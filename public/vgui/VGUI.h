@@ -78,7 +78,7 @@ const HFont INVALID_FONT = 0; // the value of an invalid font handle
 
 #include "tier1/strtools.h"
 
-#if 0 // defined( OSX ) // || defined( LINUX )
+#if defined( OSX ) && defined( BYTEMATCH_RETAIL ) // || defined( LINUX )
 // Disabled all platforms. Did a major cleanup of osxfont.cpp, and having this
 //  turned off renders much closer to Windows and Linux and also uses the same
 //  code paths (which is good).
