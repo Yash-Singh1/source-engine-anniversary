@@ -47,6 +47,12 @@ def read_map(path):
     return out
 
 
+# Symbol-port names below this confidence still scope functions but don't name relocation
+# targets: 0.7 CRT object matches can't tell identical routines apart (memcpy/memmove), and
+# 0.4 call-site groups are identical-function-folding guesses.
+TARGET_MIN_CONF = 0.9
+
+
 def apply_map(mod, path, min_conf=0.0):
     if path.endswith('.json'):
         doc = winmap.load(path)
@@ -55,8 +61,9 @@ def apply_map(mod, path, min_conf=0.0):
             for addr, names, size, stem, conf in winmap.read_rows(doc, min_conf):
                 if mod.image_base and addr < mod.image_base:
                     addr += mod.image_base
-                for n in names:
-                    mod.add_name(addr, canonical(mod.fmt, n))
+                if conf >= TARGET_MIN_CONF:
+                    for n in names:
+                        mod.add_name(addr, canonical(mod.fmt, n))
                 norm.append((addr, names, size, stem))
             rebuild(mod, norm)
             return len(norm)
