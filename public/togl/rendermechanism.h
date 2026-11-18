@@ -34,9 +34,8 @@
 
 #undef PROTECTED_THINGS_ENABLE
 
-#if defined(TOGL_OSX)
+#if defined(OSX) && defined(BYTEMATCH_RETAIL)
 
-// Valve's macOS build (retail OSX): the older togl/osx generation, as in Source SDK 2013.
 #include <OpenGL/gl.h>
 #include <OpenGL/glext.h>
 #include "tier0/basetypes.h"
@@ -79,7 +78,7 @@
 #include "togl/linuxwin/dxabstract_types.h"
 #include "togl/linuxwin/dxabstract.h"
 
-#endif // TOGL_OSX
+#endif // OSX && BYTEMATCH_RETAIL
 
 #else
 	//USE_ACTUAL_DX
