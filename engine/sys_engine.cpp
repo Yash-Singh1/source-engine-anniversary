@@ -109,7 +109,7 @@ extern ConVar host_timer_spin_ms;
 extern float host_nexttick;
 extern IVEngineClient *engineClient;
 
-#ifdef WIN32
+#if defined( WIN32 ) && !defined( BYTEMATCH_RETAIL )
 static void cpu_frequency_monitoring_callback( IConVar *var, const char *pOldValue, float flOldValue )
 {
 	// Set the specified interval for CPU frequency monitoring
@@ -310,7 +310,7 @@ void CEngine::Frame( void )
 		(void) FilterTime( 0.0f );
 		m_flPreviousTime = Sys_FloatTime() - m_flMinFrameTime;
 	}
-
+#ifndef BYTEMATCH_RETAIL
 	// Watch for data from the CPU frequency monitoring system and print it to the console.
 	const CPUFrequencyResults frequency = GetCPUFrequencyResults();
 	static double s_lastFrequencyTimestamp;
@@ -320,7 +320,7 @@ void CEngine::Frame( void )
 		Msg( "~CPU Freq: %1.3f GHz    Percent of requested: %3.1f%%    Minimum percent seen: %3.1f%%\n",
 					frequency.m_GHz, frequency.m_percentage, frequency.m_lowestPercentage );
 	}
-
+#endif
 	// Loop until it is time for our frame. Don't return early because pumping messages
 	// and processing console input is expensive (0.1 ms for each call to ProcessConsoleInput).
 	for (;;)

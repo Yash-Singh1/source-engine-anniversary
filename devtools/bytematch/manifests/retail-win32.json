@@ -100,11 +100,6 @@
      "pch": "use"
     },
     {
-     "path": "tier0/cpumonitoring.cpp",
-     "lang": "c++",
-     "pch": "use"
-    },
-    {
      "path": "tier0/dbg.cpp",
      "lang": "c++",
      "pch": "use"
@@ -189,11 +184,6 @@
     },
     {
      "path": "tier0/security.cpp",
-     "lang": "c++",
-     "pch": "use"
-    },
-    {
-     "path": "tier0/stacktools.cpp",
      "lang": "c++",
      "pch": "use"
     },
