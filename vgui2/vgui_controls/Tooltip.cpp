@@ -313,6 +313,14 @@ void TextTooltip::ShowTooltip(Panel *currentPanel)
 		_isDirty = _isDirty || ( pCurrentParent != currentPanel );
 		s_TooltipWindow->SetText( m_Text.Base() );
 		s_TooltipWindow->SetParent(currentPanel);
+
+		// Apply proportional scaling to the tooltip if the parent has scaling enabled.
+		//	This requires us to re-apply the font to see the changes.
+		if ( IScheme* pScheme = scheme()->GetIScheme( s_TooltipWindow->GetScheme() ) )
+		{
+			s_TooltipWindow->SetProportional( currentPanel && currentPanel->IsProportional() );
+			s_TooltipWindow->SetFont( pScheme->GetFont( "DefaultSmall", s_TooltipWindow->IsProportional() ) );
+		}
 	}
 	BaseTooltip::ShowTooltip( currentPanel );
 }
