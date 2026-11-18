@@ -686,6 +686,7 @@ void CGameUI::Shutdown()
 
 	ModInfo().FreeModInfo();
 	
+#ifndef BYTEMATCH_RETAIL
 	// release platform mutex
 	// close the mutex
 	if (g_hMutex)
@@ -696,10 +697,13 @@ void CGameUI::Shutdown()
 	{
 		Sys_ReleaseMutex(g_hWaitMutex);
 	}
+#endif
 	
 	BonusMapsDatabase()->WriteSaveData();
 
+#ifndef BYTEMATCH_RETAIL
 	steamapicontext->Clear();
+#endif
 	
 
 	ConVar_Unregister();
