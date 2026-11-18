@@ -51,7 +51,6 @@ def build(bld):
 		'tier1.cpp',
 		'tokenreader.cpp',
 		'uniqueid.cpp',
-		'utlbinaryblock.cpp',
 		'utlbuffer.cpp',
 		'utlbufferutil.cpp',
 		'utlstring.cpp',
