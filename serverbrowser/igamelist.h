@@ -20,7 +20,9 @@ class gameserveritem_t;
 #include "FindSteamServers.h"
 #endif
 #include "netadr.h"
+#ifndef BYTEMATCH_RETAIL
 #include "engine/iserversinfo.h"
+#endif
 
 typedef enum
 {
@@ -75,7 +77,11 @@ public:
 	virtual bool IsRefreshing() = 0;
 
 	// gets information about specified server
+#ifdef BYTEMATCH_RETAIL
+	virtual gameserveritem_t *GetServer(unsigned int serverID) = 0;
+#else
 	virtual newgameserver_t *GetServer(unsigned int serverID) = 0;
+#endif
 
 	// called when Connect button is pressed
 	virtual void OnBeginConnect() = 0;

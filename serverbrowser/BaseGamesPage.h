@@ -12,7 +12,9 @@
 #endif
 
 #include "tier1/utldict.h"
+#ifndef BYTEMATCH_RETAIL
 #include "engine/iserversinfo.h"
+#endif
 
 class CBaseGamesPage;
 
@@ -66,10 +68,22 @@ public:
 	virtual void OnCursorExited();
 };
 
+#ifdef BYTEMATCH_RETAIL
+struct servermaps_t
+#else
 struct serverping_t
+#endif
 {
+#ifdef BYTEMATCH_RETAIL
+	const char *pOriginalName;
+	const char *pFriendlyName;
+#else
 	int	m_nPing;
+#endif
 	int	iPanelIndex;
+#ifdef BYTEMATCH_RETAIL
+	bool		bOnDisk;
+#endif
 };
 
 struct gametypes_t
@@ -81,7 +95,11 @@ struct gametypes_t
 //-----------------------------------------------------------------------------
 // Purpose: Base property page for all the games lists (internet/favorites/lan/etc.)
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+class CBaseGamesPage : public vgui::PropertyPage, public IGameList, public ISteamMatchmakingServerListResponse, public ISteamMatchmakingPingResponse
+#else
 class CBaseGamesPage : public vgui::PropertyPage, public IGameList, public IServerListResponse //, public ISteamMatchmakingPingResponse
+#endif
 {
 	DECLARE_CLASS_SIMPLE( CBaseGamesPage, vgui::PropertyPage );
 
@@ -118,7 +136,11 @@ public:
 	virtual void ApplySchemeSettings(vgui::IScheme *pScheme);
 
 	// gets information about specified server
+#ifdef BYTEMATCH_RETAIL
+	virtual gameserveritem_t *GetServer(unsigned int serverID);
+#else
 	virtual newgameserver_t *GetServer(unsigned int serverID);
+#endif
 	virtual const char *GetConnectCode();
 
 	uint32 GetServerFilters( MatchMakingKeyValuePair_t **pFilters );
@@ -137,12 +159,19 @@ public:
 
 	// adds a server to the favorites
 	MESSAGE_FUNC( OnAddToFavorites, "AddToFavorites" );
+#ifdef BYTEMATCH_RETAIL
+	MESSAGE_FUNC( OnAddToBlacklist, "AddToBlacklist" );
+#endif
 
 	virtual void StartRefresh();
 
 	virtual void UpdateDerivedLayouts( void );
 	
+#ifdef BYTEMATCH_RETAIL
+	void		PrepareQuickListMap( const char *pMapName, int iListID );
+#else
 	void		PrepareQuickListMap( newgameserver_t *server, int iListID );
+#endif
 	void		SelectQuickListServers( void );
 	vgui::Panel *GetActiveList( void );
 	virtual bool IsQuickListButtonChecked()
@@ -171,14 +200,26 @@ protected:
 	void UpdateStatus();
 
 	// ISteamMatchmakingServerListResponse callbacks
+#ifdef BYTEMATCH_RETAIL
+	virtual void ServerResponded( HServerListRequest hReq, int iServer );
+	virtual void ServerResponded( int iServer, gameserveritem_t *pServerItem );
+	virtual void ServerFailedToRespond( HServerListRequest hReq, int iServer );
+	virtual void RefreshComplete( HServerListRequest hReq, EMatchMakingServerResponse response ) = 0;
+#else
 	virtual void ServerResponded( newgameserver_t &server );
 	virtual void RefreshComplete( NServerResponse response );
+#endif
 
 	// ISteamMatchmakingPingResponse callbacks
+#ifdef BYTEMATCH_RETAIL
+	virtual void ServerResponded( gameserveritem_t &server );
+	virtual void ServerFailedToRespond() {}
+#else
 	//virtual void ServerResponded( gameserveritem_t &server );
 	//virtual void ServerFailedToRespond() {}
 
 	virtual void ServerResponded( int iServer, gameserveritem_t *pServerItem );
+#endif
 
 	// Removes server from list
 	void RemoveServer( serverdisplay_t &server );
@@ -188,10 +229,17 @@ protected:
 
 	// filtering methods
 	// returns true if filters passed; false if failed
+#ifdef BYTEMATCH_RETAIL
+	virtual bool CheckPrimaryFilters( gameserveritem_t &server);
+	virtual bool CheckSecondaryFilters( gameserveritem_t &server );
+	virtual bool CheckTagFilter( gameserveritem_t &server ) { return true; }
+	virtual bool CheckWorkshopFilter( gameserveritem_t &server ) { return true; }
+#else
 	virtual bool CheckPrimaryFilters( newgameserver_t &server);
 	virtual bool CheckSecondaryFilters( newgameserver_t &server );
 	virtual bool CheckTagFilter( newgameserver_t &server ) { return true; }
 	virtual bool CheckWorkshopFilter( newgameserver_t &server ) { return true; }
+#endif
 	virtual int GetInvalidServerListID();
 
 	virtual void OnSaveFilter(KeyValues *filter);
@@ -234,13 +282,19 @@ protected:
 	CUtlMap<uint64, int> m_mapGamesFilterItem;
 	CUtlMap<int, serverdisplay_t> m_mapServers;
 	CUtlMap<netadr_t, int> m_mapServerIP;
+#ifndef BYTEMATCH_RETAIL
 
 	CUtlVector<newgameserver_t> m_serversInfo;
 
+#endif
 	CUtlVector<MatchMakingKeyValuePair_t> m_vecServerFilters;
 	CUtlDict< CQuickListMapServerList, int > m_quicklistserverlist;
 	int m_iServerRefreshCount;
+#ifdef BYTEMATCH_RETAIL
+	CUtlVector< servermaps_t > m_vecMapNamesFound;
+#else
 	CUtlVector<serverping_t> m_vecServersFound;
+#endif
 	
 
 	EPageType m_eMatchMakingType;
@@ -317,6 +371,9 @@ private:
 	bool m_bFilterNoEmptyServers;
 	bool m_bFilterNoPasswordedServers;
 	int m_iSecureFilter;
+#ifdef BYTEMATCH_RETAIL
+	int m_iServersBlacklisted;
+#endif
 	bool m_bFilterReplayServers;
 
 	CGameID m_iLimitToAppID;

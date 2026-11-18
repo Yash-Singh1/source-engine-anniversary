@@ -48,9 +48,6 @@ ARCHIVE_TARGETS = {
 # Retail links objects for these, but our copy can't be compiled for this target;
 # the module keeps building without them. module or archive -> files (tree-relative).
 RETAIL_SKIP = {
-	# Our copies lost the tag filter and friends/spectator pages they need from BaseGamesPage.
-	'bin/ServerBrowser': ['serverbrowser/unused/BlacklistedServers.cpp', 'serverbrowser/unused/CustomGames.cpp',
-		'serverbrowser/unused/FriendsGames.cpp', 'serverbrowser/unused/SpectateGames.cpp'],
 }
 
 # Files retail doesn't link that our tree still needs to link the module

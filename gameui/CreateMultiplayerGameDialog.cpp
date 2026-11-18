@@ -35,6 +35,9 @@ CCreateMultiplayerGameDialog::CCreateMultiplayerGameDialog(vgui::Panel *parent) 
 	m_bBotsEnabled = false;
 	SetDeleteSelfOnClose(true);
 
+#ifdef BYTEMATCH_RETAIL
+	SetSize(348, 460);
+#else
 	int w = 348;
 	int h = 460;
 	if (IsProportional())
@@ -44,6 +47,7 @@ CCreateMultiplayerGameDialog::CCreateMultiplayerGameDialog(vgui::Panel *parent) 
 	}
 
 	SetSize(w, h);
+#endif
 	
 	SetTitle("#GameUI_CreateServer", true);
 	SetOKButtonText("#GameUI_Start");
