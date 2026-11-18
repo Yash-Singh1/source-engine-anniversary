@@ -50,7 +50,7 @@ public:
 //-----------------------------------------------------------------------------
 CCreateMultiplayerGameGameplayPage::CCreateMultiplayerGameGameplayPage(vgui::Panel *parent, const char *name) : PropertyPage(parent, name)
 {
-	SetSize( 10, 10 ); // Quiet "parent not sized yet" spew
+	SetSize( PROPORTIONAL_VALUE( 10 ), PROPORTIONAL_VALUE( 10 ) ); // Quiet "parent not sized yet" spew
 	m_pOptionsList = new CPanelListPanel(this, "GameOptions");
 
 	m_pDescription = new CServerDescription();

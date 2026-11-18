@@ -63,11 +63,11 @@ void CCommentaryExplanationDialog::OnKeyCodeTyped(KeyCode code)
 //-----------------------------------------------------------------------------
 void CCommentaryExplanationDialog::OnKeyCodePressed(KeyCode code)
 {
-	if ( GetBaseButtonCode( code ) == KEY_XBUTTON_B || GetBaseButtonCode( code ) == STEAMCONTROLLER_B )
+	if ( GetBaseButtonCode( code ) == KEY_XBUTTON_B )
 	{
 		OnCommand( "cancel" );
 	}
-	else if ( GetBaseButtonCode( code ) == KEY_XBUTTON_A || GetBaseButtonCode( code ) == STEAMCONTROLLER_A )
+	else if ( GetBaseButtonCode( code ) == KEY_XBUTTON_A )
 	{
 		OnCommand( "ok" );
 	}

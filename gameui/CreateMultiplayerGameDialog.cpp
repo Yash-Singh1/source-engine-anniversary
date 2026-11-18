@@ -36,7 +36,7 @@ CCreateMultiplayerGameDialog::CCreateMultiplayerGameDialog(vgui::Panel *parent) 
 	SetDeleteSelfOnClose(true);
 
 #ifdef BYTEMATCH_RETAIL
-	SetSize(348, 460);
+	SetSize( PROPORTIONAL_VALUE( 348 ), PROPORTIONAL_VALUE( 460 ) );
 #else
 	int w = 348;
 	int h = 460;
@@ -162,11 +162,11 @@ void CCreateMultiplayerGameDialog::OnKeyCodePressed( vgui::KeyCode code )
 	// Handle close here, CBasePanel parent doesn't support "DialogClosing" command
 	ButtonCode_t nButtonCode = GetBaseButtonCode( code );
 
-	if ( nButtonCode == KEY_XBUTTON_B || nButtonCode == STEAMCONTROLLER_B )
+	if ( nButtonCode == KEY_XBUTTON_B )
 	{
 		OnCommand( "Close" );
 	}
-	else if ( nButtonCode == KEY_XBUTTON_A || nButtonCode == STEAMCONTROLLER_A )
+	else if ( nButtonCode == KEY_XBUTTON_A )
 	{
 		OnOK( false );
 	}
@@ -174,6 +174,7 @@ void CCreateMultiplayerGameDialog::OnKeyCodePressed( vgui::KeyCode code )
 			  nButtonCode == KEY_XSTICK1_UP ||
 			  nButtonCode == KEY_XSTICK2_UP ||
 			  nButtonCode == STEAMCONTROLLER_DPAD_UP ||
+			  nButtonCode == STEAMCONTROLLER_LEFT_PAD_UP ||
 			  nButtonCode == KEY_UP )
 	{
 		int nItem = m_pServerPage->GetMapList()->GetActiveItem() - 1;
@@ -186,7 +187,6 @@ void CCreateMultiplayerGameDialog::OnKeyCodePressed( vgui::KeyCode code )
 	else if ( nButtonCode == KEY_XBUTTON_DOWN || 
 			  nButtonCode == KEY_XSTICK1_DOWN ||
 			  nButtonCode == KEY_XSTICK2_DOWN || 
-			  nButtonCode == STEAMCONTROLLER_DPAD_DOWN ||
 			  nButtonCode == KEY_DOWN )
 	{
 		int nItem = m_pServerPage->GetMapList()->GetActiveItem() + 1;

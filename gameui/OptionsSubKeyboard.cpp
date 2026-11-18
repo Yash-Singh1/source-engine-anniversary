@@ -762,8 +762,9 @@ public:
 		// parent is ignored, since we want look like we're steal focus from the parent (we'll become modal below)
 
 #ifdef BYTEMATCH_RETAIL
+		SetParent( enginevguifuncs->GetPanel( PANEL_GAMEUIDLL ) );
 		SetTitle("#GameUI_KeyboardAdvanced_Title", true);
-		SetSize( 280, 140 );
+		SetSize( PROPORTIONAL_VALUE( 280 ), PROPORTIONAL_VALUE( 140 ) );
 #else
 		if( NeedProportional() )
 			SetProportional(true);

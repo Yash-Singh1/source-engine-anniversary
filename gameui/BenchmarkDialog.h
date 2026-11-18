@@ -23,16 +23,17 @@ public:
 
 	void OnKeyCodePressed( vgui::KeyCode code )
 	{
-		if ( code == KEY_XBUTTON_B || code == STEAMCONTROLLER_B )
+		switch ( GetBaseButtonCode( code ) )
 		{
+		case KEY_XBUTTON_B:
+		case STEAMCONTROLLER_B:
 			Close();
-		}
-		else if ( code == KEY_XBUTTON_A || code == STEAMCONTROLLER_A )
-		{
+			break;
+		case KEY_XBUTTON_A:
+		case STEAMCONTROLLER_A:
 			RunBenchmark();
-		}
-		else
-		{
+			break;
+		default:
 			BaseClass::OnKeyCodePressed(code);
 		}
 	}

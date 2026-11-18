@@ -11,7 +11,7 @@
 #include "GameUI_Interface.h"
 #include "vgui/ISurface.h"
 #include "vgui/IInput.h"
-
+#include "tier0/icommandline.h"
 #include <stdio.h>
 
 using namespace vgui;
@@ -114,16 +114,16 @@ void CCommentaryDialog::OnCommand( const char *command )
 //-----------------------------------------------------------------------------
 void CCommentaryDialog::OnKeyCodePressed(KeyCode code)
 {
+	ButtonCode_t nButtonCode = GetBaseButtonCode( code );
 	// Ignore escape key
-	if ( code == KEY_ESCAPE )
+	if ( nButtonCode == KEY_ESCAPE )
 		return;
-
-	if ( code == KEY_XBUTTON_A || code == STEAMCONTROLLER_A )
+	if ( nButtonCode == KEY_XBUTTON_A || nButtonCode == STEAMCONTROLLER_A )
 	{
 		OnCommand( "TurnOn" );
 		return;
 	}
-	else if ( code == KEY_XBUTTON_B || code == STEAMCONTROLLER_B )
+	else if ( nButtonCode == KEY_XBUTTON_B || nButtonCode == STEAMCONTROLLER_B )
 	{
 		OnCommand( "TurnOff" );
 		return;
@@ -137,6 +137,8 @@ void CCommentaryDialog::OnKeyCodePressed(KeyCode code)
 //-----------------------------------------------------------------------------
 void OpenCommentaryDialog( void )
 {
+	if ( IsSteamDeck() || !V_stricmp( CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) ), "hl2_complete" ) )
+		return;
 	DHANDLE<CCommentaryDialog> hCommentaryDialog;
 	if ( !hCommentaryDialog.Get() )
 	{
@@ -242,7 +244,8 @@ void CPostCommentaryDialog::OnKeyCodeTyped(KeyCode code)
 //-----------------------------------------------------------------------------
 void CPostCommentaryDialog::OnKeyCodePressed(KeyCode code)
 {
-   	if ( code == KEY_XBUTTON_A || code == KEY_XBUTTON_B || code == STEAMCONTROLLER_B )
+	ButtonCode_t nButtonCode = GetBaseButtonCode( code );
+   	if ( nButtonCode == KEY_XBUTTON_A || nButtonCode == KEY_XBUTTON_B || nButtonCode == STEAMCONTROLLER_A || nButtonCode == STEAMCONTROLLER_B )
 	{
 		Close();
 		vgui::surface()->RestrictPaintToSinglePanel(NULL);

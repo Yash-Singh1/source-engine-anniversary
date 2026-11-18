@@ -1778,8 +1778,9 @@ public:
 	{
 		// parent is ignored, since we want look like we're steal focus from the parent (we'll become modal below)
 #ifdef BYTEMATCH_RETAIL
+		SetParent( enginevguifuncs->GetPanel( PANEL_GAMEUIDLL ) );
 		SetTitle("#GameUI_ThirdPartyVideo_Title", true);
-		SetSize(500, 200);
+		SetSize( PROPORTIONAL_VALUE( 500 ), PROPORTIONAL_VALUE( 210 ) );
 #else
 		int w = 500;
 		int h = 200;
