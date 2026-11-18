@@ -39,6 +39,15 @@ The denominator grew by retail's `OptionsSubGamepad.o` (16 functions), which thi
 | LoadGameDialog | Workshop campaign save loading (UGC item state, `IWorkshop::GetItem`/`LoadCampaign`, `viewonworkshop`). 11/11 |
 | OptionsSubVideo | retail `COptionsSubVideo` member layout only; the anniversary video page and advanced dialog are not written. 47/70 |
 
+### OptionsSubVideo findings (not written yet)
+
+Retail `COptionsSubVideo` (0x20c bytes): `m_nSelectedHudAspect` at 0x1c4 (index from `hud_aspect`, compared in
+`OnApplyChanges`), `HudAspectRatio` combo at 0x1dc (FitDisplay / 4:3 / 16:9 / 16:10), `HDR` combo at 0x1f0
+(moved from the advanced dialog, enabled for `mat_dxlevel` >= 80), `DisplayModeCombo` at 0x1d0 built from
+`SDL_GetNumVideoDisplays()` (`#GameUI_Fullscreen` per display, `#GameUI_Windowed`, `#GameUI_NoWindowBorder`),
+HD-content and HDR availability bools at 0x208/0x209, `maps/test_hardware.bsp` hides the benchmark button.
+`COptionsSubVideoAdvancedDlg` is 0x318 bytes (ours 0x2fc) and gains `OnSliderChanged`.
+
 ## Not matching yet
 
 ### OptionsSubVideo (23 left)
