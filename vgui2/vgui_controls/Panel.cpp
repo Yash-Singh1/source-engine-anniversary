@@ -1395,19 +1395,22 @@ void Panel::SetParent(VPANEL newParent)
 		ipanel()->SetParent(GetVPanel(), NULL);
 	}
 
-	if (GetVParent() && !IsPopup())
+	if (GetVParent())
 	{
 		SetProportional(ipanel()->IsProportional(GetVParent()));
 
-		// most of the time KBInput == parents kbinput
-		if (ipanel()->IsKeyBoardInputEnabled(GetVParent()) != IsKeyBoardInputEnabled())
+		if ( !IsPopup() )
 		{
-			SetKeyBoardInputEnabled(ipanel()->IsKeyBoardInputEnabled(GetVParent()));
-		}
+			// most of the time KBInput == parents kbinput
+			if (ipanel()->IsKeyBoardInputEnabled(GetVParent()) != IsKeyBoardInputEnabled())
+			{
+				SetKeyBoardInputEnabled(ipanel()->IsKeyBoardInputEnabled(GetVParent()));
+			}
 
-		if (ipanel()->IsMouseInputEnabled(GetVParent()) != IsMouseInputEnabled())
-		{
-			SetMouseInputEnabled(ipanel()->IsMouseInputEnabled(GetVParent()));
+			if (ipanel()->IsMouseInputEnabled(GetVParent()) != IsMouseInputEnabled())
+			{
+				SetMouseInputEnabled(ipanel()->IsMouseInputEnabled(GetVParent()));
+			}
 		}
 	}
 
@@ -2968,6 +2971,8 @@ void Panel::OnKeyCodePressed(KeyCode code)
 	case KEY_XSTICK1_UP:
 	case KEY_XSTICK2_UP:
 	case KEY_UP:
+	case STEAMCONTROLLER_DPAD_UP:
+	case STEAMCONTROLLER_LEFT_PAD_UP:
 		if ( ( !vgui_nav_lock.IsValid() || vgui_nav_lock.GetInt() == 0 ) && NavigateUp() )
 		{
 			vgui_nav_lock.SetValue( 1 );
@@ -2979,6 +2984,8 @@ void Panel::OnKeyCodePressed(KeyCode code)
 	case KEY_XSTICK1_DOWN:
 	case KEY_XSTICK2_DOWN:
 	case KEY_DOWN:
+	case STEAMCONTROLLER_DPAD_DOWN:
+	case STEAMCONTROLLER_LEFT_PAD_DOWN:
 		if ( ( !vgui_nav_lock.IsValid() || vgui_nav_lock.GetInt() == 0 ) && NavigateDown() )
 		{
 			vgui_nav_lock.SetValue( 1 );
@@ -2990,6 +2997,8 @@ void Panel::OnKeyCodePressed(KeyCode code)
 	case KEY_XSTICK1_LEFT:
 	case KEY_XSTICK2_LEFT:
 	case KEY_LEFT:
+	case STEAMCONTROLLER_DPAD_LEFT:
+	case STEAMCONTROLLER_LEFT_PAD_LEFT:
 		if ( ( !vgui_nav_lock.IsValid() || vgui_nav_lock.GetInt() == 0 ) && NavigateLeft() )
 		{
 			vgui_nav_lock.SetValue( 1 );
@@ -3001,6 +3010,8 @@ void Panel::OnKeyCodePressed(KeyCode code)
 	case KEY_XSTICK1_RIGHT:
 	case KEY_XSTICK2_RIGHT:
 	case KEY_RIGHT:
+	case STEAMCONTROLLER_DPAD_RIGHT:
+	case STEAMCONTROLLER_LEFT_PAD_RIGHT:
 		if ( ( !vgui_nav_lock.IsValid() || vgui_nav_lock.GetInt() == 0 ) && NavigateRight() )
 		{
 			vgui_nav_lock.SetValue( 1 );
@@ -3009,6 +3020,7 @@ void Panel::OnKeyCodePressed(KeyCode code)
 		}
 		break;
 	case KEY_XBUTTON_B:
+	case STEAMCONTROLLER_B:
 		if ( ( !vgui_nav_lock.IsValid() || vgui_nav_lock.GetInt() == 0 ) && NavigateBack() )
 		{
 			vgui_nav_lock.SetValue( 1 );
@@ -6338,7 +6350,20 @@ void Panel::GetCornerTextureSize( int& w, int& h )
 		w = h = 0;
 		return;
 	}
-	surface()->DrawGetTextureSize(m_nBgTextureId1, w, h);
+
+	if ( IsProportional() )
+	{
+		// Do not use the scheme for this, so it's screen space that affects the rounding always.
+		w = MAX( scheme()->GetProportionalScaledValue( 8 ) / 2, 8 );
+		h = w;
+	}
+	else
+	{
+		// Legacy for size of all old 800corner1 (8x8) images.
+		// Nowe we use 8x80corner images (64x64)
+		w = 8;
+		h = 8;
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -8050,7 +8075,7 @@ vgui::Panel* Panel::GetNavUp( Panel *first )
 	}
 
 	vgui::Panel* nextPanel = m_NavUp;
-	if( m_NavUp && m_NavUp != first && !m_NavUp->IsVisible() )
+	if( m_NavUp && m_NavUp != first && ( !m_NavUp->IsVisible() || !m_NavUp->IsEnabled() ) )
 	{
 		Panel *firstPanel = first == NULL ? this : first;
 		nextPanel = nextPanel->GetNavUp( firstPanel );
@@ -8084,7 +8109,7 @@ vgui::Panel* Panel::GetNavDown( Panel *first )
 	}
 
 	vgui::Panel* nextPanel = m_NavDown;
-	if( m_NavDown && m_NavDown != first && !m_NavDown->IsVisible() )
+	if( m_NavDown && m_NavDown != first && ( !m_NavDown->IsVisible() || !m_NavDown->IsEnabled() ) )
 	{
 		Panel *firstPanel = first == NULL ? this : first;
 		nextPanel = nextPanel->GetNavDown( firstPanel );
@@ -8118,7 +8143,7 @@ vgui::Panel* Panel::GetNavLeft( Panel *first )
 	}
 
 	vgui::Panel* nextPanel = m_NavLeft;
-	if( m_NavLeft && m_NavLeft != first && !m_NavLeft->IsVisible() )
+	if( m_NavLeft && m_NavLeft != first && ( !m_NavLeft->IsVisible() || !m_NavLeft->IsEnabled() ) )
 	{
 		Panel *firstPanel = first == NULL ? this : first;
 		nextPanel = nextPanel->GetNavLeft( firstPanel );
@@ -8152,7 +8177,7 @@ vgui::Panel* Panel::GetNavRight( Panel *first )
 	}
 
 	vgui::Panel* nextPanel = m_NavRight;
-	if( m_NavRight && m_NavRight != first && !m_NavRight->IsVisible() )
+	if( m_NavRight && m_NavRight != first && ( !m_NavRight->IsVisible() || !m_NavRight->IsEnabled() ) )
 	{
 		Panel *firstPanel = first == NULL ? this : first;
 		nextPanel = nextPanel->GetNavRight( firstPanel );
@@ -8186,7 +8211,7 @@ vgui::Panel* Panel::GetNavToRelay( Panel *first )
 	}
 
 	vgui::Panel* nextPanel = m_NavToRelay;
-	if ( m_NavToRelay && m_NavToRelay != first && !m_NavToRelay->IsVisible() )
+	if ( m_NavToRelay && m_NavToRelay != first && ( !m_NavToRelay->IsVisible() || !m_NavToRelay->IsEnabled() ) )
 	{
 		Panel *firstPanel = first == NULL ? this : first;
 		nextPanel = nextPanel->GetNavToRelay( firstPanel );
@@ -8220,7 +8245,7 @@ vgui::Panel* Panel::GetNavActivate( Panel *first )
 	}
 
 	vgui::Panel* nextPanel = m_NavActivate;
-	if ( m_NavActivate && m_NavActivate != first && !m_NavActivate->IsVisible() )
+	if ( m_NavActivate && m_NavActivate != first && ( !m_NavActivate->IsVisible() || !m_NavActivate->IsEnabled() ) )
 	{
 		Panel *firstPanel = first == NULL ? this : first;
 		nextPanel = nextPanel->GetNavActivate( firstPanel );
@@ -8254,7 +8279,11 @@ vgui::Panel* Panel::GetNavBack( Panel *first )
 	}
 
 	vgui::Panel* nextPanel = m_NavBack;
-	if ( m_NavBack && m_NavBack != first && !m_NavBack->IsVisible() )
+#ifdef BYTEMATCH_RETAIL
+	if ( m_NavBack && m_NavBack != first && ( !m_NavBack->IsVisible() || !m_NavBack->IsVisible() ) )
+#else
+	if ( m_NavBack && m_NavBack != first && ( !m_NavBack->IsVisible() || !m_NavBack->IsEnabled() ) )
+#endif
 	{
 		Panel *firstPanel = first == NULL ? this : first;
 		nextPanel = nextPanel->GetNavBack( firstPanel );
