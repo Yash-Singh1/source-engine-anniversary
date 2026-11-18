@@ -1,0 +1,32 @@
+clang-503.0.38 never initializes TargetLoweringBase::MaskAndBranchFoldingIsLegal
+except in the ARM64 backend, so whether CodeGenPrepare::sinkAndCmp runs on x86
+depends on leftover memory. In Apple's Xcode 5.1 binary it varied between
+compiles: some objects in depot 223's 2014 hl2mp modules re-test single-bit
+masks in each branch block (test cl, 0x10) where others keep the masked value
+live, and hl2mp's client and server saverestore.o differ this way. This
+initializes it from a hidden option, -mllvm -mask-and-branch-folding, default
+false (what our build reads, and what clang-600 initializes it to);
+sdk2013mp/wscript turns it on for the objects that need it.
+
+--- a/src/lib/CodeGen/TargetLoweringBase.cpp
++++ b/src/lib/CodeGen/TargetLoweringBase.cpp
+@@ -32,6 +32,9 @@
+ #include "llvm/Target/TargetRegisterInfo.h"
+ #include <cctype>
+ using namespace llvm;
++
++static cl::opt<bool> MaskAndBranchFolding("mask-and-branch-folding", cl::Hidden,
++  cl::init(false), cl::desc("Report mask-and-branch folding as legal (sinkAndCmp)"));
+ 
+ /// InitLibcallNames - Set default libcall names.
+ ///
+@@ -679,6 +682,9 @@
+   Pow2DivIsCheap = false;
+   JumpIsExpensive = false;
+   PredictableSelectIsExpensive = false;
++  // Xcode 5.1 left this uninitialized (only ARM64 set it), so whether
++  // CodeGenPrepare::sinkAndCmp ran on x86 varied between compiles.
++  MaskAndBranchFoldingIsLegal = MaskAndBranchFolding;
+   StackPointerRegisterToSaveRestore = 0;
+   ExceptionPointerRegister = 0;
+   ExceptionSelectorRegister = 0;
