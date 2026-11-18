@@ -60,6 +60,7 @@ void EngineTool_OverrideSampleRate( int& rate );
 #else
 #define VOICE_RECEIVE_BUFFER_SIZE			(VOICE_OUTPUT_SAMPLE_RATE_MAX * BYTES_PER_SAMPLE)
 #endif
+#line 56
 
 #define LOCALPLAYERTALKING_TIMEOUT			0.2f	// How long it takes for the client to decide the server isn't sending acks
 													// of voice data back.
@@ -135,6 +136,7 @@ ConVar voice_forcemicrecord( "voice_forcemicrecord", "1", FCVAR_ARCHIVE );
 ConVar voice_buffer_ms( "voice_buffer_ms", "100", FCVAR_INTERNAL_USE,
                         "How many milliseconds of voice to buffer to avoid dropouts due to jitter and frame time differences." );
 #endif
+#line 129
 
 int g_nVoiceFadeSamples		= 1;							// Calculated each frame from the cvar.
 float g_VoiceFadeMul		= 1;							// 1 / (g_nVoiceFadeSamples - 1).
@@ -154,6 +156,7 @@ int g_nVoiceRequestedSampleRate = -1;
 const char *Voice_ConfiguredCodec() { return g_szVoiceCodec; }
 int Voice_ConfiguredSampleRate() { return g_nVoiceRequestedSampleRate; }
 #endif
+#line 146
 
 // Timing info for each frame.
 static double	g_CompressTime = 0;
@@ -217,8 +220,9 @@ extern IVoiceRecord *CreateVoiceRecord_SDL(int sampleRate);
 extern IVoiceRecord* CreateVoiceRecord_DSound(int nSamplesPerSec);
 
 #define VOICE_QUALITY	4
-#endif
 
+#endif
+#line 203
 #ifdef BYTEMATCH_RETAIL
 static bool VoiceRecord_Start()
 {
@@ -278,6 +282,7 @@ static void VoiceRecord_Stop()
 	}
 }
 #endif
+#line 235
 
 //
 // Used for storing incoming voice data from an entity.
@@ -339,6 +344,7 @@ void CVoiceChannel::Init(int nEntity)
 #else
 	m_TimePad = Clamp( voice_buffer_ms.GetFloat(), 1.f, 5000.f ) / 1000.f;
 #endif
+#line 292
 	m_LastSample = 0;
 	m_LastFraction = 0.999;
 
@@ -832,6 +838,7 @@ bool Voice_Init( const char *pCodecName, int nSampleRate )
 	return true;
 }
 #endif
+#line 720
 
 
 void Voice_EndChannel(int iChannel)
@@ -931,6 +938,7 @@ void Voice_Deinit()
 	g_nVoiceRequestedSampleRate = -1;
 	g_bUsingSteamVoice = false;
 #endif
+#line 817
 }
 
 bool Voice_GetLoopback()
@@ -985,8 +993,9 @@ void Voice_Idle(float frametime)
 #ifdef BYTEMATCH_RETAIL
 	static ConVarRef sv_use_steam_voice( "sv_use_steam_voice" );
 	g_bUsingSteamVoice = SteamUser() && sv_use_steam_voice.GetBool();
-#endif
 
+#endif
+#line 868
 	if( g_bLocalPlayerTalkingAck )
 	{
 		g_LocalPlayerTalkingTimeout += frametime;
@@ -1005,6 +1014,7 @@ void Voice_Idle(float frametime)
 #else
 	g_nVoiceFadeSamples = max((int)(voice_fadeouttime.GetFloat() * g_VoiceSampleFormat.nSamplesPerSec ), 2);
 #endif
+#line 882
 	g_VoiceFadeMul = 1.0f / (g_nVoiceFadeSamples - 1);
 
 	if(g_pVoiceRecord)
@@ -1114,6 +1124,7 @@ bool Voice_RecordStart(
 		g_pEncodeCodec->ResetState();
 	}
 #endif
+#line 980
 	
 	if(pMicInputFile)
 	{
@@ -1150,6 +1161,7 @@ bool Voice_RecordStart(
 				SteamFriends()->SetInGameVoiceSpeaking( SteamUser()->GetSteamID(), true );
 			}
 #endif
+#line 1014
 
 			g_pSoundServices->OnChangeVoiceStatus( -1, true );		// Tell the client DLL.
 		}
@@ -1180,6 +1192,7 @@ void Voice_UserDesiresStop()
 	}
 }
 #endif
+#line 1042
 
 
 bool Voice_RecordStop()
@@ -1229,6 +1242,7 @@ bool Voice_RecordStop()
 	g_bVoiceRecording = false;
 	g_bVoiceRecordStopping = false;
 #endif
+#line 1082
 	return(true);
 }
 
@@ -1301,6 +1315,7 @@ int Voice_GetCompressedData(char *pchDest, int nCount, bool bFinal)
 		return cbCompressedWritten;
 	}
 #endif
+#line 1125
 
 	IVoiceCodec *pCodec = g_pEncodeCodec;
 	if( g_pVoiceRecord && pCodec )
@@ -1428,6 +1443,7 @@ int Voice_AssignChannel(int nEntity, bool bProximity)
 			break;
 		}
 #endif
+#line 1243
 	}
 
 	// If they're all used, then don't allow them to make a new channel.
@@ -1514,6 +1530,7 @@ int Voice_AddIncomingData(int nChannel, const char *pchData, int nCount, int iSe
 #else
 	if ( ( pChannel = GetVoiceChannel(nChannel)) == NULL || ( !g_bUsingSteamVoice && !pChannel->m_pVoiceCodec ) )
 #endif
+#line 1325
 	{
 		return(0);
 	}
@@ -1546,6 +1563,7 @@ int Voice_AddIncomingData(int nChannel, const char *pchData, int nCount, int iSe
 		                                                                     decompressed, sizeof( decompressed ),
 		                                                                     &nBytesWritten, Voice_SamplesPerSec() );
 #endif
+#line 1351
 		if ( result == k_EVoiceResultOK )
 		{
 			nDecompressed = nBytesWritten / BYTES_PER_SAMPLE;
@@ -1585,6 +1603,7 @@ int Voice_AddIncomingData(int nChannel, const char *pchData, int nCount, int iSe
 #else
 	                                               (double)Voice_SamplesPerSec()/g_VoiceSampleFormat.nSamplesPerSec );
 #endif
+#line 1386
 	pChannel->m_LastSample = decompressed[nDecompressed];
 
 	// Write to our file buffer..
@@ -1711,6 +1730,7 @@ void Voice_ForceInit()
 	}
 }
 #endif
+#line 1502
 
 float VoiceTweak_GetControlFloat(VoiceTweakControl iControl)
 {

@@ -135,7 +135,14 @@ void HostState_RunGameInit()
 //-----------------------------------------------------------------------------
 void HostState_NewGame( char const *pMapName, bool remember_location, bool background )
 {
+#ifdef BYTEMATCH_RETAIL
+	char szMapName[_MAX_PATH];
+	V_StripExtension( pMapName, szMapName, sizeof( szMapName ) );
+	Q_strncpy( g_HostState.m_levelName, szMapName, sizeof( g_HostState.m_levelName ) );
+#else
 	Q_strncpy( g_HostState.m_levelName, pMapName, sizeof( g_HostState.m_levelName ) );
+#endif
+#line 139
 
 	g_HostState.m_landmarkName[0] = 0;
 	g_HostState.m_bRememberLocation = remember_location;
@@ -293,7 +300,10 @@ void CHostState::Init()
 
 	CCS_Init();
 
+#ifndef BYTEMATCH_RETAIL
 	Plat_SetWatchdogHandlerFunction( WatchDogHandler );
+#endif
+#line 297
 }
 
 void CHostState::SetState( HOSTSTATES newState, bool clearNext )
@@ -500,7 +510,10 @@ static bool IsClientConnected()
 
 void CHostState::State_Run( float frameTime )
 {
+#ifndef BYTEMATCH_RETAIL
 	static bool s_bFirstRunFrame = true;
+#endif
+#line 473
 
 	if ( m_flShortFrameTime > 0 )
 	{
@@ -515,6 +528,9 @@ void CHostState::State_Run( float frameTime )
 		}
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	Host_RunFrame( frameTime );
+#else
 	// Nice big timeout to play it safe while still ensuring that we don't get stuck in
 	// infinite loops.
 	int nTimerWaitSeconds = 60;
@@ -535,6 +551,8 @@ void CHostState::State_Run( float frameTime )
 	{
 		Plat_EndWatchdogTimer();
 	}
+#endif
+#line 507
 
 	switch( m_nextState )
 	{

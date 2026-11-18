@@ -124,6 +124,7 @@ bool VoiceRecord_OpenAL::RecordStart()
 
 	const ALenum error = alcGetError(m_Device);
 #endif
+#line 121
 	return error == AL_NO_ERROR;
 }
 
@@ -151,6 +152,7 @@ bool VoiceRecord_OpenAL::InitalizeInterfaces()
 	const bool result = error == AL_NO_ERROR;
 	return m_Device != NULL && result;
 #endif
+#line 144
 }
 
 bool VoiceRecord_OpenAL::Init(int sampleRate)
@@ -194,6 +196,7 @@ int VoiceRecord_OpenAL::GetRecordedData(short *pOut, int nSamples )
 #else
 		if ( alcGetError(m_Device) != ALC_NO_ERROR )
 #endif
+#line 183
 		{
 			return 0;
 		}
@@ -209,6 +212,7 @@ IVoiceRecord* CreateVoiceRecord_DSound(int sampleRate)
 #else
 IVoiceRecord* CreateVoiceRecord_OpenAL(int sampleRate)
 #endif
+#line 194
 {
 	VoiceRecord_OpenAL *pRecord = new VoiceRecord_OpenAL;
 	if ( pRecord && pRecord->Init(sampleRate) )

@@ -189,6 +189,7 @@ CAudioMixer *CAudioSourceVoice::CreateMixer( int initialStreamPosition )
 #ifdef BYTEMATCH_RETAIL
 	ReferenceAdd( pMixer );
 #endif
+#line 189
 	return pMixer;
 }
 
@@ -219,6 +220,7 @@ int CAudioSourceVoice::SampleRate()
 #else
 	return Voice_SamplesPerSec();
 #endif
+#line 215
 }
 
 int CAudioSourceVoice::SampleSize()
@@ -233,6 +235,7 @@ int CAudioSourceVoice::SampleCount()
 #else
 	return Voice_SamplesPerSec();
 #endif
+#line 225
 }
 
 void CAudioSourceVoice::ReferenceAdd(CAudioMixer *pMixer)

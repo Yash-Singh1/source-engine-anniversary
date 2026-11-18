@@ -138,11 +138,20 @@ public:
 	void Reset() { m_curPosition = 0; m_szLine[0] = '\0'; }
 	void AddColumnText( const char *pszText, unsigned int columnWidth )
 	{
+#ifdef BYTEMATCH_RETAIL
+		int len = strlen( m_szLine );
+
+		if ( m_curPosition > len )
+		{
+			for ( int i = len; i < m_curPosition; i++ )
+#else
 		size_t len = strlen( m_szLine );
 
 		if ( m_curPosition > len )
 		{
 			for ( size_t i = len; i < m_curPosition; i++ )
+#endif
+#line 142
 			{
 				m_szLine[i] = ' ';
 			}
@@ -167,7 +176,12 @@ public:
 	const char *GetLine() { return m_szLine; }
 
 private:
+#ifdef BYTEMATCH_RETAIL
+	int m_curPosition;
+#else
 	size_t m_curPosition;
+#endif
+#line 167
 	char m_szLine[512];
 };
 
