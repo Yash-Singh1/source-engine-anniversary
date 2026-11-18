@@ -146,6 +146,14 @@ void Label::GetContentSize(int &wide, int &tall)
 }
 
 //-----------------------------------------------------------------------------
+// Purpose: Return the size of the text image
+//-----------------------------------------------------------------------------
+void Label::GetTextImageSize( int &wide, int &tall )
+{
+	_textImage->GetSize( wide, tall );
+}
+
+//-----------------------------------------------------------------------------
 // Purpose: Calculate the keyboard key that is a hotkey 
 //-----------------------------------------------------------------------------
 wchar_t Label::CalculateHotkey(const char *text)
