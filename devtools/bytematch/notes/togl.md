@@ -40,7 +40,7 @@ Known differences:
   retail and SDK 2013 use 219, the 2018 leak and our tree 228. Only togl uses it.
 - cglmprogram `SelectShaderPair`, `LogSlow` and cglmtex `WriteTexels`: register allocation,
   stack slots and tail merging only; the logic matches retail.
-- libtogl exports match retail except tier1's `cvar`, which retail exports.
+- libtogl's export set is identical to retail's.
 
 shaderapidx9 links since the matsys lane: retail keeps the D3DX helpers out of libtogl and
 inlines them from `public/togl/d3dx_impl.h` (named by shaderapidx9's debug map), so the osx
