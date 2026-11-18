@@ -73,7 +73,9 @@ Header-difference risk. The headers are 10.6's, not 10.9's:
 - Prototypes. 10.8 moved `scandir`/`alphasort` to POSIX-2008 const signatures;
   `patches/sdk109-dirent.patch` applies that. 10.7+ no longer declares the
   QuickDraw GWorld calls video_quicktime redeclares as function pointers;
-  `patches/sdk109-qdoffscreen.patch` removes them. Others may surface as modules are
+  `patches/sdk109-qdoffscreen.patch` removes them. 10.8 also marked `longjmp` and
+  friends `__dead2` (`patches/sdk109-setjmp.patch`); that one compiles either way but
+  changes codegen around functions that end in `longjmp`. Others may surface as modules are
   added. Errors like these are SDK gaps, not source drift: patch the SDK, not the tree.
 - Inline functions and macros in libc, libm and the frameworks (e.g. `__sincosf`
   exists only in 10.9's math.h), plus `_FORTIFY_SOURCE` wrappers and the

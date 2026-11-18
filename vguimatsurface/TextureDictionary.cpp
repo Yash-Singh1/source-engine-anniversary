@@ -56,7 +56,9 @@ public:
 	void SetMaterial( const char *pFileName );
 	void SetMaterial( IMaterial *pMaterial );
 
+#ifndef BYTEMATCH_RETAIL
 	void SetTexture( ITexture *pTexture ) { SafeAssign( &m_pOverrideTexture, pTexture ); }
+#endif
 
 	// This is used when we want different rendering state sharing the same procedural texture (fonts)
 	void ReferenceOtherProcedural( CMatSystemTexture *pTexture, IMaterial *pMaterial );
@@ -70,7 +72,7 @@ public:
 
  	bool IsReference() const { return m_Flags & TEXTURE_IS_REFERENCE; }
 
-	void SetTextureRGBA( const char* rgba, int wide, int tall, ImageFormat format, bool bFixupTextCoordsForDimensions );
+	void SetTextureRGBA( const char* rgba, int wide, int tall, ImageFormat format, bool bFixupTextCoordsForDimensions, bool bNoPointSample, bool bAdditive );
 	void SetSubTextureRGBA( int drawX, int drawY, unsigned const char *rgba, int subTextureWide, int subTextureTall );
 	void SetSubTextureRGBAEx( int drawX, int drawY, unsigned const char *rgba, int subTextureWide, int subTextureTall, ImageFormat imageFormat );
 	void UpdateSubTextureRGBA( int drawX, int drawY, unsigned const char *rgba, int subTextureWide, int subTextureTall, ImageFormat imageFormat );
@@ -94,7 +96,9 @@ private:
 	CRC32_t				m_crcFile;
 	IMaterial			*m_pMaterial;
 	ITexture			*m_pTexture;
+#ifndef BYTEMATCH_RETAIL
 	ITexture			*m_pOverrideTexture;
+#endif
 
 	int					m_iWide;
 	int					m_iTall;
@@ -116,7 +120,9 @@ public:
 
 	// Create, destroy textures
 	int	CreateTexture( bool procedural = false );
+#ifndef BYTEMATCH_RETAIL
 	int CreateTextureByTexture( ITexture *pTexture, bool procedural = true ) OVERRIDE;
+#endif
 	void DestroyTexture( int id );
 	void DestroyAllTextures();
 
@@ -135,6 +141,7 @@ public:
 
 	void SetTextureRGBA( int id, const char* rgba, int wide, int tall );
 	void SetTextureRGBAEx( int id, const char* rgba, int wide, int tall, ImageFormat format, bool bFixupTextCoordsForDimensions );
+	void SetTextureRGBAEx2( int id, const char* rgba, int wide, int tall, ImageFormat format, bool bFixupTextCoordsForDimensions, bool bNoPointSample, bool bAdditive );
 	void SetSubTextureRGBA( int id, int drawX, int drawY, unsigned const char *rgba, int subTextureWide, int subTextureTall );
 	void SetSubTextureRGBAEx( int id, int drawX, int drawY, unsigned const char *rgba, int subTextureWide, int subTextureTall, ImageFormat imageFormat );
 	void UpdateSubTextureRGBA( int id, int drawX, int drawY, unsigned const char *rgba, int subTextureWide, int subTextureTall, ImageFormat imageFormat );
@@ -316,7 +323,9 @@ CMatSystemTexture::CMatSystemTexture( void )
 {
 	m_pMaterial = NULL;
 	m_pTexture = NULL;
+#ifndef BYTEMATCH_RETAIL
 	m_pOverrideTexture = NULL;
+#endif
 	m_crcFile = (CRC32_t)0;
 	m_iWide = m_iTall = 0;
 	m_s0 = m_t0 = 0;
@@ -331,12 +340,14 @@ CMatSystemTexture::CMatSystemTexture( void )
 //-----------------------------------------------------------------------------
 CMatSystemTexture::~CMatSystemTexture( void )
 {
+#ifndef BYTEMATCH_RETAIL
 	if ( m_pOverrideTexture )
 	{
 		m_pOverrideTexture->Release();
 		m_pOverrideTexture->DeleteIfUnreferenced();
 		m_pOverrideTexture = NULL;
 	}
+#endif
 
 	CleanUpMaterial();
 }
@@ -402,7 +413,7 @@ void CMatSystemTexture::ReleaseRegen( void )
 	}
 }
 
-void CMatSystemTexture::SetTextureRGBA( const char *rgba, int wide, int tall, ImageFormat format, bool bFixupTextCoords )
+void CMatSystemTexture::SetTextureRGBA( const char *rgba, int wide, int tall, ImageFormat format, bool bFixupTextCoords, bool bNoPointSample, bool bAdditive )
 {
 	Assert( IsProcedural() );
 	if ( !IsProcedural() )
@@ -448,7 +459,7 @@ void CMatSystemTexture::SetTextureRGBA( const char *rgba, int wide, int tall, Im
 			TEXTUREFLAGS_CLAMPS | TEXTUREFLAGS_CLAMPT |
 			TEXTUREFLAGS_NOMIP | TEXTUREFLAGS_NOLOD |
 #ifdef BYTEMATCH_RETAIL
-			TEXTUREFLAGS_PROCEDURAL | TEXTUREFLAGS_SINGLECOPY | TEXTUREFLAGS_POINTSAMPLE );
+			TEXTUREFLAGS_PROCEDURAL | TEXTUREFLAGS_SINGLECOPY | ( bNoPointSample ? 0 : TEXTUREFLAGS_POINTSAMPLE ) );
 #else
 			TEXTUREFLAGS_PROCEDURAL | TEXTUREFLAGS_SINGLECOPY );
 #endif
@@ -459,6 +470,7 @@ void CMatSystemTexture::SetTextureRGBA( const char *rgba, int wide, int tall, Im
 		pVMTKeyValues->SetInt( "$ignorez", 1 );
 		pVMTKeyValues->SetInt( "$no_fullbright", 1 );
 		pVMTKeyValues->SetInt( "$translucent", 1 );
+		pVMTKeyValues->SetInt( "$additive", bAdditive );
 		pVMTKeyValues->SetString( "$basetexture", pTextureName );
 
 		IMaterial *pMaterial = g_pMaterialSystem->CreateMaterial( pTextureName, pVMTKeyValues );
@@ -496,8 +508,10 @@ ITexture *CMatSystemTexture::GetTextureValue( void )
 	if ( !m_pMaterial )
 		return NULL;
 
+#ifndef BYTEMATCH_RETAIL
 	if ( m_pOverrideTexture )
 		return m_pOverrideTexture;
+#endif
 
 	return m_pTexture;
 }
@@ -612,6 +626,14 @@ CRC32_t CMatSystemTexture::GetCRC() const
 
 void CMatSystemTexture::SetMaterial( IMaterial *pMaterial )
 {
+#ifdef BYTEMATCH_RETAIL
+	// Increment its reference count
+	if ( pMaterial )
+	{
+		pMaterial->IncrementReferenceCount();
+	}
+#endif
+
 	// Decrement references to old texture
 	CleanUpMaterial();
 
@@ -625,14 +647,22 @@ void CMatSystemTexture::SetMaterial( IMaterial *pMaterial )
 		return;
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	// Increment its reference count
 	m_pMaterial->IncrementReferenceCount();
+#endif
 
 	// Compute texture size
 	m_iWide = m_pMaterial->GetMappingWidth();
 	m_iTall = m_pMaterial->GetMappingHeight();
 
 	// Compute texture coordinates
+#ifdef BYTEMATCH_RETAIL
+	m_s0 = 0.0f;
+	m_t0 = 0.0f;
+	m_s1 = 1.0f;
+	m_t1 = 1.0f;
+#else
 	float flPixelCenterX = 0.0f;
 	float flPixelCenterY = 0.0f;
 
@@ -648,12 +678,17 @@ void CMatSystemTexture::SetMaterial( IMaterial *pMaterial )
 	// FIXME: Old code used +, it should be - yes?!??!
 	m_s1 = 1.0 - flPixelCenterX;
 	m_t1 = 1.0 - flPixelCenterY;
+#endif
 
 	if ( IsProcedural() )
 	{
 		bool bFound;
 		IMaterialVar *tv = m_pMaterial->FindVar( "$baseTexture", &bFound );
+#ifdef BYTEMATCH_RETAIL
+		if ( bFound )
+#else
 		if ( bFound && tv->IsTexture() )
+#endif
 		{
 			m_pTexture = tv->GetTextureValue();
 			if ( m_pTexture )
@@ -763,6 +798,7 @@ int	CTextureDictionary::CreateTexture( bool procedural /*=false*/ )
 	return idx;
 }
 
+#ifndef BYTEMATCH_RETAIL
 int CTextureDictionary::CreateTextureByTexture( ITexture *pTexture, bool procedural /*= true*/ )
 {
 	int idx = m_Textures.AddToTail();
@@ -773,6 +809,7 @@ int CTextureDictionary::CreateTextureByTexture( ITexture *pTexture, bool procedu
 
 	return idx;
 }
+#endif
 
 void CTextureDictionary::DestroyTexture( int id )
 {
@@ -805,13 +842,18 @@ void CTextureDictionary::SetTextureRGBA( int id, const char* rgba, int wide, int
 
 void CTextureDictionary::SetTextureRGBAEx( int id, const char* rgba, int wide, int tall, ImageFormat format, bool bFixupTextCoordsForDimensions )
 {
+	SetTextureRGBAEx2( id, rgba, wide, tall, format, bFixupTextCoordsForDimensions, false, false );
+}
+
+void CTextureDictionary::SetTextureRGBAEx2( int id, const char* rgba, int wide, int tall, ImageFormat format, bool bFixupTextCoordsForDimensions, bool bNoPointSample, bool bAdditive )
+{
 	if (!IsValidId(id))
 	{
 		Msg( "SetTextureRGBA: Invalid texture id %i\n", id );
 		return;
 	}
 	CMatSystemTexture &texture = m_Textures[id];
-	texture.SetTextureRGBA( rgba, wide, tall, format, bFixupTextCoordsForDimensions );
+	texture.SetTextureRGBA( rgba, wide, tall, format, bFixupTextCoordsForDimensions, bNoPointSample, bAdditive );
 }
 
 void CTextureDictionary::SetSubTextureRGBA( int id, int drawX, int drawY, unsigned const char *rgba, int subTextureWide, int subTextureTall )

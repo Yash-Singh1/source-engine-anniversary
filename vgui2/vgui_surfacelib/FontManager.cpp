@@ -38,6 +38,8 @@ CFontManager &FontManager()
 //-----------------------------------------------------------------------------
 CFontManager::CFontManager()
 {
+	m_bFreetypeInitialized = false;
+
 	// add a single empty font, to act as an invalid font handle 0
 	m_FontAmalgams.EnsureCapacity( MAX_INITIAL_FONTS );
 	m_FontAmalgams.AddToTail();
@@ -58,6 +60,13 @@ CFontManager::CFontManager()
 
 	m_pFileSystem = NULL;
 	m_pMaterialSystem = NULL;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: FreeType is set up by the constructor where it is used
+//-----------------------------------------------------------------------------
+void CFontManager::InitFreetype()
+{
 }
 
 //-----------------------------------------------------------------------------
@@ -152,12 +161,25 @@ bool CFontManager::SetFontGlyphSet(HFont font, const char *windowsFontName, int 
 			}
 		}
 	}
+#ifdef BYTEMATCH_RETAIL
+	if ( !windowsFontName || !windowsFontName[0] )
+	{
+		windowsFontName = "";
+	}
+#endif
 	font_t *winFont = CreateOrFindWin32Font( windowsFontName, tall, weight, blur, scanlines, flags );
 
 
 	// cycle until valid english/extended font support has been created
 	do
 	{
+#ifdef VGUI_FONT_INTERFACE
+		if ( winFont && winFont->SupportsFullCharacterRange() )
+		{
+			bForceSingleFontForXbox = true;
+		}
+#endif
+
 		// add to the amalgam
 		if ( bForceSingleFontForXbox || IsFontForeignLanguageCapable( windowsFontName ) )
 		{
@@ -247,7 +269,7 @@ bool CFontManager::SetBitmapFontGlyphSet(HFont font, const char *windowsFontName
 	if ( winFont )
 	{
 		// bitmap fonts are only 0-255
-		m_FontAmalgams[font].AddFont( winFont, 0x0000, 0x00FF );
+		m_FontAmalgams[font].AddFont( (font_t *)winFont, 0x0000, 0x00FF );
 		return true;
 	}
 
@@ -315,6 +337,8 @@ font_t *CFontManager::CreateOrFindWin32Font(const char *windowsFontName, int tal
 			return NULL;
 		}
 
+#elif defined( VGUI_FONT_INTERFACE )
+		// no system font implementation on this platform
 #else
 		m_Win32Fonts[i] = new font_t();
 		if (m_Win32Fonts[i]->Create(windowsFontName, tall, weight, blur, scanlines, flags))
@@ -356,7 +380,7 @@ CBitmapFont *CFontManager::CreateOrFindBitmapFont(const char *windowsFontName, f
 		}
 
 		CBitmapFont *bitmapFont = reinterpret_cast< CBitmapFont* >( font );
-		if ( bitmapFont->IsEqualTo( windowsFontName, scalex, scaley, flags ) )
+		if ( bitmapFont->IsEqualTo_Bitmap( windowsFontName, scalex, scaley, flags ) )
 		{
 			winFont = bitmapFont;
 			break;
@@ -371,10 +395,10 @@ CBitmapFont *CFontManager::CreateOrFindBitmapFont(const char *windowsFontName, f
 		i = m_Win32Fonts.AddToTail();
 
 		CBitmapFont *bitmapFont = new CBitmapFont();
-		if ( bitmapFont->Create( windowsFontName, scalex, scaley, flags ) )
+		if ( bitmapFont->Create_Bitmap( windowsFontName, scalex, scaley, flags ) )
 		{
 			// add to the list
-			m_Win32Fonts[i] = bitmapFont;
+			m_Win32Fonts[i] = (font_t *)bitmapFont;
 			winFont = bitmapFont;
 		}
 		else
@@ -421,11 +445,13 @@ font_t *CFontManager::GetFontForChar(vgui::HFont font, wchar_t wch)
 //-----------------------------------------------------------------------------
 void CFontManager::GetCharABCwide(HFont font, int ch, int &a, int &b, int &c)
 {
+#ifndef BYTEMATCH_RETAIL
 	if ( !m_FontAmalgams.IsValidIndex( font ) )
 	{
 		a = b = c = 0;
 		return;
 	}
+#endif
 
 	font_t *winFont = m_FontAmalgams[font].GetFontForChar(ch);
 	if (winFont)
@@ -517,8 +543,8 @@ void CFontManager::GetTextSize(HFont font, const wchar_t *text, int &wide, int &
 	tall = GetFontTall(font);
 	
 	float xx = 0;
-	char chBefore = 0;
-	char chAfter = 0;
+	wchar_t chBefore = 0;
+	wchar_t chAfter = 0;
 	for (int i = 0; ; i++)
 	{
 		wchar_t ch = text[i];
@@ -750,7 +776,7 @@ void CFontManager::GetKernedCharWidth( vgui::HFont font, wchar_t ch, wchar_t chB
 	if ( m_FontAmalgams[font].GetFontForChar( chAfter ) != pFont )
 		chAfter = 0;
 
-#ifdef VGUI_FONT_FREETYPE
+#if defined( VGUI_FONT_FREETYPE ) || defined( VGUI_FONT_INTERFACE )
 	pFont->GetKernedCharWidth( ch, chBefore, chAfter, wide, flabcA, flabcC );
 #else
 	pFont->GetKernedCharWidth( ch, chBefore, chAfter, wide, flabcA );
