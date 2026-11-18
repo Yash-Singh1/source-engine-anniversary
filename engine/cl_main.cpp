@@ -100,7 +100,17 @@ extern ConVar rcon_password;
 extern ConVar host_framerate;
 extern ConVar cl_clanid;
 
+#ifdef BYTEMATCH_RETAIL
+ConVar sv_unlockedchapters( "sv_unlockedchapters", "1", FCVAR_ARCHIVE, "Highest unlocked game chapter." );
+static ConVar hl2_random_chapter_index( "hl2_random_chapter_index", "-1", 0 );
+static ConVar hl2_expansion( "hl2_expansion", "", FCVAR_ARCHIVE );
+static ConVar sv_unlockedchapters_hl2( "sv_unlockedchapters_hl2", "1", FCVAR_ARCHIVE );
+static ConVar sv_unlockedchapters_episodic( "sv_unlockedchapters_episodic", "1", FCVAR_ARCHIVE );
+static ConVar sv_unlockedchapters_ep2( "sv_unlockedchapters_ep2", "1", FCVAR_ARCHIVE );
+#else
 ConVar sv_unlockedchapters( "sv_unlockedchapters", "1", FCVAR_ARCHIVE | FCVAR_ARCHIVE_XBOX, "Highest unlocked game chapter." );
+#endif
+#line 105
 
 static ConVar tv_nochat	( "tv_nochat", "0", FCVAR_ARCHIVE | FCVAR_USERINFO, "Don't receive chat messages from other SourceTV spectators" );
 static ConVar cl_LocalNetworkBackdoor( "cl_localnetworkbackdoor", "1", 0, "Enable network optimizations for single player games." );
@@ -111,8 +121,11 @@ static ConVar cl_playback_screenshots( "cl_playback_screenshots", "0", 0, "Allow
 static ConVar cl_block_usercommand( "cl_block_usercommand", "0", FCVAR_CHEAT, "Force client to not send usercommand (for debugging)." );
 #endif // STAGING_ONLY || _DEBUG
 
+#ifndef BYTEMATCH_RETAIL
 ConVar dev_loadtime_map_start( "dev_loadtime_map_start", "0.0", FCVAR_HIDDEN);
 ConVar dev_loadtime_map_elapsed( "dev_loadtime_map_elapsed", "0.0", FCVAR_HIDDEN );
+#endif
+#line 115
 
 MovieInfo_t cl_movieinfo;
 
@@ -252,7 +265,7 @@ void CL_HandlePureServerWhitelist( CPureServerWhitelist *pWhitelist, /* out */ I
 }
 
 #endif
-#line 205
+#line 208
 void PrintSvPureWhitelistClassification( const CPureServerWhitelist *pWhiteList )
 {
 	if ( pWhiteList == NULL )
@@ -634,7 +647,7 @@ void CL_ClearState ( void )
 	CL_HandlePureServerWhitelist( NULL, pFilesToReload );
 	CL_ReloadFilesInList( pFilesToReload );
 #endif
-#line 580
+#line 583
 
 	CL_ResetEntityBits();
 
@@ -677,7 +690,10 @@ void CL_ClearState ( void )
 	Host_FreeStateAndWorld( false );
 	Host_FreeToLowMark( false );
 
+#ifndef BYTEMATCH_RETAIL
 	PhonemeMP3Shutdown();
+#endif
+#line 625
 
 	// Wipe the remainder of the structure.
 	cl.Clear();
@@ -914,9 +930,12 @@ void CL_Connect( const char *address, const char *pszSourceTag )
 		cl.Disconnect( "Connecting to local host", false );
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	// This happens as part of the load process anyway, but on slower systems it causes the server to timeout the
 	// connection.  Use the opportunity to flush anything before starting a new connection.
 	UpdateMaterialSystemConfig();
+#endif
+#line 861
 
 	cl.Connect( address, pszSourceTag );
 
@@ -949,7 +968,7 @@ CON_COMMAND_F( connect, "Connect to specified server.", FCVAR_DONTRECORD )
 #else
 	vecArgs.PurgeAndDeleteElementsArray();
 #endif
-#line 890
+#line 889
 }
 
 CON_COMMAND_F( redirect, "Redirect client to specified server.", FCVAR_DONTRECORD | FCVAR_SERVER_CAN_EXECUTE )
@@ -1073,7 +1092,7 @@ void CL_CheckForPureServerWhitelist( /* out */ IFileList *&pFilesToReload )
 	}
 }
 #endif
-#line 985
+#line 984
 
 int CL_GetServerQueryPort()
 {
@@ -1155,7 +1174,7 @@ void CL_FullyConnected( void )
 		cl.m_pPendingPureFileReloads = NULL;
 	}
 #endif
-#line 1058
+#line 1057
 
 	// ***************************************************************
 	// NO MORE PRELOAD DATA AVAILABLE PAST THIS POINT!!!
@@ -1227,9 +1246,16 @@ void CL_FullyConnected( void )
 			{
 				numIterations = 1;
 			}
+#ifdef BYTEMATCH_RETAIL
+			extern void R_BuildCubemapSamples( int numIterations );
+			R_BuildCubemapSamples( numIterations );
+			Cbuf_AddText( "quit\n" );
+#else
 			char cmd[1024] = { 0 };
 			V_snprintf( cmd, sizeof( cmd ), "buildcubemaps %u\nquit\n", numIterations );
 			Cbuf_AddText( cmd );
+#endif
+#line 1131
 		}
 		else if( CommandLine()->FindParm( "-navanalyze" ) )
 		{
@@ -1300,6 +1326,7 @@ void CL_FullyConnected( void )
 
 	COM_TimestampedLog( "*** Map Load Complete" );
 
+#ifndef BYTEMATCH_RETAIL
 	float map_loadtime_start = dev_loadtime_map_start.GetFloat();
 	if (map_loadtime_start > 0.0)
 	{
@@ -1309,6 +1336,8 @@ void CL_FullyConnected( void )
 		// Clear this for next time so we know we did.
 		dev_loadtime_map_start.SetValue( 0.0f );
 	}
+#endif
+#line 1201
 }
 
 
@@ -2408,6 +2437,76 @@ bool CL_ShouldLoadBackgroundLevel( const CCommand &args )
 	if ( bIsTF2 && IsPC() )
 		return false;
 
+#ifdef BYTEMATCH_RETAIL
+	if ( args.ArgC() == 2 )
+	{
+		// presence of args identifies an end-of-game situation
+		if ( IsX360() )
+		{
+			// 360 needs to get UI in the correct state to transition to the Background level
+			// from the credits.
+			EngineVGui()->OnCreditsFinished();
+			return true;
+		}
+
+		if ( !Q_stricmp( args[1], "force" ) )
+		{
+			// Adrian: Have to do this so the menu shows up if we ever call this while in a level.
+			Host_Disconnect( true );
+			return true;
+		}
+
+		if ( !Q_stricmp( args[1], "playendgamevid" ) )
+		{
+			// Bail back to the menu and play the end game video.
+			Host_Disconnect( true );
+			CommandLine()->AppendParm( "-endgamevid", NULL ); 
+			CommandLine()->RemoveParm( "-recapvid" );
+			game->PlayStartupVideos();
+			CommandLine()->RemoveParm( "-endgamevid" );
+
+			// then go back to the background map
+			extern void CL_GetBackgroundLevelName( char *pszBackgroundName, int bufSize, bool bMapName );
+			char szBackgroundName[1024];
+			CL_GetBackgroundLevelName( szBackgroundName, sizeof( szBackgroundName ), true );
+			char szCommand[1024];
+			V_snprintf( szCommand, sizeof( szCommand ), "map_background %s\n", szBackgroundName );
+			Cbuf_AddText( szCommand );
+			Cbuf_Execute();
+			return false;
+		}
+
+		if ( !Q_stricmp( args[1], "playrecapvid" ) )
+		{
+			// Bail back to the menu and play the recap video
+			CommandLine()->AppendParm( "-recapvid", NULL ); 
+			CommandLine()->RemoveParm( "-endgamevid" );
+			HostState_Restart();
+			return false;
+		}
+	}
+	
+	// if force is set, then always return true
+	if (CommandLine()->CheckParm("-forcestartupmenu"))
+		return true;
+
+	if ( CommandLine()->CheckParm("-nobackground") )
+		return false;
+
+	// don't load the map if we're going straight into a level
+	if ( CommandLine()->CheckParm("+map") ||
+		CommandLine()->CheckParm("+connect") ||
+		CommandLine()->CheckParm("+playdemo") ||
+		CommandLine()->CheckParm("+timedemo") ||
+		CommandLine()->CheckParm("+timedemoquit") ||
+		CommandLine()->CheckParm("+load") ||
+		CommandLine()->CheckParm("-makereslists") ||
+		CommandLine()->CheckParm("+snd_buildcache"))
+		return false;
+
+	// nothing else is going on, so load the startup level
+	return true;
+#else
 	if ( args.ArgC() == 2 )
 	{
 		// presence of args identifies an end-of-game situation
@@ -2456,10 +2555,7 @@ bool CL_ShouldLoadBackgroundLevel( const CCommand &args )
 	if ( developer.GetInt() || 
 		CommandLine()->CheckParm("-console") || 
 		CommandLine()->CheckParm("-dev")
-#ifndef BYTEMATCH_RETAIL
 		|| CommandLine()->CheckParm("-nobackgroundlevel")
-#endif
-#line 2358
 		)
 		return false;
 
@@ -2482,10 +2578,49 @@ bool CL_ShouldLoadBackgroundLevel( const CCommand &args )
 	// nothing else is going on, so load the startup level
 
 	return true;
+#endif
+#line 2368
 }
 
 #define DEFAULT_BACKGROUND_NAME	"background01"
 
+#ifdef BYTEMATCH_RETAIL
+
+int CL_GetBackgroundLevelIndex( int nNumChapters )
+{
+	if ( hl2_random_chapter_index.GetInt() != -1 )
+		return hl2_random_chapter_index.GetInt();
+
+	int iChapterIndex = sv_unlockedchapters.GetInt();
+	if ( iChapterIndex <= 0 )
+	{
+		// expected to be [1..N]
+		iChapterIndex = 1;
+	}
+
+	// each expansion keeps its own unlocked chapter count
+	ConVarRef expansion( "hl2_expansion" );
+	if ( expansion.IsValid() && V_strlen( expansion.GetString() ) > 0 )
+	{
+		char szUnlockedChapters[128];
+		V_snprintf( szUnlockedChapters, sizeof( szUnlockedChapters ), "sv_unlockedchapters_%s", expansion.GetString() );
+		ConVarRef unlockedChapters( szUnlockedChapters );
+		if ( unlockedChapters.IsValid() )
+		{
+			iChapterIndex = unlockedChapters.GetInt();
+		}
+	}
+
+	if ( iChapterIndex >= ( nNumChapters-1 ) )
+	{
+		RandomSeed( Plat_MSTime() );
+		iChapterIndex = RandomInt( 1, nNumChapters );
+		hl2_random_chapter_index.SetValue( iChapterIndex );
+	}
+
+	return iChapterIndex;
+}
+#else
 int g_iRandomChapterIndex = -1;
 
 int CL_GetBackgroundLevelIndex( int nNumChapters )
@@ -2508,6 +2643,8 @@ int CL_GetBackgroundLevelIndex( int nNumChapters )
 
 	return iChapterIndex;
 }
+#endif
+#line 2407
 
 //-----------------------------------------------------------------------------
 // Purpose: returns the name of the background level to load
@@ -2829,12 +2966,28 @@ void CL_SetSteamCrashComment()
 static ConCommand startupmenu( "startupmenu", &CL_CheckToDisplayStartupMenus, "Opens initial menu screen and loads the background bsp, but only if no other level is being loaded, and we're not in developer mode." );
 
 ConVar cl_language( "cl_language", "english", FCVAR_USERINFO, "Language (from HKCU\\Software\\Valve\\Steam\\Language)" );
+#ifdef BYTEMATCH_RETAIL
+void CL_InitLanguageCvar()
+{
+	if ( CommandLine()->CheckParm( "-language" ) )
+	{
+		cl_language.SetValue( CommandLine()->ParmValue( "-language", "english" ) );
+	}
+	else if ( Steam3Client().SteamApps() )
+	{
+		cl_language.SetValue( Steam3Client().SteamApps()->GetCurrentGameLanguage() );
+	}
+	else
+	{
+		cl_language.SetValue( "english" );
+	}
+}
+#else
 void CL_InitLanguageCvar()
 {
 #ifndef BYTEMATCH_RETAIL
 	Msg("CL_InitLanguageCvar\n");
 #endif
-#line 2729
 	if ( Steam3Client().SteamApps() )
 	{
 		cl_language.SetValue( Steam3Client().SteamApps()->GetCurrentGameLanguage() );
@@ -2860,11 +3013,12 @@ void CL_InitLanguageCvar()
 			}
 		}
 #endif
-#line 2735
 
 		cl_language.SetValue( "english" );
 	}
 }
+#endif
+#line 2743
 
 void CL_ChangeCloudSettingsCvar( IConVar *var, const char *pOldValue, float flOldValue );
 ConVar cl_cloud_settings( "cl_cloud_settings", "1", FCVAR_HIDDEN, "Cloud enabled from (from HKCU\\Software\\Valve\\Steam\\Apps\\appid\\Cloud)", CL_ChangeCloudSettingsCvar );
