@@ -662,6 +662,14 @@ float CInput::Joystick_GetYaw( void )
 }
 
 //-----------------------------------------------------------------------------
+// Purpose: Steam Input controller mode needs the joystick enabled too
+//-----------------------------------------------------------------------------
+bool CInput::ControllerModeActive( void )
+{
+	return in_joystick.GetBool() && sc_controller_mode.GetBool();
+}
+
+//-----------------------------------------------------------------------------
 // Purpose: Apply joystick to CUserCmd creation
 // Input  : frametime - 
 //			*cmd - 

@@ -640,6 +640,8 @@ DetermineKeySpeed
 ==============================
 */
 static ConVar in_usekeyboardsampletime( "in_usekeyboardsampletime", "1", 0, "Use keyboard sample time smoothing." );
+ConVar sc_last_used_input( "sc_last_used_input", "0", 0 );
+ConVar sc_controller_mode( "sc_controller_mode", "0", 0 );
 
 float CInput::DetermineKeySpeed( float frametime )
 {
@@ -1674,6 +1676,14 @@ void CInput::Init_All (void)
 	m_fJoystickAdvancedInit = false;
 	m_fHadJoysticks = false;
 	m_flLastForwardMove = 0.0;
+
+	m_vecQuickTurn = vec2_origin;
+	m_bQuickTurnFlip = false;
+	m_bQuickTurnWasDown = false;
+	m_bCameraResetWasDown = false;
+
+	SetControllerModeActive( false );
+	m_nUnused = 0;
 
 	// Initialize inputs
 	if ( IsPC() )

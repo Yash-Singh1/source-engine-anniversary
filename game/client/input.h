@@ -14,6 +14,8 @@
 
 #include "iinput.h"
 #include "mathlib/vector.h"
+#include "mathlib/vector2d.h"
+#include "tier1/convar.h"
 #include "kbutton.h"
 #include "ehandle.h"
 #include "inputsystem/AnalogCode.h"
@@ -35,6 +37,9 @@ public:
 };
 
 class ConVar;
+
+extern ConVar sc_controller_mode;
+extern ConVar sc_last_used_input;
 
 class CInput : public IInput
 {
@@ -112,6 +117,12 @@ public:
 
 	virtual	bool		EnableJoystickMode();
 
+	virtual void		SetControllerModeActive( bool bActive ) { sc_controller_mode.SetValue( bActive ); }
+	virtual bool		ControllerModeActive( void );
+	virtual void		SetLastUsedInput( int nInputType ) { sc_last_used_input.SetValue( nInputType ); }
+	virtual int			GetLastUsedInput( void ) { return sc_last_used_input.GetInt(); }
+	virtual void		SteamInput_SetSampleTime( float frametime );
+
 // Private Implementation
 private:
 	// Implementation specific initialization
@@ -144,6 +155,7 @@ private:
 	void		ControllerMove ( float frametime, CUserCmd *cmd );
 	void		JoyStickMove ( float frametime, CUserCmd *cmd );
 	float		ScaleAxisValue( const float axisValue, const float axisThreshold );
+	virtual void SteamControllerMove( float frametime, CUserCmd *cmd );
 	virtual float JoyStickAdjustYaw( float flSpeed ) { return flSpeed; }
 
 	// Call this to get the cursor position. The call will be logged in the VCR file if there is one.
@@ -201,6 +213,8 @@ private:
 	bool		m_fJoystickAdvancedInit;
 	// Used to support hotplugging by reinitializing the advanced joystick system when we toggle between some/none joysticks.
 	bool		m_fHadJoysticks;
+	// Init_All zeroes this; nothing in the client reads it.
+	int			m_nUnused;
 
 	// Accumulated mouse deltas
 	float		m_flAccumulatedMouseXMovement;
@@ -208,7 +222,16 @@ private:
 	float		m_flPreviousMouseXPosition;
 	float		m_flPreviousMouseYPosition;
 	float		m_flRemainingJoystickSampleTime;
+	float		m_flRemainingSteamInputSampleTime;
 	float		m_flKeyboardSampleTime;
+
+	// Quick turn and camera reset (UpdateQuickTurnAndCameraReset)
+	Vector2D	m_vecQuickTurn;
+	bool		m_bQuickTurnFlip;
+	bool		m_bQuickTurnWasDown;
+	bool		m_bCameraResetWasDown;
+	// Last auto-aim target position (DoAutoAimMagnetism)
+	Vector		m_vecLastAutoAimTarget;
 
 	// Flag to restore systemparameters when exiting
 	bool		m_fRestoreSPI;
