@@ -65,7 +65,9 @@ CBaseClient::CBaseClient()
 	m_szPendingNameChange[0] = '\0';
 	m_bReportFakeClient = true;
 	m_iTracing = 0;
+#ifndef BYTEMATCH_RETAIL
 	m_bPlayerNameLocked = false;
+#endif
 }
 
 CBaseClient::~CBaseClient()
@@ -1442,6 +1444,47 @@ void CBaseClient::UpdateUserSettings()
 	m_bConVarsChanged = false;
 }
 
+#ifdef BYTEMATCH_RETAIL
+void CBaseClient::ClientRequestNameChange( const char *pszNewName )
+{
+	V_strcpy_safe( m_szPendingNameChange, pszNewName );
+	CheckFlushNameChange();
+}
+
+void CBaseClient::CheckFlushNameChange()
+{
+	if ( !IsConnected() )
+		return;
+	
+	if ( m_szPendingNameChange[0] == '\0' )
+		return;
+
+	// Did they change it back to the original?
+	if ( !Q_strcmp( m_szPendingNameChange, m_Name ) )
+	{
+
+		// Nothing really pending, they already changed it back
+		// we had a chance to apply the other one!
+		m_szPendingNameChange[0] = '\0';
+		return;
+	}
+
+	// Check for throttling name changes
+	// Don't do it on bots
+	if ( !IsFakeClient() )
+	{
+		// Check cooldown.  The first name change is free
+		double timeNow = Plat_FloatTime();
+		if ( m_fTimeLastNameChange > 0.0 && timeNow < m_fTimeLastNameChange + sv_namechange_cooldown_seconds.GetFloat() )
+			return;
+
+		m_fTimeLastNameChange = timeNow;
+	}
+
+	// Set the new name
+	SetName( m_szPendingNameChange );
+}
+#else
 void CBaseClient::ClientRequestNameChange( const char *pszNewName )
 {
 	// This is called several times.  Only show a status message the first time.
@@ -1505,6 +1548,7 @@ bool CBaseClient::IsNameChangeOnCooldown( bool bShowStatusMessage /*= false*/ )
 
 	return false;
 }
+#endif
 
 void CBaseClient::OnRequestFullUpdate()
 {

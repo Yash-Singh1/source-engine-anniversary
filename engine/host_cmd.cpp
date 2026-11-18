@@ -2313,6 +2313,7 @@ CON_COMMAND_F( memory_diff, "show memory stats relative to snapshot", FCVAR_CHEA
 //-----------------------------------------------------------------------------
 // 
 //-----------------------------------------------------------------------------
+#ifndef BYTEMATCH_RETAIL
 CON_COMMAND( namelockid, "Prevent name changes for this userID." )
 {
 	if ( args.ArgC() <= 2 )
@@ -2357,6 +2358,7 @@ CON_COMMAND( namelockid, "Prevent name changes for this userID." )
 		ConMsg( "Player id \"%d\" not found.\n", iIndex );
 	}
 }
+#endif
 
 #if defined( STAGING_ONLY ) || defined( _DEBUG )
 CON_COMMAND( fs_find, "Run virtual filesystem find" )

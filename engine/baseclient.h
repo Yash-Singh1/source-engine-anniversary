@@ -179,11 +179,15 @@ public:
 	bool			IsFullyAuthenticated( void ) { return m_bFullyAuthenticated; }
 	void			SetFullyAuthenticated( void ) { m_bFullyAuthenticated = true; }
 
+#ifdef BYTEMATCH_RETAIL
+	void			CheckFlushNameChange();
+#else
 	void			CheckFlushNameChange( bool bShowStatusMessage = false );
 	bool			IsNameChangeOnCooldown( bool bShowStatusMessage = false );
 
 	void			SetPlayerNameLocked( bool bValue ) { m_bPlayerNameLocked = bValue; }
 	bool			IsPlayerNameLocked( void ) { return m_bPlayerNameLocked; }
+#endif
 
 private:	
 
@@ -258,7 +262,9 @@ public:
 
 	// Time when last name change was applied
 	double			m_fTimeLastNameChange;
+#ifndef BYTEMATCH_RETAIL
 	bool			m_bPlayerNameLocked;
+#endif
 
 	// Does this client have a name change that is pending?
 	// (Their 'name' convar differs from our value for their client name.)
