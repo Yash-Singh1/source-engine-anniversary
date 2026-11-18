@@ -32,7 +32,7 @@ CLIENTEFFECT_REGISTER_BEGIN( SmokeStackMaterials )
 	CLIENTEFFECT_MATERIAL( "sprites/fire1" )
 CLIENTEFFECT_REGISTER_END()
 
-ConVar r_classic_fire( "r_classic_fire", "0", FCVAR_ARCHIVE | FCVAR_REPLICATED, "Use Classic Effects for Fire (Disabled/Classic/Release)" );
+ConVar r_classic_fire( "r_classic_fire", NOV2024_ONLY( "0", FCVAR_ARCHIVE | FCVAR_REPLICATED, "Use Classic Effects for Fire (Disabled/Classic/Release)" ) OCT2024_ONLY( "2", FCVAR_REPLICATED, "Use Classic Effects for Fire (New/Classic/Release)" ) );
 
 //-----------------------------------------------------------------------------
 // Purpose: 0 uses the particle fire, 1 the classic sprite fire, 2 the classic

@@ -27,9 +27,9 @@
 #include "tier0/memdbgon.h"
 
 extern ConVar sk_allow_autoaim;
-extern ConVar sc_autoaim_scale;
-extern ConVar joy_autoaim_scale;
-extern ConVar m_autoaim_scale;
+NOV2024_ONLY( extern ConVar sc_autoaim_scale; )
+NOV2024_ONLY( extern ConVar joy_autoaim_scale; )
+NOV2024_ONLY( extern ConVar m_autoaim_scale; )
 
 #ifndef CLIENT_DLL
 //-----------------------------------------------------------------------------
@@ -381,6 +381,7 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 	//=========================================================
 	int	CSingleplayRules::GetAutoAimMode()
 	{
+#ifdef HL2_ANNIVERSARY_NOV2024
 		if ( !sk_allow_autoaim.GetBool() )
 			return AUTOAIM_NONE;
 
@@ -417,6 +418,11 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 
 		return m_autoaim_scale.GetFloat();
 	}
+#else
+		return sk_autoaim_mode.GetInt();
+	}
+#endif
+#line 420
 
 	//=========================================================
 	//=========================================================

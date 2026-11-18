@@ -40,9 +40,9 @@ class CItem;
 class CAmmoDef;
 class CTacticalMissionManager;
 
-extern ConVar sc_autoaim_mode;
-extern ConVar joy_autoaim_mode;
-extern ConVar m_autoaim_mode;
+NOV2024_ONLY( extern ConVar sc_autoaim_mode; ) OCT2024_ONLY( extern ConVar sk_autoaim_mode; )
+NOV2024_ONLY( extern ConVar joy_autoaim_mode; )
+NOV2024_ONLY( extern ConVar m_autoaim_mode; )
 
 // Autoaiming modes
 enum
@@ -275,7 +275,7 @@ public:
 	virtual float FlPlayerFallDamage( CBasePlayer *pPlayer ) = 0;// this client just hit the ground after a fall. How much damage?
 	virtual bool  FPlayerCanTakeDamage( CBasePlayer *pPlayer, CBaseEntity *pAttacker, const CTakeDamageInfo &info ) {return TRUE;};// can this player take damage from this attacker?
 	virtual bool ShouldAutoAim( CBasePlayer *pPlayer, edict_t *target ) { return TRUE; }
-	virtual float GetAutoAimScale() { return 1.0f; }
+	virtual float GetAutoAimScale( OCT2024_ONLY( CBasePlayer *pPlayer ) ) { return 1.0f; }
 	virtual int	GetAutoAimMode()	{ return AUTOAIM_ON; }
 
 	virtual bool ShouldUseRobustRadiusDamage(CBaseEntity *pEntity) { return false; }

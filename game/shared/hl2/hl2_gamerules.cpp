@@ -90,9 +90,9 @@ ConVar	sk_dmg_take_scale2( "sk_dmg_take_scale2", "1.00", FCVAR_REPLICATED );
 ConVar	sk_allow_autoaim( "sk_allow_autoaim", "1", FCVAR_REPLICATED | FCVAR_ARCHIVE_XBOX );
 
 // Autoaim scale
-ConVar	sc_autoaim_scale( "sc_autoaim_scale", "1.0", FCVAR_REPLICATED | FCVAR_ARCHIVE );
-ConVar	joy_autoaim_scale( "joy_autoaim_scale", "1.0", FCVAR_REPLICATED | FCVAR_ARCHIVE );
-ConVar	m_autoaim_scale( "m_autoaim_scale", "1.0", FCVAR_REPLICATED | FCVAR_ARCHIVE );
+NOV2024_ONLY( ConVar	sc_autoaim_scale( "sc_autoaim_scale", "1.0", FCVAR_REPLICATED | FCVAR_ARCHIVE ); ) OCT2024_ONLY( ConVar	sk_autoaim_scale1( "sk_autoaim_scale1", "1.0", FCVAR_REPLICATED ); )
+NOV2024_ONLY( ConVar	joy_autoaim_scale( "joy_autoaim_scale", "1.0", FCVAR_REPLICATED | FCVAR_ARCHIVE ); ) OCT2024_ONLY( ConVar	sk_autoaim_scale2( "sk_autoaim_scale2", "1.0", FCVAR_REPLICATED ); )
+NOV2024_ONLY( ConVar	m_autoaim_scale( "m_autoaim_scale", "1.0", FCVAR_REPLICATED | FCVAR_ARCHIVE ); )
 
 // Quantity scale for ammo received by the player.
 ConVar	sk_ammo_qty_scale1 ( "sk_ammo_qty_scale1", "1.20", FCVAR_REPLICATED );
@@ -182,9 +182,9 @@ ConVar	sk_npc_dmg_gunship			( "sk_npc_dmg_gunship", "0", FCVAR_REPLICATED );
 ConVar	sk_npc_dmg_gunship_to_plr	( "sk_npc_dmg_gunship_to_plr", "0", FCVAR_REPLICATED );
 
 // Strider minigun
-ConVar	sk_npc_dmg_strider_to_plr	( "sk_npc_dmg_strider_to_plr", "5", FCVAR_REPLICATED );
-ConVar	sk_npc_dmg_strider			( "sk_npc_dmg_strider", "5", FCVAR_REPLICATED );
-ConVar	sk_max_strider				( "sk_max_strider", "15", FCVAR_REPLICATED );
+NOV2024_ONLY( ConVar	sk_npc_dmg_strider_to_plr	( "sk_npc_dmg_strider_to_plr", "5", FCVAR_REPLICATED ); )
+NOV2024_ONLY( ConVar	sk_npc_dmg_strider			( "sk_npc_dmg_strider", "5", FCVAR_REPLICATED ); )
+NOV2024_ONLY( ConVar	sk_max_strider				( "sk_max_strider", "15", FCVAR_REPLICATED ); )
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -1699,6 +1699,29 @@ bool CHalfLife2::ShouldAutoAim( CBasePlayer *pPlayer, edict_t *target )
 	return sk_allow_autoaim.GetBool() != 0;
 }
 
+#ifndef HL2_ANNIVERSARY_NOV2024
+//---------------------------------------------------------
+//---------------------------------------------------------
+float CHalfLife2::GetAutoAimScale( CBasePlayer *pPlayer )
+{
+#ifdef _X360
+	return 1.0f;
+#else
+	switch( GetSkillLevel() )
+	{
+	case SKILL_EASY:
+		return sk_autoaim_scale1.GetFloat();
+
+	case SKILL_MEDIUM:
+		return sk_autoaim_scale2.GetFloat();
+
+	default:
+		return 0.0f;
+	}
+#endif
+}
+#endif
+#line 1702
 
 //---------------------------------------------------------
 //---------------------------------------------------------
@@ -1851,7 +1874,7 @@ CAmmoDef *GetAmmoDef()
 		// now that the AmmoDef code is behaving correctly.
 		//
 		//=====================================================================
-		def.AddAmmoType("StriderMinigun",	DMG_BULLET,					TRACER_LINE,			"sk_npc_dmg_strider_to_plr", "sk_npc_dmg_strider", "sk_max_strider", 1.0 * 750 * 12, AMMO_FORCE_DROP_IF_CARRIED ); // hit like a 1.0kg weight at 750 ft/s
+		def.AddAmmoType("StriderMinigun",	DMG_BULLET,					TRACER_LINE,			NOV2024_ONLY( "sk_npc_dmg_strider_to_plr", "sk_npc_dmg_strider", "sk_max_strider" ) OCT2024_ONLY( 5, 15,15 ), 1.0 * 750 * 12, AMMO_FORCE_DROP_IF_CARRIED ); // hit like a 1.0kg weight at 750 ft/s
 
 		def.AddAmmoType("StriderMinigunDirect",	DMG_BULLET,				TRACER_LINE,			2, 2, 15, 1.0 * 750 * 12, AMMO_FORCE_DROP_IF_CARRIED ); // hit like a 1.0kg weight at 750 ft/s
 		def.AddAmmoType("HelicopterGun",	DMG_BULLET,					TRACER_LINE_AND_WHIZ,	"sk_npc_dmg_helicopter_to_plr", "sk_npc_dmg_helicopter",	"sk_max_smg1",	BULLET_IMPULSE(400, 1225), AMMO_FORCE_DROP_IF_CARRIED | AMMO_INTERPRET_PLRDAMAGE_AS_DAMAGE_TO_PLAYER );
