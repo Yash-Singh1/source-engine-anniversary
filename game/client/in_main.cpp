@@ -47,6 +47,10 @@ extern ConVar cam_idealyaw;
 // For showing/hiding the scoreboard
 #include <game/client/iviewport.h>
 
+#ifdef HL2_CLIENT_DLL
+#include "c_basehlplayer.h"
+#endif
+
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
@@ -1578,6 +1582,64 @@ void CInput::AddIKGroundContactInfo( int entindex, float minheight, float maxhei
 	m_EntityGroundContact.AddToTail( data );
 }
 #endif
+
+//-----------------------------------------------------------------------------
+// Purpose: Enhanced aim assist: pulls the view yaw towards the autoaim target,
+//			harder when moving across it and when already aiming close to it
+//-----------------------------------------------------------------------------
+QAngle CInput::DoAutoAimMagnetism( QAngle viewangles, int nAutoAimMode, float flMagnetism, float flScale )
+{
+#ifdef HL2_CLIENT_DLL
+	if ( nAutoAimMode == AUTOAIM_ON_CONSOLE && flMagnetism > 0.0f )
+	{
+		C_BaseHLPlayer *pPlayer = (C_BaseHLPlayer *)C_BasePlayer::GetLocalPlayer();
+		if ( pPlayer->m_HL2Local.m_hAutoAimTarget )
+		{
+			if ( !pPlayer->IsInAVehicle() )
+			{
+				Vector vecForward;
+				pPlayer->EyeVectors( &vecForward );
+
+				Vector vecVelocity = pPlayer->GetAbsVelocity();
+				float flSpeed = VectorNormalize( vecVelocity );
+				float flDot = DotProduct( vecVelocity, vecForward );
+				float flSpeedFactor = RemapValClamped( flSpeed, 20.0f, 100.0f, 0.0f, 1.0f );
+				float flStrafeFactor = 1.0f - RemapValClamped( fabs( flDot ), 0.707f, 0.975f, 0.0f, 1.0f );
+				flStrafeFactor *= flStrafeFactor;
+
+				QAngle angles = viewangles;
+
+				// Follow the target as it moves
+				Vector vecAimPoint = pPlayer->m_HL2Local.m_vecAutoAimPoint;
+				if ( m_vecLastAutoAimTarget != vec3_origin )
+				{
+					vecAimPoint += pPlayer->m_HL2Local.m_hAutoAimTarget->WorldSpaceCenter() - m_vecLastAutoAimTarget;
+				}
+				m_vecLastAutoAimTarget = pPlayer->m_HL2Local.m_hAutoAimTarget->WorldSpaceCenter();
+
+				QAngle angToTarget;
+				Vector vecToTarget = vecAimPoint - pPlayer->EyePosition();
+				VectorNormalize( vecToTarget );
+				VectorAngles( vecToTarget, angToTarget );
+
+				Vector vecViewForward;
+				AngleVectors( viewangles, &vecViewForward );
+				float flAimFactor = RemapValClamped( fabs( DotProduct( vecToTarget, vecViewForward ) ), 0.8f, 1.0f, 0.0f, 1.0f );
+
+				float flRate = gpGlobals->frametime * 300.0f;
+				float flApproachSpeed = flStrafeFactor * ( flSpeedFactor * ( flAimFactor * flScale ) ) * flRate * flMagnetism;
+				angles[YAW] = ApproachAngle( angToTarget[YAW], viewangles[YAW], flApproachSpeed );
+				return angles;
+			}
+		}
+		else
+		{
+			m_vecLastAutoAimTarget = vec3_origin;
+		}
+	}
+#endif
+	return viewangles;
+}
 
 
 static ConCommand startcommandermousemove("+commandermousemove", IN_CommanderMouseMoveDown);
