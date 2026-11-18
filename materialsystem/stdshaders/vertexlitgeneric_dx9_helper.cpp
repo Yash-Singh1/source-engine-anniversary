@@ -995,7 +995,12 @@ static void DrawVertexLitGeneric_DX9_Internal( CBaseVSShader *pShader, IMaterial
 				{
 					int nWidth, nHeight;
 					pShaderAPI->GetBackBufferDimensions( nWidth, nHeight );
+#ifndef BYTEMATCH_RETAIL
 					flResScale=max( 0.5f, max( 1024.f/nWidth, 768.f/nHeight ) );
+#else
+					flResScale=max( 0.5, max( 1024.0/nWidth, 768/nHeight ) );
+#endif
+#line 1
 				
 					if ( bScaleEdges )
 					{

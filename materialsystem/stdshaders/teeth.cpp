@@ -244,10 +244,9 @@ BEGIN_VS_SHADER( Teeth_DX9, "Help for Teeth_DX9" )
 					// ps_2_b version which does Phong
 					if ( g_pHardwareConfig->SupportsPixelShaders_2_b() )
 					{
-						Vector4D vSpecExponent;
-						vSpecExponent[3] = params[PHONGEXPONENT]->GetFloatValue();
+						vEyePos_SpecExponent[3] = params[PHONGEXPONENT]->GetFloatValue();
 
-						pShaderAPI->SetPixelShaderConstant( PSREG_EYEPOS_SPEC_EXPONENT, vSpecExponent.Base(), 1 );
+						pShaderAPI->SetPixelShaderConstant( PSREG_EYEPOS_SPEC_EXPONENT, vEyePos_SpecExponent, 1 );
 
 						DECLARE_DYNAMIC_PIXEL_SHADER( teeth_bump_ps20b );
 #ifdef BYTEMATCH_RETAIL
