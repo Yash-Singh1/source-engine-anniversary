@@ -16,6 +16,10 @@
 	#include "gamerules.h"
 	#include "game.h"
 	#include "items.h"
+	#include "achievementmgr.h"
+	#include "SourceAppInfo.h"
+	#include "tier0/icommandline.h"
+	#include "steam_accessors.h"
 
 #endif
 
@@ -26,6 +30,61 @@ extern ConVar sk_allow_autoaim;
 extern ConVar sc_autoaim_scale;
 extern ConVar joy_autoaim_scale;
 extern ConVar m_autoaim_scale;
+
+#ifndef CLIENT_DLL
+//-----------------------------------------------------------------------------
+// Purpose: Steam app and mod directory of the Half-Life 2 games hl2_complete includes
+//-----------------------------------------------------------------------------
+uint32 GetHL2AppSteamAppId( ESourceApp eSourceApp )
+{
+	switch ( eSourceApp )
+	{
+	case k_App_HL2:			return 220;
+	case k_App_HL2MP:		return 320;
+	case k_App_LOST_COAST:	return 340;
+	case k_App_HL2_EP1:		return 380;
+	case k_App_HL2_EP2:		return 420;
+	default:				return 0;
+	}
+}
+
+const char *GetHL2AppModName( ESourceApp eSourceApp )
+{
+	switch ( eSourceApp )
+	{
+	case k_App_HL2:			return "hl2";
+	case k_App_HL2MP:		return "hl2mp";
+	case k_App_LOST_COAST:	return "lostcoast";
+	case k_App_HL2_EP1:		return "episodic";
+	case k_App_HL2_EP2:		return "ep2";
+	default:				return NULL;
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Is there standalone episode data hl2_complete can migrate?
+//-----------------------------------------------------------------------------
+bool HasEpisodicData()
+{
+	if ( V_stricmp( CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) ), "hl2_complete" ) )
+		return false;
+
+	char szInstallDir[512];
+	return SteamApps()->GetAppInstallDir( GetHL2AppSteamAppId( k_App_HL2_EP2 ), szInstallDir, sizeof( szInstallDir ) ) ||
+		SteamApps()->GetAppInstallDir( GetHL2AppSteamAppId( k_App_LOST_COAST ), szInstallDir, sizeof( szInstallDir ) ) >= 0;
+}
+
+void MigrateEpisodicDataCmd( const CCommand &args )
+{
+	if ( HasEpisodicData() )
+	{
+		CAchievementMgr *pAchievementMgr = dynamic_cast< CAchievementMgr * >( engine->GetAchievementMgr() );
+		pAchievementMgr->SyncEpisodeAchievements();
+	}
+}
+
+ConCommand _migrate_episodic_data( "_migrate_episodic_data", MigrateEpisodicDataCmd );
+#endif
 
 
 

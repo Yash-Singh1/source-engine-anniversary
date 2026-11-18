@@ -233,12 +233,12 @@ void CBaseAchievement::IncrementCount( int iOptIncrement )
 
 #ifndef DISABLE_STEAM
 		// if this achievement's progress should be stored in Steam, set the steam stat for it
-		if ( StoreProgressInSteam() && steamapicontext->SteamUserStats() )
+		if ( StoreProgressInSteam() && SteamUserStats() )
 		{
 			// Set the Steam stat with the same name as the achievement.  Only cached locally until we upload it.
 			char pszProgressName[1024];
 			Q_snprintf( pszProgressName, 1024, "%s_STAT", GetStat() );
-			bool bRet = steamapicontext->SteamUserStats()->SetStat( pszProgressName, m_iCount );
+			bool bRet = SteamUserStats()->SetStat( pszProgressName, m_iCount );
 			if ( !bRet )
 			{
 				DevMsg( "ISteamUserStats::GetStat failed to set progress value in Steam for achievement %s\n", pszProgressName );
@@ -275,18 +275,21 @@ void CBaseAchievement::SetShowOnHUD( bool bShow )
 
 void CBaseAchievement::HandleProgressUpdate()
 {
-	// which notification is this
-	int iProgress = -1;
-	if( m_iProgressMsgIncrement > 0 ) iProgress = m_iCount / m_iProgressMsgIncrement;
-
-	// if we haven't already shown this progress step, show it
-	if ( iProgress > m_iProgressShown || m_iCount == 1 )
+	// show a notification every m_iProgressMsgIncrement steps, once past the minimum
+	if ( m_iProgressMsgIncrement > 0 && m_iCount >= m_iProgressMsgMinimum && ( m_iCount % m_iProgressMsgIncrement ) == 0 )
 	{
-		ShowProgressNotification();
-		// remember progress step shown so we don't show it again if the player loads an earlier save game
-		// and gets past this point again
-		m_iProgressShown = iProgress;
-		m_pAchievementMgr->SetDirty( true );
+		// which notification is this
+		int iProgress = m_iCount / m_iProgressMsgIncrement;
+
+		// if we haven't already shown this progress step, show it
+		if ( iProgress > m_iProgressShown )
+		{
+			ShowProgressNotification();
+			// remember progress step shown so we don't show it again if the player loads an earlier save game
+			// and gets past this point again
+			m_iProgressShown = iProgress;
+			m_pAchievementMgr->SetDirty( true );
+		}
 	}
 }
 
@@ -381,7 +384,6 @@ void CBaseAchievement::AwardAchievement()
 	if ( IsAchieved() )
 		return;
 
-	ShowProgressNotification();
 	m_pAchievementMgr->AwardAchievement( m_iAchievementID );
 }
 
@@ -536,7 +538,18 @@ bool CBaseAchievement::ShouldSaveWithGame()
 bool CBaseAchievement::ShouldSaveGlobal() 
 { 
 	// save if we should get saved globally and have a non-zero count, or if we have been achieved, or if the player has pinned this achievement to the HUD
-	return ( ( ( m_iFlags & ACH_SAVE_GLOBAL ) > 0 && ( GetCount() > 0 ) ) || IsAchieved() || ( m_iProgressShown > 0 ) || ShouldShowOnHUD() );
+	return ( ( ( m_iFlags & ACH_SAVE_GLOBAL ) > 0 && ( GetCount() > 0 ) ) || IsAchieved() || ( m_iProgressShown > 0 ) || ShouldShowOnHUD() || ( m_iComponentBits != 0 ) );
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Can the local player earn this achievement in the game being played?
+//-----------------------------------------------------------------------------
+bool CBaseAchievement::LocalPlayerCanEarn( void )
+{
+	if ( !m_pAchievementMgr )
+		return false;
+
+	return m_pAchievementMgr->CanEarnForCurrentExpansion( GetAchievementID() );
 }
 
 //-----------------------------------------------------------------------------

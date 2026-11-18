@@ -15,7 +15,7 @@
 #include "iachievementmgr.h"
 #include "utlmap.h"
 #ifndef NO_STEAM
-#include "steam/steam_api.h"
+#include "steam_accessors.h"
 #endif
 
 #define THINK_CLEAR		-1
@@ -65,6 +65,12 @@ public:
 
 	void UploadUserData();
 	void DownloadUserData();
+	virtual bool CanEarnForCurrentExpansion( int iAchievementID );
+	virtual bool CanEarnForExpansion( int iAchievementID, const char *pszModName );
+#ifdef GAME_DLL
+	void MigrateEpisodeData( uint32 nAppID, const char *pszModName );
+	void SyncEpisodeAchievements();
+#endif
 	void SaveGlobalState( bool bAsync = false );
 	void LoadGlobalState();
 	void SaveGlobalStateIfDirty( bool bAsync = false );
@@ -101,7 +107,7 @@ public:
 	bool LoggedIntoSteam() 
 	{ 
 #if !defined(NO_STEAM)
-		return ( steamapicontext->SteamUser() && steamapicontext->SteamUserStats() && steamapicontext->SteamUser()->BLoggedOn() ); 
+		return ( SteamUser() && SteamUserStats() && SteamUser()->BLoggedOn() ); 
 #else
 		return false;
 #endif
@@ -161,6 +167,8 @@ private:
     //=============================================================================
 
     CUtlVector<int> m_AchievementsAwarded;
+
+	bool m_bIsHL2Complete;				// running as hl2_complete (Half-Life 2 with the episodes in one game)
 };
 
 // helper functions

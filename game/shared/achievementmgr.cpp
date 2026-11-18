@@ -42,12 +42,16 @@
 #endif  // _X360
 #include "engine/imatchmaking.h"
 #include "tier0/vprof.h"
+#ifdef GAME_DLL
+#include "SourceAppInfo.h"
+#endif
 
 #if defined(TF_DLL) || defined(TF_CLIENT_DLL)
 #include "tf_gamerules.h"
 #endif
 
 ConVar	cc_achievement_debug( "achievement_debug", "0", FCVAR_CHEAT | FCVAR_REPLICATED, "Turn on achievement debug msgs." );
+ConVar	gottagofast( "gottagofast", "0", FCVAR_CHEAT | FCVAR_REPLICATED | FCVAR_HIDDEN, "" );
 
 #ifdef CSTRIKE_DLL
 //=============================================================================
@@ -62,17 +66,22 @@ ConVar	sv_nostats( "sv_nostats", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Disable 
 
 const char *COM_GetModDirectory();
 
+//-----------------------------------------------------------------------------
+// Purpose: Half-Life 2 with the episodes in one game; its GameState.txt lives in ROOT_MOD
+//-----------------------------------------------------------------------------
+static bool IsHL2Complete()
+{
+	return !V_stricmp( CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) ), "hl2_complete" );
+}
+
+#ifdef GAME_DLL
+uint32 GetHL2AppSteamAppId( ESourceApp eSourceApp );
+const char *GetHL2AppModName( ESourceApp eSourceApp );
+#endif
+
 extern ConVar developer;
 
 #define DEBUG_ACHIEVEMENTS_IN_RELEASE 0
-
-#ifdef SWDS
-// Hack this for now until we get steam_api recompiling in the Steam codebase.
-ISteamUserStats *SteamUserStats()
-{
-	return NULL;
-}
-#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: Write helper
@@ -105,11 +114,14 @@ static void WriteAchievementGlobalState( KeyValues *pKV, bool bPersistToSteamClo
 		Q_snprintf( szFilename, sizeof( szFilename ), "GameState.txt" );
 	}
 
+	bool bHL2Complete = IsHL2Complete();
+
 	// Never call pKV->SaveToFile!!!!
 	// Save to a buffer instead.
 	CUtlBuffer buf( 0, 0, CUtlBuffer::TEXT_BUFFER );
 	pKV->RecursiveSaveToFile( buf, 0 );
-	filesystem->WriteFile( szFilename, NULL, buf );
+	const char *pPathID = bHL2Complete ? "ROOT_MOD" : "MOD";
+	filesystem->WriteFile( szFilename, pPathID, buf );
 	pKV->deleteThis();
 
     //=============================================================================
@@ -134,8 +146,16 @@ static void WriteAchievementGlobalState( KeyValues *pKV, bool bPersistToSteamClo
 
         if (pRemoteStorage)
         {
+#if defined( STEAM_API_COMMON_H )
+            uint64 availableBytes = 0;
+            uint64 totalBytes = 0;
+#else
             int32 availableBytes = 0;
             int32 totalBytes = 0;
+#endif
+#if defined( STEAM_API_COMMON_H )
+            pRemoteStorage->BeginFileWriteBatch();
+#endif
             if ( pRemoteStorage->GetQuota( &totalBytes, &availableBytes ) )
             {
                 if ( totalBytes > 0 )
@@ -170,6 +190,9 @@ static void WriteAchievementGlobalState( KeyValues *pKV, bool bPersistToSteamClo
                     }
                 }
             }
+#if defined( STEAM_API_COMMON_H )
+            pRemoteStorage->EndFileWriteBatch();
+#endif
         }
 #endif
     }
@@ -263,6 +286,7 @@ m_CallbackUserStatsStored( this, &CAchievementMgr::Steam_OnUserStatsStored )
 {
 	SetDefLessFunc( m_mapAchievement );
 	SetDefLessFunc( m_mapMetaAchievement );
+	m_bIsHL2Complete = false;
 	m_flLastClassChangeTime = 0;
 	m_flTeamplayStartTime = 0;
 	m_iMiniroundsCompleted = 0;
@@ -272,6 +296,7 @@ m_CallbackUserStatsStored( this, &CAchievementMgr::Steam_OnUserStatsStored )
 	m_bGlobalStateLoaded = false;
 	m_bCheatsEverOn = false;
 	m_flTimeLastSaved = 0;
+	m_bIsHL2Complete = IsHL2Complete();
 
     //=============================================================================
     // HPE_BEGIN
@@ -365,7 +390,7 @@ void CAchievementMgr::PostInit()
 		// applies to, or truly cross-game) or, if it does have a game filter, the filter matches current game.
 		// (e.g. EP 1/2/... achievements are in shared binary but are game specific, they have a game filter for runtime check.)
 		const char *pGameDirFilter = pAchievement->m_pGameDirFilter;
-		if ( !pGameDirFilter || ( 0 == Q_strcmp( pGameDir, pGameDirFilter ) ) )
+		if ( !pGameDirFilter || m_bIsHL2Complete || ( 0 == Q_strcmp( pGameDir, pGameDirFilter ) ) )
 		{
 			m_mapAchievement.Insert( pAchievement->GetAchievementID(), pAchievement );
 			if ( pAchievement->IsMetaAchievement() )
@@ -460,6 +485,11 @@ void CAchievementMgr::Update( float frametime )
 		}
 	}
 #endif
+
+	if ( gottagofast.GetBool() )
+	{
+		m_bCheatsEverOn = false;
+	}
 
 	// Call think functions. Work backwards, because we may remove achievements from the list.
 	int iCount = m_vecThinkListeners.Count();
@@ -635,10 +665,10 @@ void CAchievementMgr::DownloadUserData()
 	if ( IsPC() )
 	{
 #ifndef NO_STEAM
-		if ( steamapicontext->SteamUserStats() )
+		if ( SteamUserStats() )
 		{
 			// request stat download; will get called back at OnUserStatsReceived when complete
-			steamapicontext->SteamUserStats()->RequestCurrentStats();
+			SteamUserStats()->RequestCurrentStats();
 		}
 #endif
 	}
@@ -702,6 +732,11 @@ const char *COM_GetModDirectory()
 	if ( Q_strlen( modDir ) == 0 )
 	{
 		const char *gamedir = CommandLine()->ParmValue("-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) );
+		char szExpansion[16];
+		if ( g_pFullFileSystem->GetCurrentGameExpansionId( szExpansion, sizeof( szExpansion ) ) )
+		{
+			gamedir = szExpansion;
+		}
 		Q_strncpy( modDir, gamedir, sizeof(modDir) );
 		if ( strchr( modDir, '/' ) || strchr( modDir, '\\' ) )
 		{
@@ -722,16 +757,118 @@ void CAchievementMgr::UploadUserData()
 	if ( IsPC() )
 	{
 #ifndef NO_STEAM
-		if ( steamapicontext->SteamUserStats() )
+		if ( SteamUserStats() )
 		{
 			// Upload current Steam client achievements & stats state to Steam.  Will get called back at OnUserStatsStored when complete.
 			// Only values previously set via SteamUserStats() get uploaded
-			steamapicontext->SteamUserStats()->StoreStats();
+			SteamUserStats()->StoreStats();
 			m_bSteamDataDirty = false;
 		}
 #endif
 	}
 }
+
+//-----------------------------------------------------------------------------
+// Purpose: In hl2_complete, an achievement can only be earned while playing
+//			the game (expansion) its game dir filter names
+//-----------------------------------------------------------------------------
+bool CAchievementMgr::CanEarnForCurrentExpansion( int iAchievementID )
+{
+	if ( !m_bIsHL2Complete )
+		return true;
+
+	ConVarRef hl2_expansion( "hl2_expansion" );
+	if ( !hl2_expansion.IsValid() )
+		return true;
+
+	const char *pszExpansion = hl2_expansion.GetString();
+	return CanEarnForExpansion( iAchievementID, pszExpansion );
+}
+
+bool CAchievementMgr::CanEarnForExpansion( int iAchievementID, const char *pszModName )
+{
+	if ( !m_bIsHL2Complete )
+		return true;
+
+	CBaseAchievement *pAchievement = GetAchievementByID( iAchievementID );
+	if ( !pAchievement )
+		return false;
+
+	const char *pGameDirFilter = pAchievement->m_pGameDirFilter;
+	if ( !pGameDirFilter )
+		return true;
+
+	return !Q_strcmp( pszModName, pGameDirFilter );
+}
+
+#ifdef GAME_DLL
+//-----------------------------------------------------------------------------
+// Purpose: Brings over achievements earned in the standalone Half-Life 2 and
+//			episode installs (their GameState.txt) into hl2_complete
+//-----------------------------------------------------------------------------
+void CAchievementMgr::MigrateEpisodeData( uint32 nAppID, const char *pszModName )
+{
+	uint32 nHL2AppID = GetHL2AppSteamAppId( k_App_HL2 );
+
+	char szFilename[MAX_PATH];
+	const char *pPathID;
+
+	ConVarRef developer( "developer" );
+	if ( developer.IsValid() && developer.GetBool() )
+	{
+		V_snprintf( szFilename, sizeof( szFilename ), "%s\\GameState.txt", pszModName );
+		pPathID = "BASE_PATH";
+	}
+	else
+	{
+		char szInstallDir[512];
+		pPathID = NULL;
+		if ( SteamApps()->GetAppInstallDir( nAppID, szInstallDir, sizeof( szInstallDir ) ) )
+		{
+			V_snprintf( szFilename, sizeof( szFilename ), "%s\\%s\\GameState.txt", szInstallDir, pszModName );
+			pPathID = "ABS";
+		}
+	}
+
+	KeyValues *pKV = new KeyValues( "GameState" );
+	if ( pKV->LoadFromFile( filesystem, szFilename, pPathID ) )
+	{
+		for ( KeyValues *pNode = pKV->GetFirstSubKey(); pNode; pNode = pNode->GetNextKey() )
+		{
+			int iAchievementID = pNode->GetInt( "id", 0 );
+			if ( iAchievementID <= 0 )
+				continue;
+
+			CBaseAchievement *pAchievement = GetAchievementByID( iAchievementID );
+			if ( !pAchievement )
+				continue;
+
+			if ( !CanEarnForExpansion( iAchievementID, pszModName ) || pAchievement->IsAchieved() )
+				continue;
+
+			pAchievement->ApplySettings( pNode );
+
+			// Achievements earned in an episode still have to be awarded through Steam here
+			if ( nHL2AppID != nAppID && pAchievement->IsAchieved() )
+			{
+				pAchievement->SetAchieved( false );
+				AwardAchievement( iAchievementID );
+			}
+		}
+	}
+}
+
+void CAchievementMgr::SyncEpisodeAchievements()
+{
+	MigrateEpisodeData( GetHL2AppSteamAppId( k_App_HL2 ), GetHL2AppModName( k_App_HL2 ) );
+	MigrateEpisodeData( GetHL2AppSteamAppId( k_App_HL2_EP1 ), GetHL2AppModName( k_App_HL2_EP1 ) );
+	MigrateEpisodeData( GetHL2AppSteamAppId( k_App_HL2_EP2 ), GetHL2AppModName( k_App_HL2_EP2 ) );
+
+	SaveGlobalState( false );
+	SaveGlobalStateIfDirty( false );
+	UploadUserData();
+}
+#endif // GAME_DLL
 
 //-----------------------------------------------------------------------------
 // Purpose: loads global state from file
@@ -810,7 +947,8 @@ void CAchievementMgr::LoadGlobalState()
     //=============================================================================
 
 	KeyValues *pKV = new KeyValues("GameState" );
-	if ( pKV->LoadFromFile( filesystem, szFilename, "MOD" ) )
+	const char *pPathID = IsHL2Complete() ? "ROOT_MOD" : "MOD";
+	if ( pKV->LoadFromFile( filesystem, szFilename, pPathID ) )
 	{
 		KeyValues *pNode = pKV->GetFirstSubKey();
 		while ( pNode )
@@ -840,6 +978,12 @@ void CAchievementMgr::LoadGlobalState()
 void CAchievementMgr::SaveGlobalState( bool bAsync )
 {
 	VPROF_BUDGET( "CAchievementMgr::SaveGlobalState", "Achievements" );
+
+	ConVarRef developer( "developer" );
+	if ( developer.IsValid() && developer.GetBool() )
+	{
+		Msg( "writing out %d achievements\n", m_mapAchievement.Count() );
+	}
 
 	KeyValues *pKV = new KeyValues("GameState" );
 	FOR_EACH_MAP( m_mapAchievement, i )
@@ -952,18 +1096,20 @@ void CAchievementMgr::AwardAchievement( int iAchievementID )
 	if ( IsPC() )
 	{
 #ifndef DISABLE_STEAM
-		if ( steamapicontext->SteamUserStats() )
+		if ( SteamUserStats() )
 		{
 			VPROF_BUDGET( "AwardAchievement", VPROF_BUDGETGROUP_STEAM );
 			// set this achieved in the Steam client
-			bool bRet = steamapicontext->SteamUserStats()->SetAchievement( pAchievement->GetName() );
+			bool bRet = SteamUserStats()->SetAchievement( pAchievement->GetName() );
 			//		Assert( bRet );
 			if ( bRet )
 			{
 				m_AchievementsAwarded.AddToTail( iAchievementID );
 			}
 		}
+#ifndef BYTEMATCH_RETAIL
 		m_AchievementsAwarded.AddToTail( iAchievementID );
+#endif
 #endif
 	}
 	else if ( IsX360() )
@@ -1034,7 +1180,9 @@ extern bool IsInCommentaryMode( void );
 //-----------------------------------------------------------------------------
 bool CAchievementMgr::CheckAchievementsEnabled()
 {
+#ifndef BYTEMATCH_RETAIL
 	return true;
+#endif
 
 	// if PC, Steam must be running and user logged in
 #ifndef DISABLE_STEAM
@@ -1120,7 +1268,7 @@ bool CAchievementMgr::CheckAchievementsEnabled()
 #ifndef NO_STEAM
 			// Cheats get turned on automatically if you run with -dev which many people do internally, so allow cheats if developer is turned on and we're not running
 			// on Steam public
-			if ( developer.GetInt() == 0 || !steamapicontext->SteamUtils() || (k_EUniversePublic == steamapicontext->SteamUtils()->GetConnectedUniverse()) )
+			if ( developer.GetInt() == 0 || !SteamUtils() || (k_EUniversePublic == SteamUtils()->GetConnectedUniverse()) )
 			{
 				Msg( "Achievements disabled: cheats turned on in this app session.\n" );
 				return false;
@@ -1160,7 +1308,7 @@ bool CalcPlayersOnFriendsList( int iMinFriends )
 	if ( IsPC() )
 	{
 #ifndef NO_STEAM
-		if ( !steamapicontext->SteamFriends() || !steamapicontext->SteamUtils() || !g_pGameRules->IsMultiplayer() )
+		if ( !SteamFriends() || !SteamUtils() || !g_pGameRules->IsMultiplayer() )
 #endif
 			return false;
 
@@ -1193,8 +1341,8 @@ bool CalcPlayersOnFriendsList( int iMinFriends )
 					continue;
 #ifndef NO_STEAM
 				// check and see if they're on the local player's friends list
-				CSteamID steamID( pi.friendsID, 1, steamapicontext->SteamUtils()->GetConnectedUniverse(), k_EAccountTypeIndividual );
-				if ( !steamapicontext->SteamFriends()->HasFriend( steamID, /*k_EFriendFlagImmediate*/ 0x04 ) )
+				CSteamID steamID( pi.friendsID, 1, SteamUtils()->GetConnectedUniverse(), k_EAccountTypeIndividual );
+				if ( !SteamFriends()->HasFriend( steamID, /*k_EFriendFlagImmediate*/ 0x04 ) )
 					continue;
 #endif
 			}
@@ -1234,16 +1382,16 @@ bool CalcHasNumClanPlayers( int iClanTeammates )
 		if ( CalcPlayerCount()-1 < iClanTeammates )
 			return false;
 
-		if ( !steamapicontext->SteamFriends() || !steamapicontext->SteamUtils() || !g_pGameRules->IsMultiplayer() )
+		if ( !SteamFriends() || !SteamUtils() || !g_pGameRules->IsMultiplayer() )
 			return false;
 
 		// determine local player team
 		int iLocalPlayerIndex =  GetLocalPlayerIndex();
 
-		for ( int iClan = 0; iClan < steamapicontext->SteamFriends()->GetClanCount(); iClan++ )
+		for ( int iClan = 0; iClan < SteamFriends()->GetClanCount(); iClan++ )
 		{
 			int iClanMembersOnTeam = 0;
-			CSteamID clanID = steamapicontext->SteamFriends()->GetClanByIndex( iClan );
+			CSteamID clanID = SteamFriends()->GetClanByIndex( iClan );
 			// enumerate all players
 			for( int iPlayerIndex = 1 ; iPlayerIndex <= MAX_PLAYERS; iPlayerIndex++ )
 			{
@@ -1253,8 +1401,8 @@ bool CalcHasNumClanPlayers( int iClanTeammates )
 					if ( engine->GetPlayerInfo( iPlayerIndex, &pi ) && ( pi.friendsID ) )
 					{	
 						// check and see if they're on the local player's friends list
-						CSteamID steamID( pi.friendsID, 1, steamapicontext->SteamUtils()->GetConnectedUniverse(), k_EAccountTypeIndividual );
-						if ( steamapicontext->SteamFriends()->IsUserInSource( steamID, clanID ) )
+						CSteamID steamID( pi.friendsID, 1, SteamUtils()->GetConnectedUniverse(), k_EAccountTypeIndividual );
+						if ( SteamFriends()->IsUserInSource( steamID, clanID ) )
 						{
 							iClanMembersOnTeam++;
 							if ( iClanMembersOnTeam == iClanTeammates )
@@ -1345,9 +1493,9 @@ void CAchievementMgr::ResetAchievements()
 	}
 
 #ifndef NO_STEAM
-	if ( steamapicontext->SteamUserStats() )
+	if ( SteamUserStats() )
 	{
-		steamapicontext->SteamUserStats()->StoreStats();
+		SteamUserStats()->StoreStats();
 	}
 #endif
 	if ( cc_achievement_debug.GetInt() > 0 )
@@ -1376,9 +1524,9 @@ void CAchievementMgr::ResetAchievement( int iAchievementID )
 	{
 		ResetAchievement_Internal( pAchievement );
 #ifndef NO_STEAM
-		if ( steamapicontext->SteamUserStats() )
+		if ( SteamUserStats() )
 		{
-			steamapicontext->SteamUserStats()->StoreStats();
+			SteamUserStats()->StoreStats();
 		}
 #endif
 		if ( cc_achievement_debug.GetInt() > 0 )
@@ -1638,7 +1786,7 @@ void CAchievementMgr::OnMapEvent( const char *pchEventName )
 	{
 		CBaseAchievement *pAchievement = m_vecComponentListeners[iAchievement];
 		Assert( pAchievement->m_pszComponentPrefix );
-		if ( 0 == Q_strncmp( pchEventName, pAchievement->m_pszComponentPrefix, pAchievement->m_iComponentPrefixLen ) )
+		if ( CanEarnForCurrentExpansion( pAchievement->GetAchievementID() ) && 0 == Q_strncmp( pchEventName, pAchievement->m_pszComponentPrefix, pAchievement->m_iComponentPrefixLen ) )
 		{
 			// prefix matches, tell the achievement a component was found
 			pAchievement->OnComponentEvent( pchEventName );
@@ -1650,7 +1798,10 @@ void CAchievementMgr::OnMapEvent( const char *pchEventName )
 	FOR_EACH_VEC( m_vecMapEventListeners, iAchievement )
 	{
 		CBaseAchievement *pAchievement = m_vecMapEventListeners[iAchievement];
-		pAchievement->OnMapEvent( pchEventName );
+		if ( CanEarnForCurrentExpansion( pAchievement->GetAchievementID() ) )
+		{
+			pAchievement->OnMapEvent( pchEventName );
+		}
 	}
 }
 
@@ -1682,8 +1833,8 @@ int CAchievementMgr::GetAchievementCount()
 //-----------------------------------------------------------------------------
 void CAchievementMgr::Steam_OnUserStatsReceived( UserStatsReceived_t *pUserStatsReceived )
 {
-	Assert( steamapicontext->SteamUserStats() );
-	if ( !steamapicontext->SteamUserStats() )
+	Assert( SteamUserStats() );
+	if ( !SteamUserStats() )
 		return;
 
 	if ( cc_achievement_debug.GetInt() > 0 )
@@ -1698,6 +1849,13 @@ void CAchievementMgr::Steam_OnUserStatsReceived( UserStatsReceived_t *pUserStats
 	}
 
 	UpdateStateFromSteam_Internal();
+
+#ifdef GAME_DLL
+	if ( m_bIsHL2Complete )
+	{
+		SyncEpisodeAchievements();
+	}
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -1745,7 +1903,7 @@ void CAchievementMgr::Steam_OnUserStatsStored( UserStatsStored_t *pUserStatsStor
 						// Get the unlocked time from Steam
 						uint32 unlockTime;
 						bool bAchieved;
-						bool bRet = steamapicontext->SteamUserStats()->GetAchievementAndUnlockTime( pAchievement->GetName(), &bAchieved, &unlockTime );
+						bool bRet = SteamUserStats()->GetAchievementAndUnlockTime( pAchievement->GetName(), &bAchieved, &unlockTime );
 						if ( bRet && bAchieved )
 						{
 							// set the unlock time
@@ -1798,9 +1956,9 @@ void CAchievementMgr::ResetAchievement_Internal( CBaseAchievement *pAchievement 
 	Assert( pAchievement );
 
 #ifndef NO_STEAM
-	if ( steamapicontext->SteamUserStats() )
+	if ( SteamUserStats() )
 	{
-		steamapicontext->SteamUserStats()->ClearAchievement( pAchievement->GetName() );		
+		SteamUserStats()->ClearAchievement( pAchievement->GetName() );		
 	}
 #endif	
 	pAchievement->SetAchieved( false );
@@ -1859,7 +2017,7 @@ void CAchievementMgr::UpdateStateFromSteam_Internal()
 		// Get the achievement status, and the time it was unlocked if unlocked.
 		// If the return value is true, but the unlock time is zero, that means it was unlocked before Steam 
 		// began tracking achievement unlock times (December 2009). Time is seconds since January 1, 1970.
-		bool bRet = steamapicontext->SteamUserStats()->GetAchievementAndUnlockTime( pAchievement->GetName(), &bAchieved, &unlockTime );
+		bool bRet = SteamUserStats()->GetAchievementAndUnlockTime( pAchievement->GetName(), &bAchieved, &unlockTime );
 
 		if ( bRet )
 		{
@@ -1877,7 +2035,7 @@ void CAchievementMgr::UpdateStateFromSteam_Internal()
 			int iValue;
 			char pszProgressName[1024];
 			Q_snprintf( pszProgressName, 1024, "%s_STAT", pAchievement->GetStat() );
-			bRet = steamapicontext->SteamUserStats()->GetStat( pszProgressName, &iValue );
+			bRet = SteamUserStats()->GetStat( pszProgressName, &iValue );
 			if ( bRet )
 			{
 				pAchievement->SetCount( iValue );

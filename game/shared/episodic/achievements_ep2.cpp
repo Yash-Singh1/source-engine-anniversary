@@ -37,7 +37,7 @@ protected:
 		}
 	}
 };
-DECLARE_ACHIEVEMENT( CAchievementEp2KillPoisonAntlion, ACHIEVEMENT_EP2_KILL_POISONANTLION, "EP2_KILL_POISONANTLION", 5 );
+DECLARE_ACHIEVEMENT_( CAchievementEp2KillPoisonAntlion, ACHIEVEMENT_EP2_KILL_POISONANTLION, "EP2_KILL_POISONANTLION", "ep2", 5, false );
 
 class CAchievementEp2KillAllGrubs : public CBaseAchievement
 {
@@ -51,7 +51,7 @@ protected:
 		SetGoal( 333 );
 	}
 };
-DECLARE_ACHIEVEMENT( CAchievementEp2KillAllGrubs, ACHIEVEMENT_EP2_KILL_ALLGRUBS, "EP2_KILL_ALLGRUBS", 20 );
+DECLARE_ACHIEVEMENT_( CAchievementEp2KillAllGrubs, ACHIEVEMENT_EP2_KILL_ALLGRUBS, "EP2_KILL_ALLGRUBS", "ep2", 20, false );
 
 class CAchievementEp2KillEnemiesWithCar : public CBaseAchievement
 {
@@ -76,7 +76,7 @@ protected:
 		}
 	}
 };
-DECLARE_ACHIEVEMENT( CAchievementEp2KillEnemiesWithCar, ACHIEVEMENT_EP2_KILL_ENEMIES_WITHCAR, "EP2_KILL_ENEMIES_WITHCAR", 5 );
+DECLARE_ACHIEVEMENT_( CAchievementEp2KillEnemiesWithCar, ACHIEVEMENT_EP2_KILL_ENEMIES_WITHCAR, "EP2_KILL_ENEMIES_WITHCAR", "ep2", 5, false );
 
 class CAchievementEp2KillHunterWithFlechette : public CBaseAchievement
 {
@@ -90,7 +90,7 @@ protected:
 		SetGoal( 1 );
 	}
 };
-DECLARE_ACHIEVEMENT( CAchievementEp2KillHunterWithFlechette, ACHIEVEMENT_EP2_KILL_HUNTER_WITHFLECHETTES, "EP2_KILL_HUNTER_WITHFLECHETTES", 10 );
+DECLARE_ACHIEVEMENT_( CAchievementEp2KillHunterWithFlechette, ACHIEVEMENT_EP2_KILL_HUNTER_WITHFLECHETTES, "EP2_KILL_HUNTER_WITHFLECHETTES", "ep2", 10, false );
 
 class CAchievementEp2FindAllWebCaches : public CBaseAchievement
 {
@@ -112,7 +112,7 @@ class CAchievementEp2FindAllWebCaches : public CBaseAchievement
 	// don't show progress notifications for this achievement, it's distracting
 	virtual bool ShouldShowProgressNotification() { return false; }
 };
-DECLARE_ACHIEVEMENT( CAchievementEp2FindAllWebCaches , ACHIEVEMENT_EP2_BREAK_ALLWEBS, "EP2_BREAK_ALLWEBS", 5 );
+DECLARE_ACHIEVEMENT_( CAchievementEp2FindAllWebCaches, ACHIEVEMENT_EP2_BREAK_ALLWEBS, "EP2_BREAK_ALLWEBS", "ep2", 5, false );
 
 class CAchievementEp2KillChopperNoMisses: public CFailableAchievement
 {
@@ -143,7 +143,7 @@ protected:
 		}
 	}
 };
-DECLARE_ACHIEVEMENT( CAchievementEp2KillChopperNoMisses, ACHIEVEMENT_EP2_KILL_CHOPPER_NOMISSES, "EP2_KILL_CHOPPER_NOMISSES", 15 );
+DECLARE_ACHIEVEMENT_( CAchievementEp2KillChopperNoMisses, ACHIEVEMENT_EP2_KILL_CHOPPER_NOMISSES, "EP2_KILL_CHOPPER_NOMISSES", "ep2", 15, false );
 
 class CAchievementEp2FindAllRadarCaches : public CBaseAchievement
 {
@@ -161,7 +161,7 @@ class CAchievementEp2FindAllRadarCaches : public CBaseAchievement
 		SetGoal( m_iNumComponents );
 	}
 };
-DECLARE_ACHIEVEMENT( CAchievementEp2FindAllRadarCaches, ACHIEVEMENT_EP2_FIND_ALLRADARCACHES, "EP2_FIND_ALLRADARCACHES", 10 );
+DECLARE_ACHIEVEMENT_( CAchievementEp2FindAllRadarCaches, ACHIEVEMENT_EP2_FIND_ALLRADARCACHES, "EP2_FIND_ALLRADARCACHES", "ep2", 10, false );
 
 // Ep2-specific macro that sets game dir filter.  We need this because Ep1/Ep2/... share a binary so we need runtime check against running game.
 #define DECLARE_EP2_MAP_EVENT_ACHIEVEMENT( achievementID, achievementName, iPointValue )					\
@@ -182,5 +182,53 @@ DECLARE_EP2_MAP_EVENT_ACHIEVEMENT( ACHIEVEMENT_EP2_PUT_ITEMINROCKET, "EP2_PUT_IT
 DECLARE_EP2_MAP_EVENT_ACHIEVEMENT_HIDDEN( ACHIEVEMENT_EP2_BEAT_MISSILESILO2, "EP2_BEAT_MISSILESILO2", 5 );
 DECLARE_EP2_MAP_EVENT_ACHIEVEMENT( ACHIEVEMENT_EP2_BEAT_OUTLAND12_NOBUILDINGSDESTROYED, "EP2_BEAT_OUTLAND12_NOBUILDINGSDESTROYED", 35 );
 DECLARE_EP2_MAP_EVENT_ACHIEVEMENT_HIDDEN( ACHIEVEMENT_EP2_BEAT_GAME, "EP2_BEAT_GAME", 20 );
+
+//-----------------------------------------------------------------------------
+// Purpose: Anniversary achievement, earned by playing on or after Nov 20 2020
+//-----------------------------------------------------------------------------
+class CAchievementGlobalGnomeAlone : public CBaseAchievement
+{
+	virtual void Init()
+	{
+		SetGoal( 1 );
+	}
+
+	virtual void ListenForEvents()
+	{
+		ListenForGameEvent( "game_newmap" );
+	}
+
+	virtual void PostRestoreSavedGame()
+	{
+		if ( !IsAchieved() )
+		{
+			CheckDate();
+		}
+	}
+
+protected:
+	virtual void FireGameEvent_Internal( IGameEvent *event )
+	{
+		if ( !IsAchieved() )
+		{
+			CheckDate();
+		}
+	}
+
+private:
+	void CheckDate()
+	{
+		if ( IsAchieved() )
+			return;
+
+		time_t now;
+		time( &now );
+		if ( now >= 1605850201 )
+		{
+			IncrementCount();
+		}
+	}
+};
+DECLARE_ACHIEVEMENT_( CAchievementGlobalGnomeAlone, ACHIEVEMENT_GLOBAL_GNOME_ALONE, "GLOBAL_GNOME_ALONE", "ep2", 1, false );
 
 #endif // GAME_DLL

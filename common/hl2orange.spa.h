@@ -287,6 +287,8 @@ extern "C" {
 
 #define ACHIEVEMENT_TF_LAST_ORANGEBOX				150
 
+#define ACHIEVEMENT_GLOBAL_GNOME_ALONE				151
+
 //
 // Stats view ids
 //

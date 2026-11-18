@@ -60,7 +60,7 @@ public:
 	int GetProgressShown() { return m_iProgressShown; }
 	virtual bool IsAchieved() { return m_bAchieved; }
 	virtual bool IsActive();
-	virtual bool LocalPlayerCanEarn( void ) { return true; }
+	virtual bool LocalPlayerCanEarn( void );
 	void SetAchieved( bool bAchieved ) { m_bAchieved = bAchieved; }
 	virtual bool IsMetaAchievement() { return false; }
 	virtual bool AlwaysListen() { return false; }

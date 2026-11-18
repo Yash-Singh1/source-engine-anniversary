@@ -35,7 +35,7 @@ protected:
 		}
 	}
 };
-DECLARE_ACHIEVEMENT( CAchievementEp1KillAntlionsWithCar, ACHIEVEMENT_EP1_KILL_ANTLIONS_WITHCARS, "EP1_KILL_ANTLIONS_WITHCARS", 5 );
+DECLARE_ACHIEVEMENT_( CAchievementEp1KillAntlionsWithCar, ACHIEVEMENT_EP1_KILL_ANTLIONS_WITHCARS, "EP1_KILL_ANTLIONS_WITHCARS", "episodic", 5, false );
 
 class CAchievementEp1KillEnemiesWithSniperAlyx : public CBaseAchievement
 {
@@ -49,7 +49,7 @@ protected:
 		SetGoal( 30 );
 	}
 };
-DECLARE_ACHIEVEMENT( CAchievementEp1KillEnemiesWithSniperAlyx, ACHIEVEMENT_EP1_KILL_ENEMIES_WITHSNIPERALYX, "EP1_KILL_ENEMIES_WITHSNIPERALYX", 10 );
+DECLARE_ACHIEVEMENT_( CAchievementEp1KillEnemiesWithSniperAlyx, ACHIEVEMENT_EP1_KILL_ENEMIES_WITHSNIPERALYX, "EP1_KILL_ENEMIES_WITHSNIPERALYX", "episodic", 10, false );
 
 class CAchievementEp1BeatCitizenEscortNoCitizenDeaths : public CFailableAchievement
 {
@@ -74,7 +74,7 @@ protected:
 	// map event where achievement is evaluated for success
 	virtual const char *GetEvaluationEventName() { return "EP1_BEAT_CITIZENESCORT_NOCITIZENDEATHS_END"; }
 };
-DECLARE_ACHIEVEMENT( CAchievementEp1BeatCitizenEscortNoCitizenDeaths, ACHIEVEMENT_EP1_BEAT_CITIZENESCORT_NOCITIZENDEATHS, "EP1_BEAT_CITIZENESCORT_NOCITIZENDEATHS", 15 );
+DECLARE_ACHIEVEMENT_( CAchievementEp1BeatCitizenEscortNoCitizenDeaths, ACHIEVEMENT_EP1_BEAT_CITIZENESCORT_NOCITIZENDEATHS, "EP1_BEAT_CITIZENESCORT_NOCITIZENDEATHS", "episodic", 15, false );
 
 extern int CalcPlayerAttacks( bool bBulletOnly );
 
@@ -116,7 +116,7 @@ protected:
 		}
 	}
 };
-DECLARE_ACHIEVEMENT( CAchievementEp1BeatGameOneBullet, ACHIEVEMENT_EP1_BEAT_GAME_ONEBULLET, "EP1_BEAT_GAME_ONEBULLET", 40 );
+DECLARE_ACHIEVEMENT_( CAchievementEp1BeatGameOneBullet, ACHIEVEMENT_EP1_BEAT_GAME_ONEBULLET, "EP1_BEAT_GAME_ONEBULLET", "episodic", 40, false );
 
 // Ep1-specific macro that sets game dir filter.  We need this because Ep1/Ep2/... share a binary so we need runtime check against running game.
 #define DECLARE_EP1_MAP_EVENT_ACHIEVEMENT( achievementID, achievementName, iPointValue )					\
