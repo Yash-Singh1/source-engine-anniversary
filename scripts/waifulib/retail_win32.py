@@ -276,7 +276,8 @@ def retail_win32_module(bld, name, m, idx, subdir=None):
 			Logs.warn('%s: %s is not in this tree' % (name, fl['path']))
 	linkflags = []
 	if m['type'] != 'lib':
-		linkflags = list(m['link']) + list(m['system_libs'])
+		# /MAP: a side file naming what /OPT:ICF folded, for the matcher (--ours-link-map)
+		linkflags = list(m['link']) + list(m['system_libs']) + ['/MAP']
 		if '/DEBUG' in linkflags:
 			linkflags.append('/PDBALTPATH:' + VALVE_PDB % (m['project_dir'].replace('/', '\\'), m['output']))
 		for obj in m['link_objects']:

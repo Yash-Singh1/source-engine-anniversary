@@ -120,7 +120,7 @@ def load_obj(path, data, member=None):
             # gcc pads COMDAT sections to their alignment with NOPs, so still trim
             for e in ents:
                 e.size = s['size'] - (e.addr - s['va'])
-        fields = []
+        fields, own = [], []
         for k in range(s['nrel']):
             va, si, ty = struct.unpack_from('<IIH', data, s['rptr'] + 10 * k)
             if ty not in _RELOC:
@@ -132,6 +132,17 @@ def load_obj(path, data, member=None):
                 target = None    # section-relative reference (static data/label), name is meaningless
             addend = int.from_bytes(s['data'][va:va + width], 'little', signed=True)
             fields.append((s['va'] + va, width, kind, target, addend))
+            if ty == 6 and sym and sym[3] == sec_no:
+                own.append((va, sym[2] + addend))
+        # MSVC emits a switch's jump table (and byte index table) into the function's own
+        # section after its code; a linked image's function extent ends before it.
+        locs = {l for l, _ in own}
+        for t in sorted({t for l, t in own if t in locs and t > l}, reverse=True):
+            owner = max((e for e in ents if e.addr - s['va'] < t), key=lambda e: e.addr, default=None)
+            if owner is not None:
+                off = owner.addr - s['va']
+                if owner.size is None or off + owner.size > t:
+                    owner.size = t - off
         build_functions(mod, s['name'], s['va'], s['data'], ents, fields)
     return mod
 

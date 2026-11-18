@@ -8,7 +8,9 @@ without precompiled headers, neither of which changes code. With --retail the
 object is diffed against the module's depot 222 binary, named through its
 symbol-port map when one exists.
 
-usage: win32-cc.py MODULE SOURCE [-o OUT.obj] [--retail] [--symbol NAME] [--build build-win32] [-- cl args]
+usage: win32-cc.py MODULE SOURCE [-o OUT.obj] [--retail] [--against MODULE] [--symbol NAME]
+                   [--build build-win32] [-- cl args]
+BM_WIN32_MAPS overrides the symbol-port map directory.
 """
 import argparse, json, os, subprocess, sys, tempfile
 
@@ -18,7 +20,7 @@ sys.path.insert(0, HERE)
 import versions as V  # noqa: E402
 
 DEPOTS = "/Volumes/Expansion/mac-ports/hl2-anniversary-depot/depots"
-MAPS = "/Volumes/Storage/sco/byte-match-survey/symbols/out"
+MAPS = os.environ.get("BM_WIN32_MAPS", "/Volumes/Storage/sco/byte-match-survey/symbols/out")
 RETAIL_DEFINES = ["BYTEMATCH_RETAIL", "NO_X360_XDK"]  # as scripts/waifulib/retail_win32.py
 
 
@@ -34,7 +36,8 @@ def main():
     ap.add_argument("-o", dest="out")
     ap.add_argument("--retail", action="store_true", help="diff against the module's retail binary")
     ap.add_argument("--symbol", help="show an instruction diff for this function")
-    ap.add_argument("--build", default=os.path.join(TREE, "build-win32"),
+    ap.add_argument("--against", help="diff against this module's retail binary (static libraries: engine)")
+    ap.add_argument("--build", default=os.environ.get("BM_WIN32_BUILD", os.path.join(TREE, "build-win32")),
                     help="--retail-win32 build directory, for generated headers")
     a = ap.parse_args(argv)
 
@@ -65,14 +68,16 @@ def main():
     print(out)
     if not a.retail:
         return 0
+    against = a.against or a.module
+    m = mods[against]
     if not m.get("retail"):
-        sys.exit("%s has no retail binary in the manifest" % a.module)
+        sys.exit("%s has no retail binary in the manifest; use --against" % against)
     depot = m.get("retail_depot", "222")
     retail = os.path.join(DEPOTS, depot, "19307283", m["retail"])
     bm = [os.path.join(TREE, "devtools", "bytematch", "bin", "bytematch"), "diff", "--retail", retail, "--ours", out]
     mp = os.path.join(MAPS, os.path.splitext(os.path.basename(m["retail"]))[0].lower() + ".win.json")
-    if a.module.startswith(("client_", "server_")):
-        mp = os.path.join(MAPS, a.module + ".win.json")
+    if against.startswith(("client_", "server_")):
+        mp = os.path.join(MAPS, against + ".win.json")
     if os.path.exists(mp):
         bm += ["--retail-map", mp]
     if a.symbol:

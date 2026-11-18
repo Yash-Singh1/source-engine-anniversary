@@ -3,7 +3,7 @@ import difflib
 from dataclasses import dataclass, field
 
 from . import x86
-from .winmap import EQUIV
+from .winmap import EQUIV, FOLDED
 
 EXACT = 'exact'
 MASKED = 'matches-after-masking'
@@ -130,7 +130,8 @@ def check_targets(r, o, rdata, odata):
         else:
             continue
         names = rmod.resolve(va)
-        if names and rel.target not in names and EQUIV.get(rel.target) not in names:
+        if names and rel.target not in names and EQUIV.get(rel.target) not in names \
+                and not FOLDED.get(rel.target, FOLDED.get(EQUIV.get(rel.target), set())) & set(names):
             out.append((k, rel.target, names[0]))
     if o.module.linked:
         # linked vs linked: compare branch targets symbolically on both sides
