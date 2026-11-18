@@ -16,6 +16,7 @@ sdk field from the -syslibroot path.
 Usage: make-sdk109.py [--prefix DIR] [--sdk106 DIR] [--depot DIR ...] [--out DIR]
 """
 import argparse
+import glob
 import json
 import os
 import shutil
@@ -132,7 +133,7 @@ def locate(sdk, install_name):
             p = os.path.join(d, f)
             if os.path.isfile(p) and not os.path.islink(p) and dylib_id(p) == install_name:
                 same.append(p)
-    aliases = [p for p in same if p != path and os.path.realpath(p) != os.path.realpath(path)]
+    aliases = [p for p in same if p != path]
     if os.path.exists(path) and dylib_id(path) == install_name:
         return path, aliases
     if same:
@@ -215,6 +216,12 @@ def main():
     shutil.copytree(sdk106, out, symlinks=True)
     with open(os.path.join(out, "SDKSettings.plist"), "w") as f:
         f.write(SDK_SETTINGS)
+    # Known 10.6 -> 10.9 header differences that break compilation.
+    here = os.path.dirname(os.path.abspath(__file__))
+    for patch in sorted(glob.glob(os.path.join(here, "patches", "sdk109-*.patch"))):
+        with open(patch) as f:
+            subprocess.run(["patch", "-p1", "--forward", "-s"], cwd=out, stdin=f, check=True)
+        print(f"applied {os.path.basename(patch)}")
 
     plan = {}
     for name, e in libs.items():

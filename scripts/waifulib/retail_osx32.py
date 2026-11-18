@@ -23,11 +23,15 @@ from waflib.TaskGen import feature, before_method, after_method
 MANIFEST = 'devtools/bytematch/manifests/retail-osx32.json'
 TOOLCHAIN_DIR = 'devtools/bytematch/toolchain'
 
-# Cheapest first. Modules needing third-party archives without a period copy
-# (libjpeg 8b, libpng 1.5.2, Crypto++ 5.6.1, speex 1.0.4) are left out.
+# Modules that compile and link in this mode. Not yet: togl and materialsystem
+# (our linuxwin togl headers vs the OSX SDK), launcher (needs togl),
+# vgui_surfacelib/vguimatsurface (FreeType fonts; retail uses the OSX font path).
 RETAIL_MODULES = [
 	'tier0', 'tier1', 'mathlib', 'tier2', 'tier3', 'vstdlib',
-	'scenefilecache', 'soundemittersystem', 'datacache', 'video',
+	'appframework', 'bitmap', 'vtf', 'choreoobjects', 'dmxloader', 'particles', 'vpklib',
+	'materialsystem/shaderlib', 'vgui2/vgui_controls', 'vgui2/matsys_controls',
+	'scenefilecache', 'soundemittersystem', 'datacache', 'video', 'inputsystem',
+	'filesystem', 'vgui2/src', 'studiorender', 'serverbrowser', 'utils/vtex',
 ]
 
 # Defines our top-level wscript adds that Valve's build doesn't have.
@@ -101,6 +105,9 @@ def retail_osx32_configure(conf):
 	v.RETAIL_OSX32 = True
 	v.DEST_CPU = 'x86'
 	v.DEST_SIZEOF_VOID_P = 4
+	# Valve's VPC defines USE_SDL and DX_TO_GL_ABSTRACTION; these select the same sources in our wscripts.
+	v.SDL = 1
+	v.GL = True
 	sdk = p['sdk']
 	v.CFLAGS = rf.cflags(sdk)
 	v.CXXFLAGS = rf.cxxflags(sdk)
@@ -168,11 +175,13 @@ def _entry(tg):
 	if not tg.env.RETAIL_MANIFEST:
 		return None, None
 	m, by_target, archives = load_manifest(tg.env.RETAIL_MANIFEST)
-	name = getattr(tg, 'name', None) or tg.target
-	if name in by_target:
-		return 'module', by_target[name]
-	if name in archives:
-		return 'archive', archives[name]
+	for name in (getattr(tg, 'name', None), os.path.basename(str(tg.target))):
+		if not name:
+			continue
+		for table, kind in ((by_target, 'module'), (archives, 'archive')):
+			for key in (name, name.lower()):
+				if key in table:
+					return kind, table[key]
 	return None, None
 
 def _name(d):
