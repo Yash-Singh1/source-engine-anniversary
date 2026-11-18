@@ -12,7 +12,11 @@
 #endif
 
 // The current network protocol version.  Changing this makes clients and servers incompatible
+#ifdef BYTEMATCH_RETAIL
+#define PROTOCOL_VERSION    24
+#else
 #define PROTOCOL_VERSION    25
+#endif
 
 #define DEMO_BACKWARDCOMPATABILITY
 

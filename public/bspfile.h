@@ -22,7 +22,11 @@
 
 // MINBSPVERSION is the minimum acceptable version.  The engine will load MINBSPVERSION through BSPVERSION
 #define MINBSPVERSION 19
+#ifdef BYTEMATCH_RETAIL
+#define BSPVERSION 20
+#else
 #define BSPVERSION 21
+#endif
 
 
 // This needs to match the value in gl_lightmap.h
@@ -62,7 +66,11 @@
 #define	MAX_MAP_ENTITIES				8192
 #define	MAX_MAP_TEXINFO					12288
 #define MAX_MAP_TEXDATA					2048
+#ifdef BYTEMATCH_RETAIL
+#define MAX_MAP_DISPINFO				2048
+#else
 #define MAX_MAP_DISPINFO				4096
+#endif
 #define MAX_MAP_DISP_VERTS				( MAX_MAP_DISPINFO * ((1<<MAX_MAP_DISP_POWER)+1) * ((1<<MAX_MAP_DISP_POWER)+1) )
 #define MAX_MAP_DISP_TRIS				( (1 << MAX_MAP_DISP_POWER) * (1 << MAX_MAP_DISP_POWER) * 2 )
 #define MAX_DISPVERTS					NUM_DISP_POWER_VERTS( MAX_MAP_DISP_POWER )
@@ -364,7 +372,9 @@ enum
 	LUMP_OCCLUSION_VERSION         = 2,
 	LUMP_LEAFS_VERSION			   = 1,
 	LUMP_LEAF_AMBIENT_LIGHTING_VERSION = 1,
+#ifndef BYTEMATCH_RETAIL
 	LUMP_WORLDLIGHTS_VERSION           = 1
+#endif
 };
 
 
@@ -967,6 +977,7 @@ enum emittype_t
 
 // Flags for dworldlight_t::flags
 #define DWL_FLAGS_INAMBIENTCUBE		0x0001	// This says that the light was put into the per-leaf ambient cubes.
+#ifndef BYTEMATCH_RETAIL
 #define DWL_FLAGS_CASTENTITYSHADOWS	0x0002	// This says that the light will cast shadows from entities
 
 // Old version of the worldlight struct, used for backward compatibility loading.
@@ -992,6 +1003,7 @@ struct dworldlight_version0_t
 	int			texinfo;		// 
 	int			owner;			// entity that this light it relative to
 };
+#endif
 
 struct dworldlight_t
 {
@@ -999,7 +1011,9 @@ struct dworldlight_t
 	Vector		origin;
 	Vector		intensity;
 	Vector		normal;			// for surfaces and spotlights
+#ifndef BYTEMATCH_RETAIL
 	Vector		shadow_cast_offset;	// gets added to the light origin when this light is used as a shadow caster (only if DWL_FLAGS_CASTENTITYSHADOWS flag is set)
+#endif
 	int			cluster;
 	emittype_t	type;
     int			style;
