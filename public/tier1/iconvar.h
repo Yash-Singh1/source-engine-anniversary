@@ -78,8 +78,14 @@ class CCommand;
 #define FCVAR_EXEC_DESPITE_DEFAULT	(1<<31) // -default causes a lot of commands to be ignored (but still be recorded as though they had run). 
 											// This causes them to be executed anyways.
 
+#ifdef BYTEMATCH_RETAIL
+#define FCVAR_INTERNAL_USE		0
+#define FCVAR_ALLOWED_IN_COMPETITIVE	0
+#else
 #define FCVAR_INTERNAL_USE		(1<<15)	// This var isn't archived, but is exposed to players--and its use is allowed in competitive play.
 #define FCVAR_ALLOWED_IN_COMPETITIVE	(1<<18) // This convar can be changed in competitive (strict) settings mode even though it is not archived. Meant for one-offs like cl_showfps that are not user facing settings but are benign
+#endif
+#line 83
 // #define FCVAR_AVAILABLE			(1<<19)
 // #define FCVAR_AVAILABLE			(1<<26)
 // #define FCVAR_AVAILABLE			(1<<27)
