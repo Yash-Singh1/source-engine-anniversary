@@ -125,6 +125,15 @@ bool s_bWindowsInputEnabled = true;
 
 ConVar r_drawvgui( "r_drawvgui", "1", FCVAR_CHEAT, "Enable the rendering of vgui panels" );
 ConVar gameui_xbox( "gameui_xbox", "0", 0 );
+#ifdef BYTEMATCH_RETAIL
+static ConVar vgui_ui_scale_base_width( "vgui_ui_scale_width", "1920", 0 );
+static ConVar vgui_ui_scale_base_height( "vgui_ui_scale_height", "1080", 0 );
+static ConVar vgui_ui_scale_factor( "vgui_ui_scale_factor", "1", 0 );
+
+// root of the panels that are laid out against the scaled UI size
+#define PANEL_STATIC_SIZING ( (VGuiPanel_t)( PANEL_CLIENTDLL_TOOLS + 1 ) )
+#endif
+#line 134
 
 void Con_CreateConsolePanel( vgui::Panel *parent );
 void CL_CreateEntityReportPanel( vgui::Panel *parent );
@@ -371,6 +380,10 @@ public:
 
 private:
 	vgui::Panel *GetRootPanel( VGuiPanel_t type );
+#ifdef BYTEMATCH_RETAIL
+	void UpdateStaticSizingPanelSize( int nWidth, int nHeight );
+#endif
+#line 381
 	void SetEngineVisible( bool state );
 	void DrawMouseFocus( void );
 	void CreateVProfPanels( vgui::Panel *pParent );
@@ -404,6 +417,10 @@ private:
 	CEnginePanel *staticClientDLLToolsPanel;
 	CEnginePanel *staticGameUIPanel;
 	CEnginePanel *staticGameDLLPanel;
+#ifdef BYTEMATCH_RETAIL
+	CEnginePanel *staticSizingPanel;
+#endif
+#line 415
 
 	// Want engine tools to be on top of other engine panels
 	CEnginePanel *staticEngineToolsPanel;
@@ -519,6 +536,10 @@ CEngineVGui::CEngineVGui()
 	staticClientDLLPanel = NULL;
 	staticGameDLLPanel = NULL;
 	staticGameUIPanel = NULL;
+#ifdef BYTEMATCH_RETAIL
+	staticSizingPanel = NULL;
+#endif
+#line 531
 	staticEngineToolsPanel = NULL;
 	staticDebugSystemPanel = NULL;
 	staticFocusOverlayPanel = NULL;
@@ -605,6 +626,31 @@ void CEngineVGui::Init()
 
 	COM_TimestampedLog( "Load Scheme File" );
 
+#ifdef BYTEMATCH_RETAIL
+	staticSizingPanel = new CEnginePanel( staticPanel, "staticSizingPanel" );
+	UpdateStaticSizingPanelSize( videomode->GetModeUIWidth(), videomode->GetModeUIHeight() );
+	staticSizingPanel->SetPaintBorderEnabled( false );
+	staticSizingPanel->SetPaintBackgroundEnabled( false );
+	staticSizingPanel->SetKeyBoardInputEnabled( false );
+	staticSizingPanel->SetPaintEnabled( false );
+	staticSizingPanel->SetVisible( true );
+	staticSizingPanel->SetZPos( 150 );
+
+	// load scheme
+	const char *pStr = "Resource/SourceScheme.res";
+	if ( !vgui::scheme()->LoadSchemeFromFileEx( NULL, pStr, "Tracker" ) )
+	{
+		Sys_Error( "Error loading file %s\n", pStr );
+		return;
+	}
+
+	// and once more laid out against the scaled UI size
+	if ( !vgui::scheme()->LoadSchemeFromFileEx( IsSteamDeck() ? NULL : GetPanel( PANEL_STATIC_SIZING ), pStr, "Tracker" ) )
+	{
+		Sys_Error( "Error loading file %s\n", pStr );
+		return;
+	}
+#else
 	// load scheme
 	const char *pStr = "Resource/SourceScheme.res";
 	if ( !vgui::scheme()->LoadSchemeFromFile( pStr, "Tracker" ))
@@ -612,6 +658,8 @@ void CEngineVGui::Init()
 		Sys_Error( "Error loading file %s\n", pStr );
 		return;
 	}
+#endif
+#line 640
 
 	if ( IsX360() || IsSteamDeck() )
 	{
@@ -992,8 +1040,85 @@ inline vgui::Panel *CEngineVGui::GetRootPanel( VGuiPanel_t type )
 		return staticGameDLLPanel;
 	case PANEL_CLIENTDLL_TOOLS:
 		return staticClientDLLToolsPanel;
+#ifdef BYTEMATCH_RETAIL
+	case PANEL_STATIC_SIZING:
+		return staticSizingPanel;
+#endif
+#line 1022
 	}
 }
+
+#ifdef BYTEMATCH_RETAIL
+//-----------------------------------------------------------------------------
+// Purpose: lays out the static sizing panel for the scaled UI size, reloads
+//			fonts and borders and rebuilds the game UI dialogs when it changes
+//-----------------------------------------------------------------------------
+void CEngineVGui::UpdateStaticSizingPanelSize( int nWidth, int nHeight )
+{
+	static bool s_bOldWindowMode = videomode->IsWindowedMode();
+	static bool s_bOldWindowBorderMode = videomode->NoWindowBorder();
+	static int s_nOldWidth = 0;
+	static int s_nOldHeight = 0;
+	static int s_nOldPanelWidth = 0;
+	static int s_nOldPanelHeight = 0;
+	static int s_nOldAAMode = -1;
+	static bool s_bResizedOnce = false;
+
+	int nScaledWidth = MAX( (int)( nWidth * vgui_ui_scale_factor.GetFloat() ), vgui_ui_scale_base_width.GetInt() );
+	int nScaledHeight = MAX( (int)( nHeight * vgui_ui_scale_factor.GetFloat() ), vgui_ui_scale_base_height.GetInt() );
+	int nPanelWidth = nScaledWidth * 640 / vgui_ui_scale_base_width.GetInt();
+	int nPanelHeight = nScaledHeight * 480 / vgui_ui_scale_base_height.GetInt();
+
+	bool bWindowMode = videomode->IsWindowedMode();
+	bool bWindowBorderMode = videomode->NoWindowBorder();
+
+	ConVarRef mat_antialias( "mat_antialias" );
+	int nAAMode = mat_antialias.IsValid() ? mat_antialias.GetInt() : -1;
+
+	// tools don't resize the UI after the first layout
+	if ( CommandLine()->CheckParm( "-tools" ) && s_bResizedOnce )
+		return;
+
+	if ( s_nOldWidth == nWidth && s_nOldHeight == nHeight &&
+		 s_nOldPanelWidth == nPanelWidth && s_nOldPanelHeight == nPanelHeight &&
+		 s_bOldWindowMode == bWindowMode && s_bOldWindowBorderMode == bWindowBorderMode &&
+		 s_nOldAAMode == nAAMode )
+		return;
+
+	s_nOldWidth = nWidth;
+	s_nOldHeight = nHeight;
+	s_bOldWindowMode = bWindowMode;
+	s_bOldWindowBorderMode = bWindowBorderMode;
+	s_bResizedOnce = true;
+	s_nOldPanelWidth = nPanelWidth;
+	s_nOldPanelHeight = nPanelHeight;
+	s_nOldAAMode = nAAMode;
+
+	staticSizingPanel->SetBounds( 0, 0, nPanelWidth, nPanelHeight );
+
+	vgui::ivgui()->RunFrame();
+	g_pMatSystemSurface->ResetFontCaches();
+	vgui::scheme()->ReloadFonts();
+	vgui::scheme()->UpdateBorders();
+
+	if ( IsSteamDeck() || !staticGameUIPanel )
+		return;
+
+	if ( staticGameConsole )
+	{
+		bool bConsoleVisible = staticGameConsole->IsConsoleVisible();
+		staticGameConsole->Initialize();
+		staticGameConsole->SetParent( staticGameUIPanel->GetVPanel() );
+		if ( bConsoleVisible )
+		{
+			staticGameConsole->Activate();
+		}
+	}
+
+	engineClient->ExecuteClientCmd( "refresh_gameui_dialogs_modeset\n" );
+}
+#endif
+#line 1093
 
 vgui::VPANEL CEngineVGui::GetPanel( VGuiPanel_t type )
 {
@@ -1717,6 +1842,10 @@ void CEngineVGui::Paint( PaintMode_t mode )
 		CMatRenderContextPtr pRenderContext( materials );
 		pRenderContext->GetViewport( x, y, w, h );
 		panel->SetBounds(0, 0, w, h); // ignore x and y here because the viewport takes care of that
+#ifdef BYTEMATCH_RETAIL
+		UpdateStaticSizingPanelSize( w, h );
+#endif
+#line 1817
 	}
 
 	panel->Repaint();
