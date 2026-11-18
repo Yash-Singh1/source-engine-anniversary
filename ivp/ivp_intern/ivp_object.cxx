@@ -32,6 +32,7 @@
 #include <ivp_calc_next_psi_solver.hxx>
 
 
+#ifndef BYTEMATCH_RETAIL
 void IVP_Real_Object::change_nocoll_group_ident(const char *new_string ) {
     if (!new_string){
 	nocoll_group_ident[0] = 0;
@@ -42,6 +43,7 @@ void IVP_Real_Object::change_nocoll_group_ident(const char *new_string ) {
     }
     strncpy( nocoll_group_ident, new_string, IVP_NO_COLL_GROUP_STRING_LEN);
 }
+#endif
 
 void IVP_Real_Object::set_pinned(IVP_BOOL is_pinned)
 {
@@ -369,7 +371,9 @@ IVP_Real_Object::IVP_Real_Object(IVP_Cluster *cluster,IVP_SurfaceManager *surfac
     cache_object = NULL;
     controller_phantom = NULL;
 
+#ifndef BYTEMATCH_RETAIL
     strncpy(nocoll_group_ident, templ_obj->get_nocoll_group_ident(),IVP_NO_COLL_GROUP_STRING_LEN);
+#endif
     physical_core = new IVP_Core(this, q_world_f_object, position, templ_obj->physical_unmoveable ,templ_obj->enable_piling_optimization);
     this->friction_core=physical_core;
     this->original_core=physical_core;

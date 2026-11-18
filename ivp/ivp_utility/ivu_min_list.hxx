@@ -34,11 +34,19 @@ class IVP_U_Min_List {
     IVP_U_Min_List_Element *elems;
 public:
     IVP_U_MINLIST_FIXED_POINT min_value;
+#ifdef BYTEMATCH_RETAIL
+#ifdef IVP_U_MINLIST_USELONG
+    IVP_U_MINLIST_INDEX	first_long;
+#endif
+    IVP_U_MINLIST_INDEX	first_element;
+    IVP_U_MINLIST_INDEX	counter;
+#else
 #ifdef IVP_U_MINLIST_USELONG
     unsigned short	first_long;
 #endif
     unsigned short	first_element;
     unsigned short	counter;
+#endif
     
     IVP_U_Min_List(int size=4);
     ~IVP_U_Min_List();

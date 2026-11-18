@@ -69,15 +69,19 @@ public:
  *	Description:	A real object with mass and rotation inertia properties.
  ********************************************************************************/
 class IVP_Template_Real_Object : public IVP_Template_Object {
+#ifndef BYTEMATCH_RETAIL
     char nocoll_group_ident[IVP_NO_COLL_GROUP_STRING_LEN];		 // Optional (malloced) string used by the IVP_Collision_Filter_Coll_Group_Ident (use set ... to set this)
+#endif
 public:
     IVP_BOOL physical_unmoveable;	 // If set to TRUE, the object is unmoveable (cannot be changed later)
     IVP_BOOL enable_piling_optimization; // Objects get more wobbly but simulation of object piles is faster (dominos)
 	IVP_BOOL pinned;
     // IVP_BOOL low_simulation_forbidden;   // not used anymore
     IVP_Material *material;		 // Pointer to the material (used only if no surface material is set)
+#ifndef BYTEMATCH_RETAIL
     void set_nocoll_group_ident(const char *nocoll_group);        // Optional string used by the IVP_Collision_Filter_Coll_Group_Ident, maxlen = IVP_NO_COLL_GROUP_STRING_LEN
     const char *get_nocoll_group_ident() const { return &nocoll_group_ident[0]; };
+#endif
     IVP_DOUBLE mass;			 // Mass of object (unit: kilogram), default 1.0
 
 /********************************************************************************

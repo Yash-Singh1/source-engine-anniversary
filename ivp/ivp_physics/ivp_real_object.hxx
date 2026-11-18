@@ -99,6 +99,10 @@ public:
 
 };
 
+#ifdef BYTEMATCH_RETAIL
+#pragma pack(push, 2)
+#endif
+
 // add dynamics
 class IVP_Real_Object_Fast: public IVP_Real_Object_Fast_Static {
 protected:
@@ -171,9 +175,11 @@ protected:
  *	The physics simulation internal public section. Handle with care:
  ********************************************************************************/
 public:    
+#ifndef BYTEMATCH_RETAIL
     char nocoll_group_ident[IVP_NO_COLL_GROUP_STRING_LEN];	/* Identifier for filtering collisions, used only 
 				 * if the IVP_Collision_Filter_Coll_Group_Ident is
 				 * the installed collision filter, see IVP_Application_Environment. */
+#endif
     ///////// Simulation internals
     IVP_Material 	*l_default_material;	// default material of object
     IVP_OV_Element   	*ov_element;		// used to trace objects movement within the environment->ov_tree
@@ -376,12 +382,18 @@ public:
     void change_fast_piling_allowed(IVP_BOOL flag);
 	void set_pinned(IVP_BOOL is_pinned); //@@CB
     
+#ifndef BYTEMATCH_RETAIL
     void change_nocoll_group_ident(const char *new_identify_string ); // note: max length IVP_NO_COLL_GROUP_STRING_LEN
+#endif
     
     void recompile_values_changed();
     void recompile_material_changed();
 
     void force_grow_friction_system();
 };
+
+#ifdef BYTEMATCH_RETAIL
+#pragma pack(pop)
+#endif
 
 #endif

@@ -71,6 +71,7 @@ public:
  *		    object.
  *******************************************************************************/
 
+#ifndef BYTEMATCH_RETAIL
 class IVP_Collision_Filter_Coll_Group_Ident : public IVP_Collision_Filter {
 private:
     // internal data
@@ -111,6 +112,7 @@ public:
 
     ~IVP_Collision_Filter_Coll_Group_Ident();
 };
+#endif
 
 
 class IVP_CFEP_Objectpair;

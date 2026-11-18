@@ -46,6 +46,7 @@ IVP_Template_Real_Object::~IVP_Template_Real_Object()
 }
 
 
+#ifndef BYTEMATCH_RETAIL
 void IVP_Template_Real_Object::set_nocoll_group_ident(const char *id){
     if (!id){
 	nocoll_group_ident[0] = 0;
@@ -56,6 +57,7 @@ void IVP_Template_Real_Object::set_nocoll_group_ident(const char *id){
     }
     strncpy( nocoll_group_ident, id, IVP_NO_COLL_GROUP_STRING_LEN);
 }
+#endif
 
 
 

@@ -100,9 +100,11 @@ IVP_Environment::IVP_Environment(IVP_Environment_Manager *manager,IVP_Applicatio
 	}
 	
 	collision_filter = appl_env->collision_filter;
+#ifndef BYTEMATCH_RETAIL
 	if (!collision_filter){
 	    collision_filter = new IVP_Collision_Filter_Coll_Group_Ident(IVP_TRUE);
 	}
+#endif
 
 	anomaly_manager = appl_env->anomaly_manager;
 	if (!anomaly_manager){

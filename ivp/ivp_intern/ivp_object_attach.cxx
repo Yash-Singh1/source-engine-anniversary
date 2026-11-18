@@ -117,9 +117,11 @@ void IVP_Object_Attach::detach_object( IVP_Real_Object *attached_object, IVP_Tem
 
 
     // reset object values
+#ifndef BYTEMATCH_RETAIL
     if(t->get_nocoll_group_ident()[0]){
 	strncpy(attached_object->nocoll_group_ident, t->get_nocoll_group_ident(),IVP_NO_COLL_GROUP_STRING_LEN);
     }
+#endif
     {  // get rid of old core
 		int n_objs = old_core->objects.len();
 			old_core->unlink_obj_from_core_and_maybe_destroy(attached_object);

@@ -16,6 +16,7 @@ IVP_Collision_Filter::~IVP_Collision_Filter() {
 
 // ***************************************************************************
 
+#ifndef BYTEMATCH_RETAIL
 IVP_BOOL IVP_Collision_Filter_Coll_Group_Ident::check_objects_for_collision_detection(IVP_Real_Object *object0, IVP_Real_Object *object1) {
     char *id0 = object0->nocoll_group_ident;
     char *id1 = object1->nocoll_group_ident;
@@ -45,6 +46,7 @@ void IVP_Collision_Filter_Coll_Group_Ident::environment_will_be_deleted(IVP_Envi
     }
     return;
 }
+#endif
 
 // ------------------------------------------------------------------------------
 
