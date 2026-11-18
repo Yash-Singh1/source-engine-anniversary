@@ -85,6 +85,14 @@ void Border::Paint(int x, int y, int wide, int tall)
 //-----------------------------------------------------------------------------
 void Border::Paint(int x, int y, int wide, int tall, int breakSide, int breakStart, int breakEnd)
 {
+	Paint2( x, y, wide, tall, breakSide, breakStart, breakEnd, 1 );
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: draws the border with lines scale pixels thick
+//-----------------------------------------------------------------------------
+void Border::Paint2(int x, int y, int wide, int tall, int breakSide, int breakStart, int breakEnd, int scale)
+{
 	// iterate through and draw all lines
 	// draw left
 	int i;
@@ -99,18 +107,18 @@ void Border::Paint(int x, int y, int wide, int tall, int breakSide, int breakSta
 			if (breakStart > 0)
 			{
 				// draw before the break Start
-				g_pSurface->DrawFilledRect(x + i, y + line->startOffset, x + i + 1, y + breakStart);
+				g_pSurface->DrawFilledRect(x + i, y + line->startOffset * scale, x + i + scale, y + breakStart);
 			}
 
-			if (breakEnd < (tall - line->endOffset))
+			if (breakEnd < (tall - line->endOffset * scale))
 			{
 				// draw after break end
-				g_pSurface->DrawFilledRect(x + i, y + breakEnd + 1, x + i + 1, tall - line->endOffset);
+				g_pSurface->DrawFilledRect(x + i, y + breakEnd + scale, x + i + scale, tall - line->endOffset * scale);
 			}
 		}
 		else
 		{
-			g_pSurface->DrawFilledRect(x + i, y + line->startOffset, x + i + 1, tall - line->endOffset);
+			g_pSurface->DrawFilledRect(x + i, y + line->startOffset * scale, x + i + scale, tall - line->endOffset * scale);
 		}
 	}
 
@@ -126,18 +134,18 @@ void Border::Paint(int x, int y, int wide, int tall, int breakSide, int breakSta
 			if (breakStart > 0)
 			{
 				// draw before the break Start
-				g_pSurface->DrawFilledRect(x + line->startOffset, y + i, x + breakStart, y + i + 1);
+				g_pSurface->DrawFilledRect(x + line->startOffset * scale, y + i, x + breakStart, y + i + scale);
 			}
 
-			if (breakEnd < (wide - line->endOffset))
+			if (breakEnd < (wide - line->endOffset * scale))
 			{
 				// draw after break end
-				g_pSurface->DrawFilledRect(x + breakEnd + 1, y + i, wide - line->endOffset, y + i + 1);
+				g_pSurface->DrawFilledRect(x + breakEnd + scale, y + i, wide - line->endOffset * scale, y + i + scale);
 			}
 		}
 		else
 		{
-			g_pSurface->DrawFilledRect(x + line->startOffset, y + i, wide - line->endOffset, y + i + 1);
+			g_pSurface->DrawFilledRect(x + line->startOffset * scale, y + i, wide - line->endOffset * scale, y + i + scale);
 		}
 	}
 
@@ -146,7 +154,7 @@ void Border::Paint(int x, int y, int wide, int tall, int breakSide, int breakSta
 	{
 		line_t *line = &(_sides[SIDE_RIGHT].lines[i]);
 		g_pSurface->DrawSetColor(line->col[0], line->col[1], line->col[2], line->col[3]);
-		g_pSurface->DrawFilledRect(wide - (i+1), y + line->startOffset, (wide - (i+1)) + 1, tall - line->endOffset);
+		g_pSurface->DrawFilledRect(wide - i - scale, y + line->startOffset * scale, wide - i, tall - line->endOffset * scale);
 	}
 
 	// draw bottom
@@ -154,19 +162,28 @@ void Border::Paint(int x, int y, int wide, int tall, int breakSide, int breakSta
 	{
 		line_t *line = &(_sides[SIDE_BOTTOM].lines[i]);
 		g_pSurface->DrawSetColor(line->col[0], line->col[1], line->col[2], line->col[3]);
-		g_pSurface->DrawFilledRect(x + line->startOffset, tall - (i+1), wide - line->endOffset, (tall - (i+1)) + 1);
+		g_pSurface->DrawFilledRect(x + line->startOffset * scale, tall - i - scale, wide - line->endOffset * scale, tall - i);
 	}
 }
 
-//-----------------------------------------------------------------------------
-// Purpose: 
 //-----------------------------------------------------------------------------
 void Border::Paint(VPANEL panel)
 {
 	// get panel size
 	int wide, tall;
 	((VPanel *)panel)->GetSize(wide, tall);
-	Paint(0, 0, wide, tall, -1, 0, 0);
+
+	// scale line thickness with the panel's proportional scheme
+	int scale = 1;
+	HScheme scheme = ((VPanel *)panel)->GetScheme();
+	if ( scheme )
+	{
+		scale = g_pScheme->GetProportionalScaledValueEx( scheme, 1 );
+		if ( scale <= 0 )
+			scale = 1;
+	}
+
+	Paint2(0, 0, wide, tall, -1, 0, 0, scale);
 }
 
 //-----------------------------------------------------------------------------
