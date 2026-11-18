@@ -1680,7 +1680,12 @@ CON_COMMAND( star_memory, "Dump memory stats" )
 		 memstats.arena / ( 1024.0 * 1024.0), memstats.uordblks / ( 1024.0 * 1024.0 ), memstats.hblks );
 #elif OSX
 	struct mstats memstats = mstats( );
+#ifdef BYTEMATCH_RETAIL
+	Msg( "Available %.2f MB, Used: %.2f MB, #mallocs = %d\n",
+#else
 	Msg( "Available %.2f MB, Used: %.2f MB, #mallocs = %lu\n",
+#endif
+#line 1589
 		 memstats.bytes_free / ( 1024.0 * 1024.0), memstats.bytes_used / ( 1024.0 * 1024.0 ), memstats.chunks_used );
 #elif defined( _WIN32 ) // Win32
 	MEMORYSTATUS stat;

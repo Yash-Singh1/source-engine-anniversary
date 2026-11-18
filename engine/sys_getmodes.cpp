@@ -907,7 +907,12 @@ void CVideoMode_Common::SetupStartupGraphic()
     m_pLoadingTexture = LoadVTF( buf, loading );
     if ( !m_pLoadingTexture )
     {
+#ifdef BYTEMATCH_RETAIL
+        Error( "Can't find background image %s\n", loading );
+#else
         Error( "Can't find background image '%s'\n", loading );
+#endif
+#line 837
         return;
     }
 }

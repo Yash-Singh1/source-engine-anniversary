@@ -705,7 +705,12 @@ bool CHLTVServer::DispatchToRelay( CHLTVClient *pClient )
 	pClient->SendNetMsg( serverInfo, true );
 
 	// tell the client to connect to this new address
+#ifdef BYTEMATCH_RETAIL
+	NET_StringCmd cmdMsg( va("connect %s\n", pszRelayAddr ) ) ;
+#else
 	NET_StringCmd cmdMsg( va("redirect %s\n", pszRelayAddr ) ) ;
+#endif
+#line 709
 	pClient->SendNetMsg( cmdMsg, true );
 
  	// increase this proxies client number in advance so this proxy isn't used again next time

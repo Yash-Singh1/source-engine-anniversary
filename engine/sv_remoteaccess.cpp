@@ -36,7 +36,12 @@ void Host_Stats_f (void)
 {
 	char stats[512];
 	g_ServerRemoteAccess.GetStatsString(stats, sizeof(stats));
+#ifdef BYTEMATCH_RETAIL
+	ConMsg("CPU    In (KB/s)  Out (KB/s)  Uptime  Map changes  FPS      Players  Connects\n%s\n", stats);
+#else
 	ConMsg("CPU    In_(KB/s)  Out_(KB/s)  Uptime  Map_changes  FPS      Players  Connects\n%s\n", stats);
+#endif
+#line 40
 }
 static ConCommand stats("stats", Host_Stats_f, "Prints server performance variables" );
 
