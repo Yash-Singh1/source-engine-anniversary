@@ -414,3 +414,22 @@ r_studiolight, r_studiostats, studiorender, studiorendercontext, then tier3,
 mathlib (color_conversion, mathlib_base, sse, sseconst, vmatrix), tier2
 (meshutils, tier2), tier1 (convar, interface, KeyValues, strtools, tier1,
 utlbuffer). Retail does not link bitmap; our wscript does.
+
+## Lane smallmods (batch 3)
+
+Whole-dylib numbers from `--retail-osx32`: 979/988 at bytematch 64c10856, 983/988
+now, 985/988 with SDK 2013 casts in `CVertexBuilder::FastVertexSSE`.
+
+- `DrawSingleBoneFlexedDecals`, `DrawMultiBoneDecals`, `DrawMultiBoneFlexedDecals`:
+  match. Retail `CCachedRenderData::SetBodyModelMesh` has no
+  `m_CacheDict[...].EnsureCount( m_Mesh+1 )` (later Valve change, gated).
+- `R_StudioSetupSkinAndLighting`: matches. The shadow-build branch calls
+  `pOriginalMaterialVar->SetMaterialValue` without null checks in retail (gated).
+- `CProcessMeshWrapper<0,0,1,0,0>` and `<0,1,1,0,0>::R_StudioSoftwareProcessMesh`:
+  match once `public/materialsystem/imesh.h` drops the fork's
+  `(float *)((intp)pRead + 16)` casts for SDK 2013's `(float *)(pRead + 16)`. The
+  pointer/integer round trip makes the stack vertex escape, so clang keeps dead
+  `m_vecUserData` stores and stops splitting it.
+- Unresolved, register allocation or scheduling only, no source difference found:
+  `CStudioRenderContext::DrawModel`, `CStudioRenderContext::InvokeBindProxies`,
+  `CStudioRender::R_GatherStats` (two adjacent stores in the other order).

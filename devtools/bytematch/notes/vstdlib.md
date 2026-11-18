@@ -257,3 +257,23 @@ WaitForIdle), restored `osversion.cpp`, SDK `jobthread.h` (IThreadPool slot rest
 | vcover | `CVCoverage::~CVCoverage()` | differs | size retail 108 vs ours 85 |
 
 Counts: differs 16, edited 59, header 20, identical 134, new 8
+
+## Lane smallmods (batch 3)
+
+Whole-dylib numbers from `--retail-osx32`: 349/355 at bytematch 64c10856; 357/361
+now (scope grows by the tier1 objects `-all_load` pulls, as in retail); 361/361
+with `toolchain/patches/sdk109-setjmp.patch` applied to the stub SDK.
+
+- Retail links coroutine from `libcoroutine_osx.a`, compiled with
+  `-fno-stack-protector` and without `DLLNAME`. Retail mode builds that archive
+  (`retail_manifest.py` maps it to the `coroutine_osx` target) and links vstdlib with
+  `-all_load` (vstdlib.vpc `$GCC_ExtraLinkerFlags "-all_load" [$OSXALL]`), which is
+  what pulls the exported `Coroutine_*` API in. `CoroutineTestFunc` and
+  `Coroutine_Test` match from the stack-protector change alone.
+- `Coroutine_Launch`, `Coroutine_Finish`, `Coroutine_YieldToMain`,
+  `Internal_Coroutine_Continue`: the real 10.9 SDK declares `longjmp` `__dead2`;
+  the stub SDK's 10.6 i386 `setjmp.h` doesn't, so clang can't tell that
+  `Coroutine_Finish` never returns. Verified with a local redeclaration: all four
+  match. Needs `make-sdk109.py` rerun with the new patch.
+- `public/vstdlib/random.h`: `IUniformRandomStream` is not `VSTDLIB_CLASS` (SDK 2013),
+  so vstdlib no longer exports its typeinfo. The export set now equals retail's.
