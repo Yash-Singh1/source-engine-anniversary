@@ -5816,7 +5816,7 @@ bool CModelLoader::Map_IsValid( char const *pMapFile, bool bQuiet /* = false */ 
 	bool bHaveMapsInPath = strstr(szMapFile, "maps/");
 
 	if( !bHaveMapsInPath )
-		snprintf(szMapFile, sizeof(szMapFile), "maps/%s", pMapFile);
+		V_snprintf(szMapFile, sizeof(szMapFile), "maps/%s", pMapFile);
 
 	if( !bHaveBspFormatInPath )
 		strncat(szMapFile, ".bsp", sizeof(szMapFile));

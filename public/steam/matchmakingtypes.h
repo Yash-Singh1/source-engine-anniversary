@@ -130,6 +130,9 @@ inline void	servernetadr_t::SetIP( uint32 unIP )
 	m_unIP = unIP;
 }
 
+#if defined( _MSC_VER ) && _MSC_VER < 1900
+#define snprintf _snprintf // MSVC 2013 has no C99 snprintf
+#endif
 inline const char *servernetadr_t::ToString( uint32 unIP, uint16 usPort ) const
 {
 	static char s[4][64];
@@ -145,6 +148,9 @@ inline const char *servernetadr_t::ToString( uint32 unIP, uint16 usPort ) const
 	nBuf %= ( (sizeof(s)/sizeof(s[0])) );
 	return pchRet;
 }
+#if defined( _MSC_VER ) && _MSC_VER < 1900
+#undef snprintf
+#endif
 
 inline const char* servernetadr_t::GetConnectionAddressString() const
 {
