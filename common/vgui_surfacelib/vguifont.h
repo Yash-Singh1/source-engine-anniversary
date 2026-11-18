@@ -23,9 +23,14 @@ struct newChar_t
 #ifdef WIN32
 #include "Win32Font.h"
 typedef CWin32Font font_t;
+#elif defined(OSX) && defined(VPC)
+// Valve's VPC builds use the CoreText/ATSU font; the waf build uses FreeType on macOS too.
+#include "osxfont.h"
+typedef COSXFont font_t;
 #elif defined(POSIX)
 #include "linuxfont.h"
 typedef CLinuxFont font_t;
+#define VGUI_FONT_FREETYPE
 #else
 #error
 #endif

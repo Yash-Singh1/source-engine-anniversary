@@ -37,6 +37,7 @@ RETAIL_MODULES = [
 	'ivp/ivp_compact_builder', 'ivp/ivp_physics', 'vphysics', 'materialsystem/stdshaders',
 	'utils/bzip2', 'replay/common', 'replay', 'sourcevr', 'video/video_quicktime',
 	'utils/bsppack', 'utils/bugreporter_filequeue', 'utils/bugreporter_public',
+	'vgui2/vgui_surfacelib', 'vguimatsurface',
 ]
 
 # Defines our top-level wscript adds that Valve's build doesn't have.
@@ -47,8 +48,10 @@ BUILD_PATH_DEFINES = ['WAF_CFLAGS', 'WAF_LDFLAGS']
 
 # Extra compiler flags per task generator name. ivp includes <malloc/malloc.h> when
 # OSX is defined, which doesn't declare alloca on the 10.6 headers.
+# osxfont.cpp brace-initialises a CGRect from ints, an error under clang-600's C++11.
 EXTRA_CXXFLAGS = dict((t, ['-include', 'alloca.h']) for t in
 	('ivp_physics', 'ivp_compactbuilder', 'havana_constraints', 'hk_base', 'hk_math'))
+EXTRA_CXXFLAGS['vgui_surfacelib'] = ['-Wno-c++11-narrowing']
 
 # Modules whose VPC the manifest couldn't evaluate: take a sibling's base defines.
 DEFINES_FROM = {'bin/video_quicktime': 'bin/video_services'}

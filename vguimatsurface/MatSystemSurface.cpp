@@ -146,7 +146,7 @@ CMatSystemSurface g_MatSystemSurface;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR( CMatSystemSurface, ISurface, 
 						VGUI_SURFACE_INTERFACE_VERSION, g_MatSystemSurface );
 
-#if defined(LINUX) || defined(OSX) || defined(PLATFORM_BSD)
+#ifdef VGUI_FONT_FREETYPE
 CUtlDict< CMatSystemSurface::font_entry, unsigned short > CMatSystemSurface::m_FontData;
 #endif
 
@@ -407,7 +407,7 @@ InitReturnVal_t CMatSystemSurface::Init( void )
 		FontManager().SetLanguage( "english" );
 	}
 
-#if defined(LINUX) || defined(OSX) || defined(PLATFORM_BSD)
+#ifdef VGUI_FONT_FREETYPE
 	FontManager().SetFontDataHelper( &CMatSystemSurface::FontDataHelper );
 #endif
 
@@ -1907,7 +1907,16 @@ bool CMatSystemSurface::AddCustomFontFile( const char *fontName, const char *fon
 	}
 	Assert( success );
 	return success;
-#elif defined(LINUX) || defined(OSX) || defined(PLATFORM_BSD)
+#elif defined(OSX) && !defined(VGUI_FONT_FREETYPE)
+
+	FSRef ref;
+	OSStatus err = FSPathMakeRef( (const UInt8*)fullPath, &ref, NULL );
+	if ( err == noErr )
+		err = ATSFontActivateFromFileReference( &ref, kATSFontContextLocal, kATSFontFormatUnspecified, NULL, kATSOptionFlagsDefault, NULL );
+
+	return err == noErr;
+
+#elif defined(VGUI_FONT_FREETYPE)
 
 	int size;
 	if ( CMatSystemSurface::FontDataHelper( fontName, size, fontFileName ) )
@@ -1921,7 +1930,7 @@ bool CMatSystemSurface::AddCustomFontFile( const char *fontName, const char *fon
 #endif
 }
 
-#if defined(LINUX) || defined(OSX) || defined(PLATFORM_BSD)
+#ifdef VGUI_FONT_FREETYPE
 
 static void RemoveSpaces( CUtlString &str )
 {
