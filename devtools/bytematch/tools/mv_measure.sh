@@ -18,10 +18,13 @@ rm -rf "$OUT"; mkdir -p "$OUT/tier0" "$OUT/vstdlib" "$OUT/ov"
 cp -R "$SRC/public/tier1" "$OUT/ov/tier1"
 if [ -n "${HDRFIX:-}" ]; then
   mkdir -p "$OUT/hp/public"
-  cp -R "$SRC/public/tier1" "$SRC/public/mathlib" "$SRC/public/inputsystem" "$OUT/hp/public/"
-  (cd "$OUT/hp" && patch -s -p1 < "$HDRFIX") || echo "HDRFIX: patch failed"
+  cp -R "$SRC/public/tier0" "$SRC/public/vstdlib" "$SRC/public/tier1" "$SRC/public/mathlib" \
+    "$SRC/public/inputsystem" "$OUT/hp/public/"
+  for p in $HDRFIX; do
+    (cd "$OUT/hp" && patch -s -p1 < "$p") || echo "HDRFIX: $p failed"
+  done
   cp -R "$OUT/hp/public/tier1/." "$OUT/ov/tier1/"
-  cp -R "$OUT/hp/public/mathlib" "$OUT/ov/mathlib"
+  cp -R "$OUT/hp/public/tier0" "$OUT/hp/public/vstdlib" "$OUT/hp/public/mathlib" "$OUT/ov/"
   cp "$MS/override/mathlib/mathlib.h" "$OUT/ov/mathlib/"
 else
   cp -R "$MS/override/." "$OUT/ov/"
@@ -37,7 +40,7 @@ VS="vstdlib/cvar vstdlib/jobthread vstdlib/KeyValuesSystem vstdlib/osversion vst
 for f in $T0 $VS; do
   mod=${f%%/*}; name=${f##*/}
   case $f in
-    tier0/*) extra=(-DTIER0_DLL_EXPORT -DDLLNAME=tier0) ;;
+    tier0/*) extra=(-DTIER0_DLL_EXPORT -DDLLNAME=tier0 -DUSE_SDL -idirafter "${SDL2_INC:-$SRC/thirdparty/SDL}") ;;
     vstdlib/coroutine) extra=(-DVSTDLIB_DLL_EXPORT -fno-stack-protector -I"$SRC/public/vstdlib") ;;
     vstdlib/*) extra=(-DVSTDLIB_DLL_EXPORT -DDLLNAME=vstdlib -I"$SRC/public/vstdlib") ;;
   esac
