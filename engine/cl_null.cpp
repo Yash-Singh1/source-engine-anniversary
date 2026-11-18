@@ -173,7 +173,6 @@ bool CClientState::ProcessFixAngle( SVC_FixAngle *msg ) { return true; }
 bool CClientState::ProcessVoiceData( SVC_VoiceData *msg ) { return true; }
 bool CClientState::ProcessVoiceInit( SVC_VoiceInit *msg ) { return true; }
 bool CClientState::ProcessSetPause( SVC_SetPause *msg ) { return true; }
-bool CClientState::ProcessSetPauseTimed( SVC_SetPauseTimed *msg ) { return true; }
 bool CClientState::ProcessClassInfo( SVC_ClassInfo *msg ) { return true; }
 bool CClientState::ProcessStringCmd( NET_StringCmd *msg ) { return true; }
 bool CClientState::ProcessServerInfo( SVC_ServerInfo *msg ) { return true; }

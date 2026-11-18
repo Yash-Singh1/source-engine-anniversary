@@ -42,6 +42,7 @@ public:
 	// This affects the voice_overdrive behavior (all sounds get quieter when
 	// someone is speaking).
 	virtual bool				IsVoiceSource() { return false; }
+	virtual bool				IsCommentarySource() { return m_bIsCommentary; }
 	virtual int					SampleSize( void ) { return 1; }
 
 	// Total number of samples in this source.  NOTE: Some sources are infinite (mic input), they should return
@@ -116,7 +117,8 @@ protected:
 	int				m_refCount;
 	bool			m_bIsPlayOnce : 1;
 	bool			m_bIsSentenceWord : 1;
-	bool			m_bCheckedForPendingSentence;
+	bool			m_bCheckedForPendingSentence : 1;
+	bool			m_bIsCommentary : 1;
 };
 
 //-----------------------------------------------------------------------------

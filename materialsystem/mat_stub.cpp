@@ -425,7 +425,6 @@ public:
 	virtual void SetHDREnabled( bool bEnable ) {}
 	virtual bool SupportsBorderColor( void ) const { return true; }
 	virtual bool SupportsFetch4( void ) const { return false; }
-	virtual bool CanStretchRectFromTextures() const { return false; }
 };
 CDummyHardwareConfig g_DummyHardwareConfig;
 

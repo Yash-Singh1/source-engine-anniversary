@@ -3152,8 +3152,6 @@ void CMaterialSystem::ReloadTextures( void )
 	// 360 should not have gotten here
 	Assert( !IsX360() );
 
-	KeyValuesSystem()->InvalidateCache();
-
 	TextureManager()->RestoreRenderTargets();
 	TextureManager()->RestoreNonRenderTargetTextures();
 }
@@ -3170,8 +3168,6 @@ void CMaterialSystem::ReloadMaterials( const char *pSubString )
 
 	// Add by jay in changelist 621420.
 	ForceSingleThreaded();
-
-	KeyValuesSystem()->InvalidateCache();
 
 	bool bVertexFormatChanged = false;
 	if( pSubString == NULL )

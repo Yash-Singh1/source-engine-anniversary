@@ -20,8 +20,8 @@
    "IVoiceRecord"
   ]
  },
- "retail_len": 8,
- "retail_len_basis": "shortest deriving subtable",
+ "retail_len": 7,
+ "retail_len_basis": "override: Init() is VoiceRecord_AudioQueue's own virtual (ours is Init(int); engine voice code, not the interface)",
  "retail_len_bounds": {
   "shortest deriving subtable": 8
  },
@@ -67,22 +67,10 @@
    "name": "GetRecordedData",
    "sig": "GetRecordedData(short*, int)",
    "symbol": "VoiceRecord_AudioQueue::GetRecordedData(short*, int)"
-  },
-  {
-   "index": 7,
-   "name": "Init",
-   "sig": "Init()",
-   "symbol": "VoiceRecord_AudioQueue::Init()"
   }
  ],
- "derived_disagreements": [
-  {
-   "module": "bin/engine",
-   "class": "VoiceRecord_OpenAL",
-   "index": 7,
-   "ref": "Init()",
-   "got": "Init(int)"
-  }
+ "implementer_tail": [
+  "Init()"
  ],
  "derived": [
   "bin/engine:VoiceRecord_AudioQueue",

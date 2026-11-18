@@ -87,7 +87,7 @@ void AddPhonemesFromFile( const char *pszFileName )
 
 CAudioSourceMP3::CAudioSourceMP3( CSfxTable *pSfx )
 {
-	m_sampleRate = 0;
+	m_sampleRate = 44100;
 	m_pSfx = pSfx;
 	m_refCount = 0;
 
@@ -101,9 +101,11 @@ CAudioSourceMP3::CAudioSourceMP3( CSfxTable *pSfx )
 	}
 	else
 	{
+#ifndef BYTEMATCH_RETAIL
 		// No sound cache, the file isn't here, print this so that the relatively deep failure points that are about to
 		// spew make a little more sense
 		Warning( "MP3 is completely missing, sound system will be upset to learn of this [ %s ]\n", pSfx->GetFileName() );
+#endif
 		m_dataSize = 0;
 	}
 
@@ -112,6 +114,13 @@ CAudioSourceMP3::CAudioSourceMP3( CSfxTable *pSfx )
 	m_bIsPlayOnce = false;
 	m_bIsSentenceWord = false;
 	m_bCheckedForPendingSentence = false;
+	m_bIsCommentary = false;
+
+	const char *pszName = pSfx->GetFileName();
+	if ( pszName )
+	{
+		m_bIsCommentary = StringAfterPrefix( PSkipSoundChars( pszName ), "commentary" ) != NULL;
+	}
 }
 
 CAudioSourceMP3::CAudioSourceMP3( CSfxTable *pSfx, CAudioSourceCachedInfo *info )
@@ -126,6 +135,13 @@ CAudioSourceMP3::CAudioSourceMP3( CSfxTable *pSfx, CAudioSourceCachedInfo *info 
 	m_nCachedDataSize = 0;
 	m_bIsPlayOnce = false;
 	m_bCheckedForPendingSentence = false;
+	m_bIsCommentary = false;
+
+	const char *pszName = pSfx->GetFileName();
+	if ( pszName )
+	{
+		m_bIsCommentary = StringAfterPrefix( PSkipSoundChars( pszName ), "commentary" ) != NULL;
+	}
 
 	CheckAudioSourceCache();
 }

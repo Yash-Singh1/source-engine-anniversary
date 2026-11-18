@@ -835,10 +835,26 @@ void Menu::PerformLayout()
 		}
 
 		// take into account inset
-		child->SetPos (0, menuTall);
-		child->SetTall( m_iMenuItemHeight ); // Width is set in a second pass
-		menuTall += m_iMenuItemHeight;
-		totalTall += m_iMenuItemHeight;
+		child->SetPos( PROPORTIONAL_VALUE( child->GetXIndent() ), menuTall );
+
+		int nExtraTall = 0;
+		if ( child->GetExtraTall() )
+		{
+			nExtraTall = PROPORTIONAL_VALUE( child->GetExtraTall() );
+
+			// keep extra-tall items within reach on short screens
+			int sw, sh;
+			surface()->GetScreenSize( sw, sh );
+			if ( sh < 800 )
+			{
+				nExtraTall = clamp( nExtraTall, 0, Ceil2Int( m_iMenuItemHeight * 1.5f ) );
+			}
+		}
+
+		int nItemTall = m_iMenuItemHeight + nExtraTall;
+		child->SetTall( nItemTall ); // Width is set in a second pass
+		menuTall += nItemTall;
+		totalTall += nItemTall;
 
 		// this will make all the menuitems line up in a column with space for the checks to the left.
 		if ( ( !child->IsCheckable() ) && ( m_iCheckImageWidth > 0 ) )

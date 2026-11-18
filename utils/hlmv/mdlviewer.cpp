@@ -415,8 +415,6 @@ MDLViewer::~MDLViewer ()
 //-----------------------------------------------------------------------------
 void MDLViewer::Refresh( void )
 {
-	KeyValuesSystem()->InvalidateCache();
-
 	g_pStudioModel->ReleaseStudioModel();
 	g_pMDLCache->Flush();
 	if ( recentFiles[0][0] != '\0' )

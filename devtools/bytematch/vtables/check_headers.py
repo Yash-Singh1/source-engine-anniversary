@@ -14,7 +14,9 @@ full result.
 
 Probe settings per interface (extra includes, header to use, skip reason) live
 in overrides.json under the interface name: {"includes": [...], "header": ...,
-"skip": "why"}.
+"skip": "why"}. An "includes" entry starting with '#' is a preprocessor line
+(e.g. "#define NO_STRING_T"): leading ones precede the prelude, later ones keep
+their place among the includes.
 
 Usage: check_headers.py [--only NAME ...] [--json OUT] [--verbose]
 """

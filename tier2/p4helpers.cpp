@@ -69,14 +69,6 @@ bool CP4File::Add( void )
 	return p4->OpenFileForAdd( m_sFilename.String() );
 }
 
-bool CP4File::Revert( void )
-{
-	if ( !p4 )
-		return true;
-
-	return p4->RevertFile( m_sFilename.String() );
-}
-
 // Is the file in perforce?
 bool CP4File::IsFileInPerforce()
 {
@@ -86,22 +78,21 @@ bool CP4File::IsFileInPerforce()
 	return p4->IsFileInPerforce( m_sFilename.String() );
 }
 
-bool CP4File::SetFileType(const CUtlString& desiredFileType)
-{
-	/*if ( !p4 )
-		return false;
-
-	return p4->SetFileType( m_sFilename.String(), desiredFileType.String() );*/
-	Error("CP4File::SetFileType is unimplemented");
-	return false;
-}
-
 
 //////////////////////////////////////////////////////////////////////////
 //
 // CP4Factory implementation
 //
 //////////////////////////////////////////////////////////////////////////
+
+
+CP4Factory::CP4Factory()
+{
+}
+
+CP4Factory::~CP4Factory()
+{
+}
 
 bool CP4Factory::SetDummyMode( bool bDummyMode )
 {
