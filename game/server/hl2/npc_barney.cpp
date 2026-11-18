@@ -151,7 +151,7 @@ void CNPC_Barney::Weapon_Equip( CBaseCombatWeapon *pWeapon )
 {
 	BaseClass::Weapon_Equip( pWeapon );
 
-	if( hl2_episodic.GetBool() && FClassnameIs( pWeapon, "weapon_ar2" ) )
+	if( IsHL2Episodic() && FClassnameIs( pWeapon, "weapon_ar2" ) )
 	{
 		// Allow Barney to defend himself at point-blank range in c17_05.
 		pWeapon->m_fMinRange1 = 0.0f;

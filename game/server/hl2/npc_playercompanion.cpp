@@ -148,25 +148,33 @@ string_t CNPC_PlayerCompanion::gm_iszRollerMineClassname;
 
 bool CNPC_PlayerCompanion::CreateBehaviors()
 {
+	if ( HL2_EPISODIC_ACTIVE() )
+	{
 #ifdef HL2_EPISODIC
-	AddBehavior( &m_FearBehavior );
-	AddBehavior( &m_PassengerBehavior );
-#endif // HL2_EPISODIC	
+		AddBehavior( &m_FearBehavior );
+		AddBehavior( &m_PassengerBehavior );
+#endif
+	}
 
 	AddBehavior( &m_ActBusyBehavior );
 
+	if ( HL2_EPISODIC_ACTIVE() )
+	{
 #ifdef HL2_EPISODIC
-	AddBehavior( &m_OperatorBehavior );
-	AddBehavior( &m_StandoffBehavior );
-	AddBehavior( &m_AssaultBehavior );
-	AddBehavior( &m_FollowBehavior );
-	AddBehavior( &m_LeadBehavior );
-#else
-	AddBehavior( &m_AssaultBehavior );
-	AddBehavior( &m_StandoffBehavior );
-	AddBehavior( &m_FollowBehavior );
-	AddBehavior( &m_LeadBehavior );
-#endif//HL2_EPISODIC
+		AddBehavior( &m_OperatorBehavior );
+		AddBehavior( &m_StandoffBehavior );
+		AddBehavior( &m_AssaultBehavior );
+		AddBehavior( &m_FollowBehavior );
+		AddBehavior( &m_LeadBehavior );
+#endif
+	}
+	else
+	{
+		AddBehavior( &m_AssaultBehavior );
+		AddBehavior( &m_StandoffBehavior );
+		AddBehavior( &m_FollowBehavior );
+		AddBehavior( &m_LeadBehavior );
+	}
 	
 	return BaseClass::CreateBehaviors();
 }
@@ -234,16 +242,19 @@ void CNPC_PlayerCompanion::Spawn()
 
 	m_AnnounceAttackTimer.Set( 10, 30 );
 
-#ifdef HL2_EPISODIC
-	// We strip this flag because it's been made obsolete by the StartScripting behavior
-	if ( HasSpawnFlags( SF_NPC_ALTCOLLISION ) )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
-		Warning( "NPC %s using alternate collision! -- DISABLED\n", STRING( GetEntityName() ) );
-		RemoveSpawnFlags( SF_NPC_ALTCOLLISION );
-	}
+#ifdef HL2_EPISODIC
+		// We strip this flag because it's been made obsolete by the StartScripting behavior
+		if ( HasSpawnFlags( SF_NPC_ALTCOLLISION ) )
+		{
+			Warning( "NPC %s using alternate collision! -- DISABLED\n", STRING( GetEntityName() ) );
+			RemoveSpawnFlags( SF_NPC_ALTCOLLISION );
+		}
 
-	m_hFlare = NULL;
-#endif // HL2_EPISODIC
+		m_hFlare = NULL;
+#endif
+	}
 
 	BaseClass::Spawn();
 }
@@ -260,14 +271,17 @@ int CNPC_PlayerCompanion::Restore( IRestore &restore )
 		m_StandoffBehavior.SetActive( false );
 	}
 
-#ifdef HL2_EPISODIC
-	// We strip this flag because it's been made obsolete by the StartScripting behavior
-	if ( HasSpawnFlags( SF_NPC_ALTCOLLISION ) )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
-		Warning( "NPC %s using alternate collision! -- DISABLED\n", STRING( GetEntityName() ) );
-		RemoveSpawnFlags( SF_NPC_ALTCOLLISION );
+#ifdef HL2_EPISODIC
+		// We strip this flag because it's been made obsolete by the StartScripting behavior
+		if ( HasSpawnFlags( SF_NPC_ALTCOLLISION ) )
+		{
+			Warning( "NPC %s using alternate collision! -- DISABLED\n", STRING( GetEntityName() ) );
+			RemoveSpawnFlags( SF_NPC_ALTCOLLISION );
+		}
+#endif
 	}
-#endif // HL2_EPISODIC
 
 	return baseResult;
 }
@@ -304,7 +318,7 @@ Disposition_t CNPC_PlayerCompanion::IRelationType( CBaseEntity *pTarget )
 			// is active... that is, not classifying itself as CLASS_NONE
 			if( pTarget->Classify() != CLASS_NONE )
 			{
-				if( !hl2_episodic.GetBool() && IsSafeFromFloorTurret(GetAbsOrigin(), pTarget) )
+				if( !IsHL2Episodic() && IsSafeFromFloorTurret(GetAbsOrigin(), pTarget) )
 				{
 					return D_NU;
 				}
@@ -366,7 +380,7 @@ void CNPC_PlayerCompanion::GatherConditions()
 			{
 				if ( HasCondition( COND_SEE_PLAYER ) && (GetAbsOrigin() - pPlayer->GetAbsOrigin()).LengthSqr() < Square(25 * 12) )
 				{
-					if ( hl2_episodic.GetBool() )
+					if ( IsHL2Episodic() )
 					{
 						// Don't stomp our squad if we're in one
 						if ( GetSquad() == NULL )
@@ -496,7 +510,7 @@ void CNPC_PlayerCompanion::GatherConditions()
 		DoCustomSpeechAI();
 	}
 
-	if ( AI_IsSinglePlayer() && hl2_episodic.GetBool() && !GetEnemy() && HasCondition( COND_HEAR_PLAYER ) )
+	if ( AI_IsSinglePlayer() && IsHL2Episodic() && !GetEnemy() && HasCondition( COND_HEAR_PLAYER ) )
 	{
 		Vector los = ( UTIL_GetLocalPlayer()->EyePosition() - EyePosition() );
 		los.z = 0;
@@ -686,14 +700,17 @@ int CNPC_PlayerCompanion::SelectSchedule()
 {
 	m_bMovingAwayFromPlayer = false;
 
-#ifdef HL2_EPISODIC
-	// Always defer to passenger if it's running
-	if ( ShouldDeferToPassengerBehavior() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
-		DeferSchedulingToBehavior( &m_PassengerBehavior );
-		return BaseClass::SelectSchedule();
+#ifdef HL2_EPISODIC
+		// Always defer to passenger if it's running
+		if ( ShouldDeferToPassengerBehavior() )
+		{
+			DeferSchedulingToBehavior( &m_PassengerBehavior );
+			return BaseClass::SelectSchedule();
+		}
+#endif
 	}
-#endif // HL2_EPISODIC
 
 	if ( m_ActBusyBehavior.IsRunning() && m_ActBusyBehavior.NeedsToPlayExitAnim() )
 	{
@@ -857,7 +874,7 @@ int CNPC_PlayerCompanion::SelectSchedulePlayerPush()
 //-----------------------------------------------------------------------------
 bool CNPC_PlayerCompanion::IgnorePlayerPushing( void )
 {
-	if ( hl2_episodic.GetBool() )
+	if ( IsHL2Episodic() )
 	{
 		// Ignore player pushes if we're leading him
 		if ( m_LeadBehavior.IsRunning() && m_LeadBehavior.HasGoal() )
@@ -911,12 +928,12 @@ bool CNPC_PlayerCompanion::ShouldDeferToFollowBehavior()
 	// Even though assault and act busy are placed ahead of the follow behavior in precedence, the below
 	// code is necessary because we call ShouldDeferToFollowBehavior BEFORE we call the generic
 	// BehaviorSelectSchedule, which tries the behaviors in priority order.
-	if ( m_AssaultBehavior.CanSelectSchedule() && hl2_episodic.GetBool() )
+	if ( m_AssaultBehavior.CanSelectSchedule() && IsHL2Episodic() )
 	{
 		return false;
 	}
 
-	if ( hl2_episodic.GetBool() )
+	if ( IsHL2Episodic() )
 	{
 		if ( m_ActBusyBehavior.CanSelectSchedule() && m_ActBusyBehavior.IsCombatActBusy() )
 		{
@@ -1567,12 +1584,16 @@ bool CNPC_PlayerCompanion::IsReadinessCapable()
 	if ( GlobalEntity_GetState("gordon_precriminal") == GLOBAL_ON )
 		return false;
 
-#ifndef HL2_EPISODIC
-	// Allow episodic companions to use readiness even if unarmed. This allows for the panicked 
-	// citizens in ep1_c17_05 (sjb)
-	if( !GetActiveWeapon() )
-		return false;
-#endif
+	if ( HL2_EPISODIC_ACTIVE() )
+	{
+	}
+	else
+	{
+		// Allow episodic companions to use readiness even if unarmed. This allows for the panicked 
+		// citizens in ep1_c17_05 (sjb)
+		if( !GetActiveWeapon() )
+			return false;
+	}
 
 	if( GetActiveWeapon() && LookupActivity("ACT_IDLE_AIM_RIFLE_STIMULATED") == ACT_INVALID )
 		return false;
@@ -1892,7 +1913,7 @@ bool CNPC_PlayerCompanion::PickTacticalLookTarget( AILookTargetArgs_t *pArgs )
 	flMaxLookTime = flMinLookTime + random->RandomFloat( 0.0f, 0.5f );
 	pArgs->flDuration = random->RandomFloat( flMinLookTime, flMaxLookTime );
 
-	if( HasCondition(COND_SEE_PLAYER) && hl2_episodic.GetBool() )
+	if( HasCondition(COND_SEE_PLAYER) && IsHL2Episodic() )
 	{
 		// 1/3rd chance to authoritatively look at player
 		if( random->RandomInt( 0, 2 ) == 0 )
@@ -2265,7 +2286,7 @@ void CNPC_PlayerCompanion::OnUpdateShotRegulator()
 	{
 		if( GetAbsOrigin().DistTo( GetEnemy()->GetAbsOrigin() ) <= PC_LARGER_BURST_RANGE )
 		{
-			if( hl2_episodic.GetBool() )
+			if( IsHL2Episodic() )
 			{
 				// Longer burst
 				int longBurst = random->RandomInt( 10, 15 );

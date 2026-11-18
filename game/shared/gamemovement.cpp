@@ -2399,10 +2399,14 @@ bool CGameMovement::CheckJumpButton( void )
 	}
 
 	// Don't allow jumping when the player is in a stasis field.
-#ifndef HL2_EPISODIC
-	if ( player->m_Local.m_bSlowMovement )
-		return false;
-#endif
+	if ( HL2_EPISODIC_ACTIVE() )
+	{
+	}
+	else
+	{
+		if ( player->m_Local.m_bSlowMovement )
+			return false;
+	}
 
 	if ( mv->m_nOldButtons & IN_JUMP )
 		return false;		// don't pogo stick

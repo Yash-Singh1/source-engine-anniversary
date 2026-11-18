@@ -16,6 +16,7 @@ class C_BaseCombatWeapon;
 class C_BasePlayer;
 
 extern ConVar hud_fastswitch;
+int GetFastSwitchType();
 
 // weapon switch types for Convar hud_fastswitch
 #define HUDTYPE_BUCKETS					0	// PC buckets

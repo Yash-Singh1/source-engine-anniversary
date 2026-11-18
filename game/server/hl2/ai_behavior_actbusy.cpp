@@ -2480,7 +2480,7 @@ void CAI_ActBusyGoal::InputForceNPCToActBusy( inputdata_t &inputdata )
 		return;
 
 	// Wrapped this bugfix so that it doesn't break HL2.
-	bool bEpisodicBugFix = hl2_episodic.GetBool();
+	bool bEpisodicBugFix = IsHL2Episodic();
 
 	// Do we have a specified node too?
 	pszParam = strtok(NULL," ");

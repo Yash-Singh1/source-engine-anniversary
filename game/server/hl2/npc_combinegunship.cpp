@@ -619,7 +619,7 @@ void CNPC_CombineGunship::Spawn( void )
 
 	CapabilitiesAdd( bits_CAP_SQUAD);
 
-	if ( hl2_episodic.GetBool() == true )
+	if ( IsHL2Episodic() == true )
 	{
 		CreateBellyBlastEnergyCore();
 	}
@@ -680,7 +680,7 @@ void CNPC_CombineGunship::Precache( void )
 	PrecacheScriptSound( "NPC_CombineGunship.ExhaustSound" );
 	PrecacheScriptSound( "NPC_CombineGunship.RotorBlastSound" );
 
-	if ( hl2_episodic.GetBool() == true )
+	if ( IsHL2Episodic() == true )
 	{
 		UTIL_PrecacheOther( "env_citadel_energy_core" );
 		g_iGunshipEffectIndex = PrecacheModel( "sprites/physbeam.vmt" );
@@ -923,7 +923,7 @@ void CNPC_CombineGunship::StartGroundAttack( void )
 	
 	CSoundEnt::InsertSound ( SOUND_DANGER, endpos, 1024, 0.5f );
 
-	if ( hl2_episodic.GetBool() == true )
+	if ( IsHL2Episodic() == true )
 	{
 		if ( m_hEnergyCore )
 		{
@@ -1103,7 +1103,7 @@ void CNPC_CombineGunship::DoGroundAttackExplosion( void )
 	UTIL_TraceLine( vecSrc, impactPoint, MASK_SHOT, this, COLLISION_GROUP_NONE, &tr );
 	UTIL_DecalTrace( &tr, "Scorch" );
 
-	if ( hl2_episodic.GetBool() == true )
+	if ( IsHL2Episodic() == true )
 	{
 		g_pEffects->EnergySplash( tr.endpos, tr.plane.normal );
 
@@ -1176,7 +1176,7 @@ void CNPC_CombineGunship::StopGroundAttack( bool bDoAttack )
 		WRITE_VEC3COORD( hitPos );
 	MessageEnd();
 
-	if ( hl2_episodic.GetBool() == true )
+	if ( IsHL2Episodic() == true )
 	{
 		if ( m_hEnergyCore )
 		{
@@ -1971,7 +1971,7 @@ void CNPC_CombineGunship::BeginDestruct( void )
 	m_flEndDestructTime = gpGlobals->curtime + 3.0;
 
 	// Clamp velocity
-	if( hl2_episodic.GetBool() && GetAbsVelocity().Length() > 700.0f )
+	if( IsHL2Episodic() && GetAbsVelocity().Length() > 700.0f )
 	{
 		Vector vecVelocity = GetAbsVelocity(); 
 		VectorNormalize( vecVelocity );
@@ -2232,7 +2232,7 @@ void CNPC_CombineGunship::Flight( void )
 
 	Vector vecImpulse = m_flForce * up;
 	
-	if ( !m_hCrashTarget && m_lifeState == LIFE_DYING && !hl2_episodic.GetBool() )
+	if ( !m_hCrashTarget && m_lifeState == LIFE_DYING && !IsHL2Episodic() )
 	{
 		// Force gunship to the ground if it doesn't have a specific place to crash.
 		// EXCEPT In episodic, where forcing it to the ground means it crashes where the player can't see (attic showdown) (sjb)
@@ -2508,9 +2508,12 @@ void CNPC_CombineGunship::SelfDestruct( void )
 		GetCitizenResponse()->AddResponseTrigger( CR_PLAYER_KILLED_GUNSHIP );
 	}
 
+	if ( HL2_EPISODIC_ACTIVE() )
+	{
 #ifdef HL2_EPISODIC
-	NPCEventResponse()->TriggerEvent( "TLK_CITIZEN_RESPONSE_KILLED_GUNSHIP", false, false );
+		NPCEventResponse()->TriggerEvent( "TLK_CITIZEN_RESPONSE_KILLED_GUNSHIP", false, false );
 #endif
+	}
 }
 
 
@@ -2855,9 +2858,12 @@ void CNPC_CombineGunship::TraceAttack( const CTakeDamageInfo &info, const Vector
 				GetCitizenResponse()->AddResponseTrigger( CR_PLAYER_SHOT_GUNSHIP );
 			}
 
+		if ( HL2_EPISODIC_ACTIVE() )
+		{
 #ifdef HL2_EPISODIC
-			NPCEventResponse()->TriggerEvent( "TLK_CITIZEN_RESPONSE_SHOT_GUNSHIP", false, false );
+				NPCEventResponse()->TriggerEvent( "TLK_CITIZEN_RESPONSE_SHOT_GUNSHIP", false, false );
 #endif
+		}
 		}
 
 		return;

@@ -47,6 +47,9 @@
 #include "SoundEmitterSystem/isoundemittersystembase.h"
 #include "decals.h"
 #include "obstacle_pushaway.h"
+#ifdef CLIENT_DLL
+#include "weapon_selection.h"
+#endif
 #ifdef SIXENSE
 #include "sixense/in_sixense.h"
 #endif
@@ -274,6 +277,15 @@ void CBasePlayer::ItemPostFrame()
 	}
 	else
 	{
+		if ( GetActiveWeapon() )
+		{
+			bool bReloading = ( m_nButtons & IN_RELOAD ) && GetActiveWeapon()->UsesClipsForAmmo1() && !GetActiveWeapon()->m_bInReload;
+			if ( ( m_nButtons & ( IN_ATTACK | IN_ATTACK2 ) ) || bReloading )
+			{
+				Weapon_SetLastPending( GetActiveWeapon() );
+			}
+		}
+
 		if ( GetActiveWeapon() && (!IsInAVehicle() || UsingStandardWeaponsInVehicle()) )
 		{
 #if defined( CLIENT_DLL )
@@ -835,13 +847,34 @@ void CBasePlayer::Weapon_SetLast( CBaseCombatWeapon *pWeapon )
 }
 
 //-----------------------------------------------------------------------------
+// Purpose: The weapon the player last actually used; becomes the last weapon on the next switch.
+//-----------------------------------------------------------------------------
+void CBasePlayer::Weapon_SetLastPending( CBaseCombatWeapon *pWeapon )
+{
+	m_hLastWeaponPending = pWeapon;
+}
+
+//-----------------------------------------------------------------------------
 // Purpose: Override base class so player can reset autoaim
 // Input  :
 // Output :
 //-----------------------------------------------------------------------------
 bool CBasePlayer::Weapon_Switch( CBaseCombatWeapon *pWeapon, int viewmodelindex /*=0*/ ) 
 {
-	CBaseCombatWeapon *pLastWeapon = GetActiveWeapon();
+#ifdef CLIENT_DLL
+	int nFastSwitch = GetFastSwitchType();
+#else
+	int nFastSwitch = m_iHudFastSwitch;
+#endif
+	CBaseCombatWeapon *pLastWeapon = m_hLastWeaponPending.Get();
+	if ( nFastSwitch <= 0 || m_hLastWeapon.Get() == pWeapon )
+	{
+		pLastWeapon = GetActiveWeapon();
+	}
+	if ( !pLastWeapon )
+	{
+		pLastWeapon = GetActiveWeapon();
+	}
 
 	if ( BaseClass::Weapon_Switch( pWeapon, viewmodelindex ))
 	{
@@ -2064,9 +2097,12 @@ bool fogparams_t::operator !=( const fogparams_t& other ) const
 {
 	if ( this->enable != other.enable ||
 		this->blend != other.blend ||
+		this->radial != other.radial ||
 		!VectorsAreEqual(this->dirPrimary, other.dirPrimary, 0.01f ) || 
 		this->colorPrimary.Get() != other.colorPrimary.Get() ||
 		this->colorSecondary.Get() != other.colorSecondary.Get() ||
+		this->colorPrimaryHDR.Get() != other.colorPrimaryHDR.Get() ||
+		this->colorSecondaryHDR.Get() != other.colorSecondaryHDR.Get() ||
 		this->start != other.start ||
 		this->end != other.end ||
 		this->farz != other.farz ||

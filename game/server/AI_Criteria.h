@@ -93,7 +93,9 @@ private:
 	CUtlRBTree< CritEntry_t, short > m_Lookup;
 };
 
-//#pragma pack(1)
+#ifdef BYTEMATCH_RETAIL
+#pragma pack(1)
+#endif
 template<typename T>
 struct response_interval_t
 {
@@ -150,7 +152,9 @@ struct AI_ResponseParams
 
 	responseparams_interval_t				predelay;		//21
 };
-//#pragma pack()
+#ifdef BYTEMATCH_RETAIL
+#pragma pack()
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: Generic container for a response to a match to a criteria set

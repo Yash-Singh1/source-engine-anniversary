@@ -30,7 +30,11 @@
 class CViewVectors
 {
 public:
+#ifdef BYTEMATCH_RETAIL
+	CViewVectors() {}
+#else
 	CViewVectors() = default;
+#endif
 
 	CViewVectors( 
 		Vector vView,

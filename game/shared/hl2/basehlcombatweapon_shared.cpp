@@ -34,6 +34,10 @@ END_NETWORK_TABLE()
 //---------------------------------------------------------
 BEGIN_DATADESC( CBaseHLCombatWeapon )
 
+#ifdef BYTEMATCH_RETAIL
+	DEFINE_FIELD( m_bLowered,			FIELD_BOOLEAN ),
+	DEFINE_FIELD( m_flRaiseTime,		FIELD_TIME ),
+#endif
 	DEFINE_FIELD( m_flHolsterTime,		FIELD_TIME ),
 	DEFINE_FIELD( m_iPrimaryAttacks,	FIELD_INTEGER ),
 	DEFINE_FIELD( m_iSecondaryAttacks,	FIELD_INTEGER ),

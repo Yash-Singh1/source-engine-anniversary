@@ -121,7 +121,9 @@ CAI_Network::CAI_Network()
 	m_pNodeTree = NULL;
 #endif
 
+#ifndef BYTEMATCH_RETAIL
 	gEntList.AddListenerEntity( this );
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -136,7 +138,9 @@ CAI_Network::~CAI_Network()
 	}
 #endif
 
+#ifndef BYTEMATCH_RETAIL
 	gEntList.RemoveListenerEntity( this );
+#endif
 
 	if ( m_pAInode )
 	{
@@ -648,6 +652,7 @@ IterationRetval_t CAI_Network::EnumElement( IHandleEntity *pHandleEntity )
 
 //=============================================================================
 
+#ifndef BYTEMATCH_RETAIL
 void CAI_Network::OnEntityDeleted( CBaseEntity *pEntity )
 {
 	if( pEntity->IsNPC() )
@@ -666,3 +671,4 @@ void CAI_Network::OnEntityDeleted( CBaseEntity *pEntity )
 		}
 	}
 }
+#endif

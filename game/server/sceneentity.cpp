@@ -2306,7 +2306,7 @@ bool CSceneEntity::CheckActors()
 			if ( pActor )
 			{
 				bool bShouldWait = false;
-				if ( hl2_episodic.GetBool() )
+				if ( IsHL2Episodic() )
 				{
 					// Episodic waits until the NPC is fully finished with any .vcd with speech in it
 					if ( IsRunningScriptedSceneWithSpeech( pActor ) )
@@ -2314,17 +2314,20 @@ bool CSceneEntity::CheckActors()
 						bShouldWait = true;
 					}
 					
+				if ( HL2_EPISODIC_ACTIVE() )
+				{
 #ifdef HL2_EPISODIC
-					// HACK: Alyx cannot play scenes when she's in the middle of transitioning					
-					if ( pActor->IsInAVehicle() )
-					{
-						CNPC_Alyx *pAlyx = dynamic_cast<CNPC_Alyx *>(pActor);
-						if ( pAlyx != NULL && ( pAlyx->GetPassengerState() == PASSENGER_STATE_ENTERING || pAlyx->GetPassengerState() == PASSENGER_STATE_EXITING ) )
+						// HACK: Alyx cannot play scenes when she's in the middle of transitioning					
+						if ( pActor->IsInAVehicle() )
 						{
-							bShouldWait = true;
+							CNPC_Alyx_Episodic *pAlyx = dynamic_cast<CNPC_Alyx_Episodic *>(pActor);
+							if ( pAlyx != NULL && ( pAlyx->GetPassengerState() == PASSENGER_STATE_ENTERING || pAlyx->GetPassengerState() == PASSENGER_STATE_EXITING ) )
+							{
+								bShouldWait = true;
+							}
 						}
-					}
-#endif // HL2_EPISODIC
+#endif
+				}
 				}
 
 				if ( pActor->GetExpresser() && pActor->GetExpresser()->IsSpeaking() )

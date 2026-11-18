@@ -351,6 +351,8 @@ public:
 	virtual int				GetWeaponFlags( void ) const;
 	virtual int				GetSlot( void ) const;
 	virtual int				GetPosition( void ) const;
+	virtual int				GetSlotConsole( void ) const;
+	virtual int				GetPositionConsole( void ) const;
 	virtual char const		*GetName( void ) const;
 	virtual char const		*GetPrintName( void ) const;
 	virtual char const		*GetShootSound( int iIndex ) const;
@@ -526,7 +528,7 @@ private:
 	CNetworkVar( CBaseCombatCharacterHandle, m_hOwner );				// Player carrying this weapon
 
 protected:
-#ifdef GAME_DLL
+#if defined( GAME_DLL ) && !defined( BYTEMATCH_RETAIL )
 	bool			m_bLowered;			// Whether the viewmodel is raised or lowered
 	float			m_flRaiseTime;		// If lowered, the time we should raise the viewmodel
 #endif

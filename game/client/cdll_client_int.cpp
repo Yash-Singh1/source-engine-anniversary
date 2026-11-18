@@ -147,7 +147,9 @@
 #include "fbxsystem/fbxsystem.h"
 #endif
 
+#ifndef BYTEMATCH_RETAIL
 #include "touch.h"
+#endif
 
 extern vgui::IInputInternal *g_InputInternal;
 
@@ -305,7 +307,11 @@ C_BaseEntityClassList::~C_BaseEntityClassList()
 class CDataChangedEvent
 {
 public:
+#ifdef BYTEMATCH_RETAIL
+	CDataChangedEvent() {}
+#else
 	CDataChangedEvent() = default;
+#endif
 	CDataChangedEvent( IClientNetworkable *ent, DataUpdateType_t updateType, int *pStoredEvent )
 	{
 		m_pEntity = ent;
@@ -1033,7 +1039,9 @@ int CHLClient::Init( CreateInterfaceFn appSystemFactory, CreateInterfaceFn physi
 	g_pClientMode->InitViewport();
 
 	gHUD.Init();
+#ifndef BYTEMATCH_RETAIL
 	gTouch.Init();
+#endif
 
 	g_pClientMode->Init();
 
@@ -1198,7 +1206,9 @@ void CHLClient::Shutdown( void )
 	
 	gHUD.Shutdown();
 	VGui_Shutdown();
+#ifndef BYTEMATCH_RETAIL
 	gTouch.Shutdown();
+#endif
 
 	ParticleMgr()->Term();
 	
@@ -1630,7 +1640,9 @@ void CHLClient::LevelInitPreEntity( char const* pMapName )
 	g_RagdollLVManager.SetLowViolence( pMapName );
 
 	gHUD.LevelInit();
+#ifndef BYTEMATCH_RETAIL
 	gTouch.LevelInit();
+#endif
 
 #if defined( REPLAY_ENABLED )
 	// Initialize replay ragdoll recorder

@@ -44,6 +44,13 @@ ConVar hl2_episodic( "hl2_episodic", "1", FCVAR_REPLICATED );
 ConVar hl2_episodic( "hl2_episodic", "0", FCVAR_REPLICATED );
 #endif//HL2_EPISODIC
 
+#ifdef HL2_EPISODIC
+bool IsHL2Episodic()
+{
+	return hl2_episodic.GetBool();
+}
+#endif
+
 #ifdef PORTAL
 	#include "prop_portal_shared.h"
 #endif

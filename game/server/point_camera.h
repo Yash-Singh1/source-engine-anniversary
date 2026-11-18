@@ -46,11 +46,14 @@ private:
 	CNetworkVar( float, m_Resolution );
 	CNetworkVar( bool, m_bFogEnable );
 	CNetworkColor32( m_FogColor );
+	CNetworkColor32( m_FogColor_HDR );
 	CNetworkVar( float, m_flFogStart );
 	CNetworkVar( float, m_flFogEnd );
 	CNetworkVar( float, m_flFogMaxDensity );
+	CNetworkVar( bool, m_bFogRadial );
 	CNetworkVar( bool, m_bActive );
 	CNetworkVar( bool, m_bUseScreenAspectRatio );
+	CNetworkVar( bool, m_bUseHDCamera );
 
 	// Allows the mapmaker to control whether a camera is active or not
 	bool	m_bIsOn;

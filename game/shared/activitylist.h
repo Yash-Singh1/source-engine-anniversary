@@ -44,7 +44,13 @@ class CActivityRemapCache
 {
 public:
 
+#ifdef BYTEMATCH_RETAIL
+	CActivityRemapCache()
+	{
+	}
+#else
 	CActivityRemapCache() = default;
+#endif
 
 	CActivityRemapCache( const CActivityRemapCache& src )
 	{

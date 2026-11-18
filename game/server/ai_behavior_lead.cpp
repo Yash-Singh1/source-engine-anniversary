@@ -134,7 +134,7 @@ int CAI_LeadBehavior::DrawDebugTextOverlays( int text_offset )
 bool CAI_LeadBehavior::IsNavigationUrgent( void )
 {
 #if defined( HL2_DLL )
-	if( HasGoal() && !hl2_episodic.GetBool() )
+	if( HasGoal() && !IsHL2Episodic() )
 	{
 		return (GetOuter()->Classify() == CLASS_PLAYER_ALLY_VITAL);
 	}
@@ -1011,7 +1011,7 @@ bool CAI_LeadBehavior::Speak( AIConcept_t concept )
 	if ( !m_hasspokenstart && bNag )
 		return false;
 
-	if ( hl2_episodic.GetBool() )
+	if ( IsHL2Episodic() )
 	{
 		// If we're a player ally, only speak the concept if we're allowed to.
 		// This allows the response rules to control it better (i.e. handles respeakdelay)
@@ -1525,18 +1525,24 @@ void CAI_LeadGoal::InputActivate( inputdata_t &inputdata )
 		DevMsg( "Lead goal entity activated for an NPC that doesn't have the lead behavior\n" );
 		return;
 	}
+ if ( HL2_EPISODIC_ACTIVE() )
+ {
 #ifdef HL2_EPISODIC
- 	if ( (m_flLeadDistance*4) < m_flRetrieveDistance )
-	{
-		Warning("ai_goal_lead '%s': lead distance (%.2f) * 4 is < retrieve distance (%.2f). This will make the NPC act stupid. Either reduce the retrieve distance, or increase the lead distance.\n", GetDebugName(), m_flLeadDistance, m_flRetrieveDistance );
-	}
+	 	if ( (m_flLeadDistance*4) < m_flRetrieveDistance )
+		{
+			Warning("ai_goal_lead '%s': lead distance (%.2f) * 4 is < retrieve distance (%.2f). This will make the NPC act stupid. Either reduce the retrieve distance, or increase the lead distance.\n", GetDebugName(), m_flLeadDistance, m_flRetrieveDistance );
+		}
 #endif
+ }
 
 	if ( m_flRetrieveDistance < (m_flLeadDistance + LEAD_MIN_RETRIEVEDIST_OFFSET) )
 	{
+	if ( HL2_EPISODIC_ACTIVE() )
+	{
 #ifdef HL2_EPISODIC
-		Warning("ai_goal_lead '%s': retrieve distance (%.2f) < lead distance (%.2f) + %d. Retrieve distance should be at least %d greater than the lead distance, or NPC will ping-pong while retrieving.\n", GetDebugName(), m_flRetrieveDistance, m_flLeadDistance, LEAD_MIN_RETRIEVEDIST_OFFSET, LEAD_MIN_RETRIEVEDIST_OFFSET );
+			Warning("ai_goal_lead '%s': retrieve distance (%.2f) < lead distance (%.2f) + %d. Retrieve distance should be at least %d greater than the lead distance, or NPC will ping-pong while retrieving.\n", GetDebugName(), m_flRetrieveDistance, m_flLeadDistance, LEAD_MIN_RETRIEVEDIST_OFFSET, LEAD_MIN_RETRIEVEDIST_OFFSET );
 #endif
+	}
 		m_flRetrieveDistance = m_flLeadDistance + LEAD_MIN_RETRIEVEDIST_OFFSET;
 	}
 

@@ -774,7 +774,7 @@ bool CAI_PassengerBehaviorZombie::AttachToVehicle( void )
 	// Start our scripted sequence with any other passengers
 	// Find Alyx
 	// TODO: Iterate through the list of passengers in the vehicle and find one we can interact with
-	CNPC_Alyx *pAlyx = CNPC_Alyx::GetAlyx();
+	CNPC_Alyx_Episodic *pAlyx = CNPC_Alyx_Episodic::GetAlyx();
 	if ( pAlyx )
 	{
 		// Tell Alyx to play along!

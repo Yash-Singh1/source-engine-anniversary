@@ -6322,7 +6322,7 @@ void CBaseEntity::ModifyOrAppendCriteria( AI_CriteriaSet& set )
 	// Append anything from I/O or keyvalues pairs
 	AppendContextToCriteria( set );
 
-	if( hl2_episodic.GetBool() )
+	if( IsHL2Episodic() )
 	{
 		set.AppendCriteria( "episodic", "1" );
 	}

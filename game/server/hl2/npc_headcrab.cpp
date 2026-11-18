@@ -1165,7 +1165,7 @@ void CBaseHeadcrab::BeginClimbFromCanister()
 	Vector vecSearchCenter = GetAbsOrigin();
 	CAI_Hint *pHint = CAI_HintManager::FindHint( this, HINT_HEADCRAB_BURROW_POINT, 0, HEADCRAB_BURROW_POINT_SEARCH_RADIUS, &vecSearchCenter );
 
-	if( !pHint && hl2_episodic.GetBool() )
+	if( !pHint && IsHL2Episodic() )
 	{
 		// Look for exit points within 10 feet.
 		pHint = CAI_HintManager::FindHint( this, HINT_HEADCRAB_EXIT_POD_POINT, 0, 120.0f, &vecSearchCenter );
@@ -2051,25 +2051,31 @@ void CBaseHeadcrab::Ignite( float flFlameLifetime, bool bNPCOnly, float flSize, 
 
 	bool bWasOnFire = IsOnFire();
 
-#ifdef HL2_EPISODIC
-	if( GetHealth() > flFlameLifetime )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
-		// Add some burn time to very healthy headcrabs to fix a bug where
-		// black headcrabs would sometimes spontaneously extinguish (and survive)
-		flFlameLifetime += 10.0f;
+#ifdef HL2_EPISODIC
+		if( GetHealth() > flFlameLifetime )
+		{
+			// Add some burn time to very healthy headcrabs to fix a bug where
+			// black headcrabs would sometimes spontaneously extinguish (and survive)
+			flFlameLifetime += 10.0f;
+		}
+#endif
 	}
-#endif// HL2_EPISODIC
 
  	BaseClass::Ignite( flFlameLifetime, bNPCOnly, flSize, bCalledByLevelDesigner );
 
 	if( !bWasOnFire )
 	{
+	if ( HL2_EPISODIC_ACTIVE() )
+	{
 #ifdef HL2_EPISODIC
-		if ( HL2GameRules()->IsAlyxInDarknessMode() == true )
-		{
-			GetEffectEntity()->AddEffects( EF_DIMLIGHT );
-		}
-#endif // HL2_EPISODIC
+			if ( HL2GameRules()->IsAlyxInDarknessMode() == true )
+			{
+				GetEffectEntity()->AddEffects( EF_DIMLIGHT );
+			}
+#endif
+	}
 
 		// For the poison headcrab, who runs around when ignited
 		SetActivity( TranslateActivity(GetIdealActivity()) );
@@ -3271,7 +3277,7 @@ void CBlackHeadcrab::TouchDamage( CBaseEntity *pOther )
 		if ( pOther->IsAlive() && pOther->m_iHealth > 1)
 		{
 			// Episodic change to avoid NPCs dying too quickly from poison bites
-			if ( hl2_episodic.GetBool() )
+			if ( IsHL2Episodic() )
 			{
 				if ( pOther->IsPlayer() )
 				{

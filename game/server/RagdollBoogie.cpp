@@ -119,9 +119,12 @@ void CRagdollBoogie::ZapThink()
 		DispatchEffect( "TeslaHitboxes", data );	
 	}
 
+	if ( HL2_EPISODIC_ACTIVE() )
+	{
 #ifdef HL2_EPISODIC
-	EmitSound( "RagdollBoogie.Zap" );
+		EmitSound( "RagdollBoogie.Zap" );
 #endif
+	}
 
 	SetContextThink( &CRagdollBoogie::ZapThink, gpGlobals->curtime + random->RandomFloat( 0.1f, 0.3f ), s_pZapContext ); 
 }

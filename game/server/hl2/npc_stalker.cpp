@@ -539,7 +539,7 @@ void CNPC_Stalker::StartTask( const Task_t *pTask )
 				// Never hit target on first try
 				Vector missPos = m_vLaserTargetPos;
 				
-				if( pEnemy->Classify() == CLASS_BULLSEYE && hl2_episodic.GetBool() )
+				if( pEnemy->Classify() == CLASS_BULLSEYE && IsHL2Episodic() )
 				{
 					missPos.x += 60 + 120*random->RandomInt(-1,1);
 					missPos.y += 60 + 120*random->RandomInt(-1,1);

@@ -275,11 +275,16 @@ void CZombie::Spawn( void )
 
 	m_fIsHeadless = false;
 
+	if ( HL2_EPISODIC_ACTIVE() )
+	{
 #ifdef HL2_EPISODIC
-	SetBloodColor( BLOOD_COLOR_ZOMBIE );
-#else
-	SetBloodColor( BLOOD_COLOR_GREEN );
-#endif // HL2_EPISODIC
+		SetBloodColor( BLOOD_COLOR_ZOMBIE );
+#endif
+	}
+	else
+	{
+		SetBloodColor( BLOOD_COLOR_GREEN );
+	}
 
 	m_iHealth			= sk_zombie_health.GetFloat();
 	m_flFieldOfView		= 0.2;
@@ -821,19 +826,23 @@ void CZombie::Extinguish()
 //---------------------------------------------------------
 int CZombie::OnTakeDamage_Alive( const CTakeDamageInfo &inputInfo )
 {
-#ifndef HL2_EPISODIC
-	if ( inputInfo.GetDamageType() & DMG_BUCKSHOT )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
-		if( !m_fIsTorso && inputInfo.GetDamage() > (m_iMaxHealth/3) )
+	}
+	else
+	{
+		if ( inputInfo.GetDamageType() & DMG_BUCKSHOT )
 		{
-			// Always flinch if damaged a lot by buckshot, even if not shot in the head.
-			// The reason for making sure we did at least 1/3rd of the zombie's max health
-			// is so the zombie doesn't flinch every time the odd shotgun pellet hits them,
-			// and so the maximum number of times you'll see a zombie flinch like this is 2.(sjb)
-			AddGesture( ACT_GESTURE_FLINCH_HEAD );
+			if( !m_fIsTorso && inputInfo.GetDamage() > (m_iMaxHealth/3) )
+			{
+				// Always flinch if damaged a lot by buckshot, even if not shot in the head.
+				// The reason for making sure we did at least 1/3rd of the zombie's max health
+				// is so the zombie doesn't flinch every time the odd shotgun pellet hits them,
+				// and so the maximum number of times you'll see a zombie flinch like this is 2.(sjb)
+				AddGesture( ACT_GESTURE_FLINCH_HEAD );
+			}
 		}
 	}
-#endif // HL2_EPISODIC
 
 	return BaseClass::OnTakeDamage_Alive( inputInfo );
 }
@@ -842,30 +851,33 @@ int CZombie::OnTakeDamage_Alive( const CTakeDamageInfo &inputInfo )
 //-----------------------------------------------------------------------------
 bool CZombie::IsHeavyDamage( const CTakeDamageInfo &info )
 {
+	if ( HL2_EPISODIC_ACTIVE() )
+	{
 #ifdef HL2_EPISODIC
-	if ( info.GetDamageType() & DMG_BUCKSHOT )
-	{
-		if ( !m_fIsTorso && info.GetDamage() > (m_iMaxHealth/3) )
-			return true;
-	}
-
-	// Randomly treat all damage as heavy
-	if ( info.GetDamageType() & (DMG_BULLET | DMG_BUCKSHOT) )
-	{
-		// Don't randomly flinch if I'm melee attacking
-		if ( !HasCondition(COND_CAN_MELEE_ATTACK1) && (RandomFloat() > 0.5) )
+		if ( info.GetDamageType() & DMG_BUCKSHOT )
 		{
-			// Randomly forget I've flinched, so that I'll be forced to play a big flinch
-			// If this doesn't happen, it means I may not fully flinch if I recently flinched
-			if ( RandomFloat() > 0.75 )
-			{
-				Forget(bits_MEMORY_FLINCHED);
-			}
-
-			return true;
+			if ( !m_fIsTorso && info.GetDamage() > (m_iMaxHealth/3) )
+				return true;
 		}
+
+		// Randomly treat all damage as heavy
+		if ( info.GetDamageType() & (DMG_BULLET | DMG_BUCKSHOT) )
+		{
+			// Don't randomly flinch if I'm melee attacking
+			if ( !HasCondition(COND_CAN_MELEE_ATTACK1) && (RandomFloat() > 0.5) )
+			{
+				// Randomly forget I've flinched, so that I'll be forced to play a big flinch
+				// If this doesn't happen, it means I may not fully flinch if I recently flinched
+				if ( RandomFloat() > 0.75 )
+				{
+					Forget(bits_MEMORY_FLINCHED);
+				}
+
+				return true;
+			}
+		}
+#endif
 	}
-#endif // HL2_EPISODIC
 
 	return BaseClass::IsHeavyDamage(info);
 }

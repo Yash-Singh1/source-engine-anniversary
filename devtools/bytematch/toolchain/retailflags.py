@@ -63,8 +63,11 @@ def cflags(sdk):
 
 
 def cxxflags(sdk):
+    # -Wno-c++11-narrowing is from base.xcconfig WARNING_CFLAGS; -w alone leaves
+    # narrowing an error, and SDK 2013 game code depends on it being off.
     return common_flags(sdk) + ["-std=gnu++11", "-stdlib=libstdc++",
-                                "-fvisibility-inlines-hidden", "-ftemplate-depth=512"]
+                                "-fvisibility-inlines-hidden", "-ftemplate-depth=512",
+                                "-Wno-c++11-narrowing"]
 
 
 def objcflags():

@@ -574,7 +574,7 @@ void CMissile::SeekThink( void )
 		}
 	}
 
-	if( hl2_episodic.GetBool() )
+	if( IsHL2Episodic() )
 	{
 		if( flBestDist <= ( GetAbsVelocity().Length() * 2.5f ) && FVisible( pBestDot->GetAbsOrigin() ) )
 		{
@@ -640,7 +640,7 @@ void CMissile::SeekThink( void )
 	VectorSubtract( targetPos, GetAbsOrigin(), vTargetDir );
 	float flDist = VectorNormalize( vTargetDir );
 
-	if( pLaserDot->GetTargetEntity() != NULL && flDist <= 240.0f && hl2_episodic.GetBool() )
+	if( pLaserDot->GetTargetEntity() != NULL && flDist <= 240.0f && IsHL2Episodic() )
 	{
 		// Prevent the missile circling the Strider like a Halo in ep1_c17_06. If the missile gets within 20
 		// feet of a Strider, tighten up the turn speed of the missile so it can break the halo and strike. (sjb 4/27/2006)
@@ -688,16 +688,19 @@ void CMissile::SeekThink( void )
 	// Think as soon as possible
 	SetNextThink( gpGlobals->curtime );
 
+	if ( HL2_EPISODIC_ACTIVE() )
+	{
 #ifdef HL2_EPISODIC
 
-	if ( m_bCreateDangerSounds == true )
-	{
-		trace_t tr;
-		UTIL_TraceLine( GetAbsOrigin(), GetAbsOrigin() + GetAbsVelocity() * 0.5, MASK_SOLID, this, COLLISION_GROUP_NONE, &tr );
+		if ( m_bCreateDangerSounds == true )
+		{
+			trace_t tr;
+			UTIL_TraceLine( GetAbsOrigin(), GetAbsOrigin() + GetAbsVelocity() * 0.5, MASK_SOLID, this, COLLISION_GROUP_NONE, &tr );
 
-		CSoundEnt::InsertSound( SOUND_DANGER, tr.endpos, 100, 0.2, this, SOUNDENT_CHANNEL_REPEATED_DANGER );
-	}
+			CSoundEnt::InsertSound( SOUND_DANGER, tr.endpos, 100, 0.2, this, SOUNDENT_CHANNEL_REPEATED_DANGER );
+		}
 #endif
+	}
 }
 
 
@@ -1155,11 +1158,16 @@ void CAPCMissile::DoExplosion( void )
 	}
 	else
 	{
+	if ( HL2_EPISODIC_ACTIVE() )
+	{
 #ifdef HL2_EPISODIC
-		ExplosionCreate( GetAbsOrigin(), GetAbsAngles(), this, APC_MISSILE_DAMAGE, 100, true, 20000 );
-#else
-		ExplosionCreate( GetAbsOrigin(), GetAbsAngles(), GetOwnerEntity(), APC_MISSILE_DAMAGE, 100, true, 20000 );
+			ExplosionCreate( GetAbsOrigin(), GetAbsAngles(), this, APC_MISSILE_DAMAGE, 100, true, 20000 );
 #endif
+	}
+	else
+	{
+			ExplosionCreate( GetAbsOrigin(), GetAbsAngles(), GetOwnerEntity(), APC_MISSILE_DAMAGE, 100, true, 20000 );
+	}
 	}
 }
 
@@ -1651,7 +1659,7 @@ void CWeaponRPG::PrimaryAttack( void )
 		}
 	}
 
-	if( hl2_episodic.GetBool() )
+	if( IsHL2Episodic() )
 	{
 		CAI_BaseNPC **ppAIs = g_AI_Manager.AccessAIs();
 		int nAIs = g_AI_Manager.NumAIs();

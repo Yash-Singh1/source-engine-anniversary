@@ -22,7 +22,9 @@
 #include <vgui_controls/Panel.h>
 #include <KeyValues.h>
 #include "filesystem.h"
+#ifndef BYTEMATCH_RETAIL
 #include "touch.h"
+#endif
 #include "matsys_controls/matsyscontrols.h"
 
 #ifdef SIXENSE
@@ -130,7 +132,9 @@ static void VGui_VideoMode_AdjustForModeChange( void )
 	fps->Destroy();
 	messagechars->Destroy();
 	loadingdisc->Destroy();
+#ifndef BYTEMATCH_RETAIL
 	touch_panel->Destroy();
+#endif
 
 	// Recreate our panels.
 	VPANEL gameToolParent = enginevgui->GetPanel( PANEL_CLIENTDLL_TOOLS );
@@ -144,7 +148,9 @@ static void VGui_VideoMode_AdjustForModeChange( void )
 
 	// Debugging or related tool
 	fps->Create( toolParent );
+#ifndef BYTEMATCH_RETAIL
 	touch_panel->Create( toolParent );
+#endif
 #if defined( TRACK_BLOCKING_IO )
 	iopanel->Create( gameDLLPanel );
 #endif
@@ -210,7 +216,9 @@ void VGui_CreateGlobalPanels( void )
 
 	// Debugging or related tool
 	fps->Create( toolParent );
+#ifndef BYTEMATCH_RETAIL
 	touch_panel->Create( toolParent );
+#endif
 
 #if defined( TRACK_BLOCKING_IO )
 	iopanel->Create( gameDLLPanel );
@@ -241,7 +249,9 @@ void VGui_Shutdown()
 	iopanel->Destroy();
 #endif
 	fps->Destroy();
+#ifndef BYTEMATCH_RETAIL
 	touch_panel->Destroy();
+#endif
 
 	messagechars->Destroy();
 	loadingdisc->Destroy();

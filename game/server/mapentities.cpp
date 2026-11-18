@@ -33,8 +33,17 @@ static CStringRegistry *g_pClassnameSpawnPriority = NULL;
 extern edict_t *g_pForceAttachEdict;
 
 // creates an entity by string name, but does not spawn it
-CBaseEntity *CreateEntityByName( const char *className, int iForceEdictIndex )
+CBaseEntity *CreateEntityByName( const char *className, int iForceEdictIndex, bool bEpisodicRemap )
 {
+	// HL2 and the episodes share one server: episodic maps name the episodic Alyx and jeep by their HL2 classnames.
+	if ( bEpisodicRemap && IsHL2Episodic() )
+	{
+		if ( !V_stricmp( className, "npc_alyx" ) )
+			className = "npc_alyx_episodic";
+		if ( !V_stricmp( className, "prop_vehicle_jeep" ) )
+			className = "prop_vehicle_jalopy";
+	}
+
 	if ( iForceEdictIndex != -1 )
 	{
 		g_pForceAttachEdict = engine->CreateEdict( iForceEdictIndex );
@@ -526,7 +535,7 @@ void MapEntity_PrecacheEntity( const char *pEntData, int &nStringSize )
 	}
 
 	// Construct via the LINK_ENTITY_TO_CLASS factory.
-	CBaseEntity *pEntity = CreateEntityByName(className);
+	CBaseEntity *pEntity = CreateEntityByName( className, -1, true );
 
 	//
 	// Set up keyvalues, which can set the model name, which is why we don't just do UTIL_PrecacheOther here...
@@ -564,7 +573,7 @@ const char *MapEntity_ParseEntity(CBaseEntity *&pEntity, const char *pEntData, I
 		if ( pFilter )
 			pEntity = pFilter->CreateNextEntity( className );
 		else
-			pEntity = CreateEntityByName(className);
+			pEntity = CreateEntityByName( className, -1, true );
 
 		//
 		// Set up keyvalues.

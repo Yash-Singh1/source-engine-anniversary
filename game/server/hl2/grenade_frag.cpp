@@ -317,9 +317,12 @@ void CGrenadeFrag::OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t r
 	}
 #endif
 
+	if ( HL2_EPISODIC_ACTIVE() )
+	{
 #ifdef HL2_EPISODIC
-	SetPunted( true );
+		SetPunted( true );
 #endif
+	}
 
 	BaseClass::OnPhysGunPickup( pPhysGunUser, reason );
 }

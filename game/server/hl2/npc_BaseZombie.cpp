@@ -370,7 +370,7 @@ bool CNPC_BaseZombie::FindNearestPhysicsObject( int iMaxMass )
 		if ( !FVisible( pList[i] ) )
 			continue;
 
-		if ( hl2_episodic.GetBool() )
+		if ( IsHL2Episodic() )
 		{
 			// Skip things that the enemy can't see. Do we want this as a general thing? 
 			// The case for this feature is that zombies who are pursuing the player will
@@ -584,13 +584,16 @@ int CNPC_BaseZombie::MeleeAttack1Conditions ( float flDot, float flDist )
 	if( tr.fraction == 1.0 || !tr.m_pEnt )
 	{
 
+	if ( HL2_EPISODIC_ACTIVE() )
+	{
 #ifdef HL2_EPISODIC
 
-		// If our trace was unobstructed but we were shooting 
-		if ( GetEnemy() && GetEnemy()->Classify() == CLASS_BULLSEYE )
-			return COND_CAN_MELEE_ATTACK1;
+			// If our trace was unobstructed but we were shooting 
+			if ( GetEnemy() && GetEnemy()->Classify() == CLASS_BULLSEYE )
+				return COND_CAN_MELEE_ATTACK1;
 
-#endif // HL2_EPISODIC
+#endif
+	}
 
 		// This attack would miss completely. Trick the zombie into moving around some more.
 		return COND_TOO_FAR_TO_ATTACK;
@@ -630,19 +633,22 @@ int CNPC_BaseZombie::MeleeAttack1Conditions ( float flDot, float flDist )
 		}
 	}
 
+	if ( HL2_EPISODIC_ACTIVE() )
+	{
 #ifdef HL2_EPISODIC
 
-	if ( !tr.m_pEnt->IsWorld() && GetEnemy() && GetEnemy()->GetGroundEntity() == tr.m_pEnt )
-	{
-		//Try to swat whatever the player is standing on instead of acting like a dill.
-		return COND_CAN_MELEE_ATTACK1;
+		if ( !tr.m_pEnt->IsWorld() && GetEnemy() && GetEnemy()->GetGroundEntity() == tr.m_pEnt )
+		{
+			//Try to swat whatever the player is standing on instead of acting like a dill.
+			return COND_CAN_MELEE_ATTACK1;
+		}
+
+		// Bullseyes are given some grace on if they can be hit
+		if ( GetEnemy() && GetEnemy()->Classify() == CLASS_BULLSEYE )
+			return COND_CAN_MELEE_ATTACK1;
+
+#endif
 	}
-
-	// Bullseyes are given some grace on if they can be hit
-	if ( GetEnemy() && GetEnemy()->Classify() == CLASS_BULLSEYE )
-		return COND_CAN_MELEE_ATTACK1;
-
-#endif // HL2_EPISODIC
 
 	// Move around some more
 	return COND_TOO_FAR_TO_ATTACK;
@@ -734,7 +740,7 @@ bool CNPC_BaseZombie::ShouldBecomeTorso( const CTakeDamageInfo &info, float flDa
 		return true;
 	}
 
-	if ( hl2_episodic.GetBool() )
+	if ( IsHL2Episodic() )
 	{
 		// Always split after a cannon hit
 		if ( info.GetAmmoType() == GetAmmoDef()->Index("CombineHeavyCannon") )
@@ -909,7 +915,7 @@ int CNPC_BaseZombie::OnTakeDamage_Alive( const CTakeDamageInfo &inputInfo )
 				}
 
 				// For Combine cannon impacts
-				if ( hl2_episodic.GetBool() )
+				if ( IsHL2Episodic() )
 				{
 					if ( bHitByCombineCannon )
 					{
@@ -1733,7 +1739,7 @@ void CNPC_BaseZombie::StartTouch( CBaseEntity *pOther )
 {
 	BaseClass::StartTouch( pOther );
 
-	if( IsSlumped() && hl2_episodic.GetBool() )
+	if( IsSlumped() && IsHL2Episodic() )
 	{
 		if( FClassnameIs( pOther, "prop_physics" ) )
 		{
@@ -1928,7 +1934,7 @@ int CNPC_BaseZombie::SelectSchedule ( void )
 //---------------------------------------------------------
 bool CNPC_BaseZombie::IsSlumped( void )
 {
-	if( hl2_episodic.GetBool() )
+	if( IsHL2Episodic() )
 	{
 		if( m_ActBusyBehavior.IsInsideActBusy() && !m_ActBusyBehavior.IsStopBusying() )
 		{
@@ -2147,10 +2153,14 @@ void CNPC_BaseZombie::StartTask( const Task_t *pTask )
 
 	case TASK_ZOMBIE_WAIT_POST_MELEE:
 		{
-#ifndef HL2_EPISODIC
-			TaskComplete();
-			return;
-#endif
+		if ( HL2_EPISODIC_ACTIVE() )
+		{
+		}
+		else
+		{
+				TaskComplete();
+				return;
+		}
 
 			// Don't wait when attacking the player
 			if ( GetEnemy() && GetEnemy()->IsPlayer() )

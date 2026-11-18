@@ -894,7 +894,7 @@ void CNPC_Citizen::GatherConditions()
 {
 	BaseClass::GatherConditions();
 
-	if( IsInPlayerSquad() && hl2_episodic.GetBool() )
+	if( IsInPlayerSquad() && IsHL2Episodic() )
 	{
 		// Leave the player squad if someone has made me neutral to player.
 		if( IRelationType(UTIL_GetLocalPlayer()) == D_NU )
@@ -964,13 +964,16 @@ void CNPC_Citizen::GatherConditions()
 				}
 			}
 
+		if ( HL2_EPISODIC_ACTIVE() )
+		{
 #ifdef HL2_EPISODIC
-			// Heal if I'm on an assault. The player hasn't had time to stare at me.
-			if( m_AssaultBehavior.IsRunning() && IsMoving() )
-			{
-				SetCondition( COND_CIT_PLAYERHEALREQUEST );
-			}
+				// Heal if I'm on an assault. The player hasn't had time to stare at me.
+				if( m_AssaultBehavior.IsRunning() && IsMoving() )
+				{
+					SetCondition( COND_CIT_PLAYERHEALREQUEST );
+				}
 #endif
+		}
 		}
 		else
 		{
@@ -1095,27 +1098,32 @@ void CNPC_Citizen::BuildScheduleTestBits()
 		SetCustomInterruptCondition( COND_BETTER_WEAPON_AVAILABLE );
 	}
 
+	if ( HL2_EPISODIC_ACTIVE() )
+	{
 #ifdef HL2_EPISODIC
-	if( IsMedic() && m_AssaultBehavior.IsRunning() )
-	{
-		if( !IsCurSchedule(SCHED_RELOAD, false) )
+		if( IsMedic() && m_AssaultBehavior.IsRunning() )
 		{
-			SetCustomInterruptCondition( COND_CIT_PLAYERHEALREQUEST );
-		}
+			if( !IsCurSchedule(SCHED_RELOAD, false) )
+			{
+				SetCustomInterruptCondition( COND_CIT_PLAYERHEALREQUEST );
+			}
 
-		SetCustomInterruptCondition( COND_CIT_COMMANDHEAL );
-	}
-#else
-	if( IsMedic() && m_AssaultBehavior.IsRunning() && !IsMoving() )
-	{
-		if( !IsCurSchedule(SCHED_RELOAD, false) )
-		{
-			SetCustomInterruptCondition( COND_CIT_PLAYERHEALREQUEST );
+			SetCustomInterruptCondition( COND_CIT_COMMANDHEAL );
 		}
-
-		SetCustomInterruptCondition( COND_CIT_COMMANDHEAL );
-	}
 #endif
+	}
+	else
+	{
+		if( IsMedic() && m_AssaultBehavior.IsRunning() && !IsMoving() )
+		{
+			if( !IsCurSchedule(SCHED_RELOAD, false) )
+			{
+				SetCustomInterruptCondition( COND_CIT_PLAYERHEALREQUEST );
+			}
+
+			SetCustomInterruptCondition( COND_CIT_COMMANDHEAL );
+		}
+	}
 }
 
 
@@ -2553,7 +2561,7 @@ void CNPC_Citizen::MoveOrder( const Vector &vecDest, CAI_BaseNPC **Allies, int n
 	if ( !AI_IsSinglePlayer() )
 		return;
 
-	if( hl2_episodic.GetBool() && m_iszDenyCommandConcept != NULL_STRING )
+	if( IsHL2Episodic() && m_iszDenyCommandConcept != NULL_STRING )
 	{
 		SpeakCommandResponse( STRING(m_iszDenyCommandConcept) );
 		return;
@@ -3396,7 +3404,7 @@ bool CNPC_Citizen::CanHeal()
 	if ( !IsMedic() && !IsAmmoResupplier() )
 		return false;
 
-	if( !hl2_episodic.GetBool() )
+	if( !IsHL2Episodic() )
 	{
 		// If I'm not armed, my priority should be to arm myself.
 		if ( IsMedic() && !GetActiveWeapon() )

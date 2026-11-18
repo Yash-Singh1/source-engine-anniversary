@@ -60,7 +60,7 @@ ConVar tf_weapon_criticals_bucket_bottom( "tf_weapon_criticals_bucket_bottom", "
 ConVar tf_weapon_criticals_bucket_default( "tf_weapon_criticals_bucket_default", "300.0", FCVAR_REPLICATED | FCVAR_CHEAT );
 #endif // TF
 
-CBaseCombatWeapon::CBaseCombatWeapon() : BASECOMBATWEAPON_DERIVED_FROM()
+CBaseCombatWeapon::CBaseCombatWeapon()
 {
 	// Constructor must call this
 	// CONSTRUCT_PREDICTABLE( CBaseCombatWeapon );
@@ -77,7 +77,6 @@ CBaseCombatWeapon::CBaseCombatWeapon() : BASECOMBATWEAPON_DERIVED_FROM()
 	m_nViewModelIndex	= 0;
 
 	m_bFlipViewModel	= false;
-	m_iSubType = 0;
 
 #if defined( CLIENT_DLL )
 	m_iState = m_iOldState = WEAPON_NOT_CARRIED;
@@ -94,7 +93,7 @@ CBaseCombatWeapon::CBaseCombatWeapon() : BASECOMBATWEAPON_DERIVED_FROM()
 
 	m_hWeaponFileInfo = GetInvalidWeaponInfoHandle();
 
-#ifdef GAME_DLL
+#if defined( GAME_DLL ) && !defined( BYTEMATCH_RETAIL )
 	m_bLowered = false;
 	m_flRaiseTime = gpGlobals->curtime;
 #endif
@@ -460,6 +459,22 @@ int CBaseCombatWeapon::GetPosition( void ) const
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+int CBaseCombatWeapon::GetSlotConsole( void ) const
+{
+	return GetWpnData().iSlotConsole;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+int CBaseCombatWeapon::GetPositionConsole( void ) const
+{
+	return GetWpnData().iPositionConsole;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
 const char *CBaseCombatWeapon::GetName( void ) const
 {
 	return GetWpnData().szClassName;
@@ -685,7 +700,7 @@ void CBaseCombatWeapon::Drop( const Vector &vecVelocity )
 	SetThink( &CBaseCombatWeapon::SetPickupTouch );
 	SetTouch(NULL);
 
-	if( hl2_episodic.GetBool() )
+	if( IsHL2Episodic() )
 	{
 		RemoveSpawnFlags( SF_WEAPON_NO_PLAYER_PICKUP );
 	}
@@ -1652,127 +1667,125 @@ void CBaseCombatWeapon::ItemPreFrame( void )
 //====================================================================================
 // WEAPON BEHAVIOUR
 //====================================================================================
-void CBaseCombatWeapon::ItemPostFrame(void)
+void CBaseCombatWeapon::ItemPostFrame( void )
 {
-	CBasePlayer* pOwner = ToBasePlayer(GetOwner());
+	CBasePlayer *pOwner = ToBasePlayer( GetOwner() );
 	if (!pOwner)
 		return;
-
 
 	UpdateAutoFire();
 
 	//Track the duration of the fire
 	//FIXME: Check for IN_ATTACK2 as well?
 	//FIXME: What if we're calling ItemBusyFrame?
-	m_fFireDuration = (pOwner->m_nButtons & IN_ATTACK) ? (m_fFireDuration + gpGlobals->frametime) : 0.0f;
+	m_fFireDuration = ( pOwner->m_nButtons & IN_ATTACK ) ? ( m_fFireDuration + gpGlobals->frametime ) : 0.0f;
 
-	if (UsesClipsForAmmo1())
+	if ( UsesClipsForAmmo1() )
 	{
 		CheckReload();
 	}
 
 	bool bFired = false;
-#ifdef GAME_DLL
-	if (!m_bLowered)
+
+#if defined( GAME_DLL ) && !defined( BYTEMATCH_RETAIL )
+	if ( !m_bLowered )
 	{
 #endif
-		// Secondary attack has priority
-		if ((pOwner->m_nButtons & IN_ATTACK2) && (m_flNextSecondaryAttack <= gpGlobals->curtime))
+	// Secondary attack has priority
+	if ((pOwner->m_nButtons & IN_ATTACK2) && (m_flNextSecondaryAttack <= gpGlobals->curtime))
+	{
+		if (UsesSecondaryAmmo() && pOwner->GetAmmoCount(m_iSecondaryAmmoType)<=0 )
 		{
-			if (UsesSecondaryAmmo() && pOwner->GetAmmoCount(m_iSecondaryAmmoType) <= 0)
+			if (m_flNextEmptySoundTime < gpGlobals->curtime)
 			{
-				if (m_flNextEmptySoundTime < gpGlobals->curtime)
-				{
-					WeaponSound(EMPTY);
-					m_flNextSecondaryAttack = m_flNextEmptySoundTime = gpGlobals->curtime + 0.5;
-				}
-			}
-			else if (pOwner->GetWaterLevel() == 3 && m_bAltFiresUnderwater == false)
-			{
-				// This weapon doesn't fire underwater
 				WeaponSound(EMPTY);
-				m_flNextPrimaryAttack = gpGlobals->curtime + 0.2;
-				return;
+				m_flNextSecondaryAttack = m_flNextEmptySoundTime = gpGlobals->curtime + 0.5;
 			}
-			else
-			{
-				// FIXME: This isn't necessarily true if the weapon doesn't have a secondary fire!
-				// For instance, the crossbow doesn't have a 'real' secondary fire, but it still 
-				// stops the crossbow from firing on the 360 if the player chooses to hold down their
-				// zoom button. (sjb) Orange Box 7/25/2007
+		}
+		else if (pOwner->GetWaterLevel() == 3 && m_bAltFiresUnderwater == false)
+		{
+			// This weapon doesn't fire underwater
+			WeaponSound(EMPTY);
+			m_flNextPrimaryAttack = gpGlobals->curtime + 0.2;
+			return;
+		}
+		else
+		{
+			// FIXME: This isn't necessarily true if the weapon doesn't have a secondary fire!
+			// For instance, the crossbow doesn't have a 'real' secondary fire, but it still 
+			// stops the crossbow from firing on the 360 if the player chooses to hold down their
+			// zoom button. (sjb) Orange Box 7/25/2007
 #if !defined(CLIENT_DLL)
-				if (!IsX360() || !ClassMatches("weapon_crossbow"))
+			if( !IsX360() || !ClassMatches("weapon_crossbow") )
 #endif
-				{
-					bFired = ShouldBlockPrimaryFire();
-				}
+			{
+				bFired = ShouldBlockPrimaryFire();
+			}
 
-				SecondaryAttack();
+			SecondaryAttack();
 
-				// Secondary ammo doesn't have a reload animation
-				if (UsesClipsForAmmo2())
+			// Secondary ammo doesn't have a reload animation
+			if ( UsesClipsForAmmo2() )
+			{
+				// reload clip2 if empty
+				if (m_iClip2 < 1)
 				{
-					// reload clip2 if empty
-					if (m_iClip2 < 1)
-					{
-						pOwner->RemoveAmmo(1, m_iSecondaryAmmoType);
-						m_iClip2 = m_iClip2 + 1;
-					}
+					pOwner->RemoveAmmo( 1, m_iSecondaryAmmoType );
+					m_iClip2 = m_iClip2 + 1;
 				}
 			}
 		}
-
-		if (!bFired && (pOwner->m_nButtons & IN_ATTACK) && (m_flNextPrimaryAttack <= gpGlobals->curtime))
+	}
+	
+	if ( !bFired && (pOwner->m_nButtons & IN_ATTACK) && (m_flNextPrimaryAttack <= gpGlobals->curtime))
+	{
+		// Clip empty? Or out of ammo on a no-clip weapon?
+		if ( !IsMeleeWeapon() &&  
+			(( UsesClipsForAmmo1() && m_iClip1 <= 0) || ( !UsesClipsForAmmo1() && pOwner->GetAmmoCount(m_iPrimaryAmmoType)<=0 )) )
 		{
-			// Clip empty? Or out of ammo on a no-clip weapon?
-			if (!IsMeleeWeapon() &&
-				((UsesClipsForAmmo1() && m_iClip1 <= 0) || (!UsesClipsForAmmo1() && pOwner->GetAmmoCount(m_iPrimaryAmmoType) <= 0)))
+			HandleFireOnEmpty();
+		}
+		else if (pOwner->GetWaterLevel() == 3 && m_bFiresUnderwater == false)
+		{
+			// This weapon doesn't fire underwater
+			WeaponSound(EMPTY);
+			m_flNextPrimaryAttack = gpGlobals->curtime + 0.2;
+			return;
+		}
+		else
+		{
+			//NOTENOTE: There is a bug with this code with regards to the way machine guns catch the leading edge trigger
+			//			on the player hitting the attack key.  It relies on the gun catching that case in the same frame.
+			//			However, because the player can also be doing a secondary attack, the edge trigger may be missed.
+			//			We really need to hold onto the edge trigger and only clear the condition when the gun has fired its
+			//			first shot.  Right now that's too much of an architecture change -- jdw
+			
+			// If the firing button was just pressed, or the alt-fire just released, reset the firing time
+			if ( ( pOwner->m_afButtonPressed & IN_ATTACK ) || ( pOwner->m_afButtonReleased & IN_ATTACK2 ) )
 			{
-				HandleFireOnEmpty();
+				 m_flNextPrimaryAttack = gpGlobals->curtime;
 			}
-			else if (pOwner->GetWaterLevel() == 3 && m_bFiresUnderwater == false)
+
+			PrimaryAttack();
+
+			if ( AutoFiresFullClip() )
 			{
-				// This weapon doesn't fire underwater
-				WeaponSound(EMPTY);
-				m_flNextPrimaryAttack = gpGlobals->curtime + 0.2;
-				return;
+				m_bFiringWholeClip = true;
 			}
-			else
-			{
-
-				//NOTENOTE: There is a bug with this code with regards to the way machine guns catch the leading edge trigger
-				//			on the player hitting the attack key.  It relies on the gun catching that case in the same frame.
-				//			However, because the player can also be doing a secondary attack, the edge trigger may be missed.
-				//			We really need to hold onto the edge trigger and only clear the condition when the gun has fired its
-				//			first shot.  Right now that's too much of an architecture change -- jdw
-
-				// If the firing button was just pressed, or the alt-fire just released, reset the firing time
-				if ((pOwner->m_afButtonPressed & IN_ATTACK) || (pOwner->m_afButtonReleased & IN_ATTACK2))
-				{
-					m_flNextPrimaryAttack = gpGlobals->curtime;
-				}
-
-				PrimaryAttack();
-
-				if (AutoFiresFullClip())
-				{
-					m_bFiringWholeClip = true;
-				}
 
 #ifdef CLIENT_DLL
-				pOwner->SetFiredWeapon(true);
+			pOwner->SetFiredWeapon( true );
 #endif
-			}
 		}
-#ifdef GAME_DLL
+	}
+#if defined( GAME_DLL ) && !defined( BYTEMATCH_RETAIL )
 	}
 #endif
-
 
 	// -----------------------
 	//  Reload pressed / Clip Empty
 	// -----------------------
-	if ((pOwner->m_nButtons & IN_RELOAD) && UsesClipsForAmmo1() && !m_bInReload)
+	if ( ( pOwner->m_nButtons & IN_RELOAD ) && UsesClipsForAmmo1() && !m_bInReload ) 
 	{
 		// reload when reload is pressed, or if no buttons are down and weapon is empty.
 		Reload();
@@ -1785,7 +1798,7 @@ void CBaseCombatWeapon::ItemPostFrame(void)
 	if (!((pOwner->m_nButtons & IN_ATTACK) || (pOwner->m_nButtons & IN_ATTACK2) || (CanReload() && pOwner->m_nButtons & IN_RELOAD)))
 	{
 		// no fire buttons down or reloading
-		if (!ReloadOrSwitchWeapons() && (m_bInReload == false))
+		if ( !ReloadOrSwitchWeapons() && ( m_bInReload == false ) )
 		{
 			WeaponIdle();
 		}
@@ -2593,8 +2606,10 @@ IMPLEMENT_NETWORKCLASS_ALIASED( BaseCombatWeapon, DT_BaseCombatWeapon )
 //-----------------------------------------------------------------------------// 
 BEGIN_DATADESC( CBaseCombatWeapon )
 
-	DEFINE_FIELD(m_bLowered, FIELD_BOOLEAN),
-	DEFINE_FIELD(m_flRaiseTime, FIELD_TIME),
+#ifndef BYTEMATCH_RETAIL
+	DEFINE_FIELD( m_bLowered, FIELD_BOOLEAN ),
+	DEFINE_FIELD( m_flRaiseTime, FIELD_TIME ),
+#endif
 
 	DEFINE_FIELD( m_flNextPrimaryAttack, FIELD_TIME ),
 	DEFINE_FIELD( m_flNextSecondaryAttack, FIELD_TIME ),

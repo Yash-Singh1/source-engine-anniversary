@@ -422,7 +422,7 @@ void CHudCredits::DrawLogo( void )
 	{
 		Q_snprintf( szLogoFont, sizeof( szLogoFont ), "WeaponIcons_Small" );
 	}
-	else if ( hl2_episodic.GetBool() )
+	else if ( IsHL2Episodic() )
 	{
 		Q_snprintf( szLogoFont, sizeof( szLogoFont ), "ClientTitleFont" );
 	}
