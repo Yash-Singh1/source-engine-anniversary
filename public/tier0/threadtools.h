@@ -429,6 +429,12 @@ template <class T = intp>
 		COMPILE_TIME_ASSERT( sizeof(T) >= sizeof(int) );
 	}
 
+	CThreadLocalInt( int i )
+	{
+		COMPILE_TIME_ASSERT( sizeof(T) >= sizeof(int) );
+		this->Set( (T)i );
+	}
+
 	operator const int() const { return (int)this->Get(); }
 	int	operator=( int i ) { this->Set( (intp)i ); return i; }
 
@@ -488,6 +494,7 @@ template <class T = intp>
 
 #endif // NO_THREAD_LOCAL
 #endif // !__AFXTLS_H__
+
 
 //-----------------------------------------------------------------------------
 //
@@ -640,6 +647,61 @@ public:
 private:
 	CInterlockedInt* mCounter;
 };
+
+//-----------------------------------------------------------------------------
+// g_nThreadID: a dense index in [0, MAX_THREADS_SUPPORTED) for code that keeps
+// per-thread arrays. Indices are per module (not exported by tier0, unlike the
+// CS:GO tier0) and are released when the thread exits. Needs C++11
+// thread_local, which the 10.6-targeted i386 OSX build lacks.
+//-----------------------------------------------------------------------------
+#if defined( _X360 ) || defined( _PS3 )
+#define MAX_THREADS_SUPPORTED 16
+#else
+#define MAX_THREADS_SUPPORTED 32
+#endif
+
+#if !( defined( OSX ) && !defined( PLATFORM_64BITS ) )
+namespace ThreadIndexInternal
+{
+	inline CInterlockedInt *Slots()
+	{
+		static CInterlockedInt s_Slots[MAX_THREADS_SUPPORTED];
+		return s_Slots;
+	}
+
+	struct CThreadIndex
+	{
+		int m_nIndex;
+		CThreadIndex() : m_nIndex( -1 ) {}
+		~CThreadIndex() { if ( m_nIndex >= 0 ) Slots()[m_nIndex] = 0; }
+		int Get()
+		{
+			if ( m_nIndex < 0 )
+			{
+				for ( int i = 0; i < MAX_THREADS_SUPPORTED; i++ )
+				{
+					if ( Slots()[i].AssignIf( 0, 1 ) )
+					{
+						m_nIndex = i;
+						break;
+					}
+				}
+				if ( m_nIndex < 0 )
+					Error( "More than %d threads need a thread index\n", MAX_THREADS_SUPPORTED );
+			}
+			return m_nIndex;
+		}
+	};
+
+	inline int Current()
+	{
+		static thread_local CThreadIndex s_Index;
+		return s_Index.Get();
+	}
+}
+
+#define g_nThreadID ( ThreadIndexInternal::Current() )
+#endif
 
 
 //-----------------------------------------------------------------------------

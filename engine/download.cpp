@@ -924,7 +924,7 @@ void CDownloadManager::StartNewDownload()
 		m_lastPercent = 0;
 
 		// Start the thread
-		uintp threadID;
+		ThreadId_t threadID;
 		VCRHook_CreateThread(NULL, 0, 
 #ifdef POSIX
 			(void *)
@@ -1072,12 +1072,12 @@ class CDownloadSystem : public IDownloadSystem
 public:
 	virtual uintp CreateDownloadThread( RequestContext_t *pContext )
 	{
-		uintp nThreadID;
+		ThreadId_t nThreadID;
 		VCRHook_CreateThread(NULL, 0,
 #ifdef POSIX
 		 	(void*)
 #endif
-		 	DownloadThread, pContext, 0, (uintp *)&nThreadID );
+		 	DownloadThread, pContext, 0, &nThreadID );
 
 		ReleaseThreadHandle( ( ThreadHandle_t )nThreadID );
 		return nThreadID;

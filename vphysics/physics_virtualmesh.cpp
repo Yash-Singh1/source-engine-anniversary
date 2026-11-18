@@ -375,7 +375,7 @@ static void FlushFrameLocks()
 		}
 		pLocks->RemoveAll();
 		g_MeshFrameLocksPool.PutObject( g_pMeshFrameLocks );
-		g_pMeshFrameLocks = NULL;
+		g_pMeshFrameLocks = (int)NULL;
 	}
 }
 
