@@ -29,6 +29,8 @@ without the stab nlists and stab strings (see lduuid.py).
 
   identity.py inputsystem                  rebuild and compare one module
   identity.py --all                        every dylib in link_commands.json
+  identity.py --identical                  the modules in identical.json; fails unless each
+                                           output equals retail byte for byte (see ci.sh)
 
 The scratch tree (<build-dir>/identity/roots/<module>) is kept for inspection;
 compiled objects are cached in <build-dir>/identity/cache.
@@ -53,6 +55,7 @@ import machocmp  # noqa: E402
 MANIFEST = os.path.join(TREE, 'devtools', 'bytematch', 'manifests', 'retail-osx32.json')
 MODULE_DIR = os.path.join(TREE, 'devtools', 'bytematch', 'manifests', 'modules')
 ALIASES = os.path.join(HERE, 'aliases.json')
+IDENTICAL = os.path.join(HERE, 'identical.json')
 
 XCODE = '/Applications/Xcode.app/Contents/Developer/'
 VALVE_SDK = XCODE + 'Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/'
@@ -434,6 +437,8 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('targets', nargs='*', help='waf target names (inputsystem, tier0, vgui2, ...)')
     ap.add_argument('--all', action='store_true', help='every dylib in link_commands.json')
+    ap.add_argument('--identical', action='store_true',
+                    help='the modules in identical.json; exit 1 unless every output equals retail (cmp)')
     ap.add_argument('--build-dir', default=os.path.join(TREE, 'build-retail'))
     ap.add_argument('--scratch', default=None, help='scratch tree [default: <build-dir>/identity]')
     ap.add_argument('--depot', default=None, help='retail depot 223 build root')
@@ -449,8 +454,13 @@ def main():
     os.makedirs(scratch, exist_ok=True)
     manifest = load_manifest()
     targets = args.targets
+    expect = {}
     if args.all:
         targets = [e['target'] for e in build.links if e['kind'].endswith('shlib') or e['kind'].endswith('program')]
+    if args.identical:
+        with open(IDENTICAL) as f:
+            expect = dict((e['target'], e) for e in json.load(f)['modules'])
+        targets = list(expect)
     if not targets:
         ap.error('no targets')
     shim = build_shim(scratch)
@@ -475,6 +485,15 @@ def main():
         cargs = argparse.Namespace(symbols=args.symbols, verbose=False, max=60)
         status, lines = machocmp.compare(a, b, cargs)
         log('\n'.join(lines))
+        if t in expect:
+            with open(m.retail, 'rb') as f:
+                digest = hashlib.sha256(f.read()).hexdigest()
+            if digest != expect[t]['sha256']:
+                summary.append((t, 'failed', 'retail file %s is not the recorded one (sha256 %s)' % (m.retail, digest)))
+                rc = 1
+                continue
+            if subprocess.run(['cmp', '-s', out, m.retail]).returncode:
+                status = status or 1
         summary.append((t, 'IDENTICAL' if status == 0 else 'differs', out))
         rc |= status
     log('')
