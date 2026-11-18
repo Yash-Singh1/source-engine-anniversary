@@ -91,8 +91,9 @@ def tokenize(line):
 
 
 class Project:
-    def __init__(self, srcroot, vpc, conditionals=WIN32_RETAIL, config="Release", macros=None):
+    def __init__(self, srcroot, vpc, conditionals=WIN32_RETAIL, config="Release", macros=None, include_alias=None):
         self.srcroot = os.path.abspath(srcroot)
+        self.include_alias = include_alias or {}  # directory prefix -> directory includes come from instead
         self.vpc = os.path.abspath(vpc)
         self.projdir = os.path.dirname(self.vpc)
         self.config = config
@@ -158,6 +159,9 @@ class Project:
         return p
 
     def _parse_file(self, path):
+        for src, dst in self.include_alias.items():
+            if path.startswith(src + os.sep):
+                path = dst + path[len(src):]
         if not os.path.exists(path):
             # VPC paths are case-insensitive on Windows.
             path = case_lookup(path) or path

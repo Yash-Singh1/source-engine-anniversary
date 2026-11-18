@@ -28,6 +28,9 @@ def _load_ours(args):
         raise SystemExit(f'error: no functions found in {args.ours}')
     if any(m.fmt == 'coff' for m in mods):
         winmap.add_sig_aliases([f for f in funcs if f.module.fmt == 'coff'])
+    for m in getattr(args, 'ours_link_map', None) or ():
+        n = winmap.load_link_map(m)
+        print(f'{n} folded groups from {m}', file=sys.stderr)
     return mods, funcs
 
 
@@ -240,6 +243,8 @@ def main(argv=None):
             sp.add_argument('--ours', required=True, help='our object, archive, linked module or build directory')
         sp.add_argument('--retail-map', action='append', help='address->name map for the retail module (repeatable)')
         sp.add_argument('--ours-map', action='append', help='address->name map for linked ours modules')
+        sp.add_argument('--ours-link-map', action='append',
+                        help='MSVC link /MAP of our module: names it folded together (/OPT:ICF) count as one call target')
         sp.add_argument('--retail-object', action='append',
                         help='limit retail scope to debug-map objects whose stem equals or path contains this (repeatable)')
         sp.add_argument('--all-retail', action='store_true', help='judge against every retail function, not just our objects')

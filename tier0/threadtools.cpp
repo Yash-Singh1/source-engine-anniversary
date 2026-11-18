@@ -1700,7 +1700,7 @@ CThread::~CThread()
 		{
 			Msg( "Illegal termination of worker thread! Threads must negotiate an end to the thread before the CThread object is destroyed.\n" ); 
 #ifdef _WIN32
-
+#line 1667
 			DoNewAssertDialog( __FILE__, __LINE__, "Illegal termination of worker thread! Threads must negotiate an end to the thread before the CThread object is destroyed.\n" );
 #endif
 			if ( GetCurrentCThread() == this )

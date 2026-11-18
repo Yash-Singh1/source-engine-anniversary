@@ -24,6 +24,10 @@ UNDNAME_CANDIDATES = ('llvm-undname', '/opt/homebrew/opt/llvm/bin/llvm-undname',
 # consults it so a call to ?Foo@@... matches a retail target known only as sig:Foo(...).
 EQUIV = {}
 
+# canonical name -> names our own link (/OPT:ICF) folded onto the same address, from
+# link /MAP files; compare.check_targets accepts a retail target in the same group.
+FOLDED = {}
+
 _CC = re.compile(r'\b__(?:thiscall|cdecl|stdcall|fastcall|vectorcall|clrcall|ptr32|ptr64)\b')
 _ACCESS = re.compile(r'^(?:public|private|protected): ')
 _KW = re.compile(r'\b(?:class|struct|union|enum) ')
@@ -140,6 +144,28 @@ def add_sig_aliases(funcs):
         k = sig(d)
         if k:
             EQUIV.setdefault(n, k)
+
+
+_MAP_PUBLIC = re.compile(r'^\s*[0-9a-fA-F]{4}:[0-9a-fA-F]{8}\s+(\S+)\s+([0-9a-fA-F]{8})\s+f\b')
+
+
+def load_link_map(path):
+    """Fill FOLDED from an MSVC link /MAP file: code symbols that share an address."""
+    from .model import canonical
+    at = {}
+    with open(path, errors='replace') as f:
+        for line in f:
+            m = _MAP_PUBLIC.match(line)
+            if m:
+                at.setdefault(int(m.group(2), 16), []).append(m.group(1))
+    groups = [g for g in at.values() if len(g) > 1]
+    dem = undname({n for g in groups for n in g})
+    for g in groups:
+        keys = {canonical('coff', n) for n in g}
+        keys |= {k for k in (sig(dem[n]) for n in g if n in dem) if k}
+        for k in keys:
+            FOLDED.setdefault(k, set()).update(keys)
+    return len(groups)
 
 
 def read_rows(doc, min_conf=0.0):

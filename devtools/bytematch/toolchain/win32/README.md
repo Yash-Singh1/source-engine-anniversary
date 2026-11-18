@@ -23,13 +23,29 @@ Needs `msiextract`, `cabextract` and `7zz`/`7z` (`brew install msitools cabextra
 T=devtools/bytematch/toolchain/win32
 $T/fetch-msvc2013.py        # ~400 MB of HTTP range reads from the 3.5 GB ISO; every file sha256-checked
 $T/setup-wine.py            # wine, prefix, native msxml6
+$T/build-thirdparty.py      # stand-in cryptlib.lib (Crypto++ 5.6.1) and libpng.lib (1.5.2)
 $T/make-manifest.py         # optional: regenerate devtools/bytematch/manifests/retail-win32.json (needs hl2_src)
-git -c protocol.file.allow=always submodule update --init thirdparty
+git -c protocol.file.allow=always submodule update --init
 
-python3 waf configure --retail-win32 -o build-win32      # --retail-win32-modules=tier0,vstdlib,...
-python3 waf build -j12
-$T/report-modules.py --build build-win32 [--mac-build build-retail]
+WAFLOCK=.lock-waf-win python3 waf configure --retail-win32 -o build-win32   # --retail-win32-modules=tier0,vstdlib,...
+WAFLOCK=.lock-waf-win python3 waf build -j12
+$T/report-modules.py --build build-win32 [--mac-build build-retail --mac-game-build hl2=DIR ...]
+$T/win32-cc.py MODULE FILE.cpp --retail [--against engine] [--symbol NAME]   # one file vs retail
 ```
+
+The default module set is every first-party depot 222 module the macOS build
+covers: the eight engine-side DLLs above plus filesystem_stdio, materialsystem,
+shaderapidx9 (Valve's Win32 file set: real D3D9, no ToGL), stdshader_dx9,
+vgui2, vguimatsurface, GameUI, ServerBrowser, vphysics, replay, launcher,
+hl2.exe (`launcher_main`, linked as `default.exe`), and the hl2 and episodic
+`client`/`server` (`client_hl2`, ..., in per-module directories since both
+games build `game/client/client.dll`). A full build is about 400 cl batches
+and several hours under heavy load.
+
+`WAFLOCK` keeps each build directory's lock file apart, so a `--retail-osx32`
+build (`WAFLOCK=.lock-waf-mac ... -o build-retail`) can be configured and run
+alongside. The output directory may live outside the tree (`-o /abs/path`);
+wine sees every host path as `Z:\...`.
 
 `fetch-msvc2013.py` verifies 19 downloaded packages and then 20 key files of
 the assembled tree (`versions.EXPECTED`); a fresh run reproduced the survey's
@@ -113,6 +129,10 @@ Not Valve's, and why:
 | no `telemetry32.link` | RAD Telemetry is proprietary; this tree stubs telemetry out |
 | `jpeglib` built here | retail links an older VS2010 SP1 libjpeg prebuilt |
 | no `socketlib` | not in hl2_src |
+| `cryptlib.lib`, `libpng.lib` from `build-thirdparty.py` | Valve's prebuilts aren't available; same pinned Crypto++ 5.6.1 / libpng 1.5.2 sources as the macOS stand-ins |
+| `libprotobuf.lib`, `libcurl.lib`, `libz.lib` from Source SDK 2013 | the period prebuilts (thirdparty-static.md) |
+| ivp libraries from the ivp submodule's VPCs | hl2_src has no ivp tree; `hk_math` also gets `ivp/ivp_utility` (the fork's `vector_fpu.inl` includes `ivu_types.hxx`) |
+| `/MAP` | side file only; tells the matcher which call targets `/OPT:ICF` folded |
 
 ## Docker
 
@@ -127,7 +147,12 @@ system wine and `$WINEPREFIX`.
 - `fetch-msvc2013.py`, `setup-wine.py`, `msvc.py`: toolchain and runner
 - `vpc.py`, `make-manifest.py`: VPC evaluation and the module manifest
 - `msvc2013_compat.h`: force-included C++11 spellings
-- `report-modules.py`, `link-order.py`: match summary with macOS cross-check, link order check
+- `build-thirdparty.py`: stand-in Crypto++ and libpng archives
+- `win32-cc.py`: compile one file with its module's switches and diff it against retail
+- `report-modules.py`, `link-order.py`: match summary with macOS cross-check, link order check.
+  Symbol-port maps beyond the survey's eight modules (`--maps DIR`, repeatable) come from
+  the survey's `symbols/` pipeline run with the new modules and this build's objects as
+  exact-byte anchors.
 - `docker/`: Linux image
 
 ## Licenses

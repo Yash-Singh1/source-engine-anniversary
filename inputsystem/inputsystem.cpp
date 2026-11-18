@@ -1068,11 +1068,22 @@ void CInputSystem::StopRumble( void )
 		}
 	}
 #else
+#ifdef _WIN32
+	if ( !m_bSteamController )
+	{
+		for ( int i = 0; i < XUSER_MAX_COUNT; ++i )
+		{
+			SetRumble( 0.0, 0.0, i );
+		}
+		return;
+	}
+#endif
 	for ( int i = 0; i < XUSER_MAX_COUNT; ++i )
 	{
 		SetXDeviceRumble( 0.0, 0.0, i );
 	}
 #endif
+#line 1071
 }
 
 

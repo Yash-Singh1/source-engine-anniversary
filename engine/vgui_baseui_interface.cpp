@@ -108,6 +108,7 @@
 #include "host.h"
 #include "modelloader.h"
 void CL_GetBackgroundLevelName( char *pszBackgroundName, int bufSize, bool bMapName );
+#undef CreateEvent
 #endif
 #line 107
 #include "tier0/memdbgon.h"
