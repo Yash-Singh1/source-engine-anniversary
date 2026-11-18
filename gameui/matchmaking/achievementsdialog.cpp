@@ -503,24 +503,12 @@ public:
 	}
 };
 
-#ifdef BYTEMATCH_RETAIL
-//----------------------------------------------------------
-// Anniversary IAchievementMgr slots 11 and 12. The game DLLs of this tree
-// do not implement them yet, so only the retail build calls them.
-//----------------------------------------------------------
-abstract_class IAchievementMgrAnniversary : public IAchievementMgr
-{
-public:
-	virtual bool IsAchievementInCurrentGame( int iAchievementID ) = 0;
-	virtual bool IsAchievementInGame( int iAchievementID, const char *pszGame ) = 0;
-};
-#endif
-
+// Game DLLs built against the older IAchievementMgr lack the expansion filters
 static inline bool IsAchievementInGame( int iAchievementID, CUtlString &strOverrideMod )
 {
 #ifdef BYTEMATCH_RETAIL
-	return strOverrideMod.Length() ? static_cast< IAchievementMgrAnniversary * >( achievementmgr )->IsAchievementInGame( iAchievementID, strOverrideMod.Get() )
-								   : static_cast< IAchievementMgrAnniversary * >( achievementmgr )->IsAchievementInCurrentGame( iAchievementID );
+	return strOverrideMod.Length() ? achievementmgr->CanEarnForExpansion( iAchievementID, strOverrideMod.Get() )
+								   : achievementmgr->CanEarnForCurrentExpansion( iAchievementID );
 #else
 	return true;
 #endif

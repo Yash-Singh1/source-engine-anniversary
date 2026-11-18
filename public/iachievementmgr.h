@@ -46,7 +46,10 @@ public:
 	virtual void SaveGlobalStateIfDirty( bool bAsync ) = 0;
 	virtual bool HasAchieved( const char *pchName ) = 0;
 	virtual bool WereCheatsEverOn() = 0;
+	virtual bool CanEarnForCurrentExpansion( int iAchievementID ) = 0;
+	virtual bool CanEarnForExpansion( int iAchievementID, const char *pszModName ) = 0;
 };
+#line 50
 
 // flags for IAchievement::GetFlags
 
