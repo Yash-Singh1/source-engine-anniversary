@@ -1248,7 +1248,11 @@ int CHardwareConfig::GetMaxVertexTextureDimension() const
 
 HDRType_t CHardwareConfig::GetHDRType() const
 {
+#ifdef BYTEMATCH_RETAIL
+	bool enabled = m_bHDREnabled;
+#else
 	bool enabled = (mat_hdr_level.GetInt() >= 2) && GetHDREnabled();
+#endif
 	int dxlev = GetDXSupportLevel();
 	int dxsupp = dxlev >= 90;
 	HDRType_t caps_hdr = m_Caps.m_HDRType;

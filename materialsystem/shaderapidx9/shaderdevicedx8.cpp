@@ -562,7 +562,11 @@ void CShaderDeviceMgrDx8::CheckVendorDependentAlphaToCoverage( HardwareCaps_t *p
 ConVar mat_hdr_level( "mat_hdr_level", "2", FCVAR_ARCHIVE );
 ConVar mat_slopescaledepthbias_shadowmap( "mat_slopescaledepthbias_shadowmap", "16", FCVAR_CHEAT );
 #ifdef DX_TO_GL_ABSTRACTION
+#ifdef BYTEMATCH_RETAIL
+ConVar mat_depthbias_shadowmap(	"mat_depthbias_shadowmap", "20", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY );
+#else
 ConVar mat_depthbias_shadowmap(	"mat_depthbias_shadowmap", "40", FCVAR_CHEAT );
+#endif
 #else
 ConVar mat_depthbias_shadowmap(	"mat_depthbias_shadowmap", "0.0005", FCVAR_CHEAT  );
 #endif
@@ -1059,7 +1063,11 @@ bool CShaderDeviceMgrDx8::ComputeCapsFromD3D( HardwareCaps_t *pCaps, int nAdapte
 		pCaps->m_SupportsVertexShaders_2_0 &&
 		//		(caps.Caps3 & D3DCAPS3_ALPHA_FULLSCREEN_FLIP_OR_DISCARD) &&
 		//		(caps.PrimitiveMiscCaps & D3DPMISCCAPS_SEPARATEALPHABLEND) &&
+#ifdef BYTEMATCH_RETAIL
+		( bSupportsInteger16Textures || bSupportsFloat16Textures ) &&
+#else
 		bSupportsInteger16Textures &&
+#endif
 		pCaps->m_SupportsSRGB;
 
 	// Do we have everything necessary to run with float HDR?
