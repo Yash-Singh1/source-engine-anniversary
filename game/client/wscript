@@ -86,13 +86,11 @@ def build(bld):
 	if bld.env.DEST_OS == 'win32':
 		libs += ['USER32']
 
-	retail_module = None
+	# In retail mode the manifest (RETAIL_SELECT) replaces these with retail's file set.
+	source = [ 'in_touch.cpp' ] + game["sources"] + ['../../public/tier0/memoverride.cpp']
+	retail_module = '%s/%s' % (bld.env.GAMES, PROJECT_NAME) if retail else None
 	if retail:
-		retail_module = '%s/%s' % (bld.env.GAMES, PROJECT_NAME)
 		libs += ['JPEG', 'PNG']
-		source, libs = bld.retail_manifest(retail_module, bld.retail_manifest_sources(retail_module), libs)
-	else:
-		source = [ 'in_touch.cpp' ] + game["sources"] + ['../../public/tier0/memoverride.cpp']
 	includes += game["includes"]
 	defines = game["defines"]
 
