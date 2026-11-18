@@ -218,6 +218,16 @@ public:
 	virtual ThreadId_t GetRenderThreadId() const = 0 ;
 
 	virtual IMaterialProxy	*DetermineProxyReplacements( IMaterial *pMaterial, KeyValues *pFallbackKeyValues ) = 0;
+
+	// Texture streaming and compositing helpers; not part of the retail IMaterialSystem.
+	// Loads the texture with the specified name, calls pRecipient->OnAsyncFindComplete with the result from the main thread.
+	virtual void AsyncFindTexture( const char* pFilename, const char *pTextureGroupName, IAsyncTextureOperationReceiver* pRecipient, void* pExtraArgs, bool bComplain = true, int nAdditionalCreationFlags = 0 ) = 0;
+
+	// Pretend to be in render target allocation mode at the beginning of time.
+	virtual void OverrideRenderTargetAllocation( bool rtAlloc ) = 0;
+
+	// Creates a named texture from a raw stream of bits; the bits can be freed upon return.
+	virtual ITexture* CreateNamedTextureFromBitsEx( const char* pName, const char *pTextureGroupName, int w, int h, int mips, ImageFormat fmt, int srcBufferSize, byte* srcBits, int nFlags ) = 0;
 };
 
 

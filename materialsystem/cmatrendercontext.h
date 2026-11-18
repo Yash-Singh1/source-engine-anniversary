@@ -538,6 +538,9 @@ public:
 
 	virtual void							AsyncCreateTextureFromRenderTarget( ITexture* pSrcRt, const char* pDstName, ImageFormat dstFmt, bool bGenMips, int nAdditionalCreationFlags, IAsyncTextureOperationReceiver* pRecipient, void* pExtraArgs );
 
+	void									FogRadial( bool bRadial )											{ g_pShaderAPI->SceneFogRadial( bRadial ); }
+	bool									GetFogRadial()														{ return g_pShaderAPI->GetSceneFogRadial(); }
+
 	virtual void							AsyncMap( ITextureInternal* pTexToMap, IAsyncTextureOperationReceiver* pRecipient, void* pExtraArgs ) OVERRIDE;
 	virtual void							AsyncUnmap( ITextureInternal* pTexToUnmap ) OVERRIDE;
 	virtual void							AsyncCopyRenderTargetToStagingTexture( ITexture* pDst, ITexture* pSrc, IAsyncTextureOperationReceiver* pRecipient, void* pExtraArgs ) OVERRIDE;

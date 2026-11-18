@@ -469,11 +469,11 @@ public:
 																				unsigned int textureFlags = TEXTUREFLAGS_CLAMPS | TEXTUREFLAGS_CLAMPT,
 																				unsigned int renderTargetFlags = 0 );
 
-	virtual ITexture*			CreateTextureFromBits(int w, int h, int mips, ImageFormat fmt, int srcBufferSize, byte* srcBits);
+	ITexture*					CreateTextureFromBits(int w, int h, int mips, ImageFormat fmt, int srcBufferSize, byte* srcBits);
 
-	virtual void				OverrideRenderTargetAllocation( bool rtAlloc );
+	virtual void				OverrideRenderTargetAllocation( bool rtAlloc ) OVERRIDE;
 
-	virtual ITextureCompositor*	NewTextureCompositor( int w, int h, const char* pCompositeName, int nTeamNum, uint64 randomSeed, KeyValues* stageDesc, uint32 texCompositeCreateFlags ) OVERRIDE;
+	ITextureCompositor*			NewTextureCompositor( int w, int h, const char* pCompositeName, int nTeamNum, uint64 randomSeed, KeyValues* stageDesc, uint32 texCompositeCreateFlags = 0 );
 	void						ScheduleTextureComposite( CTextureCompositor* _texCompositor );
 
 
@@ -483,8 +483,10 @@ public:
 	virtual void				AsyncFindTexture( const char* pFilename, const char *pTextureGroupName, IAsyncTextureOperationReceiver* pRecipient, void* pExtraArgs, bool bComplain = true, int nAdditionalCreationFlags = 0 ) OVERRIDE;
 	virtual ITexture*			CreateNamedTextureFromBitsEx( const char* pName, const char *pTextureGroupName, int w, int h, int mips, ImageFormat fmt, int srcBufferSize, byte* srcBits, int nFlags ) OVERRIDE;
 
-	virtual bool				AddTextureCompositorTemplate( const char* pName, KeyValues* pTmplDesc, int nTexCompositeTemplateFlags = 0 ) OVERRIDE;
-	virtual bool				VerifyTextureCompositorTemplates() OVERRIDE;
+	bool						AddTextureCompositorTemplate( const char* pName, KeyValues* pTmplDesc, int nTexCompositeTemplateFlags = 0 );
+	bool						VerifyTextureCompositorTemplates();
+
+	virtual RenderBackend_t		GetRenderBackend() const OVERRIDE;
 
 
 
@@ -631,6 +633,7 @@ private:
 	//---------------------------------
 
 	char *									m_pShaderDLL;
+	RenderBackend_t							m_eRenderBackend;
 	CSysModule *							m_ShaderHInst; // Used to dynamically load the shader DLL
 	CreateInterfaceFn						m_ShaderAPIFactory;
 

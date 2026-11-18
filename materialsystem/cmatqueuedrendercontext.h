@@ -102,6 +102,7 @@ public:
 		m_WidthBackBuffer( 0 ), 
 		m_HeightBackBuffer( 0 ),
 		m_FogMode( MATERIAL_FOG_NONE ),
+		m_bFogRadial( false ),
 		m_flFogStart( 0 ),
 		m_flFogEnd( 0 ),
 		m_flFogZ( 0 ),
@@ -406,7 +407,18 @@ public:
 	{
 		OnAsyncCreateTextureFromRenderTarget( pSrcRt, &pDstName, pRecipient );
 
-		m_queue.QueueCall( m_pHardwareContext, &IMatRenderContext::AsyncCreateTextureFromRenderTarget, pSrcRt, pDstName, dstFmt, bGenMips, nAdditionalCreationFlags, pRecipient, pExtraArgs );
+		m_queue.QueueCall( m_pHardwareContext, &IMatRenderContextInternal::AsyncCreateTextureFromRenderTarget, pSrcRt, pDstName, dstFmt, bGenMips, nAdditionalCreationFlags, pRecipient, pExtraArgs );
+	}
+
+	virtual void							FogRadial( bool bRadial ) OVERRIDE
+	{
+		m_bFogRadial = bRadial;
+		m_queue.QueueCall( m_pHardwareContext, &IMatRenderContext::FogRadial, bRadial );
+	}
+
+	virtual bool							GetFogRadial() OVERRIDE
+	{
+		return m_bFogRadial;
 	}
 
 	virtual void							AsyncMap( ITextureInternal* pTexToMap, IAsyncTextureOperationReceiver* pRecipient, void* pExtraArgs ) OVERRIDE
@@ -613,6 +625,7 @@ private:
 	int m_WidthBackBuffer, m_HeightBackBuffer;
 	int m_nBoneCount;
 	MaterialFogMode_t m_FogMode;
+	bool m_bFogRadial;
 	float m_flFogStart;
 	float m_flFogEnd;
 	float m_flFogZ;
