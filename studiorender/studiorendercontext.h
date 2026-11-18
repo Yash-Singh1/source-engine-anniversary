@@ -156,7 +156,7 @@ public:
 	virtual void UnlockBoneMatrices();
 	virtual void LockFlexWeights( int nWeightCount, float **ppFlexWeights, float **ppFlexDelayedWeights = NULL );
 	virtual void UnlockFlexWeights();
-	virtual void GetMaterialOverride( IMaterial** ppOutForcedMaterial, OverrideType_t* pOutOverrideType );
+	void GetMaterialOverride( IMaterial** ppOutForcedMaterial, OverrideType_t* pOutOverrideType );
 
 	// Other public methods
 public:

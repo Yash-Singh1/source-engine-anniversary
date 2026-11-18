@@ -814,8 +814,6 @@ public:
 		const Vector& decalUp, int decalIndex, int body, bool noPokethru = false, int maxLODToDecal = ADDDECAL_TO_ALL_LODS );
 	virtual void AddColoredDecal( ModelInstanceHandle_t handle, Ray_t const& ray, 
 		const Vector& decalUp, int decalIndex, int body, Color cColor, bool noPokethru = false, int maxLODToDecal = ADDDECAL_TO_ALL_LODS );
-	
-	virtual void GetMaterialOverride( IMaterial** ppOutForcedMaterial, OverrideType_t* pOutOverrideType );
 
 	// Removes all the decals on a model instance
 	virtual void RemoveAllDecals( ModelInstanceHandle_t handle );
@@ -4527,11 +4525,6 @@ void CModelRender::AddColoredDecal( ModelInstanceHandle_t handle, Ray_t const& r
 	AddDecalInternal( handle, ray, decalUp, decalIndex, body, true, cColor, noPokeThru, maxLODToDecal );
 }
 
-//-----------------------------------------------------------------------------
-void CModelRender::GetMaterialOverride( IMaterial** ppOutForcedMaterial, OverrideType_t* pOutOverrideType )
-{
-	g_pStudioRender->GetMaterialOverride( ppOutForcedMaterial, pOutOverrideType );
-}
 
 //-----------------------------------------------------------------------------
 void CModelRender::AddDecalInternal( ModelInstanceHandle_t handle, Ray_t const& ray, 

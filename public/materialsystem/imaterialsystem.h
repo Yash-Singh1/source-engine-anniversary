@@ -1540,9 +1540,12 @@ public:
 
 template< class E > inline E* IMatRenderContext::LockRenderDataTyped( int nCount, const E* pSrcData )
 {
-	E *pDstData = (E*)LockRenderData( nCount*sizeof(E) );
+	int nSizeInBytes = nCount * sizeof(E);
+	E *pDstData = (E*)LockRenderData( nSizeInBytes );
 	if ( pSrcData && pDstData )
-		memutils::copy( pDstData, pSrcData, nCount );
+	{
+		memcpy( pDstData, pSrcData, nSizeInBytes );
+	}
 	return pDstData;
 }
 
@@ -1725,7 +1728,7 @@ class CMatRenderContextPtr : public CRefPtr<IMatRenderContext>
 {
 	typedef CRefPtr<IMatRenderContext> BaseClass;
 public:
-	CMatRenderContextPtr() = default;
+	CMatRenderContextPtr()																					{}
 	CMatRenderContextPtr( IMatRenderContext *pInit )			: BaseClass( pInit )						{ if ( BaseClass::m_pObject ) BaseClass::m_pObject->BeginRender(); }
 	CMatRenderContextPtr( IMaterialSystem *pFrom )				: BaseClass( pFrom->GetRenderContext() )	{ if ( BaseClass::m_pObject ) BaseClass::m_pObject->BeginRender(); }
 	~CMatRenderContextPtr()																					{ if ( BaseClass::m_pObject ) BaseClass::m_pObject->EndRender(); }
