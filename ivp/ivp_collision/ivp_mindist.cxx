@@ -50,7 +50,11 @@
 
 IVP_Mindist_Settings ivp_mindist_settings;
 
+#ifdef BYTEMATCH_RETAIL
+void IVP_Mindist_Settings::set_collision_tolerance(IVP_DOUBLE t, IVP_DOUBLE gravity_length){
+#else
 void IVP_Mindist_Settings::set_collision_tolerance(IVP_DOUBLE t){
+#endif
     real_coll_dist =                         0.1f * t;
     
     min_coll_dists = real_coll_dist        + 0.9f * t;
@@ -63,7 +67,11 @@ void IVP_Mindist_Settings::set_collision_tolerance(IVP_DOUBLE t){
 
     keeper_dist = friction_dist + 0.3f * t;
 
+#ifdef BYTEMATCH_RETAIL
+    speed_after_keeper_dist = IVP_Inline_Math::sqrtd( 2.0f * (keeper_dist - min_coll_dists) * gravity_length ); //speed when falling down from keeper dist to coll dist
+#else
     speed_after_keeper_dist = IVP_Inline_Math::ivp_sqrtf( 2.0f * (keeper_dist - min_coll_dists) * 9.81f ); //speed when falling down from keeper dist to coll dist
+#endif
     distance_keepers_safety = 0.01f * t; 			//safety gap, when surpassed, mindist doesnt appear in complex
     max_distance_for_friction = friction_dist + 2.5f * t;
     max_distance_for_impact_system = friction_dist + 20.0f * t;
@@ -78,7 +86,11 @@ void IVP_Mindist_Settings::set_event_queue_min_delta_time_base(IVP_DOUBLE base){
 }
 
 IVP_Mindist_Settings::IVP_Mindist_Settings(){
+#ifdef BYTEMATCH_RETAIL
+    set_collision_tolerance( 0.01f, 9.81f );
+#else
     set_collision_tolerance( 0.01f );
+#endif
 	set_event_queue_min_delta_time_base(1.0f);
 	max_spawned_mindist_count = 1000;
 }

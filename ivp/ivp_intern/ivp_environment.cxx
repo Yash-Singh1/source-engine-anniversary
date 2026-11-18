@@ -1024,7 +1024,11 @@ void IVP_Environment::simulate_psi(IVP_Time /*psi_time*/){
 }
 
 void IVP_Environment::set_global_collision_tolerance( IVP_DOUBLE tolerance, IVP_DOUBLE gravity_length ){
+#ifdef BYTEMATCH_RETAIL
+    ivp_mindist_settings.set_collision_tolerance( tolerance, gravity_length );
+#else
     ivp_mindist_settings.set_collision_tolerance( tolerance );
+#endif
     // CRACK - lol. according to both IDA and Ghidra, nothing is done with gravity_length
 }
 
