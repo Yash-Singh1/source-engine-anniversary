@@ -2385,7 +2385,12 @@ void SV_InitGameServerSteam()
 {
 	if ( sv.IsMultiplayer() )
 	{
+#ifdef BYTEMATCH_RETAIL
+		Steam3Server().Activate();
+#else
 		Steam3Server().Activate( CSteam3Server::eServerTypeNormal );
+#endif
+#line 2054
 		sv.SetQueryPortFromSteamServer();
 		if ( serverGameDLL && g_iServerGameDLLVersion >= 6 )
 		{

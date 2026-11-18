@@ -1338,7 +1338,12 @@ CClientFrame *CHLTVServer::AddNewFrame( CClientFrame *clientFrame )
 
 			ConMsg("SourceTV relay active.\n" );
 
+#ifdef BYTEMATCH_RETAIL
+			Steam3Server().Activate();
+#else
 			Steam3Server().Activate( CSteam3Server::eServerTypeTVRelay );
+#endif
+#line 1342
 			Steam3Server().SendUpdatedServerDetails();
 		}
 		else

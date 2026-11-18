@@ -111,7 +111,10 @@ CSteam3Server::CSteam3Server()
 	m_bHasActivePlayers = false;
 	m_bLogOnResult = false;
 	m_eServerMode = eServerModeInvalid;
+#ifndef BYTEMATCH_RETAIL
 	m_eServerType = eServerTypeNormal;
+#endif
+#line 114
     m_bWantsSecure = false;		// default to insecure currently, this may change
     m_bInitialized = false;
 	m_bWantsPersistentAccountLogon = false;
@@ -151,6 +154,16 @@ CSteam3Server::~CSteam3Server()
 }
 
 
+#ifdef BYTEMATCH_RETAIL
+void CSteam3Server::Activate()
+{
+	// we are active, check if sv_lan changed
+	if ( GetCurrentServerMode() == m_eServerMode )
+	{
+		// we are active and LANmode didnt change. done.
+		return;
+	}
+#else
 void CSteam3Server::Activate( EServerType serverType )
 {
 	// we are active, check if sv_lan changed or we're trying to change server type
@@ -159,6 +172,8 @@ void CSteam3Server::Activate( EServerType serverType )
 		// we are active and LANmode/servertype didnt change. done.
 		return;
 	}
+#endif
+#line 161
 
 	if ( BIsActive() )
 	{
@@ -186,11 +201,45 @@ void CSteam3Server::Activate( EServerType serverType )
 	}
 
 	m_eServerMode = GetCurrentServerMode();
+#ifndef BYTEMATCH_RETAIL
 	m_eServerType = serverType;
+#endif
+#line 188
 
 	char gamedir[MAX_OSPATH];
 	Q_FileBase( com_gamedir, gamedir, sizeof( gamedir ) );
 
+#ifdef BYTEMATCH_RETAIL
+	// Figure out the game port. If we're doing a SrcTV relay, then ignore the NS_SERVER port and don't tell Steam that we have a game server.
+	uint16 usGamePort = 0;
+	if ( !( hltv && hltv->IsActive() && hltv->IsTVRelay() ) )
+	{
+		usGamePort = NET_GetUDPPort( NS_SERVER );
+	}
+
+	uint16 usSpectatorPort = 0;
+	if ( hltv && hltv->IsActive() )
+	{
+		usSpectatorPort = NET_GetUDPPort( NS_HLTV );
+	}
+
+	uint16 usMasterServerUpdaterPort;
+	if ( sv_master_share_game_socket.GetBool() )
+	{
+		m_bMasterServerUpdaterSharingGameSocket = true;
+		usMasterServerUpdaterPort = MASTERSERVERUPDATERPORT_USEGAMESOCKETSHARE;
+		if ( sv.IsActive() )
+			m_QueryPort = usGamePort;
+		else
+			m_QueryPort = usSpectatorPort;
+	}
+	else
+	{
+		m_bMasterServerUpdaterSharingGameSocket = false;
+		usMasterServerUpdaterPort = m_usPort;
+		m_QueryPort = m_usPort;
+	}
+#else
 	// Figure out the game port. If we're doing a SrcTV relay, then ignore the NS_SERVER port and don't tell Steam that we have a game server.
 	uint16 usGamePort = 0;
 	if ( serverType == eServerTypeNormal )
@@ -214,6 +263,8 @@ void CSteam3Server::Activate( EServerType serverType )
 		usMasterServerUpdaterPort = m_usPort;
 		m_QueryPort = m_usPort;
 	}
+#endif
+#line 221
 #ifndef _X360
 
 	switch ( m_eServerMode )
@@ -240,7 +291,12 @@ void CSteam3Server::Activate( EServerType serverType )
 			usGamePort,
 			usMasterServerUpdaterPort,
 			m_eServerMode,
+#ifdef BYTEMATCH_RETAIL
+			gpszVersionString ) )
+#else
 			GetSteamInfIDVersionInfo().szVersionString ) )
+#endif
+#line 248
 	{
 steam_no_good:
 #if !defined( NO_STEAM )
@@ -262,6 +318,11 @@ steam_no_good:
 
 	// Note that SteamGameServer_InitSafe() calls SteamAPI_SetBreakpadAppID() for you, which is what we don't want if we wish
 	// to report crashes under a different AppId. Reset it back to our crashing one now.
+#ifdef BYTEMATCH_RETAIL
+	// Set some stuff that should NOT change while the server is
+	// running
+	SteamGameServer()->SetProduct( gpszProductString );
+#else
 	if ( sv.IsDedicated() )
 	{
 		SteamAPI_SetBreakpadAppID( GetSteamInfIDVersionInfo().ServerAppID );
@@ -270,6 +331,8 @@ steam_no_good:
 	// Set some stuff that should NOT change while the server is
 	// running
 	SteamGameServer()->SetProduct( GetSteamInfIDVersionInfo().szProductString );
+#endif
+#line 272
 	SteamGameServer()->SetGameDescription( serverGameDLL->GetGameDescription() );
 	SteamGameServer()->SetDedicatedServer( sv.IsDedicated() );
 	SteamGameServer()->SetModDir( gamedir );
@@ -758,9 +821,12 @@ bool CSteam3Server::NotifyClientConnect( CBaseClient *client, uint32 unUserID, n
 	case k_EBeginAuthSessionResultExpiredTicket:
 		WarningAndLog("S3: Client connected with expired ticket: UserID: %x\n", unUserID );
 		return false;
+#ifndef BYTEMATCH_RETAIL
 	default:
 		WarningAndLog("S3: Client failed auth session for unknown reason. UserID: %x\n", unUserID );
 		return false;
+#endif
+#line 760
 	}
 
 	// first checks ok, we know now the SteamID
@@ -936,8 +1002,11 @@ void CSteam3Server::SendUpdatedServerDetails()
 	{
 		// If we're a relay we can't use the local server data for these
 		SteamGameServer()->SetMapName( hltv->GetMapName() );
+#ifndef BYTEMATCH_RETAIL
 		SteamGameServer()->SetMaxPlayerCount( hltv->GetMaxClients() );
 		SteamGameServer()->SetBotPlayerCount( 0 );
+#endif
+#line 935
 	}
 	else
 	{
@@ -948,7 +1017,12 @@ void CSteam3Server::SendUpdatedServerDetails()
 			pszMap = sv.GetMapName();
 		SteamGameServer()->SetMapName( pszMap );
 	}
+#ifdef BYTEMATCH_RETAIL
+	if ( hltv && tv_enable.GetBool() )
+#else
 	if ( hltv && hltv->IsActive() )
+#endif
+#line 946
 	{
 		// This is also the case when we're a relay, in which case we never set a game port, so we'll only have a spectator port
 		SteamGameServer()->SetSpectatorPort( NET_GetUDPPort( NS_HLTV ) );
