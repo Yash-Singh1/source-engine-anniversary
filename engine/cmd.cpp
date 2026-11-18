@@ -464,6 +464,20 @@ static char const *Cmd_TranslateFileAssociation(char const *param )
 	return retval;
 }
 
+// The argument following command line parameter nIndex, or NULL if it is missing or is
+// itself a +/- parameter.
+static const char *ParmValueAfter( int nIndex )
+{
+	if ( nIndex + 1 >= CommandLine()->ParmCount() )
+		return NULL;
+
+	const char *pValue = CommandLine()->GetParm( nIndex + 1 );
+	if ( pValue[0] == '-' || pValue[0] == '+' )
+		return NULL;
+
+	return pValue;
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: Adds command line parameters as script statements
 // Commands lead with a +, and continue until a - or another +
@@ -493,7 +507,7 @@ CON_COMMAND( stuffcmds, "Parses and stuffs command line + commands to command bu
 		if (szParm[0] == '-') 
 		{
 			// skip -XXX options and eat their args
-			const char *szValue = CommandLine()->ParmValueByIndex( i );
+			const char *szValue = ParmValueAfter( i );
 			if ( szValue )
 				i++;
 			continue;
@@ -501,7 +515,7 @@ CON_COMMAND( stuffcmds, "Parses and stuffs command line + commands to command bu
 		if (szParm[0] == '+')
 		{
 			// convert +XXX options and stuff them into the build buffer
-			const char *szValue = CommandLine()->ParmValueByIndex( i );
+			const char *szValue = ParmValueAfter( i );
 			if (szValue)
 			{
 				build.PutString(va("%s %s\n", szParm+1, szValue));

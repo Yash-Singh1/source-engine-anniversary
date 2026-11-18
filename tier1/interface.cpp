@@ -258,7 +258,7 @@ HMODULE Sys_LoadLibrary( const char *pLibraryName, Sys_Flags flags )
 		const char *pError = dlerror();
 		if ( pError && ( strstr( pError, "No such file" ) == 0 ) && ( strstr( pError, "image not found" ) == 0 ) )
 		{
-			Msg( "failed to dlopen %s error=%s\n", str, pError );
+			Msg( " failed to dlopen %s error=%s\n", str, pError );
 		}
 	}
 	
@@ -267,7 +267,7 @@ HMODULE Sys_LoadLibrary( const char *pLibraryName, Sys_Flags flags )
 }
 static bool s_bRunningWithDebugModules = false;
 
-#ifdef POSIX
+#if defined( POSIX ) && !defined( BYTEMATCH_RETAIL )
 
 #ifdef ANDROID
 #define DEFAULT_LIB_PATH ""
@@ -320,7 +320,7 @@ CSysModule *Sys_LoadModule( const char *pModuleName, Sys_Flags flags /* = SYS_NO
 	// file in the depot (MFP) or a filesystem GetLocalCopy() call must be made
 	// prior to the call to this routine.
 	char szCwd[1024];
-#ifdef POSIX
+#if defined( POSIX ) && !defined( BYTEMATCH_RETAIL )
 	char szModuleName[1024] = { 0 };
 #endif
 	HMODULE hDLL = NULL;
@@ -334,7 +334,7 @@ CSysModule *Sys_LoadModule( const char *pModuleName, Sys_Flags flags /* = SYS_NO
 			int i = CommandLine()->FindParm( "-basedir" );
 			if ( i )
 			{
-				V_strcpy_safe( szCwd, CommandLine()->GetParm( i + 1 ) );
+				strcpy( szCwd, CommandLine()->GetParm( i+1 ) );
 			}
 		}
 
@@ -343,6 +343,21 @@ CSysModule *Sys_LoadModule( const char *pModuleName, Sys_Flags flags /* = SYS_NO
 			szCwd[strlen(szCwd) - 1] = 0;
 		}
 
+#ifdef BYTEMATCH_RETAIL
+		char szAbsoluteModuleName[1024];
+		size_t cCwd = strlen( szCwd );
+		if ( strstr( pModuleName, "bin/") == pModuleName || ( szCwd[ cCwd - 1 ] == 'n'  && szCwd[ cCwd - 2 ] == 'i' && szCwd[ cCwd - 3 ] == 'b' )  )
+		{
+			// don't make bin/bin path
+			Q_snprintf( szAbsoluteModuleName, sizeof(szAbsoluteModuleName), "%s/%s", szCwd, pModuleName );			
+		}
+		else
+		{
+			Q_snprintf( szAbsoluteModuleName, sizeof(szAbsoluteModuleName), "%s/bin/%s", szCwd, pModuleName );
+		}
+		hDLL = Sys_LoadLibrary( szAbsoluteModuleName, flags );
+	}
+#else
 		char szAbsoluteModuleName[2048];
 #ifdef ANDROID
 		char *libPath = getenv("APP_LIB_PATH");
@@ -398,6 +413,7 @@ CSysModule *Sys_LoadModule( const char *pModuleName, Sys_Flags flags /* = SYS_NO
 		Msg("LoadLibrary: path: %s\n", szModuleName);
 #endif
 	}
+#endif // BYTEMATCH_RETAIL
 
 
 	if ( !hDLL )

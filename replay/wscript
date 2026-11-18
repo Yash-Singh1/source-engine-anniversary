@@ -1,0 +1,36 @@
+#! /usr/bin/env python
+# encoding: utf-8
+
+top = '.'
+PROJECT_NAME = 'replay'
+
+def options(opt):
+	return
+
+def configure(conf):
+	conf.env.append_unique('DEFINES', ['REPLAY_DLL', 'REPLAY_ENABLED'])
+
+def build(bld):
+	source = bld.path.ant_glob('*.cpp') + ['../common/imageutils.cpp', '../common/netmessages.cpp']
+
+	includes = [
+		'.',
+		'../public',
+		'../public/tier0',
+		'../public/tier1',
+		'../common',
+	]
+
+	libs = ['tier0', 'tier1', 'replay_common', 'tier2', 'vtf', 'bzip2', 'mathlib', 'vstdlib',
+		'JPEG', 'PNG', 'CURL', 'ZLIB', 'ICONV']
+
+	bld.shlib(
+		source   = source,
+		target   = PROJECT_NAME,
+		name     = PROJECT_NAME,
+		features = 'c cxx',
+		includes = includes,
+		use      = libs,
+		install_path = bld.env.LIBDIR,
+		idx      = bld.get_taskgen_count()
+	)

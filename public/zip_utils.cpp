@@ -1174,36 +1174,10 @@ bool CZipFile::ReadFileFromZip( HANDLE hZipFile, const char *pRelativeName, bool
 		pData = readBuffer.Base();
 	}
 
-	CUtlBuffer decompressTransform;
 	if ( pEntry->m_eCompressionType != IZip::eCompressionType_None )
 	{
-		if ( pEntry->m_eCompressionType == IZip::eCompressionType_LZMA )
-		{
-			decompressTransform.EnsureCapacity( pEntry->m_nUncompressedSize );
-
-			CLZMAStream decompressStream;
-			decompressStream.InitZIPHeader( pEntry->m_nCompressedSize, pEntry->m_nUncompressedSize );
-
-			unsigned int nCompressedBytesRead = 0;
-			unsigned int nOutputBytesWritten = 0;
-			bool bSuccess = decompressStream.Read( (unsigned char *)pData, pEntry->m_nCompressedSize,
-												   (unsigned char *)decompressTransform.Base(), decompressTransform.Size(),
-												   nCompressedBytesRead, nOutputBytesWritten );
-			if ( !bSuccess ||
-			     (int)nCompressedBytesRead != pEntry->m_nCompressedSize ||
-			     (int)nOutputBytesWritten != pEntry->m_nUncompressedSize )
-			{
-				Error( "Zip: Failed decompressing LZMA data\n" );
-				return false;
-			}
-
-			pData = decompressTransform.Base();
-		}
-		else
-		{
-			Error( "Unsupported compression type in Zip file: %u\n", pEntry->m_eCompressionType );
-			return false;
-		}
+		Error( "Unsupported compression type in Zip file: %u\n", pEntry->m_eCompressionType );
+		return false;
 	}
 
 	if ( bTextMode )

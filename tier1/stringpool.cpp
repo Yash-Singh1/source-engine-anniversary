@@ -18,21 +18,16 @@
 // Purpose: Comparison function for string sorted associative data structures
 //-----------------------------------------------------------------------------
 
-bool StrLessInsensitive( const char * const &pszLeft, const char * const &pszRight )
+bool StrLess( const char * const &pszLeft, const char * const &pszRight )
 {
 	return ( Q_stricmp( pszLeft, pszRight) < 0 );
 }
 
-bool StrLessSensitive( const char * const &pszLeft, const char * const &pszRight )
-{
-	return ( Q_strcmp( pszLeft, pszRight) < 0 );
-}
-
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-CStringPool::CStringPool( StringPoolCase_t caseSensitivity )
-  : m_Strings( 32, 256, caseSensitivity == StringPoolCaseInsensitive ? StrLessInsensitive : StrLessSensitive )
+CStringPool::CStringPool()
+  : m_Strings( 32, 256, StrLess )
 {
 }
 
@@ -74,7 +69,9 @@ const char * CStringPool::Allocate( const char *pszValue )
 		return m_Strings[i];
 
 	pszNew = strdup( pszValue );
-	m_Strings.Insert( pszNew );
+
+	if ( bNew )
+		m_Strings.Insert( pszNew );
 
 	return pszNew;
 }

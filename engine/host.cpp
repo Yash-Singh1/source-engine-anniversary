@@ -361,8 +361,6 @@ CON_COMMAND( mem_test, "" )
 	MemAlloc_CrtCheckMemory();
 }
 
-static ConVar host_competitive_ever_enabled( "host_competitive_ever_enabled", "0", FCVAR_HIDDEN, "Has competitive ever been enabled this run?", true, 0, true, 1, true, 1, false, 1, NULL  );
-
 static ConVar mem_test_each_frame( "mem_test_each_frame", "0", 0, "Run heap check at end of every frame\n" );
 static ConVar mem_test_every_n_seconds( "mem_test_every_n_seconds", "0", 0, "Run heap check at a specified interval\n" );
 
@@ -1216,7 +1214,7 @@ void Host_WriteConfiguration( const char *filename, bool bAllVars )
 
 	// Don't write config when in default--most of the values are defaults which is not what the player wants.
 	// If bAllVars is set, go ahead and write out the file anyways, since it was requested explicitly.
-	if ( !cbIsUserRequested && ( CommandLine()->CheckParm( "-default" ) || host_competitive_ever_enabled.GetBool() ) )
+	if ( !cbIsUserRequested && CommandLine()->CheckParm( "-default" ) )
 		return;
 	
 	// Write to internal storage on the 360
