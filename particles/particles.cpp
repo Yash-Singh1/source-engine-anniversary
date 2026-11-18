@@ -3169,7 +3169,11 @@ bool CParticleSystemMgr::ReadParticleDefinitions( CUtlBuffer &buf, const char *p
 	DECLARE_DMX_CONTEXT_DECOMMIT( bDecommitTempMemory );
 
 	CDmxElement *pRoot;
+#ifdef BYTEMATCH_RETAIL
+	if ( !UnserializeDMX( buf, &pRoot, pFileName ) )
+#else
 	if ( !UnserializeDMX( buf, &pRoot, pFileName ) || !pRoot )
+#endif
 	{
 		Warning( "Unable to read particle definition %s! UtlBuffer is the wrong type!\n", pFileName );
 		return false;

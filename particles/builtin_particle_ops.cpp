@@ -112,7 +112,11 @@ void C_OP_BasicMovement::Operate( CParticleCollection *pParticles, float flStren
 	C4VAttributeWriteIterator xyz( PARTICLE_ATTRIBUTE_XYZ, pParticles );
 
 	// fltx4 adj_dt = ReplicateX4( (1.0-m_fDrag) * ( pParticles->m_flDt / pParticles->m_flPreviousDt ) );
+#ifdef BYTEMATCH_RETAIL
+	fltx4 adj_dt = ReplicateX4( ( pParticles->m_flDt / pParticles->m_flPreviousDt ) * ExponentialDecay( (1.0-max(0.f,m_fDrag)), (1.0f/30.0f), pParticles->m_flDt ) );
+#else
 	fltx4 adj_dt = ReplicateX4( ( pParticles->m_flDt / pParticles->m_flPreviousDt ) * ExponentialDecay( (1.0f-max(0.f,m_fDrag)), (1.0f/30.0f), pParticles->m_flDt ) );
+#endif
 
 	size_t nForceStride=0;
 	Vector acc = m_Gravity;
