@@ -1268,9 +1268,10 @@ void CEdgeList::CullSmallOccluders()
 	// Sort the surfaces by screen area, in descending order
 	int nSurfCount = m_Surfaces.Count();
 	s_pSortSurfaces = m_Surfaces.Base();
-
+#ifndef BYTEMATCH_RETAIL
 	if( m_SurfaceSort.Base() )
-		qsort( m_SurfaceSort.Base(), nSurfCount, sizeof(int), SurfCompare );
+#endif
+	qsort( m_SurfaceSort.Base(), nSurfCount, sizeof(int), SurfCompare );
 
 	// We're going to keep the greater of r_occludermin + All surfaces with a screen area >= r_occluderarea
 	int nMinSurfaces = r_occludermincount.GetInt();
@@ -1284,7 +1285,7 @@ void CEdgeList::CullSmallOccluders()
 
 	bool *bUseSurface = (bool*)stackalloc( nSurfCount * sizeof(bool) );
 	memset( bUseSurface, 0, nSurfCount * sizeof(bool) );
-
+	
 	int i;
 	for ( i = 0; i < nSurfCount; ++i )
 	{

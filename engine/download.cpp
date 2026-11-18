@@ -931,7 +931,11 @@ void CDownloadManager::StartNewDownload()
 #endif
 			DownloadThread, m_activeRequest, 0, &threadID );
 
+#ifdef BYTEMATCH_RETAIL
+		ThreadDetach( ( ThreadHandle_t )threadID );
+#else
 		ReleaseThreadHandle( ( ThreadHandle_t )threadID );
+#endif
 	}
 	else
 	{
@@ -1079,7 +1083,11 @@ public:
 #endif
 		 	DownloadThread, pContext, 0, &nThreadID );
 
+#ifdef BYTEMATCH_RETAIL
+		ThreadDetach( ( ThreadHandle_t )nThreadID );
+#else
 		ReleaseThreadHandle( ( ThreadHandle_t )nThreadID );
+#endif
 		return nThreadID;
 	}
 };

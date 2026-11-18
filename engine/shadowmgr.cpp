@@ -2048,34 +2048,53 @@ public:
 class CClipPlane
 {
 public:
-	static inline bool Inside( ShadowVertex_t const& vert )
+	static inline bool Inside( ShadowVertex_t const& vert )						
 	{
-		return DotProduct( vert.m_Position, m_pNormal ) < m_Dist;
+		return DotProduct( vert.m_Position, CurNormal() ) < m_Dist;
 	}
 
-	static inline float Clip( const Vector& one, const Vector& two )
+	static inline float Clip( const Vector& one, const Vector& two )	
 	{
 		Vector dir;
 		VectorSubtract( two, one, dir );
-		return IntersectRayWithPlane( one, dir, m_pNormal, m_Dist );
+		return IntersectRayWithPlane( one, dir, CurNormal(), m_Dist );
 	}
 
 	static inline bool IsAbove()	{return false;}
 	static inline bool IsPlane()	{return true;}
 
+#ifdef BYTEMATCH_RETAIL
+	static void SetPlane( const Vector& normal, float dist )
+	{
+		m_pNormal = &normal;
+		m_Dist = dist;
+	}
+#else
+	// Keep a copy: the transformed plane goes out of scope before ShadowClip reads it.
 	static void SetPlane( const Vector normal, float dist )
 	{
 		m_pNormal = normal;
 		m_Dist = dist;
 	}
+#endif
 
 
 private:
+#ifdef BYTEMATCH_RETAIL
+	static const Vector &CurNormal() { return *m_pNormal; }
+	static const Vector *m_pNormal;
+#else
+	static const Vector &CurNormal() { return m_pNormal; }
 	static Vector m_pNormal;
+#endif
 	static float  m_Dist;
 };
 
+#ifdef BYTEMATCH_RETAIL
+const Vector *CClipPlane::m_pNormal;
+#else
 Vector CClipPlane::m_pNormal;
+#endif
 float  CClipPlane::m_Dist;
 
 static inline void ClampTexCoord( ShadowVertex_t *pInVertex, ShadowVertex_t *pOutVertex )
