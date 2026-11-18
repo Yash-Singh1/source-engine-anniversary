@@ -101,16 +101,11 @@ void PropertyDialog::ApplyChanges()
 //-----------------------------------------------------------------------------
 // Purpose: Sets up the sheet
 //-----------------------------------------------------------------------------
-#ifdef BYTEMATCH_RETAIL
 void PropertyDialog::PerformLayout()
 {
 	BaseClass::PerformLayout();
 
-	int iBottom = m_iSheetInsetBottom;
-	if ( IsProportional() )
-	{
-		iBottom = scheme()->GetProportionalScaledValueEx( GetScheme(), iBottom );
-	}
+	int iBottom = PROPORTIONAL_VALUE( m_iSheetInsetBottom );
 
 	int x, y, wide, tall;
 	GetClientArea(x, y, wide, tall);
@@ -118,76 +113,26 @@ void PropertyDialog::PerformLayout()
 
 
 	// move the buttons to the bottom-right corner
-	int xpos = x + wide - 80;
-	int ypos = tall + y - 28;
+	int xpos = x + wide - PROPORTIONAL_VALUE( 80 );
+	int ypos = tall + y - PROPORTIONAL_VALUE( 28 );
 
 	if (_applyButton->IsVisible())
 	{
-		_applyButton->SetBounds(xpos, ypos, 72, 24);
-		xpos -= 80;
+		_applyButton->SetBounds(xpos, ypos, PROPORTIONAL_VALUE( 72 ), PROPORTIONAL_VALUE( 24 ));
+		xpos -= PROPORTIONAL_VALUE( 80 );
 	}
 
 	if (_cancelButton->IsVisible())
 	{
-		_cancelButton->SetBounds(xpos, ypos, 72, 24);
-		xpos -= 80;
+		_cancelButton->SetBounds(xpos, ypos, PROPORTIONAL_VALUE( 72 ), PROPORTIONAL_VALUE( 24 ));
+		xpos -= PROPORTIONAL_VALUE( 80 );
 	}
 
-	_okButton->SetBounds(xpos, ypos, 72, 24);
+	_okButton->SetBounds(xpos, ypos, PROPORTIONAL_VALUE( 72 ), PROPORTIONAL_VALUE( 24 ));
 
 	_propertySheet->InvalidateLayout(); // tell the propertysheet to redraw!
 	Repaint();
 }
-#else
-void PropertyDialog::PerformLayout()
-{
-	BaseClass::PerformLayout();
-
-	int iBottom = m_iSheetInsetBottom;
-	if ( IsProportional() )
-	{
-		iBottom = scheme()->GetProportionalScaledValueEx( GetScheme(), iBottom );
-	}
-
-	int x, y, wide, tall;
-	GetClientArea(x, y, wide, tall);
-	_propertySheet->SetBounds(x, y, wide, tall - iBottom);
-
-	// calc button size and indent for proportionality 
-	int iBtnWide = 72;
-	int iBtnTall = 24;
-	int iWideIndent = 8;
-	int iTallIndent = 4;
-	if (IsProportional())
-	{
-		iBtnWide = scheme()->GetProportionalScaledValueEx(GetScheme(), iBtnWide);
-		iBtnTall = scheme()->GetProportionalScaledValueEx(GetScheme(), iBtnTall);
-		iWideIndent = scheme()->GetProportionalScaledValueEx(GetScheme(), iWideIndent);
-		iTallIndent = scheme()->GetProportionalScaledValueEx(GetScheme(), iTallIndent);
-	}
-
-	// move the buttons to the bottom-right corner
-	int xpos = x + wide - iBtnWide - iWideIndent;
-	int ypos = tall + y - iBtnTall - iTallIndent;
-
-	if (_applyButton->IsVisible())
-	{
-		_applyButton->SetBounds(xpos, ypos, iBtnWide, iBtnTall);
-		xpos -= iBtnWide + iWideIndent;
-	}
-
-	if (_cancelButton->IsVisible())
-	{
-		_cancelButton->SetBounds(xpos, ypos, iBtnWide, iBtnTall);
-		xpos -= iBtnWide + iWideIndent;
-	}
-
-	_okButton->SetBounds(xpos, ypos, iBtnWide, iBtnTall);
-
-	_propertySheet->InvalidateLayout(); // tell the propertysheet to redraw!
-	Repaint();
-}
-#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: Handles command text from the buttons
