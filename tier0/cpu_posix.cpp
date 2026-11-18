@@ -67,7 +67,7 @@ uint64 GetCPUFreqFromPROC()
 	uint64 freq_hz = 0;
 	size_t freq_size = sizeof(freq_hz);
 #ifdef OSX
-	sysctlbyname( "hw.cpufrequency_max", &freq_hz, &freq_size, NULL, 0 );
+	freq_hz = 1000000000; (void)freq_size; // Plat_Rdtsc() counts nanoseconds on ARM; Apple Silicon has no hw.cpufrequency_max
 #else
 	sysctlbyname( "dev.cpu.0.freq", &freq_hz, &freq_size, NULL, 0 );
 #endif
