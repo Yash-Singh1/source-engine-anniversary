@@ -559,12 +559,12 @@ bool MatricesAreEqual( const matrix3x4_t &src1, const matrix3x4_t &src2, float f
 
 void MatrixGetColumn( const matrix3x4_t &in, int column, Vector &out );
 
-inline void MatrixSetColumn( const Vector &in, int column, matrix3x4_t& out )
-{
-	out[0][column] = in.x;
-	out[1][column] = in.y;
-	out[2][column] = in.z;
-}
+void MatrixSetColumn( const Vector &in, int column, matrix3x4_t &out );
+
+
+
+
+
 
 inline void MatrixGetTranslation( const matrix3x4_t &in, Vector &out )
 {
