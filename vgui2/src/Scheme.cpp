@@ -90,7 +90,7 @@ public:
 
 	// returns NULL rather than the base border when borderName isn't found
 	virtual IBorder *GetBorder2(const char *borderName);
-
+	void ReloadFonts();
 	void LoadFonts();
 	void LoadBorders();
 
@@ -301,21 +301,11 @@ void CSchemeManager::ReloadFonts()
 {
 	for (int i = 1; i < m_Schemes.Count(); i++)
 	{
-		m_Schemes[i]->LoadFonts();
+		m_Schemes[i]->ReloadFonts();
 	}
 }
 
-//-----------------------------------------------------------------------------
-// Purpose: reloads the borders of all schemes
-//-----------------------------------------------------------------------------
-void CSchemeManager::UpdateBorders()
-{
-	for (int i = 1; i < m_Schemes.Count(); i++)
-	{
-		m_Schemes[i]->LoadBorders();
-	}
-}
-
+#line 319
 //-----------------------------------------------------------------------------
 // Converts the handle into an interface
 //-----------------------------------------------------------------------------
@@ -866,6 +856,15 @@ void CScheme::LoadFonts()
 }
 
 //-----------------------------------------------------------------------------
+// Purpose: Reloads the fonts, for a resolution change
+//-----------------------------------------------------------------------------
+void CScheme::ReloadFonts()
+{
+	LoadFonts();
+}
+#line 867
+
+//-----------------------------------------------------------------------------
 // Purpose: Reloads all scheme fonts
 //-----------------------------------------------------------------------------
 void CScheme::ReloadFontGlyphs()
@@ -1309,6 +1308,18 @@ int CSchemeManager::GetProportionalNormalizedValueEx( HScheme scheme, int scaled
 	CScheme *p = static_cast< CScheme * >( pscheme );
 	return GetProportionalNormalizedValueEx( p, scaledValue );
 }
+
+//-----------------------------------------------------------------------------
+// Purpose: reloads the borders of all schemes
+//-----------------------------------------------------------------------------
+void CSchemeManager::UpdateBorders()
+{
+	for (int i = 1; i < m_Schemes.Count(); i++)
+	{
+		m_Schemes[i]->LoadBorders();
+	}
+}
+#line 1312
 
 void CSchemeManager::SpewFonts( void )
 {
