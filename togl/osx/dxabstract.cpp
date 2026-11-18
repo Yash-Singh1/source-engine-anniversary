@@ -335,7 +335,7 @@ HRESULT IDirect3DTexture9::GetSurfaceLevel(UINT Level,IDirect3DSurface9** ppSurf
 	surf->m_restype = (D3DRESOURCETYPE)0;	// 0 is special and means this 'surface' does not own its m_tex
 
 	// Dicey...higher level code seems to want this and not want this.  Are we missing some AddRef/Release behavior elsewhere?
-//	surf->AddRef();
+	surf->AddRef();
 	
 	surf->m_device = this->m_device;
 	
@@ -1239,7 +1239,7 @@ UINT IDirect3D9::GetAdapterModeCount(UINT Adapter,D3DFORMAT Format)
 	modeCount = db->GetModeCount( glmRendererIndex, glmDisplayIndex );
 	GLMPRINTF(( "-X-   --> result is %d", modeCount ));		
 	
-	return modeCount + 1; // Add one on for 800 x 500, which we'll tack on as mode 0 below
+	return modeCount;
 }
 
 HRESULT IDirect3D9::EnumAdapterModes( UINT Adapter, D3DFORMAT Format, UINT Mode, D3DDISPLAYMODE* pMode )
@@ -1263,13 +1263,13 @@ HRESULT IDirect3D9::EnumAdapterModes( UINT Adapter, D3DFORMAT Format, UINT Mode,
 	if ( result )
 		return D3DERR_NOTAVAILABLE;
 
-	bool result2 = db->GetModeInfo( glmRendererIndex, glmDisplayIndex, Mode == 0 ? 0 : Mode - 1, &glmModeInfo );  // End up asking Cocoa for mode zero twice
+	bool result2 = db->GetModeInfo( glmRendererIndex, glmDisplayIndex, Mode, &glmModeInfo );
 	Assert( !result2 );
 	if ( result2 )
 		return D3DERR_NOTAVAILABLE;
 
-	pMode->Width		= Mode == 0 ? 800 : glmModeInfo.m_modePixelWidth;   // substitute in width of 800 on first "Mode zero"
-	pMode->Height		= Mode == 0 ? 500 : glmModeInfo.m_modePixelHeight;  // substitute in height of 500 on first "Mode zero"
+	pMode->Width		= glmModeInfo.m_modePixelWidth;
+	pMode->Height		= glmModeInfo.m_modePixelHeight;
 	pMode->RefreshRate	= glmModeInfo.m_modeRefreshHz;		// "adapter default"
 	pMode->Format		= Format;							// whatever you asked for ?
 	
@@ -1682,8 +1682,8 @@ HRESULT IDirect3DVertexBuffer9::Lock(UINT OffsetToLock,UINT SizeToLock,void** pp
 	GLMBuffLockParams lockreq;
 	lockreq.m_offset		= OffsetToLock;
 	lockreq.m_size			= SizeToLock;
+	lockreq.m_nonblocking	= (Flags & D3DLOCK_NOOVERWRITE) != 0;
 	lockreq.m_discard		= (Flags & D3DLOCK_DISCARD) != 0;
-	lockreq.m_nonblocking	= ( (Flags & D3DLOCK_NOOVERWRITE) != 0 ) || lockreq.m_discard;
 		
 	m_vtxBuffer->Lock( &lockreq, (char**)ppbData );
 
@@ -1776,8 +1776,8 @@ HRESULT IDirect3DIndexBuffer9::Lock(UINT OffsetToLock,UINT SizeToLock,void** ppb
 	GLMBuffLockParams lockreq;
 	lockreq.m_offset		= OffsetToLock;
 	lockreq.m_size			= SizeToLock;
+	lockreq.m_nonblocking	= (Flags & D3DLOCK_NOOVERWRITE) != 0;
 	lockreq.m_discard		= (Flags & D3DLOCK_DISCARD) != 0;
-	lockreq.m_nonblocking	= ( (Flags & D3DLOCK_NOOVERWRITE) != 0 ) || lockreq.m_discard;
 
 	m_idxBuffer->Lock( &lockreq, (char**)ppbData );
 
@@ -2393,12 +2393,12 @@ HRESULT IDirect3DDevice9::SetRenderTarget(DWORD RenderTargetIndex,IDirect3DSurfa
 	
 	if (m_rtSurfaces[RenderTargetIndex])
 	{
-		m_rtSurfaces[RenderTargetIndex]->Release( 1, "-A  SetRenderTarget private release" );	// note this is the private refcount being lowered
+		m_rtSurfaces[RenderTargetIndex]->Release( 0, "-A  SetRenderTarget public release" );
 	}
 
 	if (pRenderTarget)
 	{
-		pRenderTarget->AddRef( 1, "+A  SetRenderTarget private addref"  );						// again, private refcount being raised
+		pRenderTarget->AddRef( 0, "+A  SetRenderTarget public addref"  );
 	}
 	
 	m_rtSurfaces[RenderTargetIndex] = pRenderTarget;	// emplace it whether NULL or not
@@ -2540,17 +2540,6 @@ HRESULT IDirect3DDevice9::SetDepthStencilSurface(IDirect3DSurface9* pNewZStencil
 		pNewZStencil ? pNewZStencil->m_tex : NULL,
 		pNewZStencil ? pNewZStencil->m_tex->m_layout->m_layoutSummary : ""
 	));
-
-	if (pNewZStencil)
-	{
-		pNewZStencil->AddRef(1, "+A  SetDepthStencilSurface private addref");
-	}
-
-	if (m_dsSurface)
-	{
-		m_dsSurface->Release(1, "-A  SetDepthStencilSurface private release");
-		// do not do a Release here..
-	}
 
 	if (m_dsSurface != pNewZStencil)
 	{
