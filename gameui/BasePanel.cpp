@@ -101,6 +101,7 @@ using namespace vgui;
 #define MAIN_MENU_INDENT_X360 10
 
 ConVar vgui_message_dialog_modal( "vgui_message_dialog_modal", "1", FCVAR_ARCHIVE );
+ConVar workshop_playing_campaign( "workshop_playing_campaign", "0", FCVAR_HIDDEN );
 
 extern vgui::DHANDLE<CLoadingDialog> g_hLoadingDialog;
 static CBasePanel	*g_pBasePanel = NULL;
@@ -192,9 +193,6 @@ void CGameMenuItem::PaintBackground()
 
 		int wide, tall;
 		GetSize( wide, tall );
-
-		DrawBoxFade( 0, 0, wide, tall, GetButtonBgColor(), 1.0f, 255, 0, true );
-		DrawBoxFade( 2, 2, wide - 4, tall - 4, Color( 0, 0, 0, 96 ), 1.0f, 255, 0, true );
 	}
 }
 
@@ -307,6 +305,8 @@ public:
 
 	CGameMenu(vgui::Panel *parent, const char *name) : BaseClass(parent, name) 
 	{
+		SetProportional( true );
+
 		if ( GameUI().IsConsoleUI() )
 		{
 			// shows graphic button hints
@@ -626,6 +626,8 @@ public:
 		}
 	}
 
+	void SetMenuCategory( const char *pszMenuCategory );
+
 	void UpdateMenuItemState( bool isInGame, bool isMultiplayer, bool isInReplay, bool isVREnabled, bool isVRActive )
 	{
 		bool isSteam = IsPC() && ( CommandLine()->FindParm("-steam") != 0 );
@@ -635,7 +637,7 @@ public:
 		for (int i = 0; i < GetChildCount(); i++)
 		{
 			Panel *child = GetChild(i);
-			MenuItem *menuItem = dynamic_cast<MenuItem *>(child);
+			CGameMenuItem *menuItem = dynamic_cast<CGameMenuItem *>(child);
 			if (menuItem)
 			{
 				bool shouldBeVisible = true;
@@ -680,11 +682,41 @@ public:
 				{
 					shouldBeVisible = false;
 				}
+				else if ( isInGame && kv->GetInt( "NotInGame" ) )
+				{
+					shouldBeVisible = false;
+				}
 
 				// If we're playing back a replay, hide everything else
 				if ( isInReplay && !kv->GetInt("OnlyInReplay") )
 				{
 					shouldBeVisible = false;
+				}
+
+				const char *pszMenuMod = kv->GetString( "MenuMod", "" );
+				if ( Q_strlen( pszMenuMod ) > 0 && V_stricmp( pszMenuMod, "hl2" ) )
+				{
+					shouldBeVisible = false;
+				}
+
+				const char *pszMenuCategory = kv->GetString( "MenuCategory", "" );
+				if ( Q_strlen( pszMenuCategory ) > 0 )
+				{
+					const char *pszCurrentCategory = ( workshop_playing_campaign.GetInt() && engine->IsInGame() ) ? "workshop" : m_strMenuCategory.String();
+					if ( V_stricmp( pszMenuCategory, pszCurrentCategory ) )
+					{
+						shouldBeVisible = false;
+					}
+				}
+
+				const char *pszExcludeFromMenuCategory = kv->GetString( "ExcludeFromMenuCategory", "" );
+				if ( pszExcludeFromMenuCategory[0] )
+				{
+					const char *pszCurrentCategory = ( workshop_playing_campaign.GetInt() && engine->IsInGame() ) ? "workshop" : m_strMenuCategory.String();
+					if ( V_stristr( pszExcludeFromMenuCategory, pszCurrentCategory ) )
+					{
+						shouldBeVisible = false;
+					}
 				}
 
 				menuItem->SetVisible( shouldBeVisible );
@@ -726,6 +758,7 @@ public:
 			}
 		}
 
+		ForceCalculateWidth();
 		InvalidateLayout();
 
 		if ( m_pConsoleFooter )
@@ -757,6 +790,7 @@ public:
 #endif
 
 private:
+	CUtlString		m_strMenuCategory;
 	CFooterPanel *m_pConsoleFooter;
 	vgui::CKeyRepeatHandler	m_KeyRepeat;
 	vgui::VPANEL	m_hMainMenuOverridePanel;
@@ -831,6 +865,7 @@ CBasePanel::CBasePanel() : Panel(NULL, "BaseGameUIPanel")
 	m_pConsoleControlSettings = NULL;
 	m_bCopyFrameBuffer = false;
 	m_bUseRenderTargetImage = false;
+	m_bDrawingBackgroundImage = false;
 	m_ExitingFrameCount = 0;
 	m_bXUIVisible = false;
 	m_bUseMatchmaking = false;
@@ -845,11 +880,16 @@ CBasePanel::CBasePanel() : Panel(NULL, "BaseGameUIPanel")
 	m_iStorageID = XBX_INVALID_STORAGE_ID;
 	m_pAsyncJob = NULL;
 	m_pStorageDeviceValidatedNotify = NULL;
+	m_iSwitchModState = 0;
 
 	m_iRenderTargetImageID = -1;
 	m_iBackgroundImageID = -1;
 	m_iProductImageID = -1;
 	m_iLoadingImageID = -1;
+
+	m_hGameTitleFont = 0;
+	m_hGameTitleFont2 = 0;
+	m_hWorkshopTitleFont = 0;
 
 	if ( GameUI().IsConsoleUI() )
 	{
@@ -872,8 +912,16 @@ CBasePanel::CBasePanel() : Panel(NULL, "BaseGameUIPanel")
 #endif
 	}
 
-	m_pGameMenuButtons.AddToTail( CreateMenuButton( this, "GameMenuButton", ModInfo().GetGameTitle() ) );
-	m_pGameMenuButtons.AddToTail( CreateMenuButton( this, "GameMenuButton2", ModInfo().GetGameTitle2() ) );
+	if ( !IsSteamDeck() )
+	{
+		m_pGameMenuButtons.AddToTail( CreateMenuButton( this, "GameMenuButton", ModInfo().GetGameTitle() ) );
+		m_pGameMenuButtons.AddToTail( CreateMenuButton( this, "GameMenuButton2", ModInfo().GetGameTitle2() ) );
+
+		for ( int i = 0; i < m_pGameMenuButtons.Count(); i++ )
+		{
+			m_pGameMenuButtons[i]->SetMouseInputEnabled( false );
+		}
+	}
 #ifdef CS_BETA
 	if ( !ModInfo().NoCrosshair() ) // hack to not show the BETA for HL2 or HL1Port
 	{
@@ -882,7 +930,6 @@ CBasePanel::CBasePanel() : Panel(NULL, "BaseGameUIPanel")
 #endif // CS_BETA
 
 	m_pGameMenu = NULL;
-	m_pGameLogo = NULL;
 	m_hMainMenuOverridePanel = NULL;
 
 	if ( SteamClient() )
@@ -924,6 +971,11 @@ CBasePanel::CBasePanel() : Panel(NULL, "BaseGameUIPanel")
 		
 		ArmFirstMenuItem();
 		m_pConsoleAnimationController->StartAnimationSequence( "InitializeUILayout" );
+	}
+
+	if ( IsSteamDeck() )
+	{
+		ArmFirstMenuItem();
 	}
 
 	// Record data used for rich presence updates
@@ -1584,16 +1636,12 @@ void CBasePanel::CreateGameLogo()
 
 		if ( m_pGameLogo )
 		{
-			SETUP_PANEL( m_pGameLogo );
+			SETUP_PANEL( m_pGameLogo.Get() );
 			m_pGameLogo->InvalidateLayout( true, true );
 
 			// start invisible
 			m_pGameLogo->SetAlpha( 0 );
 		}
-	}
-	else
-	{
-		m_pGameLogo = NULL;
 	}
 }
 
@@ -5049,3 +5097,20 @@ static void RefreshOptionsDialog( const CCommand &args )
 	}
 }
 static ConCommand refresh_options_dialog( "refresh_options_dialog", RefreshOptionsDialog, "Refresh the options dialog.", 0 );
+
+void CGameMenu::SetMenuCategory( const char *pszMenuCategory )
+{
+	m_strMenuCategory.Set( pszMenuCategory );
+
+	for ( int i = 0; i < GetChildCount(); i++ )
+	{
+		CGameMenuItem *pMenuItem = dynamic_cast<CGameMenuItem *>( GetChild( i ) );
+		if ( !pMenuItem )
+			continue;
+
+		if ( pMenuItem->m_strMenuCategory.IsEmpty() )
+			continue;
+	}
+
+	InvalidateLayout();
+}
