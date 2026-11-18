@@ -721,7 +721,12 @@ bool CBaseServer::ProcessConnectionlessPacket(netpacket_t * packet)
 				// We can use this to detect if they are running out of P4, and if so, don't do any version
 				// checking.
 				const char *pszVersionInP4 = "2000";
+#ifdef BYTEMATCH_RETAIL
+				const char *pszVersionString = gpszVersionString;
+#else
 				const char *pszVersionString = GetSteamInfIDVersionInfo().szVersionString;
+#endif
+#line 725
 				if ( V_strcmp( pszVersionString, pszVersionInP4 ) && V_strcmp( productVersion, pszVersionInP4 ) )
 				{
 					int nVersionCheck = Q_strncmp( pszVersionString, productVersion, V_strlen( pszVersionString ) );

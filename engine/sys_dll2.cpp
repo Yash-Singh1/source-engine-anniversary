@@ -126,10 +126,18 @@ const SteamInfVersionInfo_t& GetSteamInfIDVersionInfo()
 	return g_SteamInfIDVersionInfo;
 }
 
+#ifdef BYTEMATCH_RETAIL
+void Sys_SetSteamAppID( unsigned int unAppID )
+{
+	SteamAPI_SetBreakpadAppID( unAppID );
+}
+#else
 int build_number( void )
 {
 	return GetSteamInfIDVersionInfo().ServerVersion;
 }
+#endif
+#line 133
 
 //-----------------------------------------------------------------------------
 // Forward declarations
@@ -1083,6 +1091,25 @@ void *CEngineAPI::QueryInterface( const char *pInterfaceName )
 //-----------------------------------------------------------------------------
 void CEngineAPI::SetStartupInfo( StartupInfo_t &info )
 {
+#ifdef BYTEMATCH_RETAIL
+#ifndef NO_STEAM
+	if ( !CommandLine()->FindParm( "-nobreakpad" ) )
+	{
+		SteamAPI_UseBreakpadCrashHandler( va( "%d%s", build_number(), "" ), __DATE__, __TIME__, false, NULL, NULL );
+	}
+#endif
+
+	g_bTextMode = info.m_bTextMode;
+
+	// Set up the engineparms_t which contains global information about the mod
+	host_parms.basedir = const_cast<char*>( info.m_pBaseDirectory );
+
+	// Copy off all the startup info
+	m_StartupInfo = info;
+
+	// Setup and write out steam_appid.txt before we launch
+	Host_InitAppID( m_StartupInfo.m_pInitialMod, info.m_pBaseDirectory );
+#else
 	// Setup and write out steam_appid.txt before we launch
 	bool bDedicated = false; // Dedicated comes through CDedicatedServerAPI
 	eSteamInfoInit steamInfo = Sys_TryInitSteamInfo( this, g_SteamInfIDVersionInfo, info.m_pInitialMod, info.m_pBaseDirectory, bDedicated );
@@ -1094,6 +1121,8 @@ void CEngineAPI::SetStartupInfo( StartupInfo_t &info )
 
 	// Copy off all the startup info
 	m_StartupInfo = info;
+#endif
+#line 1103
 
 #if !defined( SWDS )
 	// turn on the Steam3 API early so we can query app data up front
@@ -1103,6 +1132,7 @@ void CEngineAPI::SetStartupInfo( StartupInfo_t &info )
 	// Needs to be done prior to init material system config
 	TRACEINIT( COM_InitFilesystem( m_StartupInfo.m_pInitialMod ), COM_ShutdownFileSystem() );
 
+#ifndef BYTEMATCH_RETAIL
 	if ( steamInfo != eSteamInfo_Initialized )
 	{
 		// Try again with filesystem available. This is commonly needed for SDK mods which need the filesystem to find
@@ -1114,6 +1144,8 @@ void CEngineAPI::SetStartupInfo( StartupInfo_t &info )
 			Warning( "Failed to find steam.inf or equivalent steam info. May not have proper information to connect to Steam.\n" );
 		}
 	}
+#endif
+#line 1112
 
 	m_bSupportsVR = false;
 	if ( IsPC() )
@@ -2368,9 +2400,12 @@ void *CDedicatedServerAPI::QueryInterface( const char *pInterfaceName )
 //-----------------------------------------------------------------------------
 bool CDedicatedServerAPI::ModInit( ModInfo_t &info )
 {
+#ifndef BYTEMATCH_RETAIL
 	// Setup and write out steam_appid.txt before we launch
 	bool bDedicated = true;
 	eSteamInfoInit steamInfo = Sys_TryInitSteamInfo( this, g_SteamInfIDVersionInfo, info.m_pInitialMod, info.m_pBaseDirectory, bDedicated );
+#endif
+#line 2366
 
 	eng->SetQuitting( IEngine::QUIT_NOTQUITTING );
 
@@ -2381,8 +2416,15 @@ bool CDedicatedServerAPI::ModInit( ModInfo_t &info )
 
 	g_bTextMode = info.m_bTextMode;
 
+#ifdef BYTEMATCH_RETAIL
+	// Setup and write out steam_appid.txt before we launch
+	Host_InitAppID( info.m_pInitialMod, info.m_pBaseDirectory );
+#endif
+#line 2378
+
 	TRACEINIT( COM_InitFilesystem( info.m_pInitialMod ), COM_ShutdownFileSystem() );
 
+#ifndef BYTEMATCH_RETAIL
 	if ( steamInfo != eSteamInfo_Initialized )
 	{
 		// Try again with filesystem available. This is commonly needed for SDK mods which need the filesystem to find
@@ -2394,6 +2436,8 @@ bool CDedicatedServerAPI::ModInit( ModInfo_t &info )
 			Warning( "Failed to find steam.inf or equivalent steam info. May not have proper information to connect to Steam.\n" );
 		}
 	}
+#endif
+#line 2381
 
 	// set this up as early as possible, if the server isn't going to run pure, stop CRCing bits as we load them
 	// this happens even before the ConCommand's are processed, but we need to be sure to either CRC every file

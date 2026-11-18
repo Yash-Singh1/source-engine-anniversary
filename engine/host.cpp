@@ -4186,8 +4186,13 @@ void Host_Init( bool bDedicated )
 	developer.SetValue( 1 );
 #endif
 
+#ifdef BYTEMATCH_RETAIL
+	Host_InitVersion();
+#else
 	// Should have read info from steam.inf by now.
 	Assert( GetSteamInfIDVersionInfo().AppID != k_uAppIdInvalid );
+#endif
+#line 4151
 
 	if ( CommandLine()->FindParm( "-nocrashdialog" ) )
 	{
@@ -4652,6 +4657,21 @@ bool Host_Changelevel( bool loadfromsavedgame, const char *mapname, const char *
 
 	return true;
 }
+
+#ifdef BYTEMATCH_RETAIL
+void GetPlatformMapPath( const char *pMapPath, char *pPlatformMapPath, int maxLength )
+{
+	Q_strncpy( pPlatformMapPath, pMapPath, maxLength );
+
+	// Once the material system is up, map names always resolve to their .bsp
+	if ( g_pMaterialSystemHardwareConfig )
+	{
+		Q_StripExtension( pMapPath, pPlatformMapPath, maxLength );
+		Q_strncat( pPlatformMapPath, ".bsp", maxLength );
+	}
+}
+#endif
+#line 4627
 
 /*
 ===============================================================================

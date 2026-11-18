@@ -503,7 +503,12 @@ public:
 	virtual float		GetScreenAspectRatio();
 
 	virtual unsigned int		GetEngineBuildNumber() { return PROTOCOL_VERSION; }
+#ifdef BYTEMATCH_RETAIL
+	virtual const char *		GetProductVersionString() { return gpszVersionString; }
+#else
 	virtual const char *		GetProductVersionString() { return GetSteamInfIDVersionInfo().szVersionString; }
+#endif
+#line 503
 	virtual void				GrabPreColorCorrectedFrame( int x, int y, int width, int height );
 	virtual bool				IsHammerRunning( ) const;
 
@@ -1648,7 +1653,12 @@ bool CEngineClient::IsWindowedMode()
 
 int	CEngineClient::GetClientVersion() const
 {
+#ifdef BYTEMATCH_RETAIL
+	return ::GetClientVersion();
+#else
 	return GetSteamInfIDVersionInfo().ClientVersion;
+#endif
+#line 1639
 }
 
 bool CEngineClient::IsActiveApp( void )

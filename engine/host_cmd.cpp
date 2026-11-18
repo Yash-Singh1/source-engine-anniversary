@@ -532,7 +532,12 @@ CON_COMMAND( status, "Display map and connection status." )
 	}
 	
 
+#ifdef BYTEMATCH_RETAIL
+	print( "version : %s/%d %d %s%s%s\n", gpszVersionString,
+#else
 	print( "version : %s/%d %d %s%s%s\n", GetSteamInfIDVersionInfo().szVersionString,
+#endif
+#line 536
 		PROTOCOL_VERSION, build_number(), bGSSecure ? "secure" : "insecure", pchSecureReasonString, pchUniverse );
 
 	if ( NET_IsMultiplayer() )
@@ -762,6 +767,12 @@ void Host_Map_Helper( const CCommand &args, bool bEditmode, bool bBackground, bo
 		return;
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	char szMapName[ MAX_QPATH ];
+	GetPlatformMapPath( args[ 1 ], szMapName, sizeof( szMapName ) );
+
+	COM_TimestampedLog( "*** Map Load: %s", szMapName );
+#else
 	char szMapName[ MAX_QPATH ] = { 0 };
 	V_strncpy( szMapName, args[ 1 ], sizeof( szMapName ) );
 
@@ -780,6 +791,8 @@ void Host_Map_Helper( const CCommand &args, bool bEditmode, bool bBackground, bo
 	// covers runtime up to around 4 months.
 	static ConVarRef dev_loadtime_map_start( "dev_loadtime_map_start" );
 	dev_loadtime_map_start.SetValue( (float)Plat_FloatTime() );
+#endif
+#line 760
 
 	// If I was in edit mode reload config file
 	// to overwrite WC edit key bindings
@@ -800,6 +813,16 @@ void Host_Map_Helper( const CCommand &args, bool bEditmode, bool bBackground, bo
 
 	g_bInCommentaryMode = bCommentary;
 #endif
+
+#ifdef BYTEMATCH_RETAIL
+	// If there is a .bsp on the end, strip it off!
+	int i = Q_strlen( szMapName );
+	if ( i > 4 && !Q_stricmp( szMapName + i - 4, ".bsp" ) )
+	{
+		szMapName[i-4] = 0;
+	}
+#endif
+#line 787
 
 	if ( !CL_HL2Demo_MapCheck( szMapName ) )
 	{
@@ -1001,6 +1024,89 @@ CON_COMMAND( reload, "Reload the most recent saved game (add setpos to jump to c
 // Purpose: Goes to a new map, taking all clients along
 // Output : void Host_Changelevel_f
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+void Host_Changelevel_f( const CCommand &args )
+{
+	if ( args.ArgC() < 2 )
+	{
+		ConMsg( "changelevel <levelname> : continue game on a new level\n" );
+		return;
+	}
+
+	if ( !sv.IsActive() )
+	{
+		ConMsg( "Can't changelevel, not running server\n" );
+		return;
+	}
+
+	if ( !CL_HL2Demo_MapCheck(args[1]) )
+	{
+		Warning( "changelevel failed: %s not found\n", args[1] );
+		return;
+	}
+
+	if ( !CL_PortalDemo_MapCheck(args[1]) )
+	{
+		Warning( "changelevel failed: %s not found\n", args[1] );
+		return;
+	}
+
+	HostState_ChangeLevelMP( args[1], args[2] );
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Changing levels within a unit, uses save/restore
+//-----------------------------------------------------------------------------
+void Host_Changelevel2_f( const CCommand &args )
+{
+	if ( args.ArgC() < 2 )
+	{
+		ConMsg ("changelevel2 <levelname> : continue game on a new level in the unit\n");
+		return;
+	}
+
+	if ( !sv.IsActive() || sv.IsMultiplayer() )
+	{
+		ConMsg( "Can't changelevel2, not in a single-player map\n" );
+		return;
+	}
+
+#if !defined(SWDS)
+	// needs to be before CL_HL2Demo_MapCheck() check as d1_trainstation_03 isn't a valid map
+	if ( IsPC() && CL_IsHL2Demo() && !sv.IsDedicated() && !Q_stricmp( args[1], "d1_trainstation_03" ) ) 
+	{
+		void CL_DemoTransitionFromTrainstation();
+		CL_DemoTransitionFromTrainstation();
+		return; 
+	}
+
+	// needs to be before CL_HL2Demo_MapCheck() check as d1_trainstation_03 isn't a valid map
+	if ( IsPC() && CL_IsHL2Demo() && !sv.IsDedicated() && !Q_stricmp( args[1], "d1_town_02a" ) && !Q_stricmp( args[2], "d1_town_02_02a" )) 
+	{
+		void CL_DemoTransitionFromRavenholm();
+		CL_DemoTransitionFromRavenholm();
+		return; 
+	}
+
+	if ( IsPC() && CL_IsPortalDemo() && !sv.IsDedicated() && !Q_stricmp( args[1], "testchmb_a_07" ) ) 
+	{
+		void CL_DemoTransitionFromTestChmb();
+		CL_DemoTransitionFromTestChmb();
+		return; 
+	}
+
+#endif
+
+	// allow a level transition to d1_trainstation_03 so the Host_Changelevel() can act on it
+	if ( !CL_HL2Demo_MapCheck( args[1] ) ) 
+	{
+		Warning( "changelevel failed: %s not found\n", args[1] );
+		return;	
+	}
+
+	HostState_ChangeLevelSP( args[1], args[2] );
+}
+#else
 void Host_Changelevel_f( const CCommand &args )
 {
 	if ( args.ArgC() < 2 )
@@ -1106,6 +1212,8 @@ void Host_Changelevel2_f( const CCommand &args )
 
 	HostState_ChangeLevelSP( szName, args[2] );
 }
+#endif
+#line 1069
 
 
 //-----------------------------------------------------------------------------
@@ -1168,6 +1276,192 @@ DWORD __declspec(dllimport) __stdcall GetEnvironmentVariableA( const char *, cha
 }
 #endif // _WIN32
 
+#ifdef BYTEMATCH_RETAIL
+char gpszVersionString[32];
+char gpszProductString[32];
+static int sClientVersion = 0;
+static int sServerVersion = 0;
+
+int GetClientVersion()
+{
+	return sClientVersion;
+}
+
+int GetServerVersion()
+{
+	return sServerVersion;
+}
+
+int build_number( void )
+{
+	return sServerVersion;
+}
+
+AppId_t DetermineAppID( const char *pchGameDir, const char *pchBaseDir )
+{
+	char szSteamInf[1024];
+	char szFullPath[1024];
+	char szGameInfo[1024];
+	char szAppID[32];
+	struct stat statGameInfo;
+	struct stat statSteamInf;
+
+	V_ComposeFileName( pchGameDir, "steam.inf", szSteamInf, sizeof( szSteamInf ) );
+	V_MakeAbsolutePath( szFullPath, sizeof( szFullPath ), szSteamInf, pchBaseDir );
+
+	// steam.inf first, then gameinfo.txt
+	FILE *fp = fopen( szFullPath, "rb" );
+	if ( fp )
+	{
+		if ( stat( szFullPath, &statSteamInf ) != 0 )
+		{
+			fclose( fp );
+			return 0;
+		}
+
+		int nSize = statSteamInf.st_size;
+		char *pchBuffer = (char *)_alloca( nSize + 1 );
+		int nRead = fread( pchBuffer, nSize, 1, fp ) * nSize;
+		fclose( fp );
+		pchBuffer[nRead] = 0;
+
+		const char *pchParse = pchBuffer;
+		while ( ( pchParse = COM_Parse( pchParse ) ) != NULL )
+		{
+			if ( Q_strlen( com_token ) <= 0 )
+				break;
+
+			if ( !Q_strnicmp( com_token, "AppID=", 6 ) )
+			{
+				Q_strncpy( szAppID, com_token + 6, sizeof( szAppID ) - 1 );
+				return atoi( szAppID );
+			}
+		}
+		return 0;
+	}
+
+	V_ComposeFileName( pchGameDir, "gameinfo.txt", szGameInfo, sizeof( szGameInfo ) );
+	V_MakeAbsolutePath( szFullPath, sizeof( szFullPath ), szGameInfo, pchBaseDir );
+	if ( stat( szFullPath, &statGameInfo ) != 0 )
+	{
+		fclose( fp );
+		return 0;
+	}
+
+	fp = fopen( szFullPath, "rb" );
+	if ( !fp )
+		return 0;
+
+	int nSize = statGameInfo.st_size;
+	char *pchBuffer = (char *)_alloca( nSize + 1 );
+	int nRead = fread( pchBuffer, nSize, 1, fp ) * nSize;
+	pchBuffer[nRead] = 0;
+	fclose( fp );
+
+	KeyValues *pkvGameInfo = new KeyValues( "gameinfo" );
+	KeyValues::AutoDelete autodelete_pkvGameInfo( pkvGameInfo );
+	AppId_t nAppID = 0;
+	if ( pkvGameInfo->LoadFromBuffer( "gameinfo.txt", pchBuffer ) )
+	{
+		nAppID = pkvGameInfo->GetInt( "FileSystem/SteamAppId" );
+	}
+	return nAppID;
+}
+
+void ParseSteamInfFile( const char *pszFile )
+{
+	FileHandle_t fp = g_pFileSystem->Open( pszFile, "r" );
+	if ( fp )
+	{
+		int bufsize = g_pFileSystem->Size( fp );
+		char *buffer = (char *)_alloca( bufsize + 1 );
+
+		int iBytesRead = g_pFileSystem->Read( buffer, bufsize, fp );
+		g_pFileSystem->Close( fp );
+		buffer[iBytesRead] = 0;
+
+		int gotKeys = 0;
+
+		const char *pbuf = buffer;
+		while ( 1 )
+		{
+			pbuf = COM_Parse( pbuf );
+			if ( !pbuf )
+				break;
+			if ( Q_strlen( com_token ) <= 0 || gotKeys >= 5 )
+				break;
+
+			if ( !Q_strnicmp( com_token, "PatchVersion=", Q_strlen( "PatchVersion=" ) ) )
+			{
+				Q_strncpy( gpszVersionString, com_token + Q_strlen( "PatchVersion=" ), sizeof( gpszVersionString ) - 1 );
+				gpszVersionString[sizeof( gpszVersionString ) - 1] = 0;
+				sClientVersion = atoi( gpszVersionString );
+				++gotKeys;
+				continue;
+			}
+
+			if ( !Q_strnicmp( com_token, "ProductName=", Q_strlen( "ProductName=" ) ) )
+			{
+				Q_strncpy( gpszProductString, com_token + Q_strlen( "ProductName=" ), sizeof( gpszProductString ) - 1 );
+				gpszProductString[sizeof( gpszProductString ) - 1] = 0;
+				++gotKeys;
+				continue;
+			}
+
+			if ( !Q_strnicmp( com_token, "ServerVersion=", Q_strlen( "ServerVersion=" ) ) )
+			{
+				char szServerVersion[256];
+				Q_strncpy( szServerVersion, com_token + Q_strlen( "ServerVersion=" ), sizeof( szServerVersion ) - 1 );
+				szServerVersion[sizeof( szServerVersion ) - 1] = 0;
+				sServerVersion = atoi( szServerVersion );
+				++gotKeys;
+				continue;
+			}
+
+			if ( !Q_strnicmp( com_token, "AppID=", Q_strlen( "AppID=" ) ) )
+			{
+				char szAppID[32];
+				Q_strncpy( szAppID, com_token + Q_strlen( "AppID=" ), sizeof( szAppID ) - 1 );
+				++gotKeys;
+				continue;
+			}
+		}
+	}
+}
+
+void Host_InitVersion()
+{
+	Q_strcpy( gpszVersionString, "1.0.2.0" );
+	Q_strcpy( gpszProductString, "valve" );
+
+	ParseSteamInfFile( "steam.inf" );
+}
+
+void Host_InitAppID( const char *pchGameDir, const char *pchBaseDir )
+{
+	AppId_t nAppID = DetermineAppID( pchGameDir, pchBaseDir );
+	if ( nAppID )
+	{
+		// Steam picks the app ID up from steam_appid.txt in the working directory
+		FILE *fh = fopen( "steam_appid.txt", "wb" );
+		if ( fh )
+		{
+			char szAppID[256];
+			Q_snprintf( szAppID, sizeof( szAppID ), "%u\n", nAppID );
+			fwrite( szAppID, Q_strlen( szAppID ) + 1, 1, fh );
+			fclose( fh );
+		}
+	}
+	Sys_SetSteamAppID( nAppID );
+}
+
+CON_COMMAND( version, "Print version info string." )
+{
+	ConMsg( "Build Label:          %8d   # Uniquely identifies each build\n", GetServerVersion() );
+	ConMsg( "Network PatchVersion: %8s   # Determines client and server compatibility\n", gpszVersionString );
+	ConMsg( "Protocol version:     %8d   # High level network protocol version\n", PROTOCOL_VERSION );
+}
+#else
 CON_COMMAND( version, "Print version info string." )
 {
 	ConMsg( "Build Label:          %8d   # Uniquely identifies each build\n", GetSteamInfIDVersionInfo().ServerVersion );
@@ -1185,6 +1479,8 @@ CON_COMMAND( version, "Print version info string." )
 		ConMsg( "Client AppID:         %8i\n", GetSteamInfIDVersionInfo().AppID );
 	}
 }
+#endif
+#line 1315
 
 
 //-----------------------------------------------------------------------------
@@ -2294,7 +2590,7 @@ CON_COMMAND( sv_dump_edicts, "Display a list of edicts allocated on the server."
 	Msg( "FreeEdicts: %d\n\n", sv.free_edicts );
 }
 #endif
-#line 2258
+#line 2394
 
 // make valve_ds only?
 CON_COMMAND_F( memory_list, "dump memory list (linux only)", FCVAR_CHEAT )
@@ -2368,7 +2664,7 @@ CON_COMMAND( namelockid, "Prevent name changes for this userID." )
 	}
 }
 #endif
-#line 2285
+#line 2421
 
 #if defined( STAGING_ONLY ) || defined( _DEBUG )
 CON_COMMAND( fs_find, "Run virtual filesystem find" )

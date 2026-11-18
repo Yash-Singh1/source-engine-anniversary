@@ -2077,7 +2077,12 @@ void CHLTVServer::ReplyInfo( const netadr_t &adr )
 	// Password?
 	buf.PutUnsignedChar( GetPassword() != NULL ? 1 : 0 );
 	buf.PutUnsignedChar( Steam3Server().BSecure() ? 1 : 0 );
+#ifdef BYTEMATCH_RETAIL
+	buf.PutString( gpszVersionString );
+#else
 	buf.PutString( GetSteamInfIDVersionInfo().szVersionString );
+#endif
+#line 2081
 
 	//
 	// NEW DATA.
