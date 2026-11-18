@@ -451,7 +451,10 @@ void IMaterialInternal::DestroyMaterial( IMaterialInternal* pMaterial )
 		CMaterial* pMatImp = static_cast<CMaterial*>(pMaterial);
 		// Deletion of the error material is deferred until after all other materials have been deleted.
 		// See CMaterialSystem::CleanUpErrorMaterial() in cmaterialsystem.cpp.
+#ifndef BYTEMATCH_RETAIL
 		if ( !pMatImp->IsErrorMaterial() )
+#endif
+#line 455
 		{
 			delete pMatImp;
 		}
@@ -492,11 +495,14 @@ CMaterial::CMaterial( char const* materialName, const char *pTextureGroupName, K
 	m_pShaderParams = NULL;
 	m_RefCount = 0;
 	m_representativeTexture = NULL;
-	m_pReplacementProxy = NULL;
 #ifdef BYTEMATCH_RETAIL
 	m_ppProxies = NULL;
+	m_pReplacementProxy = NULL;
 	m_ProxyCount = 0;
+#else
+	m_pReplacementProxy = NULL;
 #endif
+#line 500
 	m_VarCount = 0;
 	m_MappingWidth = m_MappingHeight = 0;
 	m_iEnumerationID = 0;
@@ -1762,9 +1768,12 @@ bool CMaterial::InitializeStateSnapshots()
 
 		if ( m_pShader && !ShaderSystem()->InitRenderState( m_pShader, m_VarCount, m_pShaderParams, &m_ShaderRenderState, GetName() ))
 		{
+#ifndef BYTEMATCH_RETAIL
 			m_Flags &= ~MATERIAL_VALID_RENDERSTATE;
+#endif
 			return false;
 		}
+#line 1768
 
 		m_Flags |= MATERIAL_VALID_RENDERSTATE;
 	}
@@ -1777,6 +1786,10 @@ void CMaterial::CleanUpStateSnapshots()
 	if (IsValidRenderState())
 	{
 		ShaderSystem()->CleanupRenderState(&m_ShaderRenderState);
+#ifdef BYTEMATCH_RETAIL
+		m_Flags &= ~MATERIAL_VALID_RENDERSTATE;
+#endif
+#line 1780
 		// -- THIS CANNOT BE HERE: m_Flags &= ~MATERIAL_VALID_RENDERSTATE;
 		// -- because it will cause a crash when main thread asks for material
 		// -- sort group it can temporarily see material in invalid render state
@@ -2076,7 +2089,12 @@ bool CMaterial::NeedsTangentSpace( void )
 
 bool CMaterial::NeedsPowerOfTwoFrameBufferTexture( bool bCheckSpecificToThisFrame )
 {
+#ifdef BYTEMATCH_RETAIL
+	Precache();
+#else
 	PrecacheVars();
+#endif
+#line 2080
 	if( !m_pShader )
 	{
 		if ( !HushAsserts() )
@@ -2092,7 +2110,12 @@ bool CMaterial::NeedsPowerOfTwoFrameBufferTexture( bool bCheckSpecificToThisFram
 
 bool CMaterial::NeedsFullFrameBufferTexture( bool bCheckSpecificToThisFrame )
 {
+#ifdef BYTEMATCH_RETAIL
+	Precache();
+#else
 	PrecacheVars();
+#endif
+#line 2096
 	if( !m_pShader )
 	{
 		if ( !HushAsserts() )
@@ -2426,7 +2449,10 @@ void CMaterial::Uncache( bool bPreserveVars )
 	{
 		// Clean up the state snapshots
 		CleanUpStateSnapshots();
+#ifndef BYTEMATCH_RETAIL
 		m_Flags &= ~MATERIAL_VALID_RENDERSTATE;
+#endif
+#line 2430
 		m_Flags &= ~MATERIAL_IS_PRECACHED;
 	}
 
@@ -2474,7 +2500,7 @@ void CMaterial::ReloadTextures( void )
 			if( ppVars[i]->IsTexture() )
 			{
 				ITextureInternal *pTexture = ( ITextureInternal * )ppVars[i]->GetTextureValue();
-				pTexture->Download();
+				if( !IsTextureInternalEnvCubemap( pTexture ) ) pTexture->Download();
 			}
 		}
 	}
@@ -3138,10 +3164,10 @@ IMaterial *CMaterial::CheckProxyReplacement( void *proxyData )
 
 bool CMaterial::HasProxy( )	const
 {
-	const_cast< CMaterial* >( this )->PrecacheVars();
 #ifdef BYTEMATCH_RETAIL
 	return ( m_ProxyCount > 0 );
 #else
+	const_cast< CMaterial* >( this )->PrecacheVars();
 	return m_ProxyInfo.Count() > 0;
 #endif
 }

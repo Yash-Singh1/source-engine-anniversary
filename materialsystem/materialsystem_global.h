@@ -108,5 +108,9 @@ inline IColorCorrectionSystem *ColorCorrectionSystem()
 //-----------------------------------------------------------------------------
 void EnableThreadedMaterialVarAccess( bool bEnable, IMaterialVar **ppParams, int nVarCount );
 
+#ifdef BYTEMATCH_RETAIL
+// Retail tier0 exports no HushAsserts().
+#define HushAsserts() ( CommandLine()->FindParm( "-hushasserts" ) != 0 )
+#endif
 
 #endif // MATERIALSYSTEM_GLOBAL_H

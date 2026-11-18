@@ -488,9 +488,19 @@ void CMaterialSystem::CleanUpDebugMaterials()
 {
 	if ( m_pDrawFlatMaterial )
 	{
+#ifdef BYTEMATCH_RETAIL
+		g_pErrorMaterial->DecrementReferenceCount();
+		m_pDrawFlatMaterial->DecrementReferenceCount();
+		RemoveMaterial( g_pErrorMaterial );
+		RemoveMaterial( m_pDrawFlatMaterial );
+		g_pErrorMaterial = NULL;
+		m_pDrawFlatMaterial = NULL;
+#else
 		m_pDrawFlatMaterial->DecrementReferenceCount();
 		RemoveMaterial( m_pDrawFlatMaterial );
 		m_pDrawFlatMaterial = NULL;
+#endif
+#line 494
 
 		for ( int i = BUFFER_CLEAR_NONE; i < BUFFER_CLEAR_TYPE_COUNT; ++i )
 		{
@@ -511,6 +521,7 @@ void CMaterialSystem::CleanUpDebugMaterials()
 }
 
 
+#ifndef BYTEMATCH_RETAIL
 void CMaterialSystem::CleanUpErrorMaterial()
 {
 	// Destruction of g_pErrorMaterial is deferred until after CMaterialDict::Shutdown.
@@ -521,6 +532,8 @@ void CMaterialSystem::CleanUpErrorMaterial()
 	pErrorMaterial->DecrementReferenceCount();
 	RemoveMaterial( pErrorMaterial );
 }
+#endif
+#line 524
 
 //-----------------------------------------------------------------------------
 // Constructor
@@ -1021,7 +1034,10 @@ void CMaterialSystem::Shutdown( )
 	GetLightmaps()->Shutdown();
 	m_MaterialDict.Shutdown();
 
+#ifndef BYTEMATCH_RETAIL
 	CleanUpErrorMaterial();
+#endif
+#line 1025
 
 	// Shader system!
 	ShaderSystem()->Shutdown();
