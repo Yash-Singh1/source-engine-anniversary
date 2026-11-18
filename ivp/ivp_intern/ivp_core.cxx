@@ -490,11 +490,15 @@ void IVP_Core::damp_object(IVP_DOUBLE delta_time_, const IVP_U_Float_Point *rota
 }
 
 void IVP_Core::set_rotation_inertia( const IVP_U_Float_Point *r){
+#ifdef BYTEMATCH_RETAIL
+	rot_inertia.set( r );
+#else
 	rot_inertia.set(
 		r->k[0] > P_FLOAT_MAX ? P_FLOAT_MAX : r->k[0],
 		r->k[1] > P_FLOAT_MAX ? P_FLOAT_MAX : r->k[1],
 		r->k[2] > P_FLOAT_MAX ? P_FLOAT_MAX : r->k[2]
 	);
+#endif
 
 	this->calc_calc();
 }
@@ -821,6 +825,15 @@ IVP_Vec_PCore::IVP_Vec_PCore(const IVP_Core *pc,const IVP_U_Float_Point *p){
 
 void IVP_Core::calc_calc(){
     IVP_ASSERT(get_rot_inertia()->real_length() > P_DOUBLE_EPS);
+#ifdef BYTEMATCH_RETAIL
+    for ( int i = 0; i < 3; i++ ){
+	if ( !finite( rot_inertia.k[i] ) || rot_inertia.k[i] > 1e18f ){
+	    rot_inertia.k[i] = 1e18f;
+	}else if ( rot_inertia.k[i] < -1e18f ){
+	    rot_inertia.k[i] = -1e18f;
+	}
+    }
+#endif
     IVP_U_Float_Hesse *iri = (IVP_U_Float_Hesse *)get_inv_rot_inertia();
 
     const IVP_U_Float_Point *ri = get_rot_inertia();
@@ -853,7 +866,11 @@ void IVP_Core::transform_PSI_matrizes_core(const IVP_U_Matrix *m_core_f_core){
 }
 
     
+#ifdef BYTEMATCH_RETAIL
+void IVP_Core::init(IVP_Real_Object *io, bool add_gravity){
+#else
 void IVP_Core::init(IVP_Real_Object *io){
+#endif
     P_MEM_CLEAR(this);
     objects.reset();
     objects.add(io);
@@ -863,19 +880,30 @@ void IVP_Core::init(IVP_Real_Object *io){
     sim_unit_of_core = new IVP_Simulation_Unit();
     sim_unit_of_core->add_sim_unit_core( this );
     sim_unit_of_core->set_unit_movement_type(IVP_MT_NOT_SIM);
+#ifdef BYTEMATCH_RETAIL
+    if ( add_gravity )
+#endif
     this->add_core_controller(environment->standard_gravity_controller);
     //current_sim_man_slot = -1; //not simulated
     movement_state=IVP_MT_NOT_SIM;
 }
 
 IVP_Core::IVP_Core(IVP_Real_Object *io){
+#ifdef BYTEMATCH_RETAIL
+    init(io, true);
+#else
     init(io);
+#endif
     environment->get_sim_units_manager()->add_sim_unit_to_manager(sim_unit_of_core);
 }
 
 IVP_Core::IVP_Core(IVP_Real_Object *io, const IVP_U_Quat *q_world_f_object_init, const IVP_U_Point *position, IVP_BOOL physical_unmoveable_, IVP_BOOL enable_piling_optimization)
 {
+#ifdef BYTEMATCH_RETAIL
+    init(io, physical_unmoveable_ == IVP_FALSE);
+#else
     init(io);
+#endif
     physical_unmoveable = physical_unmoveable_;
     // init_core_for_simulation();
 
@@ -914,7 +942,9 @@ IVP_Core::~IVP_Core()
   if(this->sim_unit_of_core) {
       this->sim_unit_of_core->sim_unit_remove_core(this);
   }
+#ifndef BYTEMATCH_RETAIL
   P_DELETE(spin_clipping);
+#endif
 }
 
 IVP_Core_Merged::IVP_Core_Merged(IVP_Real_Object *real_obj): IVP_Core( real_obj ){
@@ -1159,7 +1189,11 @@ void IVP_Core::update_exact_mindist_events_of_core(){
 }
 
 void IVP_Core::set_mass(IVP_FLOAT new_mass){
+#ifdef BYTEMATCH_RETAIL
+  IVP_FLOAT factor = new_mass/ this->get_mass();
+#else
   IVP_DOUBLE factor = new_mass/ this->get_mass();
+#endif
   IVP_U_Float_Hesse *ri = (IVP_U_Float_Hesse *)get_rot_inertia();
   ri->mult( factor );
   ri->hesse_val = new_mass;

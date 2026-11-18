@@ -88,18 +88,31 @@ public:
      *  Note:		For memory reasons, the flags will be combined to a bit-area soon.
      *			So use the corresponding functions to read/set them.
      ********************************************************************************/
+#ifdef BYTEMATCH_RETAIL
+    IVP_BOOL 		fast_piling_allowed_flag:1;
+    IVP_BOOL		physical_unmoveable:1;	// never any movement
+    IVP_BOOL            is_in_wakeup_vec:1;
+    IVP_BOOL		rot_inertias_are_equal:1;
+	IVP_BOOL		pinned:1;
+    IVP_BOOL            temporarily_unmovable:3;
+    IVP_Movement_Type	movement_state:8;		// Movement state
+    short               impacts_since_last_PSI;
+#else
     IVP_BOOL 		fast_piling_allowed_flag:2;
     IVP_BOOL		physical_unmoveable:2;	// never any movement
     IVP_BOOL            is_in_wakeup_vec:2;
     IVP_BOOL		rot_inertias_are_equal:2;
 	IVP_BOOL		pinned:2;
+#endif
     
     IVP_FLOAT		upper_limit_radius;	// the radius of the object around the mass center
     IVP_FLOAT		max_surface_deviation;	// for all P of all Surfaces S:		maximum P * S
 
     IVP_Environment 	*environment; 	// Backlink
     
+#ifndef BYTEMATCH_RETAIL
     class IVP_Constraint_Car_Object *car_wheel;  // bad bad hack for optimized wheel behaviour;
+#endif
     
 protected:
     IVP_U_Float_Hesse	rot_inertia;            // needed for energy calculation, mass is w part
@@ -117,6 +130,13 @@ public:
 
     IVP_FLOAT		speed_damp_factor;	// (*) same for speed
     IVP_FLOAT		inv_object_diameter; 		// 2.0f/upper_limit_radius  
+#ifdef BYTEMATCH_RETAIL
+    class IVP_Constraint_Car_Object *car_wheel;  // bad bad hack for optimized wheel behaviour;
+
+    IVP_Core_Friction_Info core_friction_info;
+
+    IVP_Vector_of_Objects objects; 	// All objects for this core.
+#else
 	IVP_U_Float_Point *spin_clipping;   // if set, than angular velocities are individually clipped against this value
 
     /********************************************************************************
@@ -129,6 +149,7 @@ public:
      *	section:  friction, systems
      ********************************************************************************/
     IVP_Core_Friction_Info core_friction_info;
+#endif
 
 
     const class IVP_U_Point_4 *get_inv_masses(){ return (class IVP_U_Point_4*)& inv_rot_inertia;} // combined solution for inertias
@@ -146,11 +167,13 @@ public:
      *	type		private, public READ ONLY
      *	section:	basic simulation part, non redundant part
      ********************************************************************************/
+#ifndef BYTEMATCH_RETAIL
     IVP_Movement_Type	movement_state:8;		// Movement state
     IVP_BOOL            temporarily_unmovable:8;
 
     short               impacts_since_last_PSI;
     IVP_Time     	time_of_last_psi;		// Indicates point in simulation time the last matrizes are valid at.    
+#endif
 
     /********************************************************************************
      *	type:		private, public READ ONLY
@@ -172,6 +195,9 @@ public:
     IVP_U_Quat 	q_world_f_core_next_psi;	// is is the quat to use at a psi
 
     IVP_U_Matrix	m_world_f_core_last_psi;	/* The core matrix valid at PSI (rotation part is redundant, see q_world_f_core_last_psi),							 * use get_m_world_f_core_PSI() to get a valid pointer to this matrix */
+#ifdef BYTEMATCH_RETAIL
+    IVP_Time     	time_of_last_psi;		// Indicates point in simulation time the last matrizes are valid at.    
+#endif
 };
 
 /********************************************************************************
@@ -181,10 +207,17 @@ public:
 class IVP_Core_Fast : public IVP_Core_Fast_PSI {
 public:
     // needed for collision detection
+#ifdef BYTEMATCH_RETAIL
+    IVP_FLOAT abs_omega;		// absolute angular velocity interpolated movement
+    IVP_FLOAT max_surface_rot_speed;	// abs_omega * max_surface_deviation
+    IVP_U_Float_Point rotation_axis_world_space;        // normized q_ncore_f_core
+    IVP_FLOAT current_speed;		// speed.real_length()
+#else
     IVP_U_Float_Point rotation_axis_world_space;        // normized q_ncore_f_core
     IVP_FLOAT current_speed;		// speed.real_length()
     IVP_FLOAT abs_omega;		// absolute angular velocity interpolated movement
     IVP_FLOAT max_surface_rot_speed;	// abs_omega * max_surface_deviation
+#endif
 };
 
 
@@ -192,7 +225,11 @@ class IVP_Core: public IVP_Core_Fast {  //
     friend class IVP_Environment;
     
 protected:
+#ifdef BYTEMATCH_RETAIL
+    void init(IVP_Real_Object *io, bool add_gravity);
+#else
     void init(IVP_Real_Object *io);
+#endif
     IVP_Core(IVP_Real_Object *io);
 public:
         

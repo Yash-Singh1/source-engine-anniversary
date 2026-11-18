@@ -25,6 +25,7 @@ void IVP_Core::inline_calc_at_position(IVP_Time current_time, IVP_U_Point *pos) 
 void IVP_Core::clip_velocity(IVP_U_Float_Point *velocity, IVP_U_Float_Point *rotation_vec){
     // perform clipping
     IVP_Anomaly_Limits *al = this->environment->get_anomaly_limits();
+#ifndef BYTEMATCH_RETAIL
     if ( this->spin_clipping){
 	if (rotation_vec->k[0] > spin_clipping->k[0]) {
 	    rotation_vec->k[0] = spin_clipping->k[0];
@@ -44,7 +45,9 @@ void IVP_Core::clip_velocity(IVP_U_Float_Point *velocity, IVP_U_Float_Point *rot
 	    rotation_vec->k[2] = -spin_clipping->k[2];
 	}
 
-    }else{
+    }else
+#endif
+    {
 #ifdef IVP_FAST_WHEELS_ENABLED
       if ( (!this->car_wheel) || (this->max_surface_deviation ) )
 #endif
