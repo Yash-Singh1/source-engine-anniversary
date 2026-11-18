@@ -266,7 +266,10 @@ void CPureServerWhitelist::AddHardcodedFileCommands()
 {
 	AddFileCommand( "materials/vgui/replay/thumbnails/...", ePureServerFileClass_Any, kLoadOrder_HardcodedOverride );
 	AddFileCommand( "sound/ui/hitsound.wav", ePureServerFileClass_Any, kLoadOrder_HardcodedOverride );
+#ifndef BYTEMATCH_RETAIL
 	AddFileCommand( "sound/ui/killsound.wav", ePureServerFileClass_Any, kLoadOrder_HardcodedOverride );
+#endif
+#line 262
 	AddFileCommand( "materials/vgui/logos/...", ePureServerFileClass_Any, kLoadOrder_HardcodedOverride );
 }
 
@@ -577,7 +580,12 @@ void CPureServerWhitelist::DecodeCommandList( CUtlDict<CPureServerWhitelist::CCo
 		}
 
 		char str[MAX_PATH];
+#ifdef BYTEMATCH_RETAIL
+		buf.GetString( str, sizeof( str ) - 1 );
+#else
 		buf.GetString( str );
+#endif
+#line 573
 		V_FixSlashes( str );
 		
 		theList.Insert( str, pCommand );
