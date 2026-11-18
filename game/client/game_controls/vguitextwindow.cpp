@@ -32,7 +32,12 @@ extern INetworkStringTable *g_pStringTableInfoPanel;
 
 #define TEMP_HTML_FILE	"textwindow_temp.html"
 
+#ifdef BYTEMATCH_RETAIL
+ConVar cl_disablehtmlmotd( "cl_disablehtmlmotd", "0", FCVAR_ARCHIVE, "Disable HTML motds." );
+#else
 ConVar cl_disablehtmlmotd( "cl_disablehtmlmotd", "1", FCVAR_ARCHIVE, "Disable HTML motds." );
+#endif
+#line 36
 
 //=============================================================================
 // HPE_BEGIN:

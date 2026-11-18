@@ -2334,7 +2334,12 @@ IDirect3DDevice9* CShaderDeviceDx8::InvokeCreateDevice( void* hWnd, int nAdapter
 	}
 	else
 	{
+#ifdef BYTEMATCH_RETAIL
+		DWarning( "init", 0, "Failed to create %s device!\nError 0x%X.\n\nPlease see the following for more info.\n"
+#else
 		DWarning( "init", 0, "Failed to create %s device!\nError 0x%lX.\n\nPlease see the following for more info.\n"
+#endif
+#line 2322
 			"http://support.steampowered.com/cgi-bin/steampowered.cfg/php/enduser/std_adp.php?p_faqid=772\n", IsOpenGL() ? "OpenGL" : "D3D", hr );
 	}
 

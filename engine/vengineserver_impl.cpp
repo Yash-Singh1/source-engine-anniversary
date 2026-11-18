@@ -843,7 +843,7 @@ public:
 			sound.nSoundNum = SV_SoundIndex( samp );
 			if (sound.nSoundNum <= 0)
 			{
-				ConMsg ("EmitAmbientSound:  sound not precached: %s\n", samp);
+				ConMsg ("EmitAmbientSound:  sound note precached: %s\n", samp);
 				return;
 			}
 		}

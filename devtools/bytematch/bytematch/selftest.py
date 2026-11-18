@@ -6,7 +6,9 @@
 3. clang-600.0.57 workflow: tier1/mathlib files from this tree compiled with
    macos-cc.sh must fully match retail engine.dylib.
 4. The survey pilot objects (clang-600) must reach the pilot's 311 matches.
-5. The same comparisons without capstone (byte-level fallback)."""
+5. The same comparisons without capstone (byte-level fallback).
+6. Data audit: a retail module against itself is clean; a copy with one
+   referenced literal edited shows that literal and its functions."""
 import json
 import os
 import shutil
@@ -141,6 +143,45 @@ def test_retail_self(t, depots, full):
                     f'{len(R.debug_map)} objects, {with_obj}/{len(R.functions)} functions attributed')
 
 
+def test_data(t, depots):
+    from . import audit, data
+    p = os.path.join(depots, '223/19307283/bin/libvstdlib.dylib')
+    if not os.path.exists(p) or not data.x86.have_capstone():
+        t.skip('data audit', 'libvstdlib.dylib or capstone missing')
+        return
+    doc = audit.audit(p, p, sources=False)
+    s = doc['summary']
+    clean = (s['differing'] == s['missing'] == s['extra'] == s['moved'] == 0 and not doc['functions']
+             and not doc['data_symbols'])
+    t.check('data audit of a retail module against itself is clean', clean and s['matched_functions'] > 0,
+            f'{s["retail_strings"]} literals, {s["matched_functions"]} functions')
+    # edit one character of a literal that code references, in a copy
+    img = data.Image(p)
+    R = loader.load_one(p)
+    target = None
+    for f in R.functions:
+        for k, (va, _) in data.code_refs(img, f).items():
+            txt = img.cstring_at(va)
+            if txt and len(txt) > 8 and img.string_start(va) == va and txt[0:1].isalpha():
+                target = (va, txt)
+                break
+        if target:
+            break
+    raw = bytearray(img.raw)
+    sec = img.section_at(target[0])
+    fo = sec.offset + target[0] - sec.addr
+    raw[fo] ^= 0x20                                  # flip case of the first letter
+    os.makedirs(BUILD, exist_ok=True)
+    q = os.path.join(BUILD, 'libvstdlib-edited.dylib')
+    with open(q, 'wb') as fh:
+        fh.write(raw)
+    doc = audit.audit(p, q, sources=False)
+    hit = [m for m in doc['functions'] if m['kind'] == 'string']
+    t.check('an edited literal is reported with its functions',
+            doc['summary']['differing'] == 1 and hit and all(target[1].decode('latin-1')[1:] in m['retail'] for m in hit),
+            f'{target[1][:30]!r}: {len(hit)} function(s)')
+
+
 def test_samples(t, b):
     if 'clang600' in b:
         o2, o1, dylib = b['clang600']
@@ -246,6 +287,7 @@ def main(args):
     from . import x86
     print(f'capstone: {"yes" if x86.have_capstone() else "no"}')
     test_retail_self(t, args.depots, args.full)
+    test_data(t, args.depots)
     b = build_samples(t, rebuild=args.rebuild)
     test_samples(t, b)
     test_workflow(t, args.depots)

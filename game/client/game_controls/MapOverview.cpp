@@ -181,7 +181,12 @@ void CMapOverview::Init( void )
 	// register for events as client listener
 	ListenForGameEvent( "game_newmap" );
 	ListenForGameEvent( "round_start" );
+#ifdef BYTEMATCH_RETAIL
+	ListenForGameEvent( "player_connect" );
+#else
 	ListenForGameEvent( "player_connect_client" );
+#endif
+#line 185
 	ListenForGameEvent( "player_info" );
 	ListenForGameEvent( "player_team" );
 	ListenForGameEvent( "player_spawn" );
@@ -933,7 +938,12 @@ void CMapOverview::FireGameEvent( IGameEvent *event )
 		ResetRound();
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	else if ( Q_strcmp(type,"player_connect") == 0 )
+#else
 	else if ( Q_strcmp(type,"player_connect_client") == 0 )
+#endif
+#line 937
 	{
 		int index = event->GetInt("index"); // = entity index - 1 
 

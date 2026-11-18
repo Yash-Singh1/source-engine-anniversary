@@ -923,10 +923,18 @@ private:
 	// 1 == Textured (TextureId1 only)
 	// 2 == Rounded Corner Box
 	CPanelAnimationVar( int, m_nPaintBackgroundType, "PaintBackgroundType", "0" );
+#ifdef BYTEMATCH_RETAIL
+	CPanelAnimationVarAliasType( int, m_nBgTextureId1, "Texture1", "vgui/hud/8x800corner1", "textureid" );
+	CPanelAnimationVarAliasType( int, m_nBgTextureId2, "Texture2", "vgui/hud/8x800corner2", "textureid" );
+	CPanelAnimationVarAliasType( int, m_nBgTextureId3, "Texture3", "vgui/hud/8x800corner3", "textureid" );
+	CPanelAnimationVarAliasType( int, m_nBgTextureId4, "Texture4", "vgui/hud/8x800corner4", "textureid" );
+#else
 	CPanelAnimationVarAliasType( int, m_nBgTextureId1, "Texture1", "vgui/hud/800corner1", "textureid" );
 	CPanelAnimationVarAliasType( int, m_nBgTextureId2, "Texture2", "vgui/hud/800corner2", "textureid" );
 	CPanelAnimationVarAliasType( int, m_nBgTextureId3, "Texture3", "vgui/hud/800corner3", "textureid" );
 	CPanelAnimationVarAliasType( int, m_nBgTextureId4, "Texture4", "vgui/hud/800corner4", "textureid" );
+#endif
+#line 930
 
 	//=============================================================================
 	// HPE_BEGIN:
