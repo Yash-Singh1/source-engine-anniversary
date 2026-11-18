@@ -37,7 +37,7 @@ RETAIL_MODULES = [
 	'ivp/ivp_compact_builder', 'ivp/ivp_physics', 'vphysics', 'materialsystem/stdshaders',
 	'utils/bzip2', 'replay/common', 'replay', 'sourcevr', 'video/video_quicktime',
 	'utils/bsppack', 'utils/bugreporter_filequeue', 'utils/bugreporter_public',
-	'vgui2/vgui_surfacelib', 'vguimatsurface', 'gameui',
+	'vgui2/vgui_surfacelib', 'vguimatsurface', 'gameui', 'engine',
 ]
 
 # Defines our top-level wscript adds that Valve's build doesn't have.
@@ -66,6 +66,7 @@ DEPOT_DYLIBS = ['libSDL2-2.0.0.dylib', 'libsteam_api.dylib', 'libMilesX86.dylib'
 # dynamic lookup instead of linking libraries retail doesn't link.
 UNDEFINED_OK = {
 	'bin/bsppack': ['__Z13LZMA_CompressPhjPj'],  # bsplib.cpp's RepackBSP path; retail has none
+	'bin/engine': ['_GetCPUFrequencyResults'],  # tier0 cpumonitoring, absent from retail tier0
 }
 
 # Exports retail modules bind from an older libsteam_api than the depot's.
@@ -170,7 +171,8 @@ def retail_osx32_configure(conf):
 	v.CPPFLAGS = list(rf.UNDEFS)
 	v.LINKFLAGS = rf.linkflags(p)
 	v.CFLAGS_cshlib = v.CXXFLAGS_cxxshlib = []
-	v.DEFINES = list(rf.DEFINES)
+	# Retail modules were built against the togl/osx headers (debug map: public/togl/osx/*.h).
+	v.DEFINES = list(rf.DEFINES) + ['TOGL_OSX']
 	v.RETAIL_UNDEFINED = list(rf.UNDEFINED_NAMES)
 	v.INCLUDES = [conf.path.find_node('common').abspath()]
 	conf.load('gccdeps')

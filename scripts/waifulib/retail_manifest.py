@@ -46,11 +46,13 @@ ARCHIVE_TARGETS = {
 }
 
 # Retail links objects for these, but our copy can't be compiled for this target;
-# the module keeps building without them. module -> files (tree-relative).
+# the module keeps building without them. module or archive -> files (tree-relative).
 RETAIL_SKIP = {
 	# Our copies lost the tag filter and friends/spectator pages they need from BaseGamesPage.
 	'bin/ServerBrowser': ['serverbrowser/unused/BlacklistedServers.cpp', 'serverbrowser/unused/CustomGames.cpp',
 		'serverbrowser/unused/FriendsGames.cpp', 'serverbrowser/unused/SpectateGames.cpp'],
+	# Written against the linuxwin GLMDisplayDB; only launcher pulls it (ToGL lane).
+	'libappframework.a': ['appframework/glmrendererinfo_osx.mm'],
 }
 
 # Files retail doesn't link that our tree still needs to link the module
@@ -62,6 +64,9 @@ RETAIL_KEEP = {
 	'bin/filesystem_stdio': ['filesystem/packfile.cpp'],
 	# Our vtex.cpp loads PNG sources through ImgUtl.
 	'bin/vtex_dll': ['common/imageutils.cpp'],
+	# Callers in our engine that retail's engine doesn't have.
+	'bin/engine': ['engine/sv_uploaddata.cpp', 'common/language.cpp', 'engine/audio/MPAHeader.cpp',
+		'engine/audio/VBRHeader.cpp', 'engine/masterserver.cpp'],
 }
 
 def options(opt):
@@ -166,17 +171,18 @@ def retail_select_sources(self):
 			n = srcnode.find_resource(path)
 		return n
 
+	skip = set(s.lower() for s in RETAIL_SKIP.get(key, []))
 	if kind == 'archive':
+		ours = [n for n in ours if _rel(self, n).lower() not in skip]
 		out = []
 		for mem in e['members']:
-			if mem['source']:
+			if mem['source'] and mem['source'].lower() not in skip:
 				n = ours_by_path.get(mem['source'].lower())
 				if n is not None and n not in out:
 					out.append(n)
 		self.source = out + [n for n in ours if n not in out]
 		return
 
-	skip = set(s.lower() for s in RETAIL_SKIP.get(key, []))
 	keep = set(s.lower() for s in RETAIL_KEEP.get(key, []))
 	built = set(k for k, a in m['archives'].items() if archive_target(k, a))
 	out, missing = [], []
