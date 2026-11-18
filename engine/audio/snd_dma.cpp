@@ -668,7 +668,11 @@ void VAudioInit()
 			g_pFileSystem->GetLocalCopy( "mss32.dll" );
 		}
 
+#ifdef BYTEMATCH_RETAIL
+		g_pVAudioModule = FileSystem_LoadModule( "vaudio_miles" );
+#else
 		g_pVAudioModule = FileSystem_LoadModule( "vaudio_minimp3" );
+#endif
 		if ( g_pVAudioModule )
 		{
 			CreateInterfaceFn vaudioFactory = Sys_GetFactory( g_pVAudioModule );
@@ -765,6 +769,7 @@ void S_Shutdown(void)
 
 	SNDDMA_Shutdown();
 
+#ifndef BYTEMATCH_RETAIL
 	for ( int i = s_Sounds.FirstInorder(); i != s_Sounds.InvalidIndex(); i = s_Sounds.NextInorder( i ) )
 	{
 		if ( s_Sounds[i].pSfx )
@@ -774,12 +779,15 @@ void S_Shutdown(void)
 		}
 	}
 	s_Sounds.RemoveAll();
+#endif
 	s_SoundPool.Clear();
 
 	// release DSP resources
 	FreeDsps( true );
 
+#ifndef BYTEMATCH_RETAIL
 	MXR_ReleaseMemory();
+#endif
 
 	// release sentences resources
 	TRACESHUTDOWN( VOX_Shutdown() );
