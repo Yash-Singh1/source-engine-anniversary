@@ -138,7 +138,7 @@ protected:
 	bool	m_bNeedsSort;
 
 private:
-private:
+private:	// duplicate kept: later Assert __LINE__ values match retail
 	template< typename TKey >
 	int	FindLessOrEqual( const TKey& search, bool *pFound ) const;
 

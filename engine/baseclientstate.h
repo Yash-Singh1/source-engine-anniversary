@@ -108,7 +108,6 @@ public: // IServerMessageHandlers
 	PROCESS_SVC_MESSAGE( GameEventList );
 	PROCESS_SVC_MESSAGE( GetCvarValue );
 	PROCESS_SVC_MESSAGE( CmdKeyValues );
-	PROCESS_SVC_MESSAGE( SetPauseTimed );
 
 	// Returns dem file protocol version, or, if not playing a demo, just returns PROTOCOL_VERSION
 	virtual int GetDemoProtocolVersion() const;
@@ -194,7 +193,6 @@ public:
 
 	int			m_nDeltaTick;		//	last valid received snapshot (server) tick
 	bool		m_bPaused;			// send over by server
-	float		m_flPausedExpireTime;
 	int			m_nViewEntity;		// cl_entitites[cl.viewentity] == player point of view
 
 	int			m_nPlayerSlot;		// own player entity index-1. skips world. Add 1 to get cl_entitites index;

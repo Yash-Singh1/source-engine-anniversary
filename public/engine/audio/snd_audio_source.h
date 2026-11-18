@@ -464,6 +464,7 @@ public:
 	// someone is speaking).
 	virtual bool				IsVoiceSource() = 0;
 
+	// Returns true if the source is a developer commentary sound.
 	virtual bool				IsCommentarySource() { return false; }
 	
 	// Sample size is in bytes.  It will not be accurate for compressed audio.  This is a best estimate.
