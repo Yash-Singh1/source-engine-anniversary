@@ -16,6 +16,7 @@ class IVP_Material_Manager;
 class IPhysicsSurfacePropsInternal : public IPhysicsSurfaceProps
 {
 public:
+	virtual void PurgeAllSurfaceData() = 0;
 	virtual IVP_Material *GetIVPMaterial( int materialIndex ) = 0;
 
 	virtual int GetIVPMaterialIndex( const IVP_Material *pIVP ) const = 0;

@@ -989,7 +989,6 @@ public:
 
 	// NOTE: Same as GetPhysicsProperties, but maybe more convenient
 	virtual void	GetPhysicsParameters( int surfaceDataIndex, surfacephysicsparams_t *pParamsOut ) const = 0;
-	virtual void	PurgeAllSurfaceData() = 0;
 };
 
 abstract_class IPhysicsFluidController
