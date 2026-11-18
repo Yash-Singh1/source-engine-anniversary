@@ -2158,7 +2158,7 @@ void CMaterialSystem::ReadConfigFromConVars( MaterialSystem_Config_t *pConfig )
 	pConfig->SetFlag( MATSYS_VIDCFG_FLAGS_ENABLE_PARALLAX_MAPPING, mat_parallaxmap.GetBool() );
 	pConfig->SetFlag( MATSYS_VIDCFG_FLAGS_REDUCE_FILLRATE, mat_reducefillrate.GetBool() );
 #ifdef BYTEMATCH_RETAIL
-	pConfig->SetFlag( MATSYS_VIDCFG_FLAGS_BICUBIC_LIGHTMAPS, r_lightmap_bicubic.GetBool() );
+	pConfig->SetFlag( MATSYS_VIDCFG_FLAGS_LIGHTMAP_BICUBIC, r_lightmap_bicubic.GetBool() );
 #endif
 #line 1972
 	pConfig->m_nForceAnisotropicLevel = max( mat_forceaniso.GetInt(), 1 );
@@ -2436,7 +2436,7 @@ void CMaterialSystem::WriteConfigIntoConVars( const MaterialSystem_Config_t &con
 	mat_parallaxmap.SetValue( config.UseParallaxMapping() );
 	mat_reducefillrate.SetValue( config.ReduceFillrate() );
 #ifdef BYTEMATCH_RETAIL
-	r_lightmap_bicubic.SetValue( config.BicubicLightmaps() );
+	r_lightmap_bicubic.SetValue( config.LightmapBicubic() );
 #endif
 #line 2228
 	mat_forceaniso.SetValue( config.m_nForceAnisotropicLevel );
@@ -2782,6 +2782,10 @@ bool CMaterialSystem::OverrideConfig( const MaterialSystem_Config_t &_config, bo
 		config.m_nAASamples != g_config.m_nAASamples ||
 		config.m_nAAQuality != g_config.m_nAAQuality ||
 		config.Windowed() != g_config.Windowed() ||
+#ifdef BYTEMATCH_RETAIL
+		config.NoWindowBorder() != g_config.NoWindowBorder() ||
+#endif
+#line 2571
 		config.Stencil() != g_config.Stencil() )
 	{
 		if( mat_debugalttab.GetBool() )
@@ -2864,7 +2868,10 @@ bool CMaterialSystem::OverrideConfig( const MaterialSystem_Config_t &_config, bo
 			Warning( "mat_debugalttab: redownloading textures\n" );
 		}
 
+#ifndef BYTEMATCH_RETAIL
 		if ( g_pShaderAPI->CanDownloadTextures() )
+#endif
+#line 2654
 		{
 			TextureManager()->RestoreRenderTargets();
 			TextureManager()->RestoreNonRenderTargetTextures();
@@ -4060,7 +4067,10 @@ void CMaterialSystem::EndFrame( void )
 	switch ( m_ThreadMode )
 	{
 	case MATERIAL_SINGLE_THREADED:
+#ifndef BYTEMATCH_RETAIL
 		OnRenderingAsyncComplete();
+#endif
+#line 3812
 		break;
 
 	case MATERIAL_QUEUED_THREADED:
@@ -4082,7 +4092,10 @@ void CMaterialSystem::EndFrame( void )
 			}
 			SafeRelease( m_pActiveAsyncJob );
 
+#ifndef BYTEMATCH_RETAIL
 			OnRenderingAsyncComplete();
+#endif
+#line 3834
 
 			CMatQueuedRenderContext *pPrevContext = &m_QueuedRenderContexts[m_iCurQueuedContext];
 
@@ -4116,7 +4129,10 @@ void CMaterialSystem::EndFrame( void )
 			}
 			SafeRelease( m_pActiveAsyncJob );
 
+#ifndef BYTEMATCH_RETAIL
 			OnRenderingAsyncComplete();
+#endif
+#line 3868
 
 			CMatQueuedRenderContext *pPrevContext = &m_QueuedRenderContexts[m_iCurQueuedContext];
 
@@ -4140,7 +4156,10 @@ void CMaterialSystem::EndFrame( void )
 		}
 
 	case MATERIAL_QUEUED_SINGLE_THREADED:
+#ifndef BYTEMATCH_RETAIL
 		OnRenderingAsyncComplete();
+#endif
+#line 3961
 		break;
 
 #ifdef MAT_QUEUE_MODE_PROFILE
@@ -5921,6 +5940,7 @@ void CMaterialSystem::CompactMemory()
 	}
 }
 
+#ifndef BYTEMATCH_RETAIL
 void CMaterialSystem::OnRenderingAsyncComplete()
 {
 	Assert( m_pActiveAsyncJob == NULL );
@@ -5937,6 +5957,8 @@ void CMaterialSystem::OnRenderingAsyncComplete()
 	if ( bThreadHadOwnership && !m_bThreadHasOwnership )
 		ThreadAcquire( true );
 }
+#endif
+#line 5676
 
 //-----------------------------------------------------------------------------
 // Material + texture related commands
