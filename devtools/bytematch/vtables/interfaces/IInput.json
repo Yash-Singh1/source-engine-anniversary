@@ -26,17 +26,16 @@
  ],
  "sdk2013_len": null,
  "retail_reference": {
-  "module": "hl2mp/client",
-  "class": "CHLInput",
+  "module": "episodic/client",
+  "class": "CInput",
   "offset": 0,
   "chain": [
-   "CHLInput",
    "CInput",
    "IInput"
   ]
  },
- "retail_len": 51,
- "retail_len_basis": "shortest deriving subtable",
+ "retail_len": 53,
+ "retail_len_basis": "override: hl2, hl2_complete, episodic and lostcoast clients end IInput with the five Steam Input methods (slots 48-52); hl2mp's client has none, and its shortest subtable runs into CInput's own CAM_CapYaw",
  "retail_len_bounds": {
   "shortest deriving subtable": 51
  },
@@ -331,79 +330,55 @@
   },
   {
    "index": 48,
-   "name": "CAM_CapYaw",
-   "sig": "CAM_CapYaw(float)",
-   "symbol": "CInput::CAM_CapYaw(float)"
+   "name": "SetControllerModeActive",
+   "sig": "SetControllerModeActive(bool)",
+   "symbol": "CInput::SetControllerModeActive(bool)"
   },
   {
    "index": 49,
-   "name": "AdjustYaw",
-   "sig": "AdjustYaw(float, QAngle&)",
-   "symbol": "CInput::AdjustYaw(float, QAngle&)"
+   "name": "ControllerModeActive",
+   "sig": "ControllerModeActive()",
+   "symbol": "CInput::ControllerModeActive()"
   },
   {
    "index": 50,
-   "name": "JoyStickAdjustYaw",
-   "sig": "JoyStickAdjustYaw(float)",
-   "symbol": "CInput::JoyStickAdjustYaw(float)"
+   "name": "SetLastUsedInput",
+   "sig": "SetLastUsedInput(int)",
+   "symbol": "CInput::SetLastUsedInput(int)"
+  },
+  {
+   "index": 51,
+   "name": "GetLastUsedInput",
+   "sig": "GetLastUsedInput()",
+   "symbol": "CInput::GetLastUsedInput()"
+  },
+  {
+   "index": 52,
+   "name": "SteamInput_SetSampleTime",
+   "sig": "SteamInput_SetSampleTime(float)",
+   "symbol": "CInput::SteamInput_SetSampleTime(float)"
   }
+ ],
+ "implementer_tail": [
+  "CAM_CapYaw(float)",
+  "AdjustYaw(float, QAngle&)",
+  "SteamControllerMove(float, CUserCmd*)",
+  "JoyStickAdjustYaw(float)"
  ],
  "derived_disagreements": [
   {
-   "module": "episodic/client",
+   "module": "hl2mp/client",
    "class": "CHLInput",
    "index": 48,
-   "ref": "CAM_CapYaw(float)",
-   "got": "SetControllerModeActive(bool)"
+   "ref": "SetControllerModeActive(bool)",
+   "got": "CAM_CapYaw(float)"
   },
   {
-   "module": "episodic/client",
+   "module": "hl2mp/client",
    "class": "CInput",
    "index": 48,
-   "ref": "CAM_CapYaw(float)",
-   "got": "SetControllerModeActive(bool)"
-  },
-  {
-   "module": "hl2/client",
-   "class": "CHLInput",
-   "index": 48,
-   "ref": "CAM_CapYaw(float)",
-   "got": "SetControllerModeActive(bool)"
-  },
-  {
-   "module": "hl2/client",
-   "class": "CInput",
-   "index": 48,
-   "ref": "CAM_CapYaw(float)",
-   "got": "SetControllerModeActive(bool)"
-  },
-  {
-   "module": "hl2_complete/client",
-   "class": "CHLInput",
-   "index": 48,
-   "ref": "CAM_CapYaw(float)",
-   "got": "SetControllerModeActive(bool)"
-  },
-  {
-   "module": "hl2_complete/client",
-   "class": "CInput",
-   "index": 48,
-   "ref": "CAM_CapYaw(float)",
-   "got": "SetControllerModeActive(bool)"
-  },
-  {
-   "module": "lostcoast/client",
-   "class": "CHLInput",
-   "index": 48,
-   "ref": "CAM_CapYaw(float)",
-   "got": "SetControllerModeActive(bool)"
-  },
-  {
-   "module": "lostcoast/client",
-   "class": "CInput",
-   "index": 48,
-   "ref": "CAM_CapYaw(float)",
-   "got": "SetControllerModeActive(bool)"
+   "ref": "SetControllerModeActive(bool)",
+   "got": "CAM_CapYaw(float)"
   }
  ],
  "derived": [

@@ -2690,9 +2690,9 @@
   "headers": [
    "public/vgui/IInput.h"
   ],
-  "reference": "hl2mp/client:CHLInput",
-  "retail_len": 51,
-  "retail_len_basis": "shortest deriving subtable",
+  "reference": "episodic/client:CInput",
+  "retail_len": 53,
+  "retail_len_basis": "override: hl2, hl2_complete, episodic and lostcoast clients end IInput with the five Steam Input methods (slots 48-52); hl2mp's client has none, and its shortest subtable runs into CInput's own CAM_CapYaw",
   "sdk2013_len": null,
   "versions": {
    "ours": [

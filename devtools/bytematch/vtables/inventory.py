@@ -11,7 +11,8 @@ and in Source SDK 2013 SP. inventory.json summarises all of them.
 Retail vtables mostly belong to implementing classes, so an interface's own
 slot count is taken from, in order:
   1. the interface's own vtable when retail emits one,
-  2. an entry in overrides.json ("retail_len"),
+  2. an entry in overrides.json ("retail_len"; "reference": "module:class"
+     picks the implementer whose order is used when the games disagree),
   3. the smallest of these bounds on the reference implementer's subtable:
      - the shortest subtable for that base over every retail class deriving
        from it,
@@ -271,7 +272,11 @@ def main():
         def pure_count(x):
             return sum(1 for s in x[3][:shortest] if s == '__cxa_pure_virtual')
         concrete = [x for x in cands if (x[0], x[1]) in reg_classes]
-        ref = own[0] if own else min(concrete or cands, key=lambda x: (pure_count(x), len(x[3]), x[0] != 'bin/engine'))
+        forced = [x for x in cands if f'{x[0]}:{x[1]}' == overrides.get(n, {}).get('reference')]
+        if forced:
+            ref = forced[0]
+        else:
+            ref = own[0] if own else min(concrete or cands, key=lambda x: (pure_count(x), len(x[3]), x[0] != 'bin/engine'))
         slots = ref[3]
         sigs = [method_sig(s) for s in slots]
 

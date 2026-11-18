@@ -129,9 +129,13 @@
  "IInput": {
   "header": "game/client/iinput.h",
   "includes": [
+   "#define HL2_CLIENT_DLL",
    "inputsystem/ButtonCode.h",
    "mathlib/vector.h"
-  ]
+  ],
+  "reference": "episodic/client:CInput",
+  "retail_len": 53,
+  "why": "hl2, hl2_complete, episodic and lostcoast clients end IInput with the five Steam Input methods (slots 48-52); hl2mp's client has none, and its shortest subtable runs into CInput's own CAM_CapYaw"
  },
  "ILauncherMgr": {
   "skip": "ToGL/launcher internals; needs SDL headers and retail ToGL is a different generation"
