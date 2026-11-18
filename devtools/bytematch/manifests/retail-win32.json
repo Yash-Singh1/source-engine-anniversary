@@ -4710,6 +4710,10 @@
      "lang": "c++"
     },
     {
+     "lang": "c++",
+     "path": "gameui/OptionsSubGamepad.cpp"
+    },
+    {
      "path": "gameui/OptionsSubHaptics.cpp",
      "lang": "c++"
     },
@@ -5504,7 +5508,8 @@
     "common",
     "public",
     "public/tier0",
-    "public/tier1"
+    "public/tier1",
+    "thirdparty/curl/include"
    ],
    "cl": [
     "/O2",

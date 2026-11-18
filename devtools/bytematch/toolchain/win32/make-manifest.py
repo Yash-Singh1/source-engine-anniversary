@@ -80,7 +80,7 @@ RETAIL_EXCLUDE = {"materialsystem": ["materialsystem/ctexturecompositor.cpp"],
 
 # Include directories this fork's sources need beyond Valve's (the fork's
 # vector_fpu.inl includes ivu_types.hxx for intp).
-FORK_INCLUDES = {"hk_math": ["ivp/ivp_utility"]}
+FORK_INCLUDES = {"hk_math": ["ivp/ivp_utility"], "replay": ["thirdparty/curl/include"]}
 
 # Searched before the VPC's include directories: Valve's 2024 shader combo headers
 # (SDK 2013 TF2 branch include/), which the 2018 fxctmp9/vshtmp9 predate; the
@@ -104,6 +104,10 @@ INCLUDE_ALIASES = {"thirdparty/SDL2": "thirdparty/SDL", "engine/audio/private": 
 
 # This fork's sources a module needs because other files call into them unconditionally.
 FORK_SOURCES = {"engine": ["engine/masterserver.cpp"]}
+
+# Valve sources retail has that the 2018 VPCs lack (retail macOS objects), placed in
+# generator order with the settings of the file before them.
+RETAIL_SOURCES = {"GameUI": ["gameui/OptionsSubGamepad.cpp"]}
 
 # Libraries retail links beyond the 2018 VPCs: retail macOS stdshader_dx9 has
 # libtier2.a(tier2.o), which defines the g_pMaterialSystem CShaderDLL::Connect sets.
@@ -331,6 +335,14 @@ class Module:
             elif f["settings"].get(("custombuildstep", "commandline")):
                 ent["custom"] = f["settings"][("custombuildstep", "commandline")]
             out.append(ent)
+        for path in RETAIL_SOURCES.get(self.name, []):
+            d, n = os.path.split(path)
+            prev = [(os.path.basename(e["path"]).lower(), k) for k, e in enumerate(out)
+                    if os.path.dirname(e["path"]) == d and os.path.basename(e["path"]).lower() < n.lower()]
+            i = max(prev)[1] if prev else len(out) - 1
+            ent = dict((k, v) for k, v in out[i].items() if k not in ("path", "valve_path", "missing"))
+            ent["path"] = path
+            out.insert(i + 1, ent)
         for path in FORK_SOURCES.get(self.name, []):
             out.append({"path": path, "lang": "c++", "fork_only": True})
         return out
