@@ -2,11 +2,16 @@
 """Function match summary for a --retail-osx32 build directory.
 
 Runs the tools lane's matcher (devtools/bytematch/bin/bytematch, or --bytematch)
-on every linked dylib against its retail counterpart, and on every static
-library against retail engine.dylib (which links all of them), scoped per
-object by the retail debug map. Prints a markdown table.
+on every linked module (dylibs and executables) against its retail counterpart,
+found through the retail manifest, and on every static library against the
+retail modules that pull members from it (engine.dylib when it is one of
+them), scoped per object by the retail debug map. Prints a markdown table;
+--save PREFIX also writes PREFIX.json and PREFIX.md.
 
-Usage: report-modules.py [--build build-retail] [--bytematch PATH] [--out DIR]
+The total covers linked modules only: static libraries are linked into them,
+so their rows would count the same functions twice.
+
+Usage: report-modules.py [--build build-retail] [--bytematch PATH] [--out DIR] [--save PREFIX]
 """
 import argparse
 import glob
@@ -14,56 +19,130 @@ import json
 import os
 import subprocess
 import sys
+import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import retailflags as rf  # noqa: E402
 
 TREE = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
+MANIFEST = os.path.join(TREE, "devtools", "bytematch", "manifests", "retail-osx32.json")
+DEPOTS = os.path.dirname(os.path.dirname(rf.RETAIL_DEPOT))
+
+
+def retail_file(mod):
+    r = mod["retail"]
+    return os.path.join(DEPOTS, r["depot"], os.path.basename(rf.RETAIL_DEPOT), r["path"])
+
+
+def is_macho_exe(path):
+    try:
+        with open(path, "rb") as f:
+            head = f.read(16)
+    except OSError:
+        return False
+    return head[:4] == b"\xce\xfa\xed\xfe" and int.from_bytes(head[12:16], "little") == 2
+
+
+def jobs_for(build, manifest):
+    by_name = {}
+    for key, mod in manifest["modules"].items():
+        by_name.setdefault(os.path.basename(mod["retail"]["path"]), []).append((key, mod))
+    jobs = []
+    linked = sorted(glob.glob(os.path.join(build, "**", "*.dylib"), recursive=True))
+    linked += sorted(p for p in glob.glob(os.path.join(build, "**", "*"), recursive=True)
+                     if os.path.isfile(p) and "." not in os.path.basename(p) and is_macho_exe(p))
+    for path in linked:
+        if "retail-depot-libs" in path:
+            continue
+        cands = by_name.get(os.path.basename(path), [])
+        # Engine-side binaries live in bin/; game modules share names across games.
+        cands = [c for c in cands if c[0].startswith("bin/") or "/" not in c[0]]
+        if len(cands) != 1:
+            continue
+        key, mod = cands[0]
+        jobs.append(("module", key, os.path.basename(path), retail_file(mod), path))
+    engine = manifest["modules"]["bin/engine"]
+    for lib in sorted(glob.glob(os.path.join(build, "**", "lib*.a"), recursive=True)):
+        name = os.path.basename(lib)
+        users = manifest["archives"].get(name, {}).get("used_by", [])
+        user = "bin/engine" if "bin/engine" in users or not users else users[0]
+        mod = manifest["modules"].get(user, engine)
+        jobs.append(("archive", name, name, retail_file(mod), lib, user))
+    return jobs
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--build", default=os.path.join(TREE, "build-retail"))
     ap.add_argument("--bytematch", default=os.path.join(TREE, "devtools", "bytematch", "bin", "bytematch"))
-    ap.add_argument("--depot", default=rf.RETAIL_DEPOT)
-    ap.add_argument("--out", default="/tmp/bytematch-retail-report")
+    ap.add_argument("--out", default="/tmp/bytematch-retail-report", help="per-module matcher reports")
+    ap.add_argument("--save", help="write PREFIX.json and PREFIX.md")
     a = ap.parse_args()
     if not os.path.exists(a.bytematch):
         sys.exit(f"matcher not found at {a.bytematch}; pass --bytematch")
     os.makedirs(a.out, exist_ok=True)
-
-    jobs = []
-    for d in sorted(glob.glob(os.path.join(a.build, "**", "*.dylib"), recursive=True)):
-        if "retail-depot-libs" in d:
-            continue
-        retail = os.path.join(a.depot, "bin", os.path.basename(d))
-        if os.path.exists(retail):
-            jobs.append((os.path.basename(d), retail, d))
-    engine = os.path.join(a.depot, "bin", "engine.dylib")
-    for lib in sorted(glob.glob(os.path.join(a.build, "**", "lib*.a"), recursive=True)):
-        jobs.append((os.path.basename(lib) + " (vs engine)", engine, lib))
+    manifest = json.load(open(MANIFEST))
 
     rows = []
-    for name, retail, ours in jobs:
-        out = os.path.join(a.out, name.split()[0])
+    for job in jobs_for(a.build, manifest):
+        kind, key, name, retail, ours = job[:5]
+        out = os.path.join(a.out, name)
         r = subprocess.run([a.bytematch, "report", "--retail", retail, "--ours", ours, "--out", out],
                            capture_output=True, text=True)
+        row = {"kind": kind, "module": key, "name": name, "retail": os.path.relpath(retail, DEPOTS),
+               "ours": os.path.relpath(ours, a.build)}
+        if kind == "archive":
+            row["compared_with"] = job[5]
         if r.returncode or not os.path.exists(out + ".json"):
-            rows.append((name, None, r.stderr.strip().splitlines()[-1:] or ["failed"]))
-            continue
-        s = json.load(open(out + ".json"))["summary"]
-        rows.append((name, s, None))
+            row["error"] = (r.stderr.strip().splitlines() or ["failed"])[-1]
+        else:
+            row["summary"] = json.load(open(out + ".json"))["summary"]
+        rows.append(row)
 
-    print("| module | functions matched | % functions | bytes matched | % bytes | exact | differs | missing |")
-    print("|---|---:|---:|---:|---:|---:|---:|---:|")
-    for name, s, err in rows:
-        if s is None:
-            print(f"| {name} | error: {err[0]} | | | | | | |")
-            continue
+    total = {"functions": {}, "bytes": {}}
+    for part in total:
+        for field in ("total", "exact", "matches_after_masking", "differs", "missing", "matched"):
+            total[part][field] = sum(r["summary"][part][field] for r in rows
+                                     if r["kind"] == "module" and "summary" in r)
+        t = total[part]
+        t["pct"] = round(100.0 * t["matched"] / t["total"], 2) if t["total"] else 0.0
+
+    lines = ["| module | functions matched | % functions | bytes matched | % bytes | exact | masked | differs | missing |",
+             "|---|---:|---:|---:|---:|---:|---:|---:|---:|"]
+
+    def fmt(name, s):
         f, b = s["functions"], s["bytes"]
-        print(f"| {name} | {f['matched']}/{f['total']} | {f['pct']}% | {b['matched']}/{b['total']} | "
-              f"{b['pct']}% | {f['exact']} | {f['differs']} | {f['missing']} |")
+        return (f"| {name} | {f['matched']}/{f['total']} | {f['pct']}% | {b['matched']}/{b['total']} | "
+                f"{b['pct']}% | {f['exact']} | {f['matches_after_masking']} | {f['differs']} | {f['missing']} |")
+
+    for kind, title in (("module", None), ("archive", "static libraries (members pulled by the named retail module)")):
+        if title:
+            lines.append(f"| **{title}** | | | | | | | | |")
+        for r in sorted((r for r in rows if r["kind"] == kind),
+                        key=lambda r: -r.get("summary", {}).get("functions", {}).get("pct", -1)):
+            name = r["name"] if kind == "module" else f"{r['name']} (vs {r['compared_with'].split('/')[-1]})"
+            lines.append(f"| {name} | error: {r['error']} | | | | | | | |" if "error" in r else fmt(name, r["summary"]))
+        if kind == "module":
+            lines.append(fmt("**total, linked modules**", total))
+    table = "\n".join(lines)
+    print(table)
+
+    if a.save:
+        os.makedirs(os.path.dirname(os.path.abspath(a.save)), exist_ok=True)
+        meta = {"generated": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                "depot_build": os.path.basename(rf.RETAIL_DEPOT),
+                "clang": rf.CLANG_VERSION, "ld64": rf.LD64_VERSION}
+        with open(a.save + ".json", "w") as f:
+            json.dump({"meta": meta, "total": total, "rows": rows}, f, indent=1)
+            f.write("\n")
+        with open(a.save + ".md", "w") as f:
+            f.write(f"# --retail-osx32 match report ({meta['generated']})\n\n")
+            f.write(f"clang-{meta['clang']}, ld64-{meta['ld64']}, retail build {meta['depot_build']}. "
+                    "Matched = exact + matches-after-masking (bytematch). Percentages are of the "
+                    "retail functions in scope (debug-map objects); bytes are retail bytes. "
+                    "The total counts linked modules only, since static libraries are linked into them.\n\n")
+            f.write(table + "\n")
 
 
 if __name__ == "__main__":
