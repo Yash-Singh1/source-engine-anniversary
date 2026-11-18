@@ -38,7 +38,8 @@
  "IBSPPack": {
   "includes": [
    "filesystem.h",
-   "vtf/vtf.h"
+   "vtf/vtf.h",
+   "utils/common/bsplib.h"
   ]
  },
  "IBaseInterface": {
@@ -113,7 +114,8 @@
  },
  "IGameClientExports": {
   "includes": [
-   "vgui/VGUI.h"
+   "vgui/VGUI.h",
+   "vgui_controls/Panel.h"
   ]
  },
  "IGameUI": {
@@ -123,6 +125,13 @@
  "IHandleEntity": {
   "retail_len": 4,
   "why": "next slots belong to IClientUnknown/IServerUnknown"
+ },
+ "IInput": {
+  "header": "game/client/iinput.h",
+  "includes": [
+   "inputsystem/ButtonCode.h",
+   "mathlib/vector.h"
+  ]
  },
  "ILauncherMgr": {
   "skip": "ToGL/launcher internals; needs SDL headers and retail ToGL is a different generation"
@@ -205,7 +214,8 @@
  },
  "IPoseDebugger": {
   "includes": [
-   "studio.h"
+   "studio.h",
+   "bone_setup.h"
   ]
  },
  "IPrediction": {
