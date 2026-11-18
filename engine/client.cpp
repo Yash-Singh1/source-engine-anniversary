@@ -1443,37 +1443,8 @@ void CClientState::CheckUpdatingSteamResources()
 
 	if ( m_bPrepareClientDLL )
 	{
-		float flPrepareProgress = 0.f;
-		char szMutableLevelName[ sizeof( m_szLevelBaseName ) ] = { 0 };
-		V_strncpy( szMutableLevelName, m_szLevelBaseName, sizeof( szMutableLevelName ) );
-
-		// if the game .dll doesn't support this call assume everything is prepared
-		IServerGameDLL::ePrepareLevelResourcesResult eResult = IServerGameDLL::ePrepareLevelResources_Prepared;
-		if ( g_iServerGameDLLVersion >= 10 )
-		{
-			eResult = serverGameDLL->AsyncPrepareLevelResources( szMutableLevelName, sizeof( szMutableLevelName ),
-				m_szLevelFileName, sizeof( m_szLevelFileName ), &flPrepareProgress );
-		}
-
-		switch ( eResult )
-		{
-		case IServerGameDLL::ePrepareLevelResources_InProgress:
-			if (!m_bShownSteamResourceUpdateProgress)
-			{
-				// make sure the loading dialog is up
-				EngineVGui()->StartCustomProgress();
-				EngineVGui()->ActivateGameUI();
-				m_bShownSteamResourceUpdateProgress = true;
-			}
-			EngineVGui()->UpdateCustomProgressBar( flPrepareProgress, g_pVGuiLocalize->Find("#Valve_UpdatingSteamResources") );
-			break;
-		default:
-		case IServerGameDLL::ePrepareLevelResources_Prepared:
-			flPrepareProgress = 100.f;
-			m_bPrepareClientDLL = false;
-			m_bUpdateSteamResources = true;
-			break;
-		}
+		m_bPrepareClientDLL = false;
+		m_bUpdateSteamResources = true;
 	}
 
 	if (m_bUpdateSteamResources)
@@ -1791,9 +1762,6 @@ void CClientState::FinishSignonState_New()
 		return;
 	}
 
-	// We're going to force-touch a lot of textures and resources below, we don't want the streaming system to try and
-	// pull these in as if they were being used for normal rendering.
-	materials->SuspendTextureStreaming();
 
 	// Only do this if our server is shut down and we're acting as a client. Otherwise the server handles this when it
 	// starts the load.
@@ -1850,8 +1818,6 @@ void CClientState::FinishSignonState_New()
 	// Tell rendering system we have a new set of models.
 	R_LevelInit();
 
-	// Balanced against SuspendTextureStreaming above
-	materials->ResumeTextureStreaming();
 
 	EngineVGui()->UpdateProgressBar(PROGRESS_SENDCLIENTINFO);
 	if ( !m_NetChannel )

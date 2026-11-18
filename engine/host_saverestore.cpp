@@ -118,7 +118,7 @@ static bool HaveExactMap( const char *pszMapName )
 {
 	char szCanonName[64] = { 0 };
 	V_strncpy( szCanonName, pszMapName, sizeof( szCanonName ) );
-	IVEngineServer::eFindMapResult eResult = g_pVEngineServer->FindMap( szCanonName, sizeof( szCanonName ) );
+	IVEngineServer::eFindMapResult eResult = VEngineServer_FindMap( szCanonName, sizeof( szCanonName ) );
 
 	switch ( eResult )
 	{
