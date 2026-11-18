@@ -971,6 +971,7 @@ CON_COMMAND_F( connect, "Connect to specified server.", FCVAR_DONTRECORD )
 #line 889
 }
 
+#ifndef BYTEMATCH_RETAIL
 CON_COMMAND_F( redirect, "Redirect client to specified server.", FCVAR_DONTRECORD | FCVAR_SERVER_CAN_EXECUTE )
 {
 	if ( !CBaseClientState::ConnectMethodAllowsRedirects() )
@@ -994,6 +995,8 @@ CON_COMMAND_F( redirect, "Redirect client to specified server.", FCVAR_DONTRECOR
 	}
 	vecArgs.PurgeAndDeleteElements();
 }
+#endif
+#line 891
 
 //-----------------------------------------------------------------------------
 // Takes the map name, strips path and extension
@@ -1092,7 +1095,7 @@ void CL_CheckForPureServerWhitelist( /* out */ IFileList *&pFilesToReload )
 	}
 }
 #endif
-#line 984
+#line 961
 
 int CL_GetServerQueryPort()
 {
@@ -1174,7 +1177,7 @@ void CL_FullyConnected( void )
 		cl.m_pPendingPureFileReloads = NULL;
 	}
 #endif
-#line 1057
+#line 1034
 
 	// ***************************************************************
 	// NO MORE PRELOAD DATA AVAILABLE PAST THIS POINT!!!
@@ -1255,7 +1258,7 @@ void CL_FullyConnected( void )
 			V_snprintf( cmd, sizeof( cmd ), "buildcubemaps %u\nquit\n", numIterations );
 			Cbuf_AddText( cmd );
 #endif
-#line 1131
+#line 1108
 		}
 		else if( CommandLine()->FindParm( "-navanalyze" ) )
 		{
@@ -1337,7 +1340,7 @@ void CL_FullyConnected( void )
 		dev_loadtime_map_start.SetValue( 0.0f );
 	}
 #endif
-#line 1201
+#line 1178
 }
 
 
@@ -2579,7 +2582,7 @@ bool CL_ShouldLoadBackgroundLevel( const CCommand &args )
 
 	return true;
 #endif
-#line 2368
+#line 2345
 }
 
 #define DEFAULT_BACKGROUND_NAME	"background01"
@@ -2644,7 +2647,7 @@ int CL_GetBackgroundLevelIndex( int nNumChapters )
 	return iChapterIndex;
 }
 #endif
-#line 2407
+#line 2384
 
 //-----------------------------------------------------------------------------
 // Purpose: returns the name of the background level to load
@@ -3018,7 +3021,7 @@ void CL_InitLanguageCvar()
 	}
 }
 #endif
-#line 2743
+#line 2720
 
 void CL_ChangeCloudSettingsCvar( IConVar *var, const char *pOldValue, float flOldValue );
 ConVar cl_cloud_settings( "cl_cloud_settings", "1", FCVAR_HIDDEN, "Cloud enabled from (from HKCU\\Software\\Valve\\Steam\\Apps\\appid\\Cloud)", CL_ChangeCloudSettingsCvar );
