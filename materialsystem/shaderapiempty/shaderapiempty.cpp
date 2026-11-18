@@ -1970,10 +1970,14 @@ bool CShaderAPIEmpty::SupportsShaderModel_3_0() const
 
 bool CShaderAPIEmpty::SupportsStaticControlFlow() const
 {
+#ifdef BYTEMATCH_RETAIL
+	return false;
+#else
 	if ( IsOpenGL() )
 		return false;
 
 	return SupportsVertexShaders_2_0();
+#endif
 }
 
 bool CShaderAPIEmpty::SupportsVertexShaders_2_0() const
