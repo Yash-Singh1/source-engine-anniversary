@@ -1,0 +1,4528 @@
+{
+ "schema": 1,
+ "generated_by": "devtools/bytematch/toolchain/win32/make-manifest.py",
+ "source": "Valve VPC scripts, 2018 hl2_src tree (conditionals WIN32,WINDOWS,VS2013,RETAIL, Release)",
+ "modules": {
+  "tier0": {
+   "vpc": "tier0/tier0.vpc",
+   "type": "dll",
+   "output": "tier0",
+   "retail": "bin/tier0.dll",
+   "project_dir": "tier0",
+   "defines": [
+    "VPC",
+    "WIN32",
+    "_WIN32",
+    "NDEBUG",
+    "_WINDOWS",
+    "_USRDLL",
+    "_CRT_SECURE_NO_DEPRECATE",
+    "_CRT_NONSTDC_NO_DEPRECATE",
+    "_ALLOW_RUNTIME_LIBRARY_MISMATCH",
+    "_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH",
+    "_ALLOW_MSC_VER_MISMATCH",
+    "COMPILER_MSVC32",
+    "COMPILER_MSVC",
+    "_DLL_EXT=.dll",
+    "DLLNAME=tier0",
+    "BINK_VIDEO",
+    "AVI_VIDEO",
+    "WMV_VIDEO",
+    "DEV_BUILD",
+    "FRAME_POINTER_OMISSION_DISABLED",
+    "TIER0_DLL_EXPORT",
+    "_WINDLL",
+    "_MBCS"
+   ],
+   "includes": [
+    "common",
+    "public",
+    "public/tier0",
+    "public/tier1",
+    "public/WindowsSDK"
+   ],
+   "cl": [
+    "/O2",
+    "/Ob2",
+    "/Oi",
+    "/Ot",
+    "/GF",
+    "/MT",
+    "/Gy",
+    "/arch:SSE",
+    "/fp:fast",
+    "/Zc:forScope",
+    "/GR",
+    "/Gd",
+    "/TP",
+    "/FC",
+    "/Zi",
+    "/W4",
+    "/Zc:wchar_t",
+    "/GS-",
+    "/wd4316",
+    "/Zm200",
+    "/Zo",
+    "/Oy-",
+    "/Gw",
+    "/Zc:inline"
+   ],
+   "pch_header": "pch_tier0.h",
+   "sources": [
+    {
+     "path": "public/tier0/pointeroverride.asm",
+     "lang": "asm",
+     "custom": "\"$(VCInstallDir)bin\\ml.exe\" /safeseh /c /Cp /Zi /Fo\"$(IntDir)\\$(InputName).obj\" \"$(InputPath)\""
+    },
+    {
+     "path": "common/debug_dll_check.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier0/assert_dialog.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "tier0/assert_dialog.rc",
+     "lang": "rc"
+    },
+    {
+     "path": "tier0/commandline.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "tier0/cpu.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "tier0/cpumonitoring.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "tier0/cpu_usage.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "tier0/dbg.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "tier0/dynfunction.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "tier0/etwprof.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "tier0/fasttimer.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "tier0/mem.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "tier0/mem_helpers.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "tier0/memdbg.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "tier0/memstd.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "tier0/memvalidate.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "tier0/minidump.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "tier0/pch_tier0.cpp",
+     "lang": "c++",
+     "pch": "create"
+    },
+    {
+     "path": "tier0/platform.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "tier0/pme.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "tier0/PMELib.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier0/progressbar.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "tier0/security.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "tier0/systeminformation.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "tier0/stacktools.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "tier0/thread.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "tier0/threadtools.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "tier0/tier0_strtools.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "tier0/tslist.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "tier0/vcrmode.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "tier0/vprof.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "tier0/win32consoleio.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "tier0/ValveETWProvider.man",
+     "lang": "mc",
+     "custom": "..\\DevTools\\bin\\mc.exe -um $(InputFilename) -z $(InputName)Events"
+    }
+   ],
+   "libs": [
+    {
+     "prebuilt": "thirdparty/telemetry/lib/telemetry32.link"
+    }
+   ],
+   "link": [
+    "/INCREMENTAL:NO",
+    "/DEBUG",
+    "/SUBSYSTEM:WINDOWS,5.01",
+    "/OPT:REF",
+    "/OPT:ICF",
+    "/MACHINE:X86",
+    "/MANIFEST:NO",
+    "/DYNAMICBASE",
+    "/NXCOMPAT",
+    "/SAFESEH:NO",
+    "/NODEFAULTLIB:libc",
+    "/NODEFAULTLIB:libcd",
+    "/NODEFAULTLIB:libcmtd",
+    "/NODEFAULTLIB:libcpmtd",
+    "/NODEFAULTLIB:libcpmtd0",
+    "/NODEFAULTLIB:libcpmtd1",
+    "/ignore:4221"
+   ],
+   "link_objects": [
+    "lib/public/ftol3.obj"
+   ],
+   "system_libs": [
+    "shell32.lib",
+    "user32.lib",
+    "advapi32.lib",
+    "gdi32.lib",
+    "comdlg32.lib",
+    "ole32.lib",
+    "ws2_32.lib"
+   ]
+  },
+  "vstdlib": {
+   "vpc": "vstdlib/vstdlib.vpc",
+   "type": "dll",
+   "output": "vstdlib",
+   "retail": "bin/vstdlib.dll",
+   "project_dir": "vstdlib",
+   "defines": [
+    "VPC",
+    "WIN32",
+    "_WIN32",
+    "NDEBUG",
+    "_WINDOWS",
+    "_USRDLL",
+    "_CRT_SECURE_NO_DEPRECATE",
+    "_CRT_NONSTDC_NO_DEPRECATE",
+    "_ALLOW_RUNTIME_LIBRARY_MISMATCH",
+    "_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH",
+    "_ALLOW_MSC_VER_MISMATCH",
+    "COMPILER_MSVC32",
+    "COMPILER_MSVC",
+    "_DLL_EXT=.dll",
+    "DLLNAME=vstdlib",
+    "BINK_VIDEO",
+    "AVI_VIDEO",
+    "WMV_VIDEO",
+    "DEV_BUILD",
+    "FRAME_POINTER_OMISSION_DISABLED",
+    "VSTDLIB_DLL_EXPORT",
+    "_WINDLL",
+    "_MBCS"
+   ],
+   "includes": [
+    "common",
+    "public",
+    "public/tier0",
+    "public/tier1"
+   ],
+   "cl": [
+    "/O2",
+    "/Ob2",
+    "/Oi",
+    "/Ot",
+    "/GF",
+    "/MT",
+    "/Gy",
+    "/arch:SSE",
+    "/fp:fast",
+    "/Zc:forScope",
+    "/GR",
+    "/Gd",
+    "/TP",
+    "/FC",
+    "/Zi",
+    "/W4",
+    "/Zc:wchar_t",
+    "/GS-",
+    "/wd4316",
+    "/Zm200",
+    "/Zo",
+    "/Oy-",
+    "/Gw",
+    "/Zc:inline"
+   ],
+   "pch_header": null,
+   "sources": [
+    {
+     "path": "public/tier0/memoverride.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/tier0/pointeroverride.asm",
+     "lang": "asm",
+     "custom": "\"$(VCInstallDir)bin\\ml.exe\" /safeseh /c /Cp /Zi /Fo\"$(IntDir)\\$(InputName).obj\" \"$(InputPath)\""
+    },
+    {
+     "path": "common/debug_dll_check.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vstdlib/coroutine.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vstdlib/cvar.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vstdlib/jobthread.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vstdlib/KeyValuesSystem.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vstdlib/osversion.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vstdlib/processutils.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vstdlib/random.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vstdlib/vcover.cpp",
+     "lang": "c++"
+    }
+   ],
+   "libs": [
+    {
+     "project": "tier0",
+     "path": "lib/public/tier0.lib",
+     "implib": true
+    },
+    {
+     "project": "tier1",
+     "path": "lib/public/tier1.lib"
+    }
+   ],
+   "link": [
+    "/INCREMENTAL:NO",
+    "/DEBUG",
+    "/SUBSYSTEM:WINDOWS,5.01",
+    "/OPT:REF",
+    "/OPT:ICF",
+    "/MACHINE:X86",
+    "/MANIFEST:NO",
+    "/DYNAMICBASE",
+    "/NXCOMPAT",
+    "/SAFESEH:NO",
+    "/NODEFAULTLIB:libc",
+    "/NODEFAULTLIB:libcd",
+    "/NODEFAULTLIB:libcmtd",
+    "/NODEFAULTLIB:libcpmtd",
+    "/NODEFAULTLIB:libcpmtd0",
+    "/NODEFAULTLIB:libcpmtd1",
+    "/ignore:4221",
+    "/ignore:4217"
+   ],
+   "link_objects": [
+    "lib/public/ftol3.obj"
+   ],
+   "system_libs": [
+    "shell32.lib",
+    "user32.lib",
+    "advapi32.lib",
+    "gdi32.lib",
+    "comdlg32.lib",
+    "ole32.lib",
+    "odbc32.lib",
+    "odbccp32.lib"
+   ]
+  },
+  "scenefilecache": {
+   "vpc": "scenefilecache/scenefilecache.vpc",
+   "type": "dll",
+   "output": "scenefilecache",
+   "retail": "bin/scenefilecache.dll",
+   "project_dir": "scenefilecache",
+   "defines": [
+    "VPC",
+    "WIN32",
+    "_WIN32",
+    "NDEBUG",
+    "_WINDOWS",
+    "_USRDLL",
+    "_CRT_SECURE_NO_DEPRECATE",
+    "_CRT_NONSTDC_NO_DEPRECATE",
+    "_ALLOW_RUNTIME_LIBRARY_MISMATCH",
+    "_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH",
+    "_ALLOW_MSC_VER_MISMATCH",
+    "COMPILER_MSVC32",
+    "COMPILER_MSVC",
+    "_DLL_EXT=.dll",
+    "DLLNAME=scenefilecache",
+    "BINK_VIDEO",
+    "AVI_VIDEO",
+    "WMV_VIDEO",
+    "DEV_BUILD",
+    "FRAME_POINTER_OMISSION_DISABLED",
+    "PROTECTED_THINGS_ENABLE",
+    "_WINDLL",
+    "_MBCS"
+   ],
+   "includes": [
+    "scenefilecache",
+    "common",
+    "public",
+    "public/tier0",
+    "public/tier1",
+    "game/shared"
+   ],
+   "cl": [
+    "/O2",
+    "/Ob2",
+    "/Oi",
+    "/Ot",
+    "/GF",
+    "/MT",
+    "/Gy",
+    "/arch:SSE",
+    "/fp:fast",
+    "/Zc:forScope",
+    "/GR",
+    "/Gd",
+    "/TP",
+    "/FC",
+    "/Zi",
+    "/W4",
+    "/Zc:wchar_t",
+    "/GS-",
+    "/wd4316",
+    "/Zm200",
+    "/Zo",
+    "/Oy-",
+    "/Gw",
+    "/Zc:inline"
+   ],
+   "pch_header": null,
+   "sources": [
+    {
+     "path": "public/tier0/memoverride.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/tier0/pointeroverride.asm",
+     "lang": "asm",
+     "custom": "\"$(VCInstallDir)bin\\ml.exe\" /safeseh /c /Cp /Zi /Fo\"$(IntDir)\\$(InputName).obj\" \"$(InputPath)\""
+    },
+    {
+     "path": "common/debug_dll_check.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "scenefilecache/SceneFileCache.cpp",
+     "lang": "c++"
+    }
+   ],
+   "libs": [
+    {
+     "project": "tier0",
+     "path": "lib/public/tier0.lib",
+     "implib": true
+    },
+    {
+     "project": "tier1",
+     "path": "lib/public/tier1.lib"
+    },
+    {
+     "project": "vstdlib",
+     "path": "lib/public/vstdlib.lib",
+     "implib": true
+    }
+   ],
+   "link": [
+    "/INCREMENTAL:NO",
+    "/DEBUG",
+    "/SUBSYSTEM:WINDOWS,5.01",
+    "/OPT:REF",
+    "/OPT:ICF",
+    "/MACHINE:X86",
+    "/MANIFEST:NO",
+    "/DYNAMICBASE",
+    "/NXCOMPAT",
+    "/SAFESEH:NO",
+    "/NODEFAULTLIB:libc",
+    "/NODEFAULTLIB:libcd",
+    "/NODEFAULTLIB:libcmtd",
+    "/NODEFAULTLIB:libcpmtd",
+    "/NODEFAULTLIB:libcpmtd0",
+    "/NODEFAULTLIB:libcpmtd1",
+    "/ignore:4221"
+   ],
+   "link_objects": [
+    "lib/public/ftol3.obj"
+   ],
+   "system_libs": [
+    "shell32.lib",
+    "user32.lib",
+    "advapi32.lib",
+    "gdi32.lib",
+    "comdlg32.lib",
+    "ole32.lib"
+   ]
+  },
+  "soundemittersystem": {
+   "vpc": "soundemittersystem/soundemittersystem.vpc",
+   "type": "dll",
+   "output": "soundemittersystem",
+   "retail": "bin/soundemittersystem.dll",
+   "project_dir": "soundemittersystem",
+   "defines": [
+    "VPC",
+    "WIN32",
+    "_WIN32",
+    "NDEBUG",
+    "_WINDOWS",
+    "_USRDLL",
+    "_CRT_SECURE_NO_DEPRECATE",
+    "_CRT_NONSTDC_NO_DEPRECATE",
+    "_ALLOW_RUNTIME_LIBRARY_MISMATCH",
+    "_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH",
+    "_ALLOW_MSC_VER_MISMATCH",
+    "COMPILER_MSVC32",
+    "COMPILER_MSVC",
+    "_DLL_EXT=.dll",
+    "DLLNAME=soundemittersystem",
+    "BINK_VIDEO",
+    "AVI_VIDEO",
+    "WMV_VIDEO",
+    "DEV_BUILD",
+    "FRAME_POINTER_OMISSION_DISABLED",
+    "SOUNDEMITTERSYSTEM_EXPORTS",
+    "PROTECTED_THINGS_ENABLE",
+    "fopen=dont_use_fopen",
+    "_WINDLL",
+    "_MBCS"
+   ],
+   "includes": [
+    "soundemittersystem",
+    "common",
+    "public",
+    "public/tier0",
+    "public/tier1",
+    "game/shared"
+   ],
+   "cl": [
+    "/O2",
+    "/Ob2",
+    "/Oi",
+    "/Ot",
+    "/GF",
+    "/MT",
+    "/Gy",
+    "/arch:SSE",
+    "/fp:fast",
+    "/Zc:forScope",
+    "/GR",
+    "/Gd",
+    "/TP",
+    "/FC",
+    "/Zi",
+    "/W4",
+    "/Zc:wchar_t",
+    "/GS-",
+    "/wd4316",
+    "/Zm200",
+    "/Zo",
+    "/Oy-",
+    "/Gw",
+    "/Zc:inline"
+   ],
+   "pch_header": null,
+   "sources": [
+    {
+     "path": "public/tier0/memoverride.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/tier0/pointeroverride.asm",
+     "lang": "asm",
+     "custom": "\"$(VCInstallDir)bin\\ml.exe\" /safeseh /c /Cp /Zi /Fo\"$(IntDir)\\$(InputName).obj\" \"$(InputPath)\""
+    },
+    {
+     "path": "common/debug_dll_check.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "game/shared/interval.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "soundemittersystem/soundemittersystembase.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/SoundParametersInternal.cpp",
+     "lang": "c++"
+    }
+   ],
+   "libs": [
+    {
+     "project": "tier0",
+     "path": "lib/public/tier0.lib",
+     "implib": true
+    },
+    {
+     "project": "tier1",
+     "path": "lib/public/tier1.lib"
+    },
+    {
+     "project": "vstdlib",
+     "path": "lib/public/vstdlib.lib",
+     "implib": true
+    }
+   ],
+   "link": [
+    "/INCREMENTAL:NO",
+    "/DEBUG",
+    "/SUBSYSTEM:WINDOWS,5.01",
+    "/OPT:REF",
+    "/OPT:ICF",
+    "/MACHINE:X86",
+    "/MANIFEST:NO",
+    "/DYNAMICBASE",
+    "/NXCOMPAT",
+    "/SAFESEH:NO",
+    "/NODEFAULTLIB:libc",
+    "/NODEFAULTLIB:libcd",
+    "/NODEFAULTLIB:libcmtd",
+    "/NODEFAULTLIB:libcpmtd",
+    "/NODEFAULTLIB:libcpmtd0",
+    "/NODEFAULTLIB:libcpmtd1",
+    "/ignore:4221"
+   ],
+   "link_objects": [
+    "lib/public/ftol3.obj"
+   ],
+   "system_libs": [
+    "shell32.lib",
+    "user32.lib",
+    "advapi32.lib",
+    "gdi32.lib",
+    "comdlg32.lib",
+    "ole32.lib"
+   ]
+  },
+  "datacache": {
+   "vpc": "datacache/datacache.vpc",
+   "type": "dll",
+   "output": "datacache",
+   "retail": "bin/datacache.dll",
+   "project_dir": "datacache",
+   "defines": [
+    "VPC",
+    "WIN32",
+    "_WIN32",
+    "NDEBUG",
+    "_WINDOWS",
+    "_USRDLL",
+    "_CRT_SECURE_NO_DEPRECATE",
+    "_CRT_NONSTDC_NO_DEPRECATE",
+    "_ALLOW_RUNTIME_LIBRARY_MISMATCH",
+    "_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH",
+    "_ALLOW_MSC_VER_MISMATCH",
+    "COMPILER_MSVC32",
+    "COMPILER_MSVC",
+    "_DLL_EXT=.dll",
+    "DLLNAME=datacache",
+    "BINK_VIDEO",
+    "AVI_VIDEO",
+    "WMV_VIDEO",
+    "DEV_BUILD",
+    "FRAME_POINTER_OMISSION_DISABLED",
+    "MDLCACHE_DLL_EXPORT",
+    "_WINDLL",
+    "_MBCS"
+   ],
+   "includes": [
+    "common",
+    "public",
+    "public/tier0",
+    "public/tier1"
+   ],
+   "cl": [
+    "/O2",
+    "/Ob2",
+    "/Oi",
+    "/Ot",
+    "/GF",
+    "/MT",
+    "/Gy",
+    "/arch:SSE",
+    "/fp:fast",
+    "/Zc:forScope",
+    "/GR",
+    "/Gd",
+    "/TP",
+    "/FC",
+    "/Zi",
+    "/W4",
+    "/Zc:wchar_t",
+    "/GS-",
+    "/wd4316",
+    "/Zm200",
+    "/Zo",
+    "/Oy-",
+    "/Gw",
+    "/Zc:inline"
+   ],
+   "pch_header": null,
+   "sources": [
+    {
+     "path": "public/tier0/memoverride.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/tier0/pointeroverride.asm",
+     "lang": "asm",
+     "custom": "\"$(VCInstallDir)bin\\ml.exe\" /safeseh /c /Cp /Zi /Fo\"$(IntDir)\\$(InputName).obj\" \"$(InputPath)\""
+    },
+    {
+     "path": "common/debug_dll_check.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "datacache/datacache.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "datacache/mdlcache.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/studio.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/studio_virtualmodel.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "common/studiobyteswap.cpp",
+     "lang": "c++"
+    }
+   ],
+   "libs": [
+    {
+     "project": "tier0",
+     "path": "lib/public/tier0.lib",
+     "implib": true
+    },
+    {
+     "project": "tier1",
+     "path": "lib/public/tier1.lib"
+    },
+    {
+     "project": "vstdlib",
+     "path": "lib/public/vstdlib.lib",
+     "implib": true
+    },
+    {
+     "project": "tier2",
+     "path": "lib/public/tier2.lib"
+    },
+    {
+     "project": "tier3",
+     "path": "lib/public/tier3.lib"
+    }
+   ],
+   "link": [
+    "/INCREMENTAL:NO",
+    "/DEBUG",
+    "/SUBSYSTEM:WINDOWS,5.01",
+    "/OPT:REF",
+    "/OPT:ICF",
+    "/MACHINE:X86",
+    "/MANIFEST:NO",
+    "/DYNAMICBASE",
+    "/NXCOMPAT",
+    "/SAFESEH:NO",
+    "/NODEFAULTLIB:libc",
+    "/NODEFAULTLIB:libcd",
+    "/NODEFAULTLIB:libcmtd",
+    "/NODEFAULTLIB:libcpmtd",
+    "/NODEFAULTLIB:libcpmtd0",
+    "/NODEFAULTLIB:libcpmtd1",
+    "/ignore:4221"
+   ],
+   "link_objects": [
+    "lib/public/ftol3.obj"
+   ],
+   "system_libs": [
+    "shell32.lib",
+    "user32.lib",
+    "advapi32.lib",
+    "gdi32.lib",
+    "comdlg32.lib",
+    "ole32.lib"
+   ]
+  },
+  "studiorender": {
+   "vpc": "studiorender/studiorender.vpc",
+   "type": "dll",
+   "output": "studiorender",
+   "retail": "bin/studiorender.dll",
+   "project_dir": "studiorender",
+   "defines": [
+    "VPC",
+    "WIN32",
+    "_WIN32",
+    "NDEBUG",
+    "_WINDOWS",
+    "_USRDLL",
+    "_CRT_SECURE_NO_DEPRECATE",
+    "_CRT_NONSTDC_NO_DEPRECATE",
+    "_ALLOW_RUNTIME_LIBRARY_MISMATCH",
+    "_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH",
+    "_ALLOW_MSC_VER_MISMATCH",
+    "COMPILER_MSVC32",
+    "COMPILER_MSVC",
+    "_DLL_EXT=.dll",
+    "DLLNAME=studiorender",
+    "BINK_VIDEO",
+    "AVI_VIDEO",
+    "WMV_VIDEO",
+    "DEV_BUILD",
+    "FRAME_POINTER_OMISSION_DISABLED",
+    "STUDIORENDER_EXPORTS",
+    "PROTECTED_THINGS_ENABLE",
+    "fopen=dont_use_fopen",
+    "_WINDLL",
+    "_MBCS"
+   ],
+   "includes": [
+    "common",
+    "public",
+    "public/tier0",
+    "public/tier1"
+   ],
+   "cl": [
+    "/O2",
+    "/Ob2",
+    "/Oi",
+    "/Ot",
+    "/GF",
+    "/MT",
+    "/Gy",
+    "/arch:SSE",
+    "/fp:fast",
+    "/Zc:forScope",
+    "/GR",
+    "/Gd",
+    "/TP",
+    "/FC",
+    "/Zi",
+    "/W4",
+    "/Zc:wchar_t",
+    "/GS-",
+    "/wd4316",
+    "/Zm200",
+    "/Zo",
+    "/Oy-",
+    "/Gw",
+    "/Zc:inline"
+   ],
+   "pch_header": null,
+   "sources": [
+    {
+     "path": "public/tier0/memoverride.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/tier0/pointeroverride.asm",
+     "lang": "asm",
+     "custom": "\"$(VCInstallDir)bin\\ml.exe\" /safeseh /c /Cp /Zi /Fo\"$(IntDir)\\$(InputName).obj\" \"$(InputPath)\""
+    },
+    {
+     "path": "common/debug_dll_check.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "studiorender/studiorender.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "studiorender/studiorendercontext.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "studiorender/flexrenderdata.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "studiorender/r_studio.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "studiorender/r_studiodecal.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "studiorender/r_studiodraw.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "studiorender/r_studiodraw_computeflexedvertex.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "studiorender/r_studioflex.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "studiorender/r_studiogettriangles.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "studiorender/r_studiolight.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "studiorender/r_studiostats.cpp",
+     "lang": "c++"
+    }
+   ],
+   "libs": [
+    {
+     "project": "tier0",
+     "path": "lib/public/tier0.lib",
+     "implib": true
+    },
+    {
+     "project": "tier1",
+     "path": "lib/public/tier1.lib"
+    },
+    {
+     "project": "vstdlib",
+     "path": "lib/public/vstdlib.lib",
+     "implib": true
+    },
+    {
+     "project": "bitmap",
+     "path": "lib/public/bitmap.lib"
+    },
+    {
+     "project": "mathlib",
+     "path": "lib/public/mathlib.lib"
+    },
+    {
+     "project": "tier2",
+     "path": "lib/public/tier2.lib"
+    },
+    {
+     "project": "tier3",
+     "path": "lib/public/tier3.lib"
+    }
+   ],
+   "link": [
+    "/INCREMENTAL:NO",
+    "/DEBUG",
+    "/SUBSYSTEM:WINDOWS,5.01",
+    "/OPT:REF",
+    "/OPT:ICF",
+    "/MACHINE:X86",
+    "/MANIFEST:NO",
+    "/DYNAMICBASE",
+    "/NXCOMPAT",
+    "/SAFESEH:NO",
+    "/NODEFAULTLIB:libc",
+    "/NODEFAULTLIB:libcd",
+    "/NODEFAULTLIB:libcmtd",
+    "/NODEFAULTLIB:libcpmtd",
+    "/NODEFAULTLIB:libcpmtd0",
+    "/NODEFAULTLIB:libcpmtd1",
+    "/ignore:4221"
+   ],
+   "link_objects": [
+    "lib/public/ftol3.obj"
+   ],
+   "system_libs": [
+    "shell32.lib",
+    "user32.lib",
+    "advapi32.lib",
+    "gdi32.lib",
+    "comdlg32.lib",
+    "ole32.lib"
+   ]
+  },
+  "inputsystem": {
+   "vpc": "inputsystem/inputsystem.vpc",
+   "type": "dll",
+   "output": "inputsystem",
+   "retail": "bin/inputsystem.dll",
+   "project_dir": "inputsystem",
+   "defines": [
+    "VPC",
+    "WIN32",
+    "_WIN32",
+    "NDEBUG",
+    "_WINDOWS",
+    "_USRDLL",
+    "_CRT_SECURE_NO_DEPRECATE",
+    "_CRT_NONSTDC_NO_DEPRECATE",
+    "_ALLOW_RUNTIME_LIBRARY_MISMATCH",
+    "_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH",
+    "_ALLOW_MSC_VER_MISMATCH",
+    "COMPILER_MSVC32",
+    "COMPILER_MSVC",
+    "_DLL_EXT=.dll",
+    "DLLNAME=inputsystem",
+    "BINK_VIDEO",
+    "AVI_VIDEO",
+    "WMV_VIDEO",
+    "DEV_BUILD",
+    "FRAME_POINTER_OMISSION_DISABLED",
+    "VERSION_SAFE_STEAM_API_INTERFACES",
+    "_WINDLL",
+    "_MBCS"
+   ],
+   "includes": [
+    "common",
+    "public",
+    "public/tier0",
+    "public/tier1",
+    "thirdparty/SDL"
+   ],
+   "cl": [
+    "/O2",
+    "/Ob2",
+    "/Oi",
+    "/Ot",
+    "/GF",
+    "/MT",
+    "/Gy",
+    "/arch:SSE",
+    "/fp:fast",
+    "/Zc:forScope",
+    "/GR",
+    "/Gd",
+    "/TP",
+    "/FC",
+    "/Zi",
+    "/W4",
+    "/Zc:wchar_t",
+    "/GS-",
+    "/wd4316",
+    "/Zm200",
+    "/Zo",
+    "/Oy-",
+    "/Gw",
+    "/Zc:inline"
+   ],
+   "pch_header": null,
+   "sources": [
+    {
+     "path": "public/tier0/memoverride.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/tier0/pointeroverride.asm",
+     "lang": "asm",
+     "custom": "\"$(VCInstallDir)bin\\ml.exe\" /safeseh /c /Cp /Zi /Fo\"$(IntDir)\\$(InputName).obj\" \"$(InputPath)\""
+    },
+    {
+     "path": "common/debug_dll_check.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "inputsystem/inputsystem.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "inputsystem/joystick_sdl.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "inputsystem/novint.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "inputsystem/key_translation.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "inputsystem/steamcontroller.cpp",
+     "lang": "c++"
+    }
+   ],
+   "libs": [
+    {
+     "project": "tier0",
+     "path": "lib/public/tier0.lib",
+     "implib": true
+    },
+    {
+     "project": "tier1",
+     "path": "lib/public/tier1.lib"
+    },
+    {
+     "project": "vstdlib",
+     "path": "lib/public/vstdlib.lib",
+     "implib": true
+    },
+    {
+     "project": "tier1",
+     "path": "lib/public/tier1.lib"
+    },
+    {
+     "project": "tier2",
+     "path": "lib/public/tier2.lib"
+    },
+    {
+     "prebuilt": "lib/public/SDL2.lib"
+    },
+    {
+     "prebuilt": "lib/public/steam_api.lib"
+    }
+   ],
+   "link": [
+    "/INCREMENTAL:NO",
+    "/DEBUG",
+    "/SUBSYSTEM:WINDOWS,5.01",
+    "/OPT:REF",
+    "/OPT:ICF",
+    "/MACHINE:X86",
+    "/MANIFEST:NO",
+    "/DYNAMICBASE",
+    "/NXCOMPAT",
+    "/SAFESEH:NO",
+    "/NODEFAULTLIB:libc",
+    "/NODEFAULTLIB:libcd",
+    "/NODEFAULTLIB:libcmtd",
+    "/NODEFAULTLIB:libcpmtd",
+    "/NODEFAULTLIB:libcpmtd0",
+    "/NODEFAULTLIB:libcpmtd1",
+    "/ignore:4221"
+   ],
+   "link_objects": [
+    "lib/public/ftol3.obj"
+   ],
+   "system_libs": [
+    "shell32.lib",
+    "user32.lib",
+    "advapi32.lib",
+    "gdi32.lib",
+    "comdlg32.lib",
+    "ole32.lib"
+   ]
+  },
+  "engine": {
+   "vpc": "engine/engine.vpc",
+   "type": "dll",
+   "output": "engine",
+   "retail": "bin/engine.dll",
+   "project_dir": "engine",
+   "defines": [
+    "VPC",
+    "WIN32",
+    "_WIN32",
+    "NDEBUG",
+    "_WINDOWS",
+    "_USRDLL",
+    "_CRT_SECURE_NO_DEPRECATE",
+    "_CRT_NONSTDC_NO_DEPRECATE",
+    "_ALLOW_RUNTIME_LIBRARY_MISMATCH",
+    "_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH",
+    "_ALLOW_MSC_VER_MISMATCH",
+    "COMPILER_MSVC32",
+    "COMPILER_MSVC",
+    "_DLL_EXT=.dll",
+    "DLLNAME=engine",
+    "BINK_VIDEO",
+    "AVI_VIDEO",
+    "WMV_VIDEO",
+    "DEV_BUILD",
+    "FRAME_POINTER_OMISSION_DISABLED",
+    "REPLAY_ENABLED",
+    "USE_CONVARS",
+    "VOICE_OVER_IP",
+    "BUMPMAP",
+    "__USEA3D",
+    "_ADD_EAX_",
+    "ENGINE_DLL",
+    "VERSION_SAFE_STEAM_API_INTERFACES",
+    "USE_BREAKPAD_HANDLER",
+    "_WINDLL",
+    "_MBCS"
+   ],
+   "includes": [
+    "common",
+    "public",
+    "public/tier0",
+    "public/tier1",
+    "engine",
+    "engine/audio",
+    "engine/audio/private",
+    "engine/audio/public",
+    "vgui2/include",
+    "vgui2/controls",
+    "dx9sdk/include"
+   ],
+   "cl": [
+    "/O2",
+    "/Ob2",
+    "/Oi",
+    "/Ot",
+    "/GF",
+    "/MT",
+    "/Gy",
+    "/arch:SSE",
+    "/fp:fast",
+    "/Zc:forScope",
+    "/GR",
+    "/Gd",
+    "/TP",
+    "/FC",
+    "/Zi",
+    "/W4",
+    "/Zc:wchar_t",
+    "/GS-",
+    "/wd4316",
+    "/Zm200",
+    "/Zo",
+    "/Oy-",
+    "/Gw",
+    "/Zc:inline"
+   ],
+   "pch_header": "",
+   "sources": [
+    {
+     "path": "public/tier0/memoverride.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/tier0/pointeroverride.asm",
+     "lang": "asm",
+     "custom": "\"$(VCInstallDir)bin\\ml.exe\" /safeseh /c /Cp /Zi /Fo\"$(IntDir)\\$(InputName).obj\" \"$(InputPath)\""
+    },
+    {
+     "path": "common/debug_dll_check.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/client_pch.cpp",
+     "lang": "c++",
+     "pch": "create",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/cl_rcon.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/socketcreator.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/rpt_engine.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/cl_steamauth.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/clientframe.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/decal_clip.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/demofile.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/DevShotGenerator.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/OcclusionSystem.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/tmessage.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/r_efx.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/view.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/baseclient.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/baseclientstate.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/cbenchmark.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/cdll_engine_int.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/cl_main.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/cl_demo.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/cl_null.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/cl_demoaction.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/cl_demoaction_types.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/cl_demoactioneditors.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/cl_demoactionmanager.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/cl_demoeditorpanel.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/cl_demosmootherpanel.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/cl_demouipanel.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/cl_foguipanel.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/cl_txviewpanel.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/cl_entityreport.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/cl_ents_parse.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/cl_localnetworkbackdoor.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/cl_parse_event.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/cl_pluginhelpers.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/cl_pred.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/cl_texturelistpanel.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/client.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/colorcorrectionpanel.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/console.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/render_pch.cpp",
+     "lang": "c++",
+     "pch": "create",
+     "pch_header": "render_pch.h"
+    },
+    {
+     "path": "engine/buildcubemaps.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "render_pch.h"
+    },
+    {
+     "path": "engine/debug_leafvis.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "render_pch.h"
+    },
+    {
+     "path": "engine/debugoverlay.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "render_pch.h"
+    },
+    {
+     "path": "engine/decals.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "render_pch.h"
+    },
+    {
+     "path": "engine/disp.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "render_pch.h"
+    },
+    {
+     "path": "engine/disp_interface.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "render_pch.h"
+    },
+    {
+     "path": "engine/disp_mapload.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "render_pch.h"
+    },
+    {
+     "path": "engine/gl_draw.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "render_pch.h"
+    },
+    {
+     "path": "engine/gl_rsurf.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "render_pch.h"
+    },
+    {
+     "path": "engine/gl_shader.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "render_pch.h"
+    },
+    {
+     "path": "engine/gl_drawlights.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "render_pch.h"
+    },
+    {
+     "path": "engine/gl_lightmap.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "render_pch.h"
+    },
+    {
+     "path": "engine/gl_matsysiface.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "render_pch.h"
+    },
+    {
+     "path": "engine/gl_rlight.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "render_pch.h"
+    },
+    {
+     "path": "engine/gl_rmain.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "render_pch.h"
+    },
+    {
+     "path": "engine/gl_rmisc.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "render_pch.h"
+    },
+    {
+     "path": "engine/gl_screen.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "render_pch.h"
+    },
+    {
+     "path": "engine/gl_warp.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "render_pch.h"
+    },
+    {
+     "path": "engine/l_studio.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "render_pch.h"
+    },
+    {
+     "path": "engine/matsys_interface.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "render_pch.h"
+    },
+    {
+     "path": "engine/modelloader.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "render_pch.h"
+    },
+    {
+     "path": "engine/Overlay.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "render_pch.h"
+    },
+    {
+     "path": "engine/r_areaportal.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "render_pch.h"
+    },
+    {
+     "path": "engine/r_decal.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "render_pch.h"
+    },
+    {
+     "path": "engine/r_linefile.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "render_pch.h"
+    },
+    {
+     "path": "engine/shadowmgr.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "render_pch.h"
+    },
+    {
+     "path": "engine/server_pch.cpp",
+     "lang": "c++",
+     "pch": "create",
+     "pch_header": "server_pch.h"
+    },
+    {
+     "path": "engine/sv_ipratelimit.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/sv_rcon.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/sv_steamauth.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/sv_uploaddata.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/sv_uploadgamestats.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/vengineserver_impl.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/sv_main.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "server_pch.h"
+    },
+    {
+     "path": "engine/sv_client.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "server_pch.h"
+    },
+    {
+     "path": "engine/sv_ents_write.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "server_pch.h"
+    },
+    {
+     "path": "engine/sv_filter.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "server_pch.h"
+    },
+    {
+     "path": "engine/sv_framesnapshot.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "server_pch.h"
+    },
+    {
+     "path": "engine/sv_log.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "server_pch.h"
+    },
+    {
+     "path": "engine/sv_packedentities.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "server_pch.h"
+    },
+    {
+     "path": "engine/sv_plugin.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "server_pch.h"
+    },
+    {
+     "path": "engine/sv_precache.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "server_pch.h"
+    },
+    {
+     "path": "engine/sv_redirect.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "server_pch.h"
+    },
+    {
+     "path": "engine/sv_remoteaccess.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "server_pch.h"
+    },
+    {
+     "path": "engine/baseautocompletefilelist.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/baseserver.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/bitbuf_errorhandler.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/blockingudpsocket.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/bsptreedata.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/builddisp.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/changeframelist.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/checksum_engine.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/ccs.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/clockdriftmgr.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/cl_bounded_cvars.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/cl_check_process.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/cmd.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/cmodel.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/cmodel_bsp.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/cmodel_disp.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/collisionutils.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/common.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/crtmemdebug.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/cvar.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/disp_common.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/disp_defs.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/disp_helpers.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/disp_powerinfo.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/dispcoll_common.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/DownloadListGenerator.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/downloadthread.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/dt.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/dt_common_eng.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/dt_encode.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/dt_instrumentation.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/dt_instrumentation_server.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/dt_localtransfer.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/dt_recv.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/dt_recv_decoder.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/dt_recv_eng.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/dt_send.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/dt_send_eng.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/dt_stack.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/dt_test.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/dt_utlvector_common.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/dt_utlvector_recv.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/dt_utlvector_send.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/enginesingleuserfilter.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/enginestats.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/enginethreads.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/enginetrace.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/filesystem_engine.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/filesystem_helpers.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/filesystem_init.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/filetransfermgr.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/GameEventManager.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/GameEventManagerOld.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/gametrace_engine.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/hltvclient.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/hltvclientstate.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/hltvdemo.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/hltvserver.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/hltvtest.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/host.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/host_cmd.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/host_listmaps.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/host_phonehome.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/host_state.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/initmathlib.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "common/language.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/LocalNetworkBackdoor.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/LoadScreenUpdate.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/lumpfiles.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/MapReslistGenerator.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/matchmakinghost.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/matchmakingqos.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/matchmakingclient.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/matchmakingshared.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/matchmakingmigrate.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/materialproxyfactory.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/mem_fgets.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/mod_vis.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/ModelInfo.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/net_chan.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/net_synctags.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/net_ws.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/net_ws_queued_packet_sender.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "common/netmessages.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "common/steamid.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/networkstringtable.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/NetworkStringTableItem.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/networkstringtableserver.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/networkvar.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/packed_entity.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/pure_server.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/pr_edict.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/precache.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/quakedef.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/randomstream.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "common/randoverride.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/registry.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/engine_replay_int.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/replay_internal.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/replaydemo.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/replaydemoplayer.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/replayserver.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/sentence.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/Session.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/sound_shared.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/spatialpartition.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/staticpropmgr.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/studio.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/sys_dll.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/sys_dll2.cpp",
+     "lang": "c++",
+     "cl": [
+      "/O2",
+      "/Ob2",
+      "/Oi",
+      "/Ot",
+      "/GF",
+      "/MT",
+      "/Gy",
+      "/arch:SSE",
+      "/fp:fast",
+      "/Zc:forScope",
+      "/GR",
+      "/Gd",
+      "/TP",
+      "/FC",
+      "/Zi",
+      "/W4",
+      "/Zc:wchar_t",
+      "/GS-",
+      "/EHa",
+      "/wd4316",
+      "/Zm200",
+      "/Zo",
+      "/Oy-",
+      "/Gw",
+      "/Zc:inline"
+     ]
+    },
+    {
+     "path": "engine/sys_engine.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/sys_mainwind.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/testscriptmgr.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/traceinit.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/vallocator.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/voiceserver_impl.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/vprof_engine.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/vprof_record.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/world.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/XZip.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/XUnzip.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/zone.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/bugreporter.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/cheatcodes.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/download.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/editor_sendcommand.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/host_saverestore.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/keys.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/lightcache.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/networkstringtableclient.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/saverestore_filesystem.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/scratchpad3d.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/servermsghandler.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/sys_getmodes.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/vgui_askconnectpanel.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/xboxsystem.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "common/SourceAppInfo.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/snd_io.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/EngineSoundServer.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/EngineSoundClient.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/engsoundservice.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/audio/voice_wavefile.cpp",
+     "lang": "c++",
+     "valve_path": "engine/audio/private/voice_wavefile.cpp"
+    },
+    {
+     "path": "engine/audio/MPAFile.cpp",
+     "lang": "c++",
+     "valve_path": "engine/audio/private/MPAFile.cpp"
+    },
+    {
+     "path": "engine/audio/MPAHeader.cpp",
+     "lang": "c++",
+     "valve_path": "engine/audio/private/MPAHeader.cpp"
+    },
+    {
+     "path": "engine/audio/circularbuffer.cpp",
+     "lang": "c++",
+     "valve_path": "engine/audio/private/circularbuffer.cpp"
+    },
+    {
+     "path": "engine/audio/audio_pch.cpp",
+     "lang": "c++",
+     "missing": true,
+     "pch": "create",
+     "pch_header": "audio_pch.h"
+    },
+    {
+     "path": "engine/audio/vox.cpp",
+     "lang": "c++",
+     "valve_path": "engine/audio/private/vox.cpp",
+     "pch": "use",
+     "pch_header": "audio_pch.h"
+    },
+    {
+     "path": "engine/audio/snd_dev_common.cpp",
+     "lang": "c++",
+     "valve_path": "engine/audio/private/snd_dev_common.cpp",
+     "pch": "use",
+     "pch_header": "audio_pch.h"
+    },
+    {
+     "path": "engine/audio/snd_dma.cpp",
+     "lang": "c++",
+     "valve_path": "engine/audio/private/snd_dma.cpp",
+     "pch": "use",
+     "pch_header": "audio_pch.h"
+    },
+    {
+     "path": "engine/audio/snd_dsp.cpp",
+     "lang": "c++",
+     "valve_path": "engine/audio/private/snd_dsp.cpp",
+     "pch": "use",
+     "pch_header": "audio_pch.h"
+    },
+    {
+     "path": "engine/audio/snd_mix.cpp",
+     "lang": "c++",
+     "valve_path": "engine/audio/private/snd_mix.cpp",
+     "pch": "use",
+     "pch_header": "audio_pch.h"
+    },
+    {
+     "path": "engine/audio/snd_sentence_mixer.cpp",
+     "lang": "c++",
+     "valve_path": "engine/audio/private/snd_sentence_mixer.cpp",
+     "pch": "use",
+     "pch_header": "audio_pch.h"
+    },
+    {
+     "path": "engine/audio/snd_wave_data.cpp",
+     "lang": "c++",
+     "valve_path": "engine/audio/private/snd_wave_data.cpp",
+     "pch": "use",
+     "pch_header": "audio_pch.h"
+    },
+    {
+     "path": "engine/audio/snd_wave_mixer.cpp",
+     "lang": "c++",
+     "valve_path": "engine/audio/private/snd_wave_mixer.cpp",
+     "pch": "use",
+     "pch_header": "audio_pch.h"
+    },
+    {
+     "path": "engine/audio/snd_wave_mixer_adpcm.cpp",
+     "lang": "c++",
+     "valve_path": "engine/audio/private/snd_wave_mixer_adpcm.cpp",
+     "pch": "use",
+     "pch_header": "audio_pch.h"
+    },
+    {
+     "path": "engine/audio/snd_wave_source.cpp",
+     "lang": "c++",
+     "valve_path": "engine/audio/private/snd_wave_source.cpp",
+     "pch": "use",
+     "pch_header": "audio_pch.h"
+    },
+    {
+     "path": "engine/audio/snd_wave_temp.cpp",
+     "lang": "c++",
+     "valve_path": "engine/audio/private/snd_wave_temp.cpp",
+     "pch": "use",
+     "pch_header": "audio_pch.h"
+    },
+    {
+     "path": "engine/audio/snd_win.cpp",
+     "lang": "c++",
+     "valve_path": "engine/audio/private/snd_win.cpp",
+     "pch": "use",
+     "pch_header": "audio_pch.h"
+    },
+    {
+     "path": "engine/audio/voice_gain.cpp",
+     "lang": "c++",
+     "valve_path": "engine/audio/private/voice_gain.cpp",
+     "pch": "use",
+     "pch_header": "audio_pch.h"
+    },
+    {
+     "path": "engine/audio/snd_dev_direct.cpp",
+     "lang": "c++",
+     "valve_path": "engine/audio/private/snd_dev_direct.cpp",
+     "pch": "use",
+     "pch_header": "audio_pch.h"
+    },
+    {
+     "path": "engine/audio/snd_dev_wave.cpp",
+     "lang": "c++",
+     "valve_path": "engine/audio/private/snd_dev_wave.cpp",
+     "pch": "use",
+     "pch_header": "audio_pch.h"
+    },
+    {
+     "path": "engine/audio/snd_mp3_source.cpp",
+     "lang": "c++",
+     "valve_path": "engine/audio/private/snd_mp3_source.cpp",
+     "pch": "use",
+     "pch_header": "audio_pch.h"
+    },
+    {
+     "path": "engine/audio/snd_wave_mixer_mp3.cpp",
+     "lang": "c++",
+     "valve_path": "engine/audio/private/snd_wave_mixer_mp3.cpp",
+     "pch": "use",
+     "pch_header": "audio_pch.h"
+    },
+    {
+     "path": "engine/audio/VBRHeader.cpp",
+     "lang": "c++",
+     "valve_path": "engine/audio/private/VBRHeader.cpp",
+     "pch": "use",
+     "pch_header": "audio_pch.h"
+    },
+    {
+     "path": "engine/audio/voice.cpp",
+     "lang": "c++",
+     "valve_path": "engine/audio/private/voice.cpp",
+     "pch": "use",
+     "pch_header": "audio_pch.h"
+    },
+    {
+     "path": "engine/audio/voice_mixer_controls.cpp",
+     "lang": "c++",
+     "valve_path": "engine/audio/private/voice_mixer_controls.cpp",
+     "pch": "use",
+     "pch_header": "audio_pch.h"
+    },
+    {
+     "path": "engine/audio/voice_record_dsound.cpp",
+     "lang": "c++",
+     "valve_path": "engine/audio/private/voice_record_dsound.cpp",
+     "pch": "use",
+     "pch_header": "audio_pch.h"
+    },
+    {
+     "path": "engine/audio/voice_sound_engine_interface.cpp",
+     "lang": "c++",
+     "valve_path": "engine/audio/private/voice_sound_engine_interface.cpp",
+     "pch": "use",
+     "pch_header": "audio_pch.h"
+    },
+    {
+     "path": "public/vgui_controls/vgui_controls.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "common/vgui/vgui_basebudgetpanel.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "common/vgui/vgui_budgetbargraphpanel.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "common/vgui/vgui_budgethistorypanel.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "common/vgui/vgui_budgetpanelshared.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/perfuipanel.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/vgui_basepanel.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/vgui_baseui_interface.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/vgui_budgetpanel.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/vgui_DebugSystemPanel.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/vgui_drawtreepanel.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/vgui_helpers.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/vgui_texturebudgetpanel.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/vgui_vprofgraphpanel.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/vgui_vprofpanel.cpp",
+     "lang": "c++",
+     "pch": "use",
+     "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/enginetool.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/toolframework.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "engine/halflife.rc",
+     "lang": "rc"
+    }
+   ],
+   "libs": [
+    {
+     "project": "tier0",
+     "path": "lib/public/tier0.lib",
+     "implib": true
+    },
+    {
+     "project": "tier1",
+     "path": "lib/public/tier1.lib"
+    },
+    {
+     "project": "vstdlib",
+     "path": "lib/public/vstdlib.lib",
+     "implib": true
+    },
+    {
+     "project": "replay_common",
+     "path": "lib/common/replay_common.lib"
+    },
+    {
+     "project": "socketlib",
+     "path": "lib/public/socketlib.lib"
+    },
+    {
+     "project": "appframework",
+     "path": "lib/public/appframework.lib"
+    },
+    {
+     "project": "bitmap",
+     "path": "lib/public/bitmap.lib"
+    },
+    {
+     "project": "bzip2",
+     "path": "lib/common/bzip2.lib"
+    },
+    {
+     "prebuilt": "lib/common/libjpeg.lib"
+    },
+    {
+     "project": "dmxloader",
+     "path": "lib/public/dmxloader.lib"
+    },
+    {
+     "project": "mathlib",
+     "path": "lib/public/mathlib.lib"
+    },
+    {
+     "project": "matsys_controls",
+     "path": "lib/public/matsys_controls.lib"
+    },
+    {
+     "project": "tier2",
+     "path": "lib/public/tier2.lib"
+    },
+    {
+     "project": "tier3",
+     "path": "lib/public/tier3.lib"
+    },
+    {
+     "project": "vtf",
+     "path": "lib/public/vtf.lib"
+    },
+    {
+     "project": "vgui_controls",
+     "path": "lib/public/vgui_controls.lib"
+    },
+    {
+     "external": "steam_api.lib"
+    },
+    {
+     "external": "libz.lib"
+    },
+    {
+     "prebuilt": "lib/common/binkw32.lib"
+    }
+   ],
+   "link": [
+    "/INCREMENTAL:NO",
+    "/DEBUG",
+    "/SUBSYSTEM:WINDOWS,5.01",
+    "/OPT:REF",
+    "/OPT:ICF",
+    "/MACHINE:X86",
+    "/MANIFEST:NO",
+    "/DYNAMICBASE",
+    "/NXCOMPAT",
+    "/SAFESEH:NO",
+    "/NODEFAULTLIB:libc",
+    "/NODEFAULTLIB:libcd",
+    "/NODEFAULTLIB:libcmtd",
+    "/NODEFAULTLIB:libcpmtd",
+    "/NODEFAULTLIB:libcpmtd0",
+    "/NODEFAULTLIB:libcpmtd1",
+    "/ignore:4221"
+   ],
+   "link_objects": [
+    "lib/public/ftol3.obj"
+   ],
+   "system_libs": [
+    "shell32.lib",
+    "user32.lib",
+    "advapi32.lib",
+    "gdi32.lib",
+    "comdlg32.lib",
+    "ole32.lib",
+    "dinput8.lib",
+    "winmm.lib",
+    "wsock32.lib",
+    "ws2_32.lib",
+    "wininet.lib",
+    "vfw32.lib",
+    "Rpcrt4.lib"
+   ]
+  },
+  "tier1": {
+   "vpc": "tier1/tier1.vpc",
+   "type": "lib",
+   "output": "tier1",
+   "retail": null,
+   "project_dir": "tier1",
+   "defines": [
+    "VPC",
+    "WIN32",
+    "_WIN32",
+    "NDEBUG",
+    "_LIB",
+    "_CRT_SECURE_NO_DEPRECATE",
+    "_CRT_NONSTDC_NO_DEPRECATE",
+    "_ALLOW_RUNTIME_LIBRARY_MISMATCH",
+    "_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH",
+    "_ALLOW_MSC_VER_MISMATCH",
+    "COMPILER_MSVC32",
+    "COMPILER_MSVC",
+    "_DLL_EXT=.dll",
+    "LIBNAME=tier1",
+    "BINK_VIDEO",
+    "AVI_VIDEO",
+    "WMV_VIDEO",
+    "DEV_BUILD",
+    "FRAME_POINTER_OMISSION_DISABLED",
+    "TIER1_STATIC_LIB",
+    "_MBCS"
+   ],
+   "includes": [
+    "common",
+    "public",
+    "public/tier0",
+    "public/tier1"
+   ],
+   "cl": [
+    "/O2",
+    "/Ob2",
+    "/Oi",
+    "/Ot",
+    "/GF",
+    "/MT",
+    "/Gy",
+    "/arch:SSE",
+    "/fp:fast",
+    "/Zc:forScope",
+    "/GR",
+    "/Gd",
+    "/TP",
+    "/FC",
+    "/Z7",
+    "/W4",
+    "/Zc:wchar_t",
+    "/GS-",
+    "/wd4316",
+    "/Zo",
+    "/Oy-",
+    "/Gw",
+    "/Zc:inline"
+   ],
+   "pch_header": null,
+   "sources": [
+    {
+     "path": "common/debug_lib_check.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/bitbuf.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/newbitbuf.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/byteswap.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/characterset.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/checksum_crc.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/checksum_md5.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/checksum_sha1.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/commandbuffer.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/convar.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/datamanager.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/diff.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/generichash.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/ilocalize.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/interface.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/KeyValues.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/keyvaluesjson.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/kvpacker.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/lzmaDecoder.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/lzss.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/mempool.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/memstack.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/NetAdr.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/splitstring.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/processor_detect.cpp",
+     "lang": "c++",
+     "cl": [
+      "/O2",
+      "/Ob2",
+      "/Oi",
+      "/Ot",
+      "/GF",
+      "/MT",
+      "/Gy",
+      "/arch:SSE",
+      "/fp:fast",
+      "/Zc:forScope",
+      "/GR",
+      "/Gd",
+      "/TP",
+      "/FC",
+      "/Z7",
+      "/W4",
+      "/Zc:wchar_t",
+      "/GS-",
+      "/EHsc",
+      "/wd4316",
+      "/Zo",
+      "/Oy-",
+      "/Gw",
+      "/Zc:inline"
+     ]
+    },
+    {
+     "path": "tier1/rangecheckedvar.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/reliabletimer.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/stringpool.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/strtools.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/strtools_unicode.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/tier1.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/tokenreader.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/sparsematrix.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/uniqueid.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/utlbuffer.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/utlbufferutil.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/utlstring.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/utlsymbol.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/utlbinaryblock.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/snappy.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/snappy-sinksource.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier1/snappy-stubs-internal.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "utils/lzma/C/LzmaDec.c",
+     "lang": "c"
+    }
+   ],
+   "libs": []
+  },
+  "tier2": {
+   "vpc": "tier2/tier2.vpc",
+   "type": "lib",
+   "output": "tier2",
+   "retail": null,
+   "project_dir": "tier2",
+   "defines": [
+    "VPC",
+    "WIN32",
+    "_WIN32",
+    "NDEBUG",
+    "_LIB",
+    "_CRT_SECURE_NO_DEPRECATE",
+    "_CRT_NONSTDC_NO_DEPRECATE",
+    "_ALLOW_RUNTIME_LIBRARY_MISMATCH",
+    "_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH",
+    "_ALLOW_MSC_VER_MISMATCH",
+    "COMPILER_MSVC32",
+    "COMPILER_MSVC",
+    "_DLL_EXT=.dll",
+    "LIBNAME=tier2",
+    "BINK_VIDEO",
+    "AVI_VIDEO",
+    "WMV_VIDEO",
+    "DEV_BUILD",
+    "FRAME_POINTER_OMISSION_DISABLED",
+    "_MBCS"
+   ],
+   "includes": [
+    "common",
+    "public",
+    "public/tier0",
+    "public/tier1",
+    "public/tier2"
+   ],
+   "cl": [
+    "/O2",
+    "/Ob2",
+    "/Oi",
+    "/Ot",
+    "/GF",
+    "/MT",
+    "/Gy",
+    "/arch:SSE",
+    "/fp:fast",
+    "/Zc:forScope",
+    "/GR",
+    "/Gd",
+    "/TP",
+    "/FC",
+    "/Z7",
+    "/W4",
+    "/Zc:wchar_t",
+    "/GS-",
+    "/wd4316",
+    "/Zo",
+    "/Oy-",
+    "/Gw",
+    "/Zc:inline"
+   ],
+   "pch_header": null,
+   "sources": [
+    {
+     "path": "common/debug_lib_check.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier2/beamsegdraw.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier2/defaultfilesystem.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier2/dmconnect.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier2/fileutils.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier2/keybindings.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/map_utils.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/materialsystem/MaterialSystemUtil.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier2/camerautils.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier2/meshutils.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier2/p4helpers.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier2/renderutils.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier2/riff.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier2/soundutils.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier2/tier2.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier2/util_init.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier2/utlstreambuffer.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier2/vconfig.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier2/keyvaluesmacros.cpp",
+     "lang": "c++"
+    }
+   ],
+   "libs": []
+  },
+  "tier3": {
+   "vpc": "tier3/tier3.vpc",
+   "type": "lib",
+   "output": "tier3",
+   "retail": null,
+   "project_dir": "tier3",
+   "defines": [
+    "VPC",
+    "WIN32",
+    "_WIN32",
+    "NDEBUG",
+    "_LIB",
+    "_CRT_SECURE_NO_DEPRECATE",
+    "_CRT_NONSTDC_NO_DEPRECATE",
+    "_ALLOW_RUNTIME_LIBRARY_MISMATCH",
+    "_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH",
+    "_ALLOW_MSC_VER_MISMATCH",
+    "COMPILER_MSVC32",
+    "COMPILER_MSVC",
+    "_DLL_EXT=.dll",
+    "LIBNAME=tier3",
+    "BINK_VIDEO",
+    "AVI_VIDEO",
+    "WMV_VIDEO",
+    "DEV_BUILD",
+    "FRAME_POINTER_OMISSION_DISABLED",
+    "_MBCS"
+   ],
+   "includes": [
+    "common",
+    "public",
+    "public/tier0",
+    "public/tier1"
+   ],
+   "cl": [
+    "/O2",
+    "/Ob2",
+    "/Oi",
+    "/Ot",
+    "/GF",
+    "/MT",
+    "/Gy",
+    "/arch:SSE",
+    "/fp:fast",
+    "/Zc:forScope",
+    "/GR",
+    "/Gd",
+    "/TP",
+    "/FC",
+    "/Z7",
+    "/W4",
+    "/Zc:wchar_t",
+    "/GS-",
+    "/wd4316",
+    "/Zo",
+    "/Oy-",
+    "/Gw",
+    "/Zc:inline"
+   ],
+   "pch_header": null,
+   "sources": [
+    {
+     "path": "common/debug_lib_check.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier3/tier3.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier3/mdlutils.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier3/choreoutils.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier3/scenetokenprocessor.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "tier3/studiohdrstub.cpp",
+     "lang": "c++"
+    }
+   ],
+   "libs": []
+  },
+  "bitmap": {
+   "vpc": "bitmap/bitmap.vpc",
+   "type": "lib",
+   "output": "bitmap",
+   "retail": null,
+   "project_dir": "bitmap",
+   "defines": [
+    "VPC",
+    "WIN32",
+    "_WIN32",
+    "NDEBUG",
+    "_LIB",
+    "_CRT_SECURE_NO_DEPRECATE",
+    "_CRT_NONSTDC_NO_DEPRECATE",
+    "_ALLOW_RUNTIME_LIBRARY_MISMATCH",
+    "_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH",
+    "_ALLOW_MSC_VER_MISMATCH",
+    "COMPILER_MSVC32",
+    "COMPILER_MSVC",
+    "_DLL_EXT=.dll",
+    "LIBNAME=bitmap",
+    "BINK_VIDEO",
+    "AVI_VIDEO",
+    "WMV_VIDEO",
+    "DEV_BUILD",
+    "FRAME_POINTER_OMISSION_DISABLED",
+    "_MBCS"
+   ],
+   "includes": [
+    "common",
+    "public",
+    "public/tier0",
+    "public/tier1",
+    "dx9sdk/include",
+    "x360xdk/include/win32/vs2005",
+    "thirdparty/stb"
+   ],
+   "cl": [
+    "/O2",
+    "/Ob2",
+    "/Oi",
+    "/Ot",
+    "/GF",
+    "/MT",
+    "/Gy",
+    "/arch:SSE",
+    "/fp:fast",
+    "/Zc:forScope",
+    "/GR",
+    "/Gd",
+    "/TP",
+    "/FC",
+    "/Z7",
+    "/W4",
+    "/Zc:wchar_t",
+    "/GS-",
+    "/wd4316",
+    "/Zo",
+    "/Oy-",
+    "/Gw",
+    "/Zc:inline"
+   ],
+   "pch_header": null,
+   "sources": [
+    {
+     "path": "common/debug_lib_check.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "bitmap/ImageByteSwap.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "bitmap/colorconversion.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "bitmap/float_bm.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "bitmap/float_bm2.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "bitmap/float_bm3.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "bitmap/float_bm4.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "bitmap/float_bm_bilateral_filter.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "bitmap/float_cube.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "bitmap/imageformat.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "bitmap/psd.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "bitmap/resample.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "bitmap/tgaloader.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "bitmap/tgawriter.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "bitmap/bitmap.cpp",
+     "lang": "c++"
+    }
+   ],
+   "libs": [
+    {
+     "prebuilt": "lib/public/nvtc.lib"
+    },
+    {
+     "prebuilt": "lib/public/ATI_Compress_MT_VC10.lib"
+    }
+   ]
+  },
+  "mathlib": {
+   "vpc": "mathlib/mathlib.vpc",
+   "type": "lib",
+   "output": "mathlib",
+   "retail": null,
+   "project_dir": "mathlib",
+   "defines": [
+    "VPC",
+    "WIN32",
+    "_WIN32",
+    "NDEBUG",
+    "_LIB",
+    "_CRT_SECURE_NO_DEPRECATE",
+    "_CRT_NONSTDC_NO_DEPRECATE",
+    "_ALLOW_RUNTIME_LIBRARY_MISMATCH",
+    "_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH",
+    "_ALLOW_MSC_VER_MISMATCH",
+    "COMPILER_MSVC32",
+    "COMPILER_MSVC",
+    "_DLL_EXT=.dll",
+    "LIBNAME=mathlib",
+    "BINK_VIDEO",
+    "AVI_VIDEO",
+    "WMV_VIDEO",
+    "DEV_BUILD",
+    "FRAME_POINTER_OMISSION_DISABLED",
+    "MATHLIB_LIB",
+    "_MBCS"
+   ],
+   "includes": [
+    "common",
+    "public",
+    "public/tier0",
+    "public/tier1",
+    "public/mathlib"
+   ],
+   "cl": [
+    "/O2",
+    "/Ob2",
+    "/Oi",
+    "/Ot",
+    "/GF",
+    "/MT",
+    "/Gy",
+    "/arch:SSE",
+    "/fp:fast",
+    "/Zc:forScope",
+    "/GR",
+    "/Gd",
+    "/TP",
+    "/FC",
+    "/Z7",
+    "/W4",
+    "/Zc:wchar_t",
+    "/GS-",
+    "/wd4316",
+    "/Zo",
+    "/Oy-",
+    "/Gw",
+    "/Zc:inline"
+   ],
+   "pch_header": null,
+   "sources": [
+    {
+     "path": "common/debug_lib_check.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "mathlib/color_conversion.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "mathlib/halton.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "mathlib/lightdesc.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "mathlib/mathlib_base.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "mathlib/powsse.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "mathlib/sparse_convolution_noise.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "mathlib/sseconst.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "mathlib/sse.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "mathlib/ssenoise.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "mathlib/3dnow.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "mathlib/anorms.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "mathlib/bumpvects.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "mathlib/IceKey.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "mathlib/imagequant.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "mathlib/polyhedron.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "mathlib/quantize.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "mathlib/randsse.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "mathlib/spherical.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "mathlib/simdvectormatrix.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "mathlib/vector.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "mathlib/vmatrix.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "mathlib/almostequal.cpp",
+     "lang": "c++"
+    }
+   ],
+   "libs": []
+  },
+  "replay_common": {
+   "vpc": "replay/common/replay_common.vpc",
+   "type": "lib",
+   "output": "replay_common",
+   "retail": null,
+   "project_dir": "replay/common",
+   "defines": [
+    "VPC",
+    "WIN32",
+    "_WIN32",
+    "NDEBUG",
+    "_LIB",
+    "_CRT_SECURE_NO_DEPRECATE",
+    "_CRT_NONSTDC_NO_DEPRECATE",
+    "_ALLOW_RUNTIME_LIBRARY_MISMATCH",
+    "_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH",
+    "_ALLOW_MSC_VER_MISMATCH",
+    "COMPILER_MSVC32",
+    "COMPILER_MSVC",
+    "_DLL_EXT=.dll",
+    "LIBNAME=replay_common",
+    "BINK_VIDEO",
+    "AVI_VIDEO",
+    "WMV_VIDEO",
+    "DEV_BUILD",
+    "FRAME_POINTER_OMISSION_DISABLED",
+    "_MBCS"
+   ],
+   "includes": [
+    "common",
+    "public",
+    "public/tier0",
+    "public/tier1",
+    "dx9sdk/include",
+    "x360xdk/include/win32/vs2005"
+   ],
+   "cl": [
+    "/O2",
+    "/Ob2",
+    "/Oi",
+    "/Ot",
+    "/GF",
+    "/MT",
+    "/Gy",
+    "/arch:SSE",
+    "/fp:fast",
+    "/Zc:forScope",
+    "/GR",
+    "/Gd",
+    "/TP",
+    "/FC",
+    "/Z7",
+    "/W4",
+    "/Zc:wchar_t",
+    "/GS-",
+    "/wd4316",
+    "/Zo",
+    "/Oy-",
+    "/Gw",
+    "/Zc:inline"
+   ],
+   "pch_header": null,
+   "sources": [
+    {
+     "path": "common/debug_lib_check.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "replay/common/replay.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "replay/common/replaylib.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "replay/common/basereplayserializeable.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "replay/common/performance.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "replay/common/replaytime.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "replay/common/replayutils.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "replay/common/screenshot.cpp",
+     "lang": "c++"
+    }
+   ],
+   "libs": []
+  },
+  "appframework": {
+   "vpc": "appframework/appframework.vpc",
+   "type": "lib",
+   "output": "appframework",
+   "retail": null,
+   "project_dir": "appframework",
+   "defines": [
+    "VPC",
+    "WIN32",
+    "_WIN32",
+    "NDEBUG",
+    "_LIB",
+    "_CRT_SECURE_NO_DEPRECATE",
+    "_CRT_NONSTDC_NO_DEPRECATE",
+    "_ALLOW_RUNTIME_LIBRARY_MISMATCH",
+    "_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH",
+    "_ALLOW_MSC_VER_MISMATCH",
+    "COMPILER_MSVC32",
+    "COMPILER_MSVC",
+    "_DLL_EXT=.dll",
+    "LIBNAME=appframework",
+    "BINK_VIDEO",
+    "AVI_VIDEO",
+    "WMV_VIDEO",
+    "DEV_BUILD",
+    "FRAME_POINTER_OMISSION_DISABLED",
+    "_MBCS"
+   ],
+   "includes": [
+    "common",
+    "public",
+    "public/tier0",
+    "public/tier1"
+   ],
+   "cl": [
+    "/O2",
+    "/Ob2",
+    "/Oi",
+    "/Ot",
+    "/GF",
+    "/MT",
+    "/Gy",
+    "/arch:SSE",
+    "/fp:fast",
+    "/Zc:forScope",
+    "/GR",
+    "/Gd",
+    "/TP",
+    "/FC",
+    "/Z7",
+    "/W4",
+    "/Zc:wchar_t",
+    "/GS-",
+    "/wd4316",
+    "/Zo",
+    "/Oy-",
+    "/Gw",
+    "/Zc:inline"
+   ],
+   "pch_header": null,
+   "sources": [
+    {
+     "path": "common/debug_lib_check.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "appframework/AppSystemGroup.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/filesystem_init.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "appframework/vguimatsysapp.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "appframework/winapp.cpp",
+     "lang": "c++"
+    }
+   ],
+   "libs": []
+  },
+  "bzip2": {
+   "vpc": "utils/bzip2/bzip2.vpc",
+   "type": "lib",
+   "output": "bzip2",
+   "retail": null,
+   "project_dir": "utils/bzip2",
+   "defines": [
+    "VPC",
+    "WIN32",
+    "_WIN32",
+    "NDEBUG",
+    "_LIB",
+    "_CRT_SECURE_NO_DEPRECATE",
+    "_CRT_NONSTDC_NO_DEPRECATE",
+    "_ALLOW_RUNTIME_LIBRARY_MISMATCH",
+    "_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH",
+    "_ALLOW_MSC_VER_MISMATCH",
+    "COMPILER_MSVC32",
+    "COMPILER_MSVC",
+    "_DLL_EXT=.dll",
+    "LIBNAME=bzip2",
+    "BINK_VIDEO",
+    "AVI_VIDEO",
+    "WMV_VIDEO",
+    "DEV_BUILD",
+    "FRAME_POINTER_OMISSION_DISABLED",
+    "_MBCS"
+   ],
+   "includes": [
+    "common",
+    "public",
+    "public/tier0",
+    "public/tier1"
+   ],
+   "cl": [
+    "/O2",
+    "/Ob2",
+    "/Oi",
+    "/Ot",
+    "/GF",
+    "/MT",
+    "/Gy",
+    "/arch:SSE",
+    "/fp:fast",
+    "/Zc:forScope",
+    "/GR",
+    "/Gd",
+    "/TC",
+    "/FC",
+    "/Z7",
+    "/W4",
+    "/Zc:wchar_t",
+    "/GS-",
+    "/wd4316",
+    "/Zo",
+    "/Oy-",
+    "/Gw",
+    "/Zc:inline"
+   ],
+   "pch_header": null,
+   "sources": [
+    {
+     "path": "common/debug_lib_check.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "utils/bzip2/blocksort.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/bzip2/bzip2.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/bzip2/bzlib.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/bzip2/compress.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/bzip2/crctable.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/bzip2/decompress.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/bzip2/huffman.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/bzip2/randtable.c",
+     "lang": "c"
+    }
+   ],
+   "libs": []
+  },
+  "dmxloader": {
+   "vpc": "dmxloader/dmxloader.vpc",
+   "type": "lib",
+   "output": "dmxloader",
+   "retail": null,
+   "project_dir": "dmxloader",
+   "defines": [
+    "VPC",
+    "WIN32",
+    "_WIN32",
+    "NDEBUG",
+    "_LIB",
+    "_CRT_SECURE_NO_DEPRECATE",
+    "_CRT_NONSTDC_NO_DEPRECATE",
+    "_ALLOW_RUNTIME_LIBRARY_MISMATCH",
+    "_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH",
+    "_ALLOW_MSC_VER_MISMATCH",
+    "COMPILER_MSVC32",
+    "COMPILER_MSVC",
+    "_DLL_EXT=.dll",
+    "LIBNAME=dmxloader",
+    "BINK_VIDEO",
+    "AVI_VIDEO",
+    "WMV_VIDEO",
+    "DEV_BUILD",
+    "FRAME_POINTER_OMISSION_DISABLED",
+    "DMXLOADER_LIB",
+    "_MBCS"
+   ],
+   "includes": [
+    "common",
+    "public",
+    "public/tier0",
+    "public/tier1"
+   ],
+   "cl": [
+    "/O2",
+    "/Ob2",
+    "/Oi",
+    "/Ot",
+    "/GF",
+    "/MT",
+    "/Gy",
+    "/arch:SSE",
+    "/fp:fast",
+    "/Zc:forScope",
+    "/GR",
+    "/Gd",
+    "/TP",
+    "/FC",
+    "/Z7",
+    "/W4",
+    "/Zc:wchar_t",
+    "/GS-",
+    "/wd4316",
+    "/Zo",
+    "/Oy-",
+    "/Gw",
+    "/Zc:inline"
+   ],
+   "pch_header": null,
+   "sources": [
+    {
+     "path": "common/debug_lib_check.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "dmxloader/dmxattribute.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "dmxloader/dmxelement.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "dmxloader/dmxloader.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "dmxloader/dmxloadertext.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "dmxloader/dmxserializationdictionary.cpp",
+     "lang": "c++"
+    }
+   ],
+   "libs": []
+  },
+  "matsys_controls": {
+   "vpc": "vgui2/matsys_controls/matsys_controls.vpc",
+   "type": "lib",
+   "output": "matsys_controls",
+   "retail": null,
+   "project_dir": "vgui2/matsys_controls",
+   "defines": [
+    "VPC",
+    "WIN32",
+    "_WIN32",
+    "NDEBUG",
+    "_LIB",
+    "_CRT_SECURE_NO_DEPRECATE",
+    "_CRT_NONSTDC_NO_DEPRECATE",
+    "_ALLOW_RUNTIME_LIBRARY_MISMATCH",
+    "_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH",
+    "_ALLOW_MSC_VER_MISMATCH",
+    "COMPILER_MSVC32",
+    "COMPILER_MSVC",
+    "_DLL_EXT=.dll",
+    "LIBNAME=matsys_controls",
+    "BINK_VIDEO",
+    "AVI_VIDEO",
+    "WMV_VIDEO",
+    "DEV_BUILD",
+    "FRAME_POINTER_OMISSION_DISABLED",
+    "_MBCS"
+   ],
+   "includes": [
+    "common",
+    "public",
+    "public/tier0",
+    "public/tier1"
+   ],
+   "cl": [
+    "/O2",
+    "/Ob2",
+    "/Oi",
+    "/Ot",
+    "/GF",
+    "/MT",
+    "/Gy",
+    "/arch:SSE",
+    "/fp:fast",
+    "/Zc:forScope",
+    "/GR",
+    "/Gd",
+    "/TP",
+    "/FC",
+    "/Z7",
+    "/W4",
+    "/Zc:wchar_t",
+    "/GS-",
+    "/wd4316",
+    "/Zo",
+    "/Oy-",
+    "/Gw",
+    "/Zc:inline"
+   ],
+   "pch_header": null,
+   "sources": [
+    {
+     "path": "common/debug_lib_check.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/matsys_controls/assetpicker.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/matsys_controls/baseassetpicker.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/matsys_controls/colorpickerpanel.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/matsys_controls/curveeditorpanel.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/matsys_controls/gamefiletreeview.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/matsys_controls/manipulator.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/matsys_controls/matsyscontrols.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/matsys_controls/mdlpanel.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/matsys_controls/mdlpicker.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/matsys_controls/mdlsequencepicker.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/matsys_controls/picker.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/matsys_controls/potterywheelpanel.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/matsys_controls/proceduraltexturepanel.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/matsys_controls/QCGenerator.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/matsys_controls/sequencepicker.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/matsys_controls/tgapreviewpanel.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/matsys_controls/vmtpicker.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/matsys_controls/vmtpreviewpanel.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/matsys_controls/vtfpicker.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/matsys_controls/vtfpreviewpanel.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/matsys_controls/vmtpanel.cpp",
+     "lang": "c++"
+    }
+   ],
+   "libs": [
+    {
+     "project": "bitmap",
+     "path": "lib/public/bitmap.lib"
+    }
+   ]
+  },
+  "vtf": {
+   "vpc": "vtf/vtf.vpc",
+   "type": "lib",
+   "output": "vtf",
+   "retail": null,
+   "project_dir": "vtf",
+   "defines": [
+    "VPC",
+    "WIN32",
+    "_WIN32",
+    "NDEBUG",
+    "_LIB",
+    "_CRT_SECURE_NO_DEPRECATE",
+    "_CRT_NONSTDC_NO_DEPRECATE",
+    "_ALLOW_RUNTIME_LIBRARY_MISMATCH",
+    "_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH",
+    "_ALLOW_MSC_VER_MISMATCH",
+    "COMPILER_MSVC32",
+    "COMPILER_MSVC",
+    "_DLL_EXT=.dll",
+    "LIBNAME=vtf",
+    "BINK_VIDEO",
+    "AVI_VIDEO",
+    "WMV_VIDEO",
+    "DEV_BUILD",
+    "FRAME_POINTER_OMISSION_DISABLED",
+    "fopen=dont_use_fopen",
+    "_MBCS"
+   ],
+   "includes": [
+    "common",
+    "public",
+    "public/tier0",
+    "public/tier1",
+    "dx9sdk/include"
+   ],
+   "cl": [
+    "/O2",
+    "/Ob2",
+    "/Oi",
+    "/Ot",
+    "/GF",
+    "/MT",
+    "/Gy",
+    "/arch:SSE",
+    "/fp:fast",
+    "/Zc:forScope",
+    "/GR",
+    "/Gd",
+    "/TP",
+    "/FC",
+    "/Z7",
+    "/W4",
+    "/Zc:wchar_t",
+    "/GS-",
+    "/wd4316",
+    "/Zo",
+    "/Oy-",
+    "/Gw",
+    "/Zc:inline"
+   ],
+   "pch_header": null,
+   "sources": [
+    {
+     "path": "common/debug_lib_check.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vtf/convert_x360.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vtf/s3tc_decode.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vtf/vtf.cpp",
+     "lang": "c++"
+    }
+   ],
+   "libs": []
+  },
+  "vgui_controls": {
+   "vpc": "vgui2/vgui_controls/vgui_controls.vpc",
+   "type": "lib",
+   "output": "vgui_controls",
+   "retail": null,
+   "project_dir": "vgui2/vgui_controls",
+   "defines": [
+    "VPC",
+    "WIN32",
+    "_WIN32",
+    "NDEBUG",
+    "_LIB",
+    "_CRT_SECURE_NO_DEPRECATE",
+    "_CRT_NONSTDC_NO_DEPRECATE",
+    "_ALLOW_RUNTIME_LIBRARY_MISMATCH",
+    "_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH",
+    "_ALLOW_MSC_VER_MISMATCH",
+    "COMPILER_MSVC32",
+    "COMPILER_MSVC",
+    "_DLL_EXT=.dll",
+    "LIBNAME=vgui_controls",
+    "BINK_VIDEO",
+    "AVI_VIDEO",
+    "WMV_VIDEO",
+    "DEV_BUILD",
+    "FRAME_POINTER_OMISSION_DISABLED",
+    "_MBCS"
+   ],
+   "includes": [
+    "common",
+    "public",
+    "public/tier0",
+    "public/tier1",
+    "vgui2/vgui_controls/generated_proto",
+    "thirdparty/protobuf-2.6.1/src",
+    "thirdparty",
+    "thirdparty/cef"
+   ],
+   "cl": [
+    "/O2",
+    "/Ob2",
+    "/Oi",
+    "/Ot",
+    "/GF",
+    "/MT",
+    "/Gy",
+    "/arch:SSE",
+    "/fp:fast",
+    "/Zc:forScope",
+    "/GR",
+    "/Gd",
+    "/TP",
+    "/FC",
+    "/Z7",
+    "/W4",
+    "/Zc:wchar_t",
+    "/GS-",
+    "/wd4316",
+    "/Zo",
+    "/Oy-",
+    "/Gw",
+    "/Zc:inline"
+   ],
+   "pch_header": null,
+   "sources": [
+    {
+     "path": "common/debug_lib_check.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/AnalogBar.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/AnimatingImagePanel.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/AnimationController.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/BitmapImagePanel.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/BuildFactoryHelper.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/BuildGroup.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/BuildModeDialog.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/Button.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/CheckButton.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/CheckButtonList.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/CircularProgressBar.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/ComboBox.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/consoledialog.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/ControllerMap.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/controls.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/CvarToggleCheckButton.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/DirectorySelectDialog.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/Divider.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/EditablePanel.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/ExpandButton.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/FileOpenDialog.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/FileOpenStateMachine.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "public/filesystem_helpers.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/FocusNavGroup.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/Frame.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/GraphPanel.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/HTML.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/Image.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/ImageList.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/ImagePanel.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/InputDialog.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/KeyBindingHelpDialog.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/KeyBoardEditorDialog.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/KeyRepeat.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/Label.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/ListPanel.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/ListViewPanel.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/Menu.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/MenuBar.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/MenuButton.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/MenuItem.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/MessageBox.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/MessageDialog.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/Panel.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/PanelListPanel.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/PerforceFileExplorer.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/PerforceFileList.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/perforcefilelistframe.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/ProgressBar.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/ProgressBox.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/PropertyDialog.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/PropertyPage.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/PropertySheet.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/QueryBox.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/RadioButton.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/RichText.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/RotatingProgressBar.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/savedocumentquery.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/ScalableImagePanel.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/ScrollableEditablePanel.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/ScrollBar.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/ScrollBarSlider.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/SectionedListPanel.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/Slider.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/Splitter.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/subrectimage.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/TextEntry.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/TextImage.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/ToggleButton.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/Tooltip.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/ToolWindow.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/TreeView.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/TreeViewListControl.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/URLLabel.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/WizardPanel.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/vgui_controls/WizardSubPanel.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "vgui2/src/vgui_key_translation.cpp",
+     "lang": "c++"
+    }
+   ],
+   "libs": []
+  }
+ },
+ "missing_projects": [
+  "socketlib"
+ ]
+}
