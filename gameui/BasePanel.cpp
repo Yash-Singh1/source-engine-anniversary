@@ -5554,7 +5554,15 @@ void CBasePanel::RefreshDialogs()
 	DeletePanel();
 	MakeBasePanel();
 
-	REOPEN_BASE_DIALOG( m_hNewGameDialog, bNewGameDialog, OnOpenNewGameDialog( -1, NULL ) );
+	if ( bNewGameDialog )
+	{
+		g_pBasePanel->OnOpenNewGameDialog( -1, NULL );
+		if ( g_pBasePanel->m_hNewGameDialog.Get() )
+		{
+			g_pBasePanel->m_hNewGameDialog->DisableFadeEffect();
+			((CNewGameDialog *)g_pBasePanel->m_hNewGameDialog.Get())->IsCommentaryMode();
+		}
+	}
 	REOPEN_BASE_DIALOG( m_hBonusMapsDialog, bBonusMapsDialog, OnOpenBonusMapsDialog() );
 	REOPEN_BASE_DIALOG( m_hLoadGameDialog, bLoadGameDialog, OnOpenLoadGameDialog( NULL ) );
 	REOPEN_BASE_DIALOG( m_hSaveGameDialog, bSaveGameDialog, OnOpenSaveGameDialog() );
@@ -5562,14 +5570,11 @@ void CBasePanel::RefreshDialogs()
 	if ( bOptionsDialog )
 	{
 		g_pBasePanel->OnOpenOptionsDialog();
-		if ( g_pBasePanel->m_hOptionsDialog.Get() )
+		COptionsDialog *pOptionsDialog = dynamic_cast< COptionsDialog * >( g_pBasePanel->m_hOptionsDialog.Get() );
+		if ( pOptionsDialog )
 		{
-			COptionsDialog *pOptionsDialog = dynamic_cast< COptionsDialog * >( g_pBasePanel->m_hOptionsDialog.Get() );
-			if ( pOptionsDialog )
-			{
-				pOptionsDialog->GetPropertySheet()->SetActivePage( pOptionsDialog->GetOptionsSubVideo() );
-				pOptionsDialog->DisableFadeEffect();
-			}
+			pOptionsDialog->GetPropertySheet()->SetActivePage( pOptionsDialog->GetOptionsSubVideo() );
+			pOptionsDialog->DisableFadeEffect();
 		}
 	}
 
