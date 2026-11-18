@@ -38,6 +38,8 @@ enum ESystemNotify
 	SYSTEMNOTIFY_INVITE_SHUTDOWN,	// Cross-game invite is causing us to shutdown
 };
 
+class CBonusMapsDatabase;
+
 //-----------------------------------------------------------------------------
 // Purpose: contains all the functions that the GameUI dll exports
 //-----------------------------------------------------------------------------
@@ -114,6 +116,8 @@ public:
 	virtual void SetMainMenuOverride( vgui::VPANEL panel ) = 0;
 	// Client DLL is telling us that a main menu command was issued, probably from its custom main menu panel
 	virtual void SendMainMenuCommand( const char *pszCommand ) = 0;
+
+	virtual CBonusMapsDatabase *GetBonusMapsDatabase( void ) = 0;
 };
 
 #define GAMEUI_INTERFACE_VERSION "GameUI011"

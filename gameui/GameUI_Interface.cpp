@@ -1288,3 +1288,8 @@ void CGameUI::SendMainMenuCommand( const char *pszCommand )
 		pBasePanel->RunMenuCommand( pszCommand );
 	}
 }
+
+CBonusMapsDatabase *CGameUI::GetBonusMapsDatabase( void )
+{
+	return BonusMapsDatabase();
+}
