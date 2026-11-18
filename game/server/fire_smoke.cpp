@@ -92,6 +92,7 @@ LINK_ENTITY_TO_CLASS( _firesmoke, CFireSmoke );
 //Send datatable
 IMPLEMENT_SERVERCLASS_ST( CFireSmoke, DT_FireSmoke )
 	SendPropFloat(  SENDINFO( m_flStartScale ), 0,	SPROP_NOSCALE),
+	SendPropFloat(  SENDINFO( m_flOriginalStartScale ), 0,	SPROP_NOSCALE),
 	SendPropFloat(	SENDINFO( m_flScale ),		0,	SPROP_NOSCALE),
 	SendPropFloat(	SENDINFO( m_flScaleTime ),	0,	SPROP_NOSCALE),
 	SendPropInt(	SENDINFO( m_nFlags ),		8,  SPROP_UNSIGNED ),
@@ -103,6 +104,7 @@ END_SEND_TABLE()
 BEGIN_DATADESC( CFireSmoke )
 
 	DEFINE_FIELD( m_flStartScale,		FIELD_FLOAT ),
+	DEFINE_FIELD( m_flOriginalStartScale,	FIELD_FLOAT ),
 	DEFINE_FIELD( m_flScale,			FIELD_FLOAT ),
 	DEFINE_FIELD( m_flScaleTime,		FIELD_FLOAT ),
 	DEFINE_FIELD( m_nFlags,				FIELD_INTEGER ),
@@ -120,6 +122,7 @@ CFireSmoke::CFireSmoke( void )
 	//Client-side
 	m_flScale			= 0.0f;
 	m_flScaleTime		= 0.0f;
+	m_flOriginalStartScale = 0.0f;
 	m_nFlags			= bitsFIRE_NONE;
 
 	//Server-side
@@ -139,6 +142,9 @@ CFireSmoke::~CFireSmoke( void )
 void CFireSmoke::Precache()
 {
 	BaseClass::Precache();
+
+	m_nFlameModelIndex	= PrecacheModel( "sprites/fire1.vmt" );
+	m_nFlameFromAboveModelIndex = PrecacheModel( "sprites/flamefromabove.vmt" );
 }
 
 void CFireSmoke::Spawn()
