@@ -21,7 +21,12 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 ConVar sv_dumpstringtables( "sv_dumpstringtables", "0", FCVAR_CHEAT );
+#ifdef BYTEMATCH_RETAIL
+ConVar sv_compressstringtablebaselines( "sv_compressstringtablebaselines", "0", 0, "Enable to compression for string table baselines.  (Spend more CPU time to maybe save a little bandwidth.)" );
+#else
 ConVar sv_compressstringtablebaselines_threshhold( "sv_compressstringtablebaselines_threshold", "2048", 0, "Minimum size (in bytes) for stringtablebaseline buffer to be compressed." );
+#endif
+#line 25
 
 #define SUBSTRING_BITS	5
 struct StringHistoryEntry
@@ -643,6 +648,11 @@ void CNetworkStringTable::ParseUpdate( bf_read &buf, int entries )
 
 			if ( substringcheck )
 			{
+#ifdef BYTEMATCH_RETAIL
+				int index = buf.ReadUBitLong( 5 );
+				int bytestocopy = buf.ReadUBitLong( SUBSTRING_BITS );
+				Q_strncpy( entry, history[ index ].string, bytestocopy + 1 );
+#else
 				unsigned int index = buf.ReadUBitLong( 5 );
 				unsigned int bytestocopy = buf.ReadUBitLong( SUBSTRING_BITS );
 				if ( index >= (unsigned int)history.Count() )
@@ -651,6 +661,8 @@ void CNetworkStringTable::ParseUpdate( bf_read &buf, int entries )
 					            entryIndex, GetTableName() );
 				}
 				Q_strncpy( entry, history[ index ].string, Min( sizeof( entry ), (size_t)bytestocopy + 1 ) );
+#endif
+#line 649
 				buf.ReadString( substr, sizeof(substr) );
 				Q_strncat( entry, substr, sizeof(entry), COPY_ALL_CHARACTERS );
 			}
@@ -1393,6 +1405,67 @@ int CNetworkStringTableContainer::GetNumTables( void ) const
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+void CNetworkStringTableContainer::WriteBaselines( bf_write &buf )
+{
+	VPROF_BUDGET( "CNetworkStringTableContainer::WriteBaselines", VPROF_BUDGETGROUP_OTHER_NETWORKING );
+
+	SVC_CreateStringTable msg;
+
+	size_t msg_buffer_size = 2 * NET_MAX_PAYLOAD;
+	char *msg_buffer = new char[ msg_buffer_size ];
+
+	for ( int i = 0 ; i < m_Tables.Count() ; i++ )
+	{
+		CNetworkStringTable *table = (CNetworkStringTable*) GetTable( i );
+
+		int before = buf.GetNumBytesWritten();
+		if ( !table->WriteBaselines( msg, msg_buffer, msg_buffer_size ) )
+		{
+			delete[] msg_buffer;
+			Host_Error( "Index error writing string table baseline %s\n", table->GetTableName() );
+		}
+
+		if ( msg.m_DataOut.IsOverflowed() )
+		{
+			Warning( "Warning:  Overflowed writing uncompressed string table data for %s\n", table->GetTableName() );
+		}
+
+		int numBytes = msg.m_DataOut.GetNumBytesWritten();
+		unsigned int compressedSize = (unsigned int)numBytes;
+		char *compressedData = new char[numBytes];
+
+		if ( sv_compressstringtablebaselines.GetBool() && COM_BufferToBufferCompress_LZSS( compressedData, &compressedSize, (char *)msg.m_DataOut.GetData(), numBytes ) )
+		{
+			msg.m_bDataCompressed = true;
+			msg.m_DataOut.Reset();
+			msg.m_DataOut.WriteLong( numBytes );	// uncompressed size
+			msg.m_DataOut.WriteLong( compressedSize );	// compressed size
+			msg.m_DataOut.WriteBits( compressedData, compressedSize * 8 );	// compressed data
+		}
+		else
+		{
+			msg.m_bDataCompressed = false;
+		}
+
+		delete [] compressedData;
+
+		if ( !msg.WriteToBuffer( buf ) )
+		{
+			delete[] msg_buffer;
+			Host_Error( "Overflow error writing string table baseline %s\n", table->GetTableName() );
+		}
+
+		int after = buf.GetNumBytesWritten();
+		if ( sv_dumpstringtables.GetBool() )
+		{
+			DevMsg( "CNetworkStringTableContainer::WriteBaselines wrote %d bytes for table %s [space remaining %d bytes]\n", after - before, table->GetTableName(), buf.GetNumBytesLeft() );
+		}
+	}
+
+	delete[] msg_buffer;
+}
+#else
 void CNetworkStringTableContainer::WriteBaselines( bf_write &buf )
 {
 	VPROF_BUDGET( "CNetworkStringTableContainer::WriteBaselines", VPROF_BUDGETGROUP_OTHER_NETWORKING );
@@ -1466,6 +1539,8 @@ void CNetworkStringTableContainer::WriteBaselines( bf_write &buf )
 
 	delete[] msg_buffer;
 }
+#endif
+#line 1450
 
 void CNetworkStringTableContainer::WriteStringTables( bf_write& buf )
 {

@@ -124,6 +124,88 @@ static void SV_CheatsChanged_f( IConVar *pConVar, const char *pOldString, float 
 	}
 }
 
+#ifdef BYTEMATCH_RETAIL
+static int g_sv_pure_mode = -2;
+
+static int GetSvPureCommandLine()
+{
+	if ( CommandLine()->CheckParm( "+sv_pure" ) )
+		return CommandLine()->ParmValue( "+sv_pure", 1 );
+	else if ( CommandLine()->CheckParm( "-sv_pure" ) )
+		return CommandLine()->ParmValue( "-sv_pure", 1 );
+	else
+		return 0;
+}
+
+int GetSvPureMode()
+{
+	if ( g_sv_pure_mode == -2 )
+		g_sv_pure_mode = GetSvPureCommandLine();
+	return g_sv_pure_mode;
+}
+
+static void SV_Pure_f( const CCommand &args )
+{
+	int pure_mode = -2;
+	if ( args.ArgC() == 2 )
+	{
+		pure_mode = atoi( args[1] );
+	}
+
+	Msg( "--------------------------------------------------------\n" );
+	if ( pure_mode >= -1 && pure_mode <= 2 )
+	{
+		if ( GetSvPureCommandLine() <= 0 && pure_mode > 0 )
+		{
+			Msg( "sv_pure must be specified on the command line to function properly. sv_pure mode not changed\n" );
+			return;
+		}
+		else if ( pure_mode == GetSvPureMode() )
+		{
+			Msg( "sv_pure value unchanged (current value is %d).\n", GetSvPureMode() );
+		}
+		else
+		{
+			g_sv_pure_mode = pure_mode;
+			Msg( "sv_pure set to %d.\n", g_sv_pure_mode );
+
+			if ( sv.IsActive() )
+			{
+				Msg( "Note: Changes to sv_pure take effect when the next map is loaded.\n" );
+			}
+		}
+	}
+	else
+	{
+		Msg( "sv_pure: Only allow client to use certain files.\n"
+			"\n"
+			"  -1 - Do not apply any rules or restrict which files the client may load.\n"
+			"   0 - Apply rules in cfg/pure_server_minimal.txt only.\n"
+			"   1 - Apply rules in cfg/pure_server_full.txt and then cfg/pure_server_whitelist.txt.\n"
+			"   2 - Apply rules in cfg/pure_server_full.txt.\n"
+			"\n"
+			"   See cfg/pure_server_whitelist_example.txt for more details.\n"
+		);
+	}
+
+	if ( pure_mode == -2 )
+	{
+#ifndef DEDICATED
+		if ( cl.IsConnected() )
+		{
+			Msg( "\n\n" );
+			extern void CL_PrintWhitelistInfo(); // from cl_main.cpp
+			CL_PrintWhitelistInfo();
+		}
+		else
+#endif
+		{
+			Msg( "\nCurrent sv_pure value is %d.\n", GetSvPureMode() );
+		}
+	}
+	Msg( "--------------------------------------------------------\n" );
+}
+#else
 static bool g_sv_pure_waiting_on_reload = false;
 static int g_sv_pure_mode = 0;
 int GetSvPureMode()
@@ -195,6 +277,8 @@ static void SV_Pure_f( const CCommand &args )
 	}
     Msg( "--------------------------------------------------------\n" );
 }
+#endif
+#line 197
 
 static ConCommand sv_pure( "sv_pure", SV_Pure_f, "Show user data." );
 
@@ -241,7 +325,7 @@ static ConVar sv_voicecodec( "sv_voicecodec", "vaudio_opus", 0,
 ConVar  sv_mincmdrate( "sv_mincmdrate", "20", FCVAR_REPLICATED, "This sets the minimum value for cl_cmdrate. 0 == unlimited." );
 ConVar  sv_maxcmdrate( "sv_maxcmdrate", "100", FCVAR_REPLICATED, "(If sv_mincmdrate is > 0), this sets the maximum value for cl_cmdrate." );
 #endif
-#line 221
+#line 230
 ConVar  sv_client_cmdrate_difference( "sv_client_cmdrate_difference", "20", FCVAR_REPLICATED, 
 	"cl_cmdrate is moved to within sv_client_cmdrate_difference units of cl_updaterate before it "
 	"is clamped between sv_mincmdrate and sv_maxcmdrate." );
@@ -413,7 +497,7 @@ void CGameServer::Clear( void )
 #ifndef BYTEMATCH_RETAIL
 	free_edicts = 0;
 #endif
-#line 389
+#line 398
 	edicts = NULL;
 	
 	// Clear the instance baseline indices in the ServerClasses.
@@ -1257,7 +1341,7 @@ void SV_DetermineMulticastRecipients( bool usepas, const Vector& origin, CBitVec
 #else
 		if ( iBitNumber < 0 || !(pMask[iBitNumber>>3] & (1<<(iBitNumber&7)) ) )
 #endif
-#line 1228
+#line 1237
 			continue;
 
 		playerbits.Set( i );
@@ -1434,7 +1518,7 @@ bool CGameServer::FinishCertificateCheck( netadr_t &adr, int nAuthProtocol, cons
 			return false;
 		}
 #endif
-#line 1402
+#line 1411
 
 		int nHashCount = 0;
 
@@ -1582,9 +1666,125 @@ static void OnHibernateWhenEmptyChanged( IConVar *var, const char *pOldValue, fl
 	sv.UpdateHibernationState( );
 }
 #endif
-#line 1540
+#line 1549
 
 static bool s_bExitWhenEmpty = false;
+#ifdef BYTEMATCH_RETAIL
+static ConVar sv_memlimit(  "sv_memlimit", "0", FCVAR_CHEAT, 
+	"If set, whenever the server is empty, if the total memory used by the server is "
+	"greater than this # of megabytes, the server will exit."	);
+
+static void sv_ShutDown( void )
+{
+	s_bExitWhenEmpty = true;
+	Warning( "sv_shutdown command received.\n" );
+
+	double timeCurrent = Plat_FloatTime();
+	if ( sv.IsHibernating() )
+	{
+		Warning( "Server is hibernating. Shutting down right now\n" );
+		s_timeForceShutdown = timeCurrent + 5.0; // don't forget!
+		HostState_Shutdown();
+	}
+	else
+	{
+		// Check if we should update shutdown timeout
+		if ( s_timeForceShutdown == 0.0 && sv_shutdown_timeout_minutes.GetInt() > 0 )
+			s_timeForceShutdown = timeCurrent + sv_shutdown_timeout_minutes.GetInt() * 60.0;
+
+		// Print appropriate message
+		if ( s_timeForceShutdown > 0.0 )
+		{
+			Warning( "Server will shut down in %d seconds, or when it becomes empty.\n", (int)(s_timeForceShutdown - timeCurrent) );
+		}
+		else
+		{
+			Warning( "Server will shut down when it becomes empty.\n" );
+		}
+	}
+}
+
+static ConCommand sv_shutdown( "sv_shutdown", sv_ShutDown, "Sets the server to shutdown next time it's empty" );
+
+
+bool CGameServer::IsHibernating() const
+{
+	return m_bHibernating;
+}
+
+void CGameServer::SetHibernating( bool bHibernating )
+{
+	if ( m_bHibernating != bHibernating )
+	{
+		m_bHibernating = bHibernating;
+		if ( m_bHibernating )
+		{
+			// see if we have any other connected bot clients
+			for ( int iClient = 0; iClient < m_Clients.Count(); iClient++ )
+			{			
+				CBaseClient *pClient = m_Clients[iClient];
+				if ( pClient->IsFakeClient() && pClient->IsConnected() && !pClient->IsSplitScreenUser() && !pClient->IsReplay() && !pClient->IsHLTV() )
+				{
+					pClient->Disconnect( "Punting bot, server is hibernating" );
+				}
+			}
+
+			// A solo player using the game menu to return to lobby can leave the server paused
+			SetPaused( false );
+
+			// if we are hibernating, and we want to quit, quit
+			if ( s_bExitWhenEmpty )
+			{
+				Warning( "Server shutting down because sv_shutdown was requested and a server is empty.\n" );
+				HostState_Shutdown();
+			}
+			else if ( s_timeForceShutdown > 0.0 && s_timeForceShutdown < Plat_FloatTime() )
+			{
+				Warning( "Server shutting down because sv_shutdown was requested and timeout has expired.\n" );
+				HostState_Shutdown();
+			}
+			else if ( sv_memlimit.GetInt() && ApproximateProcessMemoryUsage() > 1024 * 1024 * sv_memlimit.GetInt() )
+			{
+				Warning( "Server shutting down because of using %dMB with an sv_memory_limit of %dMB\n", ApproximateProcessMemoryUsage() / ( 1024 * 1024 ), sv_memlimit.GetInt() );
+				HostState_Shutdown();
+			}
+		}
+
+		if ( g_iServerGameDLLVersion >= 8 )
+		{
+			serverGameDLL->SetServerHibernation( m_bHibernating );
+		}
+
+		// Heartbeat ASAP
+		Steam3Server().SendUpdatedServerDetails();
+	}
+}
+
+void CGameServer::UpdateHibernationState()
+{
+	if ( !IsDedicated() || sv.m_State == ss_dead )
+		return;
+
+	// is this the last client disconnecting?
+	bool bHaveAnyClients = false;
+
+	// see if we have any other connected clients
+	for ( int iClient = 0; iClient < m_Clients.Count(); iClient++ )
+	{			
+		CBaseClient *pClient = m_Clients[iClient];
+		// don't consider the client being removed, it still shows as connected but won't be in a moment
+		if ( pClient->IsConnected() && ( pClient->IsSplitScreenUser() || !pClient->IsFakeClient() ) )
+		{
+			bHaveAnyClients = true;
+			break;
+		}
+	}
+
+	bool hibernateFromGCServer = ( g_iServerGameDLLVersion < 8 ) || !serverGameDLL->GetServerGCLobby() || serverGameDLL->GetServerGCLobby()->ShouldHibernate();
+
+	SetHibernating( hibernateFromGCServer && !bHaveAnyClients );
+}
+#else
 static ConVar sv_memlimit(  "sv_memlimit", "0", 0, 
 	"If set, whenever a game ends, if the total memory used by the server is "
 	"greater than this # of megabytes, the server will exit."	);
@@ -1788,13 +1988,10 @@ void CGameServer::UpdateHibernationState()
 		s_bExitWhenEmpty = true;
 	}
 
-#ifdef BYTEMATCH_RETAIL
-	SetHibernating( hibernateFromGCServer && !bHaveAnyClients );
-#else
 	SetHibernating( sv_hibernate_when_empty.GetBool() && hibernateFromGCServer && !bHaveAnyClients );
-#endif
-#line 1746
 }
+#endif
+#line 1665
 
 void CGameServer::FinishRestore()
 {
@@ -1867,7 +2064,12 @@ void CGameServer::CopyTempEntities( CFrameSnapshot* pSnapshot )
 //   are running many instances anyway. It's off in Dota and CSGO dedicated servers.
 //
 // Bruce also had a patch to disable this in //ValveGames/staging/game/tf/cfg/unencrypted/print_instance_config.py
+#ifdef BYTEMATCH_RETAIL
+static ConVar sv_parallel_sendsnapshot( "sv_parallel_sendsnapshot", "1" );
+#else
 static ConVar sv_parallel_sendsnapshot( "sv_parallel_sendsnapshot", "0" );
+#endif
+#line 1738
 
 static void SV_ParallelSendSnapshot( CGameClient *& pClient )
 {
@@ -2183,7 +2385,12 @@ void SV_InitGameServerSteam()
 {
 	if ( sv.IsMultiplayer() )
 	{
+#ifdef BYTEMATCH_RETAIL
+		Steam3Server().Activate();
+#else
 		Steam3Server().Activate( CSteam3Server::eServerTypeNormal );
+#endif
+#line 2054
 		sv.SetQueryPortFromSteamServer();
 		if ( serverGameDLL && g_iServerGameDLLVersion >= 6 )
 		{
@@ -2362,12 +2569,15 @@ static void SV_AllocateEdicts()
 	{
 		new( &sv.edicts[i] ) edict_t;
 		sv.edicts[i].m_EdictIndex = i;
+#ifndef BYTEMATCH_RETAIL
 		sv.edicts[i].freetime = 0;
+#endif
+#line 2232
 	}
 #ifndef BYTEMATCH_RETAIL
 	ED_ClearFreeEdictList();
 #endif
-#line 2316
+#line 2233
 
 	sv.edictchangeinfo = (IChangeInfoAccessor *)Hunk_AllocName( sv.max_edicts * sizeof( IChangeInfoAccessor ), "edictchangeinfo" );
 }
@@ -2383,11 +2593,24 @@ void CGameServer::ReloadWhitelist( const char *pMapName )
 		m_pPureServerWhitelist = NULL;
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	g_sv_pure_waiting_on_reload = false;
+#endif
+#line 2248
 
 	// Don't do sv_pure stuff in SP games.
 	if ( GetMaxClients() <= 1 )
 		return;
+
+#ifdef BYTEMATCH_RETAIL
+	// Get rid of the old whitelist.
+	if ( m_pPureServerWhitelist )
+	{
+		m_pPureServerWhitelist->Release();
+		m_pPureServerWhitelist = NULL;
+	}
+#endif
+#line 2259
 
 	// Don't use the whitelist if sv_pure is not set.
 	if ( GetSvPureMode() < 0 )
@@ -2396,7 +2619,12 @@ void CGameServer::ReloadWhitelist( const char *pMapName )
 	// There's a magic number we use in the steam.inf in P4 that we don't update.
 	// We can use this to detect if they are running out of P4, and if so, don't use the whitelist
 	const char *pszVersionInP4 = "2000";
+#ifdef BYTEMATCH_RETAIL
+	if ( !Q_strcmp( gpszVersionString, pszVersionInP4 ) )
+#else
 	if ( !Q_strcmp( GetSteamInfIDVersionInfo().szVersionString, pszVersionInP4 ) )
+#endif
+#line 2268
 		return;
 
 	m_pPureServerWhitelist = CPureServerWhitelist::Create( g_pFileSystem );
@@ -2431,7 +2659,12 @@ SV_SpawnServer
 This is called at the start of each level
 ================
 */
+#ifdef BYTEMATCH_RETAIL
+bool CGameServer::SpawnServer( char *szMapName, char *szMapFile, char *startspot )
+#else
 bool CGameServer::SpawnServer( const char *szMapName, const char *szMapFile, const char *startspot )
+#endif
+#line 2303
 {
 	int		i;
 
@@ -2728,7 +2961,7 @@ bool CGameServer::SpawnServer( const char *szMapName, const char *szMapFile, con
 	// Clear the free bit on the world edict (entindex: 0).
 	ED_ClearFreeFlag( &edicts[0] );
 #endif
-#line 2671
+#line 2594
 
 	if (coop.GetFloat())
 	{
@@ -2866,6 +3099,7 @@ void SV_Think( bool bIsSimulating )
 // and available to host a game," which is used for the GC matchmaking.
 	sv.UpdateHibernationState();
 
+#ifndef BYTEMATCH_RETAIL
 	if ( s_timeForceShutdown > 0.0 )
 	{
 		if ( s_timeForceShutdown < Plat_FloatTime() )
@@ -2874,6 +3108,8 @@ void SV_Think( bool bIsSimulating )
 			HostState_Shutdown();
 		}
 	}
+#endif
+#line 2731
 //	if ( sv.IsDedicated() )
 //	{
 //		sv.UpdateReservedState();
@@ -2906,7 +3142,7 @@ void SV_Think( bool bIsSimulating )
 	if( bIsSimulating )
 		GetBenchResultsMgr()->Frame();
 #endif
-#line 2844
+#line 2759
 }
 
 //-----------------------------------------------------------------------------

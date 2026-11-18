@@ -88,6 +88,10 @@ void Host_EndGame (bool bShowMainMenu, PRINTF_FORMAT_STRING const char *message,
 // build info
 // day counter from Sep 30 2003
 extern int build_number( void );
+#ifdef BYTEMATCH_RETAIL
+void GetPlatformMapPath( const char *pMapPath, char *pPlatformMapPath, int maxLength );
+#endif
+#line 92
 
 
 // Choke local client's/server's packets?

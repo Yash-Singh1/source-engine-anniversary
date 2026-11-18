@@ -28,7 +28,12 @@ void Host_Shutdown(void);
 int  Host_Frame (float time, int iState );
 void Host_ShutdownServer(void);
 bool Host_NewGame( char *mapName, bool loadGame, bool bBackgroundLevel, const char *pszOldMap = NULL, const char *pszLandmark = NULL, bool bOldSave = false );
+#ifdef BYTEMATCH_RETAIL
+void Host_Changelevel( bool loadfromsavedgame, const char *mapname, const char *start );
+#else
 bool Host_Changelevel( bool loadfromsavedgame, const char *mapname, const char *start );
+#endif
+#line 32
 void Disconnect();
 
 extern ConVar host_name;
