@@ -1,0 +1,56 @@
+#! /usr/bin/env python
+# encoding: utf-8
+
+from waflib import Utils
+import os
+
+top = '.'
+PROJECT_NAME = 'chromehtml'
+
+def options(opt):
+	# stub
+	return
+
+def configure(conf):
+	return
+
+def build(bld):
+	# generated_proto/htmlmessages.pb.* come from htmlmessages.proto with protoc 2.3.0:
+	#   protoc --proto_path=. --cpp_out=generated_proto htmlmessages.proto
+	source = [
+		'../../common/jpegloader.cpp',
+		'../../common/jpegloader_common.cpp',
+		'../../public/html/htmlprotobuf.cpp',
+		'../../tier1/fileio.cpp',
+		'chromewrapper.cpp',
+		'generated_proto/htmlmessages.pb.cc',
+		'html_mac.mm',
+	]
+
+	includes = [
+		'.',
+		'generated_proto',
+		'../../public',
+		'../../public/tier0',
+		'../../public/tier1',
+		'../../common',
+		'../../public/jpeglib',
+	]
+
+	defines = []
+
+	libs = ['tier0','tier1','vstdlib','JPEG','PROTOBUF','ZLIB']
+
+	# html_chrome.cpp (the CEF client) is not written yet,
+	# so the module is compiled to objects only; it becomes a shlib linking the
+	# depot's libcef.dylib and a libcef_dll_wrapper once they exist.
+	bld(
+		source   = source,
+		target   = PROJECT_NAME,
+		name     = PROJECT_NAME,
+		features = 'c cxx',
+		includes = includes,
+		defines  = defines,
+		use      = libs,
+		idx      = bld.get_taskgen_count()
+	)
