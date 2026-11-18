@@ -393,7 +393,7 @@ void TextEntry::CursorToPixelSpace(int cursorPos, int &cx, int &cy)
 {
 	int yStart = GetYStart();
 	
-	int x = PROPORTIONAL_VALUE( DRAW_OFFSET_X ), y = yStart;
+	int x = QuickPropScale( DRAW_OFFSET_X ), y = yStart;
 	_pixelsIndent = 0;
 	int lineBreakIndexIndex = 0;
 	
@@ -467,7 +467,7 @@ int TextEntry::PixelToCursorSpace(int cx, int cy)
 	
 	// where to Start reading
 	int yStart = GetYStart();
-	int x = PROPORTIONAL_VALUE( DRAW_OFFSET_X ), y = yStart;
+	int x = QuickPropScale( DRAW_OFFSET_X ), y = yStart;
 	_pixelsIndent = 0;
 	int lineBreakIndexIndex = 0;
 	
@@ -503,7 +503,7 @@ int TextEntry::PixelToCursorSpace(int cx, int cy)
 			onRightLine = true;
 			_putCursorAtEnd = true;	// this will make the text scroll up if needed
 		}
-		else if (cy >= y && (cy < (y + fontTall + PROPORTIONAL_VALUE( DRAW_OFFSET_Y ))))
+		else if (cy >= y && (cy < (y + fontTall + QuickPropScale( DRAW_OFFSET_Y ))))
 		{
 			onRightLine = true;
 		}
@@ -516,7 +516,7 @@ int TextEntry::PixelToCursorSpace(int cx, int cy)
 			if (cx > GetWide())	  // off right side of window
 			{
 			}
-			else if (cx < (PROPORTIONAL_VALUE( DRAW_OFFSET_X ) + _pixelsIndent) || cy < yStart)	 // off left side of window
+			else if (cx < (QuickPropScale( DRAW_OFFSET_X ) + _pixelsIndent) || cy < yStart)	 // off left side of window
 			{
 				return i; // move cursor one to left
 			}
@@ -621,7 +621,7 @@ bool TextEntry::NeedsEllipses( HFont font, int *pIndex )
 {
 	Assert( pIndex );
 	*pIndex = -1;
-	int wide = PROPORTIONAL_VALUE( DRAW_OFFSET_X ); // buffer on left and right end of text.
+	int wide = QuickPropScale( DRAW_OFFSET_X ); // buffer on left and right end of text.
 	for ( int i = 0; i < m_TextStream.Count(); ++i )
 	{	
 		wide += getCharWidth( font , m_TextStream[i] );
@@ -660,7 +660,7 @@ void TextEntry::PaintBackground()
 //	surface()->DrawFilledRect(0, 0, wide, tall);
 
 	// where to Start drawing
-	int x = PROPORTIONAL_VALUE( DRAW_OFFSET_X ) + _pixelsIndent, y = GetYStart();
+	int x = QuickPropScale( DRAW_OFFSET_X ) + _pixelsIndent, y = GetYStart();
 
 	m_nLangInset = 0;
 
@@ -963,8 +963,8 @@ void TextEntry::PerformLayout()
 // moves x,y to the Start of the next line of text
 void TextEntry::AddAnotherLine(int &cx, int &cy)
 {
-	cx = PROPORTIONAL_VALUE( DRAW_OFFSET_X ) + _pixelsIndent;
-	cy += (surface()->GetFontTall(_font) + PROPORTIONAL_VALUE( DRAW_OFFSET_Y ));
+	cx = QuickPropScale( DRAW_OFFSET_X ) + _pixelsIndent;
+	cy += (surface()->GetFontTall(_font) + QuickPropScale( DRAW_OFFSET_Y ));
 }
 
 
@@ -992,7 +992,7 @@ void TextEntry::RecalculateLineBreaks()
 	}
 	
 	int charWidth;
-	int x = PROPORTIONAL_VALUE( DRAW_OFFSET_X ), y = PROPORTIONAL_VALUE( DRAW_OFFSET_Y );
+	int x = QuickPropScale( DRAW_OFFSET_X ), y = QuickPropScale( DRAW_OFFSET_Y );
 		
 	int wordStartIndex = 0;
 	int wordLength = 0;
@@ -1130,7 +1130,7 @@ void TextEntry::LayoutVerticalScrollBarSlider()
 		_vertScrollBar->SetSize(_vertScrollBar->GetWide(), tall - ibottom - itop);
 		
 		// calculate how many lines we can fully display
-		int displayLines = tall / (surface()->GetFontTall(_font) + PROPORTIONAL_VALUE( DRAW_OFFSET_Y ));
+		int displayLines = tall / (surface()->GetFontTall(_font) + QuickPropScale( DRAW_OFFSET_Y ));
 		int numLines = m_LineBreaks.Count();
 		
 		if (numLines <= displayLines)
@@ -1908,7 +1908,7 @@ void TextEntry::OnKeyCodeTyped(KeyCode code)
 				// if there is a scroll bar scroll down one rangewindow
 				if (_multiline)
 				{
-					int displayLines = GetTall() / (surface()->GetFontTall(_font) + PROPORTIONAL_VALUE( DRAW_OFFSET_Y ));
+					int displayLines = GetTall() / (surface()->GetFontTall(_font) + QuickPropScale( DRAW_OFFSET_Y ));
 					// move the cursor down
 					for (int i=0; i < displayLines; i++)
 					{
@@ -1938,7 +1938,7 @@ void TextEntry::OnKeyCodeTyped(KeyCode code)
 				
 				if (_multiline)
 				{
-					int displayLines = GetTall() / (surface()->GetFontTall(_font) + PROPORTIONAL_VALUE( DRAW_OFFSET_Y ));
+					int displayLines = GetTall() / (surface()->GetFontTall(_font) + QuickPropScale( DRAW_OFFSET_Y ));
 					// move the cursor down
 					for (int i=0; i < displayLines; i++)
 					{
@@ -2391,7 +2391,7 @@ int TextEntry::GetYStart()
 	if (_multiline)
 	{
 		// just Start from the top
-		return PROPORTIONAL_VALUE( DRAW_OFFSET_Y );
+		return QuickPropScale( DRAW_OFFSET_Y );
 	}
 
 	int fontTall = surface()->GetFontTall(_font);
@@ -2414,7 +2414,7 @@ void TextEntry::MoveCursor(int line, int pixelsAcross)
 	
 	int yStart = GetYStart();
 	
-	int x = PROPORTIONAL_VALUE( DRAW_OFFSET_X ), y = yStart;
+	int x = QuickPropScale( DRAW_OFFSET_X ), y = yStart;
 	int lineBreakIndexIndex = 0;
 	_pixelsIndent = 0;
 	int i;
@@ -3483,7 +3483,7 @@ int TextEntry::GetStartDrawIndex(int &lineBreakIndexIndex)
 	{
 		// check to see if the cursor is off the screen-multiline case
 		HFont font = _font;
-		int displayLines = GetTall() / (surface()->GetFontTall(font) + PROPORTIONAL_VALUE( DRAW_OFFSET_Y ));
+		int displayLines = GetTall() / (surface()->GetFontTall(font) + QuickPropScale( DRAW_OFFSET_Y ));
 		if (displayLines < 1)
 		{
 			displayLines = 1;
@@ -3525,7 +3525,7 @@ int TextEntry::GetStartDrawIndex(int &lineBreakIndexIndex)
 			while ( !done )
 			{
 				done = true;
-				int x = PROPORTIONAL_VALUE( DRAW_OFFSET_X );
+				int x = QuickPropScale( DRAW_OFFSET_X );
 				for (int i = _currentStartIndex; i < m_TextStream.Count(); i++)
 				{
 					done = false;
@@ -3609,21 +3609,27 @@ int TextEntry::GetValueAsInt()
 // Input:	offset - index to Start reading from 
 //			bufLenInBytes - length of string
 //-----------------------------------------------------------------------------
-void TextEntry::GetText(OUT_Z_BYTECAP(bufLenInBytes) char *buf, int bufLenInBytes)
+int TextEntry::GetText(OUT_Z_BYTECAP(bufLenInBytes) char *buf, int bufLenInBytes)
 {
 	Assert(bufLenInBytes >= sizeof(buf[0]));
+	int nLength = 0;
 	if (m_TextStream.Count())
 	{
 		// temporarily null terminate the text stream so we can use the conversion function
 		int nullTerminatorIndex = m_TextStream.AddToTail((wchar_t)0);
-		g_pVGuiLocalize->ConvertUnicodeToANSI(m_TextStream.Base(), buf, bufLenInBytes);
+		nLength = g_pVGuiLocalize->ConvertUnicodeToANSI(m_TextStream.Base(), buf, bufLenInBytes);
 		m_TextStream.FastRemove(nullTerminatorIndex);
+
+		// don't count the terminator
+		if ( nLength )
+			nLength--;
 	}
 	else
 	{
 		// no characters in the stream
 		buf[0] = 0;
 	}
+	return nLength;
 }
 
 //-----------------------------------------------------------------------------
@@ -3792,7 +3798,7 @@ void TextEntry::SetToFullHeight()
 	int wide, tall;
 	GetSize(wide, tall);
 	
-	tall = GetNumLines() * (surface()->GetFontTall(_font) + PROPORTIONAL_VALUE( DRAW_OFFSET_Y )) + PROPORTIONAL_VALUE( DRAW_OFFSET_Y ) + 2;
+	tall = GetNumLines() * (surface()->GetFontTall(_font) + QuickPropScale( DRAW_OFFSET_Y )) + QuickPropScale( DRAW_OFFSET_Y ) + 2;
 	SetSize (wide, tall);
 	PerformLayout();
 	
@@ -3841,7 +3847,7 @@ void TextEntry::SetToFullWidth()
 		return;
 	
 	PerformLayout();
-	int wide = 2*PROPORTIONAL_VALUE( DRAW_OFFSET_X ); // buffer on left and right end of text.
+	int wide = 2*QuickPropScale( DRAW_OFFSET_X ); // buffer on left and right end of text.
 	
 	// loop through all the characters and sum their widths	
 	for (int i = 0; i < m_TextStream.Count(); ++i)
@@ -3850,7 +3856,7 @@ void TextEntry::SetToFullWidth()
 	}
 	
 	// height of one line of text
-	int tall = (surface()->GetFontTall(_font) + PROPORTIONAL_VALUE( DRAW_OFFSET_Y )) + PROPORTIONAL_VALUE( DRAW_OFFSET_Y ) + 2;
+	int tall = (surface()->GetFontTall(_font) + QuickPropScale( DRAW_OFFSET_Y )) + QuickPropScale( DRAW_OFFSET_Y ) + 2;
 	
 	SetSize (wide, tall);
 	PerformLayout();

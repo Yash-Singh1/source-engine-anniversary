@@ -44,7 +44,11 @@ static const keystring_t s_ControllerButtons[] = {	{ KEY_XBUTTON_UP,				"KEY_XBU
 												{ KEY_XSTICK2_UP,				"KEY_XSTICK2_UP" },
 												{ KEY_XSTICK2_DOWN,				"KEY_XSTICK2_DOWN" },
 												{ KEY_XSTICK2_LEFT,				"KEY_XSTICK2_LEFT" },
-												{ KEY_XSTICK2_RIGHT,			"KEY_XSTICK2_RIGHT" } };
+												{ KEY_XSTICK2_RIGHT,			"KEY_XSTICK2_RIGHT" },
+												{ STEAMCONTROLLER_A,			"STEAMCONTROLLER_A" },
+												{ STEAMCONTROLLER_B,			"STEAMCONTROLLER_B" },
+												{ STEAMCONTROLLER_X,			"STEAMCONTROLLER_X" },
+												{ STEAMCONTROLLER_Y,			"STEAMCONTROLLER_Y" } };
 
 //-----------------------------------------------------------------------------
 // Purpose: for the UtlMap

@@ -106,11 +106,11 @@ public:
 
 	virtual void GetContentSize( int& cw, int &ch );
 
-	// Unscaled indent of the item within its menu, and height added to the menu's item height
-	int GetXIndent() const { return m_nXIndent; }
-	void SetXIndent( int nIndent ) { m_nXIndent = nIndent; }
-	int GetExtraTall() const { return m_nExtraTall; }
-	void SetExtraTall( int nTall ) { m_nExtraTall = nTall; }
+	void SetOffsetFromMainMenu(int nOffset) { m_nOffsetFromMainMenu = nOffset; }
+	int GetOffsetFromMainMenu() const { return m_nOffsetFromMainMenu; }
+
+	void SetPaddingY( int nPadding ) { m_nPaddingY = nPadding; }
+	int GetPaddingY() const { return m_nPaddingY; }
 
 protected:
 	void OnKeyCodeReleased(KeyCode code);
@@ -135,8 +135,8 @@ private:
 
 	KeyValues *m_pUserData;
 
-	int m_nXIndent;
-	int m_nExtraTall;
+	int m_nOffsetFromMainMenu;
+	int m_nPaddingY;
 };
 
 } // namespace vgui

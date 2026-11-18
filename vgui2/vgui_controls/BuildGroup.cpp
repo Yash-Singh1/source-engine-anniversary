@@ -869,6 +869,9 @@ void BuildGroup::PanelAdded(Panel *panel)
 //-----------------------------------------------------------------------------
 void BuildGroup::LoadControlSettings(const char *controlResourceName, const char *pathID, KeyValues *pPreloadedKeyValues, KeyValues *pConditions)
 {
+	// everything but the HUD layout scales with its parent
+	bool bProportionalToParent = controlResourceName && V_stricmp( "hudlayout.res", controlResourceName ) != 0;
+
 	// make sure the file is registered
 	RegisterControlSettingsFile(controlResourceName, pathID);
 
@@ -909,6 +912,14 @@ void BuildGroup::LoadControlSettings(const char *controlResourceName, const char
 			{
 				ProcessConditionalKeys( rDat, pConditions );			
 			}
+		}
+	}
+
+	if ( bProportionalToParent && rDat )
+	{
+		for ( KeyValues *pControl = rDat->GetFirstSubKey(); pControl; pControl = pControl->GetNextKey() )
+		{
+			pControl->SetInt( "proportionalToParent", 1 );
 		}
 	}
 

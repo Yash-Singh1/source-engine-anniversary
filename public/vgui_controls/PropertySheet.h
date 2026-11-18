@@ -126,6 +126,8 @@ public:
 
 	virtual bool HasUserConfigSettings() { return true; }
 
+	void SetTabFont( vgui::HFont hFont );
+
 protected:
 	virtual void PaintBorder();
 	virtual void PerformLayout();
@@ -178,6 +180,7 @@ private:
 	float m_flPageTransitionEffectTime;
 	bool	m_bSmallTabs;
 	HFont	m_tabFont;
+	bool	m_bOverrideTabFont = false;
 	bool	m_bDraggableTabs;
 	bool	m_bContextButton;
 	bool	m_bKBNavigationEnabled;
