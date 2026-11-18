@@ -157,7 +157,12 @@ public:
 	~CMapListManager( void );
 
 	// See if it's time to revisit the items in the list
+#ifdef BYTEMATCH_RETAIL
+	void			RefreshList( bool bForce = false );
+#else
 	void			RefreshList( void );
+#endif
+#line 161
 
 	// Get item count, etc
 	int				GetMapCount( void ) const;
@@ -254,6 +259,77 @@ void CMapListManager::Think( void )
 //-----------------------------------------------------------------------------
 // Purpose: FIXME:  Refresh doesn't notice maps that have been deleted... oh well
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+void CMapListManager::RefreshList( bool bForce )
+{
+	if ( m_flLastRefreshTime == -1.0f || bForce )
+	{
+		BuildList();
+		return;
+	}
+
+	if ( realtime < m_flLastRefreshTime + MIN_REFRESH_INTERVAL )
+		return;
+
+	ConDMsg( "Refreshing map list...\n" );
+
+	// Search the directory structure.
+	char mapwild[MAX_QPATH];
+	Q_strncpy(mapwild,"maps/*.bsp", sizeof( mapwild ) );
+	char const *findfn = Sys_FindFirst( mapwild, NULL, 0 );
+	while ( findfn )
+	{
+		if ( IsPC() && V_stristr( findfn, ".360.bsp" ) )
+		{
+			// ignore 360 bsp
+			findfn = Sys_FindNext( NULL, 0 );
+			continue;
+		}
+		else if ( IsX360() && !V_stristr( findfn, ".360.bsp" ) )
+		{
+			// ignore pc bsp
+			findfn = Sys_FindNext( NULL, 0 );
+			continue;
+		}
+
+		char szFileName[ MAX_QPATH ];
+		Q_snprintf( szFileName, sizeof( szFileName ), "maps/%s", findfn );
+
+		int idx = m_Items.Find( szFileName );
+		if ( idx == m_Items.InvalidIndex() )
+		{
+			CMapListItem item;
+			item.SetFileTimestamp( item.GetFSTimeStamp( szFileName ) );
+			item.SetValid( CMapListItem::PENDING );
+			// Insert into dictionary
+			m_Items.Insert( szFileName, item );
+
+			m_bDirty = true;
+		}
+		else
+		{
+			CMapListItem *item = &m_Items[ idx ];
+			Assert( item );
+
+			// Make sure data is up to date
+			long timestamp = g_pFileSystem->GetFileTime( szFileName );
+			if ( !item->IsSameTime( timestamp ) )
+			{
+				item->SetFileTimestamp( timestamp );
+				item->SetValid( CMapListItem::PENDING );
+
+				m_bDirty = true;
+			}
+		}
+
+		findfn = Sys_FindNext( NULL, 0 );
+	}
+
+	Sys_FindClose();
+
+	m_flLastRefreshTime = realtime;
+}
+#else
 void CMapListManager::RefreshList( void )
 {
 	if ( m_flLastRefreshTime == -1.0f )
@@ -332,6 +408,8 @@ void CMapListManager::RefreshList( void )
 
 	m_flLastRefreshTime = realtime;
 }
+#endif
+#line 335
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -405,6 +483,21 @@ void CMapListManager::BuildList( void )
 			continue;
 		}
 
+#ifdef BYTEMATCH_RETAIL
+		char szFileName[ MAX_QPATH ];
+		Q_snprintf( szFileName, sizeof( szFileName ), "maps/%s", findfn );
+
+		CMapListItem item;
+		item.SetFileTimestamp( item.GetFSTimeStamp( szFileName ) );
+		item.SetValid( CMapListItem::PENDING );
+
+		// Insert into dictionary
+		int idx = m_Items.Find( szFileName );
+		if ( idx == m_Items.InvalidIndex() )
+		{
+			m_Items.Insert( szFileName, item );
+		}
+#else
 		// Make full fileame (maps/foo.bsp) and map name (foo)
 		char szFileName[ MAX_QPATH ] = { 0 };
 		V_snprintf( szFileName, sizeof( szFileName ), "maps/%s", findfn );
@@ -427,6 +520,8 @@ void CMapListManager::BuildList( void )
 		{
 			m_Items.Insert( szMapName, item );
 		}
+#endif
+#line 430
 
 		findfn = Sys_FindNext( NULL, 0 );
 	}
@@ -510,11 +605,20 @@ static int MapList_CountMaps( const char *pszSubString, bool listobsolete, int& 
 			char const *mapname = g_MapListMgr.GetMapName( i );
 			int valid = g_MapListMgr.IsMapValid( i );
 
+#ifdef BYTEMATCH_RETAIL
+			if ( !substringlength || !Q_strnicmp( &mapname[ 5 ], pszSubString, substringlength ) )
+			{
+				if ( MapList_CheckPrintMap( "(fs)", &mapname[ 5 ], valid, showOutdated ? true : false, false ) )
+				{
+					maxitemlength = max( maxitemlength, (int)( strlen( &mapname[ 5 ] ) + 1 ) );
+#else
 			if ( !substringlength || V_stristr( mapname, pszSubString ) )
 			{
 				if ( MapList_CheckPrintMap( "(fs)", mapname, valid, showOutdated ? true : false, false ) )
 				{
 					maxitemlength = max( maxitemlength, (int)( strlen( mapname ) + 1 ) );
+#endif
+#line 518
 					count++;
 				}
 			}
@@ -530,9 +634,15 @@ static int MapList_CountMaps( const char *pszSubString, bool listobsolete, int& 
 //  If the substring is empty, or "*", then lists all maps
 // Input  : *pszSubString - 
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+static void MapList_ListMaps( const char *pszSubString, bool listobsolete, bool verbose, int maxcount, int maxitemlength, char maplist[][ 64 ] )
+{
+#else
 int MapList_ListMaps( const char *pszSubString, bool listobsolete, bool verbose, int maxcount, int maxitemlength, char maplist[][ 64 ] )
 {
 	g_MapListMgr.RefreshList();
+#endif
+#line 536
 	int substringlength = 0;
 	if (pszSubString && pszSubString[0])
 	{
@@ -564,6 +674,16 @@ int MapList_ListMaps( const char *pszSubString, bool listobsolete, bool verbose,
 			char const *mapname = g_MapListMgr.GetMapName( i );
 			int valid = g_MapListMgr.IsMapValid( i );
 
+#ifdef BYTEMATCH_RETAIL
+			if ( !substringlength || !Q_strnicmp( &mapname[ 5 ], pszSubString, substringlength ) )
+			{
+				if ( MapList_CheckPrintMap( "(fs)", &mapname[ 5 ], valid, showOutdated ? true : false, verbose ) )
+				{
+					if ( maxitemlength != 0 )
+					{
+						Q_strncpy( maplist[ count ], &mapname[ 5 ], maxitemlength );
+					}
+#else
 			if ( !substringlength || V_stristr( mapname, pszSubString ) )
 			{
 				if ( MapList_CheckPrintMap( "(fs)", mapname, valid, showOutdated ? true : false, verbose ) )
@@ -572,13 +692,18 @@ int MapList_ListMaps( const char *pszSubString, bool listobsolete, bool verbose,
 					{
 						Q_strncpy( maplist[ count ], mapname, maxitemlength );
 					}
+#endif
+#line 575
 					count++;
 				}
 			}
 		}
 	}
+#ifndef BYTEMATCH_RETAIL
 
 	return count;
+#endif
+#line 582
 }
 
 //-----------------------------------------------------------------------------
@@ -590,6 +715,10 @@ int MapList_ListMaps( const char *pszSubString, bool listobsolete, bool verbose,
 //			**commands - 
 // Output : int
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+static
+#endif
+#line 593
 int _Host_Map_f_CompletionFunc( char const *cmdname, char const *partial, char commands[ COMMAND_COMPLETION_MAXITEMS ][ COMMAND_COMPLETION_ITEM_LENGTH ] )
 {
 	char *substring = (char *)partial;
@@ -611,6 +740,10 @@ int _Host_Map_f_CompletionFunc( char const *cmdname, char const *partial, char c
 			char old[ COMMAND_COMPLETION_ITEM_LENGTH ];
 			Q_strncpy( old, commands[ i ], sizeof( old ) );
 			Q_snprintf( commands[ i ], sizeof( commands[ i ] ), "%s%s", cmdname, old );
+#ifdef BYTEMATCH_RETAIL
+			commands[ i ][ strlen( commands[ i ] ) - 4 ] = 0;	// strip off .bsp extension
+#endif
+#line 614
 		}
 	}
 
