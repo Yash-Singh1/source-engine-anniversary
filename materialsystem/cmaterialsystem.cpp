@@ -1196,12 +1196,20 @@ bool CMaterialSystem::AllowThreading( bool bAllow, int nServiceThread )
 #if defined(DEDICATED)
 	return false;
 #else
+#ifndef BYTEMATCH_RETAIL
 	if ( CommandLine()->ParmValue( "-threads", 2 ) < 2 ) // if -threads specified on command line to restrict all the pools then obey and not turn on QMS
 		bAllow = false;
+#endif
+#line 1108
 
 	bool bOldAllow = m_bAllowQueuedRendering;
 
+#ifdef BYTEMATCH_RETAIL
+	if ( GetCPUInformation()->m_nPhysicalProcessors >= 2 )
+#else
 	if ( GetCPUInformation()->m_nLogicalProcessors >= 2 )
+#endif
+#line 1112
 	{
 		m_bAllowQueuedRendering = bAllow;
 		bool bQueued = m_IdealThreadMode != MATERIAL_SINGLE_THREADED;
