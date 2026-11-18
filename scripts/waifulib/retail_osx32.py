@@ -17,7 +17,7 @@ game/server. The default build is untouched when the option is off.
 '''
 
 import json, os, shutil, subprocess, sys
-from waflib import Logs, Utils
+from waflib import Build, Logs, Utils
 from waflib.Configure import conf
 from waflib.TaskGen import feature, before_method, after_method
 
@@ -391,3 +391,57 @@ def retail_osx32_link_order(self):
 		flags.append('-Wl,-U,' + sym)
 	env.LINKFLAGS = flags
 	env.LDFLAGS = args
+
+LINK_TASK_CLASSES = ('cshlib', 'cxxshlib', 'cprogram', 'cxxprogram', 'cstlib', 'cxxstlib')
+
+class RetailLinkDb(Build.BuildContext):
+	'''writes link_commands.json: the link and archive commands of the configured modules (for devtools/bytematch/identity)'''
+	cmd = 'retail_linkdb'
+
+	def execute(self):
+		self.restore()
+		if not self.all_envs:
+			self.load_envs()
+		self.recurse([self.run_dir])
+		self.pre_build()
+
+		def exec_command(*k, **kw):
+			return 0
+		entries = []
+		for g in self.groups:
+			for tg in g:
+				if hasattr(tg, 'post'):
+					tg.post()
+				for tsk in getattr(tg, 'tasks', []):
+					kind = tsk.__class__.__name__
+					if kind not in LINK_TASK_CLASSES:
+						continue
+					if kind.endswith('stlib'):
+						# stlink_task.run deletes its output first, so spell the ar command out
+						cwd = tsk.get_cwd()
+						env = tsk.env
+						tgt_f, src_f = (''.join(Utils.to_list(env[k])) for k in ('AR_TGT_F', 'AR_SRC_F'))
+						cmd = (Utils.to_list(env.AR) + Utils.to_list(env.ARFLAGS) + [tgt_f + tsk.outputs[0].path_from(cwd)] +
+							[src_f + n.path_from(cwd) for n in tsk.inputs])
+					else:
+						tsk.keep_last_cmd = True
+						old = tsk.exec_command
+						tsk.exec_command = exec_command
+						try:
+							tsk.run()
+						finally:
+							tsk.exec_command = old
+						cmd = getattr(tsk, 'last_cmd', None)
+					if not cmd:
+						continue
+					entries.append({
+						'target': getattr(tg, 'name', None),
+						'kind': tsk.__class__.__name__,
+						'directory': tsk.get_cwd().abspath(),
+						'arguments': cmd if isinstance(cmd, list) else Utils.split_quoted(cmd),
+						'output': tsk.outputs[0].abspath(),
+						'inputs': [n.abspath() for n in tsk.inputs],
+					})
+		node = self.bldnode.make_node('link_commands.json')
+		node.write_json(entries)
+		Logs.info('Link commands stored in %s', node.path_from(self.path))

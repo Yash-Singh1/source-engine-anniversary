@@ -162,6 +162,54 @@ libstdc++), `ld` cannot link i386 (the SDK `.tbd` stubs have no i386 slice), and
 its code generation is unrelated to Xcode 6. Use clang-600.0.57 for anything
 that is meant to match.
 
+## Whole-file identity (`identity/`)
+
+Function matching ignores the symbol table. `identity/identity.py` rebuilds
+`--retail-osx32` modules so the whole file can equal retail, debug map and
+LC_UUID included:
+
+```sh
+python3 waf configure --retail-osx32 -T release --prefix='' -o build-retail
+python3 waf build && python3 waf retail_linkdb      # writes build-retail/link_commands.json
+devtools/bytematch/identity/identity.py --all       # or: identity.py inputsystem vgui2 ...
+devtools/bytematch/identity/machocmp.py -s OURS RETAIL   # region-by-region and symbol diff
+```
+
+Outputs go to `build-retail/identity/out/`. For each object the retail debug
+map lists, the tool reproduces what ld64 records:
+
+- **N_SO**: the source is preprocessed with absolute include paths, our tree,
+  SDK and clang resource prefixes in the `.ii` are rewritten to Valve's
+  (`/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/`, Xcode's
+  `MacOSX10.9.sdk`, Xcode's `lib/clang/6.0`), and the `.ii` is compiled under
+  its retail ccache temp name with `-fdebug-compilation-dir
+  /Users/buildbot/buildslave/../.ccache/tmp`, as ccache did.
+- **N_SOL**: follows from the rewritten line markers. Files that sit elsewhere
+  in our tree are mapped by `identity/aliases.json`.
+- **N_OSO**: objects are written under a scratch root at Valve's Xcode paths
+  with the retail mtimes. Archives are rebuilt with retail member names and
+  member dates, in our member order.
+- **Link**: the waf link command runs with Valve's object and archive paths.
+  `identity/buildhost.c` is injected into the clang driver and ld64 with
+  `DYLD_INSERT_LIBRARIES`. It maps `/Users/buildbot/` onto the scratch root
+  (ld64 records input paths verbatim). It also replaces `qsort` with the OS X
+  10.9/10.10 one (`identity/qsort109.c`): ld64-242 qsorts output sections,
+  and `__DATA,__bss` and `__DATA,__common` tie.
+- **LC_UUID**: no patching. ld64 hashes the file without stab nlists and stab
+  strings, so the UUID follows from everything else (`identity/lduuid.py`
+  recomputes it).
+
+Code and data sections never change in this flow. If `machocmp.py` reports a
+section difference, it is source drift (see the lane report). Things that
+show up only here:
+
+- the `GCC_except_tableN` labels, numbered by clang's per-TU function index,
+  which counts functions that were dead-stripped;
+- function order inside an object, which follows clang's first reference to
+  each function, not definition order;
+- literal placement, where the first-loaded archive member's copy wins, even
+  when the function using it is dead-stripped.
+
 ## Known gaps
 
 - Data references are masked but not checked symbolically (only call/jump
