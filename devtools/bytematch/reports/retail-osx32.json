@@ -1,28 +1,28 @@
 {
  "meta": {
-  "generated": "2026-11-18T11:44:54Z",
+  "generated": "2026-11-18T14:34:37Z",
   "depot_build": "19307283",
   "clang": "600.0.57",
   "ld64": "242"
  },
  "total": {
   "functions": {
-   "total": 46215,
-   "exact": 13566,
-   "matches_after_masking": 26474,
-   "differs": 4936,
-   "missing": 1239,
-   "matched": 40040,
-   "pct": 86.64
+   "total": 46216,
+   "exact": 15773,
+   "matches_after_masking": 26008,
+   "differs": 3524,
+   "missing": 911,
+   "matched": 41781,
+   "pct": 90.4
   },
   "bytes": {
-   "total": 11821263,
-   "exact": 865904,
-   "matches_after_masking": 7832779,
-   "differs": 2877693,
-   "missing": 244887,
-   "matched": 8698683,
-   "pct": 73.59
+   "total": 11821532,
+   "exact": 1461118,
+   "matches_after_masking": 8183902,
+   "differs": 2018969,
+   "missing": 157543,
+   "matched": 9645020,
+   "pct": 81.59
   }
  },
  "rows": [
@@ -35,21 +35,21 @@
    "summary": {
     "functions": {
      "total": 406,
-     "exact": 201,
+     "exact": 202,
      "matches_after_masking": 200,
-     "differs": 5,
+     "differs": 4,
      "missing": 0,
-     "matched": 401,
-     "pct": 98.77
+     "matched": 402,
+     "pct": 99.01
     },
     "bytes": {
      "total": 138135,
-     "exact": 25260,
+     "exact": 25408,
      "matches_after_masking": 107195,
-     "differs": 5680,
+     "differs": 5532,
      "missing": 0,
-     "matched": 132455,
-     "pct": 95.89
+     "matched": 132603,
+     "pct": 96.0
     }
    }
   },
@@ -62,21 +62,21 @@
    "summary": {
     "functions": {
      "total": 12986,
-     "exact": 3151,
-     "matches_after_masking": 8464,
-     "differs": 1095,
-     "missing": 276,
-     "matched": 11615,
-     "pct": 89.44
+     "exact": 3255,
+     "matches_after_masking": 9054,
+     "differs": 527,
+     "missing": 150,
+     "matched": 12309,
+     "pct": 94.79
     },
     "bytes": {
      "total": 3809922,
-     "exact": 179124,
-     "matches_after_masking": 2776278,
-     "differs": 773315,
-     "missing": 81205,
-     "matched": 2955402,
-     "pct": 77.57
+     "exact": 185552,
+     "matches_after_masking": 3116942,
+     "differs": 450419,
+     "missing": 57009,
+     "matched": 3302494,
+     "pct": 86.68
     }
    }
   },
@@ -116,21 +116,21 @@
    "summary": {
     "functions": {
      "total": 1953,
-     "exact": 297,
-     "matches_after_masking": 696,
-     "differs": 668,
-     "missing": 292,
-     "matched": 993,
-     "pct": 50.84
+     "exact": 338,
+     "matches_after_masking": 849,
+     "differs": 548,
+     "missing": 218,
+     "matched": 1187,
+     "pct": 60.78
     },
     "bytes": {
      "total": 567545,
-     "exact": 13397,
-     "matches_after_masking": 240548,
-     "differs": 258127,
-     "missing": 55473,
-     "matched": 253945,
-     "pct": 44.74
+     "exact": 16420,
+     "matches_after_masking": 339696,
+     "differs": 190387,
+     "missing": 21042,
+     "matched": 356116,
+     "pct": 62.75
     }
    }
   },
@@ -143,21 +143,21 @@
    "summary": {
     "functions": {
      "total": 4888,
-     "exact": 948,
-     "matches_after_masking": 3334,
-     "differs": 513,
-     "missing": 93,
-     "matched": 4282,
-     "pct": 87.6
+     "exact": 951,
+     "matches_after_masking": 3361,
+     "differs": 498,
+     "missing": 78,
+     "matched": 4312,
+     "pct": 88.22
     },
     "bytes": {
      "total": 1159816,
-     "exact": 43543,
-     "matches_after_masking": 797459,
-     "differs": 291961,
-     "missing": 26853,
-     "matched": 841002,
-     "pct": 72.51
+     "exact": 43762,
+     "matches_after_masking": 806721,
+     "differs": 287468,
+     "missing": 21865,
+     "matched": 850483,
+     "pct": 73.33
     }
    }
   },
@@ -169,22 +169,22 @@
    "ours": "inputsystem/inputsystem.dylib",
    "summary": {
     "functions": {
-     "total": 192,
-     "exact": 43,
-     "matches_after_masking": 70,
-     "differs": 61,
-     "missing": 18,
-     "matched": 113,
-     "pct": 58.85
+     "total": 193,
+     "exact": 193,
+     "matches_after_masking": 0,
+     "differs": 0,
+     "missing": 0,
+     "matched": 193,
+     "pct": 100.0
     },
     "bytes": {
-     "total": 28914,
-     "exact": 795,
-     "matches_after_masking": 9137,
-     "differs": 16632,
-     "missing": 2350,
-     "matched": 9932,
-     "pct": 34.35
+     "total": 29183,
+     "exact": 29183,
+     "matches_after_masking": 0,
+     "differs": 0,
+     "missing": 0,
+     "matched": 29183,
+     "pct": 100.0
     }
    }
   },
@@ -224,21 +224,21 @@
    "summary": {
     "functions": {
      "total": 3747,
-     "exact": 1756,
-     "matches_after_masking": 1800,
-     "differs": 180,
-     "missing": 11,
-     "matched": 3556,
-     "pct": 94.9
+     "exact": 1775,
+     "matches_after_masking": 1854,
+     "differs": 116,
+     "missing": 2,
+     "matched": 3629,
+     "pct": 96.85
     },
     "bytes": {
      "total": 552250,
-     "exact": 51167,
-     "matches_after_masking": 358533,
-     "differs": 136901,
-     "missing": 5649,
-     "matched": 409700,
-     "pct": 74.19
+     "exact": 52250,
+     "matches_after_masking": 404852,
+     "differs": 95134,
+     "missing": 14,
+     "matched": 457102,
+     "pct": 82.77
     }
    }
   },
@@ -251,21 +251,21 @@
    "summary": {
     "functions": {
      "total": 1592,
-     "exact": 622,
-     "matches_after_masking": 916,
-     "differs": 52,
+     "exact": 623,
+     "matches_after_masking": 919,
+     "differs": 48,
      "missing": 2,
-     "matched": 1538,
-     "pct": 96.61
+     "matched": 1542,
+     "pct": 96.86
     },
     "bytes": {
      "total": 302451,
-     "exact": 25003,
-     "matches_after_masking": 241763,
-     "differs": 35161,
+     "exact": 25040,
+     "matches_after_masking": 248138,
+     "differs": 28749,
      "missing": 524,
-     "matched": 266766,
-     "pct": 88.2
+     "matched": 273178,
+     "pct": 90.32
     }
    }
   },
@@ -278,21 +278,21 @@
    "summary": {
     "functions": {
      "total": 588,
-     "exact": 524,
+     "exact": 525,
      "matches_after_masking": 61,
-     "differs": 1,
+     "differs": 0,
      "missing": 2,
-     "matched": 585,
-     "pct": 99.49
+     "matched": 586,
+     "pct": 99.66
     },
     "bytes": {
      "total": 8569,
-     "exact": 4112,
+     "exact": 4132,
      "matches_after_masking": 4423,
-     "differs": 20,
+     "differs": 0,
      "missing": 14,
-     "matched": 8535,
-     "pct": 99.6
+     "matched": 8555,
+     "pct": 99.84
     }
    }
   },
@@ -305,21 +305,21 @@
    "summary": {
     "functions": {
      "total": 1963,
-     "exact": 308,
-     "matches_after_masking": 1617,
-     "differs": 33,
-     "missing": 5,
-     "matched": 1925,
-     "pct": 98.06
+     "exact": 1963,
+     "matches_after_masking": 0,
+     "differs": 0,
+     "missing": 0,
+     "matched": 1963,
+     "pct": 100.0
     },
     "bytes": {
      "total": 535678,
-     "exact": 7691,
-     "matches_after_masking": 382086,
-     "differs": 145035,
-     "missing": 866,
-     "matched": 389777,
-     "pct": 72.76
+     "exact": 535678,
+     "matches_after_masking": 0,
+     "differs": 0,
+     "missing": 0,
+     "matched": 535678,
+     "pct": 100.0
     }
    }
   },
@@ -333,20 +333,20 @@
     "functions": {
      "total": 1405,
      "exact": 483,
-     "matches_after_masking": 853,
-     "differs": 19,
+     "matches_after_masking": 854,
+     "differs": 18,
      "missing": 50,
-     "matched": 1336,
-     "pct": 95.09
+     "matched": 1337,
+     "pct": 95.16
     },
     "bytes": {
      "total": 254041,
      "exact": 18413,
-     "matches_after_masking": 221886,
-     "differs": 8886,
+     "matches_after_masking": 222034,
+     "differs": 8738,
      "missing": 4856,
-     "matched": 240299,
-     "pct": 94.59
+     "matched": 240447,
+     "pct": 94.65
     }
    }
   },
@@ -386,21 +386,21 @@
    "summary": {
     "functions": {
      "total": 3380,
-     "exact": 842,
-     "matches_after_masking": 2267,
-     "differs": 247,
-     "missing": 24,
-     "matched": 3109,
-     "pct": 91.98
+     "exact": 849,
+     "matches_after_masking": 2324,
+     "differs": 206,
+     "missing": 1,
+     "matched": 3173,
+     "pct": 93.88
     },
     "bytes": {
      "total": 788052,
-     "exact": 38849,
-     "matches_after_masking": 589508,
-     "differs": 153801,
-     "missing": 5894,
-     "matched": 628357,
-     "pct": 79.74
+     "exact": 39262,
+     "matches_after_masking": 613824,
+     "differs": 134617,
+     "missing": 349,
+     "matched": 653086,
+     "pct": 82.87
     }
    }
   },
@@ -521,21 +521,21 @@
    "summary": {
     "functions": {
      "total": 502,
-     "exact": 163,
-     "matches_after_masking": 293,
-     "differs": 46,
+     "exact": 229,
+     "matches_after_masking": 270,
+     "differs": 3,
      "missing": 0,
-     "matched": 456,
-     "pct": 90.84
+     "matched": 499,
+     "pct": 99.4
     },
     "bytes": {
      "total": 179003,
-     "exact": 11880,
-     "matches_after_masking": 119316,
-     "differs": 47807,
+     "exact": 23186,
+     "matches_after_masking": 151807,
+     "differs": 4010,
      "missing": 0,
-     "matched": 131196,
-     "pct": 73.29
+     "matched": 174993,
+     "pct": 97.76
     }
    }
   },
@@ -548,21 +548,21 @@
    "summary": {
     "functions": {
      "total": 368,
-     "exact": 96,
-     "matches_after_masking": 245,
-     "differs": 18,
+     "exact": 95,
+     "matches_after_masking": 248,
+     "differs": 16,
      "missing": 9,
-     "matched": 341,
-     "pct": 92.66
+     "matched": 343,
+     "pct": 93.21
     },
     "bytes": {
      "total": 153265,
-     "exact": 8743,
-     "matches_after_masking": 100642,
-     "differs": 41166,
+     "exact": 8519,
+     "matches_after_masking": 102184,
+     "differs": 39848,
      "missing": 2714,
-     "matched": 109385,
-     "pct": 71.37
+     "matched": 110703,
+     "pct": 72.23
     }
    }
   },
@@ -629,21 +629,21 @@
    "summary": {
     "functions": {
      "total": 439,
-     "exact": 135,
-     "matches_after_masking": 266,
-     "differs": 34,
+     "exact": 136,
+     "matches_after_masking": 268,
+     "differs": 31,
      "missing": 4,
-     "matched": 401,
-     "pct": 91.34
+     "matched": 404,
+     "pct": 92.03
     },
     "bytes": {
      "total": 149812,
-     "exact": 13365,
-     "matches_after_masking": 103088,
-     "differs": 32778,
+     "exact": 13500,
+     "matches_after_masking": 104973,
+     "differs": 30758,
      "missing": 581,
-     "matched": 116453,
-     "pct": 77.73
+     "matched": 118473,
+     "pct": 79.08
     }
    }
   },
@@ -683,21 +683,21 @@
    "summary": {
     "functions": {
      "total": 2987,
-     "exact": 810,
-     "matches_after_masking": 1885,
-     "differs": 265,
-     "missing": 27,
-     "matched": 2695,
-     "pct": 90.22
+     "exact": 811,
+     "matches_after_masking": 1897,
+     "differs": 263,
+     "missing": 16,
+     "matched": 2708,
+     "pct": 90.66
     },
     "bytes": {
      "total": 709304,
-     "exact": 40316,
-     "matches_after_masking": 516801,
-     "differs": 138264,
-     "missing": 13923,
-     "matched": 557117,
-     "pct": 78.54
+     "exact": 40487,
+     "matches_after_masking": 522120,
+     "differs": 137579,
+     "missing": 9118,
+     "matched": 562607,
+     "pct": 79.32
     }
    }
   },
@@ -764,21 +764,21 @@
    "summary": {
     "functions": {
      "total": 2963,
-     "exact": 777,
-     "matches_after_masking": 1460,
-     "differs": 662,
-     "missing": 64,
-     "matched": 2237,
-     "pct": 75.5
+     "exact": 927,
+     "matches_after_masking": 1803,
+     "differs": 215,
+     "missing": 18,
+     "matched": 2730,
+     "pct": 92.14
     },
     "bytes": {
      "total": 891892,
-     "exact": 43767,
-     "matches_after_masking": 479562,
-     "differs": 361222,
-     "missing": 7341,
-     "matched": 523329,
-     "pct": 58.68
+     "exact": 59555,
+     "matches_after_masking": 648986,
+     "differs": 180142,
+     "missing": 3209,
+     "matched": 708541,
+     "pct": 79.44
     }
    }
   },
@@ -791,21 +791,21 @@
    "summary": {
     "functions": {
      "total": 355,
-     "exact": 106,
-     "matches_after_masking": 245,
-     "differs": 4,
+     "exact": 114,
+     "matches_after_masking": 241,
+     "differs": 0,
      "missing": 0,
-     "matched": 351,
-     "pct": 98.87
+     "matched": 355,
+     "pct": 100.0
     },
     "bytes": {
      "total": 55390,
-     "exact": 2870,
-     "matches_after_masking": 49100,
-     "differs": 3420,
+     "exact": 3162,
+     "matches_after_masking": 52228,
+     "differs": 0,
      "missing": 0,
-     "matched": 51970,
-     "pct": 93.83
+     "matched": 55390,
+     "pct": 100.0
     }
    }
   },
@@ -846,20 +846,20 @@
     "functions": {
      "total": 1883,
      "exact": 247,
-     "matches_after_masking": 383,
-     "differs": 917,
-     "missing": 336,
-     "matched": 630,
-     "pct": 33.46
+     "matches_after_masking": 386,
+     "differs": 915,
+     "missing": 335,
+     "matched": 633,
+     "pct": 33.62
     },
     "bytes": {
      "total": 485072,
      "exact": 9767,
-     "matches_after_masking": 107628,
-     "differs": 333234,
-     "missing": 34443,
-     "matched": 117395,
-     "pct": 24.2
+     "matches_after_masking": 109953,
+     "differs": 331305,
+     "missing": 34047,
+     "matched": 119720,
+     "pct": 24.68
     }
    }
   },
@@ -986,20 +986,20 @@
     "functions": {
      "total": 5,
      "exact": 0,
-     "matches_after_masking": 2,
-     "differs": 3,
+     "matches_after_masking": 4,
+     "differs": 1,
      "missing": 0,
-     "matched": 2,
-     "pct": 40.0
+     "matched": 4,
+     "pct": 80.0
     },
     "bytes": {
      "total": 1219,
      "exact": 0,
-     "matches_after_masking": 197,
-     "differs": 1022,
+     "matches_after_masking": 599,
+     "differs": 620,
      "missing": 0,
-     "matched": 197,
-     "pct": 16.16
+     "matched": 599,
+     "pct": 49.14
     }
    }
   },
@@ -1041,21 +1041,21 @@
    "summary": {
     "functions": {
      "total": 143,
-     "exact": 40,
-     "matches_after_masking": 42,
-     "differs": 56,
-     "missing": 5,
-     "matched": 82,
-     "pct": 57.34
+     "exact": 52,
+     "matches_after_masking": 71,
+     "differs": 19,
+     "missing": 1,
+     "matched": 123,
+     "pct": 86.01
     },
     "bytes": {
      "total": 72841,
-     "exact": 2270,
-     "matches_after_masking": 2328,
-     "differs": 66478,
-     "missing": 1765,
-     "matched": 4598,
-     "pct": 6.31
+     "exact": 3380,
+     "matches_after_masking": 35690,
+     "differs": 33466,
+     "missing": 305,
+     "matched": 39070,
+     "pct": 53.64
     }
    }
   },
@@ -1070,20 +1070,20 @@
     "functions": {
      "total": 393,
      "exact": 36,
-     "matches_after_masking": 341,
-     "differs": 15,
+     "matches_after_masking": 345,
+     "differs": 11,
      "missing": 1,
-     "matched": 377,
-     "pct": 95.93
+     "matched": 381,
+     "pct": 96.95
     },
     "bytes": {
      "total": 235146,
      "exact": 2452,
-     "matches_after_masking": 214799,
-     "differs": 17869,
+     "matches_after_masking": 217870,
+     "differs": 14798,
      "missing": 26,
-     "matched": 217251,
-     "pct": 92.39
+     "matched": 220322,
+     "pct": 93.7
     }
    }
   },
@@ -1097,21 +1097,21 @@
    "summary": {
     "functions": {
      "total": 1207,
-     "exact": 266,
-     "matches_after_masking": 499,
-     "differs": 406,
-     "missing": 36,
-     "matched": 765,
-     "pct": 63.38
+     "exact": 338,
+     "matches_after_masking": 711,
+     "differs": 152,
+     "missing": 6,
+     "matched": 1049,
+     "pct": 86.91
     },
     "bytes": {
      "total": 317532,
-     "exact": 21829,
-     "matches_after_masking": 93629,
-     "differs": 199131,
-     "missing": 2943,
-     "matched": 115458,
-     "pct": 36.36
+     "exact": 31110,
+     "matches_after_masking": 180546,
+     "differs": 104405,
+     "missing": 1471,
+     "matched": 211656,
+     "pct": 66.66
     }
    }
   },
@@ -1181,21 +1181,21 @@
    "summary": {
     "functions": {
      "total": 1463,
-     "exact": 813,
-     "matches_after_masking": 513,
-     "differs": 127,
-     "missing": 10,
-     "matched": 1326,
-     "pct": 90.64
+     "exact": 842,
+     "matches_after_masking": 602,
+     "differs": 14,
+     "missing": 5,
+     "matched": 1444,
+     "pct": 98.7
     },
     "bytes": {
      "total": 285508,
-     "exact": 12939,
-     "matches_after_masking": 170398,
-     "differs": 87578,
-     "missing": 14593,
-     "matched": 183337,
-     "pct": 64.21
+     "exact": 14742,
+     "matches_after_masking": 238698,
+     "differs": 20070,
+     "missing": 11998,
+     "matched": 253440,
+     "pct": 88.77
     }
    }
   },
@@ -1378,20 +1378,20 @@
     "functions": {
      "total": 2508,
      "exact": 667,
-     "matches_after_masking": 1728,
-     "differs": 113,
+     "matches_after_masking": 1729,
+     "differs": 112,
      "missing": 0,
-     "matched": 2395,
-     "pct": 95.49
+     "matched": 2396,
+     "pct": 95.53
     },
     "bytes": {
      "total": 595734,
      "exact": 30148,
-     "matches_after_masking": 480993,
-     "differs": 84593,
+     "matches_after_masking": 481530,
+     "differs": 84056,
      "missing": 0,
-     "matched": 511141,
-     "pct": 85.8
+     "matched": 511678,
+     "pct": 85.89
     }
    }
   },
@@ -1406,20 +1406,20 @@
     "functions": {
      "total": 92,
      "exact": 15,
-     "matches_after_masking": 38,
-     "differs": 31,
+     "matches_after_masking": 39,
+     "differs": 30,
      "missing": 8,
-     "matched": 53,
-     "pct": 57.61
+     "matched": 54,
+     "pct": 58.7
     },
     "bytes": {
      "total": 22043,
      "exact": 794,
-     "matches_after_masking": 7583,
-     "differs": 8780,
+     "matches_after_masking": 7731,
+     "differs": 8632,
      "missing": 4886,
-     "matched": 8377,
-     "pct": 38.0
+     "matched": 8525,
+     "pct": 38.67
     }
    }
   },
@@ -1461,21 +1461,21 @@
    "summary": {
     "functions": {
      "total": 82,
-     "exact": 29,
-     "matches_after_masking": 42,
-     "differs": 11,
+     "exact": 30,
+     "matches_after_masking": 43,
+     "differs": 9,
      "missing": 0,
-     "matched": 71,
-     "pct": 86.59
+     "matched": 73,
+     "pct": 89.02
     },
     "bytes": {
      "total": 25047,
-     "exact": 2303,
-     "matches_after_masking": 17299,
-     "differs": 5445,
+     "exact": 2438,
+     "matches_after_masking": 19036,
+     "differs": 3573,
      "missing": 0,
-     "matched": 19602,
-     "pct": 78.26
+     "matched": 21474,
+     "pct": 85.73
     }
    }
   },
@@ -1484,25 +1484,25 @@
    "module": "episodic/server",
    "name": "episodic/server.dylib",
    "retail": "380/19307283/episodic/bin/server.dylib",
-   "ours": "/Volumes/Storage/sco/byte-match-survey/integration-2-scratch/games/episodic/server.dylib",
+   "ours": "/Volumes/Storage/sco/byte-match-survey/integration-3-scratch/games/episodic/server.dylib",
    "summary": {
     "functions": {
      "total": 22744,
-     "exact": 5237,
-     "matches_after_masking": 16627,
-     "differs": 730,
-     "missing": 150,
-     "matched": 21864,
-     "pct": 96.13
+     "exact": 5262,
+     "matches_after_masking": 16852,
+     "differs": 505,
+     "missing": 125,
+     "matched": 22114,
+     "pct": 97.23
     },
     "bytes": {
      "total": 7696434,
-     "exact": 155089,
-     "matches_after_masking": 6856497,
-     "differs": 663492,
-     "missing": 21356,
-     "matched": 7011586,
-     "pct": 91.1
+     "exact": 156358,
+     "matches_after_masking": 7109434,
+     "differs": 412308,
+     "missing": 18334,
+     "matched": 7265792,
+     "pct": 94.4
     }
    }
   },
@@ -1511,25 +1511,25 @@
    "module": "episodic/client",
    "name": "episodic/client.dylib",
    "retail": "380/19307283/episodic/bin/client.dylib",
-   "ours": "/Volumes/Storage/sco/byte-match-survey/integration-2-scratch/games/episodic/client.dylib",
+   "ours": "/Volumes/Storage/sco/byte-match-survey/integration-3-scratch/games/episodic/client.dylib",
    "summary": {
     "functions": {
-     "total": 17809,
-     "exact": 5249,
-     "matches_after_masking": 11538,
-     "differs": 836,
-     "missing": 186,
-     "matched": 16787,
-     "pct": 94.26
+     "total": 17821,
+     "exact": 5335,
+     "matches_after_masking": 11783,
+     "differs": 572,
+     "missing": 131,
+     "matched": 17118,
+     "pct": 96.06
     },
     "bytes": {
-     "total": 4434694,
-     "exact": 180930,
-     "matches_after_masking": 3594879,
-     "differs": 594963,
-     "missing": 63922,
-     "matched": 3775809,
-     "pct": 85.14
+     "total": 4443243,
+     "exact": 186773,
+     "matches_after_masking": 3769933,
+     "differs": 430794,
+     "missing": 55743,
+     "matched": 3956706,
+     "pct": 89.05
     }
    }
   },
@@ -1538,25 +1538,25 @@
    "module": "lostcoast/server",
    "name": "lostcoast/server.dylib",
    "retail": "340/19307283/lostcoast/bin/server.dylib",
-   "ours": "/Volumes/Storage/sco/byte-match-survey/integration-2-scratch/games/lostcoast/server.dylib",
+   "ours": "/Volumes/Storage/sco/byte-match-survey/integration-3-scratch/games/lostcoast/server.dylib",
    "summary": {
     "functions": {
      "total": 21442,
-     "exact": 5047,
-     "matches_after_masking": 15166,
-     "differs": 1173,
-     "missing": 56,
-     "matched": 20213,
-     "pct": 94.27
+     "exact": 5033,
+     "matches_after_masking": 15250,
+     "differs": 1126,
+     "missing": 33,
+     "matched": 20283,
+     "pct": 94.59
     },
     "bytes": {
      "total": 7181480,
-     "exact": 148407,
-     "matches_after_masking": 6152654,
-     "differs": 870906,
-     "missing": 9513,
-     "matched": 6301061,
-     "pct": 87.74
+     "exact": 148573,
+     "matches_after_masking": 6201171,
+     "differs": 824850,
+     "missing": 6886,
+     "matched": 6349744,
+     "pct": 88.42
     }
    }
   },
@@ -1565,25 +1565,25 @@
    "module": "lostcoast/client",
    "name": "lostcoast/client.dylib",
    "retail": "340/19307283/lostcoast/bin/client.dylib",
-   "ours": "/Volumes/Storage/sco/byte-match-survey/integration-2-scratch/games/lostcoast/client.dylib",
+   "ours": "/Volumes/Storage/sco/byte-match-survey/integration-3-scratch/games/lostcoast/client.dylib",
    "summary": {
     "functions": {
-     "total": 17459,
-     "exact": 5112,
-     "matches_after_masking": 11049,
-     "differs": 1124,
-     "missing": 174,
-     "matched": 16161,
-     "pct": 92.57
+     "total": 17468,
+     "exact": 5183,
+     "matches_after_masking": 11262,
+     "differs": 904,
+     "missing": 119,
+     "matched": 16445,
+     "pct": 94.14
     },
     "bytes": {
-     "total": 4349835,
-     "exact": 171881,
-     "matches_after_masking": 3429969,
-     "differs": 696211,
-     "missing": 51774,
-     "matched": 3601850,
-     "pct": 82.8
+     "total": 4356276,
+     "exact": 177104,
+     "matches_after_masking": 3581476,
+     "differs": 555532,
+     "missing": 42164,
+     "matched": 3758580,
+     "pct": 86.28
     }
    }
   },
@@ -1592,25 +1592,25 @@
    "module": "hl2/server",
    "name": "hl2/server.dylib",
    "retail": "223/19307283/hl2/bin/server.dylib",
-   "ours": "/Volumes/Storage/sco/byte-match-survey/integration-2-scratch/games/hl2/server.dylib",
+   "ours": "/Volumes/Storage/sco/byte-match-survey/integration-3-scratch/games/hl2/server.dylib",
    "summary": {
     "functions": {
      "total": 22744,
-     "exact": 5237,
-     "matches_after_masking": 16627,
-     "differs": 730,
-     "missing": 150,
-     "matched": 21864,
-     "pct": 96.13
+     "exact": 5262,
+     "matches_after_masking": 16852,
+     "differs": 505,
+     "missing": 125,
+     "matched": 22114,
+     "pct": 97.23
     },
     "bytes": {
      "total": 7696434,
-     "exact": 155089,
-     "matches_after_masking": 6856497,
-     "differs": 663492,
-     "missing": 21356,
-     "matched": 7011586,
-     "pct": 91.1
+     "exact": 156358,
+     "matches_after_masking": 7109434,
+     "differs": 412308,
+     "missing": 18334,
+     "matched": 7265792,
+     "pct": 94.4
     }
    }
   },
@@ -1619,47 +1619,47 @@
    "module": "hl2/client",
    "name": "hl2/client.dylib",
    "retail": "223/19307283/hl2/bin/client.dylib",
-   "ours": "/Volumes/Storage/sco/byte-match-survey/integration-2-scratch/games/hl2/client.dylib",
+   "ours": "/Volumes/Storage/sco/byte-match-survey/integration-3-scratch/games/hl2/client.dylib",
    "summary": {
     "functions": {
-     "total": 17808,
-     "exact": 5249,
-     "matches_after_masking": 11537,
-     "differs": 836,
-     "missing": 186,
-     "matched": 16786,
-     "pct": 94.26
+     "total": 17820,
+     "exact": 5339,
+     "matches_after_masking": 11778,
+     "differs": 572,
+     "missing": 131,
+     "matched": 17117,
+     "pct": 96.05
     },
     "bytes": {
-     "total": 4434639,
-     "exact": 180930,
-     "matches_after_masking": 3594852,
-     "differs": 594922,
-     "missing": 63935,
-     "matched": 3775782,
-     "pct": 85.14
+     "total": 4443188,
+     "exact": 186809,
+     "matches_after_masking": 3769870,
+     "differs": 430753,
+     "missing": 55756,
+     "matched": 3956679,
+     "pct": 89.05
     }
    }
   }
  ],
  "total_with_games": {
   "functions": {
-   "total": 166221,
-   "exact": 44697,
-   "matches_after_masking": 109018,
-   "differs": 10365,
-   "missing": 2141,
-   "matched": 153715,
-   "pct": 92.48
+   "total": 166255,
+   "exact": 47187,
+   "matches_after_masking": 109785,
+   "differs": 7708,
+   "missing": 1575,
+   "matched": 156972,
+   "pct": 94.42
   },
   "bytes": {
-   "total": 47614779,
-   "exact": 1858230,
-   "matches_after_masking": 38318127,
-   "differs": 6961679,
-   "missing": 476743,
-   "matched": 40176357,
-   "pct": 84.38
+   "total": 47638587,
+   "exact": 2473093,
+   "matches_after_masking": 39725220,
+   "differs": 5085514,
+   "missing": 354760,
+   "matched": 42198313,
+   "pct": 88.58
   }
  }
 }
