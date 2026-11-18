@@ -42,6 +42,9 @@ class IVP_Time_Manager;
 class IVP_Event_Manager {
 public:
 	int mode;
+#ifdef BYTEMATCH_RETAIL
+	virtual ~IVP_Event_Manager() {}
+#endif
 	virtual void simulate_time_events(IVP_Time_Manager *tman,IVP_Environment *env,IVP_Time until) = 0;
 	virtual void simulate_variable_time_step(IVP_Time_Manager *tman,IVP_Environment *env,IVP_Time_Event_PSI *psi_event, IVP_FLOAT delta);
 };

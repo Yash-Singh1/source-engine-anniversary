@@ -475,8 +475,22 @@ void IVP_Contact_Point::recalc_friction_s_vals(){
 	this->span_friction_s[0] -= delta_velocity_ws.dot_product(&info->span_friction_v[0]) * dt;
 	this->span_friction_s[1] -= delta_velocity_ws.dot_product(&info->span_friction_v[1]) * dt;
     this->last_contact_point_ws.set( &info->contact_point_ws );
+#ifdef BYTEMATCH_RETAIL
+    this->last_contact_normal_ws_x = info->surf_normal.k[0];
+    this->last_contact_normal_ws_y = info->surf_normal.k[1];
+    this->last_contact_point_ws.hesse_val = info->surf_normal.k[2];
+#endif
 	}
 }
+
+#ifdef BYTEMATCH_RETAIL
+void IVP_Contact_Point::get_contact_normal(IVP_U_Float_Point *normal_out)
+{
+    normal_out->k[0] = last_contact_normal_ws_x;
+    normal_out->k[1] = last_contact_normal_ws_y;
+    normal_out->k[2] = last_contact_point_ws.hesse_val;
+}
+#endif
 
 
 IVP_Contact_Point *IVP_Friction_Manager::get_associated_contact_point(IVP_Mindist *mindist) {

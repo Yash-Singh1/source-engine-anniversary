@@ -181,11 +181,21 @@ protected:
     
     IVP_FLOAT get_gap_length() { return last_gap_len; };
     
+#ifdef BYTEMATCH_RETAIL
+    short slowly_turn_on_keeper:8;     // is initialized with IVP_SLOWLY_TURN_ON_KEEPER
+    IVP_CONTACT_POINT_BREAK_STATUS  cp_status:8;
+    int has_negative_pull_since:16;   //0 means inactive, n>1 means negative since n-1 PSIs, -n>0 means has positive value since n PSIs
+#else
     short slowly_turn_on_keeper;     // is initialized with IVP_SLOWLY_TURN_ON_KEEPER
     IVP_CONTACT_POINT_BREAK_STATUS  cp_status:8;
     int has_negative_pull_since;   //0 means inactive, n>1 means negative since n-1 PSIs, -n>0 means has positive value since n PSIs
+#endif
     IVP_Time last_time_of_recalc_friction_s_vals; // move to friction system
     IVP_U_Float_Point last_contact_point_ws;
+#ifdef BYTEMATCH_RETAIL
+    IVP_FLOAT last_contact_normal_ws_x;   // the z component lives in last_contact_point_ws.hesse_val
+    IVP_FLOAT last_contact_normal_ws_y;
+#endif
 };
 
 class IVP_Contact_Point: public IVP_Contact_Point_Fast {
@@ -258,7 +268,12 @@ public:
     const IVP_Synapse_Friction *get_synapse(int i) const { return &synapse[i];};
     void recalc_friction_s_vals(); // move on surfaces but keep topologie
     IVP_Contact_Point(IVP_Mindist *mindist);
+#ifdef BYTEMATCH_RETAIL
+    IVP_FLOAT get_friction_factor() { return real_friction_factor; }
+    void get_contact_normal(IVP_U_Float_Point *normal_out);
+#else
     IVP_FLOAT get_friction_factor();
+#endif
     void set_friction_to_neutral();
     void get_material_info(IVP_Material *mtl[2]);
     void recompute_friction();

@@ -91,7 +91,11 @@ IVP_Contact_Point::IVP_Contact_Point( IVP_Mindist *md)
 	const IVP_Compact_Edge *e1 = syn1->edge;
 	IVP_U_Point wHesse_vecF_Fos;
 	IVP_CLS.calc_hesse_vec_object_not_normized(e1, e1->get_compact_ledge(), &wHesse_vecF_Fos);
+#ifdef BYTEMATCH_RETAIL
+	inv_triangle_det = 1.0f / ( wHesse_vecF_Fos.real_length() + 1e-18 );
+#else
 	inv_triangle_det = 1.0f / wHesse_vecF_Fos.real_length();
+#endif
     }
 
     this->old_energy_dynamic_fr=0.0f;
@@ -109,6 +113,10 @@ IVP_Contact_Point::IVP_Contact_Point( IVP_Mindist *md)
     slowly_turn_on_keeper = IVP_SLOWLY_TURN_ON_KEEPER;
     l_friction_system=NULL;
     two_friction_values=IVP_FALSE;
+#ifdef BYTEMATCH_RETAIL
+    last_contact_point_ws.set_to_zero();
+    last_contact_point_ws.hesse_val = 0.0f;
+#endif
     
 }
 
@@ -664,9 +672,11 @@ void IVP_Friction_System::calc_friction_forces(const IVP_Event_Sim *es) {
     //printf("\n");
 }
 
+#ifndef BYTEMATCH_RETAIL
 IVP_FLOAT IVP_Contact_Point::get_friction_factor() {
 	return span_friction_s[0] * span_friction_s[1];
 }
+#endif
 
 void IVP_Contact_Point::set_friction_to_neutral(){
     span_friction_s[0] = 0.0f;
@@ -1009,6 +1019,11 @@ IVP_Contact_Point::~IVP_Contact_Point(){
 	IVP_Contact_Situation contact_situation;
 	contact_situation.objects[0] = obj0;
 	contact_situation.objects[1] = obj1;
+#ifdef BYTEMATCH_RETAIL
+	contact_situation.speed.set_to_zero();
+	get_contact_normal( &contact_situation.surf_normal );
+	contact_situation.contact_point_ws.set( &last_contact_point_ws );
+#endif
 
 	contact_situation.compact_edges[0] = get_synapse(0)->edge;
 	contact_situation.compact_edges[1] = get_synapse(1)->edge;
@@ -1065,7 +1080,11 @@ IVP_FLOAT IVP_Contact_Point_API::get_vert_force(IVP_Contact_Point *friction_hand
 
 
 void IVP_Contact_Point_API::get_surface_normal_ws(IVP_Contact_Point* friction_handle, IVP_U_Float_Point* normal){
+#ifdef BYTEMATCH_RETAIL
+	friction_handle->get_contact_normal( normal );
+#else
 	*normal = friction_handle->tmp_contact_info->surf_normal;
+#endif
 }
 
 void IVP_Friction_Info_For_Core::friction_info_insert_friction_dist(IVP_Contact_Point *dist)
