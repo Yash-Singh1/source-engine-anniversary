@@ -194,7 +194,11 @@ bool DoParamNamesMatch( const char *pParam1, const char *pParam2 )
 	char szTemp[2][256];
 	GetParamNameWithoutSwizzle( pParam1, szTemp[0], sizeof( szTemp[0] ) );
 	GetParamNameWithoutSwizzle( pParam2, szTemp[1], sizeof( szTemp[1] ) );
-	return ( V_stricmp( szTemp[0], szTemp[1] ) == 0 );
+
+	// Negation doesn't make it a different register
+	const char *pName1 = ( szTemp[0][0] == '-' ) ? &szTemp[0][1] : szTemp[0];
+	const char *pName2 = ( szTemp[1][0] == '-' ) ? &szTemp[1][1] : szTemp[1];
+	return ( V_stricmp( pName1, pName2 ) == 0 );
 }
 
 
@@ -315,6 +319,8 @@ bool D3DToGL::OpenIntrinsic( uint32 inst, char* buff, int nBufLen, uint32 destDi
 			}
 			else
 			{
+				if ( !destDimension )
+					destDimension = 4;
 				V_snprintf( buff, nBufLen, "vec%d( dot( ", destDimension );
 				bDoubleClose = true;
 			}
@@ -328,7 +334,7 @@ bool D3DToGL::OpenIntrinsic( uint32 inst, char* buff, int nBufLen, uint32 destDi
 		case D3DSIO_SLT:
 			if ( nArgumentDimension == 1 )
 			{
-				V_snprintf( buff, nBufLen, "float( ", nArgumentDimension ); // lessThan doesn't have a scalar version
+				V_snprintf( buff, nBufLen, "float( " ); // lessThan doesn't have a scalar version
 			}
 			else
 			{
@@ -339,7 +345,7 @@ bool D3DToGL::OpenIntrinsic( uint32 inst, char* buff, int nBufLen, uint32 destDi
 		case D3DSIO_SGE:
 			if ( nArgumentDimension == 1 )
 			{
-				V_snprintf( buff, nBufLen, "float( ", nArgumentDimension ); // greaterThanEqual doesn't have a scalar version
+				V_snprintf( buff, nBufLen, "float( " ); // greaterThanEqual doesn't have a scalar version
 			}
 			else
 			{
@@ -354,11 +360,9 @@ bool D3DToGL::OpenIntrinsic( uint32 inst, char* buff, int nBufLen, uint32 destDi
 			V_snprintf( buff, nBufLen, "log( " );	// log2 ?
 			break;
 		case D3DSIO_LIT:
-			DebuggerBreakIfDebugging();
 			V_snprintf( buff, nBufLen, "lit( " ); // gonna have to write this one
 			break;
 		case D3DSIO_DST:
-			DebuggerBreakIfDebugging();
 			V_snprintf( buff, nBufLen, "dst( " ); // gonna have to write this one
 			break;
 		case D3DSIO_LRP:
@@ -369,7 +373,6 @@ bool D3DToGL::OpenIntrinsic( uint32 inst, char* buff, int nBufLen, uint32 destDi
 			V_snprintf( buff, nBufLen, "fract( " );
 			break;
 		case D3DSIO_M4x4:
-			DebuggerBreakIfDebugging();
 			V_snprintf( buff, nBufLen, "m4x4" );
 			break;
 		case D3DSIO_M4x3:
@@ -383,7 +386,6 @@ bool D3DToGL::OpenIntrinsic( uint32 inst, char* buff, int nBufLen, uint32 destDi
 		case D3DSIO_ENDLOOP:
 		case D3DSIO_LABEL:
 		case D3DSIO_DCL:
-			DebuggerBreakIfDebugging();
 			break;
 		case D3DSIO_POW:
 			V_snprintf( buff, nBufLen, "pow( " );
@@ -392,18 +394,15 @@ bool D3DToGL::OpenIntrinsic( uint32 inst, char* buff, int nBufLen, uint32 destDi
 			V_snprintf( buff, nBufLen, "cross( " );
 			break;
 		case D3DSIO_SGN:
-			DebuggerBreakIfDebugging();
 			V_snprintf( buff, nBufLen, "sign( " );
 			break;
 		case D3DSIO_ABS:
 			V_snprintf( buff, nBufLen, "abs( " );
 			break;
 		case D3DSIO_NRM:
-			DebuggerBreakIfDebugging();
 			V_snprintf( buff, nBufLen, "normalize( " );
 			break;
 		case D3DSIO_SINCOS:
-			DebuggerBreakIfDebugging();
 			V_snprintf( buff, nBufLen, "sincos( " ); // gonna have to write this one
 			break;
 		case D3DSIO_REP:
@@ -414,11 +413,9 @@ bool D3DToGL::OpenIntrinsic( uint32 inst, char* buff, int nBufLen, uint32 destDi
 		case D3DSIO_ENDIF:
 		case D3DSIO_BREAK:
 		case D3DSIO_BREAKC:		// TODO: these are the reason we even need GLSL...gotta make these work
-			DebuggerBreakIfDebugging();
 			break;
 		case D3DSIO_DEFB:
 		case D3DSIO_DEFI:
-			DebuggerBreakIfDebugging();
 			break;
 		case D3DSIO_TEXCOORD:
 			V_snprintf( buff, nBufLen, "texcoord" );
@@ -427,7 +424,6 @@ bool D3DToGL::OpenIntrinsic( uint32 inst, char* buff, int nBufLen, uint32 destDi
 			V_snprintf( buff, nBufLen, "kill( " ); // wrap the discard instruction?
 			break;
 		case D3DSIO_TEX:
-			DebuggerBreakIfDebugging();
 			V_snprintf( buff, nBufLen, "TEX" );		// We shouldn't get here
 			break;
 		case D3DSIO_TEXBEM:
@@ -440,7 +436,6 @@ bool D3DToGL::OpenIntrinsic( uint32 inst, char* buff, int nBufLen, uint32 destDi
 		case D3DSIO_TEXM3x3TEX:
 		case D3DSIO_TEXM3x3SPEC:
 		case D3DSIO_TEXM3x3VSPEC:
-			DebuggerBreakIfDebugging();
 			break;
 		case D3DSIO_EXPP:
 			V_snprintf( buff, nBufLen, "exp( " );
@@ -449,10 +444,8 @@ bool D3DToGL::OpenIntrinsic( uint32 inst, char* buff, int nBufLen, uint32 destDi
 			V_snprintf( buff, nBufLen, "log( " );
 			break;
 		case D3DSIO_CND:
-			DebuggerBreakIfDebugging();
 			break;
 		case D3DSIO_DEF:
-			DebuggerBreakIfDebugging();
 			V_snprintf( buff, nBufLen, "DEF" );
 			break;
 		case D3DSIO_TEXREG2RGB:
@@ -460,38 +453,31 @@ bool D3DToGL::OpenIntrinsic( uint32 inst, char* buff, int nBufLen, uint32 destDi
 		case D3DSIO_TEXM3x2DEPTH:
 		case D3DSIO_TEXDP3:
 		case D3DSIO_TEXM3x3:
-			DebuggerBreakIfDebugging();
 			break;
 		case D3DSIO_TEXDEPTH:
 			V_snprintf( buff, nBufLen, "texdepth" );
 			break;
 		case D3DSIO_CMP:
-			DebuggerBreakIfDebugging();
 			Assert( !m_bVertexShader );
 			V_snprintf( buff, nBufLen, "CMP" );
 			break;
 		case D3DSIO_BEM:
-			DebuggerBreakIfDebugging();
 			break;
 		case D3DSIO_DP2ADD:
-			DebuggerBreakIfDebugging();
 			break;
 		case D3DSIO_DSX:
 		case D3DSIO_DSY:
-			DebuggerBreakIfDebugging();
 			break;
 		case D3DSIO_TEXLDD:
 			V_snprintf( buff, nBufLen, "texldd" );
 			break;
 		case D3DSIO_SETP:
-			DebuggerBreakIfDebugging();
 			break;
 		case D3DSIO_TEXLDL:
 			V_snprintf( buff, nBufLen, "texldl" );
 			break;
 		case D3DSIO_BREAKP:
 		case D3DSIO_PHASE:
-			DebuggerBreakIfDebugging();
 			break;
 	}
 	
@@ -520,7 +506,6 @@ void D3DToGL::PrintOpcode( uint32 inst, char* buff, int nBufLen )
 	{
 		case D3DSIO_NOP:
 			V_snprintf( buff, nBufLen, "NOP" );
-			DebuggerBreakIfDebugging();
 			break;
 		case D3DSIO_MOV:
 			V_snprintf( buff, nBufLen, "MOV" );
@@ -593,7 +578,6 @@ void D3DToGL::PrintOpcode( uint32 inst, char* buff, int nBufLen )
 		case D3DSIO_RET:
 		case D3DSIO_ENDLOOP:
 		case D3DSIO_LABEL:
-			DebuggerBreakIfDebugging();
 			break;
 		case D3DSIO_DCL:
 			V_snprintf( buff, nBufLen, "DCL" );
@@ -605,14 +589,12 @@ void D3DToGL::PrintOpcode( uint32 inst, char* buff, int nBufLen )
 			V_snprintf( buff, nBufLen, "XPD" );
 			break;
 		case D3DSIO_SGN:
-			DebuggerBreakIfDebugging();
 			V_snprintf( buff, nBufLen, "SGN" );
 			break;
 		case D3DSIO_ABS:
 			V_snprintf( buff, nBufLen, "ABS" );
 			break;
 		case D3DSIO_NRM:
-			DebuggerBreakIfDebugging();
 			V_snprintf( buff, nBufLen, "NRM" );
 			break;
 		case D3DSIO_SINCOS:
@@ -627,7 +609,6 @@ void D3DToGL::PrintOpcode( uint32 inst, char* buff, int nBufLen )
 		case D3DSIO_ENDIF:
 		case D3DSIO_BREAK:
 		case D3DSIO_BREAKC:
-			DebuggerBreakIfDebugging();
 			break;
 		case D3DSIO_MOVA:
 			Assert( m_bVertexShader );
@@ -635,7 +616,6 @@ void D3DToGL::PrintOpcode( uint32 inst, char* buff, int nBufLen )
 			break;
 		case D3DSIO_DEFB:
 		case D3DSIO_DEFI:
-			DebuggerBreakIfDebugging();
 			break;
 		case D3DSIO_TEXCOORD:
 			V_snprintf( buff, nBufLen, "texcoord" );
@@ -656,7 +636,6 @@ void D3DToGL::PrintOpcode( uint32 inst, char* buff, int nBufLen )
 		case D3DSIO_TEXM3x3TEX:
 		case D3DSIO_TEXM3x3SPEC:
 		case D3DSIO_TEXM3x3VSPEC:
-			DebuggerBreakIfDebugging();
 			break;
 		case D3DSIO_EXPP:
 			V_snprintf( buff, nBufLen, "EXP" );
@@ -665,7 +644,6 @@ void D3DToGL::PrintOpcode( uint32 inst, char* buff, int nBufLen )
 			V_snprintf( buff, nBufLen, "LOG" );
 			break;
 		case D3DSIO_CND:
-			DebuggerBreakIfDebugging();
 			break;
 		case D3DSIO_DEF:
 			V_snprintf( buff, nBufLen, "DEF" );
@@ -675,7 +653,6 @@ void D3DToGL::PrintOpcode( uint32 inst, char* buff, int nBufLen )
 		case D3DSIO_TEXM3x2DEPTH:
 		case D3DSIO_TEXDP3:
 		case D3DSIO_TEXM3x3:
-			DebuggerBreakIfDebugging();
 			break;
 		case D3DSIO_TEXDEPTH:
 			V_snprintf( buff, nBufLen, "texdepth" );
@@ -685,27 +662,22 @@ void D3DToGL::PrintOpcode( uint32 inst, char* buff, int nBufLen )
 			V_snprintf( buff, nBufLen, "CMP" );
 			break;
 		case D3DSIO_BEM:
-			DebuggerBreakIfDebugging();
 			break;
 		case D3DSIO_DP2ADD:
-			DebuggerBreakIfDebugging();
 			break;
 		case D3DSIO_DSX:
 		case D3DSIO_DSY:
-			DebuggerBreakIfDebugging();
 			break;
 		case D3DSIO_TEXLDD:
 			V_snprintf( buff, nBufLen, "texldd" );
 			break;
 		case D3DSIO_SETP:
-			DebuggerBreakIfDebugging();
 			break;
 		case D3DSIO_TEXLDL:
 			V_snprintf( buff, nBufLen, "texldl" );
 			break;
 		case D3DSIO_BREAKP:
 		case D3DSIO_PHASE:
-			DebuggerBreakIfDebugging();
 			break;
 	}
 }
@@ -762,7 +734,6 @@ void D3DToGL::PrintUsageAndIndexToString( uint32 dwToken, char* strUsageUsageInd
 			V_snprintf( strUsageUsageIndexName, nBufLen, m_bGLSL ? "vec4( gl_Normal, 0.0 )" : "vertex.attrib[2]" );
 			break;
 		case D3DDECLUSAGE_PSIZE:
-			DebuggerBreakIfDebugging();
 			V_snprintf( strUsageUsageIndexName, nBufLen, "_psize" );					// no analog
 			break;
 		case D3DDECLUSAGE_TEXCOORD:
@@ -819,11 +790,9 @@ void D3DToGL::PrintUsageAndIndexToString( uint32 dwToken, char* strUsageUsageInd
 			V_snprintf( strUsageUsageIndexName, nBufLen, "vertex.attrib[5]" );	//"vertex.position" /* "_fog" */ );	//FIXME, evil		// aka [5] / vertex.fogcoord
 			break;
 		case D3DDECLUSAGE_DEPTH:
-			DebuggerBreakIfDebugging();
 			V_snprintf( strUsageUsageIndexName, nBufLen, "_depth" );					// no analog
 			break;
 		case D3DDECLUSAGE_SAMPLE:
-			DebuggerBreakIfDebugging();
 			V_snprintf( strUsageUsageIndexName, nBufLen, "_sample" );					// no analog
 			break;
 		default:
@@ -1021,11 +990,9 @@ void D3DToGL::PrintParameterToString ( uint32 dwToken, uint32 dwSourceOrDest, ch
 				case D3DSPSM_BIASNEG:						// bias and negate
 				case D3DSPSM_SIGNNEG:						// sign and negate
 				case D3DSPSM_X2NEG:						  // *2 and negate
-					DebuggerBreakIfDebugging();
 					strcat_s( pRegisterName, nBufLen, "-" );
 					break;
 				case D3DSPSM_COMP:							// complement
-					DebuggerBreakIfDebugging();
 					strcat_s( pRegisterName, nBufLen, "1-" );
 					break;
 				case D3DSPSM_ABS:							 // abs()
@@ -1035,7 +1002,6 @@ void D3DToGL::PrintParameterToString ( uint32 dwToken, uint32 dwSourceOrDest, ch
 					}
 					else if ( !m_bGeneratingDebugText )
 					{
-						DebuggerBreakIfDebugging();
 					}
 					break;
 				case D3DSPSM_ABSNEG:						 // -abs()
@@ -1045,11 +1011,9 @@ void D3DToGL::PrintParameterToString ( uint32 dwToken, uint32 dwSourceOrDest, ch
 					}
 					else if ( !m_bGeneratingDebugText )
 					{
-						DebuggerBreakIfDebugging();
 					}
 					break;
 				case D3DSPSM_NOT:							 // for predicate register: "!p0"
-					DebuggerBreakIfDebugging();
 					strcat_s( pRegisterName, nBufLen, "!" );
 					break;
 			}
@@ -1108,7 +1072,6 @@ void D3DToGL::PrintParameterToString ( uint32 dwToken, uint32 dwSourceOrDest, ch
 				}
 				else  // No indirect addressing in PS, this shouldn't happen
 				{
-					DebuggerBreakIfDebugging();
 					V_snprintf( szConstantRegName, 3, "pc" );
 				}
 
@@ -1205,7 +1168,6 @@ void D3DToGL::PrintParameterToString ( uint32 dwToken, uint32 dwSourceOrDest, ch
 
 				default:
 					printf( "\nD3DSPR_RASTOUT: dwRegNum is %08x and token is %08x", dwRegNum, dwToken );  
-					DebuggerBreakIfDebugging();
 				break;
 			}
 			break;
@@ -1280,17 +1242,14 @@ void D3DToGL::PrintParameterToString ( uint32 dwToken, uint32 dwSourceOrDest, ch
 			strcat_s( pRegisterName, nBufLen, buff );
 			break;
 		case D3DSPR_CONST2:
-			DebuggerBreakIfDebugging();
 			V_snprintf( buff, sizeof( buff ), "c%d", dwRegNum+2048);
 			strcat_s( pRegisterName, nBufLen, buff );
 			break;
 		case D3DSPR_CONST3:
-			DebuggerBreakIfDebugging();
 			V_snprintf( buff, sizeof( buff ), "c%d", dwRegNum+4096);
 			strcat_s( pRegisterName, nBufLen, buff );
 			break;
 		case D3DSPR_CONST4:
-			DebuggerBreakIfDebugging();
 			V_snprintf( buff, sizeof( buff ), "c%d", dwRegNum+6144);
 			strcat_s( pRegisterName, nBufLen, buff );
 			break;
@@ -1301,30 +1260,25 @@ void D3DToGL::PrintParameterToString ( uint32 dwToken, uint32 dwSourceOrDest, ch
 			m_dwConstBoolUsageMask |= 0x00000001 << dwRegNum;		// Keep track of the use of this bool constant
 			break;
 		case D3DSPR_LOOP:
-			DebuggerBreakIfDebugging();
 			V_snprintf( buff, sizeof( buff ), "aL%d", dwRegNum );
 			strcat_s( pRegisterName, nBufLen, buff );
 			break;
 		case D3DSPR_TEMPFLOAT16:
-			DebuggerBreakIfDebugging();
 			V_snprintf( buff, sizeof( buff ), "temp_float16_xxx%d", dwRegNum );
 			strcat_s( pRegisterName, nBufLen, buff );
 			break;
 		case D3DSPR_MISCTYPE:
 			if ( !m_bGLSL && !m_bGeneratingDebugText )
 			{
-				DebuggerBreakIfDebugging();
 			}
 			V_snprintf( buff, sizeof( buff ), "misc%d", dwRegNum );
 			strcat_s( pRegisterName, nBufLen, buff );
 			break;
 		case D3DSPR_LABEL:
-			DebuggerBreakIfDebugging();
 			V_snprintf( buff, sizeof( buff ), "label%d", dwRegNum );
 			strcat_s( pRegisterName, nBufLen, buff );
 			break;
 		case D3DSPR_PREDICATE:
-			DebuggerBreakIfDebugging();
 			V_snprintf( buff, sizeof( buff ), "p%d", dwRegNum );
 			strcat_s( pRegisterName, nBufLen, buff );
 			break;
@@ -1485,17 +1439,14 @@ void D3DToGL::PrintParameterToString ( uint32 dwToken, uint32 dwSourceOrDest, ch
 			{
 				case D3DSPSM_BIAS:							// bias
 				case D3DSPSM_BIASNEG:						// bias and negate
-					DebuggerBreakIfDebugging();
 					strcat_s( pRegisterName, nBufLen, "_bx2" );
 					break;
 				case D3DSPSM_SIGN:							// sign
 				case D3DSPSM_SIGNNEG:						// sign and negate
-					DebuggerBreakIfDebugging();
 					strcat_s( pRegisterName, nBufLen, "_sgn" );
 					break;
 				case D3DSPSM_X2:							  // *2
 				case D3DSPSM_X2NEG:						  // *2 and negate
-					DebuggerBreakIfDebugging();
 					strcat_s( pRegisterName, nBufLen, "_x2" );
 					break;
 				case D3DSPSM_ABS:							 // abs()
@@ -1506,11 +1457,9 @@ void D3DToGL::PrintParameterToString ( uint32 dwToken, uint32 dwSourceOrDest, ch
 					}
 					break;
 				case D3DSPSM_DZ:							  // divide through by z component
-					DebuggerBreakIfDebugging();
 					strcat_s( pRegisterName, nBufLen, "_dz" );
 					break;
 				case D3DSPSM_DW:							  // divide through by w component
-					DebuggerBreakIfDebugging();
 					strcat_s( pRegisterName, nBufLen, "_dw" );
 					break;
 			}
@@ -1820,7 +1769,6 @@ void D3DToGL::Handle_MAD( uint32 nInstruction )
 		if ( nDestToken & D3DSPDM_SATURATE )
 		{
 			// Need to saturate asm!
-			DebuggerBreakIfDebugging();
 		}
 	}
 }
@@ -1872,7 +1820,6 @@ void D3DToGL::Handle_DP2ADD()
 		if ( nDestToken & D3DSPDM_SATURATE )
 		{
 			// Need to saturate asm!
-			DebuggerBreakIfDebugging();
 		}
 	}
 }
@@ -2189,7 +2136,6 @@ void D3DToGL::Handle_TexLDD( uint32 nInstruction )
 
 void D3DToGL::Handle_TexCoord()
 {
-	DebuggerBreakIfDebugging();
 
 	// If ps_1_4, this is texcrd
 	if ( (m_dwMajorVersion == 1) && (m_dwMinorVersion == 4) && (!m_bVertexShader) )
@@ -2198,7 +2144,6 @@ void D3DToGL::Handle_TexCoord()
 	}
 	else // else it's texcoord
 	{
-		DebuggerBreakIfDebugging();
 		StrcatToALUCode( "texcoord" );
 	}
 
@@ -2869,7 +2814,6 @@ int D3DToGL::TranslateShader( uint32* code, CUtlBuffer *pBufDisassembledCode, bo
 			case D3DSIO_RET:
 			case D3DSIO_ENDLOOP:
 			case D3DSIO_BREAK:
-				DebuggerBreakIfDebugging();
 				PrintOpcode( nInstruction, buff, sizeof( buff ) );
 				StrcatToALUCode( buff );
 				StrcatToALUCode( ";\n" );
@@ -2902,7 +2846,6 @@ int D3DToGL::TranslateShader( uint32* code, CUtlBuffer *pBufDisassembledCode, bo
 			case D3DSIO_BREAKP:
 			case D3DSIO_DSX:
 			case D3DSIO_DSY:
-				DebuggerBreakIfDebugging();
 				break;
 
 			case D3DSIO_IF:
@@ -3016,7 +2959,6 @@ int D3DToGL::TranslateShader( uint32* code, CUtlBuffer *pBufDisassembledCode, bo
 			case D3DSIO_IFC:
 			case D3DSIO_BREAKC:
 			case D3DSIO_SETP:
-				DebuggerBreakIfDebugging();
 				break;
 
 			// Binary Operations
@@ -3051,10 +2993,8 @@ int D3DToGL::TranslateShader( uint32* code, CUtlBuffer *pBufDisassembledCode, bo
 				break;
 			case D3DSIO_SGN:
 				Assert( m_bVertexShader );
-				DebuggerBreakIfDebugging();		// TODO emulate with SLT etc
 				break;
 			case D3DSIO_CND:
-				DebuggerBreakIfDebugging();
 				break;
 			case D3DSIO_CMP:
 				Handle_CMP();
@@ -3091,7 +3031,6 @@ int D3DToGL::TranslateShader( uint32* code, CUtlBuffer *pBufDisassembledCode, bo
 			case D3DSIO_DEFB:
 			case D3DSIO_DEFI:
 				// Shouldn't be using bool or integer constants
-				DebuggerBreakIfDebugging();
 				break;
 
 			case D3DSIO_DEF:
