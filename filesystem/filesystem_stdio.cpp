@@ -140,8 +140,12 @@ public:
 	virtual char *FS_fgets( char *dest, int destSize );
 
 #ifdef POSIX
+#ifdef BYTEMATCH_RETAIL
+	static CUtlMap< int, CInterlockedInt > m_LockedFDMap;	// fd -> thread holding its write lock, -1 once closed
+#else
 	static CUtlMap< ino_t, CThreadMutex * > m_LockedFDMap;
 	static CThreadMutex	m_MutexLockedFD;
+#endif
 #endif
 private:
 	CStdioFile( FILE *pFile, bool bWriteable )
@@ -154,8 +158,12 @@ private:
 };
 
 #ifdef POSIX
+#ifdef BYTEMATCH_RETAIL
+CUtlMap< int, CInterlockedInt > CStdioFile::m_LockedFDMap;
+#else
 CUtlMap< ino_t, CThreadMutex * > CStdioFile::m_LockedFDMap;
 CThreadMutex	CStdioFile::m_MutexLockedFD;
+#endif
 #endif
 
 //-----------------------------------------------------------------------------
@@ -262,7 +270,7 @@ CFileSystem_Stdio::CFileSystem_Stdio()
 //-----------------------------------------------------------------------------
 CFileSystem_Stdio::~CFileSystem_Stdio()
 {
-#ifdef POSIX
+#if defined( POSIX ) && !defined( BYTEMATCH_RETAIL )
 	FOR_EACH_MAP_FAST( CStdioFile::m_LockedFDMap, i )
 	{
 		Assert( CStdioFile::m_LockedFDMap[ i ] );
@@ -900,6 +908,54 @@ CStdioFile *CStdioFile::FS_fopen( const char *filenameT, const char *options, in
 	}
 #endif
 
+#ifdef BYTEMATCH_RETAIL
+	if ( !pFile )
+		return NULL;
+
+	bool bWriteable = false;
+	if ( strchr(options,'w') || strchr(options,'a') )
+	{
+		bWriteable = true;
+#if defined POSIX
+		// Win32 has an undocumented feature that is serialized ALL writes to a file across threads (i.e only 1 thread can open a file at a time)
+		// so add a lock here to mimic that behavior
+		ThreadId_t curThread = ThreadGetCurrentId();
+		int fd = fileno_unlocked( pFile );
+		unsigned short iLockID = m_LockedFDMap.Find( fd );
+		int ret = flock( fd, LOCK_EX | LOCK_NB );
+		if ( ret < 0 )
+		{
+			if ( errno == EWOULDBLOCK )
+			{
+				// another thread of ours holds it, wait for it
+				if ( iLockID != m_LockedFDMap.InvalidIndex() && m_LockedFDMap[iLockID] != -1 && curThread != (ThreadId_t)m_LockedFDMap[iLockID] )
+				{
+					ret = flock( fd, LOCK_EX );
+					if ( ret < 0 )
+					{
+						fclose( pFile );
+						return NULL;
+					}
+				}
+			}
+			else
+			{
+				fclose( pFile );
+				return NULL;
+			}
+		}
+
+		if ( iLockID != m_LockedFDMap.InvalidIndex() )
+			m_LockedFDMap[iLockID] = curThread;
+		else
+			m_LockedFDMap.Insert( fd, curThread );
+
+		rewind( pFile );
+#endif
+	}
+
+	return new CStdioFile( pFile, bWriteable );
+#else
 	if ( pFile )
 	{
 		bool bWriteable = false;
@@ -948,6 +1004,7 @@ CStdioFile *CStdioFile::FS_fopen( const char *filenameT, const char *options, in
 	}
 
 	return NULL;
+#endif
 }
 
 
@@ -977,7 +1034,19 @@ void CStdioFile::FS_setbufsize( unsigned nBytes )
 //-----------------------------------------------------------------------------
 void CStdioFile::FS_fclose()
 {
-#ifdef POSIX
+#if defined( POSIX ) && defined( BYTEMATCH_RETAIL )
+	if ( m_bWriteable )
+	{
+		fflush( m_pFile );
+		int fd = fileno_unlocked( m_pFile );
+		flock( fd, LOCK_UN );
+		unsigned short iLockID = m_LockedFDMap.Find( fd );
+		if ( iLockID != m_LockedFDMap.InvalidIndex() )
+		{
+			m_LockedFDMap[iLockID] = -1;
+		}
+	}
+#elif defined( POSIX )
 	if ( m_bWriteable )
 	{
 		AUTO_LOCK( m_MutexLockedFD );

@@ -2344,7 +2344,7 @@ void CBaseFileSystem::RemoveSearchPaths( const char *pathID )
 	{
 		if (!Q_stricmp(m_SearchPaths.Element(i).GetPathIDString(), pathID))
 		{
-			m_SearchPaths.FastRemove(i);
+			m_SearchPaths.Remove(i);
 		}
 	}
 }
