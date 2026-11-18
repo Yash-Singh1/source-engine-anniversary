@@ -1364,7 +1364,7 @@ void HTML::BrowserFinishedRequest( HTML_FinishedRequest_t *pCmd )
 		PostActionSignal( new KeyValues( "PageTitleChange", "title", pCmd->pchPageTitle ) );
 
 	CUtlMap < CUtlString, CUtlString > mapHeaders;
-	mapHeaders.SetLessFunc( UtlStringLessFunc );
+	SetDefLessFunc( mapHeaders );
 	// headers are no longer reported on loads
 
 	OnFinishRequest( pCmd->pchURL, pCmd->pchPageTitle, mapHeaders );

@@ -1175,6 +1175,8 @@ static void CC_GameMenuCommand( const CCommand &args )
 	vgui::ivgui()->PostMessage( g_pBasePanel->GetVPanel(), new KeyValues("Command", "command", args[1] ), NULL);
 }
 
+static bool UtlStringLessFunc( const CUtlString &lhs, const CUtlString &rhs );
+
 static int CC_GameMenuCompletionFunc( char const *partial, char commands[ COMMAND_COMPLETION_MAXITEMS ][ COMMAND_COMPLETION_ITEM_LENGTH ] )
 {
 	char const *cmdname = "gamemenucommand";
@@ -5567,6 +5569,11 @@ static void RefreshOptionsDialogModeset( const CCommand &args )
 	g_pBasePanel->RefreshDialogs();
 }
 static ConCommand refresh_gameui_dialogs_modeset( "refresh_gameui_dialogs_modeset", RefreshOptionsDialogModeset, "Refresh ALL GameUI Dialogs", 0 );
+
+static bool UtlStringLessFunc( const CUtlString &lhs, const CUtlString &rhs )
+{
+	return V_stricmp( lhs.Get(), rhs.Get() ) < 0;
+}
 
 void CGameMenu::SetMenuCategory( const char *pszMenuCategory )
 {
