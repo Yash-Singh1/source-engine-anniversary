@@ -29,6 +29,7 @@
 #include "CommentaryExplanationDialog.h"
 #include "vgui_controls/BitmapImagePanel.h"
 #include "BonusMapsDatabase.h"
+#include "gameui_proportional.h"
 
 #include <stdio.h>
 
@@ -161,6 +162,18 @@ public:
 
 		SetPaintBackgroundEnabled( false );
 
+#ifdef BYTEMATCH_RETAIL
+		// the image has the same name as the config file
+		char szMaterial[ MAX_PATH ];
+		Q_snprintf( szMaterial, sizeof(szMaterial), "chapters/%s", chapterConfigFile );
+		char *ext = strstr( szMaterial, "." );
+		if ( ext )
+		{
+			*ext = 0;
+		}
+		m_pLevelPic->SetImage( szMaterial );
+#endif
+
 		KeyValues *pKeys = NULL;
 		if ( GameUI().IsConsoleUI() )
 		{
@@ -168,6 +181,7 @@ public:
 		}
 		LoadControlSettings( "Resource/NewGameChapterPanel.res", NULL, pKeys );
 
+#ifndef BYTEMATCH_RETAIL
 		// the image has the same name as the config file
 		char szMaterial[MAX_PATH];
 		Q_snprintf(szMaterial, sizeof(szMaterial), "chapters/%s", chapterConfigFile);
@@ -177,6 +191,7 @@ public:
 			*ext = 0;
 		}
 		m_pLevelPic->SetImage(szMaterial);
+#endif
 
 		int px, py;
 		m_pLevelPicBorder->GetPos( px, py );
@@ -525,6 +540,10 @@ CNewGameDialog::CNewGameDialog(vgui::Panel *parent, bool bCommentaryMode) : Base
 		return;
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	const int indent = 8;
+	const int wide = 16;
+#else
 	int indent = 8;
 	if ( IsProportional() )
 	{
@@ -536,6 +555,7 @@ CNewGameDialog::CNewGameDialog(vgui::Panel *parent, bool bCommentaryMode) : Base
 	{
 		wide = scheme()->GetProportionalScaledValueEx( GetScheme(), wide );
 	}
+#endif
 
 	// Layout panel positions relative to the dialog center.
 	int panelWidth = m_ChapterPanels[0]->GetWide() + wide;
@@ -626,11 +646,7 @@ void CNewGameDialog::ApplySettings( KeyValues *inResourceData )
 {
 	BaseClass::ApplySettings( inResourceData );
 
-	int ypos = inResourceData->GetInt( "chapterypos", 40 );
-	if ( IsProportional() )
-	{
-		ypos = scheme()->GetProportionalScaledValueEx( GetScheme(), ypos );
-	}
+	int ypos = PROPORTIONAL_VALUE( inResourceData->GetInt( "chapterypos", 40 ) );
 
 	for ( int i = 0; i < NUM_SLOTS; ++i )
 	{

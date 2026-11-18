@@ -7,6 +7,7 @@
 #include "TGAImagePanel.h"
 #include "bitmap/tgaloader.h"
 #include "vgui/ISurface.h"
+#include "gameui_proportional.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -19,10 +20,12 @@ CTGAImagePanel::CTGAImagePanel( vgui::Panel *parent, const char *name ) : BaseCl
 	m_bHasValidTexture = false;
 	m_bLoadedTexture = false;
 	m_szTGAName[0] = 0;
+#ifndef BYTEMATCH_RETAIL
 	m_iImageWidth = 0;
 	m_iImageHeight = 0;
 	m_iImageRealWidth = 0;
 	m_iImageRealHeight = 0;
+#endif
 
 	SetPaintBackgroundEnabled( false );
 }
@@ -47,6 +50,56 @@ void CTGAImagePanel::SetTGANonMod( const char *filename )
 	V_strcpy_safe( m_szTGAName, filename );
 }
 
+#ifdef BYTEMATCH_RETAIL
+void CTGAImagePanel::Paint()
+{
+	if ( !m_bLoadedTexture )
+	{
+		m_bLoadedTexture = true;
+		// get a texture id, if we haven't already
+		if ( m_iTextureID == -1 )
+		{
+			m_iTextureID = vgui::surface()->CreateNewTextureID( true );
+			SetSize( PROPORTIONAL_VALUE( 180 ), PROPORTIONAL_VALUE( 100 ) );
+		}
+
+		// load the file
+		CUtlMemory<unsigned char> tga;
+		if ( TGALoader::LoadRGBA8888( m_szTGAName, tga, m_iImageWidth, m_iImageHeight ) )
+		{
+			// set the textureID
+			surface()->DrawSetTextureRGBA( m_iTextureID, tga.Base(), m_iImageWidth, m_iImageHeight, true, true );
+			m_bHasValidTexture = true;
+			// set our size to be the size of the tga
+			SetSize( PROPORTIONAL_VALUE( m_iImageWidth ), PROPORTIONAL_VALUE( m_iImageHeight ) );
+		}
+		else
+		{
+			m_bHasValidTexture = false;
+		}
+	}
+
+	// draw the image
+	int wide = 180, tall = 100;
+	if ( m_bHasValidTexture )
+	{
+		surface()->DrawGetTextureSize( m_iTextureID, wide, tall );
+		wide = PROPORTIONAL_VALUE( wide );
+		tall = PROPORTIONAL_VALUE( tall );
+		surface()->DrawSetTexture( m_iTextureID );
+		surface()->DrawSetColor( 255, 255, 255, 255 );
+		surface()->DrawTexturedRect( 0, 0, wide, tall );
+	}
+	else
+	{
+		// draw a black fill instead
+		wide = PROPORTIONAL_VALUE( wide );
+		tall = PROPORTIONAL_VALUE( tall );
+		surface()->DrawSetColor( 0, 0, 0, 255 );
+		surface()->DrawFilledRect( 0, 0, wide, tall );
+	}
+}
+#else
 void CTGAImagePanel::Paint()
 {
 	if ( !m_bLoadedTexture )
@@ -104,3 +157,4 @@ void CTGAImagePanel::Paint()
 		surface()->DrawFilledRect( 0, 0, wide, tall );
 	}
 }
+#endif

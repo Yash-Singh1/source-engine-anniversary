@@ -362,6 +362,10 @@ void COptionsSubAudio::OnCommand( const char *command )
 			RunTestSpeakers();
 		}
 	}
+   else if ( !stricmp( command, "ShowThirdPartyAudioCredits" ) )
+   {
+      OpenThirdPartySoundCreditsDialog();
+   }
 
 	BaseClass::OnCommand( command );
 }
@@ -384,6 +388,10 @@ public:
 	COptionsSubAudioThirdPartyCreditsDlg(vgui::VPANEL hParent) : BaseClass(NULL, NULL)
 	{
 		// parent is ignored, since we want look like we're steal focus from the parent (we'll become modal below)
+#ifdef BYTEMATCH_RETAIL
+		SetTitle("#GameUI_ThirdPartyAudio_Title", true);
+		SetSize(500, 200);
+#else
 		int w = 500;
 		int h = 200;
 		if (ipanel()->IsProportional(hParent))
@@ -395,6 +403,7 @@ public:
 
 		SetTitle("#GameUI_ThirdPartyAudio_Title", true);
 		SetSize(w, h);
+#endif
 		LoadControlSettings("resource/OptionsSubAudioThirdPartyDlg.res");
 		MoveToCenterOfScreen();
 		SetSizeable(false);
