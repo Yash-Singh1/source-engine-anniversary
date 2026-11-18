@@ -83,13 +83,21 @@ void IVP_Core::get_surface_speed_ws( const IVP_U_Point *position_ws_in, IVP_U_Fl
 void IVP_Core::get_diff_surface_speed_of_two_cores(const IVP_Core *this_core, const IVP_Core *other_core,
 						   const IVP_U_Float_Point *obj_point_this, const IVP_U_Float_Point *obj_point_other,
 						   IVP_U_Float_Point *delta_velocity_ws){
+#ifdef BYTEMATCH_RETAIL
+    if(this_core && !this_core->physical_unmoveable && !this_core->pinned)    {
+#else
     if(this_core && !this_core->physical_unmoveable)    {
+#endif
 	this_core->get_surface_speed_on_test(obj_point_this,&this_core->speed,&this_core->rot_speed,delta_velocity_ws);
     } else {
 	delta_velocity_ws->set_to_zero();
     }
 
+#ifdef BYTEMATCH_RETAIL
+    if(other_core && !other_core->physical_unmoveable && !other_core->pinned)    {
+#else
     if(other_core && !other_core->physical_unmoveable)    {
+#endif
 	IVP_U_Float_Point velocity_ws_2;
 	other_core->get_surface_speed_on_test(obj_point_other,&other_core->speed,&other_core->rot_speed,&velocity_ws_2);
         delta_velocity_ws->subtract(&velocity_ws_2);
@@ -103,13 +111,21 @@ void IVP_Core::get_diff_surface_speed_of_two_cores_on_test(const IVP_Core *this_
 							   IVP_U_Float_Point *diff_speed_this_minus_other_out)
 {
     IVP_U_Float_Point world_this,world_other;
+#ifdef BYTEMATCH_RETAIL
+    if(!this_core->physical_unmoveable && !this_core->pinned)    {
+#else
     if(!this_core->physical_unmoveable)    {
+#endif
 	this_core->get_surface_speed_on_test(obj_point_this,trans_speed0,rot_speed0,&world_this);
     } else {
 	world_this.set_to_zero();
     }
 
+#ifdef BYTEMATCH_RETAIL
+    if(!other_core->physical_unmoveable && !other_core->pinned)    {
+#else
     if(!other_core->physical_unmoveable)    {
+#endif
 	other_core->get_surface_speed_on_test(obj_point_other,trans_speed1,rot_speed1,&world_other);
     } else {
 	world_other.set_to_zero();

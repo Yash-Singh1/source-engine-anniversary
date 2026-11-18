@@ -1982,10 +1982,18 @@ void IVP_Contact_Point::calc_virtual_mass_of_mindist() {
 	core[i] = get_synapse(i)->get_object()->get_core();
     }
     IVP_DOUBLE virt_mass_mindist_no_dir;
+#ifdef BYTEMATCH_RETAIL
+    if(core[0]->physical_unmoveable || core[0]->pinned) {
+#else
     if(core[0]->physical_unmoveable) {
+#endif
 	virt_mass_mindist_no_dir =  core[1]->calc_virt_mass_worst_case(&tmp_contact_info->contact_point_cs[1]);
     } else {
+#ifdef BYTEMATCH_RETAIL
+	if(core[1]->physical_unmoveable || core[1]->pinned) {
+#else
 	if(core[1]->physical_unmoveable) {
+#endif
 	    virt_mass_mindist_no_dir =  core[0]->calc_virt_mass_worst_case(&tmp_contact_info->contact_point_cs[0]);
 	} else {
 	    IVP_DOUBLE vmass_no_dir[2];

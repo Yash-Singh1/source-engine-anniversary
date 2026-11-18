@@ -1032,7 +1032,11 @@ void IVP_Environment::set_global_collision_tolerance( IVP_DOUBLE tolerance, IVP_
     // CRACK - lol. according to both IDA and Ghidra, nothing is done with gravity_length
 }
 
+#ifdef BYTEMATCH_RETAIL
+IVP_DOUBLE IVP_Environment::get_global_collision_tolerance()
+#else
 IVP_FLOAT IVP_Environment::get_global_collision_tolerance()
+#endif
 {
     //return ivp_mindist_settings.real_coll_dist;
     return ivp_mindist_settings.min_coll_dists;
