@@ -34,6 +34,9 @@ import retailflags as rf  # noqa: E402
 TREE = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
 MANIFEST = os.path.join(TREE, "devtools", "bytematch", "manifests", "retail-osx32.json")
 DEPOTS = os.path.dirname(os.path.dirname(rf.RETAIL_DEPOT))
+# Per-module static-library variants (retail_osx32.py's retail_stlib_variant):
+# archive name suffix -> the module that links them.
+ARCHIVE_VARIANTS = {"_105": "bin/sourcevr"}
 
 
 def retail_file(mod):
@@ -71,7 +74,8 @@ def jobs_for(build, manifest):
     engine = manifest["modules"]["bin/engine"]
     for lib in sorted(glob.glob(os.path.join(build, "**", "lib*.a"), recursive=True)):
         name = os.path.basename(lib)
-        users = manifest["archives"].get(name, {}).get("used_by", [])
+        variant = [m for s, m in ARCHIVE_VARIANTS.items() if name.endswith(s + ".a")]
+        users = variant or manifest["archives"].get(name, {}).get("used_by", [])
         user = "bin/engine" if "bin/engine" in users or not users else users[0]
         mod = manifest["modules"].get(user, engine)
         jobs.append(("archive", name, name, retail_file(mod), lib, user))

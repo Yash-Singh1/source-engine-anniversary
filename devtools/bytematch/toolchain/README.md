@@ -51,7 +51,7 @@ to i386 first (`thin-i386.py`, and the waf mode's `retail-depot-libs/`).
 - `make-sdk109.py`, `macho.py`: stub 10.9 SDK generator
 - `retailflags.py`: compiler and linker flags from Valve's xcconfig/VPC, shared by everything here and by `scripts/waifulib/retail_osx32.py`
 - `ld64-pin.py`: links scenefilecache with each ld64 and compares structure with retail
-- `build-thirdparty.py`: period third-party archives (known non-matching inputs)
+- `build-thirdparty.py`: period third-party archives (known non-matching inputs), installed in `<prefix>/thirdparty-osx32-N` (`retailflags.THIRDPARTY_DIR`; the suffix is bumped whenever the archives change, so builds using the previous set keep working). libpng has default visibility, as retail modules export it
 - `build-protoc.sh`: host protoc 2.3.0 from `sdk2013mp/thirdparty/protobuf-2.3.0`, for hl2mp's `htmlmessages.pb.cc`
 - `report-modules.py`: match summary for a `--retail-osx32` build directory
 
