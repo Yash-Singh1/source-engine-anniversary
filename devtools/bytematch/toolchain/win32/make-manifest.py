@@ -205,9 +205,28 @@ class Module:
                 extra.append(opt)
         return dedupe(sw + extra), objs
 
+    def generator_order(self):
+        """Files in the order VPC's vcxproj generator writes them, which is MSBuild's
+        compile and link order: per folder, files sorted case-insensitively by file
+        name alone (ties keep insertion order), then subfolders sorted by name
+        (external/vpc/utils/vpc/projectgenerator_vcproj.cpp, CProjectFolder::AddFile)."""
+        root = {"files": [], "folders": {}}
+        for f in self.p.files:
+            node = root
+            for part in [p for p in f["folder"].split("/") if p]:
+                node = node["folders"].setdefault(part, {"files": [], "folders": {}})
+            node["files"].append(f)
+
+        def walk(node):
+            out = sorted(node["files"], key=lambda f: ntpath.basename(f["path"].replace("/", "\\")).lower())
+            for name in sorted(node["folders"], key=str.lower):
+                out += walk(node["folders"][name])
+            return out
+        return walk(root)
+
     def sources(self):
         out = []
-        for f in self.p.files:
+        for f in self.generator_order():
             ext = os.path.splitext(f["path"])[1].lower()
             lang = {".cpp": "c++", ".cxx": "c++", ".cc": "c++", ".c": "c", ".asm": "asm", ".rc": "rc",
                     ".man": "mc"}.get(ext)
