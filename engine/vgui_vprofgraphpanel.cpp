@@ -260,7 +260,12 @@ void CVProfGraphPanel::Paint()
 	if ( ( g_ClientGlobalVariables.absoluteframetime) > 0.f )
 	{
 		Q_snprintf( sz, sizeof( sz ), "%s - %0.1f%%%%", m_CurrentNode->GetName(), ( m_CurrentNode->GetPrevTime() /  RootTime ) * 100.f);
+#ifdef BYTEMATCH_RETAIL
+		g_pMatSystemSurface->DrawColoredText( m_hFont, x, y, GRAPH_RED, GRAPH_GREEN, GRAPH_BLUE, 255, sz );
+#else
 		g_pMatSystemSurface->DrawColoredText( m_hFont, x, y, GRAPH_RED, GRAPH_GREEN, GRAPH_BLUE, 255, "%s", sz );
+#endif
+#line 264
 	}
 
 	byte color[3][3] = 
@@ -281,7 +286,12 @@ void CVProfGraphPanel::Paint()
 	{
 		Q_snprintf( sz, sizeof( sz ), "%07.3f ms (%s)", m_Samples[m_CurrentSample][i], pTitles[i] );
 		y -= 10;
+#ifdef BYTEMATCH_RETAIL
+		g_pMatSystemSurface->DrawColoredText( m_hFont, x, y, color[i][0], color[i][1], color[i][2], 180, sz );
+#else
 		g_pMatSystemSurface->DrawColoredText( m_hFont, x, y, color[i][0], color[i][1], color[i][2], 180, "%s", sz );
+#endif
+#line 285
 	}
 }
 
