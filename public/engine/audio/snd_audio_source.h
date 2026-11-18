@@ -463,6 +463,8 @@ public:
 	// This affects the voice_overdrive behavior (all sounds get quieter when
 	// someone is speaking).
 	virtual bool				IsVoiceSource() = 0;
+
+	virtual bool				IsCommentarySource() { return false; }
 	
 	// Sample size is in bytes.  It will not be accurate for compressed audio.  This is a best estimate.
 	// The compressed audio mixers understand this, but in general do not assume that SampleSize() * SampleCount() = filesize

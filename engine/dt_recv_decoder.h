@@ -50,7 +50,12 @@ private:
 class CClientSendTable
 {
 public:
+#ifdef BYTEMATCH_RETAIL
+								CClientSendTable();
+#else
 								CClientSendTable() = default;
+#endif
+#line 54
 								~CClientSendTable();
 	
 	int							GetNumProps() const		{ return m_SendTable.m_nProps; }

@@ -425,7 +425,7 @@ DWORD __stdcall DownloadThread( void *voidPtr )
 		//Thread_DPrintf( "Requesting full download\n%s", headers );
 	}
 
-	rc.hDataResource = InternetOpenUrl(rc.hOpenResource, fullURL, headerPtr, headerLen, flags, (DWORD_PTR)(&rc) );
+	rc.hDataResource = InternetOpenUrl(rc.hOpenResource, fullURL, headerPtr, headerLen, flags,(DWORD_PTR)(&rc) );
 
 	// send the request off
 	if ( !rc.hDataResource )
@@ -522,7 +522,7 @@ DWORD __stdcall DownloadThread( void *voidPtr )
 }
 
 
-#elif defined( POSIX ) && HAVE_CURL
+#elif defined( POSIX ) && ( HAVE_CURL || defined( BYTEMATCH_RETAIL ) )
 
 #include "curl/curl.h"
 
@@ -921,7 +921,12 @@ void DownloadThread( void *voidPtr )
 	// Delete rc.data, which was allocated in this thread
 	if ( rc.data != NULL )
 	{
+#ifdef BYTEMATCH_RETAIL
+		delete[] rc.data;
+#else
 		free(rc.data);
+#endif
+#line 925
 		rc.data = NULL;
 	}
 	

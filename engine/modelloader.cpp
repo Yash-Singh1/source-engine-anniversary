@@ -1149,6 +1149,11 @@ void Mod_LoadWorldlights( CMapLoadHelper &lh, bool bIsHDR )
 		return;
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	lh.GetMap()->numworldlights = lh.LumpSize() / sizeof( dworldlight_t );
+	lh.GetMap()->worldlights = (dworldlight_t *)Hunk_AllocName( lh.LumpSize(), va( "%s [%s]", lh.GetLoadName(), "worldlights" ) );
+	memcpy (lh.GetMap()->worldlights, lh.LumpBase(), lh.LumpSize());
+#else
 	switch ( lh.LumpVersion() )
 	{
 		case LUMP_WORLDLIGHTS_VERSION:
@@ -1196,6 +1201,8 @@ void Mod_LoadWorldlights( CMapLoadHelper &lh, bool bIsHDR )
 			Host_Error( "Invalid worldlight lump version!\n" );
 			break;
 	}
+#endif
+#line 1155
 
 #if !defined( SWDS )
 	if ( r_lightcache_zbuffercache.GetInt() )

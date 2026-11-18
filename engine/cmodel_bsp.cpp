@@ -288,7 +288,7 @@ bool CollisionBSPData_Load( const char *pName, CCollisionBSPData *pBSPData )
 	CollisionBSPData_LoadPhysics( pBSPData );
 
 	COM_TimestampedLog( "  CollisionBSPData_LoadDispInfo" );
-	CollisionBSPData_LoadDispInfo( pBSPData );
+    CollisionBSPData_LoadDispInfo( pBSPData );
 
 	return true;
 }
@@ -1110,7 +1110,12 @@ void CollisionBSPData_LoadDispInfo( CCollisionBSPData *pBSPData )
     // get face data
     //
 	int face_lump_to_load = LUMP_FACES;
-	if ( g_pMaterialSystemHardwareConfig->GetHDREnabled() && /*g_pMaterialSystemHardwareConfig->GetHDRType() != HDR_TYPE_NONE &&*/
+#ifdef BYTEMATCH_RETAIL
+	if ( g_pMaterialSystemHardwareConfig->GetHDRType() != HDR_TYPE_NONE &&
+#else
+	if ( g_pMaterialSystemHardwareConfig->GetHDREnabled() &&
+#endif
+#line 1114
 		CMapLoadHelper::LumpSize( LUMP_FACES_HDR ) > 0 )
 	{
 		face_lump_to_load = LUMP_FACES_HDR;

@@ -1289,7 +1289,12 @@ public:
 
 				SaveMsg( "DirectoryCopy: AsyncAppend %s, %s\n", szName, pDestFileName );
 				g_pFileSystem->AsyncAppend( pDestFileName, memcpy( new char[MAX_PATH], list[i].szFileName, MAX_PATH), MAX_PATH, true );		// Filename can only be as long as a map name + extension
+#ifdef BYTEMATCH_RETAIL
+				g_pFileSystem->AsyncAppend( pDestFileName, new int(fileSize), sizeof(int), true );
+#else
 				g_pFileSystem->AsyncAppend( pDestFileName, memcpy( new char[sizeof(int)], &fileSize, sizeof(int)), sizeof(int), true );
+#endif
+#line 1293
 				g_pFileSystem->AsyncAppendFile( pDestFileName, szName );
 			}
 		}
