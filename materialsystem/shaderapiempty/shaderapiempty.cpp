@@ -2886,8 +2886,7 @@ void CShaderAPIEmpty::GetDX9LightState( LightState_t *state ) const
 {
 	state->m_nNumLights = 0;
 	state->m_bAmbientLight = false;
-	state->m_bStaticLightVertex = false;
-	state->m_bStaticLightTexel = false;
+	state->m_bStaticLight = false;
 }
 
 MaterialFogMode_t CShaderAPIEmpty::GetCurrentFogType( void ) const
