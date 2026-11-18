@@ -17,6 +17,10 @@
 #include "c_baseplayer.h"
 #include "IGameUIFuncs.h"
 #include "inputsystem/iinputsystem.h"
+#include "steam/steam_api.h"
+#include "VGuiMatSurface/IMatSystemSurface.h"
+#include "bitmap/bitmap.h"
+#include "imageutils.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -345,12 +349,37 @@ void CHudHintDisplay::LocalizeAndDisplay( const char *pszHudTxtMsg, const char *
 //-----------------------------------------------------------------------------
 // Purpose: Displays small key-centric hints on the right hand side of the screen
 //-----------------------------------------------------------------------------
+// Up to two actions' worth of Steam Input origins per hint variable
+#define MAX_HINT_GLYPHS		( STEAM_INPUT_MAX_ORIGINS * 2 )
+
+struct SteamControllerGlyphSet_t
+{
+	SteamControllerGlyphSet_t()
+	{
+		m_nX = 0;
+		m_nY = 0;
+		m_nWide = 0;
+		m_nTall = 0;
+		m_nFrames = 0;
+		for ( int i = 0; i < MAX_HINT_GLYPHS; i++ )
+		{
+			m_nTextureIDs[i] = -1;
+		}
+	}
+
+	int m_nTextureIDs[MAX_HINT_GLYPHS];		// one frame per origin, cycled in Paint
+	int m_nX, m_nY;
+	int m_nWide, m_nTall;
+	int m_nFrames;
+};
+
 class CHudHintKeyDisplay : public vgui::Panel, public CHudElement
 {
 	DECLARE_CLASS_SIMPLE( CHudHintKeyDisplay, vgui::Panel );
 
 public:
 	CHudHintKeyDisplay( const char *pElementName );
+	~CHudHintKeyDisplay();
 	void Init();
 	void Reset();
 	void MsgFunc_KeyHintText( bf_read &msg );
@@ -360,12 +389,18 @@ public:
 
 protected:
 	virtual void ApplySchemeSettings( vgui::IScheme *pScheme );
+	virtual void Paint();
 	virtual void OnThink();
 
 private:
 	CUtlVector<vgui::Label *> m_Labels;
 	vgui::HFont m_hSmallFont, m_hLargeFont;
 	int		m_iBaseY;
+
+	// Steam Input glyphs drawn over the variable labels
+	CUtlVector<SteamControllerGlyphSet_t> m_GlyphSets;
+	float	m_flNextGlyphFrameTime;
+	int		m_nGlyphFrame;
 
 	CPanelAnimationVarAliasType( float, m_iTextX, "text_xpos", "8", "proportional_float" );
 	CPanelAnimationVarAliasType( float, m_iTextY, "text_ypos", "8", "proportional_float" );
@@ -377,6 +412,12 @@ private:
 DECLARE_HUDELEMENT( CHudHintKeyDisplay );
 DECLARE_HUD_MESSAGE( CHudHintKeyDisplay, KeyHintText );
 
+ConVar sc_use_glyphs( "sc_use_glyphs", "1", 0, "Debug if the string fallbacks display properly." );
+ConVar sc_prefer_basic_origin_hints( "sc_prefer_basic_origin_hints", "1", 0, "Only show the basic origins if available." );
+ConVar sc_tint_glyphs( "sc_tint_glyphs", "0", 0, "Whether or not to tint the glyphs or not." );
+
+extern int g_ActionSet;
+
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
 //-----------------------------------------------------------------------------
@@ -386,6 +427,25 @@ CHudHintKeyDisplay::CHudHintKeyDisplay( const char *pElementName ) : BaseClass(N
 	SetParent( pParent );
 	SetVisible( false );
 	SetAlpha( 0 );
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+CHudHintKeyDisplay::~CHudHintKeyDisplay()
+{
+	for ( int i = 0; i < m_GlyphSets.Count(); i++ )
+	{
+		SteamControllerGlyphSet_t &glyphSet = m_GlyphSets[i];
+		for ( int j = 0; j != MAX_HINT_GLYPHS; j++ )
+		{
+			if ( glyphSet.m_nTextureIDs[j] > 0 )
+			{
+				vgui::surface()->DestroyTextureID( glyphSet.m_nTextureIDs[j] );
+				glyphSet.m_nTextureIDs[j] = -1;
+			}
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -427,6 +487,34 @@ bool CHudHintKeyDisplay::ShouldDraw( void )
 }
 
 //-----------------------------------------------------------------------------
+// Purpose: Draws the current frame of each Steam Input glyph
+//-----------------------------------------------------------------------------
+void CHudHintKeyDisplay::Paint()
+{
+	BaseClass::Paint();
+
+	if ( gpGlobals->curtime > m_flNextGlyphFrameTime )
+	{
+		m_nGlyphFrame++;
+		m_flNextGlyphFrameTime = gpGlobals->curtime + 1.0f;
+	}
+
+	for ( int i = 0; i < m_GlyphSets.Count(); i++ )
+	{
+		if ( !m_GlyphSets[i].m_nFrames )
+			continue;
+
+		int nFrame = m_nGlyphFrame % m_GlyphSets[i].m_nFrames;
+		if ( m_GlyphSets[i].m_nTextureIDs[nFrame] <= 0 )
+			continue;
+
+		vgui::surface()->DrawSetColor( Color( 255, 255, 255, GetFgColor().a() ) );
+		vgui::surface()->DrawSetTexture( m_GlyphSets[i].m_nTextureIDs[nFrame] );
+		vgui::surface()->DrawTexturedRect( m_GlyphSets[i].m_nX, m_GlyphSets[i].m_nY, m_GlyphSets[i].m_nX + m_GlyphSets[i].m_nWide, m_GlyphSets[i].m_nY + m_GlyphSets[i].m_nTall );
+	}
+}
+
+//-----------------------------------------------------------------------------
 // Purpose: Updates the label color each frame
 //-----------------------------------------------------------------------------
 void CHudHintKeyDisplay::OnThink()
@@ -464,8 +552,71 @@ bool CHudHintKeyDisplay::SetHintText( const char *text )
 	}
 	m_Labels.RemoveAll();
 
+	for ( int i = 0; i < m_GlyphSets.Count(); i++ )
+	{
+		SteamControllerGlyphSet_t &glyphSet = m_GlyphSets[i];
+		for ( int j = 0; j != MAX_HINT_GLYPHS; j++ )
+		{
+			if ( glyphSet.m_nTextureIDs[j] > 0 )
+			{
+				vgui::surface()->DestroyTextureID( glyphSet.m_nTextureIDs[j] );
+				glyphSet.m_nTextureIDs[j] = -1;
+			}
+		}
+	}
+	m_GlyphSets.RemoveAll();
+
 	// look up the text string
 	wchar_t *ws = g_pVGuiLocalize->Find( text );
+
+	// Steam Input players get the Deck_ variant of the hint when there is one
+	if ( g_pInputSystem->IsSteamControllerActive() && text[0] )
+	{
+		const char *pszToken = text;
+		if ( text[0] == '#' )
+		{
+			pszToken = text + 1;
+		}
+
+		char szDeckToken[256];
+		V_snprintf( szDeckToken, sizeof( szDeckToken ), "Deck_%s", pszToken );
+		wchar_t *wsDeck = g_pVGuiLocalize->Find( szDeckToken );
+		if ( wsDeck )
+		{
+			ws = wsDeck;
+		}
+
+		InputAnalogActionHandle_t hSteer = SteamInput()->GetAnalogActionHandle( "Steer" );
+		InputAnalogActionHandle_t hBrake = SteamInput()->GetAnalogActionHandle( "Brake" );
+		InputAnalogActionHandle_t hAccel = SteamInput()->GetAnalogActionHandle( "Accelerate" );
+		if ( hSteer && ( hBrake || hAccel ) )
+		{
+			InputHandle_t handles[STEAM_INPUT_MAX_COUNT];
+			SteamInput()->GetConnectedControllers( handles );
+
+			InputHandle_t hController = g_pInputSystem->GetActiveSteamInputHandle();
+			if ( !hController )
+			{
+				hController = handles[0];
+			}
+
+			InputActionSetHandle_t hActionSet = SteamInput()->GetCurrentActionSet( hController );
+
+			EInputActionOrigin origins[MAX_HINT_GLYPHS] = {};
+			int nSteerOrigins = SteamInput()->GetAnalogActionOrigins( hController, hActionSet, hSteer, origins );
+			int nBrakeOrigins = SteamInput()->GetAnalogActionOrigins( hController, hActionSet, hBrake, origins );
+			int nAccelOrigins = SteamInput()->GetAnalogActionOrigins( hController, hActionSet, hAccel, origins );
+			if ( nSteerOrigins && ( nBrakeOrigins || nAccelOrigins ) )
+			{
+				V_snprintf( szDeckToken, sizeof( szDeckToken ), "Deck_%s_SeparateAccelBrake", pszToken );
+				wsDeck = g_pVGuiLocalize->Find( szDeckToken );
+				if ( wsDeck )
+				{
+					ws = wsDeck;
+				}
+			}
+		}
+	}
 
 	wchar_t wszBuf[256];
 	if ( !ws || wcslen(ws) <= 0)
@@ -516,6 +667,7 @@ bool CHudHintKeyDisplay::SetHintText( const char *text )
 		// put it in a label
 		vgui::Label *label = vgui::SETUP_PANEL(new vgui::Label(this, NULL, token));
 
+		SteamControllerGlyphSet_t glyphSet;
 		bool bIsBitmap = false;
 
 		// modify the label if necessary
@@ -530,70 +682,236 @@ bool CHudHintKeyDisplay::SetHintText( const char *text )
 			//!! change some key names into better names
 			char friendlyName[64];
 
-			if ( IsX360() )
+			if ( g_pInputSystem->IsSteamControllerActive() )
 			{
-				int iNumBinds = 0;
+				InputHandle_t handles[STEAM_INPUT_MAX_COUNT];
+				SteamInput()->GetConnectedControllers( handles );
 
-				char szBuff[ 512 ];
-				wchar_t szWideBuff[ 64 ];
-
-				for ( int iCode = 0; iCode < BUTTON_CODE_LAST; ++iCode )
+				InputHandle_t hController = g_pInputSystem->GetActiveSteamInputHandle();
+				if ( !hController )
 				{
-					ButtonCode_t code = static_cast<ButtonCode_t>( iCode );
-
-					bool bUseThisKey = false;
-
-					// Only check against bind name if we haven't already forced this binding to be used
-					const char *pBinding = gameuifuncs->GetBindingForButtonCode( code );
-
-					if ( !pBinding )
-						continue;
-
-					bUseThisKey = ( Q_stricmp( pBinding, binding ) == 0 );
-
-					if ( !bUseThisKey && 
-						( Q_stricmp( pBinding, "+duck" ) == 0 || Q_stricmp( pBinding, "toggle_duck" ) == 0 ) && 
-						( Q_stricmp( binding, "+duck" ) == 0 || Q_stricmp( binding, "toggle_duck" ) == 0 ) )
-					{
-						// +duck and toggle_duck are interchangable
-						bUseThisKey = true;
-					}
-
-					if ( !bUseThisKey && 
-						( Q_stricmp( pBinding, "+zoom" ) == 0 || Q_stricmp( pBinding, "toggle_zoom" ) == 0 ) && 
-						( Q_stricmp( binding, "+zoom" ) == 0 || Q_stricmp( binding, "toggle_zoom" ) == 0 ) )
-					{
-						// +zoom and toggle_zoom are interchangable
-						bUseThisKey = true;
-					}
-
-					// Don't use this bind in out list
-					if ( !bUseThisKey )
-						continue;
-
-					// Turn localized string into icon character
-					Q_snprintf( szBuff, sizeof( szBuff ), "#GameUI_Icons_%s", g_pInputSystem->ButtonCodeToString( static_cast<ButtonCode_t>( iCode ) ) );
-					g_pVGuiLocalize->ConstructString( szWideBuff, sizeof( szWideBuff ), g_pVGuiLocalize->Find( szBuff ), 0 );
-					g_pVGuiLocalize->ConvertUnicodeToANSI( szWideBuff, szBuff, sizeof( szBuff ) );
-
-					// Add this icon to our list of keys to display
-					friendlyName[ iNumBinds ] = szBuff[ 0 ];
-					++iNumBinds;
+					hController = handles[0];
 				}
 
-				friendlyName[ iNumBinds ] = '\0';
-
-				if ( iNumBinds == 0 )
+				// Steam Input actions are named after the commands, minus the +
+				const char *pszAction = ( binding[0] == '+' ) ? binding + 1 : binding;
+				if ( !strcmp( "impulse 100", pszAction ) )
 				{
-					friendlyName[ 0 ] = '\0';
-					label->SetFont( m_hSmallFont );
-					label->SetText( "#GameUI_Icons_NONE" );
+					pszAction = "sc_flashlight";
+				}
+				else if ( !strcmp( "impulse 50", pszAction ) )
+				{
+					pszAction = "sc_squad";
+				}
+
+				InputDigitalActionHandle_t hDigital = SteamInput()->GetDigitalActionHandle( pszAction );
+				EInputActionOrigin origins[MAX_HINT_GLYPHS] = {};
+				InputActionSetHandle_t hActionSet = SteamInput()->GetCurrentActionSet( hController );
+
+				if ( hDigital )
+				{
+					int nOrigins = SteamInput()->GetDigitalActionOrigins( hController, hActionSet, hDigital, origins );
+
+					// The toggle and smart versions are bound separately
+					const char *pszAltAction = pszAction;
+					if ( !strcmp( "duck", pszAltAction ) )
+					{
+						pszAltAction = "toggle_duck";
+					}
+					if ( !strcmp( "zoom", pszAltAction ) )
+					{
+						pszAltAction = "toggle_zoom";
+					}
+					if ( !strcmp( "speed", pszAltAction ) )
+					{
+						pszAltAction = "smart_sprint";
+					}
+
+					InputDigitalActionHandle_t hAltDigital = SteamInput()->GetDigitalActionHandle( pszAltAction );
+					if ( hAltDigital && hAltDigital != hDigital )
+					{
+						nOrigins += SteamInput()->GetDigitalActionOrigins( hController, hActionSet, hAltDigital, &origins[nOrigins] );
+					}
+
+					if ( sc_prefer_basic_origin_hints.GetBool() )
+					{
+						bool bHasBasicOrigin = false;
+						for ( int i = 0; i < nOrigins; i++ )
+						{
+							if ( SteamInput()->TranslateActionOrigin( k_ESteamInputType_XBoxOneController, origins[i] ) != k_EInputActionOrigin_None )
+							{
+								bHasBasicOrigin = true;
+								break;
+							}
+						}
+
+						if ( bHasBasicOrigin )
+						{
+							// Keep only the origins an Xbox controller has, packed to the front
+							CUtlVector<int> freeSlots;
+							for ( int i = 0; i < nOrigins; i++ )
+							{
+								if ( SteamInput()->TranslateActionOrigin( k_ESteamInputType_XBoxOneController, origins[i] ) == k_EInputActionOrigin_None )
+								{
+									origins[i] = k_EInputActionOrigin_None;
+									freeSlots.AddToTail( i );
+								}
+								else if ( freeSlots.Count() )
+								{
+									origins[freeSlots[0]] = origins[i];
+									freeSlots.Remove( 0 );
+									freeSlots.AddToTail( i );
+									origins[i] = k_EInputActionOrigin_None;
+								}
+							}
+						}
+					}
 				}
 				else
 				{
-					// 360 always uses bitmaps
-					bIsBitmap = true;
-					label->SetText( friendlyName );
+					const char *pszAnalogAction = pszAction;
+					if ( !strcmp( "xmove", pszAction ) || !strcmp( "forward", pszAction ) || !strcmp( "moveleft", pszAction ) ||
+						 !strcmp( "moveright", pszAction ) || !strcmp( "back", pszAction ) )
+					{
+						pszAnalogAction = "Move";
+					}
+					else if ( !strcmp( "xsteer", pszAction ) )
+					{
+						pszAnalogAction = "Steer";
+					}
+					else if ( !strcmp( "xaccel", pszAction ) )
+					{
+						pszAnalogAction = "Accelerate";
+					}
+					else if ( !strcmp( "xbrake", pszAction ) )
+					{
+						pszAnalogAction = "Brake";
+					}
+					else if ( !strcmp( "xlook", pszAction ) )
+					{
+						pszAnalogAction = "Camera";
+					}
+
+					InputAnalogActionHandle_t hAnalog = SteamInput()->GetAnalogActionHandle( pszAnalogAction );
+					if ( hAnalog )
+					{
+						int nOrigins = SteamInput()->GetAnalogActionOrigins( hController, hActionSet, hAnalog, origins );
+
+						const char *pszAltAction = pszAnalogAction;
+						if ( g_ActionSet == GAME_ACTION_SET_VEHICLECONTROLS && !strcmp( "xmove", pszAnalogAction ) )
+						{
+							pszAltAction = "Steer";
+						}
+						else if ( !strcmp( "xsteer", pszAnalogAction ) || !strcmp( "xaccel", pszAnalogAction ) || !strcmp( "xbrake", pszAnalogAction ) )
+						{
+							pszAltAction = "Move";
+						}
+
+						InputAnalogActionHandle_t hAltAnalog = SteamInput()->GetAnalogActionHandle( pszAltAction );
+						if ( hAltAnalog && hAltAnalog != hAnalog )
+						{
+							SteamInput()->GetAnalogActionOrigins( hController, hActionSet, hAltAnalog, &origins[nOrigins] );
+						}
+					}
+				}
+
+				if ( sc_use_glyphs.GetBool() )
+				{
+					for ( int i = 0; i < MAX_HINT_GLYPHS && origins[i] != k_EInputActionOrigin_None; i++ )
+					{
+						// Glyphs are square and as tall as the font; ask Steam for the next size up
+						int nGlyphSize = vgui::surface()->GetFontTall( m_hLargeFont );
+						nGlyphSize--;
+						nGlyphSize |= nGlyphSize >> 1;
+						nGlyphSize |= nGlyphSize >> 2;
+						nGlyphSize |= nGlyphSize >> 4;
+						nGlyphSize |= nGlyphSize >> 8;
+						nGlyphSize |= nGlyphSize >> 16;
+						nGlyphSize++;
+
+						ESteamInputGlyphSize eGlyphSize;
+						if ( nGlyphSize <= 32 )
+						{
+							eGlyphSize = k_ESteamInputGlyphSize_Small;
+						}
+						else if ( nGlyphSize <= 128 )
+						{
+							eGlyphSize = k_ESteamInputGlyphSize_Medium;
+						}
+						else
+						{
+							eGlyphSize = k_ESteamInputGlyphSize_Large;
+						}
+
+						const char *pszGlyph = SteamInput()->GetGlyphPNGForActionOrigin( origins[i], eGlyphSize, ESteamInputGlyphStyle_Light | ESteamInputGlyphStyle_SolidABXY );
+						if ( !pszGlyph )
+							continue;
+
+						Bitmap_t bitmap;
+						if ( ImgUtl_LoadBitmap( pszGlyph, bitmap ) == CE_SUCCESS )
+						{
+							if ( sc_tint_glyphs.GetBool() )
+							{
+								for ( int y = 0; y < bitmap.Height(); y++ )
+								{
+									for ( int x = 0; x < bitmap.Width(); x++ )
+									{
+										Color c = bitmap.GetColor( x, y );
+										Color fg = GetFgColor();
+
+										float r = c.r() * ( 1.0f / 255.0f );
+										float g = c.g() * ( 1.0f / 255.0f );
+										float b = c.b() * ( 1.0f / 255.0f );
+										float fr = fg.r() * ( 1.0f / 255.0f );
+										float fgg = fg.g() * ( 1.0f / 255.0f );
+										float fb = fg.b() * ( 1.0f / 255.0f );
+
+										// Leave colored parts of the glyph alone, tint the grey ones
+										float flSaturation = MAX( MAX( r, g ), b ) - MIN( MIN( r, g ), b ) - ( 2.0f / 255.0f );
+										float flColored = 0.0f;
+										if ( flSaturation > 0.0f )
+										{
+											flColored = flSaturation * 2.0f;
+										}
+										float flTint = 1.0f - MIN( flColored, 1.0f );
+
+										float flTintR = ( fr - 1.0f ) * flTint + 1.0f;
+										float flTintG = ( fgg - 1.0f ) * flTint + 1.0f;
+										float flTintB = ( fb - 1.0f ) * flTint + 1.0f;
+										r *= flTintR;
+										g *= flTintG;
+										b *= flTintB;
+
+										c.SetColor( r * 255.0f, g * 255.0f, b * 255.0f, c.a() );
+										bitmap.SetColor( x, y, c );
+									}
+								}
+							}
+
+							ImgUtl_ResizeBitmap( bitmap, nGlyphSize, nGlyphSize, &bitmap );
+
+							glyphSet.m_nTextureIDs[i] = vgui::surface()->CreateNewTextureID( true );
+							glyphSet.m_nFrames++;
+							g_pMatSystemSurface->DrawSetTextureRGBAEx2( glyphSet.m_nTextureIDs[i], bitmap.GetBits(), bitmap.Width(), bitmap.Height(), IMAGE_FORMAT_RGBA8888, true, true );
+
+							// Make room for the glyph Paint draws
+							bIsBitmap = true;
+							label->SetText( L"   " );
+						}
+					}
+				}
+
+				if ( !bIsBitmap )
+				{
+					const char *pszOrigin = "< not bound >";
+					if ( origins[0] != k_EInputActionOrigin_None )
+					{
+						pszOrigin = SteamInput()->GetStringForActionOrigin( origins[0] );
+					}
+
+					wchar_t wszOrigin[128];
+					V_UTF8ToUnicode( pszOrigin, wszOrigin, sizeof( wszOrigin ) );
+					label->SetText( wszOrigin );
 				}
 			}
 			else
@@ -641,43 +959,10 @@ bool CHudHintKeyDisplay::SetHintText( const char *text )
 			label->SetFgColor( GetFgColor() );
 		}
 		m_Labels.AddToTail( vgui::SETUP_PANEL(label) );
+		m_GlyphSets.AddToTail( glyphSet );
+
+		m_flNextGlyphFrameTime = gpGlobals->curtime + 1.5f;
 	}
-
-// Enable this small block of code to test formatting and layout of hint messages
-// with varying numbers of lines
-#define TEST_KEYHINT_DISPLAY 0
-#if TEST_KEYHINT_DISPLAY
-
-	// clear the existing text
-	for (int i = 0; i < m_Labels.Count(); i++)
-	{
-		m_Labels[i]->MarkForDeletion();
-	}
-	m_Labels.RemoveAll();
-
-	const char* sampleText[] = 
-	{
-		"This is a test",
-		"of the hint system\nwith a multi-line hint",
-		"that\ngoes\non\nfor",
-		"several",
-		"lines"
-	};
-
-	for ( int i = 0; i < ARRAYSIZE(sampleText); ++i)
-	{
-		// put it in a label
-		vgui::Label *label = vgui::SETUP_PANEL(new vgui::Label(this, NULL, sampleText[i]));
-
-		label->SetFont( m_hSmallFont );
-		label->SetPaintBackgroundEnabled( false );
-		label->SetPaintBorderEnabled( false );
-		label->SizeToContents();
-		label->SetContentAlignment( vgui::Label::a_west );
-		label->SetFgColor( GetFgColor() );
-		m_Labels.AddToTail( vgui::SETUP_PANEL(label) );
-	}
-#endif
 
 	// find the bounds we need to show
 	int widest1 = 0, widest2 = 0;
@@ -715,12 +1000,31 @@ bool CHudHintKeyDisplay::SetHintText( const char *text )
 		int tall0 = label0->GetTall();
 		rowHeight = tall0;
 
+		// glyphs are drawn as tall as the larger font in the row
+		int glyphTall = vgui::surface()->GetFontTall( label0->GetFont() );
+
 		if (i + 1 < m_Labels.Count())
 		{
 			vgui::Label *label1 = m_Labels[i + 1];
 			int tall1 = label1->GetTall();
 			rowHeight = MAX(tall0, tall1);
+			glyphTall = MAX( glyphTall, vgui::surface()->GetFontTall( label1->GetFont() ) );
 			label1->SetPos( col2_x, col_y + (rowHeight - tall1) / 2 );
+		}
+
+		SteamControllerGlyphSet_t &glyphSet0 = m_GlyphSets[i];
+		glyphSet0.m_nX = col1_x;
+		glyphSet0.m_nY = col_y + (rowHeight - glyphTall) / 2;
+		glyphSet0.m_nWide = glyphTall;
+		glyphSet0.m_nTall = glyphTall;
+
+		if ( i + 1 < m_GlyphSets.Count() )
+		{
+			SteamControllerGlyphSet_t &glyphSet1 = m_GlyphSets[i + 1];
+			glyphSet1.m_nX = col2_x;
+			glyphSet1.m_nY = col_y + (rowHeight - glyphTall) / 2;
+			glyphSet1.m_nWide = glyphTall;
+			glyphSet1.m_nTall = glyphTall;
 		}
 
 		label0->SetPos( col1_x, col_y + (rowHeight - tall0) / 2 );
