@@ -814,7 +814,9 @@ protected:
 	CPackedStoreFileHandle		FindFileInVPKs( const char *pFileName, const char *pPathID = NULL );
 #endif
 	void						AddVPKFile( const char *pPath, const char *pPathID, SearchPathAdd_t addType );
+#ifndef BYTEMATCH_RETAIL
 	bool						RemoveVPKFile( const char *pPath, const char *pPathID );
+#endif
 
 	void						HandleOpenRegularFile( CFileOpenInfo &openInfo, bool bIsAbsolutePath );
 
@@ -968,11 +970,10 @@ inline bool CBaseFileSystem::FilterByPathID( const CSearchPath *pSearchPath, con
 		else
 		{
 			// "GAME" also searches the workshop content paths
-			CUtlSymbol searchPathID = pSearchPath->GetPathID();
-			if ( searchPathID == pathID )
+			bool bIsWorkshopPath = ( pSearchPath->GetPathID() == m_WorkshopAssetPathID || pSearchPath->GetPathID() == m_WorkshopCampaignPathID );
+			if ( bIsWorkshopPath && pathID == m_GamePathID )
 				return false;
-
-			return ( searchPathID != m_WorkshopAssetPathID && searchPathID != m_WorkshopCampaignPathID ) || pathID != m_GamePathID;
+			return (pSearchPath->GetPathID() != pathID);
 		}
 	}
 }

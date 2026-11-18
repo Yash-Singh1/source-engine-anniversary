@@ -863,6 +863,7 @@ void CBaseFileSystem::AddVPKFile( char const *pPath, const char *pPathID, Search
 }
 
 
+#ifndef BYTEMATCH_RETAIL
 bool CBaseFileSystem::RemoveVPKFile( const char *pPath, const char *pPathID )
 {
 #if defined( SUPPORT_PACKED_STORE )
@@ -891,6 +892,7 @@ bool CBaseFileSystem::RemoveVPKFile( const char *pPath, const char *pPathID )
 
 	return false;
 }
+#endif
 
 
 //-----------------------------------------------------------------------------
@@ -1974,8 +1976,8 @@ void CBaseFileSystem::EndMapAccess()
 
 void CBaseFileSystem::PrintSearchPaths( void )
 {
-	Msg( "---------------\n" );
-	Msg( "Paths:\n" );
+	Msg( "----------------------------------------------\n" );
+	Msg( "All Search Paths:\n" );
 
 	int c = m_SearchPaths.Count();
 	for( int i = 0; i < c; i++ )
@@ -2017,6 +2019,8 @@ void CBaseFileSystem::PrintSearchPaths( void )
 			}
 		}
 	}
+
+	Msg( "----------------------------------------------\n" );
 }
 
 
@@ -2288,10 +2292,12 @@ bool CBaseFileSystem::RemoveSearchPath( const char *pPath, const char *pathID )
 		{
 			Q_FixSlashes( newPath );
 		}
+#ifndef BYTEMATCH_RETAIL
 		else if ( V_stristr( newPath, ".vpk" ) )
 		{
 			return RemoveVPKFile( newPath, pathID );
 		}
+#endif
 		else
 		{
 			AddSeperatorAndFixPath( newPath );
@@ -2308,7 +2314,11 @@ bool CBaseFileSystem::RemoveSearchPath( const char *pPath, const char *pathID )
 	int c = m_SearchPaths.Count();
 	for( i = c - 1; i >= 0; i-- )
 	{
+#ifdef BYTEMATCH_RETAIL
+		if ( m_SearchPaths[i].GetPath() != lookup )
+#else
 		if ( newPath[0] && m_SearchPaths[i].GetPath() != lookup )
+#endif
 			continue;
 
 		if ( FilterByPathID( &m_SearchPaths[i], id ) )
@@ -3048,10 +3058,12 @@ FileHandle_t CBaseFileSystem::OpenForRead( const char *pFileNameT, const char *p
 				return ( FileHandle_t )NULL;
 			}
 		}
+#ifndef BYTEMATCH_RETAIL
 		else if ( ThreadInMainThread() && fs_report_sync_opens.GetInt() > 0 )
 		{
 			DevWarning("blocking load %s\n", pFileName);
 		}
+#endif
 	}
 
 	CFileOpenInfo openInfo( this, pFileName, NULL, pOptions, flags, ppszResolvedFilename );
@@ -3197,10 +3209,12 @@ FileHandle_t CBaseFileSystem::OpenForWrite( const char *pFileName, const char *p
 	char tempPathID[MAX_PATH];
 	ParsePathID( pFileName, pathID, tempPathID );
 
+#ifndef BYTEMATCH_RETAIL
 	if ( ThreadInMainThread() && fs_report_sync_opens.GetInt() )
 	{
 		DevWarning("blocking write %s\n", pFileName);
 	}
+#endif
 
 	// Opening for write or append uses the write path
 	// Unless an absolute path is specified...
@@ -3306,7 +3320,11 @@ FileHandle_t CBaseFileSystem::OpenEx( const char *pFileName, const char *pOption
 		
 	CHECK_DOUBLE_SLASHES( pFileName );
 
+#ifdef BYTEMATCH_RETAIL
+	if ( ThreadInMainThread() && fs_report_sync_opens.GetInt() > 0 )
+#else
 	if ( ThreadInMainThread() && fs_report_sync_opens.GetInt() > 1 )
+#endif
 	{
 		::Warning( "Open( %s )\n", pFileName );
 	}
@@ -5010,10 +5028,14 @@ void CBaseFileSystem::CreateDirHierarchy( const char *pRelativePathT, const char
 	char tempPathID[MAX_PATH];
 	ParsePathID(pRelativePathT, pathID, tempPathID); // use the original path param to preserve "//"
 
+#ifdef BYTEMATCH_RETAIL
+	const char *pRelativePath = pRelativePathT;
+#else
 	char pRelativePathBuff[ MAX_PATH ];
 	const char *pRelativePath = pRelativePathBuff;
 
 	FixUpPath ( pRelativePathT, pRelativePathBuff, sizeof( pRelativePathBuff ) );
+#endif
 		
 	CHECK_DOUBLE_SLASHES( pRelativePath );
 
@@ -5029,6 +5051,10 @@ void CBaseFileSystem::CreateDirHierarchy( const char *pRelativePathT, const char
 	{
 		Q_strncpy( szScratchFileName, pRelativePath, sizeof(szScratchFileName) );
 	}
+
+#ifdef BYTEMATCH_RETAIL
+	Q_FixSlashes( szScratchFileName );
+#endif
 
 	int len = strlen( szScratchFileName ) + 1;
 	char *end = szScratchFileName + len;
@@ -5455,12 +5481,12 @@ const char *CBaseFileSystem::RelativePathToFullPath( const char *pFileName, cons
 	for ( CSearchPath *pSearchPath = iter.GetFirst(); pSearchPath != NULL; pSearchPath = iter.GetNext() )
 	{
 
-		int partOffset = 0, partLength = 0;
+		int nLength;
 		int64 nPosition;
 		CPackFile *pPack = pSearchPath->GetPackFile();
 		if ( pPack )
 		{
-			if ( pPack->FindFile( pFileName, partOffset, nPosition, partLength ) )
+			if ( pPack->FindFile( pFileName, nLength, nPosition, nLength ) )
 			{
 				if ( pPathType )
 				{
@@ -5532,7 +5558,7 @@ const char *CBaseFileSystem::RelativePathToFullPath( const char *pFileName, cons
 		#endif
 
 		char pTmpFileName[ MAX_FILEPATH ];
-		V_sprintf_safe( pTmpFileName, "%s%s", pSearchPath->GetPathString(), pFileName );
+		Q_snprintf( pTmpFileName, sizeof( pTmpFileName ), "%s%s", pSearchPath->GetPathString(), pFileName );
 		V_FixSlashes( pTmpFileName );
 		if ( FS_stat( pTmpFileName, &buf ) != -1 )
 		{
