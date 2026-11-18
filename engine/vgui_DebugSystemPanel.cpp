@@ -296,9 +296,19 @@ public:
 		SetPos( videomode->GetModeStereoWidth() - GetWide() - 10 , 10 );
 		SetVisible( true );
 
+#ifdef BYTEMATCH_RETAIL
+		if ( g_pFullFileSystem->FileExists( "resource\\DebugOptionsPanel.res" ) )
+#else
 		if ( g_pFullFileSystem->FileExists( "resource/DebugOptionsPanel.res" ) )
+#endif
+#line 300
 		{
+#ifdef BYTEMATCH_RETAIL
+			LoadControlSettings( "resource\\DebugOptionsPanel.res" );
+#else
 			LoadControlSettings( "resource/DebugOptionsPanel.res" );
+#endif
+#line 302
 		}
 	}
 

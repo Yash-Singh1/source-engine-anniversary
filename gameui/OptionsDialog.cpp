@@ -72,7 +72,12 @@ COptionsDialog::COptionsDialog(vgui::Panel *parent) : PropertyDialog(parent, "Op
 #endif
 	if (ModInfo().IsSinglePlayerOnly() && !ModInfo().NoDifficulty())
 	{
+#ifdef BYTEMATCH_RETAIL
+		AddPage(new COptionsSubDifficulty(this), "#GameUI_Gameplay");
+#else
 		AddPage(new COptionsSubDifficulty(this), "#GameUI_Difficulty");
+#endif
+#line 76
 	}
 
 	if (ModInfo().HasPortals())

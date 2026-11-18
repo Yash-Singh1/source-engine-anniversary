@@ -34,6 +34,20 @@ def _load_ours(args):
     return mods, funcs
 
 
+def _data_check(args, retail, mods):
+    if not getattr(args, 'data_check', False):
+        return None
+    from . import data
+    if retail.fmt != 'macho':
+        raise SystemExit('error: --data-check supports Mach-O only')
+    rimg = data.Image(retail.path)
+    oimgs = {}
+    for m in mods:
+        if m.fmt == 'macho' and m.member is None and m.path not in oimgs:
+            oimgs[m.path] = data.Image(m.path)
+    return rimg, oimgs
+
+
 def _include(args):
     if not getattr(args, 'include', None):
         return None
@@ -76,6 +90,9 @@ def cmd_diff(args):
             print(f'{o.name}: not found in retail ({retail.path})')
             return 1
         res = compare.compare(r, o, not args.no_target_check)
+        dc = _data_check(args, retail, [o.module] if o.module.member is None else [])
+        if dc:
+            report.apply_data_check([res], *dc)
         pretty = report.demangle([o.key]).get(o.key, o.key)
         print(f'function: {pretty}\n  symbol: {o.name}')
         print(f'  retail: {r.addr:#x} size {r.size}{"" if r.size_known else " (extent unknown)"}'
@@ -83,6 +100,9 @@ def cmd_diff(args):
         print(f'  ours:   size {o.size}  object {o.obj_path or o.module.label}')
         print(f'  status: {res.status}' + (f'  ({res.reason})' if res.reason else '')
               + (f'  masked bytes {res.masked_bytes}' if res.masked_bytes else ''))
+        for k, a, b in res.data_mismatches:
+            from . import data as _d
+            print(f'  data ref +{k:#x} ({_d.kind_of(a, b)}): retail {_d.show(a)}  ours {_d.show(b)}')
         if res.status == compare.DIFFERS or args.listing:
             if not x86.have_capstone():
                 print('  (capstone not installed: showing masked hex rows)')
@@ -90,7 +110,8 @@ def cmd_diff(args):
             print('\n'.join(lines))
         return 0 if res.status != compare.DIFFERS else 2
 
-    data = report.run(retail, ours, args.retail_object, args.all_retail, not args.no_target_check, _include(args))
+    data = report.run(retail, ours, args.retail_object, args.all_retail, not args.no_target_check, _include(args),
+                      _data_check(args, retail, mods))
     for n in data['notes']:
         print(f'note: {n}', file=sys.stderr)
     results = data['results']
@@ -125,13 +146,30 @@ def cmd_diff(args):
 def cmd_report(args):
     retail = _load_retail(args)
     mods, ours = _load_ours(args)
-    data = report.run(retail, ours, args.retail_object, args.all_retail, not args.no_target_check, _include(args))
+    data = report.run(retail, ours, args.retail_object, args.all_retail, not args.no_target_check, _include(args),
+                      _data_check(args, retail, mods))
     out = args.out or os.path.join(os.getcwd(), 'bytematch-report')
     doc = report.write(out, dict(retail=os.path.abspath(args.retail), ours=os.path.abspath(args.ours),
                                  ours_modules=len(mods)), data, diff_lines=args.diff_lines, top=args.top)
     f, b = doc['summary']['functions'], doc['summary']['bytes']
     print(f'{out}.json\n{out}.md')
     print(f'scope={doc["scope"]} functions {f["matched"]}/{f["total"]} ({f["pct"]}%)  bytes {b["matched"]}/{b["total"]} ({b["pct"]}%)')
+    return 0
+
+
+def cmd_data(args):
+    from . import audit
+    tree = args.tree or os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+    log = (lambda m: print(f'[data] {m}', file=sys.stderr)) if args.verbose else None
+    doc = audit.audit(args.retail, args.ours, tree=tree, pristine=args.pristine, sources=not args.no_sources, log=log)
+    out = args.out or os.path.join(os.getcwd(), 'bytematch-data')
+    audit.write(out, doc, args.title)
+    s = doc['summary']
+    print(f'{out}.json\n{out}.md')
+    print(f'literals retail {s["retail_strings"]} ours {s["ours_strings"]}: differing {s["differing"]}, '
+          f'retail-only {s["missing"]}, ours-only {s["extra"]}, moved {s["moved"]}; '
+          f'functions not truly matching {s["functions_not_truly_matching"]}/{s["matched_functions"]} '
+          f'(strings {s["functions_string_mismatch"]}); data symbols differing {s["data_symbols_differing"]}')
     return 0
 
 
@@ -250,6 +288,9 @@ def main(argv=None):
         sp.add_argument('--all-retail', action='store_true', help='judge against every retail function, not just our objects')
         sp.add_argument('--include', help='regex on symbol names to restrict the comparison')
         sp.add_argument('--no-target-check', action='store_true', help='do not flag relocations that resolve to different symbols')
+        sp.add_argument('--data-check', action='store_true',
+                        help='Mach-O: matched functions whose masked data references resolve to different strings, '
+                             'globals or constants count as differing')
 
     d = sub.add_parser('diff', help='compare functions; with --symbol show an instruction diff')
     common(d)
@@ -269,6 +310,18 @@ def main(argv=None):
     r.add_argument('--diff-lines', type=int, default=12, help='max diff lines per differing function')
     r.add_argument('--top', type=int, default=40, help='differing functions shown in markdown')
     r.set_defaults(fn=cmd_report)
+
+    da = sub.add_parser('data', help='Mach-O data audit: literals, constant data, data refs of matched functions')
+    da.add_argument('--retail', required=True)
+    da.add_argument('--ours', required=True, help='our linked module (or one object)')
+    da.add_argument('--out', help='output path prefix (default ./bytematch-data)')
+    da.add_argument('--tree', help='source tree for locating literals (default: this checkout)')
+    da.add_argument('--pristine', default='/Users/yashsingh/p/sco/source-engine-2018-hl2_src',
+                    help='pristine leak to search for retail-only literals')
+    da.add_argument('--no-sources', action='store_true', help='skip source location')
+    da.add_argument('--title')
+    da.add_argument('-v', '--verbose', action='store_true')
+    da.set_defaults(fn=cmd_data)
 
     f = sub.add_parser('funcs', help='list the functions extracted from a module')
     f.add_argument('module')
