@@ -1257,6 +1257,7 @@
  "GLMDisplayDB": {
   "headers": [
    "public/togl/linuxwin/glmdisplaydb.h",
+   "public/togl/osx/glmdisplaydb.h",
    "public/togles/linuxwin/glmdisplaydb.h"
   ],
   "reference": "bin/launcher:GLMDisplayDB",
@@ -1403,10 +1404,10 @@
   "reference": "bin/bsppack:CBSPPack",
   "retail_len": 10,
   "retail_len_basis": "shortest deriving subtable",
-  "sdk2013_len": null,
+  "sdk2013_len": 10,
   "versions": {
    "ours": [
-    "IBSPPACK004"
+    "IBSPPACK003"
    ],
    "retail": [
     "IBSPPACK003"
@@ -1620,7 +1621,7 @@
   "reference": "bin/engine:CGameClient",
   "retail_len": 41,
   "retail_len_basis": "shortest deriving subtable",
-  "sdk2013_len": 40,
+  "sdk2013_len": 41,
   "versions": {
    "ours": [],
    "retail": [],
@@ -1742,7 +1743,7 @@
   "reference": "bin/engine:CGameClient",
   "retail_len": 16,
   "retail_len_basis": "shortest deriving subtable",
-  "sdk2013_len": 15,
+  "sdk2013_len": 16,
   "versions": {
    "ours": [],
    "retail": [],
@@ -2414,7 +2415,7 @@
   "reference": "episodic/client:CGameClientExports",
   "retail_len": 12,
   "retail_len_basis": "shortest deriving subtable",
-  "sdk2013_len": null,
+  "sdk2013_len": 12,
   "versions": {
    "ours": [
     "GameClientExports001"
@@ -3761,7 +3762,7 @@
   "reference": "episodic/client:CPoseDebuggerImpl",
   "retail_len": 2,
   "retail_len_basis": "shortest deriving subtable",
-  "sdk2013_len": null,
+  "sdk2013_len": 2,
   "versions": {
    "ours": [],
    "retail": [],
@@ -4568,8 +4569,7 @@
   "versions": {
    "ours": [
     "VSERVERTOOLS001",
-    "VSERVERTOOLS002",
-    "VSERVERTOOLS003"
+    "VSERVERTOOLS002"
    ],
    "retail": [
     "VSERVERTOOLS002"
@@ -4586,8 +4586,7 @@
   "versions": {
    "ours": [
     "VSERVERTOOLS001",
-    "VSERVERTOOLS002",
-    "VSERVERTOOLS003"
+    "VSERVERTOOLS002"
    ],
    "retail": [
     "VSERVERTOOLS001"
@@ -5054,8 +5053,8 @@
    "public/materialsystem/itexture.h"
   ],
   "reference": "bin/materialsystem:CDummyTexture",
-  "retail_len": 31,
-  "retail_len_basis": "shortest deriving subtable",
+  "retail_len": 30,
+  "retail_len_basis": "override: GetEmbeddedTexture is CDummyTexture's own virtual (SDK 2013 ITexture has 30 slots; CTexture gets it from ITextureInternal)",
   "sdk2013_len": 30,
   "versions": {
    "ours": [],
@@ -5155,6 +5154,20 @@
    "sdk2013": [
     "VEngineRandom001"
    ]
+  }
+ },
+ "IUnknown": {
+  "headers": [
+   "public/togl/dx_iunknown.h"
+  ],
+  "reference": "bin/libtogl:IDirect3D9",
+  "retail_len": 2,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
   }
  },
  "IUploadGameStats": {
@@ -5556,8 +5569,8 @@
    "public/vtf/vtf.h"
   ],
   "reference": "bin/engine:CVTFTexture",
-  "retail_len": 56,
-  "retail_len_basis": "shortest deriving subtable",
+  "retail_len": 55,
+  "retail_len_basis": "override: NormalizeTopMipLevel is CVTFTexture's own virtual (SDK 2013 IVTFTexture has 55 slots)",
   "sdk2013_len": 55,
   "versions": {
    "ours": [],
@@ -5753,8 +5766,8 @@
    "public/engine/audio/ivoicerecord.h"
   ],
   "reference": "bin/engine:VoiceRecord_AudioQueue",
-  "retail_len": 8,
-  "retail_len_basis": "shortest deriving subtable",
+  "retail_len": 7,
+  "retail_len_basis": "override: Init() is VoiceRecord_AudioQueue's own virtual (ours is Init(int); engine voice code, not the interface)",
   "sdk2013_len": null,
   "versions": {
    "ours": [],

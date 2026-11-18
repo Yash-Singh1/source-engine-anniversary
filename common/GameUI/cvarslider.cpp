@@ -325,7 +325,7 @@ void CCvarSlider::OnSliderMoved()
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CCvarSlider::OnSliderDragEnd( void )
+void CCvarSlider::OnApplyChanges( void )
 {
 	if ( !m_bCreatedInCode )
 	{

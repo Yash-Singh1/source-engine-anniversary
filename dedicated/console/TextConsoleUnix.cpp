@@ -45,12 +45,12 @@ TINFO_SYM(int,    tgetflag, (char *id), (id), return);
 TINFO_SYM(int,    tgetnum,  (char *id), (id), return);
 TINFO_SYM(int,    tgetent,  (char *bufp, const char *name), (bufp, name), return);
 TINFO_SYM(char *, tgetstr,  (char *id, char **area), (id, area), return);
-
 #endif // LINUX
-
-//----------------------------------------------------------------------------------------------------------------------
-// init_tinfo_functions
-//----------------------------------------------------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+#define PRESET_READER_THREADID()
+#else // the reader thread can test g_threadid before pthread_create has stored it
+#define PRESET_READER_THREADID() ( g_threadid = (pthread_t)0 )
+#endif
 static bool init_tinfo_functions()
 {
 #if !defined( LINUX )
@@ -307,7 +307,7 @@ bool CTextConsoleUnix::Init()
 		void *(*terminal_threadproc) (void *) = editline_threadproc;
 		if ( !init_tinfo_functions() )
 			terminal_threadproc = fgets_threadproc;
-
+		PRESET_READER_THREADID();
 		if ( pthread_create( &g_threadid, NULL, terminal_threadproc, (void *)m_tty ) != 0 )
 		{
 			g_threadid = (pthread_t)-1;

@@ -303,7 +303,6 @@ CBaseClientState::CBaseClientState()
 	m_nCurrentSequence = 0;
 	m_nDeltaTick = 0;
 	m_bPaused = 0;
-	m_flPausedExpireTime = -1.f;
 	m_nViewEntity = 0;
 	m_nPlayerSlot = 0;
 	m_szLevelFileName[0] = 0;
@@ -358,7 +357,6 @@ void CBaseClientState::Clear( void )
 		m_NetChannel->Reset();
 	
 	m_bPaused = 0;
-	m_flPausedExpireTime = -1.f;
 	m_nViewEntity = 0;
 	m_nChallengeNr = 0;
 	m_flConnectTime = 0.0f;
@@ -427,7 +425,6 @@ void CBaseClientState::ConnectionStart(INetChannel *chan)
 	REGISTER_SVC_MSG( GameEventList );
 	REGISTER_SVC_MSG( GetCvarValue );
 	REGISTER_SVC_MSG( CmdKeyValues );
-	REGISTER_SVC_MSG( SetPauseTimed );
 }
 
 void CBaseClientState::ConnectionClosing( const char *reason )
@@ -1327,15 +1324,6 @@ bool CBaseClientState::ProcessSetPause( SVC_SetPause *msg )
 	VPROF( "ProcessSetPause" );
 
 	m_bPaused = msg->m_bPaused;
-	return true;
-}
-
-bool CBaseClientState::ProcessSetPauseTimed( SVC_SetPauseTimed *msg )
-{
-	VPROF( "ProcessSetPauseTimed" );
-
-	m_bPaused = msg->m_bPaused;
-	m_flPausedExpireTime = msg->m_flExpireTime;
 	return true;
 }
 

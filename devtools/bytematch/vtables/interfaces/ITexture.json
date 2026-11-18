@@ -52,8 +52,8 @@
    "ITexture"
   ]
  },
- "retail_len": 31,
- "retail_len_basis": "shortest deriving subtable",
+ "retail_len": 30,
+ "retail_len_basis": "override: GetEmbeddedTexture is CDummyTexture's own virtual (SDK 2013 ITexture has 30 slots; CTexture gets it from ITextureInternal)",
  "retail_len_bounds": {
   "shortest deriving subtable": 31
  },
@@ -237,29 +237,10 @@
    "name": "SaveToFile",
    "sig": "SaveToFile(char const*)",
    "symbol": "CDummyTexture::SaveToFile(char const*)"
-  },
-  {
-   "index": 30,
-   "name": "GetEmbeddedTexture",
-   "sig": "GetEmbeddedTexture(int)",
-   "symbol": "CDummyTexture::GetEmbeddedTexture(int)"
   }
  ],
- "derived_disagreements": [
-  {
-   "module": "bin/materialsystem",
-   "class": "CReferenceToHandleTexture",
-   "index": 30,
-   "ref": "GetEmbeddedTexture(int)",
-   "got": "Bind(Sampler_t)"
-  },
-  {
-   "module": "bin/materialsystem",
-   "class": "CTexture",
-   "index": 30,
-   "ref": "GetEmbeddedTexture(int)",
-   "got": "Bind(Sampler_t)"
-  }
+ "implementer_tail": [
+  "GetEmbeddedTexture(int)"
  ],
  "derived": [
   "bin/materialsystem:CDummyTexture",

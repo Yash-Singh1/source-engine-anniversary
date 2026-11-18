@@ -292,6 +292,21 @@ void CUtlSymbolTable::RemoveAll()
 }
 
 
+class CUtlFilenameSymbolTable::HashTable : public CUtlStableHashtable<CUtlConstString>
+{
+};
+
+CUtlFilenameSymbolTable::CUtlFilenameSymbolTable()
+{
+	m_Strings = new HashTable;
+}
+
+CUtlFilenameSymbolTable::~CUtlFilenameSymbolTable()
+{
+	delete m_Strings;
+}
+
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : *pFileName - 
@@ -316,7 +331,7 @@ FileNameHandle_t CUtlFilenameSymbolTable::FindOrAddFileName( const char *pFileNa
 	Q_strncpy( fn, pFileName, sizeof( fn ) );
 	Q_RemoveDotSlashes( fn );
 #ifdef _WIN32
-	strlwr( fn );
+	Q_strlower( fn );
 #endif
 
 	// Split the filename into constituent parts
@@ -328,18 +343,20 @@ FileNameHandle_t CUtlFilenameSymbolTable::FindOrAddFileName( const char *pFileNa
 	// not found, lock and look again
 	FileNameHandleInternal_t handle;
 	m_lock.LockForWrite();
-	handle.SetPath( m_PathStringPool.FindStringHandle( basepath ) );
-	handle.SetFile( m_FileStringPool.FindStringHandle( filename ) );
-	if ( handle.GetPath() && handle.GetFile() )
-	{
+	handle.path = m_Strings->Insert( basepath ) + 1;
+	handle.file = m_Strings->Insert( filename ) + 1;
+	//handle.path = m_StringPool.FindStringHandle( basepath );
+	//handle.file = m_StringPool.FindStringHandle( filename );
+	//if ( handle.path != m_Strings.InvalidHandle() && handle.file )
+	//{
 		// found
-		m_lock.UnlockWrite();
-		return *( FileNameHandle_t * )( &handle );
-	}
+	//	m_lock.UnlockWrite();
+	//	return *( FileNameHandle_t * )( &handle );
+	//}
 
 	// safely add it
-	handle.SetPath( m_PathStringPool.ReferenceStringHandle( basepath ) );
-	handle.SetFile( m_FileStringPool.ReferenceStringHandle( filename ) );
+	//handle.path = m_StringPool.ReferenceStringHandle( basepath );
+	//handle.file = m_StringPool.ReferenceStringHandle( filename );
 	m_lock.UnlockWrite();
 
 	return *( FileNameHandle_t * )( &handle );
@@ -357,7 +374,7 @@ FileNameHandle_t CUtlFilenameSymbolTable::FindFileName( const char *pFileName )
 	Q_strncpy( fn, pFileName, sizeof( fn ) );
 	Q_RemoveDotSlashes( fn );
 #ifdef _WIN32
-	strlwr( fn );
+	Q_strlower( fn );
 #endif
 
 	// Split the filename into constituent parts
@@ -368,13 +385,16 @@ FileNameHandle_t CUtlFilenameSymbolTable::FindFileName( const char *pFileName )
 
 	FileNameHandleInternal_t handle;
 
+	Assert( (uint16)(m_Strings->InvalidHandle() + 1) == 0 );
+
 	m_lock.LockForRead();
-	handle.SetPath( m_PathStringPool.FindStringHandle( basepath ) );
-	handle.SetFile( m_FileStringPool.FindStringHandle( filename ) );
+	handle.path = m_Strings->Find(basepath) + 1;
+	handle.file = m_Strings->Find(filename) + 1;
+	//handle.path = m_StringPool.FindStringHandle(basepath);
+	//handle.file = m_StringPool.FindStringHandle(filename);
 	m_lock.UnlockRead();
 
-
-	if ( ( handle.GetPath() == 0 )  || ( handle.GetFile() == 0 ) )
+	if ( handle.path == 0 || handle.file == 0 )
 		return NULL;
 
 	return *( FileNameHandle_t * )( &handle );
@@ -389,15 +409,17 @@ bool CUtlFilenameSymbolTable::String( const FileNameHandle_t& handle, char *buf,
 {
 	buf[ 0 ] = 0;
 
-	FileNameHandleInternal_t *internalFileHandle = ( FileNameHandleInternal_t * )&handle;
-	if ( !internalFileHandle )
+	FileNameHandleInternal_t *internal = ( FileNameHandleInternal_t * )&handle;
+	if ( !internal || !internal->file || !internal->path )
 	{
 		return false;
 	}
 
 	m_lock.LockForRead();
-	const char *path = m_PathStringPool.HandleToString( internalFileHandle->GetPath() );
-	const char *fn = m_FileStringPool.HandleToString( internalFileHandle->GetFile() );
+	//const char *path = m_StringPool.HandleToString(internal->path);
+	//const char *fn = m_StringPool.HandleToString(internal->file);
+	const char *path = (*m_Strings)[ internal->path - 1 ].Get();
+	const char *fn = (*m_Strings)[ internal->file - 1].Get();
 	m_lock.UnlockRead();
 
 	if ( !path || !fn )
@@ -413,34 +435,5 @@ bool CUtlFilenameSymbolTable::String( const FileNameHandle_t& handle, char *buf,
 
 void CUtlFilenameSymbolTable::RemoveAll()
 {
-	m_PathStringPool.FreeAll();
-	m_FileStringPool.FreeAll();
-}
-
-void CUtlFilenameSymbolTable::SpewStrings()
-{
-	m_lock.LockForRead();
-	m_PathStringPool.SpewStrings();
-	m_FileStringPool.SpewStrings();
-	m_lock.UnlockRead();
-}
-
-bool CUtlFilenameSymbolTable::SaveToBuffer( CUtlBuffer &buffer )
-{
-	m_lock.LockForRead();
-	bool bResult = m_PathStringPool.SaveToBuffer( buffer );
-	bResult = bResult && m_FileStringPool.SaveToBuffer( buffer );
-	m_lock.UnlockRead();
-
-	return bResult;
-}
-
-bool CUtlFilenameSymbolTable::RestoreFromBuffer( CUtlBuffer &buffer )
-{
-	m_lock.LockForWrite();
-	bool bResult = m_PathStringPool.RestoreFromBuffer( buffer );
-	bResult = bResult && m_FileStringPool.RestoreFromBuffer( buffer );
-	m_lock.UnlockWrite();
-
-	return bResult;
+	m_Strings->Purge();
 }

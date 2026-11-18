@@ -44,7 +44,21 @@
    "class": "CGameClientExports"
   }
  ],
- "sdk2013_len": null,
+ "sdk2013_len": 12,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "IsPlayerGameVoiceMuted(int)",
+  "MutePlayerGameVoice(int)",
+  "UnmutePlayerGameVoice(int)",
+  "OnGameUIActivated()",
+  "OnGameUIHidden()",
+  "CreateAchievementsPanel(vgui::Panel*)",
+  "DisplayAchievementPanel()",
+  "ShutdownAchievementPanel()",
+  "GetAchievementsPanelMinWidth() const",
+  "GetHolidayString()"
+ ],
  "retail_reference": {
   "module": "episodic/client",
   "class": "CGameClientExports",

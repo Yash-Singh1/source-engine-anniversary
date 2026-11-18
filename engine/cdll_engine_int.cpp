@@ -569,8 +569,6 @@ public:
 	virtual const char *GetMapName();
 	virtual const char *GetPatchVersion();
 
-	float			GetPausedExpireTime( void );
-
 	bool			StartDemoRecording( const char *pszFilename, const char *pszFolder = NULL );
 	void			StopDemoRecording( void );
 	void			TakeScreenshot( const char *pszFilename, const char *pszFolder = NULL );
@@ -2098,11 +2096,6 @@ const char *CEngineClient::GetPatchVersion()
 {
 	// UNIMPLEMENTED: retail returns its own version buffer; this uses the steam.inf version string.
 	return GetSteamInfIDVersionInfo().szVersionString;
-}
-
-float CEngineClient::GetPausedExpireTime( void )
-{
-	return cl.GetPausedExpireTime();
 }
 
 //-----------------------------------------------------------------------------

@@ -41,13 +41,6 @@ public:
 	/// Returns the cleaned out map name into the caller's buffer, and returns the friendly
 	/// game type name.
 	virtual const char *GetMapFriendlyNameAndGameType( const char *pszMapName, char *szFriendlyMapName, int cchFriendlyName ) = 0;
-
-	// Enable filtering of workshop maps, requires the game/tool loading us to feed subscription data. This is a
-	// slightly ugly workaround to TF2 not yet having native workshop UI in quickplay, once that is in place this should
-	// either be stripped back out or expanded to be directly aware of the steam workshop without being managed.
-	virtual void SetWorkshopEnabled( bool bManaged ) = 0;
-	virtual void AddWorkshopSubscribedMap( const char *pszMapName ) = 0;
-	virtual void RemoveWorkshopSubscribedMap( const char *pszMapName ) = 0;
 };
 
 #define SERVERBROWSER_INTERFACE_VERSION "ServerBrowser005"

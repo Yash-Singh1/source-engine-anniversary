@@ -14,7 +14,7 @@ import subprocess
 
 DEFINES = ['DX_TO_GL_ABSTRACTION', 'GL_GLEXT_PROTOTYPES', 'USE_SDL=1', 'OSX=1', '_OSX=1', 'POSIX=1', '_POSIX=1',
            'PLATFORM_POSIX=1', 'GNUC', 'NO_HOOK_MALLOC', '_DLL_EXT=.dylib', 'NO_MEMOVERRIDE_NEW_DELETE=1', 'NDEBUG',
-           'VERSION_SAFE_STEAM_API_INTERFACES']
+           'VERSION_SAFE_STEAM_API_INTERFACES', 'REPLAY_ENABLED']
 INCLUDES = ['public', 'public/tier0', 'public/tier1', 'common', 'game/shared', 'game/client', 'game/server']
 PRELUDE = ['tier0/platform.h', 'tier0/dbg.h', 'tier1/interface.h', 'tier1/utlvector.h', 'tier1/utlstring.h',
            'mathlib/vector.h', 'mathlib/mathlib.h', 'tier1/KeyValues.h']
@@ -37,7 +37,13 @@ def header_relpath(h):
 
 
 def probe_source(name, header, extra):
-    lines = [f'#include "{h}"' for h in PRELUDE + list(extra)]
+    # extras starting with '#' are emitted verbatim: leading ones before the prelude, the rest in order
+    extra = list(extra)
+    n = 0
+    while n < len(extra) and extra[n].startswith('#'):
+        n += 1
+    lines = extra[:n] + [f'#include "{h}"' for h in PRELUDE]
+    lines += [h if h.startswith('#') else f'#include "{h}"' for h in extra[n:]]
     lines.append(f'#include "{header_relpath(header)}"')
     # an out-of-line key function emits the vtable without needing a base constructor
     lines.append(f'struct __bm_probe : {name} {{ virtual void __bm_key(); }};')

@@ -2,6 +2,7 @@
  "interface": "GLMDisplayDB",
  "headers": [
   "public/togl/linuxwin/glmdisplaydb.h",
+  "public/togl/osx/glmdisplaydb.h",
   "public/togles/linuxwin/glmdisplaydb.h"
  ],
  "versions": {
