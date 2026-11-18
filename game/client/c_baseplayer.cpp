@@ -46,7 +46,7 @@
 #include "replay/ireplaysystem.h"
 #include "replay/ienginereplay.h"
 #endif
-#include "steam/steam_api.h"
+#include "steam_accessors.h"
 #include "sourcevr/isourcevirtualreality.h"
 #include "client_virtualreality.h"
 
@@ -2809,17 +2809,17 @@ bool C_BasePlayer::GetSteamID( CSteamID *pID )
 	player_info_t pi;
 	if ( engine->GetPlayerInfo( entindex(), &pi ) )
 	{
-		if ( pi.friendsID && steamapicontext && steamapicontext->SteamUtils() )
+		if ( pi.friendsID && SteamUtils() )
 		{
 #if 1	// new
 			static EUniverse universe = k_EUniverseInvalid;
 
 			if ( universe == k_EUniverseInvalid )
-				universe = steamapicontext->SteamUtils()->GetConnectedUniverse();
+				universe = SteamUtils()->GetConnectedUniverse();
 
 			pID->InstancedSet( pi.friendsID, 1, universe, k_EAccountTypeIndividual );
 #else	// old
-			pID->InstancedSet( pi.friendsID, 1, steamapicontext->SteamUtils()->GetConnectedUniverse(), k_EAccountTypeIndividual );
+			pID->InstancedSet( pi.friendsID, 1, SteamUtils()->GetConnectedUniverse(), k_EAccountTypeIndividual );
 #endif
 
 			return true;

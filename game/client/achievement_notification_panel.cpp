@@ -18,7 +18,7 @@
 #include <vgui_controls/Label.h>
 #include <vgui_controls/ImagePanel.h>
 #include "achievement_notification_panel.h"
-#include "steam/steam_api.h"
+#include "steam_accessors.h"
 #include "iachievementmgr.h"
 #include "fmtstr.h"
 
@@ -105,14 +105,14 @@ void CAchievementNotificationPanel::FireGameEvent( IGameEvent * event )
 		if ( IsPC() )
 		{
 			// shouldn't ever get achievement progress if steam not running and user logged in, but check just in case
-			if ( !steamapicontext->SteamUserStats() )
+			if ( !SteamUserStats() )
 			{				
 				Msg( "Steam not running, achievement progress notification not displayed\n" );
 			}
 			else 
 			{
 				// use Steam to show achievement progress UI
-				steamapicontext->SteamUserStats()->IndicateAchievementProgress( pchName, iCur, iMax );
+				SteamUserStats()->IndicateAchievementProgress( pchName, iCur, iMax );
 			}
 		}
 		else

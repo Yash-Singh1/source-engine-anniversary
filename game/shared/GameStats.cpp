@@ -34,7 +34,7 @@
 #include "voice_status.h"
 extern const ConVar *sv_cheats;
 #if !defined(NO_STEAM)
-#include "steam/steam_api.h"
+#include "steam_accessors.h"
 #endif
 #endif
 
@@ -1122,9 +1122,9 @@ bool CBaseGameStats_Driver::AddBaseDataForSend( KeyValues *pKV, StatSendType_t s
 
 #ifndef	NO_STEAM
 			// We can now get the game language from steam :)
-			if ( steamapicontext && steamapicontext->SteamApps() )
+			if ( SteamApps() )
 			{
-				const char *currentLanguage = steamapicontext->SteamApps()->GetCurrentGameLanguage();
+				const char *currentLanguage = SteamApps()->GetCurrentGameLanguage();
 				pKV->SetString( "Language", currentLanguage ? currentLanguage : "unknown" );
 			}
 #endif

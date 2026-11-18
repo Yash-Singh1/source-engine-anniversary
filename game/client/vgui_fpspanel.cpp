@@ -17,7 +17,7 @@
 #include "materialsystem/imaterialsystemhardwareconfig.h"
 #include "filesystem.h"
 #include "../common/xbox/xboxstubs.h"
-#include "steam/steam_api.h"
+#include "steam_accessors.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -324,10 +324,10 @@ void CFPSPanel::Paint()
 
 	if ( cl_showbattery.GetInt() > 0 )
 	{
-		if ( steamapicontext && steamapicontext->SteamUtils() && 
+		if ( SteamUtils() && 
 			( m_lastBatteryPercent == -1.0f || (gpGlobals->realtime - m_lastBatteryPercent) > 10.0f ) )
 		{
-			m_BatteryPercent = steamapicontext->SteamUtils()->GetCurrentBatteryPower();
+			m_BatteryPercent = SteamUtils()->GetCurrentBatteryPower();
 			m_lastBatteryPercent = gpGlobals->realtime;
 		}
 		

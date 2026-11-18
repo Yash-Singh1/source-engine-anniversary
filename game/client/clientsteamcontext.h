@@ -5,7 +5,7 @@
 #pragma once
 #endif
 
-#include "steam/steam_api.h"
+#include "steam_accessors.h"
 #include "utldelegate.h"
 
 struct SteamLoggedOnChange_t
@@ -14,7 +14,7 @@ struct SteamLoggedOnChange_t
 	bool bLoggedOn;
 };
 
-class CClientSteamContext : public CSteamAPIContext
+class CClientSteamContext
 {
 public:
 	CClientSteamContext();

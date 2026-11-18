@@ -15,7 +15,7 @@
 #include "prediction.h"
 #include "clientsideeffects.h"
 #include "particlemgr.h"
-#include "steam/steam_api.h"
+#include "steam_accessors.h"
 #include "initializer.h"
 #include "smoke_fog_overlay.h"
 #include "view.h"
@@ -1149,10 +1149,10 @@ void CHLClient::PostInit()
 	g_ClientVirtualReality.StartupComplete();
 
 #ifdef HL1MP_CLIENT_DLL
-	if ( s_cl_load_hl1_content.GetBool() && steamapicontext && steamapicontext->SteamApps() )
+	if ( s_cl_load_hl1_content.GetBool() && SteamApps() )
 	{
 		char szPath[ MAX_PATH*2 ];
-		int ccFolder= steamapicontext->SteamApps()->GetAppInstallDir( 280, szPath, sizeof(szPath) );
+		int ccFolder= SteamApps()->GetAppInstallDir( 280, szPath, sizeof(szPath) );
 		if ( ccFolder > 0 )
 		{
 			V_AppendSlash( szPath, sizeof(szPath) );
@@ -2633,13 +2633,13 @@ bool CHLClient::IsConnectedUserInfoChangeAllowed( IConVar *pCvar )
 CSteamID GetSteamIDForPlayerIndex( int iPlayerIndex )
 {
 	player_info_t pi;
-	if ( steamapicontext && steamapicontext->SteamUtils() )
+	if ( SteamUtils() )
 	{
 		if ( engine->GetPlayerInfo( iPlayerIndex, &pi ) )
 		{
 			if ( pi.friendsID )
 			{
-				return CSteamID( pi.friendsID, 1, steamapicontext->SteamUtils()->GetConnectedUniverse(), k_EAccountTypeIndividual );
+				return CSteamID( pi.friendsID, 1, SteamUtils()->GetConnectedUniverse(), k_EAccountTypeIndividual );
 			}
 		}
 	}

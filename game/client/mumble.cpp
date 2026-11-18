@@ -21,7 +21,7 @@
 
 #if !defined( _X360 ) && !defined( NO_STEAM )
 #include "steam/isteamuser.h"
-#include "steam/steam_api.h"
+#include "steam_accessors.h"
 #endif
 
 const char *COM_GetModDirectory(); // return the mod dir (rather than the complete -game param, which can be a path)
@@ -206,9 +206,9 @@ void CMumbleSystem::PostRender()
 		m_bHasSetPlayerUniqueId = false;
 	}
 
-	if ( !m_bHasSetPlayerUniqueId && steamapicontext && steamapicontext->SteamUser() )
+	if ( !m_bHasSetPlayerUniqueId && SteamUser() )
 	{
-		CSteamID steamid = steamapicontext->SteamUser()->GetSteamID();
+		CSteamID steamid = SteamUser()->GetSteamID();
 		if ( steamid.IsValid() )
 		{
 			int unTeam = pPlayer ? pPlayer->GetTeamNumber() : 0;
