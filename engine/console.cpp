@@ -30,7 +30,13 @@ bool con_debuglog = false;
 bool con_initialized = false;
 bool con_debuglogmapprefixed = false;
 
+#ifdef BYTEMATCH_RETAIL
+#define NOTIFY_TEXT_LOCK()
+#else
 CThreadFastMutex g_AsyncNotifyTextMutex;
+#define NOTIFY_TEXT_LOCK()	AUTO_LOCK( g_AsyncNotifyTextMutex )
+#endif
+#line 34
 
 static ConVar con_timestamp( "con_timestamp", "0", 0, "Prefix console.log entries with timestamps" );
 
@@ -159,7 +165,12 @@ public:
 	int				ProcessNotifyLines( int &left, int &top, int &right, int &bottom, bool bDraw );
 
 	// Draw helpers
+#ifdef BYTEMATCH_RETAIL
+	virtual int		DrawText( vgui::HFont font, int x, int y, wchar_t *data, ... );
+#else
 	virtual int		DrawText( vgui::HFont font, int x, int y, wchar_t *data );
+#endif
+#line 163
 
 	virtual bool	ShouldDraw( void );
 
@@ -181,7 +192,12 @@ private:
 		wchar_t		text[MAX_NOTIFY_TEXT_LINE];
 	};
 
+#ifdef BYTEMATCH_RETAIL
+	CUtlVector< CNotifyText >	m_NotifyText;
+#else
 	CCopyableUtlVector< CNotifyText >	m_NotifyText;
+#endif
+#line 185
 
 	enum
 	{
@@ -724,7 +740,7 @@ void Con_ColorPrintf( const Color& clr, const char *fmt, ... )
 	Q_vsnprintf (msg,sizeof( msg ), fmt,argptr);
 	va_end (argptr);
 
-	AUTO_LOCK( g_AsyncNotifyTextMutex );
+	NOTIFY_TEXT_LOCK();
 	if ( !HandleRedirectAndDebugLog( msg ) )
 	{
 		return;
@@ -873,7 +889,10 @@ CConPanel::CConPanel( vgui::Panel *parent ) : CBasePanel( parent, "CConPanel" )
 //-----------------------------------------------------------------------------
 CConPanel::~CConPanel( void )
 {
+#ifndef BYTEMATCH_RETAIL
 	g_pConPanel = NULL;
+#endif
+#line 869
 }
 
 void CConPanel::Con_NPrintf( int idx, const char *msg )
@@ -958,7 +977,7 @@ void CConPanel::AddToNotify( const Color& clr, char const *msg )
 		return;
 
 	// Protect against background modifications to m_NotifyText.
-	AUTO_LOCK( g_AsyncNotifyTextMutex );
+	NOTIFY_TEXT_LOCK();
 
 	CNotifyText *current = NULL;
 
@@ -1026,7 +1045,7 @@ void CConPanel::AddToNotify( const Color& clr, char const *msg )
 void CConPanel::ClearNotify()
 {
 	// Protect against background modifications to m_NotifyText.
-	AUTO_LOCK( g_AsyncNotifyTextMutex );
+	NOTIFY_TEXT_LOCK();
 
 	m_NotifyText.RemoveAll();
 }
@@ -1040,6 +1059,28 @@ void CConPanel::ApplySchemeSettings( vgui::IScheme *pScheme )
 	m_hFontFixed = pScheme->GetFont( "DefaultFixedDropShadow", false );
 }
 
+#ifdef BYTEMATCH_RETAIL
+int CConPanel::DrawText( vgui::HFont font, int x, int y, wchar_t *data, ... )
+{
+	va_list argptr;
+	wchar_t szText[ 1024 ];
+	va_start( argptr, data );
+	vswprintf( szText, ARRAYSIZE( szText ) - 1, data, argptr );
+	szText[ ARRAYSIZE( szText ) - 1 ] = 0;
+	va_end( argptr );
+
+	int len = DrawColoredText( font,
+	                           x,
+	                           y,
+	                           255,
+	                           255,
+	                           255,
+	                           255,
+	                           szText );
+
+	return len;
+}
+#else
 int CConPanel::DrawText( vgui::HFont font, int x, int y, wchar_t *data )
 {
 	int len = DrawColoredText( font,
@@ -1053,6 +1094,8 @@ int CConPanel::DrawText( vgui::HFont font, int x, int y, wchar_t *data )
 
 	return len;
 }
+#endif
+#line 1048
 
 
 //-----------------------------------------------------------------------------
@@ -1072,7 +1115,7 @@ bool CConPanel::ShouldDraw()
 	if ( !Con_IsVisible() )
 	{
 		// Protect against background modifications to m_NotifyText.
-		AUTO_LOCK( g_AsyncNotifyTextMutex );
+		NOTIFY_TEXT_LOCK();
 
 		int i;
 		int c = m_NotifyText.Count();
@@ -1128,9 +1171,15 @@ void CConPanel::DrawNotify( void )
 	// DEADLOCK WARNING: Cannot call DrawColoredText while holding g_AsyncNotifyTextMutex or
 	// deadlock can occur while MatQueue0 holds material system lock and attempts to add text
 	// to m_NotifyText.
+#ifdef BYTEMATCH_RETAIL
+	int c = m_NotifyText.Count();
+	for ( int i = 0; i < c; i++ )
+	{
+		CNotifyText *notify = &m_NotifyText[ i ];
+#else
 	CUtlVector< CNotifyText > textToDraw;
 	{
-		AUTO_LOCK( g_AsyncNotifyTextMutex );
+		NOTIFY_TEXT_LOCK();
 		textToDraw = m_NotifyText;
 	}
 
@@ -1138,6 +1187,8 @@ void CConPanel::DrawNotify( void )
 	for ( int i = 0; i < c; i++ )
 	{
 		CNotifyText *notify = &textToDraw[ i ];
+#endif
+#line 1133
 
 		float timeleft = notify->liferemaining;
 	
