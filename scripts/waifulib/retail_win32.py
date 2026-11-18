@@ -61,6 +61,9 @@ def options(opt):
 	grp.add_option('--sdk2013', action = 'store', dest = 'SDK2013',
 		default = os.environ.get('SOURCE_SDK_2013', '/Volumes/Storage/sco/source-sdk-2013/src'),
 		help = 'Source SDK 2013 src/ directory, for lib/public/libz.lib [default: %default]')
+	grp.add_option('--hl2src', action = 'store', dest = 'HL2SRC',
+		default = os.environ.get('HL2SRC', os.path.expanduser('~/p/sco/source-engine-2018-hl2_src')),
+		help = '2018 hl2_src tree, for RAD Telemetry\'s headers (thirdparty/telemetry/include) [default: %default]')
 
 def toolchain(ctx):
 	path = ctx.path.find_node(TOOLCHAIN_DIR).abspath()
@@ -173,6 +176,24 @@ def retail_win32_configure(conf):
 		p = os.path.join(o.SDK2013, d)
 		if os.path.isdir(p):
 			v.append_value('RETAIL_LIBPATH', [p])
+	# vprof_telemetry.h includes "../../thirdparty/telemetry/include/telemetry.h"; an include
+	# directory two levels below a thirdparty/telemetry link resolves it to hl2_src's copy.
+	tm = os.path.join(o.HL2SRC, 'thirdparty', 'telemetry')
+	if os.path.isfile(os.path.join(tm, 'include', 'telemetry.h')):
+		root = conf.bldnode.make_node('retail-win32-telemetry')
+		inc = root.make_node('include/tier0')
+		inc.mkdir()
+		link = os.path.join(root.abspath(), 'thirdparty', 'telemetry')
+		if os.path.lexists(link):
+			os.remove(link)
+		os.makedirs(os.path.dirname(link), exist_ok=True)
+		os.symlink(tm, link)
+		v.RETAIL_TELEMETRY_INCLUDE = inc.abspath()
+		v.RETAIL_TELEMETRY_DEFINES = []
+	else:
+		Logs.warn('retail-win32: %s not found; RAD Telemetry zones compiled out (RAD_TELEMETRY_DISABLED)' % tm)
+		v.RETAIL_TELEMETRY_INCLUDE = ''
+		v.RETAIL_TELEMETRY_DEFINES = ['RAD_TELEMETRY_DISABLED']
 	Logs.info('retail-win32: MSVC %s, wine %s, modules %s' % (V.VS, V.WINE_BIN, ','.join(want)))
 
 def closure(m, names):
@@ -250,6 +271,8 @@ def retail_win32_module(bld, name, m, idx, subdir=None):
 		includes.insert(0, bld.retail_override)
 	if bld.env.RETAIL_THIRDPARTY_INCLUDE:
 		includes.append(bld.root.find_dir(bld.env.RETAIL_THIRDPARTY_INCLUDE))
+	if bld.env.RETAIL_TELEMETRY_INCLUDE:
+		includes.append(bld.root.find_dir(bld.env.RETAIL_TELEMETRY_INCLUDE))
 	pdbdir = bdir.make_node(subdir) if subdir else bdir
 	pdbdir.mkdir()
 	cl = m['cl'] + ['/FS', '/Fd' + pdbdir.make_node('vc120.pdb').abspath()] if '/Zi' in m['cl'] else list(m['cl'])
@@ -295,7 +318,7 @@ def retail_win32_module(bld, name, m, idx, subdir=None):
 		name     = name,
 		path     = pdir,
 		includes = includes,
-		defines  = m['defines'] + RETAIL_DEFINES,
+		defines  = m['defines'] + RETAIL_DEFINES + bld.env.RETAIL_TELEMETRY_DEFINES,
 		use      = use,
 		install_path = None,
 		idx      = idx,
@@ -360,7 +383,7 @@ def retail_win32_per_file(self):
 					f += ['/FS', '/Fd' + pdb.abspath()]
 				e.CFLAGS = e.CXXFLAGS = self.retail_base + f
 			if defines:
-				e.DEFINES = list(defines) + RETAIL_DEFINES
+				e.DEFINES = list(defines) + RETAIL_DEFINES + self.env.RETAIL_TELEMETRY_DEFINES
 			if mode:
 				sw = ['/Yc' + hdr if mode == 'create' else '/Yu' + hdr, '/Fp' + pch.abspath()]
 				# a PCH's creator and users share a PDB; separate PCHs get separate PDBs so
