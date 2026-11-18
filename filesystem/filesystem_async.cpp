@@ -1027,6 +1027,9 @@ FSAsyncStatus_t CBaseFileSystem::AsyncAppendFile(const char *pAppendToFileName, 
 CThreadMutex g_AsyncFinishMutex;
 void CBaseFileSystem::AsyncFinishAll( int iToPriority )
 {
+	if ( m_nNoFinishAllOnSearchPaths )
+		return;
+
 	if ( m_pThreadPool)
 	{
 		AUTO_LOCK( g_AsyncFinishMutex );
