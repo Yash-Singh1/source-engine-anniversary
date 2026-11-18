@@ -279,11 +279,16 @@ public:
 
 	void Discard()
 	{
+#ifdef BYTEMATCH_RETAIL
+		m_buf.Purge();
+#else
 		// TODO(johns): Neutered -- Tear this class out. This can no longer be discarded with transparently compressed
 		//              BSPs. This is on the range of 500k of memory, and is probably overly complex for the savings in
 		//              the current era.
 		DevMsg("TODO: Refusing to discard %u bytes\n", sizeof(T) * m_nCount);
 		// m_buf.Purge();
+#endif
+#line 287
 	}
 
 protected:
