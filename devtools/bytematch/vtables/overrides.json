@@ -160,6 +160,9 @@
   "retail_len": 3,
   "why": "AccumulateMorph belongs to the internal morph interface"
  },
+ "INetChannel": {
+  "header": "public/inetchannel.h"
+ },
  "INetworkStringTable": {
   "retail_len": 15,
   "why": "Dump/Lock are CNetworkStringTable's own"
