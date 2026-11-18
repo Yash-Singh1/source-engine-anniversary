@@ -26,7 +26,10 @@ abstract_class IClientVehicle : public IVehicle
 {
 public:
 	// When a player is in a vehicle, here's where the camera will be
+#ifndef BYTEMATCH_RETAIL
 	virtual void GetVehicleFOV( float &flFOV ) = 0;
+#endif
+#line 30
 
 	// Allows the vehicle to restrict view angles, blend, etc.
 	virtual void UpdateViewAngles( C_BasePlayer *pLocalPlayer, CUserCmd *pCmd ) = 0;

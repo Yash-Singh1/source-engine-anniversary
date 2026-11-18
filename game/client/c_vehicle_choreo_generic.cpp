@@ -49,10 +49,13 @@ public:
 
 	// IClientVehicle overrides.
 	virtual void GetVehicleViewPosition( int nRole, Vector *pOrigin, QAngle *pAngles, float *pFOV = NULL );
+#ifndef BYTEMATCH_RETAIL
 	virtual void GetVehicleFOV( float &flFOV )
 	{
 		flFOV = m_flFOV;
 	}
+#endif
+#line 56
 	virtual void DrawHudElements();
 	virtual bool IsPassengerUsingStandardWeapons( int nRole = VEHICLE_ROLE_DRIVER ) { return false; }
 	virtual void UpdateViewAngles( C_BasePlayer *pLocalPlayer, CUserCmd *pCmd );

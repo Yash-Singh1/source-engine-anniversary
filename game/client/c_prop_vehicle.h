@@ -41,7 +41,10 @@ public:
 // IClientVehicle overrides.
 public:
 
+#ifndef BYTEMATCH_RETAIL
 	virtual void GetVehicleFOV( float &flFOV ) { flFOV = m_flFOV; }
+#endif
+#line 45
 	virtual void DrawHudElements();
 	virtual void UpdateViewAngles( C_BasePlayer *pLocalPlayer, CUserCmd *pCmd );
 	virtual void DampenEyePosition( Vector &vecVehicleEyePos, QAngle &vecVehicleEyeAngles );
