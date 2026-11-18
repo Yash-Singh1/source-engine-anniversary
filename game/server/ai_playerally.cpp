@@ -658,21 +658,24 @@ bool CAI_PlayerAlly::SelectIdleSpeech( AISpeechSelection_t *pSelection )
 //-----------------------------------------------------------------------------
 bool CAI_PlayerAlly::SelectAlertSpeech( AISpeechSelection_t *pSelection )
 {
-#ifdef HL2_EPISODIC
-	CBasePlayer *pTarget = assert_cast<CBasePlayer *>(FindSpeechTarget( AIST_PLAYERS | AIST_FACING_TARGET ));
-	if ( pTarget )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
-		if ( pTarget->IsAlive() )
+#ifdef HL2_EPISODIC
+		CBasePlayer *pTarget = assert_cast<CBasePlayer *>(FindSpeechTarget( AIST_PLAYERS | AIST_FACING_TARGET ));
+		if ( pTarget )
 		{
-			float flHealthPerc = ((float)pTarget->m_iHealth / (float)pTarget->m_iMaxHealth);
-			if ( flHealthPerc < 1.0 )
+			if ( pTarget->IsAlive() )
 			{
-				if ( SelectSpeechResponse( TLK_PLHURT, NULL, pTarget, pSelection ) )
-					return true;
+				float flHealthPerc = ((float)pTarget->m_iHealth / (float)pTarget->m_iMaxHealth);
+				if ( flHealthPerc < 1.0 )
+				{
+					if ( SelectSpeechResponse( TLK_PLHURT, NULL, pTarget, pSelection ) )
+						return true;
+				}
 			}
 		}
-	}
 #endif
+	}
 
 	return SelectIdleSpeech( pSelection );
 }
@@ -742,69 +745,72 @@ bool CAI_PlayerAlly::SelectQuestionAndAnswerSpeech( AISpeechSelection_t *pSelect
 //-----------------------------------------------------------------------------
 void CAI_PlayerAlly::PostSpeakDispatchResponse( AIConcept_t concept, AI_Response *response )
 {
-#ifdef HL2_EPISODIC
-	CAI_AllySpeechManager *pSpeechManager = GetAllySpeechManager();
-	ConceptInfo_t *pConceptInfo	= pSpeechManager->GetConceptInfo( concept );
-	if ( pConceptInfo && (pConceptInfo->flags & AICF_QUESTION) && GetSpeechTarget() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
-		bool bSaidHelloToNPC = !Q_strcmp(concept, "TLK_HELLO_NPC");
-
-		float duration = GetExpresser()->GetSemaphoreAvailableTime(this) - gpGlobals->curtime;
-
-		if ( rr_debug_qa.GetBool() )
+#ifdef HL2_EPISODIC
+		CAI_AllySpeechManager *pSpeechManager = GetAllySpeechManager();
+		ConceptInfo_t *pConceptInfo	= pSpeechManager->GetConceptInfo( concept );
+		if ( pConceptInfo && (pConceptInfo->flags & AICF_QUESTION) && GetSpeechTarget() )
 		{
+			bool bSaidHelloToNPC = !Q_strcmp(concept, "TLK_HELLO_NPC");
+
+			float duration = GetExpresser()->GetSemaphoreAvailableTime(this) - gpGlobals->curtime;
+
+			if ( rr_debug_qa.GetBool() )
+			{
+				if ( bSaidHelloToNPC )
+				{
+					Warning("Q&A: '%s' said Hello to '%s' (concept %s)\n", GetDebugName(), GetSpeechTarget()->GetDebugName(), concept );
+				}
+				else
+				{
+					Warning("Q&A: '%s' questioned '%s' (concept %s)\n", GetDebugName(), GetSpeechTarget()->GetDebugName(), concept );
+				}
+				NDebugOverlay::HorzArrow( GetAbsOrigin(), GetSpeechTarget()->GetAbsOrigin(), 8, 0, 255, 0, 64, true, duration );
+			}
+
+			// If we spoke a Question, tell our friend to answer
+			const char *pszInput;
 			if ( bSaidHelloToNPC )
 			{
-				Warning("Q&A: '%s' said Hello to '%s' (concept %s)\n", GetDebugName(), GetSpeechTarget()->GetDebugName(), concept );
+				pszInput = "AnswerQuestionHello";
 			}
 			else
 			{
-				Warning("Q&A: '%s' questioned '%s' (concept %s)\n", GetDebugName(), GetSpeechTarget()->GetDebugName(), concept );
+				pszInput = "AnswerQuestion";
 			}
-			NDebugOverlay::HorzArrow( GetAbsOrigin(), GetSpeechTarget()->GetAbsOrigin(), 8, 0, 255, 0, 64, true, duration );
-		}
 
-		// If we spoke a Question, tell our friend to answer
-		const char *pszInput;
-		if ( bSaidHelloToNPC )
+			// Set the input parameter to the random number we used to find the Question
+			variant_t value;
+			value.SetInt( m_iQARandomNumber );
+			g_EventQueue.AddEvent( GetSpeechTarget(), pszInput, value, duration + .2, this, this );
+
+			if ( GetSpeechTarget()->MyNPCPointer() )
+			{
+				AddLookTarget( GetSpeechTarget()->MyNPCPointer(), 1.0, duration + random->RandomFloat( 0.4, 1.2 ), 0.5 );
+				GetSpeechTarget()->MyNPCPointer()->AddLookTarget( this, 1.0, duration + random->RandomFloat( 0.4, 1 ), 0.7 );
+			}
+
+			// Don't let anyone else butt in.
+			DeferAllIdleSpeech( random->RandomFloat( TALKER_DEFER_IDLE_SPEAK_MIN, TALKER_DEFER_IDLE_SPEAK_MAX ), GetSpeechTarget()->MyNPCPointer() );
+		}
+		else if ( pConceptInfo && (pConceptInfo->flags & AICF_ANSWER) && GetSpeechTarget() )
 		{
-			pszInput = "AnswerQuestionHello";
-		}
-		else
-		{
-			pszInput = "AnswerQuestion";
-		}
-
-		// Set the input parameter to the random number we used to find the Question
-		variant_t value;
-		value.SetInt( m_iQARandomNumber );
-		g_EventQueue.AddEvent( GetSpeechTarget(), pszInput, value, duration + .2, this, this );
-
-		if ( GetSpeechTarget()->MyNPCPointer() )
-		{
-			AddLookTarget( GetSpeechTarget()->MyNPCPointer(), 1.0, duration + random->RandomFloat( 0.4, 1.2 ), 0.5 );
-			GetSpeechTarget()->MyNPCPointer()->AddLookTarget( this, 1.0, duration + random->RandomFloat( 0.4, 1 ), 0.7 );
+			float duration = GetExpresser()->GetSemaphoreAvailableTime(this) - gpGlobals->curtime;
+			if ( rr_debug_qa.GetBool() )
+			{
+				NDebugOverlay::HorzArrow( GetAbsOrigin(), GetSpeechTarget()->GetAbsOrigin(), 8, 0, 255, 0, 64, true, duration );
+			}
+			if ( GetSpeechTarget()->MyNPCPointer() )
+			{
+				AddLookTarget( GetSpeechTarget()->MyNPCPointer(), 1.0, duration + random->RandomFloat( 0, 0.3 ), 0.5 );
+				GetSpeechTarget()->MyNPCPointer()->AddLookTarget( this, 1.0, duration + random->RandomFloat( 0.2, 0.5 ), 0.7 );
+			}
 		}
 
-		// Don't let anyone else butt in.
-		DeferAllIdleSpeech( random->RandomFloat( TALKER_DEFER_IDLE_SPEAK_MIN, TALKER_DEFER_IDLE_SPEAK_MAX ), GetSpeechTarget()->MyNPCPointer() );
+		m_hPotentialSpeechTarget = NULL;
+#endif
 	}
-	else if ( pConceptInfo && (pConceptInfo->flags & AICF_ANSWER) && GetSpeechTarget() )
-	{
-		float duration = GetExpresser()->GetSemaphoreAvailableTime(this) - gpGlobals->curtime;
-		if ( rr_debug_qa.GetBool() )
-		{
-			NDebugOverlay::HorzArrow( GetAbsOrigin(), GetSpeechTarget()->GetAbsOrigin(), 8, 0, 255, 0, 64, true, duration );
-		}
-		if ( GetSpeechTarget()->MyNPCPointer() )
-		{
-			AddLookTarget( GetSpeechTarget()->MyNPCPointer(), 1.0, duration + random->RandomFloat( 0, 0.3 ), 0.5 );
-			GetSpeechTarget()->MyNPCPointer()->AddLookTarget( this, 1.0, duration + random->RandomFloat( 0.2, 0.5 ), 0.7 );
-		}
-	}
-
-	m_hPotentialSpeechTarget = NULL;
-#endif // HL2_EPISODIC
 }
 
 //-----------------------------------------------------------------------------

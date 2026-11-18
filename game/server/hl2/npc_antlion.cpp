@@ -2551,15 +2551,20 @@ int CNPC_Antlion::SelectSchedule( void )
 
 void CNPC_Antlion::Ignite ( float flFlameLifetime, bool bNPCOnly, float flSize, bool bCalledByLevelDesigner )
 {
+	if ( HL2_EPISODIC_ACTIVE() )
+	{
 #ifdef HL2_EPISODIC
-	float flDamage = m_iHealth + 1;
+		float flDamage = m_iHealth + 1;
 
-	CTakeDamageInfo	dmgInfo( this, this, flDamage, DMG_GENERIC );
-	GuessDamageForce( &dmgInfo, Vector( 0, 0, 8 ), GetAbsOrigin() );
-	TakeDamage( dmgInfo );
-#else
-	BaseClass::Ignite( flFlameLifetime, bNPCOnly, flSize, bCalledByLevelDesigner );
+		CTakeDamageInfo	dmgInfo( this, this, flDamage, DMG_GENERIC );
+		GuessDamageForce( &dmgInfo, Vector( 0, 0, 8 ), GetAbsOrigin() );
+		TakeDamage( dmgInfo );
 #endif
+	}
+	else
+	{
+		BaseClass::Ignite( flFlameLifetime, bNPCOnly, flSize, bCalledByLevelDesigner );
+	}
 
 }
 
@@ -4366,38 +4371,43 @@ void CNPC_Antlion::InputJumpAtTarget( inputdata_t &inputdata )
 		return;
 	}
 
-#if HL2_EPISODIC
-
-	// Try the jump
-	AIMoveTrace_t moveTrace;
-	Vector targetPos = pJumpTarget->GetAbsOrigin();
-
-	// initialize jump state
-	float minJumpHeight = 0.0;
-	float maxHorzVel = 800.0f;
-
-	// initial jump, sets baseline for minJumpHeight
-	Vector vecApex;
-	Vector rawJumpVel = GetMoveProbe()->CalcJumpLaunchVelocity(GetAbsOrigin(), targetPos, GetCurrentGravity() * GetJumpGravity(), &minJumpHeight, maxHorzVel, &vecApex );
-
-	if ( g_debug_antlion.GetInt() == 2 )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
-		NDebugOverlay::Box( targetPos, GetHullMins(), GetHullMaxs(), 0, 255, 0, 0, 5 );
-		NDebugOverlay::Line( GetAbsOrigin(), targetPos, 0, 255, 0, 0, 5 );
-		NDebugOverlay::Line( GetAbsOrigin(), rawJumpVel, 255, 255, 0, 0, 5 );
-	}
+#ifdef HL2_EPISODIC
 
-	m_vecSavedJump = rawJumpVel;
+		// Try the jump
+		AIMoveTrace_t moveTrace;
+		Vector targetPos = pJumpTarget->GetAbsOrigin();
 
-#else	
+		// initialize jump state
+		float minJumpHeight = 0.0;
+		float maxHorzVel = 800.0f;
 
-	// Get the direction and speed to our target
-	Vector vecJumpDir = ( pJumpTarget->GetAbsOrigin() - GetAbsOrigin() );
-	VectorNormalize( vecJumpDir );
-	vecJumpDir *= 800.0f;	// FIXME: We'd like to pass this in as a parameter, but comma delimited lists are bad
-	m_vecSavedJump = vecJumpDir;
+		// initial jump, sets baseline for minJumpHeight
+		Vector vecApex;
+		Vector rawJumpVel = GetMoveProbe()->CalcJumpLaunchVelocity(GetAbsOrigin(), targetPos, GetCurrentGravity() * GetJumpGravity(), &minJumpHeight, maxHorzVel, &vecApex );
+
+		if ( g_debug_antlion.GetInt() == 2 )
+		{
+			NDebugOverlay::Box( targetPos, GetHullMins(), GetHullMaxs(), 0, 255, 0, 0, 5 );
+			NDebugOverlay::Line( GetAbsOrigin(), targetPos, 0, 255, 0, 0, 5 );
+			NDebugOverlay::Line( GetAbsOrigin(), rawJumpVel, 255, 255, 0, 0, 5 );
+		}
+
+		m_vecSavedJump = rawJumpVel;
 
 #endif
+	}
+	else
+	{
+
+		// Get the direction and speed to our target
+		Vector vecJumpDir = ( pJumpTarget->GetAbsOrigin() - GetAbsOrigin() );
+		VectorNormalize( vecJumpDir );
+		vecJumpDir *= 800.0f;	// FIXME: We'd like to pass this in as a parameter, but comma delimited lists are bad
+		m_vecSavedJump = vecJumpDir;
+
+	}
 
 	SetCondition( COND_ANTLION_CAN_JUMP_AT_TARGET );
 }

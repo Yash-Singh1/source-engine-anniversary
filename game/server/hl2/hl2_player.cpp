@@ -2454,19 +2454,22 @@ void CHL2_Player::Event_KilledOther( CBaseEntity *pVictim, const CTakeDamageInfo
 {
 	BaseClass::Event_KilledOther( pVictim, info );
 
+	if ( HL2_EPISODIC_ACTIVE() )
+	{
 #ifdef HL2_EPISODIC
 
-	CAI_BaseNPC **ppAIs = g_AI_Manager.AccessAIs();
+		CAI_BaseNPC **ppAIs = g_AI_Manager.AccessAIs();
 
-	for ( int i = 0; i < g_AI_Manager.NumAIs(); i++ )
-	{
-		if ( ppAIs[i] && ppAIs[i]->IRelationType(this) == D_LI )
+		for ( int i = 0; i < g_AI_Manager.NumAIs(); i++ )
 		{
-			ppAIs[i]->OnPlayerKilledOther( pVictim, info );
+			if ( ppAIs[i] && ppAIs[i]->IRelationType(this) == D_LI )
+			{
+				ppAIs[i]->OnPlayerKilledOther( pVictim, info );
+			}
 		}
-	}
 
 #endif
+	}
 }
 
 //-----------------------------------------------------------------------------

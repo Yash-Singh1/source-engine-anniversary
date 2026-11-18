@@ -5488,21 +5488,24 @@ void CGrenadeHelicopter::ExplodeConcussion( CBaseEntity *pOther )
 		}
 	}
 
+	if ( HL2_EPISODIC_ACTIVE() )
+	{
 #ifdef HL2_EPISODIC
-	CBaseEntity *pEntityHit = pOther;
-	if ( pEntityHit->ClassMatches( "phys_bone_follower" ) && pEntityHit->GetOwnerEntity() )
-	{
-		pEntityHit = pEntityHit->GetOwnerEntity();
-	}
-	if ( ( CLASS_COMBINE_GUNSHIP != pEntityHit->Classify() ) || !pEntityHit->ClassMatches( "npc_helicopter" ) )
-	{
-		// We hit something other than a helicopter.  If the player threw us, send a miss event
-		if ( IsThrownByPlayer() )
+		CBaseEntity *pEntityHit = pOther;
+		if ( pEntityHit->ClassMatches( "phys_bone_follower" ) && pEntityHit->GetOwnerEntity() )
 		{
-			SendMissEvent();
-		}		
+			pEntityHit = pEntityHit->GetOwnerEntity();
+		}
+		if ( ( CLASS_COMBINE_GUNSHIP != pEntityHit->Classify() ) || !pEntityHit->ClassMatches( "npc_helicopter" ) )
+		{
+			// We hit something other than a helicopter.  If the player threw us, send a miss event
+			if ( IsThrownByPlayer() )
+			{
+				SendMissEvent();
+			}		
+		}
+#endif
 	}
-#endif // HL2_EPISODIC
 
 	Vector vecVelocity;
 	GetVelocity( &vecVelocity, NULL );

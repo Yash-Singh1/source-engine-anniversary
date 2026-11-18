@@ -539,22 +539,27 @@ void CNPC_Barnacle::BarnacleThink ( void )
 			else
 			{
 				// Finished digesting
-#if HL2_EPISODIC
-				// have to save this off because LostPrey() resets it (and if we take damage before hitting that,
-				// then the dead thing will go flying)
-				bool poisoned = m_bSwallowingPoison;
+				if ( HL2_EPISODIC_ACTIVE() )
+				{
+#ifdef HL2_EPISODIC
+					// have to save this off because LostPrey() resets it (and if we take damage before hitting that,
+					// then the dead thing will go flying)
+					bool poisoned = m_bSwallowingPoison;
 
-				LostPrey( true ); // Remove all evidence
-				m_flDigestFinish = 0;
+					LostPrey( true ); // Remove all evidence
+					m_flDigestFinish = 0;
 
-				if ( poisoned )
-				{	// hurt me
-					TakeDamage( CTakeDamageInfo( this, this, m_iHealth, DMG_ACID ) );
-				}
-#else
-				LostPrey( true ); // Remove all evidence
-				m_flDigestFinish = 0;
+					if ( poisoned )
+					{	// hurt me
+						TakeDamage( CTakeDamageInfo( this, this, m_iHealth, DMG_ACID ) );
+					}
 #endif
+				}
+				else
+				{
+					LostPrey( true ); // Remove all evidence
+					m_flDigestFinish = 0;
+				}
 			}
 		}
 	}
@@ -1177,17 +1182,20 @@ void CNPC_Barnacle::LiftPhysicsObject( float flBiteZOffset )
 			SetActivity( (Activity)ACT_BARNACLE_TASTE_SPIT );
 		}
 		
-#ifdef HL2_EPISODIC
-		// if the object is a combatclass, send it a chomp interaction in case it wants to respond to that
-		// in some nonstandard way.
-		CBaseCombatCharacter *pBCC = dynamic_cast<CBaseCombatCharacter *>(pVictim);
-		if( pBCC ) 
+		if ( HL2_EPISODIC_ACTIVE() )
 		{
-			Vector tipPos = m_vecTip.Get();
+#ifdef HL2_EPISODIC
+			// if the object is a combatclass, send it a chomp interaction in case it wants to respond to that
+			// in some nonstandard way.
+			CBaseCombatCharacter *pBCC = dynamic_cast<CBaseCombatCharacter *>(pVictim);
+			if( pBCC ) 
+			{
+				Vector tipPos = m_vecTip.Get();
 
-			pBCC->DispatchInteraction( g_interactionBarnacleVictimBite, &tipPos, this );
-		}
+				pBCC->DispatchInteraction( g_interactionBarnacleVictimBite, &tipPos, this );
+			}
 #endif
+		}
 	}
 	else
 	{
