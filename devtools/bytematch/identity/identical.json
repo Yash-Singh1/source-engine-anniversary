@@ -10,6 +10,7 @@
     {"target": "bugreporter_filequeue", "retail": "bin/bugreporter_filequeue.dylib", "size": 107324, "sha256": "f429f26805e6992e93fe017be30697868cf2b2ada2ce05c992658e2b1500ed31"},
     {"target": "stdshader_dx9", "retail": "bin/stdshader_dx9.dylib", "size": 1269984, "sha256": "13ed4a7060245ba39519fe9e62f9e848a1b4315e61ce1c626c0a9f48a014bd3d"},
     {"target": "vstdlib", "retail": "bin/libvstdlib.dylib", "size": 181248, "sha256": "0305b99d8d3ce20b47aa07356cced03c3e9383be9b20b06cd474c75a7e2a079f"},
-    {"target": "vaudio_miles", "retail": "bin/vaudio_miles.dylib", "size": 28900, "sha256": "51e6b5c1b81b66306fe3ad2e8a2f8f12f6fadd9d68252cecbc3ca2fc7dcf5806"}
+    {"target": "vaudio_miles", "retail": "bin/vaudio_miles.dylib", "size": 28900, "sha256": "51e6b5c1b81b66306fe3ad2e8a2f8f12f6fadd9d68252cecbc3ca2fc7dcf5806"},
+    {"target": "vtex_dll", "retail": "bin/vtex_dll.dylib", "size": 298736, "sha256": "c14816e9d29865e32f20d0d9cbd5b25b885b7bc8d7560bb61cfc9f5b846985bb"}
   ]
 }
