@@ -93,7 +93,14 @@ def main():
             modules.append(r)
             continue
         doc = json.load(open(r["prefix"] + ".json"))
-        doc.pop("moved", None)                   # long; kept in the per-module files
+        # long lists stay complete in the per-module files only
+        doc.pop("moved", None)
+        for x in doc.get("data_symbols", []):
+            x["diffs"] = x["diffs"][:4]
+        paths = [m for m in doc.get("functions", []) if m.get("category") in audit.BUILD_SIDE]
+        if len(paths) > 20:
+            drop = {id(m) for m in paths[20:]}
+            doc["functions"] = [m for m in doc["functions"] if id(m) not in drop]
         doc["module"], doc["name"], doc["kind"] = r["module"], r["name"], r["kind"]
         modules.append(doc)
     modules.sort(key=lambda d: (d.get("kind") != "module", d["name"]))

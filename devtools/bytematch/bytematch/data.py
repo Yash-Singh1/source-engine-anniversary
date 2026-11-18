@@ -373,6 +373,10 @@ class Image:
             n, off = self.symbol_at(addr, s)
             return ('code', generic(canonical('macho', n)) if n else None, off)
         n, off = self.symbol_at(addr, s)
+        if n and n.startswith('__ZTS') and not off:
+            # typeinfo names are C strings; where they live (__cstring or a _ZTS symbol) is placement
+            b = self.read(addr, 512)
+            return ('str', b[:b.find(b'\0')] if b'\0' in b else b)
         constant = s.name == '__const' or (n or '').startswith(('__ZTV', '__ZTI', '__ZTT', '__ZTS'))
         if constant and (n is None or off or generated(n)):
             # constant data: symbol extents are unknown (anonymous data follows named
