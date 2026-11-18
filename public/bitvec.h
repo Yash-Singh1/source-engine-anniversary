@@ -141,7 +141,12 @@ inline unsigned GetEndMask( int numBits )
 }
 
 
+#ifdef BYTEMATCH_RETAIL
+inline int GetBitForBitnum( int bitNum ) 
+#else
 inline uint GetBitForBitnum( int bitNum ) 
+#endif
+#line 145
 { 
 	static int bitsForBitnum[] = 
 	{
@@ -373,7 +378,12 @@ public:
 	int		FindNextSetBit(int iStartBit) const; // returns -1 if no set bit was found
 
 protected:
+#ifdef BYTEMATCH_RETAIL
+	CFixedBitVecBase()				{}
+#else
 	CFixedBitVecBase() = default;
+#endif
+#line 377
 	CFixedBitVecBase(int numBits)	{ Assert( numBits == NUM_BITS ); } // doesn't make sense, really. Supported to simplify templates & allow easy replacement of variable 
 	
 	void 		ValidateOperand( const CFixedBitVecBase<NUM_BITS> &operand ) const	{ } // no need, compiler does so statically
@@ -428,8 +438,16 @@ template < int NUM_BITS >
 class CBitVec : public CBitVecT< CFixedBitVecBase<NUM_BITS> >
 {
 public:
+#ifdef BYTEMATCH_RETAIL
+	CBitVec()
+	{
+	}
+	
+#else
 	CBitVec() = default;
 
+#endif
+#line 435
 	CBitVec(int numBits)
 	 : CBitVecT< CFixedBitVecBase<NUM_BITS> >(numBits)
 	{
@@ -1063,6 +1081,17 @@ inline int CFixedBitVecBase<NUM_BITS>::FindNextSetBit( int startBit ) const
 			const uint32 * RESTRICT pCurElem = Base() + wordIndex;
 			unsigned int elem = *pCurElem;
 			elem &= startMask;
+#ifdef BYTEMATCH_RETAIL
+			do 
+			{
+				if ( elem )
+					return FirstBitInWord(elem, wordIndex << 5);
+				++pCurElem;
+				elem = *pCurElem;
+				++wordIndex;
+			} while( wordIndex <= NUM_INTS-1);
+#else
+			// don't read past the last word
 			while ( wordIndex < NUM_INTS )
 			{
 				if ( elem )
@@ -1075,6 +1104,8 @@ inline int CFixedBitVecBase<NUM_BITS>::FindNextSetBit( int startBit ) const
 					elem = *pCurElem;
 				}
 			}
+#endif
+#line 1076
 		}
 
 	}
