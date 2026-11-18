@@ -597,8 +597,11 @@ void CPhysicsObject::SetMass( float mass )
 	}
 
 	Assert( mass > 0 );
-
+#ifndef BYTEMATCH_RETAIL
 	mass = clamp( mass, 1.f, VPHYSICS_MAX_MASS );
+#else
+	mass = clamp( mass, 0, VPHYSICS_MAX_MASS ); // NOTE: Allow zero procedurally, but not by initialization
+#endif
 	m_pObject->change_mass( mass );
 	SetVolume( m_volume );
 	RecomputeDragBases();
@@ -1042,7 +1045,11 @@ void CPhysicsObject::SetVelocityInstantaneous( const Vector *velocity, const Ang
 		return;
 	IVP_Core *core = m_pObject->get_core();
 
+#ifndef BYTEMATCH_RETAIL
 	WakeNow();
+#else
+	Wake();
+#endif
 
 	if ( velocity )
 	{
@@ -1402,10 +1409,18 @@ void CPhysicsObject::RemoveHinged()
 void CPhysicsObject::OutputDebugInfo() const
 {
 	Msg("-----------------\nObject: %s\n", m_pObject->get_name());
+#ifndef BYTEMATCH_RETAIL
 	Msg("Mass: %.3e (inv %.3e)\n", GetMass(), GetInvMass() );
+#else
+	Msg("Mass: %.1f (inv %.3f)\n", GetMass(), GetInvMass() );
+#endif
 	Vector inertia = GetInertia();
 	Vector invInertia = GetInvInertia();
+#ifndef BYTEMATCH_RETAIL
 	Msg("Inertia: %.3e, %.3e, %.3e (inv %.3e, %.3e, %.3e)\n", inertia.x, inertia.y, inertia.z, invInertia.x, invInertia.y, invInertia.z );
+#else
+	Msg("Inertia: %.2f, %.2f, %.2f (inv %.3f, %.3f, %.3f)\n", inertia.x, inertia.y, inertia.z, invInertia.x, invInertia.y, invInertia.z );
+#endif
 
 	Vector speed, angSpeed;
 	GetVelocity( &speed, &angSpeed );
@@ -1414,7 +1429,11 @@ void CPhysicsObject::OutputDebugInfo() const
 
 	float damp, angDamp;
 	GetDamping( &damp, &angDamp );
+#ifndef BYTEMATCH_RETAIL
 	Msg("Damping %.3e linear, %.3e angular\n", damp, angDamp );
+#else
+	Msg("Damping %.2f linear, %.2f angular\n", damp, angDamp );
+#endif
 
 	Msg("Linear Drag: %.2f, %.2f, %.2f (factor %.2f)\n", m_dragBasis.x, m_dragBasis.y, m_dragBasis.z, m_dragCoefficient );
 	Msg("Angular Drag: %.2f, %.2f, %.2f (factor %.2f)\n", m_angDragBasis.x, m_angDragBasis.y, m_angDragBasis.z, m_angDragCoefficient );
@@ -1470,7 +1489,8 @@ bool CPhysicsObject::IsAttachedToConstraint( bool bExternalOnly ) const
 
 static void InitObjectTemplate( IVP_Template_Real_Object &objectTemplate, int materialIndex, objectparams_t *pParams, bool isStatic )
 {
-	objectTemplate.mass = clamp( pParams->mass, VPHYSICS_MIN_MASS, VPHYSICS_MAX_MASS );
+	objectTemplate.mass = pParams->mass;
+	objectTemplate.mass = clamp( objectTemplate.mass, VPHYSICS_MIN_MASS, VPHYSICS_MAX_MASS );
 
 	if ( materialIndex >= 0 )
 	{
@@ -1502,8 +1522,13 @@ static void InitObjectTemplate( IVP_Template_Real_Object &objectTemplate, int ma
 	if ( inertia <= 0 )
 		inertia = 1.0;
 
+#ifndef BYTEMATCH_RETAIL
 	if ( inertia > 1e14f )
 		inertia = 1e14f;
+#else
+	if ( inertia > 1e18f )
+		inertia = 1e18f;
+#endif
 
 	objectTemplate.rot_inertia.set(inertia, inertia, inertia);
 	objectTemplate.rot_speed_damp_factor.set(pParams->rotdamping, pParams->rotdamping, pParams->rotdamping);
@@ -1859,6 +1884,7 @@ void CPhysicsObject::InitFromTemplate( CPhysicsEnvironment *pEnvironment, void *
 		EnableCollisions( true );
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	m_asleepSinceCreation = objectTemplate.asleepSinceCreation;
 
 	if ( objectTemplate.velocity.LengthSqr() != 0 || objectTemplate.angVelocity.LengthSqr() != 0 )
@@ -1876,6 +1902,24 @@ void CPhysicsObject::InitFromTemplate( CPhysicsEnvironment *pEnvironment, void *
 	{
 		Sleep();
 	}
+#else
+	// will wake up the object
+	if ( objectTemplate.velocity.LengthSqr() != 0 || objectTemplate.angVelocity.LengthSqr() != 0 )
+	{
+		SetVelocityInstantaneous( &objectTemplate.velocity, &objectTemplate.angVelocity );
+		if ( objectTemplate.isAsleep )
+		{
+			Sleep();
+		}
+	}
+
+	m_asleepSinceCreation = objectTemplate.asleepSinceCreation;
+	if ( !objectTemplate.isAsleep )
+	{
+		Assert( !objectTemplate.isStatic );
+		Wake();
+	}
+#endif
 
 	if ( objectTemplate.hingeAxis )
 	{

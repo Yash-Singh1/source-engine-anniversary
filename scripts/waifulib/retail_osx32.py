@@ -25,7 +25,7 @@ TOOLCHAIN_DIR = 'devtools/bytematch/toolchain'
 
 # Modules that compile and link in this mode. Not here: shaderapidx9 (compiles; our source
 # needs D3DX helpers that retail's togl doesn't export), the game modules (game lane),
-# chromehtml, vaudio_miles and vpk_osx32 (sources missing from this tree).
+# chromehtml and vaudio_miles (sources missing from this tree).
 RETAIL_MODULES = [
 	'tier0', 'tier1', 'mathlib', 'tier2', 'tier3', 'vstdlib',
 	'appframework', 'bitmap', 'vtf', 'choreoobjects', 'dmxloader', 'particles', 'vpklib',
@@ -36,7 +36,7 @@ RETAIL_MODULES = [
 	'ivp/havana', 'ivp/havana/havok/hk_base', 'ivp/havana/havok/hk_math',
 	'ivp/ivp_compact_builder', 'ivp/ivp_physics', 'vphysics', 'materialsystem/stdshaders',
 	'utils/bzip2', 'replay/common', 'replay', 'sourcevr', 'video/video_quicktime',
-	'utils/bsppack', 'utils/bugreporter_filequeue', 'utils/bugreporter_public',
+	'utils/bsppack', 'utils/bugreporter_filequeue', 'utils/bugreporter_public', 'utils/vpk',
 	'vgui2/vgui_surfacelib', 'vguimatsurface', 'gameui', 'engine',
 	'togl', 'materialsystem', 'launcher',
 ]
@@ -66,7 +66,6 @@ DEPOT_DYLIBS = ['libSDL2-2.0.0.dylib', 'libsteam_api.dylib', 'libMilesX86.dylib'
 # Symbols whose definition is source drift with no retail counterpart: left for
 # dynamic lookup instead of linking libraries retail doesn't link.
 UNDEFINED_OK = {
-	'bin/bsppack': ['__Z13LZMA_CompressPhjPj'],  # bsplib.cpp's RepackBSP path; retail has none
 	'bin/engine': ['_GetCPUFrequencyResults'],  # tier0 cpumonitoring, absent from retail tier0
 }
 

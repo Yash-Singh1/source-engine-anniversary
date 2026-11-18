@@ -53,12 +53,8 @@ RETAIL_SKIP = {
 # Files retail doesn't link that our tree still needs to link the module
 # (code that retail has in a file we lack). module -> files (tree-relative).
 RETAIL_KEEP = {
-	# CInputSystem still declares the touch API.
-	'bin/inputsystem': ['inputsystem/touch_sdl.cpp'],
 	# Our CBaseFileSystem uses the fork's CPackFile classes.
 	'bin/filesystem_stdio': ['filesystem/packfile.cpp'],
-	# Our vtex.cpp loads PNG sources through ImgUtl.
-	'bin/vtex_dll': ['common/imageutils.cpp'],
 	# Texture compositor callers in our materialsystem that retail's doesn't have.
 	'bin/materialsystem': ['materialsystem/ctexturecompositor.cpp'],
 	# Callers in our engine that retail's engine doesn't have.

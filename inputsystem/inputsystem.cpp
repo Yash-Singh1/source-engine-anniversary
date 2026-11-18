@@ -69,7 +69,9 @@ CInputSystem::CInputSystem()
 	m_JoysticksEnabled.ClearAllFlags();
 	m_nJoystickCount = 0;
 	m_bJoystickInitialized = false;
+#ifndef BYTEMATCH_RETAIL
 	m_bTouchInitialized = false;
+#endif
 	m_nPollCount = 0;
 	m_PrimaryUserId = INVALID_USER_ID;
 	m_uiMouseWheel = 0;
@@ -168,10 +170,10 @@ InitReturnVal_t CInputSystem::Init()
 	ButtonCode_UpdateScanCodeLayout();
 
 	joy_xcontroller_found.SetValue( 0 );
-	
+#ifndef BYTEMATCH_RETAIL
 	if( !m_bConsoleTextMode )
 		InitializeTouch();
-	
+#endif
 	if ( IsPC() && !m_bConsoleTextMode )
 	{
 		InitializeJoysticks();

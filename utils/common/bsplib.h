@@ -196,9 +196,14 @@ extern int			g_PhysDispSize;
 IZip				*GetPakFile( void );
 IZip				*GetSwapPakFile( void );
 void				ClearPakFile( IZip *pak );
+#ifndef BYTEMATCH_RETAIL
 void				AddFileToPak( IZip *pak, const char *pRelativeName, const char *fullpath, IZip::eCompressionType compressionType = IZip::eCompressionType_None );
 void				AddBufferToPak( IZip *pak, const char *pRelativeName, void *data, int length, bool bTextMode, IZip::eCompressionType compressionType = IZip::eCompressionType_None );
 void				AddDirToPak( IZip *pak, const char *pDirPath, const char *pPakPrefix = NULL );
+#else
+void				AddFileToPak( IZip *pak, const char *pRelativeName, const char *fullpath );
+void				AddBufferToPak( IZip *pak, const char *pRelativeName, void *data, int length, bool bTextMode );
+#endif
 bool				FileExistsInPak( IZip *pak, const char *pRelativeName );
 bool				ReadFileFromPak( IZip *pak, const char *pRelativeName, bool bTextMode, CUtlBuffer &buf );
 void				RemoveFileFromPak( IZip *pak, const char *pRelativeName );
@@ -297,8 +302,10 @@ void	PrintBSPFileSizes(void);
 void	PrintBSPPackDirectory(void);
 void	ReleasePakFileLumps(void);
 
+#ifndef BYTEMATCH_RETAIL
 bool	RepackBSPCallback_LZMA( CUtlBuffer &inputBuffer, CUtlBuffer &outputBuffer );
 bool	RepackBSP( CUtlBuffer &inputBuffer, CUtlBuffer &outputBuffer, CompressFunc_t pCompressFunc, IZip::eCompressionType packfileCompression );
+#endif
 bool	SwapBSPFile( const char *filename, const char *swapFilename, bool bSwapOnLoad, VTFConvertFunc_t pVTFConvertFunc, VHVFixupFunc_t pVHVFixupFunc, CompressFunc_t pCompressFunc );
 
 bool	GetPakFileLump( const char *pBSPFilename, void **pPakData, int *pPakSize );

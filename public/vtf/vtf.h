@@ -440,7 +440,11 @@ bool GetVTFPreload360Data( const char *pDebugName, CUtlBuffer &fileBufferIn, CUt
 
 // version number for the disk texture cache
 #define VTF_MAJOR_VERSION 7
+#ifndef BYTEMATCH_RETAIL
 #define VTF_MINOR_VERSION 5
+#else
+#define VTF_MINOR_VERSION 4
+#endif
 
 //-----------------------------------------------------------------------------
 // !!!!CRITICAL!!!! BEFORE YOU CHANGE THE FORMAT
@@ -455,6 +459,7 @@ bool GetVTFPreload360Data( const char *pDebugName, CUtlBuffer &fileBufferIn, CUt
 // compiler pads, the 360 compiler does NOT.
 //-----------------------------------------------------------------------------
 
+#ifndef BYTEMATCH_RETAIL
 // nillerusr: try to avoid problems with pragma pack, remove c++ inheritance to make this structs platform-independent
 
 struct alignas(16) VTFFileBaseHeader_t
@@ -548,6 +553,68 @@ struct alignas(16) VTFFileHeaderV7_3_t
 };
 
 typedef VTFFileHeaderV7_3_t VTFFileHeader_t;
+#else
+struct VTFFileBaseHeader_t
+{
+	DECLARE_BYTESWAP_DATADESC();
+	char fileTypeString[4]; // "VTF" Valve texture file
+	int version[2]; 		// version[0].version[1]
+	int headerSize;
+};
+
+struct VTFFileHeaderV7_1_t : public VTFFileBaseHeader_t 
+{
+	DECLARE_BYTESWAP_DATADESC();
+	unsigned short	width;
+	unsigned short	height;
+	unsigned int	flags;
+	unsigned short	numFrames;
+	unsigned short	startFrame;
+#if !defined( POSIX ) && !defined( _X360 )
+	VectorAligned	reflectivity;
+#else
+	// must manually align in order to maintain pack(1) expected layout with existing binaries
+	char			pad1[4];
+	Vector			reflectivity;
+	char			pad2[4];
+#endif
+	float			bumpScale;
+	ImageFormat		imageFormat;
+	unsigned char	numMipLevels;
+	ImageFormat		lowResImageFormat;
+	unsigned char	lowResImageWidth;
+	unsigned char	lowResImageHeight;	
+};
+
+struct VTFFileHeaderV7_2_t : public VTFFileHeaderV7_1_t
+{
+	DECLARE_BYTESWAP_DATADESC();
+
+	unsigned short depth;
+};
+
+struct VTFFileHeaderV7_3_t : public VTFFileHeaderV7_2_t
+{
+	DECLARE_BYTESWAP_DATADESC();
+
+	char			pad4[3];
+	unsigned int	numResources;
+
+#if defined( _X360 ) || defined( POSIX )
+	// must manually align in order to maintain pack(1) expected layout with existing binaries
+	char			pad5[8];
+#endif
+	
+	// AFTER THE IMPLICIT PADDING CAUSED BY THE COMPILER....
+	// *** followed by *** ResourceEntryInfo resources[0];
+	// Array of resource entry infos sorted ascending by type
+};
+
+struct VTFFileHeader_t : public VTFFileHeaderV7_3_t
+{
+	DECLARE_BYTESWAP_DATADESC();
+};
+#endif
 
 #define BYTE_POS( byteVal, shft )	uint32( uint32(uint8(byteVal)) << uint8(shft * 8) )
 #if !defined( _X360 )
