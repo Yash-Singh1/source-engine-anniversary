@@ -309,7 +309,7 @@ CConsolePanel::CConsolePanel( vgui::Panel *pParent, const char *pName, bool bSta
 	m_pHistory->SetVerticalScrollbar( !m_bStatusVersion );
 	if ( m_bStatusVersion )
 	{
-		m_pHistory->SetDrawOffsets( 3, 3 );
+		m_pHistory->SetDrawOffsets( QuickPropScale( 3 ), QuickPropScale( 3 ) );
 	}
 	m_pHistory->GotoTextEnd();
 	
@@ -846,33 +846,12 @@ void CConsolePanel::PerformLayout()
 
 	if ( !m_bStatusVersion )
 	{
-#ifdef BYTEMATCH_RETAIL
-		const int inset = 8;
-		const int entryHeight = 24;
-		const int topHeight = 4;
-		const int entryInset = 4;
-		const int submitWide = 64;
-		const int submitInset = 7; // x inset to pull the submit button away from the frame grab
-#else
-		float scale = 1;
-		if (IsProportional())
-		{
-			int screenW, screenH;
-			surface()->GetScreenSize(screenW, screenH);
-
-			int proW, proH;
-			surface()->GetProportionalBase(proW, proH);
-
-			scale = ((float)(screenH) / (float)(proH));
-		}
-
-		const int inset = 8 * scale;
-		const int entryHeight = 24 * scale;
-		const int topHeight = 4 * scale;
-		const int entryInset = 4 * scale;
-		const int submitWide = 64 * scale;
-		const int submitInset = 7 * scale; // x inset to pull the submit button away from the frame grab
-#endif
+		const int inset = QuickPropScale( 8 );
+		const int entryHeight = QuickPropScale( 24 );
+		const int topHeight = QuickPropScale( 4 );
+		const int entryInset = QuickPropScale( 4 );
+		const int submitWide = QuickPropScale( 64 );
+		const int submitInset = QuickPropScale( 7 ); // x inset to pull the submit button away from the frame grab
 
 		m_pHistory->SetPos(inset, inset + topHeight); 
 		m_pHistory->SetSize(wide - (inset * 2), tall - (entryInset * 2 + inset * 2 + topHeight + entryHeight));
@@ -887,7 +866,7 @@ void CConsolePanel::PerformLayout()
 	}
 	else
 	{
-		const int inset = 2;
+		const int inset = QuickPropScale( 2 );
 
 		int entryWidth = wide / 2;
 		if ( wide > 400 )
@@ -1274,7 +1253,7 @@ void CConsoleDialog::DumpConsoleTextToFile()
 
 void CConsoleDialog::OnKeyCodePressed( vgui::KeyCode code )
 {
-	if ( code == KEY_XBUTTON_B )
+	if ( GetBaseButtonCode( code ) == KEY_XBUTTON_B || GetBaseButtonCode( code ) == STEAMCONTROLLER_B )
 	{
 		Hide();
 	}

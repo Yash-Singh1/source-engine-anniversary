@@ -79,8 +79,8 @@ private:
 // singleton accessor
 CServerBrowser &ServerBrowser();
 
-class CSteamAPIContext;
-extern CSteamAPIContext *steamapicontext;
+
+
 
 
 #endif // SERVERBROWSER_H

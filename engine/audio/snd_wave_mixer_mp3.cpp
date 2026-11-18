@@ -25,8 +25,21 @@ CAudioMixerWaveMP3::CAudioMixerWaveMP3( IWaveData *data ) : CAudioMixerWave( dat
 	m_delaySamples = 0;
 	m_headerOffset = 0;
 	m_pStream = NULL;
+#ifdef BYTEMATCH_RETAIL
+	if ( vaudio )
+	{
+		m_pStream = vaudio->CreateMP3StreamDecoder( static_cast<IAudioStreamEvent *>(this) );
+	}
+
+	if ( m_pStream )
+	{
+		m_channelCount = m_pStream->GetOutputChannels();
+	}
+#else
 	m_bStreamInit = false;
 	m_channelCount = 0;
+#endif
+#line 37
 }
 
 
@@ -124,6 +137,9 @@ int CAudioMixerWaveMP3::StreamRequestData( void *pBuffer, int bytesRequested, in
 
 bool CAudioMixerWaveMP3::DecodeBlock()
 {
+#ifdef BYTEMATCH_RETAIL
+	m_sampleCount = m_pStream->Decode( m_samples, sizeof(m_samples) );
+#else
 	IAudioStream *pStream = GetStream();
 	if ( !pStream )
 	{
@@ -131,10 +147,13 @@ bool CAudioMixerWaveMP3::DecodeBlock()
 	}
 
 	m_sampleCount = pStream->Decode( m_samples, sizeof(m_samples) );
+#endif
+#line 135
 	m_samplePosition = 0;
 	return m_sampleCount > 0;
 }
 
+#ifndef BYTEMATCH_RETAIL
 IAudioStream *CAudioMixerWaveMP3::GetStream()
 {
 	if ( !m_bStreamInit )
@@ -164,6 +183,8 @@ IAudioStream *CAudioMixerWaveMP3::GetStream()
 
 	return m_pStream;
 }
+#endif
+#line 139
 
 //-----------------------------------------------------------------------------
 // Purpose: Read existing buffer or decompress a new block when necessary
@@ -179,6 +200,11 @@ int CAudioMixerWaveMP3::GetOutputData( void **pData, int sampleCount, char copyB
 			return 0;
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	if ( m_samplePosition < m_sampleCount )
+	{
+		int sampleSize = m_channelCount * 2;
+#else
 	IAudioStream *pStream = GetStream();
 	if ( !pStream )
 	{
@@ -189,6 +215,8 @@ int CAudioMixerWaveMP3::GetOutputData( void **pData, int sampleCount, char copyB
 	if ( m_samplePosition < m_sampleCount )
 	{
 		int sampleSize = pStream->GetOutputChannels() * 2;
+#endif
+#line 157
 		*pData = (void *)(m_samples + m_samplePosition);
 		int available = m_sampleCount - m_samplePosition;
 		int bytesRequired = sampleCount * sampleSize;
@@ -234,5 +262,26 @@ void CAudioMixerWaveMP3::SetStartupDelaySamples( int delaySamples )
 {
 	m_delaySamples = delaySamples;
 }
+
+#ifdef BYTEMATCH_RETAIL
+CAudioMixerWaveMP3 *CreateMP3Mixer( IWaveData *data, int *pSampleRate )
+{
+	CAudioMixerWaveMP3 *pMixer = new CAudioMixerWaveMP3( data );
+	if ( pMixer->IsValid() )
+	{
+		if ( pSampleRate )
+		{
+			*pSampleRate = pMixer->GetStreamOutputRate();
+		}
+		return pMixer;
+	}
+	else
+	{
+		delete pMixer;
+	}
+	return NULL;
+}
+#endif
+#line 220
 
 #endif

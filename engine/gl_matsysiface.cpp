@@ -222,8 +222,15 @@ static void RegisterLightmappedSurface( SurfaceHandle_t surfID )
 	// fixme: lightmapSize needs to be in msurface_t once we
 	// switch over to having lightmap size untied to base texture
 	// size
+#ifdef BYTEMATCH_RETAIL
+	// materialsystem writes a one texel border around each lightmap
+	lightmapSize[0] = ( MSurf_LightmapExtents( surfID )[0] ) + 3;
+	lightmapSize[1] = ( MSurf_LightmapExtents( surfID )[1] ) + 3;
+#else
 	lightmapSize[0] = ( MSurf_LightmapExtents( surfID )[0] ) + 1;
 	lightmapSize[1] = ( MSurf_LightmapExtents( surfID )[1] ) + 1;
+#endif
+#line 228
 	
 	// Allocate all bumped lightmaps next to each other so that we can just 
 	// increment the s texcoord by pSurf->bumpSTexCoordOffset to render the next
@@ -249,8 +256,17 @@ static void RegisterLightmappedSurface( SurfaceHandle_t surfID )
 		offsetIntoLightmapPage,
 		MSurf_TexInfo( surfID )->material );
 
+#ifdef BYTEMATCH_RETAIL
+	// skip the border
 	MSurf_OffsetIntoLightmapPage( surfID )[0] = offsetIntoLightmapPage[0];
 	MSurf_OffsetIntoLightmapPage( surfID )[1] = offsetIntoLightmapPage[1];
+	MSurf_OffsetIntoLightmapPage( surfID )[0]++;
+	MSurf_OffsetIntoLightmapPage( surfID )[1]++;
+#else
+	MSurf_OffsetIntoLightmapPage( surfID )[0] = offsetIntoLightmapPage[0];
+	MSurf_OffsetIntoLightmapPage( surfID )[1] = offsetIntoLightmapPage[1];
+#endif
+#line 258
 }
 
 static void RegisterUnlightmappedSurface( SurfaceHandle_t surfID )

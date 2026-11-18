@@ -89,6 +89,9 @@ bool	GLMDetectSLGU( void )
 }
 
 
+#ifdef BYTEMATCH_RETAIL
+#line 82
+#endif
 bool	GLMDetectScaledResolveMode( uint osComboVersion, bool hasSLGU );
 bool	GLMDetectScaledResolveMode( uint osComboVersion, bool hasSLGU )
 {

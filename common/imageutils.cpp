@@ -48,7 +48,7 @@ extern void longjmp( jmp_buf, int ) __attribute__((noreturn));
 	extern class IMatchmaking *matchmaking;
 	extern class IXboxSystem  *xboxsystem;
 	extern class IAchievementMgr *achievementmgr; 
-	extern class CSteamAPIContext *steamapicontext;
+
 #elif REPLAY_DLL
 	#include "replay/ienginereplay.h"
 	extern IEngineReplay *g_pEngine;

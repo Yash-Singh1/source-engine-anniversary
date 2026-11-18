@@ -125,6 +125,7 @@ public:
 	virtual int		GetSurfaceIndex( const char *pPropertyName ) const;
 	virtual void	GetPhysicsProperties( int surfaceDataIndex, float *density, float *thickness, float *friction, float *elasticity ) const;
 	virtual void	GetPhysicsParameters( int surfaceDataIndex, surfacephysicsparams_t *pParamsOut ) const;
+	virtual void	PurgeAllSurfaceData();
 	virtual surfacedata_t *GetSurfaceData( int surfaceDataIndex );
 	virtual const char *GetString( unsigned short stringTableIndex ) const;
 	virtual const char *GetPropName( int surfaceDataIndex ) const;
@@ -640,4 +641,13 @@ void CIVPMaterialManager::SetPropMap( int *map, int mapSize )
 	{
 		m_propMap[i] = (unsigned short)map[i];
 	}
+}
+
+
+void CPhysicsSurfaceProps::PurgeAllSurfaceData()
+{
+	m_strings.RemoveAll();
+	m_fileList.RemoveAll();
+	m_props.RemoveAll();
+	m_init = false;
 }

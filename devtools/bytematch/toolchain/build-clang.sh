@@ -10,6 +10,8 @@
 #                       was configured from the same sources
 #
 # Installs <prefix>/clang-<version>/bin/{clang,clang++} and lib/clang/*/include.
+# patches/clang-<version>-*.patch apply to that version only and are listed
+# in <prefix>/clang-<version>/PATCHES.
 set -euo pipefail
 HERE=$(cd "$(dirname "$0")" && pwd)
 . "$HERE/versions.sh"
@@ -30,6 +32,7 @@ SHA=$(clang_sha256 "$V") || { echo "unknown clang version $V" >&2; exit 1; }
 WORK=${WORK:-$PREFIX/work}
 DEST=$PREFIX/clang-$V
 mkdir -p "$WORK" "$PREFIX"
+VERSION_PATCHES=$(ls "$HERE/patches/clang-$V-"*.patch 2>/dev/null || true)
 
 install_from() {
 	local b=$1
@@ -40,6 +43,7 @@ install_from() {
 	ln -sf clang "$DEST/bin/clang++"
 	cp -R "$b/lib/clang" "$DEST/lib/"
 	echo "$V" > "$DEST/VERSION"
+	for p in $VERSION_PATCHES; do basename "$p"; done > "$DEST/PATCHES"
 	"$DEST/bin/clang" --version | head -1
 	echo "installed $DEST"
 }
@@ -63,6 +67,9 @@ rm -rf "$SRC"
 mkdir -p "$SRC"
 tar -xzf "$TB" -C "$SRC" --strip-components=1
 (cd "$SRC" && patch -p1 --forward < "$HERE/patches/clang-intrusiverefcntptr-friend.patch")
+for p in $VERSION_PATCHES; do
+	(cd "$SRC" && patch -p1 --forward < "$p")
+done
 
 # Host-compiler compatibility knobs only; none affect generated i386 code:
 #  -D_XLOCALE__REGEX_H_  avoids the SDK's xlocale regex header clashing with llvm's regex

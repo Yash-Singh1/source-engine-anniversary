@@ -720,9 +720,9 @@ void CVideoMode_Common::WriteScreenshotToSteam( uint8 *pImage, int cubImage, int
 #if !defined(NO_STEAM)
 	if ( cl_savescreenshotstosteam.GetBool() )
 	{
-		if ( Steam3Client().SteamScreenshots() )
+		if ( SteamScreenshots() )
 		{
-			ScreenshotHandle hScreenshot = Steam3Client().SteamScreenshots()->WriteScreenshot( pImage, cubImage, width, height );
+			ScreenshotHandle hScreenshot = SteamScreenshots()->WriteScreenshot( pImage, cubImage, width, height );
 			ApplySteamScreenshotTags( hScreenshot );
 		}
 	}
@@ -741,9 +741,9 @@ void CVideoMode_Common::AddScreenshotToSteam( const char *pchFilename, int width
 #if !defined(NO_STEAM)
 	if ( cl_savescreenshotstosteam.GetBool() )
 	{
-		if ( Steam3Client().SteamScreenshots() )
+		if ( SteamScreenshots() )
 		{
-			ScreenshotHandle hScreenshot = Steam3Client().SteamScreenshots()->AddScreenshotToLibrary( pchFilename, NULL, width, height );
+			ScreenshotHandle hScreenshot = SteamScreenshots()->AddScreenshotToLibrary( pchFilename, NULL, width, height );
 			ApplySteamScreenshotTags( hScreenshot );
 		}
 	}
@@ -764,16 +764,16 @@ void CVideoMode_Common::ApplySteamScreenshotTags( ScreenshotHandle hScreenshot )
 	{
 		if ( cl_screenshotusertag.GetBool() )
 		{
-			if ( Steam3Client().SteamUtils() )
+			if ( SteamUtils() )
 			{
-				CSteamID steamID( cl_screenshotusertag.GetInt(), Steam3Client().SteamUtils()->GetConnectedUniverse(), k_EAccountTypeIndividual );
-				Steam3Client().SteamScreenshots()->TagUser( hScreenshot, steamID );
+				CSteamID steamID( cl_screenshotusertag.GetInt(), SteamUtils()->GetConnectedUniverse(), k_EAccountTypeIndividual );
+				SteamScreenshots()->TagUser( hScreenshot, steamID );
 			}
 		}
 		const char *pchLocation = cl_screenshotlocation.GetString();
 		if ( pchLocation && pchLocation[0] )
 		{
-			Steam3Client().SteamScreenshots()->SetLocation( hScreenshot, pchLocation );
+			SteamScreenshots()->SetLocation( hScreenshot, pchLocation );
 		}
 	}	
 }

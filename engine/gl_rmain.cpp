@@ -128,9 +128,14 @@ float GetScreenAspect( )
 	if ( r_aspectratio.GetFloat() > 0.0f )
 		return r_aspectratio.GetFloat();
 
+#ifdef BYTEMATCH_RETAIL
+	CMatRenderContextPtr pRenderContext( materials );
+#else
 	// mikesart: This is just sticking in unnecessary BeginRender/EndRender calls to the queue.
 	//   CMatRenderContextPtr pRenderContext( materials );
 	IMatRenderContext *pRenderContext = g_pMaterialSystem->GetRenderContext();
+#endif
+#line 132
 
 	int width, height;
 	pRenderContext->GetRenderTargetDimensions( width, height );

@@ -519,10 +519,17 @@ static bool ShallWarnTx( KeyValues *kv, ITexture *tx )
  	if ( tx->GetFlags() & ( TEXTUREFLAGS_NOLOD | TEXTUREFLAGS_NOMIP | TEXTUREFLAGS_ONEBITALPHA	) )
  		return true;
 
+#ifdef BYTEMATCH_RETAIL
+	if ( stricmp( "DXT1", kv->GetString( KEYNAME_FORMAT ) )  && stricmp( "DXT5", kv->GetString( KEYNAME_FORMAT ) ) &&
+		 stricmp( "ATI1N", kv->GetString( KEYNAME_FORMAT ) ) && stricmp( "ATI2N", kv->GetString( KEYNAME_FORMAT ) ) )
+		return true;
+#else
 	if ( stricmp( "DXT1", kv->GetString( KEYNAME_FORMAT ) )  && stricmp( "DXT5", kv->GetString( KEYNAME_FORMAT ) ) &&
 		 stricmp( "ATI1N", kv->GetString( KEYNAME_FORMAT ) ) && stricmp( "ATI2N", kv->GetString( KEYNAME_FORMAT ) ) &&
 		 stricmp( "DXT5_RUNTIME", kv->GetString( KEYNAME_FORMAT ) ) )
 		return true;
+#endif
+#line 525
 
 	if ( kv->GetInt( KEYNAME_SIZE ) > g_warn_texkbytes )
 		return true;
@@ -3073,8 +3080,11 @@ void CTextureListPanel::OnTurnedOn()
 	if ( CRenderTextureEditor *pRe = m_pViewPanel->GetRenderTxEditor() )
 		pRe->Close();
 
+#ifndef BYTEMATCH_RETAIL
 	MakePopup( false, false );
 	MoveToFront();
+#endif
+#line 3075
 }
 
 void CTextureListPanel::Close()

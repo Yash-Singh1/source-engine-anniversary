@@ -1,5 +1,7 @@
 # shaderapidx9 (retail macOS)
 
+# shaderapidx9 (retail macOS)
+
 Retail: depot 223 `bin/shaderapidx9.dylib`; own objects listed below. Did not link in
 `--retail-osx32` at lane start (no per-function baseline; the ToGL lane measured 943/1361 of
 the compiled objects). Measured with `bytematch diff` against
@@ -11,42 +13,39 @@ debug map; vtable-less matrix stack), `nativeGetClientRect`; retail `DynamicStat
 ShaderApiStreaming001 out of the retail path; `IsOpenGL()` as a render backend query; D3D9
 `D3DFORMAT` values; leak bodies for constant uploads and caps.
 
-Known causes of the rest: `colorformatdx8` needs SDK 2013's 39-entry `ImageFormat` enum
-(cross-module header); the six `CTransitionTable` sort-vector functions differ only in
+Lane mod-matsys2: `colorformatdx8` now matches with retail's 39-entry `ImageFormat` enum, and
+`LoadTextureFromVTF` uploads every mip level (no `IVTFTexture::GetMipmapRange`). "At lane
+start" below is bytematch d276d8ee.
+
+Known causes of the rest: the six `CTransitionTable` sort-vector functions differ only in
 `AssertFatal` line numbers from `public/tier1/utlsortvector.h` (ours is one line short of
 SDK 2013 before line 179); meshdx8/texturedx8 are TF2-era dynamic buffer and texture code.
 
 | object | functions | matched now | matched at lane start | % bytes now |
 |---|---:|---:|---:|---:|
-| TransitionTable | 73 | 67 | - | 90.9 |
-| colorformatdx8 | 7 | 5 | - | 36.7 |
-| cvballoctracker | 5 | 5 | - | 100.0 |
-| hardwareconfig | 92 | 90 | - | 71.4 |
-| meshbase | 22 | 22 | - | 100.0 |
-| meshdx8 | 249 | 225 | - | 71.5 |
-| shaderapibase | 5 | 5 | - | 100.0 |
-| shaderapidx8 | 642 | 632 | - | 95.9 |
-| shaderdevicebase | 46 | 43 | - | 65.1 |
-| shaderdevicedx8 | 67 | 64 | - | 72.2 |
-| shadershadowdx8 | 65 | 65 | - | 100.0 |
-| texturedx8 | 11 | 8 | - | 74.8 |
-| vertexdecl | 17 | 16 | - | 98.8 |
-| vertexshaderdx8 | 49 | 47 | - | 95.5 |
-| winutils | 3 | 3 | - | 100.0 |
-| **total** | 1353 | 1297 | - | 85.6 |
+| TransitionTable | 73 | 73 | 73 | 100.0 |
+| colorformatdx8 | 7 | 7 | 5 | 100.0 |
+| cvballoctracker | 5 | 5 | 5 | 100.0 |
+| hardwareconfig | 92 | 90 | 90 | 71.4 |
+| meshbase | 22 | 22 | 22 | 100.0 |
+| meshdx8 | 249 | 225 | 225 | 71.5 |
+| shaderapibase | 5 | 5 | 5 | 100.0 |
+| shaderapidx8 | 642 | 633 | 633 | 97.1 |
+| shaderdevicebase | 46 | 43 | 43 | 65.1 |
+| shaderdevicedx8 | 67 | 64 | 64 | 72.2 |
+| shadershadowdx8 | 65 | 65 | 65 | 100.0 |
+| texturedx8 | 11 | 9 | 8 | 84.0 |
+| vertexdecl | 17 | 16 | 16 | 98.8 |
+| vertexshaderdx8 | 49 | 47 | 47 | 95.5 |
+| winutils | 3 | 3 | 3 | 100.0 |
+| **total** | 1353 | 1307 | 1304 | 89.2 |
 
 Status column: matched = exact or matches-after-masking; "fixed" = differed or was missing at lane start.
 
 | object | function | status | note |
 |---|---|---|---|
-| TransitionTable | `CUtlSortVector<CTransitionTable::ShadowStateDictEntry_t, CTransitionTable::ShadowStateDictLessFunc, CUtlVector<CTransitionTable::ShadowStateDictEntry_t, CUtlMemory<CTransitionTable::ShadowStateDictEntry_t, int>>>::Insert(CTransitionTable::ShadowStateDictEntry_t const&)` | differs | bytes |
-| TransitionTable | `CUtlSortVector<CTransitionTable::SnapshotDictEntry_t, CTransitionTable::SnapshotDictLessFunc, CUtlVector<CTransitionTable::SnapshotDictEntry_t, CUtlMemory<CTransitionTable::SnapshotDictEntry_t, int>>>::Insert(CTransitionTable::SnapshotDictEntry_t const&)` | differs | bytes |
-| TransitionTable | `CUtlSortVector<CTransitionTable::TransitionList_t, CTransitionTable::UniqueSnapshotLessFunc, CUtlVector<CTransitionTable::TransitionList_t, CUtlMemory<CTransitionTable::TransitionList_t, int>>>::Insert(CTransitionTable::TransitionList_t const&)` | differs | bytes |
-| TransitionTable | `int CUtlSortVector<CTransitionTable::ShadowStateDictEntry_t, CTransitionTable::ShadowStateDictLessFunc, CUtlVector<CTransitionTable::ShadowStateDictEntry_t, CUtlMemory<CTransitionTable::ShadowStateDictEntry_t, int>>>::FindLessOrEqual<CTransitionTable::ShadowStateDictEntry_t>(CTransitionTable::ShadowStateDictEntry_t const&, bool*) const` | differs | bytes |
-| TransitionTable | `int CUtlSortVector<CTransitionTable::SnapshotDictEntry_t, CTransitionTable::SnapshotDictLessFunc, CUtlVector<CTransitionTable::SnapshotDictEntry_t, CUtlMemory<CTransitionTable::SnapshotDictEntry_t, int>>>::FindLessOrEqual<CTransitionTable::SnapshotDictEntry_t>(CTransitionTable::SnapshotDictEntry_t const&, bool*) const` | differs | bytes |
-| TransitionTable | `int CUtlSortVector<CTransitionTable::TransitionList_t, CTransitionTable::UniqueSnapshotLessFunc, CUtlVector<CTransitionTable::TransitionList_t, CUtlMemory<CTransitionTable::TransitionList_t, int>>>::FindLessOrEqual<CTransitionTable::TransitionList_t>(CTransitionTable::TransitionList_t const&, bool*) const` | differs | bytes |
-| colorformatdx8 | `GetNearestD3DColorFormat(ImageFormat, bool, bool, bool)` | differs | size retail 4868 vs ours 4880 |
-| colorformatdx8 | `InitializeColorInformation(unsigned int, _D3DDEVTYPE, ImageFormat)` | differs | bytes |
+| colorformatdx8 | `GetNearestD3DColorFormat(ImageFormat, bool, bool, bool)` | matched | fixed (was differs) |
+| colorformatdx8 | `InitializeColorInformation(unsigned int, _D3DDEVTYPE, ImageFormat)` | matched | fixed (was differs) |
 | hardwareconfig | `CHardwareConfig::ForceCapsToDXLevel(HardwareCaps_t*, int, HardwareCaps_t const&)` | differs | size retail 1844 vs ours 1833 |
 | hardwareconfig | `CHardwareConfig::SetupHardwareCaps(int, HardwareCaps_t const&)` | differs | size retail 549 vs ours 503 |
 | meshdx8 | `CDynamicMeshDX8::SetVertexFormat(unsigned long long)` | differs | size retail 168 vs ours 192 |
@@ -59,7 +58,7 @@ Status column: matched = exact or matches-after-masking; "fixed" = differed or w
 | meshdx8 | `CMeshMgr::CopyStaticMeshIndexBufferToTempMeshIndexBuffer(CTempMeshDX8*, CMeshDX8*)` | differs | bytes |
 | meshdx8 | `CMeshMgr::CreateDynamicIndexBuffer()` | differs | size retail 329 vs ours 363 |
 | meshdx8 | `CMeshMgr::CreateVertexIDBuffer()` | differs | size retail 638 vs ours 603 |
-| meshdx8 | `CMeshMgr::DestroyDynamicIndexBuffer()` | differs | size retail 306 vs ours 25 |
+| meshdx8 | `CMeshMgr::DestroyDynamicIndexBuffer()` | missing |  |
 | meshdx8 | `CMeshMgr::DestroyVertexBuffers()` | differs | size retail 778 vs ours 887 |
 | meshdx8 | `CMeshMgr::DiscardVertexBuffers()` | differs | bytes |
 | meshdx8 | `CMeshMgr::GetDynamicMesh(IMaterial*, unsigned long long, int, bool, IMesh*, IMesh*)` | differs | size retail 448 vs ours 460 |
@@ -69,11 +68,10 @@ Status column: matched = exact or matches-after-masking; "fixed" = differed or w
 | meshdx8 | `CMeshMgr::SetRenderState(int, int, unsigned long long, int)` | differs | size retail 427 vs ours 435 |
 | meshdx8 | `CMeshMgr::Shutdown()` | differs | size retail 77 vs ours 80 |
 | meshdx8 | `CTempMeshDX8::BeginPass()` | differs | size retail 941 vs ours 973 |
-| meshdx8 | `CTempMeshDX8::GetDynamicMesh()` | differs | size retail 218 vs ours 52 |
+| meshdx8 | `CTempMeshDX8::GetDynamicMesh()` | missing |  |
 | meshdx8 | `CTempMeshDX8::RenderPass()` | differs | size retail 725 vs ours 768 |
 | meshdx8 | `CVertexBufferDx8::CVertexBufferDx8(ShaderBufferType_t, unsigned long long, int, char const*)` | differs | size retail 482 vs ours 475 |
 | meshdx8 | `non-virtual thunk to CMeshDX8::Unlock(int, IndexDesc_t&)` | differs | bytes |
-| shaderapidx8 | `CShaderAPIDx8::CommitVertexShaderLighting()` | differs | bytes |
 | shaderapidx8 | `CShaderAPIDx8::ComputeGammaCorrectedFogColor(unsigned char, unsigned char, unsigned char, bool)` | differs | size retail 449 vs ours 422 |
 | shaderapidx8 | `CShaderAPIDx8::CreateTextureHandles(int*, int)` | differs | size retail 289 vs ours 296 |
 | shaderapidx8 | `CShaderAPIDx8::CreateTextures(int*, int, int, int, int, ImageFormat, int, int, int, char const*, char const*)` | differs | size retail 759 vs ours 715 |
@@ -91,7 +89,7 @@ Status column: matched = exact or matches-after-masking; "fixed" = differed or w
 | shaderdevicedx8 | `CShaderDeviceMgrDx8::Connect(void* (*)(char const*, int*))` | differs | size retail 128 vs ours 99 |
 | texturedx8 | `CreateD3DTexture(int, int, int, ImageFormat, int, int, char*)` | differs | size retail 648 vs ours 682 |
 | texturedx8 | `DestroyD3DTexture(IDirect3DBaseTexture9*)` | differs | size retail 49 vs ours 345 |
-| texturedx8 | `LoadTextureFromVTF(TextureLoadInfo_t&, IVTFTexture*, int)` | differs | size retail 399 vs ours 479 |
+| texturedx8 | `LoadTextureFromVTF(TextureLoadInfo_t&, IVTFTexture*, int)` | matched | fixed (was differs) |
 | vertexdecl | `ReleaseAllVertexDecl()` | differs | bytes |
 | vertexshaderdx8 | `CShaderManager::SetPixelShader(int)` | differs | size retail 359 vs ours 234 |
 | vertexshaderdx8 | `CShaderManager::SetVertexShader(int)` | differs | size retail 462 vs ours 329 |

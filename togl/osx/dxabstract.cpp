@@ -335,7 +335,7 @@ HRESULT IDirect3DTexture9::GetSurfaceLevel(UINT Level,IDirect3DSurface9** ppSurf
 	surf->m_restype = (D3DRESOURCETYPE)0;	// 0 is special and means this 'surface' does not own its m_tex
 
 	// Dicey...higher level code seems to want this and not want this.  Are we missing some AddRef/Release behavior elsewhere?
-//	surf->AddRef();
+	surf->AddRef();
 	
 	surf->m_device = this->m_device;
 	
@@ -904,7 +904,7 @@ HRESULT IDirect3D9::GetDeviceCaps(UINT Adapter,D3DDEVTYPE DeviceType,D3DCAPS9* p
 
     pCaps->MaxTextureAspectRatio		=	0;		// imply no limit on AR
 
-    pCaps->MaxAnisotropy				=	glmRendererInfo.m_maxAniso;
+    pCaps->MaxAnisotropy				=	8;		//guess
     
     pCaps->TextureOpCaps				=	D3DTEXOPCAPS_ADD | D3DTEXOPCAPS_MODULATE2X;	//guess
     DWORD   MaxTextureBlendStages;
@@ -1239,7 +1239,7 @@ UINT IDirect3D9::GetAdapterModeCount(UINT Adapter,D3DFORMAT Format)
 	modeCount = db->GetModeCount( glmRendererIndex, glmDisplayIndex );
 	GLMPRINTF(( "-X-   --> result is %d", modeCount ));		
 	
-	return modeCount + 1; // Add one on for 800 x 500, which we'll tack on as mode 0 below
+	return modeCount;
 }
 
 HRESULT IDirect3D9::EnumAdapterModes( UINT Adapter, D3DFORMAT Format, UINT Mode, D3DDISPLAYMODE* pMode )
@@ -1263,13 +1263,13 @@ HRESULT IDirect3D9::EnumAdapterModes( UINT Adapter, D3DFORMAT Format, UINT Mode,
 	if ( result )
 		return D3DERR_NOTAVAILABLE;
 
-	bool result2 = db->GetModeInfo( glmRendererIndex, glmDisplayIndex, Mode == 0 ? 0 : Mode - 1, &glmModeInfo );  // End up asking Cocoa for mode zero twice
+	bool result2 = db->GetModeInfo( glmRendererIndex, glmDisplayIndex, Mode, &glmModeInfo );
 	Assert( !result2 );
 	if ( result2 )
 		return D3DERR_NOTAVAILABLE;
 
-	pMode->Width		= Mode == 0 ? 800 : glmModeInfo.m_modePixelWidth;   // substitute in width of 800 on first "Mode zero"
-	pMode->Height		= Mode == 0 ? 500 : glmModeInfo.m_modePixelHeight;  // substitute in height of 500 on first "Mode zero"
+	pMode->Width		= glmModeInfo.m_modePixelWidth;
+	pMode->Height		= glmModeInfo.m_modePixelHeight;
 	pMode->RefreshRate	= glmModeInfo.m_modeRefreshHz;		// "adapter default"
 	pMode->Format		= Format;							// whatever you asked for ?
 	
@@ -1682,8 +1682,8 @@ HRESULT IDirect3DVertexBuffer9::Lock(UINT OffsetToLock,UINT SizeToLock,void** pp
 	GLMBuffLockParams lockreq;
 	lockreq.m_offset		= OffsetToLock;
 	lockreq.m_size			= SizeToLock;
+	lockreq.m_nonblocking	= (Flags & D3DLOCK_NOOVERWRITE) != 0;
 	lockreq.m_discard		= (Flags & D3DLOCK_DISCARD) != 0;
-	lockreq.m_nonblocking	= ( (Flags & D3DLOCK_NOOVERWRITE) != 0 ) || lockreq.m_discard;
 		
 	m_vtxBuffer->Lock( &lockreq, (char**)ppbData );
 
@@ -1776,8 +1776,8 @@ HRESULT IDirect3DIndexBuffer9::Lock(UINT OffsetToLock,UINT SizeToLock,void** ppb
 	GLMBuffLockParams lockreq;
 	lockreq.m_offset		= OffsetToLock;
 	lockreq.m_size			= SizeToLock;
+	lockreq.m_nonblocking	= (Flags & D3DLOCK_NOOVERWRITE) != 0;
 	lockreq.m_discard		= (Flags & D3DLOCK_DISCARD) != 0;
-	lockreq.m_nonblocking	= ( (Flags & D3DLOCK_NOOVERWRITE) != 0 ) || lockreq.m_discard;
 
 	m_idxBuffer->Lock( &lockreq, (char**)ppbData );
 
@@ -1869,6 +1869,7 @@ HRESULT	IDirect3DDevice9::Create( IDirect3DDevice9Params *params )
 	m_defaultDepthStencilSurface = NULL;
 	
 	memset( m_streams, 0, sizeof(m_streams) );
+	m_indices.m_idxBuffer = NULL;
 	memset( m_textures, 0, sizeof(m_textures) );
 	memset( m_samplers, 0, sizeof(m_samplers) );
 	
@@ -2393,12 +2394,12 @@ HRESULT IDirect3DDevice9::SetRenderTarget(DWORD RenderTargetIndex,IDirect3DSurfa
 	
 	if (m_rtSurfaces[RenderTargetIndex])
 	{
-		m_rtSurfaces[RenderTargetIndex]->Release( 1, "-A  SetRenderTarget private release" );	// note this is the private refcount being lowered
+		m_rtSurfaces[RenderTargetIndex]->Release( 0, "-A  SetRenderTarget public release" );
 	}
 
 	if (pRenderTarget)
 	{
-		pRenderTarget->AddRef( 1, "+A  SetRenderTarget private addref"  );						// again, private refcount being raised
+		pRenderTarget->AddRef( 0, "+A  SetRenderTarget public addref"  );
 	}
 	
 	m_rtSurfaces[RenderTargetIndex] = pRenderTarget;	// emplace it whether NULL or not
@@ -2540,17 +2541,6 @@ HRESULT IDirect3DDevice9::SetDepthStencilSurface(IDirect3DSurface9* pNewZStencil
 		pNewZStencil ? pNewZStencil->m_tex : NULL,
 		pNewZStencil ? pNewZStencil->m_tex->m_layout->m_layoutSummary : ""
 	));
-
-	if (pNewZStencil)
-	{
-		pNewZStencil->AddRef(1, "+A  SetDepthStencilSurface private addref");
-	}
-
-	if (m_dsSurface)
-	{
-		m_dsSurface->Release(1, "-A  SetDepthStencilSurface private release");
-		// do not do a Release here..
-	}
 
 	if (m_dsSurface != pNewZStencil)
 	{
@@ -2714,33 +2704,47 @@ static uint32 CentroidMaskFromName( bool bPixelShader, const char *pName )
 	
 	if ( bPixelShader )
 	{
-		if ( V_stristr( pName, "lightmappedpaint_ps" ) || V_stristr( pName, "lightmappedgeneric_ps" ) || V_stristr( pName, "flashlight_ps" ) )
+		if ( V_stristr( pName, "lightmappedgeneric_ps" ) || V_strstr( pName, "worldtwotextureblend_ps" ) )
 		{
-			return (0x01 << 1); // iterator 1
+			return (0x01 << 2) | (0x01 << 3); // iterators 2 and 3
+		}
+		else if ( V_stristr( pName, "lightmappedreflective_ps" ) || V_stristr( pName, "water_ps" ) )
+		{
+			return (0x01 << 6) | (0x01 << 7); // iterators 6 and 7
 		}
 		else if ( V_stristr( pName, "shadow_ps" ) )
 		{
-			return (0x01 << 1) | (0x01 << 2) | (0x01 << 3); // iterators 1, 2 and 3
+			return (0x01 << 0) | (0x01 << 1) | (0x01 << 3) | (0x01 << 4); // iterators 0, 1, 3 and 4
 		}
-		else if ( V_stristr( pName, "water_ps" ) )
+		else if ( V_stristr( pName, "shatteredglass_ps" ) )
 		{
-			return (0x01 << 5) | (0x01 << 6) | (0x01 << 7); // iterators 5, 6 and 7
+			return (0x01 << 2); // iterator 2
+		}
+		else if ( V_stristr( pName, "WorldVertexAlpha_ps" ) || V_stristr( pName, "WorldVertexTransition_ps" ) )
+		{
+			// These pixel shaders want centroid but shouldn't be used
+			Assert(0);
+			return 0;
 		}
 	}
 	else // vertex shader
 	{
 		// Vertex shaders also
-		if ( V_stristr( pName, "lightmappedgeneric_vs" ) || V_stristr( pName, "flashlight_vs" ) )
+		if ( V_stristr( pName, "lightmappedgeneric_vs" ) )
 		{
-			return (0x01 << 1); // iterator 1
+			return (0x01 << 2) | (0x01 << 3); // iterators 2 and 3
+		}
+		else if ( V_stristr( pName, "lightmappedreflective_vs" ) || V_stristr( pName, "water_vs" ) )
+		{
+			return (0x01 << 6) | (0x01 << 7); // iterators 6 and 7
 		}
 		else if ( V_stristr( pName, "shadow_vs" ) )
 		{
-			return (0x01 << 1) | (0x01 << 2) | (0x01 << 3); // iterators 1, 2 and 3
+			return (0x01 << 0) | (0x01 << 1) | (0x01 << 3) | (0x01 << 4); // iterators 0, 1, 3 and 4
 		}
-		else if ( V_stristr( pName, "water_vs" ) )
+		else if ( V_stristr( pName, "shatteredglass_vs" ) )
 		{
-			return (0x01 << 5) | (0x01 << 6) | (0x01 << 7); // iterators 5, 6 and 7
+			return (0x01 << 2); // iterator 2
 		}
 	}
 	
@@ -2760,7 +2764,10 @@ static int ShadowDepthSamplerFromName( const char *pName )
 	{
 		return 7;
 	}
-
+	else if ( V_stristr( pName, "infected_ps" ) )
+	{
+		return 1;
+	}
 	else if ( V_stristr( pName, "phong_ps" ) )
 	{
 		return 4;
@@ -2788,6 +2795,10 @@ static int ShadowDepthSamplerFromName( const char *pName )
 	else if ( V_stristr( pName, "teeth_flashlight_ps" ) ) 
 	{
 		return 2;
+	}
+	else if ( V_stristr( pName, "skin_ps" ) )
+	{
+		return 4;
 	}
 	else if ( V_stristr( pName, "flashlight_ps" ) ) // substring of above, make sure this comes last!!
 	{
@@ -4702,15 +4713,11 @@ HRESULT IDirect3DDevice9::FlushSamplers( uint mask )
 			glsamp->m_maxMipLevel = texMipCount-1;				// d3d has no value for constraining how small we can sample.
 																// however we may need to set this more intelligently if textures are not being fully submitted.
 
-			// On OpenGL, GL_TEXTURE_MAX_ANISOTROPY_EXT needs to be 1 if we don't want aniso
-			glsamp->m_maxAniso = (dxsamp->m_minFilter != D3DTEXF_ANISOTROPIC) ? 1 : dxsamp->m_maxAniso;
+			glsamp->m_maxAniso = dxsamp->m_maxAniso;
 
 			// SRGB
 			glsamp->m_srgb = dxsamp->m_srgb != 0;
 
-			// Shadow compare mode
-			glsamp->m_compareMode = dxsamp->m_shadowFilter ? GL_COMPARE_R_TO_TEXTURE_ARB : GL_NONE;
-			
 			// write that sampler.
 			m_ctx->SetSamplerParams( index, glsamp );
 			samplerHitMask ^= nCurrentSamplerMask;	//turn bit off
@@ -4745,31 +4752,25 @@ HRESULT IDirect3DDevice9::FlushSamplers( uint mask )
 										
 						m_textures[index]->m_srgbFlipCount++;
 						
-						static bool bCheckedCommandline = false;
-						static bool bPrintAllflips = false;
-						static bool bPrintFirstflips = false;
-						static bool bPrintFreqflips = false;
-						static bool bPrintCrawls = false;
-						static bool bPrintMaxCrawls = false;
-						if ( !bCheckedCommandline )
+						bool bPrintAllflips		= CommandLine()->FindParm( "-glmspewallsrgbflips" );
+						bool bPrintFirstflips	= CommandLine()->FindParm( "-glmspewfirstsrgbflips" );
+						bool bPrintFreqflips	= CommandLine()->FindParm( "-glmspewfreqsrgbflips" );
+						bool bPrintCrawls		= CommandLine()->FindParm( "-glmspewsrgbcrawls" );
+						bool bPrintMaxCrawls	= CommandLine()->FindParm( "-glmspewsrgbmaxcrawls" );
+						
+						bool bPrintIt = false;
+						
+						if ( bPrintAllflips )
 						{
-							bPrintAllflips		= CommandLine()->FindParm( "-glmspewallsrgbflips" );
-							bPrintFirstflips	= CommandLine()->FindParm( "-glmspewfirstsrgbflips" );
-							bPrintFreqflips		= CommandLine()->FindParm( "-glmspewfreqsrgbflips" );
-							bPrintCrawls		= CommandLine()->FindParm( "-glmspewsrgbcrawls" );
-							bPrintMaxCrawls		= CommandLine()->FindParm( "-glmspewsrgbmaxcrawls" );
-							bCheckedCommandline = true;
+							bPrintIt = true;
 						}
-						
-						bool bPrintIt = bPrintAllflips;
-						
 						if ( bPrintFirstflips )		// report on first flip
 						{
-							bPrintIt = bPrintIt || m_textures[index]->m_srgbFlipCount==1;
+							bPrintIt |= m_textures[index]->m_srgbFlipCount==1;
 						}
 						if ( bPrintFreqflips )	// report on 50th flip
 						{
-							bPrintIt = bPrintIt || m_textures[index]->m_srgbFlipCount==50;
+							bPrintIt |= m_textures[index]->m_srgbFlipCount==50;
 						}
 						
 						if ( bPrintIt )
@@ -4840,6 +4841,8 @@ HRESULT IDirect3DDevice9::FlushSamplers( uint mask )
 					}
 				}
 			}
+
+			glsamp->m_compareMode = dxsamp->m_shadowFilter ? GL_COMPARE_R_TO_TEXTURE_ARB : GL_NONE;
 		}		
 	}
 	return S_OK;

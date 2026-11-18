@@ -92,8 +92,8 @@ void QueryBox::PerformLayout()
 	
 	int btnWide, btnTall;
 	m_pCancelButton->GetContentSize(btnWide, btnTall);
-	btnWide = max(oldWide, btnWide + PROPORTIONAL_VALUE( 10 ));
-	btnTall = max(oldTall, btnTall + PROPORTIONAL_VALUE( 10 ));
+	btnWide = max(oldWide, btnWide + QuickPropScale( 10 ));
+	btnTall = max(oldTall, btnTall + QuickPropScale( 10 ));
 	m_pCancelButton->SetSize(btnWide, btnTall);
 
 //nt boxWidth, boxTall;
@@ -101,8 +101,8 @@ void QueryBox::PerformLayout()
 //	wide = max(wide, btnWide * 2 + 100);
 //	SetSize(wide, tall);
 
-	m_pOkButton->SetPos((wide/2)-(m_pOkButton->GetWide())-PROPORTIONAL_VALUE( 1 ) + x, tall - m_pOkButton->GetTall() - PROPORTIONAL_VALUE( 15 ));
-	m_pCancelButton->SetPos((wide/2) + x+PROPORTIONAL_VALUE( 16 ), tall - m_pCancelButton->GetTall() - PROPORTIONAL_VALUE( 15 ));
+	m_pOkButton->SetPos((wide/2)-(m_pOkButton->GetWide())-QuickPropScale( 1 ) + x, tall - m_pOkButton->GetTall() - QuickPropScale( 15 ));
+	m_pCancelButton->SetPos((wide/2) + x+QuickPropScale( 16 ), tall - m_pCancelButton->GetTall() - QuickPropScale( 15 ));
 
 }
 

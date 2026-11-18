@@ -23,8 +23,8 @@ IRunGameEngine *g_pRunGameEngine = NULL;
 IServersInfo *g_pServersInfo = NULL;
 #endif
 
-static CSteamAPIContext g_SteamAPIContext;
-CSteamAPIContext *steamapicontext = &g_SteamAPIContext;
+
+
 
 IEngineReplay *g_pEngineReplay = NULL;
 
@@ -97,7 +97,7 @@ bool CServerBrowser::Initialize(CreateInterfaceFn *factorylist, int factoryCount
 
 	SteamAPI_InitSafe();
 	SteamAPI_SetTryCatchCallbacks( false ); // We don't use exceptions, so tell steam not to use try/catch in callback handlers
-	steamapicontext->Init();
+
 
 	for (int i = 0; i < factoryCount; i++)
 	{
@@ -330,10 +330,10 @@ bool CServerBrowser::OpenGameInfoDialog( uint64 ulSteamIDFriend, const char *psz
 
 		// none yet, create a new dialog
 		FriendGameInfo_t friendGameInfo;
-		if ( steamapicontext->SteamFriends()->GetFriendGamePlayed( ulSteamIDFriend, &friendGameInfo ) )
+		if ( SteamFriends()->GetFriendGamePlayed( ulSteamIDFriend, &friendGameInfo ) )
 		{
 			uint16 usConnPort = friendGameInfo.m_usGamePort;
-			if ( friendGameInfo.m_usQueryPort < QUERY_PORT_ERROR )
+			if ( friendGameInfo.m_usQueryPort < k_usFriendGameInfoQueryPort_Error )
 				usConnPort = friendGameInfo.m_usQueryPort;
 			CDialogGameInfo *pDialogGameInfo = m_hInternetDlg->OpenGameInfoDialog( friendGameInfo.m_unGameIP, friendGameInfo.m_usGamePort, usConnPort, pszConnectCode );
 			pDialogGameInfo->SetFriend( ulSteamIDFriend );

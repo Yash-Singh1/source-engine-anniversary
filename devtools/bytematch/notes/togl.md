@@ -12,16 +12,35 @@ slots (+80/+100/+108/+112). `public/togl/dx_iunknown.h` is retail's `IUnknown`
 
 | file | base | matched |
 |---|---|---:|
-| cglmbuffer, cglmfbo, cglmquery, cglmprogram | written from the retail disassembly, linuxwin as reference | 6/7, 4/4, 11/11, 16/18 |
+| cglmbuffer, cglmfbo, cglmquery, cglmprogram | written from the retail disassembly, linuxwin as reference | 7/7, 4/4, 11/11, 16/18 |
 | glmgrbasics, glentrypoints, glmgrcocoa.mm | ToGL 2014 linuxwin, cut back to what retail has | 12/12, 6/6, 1/1 |
-| glmgr, cglmtex, dxabstract, dx9asmtogl2 | Source SDK 2012 `materialsystem/glmgr` and `shaderapidx9` (the direct ancestors), moved to the 2013 SDL/gGL model | 69/81, 23/29, 140/158, 24/35 |
+| glmgr, cglmtex, dxabstract, dx9asmtogl2 | Source SDK 2012 `materialsystem/glmgr` and `shaderapidx9` (the direct ancestors), moved to the 2013 SDL/gGL model, then fixed function by function against retail | 81/81, 28/29, 158/158\*, 35/35\* |
+
+\* with `DXABSTRACT_VS_PARAM_SLOTS` 219 (see below); with the tree's 228,
+`IDirect3D9::GetDeviceCaps`, `D3DToGL::Handle_UnaryOp`, `PrintParameterToString` and
+`TranslateShader` differ only in that constant. Whole dylib: 495/502 (499/502 with 219).
+
+Retail is older than the 2012 SDK code in several places (the Mac SP branch is from
+2010): `dxabstract` follows the Steamworks SDK `glmgr` copy (`FlushSamplers`,
+`EnumAdapterModes`/`GetAdapterModeCount` without the 800x500 mode, centroid and
+shadow-sampler name tables, `MaxAnisotropy` 8), `GetSurfaceLevel` still AddRefs the
+surface ("trying to turn this off - 26Oct2010" in later code), `SetRenderTarget` uses the
+public refcount and `SetDepthStencilSurface` does no refcounting. Elsewhere it has later
+pieces: ToGL's `m_bOutputColorRegister[4]`, `targetname = "?"`, the previous-TMU-0 restore
+in `CGLMTex` (ctor, `ReadTexels`, `WriteTexels`), `m_nCurOwnerThreadId` set in the
+`GLMContext` ctor, no `MakeCurrent()` in the `New*`/`Del*` helpers (except `DelProgram`)
+or `BeginFrame`, and no `DebuggerBreakIfDebugging()` anywhere in `dx9asmtogl2`.
+Retail-only details: `m_texClientStorage` needs `m_osComboVersion >= 0x000A0603`
+(10.6.3), `GL_APPLE_texture_range`/`GL_APPLE_client_storage` guards, `gl_enabletexsubimage`
+default 0, the four resolve convars constructed with a null default.
 
 Known differences:
 
-- cglmtex: the remaining functions are the 2012 code (retail adds e.g. the 10.6.3 client-storage check).
-- dx9asmtogl2: retail's translator sits between the 2012 and 2014 code (it has `m_dwTempBoolUsageMask`); the handlers need a function-by-function backport.
-- cglmprogram `SelectShaderPair`, `LogSlow`: stack layout and register allocation only.
-- libtogl exports match retail except tier1's `cvar`, which retail exports.
+- `DXABSTRACT_VS_PARAM_SLOTS` lives in `public/materialsystem/IShader.h` (shared header):
+  retail and SDK 2013 use 219, the 2018 leak and our tree 228. Only togl uses it.
+- cglmprogram `SelectShaderPair`, `LogSlow` and cglmtex `WriteTexels`: register allocation,
+  stack slots and tail merging only; the logic matches retail.
+- libtogl's export set is identical to retail's.
 
 shaderapidx9 links since the matsys lane: retail keeps the D3DX helpers out of libtogl and
 inlines them from `public/togl/d3dx_impl.h` (named by shaderapidx9's debug map), so the osx

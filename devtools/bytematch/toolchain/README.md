@@ -10,6 +10,7 @@ the `--retail-osx32` waf mode. Everything installs under
 | compiler | Apple clang-600.0.57 (Xcode 6.2) | static-init naming and the pilot match rate pin clang-600; .54 gives identical code on every object we build, .51 differs in one object retail doesn't link |
 | linker | ld64-242 (Xcode 6.2) via cctools-port | 236.3 writes `__unwind_info` with 2^0 alignment, retail has 2^2; 241.9 and 242 give byte-identical dylibs |
 | SDK | stub MacOSX10.9.sdk | 10.6 headers plus i386 stub libraries carrying retail's install names, versions and exports |
+| hl2mp (2014) | clang-503.0.38, ld64-236.3 (Xcode 5.1), protoc 2.3.0 | depot 223's hl2mp modules are a May 2014 Source SDK 2013 build: `LC_VERSION_MIN` 10.5, `__unwind_info` 2^0; `--build-games=hl2mp` (see `sdk2013mp/wscript`). clang-503 carries `patches/clang-503.0.38-maskandbranch.patch` (an uninitialized x86 flag made Xcode 5.1's codegen vary per compile) |
 
 ## Setup
 
@@ -23,10 +24,13 @@ $T/build-ld64.sh 242                # optional: 241.9 236.3
 $T/extract-sdk106.sh /path/to/Mac_OS_X_10.6_Snow_Leopard_Retail.iso
 $T/make-sdk109.py                   # reads retail imports from depot 223/340/380/420
 $T/build-thirdparty.py              # optional: libjpeg 8b, libpng 1.5.2, Crypto++ 5.6.1, speex 1.0.4
+$T/build-protoc.sh                  # hl2mp only, with clang 503.0.38 and ld64 236.3
 git submodule update --init thirdparty
 
 python3 waf configure --retail-osx32 -T release --prefix='' -o build-retail
 python3 waf build
+# hl2mp alone (needs a Source SDK 2013 git checkout with history, $SOURCE_SDK_2013):
+#   python3 waf configure --retail-osx32 -T release --prefix='' -o build-hl2mp --build-games=hl2mp --retail-modules=
 $T/report-modules.py                # per-module function match vs retail (devtools/bytematch matcher)
 ```
 
@@ -48,6 +52,7 @@ to i386 first (`thin-i386.py`, and the waf mode's `retail-depot-libs/`).
 - `retailflags.py`: compiler and linker flags from Valve's xcconfig/VPC, shared by everything here and by `scripts/waifulib/retail_osx32.py`
 - `ld64-pin.py`: links scenefilecache with each ld64 and compares structure with retail
 - `build-thirdparty.py`: period third-party archives (known non-matching inputs)
+- `build-protoc.sh`: host protoc 2.3.0 from `sdk2013mp/thirdparty/protobuf-2.3.0`, for hl2mp's `htmlmessages.pb.cc`
 - `report-modules.py`: match summary for a `--retail-osx32` build directory
 
 ## Stub SDK: what it does and doesn't reproduce
@@ -68,7 +73,9 @@ Header-difference risk. The headers are 10.6's, not 10.9's:
 - Prototypes. 10.8 moved `scandir`/`alphasort` to POSIX-2008 const signatures;
   `patches/sdk109-dirent.patch` applies that. 10.7+ no longer declares the
   QuickDraw GWorld calls video_quicktime redeclares as function pointers;
-  `patches/sdk109-qdoffscreen.patch` removes them. Others may surface as modules are
+  `patches/sdk109-qdoffscreen.patch` removes them. 10.8 also marked `longjmp` and
+  friends `__dead2` (`patches/sdk109-setjmp.patch`); that one compiles either way but
+  changes codegen around functions that end in `longjmp`. Others may surface as modules are
   added. Errors like these are SDK gaps, not source drift: patch the SDK, not the tree.
 - Inline functions and macros in libc, libm and the frameworks (e.g. `__sincosf`
   exists only in 10.9's math.h), plus `_FORTIFY_SOURCE` wrappers and the

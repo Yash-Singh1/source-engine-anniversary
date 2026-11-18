@@ -412,6 +412,19 @@ void CDemoRecorder::RecordStringTables()
 {
 	MEM_ALLOC_CREDIT();
 
+#ifdef BYTEMATCH_RETAIL
+	// !KLUDGE! It would be nice if the bit buffer could write into a stream
+	// with the power to grow itself.  But it can't.  Hence this really bad
+	// kludge
+	CUtlBuffer bigBuff;
+	bigBuff.EnsureCapacity( 512 * 1024 );
+	bf_write buf( bigBuff.Base(), 512 * 1024 );
+
+	networkStringTableContainerClient->WriteStringTables( buf );
+
+	// Now write the buffer into the demo file
+	m_DemoFile.WriteStringTables( &buf, GetRecordingTick() );
+#else
 	// !KLUDGE! It would be nice if the bit buffer could write into a stream
 	// with the power to grow itself.  But it can't.  Hence this really bad
 	// kludge
@@ -443,6 +456,8 @@ void CDemoRecorder::RecordStringTables()
 	}
 
 	free(data);
+#endif
+#line 426
 }
 
 void CDemoRecorder::RecordUserInput( int cmdnumber )
@@ -544,6 +559,16 @@ void CDemoRecorder::StartupDemoFile( void )
 
 	char demoFileName[MAX_OSPATH];
 
+#ifdef BYTEMATCH_RETAIL
+	if ( m_nDemoNumber <= 1 )
+	{
+		Q_snprintf( demoFileName, sizeof( demoFileName ), "%s.dem", m_szDemoBaseName );
+	}
+	else
+	{
+		Q_snprintf( demoFileName, sizeof( demoFileName ), "%s_%i.dem", m_szDemoBaseName, m_nDemoNumber );
+	}
+#else
 	if ( m_nDemoNumber <= 1 )
 	{
 		V_sprintf_safe( demoFileName, "%s.dem", m_szDemoBaseName );
@@ -564,6 +589,8 @@ void CDemoRecorder::StartupDemoFile( void )
 		ConMsg( "StartupDemoFile: invalid filename.\n" );
 		return;
 	}
+#endif
+#line 535
 
 	if ( !m_DemoFile.Open( demoFileName, false ) )
 		return;
@@ -634,7 +661,10 @@ void CDemoRecorder::StartupDemoFile( void )
 
 	ConMsg ("Recording to %s...\n", demoFileName);
 
+#ifndef BYTEMATCH_RETAIL
 	g_ClientDLL->OnDemoRecordStart( m_szDemoBaseName );
+#endif
+#line 605
 }
 
 #ifdef BYTEMATCH_RETAIL
@@ -643,7 +673,7 @@ CDemoRecorder::CDemoRecorder()
 }
 
 #endif
-#line 644
+#line 611
 CDemoRecorder::~CDemoRecorder()
 {
 	CloseDemoFile();	
@@ -693,12 +723,10 @@ void CDemoRecorder::CloseDemoFile()
 
 		m_DemoFile.Close();
 
-#ifdef BYTEMATCH_RETAIL
-		g_ClientDLL->OnDemoRecordStop();
-#else
+#ifndef BYTEMATCH_RETAIL
 		if( g_ClientDLL ) g_ClientDLL->OnDemoRecordStop();
 #endif
-#line 694
+#line 660
 	}
 
 	m_bCloseDemoFile = false;
@@ -1113,6 +1141,7 @@ netpacket_t *CDemoPlayer::ReadPacket( void )
 
 	Assert( IsPlayingBack() );
 
+#ifndef BYTEMATCH_RETAIL
 	if ( IsSkipping() )
 	{
 		// Every nMaxConsecutiveSkipPackets frames return NULL so that we don't build up an
@@ -1129,6 +1158,8 @@ netpacket_t *CDemoPlayer::ReadPacket( void )
 	{
 		m_nSkipPacketsPlayed = 0;
 	}
+#endif
+#line 1074
 
 	// External editor has paused playback
 	if ( CheckPausedPlayback() )
@@ -1254,6 +1285,21 @@ netpacket_t *CDemoPlayer::ReadPacket( void )
 				free( data );
 			}
 			break;
+#ifdef BYTEMATCH_RETAIL
+		case dem_stringtables:
+			{
+				void *data = malloc( 512*1024 ); // X360TBD: How much memory is really needed here?
+				bf_read buf( "dem_stringtables", data, 512*1024 );
+				m_DemoFile.ReadStringTables( &buf );
+				buf.Seek( 0 );
+				if ( !networkStringTableContainerClient->ReadStringTables( buf ) )
+				{
+					Host_Error( "Error parsing string tables during demo playback." );
+				}
+				free( data );
+			}
+			break;
+#else
 		case dem_stringtables:
 			{
 				void *data = NULL;
@@ -1285,6 +1331,8 @@ netpacket_t *CDemoPlayer::ReadPacket( void )
 				free( data );
 			}
 			break;
+#endif
+#line 1212
 		case dem_usercmd:
 			{
 
@@ -1632,7 +1680,10 @@ CDemoPlayer::CDemoPlayer()
 	m_bLoading = false;
 	m_bPlaybackPaused = false;
 	m_nSkipToTick = -1;
+#ifndef BYTEMATCH_RETAIL
 	m_nSkipPacketsPlayed = 0;
+#endif
+#line 1559
 	m_nSnapshotTick = 0;
 	m_SnapshotFilename[0] = 0;
 	m_bResetInterpolation = false;
@@ -1790,6 +1841,7 @@ void CDemoPlayer::WriteTimeDemoResults( void )
 		g_pFileSystem->FPrintf( fileHandle, "flashlight shadows," );
 		g_pFileSystem->FPrintf( fileHandle, "mat_reduceparticles," );
 		g_pFileSystem->FPrintf( fileHandle, "r_dopixelvisibility," );
+		g_pFileSystem->FPrintf( fileHandle, "r_lightmap_bicubic," );
 		g_pFileSystem->FPrintf( fileHandle, "nulldevice," );
 		g_pFileSystem->FPrintf( fileHandle, "timedemo_comment," );
 		g_pFileSystem->FPrintf( fileHandle, "\n" );
@@ -1804,6 +1856,7 @@ void CDemoPlayer::WriteTimeDemoResults( void )
 	ConVarRef mat_reducefillrate( "mat_reducefillrate" );
 	ConVarRef mat_reduceparticles( "mat_reduceparticles" );
 	ConVarRef r_dopixelvisibility( "r_dopixelvisibility" );
+	ConVarRef r_lightmap_bicubic( "r_lightmap_bicubic" );
 
 	g_pFileSystem->Seek( fileHandle, 0, FILESYSTEM_SEEK_TAIL );
 	MaterialAdapterInfo_t info;
@@ -1832,6 +1885,7 @@ void CDemoPlayer::WriteTimeDemoResults( void )
 	g_pFileSystem->FPrintf( fileHandle, "%s,", r_flashlightdepthtexture.GetBool() ? "on" : "off" );
 	g_pFileSystem->FPrintf( fileHandle, "%s,", mat_reduceparticles.GetBool() ? "on" : "off" );
 	g_pFileSystem->FPrintf( fileHandle, "%s,", r_dopixelvisibility.GetBool() ? "on" : "off" );
+	g_pFileSystem->FPrintf( fileHandle, "%s,", r_lightmap_bicubic.GetBool() ? "on" : "off" );
 	g_pFileSystem->FPrintf( fileHandle, "%s,", CommandLine()->CheckParm( "-nulldevice" ) ? "yes" : "no" );
 
 	int itimedemo_comment = CommandLine()->FindParm( "-timedemo_comment" );

@@ -87,7 +87,12 @@ public:
 	// Unmasks the specified reference type across all models
 	virtual void		UnreferenceAllModels( REFERENCETYPE referencetype ) = 0;
 	// Set all models to last loaded on server count -1
+#ifdef BYTEMATCH_RETAIL
+	void				ResetModelServerCounts() {}
+#else
 	virtual void		ResetModelServerCounts() = 0;
+#endif
+#line 91
 
 	// For any models with referencetype blank, frees all memory associated with the model
 	//  and frees up the models slot
@@ -108,7 +113,13 @@ public:
 	virtual void		Print( void ) = 0;
 
 	// Validate version/header of a .bsp file
+#ifdef BYTEMATCH_RETAIL
+	virtual bool		Map_IsValid( char const *mapname ) = 0;
+	bool				Map_IsValid( char const *mapname, bool bQuiet ) { return Map_IsValid( mapname ); }
+#else
 	virtual bool		Map_IsValid( char const *mapname, bool bQuiet = false ) = 0;
+#endif
+#line 113
 
 	// Recomputes surface flags
 	virtual void		RecomputeSurfaceFlags( model_t *mod ) = 0;
@@ -176,6 +187,7 @@ public:
 	int					LumpVersion() const;
 	const char			*GetMapName( void );
 	char				*GetLoadName( void );
+	char				*GetDiskName( void );
 	struct worldbrushdata_t	*GetMap( void );
 
 	// Global setup/shutdown

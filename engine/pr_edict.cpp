@@ -41,10 +41,15 @@
 
 static ConVar		sv_useexplicitdelete( "sv_useexplicitdelete", "1", FCVAR_DEVELOPMENTONLY, "Explicitly delete dormant client entities caused by AllowImmediateReuse()." );
 static ConVar		sv_lowedict_threshold( "sv_lowedict_threshold", "8", FCVAR_NONE, "When only this many edicts are free, take the action specified by sv_lowedict_action.", true, 0, true, MAX_EDICTS );
+#ifdef BYTEMATCH_RETAIL
+static ConVar		sv_lowedict_action( "sv_lowedict_action", "0", FCVAR_NONE, "0 - no action, 1 - warn to log file, 2 - attempt to restart the game, if applicable, 3 - restart the map, 4 - go to the next map in the map cycle.", true, 0, true, 4 );
+#else
 static ConVar		sv_lowedict_action( "sv_lowedict_action", "0", FCVAR_NONE, "0 - no action, 1 - warn to log file, 2 - attempt to restart the game, if applicable, 3 - restart the map, 4 - go to the next map in the map cycle, 5 - spew all edicts.", true, 0, true, 5 );
 
 // Bitmask of free edicts.
 static CBitVec< MAX_EDICTS > g_FreeEdicts;
+#endif
+#line 45
 
 /*
 =================
@@ -53,7 +58,12 @@ ED_ClearEdict
 Sets everything to NULL, done when new entity is allocated for game.dll
 =================
 */
+#ifdef BYTEMATCH_RETAIL
+void ED_ClearEdict( edict_t *e )
+#else
 static void ED_ClearEdict( edict_t *e )
+#endif
+#line 54
 {
 	e->ClearFree();
 	e->ClearStateChanged();
@@ -66,6 +76,7 @@ static void ED_ClearEdict( edict_t *e )
 	Assert( (int) e->m_EdictIndex == (e - sv.edicts) );
 }
 
+#ifndef BYTEMATCH_RETAIL
 void ED_ClearFreeFlag( edict_t *e )
 {
 	e->ClearFree();
@@ -136,6 +147,8 @@ static void SpewEdicts()
 
 	vecEnts.PurgeAndDeleteElements();
 }
+#endif
+#line 66
 
 /*
 =================
@@ -150,6 +163,107 @@ angles and bad trails.
 */
 
 
+#ifdef BYTEMATCH_RETAIL
+edict_t *ED_Alloc( int iForceEdictIndex )
+{
+	if ( iForceEdictIndex >= 0 )
+	{
+		if ( iForceEdictIndex >= sv.num_edicts )
+		{
+			Warning( "ED_Alloc( %d ) - invalid edict index specified.", iForceEdictIndex );
+			return NULL;
+		}
+		
+		edict_t *e = &sv.edicts[ iForceEdictIndex ];
+		if ( e->IsFree() )
+		{
+			ED_ClearEdict( e );
+			return e;
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+
+	// Check the free list first.
+	int i;
+	edict_t *pEdict = sv.edicts + sv.GetMaxClients() + 1;
+	for ( i = sv.GetMaxClients() + 1; i < sv.num_edicts; i++ )
+	{
+		// the first couple seconds of server time can involve a lot of
+		// freeing and allocating, so relax the replacement policy
+		if ( pEdict->IsFree() && ( pEdict->freetime < 2 || sv.GetTime() - pEdict->freetime >= EDICT_FREETIME ) )
+		{
+			// If we have no freetime, we've had AllowImmediateReuse() called. We need
+			// to explicitly delete this old entity.
+			if ( pEdict->freetime == 0 && sv_useexplicitdelete.GetBool() )
+			{
+				//Warning("ADDING SLOT to snapshot: %d\n", i );
+				framesnapshotmanager->AddExplicitDelete( i );
+			}
+
+			ED_ClearEdict( pEdict );
+			return pEdict;
+		}
+
+		pEdict++;
+	}
+
+	// Allocate a new edict.
+	if ( sv.num_edicts >= sv.max_edicts )
+	{
+		AssertMsg( 0, "Can't allocate edict" );
+
+		if ( sv.max_edicts == 0 )
+			Sys_Error( "ED_Alloc: No edicts yet" );
+		Sys_Error ("ED_Alloc: no free edicts");
+	}
+
+	// Do this before clearing since clear now needs to call back into the edict to deduce the index so can get the changeinfo data in the parallel structure
+	pEdict = sv.edicts + sv.num_edicts++; 
+
+	ED_ClearEdict( pEdict );
+
+	if ( sv_lowedict_action.GetInt() > 0 && sv.num_edicts >= sv.max_edicts - sv_lowedict_threshold.GetInt() )
+	{
+		int nEdictsRemaining = sv.max_edicts - sv.num_edicts;
+		g_Log.Printf( "Warning: free edicts below threshold. %i free edict%s remaining.\n", nEdictsRemaining, nEdictsRemaining == 1 ? "" : "s" );
+
+		switch ( sv_lowedict_action.GetInt() )
+		{
+		case 2:
+			// restart the game
+			{
+				ConVarRef mp_restartgame_immediate( "mp_restartgame_immediate" );
+				if ( mp_restartgame_immediate.IsValid() )
+				{
+					mp_restartgame_immediate.SetValue( 1 );
+				}
+				else
+				{
+					ConVarRef mp_restartgame( "mp_restartgame" );
+					if ( mp_restartgame.IsValid() )
+					{
+						mp_restartgame.SetValue( 1 );
+					}
+				}
+			}
+			break;
+		case 3:
+			// restart the map
+			g_pVEngineServer->ChangeLevel( sv.GetMapName(), NULL );
+			break;
+		case 4:
+			// go to the next map
+			g_pVEngineServer->ServerCommand( "changelevel_next\n" );
+			break;
+		}
+	}
+	
+	return pEdict;
+}
+#else
 edict_t *ED_Alloc( int iForceEdictIndex )
 {
 	if ( iForceEdictIndex >= 0 )
@@ -267,6 +381,8 @@ edict_t *ED_Alloc( int iForceEdictIndex )
 	
 	return pEdict;
 }
+#endif
+#line 179
 
 
 void ED_AllowImmediateReuse()
@@ -312,9 +428,12 @@ void ED_Free (edict_t *ed)
 	ed->SetFree();
 	ed->freetime = sv.GetTime();
 
+#ifndef BYTEMATCH_RETAIL
 	++sv.free_edicts;
 	Assert( !g_FreeEdicts.IsBitSet( ed->m_EdictIndex ) );
 	g_FreeEdicts.Set( ed->m_EdictIndex );
+#endif
+#line 224
 
 	// Increment the serial number so it knows to send explicit deletes the clients.
 	ed->m_NetworkSerialNumber++; 

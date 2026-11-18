@@ -425,6 +425,11 @@ bool CSfxTable::IsPrecachedSound()
 }
 
 float		g_DuckScale = 1.0f;
+#ifdef BYTEMATCH_RETAIL
+float		g_DuckScaleCommentary = 1.0f;
+float		g_DuckScaleVoice = 1.0f;
+#endif
+#line 430
 
 // Structure used for fading in and out client sound volume.
 typedef struct
@@ -673,7 +678,7 @@ void VAudioInit()
 #else
 		g_pVAudioModule = FileSystem_LoadModule( "vaudio_minimp3" );
 #endif
-#line 672
+#line 674
 		if ( g_pVAudioModule )
 		{
 			CreateInterfaceFn vaudioFactory = Sys_GetFactory( g_pVAudioModule );
@@ -751,6 +756,34 @@ void S_Init( void )
 }
 
 
+//-----------------------------------------------------------------------------
+// Purpose: Free every sound source and empty the sfx dictionary and pool
+//-----------------------------------------------------------------------------
+void S_ClearSoundPool()
+{
+	for ( int i = s_Sounds.FirstInorder(); i != s_Sounds.InvalidIndex(); i = s_Sounds.NextInorder( i ) )
+	{
+		if ( s_Sounds[i].pSfx )
+		{
+			delete s_Sounds[i].pSfx->pSource;
+			s_Sounds[i].pSfx->pSource = NULL;
+		}
+	}
+	s_Sounds.RemoveAll();
+	s_SoundPool.Clear();
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Drop all cached sound data so newly mounted content is picked up
+//-----------------------------------------------------------------------------
+void S_ReloadAudioCaches()
+{
+	S_ClearSoundPool();
+	wavedatacache->Flush();
+	audiosourcecache->Shutdown();
+	audiosourcecache->Init( host_parms.memsize >> 2 );
+}
+
 // =======================================================================
 // Shutdown sound engine
 // =======================================================================
@@ -770,19 +803,7 @@ void S_Shutdown(void)
 
 	SNDDMA_Shutdown();
 
-#ifndef BYTEMATCH_RETAIL
-	for ( int i = s_Sounds.FirstInorder(); i != s_Sounds.InvalidIndex(); i = s_Sounds.NextInorder( i ) )
-	{
-		if ( s_Sounds[i].pSfx )
-		{
-			delete s_Sounds[i].pSfx->pSource;
-			s_Sounds[i].pSfx->pSource = NULL;
-		}
-	}
-	s_Sounds.RemoveAll();
-#endif
-#line 768
-	s_SoundPool.Clear();
+	S_ClearSoundPool();
 
 	// release DSP resources
 	FreeDsps( true );
@@ -790,7 +811,7 @@ void S_Shutdown(void)
 #ifndef BYTEMATCH_RETAIL
 	MXR_ReleaseMemory();
 #endif
-#line 773
+#line 803
 
 	// release sentences resources
 	TRACESHUTDOWN( VOX_Shutdown() );
@@ -6051,6 +6072,11 @@ void S_UpdateSoundFade(void)
 // other mixer ducking, and ducks all other sounds except dialog.
 
 ConVar snd_ducktovolume( "snd_ducktovolume", "0.55", FCVAR_ARCHIVE );
+#ifdef BYTEMATCH_RETAIL
+ConVar snd_ducktovolume_commentary( "snd_ducktovolume_commentary", "0.10", FCVAR_ARCHIVE );
+ConVar snd_ducktovolume_commentary_othervoice( "snd_ducktovolume_commentary_othervoice", "0", FCVAR_ARCHIVE );
+#endif
+#line 6065
 ConVar snd_duckerattacktime( "snd_duckerattacktime", "0.5", FCVAR_ARCHIVE );
 ConVar snd_duckerreleasetime( "snd_duckerreleasetime", "2.5", FCVAR_ARCHIVE );
 ConVar snd_duckerthreshold("snd_duckerthreshold", "0.15", FCVAR_ARCHIVE );
@@ -6076,6 +6102,35 @@ static void S_UpdateVoiceDuck( int voiceChannelCount, int voiceChannelMaxVolume,
 	float rate = ( duckTarget < g_DuckScale ) ? snd_duckerattacktime.GetFloat() : snd_duckerreleasetime.GetFloat();
 	g_DuckScale = Approach( duckTarget, g_DuckScale, frametime * ((1-volume_when_ducked) / rate) );
 }
+
+#ifdef BYTEMATCH_RETAIL
+// Commentary ducker - while a commentary node speaks, duck all other sounds and other voices.
+static void S_UpdateCommentaryDuck( int commentaryChannelCount, int commentaryChannelMaxVolume, float frametime )
+{
+	float volume_when_ducked = snd_ducktovolume_commentary.GetFloat();
+	float voice_volume_when_ducked = snd_ducktovolume_commentary_othervoice.GetFloat();
+
+	float duckTarget = 1.0;
+	float voiceDuckTarget = 1.0;
+	if ( commentaryChannelCount > 0 )
+	{
+		int volume_threshold = (int)(snd_duckerthreshold.GetFloat() * 255.0);
+		commentaryChannelMaxVolume = clamp(commentaryChannelMaxVolume, 0, 255);
+
+		if ( commentaryChannelMaxVolume > volume_threshold )
+		{
+			duckTarget = volume_when_ducked;
+			voiceDuckTarget = voice_volume_when_ducked;
+		}
+	}
+	float rate = ( duckTarget < g_DuckScaleCommentary ) ? snd_duckerattacktime.GetFloat() : snd_duckerreleasetime.GetFloat();
+	g_DuckScaleCommentary = Approach( duckTarget, g_DuckScaleCommentary, frametime * ((1-volume_when_ducked) / rate) );
+
+	rate = ( voiceDuckTarget < g_DuckScaleVoice ) ? snd_duckerattacktime.GetFloat() : snd_duckerreleasetime.GetFloat();
+	g_DuckScaleVoice = Approach( voiceDuckTarget, g_DuckScaleVoice, frametime * ((1-voice_volume_when_ducked) / rate) );
+}
+#endif
+#line 6116
 
 // set 2d forward vector, given 3d right vector.
 // NOTE: this should only be used for a listener forward
@@ -6177,6 +6232,21 @@ void S_Update( const AudioState_t *pAudioState )
 	CChannelList list;
 	g_ActiveChannels.GetActiveChannels( list );
 
+#ifdef BYTEMATCH_RETAIL
+	int commentaryChannelCount = 0;
+	int commentaryChannelMaxVolume = 0;
+	for ( int i = 0; i < list.Count(); i++ )
+	{
+		ch = list.GetChannel(i);
+		if ( ch->sfx->pSource && ch->sfx->pSource->IsCommentarySource() )
+		{
+			commentaryChannelCount++;
+			commentaryChannelMaxVolume = max( commentaryChannelMaxVolume, ChannelGetMaxVol( ch ) );
+		}
+	}
+#endif
+#line 6228
+
 	if (snd_spatialize_roundrobin.GetInt() == 0)
 	{
 		// spatialize each channel each time
@@ -6229,6 +6299,10 @@ void S_Update( const AudioState_t *pAudioState )
 	// set new target for voice ducking
 	float frametime = g_pSoundServices->GetHostFrametime();
 	S_UpdateVoiceDuck( voiceChannelCount, voiceChannelMaxVolume, frametime );
+#ifdef BYTEMATCH_RETAIL
+	S_UpdateCommentaryDuck( commentaryChannelCount, commentaryChannelMaxVolume, frametime );
+#endif
+#line 6282
 
 	// update x360 music volume
 	g_DashboardMusicMixValue = Approach( g_DashboardMusicMixTarget, g_DashboardMusicMixValue, g_DashboardMusicFadeRate * frametime );

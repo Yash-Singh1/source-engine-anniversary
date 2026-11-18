@@ -165,13 +165,13 @@ void CInputSystem::PollSteamControllers( void )
 	{
 		if ( InitDigitalMenuActions() )
 		{
-			g_pInputSystem->ActivateSteamControllerActionSet( GAME_ACTION_SET_MENUCONTROLS );
+			g_pInputSystem->ActivateSteamControllerActionSetForSlot( STEAM_INPUT_HANDLE_ALL_CONTROLLERS, GAME_ACTION_SET_MENUCONTROLS );
 			m_hActiveSteamInput = 0;
 			g_bInitialized = true;
 		}
 	}
 
-	if ( m_unNumConnected == 0 || !g_bInitialized )
+	if ( m_unNumConnected <= 0 || !g_bInitialized )
 	{
 		return;
 	}

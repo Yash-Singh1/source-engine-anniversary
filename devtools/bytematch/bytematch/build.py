@@ -38,11 +38,19 @@ def merge_entries(entries):
 
 
 def rebuild(mod, extra):
-    """Rebuild all functions with extra (va, name, size) starts, e.g. from a user map."""
+    """Rebuild all functions with extra starts, e.g. from a user map.
+
+    Items are (va, name or [names], size) or (va, names, size, object stem)."""
     inputs, mod.build_inputs = mod.build_inputs, []
     mod.functions, mod._starts = [], None
+    norm = []
+    for item in extra:
+        a, n, s = item[:3]
+        names = [n] if isinstance(n, str) else list(n)
+        norm.append((a, names, s, item[3] if len(item) > 3 else None))
     for secname, va, data, entries, fields in inputs:
-        ex = [Entry(a, [(True, n)], s, bounded=bool(s)) for a, n, s in extra if va <= a < va + len(data)]
+        ex = [Entry(a, [(True, n) for n in ns], s, bounded=bool(s), obj=obj)
+              for a, ns, s, obj in norm if va <= a < va + len(data)]
         build_functions(mod, secname, va, data, entries + ex, fields)
     for f in mod.functions:
         f.obj_path = mod.obj_paths.get(f.addr, f.obj_path)

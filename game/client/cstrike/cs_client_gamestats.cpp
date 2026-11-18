@@ -139,8 +139,8 @@ void CCSClientGameStats::FireGameEvent( IGameEvent *event )
 
 void CCSClientGameStats::RetrieveSteamStats()
 {
-	Assert( steamapicontext->SteamUserStats() );
-	if ( !steamapicontext->SteamUserStats() )
+	Assert( SteamUserStats() );
+	if ( !SteamUserStats() )
 		return;
 
 	// we shouldn't be downloading stats more than once
@@ -155,7 +155,7 @@ void CCSClientGameStats::RetrieveSteamStats()
 			continue;
 
 		int iData;
-		if ( steamapicontext->SteamUserStats()->GetStat( CSStatProperty_Table[i].szSteamName, &iData ) )
+		if ( SteamUserStats()->GetStat( CSStatProperty_Table[i].szSteamName, &iData ) )
 		{	
 			m_lifetimeStats[CSStatProperty_Table[i].statId] = iData;
 		}
@@ -186,7 +186,7 @@ void CCSClientGameStats::RetrieveSteamStats()
 void CCSClientGameStats::UpdateSteamStats()
 {
 	// only upload if Steam is running
-	if ( !steamapicontext->SteamUserStats() )
+	if ( !SteamUserStats() )
 		return; 
 
 	CAchievementMgr *pAchievementMgr = dynamic_cast<CAchievementMgr *>( engine->GetAchievementMgr() );
@@ -215,7 +215,7 @@ void CCSClientGameStats::UpdateSteamStats()
 			continue;
 
 		// set the stats locally in Steam client
-		steamapicontext->SteamUserStats()->SetStat( CSStatProperty_Table[i].szSteamName, m_lifetimeStats[CSStatProperty_Table[i].statId]);
+		SteamUserStats()->SetStat( CSStatProperty_Table[i].szSteamName, m_lifetimeStats[CSStatProperty_Table[i].statId]);
 	}
 
 	// let the achievement manager know the stats have changed
@@ -577,9 +577,9 @@ void CCSClientGameStats::ResetAllStats( void )
 	m_roundStats.Reset();
 
 	// reset the stats on Steam
-	if (steamapicontext && steamapicontext->SteamUserStats())
+	if (SteamUserStats())
 	{
-		steamapicontext->SteamUserStats()->ResetAllStats(false);
+		SteamUserStats()->ResetAllStats(false);
 	}
 
 	IGameEvent * event = gameeventmanager->CreateEvent( "player_stats_updated" );

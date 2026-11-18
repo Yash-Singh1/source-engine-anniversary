@@ -41,6 +41,11 @@
 // this is hooked into the engines convar
 ConVar mat_debugalttab( "mat_debugalttab", "0", FCVAR_CHEAT );
 
+#ifdef BYTEMATCH_RETAIL
+ConVar mat_forcemanagedtextureintohardware( "mat_forcemanagedtextureintohardware", "1" );
+
+ConVar mat_supportflashlight( "mat_supportflashlight", "-1", 0, "0 - do not support flashlight (don't load flashlight shader combos), 1 - flashlight is supported" );
+#else
 ConVar mat_forcemanagedtextureintohardware( "mat_forcemanagedtextureintohardware", "1", FCVAR_HIDDEN | FCVAR_ALLOWED_IN_COMPETITIVE );
 
 ConVar mat_supportflashlight( "mat_supportflashlight", "-1", FCVAR_HIDDEN, "0 - do not support flashlight (don't load flashlight shader combos), 1 - flashlight is supported" );
@@ -55,6 +60,8 @@ ConVar mat_texture_reload_frame_swap_workaround( "mat_texture_reload_frame_swap_
 // This ConVar allows us to skip ~40% of our map load time, but it doesn't work on GPUs older
 // than ~2005. We set it automatically and don't expose it to players. 
 ConVar mat_requires_rt_alloc_first( "mat_requires_rt_alloc_first", "0", FCVAR_HIDDEN );
+#endif
+#line 58
 
 // Make sure this convar gets created before videocfg.lib is initialized, so it can be driven by dxsupport.cfg
 static ConVar mat_tonemapping_occlusion_use_stencil( "mat_tonemapping_occlusion_use_stencil", "0" );
@@ -1779,6 +1786,13 @@ void CMaterialSystem::GenerateConfigFromConfigKeyValues( MaterialSystem_Config_t
 
 #else
 
+#ifdef BYTEMATCH_RETAIL
+	// Get the desktop resolution and aspect ratio; the desktop resolution is the recommended one
+	ShaderDisplayMode_t displayMode;
+	g_pShaderDeviceMgr->GetCurrentModeInfo( &displayMode, 0 );
+	int nCurrentScreenAspect = GetScreenAspectMode( displayMode.m_nWidth, displayMode.m_nHeight );
+	int nRecommendedPixels = displayMode.m_nWidth * displayMode.m_nHeight;
+#else
 	// Get the recommended resolution from dxsupport.cfg, this assumes a 4:3 aspect ratio
 	int nRecommendedWidth, nRecommendedHeight;
 	ReadInt( pKeyValues, "DefaultRes", 640, -1, &nRecommendedWidth );
@@ -1789,6 +1803,8 @@ void CMaterialSystem::GenerateConfigFromConfigKeyValues( MaterialSystem_Config_t
 	ShaderDisplayMode_t displayMode;
 	g_pShaderDeviceMgr->GetCurrentModeInfo( &displayMode, 0 );
 	int nCurrentScreenAspect = GetScreenAspectMode( displayMode.m_nWidth, displayMode.m_nHeight );
+#endif
+#line 1792
 
 	// Let's see what the device supports and pick the most appropriate mode
 	g_pShaderDeviceMgr->GetModeInfo( &displayMode, 0, 0 );
@@ -1824,11 +1840,20 @@ void CMaterialSystem::GenerateConfigFromConfigKeyValues( MaterialSystem_Config_t
 		pConfig->m_VideoMode.m_Width = nBestWidth;
 		pConfig->m_VideoMode.m_Height = nBestHeight;
 	}
+#ifdef BYTEMATCH_RETAIL
+	else // This should never happen
+	{
+		pConfig->m_VideoMode.m_Width = displayMode.m_nWidth;
+		pConfig->m_VideoMode.m_Height = displayMode.m_nHeight;
+	}
+#else
 	else // Fall back to 4:3 mode from the cfg file.  This should never happen
 	{
 		pConfig->m_VideoMode.m_Width = nRecommendedWidth;
 		pConfig->m_VideoMode.m_Height = nRecommendedHeight;
 	}
+#endif
+#line 1832
 
 #if defined( _X360 )
 	pConfig->m_VideoMode.m_Width = GetSystemMetrics( SM_CXSCREEN );
@@ -1861,6 +1886,14 @@ static void MatProxyCallback( IConVar *pConVar, const char *old, float flOldValu
 //-----------------------------------------------------------------------------
 // Convars that control the config record
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+static ConVar mat_vsync(			"mat_vsync", "0", 0, "Force sync to vertical retrace", true, 0.0, true, 1.0 );
+static ConVar mat_forcehardwaresync( "mat_forcehardwaresync", IsPC() ? "1" : "0" );
+
+// Texture-related
+static ConVar mat_trilinear(		"mat_trilinear", "0" );
+static ConVar mat_forceaniso( "mat_forceaniso", "1", 0, "Filtering level", true, 0, true, 8 ); // 0 = Bilinear, 1 = Trilinear, 2+ = Aniso
+#else
 static ConVar mat_vsync(			"mat_vsync", "0", FCVAR_ALLOWED_IN_COMPETITIVE, "Force sync to vertical retrace", true, 0.0, true, 1.0 );
 static ConVar mat_forcehardwaresync( "mat_forcehardwaresync", IsPC() ? "1" : "0", FCVAR_ALLOWED_IN_COMPETITIVE );
 
@@ -1873,6 +1906,8 @@ static ConVar mat_trilinear(		"mat_trilinear", "0", FCVAR_ALLOWED_IN_COMPETITIVE
 #else
 	static ConVar mat_forceaniso( "mat_forceaniso", "1", FCVAR_ARCHIVE ); // 0 = Bilinear, 1 = Trilinear, 2+ = Aniso
 #endif
+#endif
+#line 1876
 static ConVar mat_filterlightmaps(	"mat_filterlightmaps", "1" );
 static ConVar mat_filtertextures(	"mat_filtertextures", "1" );
 static ConVar mat_mipmaptextures(	"mat_mipmaptextures", "1" );
@@ -1886,6 +1921,55 @@ static void mat_showmiplevels_Callback_f( IConVar *var, const char *pOldValue, f
 // Debugging textures
 static ConVar mat_showmiplevels(	"mat_showmiplevels", "0", FCVAR_CHEAT, "color-code miplevels 2: normalmaps, 1: everything else", mat_showmiplevels_Callback_f );
 
+#ifdef BYTEMATCH_RETAIL
+static ConVar mat_specular(			"mat_specular", "1", 0, "Enable/Disable specularity for perf testing.  Will cause a material reload upon change." );
+static ConVar mat_bumpmap(			"mat_bumpmap", "1" );
+static ConVar mat_phong(			"mat_phong", "1" );
+static ConVar mat_parallaxmap(		"mat_parallaxmap", "1" );
+static ConVar mat_reducefillrate(	"mat_reducefillrate", "0" );
+static ConVar r_lightmap_bicubic(	"r_lightmap_bicubic", "0", 0, "Enable bi-cubic (high quality) lightmap sampling." );
+
+static ConVar mat_picmip(			"mat_picmip", "0", 0, "", true, -1, true, 4 );
+static ConVar mat_slopescaledepthbias_normal( "mat_slopescaledepthbias_normal", "0.0f", FCVAR_CHEAT );
+static ConVar mat_depthbias_normal( "mat_depthbias_normal", "0.0f", FCVAR_CHEAT );
+static ConVar mat_slopescaledepthbias_decal( "mat_slopescaledepthbias_decal", "-0.5", FCVAR_CHEAT );		// Reciprocals of these biases sent to API
+static ConVar mat_depthbias_decal(	"mat_depthbias_decal", "-262144", FCVAR_CHEAT );						//
+
+static ConVar mat_slopescaledepthbias_shadowmap( "mat_slopescaledepthbias_shadowmap", "16", FCVAR_CHEAT );
+static ConVar mat_depthbias_shadowmap(	"mat_depthbias_shadowmap", "0.0005", FCVAR_CHEAT  );
+
+static ConVar mat_monitorgamma(		"mat_monitorgamma", "2.2", 0, "monitor gamma (typically 2.2 for CRT and 1.7 for LCD)", true, 1.6f, true, 2.6f  );
+static ConVar mat_monitorgamma_tv_range_min( "mat_monitorgamma_tv_range_min", "16" );
+static ConVar mat_monitorgamma_tv_range_max( "mat_monitorgamma_tv_range_max", "255" );
+// TV's generally have a 2.5 gamma, so we need to convert our 2.2 frame buffer into a 2.5 frame buffer for display on a TV
+static ConVar mat_monitorgamma_tv_exp( "mat_monitorgamma_tv_exp", "2.5", 0, "", true, 1.0f, true, 4.0f );
+static ConVar mat_monitorgamma_tv_enabled( "mat_monitorgamma_tv_enabled", "0", FCVAR_ARCHIVE, "" );
+
+static ConVar mat_antialias(		"mat_antialias", "0" );
+static ConVar mat_aaquality(		"mat_aaquality", "0" );
+static ConVar mat_diffuse(			"mat_diffuse", "1", FCVAR_CHEAT );
+static ConVar mat_showlowresimage(	"mat_showlowresimage", "0", FCVAR_CHEAT );
+static ConVar mat_fullbright(		"mat_fullbright","0", FCVAR_CHEAT );
+static ConVar mat_normalmaps(		"mat_normalmaps", "0", FCVAR_CHEAT );
+static ConVar mat_measurefillrate(	"mat_measurefillrate", "0", FCVAR_CHEAT );
+static ConVar mat_fillrate(			"mat_fillrate", "0", FCVAR_CHEAT );
+static ConVar mat_reversedepth(		"mat_reversedepth", "0", FCVAR_CHEAT );
+static ConVar mat_bufferprimitives( "mat_bufferprimitives", "0" );	// I'm not seeing any benefit speed wise for buffered primitives on GLM/POSIX (checked via TF2 timedemo) - default to zero
+static ConVar mat_drawflat(			"mat_drawflat","0", FCVAR_CHEAT );
+static ConVar mat_softwarelighting( "mat_softwarelighting", "0" );
+static ConVar mat_proxy(			"mat_proxy", "0", FCVAR_CHEAT, "", MatProxyCallback );
+static ConVar mat_norendering(		"mat_norendering", "0", FCVAR_CHEAT );
+static ConVar mat_compressedtextures(  "mat_compressedtextures", "1" );
+static ConVar mat_fastspecular(		"mat_fastspecular", "1", 0, "Enable/Disable specularity for visual testing.  Will not reload materials and will not affect perf." );
+static ConVar mat_fastnobump(		"mat_fastnobump", "0", FCVAR_CHEAT ); // Binds 1-texel normal map for quick internal testing
+
+// These are not controlled by the material system, but are limited by settings in the material system
+static ConVar r_shadowrendertotexture(		"r_shadowrendertotexture", "0" );
+static ConVar r_flashlightdepthtexture(		"r_flashlightdepthtexture", "1" );
+static ConVar r_waterforceexpensive(		"r_waterforceexpensive", "0", FCVAR_ARCHIVE );
+static ConVar r_waterforcereflectentities(	"r_waterforcereflectentities", "0" );
+static ConVar mat_motion_blur_enabled( "mat_motion_blur_enabled", "1" );
+#else
 static ConVar mat_specular(			"mat_specular", "1", FCVAR_ALLOWED_IN_COMPETITIVE, "Enable/Disable specularity for perf testing.  Will cause a material reload upon change." );
 static ConVar mat_bumpmap(			"mat_bumpmap", "1", FCVAR_ALLOWED_IN_COMPETITIVE );
 static ConVar mat_phong(			"mat_phong", "1" );
@@ -1946,6 +2030,8 @@ static ConVar r_waterforceexpensive(		"r_waterforceexpensive", "0", FCVAR_ARCHIV
 #endif
 static ConVar r_waterforcereflectentities(	"r_waterforcereflectentities", "0", FCVAR_ALLOWED_IN_COMPETITIVE );
 static ConVar mat_motion_blur_enabled( "mat_motion_blur_enabled", "0", FCVAR_ARCHIVE );
+#endif
+#line 1949
 
 
 uint32 g_nDebugVarsSignature = 0;
@@ -1969,6 +2055,10 @@ void CMaterialSystem::ReadConfigFromConVars( MaterialSystem_Config_t *pConfig )
 	pConfig->SetFlag( MATSYS_VIDCFG_FLAGS_DISABLE_PHONG, !mat_phong.GetBool() );
 	pConfig->SetFlag( MATSYS_VIDCFG_FLAGS_ENABLE_PARALLAX_MAPPING, mat_parallaxmap.GetBool() );
 	pConfig->SetFlag( MATSYS_VIDCFG_FLAGS_REDUCE_FILLRATE, mat_reducefillrate.GetBool() );
+#ifdef BYTEMATCH_RETAIL
+	pConfig->SetFlag( MATSYS_VIDCFG_FLAGS_BICUBIC_LIGHTMAPS, r_lightmap_bicubic.GetBool() );
+#endif
+#line 1972
 	pConfig->m_nForceAnisotropicLevel = max( mat_forceaniso.GetInt(), 1 );
 	pConfig->dxSupportLevel = MAX( ABSOLUTE_MINIMUM_DXLEVEL, mat_dxlevel.GetInt() );
 	pConfig->skipMipLevels = mat_picmip.GetInt();
@@ -2006,7 +2096,12 @@ void CMaterialSystem::ReadConfigFromConVars( MaterialSystem_Config_t *pConfig )
 	pConfig->bReverseDepth = mat_reversedepth.GetInt() ? true : false;
 
 #ifdef DX_TO_GL_ABSTRACTION
+#ifdef BYTEMATCH_RETAIL
+	pConfig->bBufferPrimitives = mat_bufferprimitives.GetInt() ? true : false;
+#else
 	pConfig->bBufferPrimitives = false; // nillerusr: causes rendering bugs and sefaults with nvidia driver
+#endif
+#line 2010
 #else
 	pConfig->bBufferPrimitives = mat_bufferprimitives.GetInt() ? true : false;
 #endif
@@ -2036,7 +2131,10 @@ void CMaterialSystem::ReadConfigFromConVars( MaterialSystem_Config_t *pConfig )
 	}
 	if ( pConfig->dxSupportLevel < 90 )
 	{
+#ifndef BYTEMATCH_RETAIL
 		mat_requires_rt_alloc_first.SetValue( 1 );
+#endif
+#line 2040
 		r_flashlightdepthtexture.SetValue( 0 );
 		mat_motion_blur_enabled.SetValue( 0 );
 		pConfig->m_bShadowDepthTexture = false;
@@ -2225,6 +2323,10 @@ void CMaterialSystem::WriteConfigIntoConVars( const MaterialSystem_Config_t &con
 	mat_phong.SetValue( config.UsePhong() );
 	mat_parallaxmap.SetValue( config.UseParallaxMapping() );
 	mat_reducefillrate.SetValue( config.ReduceFillrate() );
+#ifdef BYTEMATCH_RETAIL
+	r_lightmap_bicubic.SetValue( config.BicubicLightmaps() );
+#endif
+#line 2228
 	mat_forceaniso.SetValue( config.m_nForceAnisotropicLevel );
 	mat_dxlevel.SetValue( MAX( ABSOLUTE_MINIMUM_DXLEVEL, config.dxSupportLevel ) );
 	mat_picmip.SetValue( config.skipMipLevels );
@@ -3819,6 +3921,37 @@ void CMaterialSystem::EndFrame( void )
 				ThreadAcquire( true );
 			}
 
+#ifdef BYTEMATCH_RETAIL
+			if ( m_pActiveAsyncJob && !m_pActiveAsyncJob->IsFinished() )
+			{
+				m_pActiveAsyncJob->WaitForFinish();
+				if ( !IsPC() && g_config.ForceHWSync() )
+				{
+					g_pShaderAPI->ForceHardwareSync();
+				}
+			}
+			SafeRelease( m_pActiveAsyncJob );
+
+			OnRenderingAsyncComplete();
+
+			CMatQueuedRenderContext *pPrevContext = &m_QueuedRenderContexts[m_iCurQueuedContext];
+
+			m_iCurQueuedContext = ( ( m_iCurQueuedContext + 1 ) % ARRAYSIZE( m_QueuedRenderContexts) );
+			m_QueuedRenderContexts[m_iCurQueuedContext].BeginQueue( pPrevContext );
+			m_pRenderContext.Set( &m_QueuedRenderContexts[m_iCurQueuedContext] );
+
+			m_pActiveAsyncJob = new CFunctorJob( CreateFunctor( this, &CMaterialSystem::ThreadExecuteQueuedContext, pPrevContext ), "ThreadExecuteQueuedContext" );
+			if ( IsX360() )
+			{
+				if ( m_nServiceThread >= 0 )
+				{
+					m_pActiveAsyncJob->SetServiceThread( m_nServiceThread );
+				}
+			}
+
+			IThreadPool *pThreadPool = CreateMatQueueThreadPool();
+			pThreadPool->AddJob( m_pActiveAsyncJob );
+#else
 			IThreadPool* pThreadPool = CreateMatQueueThreadPool();
 
 			if ( m_pActiveAsyncJob && !m_pActiveAsyncJob->IsFinished() )
@@ -3851,6 +3984,8 @@ void CMaterialSystem::EndFrame( void )
 			}
 
 			pThreadPool->AddJob( m_pActiveAsyncJob );
+#endif
+#line 3956
 			break;
 		}
 

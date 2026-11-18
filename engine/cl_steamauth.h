@@ -16,7 +16,7 @@
 
 #include "steam/steam_api.h"
 
-class CSteam3Client : public CSteamAPIContext
+class CSteam3Client
 {
 public:
 	CSteam3Client();

@@ -152,7 +152,7 @@ void CInternetGames::ServerResponded( newgameserver_t &server )
 void CInternetGames::ServerFailedToRespond( HServerListRequest hReq, int iServer )
 {
 	m_bDirty = true;
-	gameserveritem_t *pServer = steamapicontext->SteamMatchmakingServers()->GetServerDetails( hReq, iServer );
+	gameserveritem_t *pServer = SteamMatchmakingServers()->GetServerDetails( hReq, iServer );
 	Assert( pServer );
 #endif
 

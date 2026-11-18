@@ -522,7 +522,7 @@ class CAchievementPortalFindAllDinosaurs : public CBaseAchievement
 
 #ifndef DISABLE_STEAM
 				// Update our Steam stat
-				steamapicontext->SteamUserStats()->SetStat( "PORTAL_TRANSMISSION_RECEIVED_STAT", m_iCount );
+				SteamUserStats()->SetStat( "PORTAL_TRANSMISSION_RECEIVED_STAT", m_iCount );
 #endif
 			}
 			else

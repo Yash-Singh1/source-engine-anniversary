@@ -272,7 +272,7 @@ CBaseGamesPage::~CBaseGamesPage()
 {
 	if ( m_hRequest )
 	{
-		steamapicontext->SteamMatchmakingServers()->ReleaseRequest( m_hRequest );
+		SteamMatchmakingServers()->ReleaseRequest( m_hRequest );
 		m_hRequest = NULL;
 	}
 }
@@ -351,7 +351,7 @@ void CBaseGamesPage::PerformLayout()
 		m_pRefreshQuick->SetEnabled(false);
 	}
 
-	if ( !steamapicontext->SteamMatchmakingServers() || !steamapicontext->SteamMatchmaking() )
+	if ( !SteamMatchmakingServers() || !SteamMatchmaking() )
 	{
 		m_pAddCurrentServer->SetVisible( false );
 		m_pRefreshQuick->SetEnabled( false );
@@ -655,13 +655,13 @@ newgameserver_t *CBaseGamesPage::GetServer( unsigned int serverID )
 #endif
 {
 #ifdef BYTEMATCH_RETAIL
-	if ( !steamapicontext->SteamMatchmakingServers() )
+	if ( !SteamMatchmakingServers() )
 		return NULL;
 
 	// No point checking for >= 0 when serverID is unsigned.
 	//if ( serverID >= 0 )
 	{
-		return steamapicontext->SteamMatchmakingServers()->GetServerDetails( m_hRequest, serverID );
+		return SteamMatchmakingServers()->GetServerDetails( m_hRequest, serverID );
 	}
 	//else
 	//{
@@ -929,7 +929,7 @@ void CBaseGamesPage::ServerResponded( gameserveritem_t &server )
 #ifdef BYTEMATCH_RETAIL
 void CBaseGamesPage::ServerResponded( HServerListRequest hReq, int iServer )
 {
-	gameserveritem_t *pServerItem = steamapicontext->SteamMatchmakingServers()->GetServerDetails( hReq, iServer );
+	gameserveritem_t *pServerItem = SteamMatchmakingServers()->GetServerDetails( hReq, iServer );
 	if ( !pServerItem )
 	{
 		Assert( !"Missing server response" );
@@ -1276,7 +1276,7 @@ void CBaseGamesPage::OnTextChanged(Panel *panel, const char *text)
 void CBaseGamesPage::ApplyGameFilters()
 {
 #ifdef BYTEMATCH_RETAIL
-	if ( !steamapicontext->SteamMatchmakingServers() )
+	if ( !SteamMatchmakingServers() )
 		return;
 #ifdef BYTEMATCH_RETAIL
 
@@ -1287,7 +1287,7 @@ void CBaseGamesPage::ApplyGameFilters()
 	FOR_EACH_MAP_FAST( m_mapServers, i )
 	{
 		serverdisplay_t &server = m_mapServers[ i ];
-		gameserveritem_t *pServer = steamapicontext->SteamMatchmakingServers()->GetServerDetails( m_hRequest, server.m_iServerID );
+		gameserveritem_t *pServer = SteamMatchmakingServers()->GetServerDetails( m_hRequest, server.m_iServerID );
 		if ( !pServer ) 
 			continue;
 
@@ -1862,8 +1862,8 @@ void CBaseGamesPage::OnCommand(const char *command)
 	}
 	else if ( !Q_stricmp(command, "refresh") )
 	{
-		if ( steamapicontext->SteamMatchmakingServers() )
-			steamapicontext->SteamMatchmakingServers()->RefreshQuery( m_hRequest );
+		if ( SteamMatchmakingServers() )
+			SteamMatchmakingServers()->RefreshQuery( m_hRequest );
 		SetRefreshing( true );
 		m_iServerRefreshCount = 0;
 		ClearQuickList();
@@ -1944,7 +1944,7 @@ int CBaseGamesPage::GetSelectedItemsCount()
 void CBaseGamesPage::OnAddToFavorites()
 {
 #ifdef BYTEMATCH_RETAIL
-	if ( !steamapicontext->SteamMatchmakingServers() )
+	if ( !SteamMatchmakingServers() )
 		return;
 #endif
 
@@ -1954,7 +1954,7 @@ void CBaseGamesPage::OnAddToFavorites()
 	{
 		int serverID = m_pGameList->GetItemUserData(m_pGameList->GetSelectedItem(i));
 
-		gameserveritem_t *pServer = steamapicontext->SteamMatchmakingServers()->GetServerDetails( m_hRequest, serverID );
+		gameserveritem_t *pServer = SteamMatchmakingServers()->GetServerDetails( m_hRequest, serverID );
 		if ( pServer )
 		{
 			// add to favorites list
@@ -1970,7 +1970,7 @@ void CBaseGamesPage::OnAddToFavorites()
 //-----------------------------------------------------------------------------
 void CBaseGamesPage::OnAddToBlacklist()
 {
-	if ( !steamapicontext->SteamMatchmakingServers() )
+	if ( !SteamMatchmakingServers() )
 		return;
 
 	// loop through all the selected favorites
@@ -1978,7 +1978,7 @@ void CBaseGamesPage::OnAddToBlacklist()
 	{
 		int serverID = m_pGameList->GetItemUserData(m_pGameList->GetSelectedItem(i));
 
-		gameserveritem_t *pServer = steamapicontext->SteamMatchmakingServers()->GetServerDetails( m_hRequest, serverID );
+		gameserveritem_t *pServer = SteamMatchmakingServers()->GetServerDetails( m_hRequest, serverID );
 		if ( pServer )
 		{
 			ServerBrowserDialog().AddServerToBlacklist(*pServer);
@@ -2023,7 +2023,7 @@ void CBaseGamesPage::RemoveServer( serverdisplay_t &server )
 //-----------------------------------------------------------------------------
 void CBaseGamesPage::OnRefreshServer( int serverID )
 {
-	if ( !steamapicontext->SteamMatchmakingServers() )
+	if ( !SteamMatchmakingServers() )
 		return;
 
 	// walk the list of selected servers refreshing them
@@ -2032,7 +2032,7 @@ void CBaseGamesPage::OnRefreshServer( int serverID )
 		int serverID = m_pGameList->GetItemUserData(m_pGameList->GetSelectedItem(i));
 
 		// refresh this server
-		steamapicontext->SteamMatchmakingServers()->RefreshServer( m_hRequest, serverID );
+		SteamMatchmakingServers()->RefreshServer( m_hRequest, serverID );
 	}
 
 	SetRefreshing(IsRefreshing());
@@ -2045,7 +2045,7 @@ void CBaseGamesPage::OnRefreshServer( int serverID )
 void CBaseGamesPage::StartRefresh()
 {
 #ifdef BYTEMATCH_RETAIL
-	if ( !steamapicontext->SteamMatchmakingServers() )
+	if ( !SteamMatchmakingServers() )
 		return;
 
 #endif
@@ -2056,7 +2056,7 @@ void CBaseGamesPage::StartRefresh()
 #ifdef BYTEMATCH_RETAIL
 	if ( m_hRequest )
 	{
-		steamapicontext->SteamMatchmakingServers()->ReleaseRequest( m_hRequest );
+		SteamMatchmakingServers()->ReleaseRequest( m_hRequest );
 		m_hRequest = NULL;
 	}
 #else
@@ -2068,29 +2068,29 @@ void CBaseGamesPage::StartRefresh()
 	{
 #ifdef BYTEMATCH_RETAIL
 	case eFavoritesServer:
-		m_hRequest = steamapicontext->SteamMatchmakingServers()->RequestFavoritesServerList( GetFilterAppID().AppID(), &pFilters, nFilters, this );
+		m_hRequest = SteamMatchmakingServers()->RequestFavoritesServerList( GetFilterAppID().AppID(), &pFilters, nFilters, this );
 		break;
 	case eHistoryServer:
-		m_hRequest = steamapicontext->SteamMatchmakingServers()->RequestHistoryServerList( GetFilterAppID().AppID(), &pFilters, nFilters, this );
+		m_hRequest = SteamMatchmakingServers()->RequestHistoryServerList( GetFilterAppID().AppID(), &pFilters, nFilters, this );
 		break;
 #endif
 	case eInternetServer:
 #ifdef BYTEMATCH_RETAIL
-		m_hRequest = steamapicontext->SteamMatchmakingServers()->RequestInternetServerList( GetFilterAppID().AppID(), &pFilters, nFilters, this );
+		m_hRequest = SteamMatchmakingServers()->RequestInternetServerList( GetFilterAppID().AppID(), &pFilters, nFilters, this );
 #else
 		g_pServersInfo->RequestInternetServerList(COM_GetModDirectory(), this);
-		//m_hRequest = steamapicontext->SteamMatchmakingServers()->RequestInternetServerList( GetFilterAppID().AppID(), &pFilters, nFilters, this );
+		//m_hRequest = SteamMatchmakingServers()->RequestInternetServerList( GetFilterAppID().AppID(), &pFilters, nFilters, this );
 #endif
 		break;
 #ifdef BYTEMATCH_RETAIL
 	case eSpectatorServer:
-		m_hRequest = steamapicontext->SteamMatchmakingServers()->RequestSpectatorServerList( GetFilterAppID().AppID(), &pFilters, nFilters, this );
+		m_hRequest = SteamMatchmakingServers()->RequestSpectatorServerList( GetFilterAppID().AppID(), &pFilters, nFilters, this );
 		break;
 	case eFriendsServer:
-		m_hRequest = steamapicontext->SteamMatchmakingServers()->RequestFriendsServerList( GetFilterAppID().AppID(), &pFilters, nFilters, this );
+		m_hRequest = SteamMatchmakingServers()->RequestFriendsServerList( GetFilterAppID().AppID(), &pFilters, nFilters, this );
 		break;
 	case eLANServer:
-		m_hRequest = steamapicontext->SteamMatchmakingServers()->RequestLANServerList( GetFilterAppID().AppID(), this );
+		m_hRequest = SteamMatchmakingServers()->RequestLANServerList( GetFilterAppID().AppID(), this );
 		break;
 	default:
 		Assert( !"Unknown server type" );
@@ -2164,8 +2164,8 @@ void CBaseGamesPage::StopRefresh()
 
 	// Stop the server list refreshing
 #ifdef BYTEMATCH_RETAIL
-	if ( steamapicontext->SteamMatchmakingServers() )
-		steamapicontext->SteamMatchmakingServers()->CancelQuery( m_hRequest );
+	if ( SteamMatchmakingServers() )
+		SteamMatchmakingServers()->CancelQuery( m_hRequest );
 #else
 	g_pServersInfo->StopRefresh();
 #endif
@@ -2203,7 +2203,7 @@ void CBaseGamesPage::RefreshComplete( NServerResponse response )
 //-----------------------------------------------------------------------------
 bool CBaseGamesPage::IsRefreshing()
 {
-	return steamapicontext->SteamMatchmakingServers() && steamapicontext->SteamMatchmakingServers()->IsRefreshing( m_hRequest );
+	return SteamMatchmakingServers() && SteamMatchmakingServers()->IsRefreshing( m_hRequest );
 }
 
 //-----------------------------------------------------------------------------
@@ -2606,13 +2606,13 @@ void CBaseGamesPage::OnFavoritesMsg( FavoritesListChanged_t *pFavListChanged )
 			if ( pFavListChanged->m_bAdd )	
 			{
 #ifdef BYTEMATCH_RETAIL
-				if ( steamapicontext->SteamMatchmakingServers() )
-					steamapicontext->SteamMatchmakingServers()->PingServer( pFavListChanged->m_nIP, pFavListChanged->m_nQueryPort, this );
+				if ( SteamMatchmakingServers() )
+					SteamMatchmakingServers()->PingServer( pFavListChanged->m_nIP, pFavListChanged->m_nQueryPort, this );
 #else
 
 			// TODO(nillerusr): implement this
-			//	if ( steamapicontext->SteamMatchmakingServers() )
-			//		steamapicontext->SteamMatchmakingServers()->PingServer( pFavListChanged->m_nIP, pFavListChanged->m_nQueryPort, this );
+			//	if ( SteamMatchmakingServers() )
+			//		SteamMatchmakingServers()->PingServer( pFavListChanged->m_nIP, pFavListChanged->m_nQueryPort, this );
 #endif
 			}
 			// ignore deletes of fav's we didn't have

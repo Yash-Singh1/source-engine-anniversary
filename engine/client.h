@@ -245,14 +245,20 @@ public:
 	bool m_bUpdateSteamResources;
 	bool m_bShownSteamResourceUpdateProgress;
 	bool m_bDownloadResources;
+#ifndef BYTEMATCH_RETAIL
 	bool m_bPrepareClientDLL;
+#endif
+#line 248
 	bool m_bCheckCRCsWithServer;
 	float m_flLastCRCBatchTime;
 
 	// This is only kept around to print out the whitelist info if sv_pure is used.
 	CPureServerWhitelist *m_pPureServerWhitelist;
 
+#ifndef BYTEMATCH_RETAIL
 	IFileList *m_pPendingPureFileReloads;
+#endif
+#line 254
 
 private:
 

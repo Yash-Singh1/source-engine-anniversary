@@ -96,8 +96,8 @@ IAchievementMgr *achievementmgr = NULL;
 IEngineClientReplay *g_pEngineClientReplay = NULL;
 ISourceVirtualReality *g_pSourceVR = NULL;
 
-static CSteamAPIContext g_SteamAPIContext;
-CSteamAPIContext *steamapicontext = &g_SteamAPIContext;
+
+
 
 static CBasePanel *staticPanel = NULL;
 
@@ -168,7 +168,7 @@ void CGameUI::Initialize( CreateInterfaceFn factory )
 	enginesound = (IEngineSound *)factory(IENGINESOUND_CLIENT_INTERFACE_VERSION, NULL);
 	engine = (IVEngineClient *)factory( VENGINE_CLIENT_INTERFACE_VERSION, NULL );
 
-	steamapicontext->Init();
+
 
 	ConVarRef var( "gameui_xbox" );
 	m_bIsConsoleUI = var.IsValid() && var.GetBool();
@@ -701,9 +701,7 @@ void CGameUI::Shutdown()
 	
 	BonusMapsDatabase()->WriteSaveData();
 
-#ifndef BYTEMATCH_RETAIL
-	steamapicontext->Clear();
-#endif
+
 	
 
 	ConVar_Unregister();

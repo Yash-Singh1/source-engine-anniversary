@@ -52,7 +52,7 @@ Slider::Slider(Panel *parent, const char *panelName ) : BaseClass(parent, panelN
 	m_bUseSubRange = false;
 	m_bInverted = false;
 
-	SetThumbWidth( PROPORTIONAL_VALUE( 8 ) );
+	SetThumbWidth( QuickPropScale( 8 ) );
 	RecomputeNobPosFromValue();
 	AddActionSignalTarget(this);
 	SetBlockDragChaining( true );
@@ -333,7 +333,7 @@ void Slider::ApplySettings(KeyValues *inResourceData)
 	int thumbWidth = inResourceData->GetInt("thumbwidth", 0);
 	if (thumbWidth != 0)
 	{
-		SetThumbWidth( PROPORTIONAL_VALUE( thumbWidth ) );
+		SetThumbWidth( QuickPropScale( thumbWidth ) );
 	}
 
 	SetTickCaptions(left, right);
@@ -385,9 +385,9 @@ void Slider::GetTrackRect( int& x, int& y, int& w, int& h )
 	GetPaintSize( wide, tall );
 
 	x = 0;
-	y = PROPORTIONAL_VALUE( 8 );
+	y = QuickPropScale( 8 );
 	w = wide - (int)_nobSize;
-	h = PROPORTIONAL_VALUE( 4 );
+	h = QuickPropScale( 4 );
 }
 
 //-----------------------------------------------------------------------------
@@ -423,7 +423,7 @@ void Slider::DrawTicks()
 	float pixelspertick = freepixels / ( m_nNumTicks );
 
 	y += (int)_nobSize;
-	int tickHeight = PROPORTIONAL_VALUE( 5 );
+	int tickHeight = QuickPropScale( 5 );
 
     if (IsEnabled())
     {
@@ -432,7 +432,7 @@ void Slider::DrawTicks()
     	{
     		int xpos = (int)( leftpixel + i * pixelspertick );
     
-    		surface()->DrawFilledRect( xpos, y, xpos + PROPORTIONAL_VALUE( 1 ), y + tickHeight );
+    		surface()->DrawFilledRect( xpos, y, xpos + QuickPropScale( 1 ), y + tickHeight );
     	}
     }
     else
@@ -441,13 +441,13 @@ void Slider::DrawTicks()
     	for ( int i = 0; i <= m_nNumTicks; i++ )
     	{
     		int xpos = (int)( leftpixel + i * pixelspertick );
-    		surface()->DrawFilledRect( xpos + PROPORTIONAL_VALUE( 1 ), y + PROPORTIONAL_VALUE( 1 ), xpos + PROPORTIONAL_VALUE( 2 ), y + tickHeight + PROPORTIONAL_VALUE( 1 ) );
+    		surface()->DrawFilledRect( xpos + QuickPropScale( 1 ), y + QuickPropScale( 1 ), xpos + QuickPropScale( 2 ), y + tickHeight + QuickPropScale( 1 ) );
     	}
         surface()->DrawSetColor( m_DisabledTextColor2 ); //vgui::Color( 127, 140, 127, 255 ) );
     	for ( int i = 0; i <= m_nNumTicks; i++ )
     	{
     		int xpos = (int)( leftpixel + i * pixelspertick );
-    		surface()->DrawFilledRect( xpos, y, xpos + PROPORTIONAL_VALUE( 1 ), y + tickHeight );
+    		surface()->DrawFilledRect( xpos, y, xpos + QuickPropScale( 1 ), y + tickHeight );
     	}
     }
 }
@@ -463,7 +463,7 @@ void Slider::DrawTickLabels()
 
 	// Figure out how to draw the ticks
 //	GetPaintSize( wide, tall );
-	y += PROPORTIONAL_VALUE( (int)NOB_SIZE + 4 );
+	y += QuickPropScale( (int)NOB_SIZE + 4 );
 
 	// Draw Start and end range values
     if (IsEnabled())
@@ -523,8 +523,8 @@ void Slider::DrawNob()
 #endif
 	surface()->DrawSetColor(col);
 
-	int nBorderScale = Max( PROPORTIONAL_VALUE( 1 ), 1 );
-	int nobheight = PROPORTIONAL_VALUE( 16 );
+	int nBorderScale = Max( QuickPropScale( 1 ), 1 );
+	int nobheight = QuickPropScale( 16 );
 
 	surface()->DrawFilledRect(
 		_nobPos[0], 
@@ -610,7 +610,7 @@ void Slider::PaintBackground()
 {
 	BaseClass::PaintBackground();
 	
-	int nScale = PROPORTIONAL_VALUE( 1 );
+	int nScale = QuickPropScale( 1 );
 	int nBorderScale = max( nScale, 1 );
 
 	int x, y;

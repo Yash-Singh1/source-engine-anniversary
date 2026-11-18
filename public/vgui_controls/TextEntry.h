@@ -92,7 +92,7 @@ public:
 
 	virtual void SetText(const wchar_t *wszText);
 	virtual void SetText(const char *text);
-	virtual void GetText(OUT_Z_BYTECAP(bufLenInBytes) char *buf, int bufLenInBytes);
+	virtual int GetText(OUT_Z_BYTECAP(bufLenInBytes) char *buf, int bufLenInBytes);
 	virtual void GetText(OUT_Z_BYTECAP(bufLenInBytes) wchar_t *buf, int bufLenInBytes);
 	virtual int GetTextLength() const;
 	virtual bool IsTextFullySelected() const;

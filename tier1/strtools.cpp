@@ -4043,6 +4043,7 @@ bool V_URLContainsDomain( const char *pchURL, const char *pchDomain )
 	return false;
 }
 
+#ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
 // Purpose: Strips all HTML tags not specified in rgszPreserveTags
 //			Does some additional formatting, like turning <li> into * when not preserving that tag,
@@ -4378,5 +4379,6 @@ void V_StripAndPreserveHTML( CUtlBuffer *pbuffer, const char *pchHTML, const cha
 	const char *rgszNoCloseTags[] = { "br", "img" };
 	V_StripAndPreserveHTMLCore( pbuffer, pchHTML, rgszPreserveTags, cPreserveTags, rgszNoCloseTags, V_ARRAYSIZE( rgszNoCloseTags ), cMaxResultSize );
 }
+#endif
 
 

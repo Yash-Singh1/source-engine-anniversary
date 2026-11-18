@@ -1,0 +1,112 @@
+diff --color -ruN a/usr/include/sys/_structs.h b/usr/include/sys/_structs.h
+--- a/usr/include/sys/_structs.h	2026-11-18 05:26:16
++++ b/usr/include/sys/_structs.h	2026-11-18 05:26:17
+@@ -163,52 +163,7 @@
+ 
+ #ifdef __need_fd_set
+ #undef __need_fd_set
+-#ifndef _FD_SET
+-#define _FD_SET
+-/*
+- * Select uses bit masks of file descriptors in longs.  These macros
+- * manipulate such bit fields (the filesystem macros use chars).  The
+- * extra protection here is to permit application redefinition above
+- * the default size.
+- */
+-#ifdef FD_SETSIZE
+-#define	__DARWIN_FD_SETSIZE	FD_SETSIZE
+-#else /* !FD_SETSIZE */
+-#define	__DARWIN_FD_SETSIZE	1024
+-#endif /* FD_SETSIZE */
+-#define	__DARWIN_NBBY		8				/* bits in a byte */
+-#define __DARWIN_NFDBITS	(sizeof(__int32_t) * __DARWIN_NBBY) /* bits per mask */
+-#define	__DARWIN_howmany(x, y)	((((x) % (y)) == 0) ? ((x) / (y)) : (((x) / (y)) + 1)) /* # y's == x bits? */
+-
+-__BEGIN_DECLS
+-typedef	struct fd_set {
+-	__int32_t	fds_bits[__DARWIN_howmany(__DARWIN_FD_SETSIZE, __DARWIN_NFDBITS)];
+-} fd_set;
+-__END_DECLS
+-
+-/* This inline avoids argument side-effect issues with FD_ISSET() */
+-static __inline int
+-__darwin_fd_isset(int _n, const struct fd_set *_p)
+-{
+-	return (_p->fds_bits[_n/__DARWIN_NFDBITS] & (1<<(_n % __DARWIN_NFDBITS)));
+-}
+-
+-#define	__DARWIN_FD_SET(n, p)	do { int __fd = (n); ((p)->fds_bits[__fd/__DARWIN_NFDBITS] |= (1<<(__fd % __DARWIN_NFDBITS))); } while(0)
+-#define	__DARWIN_FD_CLR(n, p)	do { int __fd = (n); ((p)->fds_bits[__fd/__DARWIN_NFDBITS] &= ~(1<<(__fd % __DARWIN_NFDBITS))); } while(0)
+-#define	__DARWIN_FD_ISSET(n, p)	__darwin_fd_isset((n), (p))
+-
+-#if __GNUC__ > 3 || __GNUC__ == 3 && __GNUC_MINOR__ >= 3
+-/*
+- * Use the built-in bzero function instead of the library version so that
+- * we do not pollute the namespace or introduce prototype warnings.
+- */
+-#define	__DARWIN_FD_ZERO(p)	__builtin_bzero(p, sizeof(*(p)))
+-#else
+-#define	__DARWIN_FD_ZERO(p)	bzero(p, sizeof(*(p)))
+-#endif
+-
+-#define	__DARWIN_FD_COPY(f, t)	bcopy(f, t, sizeof(*(f)))
+-#endif /* _FD_SET */
++#include <sys/_types/_fd_def.h>
+ #endif /* __need_fd_set */
+ 
+ #ifdef __need_stack_t
+diff --color -ruN a/usr/include/sys/_types/_fd_def.h b/usr/include/sys/_types/_fd_def.h
+--- a/usr/include/sys/_types/_fd_def.h	1969-12-31 18:00:00
++++ b/usr/include/sys/_types/_fd_def.h	2026-11-18 05:26:17
+@@ -0,0 +1,51 @@
++/*
++ * fd_set and its helpers, split out of sys/_structs.h as in the 10.9 SDK
++ * (retail debug maps name sys/_types/_fd_def.h for __darwin_fd_isset).
++ * The definitions are the 10.6 ones, unchanged.
++ */
++#ifndef _FD_SET
++#define _FD_SET
++/*
++ * Select uses bit masks of file descriptors in longs.  These macros
++ * manipulate such bit fields (the filesystem macros use chars).  The
++ * extra protection here is to permit application redefinition above
++ * the default size.
++ */
++#ifdef FD_SETSIZE
++#define	__DARWIN_FD_SETSIZE	FD_SETSIZE
++#else /* !FD_SETSIZE */
++#define	__DARWIN_FD_SETSIZE	1024
++#endif /* FD_SETSIZE */
++#define	__DARWIN_NBBY		8				/* bits in a byte */
++#define __DARWIN_NFDBITS	(sizeof(__int32_t) * __DARWIN_NBBY) /* bits per mask */
++#define	__DARWIN_howmany(x, y)	((((x) % (y)) == 0) ? ((x) / (y)) : (((x) / (y)) + 1)) /* # y's == x bits? */
++
++__BEGIN_DECLS
++typedef	struct fd_set {
++	__int32_t	fds_bits[__DARWIN_howmany(__DARWIN_FD_SETSIZE, __DARWIN_NFDBITS)];
++} fd_set;
++__END_DECLS
++
++/* This inline avoids argument side-effect issues with FD_ISSET() */
++static __inline int
++__darwin_fd_isset(int _n, const struct fd_set *_p)
++{
++	return (_p->fds_bits[_n/__DARWIN_NFDBITS] & (1<<(_n % __DARWIN_NFDBITS)));
++}
++
++#define	__DARWIN_FD_SET(n, p)	do { int __fd = (n); ((p)->fds_bits[__fd/__DARWIN_NFDBITS] |= (1<<(__fd % __DARWIN_NFDBITS))); } while(0)
++#define	__DARWIN_FD_CLR(n, p)	do { int __fd = (n); ((p)->fds_bits[__fd/__DARWIN_NFDBITS] &= ~(1<<(__fd % __DARWIN_NFDBITS))); } while(0)
++#define	__DARWIN_FD_ISSET(n, p)	__darwin_fd_isset((n), (p))
++
++#if __GNUC__ > 3 || __GNUC__ == 3 && __GNUC_MINOR__ >= 3
++/*
++ * Use the built-in bzero function instead of the library version so that
++ * we do not pollute the namespace or introduce prototype warnings.
++ */
++#define	__DARWIN_FD_ZERO(p)	__builtin_bzero(p, sizeof(*(p)))
++#else
++#define	__DARWIN_FD_ZERO(p)	bzero(p, sizeof(*(p)))
++#endif
++
++#define	__DARWIN_FD_COPY(f, t)	bcopy(f, t, sizeof(*(f)))
++#endif /* _FD_SET */

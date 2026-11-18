@@ -29,12 +29,12 @@ public:
 
 	// returns a texture ID and a pointer to an array of 4 texture coords for the given character & font
 	// generates+uploads more texture if necessary
-	bool GetTextureForChar( vgui::HFont font, vgui::FontDrawType_t type, wchar_t wch, int *textureID, float **texCoords );
+	bool GetTextureForChar( vgui::HFont font, vgui::FontDrawType_t type, wchar_t wch, int *textureID, float **texCoords, int *pColorGlyph = NULL );
 
 	// for each character in an array (not assumed to be a NULL-terminated string), returns a
 	// texture ID and a pointer to an array of 4 texture coords for the given character & font
 	// generates+uploads more texture if necessary
-	bool GetTextureForChars( vgui::HFont font, vgui::FontDrawType_t type, const wchar_t *wch, int *textureID, float **texCoords, int numChars = 1 );
+	bool GetTextureForChars( vgui::HFont font, vgui::FontDrawType_t type, const wchar_t *wch, int *textureID, float **texCoords, int numChars = 1, int *pColorGlyph = NULL );
 
 	// clears the cache
 	void Clear();
@@ -48,6 +48,9 @@ private:
 		FONT_PAGE_SIZE_64,
 		FONT_PAGE_SIZE_128,
 		FONT_PAGE_SIZE_256,
+#ifdef BYTEMATCH_RETAIL
+		FONT_PAGE_SIZE_512,
+#endif
 		FONT_PAGE_SIZE_COUNT,
 	};
 
@@ -59,6 +62,7 @@ private:
 		wchar_t			wch;
 		unsigned char	page;
 		float			texCoords[4];
+		int				colorGlyph;
 
 		// doubly-linked list for use in the LRU
 		HCacheEntry		nextEntry;

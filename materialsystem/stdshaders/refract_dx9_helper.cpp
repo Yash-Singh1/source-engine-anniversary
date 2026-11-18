@@ -20,9 +20,21 @@ void InitParamsRefract_DX9( CBaseVSShader *pShader, IMaterialVar** params, const
 {
 	SET_FLAGS2( MATERIAL_VAR2_NEEDS_TANGENT_SPACES );
 	SET_FLAGS( MATERIAL_VAR_TRANSLUCENT );
+	static ConVarRef mat_specular_scalar( "mat_specular_scalar" );
+	float flSpecularScalar = mat_specular_scalar.IsValid() ? mat_specular_scalar.GetFloat() : -1.0f;
+	if ( flSpecularScalar < 0.0f )
+		flSpecularScalar = 1.0f;
+
 	if( !params[info.m_nEnvmapTint]->IsDefined() )
 	{
-		params[info.m_nEnvmapTint]->SetVecValue( 1.0f, 1.0f, 1.0f );
+		params[info.m_nEnvmapTint]->SetVecValue( flSpecularScalar, flSpecularScalar, flSpecularScalar );
+	}
+	else if ( flSpecularScalar != 1.0f )
+	{
+		// Retail writes the tint back unscaled here.
+		float vTint[3];
+		params[info.m_nEnvmapTint]->GetVecValue( vTint, 3 );
+		params[info.m_nEnvmapTint]->SetVecValue( vTint, 3 );
 	}
 	if( !params[info.m_nEnvmapContrast]->IsDefined() )
 	{
@@ -112,6 +124,26 @@ void DrawRefract_DX9( CBaseVSShader *pShader, IMaterialVar** params, IShaderDyna
 	bool bTranslucentNormal = pShader->TextureIsTranslucent( info.m_nNormalMap, false );
 	bFullyOpaque &= (! bTranslucentNormal );
 
+	NormalDecodeMode_t nNormalDecodeMode = NORMAL_DECODE_NONE;
+	if ( g_pHardwareConfig->SupportsNormalMapCompression() )
+	{
+		ITexture *pBumpTex = params[info.m_nNormalMap]->GetTextureValue();
+		if ( pBumpTex )
+		{
+			nNormalDecodeMode = pBumpTex->GetNormalDecodeMode();
+
+			if ( bSecondaryNormal )			// Check encoding of secondary normal if there is one
+			{
+				ITexture *pBumpTex2 = params[info.m_nNormalMap2]->GetTextureValue();
+				if ( pBumpTex2 && ( pBumpTex2->GetNormalDecodeMode() != nNormalDecodeMode ) )
+				{
+					DevMsg("Refract: Primary and Secondary normal map compression formats don't match.  This is unsupported!\n");
+					Assert(0);
+				}
+			}
+		}
+	}
+
 	SHADOW_STATE
 	{
 		pShader->SetInitialShadowState( );
@@ -134,9 +166,19 @@ void DrawRefract_DX9( CBaseVSShader *pShader, IMaterialVar** params, IShaderDyna
 
 		// normal map
 		pShaderShadow->EnableTexture( SHADER_SAMPLER3, true );
+		if ( nNormalDecodeMode == NORMAL_DECODE_ATI2N_ALPHA )
+		{
+			pShaderShadow->EnableTexture( SHADER_SAMPLER6, true );	// Normal map alpha, in the compressed normal case
+		}
+
 		if ( bSecondaryNormal )
 		{
 			pShaderShadow->EnableTexture( SHADER_SAMPLER1, true );
+
+			if ( nNormalDecodeMode == NORMAL_DECODE_ATI2N_ALPHA )
+			{
+				pShaderShadow->EnableTexture( SHADER_SAMPLER7, true );	// Secondary normal map alpha, in the compressed normal case
+			}
 		}
 
 		if( bHasEnvmap )
@@ -193,7 +235,7 @@ void DrawRefract_DX9( CBaseVSShader *pShader, IMaterialVar** params, IShaderDyna
 			SET_STATIC_PIXEL_SHADER_COMBO( MASKED, bMasked );
 			SET_STATIC_PIXEL_SHADER_COMBO( COLORMODULATE, bColorModulate );
 			SET_STATIC_PIXEL_SHADER_COMBO( SECONDARY_NORMAL, bSecondaryNormal );
-			SET_STATIC_PIXEL_SHADER_COMBO( NORMAL_DECODE_MODE, (int) NORMAL_DECODE_NONE );
+			SET_STATIC_PIXEL_SHADER_COMBO( NORMAL_DECODE_MODE, (int) nNormalDecodeMode );
 			SET_STATIC_PIXEL_SHADER_COMBO( SHADER_SRGB_READ, bShaderSRGBConvert );
 			SET_STATIC_PIXEL_SHADER( refract_ps20b );
 		}
@@ -207,7 +249,7 @@ void DrawRefract_DX9( CBaseVSShader *pShader, IMaterialVar** params, IShaderDyna
 			SET_STATIC_PIXEL_SHADER_COMBO( MASKED, bMasked );
 			SET_STATIC_PIXEL_SHADER_COMBO( COLORMODULATE, bColorModulate );
 			SET_STATIC_PIXEL_SHADER_COMBO( SECONDARY_NORMAL, bSecondaryNormal );
-			SET_STATIC_PIXEL_SHADER_COMBO( NORMAL_DECODE_MODE, (int) NORMAL_DECODE_NONE );
+			SET_STATIC_PIXEL_SHADER_COMBO( NORMAL_DECODE_MODE, (int) nNormalDecodeMode );
 			SET_STATIC_PIXEL_SHADER( refract_ps20 );
 		}
 		pShader->DefaultFog();
@@ -232,11 +274,25 @@ void DrawRefract_DX9( CBaseVSShader *pShader, IMaterialVar** params, IShaderDyna
 			pShaderAPI->BindStandardTexture( SHADER_SAMPLER2, TEXTURE_FRAME_BUFFER_FULL_TEXTURE_0 );
 		}
 
-		pShader->BindTexture( SHADER_SAMPLER3, info.m_nNormalMap, info.m_nBumpFrame );
+		if ( nNormalDecodeMode == NORMAL_DECODE_ATI2N_ALPHA )
+		{
+			pShader->BindTexture( SHADER_SAMPLER3, SHADER_SAMPLER6, info.m_nNormalMap, info.m_nBumpFrame );
+		}
+		else
+		{
+			pShader->BindTexture( SHADER_SAMPLER3, info.m_nNormalMap, info.m_nBumpFrame );
+		}
 
 		if ( bSecondaryNormal )
 		{
-			pShader->BindTexture( SHADER_SAMPLER1, info.m_nNormalMap2, info.m_nBumpFrame2 );
+			if ( nNormalDecodeMode == NORMAL_DECODE_ATI2N_ALPHA )
+			{
+				pShader->BindTexture( SHADER_SAMPLER1, SHADER_SAMPLER7, info.m_nNormalMap2, info.m_nBumpFrame2 );
+			}
+			else
+			{
+				pShader->BindTexture( SHADER_SAMPLER1, info.m_nNormalMap2, info.m_nBumpFrame2 );
+			}
 		}
 
 		if( bHasEnvmap )
@@ -257,7 +313,12 @@ void DrawRefract_DX9( CBaseVSShader *pShader, IMaterialVar** params, IShaderDyna
 		if ( g_pHardwareConfig->SupportsPixelShaders_2_b() || g_pHardwareConfig->ShouldAlwaysUseShaderModel2bShaders() ) // always send Posix down the ps2b path
 		{
 			DECLARE_DYNAMIC_PIXEL_SHADER( refract_ps20b );
+#ifdef BYTEMATCH_RETAIL
+			SET_DYNAMIC_PIXEL_SHADER_COMBO( PIXELFOGTYPE, pShaderAPI->GetPixelFogCombo1( true ) );
+#else
 			SET_DYNAMIC_PIXEL_SHADER_COMBO( PIXELFOGTYPE, pShaderAPI->GetPixelFogCombo() );
+#endif
+#line 317
 			SET_DYNAMIC_PIXEL_SHADER_COMBO( WRITE_DEPTH_TO_DESTALPHA, bWriteZ && bFullyOpaque && pShaderAPI->ShouldWriteDepthToDestAlpha() );
 			SET_DYNAMIC_PIXEL_SHADER( refract_ps20b );
 		}

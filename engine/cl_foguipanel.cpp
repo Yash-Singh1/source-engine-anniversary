@@ -51,6 +51,7 @@ void CFogUIPanel::InstallFogUI( vgui::Panel *parent )
 //-----------------------------------------------------------------------------
 CFogUIPanel::CFogUIPanel( vgui::Panel *parent ) : vgui::Frame( parent, "FogUIPanel" )
 {
+	m_bSlidersSynced = false;
 	SetTitle( "FogUI", true );
 
 	m_pFogOverride = new vgui::CheckButton( this, "FogOverride", "FogOverride" );
@@ -60,6 +61,8 @@ CFogUIPanel::CFogUIPanel( vgui::Panel *parent ) : vgui::Frame( parent, "FogUIPan
 	//
 	m_pFogEnable = new vgui::CheckButton( this, "FogEnable", "FogEnable" );
 	m_pFogEnable->SetSelected( true );
+	m_pFogRadial = new vgui::CheckButton( this, "FogRadial", "FogRadial" );
+	m_pFogRadial->SetSelected( false );
 	// FogStart
 	m_pFogStart = new vgui::Slider( this, "FogStart" );
 	m_pFogStart->SetRange( -10000, 30000 );
@@ -111,6 +114,8 @@ CFogUIPanel::CFogUIPanel( vgui::Panel *parent ) : vgui::Frame( parent, "FogUIPan
 	//
 	m_pFogEnableSky = new vgui::CheckButton( this, "FogEnableSky", "FogEnableSky" );
 	m_pFogEnableSky->SetSelected( true );
+	m_pFogRadialSky = new vgui::CheckButton( this, "FogRadialSky", "FogRadialSky" );
+	m_pFogRadialSky->SetSelected( false );
 	// Start
 	m_pFogStartSky = new vgui::Slider( this, "FogStartSky" );
 	m_pFogStartSky->SetRange( -10000, 30000  );
@@ -208,6 +213,7 @@ void CFogUIPanel::OnTick()
 
 	bool bFogEnabled = ( m_pFogEnable->IsSelected() && m_pFogOverride->IsSelected() );
 	m_pFogEnable->SetEnabled( bEnabled );
+	m_pFogRadial->SetEnabled( bEnabled );
 	m_pFogStart->SetEnabled( bFogEnabled );
 	m_pFogEnd->SetEnabled( bFogEnabled);  
 	m_pFogStartText->SetEnabled( bFogEnabled );
@@ -221,6 +227,7 @@ void CFogUIPanel::OnTick()
 
 	bool bFogSkyEnabled = ( m_pFogEnableSky->IsSelected() && m_pFogOverride->IsSelected() );
 	m_pFogEnableSky->SetEnabled( bEnabled );
+	m_pFogRadialSky->SetEnabled( bEnabled );
 	m_pFogStartSky->SetEnabled( bFogSkyEnabled );
 	m_pFogEndSky->SetEnabled( bFogSkyEnabled);  
 	m_pFogStartTextSky->SetEnabled( bFogSkyEnabled );
@@ -265,6 +272,17 @@ void CFogUIPanel::OnCommand( const char *command )
 			Cbuf_AddText( "fog_enable 0\n" );
 		}
 	}
+	else if ( !Q_strcasecmp( command, "FogRadial" ) )
+	{
+		if ( m_pFogRadial->IsSelected() == true )
+		{
+			Cbuf_AddText( "fog_radial 1\n" );
+		}
+		else
+		{
+			Cbuf_AddText( "fog_radial 0\n" );
+		}
+	}
 	else if ( !Q_strcasecmp( command, "FogEnableSky" ) )
 	{
 		if ( m_pFogEnableSky->IsSelected() == true )
@@ -274,6 +292,17 @@ void CFogUIPanel::OnCommand( const char *command )
 		else
 		{
 			Cbuf_AddText( "fog_enableskybox 0\n" );
+		}
+	}
+	else if ( !Q_strcasecmp( command, "FogRadialSky" ) )
+	{
+		if ( m_pFogRadialSky->IsSelected() == true )
+		{
+			Cbuf_AddText( "fog_radialskybox 1\n" );
+		}
+		else
+		{
+			Cbuf_AddText( "fog_radialskybox 0\n" );
 		}
 	}
 	else if ( !Q_strcasecmp( command, "FarZOverride" ) )
@@ -401,66 +430,68 @@ void CFogUIPanel::OnMessage( const KeyValues *params, VPANEL fromPanel )
 {
 	BaseClass::OnMessage( params, fromPanel );
 	
-	if ( !Q_strcmp( "SliderMoved", params->GetName() ) )
+	if ( !Q_strcmp( "SliderMoved", params->GetName() ) && IsVisible() )
 	{
 		// World
-		if ( fromPanel == m_pFogStart->GetVPanel() )
+		if ( !m_bSlidersSynced || fromPanel == m_pFogStart->GetVPanel() )
 		{
 			Cbuf_AddText( va( "fog_start %i\n", m_pFogStart->GetValue() ) );
 			m_pFogStartText->SetText( va( "%i", m_pFogStart->GetValue() ) );
 		}
-		if ( fromPanel == m_pFogEnd->GetVPanel() )
+		if ( !m_bSlidersSynced || fromPanel == m_pFogEnd->GetVPanel() )
 		{
 			Cbuf_AddText( va( "fog_end %i\n", m_pFogEnd->GetValue() ) );
 			m_pFogEndText->SetText( va( "%i", m_pFogEnd->GetValue() ) );
 		}
-		if ( fromPanel == m_pFogColorRed->GetVPanel() )
+		if ( !m_bSlidersSynced || fromPanel == m_pFogColorRed->GetVPanel() )
 		{
 			m_pFogColorRedText->SetText( va( "%i", m_pFogColorRed->GetValue() ) );
 			UpdateFogColors();
 		}
-		if ( fromPanel == m_pFogColorGreen->GetVPanel() )
+		if ( !m_bSlidersSynced || fromPanel == m_pFogColorGreen->GetVPanel() )
 		{
 			m_pFogColorGreenText->SetText( va( "%i", m_pFogColorGreen->GetValue() ) );
 			UpdateFogColors();
 		}
-		if ( fromPanel == m_pFogColorBlue->GetVPanel() )
+		if ( !m_bSlidersSynced || fromPanel == m_pFogColorBlue->GetVPanel() )
 		{
 			m_pFogColorBlueText->SetText( va( "%i", m_pFogColorBlue->GetValue() ) );
 			UpdateFogColors();
 		}
 		// Skybox
-		if ( fromPanel == m_pFogStartSky->GetVPanel() )
+		if ( !m_bSlidersSynced || fromPanel == m_pFogStartSky->GetVPanel() )
 		{
 			Cbuf_AddText( va( "fog_startskybox %i\n", m_pFogStartSky->GetValue() ) );
 			m_pFogStartTextSky->SetText( va( "%i", m_pFogStartSky->GetValue() ) );
 		}
-		if ( fromPanel == m_pFogEndSky->GetVPanel() )
+		if ( !m_bSlidersSynced || fromPanel == m_pFogEndSky->GetVPanel() )
 		{
 			Cbuf_AddText( va( "fog_endskybox %i\n", m_pFogEndSky->GetValue() ) );
 			m_pFogEndTextSky->SetText( va( "%i", m_pFogEndSky->GetValue() ) );
 		}
-		if ( fromPanel == m_pFogColorRedSky->GetVPanel() )
+		if ( !m_bSlidersSynced || fromPanel == m_pFogColorRedSky->GetVPanel() )
 		{
 			m_pFogColorRedTextSky->SetText( va( "%i", m_pFogColorRedSky->GetValue() ) );
 			UpdateFogColors();
 		}
-		if ( fromPanel == m_pFogColorGreenSky->GetVPanel() )
+		if ( !m_bSlidersSynced || fromPanel == m_pFogColorGreenSky->GetVPanel() )
 		{
 			m_pFogColorGreenTextSky->SetText( va( "%i", m_pFogColorGreenSky->GetValue() ) );
 			UpdateFogColors();
 		}
-		if ( fromPanel == m_pFogColorBlueSky->GetVPanel() )
+		if ( !m_bSlidersSynced || fromPanel == m_pFogColorBlueSky->GetVPanel() )
 		{
 			m_pFogColorBlueTextSky->SetText( va( "%i", m_pFogColorBlueSky->GetValue() ) );
 			UpdateFogColors();
 		}
 		// FarZ
-		if ( fromPanel == m_pFarZ->GetVPanel() )
+		if ( !m_bSlidersSynced || fromPanel == m_pFarZ->GetVPanel() )
 		{
 			Cbuf_AddText( va( "r_farz %i\n", m_pFarZ->GetValue() ) );
 			m_pFarZText->SetText( va( "%i", m_pFarZ->GetValue() ) );
 		}
+
+		m_bSlidersSynced = true;
 	}
 }
 

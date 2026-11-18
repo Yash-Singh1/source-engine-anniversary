@@ -89,10 +89,16 @@ ConVar r_rootlod( "r_rootlod", "0", FCVAR_MATERIAL_SYSTEM_THREAD | FCVAR_ARCHIVE
 static ConVar r_decalstaticprops( "r_decalstaticprops", "1", 0, "Decal static props test" );
 static ConCommand r_flushlod( "r_flushlod", FlushLOD_f, "Flush and reload LODs." );
 ConVar r_debugrandomstaticlighting( "r_debugrandomstaticlighting", "0", FCVAR_CHEAT, "Set to 1 to randomize static lighting for debugging.  Must restart for change to take affect." );
+#ifdef BYTEMATCH_RETAIL
+ConVar r_proplightingfromdisk( "r_proplightingfromdisk", "1", 0, "0=Off, 1=On, 2=Show Errors" );
+#else
 ConVar r_proplightingfromdisk( "r_proplightingfromdisk", "1", FCVAR_CHEAT, "0=Off, 1=On, 2=Show Errors" );
+#endif
+#line 93
 static ConVar r_itemblinkmax( "r_itemblinkmax", ".3", FCVAR_CHEAT );
 static ConVar r_itemblinkrate( "r_itemblinkrate", "4.5", FCVAR_CHEAT );
 static ConVar r_proplightingpooling( "r_proplightingpooling", "-1.0", FCVAR_CHEAT, "0 - off, 1 - static prop color meshes are allocated from a single shared vertex buffer (on hardware that supports stream offset)" );
+static ConVar mat_specular_scalar( "mat_specular_scalar", "-1.0", 0 );
 
 //-----------------------------------------------------------------------------
 // StudioRender config 
@@ -3596,7 +3602,12 @@ void CModelRender::ValidateStaticPropColorData( ModelInstanceHandle_t handle )
 	// fetch the header
 	CUtlBuffer utlBuf;
 	char fileName[MAX_PATH];
+#ifdef BYTEMATCH_RETAIL
+	if ( g_pMaterialSystemHardwareConfig->GetHDRType() == HDR_TYPE_NONE || g_bBakedPropLightingNoSeparateHDR )
+#else
 	if ( !g_pMaterialSystemHardwareConfig->GetHDREnabled() || g_bBakedPropLightingNoSeparateHDR )
+#endif
+#line 3601
 	{
 		Q_snprintf( fileName, sizeof( fileName ), "sp_%d%s.vhv", StaticPropMgr()->GetStaticPropIndex( pProp ), GetPlatformExt() );
 	}
@@ -3815,7 +3826,12 @@ bool CModelRender::LoadStaticPropColorData( IHandleEntity *pProp, DataCacheHandl
 
 	// each static prop has its own compiled color mesh
 	char fileName[MAX_PATH];
+#ifdef BYTEMATCH_RETAIL
+	if ( g_pMaterialSystemHardwareConfig->GetHDRType() == HDR_TYPE_NONE || g_bBakedPropLightingNoSeparateHDR )
+#else
 	if ( !g_pMaterialSystemHardwareConfig->GetHDREnabled() || g_bBakedPropLightingNoSeparateHDR )
+#endif
+#line 3820
 	{
 	        Q_snprintf( fileName, sizeof( fileName ), "sp_%d%s.vhv", StaticPropMgr()->GetStaticPropIndex( pProp ), GetPlatformExt() );
 	}
@@ -4215,6 +4231,18 @@ ModelInstanceHandle_t CModelRender::CreateInstance( IClientRenderable *pRenderab
 		ValidateStaticPropColorData( handle );
 
 		// 360 persists the color meshes across same map loads
+#ifdef BYTEMATCH_RETAIL
+		if ( !IsX360() || instance.m_ColorMeshHandle == DC_INVALID_HANDLE )
+		{
+			// builds out color meshes or loads disk colors, now at load/create time
+			RecomputeStaticLighting( handle );
+		}
+		else
+			if ( r_decalstaticprops.GetBool() && instance.m_LightCacheHandle )
+			{
+				instance.m_AmbientLightingState = *(LightcacheGetStatic( *pCache, NULL, LIGHTCACHEFLAGS_STATIC ));
+			}
+#else
 #ifdef _X360
 		if ( r_decalstaticprops.GetBool() && instance.m_LightCacheHandle )
 			instance.m_AmbientLightingState = *(LightcacheGetStatic( *pCache, NULL, LIGHTCACHEFLAGS_STATIC ));
@@ -4225,6 +4253,8 @@ ModelInstanceHandle_t CModelRender::CreateInstance( IClientRenderable *pRenderab
 			RecomputeStaticLighting( handle );
 		}
 #endif
+#endif
+#line 4229
 	}
 
 	return handle;
@@ -4647,6 +4677,21 @@ void SetRootLOD_f( IConVar *pConVar, const char *pOldString, float flOldValue )
 		return;	// was called recursively.
 
 	ConVarRef var( pConVar );
+#ifdef BYTEMATCH_RETAIL
+	// detail prop distance and model LOD follow the root LOD
+	int nLod = 0;
+	int nDetailDist = 4096;
+	if ( var.GetInt() != 0 )
+	{
+		nDetailDist = ( var.GetInt() == 1 ) ? 2048 : 1024;
+		nLod = -1;
+	}
+	ConVarRef cl_detaildist( "cl_detaildist" );
+	cl_detaildist.SetValue( nDetailDist );
+	ConVarRef r_lod_ref( "r_lod" );
+	r_lod_ref.SetValue( nLod );
+#endif
+#line 4663
 	UpdateStudioRenderConfig();
 	if ( !g_LostVideoMemory && Q_strcmp( var.GetString(), pOldString ) )
 	{

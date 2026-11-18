@@ -21,7 +21,11 @@
 // it's not 256, because you can't use all 256 slots in 10.5.x.
 // use this constant everywhere you might normally use "256" in reference to a parameter array size.
 // The highest shader constant is c218, plus we allocate c219 and c220 for two clip planes
+#ifdef BYTEMATCH_RETAIL
+#define DXABSTRACT_VS_PARAM_SLOTS   219
+#else
 #define DXABSTRACT_VS_PARAM_SLOTS   228
+#endif
 #define DXABSTRACT_VS_FIRST_BONE_SLOT VERTEX_SHADER_MODEL
 #define DXABSTRACT_VS_LAST_BONE_SLOT (VERTEX_SHADER_SHADER_SPECIFIC_CONST_13-1)
 

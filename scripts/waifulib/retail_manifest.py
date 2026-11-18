@@ -28,6 +28,13 @@ task generator that has an entry, without wscript changes:
 A task generator is matched by its `retail_module` attribute, else by the
 manifest's waf target, else by bin/<target>. Per-module exceptions live in
 RETAIL_KEEP / RETAIL_SKIP below.
+
+Task generator attributes for modules built from another source tree
+(sdk2013mp/wscript):
+  - retail_root: directory the manifest's tree-relative source paths resolve
+    under, instead of the tree root;
+  - retail_archives: {archive name: waf target} replacing the manifest's
+    archive targets for `use` and link order.
 '''
 
 import json, os
@@ -43,6 +50,7 @@ ARCHIVE_TARGETS = {
 	'libreplay_common.a': 'replay_common',
 	'libcryptopp.a': 'CRYPTOPP',
 	'libspeex.a': 'SPEEX',
+	'libcef_dll_wrapper.a': 'CEF_DLL_WRAPPER',
 }
 
 # Retail links objects for these, but our copy can't be compiled for this target;
@@ -124,8 +132,9 @@ def lookup(tg):
 				return 'archive', k, a
 	return None, None, None
 
-def archive_target(name, archive):
-	return archive.get('waf_target') or ARCHIVE_TARGETS.get(name)
+def archive_target(name, archive, tg = None):
+	override = getattr(tg, 'retail_archives', None) or {}
+	return override.get(name) or archive.get('waf_target') or ARCHIVE_TARGETS.get(name)
 
 def _nodes(tg):
 	nodes = []
@@ -151,10 +160,13 @@ def retail_select_sources(self):
 		return
 	m = _load(self.env.RETAIL_MANIFEST)
 	srcnode = self.bld.srcnode
+	root = getattr(self, 'retail_root', None)
 	ours = _nodes(self)
 	ours_by_path = dict((_rel(self, n).lower(), n) for n in ours)
 
 	def resolve(path):
+		if root:
+			path = root + '/' + path
 		n = ours_by_path.get(path.lower())
 		if n is None:
 			n = srcnode.find_resource(path)
@@ -174,7 +186,7 @@ def retail_select_sources(self):
 		return
 
 	keep = set(s.lower() for s in RETAIL_KEEP.get(key, []))
-	built = set(k for k, a in m['archives'].items() if archive_target(k, a))
+	built = set(k for k, a in m['archives'].items() if archive_target(k, a, self))
 	out, missing = [], []
 	for obj in e['objects']:
 		if obj['archive'] and obj['archive'] in built:
@@ -203,7 +215,7 @@ def retail_select_sources(self):
 
 	use = self.to_list(getattr(self, 'use', []))
 	for k in [a['path'].split('/')[-1] for a in e['archives']]:
-		t = archive_target(k, m['archives'][k])
+		t = archive_target(k, m['archives'][k], self)
 		if not t or t in use:
 			continue
 		if t.isupper():
@@ -231,7 +243,7 @@ def retail_stlib_order(self):
 	for a in e['archives']:
 		k = a['path'].split('/')[-1]
 		order.append(k[3:-2])
-		t = archive_target(k, m['archives'][k])
+		t = archive_target(k, m['archives'][k], self)
 		if t and not t.isupper():
 			try:
 				tg = self.bld.get_tgen_by_name(t)

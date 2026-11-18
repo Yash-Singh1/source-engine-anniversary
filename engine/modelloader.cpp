@@ -62,6 +62,7 @@
 
 ConVar mat_loadtextures( "mat_loadtextures", "1", FCVAR_CHEAT );
 
+#ifndef BYTEMATCH_RETAIL
 // OS X and Linux are blowing up right now due to this.  Benefits vs possible regressions on DX less clear.
 #if defined( DX_TO_GL_ABSTRACTION ) || defined( STAGING_ONLY )
 	#define CONVAR_DEFAULT_MOD_OFFLINE_HDR_SWITCH "1"
@@ -74,9 +75,16 @@ static ConVar mod_offline_hdr_switch( "mod_offline_hdr_switch", CONVAR_DEFAULT_M
                                       "resource uploads and may drastically reduce load time and memory pressure "
                                       "on certain drivers, but may trigger bugs in some very old source engine "
                                       "pathways." );
+#endif
+#line 65
 static ConVar mod_touchalldata( "mod_touchalldata", "1", 0, "Touch model data during level startup" );
 static ConVar mod_forcetouchdata( "mod_forcetouchdata", "1", 0, "Forces all model file data into cache on model load." );
+#ifdef BYTEMATCH_RETAIL
+ConVar mat_excludetextures( "mat_excludetextures", "0", 0 );
+#else
 ConVar mat_excludetextures( "mat_excludetextures", "0", FCVAR_CHEAT );
+#endif
+#line 68
 
 ConVar r_unloadlightmaps( "r_unloadlightmaps", "0", FCVAR_CHEAT );
 ConVar r_hunkalloclightmaps( "r_hunkalloclightmaps", "1" );
@@ -115,6 +123,9 @@ double g_flAccumulatedModelLoadTimeMaterialNamesOnly;
 // A dictionary used to store where to find game lump data in the .bsp file
 //-----------------------------------------------------------------------------
 
+#ifdef BYTEMATCH_RETAIL
+static CUtlVector< dgamelump_t > g_GameLumpDict;
+#else
 // Extended from the on-disk struct to include uncompressed size and stop propagation of bogus signed values
 struct dgamelump_internal_t
 {
@@ -135,6 +146,8 @@ struct dgamelump_internal_t
 };
 
 static CUtlVector< dgamelump_internal_t > g_GameLumpDict;
+#endif
+#line 107
 static char g_GameLumpFilename[128] = { 0 };
 
 //void NotifyHunkBeginMapLoad( const char *pszMapName )
@@ -202,8 +215,11 @@ public:
 	void			UnreferenceModel( model_t *model, REFERENCETYPE referencetype );
 	// Unmasks the specified reference type across all models
 	void			UnreferenceAllModels( REFERENCETYPE referencetype );
+#ifndef BYTEMATCH_RETAIL
 	// Set all models to last loaded on server count -1
 	void			ResetModelServerCounts();
+#endif
+#line 174
 
 	// For any models with referencetype blank, frees all memory associated with the model
 	//  and frees up the models slot
@@ -216,7 +232,12 @@ public:
 	virtual void	Map_LoadDisplacements( model_t *pModel, bool bRestoring );
 
 	// Validate version/header of a .bsp file
+#ifdef BYTEMATCH_RETAIL
+	bool			Map_IsValid( char const *mapname );
+#else
 	bool			Map_IsValid( char const *mapname, bool bQuiet = false );
+#endif
+#line 187
 
 	virtual void	RecomputeSurfaceFlags( model_t *mod );
 
@@ -390,8 +411,15 @@ IModelLoader *modelloader = ( IModelLoader * )&g_ModelLoader;
 dheader_t		s_MapHeader;
 
 static FileHandle_t		s_MapFileHandle = FILESYSTEM_INVALID_HANDLE;
+#ifdef BYTEMATCH_RETAIL
+static char				s_szLoadName[64];
+static char				s_szMapName[64];
+#else
 static char				s_szLoadName[128];
 static char				s_szMapName[128];
+#endif
+#line 362
+static char				s_szDiskName[64];
 static worldbrushdata_t	*s_pMap = NULL;
 static int				s_nMapLoadRecursion = 0;
 static CUtlBuffer		s_MapBuffer;
@@ -411,6 +439,17 @@ static lumpfiles_t s_MapLumpFiles[ HEADER_LUMPS ];
 CON_COMMAND( mem_vcollide, "Dumps the memory used by vcollides" )
 {
 	g_ModelLoader.DumpVCollideStats();
+}
+
+//-----------------------------------------------------------------------------
+// Map name as found on disk
+//-----------------------------------------------------------------------------
+inline void GetMapPathNameOnDisk( char *pDiskName, const char *pFullMapName, unsigned int nDiskNameSize )
+{
+	if ( pFullMapName != pDiskName )
+	{
+		V_strncpy( pDiskName, pFullMapName, nDiskNameSize );
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -446,6 +485,34 @@ void CMapLoadHelper::Init( model_t *pMapModel, const char *loadname )
 		V_strcpy_safe( s_szMapName, pMapModel->strName );
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	char szNameOnDisk[MAX_PATH];
+	GetMapPathNameOnDisk( szNameOnDisk, s_szMapName, sizeof( szNameOnDisk ) );
+	s_MapFileHandle = g_pFileSystem->OpenEx( szNameOnDisk, "rb", IsX360() ? FSOPEN_NEVERINPACK : 0, IsX360() ? "GAME" : NULL );
+	if ( s_MapFileHandle == FILESYSTEM_INVALID_HANDLE )
+	{
+		Host_Error( "CMapLoadHelper::Init, unable to open %s\n", szNameOnDisk );
+		return;
+	}
+
+	g_pFileSystem->Read( &s_MapHeader, sizeof( dheader_t ), s_MapFileHandle );
+	if ( s_MapHeader.ident != IDBSPHEADER )
+	{
+		g_pFileSystem->Close( s_MapFileHandle );
+		s_MapFileHandle = FILESYSTEM_INVALID_HANDLE;
+		Host_Error( "CMapLoadHelper::Init, map %s has wrong identifier\n", szNameOnDisk );
+		return;
+	}
+
+	if ( s_MapHeader.version < MINBSPVERSION || s_MapHeader.version > BSPVERSION )
+	{
+		g_pFileSystem->Close( s_MapFileHandle );
+		s_MapFileHandle = FILESYSTEM_INVALID_HANDLE;
+		Host_Error( "CMapLoadHelper::Init, map %s has wrong version (%i when expecting %i)\n", szNameOnDisk,
+			s_MapHeader.version, BSPVERSION );
+		return;
+	}
+#else
 	s_MapFileHandle = g_pFileSystem->OpenEx( s_szMapName, "rb", IsX360() ? FSOPEN_NEVERINPACK : 0, IsX360() ? "GAME" : NULL );
 	if ( s_MapFileHandle == FILESYSTEM_INVALID_HANDLE )
 	{
@@ -472,6 +539,8 @@ void CMapLoadHelper::Init( model_t *pMapModel, const char *loadname )
 	}
 
 	s_MapVersion = s_MapHeader.version;
+#endif
+#line 454
 
 	V_strcpy_safe( s_szLoadName, loadname );
 
@@ -559,11 +628,29 @@ void CMapLoadHelper::InitFromMemory( model_t *pMapModel, const void *pData, int 
 
 	V_strcpy_safe( s_szMapName, pMapModel->strName );
 	V_FileBase( s_szMapName, s_szLoadName, sizeof( s_szLoadName ) );
+#ifdef BYTEMATCH_RETAIL
+	char szNameOnDisk[MAX_PATH];
+	GetMapPathNameOnDisk( szNameOnDisk, s_szMapName, sizeof( szNameOnDisk ) );
+#endif
+#line 543
 
 	s_MapBuffer.SetExternalBuffer( (void *)pData, nDataSize, nDataSize );
 
 	V_memcpy( &s_MapHeader, pData, sizeof( dheader_t ) );
 
+#ifdef BYTEMATCH_RETAIL
+	if ( s_MapHeader.ident != IDBSPHEADER )
+	{
+		Host_Error( "CMapLoadHelper::Init, map %s has wrong identifier\n", szNameOnDisk );
+		return;
+	}
+
+	if ( s_MapHeader.version < MINBSPVERSION || s_MapHeader.version > BSPVERSION )
+	{
+		Host_Error( "CMapLoadHelper::Init, map %s has wrong version (%i when expecting %i)\n", szNameOnDisk, s_MapHeader.version, BSPVERSION );
+		return;
+	}
+#else
 	if ( s_MapHeader.ident != IDBSPHEADER )
 	{
 		Host_Error( "CMapLoadHelper::Init, map %s has wrong identifier\n", s_szMapName );
@@ -575,6 +662,8 @@ void CMapLoadHelper::InitFromMemory( model_t *pMapModel, const void *pData, int 
 		Host_Error( "CMapLoadHelper::Init, map %s has wrong version (%i when expecting %i)\n", s_szMapName, s_MapHeader.version, BSPVERSION );
 		return;
 	}
+#endif
+#line 559
 
 	// Store map version
 	g_ServerGlobalVariables.mapversion = s_MapHeader.mapRevision;
@@ -678,12 +767,15 @@ int CMapLoadHelper::LumpSize( int lumpId )
 	lump_t *pLump = &s_MapHeader.lumps[ lumpId ];
 	Assert( pLump );
 
+#ifndef BYTEMATCH_RETAIL
 	// all knowledge of compression is private, they expect and get the original size
 	int originalSize = s_MapHeader.lumps[lumpId].uncompressedSize;
 	if ( originalSize != 0 )
 	{
 		return originalSize;
 	}
+#endif
+#line 662
 
 	return pLump->filelen;
 }
@@ -836,6 +928,7 @@ CMapLoadHelper::CMapLoadHelper( int lumpToLoad )
 		}
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	if ( lump->uncompressedSize != 0 )
 	{
 		// Handle compressed lump -- users of the class see the uncompressed data
@@ -851,6 +944,8 @@ CMapLoadHelper::CMapLoadHelper( int lumpToLoad )
 
 		m_pData = m_pUncompressedData;
 	}
+#endif
+#line 814
 }
 
 //-----------------------------------------------------------------------------
@@ -858,10 +953,13 @@ CMapLoadHelper::CMapLoadHelper( int lumpToLoad )
 //-----------------------------------------------------------------------------
 CMapLoadHelper::~CMapLoadHelper( void )
 {
+#ifndef BYTEMATCH_RETAIL
 	if ( m_pUncompressedData )
 	{
 		free( m_pUncompressedData );
 	}
+#endif
+#line 821
 
 	if ( m_pRawData )
 	{
@@ -902,6 +1000,16 @@ char *CMapLoadHelper::GetLoadName( void )
 	}
 
 	return s_szLoadName;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+// Output : char
+//-----------------------------------------------------------------------------
+char *CMapLoadHelper::GetDiskName( void )
+{
+	GetMapPathNameOnDisk( s_szDiskName, GetLoadName(), sizeof( s_szDiskName ) );
+	return s_szDiskName;
 }
 
 //-----------------------------------------------------------------------------
@@ -950,6 +1058,11 @@ void EnableHDR( bool bEnable )
 	ShutdownWellKnownRenderTargets();
 	InitWellKnownRenderTargets();
 
+#ifdef BYTEMATCH_RETAIL
+	UpdateMaterialSystemConfig();
+	materials->ReleaseResources();
+	materials->ReacquireResources();
+#else
 	/// XXX(JohnS): This works around part of the terribleness the comments below discuss by performing
 	///             UpdateMaterialSystemConfig with the device offline, removing its need to do multiple re-uploads of
 	///             things.  I am not positive my changes to allow that won't introduce terrible regressions or awaken
@@ -989,6 +1102,8 @@ void EnableHDR( bool bEnable )
 		V_RenderSwapBuffers();
 	}
 #endif
+#endif
+#line 922
 }
 
 //-----------------------------------------------------------------------------
@@ -1043,7 +1158,12 @@ bool Map_CheckForHDR( model_t *pModel, const char *pLoadName )
 	}
 	
 	bool bEnableHDR = ( IsX360() && bHasHDR ) ||
+#ifdef BYTEMATCH_RETAIL
+		( bHasHDR && ( mat_hdr_level.GetInt() >= 2 ) &&
+#else
 		( bHasHDR &&
+#endif
+#line 977
 		( g_pMaterialSystemHardwareConfig->GetDXSupportLevel() >= 90 ) );
 	
 	EnableHDR( bEnableHDR );
@@ -1202,7 +1322,7 @@ void Mod_LoadWorldlights( CMapLoadHelper &lh, bool bIsHDR )
 			break;
 	}
 #endif
-#line 1155
+#line 1085
 
 #if !defined( SWDS )
 	if ( r_lightcache_zbuffercache.GetInt() )
@@ -1914,7 +2034,13 @@ void Mod_LoadFaces( void )
 	int			ti, di;
 
 	int face_lump_to_load = LUMP_FACES;
+#ifdef BYTEMATCH_RETAIL
+	if ( g_pMaterialSystemHardwareConfig->GetHDRType() != HDR_TYPE_NONE &&
+		CMapLoadHelper::LumpSize( LUMP_FACES_HDR ) > 0 )
+#else
 	if ( g_pMaterialSystemHardwareConfig->GetHDREnabled() && CMapLoadHelper::LumpSize( LUMP_FACES_HDR ) > 0 )
+#endif
+#line 1798
 	{
 		face_lump_to_load = LUMP_FACES_HDR;
 	}
@@ -2353,7 +2479,13 @@ void Mod_LoadLeafs( void )
 		Mod_LoadLeafs_Version_0( lh );
 		break;
 	case 1:
+#ifdef BYTEMATCH_RETAIL
+		if( g_pMaterialSystemHardwareConfig->GetHDRType() != HDR_TYPE_NONE &&
+			CMapLoadHelper::LumpSize( LUMP_LEAF_AMBIENT_LIGHTING_HDR ) > 0 )
+#else
 		if( g_pMaterialSystemHardwareConfig->GetHDREnabled() && CMapLoadHelper::LumpSize( LUMP_LEAF_AMBIENT_LIGHTING_HDR ) > 0 )
+#endif
+#line 2238
 		{
 			CMapLoadHelper mlh( LUMP_LEAF_AMBIENT_LIGHTING_HDR );
 			CMapLoadHelper mlhTable( LUMP_LEAF_AMBIENT_INDEX_HDR );
@@ -2448,7 +2580,12 @@ void Mod_LoadCubemapSamples( void )
 	lh.GetMap()->m_pCubemapSamples = out;
 	lh.GetMap()->m_nCubemapSamples = count;
 
+#ifdef BYTEMATCH_RETAIL
+	bool bHDR = g_pMaterialSystemHardwareConfig->GetHDRType() != HDR_TYPE_NONE;
+#else
 	bool bHDR =  g_pMaterialSystemHardwareConfig->GetHDREnabled(); //g_pMaterialSystemHardwareConfig->GetHDRType() != HDR_TYPE_NONE;
+#endif
+#line 2333
 	int nCreateFlags = bHDR ? 0 : TEXTUREFLAGS_SRGB;
 
 	// We have separate HDR versions of the textures.  In order to deal with this,
@@ -2726,7 +2863,12 @@ int Mod_GameLumpSize( int lumpId )
 	{
 		if ( g_GameLumpDict[i].id == lumpId )
 		{
+#ifdef BYTEMATCH_RETAIL
+			return g_GameLumpDict[i].filelen;
+#else
 			return g_GameLumpDict[i].uncompressedSize;
+#endif
+#line 2611
 		}
 	}
 
@@ -2753,6 +2895,77 @@ bool Mod_LoadGameLump( int lumpId, void *pOutBuffer, int size )
 		return false;
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	// lump data length is always original uncompressed size
+	int dataLength = g_GameLumpDict[i].filelen;
+	if ( size < dataLength )
+	{
+		// caller must supply a buffer that is large enough to hold the data
+		return false;
+	}
+
+	bool bIsCompressed = ( g_GameLumpDict[i].flags & GAMELUMPFLAG_COMPRESSED );
+	if ( bIsCompressed )
+	{
+		// compressed lump data length is determined from next dictionary entry offset
+		dataLength = g_GameLumpDict[i+1].fileofs - g_GameLumpDict[i].fileofs;
+	}
+
+	if ( s_MapBuffer.Base() )
+	{
+		// data is in memory
+		Assert( CMapLoadHelper::GetRefCount() );
+
+		if ( g_GameLumpDict[i].fileofs + dataLength > s_MapBuffer.TellMaxPut() )
+		{
+			// out of range
+			Assert( 0 );
+			return false;
+		}
+
+		if ( !bIsCompressed )
+		{
+			V_memcpy( pOutBuffer, (unsigned char *)s_MapBuffer.Base() + g_GameLumpDict[i].fileofs, dataLength );
+			return true;
+		}
+	}
+	else
+	{
+		// Load file into buffer
+		char szFilename[MAX_PATH];
+		V_strncpy( szFilename, g_GameLumpFilename, sizeof( szFilename ) );
+		FileHandle_t fileHandle = g_pFileSystem->Open( szFilename, "rb" );
+		if ( fileHandle == FILESYSTEM_INVALID_HANDLE )
+		{
+			return false;
+		}
+
+		g_pFileSystem->Seek( fileHandle, g_GameLumpDict[i].fileofs, FILESYSTEM_SEEK_HEAD );
+
+		if ( !bIsCompressed )
+		{
+			// read directly into user's buffer
+			bool bOK = ( g_pFileSystem->Read( pOutBuffer, dataLength, fileHandle ) > 0 );
+			g_pFileSystem->Close( fileHandle );
+			return bOK;
+		}
+		else
+		{
+			// data is compressed, read into temporary
+			byte *pData = (byte *)malloc( dataLength );
+			bool bOK = ( g_pFileSystem->Read( pData, dataLength, fileHandle ) > 0 );
+			g_pFileSystem->Close( fileHandle );
+			if ( !bOK )
+			{
+				free( pData );
+				return false;
+			}
+		}
+	}
+
+	// compressed game lumps are not supported
+	return false;
+#else
 	byte *pData;
 	bool bIsCompressed = ( g_GameLumpDict[i].flags & GAMELUMPFLAG_COMPRESSED );
 	int dataLength;
@@ -2846,6 +3059,8 @@ bool Mod_LoadGameLump( int lumpId, void *pOutBuffer, int size )
 	}
 
 	return bResult;
+#endif
+#line 2706
 }
 
 //-----------------------------------------------------------------------------
@@ -2859,6 +3074,19 @@ void Mod_LoadGameLumpDict( void )
 	// (say, in multiple BSP files), the dictionary info I store here will get whacked
 
 	g_GameLumpDict.RemoveAll();
+#ifdef BYTEMATCH_RETAIL
+	V_strncpy( g_GameLumpFilename, lh.GetMapName(), sizeof( g_GameLumpFilename ) );
+
+	if ( lh.LumpSize() )
+	{
+		dgamelumpheader_t* pGameLumpHeader = (dgamelumpheader_t*)lh.LumpBase();
+		dgamelump_t* pGameLump = (dgamelump_t*)(pGameLumpHeader + 1);
+		for (int i = 0; i < pGameLumpHeader->lumpCount; ++i )
+		{
+			g_GameLumpDict.AddToTail( pGameLump[i] );
+		}
+	}
+#else
 	V_strcpy_safe( g_GameLumpFilename, lh.GetMapName() );
 
 	unsigned int lhSize = (unsigned int)Max( lh.LumpSize(), 0 );
@@ -2902,6 +3130,8 @@ void Mod_LoadGameLumpDict( void )
 			}
 		}
 	}
+#endif
+#line 2730
 }
 
 //-----------------------------------------------------------------------------
@@ -3647,7 +3877,14 @@ model_t	*CModelLoader::LoadModel( model_t *mod, REFERENCETYPE *pReferencetype )
 			// This is necessary on dedicated clients. On listen + dedicated servers, it's called twice.
 			// The second invocation is harmless.
 			// Add to file system before loading so referenced objects in map can use the filename.
+#ifdef BYTEMATCH_RETAIL
+			char szNameOnDisk[MAX_PATH];
+			GetMapPathNameOnDisk( szNameOnDisk, mod->strName, sizeof( szNameOnDisk ) );
+			g_pFileSystem->AddSearchPath( szNameOnDisk, "GAME", PATH_ADD_TO_HEAD );
+#else
 			g_pFileSystem->AddSearchPath( mod->strName, "GAME", PATH_ADD_TO_HEAD );
+#endif
+#line 3478
 
 			// the map may have explicit texture exclusion
 			// the texture state needs to be established before any loading work
@@ -3822,6 +4059,7 @@ void CModelLoader::UnreferenceAllModels( REFERENCETYPE referencetype )
 	}
 }
 
+#ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
 // Purpose: When changing servers the old servercount number is bogus. This
 //          marks all models as loaded from -1 (e.g. a server count from the
@@ -3835,6 +4073,8 @@ void CModelLoader::ResetModelServerCounts()
 		pModel->nServerCount = -1;
 	}
 }
+#endif
+#line 3652
 
 
 void CModelLoader::ReloadFilesInList( IFileList *pFilesToReload )
@@ -4516,7 +4756,13 @@ void CModelLoader::Map_LoadModel( model_t *mod )
 
 	// Until BSP version 19, this must occur after loading texinfo
 	COM_TimestampedLog( "  Mod_LoadLighting" );
+#ifdef BYTEMATCH_RETAIL
+	if ( g_pMaterialSystemHardwareConfig->GetHDRType() != HDR_TYPE_NONE &&
+		CMapLoadHelper::LumpSize( LUMP_LIGHTING_HDR ) > 0 )
+#else
 	if ( g_pMaterialSystemHardwareConfig->GetHDREnabled() && CMapLoadHelper::LumpSize( LUMP_LIGHTING_HDR ) > 0 )
+#endif
+#line 4335
 	{
 		CMapLoadHelper mlh( LUMP_LIGHTING_HDR );
 		Mod_LoadLighting( mlh );
@@ -4608,7 +4854,13 @@ void CModelLoader::Map_LoadModel( model_t *mod )
 		&m_worldBrushData.m_nAreas );
 
 	COM_TimestampedLog( "  Mod_LoadWorldlights" );
+#ifdef BYTEMATCH_RETAIL
+	if ( g_pMaterialSystemHardwareConfig->GetHDRType() != HDR_TYPE_NONE &&
+		CMapLoadHelper::LumpSize( LUMP_WORLDLIGHTS_HDR ) > 0 )
+#else
 	if ( g_pMaterialSystemHardwareConfig->GetHDREnabled() && CMapLoadHelper::LumpSize( LUMP_WORLDLIGHTS_HDR ) > 0 )
+#endif
+#line 4428
 	{
 		CMapLoadHelper mlh( LUMP_WORLDLIGHTS_HDR );
 		Mod_LoadWorldlights( mlh, true );
@@ -5397,6 +5649,106 @@ int CModelLoader::UpdateOrCreate( const char *pSourceName, char *pTargetName, in
 // Input  : *mapname - 
 // Output : Returns true on success, false on failure.
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+bool CModelLoader::Map_IsValid( char const *pMapFile )
+{
+	static char	s_szLastMapFile[MAX_PATH] = { 0 };
+
+	if ( !pMapFile || !pMapFile[0] )
+	{
+		ConMsg( "CModelLoader::Map_IsValid:  Empty mapname!!!\n" );
+		return false;
+	}
+
+	char szMapFile[MAX_PATH] = { 0 };
+	V_strncpy( szMapFile, pMapFile, sizeof( szMapFile ) );
+
+	if ( IsX360() && !V_stricmp( szMapFile, s_szLastMapFile ) )
+	{
+		// already been checked, no reason to do multiple i/o validations
+		return true;
+	}
+
+	// Blacklist some characters
+	// - Don't allow characters not allowed on all supported platforms for consistency
+	// - Don't allow quotes or ;"' as defense-in-depth against script abuses (and, no real reason for mapnames to use these)
+	const char *pBaseFileName = V_UnqualifiedFileName( pMapFile );
+	bool bIllegalChar = false;
+	for (; pBaseFileName && *pBaseFileName; pBaseFileName++ )
+	{
+		// ASCII control characters (codepoints <= 31) illegal in windows filenames
+		if ( *pBaseFileName <= (char)31 )
+			bIllegalChar = true;
+
+		switch ( *pBaseFileName )
+		{
+			// Illegal in windows filenames, don't allow on any platform
+			case '<': case '>': case ':': case '"': case '/': case '\\':
+			case '|': case '?': case '*':
+				bIllegalChar = true;
+			// Additional special characters in source engine commands, defense-in-depth against things that might be
+			// composing commands with map names (though they really shouldn't be)
+			case ';': case '\'':
+				bIllegalChar = true;
+			default: break;
+		}
+	}
+
+	if ( bIllegalChar )
+	{
+		Assert( !"Map with illegal characters in filename" );
+		Warning( "Map with illegal characters in filename\n" );
+		return false;
+	}
+
+	FileHandle_t mapfile;
+
+	if ( IsX360() )
+	{
+		char szMapName360[MAX_PATH];
+		UpdateOrCreate( szMapFile, szMapName360, sizeof( szMapName360 ), false );
+		V_strcpy_safe( szMapFile, szMapName360 );
+	}
+
+	mapfile = g_pFileSystem->OpenEx( szMapFile, "rb", IsX360() ? FSOPEN_NEVERINPACK : 0, "GAME" );
+	if ( mapfile != FILESYSTEM_INVALID_HANDLE )
+	{
+		dheader_t header;
+		memset( &header, 0, sizeof( header ) );
+		g_pFileSystem->Read( &header, sizeof( dheader_t ), mapfile );
+		g_pFileSystem->Close( mapfile );
+
+		if ( header.ident == IDBSPHEADER )
+		{
+			if ( header.version >= MINBSPVERSION && header.version <= BSPVERSION )
+			{
+				V_strncpy( s_szLastMapFile, szMapFile, sizeof( s_szLastMapFile ) );
+				return true;
+			}
+			else
+			{
+				Warning( "CModelLoader::Map_IsValid:  Map '%s' bsp version %i, expecting %i\n", szMapFile, header.version, BSPVERSION );
+			}
+		}
+		else
+		{
+			Warning( "CModelLoader::Map_IsValid: '%s' is not a valid BSP file\n", szMapFile );
+		}
+	}
+	else
+	{
+		Warning( "CModelLoader::Map_IsValid:  No such map '%s'\n", szMapFile );
+	}
+
+	// Get outta here if we are checking vidmemstats.
+	if ( CommandLine()->CheckParm( "-dumpvidmemstats" ) )
+	{
+		Cbuf_AddText( "quit\n" );
+	}
+
+	return false;
+}
+#else
 bool CModelLoader::Map_IsValid( char const *pMapFile, bool bQuiet /* = false */ )
 {
 	static char	s_szLastMapFile[MAX_PATH] = { 0 };
@@ -5464,7 +5816,7 @@ bool CModelLoader::Map_IsValid( char const *pMapFile, bool bQuiet /* = false */ 
 	bool bHaveMapsInPath = strstr(szMapFile, "maps/");
 
 	if( !bHaveMapsInPath )
-		snprintf(szMapFile, sizeof(szMapFile), "maps/%s", pMapFile);
+		V_snprintf(szMapFile, sizeof(szMapFile), "maps/%s", pMapFile);
 
 	if( !bHaveBspFormatInPath )
 		strncat(szMapFile, ".bsp", sizeof(szMapFile));
@@ -5517,6 +5869,8 @@ bool CModelLoader::Map_IsValid( char const *pMapFile, bool bQuiet /* = false */ 
 
 	return false;
 }
+#endif
+#line 5314
 
 model_t *CModelLoader::FindModelNoCreate( const char *pModelName )
 {
@@ -5591,7 +5945,16 @@ void CModelLoader::UnloadModel( model_t *pModel )
 		Map_UnloadModel( pModel );
 
 		// Remove from file system
+#ifdef BYTEMATCH_RETAIL
+		{
+			char szNameOnDisk[MAX_PATH];
+			GetMapPathNameOnDisk( szNameOnDisk, pModel->strName, sizeof( szNameOnDisk ) );
+			g_pFileSystem->RemoveSearchPath( szNameOnDisk, "GAME" );
+		}
+#else
 		g_pFileSystem->RemoveSearchPath( pModel->strName, "GAME" );
+#endif
+#line 5393
 
 		m_szActiveMapName[0] = '\0';
 		break;
@@ -6021,7 +6384,20 @@ void CModelLoader::InternalUpdateDynamicModels( bool bIgnoreTime )
 
 					if ( mod_dynamicunloadtextures.GetBool() )
 					{
+#ifdef BYTEMATCH_RETAIL
+						ICallQueue *pCallQueue = materials->GetRenderContext()->GetCallQueue();
+						if ( pCallQueue )
+						{
+							pCallQueue->QueueCall( materials, &IMaterialSystem::UncacheUnusedMaterials, false );
+						}
+						else
+						{
+							materials->UncacheUnusedMaterials( false );
+						}
+#else
 						materials->UncacheUnusedMaterials( false );
+#endif
+#line 5831
 					}
 				}
 			}
