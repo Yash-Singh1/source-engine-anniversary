@@ -12,7 +12,8 @@ implies --retail-manifest. Third-party dylibs (SDL2, steam_api, Miles, CEF)
 are linked from the retail depot, thinned to i386.
 
 Only the modules in RETAIL_MODULES (or --retail-modules) are configured.
-The default build is untouched when the option is off.
+Passing --build-games (hl2, episodic or lostcoast) adds game/client and
+game/server. The default build is untouched when the option is off.
 '''
 
 import json, os, shutil, subprocess, sys
@@ -33,6 +34,8 @@ RETAIL_MODULES = [
 	'scenefilecache', 'soundemittersystem', 'datacache', 'video', 'inputsystem',
 	'filesystem', 'vgui2/src', 'studiorender', 'serverbrowser', 'utils/vtex',
 ]
+
+GAME_MODULES = ['game/client', 'game/server']
 
 # Defines our top-level wscript adds that Valve's build doesn't have.
 TREE_ONLY_DEFINES = ['PLATFORM_POSIX', 'NO_MEMOVERRIDE_NEW_DELETE', 'GIT_COMMIT_HASH',
@@ -169,7 +172,9 @@ def retail_osx32_configure(conf):
 	v.RETAIL_MANIFEST = conf.path.find_node(MANIFEST).abspath()
 	v.LIBDIR = v.PREFIX + '/bin/'
 	v.BINDIR = v.PREFIX
-	v.RETAIL_PROJECTS = (o.RETAIL_MODULES.split(',') if o.RETAIL_MODULES else RETAIL_MODULES)
+	v.RETAIL_PROJECTS = (o.RETAIL_MODULES.split(',') if o.RETAIL_MODULES else list(RETAIL_MODULES))
+	if any(a == '--build-games' or a.startswith('--build-games=') for a in sys.argv):
+		v.RETAIL_PROJECTS += [g for g in GAME_MODULES if g not in v.RETAIL_PROJECTS]
 	Logs.info('retail-osx32: clang %s, ld64 %s, sdk %s' % (p['cc'], p['ld_dir'], sdk))
 	conf.add_subproject(v.RETAIL_PROJECTS)
 
@@ -177,6 +182,9 @@ def _entry(tg):
 	if not tg.env.RETAIL_MANIFEST:
 		return None, None
 	m, by_target, archives = load_manifest(tg.env.RETAIL_MANIFEST)
+	key = getattr(tg, 'retail_module', None)
+	if key:
+		return 'module', (key, m['modules'][key])
 	for name in (getattr(tg, 'name', None), os.path.basename(str(tg.target))):
 		if not name:
 			continue

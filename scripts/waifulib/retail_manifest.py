@@ -64,3 +64,11 @@ def retail_manifest(ctx, module, source, use):
 	use = [next(slots) if u in retail_libs else u for u in use]
 
 	return ordered, use
+
+@conf
+def retail_manifest_sources(ctx, module):
+	'''The module's retail loose objects as sources relative to this wscript, in link order.'''
+	mod = _load(ctx.env.RETAIL_MANIFEST)['modules'][module]
+	here = ctx.path.path_from(ctx.srcnode)
+	missing = set(mod['missing_sources'])
+	return [os.path.relpath(s, here) for s in mod['sources'] if s not in missing]
