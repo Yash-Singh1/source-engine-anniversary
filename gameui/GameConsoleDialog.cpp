@@ -23,7 +23,7 @@ using namespace vgui;
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
 //-----------------------------------------------------------------------------
-CGameConsoleDialog::CGameConsoleDialog() : BaseClass( NULL, "GameConsole", false )
+CGameConsoleDialog::CGameConsoleDialog( vgui::Panel *pParent ) : BaseClass( pParent, "GameConsole", false )
 {
 #ifndef BYTEMATCH_RETAIL
 	if( NeedProportional() ) SetProportional(true);

@@ -50,9 +50,6 @@ private:
    
 	void		PrepareResolutionList();
 
-	bool		BUseHDContent();
-	void		SetUseHDContent( bool bUse );
-
 	int m_nSelectedMode; // -1 if we are running in a nonstandard mode
 	int m_nSelectedHudAspect;
 

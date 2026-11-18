@@ -25,6 +25,7 @@ public:
 
 	virtual void OnResetData();
 	virtual void OnApplyChanges();
+	virtual void OnCommand( const char *command );
 
 	MESSAGE_FUNC( OnRadioButtonChecked, "RadioButtonChecked" );
 
@@ -32,6 +33,7 @@ private:
 	vgui::RadioButton *m_pEasyRadio;
 	vgui::RadioButton *m_pNormalRadio;
 	vgui::RadioButton *m_pHardRadio;
+	vgui::Button *m_pMigrateButton;
 };
 
 

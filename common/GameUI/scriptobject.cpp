@@ -815,7 +815,7 @@ void CDescription::AddObject( CScriptObject *pObj )
 	}
 }
 
-bool CDescription::ReadFromBuffer( const char **pBuffer, bool bAllowNewObject )
+bool CDescription::ReadFromBuffer( const char **pBuffer )
 {
 	// Get the first token.
 	*pBuffer = engine->ParseFile( *pBuffer, token, sizeof( token ) );
@@ -904,12 +904,11 @@ bool CDescription::ReadFromBuffer( const char **pBuffer, bool bAllowNewObject )
 		*pBuffer = pStart;
 
 		// Create a new object
-		bool mustAdd = bAllowNewObject;
 		pObj = FindObject( token );
 		if ( pObj )
 		{
 			pObj->ReadFromBuffer( &pStart, false );
-			mustAdd = false; // already in list
+			*pBuffer = pStart;
 		}
 		else
 		{
@@ -926,19 +925,10 @@ bool CDescription::ReadFromBuffer( const char **pBuffer, bool bAllowNewObject )
 				return false;
 			}
 
-			// throw away the object if we're not adding it.
-			if ( !mustAdd )
-			{
-				delete pObj;
-			}
-		}
+			*pBuffer = pStart;
 
-		*pBuffer = pStart;
-
-		// Add to list
-		// Fixme, move to end of list first
-		if ( mustAdd )
-		{
+			// Add to list
+			// Fixme, move to end of list first
 			AddObject( pObj );
 		}
 	}
@@ -946,7 +936,7 @@ bool CDescription::ReadFromBuffer( const char **pBuffer, bool bAllowNewObject )
 	return true;
 }
 
-bool CDescription::InitFromFile( const char *pszFileName, bool bAllowNewObject /*= true*/ )
+bool CDescription::InitFromFile( const char *pszFileName )
 {
 
 	// Load file into memory
@@ -964,7 +954,7 @@ bool CDescription::InitFromFile( const char *pszFileName, bool bAllowNewObject /
 
 	const char *pBuffer = (const char*)buffer;
 	
-	ReadFromBuffer( &pBuffer, bAllowNewObject );
+	ReadFromBuffer( &pBuffer );
 
 	delete[] buffer;
 

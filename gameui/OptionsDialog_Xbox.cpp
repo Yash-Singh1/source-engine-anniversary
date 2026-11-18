@@ -575,10 +575,11 @@ void COptionsDialogXbox::OnThink()
 
 void COptionsDialogXbox::HandleInactiveKeyCodePressed( vgui::KeyCode code )
 {
+	ButtonCode_t nButtonCode = GetBaseButtonCode( code );
 	m_KeyRepeat.KeyDown( code );
 
 	OptionType_e eOptionType = (*m_pOptions)[ m_iSelection ]->eOptionType;
-	switch( code )
+	switch( nButtonCode )
 	{
 		// Change the selected value
 		case KEY_XBUTTON_A:
@@ -623,12 +624,12 @@ void COptionsDialogXbox::HandleInactiveKeyCodePressed( vgui::KeyCode code )
 		case KEY_XBUTTON_UP:
 		case KEY_XSTICK1_UP:
 		case STEAMCONTROLLER_DPAD_UP:
+		case STEAMCONTROLLER_LEFT_PAD_UP:
 			ChangeSelection( -1 );
 			break;
 
 		case KEY_XBUTTON_DOWN:
 		case KEY_XSTICK1_DOWN:
-		case STEAMCONTROLLER_DPAD_DOWN:
 			ChangeSelection( 1 );
 			break;
 
@@ -636,6 +637,7 @@ void COptionsDialogXbox::HandleInactiveKeyCodePressed( vgui::KeyCode code )
 		case KEY_XBUTTON_LEFT:
 		case KEY_XSTICK1_LEFT:
 		case STEAMCONTROLLER_DPAD_LEFT:
+		case STEAMCONTROLLER_LEFT_PAD_LEFT:
 			if ( !(*m_pOptions)[ m_iSelection ]->bUnchangeable )
 			{
 				if ( eOptionType != OPTION_TYPE_BIND )
@@ -655,6 +657,7 @@ void COptionsDialogXbox::HandleInactiveKeyCodePressed( vgui::KeyCode code )
 		case KEY_XBUTTON_RIGHT:
 		case KEY_XSTICK1_RIGHT:
 		case STEAMCONTROLLER_DPAD_RIGHT:
+		case STEAMCONTROLLER_LEFT_PAD_RIGHT:
 			if ( !(*m_pOptions)[ m_iSelection ]->bUnchangeable )
 			{
 				if ( eOptionType != OPTION_TYPE_BIND )

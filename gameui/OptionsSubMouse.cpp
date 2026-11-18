@@ -19,6 +19,7 @@
 #include "tier1/convar.h"
 #include <stdio.h>
 #include <vgui_controls/TextEntry.h>
+#include <vgui_controls/ComboBox.h>
 // memdbgon must be the last include file in a .cpp file!!!
 #include <tier0/memdbgon.h>
 
@@ -94,12 +95,58 @@ COptionsSubMouse::COptionsSubMouse(vgui::Panel *parent) : PropertyPage(parent, N
 		0.5f, 7.0f, "joy_pitchsensitivity", true );
 	m_pJoyPitchSensitivityPreLabel = new Label(this, "JoystickPitchSensitivityPreLabel", "#GameUI_JoystickLookSpeedPitch" );
 
+	// joystick and HUD options moved to the gamepad page; a .res file may still show them
+	m_pJoystickCheckBox->SetEnabled( false );
+	m_pJoystickCheckBox->SetVisible( false );
+	m_pJoystickSouthpawCheckBox->SetEnabled( false );
+	m_pJoystickSouthpawCheckBox->SetVisible( false );
+	m_pReverseJoystickCheckBox->SetEnabled( false );
+	m_pReverseJoystickCheckBox->SetVisible( false );
+	m_pQuickInfoCheckBox->SetEnabled( false );
+	m_pQuickInfoCheckBox->SetVisible( false );
+	m_pJoyYawSensitivitySlider->SetVisible( false );
+	m_pJoyYawSensitivityPreLabel->SetVisible( false );
+	m_pJoyPitchSensitivitySlider->SetVisible( false );
+	m_pJoyPitchSensitivityPreLabel->SetVisible( false );
+
+	m_pAutoaimCombo = new ComboBox( this, "Autoaim", 3, false );
+	m_pAutoaimCombo->AddItem( "#GameUI_SettingOff", NULL );
+	m_pAutoaimCombo->AddItem( "#GameUI_SettingBasic", NULL );
+	m_pAutoaimCombo->AddItem( "#GameUI_SettingEnhanced", NULL );
+	m_pAutoaimCombo->SetVisible( false );
+	m_pAutoaimCombo->SetEnabled( false );
+
+	m_pAutoaimScaleSlider = new CCvarSlider( this, "AutoaimScale", "#GameUI_AimAssistScale", 0.5f, 2.0f, "m_autoaim_scale" );
+	m_pAutoaimScaleSlider->SetVisible( false );
+	m_pAutoaimScaleSlider->SetEnabled( false );
+
+	m_pAutoaimScaleLabel = new Label( this, "AutoaimScaleLabel", "#GameUI_AimAssistScale" );
+	m_pAutoaimScaleLabel->SetVisible( false );
+	m_pAutoaimScaleLabel->SetEnabled( false );
+
 	LoadControlSettings("Resource\\OptionsSubMouse.res");
+
+	m_bJoystickVisible = m_pJoystickCheckBox->IsVisible();
+	m_bAutoaimVisible = m_pAutoaimCombo->IsVisible();
 
 	UpdateSensitivityLabel();
 	UpdateAccelerationLabel();
 
 	UpdateJoystickPanels();
+
+	if ( m_bAutoaimVisible )
+	{
+		if ( m_pAutoaimCombo->GetActiveItem() > 0 )
+		{
+			m_pAutoaimScaleLabel->SetEnabled( true );
+			m_pAutoaimScaleSlider->SetEnabled( true );
+		}
+		else
+		{
+			m_pAutoaimScaleLabel->SetEnabled( false );
+			m_pAutoaimScaleSlider->SetEnabled( false );
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -117,18 +164,36 @@ void COptionsSubMouse::OnResetData()
 	m_pReverseMouseCheckBox->Reset();
 	m_pMouseFilterCheckBox->Reset();
 	m_pMouseRawCheckBox->Reset();
-	m_pJoystickCheckBox->Reset();
-	m_pJoystickSouthpawCheckBox->Reset();
+	if ( m_bJoystickVisible )
+	{
+		m_pJoystickCheckBox->Reset();
+		m_pJoystickSouthpawCheckBox->Reset();
+		m_pReverseJoystickCheckBox->Reset();
+		m_pJoyYawSensitivitySlider->Reset();
+		m_pJoyPitchSensitivitySlider->Reset();
+	}
 	m_pMouseSensitivitySlider->Reset();
 	m_pMouseAccelExponentSlider->Reset();
 	m_pQuickInfoCheckBox->Reset();
-	m_pReverseJoystickCheckBox->Reset();
-	m_pJoyYawSensitivitySlider->Reset();
-	m_pJoyPitchSensitivitySlider->Reset();
 
 	ConVarRef m_customacel("m_customaccel");
 	if ( m_customacel.IsValid() )
 		m_pMouseAccelerationCheckBox->SetSelected( m_customacel.GetBool() );
+
+	if ( m_bAutoaimVisible )
+	{
+		ConVarRef m_autoaim_mode( "m_autoaim_mode" );
+		int nAutoaimMode = m_autoaim_mode.IsValid() ? m_autoaim_mode.GetInt() : 0;
+		m_pAutoaimCombo->ActivateItem( nAutoaimMode );
+		if ( nAutoaimMode > 0 )
+		{
+			m_pAutoaimScaleSlider->SetEnabled( true );
+		}
+		else
+		{
+			m_pAutoaimScaleSlider->SetEnabled( false );
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -139,16 +204,30 @@ void COptionsSubMouse::OnApplyChanges()
 	m_pReverseMouseCheckBox->ApplyChanges();
 	m_pMouseFilterCheckBox->ApplyChanges();
 	m_pMouseRawCheckBox->ApplyChanges();
-	m_pJoystickCheckBox->ApplyChanges();
-	m_pJoystickSouthpawCheckBox->ApplyChanges();
+	if ( m_bJoystickVisible )
+	{
+		m_pJoystickCheckBox->ApplyChanges();
+		m_pJoystickSouthpawCheckBox->ApplyChanges();
+		m_pReverseJoystickCheckBox->ApplyChanges();
+		m_pJoyYawSensitivitySlider->ApplyChanges();
+		m_pJoyPitchSensitivitySlider->ApplyChanges();
+
+		engine->ClientCmd_Unrestricted( "joyadvancedupdate" );
+	}
+
+	if ( m_bAutoaimVisible )
+	{
+		ConVarRef m_autoaim_mode( "m_autoaim_mode" );
+		if ( m_autoaim_mode.IsValid() )
+		{
+			m_autoaim_mode.SetValue( m_pAutoaimCombo->GetActiveItem() );
+		}
+		m_pAutoaimScaleSlider->ApplyChanges();
+	}
+
 	m_pMouseSensitivitySlider->ApplyChanges();
 	m_pMouseAccelExponentSlider->ApplyChanges();
 	m_pQuickInfoCheckBox->ApplyChanges();
-	m_pReverseJoystickCheckBox->ApplyChanges();
-	m_pJoyYawSensitivitySlider->ApplyChanges();
-	m_pJoyPitchSensitivitySlider->ApplyChanges();
-
-	engine->ClientCmd_Unrestricted( "joyadvancedupdate" );
 
 	ConVarRef m_customacel("m_customaccel");
 	if ( m_customacel.IsValid() )
@@ -223,6 +302,25 @@ void COptionsSubMouse::OnTextChanged(Panel *panel)
 			m_pMouseAccelExponentSlider->SetSliderValue(fValue);
 			PostActionSignal(new KeyValues("ApplyButtonEnable"));
 		}
+		return;
+	}
+
+	if ( panel == m_pAutoaimCombo )
+	{
+		if ( m_bAutoaimVisible )
+		{
+			if ( m_pAutoaimCombo->GetActiveItem() > 0 )
+			{
+				m_pAutoaimScaleLabel->SetEnabled( true );
+				m_pAutoaimScaleSlider->SetEnabled( true );
+			}
+			else
+			{
+				m_pAutoaimScaleLabel->SetEnabled( false );
+				m_pAutoaimScaleSlider->SetEnabled( false );
+			}
+		}
+		PostActionSignal( new KeyValues( "ApplyButtonEnable" ) );
 	}
 }
 
@@ -250,6 +348,9 @@ void COptionsSubMouse::UpdateAccelerationLabel()
 //-----------------------------------------------------------------------------
 void COptionsSubMouse::UpdateJoystickPanels()
 {
+	if ( !m_bJoystickVisible )
+		return;
+
 	bool bEnabled = m_pJoystickCheckBox->IsSelected();
 
 	m_pReverseJoystickCheckBox->SetEnabled( bEnabled );

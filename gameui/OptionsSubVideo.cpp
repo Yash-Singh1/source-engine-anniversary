@@ -82,7 +82,7 @@ int g_DirectXLevels[] =
 //-----------------------------------------------------------------------------
 // Purpose: returns the string name of a given dxlevel
 //-----------------------------------------------------------------------------
-void GetNameForDXLevel( int dxlevel, char *name, int bufferSize)
+static void GetNameForDXLevel( int dxlevel, char *name, int bufferSize)
 {
 	if ( ( dxlevel >= 92 ) && ( dxlevel <= 95 ) )
 	{
@@ -97,7 +97,7 @@ void GetNameForDXLevel( int dxlevel, char *name, int bufferSize)
 //-----------------------------------------------------------------------------
 // Purpose: returns the aspect ratio mode number for the given resolution
 //-----------------------------------------------------------------------------
-int GetScreenAspectMode( int width, int height )
+static int GetScreenAspectMode( int width, int height )
 {
 	float aspectRatio = (float)width / (float)height;
 
@@ -120,10 +120,89 @@ int GetScreenAspectMode( int width, int height )
 //-----------------------------------------------------------------------------
 // Purpose: returns the string name of the specified resolution mode
 //-----------------------------------------------------------------------------
-static void GetResolutionName( vmode_t *mode, char *sz, int sizeofsz, int desktopWidth, int desktopHeight )
+static void GetResolutionName( vmode_t *mode, wchar_t *sz, int sizeofsz, int desktopWidth, int desktopHeight )
 {
-	Q_snprintf( sz, sizeofsz, "%i x %i%s", mode->width, mode->height,
-				( mode->width == desktopWidth ) && ( mode->height == desktopHeight ) ? " (native)": "" );
+	if ( ( mode->width == desktopWidth ) && ( mode->height == desktopHeight ) )
+	{
+		const wchar_t *pszNative = g_pVGuiLocalize->Find( "#GameUI_Native" );
+		V_snwprintf( sz, sizeofsz, L"%i x %i (%ls)", mode->width, mode->height, pszNative );
+	}
+	else
+	{
+		V_snwprintf( sz, sizeofsz, L"%i x %i", mode->width, mode->height );
+	}
+}
+
+static FILE *FOpenGameHDFile( const char *pchMode )
+{
+	const char *pGameDir = engine->GetGameDirectory();
+	char szModSteamInfPath[ 1024 ];
+	V_ComposeFileName( pGameDir, "game_hd.txt", szModSteamInfPath, sizeof( szModSteamInfPath ) );
+
+	FILE *fp = fopen( szModSteamInfPath, pchMode );
+	return fp;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+static bool BUseHDContent()
+{
+	FILE *fp = FOpenGameHDFile( "rb" );
+	if ( fp )
+	{
+		fclose(fp);
+		return true;
+	}
+	return false;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: hint the engine to load HD content if possible, logic must match with engine/common.cpp BLoadHDContent
+//-----------------------------------------------------------------------------
+void SetUseHDContent( bool bUse )
+{
+	if ( bUse )
+	{
+		FILE *fp = FOpenGameHDFile( "wb+" );
+		if ( fp )
+		{
+			fprintf( fp, "If this file exists on disk HD content will be loaded.\n" );
+			fclose( fp );
+		}
+	}
+	else
+	{
+		const char *pGameDir = engine->GetGameDirectory();
+		char szModSteamInfPath[ 1024 ];
+		V_ComposeFileName( pGameDir, "game_hd.txt", szModSteamInfPath, sizeof( szModSteamInfPath ) );
+		_unlink( szModSteamInfPath );
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Anniversary ISourceVirtualReality ends with IsHmdAvailable() (slot 27); sourcevr
+// implements it after the interface methods.
+//-----------------------------------------------------------------------------
+abstract_class ISourceVirtualRealityAnniversary : public ISourceVirtualReality
+{
+public:
+	virtual bool IsHmdAvailable() = 0;
+};
+
+static inline bool IsHmdAvailable()
+{
+	return static_cast< ISourceVirtualRealityAnniversary * >( g_pSourceVR )->IsHmdAvailable();
+}
+
+// borderless windows need the anniversary video config and mat_setvideomode
+static inline bool ConfigNoWindowBorder( const MaterialSystem_Config_t &config )
+{
+#ifdef BYTEMATCH_RETAIL
+	return config.NoWindowBorder();
+#else
+	return false;
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -136,8 +215,9 @@ public:
 	CGammaDialog( vgui::VPANEL hParent ) : BaseClass( NULL, "OptionsSubVideoGammaDlg" )
 	{
 		// parent is ignored, since we want look like we're steal focus from the parent (we'll become modal below)
+		SetParent( enginevguifuncs->GetPanel( PANEL_GAMEUIDLL ) );
 		SetTitle("#GameUI_AdjustGamma_Title", true);
-		SetSize( 400, 260 );
+		SetSize( PROPORTIONAL_VALUE( 400 ), PROPORTIONAL_VALUE( 260 ) );
 		SetDeleteSelfOnClose( true );
 
 		m_pGammaSlider = new CCvarSlider( this, "Gamma", "#GameUI_Gamma", 1.6f, 2.6f, "mat_monitorgamma" );
@@ -251,6 +331,10 @@ public:
 	{
 		SetTitle("#GameUI_VideoAdvanced_Title", true);
 		SetSize( 260, 400 );
+
+		m_bHDRVisible = false;
+		m_bHDContentVisible = false;
+		m_bClassicEffectsVisible = false;
 
 		m_pDXLevel = new ComboBox(this, "dxlabel", 6, false );
 		const MaterialSystem_Config_t &config = materials->GetCurrentConfigForVideoCard();
@@ -399,7 +483,19 @@ public:
 		}
 #endif
 
-		m_pHDR->SetEnabled( mat_dxlevel.GetInt() >= 80 );
+		// HDR moved to the main video page
+		m_pHDR->SetEnabled( false );
+		m_pHDR->SetVisible( false );
+
+		m_pHDContent = new CheckButton( this, "HDContentButton", "#GameUI_HDContent" );
+		m_pHDContent->SetEnabled( false );
+		m_pHDContent->SetVisible( false );
+
+		m_pClassicEffects = new ComboBox( this, "ClassicEffects", 6, false );
+		m_pClassicEffects->AddItem("#GameUI_ClassicEffects_Off", NULL);
+		m_pClassicEffects->AddItem("#GameUI_ClassicEffects_On", NULL);
+		m_pClassicEffects->SetEnabled( false );
+		m_pClassicEffects->SetVisible( false );
 
 		m_pWaterDetail = new ComboBox( this, "WaterDetail", 6, false );
 		m_pWaterDetail->AddItem("#gameui_noreflections", NULL);
@@ -417,6 +513,7 @@ public:
 		m_pShaderDetail = new ComboBox( this, "ShaderDetail", 6, false );
 		m_pShaderDetail->AddItem("#gameui_low", NULL);
 		m_pShaderDetail->AddItem("#gameui_high", NULL);
+		m_pShaderDetail->AddItem("#gameui_ultra", NULL);
 
 		m_pColorCorrection = new ComboBox( this, "ColorCorrection", 2, false );
 		m_pColorCorrection->AddItem("#gameui_disabled", NULL);
@@ -426,16 +523,57 @@ public:
 		m_pMotionBlur->AddItem("#gameui_disabled", NULL);
 		m_pMotionBlur->AddItem("#gameui_enabled", NULL);
 
+		ConVarRef mat_supports_d3d9ex( "mat_supports_d3d9ex", true );
+		m_pD3D9Ex = new ComboBox( this, "D3D9Ex", 2, false );
+		m_pD3D9Ex->AddItem("#gameui_disabled", NULL);
+		m_pD3D9Ex->AddItem("#gameui_enabled", NULL);
+		m_pD3D9Ex->SetEnabled( mat_supports_d3d9ex.IsValid() && mat_supports_d3d9ex.GetBool() );
+		m_bD3D9ExMessageShown = false;
+
 		LoadControlSettings( "resource/OptionsSubVideoAdvancedDlg.res" );
 		MoveToCenterOfScreen();
 		SetSizeable( false );
+
+		// the .res file decides which of the optional controls are shown
+		if ( m_pHDR->IsVisible() )
+		{
+			m_bHDRVisible = true;
+			m_pHDR->SetEnabled( mat_dxlevel.GetInt() >= 80 );
+		}
+
+		if ( m_pHDContent->IsEnabled() && ModInfo().HasHDContent() )
+		{
+			m_bHDContentVisible = true;
+			m_pHDContent->SetVisible( true );
+		}
+
+		if ( m_pClassicEffects->IsVisible() )
+		{
+			m_bClassicEffectsVisible = true;
+		}
 
 		m_pDXLevel->SetEnabled(false);
 		
 		m_pColorCorrection->SetEnabled( mat_dxlevel.GetInt() >= 90 );
 		m_pMotionBlur->SetEnabled( mat_dxlevel.GetInt() >= 90 );
 		
-		if ( g_pCVar->FindVar( "fov_desired" ) == NULL )
+		if ( g_pCVar->FindVar( "fov_desired" ) )
+		{
+			CCvarSlider *pFOV = (CCvarSlider *)FindChildByName( "FOVSlider" );
+			if ( pFOV )
+			{
+				pFOV->SetNumTicks( 7 );
+			}
+
+			Label *pFOVValue = (Label *)FindChildByName( "FOVValueLabel" );
+			if ( pFOVValue )
+			{
+				wchar_t szValue[16];
+				V_snwprintf( szValue, ARRAYSIZE( szValue ), L"%.0f", pFOV->GetSliderValue() );
+				pFOVValue->SetText( szValue );
+			}
+		}
+		else
 		{
 			Panel *pFOV = FindChildByName( "FovSlider" );
 			if ( pFOV )
@@ -449,13 +587,11 @@ public:
 				pFOV->SetVisible( false );
 			}
 
-#ifndef BYTEMATCH_RETAIL
-			pFOV = FindChildByName( "FovValueLabel" );
+			pFOV = FindChildByName( "FOVValueLabel" );
 			if ( pFOV )
 			{
 				pFOV->SetVisible( false );
 			}
-#endif
 		}
 		
 		MarkDefaultSettingsAsRecommended();
@@ -505,19 +641,40 @@ public:
 		return 0;	// Didn't find what we're looking for, so no AA
 	}
 
+	MESSAGE_FUNC_PTR( OnSliderChanged, "SliderMoved", panel )
+	{
+		CCvarSlider *pFOV = (CCvarSlider *)FindChildByName( "FOVSlider" );
+		Label *pFOVValue = (Label *)FindChildByName( "FOVValueLabel" );
+		if ( pFOV && pFOVValue )
+		{
+			wchar_t szValue[16];
+			V_snwprintf( szValue, ARRAYSIZE( szValue ), L"%.0f", pFOV->GetSliderValue() );
+			pFOVValue->SetText( szValue );
+		}
+	}
+
 	MESSAGE_FUNC_PTR( OnTextChanged, "TextChanged", panel )
 	{
 		if ( panel == m_pDXLevel && RequiresRestart() )
 		{
 			// notify the user that this will require a disconnect
-#ifdef BYTEMATCH_RETAIL
-			QueryBox *box = new QueryBox("#GameUI_SettingRequiresDisconnect_Title", "#GameUI_SettingRequiresDisconnect_Info");
-#else
-			QueryBox *box = new QueryBox("#GameUI_SettingRequiresDisconnect_Title", "#GameUI_SettingRequiresDisconnect_Info", this);
-#endif
+			QueryBox *box = new QueryBox("#GameUI_SettingRequiresDisconnect_Title", "#GameUI_SettingRequiresDisconnect_Info", GetParent()->GetParent()->GetParent());
 			box->AddActionSignalTarget( this );
 			box->SetCancelCommand(new KeyValues("ResetDXLevelCombo"));
 			box->DoModal();
+		}
+
+		if ( panel == m_pD3D9Ex && !m_bD3D9ExMessageShown )
+		{
+			ConVarRef mat_disable_d3d9ex( "mat_disable_d3d9ex", true );
+			if ( mat_disable_d3d9ex.IsValid() && ( m_pD3D9Ex->GetActiveItem() == 0 ) != mat_disable_d3d9ex.GetBool() )
+			{
+				// the change only takes effect after a relaunch
+				m_bD3D9ExMessageShown = true;
+				MessageBox *box = new MessageBox( "#GameUI_D3D9Ex", "#GameUI_D3D9ExRelaunchMsg", this );
+				box->MoveToFront();
+				box->DoModal();
+			}
 		}
 	}
 
@@ -540,7 +697,7 @@ public:
 		}
 
 		// Reset HDR too
-		if ( m_pHDR->IsEnabled() )
+		if ( m_pHDR->IsEnabled() && m_bHDRVisible )
 		{
 			ConVarRef mat_hdr_level("mat_hdr_level");
 			Assert( mat_hdr_level.IsValid() );
@@ -551,6 +708,7 @@ public:
 	MESSAGE_FUNC( OK_Confirmed, "OK_Confirmed" )
 	{
 		m_bUseChanges = true;
+		PostActionSignal( new KeyValues( "ApplyButtonEnable" ) );
 		Close();
 	}
 
@@ -575,6 +733,7 @@ public:
 		int nMatVSync = pKeyValues->GetInt( "ConVar.mat_vsync", 1 );
 		int nRootLOD = pKeyValues->GetInt( "ConVar.r_rootlod", 0 );
 		int nReduceFillRate = pKeyValues->GetInt( "ConVar.mat_reducefillrate", 0 );
+		int nLightmapBicubic = pKeyValues->GetInt( "ConVar.r_lightmap_bicubic", 0 );
 		int nDXLevel = pKeyValues->GetInt( "ConVar.mat_dxlevel", 0 );
 		int nColorCorrection = pKeyValues->GetInt( "ConVar.mat_colorcorrection", 0 );
 		int nMotionBlur = pKeyValues->GetInt( "ConVar.mat_motion_blur_enabled", 0 );
@@ -637,7 +796,10 @@ public:
 		else
 			SetComboItemAsRecommended( m_pShadowDetail, 0 );	// Blobbies
 
-		SetComboItemAsRecommended( m_pShaderDetail, nReduceFillRate ? 0 : 1 );
+		if ( nLightmapBicubic )
+			SetComboItemAsRecommended( m_pShaderDetail, 2 );
+		else
+			SetComboItemAsRecommended( m_pShaderDetail, nReduceFillRate ? 0 : 1 );
 		
 #ifndef _X360
 		if ( nWaterUseRealtimeReflection )
@@ -663,11 +825,24 @@ public:
 
 		SetComboItemAsRecommended( m_pMulticore, nMulticore != 0 );
 
-		SetComboItemAsRecommended( m_pHDR, nDXLevel >= 90 ? 2 : 0 );
+		if ( m_bHDRVisible )
+		{
+			SetComboItemAsRecommended( m_pHDR, nDXLevel >= 90 ? 2 : 0 );
+		}
+
+		if ( m_bClassicEffectsVisible )
+		{
+			SetComboItemAsRecommended( m_pClassicEffects, 0 );
+		}
 
 		SetComboItemAsRecommended( m_pColorCorrection, nColorCorrection );
 
 		SetComboItemAsRecommended( m_pMotionBlur, nMotionBlur );
+
+		if ( m_pD3D9Ex->IsEnabled() )
+		{
+			SetComboItemAsRecommended( m_pD3D9Ex, 1 );
+		}
 
 		pKeyValues->deleteThis();
 	}
@@ -727,11 +902,20 @@ public:
 		ApplyChangesToConVar( "mat_antialias", m_nAAModes[nActiveAAItem].m_nNumSamples );
 		ApplyChangesToConVar( "mat_aaquality", m_nAAModes[nActiveAAItem].m_nQualityLevel );
 
-		if( m_pHDR->IsEnabled() )
+		if( m_pHDR->IsEnabled() && m_bHDRVisible )
 		{
 			ConVarRef mat_hdr_level("mat_hdr_level");
 			Assert( mat_hdr_level.IsValid() );
 			mat_hdr_level.SetValue(m_pHDR->GetActiveItem());
+		}
+
+		if ( m_bClassicEffectsVisible )
+		{
+			ConVarRef r_classic_fire( "r_classic_fire" );
+			ConVarRef r_classic_blood( "r_classic_blood" );
+			int nClassic = ( m_pClassicEffects->GetActiveItem() == 1 ) ? 2 : 0;
+			r_classic_fire.SetValue( nClassic );
+			r_classic_blood.SetValue( nClassic );
 		}
 
 		if ( m_pShadowDetail->GetActiveItem() == 0 )						// Blobby shadows
@@ -751,6 +935,7 @@ public:
 		}
 
 		ApplyChangesToConVar( "mat_reducefillrate", ( m_pShaderDetail->GetActiveItem() > 0 ) ? 0 : 1 );
+		ApplyChangesToConVar( "r_lightmap_bicubic", m_pShaderDetail->GetActiveItem() > 1 );
 
 		switch ( m_pWaterDetail->GetActiveItem() )
 		{
@@ -783,11 +968,28 @@ public:
 		ApplyChangesToConVar( "mat_colorcorrection", m_pColorCorrection->GetActiveItem() );
 
 		ApplyChangesToConVar( "mat_motion_blur_enabled", m_pMotionBlur->GetActiveItem() );
+
+		if ( m_pD3D9Ex->IsEnabled() )
+		{
+			ApplyChangesToConVar( "mat_disable_d3d9ex", m_pD3D9Ex->GetActiveItem() == 0 );
+		}
 		
 		CCvarSlider *pFOV = (CCvarSlider *)FindChildByName( "FOVSlider" );
 		if ( pFOV ) 
 		{
 			pFOV->ApplyChanges();
+		}
+
+		if ( m_bHDContentVisible )
+		{
+			if ( BUseHDContent() != m_pHDContent->IsSelected() )
+			{
+				SetUseHDContent( m_pHDContent->IsSelected() );
+				// Bring up the confirmation dialog
+				MessageBox *box = new MessageBox( "#GameUI_OptionsRestartRequired_Title", "#GameUI_HDRestartRequired_Info", NULL );
+				box->DoModal();
+				box->MoveToFront();
+			}
 		}
 	}
 
@@ -812,6 +1014,8 @@ public:
 		ConVarRef mat_colorcorrection( "mat_colorcorrection" );
 		ConVarRef mat_motion_blur_enabled( "mat_motion_blur_enabled" );
 		ConVarRef r_shadowrendertotexture( "r_shadowrendertotexture" );
+		ConVarRef r_lightmap_bicubic( "r_lightmap_bicubic" );
+		ConVarRef r_classic_fire( "r_classic_fire" );
 
 		ResetDXLevelCombo();
 
@@ -832,8 +1036,30 @@ public:
 			m_pShadowDetail->ActivateItem( 0 );
 		}
 
-		m_pShaderDetail->ActivateItem( mat_reducefillrate.GetBool() ? 0 : 1 );
-		m_pHDR->ActivateItem(clamp(mat_hdr_level.GetInt(), 0, 2));
+		if ( r_lightmap_bicubic.GetBool() )
+		{
+			m_pShaderDetail->ActivateItem( 2 );
+		}
+		else
+		{
+			m_pShaderDetail->ActivateItem( mat_reducefillrate.GetBool() ? 0 : 1 );
+		}
+
+		if ( m_bHDRVisible )
+		{
+			m_pHDR->ActivateItem(clamp(mat_hdr_level.GetInt(), 0, 2));
+		}
+
+		if ( m_bHDContentVisible )
+		{
+			m_pHDContent->SetSelected( BUseHDContent() );
+		}
+
+		if ( m_bClassicEffectsVisible )
+		{
+			bool bClassicEffects = r_classic_fire.GetInt() > 0;
+			m_pClassicEffects->ActivateItem( bClassicEffects );
+		}
 
 		switch (mat_forceaniso.GetInt())
 		{
@@ -903,6 +1129,9 @@ public:
 
 		m_pMotionBlur->ActivateItem( mat_motion_blur_enabled.GetInt() );
 
+		ConVarRef mat_disable_d3d9ex( "mat_disable_d3d9ex", true );
+		m_pD3D9Ex->ActivateItem( m_pD3D9Ex->IsEnabled() && !mat_disable_d3d9ex.GetBool() );
+
 		// get current hardware dx support level
 		char dxVer[64];
 		GetNameForDXLevel( mat_dxlevel.GetInt(), dxVer, sizeof( dxVer ) );
@@ -925,7 +1154,7 @@ public:
 			if ( RequiresRestart() )
 			{
 				// Bring up the confirmation dialog
-				QueryBox *box = new QueryBox("#GameUI_SettingRequiresDisconnect_Title", "#GameUI_SettingRequiresDisconnect_Info");
+				QueryBox *box = new QueryBox("#GameUI_SettingRequiresDisconnect_Title", "#GameUI_SettingRequiresDisconnect_Info", GetParent()->GetParent()->GetParent());
 				box->AddActionSignalTarget( this );
 				box->SetOKCommand(new KeyValues("OK_Confirmed"));
 				box->SetCancelCommand(new KeyValues("ResetDXLevelCombo"));
@@ -935,6 +1164,7 @@ public:
 			}
 
 			m_bUseChanges = true;
+			PostActionSignal( new KeyValues( "ApplyButtonEnable" ) );
 			Close();
 		}
 		else
@@ -974,7 +1204,7 @@ public:
 			}
 
 			// HDR changed?
-			if ( m_pHDR->IsEnabled() )
+			if ( m_pHDR->IsEnabled() && m_bHDRVisible )
 			{
 				ConVarRef mat_hdr_level("mat_hdr_level");
 				Assert( mat_hdr_level.IsValid() );
@@ -987,11 +1217,19 @@ public:
 
 private:
 	bool m_bUseChanges;
+	bool m_bD3D9ExMessageShown;
 	vgui::ComboBox *m_pModelDetail, *m_pTextureDetail, *m_pAntialiasingMode, *m_pFilteringMode;
-	vgui::ComboBox *m_pShadowDetail, *m_pHDR, *m_pWaterDetail, *m_pVSync, *m_pMulticore, *m_pShaderDetail;
+	vgui::ComboBox *m_pShadowDetail, *m_pWaterDetail, *m_pVSync, *m_pMulticore, *m_pShaderDetail;
+	vgui::ComboBox *m_pD3D9Ex;
 	vgui::ComboBox *m_pColorCorrection;
 	vgui::ComboBox *m_pMotionBlur;
 	vgui::ComboBox *m_pDXLevel;
+	vgui::CheckButton *m_pHDContent;
+	bool m_bHDContentVisible;
+	vgui::ComboBox *m_pHDR;
+	bool m_bHDRVisible;
+	vgui::ComboBox *m_pClassicEffects;
+	bool m_bClassicEffectsVisible;
 
 	int m_nNumAAModes;
 	AAMode_t m_nAAModes[16];
@@ -1030,17 +1268,15 @@ COptionsSubVideo::COptionsSubVideo(vgui::Panel *parent) : PropertyPage(parent, N
 {
 	m_bRequireRestart = false;
 	m_bHDContentAvailable = false;
-	m_bDisplayedVRModeMessage = false;
 	m_bHDRAvailable = false;
-	m_pHudAspectRatio = NULL;
-	m_pHDR = NULL;
-	m_nSelectedHudAspect = 0;
-#line 1035
+	m_bDisplayedVRModeMessage = false;
+
 	m_pGammaButton = new Button( this, "GammaButton", "#GameUI_AdjustGamma" );
 	m_pGammaButton->SetCommand(new KeyValues("OpenGammaDialog"));
 	m_pMode = new ComboBox(this, "Resolution", 8, false);
 	m_pAspectRatio = new ComboBox( this, "AspectRatio", 6, false );
 	m_pVRMode = new ComboBox( this, "VRMode", 2, false );
+	m_pHudAspectRatio = new ComboBox( this, "HudAspectRatio", 6, false );
 	m_pAdvanced = new Button( this, "AdvancedButton", "#GameUI_AdvancedEllipsis" );
 	m_pAdvanced->SetCommand(new KeyValues("OpenAdvanced"));
 	m_pBenchmark = new Button( this, "BenchmarkButton", "#GameUI_LaunchBenchmark" );
@@ -1053,6 +1289,8 @@ COptionsSubVideo::COptionsSubVideo(vgui::Panel *parent) : PropertyPage(parent, N
 	m_pThirdPartyCredits->SetVisible(false);
 #endif
 	m_pHDContent = new CheckButton( this, "HDContentButton", "#GameUI_HDContent" );
+	m_pHDContent->SetEnabled( false );
+	m_pHDContent->SetVisible( false );
 
 	char pszAspectName[3][64];
 	const wchar_t *unicodeText = g_pVGuiLocalize->Find("#GameUI_AspectNormal");
@@ -1090,6 +1328,57 @@ COptionsSubVideo::COptionsSubVideo(vgui::Panel *parent) : PropertyPage(parent, N
 	m_pGammaButton->SetEnabled(false);
 #endif
 
+	// HUD aspect ratio, from hud_aspect (0 fits the display)
+	ConVarRef hud_aspect( "hud_aspect" );
+	float flHudAspect = hud_aspect.GetFloat();
+
+	char pszHudAspectName[4][64];
+	unicodeText = g_pVGuiLocalize->Find("#GameUI_HUDAspectRatio_FitDisplay");
+	g_pVGuiLocalize->ConvertUnicodeToANSI(unicodeText, pszHudAspectName[0], 32);
+	unicodeText = g_pVGuiLocalize->Find("#GameUI_HUDAspectRatio_4x3");
+	g_pVGuiLocalize->ConvertUnicodeToANSI(unicodeText, pszHudAspectName[1], 32);
+	unicodeText = g_pVGuiLocalize->Find("#GameUI_HUDAspectRatio_16x9");
+	g_pVGuiLocalize->ConvertUnicodeToANSI(unicodeText, pszHudAspectName[2], 32);
+	unicodeText = g_pVGuiLocalize->Find("#GameUI_HUDAspectRatio_16x10");
+	g_pVGuiLocalize->ConvertUnicodeToANSI(unicodeText, pszHudAspectName[3], 32);
+
+	int iHudFitItemID = m_pHudAspectRatio->AddItem( pszHudAspectName[0], NULL );
+	int iHud4x3ItemID = m_pHudAspectRatio->AddItem( pszHudAspectName[1], NULL );
+	int iHud16x9ItemID = m_pHudAspectRatio->AddItem( pszHudAspectName[2], NULL );
+	int iHud16x10ItemID = m_pHudAspectRatio->AddItem( pszHudAspectName[3], NULL );
+
+	if ( flHudAspect > 0.0f )
+	{
+		if ( flHudAspect < 1.4f )
+		{
+			m_nSelectedHudAspect = iHud4x3ItemID;
+		}
+		else if ( flHudAspect < 1.7f )
+		{
+			m_nSelectedHudAspect = iHud16x10ItemID;
+		}
+		else
+		{
+			m_nSelectedHudAspect = iHud16x9ItemID;
+		}
+	}
+	else
+	{
+		m_nSelectedHudAspect = iHudFitItemID;
+	}
+	m_pHudAspectRatio->ActivateItem( m_nSelectedHudAspect );
+
+	// HDR moved here from the advanced dialog; the .res file decides whether it is shown
+	m_pHDR = new ComboBox( this, "HDR", 6, false );
+	m_pHDR->AddItem("#GameUI_hdr_level0", NULL);
+	m_pHDR->AddItem("#GameUI_hdr_level1", NULL);
+	if ( materials->SupportsHDRMode( HDR_TYPE_INTEGER ) )
+	{
+		m_pHDR->AddItem("#GameUI_hdr_level2", NULL);
+	}
+	m_pHDR->SetEnabled( false );
+	m_pHDR->SetVisible( false );
+
 	char pszVRModeName[2][64];
 	unicodeText = g_pVGuiLocalize->Find("#GameUI_Disabled");
 	g_pVGuiLocalize->ConvertUnicodeToANSI(unicodeText, pszVRModeName[0], 32);
@@ -1105,19 +1394,17 @@ COptionsSubVideo::COptionsSubVideo(vgui::Panel *parent) : PropertyPage(parent, N
 #if defined( USE_SDL ) && defined( DX_TO_GL_ABSTRACTION )
 	int numVideoDisplays = SDL_GetNumVideoDisplays();
 
-	m_pWindowed = new vgui::ComboBox( this, "DisplayModeCombo", 5 + numVideoDisplays, false );
+	m_pWindowed = new vgui::ComboBox( this, "DisplayModeCombo", 6 + numVideoDisplays, false );
 
 	if ( numVideoDisplays <= 1 )
 	{
 		m_pWindowed->AddItem( "#GameUI_Fullscreen", NULL );
-		m_pWindowed->AddItem( "#GameUI_Windowed", NULL );
 	}
 	else
 	{
 		// Add something like this:
 		//   Full Screen (0)
 		//   Full Screen (1)
-		//   Windowed
 		wchar_t *fullscreenText = g_pVGuiLocalize->Find( "#GameUI_Fullscreen" );
 
 		for ( int i = 0; i < numVideoDisplays; i++ )
@@ -1127,10 +1414,16 @@ COptionsSubVideo::COptionsSubVideo(vgui::Panel *parent) : PropertyPage(parent, N
 			V_swprintf_safe( ItemText, L"%ls (%d)", fullscreenText, i );
 			m_pWindowed->AddItem( ItemText, NULL );
 		}
-
-		m_pWindowed->AddItem( "#GameUI_Windowed", NULL );
 	}
 
+	// the last two items are windowed and borderless windowed
+	wchar_t *windowedText = g_pVGuiLocalize->Find( "#GameUI_Windowed" );
+	wchar_t *noWindowBorderText = g_pVGuiLocalize->Find( "#GameUI_NoWindowBorder" );
+	m_pWindowed->AddItem( windowedText, NULL );
+
+	wchar_t ItemText[ 256 ];
+	V_swprintf_safe( ItemText, L"%ls (%ls)", windowedText, noWindowBorderText );
+	m_pWindowed->AddItem( ItemText, NULL );
 #else
 	m_pWindowed = new vgui::ComboBox( this, "DisplayModeCombo", 6, false );
 
@@ -1154,9 +1447,17 @@ COptionsSubVideo::COptionsSubVideo(vgui::Panel *parent) : PropertyPage(parent, N
 		m_pBenchmark->SetVisible( false );
 	}
 
-	if ( ModInfo().HasHDContent() )
+	if ( m_pHDContent->IsEnabled() && ModInfo().HasHDContent() )
 	{
+		m_bHDContentAvailable = true;
 		m_pHDContent->SetVisible( true );
+	}
+
+	if ( m_pHDR->IsVisible() )
+	{
+		ConVarRef mat_dxlevel( "mat_dxlevel" );
+		m_bHDRAvailable = true;
+		m_pHDR->SetEnabled( mat_dxlevel.GetInt() >= 80 );
 	}
 	
 	// if VR mode isn't available, disable the dropdown
@@ -1170,7 +1471,7 @@ COptionsSubVideo::COptionsSubVideo(vgui::Panel *parent) : PropertyPage(parent, N
 		if( label )
 			label->SetVisible( false );
 	}
-	else if( !g_pSourceVR->IsHmdConnected() )
+	else if( !IsHmdAvailable() )
 	{
 		m_pVRMode->ActivateItem( 0 );
 		m_pVRMode->SetEnabled( false );
@@ -1203,8 +1504,8 @@ void COptionsSubVideo::PrepareResolutionList()
 
 	const MaterialSystem_Config_t &config = materials->GetCurrentConfigForVideoCard();
 
-	// Windowed is the last item in the combobox.
-	bool bWindowed = ( m_pWindowed->GetActiveItem() >= ( m_pWindowed->GetItemCount() - 1 ) );
+	// Windowed and borderless windowed are the last two items in the combobox.
+	bool bWindowed = ( m_pWindowed->GetActiveItem() >= ( m_pWindowed->GetItemCount() - 2 ) );
 	int desktopWidth, desktopHeight;
 	gameuifuncs->GetDesktopResolution( desktopWidth, desktopHeight );
 
@@ -1255,7 +1556,8 @@ void COptionsSubVideo::PrepareResolutionList()
 			}
 		}
 
-		GetResolutionName( plist, sz, sizeof( sz ), desktopWidth, desktopHeight );
+		wchar_t wszResolution[256];
+		GetResolutionName( plist, wszResolution, sizeof( wszResolution ), desktopWidth, desktopHeight );
 
 		int itemID = -1;
 
@@ -1270,14 +1572,14 @@ void COptionsSubVideo::PrepareResolutionList()
 		// filter the list for those matching the current aspect
 		if ( iAspectMode == m_pAspectRatio->GetActiveItem() )
 		{
-			itemID = m_pMode->AddItem( sz, NULL);
+			itemID = m_pMode->AddItem( wszResolution, NULL);
 		}
 #else
 		float aspect = (float)plist->width / plist->height;
 		float native_aspect = (float)desktopWidth / desktopHeight;
 
 		if( fabs(native_aspect - aspect) < 0.01f )
-			itemID = m_pMode->AddItem( sz, NULL);
+			itemID = m_pMode->AddItem( wszResolution, NULL);
 #endif
 
 		// try and find the bestplistplistplist match for the resolution to be selected
@@ -1317,8 +1619,9 @@ void COptionsSubVideo::PrepareResolutionList()
 		}
 #endif
 
-		Q_snprintf( sz, ARRAYSIZE( sz ), "%d x %d", Width, Height );
-		m_pMode->SetText( sz );
+		char szResolution[256];
+		Q_snprintf( szResolution, ARRAYSIZE( szResolution ), "%d x %d", Width, Height );
+		m_pMode->SetText( szResolution );
 	}
 }
 
@@ -1330,57 +1633,6 @@ COptionsSubVideo::~COptionsSubVideo()
 	if (m_hOptionsSubVideoAdvancedDlg.Get())
 	{
 		m_hOptionsSubVideoAdvancedDlg->MarkForDeletion();
-	}
-}
-
-
-FILE *FOpenGameHDFile( const char *pchMode )
-{
-	const char *pGameDir = engine->GetGameDirectory();
-	char szModSteamInfPath[ 1024 ];
-	V_ComposeFileName( pGameDir, "game_hd.txt", szModSteamInfPath, sizeof( szModSteamInfPath ) );
-
-	FILE *fp = fopen( szModSteamInfPath, pchMode );
-	return fp;
-}
-
-
-//-----------------------------------------------------------------------------
-// Purpose: 
-//-----------------------------------------------------------------------------
-bool COptionsSubVideo::BUseHDContent()
-{
-	FILE *fp = FOpenGameHDFile( "rb" );
-	if ( fp )
-	{
-		fclose(fp);
-		return true;
-	}
-	return false;
-
-}
-
-
-//-----------------------------------------------------------------------------
-// Purpose: hint the engine to load HD content if possible, logic must match with engine/common.cpp BLoadHDContent
-//-----------------------------------------------------------------------------
-void COptionsSubVideo::SetUseHDContent( bool bUse )
-{
-	if ( bUse )
-	{
-		FILE *fp = FOpenGameHDFile( "wb+" );
-		if ( fp )
-		{
-			fprintf( fp, "If this file exists on disk HD content will be loaded.\n" );
-			fclose( fp );
-		}
-	}
-	else
-	{
-		const char *pGameDir = engine->GetGameDirectory();
-		char szModSteamInfPath[ 1024 ];
-		V_ComposeFileName( pGameDir, "game_hd.txt", szModSteamInfPath, sizeof( szModSteamInfPath ) );
-		_unlink( szModSteamInfPath );
 	}
 }
 
@@ -1400,8 +1652,12 @@ void COptionsSubVideo::OnResetData()
 
 	if ( config.Windowed() )
 	{
-		// Last item in the combobox is Windowed.
-		ItemIndex = ( m_pWindowed->GetItemCount() - 1 );
+		// The last two items in the combobox are Windowed and borderless Windowed.
+		ItemIndex = ( m_pWindowed->GetItemCount() - 2 );
+		if ( ConfigNoWindowBorder( config ) )
+		{
+			ItemIndex = ( m_pWindowed->GetItemCount() - 1 );
+		}
 	}
 	else
 	{
@@ -1425,9 +1681,13 @@ void COptionsSubVideo::OnResetData()
 	m_pGammaButton->SetEnabled( false );
 #else
 	m_pGammaButton->SetEnabled( !config.Windowed() );
+	m_pGammaButton->SetEnabled( true );
 #endif
 
-	m_pHDContent->SetSelected( BUseHDContent() );
+	if ( m_bHDContentAvailable )
+	{
+		m_pHDContent->SetSelected( BUseHDContent() );
+	}
 
     SetCurrentResolutionComboItem();
 
@@ -1435,6 +1695,12 @@ void COptionsSubVideo::OnResetData()
 	m_pVRMode->ActivateItem( bVREnabled ? 1 : 0 );
 	EnableOrDisableWindowedForVR();
 
+	if ( m_pHDR->IsEnabled() && m_bHDRAvailable )
+	{
+		ConVarRef mat_hdr_level( "mat_hdr_level" );
+		int nHDRLevel = mat_hdr_level.GetInt();
+		m_pHDR->ActivateItem( clamp( nHDRLevel, 0, m_pHDR->GetItemCount() ) );
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -1461,7 +1727,7 @@ void COptionsSubVideo::SetCurrentResolutionComboItem()
 
     if (resolution != -1)
 	{
-		char sz[256];
+		wchar_t sz[256];
 		int desktopWidth, desktopHeight;
 
 		gameuifuncs->GetDesktopResolution( desktopWidth, desktopHeight );
@@ -1534,7 +1800,8 @@ void COptionsSubVideo::OnApplyChanges()
 
 	// windowed
 	bool bConfigChanged = false;
-	bool windowed = ( m_pWindowed->GetActiveItem() == ( m_pWindowed->GetItemCount() - 1 ) ) ? true : false;
+	bool bNoWindowBorder = ( m_pWindowed->GetActiveItem() == ( m_pWindowed->GetItemCount() - 1 ) );
+	bool windowed = ( m_pWindowed->GetActiveItem() == ( m_pWindowed->GetItemCount() - 2 ) ) || bNoWindowBorder;
 	const MaterialSystem_Config_t &config = materials->GetCurrentConfigForVideoCard();
 
 	bool bVRMode = m_pVRMode->GetActiveItem() != 0;
@@ -1549,11 +1816,33 @@ void COptionsSubVideo::OnApplyChanges()
 		windowed = bVRMode;
 	}
 
+	int iHudAspect = m_pHudAspectRatio->GetActiveItem();
+	if ( m_nSelectedHudAspect != iHudAspect )
+	{
+		ConVarRef hud_aspect( "hud_aspect" );
+		switch ( iHudAspect )
+		{
+		case 0:
+			hud_aspect.SetValue( 0 );
+			break;
+		case 1:
+			hud_aspect.SetValue( 4.0f / 3.0f );
+			break;
+		case 2:
+			hud_aspect.SetValue( 16.0f / 9.0f );
+			break;
+		case 3:
+			hud_aspect.SetValue( 16.0f / 10.0f );
+			break;
+		}
+		m_nSelectedHudAspect = iHudAspect;
+	}
 
 	// make sure there is a change
 	if ( config.m_VideoMode.m_Width != width
 		|| config.m_VideoMode.m_Height != height
-		|| config.Windowed() != windowed )
+		|| config.Windowed() != windowed
+		|| ConfigNoWindowBorder( config ) != bNoWindowBorder )
 	{
 		bConfigChanged = true;
 	}
@@ -1595,11 +1884,15 @@ void COptionsSubVideo::OnApplyChanges()
 	{
 		// set mode
 		char szCmd[ 256 ];
+#ifdef BYTEMATCH_RETAIL
+		Q_snprintf( szCmd, sizeof( szCmd ), "mat_setvideomode %i %i %i %i\n", width, height, windowed ? 1 : 0, bNoWindowBorder ? 1 : 0 );
+#else
 		Q_snprintf( szCmd, sizeof( szCmd ), "mat_setvideomode %i %i %i\n", width, height, windowed ? 1 : 0 );
+#endif
 		engine->ClientCmd_Unrestricted( szCmd );
 	}
 
-	if ( ModInfo().HasHDContent() )
+	if ( m_bHDContentAvailable )
 	{
 		if ( BUseHDContent() != m_pHDContent->IsSelected() )
 		{
@@ -1608,6 +1901,18 @@ void COptionsSubVideo::OnApplyChanges()
 			MessageBox *box = new MessageBox("#GameUI_OptionsRestartRequired_Title", "#GameUI_HDRestartRequired_Info");
 			box->DoModal();
 			box->MoveToFront();
+		}
+	}
+
+	if ( m_pHDR->IsEnabled() && m_bHDRAvailable )
+	{
+		ConVarRef mat_hdr_level( "mat_hdr_level" );
+		int iHDRItem = m_pHDR->GetActiveItem();
+		if ( mat_hdr_level.GetInt() != iHDRItem )
+		{
+			char szCmd[ 256 ];
+			Q_snprintf( szCmd, sizeof( szCmd ), "mat_hdr_level %d\n", m_pHDR->GetActiveItem() );
+			engine->ClientCmd_Unrestricted( szCmd );
 		}
 	}
 
@@ -1622,16 +1927,6 @@ void COptionsSubVideo::OnApplyChanges()
 void COptionsSubVideo::PerformLayout()
 {
 	BaseClass::PerformLayout();
-
-	if ( m_pGammaButton )
-	{
-#ifdef ANDROID
-		m_pGammaButton->SetEnabled( false );
-#else
-		const MaterialSystem_Config_t &config = materials->GetCurrentConfigForVideoCard();
-		m_pGammaButton->SetEnabled( !config.Windowed() );
-#endif
-	}
 }
 
 //-----------------------------------------------------------------------------
@@ -1663,6 +1958,10 @@ void COptionsSubVideo::OnTextChanged(Panel *pPanel, const char *pszText)
 		PrepareResolutionList();
 		OnDataChanged();
 	}
+	else if ( pPanel == m_pHudAspectRatio || pPanel == m_pHDR )
+	{
+		OnDataChanged();
+	}
 	else if ( pPanel == m_pVRMode )
 	{
 		if ( !m_bDisplayedVRModeMessage )
@@ -1688,10 +1987,10 @@ void COptionsSubVideo::OnTextChanged(Panel *pPanel, const char *pszText)
 //-----------------------------------------------------------------------------
 void		COptionsSubVideo::EnableOrDisableWindowedForVR()
 {
-	bool bCanBeEnabled = g_pSourceVR && g_pSourceVR->IsHmdConnected();
+	bool bCanBeEnabled = g_pSourceVR && IsHmdAvailable();
 	bool bVRNowEnabled = m_pVRMode->GetActiveItem() == 1;
 	bool bVRWasEnabled = materials->GetCurrentConfigForVideoCard().m_nVRModeAdapter != -1;
-	if( bCanBeEnabled && ( bVRNowEnabled || bVRWasEnabled ) )
+	if( bCanBeEnabled && ( bVRNowEnabled || bVRWasEnabled ) && g_pSourceVR->IsHmdConnected() )
 	{
 		m_pWindowed->SetEnabled( false );
 		m_pWindowed->ActivateItem( m_pWindowed->GetItemCount() - 1 );
@@ -1778,8 +2077,9 @@ public:
 	{
 		// parent is ignored, since we want look like we're steal focus from the parent (we'll become modal below)
 #ifdef BYTEMATCH_RETAIL
+		SetParent( enginevguifuncs->GetPanel( PANEL_GAMEUIDLL ) );
 		SetTitle("#GameUI_ThirdPartyVideo_Title", true);
-		SetSize(500, 200);
+		SetSize( PROPORTIONAL_VALUE( 500 ), PROPORTIONAL_VALUE( 210 ) );
 #else
 		int w = 500;
 		int h = 200;

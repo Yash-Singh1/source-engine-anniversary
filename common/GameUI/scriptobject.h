@@ -93,8 +93,8 @@ public:
 	CDescription( void );
 	virtual ~CDescription();
 
-	bool ReadFromBuffer( const char **pBuffer, bool bAllowNewObject );
-	bool InitFromFile( const char *pszFileName, bool bAllowNewObject = true );
+	bool ReadFromBuffer( const char **pBuffer );
+	bool InitFromFile( const char *pszFileName );
 	void TransferCurrentValues( const char *pszConfigFile );
 
 	void AddObject( CScriptObject *pItem );

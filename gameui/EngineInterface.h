@@ -29,6 +29,6 @@ extern class IEngineSound *enginesound;
 extern class IMatchmaking *matchmaking;
 extern class IXboxSystem  *xboxsystem;
 extern class IAchievementMgr *achievementmgr; 
-
-
+#include "ienginevgui.h"
+extern IEngineVGui *enginevguifuncs;
 #endif // ENGINEINTERFACE_H

@@ -1840,6 +1840,7 @@ void COptionsSubMultiplayer::OnApplyChanges()
 		
 		// save the player model name
 		Q_snprintf(cmd, sizeof(cmd), "cl_playermodel models/%s.mdl\n", m_ModelName );
+		V_FixDoubleSlashes( cmd );
 		engine->ClientCmd_Unrestricted(cmd);
 	}
 	else

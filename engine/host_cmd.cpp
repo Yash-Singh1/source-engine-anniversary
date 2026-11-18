@@ -2585,6 +2585,11 @@ CON_COMMAND( cache_print_summary, "cache_print_summary [section]\nPrint out a su
 }
 
 #ifndef BYTEMATCH_RETAIL
+static bool UtlStringLessFunc( const CUtlString &lhs, const CUtlString &rhs )
+{
+	return V_strcmp( lhs.Get(), rhs.Get() ) < 0;
+}
+
 CON_COMMAND( sv_dump_edicts, "Display a list of edicts allocated on the server." )
 {
 	if ( !sv.IsActive() )

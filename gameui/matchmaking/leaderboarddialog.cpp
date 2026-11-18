@@ -480,7 +480,7 @@ void CLeaderboardDialog::HandleKeyRepeated( vgui::KeyCode code )
 void CLeaderboardDialog::OnKeyCodePressed( vgui::KeyCode code )
 {
 
-	switch( code )
+	switch( GetBaseButtonCode( code ) )
 	{
 	case KEY_XBUTTON_A:
 	case STEAMCONTROLLER_A:
@@ -503,6 +503,7 @@ void CLeaderboardDialog::OnKeyCodePressed( vgui::KeyCode code )
 	case KEY_XSTICK1_DOWN:
 	case KEY_XBUTTON_DOWN:
 	case STEAMCONTROLLER_DPAD_DOWN:
+	case STEAMCONTROLLER_LEFT_PAD_DOWN:
 		m_KeyRepeat.KeyDown( code );
 		UpdateLeaderboard( m_iActiveRank + 1 );
 		break;
@@ -510,15 +511,18 @@ void CLeaderboardDialog::OnKeyCodePressed( vgui::KeyCode code )
 	case KEY_XSTICK1_UP:
 	case KEY_XBUTTON_UP:
 	case STEAMCONTROLLER_DPAD_UP:
+	case STEAMCONTROLLER_LEFT_PAD_UP:
 		m_KeyRepeat.KeyDown( code );
 		UpdateLeaderboard( m_iActiveRank - 1 );
 		break;
 
 	case KEY_XBUTTON_LEFT_SHOULDER:
+	case STEAMCONTROLLER_LEFT_BUMPER:
 		UpdateLeaderboard( 1 );
 		break;
 
 	case KEY_XBUTTON_RIGHT_SHOULDER:
+	case STEAMCONTROLLER_RIGHT_BUMPER:
 		OnCommand( "CenterOnPlayer" );
 		break;
 
@@ -538,10 +542,8 @@ void CLeaderboardDialog::OnKeyCodePressed( vgui::KeyCode code )
 	{
 	case KEY_XSTICK1_LEFT:
 	case KEY_XBUTTON_LEFT:
-	case STEAMCONTROLLER_DPAD_LEFT:
 	case KEY_XSTICK1_RIGHT:
 	case KEY_XBUTTON_RIGHT:
-	case STEAMCONTROLLER_DPAD_RIGHT:
 		InvalidateLayout();
 		break;
 	}

@@ -44,9 +44,9 @@ using namespace vgui;
 //-----------------------------------------------------------------------------
 CMultiplayerAdvancedDialog::CMultiplayerAdvancedDialog(vgui::Panel *parent) : BaseClass(NULL, "MultiplayerAdvancedDialog")
 {
-	SetBounds(0, 0, 372, 160);
+	SetParent( enginevguifuncs->GetPanel( PANEL_GAMEUIDLL ) );
+	SetBounds( 0, 0, PROPORTIONAL_VALUE( 372 ), PROPORTIONAL_VALUE( 160 ) );
 	SetSizeable( false );
-
 	SetTitle("#GameUI_MultiplayerAdvanced", true);
 
 	Button *cancel = new Button( this, "Cancel", "#GameUI_Cancel" );
@@ -345,10 +345,10 @@ void CMultiplayerAdvancedDialog::CreateControls()
 		case O_STRING:
 		case O_NUMBER:
 		case O_LIST:
-			pCtrl->SetSize( 100, 28 );
+			pCtrl->SetSize( PROPORTIONAL_VALUE( 100 ), PROPORTIONAL_VALUE( 28 ) );
 			break;
 		case O_SLIDER:
-			pCtrl->SetSize( 100, 40 );
+			pCtrl->SetSize( PROPORTIONAL_VALUE( 100 ), PROPORTIONAL_VALUE( 40 ) );
 			break;
 		default:
 			break;

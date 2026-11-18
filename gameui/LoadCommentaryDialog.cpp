@@ -41,6 +41,8 @@ using namespace vgui;
 
 void OpenLoadCommentaryDialog( void )
 {
+	if ( IsSteamDeck() )
+		return;
 	DHANDLE<CLoadCommentaryDialog> hCommentaryDialog;
 	if ( !hCommentaryDialog.Get() )
 	{
@@ -222,12 +224,13 @@ void CLoadCommentaryDialog::OnCommand( const char *command )
 
 void CLoadCommentaryDialog::OnKeyCodePressed( vgui::KeyCode code )
 {
-	if ( code == KEY_XBUTTON_A || code == STEAMCONTROLLER_A )
+	ButtonCode_t nButtonCode = GetBaseButtonCode( code );
+	if ( nButtonCode == KEY_XBUTTON_A || nButtonCode == STEAMCONTROLLER_A )
 	{
 		OnCommand( "loadcommentary" );
 		return;
 	}
-	else if ( code == KEY_XBUTTON_B )
+	else if ( nButtonCode == KEY_XBUTTON_B || nButtonCode == STEAMCONTROLLER_B )
 	{
 		OnCommand( "Close" );
 		return;
