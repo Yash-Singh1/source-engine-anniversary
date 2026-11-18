@@ -353,7 +353,7 @@ protected:
 	typedef UtlLinkedListElem_t<T, S>  ListElem_t;
 
 	// constructs the class
-	I		AllocInternal( bool multilist = false ) RESTRICT;
+	I		AllocInternal( bool multilist = false );
 	void ConstructList();
 	
 	// Gets at the list element....
@@ -653,7 +653,7 @@ void CUtlLinkedList<T,S,ML,I,M>::PurgeAndDeleteElements()
 // Node allocation/deallocation
 //-----------------------------------------------------------------------------
 template <class T, class S, bool ML, class I, class M>
-I CUtlLinkedList<T,S,ML,I,M>::AllocInternal( bool multilist ) RESTRICT
+I CUtlLinkedList<T,S,ML,I,M>::AllocInternal( bool multilist )
 {
 	Assert( !multilist || ML );
 #ifdef MULTILIST_PEDANTIC_ASSERTS
@@ -677,8 +677,7 @@ I CUtlLinkedList<T,S,ML,I,M>::AllocInternal( bool multilist ) RESTRICT
 			Assert( m_Memory.IsValidIterator( it ) );
 			if ( !m_Memory.IsValidIterator( it ) )
 			{
-				// We rarely if ever handle alloc failure. Continuing leads to corruption.
-				Error( "CUtlLinkedList overflow! (exhausted memory allocator)\n" );
+				ExecuteNTimes( 10, Warning( "CUtlLinkedList overflow! (exhausted memory allocator)\n" ) );
 				return InvalidIndex();
 			}
 		}
@@ -686,8 +685,7 @@ I CUtlLinkedList<T,S,ML,I,M>::AllocInternal( bool multilist ) RESTRICT
 		// We can overflow before the utlmemory overflows, since S != I
 		if ( !IndexInRange( m_Memory.GetIndex( it ) ) )
 		{
-			// We rarely if ever handle alloc failure. Continuing leads to corruption.
-			Error( "CUtlLinkedList overflow! (exhausted index range)\n" );
+			ExecuteNTimes( 10, Warning( "CUtlLinkedList overflow! (exhausted index range)\n" ) );
 			return InvalidIndex();
 		}
 

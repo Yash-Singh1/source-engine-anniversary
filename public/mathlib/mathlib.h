@@ -417,11 +417,9 @@ void inline SinCos( float radians, float *sine, float *cosine )
 		fstp DWORD PTR [edx]
 		fstp DWORD PTR [eax]
 	}
-#elif defined( PLATFORM_WINDOWS_PC64 )
+#elif defined( PLATFORM_WINDOWS_PC64 ) || defined( OSX )
 	*sine = sin( radians );
 	*cosine = cos( radians );
-#elif defined( OSX )
-    __sincosf(radians, sine, cosine);
 #elif defined( POSIX )
 	sincosf(radians, sine, cosine);
 #endif

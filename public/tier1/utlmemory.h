@@ -280,7 +280,12 @@ private:
 	char m_Memory[ SIZE*sizeof(T) + nAlignment ];
 };
 
-#ifdef _LINUX
+#if defined(POSIX)
+// From Chris Green: Memory is a little fuzzy but I believe this class did
+//	something fishy with respect to msize and alignment that was OK under our
+//	allocator, the glibc allocator, etc but not the valgrind one (which has no
+//	padding because it detects all forms of head/tail overwrite, including
+//	writing 1 byte past a 1 byte allocation).
 #define REMEMBER_ALLOC_SIZE_FOR_VALGRIND 1
 #endif
 
@@ -706,8 +711,7 @@ inline bool CUtlMemory<T,I>::IsIdxValid( I i ) const
 {
 	// GCC warns if I is an unsigned type and we do a ">= 0" against it (since the comparison is always 0).
 	// We get the warning even if we cast inside the expression. It only goes away if we assign to another variable.
-	long x = i;
-	return ( x >= 0 ) && ( x < m_nAllocationCount );
+	return (uint32)i < (uint32)m_nAllocationCount;
 }
 
 //-----------------------------------------------------------------------------
@@ -725,11 +729,6 @@ inline int UtlMemory_CalcNewAllocationCount( int nAllocationCount, int nGrowSize
 		{
 			// Compute an allocation which is at least as big as a cache line...
 			nAllocationCount = (31 + nBytesItem) / nBytesItem;
-			// If the requested amount is larger then compute an allocation which
-			// is exactly the right size. Otherwise we can end up with wasted memory
-			// when CUtlVector::EnsureCount(n) is called.
-			if ( nAllocationCount < nNewSize )
-				nAllocationCount = nNewSize;
 		}
 
 		while (nAllocationCount < nNewSize)
