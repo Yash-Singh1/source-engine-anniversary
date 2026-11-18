@@ -18,9 +18,7 @@ slots (+80/+100/+108/+112). `public/togl/dx_iunknown.h` is retail's `IUnknown`
 
 Known differences:
 
-- cglmbuffer ctor: our `ICommandLine` has CS:GO's `HasParm`/`ParmValueByIndex`, so `FindParm` is slot 11, not 10 (tier0 header).
-- Every object's `_GLOBAL__I_a`: `vec4_origin` is initialized with one vector store instead of four dword stores (`mathlib/vector4d.h`).
-- cglmtex, glmgrbasics: 12 `CUtlRBTree`/`CUtlMemory::Grow` instances differ from tier1 header drift; the cglmtex functions proper are the 2012 code (retail adds e.g. the 10.6.3 client-storage check).
+- cglmtex: the remaining functions are the 2012 code (retail adds e.g. the 10.6.3 client-storage check).
 - dx9asmtogl2: retail's translator sits between the 2012 and 2014 code (it has `m_dwTempBoolUsageMask`); the handlers need a function-by-function backport.
 - cglmprogram `SelectShaderPair`, `LogSlow`: stack layout and register allocation only.
 - libtogl exports match retail except tier1's `cvar`, which retail exports.
