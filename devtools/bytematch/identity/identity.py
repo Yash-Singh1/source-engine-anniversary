@@ -19,7 +19,7 @@ inputs the way Valve's buildbot produced them:
    names (convar.o) and member dates, in our archive order.
 3. The waf link command (build-retail/link_commands.json, from
    `waf retail_linkdb`) is re-run with Valve's object and archive paths. The
-   pathmap.dylib shim maps /Users/buildbot/ onto the scratch root for the
+   buildhost.dylib shim maps /Users/buildbot/ onto the scratch root for the
    clang driver and ld64, so ld64 records Valve's paths verbatim.
 4. The result is compared with the retail file (machocmp.py).
 
@@ -407,10 +407,10 @@ class Module:
 
 
 def build_shim(scratch):
-    src = os.path.join(HERE, 'pathmap.c')
-    out = os.path.join(scratch, 'pathmap.dylib')
-    if not os.path.exists(out) or os.path.getmtime(out) < os.path.getmtime(src):
-        subprocess.check_call(['xcrun', 'clang', '-O2', '-dynamiclib', '-o', out, src])
+    srcs = [os.path.join(HERE, f) for f in ('buildhost.c', 'qsort109.c')]
+    out = os.path.join(scratch, 'buildhost.dylib')
+    if not os.path.exists(out) or os.path.getmtime(out) < max(os.path.getmtime(s) for s in srcs):
+        subprocess.check_call(['xcrun', 'clang', '-O2', '-dynamiclib', '-o', out] + srcs)
     return out
 
 

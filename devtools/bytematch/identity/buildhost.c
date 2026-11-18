@@ -1,9 +1,12 @@
 /*
- * DYLD_INSERT_LIBRARIES shim that makes a scratch directory appear at another
- * absolute path, a userland stand-in for a chroot. ld64 records input paths
- * verbatim in N_OSO debug notes, so linking objects that "live" under
- * /Users/buildbot/... reproduces Valve's debug map without creating that
- * directory (which needs root).
+ * DYLD_INSERT_LIBRARIES shim that makes the clang driver and ld64 behave as
+ * on Valve's 2014 build host. Built for the host (arm64); both tools are
+ * ad-hoc signed and not hardened, so dyld honours the variable.
+ *
+ * Paths: a scratch directory appears at another absolute path, a userland
+ * stand-in for a chroot. ld64 records input paths verbatim in N_OSO debug
+ * notes, so linking objects that "live" under /Users/buildbot/... reproduces
+ * Valve's debug map without creating that directory (which needs root).
  *
  *   BM_PATHMAP="/Users/buildbot/=/scratch/root/Users/buildbot/[;from=to...]"
  *
@@ -11,8 +14,8 @@
  * starts with a "from" prefix is rewritten to "to" + rest. Nothing else
  * changes: getcwd and realpath still report real paths.
  *
- * Built for the host (arm64) and injected into the clang driver and ld64,
- * which are ad-hoc signed and not hardened, so dyld honours the variable.
+ * qsort: replaced by the OS X 10.9/10.10 implementation (qsort109.c), which
+ * decides how ld64 orders sections of equal rank.
  */
 #include <dirent.h>
 #include <fcntl.h>
@@ -112,9 +115,13 @@ static DIR *my_opendir(const char *path)
 	__attribute__((used, section("__DATA,__interpose"))) \
 	static const struct { const void *replacement, *original; } interpose_##fn = { (const void *)my_##fn, (const void *)fn }
 
+void bm_qsort_109(void *a, size_t n, size_t es, int (*cmp)(const void *, const void *));
+#define my_qsort bm_qsort_109
+
 INTERPOSE(open);
 INTERPOSE(stat);
 INTERPOSE(lstat);
 INTERPOSE(access);
 INTERPOSE(fopen);
 INTERPOSE(opendir);
+INTERPOSE(qsort);
