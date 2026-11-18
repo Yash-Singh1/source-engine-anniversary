@@ -49,6 +49,20 @@ LIBS = {
 	'libmatsys_controls.a': (None, ['vgui2/matsys_controls'], 'sdk'),
 }
 
+# Objects Valve's compiler built with CodeGenPrepare::sinkAndCmp active: an
+# uninitialized flag in Xcode 5.1's clang-503 made it vary between compiles
+# (devtools/bytematch/toolchain/patches/clang-503.0.38-maskandbranch.patch).
+# Found per object against retail; client and server saverestore.o differ.
+SINK_AND_CMP = {
+	'client': ['game/client/beamdraw.cpp', 'game/client/clientshadowmgr.cpp',
+		'game/client/fx_staticline.cpp', 'game/client/prediction.cpp'],
+	'server': ['game/server/AI_ResponseSystem.cpp', 'game/server/hl2/antlion_maker.cpp',
+		'game/server/vehicle_baseserver.cpp', 'game/shared/gamemovement.cpp',
+		'game/shared/multiplay_gamerules.cpp', 'game/shared/saverestore.cpp'],
+	'libvgui_controls.a': ['vgui2/vgui_controls/SectionedListPanel.cpp'],
+}
+SINK_AND_CMP_FLAGS = ['-mllvm', '-mask-and-branch-folding']
+
 LIB_INCLUDES = ['common', 'public', 'public/tier0', 'public/tier1', 'public/tier2', 'public/tier3']
 TREE_EXTRA_INCLUDES = {'libbitmap.a': ['thirdparty/stb']}
 
@@ -115,6 +129,10 @@ def protoc(bld, env, proto, outdir):
 	)
 	return out[0]
 
+def sink_and_cmp(bld, key):
+	here = bld.path.path_from(bld.srcnode)
+	return dict((here + '/' + f, SINK_AND_CMP_FLAGS) for f in SINK_AND_CMP.get(key, []))
+
 def build(bld):
 	from waflib import Logs
 	env = bld.all_envs[ENV]
@@ -154,6 +172,7 @@ def build(bld):
 			includes = includes,
 			retail_defines = defines,
 			retail_selected = True,
+			retail_file_cxxflags = sink_and_cmp(bld, archive),
 			idx      = bld.get_taskgen_count()
 		)
 
@@ -171,6 +190,7 @@ def build(bld):
 			retail_module = key,
 			retail_root = bld.path.path_from(bld.srcnode),
 			retail_archives = targets,
+			retail_file_cxxflags = sink_and_cmp(bld, name),
 			install_path = env.PREFIX + '/hl2mp/bin',
 			idx      = bld.get_taskgen_count()
 		)

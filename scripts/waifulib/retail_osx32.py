@@ -263,6 +263,12 @@ def hl2mp_configure(conf, rf):
 	if not os.path.exists(p['cc']) or not os.path.exists(os.path.join(p['ld_dir'], 'ld')):
 		conf.fatal('hl2mp needs clang-%s and ld64-%s; build them with %s/build-clang.sh %s and build-ld64.sh %s'
 			% (h['clang'], h['ld64'], TOOLCHAIN_DIR, h['clang'], h['ld64']))
+	patches = conf.path.find_node(TOOLCHAIN_DIR).ant_glob('patches/clang-%s-*.patch' % h['clang'])
+	stamp = os.path.join(os.path.dirname(os.path.dirname(p['cc'])), 'PATCHES')
+	have = open(stamp).read().split() if os.path.exists(stamp) else []
+	for n in patches:
+		if n.name not in have:
+			conf.fatal('%s lacks %s; rebuild it with %s/build-clang.sh %s' % (p['cc'], n.name, TOOLCHAIN_DIR, h['clang']))
 	protoc = os.path.join(os.path.dirname(os.path.dirname(p['sdk'])), 'protoc-2.3.0', 'bin', 'protoc')
 	if not os.path.exists(protoc):
 		conf.fatal('hl2mp needs %s; build it with %s/build-protoc.sh' % (protoc, TOOLCHAIN_DIR))
@@ -353,6 +359,8 @@ def retail_osx32_defines(self):
 	if extra:
 		self.env.append_value('CXXFLAGS', extra)
 	as_cxx = getattr(self, 'name', None) in COMPILE_C_AS_CXX
+	# retail_file_cxxflags: {tree-relative source: [flags]} for single objects.
+	per_file = getattr(self, 'retail_file_cxxflags', None) or {}
 	for t in getattr(self, 'compiled_tasks', []):
 		t.env.DEFINES = defs
 		if extra:
@@ -360,6 +368,10 @@ def retail_osx32_defines(self):
 		if as_cxx and t.__class__.__name__ == 'c':
 			t.env.CC = self.env.CXX
 			t.env.CFLAGS = list(self.env.CXXFLAGS) + ['-x', 'c++']
+		flags = per_file.get(t.inputs[0].path_from(self.bld.srcnode))
+		if flags:
+			t.env = t.env.derive()
+			t.env.append_value('CXXFLAGS', flags)
 
 @feature('cprogram', 'cxxprogram')
 @before_method('apply_link')
