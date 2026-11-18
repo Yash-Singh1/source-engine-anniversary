@@ -14,6 +14,7 @@
 #include "vgui_controls/Frame.h"
 #include "vgui_controls/KeyRepeat.h"
 #include "utlvector.h"
+#include "tier1/utlstring.h"
 
 class CGameChapterPanel;
 class CSkillSelectionDialog;
@@ -83,11 +84,14 @@ public:
 	virtual void	OnCommand( const char *command );
 	virtual void	OnClose( void );
 	virtual void	PaintBackground();
-	void			SetSelectedChapterIndex( int index );
+	void			SetSelectedChapterIndex( int index, bool bLayoutPanels = true );
 	void			SetSelectedChapter( const char *chapter );
-	void			UpdatePanelLockedStatus( int iUnlockedChapter, int i, CGameChapterPanel *pChapterPanel );
+	void			SetOverrideMod( const char *pszOverrideMod );
+	void			ReloadChapters();
+	int				GetUnlockedChapter();
 
 	void			SetCommentaryMode( bool bCommentary ) { m_bCommentaryMode = bCommentary; }
+	bool			IsCommentaryMode() const { return m_bCommentaryMode; }
 
 	virtual void	OnKeyCodePressed( vgui::KeyCode code );
 	virtual void	OnKeyCodeReleased( vgui::KeyCode code );
@@ -108,16 +112,19 @@ private:
 	CUtlVector<CGameChapterPanel *> m_ChapterPanels;
 
 	vgui::DHANDLE<CSkillSelectionDialog> m_hSkillSelectionDialog;
+	void				*m_pUnused;		// keeps the retail member offsets; never accessed
 
 	vgui::Button		*m_pPlayButton;
 	vgui::Button		*m_pNextButton;
 	vgui::Button		*m_pPrevButton;
+	vgui::CheckButton	*m_pCommentaryCheckButton;
 	vgui::Panel			*m_pCenterBg;
 	vgui::Label			*m_pChapterTitleLabels[2];
 	vgui::Label			*m_pBonusSelection;
 	vgui::ImagePanel	*m_pBonusSelectionBorder;
 	CFooterPanel		*m_pFooter;
 	bool				m_bCommentaryMode;
+	MESSAGE_FUNC_PTR( OnCheckButtonChecked, "CheckButtonChecked", panel );
 	vgui::Label			*m_pCommentaryLabel;
 
 	// Xbox
@@ -146,6 +153,9 @@ private:
 	bool	m_bMapStarting;
 	int		m_iBonusSelection;
 	bool	m_bScrollToFirstBonusMap;
+
+	CUtlString	m_strOverrideMod;
+	bool		m_bLostCoast;
 	
 	struct BonusMapDescription_t	*m_pBonusMapDescription;
 

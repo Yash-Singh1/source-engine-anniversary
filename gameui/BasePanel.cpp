@@ -76,6 +76,7 @@ using namespace vgui;
 #include "game/client/IGameClientExports.h"
 
 #include "OptionsSubAudio.h"
+#include "OptionsSubVideo.h"
 #include "hl2orange.spa.h"
 #include "CustomTabExplanationDialog.h"
 #if defined( _X360 )
@@ -87,6 +88,7 @@ using namespace vgui;
 #include "../engine/imatchmaking.h"
 #include "tier1/utlstring.h"
 #include "steam/steam_api.h"
+#include "iworkshop.h"
 
 #ifdef ANDROID
 #include <SDL_misc.h>
@@ -627,6 +629,10 @@ public:
 	}
 
 	void SetMenuCategory( const char *pszMenuCategory );
+	const char *GetMenuCategory()
+	{
+		return ( workshop_playing_campaign.GetInt() && engine->IsInGame() ) ? "workshop" : m_strMenuCategory.String();
+	}
 
 	void UpdateMenuItemState( bool isInGame, bool isMultiplayer, bool isInReplay, bool isVREnabled, bool isVRActive )
 	{
@@ -887,8 +893,8 @@ CBasePanel::CBasePanel() : Panel(NULL, "BaseGameUIPanel")
 	m_iProductImageID = -1;
 	m_iLoadingImageID = -1;
 
-	m_hGameTitleFont = 0;
 	m_hGameTitleFont2 = 0;
+	m_hGameTitleFont = 0;
 	m_hWorkshopTitleFont = 0;
 
 	if ( GameUI().IsConsoleUI() )
@@ -1075,6 +1081,54 @@ CBasePanel::~CBasePanel()
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Purpose: steps the expansion switch started by SwitchExpansion()
+//-----------------------------------------------------------------------------
+void CBasePanel::OnThink()
+{
+	if ( m_iSwitchModState && m_strSwitchMod.Length() )
+	{
+		switch ( m_iSwitchModState )
+		{
+		case 1:
+			if ( m_flSwitchModTransition >= 1.0f )
+			{
+				SetMenuAlpha( 0 );
+				for ( int i = 0; i < m_pGameMenuButtons.Count(); ++i )
+				{
+					m_pGameMenuButtons[i]->SetVisible( false );
+				}
+
+				m_pGameMenu->SetMenuCategory( m_strSwitchMod.String() );
+				m_iSwitchModState = 2;
+
+				CFmtStr strCommand( "disconnect\n" );
+				engine->ClientCmd_Unrestricted( strCommand );
+			}
+			break;
+
+		case 3:
+			{
+				CFmtStr strCommand( "launchmod %s\nstartupmenu force", m_strSwitchMod.Get() );
+				engine->ClientCmd_Unrestricted( strCommand );
+				m_iSwitchModState = 4;
+			}
+			break;
+
+		case 5:
+			for ( int i = 0; i < m_pGameMenuButtons.Count(); ++i )
+			{
+				m_pGameMenuButtons[i]->SetVisible( true );
+			}
+			SetMenuAlpha( 0 );
+			m_iSwitchModState = 0;
+			break;
+		}
+	}
+
+	BaseClass::OnThink();
+}
+
 static const char *g_rgValidCommands[] =
 {
 	"OpenGameMenu",
@@ -1175,16 +1229,28 @@ static ConCommand gamemenucommand( "gamemenucommand", CC_GameMenuCommand, "Issue
 //-----------------------------------------------------------------------------
 void CBasePanel::PaintBackground()
 {
+	bool bDrawingBackgroundImage;
 	if ( !GameUI().IsInLevel() || g_hLoadingDialog.Get() || m_ExitingFrameCount )
 	{
 		// not in the game or loading dialog active or exiting, draw the ui background
 		DrawBackgroundImage();
+		bDrawingBackgroundImage = true;
 	}
-	else if ( IsX360() )
+	else
 	{
-		// only valid during loading from level to level
-		m_bUseRenderTargetImage = false;
+		if ( IsSteamDeck() )
+		{
+			// only valid during loading from level to level
+			m_bUseRenderTargetImage = false;
+		}
+		bDrawingBackgroundImage = false;
 	}
+
+	if ( m_bDrawingBackgroundImage != bDrawingBackgroundImage )
+	{
+		UpdateBackgroundImages();
+	}
+	m_bDrawingBackgroundImage = bDrawingBackgroundImage;
 
 	if ( m_flBackgroundFillAlpha )
 	{
@@ -1213,12 +1279,31 @@ void CBasePanel::UpdateBackgroundState()
 	{
 		SetBackgroundRenderState( BACKGROUND_LEVEL );
 	}
+	else if ( m_iSwitchModState )
+	{
+		SetBackgroundRenderState( BACKGROUND_SWITCHMOD );
+	}
 	else if ( GameUI().IsInBackgroundLevel() && !m_bLevelLoading )
 	{
 		// 360 guarantees a progress bar
 		// level loading is truly completed when the progress bar is gone, then transition to main menu
 		if ( IsPC() || ( IsX360() && !g_hLoadingDialog.Get() ) )
 		{
+			char szExpansion[16];
+			if ( g_pFullFileSystem->GetCurrentGameExpansionId( szExpansion, sizeof( szExpansion ) ) )
+			{
+				ConVarRef hl2_expansion_transition( "hl2_expansion_transition" );
+				if ( hl2_expansion_transition.IsValid() )
+				{
+					CUtlString strTransition( hl2_expansion_transition.GetString() );
+					if ( strTransition.Length() )
+					{
+						hl2_expansion_transition.SetValue( "" );
+						SwitchExpansion( strTransition.Get() );
+					}
+				}
+			}
+
 			SetBackgroundRenderState( BACKGROUND_MAINMENU );
 		}
 	}
@@ -1231,7 +1316,7 @@ void CBasePanel::UpdateBackgroundState()
 		SetBackgroundRenderState( BACKGROUND_DISCONNECTED );
 	}
 
-	if ( GameUI().IsConsoleUI() )
+	if ( GameUI().IsConsoleUI() || IsSteamDeck() )
 	{
 		if ( !m_ExitingFrameCount && !m_bLevelLoading && !g_hLoadingDialog.Get() && GameUI().IsInLevel() )
 		{
@@ -1307,7 +1392,7 @@ void CBasePanel::UpdateBackgroundState()
 
 	// check to see if the game title should be dimmed
 	// don't transition on level change
-	if ( m_bLevelLoading )
+	if ( m_bLevelLoading || m_iSwitchModState )
 		return;
 
 	bool bNeedDarkenedTitleText = bHaveActiveDialogs;
@@ -1355,15 +1440,6 @@ void CBasePanel::SetBackgroundRenderState(EBackgroundState state)
 	// apply state change transition
 	float frametime = engine->Time();
 
-	if ( m_eBackgroundState == BACKGROUND_INITIAL && ( state == BACKGROUND_DISCONNECTED || state == BACKGROUND_MAINMENU ) )
-	{
-		ConVar* dev_loadtime_mainmenu = cvar->FindVar( "dev_loadtime_mainmenu" );
-		if (dev_loadtime_mainmenu) {
-			dev_loadtime_mainmenu->SetValue( frametime );
-		}
-	}
-
-
 	m_bRenderingBackgroundTransition = false;
 	m_bFadingInMenus = false;
 
@@ -1404,7 +1480,7 @@ void CBasePanel::SetBackgroundRenderState(EBackgroundState state)
 	}
 	else if ( state == BACKGROUND_LOADING )
 	{
-		if ( GameUI().IsConsoleUI() )
+		if ( GameUI().IsConsoleUI() || IsSteamDeck() )
 		{
 			RunAnimationWithCallback( this, "InstantHideMainMenu", new KeyValues( "LoadMap" ) );
 		}
@@ -1419,6 +1495,29 @@ void CBasePanel::SetBackgroundRenderState(EBackgroundState state)
 	}
 
 	m_eBackgroundState = state;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: fades out the menus and relaunches into another expansion
+//-----------------------------------------------------------------------------
+void CBasePanel::SwitchExpansion( const char *pszExpansion )
+{
+	char szExpansion[16];
+	if ( !g_pFullFileSystem->GetCurrentGameExpansionId( szExpansion, sizeof( szExpansion ) ) || V_strlen( pszExpansion ) <= 0 )
+		return;
+
+	if ( V_stricmp( pszExpansion, szExpansion ) )
+	{
+		m_strSwitchMod = pszExpansion;
+		m_iSwitchModState = 1;
+		m_flSwitchModTransition = 0.0f;
+		vgui::GetAnimationController()->RunAnimationCommand( this, "m_flSwitchModTransition", 1.0f, 0.0f, 0.65f, AnimationController::INTERPOLATOR_ACCEL );
+	}
+	else
+	{
+		m_pGameMenu->SetMenuCategory( pszExpansion );
+		UpdateTitleText( V_stricmp( pszExpansion, "main" ) != 0 );
+	}
 }
 
 void CBasePanel::StartExitingProcess()
@@ -1467,7 +1566,7 @@ void CBasePanel::OnLevelLoadingStarted()
 		m_hMatchmakingBasePanel->OnCommand( "LevelLoadingStarted" );
 	}
 
-	if ( IsX360() && m_eBackgroundState == BACKGROUND_LEVEL )
+	if ( IsSteamDeck() && m_eBackgroundState == BACKGROUND_LEVEL )
 	{
 		// already in a level going to another level
 		// frame buffer is about to be cleared, copy it off for ui backing purposes
@@ -1476,10 +1575,153 @@ void CBasePanel::OnLevelLoadingStarted()
 }
 
 //-----------------------------------------------------------------------------
+// Purpose: true unless the main menu shows the base game's category
+//-----------------------------------------------------------------------------
+static bool IsExpansionMenuCategory( CGameMenu *pGameMenu )
+{
+	const char *pszMenuCategory = pGameMenu ? pGameMenu->GetMenuCategory() : NULL;
+	return !pszMenuCategory || V_stricmp( pszMenuCategory, "main" ) != 0;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: notification
+//-----------------------------------------------------------------------------
+void CBasePanel::OnDisconnectFromServer( uint8 eSteamLoginFailure )
+{
+	if ( m_iSwitchModState == 2 )
+	{
+		m_iSwitchModState = 3;
+	}
+
+	char szExpansion[16];
+	if ( g_pFullFileSystem->GetCurrentGameExpansionId( szExpansion, sizeof( szExpansion ) ) )
+	{
+		UpdateTitleText( IsExpansionMenuCategory( m_pGameMenu ) );
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: sets the title buttons for the current expansion or workshop campaign
+//-----------------------------------------------------------------------------
+void CBasePanel::UpdateTitleText( bool bExpansion )
+{
+	const char *pszGame;
+	if ( bExpansion )
+	{
+		ConVarRef hl2_expansion( "hl2_expansion" );
+		hl2_expansion.IsValid();
+		pszGame = hl2_expansion.GetString();
+	}
+	else
+	{
+		pszGame = m_strStartupGame.Get();
+	}
+
+	if ( !pszGame[0] )
+	{
+		pszGame = "hl2";
+	}
+
+	if ( m_pGameMenuButtons.Count() < 2 )
+		return;
+
+	if ( !m_hGameTitleFont )
+	{
+		m_hGameTitleFont = m_pGameMenuButtons[0]->GetFont();
+	}
+
+	if ( !m_hGameTitleFont2 )
+	{
+		m_hGameTitleFont2 = m_pGameMenuButtons[1]->GetFont();
+	}
+
+	if ( !m_hWorkshopTitleFont )
+	{
+		IScheme *pScheme = vgui::scheme()->GetIScheme( vgui::scheme()->GetScheme( "SourceScheme" ) );
+		m_hWorkshopTitleFont = pScheme->GetFont( "WorkshopLogo", true );
+	}
+
+	if ( !V_stricmp( pszGame, "episodic" ) )
+	{
+		m_pGameMenuButtons[0]->SetText( "HALF-LIFE'" );
+		m_pGameMenuButtons[1]->SetText( "== episode one ==" );
+	}
+	else if ( !V_stricmp( pszGame, "ep2" ) )
+	{
+		m_pGameMenuButtons[0]->SetText( "HALF-LIFE'" );
+		m_pGameMenuButtons[1]->SetText( "== episode two ==" );
+	}
+	else
+	{
+		m_pGameMenuButtons[0]->SetText( "" );
+		m_pGameMenuButtons[1]->SetText( "HALF-LIFE'" );
+	}
+
+	if ( workshop_playing_campaign.GetInt() && engine->IsInGame() )
+	{
+		CUtlVector< PublishedFileId_t > items;
+		PublishedFileId_t nCampaignID = 0;
+		workshop->GetCurrentCampaign( items, nCampaignID );
+
+		WorkshopItem_t *pItem = workshop->GetItem( nCampaignID );
+		if ( pItem )
+		{
+			const char *pszTitle = pItem->m_pCampaignData->GetString( "TitleOverride", "" );
+			if ( !pszTitle || !pszTitle[0] )
+			{
+				pszTitle = pItem->m_Details.m_rgchTitle;
+			}
+
+			wchar_t wszTitle[ k_cchPublishedDocumentTitleMax ];
+			wszTitle[0] = L'\0';
+			g_pVGuiLocalize->ConvertANSIToUnicode( pszTitle, wszTitle, sizeof( wszTitle ) );
+			wszTitle[ ARRAYSIZE( wszTitle ) - 1 ] = L'\0';
+
+			m_pGameMenuButtons[0]->SetText( "" );
+			m_pGameMenuButtons[1]->SetText( wszTitle );
+			m_pGameMenuButtons[1]->SetFont( m_hWorkshopTitleFont );
+		}
+	}
+	else
+	{
+		m_pGameMenuButtons[0]->SetFont( m_hGameTitleFont );
+		m_pGameMenuButtons[1]->SetFont( m_hGameTitleFont2 );
+	}
+
+	for ( int i = 0; i < m_pGameMenuButtons.Count(); ++i )
+	{
+		m_pGameMenuButtons[i]->SizeToContents();
+	}
+}
+
+//-----------------------------------------------------------------------------
 // Purpose: notification
 //-----------------------------------------------------------------------------
 void CBasePanel::OnLevelLoadingFinished()
 {
+	if ( ModInfo().IsHL2Complete() )
+	{
+		if ( m_iSwitchModState == 4 )
+		{
+			m_iSwitchModState = 5;
+			UpdateBackgroundImages();
+			UpdateTitleText( IsExpansionMenuCategory( m_pGameMenu ) );
+		}
+
+		ConVarRef hl2_expansion( "hl2_expansion" );
+		hl2_expansion.IsValid();
+		const char *pszExpansion = hl2_expansion.GetString();
+		if ( !pszExpansion[0] )
+		{
+			pszExpansion = "hl2";
+		}
+
+		if ( V_stricmp( pszExpansion, m_strCurrentGame.Get() ) )
+		{
+			m_strCurrentGame = pszExpansion;
+		}
+	}
+
 	m_bLevelLoading = false;
 
 	if ( m_hMatchmakingBasePanel.Get() )
@@ -1493,7 +1735,7 @@ void CBasePanel::OnLevelLoadingFinished()
 //-----------------------------------------------------------------------------
 void CBasePanel::DrawBackgroundImage()
 {
-	if ( IsX360() && m_bCopyFrameBuffer )
+	if ( IsSteamDeck() && m_bCopyFrameBuffer )
 	{
 		// force the engine to do an image capture ONCE into this image's render target
 		char filename[MAX_PATH];
@@ -1518,6 +1760,13 @@ void CBasePanel::DrawBackgroundImage()
 		alpha = clamp( alpha, 0, 255 );
 	}
 
+	// fade the menus out while switching expansions
+	if ( m_iSwitchModState )
+	{
+		alpha = clamp( Floor2Int( m_flSwitchModTransition * 255.0f ), 0, 255 );
+		SetMenuAlpha( clamp( 255 - alpha, 0, 255 ) );
+	}
+
 	// an exiting process needs to opaquely cover everything
 	if ( m_ExitingFrameCount )
 	{
@@ -1527,7 +1776,7 @@ void CBasePanel::DrawBackgroundImage()
 	}
 
 	int iImageID = m_iBackgroundImageID;
-	if ( IsX360() )
+	if ( IsSteamDeck() )
 	{
 		if ( m_ExitingFrameCount )
 		{
@@ -1566,7 +1815,7 @@ void CBasePanel::DrawBackgroundImage()
 	}
 
 	// 360 always use the progress bar, TCR Requirement, and never this loading plaque
-	if ( IsPC() && ( m_bRenderingBackgroundTransition || m_eBackgroundState == BACKGROUND_LOADING ) )
+	if ( !IsSteamDeck() && ( m_bRenderingBackgroundTransition || m_eBackgroundState == BACKGROUND_LOADING ) )
 	{
 		// draw the loading image over the top
 		surface()->DrawSetColor(255, 255, 255, alpha);
@@ -1589,7 +1838,7 @@ void CBasePanel::DrawBackgroundImage()
 			// goes from [0..255]
 			alpha = (frametime - m_flFadeMenuStartTime) / (m_flFadeMenuEndTime - m_flFadeMenuStartTime) * 255;
 			alpha = clamp( alpha, 0, 255 );
-			m_pGameMenu->SetAlpha( alpha );
+			SetMenuAlpha( alpha );
 			if ( alpha == 255 )
 			{
 				m_bFadingInMenus = false;
@@ -1603,9 +1852,30 @@ void CBasePanel::DrawBackgroundImage()
 //-----------------------------------------------------------------------------
 void CBasePanel::CreateGameMenu()
 {
+	const char *pszGame = CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) );
+	bool bHL2Complete = ModInfo().IsHL2Complete();
+	CUtlString strGame( pszGame );
+	if ( bHL2Complete )
+	{
+		ConVarRef hl2_expansion( "hl2_expansion" );
+		if ( hl2_expansion.IsValid() )
+		{
+			strGame = hl2_expansion.GetString();
+		}
+
+		if ( !strGame.Length() )
+		{
+			strGame = "hl2";
+		}
+	}
+
+	m_strStartupGame = pszGame;
+	m_strCurrentGame = m_strStartupGame;
+
 	// load settings from config file
 	KeyValues *datafile = new KeyValues("GameMenu");
 	datafile->UsesEscapeSequences( true );	// VGUI uses escape sequences
+	m_pGameMenu = NULL;
 	if (datafile->LoadFromFile( g_pFullFileSystem, "Resource/GameMenu.res" ) )
 	{
 		m_pGameMenu = RecursiveLoadGameMenu(datafile);
@@ -1694,6 +1964,9 @@ CGameMenu *CBasePanel::RecursiveLoadGameMenu(KeyValues *datafile)
 {
 	CGameMenu *menu = new CGameMenu(this, datafile->GetName());
 
+	int menuWide, menuTall;
+	menu->GetSize( menuWide, menuTall );
+
 #ifndef BYTEMATCH_RETAIL
 	wchar_t *pString = g_pVGuiLocalize->Find( "#GameUI_Console" );
 
@@ -1734,8 +2007,14 @@ CGameMenu *CBasePanel::RecursiveLoadGameMenu(KeyValues *datafile)
 			continue;
 #endif
 
-		menu->AddMenuItem(name, label, cmd, this, dat);
+		int iItem = menu->AddMenuItem(name, label, cmd, this, dat);
+		if ( dat->GetInt( "Caps", 0 ) == 1 )
+		{
+			menu->SetItemUppercase( iItem, true );
+		}
 	}
+
+	menu->SetMenuCategory( "main" );
 
 	return menu;
 }
@@ -1966,8 +2245,16 @@ void CBasePanel::ApplySchemeSettings(IScheme *pScheme)
 
 	m_BackdropColor = pScheme->GetColor("mainmenu.backdrop", Color(0, 0, 0, 128));
 
+	UpdateBackgroundImages();
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: loads the background, product and loading images
+//-----------------------------------------------------------------------------
+void CBasePanel::UpdateBackgroundImages()
+{
 	char filename[MAX_PATH];
-	if ( IsX360() )
+	if ( IsSteamDeck() )
 	{
 		// 360 uses FullFrameFB1 RT for map to map transitioning
 		if ( m_iRenderTargetImageID == -1 )
@@ -2005,7 +2292,7 @@ void CBasePanel::ApplySchemeSettings(IScheme *pScheme)
 	}
 	surface()->DrawSetTextureFile( m_iBackgroundImageID, filename, false, false );
 
-	if ( IsX360() )
+	if ( IsSteamDeck() )
 	{
 		// 360 uses a product image during application exit
 		V_snprintf( filename, sizeof( filename ), "vgui/appchooser/background_orange%s", ( bIsWidescreen ? "_widescreen" : "" ) );
@@ -2135,6 +2422,58 @@ void CBasePanel::OnGameUIActivated()
 }
 
 //-----------------------------------------------------------------------------
+// Purpose: simple querybox that accepts escape
+//-----------------------------------------------------------------------------
+class CQuitQueryBox : public vgui::QueryBox
+{
+	DECLARE_CLASS_SIMPLE( CQuitQueryBox, vgui::QueryBox );
+public:
+	CQuitQueryBox(const char *title, const char *info, Panel *parent) : BaseClass( title, info, parent )
+	{
+	}
+
+	void DoModal( Frame* pFrameOver )
+	{
+		BaseClass::DoModal( pFrameOver );
+		vgui::surface()->RestrictPaintToSinglePanel(GetVPanel());
+		GameUI().PreventEngineHideGameUI();
+	}
+
+	void OnKeyCodeTyped(KeyCode code)
+	{
+		// ESC cancels
+		if (code == KEY_ESCAPE)
+		{
+			Close();
+		}
+		else
+		{
+			BaseClass::OnKeyCodeTyped(code);
+		}
+	}
+
+	void OnKeyCodePressed(KeyCode code)
+	{
+		// ESC cancels
+		if (code == KEY_XBUTTON_B || code == STEAMCONTROLLER_B)
+		{
+			Close();
+		}
+		else
+		{
+			BaseClass::OnKeyCodePressed(code);
+		}
+	}
+
+	virtual void OnClose()
+	{
+		BaseClass::OnClose();
+		vgui::surface()->RestrictPaintToSinglePanel(NULL);
+		GameUI().AllowEngineHideGameUI();
+	}
+};
+
+//-----------------------------------------------------------------------------
 // Purpose: executes a menu command
 //-----------------------------------------------------------------------------
 void CBasePanel::RunMenuCommand(const char *command)
@@ -2150,9 +2489,14 @@ void CBasePanel::RunMenuCommand(const char *command)
 	{
 		OnOpenPlayerListDialog();
 	}
-	else if ( !Q_stricmp( command, "OpenNewGameDialog" ) )
+	else if ( Q_stristr( command, "OpenNewGameDialog" ) )
 	{
-		OnOpenNewGameDialog();
+		const char *pszMod = NULL;
+		if ( !ModInfo().HasPortals() && Q_strlen( command ) > Q_strlen( "OpenNewGameDialog " ) )
+		{
+			pszMod = Q_stristr( command, "OpenNewGameDialog " ) + Q_strlen( "OpenNewGameDialog " );
+		}
+		OnOpenNewGameDialog( -1, pszMod );
 	}
 #ifndef BYTEMATCH_RETAIL
 	else if ( !Q_stricmp( command, "OpenConsole" ) )
@@ -2160,11 +2504,16 @@ void CBasePanel::RunMenuCommand(const char *command)
 		GameConsole().Activate();
 	}
 #endif
-	else if ( !Q_stricmp( command, "OpenLoadGameDialog" ) )
+	else if ( Q_stristr( command, "OpenLoadGameDialog" ) )
 	{
 		if ( !GameUI().IsConsoleUI() )
 		{
-			OnOpenLoadGameDialog();
+			const char *pszMod = NULL;
+			if ( !ModInfo().HasPortals() && Q_strlen( command ) > Q_strlen( "OpenLoadGameDialog " ) )
+			{
+				pszMod = Q_stristr( command, "OpenLoadGameDialog " ) + Q_strlen( "OpenLoadGameDialog " );
+			}
+			OnOpenLoadGameDialog( pszMod );
 		}
 		else
 		{
@@ -2182,6 +2531,43 @@ void CBasePanel::RunMenuCommand(const char *command)
 			OnOpenSaveGameDialog_Xbox();
 		}
 	}
+	else if ( Q_stristr( command, "OpenLoadSingleplayerCommentaryDialog" ) )
+	{
+		const char *pszMod = NULL;
+		if ( !ModInfo().HasPortals() && Q_strlen( command ) > Q_strlen( "OpenLoadSingleplayerCommentaryDialog " ) )
+		{
+			pszMod = Q_stristr( command, "OpenLoadSingleplayerCommentaryDialog " ) + Q_strlen( "OpenLoadSingleplayerCommentaryDialog " );
+		}
+		OpenLoadSingleplayerCommentaryDialog( pszMod );
+	}
+	else if ( Q_stristr( command, "OpenAchievementsDialog" ) )
+	{
+		if ( IsPC() )
+		{
+#ifndef NO_STEAM
+			if ( !SteamUser() || !SteamUser()->BLoggedOn() )
+			{
+#ifdef BYTEMATCH_RETAIL
+				vgui::MessageBox *pMessageBox = new vgui::MessageBox("#GameUI_Achievements_SteamRequired_Title", "#GameUI_Achievements_SteamRequired_Message");
+#else
+				vgui::MessageBox *pMessageBox = new vgui::MessageBox("#GameUI_Achievements_SteamRequired_Title", "#GameUI_Achievements_SteamRequired_Message", this);
+#endif
+				pMessageBox->DoModal();
+				return;
+			}
+#endif
+			const char *pszMod = NULL;
+			if ( !ModInfo().HasPortals() && Q_strlen( command ) > Q_strlen( "OpenAchievementsDialog " ) )
+			{
+				pszMod = Q_stristr( command, "OpenAchievementsDialog " ) + Q_strlen( "OpenAchievementsDialog " );
+			}
+			OnOpenAchievementsDialog( pszMod );
+		}
+		else
+		{
+			OnOpenAchievementsDialog_Xbox();
+		}
+	}
 	else if ( !Q_stricmp( command, "OpenBonusMapsDialog" ) )
 	{
 		OnOpenBonusMapsDialog();
@@ -2196,6 +2582,19 @@ void CBasePanel::RunMenuCommand(const char *command)
 		{
 			OnOpenOptionsDialog_Xbox();
 		}
+	}
+	else if ( !Q_stricmp( command, "OpenMainMenuDialog" ) )
+	{
+		QueryBox *box = new CQuitQueryBox( "#GameUI_ConfirmMainMenu_Title", "#GameUI_MainMenuWarning", this );
+		box->SetOKCommand( new KeyValues( "Command", "command", "ReturnToMainMenu" ) );
+		box->SetCancelCommand( new KeyValues( "Command", "command", "ReleaseModalWindow" ) );
+		box->AddActionSignalTarget( this );
+		box->DoModal();
+	}
+	else if ( !Q_stricmp( command, "ReturnToMainMenu" ) )
+	{
+		CFmtStr strCommand( "startupmenu force" );
+		engine->ClientCmd_Unrestricted( strCommand );
 	}
 	else if ( !Q_stricmp( command, "OpenControllerDialog" ) )
 	{
@@ -2224,6 +2623,10 @@ void CBasePanel::RunMenuCommand(const char *command)
 	{
 		OnOpenCreateMultiplayerGameDialog();
 	}
+	else if ( !Q_stricmp( command, "OpenWorkshopDialog" ) )
+	{
+		// the Workshop dialog is not available on this platform
+	}
 	else if ( !Q_stricmp( command, "OpenChangeGameDialog" ) )
 	{
 		OnOpenChangeGameDialog();
@@ -2232,36 +2635,9 @@ void CBasePanel::RunMenuCommand(const char *command)
 	{
 		OnOpenLoadCommentaryDialog();	
 	}
-	else if ( !Q_stricmp( command, "OpenLoadSingleplayerCommentaryDialog" ) )
-	{
-		OpenLoadSingleplayerCommentaryDialog();	
-	}
 	else if ( !Q_stricmp( command, "OpenMatchmakingBasePanel" ) )
 	{
 		OnOpenMatchmakingBasePanel();
-	}
-	else if ( !Q_stricmp( command, "OpenAchievementsDialog" ) )
-	{
-		if ( IsPC() )
-		{
-#ifndef NO_STEAM
-			if ( !SteamUser() || !SteamUser()->BLoggedOn() )
-			{
-#ifdef BYTEMATCH_RETAIL
-				vgui::MessageBox *pMessageBox = new vgui::MessageBox("#GameUI_Achievements_SteamRequired_Title", "#GameUI_Achievements_SteamRequired_Message");
-#else
-				vgui::MessageBox *pMessageBox = new vgui::MessageBox("#GameUI_Achievements_SteamRequired_Title", "#GameUI_Achievements_SteamRequired_Message", this);
-#endif
-				pMessageBox->DoModal();
-				return;
-			}
-#endif
-			OnOpenAchievementsDialog();
-		}
-		else
-		{
-			OnOpenAchievementsDialog_Xbox();
-		}
 	}
     //=============================================================================
     // HPE_BEGIN:
@@ -2376,6 +2752,22 @@ void CBasePanel::RunMenuCommand(const char *command)
 	else if ( !Q_stricmp( command, "ReleaseModalWindow" ) )
 	{
 		vgui::surface()->RestrictPaintToSinglePanel(NULL);
+	}
+	else if ( Q_stristr( command, "SwitchCategory " ) )
+	{
+		const char *pszCategory = Q_stristr( command, "SwitchCategory " ) + Q_strlen( "SwitchCategory " );
+		if ( pszCategory[0] )
+		{
+			if ( m_pGameMenu )
+			{
+				m_pGameMenu->SetMenuCategory( pszCategory );
+			}
+			UpdateTitleText( true );
+		}
+	}
+	else if ( Q_stristr( command, "SwitchExpansion " ) )
+	{
+		SwitchExpansion( Q_stristr( command, "SwitchExpansion " ) + Q_strlen( "SwitchExpansion " ) );
 	}
 	else if ( Q_stristr( command, "engine " ) )
 	{
@@ -3120,58 +3512,6 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-// Purpose: simple querybox that accepts escape
-//-----------------------------------------------------------------------------
-class CQuitQueryBox : public vgui::QueryBox
-{
-	DECLARE_CLASS_SIMPLE( CQuitQueryBox, vgui::QueryBox );
-public:
-	CQuitQueryBox(const char *title, const char *info, Panel *parent) : BaseClass( title, info, parent )
-	{
-	}
-
-	void DoModal( Frame* pFrameOver )
-	{
-		BaseClass::DoModal( pFrameOver );
-		vgui::surface()->RestrictPaintToSinglePanel(GetVPanel());
-		GameUI().PreventEngineHideGameUI();
-	}
-
-	void OnKeyCodeTyped(KeyCode code)
-	{
-		// ESC cancels
-		if (code == KEY_ESCAPE)
-		{
-			Close();
-		}
-		else
-		{
-			BaseClass::OnKeyCodeTyped(code);
-		}
-	}
-
-	void OnKeyCodePressed(KeyCode code)
-	{
-		// ESC cancels
-		if (code == KEY_XBUTTON_B || code == STEAMCONTROLLER_B)
-		{
-			Close();
-		}
-		else
-		{
-			BaseClass::OnKeyCodePressed(code);
-		}
-	}
-
-	virtual void OnClose()
-	{
-		BaseClass::OnClose();
-		vgui::surface()->RestrictPaintToSinglePanel(NULL);
-		GameUI().AllowEngineHideGameUI();
-	}
-};
-
-//-----------------------------------------------------------------------------
 // Purpose: asks user how they feel about quiting
 //-----------------------------------------------------------------------------
 void CBasePanel::OnOpenQuitConfirmationDialog()
@@ -3241,21 +3581,32 @@ void CBasePanel::OnOpenDisconnectConfirmationDialog()
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CBasePanel::OnOpenNewGameDialog(const char *chapter )
+void CBasePanel::OnOpenNewGameDialog( int iChapter, const char *pszMod )
 {
 	if ( !m_hNewGameDialog.Get() )
 	{
 		m_hNewGameDialog = new CNewGameDialog(this, false);
-		PositionDialog( m_hNewGameDialog );
 	}
 
-	if ( chapter )
+	if ( pszMod && V_strlen( pszMod ) > 0 )
 	{
-		((CNewGameDialog *)m_hNewGameDialog.Get())->SetSelectedChapter(chapter);
+		((CNewGameDialog *)m_hNewGameDialog.Get())->SetOverrideMod( pszMod );
+	}
+	else
+	{
+		((CNewGameDialog *)m_hNewGameDialog.Get())->SetOverrideMod( NULL );
+	}
+
+	if ( iChapter < -1 )
+	{
+		char chapter[32];
+		V_snprintf( chapter, sizeof( chapter ), "%d", iChapter );
+		((CNewGameDialog *)m_hNewGameDialog.Get())->SetSelectedChapter( chapter );
 	}
 
 	((CNewGameDialog *)m_hNewGameDialog.Get())->SetCommentaryMode( false );
 	m_hNewGameDialog->Activate();
+	PositionDialog( m_hNewGameDialog );
 }
 
 //-----------------------------------------------------------------------------
@@ -3275,14 +3626,24 @@ void CBasePanel::OnOpenBonusMapsDialog( void )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CBasePanel::OnOpenLoadGameDialog()
+void CBasePanel::OnOpenLoadGameDialog( const char *pszMod )
 {
 	if ( !m_hLoadGameDialog.Get() )
 	{
 		m_hLoadGameDialog = new CLoadGameDialog(this);
-		PositionDialog( m_hLoadGameDialog );
 	}
+
+	if ( pszMod && V_strlen( pszMod ) > 0 )
+	{
+		((CLoadGameDialog *)m_hLoadGameDialog.Get())->SetOverrideMod( pszMod );
+	}
+	else
+	{
+		((CLoadGameDialog *)m_hLoadGameDialog.Get())->SetOverrideMod( NULL );
+	}
+
 	m_hLoadGameDialog->Activate();
+	PositionDialog( m_hLoadGameDialog );
 }
 
 //-----------------------------------------------------------------------------
@@ -3480,29 +3841,32 @@ void CBasePanel::OnOpenLoadCommentaryDialog()
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CBasePanel::OpenLoadSingleplayerCommentaryDialog()
+void CBasePanel::OpenLoadSingleplayerCommentaryDialog( const char *pszMod )
 {
 	if ( !m_hNewGameDialog.Get() )
 	{
 		m_hNewGameDialog = new CNewGameDialog(this,true);
-		PositionDialog( m_hNewGameDialog );
 	}
 
 	((CNewGameDialog *)m_hNewGameDialog.Get())->SetCommentaryMode( true );
+	((CNewGameDialog *)m_hNewGameDialog.Get())->SetOverrideMod( pszMod );
 	m_hNewGameDialog->Activate();
+	PositionDialog( m_hNewGameDialog );
 }
 
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CBasePanel::OnOpenAchievementsDialog()
+void CBasePanel::OnOpenAchievementsDialog( const char *pszMod )
 {
 	if (!m_hAchievementsDialog.Get())
 	{
 		m_hAchievementsDialog = new CAchievementsDialog( this );
-		PositionDialog(m_hAchievementsDialog);
 	}
+
+	((CAchievementsDialog *)m_hAchievementsDialog.Get())->SetOverrideMod( pszMod );
 	m_hAchievementsDialog->Activate();
+	PositionDialog(m_hAchievementsDialog);
 }
 
 //=============================================================================
@@ -3912,7 +4276,7 @@ void CBasePanel::SetMenuAlpha(int alpha)
 
 	if ( m_pGameLogo )
 	{
-		m_pGameLogo->SetAlpha( alpha );
+		m_pGameLogo->SetAlpha( GameUI().IsInLevel() ? 0 : alpha );
 	}
 
 	for ( int i=0; i<m_pGameMenuButtons.Count(); ++i )
@@ -5098,6 +5462,111 @@ static void RefreshOptionsDialog( const CCommand &args )
 }
 static ConCommand refresh_options_dialog( "refresh_options_dialog", RefreshOptionsDialog, "Refresh the options dialog.", 0 );
 
+#define CLOSE_BASE_DIALOG( hDialog, bWasOpen ) \
+	bool bWasOpen = false; \
+	if ( hDialog.Get() ) \
+	{ \
+		hDialog->Close(); \
+		hDialog->DeletePanel(); \
+		hDialog = NULL; \
+		bWasOpen = true; \
+	}
+
+#define REOPEN_BASE_DIALOG( hDialog, bWasOpen, OpenCall ) \
+	if ( bWasOpen ) \
+	{ \
+		g_pBasePanel->OpenCall; \
+		if ( g_pBasePanel->hDialog.Get() ) \
+		{ \
+			g_pBasePanel->hDialog->DisableFadeEffect(); \
+		} \
+	}
+
+//-----------------------------------------------------------------------------
+// Purpose: recreates the base panel and reopens its dialogs (after a video mode change)
+//-----------------------------------------------------------------------------
+void CBasePanel::RefreshDialogs()
+{
+	bool bNewGameDialog = false;
+	if ( m_hNewGameDialog.Get() )
+	{
+		((CNewGameDialog *)m_hNewGameDialog.Get())->IsCommentaryMode();
+		m_hNewGameDialog->Close();
+		m_hNewGameDialog->DeletePanel();
+		m_hNewGameDialog = NULL;
+		bNewGameDialog = true;
+	}
+	CLOSE_BASE_DIALOG( m_hBonusMapsDialog, bBonusMapsDialog );
+	CLOSE_BASE_DIALOG( m_hLoadGameDialog, bLoadGameDialog );
+	CLOSE_BASE_DIALOG( m_hSaveGameDialog, bSaveGameDialog );
+
+	bool bOptionsDialog = false;
+	if ( m_hOptionsDialog.Get() )
+	{
+		m_hOptionsDialog->Close();
+		m_hOptionsDialog->DeletePanel();
+		m_hOptionsDialog = NULL;
+		g_hOptionsDialog = NULL;
+		bOptionsDialog = true;
+	}
+
+	CLOSE_BASE_DIALOG( m_hCreateMultiplayerGameDialog, bCreateMultiplayerGameDialog );
+	CLOSE_BASE_DIALOG( m_hDemoPlayerDialog, bDemoPlayerDialog );
+	CLOSE_BASE_DIALOG( m_hChangeGameDialog, bChangeGameDialog );
+	CLOSE_BASE_DIALOG( m_hPlayerListDialog, bPlayerListDialog );
+	CLOSE_BASE_DIALOG( m_hBenchmarkDialog, bBenchmarkDialog );
+	CLOSE_BASE_DIALOG( m_hLoadCommentaryDialog, bLoadCommentaryDialog );
+	CLOSE_BASE_DIALOG( m_hAchievementsDialog, bAchievementsDialog );
+
+	ConVarRef vgui_drawfocus( "vgui_drawfocus" );
+	if ( vgui_drawfocus.GetBool() )
+	{
+		vgui_drawfocus.SetValue( 0 );
+	}
+
+	ConVarRef vgui_drawtree( "vgui_drawtree" );
+	if ( vgui_drawtree.GetBool() )
+	{
+		vgui_drawtree.SetValue( 0 );
+	}
+
+	DeletePanel();
+	MakeBasePanel();
+
+	REOPEN_BASE_DIALOG( m_hNewGameDialog, bNewGameDialog, OnOpenNewGameDialog( -1, NULL ) );
+	REOPEN_BASE_DIALOG( m_hBonusMapsDialog, bBonusMapsDialog, OnOpenBonusMapsDialog() );
+	REOPEN_BASE_DIALOG( m_hLoadGameDialog, bLoadGameDialog, OnOpenLoadGameDialog( NULL ) );
+	REOPEN_BASE_DIALOG( m_hSaveGameDialog, bSaveGameDialog, OnOpenSaveGameDialog() );
+
+	if ( bOptionsDialog )
+	{
+		g_pBasePanel->OnOpenOptionsDialog();
+		if ( g_pBasePanel->m_hOptionsDialog.Get() )
+		{
+			COptionsDialog *pOptionsDialog = dynamic_cast< COptionsDialog * >( g_pBasePanel->m_hOptionsDialog.Get() );
+			if ( pOptionsDialog )
+			{
+				pOptionsDialog->GetPropertySheet()->SetActivePage( pOptionsDialog->GetOptionsSubVideo() );
+				pOptionsDialog->DisableFadeEffect();
+			}
+		}
+	}
+
+	REOPEN_BASE_DIALOG( m_hCreateMultiplayerGameDialog, bCreateMultiplayerGameDialog, OnOpenCreateMultiplayerGameDialog() );
+	REOPEN_BASE_DIALOG( m_hChangeGameDialog, bChangeGameDialog, OnOpenChangeGameDialog() );
+	REOPEN_BASE_DIALOG( m_hPlayerListDialog, bPlayerListDialog, OnOpenPlayerListDialog() );
+	REOPEN_BASE_DIALOG( m_hBenchmarkDialog, bBenchmarkDialog, OnOpenBenchmarkDialog() );
+	REOPEN_BASE_DIALOG( m_hLoadCommentaryDialog, bLoadCommentaryDialog, OnOpenLoadCommentaryDialog() );
+	REOPEN_BASE_DIALOG( m_hAchievementsDialog, bAchievementsDialog, OnOpenAchievementsDialog( NULL ) );
+	REOPEN_BASE_DIALOG( m_hDemoPlayerDialog, bDemoPlayerDialog, OnOpenDemoDialog() );
+}
+
+static void RefreshOptionsDialogModeset( const CCommand &args )
+{
+	g_pBasePanel->RefreshDialogs();
+}
+static ConCommand refresh_gameui_dialogs_modeset( "refresh_gameui_dialogs_modeset", RefreshOptionsDialogModeset, "Refresh ALL GameUI Dialogs", 0 );
+
 void CGameMenu::SetMenuCategory( const char *pszMenuCategory )
 {
 	m_strMenuCategory.Set( pszMenuCategory );
@@ -5108,7 +5577,7 @@ void CGameMenu::SetMenuCategory( const char *pszMenuCategory )
 		if ( !pMenuItem )
 			continue;
 
-		if ( pMenuItem->m_strMenuCategory.IsEmpty() )
+		if ( !pMenuItem->m_strMenuCategory.Length() )
 			continue;
 	}
 

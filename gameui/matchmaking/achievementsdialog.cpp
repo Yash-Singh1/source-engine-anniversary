@@ -571,6 +571,15 @@ public:
 };
 
 //----------------------------------------------------------
+// Show the achievements of another game directory
+//----------------------------------------------------------
+void CAchievementsDialog::SetOverrideMod( const char *pszOverrideMod )
+{
+	m_strOverrideMod = pszOverrideMod;
+	UpdateAchievementList();
+}
+
+//----------------------------------------------------------
 // Re-populate the achievement list with the selected group
 //----------------------------------------------------------
 void CAchievementsDialog::UpdateAchievementList()

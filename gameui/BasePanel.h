@@ -214,9 +214,9 @@ public:
 	void OnGameUIActivated();
 
 	// game dialogs
-	void OnOpenNewGameDialog( const char *chapter = NULL );
+	void OnOpenNewGameDialog( int iChapter = -1, const char *pszMod = NULL );
 	void OnOpenBonusMapsDialog();
-	void OnOpenLoadGameDialog();
+	void OnOpenLoadGameDialog( const char *pszMod = NULL );
 	void OnOpenLoadGameDialog_Xbox();
 	void OnOpenSaveGameDialog();
 	void OnOpenSaveGameDialog_Xbox();
@@ -232,8 +232,8 @@ public:
 	void OnOpenOptionsDialog();
 	void OnOpenOptionsDialog_Xbox();
 	void OnOpenLoadCommentaryDialog();
-	void OpenLoadSingleplayerCommentaryDialog();
-	void OnOpenAchievementsDialog();
+	void OpenLoadSingleplayerCommentaryDialog( const char *pszMod = NULL );
+	void OnOpenAchievementsDialog( const char *pszMod = NULL );
 
     //=============================================================================
     // HPE_BEGIN:
@@ -281,7 +281,11 @@ public:
 	void OnGameUIHidden();
 
 	void CloseBaseDialogs( void );
+	void RefreshDialogs( void );
 	bool IsWaitingForConsoleUI( void ) { return m_bWaitingForStorageDeviceHandle || m_bWaitingForUserSignIn || m_bXUIVisible; }
+
+	void OnDisconnectFromServer( uint8 eSteamLoginFailure );
+	void SwitchExpansion( const char *pszExpansion );
 
 #if defined( _X360 )
 	CON_COMMAND_MEMBER_F( CBasePanel, "gameui_reload_resources", Reload_Resources, "Reload the Xbox 360 UI res files", 0 );
@@ -294,6 +298,7 @@ public:
 
 
 protected:
+	virtual void OnThink();
 	virtual void PaintBackground();
 	virtual void ApplySchemeSettings(vgui::IScheme *pScheme);
 
@@ -312,6 +317,7 @@ private:
 		BACKGROUND_LEVEL,
 		BACKGROUND_DISCONNECTED,
 		BACKGROUND_EXITING,			// Console has started an exiting state, cannot be stopped
+		BACKGROUND_SWITCHMOD,		// switching to another expansion
 	};
 	void SetBackgroundRenderState(EBackgroundState state);
 
@@ -322,6 +328,8 @@ private:
 	void IssuePostPromptCommand( void );
 
 	void UpdateBackgroundState();
+	void UpdateBackgroundImages();
+	void UpdateTitleText( bool bExpansion );
 
 	// sets the menu alpha [0..255]
 	void SetMenuAlpha(int alpha);
@@ -427,8 +435,8 @@ private:
 	bool						m_bWaitingForUserSignIn;
 	bool						m_bStorageBladeShown;
 	CUtlString					m_strPostPromptCommand;
-	CUtlString					m_strCurrentGame;
 	CUtlString					m_strStartupGame;
+	CUtlString					m_strCurrentGame;
 
 	// Storage device changing vars
 	bool			m_bWaitingForStorageDeviceHandle;
@@ -471,6 +479,9 @@ public:
 // Purpose: singleton accessor
 //-----------------------------------------------------------------------------
 extern CBasePanel *BasePanel();
+
+// (re)creates the base panel; implemented in GameUI_Interface.cpp
+extern void MakeBasePanel();
 
 
 #endif // BASEPANEL_H

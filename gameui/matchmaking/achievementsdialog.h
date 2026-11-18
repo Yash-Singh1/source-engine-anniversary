@@ -15,6 +15,7 @@
 #include "vgui_controls/PanelListPanel.h"
 #include "vgui_controls/Label.h"
 #include "tier1/KeyValues.h"
+#include "tier1/utlstring.h"
 #include "TGAImagePanel.h"
 
 #define MAX_ACHIEVEMENT_GROUPS 25
@@ -100,6 +101,7 @@ public:
 	void CreateNewAchievementGroup( int iMinRange, int iMaxRange );
 	void CreateOrUpdateComboItems( bool bCreate );
 	void UpdateAchievementList();
+	void SetOverrideMod( const char *pszOverrideMod );
 
 	vgui::PanelListPanel	*m_pAchievementsList;
 	vgui::ImagePanel		*m_pListBG;
@@ -132,6 +134,8 @@ public:
 
 	int m_nScrollItem;
 	int m_nOldScrollItem;
+
+	CUtlString m_strOverrideMod;
 };
 
 //////////////////////////////////////////////////////////////////////////
