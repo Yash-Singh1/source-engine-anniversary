@@ -1238,7 +1238,12 @@ bool CMaterial::ParseMaterialFlag( KeyValues* pParseValue, IMaterialVar* pFlagVa
 }
 
 
+#ifdef BYTEMATCH_RETAIL
+ConVar mat_reduceparticles( "mat_reduceparticles",  "0" );
+#else
 ConVar mat_reduceparticles( "mat_reduceparticles",  "0", FCVAR_ALLOWED_IN_COMPETITIVE );
+#endif
+#line 1236
 
 bool CMaterial::ShouldSkipVar( KeyValues *pVar, bool *pWasConditional )
 {
@@ -1270,7 +1275,12 @@ bool CMaterial::ShouldSkipVar( KeyValues *pVar, bool *pWasConditional )
 		}
 		else if ( ! stricmp( pCond, "hdr" ) )
 		{
+#ifdef BYTEMATCH_RETAIL
+			bShouldSkip = ( HardwareConfig()->GetHDRType() == HDR_TYPE_NONE );
+#else
 			bShouldSkip = false; //( HardwareConfig()->GetHDRType() == HDR_TYPE_NONE );
+#endif
+#line 1268
 		}
 		else if ( ! stricmp( pCond, "srgb" ) )
 		{
@@ -1284,10 +1294,13 @@ bool CMaterial::ShouldSkipVar( KeyValues *pVar, bool *pWasConditional )
 		{
 			bShouldSkip = !IsX360();
 		}
+#ifndef BYTEMATCH_RETAIL
 		else if ( ! stricmp( pCond, "gameconsole" ) )
 		{
 			bShouldSkip = !IsGameConsole();
 		}
+#endif
+#line 1285
 		else
 		{
 			Warning( "unrecognized conditional test %s in %s\n", pVarName, GetName() );
@@ -1497,6 +1510,23 @@ static KeyValues *FindBuiltinFallbackBlock( char const *pShaderName, KeyValues *
 		if ( pRet )
 			return pRet;
 	}
+#ifdef BYTEMATCH_RETAIL
+	if ( HardwareConfig()->GetHDRType() != HDR_TYPE_NONE )
+	{
+		KeyValues *pRet = CheckConditionalFakeShaderName( pShaderName,"hdr_dx9", pKeyValues );
+		if ( pRet )
+			return pRet;
+		pRet = CheckConditionalFakeShaderName( pShaderName,"hdr", pKeyValues );
+		if ( pRet )
+			return pRet;
+	}
+	else
+	{
+		KeyValues *pRet = CheckConditionalFakeShaderName( pShaderName,"ldr", pKeyValues );
+		if ( pRet )
+			return pRet;
+	}
+#else
 //	if ( HardwareConfig()->GetHDRType() != HDR_TYPE_NONE )
 	{
 		KeyValues *pRet = CheckConditionalFakeShaderName( pShaderName,"hdr_dx9", pKeyValues );
@@ -1512,6 +1542,8 @@ static KeyValues *FindBuiltinFallbackBlock( char const *pShaderName, KeyValues *
 		if ( pRet )
 			return pRet;
 	}
+#endif
+#line 1509
 	if ( HardwareConfig()->UsesSRGBCorrectBlending() )
 	{
 		KeyValues *pRet = CheckConditionalFakeShaderName( pShaderName,"srgb", pKeyValues );
@@ -1679,6 +1711,16 @@ KeyValues* CMaterial::InitializeShader( KeyValues &keyValues, KeyValues &patchKe
 		const char *pFallbackMaterial = pCurrentFallback->GetString( "$fallbackmaterial" );
 		if ( pFallbackMaterial[0] )
 		{
+#ifdef BYTEMATCH_RETAIL
+			// Gotta copy it off; clearing the keyvalues will blow the string away
+			Q_strncpy( pFallbackMaterialNameBuf, pFallbackMaterial, 256 );
+			keyValues.Clear();
+			if( !LoadVMTFile( keyValues, patchKeyValues, pFallbackMaterialNameBuf, UsesUNCFileName(), NULL ) )
+			{
+				Warning( "CMaterial::PrecacheVars: error loading vmt file %s for %s\n", pFallbackMaterialNameBuf, GetName() );
+				keyValues = *(((CMaterial *)g_pErrorMaterial)->m_pVMTKeyValues);
+			}
+#else
 			// Don't fallback to ourselves
 			if ( Q_stricmp( GetName(), pFallbackMaterial ) )
 			{
@@ -1696,6 +1738,8 @@ KeyValues* CMaterial::InitializeShader( KeyValues &keyValues, KeyValues &patchKe
 				Warning( "CMaterial::PrecacheVars: fallback material for vmt file %s is itself!\n", GetName() );
 				keyValues = *(((CMaterial *)g_pErrorMaterial)->m_pVMTKeyValues);
 			}
+#endif
+#line 1693
 			pCurrentFallback = &keyValues;
 			pFallbackSection = NULL;
 
@@ -2797,7 +2841,12 @@ PreviewImageRetVal_t CMaterial::GetPreviewImageProperties( int *width, int *heig
 	CUtlBuffer buf( pMem, nHeaderSize );
 	if( !g_pFullFileSystem->ReadFile( pFileName, NULL, buf, nHeaderSize ) )
 	{
+#ifdef BYTEMATCH_RETAIL
+		Warning( "\"%s\": cached version doesn't exist\n", pFileName );
+#else
 		Warning( "\"%s\" - \"%s\": cached version doesn't exist\n", GetName(), pFileName );
+#endif
+#line 2775
 		return MATERIAL_PREVIEW_IMAGE_BAD;
 	}
 	
@@ -2860,11 +2909,14 @@ PreviewImageRetVal_t CMaterial::GetPreviewImage( unsigned char *pData, int width
 	// Determine where in the file to start reading (frame 0, face 0, mip 0)
 	pVTFTexture->ImageFileInfo( 0, 0, 0, &nImageOffset, &nImageSize );
 
+#ifndef BYTEMATCH_RETAIL
 	if ( nImageSize == 0 )
 	{
 		Warning( "Couldn't determine offset and size of material \"%s\"\n", pFileName );
 		goto fail;
 	}
+#endif
+#line 2842
 		
 	// Prep the utlbuffer for reading
 	buf.EnsureCapacity( nImageSize );
@@ -3596,10 +3648,13 @@ bool AccumulateRecursiveVmtPatches( KeyValues &patchKeyValuesOut, KeyValues **pp
 #ifndef DEDICATED
 			Warning( "Failed to load $include VMT file (%s)\n", includeFileName.String() );
 #endif
+#ifndef BYTEMATCH_RETAIL
 			if ( !HushAsserts() )
 			{
 				AssertMsg( false, "Failed to load $include VMT file (%s)", includeFileName.String() );
 			}
+#endif
+#line 3577
 			return false;
 		}
 
