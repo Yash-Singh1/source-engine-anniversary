@@ -160,6 +160,10 @@ void IVP_Real_Object::recompile_material_changed() {
 }
 
 void IVP_Real_Object::force_grow_friction_system() {
+#ifdef BYTEMATCH_RETAIL
+    get_all_near_mindists();
+    physical_core->grow_friction_system();
+#else
     IVP_Movement_Type movement_state_temp;
     IVP_Movement_Type movement_state_temp2;
 
@@ -174,6 +178,7 @@ void IVP_Real_Object::force_grow_friction_system() {
     physical_core->movement_state = movement_state_temp2;
 
     physical_core->grow_friction_system();
+#endif
 }
 
 void IVP_Real_Object::enable_collision_detection(IVP_BOOL enable){
@@ -591,9 +596,16 @@ void IVP_Real_Object::get_all_near_mindists() {
     IVP_Movement_Type temp_movement= (IVP_Movement_Type)physical_core->movement_state;
     
     physical_core->movement_state=IVP_MT_GET_MINDIST;
+#ifdef BYTEMATCH_RETAIL
+    IVP_Movement_Type temp_object_movement = (IVP_Movement_Type)flags.object_movement_state;
+    flags.object_movement_state = IVP_MT_GET_MINDIST;
+#endif
     physical_core->environment->get_mindist_manager()->recheck_ov_element(this);
     
     this->physical_core->movement_state=temp_movement;
+#ifdef BYTEMATCH_RETAIL
+    flags.object_movement_state = temp_object_movement;
+#endif
 }
 
 void IVP_Real_Object::recheck_collision_filter(){
