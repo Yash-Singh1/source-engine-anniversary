@@ -55,8 +55,6 @@ RETAIL_SKIP = {
 RETAIL_KEEP = {
 	# Our CBaseFileSystem uses the fork's CPackFile classes.
 	'bin/filesystem_stdio': ['filesystem/packfile.cpp'],
-	# Texture compositor callers in our materialsystem that retail's doesn't have.
-	'bin/materialsystem': ['materialsystem/ctexturecompositor.cpp'],
 	# Callers in our engine that retail's engine doesn't have.
 	'bin/engine': ['engine/sv_uploaddata.cpp', 'common/language.cpp', 'engine/audio/MPAHeader.cpp',
 		'engine/audio/VBRHeader.cpp', 'engine/masterserver.cpp'],

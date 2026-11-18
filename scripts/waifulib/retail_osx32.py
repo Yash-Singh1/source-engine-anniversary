@@ -24,8 +24,7 @@ from waflib.TaskGen import feature, before_method, after_method
 MANIFEST = 'devtools/bytematch/manifests/retail-osx32.json'
 TOOLCHAIN_DIR = 'devtools/bytematch/toolchain'
 
-# Modules that compile and link in this mode. Not here: shaderapidx9 (compiles; our source
-# needs D3DX helpers that retail's togl doesn't export), the game modules (game lane),
+# Modules that compile and link in this mode (game modules are in GAME_MODULES). Not here:
 # chromehtml and vaudio_miles (sources missing from this tree).
 RETAIL_MODULES = [
 	'tier0', 'tier1', 'mathlib', 'tier2', 'tier3', 'vstdlib',
@@ -39,7 +38,7 @@ RETAIL_MODULES = [
 	'utils/bzip2', 'replay/common', 'replay', 'sourcevr', 'video/video_quicktime',
 	'utils/bsppack', 'utils/bugreporter_filequeue', 'utils/bugreporter_public', 'utils/vpk',
 	'vgui2/vgui_surfacelib', 'vguimatsurface', 'gameui', 'engine',
-	'togl', 'materialsystem', 'launcher',
+	'togl', 'materialsystem', 'launcher', 'materialsystem/shaderapidx9',
 ]
 
 GAME_MODULES = ['game/client', 'game/server']

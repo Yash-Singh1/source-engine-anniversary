@@ -108,7 +108,62 @@ enum ImageFormat
 	NUM_IMAGE_FORMATS
 };
 
-#if defined( POSIX  ) || defined( DX_TO_GL_ABSTRACTION )
+#if defined( TOGL_OSX )
+typedef enum _D3DFORMAT
+	{
+		D3DFMT_INDEX16		= 101,
+		D3DFMT_D16			= 80,
+		D3DFMT_D24S8		= 75,
+		D3DFMT_A8R8G8B8		= 21,
+		D3DFMT_A4R4G4B4		= 26,
+		D3DFMT_X8R8G8B8		= 22,
+		D3DFMT_R5G6B5		= 23,
+		D3DFMT_X1R5G5B5		= 24,
+		D3DFMT_A1R5G5B5		= 25,
+		D3DFMT_L8			= 50,
+		D3DFMT_A8L8			= 51,
+		D3DFMT_A8			= 28,
+		D3DFMT_DXT1			= 0x31545844,	// MAKEFOURCC('D','X','T','1')
+		D3DFMT_DXT3			= 0x33545844,	// MAKEFOURCC('D','X','T','3')
+		D3DFMT_DXT5			= 0x35545844,	// MAKEFOURCC('D','X','T','5')
+		D3DFMT_V8U8			= 60,
+		D3DFMT_Q8W8V8U8		= 63,
+		D3DFMT_X8L8V8U8		= 62,
+		D3DFMT_A16B16G16R16F	= 113,
+		D3DFMT_A16B16G16R16	= 36,
+		D3DFMT_R32F			= 114,
+		D3DFMT_A32B32G32R32F	= 116,
+		D3DFMT_R8G8B8		= 20,
+		D3DFMT_D24X4S4		= 79,
+		D3DFMT_D15S1		= 73,
+		D3DFMT_D24X8		= 77,
+		D3DFMT_VERTEXDATA	= 100,
+		D3DFMT_INDEX32		= 102,
+
+		// adding fake D3D format names for the vendor specific ones (eases debugging/logging)
+		
+		// NV shadow depth tex
+		D3DFMT_NV_INTZ		= 0x5a544e49,	// MAKEFOURCC('I','N','T','Z')
+		D3DFMT_NV_RAWZ		= 0x5a574152,	// MAKEFOURCC('R','A','W','Z')
+
+		// NV null tex
+		D3DFMT_NV_NULL		= 0x4c4c554e,	// MAKEFOURCC('N','U','L','L')
+
+		// ATI shadow depth tex
+		D3DFMT_ATI_D16		= 0x36314644,	// MAKEFOURCC('D','F','1','6')
+		D3DFMT_ATI_D24S8	= 0x34324644,	// MAKEFOURCC('D','F','2','4')
+
+		// ATI 1N and 2N compressed tex
+		D3DFMT_ATI_2N		= 0x32495441,	// MAKEFOURCC('A', 'T', 'I', '2')
+		D3DFMT_ATI_1N		= 0x31495441,	// MAKEFOURCC('A', 'T', 'I', '1')
+		
+		D3DFMT_UNKNOWN		= 0,
+
+		// old names togl/osx/glmgrbasics.cpp still lists
+		D3DFMT_R5G6R5		= D3DFMT_R5G6B5,
+		D3DFMT_A			= D3DFMT_A8,
+	} D3DFORMAT;
+#elif defined( POSIX  ) || defined( DX_TO_GL_ABSTRACTION )
 typedef enum _D3DFORMAT
 	{
 		D3DFMT_INDEX16,

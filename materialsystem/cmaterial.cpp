@@ -326,6 +326,11 @@ private:
 
 	unsigned char		m_VarCount;
 
+#ifdef BYTEMATCH_RETAIL
+	unsigned char		m_ProxyCount;
+	IMaterialVar**		m_pShaderParams;
+	IMaterialProxy**	m_ppProxies;
+#else
 	CUtlVector< IMaterialProxy * > m_ProxyInfo;
 
 #ifdef PROXY_TRACK_NAMES
@@ -334,6 +339,7 @@ private:
 #endif
 
 	IMaterialVar**		m_pShaderParams;
+#endif
 	IMaterialProxy		*m_pReplacementProxy;
 	ShaderRenderState_t m_ShaderRenderState;
 
@@ -487,6 +493,10 @@ CMaterial::CMaterial( char const* materialName, const char *pTextureGroupName, K
 	m_RefCount = 0;
 	m_representativeTexture = NULL;
 	m_pReplacementProxy = NULL;
+#ifdef BYTEMATCH_RETAIL
+	m_ppProxies = NULL;
+	m_ProxyCount = 0;
+#endif
 	m_VarCount = 0;
 	m_MappingWidth = m_MappingHeight = 0;
 	m_iEnumerationID = 0;
@@ -749,6 +759,62 @@ void CMaterial::InitializeMaterialProxy( KeyValues* pFallbackKeyValues )
 
 	DetermineProxyReplacements( pFallbackKeyValues );
 
+#ifdef BYTEMATCH_RETAIL
+	int proxyCount = 0;
+	IMaterialProxy* ppProxies[256];
+
+	if ( m_pReplacementProxy )
+	{
+		ppProxies[proxyCount] = m_pReplacementProxy;
+		++proxyCount;
+	}
+
+	// See if we've got a proxy section; obey fallbacks
+	KeyValues* pProxySection = pFallbackKeyValues->FindKey("Proxies");
+	if ( pProxySection )
+	{
+		// Iterate through the section + create all of the proxies
+		KeyValues* pProxyKey = pProxySection->GetFirstSubKey();
+		for ( ; pProxyKey; pProxyKey = pProxyKey->GetNextKey() )
+		{
+			// Each of the proxies should themselves be databases
+			IMaterialProxy* pProxy = pMaterialProxyFactory->CreateProxy( pProxyKey->GetName() );
+			if (!pProxy)
+			{
+				Warning( "Error: Material \"%s\" : proxy \"%s\" not found!\n", GetName(), pProxyKey->GetName() );
+				continue;
+			}
+
+			if (!pProxy->Init( this->GetQueueFriendlyVersion(), pProxyKey ))
+			{
+				pMaterialProxyFactory->DeleteProxy( pProxy );
+				Warning( "Error: Material \"%s\" : proxy \"%s\" unable to initialize!\n", GetName(), pProxyKey->GetName() );
+			}
+			else
+			{
+				ppProxies[proxyCount] = pProxy;
+				++proxyCount;
+				if ( proxyCount >= ARRAYSIZE( ppProxies ) )
+				{
+					Warning( "Error: Material \"%s\" has more than %lu proxies!\n", GetName(), ( unsigned long )ARRAYSIZE( ppProxies ) );
+					break;
+				}
+			}
+		}
+	}
+
+	// Allocate space for the number of proxies we successfully made...
+	m_ProxyCount = proxyCount;
+	if (proxyCount)
+	{
+		m_ppProxies = (IMaterialProxy**)malloc( proxyCount * sizeof(IMaterialProxy*) );
+		memcpy( m_ppProxies, ppProxies, proxyCount * sizeof(IMaterialProxy*) );
+	}
+	else
+	{
+		m_ppProxies = 0;
+	}
+#else
 	if ( m_pReplacementProxy )
 	{
 		m_ProxyInfo.AddToTail( m_pReplacementProxy );
@@ -788,6 +854,7 @@ void CMaterial::InitializeMaterialProxy( KeyValues* pFallbackKeyValues )
 			}
 		}
 	}
+#endif
 }
 
 
@@ -796,8 +863,13 @@ void CMaterial::InitializeMaterialProxy( KeyValues* pFallbackKeyValues )
 //-----------------------------------------------------------------------------
 void CMaterial::CleanUpMaterialProxy()
 {
+#ifdef BYTEMATCH_RETAIL
+	if ( !m_ProxyCount )
+		return;
+#else
 	if ( !m_ProxyInfo.Count() )
 		return;
+#endif
 
 	IMaterialProxyFactory *pMaterialProxyFactory;
 	pMaterialProxyFactory = MaterialSystem()->GetMaterialProxyFactory();
@@ -805,6 +877,16 @@ void CMaterial::CleanUpMaterialProxy()
 		return;
 
 	// Clean up material proxies
+#ifdef BYTEMATCH_RETAIL
+	for ( int i = m_ProxyCount; --i >= 0; )
+	{
+		pMaterialProxyFactory->DeleteProxy( m_ppProxies[i] );
+	}
+	free( m_ppProxies );
+
+	m_ppProxies = NULL;
+	m_ProxyCount = 0;
+#else
 	for ( int i = m_ProxyInfo.Count() - 1; i >= 0; i-- )
 	{
 		IMaterialProxy *pProxy = m_ProxyInfo[ i ];
@@ -815,6 +897,7 @@ void CMaterial::CleanUpMaterialProxy()
 	m_ProxyInfo.RemoveAll();
 #ifdef PROXY_TRACK_NAMES
 	m_ProxyInfoNames.RemoveAll();
+#endif
 #endif
 }
 
@@ -2987,6 +3070,18 @@ void CMaterial::CallBindProxy( void *proxyData )
 		{
 			// Make sure we call the proxies in the order in which they show up
 			// in the .vmt file
+#ifdef BYTEMATCH_RETAIL
+			if ( m_ProxyCount )
+			{
+				if ( bIsThreaded )
+				{
+					EnableThreadedMaterialVarAccess( true, m_pShaderParams, m_VarCount );
+				}
+				for( int i = 0; i < m_ProxyCount; ++i )
+				{
+					m_ppProxies[i]->OnBind( proxyData );
+				}
+#else
 			if ( m_ProxyInfo.Count() )
 			{
 				if ( bIsThreaded )
@@ -2997,6 +3092,7 @@ void CMaterial::CallBindProxy( void *proxyData )
 				{
 					m_ProxyInfo[i]->OnBind( proxyData );
 				}
+#endif
 				if ( bIsThreaded )
 				{
 					EnableThreadedMaterialVarAccess( false, m_pShaderParams, m_VarCount );
@@ -3043,7 +3139,11 @@ IMaterial *CMaterial::CheckProxyReplacement( void *proxyData )
 bool CMaterial::HasProxy( )	const
 {
 	const_cast< CMaterial* >( this )->PrecacheVars();
+#ifdef BYTEMATCH_RETAIL
+	return ( m_ProxyCount > 0 );
+#else
 	return m_ProxyInfo.Count() > 0;
+#endif
 }
 
 
@@ -3594,6 +3694,16 @@ bool CMaterial::IsUsingVertexID( ) const
 	return ( GetMaterialVarFlags2() & MATERIAL_VAR2_USES_VERTEXID ) != 0;
 }
 
+#ifdef BYTEMATCH_RETAIL
+void CMaterial::DeleteIfUnreferenced()
+{
+	if ( m_RefCount > 0 )
+		return;
+	IMaterialVar::DeleteUnreferencedTextures( true );
+	MaterialSystem()->RemoveMaterial( this );
+	IMaterialVar::DeleteUnreferencedTextures( false );
+}
+#else
 void CMaterial::DeleteIfUnreferenced()
 {
 	if ( m_RefCount > 0 )
@@ -3602,3 +3712,4 @@ void CMaterial::DeleteIfUnreferenced()
 	IMaterialInternal::DestroyMaterial( this );
 	IMaterialVar::DeleteUnreferencedTextures( false );
 }
+#endif

@@ -25,10 +25,15 @@ FORCEINLINE bool IsEmulatingGL()
 	return bIsEmulatingGL;
 }
 
+#ifdef BYTEMATCH_RETAIL
+// Defined after IMaterialSystem in imaterialsystem.h: asks g_pMaterialSystem for its render backend.
+FORCEINLINE bool IsOpenGL( void );
+#else
 FORCEINLINE bool IsOpenGL( void )
 {
 	return IsPlatformOpenGL() || IsEmulatingGL();
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Material system interface version

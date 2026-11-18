@@ -562,7 +562,11 @@ void CShaderDeviceMgrDx8::CheckVendorDependentAlphaToCoverage( HardwareCaps_t *p
 ConVar mat_hdr_level( "mat_hdr_level", "2", FCVAR_ARCHIVE );
 ConVar mat_slopescaledepthbias_shadowmap( "mat_slopescaledepthbias_shadowmap", "16", FCVAR_CHEAT );
 #ifdef DX_TO_GL_ABSTRACTION
+#ifdef BYTEMATCH_RETAIL
+ConVar mat_depthbias_shadowmap(	"mat_depthbias_shadowmap", "20", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY );
+#else
 ConVar mat_depthbias_shadowmap(	"mat_depthbias_shadowmap", "40", FCVAR_CHEAT );
+#endif
 #else
 ConVar mat_depthbias_shadowmap(	"mat_depthbias_shadowmap", "0.0005", FCVAR_CHEAT  );
 #endif
@@ -1059,7 +1063,11 @@ bool CShaderDeviceMgrDx8::ComputeCapsFromD3D( HardwareCaps_t *pCaps, int nAdapte
 		pCaps->m_SupportsVertexShaders_2_0 &&
 		//		(caps.Caps3 & D3DCAPS3_ALPHA_FULLSCREEN_FLIP_OR_DISCARD) &&
 		//		(caps.PrimitiveMiscCaps & D3DPMISCCAPS_SEPARATEALPHABLEND) &&
+#ifdef BYTEMATCH_RETAIL
+		( bSupportsInteger16Textures || bSupportsFloat16Textures ) &&
+#else
 		bSupportsInteger16Textures &&
+#endif
 		pCaps->m_SupportsSRGB;
 
 	// Do we have everything necessary to run with float HDR?
@@ -1345,6 +1353,46 @@ void CShaderDeviceMgrDx8::GetModeInfo( ShaderDisplayMode_t* pInfo, int nAdapter,
 //-----------------------------------------------------------------------------
 // Returns the current mode information for an adapter
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+void CShaderDeviceMgrDx8::GetCurrentModeInfo( ShaderDisplayMode_t* pInfo, int nAdapter ) const
+{
+	Assert( pInfo->m_nVersion == SHADER_DISPLAY_MODE_VERSION );
+
+	LOCK_SHADERAPI();
+	Assert( D3D() );
+
+	HRESULT hr;
+	D3DDISPLAYMODE mode;
+#if defined( _PS3 )
+	PS3_GetVideoOutResolution( ( int *)&mode.Width, ( int *)&mode.Height, &pInfo->m_flAspectRatio );
+ 	mode.Format = D3DFMT_X8R8G8B8;
+ 	mode.RefreshRate = 60;	
+#elif defined( _X360 )
+	if ( !m_pD3DDevice )
+	{
+		// the console has no prior display or mode until its created
+		mode.Width  = GetSystemMetrics( SM_CXSCREEN );
+		mode.Height = GetSystemMetrics( SM_CYSCREEN );
+		mode.RefreshRate = 60;
+		mode.Format = D3DFMT_X8R8G8B8;
+	}
+	else
+	{
+		hr = m_pD3DDevice->GetDisplayMode( 0, &mode );
+		Assert( !FAILED(hr) );
+	}
+#else
+	hr = D3D()->GetAdapterDisplayMode( nAdapter, &mode );
+	Assert( !FAILED(hr) );	
+#endif
+
+	pInfo->m_nWidth = mode.Width;
+	pInfo->m_nHeight = mode.Height;
+	pInfo->m_Format = ImageLoader::D3DFormatToImageFormat( mode.Format );
+	pInfo->m_nRefreshRateNumerator = mode.RefreshRate;
+	pInfo->m_nRefreshRateDenominator = 1;
+}
+#else
 void CShaderDeviceMgrDx8::GetCurrentModeInfo( ShaderDisplayMode_t* pInfo, int nAdapter ) const
 {
 	Assert( pInfo->m_nVersion == SHADER_DISPLAY_MODE_VERSION );
@@ -1379,6 +1427,7 @@ void CShaderDeviceMgrDx8::GetCurrentModeInfo( ShaderDisplayMode_t* pInfo, int nA
 	pInfo->m_nRefreshRateNumerator = mode.RefreshRate;
 	pInfo->m_nRefreshRateDenominator = 1;
 }
+#endif
 
 
 //-----------------------------------------------------------------------------
@@ -3406,6 +3455,8 @@ void CShaderDeviceDx8::Present()
 			RECT destRect;
 			#ifndef DX_TO_GL_ABSTRACTION
 					GetClientRect( ( HWND )m_ViewHWnd, &destRect );
+			#elif defined( TOGL_OSX )
+					nativeGetClientRect( m_ViewHWnd, &destRect );
 			#else
 					toglGetClientRect( (VD3DHWND)m_ViewHWnd, &destRect );
 			#endif

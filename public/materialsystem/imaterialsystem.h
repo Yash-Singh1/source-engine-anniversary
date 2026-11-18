@@ -1802,4 +1802,11 @@ static void DoMatSysQueueMark( IMaterialSystem *pMaterialSystem, const char *psz
 extern IMaterialSystem *materials;
 extern IMaterialSystem *g_pMaterialSystem;
 
+#ifdef BYTEMATCH_RETAIL
+FORCEINLINE bool IsOpenGL( void )
+{
+	return g_pMaterialSystem->GetRenderBackend() == RENDER_BACKEND_TOGL;
+}
+#endif
+
 #endif // IMATERIALSYSTEM_H

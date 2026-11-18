@@ -107,6 +107,9 @@ bool CShaderDLL::Connect( CreateInterfaceFn factory, bool bIsMaterialSystem )
 	g_pHardwareConfig =  (IMaterialSystemHardwareConfig*)factory( MATERIALSYSTEM_HARDWARECONFIG_INTERFACE_VERSION, NULL );
 	g_pConfig = (const MaterialSystem_Config_t*)factory( MATERIALSYSTEM_CONFIG_VERSION, NULL );
 	g_pSLShaderSystem =  (IShaderSystem*)factory( SHADERSYSTEM_INTERFACE_VERSION, NULL );
+#ifdef BYTEMATCH_RETAIL
+	g_pMaterialSystem = (IMaterialSystem*)factory( MATERIAL_SYSTEM_INTERFACE_VERSION, NULL );
+#endif
 
 	if ( !bIsMaterialSystem )
 	{
@@ -114,7 +117,11 @@ bool CShaderDLL::Connect( CreateInterfaceFn factory, bool bIsMaterialSystem )
   		InitShaderLibCVars( factory );
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	return ( g_pConfig != NULL ) && (g_pHardwareConfig != NULL) && ( g_pSLShaderSystem != NULL ) && ( g_pMaterialSystem != NULL );
+#else
 	return ( g_pConfig != NULL ) && (g_pHardwareConfig != NULL) && ( g_pSLShaderSystem != NULL );
+#endif
 }
 
 void CShaderDLL::Disconnect( bool bIsMaterialSystem )

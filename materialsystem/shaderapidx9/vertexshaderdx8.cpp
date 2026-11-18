@@ -164,8 +164,8 @@ static FILE *GetDebugFileHandle( void )
 	// to the filename glshaders.cfg
 	//
 
-	ConVar mat_autosave_glshaders( "mat_autosave_glshaders", "1" );
 	ConVar mat_autoload_glshaders( "mat_autoload_glshaders", "1" );
+	ConVar mat_autosave_glshaders( "mat_autosave_glshaders", "1" );
 #endif
 //-----------------------------------------------------------------------------
 // Explicit instantiation of shader buffer implementation
