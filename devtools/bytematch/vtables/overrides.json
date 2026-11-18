@@ -1,0 +1,296 @@
+{
+ "CBitmapFont": {
+  "skip": "needs FreeType headers; vguimatsurface-internal font class"
+ },
+ "CBitmapImagePanel": {
+  "skip": "GameUI-local class; the public header declares vgui::CBitmapImagePanel"
+ },
+ "CBotCmd": {
+  "includes": [
+   "edict.h"
+  ]
+ },
+ "CLC_SaveReplay": {
+  "skip": "replay message; not built in this tree"
+ },
+ "CParticleSystem": {
+  "skip": "name clash with an unrelated public class"
+ },
+ "CPlayerState": {
+  "retail_len": 4,
+  "why": "GetPredDescMap comes from DECLARE_PREDICTABLE in the game class"
+ },
+ "CRefCountServiceNull": {
+  "skip": "no virtuals of its own in our header"
+ },
+ "ConVar_ServerBounded": {
+  "includes": [
+   "tier1/convar.h"
+  ]
+ },
+ "GLMDisplayDB": {
+  "skip": "ToGL internals; retail ToGL is a different generation (libtogl lane)"
+ },
+ "IAsyncWavDataCache": {
+  "retail_len": 21,
+  "why": "GetItemName overrides the secondary base IDataCacheClient"
+ },
+ "IBSPPack": {
+  "includes": [
+   "filesystem.h",
+   "vtf/vtf.h"
+  ]
+ },
+ "IBaseInterface": {
+  "retail_len": 2,
+  "why": "CreateDownloadThread is CDownloadSystem's own virtual"
+ },
+ "IBotController": {
+  "includes": [
+   "edict.h"
+  ],
+  "retail_len": 10,
+  "why": "retail CPlayerInfo subtable continues with IPlayerInfo methods"
+ },
+ "IBotManager": {
+  "includes": [
+   "edict.h"
+  ]
+ },
+ "ICenterPrint": {
+  "retail_len": 6,
+  "why": "Create/Destroy are CCenterPrint's own virtuals"
+ },
+ "IClientEntity": {
+  "retail_len": 15,
+  "why": "next slots are C_BaseEntity virtuals (GetDataDescMap, ...)"
+ },
+ "IClientLeafSystemEngine": {
+  "retail_len": 4,
+  "why": "next slots belong to IClientLeafSystem"
+ },
+ "IClientReplayContext": {
+  "retail_len": 30,
+  "why": "extra slots are CClientReplayContext's own (replay)"
+ },
+ "IClientTools": {
+  "retail_len": 47,
+  "why": "OnEntityCreated/Deleted override the secondary base IClientEntityListener"
+ },
+ "IClientUnknown": {
+  "retail_len": 10,
+  "why": "next slots come from DECLARE_CLIENTCLASS in the implementer"
+ },
+ "ICollideable": {
+  "includes": [
+   "const.h"
+  ]
+ },
+ "IDataCacheSection": {
+  "retail_len": 30,
+  "why": "OnAdd/DoFind/OnRemove are CDataCacheSection's own"
+ },
+ "IDedicatedServerAPI": {
+  "includes": [
+   "appframework/IAppSystemGroup.h"
+  ]
+ },
+ "IEngineTool": {
+  "retail_len": 85,
+  "why": "SetIsInGame belongs to the engine-internal tool interface"
+ },
+ "IEngineTrace": {
+  "retail_len": 18,
+  "why": "extra slots are CEngineTrace's own"
+ },
+ "IEngineVGui": {
+  "retail_len": 4,
+  "why": "next slots belong to IEngineVGuiInternal"
+ },
+ "IFileSystem": {
+  "retail_len": 123,
+  "why": "slots 123+ are CBaseFileSystem overrides of the secondary base IBaseFileSystem"
+ },
+ "IGameClientExports": {
+  "includes": [
+   "vgui/VGUI.h"
+  ]
+ },
+ "IGameUI": {
+  "retail_len": 38,
+  "why": "extra slots are CGameUI's own"
+ },
+ "IHandleEntity": {
+  "retail_len": 4,
+  "why": "next slots belong to IClientUnknown/IServerUnknown"
+ },
+ "ILauncherMgr": {
+  "skip": "ToGL/launcher internals; needs SDL headers and retail ToGL is a different generation"
+ },
+ "IMaterialSystem": {
+  "retail_len": 127,
+  "why": "IMaterialSystemInternal starts at GetCurrentMaterial"
+ },
+ "IMaterialSystemHardwareConfig": {
+  "retail_len": 73,
+  "why": "GetHWSpecificShaderDLLName belongs to IHardwareConfigInternal"
+ },
+ "IMaterialVar": {
+  "retail_len": 31,
+  "why": "operator ITexture* / GetType are implementer virtuals"
+ },
+ "IMesh": {
+  "retail_len": 28,
+  "why": "slots 28+ override the secondary base IIndexBuffer"
+ },
+ "IMorph": {
+  "retail_len": 3,
+  "why": "AccumulateMorph belongs to the internal morph interface"
+ },
+ "INetworkStringTable": {
+  "retail_len": 15,
+  "why": "Dump/Lock are CNetworkStringTable's own"
+ },
+ "IPhysicsConstraint": {
+  "retail_len": 14,
+  "why": "event_object_* come from the IVP listener base"
+ },
+ "IPhysicsEnvironment": {
+  "retail_len": 68,
+  "why": "extra slots are CPhysicsEnvironment's own"
+ },
+ "IPhysicsFrictionSnapshot": {
+  "includes": [
+   "vphysics_interface.h"
+  ]
+ },
+ "IPhysicsPlayerController": {
+  "includes": [
+   "vphysics_interface.h"
+  ]
+ },
+ "IPhysicsPlayerControllerEvent": {
+  "includes": [
+   "vphysics_interface.h"
+  ]
+ },
+ "IPhysicsSpring": {
+  "retail_len": 8,
+  "why": "event_object_* come from the IVP listener base"
+ },
+ "IPhysicsSurfaceProps": {
+  "retail_len": 11,
+  "why": "extra slots are CPhysicsSurfaceProps's own IVP helpers"
+ },
+ "IPhysicsVehicleController": {
+  "includes": [
+   "vphysics_interface.h"
+  ],
+  "retail_len": 18,
+  "why": "event_object_* come from the IVP listener base"
+ },
+ "IPlayerInfo": {
+  "includes": [
+   "edict.h"
+  ]
+ },
+ "IPlayerInfoManager": {
+  "includes": [
+   "edict.h"
+  ]
+ },
+ "IPoseDebugger": {
+  "includes": [
+   "studio.h"
+  ]
+ },
+ "IPrediction": {
+  "retail_len": 15,
+  "why": "extra slots are CPrediction's own"
+ },
+ "IRecordingSessionBlockManager": {
+  "skip": "replay module; not built in this tree"
+ },
+ "IRegistry": {
+  "retail_len": 12,
+  "why": "DirectInit is CRegistry's own"
+ },
+ "IServer": {
+  "retail_len": 35,
+  "why": "extra slots are CBaseServer's own"
+ },
+ "IServerEntity": {
+  "retail_len": 10,
+  "why": "next slots are CBaseEntity virtuals (GetServerClass, ...)"
+ },
+ "IServerNetworkable": {
+  "retail_len": 11,
+  "why": "GetDataDescMap/FireEvent are CServerNetworkProperty's own"
+ },
+ "IServerPluginHelpers": {
+  "retail_len": 3,
+  "why": "next slots override IServerPluginCallbacks"
+ },
+ "IServerReplayContext": {
+  "retail_len": 18,
+  "why": "extra slots are CServerReplayContext's own (replay)"
+ },
+ "IShaderInit": {
+  "retail_len": 3,
+  "why": "extra slots are CShaderSystem's own"
+ },
+ "IShadowMgr": {
+  "retail_len": 23,
+  "why": "extra slots belong to the internal shadow manager interface"
+ },
+ "ISpatialPartition": {
+  "retail_len": 35,
+  "why": "extra slots belong to ISpatialPartitionInternal"
+ },
+ "IToolFrameworkInternal": {
+  "retail_len": 48,
+  "why": "extra slots are CToolFrameworkInternal's own"
+ },
+ "IVModelInfo": {
+  "retail_len": 59,
+  "why": "extra slots are CModelInfo's own"
+ },
+ "IVModelInfoClient": {
+  "retail_len": 60,
+  "why": "extra slots are CModelInfo's own"
+ },
+ "IVModelRender": {
+  "retail_len": 25,
+  "why": "GetItemName overrides the secondary base IDataCacheClient"
+ },
+ "IVRenderView": {
+  "retail_len": 52,
+  "why": "EnumerateLeaf overrides the secondary base ISpatialLeafEnumerator"
+ },
+ "IVTex": {
+  "retail_len": 7,
+  "why": "main overrides the secondary base ILaunchableDLL"
+ },
+ "aligned_tmp_t": {
+  "skip": "not a polymorphic class in our header"
+ },
+ "vgui::BaseTooltip": {
+  "includes": [
+   "vgui/IScheme.h"
+  ]
+ },
+ "vgui::IPanel": {
+  "retail_len": 62,
+  "why": "Client/GetModuleName are VPanelWrapper's own virtuals"
+ },
+ "vgui::ListViewPanel": {
+  "includes": [
+   "vgui_controls/Panel.h"
+  ]
+ },
+ "vgui::TextTooltip": {
+  "includes": [
+   "vgui/IScheme.h"
+  ]
+ }
+}

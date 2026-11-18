@@ -1,0 +1,85 @@
+{
+ "interface": "IKeyValuesSystem",
+ "headers": [
+  "public/vstdlib/IKeyValuesSystem.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 7,
+ "sdk2013_slots": [
+  "RegisterSizeofKeyValues(int)",
+  "AllocKeyValuesMemory(int)",
+  "FreeKeyValuesMemory(void*)",
+  "GetSymbolForString(char const*, bool)",
+  "GetStringForSymbol(int)",
+  "AddKeyValuesToMemoryLeakList(void*, int)",
+  "RemoveKeyValuesFromMemoryLeakList(void*)"
+ ],
+ "retail_reference": {
+  "module": "bin/libvstdlib",
+  "class": "CKeyValuesSystem",
+  "offset": 0,
+  "chain": [
+   "CKeyValuesSystem",
+   "IKeyValuesSystem"
+  ]
+ },
+ "retail_len": 7,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 7
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "RegisterSizeofKeyValues",
+   "sig": "RegisterSizeofKeyValues(int)",
+   "symbol": "CKeyValuesSystem::RegisterSizeofKeyValues(int)"
+  },
+  {
+   "index": 1,
+   "name": "AllocKeyValuesMemory",
+   "sig": "AllocKeyValuesMemory(int)",
+   "symbol": "CKeyValuesSystem::AllocKeyValuesMemory(int)"
+  },
+  {
+   "index": 2,
+   "name": "FreeKeyValuesMemory",
+   "sig": "FreeKeyValuesMemory(void*)",
+   "symbol": "CKeyValuesSystem::FreeKeyValuesMemory(void*)"
+  },
+  {
+   "index": 3,
+   "name": "GetSymbolForString",
+   "sig": "GetSymbolForString(char const*, bool)",
+   "symbol": "CKeyValuesSystem::GetSymbolForString(char const*, bool)"
+  },
+  {
+   "index": 4,
+   "name": "GetStringForSymbol",
+   "sig": "GetStringForSymbol(int)",
+   "symbol": "CKeyValuesSystem::GetStringForSymbol(int)"
+  },
+  {
+   "index": 5,
+   "name": "AddKeyValuesToMemoryLeakList",
+   "sig": "AddKeyValuesToMemoryLeakList(void*, int)",
+   "symbol": "CKeyValuesSystem::AddKeyValuesToMemoryLeakList(void*, int)"
+  },
+  {
+   "index": 6,
+   "name": "RemoveKeyValuesFromMemoryLeakList",
+   "sig": "RemoveKeyValuesFromMemoryLeakList(void*)",
+   "symbol": "CKeyValuesSystem::RemoveKeyValuesFromMemoryLeakList(void*)"
+  }
+ ],
+ "derived": [
+  "bin/libvstdlib:CKeyValuesSystem"
+ ],
+ "derived_count": 1
+}

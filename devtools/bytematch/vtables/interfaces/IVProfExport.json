@@ -1,0 +1,95 @@
+{
+ "interface": "IVProfExport",
+ "headers": [
+  "common/ivprofexport.h"
+ ],
+ "versions": {
+  "retail": [
+   "VProfExport001"
+  ],
+  "ours": [
+   "VProfExport001"
+  ],
+  "sdk2013": []
+ },
+ "version_macros": [
+  "VPROF_EXPORT_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/engine",
+   "version": "VProfExport001",
+   "class": "CVProfExport"
+  }
+ ],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CVProfExport",
+  "offset": 0,
+  "chain": [
+   "CVProfExport",
+   "IVProfExport"
+  ]
+ },
+ "retail_len": 8,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 8
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "AddListener",
+   "sig": "AddListener()",
+   "symbol": "CVProfExport::AddListener()"
+  },
+  {
+   "index": 1,
+   "name": "RemoveListener",
+   "sig": "RemoveListener()",
+   "symbol": "CVProfExport::RemoveListener()"
+  },
+  {
+   "index": 2,
+   "name": "PauseProfile",
+   "sig": "PauseProfile()",
+   "symbol": "CVProfExport::PauseProfile()"
+  },
+  {
+   "index": 3,
+   "name": "ResumeProfile",
+   "sig": "ResumeProfile()",
+   "symbol": "CVProfExport::ResumeProfile()"
+  },
+  {
+   "index": 4,
+   "name": "SetBudgetFlagsFilter",
+   "sig": "SetBudgetFlagsFilter(int)",
+   "symbol": "CVProfExport::SetBudgetFlagsFilter(int)"
+  },
+  {
+   "index": 5,
+   "name": "GetNumBudgetGroups",
+   "sig": "GetNumBudgetGroups()",
+   "symbol": "CVProfExport::GetNumBudgetGroups()"
+  },
+  {
+   "index": 6,
+   "name": "GetBudgetGroupInfos",
+   "sig": "GetBudgetGroupInfos(IVProfExport::CExportedBudgetGroupInfo*)",
+   "symbol": "CVProfExport::GetBudgetGroupInfos(IVProfExport::CExportedBudgetGroupInfo*)"
+  },
+  {
+   "index": 7,
+   "name": "GetBudgetGroupTimes",
+   "sig": "GetBudgetGroupTimes(float*)",
+   "symbol": "CVProfExport::GetBudgetGroupTimes(float*)"
+  }
+ ],
+ "derived": [
+  "bin/engine:CRConVProfExport",
+  "bin/engine:CVProfExport"
+ ],
+ "derived_count": 2
+}

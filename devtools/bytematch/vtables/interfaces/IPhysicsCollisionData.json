@@ -1,0 +1,60 @@
+{
+ "interface": "IPhysicsCollisionData",
+ "headers": [
+  "public/vphysics_interface.h",
+  "public/vphysics_interfaceV30.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 3,
+ "sdk2013_slots": [
+  "GetSurfaceNormal(Vector&)",
+  "GetContactPoint(Vector&)",
+  "GetContactSpeed(Vector&)"
+ ],
+ "retail_reference": {
+  "module": "bin/vphysics",
+  "class": "CAirboatFrictionData",
+  "offset": 0,
+  "chain": [
+   "CAirboatFrictionData",
+   "IPhysicsCollisionData"
+  ]
+ },
+ "retail_len": 3,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 3
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "GetSurfaceNormal",
+   "sig": "GetSurfaceNormal(Vector&)",
+   "symbol": "CAirboatFrictionData::GetSurfaceNormal(Vector&)"
+  },
+  {
+   "index": 1,
+   "name": "GetContactPoint",
+   "sig": "GetContactPoint(Vector&)",
+   "symbol": "CAirboatFrictionData::GetContactPoint(Vector&)"
+  },
+  {
+   "index": 2,
+   "name": "GetContactSpeed",
+   "sig": "GetContactSpeed(Vector&)",
+   "symbol": "CAirboatFrictionData::GetContactSpeed(Vector&)"
+  }
+ ],
+ "derived": [
+  "bin/vphysics:CAirboatFrictionData",
+  "bin/vphysics:CPhysicsCollisionData",
+  "bin/vphysics:CPhysicsFrictionData"
+ ],
+ "derived_count": 3
+}

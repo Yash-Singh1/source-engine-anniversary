@@ -1,0 +1,343 @@
+{
+ "interface": "IClientLeafSystem",
+ "headers": [],
+ "versions": {
+  "retail": [
+   "ClientLeafSystem002"
+  ],
+  "ours": [
+   "ClientLeafSystem001",
+   "ClientLeafSystem002"
+  ],
+  "sdk2013": [
+   "ClientLeafSystem001",
+   "ClientLeafSystem002"
+  ]
+ },
+ "version_macros": [
+  "CLIENTLEAFSYSTEM_INTERFACE_VERSION",
+  "CLIENTLEAFSYSTEM_INTERFACE_VERSION_1"
+ ],
+ "registrations": [
+  {
+   "module": "episodic/client",
+   "version": "ClientLeafSystem002",
+   "class": "CClientLeafSystem"
+  },
+  {
+   "module": "hl2/client",
+   "version": "ClientLeafSystem002",
+   "class": "CClientLeafSystem"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "ClientLeafSystem002",
+   "class": "CClientLeafSystem"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "ClientLeafSystem002",
+   "class": "CClientLeafSystem"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "ClientLeafSystem002",
+   "class": "CClientLeafSystem"
+  }
+ ],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "episodic/client",
+  "class": "CClientLeafSystem",
+  "offset": 0,
+  "chain": [
+   "CClientLeafSystem",
+   "IClientLeafSystem"
+  ]
+ },
+ "retail_len": 45,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 45
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "CreateRenderableHandle",
+   "sig": "CreateRenderableHandle(IClientRenderable*, bool)",
+   "symbol": "CClientLeafSystem::CreateRenderableHandle(IClientRenderable*, bool)"
+  },
+  {
+   "index": 1,
+   "name": "RemoveRenderable",
+   "sig": "RemoveRenderable(unsigned short)",
+   "symbol": "CClientLeafSystem::RemoveRenderable(unsigned short)"
+  },
+  {
+   "index": 2,
+   "name": "AddRenderableToLeaves",
+   "sig": "AddRenderableToLeaves(unsigned short, int, unsigned short*)",
+   "symbol": "CClientLeafSystem::AddRenderableToLeaves(unsigned short, int, unsigned short*)"
+  },
+  {
+   "index": 3,
+   "name": "ChangeRenderableRenderGroup",
+   "sig": "ChangeRenderableRenderGroup(unsigned short, RenderGroup_t)",
+   "symbol": "CClientLeafSystem::ChangeRenderableRenderGroup(unsigned short, RenderGroup_t)"
+  },
+  {
+   "index": 4,
+   "name": "AddRenderable",
+   "sig": "AddRenderable(IClientRenderable*, RenderGroup_t)",
+   "symbol": "CClientLeafSystem::AddRenderable(IClientRenderable*, RenderGroup_t)"
+  },
+  {
+   "index": 5,
+   "name": "IsRenderableInPVS",
+   "sig": "IsRenderableInPVS(IClientRenderable*)",
+   "symbol": "CClientLeafSystem::IsRenderableInPVS(IClientRenderable*)"
+  },
+  {
+   "index": 6,
+   "name": "SetSubSystemDataInLeaf",
+   "sig": "SetSubSystemDataInLeaf(int, int, CClientLeafSubSystemData*)",
+   "symbol": "CClientLeafSystem::SetSubSystemDataInLeaf(int, int, CClientLeafSubSystemData*)"
+  },
+  {
+   "index": 7,
+   "name": "GetSubSystemDataInLeaf",
+   "sig": "GetSubSystemDataInLeaf(int, int)",
+   "symbol": "CClientLeafSystem::GetSubSystemDataInLeaf(int, int)"
+  },
+  {
+   "index": 8,
+   "name": "SetDetailObjectsInLeaf",
+   "sig": "SetDetailObjectsInLeaf(int, int, int)",
+   "symbol": "CClientLeafSystem::SetDetailObjectsInLeaf(int, int, int)"
+  },
+  {
+   "index": 9,
+   "name": "GetDetailObjectsInLeaf",
+   "sig": "GetDetailObjectsInLeaf(int, int&, int&)",
+   "symbol": "CClientLeafSystem::GetDetailObjectsInLeaf(int, int&, int&)"
+  },
+  {
+   "index": 10,
+   "name": "DrawDetailObjectsInLeaf",
+   "sig": "DrawDetailObjectsInLeaf(int, int, int&, int&)",
+   "symbol": "CClientLeafSystem::DrawDetailObjectsInLeaf(int, int, int&, int&)"
+  },
+  {
+   "index": 11,
+   "name": "ShouldDrawDetailObjectsInLeaf",
+   "sig": "ShouldDrawDetailObjectsInLeaf(int, int)",
+   "symbol": "CClientLeafSystem::ShouldDrawDetailObjectsInLeaf(int, int)"
+  },
+  {
+   "index": 12,
+   "name": "RenderableChanged",
+   "sig": "RenderableChanged(unsigned short)",
+   "symbol": "CClientLeafSystem::RenderableChanged(unsigned short)"
+  },
+  {
+   "index": 13,
+   "name": "SetRenderGroup",
+   "sig": "SetRenderGroup(unsigned short, RenderGroup_t)",
+   "symbol": "CClientLeafSystem::SetRenderGroup(unsigned short, RenderGroup_t)"
+  },
+  {
+   "index": 14,
+   "name": "ComputeTranslucentRenderLeaf",
+   "sig": "ComputeTranslucentRenderLeaf(int, unsigned short const*, short const*, int, int)",
+   "symbol": "CClientLeafSystem::ComputeTranslucentRenderLeaf(int, unsigned short const*, short const*, int, int)"
+  },
+  {
+   "index": 15,
+   "name": "BuildRenderablesList",
+   "sig": "BuildRenderablesList(SetupRenderInfo_t const&)",
+   "symbol": "CClientLeafSystem::BuildRenderablesList(SetupRenderInfo_t const&)"
+  },
+  {
+   "index": 16,
+   "name": "CollateViewModelRenderables",
+   "sig": "CollateViewModelRenderables(CUtlVector<IClientRenderable*, CUtlMemory<IClientRenderable*, int>>&, CUtlVector<IClientRenderable*, CUtlMemory<IClientRenderable*, int>>&)",
+   "symbol": "CClientLeafSystem::CollateViewModelRenderables(CUtlVector<IClientRenderable*, CUtlMemory<IClientRenderable*, int>>&, CUtlVector<IClientRenderable*, CUtlMemory<IClientRenderable*, int>>&)"
+  },
+  {
+   "index": 17,
+   "name": "DrawStaticProps",
+   "sig": "DrawStaticProps(bool)",
+   "symbol": "CClientLeafSystem::DrawStaticProps(bool)"
+  },
+  {
+   "index": 18,
+   "name": "DrawSmallEntities",
+   "sig": "DrawSmallEntities(bool)",
+   "symbol": "CClientLeafSystem::DrawSmallEntities(bool)"
+  },
+  {
+   "index": 19,
+   "name": "AddShadow",
+   "sig": "AddShadow(unsigned short, unsigned short)",
+   "symbol": "CClientLeafSystem::AddShadow(unsigned short, unsigned short)"
+  },
+  {
+   "index": 20,
+   "name": "RemoveShadow",
+   "sig": "RemoveShadow(unsigned short)",
+   "symbol": "CClientLeafSystem::RemoveShadow(unsigned short)"
+  },
+  {
+   "index": 21,
+   "name": "ProjectShadow",
+   "sig": "ProjectShadow(unsigned short, int, int const*)",
+   "symbol": "CClientLeafSystem::ProjectShadow(unsigned short, int, int const*)"
+  },
+  {
+   "index": 22,
+   "name": "ProjectFlashlight",
+   "sig": "ProjectFlashlight(unsigned short, int, int const*)",
+   "symbol": "CClientLeafSystem::ProjectFlashlight(unsigned short, int, int const*)"
+  },
+  {
+   "index": 23,
+   "name": "EnumerateShadowsInLeaves",
+   "sig": "EnumerateShadowsInLeaves(int, unsigned short*, IClientLeafShadowEnum*)",
+   "symbol": "CClientLeafSystem::EnumerateShadowsInLeaves(int, unsigned short*, IClientLeafShadowEnum*)"
+  },
+  {
+   "index": 24,
+   "name": "GetRenderableLeaves",
+   "sig": "GetRenderableLeaves(unsigned short, int*)",
+   "symbol": "CClientLeafSystem::GetRenderableLeaves(unsigned short, int*)"
+  },
+  {
+   "index": 25,
+   "name": "GetRenderableLeaf",
+   "sig": "GetRenderableLeaf(unsigned short, int*, int const*, int*)",
+   "symbol": "CClientLeafSystem::GetRenderableLeaf(unsigned short, int*, int const*, int*)"
+  },
+  {
+   "index": 26,
+   "name": "EnableAlternateSorting",
+   "sig": "EnableAlternateSorting(unsigned short, bool)",
+   "symbol": "CClientLeafSystem::EnableAlternateSorting(unsigned short, bool)"
+  },
+  {
+   "index": 27,
+   "name": "~CClientLeafSystem",
+   "sig": "~CClientLeafSystem()",
+   "symbol": "CClientLeafSystem::~CClientLeafSystem()"
+  },
+  {
+   "index": 28,
+   "name": "~CClientLeafSystem",
+   "sig": "~CClientLeafSystem()",
+   "symbol": "CClientLeafSystem::~CClientLeafSystem()"
+  },
+  {
+   "index": 29,
+   "name": "Name",
+   "sig": "Name()",
+   "symbol": "CClientLeafSystem::Name()"
+  },
+  {
+   "index": 30,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "CClientLeafSystem::Init()"
+  },
+  {
+   "index": 31,
+   "name": "PostInit",
+   "sig": "PostInit()",
+   "symbol": "CClientLeafSystem::PostInit()"
+  },
+  {
+   "index": 32,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CClientLeafSystem::Shutdown()"
+  },
+  {
+   "index": 33,
+   "name": "IsPerFrame",
+   "sig": "IsPerFrame()",
+   "symbol": "CClientLeafSystem::IsPerFrame()"
+  },
+  {
+   "index": 34,
+   "name": "PreRender",
+   "sig": "PreRender()",
+   "symbol": "CClientLeafSystem::PreRender()"
+  },
+  {
+   "index": 35,
+   "name": "PostRender",
+   "sig": "PostRender()",
+   "symbol": "CClientLeafSystem::PostRender()"
+  },
+  {
+   "index": 36,
+   "name": "Update",
+   "sig": "Update(float)",
+   "symbol": "CClientLeafSystem::Update(float)"
+  },
+  {
+   "index": 37,
+   "name": "LevelInitPreEntity",
+   "sig": "LevelInitPreEntity()",
+   "symbol": "CClientLeafSystem::LevelInitPreEntity()"
+  },
+  {
+   "index": 38,
+   "name": "LevelInitPostEntity",
+   "sig": "LevelInitPostEntity()",
+   "symbol": "CClientLeafSystem::LevelInitPostEntity()"
+  },
+  {
+   "index": 39,
+   "name": "LevelShutdownPreEntity",
+   "sig": "LevelShutdownPreEntity()",
+   "symbol": "CClientLeafSystem::LevelShutdownPreEntity()"
+  },
+  {
+   "index": 40,
+   "name": "LevelShutdownPostEntity",
+   "sig": "LevelShutdownPostEntity()",
+   "symbol": "CClientLeafSystem::LevelShutdownPostEntity()"
+  },
+  {
+   "index": 41,
+   "name": "OnSave",
+   "sig": "OnSave()",
+   "symbol": "CClientLeafSystem::OnSave()"
+  },
+  {
+   "index": 42,
+   "name": "OnRestore",
+   "sig": "OnRestore()",
+   "symbol": "CClientLeafSystem::OnRestore()"
+  },
+  {
+   "index": 43,
+   "name": "SafeRemoveIfDesired",
+   "sig": "SafeRemoveIfDesired()",
+   "symbol": "CClientLeafSystem::SafeRemoveIfDesired()"
+  },
+  {
+   "index": 44,
+   "name": "EnumerateLeaf",
+   "sig": "EnumerateLeaf(int, int)",
+   "symbol": "CClientLeafSystem::EnumerateLeaf(int, int)"
+  }
+ ],
+ "derived": [
+  "episodic/client:CClientLeafSystem",
+  "hl2/client:CClientLeafSystem",
+  "hl2_complete/client:CClientLeafSystem",
+  "hl2mp/client:CClientLeafSystem",
+  "lostcoast/client:CClientLeafSystem"
+ ],
+ "derived_count": 5
+}

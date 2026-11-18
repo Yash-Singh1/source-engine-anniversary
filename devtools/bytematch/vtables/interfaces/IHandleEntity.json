@@ -1,0 +1,132 @@
+{
+ "interface": "IHandleEntity",
+ "headers": [
+  "public/ihandleentity.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 4,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "SetRefEHandle(CBaseHandle const&)",
+  "GetRefEHandle() const"
+ ],
+ "retail_reference": {
+  "module": "episodic/client",
+  "class": "C_BaseTempEntity",
+  "offset": 0,
+  "chain": [
+   "C_BaseTempEntity",
+   "IClientUnknown",
+   "IHandleEntity"
+  ]
+ },
+ "retail_len": 4,
+ "retail_len_basis": "override: next slots belong to IClientUnknown/IServerUnknown",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 29,
+  "first own method of IClientUnknown": 4
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~C_BaseTempEntity",
+   "sig": "~C_BaseTempEntity()",
+   "symbol": "C_BaseTempEntity::~C_BaseTempEntity()"
+  },
+  {
+   "index": 1,
+   "name": "~C_BaseTempEntity",
+   "sig": "~C_BaseTempEntity()",
+   "symbol": "C_BaseTempEntity::~C_BaseTempEntity()"
+  },
+  {
+   "index": 2,
+   "name": "SetRefEHandle",
+   "sig": "SetRefEHandle(CBaseHandle const&)",
+   "symbol": "C_BaseTempEntity::SetRefEHandle(CBaseHandle const&)"
+  },
+  {
+   "index": 3,
+   "name": "GetRefEHandle",
+   "sig": "GetRefEHandle() const",
+   "symbol": "C_BaseTempEntity::GetRefEHandle() const"
+  }
+ ],
+ "implementer_tail": [
+  "GetCollideable()",
+  "GetClientNetworkable()",
+  "GetClientRenderable()",
+  "GetIClientEntity()",
+  "GetBaseEntity()",
+  "GetClientThinkable()",
+  "YouForgotToImplementOrDeclareClientClass()",
+  "GetClientClass()",
+  "GetIClientUnknown()",
+  "Release()",
+  "NotifyShouldTransmit(ShouldTransmitState_t)",
+  "PreDataUpdate(DataUpdateType_t)",
+  "PostDataUpdate(DataUpdateType_t)",
+  "OnPreDataChanged(DataUpdateType_t)",
+  "OnDataChanged(DataUpdateType_t)",
+  "SetDormant(bool)",
+  "IsDormant()",
+  "entindex() const",
+  "ReceiveMessage(int, bf_read&)",
+  "GetDataTableBasePtr()",
+  "SetDestroyedOnRecreateEntities()",
+  "Init(int, int)",
+  "Precache()",
+  "ShouldDestroy()",
+  "ShouldReceiveProjectedTextures(int)"
+ ],
+ "derived": [
+  "bin/engine:CStaticProp",
+  "episodic/client:Beam_t",
+  "episodic/client:CClient_Precipitation",
+  "episodic/client:CDetailModel",
+  "episodic/client:CModelPanelModel",
+  "episodic/client:CNewParticleEffect",
+  "episodic/client:CParticleEffectBinding",
+  "episodic/client:CPhysBoxMultiplayer",
+  "episodic/client:CPhysicsPropMultiplayer",
+  "episodic/client:CSnowFallManager",
+  "episodic/client:CViewAngleAnimation",
+  "episodic/client:C_AI_BaseNPC",
+  "episodic/client:C_AR2Explosion",
+  "episodic/client:C_AlyxEmpEffect",
+  "episodic/client:C_AntlionGib",
+  "episodic/client:C_Barney",
+  "episodic/client:C_BaseAnimating",
+  "episodic/client:C_BaseAnimatingOverlay",
+  "episodic/client:C_BaseCombatCharacter",
+  "episodic/client:C_BaseCombatWeapon",
+  "episodic/client:C_BaseDoor",
+  "episodic/client:C_BaseEntity",
+  "episodic/client:C_BaseFlex",
+  "episodic/client:C_BaseGrenade",
+  "episodic/client:C_BaseHLBludgeonWeapon",
+  "episodic/client:C_BaseHLCombatWeapon",
+  "episodic/client:C_BaseHLPlayer",
+  "episodic/client:C_BaseHelicopter",
+  "episodic/client:C_BaseParticleEntity",
+  "episodic/client:C_BasePlayer",
+  "episodic/client:C_BaseProjectile",
+  "episodic/client:C_BasePropDoor",
+  "episodic/client:C_BaseTeamObjectiveResource",
+  "episodic/client:C_BaseTempEntity",
+  "episodic/client:C_BaseViewModel",
+  "episodic/client:C_Beam",
+  "episodic/client:C_BoneFollower",
+  "episodic/client:C_BreakableProp",
+  "episodic/client:C_BreakableSurface",
+  "episodic/client:C_CitadelEnergyCore"
+ ],
+ "derived_count": 4101
+}

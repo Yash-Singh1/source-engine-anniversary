@@ -1,0 +1,178 @@
+{
+ "interface": "IEffects",
+ "headers": [],
+ "versions": {
+  "retail": [
+   "IEffects001"
+  ],
+  "ours": [
+   "IEffects001"
+  ],
+  "sdk2013": [
+   "IEffects001"
+  ]
+ },
+ "version_macros": [
+  "IEFFECTS_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "episodic/client",
+   "version": "IEffects001",
+   "class": "CEffectsClient"
+  },
+  {
+   "module": "episodic/server",
+   "version": "IEffects001",
+   "class": "CEffectsServer"
+  },
+  {
+   "module": "hl2/client",
+   "version": "IEffects001",
+   "class": "CEffectsClient"
+  },
+  {
+   "module": "hl2/server",
+   "version": "IEffects001",
+   "class": "CEffectsServer"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "IEffects001",
+   "class": "CEffectsClient"
+  },
+  {
+   "module": "hl2_complete/server",
+   "version": "IEffects001",
+   "class": "CEffectsServer"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "IEffects001",
+   "class": "CEffectsClient"
+  },
+  {
+   "module": "hl2mp/server",
+   "version": "IEffects001",
+   "class": "CEffectsServer"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "IEffects001",
+   "class": "CEffectsClient"
+  },
+  {
+   "module": "lostcoast/server",
+   "version": "IEffects001",
+   "class": "CEffectsServer"
+  }
+ ],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "episodic/client",
+  "class": "CEffectsClient",
+  "offset": 0,
+  "chain": [
+   "CEffectsClient",
+   "IEffects"
+  ]
+ },
+ "retail_len": 13,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 13
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CEffectsClient",
+   "sig": "~CEffectsClient()",
+   "symbol": "CEffectsClient::~CEffectsClient()"
+  },
+  {
+   "index": 1,
+   "name": "~CEffectsClient",
+   "sig": "~CEffectsClient()",
+   "symbol": "CEffectsClient::~CEffectsClient()"
+  },
+  {
+   "index": 2,
+   "name": "Beam",
+   "sig": "Beam(Vector const&, Vector const&, int, int, unsigned char, unsigned char, float, unsigned char, unsigned char, unsigned char, unsigned char, unsigned char, unsigned char, unsigned char, unsigned char, unsigned char)",
+   "symbol": "CEffectsClient::Beam(Vector const&, Vector const&, int, int, unsigned char, unsigned char, float, unsigned char, unsigned char, unsigned char, unsigned char, unsigned char, unsigned char, unsigned char, unsigned char, unsigned char)"
+  },
+  {
+   "index": 3,
+   "name": "Smoke",
+   "sig": "Smoke(Vector const&, int, float, float)",
+   "symbol": "CEffectsClient::Smoke(Vector const&, int, float, float)"
+  },
+  {
+   "index": 4,
+   "name": "Sparks",
+   "sig": "Sparks(Vector const&, int, int, Vector const*)",
+   "symbol": "CEffectsClient::Sparks(Vector const&, int, int, Vector const*)"
+  },
+  {
+   "index": 5,
+   "name": "Dust",
+   "sig": "Dust(Vector const&, Vector const&, float, float)",
+   "symbol": "CEffectsClient::Dust(Vector const&, Vector const&, float, float)"
+  },
+  {
+   "index": 6,
+   "name": "MuzzleFlash",
+   "sig": "MuzzleFlash(Vector const&, QAngle const&, float, int)",
+   "symbol": "CEffectsClient::MuzzleFlash(Vector const&, QAngle const&, float, int)"
+  },
+  {
+   "index": 7,
+   "name": "MetalSparks",
+   "sig": "MetalSparks(Vector const&, Vector const&)",
+   "symbol": "CEffectsClient::MetalSparks(Vector const&, Vector const&)"
+  },
+  {
+   "index": 8,
+   "name": "EnergySplash",
+   "sig": "EnergySplash(Vector const&, Vector const&, bool)",
+   "symbol": "CEffectsClient::EnergySplash(Vector const&, Vector const&, bool)"
+  },
+  {
+   "index": 9,
+   "name": "Ricochet",
+   "sig": "Ricochet(Vector const&, Vector const&)",
+   "symbol": "CEffectsClient::Ricochet(Vector const&, Vector const&)"
+  },
+  {
+   "index": 10,
+   "name": "Time",
+   "sig": "Time()",
+   "symbol": "CEffectsClient::Time()"
+  },
+  {
+   "index": 11,
+   "name": "IsServer",
+   "sig": "IsServer()",
+   "symbol": "CEffectsClient::IsServer()"
+  },
+  {
+   "index": 12,
+   "name": "SuppressEffectsSounds",
+   "sig": "SuppressEffectsSounds(bool)",
+   "symbol": "CEffectsClient::SuppressEffectsSounds(bool)"
+  }
+ ],
+ "derived": [
+  "episodic/client:CEffectsClient",
+  "episodic/server:CEffectsServer",
+  "hl2/client:CEffectsClient",
+  "hl2/server:CEffectsServer",
+  "hl2_complete/client:CEffectsClient",
+  "hl2_complete/server:CEffectsServer",
+  "hl2mp/client:CEffectsClient",
+  "hl2mp/server:CEffectsServer",
+  "lostcoast/client:CEffectsClient",
+  "lostcoast/server:CEffectsServer"
+ ],
+ "derived_count": 10
+}

@@ -1,0 +1,155 @@
+{
+ "interface": "IVideoRecorder",
+ "headers": [
+  "public/video/ivideoservices.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 17,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "EstimateMovieFileSize(unsigned long*, int, int, VideoFrameRate_t, float, VideoEncodeCodec::EVideoEncodeCodec_t, int, AudioEncodeSourceFormat::EAudioEncodeSourceFormat_t, int)",
+  "CreateNewMovieFile(char const*, bool)",
+  "SetMovieVideoParameters(VideoEncodeCodec::EVideoEncodeCodec_t, int, int, int, VideoFrameRate_t, VideoEncodeGamma::EVideoEncodeGamma_t)",
+  "SetMovieSourceImageParameters(VideoEncodeSourceFormat::EVideoEncodeSourceFormat_t, int, int)",
+  "SetMovieSourceAudioParameters(AudioEncodeSourceFormat::EAudioEncodeSourceFormat_t, int, AudioEncodeOptions::EAudioEncodeOptions_t, int)",
+  "IsReadyToRecord()",
+  "GetLastResult()",
+  "AppendVideoFrame(void*, int)",
+  "AppendAudioSamples(void*, unsigned long)",
+  "GetFrameCount()",
+  "GetSampleCount()",
+  "GetFPS()",
+  "GetSampleRate()",
+  "AbortMovie()",
+  "FinishMovie(bool)"
+ ],
+ "retail_reference": {
+  "module": "bin/video_quicktime",
+  "class": "CQuickTimeVideoRecorder",
+  "offset": 0,
+  "chain": [
+   "CQuickTimeVideoRecorder",
+   "IVideoRecorder"
+  ]
+ },
+ "retail_len": 17,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 17
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CQuickTimeVideoRecorder",
+   "sig": "~CQuickTimeVideoRecorder()",
+   "symbol": "CQuickTimeVideoRecorder::~CQuickTimeVideoRecorder()"
+  },
+  {
+   "index": 1,
+   "name": "~CQuickTimeVideoRecorder",
+   "sig": "~CQuickTimeVideoRecorder()",
+   "symbol": "CQuickTimeVideoRecorder::~CQuickTimeVideoRecorder()"
+  },
+  {
+   "index": 2,
+   "name": "EstimateMovieFileSize",
+   "sig": "EstimateMovieFileSize(unsigned long*, int, int, VideoFrameRate_t, float, VideoEncodeCodec::EVideoEncodeCodec_t, int, AudioEncodeSourceFormat::EAudioEncodeSourceFormat_t, int)",
+   "symbol": "CQuickTimeVideoRecorder::EstimateMovieFileSize(unsigned long*, int, int, VideoFrameRate_t, float, VideoEncodeCodec::EVideoEncodeCodec_t, int, AudioEncodeSourceFormat::EAudioEncodeSourceFormat_t, int)"
+  },
+  {
+   "index": 3,
+   "name": "CreateNewMovieFile",
+   "sig": "CreateNewMovieFile(char const*, bool)",
+   "symbol": "CQuickTimeVideoRecorder::CreateNewMovieFile(char const*, bool)"
+  },
+  {
+   "index": 4,
+   "name": "SetMovieVideoParameters",
+   "sig": "SetMovieVideoParameters(VideoEncodeCodec::EVideoEncodeCodec_t, int, int, int, VideoFrameRate_t, VideoEncodeGamma::EVideoEncodeGamma_t)",
+   "symbol": "CQuickTimeVideoRecorder::SetMovieVideoParameters(VideoEncodeCodec::EVideoEncodeCodec_t, int, int, int, VideoFrameRate_t, VideoEncodeGamma::EVideoEncodeGamma_t)"
+  },
+  {
+   "index": 5,
+   "name": "SetMovieSourceImageParameters",
+   "sig": "SetMovieSourceImageParameters(VideoEncodeSourceFormat::EVideoEncodeSourceFormat_t, int, int)",
+   "symbol": "CQuickTimeVideoRecorder::SetMovieSourceImageParameters(VideoEncodeSourceFormat::EVideoEncodeSourceFormat_t, int, int)"
+  },
+  {
+   "index": 6,
+   "name": "SetMovieSourceAudioParameters",
+   "sig": "SetMovieSourceAudioParameters(AudioEncodeSourceFormat::EAudioEncodeSourceFormat_t, int, AudioEncodeOptions::EAudioEncodeOptions_t, int)",
+   "symbol": "CQuickTimeVideoRecorder::SetMovieSourceAudioParameters(AudioEncodeSourceFormat::EAudioEncodeSourceFormat_t, int, AudioEncodeOptions::EAudioEncodeOptions_t, int)"
+  },
+  {
+   "index": 7,
+   "name": "IsReadyToRecord",
+   "sig": "IsReadyToRecord()",
+   "symbol": "CQuickTimeVideoRecorder::IsReadyToRecord()"
+  },
+  {
+   "index": 8,
+   "name": "GetLastResult",
+   "sig": "GetLastResult()",
+   "symbol": "CQuickTimeVideoRecorder::GetLastResult()"
+  },
+  {
+   "index": 9,
+   "name": "AppendVideoFrame",
+   "sig": "AppendVideoFrame(void*, int)",
+   "symbol": "CQuickTimeVideoRecorder::AppendVideoFrame(void*, int)"
+  },
+  {
+   "index": 10,
+   "name": "AppendAudioSamples",
+   "sig": "AppendAudioSamples(void*, unsigned long)",
+   "symbol": "CQuickTimeVideoRecorder::AppendAudioSamples(void*, unsigned long)"
+  },
+  {
+   "index": 11,
+   "name": "GetFrameCount",
+   "sig": "GetFrameCount()",
+   "symbol": "CQuickTimeVideoRecorder::GetFrameCount()"
+  },
+  {
+   "index": 12,
+   "name": "GetSampleCount",
+   "sig": "GetSampleCount()",
+   "symbol": "CQuickTimeVideoRecorder::GetSampleCount()"
+  },
+  {
+   "index": 13,
+   "name": "GetFPS",
+   "sig": "GetFPS()",
+   "symbol": "CQuickTimeVideoRecorder::GetFPS()"
+  },
+  {
+   "index": 14,
+   "name": "GetSampleRate",
+   "sig": "GetSampleRate()",
+   "symbol": "CQuickTimeVideoRecorder::GetSampleRate()"
+  },
+  {
+   "index": 15,
+   "name": "AbortMovie",
+   "sig": "AbortMovie()",
+   "symbol": "CQuickTimeVideoRecorder::AbortMovie()"
+  },
+  {
+   "index": 16,
+   "name": "FinishMovie",
+   "sig": "FinishMovie(bool)",
+   "symbol": "CQuickTimeVideoRecorder::FinishMovie(bool)"
+  }
+ ],
+ "derived": [
+  "bin/video_quicktime:CQuickTimeVideoRecorder"
+ ],
+ "derived_count": 1
+}

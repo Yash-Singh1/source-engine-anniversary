@@ -1,0 +1,175 @@
+{
+ "interface": "IZip",
+ "headers": [
+  "public/zip_utils.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 19,
+ "sdk2013_slots": [
+  "Reset()",
+  "AddFileToZip(char const*, char const*)",
+  "FileExistsInZip(char const*)",
+  "ReadFileFromZip(char const*, bool, CUtlBuffer&)",
+  "ReadFileFromZip(void*, char const*, bool, CUtlBuffer&)",
+  "RemoveFileFromZip(char const*)",
+  "GetNextFilename(int, char*, int, int&)",
+  "PrintDirectory()",
+  "EstimateSize()",
+  "AddBufferToZip(char const*, void*, int, bool)",
+  "SaveToBuffer(CUtlBuffer&)",
+  "SaveToDisk(__sFILE*)",
+  "SaveToDisk(void*)",
+  "ParseFromBuffer(void*, int)",
+  "ParseFromDisk(char const*)",
+  "ForceAlignment(bool, bool, unsigned int)",
+  "GetAlignment()",
+  "SetBigEndian(bool)",
+  "ActivateByteSwapping(bool)"
+ ],
+ "retail_reference": {
+  "module": "bin/bsppack",
+  "class": "CZip",
+  "offset": 0,
+  "chain": [
+   "CZip",
+   "IZip"
+  ]
+ },
+ "retail_len": 19,
+ "retail_len_basis": "first implementer destructor",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 21,
+  "first implementer destructor": 19
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Reset",
+   "sig": "Reset()",
+   "symbol": "CZip::Reset()"
+  },
+  {
+   "index": 1,
+   "name": "AddFileToZip",
+   "sig": "AddFileToZip(char const*, char const*)",
+   "symbol": "CZip::AddFileToZip(char const*, char const*)"
+  },
+  {
+   "index": 2,
+   "name": "FileExistsInZip",
+   "sig": "FileExistsInZip(char const*)",
+   "symbol": "CZip::FileExistsInZip(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "ReadFileFromZip",
+   "sig": "ReadFileFromZip(char const*, bool, CUtlBuffer&)",
+   "symbol": "CZip::ReadFileFromZip(char const*, bool, CUtlBuffer&)"
+  },
+  {
+   "index": 4,
+   "name": "ReadFileFromZip",
+   "sig": "ReadFileFromZip(void*, char const*, bool, CUtlBuffer&)",
+   "symbol": "CZip::ReadFileFromZip(void*, char const*, bool, CUtlBuffer&)"
+  },
+  {
+   "index": 5,
+   "name": "RemoveFileFromZip",
+   "sig": "RemoveFileFromZip(char const*)",
+   "symbol": "CZip::RemoveFileFromZip(char const*)"
+  },
+  {
+   "index": 6,
+   "name": "GetNextFilename",
+   "sig": "GetNextFilename(int, char*, int, int&)",
+   "symbol": "CZip::GetNextFilename(int, char*, int, int&)"
+  },
+  {
+   "index": 7,
+   "name": "PrintDirectory",
+   "sig": "PrintDirectory()",
+   "symbol": "CZip::PrintDirectory()"
+  },
+  {
+   "index": 8,
+   "name": "EstimateSize",
+   "sig": "EstimateSize()",
+   "symbol": "CZip::EstimateSize()"
+  },
+  {
+   "index": 9,
+   "name": "AddBufferToZip",
+   "sig": "AddBufferToZip(char const*, void*, int, bool)",
+   "symbol": "CZip::AddBufferToZip(char const*, void*, int, bool)"
+  },
+  {
+   "index": 10,
+   "name": "SaveToBuffer",
+   "sig": "SaveToBuffer(CUtlBuffer&)",
+   "symbol": "CZip::SaveToBuffer(CUtlBuffer&)"
+  },
+  {
+   "index": 11,
+   "name": "SaveToDisk",
+   "sig": "SaveToDisk(__sFILE*)",
+   "symbol": "CZip::SaveToDisk(__sFILE*)"
+  },
+  {
+   "index": 12,
+   "name": "SaveToDisk",
+   "sig": "SaveToDisk(void*)",
+   "symbol": "CZip::SaveToDisk(void*)"
+  },
+  {
+   "index": 13,
+   "name": "ParseFromBuffer",
+   "sig": "ParseFromBuffer(void*, int)",
+   "symbol": "CZip::ParseFromBuffer(void*, int)"
+  },
+  {
+   "index": 14,
+   "name": "ParseFromDisk",
+   "sig": "ParseFromDisk(char const*)",
+   "symbol": "CZip::ParseFromDisk(char const*)"
+  },
+  {
+   "index": 15,
+   "name": "ForceAlignment",
+   "sig": "ForceAlignment(bool, bool, unsigned int)",
+   "symbol": "CZip::ForceAlignment(bool, bool, unsigned int)"
+  },
+  {
+   "index": 16,
+   "name": "GetAlignment",
+   "sig": "GetAlignment()",
+   "symbol": "CZip::GetAlignment()"
+  },
+  {
+   "index": 17,
+   "name": "SetBigEndian",
+   "sig": "SetBigEndian(bool)",
+   "symbol": "CZip::SetBigEndian(bool)"
+  },
+  {
+   "index": 18,
+   "name": "ActivateByteSwapping",
+   "sig": "ActivateByteSwapping(bool)",
+   "symbol": "CZip::ActivateByteSwapping(bool)"
+  }
+ ],
+ "implementer_tail": [
+  "~CZip()",
+  "~CZip()"
+ ],
+ "derived": [
+  "bin/bsppack:CZip",
+  "bin/filesystem_stdio:CZip"
+ ],
+ "derived_count": 2
+}

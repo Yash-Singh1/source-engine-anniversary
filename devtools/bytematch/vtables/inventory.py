@@ -266,8 +266,12 @@ def main():
             inventory[n] = {k: rec[k] for k in ('headers', 'versions', 'status')}
             json.dump(rec, open(os.path.join(OUT_DIR, n.replace('::', '__') + '.json'), 'w'), indent=1)
             continue
-        ref = own[0] if own else next((x for x in cands if (x[0], x[1]) in reg_classes), None) \
-            or min(cands, key=lambda x: (len(x[3]), x[0] != 'bin/engine'))
+        shortest = min(len(x[3]) for x in cands)
+
+        def pure_count(x):
+            return sum(1 for s in x[3][:shortest] if s == '__cxa_pure_virtual')
+        concrete = [x for x in cands if (x[0], x[1]) in reg_classes]
+        ref = own[0] if own else min(concrete or cands, key=lambda x: (pure_count(x), len(x[3]), x[0] != 'bin/engine'))
         slots = ref[3]
         sigs = [method_sig(s) for s in slots]
 

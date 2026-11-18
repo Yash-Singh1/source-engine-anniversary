@@ -1,0 +1,92 @@
+{
+ "interface": "IShaderDLLInternal",
+ "headers": [],
+ "versions": {
+  "retail": [
+   "ShaderDLL004"
+  ],
+  "ours": [
+   "ShaderDLL004"
+  ],
+  "sdk2013": []
+ },
+ "version_macros": [
+  "SHADER_DLL_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/materialsystem",
+   "version": "ShaderDLL004",
+   "class": null
+  },
+  {
+   "module": "bin/stdshader_dx9",
+   "version": "ShaderDLL004",
+   "class": null
+  }
+ ],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "bin/materialsystem",
+  "class": "CShaderDLL",
+  "offset": 0,
+  "chain": [
+   "CShaderDLL",
+   "IShaderDLLInternal"
+  ]
+ },
+ "retail_len": 7,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 7
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Connect",
+   "sig": "Connect(void* (*)(char const*, int*), bool)",
+   "symbol": "CShaderDLL::Connect(void* (*)(char const*, int*), bool)"
+  },
+  {
+   "index": 1,
+   "name": "Disconnect",
+   "sig": "Disconnect(bool)",
+   "symbol": "CShaderDLL::Disconnect(bool)"
+  },
+  {
+   "index": 2,
+   "name": "ShaderCount",
+   "sig": "ShaderCount() const",
+   "symbol": "CShaderDLL::ShaderCount() const"
+  },
+  {
+   "index": 3,
+   "name": "GetShader",
+   "sig": "GetShader(int)",
+   "symbol": "CShaderDLL::GetShader(int)"
+  },
+  {
+   "index": 4,
+   "name": "Connect",
+   "sig": "Connect(void* (*)(char const*, int*))",
+   "symbol": "CShaderDLL::Connect(void* (*)(char const*, int*))"
+  },
+  {
+   "index": 5,
+   "name": "Disconnect",
+   "sig": "Disconnect()",
+   "symbol": "CShaderDLL::Disconnect()"
+  },
+  {
+   "index": 6,
+   "name": "InsertShader",
+   "sig": "InsertShader(IShader*)",
+   "symbol": "CShaderDLL::InsertShader(IShader*)"
+  }
+ ],
+ "derived": [
+  "bin/materialsystem:CShaderDLL",
+  "bin/stdshader_dx9:CShaderDLL"
+ ],
+ "derived_count": 2
+}

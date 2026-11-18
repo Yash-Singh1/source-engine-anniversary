@@ -1,0 +1,112 @@
+{
+ "interface": "IConVar",
+ "headers": [
+  "public/tier1/iconvar.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 5,
+ "sdk2013_slots": [
+  "SetValue(char const*)",
+  "SetValue(float)",
+  "SetValue(int)",
+  "GetName() const",
+  "IsFlagSet(int) const"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CBoundedCvar_CmdRate",
+  "offset": 24,
+  "chain": [
+   "CBoundedCvar_CmdRate",
+   "ConVar_ServerBounded",
+   "ConVar",
+   "IConVar"
+  ]
+ },
+ "retail_len": 5,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 5
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "SetValue",
+   "sig": "SetValue(char const*)",
+   "symbol": "non-virtual thunk to ConVar::SetValue(char const*)"
+  },
+  {
+   "index": 1,
+   "name": "SetValue",
+   "sig": "SetValue(float)",
+   "symbol": "non-virtual thunk to ConVar::SetValue(float)"
+  },
+  {
+   "index": 2,
+   "name": "SetValue",
+   "sig": "SetValue(int)",
+   "symbol": "non-virtual thunk to ConVar::SetValue(int)"
+  },
+  {
+   "index": 3,
+   "name": "GetName",
+   "sig": "GetName() const",
+   "symbol": "non-virtual thunk to ConVar::GetName() const"
+  },
+  {
+   "index": 4,
+   "name": "IsFlagSet",
+   "sig": "IsFlagSet(int) const",
+   "symbol": "non-virtual thunk to ConVar::IsFlagSet(int) const"
+  }
+ ],
+ "derived": [
+  "bin/GameUI:CEmptyConVar",
+  "bin/GameUI:ConVar",
+  "bin/ServerBrowser:CEmptyConVar",
+  "bin/ServerBrowser:ConVar",
+  "bin/bsppack:CEmptyConVar",
+  "bin/bsppack:ConVar",
+  "bin/bugreporter_filequeue:CEmptyConVar",
+  "bin/bugreporter_filequeue:ConVar",
+  "bin/datacache:CEmptyConVar",
+  "bin/datacache:ConVar",
+  "bin/engine:CBoundedCvar_CmdRate",
+  "bin/engine:CBoundedCvar_Rate",
+  "bin/engine:CBoundedCvar_UpdateRate",
+  "bin/engine:CEmptyConVar",
+  "bin/engine:ConVar",
+  "bin/filesystem_stdio:CEmptyConVar",
+  "bin/filesystem_stdio:ConVar",
+  "bin/inputsystem:CEmptyConVar",
+  "bin/inputsystem:ConVar",
+  "bin/launcher:CEmptyConVar",
+  "bin/launcher:ConVar",
+  "bin/libtogl:CEmptyConVar",
+  "bin/libtogl:ConVar",
+  "bin/libvstdlib:CEmptyConVar",
+  "bin/libvstdlib:ConVar",
+  "bin/materialsystem:CEmptyConVar",
+  "bin/materialsystem:ConVar",
+  "bin/replay:CEmptyConVar",
+  "bin/replay:ConVar",
+  "bin/shaderapidx9:CEmptyConVar",
+  "bin/shaderapidx9:ConVar",
+  "bin/soundemittersystem:CEmptyConVar",
+  "bin/soundemittersystem:ConVar",
+  "bin/sourcevr:CEmptyConVar",
+  "bin/sourcevr:ConVar",
+  "bin/stdshader_dx9:CEmptyConVar",
+  "bin/stdshader_dx9:ConVar",
+  "bin/studiorender:CEmptyConVar",
+  "bin/studiorender:ConVar",
+  "bin/vgui2:CEmptyConVar"
+ ],
+ "derived_count": 91
+}

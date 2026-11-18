@@ -1,0 +1,368 @@
+{
+ "interface": "IGameUI",
+ "headers": [
+  "common/GameUI/IGameUI.h"
+ ],
+ "versions": {
+  "retail": [
+   "GameUI011"
+  ],
+  "ours": [
+   "GameUI011"
+  ],
+  "sdk2013": [
+   "GameUI011"
+  ]
+ },
+ "version_macros": [
+  "GAMEUI_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/GameUI",
+   "version": "GameUI011",
+   "class": "CGameUI"
+  }
+ ],
+ "sdk2013_len": 38,
+ "sdk2013_slots": [
+  "Initialize(void* (*)(char const*, int*))",
+  "PostInit()",
+  "Connect(void* (*)(char const*, int*))",
+  "Start()",
+  "Shutdown()",
+  "RunFrame()",
+  "OnGameUIActivated()",
+  "OnGameUIHidden()",
+  "OLD_OnConnectToServer(char const*, int, int)",
+  "OnDisconnectFromServer_OLD(unsigned char, char const*)",
+  "OnLevelLoadingStarted(bool)",
+  "OnLevelLoadingFinished(bool, char const*, char const*)",
+  "UpdateProgressBar(float, char const*)",
+  "SetShowProgressText(bool)",
+  "ShowNewGameDialog(int)",
+  "SessionNotification(int, int)",
+  "SystemNotification(int)",
+  "ShowMessageDialog(unsigned int, vgui::Panel*)",
+  "UpdatePlayerInfo(unsigned long long, char const*, int, unsigned char, int, bool)",
+  "SessionSearchResult(int, void*, _XSESSION_SEARCHRESULT*, int)",
+  "OnCreditsFinished()",
+  "SetLoadingBackgroundDialog(unsigned int)",
+  "BonusMapUnlock(char const*, char const*)",
+  "BonusMapComplete(char const*, char const*)",
+  "BonusMapChallengeUpdate(char const*, char const*, char const*, int)",
+  "BonusMapChallengeNames(char*, char*, char*)",
+  "BonusMapChallengeObjectives(int&, int&, int&)",
+  "BonusMapDatabaseSave()",
+  "BonusMapNumAdvancedCompleted()",
+  "BonusMapNumMedals(int*)",
+  "OnConnectToServer2(char const*, int, int, int)",
+  "ValidateStorageDevice(int*)",
+  "SetProgressOnStart()",
+  "OnDisconnectFromServer(unsigned char)",
+  "OnConfirmQuit()",
+  "IsMainMenuVisible()",
+  "SetMainMenuOverride(unsigned int)",
+  "SendMainMenuCommand(char const*)"
+ ],
+ "retail_reference": {
+  "module": "bin/GameUI",
+  "class": "CGameUI",
+  "offset": 0,
+  "chain": [
+   "CGameUI",
+   "IGameUI"
+  ]
+ },
+ "retail_len": 38,
+ "retail_len_basis": "override: extra slots are CGameUI's own",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 46
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Initialize",
+   "sig": "Initialize(void* (*)(char const*, int*))",
+   "symbol": "CGameUI::Initialize(void* (*)(char const*, int*))"
+  },
+  {
+   "index": 1,
+   "name": "PostInit",
+   "sig": "PostInit()",
+   "symbol": "CGameUI::PostInit()"
+  },
+  {
+   "index": 2,
+   "name": "Connect",
+   "sig": "Connect(void* (*)(char const*, int*))",
+   "symbol": "CGameUI::Connect(void* (*)(char const*, int*))"
+  },
+  {
+   "index": 3,
+   "name": "Start",
+   "sig": "Start()",
+   "symbol": "CGameUI::Start()"
+  },
+  {
+   "index": 4,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CGameUI::Shutdown()"
+  },
+  {
+   "index": 5,
+   "name": "RunFrame",
+   "sig": "RunFrame()",
+   "symbol": "CGameUI::RunFrame()"
+  },
+  {
+   "index": 6,
+   "name": "OnGameUIActivated",
+   "sig": "OnGameUIActivated()",
+   "symbol": "CGameUI::OnGameUIActivated()"
+  },
+  {
+   "index": 7,
+   "name": "OnGameUIHidden",
+   "sig": "OnGameUIHidden()",
+   "symbol": "CGameUI::OnGameUIHidden()"
+  },
+  {
+   "index": 8,
+   "name": "OLD_OnConnectToServer",
+   "sig": "OLD_OnConnectToServer(char const*, int, int)",
+   "symbol": "CGameUI::OLD_OnConnectToServer(char const*, int, int)"
+  },
+  {
+   "index": 9,
+   "name": "OnDisconnectFromServer_OLD",
+   "sig": "OnDisconnectFromServer_OLD(unsigned char, char const*)",
+   "symbol": "CGameUI::OnDisconnectFromServer_OLD(unsigned char, char const*)"
+  },
+  {
+   "index": 10,
+   "name": "OnLevelLoadingStarted",
+   "sig": "OnLevelLoadingStarted(bool)",
+   "symbol": "CGameUI::OnLevelLoadingStarted(bool)"
+  },
+  {
+   "index": 11,
+   "name": "OnLevelLoadingFinished",
+   "sig": "OnLevelLoadingFinished(bool, char const*, char const*)",
+   "symbol": "CGameUI::OnLevelLoadingFinished(bool, char const*, char const*)"
+  },
+  {
+   "index": 12,
+   "name": "UpdateProgressBar",
+   "sig": "UpdateProgressBar(float, char const*)",
+   "symbol": "CGameUI::UpdateProgressBar(float, char const*)"
+  },
+  {
+   "index": 13,
+   "name": "SetShowProgressText",
+   "sig": "SetShowProgressText(bool)",
+   "symbol": "CGameUI::SetShowProgressText(bool)"
+  },
+  {
+   "index": 14,
+   "name": "ShowNewGameDialog",
+   "sig": "ShowNewGameDialog(int)",
+   "symbol": "CGameUI::ShowNewGameDialog(int)"
+  },
+  {
+   "index": 15,
+   "name": "SessionNotification",
+   "sig": "SessionNotification(int, int)",
+   "symbol": "CGameUI::SessionNotification(int, int)"
+  },
+  {
+   "index": 16,
+   "name": "SystemNotification",
+   "sig": "SystemNotification(int)",
+   "symbol": "CGameUI::SystemNotification(int)"
+  },
+  {
+   "index": 17,
+   "name": "ShowMessageDialog",
+   "sig": "ShowMessageDialog(unsigned int, vgui::Panel*)",
+   "symbol": "CGameUI::ShowMessageDialog(unsigned int, vgui::Panel*)"
+  },
+  {
+   "index": 18,
+   "name": "UpdatePlayerInfo",
+   "sig": "UpdatePlayerInfo(unsigned long long, char const*, int, unsigned char, int, bool)",
+   "symbol": "CGameUI::UpdatePlayerInfo(unsigned long long, char const*, int, unsigned char, int, bool)"
+  },
+  {
+   "index": 19,
+   "name": "SessionSearchResult",
+   "sig": "SessionSearchResult(int, void*, _XSESSION_SEARCHRESULT*, int)",
+   "symbol": "CGameUI::SessionSearchResult(int, void*, _XSESSION_SEARCHRESULT*, int)"
+  },
+  {
+   "index": 20,
+   "name": "OnCreditsFinished",
+   "sig": "OnCreditsFinished()",
+   "symbol": "CGameUI::OnCreditsFinished()"
+  },
+  {
+   "index": 21,
+   "name": "SetLoadingBackgroundDialog",
+   "sig": "SetLoadingBackgroundDialog(unsigned int)",
+   "symbol": "CGameUI::SetLoadingBackgroundDialog(unsigned int)"
+  },
+  {
+   "index": 22,
+   "name": "BonusMapUnlock",
+   "sig": "BonusMapUnlock(char const*, char const*)",
+   "symbol": "CGameUI::BonusMapUnlock(char const*, char const*)"
+  },
+  {
+   "index": 23,
+   "name": "BonusMapComplete",
+   "sig": "BonusMapComplete(char const*, char const*)",
+   "symbol": "CGameUI::BonusMapComplete(char const*, char const*)"
+  },
+  {
+   "index": 24,
+   "name": "BonusMapChallengeUpdate",
+   "sig": "BonusMapChallengeUpdate(char const*, char const*, char const*, int)",
+   "symbol": "CGameUI::BonusMapChallengeUpdate(char const*, char const*, char const*, int)"
+  },
+  {
+   "index": 25,
+   "name": "BonusMapChallengeNames",
+   "sig": "BonusMapChallengeNames(char*, char*, char*)",
+   "symbol": "CGameUI::BonusMapChallengeNames(char*, char*, char*)"
+  },
+  {
+   "index": 26,
+   "name": "BonusMapChallengeObjectives",
+   "sig": "BonusMapChallengeObjectives(int&, int&, int&)",
+   "symbol": "CGameUI::BonusMapChallengeObjectives(int&, int&, int&)"
+  },
+  {
+   "index": 27,
+   "name": "BonusMapDatabaseSave",
+   "sig": "BonusMapDatabaseSave()",
+   "symbol": "CGameUI::BonusMapDatabaseSave()"
+  },
+  {
+   "index": 28,
+   "name": "BonusMapNumAdvancedCompleted",
+   "sig": "BonusMapNumAdvancedCompleted()",
+   "symbol": "CGameUI::BonusMapNumAdvancedCompleted()"
+  },
+  {
+   "index": 29,
+   "name": "BonusMapNumMedals",
+   "sig": "BonusMapNumMedals(int*)",
+   "symbol": "CGameUI::BonusMapNumMedals(int*)"
+  },
+  {
+   "index": 30,
+   "name": "OnConnectToServer2",
+   "sig": "OnConnectToServer2(char const*, int, int, int)",
+   "symbol": "CGameUI::OnConnectToServer2(char const*, int, int, int)"
+  },
+  {
+   "index": 31,
+   "name": "ValidateStorageDevice",
+   "sig": "ValidateStorageDevice(int*)",
+   "symbol": "CGameUI::ValidateStorageDevice(int*)"
+  },
+  {
+   "index": 32,
+   "name": "SetProgressOnStart",
+   "sig": "SetProgressOnStart()",
+   "symbol": "CGameUI::SetProgressOnStart()"
+  },
+  {
+   "index": 33,
+   "name": "OnDisconnectFromServer",
+   "sig": "OnDisconnectFromServer(unsigned char)",
+   "symbol": "CGameUI::OnDisconnectFromServer(unsigned char)"
+  },
+  {
+   "index": 34,
+   "name": "OnConfirmQuit",
+   "sig": "OnConfirmQuit()",
+   "symbol": "CGameUI::OnConfirmQuit()"
+  },
+  {
+   "index": 35,
+   "name": "IsMainMenuVisible",
+   "sig": "IsMainMenuVisible()",
+   "symbol": "CGameUI::IsMainMenuVisible()"
+  },
+  {
+   "index": 36,
+   "name": "SetMainMenuOverride",
+   "sig": "SetMainMenuOverride(unsigned int)",
+   "symbol": "CGameUI::SetMainMenuOverride(unsigned int)"
+  },
+  {
+   "index": 37,
+   "name": "SendMainMenuCommand",
+   "sig": "SendMainMenuCommand(char const*)",
+   "symbol": "CGameUI::SendMainMenuCommand(char const*)"
+  }
+ ],
+ "implementer_tail": [
+  "GetBonusMapsDatabase()",
+  "CloseMessageDialog(unsigned int)",
+  "StartProgressBar()",
+  "ContinueProgressBar(float)",
+  "StopProgressBar(bool, char const*, char const*)",
+  "SetProgressBarStatusText(char const*)",
+  "SetSecondaryProgressBar(float)",
+  "SetSecondaryProgressBarText(char const*)"
+ ],
+ "derived_disagreements": [
+  {
+   "module": "episodic/server",
+   "class": "CGameUI",
+   "index": 0,
+   "ref": "Initialize(void* (*)(char const*, int*))",
+   "got": "~CGameUI()"
+  },
+  {
+   "module": "hl2/server",
+   "class": "CGameUI",
+   "index": 0,
+   "ref": "Initialize(void* (*)(char const*, int*))",
+   "got": "~CGameUI()"
+  },
+  {
+   "module": "hl2_complete/server",
+   "class": "CGameUI",
+   "index": 0,
+   "ref": "Initialize(void* (*)(char const*, int*))",
+   "got": "~CGameUI()"
+  },
+  {
+   "module": "hl2mp/server",
+   "class": "CGameUI",
+   "index": 0,
+   "ref": "Initialize(void* (*)(char const*, int*))",
+   "got": "~CGameUI()"
+  },
+  {
+   "module": "lostcoast/server",
+   "class": "CGameUI",
+   "index": 0,
+   "ref": "Initialize(void* (*)(char const*, int*))",
+   "got": "~CGameUI()"
+  }
+ ],
+ "derived": [
+  "bin/GameUI:CGameUI",
+  "episodic/server:CGameUI",
+  "hl2/server:CGameUI",
+  "hl2_complete/server:CGameUI",
+  "hl2mp/server:CGameUI",
+  "lostcoast/server:CGameUI"
+ ],
+ "derived_count": 6
+}

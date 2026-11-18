@@ -1,0 +1,618 @@
+{
+ "interface": "IPhysicsObject",
+ "headers": [
+  "public/vphysics_interface.h",
+  "public/vphysics_interfaceV30.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 83,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "IsStatic() const",
+  "IsAsleep() const",
+  "IsTrigger() const",
+  "IsFluid() const",
+  "IsHinged() const",
+  "IsCollisionEnabled() const",
+  "IsGravityEnabled() const",
+  "IsDragEnabled() const",
+  "IsMotionEnabled() const",
+  "IsMoveable() const",
+  "IsAttachedToConstraint(bool) const",
+  "EnableCollisions(bool)",
+  "EnableGravity(bool)",
+  "EnableDrag(bool)",
+  "EnableMotion(bool)",
+  "SetGameData(void*)",
+  "GetGameData() const",
+  "SetGameFlags(unsigned short)",
+  "GetGameFlags() const",
+  "SetGameIndex(unsigned short)",
+  "GetGameIndex() const",
+  "SetCallbackFlags(unsigned short)",
+  "GetCallbackFlags() const",
+  "Wake()",
+  "Sleep()",
+  "RecheckCollisionFilter()",
+  "RecheckContactPoints()",
+  "SetMass(float)",
+  "GetMass() const",
+  "GetInvMass() const",
+  "GetInertia() const",
+  "GetInvInertia() const",
+  "SetInertia(Vector const&)",
+  "SetDamping(float const*, float const*)",
+  "GetDamping(float*, float*) const",
+  "SetDragCoefficient(float*, float*)",
+  "SetBuoyancyRatio(float)",
+  "GetMaterialIndex() const",
+  "SetMaterialIndex(int)",
+  "GetContents() const",
+  "SetContents(unsigned int)",
+  "GetSphereRadius() const",
+  "GetEnergy() const",
+  "GetMassCenterLocalSpace() const",
+  "SetPosition(Vector const&, QAngle const&, bool)",
+  "SetPositionMatrix(matrix3x4_t const&, bool)",
+  "GetPosition(Vector*, QAngle*) const",
+  "GetPositionMatrix(matrix3x4_t*) const",
+  "SetVelocity(Vector const*, Vector const*)",
+  "SetVelocityInstantaneous(Vector const*, Vector const*)",
+  "GetVelocity(Vector*, Vector*) const",
+  "AddVelocity(Vector const*, Vector const*)",
+  "GetVelocityAtPoint(Vector const&, Vector*) const",
+  "GetImplicitVelocity(Vector*, Vector*) const",
+  "LocalToWorld(Vector*, Vector const&) const",
+  "WorldToLocal(Vector*, Vector const&) const",
+  "LocalToWorldVector(Vector*, Vector const&) const",
+  "WorldToLocalVector(Vector*, Vector const&) const",
+  "ApplyForceCenter(Vector const&)",
+  "ApplyForceOffset(Vector const&, Vector const&)",
+  "ApplyTorqueCenter(Vector const&)",
+  "CalculateForceOffset(Vector const&, Vector const&, Vector*, Vector*) const",
+  "CalculateVelocityOffset(Vector const&, Vector const&, Vector*, Vector*) const",
+  "CalculateLinearDrag(Vector const&) const",
+  "CalculateAngularDrag(Vector const&) const",
+  "GetContactPoint(Vector*, IPhysicsObject**) const",
+  "SetShadow(float, float, bool, bool)",
+  "UpdateShadow(Vector const&, QAngle const&, bool, float)",
+  "GetShadowPosition(Vector*, QAngle*) const",
+  "GetShadowController() const",
+  "RemoveShadowController()",
+  "ComputeShadowControl(hlshadowcontrol_params_t const&, float, float)",
+  "GetCollide() const",
+  "GetName() const",
+  "BecomeTrigger()",
+  "RemoveTrigger()",
+  "BecomeHinged(int)",
+  "RemoveHinged()",
+  "CreateFrictionSnapshot()",
+  "DestroyFrictionSnapshot(IPhysicsFrictionSnapshot*)",
+  "OutputDebugInfo() const"
+ ],
+ "retail_reference": {
+  "module": "bin/vphysics",
+  "class": "CPhysicsObject",
+  "offset": 0,
+  "chain": [
+   "CPhysicsObject",
+   "IPhysicsObject"
+  ]
+ },
+ "retail_len": 83,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 83
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CPhysicsObject",
+   "sig": "~CPhysicsObject()",
+   "symbol": "CPhysicsObject::~CPhysicsObject()"
+  },
+  {
+   "index": 1,
+   "name": "~CPhysicsObject",
+   "sig": "~CPhysicsObject()",
+   "symbol": "CPhysicsObject::~CPhysicsObject()"
+  },
+  {
+   "index": 2,
+   "name": "IsStatic",
+   "sig": "IsStatic() const",
+   "symbol": "CPhysicsObject::IsStatic() const"
+  },
+  {
+   "index": 3,
+   "name": "IsAsleep",
+   "sig": "IsAsleep() const",
+   "symbol": "CPhysicsObject::IsAsleep() const"
+  },
+  {
+   "index": 4,
+   "name": "IsTrigger",
+   "sig": "IsTrigger() const",
+   "symbol": "CPhysicsObject::IsTrigger() const"
+  },
+  {
+   "index": 5,
+   "name": "IsFluid",
+   "sig": "IsFluid() const",
+   "symbol": "CPhysicsObject::IsFluid() const"
+  },
+  {
+   "index": 6,
+   "name": "IsHinged",
+   "sig": "IsHinged() const",
+   "symbol": "CPhysicsObject::IsHinged() const"
+  },
+  {
+   "index": 7,
+   "name": "IsCollisionEnabled",
+   "sig": "IsCollisionEnabled() const",
+   "symbol": "CPhysicsObject::IsCollisionEnabled() const"
+  },
+  {
+   "index": 8,
+   "name": "IsGravityEnabled",
+   "sig": "IsGravityEnabled() const",
+   "symbol": "CPhysicsObject::IsGravityEnabled() const"
+  },
+  {
+   "index": 9,
+   "name": "IsDragEnabled",
+   "sig": "IsDragEnabled() const",
+   "symbol": "CPhysicsObject::IsDragEnabled() const"
+  },
+  {
+   "index": 10,
+   "name": "IsMotionEnabled",
+   "sig": "IsMotionEnabled() const",
+   "symbol": "CPhysicsObject::IsMotionEnabled() const"
+  },
+  {
+   "index": 11,
+   "name": "IsMoveable",
+   "sig": "IsMoveable() const",
+   "symbol": "CPhysicsObject::IsMoveable() const"
+  },
+  {
+   "index": 12,
+   "name": "IsAttachedToConstraint",
+   "sig": "IsAttachedToConstraint(bool) const",
+   "symbol": "CPhysicsObject::IsAttachedToConstraint(bool) const"
+  },
+  {
+   "index": 13,
+   "name": "EnableCollisions",
+   "sig": "EnableCollisions(bool)",
+   "symbol": "CPhysicsObject::EnableCollisions(bool)"
+  },
+  {
+   "index": 14,
+   "name": "EnableGravity",
+   "sig": "EnableGravity(bool)",
+   "symbol": "CPhysicsObject::EnableGravity(bool)"
+  },
+  {
+   "index": 15,
+   "name": "EnableDrag",
+   "sig": "EnableDrag(bool)",
+   "symbol": "CPhysicsObject::EnableDrag(bool)"
+  },
+  {
+   "index": 16,
+   "name": "EnableMotion",
+   "sig": "EnableMotion(bool)",
+   "symbol": "CPhysicsObject::EnableMotion(bool)"
+  },
+  {
+   "index": 17,
+   "name": "SetGameData",
+   "sig": "SetGameData(void*)",
+   "symbol": "CPhysicsObject::SetGameData(void*)"
+  },
+  {
+   "index": 18,
+   "name": "GetGameData",
+   "sig": "GetGameData() const",
+   "symbol": "CPhysicsObject::GetGameData() const"
+  },
+  {
+   "index": 19,
+   "name": "SetGameFlags",
+   "sig": "SetGameFlags(unsigned short)",
+   "symbol": "CPhysicsObject::SetGameFlags(unsigned short)"
+  },
+  {
+   "index": 20,
+   "name": "GetGameFlags",
+   "sig": "GetGameFlags() const",
+   "symbol": "CPhysicsObject::GetGameFlags() const"
+  },
+  {
+   "index": 21,
+   "name": "SetGameIndex",
+   "sig": "SetGameIndex(unsigned short)",
+   "symbol": "CPhysicsObject::SetGameIndex(unsigned short)"
+  },
+  {
+   "index": 22,
+   "name": "GetGameIndex",
+   "sig": "GetGameIndex() const",
+   "symbol": "CPhysicsObject::GetGameIndex() const"
+  },
+  {
+   "index": 23,
+   "name": "SetCallbackFlags",
+   "sig": "SetCallbackFlags(unsigned short)",
+   "symbol": "CPhysicsObject::SetCallbackFlags(unsigned short)"
+  },
+  {
+   "index": 24,
+   "name": "GetCallbackFlags",
+   "sig": "GetCallbackFlags() const",
+   "symbol": "CPhysicsObject::GetCallbackFlags() const"
+  },
+  {
+   "index": 25,
+   "name": "Wake",
+   "sig": "Wake()",
+   "symbol": "CPhysicsObject::Wake()"
+  },
+  {
+   "index": 26,
+   "name": "Sleep",
+   "sig": "Sleep()",
+   "symbol": "CPhysicsObject::Sleep()"
+  },
+  {
+   "index": 27,
+   "name": "RecheckCollisionFilter",
+   "sig": "RecheckCollisionFilter()",
+   "symbol": "CPhysicsObject::RecheckCollisionFilter()"
+  },
+  {
+   "index": 28,
+   "name": "RecheckContactPoints",
+   "sig": "RecheckContactPoints()",
+   "symbol": "CPhysicsObject::RecheckContactPoints()"
+  },
+  {
+   "index": 29,
+   "name": "SetMass",
+   "sig": "SetMass(float)",
+   "symbol": "CPhysicsObject::SetMass(float)"
+  },
+  {
+   "index": 30,
+   "name": "GetMass",
+   "sig": "GetMass() const",
+   "symbol": "CPhysicsObject::GetMass() const"
+  },
+  {
+   "index": 31,
+   "name": "GetInvMass",
+   "sig": "GetInvMass() const",
+   "symbol": "CPhysicsObject::GetInvMass() const"
+  },
+  {
+   "index": 32,
+   "name": "GetInertia",
+   "sig": "GetInertia() const",
+   "symbol": "CPhysicsObject::GetInertia() const"
+  },
+  {
+   "index": 33,
+   "name": "GetInvInertia",
+   "sig": "GetInvInertia() const",
+   "symbol": "CPhysicsObject::GetInvInertia() const"
+  },
+  {
+   "index": 34,
+   "name": "SetInertia",
+   "sig": "SetInertia(Vector const&)",
+   "symbol": "CPhysicsObject::SetInertia(Vector const&)"
+  },
+  {
+   "index": 35,
+   "name": "SetDamping",
+   "sig": "SetDamping(float const*, float const*)",
+   "symbol": "CPhysicsObject::SetDamping(float const*, float const*)"
+  },
+  {
+   "index": 36,
+   "name": "GetDamping",
+   "sig": "GetDamping(float*, float*) const",
+   "symbol": "CPhysicsObject::GetDamping(float*, float*) const"
+  },
+  {
+   "index": 37,
+   "name": "SetDragCoefficient",
+   "sig": "SetDragCoefficient(float*, float*)",
+   "symbol": "CPhysicsObject::SetDragCoefficient(float*, float*)"
+  },
+  {
+   "index": 38,
+   "name": "SetBuoyancyRatio",
+   "sig": "SetBuoyancyRatio(float)",
+   "symbol": "CPhysicsObject::SetBuoyancyRatio(float)"
+  },
+  {
+   "index": 39,
+   "name": "GetMaterialIndex",
+   "sig": "GetMaterialIndex() const",
+   "symbol": "CPhysicsObject::GetMaterialIndex() const"
+  },
+  {
+   "index": 40,
+   "name": "SetMaterialIndex",
+   "sig": "SetMaterialIndex(int)",
+   "symbol": "CPhysicsObject::SetMaterialIndex(int)"
+  },
+  {
+   "index": 41,
+   "name": "GetContents",
+   "sig": "GetContents() const",
+   "symbol": "CPhysicsObject::GetContents() const"
+  },
+  {
+   "index": 42,
+   "name": "SetContents",
+   "sig": "SetContents(unsigned int)",
+   "symbol": "CPhysicsObject::SetContents(unsigned int)"
+  },
+  {
+   "index": 43,
+   "name": "GetSphereRadius",
+   "sig": "GetSphereRadius() const",
+   "symbol": "CPhysicsObject::GetSphereRadius() const"
+  },
+  {
+   "index": 44,
+   "name": "GetEnergy",
+   "sig": "GetEnergy() const",
+   "symbol": "CPhysicsObject::GetEnergy() const"
+  },
+  {
+   "index": 45,
+   "name": "GetMassCenterLocalSpace",
+   "sig": "GetMassCenterLocalSpace() const",
+   "symbol": "CPhysicsObject::GetMassCenterLocalSpace() const"
+  },
+  {
+   "index": 46,
+   "name": "SetPosition",
+   "sig": "SetPosition(Vector const&, QAngle const&, bool)",
+   "symbol": "CPhysicsObject::SetPosition(Vector const&, QAngle const&, bool)"
+  },
+  {
+   "index": 47,
+   "name": "SetPositionMatrix",
+   "sig": "SetPositionMatrix(matrix3x4_t const&, bool)",
+   "symbol": "CPhysicsObject::SetPositionMatrix(matrix3x4_t const&, bool)"
+  },
+  {
+   "index": 48,
+   "name": "GetPosition",
+   "sig": "GetPosition(Vector*, QAngle*) const",
+   "symbol": "CPhysicsObject::GetPosition(Vector*, QAngle*) const"
+  },
+  {
+   "index": 49,
+   "name": "GetPositionMatrix",
+   "sig": "GetPositionMatrix(matrix3x4_t*) const",
+   "symbol": "CPhysicsObject::GetPositionMatrix(matrix3x4_t*) const"
+  },
+  {
+   "index": 50,
+   "name": "SetVelocity",
+   "sig": "SetVelocity(Vector const*, Vector const*)",
+   "symbol": "CPhysicsObject::SetVelocity(Vector const*, Vector const*)"
+  },
+  {
+   "index": 51,
+   "name": "SetVelocityInstantaneous",
+   "sig": "SetVelocityInstantaneous(Vector const*, Vector const*)",
+   "symbol": "CPhysicsObject::SetVelocityInstantaneous(Vector const*, Vector const*)"
+  },
+  {
+   "index": 52,
+   "name": "GetVelocity",
+   "sig": "GetVelocity(Vector*, Vector*) const",
+   "symbol": "CPhysicsObject::GetVelocity(Vector*, Vector*) const"
+  },
+  {
+   "index": 53,
+   "name": "AddVelocity",
+   "sig": "AddVelocity(Vector const*, Vector const*)",
+   "symbol": "CPhysicsObject::AddVelocity(Vector const*, Vector const*)"
+  },
+  {
+   "index": 54,
+   "name": "GetVelocityAtPoint",
+   "sig": "GetVelocityAtPoint(Vector const&, Vector*) const",
+   "symbol": "CPhysicsObject::GetVelocityAtPoint(Vector const&, Vector*) const"
+  },
+  {
+   "index": 55,
+   "name": "GetImplicitVelocity",
+   "sig": "GetImplicitVelocity(Vector*, Vector*) const",
+   "symbol": "CPhysicsObject::GetImplicitVelocity(Vector*, Vector*) const"
+  },
+  {
+   "index": 56,
+   "name": "LocalToWorld",
+   "sig": "LocalToWorld(Vector*, Vector const&) const",
+   "symbol": "CPhysicsObject::LocalToWorld(Vector*, Vector const&) const"
+  },
+  {
+   "index": 57,
+   "name": "WorldToLocal",
+   "sig": "WorldToLocal(Vector*, Vector const&) const",
+   "symbol": "CPhysicsObject::WorldToLocal(Vector*, Vector const&) const"
+  },
+  {
+   "index": 58,
+   "name": "LocalToWorldVector",
+   "sig": "LocalToWorldVector(Vector*, Vector const&) const",
+   "symbol": "CPhysicsObject::LocalToWorldVector(Vector*, Vector const&) const"
+  },
+  {
+   "index": 59,
+   "name": "WorldToLocalVector",
+   "sig": "WorldToLocalVector(Vector*, Vector const&) const",
+   "symbol": "CPhysicsObject::WorldToLocalVector(Vector*, Vector const&) const"
+  },
+  {
+   "index": 60,
+   "name": "ApplyForceCenter",
+   "sig": "ApplyForceCenter(Vector const&)",
+   "symbol": "CPhysicsObject::ApplyForceCenter(Vector const&)"
+  },
+  {
+   "index": 61,
+   "name": "ApplyForceOffset",
+   "sig": "ApplyForceOffset(Vector const&, Vector const&)",
+   "symbol": "CPhysicsObject::ApplyForceOffset(Vector const&, Vector const&)"
+  },
+  {
+   "index": 62,
+   "name": "ApplyTorqueCenter",
+   "sig": "ApplyTorqueCenter(Vector const&)",
+   "symbol": "CPhysicsObject::ApplyTorqueCenter(Vector const&)"
+  },
+  {
+   "index": 63,
+   "name": "CalculateForceOffset",
+   "sig": "CalculateForceOffset(Vector const&, Vector const&, Vector*, Vector*) const",
+   "symbol": "CPhysicsObject::CalculateForceOffset(Vector const&, Vector const&, Vector*, Vector*) const"
+  },
+  {
+   "index": 64,
+   "name": "CalculateVelocityOffset",
+   "sig": "CalculateVelocityOffset(Vector const&, Vector const&, Vector*, Vector*) const",
+   "symbol": "CPhysicsObject::CalculateVelocityOffset(Vector const&, Vector const&, Vector*, Vector*) const"
+  },
+  {
+   "index": 65,
+   "name": "CalculateLinearDrag",
+   "sig": "CalculateLinearDrag(Vector const&) const",
+   "symbol": "CPhysicsObject::CalculateLinearDrag(Vector const&) const"
+  },
+  {
+   "index": 66,
+   "name": "CalculateAngularDrag",
+   "sig": "CalculateAngularDrag(Vector const&) const",
+   "symbol": "CPhysicsObject::CalculateAngularDrag(Vector const&) const"
+  },
+  {
+   "index": 67,
+   "name": "GetContactPoint",
+   "sig": "GetContactPoint(Vector*, IPhysicsObject**) const",
+   "symbol": "CPhysicsObject::GetContactPoint(Vector*, IPhysicsObject**) const"
+  },
+  {
+   "index": 68,
+   "name": "SetShadow",
+   "sig": "SetShadow(float, float, bool, bool)",
+   "symbol": "CPhysicsObject::SetShadow(float, float, bool, bool)"
+  },
+  {
+   "index": 69,
+   "name": "UpdateShadow",
+   "sig": "UpdateShadow(Vector const&, QAngle const&, bool, float)",
+   "symbol": "CPhysicsObject::UpdateShadow(Vector const&, QAngle const&, bool, float)"
+  },
+  {
+   "index": 70,
+   "name": "GetShadowPosition",
+   "sig": "GetShadowPosition(Vector*, QAngle*) const",
+   "symbol": "CPhysicsObject::GetShadowPosition(Vector*, QAngle*) const"
+  },
+  {
+   "index": 71,
+   "name": "GetShadowController",
+   "sig": "GetShadowController() const",
+   "symbol": "CPhysicsObject::GetShadowController() const"
+  },
+  {
+   "index": 72,
+   "name": "RemoveShadowController",
+   "sig": "RemoveShadowController()",
+   "symbol": "CPhysicsObject::RemoveShadowController()"
+  },
+  {
+   "index": 73,
+   "name": "ComputeShadowControl",
+   "sig": "ComputeShadowControl(hlshadowcontrol_params_t const&, float, float)",
+   "symbol": "CPhysicsObject::ComputeShadowControl(hlshadowcontrol_params_t const&, float, float)"
+  },
+  {
+   "index": 74,
+   "name": "GetCollide",
+   "sig": "GetCollide() const",
+   "symbol": "CPhysicsObject::GetCollide() const"
+  },
+  {
+   "index": 75,
+   "name": "GetName",
+   "sig": "GetName() const",
+   "symbol": "CPhysicsObject::GetName() const"
+  },
+  {
+   "index": 76,
+   "name": "BecomeTrigger",
+   "sig": "BecomeTrigger()",
+   "symbol": "CPhysicsObject::BecomeTrigger()"
+  },
+  {
+   "index": 77,
+   "name": "RemoveTrigger",
+   "sig": "RemoveTrigger()",
+   "symbol": "CPhysicsObject::RemoveTrigger()"
+  },
+  {
+   "index": 78,
+   "name": "BecomeHinged",
+   "sig": "BecomeHinged(int)",
+   "symbol": "CPhysicsObject::BecomeHinged(int)"
+  },
+  {
+   "index": 79,
+   "name": "RemoveHinged",
+   "sig": "RemoveHinged()",
+   "symbol": "CPhysicsObject::RemoveHinged()"
+  },
+  {
+   "index": 80,
+   "name": "CreateFrictionSnapshot",
+   "sig": "CreateFrictionSnapshot()",
+   "symbol": "CPhysicsObject::CreateFrictionSnapshot()"
+  },
+  {
+   "index": 81,
+   "name": "DestroyFrictionSnapshot",
+   "sig": "DestroyFrictionSnapshot(IPhysicsFrictionSnapshot*)",
+   "symbol": "CPhysicsObject::DestroyFrictionSnapshot(IPhysicsFrictionSnapshot*)"
+  },
+  {
+   "index": 82,
+   "name": "OutputDebugInfo",
+   "sig": "OutputDebugInfo() const",
+   "symbol": "CPhysicsObject::OutputDebugInfo() const"
+  }
+ ],
+ "derived": [
+  "bin/vphysics:CPhysicsObject"
+ ],
+ "derived_count": 1
+}

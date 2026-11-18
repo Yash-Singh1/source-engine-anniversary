@@ -1,0 +1,175 @@
+{
+ "interface": "IBaseFileSystem",
+ "headers": [
+  "public/filesystem.h"
+ ],
+ "versions": {
+  "retail": [
+   "VBaseFileSystem011"
+  ],
+  "ours": [
+   "VBaseFileSystem011"
+  ],
+  "sdk2013": [
+   "VBaseFileSystem011"
+  ]
+ },
+ "version_macros": [
+  "BASEFILESYSTEM_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/filesystem_stdio",
+   "version": "VBaseFileSystem011",
+   "class": "CFileSystem_Stdio"
+  }
+ ],
+ "sdk2013_len": 17,
+ "sdk2013_slots": [
+  "Read(void*, int, void*)",
+  "Write(void const*, int, void*)",
+  "Open(char const*, char const*, char const*)",
+  "Close(void*)",
+  "Seek(void*, int, FileSystemSeek_t)",
+  "Tell(void*)",
+  "Size(void*)",
+  "Size(char const*, char const*)",
+  "Flush(void*)",
+  "Precache(char const*, char const*)",
+  "FileExists(char const*, char const*)",
+  "IsFileWritable(char const*, char const*)",
+  "SetFileWritable(char const*, bool, char const*)",
+  "GetFileTime(char const*, char const*)",
+  "ReadFile(char const*, char const*, CUtlBuffer&, int, int, void* (*)(char const*, unsigned int))",
+  "WriteFile(char const*, char const*, CUtlBuffer&)",
+  "UnzipFile(char const*, char const*, char const*)"
+ ],
+ "retail_reference": {
+  "module": "bin/filesystem_stdio",
+  "class": "CFileSystem_Stdio",
+  "offset": 4,
+  "chain": [
+   "CFileSystem_Stdio",
+   "CBaseFileSystem",
+   "CTier1AppSystem<IFileSystem, 0>",
+   "CTier0AppSystem<IFileSystem>",
+   "CBaseAppSystem<IFileSystem>",
+   "IFileSystem",
+   "IBaseFileSystem"
+  ]
+ },
+ "retail_len": 17,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 17
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Read",
+   "sig": "Read(void*, int, void*)",
+   "symbol": "non-virtual thunk to CBaseFileSystem::Read(void*, int, void*)"
+  },
+  {
+   "index": 1,
+   "name": "Write",
+   "sig": "Write(void const*, int, void*)",
+   "symbol": "non-virtual thunk to CBaseFileSystem::Write(void const*, int, void*)"
+  },
+  {
+   "index": 2,
+   "name": "Open",
+   "sig": "Open(char const*, char const*, char const*)",
+   "symbol": "non-virtual thunk to CBaseFileSystem::Open(char const*, char const*, char const*)"
+  },
+  {
+   "index": 3,
+   "name": "Close",
+   "sig": "Close(void*)",
+   "symbol": "non-virtual thunk to CBaseFileSystem::Close(void*)"
+  },
+  {
+   "index": 4,
+   "name": "Seek",
+   "sig": "Seek(void*, int, FileSystemSeek_t)",
+   "symbol": "non-virtual thunk to CBaseFileSystem::Seek(void*, int, FileSystemSeek_t)"
+  },
+  {
+   "index": 5,
+   "name": "Tell",
+   "sig": "Tell(void*)",
+   "symbol": "non-virtual thunk to CBaseFileSystem::Tell(void*)"
+  },
+  {
+   "index": 6,
+   "name": "Size",
+   "sig": "Size(void*)",
+   "symbol": "non-virtual thunk to CBaseFileSystem::Size(void*)"
+  },
+  {
+   "index": 7,
+   "name": "Size",
+   "sig": "Size(char const*, char const*)",
+   "symbol": "non-virtual thunk to CBaseFileSystem::Size(char const*, char const*)"
+  },
+  {
+   "index": 8,
+   "name": "Flush",
+   "sig": "Flush(void*)",
+   "symbol": "non-virtual thunk to CBaseFileSystem::Flush(void*)"
+  },
+  {
+   "index": 9,
+   "name": "Precache",
+   "sig": "Precache(char const*, char const*)",
+   "symbol": "non-virtual thunk to CBaseFileSystem::Precache(char const*, char const*)"
+  },
+  {
+   "index": 10,
+   "name": "FileExists",
+   "sig": "FileExists(char const*, char const*)",
+   "symbol": "non-virtual thunk to CBaseFileSystem::FileExists(char const*, char const*)"
+  },
+  {
+   "index": 11,
+   "name": "IsFileWritable",
+   "sig": "IsFileWritable(char const*, char const*)",
+   "symbol": "non-virtual thunk to CBaseFileSystem::IsFileWritable(char const*, char const*)"
+  },
+  {
+   "index": 12,
+   "name": "SetFileWritable",
+   "sig": "SetFileWritable(char const*, bool, char const*)",
+   "symbol": "non-virtual thunk to CBaseFileSystem::SetFileWritable(char const*, bool, char const*)"
+  },
+  {
+   "index": 13,
+   "name": "GetFileTime",
+   "sig": "GetFileTime(char const*, char const*)",
+   "symbol": "non-virtual thunk to CBaseFileSystem::GetFileTime(char const*, char const*)"
+  },
+  {
+   "index": 14,
+   "name": "ReadFile",
+   "sig": "ReadFile(char const*, char const*, CUtlBuffer&, int, int, void* (*)(char const*, unsigned int))",
+   "symbol": "non-virtual thunk to CBaseFileSystem::ReadFile(char const*, char const*, CUtlBuffer&, int, int, void* (*)(char const*, unsigned int))"
+  },
+  {
+   "index": 15,
+   "name": "WriteFile",
+   "sig": "WriteFile(char const*, char const*, CUtlBuffer&)",
+   "symbol": "non-virtual thunk to CBaseFileSystem::WriteFile(char const*, char const*, CUtlBuffer&)"
+  },
+  {
+   "index": 16,
+   "name": "UnzipFile",
+   "sig": "UnzipFile(char const*, char const*, char const*)",
+   "symbol": "non-virtual thunk to CBaseFileSystem::UnzipFile(char const*, char const*, char const*)"
+  }
+ ],
+ "derived": [
+  "bin/filesystem_stdio:CBaseFileSystem",
+  "bin/filesystem_stdio:CFileSystem_Stdio"
+ ],
+ "derived_count": 2
+}

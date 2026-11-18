@@ -1,0 +1,65 @@
+{
+ "interface": "CDefaultDataCacheClient",
+ "headers": [
+  "public/datacache/idatacache.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 2,
+ "sdk2013_slots": [
+  "HandleCacheNotification(DataCacheNotification_t const&)",
+  "GetItemName(unsigned int, void const*, char*, unsigned int)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CAsyncWavDataCache",
+  "offset": 4,
+  "chain": [
+   "CAsyncWavDataCache",
+   "CManagedDataCacheClient<CAsyncWaveData, asyncwaveparams_t, CAsyncWaveData*>",
+   "CDefaultDataCacheClient"
+  ]
+ },
+ "retail_len": 2,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 2
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "HandleCacheNotification",
+   "sig": "HandleCacheNotification(DataCacheNotification_t const&)",
+   "symbol": "CManagedDataCacheClient<CAsyncWaveData, asyncwaveparams_t, CAsyncWaveData*>::HandleCacheNotification(DataCacheNotification_t const&)"
+  },
+  {
+   "index": 1,
+   "name": "GetItemName",
+   "sig": "GetItemName(unsigned int, void const*, char*, unsigned int)",
+   "symbol": "non-virtual thunk to CAsyncWavDataCache::GetItemName(unsigned int, void const*, char*, unsigned int)"
+  }
+ ],
+ "derived": [
+  "bin/datacache:CMDLCache",
+  "bin/engine:CAsyncWavDataCache",
+  "bin/engine:CManagedDataCacheClient<CAsyncWaveData, asyncwaveparams_t, CAsyncWaveData*>",
+  "bin/engine:CManagedDataCacheClient<CColorMeshData, colormeshparams_t, CColorMeshData*>",
+  "bin/engine:CModelRender",
+  "episodic/client:CAsyncCaptionResourceManager",
+  "episodic/client:CManagedDataCacheClient<AsyncCaptionData_t, asynccaptionparams_t, AsyncCaptionData_t*>",
+  "hl2/client:CAsyncCaptionResourceManager",
+  "hl2/client:CManagedDataCacheClient<AsyncCaptionData_t, asynccaptionparams_t, AsyncCaptionData_t*>",
+  "hl2_complete/client:CAsyncCaptionResourceManager",
+  "hl2_complete/client:CManagedDataCacheClient<AsyncCaptionData_t, asynccaptionparams_t, AsyncCaptionData_t*>",
+  "hl2mp/client:CAsyncCaptionResourceManager",
+  "hl2mp/client:CManagedDataCacheClient<AsyncCaptionData_t, asynccaptionparams_t, AsyncCaptionData_t*>",
+  "lostcoast/client:CAsyncCaptionResourceManager",
+  "lostcoast/client:CManagedDataCacheClient<AsyncCaptionData_t, asynccaptionparams_t, AsyncCaptionData_t*>"
+ ],
+ "derived_count": 15
+}

@@ -1,0 +1,50 @@
+{
+ "interface": "IMaterialProxyFactory",
+ "headers": [
+  "public/materialsystem/imaterialproxyfactory.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 2,
+ "sdk2013_slots": [
+  "CreateProxy(char const*)",
+  "DeleteProxy(IMaterialProxy*)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CMaterialProxyFactory",
+  "offset": 0,
+  "chain": [
+   "CMaterialProxyFactory",
+   "IMaterialProxyFactory"
+  ]
+ },
+ "retail_len": 2,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 2
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "CreateProxy",
+   "sig": "CreateProxy(char const*)",
+   "symbol": "CMaterialProxyFactory::CreateProxy(char const*)"
+  },
+  {
+   "index": 1,
+   "name": "DeleteProxy",
+   "sig": "DeleteProxy(IMaterialProxy*)",
+   "symbol": "CMaterialProxyFactory::DeleteProxy(IMaterialProxy*)"
+  }
+ ],
+ "derived": [
+  "bin/engine:CMaterialProxyFactory"
+ ],
+ "derived_count": 1
+}

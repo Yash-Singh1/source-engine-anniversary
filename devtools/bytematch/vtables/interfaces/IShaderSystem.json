@@ -1,0 +1,87 @@
+{
+ "interface": "IShaderSystem",
+ "headers": [],
+ "versions": {
+  "retail": [
+   "ShaderSystem002"
+  ],
+  "ours": [
+   "ShaderSystem002"
+  ],
+  "sdk2013": []
+ },
+ "version_macros": [
+  "SHADERSYSTEM_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/materialsystem",
+   "version": "ShaderSystem002",
+   "class": "CShaderSystem"
+  }
+ ],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "bin/materialsystem",
+  "class": "CShaderSystem",
+  "offset": 4,
+  "chain": [
+   "CShaderSystem",
+   "IShaderSystemInternal",
+   "IShaderSystem"
+  ]
+ },
+ "retail_len": 7,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 7
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "GetShaderAPITextureBindHandle",
+   "sig": "GetShaderAPITextureBindHandle(ITexture*, int, int)",
+   "symbol": "non-virtual thunk to CShaderSystem::GetShaderAPITextureBindHandle(ITexture*, int, int)"
+  },
+  {
+   "index": 1,
+   "name": "BindTexture",
+   "sig": "BindTexture(Sampler_t, ITexture*, int)",
+   "symbol": "non-virtual thunk to CShaderSystem::BindTexture(Sampler_t, ITexture*, int)"
+  },
+  {
+   "index": 2,
+   "name": "BindTexture",
+   "sig": "BindTexture(Sampler_t, Sampler_t, ITexture*, int)",
+   "symbol": "non-virtual thunk to CShaderSystem::BindTexture(Sampler_t, Sampler_t, ITexture*, int)"
+  },
+  {
+   "index": 3,
+   "name": "TakeSnapshot",
+   "sig": "TakeSnapshot()",
+   "symbol": "non-virtual thunk to CShaderSystem::TakeSnapshot()"
+  },
+  {
+   "index": 4,
+   "name": "DrawSnapshot",
+   "sig": "DrawSnapshot(bool)",
+   "symbol": "non-virtual thunk to CShaderSystem::DrawSnapshot(bool)"
+  },
+  {
+   "index": 5,
+   "name": "IsUsingGraphics",
+   "sig": "IsUsingGraphics() const",
+   "symbol": "non-virtual thunk to CShaderSystem::IsUsingGraphics() const"
+  },
+  {
+   "index": 6,
+   "name": "CanUseEditorMaterials",
+   "sig": "CanUseEditorMaterials() const",
+   "symbol": "non-virtual thunk to CShaderSystem::CanUseEditorMaterials() const"
+  }
+ ],
+ "derived": [
+  "bin/materialsystem:CShaderSystem"
+ ],
+ "derived_count": 1
+}

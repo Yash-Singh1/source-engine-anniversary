@@ -1,0 +1,138 @@
+{
+ "interface": "IPhysicsSurfaceProps",
+ "headers": [
+  "public/vphysics_interface.h",
+  "public/vphysics_interfaceV30.h"
+ ],
+ "versions": {
+  "retail": [
+   "VPhysicsSurfaceProps001"
+  ],
+  "ours": [
+   "VPhysicsSurfaceProps001"
+  ],
+  "sdk2013": [
+   "VPhysicsSurfaceProps001"
+  ]
+ },
+ "version_macros": [
+  "VPHYSICS_SURFACEPROPS_INTERFACE_VERSION",
+  "VPHYSICS_SURFACEPROPS_INTERFACE_VERSION_1"
+ ],
+ "registrations": [
+  {
+   "module": "bin/vphysics",
+   "version": "VPhysicsSurfaceProps001",
+   "class": "CPhysicsSurfaceProps"
+  }
+ ],
+ "sdk2013_len": 11,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "ParseSurfaceData(char const*, char const*)",
+  "SurfacePropCount() const",
+  "GetSurfaceIndex(char const*) const",
+  "GetPhysicsProperties(int, float*, float*, float*, float*) const",
+  "GetSurfaceData(int)",
+  "GetString(unsigned short) const",
+  "GetPropName(int) const",
+  "SetWorldMaterialIndexTable(int*, int)",
+  "GetPhysicsParameters(int, surfacephysicsparams_t*) const"
+ ],
+ "retail_reference": {
+  "module": "bin/vphysics",
+  "class": "CPhysicsSurfaceProps",
+  "offset": 0,
+  "chain": [
+   "CPhysicsSurfaceProps",
+   "IPhysicsSurfacePropsInternal",
+   "IPhysicsSurfaceProps"
+  ]
+ },
+ "retail_len": 11,
+ "retail_len_basis": "override: extra slots are CPhysicsSurfaceProps's own IVP helpers",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 17
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CPhysicsSurfaceProps",
+   "sig": "~CPhysicsSurfaceProps()",
+   "symbol": "CPhysicsSurfaceProps::~CPhysicsSurfaceProps()"
+  },
+  {
+   "index": 1,
+   "name": "~CPhysicsSurfaceProps",
+   "sig": "~CPhysicsSurfaceProps()",
+   "symbol": "CPhysicsSurfaceProps::~CPhysicsSurfaceProps()"
+  },
+  {
+   "index": 2,
+   "name": "ParseSurfaceData",
+   "sig": "ParseSurfaceData(char const*, char const*)",
+   "symbol": "CPhysicsSurfaceProps::ParseSurfaceData(char const*, char const*)"
+  },
+  {
+   "index": 3,
+   "name": "SurfacePropCount",
+   "sig": "SurfacePropCount() const",
+   "symbol": "CPhysicsSurfaceProps::SurfacePropCount() const"
+  },
+  {
+   "index": 4,
+   "name": "GetSurfaceIndex",
+   "sig": "GetSurfaceIndex(char const*) const",
+   "symbol": "CPhysicsSurfaceProps::GetSurfaceIndex(char const*) const"
+  },
+  {
+   "index": 5,
+   "name": "GetPhysicsProperties",
+   "sig": "GetPhysicsProperties(int, float*, float*, float*, float*) const",
+   "symbol": "CPhysicsSurfaceProps::GetPhysicsProperties(int, float*, float*, float*, float*) const"
+  },
+  {
+   "index": 6,
+   "name": "GetSurfaceData",
+   "sig": "GetSurfaceData(int)",
+   "symbol": "CPhysicsSurfaceProps::GetSurfaceData(int)"
+  },
+  {
+   "index": 7,
+   "name": "GetString",
+   "sig": "GetString(unsigned short) const",
+   "symbol": "CPhysicsSurfaceProps::GetString(unsigned short) const"
+  },
+  {
+   "index": 8,
+   "name": "GetPropName",
+   "sig": "GetPropName(int) const",
+   "symbol": "CPhysicsSurfaceProps::GetPropName(int) const"
+  },
+  {
+   "index": 9,
+   "name": "SetWorldMaterialIndexTable",
+   "sig": "SetWorldMaterialIndexTable(int*, int)",
+   "symbol": "CPhysicsSurfaceProps::SetWorldMaterialIndexTable(int*, int)"
+  },
+  {
+   "index": 10,
+   "name": "GetPhysicsParameters",
+   "sig": "GetPhysicsParameters(int, surfacephysicsparams_t*) const",
+   "symbol": "CPhysicsSurfaceProps::GetPhysicsParameters(int, surfacephysicsparams_t*) const"
+  }
+ ],
+ "implementer_tail": [
+  "PurgeAllSurfaceData()",
+  "GetIVPMaterial(int)",
+  "GetIVPMaterialIndex(IVP_Material const*) const",
+  "GetIVPManager()",
+  "RemapIVPMaterialIndex(int) const",
+  "GetReservedMaterialName(int) const"
+ ],
+ "derived": [
+  "bin/vphysics:CPhysicsSurfaceProps"
+ ],
+ "derived_count": 1
+}

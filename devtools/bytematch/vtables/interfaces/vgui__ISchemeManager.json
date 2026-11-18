@@ -1,0 +1,175 @@
+{
+ "interface": "vgui::ISchemeManager",
+ "headers": [
+  "public/vgui/IScheme.h"
+ ],
+ "versions": {
+  "retail": [
+   "VGUI_Scheme010"
+  ],
+  "ours": [
+   "VGUI_Scheme010"
+  ],
+  "sdk2013": [
+   "VGUI_Scheme010"
+  ]
+ },
+ "version_macros": [
+  "VGUI_SCHEME_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/vgui2",
+   "version": "VGUI_Scheme010",
+   "class": "CSchemeManager"
+  }
+ ],
+ "sdk2013_len": 17,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "LoadSchemeFromFile(char const*, char const*)",
+  "ReloadSchemes()",
+  "ReloadFonts()",
+  "GetDefaultScheme()",
+  "GetScheme(char const*)",
+  "GetImage(char const*, bool)",
+  "GetImageID(char const*, bool)",
+  "GetIScheme(unsigned long)",
+  "Shutdown(bool)",
+  "GetProportionalScaledValue(int)",
+  "GetProportionalNormalizedValue(int)",
+  "LoadSchemeFromFileEx(unsigned int, char const*, char const*)",
+  "GetProportionalScaledValueEx(unsigned long, int)",
+  "GetProportionalNormalizedValueEx(unsigned long, int)",
+  "DeleteImage(char const*)"
+ ],
+ "retail_reference": {
+  "module": "bin/vgui2",
+  "class": "CSchemeManager",
+  "offset": 0,
+  "chain": [
+   "CSchemeManager",
+   "vgui::ISchemeManager"
+  ]
+ },
+ "retail_len": 18,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 18
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CSchemeManager",
+   "sig": "~CSchemeManager()",
+   "symbol": "CSchemeManager::~CSchemeManager()"
+  },
+  {
+   "index": 1,
+   "name": "~CSchemeManager",
+   "sig": "~CSchemeManager()",
+   "symbol": "CSchemeManager::~CSchemeManager()"
+  },
+  {
+   "index": 2,
+   "name": "LoadSchemeFromFile",
+   "sig": "LoadSchemeFromFile(char const*, char const*)",
+   "symbol": "CSchemeManager::LoadSchemeFromFile(char const*, char const*)"
+  },
+  {
+   "index": 3,
+   "name": "ReloadSchemes",
+   "sig": "ReloadSchemes()",
+   "symbol": "CSchemeManager::ReloadSchemes()"
+  },
+  {
+   "index": 4,
+   "name": "ReloadFonts",
+   "sig": "ReloadFonts()",
+   "symbol": "CSchemeManager::ReloadFonts()"
+  },
+  {
+   "index": 5,
+   "name": "GetDefaultScheme",
+   "sig": "GetDefaultScheme()",
+   "symbol": "CSchemeManager::GetDefaultScheme()"
+  },
+  {
+   "index": 6,
+   "name": "GetScheme",
+   "sig": "GetScheme(char const*)",
+   "symbol": "CSchemeManager::GetScheme(char const*)"
+  },
+  {
+   "index": 7,
+   "name": "GetImage",
+   "sig": "GetImage(char const*, bool)",
+   "symbol": "CSchemeManager::GetImage(char const*, bool)"
+  },
+  {
+   "index": 8,
+   "name": "GetImageID",
+   "sig": "GetImageID(char const*, bool)",
+   "symbol": "CSchemeManager::GetImageID(char const*, bool)"
+  },
+  {
+   "index": 9,
+   "name": "GetIScheme",
+   "sig": "GetIScheme(unsigned long)",
+   "symbol": "CSchemeManager::GetIScheme(unsigned long)"
+  },
+  {
+   "index": 10,
+   "name": "Shutdown",
+   "sig": "Shutdown(bool)",
+   "symbol": "CSchemeManager::Shutdown(bool)"
+  },
+  {
+   "index": 11,
+   "name": "GetProportionalScaledValue",
+   "sig": "GetProportionalScaledValue(int)",
+   "symbol": "CSchemeManager::GetProportionalScaledValue(int)"
+  },
+  {
+   "index": 12,
+   "name": "GetProportionalNormalizedValue",
+   "sig": "GetProportionalNormalizedValue(int)",
+   "symbol": "CSchemeManager::GetProportionalNormalizedValue(int)"
+  },
+  {
+   "index": 13,
+   "name": "LoadSchemeFromFileEx",
+   "sig": "LoadSchemeFromFileEx(unsigned int, char const*, char const*)",
+   "symbol": "CSchemeManager::LoadSchemeFromFileEx(unsigned int, char const*, char const*)"
+  },
+  {
+   "index": 14,
+   "name": "GetProportionalScaledValueEx",
+   "sig": "GetProportionalScaledValueEx(unsigned long, int)",
+   "symbol": "CSchemeManager::GetProportionalScaledValueEx(unsigned long, int)"
+  },
+  {
+   "index": 15,
+   "name": "GetProportionalNormalizedValueEx",
+   "sig": "GetProportionalNormalizedValueEx(unsigned long, int)",
+   "symbol": "CSchemeManager::GetProportionalNormalizedValueEx(unsigned long, int)"
+  },
+  {
+   "index": 16,
+   "name": "DeleteImage",
+   "sig": "DeleteImage(char const*)",
+   "symbol": "CSchemeManager::DeleteImage(char const*)"
+  },
+  {
+   "index": 17,
+   "name": "UpdateBorders",
+   "sig": "UpdateBorders()",
+   "symbol": "CSchemeManager::UpdateBorders()"
+  }
+ ],
+ "derived": [
+  "bin/vgui2:CSchemeManager"
+ ],
+ "derived_count": 1
+}

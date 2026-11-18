@@ -1,0 +1,66 @@
+{
+ "interface": "ITextureRegenerator",
+ "headers": [
+  "public/materialsystem/itexture.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 2,
+ "sdk2013_slots": [
+  "RegenerateTextureBits(ITexture*, IVTFTexture*, Rect_t*)",
+  "Release()"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "ITextureRegenerator",
+  "offset": 0,
+  "chain": [
+   "ITextureRegenerator"
+  ]
+ },
+ "retail_len": 2,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 2
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 1,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  }
+ ],
+ "derived": [
+  "bin/engine:CLookupViewPanel",
+  "bin/engine:CProceduralTexturePanel",
+  "bin/engine:CUncorrectedImagePanel",
+  "bin/engine:ITextureRegenerator",
+  "bin/materialsystem:CCheckerboardTexture",
+  "bin/materialsystem:CColorCorrectionTexture",
+  "bin/materialsystem:CMorph",
+  "bin/materialsystem:CNormalizationCubemap",
+  "bin/materialsystem:CSignedNormalizationCubemap",
+  "bin/materialsystem:CSolidTexture",
+  "bin/studiorender:CGlintTextureRegenerator",
+  "bin/vguimatsurface:CFontTextureRegen",
+  "bin/video_quicktime:CQuicktimeMaterialRGBTextureRegenerator",
+  "episodic/client:CCamoTextureRegen",
+  "hl2/client:CCamoTextureRegen",
+  "hl2_complete/client:CCamoTextureRegen",
+  "hl2mp/client:CCamoTextureRegen",
+  "lostcoast/client:CCamoTextureRegen"
+ ],
+ "derived_count": 18
+}

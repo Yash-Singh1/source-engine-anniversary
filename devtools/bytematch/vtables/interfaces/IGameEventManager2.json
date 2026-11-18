@@ -1,0 +1,151 @@
+{
+ "interface": "IGameEventManager2",
+ "headers": [
+  "public/igameevents.h"
+ ],
+ "versions": {
+  "retail": [
+   "GAMEEVENTSMANAGER002"
+  ],
+  "ours": [
+   "GAMEEVENTSMANAGER001",
+   "GAMEEVENTSMANAGER002"
+  ],
+  "sdk2013": [
+   "GAMEEVENTSMANAGER001",
+   "GAMEEVENTSMANAGER002"
+  ]
+ },
+ "version_macros": [
+  "INTERFACEVERSION_GAMEEVENTSMANAGER",
+  "INTERFACEVERSION_GAMEEVENTSMANAGER2"
+ ],
+ "registrations": [
+  {
+   "module": "bin/engine",
+   "version": "GAMEEVENTSMANAGER002",
+   "class": "CGameEventManager"
+  }
+ ],
+ "sdk2013_len": 14,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "LoadEventsFromFile(char const*)",
+  "Reset()",
+  "AddListener(IGameEventListener2*, char const*, bool)",
+  "FindListener(IGameEventListener2*, char const*)",
+  "RemoveListener(IGameEventListener2*)",
+  "CreateEvent(char const*, bool)",
+  "FireEvent(IGameEvent*, bool)",
+  "FireEventClientSide(IGameEvent*)",
+  "DuplicateEvent(IGameEvent*)",
+  "FreeEvent(IGameEvent*)",
+  "SerializeEvent(IGameEvent*, bf_write*)",
+  "UnserializeEvent(bf_read*)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CGameEventManager",
+  "offset": 0,
+  "chain": [
+   "CGameEventManager",
+   "IGameEventManager2"
+  ]
+ },
+ "retail_len": 14,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 14
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CGameEventManager",
+   "sig": "~CGameEventManager()",
+   "symbol": "CGameEventManager::~CGameEventManager()"
+  },
+  {
+   "index": 1,
+   "name": "~CGameEventManager",
+   "sig": "~CGameEventManager()",
+   "symbol": "CGameEventManager::~CGameEventManager()"
+  },
+  {
+   "index": 2,
+   "name": "LoadEventsFromFile",
+   "sig": "LoadEventsFromFile(char const*)",
+   "symbol": "CGameEventManager::LoadEventsFromFile(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "Reset",
+   "sig": "Reset()",
+   "symbol": "CGameEventManager::Reset()"
+  },
+  {
+   "index": 4,
+   "name": "AddListener",
+   "sig": "AddListener(IGameEventListener2*, char const*, bool)",
+   "symbol": "CGameEventManager::AddListener(IGameEventListener2*, char const*, bool)"
+  },
+  {
+   "index": 5,
+   "name": "FindListener",
+   "sig": "FindListener(IGameEventListener2*, char const*)",
+   "symbol": "CGameEventManager::FindListener(IGameEventListener2*, char const*)"
+  },
+  {
+   "index": 6,
+   "name": "RemoveListener",
+   "sig": "RemoveListener(IGameEventListener2*)",
+   "symbol": "CGameEventManager::RemoveListener(IGameEventListener2*)"
+  },
+  {
+   "index": 7,
+   "name": "CreateEvent",
+   "sig": "CreateEvent(char const*, bool)",
+   "symbol": "CGameEventManager::CreateEvent(char const*, bool)"
+  },
+  {
+   "index": 8,
+   "name": "FireEvent",
+   "sig": "FireEvent(IGameEvent*, bool)",
+   "symbol": "CGameEventManager::FireEvent(IGameEvent*, bool)"
+  },
+  {
+   "index": 9,
+   "name": "FireEventClientSide",
+   "sig": "FireEventClientSide(IGameEvent*)",
+   "symbol": "CGameEventManager::FireEventClientSide(IGameEvent*)"
+  },
+  {
+   "index": 10,
+   "name": "DuplicateEvent",
+   "sig": "DuplicateEvent(IGameEvent*)",
+   "symbol": "CGameEventManager::DuplicateEvent(IGameEvent*)"
+  },
+  {
+   "index": 11,
+   "name": "FreeEvent",
+   "sig": "FreeEvent(IGameEvent*)",
+   "symbol": "CGameEventManager::FreeEvent(IGameEvent*)"
+  },
+  {
+   "index": 12,
+   "name": "SerializeEvent",
+   "sig": "SerializeEvent(IGameEvent*, bf_write*)",
+   "symbol": "CGameEventManager::SerializeEvent(IGameEvent*, bf_write*)"
+  },
+  {
+   "index": 13,
+   "name": "UnserializeEvent",
+   "sig": "UnserializeEvent(bf_read*)",
+   "symbol": "CGameEventManager::UnserializeEvent(bf_read*)"
+  }
+ ],
+ "derived": [
+  "bin/engine:CGameEventManager"
+ ],
+ "derived_count": 1
+}

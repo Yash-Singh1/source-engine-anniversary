@@ -1,0 +1,137 @@
+{
+ "interface": "IClientEntityList",
+ "headers": [
+  "public/icliententitylist.h"
+ ],
+ "versions": {
+  "retail": [
+   "VClientEntityList003"
+  ],
+  "ours": [
+   "VClientEntityList003"
+  ],
+  "sdk2013": [
+   "VClientEntityList003"
+  ]
+ },
+ "version_macros": [
+  "VCLIENTENTITYLIST_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "episodic/client",
+   "version": "VClientEntityList003",
+   "class": "CClientEntityList"
+  },
+  {
+   "module": "hl2/client",
+   "version": "VClientEntityList003",
+   "class": "CClientEntityList"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "VClientEntityList003",
+   "class": "CClientEntityList"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "VClientEntityList003",
+   "class": "CClientEntityList"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "VClientEntityList003",
+   "class": "CClientEntityList"
+  }
+ ],
+ "sdk2013_len": 9,
+ "sdk2013_slots": [
+  "GetClientNetworkable(int)",
+  "GetClientNetworkableFromHandle(CBaseHandle)",
+  "GetClientUnknownFromHandle(CBaseHandle)",
+  "GetClientEntity(int)",
+  "GetClientEntityFromHandle(CBaseHandle)",
+  "NumberOfEntities(bool)",
+  "GetHighestEntityIndex()",
+  "SetMaxEntities(int)",
+  "GetMaxEntities()"
+ ],
+ "retail_reference": {
+  "module": "episodic/client",
+  "class": "CClientEntityList",
+  "offset": 65556,
+  "chain": [
+   "CClientEntityList",
+   "IClientEntityList"
+  ]
+ },
+ "retail_len": 9,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 9
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "GetClientNetworkable",
+   "sig": "GetClientNetworkable(int)",
+   "symbol": "non-virtual thunk to CClientEntityList::GetClientNetworkable(int)"
+  },
+  {
+   "index": 1,
+   "name": "GetClientNetworkableFromHandle",
+   "sig": "GetClientNetworkableFromHandle(CBaseHandle)",
+   "symbol": "non-virtual thunk to CClientEntityList::GetClientNetworkableFromHandle(CBaseHandle)"
+  },
+  {
+   "index": 2,
+   "name": "GetClientUnknownFromHandle",
+   "sig": "GetClientUnknownFromHandle(CBaseHandle)",
+   "symbol": "non-virtual thunk to CClientEntityList::GetClientUnknownFromHandle(CBaseHandle)"
+  },
+  {
+   "index": 3,
+   "name": "GetClientEntity",
+   "sig": "GetClientEntity(int)",
+   "symbol": "non-virtual thunk to CClientEntityList::GetClientEntity(int)"
+  },
+  {
+   "index": 4,
+   "name": "GetClientEntityFromHandle",
+   "sig": "GetClientEntityFromHandle(CBaseHandle)",
+   "symbol": "non-virtual thunk to CClientEntityList::GetClientEntityFromHandle(CBaseHandle)"
+  },
+  {
+   "index": 5,
+   "name": "NumberOfEntities",
+   "sig": "NumberOfEntities(bool)",
+   "symbol": "non-virtual thunk to CClientEntityList::NumberOfEntities(bool)"
+  },
+  {
+   "index": 6,
+   "name": "GetHighestEntityIndex",
+   "sig": "GetHighestEntityIndex()",
+   "symbol": "non-virtual thunk to CClientEntityList::GetHighestEntityIndex()"
+  },
+  {
+   "index": 7,
+   "name": "SetMaxEntities",
+   "sig": "SetMaxEntities(int)",
+   "symbol": "non-virtual thunk to CClientEntityList::SetMaxEntities(int)"
+  },
+  {
+   "index": 8,
+   "name": "GetMaxEntities",
+   "sig": "GetMaxEntities()",
+   "symbol": "non-virtual thunk to CClientEntityList::GetMaxEntities()"
+  }
+ ],
+ "derived": [
+  "episodic/client:CClientEntityList",
+  "hl2/client:CClientEntityList",
+  "hl2_complete/client:CClientEntityList",
+  "hl2mp/client:CClientEntityList",
+  "lostcoast/client:CClientEntityList"
+ ],
+ "derived_count": 5
+}

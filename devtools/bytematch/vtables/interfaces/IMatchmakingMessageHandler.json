@@ -1,0 +1,127 @@
+{
+ "interface": "IMatchmakingMessageHandler",
+ "headers": [
+  "public/inetmsghandler.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 13,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "ProcessTick(NET_Tick*)",
+  "ProcessStringCmd(NET_StringCmd*)",
+  "ProcessSetConVar(NET_SetConVar*)",
+  "ProcessSignonState(NET_SignonState*)",
+  "ProcessHeartbeat(MM_Heartbeat*)",
+  "ProcessClientInfo(MM_ClientInfo*)",
+  "ProcessJoinResponse(MM_JoinResponse*)",
+  "ProcessRegisterResponse(MM_RegisterResponse*)",
+  "ProcessMigrate(MM_Migrate*)",
+  "ProcessMutelist(MM_Mutelist*)",
+  "ProcessCheckpoint(MM_Checkpoint*)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CMatchmaking",
+  "offset": 4,
+  "chain": [
+   "CMatchmaking",
+   "IMatchmakingMessageHandler"
+  ]
+ },
+ "retail_len": 13,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 13
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CMatchmaking",
+   "sig": "~CMatchmaking()",
+   "symbol": "non-virtual thunk to CMatchmaking::~CMatchmaking()"
+  },
+  {
+   "index": 1,
+   "name": "~CMatchmaking",
+   "sig": "~CMatchmaking()",
+   "symbol": "non-virtual thunk to CMatchmaking::~CMatchmaking()"
+  },
+  {
+   "index": 2,
+   "name": "ProcessTick",
+   "sig": "ProcessTick(NET_Tick*)",
+   "symbol": "non-virtual thunk to CMatchmaking::ProcessTick(NET_Tick*)"
+  },
+  {
+   "index": 3,
+   "name": "ProcessStringCmd",
+   "sig": "ProcessStringCmd(NET_StringCmd*)",
+   "symbol": "non-virtual thunk to CMatchmaking::ProcessStringCmd(NET_StringCmd*)"
+  },
+  {
+   "index": 4,
+   "name": "ProcessSetConVar",
+   "sig": "ProcessSetConVar(NET_SetConVar*)",
+   "symbol": "non-virtual thunk to CMatchmaking::ProcessSetConVar(NET_SetConVar*)"
+  },
+  {
+   "index": 5,
+   "name": "ProcessSignonState",
+   "sig": "ProcessSignonState(NET_SignonState*)",
+   "symbol": "non-virtual thunk to CMatchmaking::ProcessSignonState(NET_SignonState*)"
+  },
+  {
+   "index": 6,
+   "name": "ProcessHeartbeat",
+   "sig": "ProcessHeartbeat(MM_Heartbeat*)",
+   "symbol": "non-virtual thunk to CMatchmaking::ProcessHeartbeat(MM_Heartbeat*)"
+  },
+  {
+   "index": 7,
+   "name": "ProcessClientInfo",
+   "sig": "ProcessClientInfo(MM_ClientInfo*)",
+   "symbol": "non-virtual thunk to CMatchmaking::ProcessClientInfo(MM_ClientInfo*)"
+  },
+  {
+   "index": 8,
+   "name": "ProcessJoinResponse",
+   "sig": "ProcessJoinResponse(MM_JoinResponse*)",
+   "symbol": "non-virtual thunk to CMatchmaking::ProcessJoinResponse(MM_JoinResponse*)"
+  },
+  {
+   "index": 9,
+   "name": "ProcessRegisterResponse",
+   "sig": "ProcessRegisterResponse(MM_RegisterResponse*)",
+   "symbol": "non-virtual thunk to CMatchmaking::ProcessRegisterResponse(MM_RegisterResponse*)"
+  },
+  {
+   "index": 10,
+   "name": "ProcessMigrate",
+   "sig": "ProcessMigrate(MM_Migrate*)",
+   "symbol": "non-virtual thunk to CMatchmaking::ProcessMigrate(MM_Migrate*)"
+  },
+  {
+   "index": 11,
+   "name": "ProcessMutelist",
+   "sig": "ProcessMutelist(MM_Mutelist*)",
+   "symbol": "non-virtual thunk to CMatchmaking::ProcessMutelist(MM_Mutelist*)"
+  },
+  {
+   "index": 12,
+   "name": "ProcessCheckpoint",
+   "sig": "ProcessCheckpoint(MM_Checkpoint*)",
+   "symbol": "non-virtual thunk to CMatchmaking::ProcessCheckpoint(MM_Checkpoint*)"
+  }
+ ],
+ "derived": [
+  "bin/engine:CMatchmaking"
+ ],
+ "derived_count": 1
+}

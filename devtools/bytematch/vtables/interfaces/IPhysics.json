@@ -1,0 +1,148 @@
+{
+ "interface": "IPhysics",
+ "headers": [
+  "public/vphysics_interface.h",
+  "public/vphysics_interfaceV30.h"
+ ],
+ "versions": {
+  "retail": [
+   "VPhysics031"
+  ],
+  "ours": [
+   "VPhysics030",
+   "VPhysics031"
+  ],
+  "sdk2013": [
+   "VPhysics030",
+   "VPhysics031"
+  ]
+ },
+ "version_macros": [
+  "VPHYSICS_INTERFACE_VERSION",
+  "VPHYSICS_INTERFACE_VERSION_30"
+ ],
+ "registrations": [
+  {
+   "module": "bin/vphysics",
+   "version": "VPhysics031",
+   "class": "CPhysicsInterface"
+  }
+ ],
+ "sdk2013_len": 13,
+ "sdk2013_slots": [
+  "Connect(void* (*)(char const*, int*))",
+  "Disconnect()",
+  "QueryInterface(char const*)",
+  "Init()",
+  "Shutdown()",
+  "CreateEnvironment()",
+  "DestroyEnvironment(IPhysicsEnvironment*)",
+  "GetActiveEnvironmentByIndex(int)",
+  "CreateObjectPairHash()",
+  "DestroyObjectPairHash(IPhysicsObjectPairHash*)",
+  "FindOrCreateCollisionSet(unsigned int, int)",
+  "FindCollisionSet(unsigned int)",
+  "DestroyAllCollisionSets()"
+ ],
+ "retail_reference": {
+  "module": "bin/vphysics",
+  "class": "CPhysicsInterface",
+  "offset": 0,
+  "chain": [
+   "CPhysicsInterface",
+   "CTier1AppSystem<IPhysics, 0>",
+   "CTier0AppSystem<IPhysics>",
+   "CBaseAppSystem<IPhysics>",
+   "IPhysics"
+  ]
+ },
+ "retail_len": 13,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 13
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Connect",
+   "sig": "Connect(void* (*)(char const*, int*))",
+   "symbol": "CTier1AppSystem<IPhysics, 0>::Connect(void* (*)(char const*, int*))"
+  },
+  {
+   "index": 1,
+   "name": "Disconnect",
+   "sig": "Disconnect()",
+   "symbol": "CTier1AppSystem<IPhysics, 0>::Disconnect()"
+  },
+  {
+   "index": 2,
+   "name": "QueryInterface",
+   "sig": "QueryInterface(char const*)",
+   "symbol": "CPhysicsInterface::QueryInterface(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "CTier1AppSystem<IPhysics, 0>::Init()"
+  },
+  {
+   "index": 4,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CTier1AppSystem<IPhysics, 0>::Shutdown()"
+  },
+  {
+   "index": 5,
+   "name": "CreateEnvironment",
+   "sig": "CreateEnvironment()",
+   "symbol": "CPhysicsInterface::CreateEnvironment()"
+  },
+  {
+   "index": 6,
+   "name": "DestroyEnvironment",
+   "sig": "DestroyEnvironment(IPhysicsEnvironment*)",
+   "symbol": "CPhysicsInterface::DestroyEnvironment(IPhysicsEnvironment*)"
+  },
+  {
+   "index": 7,
+   "name": "GetActiveEnvironmentByIndex",
+   "sig": "GetActiveEnvironmentByIndex(int)",
+   "symbol": "CPhysicsInterface::GetActiveEnvironmentByIndex(int)"
+  },
+  {
+   "index": 8,
+   "name": "CreateObjectPairHash",
+   "sig": "CreateObjectPairHash()",
+   "symbol": "CPhysicsInterface::CreateObjectPairHash()"
+  },
+  {
+   "index": 9,
+   "name": "DestroyObjectPairHash",
+   "sig": "DestroyObjectPairHash(IPhysicsObjectPairHash*)",
+   "symbol": "CPhysicsInterface::DestroyObjectPairHash(IPhysicsObjectPairHash*)"
+  },
+  {
+   "index": 10,
+   "name": "FindOrCreateCollisionSet",
+   "sig": "FindOrCreateCollisionSet(unsigned int, int)",
+   "symbol": "CPhysicsInterface::FindOrCreateCollisionSet(unsigned int, int)"
+  },
+  {
+   "index": 11,
+   "name": "FindCollisionSet",
+   "sig": "FindCollisionSet(unsigned int)",
+   "symbol": "CPhysicsInterface::FindCollisionSet(unsigned int)"
+  },
+  {
+   "index": 12,
+   "name": "DestroyAllCollisionSets",
+   "sig": "DestroyAllCollisionSets()",
+   "symbol": "CPhysicsInterface::DestroyAllCollisionSets()"
+  }
+ ],
+ "derived": [
+  "bin/vphysics:CPhysicsInterface"
+ ],
+ "derived_count": 1
+}

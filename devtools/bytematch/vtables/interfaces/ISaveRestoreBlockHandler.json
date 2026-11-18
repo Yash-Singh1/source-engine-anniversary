@@ -1,0 +1,138 @@
+{
+ "interface": "ISaveRestoreBlockHandler",
+ "headers": [
+  "public/isaverestore.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 9,
+ "sdk2013_slots": [
+  "GetBlockName()",
+  "PreSave(CSaveRestoreData*)",
+  "Save(ISave*)",
+  "WriteSaveHeaders(ISave*)",
+  "PostSave()",
+  "PreRestore()",
+  "ReadRestoreHeaders(IRestore*)",
+  "Restore(IRestore*, bool)",
+  "PostRestore()"
+ ],
+ "retail_reference": {
+  "module": "episodic/client",
+  "class": "CEntitySaveRestoreBlockHandler",
+  "offset": 0,
+  "chain": [
+   "CEntitySaveRestoreBlockHandler",
+   "ISaveRestoreBlockHandler"
+  ]
+ },
+ "retail_len": 9,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 9
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "GetBlockName",
+   "sig": "GetBlockName()",
+   "symbol": "CEntitySaveRestoreBlockHandler::GetBlockName()"
+  },
+  {
+   "index": 1,
+   "name": "PreSave",
+   "sig": "PreSave(CSaveRestoreData*)",
+   "symbol": "CEntitySaveRestoreBlockHandler::PreSave(CSaveRestoreData*)"
+  },
+  {
+   "index": 2,
+   "name": "Save",
+   "sig": "Save(ISave*)",
+   "symbol": "CEntitySaveRestoreBlockHandler::Save(ISave*)"
+  },
+  {
+   "index": 3,
+   "name": "WriteSaveHeaders",
+   "sig": "WriteSaveHeaders(ISave*)",
+   "symbol": "CEntitySaveRestoreBlockHandler::WriteSaveHeaders(ISave*)"
+  },
+  {
+   "index": 4,
+   "name": "PostSave",
+   "sig": "PostSave()",
+   "symbol": "CEntitySaveRestoreBlockHandler::PostSave()"
+  },
+  {
+   "index": 5,
+   "name": "PreRestore",
+   "sig": "PreRestore()",
+   "symbol": "CEntitySaveRestoreBlockHandler::PreRestore()"
+  },
+  {
+   "index": 6,
+   "name": "ReadRestoreHeaders",
+   "sig": "ReadRestoreHeaders(IRestore*)",
+   "symbol": "CEntitySaveRestoreBlockHandler::ReadRestoreHeaders(IRestore*)"
+  },
+  {
+   "index": 7,
+   "name": "Restore",
+   "sig": "Restore(IRestore*, bool)",
+   "symbol": "CEntitySaveRestoreBlockHandler::Restore(IRestore*, bool)"
+  },
+  {
+   "index": 8,
+   "name": "PostRestore",
+   "sig": "PostRestore()",
+   "symbol": "CEntitySaveRestoreBlockHandler::PostRestore()"
+  }
+ ],
+ "derived": [
+  "episodic/client:CEntitySaveRestoreBlockHandler",
+  "episodic/client:CPhysSaveRestoreBlockHandler",
+  "episodic/client:CSaveRestoreBlockSet",
+  "episodic/client:CViewEffectsSaveRestoreBlockHandler",
+  "episodic/server:CAI_SaveRestoreBlockHandler",
+  "episodic/server:CAchievementSaveRestoreBlockHandler",
+  "episodic/server:CCommentary_SaveRestoreBlockHandler",
+  "episodic/server:CDefaultResponseSystemSaveRestoreBlockHandler",
+  "episodic/server:CEntitySaveRestoreBlockHandler",
+  "episodic/server:CEventQueue_SaveRestoreBlockHandler",
+  "episodic/server:CPhysSaveRestoreBlockHandler",
+  "episodic/server:CSaveRestoreBlockSet",
+  "episodic/server:CTemplate_SaveRestoreBlockHandler",
+  "hl2/client:CEntitySaveRestoreBlockHandler",
+  "hl2/client:CPhysSaveRestoreBlockHandler",
+  "hl2/client:CSaveRestoreBlockSet",
+  "hl2/client:CViewEffectsSaveRestoreBlockHandler",
+  "hl2/server:CAI_SaveRestoreBlockHandler",
+  "hl2/server:CAchievementSaveRestoreBlockHandler",
+  "hl2/server:CCommentary_SaveRestoreBlockHandler",
+  "hl2/server:CDefaultResponseSystemSaveRestoreBlockHandler",
+  "hl2/server:CEntitySaveRestoreBlockHandler",
+  "hl2/server:CEventQueue_SaveRestoreBlockHandler",
+  "hl2/server:CPhysSaveRestoreBlockHandler",
+  "hl2/server:CSaveRestoreBlockSet",
+  "hl2/server:CTemplate_SaveRestoreBlockHandler",
+  "hl2_complete/client:CEntitySaveRestoreBlockHandler",
+  "hl2_complete/client:CPhysSaveRestoreBlockHandler",
+  "hl2_complete/client:CSaveRestoreBlockSet",
+  "hl2_complete/client:CViewEffectsSaveRestoreBlockHandler",
+  "hl2_complete/server:CAI_SaveRestoreBlockHandler",
+  "hl2_complete/server:CAchievementSaveRestoreBlockHandler",
+  "hl2_complete/server:CCommentary_SaveRestoreBlockHandler",
+  "hl2_complete/server:CDefaultResponseSystemSaveRestoreBlockHandler",
+  "hl2_complete/server:CEntitySaveRestoreBlockHandler",
+  "hl2_complete/server:CEventQueue_SaveRestoreBlockHandler",
+  "hl2_complete/server:CPhysSaveRestoreBlockHandler",
+  "hl2_complete/server:CSaveRestoreBlockSet",
+  "hl2_complete/server:CTemplate_SaveRestoreBlockHandler",
+  "hl2mp/client:CEntitySaveRestoreBlockHandler"
+ ],
+ "derived_count": 65
+}

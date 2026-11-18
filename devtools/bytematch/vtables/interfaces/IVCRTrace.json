@@ -1,0 +1,50 @@
+{
+ "interface": "IVCRTrace",
+ "headers": [
+  "public/tier0/vcrmode.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 2,
+ "sdk2013_slots": [
+  "ReadEvent()",
+  "Read(void*, int)"
+ ],
+ "retail_reference": {
+  "module": "bin/libtier0",
+  "class": "CVCRTrace",
+  "offset": 0,
+  "chain": [
+   "CVCRTrace",
+   "IVCRTrace"
+  ]
+ },
+ "retail_len": 2,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 2
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "ReadEvent",
+   "sig": "ReadEvent()",
+   "symbol": "CVCRTrace::ReadEvent()"
+  },
+  {
+   "index": 1,
+   "name": "Read",
+   "sig": "Read(void*, int)",
+   "symbol": "CVCRTrace::Read(void*, int)"
+  }
+ ],
+ "derived": [
+  "bin/libtier0:CVCRTrace"
+ ],
+ "derived_count": 1
+}

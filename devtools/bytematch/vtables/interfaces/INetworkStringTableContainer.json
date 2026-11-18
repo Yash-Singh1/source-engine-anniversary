@@ -1,0 +1,113 @@
+{
+ "interface": "INetworkStringTableContainer",
+ "headers": [
+  "public/networkstringtabledefs.h"
+ ],
+ "versions": {
+  "retail": [
+   "VEngineClientStringTable001"
+  ],
+  "ours": [
+   "VEngineClientStringTable001"
+  ],
+  "sdk2013": [
+   "VEngineClientStringTable001"
+  ]
+ },
+ "version_macros": [
+  "INTERFACENAME_NETWORKSTRINGTABLECLIENT"
+ ],
+ "registrations": [
+  {
+   "module": "bin/engine",
+   "version": "VEngineClientStringTable001",
+   "class": "CNetworkStringTableContainer"
+  }
+ ],
+ "sdk2013_len": 9,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "CreateStringTable(char const*, int, int, int)",
+  "RemoveAllTables()",
+  "FindTable(char const*) const",
+  "GetTable(int) const",
+  "GetNumTables() const",
+  "CreateStringTableEx(char const*, int, int, int, bool)",
+  "SetAllowClientSideAddString(INetworkStringTable*, bool)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CNetworkStringTableContainer",
+  "offset": 0,
+  "chain": [
+   "CNetworkStringTableContainer",
+   "INetworkStringTableContainer"
+  ]
+ },
+ "retail_len": 9,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 9
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CNetworkStringTableContainer",
+   "sig": "~CNetworkStringTableContainer()",
+   "symbol": "CNetworkStringTableContainer::~CNetworkStringTableContainer()"
+  },
+  {
+   "index": 1,
+   "name": "~CNetworkStringTableContainer",
+   "sig": "~CNetworkStringTableContainer()",
+   "symbol": "CNetworkStringTableContainer::~CNetworkStringTableContainer()"
+  },
+  {
+   "index": 2,
+   "name": "CreateStringTable",
+   "sig": "CreateStringTable(char const*, int, int, int)",
+   "symbol": "CNetworkStringTableContainer::CreateStringTable(char const*, int, int, int)"
+  },
+  {
+   "index": 3,
+   "name": "RemoveAllTables",
+   "sig": "RemoveAllTables()",
+   "symbol": "CNetworkStringTableContainer::RemoveAllTables()"
+  },
+  {
+   "index": 4,
+   "name": "FindTable",
+   "sig": "FindTable(char const*) const",
+   "symbol": "CNetworkStringTableContainer::FindTable(char const*) const"
+  },
+  {
+   "index": 5,
+   "name": "GetTable",
+   "sig": "GetTable(int) const",
+   "symbol": "CNetworkStringTableContainer::GetTable(int) const"
+  },
+  {
+   "index": 6,
+   "name": "GetNumTables",
+   "sig": "GetNumTables() const",
+   "symbol": "CNetworkStringTableContainer::GetNumTables() const"
+  },
+  {
+   "index": 7,
+   "name": "CreateStringTableEx",
+   "sig": "CreateStringTableEx(char const*, int, int, int, bool)",
+   "symbol": "CNetworkStringTableContainer::CreateStringTableEx(char const*, int, int, int, bool)"
+  },
+  {
+   "index": 8,
+   "name": "SetAllowClientSideAddString",
+   "sig": "SetAllowClientSideAddString(INetworkStringTable*, bool)",
+   "symbol": "CNetworkStringTableContainer::SetAllowClientSideAddString(INetworkStringTable*, bool)"
+  }
+ ],
+ "derived": [
+  "bin/engine:CNetworkStringTableContainer"
+ ],
+ "derived_count": 1
+}

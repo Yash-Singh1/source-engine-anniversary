@@ -1,0 +1,130 @@
+{
+ "interface": "IVertexBuffer",
+ "headers": [
+  "public/materialsystem/imesh.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 12,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "VertexCount() const",
+  "GetVertexFormat() const",
+  "IsDynamic() const",
+  "BeginCastBuffer(unsigned long long)",
+  "EndCastBuffer()",
+  "GetRoomRemaining() const",
+  "Lock(int, bool, VertexDesc_t&)",
+  "Unlock(int, VertexDesc_t&)",
+  "Spew(int, VertexDesc_t const&)",
+  "ValidateData(int, VertexDesc_t const&)"
+ ],
+ "retail_reference": {
+  "module": "bin/shaderapidx9",
+  "class": "CVertexBufferDx8",
+  "offset": 0,
+  "chain": [
+   "CVertexBufferDx8",
+   "CVertexBufferBase",
+   "IVertexBuffer"
+  ]
+ },
+ "retail_len": 12,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 12
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CVertexBufferDx8",
+   "sig": "~CVertexBufferDx8()",
+   "symbol": "CVertexBufferDx8::~CVertexBufferDx8()"
+  },
+  {
+   "index": 1,
+   "name": "~CVertexBufferDx8",
+   "sig": "~CVertexBufferDx8()",
+   "symbol": "CVertexBufferDx8::~CVertexBufferDx8()"
+  },
+  {
+   "index": 2,
+   "name": "VertexCount",
+   "sig": "VertexCount() const",
+   "symbol": "CVertexBufferDx8::VertexCount() const"
+  },
+  {
+   "index": 3,
+   "name": "GetVertexFormat",
+   "sig": "GetVertexFormat() const",
+   "symbol": "CVertexBufferDx8::GetVertexFormat() const"
+  },
+  {
+   "index": 4,
+   "name": "IsDynamic",
+   "sig": "IsDynamic() const",
+   "symbol": "CVertexBufferDx8::IsDynamic() const"
+  },
+  {
+   "index": 5,
+   "name": "BeginCastBuffer",
+   "sig": "BeginCastBuffer(unsigned long long)",
+   "symbol": "CVertexBufferDx8::BeginCastBuffer(unsigned long long)"
+  },
+  {
+   "index": 6,
+   "name": "EndCastBuffer",
+   "sig": "EndCastBuffer()",
+   "symbol": "CVertexBufferDx8::EndCastBuffer()"
+  },
+  {
+   "index": 7,
+   "name": "GetRoomRemaining",
+   "sig": "GetRoomRemaining() const",
+   "symbol": "CVertexBufferDx8::GetRoomRemaining() const"
+  },
+  {
+   "index": 8,
+   "name": "Lock",
+   "sig": "Lock(int, bool, VertexDesc_t&)",
+   "symbol": "CVertexBufferDx8::Lock(int, bool, VertexDesc_t&)"
+  },
+  {
+   "index": 9,
+   "name": "Unlock",
+   "sig": "Unlock(int, VertexDesc_t&)",
+   "symbol": "CVertexBufferDx8::Unlock(int, VertexDesc_t&)"
+  },
+  {
+   "index": 10,
+   "name": "Spew",
+   "sig": "Spew(int, VertexDesc_t const&)",
+   "symbol": "CVertexBufferBase::Spew(int, VertexDesc_t const&)"
+  },
+  {
+   "index": 11,
+   "name": "ValidateData",
+   "sig": "ValidateData(int, VertexDesc_t const&)",
+   "symbol": "CVertexBufferBase::ValidateData(int, VertexDesc_t const&)"
+  }
+ ],
+ "derived": [
+  "bin/materialsystem:CDummyMesh",
+  "bin/materialsystem:CMatQueuedMesh",
+  "bin/shaderapidx9:CBufferedMeshDX8",
+  "bin/shaderapidx9:CDynamicMeshDX8",
+  "bin/shaderapidx9:CMeshBase",
+  "bin/shaderapidx9:CMeshDX8",
+  "bin/shaderapidx9:CTempMeshDX8",
+  "bin/shaderapidx9:CVertexBufferBase",
+  "bin/shaderapidx9:CVertexBufferDx8",
+  "bin/shaderapiempty:CEmptyMesh"
+ ],
+ "derived_count": 10
+}

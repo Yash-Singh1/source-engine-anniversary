@@ -1,0 +1,60 @@
+{
+ "interface": "ISteamMatchmakingPingResponse",
+ "headers": [
+  "public/steam/isteammatchmaking.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 2,
+ "sdk2013_slots": [
+  "ServerResponded(gameserveritem_t&)",
+  "ServerFailedToRespond()"
+ ],
+ "retail_reference": {
+  "module": "bin/ServerBrowser",
+  "class": "ISteamMatchmakingPingResponse",
+  "offset": 0,
+  "chain": [
+   "ISteamMatchmakingPingResponse"
+  ]
+ },
+ "retail_len": 2,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 2
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 1,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  }
+ ],
+ "derived": [
+  "bin/ServerBrowser:CBaseGamesPage",
+  "bin/ServerBrowser:CCustomGames",
+  "bin/ServerBrowser:CDialogAddBlacklistedServer",
+  "bin/ServerBrowser:CDialogAddServer",
+  "bin/ServerBrowser:CDialogGameInfo",
+  "bin/ServerBrowser:CFavoriteGames",
+  "bin/ServerBrowser:CFriendsGames",
+  "bin/ServerBrowser:CHistoryGames",
+  "bin/ServerBrowser:CInternetGames",
+  "bin/ServerBrowser:CLanGames",
+  "bin/ServerBrowser:CSpectateGames",
+  "bin/ServerBrowser:ISteamMatchmakingPingResponse"
+ ],
+ "derived_count": 12
+}

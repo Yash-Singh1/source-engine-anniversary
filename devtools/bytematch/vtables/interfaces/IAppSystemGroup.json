@@ -1,0 +1,83 @@
+{
+ "interface": "IAppSystemGroup",
+ "headers": [
+  "public/appframework/IAppSystemGroup.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 5,
+ "sdk2013_slots": [
+  "Create()",
+  "PreInit()",
+  "Main()",
+  "PostShutdown()",
+  "Destroy()"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CModAppSystemGroup",
+  "offset": 0,
+  "chain": [
+   "CModAppSystemGroup",
+   "CAppSystemGroup",
+   "IAppSystemGroup"
+  ]
+ },
+ "retail_len": 5,
+ "retail_len_basis": "first own method of CAppSystemGroup",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 8,
+  "first own method of CAppSystemGroup": 5
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Create",
+   "sig": "Create()",
+   "symbol": "CModAppSystemGroup::Create()"
+  },
+  {
+   "index": 1,
+   "name": "PreInit",
+   "sig": "PreInit()",
+   "symbol": "CModAppSystemGroup::PreInit()"
+  },
+  {
+   "index": 2,
+   "name": "Main",
+   "sig": "Main()",
+   "symbol": "CModAppSystemGroup::Main()"
+  },
+  {
+   "index": 3,
+   "name": "PostShutdown",
+   "sig": "PostShutdown()",
+   "symbol": "CModAppSystemGroup::PostShutdown()"
+  },
+  {
+   "index": 4,
+   "name": "Destroy",
+   "sig": "Destroy()",
+   "symbol": "CModAppSystemGroup::Destroy()"
+  }
+ ],
+ "implementer_tail": [
+  "Startup()",
+  "Shutdown()",
+  "LoadModuleDLL(char const*)"
+ ],
+ "derived": [
+  "bin/engine:CAppSystemGroup",
+  "bin/engine:CModAppSystemGroup",
+  "bin/launcher:CAppSystemGroup",
+  "bin/launcher:CSourceAppSystemGroup",
+  "bin/launcher:CSteamAppSystemGroup",
+  "bin/launcher:CSteamApplication"
+ ],
+ "derived_count": 6
+}

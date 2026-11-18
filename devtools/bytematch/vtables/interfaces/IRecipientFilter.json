@@ -1,0 +1,117 @@
+{
+ "interface": "IRecipientFilter",
+ "headers": [
+  "public/irecipientfilter.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 6,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "IsReliable() const",
+  "IsInitMessage() const",
+  "GetRecipientCount() const",
+  "GetRecipientIndex(int) const"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CEngineRecipientFilter",
+  "offset": 0,
+  "chain": [
+   "CEngineRecipientFilter",
+   "IRecipientFilter"
+  ]
+ },
+ "retail_len": 6,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 6
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CEngineRecipientFilter",
+   "sig": "~CEngineRecipientFilter()",
+   "symbol": "CEngineRecipientFilter::~CEngineRecipientFilter()"
+  },
+  {
+   "index": 1,
+   "name": "~CEngineRecipientFilter",
+   "sig": "~CEngineRecipientFilter()",
+   "symbol": "CEngineRecipientFilter::~CEngineRecipientFilter()"
+  },
+  {
+   "index": 2,
+   "name": "IsReliable",
+   "sig": "IsReliable() const",
+   "symbol": "CEngineRecipientFilter::IsReliable() const"
+  },
+  {
+   "index": 3,
+   "name": "IsInitMessage",
+   "sig": "IsInitMessage() const",
+   "symbol": "CEngineRecipientFilter::IsInitMessage() const"
+  },
+  {
+   "index": 4,
+   "name": "GetRecipientCount",
+   "sig": "GetRecipientCount() const",
+   "symbol": "CEngineRecipientFilter::GetRecipientCount() const"
+  },
+  {
+   "index": 5,
+   "name": "GetRecipientIndex",
+   "sig": "GetRecipientIndex(int) const",
+   "symbol": "CEngineRecipientFilter::GetRecipientIndex(int) const"
+  }
+ ],
+ "derived": [
+  "bin/engine:CEngineRecipientFilter",
+  "bin/engine:CEngineSingleUserFilter",
+  "episodic/client:CBroadcastRecipientFilter",
+  "episodic/client:CCopyRecipientFilter",
+  "episodic/client:CLocalPlayerFilter",
+  "episodic/client:CPASAttenuationFilter",
+  "episodic/client:CPASFilter",
+  "episodic/client:CPVSFilter",
+  "episodic/client:CSingleUserRecipientFilter",
+  "episodic/client:C_RecipientFilter",
+  "episodic/server:CBroadcastRecipientFilter",
+  "episodic/server:CCopyRecipientFilter",
+  "episodic/server:CPASAttenuationFilter",
+  "episodic/server:CPASFilter",
+  "episodic/server:CPVSFilter",
+  "episodic/server:CRecipientFilter",
+  "episodic/server:CReliableBroadcastRecipientFilter",
+  "episodic/server:CSingleUserRecipientFilter",
+  "hl2/client:CBroadcastRecipientFilter",
+  "hl2/client:CCopyRecipientFilter",
+  "hl2/client:CLocalPlayerFilter",
+  "hl2/client:CPASAttenuationFilter",
+  "hl2/client:CPASFilter",
+  "hl2/client:CPVSFilter",
+  "hl2/client:CSingleUserRecipientFilter",
+  "hl2/client:C_RecipientFilter",
+  "hl2/server:CBroadcastRecipientFilter",
+  "hl2/server:CCopyRecipientFilter",
+  "hl2/server:CPASAttenuationFilter",
+  "hl2/server:CPASFilter",
+  "hl2/server:CPVSFilter",
+  "hl2/server:CRecipientFilter",
+  "hl2/server:CReliableBroadcastRecipientFilter",
+  "hl2/server:CSingleUserRecipientFilter",
+  "hl2_complete/client:CBroadcastRecipientFilter",
+  "hl2_complete/client:CCopyRecipientFilter",
+  "hl2_complete/client:CLocalPlayerFilter",
+  "hl2_complete/client:CPASAttenuationFilter",
+  "hl2_complete/client:CPASFilter",
+  "hl2_complete/client:CPVSFilter"
+ ],
+ "derived_count": 82
+}

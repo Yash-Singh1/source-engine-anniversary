@@ -1,0 +1,144 @@
+{
+ "interface": "IGameClientExports",
+ "headers": [
+  "public/game/client/IGameClientExports.h"
+ ],
+ "versions": {
+  "retail": [
+   "GameClientExports001"
+  ],
+  "ours": [
+   "GameClientExports001"
+  ],
+  "sdk2013": [
+   "GameClientExports001"
+  ]
+ },
+ "version_macros": [
+  "GAMECLIENTEXPORTS_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "episodic/client",
+   "version": "GameClientExports001",
+   "class": "CGameClientExports"
+  },
+  {
+   "module": "hl2/client",
+   "version": "GameClientExports001",
+   "class": "CGameClientExports"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "GameClientExports001",
+   "class": "CGameClientExports"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "GameClientExports001",
+   "class": "CGameClientExports"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "GameClientExports001",
+   "class": "CGameClientExports"
+  }
+ ],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "episodic/client",
+  "class": "CGameClientExports",
+  "offset": 0,
+  "chain": [
+   "CGameClientExports",
+   "IGameClientExports"
+  ]
+ },
+ "retail_len": 12,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 12
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CGameClientExports",
+   "sig": "~CGameClientExports()",
+   "symbol": "CGameClientExports::~CGameClientExports()"
+  },
+  {
+   "index": 1,
+   "name": "~CGameClientExports",
+   "sig": "~CGameClientExports()",
+   "symbol": "CGameClientExports::~CGameClientExports()"
+  },
+  {
+   "index": 2,
+   "name": "IsPlayerGameVoiceMuted",
+   "sig": "IsPlayerGameVoiceMuted(int)",
+   "symbol": "CGameClientExports::IsPlayerGameVoiceMuted(int)"
+  },
+  {
+   "index": 3,
+   "name": "MutePlayerGameVoice",
+   "sig": "MutePlayerGameVoice(int)",
+   "symbol": "CGameClientExports::MutePlayerGameVoice(int)"
+  },
+  {
+   "index": 4,
+   "name": "UnmutePlayerGameVoice",
+   "sig": "UnmutePlayerGameVoice(int)",
+   "symbol": "CGameClientExports::UnmutePlayerGameVoice(int)"
+  },
+  {
+   "index": 5,
+   "name": "OnGameUIActivated",
+   "sig": "OnGameUIActivated()",
+   "symbol": "CGameClientExports::OnGameUIActivated()"
+  },
+  {
+   "index": 6,
+   "name": "OnGameUIHidden",
+   "sig": "OnGameUIHidden()",
+   "symbol": "CGameClientExports::OnGameUIHidden()"
+  },
+  {
+   "index": 7,
+   "name": "CreateAchievementsPanel",
+   "sig": "CreateAchievementsPanel(vgui::Panel*)",
+   "symbol": "CGameClientExports::CreateAchievementsPanel(vgui::Panel*)"
+  },
+  {
+   "index": 8,
+   "name": "DisplayAchievementPanel",
+   "sig": "DisplayAchievementPanel()",
+   "symbol": "CGameClientExports::DisplayAchievementPanel()"
+  },
+  {
+   "index": 9,
+   "name": "ShutdownAchievementPanel",
+   "sig": "ShutdownAchievementPanel()",
+   "symbol": "CGameClientExports::ShutdownAchievementPanel()"
+  },
+  {
+   "index": 10,
+   "name": "GetAchievementsPanelMinWidth",
+   "sig": "GetAchievementsPanelMinWidth() const",
+   "symbol": "CGameClientExports::GetAchievementsPanelMinWidth() const"
+  },
+  {
+   "index": 11,
+   "name": "GetHolidayString",
+   "sig": "GetHolidayString()",
+   "symbol": "CGameClientExports::GetHolidayString()"
+  }
+ ],
+ "derived": [
+  "episodic/client:CGameClientExports",
+  "hl2/client:CGameClientExports",
+  "hl2_complete/client:CGameClientExports",
+  "hl2mp/client:CGameClientExports",
+  "lostcoast/client:CGameClientExports"
+ ],
+ "derived_count": 5
+}

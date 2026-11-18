@@ -1,0 +1,395 @@
+{
+ "interface": "IMDLCache",
+ "headers": [
+  "public/datacache/imdlcache.h"
+ ],
+ "versions": {
+  "retail": [
+   "MDLCache004"
+  ],
+  "ours": [
+   "MDLCache004"
+  ],
+  "sdk2013": [
+   "MDLCache004"
+  ]
+ },
+ "version_macros": [
+  "MDLCACHE_INTERFACE_VERSION",
+  "MDLCACHE_INTERFACE_VERSION_4"
+ ],
+ "registrations": [
+  {
+   "module": "bin/datacache",
+   "version": "MDLCache004",
+   "class": "CMDLCache"
+  }
+ ],
+ "sdk2013_len": 45,
+ "sdk2013_slots": [
+  "Connect(void* (*)(char const*, int*))",
+  "Disconnect()",
+  "QueryInterface(char const*)",
+  "Init()",
+  "Shutdown()",
+  "SetCacheNotify(IMDLCacheNotify*)",
+  "FindMDL(char const*)",
+  "AddRef(unsigned short)",
+  "Release(unsigned short)",
+  "GetRef(unsigned short)",
+  "GetStudioHdr(unsigned short)",
+  "GetHardwareData(unsigned short)",
+  "GetVCollide(unsigned short)",
+  "GetAnimBlock(unsigned short, int)",
+  "GetVirtualModel(unsigned short)",
+  "GetAutoplayList(unsigned short, unsigned short**)",
+  "GetVertexData(unsigned short)",
+  "TouchAllData(unsigned short)",
+  "SetUserData(unsigned short, void*)",
+  "GetUserData(unsigned short)",
+  "IsErrorModel(unsigned short)",
+  "Flush(MDLCacheFlush_t)",
+  "Flush(unsigned short, int)",
+  "GetModelName(unsigned short)",
+  "GetVirtualModelFast(studiohdr_t const*, unsigned short)",
+  "BeginLock()",
+  "EndLock()",
+  "GetFrameUnlockCounterPtrOLD()",
+  "FinishPendingLoads()",
+  "GetVCollideEx(unsigned short, bool)",
+  "GetVCollideSize(unsigned short, int*)",
+  "GetAsyncLoad(MDLCacheDataType_t)",
+  "SetAsyncLoad(MDLCacheDataType_t, bool)",
+  "BeginMapLoad()",
+  "EndMapLoad()",
+  "MarkAsLoaded(unsigned short)",
+  "InitPreloadData(bool)",
+  "ShutdownPreloadData()",
+  "IsDataLoaded(unsigned short, MDLCacheDataType_t)",
+  "GetFrameUnlockCounterPtr(MDLCacheDataType_t)",
+  "LockStudioHdr(unsigned short)",
+  "UnlockStudioHdr(unsigned short)",
+  "PreloadModel(unsigned short)",
+  "ResetErrorModelStatus(unsigned short)",
+  "MarkFrame()"
+ ],
+ "retail_reference": {
+  "module": "bin/datacache",
+  "class": "CMDLCache",
+  "offset": 0,
+  "chain": [
+   "CMDLCache",
+   "CTier3AppSystem<IMDLCache, 0>",
+   "CTier2AppSystem<IMDLCache, 0>",
+   "CTier1AppSystem<IMDLCache, 0>",
+   "CTier0AppSystem<IMDLCache>",
+   "CBaseAppSystem<IMDLCache>",
+   "IMDLCache"
+  ]
+ },
+ "retail_len": 49,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 49
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Connect",
+   "sig": "Connect(void* (*)(char const*, int*))",
+   "symbol": "CMDLCache::Connect(void* (*)(char const*, int*))"
+  },
+  {
+   "index": 1,
+   "name": "Disconnect",
+   "sig": "Disconnect()",
+   "symbol": "CMDLCache::Disconnect()"
+  },
+  {
+   "index": 2,
+   "name": "QueryInterface",
+   "sig": "QueryInterface(char const*)",
+   "symbol": "CMDLCache::QueryInterface(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "CMDLCache::Init()"
+  },
+  {
+   "index": 4,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CMDLCache::Shutdown()"
+  },
+  {
+   "index": 5,
+   "name": "SetCacheNotify",
+   "sig": "SetCacheNotify(IMDLCacheNotify*)",
+   "symbol": "CMDLCache::SetCacheNotify(IMDLCacheNotify*)"
+  },
+  {
+   "index": 6,
+   "name": "FindMDL",
+   "sig": "FindMDL(char const*)",
+   "symbol": "CMDLCache::FindMDL(char const*)"
+  },
+  {
+   "index": 7,
+   "name": "AddRef",
+   "sig": "AddRef(unsigned short)",
+   "symbol": "CMDLCache::AddRef(unsigned short)"
+  },
+  {
+   "index": 8,
+   "name": "Release",
+   "sig": "Release(unsigned short)",
+   "symbol": "CMDLCache::Release(unsigned short)"
+  },
+  {
+   "index": 9,
+   "name": "GetRef",
+   "sig": "GetRef(unsigned short)",
+   "symbol": "CMDLCache::GetRef(unsigned short)"
+  },
+  {
+   "index": 10,
+   "name": "GetStudioHdr",
+   "sig": "GetStudioHdr(unsigned short)",
+   "symbol": "CMDLCache::GetStudioHdr(unsigned short)"
+  },
+  {
+   "index": 11,
+   "name": "GetHardwareData",
+   "sig": "GetHardwareData(unsigned short)",
+   "symbol": "CMDLCache::GetHardwareData(unsigned short)"
+  },
+  {
+   "index": 12,
+   "name": "GetVCollide",
+   "sig": "GetVCollide(unsigned short)",
+   "symbol": "CMDLCache::GetVCollide(unsigned short)"
+  },
+  {
+   "index": 13,
+   "name": "GetAnimBlock",
+   "sig": "GetAnimBlock(unsigned short, int)",
+   "symbol": "CMDLCache::GetAnimBlock(unsigned short, int)"
+  },
+  {
+   "index": 14,
+   "name": "GetVirtualModel",
+   "sig": "GetVirtualModel(unsigned short)",
+   "symbol": "CMDLCache::GetVirtualModel(unsigned short)"
+  },
+  {
+   "index": 15,
+   "name": "GetAutoplayList",
+   "sig": "GetAutoplayList(unsigned short, unsigned short**)",
+   "symbol": "CMDLCache::GetAutoplayList(unsigned short, unsigned short**)"
+  },
+  {
+   "index": 16,
+   "name": "GetVertexData",
+   "sig": "GetVertexData(unsigned short)",
+   "symbol": "CMDLCache::GetVertexData(unsigned short)"
+  },
+  {
+   "index": 17,
+   "name": "TouchAllData",
+   "sig": "TouchAllData(unsigned short)",
+   "symbol": "CMDLCache::TouchAllData(unsigned short)"
+  },
+  {
+   "index": 18,
+   "name": "SetUserData",
+   "sig": "SetUserData(unsigned short, void*)",
+   "symbol": "CMDLCache::SetUserData(unsigned short, void*)"
+  },
+  {
+   "index": 19,
+   "name": "GetUserData",
+   "sig": "GetUserData(unsigned short)",
+   "symbol": "CMDLCache::GetUserData(unsigned short)"
+  },
+  {
+   "index": 20,
+   "name": "IsErrorModel",
+   "sig": "IsErrorModel(unsigned short)",
+   "symbol": "CMDLCache::IsErrorModel(unsigned short)"
+  },
+  {
+   "index": 21,
+   "name": "Flush",
+   "sig": "Flush(MDLCacheFlush_t)",
+   "symbol": "CMDLCache::Flush(MDLCacheFlush_t)"
+  },
+  {
+   "index": 22,
+   "name": "Flush",
+   "sig": "Flush(unsigned short, int)",
+   "symbol": "CMDLCache::Flush(unsigned short, int)"
+  },
+  {
+   "index": 23,
+   "name": "GetModelName",
+   "sig": "GetModelName(unsigned short)",
+   "symbol": "CMDLCache::GetModelName(unsigned short)"
+  },
+  {
+   "index": 24,
+   "name": "GetVirtualModelFast",
+   "sig": "GetVirtualModelFast(studiohdr_t const*, unsigned short)",
+   "symbol": "CMDLCache::GetVirtualModelFast(studiohdr_t const*, unsigned short)"
+  },
+  {
+   "index": 25,
+   "name": "BeginLock",
+   "sig": "BeginLock()",
+   "symbol": "CMDLCache::BeginLock()"
+  },
+  {
+   "index": 26,
+   "name": "EndLock",
+   "sig": "EndLock()",
+   "symbol": "CMDLCache::EndLock()"
+  },
+  {
+   "index": 27,
+   "name": "GetFrameUnlockCounterPtrOLD",
+   "sig": "GetFrameUnlockCounterPtrOLD()",
+   "symbol": "CMDLCache::GetFrameUnlockCounterPtrOLD()"
+  },
+  {
+   "index": 28,
+   "name": "FinishPendingLoads",
+   "sig": "FinishPendingLoads()",
+   "symbol": "CMDLCache::FinishPendingLoads()"
+  },
+  {
+   "index": 29,
+   "name": "GetVCollideEx",
+   "sig": "GetVCollideEx(unsigned short, bool)",
+   "symbol": "CMDLCache::GetVCollideEx(unsigned short, bool)"
+  },
+  {
+   "index": 30,
+   "name": "GetVCollideSize",
+   "sig": "GetVCollideSize(unsigned short, int*)",
+   "symbol": "CMDLCache::GetVCollideSize(unsigned short, int*)"
+  },
+  {
+   "index": 31,
+   "name": "GetAsyncLoad",
+   "sig": "GetAsyncLoad(MDLCacheDataType_t)",
+   "symbol": "CMDLCache::GetAsyncLoad(MDLCacheDataType_t)"
+  },
+  {
+   "index": 32,
+   "name": "SetAsyncLoad",
+   "sig": "SetAsyncLoad(MDLCacheDataType_t, bool)",
+   "symbol": "CMDLCache::SetAsyncLoad(MDLCacheDataType_t, bool)"
+  },
+  {
+   "index": 33,
+   "name": "BeginMapLoad",
+   "sig": "BeginMapLoad()",
+   "symbol": "CMDLCache::BeginMapLoad()"
+  },
+  {
+   "index": 34,
+   "name": "EndMapLoad",
+   "sig": "EndMapLoad()",
+   "symbol": "CMDLCache::EndMapLoad()"
+  },
+  {
+   "index": 35,
+   "name": "MarkAsLoaded",
+   "sig": "MarkAsLoaded(unsigned short)",
+   "symbol": "CMDLCache::MarkAsLoaded(unsigned short)"
+  },
+  {
+   "index": 36,
+   "name": "InitPreloadData",
+   "sig": "InitPreloadData(bool)",
+   "symbol": "CMDLCache::InitPreloadData(bool)"
+  },
+  {
+   "index": 37,
+   "name": "ShutdownPreloadData",
+   "sig": "ShutdownPreloadData()",
+   "symbol": "CMDLCache::ShutdownPreloadData()"
+  },
+  {
+   "index": 38,
+   "name": "IsDataLoaded",
+   "sig": "IsDataLoaded(unsigned short, MDLCacheDataType_t)",
+   "symbol": "CMDLCache::IsDataLoaded(unsigned short, MDLCacheDataType_t)"
+  },
+  {
+   "index": 39,
+   "name": "GetFrameUnlockCounterPtr",
+   "sig": "GetFrameUnlockCounterPtr(MDLCacheDataType_t)",
+   "symbol": "CMDLCache::GetFrameUnlockCounterPtr(MDLCacheDataType_t)"
+  },
+  {
+   "index": 40,
+   "name": "LockStudioHdr",
+   "sig": "LockStudioHdr(unsigned short)",
+   "symbol": "CMDLCache::LockStudioHdr(unsigned short)"
+  },
+  {
+   "index": 41,
+   "name": "UnlockStudioHdr",
+   "sig": "UnlockStudioHdr(unsigned short)",
+   "symbol": "CMDLCache::UnlockStudioHdr(unsigned short)"
+  },
+  {
+   "index": 42,
+   "name": "PreloadModel",
+   "sig": "PreloadModel(unsigned short)",
+   "symbol": "CMDLCache::PreloadModel(unsigned short)"
+  },
+  {
+   "index": 43,
+   "name": "ResetErrorModelStatus",
+   "sig": "ResetErrorModelStatus(unsigned short)",
+   "symbol": "CMDLCache::ResetErrorModelStatus(unsigned short)"
+  },
+  {
+   "index": 44,
+   "name": "MarkFrame",
+   "sig": "MarkFrame()",
+   "symbol": "CMDLCache::MarkFrame()"
+  },
+  {
+   "index": 45,
+   "name": "VerifyHeaders",
+   "sig": "VerifyHeaders(studiohdr_t*)",
+   "symbol": "CMDLCache::VerifyHeaders(studiohdr_t*)"
+  },
+  {
+   "index": 46,
+   "name": "CacheVertexData",
+   "sig": "CacheVertexData(studiohdr_t*)",
+   "symbol": "CMDLCache::CacheVertexData(studiohdr_t*)"
+  },
+  {
+   "index": 47,
+   "name": "HandleCacheNotification",
+   "sig": "HandleCacheNotification(DataCacheNotification_t const&)",
+   "symbol": "CMDLCache::HandleCacheNotification(DataCacheNotification_t const&)"
+  },
+  {
+   "index": 48,
+   "name": "GetItemName",
+   "sig": "GetItemName(unsigned int, void const*, char*, unsigned int)",
+   "symbol": "CMDLCache::GetItemName(unsigned int, void const*, char*, unsigned int)"
+  }
+ ],
+ "derived": [
+  "bin/datacache:CMDLCache"
+ ],
+ "derived_count": 1
+}

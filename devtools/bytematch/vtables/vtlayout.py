@@ -98,7 +98,14 @@ def _scan(s, opener):
 def split_owner_name(body):
     """'void *IAppSystem::QueryInterface(const char *) [pure]' -> (owner, name, params, cv)."""
     body = re.sub(r'\s*\[(pure|complete|deleting|deleted|this adjustment[^\]]*|return adjustment[^\]]*)\]', '', body)
-    paren = _scan(body, '(')
+    # the parameter list opens right after the method name; return types may hold
+    # parentheses of their own ('CBitVec<(1 << 11)> *')
+    paren = None
+    for m in re.finditer(r'(::|^|[\s*&])(operator\(\)|operator[^\w\s(][^(]*|operator \w[\w ]*?[*&]*|~?[A-Za-z_]\w*)\(', body):
+        paren = m.end() - 1
+        break
+    if paren is None:
+        paren = _scan(body, '(')
     head, rest = body[:paren], body[paren:]
     depth, close = 0, len(rest) - 1
     for i, ch in enumerate(rest):
@@ -110,25 +117,22 @@ def split_owner_name(body):
                 close = i
                 break
     params, cv = rest[1:close], rest[close + 1:].strip()
-    depth, start = 0, 0
-    for i, ch in enumerate(head):
-        if ch == '<':
+    cut = head.rfind('::')
+    if cut < 0:
+        return '', head.split()[-1].lstrip('*&'), params, cv
+    name = head[cut + 2:]
+    # walk left from '::' over the owner, which may be a template-id with spaces
+    depth, i = 0, cut - 1
+    while i >= 0:
+        ch = head[i]
+        if ch == '>':
             depth += 1
-        elif ch == '>':
+        elif ch == '<':
             depth -= 1
         elif ch in ' *&' and depth == 0:
-            start = i + 1
-    qual = head[start:]
-    depth, cut = 0, None
-    for i, ch in enumerate(qual):
-        if ch == '<':
-            depth += 1
-        elif ch == '>':
-            depth -= 1
-        elif depth == 0 and qual[i:i + 2] == '::':
-            cut = i
-    owner, name = (qual[:cut], qual[cut + 2:]) if cut is not None else ('', qual)
-    return owner, name, params, cv
+            break
+        i -= 1
+    return head[i + 1:cut], name, params, cv
 
 
 def _json_objects(txt):

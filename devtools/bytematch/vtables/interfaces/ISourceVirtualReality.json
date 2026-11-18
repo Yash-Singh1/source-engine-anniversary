@@ -1,0 +1,58 @@
+{
+ "interface": "ISourceVirtualReality",
+ "headers": [
+  "public/sourcevr/isourcevirtualreality.h"
+ ],
+ "versions": {
+  "retail": [
+   "SourceVirtualReality001"
+  ],
+  "ours": [
+   "SourceVirtualReality001"
+  ],
+  "sdk2013": [
+   "SourceVirtualReality001"
+  ]
+ },
+ "version_macros": [
+  "SOURCE_VIRTUAL_REALITY_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/sourcevr",
+   "version": "SourceVirtualReality001",
+   "class": "CSourceVirtualReality"
+  }
+ ],
+ "sdk2013_len": 27,
+ "sdk2013_slots": [
+  "Connect(void* (*)(char const*, int*))",
+  "Disconnect()",
+  "QueryInterface(char const*)",
+  "Init()",
+  "Shutdown()",
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "ShouldRunInVR()",
+  "IsHmdConnected()",
+  "GetViewportBounds(ISourceVirtualReality::VREye, int*, int*, int*, int*)",
+  "DoDistortionProcessing(ISourceVirtualReality::VREye)",
+  "CompositeHud(ISourceVirtualReality::VREye, float*, bool, bool, bool)",
+  "GetMideyePose()",
+  "SampleTrackingState(float, float)",
+  "GetDisplayBounds(VRRect_t*)",
+  "GetEyeProjectionMatrix(VMatrix*, ISourceVirtualReality::VREye, float, float, float)",
+  "GetMidEyeFromEye(ISourceVirtualReality::VREye)",
+  "GetVRModeAdapter()",
+  "WillDriftInYaw()",
+  "CreateRenderTargets(IMaterialSystem*)",
+  "ShutdownRenderTargets()",
+  "GetRenderTarget(ISourceVirtualReality::VREye, ISourceVirtualReality::EWhichRenderTarget)",
+  "GetRenderTargetFrameBufferDimensions(int&, int&)",
+  "Activate()",
+  "Deactivate()",
+  "ShouldForceVRMode()",
+  "SetShouldForceVRMode()"
+ ],
+ "status": "no retail vtable"
+}

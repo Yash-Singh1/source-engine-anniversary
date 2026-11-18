@@ -1,0 +1,303 @@
+{
+ "interface": "IShaderDevice",
+ "headers": [
+  "public/shaderapi/IShaderDevice.h"
+ ],
+ "versions": {
+  "retail": [
+   "ShaderDevice001"
+  ],
+  "ours": [
+   "ShaderDevice001"
+  ],
+  "sdk2013": [
+   "ShaderDevice001"
+  ]
+ },
+ "version_macros": [
+  "SHADER_DEVICE_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/shaderapidx9",
+   "version": "ShaderDevice001",
+   "class": "CShaderAPIDx8"
+  },
+  {
+   "module": "bin/shaderapiempty",
+   "version": "ShaderDevice001",
+   "class": "CShaderDeviceEmpty"
+  }
+ ],
+ "sdk2013_len": 35,
+ "sdk2013_slots": [
+  "ReleaseResources()",
+  "ReacquireResources()",
+  "GetBackBufferFormat() const",
+  "GetBackBufferDimensions(int&, int&) const",
+  "GetCurrentAdapter() const",
+  "IsUsingGraphics() const",
+  "SpewDriverInfo() const",
+  "StencilBufferBits() const",
+  "IsAAEnabled() const",
+  "Present()",
+  "GetWindowSize(int&, int&) const",
+  "SetHardwareGammaRamp(float, float, float, float, bool)",
+  "AddView(void*)",
+  "RemoveView(void*)",
+  "SetView(void*)",
+  "CompileShader(char const*, unsigned long, char const*)",
+  "CreateVertexShader(IShaderBuffer*)",
+  "DestroyVertexShader(VertexShaderHandle_t__*)",
+  "CreateGeometryShader(IShaderBuffer*)",
+  "DestroyGeometryShader(GeometryShaderHandle_t__*)",
+  "CreatePixelShader(IShaderBuffer*)",
+  "DestroyPixelShader(PixelShaderHandle_t__*)",
+  "CreateStaticMesh(unsigned long long, char const*, IMaterial*)",
+  "DestroyStaticMesh(IMesh*)",
+  "CreateVertexBuffer(ShaderBufferType_t, unsigned long long, int, char const*)",
+  "DestroyVertexBuffer(IVertexBuffer*)",
+  "CreateIndexBuffer(ShaderBufferType_t, MaterialIndexFormat_t, int, char const*)",
+  "DestroyIndexBuffer(IIndexBuffer*)",
+  "GetDynamicVertexBuffer(int, unsigned long long, bool)",
+  "GetDynamicIndexBuffer(MaterialIndexFormat_t, bool)",
+  "EnableNonInteractiveMode(MaterialNonInteractiveMode_t, ShaderNonInteractiveInfo_t*)",
+  "RefreshFrontBufferNonInteractive()",
+  "HandleThreadEvent(unsigned int)",
+  "DoStartupShaderPreloading()",
+  "GetDisplayDeviceName()"
+ ],
+ "retail_reference": {
+  "module": "bin/shaderapiempty",
+  "class": "CShaderDeviceEmpty",
+  "offset": 0,
+  "chain": [
+   "CShaderDeviceEmpty",
+   "IShaderDevice"
+  ]
+ },
+ "retail_len": 35,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 35
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "ReleaseResources",
+   "sig": "ReleaseResources()",
+   "symbol": "CShaderDeviceEmpty::ReleaseResources()"
+  },
+  {
+   "index": 1,
+   "name": "ReacquireResources",
+   "sig": "ReacquireResources()",
+   "symbol": "CShaderDeviceEmpty::ReacquireResources()"
+  },
+  {
+   "index": 2,
+   "name": "GetBackBufferFormat",
+   "sig": "GetBackBufferFormat() const",
+   "symbol": "CShaderDeviceEmpty::GetBackBufferFormat() const"
+  },
+  {
+   "index": 3,
+   "name": "GetBackBufferDimensions",
+   "sig": "GetBackBufferDimensions(int&, int&) const",
+   "symbol": "CShaderDeviceEmpty::GetBackBufferDimensions(int&, int&) const"
+  },
+  {
+   "index": 4,
+   "name": "GetCurrentAdapter",
+   "sig": "GetCurrentAdapter() const",
+   "symbol": "CShaderDeviceEmpty::GetCurrentAdapter() const"
+  },
+  {
+   "index": 5,
+   "name": "IsUsingGraphics",
+   "sig": "IsUsingGraphics() const",
+   "symbol": "CShaderDeviceEmpty::IsUsingGraphics() const"
+  },
+  {
+   "index": 6,
+   "name": "SpewDriverInfo",
+   "sig": "SpewDriverInfo() const",
+   "symbol": "CShaderDeviceEmpty::SpewDriverInfo() const"
+  },
+  {
+   "index": 7,
+   "name": "StencilBufferBits",
+   "sig": "StencilBufferBits() const",
+   "symbol": "CShaderDeviceEmpty::StencilBufferBits() const"
+  },
+  {
+   "index": 8,
+   "name": "IsAAEnabled",
+   "sig": "IsAAEnabled() const",
+   "symbol": "CShaderDeviceEmpty::IsAAEnabled() const"
+  },
+  {
+   "index": 9,
+   "name": "Present",
+   "sig": "Present()",
+   "symbol": "CShaderDeviceEmpty::Present()"
+  },
+  {
+   "index": 10,
+   "name": "GetWindowSize",
+   "sig": "GetWindowSize(int&, int&) const",
+   "symbol": "CShaderDeviceEmpty::GetWindowSize(int&, int&) const"
+  },
+  {
+   "index": 11,
+   "name": "SetHardwareGammaRamp",
+   "sig": "SetHardwareGammaRamp(float, float, float, float, bool)",
+   "symbol": "CShaderDeviceEmpty::SetHardwareGammaRamp(float, float, float, float, bool)"
+  },
+  {
+   "index": 12,
+   "name": "AddView",
+   "sig": "AddView(void*)",
+   "symbol": "CShaderDeviceEmpty::AddView(void*)"
+  },
+  {
+   "index": 13,
+   "name": "RemoveView",
+   "sig": "RemoveView(void*)",
+   "symbol": "CShaderDeviceEmpty::RemoveView(void*)"
+  },
+  {
+   "index": 14,
+   "name": "SetView",
+   "sig": "SetView(void*)",
+   "symbol": "CShaderDeviceEmpty::SetView(void*)"
+  },
+  {
+   "index": 15,
+   "name": "CompileShader",
+   "sig": "CompileShader(char const*, unsigned long, char const*)",
+   "symbol": "CShaderDeviceEmpty::CompileShader(char const*, unsigned long, char const*)"
+  },
+  {
+   "index": 16,
+   "name": "CreateVertexShader",
+   "sig": "CreateVertexShader(IShaderBuffer*)",
+   "symbol": "CShaderDeviceEmpty::CreateVertexShader(IShaderBuffer*)"
+  },
+  {
+   "index": 17,
+   "name": "DestroyVertexShader",
+   "sig": "DestroyVertexShader(VertexShaderHandle_t__*)",
+   "symbol": "CShaderDeviceEmpty::DestroyVertexShader(VertexShaderHandle_t__*)"
+  },
+  {
+   "index": 18,
+   "name": "CreateGeometryShader",
+   "sig": "CreateGeometryShader(IShaderBuffer*)",
+   "symbol": "CShaderDeviceEmpty::CreateGeometryShader(IShaderBuffer*)"
+  },
+  {
+   "index": 19,
+   "name": "DestroyGeometryShader",
+   "sig": "DestroyGeometryShader(GeometryShaderHandle_t__*)",
+   "symbol": "CShaderDeviceEmpty::DestroyGeometryShader(GeometryShaderHandle_t__*)"
+  },
+  {
+   "index": 20,
+   "name": "CreatePixelShader",
+   "sig": "CreatePixelShader(IShaderBuffer*)",
+   "symbol": "CShaderDeviceEmpty::CreatePixelShader(IShaderBuffer*)"
+  },
+  {
+   "index": 21,
+   "name": "DestroyPixelShader",
+   "sig": "DestroyPixelShader(PixelShaderHandle_t__*)",
+   "symbol": "CShaderDeviceEmpty::DestroyPixelShader(PixelShaderHandle_t__*)"
+  },
+  {
+   "index": 22,
+   "name": "CreateStaticMesh",
+   "sig": "CreateStaticMesh(unsigned long long, char const*, IMaterial*)",
+   "symbol": "CShaderDeviceEmpty::CreateStaticMesh(unsigned long long, char const*, IMaterial*)"
+  },
+  {
+   "index": 23,
+   "name": "DestroyStaticMesh",
+   "sig": "DestroyStaticMesh(IMesh*)",
+   "symbol": "CShaderDeviceEmpty::DestroyStaticMesh(IMesh*)"
+  },
+  {
+   "index": 24,
+   "name": "CreateVertexBuffer",
+   "sig": "CreateVertexBuffer(ShaderBufferType_t, unsigned long long, int, char const*)",
+   "symbol": "CShaderDeviceEmpty::CreateVertexBuffer(ShaderBufferType_t, unsigned long long, int, char const*)"
+  },
+  {
+   "index": 25,
+   "name": "DestroyVertexBuffer",
+   "sig": "DestroyVertexBuffer(IVertexBuffer*)",
+   "symbol": "CShaderDeviceEmpty::DestroyVertexBuffer(IVertexBuffer*)"
+  },
+  {
+   "index": 26,
+   "name": "CreateIndexBuffer",
+   "sig": "CreateIndexBuffer(ShaderBufferType_t, MaterialIndexFormat_t, int, char const*)",
+   "symbol": "CShaderDeviceEmpty::CreateIndexBuffer(ShaderBufferType_t, MaterialIndexFormat_t, int, char const*)"
+  },
+  {
+   "index": 27,
+   "name": "DestroyIndexBuffer",
+   "sig": "DestroyIndexBuffer(IIndexBuffer*)",
+   "symbol": "CShaderDeviceEmpty::DestroyIndexBuffer(IIndexBuffer*)"
+  },
+  {
+   "index": 28,
+   "name": "GetDynamicVertexBuffer",
+   "sig": "GetDynamicVertexBuffer(int, unsigned long long, bool)",
+   "symbol": "CShaderDeviceEmpty::GetDynamicVertexBuffer(int, unsigned long long, bool)"
+  },
+  {
+   "index": 29,
+   "name": "GetDynamicIndexBuffer",
+   "sig": "GetDynamicIndexBuffer(MaterialIndexFormat_t, bool)",
+   "symbol": "CShaderDeviceEmpty::GetDynamicIndexBuffer(MaterialIndexFormat_t, bool)"
+  },
+  {
+   "index": 30,
+   "name": "EnableNonInteractiveMode",
+   "sig": "EnableNonInteractiveMode(MaterialNonInteractiveMode_t, ShaderNonInteractiveInfo_t*)",
+   "symbol": "CShaderDeviceEmpty::EnableNonInteractiveMode(MaterialNonInteractiveMode_t, ShaderNonInteractiveInfo_t*)"
+  },
+  {
+   "index": 31,
+   "name": "RefreshFrontBufferNonInteractive",
+   "sig": "RefreshFrontBufferNonInteractive()",
+   "symbol": "CShaderDeviceEmpty::RefreshFrontBufferNonInteractive()"
+  },
+  {
+   "index": 32,
+   "name": "HandleThreadEvent",
+   "sig": "HandleThreadEvent(unsigned int)",
+   "symbol": "CShaderDeviceEmpty::HandleThreadEvent(unsigned int)"
+  },
+  {
+   "index": 33,
+   "name": "DoStartupShaderPreloading",
+   "sig": "DoStartupShaderPreloading()",
+   "symbol": "CShaderDeviceEmpty::DoStartupShaderPreloading()"
+  },
+  {
+   "index": 34,
+   "name": "GetDisplayDeviceName",
+   "sig": "GetDisplayDeviceName()",
+   "symbol": "CShaderDeviceEmpty::GetDisplayDeviceName()"
+  }
+ ],
+ "derived": [
+  "bin/shaderapidx9:CShaderAPIDx8",
+  "bin/shaderapidx9:CShaderDeviceBase",
+  "bin/shaderapidx9:CShaderDeviceDx8",
+  "bin/shaderapiempty:CShaderDeviceEmpty"
+ ],
+ "derived_count": 4
+}

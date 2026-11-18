@@ -1,0 +1,244 @@
+{
+ "interface": "IVideoServices",
+ "headers": [
+  "public/video/ivideoservices.h"
+ ],
+ "versions": {
+  "retail": [
+   "IVideoServices002"
+  ],
+  "ours": [
+   "IVideoServices002"
+  ],
+  "sdk2013": [
+   "IVideoServices002"
+  ]
+ },
+ "version_macros": [
+  "VIDEO_SERVICES_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/video_services",
+   "version": "IVideoServices002",
+   "class": "CValveVideoServices"
+  }
+ ],
+ "sdk2013_len": 27,
+ "sdk2013_slots": [
+  "Connect(void* (*)(char const*, int*))",
+  "Disconnect()",
+  "QueryInterface(char const*)",
+  "Init()",
+  "Shutdown()",
+  "GetAvailableVideoSystemCount()",
+  "GetAvailableVideoSystem(int)",
+  "IsVideoSystemAvailable(VideoSystem::EVideoSystem_t)",
+  "GetVideoSystemStatus(VideoSystem::EVideoSystem_t)",
+  "GetVideoSystemFeatures(VideoSystem::EVideoSystem_t)",
+  "GetVideoSystemName(VideoSystem::EVideoSystem_t)",
+  "FindNextSystemWithFeature(VideoSystemFeature::EVideoSystemFeature_t, VideoSystem::EVideoSystem_t)",
+  "GetLastResult()",
+  "GetSupportedFileExtensionCount(VideoSystem::EVideoSystem_t)",
+  "GetSupportedFileExtension(VideoSystem::EVideoSystem_t, int)",
+  "GetSupportedFileExtensionFeatures(VideoSystem::EVideoSystem_t, int)",
+  "LocateVideoSystemForPlayingFile(char const*, VideoSystemFeature::EVideoSystemFeature_t)",
+  "LocatePlayableVideoFile(char const*, char const*, VideoSystem::EVideoSystem_t*, char*, int, VideoSystemFeature::EVideoSystemFeature_t)",
+  "CreateVideoMaterial(char const*, char const*, char const*, VideoPlaybackFlags::EVideoPlaybackFlags_t, VideoSystem::EVideoSystem_t, bool)",
+  "DestroyVideoMaterial(IVideoMaterial*)",
+  "GetUniqueMaterialID()",
+  "IsRecordCodecAvailable(VideoSystem::EVideoSystem_t, VideoEncodeCodec::EVideoEncodeCodec_t)",
+  "CreateVideoRecorder(VideoSystem::EVideoSystem_t)",
+  "DestroyVideoRecorder(IVideoRecorder*)",
+  "PlayVideoFileFullScreen(char const*, char const*, void*, int, int, int, int, bool, float, VideoPlaybackFlags::EVideoPlaybackFlags_t, VideoSystem::EVideoSystem_t, bool)",
+  "SoundDeviceCommand(VideoSoundDeviceOperation::EVideoSoundDeviceOperation_t, void*, void*, VideoSystem::EVideoSystem_t)",
+  "GetCodecName(VideoEncodeCodec::EVideoEncodeCodec_t)"
+ ],
+ "retail_reference": {
+  "module": "bin/video_services",
+  "class": "CValveVideoServices",
+  "offset": 0,
+  "chain": [
+   "CValveVideoServices",
+   "CTier3AppSystem<IVideoServices, 0>",
+   "CTier2AppSystem<IVideoServices, 0>",
+   "CTier1AppSystem<IVideoServices, 0>",
+   "CTier0AppSystem<IVideoServices>",
+   "CBaseAppSystem<IVideoServices>",
+   "IVideoServices"
+  ]
+ },
+ "retail_len": 27,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 27
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Connect",
+   "sig": "Connect(void* (*)(char const*, int*))",
+   "symbol": "CValveVideoServices::Connect(void* (*)(char const*, int*))"
+  },
+  {
+   "index": 1,
+   "name": "Disconnect",
+   "sig": "Disconnect()",
+   "symbol": "CValveVideoServices::Disconnect()"
+  },
+  {
+   "index": 2,
+   "name": "QueryInterface",
+   "sig": "QueryInterface(char const*)",
+   "symbol": "CValveVideoServices::QueryInterface(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "CValveVideoServices::Init()"
+  },
+  {
+   "index": 4,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CValveVideoServices::Shutdown()"
+  },
+  {
+   "index": 5,
+   "name": "GetAvailableVideoSystemCount",
+   "sig": "GetAvailableVideoSystemCount()",
+   "symbol": "CValveVideoServices::GetAvailableVideoSystemCount()"
+  },
+  {
+   "index": 6,
+   "name": "GetAvailableVideoSystem",
+   "sig": "GetAvailableVideoSystem(int)",
+   "symbol": "CValveVideoServices::GetAvailableVideoSystem(int)"
+  },
+  {
+   "index": 7,
+   "name": "IsVideoSystemAvailable",
+   "sig": "IsVideoSystemAvailable(VideoSystem::EVideoSystem_t)",
+   "symbol": "CValveVideoServices::IsVideoSystemAvailable(VideoSystem::EVideoSystem_t)"
+  },
+  {
+   "index": 8,
+   "name": "GetVideoSystemStatus",
+   "sig": "GetVideoSystemStatus(VideoSystem::EVideoSystem_t)",
+   "symbol": "CValveVideoServices::GetVideoSystemStatus(VideoSystem::EVideoSystem_t)"
+  },
+  {
+   "index": 9,
+   "name": "GetVideoSystemFeatures",
+   "sig": "GetVideoSystemFeatures(VideoSystem::EVideoSystem_t)",
+   "symbol": "CValveVideoServices::GetVideoSystemFeatures(VideoSystem::EVideoSystem_t)"
+  },
+  {
+   "index": 10,
+   "name": "GetVideoSystemName",
+   "sig": "GetVideoSystemName(VideoSystem::EVideoSystem_t)",
+   "symbol": "CValveVideoServices::GetVideoSystemName(VideoSystem::EVideoSystem_t)"
+  },
+  {
+   "index": 11,
+   "name": "FindNextSystemWithFeature",
+   "sig": "FindNextSystemWithFeature(VideoSystemFeature::EVideoSystemFeature_t, VideoSystem::EVideoSystem_t)",
+   "symbol": "CValveVideoServices::FindNextSystemWithFeature(VideoSystemFeature::EVideoSystemFeature_t, VideoSystem::EVideoSystem_t)"
+  },
+  {
+   "index": 12,
+   "name": "GetLastResult",
+   "sig": "GetLastResult()",
+   "symbol": "CValveVideoServices::GetLastResult()"
+  },
+  {
+   "index": 13,
+   "name": "GetSupportedFileExtensionCount",
+   "sig": "GetSupportedFileExtensionCount(VideoSystem::EVideoSystem_t)",
+   "symbol": "CValveVideoServices::GetSupportedFileExtensionCount(VideoSystem::EVideoSystem_t)"
+  },
+  {
+   "index": 14,
+   "name": "GetSupportedFileExtension",
+   "sig": "GetSupportedFileExtension(VideoSystem::EVideoSystem_t, int)",
+   "symbol": "CValveVideoServices::GetSupportedFileExtension(VideoSystem::EVideoSystem_t, int)"
+  },
+  {
+   "index": 15,
+   "name": "GetSupportedFileExtensionFeatures",
+   "sig": "GetSupportedFileExtensionFeatures(VideoSystem::EVideoSystem_t, int)",
+   "symbol": "CValveVideoServices::GetSupportedFileExtensionFeatures(VideoSystem::EVideoSystem_t, int)"
+  },
+  {
+   "index": 16,
+   "name": "LocateVideoSystemForPlayingFile",
+   "sig": "LocateVideoSystemForPlayingFile(char const*, VideoSystemFeature::EVideoSystemFeature_t)",
+   "symbol": "CValveVideoServices::LocateVideoSystemForPlayingFile(char const*, VideoSystemFeature::EVideoSystemFeature_t)"
+  },
+  {
+   "index": 17,
+   "name": "LocatePlayableVideoFile",
+   "sig": "LocatePlayableVideoFile(char const*, char const*, VideoSystem::EVideoSystem_t*, char*, int, VideoSystemFeature::EVideoSystemFeature_t)",
+   "symbol": "CValveVideoServices::LocatePlayableVideoFile(char const*, char const*, VideoSystem::EVideoSystem_t*, char*, int, VideoSystemFeature::EVideoSystemFeature_t)"
+  },
+  {
+   "index": 18,
+   "name": "CreateVideoMaterial",
+   "sig": "CreateVideoMaterial(char const*, char const*, char const*, VideoPlaybackFlags::EVideoPlaybackFlags_t, VideoSystem::EVideoSystem_t, bool)",
+   "symbol": "CValveVideoServices::CreateVideoMaterial(char const*, char const*, char const*, VideoPlaybackFlags::EVideoPlaybackFlags_t, VideoSystem::EVideoSystem_t, bool)"
+  },
+  {
+   "index": 19,
+   "name": "DestroyVideoMaterial",
+   "sig": "DestroyVideoMaterial(IVideoMaterial*)",
+   "symbol": "CValveVideoServices::DestroyVideoMaterial(IVideoMaterial*)"
+  },
+  {
+   "index": 20,
+   "name": "GetUniqueMaterialID",
+   "sig": "GetUniqueMaterialID()",
+   "symbol": "CValveVideoServices::GetUniqueMaterialID()"
+  },
+  {
+   "index": 21,
+   "name": "IsRecordCodecAvailable",
+   "sig": "IsRecordCodecAvailable(VideoSystem::EVideoSystem_t, VideoEncodeCodec::EVideoEncodeCodec_t)",
+   "symbol": "CValveVideoServices::IsRecordCodecAvailable(VideoSystem::EVideoSystem_t, VideoEncodeCodec::EVideoEncodeCodec_t)"
+  },
+  {
+   "index": 22,
+   "name": "CreateVideoRecorder",
+   "sig": "CreateVideoRecorder(VideoSystem::EVideoSystem_t)",
+   "symbol": "CValveVideoServices::CreateVideoRecorder(VideoSystem::EVideoSystem_t)"
+  },
+  {
+   "index": 23,
+   "name": "DestroyVideoRecorder",
+   "sig": "DestroyVideoRecorder(IVideoRecorder*)",
+   "symbol": "CValveVideoServices::DestroyVideoRecorder(IVideoRecorder*)"
+  },
+  {
+   "index": 24,
+   "name": "PlayVideoFileFullScreen",
+   "sig": "PlayVideoFileFullScreen(char const*, char const*, void*, int, int, int, int, bool, float, VideoPlaybackFlags::EVideoPlaybackFlags_t, VideoSystem::EVideoSystem_t, bool)",
+   "symbol": "CValveVideoServices::PlayVideoFileFullScreen(char const*, char const*, void*, int, int, int, int, bool, float, VideoPlaybackFlags::EVideoPlaybackFlags_t, VideoSystem::EVideoSystem_t, bool)"
+  },
+  {
+   "index": 25,
+   "name": "SoundDeviceCommand",
+   "sig": "SoundDeviceCommand(VideoSoundDeviceOperation::EVideoSoundDeviceOperation_t, void*, void*, VideoSystem::EVideoSystem_t)",
+   "symbol": "CValveVideoServices::SoundDeviceCommand(VideoSoundDeviceOperation::EVideoSoundDeviceOperation_t, void*, void*, VideoSystem::EVideoSystem_t)"
+  },
+  {
+   "index": 26,
+   "name": "GetCodecName",
+   "sig": "GetCodecName(VideoEncodeCodec::EVideoEncodeCodec_t)",
+   "symbol": "CValveVideoServices::GetCodecName(VideoEncodeCodec::EVideoEncodeCodec_t)"
+  }
+ ],
+ "derived": [
+  "bin/video_services:CValveVideoServices"
+ ],
+ "derived_count": 1
+}

@@ -1,0 +1,57 @@
+{
+ "interface": "IWorldRenderList",
+ "headers": [
+  "public/ivrenderview.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 2,
+ "sdk2013_slots": [
+  "AddRef()",
+  "Release()"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CWorldRenderList",
+  "offset": 0,
+  "chain": [
+   "CWorldRenderList",
+   "CRefCounted1<IWorldRenderList, CRefCountServiceBase<true, CRefMT>>",
+   "IWorldRenderList"
+  ]
+ },
+ "retail_len": 2,
+ "retail_len_basis": "first implementer destructor",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 5,
+  "first implementer destructor": 2
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "AddRef",
+   "sig": "AddRef()",
+   "symbol": "CRefCounted1<IWorldRenderList, CRefCountServiceBase<true, CRefMT>>::AddRef()"
+  },
+  {
+   "index": 1,
+   "name": "Release",
+   "sig": "Release()",
+   "symbol": "CRefCounted1<IWorldRenderList, CRefCountServiceBase<true, CRefMT>>::Release()"
+  }
+ ],
+ "implementer_tail": [
+  "~CWorldRenderList()",
+  "~CWorldRenderList()",
+  "OnFinalRelease()"
+ ],
+ "derived": [
+  "bin/engine:CWorldRenderList"
+ ],
+ "derived_count": 1
+}
