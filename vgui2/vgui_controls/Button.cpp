@@ -1034,7 +1034,7 @@ void Button::OnKeyCodePressed(KeyCode code)
 {
 	KeyCode localCode = GetBaseButtonCode( code );
 
-	if( ( localCode == KEY_XBUTTON_A || localCode == STEAMCONTROLLER_A ) && IsEnabled() )
+	if( ( localCode == KEY_XBUTTON_A && IsEnabled() ) || ( localCode == STEAMCONTROLLER_A && IsEnabled() ) )
 	{
 		SetArmed( true );
 		_buttonFlags.SetFlag( BUTTON_KEY_DOWN );
