@@ -31,8 +31,11 @@ struct fogparams_t
 	CNetworkVector( dirPrimary );
 	CNetworkColor32( colorPrimary );
 	CNetworkColor32( colorSecondary );
+#ifdef HL2_ANNIVERSARY_NOV2024
 	CNetworkColor32( colorPrimaryHDR );
 	CNetworkColor32( colorSecondaryHDR );
+#endif
+#line 36
 	CNetworkColor32( colorPrimaryLerpTo );
 	CNetworkColor32( colorSecondaryLerpTo );
 	CNetworkVar( float, start );

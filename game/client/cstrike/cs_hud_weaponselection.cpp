@@ -39,7 +39,7 @@ public:
 	virtual void CycleToPrevWeapon( void );
 	virtual void SwitchToLastWeapon( void );
 
-	virtual C_BaseCombatWeapon *GetWeaponInSlot( int iSlot, int iSlotPos );
+	virtual C_BaseCombatWeapon *GetWeaponInSlot( int iSlot, int iSlotPos, bool bConsole = false );
 	virtual void SelectWeaponSlot( int iSlot );
 	virtual void SelectWeapon( void );
 
@@ -681,7 +681,7 @@ void CHudWeaponSelection::SwitchToLastWeapon( void )
 //-----------------------------------------------------------------------------
 // Purpose: returns the weapon in the specified slot
 //-----------------------------------------------------------------------------
-C_BaseCombatWeapon *CHudWeaponSelection::GetWeaponInSlot( int iSlot, int iSlotPos )
+C_BaseCombatWeapon *CHudWeaponSelection::GetWeaponInSlot( int iSlot, int iSlotPos, bool bConsole )
 {
 	C_BasePlayer *player = C_BasePlayer::GetLocalPlayer();
 	if ( !player )

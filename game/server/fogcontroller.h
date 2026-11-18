@@ -43,8 +43,11 @@ public:
 	void InputTurnOff(inputdata_t &data);
 	void InputSetColor(inputdata_t &data);
 	void InputSetColorSecondary(inputdata_t &data);
+#ifdef HL2_ANNIVERSARY_NOV2024
 	void InputSetColorHDR(inputdata_t &data);
 	void InputSetColorSecondaryHDR(inputdata_t &data);
+#endif
+#line 48
 	void InputSetFarZ( inputdata_t &data );
 	void InputSetAngles( inputdata_t &inputdata );
 	void InputSetRadial( inputdata_t &inputdata );

@@ -63,7 +63,7 @@ BEGIN_DATADESC( CAI_ScriptConditions )
 
 	DEFINE_KEYFIELD(m_flRequiredTime, 				FIELD_FLOAT, 	"RequiredTime" 				),
 
-#ifndef HL2_EPISODIC
+#if !defined( HL2_EPISODIC ) || defined( BYTEMATCH_RETAIL )
 	DEFINE_FIELD( m_hActor, FIELD_EHANDLE ),
 	DEFINE_EMBEDDED(m_Timer ),
 	DEFINE_EMBEDDED(m_Timeout ),
@@ -257,7 +257,7 @@ bool CAI_ScriptConditions::EvalActorSeeTarget( const EvalArgs_t &args )
 #ifdef HL2_EPISODIC
 		// This is the code we want to have written for HL2, but HL2 shipped without the QuerySeeEntity() call. This #ifdef really wants to be
 		// something like #ifndef HL2_RETAIL, since this change does want to be in any products that are built henceforth. (sjb)
-		bool fSee = pNPCActor->FInViewCone( args.pTarget ) && pNPCActor->FVisible( args.pTarget ) && pNPCActor->QuerySeeEntity( args.pTarget );
+		bool fSee = HL2_EPISODIC_ACTIVE() ? ( pNPCActor->FInViewCone( args.pTarget ) && pNPCActor->FVisible( args.pTarget ) && pNPCActor->QuerySeeEntity( args.pTarget ) ) : ( pNPCActor->FInViewCone( args.pTarget ) && pNPCActor->FVisible( args.pTarget ) );
 #else
 		bool fSee = pNPCActor->FInViewCone( args.pTarget ) && pNPCActor->FVisible( args.pTarget );
 #endif//HL2_EPISODIC

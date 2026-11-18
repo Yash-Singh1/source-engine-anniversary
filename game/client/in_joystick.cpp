@@ -35,13 +35,28 @@
 #include "../common/xbox/xboxstubs.h"
 #endif
 
+#include "steam/steam_api.h"
+#include "tier2/tier2.h"
+
 #ifdef HL2_CLIENT_DLL
 // FIXME: Autoaim support needs to be moved from HL2_DLL to the client dll, so this include should be c_baseplayer.h
 #include "c_basehlplayer.h"
+
+extern ConVar sk_allow_autoaim;
+extern ConVar joy_autoaim_mode;
+extern ConVar joy_autoaim_scale;
 #endif
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
+
+// Names of the controller types (GetControllerTypeForSlot)
+const char *g_inputTypeToNameTable[] =
+{
+	"joystick",
+	"Xbox360 controller",
+	"Steam Controller",
+};
 
 // Control like a joystick
 #define JOY_ABSOLUTE_AXIS	0x00000000		
@@ -241,23 +256,30 @@ static float ResponseCurve( int curve, float x, int axis, float sensitivity )
 //
 // This assists the player staying on target.
 //-----------------------------------------------
-float AutoAimDampening( float x, int axis, float dist )
+static float AutoAimDampening( float x, int axis, float dist )
 {
 	// FIXME: Autoaim support needs to be moved from HL2_DLL to the client dll, so all games can use it.
 #ifdef HL2_CLIENT_DLL
 	// Help the user stay on target if the feature is enabled and the user
 	// is not making a gross stick movement.
-	if( joy_autoaimdampen.GetFloat() > 0.0f && fabs(x) < joy_autoaimdampenrange.GetFloat() )
+	if( joy_autoaim_mode.GetBool() && joy_autoaimdampen.GetFloat() > 0.0f )
 	{
 		// Get the HL2 player
 		C_BaseHLPlayer *pLocalPlayer = (C_BaseHLPlayer *)C_BasePlayer::GetLocalPlayer();
 
 		if( pLocalPlayer )
 		{
-			// Get the autoaim target
-			if( pLocalPlayer->m_HL2Local.m_bAutoAimTarget )
+			float flRange = joy_autoaimdampenrange.GetFloat();
+			float flScale = 1.0f;
+			if ( sk_allow_autoaim.GetBool() && joy_autoaim_mode.GetBool() )
 			{
-				return joy_autoaimdampen.GetFloat();
+				flScale = joy_autoaim_scale.GetFloat();
+			}
+
+			// Get the autoaim target
+			if( pLocalPlayer->m_HL2Local.m_bAutoAimTarget && fabsf( x ) < flRange * flScale )
+			{
+				return MIN( 1.0, pow( joy_autoaimdampen.GetFloat(), flScale ) );
 			}
 		}
 	}
@@ -474,72 +496,97 @@ void CInput::Joystick_Advanced(void)
 		in_joystick.SetValue( 1 );
 	}
 
-	// Initialize all the maps
-	for ( i = 0; i < MAX_JOYSTICK_AXES; i++ )
+	// Steam Input does its own axis mapping
+	const char *pszControllerType = g_inputTypeToNameTable[ inputsystem->GetControllerTypeForSlot( 0 ) ];
+	if ( V_stricmp( pszControllerType, g_inputTypeToNameTable[ INPUT_TYPE_STEAMCONTROLLER ] ) &&
+		 V_stricmp( g_inputTypeToNameTable[ INPUT_TYPE_STEAMCONTROLLER ], joy_name.GetString() ) )
 	{
-		m_rgAxes[i].AxisMap = GAME_AXIS_NONE;
-		m_rgAxes[i].ControlMap = JOY_ABSOLUTE_AXIS;
-	}
-
-	if ( !joy_advanced.GetBool() )
-	{
-		// default joystick initialization
-		// 2 axes only with joystick control
-		m_rgAxes[JOY_AXIS_X].AxisMap = GAME_AXIS_YAW;
-		m_rgAxes[JOY_AXIS_Y].AxisMap = GAME_AXIS_FORWARD;
-	}
-	else
-	{
-		if ( Q_stricmp( joy_name.GetString(), "joystick") != 0 )
+		// Initialize all the maps
+		for ( i = 0; i < MAX_JOYSTICK_AXES; i++ )
 		{
-			// notify user of advanced controller
-			Msg( "Using joystick '%s' configuration\n", joy_name.GetString() );
+			m_rgAxes[i].AxisMap = GAME_AXIS_NONE;
+			m_rgAxes[i].ControlMap = JOY_ABSOLUTE_AXIS;
 		}
 
-		// advanced initialization here
-		// data supplied by user via joy_axisn cvars
-		dwTemp = ( joy_movement_stick.GetBool() ) ? (DWORD)joy_advaxisu.GetInt() : (DWORD)joy_advaxisx.GetInt();
-		m_rgAxes[JOY_AXIS_X].AxisMap = dwTemp & 0x0000000f;
-		m_rgAxes[JOY_AXIS_X].ControlMap = dwTemp & JOY_RELATIVE_AXIS;
+		if ( !joy_advanced.GetBool() )
+		{
+			// default joystick initialization
+			// 2 axes only with joystick control
+			m_rgAxes[JOY_AXIS_X].AxisMap = GAME_AXIS_YAW;
+			m_rgAxes[JOY_AXIS_Y].AxisMap = GAME_AXIS_FORWARD;
+		}
+		else
+		{
+			if ( Q_stricmp( joy_name.GetString(), "joystick") != 0 )
+			{
+				// notify user of advanced controller
+				Msg( "Using joystick '%s' configuration\n", joy_name.GetString() );
+			}
 
-		DescribeJoystickAxis( "JOY_AXIS_X", &m_rgAxes[JOY_AXIS_X] );
+			// advanced initialization here
+			// data supplied by user via joy_axisn cvars
+			dwTemp = ( joy_movement_stick.GetBool() ) ? (DWORD)joy_advaxisu.GetInt() : (DWORD)joy_advaxisx.GetInt();
+			m_rgAxes[JOY_AXIS_X].AxisMap = dwTemp & 0x0000000f;
+			m_rgAxes[JOY_AXIS_X].ControlMap = dwTemp & JOY_RELATIVE_AXIS;
 
-		dwTemp = ( joy_movement_stick.GetBool() ) ? (DWORD)joy_advaxisr.GetInt() : (DWORD)joy_advaxisy.GetInt();
-		m_rgAxes[JOY_AXIS_Y].AxisMap = dwTemp & 0x0000000f;
-		m_rgAxes[JOY_AXIS_Y].ControlMap = dwTemp & JOY_RELATIVE_AXIS;
+			DescribeJoystickAxis( "JOY_AXIS_X", &m_rgAxes[JOY_AXIS_X] );
 
-		DescribeJoystickAxis( "JOY_AXIS_Y", &m_rgAxes[JOY_AXIS_Y] );
+			dwTemp = ( joy_movement_stick.GetBool() ) ? (DWORD)joy_advaxisr.GetInt() : (DWORD)joy_advaxisy.GetInt();
+			m_rgAxes[JOY_AXIS_Y].AxisMap = dwTemp & 0x0000000f;
+			m_rgAxes[JOY_AXIS_Y].ControlMap = dwTemp & JOY_RELATIVE_AXIS;
 
-		dwTemp = (DWORD)joy_advaxisz.GetInt();
-		m_rgAxes[JOY_AXIS_Z].AxisMap = dwTemp & 0x0000000f;
-		m_rgAxes[JOY_AXIS_Z].ControlMap = dwTemp & JOY_RELATIVE_AXIS;
+			DescribeJoystickAxis( "JOY_AXIS_Y", &m_rgAxes[JOY_AXIS_Y] );
 
-		DescribeJoystickAxis( "JOY_AXIS_Z", &m_rgAxes[JOY_AXIS_Z] );
+			dwTemp = (DWORD)joy_advaxisz.GetInt();
+			m_rgAxes[JOY_AXIS_Z].AxisMap = dwTemp & 0x0000000f;
+			m_rgAxes[JOY_AXIS_Z].ControlMap = dwTemp & JOY_RELATIVE_AXIS;
 
-		dwTemp = ( joy_movement_stick.GetBool() ) ? (DWORD)joy_advaxisy.GetInt() : (DWORD)joy_advaxisr.GetInt();
-		m_rgAxes[JOY_AXIS_R].AxisMap = dwTemp & 0x0000000f;
-		m_rgAxes[JOY_AXIS_R].ControlMap = dwTemp & JOY_RELATIVE_AXIS;
+			DescribeJoystickAxis( "JOY_AXIS_Z", &m_rgAxes[JOY_AXIS_Z] );
 
-		DescribeJoystickAxis( "JOY_AXIS_R", &m_rgAxes[JOY_AXIS_R] );
+			dwTemp = ( joy_movement_stick.GetBool() ) ? (DWORD)joy_advaxisy.GetInt() : (DWORD)joy_advaxisr.GetInt();
+			m_rgAxes[JOY_AXIS_R].AxisMap = dwTemp & 0x0000000f;
+			m_rgAxes[JOY_AXIS_R].ControlMap = dwTemp & JOY_RELATIVE_AXIS;
 
-		dwTemp = ( joy_movement_stick.GetBool() ) ? (DWORD)joy_advaxisx.GetInt() : (DWORD)joy_advaxisu.GetInt();
-		m_rgAxes[JOY_AXIS_U].AxisMap = dwTemp & 0x0000000f;
-		m_rgAxes[JOY_AXIS_U].ControlMap = dwTemp & JOY_RELATIVE_AXIS;
+			DescribeJoystickAxis( "JOY_AXIS_R", &m_rgAxes[JOY_AXIS_R] );
 
-		DescribeJoystickAxis( "JOY_AXIS_U", &m_rgAxes[JOY_AXIS_U] );
+			dwTemp = ( joy_movement_stick.GetBool() ) ? (DWORD)joy_advaxisx.GetInt() : (DWORD)joy_advaxisu.GetInt();
+			m_rgAxes[JOY_AXIS_U].AxisMap = dwTemp & 0x0000000f;
+			m_rgAxes[JOY_AXIS_U].ControlMap = dwTemp & JOY_RELATIVE_AXIS;
 
-		dwTemp = (DWORD)joy_advaxisv.GetInt();
-		m_rgAxes[JOY_AXIS_V].AxisMap = dwTemp & 0x0000000f;
-		m_rgAxes[JOY_AXIS_V].ControlMap = dwTemp & JOY_RELATIVE_AXIS;
+			DescribeJoystickAxis( "JOY_AXIS_U", &m_rgAxes[JOY_AXIS_U] );
 
-		DescribeJoystickAxis( "JOY_AXIS_V", &m_rgAxes[JOY_AXIS_V] );
+			dwTemp = (DWORD)joy_advaxisv.GetInt();
+			m_rgAxes[JOY_AXIS_V].AxisMap = dwTemp & 0x0000000f;
+			m_rgAxes[JOY_AXIS_V].ControlMap = dwTemp & JOY_RELATIVE_AXIS;
 
-		Msg( "Advanced Joystick settings initialized\n" );
+			DescribeJoystickAxis( "JOY_AXIS_V", &m_rgAxes[JOY_AXIS_V] );
+
+			Msg( "Advanced Joystick settings initialized\n" );
+		}
 	}
 
 	// If we have an xcontroller, load the cfg file if it hasn't been loaded.
 	static ConVarRef var( "joy_xcontroller_found" );
-	if ( var.IsValid() && var.GetBool() && in_joystick.GetBool() )
+	if ( g_pInputSystem->IsSteamControllerActive() )
+	{
+		InputHandle_t handles[ STEAM_INPUT_MAX_COUNT ];
+		if ( SteamInput()->GetConnectedControllers( handles ) && !joy_steamcontroller_cfg_loaded.GetBool() )
+		{
+			engine->ClientCmd( "exec joy_configuration_sc.cfg" );
+
+			static ConVarRef s_joy_legacy( "joy_legacy" );
+			if ( s_joy_legacy.IsValid() )
+			{
+				engine->ExecuteClientCmd( s_joy_legacy.GetInt() > 0 ? "exec joy_configuration_sc_analog.cfg" : "exec joy_configuration_sc_absolute.cfg" );
+			}
+			joy_steamcontroller_cfg_loaded.SetValue( 1 );
+		}
+		else
+		{
+			joy_steamcontroller_cfg_loaded.SetValue( 0 );
+		}
+	}
+	else if ( var.IsValid() && var.GetBool() && in_joystick.GetBool() )
 	{
 		if ( joy_xcontroller_cfg_loaded.GetInt() < 2 )
 		{
@@ -549,6 +596,7 @@ void CInput::Joystick_Advanced(void)
 				engine->ClientCmd_Unrestricted( "exec 360controller-linux.cfg" );
 			}
 			joy_xcontroller_cfg_loaded.SetValue( 2 );
+			joy_steamcontroller_cfg_loaded.SetValue( 0 );
 		}
 	}
 	else if ( joy_xcontroller_cfg_loaded.GetInt() > 0 )
@@ -624,7 +672,7 @@ float CInput::ScaleAxisValue( const float axisValue, const float axisThreshold )
 	// has a (potentially) unique threshold value.  If all axes were restricted to a single threshold
 	// as they are on the Xbox, this function could move to inputsystem and be slightly more optimal.
 	float result = 0.f;
-	if ( IsPC() )
+	if ( IsPC() && !inputsystem->IsSteamControllerActive() )
 	{
 		if ( axisValue < -axisThreshold )
 		{
@@ -634,6 +682,12 @@ float CInput::ScaleAxisValue( const float axisValue, const float axisThreshold )
 		{
 			result = ( axisValue - axisThreshold ) / ( MAX_BUTTONSAMPLE - axisThreshold );
 		}
+	}
+	else if ( inputsystem->IsSteamControllerActive() && ( sc_joystick_inner_deadzone_scale.GetFloat() != 1.0f || sc_joystick_outer_deadzone_scale.GetFloat() != 1.0f ) )
+	{
+		// Steam Input: rescale the deadzone and the pegged range
+		float flSign = axisValue < 0.0f ? -1.0f : 1.0f;
+		result = RemapValClamped( axisValue, axisThreshold * flSign * sc_joystick_inner_deadzone_scale.GetFloat(), MAX_BUTTONSAMPLE * flSign * sc_joystick_outer_deadzone_scale.GetFloat(), 0.0f, flSign );
 	}
 	else
 	{
@@ -830,6 +884,10 @@ void CInput::JoyStickMove( float frametime, CUserCmd *cmd )
 	{
 		m_flPreviousJoystickPitch *= -1.0f;
 	}
+	if ( joy_invertx.GetBool() )
+	{
+		m_flPreviousJoystickYaw *= -1.0f;
+	}
 
 	// drive yaw, pitch and move like a screen relative platformer game
 	if ( CAM_IsThirdPerson() && thirdperson_platformer.GetInt() )
@@ -965,6 +1023,13 @@ void CInput::JoyStickMove( float frametime, CUserCmd *cmd )
 			KeyUp( &in_joyspeed, NULL );
 		}
 	}
+
+#ifdef HL2_CLIENT_DLL
+	if ( sk_allow_autoaim.GetBool() && g_pInputSystem->IsXinputControllerActive() )
+	{
+		viewangles = DoAutoAimMagnetism( viewangles, joy_autoaim_mode.GetInt(), joy_autoaim_magnetism.GetFloat(), joy_autoaim_scale.GetFloat() );
+	}
+#endif
 
 	// Bound pitch
 	viewangles[PITCH] = clamp( viewangles[ PITCH ], -cl_pitchup.GetFloat(), cl_pitchdown.GetFloat() );

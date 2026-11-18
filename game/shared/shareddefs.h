@@ -949,4 +949,10 @@ enum
 };
 #endif // TF_DLL || TF_CLIENT_DLL
 
+// Retail Lost Coast game modules are an October 2024 build, older than the November 2024
+// hl2 and episodic ones; in retail mode HL2_EPISODIC tells the two code revisions apart.
+#if defined( HL2_EPISODIC ) || !defined( BYTEMATCH_RETAIL )
+#define HL2_ANNIVERSARY_NOV2024
+#endif
+
 #endif // SHAREDDEFS_H

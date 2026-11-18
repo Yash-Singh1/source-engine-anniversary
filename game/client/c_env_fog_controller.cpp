@@ -23,8 +23,11 @@ BEGIN_NETWORK_TABLE_NOBASE( CFogController, DT_FogController )
 	RecvPropVector( RECVINFO( m_fog.dirPrimary ) ),
 	RecvPropInt( RECVINFO( m_fog.colorPrimary ) ),
 	RecvPropInt( RECVINFO( m_fog.colorSecondary ) ),
+#ifdef HL2_ANNIVERSARY_NOV2024
 	RecvPropInt( RECVINFO( m_fog.colorPrimaryHDR ) ),
 	RecvPropInt( RECVINFO( m_fog.colorSecondaryHDR ) ),
+#endif
+#line 28
 	RecvPropFloat( RECVINFO( m_fog.start ) ),
 	RecvPropFloat( RECVINFO( m_fog.end ) ),
 	RecvPropFloat( RECVINFO( m_fog.farz ) ),
