@@ -822,7 +822,7 @@ void ClearPakFile( IZip *pak )
 void AddFileToPak( IZip *pak, const char *relativename, const char *fullpath, IZip::eCompressionType compressionType )
 {
 	DevMsg( "Adding file to pakfile [ %s ]\n", fullpath );
-	pak->AddFileToZip( relativename, fullpath, compressionType );
+	pak->AddFileToZip( relativename, fullpath );
 }
 
 //-----------------------------------------------------------------------------
@@ -833,7 +833,7 @@ void AddFileToPak( IZip *pak, const char *relativename, const char *fullpath, IZ
 //-----------------------------------------------------------------------------
 void AddBufferToPak( IZip *pak, const char *pRelativeName, void *data, int length, bool bTextMode, IZip::eCompressionType compressionType )
 {
-	pak->AddBufferToZip( pRelativeName, data, length, bTextMode, compressionType );
+	pak->AddBufferToZip( pRelativeName, data, length, bTextMode );
 }
 
 //-----------------------------------------------------------------------------
