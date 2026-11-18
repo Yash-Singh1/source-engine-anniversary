@@ -129,9 +129,6 @@ public: // IServerMessageHandlers
 	PROCESS_SVC_MESSAGE( PacketEntities );
 	PROCESS_SVC_MESSAGE( TempEntities );
 	PROCESS_SVC_MESSAGE( Prefetch );
-#ifdef svc_SetPauseTimed
-	PROCESS_SVC_MESSAGE( SetPauseTimed );
-#endif
 
 public:
 
@@ -189,9 +186,6 @@ public:
 	
 	
 	bool				IsPaused() const;
-#ifdef svc_SetPauseTimed
-	float				GetPausedExpireTime() const { return m_flPausedExpireTime; }
-#endif
 
 	float				GetFrameTime( void ) const;
 	void				SetFrameTime( float dt ) { m_frameTime = dt; }

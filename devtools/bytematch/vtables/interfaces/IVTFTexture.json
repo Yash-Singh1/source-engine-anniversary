@@ -77,8 +77,8 @@
    "IVTFTexture"
   ]
  },
- "retail_len": 56,
- "retail_len_basis": "shortest deriving subtable",
+ "retail_len": 55,
+ "retail_len_basis": "override: NormalizeTopMipLevel is CVTFTexture's own virtual (SDK 2013 IVTFTexture has 55 slots)",
  "retail_len_bounds": {
   "shortest deriving subtable": 56
  },
@@ -412,13 +412,10 @@
    "name": "SetPostProcessingSettings",
    "sig": "SetPostProcessingSettings(VtfProcessingOptions const*)",
    "symbol": "CVTFTexture::SetPostProcessingSettings(VtfProcessingOptions const*)"
-  },
-  {
-   "index": 55,
-   "name": "NormalizeTopMipLevel",
-   "sig": "NormalizeTopMipLevel()",
-   "symbol": "CVTFTexture::NormalizeTopMipLevel()"
   }
+ ],
+ "implementer_tail": [
+  "NormalizeTopMipLevel()"
  ],
  "derived": [
   "bin/engine:CVTFTexture",

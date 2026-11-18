@@ -455,15 +455,6 @@ bool CClientState::ProcessSetPause( SVC_SetPause *msg )
 	return true;
 }
 
-#ifdef svc_SetPauseTimed
-bool CClientState::ProcessSetPauseTimed( SVC_SetPauseTimed *msg )
-{
-	CBaseClientState::ProcessSetPauseTimed( msg );
-
-	return true;
-}
-#endif
-
 bool CClientState::ProcessVoiceInit( SVC_VoiceInit *msg )
 {
 #if !defined( NO_VOICE )//#ifndef _XBOX

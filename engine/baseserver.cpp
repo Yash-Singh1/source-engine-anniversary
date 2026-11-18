@@ -289,9 +289,6 @@ CBaseServer::CBaseServer()
 	m_flLastRandomNumberGenerationTime = -3.0f; // force it to calc first frame
 
 	m_bReportNewFakeClients = true;
-#ifdef svc_SetPauseTimed
-	m_flPausedTimeEnd = -1.f;
-#endif
 }
 
 CBaseServer::~CBaseServer()
@@ -1643,9 +1640,6 @@ void CBaseServer::Clear( void )
 	serverclassbits = 0;
 
 	m_LastRandomNonce = m_CurrentRandomNonce = 0;
-#ifdef svc_SetPauseTimed
-	m_flPausedTimeEnd = -1.f;
-#endif
 }
 
 /*
@@ -1960,14 +1954,6 @@ void CBaseServer::RunFrame( void )
 		m_CurrentRandomNonce = ( ( (uint32)RandomInt( 0, 0xFFFF ) ) << 16 ) | RandomInt( 0, 0xFFFF );
 		m_flLastRandomNumberGenerationTime = g_ServerGlobalVariables.realtime;
 	}
-
-#ifdef svc_SetPauseTimed
-	// Timed pause - resume game when time expires
-	if ( m_flPausedTimeEnd >= 0.f && m_State == ss_paused && Sys_FloatTime() >= m_flPausedTimeEnd )
-	{
-		SetPausedForced( false );
-	}
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -2548,19 +2534,3 @@ void CBaseServer::RemoveTag( const char *pszTag )
 	sv_tags.SetValue( tmptags );
 }
 
-#ifdef svc_SetPauseTimed
-//-----------------------------------------------------------------------------
-// Purpose: Server-only override (ignores sv_pausable).  Can be on a timer.
-//-----------------------------------------------------------------------------
-void CBaseServer::SetPausedForced( bool bPaused, float flDuration /*= -1.f*/ )
-{
-	if ( !IsActive() )
-		return;
-
-	m_State = ( bPaused ) ? ss_paused : ss_active;
-	m_flPausedTimeEnd = ( bPaused && flDuration > 0.f ) ? Sys_FloatTime() + flDuration : -1.f;
-
-	SVC_SetPauseTimed setpause( bPaused, m_flPausedTimeEnd );
-	BroadcastMessage( setpause );
-}
-#endif

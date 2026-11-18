@@ -266,57 +266,37 @@ class CUtlFilenameSymbolTable
 	{
 		FileNameHandleInternal_t()
 		{
-			COMPILE_TIME_ASSERT( sizeof( *this ) == sizeof( FileNameHandle_t ) );
-			COMPILE_TIME_ASSERT( sizeof( value ) == 4 );
-			value = 0;
-
+			path = 0;
+			file = 0;
 #ifdef PLATFORM_64BITS
 			pad = 0;
 #endif
 		}
 
-		// We pack the path and file values into a single 32 bit value.  We were running
-		// out of space with the two 16 bit values (more than 64k files) so instead of increasing
-		// the total size we split the underlying pool into two (paths and files) and 
-		// use a smaller path string pool and a larger file string pool.
-		unsigned int value;
-
+		// Part before the final '/' character
+		unsigned short path;
+		// Part after the final '/', including extension
+		unsigned short file;
 #ifdef PLATFORM_64BITS
-		// some padding to make sure we are the same size as FileNameHandle_t on 64 bit.
+		// FileNameHandle_t is returned by value, so fill the rest of the pointer
 		unsigned int pad;
 #endif
-
-		static const unsigned int cNumBitsInPath = 12;
-		static const unsigned int cNumBitsInFile = 32 - cNumBitsInPath;
-
-		static const unsigned int cMaxPathValue = 1 << cNumBitsInPath;
-		static const unsigned int cMaxFileValue = 1 << cNumBitsInFile;
-
-		static const unsigned int cPathBitMask = cMaxPathValue - 1;
-		static const unsigned int cFileBitMask = cMaxFileValue - 1;
-
-		// Part before the final '/' character
-		unsigned int	GetPath() const { return ((value >> cNumBitsInFile) & cPathBitMask); }
-		void			SetPath( unsigned int path ) { Assert( path < cMaxPathValue ); value = ((value & cFileBitMask) | ((path & cPathBitMask) << cNumBitsInFile)); }
-
-		// Part after the final '/', including extension
-		unsigned int	GetFile() const { return (value & cFileBitMask); }
-		void			SetFile( unsigned int file ) { Assert( file < cMaxFileValue ); value = ((value & (cPathBitMask << cNumBitsInFile)) | (file & cFileBitMask)); }
 	};
 
+	class HashTable;
+
 public:
+	CUtlFilenameSymbolTable();
+	~CUtlFilenameSymbolTable();
 	FileNameHandle_t	FindOrAddFileName( const char *pFileName );
 	FileNameHandle_t	FindFileName( const char *pFileName );
-	int					PathIndex( const FileNameHandle_t &handle ) { return (( const FileNameHandleInternal_t * )&handle)->GetPath(); }
+	int					PathIndex(const FileNameHandle_t &handle) { return (( const FileNameHandleInternal_t * )&handle)->path; }
 	bool				String( const FileNameHandle_t& handle, char *buf, int buflen );
 	void				RemoveAll();
-	void				SpewStrings();
-	bool				SaveToBuffer( CUtlBuffer &buffer );
-	bool				RestoreFromBuffer( CUtlBuffer &buffer );
 
 private:
-	CCountedStringPoolBase<unsigned short> m_PathStringPool;
-	CCountedStringPoolBase<unsigned int> m_FileStringPool;
+	//CCountedStringPool	m_StringPool;
+	HashTable* m_Strings;
 	mutable CThreadSpinRWLock m_lock;
 };
 
