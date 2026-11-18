@@ -45,7 +45,9 @@ public:
 	virtual ~CPotteryWheelPanel();
 
 	// Overriden methods of vgui::Panel
+#ifndef BYTEMATCH_RETAIL
 	virtual void ApplySettings( KeyValues *inResourceData );
+#endif
 	virtual void Init( int x, int y, int wide, int tall );
 	virtual void Paint();
 
@@ -118,7 +120,9 @@ protected:
 	bool WarpMouse( int &x, int &y );
 	IManipulator		*m_pCurrentManip;
 	int m_nManipStartX, m_nManipStartY;
+#ifndef BYTEMATCH_RETAIL
 	int m_nClickStartX, m_nClickStartY;
+#endif
 
 	// Re-apply the manipulators on a new model
 	void ApplyManipulation();
@@ -138,7 +142,9 @@ protected:
 private:
 	void CreateDefaultLights();
 	void DestroyLights();
+#ifndef BYTEMATCH_RETAIL
 	void ParseLightsFromKV( KeyValues *pLightsKV );
+#endif
 
 	CMaterialReference m_LightProbeBackground;
 	CMaterialReference m_LightProbeHDRBackground;

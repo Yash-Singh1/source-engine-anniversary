@@ -264,6 +264,7 @@ CPotteryWheelPanel::CPotteryWheelPanel( vgui::Panel *pParent, const char *pName 
 	UpdateCameraTransform();
 }
 
+#ifndef BYTEMATCH_RETAIL
 void CPotteryWheelPanel::ApplySettings( KeyValues *inResourceData )
 {
 	BaseClass::ApplySettings( inResourceData );
@@ -274,6 +275,7 @@ void CPotteryWheelPanel::ApplySettings( KeyValues *inResourceData )
 		ParseLightsFromKV( pLights );
 	}
 }
+#endif
 
 void CPotteryWheelPanel::Init( int x, int y, int wide, int tall )
 {
@@ -389,6 +391,7 @@ void StringToVector( float *pVector, const char *pString )
 //-----------------------------------------------------------------------------
 // Sets initialize lights from KeyValues
 //-----------------------------------------------------------------------------
+#ifndef BYTEMATCH_RETAIL
 void CPotteryWheelPanel::ParseLightsFromKV( KeyValues *pLightsKV )
 {
 	int nLightCount = 0;
@@ -458,6 +461,7 @@ void CPotteryWheelPanel::ParseLightsFromKV( KeyValues *pLightsKV )
 
 	m_nLightCount = nLightCount;
 }
+#endif
 
 
 //-----------------------------------------------------------------------------
