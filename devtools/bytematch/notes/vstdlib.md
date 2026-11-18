@@ -274,6 +274,7 @@ with `toolchain/patches/sdk109-setjmp.patch` applied to the stub SDK.
   `Internal_Coroutine_Continue`: the real 10.9 SDK declares `longjmp` `__dead2`;
   the stub SDK's 10.6 i386 `setjmp.h` doesn't, so clang can't tell that
   `Coroutine_Finish` never returns. Verified with a local redeclaration: all four
-  match. Needs `make-sdk109.py` rerun with the new patch.
+  match. The patch is now applied to the shared stub SDK; after a clean retail
+  rebuild (Nov 18, 08:51) vstdlib is 361/361.
 - `public/vstdlib/random.h`: `IUniformRandomStream` is not `VSTDLIB_CLASS` (SDK 2013),
   so vstdlib no longer exports its typeinfo. The export set now equals retail's.
