@@ -3921,6 +3921,37 @@ void CMaterialSystem::EndFrame( void )
 				ThreadAcquire( true );
 			}
 
+#ifdef BYTEMATCH_RETAIL
+			if ( m_pActiveAsyncJob && !m_pActiveAsyncJob->IsFinished() )
+			{
+				m_pActiveAsyncJob->WaitForFinish();
+				if ( !IsPC() && g_config.ForceHWSync() )
+				{
+					g_pShaderAPI->ForceHardwareSync();
+				}
+			}
+			SafeRelease( m_pActiveAsyncJob );
+
+			OnRenderingAsyncComplete();
+
+			CMatQueuedRenderContext *pPrevContext = &m_QueuedRenderContexts[m_iCurQueuedContext];
+
+			m_iCurQueuedContext = ( ( m_iCurQueuedContext + 1 ) % ARRAYSIZE( m_QueuedRenderContexts) );
+			m_QueuedRenderContexts[m_iCurQueuedContext].BeginQueue( pPrevContext );
+			m_pRenderContext.Set( &m_QueuedRenderContexts[m_iCurQueuedContext] );
+
+			m_pActiveAsyncJob = new CFunctorJob( CreateFunctor( this, &CMaterialSystem::ThreadExecuteQueuedContext, pPrevContext ), "ThreadExecuteQueuedContext" );
+			if ( IsX360() )
+			{
+				if ( m_nServiceThread >= 0 )
+				{
+					m_pActiveAsyncJob->SetServiceThread( m_nServiceThread );
+				}
+			}
+
+			IThreadPool *pThreadPool = CreateMatQueueThreadPool();
+			pThreadPool->AddJob( m_pActiveAsyncJob );
+#else
 			IThreadPool* pThreadPool = CreateMatQueueThreadPool();
 
 			if ( m_pActiveAsyncJob && !m_pActiveAsyncJob->IsFinished() )
@@ -3953,6 +3984,8 @@ void CMaterialSystem::EndFrame( void )
 			}
 
 			pThreadPool->AddJob( m_pActiveAsyncJob );
+#endif
+#line 3956
 			break;
 		}
 
