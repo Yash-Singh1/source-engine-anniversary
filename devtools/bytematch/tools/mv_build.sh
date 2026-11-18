@@ -26,7 +26,7 @@ DEFS="-DVPC -DNDEBUG -DGNUC -DPOSIX -D_POSIX -DCOMPILER_GCC -D_DLL_EXT=.dylib -D
 # whole directory with the overrides applied.
 SH="$OUT/.shadow"; rm -rf "$SH"; mkdir -p "$SH"
 cp -R "$SRC/public/tier1" "$SH/tier1"; cp -R "$HERE/override/." "$SH/"
-INC="-I$SH -I$SRC/common -I$SRC/public -I$SRC/public/tier0 -I$SRC/public/tier1"
+INC="${EXTRA_INC:-} -I$SH -I$SRC/common -I$SRC/public -I$SRC/public/tier0 -I$SRC/public/tier1"
 BASE="-x c++ -arch i386 -mmacosx-version-min=10.6 -isysroot $SDK -std=gnu++11 -stdlib=libstdc++
  -fmessage-length=0 -fpascal-strings -fasm-blocks -fstrict-aliasing -O2 -g
  -fvisibility=hidden -fvisibility-inlines-hidden -ffast-math -ftree-vectorize -ftemplate-depth=512

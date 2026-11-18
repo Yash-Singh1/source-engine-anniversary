@@ -7,6 +7,8 @@ Functions are paired per source object using the retail N_OSO/N_FUN stabs.
 "norm" = same normalized instruction stream (symdiff.py rules);
 "byte" = norm plus identical encodings for every unmasked instruction and
 equal lengths for masked ones (PIC displacement, external call, large imm).
+Compiler-generated helpers whose names repeat across objects (static
+initializers, array dtors, __clang_call_terminate) are not counted.
 """
 import collections, difflib, glob, json, os, re, subprocess, sys
 
@@ -15,6 +17,7 @@ from symdiff import dump, strip_nops  # noqa: E402
 
 DEPOT = "/Volumes/Expansion/mac-ports/hl2-anniversary-depot/depots/223/19307283/bin"
 RETAIL = {"tier0": f"{DEPOT}/libtier0.dylib", "vstdlib": f"{DEPOT}/libvstdlib.dylib"}
+SKIP = re.compile(r"^(__GLOBAL__I_|___cxx_global_array_dtor|___clang_call_terminate)")
 CACHE = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".cache")
 
 
@@ -64,7 +67,7 @@ def main():
     owner = {}
     for mod, (funcs, omap) in retail.items():
         for k, o in omap.items():
-            if k in funcs and o:
+            if k in funcs and o and not SKIP.match(k):
                 owner.setdefault(o, (mod, set()))[1].add(k)
     tot = collections.Counter()
     status = {}
