@@ -137,10 +137,12 @@ public:
 		return pResult;
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	void operator delete(void *p)
 	{
 		MemAlloc_Free( p );
 	};
+#endif
 
 private:
 	CAI_BaseNPC *m_pOuter;

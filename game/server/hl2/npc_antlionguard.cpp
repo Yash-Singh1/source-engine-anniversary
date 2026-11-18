@@ -118,8 +118,25 @@ enum
 	SCHED_FORCE_ANTLIONGUARD_PHYSICS_ATTACK,
 	SCHED_ANTLIONGUARD_CANT_ATTACK,
 	SCHED_ANTLIONGUARD_TAKE_COVER_FROM_ENEMY,
-	SCHED_ANTLIONGUARD_CHASE_ENEMY
+	SCHED_ANTLIONGUARD_CHASE_ENEMY,
+#ifdef HL2_EPISODIC
+	// Episode variants of the schedules above (chosen with IsHL2Episodic())
+	SCHED_ANTLIONGUARD_CHASE_ENEMY_TOLERANCE_EPISODIC,
+	SCHED_ANTLIONGUARD_PATROL_RUN_EPISODIC,
+	SCHED_ANTLIONGUARD_UNUSED_EPISODIC,		// not registered
+	SCHED_ANTLIONGUARD_CANT_ATTACK_EPISODIC,
+	SCHED_ANTLIONGUARD_TAKE_COVER_FROM_ENEMY_EPISODIC,
+	SCHED_FORCE_ANTLIONGUARD_PHYSICS_ATTACK_EPISODIC,
+#endif
 };
+
+#ifdef HL2_EPISODIC
+#define ANTLIONGUARD_SCHED( sched )			( IsHL2Episodic() ? sched##_EPISODIC : sched )
+#define ANTLIONGUARD_IS_CUR_SCHED( sched )	( IsCurSchedule( sched ) || IsCurSchedule( sched##_EPISODIC ) )
+#else
+#define ANTLIONGUARD_SCHED( sched )			( sched )
+#define ANTLIONGUARD_IS_CUR_SCHED( sched )	( IsCurSchedule( sched ) )
+#endif
 
 
 //==================================================
@@ -302,7 +319,15 @@ public:
 
 		bool GetStoppingPath( CAI_WaypointList *pClippedWaypoints );
 	};
-	CAI_Navigator *	CreateNavigator()	{ return new CNavigator( this );	}
+	CAI_Navigator *	CreateNavigator()
+	{
+		if ( IsHL2Episodic() )
+			return new CNavigator( this );
+
+		CAI_Navigator *pNavigator = BaseClass::CreateNavigator();
+		pNavigator->SetValidateActivitySpeed( false );
+		return pNavigator;
+	}
 #endif
 
 	DEFINE_CUSTOM_AI;
@@ -923,7 +948,7 @@ int CNPC_AntlionGuard::SelectUnreachableSchedule( void )
 {
 	// If we're in the cavern setting, we opt out of this
 	if ( m_bInCavern )
-		return SCHED_ANTLIONGUARD_CHASE_ENEMY_TOLERANCE;
+		return ANTLIONGUARD_SCHED( SCHED_ANTLIONGUARD_CHASE_ENEMY_TOLERANCE );
 	// Summon antlions if we can
 	if ( HasCondition( COND_ANTLIONGUARD_CAN_SUMMON ) )
 		return SCHED_ANTLIONGUARD_SUMMON;
@@ -979,14 +1004,14 @@ int CNPC_AntlionGuard::SelectUnreachableSchedule( void )
 
 			GetMotor()->SetIdealYaw( -dir );
 			
-			return SCHED_ANTLIONGUARD_TAKE_COVER_FROM_ENEMY;
+			return ANTLIONGUARD_SCHED( SCHED_ANTLIONGUARD_TAKE_COVER_FROM_ENEMY );
 		}
 	}
 
 	// If we're too far away, try to close distance to our target first
 	float flDistToEnemySqr = ( GetEnemy()->GetAbsOrigin() - GetAbsOrigin() ).LengthSqr();
 	if ( flDistToEnemySqr > Square( 100*12 ) )
-		return SCHED_ANTLIONGUARD_CHASE_ENEMY_TOLERANCE;
+		return ANTLIONGUARD_SCHED( SCHED_ANTLIONGUARD_CHASE_ENEMY_TOLERANCE );
 
 	// Fire that we're unable to reach our target!
 	if ( GetEnemy() && GetEnemy()->IsPlayer() )
@@ -998,7 +1023,7 @@ int CNPC_AntlionGuard::SelectUnreachableSchedule( void )
 	GetEnemies()->MarkAsEluded( GetEnemy() );
 
 	// Move randomly for the moment
-	return SCHED_ANTLIONGUARD_CANT_ATTACK;
+	return ANTLIONGUARD_SCHED( SCHED_ANTLIONGUARD_CANT_ATTACK );
 }
 
 //-----------------------------------------------------------------------------
@@ -2078,6 +2103,9 @@ void CNPC_AntlionGuard::HandleAnimEvent( animevent_t *pEvent )
 
 		//Throw dust up
 		UTIL_CreateAntlionDust( GetAbsOrigin() + Vector(0,0,24), GetLocalAngles() );
+
+		// The retail binary makes this call and discards the result
+		IsHL2Episodic();
 
 		RemoveEffects( EF_NODRAW );
 		RemoveFlag( FL_NOTARGET );
@@ -3574,11 +3602,11 @@ void CNPC_AntlionGuard::PrescheduleThink( void )
 
 	// Automatically update our physics target when chasing enemies
 	if ( IsCurSchedule( SCHED_ANTLIONGUARD_CHASE_ENEMY ) || 
-		 IsCurSchedule( SCHED_ANTLIONGUARD_PATROL_RUN ) ||
-		 IsCurSchedule( SCHED_ANTLIONGUARD_CANT_ATTACK ) ||
-		 IsCurSchedule( SCHED_ANTLIONGUARD_CHASE_ENEMY_TOLERANCE ) )
+		 ANTLIONGUARD_IS_CUR_SCHED( SCHED_ANTLIONGUARD_PATROL_RUN ) ||
+		 ANTLIONGUARD_IS_CUR_SCHED( SCHED_ANTLIONGUARD_CANT_ATTACK ) ||
+		 ANTLIONGUARD_IS_CUR_SCHED( SCHED_ANTLIONGUARD_CHASE_ENEMY_TOLERANCE ) )
 	{
-		bool bCheckAlongLine = ( IsCurSchedule( SCHED_ANTLIONGUARD_CHASE_ENEMY ) || IsCurSchedule( SCHED_ANTLIONGUARD_CHASE_ENEMY_TOLERANCE ) );
+		bool bCheckAlongLine = ( IsCurSchedule( SCHED_ANTLIONGUARD_CHASE_ENEMY ) || ANTLIONGUARD_IS_CUR_SCHED( SCHED_ANTLIONGUARD_CHASE_ENEMY_TOLERANCE ) );
 		UpdatePhysicsTarget( bCheckAlongLine );
 	}
 	else if ( !IsCurSchedule( SCHED_ANTLIONGUARD_PHYSICS_ATTACK ) )
@@ -4434,7 +4462,7 @@ bool CNPC_AntlionGuard::OverrideMoveFacing( const AILocalMoveGoal_t &move, float
 		bFaceTarget = true;
 	}
 #ifdef HL2_EPISODIC
-	else if ( GetEnemy() && IsCurSchedule( SCHED_ANTLIONGUARD_CANT_ATTACK ) )
+	else if ( IsHL2Episodic() && GetEnemy() && ANTLIONGUARD_IS_CUR_SCHED( SCHED_ANTLIONGUARD_CANT_ATTACK ) )
 	{
 		// Always face our enemy when randomly patrolling around
 		vecFacePosition = GetEnemy()->EyePosition();
@@ -4447,7 +4475,7 @@ bool CNPC_AntlionGuard::OverrideMoveFacing( const AILocalMoveGoal_t &move, float
 		Vector vecEnemyLKP = GetEnemyLKP();
 		
 		// Only start facing when we're close enough
-		if ( ( UTIL_DistApprox( vecEnemyLKP, GetAbsOrigin() ) < 512 ) || IsCurSchedule( SCHED_ANTLIONGUARD_PATROL_RUN ) )
+		if ( ( UTIL_DistApprox( vecEnemyLKP, GetAbsOrigin() ) < 512 ) || ANTLIONGUARD_IS_CUR_SCHED( SCHED_ANTLIONGUARD_PATROL_RUN ) )
 		{
 			vecFacePosition = vecEnemyLKP;
 			pFaceTarget = GetEnemy();
@@ -4842,6 +4870,22 @@ AI_BEGIN_CUSTOM_NPC( npc_antlionguard, CNPC_AntlionGuard )
 		"		COND_HEAVY_DAMAGE"
 	)
 
+#ifdef HL2_EPISODIC
+	DEFINE_SCHEDULE
+	( 
+		SCHED_FORCE_ANTLIONGUARD_PHYSICS_ATTACK_EPISODIC,
+
+		"	Tasks"
+		"		TASK_SET_FAIL_SCHEDULE						SCHEDULE:SCHED_ANTLIONGUARD_CANT_ATTACK_EPISODIC"
+		"		TASK_ANTLIONGUARD_FIND_PHYSOBJECT			0"
+		"		TASK_SET_SCHEDULE							SCHEDULE:SCHED_ANTLIONGUARD_PHYSICS_ATTACK"
+		""
+		"	Interrupts"
+		"		COND_ANTLIONGUARD_PHYSICS_TARGET"
+		"		COND_HEAVY_DAMAGE"
+	)
+#endif
+
 	//==================================================
 	// SCHED_ANTLIONGUARD_CANT_ATTACK
 	//		If we're here, the guard can't chase enemy, can't find a physobject to attack with, and can't summon
@@ -4851,7 +4895,7 @@ AI_BEGIN_CUSTOM_NPC( npc_antlionguard, CNPC_AntlionGuard )
 
 	DEFINE_SCHEDULE
 	( 
-		SCHED_ANTLIONGUARD_CANT_ATTACK,
+		SCHED_ANTLIONGUARD_CANT_ATTACK_EPISODIC,
 
 		"	Tasks"
 		"		TASK_SET_ROUTE_SEARCH_TIME		2"	// Spend 5 seconds trying to build a path if stuck
@@ -4867,7 +4911,7 @@ AI_BEGIN_CUSTOM_NPC( npc_antlionguard, CNPC_AntlionGuard )
 		"		COND_HEAVY_DAMAGE"
 	)
 
-#else
+#endif
 
 	DEFINE_SCHEDULE
 	( 
@@ -4879,7 +4923,7 @@ AI_BEGIN_CUSTOM_NPC( npc_antlionguard, CNPC_AntlionGuard )
 	"	Interrupts"
 	)
 
-#endif
+
 
 	//==================================================
 	// SCHED_ANTLIONGUARD_PHYSICS_DAMAGE_HEAVY
@@ -4948,6 +4992,31 @@ AI_BEGIN_CUSTOM_NPC( npc_antlionguard, CNPC_AntlionGuard )
 	//=========================================================
 	// > SCHED_ANTLIONGUARD_CHASE_ENEMY_TOLERANCE
 	//=========================================================
+#ifdef HL2_EPISODIC
+	DEFINE_SCHEDULE
+	(
+		SCHED_ANTLIONGUARD_CHASE_ENEMY_TOLERANCE_EPISODIC,
+
+		"	Tasks"
+		"		TASK_STOP_MOVING									0"
+		"		TASK_SET_FAIL_SCHEDULE								SCHEDULE:SCHED_ANTLIONGUARD_PATROL_RUN_EPISODIC"
+		"		TASK_ANTLIONGUARD_GET_PATH_TO_NEAREST_NODE			500"
+		"		TASK_RUN_PATH										0"
+		"		TASK_WAIT_FOR_MOVEMENT								0"
+		"		TASK_FACE_ENEMY										0"
+		""
+		"	Interrupts"
+		"		COND_TASK_FAILED"
+		"		COND_CAN_MELEE_ATTACK1"
+		"		COND_GIVE_WAY"
+		"		COND_NEW_ENEMY"
+		"		COND_ANTLIONGUARD_CAN_SUMMON"
+		"		COND_ANTLIONGUARD_PHYSICS_TARGET"
+		"		COND_HEAVY_DAMAGE"
+		"		COND_ANTLIONGUARD_CAN_CHARGE"
+	);
+#endif
+
 	DEFINE_SCHEDULE
 	(
 		SCHED_ANTLIONGUARD_CHASE_ENEMY_TOLERANCE,
@@ -4974,6 +5043,30 @@ AI_BEGIN_CUSTOM_NPC( npc_antlionguard, CNPC_AntlionGuard )
 	//=========================================================
 	// > PATROL_RUN
 	//=========================================================
+#ifdef HL2_EPISODIC
+	DEFINE_SCHEDULE
+	(
+		SCHED_ANTLIONGUARD_PATROL_RUN_EPISODIC,
+
+		"	Tasks"
+		"		TASK_SET_FAIL_SCHEDULE						SCHEDULE:SCHED_ANTLIONGUARD_CANT_ATTACK_EPISODIC"
+		"		TASK_SET_ROUTE_SEARCH_TIME					3"	// Spend 3 seconds trying to build a path if stuck
+		"		TASK_ANTLIONGUARD_GET_PATH_TO_NEAREST_NODE	500"
+		"		TASK_RUN_PATH								0"
+		"		TASK_WAIT_FOR_MOVEMENT						0"
+		""
+		"	Interrupts"
+		"		COND_TASK_FAILED"
+		"		COND_CAN_MELEE_ATTACK1"
+		"		COND_GIVE_WAY"
+		"		COND_NEW_ENEMY"
+		"		COND_ANTLIONGUARD_PHYSICS_TARGET"
+		"		COND_ANTLIONGUARD_CAN_SUMMON"
+		"		COND_HEAVY_DAMAGE"
+		"		COND_ANTLIONGUARD_CAN_CHARGE"
+	);
+#endif
+
 	DEFINE_SCHEDULE
 	(
 		SCHED_ANTLIONGUARD_PATROL_RUN,
@@ -5016,6 +5109,28 @@ AI_BEGIN_CUSTOM_NPC( npc_antlionguard, CNPC_AntlionGuard )
 	//==================================================
 	// SCHED_ANTLIONGUARD_TAKE_COVER_FROM_ENEMY
 	//==================================================
+#ifdef HL2_EPISODIC
+	DEFINE_SCHEDULE
+	(
+		SCHED_ANTLIONGUARD_TAKE_COVER_FROM_ENEMY_EPISODIC,
+
+		"	Tasks"
+		"		TASK_SET_FAIL_SCHEDULE			SCHEDULE:SCHED_ANTLIONGUARD_CANT_ATTACK_EPISODIC"
+		"		TASK_FIND_COVER_FROM_ENEMY		0"
+		"		TASK_RUN_PATH					0"
+		"		TASK_WAIT_FOR_MOVEMENT			0"
+		"		TASK_STOP_MOVING				0"
+		""
+		"	Interrupts"
+		"		COND_TASK_FAILED"
+		"		COND_NEW_ENEMY"
+		"		COND_ENEMY_DEAD"
+		"		COND_ANTLIONGUARD_PHYSICS_TARGET"
+		"		COND_ANTLIONGUARD_CAN_SUMMON"
+		"		COND_HEAVY_DAMAGE"
+	)
+#endif
+
 	DEFINE_SCHEDULE
 	(
 		SCHED_ANTLIONGUARD_TAKE_COVER_FROM_ENEMY,
