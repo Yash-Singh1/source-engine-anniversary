@@ -385,17 +385,9 @@ void Slider::GetTrackRect( int& x, int& y, int& w, int& h )
 	GetPaintSize( wide, tall );
 
 	x = 0;
-#ifdef BYTEMATCH_RETAIL
-	y = 8;
-#else
-	y = IsProportional() ? scheme()->GetProportionalScaledValue( 8.f ) : 8;;
-#endif
+	y = PROPORTIONAL_VALUE( 8 );
 	w = wide - (int)_nobSize;
-#ifdef BYTEMATCH_RETAIL
-	h = 4;
-#else
-	h = IsProportional() ? scheme()->GetProportionalScaledValue( 4.f ) : 4;
-#endif
+	h = PROPORTIONAL_VALUE( 4 );
 }
 
 //-----------------------------------------------------------------------------
