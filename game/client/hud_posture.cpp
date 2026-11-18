@@ -27,6 +27,7 @@ using namespace vgui;
 #define HUD_POSTURE_FADE_TIME 0.4f
 #define CROUCHING_CHARACTER_INDEX 92  // index of the crouching dude in the TTF font
 
+
 //-----------------------------------------------------------------------------
 // Purpose: Shows the sprint power bar
 //-----------------------------------------------------------------------------
@@ -38,7 +39,6 @@ public:
 	CHudPosture( const char *pElementName );
 	bool			ShouldDraw( void );
 
-#ifdef _X360 	// if not xbox 360, don't waste code space on this
 	virtual void	Init( void );
 	virtual void	Reset( void );
 	virtual void	OnTick( void );
@@ -47,9 +47,11 @@ protected:
 	virtual void	Paint();
 
 	float	m_duckTimeout; /// HUD_POSTURE_FADE_TIME after the last known time the player was ducking
+	bool	m_bShowPosture; // vgui_hud_posture: 1 on, 0 off, otherwise only on Steam Deck
 
 private:
 
+	CPanelAnimationVar( Color, m_TextColor, "TextColor", "FgColor" );
 	CPanelAnimationVar( vgui::HFont, m_hFont, "Font", "WeaponIconsSmall" );
 	CPanelAnimationVarAliasType( float, m_IconX, "icon_xpos", "4", "proportional_float" );
 	CPanelAnimationVarAliasType( float, m_IconY, "icon_ypos", "4", "proportional_float" );
@@ -58,11 +60,12 @@ private:
 		   FADING_UP, 
 		   FADING_DOWN
 	} m_kIsFading;
-#endif
 };	
 
 
 DECLARE_HUDELEMENT( CHudPosture );
+
+ConVar vgui_hud_posture( "vgui_hud_posture", "-1", FCVAR_ARCHIVE );
 
 
 namespace
@@ -85,7 +88,21 @@ CHudPosture::CHudPosture( const char *pElementName ) : CHudElement( pElementName
 
 	SetHiddenBits( HIDEHUD_HEALTH | HIDEHUD_PLAYERDEAD | HIDEHUD_NEEDSUIT );
 
-	if( IsX360() )
+	int nShowPosture = vgui_hud_posture.GetInt();
+	if ( nShowPosture == 1 )
+	{
+		m_bShowPosture = true;
+	}
+	else if ( nShowPosture == 0 )
+	{
+		m_bShowPosture = false;
+	}
+	else
+	{
+		m_bShowPosture = IsSteamDeck();
+	}
+
+	if ( m_bShowPosture )
 	{
 		vgui::ivgui()->AddTickSignal( GetVPanel(), (1000/HUD_POSTURE_UPDATES_PER_SECOND) );
 	}
@@ -98,15 +115,9 @@ CHudPosture::CHudPosture( const char *pElementName ) : CHudElement( pElementName
 //-----------------------------------------------------------------------------
 bool CHudPosture::ShouldDraw()
 {
-#ifdef _X360
-	return ( m_duckTimeout >= gpGlobals->curtime &&
+	return ( m_bShowPosture && m_duckTimeout >= gpGlobals->curtime &&
 		CHudElement::ShouldDraw() );
-#else
-	return false;
-#endif
 }
-
-#ifdef _X360
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -178,9 +189,7 @@ void CHudPosture::Paint()
 
 	SetPaintBackgroundEnabled( true );
 
-	Color clr;
-	clr = gHUD.m_clrNormal;
-	clr[3] = 255;
+	Color clr = m_TextColor;
 
 	// Pick the duck character
 	wchar_t duck_char = CROUCHING_CHARACTER_INDEX;
@@ -188,8 +197,6 @@ void CHudPosture::Paint()
 	surface()->DrawSetTextFont( m_hFont );
 	surface()->DrawSetTextColor( clr );
 	surface()->DrawSetTextPos( m_IconX, m_IconY );
-	surface()->DrawUnicodeChar( duck_char );
+	surface()->DrawUnicodeChar( duck_char, FONT_DRAW_ADDITIVE );
 }
-
-#endif
 
