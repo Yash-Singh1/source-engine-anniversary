@@ -84,8 +84,8 @@ MenuItem::MenuItem(Menu *parent, const char *panelName, const char *text, Menu *
 	SetButtonActivationType(ACTIVATE_ONRELEASED);
 	m_pUserData = NULL;
 	m_pCurrentKeyBinding = NULL;
-	m_nExtraTall = 0;
-	m_nXIndent = 0;
+	m_nOffsetFromMainMenu = 0;
+	m_nPaddingY = 0;
 
 	// only one arg should be passed in.
 	Assert (!(cascadeMenu && checkable));
@@ -108,8 +108,8 @@ MenuItem::MenuItem(Menu *parent, const char *panelName, const wchar_t *wszText, 
 	SetButtonActivationType(ACTIVATE_ONRELEASED);
 	m_pUserData = NULL;
 	m_pCurrentKeyBinding = NULL;
-	m_nExtraTall = 0;
-	m_nXIndent = 0;
+	m_nOffsetFromMainMenu = 0;
+	m_nPaddingY = 0;
 
 	// only one arg should be passed in.
 	Assert (!(cascadeMenu && checkable));
@@ -370,7 +370,7 @@ void MenuItem::OpenCascadeMenu()
 		// if the window's been moved
 		m_pCascadeMenu->PerformLayout();
 		m_pCascadeMenu->SetVisible(true);
-		m_pCascadeMenu->MoveToFront();
+		ArmItem();
 	}
 }
 
@@ -395,7 +395,7 @@ void MenuItem::ApplySchemeSettings(IScheme *pScheme)
 	SetArmedColor(GetSchemeColor("Menu.ArmedTextColor", GetFgColor(), pScheme), GetSchemeColor("Menu.ArmedBgColor", GetBgColor(), pScheme));
 	SetDepressedColor(GetSchemeColor("Menu.ArmedTextColor", GetFgColor(), pScheme), GetSchemeColor("Menu.ArmedBgColor", GetBgColor(), pScheme));
 
-	SetTextInset(atoi(pScheme->GetResourceString("Menu.TextInset")), 0);
+	SetTextInset(QuickPropScale( atoi(pScheme->GetResourceString("Menu.TextInset")) ), 0);
 	
 	// reload images since applyschemesettings in label wipes them out.
 	if ( m_pCascadeArrow )
@@ -622,7 +622,7 @@ void MenuItem::Paint()
 	int iw, ih;
 	m_pCurrentKeyBinding->GetSize( iw, ih );
 
-	int x = w - iw - KEYBINDING_INSET;
+	int x = w - iw - QuickPropScale( KEYBINDING_INSET );
 	int y = ( h - ih ) / 2;
 
 	if ( IsEnabled() )
@@ -648,11 +648,11 @@ void MenuItem::Paint()
 void MenuItem::GetContentSize( int& cw, int &ch )
 {
 	BaseClass::GetContentSize( cw, ch );
-	if ( m_nXIndent > 0 )
+	if ( m_nOffsetFromMainMenu > 0 )
 	{
-		cw += QuickPropScale( m_nXIndent );
+		cw += QuickPropScale( GetOffsetFromMainMenu() );
 	}
-
+	
 	if ( !m_pCurrentKeyBinding )
 		return;
 

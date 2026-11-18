@@ -834,27 +834,30 @@ void Menu::PerformLayout()
 			child->SetFont( m_hItemFont );
 		}
 
+		int nX = QuickPropScale( child->GetOffsetFromMainMenu() );
+
 		// take into account inset
-		child->SetPos( QuickPropScale( child->GetXIndent() ), menuTall );
+		child->SetPos (nX, menuTall);
 
-		int nExtraTall = 0;
-		if ( child->GetExtraTall() )
+		int nPaddingY = child->GetPaddingY();
+		if ( nPaddingY != 0 )
 		{
-			nExtraTall = QuickPropScale( child->GetExtraTall() );
+			nPaddingY = QuickPropScale(nPaddingY);
+			int wide, tall;
+			surface()->GetScreenSize(wide, tall);
 
-			// keep extra-tall items within reach on short screens
-			int sw, sh;
-			surface()->GetScreenSize( sw, sh );
-			if ( sh < 800 )
+			// special handling for resolutions where this feels cramped and the fonts have switched
+			if ( tall < 800 )
 			{
-				nExtraTall = clamp( nExtraTall, 0, Ceil2Int( m_iMenuItemHeight * 1.5f ) );
+				nPaddingY = clamp(nPaddingY, 0, Ceil2Int( (float)m_iMenuItemHeight * 1.5f) );
 			}
 		}
 
-		int nItemTall = m_iMenuItemHeight + nExtraTall;
-		child->SetTall( nItemTall ); // Width is set in a second pass
-		menuTall += nItemTall;
-		totalTall += nItemTall;
+		int nChildHeight = m_iMenuItemHeight + nPaddingY;
+
+		child->SetTall( nChildHeight ); // Width is set in a second pass
+		menuTall += nChildHeight;
+		totalTall += nChildHeight;
 
 		// this will make all the menuitems line up in a column with space for the checks to the left.
 		if ( ( !child->IsCheckable() ) && ( m_iCheckImageWidth > 0 ) )
@@ -874,7 +877,7 @@ void Menu::PerformLayout()
 			MenuSeparator *sep = m_SeparatorPanels[ sepIndex ];
 			Assert( sep );
 			sep->SetVisible( true );
-			sep->SetBounds( 0, menuTall, trueW, separatorHeight );
+			sep->SetBounds( nX, menuTall, nX + trueW, separatorHeight );
 			menuTall += separatorHeight;
 			totalTall += separatorHeight;
 		}
@@ -966,9 +969,9 @@ void Menu::CalculateWidth()
 		{		
 			int wide, tall;
 			m_MenuItems[i]->GetContentSize(wide, tall);
-			if (wide > _menuWide - Label::Content)
+			if (wide > _menuWide - QuickPropScale( Label::Content ) )
 			{
-				_menuWide =  wide + Label::Content;	
+				_menuWide =  wide + QuickPropScale( Label::Content );	
 			}
 		}	
 	}
@@ -1296,6 +1299,8 @@ void Menu::OnKeyCodeTyped(KeyCode keycode)
 	case KEY_XBUTTON_UP: 
 	case KEY_XSTICK1_UP:
 	case STEAMCONTROLLER_DPAD_UP:
+	case STEAMCONTROLLER_LEFT_PAD_UP:
+	case STEAMCONTROLLER_RIGHT_PAD_UP:
 		{	
 			MoveAlongMenuItemList(MENU_UP, 0);
 			if ( m_MenuItems.IsValidIndex( m_iCurrentlySelectedItemID ) )
@@ -1312,6 +1317,8 @@ void Menu::OnKeyCodeTyped(KeyCode keycode)
 	case KEY_XBUTTON_DOWN: 
 	case KEY_XSTICK1_DOWN: 
 	case STEAMCONTROLLER_DPAD_DOWN:
+	case STEAMCONTROLLER_LEFT_PAD_DOWN:
+	case STEAMCONTROLLER_RIGHT_PAD_DOWN:
 		{
 			MoveAlongMenuItemList(MENU_DOWN, 0);
 			if ( m_MenuItems.IsValidIndex( m_iCurrentlySelectedItemID ) )
@@ -1329,6 +1336,8 @@ void Menu::OnKeyCodeTyped(KeyCode keycode)
 	case KEY_XBUTTON_RIGHT: 
 	case KEY_XSTICK1_RIGHT: 
 	case STEAMCONTROLLER_DPAD_RIGHT:
+	case STEAMCONTROLLER_LEFT_PAD_RIGHT:
+	case STEAMCONTROLLER_RIGHT_PAD_RIGHT:
 		{
 			// make sure a menuItem is currently selected
 			if ( m_MenuItems.IsValidIndex(m_iCurrentlySelectedItemID) )
@@ -1352,6 +1361,8 @@ void Menu::OnKeyCodeTyped(KeyCode keycode)
 	case KEY_XBUTTON_LEFT: 
 	case KEY_XSTICK1_LEFT: 
 	case STEAMCONTROLLER_DPAD_LEFT:
+	case STEAMCONTROLLER_LEFT_PAD_LEFT:
+	case STEAMCONTROLLER_RIGHT_PAD_LEFT:
 		{
 			// if our parent is a menu item then we are a submenu so close us.
 			if (GetParentMenuItem())
@@ -2270,8 +2281,10 @@ void Menu::OnCursorMoved(int x, int y)
 	
 	// chain up
 	CallParentFunction(new KeyValues("OnCursorMoved", "x", x, "y", y));
-	//RequestFocus();
-	//InvalidateLayout();
+#ifdef BYTEMATCH_RETAIL
+	RequestFocus();
+	InvalidateLayout();
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -2406,6 +2419,11 @@ void Menu::OnCursorEnteredMenuItem(int VPanel)
 		MenuItem *item = static_cast<MenuItem *>(ipanel()->GetPanel(menuItem, GetModuleName()));
 		// arm the menu
 		item->ArmItem();
+#ifdef BYTEMATCH_RETAIL
+		// open the cascading menu if there is one.
+		item->OpenCascadeMenu();
+		SetCurrentlySelectedItem(item);
+#else
 		SetCurrentlySelectedItem(item);
 
 		// open the cascading menu if there is one.
@@ -2415,6 +2433,7 @@ void Menu::OnCursorEnteredMenuItem(int VPanel)
 			item->OpenCascadeMenu();
 			ActivateItem( m_iCurrentlySelectedItemID );
 		}
+#endif
 	}
 }
 
@@ -2647,7 +2666,7 @@ void Menu::SetFont( HFont font )
 	m_hItemFont = font;
 	if ( font )
 	{
-		m_iMenuItemHeight = surface()->GetFontTall( font ) + 2;
+		m_iMenuItemHeight = surface()->GetFontTall( font ) + QuickPropScale( 2 );
 	}
 	InvalidateLayout();
 }
