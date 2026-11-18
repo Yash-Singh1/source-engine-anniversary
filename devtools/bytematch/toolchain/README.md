@@ -10,7 +10,7 @@ the `--retail-osx32` waf mode. Everything installs under
 | compiler | Apple clang-600.0.57 (Xcode 6.2) | static-init naming and the pilot match rate pin clang-600; .54 gives identical code on every object we build, .51 differs in one object retail doesn't link |
 | linker | ld64-242 (Xcode 6.2) via cctools-port | 236.3 writes `__unwind_info` with 2^0 alignment, retail has 2^2; 241.9 and 242 give byte-identical dylibs |
 | SDK | stub MacOSX10.9.sdk | 10.6 headers plus i386 stub libraries carrying retail's install names, versions and exports |
-| hl2mp (2014) | clang-503.0.38, ld64-236.3 (Xcode 5.1), protoc 2.3.0 | depot 223's hl2mp modules are a May 2014 Source SDK 2013 build: `LC_VERSION_MIN` 10.5, `__unwind_info` 2^0; `--build-games=hl2mp` (see `sdk2013mp/wscript`) |
+| hl2mp (2014) | clang-503.0.38, ld64-236.3 (Xcode 5.1), protoc 2.3.0 | depot 223's hl2mp modules are a May 2014 Source SDK 2013 build: `LC_VERSION_MIN` 10.5, `__unwind_info` 2^0; `--build-games=hl2mp` (see `sdk2013mp/wscript`). clang-503 carries `patches/clang-503.0.38-maskandbranch.patch` (an uninitialized x86 flag made Xcode 5.1's codegen vary per compile) |
 
 ## Setup
 
