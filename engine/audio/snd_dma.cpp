@@ -756,6 +756,34 @@ void S_Init( void )
 }
 
 
+//-----------------------------------------------------------------------------
+// Purpose: Free every sound source and empty the sfx dictionary and pool
+//-----------------------------------------------------------------------------
+void S_ClearSoundPool()
+{
+	for ( int i = s_Sounds.FirstInorder(); i != s_Sounds.InvalidIndex(); i = s_Sounds.NextInorder( i ) )
+	{
+		if ( s_Sounds[i].pSfx )
+		{
+			delete s_Sounds[i].pSfx->pSource;
+			s_Sounds[i].pSfx->pSource = NULL;
+		}
+	}
+	s_Sounds.RemoveAll();
+	s_SoundPool.Clear();
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Drop all cached sound data so newly mounted content is picked up
+//-----------------------------------------------------------------------------
+void S_ReloadAudioCaches()
+{
+	S_ClearSoundPool();
+	wavedatacache->Flush();
+	audiosourcecache->Shutdown();
+	audiosourcecache->Init( host_parms.memsize >> 2 );
+}
+
 // =======================================================================
 // Shutdown sound engine
 // =======================================================================
@@ -775,19 +803,7 @@ void S_Shutdown(void)
 
 	SNDDMA_Shutdown();
 
-#ifndef BYTEMATCH_RETAIL
-	for ( int i = s_Sounds.FirstInorder(); i != s_Sounds.InvalidIndex(); i = s_Sounds.NextInorder( i ) )
-	{
-		if ( s_Sounds[i].pSfx )
-		{
-			delete s_Sounds[i].pSfx->pSource;
-			s_Sounds[i].pSfx->pSource = NULL;
-		}
-	}
-	s_Sounds.RemoveAll();
-#endif
-#line 770
-	s_SoundPool.Clear();
+	S_ClearSoundPool();
 
 	// release DSP resources
 	FreeDsps( true );
@@ -795,7 +811,7 @@ void S_Shutdown(void)
 #ifndef BYTEMATCH_RETAIL
 	MXR_ReleaseMemory();
 #endif
-#line 775
+#line 803
 
 	// release sentences resources
 	TRACESHUTDOWN( VOX_Shutdown() );
@@ -6060,7 +6076,7 @@ ConVar snd_ducktovolume( "snd_ducktovolume", "0.55", FCVAR_ARCHIVE );
 ConVar snd_ducktovolume_commentary( "snd_ducktovolume_commentary", "0.10", FCVAR_ARCHIVE );
 ConVar snd_ducktovolume_commentary_othervoice( "snd_ducktovolume_commentary_othervoice", "0", FCVAR_ARCHIVE );
 #endif
-#line 6037
+#line 6065
 ConVar snd_duckerattacktime( "snd_duckerattacktime", "0.5", FCVAR_ARCHIVE );
 ConVar snd_duckerreleasetime( "snd_duckerreleasetime", "2.5", FCVAR_ARCHIVE );
 ConVar snd_duckerthreshold("snd_duckerthreshold", "0.15", FCVAR_ARCHIVE );
@@ -6114,7 +6130,7 @@ static void S_UpdateCommentaryDuck( int commentaryChannelCount, int commentaryCh
 	g_DuckScaleVoice = Approach( voiceDuckTarget, g_DuckScaleVoice, frametime * ((1-voice_volume_when_ducked) / rate) );
 }
 #endif
-#line 6088
+#line 6116
 
 // set 2d forward vector, given 3d right vector.
 // NOTE: this should only be used for a listener forward
@@ -6229,7 +6245,7 @@ void S_Update( const AudioState_t *pAudioState )
 		}
 	}
 #endif
-#line 6200
+#line 6228
 
 	if (snd_spatialize_roundrobin.GetInt() == 0)
 	{
@@ -6286,7 +6302,7 @@ void S_Update( const AudioState_t *pAudioState )
 #ifdef BYTEMATCH_RETAIL
 	S_UpdateCommentaryDuck( commentaryChannelCount, commentaryChannelMaxVolume, frametime );
 #endif
-#line 6254
+#line 6282
 
 	// update x360 music volume
 	g_DashboardMusicMixValue = Approach( g_DashboardMusicMixTarget, g_DashboardMusicMixValue, g_DashboardMusicFadeRate * frametime );

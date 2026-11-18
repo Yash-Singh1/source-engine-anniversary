@@ -2083,7 +2083,32 @@ int CEngineClient::GetInstancesRunningCount( )
 //-----------------------------------------------------------------------------
 void CEngineClient::OnHL2ExpansionLoaded()
 {
-	// UNIMPLEMENTED: retail stops all sounds and reloads content for the newly mounted HL2 expansion.
+	extern void S_ReloadAudioCaches();
+	extern void DSP_DEBUGReloadPresetFile( void );
+	extern void Host_MapListFlush( void );
+
+	S_StopAllSounds( true );
+	DSP_DEBUGReloadPresetFile();
+	S_ReloadAudioCaches();
+	VOX_Shutdown();
+	VOX_Init();
+
+	ClientCmd_Unrestricted( "r_flushlod" );
+	ClientCmd_Unrestricted( "_gi_on_expansion_reload" );
+
+	ConCommand *pCommand = g_pCVar->FindCommand( "sv_hl2_expansion_reloaded" );
+	if ( pCommand )
+	{
+		const char *pArgv[] = { "sv_hl2_expansion_reloaded" };
+		CCommand args( 1, pArgv );
+		pCommand->Dispatch( args );
+	}
+
+	ClientCmd_Unrestricted( "cl_hl2_expansion_reloaded" );
+
+	TextMessageShutdown();
+	TextMessageInit();
+	Host_MapListFlush();
 }
 
 IMatchEventsSubscription *CEngineClient::GetEventsSubscription()
