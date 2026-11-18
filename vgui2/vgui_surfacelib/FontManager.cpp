@@ -43,7 +43,7 @@ CFontManager::CFontManager()
 	m_FontAmalgams.AddToTail();
 	m_Win32Fonts.EnsureCapacity( MAX_INITIAL_FONTS );
 
-#ifdef POSIX
+#ifdef VGUI_FONT_FREETYPE
 	FT_Error error = FT_Init_FreeType( &library ); 
 	if ( error )
 		Error( "Unable to initalize freetype library, is it installed?" );
@@ -75,7 +75,7 @@ CFontManager::~CFontManager()
 {
 	ClearAllFonts();
 	m_FontAmalgams.RemoveAll();
-#ifdef POSIX
+#ifdef VGUI_FONT_FREETYPE
 	FT_Done_FreeType( library );
 #endif
 }
@@ -280,7 +280,7 @@ font_t *CFontManager::CreateOrFindWin32Font(const char *windowsFontName, int tal
 		i = m_Win32Fonts.AddToTail();
 		m_Win32Fonts[i] = NULL;
 
-#ifdef POSIX
+#ifdef VGUI_FONT_FREETYPE
 		int memSize = 0;
 		void *pchFontData = m_pFontDataHelper( windowsFontName, memSize, NULL );
 
@@ -750,7 +750,7 @@ void CFontManager::GetKernedCharWidth( vgui::HFont font, wchar_t ch, wchar_t chB
 	if ( m_FontAmalgams[font].GetFontForChar( chAfter ) != pFont )
 		chAfter = 0;
 
-#ifdef POSIX
+#ifdef VGUI_FONT_FREETYPE
 	pFont->GetKernedCharWidth( ch, chBefore, chAfter, wide, flabcA, flabcC );
 #else
 	pFont->GetKernedCharWidth( ch, chBefore, chAfter, wide, flabcA );

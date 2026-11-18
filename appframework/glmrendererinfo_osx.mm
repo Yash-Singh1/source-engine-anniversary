@@ -198,7 +198,7 @@ GLMRendererInfo::GLMRendererInfo( GLMRendererInfoFields *info )
 
 	// absorb info obtained so far by caller
 	m_info = *info;
-#ifdef BYTEMATCH_RETAIL
+#ifdef TOGL_OSX
 	m_display = NULL;
 #else
 	m_displays = NULL;
@@ -454,7 +454,7 @@ GLMRendererInfo::GLMRendererInfo( GLMRendererInfoFields *info )
 	if ( (m_info.m_atiR6xx) && (m_info.m_osComboVersion < 0x000A0605) )	// or r6xx prior to 10.6.5
 		m_info.m_costlyGammaFlips = true;
 
-#ifndef BYTEMATCH_RETAIL
+#ifndef TOGL_OSX
 	// The OpenGL driver for Intel HD4000 on 10.8 has a bug in the GLSL compiler, which was fixed
 	// in 10.9 (and unlikely to be fixed in 10.8). See intelglmallocworkaround.h for more info.
 	bool mountainLion = (m_info.m_osComboVersion >= 0x000A0800) && (m_info.m_osComboVersion < 0x000A0900);
@@ -475,7 +475,7 @@ GLMRendererInfo::GLMRendererInfo( GLMRendererInfoFields *info )
 	[tempPool release];
 }
 
-#ifdef BYTEMATCH_RETAIL
+#ifdef TOGL_OSX
 
 GLMRendererInfo::~GLMRendererInfo( void )
 {
@@ -652,7 +652,7 @@ void	GLMRendererInfo::Dump( int which )
 }
 
 
-#endif // BYTEMATCH_RETAIL
+#endif // TOGL_OSX
 
 //===============================================================================
 
@@ -1154,7 +1154,7 @@ void	GLMDisplayDB::PopulateRenderers( void )
 								{
 									case	0x27A6:	fields.m_intel95x = true;		break;	// GMA 950
 									case	0x2A02:	fields.m_intel3100 = true;		break;	// X3100
-#ifndef BYTEMATCH_RETAIL
+#ifndef TOGL_OSX
 									case	0x0166: fields.m_intelHD4000 = true;	break;	// HD4000
 #endif
 								}
@@ -1347,7 +1347,7 @@ bool	GLMDisplayDB::GetRendererInfo( int rendererIndex, GLMRendererInfoFields *in
 	return false;
 }
 
-#ifdef BYTEMATCH_RETAIL
+#ifdef TOGL_OSX
 
 int		GLMDisplayDB::GetDisplayCount( int rendererIndex )
 {
@@ -1541,7 +1541,7 @@ bool	GLMDisplayDB::GetModeInfo( int rendererIndex, int displayIndex, int modeInd
 }
 
 
-#endif // BYTEMATCH_RETAIL
+#endif // TOGL_OSX
 
 void	GLMDisplayDB::Dump( void )
 {
@@ -1553,7 +1553,7 @@ void	GLMDisplayDB::Dump( void )
 	}
 }
 
-#ifndef BYTEMATCH_RETAIL
+#ifndef TOGL_OSX
 
 //===============================================================================
 
@@ -1702,4 +1702,4 @@ void	GLMDisplayInfo::Dump( int which )
 	}
 }
 
-#endif // !BYTEMATCH_RETAIL
+#endif // !TOGL_OSX

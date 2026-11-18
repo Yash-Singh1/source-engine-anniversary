@@ -1,0 +1,38 @@
+#! /usr/bin/env python
+# encoding: utf-8
+
+top = '.'
+PROJECT_NAME = 'bugreporter_public'
+
+def options(opt):
+	return
+
+def configure(conf):
+	conf.env.append_unique('DEFINES', ['bugreporter_public_EXPORTS'])
+
+def build(bld):
+	source = [
+		'bugreporter_public.cpp',
+		'bugreporter_upload.cpp',
+		'../../public/blockingudpsocket.cpp',
+	]
+
+	includes = [
+		'.',
+		'../common',
+		'../../public',
+		'../../public/tier0',
+		'../../public/tier1',
+		'../../common',
+	]
+
+	bld.shlib(
+		source   = source,
+		target   = PROJECT_NAME,
+		name     = PROJECT_NAME,
+		features = 'c cxx',
+		includes = includes,
+		use      = ['tier0', 'tier1', 'mathlib', 'vstdlib', 'ICONV'],
+		install_path = bld.env.LIBDIR,
+		idx      = bld.get_taskgen_count()
+	)

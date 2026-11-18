@@ -1,0 +1,38 @@
+#! /usr/bin/env python
+# encoding: utf-8
+
+top = '.'
+PROJECT_NAME = 'video_quicktime'
+
+def options(opt):
+	return
+
+def configure(conf):
+	conf.env.append_unique('DEFINES', ['DLLNAME=video_quicktime'])
+
+def build(bld):
+	source = [
+		'quicktime_material.cpp',
+		'quicktime_recorder.cpp',
+		'quicktime_video.cpp',
+	]
+
+	includes = [
+		'.',
+		'..',
+		'../../public',
+		'../../public/tier0',
+		'../../public/tier1',
+		'../../common',
+	]
+
+	bld.shlib(
+		source   = source,
+		target   = PROJECT_NAME,
+		name     = PROJECT_NAME,
+		features = 'c cxx',
+		includes = includes,
+		use      = ['tier0', 'tier1', 'tier2', 'vstdlib', 'ICONV', 'QUICKTIME', 'CARBON', 'COREFOUNDATION', 'CORESERVICES'],
+		install_path = bld.env.LIBDIR,
+		idx      = bld.get_taskgen_count()
+	)

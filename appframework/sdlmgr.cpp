@@ -2245,7 +2245,7 @@ GLMDisplayDB *CSDLMgr::GetDisplayDB( void )
 	return m_displayDB;
 }
 
-#if !defined( OSX ) || defined( BYTEMATCH_RETAIL )
+#if !defined( OSX ) || defined( TOGL_OSX )
 #include "glmdisplaydb_linuxwin.inl"
 #endif
 

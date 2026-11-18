@@ -34,7 +34,7 @@
 
 #undef PROTECTED_THINGS_ENABLE
 
-#if defined(OSX) && defined(BYTEMATCH_RETAIL)
+#if defined(TOGL_OSX)
 
 #include <OpenGL/gl.h>
 #include <OpenGL/glext.h>
@@ -78,7 +78,7 @@
 #include "togl/linuxwin/dxabstract_types.h"
 #include "togl/linuxwin/dxabstract.h"
 
-#endif // OSX && BYTEMATCH_RETAIL
+#endif // TOGL_OSX
 
 #else
 	//USE_ACTUAL_DX

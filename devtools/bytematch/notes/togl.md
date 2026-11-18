@@ -2,7 +2,7 @@
 
 Retail `bin/libtogl.dylib` was built from `togl/osx/*` against `public/togl/osx/*`
 (debug map), the ToGL generation Source SDK 2013 ships headers for. Retail mode
-(`OSX && BYTEMATCH_RETAIL`) selects those headers in `rendermechanism.h`,
+(`TOGL_OSX`, defined by `--retail-osx32`) selects those headers in `rendermechanism.h`,
 `glfuncs.inl` and `ilaunchermgr.h`; the default build stays on `linuxwin`.
 
 Layouts checked against retail: `GLMContext` 0x2F90, `CGLMTex` 0x84,

@@ -1,0 +1,1348 @@
+{
+ "meta": {
+  "generated": "2026-11-18T07:34:53Z",
+  "depot_build": "19307283",
+  "clang": "600.0.57",
+  "ld64": "242"
+ },
+ "total": {
+  "functions": {
+   "total": 36690,
+   "exact": 6482,
+   "matches_after_masking": 14138,
+   "differs": 14571,
+   "missing": 1499,
+   "matched": 20620,
+   "pct": 56.2
+  },
+  "bytes": {
+   "total": 9896630,
+   "exact": 274665,
+   "matches_after_masking": 2764262,
+   "differs": 6476159,
+   "missing": 381544,
+   "matched": 3038927,
+   "pct": 30.71
+  }
+ },
+ "rows": [
+  {
+   "kind": "module",
+   "module": "bin/datacache",
+   "name": "datacache.dylib",
+   "retail": "223/19307283/bin/datacache.dylib",
+   "ours": "datacache/datacache.dylib",
+   "summary": {
+    "functions": {
+     "total": 406,
+     "exact": 76,
+     "matches_after_masking": 164,
+     "differs": 155,
+     "missing": 11,
+     "matched": 240,
+     "pct": 59.11
+    },
+    "bytes": {
+     "total": 138135,
+     "exact": 4257,
+     "matches_after_masking": 36942,
+     "differs": 94326,
+     "missing": 2610,
+     "matched": 41199,
+     "pct": 29.83
+    }
+   }
+  },
+  {
+   "kind": "module",
+   "module": "bin/engine",
+   "name": "engine.dylib",
+   "retail": "223/19307283/bin/engine.dylib",
+   "ours": "engine/engine.dylib",
+   "summary": {
+    "functions": {
+     "total": 12767,
+     "exact": 2214,
+     "matches_after_masking": 4972,
+     "differs": 5121,
+     "missing": 460,
+     "matched": 7186,
+     "pct": 56.29
+    },
+    "bytes": {
+     "total": 3778257,
+     "exact": 104045,
+     "matches_after_masking": 1023355,
+     "differs": 2540103,
+     "missing": 110754,
+     "matched": 1127400,
+     "pct": 29.84
+    }
+   }
+  },
+  {
+   "kind": "module",
+   "module": "bin/vaudio_speex",
+   "name": "vaudio_speex.dylib",
+   "retail": "223/19307283/bin/vaudio_speex.dylib",
+   "ours": "engine/voice_codecs/speex/vaudio_speex.dylib",
+   "summary": {
+    "functions": {
+     "total": 131,
+     "exact": 4,
+     "matches_after_masking": 15,
+     "differs": 87,
+     "missing": 25,
+     "matched": 19,
+     "pct": 14.5
+    },
+    "bytes": {
+     "total": 61295,
+     "exact": 199,
+     "matches_after_masking": 2166,
+     "differs": 56759,
+     "missing": 2171,
+     "matched": 2365,
+     "pct": 3.86
+    }
+   }
+  },
+  {
+   "kind": "module",
+   "module": "bin/filesystem_stdio",
+   "name": "filesystem_stdio.dylib",
+   "retail": "223/19307283/bin/filesystem_stdio.dylib",
+   "ours": "filesystem/filesystem_stdio.dylib",
+   "summary": {
+    "functions": {
+     "total": 1021,
+     "exact": 166,
+     "matches_after_masking": 276,
+     "differs": 434,
+     "missing": 145,
+     "matched": 442,
+     "pct": 43.29
+    },
+    "bytes": {
+     "total": 345776,
+     "exact": 7106,
+     "matches_after_masking": 48471,
+     "differs": 229783,
+     "missing": 60416,
+     "matched": 55577,
+     "pct": 16.07
+    }
+   }
+  },
+  {
+   "kind": "module",
+   "module": "bin/GameUI",
+   "name": "GameUI.dylib",
+   "retail": "223/19307283/bin/GameUI.dylib",
+   "ours": "gameui/GameUI.dylib",
+   "summary": {
+    "functions": {
+     "total": 4888,
+     "exact": 326,
+     "matches_after_masking": 1649,
+     "differs": 2756,
+     "missing": 157,
+     "matched": 1975,
+     "pct": 40.41
+    },
+    "bytes": {
+     "total": 1159816,
+     "exact": 6774,
+     "matches_after_masking": 169311,
+     "differs": 945357,
+     "missing": 38374,
+     "matched": 176085,
+     "pct": 15.18
+    }
+   }
+  },
+  {
+   "kind": "module",
+   "module": "bin/inputsystem",
+   "name": "inputsystem.dylib",
+   "retail": "223/19307283/bin/inputsystem.dylib",
+   "ours": "inputsystem/inputsystem.dylib",
+   "summary": {
+    "functions": {
+     "total": 192,
+     "exact": 38,
+     "matches_after_masking": 55,
+     "differs": 68,
+     "missing": 31,
+     "matched": 93,
+     "pct": 48.44
+    },
+    "bytes": {
+     "total": 28914,
+     "exact": 637,
+     "matches_after_masking": 5588,
+     "differs": 18015,
+     "missing": 4674,
+     "matched": 6225,
+     "pct": 21.53
+    }
+   }
+  },
+  {
+   "kind": "module",
+   "module": "bin/shaderapiempty",
+   "name": "shaderapiempty.dylib",
+   "retail": "223/19307283/bin/shaderapiempty.dylib",
+   "ours": "materialsystem/shaderapiempty/shaderapiempty.dylib",
+   "summary": {
+    "functions": {
+     "total": 588,
+     "exact": 521,
+     "matches_after_masking": 58,
+     "differs": 4,
+     "missing": 5,
+     "matched": 579,
+     "pct": 98.47
+    },
+    "bytes": {
+     "total": 8569,
+     "exact": 4093,
+     "matches_after_masking": 3655,
+     "differs": 788,
+     "missing": 33,
+     "matched": 7748,
+     "pct": 90.42
+    }
+   }
+  },
+  {
+   "kind": "module",
+   "module": "bin/stdshader_dx9",
+   "name": "stdshader_dx9.dylib",
+   "retail": "223/19307283/bin/stdshader_dx9.dylib",
+   "ours": "materialsystem/stdshaders/stdshader_dx9.dylib",
+   "summary": {
+    "functions": {
+     "total": 1956,
+     "exact": 296,
+     "matches_after_masking": 1369,
+     "differs": 282,
+     "missing": 9,
+     "matched": 1665,
+     "pct": 85.12
+    },
+    "bytes": {
+     "total": 533175,
+     "exact": 5001,
+     "matches_after_masking": 126478,
+     "differs": 399907,
+     "missing": 1789,
+     "matched": 131479,
+     "pct": 24.66
+    }
+   }
+  },
+  {
+   "kind": "module",
+   "module": "bin/replay",
+   "name": "replay.dylib",
+   "retail": "223/19307283/bin/replay.dylib",
+   "ours": "replay/replay.dylib",
+   "summary": {
+    "functions": {
+     "total": 1405,
+     "exact": 371,
+     "matches_after_masking": 610,
+     "differs": 345,
+     "missing": 79,
+     "matched": 981,
+     "pct": 69.82
+    },
+    "bytes": {
+     "total": 254041,
+     "exact": 11130,
+     "matches_after_masking": 130134,
+     "differs": 102591,
+     "missing": 10186,
+     "matched": 141264,
+     "pct": 55.61
+    }
+   }
+  },
+  {
+   "kind": "module",
+   "module": "bin/scenefilecache",
+   "name": "scenefilecache.dylib",
+   "retail": "223/19307283/bin/scenefilecache.dylib",
+   "ours": "scenefilecache/scenefilecache.dylib",
+   "summary": {
+    "functions": {
+     "total": 40,
+     "exact": 12,
+     "matches_after_masking": 18,
+     "differs": 8,
+     "missing": 2,
+     "matched": 30,
+     "pct": 75.0
+    },
+    "bytes": {
+     "total": 7785,
+     "exact": 383,
+     "matches_after_masking": 2740,
+     "differs": 1454,
+     "missing": 3208,
+     "matched": 3123,
+     "pct": 40.12
+    }
+   }
+  },
+  {
+   "kind": "module",
+   "module": "bin/ServerBrowser",
+   "name": "ServerBrowser.dylib",
+   "retail": "223/19307283/bin/ServerBrowser.dylib",
+   "ours": "serverbrowser/ServerBrowser.dylib",
+   "summary": {
+    "functions": {
+     "total": 3117,
+     "exact": 279,
+     "matches_after_masking": 830,
+     "differs": 1729,
+     "missing": 279,
+     "matched": 1109,
+     "pct": 35.58
+    },
+    "bytes": {
+     "total": 731116,
+     "exact": 5428,
+     "matches_after_masking": 87966,
+     "differs": 558446,
+     "missing": 79276,
+     "matched": 93394,
+     "pct": 12.77
+    }
+   }
+  },
+  {
+   "kind": "module",
+   "module": "bin/soundemittersystem",
+   "name": "soundemittersystem.dylib",
+   "retail": "223/19307283/bin/soundemittersystem.dylib",
+   "ours": "soundemittersystem/soundemittersystem.dylib",
+   "summary": {
+    "functions": {
+     "total": 236,
+     "exact": 52,
+     "matches_after_masking": 107,
+     "differs": 66,
+     "missing": 11,
+     "matched": 159,
+     "pct": 67.37
+    },
+    "bytes": {
+     "total": 53556,
+     "exact": 3351,
+     "matches_after_masking": 23678,
+     "differs": 23841,
+     "missing": 2686,
+     "matched": 27029,
+     "pct": 50.47
+    }
+   }
+  },
+  {
+   "kind": "module",
+   "module": "bin/sourcevr",
+   "name": "sourcevr.dylib",
+   "retail": "223/19307283/bin/sourcevr.dylib",
+   "ours": "sourcevr/sourcevr.dylib",
+   "summary": {
+    "functions": {
+     "total": 139,
+     "exact": 44,
+     "matches_after_masking": 56,
+     "differs": 30,
+     "missing": 9,
+     "matched": 100,
+     "pct": 71.94
+    },
+    "bytes": {
+     "total": 18512,
+     "exact": 937,
+     "matches_after_masking": 7232,
+     "differs": 8564,
+     "missing": 1779,
+     "matched": 8169,
+     "pct": 44.13
+    }
+   }
+  },
+  {
+   "kind": "module",
+   "module": "bin/studiorender",
+   "name": "studiorender.dylib",
+   "retail": "223/19307283/bin/studiorender.dylib",
+   "ours": "studiorender/studiorender.dylib",
+   "summary": {
+    "functions": {
+     "total": 987,
+     "exact": 190,
+     "matches_after_masking": 573,
+     "differs": 218,
+     "missing": 6,
+     "matched": 763,
+     "pct": 77.3
+    },
+    "bytes": {
+     "total": 506588,
+     "exact": 37298,
+     "matches_after_masking": 308737,
+     "differs": 159214,
+     "missing": 1339,
+     "matched": 346035,
+     "pct": 68.31
+    }
+   }
+  },
+  {
+   "kind": "module",
+   "module": "bin/libtier0",
+   "name": "libtier0.dylib",
+   "retail": "223/19307283/bin/libtier0.dylib",
+   "ours": "tier0/libtier0.dylib",
+   "summary": {
+    "functions": {
+     "total": 367,
+     "exact": 124,
+     "matches_after_masking": 238,
+     "differs": 5,
+     "missing": 0,
+     "matched": 362,
+     "pct": 98.64
+    },
+    "bytes": {
+     "total": 58505,
+     "exact": 8174,
+     "matches_after_masking": 49694,
+     "differs": 637,
+     "missing": 0,
+     "matched": 57868,
+     "pct": 98.91
+    }
+   }
+  },
+  {
+   "kind": "module",
+   "module": "bin/bsppack",
+   "name": "bsppack.dylib",
+   "retail": "223/19307283/bin/bsppack.dylib",
+   "ours": "utils/bsppack/bsppack.dylib",
+   "summary": {
+    "functions": {
+     "total": 368,
+     "exact": 45,
+     "matches_after_masking": 165,
+     "differs": 125,
+     "missing": 33,
+     "matched": 210,
+     "pct": 57.07
+    },
+    "bytes": {
+     "total": 153265,
+     "exact": 1387,
+     "matches_after_masking": 49287,
+     "differs": 92202,
+     "missing": 10389,
+     "matched": 50674,
+     "pct": 33.06
+    }
+   }
+  },
+  {
+   "kind": "module",
+   "module": "bin/bugreporter_filequeue",
+   "name": "bugreporter_filequeue.dylib",
+   "retail": "223/19307283/bin/bugreporter_filequeue.dylib",
+   "ours": "utils/bugreporter_filequeue/bugreporter_filequeue.dylib",
+   "summary": {
+    "functions": {
+     "total": 212,
+     "exact": 41,
+     "matches_after_masking": 46,
+     "differs": 114,
+     "missing": 11,
+     "matched": 87,
+     "pct": 41.04
+    },
+    "bytes": {
+     "total": 41424,
+     "exact": 1007,
+     "matches_after_masking": 5901,
+     "differs": 31830,
+     "missing": 2686,
+     "matched": 6908,
+     "pct": 16.68
+    }
+   }
+  },
+  {
+   "kind": "module",
+   "module": "bin/bugreporter_public",
+   "name": "bugreporter_public.dylib",
+   "retail": "223/19307283/bin/bugreporter_public.dylib",
+   "ours": "utils/bugreporter_public/bugreporter_public.dylib",
+   "summary": {
+    "functions": {
+     "total": 163,
+     "exact": 39,
+     "matches_after_masking": 45,
+     "differs": 71,
+     "missing": 8,
+     "matched": 84,
+     "pct": 51.53
+    },
+    "bytes": {
+     "total": 34863,
+     "exact": 1288,
+     "matches_after_masking": 8385,
+     "differs": 22742,
+     "missing": 2448,
+     "matched": 9673,
+     "pct": 27.75
+    }
+   }
+  },
+  {
+   "kind": "module",
+   "module": "bin/vtex_dll",
+   "name": "vtex_dll.dylib",
+   "retail": "223/19307283/bin/vtex_dll.dylib",
+   "ours": "utils/vtex/vtex_dll.dylib",
+   "summary": {
+    "functions": {
+     "total": 426,
+     "exact": 108,
+     "matches_after_masking": 174,
+     "differs": 124,
+     "missing": 20,
+     "matched": 282,
+     "pct": 66.2
+    },
+    "bytes": {
+     "total": 149120,
+     "exact": 7664,
+     "matches_after_masking": 47579,
+     "differs": 89384,
+     "missing": 4493,
+     "matched": 55243,
+     "pct": 37.05
+    }
+   }
+  },
+  {
+   "kind": "module",
+   "module": "bin/vgui2",
+   "name": "vgui2.dylib",
+   "retail": "223/19307283/bin/vgui2.dylib",
+   "ours": "vgui2/src/vgui2.dylib",
+   "summary": {
+    "functions": {
+     "total": 684,
+     "exact": 237,
+     "matches_after_masking": 215,
+     "differs": 211,
+     "missing": 21,
+     "matched": 452,
+     "pct": 66.08
+    },
+    "bytes": {
+     "total": 133227,
+     "exact": 6752,
+     "matches_after_masking": 39089,
+     "differs": 82990,
+     "missing": 4396,
+     "matched": 45841,
+     "pct": 34.41
+    }
+   }
+  },
+  {
+   "kind": "module",
+   "module": "bin/vguimatsurface",
+   "name": "vguimatsurface.dylib",
+   "retail": "223/19307283/bin/vguimatsurface.dylib",
+   "ours": "vguimatsurface/vguimatsurface.dylib",
+   "summary": {
+    "functions": {
+     "total": 2984,
+     "exact": 340,
+     "matches_after_masking": 838,
+     "differs": 1718,
+     "missing": 88,
+     "matched": 1178,
+     "pct": 39.48
+    },
+    "bytes": {
+     "total": 707940,
+     "exact": 10144,
+     "matches_after_masking": 98119,
+     "differs": 574752,
+     "missing": 24925,
+     "matched": 108263,
+     "pct": 15.29
+    }
+   }
+  },
+  {
+   "kind": "module",
+   "module": "bin/video_quicktime",
+   "name": "video_quicktime.dylib",
+   "retail": "223/19307283/bin/video_quicktime.dylib",
+   "ours": "video/video_quicktime/video_quicktime.dylib",
+   "summary": {
+    "functions": {
+     "total": 181,
+     "exact": 67,
+     "matches_after_masking": 92,
+     "differs": 17,
+     "missing": 5,
+     "matched": 159,
+     "pct": 87.85
+    },
+    "bytes": {
+     "total": 29196,
+     "exact": 2337,
+     "matches_after_masking": 20681,
+     "differs": 4944,
+     "missing": 1234,
+     "matched": 23018,
+     "pct": 78.84
+    }
+   }
+  },
+  {
+   "kind": "module",
+   "module": "bin/video_services",
+   "name": "video_services.dylib",
+   "retail": "223/19307283/bin/video_services.dylib",
+   "ours": "video/video_services.dylib",
+   "summary": {
+    "functions": {
+     "total": 113,
+     "exact": 44,
+     "matches_after_masking": 53,
+     "differs": 12,
+     "missing": 4,
+     "matched": 97,
+     "pct": 85.84
+    },
+    "bytes": {
+     "total": 16116,
+     "exact": 1815,
+     "matches_after_masking": 10504,
+     "differs": 2874,
+     "missing": 923,
+     "matched": 12319,
+     "pct": 76.44
+    }
+   }
+  },
+  {
+   "kind": "module",
+   "module": "bin/vphysics",
+   "name": "vphysics.dylib",
+   "retail": "223/19307283/bin/vphysics.dylib",
+   "ours": "vphysics/vphysics.dylib",
+   "summary": {
+    "functions": {
+     "total": 2963,
+     "exact": 753,
+     "matches_after_masking": 1327,
+     "differs": 814,
+     "missing": 69,
+     "matched": 2080,
+     "pct": 70.2
+    },
+    "bytes": {
+     "total": 891892,
+     "exact": 41052,
+     "matches_after_masking": 426833,
+     "differs": 415691,
+     "missing": 8316,
+     "matched": 467885,
+     "pct": 52.46
+    }
+   }
+  },
+  {
+   "kind": "module",
+   "module": "bin/libvstdlib",
+   "name": "libvstdlib.dylib",
+   "retail": "223/19307283/bin/libvstdlib.dylib",
+   "ours": "vstdlib/libvstdlib.dylib",
+   "summary": {
+    "functions": {
+     "total": 355,
+     "exact": 95,
+     "matches_after_masking": 193,
+     "differs": 56,
+     "missing": 11,
+     "matched": 288,
+     "pct": 81.13
+    },
+    "bytes": {
+     "total": 55390,
+     "exact": 2406,
+     "matches_after_masking": 31737,
+     "differs": 18808,
+     "missing": 2439,
+     "matched": 34143,
+     "pct": 61.64
+    }
+   }
+  },
+  {
+   "kind": "module",
+   "module": "hl2_osx",
+   "name": "hl2_osx",
+   "retail": "223/19307283/hl2_osx",
+   "ours": "launcher_main/hl2_osx",
+   "summary": {
+    "functions": {
+     "total": 1,
+     "exact": 0,
+     "matches_after_masking": 0,
+     "differs": 1,
+     "missing": 0,
+     "matched": 0,
+     "pct": 0.0
+    },
+    "bytes": {
+     "total": 157,
+     "exact": 0,
+     "matches_after_masking": 0,
+     "differs": 157,
+     "missing": 0,
+     "matched": 0,
+     "pct": 0.0
+    }
+   }
+  },
+  {
+   "kind": "archive",
+   "module": "libappframework.a",
+   "name": "libappframework.a",
+   "retail": "223/19307283/bin/engine.dylib",
+   "ours": "appframework/libappframework.a",
+   "compared_with": "bin/engine",
+   "summary": {
+    "functions": {
+     "total": 34,
+     "exact": 1,
+     "matches_after_masking": 10,
+     "differs": 22,
+     "missing": 1,
+     "matched": 11,
+     "pct": 32.35
+    },
+    "bytes": {
+     "total": 10412,
+     "exact": 9,
+     "matches_after_masking": 1601,
+     "differs": 8410,
+     "missing": 392,
+     "matched": 1610,
+     "pct": 15.46
+    }
+   }
+  },
+  {
+   "kind": "archive",
+   "module": "libbitmap.a",
+   "name": "libbitmap.a",
+   "retail": "223/19307283/bin/engine.dylib",
+   "ours": "bitmap/libbitmap.a",
+   "compared_with": "bin/engine",
+   "summary": {
+    "functions": {
+     "total": 102,
+     "exact": 37,
+     "matches_after_masking": 33,
+     "differs": 32,
+     "missing": 0,
+     "matched": 70,
+     "pct": 68.63
+    },
+    "bytes": {
+     "total": 53332,
+     "exact": 3211,
+     "matches_after_masking": 15318,
+     "differs": 34803,
+     "missing": 0,
+     "matched": 18529,
+     "pct": 34.74
+    }
+   }
+  },
+  {
+   "kind": "archive",
+   "module": "libchoreoobjects.a",
+   "name": "libchoreoobjects.a",
+   "retail": "380/19307283/episodic/bin/client.dylib",
+   "ours": "choreoobjects/libchoreoobjects.a",
+   "compared_with": "episodic/client",
+   "summary": {
+    "functions": {
+     "total": 245,
+     "exact": 41,
+     "matches_after_masking": 44,
+     "differs": 158,
+     "missing": 2,
+     "matched": 85,
+     "pct": 34.69
+    },
+    "bytes": {
+     "total": 71361,
+     "exact": 975,
+     "matches_after_masking": 12643,
+     "differs": 57357,
+     "missing": 386,
+     "matched": 13618,
+     "pct": 19.08
+    }
+   }
+  },
+  {
+   "kind": "archive",
+   "module": "libdmxloader.a",
+   "name": "libdmxloader.a",
+   "retail": "223/19307283/bin/engine.dylib",
+   "ours": "dmxloader/libdmxloader.a",
+   "compared_with": "bin/engine",
+   "summary": {
+    "functions": {
+     "total": 99,
+     "exact": 8,
+     "matches_after_masking": 24,
+     "differs": 66,
+     "missing": 1,
+     "matched": 32,
+     "pct": 32.32
+    },
+    "bytes": {
+     "total": 37092,
+     "exact": 278,
+     "matches_after_masking": 3321,
+     "differs": 33240,
+     "missing": 253,
+     "matched": 3599,
+     "pct": 9.7
+    }
+   }
+  },
+  {
+   "kind": "archive",
+   "module": "libhk_base.a",
+   "name": "libhk_base.a",
+   "retail": "223/19307283/bin/vphysics.dylib",
+   "ours": "ivp/havana/havok/hk_base/libhk_base.a",
+   "compared_with": "bin/vphysics",
+   "summary": {
+    "functions": {
+     "total": 5,
+     "exact": 0,
+     "matches_after_masking": 2,
+     "differs": 3,
+     "missing": 0,
+     "matched": 2,
+     "pct": 40.0
+    },
+    "bytes": {
+     "total": 1219,
+     "exact": 0,
+     "matches_after_masking": 197,
+     "differs": 1022,
+     "missing": 0,
+     "matched": 197,
+     "pct": 16.16
+    }
+   }
+  },
+  {
+   "kind": "archive",
+   "module": "libhk_math.a",
+   "name": "libhk_math.a",
+   "retail": "223/19307283/bin/vphysics.dylib",
+   "ours": "ivp/havana/havok/hk_math/libhk_math.a",
+   "compared_with": "bin/vphysics",
+   "summary": {
+    "functions": {
+     "total": 15,
+     "exact": 7,
+     "matches_after_masking": 8,
+     "differs": 0,
+     "missing": 0,
+     "matched": 15,
+     "pct": 100.0
+    },
+    "bytes": {
+     "total": 6918,
+     "exact": 1483,
+     "matches_after_masking": 5435,
+     "differs": 0,
+     "missing": 0,
+     "matched": 6918,
+     "pct": 100.0
+    }
+   }
+  },
+  {
+   "kind": "archive",
+   "module": "libhavana_constraints.a",
+   "name": "libhavana_constraints.a",
+   "retail": "223/19307283/bin/vphysics.dylib",
+   "ours": "ivp/havana/libhavana_constraints.a",
+   "compared_with": "bin/vphysics",
+   "summary": {
+    "functions": {
+     "total": 143,
+     "exact": 40,
+     "matches_after_masking": 42,
+     "differs": 56,
+     "missing": 5,
+     "matched": 82,
+     "pct": 57.34
+    },
+    "bytes": {
+     "total": 72841,
+     "exact": 2270,
+     "matches_after_masking": 2328,
+     "differs": 66478,
+     "missing": 1765,
+     "matched": 4598,
+     "pct": 6.31
+    }
+   }
+  },
+  {
+   "kind": "archive",
+   "module": "libivp_compactbuilder.a",
+   "name": "libivp_compactbuilder.a",
+   "retail": "223/19307283/bin/vphysics.dylib",
+   "ours": "ivp/ivp_compact_builder/libivp_compactbuilder.a",
+   "compared_with": "bin/vphysics",
+   "summary": {
+    "functions": {
+     "total": 393,
+     "exact": 36,
+     "matches_after_masking": 341,
+     "differs": 15,
+     "missing": 1,
+     "matched": 377,
+     "pct": 95.93
+    },
+    "bytes": {
+     "total": 235146,
+     "exact": 2452,
+     "matches_after_masking": 214799,
+     "differs": 17869,
+     "missing": 26,
+     "matched": 217251,
+     "pct": 92.39
+    }
+   }
+  },
+  {
+   "kind": "archive",
+   "module": "libivp_physics.a",
+   "name": "libivp_physics.a",
+   "retail": "223/19307283/bin/vphysics.dylib",
+   "ours": "ivp/ivp_physics/libivp_physics.a",
+   "compared_with": "bin/vphysics",
+   "summary": {
+    "functions": {
+     "total": 1207,
+     "exact": 266,
+     "matches_after_masking": 499,
+     "differs": 406,
+     "missing": 36,
+     "matched": 765,
+     "pct": 63.38
+    },
+    "bytes": {
+     "total": 317532,
+     "exact": 21829,
+     "matches_after_masking": 93629,
+     "differs": 199131,
+     "missing": 2943,
+     "matched": 115458,
+     "pct": 36.36
+    }
+   }
+  },
+  {
+   "kind": "archive",
+   "module": "libshaderlib.a",
+   "name": "libshaderlib.a",
+   "retail": "223/19307283/bin/materialsystem.dylib",
+   "ours": "materialsystem/shaderlib/libshaderlib.a",
+   "compared_with": "bin/materialsystem",
+   "summary": {
+    "functions": {
+     "total": 13,
+     "exact": 4,
+     "matches_after_masking": 6,
+     "differs": 3,
+     "missing": 0,
+     "matched": 10,
+     "pct": 76.92
+    },
+    "bytes": {
+     "total": 1314,
+     "exact": 108,
+     "matches_after_masking": 690,
+     "differs": 516,
+     "missing": 0,
+     "matched": 798,
+     "pct": 60.73
+    }
+   }
+  },
+  {
+   "kind": "archive",
+   "module": "libmathlib.a",
+   "name": "libmathlib.a",
+   "retail": "223/19307283/bin/engine.dylib",
+   "ours": "mathlib/libmathlib.a",
+   "compared_with": "bin/engine",
+   "summary": {
+    "functions": {
+     "total": 75,
+     "exact": 22,
+     "matches_after_masking": 49,
+     "differs": 3,
+     "missing": 1,
+     "matched": 71,
+     "pct": 94.67
+    },
+    "bytes": {
+     "total": 20017,
+     "exact": 2518,
+     "matches_after_masking": 15355,
+     "differs": 1734,
+     "missing": 410,
+     "matched": 17873,
+     "pct": 89.29
+    }
+   }
+  },
+  {
+   "kind": "archive",
+   "module": "libparticles.a",
+   "name": "libparticles.a",
+   "retail": "380/19307283/episodic/bin/client.dylib",
+   "ours": "particles/libparticles.a",
+   "compared_with": "episodic/client",
+   "summary": {
+    "functions": {
+     "total": 1463,
+     "exact": 788,
+     "matches_after_masking": 433,
+     "differs": 232,
+     "missing": 10,
+     "matched": 1221,
+     "pct": 83.46
+    },
+    "bytes": {
+     "total": 285508,
+     "exact": 11831,
+     "matches_after_masking": 109242,
+     "differs": 149842,
+     "missing": 14593,
+     "matched": 121073,
+     "pct": 42.41
+    }
+   }
+  },
+  {
+   "kind": "archive",
+   "module": "libreplay_common.a",
+   "name": "libreplay_common.a",
+   "retail": "223/19307283/bin/engine.dylib",
+   "ours": "replay/common/libreplay_common.a",
+   "compared_with": "bin/engine",
+   "summary": {
+    "functions": {
+     "total": 6,
+     "exact": 0,
+     "matches_after_masking": 4,
+     "differs": 2,
+     "missing": 0,
+     "matched": 4,
+     "pct": 66.67
+    },
+    "bytes": {
+     "total": 657,
+     "exact": 0,
+     "matches_after_masking": 543,
+     "differs": 114,
+     "missing": 0,
+     "matched": 543,
+     "pct": 82.65
+    }
+   }
+  },
+  {
+   "kind": "archive",
+   "module": "libtier1.a",
+   "name": "libtier1.a",
+   "retail": "223/19307283/bin/engine.dylib",
+   "ours": "tier1/libtier1.a",
+   "compared_with": "bin/engine",
+   "summary": {
+    "functions": {
+     "total": 485,
+     "exact": 136,
+     "matches_after_masking": 177,
+     "differs": 152,
+     "missing": 20,
+     "matched": 313,
+     "pct": 64.54
+    },
+    "bytes": {
+     "total": 98806,
+     "exact": 9474,
+     "matches_after_masking": 28532,
+     "differs": 57872,
+     "missing": 2928,
+     "matched": 38006,
+     "pct": 38.47
+    }
+   }
+  },
+  {
+   "kind": "archive",
+   "module": "libtier2.a",
+   "name": "libtier2.a",
+   "retail": "223/19307283/bin/engine.dylib",
+   "ours": "tier2/libtier2.a",
+   "compared_with": "bin/engine",
+   "summary": {
+    "functions": {
+     "total": 65,
+     "exact": 19,
+     "matches_after_masking": 28,
+     "differs": 18,
+     "missing": 0,
+     "matched": 47,
+     "pct": 72.31
+    },
+    "bytes": {
+     "total": 36813,
+     "exact": 6072,
+     "matches_after_masking": 4264,
+     "differs": 26477,
+     "missing": 0,
+     "matched": 10336,
+     "pct": 28.08
+    }
+   }
+  },
+  {
+   "kind": "archive",
+   "module": "libtier3.a",
+   "name": "libtier3.a",
+   "retail": "223/19307283/bin/engine.dylib",
+   "ours": "tier3/libtier3.a",
+   "compared_with": "bin/engine",
+   "summary": {
+    "functions": {
+     "total": 2,
+     "exact": 0,
+     "matches_after_masking": 2,
+     "differs": 0,
+     "missing": 0,
+     "matched": 2,
+     "pct": 100.0
+    },
+    "bytes": {
+     "total": 845,
+     "exact": 0,
+     "matches_after_masking": 845,
+     "differs": 0,
+     "missing": 0,
+     "matched": 845,
+     "pct": 100.0
+    }
+   }
+  },
+  {
+   "kind": "archive",
+   "module": "libbzip2.a",
+   "name": "libbzip2.a",
+   "retail": "223/19307283/bin/engine.dylib",
+   "ours": "utils/bzip2/libbzip2.a",
+   "compared_with": "bin/engine",
+   "summary": {
+    "functions": {
+     "total": 25,
+     "exact": 4,
+     "matches_after_masking": 21,
+     "differs": 0,
+     "missing": 0,
+     "matched": 25,
+     "pct": 100.0
+    },
+    "bytes": {
+     "total": 53130,
+     "exact": 1158,
+     "matches_after_masking": 51972,
+     "differs": 0,
+     "missing": 0,
+     "matched": 53130,
+     "pct": 100.0
+    }
+   }
+  },
+  {
+   "kind": "archive",
+   "module": "libmatsys_controls.a",
+   "name": "libmatsys_controls.a",
+   "retail": "223/19307283/bin/engine.dylib",
+   "ours": "vgui2/matsys_controls/libmatsys_controls.a",
+   "compared_with": "bin/engine",
+   "summary": {
+    "functions": {
+     "total": 28,
+     "exact": 0,
+     "matches_after_masking": 11,
+     "differs": 16,
+     "missing": 1,
+     "matched": 11,
+     "pct": 39.29
+    },
+    "bytes": {
+     "total": 6761,
+     "exact": 0,
+     "matches_after_masking": 1392,
+     "differs": 5335,
+     "missing": 34,
+     "matched": 1392,
+     "pct": 20.59
+    }
+   }
+  },
+  {
+   "kind": "archive",
+   "module": "libvgui_controls.a",
+   "name": "libvgui_controls.a",
+   "retail": "223/19307283/bin/engine.dylib",
+   "ours": "vgui2/vgui_controls/libvgui_controls.a",
+   "compared_with": "bin/engine",
+   "summary": {
+    "functions": {
+     "total": 2508,
+     "exact": 207,
+     "matches_after_masking": 669,
+     "differs": 1600,
+     "missing": 32,
+     "matched": 876,
+     "pct": 34.93
+    },
+    "bytes": {
+     "total": 595734,
+     "exact": 3454,
+     "matches_after_masking": 66474,
+     "differs": 519274,
+     "missing": 6532,
+     "matched": 69928,
+     "pct": 11.74
+    }
+   }
+  },
+  {
+   "kind": "archive",
+   "module": "libvgui_surfacelib.a",
+   "name": "libvgui_surfacelib.a",
+   "retail": "223/19307283/bin/vguimatsurface.dylib",
+   "ours": "vgui2/vgui_surfacelib/libvgui_surfacelib.a",
+   "compared_with": "bin/vguimatsurface",
+   "summary": {
+    "functions": {
+     "total": 92,
+     "exact": 8,
+     "matches_after_masking": 19,
+     "differs": 57,
+     "missing": 8,
+     "matched": 27,
+     "pct": 29.35
+    },
+    "bytes": {
+     "total": 22043,
+     "exact": 716,
+     "matches_after_masking": 1041,
+     "differs": 15400,
+     "missing": 4886,
+     "matched": 1757,
+     "pct": 7.97
+    }
+   }
+  },
+  {
+   "kind": "archive",
+   "module": "libvpklib.a",
+   "name": "libvpklib.a",
+   "retail": "223/19307283/bin/filesystem_stdio.dylib",
+   "ours": "vpklib/libvpklib.a",
+   "compared_with": "bin/filesystem_stdio",
+   "summary": {
+    "functions": {
+     "total": 65,
+     "exact": 4,
+     "matches_after_masking": 9,
+     "differs": 51,
+     "missing": 1,
+     "matched": 13,
+     "pct": 20.0
+    },
+    "bytes": {
+     "total": 37127,
+     "exact": 190,
+     "matches_after_masking": 2861,
+     "differs": 33560,
+     "missing": 516,
+     "matched": 3051,
+     "pct": 8.22
+    }
+   }
+  },
+  {
+   "kind": "archive",
+   "module": "libvtf.a",
+   "name": "libvtf.a",
+   "retail": "223/19307283/bin/engine.dylib",
+   "ours": "vtf/libvtf.a",
+   "compared_with": "bin/engine",
+   "summary": {
+    "functions": {
+     "total": 82,
+     "exact": 26,
+     "matches_after_masking": 27,
+     "differs": 27,
+     "missing": 2,
+     "matched": 53,
+     "pct": 64.63
+    },
+    "bytes": {
+     "total": 25047,
+     "exact": 1852,
+     "matches_after_masking": 9722,
+     "differs": 12487,
+     "missing": 986,
+     "matched": 11574,
+     "pct": 46.21
+    }
+   }
+  }
+ ]
+}

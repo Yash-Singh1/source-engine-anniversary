@@ -17,7 +17,7 @@
 
 #if defined( DX_TO_GL_ABSTRACTION )
 
-#if defined( OSX ) && defined( BYTEMATCH_RETAIL )
+#if defined( TOGL_OSX )
 #include "togl/osx/glmgrbasics.h"
 #include "togl/osx/glmdisplay.h"
 #else

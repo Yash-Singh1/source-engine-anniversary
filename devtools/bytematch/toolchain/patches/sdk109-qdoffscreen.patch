@@ -1,0 +1,71 @@
+MacOSX10.7+ SDKs no longer declare these QuickDraw GWorld calls;
+video_quicktime declares function pointers with the same names and
+resolves them with dlsym. Applied by make-sdk109.py.
+
+--- a/System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/QD.framework/Versions/A/Headers/QDOffscreen.h
++++ b/System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/QD.framework/Versions/A/Headers/QDOffscreen.h
+@@ -184,8 +184,6 @@
+  *    CarbonLib:        in CarbonLib 1.0 and later
+  *    Non-Carbon CFM:   in InterfaceLib 7.1 and later
+  */
+-extern Boolean 
+-LockPixels(PixMapHandle pm)                                   AVAILABLE_MAC_OS_X_VERSION_10_0_AND_LATER_BUT_DEPRECATED_IN_MAC_OS_X_VERSION_10_4;
+ 
+ 
+ /*
+@@ -196,8 +194,6 @@
+  *    CarbonLib:        in CarbonLib 1.0 and later
+  *    Non-Carbon CFM:   in InterfaceLib 7.1 and later
+  */
+-extern void 
+-UnlockPixels(PixMapHandle pm)                                 AVAILABLE_MAC_OS_X_VERSION_10_0_AND_LATER_BUT_DEPRECATED_IN_MAC_OS_X_VERSION_10_4;
+ 
+ 
+ /*
+@@ -226,8 +222,6 @@
+  *    CarbonLib:        in CarbonLib 1.0 and later
+  *    Non-Carbon CFM:   in InterfaceLib 7.1 and later
+  */
+-extern void 
+-DisposeGWorld(GWorldPtr offscreenGWorld)                      AVAILABLE_MAC_OS_X_VERSION_10_0_AND_LATER_BUT_DEPRECATED_IN_MAC_OS_X_VERSION_10_4;
+ 
+ 
+ /*
+@@ -252,10 +246,6 @@
+  *    CarbonLib:        in CarbonLib 1.0 and later
+  *    Non-Carbon CFM:   in InterfaceLib 7.1 and later
+  */
+-extern void 
+-SetGWorld(
+-  CGrafPtr   port,
+-  GDHandle   gdh)                                             AVAILABLE_MAC_OS_X_VERSION_10_0_AND_LATER_BUT_DEPRECATED_IN_MAC_OS_X_VERSION_10_4;
+ 
+ 
+ /*
+@@ -364,8 +354,6 @@
+  *    CarbonLib:        in CarbonLib 1.0 and later
+  *    Non-Carbon CFM:   in InterfaceLib 7.1 and later
+  */
+-extern Ptr 
+-GetPixBaseAddr(PixMapHandle pm)                               AVAILABLE_MAC_OS_X_VERSION_10_0_AND_LATER;
+ 
+ 
+ /*
+@@ -376,8 +364,6 @@
+  *    CarbonLib:        in CarbonLib 1.0 and later
+  *    Non-Carbon CFM:   in InterfaceLib 8.5 and later
+  */
+-extern SInt32 
+-GetPixRowBytes(PixMapHandle pm)                               AVAILABLE_MAC_OS_X_VERSION_10_0_AND_LATER_BUT_DEPRECATED_IN_MAC_OS_X_VERSION_10_4;
+ 
+ 
+ /*
+@@ -480,8 +466,6 @@
+  *    CarbonLib:        in CarbonLib 1.0 and later
+  *    Non-Carbon CFM:   in InterfaceLib 7.1 and later
+  */
+-extern PixMapHandle 
+-GetGWorldPixMap(GWorldPtr offscreenGWorld)                    AVAILABLE_MAC_OS_X_VERSION_10_0_AND_LATER_BUT_DEPRECATED_IN_MAC_OS_X_VERSION_10_4;
+ 
+ 
+ #endif  /* !__LP64__ */

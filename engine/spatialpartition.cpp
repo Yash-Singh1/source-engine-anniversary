@@ -40,6 +40,12 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
+#ifndef g_nThreadID
+// tier0 has no dense thread index without C++11 thread_local (i386 OSX): one TLS slot per tree.
+#define g_nThreadID 0
+#define SPATIAL_VISITS_TLS
+#endif
+
 class CVoxelTree;
 class CIntersectSweptBox;
 
@@ -312,7 +318,11 @@ private:
 	CVoxelHash*							m_pVoxelHash;
 	CLeafList							m_aLeafList;								// Pool - Linked list(multilist) of leaves per entity.
 	int									m_TreeId;
+#ifdef SPATIAL_VISITS_TLS
+	CThreadLocalPtr<CPartitionVisits>	m_pVisits[1];
+#else
 	CPartitionVisits *                  m_pVisits[MAX_THREADS_SUPPORTED];
+#endif
 	CSpatialPartition *					m_pOwner;
 	CUtlVector<unsigned short>			m_AvailableVisitBits;
 	unsigned short						m_nNextVisitBit;
@@ -1951,7 +1961,9 @@ void CVoxelTree::Init( CSpatialPartition *pOwner, int iTree, const Vector &world
 	m_TreeId = iTree;
 
 	// Reset the enumeration id.
+#ifndef SPATIAL_VISITS_TLS
 	memset( m_pVisits, 0, sizeof( m_pVisits ) );
+#endif
 
 	for ( int i = 0; i < m_nLevelCount; ++i )
 	{

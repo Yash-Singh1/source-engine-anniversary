@@ -31,7 +31,8 @@ def build(bld):
 		'../../../public/tier0',
 		'../../',
 		'../../../common',
-		'../../audio/public'
+		'../../audio/public',
+		'../../../public/engine/audio'
 	]
 
 	defines = []
