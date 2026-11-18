@@ -21,7 +21,11 @@ using namespace vgui;
 #define UNIVERSE_CUSTOMGAMES		1
 #define QUICKLIST_FILTER_MIN_PING	0
 
+#ifdef BYTEMATCH_RETAIL
+#define MAX_MAP_NAME	32
+#else
 #define MAX_MAP_NAME	128
+#endif
 const char *COM_GetModDirectory();
 
 #undef wcscat
@@ -1521,7 +1525,7 @@ void CBaseGamesPage::UpdateFilterSettings()
 		m_vecServerFilters.AddToTail( MatchMakingKeyValuePair_t( "secure", "1" ) );
 	}
 	int regCode = GetRegionCodeToFilter();
-	if ( ( regCode >= 0 ) && ( regCode < 255 ) )
+	if ( regCode > 0 )
 	{
 		char szRegCode[ 32 ];
 		Q_snprintf( szRegCode, sizeof(szRegCode), "%i", regCode );
@@ -1561,6 +1565,10 @@ void CBaseGamesPage::UpdateFilterSettings()
 	}
 #endif
 	filter->SetInt("Replay", m_bFilterReplayServers);
+
+	// servers with tags are filtered out
+	filter->SetString( "gametype", "notags" );
+	m_vecServerFilters.AddToTail( MatchMakingKeyValuePair_t( "gametype", "notags" ) );
 
 	OnSaveFilter(filter);
 
