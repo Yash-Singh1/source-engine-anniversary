@@ -32,6 +32,9 @@ RETAIL_MODULES = ['tier0', 'vstdlib', 'scenefilecache', 'soundemittersystem', 'd
 # NO_X360_XDK because Valve's tree had the Xbox 360 XDK's win32 headers (bitmap/imagebyteswap.cpp).
 RETAIL_DEFINES = ['BYTEMATCH_RETAIL', 'NO_X360_XDK']
 
+# The PDB path retail's CodeView debug records name; its length sets the record's size in .rdata.
+VALVE_PDB = 'c:\\buildslave\\rel_singleplayer_win32\\build\\src\\%s\\Retail\\%s.pdb'
+
 # Valve include paths that only resolve with Valve's directory layout:
 # shim directory entry -> where this tree keeps it.
 LAYOUT_SHIMS = {'audio/public': 'public/engine/audio', 'audio/private': 'engine/audio'}
@@ -257,6 +260,8 @@ def retail_win32_module(bld, name, m, idx):
 	linkflags = []
 	if m['type'] != 'lib':
 		linkflags = list(m['link']) + list(m['system_libs'])
+		if '/DEBUG' in linkflags:
+			linkflags.append('/PDBALTPATH:' + VALVE_PDB % (m['project_dir'].replace('/', '\\'), m['output']))
 		for obj in m['link_objects']:
 			n = src.find_node(obj)
 			if n:

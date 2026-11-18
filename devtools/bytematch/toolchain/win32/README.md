@@ -68,6 +68,12 @@ loader, not the MSVC files: the same `link.exe`/`mspdb120.dll` link with
 msvcr120 weren't needed. A real x86_64 Linux host (no qemu) with `docker/`
 was not tested.
 
+Every `--retail-win32` DLL links with `/DEBUG`. `llvm-pdbutil dump --summary`
+reads the PDBs, and their GUID and age equal the DLL's CodeView record. Like
+retail's (ages 7 to 43), the age goes up on each relink into an existing PDB.
+GUID, age and the PE/debug timestamps still differ from retail on every link;
+MSVC 2013 has no `/Brepro`.
+
 ## `--retail-win32`
 
 `scripts/waifulib/retail_win32.py` builds the modules in
@@ -88,7 +94,9 @@ fork's. Per module:
   `_USING_V110_SDK71_`, per-file overrides, `/Yc`/`/Yu` precompiled headers,
   `pointeroverride.asm` (`ml /safeseh`), `mc.exe` for tier0's ETW manifest.
 - link: `/INCREMENTAL:NO /DEBUG /SUBSYSTEM:WINDOWS,5.01 /OPT:REF /OPT:ICF
-  /MACHINE:X86 /MANIFEST:NO /DYNAMICBASE /NXCOMPAT /SAFESEH:NO`, Valve's
+  /MACHINE:X86 /MANIFEST:NO /DYNAMICBASE /NXCOMPAT /SAFESEH:NO`,
+  `/PDBALTPATH:` the buildslave path retail's CodeView records name (so the
+  record has retail's size in `.rdata`), Valve's
   `/NODEFAULTLIB` list and system libraries, static libraries built in the
   same run, import libraries for retail third-party DLLs (steam_api, SDL2,
   binkw32) generated from their export tables, `libz.lib` from Source SDK 2013.
