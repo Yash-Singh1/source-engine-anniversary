@@ -144,6 +144,7 @@ CON_COMMAND_F( ccs_create_convars_from_hwconfig, "Create convars from the curren
 	HWCFG( m_bSoftwareVertexProcessing );
 	HWCFG( m_bScissorSupported );
 	HWCFG( m_bSupportsFloat32RenderTargets );
+	HWCFG( m_bSupportsNormalMapCompression );
 	HWCFG( m_bSupportsBorderColor );
 	HWCFG( m_bDX10Card );							
 	HWCFG( m_bDX10Blending );						
@@ -151,7 +152,9 @@ CON_COMMAND_F( ccs_create_convars_from_hwconfig, "Create convars from the curren
 	HWCFG( m_FakeSRGBWrite );						
 	HWCFG( m_CanDoSRGBReadFromRTs );				
 	HWCFG( m_bSupportsGLMixedSizeTargets );			
+#ifndef BYTEMATCH_RETAIL
 	HWCFG( m_bCanStretchRectFromTextures );
+#endif
 
 	HWCFG( m_MaxHDRType );
 #undef HWCFG
@@ -768,6 +771,11 @@ bool CHardwareConfig::SupportsCompressedTextures() const
 VertexCompressionType_t CHardwareConfig::SupportsCompressedVertices() const
 {
 	return m_Caps.m_SupportsCompressedVertices;
+}
+
+bool CHardwareConfig::SupportsNormalMapCompression() const
+{
+	return m_Caps.m_bSupportsNormalMapCompression;
 }
 
 bool CHardwareConfig::SupportsBorderColor() const

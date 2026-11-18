@@ -984,6 +984,8 @@ public:
 	void FogStart( float fStart );
 	void FogEnd( float fEnd );
 	void FogMaxDensity( float flMaxDensity );
+	void SceneFogRadial( bool bRadial );
+	bool GetSceneFogRadial();
 	void SetFogZ( float fogZ );
 	void GetFogDistances( float *fStart, float *fEnd, float *fFogZ );
 
@@ -992,8 +994,6 @@ public:
 	MaterialFogMode_t GetPixelFogMode( );
 	int GetPixelFogCombo( );//0 is either range fog, or no fog simulated with rigged range fog values. 1 is height fog
 	int GetPixelFogCombo1( bool bSupportsRadial );
-	void SceneFogRadial( bool bRadial );
-	bool GetSceneFogRadial();
 	bool ShouldUsePixelFogForMode( MaterialFogMode_t fogMode );
 	void SceneFogColor3ub( unsigned char r, unsigned char g, unsigned char b );
 	void GetSceneFogColor( unsigned char *rgb );
@@ -1772,7 +1772,7 @@ private:
 	// Vendor-dependent depth stencil texture format
 	ImageFormat GetShadowDepthTextureFormat( void );
 
-	bool SupportsBorderColor( void ) const;
+	bool SupportsNormalMapCompression( void ) const;
 	bool SupportsFetch4( void ) const;
 	
 	void EnableBuffer2FramesAhead( bool bEnable );
@@ -3477,11 +3477,13 @@ void CShaderAPIDx8::ResetRenderState( bool bFullReset )
 	LOCK_SHADERAPI();
 	RECORD_DEBUG_STRING( "BEGIN ResetRenderState" );
 
+#ifndef BYTEMATCH_RETAIL
 	if ( !CanDownloadTextures() )
 	{
 		QueueResetRenderState();
 		return;
 	}
+#endif
 
 	m_bResettingRenderState = true;
 
@@ -3551,6 +3553,7 @@ void CShaderAPIDx8::ResetRenderState( bool bFullReset )
 	m_DynamicState.m_FogStart = -1;
 	m_DynamicState.m_FogEnd = -1;
 	m_DynamicState.m_FogMaxDensity = -1.0f;
+	m_DynamicState.m_bFogRadial = false;
 	m_DynamicState.m_FogZ = 0.0f;
 
 	SetSupportedRenderState( D3DRS_FOGCOLOR, m_DynamicState.m_FogColor );
@@ -3562,6 +3565,7 @@ void CShaderAPIDx8::ResetRenderState( bool bFullReset )
 	FogStart( 0 );
 	FogEnd( 0 );
 	FogMaxDensity( 1.0f );
+	SceneFogRadial( false );
 
 	m_DynamicState.m_bSRGBWritesEnabled = false;
 
@@ -3572,8 +3576,7 @@ void CShaderAPIDx8::ResetRenderState( bool bFullReset )
 	SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW );
 
 	// No shade mode yet
-	const D3DSHADEMODE D3DSHADE_NONE = (D3DSHADEMODE)0;
-	m_DynamicState.m_ShadeMode = D3DSHADE_NONE;
+	m_DynamicState.m_ShadeMode = (D3DSHADEMODE)-1;
 	ShadeMode( SHADER_SMOOTH );
 
 	m_DynamicState.m_bHWMorphingEnabled = false;
@@ -6120,7 +6123,7 @@ int CShaderAPIDx8::GetPixelFogCombo1( bool bSupportsRadial )
 
 void CShaderAPIDx8::SceneFogRadial( bool bRadial )
 {
-	if ( m_DynamicState.m_bFogRadial != bRadial )
+	if ( bRadial != m_DynamicState.m_bFogRadial )
 	{
 		FlushBufferedPrimitives();
 		m_DynamicState.m_bFogRadial = bRadial;
@@ -6410,16 +6413,27 @@ int CShaderAPIDx8::GetCurrentDynamicVBSize( void )
 
 FORCEINLINE void CShaderAPIDx8::SetVertexShaderConstantInternal( int var, float const* pVec, int numVecs, bool bForce )
 {
-	Assert( numVecs > 0 );
 	Assert( pVec );
 
-	if ( IsPC() || IsPS3() )
+	// DX8 asm shaders use a constant mapping which has transforms and vertex shader
+	// specific constants shifted down by 10 constants (two 5-constant light structures)
+	if ( IsPC() )
 	{
+		if ( (g_pHardwareConfig->Caps().m_nDXSupportLevel < 90) && (var >= VERTEX_SHADER_MODULATION_COLOR) )
+		{
+			var -= 10;
+		}
 		Assert( var + numVecs <= g_pHardwareConfig->NumVertexShaderConstants() );
 
-		if ( !bForce && memcmp( pVec, &m_DynamicState.m_pVectorVertexShaderConstant[var], numVecs * 4 * sizeof( float ) ) == 0 )
-			return;
-
+		if ( !bForce )
+		{
+			int skip = 0;
+			numVecs = AdjustUpdateRange( pVec, &m_DesiredState.m_pVectorVertexShaderConstant[var], numVecs, &skip );
+			if ( !numVecs )
+				return;
+			var += skip;
+			pVec += skip * 4;
+		}
 		Dx9Device()->SetVertexShaderConstantF( var, pVec, numVecs );
 		memcpy( &m_DynamicState.m_pVectorVertexShaderConstant[var], pVec, numVecs * 4 * sizeof(float) );
 	}
@@ -6428,10 +6442,12 @@ FORCEINLINE void CShaderAPIDx8::SetVertexShaderConstantInternal( int var, float 
 		Assert( var + numVecs <= g_pHardwareConfig->NumVertexShaderConstants() );
 	}
 
-	if ( IsX360() && var + numVecs > m_MaxVectorVertexShaderConstant )
-			m_MaxVectorVertexShaderConstant = var + numVecs;
-
 	memcpy( &m_DesiredState.m_pVectorVertexShaderConstant[var], pVec, numVecs * 4 * sizeof(float) );	
+
+	if ( IsX360() )
+	{
+		m_MaxVectorVertexShaderConstant = max( m_MaxVectorVertexShaderConstant, var + numVecs );
+	}	
 }
 
 
@@ -6513,40 +6529,29 @@ FORCEINLINE void CShaderAPIDx8::SetPixelShaderConstantInternal( int nStartConst,
 {
 	Assert( nStartConst + nNumConsts <= g_pHardwareConfig->NumPixelShaderConstants() );
 
-	if ( IsPC() || IsPS3() )
+	if ( IsPC() )
 	{
-		if ( !bForce )
+		if ( ! bForce )
 		{
-			DWORD* pSrc = (DWORD*)pValues;
-			DWORD* pDst = (DWORD*)&m_DesiredState.m_pVectorPixelShaderConstant[nStartConst];
-			while( nNumConsts && ( pSrc[0] == pDst[0] ) && ( pSrc[1] == pDst[1] ) && ( pSrc[2] == pDst[2] ) && ( pSrc[3] == pDst[3] ) )
-			{
-				pSrc += 4;
-				pDst += 4;
-				nNumConsts--;
-				nStartConst++;
-			}
+			int skip = 0;
+			nNumConsts = AdjustUpdateRange( pValues, &m_DesiredState.m_pVectorPixelShaderConstant[nStartConst], nNumConsts, &skip );
 			if ( !nNumConsts )
 				return;
-			pValues = reinterpret_cast< float const * >( pSrc );
+			nStartConst += skip;
+			pValues += skip * 4;
 		}
 					
 		Dx9Device()->SetPixelShaderConstantF( nStartConst, pValues, nNumConsts );
 		memcpy( &m_DynamicState.m_pVectorPixelShaderConstant[nStartConst], pValues, nNumConsts * 4 * sizeof(float) );
 	}
 
-	if ( IsX360() && nStartConst + nNumConsts > m_MaxVectorPixelShaderConstant )
-	{
-		m_MaxVectorPixelShaderConstant = nStartConst + nNumConsts;
-		Assert( m_MaxVectorPixelShaderConstant <= 32 );
-		if ( m_MaxVectorPixelShaderConstant > 32 )
-		{
-			// NOTE!  There really are 224 pixel shader constants on the 360, but we do an optimization that only blasts the first 32 always.
-			Error( "Don't use more then the first 32 pixel shader constants on the 360!" );
-		}
-	}
-
 	memcpy( &m_DesiredState.m_pVectorPixelShaderConstant[nStartConst], pValues, nNumConsts * 4 * sizeof(float) );
+					
+	if ( IsX360() )
+	{
+		m_MaxVectorPixelShaderConstant = max( m_MaxVectorPixelShaderConstant, nStartConst + nNumConsts );
+		Assert( m_MaxVectorPixelShaderConstant <= 32 );
+	}
 }
 
 void CShaderAPIDx8::SetPixelShaderConstant( int var, float const* pVec, int numVecs, bool bForce )
@@ -13196,9 +13201,9 @@ bool CShaderAPIDx8::SupportsShadowDepthTextures( void )
 	return g_pHardwareConfig->Caps().m_bSupportsShadowDepthTextures;
 }
 
-bool CShaderAPIDx8::SupportsBorderColor( void ) const
+bool CShaderAPIDx8::SupportsNormalMapCompression( void ) const
 {
-	return g_pHardwareConfig->Caps().m_bSupportsBorderColor;
+	return g_pHardwareConfig->Caps().m_bSupportsNormalMapCompression;
 }
 
 bool CShaderAPIDx8::SupportsFetch4( void )

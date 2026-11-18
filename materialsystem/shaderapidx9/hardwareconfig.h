@@ -148,6 +148,7 @@ struct HardwareCaps_t : public MaterialAdapterInfo_t
 	bool m_bSoftwareVertexProcessing : 1;
 	bool m_bScissorSupported : 1;
 	bool m_bSupportsFloat32RenderTargets : 1;
+	bool m_bSupportsNormalMapCompression : 1;
 	bool m_bSupportsBorderColor : 1;
 	bool m_bDX10Card : 1;							// Indicates DX10 part with performant vertex textures running DX9 path
 	bool m_bDX10Blending : 1;						// Indicates DX10 part that does DX10 blending (but may not have performant vertex textures, such as Intel parts)
@@ -185,6 +186,7 @@ public:
 	virtual bool HasSetDeviceGammaRamp() const;
 	virtual bool SupportsCompressedTextures() const;
 	virtual VertexCompressionType_t SupportsCompressedVertices() const;
+	virtual bool SupportsNormalMapCompression() const;
 	virtual bool SupportsBorderColor() const;
 	virtual bool SupportsFetch4() const;
 	virtual bool CanStretchRectFromTextures() const;
