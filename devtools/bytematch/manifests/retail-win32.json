@@ -1166,11 +1166,6 @@
     {
      "path": "inputsystem/steamcontroller.cpp",
      "lang": "c++"
-    },
-    {
-     "path": "inputsystem/touch_sdl.cpp",
-     "lang": "c++",
-     "fork_only": true
     }
    ],
    "libs": [

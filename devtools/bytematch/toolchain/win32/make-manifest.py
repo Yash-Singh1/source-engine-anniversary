@@ -42,7 +42,7 @@ INCLUDE_ALIASES = {"thirdparty/SDL2": "thirdparty/SDL", "engine/audio/private": 
                    "engine/audio/public": "public/engine/audio"}
 
 # This fork's sources a module needs because other files call into them unconditionally.
-FORK_SOURCES = {"inputsystem": ["inputsystem/touch_sdl.cpp"], "engine": ["engine/masterserver.cpp"]}
+FORK_SOURCES = {"engine": ["engine/masterserver.cpp"]}
 
 # Valve library paths ($File "...lib") that live elsewhere in this tree.
 LIB_FILE_ALIASES = {"dx9sdk/lib": "dx9sdk/lib/x86"}
