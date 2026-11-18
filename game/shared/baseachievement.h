@@ -60,7 +60,12 @@ public:
 	int GetProgressShown() { return m_iProgressShown; }
 	virtual bool IsAchieved() { return m_bAchieved; }
 	virtual bool IsActive();
+#ifdef HL2_ANNIVERSARY_NOV2024
 	virtual bool LocalPlayerCanEarn( void );
+#else
+	virtual bool LocalPlayerCanEarn( void ) { return true; }
+#endif
+#line 64
 	void SetAchieved( bool bAchieved ) { m_bAchieved = bAchieved; }
 	virtual bool IsMetaAchievement() { return false; }
 	virtual bool AlwaysListen() { return false; }
@@ -266,5 +271,12 @@ DECLARE_ACHIEVEMENT_( CAchievement##achievementID, achievementID, achievementNam
 
 #define DECLARE_MAP_EVENT_ACHIEVEMENT_HIDDEN( achievementID, achievementName, iPointValue )	\
 	DECLARE_MAP_EVENT_ACHIEVEMENT_( achievementID, achievementName, NULL, iPointValue, true )
+
+// The November 2024 build (hl2_complete) filters HL2 and episode achievements by game dir; Lost Coast's October build doesn't.
+#ifdef HL2_ANNIVERSARY_NOV2024
+#define ANNIVERSARY_GAMEDIR( dir ) dir
+#else
+#define ANNIVERSARY_GAMEDIR( dir ) NULL
+#endif
 
 #endif // BASEACHIEVEMENT_H

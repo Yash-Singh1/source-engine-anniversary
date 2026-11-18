@@ -538,9 +538,10 @@ bool CBaseAchievement::ShouldSaveWithGame()
 bool CBaseAchievement::ShouldSaveGlobal() 
 { 
 	// save if we should get saved globally and have a non-zero count, or if we have been achieved, or if the player has pinned this achievement to the HUD
-	return ( ( ( m_iFlags & ACH_SAVE_GLOBAL ) > 0 && ( GetCount() > 0 ) ) || IsAchieved() || ( m_iProgressShown > 0 ) || ShouldShowOnHUD() || ( m_iComponentBits != 0 ) );
+	return ( ( ( m_iFlags & ACH_SAVE_GLOBAL ) > 0 && ( GetCount() > 0 ) ) || IsAchieved() || ( m_iProgressShown > 0 ) || ShouldShowOnHUD() NOV2024_ONLY( || ( m_iComponentBits != 0 ) ) );
 }
 
+#ifdef HL2_ANNIVERSARY_NOV2024
 //-----------------------------------------------------------------------------
 // Purpose: Can the local player earn this achievement in the game being played?
 //-----------------------------------------------------------------------------
@@ -551,6 +552,8 @@ bool CBaseAchievement::LocalPlayerCanEarn( void )
 
 	return m_pAchievementMgr->CanEarnForCurrentExpansion( GetAchievementID() );
 }
+#endif
+#line 554
 
 //-----------------------------------------------------------------------------
 // Purpose: returns whether this achievement is active
