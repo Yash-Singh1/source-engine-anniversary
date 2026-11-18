@@ -5335,8 +5335,10 @@ static int g_FieldSizes[FIELD_TYPECOUNT] =
 	FIELD_SIZE( FIELD_MATERIALINDEX ),
 
 	FIELD_SIZE( FIELD_VECTOR2D ),
+#ifndef BYTEMATCH_RETAIL
 	FIELD_SIZE( FIELD_INTEGER64 ),
 	FIELD_SIZE( FIELD_POINTER ),
+#endif
 };
 
 //-----------------------------------------------------------------------------
