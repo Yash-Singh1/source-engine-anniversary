@@ -51,7 +51,7 @@ public:
 	virtual const	WeaponProficiencyInfo_t *GetProficiencyValues();
 	static const	WeaponProficiencyInfo_t *GetDefaultProficiencyValues();
 
-	virtual void	ItemHolsterFrame( void );
+	virtual void	ItemHolsterFrame( void ); NOV2024_ONLY( virtual bool IsUpgraded( void ) { return false; } )
 
 	int				m_iPrimaryAttacks;		// # of primary attacks performed with this weapon
 	int				m_iSecondaryAttacks;	// # of secondary attacks performed with this weapon
