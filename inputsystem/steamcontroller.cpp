@@ -214,7 +214,7 @@ static const wchar_t* g_MapSteamControllerOriginToDescription[] = {
 
 bool CInputSystem::InitializeSteamControllerActionSets()
 {
-	auto psteamcontroller = g_pInputSystem->SteamControllerInterface();
+	auto psteamcontroller = SteamControllerInterface();
 	if ( !psteamcontroller )
 	{
 		return false;

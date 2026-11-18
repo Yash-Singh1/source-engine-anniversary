@@ -103,9 +103,19 @@ public:
 	virtual void *GetHapticsInterfaceAddress() const { return NULL;}	
 #endif
 	bool GetRawMouseAccumulators( int& accumX, int& accumY );
-	virtual bool GetTouchAccumulators( int fingerId, float &dx, float &dy );
+	bool GetTouchAccumulators( int fingerId, float &dx, float &dy );
 
 	virtual void SetConsoleTextMode( bool bConsoleTextMode );
+
+	// Anniversary Steam Input additions
+	virtual void PulseHapticOnSteamController( uint32 nControllerIndex, ESteamControllerPad ePad, unsigned short usDurationMicroSec );
+	virtual int GetControllerTypeForSlot( int nSlot );
+	virtual EControllerActionOrigin GetActionOriginForSlotAndCode( int nSlot, ButtonCode_t code );
+	virtual void SetActiveInputType( EActiveInputType_t eType, uint64 hInputHandle );
+	virtual uint64 GetActiveSteamInputHandle();
+	virtual bool IsXinputControllerActive();
+	virtual bool IsMouseKeyboardActive();
+	virtual void SteamControllerSkipVideo( bool *pbSkip, bool *pbEscape );
 
 	// Windows proc
 	LRESULT WindowProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
@@ -349,31 +359,29 @@ public:
 	bool GetControllerStateForSlot( int nSlot );
 	int GetSteamControllerIndexForSlot( int nSlot );
 	bool GetRadialMenuStickValues( int nSlot, float &fX, float &fY );
-	virtual ISteamController* SteamControllerInterface();
+	ISteamController* SteamControllerInterface();
 	bool InitializeSteamControllerActionSets();
 
 	// Gets the action origin (i.e. which physical input) maps to the given action name
-	virtual EControllerActionOrigin GetSteamControllerActionOrigin( const char* action, GameActionSet_t action_set );
-	virtual EControllerActionOrigin GetSteamControllerActionOrigin( const char* action, ControllerActionSetHandle_t action_set_handle );
+	EControllerActionOrigin GetSteamControllerActionOrigin( const char* action, GameActionSet_t action_set );
+	EControllerActionOrigin GetSteamControllerActionOrigin( const char* action, ControllerActionSetHandle_t action_set_handle );
 
 	// Maps a Steam Controller action origin to a string (consisting of a single character) in our SC icon font
-	virtual const wchar_t*	GetSteamControllerFontCharacterForActionOrigin( EControllerActionOrigin origin );
+	const wchar_t*	GetSteamControllerFontCharacterForActionOrigin( EControllerActionOrigin origin );
 
 	// Maps a Steam Controller action origin to a short text string (e.g. "X", "LB", "LDOWN") describing the control.
 	// Prefer to actually use the icon font wherever possible.
-	virtual const wchar_t* GetSteamControllerDescriptionForActionOrigin( EControllerActionOrigin origin );
+	const wchar_t* GetSteamControllerDescriptionForActionOrigin( EControllerActionOrigin origin );
 
 	// Converts SteamController keys to button codes
 	ButtonCode_t SKeyToButtonCode( int nUserId, int nXKey ) const;
 
 	// This is called with "true" by dedicated server initialization (before calling Init) in order to
 	// force us to skip initialization of Steam (which messes up dedicated servers).
-	virtual void SetSkipControllerInitialization( bool bSkip )
+	void SetSkipControllerInitialization( bool bSkip )
 	{
 		m_bSkipControllerInitialization = bSkip;
 	}
-
-	virtual void StartTextInput();
 
 #if defined( USE_SDL )
 	void PollInputState_Platform();
@@ -474,6 +482,9 @@ public:
 #endif
 
 	bool m_bConsoleTextMode;
+
+	EActiveInputType_t m_eActiveInputType;
+	uint64 m_hActiveSteamInput;
 
 public:
 	// Steam API context for use by input system for access to steam controllers.

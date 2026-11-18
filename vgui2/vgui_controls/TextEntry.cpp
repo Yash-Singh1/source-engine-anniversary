@@ -1486,9 +1486,6 @@ void TextEntry::OnMousePressed(MouseCode code)
 			return;
 		}
 
-		if( IsEnabled() )
-			g_pInputSystem->StartTextInput();
-
 		// move the cursor to where the mouse was pressed
 		int x, y;
 		input()->GetCursorPos(x, y);

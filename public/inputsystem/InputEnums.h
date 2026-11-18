@@ -195,4 +195,13 @@ enum JoystickType_t
 	INPUT_TYPE_STEAMCONTROLLER,
 };
 
+// Anniversary IInputSystem::SetActiveInputType. Only the type name is known from
+// retail symbols; the enumerator names are reconstructed from how retail tests them.
+enum EActiveInputType_t
+{
+	ACTIVE_INPUT_TYPE_MOUSE_KEYBOARD = 0,
+	ACTIVE_INPUT_TYPE_XINPUT = 1,
+	ACTIVE_INPUT_TYPE_STEAM_INPUT = 2,
+};
+
 #endif // INPUTENUMS_H
