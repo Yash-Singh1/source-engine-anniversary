@@ -174,6 +174,7 @@ public:
 	void InitSprinting( void );
 	bool IsSprinting( void ) { return m_fIsSprinting; }
 	bool CanSprint( void );
+	bool BCanStand( void );
 	void EnableSprint( bool bEnable);
 
 	bool CanZoom( CBaseEntity *pRequester );

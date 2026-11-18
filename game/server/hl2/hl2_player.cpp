@@ -163,9 +163,16 @@ bool Flashlight_UseLegacyVersion( void )
 	// If this is the first run through, cache off what the answer should be (cannot change during a session)
 	if ( g_bCacheLegacyFlashlightStatus )
 	{
+		ConVarRef hl2_expansion( "hl2_expansion" );
+
 		char modDir[MAX_PATH];
-		if ( UTIL_GetModDir( modDir, sizeof(modDir) ) == false )
-			return false;
+		UTIL_GetModDir( modDir, sizeof(modDir) );
+
+		// In hl2_complete the expansion being played decides
+		if ( hl2_expansion.IsValid() && V_strlen( hl2_expansion.GetString() ) > 0 )
+		{
+			V_snprintf( modDir, sizeof( modDir ), "%s", hl2_expansion.GetString() );
+		}
 
 		g_bUseLegacyFlashlight = ( !Q_strcmp( modDir, "hl2" ) ||
 					   !Q_strcmp( modDir, "episodic" ) ||
@@ -502,20 +509,28 @@ void CHL2_Player::HandleSpeedChanges( void )
 	bool bCanSprint = CanSprint();
 	bool bIsSprinting = IsSprinting();
 	bool bWantSprint = ( bCanSprint && IsSuitEquipped() && (m_nButtons & IN_SPEED) );
-	if ( bIsSprinting != bWantSprint && (buttonsChanged & IN_SPEED) )
+
+	// Releasing duck while holding sprint goes back to sprinting
+	bool bUnduckToSprint = bWantSprint && ( buttonsChanged & IN_DUCK ) && ( m_afButtonReleased & IN_DUCK );
+
+	if ( ( bIsSprinting != bWantSprint && (buttonsChanged & IN_SPEED) ) || bUnduckToSprint )
 	{
 		// If someone wants to sprint, make sure they've pressed the button to do so. We want to prevent the
 		// case where a player can hold down the sprint key and burn tiny bursts of sprint as the suit recharges
 		// We want a full debounce of the key to resume sprinting after the suit is completely drained
 		if ( bWantSprint )
 		{
-			if ( sv_stickysprint.GetBool() )
+			// Sprinting stands the player up, so there has to be room
+			if ( BCanStand() )
 			{
-				StartAutoSprint();
-			}
-			else
-			{
-				StartSprinting();
+				if ( sv_stickysprint.GetBool() )
+				{
+					StartAutoSprint();
+				}
+				else
+				{
+					StartSprinting();
+				}
 			}
 		}
 		else
@@ -1218,11 +1233,24 @@ void CHL2_Player::InitSprinting( void )
 //-----------------------------------------------------------------------------
 // Purpose: Returns whether or not we are allowed to sprint now.
 //-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+// Purpose: Is there room for the standing hull where we are?
+//-----------------------------------------------------------------------------
+bool CHL2_Player::BCanStand()
+{
+	Vector vecOrigin = GetAbsOrigin();
+	Vector vecMins = VEC_HULL_MIN_SCALED( this );
+	Vector vecMaxs = VEC_HULL_MAX_SCALED( this );
+
+	trace_t tr;
+	UTIL_TraceHull( vecOrigin, vecOrigin, vecMins, vecMaxs, MASK_PLAYERSOLID, this, COLLISION_GROUP_PLAYER_MOVEMENT, &tr );
+	return !tr.startsolid && !tr.allsolid;
+}
+
 bool CHL2_Player::CanSprint()
 {
 	return ( m_bSprintEnabled &&										// Only if sprint is enabled 
 			!IsWalking() &&												// Not if we're walking
-			!( m_Local.m_bDucked && !m_Local.m_bDucking ) &&			// Nor if we're ducking
 			(GetWaterLevel() != 3) &&									// Certainly not underwater
 			(GlobalEntity_GetState("suit_no_sprint") != GLOBAL_ON) );	// Out of the question without the sprint module
 }
@@ -2037,6 +2065,7 @@ bool CHL2_Player::ApplyBattery( float powerMultiplier )
 	{
 		int pct;
 		char szcharge[64];
+		int nOldArmorValue = ArmorValue();
 
 		IncrementArmorValue( sk_battery.GetFloat() * powerMultiplier, MAX_NORMAL_BATTERY );
 
@@ -2062,6 +2091,17 @@ bool CHL2_Player::ApplyBattery( float powerMultiplier )
 		
 		//UTIL_EmitSoundSuit(edict(), szcharge);
 		//SetSuitUpdate(szcharge, FALSE, SUIT_NEXT_IN_30SEC);
+
+		if ( IsPlayer() && ArmorValue() > nOldArmorValue )
+		{
+			IGameEvent *event = gameeventmanager->CreateEvent( "take_armor" );
+			if ( event )
+			{
+				event->SetInt( "amount", ArmorValue() - nOldArmorValue );
+				event->SetInt( "total", ArmorValue() );
+				gameeventmanager->FireEvent( event );
+			}
+		}
 		return true;		
 	}
 	return false;
