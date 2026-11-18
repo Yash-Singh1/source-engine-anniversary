@@ -172,8 +172,9 @@ def retail_select_sources(self):
 		ours = [n for n in ours if _rel(self, n).lower() not in skip]
 		out = []
 		for mem in e['members']:
-			if mem['source'] and mem['source'].lower() not in skip:
-				n = ours_by_path.get(mem['source'].lower())
+			src = mem['source'] or mem['retail_source']
+			if src and src.lower() not in skip:
+				n = resolve(src)
 				if n is not None and n not in out:
 					out.append(n)
 		self.source = out + [n for n in ours if n not in out]
