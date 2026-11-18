@@ -123,7 +123,7 @@ def build(bld):
 
 	defines = []
 
-	libs = ['tier0','tier1','vstdlib','JPEG','PROTOBUF','ZLIB','cef_dll_wrapper']
+	libs = ['tier0','tier1','vstdlib','JPEG','PNG','PROTOBUF','ZLIB','cef_dll_wrapper']
 
 	install_path = bld.env.LIBDIR
 
