@@ -127,6 +127,7 @@ Not Valve's, and why:
 | `/FS`, per-target `/Fd` | parallel `cl` runs share a PDB; debug info only |
 | no `lib/public/ftol3.obj` | Valve's object isn't public (retail Rich headers show it: one MASM 12.00.21210 object) |
 | RAD Telemetry headers from hl2_src (`--hl2src`, default `~/p/sco/source-engine-2018-hl2_src`) | Telemetry is proprietary and not in this tree. Retail Windows modules carry its zones at every `VPROF`/`tmZone` site, so the build resolves `vprof_telemetry.h`'s `../../thirdparty/telemetry/include/telemetry.h` through `build-win32/retail-win32-telemetry`, a link to hl2_src's copy. Without hl2_src it defines Valve's `RAD_TELEMETRY_DISABLED` |
+| `nvtc.lib` from `nvtc_stub.cpp` | NVIDIA's S3TC encoder library (bitmap, vguimatsurface) isn't available; the stub encodes nothing |
 | `telemetry32.lib` from `telemetry_stub.c` instead of `telemetry32.link` | RAD's loader library isn't available; the stub's `tmStartup` etc. report failure, so tier0 never opens a context. Only tier0 links it |
 | `jpeglib` built here | retail links an older VS2010 SP1 libjpeg prebuilt |
 | no `socketlib` | not in hl2_src |
@@ -149,6 +150,7 @@ system wine and `$WINEPREFIX`.
 - `vpc.py`, `make-manifest.py`: VPC evaluation and the module manifest
 - `msvc2013_compat.h`: force-included C++11 spellings
 - `telemetry_stub.c`: stand-ins for RAD Telemetry's loader functions (tier0)
+- `nvtc_stub.cpp`: stand-ins for NVIDIA's S3TC encoder (bitmap)
 - `build-thirdparty.py`: stand-in Crypto++ and libpng archives
 - `win32-cc.py`: compile one file with its module's switches and diff it against retail
 - `report-modules.py`, `link-order.py`: match summary with macOS cross-check, link order check.

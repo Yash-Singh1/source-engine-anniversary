@@ -165,6 +165,12 @@ def retail_win32_configure(conf):
 		if conf.exec_command(v.AR + ['/nologo', '/MACHINE:X86', '/DEF:' + deffile.abspath(), '/OUT:' + lib.abspath()]):
 			conf.fatal('lib /DEF failed for %s' % name)
 	v.RETAIL_LIBPATH = [libdir.abspath()]
+	# Stand-in for NVIDIA's nvtc.lib (bitmap's S3TC encoder), which isn't available.
+	obj = libdir.make_node('nvtc_stub.obj')
+	if conf.exec_command(v.CXX + ['/nologo', '/c', '/O2', '/GS-', '/Zl', '/EHsc', '/D_USING_V110_SDK71_', '/I' + conf.path.find_node('public').abspath(),
+			'/Fo' + obj.abspath(), os.path.join(tdir, 'nvtc_stub.cpp')]) or \
+			conf.exec_command(v.AR + ['/nologo', '/MACHINE:X86', '/OUT:' + libdir.make_node('nvtc.lib').abspath(), obj.abspath()]):
+		conf.fatal('could not build nvtc.lib')
 	# Stand-ins for Valve's prebuilt cryptlib.lib and libpng.lib (build-thirdparty.py).
 	tp = os.path.join(V.ROOT, 'thirdparty')
 	if os.path.isdir(os.path.join(tp, 'lib')):
@@ -311,7 +317,9 @@ def retail_win32_module(bld, name, m, idx, subdir=None):
 	linkflags = []
 	if m['type'] != 'lib':
 		# /MAP: a side file naming what /OPT:ICF folded, for the matcher (--ours-link-map)
-		linkflags = list(m['link']) + list(m['system_libs']) + ['/MAP']
+		gen = bld.env.RETAIL_LIBPATH[0]  # generated stand-ins (nvtc.lib) replace bare system library names
+		linkflags = list(m['link']) + [os.path.join(gen, l) if os.path.exists(os.path.join(gen, l)) else l
+			for l in m['system_libs']] + ['/MAP']
 		if '/DEBUG' in linkflags:
 			linkflags.append('/PDBALTPATH:' + VALVE_PDB % (m['project_dir'].replace('/', '\\'), m['output']))
 		for obj in m['link_objects']:
