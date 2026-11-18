@@ -859,8 +859,11 @@ void CMatRenderContextBase::PopRenderTargetAndViewport( void )
 		return;
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	// Changelist #266217 added this to main/src/materialsystem.
 	Flush();
+#endif
+#line 864
 
 	// Remove the top of stack
 	m_RenderTargetStack.Pop( );
@@ -1700,6 +1703,14 @@ void CMatRenderContext::BindMorph( IMorph *pMorph )
 	{
 		g_pShaderAPI->FlushBufferedPrimitives();
 
+#ifdef BYTEMATCH_RETAIL
+		g_pShaderAPI->EnableHWMorphing( pMorphInternal != NULL );
+		m_pBoundMorph = pMorphInternal;
+		if ( pMorph > MATERIAL_MORPH_DECAL )
+		{
+			pMorphInternal->Bind( m_pMorphRenderContext );
+		}
+#else
 		m_pBoundMorph = pMorphInternal;
 
 		bool bEnableHWMorph = false;
@@ -1713,6 +1724,8 @@ void CMatRenderContext::BindMorph( IMorph *pMorph )
 			pMorphInternal->Bind( m_pMorphRenderContext );
 		}
 		g_pShaderAPI->EnableHWMorphing( bEnableHWMorph );
+#endif
+#line 1716
 	}
 }
 
