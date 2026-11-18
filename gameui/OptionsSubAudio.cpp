@@ -156,9 +156,8 @@ void COptionsSubAudio::OnResetData()
    //
    // Audio Languages
    //
-   char szCurrentLanguage[50];
-   char szAvailableLanguages[512];
-   szCurrentLanguage[0] = 0;
+   char szCurrentLanguage[50] = { 0 };
+   char szAvailableLanguages[512] = { 0 };
    szAvailableLanguages[0] = 0;
 
    // Fallback to current engine language
@@ -340,7 +339,7 @@ void COptionsSubAudio::OnCommand( const char *command )
 		// ask them if they REALLY want to test the speakers if they're in a game already.
 		if (engine->IsConnected())
 		{
-			QueryBox *qb = new QueryBox("#GameUI_TestSpeakersWarning_Title", "#GameUI_TestSpeakersWarning_Info" );
+			QueryBox *qb = new QueryBox("#GameUI_TestSpeakersWarning_Title", "#GameUI_TestSpeakersWarning_Info", GetParent()->GetParent()->GetParent() );
 			if (qb != NULL)
 			{
 				qb->SetOKCommand(new KeyValues("RunTestSpeakers"));

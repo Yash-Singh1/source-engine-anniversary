@@ -1754,7 +1754,7 @@ ConversionErrorType	ImgUtl_ConvertToVTFAndDumpVMT( const char *pInPath, const ch
 		V_strcpy_safe( szOutDir, IsPosix() ? "/materials/" : "\\materials\\" );
 		if ( pMaterialsSubDir[0] == '\\' || pMaterialsSubDir[0] == '/' )
 			pMaterialsSubDir = pMaterialsSubDir + 1;
-		V_strcat_safe(szOutDir, pMaterialsSubDir, sizeof(szOutDir) );
+		V_strcat_safe( szOutDir, pMaterialsSubDir );
 		Q_StripTrailingSlash( szOutDir );
 		Q_AppendSlash( szOutDir, sizeof(szOutDir) );
 		Q_FixSlashes( szOutDir, CORRECT_PATH_SEPARATOR );

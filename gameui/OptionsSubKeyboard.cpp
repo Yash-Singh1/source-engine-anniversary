@@ -122,7 +122,7 @@ void COptionsSubKeyboard::OnCommand( const char *command )
 	if ( !stricmp( command, "Defaults" )  )
 	{
 		// open a box asking if we want to restore defaults
-		QueryBox *box = new QueryBox("#GameUI_KeyboardSettings", "#GameUI_KeyboardSettingsText");
+		QueryBox *box = new QueryBox("#GameUI_KeyboardSettings", "#GameUI_KeyboardSettingsText", GetParent()->GetParent()->GetParent());
 		box->AddActionSignalTarget(this);
 		box->SetOKCommand(new KeyValues("Command", "command", "DefaultsOK"));
 		box->DoModal();
@@ -226,8 +226,8 @@ void COptionsSubKeyboard::ParseActionDescriptions( void )
 			{
 				// add header item
 				m_pKeyBindList->AddSection(++sectionIndex, szDescription);
-				m_pKeyBindList->AddColumnToSection(sectionIndex, "Action", szDescription, SectionedListPanel::COLUMN_BRIGHT, 286);
-				m_pKeyBindList->AddColumnToSection(sectionIndex, "Key", "#GameUI_KeyButton", SectionedListPanel::COLUMN_BRIGHT, 128);
+				m_pKeyBindList->AddColumnToSection(sectionIndex, "Action", szDescription, SectionedListPanel::COLUMN_BRIGHT, PROPORTIONAL_VALUE( 286 ));
+				m_pKeyBindList->AddColumnToSection(sectionIndex, "Key", "#GameUI_KeyButton", SectionedListPanel::COLUMN_BRIGHT, PROPORTIONAL_VALUE( 128 ));
 			}
 			else
 			{
