@@ -44,7 +44,6 @@ public:
 	virtual const char	*GetCmdLine( void ) const;
 	virtual	const char	*CheckParm( const char *psz, const char **ppszValue = 0 ) const;
 	// A bool return of whether param exists, useful for just checking if param that is just a flag is set
-	bool				HasParm( const char *psz ) const;
 
 	virtual void		RemoveParm( const char *parm );
 	virtual void		AppendParm( const char *pszParm, const char *pszValues );
@@ -56,7 +55,6 @@ public:
 	virtual const char	*ParmValue( const char *psz, const char *pDefaultVal = NULL ) const OVERRIDE;
 	virtual int			ParmValue( const char *psz, int nDefaultVal ) const OVERRIDE;
 	virtual float		ParmValue( const char *psz, float flDefaultVal ) const OVERRIDE;
-	const char			*ParmValueByIndex( int nIndex, const char *pDefaultVal = 0 ) const;
 
 	virtual void        SetParm( int nIndex, char const *pParm );
 
@@ -600,11 +598,6 @@ int CCommandLine::FindParm( const char *psz ) const
 	return 0;
 }
 
-bool CCommandLine::HasParm( const char *psz ) const
-{
-	return ( FindParm( psz ) != 0 );
-}
-
 const char* CCommandLine::GetParm( int nIndex ) const
 {
 	Assert( (nIndex >= 0) && (nIndex < m_nParmCount) );
@@ -670,15 +663,3 @@ float CCommandLine::ParmValue( const char *psz, float flDefaultVal ) const
 
 	return atof( m_ppParms[nIndex + 1] );
 }
-const char *CCommandLine::ParmValueByIndex( int nIndex, const char *pDefaultVal ) const
-{
-	if (( nIndex == 0 ) || (nIndex == m_nParmCount - 1))
-		return pDefaultVal;
-
-	// Probably another cmdline parameter instead of a valid arg if it starts with '+' or '-'
-	if ( m_ppParms[nIndex + 1][0] == '-' || m_ppParms[nIndex + 1][0] == '+' )
-		return pDefaultVal;
-
-	return m_ppParms[nIndex + 1];
-}
-
