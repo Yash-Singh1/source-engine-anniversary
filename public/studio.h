@@ -147,7 +147,7 @@ struct mstudioaxisinterpbone_t
 	Vector			pos[6];	// X+, X-, Y+, Y-, Z+, Z-
 	Quaternion		quat[6];// X+, X-, Y+, Y-, Z+, Z-
 
-	mstudioaxisinterpbone_t() = default;
+	mstudioaxisinterpbone_t(){}
 private:
 	// No copy constructors allowed
 	mstudioaxisinterpbone_t(const mstudioaxisinterpbone_t& vOther);
@@ -162,7 +162,7 @@ struct mstudioquatinterpinfo_t
 	Vector			pos;		// new position
 	Quaternion		quat;		// new angle
 
-	mstudioquatinterpinfo_t() = default;
+	mstudioquatinterpinfo_t(){}
 private:
 	// No copy constructors allowed
 	mstudioquatinterpinfo_t(const mstudioquatinterpinfo_t& vOther);
@@ -176,7 +176,7 @@ struct mstudioquatinterpbone_t
 	int				triggerindex;
 	inline mstudioquatinterpinfo_t *pTrigger( int i ) const { return  (mstudioquatinterpinfo_t *)(((byte *)this) + triggerindex) + i; };
 
-	mstudioquatinterpbone_t() = default;
+	mstudioquatinterpbone_t(){}
 private:
 	// No copy constructors allowed
 	mstudioquatinterpbone_t(const mstudioquatinterpbone_t& vOther);
@@ -261,7 +261,7 @@ struct mstudioaimatbone_t
 	Vector			upvector;
 	Vector			basepos;
 
-	mstudioaimatbone_t() = default;
+	mstudioaimatbone_t(){}
 private:
 	// No copy constructors allowed
 	mstudioaimatbone_t(const mstudioaimatbone_t& vOther);
@@ -297,7 +297,7 @@ struct mstudiobone_t
 
 	int					unused[8];		// remove as appropriate
 
-	mstudiobone_t() = default;
+	mstudiobone_t(){}
 private:
 	// No copy constructors allowed
 	mstudiobone_t(const mstudiobone_t& vOther);
@@ -339,7 +339,7 @@ struct mstudiolinearbone_t
 
 	int unused[6];
 
-	mstudiolinearbone_t() = default;
+	mstudiolinearbone_t(){}
 private:
 	// No copy constructors allowed
 	mstudiolinearbone_t(const mstudiolinearbone_t& vOther);
@@ -370,7 +370,7 @@ struct mstudioboneflexdrivercontrol_t
 	float m_flMin;				// Min value of bone component mapped to 0 on flex controller
 	float m_flMax;				// Max value of bone component mapped to 1 on flex controller
 
-	mstudioboneflexdrivercontrol_t() = default;
+	mstudioboneflexdrivercontrol_t(){}
 private:
 	// No copy constructors allowed
 	mstudioboneflexdrivercontrol_t( const mstudioboneflexdrivercontrol_t &vOther );
@@ -396,7 +396,7 @@ struct mstudioboneflexdriver_t
 
 	int unused[3];
 
-	mstudioboneflexdriver_t() = default;
+	mstudioboneflexdriver_t(){}
 private:
 	// No copy constructors allowed
 	mstudioboneflexdriver_t( const mstudioboneflexdriver_t &vOther );
@@ -468,7 +468,7 @@ struct mstudiobbox_t
 		return ((const char*)this) + szhitboxnameindex;
 	}
 
-	mstudiobbox_t() = default;
+	mstudiobbox_t(){}
 
 private:
 	// No copy constructors allowed
@@ -532,7 +532,7 @@ struct mstudioikerror_t
 	Vector		pos;
 	Quaternion	q;
 
-	mstudioikerror_t() = default;
+	mstudioikerror_t(){}
 
 private:
 	// No copy constructors allowed
@@ -547,7 +547,7 @@ struct mstudiocompressedikerror_t
 	float	scale[6];
 	short	offset[6];
 	inline mstudioanimvalue_t *pAnimvalue( int i ) const { if (offset[i] > 0) return  (mstudioanimvalue_t *)(((byte *)this) + offset[i]); else return NULL; };
-	mstudiocompressedikerror_t() = default;
+	mstudiocompressedikerror_t(){}
 
 private:
 	// No copy constructors allowed
@@ -598,7 +598,7 @@ struct mstudioikrule_t
 
 	int			unused[7];
 
-	mstudioikrule_t() = default;
+	mstudioikrule_t(){}
 
 private:
 	// No copy constructors allowed
@@ -699,7 +699,7 @@ struct mstudiomovement_t
 	Vector				vector;		// movement vector relative to this blocks initial angle
 	Vector				position;	// relative to start of animation???
 
-	mstudiomovement_t() = default;
+	mstudiomovement_t(){}
 
 private:
 	// No copy constructors allowed
@@ -769,7 +769,7 @@ struct mstudioanimdesc_t
 	byte				*pZeroFrameData( ) const { if (zeroframeindex) return (((byte *)this) + zeroframeindex); else return NULL; };
 	mutable float		zeroframestalltime;		// saved during read stalls
 
-	mstudioanimdesc_t() = default;
+	mstudioanimdesc_t(){}
 private:
 	// No copy constructors allowed
 	mstudioanimdesc_t(const mstudioanimdesc_t& vOther);
@@ -791,13 +791,6 @@ struct mstudioautolayer_t
 	float				end;	// end of all influence
 };
 
-struct mstudioactivitymodifier_t
-{
-	DECLARE_BYTESWAP_DATADESC();
-	
-	int					sznameindex;
-	inline char			*pszName() { return (sznameindex) ? (char *)(((byte *)this) + sznameindex ) : NULL; }
-};
 
 // sequence descriptions
 struct mstudioseqdesc_t
@@ -895,13 +888,9 @@ struct mstudioseqdesc_t
 
 	int					cycleposeindex;		// index of pose parameter to use as cycle index
 
-	int					activitymodifierindex;
-	int					numactivitymodifiers;
-	inline mstudioactivitymodifier_t *pActivityModifier( int i ) const { Assert( i >= 0 && i < numactivitymodifiers); return activitymodifierindex != 0 ? (mstudioactivitymodifier_t *)(((byte *)this) + activitymodifierindex) + i : NULL; };
+	int					unused[7];		// remove/add as appropriate (grow back to 8 ints on version change!)
 
-	int					unused[5];		// remove/add as appropriate (grow back to 8 ints on version change!)
-
-	mstudioseqdesc_t() = default;
+	mstudioseqdesc_t(){}
 private:
 	// No copy constructors allowed
 	mstudioseqdesc_t(const mstudioseqdesc_t& vOther);
@@ -1101,7 +1090,7 @@ public:
 	};
 	friend class CSortByIndex;
 
-	mstudiovertanim_t() = default;
+	mstudiovertanim_t(){}
 //private:
 // No copy constructors allowed, but it's needed for std::sort()
 //	mstudiovertanim_t(const mstudiovertanim_t& vOther);
@@ -1212,7 +1201,7 @@ struct mstudiovertex_t
 	Vector				m_vecNormal;
 	Vector2D			m_vecTexCoord;
 
-	mstudiovertex_t() = default;
+	mstudiovertex_t(){}
 
 private:
 	// No copy constructors allowed
@@ -1270,7 +1259,7 @@ struct mstudioeyeball_t
 	char	unused3[3];
 	int		unused4[7];
 
-	mstudioeyeball_t() = default;
+	mstudioeyeball_t(){}
 private:
 	// No copy constructors allowed
 	mstudioeyeball_t(const mstudioeyeball_t& vOther);
@@ -1285,7 +1274,7 @@ struct mstudioiklink_t
 	Vector	kneeDir;	// ideal bending direction (per link, if applicable)
 	Vector	unused0;	// unused
 
-	mstudioiklink_t() = default;
+	mstudioiklink_t(){}
 private:
 	// No copy constructors allowed
 	mstudioiklink_t(const mstudioiklink_t& vOther);
@@ -1326,8 +1315,13 @@ struct mstudio_modelvertexdata_t
 	int					GetGlobalTangentIndex( int i ) const;
 
 	// base of external vertex data stores
+#ifdef PLATFORM_64BITS
 	serializedstudioptr_t<const void> pVertexData;
 	serializedstudioptr_t<const void> pTangentData;
+#else
+	const void			*pVertexData;
+	const void			*pTangentData;
+#endif
 
     const void	*GetVertexData() const {
         return pVertexData;
@@ -1412,7 +1406,7 @@ struct mstudiomesh_t
 	int					unused[8]; // remove as appropriate
 #endif
 
-	mstudiomesh_t() = default;
+	mstudiomesh_t(){}
 private:
 	// No copy constructors allowed
 	mstudiomesh_t(const mstudiomesh_t& vOther);
@@ -1452,9 +1446,15 @@ struct mstudiomodel_t
 	int					eyeballindex;
 	inline  mstudioeyeball_t *pEyeball( int i ) { return (mstudioeyeball_t *)(((byte *)this) + eyeballindex) + i; };
 
+#ifdef PLATFORM_64BITS
     mstudio_modelvertexdata_t vertexdata; // sizeof(mstudio_modelvertexdata_t) == 16
 
 	int					unused[6];		// remove as appropriate
+#else
+	mstudio_modelvertexdata_t vertexdata;
+
+	int					unused[8];		// remove as appropriate
+#endif
 };
 
 #ifdef PLATFORM_64BITS
@@ -1698,7 +1698,7 @@ struct mstudiomouth_t
 	Vector				forward;
 	int					flexdesc;
 
-	mstudiomouth_t() = default;
+	mstudiomouth_t(){}
 private:
 	// No copy constructors allowed
 	mstudiomouth_t(const mstudiomouth_t& vOther);
@@ -2139,6 +2139,7 @@ struct studiohdr2_t
 	int m_nBoneFlexDriverIndex;
 	inline mstudioboneflexdriver_t *pBoneFlexDriver( int i ) const { Assert( i >= 0 && i < m_nBoneFlexDriverCount ); return (mstudioboneflexdriver_t *)(((byte *)this) + m_nBoneFlexDriverIndex) + i; }
 
+#ifdef PLATFORM_64BITS
 	mutable serializedstudioptr_t< void	> virtualModel;
 	mutable serializedstudioptr_t< void	> animblockModel;
 
@@ -2146,12 +2147,15 @@ struct studiohdr2_t
 	serializedstudioptr_t< void> pIndexBase;
 
 	int reserved[48];
+#else
+	int reserved[56];
+#endif
 };
 
 struct studiohdr_t
 {
 	DECLARE_BYTESWAP_DATADESC();
-	studiohdr_t() = default;
+	studiohdr_t(){}
 
 	int					id;
 	int					version;
@@ -2350,7 +2354,11 @@ struct studiohdr_t
 	const studiohdr_t	*FindModel( void **cache, char const *modelname ) const;
 
 	// implementation specific back pointer to virtual data
+#ifdef PLATFORM_64BITS
 	int                 unused_virtualModel;
+#else
+	mutable void		*virtualModel;
+#endif
 	virtualmodel_t		*GetVirtualModel( void ) const;
 
 	// for demand loaded animation blocks
@@ -2360,7 +2368,11 @@ struct studiohdr_t
 	int					animblockindex;
 	inline mstudioanimblock_t *pAnimBlock( int i ) const { Assert( i > 0 && i < numanimblocks); return (mstudioanimblock_t *)(((byte *)this) + animblockindex) + i; };
 
+#ifdef PLATFORM_64BITS
     int                 unused_animblockModel;
+#else
+	mutable void		*animblockModel;
+#endif
 	byte *				GetAnimBlock( int i ) const;
 
 	int					bonetablebynameindex;
@@ -2368,8 +2380,13 @@ struct studiohdr_t
 
 	// used by tools only that don't cache, but persist mdl's peer data
 	// engine uses virtualModel to back link to cache pointers
+#ifdef PLATFORM_64BITS
     int                 unused_pVertexBase;
     int                 unused_pIndexBase;
+#else
+	void				*pVertexBase;
+	void				*pIndexBase;
+#endif
 
 	// if STUDIOHDR_FLAGS_CONSTANT_DIRECTIONAL_LIGHT_DOT is set,
 	// this value is used to calculate directional components of lighting 
@@ -2417,12 +2434,21 @@ struct studiohdr_t
 	inline int			BoneFlexDriverCount() const { return studiohdr2index ? pStudioHdr2()->m_nBoneFlexDriverCount : 0; }
 	inline const mstudioboneflexdriver_t* BoneFlexDriver( int i ) const { Assert( i >= 0 && i < BoneFlexDriverCount() ); return studiohdr2index > 0 ? pStudioHdr2()->pBoneFlexDriver( i ) : NULL; }
 
+#ifdef PLATFORM_64BITS
 	void* 				VirtualModel() const { return studiohdr2index ? (void *)( pStudioHdr2()->virtualModel ) : nullptr; }
 	void				SetVirtualModel( void* ptr ) { Assert( studiohdr2index ); if ( studiohdr2index ) { pStudioHdr2()->virtualModel = ptr; } else { Msg("go fuck urself!\n"); } }
 	void*				VertexBase() const { return studiohdr2index ? (void *)( pStudioHdr2()->pVertexBase ) : nullptr; }
 	void				SetVertexBase( void* pVertexBase ) const { Assert( studiohdr2index ); if ( studiohdr2index ) { pStudioHdr2()->pVertexBase = pVertexBase; } }
 	void*				IndexBase() const { return studiohdr2index ? ( void * ) ( pStudioHdr2()->pIndexBase ) : nullptr; }
 	void				SetIndexBase( void* pIndexBase ) const { Assert( studiohdr2index ); if ( studiohdr2index ) { pStudioHdr2()->pIndexBase  = pIndexBase; } }
+#else
+	void* 				VirtualModel() const { return virtualModel; }
+	void				SetVirtualModel( void* ptr ) { virtualModel = ptr; }
+	void*				VertexBase() const { return pVertexBase; }
+	void				SetVertexBase( void* pBase ) const { const_cast<studiohdr_t *>( this )->pVertexBase = pBase; }
+	void*				IndexBase() const { return pIndexBase; }
+	void				SetIndexBase( void* pBase ) const { const_cast<studiohdr_t *>( this )->pIndexBase = pBase; }
+#endif
 
 	// NOTE: No room to add stuff? Up the .mdl file format version 
 	// [and move all fields in studiohdr2_t into studiohdr_t and kill studiohdr2_t],
@@ -2617,8 +2643,6 @@ public:
 		{
 			short		seqnum;
 			short		weight; // the absolute value of the weight from the sequence header
-			CUtlSymbol	*pActivityModifiers;		// list of activity modifier symbols
-			int			iNumActivityModifiers;
 		};
 
 		// The type of the hash's stored data, a composite of both key and value
@@ -2688,13 +2712,9 @@ public:
 
 		// dtor -- not virtual because this class has no inheritors
 		~CActivityToSequenceMapping()
-		{	
+		{
 			if ( m_pSequenceTuples != NULL )
 			{
-				if ( m_pSequenceTuples->pActivityModifiers != NULL )
-				{
-					delete[] m_pSequenceTuples->pActivityModifiers;
-				}
 				delete[] m_pSequenceTuples;
 			}
 		}
@@ -2724,9 +2744,6 @@ public:
 
 		/// A more efficient version of the old SelectWeightedSequence() function in animation.cpp. 
 		int SelectWeightedSequence( CStudioHdr *pstudiohdr, int activity, int curSequence );
-
-		// selects the sequence with the most matching modifiers
-		int SelectWeightedSequenceFromModifiers( CStudioHdr *pstudiohdr, int activity, CUtlSymbol *pActivityModifiers, int iModifierCount );
 
 		// Actually a big array, into which the hash values index.
 		SequenceTuple *m_pSequenceTuples;
@@ -2770,19 +2787,6 @@ public:
 		}
 #endif
 		return m_ActivityToSequence.SelectWeightedSequence( this, activity, curSequence );
-	}
-
-	inline int SelectWeightedSequenceFromModifiers( int activity, CUtlSymbol *pActivityModifiers, int iModifierCount )
-	{
-#if STUDIO_SEQUENCE_ACTIVITY_LAZY_INITIALIZE
-		// We lazy-initialize the header on demand here, because CStudioHdr::Init() is
-		// called from the constructor, at which time the this pointer is illegitimate.
-		if ( !m_ActivityToSequence.IsInitialized() )
-		{
-			m_ActivityToSequence.Initialize( this );
-		}
-#endif
-		return m_ActivityToSequence.SelectWeightedSequenceFromModifiers( this, activity, pActivityModifiers, iModifierCount );
 	}
 
 	/// True iff there is at least one sequence for the given activity.
