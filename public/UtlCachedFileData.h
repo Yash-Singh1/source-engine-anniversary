@@ -160,6 +160,7 @@ public:
 #else
 	void	CheckDiskInfo( bool force_rebuild, time_t cacheFileTime = 0L );
 #endif
+#line 159
 
 	void	SaveManifest();
 	bool	ManifestExists();
@@ -240,6 +241,7 @@ private:
 		long long			fileinfo;
 		long long			diskfileinfo;
 #endif
+#line 234
 		int					dataIndex;
 	};
 
@@ -650,6 +652,7 @@ bool CUtlCachedFileData<T>::Init()
 #else
 	time_t fileTime = g_pFullFileSystem->GetFileTime( m_sRepositoryFileName, "MOD" );
 #endif
+#line 640
 	int size = g_pFullFileSystem->Size( fh );
 
 	bool deletefile = false;
@@ -926,6 +929,7 @@ void	CUtlCachedFileData<T>::CheckDiskInfo( bool forcerebuild, long cacheFileTime
 #else
 void	CUtlCachedFileData<T>::CheckDiskInfo( bool forcerebuild, time_t cacheFileTime )
 #endif
+#line 912
 {
 	char fn[ 512 ];
 	int i;
@@ -980,6 +984,7 @@ void	CUtlCachedFileData<T>::CheckDiskInfo( bool forcerebuild, time_t cacheFileTi
 #else
 			time_t pathTime = g_pFullFileSystem->GetPathTime( fn, "GAME" );
 #endif
+#line 962
 			bCheck = (pathTime > cacheFileTime) ? true : false;
 		}
 

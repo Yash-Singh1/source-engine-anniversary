@@ -1115,6 +1115,7 @@ void CollisionBSPData_LoadDispInfo( CCollisionBSPData *pBSPData )
 #else
 	if ( g_pMaterialSystemHardwareConfig->GetHDREnabled() &&
 #endif
+#line 1114
 		CMapLoadHelper::LumpSize( LUMP_FACES_HDR ) > 0 )
 	{
 		face_lump_to_load = LUMP_FACES_HDR;

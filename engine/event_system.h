@@ -57,6 +57,7 @@ public:
 #else
 			delete[] pData;
 #endif
+#line 56
 		}
 	}
 

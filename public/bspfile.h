@@ -27,6 +27,7 @@
 #else
 #define BSPVERSION 21
 #endif
+#line 26
 
 
 // This needs to match the value in gl_lightmap.h
@@ -71,6 +72,7 @@
 #else
 #define MAX_MAP_DISPINFO				4096
 #endif
+#line 66
 #define MAX_MAP_DISP_VERTS				( MAX_MAP_DISPINFO * ((1<<MAX_MAP_DISP_POWER)+1) * ((1<<MAX_MAP_DISP_POWER)+1) )
 #define MAX_MAP_DISP_TRIS				( (1 << MAX_MAP_DISP_POWER) * (1 << MAX_MAP_DISP_POWER) * 2 )
 #define MAX_DISPVERTS					NUM_DISP_POWER_VERTS( MAX_MAP_DISP_POWER )
@@ -375,6 +377,7 @@ enum
 #ifndef BYTEMATCH_RETAIL
 	LUMP_WORLDLIGHTS_VERSION           = 1
 #endif
+#line 367
 };
 
 
@@ -1004,6 +1007,7 @@ struct dworldlight_version0_t
 	int			owner;			// entity that this light it relative to
 };
 #endif
+#line 969
 
 struct dworldlight_t
 {
@@ -1014,6 +1018,7 @@ struct dworldlight_t
 #ifndef BYTEMATCH_RETAIL
 	Vector		shadow_cast_offset;	// gets added to the light origin when this light is used as a shadow caster (only if DWL_FLAGS_CASTENTITYSHADOWS flag is set)
 #endif
+#line 976
 	int			cluster;
 	emittype_t	type;
     int			style;

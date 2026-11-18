@@ -17,6 +17,7 @@
 #else
 #define PROTOCOL_VERSION    25
 #endif
+#line 16
 
 #define DEMO_BACKWARDCOMPATABILITY
 

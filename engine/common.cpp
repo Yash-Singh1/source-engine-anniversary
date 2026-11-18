@@ -903,6 +903,7 @@ void COM_InitFilesystem( const char *pFullModPath )
 #ifndef BYTEMATCH_RETAIL
 			char *szLang = getenv("LANG");
 #endif
+#line 903
 
 			// still allow command line override even when not running steam
 			if (CommandLine()->CheckParm("-audiolanguage"))
@@ -918,6 +919,7 @@ void COM_InitFilesystem( const char *pFullModPath )
 					Q_strncpy(language, szShortLang, sizeof( language ) - 1);
 			}
 #endif
+#line 909
 		}
 
 		if ( ( Q_strlen(language) > 0 ) && ( Q_stricmp(language, "english") ) )
@@ -1394,6 +1396,7 @@ bool COM_BufferToBufferDecompress( void *dest, unsigned int *destLen, const void
 #else
 			int nActualDecompressedSize = s.SafeUncompress( (byte *)source, sourceLen, (byte *)dest, *destLen );
 #endif
+#line 1381
 			if ( nActualDecompressedSize != nDecompressedSize )
 			{
 				Warning( "NET_BufferToBufferDecompress: header said %d bytes would be decompressed, but we LZSS decompressed %d\n", nDecompressedSize, nActualDecompressedSize );

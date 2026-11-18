@@ -204,6 +204,7 @@ bool CNetworkStringTableItem::SetUserData( int tick, int length, const void *use
 #else
 		m_pUserData = new unsigned char[ALIGN_VALUE( length, 4 )];
 #endif
+#line 203
 		Q_memcpy( m_pUserData, userData, length );
 	}
 	else

@@ -926,6 +926,7 @@ void DownloadThread( void *voidPtr )
 #else
 		free(rc.data);
 #endif
+#line 925
 		rc.data = NULL;
 	}
 	

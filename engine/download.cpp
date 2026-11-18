@@ -936,6 +936,7 @@ void CDownloadManager::StartNewDownload()
 #else
 		ReleaseThreadHandle( ( ThreadHandle_t )threadID );
 #endif
+#line 935
 	}
 	else
 	{
@@ -1088,6 +1089,7 @@ public:
 #else
 		ReleaseThreadHandle( ( ThreadHandle_t )nThreadID );
 #endif
+#line 1083
 		return nThreadID;
 	}
 };

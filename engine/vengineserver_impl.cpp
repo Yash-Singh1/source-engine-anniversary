@@ -608,6 +608,7 @@ public:
 		return false;
 	}
 #endif
+#line 574
 
 	// The canonical map lookup spot (see VEngineServer_FindMap)
 	eFindMapResult FindMap( /* in/out */ char *pMapName, int nMapNameMax )

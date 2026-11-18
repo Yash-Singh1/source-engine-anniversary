@@ -673,6 +673,7 @@ void VAudioInit()
 #else
 		g_pVAudioModule = FileSystem_LoadModule( "vaudio_minimp3" );
 #endif
+#line 672
 		if ( g_pVAudioModule )
 		{
 			CreateInterfaceFn vaudioFactory = Sys_GetFactory( g_pVAudioModule );
@@ -780,6 +781,7 @@ void S_Shutdown(void)
 	}
 	s_Sounds.RemoveAll();
 #endif
+#line 768
 	s_SoundPool.Clear();
 
 	// release DSP resources
@@ -788,6 +790,7 @@ void S_Shutdown(void)
 #ifndef BYTEMATCH_RETAIL
 	MXR_ReleaseMemory();
 #endif
+#line 773
 
 	// release sentences resources
 	TRACESHUTDOWN( VOX_Shutdown() );

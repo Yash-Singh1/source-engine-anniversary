@@ -2077,6 +2077,7 @@ public:
 		m_Dist = dist;
 	}
 #endif
+#line 2071
 
 
 private:
@@ -2087,6 +2088,7 @@ private:
 	static const Vector &CurNormal() { return m_pNormal; }
 	static Vector m_pNormal;
 #endif
+#line 2076
 	static float  m_Dist;
 };
 
@@ -2095,6 +2097,7 @@ const Vector *CClipPlane::m_pNormal;
 #else
 Vector CClipPlane::m_pNormal;
 #endif
+#line 2080
 float  CClipPlane::m_Dist;
 
 static inline void ClampTexCoord( ShadowVertex_t *pInVertex, ShadowVertex_t *pOutVertex )

@@ -77,6 +77,7 @@ public:
 #else
 	CGameTrace() = default;
 #endif
+#line 76
 
 private:
 	// No copy constructors allowed

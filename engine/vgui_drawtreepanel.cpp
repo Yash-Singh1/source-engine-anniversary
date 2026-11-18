@@ -273,6 +273,7 @@ public:
 #else
 				g_DrawTreeSelectedPanel = (data) ? (vgui::VPANEL)data->GetPtr( "PanelPtr", 0 ) : 0;
 #endif
+#line 272
 			}
 			else
 			{
@@ -397,6 +398,7 @@ void VGui_RecursivePrintTree(
 #else
 	pVal->SetPtr( "PanelPtr", (void*)current );
 #endif
+#line 392
 
 	pNewParent = pVal;
 
@@ -430,6 +432,7 @@ bool UpdateItemState(
 #else
 	if ( pItemData->GetPtr( "PanelPtr" ) != pSub->GetPtr( "PanelPtr" ) ||
 #endif
+#line 421
 		Q_stricmp( pItemData->GetString( "Text" ), pSub->GetString( "Text" ) ) != 0 )
 	{
 		pTree->ModifyItem( iChildItemId, pSub );
@@ -442,6 +445,7 @@ bool UpdateItemState(
 #else
 	vgui::VPANEL vPanel = (vgui::VPANEL)pSub->GetPtr( "PanelPtr" );
 #endif
+#line 429
 
 	int iBaseColor[3] = { 255, 255, 255 };
 	if ( ipanel->IsPopup( vPanel ) )

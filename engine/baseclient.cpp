@@ -68,6 +68,7 @@ CBaseClient::CBaseClient()
 #ifndef BYTEMATCH_RETAIL
 	m_bPlayerNameLocked = false;
 #endif
+#line 68
 }
 
 CBaseClient::~CBaseClient()
@@ -1549,6 +1550,7 @@ bool CBaseClient::IsNameChangeOnCooldown( bool bShowStatusMessage /*= false*/ )
 	return false;
 }
 #endif
+#line 1483
 
 void CBaseClient::OnRequestFullUpdate()
 {

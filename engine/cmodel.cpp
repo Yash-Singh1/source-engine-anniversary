@@ -2692,6 +2692,7 @@ int	CM_BoxVisible( const Vector& mins, const Vector& maxs, const byte *visbits, 
 
 		if ( offset > vissize )
 #endif
+#line 2688
 		{
 			Sys_Error( "CM_BoxVisible:  cluster %i, offset %i out of bounds %i\n", cluster, offset, vissize );
 		}

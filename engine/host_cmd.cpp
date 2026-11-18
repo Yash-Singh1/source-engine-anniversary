@@ -2359,6 +2359,7 @@ CON_COMMAND( namelockid, "Prevent name changes for this userID." )
 	}
 }
 #endif
+#line 2316
 
 #if defined( STAGING_ONLY ) || defined( _DEBUG )
 CON_COMMAND( fs_find, "Run virtual filesystem find" )

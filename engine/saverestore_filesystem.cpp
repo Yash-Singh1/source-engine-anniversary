@@ -1294,6 +1294,7 @@ public:
 #else
 				g_pFileSystem->AsyncAppend( pDestFileName, memcpy( new char[sizeof(int)], &fileSize, sizeof(int)), sizeof(int), true );
 #endif
+#line 1293
 				g_pFileSystem->AsyncAppendFile( pDestFileName, szName );
 			}
 		}

@@ -1271,6 +1271,7 @@ void CEdgeList::CullSmallOccluders()
 #ifndef BYTEMATCH_RETAIL
 	if( m_SurfaceSort.Base() )
 #endif
+#line 1271
 	qsort( m_SurfaceSort.Base(), nSurfCount, sizeof(int), SurfCompare );
 
 	// We're going to keep the greater of r_occludermin + All surfaces with a screen area >= r_occluderarea

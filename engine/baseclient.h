@@ -188,6 +188,7 @@ public:
 	void			SetPlayerNameLocked( bool bValue ) { m_bPlayerNameLocked = bValue; }
 	bool			IsPlayerNameLocked( void ) { return m_bPlayerNameLocked; }
 #endif
+#line 183
 
 private:	
 
@@ -265,6 +266,7 @@ public:
 #ifndef BYTEMATCH_RETAIL
 	bool			m_bPlayerNameLocked;
 #endif
+#line 257
 
 	// Does this client have a name change that is pending?
 	// (Their 'name' convar differs from our value for their client name.)

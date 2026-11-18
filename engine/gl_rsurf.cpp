@@ -4102,6 +4102,7 @@ CBrushBatchRender::brushrender_t *CBrushBatchRender::FindOrCreateRenderBatch( mo
 #ifndef BYTEMATCH_RETAIL
 	if( planeList.Base() )
 #endif
+#line 4102
 		memcpy( renderT.pPlanes, planeList.Base(), sizeof(cplane_t *)*planeList.Count() );
 	renderT.pSurfaces = new brushrendersurface_t[surfaceList.Count()];
 	renderT.surfaceCount = surfaceList.Count();

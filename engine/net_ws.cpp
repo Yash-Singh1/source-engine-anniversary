@@ -16,6 +16,7 @@
 #ifndef BYTEMATCH_RETAIL
 #include "master.h"
 #endif
+#line 16
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -1397,6 +1398,7 @@ bool NET_GetLoopPacket ( netpacket_t * packet )
 #else
 		delete[] loop->data;
 #endif
+#line 1393
 		loop->data = loop->defbuffer;
 	}
 
@@ -1656,6 +1658,7 @@ netpacket_t *NET_GetPacket (int sock, byte *scratch )
 #else
 		if ( !NET_IsMultiplayer() && sock != NS_CLIENT )
 #endif
+#line 1648
 		{
 			return NULL;
 		}
@@ -2367,6 +2370,7 @@ int NET_SendPacket ( INetChannel *chan, int sock,  const netadr_t &to, const uns
 #else
 	if ( (!NET_IsMultiplayer() && sock != NS_CLIENT) || to.type == NA_LOOPBACK || ( to.IsLocalhost() && !net_usesocketsforloopback.GetBool() ) )
 #endif
+#line 2355
 	{
 		Assert( !pVoicePayload );
 
@@ -3006,6 +3010,7 @@ void NET_RunFrame( double flRealtime )
 #ifndef BYTEMATCH_RETAIL
 	master->RunFrame();
 #endif
+#line 2991
 
 #ifdef _X360
 	if ( net_logserver.GetInt() )
@@ -3134,6 +3139,7 @@ void NET_ListenSocket( int sock, bool bListen )
 #else
 	if ( (!NET_IsMultiplayer() && sock != NS_CLIENT) || net_notcp )
 #endif
+#line 3115
 		return;
 
 	if ( bListen )
@@ -3325,6 +3331,7 @@ void NET_Init( bool bIsDedicated )
 	// open client socket for masterserver
 	OpenSocketInternal( NS_CLIENT, clientport.GetInt(), PORT_SERVER, "client", nProtocol, true );
 #endif
+#line 3300
 
 	if ( bIsDedicated )
 	{

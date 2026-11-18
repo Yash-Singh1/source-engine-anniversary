@@ -75,6 +75,7 @@
 #ifndef BYTEMATCH_RETAIL
 #include "language.h"
 #endif
+#line 75
 #include "igame.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
@@ -900,6 +901,7 @@ CON_COMMAND_F( connect, "Connect to specified server.", FCVAR_DONTRECORD )
 #else
 	vecArgs.PurgeAndDeleteElementsArray();
 #endif
+#line 896
 }
 
 CON_COMMAND_F( redirect, "Redirect client to specified server.", FCVAR_DONTRECORD | FCVAR_SERVER_CAN_EXECUTE )
@@ -2377,6 +2379,7 @@ bool CL_ShouldLoadBackgroundLevel( const CCommand &args )
 #ifndef BYTEMATCH_RETAIL
 		|| CommandLine()->CheckParm("-nobackgroundlevel")
 #endif
+#line 2370
 		)
 		return false;
 
@@ -2751,6 +2754,7 @@ void CL_InitLanguageCvar()
 #ifndef BYTEMATCH_RETAIL
 	Msg("CL_InitLanguageCvar\n");
 #endif
+#line 2741
 	if ( Steam3Client().SteamApps() )
 	{
 		cl_language.SetValue( Steam3Client().SteamApps()->GetCurrentGameLanguage() );
@@ -2776,6 +2780,7 @@ void CL_InitLanguageCvar()
 			}
 		}
 #endif
+#line 2747
 
 		cl_language.SetValue( "english" );
 	}

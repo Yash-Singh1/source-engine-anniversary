@@ -1202,6 +1202,7 @@ void Mod_LoadWorldlights( CMapLoadHelper &lh, bool bIsHDR )
 			break;
 	}
 #endif
+#line 1155
 
 #if !defined( SWDS )
 	if ( r_lightcache_zbuffercache.GetInt() )
