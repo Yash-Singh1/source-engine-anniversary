@@ -952,7 +952,7 @@ void C_EntityFlame::AttachToHitBoxes( void )
 		return;
 	}
 
-	mstudiohitboxset_t *set = pStudioHdr->pHitboxSet( pAnimating->GetHitboxSet() );
+	mstudiohitboxset_t *set = pStudioHdr->pHitboxSet( pAnimating->m_nHitboxSet );
 	if ( !set )
 	{
 		return;
@@ -1031,7 +1031,15 @@ void C_EntityFlame::AttachToHitBoxes( void )
 		m_pFireSmoke[i]->SetOwnerEntity( this );
 		
 		// Do a simple approximation of the area the fire is covering based on the hitbox volume.
-		float flVolume = clamp( hitboxvolume[hitboxindex].flVolume, 1000.0f, 4000.0f );
+		float flVolume = hitboxvolume[hitboxindex].flVolume;
+		if ( flVolume < 1000.0f )
+		{
+			flVolume = 1000.0f;
+		}
+		else if ( flVolume > 4000.0f )
+		{
+			flVolume = 4000.0f;
+		}
 		m_pFireSmoke[i]->m_flScaleEnd = flVolume * 0.00012f * m_flHitboxFireScale;
 		m_pFireSmoke[i]->m_flScaleTimeStart = Helper_GetTime();
 		m_pFireSmoke[i]->m_flScaleTimeEnd = Helper_GetTime() + 2.0;
@@ -1220,7 +1228,7 @@ void C_EntityFlame::UpdateHitBoxFlames( void )
 		return;
 	}
 
-	mstudiohitboxset_t *set = pStudioHdr->pHitboxSet( pAnimating->GetHitboxSet() );
+	mstudiohitboxset_t *set = pStudioHdr->pHitboxSet( pAnimating->m_nHitboxSet );
 	if ( !set )
 	{
 		return;
