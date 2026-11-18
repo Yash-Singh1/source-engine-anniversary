@@ -291,22 +291,23 @@ bool CSceneFileCache::GetSceneDataFromImage( const char *pFileName, int iScene, 
 
 	SceneImageEntry_t *pEntries = (SceneImageEntry_t *)( (byte *)pHeader + pHeader->nSceneEntryOffset );
 	unsigned char *pData = (unsigned char *)pHeader + pEntries[iScene].nDataOffset;
+	CLZMA lzma;
 	bool bIsCompressed;
-	bIsCompressed = CLZMA::IsCompressed( pData );
+	bIsCompressed = lzma.IsCompressed( pData );
 	if ( bIsCompressed )
 	{
-		int originalSize = CLZMA::GetActualSize( pData );
+		int originalSize = lzma.GetActualSize( pData );
 		if ( pSceneData )
 		{
 			int nMaxLen = *pSceneLength;
 			if ( originalSize <= nMaxLen )
 			{
-				CLZMA::Uncompress( pData, pSceneData );
+				lzma.Uncompress( pData, pSceneData );
 			}
 			else
 			{
 				unsigned char *pOutputData = (unsigned char *)malloc( originalSize );
-				CLZMA::Uncompress( pData, pOutputData );
+				lzma.Uncompress( pData, pOutputData );
 				V_memcpy( pSceneData, pOutputData, nMaxLen );
 				free( pOutputData );
 			}
@@ -320,7 +321,7 @@ bool CSceneFileCache::GetSceneDataFromImage( const char *pFileName, int iScene, 
 	{
 		if ( pSceneData )
 		{
-			size_t nCountToCopy = min(*pSceneLength, (size_t)pEntries[iScene].nDataLength );
+			size_t nCountToCopy = MIN( *pSceneLength, (size_t)pEntries[iScene].nDataLength );
 			V_memcpy( pSceneData, pData, nCountToCopy );
 		}
 		if ( pSceneLength )

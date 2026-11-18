@@ -16,6 +16,7 @@
 #include "vtf/vtf.h"
 #include "pixelwriter.h"
 #include "tier3/tier3.h"
+#include "inputsystem/iinputsystem.h"
 #include "platform.h"
 
 #include "videoservices.h"
@@ -1391,6 +1392,23 @@ bool CVideoCommonServices::ProcessFullScreenInput( bool &bAbortEvent, bool &bPau
 	bool bSpacePressed	= false;
 
 	g_pLauncherMgr->PeekAndRemoveKeyboardEvents( &bEscPressed, &bReturnPressed, &bSpacePressed );
+#endif
+
+#ifdef INPUTSYSTEM_HAS_STEAMCONTROLLERSKIPVIDEO
+	// Steam controller buttons act as space (skip) and escape
+	if ( g_pInputSystem )
+	{
+		bool bControllerSkip, bControllerEscape;
+		g_pInputSystem->SteamControllerSkipVideo( &bControllerSkip, &bControllerEscape );
+		if ( bControllerEscape )
+		{
+			bEscPressed = true;
+		}
+		if ( bControllerSkip )
+		{
+			bSpacePressed = true;
+		}
+	}
 #endif
 
 	// Manual debounce of the keys, only interested in unpressed->pressed transitions
