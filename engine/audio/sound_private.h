@@ -108,6 +108,11 @@ extern int idsp_speaker;
 extern int idsp_spatial;
 
 extern float g_DuckScale;
+#ifdef BYTEMATCH_RETAIL
+extern float g_DuckScaleCommentary;
+extern float g_DuckScaleVoice;
+#endif
+#line 113
 
 // Legacy DSP Routines
 

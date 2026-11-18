@@ -58,7 +58,10 @@ private:
 
 	CUtlVector< netadr_t >	m_LogAddresses;		// Server frag log stream is sent to the address(es) in this list
 	FileHandle_t			m_hLogFile;			// File where frag log is put.
+#ifndef BYTEMATCH_RETAIL
 	CUtlString				m_LogFilename;		// Name of our logfile.
+#endif
+#line 61
 	double					m_flLastLogFlush;
 	bool					m_bFlushLog;
 };

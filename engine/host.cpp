@@ -1819,7 +1819,10 @@ void Host_ShutdownServer( void )
 	if ( !sv.IsActive() )
 		return;
 
+#ifndef BYTEMATCH_RETAIL
 	master->ShutdownConnection();
+#endif
+#line 1822
 
 	Host_AllowQueuedMaterialSystem( false );
 	// clear structures
@@ -2920,6 +2923,18 @@ void _Host_RunFrame_Sound()
 
 float Host_GetSoundDuration( const char *pSample )
 {
+#ifdef BYTEMATCH_RETAIL
+#ifndef SWDS
+	extern float SV_GetSoundDuration(const char *pSample);
+	extern float AudioSource_GetSoundDuration(CSfxTable *pSfx);
+	int index = cl.LookupSoundIndex(pSample);
+	if (index >= 0)
+		return AudioSource_GetSoundDuration(cl.GetSound(index));
+	return SV_GetSoundDuration(pSample);
+#else
+	return 0.0f;
+#endif
+#else
 #ifndef SWDS
 	if (!sv.IsDedicated())
 	{
@@ -2932,6 +2947,8 @@ float Host_GetSoundDuration( const char *pSample )
 	}
 #endif
 	return 0.0f;
+#endif
+#line 2932
 }
 
 CON_COMMAND( host_runofftime, "Run off some time without rendering/updating sounds\n" )
@@ -3505,6 +3522,7 @@ void _Host_RunFrame (float time)
 			}
 #endif
 		}
+#ifndef BYTEMATCH_RETAIL
 		else
 		{
 			tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "modelloader->UpdateDynamicModels" );
@@ -3512,6 +3530,8 @@ void _Host_RunFrame (float time)
 			CMDLCacheCriticalSection critsec( g_pMDLCache );
 			modelloader->UpdateDynamicModels();
 		}
+#endif
+#line 3505
 
 		//-------------------
 		// simulation
@@ -3614,6 +3634,15 @@ void Host_RunFrame( float time )
 		g_bThreadedEngine = false;
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	{
+		VPROF( "UpdateDynamicModels" );
+		CMDLCacheCriticalSection critsec( g_pMDLCache );
+		modelloader->UpdateDynamicModels();
+	}
+
+#endif
+#line 3613
 	if ( !host_profile.GetBool() )
 	{
 		_Host_RunFrame( time );
@@ -4063,8 +4092,14 @@ bool DLL_LOCAL Host_AllowLoadModule( const char *pFilename, const char *pPathID,
 
 bool DLL_LOCAL Host_IsSecureServerAllowed()
 {
+#ifdef BYTEMATCH_RETAIL
+	if ( CommandLine()->FindParm( "-insecure" ) )
+		g_bAllowSecureServers = false;
+#else
 	if ( CommandLine()->FindParm( "-insecure" ) || CommandLine()->FindParm( "-textmode" ) )
 		g_bAllowSecureServers = false;
+#endif
+#line 4064
 
 	return g_bAllowSecureServers;
 }

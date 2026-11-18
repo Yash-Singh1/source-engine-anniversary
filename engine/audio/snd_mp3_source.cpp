@@ -25,7 +25,16 @@
 // it arrives. Setting this to anything above zero, however, will allow the sound to start, so it needs to either be
 // enough to cover SND_ASYNC_LOOKAHEAD_SECONDS or none at all.
 #define MP3_STARTUP_DATA_SIZE_BYTES 0
+#ifdef BYTEMATCH_RETAIL
+#define MP3_RETAIL_STARTUP_DATA_SIZE_BYTES 16384
+#endif
+#line 29
 
+#ifdef BYTEMATCH_RETAIL
+void PhonemeMP3Shutdown( void )
+{
+}
+#else
 CUtlDict< CSentence *, int> g_PhonemeFileSentences;
 bool g_bAllPhonemesLoaded;
 
@@ -84,6 +93,8 @@ void AddPhonemesFromFile( const char *pszFileName )
 		}
 	}
 }
+#endif
+#line 33
 
 CAudioSourceMP3::CAudioSourceMP3( CSfxTable *pSfx )
 {
@@ -106,6 +117,7 @@ CAudioSourceMP3::CAudioSourceMP3( CSfxTable *pSfx )
 		// spew make a little more sense
 		Warning( "MP3 is completely missing, sound system will be upset to learn of this [ %s ]\n", pSfx->GetFileName() );
 #endif
+#line 50
 		m_dataSize = 0;
 	}
 
@@ -113,7 +125,12 @@ CAudioSourceMP3::CAudioSourceMP3( CSfxTable *pSfx )
 	m_nCachedDataSize = 0;
 	m_bIsPlayOnce = false;
 	m_bIsSentenceWord = false;
+#ifdef BYTEMATCH_RETAIL
+	m_bIsVoiceSource = false;
+#else
 	m_bCheckedForPendingSentence = false;
+#endif
+#line 58
 	m_bIsCommentary = false;
 
 	const char *pszName = pSfx->GetFileName();
@@ -125,6 +142,26 @@ CAudioSourceMP3::CAudioSourceMP3( CSfxTable *pSfx )
 
 CAudioSourceMP3::CAudioSourceMP3( CSfxTable *pSfx, CAudioSourceCachedInfo *info )
 {
+#ifdef BYTEMATCH_RETAIL
+	m_sampleRate = 44100;
+	m_pSfx = pSfx;
+	m_refCount = 0;
+
+	m_dataSize = info->DataSize();
+	m_dataStart = info->DataStart();
+
+	m_nCachedDataSize = 0;
+	m_bIsPlayOnce = false;
+	m_bIsSentenceWord = false;
+	m_bIsVoiceSource = false;
+	m_bIsCommentary = false;
+
+	const char *pszName = pSfx ? pSfx->GetFileName() : NULL;
+	if ( pszName )
+	{
+		m_bIsCommentary = StringAfterPrefix( PSkipSoundChars( pszName ), "commentary" ) != NULL;
+	}
+#else
 	m_pSfx = pSfx;
 	m_refCount = 0;
 
@@ -144,6 +181,8 @@ CAudioSourceMP3::CAudioSourceMP3( CSfxTable *pSfx, CAudioSourceCachedInfo *info 
 	}
 
 	CheckAudioSourceCache();
+#endif
+#line 87
 }
 
 CAudioSourceMP3::~CAudioSourceMP3()
@@ -172,6 +211,14 @@ void CAudioSourceMP3::ReferenceRemove( CAudioMixer * )
 //-----------------------------------------------------------------------------
 bool CAudioSourceMP3::IsAsyncLoad()
 {
+#ifdef BYTEMATCH_RETAIL
+	if ( !m_AudioCacheHandle.IsValid() )
+	{
+		m_AudioCacheHandle.Get( GetType(), m_pSfx->IsPrecachedSound(), m_pSfx, &m_nCachedDataSize );
+	}
+#endif
+#line 119
+
 	// If there's a bit of "cached data" then we don't have to lazy/async load (we still async load the remaining data,
 	//  but we run from the cache initially)
 	return ( m_nCachedDataSize > 0 ) ? false : true;
@@ -192,6 +239,7 @@ int CAudioSourceMP3::GetType()
 	return AUDIO_SOURCE_MP3;
 }
 
+#ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
 void CAudioSourceMP3::SetSentence( CSentence *pSentence )
 {
@@ -211,8 +259,14 @@ void CAudioSourceMP3::SetSentence( CSentence *pSentence )
 	info->SetSentence( pNewSentence );
 }
 
+#endif
+#line 140
+
 int CAudioSourceMP3::SampleRate()
 {
+#ifdef BYTEMATCH_RETAIL
+	return m_sampleRate;
+#else
 	if ( !m_sampleRate )
 	{
 		// This should've come from the sound cache. We can avoid sync I/O jank if and only if we've started streaming
@@ -237,10 +291,44 @@ int CAudioSourceMP3::SampleRate()
 		delete pMixer;
 	}
 	return m_sampleRate;
+#endif
+#line 144
 }
 
 void CAudioSourceMP3::GetCacheData( CAudioSourceCachedInfo *info )
 {
+#ifdef BYTEMATCH_RETAIL
+	info->SetSampleRate( m_sampleRate );
+	info->SetDataStart( 0 );
+
+	if ( info->s_bIsPrecacheSound )
+	{
+		intp file = g_pSndIO->open( m_pSfx->GetFileName() );
+		if ( file )
+		{
+			m_dataSize = (int)g_pSndIO->size( file );
+
+			char data[ MP3_RETAIL_STARTUP_DATA_SIZE_BYTES ];
+			int dataSize = m_dataSize;
+			if ( dataSize > MP3_RETAIL_STARTUP_DATA_SIZE_BYTES )
+			{
+				dataSize = MP3_RETAIL_STARTUP_DATA_SIZE_BYTES;
+			}
+			g_pSndIO->read( data, dataSize, file );
+			g_pSndIO->close( file );
+
+			if ( dataSize > 0 )
+			{
+				byte *pData = new byte[ dataSize ];
+				memcpy( pData, data, dataSize );
+				info->SetCachedDataSize( dataSize );
+				info->SetCachedData( pData );
+			}
+		}
+	}
+
+	info->SetDataSize( m_dataSize );
+#else
 	// Don't want to replicate our cached sample rate back into the new cache, ensure we recompute it.
 	CAudioMixerWaveMP3 *pTempMixer = new CAudioMixerWaveMP3( CreateWaveDataMemory(*this) );
 	m_sampleRate = pTempMixer->GetStreamOutputRate();
@@ -293,6 +381,8 @@ void CAudioSourceMP3::GetCacheData( CAudioSourceCachedInfo *info )
 
 	// Data size gets computed in GetStartupData!!!
 	info->SetDataSize( m_dataSize );
+#endif
+#line 178
 }
 
 //-----------------------------------------------------------------------------
@@ -337,7 +427,10 @@ CAudioSourceMP3Cache::CAudioSourceMP3Cache( CSfxTable *pSfx, CAudioSourceCachedI
 	m_dataSize = info->DataSize();
 	m_dataStart = info->DataStart();
 
+#ifndef BYTEMATCH_RETAIL
 	m_bNoSentence = false;
+#endif
+#line 222
 }
 
 //-----------------------------------------------------------------------------
@@ -454,11 +547,21 @@ int CAudioSourceMP3Cache::GetOutputData( void **pData, int samplePosition, int s
 
 CAudioMixer	*CAudioSourceMP3Cache::CreateMixer( int initialStreamPosition )
 {
+#ifdef BYTEMATCH_RETAIL
+	CAudioMixer *pMixer = CreateMP3Mixer( CreateWaveDataMemory(*this), &m_sampleRate );
+	if ( pMixer )
+	{
+		ReferenceAdd( pMixer );
+	}
+#else
 	CAudioMixer *pMixer = new CAudioMixerWaveMP3( CreateWaveDataMemory(*this) );
+#endif
+#line 343
 
 	return pMixer;
 }
 
+#ifndef BYTEMATCH_RETAIL
 CSentence *CAudioSourceMP3Cache::GetSentence( void )
 {
 	// Already checked and this wav doesn't have sentence data...
@@ -510,6 +613,8 @@ CSentence *CAudioSourceMP3Cache::GetSentence( void )
 
 	return NULL;
 }
+#endif
+#line 347
 
 //-----------------------------------------------------------------------------
 // CAudioSourceStreamMP3
@@ -539,6 +644,14 @@ CAudioMixer	*CAudioSourceStreamMP3::CreateMixer( int intialStreamPosition )
 	IWaveData *pWaveData = CreateWaveDataStream( *this, static_cast<IWaveStreamSource *>( this ), m_pSfx->GetFileName(), 0, m_dataSize, m_pSfx, 0 );
 	if ( pWaveData )
 	{
+#ifdef BYTEMATCH_RETAIL
+		CAudioMixer *pMixer = CreateMP3Mixer( pWaveData, &m_sampleRate );
+		if ( pMixer )
+		{
+			ReferenceAdd( pMixer );
+			return pMixer;
+		}
+#else
 		CAudioMixer *pMixer = new CAudioMixerWaveMP3( pWaveData );
 		if ( pMixer )
 		{
@@ -556,6 +669,8 @@ CAudioMixer	*CAudioSourceStreamMP3::CreateMixer( int intialStreamPosition )
 
 			return pMixer;
 		}
+#endif
+#line 382
 
 		// no mixer but pWaveData was deleted in mixer's destructor
 		// so no need to delete

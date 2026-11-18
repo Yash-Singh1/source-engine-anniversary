@@ -19,14 +19,20 @@ void InitializeEntityDLLFields( edict_t *pEdict );
 edict_t *ED_Alloc( int iForceEdictIndex = -1 );
 void	ED_Free( edict_t *ed );
 
+#ifndef BYTEMATCH_RETAIL
 // Clear the FL_EDICT_FREE flag and the g_FreeEdicts bit.
 void	ED_ClearFreeFlag( edict_t *pEdict );
+#endif
+#line 22
 
 edict_t *EDICT_NUM(int n);
 int NUM_FOR_EDICT(const edict_t *e);
 
 void ED_AllowImmediateReuse();
+#ifndef BYTEMATCH_RETAIL
 void ED_ClearFreeEdictList();
+#endif
+#line 27
 
 #endif
 
