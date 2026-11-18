@@ -216,7 +216,11 @@ show up only here:
 - function order inside an object, which follows clang's first reference to
   each function, not definition order;
 - literal placement, where the first-loaded archive member's copy wins, even
-  when the function using it is dead-stripped.
+  when the function using it is dead-stripped;
+- objects whose code is all dead-stripped: the debug map doesn't list them,
+  but their literals and the order in which their sections first appear still
+  count. `RETAIL_DEAD` in `scripts/waifulib/retail_manifest.py` links them at
+  their Xcode position.
 
 ## Known gaps
 
