@@ -257,7 +257,7 @@ public:
 	
 	virtual uint32 GetClientSteamID()
 	{
-		CSteamID steamID = Steam3Client().SteamUser()->GetSteamID();
+		CSteamID steamID = SteamUser()->GetSteamID();
 		return steamID.GetAccountID();
 	}
 

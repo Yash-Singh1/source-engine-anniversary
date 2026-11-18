@@ -64,8 +64,6 @@ public:
 	virtual void FireGameEvent( IGameEvent *event);
 
 	virtual void UpdatePlayerAvatar( int playerIndex, KeyValues *kv );
-
-	virtual GameActionSet_t GetPreferredActionSet() { return GAME_ACTION_SET_NONE;  }
 			
 protected:
 	MESSAGE_FUNC_INT( OnPollHideCode, "PollHideCode", code );

@@ -292,54 +292,54 @@ public:
 
 	void UpdateConnection( void )
 	{
-		if ( m_bConnected || HostState_IsShuttingDown() )
-			return;
 
-		// try getting client SteamUtils interface
-		ISteamUtils *pSteamUtils = NULL;
-#ifndef SWDS
-		pSteamUtils = Steam3Client().SteamUtils();
-#endif
-		// if that fails, try the game server SteamUtils interface
-		if ( !pSteamUtils )
-		{
-			pSteamUtils = Steam3Server().SteamGameServerUtils();
-		}
 
-		// can't determine CSER if Steam not running
-		if ( !pSteamUtils )
-			return;
 
-		float curTime = Sys_FloatTime();
 
-		if ( curTime < m_flNextConnectAttempt )
-			return;
 
-		uint32 unIP = 0;
-		uint16 usPort = 0;
-#if !defined( NO_VCR )
-		if ( VCRGetMode() != VCR_Playback )
-#endif
-		{
-			pSteamUtils->GetCSERIPPort( &unIP, &usPort );
-		}
-#if !defined( NO_VCR )
-		VCRGenericValue( "a", &unIP, sizeof( unIP ) );	
-		VCRGenericValue( "b", &usPort, sizeof( usPort ) );	
-#endif	
 
-		if ( unIP == 0 )
-		{
-			m_flNextConnectAttempt = curTime + GAMESTATSUPLOADER_CONNECT_RETRY_TIME;
-			return; 
-		}
-		else
-		{
-			m_Adr.SetIP( unIP );
-			m_Adr.SetPort( usPort );
-			m_Adr.SetType( NA_IP );
-			m_bConnected = true;
-		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	}
 
 	virtual bool UploadGameStats( char const *mapname,
@@ -410,8 +410,8 @@ public:
 			Q_binarytohex( (const byte *)&newId, sizeof( newId ), hex, sizeof( hex ) );
 
 			// If running at Valve, copy in the users name here
-			if ( Steam3Client().SteamUtils() && ( Steam3Client().SteamUser()->BLoggedOn() ) && 
-				( k_EUniverseBeta == Steam3Client().SteamUtils()->GetConnectedUniverse() ) )
+			if ( SteamUtils() && ( SteamUser()->BLoggedOn() ) && 
+				( k_EUniverseBeta == SteamUtils()->GetConnectedUniverse() ) )
 			{
 				bool bOk = true;
 				char username[ 64 ];

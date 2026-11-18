@@ -175,10 +175,10 @@ uint GetSteamAppID()
 	if ( !bHaveValidSteamInterface )
 	{
 #ifndef SWDS
-		if ( Steam3Client().SteamUtils() )
+		if ( SteamUtils() )
 		{
 			bHaveValidSteamInterface = true;
-			sunAppID = Steam3Client().SteamUtils()->GetAppID();
+			sunAppID = SteamUtils()->GetAppID();
 		}
 #endif
 		if ( Steam3Server().SteamGameServerUtils() )
@@ -197,8 +197,8 @@ uint GetSteamAppID()
 EUniverse GetSteamUniverse()
 {
 #ifndef SWDS
-	if ( Steam3Client().SteamUtils() )
-		return Steam3Client().SteamUtils()->GetConnectedUniverse();
+	if ( SteamUtils() )
+		return SteamUtils()->GetConnectedUniverse();
 #endif
 	if ( Steam3Server().SteamGameServerUtils() )
 		return Steam3Server().SteamGameServerUtils()->GetConnectedUniverse();

@@ -185,7 +185,7 @@ void CClientState::SendClientInfo( void )
 	info.m_bIsReplay = false;
 #endif
 #if !defined( NO_STEAM )
-	info.m_nFriendsID = Steam3Client().SteamUser() ? Steam3Client().SteamUser()->GetSteamID().GetAccountID() : 0;
+	info.m_nFriendsID = SteamUser() ? SteamUser()->GetSteamID().GetAccountID() : 0;
 #else
 	info.m_nFriendsID = 0;
 #endif

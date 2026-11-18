@@ -486,7 +486,7 @@ bool CSteamID::SetFromStringStrict( const char *pchSteamID, EUniverse eDefaultUn
 //			eUniverse -		universe this ID belongs to
 // Output:	true if successful, false otherwise
 //-----------------------------------------------------------------------------
-bool CSteamID::SetFromSteam2String( const char *pchSteam2ID, EUniverse eUniverse )
+bool SteamIDFromSteam2String( const char *pchSteam2ID, EUniverse eUniverse, CSteamID *pSteamIDOut )
 {
 	Assert( pchSteam2ID );
 
@@ -513,7 +513,7 @@ bool CSteamID::SetFromSteam2String( const char *pchSteam2ID, EUniverse eUniverse
 		return false;
 
 	// Now convert to steam ID from the Steam2 ID structure
-	SetFromSteam2( &steam2ID, eUniverse );
+	*pSteamIDOut = SteamIDFromSteam2UserID( &steam2ID, eUniverse );
 	return true;
 }
 #endif
@@ -583,7 +583,7 @@ const char * CSteamID::Render() const
 	}
 	else if ( k_EAccountTypeIndividual == m_steamid.m_comp.m_EAccountType )
 	{
-		if ( m_steamid.m_comp.m_unAccountInstance != k_unSteamUserDesktopInstance )
+		if ( m_steamid.m_comp.m_unAccountInstance != k_unSteamUserDefaultInstance )
 			V_snprintf( pchBuf, k_cBufLen, "[U:%u:%u:%u]", m_steamid.m_comp.m_EUniverse, m_steamid.m_comp.m_unAccountID, m_steamid.m_comp.m_unAccountInstance );
 		else
 			V_snprintf( pchBuf, k_cBufLen, "[U:%u:%u]", m_steamid.m_comp.m_EUniverse, m_steamid.m_comp.m_unAccountID );
