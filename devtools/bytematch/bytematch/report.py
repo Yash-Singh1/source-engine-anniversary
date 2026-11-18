@@ -46,7 +46,7 @@ def scope(retail, ours_funcs, objects=None, all_retail=False):
         return sel, 'objects', notes
     if all_retail:
         return list(rf), 'all', notes
-    if any(f.obj for f in rf) and retail.fmt == 'macho':
+    if any(f.obj for f in rf) and retail.fmt in ('macho', 'pe'):
         stems = {f.obj for f in ours_funcs if f.obj}
         sel = [f for f in rf if f.obj in stems]
         by_stem = collections.defaultdict(set)
@@ -92,9 +92,11 @@ def summarize(results):
         b[r.status] += r.size
     nf = len(results)
     nb = sum(b.values())
+    lc = [r for r in results if r.status == DIFFERS and r.line_constants]
     matched_f = c[EXACT] + c[MASKED]
     matched_b = b[EXACT] + b[MASKED]
     return dict(
+        line_constants_only=dict(functions=len(lc), bytes=sum(r.size for r in lc)),
         functions=dict(total=nf, exact=c[EXACT], matches_after_masking=c[MASKED], differs=c[DIFFERS],
                        missing=c[MISSING], matched=matched_f, pct=round(100 * matched_f / nf, 2) if nf else 0.0),
         bytes=dict(total=nb, exact=b[EXACT], matches_after_masking=b[MASKED], differs=b[DIFFERS],
@@ -125,6 +127,8 @@ def result_json(r, diff_lines=0):
         d['reason'] = r.reason
     if r.first_diff is not None:
         d['first_diff'] = r.first_diff
+    if r.line_constants:
+        d['line_constants'] = [dict(offset=o, retail=a, ours=b) for o, a, b in r.line_constants]
     if r.target_mismatches:
         d['target_mismatches'] = [dict(offset=k, ours=t, retail=rt) for k, t, rt in r.target_mismatches]
     if diff_lines and r.status == DIFFERS and r.retail and r.ours:

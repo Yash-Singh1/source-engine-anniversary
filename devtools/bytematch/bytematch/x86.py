@@ -247,6 +247,31 @@ def listing(code, base, masked, labels=None):
     return rows
 
 
+def line_constant_diffs(a, b, base=0, lo=40, hi=50000):
+    """For same-length code differing only in immediates that look like source
+    line numbers (Assert's __LINE__), [(offset, value in a, value in b)]; else None."""
+    if not cs or len(a) != len(b) or a == b:
+        return None
+    ia, ib = list(_det.disasm(a, base)), list(_det.disasm(b, base))
+    if len(ia) != len(ib) or sum(i.size for i in ia) != len(a):
+        return None
+    out = []
+    for x, y in zip(ia, ib):
+        if x.bytes == y.bytes:
+            continue
+        if x.size != y.size or x.mnemonic != y.mnemonic or not x.imm_size or x.imm_offset != y.imm_offset:
+            return None
+        o, n = x.imm_offset, x.imm_size
+        if x.bytes[:o] != y.bytes[:o] or x.bytes[o + n:] != y.bytes[o + n:]:
+            return None
+        va = int.from_bytes(bytes(x.bytes[o:o + n]), 'little')
+        vb = int.from_bytes(bytes(y.bytes[o:o + n]), 'little')
+        if not (lo <= va <= hi and lo <= vb <= hi):
+            return None
+        out.append((x.address - base + o, va, vb))
+    return out or None
+
+
 def u32(b, off=0):
     return struct.unpack_from('<I', b, off)[0]
 
