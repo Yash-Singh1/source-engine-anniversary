@@ -119,7 +119,12 @@ void CClientState::ConnectionCrashed( const char * reason )
 
 		COM_ExplainDisconnection( true, "Disconnect: %s.\n", reason );
 		SCR_EndLoadingPlaque();
+#ifdef BYTEMATCH_RETAIL
+		Host_EndGame ( true, reason );
+#else
 		Host_EndGame ( true, "%s", reason );
+#endif
+#line 123
 	}
 }
 
@@ -308,7 +313,12 @@ bool CClientState::ProcessTick( NET_Tick *msg )
 
 bool CClientState::ProcessStringCmd( NET_StringCmd *msg )
 {
+#ifdef BYTEMATCH_RETAIL
+	return InternalProcessStringCmd( msg, ishltv );
+#else
 	return CBaseClientState::ProcessStringCmd( msg );
+#endif
+#line 312
 }
 
 
@@ -829,6 +839,11 @@ bool CClientState::ProcessEntityMessage(SVC_EntityMessage *msg)
 
 bool CClientState::ProcessPacketEntities( SVC_PacketEntities *msg )
 {
+#ifdef BYTEMATCH_RETAIL
+	CL_PreprocessEntities(); // setup client prediction
+
+#endif
+#line 827
 	if ( !msg->m_bIsDelta )
 	{
 		// Delta too old or is initial message
@@ -850,9 +865,12 @@ bool CClientState::ProcessPacketEntities( SVC_PacketEntities *msg )
 			return true;
 		}
 
+#ifndef BYTEMATCH_RETAIL
 		// Preprocessing primarily does client prediction. So if we're processing deltas--do it
 		// otherwise, we're about to be told exactly what the state of everything is--so skip it.
 		CL_PreprocessEntities(); // setup client prediction
+#endif
+#line 851
 	}
 	
 	TRACE_PACKET(( "CL Receive (%d <-%d)\n", m_nCurrentSequence, msg->m_nDeltaFrom ));
