@@ -1113,17 +1113,6 @@ void Panel::Think()
 	OnThink();
 }
 
-void Panel::OnChildSettingsApplied( KeyValues *pInResourceData, Panel *pChild  )
-{
-	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s - %s", __FUNCTION__, GetName() );
-
-	Panel* pParent = GetParent();
-	if( pParent )
-	{
-		pParent->OnChildSettingsApplied( pInResourceData, pChild );
-	}
-}
-
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -2102,26 +2091,6 @@ void Panel::InternalMouseReleased(int code)
 		}
 	}
 
-#ifdef STAGING_ONLY
-	const char *pGameDir = CommandLine()->ParmValue( "-game", "hl2" );
-	if ( tf_strict_mouse_up_events.GetBool() && !V_stricmp( pGameDir, "tf" ) )
-	{
-		// Only allow mouse release events to go to panels that we also
-		// first clicked into
-		if ( code >= MOUSE_LEFT && code <= MOUSE_MIDDLE )
-		{
-			const int nIndex = code - MOUSE_LEFT;
-			Panel* pPressedPanel = m_sMousePressedPanels[ nIndex ];
-			m_sMousePressedPanels[ nIndex ] = NULL;	// Clear out pressed panel
-			if ( pPressedPanel != this )
-			{
-				OnMouseMismatchedRelease( (MouseCode)code, pPressedPanel );
-				return;
-			}
-		}
-	}
-#endif
-
 	OnMouseReleased((MouseCode)code);
 }
 
@@ -3069,10 +3038,6 @@ void Panel::OnMouseTriplePressed(MouseCode code)
 }
 
 void Panel::OnMouseReleased(MouseCode code)
-{
-}
-
-void Panel::OnMouseMismatchedRelease( MouseCode code, Panel* pPressedPanel )
 {
 }
 
@@ -4644,8 +4609,6 @@ void Panel::ApplySettings(KeyValues *inResourceData)
 	{
 		SetKeyBoardInputEnabled( atoi( pKeyboardInputEnabled ) );
 	}
-
-	OnChildSettingsApplied( inResourceData, this );
 }
 
 //-----------------------------------------------------------------------------
