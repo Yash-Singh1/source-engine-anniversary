@@ -2155,11 +2155,6 @@ studiohdr_t *CMDLCache::GetStudioHdr( MDLHandle_t handle )
 	// Assert( m_pModelCacheSection->IsFrameLocking() );
 	// Assert( m_pMeshCacheSection->IsFrameLocking() );
 
-	studiodata_t *pStudioData = m_MDLDict[handle];
-
-	if( !pStudioData )
-		return NULL;
-
 #if _DEBUG
 	VPROF_INCREMENT_COUNTER( "GetStudioHdr", 1 );
 #endif
@@ -2258,7 +2253,7 @@ void CMDLCache::TouchAllData( MDLHandle_t handle )
 		// ensure all sub models are cached
 		for ( int i=1; i<pVModel->m_group.Count(); ++i )
 		{
-			MDLHandle_t childHandle = VoidPtrToMDLHandle( pVModel->m_group[i].cache );
+			MDLHandle_t childHandle = (MDLHandle_t)(intp)pVModel->m_group[i].cache&0xffff;
 			if ( childHandle != MDLHANDLE_INVALID )
 			{
 				// FIXME: Should this be calling TouchAllData on the child?
