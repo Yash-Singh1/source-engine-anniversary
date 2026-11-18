@@ -20,7 +20,7 @@ IMPLEMENT_CLIENTCLASS_DT( C_PointCamera, DT_PointCamera, CPointCamera )
 	RecvPropFloat( RECVINFO( m_Resolution ) ), 
 	RecvPropInt( RECVINFO( m_bFogEnable ) ),
 	RecvPropInt( RECVINFO( m_FogColor ) ),
-#if defined( HL2_EPISODIC ) || !defined( BYTEMATCH_RETAIL )
+#ifdef HL2_ANNIVERSARY_NOV2024
 	RecvPropInt( RECVINFO( m_FogColor_HDR ) ),
 #endif
 #line 24
@@ -30,7 +30,7 @@ IMPLEMENT_CLIENTCLASS_DT( C_PointCamera, DT_PointCamera, CPointCamera )
 	RecvPropInt( RECVINFO( m_bFogRadial ) ),
 	RecvPropInt( RECVINFO( m_bActive ) ),
 	RecvPropInt( RECVINFO( m_bUseScreenAspectRatio ) ),
-#if defined( HL2_EPISODIC ) || !defined( BYTEMATCH_RETAIL )
+#ifdef HL2_ANNIVERSARY_NOV2024
 	RecvPropInt( RECVINFO( m_bUseHDCamera ) ),
 #endif
 #line 31

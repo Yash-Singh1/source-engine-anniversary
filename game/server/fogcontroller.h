@@ -43,7 +43,7 @@ public:
 	void InputTurnOff(inputdata_t &data);
 	void InputSetColor(inputdata_t &data);
 	void InputSetColorSecondary(inputdata_t &data);
-#if defined( HL2_EPISODIC ) || !defined( BYTEMATCH_RETAIL )
+#ifdef HL2_ANNIVERSARY_NOV2024
 	void InputSetColorHDR(inputdata_t &data);
 	void InputSetColorSecondaryHDR(inputdata_t &data);
 #endif

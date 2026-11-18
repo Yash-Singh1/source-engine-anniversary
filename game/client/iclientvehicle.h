@@ -26,7 +26,7 @@ abstract_class IClientVehicle : public IVehicle
 {
 public:
 	// When a player is in a vehicle, here's where the camera will be
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || !defined( HL2_ANNIVERSARY_NOV2024 )
 	virtual void GetVehicleFOV( float &flFOV ) = 0;
 #endif
 #line 30

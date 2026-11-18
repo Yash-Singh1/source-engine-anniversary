@@ -33,8 +33,12 @@ public:
 	DECLARE_INTERPOLATION();
 
 	C_PropJeep();
+#ifdef HL2_ANNIVERSARY_NOV2024
 
 	virtual void UpdateOnRemove( void );
+#else
+	~C_PropJeep();
+#endif
 
 public:
 
@@ -44,7 +48,9 @@ public:
 	void OnEnteredVehicle( C_BasePlayer *pPlayer );
 	void Simulate( void );
 
+#ifdef HL2_ANNIVERSARY_NOV2024
 	virtual void UpdateViewSmoothingFOV();
+#endif
 
 private:
 

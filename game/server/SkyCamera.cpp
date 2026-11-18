@@ -52,7 +52,7 @@ BEGIN_DATADESC( CSkyCamera )
 	DEFINE_KEYFIELD( m_skyboxData.fog.dirPrimary,		FIELD_VECTOR, "fogdir" ),
 	DEFINE_KEYFIELD( m_skyboxData.fog.colorPrimary,		FIELD_COLOR32, "fogcolor" ),
 	DEFINE_KEYFIELD( m_skyboxData.fog.colorSecondary,	FIELD_COLOR32, "fogcolor2" ),
-#if defined( HL2_EPISODIC ) || !defined( BYTEMATCH_RETAIL )
+#ifdef HL2_ANNIVERSARY_NOV2024
 	DEFINE_KEYFIELD( m_skyboxData.fog.colorPrimaryHDR,	FIELD_COLOR32, "fogcolor_hdr" ),
 	DEFINE_KEYFIELD( m_skyboxData.fog.colorSecondaryHDR,	FIELD_COLOR32, "fogcolor2_hdr" ),
 #endif

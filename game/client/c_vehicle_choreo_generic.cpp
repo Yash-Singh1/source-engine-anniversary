@@ -49,7 +49,7 @@ public:
 
 	// IClientVehicle overrides.
 	virtual void GetVehicleViewPosition( int nRole, Vector *pOrigin, QAngle *pAngles, float *pFOV = NULL );
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || !defined( HL2_ANNIVERSARY_NOV2024 )
 	virtual void GetVehicleFOV( float &flFOV )
 	{
 		flFOV = m_flFOV;
@@ -88,7 +88,7 @@ private:
 	bool					m_bEnterAnimOn;
 	bool					m_bExitAnimOn;
 	Vector					m_vecEyeExitEndpoint;
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || !defined( HL2_ANNIVERSARY_NOV2024 )
 	float					m_flFOV;				// The current FOV (changes during entry/exit anims).
 #endif
 #line 92
@@ -132,7 +132,7 @@ C_PropVehicleChoreoGeneric::C_PropVehicleChoreoGeneric( void )
 	m_ViewSmoothingData.flPitchCurveLinear = PITCH_CURVE_LINEAR;
 	m_ViewSmoothingData.flRollCurveZero = ROLL_CURVE_ZERO;
 	m_ViewSmoothingData.flRollCurveLinear = ROLL_CURVE_LINEAR;
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || !defined( HL2_ANNIVERSARY_NOV2024 )
 	m_flFOV = 0;
 #endif
 #line 133

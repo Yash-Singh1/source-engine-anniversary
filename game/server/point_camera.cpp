@@ -218,7 +218,7 @@ BEGIN_DATADESC( CPointCamera )
 	DEFINE_KEYFIELD( m_Resolution,	FIELD_FLOAT, "resolution" ),
 	DEFINE_KEYFIELD( m_bFogEnable,	FIELD_BOOLEAN, "fogEnable" ),
 	DEFINE_KEYFIELD( m_FogColor,	FIELD_COLOR32,	"fogColor" ),
-#if defined( HL2_EPISODIC ) || !defined( BYTEMATCH_RETAIL )
+#ifdef HL2_ANNIVERSARY_NOV2024
 	DEFINE_KEYFIELD( m_FogColor_HDR,	FIELD_COLOR32,	"fogColor_HDR" ),
 #endif
 #line 222
@@ -227,7 +227,7 @@ BEGIN_DATADESC( CPointCamera )
 	DEFINE_KEYFIELD( m_flFogMaxDensity,	FIELD_FLOAT, "fogMaxDensity" ),
 	DEFINE_KEYFIELD( m_bFogRadial,	FIELD_BOOLEAN, "fogRadial" ),
 	DEFINE_KEYFIELD( m_bUseScreenAspectRatio, FIELD_BOOLEAN, "UseScreenAspectRatio" ),
-#if defined( HL2_EPISODIC ) || !defined( BYTEMATCH_RETAIL )
+#ifdef HL2_ANNIVERSARY_NOV2024
 	DEFINE_KEYFIELD( m_bUseHDCamera, FIELD_BOOLEAN, "UseHDCamera" ),
 #endif
 #line 228
@@ -254,7 +254,7 @@ IMPLEMENT_SERVERCLASS_ST( CPointCamera, DT_PointCamera )
 	SendPropFloat( SENDINFO( m_Resolution ), 0, SPROP_NOSCALE ),
 	SendPropInt( SENDINFO( m_bFogEnable ), 1, SPROP_UNSIGNED ),	
 	SendPropInt( SENDINFO_STRUCTELEM( m_FogColor ), 32, SPROP_UNSIGNED ),
-#if defined( HL2_EPISODIC ) || !defined( BYTEMATCH_RETAIL )
+#ifdef HL2_ANNIVERSARY_NOV2024
 	SendPropInt( SENDINFO_STRUCTELEM( m_FogColor_HDR ), 32, SPROP_UNSIGNED ),
 #endif
 #line 252
@@ -264,7 +264,7 @@ IMPLEMENT_SERVERCLASS_ST( CPointCamera, DT_PointCamera )
 	SendPropInt( SENDINFO( m_bFogRadial ), 1, SPROP_UNSIGNED ),
 	SendPropInt( SENDINFO( m_bActive ), 1, SPROP_UNSIGNED ),
 	SendPropInt( SENDINFO( m_bUseScreenAspectRatio ), 1, SPROP_UNSIGNED ),
-#if defined( HL2_EPISODIC ) || !defined( BYTEMATCH_RETAIL )
+#ifdef HL2_ANNIVERSARY_NOV2024
 	SendPropInt( SENDINFO( m_bUseHDCamera ), 1, SPROP_UNSIGNED ),
 #endif
 #line 259

@@ -55,7 +55,9 @@ BEGIN_DATADESC( C_PropVehicleDriveable )
 END_DATADESC()
 
 ConVar r_VehicleViewClamp( "r_VehicleViewClamp", "1", FCVAR_CHEAT );
+#ifdef HL2_ANNIVERSARY_NOV2024
 ConVar r_VehicleHudReticleSmoothing( "r_VehicleHudReticleSmoothing", "0.8", 0 );
+#endif
 
 #define ROLL_CURVE_ZERO		20		// roll less than this is clamped to zero
 #define ROLL_CURVE_LINEAR	90		// roll greater than this is copied out
@@ -85,10 +87,14 @@ C_PropVehicleDriveable::C_PropVehicleDriveable() :
 	m_ViewSmoothingData.flRollCurveZero = ROLL_CURVE_ZERO;
 	m_ViewSmoothingData.flRollCurveLinear = ROLL_CURVE_LINEAR;
 
+#ifdef HL2_ANNIVERSARY_NOV2024
 #ifndef BYTEMATCH_RETAIL
 	m_flFOV = default_fov.GetFloat();
 #endif
 	UpdateViewSmoothingFOV();
+#else
+	m_ViewSmoothingData.flFOV = m_flFOV = default_fov.GetFloat();
+#endif
 
 	AddVar( &m_vecGunCrosshair, &m_iv_vecGunCrosshair, LATCH_SIMULATION_VAR );
 }
@@ -208,7 +214,9 @@ void C_PropVehicleDriveable::DampenEyePosition( Vector &vecVehicleEyePos, QAngle
 //-----------------------------------------------------------------------------
 void C_PropVehicleDriveable::GetVehicleViewPosition( int nRole, Vector *pAbsOrigin, QAngle *pAbsAngles, float *pFOV /*=NULL*/ )
 {
+#ifdef HL2_ANNIVERSARY_NOV2024
 	UpdateViewSmoothingFOV();
+#endif
 
 	SharedVehicleViewSmoothing( m_hPlayer,
 								pAbsOrigin, pAbsAngles,
@@ -225,6 +233,7 @@ void C_PropVehicleDriveable::GetVehicleViewPosition( int nRole, Vector *pAbsOrig
 void C_PropVehicleDriveable::GetVehicleClipPlanes( float &flZNear, float &flZFar ) const
 {
 	// FIXME: Need something a better long-term, this fixes the buggy.
+#ifdef HL2_ANNIVERSARY_NOV2024
 	// Wide views would clip the vehicle model at 6.
 	if ( default_fov.GetFloat() > 90.0f || engine->GetScreenAspectRatio() > ( 16.0f / 9.0f ) )
 	{
@@ -234,6 +243,9 @@ void C_PropVehicleDriveable::GetVehicleClipPlanes( float &flZNear, float &flZFar
 	{
 		flZNear = 6;
 	}
+#else
+	flZNear = 6;
+#endif
 }
 
 	
@@ -295,6 +307,7 @@ void C_PropVehicleDriveable::DrawHudElements( )
 			{
 				Vector screen;
 
+#ifdef HL2_ANNIVERSARY_NOV2024
 				int vx, vy, vw, vh;
 				vgui::surface()->GetFullscreenViewport( vx, vy, vw, vh );
 
@@ -313,6 +326,16 @@ void C_PropVehicleDriveable::DrawHudElements( )
 				ScreenTransform( vecCrosshair, screen );
 				x += 0.5 * screen[0] * screenWidth + 0.5;
 				y -= 0.5 * screen[1] * screenHeight + 0.5;
+#endif
+#else
+				x = ScreenWidth()/2;
+				y = ScreenHeight()/2;
+
+#if TRIANGULATED_CROSSHAIR
+				ScreenTransform( m_vecGunCrosshair, screen );
+				x += 0.5 * screen[0] * ScreenWidth() + 0.5;
+				y -= 0.5 * screen[1] * ScreenHeight() + 0.5;
+#endif
 #endif
 			}
 
@@ -417,10 +440,12 @@ void C_PropVehicleDriveable::RestrictView( float *pYawBounds, float *pPitchBound
 //-----------------------------------------------------------------------------
 // Purpose: The view smoothing FOV follows the player's FOV setting
 //-----------------------------------------------------------------------------
+#ifdef HL2_ANNIVERSARY_NOV2024
 void C_PropVehicleDriveable::UpdateViewSmoothingFOV()
 {
 	m_ViewSmoothingData.flFOV = default_fov.GetFloat();
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 

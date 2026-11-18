@@ -46,7 +46,7 @@ private:
 	CNetworkVar( float, m_Resolution );
 	CNetworkVar( bool, m_bFogEnable );
 	CNetworkColor32( m_FogColor );
-#if defined( HL2_EPISODIC ) || !defined( BYTEMATCH_RETAIL )
+#ifdef HL2_ANNIVERSARY_NOV2024
 	CNetworkColor32( m_FogColor_HDR );
 #endif
 #line 50
@@ -56,7 +56,7 @@ private:
 	CNetworkVar( bool, m_bFogRadial );
 	CNetworkVar( bool, m_bActive );
 	CNetworkVar( bool, m_bUseScreenAspectRatio );
-#if defined( HL2_EPISODIC ) || !defined( BYTEMATCH_RETAIL )
+#ifdef HL2_ANNIVERSARY_NOV2024
 	CNetworkVar( bool, m_bUseHDCamera );
 #endif
 #line 57

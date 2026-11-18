@@ -39,9 +39,15 @@ C_PropJeep::C_PropJeep()
 	m_flViewAngleDeltaTime = 0.0f;
 	m_pHeadlight = NULL;
 	
+#ifdef HL2_ANNIVERSARY_NOV2024
 	UpdateViewSmoothingFOV();
+#else
+	ConVarRef r_JeepFOV( "r_JeepFOV" );
+	m_ViewSmoothingData.flFOV = r_JeepFOV.GetFloat();
+#endif
 }
 
+#ifdef HL2_ANNIVERSARY_NOV2024
 //-----------------------------------------------------------------------------
 // Purpose: The headlight goes away with the entity
 //-----------------------------------------------------------------------------
@@ -55,6 +61,18 @@ void C_PropJeep::UpdateOnRemove( void )
 
 	BaseClass::UpdateOnRemove();
 }
+#else
+//-----------------------------------------------------------------------------
+// Purpose: Deconstructor
+//-----------------------------------------------------------------------------
+C_PropJeep::~C_PropJeep()
+{
+	if ( m_pHeadlight )
+	{
+		delete m_pHeadlight;
+	}
+}
+#endif
 
 void C_PropJeep::Simulate( void )
 {
@@ -104,7 +122,11 @@ void C_PropJeep::UpdateViewAngles( C_BasePlayer *pLocalPlayer, CUserCmd *pCmd )
 	if ( r_JeepViewBlendTo.GetInt() )
 	{
 		// Check to see if the mouse has been touched in a bit or that we are not throttling.
-		if ( ( pCmd->mousedx != 0 || pCmd->mousedy != 0 ) || ( fabsf( m_flThrottle ) < 0.01f ) || pLocalPlayer->m_fOnTarget )
+		if ( ( pCmd->mousedx != 0 || pCmd->mousedy != 0 ) || ( fabsf( m_flThrottle ) < 0.01f )
+#ifdef HL2_ANNIVERSARY_NOV2024
+			|| pLocalPlayer->m_fOnTarget
+#endif
+			)
 		{
 			m_flViewAngleDeltaTime = 0.0f;
 		}
@@ -248,11 +270,13 @@ void C_PropJeep::DampenForwardMotion( Vector &vecVehicleEyePos, QAngle &vecVehic
 //-----------------------------------------------------------------------------
 // Purpose: The jeep has its own view FOV
 //-----------------------------------------------------------------------------
+#ifdef HL2_ANNIVERSARY_NOV2024
 void C_PropJeep::UpdateViewSmoothingFOV()
 {
 	static ConVarRef r_JeepFOV( "r_JeepFOV" );
 	m_ViewSmoothingData.flFOV = r_JeepFOV.GetFloat();
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose:

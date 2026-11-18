@@ -185,7 +185,7 @@ BEGIN_RECV_TABLE_NOBASE( CPlayerLocalData, DT_Local )
 	RecvPropVector( RECVINFO( m_skybox3d.fog.dirPrimary ) ),
 	RecvPropInt( RECVINFO( m_skybox3d.fog.colorPrimary ) ),
 	RecvPropInt( RECVINFO( m_skybox3d.fog.colorSecondary ) ),
-#if defined( HL2_EPISODIC ) || !defined( BYTEMATCH_RETAIL )
+#ifdef HL2_ANNIVERSARY_NOV2024
 	RecvPropInt( RECVINFO( m_skybox3d.fog.colorPrimaryHDR ) ),
 	RecvPropInt( RECVINFO( m_skybox3d.fog.colorSecondaryHDR ) ),
 #endif

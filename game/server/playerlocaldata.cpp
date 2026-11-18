@@ -66,7 +66,7 @@ BEGIN_SEND_TABLE_NOBASE( CPlayerLocalData, DT_Local )
 	SendPropVector( SENDINFO_STRUCTELEM(m_skybox3d.fog.dirPrimary), -1, SPROP_COORD),
 	SendPropInt( SENDINFO_STRUCTELEM( m_skybox3d.fog.colorPrimary ), 32, SPROP_UNSIGNED ),
 	SendPropInt( SENDINFO_STRUCTELEM( m_skybox3d.fog.colorSecondary ), 32, SPROP_UNSIGNED ),
-#if defined( HL2_EPISODIC ) || !defined( BYTEMATCH_RETAIL )
+#ifdef HL2_ANNIVERSARY_NOV2024
 	SendPropInt( SENDINFO_STRUCTELEM( m_skybox3d.fog.colorPrimaryHDR ), 32, SPROP_UNSIGNED ),
 	SendPropInt( SENDINFO_STRUCTELEM( m_skybox3d.fog.colorSecondaryHDR ), 32, SPROP_UNSIGNED ),
 #endif
@@ -109,7 +109,7 @@ BEGIN_SIMPLE_DATADESC( fogparams_t )
 	DEFINE_FIELD( dirPrimary, FIELD_VECTOR ),
 	DEFINE_FIELD( colorPrimary, FIELD_COLOR32 ),
 	DEFINE_FIELD( colorSecondary, FIELD_COLOR32 ),
-#if defined( HL2_EPISODIC ) || !defined( BYTEMATCH_RETAIL )
+#ifdef HL2_ANNIVERSARY_NOV2024
 	DEFINE_FIELD( colorPrimaryHDR, FIELD_COLOR32 ),
 	DEFINE_FIELD( colorSecondaryHDR, FIELD_COLOR32 ),
 #endif

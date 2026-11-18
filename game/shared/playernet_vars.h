@@ -31,7 +31,7 @@ struct fogparams_t
 	CNetworkVector( dirPrimary );
 	CNetworkColor32( colorPrimary );
 	CNetworkColor32( colorSecondary );
-#if defined( HL2_EPISODIC ) || !defined( BYTEMATCH_RETAIL )
+#ifdef HL2_ANNIVERSARY_NOV2024
 	CNetworkColor32( colorPrimaryHDR );
 	CNetworkColor32( colorSecondaryHDR );
 #endif

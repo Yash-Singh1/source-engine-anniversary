@@ -45,7 +45,7 @@ private:
 	float m_Resolution;
 	bool m_bFogEnable;
 	color32 m_FogColor;
-#if defined( HL2_EPISODIC ) || !defined( BYTEMATCH_RETAIL )
+#ifdef HL2_ANNIVERSARY_NOV2024
 	color32 m_FogColor_HDR;
 #endif
 #line 49
@@ -55,7 +55,7 @@ private:
 	bool m_bFogRadial;
 	bool m_bActive;
 	bool m_bUseScreenAspectRatio;
-#if defined( HL2_EPISODIC ) || !defined( BYTEMATCH_RETAIL )
+#ifdef HL2_ANNIVERSARY_NOV2024
 	bool m_bUseHDCamera;
 #endif
 #line 56
