@@ -2526,6 +2526,10 @@
      "lang": "c++"
     },
     {
+     "lang": "c++",
+     "path": "engine/workshop.cpp"
+    },
+    {
      "path": "engine/world.cpp",
      "lang": "c++"
     },
@@ -5697,6 +5701,10 @@
      "lang": "c++"
     },
     {
+     "lang": "c++",
+     "path": "replay/sv_ftp.cpp"
+    },
+    {
      "path": "replay/sv_publishtest.cpp",
      "lang": "c++"
     },
@@ -5954,7 +5962,16 @@
      "prebuilt": "lib/public/steam_api.lib"
     }
    ],
-   "file_libs": [],
+   "file_libs": [
+    {
+     "path": "dx9sdk/lib/x86/dinput8.lib",
+     "valve_path": "dx9sdk/lib/dinput8.lib"
+    },
+    {
+     "path": "dx9sdk/lib/x86/ddraw.lib",
+     "valve_path": "dx9sdk/lib/ddraw.lib"
+    }
+   ],
    "link": [
     "/INCREMENTAL:NO",
     "/DEBUG",
@@ -5988,9 +6005,7 @@
     "winmm.lib",
     "wsock32.lib",
     "odbc32.lib",
-    "odbccp32.lib",
-    "..\\dx9sdk\\lib\\dinput8.lib",
-    "..\\dx9sdk\\lib\\ddraw.lib"
+    "odbccp32.lib"
    ]
   },
   "launcher_main": {

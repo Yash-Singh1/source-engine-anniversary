@@ -109,7 +109,9 @@ FORK_SOURCES = {"engine": ["engine/masterserver.cpp"]}
 
 # Valve sources retail has that the 2018 VPCs lack (retail macOS objects), placed in
 # generator order with the settings of the file before them.
-RETAIL_SOURCES = {"GameUI": ["gameui/OptionsSubGamepad.cpp"]}
+RETAIL_SOURCES = {"GameUI": ["gameui/OptionsSubGamepad.cpp"],
+                  # retail replay.dll and engine.dll have their strings too
+                  "replay": ["replay/sv_ftp.cpp"], "engine": ["engine/workshop.cpp"]}
 
 # Libraries retail links beyond the 2018 VPCs: retail macOS stdshader_dx9 has
 # libtier2.a(tier2.o), which defines the g_pMaterialSystem CShaderDLL::Connect sets.
@@ -418,7 +420,17 @@ class Module:
         if m["type"] != "lib":
             m["link"] = lsw
             m["link_objects"] = lobjs
-            m["system_libs"] = split_list(self.get("linker.additionaldependencies"), " ")
+            m["system_libs"] = []
+            for lib in split_list(self.get("linker.additionaldependencies"), " "):
+                if "\\" not in lib and "/" not in lib:
+                    m["system_libs"].append(lib)
+                    continue
+                # a path relative to the project (launcher: ..\dx9sdk\lib\dinput8.lib)
+                rel = os.path.normpath(os.path.join(os.path.relpath(self.projdir, self.hl2src), lib.replace("\\", "/")))
+                d, base = os.path.split(rel)
+                d = next((v for k, v in LIB_FILE_ALIASES.items() if d.lower() == k.lower()), d)
+                ours = self.locate(os.path.join(d, base))
+                m["file_libs"].append({"path": ours, "valve_path": rel} if ours else {"path": rel, "missing": True})
         return m
 
 
