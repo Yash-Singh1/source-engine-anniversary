@@ -262,6 +262,7 @@ static float AutoAimDampening( float x, int axis, float dist )
 #ifdef HL2_CLIENT_DLL
 	// Help the user stay on target if the feature is enabled and the user
 	// is not making a gross stick movement.
+#ifdef HL2_ANNIVERSARY_NOV2024
 	if( joy_autoaim_mode.GetBool() && joy_autoaimdampen.GetFloat() > 0.0f )
 	{
 		// Get the HL2 player
@@ -283,6 +284,23 @@ static float AutoAimDampening( float x, int axis, float dist )
 			}
 		}
 	}
+#else
+	if( joy_autoaimdampen.GetFloat() > 0.0f && fabs(x) < joy_autoaimdampenrange.GetFloat() )
+	{
+		// Get the HL2 player
+		C_BaseHLPlayer *pLocalPlayer = (C_BaseHLPlayer *)C_BasePlayer::GetLocalPlayer();
+
+		if( pLocalPlayer )
+		{
+			// Get the autoaim target
+			if( pLocalPlayer->m_HL2Local.m_bAutoAimTarget )
+			{
+				return joy_autoaimdampen.GetFloat();
+			}
+		}
+	}
+#endif
+#line 286
 #endif
 	return 1.0f;// No dampening.
 }
