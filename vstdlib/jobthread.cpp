@@ -998,7 +998,7 @@ bool CThreadPool::Start( const ThreadPoolStartParams_t &startParams, const char 
 
 	if ( !pszName )
 	{
-		pszName = ( startParams.bIOThreads ) ? "IOJobX" : "CmpJobX";
+		pszName = ( startParams.bIOThreads ) ? "IOJob" : "CmpJob";
 	}
 	while ( nThreads-- )
 	{

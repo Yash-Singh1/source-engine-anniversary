@@ -93305,19 +93305,18 @@
     "common/jpegloader_common.cpp",
     "public/html/htmlprotobuf.cpp",
     "tier1/fileio.cpp",
+    "vgui2/chromehtml/chromewrapper.cpp",
     "vgui2/chromehtml/generated_proto/htmlmessages.pb.cc",
+    "vgui2/chromehtml/html_chrome.cpp",
     "vgui2/chromehtml/html_mac.mm"
    ],
-   "missing_sources": [
-    "vgui2/chromehtml/chromewrapper.cpp",
-    "vgui2/chromehtml/html_chrome.cpp"
-   ],
+   "missing_sources": [],
    "archives": [
     {
      "archive": "libcef_dll_wrapper.a",
      "path": "lib/public/osx32/libcef_dll_wrapper.a",
      "prebuilt": true,
-     "waf_target": null,
+     "waf_target": "cef_dll_wrapper",
      "members": [
       "transfer_util.o",
       "libcef_dll_wrapper.o",
@@ -93559,9 +93558,9 @@
     },
     {
      "kind": "object",
-     "source": null,
+     "source": "vgui2/chromehtml/chromewrapper.cpp",
      "retail_source": "vgui2/chromehtml/chromewrapper.cpp",
-     "status": "missing",
+     "status": "exact",
      "archive": null,
      "member": null,
      "mtime": 1732582891,
@@ -93581,9 +93580,9 @@
     },
     {
      "kind": "object",
-     "source": null,
+     "source": "vgui2/chromehtml/html_chrome.cpp",
      "retail_source": "vgui2/chromehtml/html_chrome.cpp",
-     "status": "missing",
+     "status": "exact",
      "archive": null,
      "member": null,
      "mtime": 1732582891,
@@ -97070,7 +97069,7 @@
   "libcef_dll_wrapper.a": {
    "path": "lib/public/osx32/libcef_dll_wrapper.a",
    "prebuilt": true,
-   "waf_target": null,
+   "waf_target": "cef_dll_wrapper",
    "used_by": [
     "bin/chromehtml"
    ],

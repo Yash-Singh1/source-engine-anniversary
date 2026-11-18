@@ -450,6 +450,7 @@ public:
 			// Latch in case extended stuff below crashes
 			Steam_SetMiniDumpComment();
 
+#ifndef BYTEMATCH_RETAIL
 			// Add user comment strings. 4096 is just a large sanity number we should
 			//  never ever reach (currently our minidump supports 32 of these.)
 			for( int i = 0; i < 4096; i++ )
@@ -461,6 +462,8 @@ public:
 				if ( pUserStreamInfo[ 0 ] )
 					CommentPrintf( "%s", pUserStreamInfo );
 			}
+#endif
+#line 456
 
 			bool bExtendedSpew = sys_minidumpexpandedspew.GetBool();
 			if ( bExtendedSpew )
@@ -912,7 +915,10 @@ static eSteamInfoInit Sys_TryInitSteamInfo( void *pvAPI, SteamInfVersionInfo_t& 
 	}
 #endif // NO_STEAM
 
+#ifndef BYTEMATCH_RETAIL
 	MinidumpUserStreamInfoSetHeader( "%sLaunching \"%s\"\n", ( bDedicated ? "DedicatedServerAPI " : "" ), CommandLine()->GetCmdLine() );
+#endif
+#line 908
 
 
 	return initState;

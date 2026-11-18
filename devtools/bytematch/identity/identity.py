@@ -29,6 +29,8 @@ without the stab nlists and stab strings (see lduuid.py).
 
   identity.py inputsystem                  rebuild and compare one module
   identity.py --all                        every dylib in link_commands.json
+  identity.py --identical                  the modules in identical.json; fails unless each
+                                           output equals retail byte for byte (see ci.sh)
 
 The scratch tree (<build-dir>/identity/roots/<module>) is kept for inspection;
 compiled objects are cached in <build-dir>/identity/cache.
@@ -53,6 +55,7 @@ import machocmp  # noqa: E402
 MANIFEST = os.path.join(TREE, 'devtools', 'bytematch', 'manifests', 'retail-osx32.json')
 MODULE_DIR = os.path.join(TREE, 'devtools', 'bytematch', 'manifests', 'modules')
 ALIASES = os.path.join(HERE, 'aliases.json')
+IDENTICAL = os.path.join(HERE, 'identical.json')
 
 XCODE = '/Applications/Xcode.app/Contents/Developer/'
 VALVE_SDK = XCODE + 'Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/'
@@ -98,17 +101,23 @@ def split_member(oso):
 class Build:
     def __init__(self, bld):
         self.bld = os.path.abspath(bld)
-        with open(os.path.join(self.bld, 'compile_commands.json')) as f:
-            cc = json.load(f)
-        self.compile = {}
-        for e in cc:
-            args = e['arguments']
-            out = next((a[2:] if a != '-o' else args[i + 1]) for i, a in enumerate(args)
-                       if a.startswith('-o'))
-            self.compile[os.path.normpath(os.path.join(e['directory'], out))] = e
         path = os.path.join(self.bld, 'link_commands.json')
         if not os.path.exists(path):
             raise SystemExit('%s missing: run `python3 waf retail_linkdb` first' % path)
+        # compile_commands.json keeps one entry per source file, so a source compiled by
+        # two targets (tier1/interface.cpp in tier1 and vaudio_speex) loses one of them.
+        self.compile = {}
+        for name in ('compile_commands.json', 'retail_compile_commands.json'):
+            p = os.path.join(self.bld, name)
+            if not os.path.exists(p):
+                continue
+            with open(p) as f:
+                cc = json.load(f)
+            for e in cc:
+                args = e['arguments']
+                out = next((a[2:] if a != '-o' else args[i + 1]) for i, a in enumerate(args)
+                           if a.startswith('-o'))
+                self.compile[os.path.normpath(os.path.join(e['directory'], out))] = e
         with open(path) as f:
             self.links = json.load(f)
         self.by_target = dict((e['target'], e) for e in self.links)
@@ -271,6 +280,9 @@ class Module:
             rel = o['oso']
             o.update(d)
             o['source'] = our.get('source')  # path in our tree (retail's may differ, see aliases.json)
+            rs = our.get('retail_source')
+            if not o['source'] and rs and os.path.exists(os.path.join(TREE, rs)):
+                o['source'] = rs  # restored since the manifest was generated
             o['valve_src'] = d['oso'][:-len(rel)] if d['oso'].endswith(rel) and d['oso'] != rel else None
         self.valve_src = next((o['valve_src'] for o in self.objects if o['valve_src'] and o['kind'] == 'object'),
                               next((o['valve_src'] for o in self.objects if o['valve_src']), None))
@@ -280,13 +292,20 @@ class Module:
         return os.path.join(self.root, p.lstrip('/')) if p.startswith(VALVE_TOP) else None
 
     def plan(self):
-        """Work list: (our object, source, compile entry, retail object or None, Valve path)."""
+        """Work list: (our object, source, compile entry, retail object or None, Valve path).
+
+        A loose object that retail links as a member of an archive we don't build
+        (vstdlib's coroutine.o from libcoroutine_osx.a) goes into that archive instead,
+        returned as {Valve archive path: [(object, source, entry, retail member, member name)]}."""
         d = self.link['directory']
         args = self.link['arguments']
         loose = [o for o in self.objects if o['kind'] == 'object']
         by_src = dict((o.get('source'), o) for o in loose if o.get('source'))
+        ours_ar = set('lib%s.a' % a[2:] for a in args if a.startswith('-l'))
+        mem_src = dict((o.get('source'), o) for o in self.objects if o['kind'] == 'archive_member'
+                       and o.get('source') and os.path.basename(o['archive']) not in ours_ar)
         obj_dir = os.path.dirname(loose[0]['oso']) if loose else None
-        jobs, arg_map = [], {}
+        jobs, arg_map, extra = [], {}, {}
         for a in args:
             if not a.endswith('.o') or a.startswith('-'):
                 continue
@@ -297,6 +316,12 @@ class Module:
                 continue
             rel = os.path.relpath(src, self.comp.tree)
             r = by_src.get(rel)
+            if not r and rel in mem_src:
+                r = mem_src[rel]
+                varchive, mname = split_member(r['oso'])
+                extra.setdefault(varchive, []).append((path, src, entry, r, mname))
+                arg_map[a] = None
+                continue
             if r:
                 vp = r['oso']
             else:
@@ -304,7 +329,7 @@ class Module:
                 self.notes.append('%s: not in the retail debug map' % rel)
             jobs.append(('obj', path, src, entry, r, vp))
             arg_map[a] = vp
-        return jobs, arg_map
+        return jobs, arg_map, extra
 
     def archive_plan(self):
         """For each -l that names one of our static libraries: (lib arg, archive entry, members)."""
@@ -343,8 +368,10 @@ class Module:
     def run(self, shim):
         if os.path.isdir(self.root):
             shutil.rmtree(self.root)
-        jobs, arg_map = self.plan()
+        jobs, arg_map, extra = self.plan()
         archives = self.archive_plan()
+        for varchive, mems in extra.items():
+            archives.append((varchive, varchive, mems))
         work = []
         for kind, path, src, entry, r, vp in jobs:
             work.append((src, entry, r, ('obj', vp)))
@@ -383,11 +410,16 @@ class Module:
             subprocess.check_call(['/usr/bin/ar', 'rcs', dest] + names, cwd=stage,
                                   stderr=subprocess.DEVNULL)
             lib_map[lib] = varchive
-        # link
+        # link; archives of formerly loose objects follow the last object, ahead of the libraries
         cmd = []
-        for a in self.link['arguments']:
+        args = self.link['arguments']
+        last_obj = max([i for i, a in enumerate(args) if a in arg_map] or [-1])
+        for i, a in enumerate(args):
             if a in arg_map:
-                cmd.append(arg_map[a])
+                if arg_map[a]:
+                    cmd.append(arg_map[a])
+                if i == last_obj:
+                    cmd += [lib_map[v] for v in extra]
             elif a in lib_map:
                 cmd.append(lib_map[a])
             elif a.startswith('-o') and len(a) > 2:
@@ -428,6 +460,8 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('targets', nargs='*', help='waf target names (inputsystem, tier0, vgui2, ...)')
     ap.add_argument('--all', action='store_true', help='every dylib in link_commands.json')
+    ap.add_argument('--identical', action='store_true',
+                    help='the modules in identical.json; exit 1 unless every output equals retail (cmp)')
     ap.add_argument('--build-dir', default=os.path.join(TREE, 'build-retail'))
     ap.add_argument('--scratch', default=None, help='scratch tree [default: <build-dir>/identity]')
     ap.add_argument('--depot', default=None, help='retail depot 223 build root')
@@ -443,8 +477,13 @@ def main():
     os.makedirs(scratch, exist_ok=True)
     manifest = load_manifest()
     targets = args.targets
+    expect = {}
     if args.all:
         targets = [e['target'] for e in build.links if e['kind'].endswith('shlib') or e['kind'].endswith('program')]
+    if args.identical:
+        with open(IDENTICAL) as f:
+            expect = dict((e['target'], e) for e in json.load(f)['modules'])
+        targets = list(expect)
     if not targets:
         ap.error('no targets')
     shim = build_shim(scratch)
@@ -452,10 +491,13 @@ def main():
     rc = 0
     summary = []
     for t in targets:
+        m = None
         try:
             m = Module(t, build, manifest, comp, depot, scratch, os.path.join(scratch, 'out'))
             out = m.run(shim)
         except (RuntimeError, SystemExit) as e:
+            for n in (m.notes if m else []):
+                log('%s: note: %s' % (t, n))
             log('%s: FAILED: %s' % (t, e))
             summary.append((t, 'failed', str(e).splitlines()[0]))
             rc = 1
@@ -466,6 +508,15 @@ def main():
         cargs = argparse.Namespace(symbols=args.symbols, verbose=False, max=60)
         status, lines = machocmp.compare(a, b, cargs)
         log('\n'.join(lines))
+        if t in expect:
+            with open(m.retail, 'rb') as f:
+                digest = hashlib.sha256(f.read()).hexdigest()
+            if digest != expect[t]['sha256']:
+                summary.append((t, 'failed', 'retail file %s is not the recorded one (sha256 %s)' % (m.retail, digest)))
+                rc = 1
+                continue
+            if subprocess.run(['cmp', '-s', out, m.retail]).returncode:
+                status = status or 1
         summary.append((t, 'IDENTICAL' if status == 0 else 'differs', out))
         rc |= status
     log('')

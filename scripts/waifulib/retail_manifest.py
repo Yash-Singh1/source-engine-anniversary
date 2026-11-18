@@ -51,7 +51,7 @@ ARCHIVE_TARGETS = {
 	'libcoroutine_osx.a': 'coroutine_osx',
 	'libcryptopp.a': 'CRYPTOPP',
 	'libspeex.a': 'SPEEX',
-	'libcef_dll_wrapper.a': 'CEF_DLL_WRAPPER',
+	'libcef_dll_wrapper.a': 'cef_dll_wrapper',
 }
 
 # Retail links objects for these, but our copy can't be compiled for this target;
