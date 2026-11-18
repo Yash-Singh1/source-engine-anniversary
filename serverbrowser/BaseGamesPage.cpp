@@ -26,7 +26,12 @@ const char *COM_GetModDirectory();
 
 #undef wcscat
 
+#ifdef BYTEMATCH_RETAIL
+ConVar sb_mod_suggested_maxplayers( "sb_mod_suggested_maxplayers", "0", 0 );
+#else
 ConVar sb_mod_suggested_maxplayers( "sb_mod_suggested_maxplayers", "0", FCVAR_HIDDEN );
+#endif
+#line 30
 ConVar sb_filter_incompatible_versions( "sb_filter_incompatible_versions",
 	#ifdef STAGING_ONLY
 		"0",
@@ -938,15 +943,15 @@ void CBaseGamesPage::ServerResponded( HServerListRequest hReq, int iServer )
 #endif
 
 #ifdef BYTEMATCH_RETAIL
-	// FIXME(johns): This is a workaround for a steam bug, where it inproperly reads signed bytes out of the
-	//               message. Once the upstream fix makes it into our SteamSDK, this block can be removed.
-	pServerItem->m_nPlayers    = (uint8)(int8)pServerItem->m_nPlayers;
-	pServerItem->m_nBotPlayers = (uint8)(int8)pServerItem->m_nBotPlayers;
-	pServerItem->m_nMaxPlayers = (uint8)(int8)pServerItem->m_nMaxPlayers;
-
 	ServerResponded( iServer, pServerItem );
 }
 #endif
+
+
+
+
+
+
 
 
 //-----------------------------------------------------------------------------

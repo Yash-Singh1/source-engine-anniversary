@@ -266,6 +266,16 @@ void CCustomGames::OnSaveFilter(KeyValues *filter)
 		Q_strlower(m_szTagFilter);
 	}
 
+	// replace any gametype filter added by an earlier save
+	for ( int i = 0; i < m_vecServerFilters.Count(); i++ )
+	{
+		if ( !V_strnicmp( m_vecServerFilters[i].m_szKey, "gametype", 8 ) )
+		{
+			m_vecServerFilters.Remove( i );
+			break;
+		}
+	}
+
 	if ( TagsExclude() )
 	{
 		m_vecServerFilters.AddToTail( MatchMakingKeyValuePair_t( "gametype", "" ) );

@@ -23,7 +23,7 @@ if [ -z "$WAFLOCK" ] && [ -d "$OUT" ]; then
 fi
 if [ ! -f "$OUT/c4che/_cache.py" ]; then
 	python3 waf configure --retail-osx32 -T release --prefix='' -o "$OUT" \
-		--retail-modules=tier0,tier1,mathlib,tier2,tier3,vstdlib,inputsystem,video,video/video_quicktime,soundemittersystem,scenefilecache,utils/bugreporter_public,utils/bugreporter_filequeue,materialsystem/shaderlib,materialsystem/stdshaders
+		--retail-modules=tier0,tier1,mathlib,tier2,tier3,vstdlib,appframework,bitmap,vtf,utils/vtex,inputsystem,video,video/video_quicktime,soundemittersystem,scenefilecache,utils/bugreporter_public,utils/bugreporter_filequeue,materialsystem/shaderlib,materialsystem/stdshaders,engine/voice_codecs/miles
 fi
 python3 waf build
 python3 waf retail_linkdb

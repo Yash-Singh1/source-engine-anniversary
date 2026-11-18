@@ -1029,9 +1029,13 @@ static int getSDLDisplayIndexFullscreen()
 COptionsSubVideo::COptionsSubVideo(vgui::Panel *parent) : PropertyPage(parent, NULL)
 {
 	m_bRequireRestart = false;
-
+	m_bHDContentAvailable = false;
 	m_bDisplayedVRModeMessage = false;
-
+	m_bHDRAvailable = false;
+	m_pHudAspectRatio = NULL;
+	m_pHDR = NULL;
+	m_nSelectedHudAspect = 0;
+#line 1035
 	m_pGammaButton = new Button( this, "GammaButton", "#GameUI_AdjustGamma" );
 	m_pGammaButton->SetCommand(new KeyValues("OpenGammaDialog"));
 	m_pMode = new ComboBox(this, "Resolution", 8, false);

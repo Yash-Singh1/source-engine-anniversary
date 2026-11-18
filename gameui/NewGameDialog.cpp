@@ -122,7 +122,7 @@ class CGameChapterPanel : public vgui::EditablePanel
 	Color m_SelectedColor;
 	Color m_FillColor;
 
-	char m_szConfigFile[_MAX_PATH];
+	char m_szConfigFile[1024];
 	char m_szChapter[32];
 
 	bool m_bTeaserChapter;
@@ -132,7 +132,7 @@ class CGameChapterPanel : public vgui::EditablePanel
 	bool m_bIsSelected;
 
 public:
-	CGameChapterPanel( CNewGameDialog *parent, const char *name, const char *chapterName, int chapterIndex, const char *chapterNumber, const char *chapterConfigFile, bool bCommentary ) : BaseClass( parent, name )
+	CGameChapterPanel( CNewGameDialog *parent, const char *name, const char *chapterName, int chapterIndex, const char *chapterNumber, const char *chapterConfigFile, bool bCommentary, const char *pszOverrideMod ) : BaseClass( parent, name )
 	{
 		Q_strncpy( m_szConfigFile, chapterConfigFile, sizeof(m_szConfigFile) );
 		Q_strncpy( m_szChapter, chapterNumber, sizeof(m_szChapter) );
@@ -165,7 +165,14 @@ public:
 #ifdef BYTEMATCH_RETAIL
 		// the image has the same name as the config file
 		char szMaterial[ MAX_PATH ];
-		Q_snprintf( szMaterial, sizeof(szMaterial), "chapters/%s", chapterConfigFile );
+		if ( ModInfo().IsHL2Complete() && pszOverrideMod && V_strlen( pszOverrideMod ) > 0 )
+		{
+			Q_snprintf( szMaterial, sizeof(szMaterial), "vgui/%s/chapters/%s", pszOverrideMod, chapterConfigFile );
+		}
+		else
+		{
+			Q_snprintf( szMaterial, sizeof(szMaterial), "chapters/%s", chapterConfigFile );
+		}
 		char *ext = strstr( szMaterial, "." );
 		if ( ext )
 		{
@@ -184,7 +191,10 @@ public:
 #ifndef BYTEMATCH_RETAIL
 		// the image has the same name as the config file
 		char szMaterial[MAX_PATH];
-		Q_snprintf(szMaterial, sizeof(szMaterial), "chapters/%s", chapterConfigFile);
+		if ( ModInfo().IsHL2Complete() && pszOverrideMod && V_strlen( pszOverrideMod ) > 0 )
+			Q_snprintf( szMaterial, sizeof(szMaterial), "vgui/%s/chapters/%s", pszOverrideMod, chapterConfigFile );
+		else
+			Q_snprintf(szMaterial, sizeof(szMaterial), "chapters/%s", chapterConfigFile);
 		char* ext = strstr(szMaterial, ".");
 		if (ext)
 		{
@@ -226,6 +236,15 @@ public:
 		if ( GameUI().IsConsoleUI() )
 		{
 			m_pChapterNameLabel->SetVisible( false );
+		}
+
+		m_pChapterLabel->SetAllCaps( true );
+		m_pChapterNameLabel->SetAllCaps( true );
+
+		if ( PROPORTIONAL_VALUE( 1000 ) != 1000 )
+		{
+			m_pLevelPic->SetShouldScaleImage( true );
+			m_pLevelPic->SetScaleAmount( PROPORTIONAL_VALUE( 1000 ) / 1000.0f );
 		}
 
 		m_pCommentaryIcon = dynamic_cast<ImagePanel*>( FindChildByName( "CommentaryIcon" ) );
@@ -301,6 +320,11 @@ const char *COM_GetModDirectory()
 	if ( Q_strlen( modDir ) == 0 )
 	{
 		const char *gamedir = CommandLine()->ParmValue("-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) );
+		char szExpansion[16];
+		if ( g_pFullFileSystem->GetCurrentGameExpansionId( szExpansion, sizeof( szExpansion ) ) )
+		{
+			gamedir = szExpansion;
+		}
 		Q_strncpy( modDir, gamedir, sizeof(modDir) );
 		if ( strchr( modDir, '/' ) || strchr( modDir, '\\' ) )
 		{
@@ -311,6 +335,37 @@ const char *COM_GetModDirectory()
 	}
 
 	return modDir;
+}
+
+//-----------------------------------------------------------------------------
+// iUnlockedChapter - the value of sv_unlockedchapters, 1-based. A value of 0
+//		is treated as a 1, since at least one chapter must be unlocked.
+//
+// i - the 1-based index of the chapter we're considering.
+//-----------------------------------------------------------------------------
+inline void CNewGameDialog::UpdatePanelLockedStatus( int iUnlockedChapter, int i, CGameChapterPanel *pChapterPanel )
+{
+	if ( iUnlockedChapter <= 0 )
+	{
+		iUnlockedChapter = 1;
+	}
+
+	bool bLocked = false;
+	if ( iUnlockedChapter < i )
+	{
+		// Never lock the first chapter
+		bLocked = ( i != 0 );
+	}
+
+	pChapterPanel->SetEnabled( !bLocked );
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: the commentary check button wins over the dialog's commentary mode
+//-----------------------------------------------------------------------------
+inline bool CNewGameDialog::IsCommentaryEnabled()
+{
+	return m_pCommentaryCheckButton ? m_pCommentaryCheckButton->IsSelected() : m_bCommentaryMode;
 }
 
 //-----------------------------------------------------------------------------
@@ -340,6 +395,7 @@ CNewGameDialog::CNewGameDialog(vgui::Panel *parent, bool bCommentaryMode) : Base
 
 	m_pNextButton = new Button( this, "Next", "#gameui_next" );
 	m_pPrevButton = new Button( this, "Prev", "#gameui_prev" );
+	m_pCommentaryCheckButton = NULL;
 	m_pPlayButton = new CNewGamePlayButton( this, "Play", "#GameUI_Play" );
 	m_pPlayButton->SetCommand( "Play" );
 
@@ -380,75 +436,99 @@ CNewGameDialog::CNewGameDialog(vgui::Panel *parent, bool bCommentaryMode) : Base
 		m_pFooter = NULL;
 	}
 
+	ReloadChapters();
+}
+
+CNewGameDialog::~CNewGameDialog()
+{
+	delete m_pFooter;
+	m_pFooter = NULL;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: sv_unlockedchapters, or sv_unlockedchapters_<mod> for an override mod
+//-----------------------------------------------------------------------------
+int CNewGameDialog::GetUnlockedChapter()
+{
+	ConVarRef var( "sv_unlockedchapters" );
+	int iUnlockedChapter = atoi( var.IsValid() ? var.GetString() : "1" );
+
+	if ( m_strOverrideMod.Length() )
+	{
+		char szModVar[128];
+		V_snprintf( szModVar, sizeof( szModVar ), "%s_%s", "sv_unlockedchapters", m_strOverrideMod.Get() );
+
+		ConVarRef modVar( szModVar );
+		if ( modVar.IsValid() )
+		{
+			iUnlockedChapter = modVar.GetInt();
+		}
+	}
+
+	return iUnlockedChapter;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: rebuilds the chapter panels from the current (or override) mod's cfg dir
+//-----------------------------------------------------------------------------
+void CNewGameDialog::ReloadChapters()
+{
+	for ( int i = m_ChapterPanels.Count(); i > 0; --i )
+	{
+		m_ChapterPanels[i - 1]->DeletePanel();
+	}
+	m_ChapterPanels.RemoveAll();
+
 	// parse out the chapters off disk
-	static const int MAX_CHAPTERS = 32;
+	static const int MAX_CHAPTERS = 64;
 	chapter_t chapters[MAX_CHAPTERS];
 
+	char szSearchPath[MAX_PATH];
 	char szFullFileName[MAX_PATH];
 	int chapterIndex = 0;
 
-	if ( IsPC() || !IsX360() )
+	FileFindHandle_t findHandle = FILESYSTEM_INVALID_FIND_HANDLE;
+	const char *pszPathID;
+	if ( m_strOverrideMod.Length() )
 	{
-		FileFindHandle_t findHandle = FILESYSTEM_INVALID_FIND_HANDLE;
-		const char *fileName = "cfg/chapter*.cfg";
-		fileName = g_pFullFileSystem->FindFirst( fileName, &findHandle );
-		while ( fileName && chapterIndex < MAX_CHAPTERS )
-		{
-			if ( fileName[0] )
-			{
-				// Only load chapter configs from the current mod's cfg dir
-				// or else chapters appear that we don't want!
-				Q_snprintf( szFullFileName, sizeof(szFullFileName), "cfg/%s", fileName );
-				FileHandle_t f = g_pFullFileSystem->Open( szFullFileName, "rb", "MOD" );
-				if ( f )
-				{	
-					// don't load chapter files that are empty, used in the demo
-					if ( g_pFullFileSystem->Size(f) > 0	)
-					{
-						Q_strncpy(chapters[chapterIndex].filename, fileName, sizeof(chapters[chapterIndex].filename));
-						++chapterIndex;
-					}
-					g_pFullFileSystem->Close( f );
-				}
-			}
-			fileName = g_pFullFileSystem->FindNext(findHandle);
-		}
+		Q_snprintf( szSearchPath, sizeof( szSearchPath ), "%s/cfg/chapter*.cfg", m_strOverrideMod.Get() );
+		pszPathID = "BASE_PATH";
 	}
-	else if ( IsX360() )
+	else
 	{
-		int ChapterStringIndex = 0;
-		bool bExists = true;
-		while ( bExists && chapterIndex < MAX_CHAPTERS )
-		{
-			Q_snprintf( szFullFileName, sizeof( szFullFileName ), "cfg/chapter%d.cfg", ChapterStringIndex+1 );
+		Q_snprintf( szSearchPath, sizeof( szSearchPath ), "cfg/chapter*.cfg" );
+		pszPathID = "MOD";
+	}
 
-			FileHandle_t f = g_pFullFileSystem->Open( szFullFileName, "rb", "MOD" );
-			if ( f )
-			{		
-				Q_strncpy(chapters[chapterIndex].filename, szFullFileName + 4, sizeof(chapters[chapterIndex].filename));
-				++chapterIndex;
-				++ChapterStringIndex;
-				g_pFullFileSystem->Close( f );
+	const char *fileName = g_pFullFileSystem->FindFirstEx( szSearchPath, pszPathID, &findHandle );
+	while ( fileName && chapterIndex < MAX_CHAPTERS )
+	{
+		if ( fileName[0] )
+		{
+			// Only load chapter configs from the current mod's cfg dir
+			// or else chapters appear that we don't want!
+			if ( m_strOverrideMod.Length() )
+			{
+				Q_snprintf( szFullFileName, sizeof( szFullFileName ), "%s/cfg/%s", m_strOverrideMod.Get(), fileName );
 			}
 			else
 			{
-				bExists = false;
-			}	
-			//Hack to account for xbox360 missing chapter9a
-			if ( ChapterStringIndex == 10 )
-			{				
-				Q_snprintf( szFullFileName, sizeof( szFullFileName ), "cfg/chapter9a.cfg" );
-				FileHandle_t fChap = g_pFullFileSystem->Open( szFullFileName, "rb", "MOD" );
-				if ( fChap )
-				{		
-					Q_strncpy(chapters[chapterIndex].filename, szFullFileName + 4, sizeof(chapters[chapterIndex].filename));
-					++chapterIndex;
-					g_pFullFileSystem->Close( fChap );
-				}		
+				Q_snprintf( szFullFileName, sizeof( szFullFileName ), "cfg/%s", fileName );
 			}
 
+			FileHandle_t f = g_pFullFileSystem->Open( szFullFileName, "rb", pszPathID );
+			if ( f )
+			{
+				// don't load chapter files that are empty, used in the demo
+				if ( g_pFullFileSystem->Size( f ) > 0 )
+				{
+					Q_strncpy( chapters[chapterIndex].filename, fileName, sizeof( chapters[chapterIndex].filename ) );
+					++chapterIndex;
+				}
+				g_pFullFileSystem->Close( f );
+			}
 		}
-		
+		fileName = g_pFullFileSystem->FindNext( findHandle );
 	}
 
 	bool bBonusesUnlocked = false;
@@ -463,57 +543,50 @@ CNewGameDialog::CNewGameDialog(vgui::Panel *parent, bool bCommentaryMode) : Base
 	}
 
 	// sort the chapters
-	qsort(chapters, chapterIndex, sizeof(chapter_t), &ChapterSortFunc);
+	qsort( chapters, chapterIndex, sizeof( chapter_t ), &ChapterSortFunc );
 
-	// work out which chapters are unlocked
-	ConVarRef var( "sv_unlockedchapters" );
-
-	if ( bBonusesUnlocked )
-	{
-		// Bonuses are unlocked so we need to unlock all the chapters too
-		var.SetValue( 15 );
-	}
-
-	const char *unlockedChapter = var.IsValid() ? var.GetString() : "1";
-	int iUnlockedChapter = atoi(unlockedChapter);
+	// Bonuses are unlocked so we need to unlock all the chapters too
+	int iUnlockedChapter = bBonusesUnlocked ? MAX_CHAPTERS : GetUnlockedChapter();
 
 	// add chapters to combobox
-	for (int i = 0; i < chapterIndex; i++)
+	for ( int i = 0; i < chapterIndex; i++ )
 	{
 		const char *fileName = chapters[i].filename;
 		char chapterID[32] = { 0 };
-		sscanf(fileName, "chapter%s", chapterID);
+		sscanf( fileName, "chapter%s", chapterID );
 		// strip the extension
-		char *ext = V_stristr(chapterID, ".cfg");
-		if (ext)
+		char *ext = V_stristr( chapterID, ".cfg" );
+		if ( ext )
 		{
 			*ext = 0;
 		}
 
 		const char *pGameDir = COM_GetModDirectory();
+		if ( m_strOverrideMod.Length() )
+		{
+			pGameDir = m_strOverrideMod.Get();
+		}
+		m_bLostCoast = !V_strcmp( pGameDir, "lostcoast" );
 
 		char chapterName[64];
-		Q_snprintf(chapterName, sizeof(chapterName), "#%s_Chapter%s_Title", pGameDir, chapterID);
+		Q_snprintf( chapterName, sizeof( chapterName ), "#%s_Chapter%s_Title", pGameDir, chapterID );
 
 		Q_snprintf( szFullFileName, sizeof( szFullFileName ), "%s", fileName );
-		CGameChapterPanel *chapterPanel = SETUP_PANEL( new CGameChapterPanel( this, NULL, chapterName, i, chapterID, szFullFileName, m_bCommentaryMode ) );
+		CGameChapterPanel *chapterPanel = SETUP_PANEL( new CGameChapterPanel( this, NULL, chapterName, i, chapterID, szFullFileName, m_bCommentaryMode, m_strOverrideMod.Length() ? m_strOverrideMod.Get() : NULL ) );
 		chapterPanel->SetVisible( false );
 
 		UpdatePanelLockedStatus( iUnlockedChapter, i + 1, chapterPanel );
 
-		if ( GameUI().IsConsoleUI() )
+		if ( GameUI().IsConsoleUI() && bBonusesUnlocked )
 		{
-			if ( bBonusesUnlocked )
+			// check to see if it has associated challenges
+			for ( int iBonusMap = 0; iBonusMap < BonusMapsDatabase()->BonusCount(); ++iBonusMap )
 			{
-				// check to see if it has associated challenges
-				for ( int iBonusMap = 0; iBonusMap < BonusMapsDatabase()->BonusCount(); ++iBonusMap )
+				BonusMapDescription_t *pMap = BonusMapsDatabase()->GetBonusData( iBonusMap );
+				if ( Q_stricmp( pMap->szChapterName, szFullFileName ) == 0 && !pMap->bLocked )
 				{
-					BonusMapDescription_t *pMap = BonusMapsDatabase()->GetBonusData( iBonusMap );
-					if ( Q_stricmp( pMap->szChapterName, szFullFileName ) == 0 && !pMap->bLocked )
-					{
-						chapterPanel->m_bHasBonus = true;
-						chapterPanel->SetControlVisible( "HasBonusLabel", true );
-					}
+					chapterPanel->m_bHasBonus = true;
+					chapterPanel->SetControlVisible( "HasBonusLabel", true );
 				}
 			}
 		}
@@ -540,28 +613,11 @@ CNewGameDialog::CNewGameDialog(vgui::Panel *parent, bool bCommentaryMode) : Base
 		return;
 	}
 
-#ifdef BYTEMATCH_RETAIL
-	const int indent = 8;
-	const int wide = 16;
-#else
-	int indent = 8;
-	if ( IsProportional() )
-	{
-		indent = scheme()->GetProportionalScaledValueEx( GetScheme(), indent );
-	}
-
-	int wide = 16;
-	if ( IsProportional() )
-	{
-		wide = scheme()->GetProportionalScaledValueEx( GetScheme(), wide );
-	}
-#endif
-
 	// Layout panel positions relative to the dialog center.
-	int panelWidth = m_ChapterPanels[0]->GetWide() + wide;
+	int panelWidth = m_ChapterPanels[0]->GetWide() + PROPORTIONAL_VALUE( 16 );
 	int dialogWidth = GetWide();
 	
-	m_PanelXPos[2] = ( dialogWidth - panelWidth ) / 2 + indent;
+	m_PanelXPos[2] = ( dialogWidth - panelWidth ) / 2 + PROPORTIONAL_VALUE( 8 );
 	
 	if (m_ChapterPanels.Count() > 1)
 	{
@@ -576,7 +632,6 @@ CNewGameDialog::CNewGameDialog(vgui::Panel *parent, bool bCommentaryMode) : Base
 		m_PanelXPos[4] = m_PanelXPos[2];
 	}
 
-
 	m_PanelAlpha[0] = 0;
 	m_PanelAlpha[1] = 255;
 	m_PanelAlpha[2] = 255;
@@ -585,18 +640,62 @@ CNewGameDialog::CNewGameDialog(vgui::Panel *parent, bool bCommentaryMode) : Base
 
 	int panelHeight;
 	m_ChapterPanels[0]->GetSize( panelWidth, panelHeight );
-	m_pCenterBg->SetWide( panelWidth + wide);
-	m_pCenterBg->SetPos( m_PanelXPos[2] - indent, m_PanelYPos[2] - (m_pCenterBg->GetTall() - panelHeight) + indent );
+	m_pCenterBg->SetWide( panelWidth + PROPORTIONAL_VALUE( 16 ) );
+	m_pCenterBg->SetPos( m_PanelXPos[2] - PROPORTIONAL_VALUE( 8 ), m_PanelYPos[2] - (m_pCenterBg->GetTall() - panelHeight) + PROPORTIONAL_VALUE( 8 ) );
 	m_pCenterBg->SetBgColor( Color( 190, 115, 0, 255 ) );
 
 	// start the first item selected
-	SetSelectedChapterIndex( 0 );
+	SetSelectedChapterIndex( 0, true );
 }
 
-CNewGameDialog::~CNewGameDialog()
+//-----------------------------------------------------------------------------
+// Purpose: lists the chapters of another game directory
+//-----------------------------------------------------------------------------
+void CNewGameDialog::SetOverrideMod( const char *pszOverrideMod )
 {
-	delete m_pFooter;
-	m_pFooter = NULL;
+	if ( pszOverrideMod && V_strlen( pszOverrideMod ) > 0 )
+	{
+		m_strOverrideMod.Set( pszOverrideMod );
+	}
+	else
+	{
+		m_strOverrideMod.Set( NULL );
+	}
+
+	ReloadChapters();
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: the commentary check button relocks the chapters and toggles commentary icons
+//-----------------------------------------------------------------------------
+void CNewGameDialog::OnCheckButtonChecked( vgui::Panel *panel )
+{
+	int iLastEnabledChapter = -1;
+	if ( m_pCommentaryCheckButton && m_pCommentaryCheckButton == panel )
+	{
+		int iUnlockedChapter = GetUnlockedChapter();
+
+		for ( int i = 0; i < m_ChapterPanels.Count(); i++ )
+		{
+			CGameChapterPanel *pChapterPanel = m_ChapterPanels[i];
+			if ( !pChapterPanel )
+				continue;
+
+			UpdatePanelLockedStatus( iUnlockedChapter, i + 1, pChapterPanel );
+			if ( pChapterPanel->IsEnabled() )
+			{
+				++iLastEnabledChapter;
+				pChapterPanel->SetCommentaryMode( IsCommentaryEnabled() );
+			}
+			else
+			{
+				pChapterPanel->SetCommentaryMode( false );
+			}
+		}
+	}
+
+	SetSelectedChapterIndex( clamp( m_iSelectedChapter, -1, iLastEnabledChapter ), false );
+	m_pPlayButton->SetEnabled( iLastEnabledChapter >= 0 );
 }
 
 void CNewGameDialog::Activate( void )
@@ -620,9 +719,7 @@ void CNewGameDialog::Activate( void )
 		m_pCommentaryLabel->SetVisible( m_bCommentaryMode );
 
 	// work out which chapters are unlocked
-	ConVarRef var( "sv_unlockedchapters" );
-	const char *unlockedChapter = var.IsValid() ? var.GetString() : "1";
-	int iUnlockedChapter = atoi(unlockedChapter);
+	int iUnlockedChapter = GetUnlockedChapter();
 
 	for ( int i = 0; i < m_ChapterPanels.Count(); i++)
 	{
@@ -675,6 +772,10 @@ void CNewGameDialog::ApplySchemeSettings( vgui::IScheme *pScheme )
 	m_pCommentaryLabel = dynamic_cast<vgui::Label*>( FindChildByName( "CommentaryUnlock" ) );
 	if ( m_pCommentaryLabel )
 		m_pCommentaryLabel->SetVisible( m_bCommentaryMode );
+
+	m_pCommentaryCheckButton = dynamic_cast<vgui::CheckButton*>( FindChildByName( "Commentary" ) );
+	if ( m_pCommentaryCheckButton )
+		m_pCommentaryCheckButton->AddActionSignalTarget( this );
 
 	if ( GameUI().IsConsoleUI() )
 	{
@@ -962,7 +1063,7 @@ void CNewGameDialog::UpdateBonusSelection( void )
 //-----------------------------------------------------------------------------
 // Purpose: sets a chapter as selected
 //-----------------------------------------------------------------------------
-void CNewGameDialog::SetSelectedChapterIndex( int index )
+void CNewGameDialog::SetSelectedChapterIndex( int index, bool bLayoutPanels )
 {
 	m_iSelectedChapter = index;
 
@@ -980,8 +1081,11 @@ void CNewGameDialog::SetSelectedChapterIndex( int index )
 
 	if ( m_pPlayButton )
 	{
-		m_pPlayButton->SetEnabled( true );
+		m_pPlayButton->SetEnabled( index >= 0 );
 	}
+
+	if ( !bLayoutPanels )
+		return;
 
 	// Setup panels to the left of the selected panel
 	int selectedSlot = GameUI().IsConsoleUI() ? SLOT_CENTER : index % 3 + 1;
@@ -1026,41 +1130,8 @@ void CNewGameDialog::SetSelectedChapter( const char *chapter )
 
 	if ( m_pPlayButton )
 	{
-		m_pPlayButton->SetEnabled( true );
+		m_pPlayButton->SetEnabled( m_iSelectedChapter >= 0 );
 	}
-}
-
-
-//-----------------------------------------------------------------------------
-// iUnlockedChapter - the value of sv_unlockedchapters, 1-based. A value of 0
-//		is treated as a 1, since at least one chapter must be unlocked.
-//
-// i - the 1-based index of the chapter we're considering.
-//-----------------------------------------------------------------------------
-void CNewGameDialog::UpdatePanelLockedStatus( int iUnlockedChapter, int i, CGameChapterPanel *pChapterPanel )
-{
-	if ( iUnlockedChapter <= 0 )
-	{
-		iUnlockedChapter = 1;
-	}
-
-	// Commentary mode requires chapters to be finished before they can be chosen
-	bool bLocked = false;
-
-	if ( m_bCommentaryMode )
-	{
-		bLocked = ( iUnlockedChapter <= i );
-	}
-	else
-	{
-		if ( iUnlockedChapter < i )
-		{
-			// Never lock the first chapter
-			bLocked = ( i != 0 );
-		}
-	}
-
-	pChapterPanel->SetEnabled( !bLocked );
 }
 
 //-----------------------------------------------------------------------------
@@ -1392,21 +1463,28 @@ void CNewGameDialog::StartGame( void )
 {
 	if ( m_ChapterPanels.IsValidIndex( m_iSelectedChapter ) )
 	{
-		char mapcommand[512];
+		char mapcommand[1024];
 		mapcommand[0] = 0;
-		Q_snprintf( mapcommand, sizeof( mapcommand ), "disconnect\ndeathmatch 0\nprogress_enable\nexec %s\n", m_ChapterPanels[m_iSelectedChapter]->GetConfigFile() );
+		if ( m_strOverrideMod.Length() )
+		{
+			Q_snprintf( mapcommand, sizeof( mapcommand ), "disconnect\ndeathmatch 0\nlaunchmod %s\nprogress_enable\nexec %s\n", m_strOverrideMod.Get(), m_ChapterPanels[m_iSelectedChapter]->GetConfigFile() );
+		}
+		else
+		{
+			Q_snprintf( mapcommand, sizeof( mapcommand ), "disconnect\ndeathmatch 0\nprogress_enable\nexec %s\n", m_ChapterPanels[m_iSelectedChapter]->GetConfigFile() );
+		}
 
 		// Set commentary
 		ConVarRef commentary( "commentary" );
-		commentary.SetValue( m_bCommentaryMode );
+		commentary.SetValue( IsCommentaryEnabled() );
 
 		ConVarRef sv_cheats( "sv_cheats" );
-		sv_cheats.SetValue( m_bCommentaryMode );
+		sv_cheats.SetValue( IsCommentaryEnabled() );
 
 		if ( IsPC() )
 		{
 			// If commentary is on, we go to the explanation dialog (but not for teaser trailers)
-			if ( m_bCommentaryMode && !m_ChapterPanels[m_iSelectedChapter]->IsTeaserChapter() )
+			if ( IsCommentaryEnabled() && !m_ChapterPanels[m_iSelectedChapter]->IsTeaserChapter() )
 			{
 				// Check our current state and disconnect us from any multiplayer server we're connected to.
 				// This fixes an exploit where players would click "start" on the commentary dialog to enable
@@ -1512,7 +1590,7 @@ void CNewGameDialog::OnCommand( const char *command )
 				m_bMapStarting = false;
 				vgui::surface()->PlaySound( "player/suit_denydevice.wav" );
 
-				if ( m_bCommentaryMode )
+				if ( IsCommentaryEnabled() )
 				{
 					BasePanel()->ShowMessageDialog( MD_COMMENTARY_CHAPTER_UNLOCK_EXPLANATION, this );
 				}
@@ -1662,13 +1740,14 @@ void CNewGameDialog::PaintBackground()
 
 void CNewGameDialog::OnKeyCodePressed( KeyCode code )
 {
-	switch ( code )
+	switch ( GetBaseButtonCode( code ) )
 	{
 	case KEY_XBUTTON_LEFT:
 	case KEY_XSTICK1_LEFT:
 	case KEY_XSTICK2_LEFT:
 	case KEY_LEFT:
 	case STEAMCONTROLLER_DPAD_LEFT:
+	case STEAMCONTROLLER_LEFT_PAD_LEFT:
 		if ( !m_bScrolling )
 		{
 			for ( int i = 0; i < m_ChapterPanels.Count(); ++i )
@@ -1698,6 +1777,7 @@ void CNewGameDialog::OnKeyCodePressed( KeyCode code )
 	case KEY_XSTICK2_RIGHT:
 	case KEY_RIGHT:
 	case STEAMCONTROLLER_DPAD_RIGHT:
+	case STEAMCONTROLLER_LEFT_PAD_RIGHT:
 		if ( !m_bScrolling )
 		{
 			for ( int i = 0; i < m_ChapterPanels.Count(); ++i )

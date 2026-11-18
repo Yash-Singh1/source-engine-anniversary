@@ -532,12 +532,19 @@ void CDialogGameInfo::OnTick()
 //-----------------------------------------------------------------------------
 void CDialogGameInfo::ServerResponded( gameserveritem_t &server )
 {
+#ifdef BYTEMATCH_RETAIL
+	if( m_Server.m_NetAdr.GetConnectionPort() &&
+		m_Server.m_NetAdr.GetConnectionPort() != server.m_NetAdr.GetConnectionPort() )
+#else
 	if( m_Server.m_NetAdr.GetQueryPort() &&
 		m_Server.m_NetAdr.GetQueryPort() != server.m_NetAdr.GetQueryPort() )
+#endif
+#line 537
 	{
 		return; // this is not the guy we talked about
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	uint16 connectionPort = m_Server.m_NetAdr.GetConnectionPort();
 
 	// FIXME(johns): This is a workaround for a steam bug, where it inproperly reads signed bytes out of the
@@ -546,13 +553,18 @@ void CDialogGameInfo::ServerResponded( gameserveritem_t &server )
 	server.m_nBotPlayers = (uint8)(int8)server.m_nBotPlayers;
 	server.m_nMaxPlayers = (uint8)(int8)server.m_nMaxPlayers;
 
+#endif
+#line 549
 	m_hPingQuery = HSERVERQUERY_INVALID;
 	m_Server = server;
 
+#ifndef BYTEMATCH_RETAIL
 	// Preserve our connection port, since we may be querying the sourceTV port but getting a response for the real
 	// server. This is a limitation of the steam Matchmaking API where it doesn't properly send us a sourcetv response
 	// but instead the main server's response (unless we're connecting to a proxy, THEN we get the sourcetv response!)
 	m_Server.m_NetAdr.SetConnectionPort( connectionPort );
+#endif
+#line 556
 
 	if ( m_bConnecting )
 	{
