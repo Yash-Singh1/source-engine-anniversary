@@ -569,7 +569,9 @@ public:
 	virtual const char *GetMapName();
 	virtual const char *GetPatchVersion();
 
+#ifdef svc_SetPauseTimed
 	float			GetPausedExpireTime( void );
+#endif
 
 	bool			StartDemoRecording( const char *pszFilename, const char *pszFolder = NULL );
 	void			StopDemoRecording( void );
@@ -2100,10 +2102,12 @@ const char *CEngineClient::GetPatchVersion()
 	return GetSteamInfIDVersionInfo().szVersionString;
 }
 
+#ifdef svc_SetPauseTimed
 float CEngineClient::GetPausedExpireTime( void )
 {
 	return cl.GetPausedExpireTime();
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 
