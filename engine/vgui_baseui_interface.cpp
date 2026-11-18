@@ -131,14 +131,10 @@ bool s_bWindowsInputEnabled = true;
 ConVar r_drawvgui( "r_drawvgui", "1", FCVAR_CHEAT, "Enable the rendering of vgui panels" );
 ConVar gameui_xbox( "gameui_xbox", "0", 0 );
 #ifdef BYTEMATCH_RETAIL
-static ConVar vgui_ui_scale_base_width( "vgui_ui_scale_width", "1920", 0 );
-static ConVar vgui_ui_scale_base_height( "vgui_ui_scale_height", "1080", 0 );
-static ConVar vgui_ui_scale_factor( "vgui_ui_scale_factor", "1", 0 );
-
 // root of the panels that are laid out against the scaled UI size
 #define PANEL_STATIC_SIZING ( (VGuiPanel_t)( PANEL_CLIENTDLL_TOOLS + 1 ) )
 #endif
-#line 136
+#line 132
 
 void Con_CreateConsolePanel( vgui::Panel *parent );
 void CL_CreateEntityReportPanel( vgui::Panel *parent );
@@ -388,7 +384,7 @@ private:
 #ifdef BYTEMATCH_RETAIL
 	void UpdateStaticSizingPanelSize( int nWidth, int nHeight );
 #endif
-#line 383
+#line 379
 	void SetEngineVisible( bool state );
 	void DrawMouseFocus( void );
 	void CreateVProfPanels( vgui::Panel *pParent );
@@ -425,7 +421,7 @@ private:
 #ifdef BYTEMATCH_RETAIL
 	CEnginePanel *staticSizingPanel;
 #endif
-#line 417
+#line 413
 
 	// Want engine tools to be on top of other engine panels
 	CEnginePanel *staticEngineToolsPanel;
@@ -529,6 +525,12 @@ private:
 	int m_SnappedProgress;
 };
 static CLoaderProgress s_LoaderProgress;
+#ifdef BYTEMATCH_RETAIL
+static ConVar vgui_ui_scale_base_width( "vgui_ui_scale_width", "1920", 0 );
+static ConVar vgui_ui_scale_base_height( "vgui_ui_scale_height", "1080", 0 );
+static ConVar vgui_ui_scale_factor( "vgui_ui_scale_factor", "1", 0 );
+#endif
+#line 519
 
 	
 //-----------------------------------------------------------------------------
@@ -544,7 +546,7 @@ CEngineVGui::CEngineVGui()
 #ifdef BYTEMATCH_RETAIL
 	staticSizingPanel = NULL;
 #endif
-#line 533
+#line 532
 	staticEngineToolsPanel = NULL;
 	staticDebugSystemPanel = NULL;
 	staticFocusOverlayPanel = NULL;
@@ -665,7 +667,7 @@ void CEngineVGui::Init()
 		return;
 	}
 #endif
-#line 643
+#line 642
 
 	if ( IsX360() || IsSteamDeck() )
 	{
@@ -755,7 +757,7 @@ void CEngineVGui::Init()
 	if(NeedProportional())
 		staticGameUIPanel->SetProportional(true);
 #endif
-#line 728
+#line 727
 
 	staticGameUIPanel->SetBounds( 0, 0, videomode->GetModeUIWidth(), videomode->GetModeUIHeight() );
 	staticGameUIPanel->SetPaintBorderEnabled(false);
@@ -768,7 +770,7 @@ void CEngineVGui::Init()
 	staticGameUIPanel->SetScheme( hSizedScheme );
 	staticGameUIPanel->SetProportional( true );
 #endif
-#line 738
+#line 737
 
 	staticGameDLLPanel = new CEnginePanel( staticPanel, "staticGameDLLPanel" );
 	staticGameDLLPanel->SetBounds( 0, 0, videomode->GetModeUIWidth(), videomode->GetModeUIHeight() );
@@ -851,7 +853,7 @@ void CEngineVGui::Init()
 #ifdef BYTEMATCH_RETAIL
 	g_pVGuiLocalize->AddFile( "Resource/deck_%language%.txt" );
 #endif
-#line 818
+#line 817
 
 	COM_TimestampedLog( "staticGameUIFuncs->Initialize" );
 
@@ -885,7 +887,7 @@ void CEngineVGui::Init()
 	szFileName[ sizeof( szFileName ) - 1 ] = '\0';
 	g_pVGuiLocalize->AddFile( szFileName );
 #endif
-#line 841
+#line 840
 
 	// setup console
 	if ( staticGameConsole )
@@ -910,7 +912,7 @@ void CEngineVGui::Init()
 #ifdef BYTEMATCH_RETAIL
 		!IsSteamDeck() &&
 #endif
-#line 863
+#line 862
 		( CommandLine()->FindParm( "-toconsole" ) || CommandLine()->FindParm( "-console" ) || CommandLine()->FindParm( "-rpt" ) || CommandLine()->FindParm( "-allowdebug" ) ) )
 	{
 		// activate the console
@@ -1085,7 +1087,7 @@ inline vgui::Panel *CEngineVGui::GetRootPanel( VGuiPanel_t type )
 	case PANEL_STATIC_SIZING:
 		return staticSizingPanel;
 #endif
-#line 1035
+#line 1034
 	}
 }
 
@@ -1159,7 +1161,7 @@ void CEngineVGui::UpdateStaticSizingPanelSize( int nWidth, int nHeight )
 	engineClient->ExecuteClientCmd( "refresh_gameui_dialogs_modeset\n" );
 }
 #endif
-#line 1106
+#line 1105
 
 vgui::VPANEL CEngineVGui::GetPanel( VGuiPanel_t type )
 {
@@ -1222,7 +1224,7 @@ void CEngineVGui::ActivateGameUI()
 		g_pInputSystem->ActivateSteamControllerActionSet( GAME_ACTION_SET_MENUCONTROLS );
 	}
 #endif
-#line 1166
+#line 1165
 
 	// clear any keys that might be stuck down
 	ClearIOStates();
@@ -1249,7 +1251,7 @@ void CEngineVGui::ActivateGameUI()
 		g_GameEventManager.FireEventClientSide( event );
 	}
 #endif
-#line 1190
+#line 1189
 }
 
 //-----------------------------------------------------------------------------
@@ -1300,7 +1302,7 @@ bool CEngineVGui::HideGameUI()
 		g_GameEventManager.FireEventClientSide( event );
 	}
 #endif
-#line 1238
+#line 1237
 
 	return true;
 }
@@ -1507,7 +1509,7 @@ void CEngineVGui::OnLevelLoadingStarted()
 		g_GameEventManager.FireEventClientSide( event );
 	}
 #endif
-#line 1442
+#line 1441
 }
 
 //-----------------------------------------------------------------------------
@@ -1594,7 +1596,7 @@ void CEngineVGui::OnLevelLoadingFinished()
 		g_GameEventManager.FireEventClientSide( event );
 	}
 #endif
-#line 1526
+#line 1525
 }
 
 
@@ -1932,7 +1934,7 @@ void CEngineVGui::Paint( PaintMode_t mode )
 #ifdef BYTEMATCH_RETAIL
 		UpdateStaticSizingPanelSize( w, h );
 #endif
-#line 1861
+#line 1860
 	}
 
 	panel->Repaint();
