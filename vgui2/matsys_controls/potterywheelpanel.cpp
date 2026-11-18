@@ -182,7 +182,7 @@ void CRotationManipulator::OnCursorMoved( int x, int y )
 	{
 		m_azimuth  += 0.002f * ( m_lastx - x );
 		m_altitude -= 0.002f * ( m_lasty - y );
-		m_altitude = max( (float)-M_PI/2, min( (float)M_PI/2, m_altitude ) );
+		m_altitude = MAX( -M_PI/2, MIN( M_PI/2, m_altitude ) );
 	}
 
 	m_lastx = x;
