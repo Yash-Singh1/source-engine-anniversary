@@ -24,10 +24,10 @@
 
 #include "tier0/platform.h"
 
-#ifdef	IS_WINDOWS_PC
+#if defined( IS_WINDOWS_PC ) && defined( BYTEMATCH_RETAIL )
 // ETW support should be compiled in for all Windows PC platforms. It isn't
 // supported on Windows XP but that is determined at run-time.
-//#define	ETW_MARKS_ENABLED
+#define	ETW_MARKS_ENABLED
 #endif
 
 #ifdef	ETW_MARKS_ENABLED
