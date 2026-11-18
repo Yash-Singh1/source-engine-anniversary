@@ -77,7 +77,7 @@ public:
 #ifdef BYTEMATCH_RETAIL
 	virtual bool			NoWindowBorder() const = 0;
 #endif
-#line 68
+#line 67
 
 	// Returns the video mode width + height for a single stereo display.
 	// if the game isn't running in side by side stereo, this is the same
@@ -131,11 +131,5 @@ extern IVideoMode *videomode;
 void VideoMode_Create();
 void VideoMode_Destroy();
 
-#ifdef BYTEMATCH_RETAIL
-// Retail's MaterialSystem_Config_t flags; materialsystem_config.h lacks them.
-#define MATSYS_VIDCFG_FLAGS_NO_WINDOW_BORDER	( 1 << 18 )
-#define MATSYS_VIDCFG_FLAGS_LIGHTMAP_BICUBIC	( 1 << 19 )
-#endif
-#line 124
 
 #endif // IVIDEOMODE_H
