@@ -2920,7 +2920,8 @@
     },
     {
      "path": "tier1/keyvaluesjson.cpp",
-     "lang": "c++"
+     "lang": "c++",
+     "missing": true
     },
     {
      "path": "tier1/kvpacker.cpp",
@@ -3034,7 +3035,8 @@
     },
     {
      "path": "tier1/utlbinaryblock.cpp",
-     "lang": "c++"
+     "lang": "c++",
+     "missing": true
     },
     {
      "path": "tier1/utlbuffer.cpp",
