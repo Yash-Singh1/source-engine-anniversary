@@ -31,8 +31,8 @@ ProgressBar::ProgressBar(Panel *parent, const char *panelName) : Panel(parent, p
 {
 	_progress = 0.0f;
 	m_pszDialogVar = NULL;
-	SetSegmentInfo( 4, 8 );
-	SetBarInset( 4 );
+	SetSegmentInfo( QuickPropScale( 4 ), QuickPropScale( 8 ) );
+	SetBarInset( QuickPropScale( 4 ) );
 	SetMargin( 0 );
 	m_iProgressDirection = PROGRESS_EAST;
 }
