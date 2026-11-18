@@ -83,7 +83,7 @@ void ColorCorrectionLookup_t::AllocTexture()
 
 	m_pColorCorrectionTexture = ITextureInternal::CreateProceduralTexture( name, TEXTURE_GROUP_OTHER,
 		COLOR_CORRECTION_TEXTURE_SIZE, COLOR_CORRECTION_TEXTURE_SIZE, COLOR_CORRECTION_TEXTURE_SIZE,
-#ifdef DX_TO_GL_ABSTRACTION
+#if defined( DX_TO_GL_ABSTRACTION ) && !defined( BYTEMATCH_RETAIL )
 		IMAGE_FORMAT_RGBA8888,
 #else
 		IMAGE_FORMAT_BGRX8888,

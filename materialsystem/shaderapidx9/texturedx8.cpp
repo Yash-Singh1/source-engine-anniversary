@@ -172,8 +172,11 @@ IDirect3DBaseTexture* CreateD3DTexture( int width, int height, int nDepth,
 	D3DFORMAT d3dFormat = D3DFMT_UNKNOWN;
 
 	D3DPOOL pool = bManaged ? D3DPOOL_MANAGED : D3DPOOL_DEFAULT;
+#ifndef BYTEMATCH_RETAIL
 	if ( bSysmem )
 		pool = D3DPOOL_SYSTEMMEM;
+#endif
+#line 177
 
 	if ( IsX360() )
 	{
@@ -295,7 +298,12 @@ IDirect3DBaseTexture* CreateD3DTexture( int width, int height, int nDepth,
 				numLevels, 
 				usage,
 				d3dFormat,
+#ifdef BYTEMATCH_RETAIL
+				bManaged ? D3DPOOL_MANAGED : D3DPOOL_DEFAULT,
+#else
 				pool,
+#endif
+#line 299
 				&pD3DTexture,
 				NULL
 	#if defined( DX_TO_GL_ABSTRACTION )			
@@ -396,7 +404,9 @@ void DestroyD3DTexture( IDirect3DBaseTexture* pD3DTex )
 		VPROF_INCREMENT_GROUP_COUNTER( "total driver mem", COUNTER_GROUP_NO_RESET, -nMemUsed );
 #endif
 
-#if !defined( _X360 )
+#if defined( BYTEMATCH_RETAIL )
+		ReleaseD3DTexture( pD3DTex );
+#elif !defined( _X360 )
 		CMatRenderContextPtr pRenderContext( materials );
 		ICallQueue *pCallQueue;
 		if ( ( pCallQueue = pRenderContext->GetCallQueue() ) != NULL )
@@ -410,6 +420,7 @@ void DestroyD3DTexture( IDirect3DBaseTexture* pD3DTex )
 #else
 		g_TextureHeap.FreeTexture( pD3DTex );
 #endif
+#line 413
 		--s_TextureCount;
 	}
 }
