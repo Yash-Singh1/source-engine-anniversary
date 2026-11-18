@@ -60,8 +60,6 @@ RETAIL_SKIP = {
 RETAIL_KEEP = {
 	# Our CBaseFileSystem uses the fork's CPackFile classes.
 	'bin/filesystem_stdio': ['filesystem/packfile.cpp'],
-	# Our vtex.cpp loads PNG sources through ImgUtl.
-	'bin/vtex_dll': ['common/imageutils.cpp'],
 	# Callers in our engine that retail's engine doesn't have.
 	'bin/engine': ['engine/sv_uploaddata.cpp', 'common/language.cpp', 'engine/audio/MPAHeader.cpp',
 		'engine/audio/VBRHeader.cpp', 'engine/masterserver.cpp'],
