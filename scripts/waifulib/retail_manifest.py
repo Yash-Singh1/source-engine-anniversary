@@ -27,7 +27,7 @@ task generator that has an entry, without wscript changes:
     static libraries are put in retail link order.
 A task generator is matched by its `retail_module` attribute, else by the
 manifest's waf target, else by bin/<target>. Per-module exceptions live in
-RETAIL_KEEP / RETAIL_SKIP below.
+RETAIL_KEEP / RETAIL_SKIP / RETAIL_DEAD below.
 
 Task generator attributes for modules built from another source tree
 (sdk2013mp/wscript):
@@ -65,6 +65,17 @@ RETAIL_KEEP = {
 	# Callers in our engine that retail's engine doesn't have.
 	'bin/engine': ['engine/sv_uploaddata.cpp', 'common/language.cpp', 'engine/audio/MPAHeader.cpp',
 		'engine/audio/VBRHeader.cpp', 'engine/masterserver.cpp'],
+}
+
+# Objects retail links whose code is all dead-stripped, so the debug map doesn't
+# list them. ld64 still places their literals: a string they share with a live
+# object lands where the first loaded copy is. module -> [(file, the retail-listed
+# file it is linked before)], in Xcode's link order (tree-relative paths).
+RETAIL_DEAD = {
+	'bin/vgui2': [('public/filesystem_helpers.cpp', 'public/filesystem_init.cpp'),
+		('vgui2/src/fileimage.cpp', 'vgui2/src/ImageBorder.cpp'),
+		('vgui2/src/MemoryBitmap.cpp', 'vgui2/src/ScalableImageBorder.cpp'),
+		('vgui2/src/MessageListener.cpp', 'vgui2/src/ScalableImageBorder.cpp')],
 }
 
 def options(opt):
@@ -203,6 +214,10 @@ def retail_select_sources(self):
 			missing.append(src)
 		elif n not in out:
 			out.append(n)
+	for src, before in RETAIL_DEAD.get(key, []):
+		n, at = resolve(src), resolve(before)
+		if n is not None and n not in out and at in out:
+			out.insert(out.index(at), n)
 	added = [n for n in out if _rel(self, n).lower() not in ours_by_path]
 	dropped = [n for n in ours if n not in out]
 	out += [n for n in dropped if _rel(self, n).lower() in keep]
