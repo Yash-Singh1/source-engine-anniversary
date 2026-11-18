@@ -518,17 +518,19 @@ public:
 			}
 		}
 
+		ButtonCode_t nButtonCode = GetBaseButtonCode( code );
 		m_KeyRepeat.KeyDown( code );
 
 		int nDir = 0;
 
-		switch ( code )
+		switch ( nButtonCode )
 		{
 		case KEY_XBUTTON_UP:
 		case KEY_XSTICK1_UP:
 		case KEY_XSTICK2_UP:
 		case KEY_UP:
 		case STEAMCONTROLLER_DPAD_UP:
+		case STEAMCONTROLLER_LEFT_PAD_UP:
 			nDir = -1;
 			break;
 
@@ -537,6 +539,7 @@ public:
 		case KEY_XSTICK2_DOWN:
 		case KEY_DOWN:
 		case STEAMCONTROLLER_DPAD_DOWN:
+		case STEAMCONTROLLER_LEFT_PAD_DOWN:
 			nDir = 1;
 			break;
 		}
@@ -552,7 +555,7 @@ public:
 				return;
 			}
 		}
-		else if ( code == KEY_XBUTTON_A || code == STEAMCONTROLLER_A )
+		else if ( nButtonCode == KEY_XBUTTON_A || nButtonCode == STEAMCONTROLLER_A )
 		{
 			CUtlSortVector< SortedPanel_t, CSortedPanelYLess > vecSortedButtons;
 			VguiPanelGetSortedChildButtonList( this, (void*)&vecSortedButtons );
@@ -570,10 +573,10 @@ public:
 		BaseClass::OnKeyCodePressed( code );
 
 		// HACK: Allow F key bindings to operate even here
-		if ( IsPC() && code >= KEY_F1 && code <= KEY_F12 )
+		if ( IsPC() && nButtonCode >= KEY_F1 && nButtonCode <= KEY_F12 )
 		{
 			// See if there is a binding for the FKey
-			const char *binding = gameuifuncs->GetBindingForButtonCode( code );
+			const char *binding = gameuifuncs->GetBindingForButtonCode( nButtonCode );
 			if ( binding && binding[0] )
 			{
 				// submit the entry as a console commmand
@@ -2394,7 +2397,7 @@ void CBasePanel::OnGameUIActivated()
 		}
 	}
 
-	if ( GameUI().IsConsoleUI() )
+	if ( GameUI().IsConsoleUI() || IsSteamDeck() )
 	{
 		ArmFirstMenuItem();
 	}
@@ -3455,16 +3458,18 @@ public:
 
 	void OnKeyCodePressed(KeyCode code)
 	{
+		ButtonCode_t nButtonCode = GetBaseButtonCode( code );
+
 		// ESC cancels
-		if ( code == KEY_XBUTTON_B || code == STEAMCONTROLLER_B || code == STEAMCONTROLLER_START )
+		if ( nButtonCode == KEY_ESCAPE || nButtonCode == KEY_XBUTTON_B || nButtonCode == STEAMCONTROLLER_B || nButtonCode == STEAMCONTROLLER_START )
 		{
 			Close();
 		}
-		else if ( code == KEY_XBUTTON_A || code == STEAMCONTROLLER_A )
+		else if ( nButtonCode == KEY_XBUTTON_A || nButtonCode == STEAMCONTROLLER_A )
 		{
 			OnCommand( "SaveAndQuit" );
 		}
-		else if ( code == KEY_XBUTTON_X || code == STEAMCONTROLLER_X )
+		else if ( nButtonCode == KEY_XBUTTON_X || nButtonCode == STEAMCONTROLLER_X )
 		{
 			OnCommand( "Quit" );
 		}
@@ -5416,6 +5421,9 @@ void CBasePanel::CloseBaseDialogs( void )
 
 	if ( m_hCreateMultiplayerGameDialog.Get() )
 		m_hCreateMultiplayerGameDialog->Close();
+
+	if ( m_hDemoPlayerDialog.Get() )
+		m_hDemoPlayerDialog->Close();
 }
 
 static void CC_GameUIShowDialog( const CCommand &args )
