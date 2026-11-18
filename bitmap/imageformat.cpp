@@ -120,7 +120,13 @@ int GetMemRequired( int width, int height, int depth, ImageFormat imageFormat, b
 	{
 		// Block compressed formats
 		
+#ifdef BYTEMATCH_RETAIL
+		if ( imageFormat == IMAGE_FORMAT_DXT1 || imageFormat == IMAGE_FORMAT_DXT3 || imageFormat == IMAGE_FORMAT_DXT5 ||
+			 imageFormat == IMAGE_FORMAT_ATI1N || imageFormat == IMAGE_FORMAT_ATI2N )
+#else
 		if ( IsCompressed( imageFormat ) )
+#endif
+#line 124
 		{
 /*
 			DDSURFACEDESC desc;
@@ -154,13 +160,17 @@ int GetMemRequired( int width, int height, int depth, ImageFormat imageFormat, b
 			switch ( imageFormat )
 			{
 			case IMAGE_FORMAT_DXT1:
+#ifndef BYTEMATCH_RETAIL
 			case IMAGE_FORMAT_DXT1_RUNTIME:
+#endif
 			case IMAGE_FORMAT_ATI1N:
 				return numBlocks * 8;
 
 			case IMAGE_FORMAT_DXT3:
 			case IMAGE_FORMAT_DXT5:
+#ifndef BYTEMATCH_RETAIL
 			case IMAGE_FORMAT_DXT5_RUNTIME:
+#endif
 			case IMAGE_FORMAT_ATI2N:
 				return numBlocks * 16;
 			}
