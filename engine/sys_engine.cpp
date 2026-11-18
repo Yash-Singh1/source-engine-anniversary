@@ -170,7 +170,7 @@ private:
 #ifdef BYTEMATCH_RETAIL
 	CTextConsoleUnix m_TextConsole;
 #endif
-#line 166
+#line 161
 };
 
 static CEngine g_Engine;
@@ -217,7 +217,7 @@ void CEngine::Unload( void )
 #ifdef BYTEMATCH_RETAIL
 	m_TextConsole.ShutDown();
 #endif
-#line 209
+#line 204
 }
 
 //-----------------------------------------------------------------------------
@@ -245,7 +245,7 @@ bool CEngine::Load( bool bDedicated, const char *rootdir )
 #ifdef BYTEMATCH_RETAIL
 	m_TextConsole.Init();
 #endif
-#line 233
+#line 228
 	
 	return success;
 }
@@ -317,7 +317,7 @@ void CEngine::Frame( void )
 #ifndef BYTEMATCH_RETAIL
 		VPROF_BUDGET( "Sleep", VPROF_BUDGETGROUP_SLEEPING );
 #endif
-#line 302
+#line 297
 #if defined( RAD_TELEMETRY_ENABLED )
 		if( !g_Telemetry.Level )
 #endif
@@ -341,7 +341,7 @@ void CEngine::Frame( void )
 					frequency.m_GHz, frequency.m_percentage, frequency.m_lowestPercentage );
 	}
 #endif
-#line 323
+#line 318
 
 	// Loop until it is time for our frame. Don't return early because pumping messages
 	// and processing console input is expensive (0.1 ms for each call to ProcessConsoleInput).
@@ -385,6 +385,7 @@ void CEngine::Frame( void )
 			// Calculate how long we need to wait.
 			int nSleepMS = (int)( ( m_flMinFrameTime - m_flFrameTime ) * 1000 - fBusyWaitMS );
 #ifdef BYTEMATCH_RETAIL
+#line 360
 			if ( nSleepMS > 0 )
 			{
 				ThreadSleep( nSleepMS );
@@ -400,10 +401,11 @@ void CEngine::Frame( void )
 				}
 			}
 #else
+#line 360
 			if ( nSleepMS > 0 )
 				ThreadSleep( nSleepMS );
 #endif
-#line 367
+#line 362
 
 			// Go back to the top of the loop and see if it is time yet.
 		}
@@ -518,7 +520,7 @@ void CEngine::Frame( void )
 		engineClient->ClientCmd_Unrestricted( szCommand );
 	}
 #endif
-#line 470
+#line 465
 
 #if defined( VPROF_ENABLED ) && defined( _X360 )
 	UpdateVXConsoleProfile();

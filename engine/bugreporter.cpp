@@ -439,7 +439,7 @@ CBugReportUploadProgressDialog::CBugReportUploadProgressDialog(Panel *parent, co
 #else
 	SetSize(300, 160);
 #endif
-#line 438
+#line 433
 	SetSizeable(false);
 	MoveToFront();
 	SetTitle(title, true);
@@ -509,7 +509,7 @@ CBugReportFinishedDialog::CBugReportFinishedDialog(Panel *parent, const char *na
 #else
 	SetSize(300, 160);
 #endif
-#line 503
+#line 498
 	SetSizeable(false);
 	MoveToFront();
 	SetTitle(title, true);

@@ -64,6 +64,7 @@ protected:
 	void	ReceiveRightArrow( void );
 };
 #else
+#line 13
 class CTextConsole
 {
 public:

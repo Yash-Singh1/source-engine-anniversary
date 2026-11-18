@@ -315,6 +315,7 @@ int CTextConsoleUnix::GetWidth( void )
 	return nWidth;
 }
 #else
+#line 14
 #include <sys/ioctl.h>
 
 #include "TextConsoleUnix.h"

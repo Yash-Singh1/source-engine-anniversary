@@ -49,6 +49,7 @@ private:
 	FILE		*tty;
 };
 #else
+#line 20
 class CTextConsoleUnix : public CTextConsole
 {
 public:

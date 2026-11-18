@@ -1961,7 +1961,7 @@ void CHLTVServer::ReadCompeleteDemoFile()
 					Warning( "ReadCompleteDemoFile failed to read string tables. Trying to read string tables that's bigger than max string table size\n" );
 				}
 #endif
-#line 1953
+#line 1948
 
 				free( data );
 			}

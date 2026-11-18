@@ -595,7 +595,7 @@ bool Base_CmdKeyValues::ReadFromBuffer( bf_read &buffer )
 #else
 	if ( numBytes <= 0 || numBytes > buffer.GetNumBytesLeft() )
 #endif
-#line 594
+#line 591
 	{
 		return false; // don't read past the end of the buffer
 	}
@@ -1173,7 +1173,7 @@ bool NET_SetConVar::ReadFromBuffer( bf_read &buffer )
 #ifdef BYTEMATCH_RETAIL
 	if ( numvars > 0 )
 #endif
-#line 1168
+#line 1138
 	m_ConVars.RemoveAll();
 
 	for (int i=0; i< numvars; i++ )
@@ -1195,7 +1195,7 @@ const char *NET_SetConVar::ToString(void) const
 		Q_snprintf(s_text, sizeof(s_text), "%s: %i cvars", GetName(), m_ConVars.Count() );
 	return s_text;
 }
-#line 1188
+#line 1158
 
 bool SVC_UpdateStringTable::WriteToBuffer( bf_write &buffer )
 {

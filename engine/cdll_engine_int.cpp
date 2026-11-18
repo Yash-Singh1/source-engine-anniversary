@@ -2137,7 +2137,7 @@ void CEngineClient::OnHL2ExpansionLoaded()
 IMatchEventsSubscription *CEngineClient::GetEventsSubscription()
 {
 	return g_pMatchEventsSubscription;
-#line 2139
+#line 2105
 }
 
 const char *CEngineClient::GetMapName()

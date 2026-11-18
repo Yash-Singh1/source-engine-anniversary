@@ -557,6 +557,7 @@ IUploadGameStats *g_pUploadGameStats = &g_UploadGameStats;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR( CUploadGameStats, IUploadGameStats, INTERFACEVERSION_UPLOADGAMESTATS, g_UploadGameStats );
 
 #ifndef BYTEMATCH_RETAIL
+#line 526
 void UpdateProgress( const TGameStatsParameters & params, char const *fmt, ... )
 {
 	if ( !params.m_pOptionalProgressFunc )
