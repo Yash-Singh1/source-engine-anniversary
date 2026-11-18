@@ -170,10 +170,18 @@ LC_UUID included:
 
 ```sh
 python3 waf configure --retail-osx32 -T release --prefix='' -o build-retail
-python3 waf build && python3 waf retail_linkdb      # writes build-retail/link_commands.json
+python3 waf build && python3 waf retail_linkdb      # writes link_commands.json, retail_compile_commands.json
 devtools/bytematch/identity/identity.py --all       # or: identity.py inputsystem vgui2 ...
 devtools/bytematch/identity/machocmp.py -s OURS RETAIL   # region-by-region and symbol diff
 ```
+
+Regression check: `devtools/bytematch/identity/ci.sh [BUILD_DIR]` builds, writes
+the link database and runs `identity.py --identical`, which rebuilds every
+module in `identity/identical.json` and `cmp`s it against retail (the retail
+file's sha256 is checked too). It exits non-zero if any of them differ. If
+`BUILD_DIR` (default `build-retail`) was never configured, it is configured
+with just the modules those need. Add a module to `identical.json` once it
+becomes identical.
 
 Outputs go to `build-retail/identity/out/`. For each object the retail debug
 map lists, the tool reproduces what ld64 records:
