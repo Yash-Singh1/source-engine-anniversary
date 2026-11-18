@@ -3094,6 +3094,7 @@ bool BGetLocalFormattedTime( time_t timeVal, char *pchTime, int cubTime )
 	return BGetLocalFormattedDateAndTime( timeVal, NULL, 0, pchTime, cubTime );
 }
 
+#ifndef BYTEMATCH_RETAIL
 // Prints out a memory dump where stuff that's ascii is human readable, etc.
 void V_LogMultiline( bool input, char const *label, const char *data, size_t len, CUtlString &output )
 {
@@ -3119,6 +3120,8 @@ void V_LogMultiline( bool input, char const *label, const char *data, size_t len
 		len -= line_len;
 	}
 }
+#endif
+#line 3122
 
 
 #ifdef WIN32
@@ -3448,6 +3451,7 @@ bool V_BasicHtmlEntityEncode( char *pDest, const int nDestSize, char const *pIn,
 }
 
 
+#ifndef BYTEMATCH_RETAIL
 bool V_HtmlEntityDecodeToUTF8( char *pDest, const int nDestSize, char const *pIn, const int nInSize )
 {
 	Assert( nDestSize == 0 || pDest != NULL );
@@ -3544,6 +3548,8 @@ bool V_HtmlEntityDecodeToUTF8( char *pDest, const int nDestSize, char const *pIn
 
 	return true;
 }
+#endif
+#line 3547
 
 static const char *g_pszSimpleBBCodeReplacements[] = {
 	"[b]", "<b>",
@@ -3814,6 +3820,7 @@ bool V_IsDeprecatedW( wchar_t wch )
 }
 
 
+#ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
 // returns true if the character is allowed in a DNS doman name, false otherwise
 //-----------------------------------------------------------------------------
@@ -4042,6 +4049,8 @@ bool V_URLContainsDomain( const char *pchURL, const char *pchDomain )
 	}
 	return false;
 }
+#endif
+#line 4045
 
 #ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
