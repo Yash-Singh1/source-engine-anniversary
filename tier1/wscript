@@ -30,7 +30,6 @@ def build(bld):
 		'ilocalize.cpp',
 		'interface.cpp',
 		'KeyValues.cpp',
-		'keyvaluesjson.cpp',
 		'kvpacker.cpp',
 		'lzmaDecoder.cpp',
 		'lzss.cpp', # [!$SOURCESDK]
