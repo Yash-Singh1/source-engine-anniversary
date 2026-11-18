@@ -102,6 +102,30 @@ void ParseParticleEffects( bool bLoadSheets, bool bPrecache )
 	g_pParticleSystemMgr->DecommitTempMemory();
 }
 
+#ifdef CLIENT_DLL
+//-----------------------------------------------------------------------------
+// Purpose: Reload every particle file, e.g. after the HL2 expansion changed
+//-----------------------------------------------------------------------------
+void ReloadParticleEffects()
+{
+	CUtlVector<CUtlString> files;
+	GetParticleManifest( files );
+
+	const char *pszMapName = engine->GetLevelName();
+	if ( pszMapName && pszMapName[0] )
+	{
+		char mapname[MAX_MAP_NAME];
+		Q_FileBase( pszMapName, mapname, sizeof( mapname ) );
+		Q_strlower( mapname );
+		ParseParticleEffectsMap( mapname, true );
+	}
+
+	ParseParticleEffects( true, true );
+
+	g_pParticleSystemMgr->DecommitTempMemory();
+}
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------

@@ -50,8 +50,8 @@
    "IPhysicsSurfaceProps"
   ]
  },
- "retail_len": 11,
- "retail_len_basis": "override: extra slots are CPhysicsSurfaceProps's own IVP helpers",
+ "retail_len": 12,
+ "retail_len_basis": "override: PurgeAllSurfaceData is the interface's (the episodic client's FlushClientContent calls slot 11 through IPhysicsSurfaceProps); the slots after it are CPhysicsSurfaceProps's own IVP helpers",
  "retail_len_bounds": {
   "shortest deriving subtable": 17
  },
@@ -121,10 +121,15 @@
    "name": "GetPhysicsParameters",
    "sig": "GetPhysicsParameters(int, surfacephysicsparams_t*) const",
    "symbol": "CPhysicsSurfaceProps::GetPhysicsParameters(int, surfacephysicsparams_t*) const"
+  },
+  {
+   "index": 11,
+   "name": "PurgeAllSurfaceData",
+   "sig": "PurgeAllSurfaceData()",
+   "symbol": "CPhysicsSurfaceProps::PurgeAllSurfaceData()"
   }
  ],
  "implementer_tail": [
-  "PurgeAllSurfaceData()",
   "GetIVPMaterial(int)",
   "GetIVPMaterialIndex(IVP_Material const*) const",
   "GetIVPManager()",

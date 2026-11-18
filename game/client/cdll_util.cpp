@@ -27,6 +27,12 @@
 #include <vgui/ILocalize.h>
 #include "view.h"
 #include "ixboxsystem.h"
+#ifdef HL2_EPISODIC
+#include "ivmodemanager.h"
+#include "particle_parse.h"
+#include "physics_shared.h"
+#endif
+#include "tier0/icommandline.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -61,6 +67,163 @@ char *VarArgs( const char *format, ... )
 
 	return string;	
 }
+
+#ifdef HL2_EPISODIC
+bool s_bHadWorkshopContent = false;
+
+//-----------------------------------------------------------------------------
+// Purpose: Reload everything that depends on the mounted HL2 expansion
+//-----------------------------------------------------------------------------
+void FlushClientContent( const CCommand &args )
+{
+	g_pFullFileSystem->PushNoFinishAllOnSearchPaths();
+	g_pFullFileSystem->UpdateSearchPathsForCurrentGameExpansion();
+	g_pMaterialSystem->UncacheAllMaterials();
+	g_pVGuiSurface->ResetFontCaches();
+	physprops->PurgeAllSurfaceData();
+	engine->OnHL2ExpansionLoaded();
+	modemanager->OnExpansionLoaded();
+	g_pFullFileSystem->PopNoFinishAllOnSearchPaths();
+
+	g_pVGuiLocalize->AddFile( "Resource/gameui_%language%.txt", "GAME", true );
+	g_pVGuiLocalize->AddFile( "Resource/platform_%language%.txt" );
+	g_pVGuiLocalize->AddFile( "Resource/vgui_%language%.txt" );
+	g_pVGuiLocalize->AddFile( "Resource/valve_%language%.txt" );
+	g_pVGuiLocalize->AddFile( "Resource/deck_%language%.txt" );
+	g_pVGuiLocalize->AddFile( "resource/replay_%language%.txt", "GAME" );
+	g_pVGuiLocalize->AddFile( "resource/youtube_%language%.txt", "GAME" );
+
+	char szExpansion[1024];
+	g_pFullFileSystem->GetCurrentGameExpansionId( szExpansion, sizeof( szExpansion ) );
+	szExpansion[sizeof( szExpansion ) - 1] = 0;
+
+	const char *pszGameDir = CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) );
+	if ( V_stricmp( pszGameDir, "hl2_complete" ) )
+	{
+		char szFile[MAX_PATH];
+		V_snprintf( szFile, sizeof( szFile ) - 1, "resource/%s_%%language%%.txt", szExpansion );
+		szFile[sizeof( szFile ) - 1] = 0;
+		g_pVGuiLocalize->AddFile( szFile );
+	}
+	else
+	{
+		g_pVGuiLocalize->AddFile( "hl2/resource/hl2_%language%.txt", "BASE_PATH" );
+		g_pVGuiLocalize->AddFile( "episodic/resource/episodic_%language%.txt", "BASE_PATH" );
+		g_pVGuiLocalize->AddFile( "ep2/resource/ep2_%language%.txt", "BASE_PATH" );
+		g_pVGuiLocalize->AddFile( "lostcoast/resource/lostcoast_%language%.txt", "BASE_PATH" );
+	}
+
+	s_bHadWorkshopContent = false;
+	ReloadParticleEffects();
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Switch the HL2 expansion (hl2, episodic, ep2, lostcoast or their
+//			workshop campaigns) without restarting
+//-----------------------------------------------------------------------------
+void LaunchMod( const CCommand &args )
+{
+	if ( args.ArgC() < 2 )
+		return;
+
+	const char *pszMod = args[1];
+	if ( V_stricmp( pszMod, "hl2" ) && V_stricmp( pszMod, "episodic" ) && V_stricmp( pszMod, "ep2" ) && V_stricmp( pszMod, "lostcoast" ) &&
+		 V_stricmp( pszMod, "workshop_hl2" ) && V_stricmp( pszMod, "workshop_episodic" ) && V_stricmp( pszMod, "workshop_ep1" ) && V_stricmp( pszMod, "workshop_ep2" ) )
+		return;
+
+	bool bWorkshop = false;
+	if ( !V_stricmp( pszMod, "workshop_ep2" ) )
+	{
+		pszMod = "ep2";
+		bWorkshop = true;
+	}
+	if ( !V_stricmp( pszMod, "workshop_episodic" ) || !V_stricmp( pszMod, "workshop_ep1" ) )
+	{
+		pszMod = "episodic";
+		bWorkshop = true;
+	}
+	if ( !V_stricmp( pszMod, "workshop_hl2" ) )
+	{
+		pszMod = "hl2";
+		bWorkshop = true;
+	}
+
+	bool bHL2 = !V_stricmp( pszMod, "hl2" ) || !V_stricmp( pszMod, "lostcoast" );
+
+	static ConVarRef hl2_episodic( "hl2_episodic" );
+	if ( bHL2 )
+		hl2_episodic.SetValue( 0 );
+	else
+		hl2_episodic.SetValue( 1 );
+
+	ConVarRef hl2_expansion( "hl2_expansion" );
+	if ( hl2_expansion.IsValid() )
+	{
+		ConVarRef hl2_random_chapter_index( "hl2_random_chapter_index" );
+		hl2_random_chapter_index.SetValue( -1 );
+		hl2_expansion.SetValue( pszMod );
+	}
+
+	bool bChanged = false;
+	ConVarRef workshop_playing_campaign( "workshop_playing_campaign" );
+	if ( workshop_playing_campaign.GetBool() != bWorkshop )
+	{
+		workshop_playing_campaign.SetValue( bWorkshop );
+		bChanged = true;
+	}
+
+	char szCurrentExpansion[512];
+	g_pFullFileSystem->GetCurrentGameExpansionId( szCurrentExpansion, sizeof( szCurrentExpansion ) );
+
+	engine->ClientCmd( "exec modsettings_default.cfg\n" );
+	if ( g_pFullFileSystem->FileExists( "//mod/cfg/modsettings.cfg" ) )
+	{
+		engine->ClientCmd( "exec modsettings.cfg mod\n" );
+	}
+
+	if ( !bChanged && !strcmp( pszMod, szCurrentExpansion ) )
+		return;
+
+	engine->DisconnectInternal();
+	g_pFullFileSystem->SetCurrentGameExpansionId( pszMod );
+	FlushClientContent( args );
+}
+
+ConCommand launchmod( "launchmod", LaunchMod, "Launch a specified mod (ex: ep2)" );
+ConCommand flush_content( "flush_content", FlushClientContent, "" );
+#else
+//-----------------------------------------------------------------------------
+// Purpose: Restart the game in another mod
+//-----------------------------------------------------------------------------
+void LaunchMod( const CCommand &args )
+{
+	if ( args.ArgC() < 2 )
+		return;
+
+	engine->ClientCmd_Unrestricted( "disconnect\n" );
+
+	const char *pszMod = args[1];
+
+	if ( !CommandLine()->FindParm( "-novid" ) )
+	{
+		CommandLine()->AppendParm( "-novid", "" );
+	}
+
+	if ( !CommandLine()->FindParm( "-sw" ) )
+	{
+		CommandLine()->AppendParm( "-sw", "" );
+		CommandLine()->AppendParm( "-width", "1280" );
+		CommandLine()->AppendParm( "-height", "720" );
+	}
+
+	CommandLine()->RemoveParm( "-game" );
+	CommandLine()->AppendParm( "-game", pszMod );
+
+	engine->ClientCmd_Unrestricted( "_restart\n" );
+}
+
+ConCommand launchmod( "launchmod", LaunchMod, "Launch a specified mod (ex: ep2)" );
+#endif
 	
 //-----------------------------------------------------------------------------
 // Purpose: Returns true if the entity index corresponds to a player slot 

@@ -33,6 +33,9 @@ public:
 	virtual void	CreateMove( float flInputSampleTime, CUserCmd *cmd );
 	virtual void	LevelInit( const char *newmap );
 	virtual void	LevelShutdown( void );
+#ifdef HL2_EPISODIC
+	virtual void	OnExpansionLoaded( void );
+#endif
 };
 
 CHLModeManager::CHLModeManager( void )
@@ -70,6 +73,13 @@ void CHLModeManager::LevelShutdown( void )
 {
 	g_pClientMode->LevelShutdown();
 }
+
+#ifdef HL2_EPISODIC
+void CHLModeManager::OnExpansionLoaded( void )
+{
+	PanelMetaClassMgr()->LoadMetaClassDefinitionFile( SCREEN_FILE );
+}
+#endif
 
 
 static CHLModeManager g_HLModeManager;

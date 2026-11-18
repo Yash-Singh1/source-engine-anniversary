@@ -24,6 +24,10 @@ public:
 	virtual void	SwitchMode( bool commander, bool force ) = 0;
 	virtual void	LevelInit( const char *newmap ) = 0;
 	virtual void	LevelShutdown( void ) = 0;
+#ifdef HL2_EPISODIC
+	// Called after launchmod switches the HL2 expansion
+	virtual void	OnExpansionLoaded( void ) {}
+#endif
 };
 
 extern IVModeManager *modemanager;

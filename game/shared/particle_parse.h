@@ -66,6 +66,9 @@ void PrecacheStandardParticleSystems( );
 
 class IFileList;
 void ReloadParticleEffectsInList( IFileList *pFilesToReload );
+#ifdef CLIENT_DLL
+void ReloadParticleEffects();
+#endif
 
 //-----------------------------------------------------------------------------
 // Particle spawning methods
