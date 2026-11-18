@@ -34,6 +34,8 @@ DEFINES = [
     "FRAME_POINTER_OMISSION_DISABLED",
     "NO_MALLOC_OVERRIDE=1", "VPROF_LEVEL=1", "NO_HOOK_MALLOC=1", "PNG_NO_PEDANTIC_WARNINGS",
     "CPP11_NO_LIBCXX",
+    # Not Valve's: excludes this fork's runtime additions from retail builds.
+    "BYTEMATCH_RETAIL",
 ]
 
 # BASE_CFLAGS -U options; they follow every -D on Xcode's command line.

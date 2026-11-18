@@ -19,7 +19,6 @@
 #include "tier1/callqueue.h"
 #include "cmodel.h"
 #include "tier0/vprof.h"
-#include "tier1/memhelpers.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -898,12 +897,9 @@ void CStudioRenderContext::R_StudioBuildMeshStrips( studiomeshgroup_t* pMeshGrou
 	int i;
 	int stripDataSize = 0;
 
-	size_t stripHdrSize = (pStripGroup->flags & OptimizedModel::STRIPGROUP_IS_MDL49)
-		? sizeof(OptimizedModel::StripHeader_v49_t) : sizeof(OptimizedModel::StripHeader_t);
-
 	for( i = 0; i < pStripGroup->numStrips; ++i )
 	{
-		stripDataSize += stripHdrSize;
+		stripDataSize += sizeof(OptimizedModel::StripHeader_t);
 		stripDataSize += pStripGroup->pStrip(i)->numBoneStateChanges *
 			sizeof(OptimizedModel::BoneStateChangeHeader_t);
 	}
@@ -911,14 +907,14 @@ void CStudioRenderContext::R_StudioBuildMeshStrips( studiomeshgroup_t* pMeshGrou
 	pMeshGroup->m_pStripData = (OptimizedModel::StripHeader_t*)malloc(stripDataSize);
 
 	// Copy over the strip info
-	int boneStateChangeOffset = pStripGroup->numStrips * stripHdrSize;
+	int boneStateChangeOffset = pStripGroup->numStrips * sizeof(OptimizedModel::StripHeader_t);
 	for( i = 0; i < pStripGroup->numStrips; ++i )
 	{
-		memcpy( &pMeshGroup->m_pStripData[i], pStripGroup->pStrip(i), stripHdrSize);
+		memcpy( &pMeshGroup->m_pStripData[i], pStripGroup->pStrip(i), sizeof(OptimizedModel::StripHeader_t));
 
 		// Fixup the bone state change offset, since we have it right after the strip data
 		pMeshGroup->m_pStripData[i].boneStateChangeOffset = boneStateChangeOffset -
-			i * stripHdrSize;
+			i * sizeof(OptimizedModel::StripHeader_t);
 
 		// copy over bone state changes
 		int boneWeightSize = pMeshGroup->m_pStripData[i].numBoneStateChanges * 
@@ -1323,7 +1319,7 @@ void CStudioRenderContext::R_StudioDestroyStaticMeshes( int numStudioMeshes, stu
 
 	if ( *ppStudioMeshes )
 	{
-		delete[] *ppStudioMeshes;
+		delete *ppStudioMeshes;
 		*ppStudioMeshes = 0;
 	}
 }
@@ -1998,7 +1994,7 @@ void CStudioRenderContext::SetAmbientLightColors( const Vector *pColors )
 
 void CStudioRenderContext::SetAmbientLightColors( const Vector4D *pColors )
 {
-	memutils::copy( &m_RC.m_LightBoxColors[0], pColors, 6 );
+	memcpy( m_RC.m_LightBoxColors, pColors, 6 * sizeof(Vector4D) );
 
 	// FIXME: Would like to get this into the render thread, but there's systemic confusion
 	// about whether to set lighting state here or in the material system
@@ -2427,34 +2423,11 @@ void CStudioRenderContext::AddDecal( StudioDecalHandle_t handle, studiohdr_t *pS
 	matrix3x4_t *pBoneToWorld, const Ray_t& ray, const Vector& decalUp, 
 	IMaterial* pDecalMaterial, float radius, int body, bool noPokethru, int maxLODToDecal )
 {
-	// This substition always has to be done in the main thread, so do it here.
-	pDecalMaterial = GetModelSpecificDecalMaterial( pDecalMaterial );
-
 	CMatRenderContextPtr pRenderContext( g_pMaterialSystem );
 	Assert( pRenderContext->IsRenderData( pBoneToWorld ) );
 	QUEUE_STUDIORENDER_CALL_RC( AddDecal, CStudioRender, g_pStudioRenderImp, pRenderContext, 
 		handle, m_RC, pBoneToWorld, pStudioHdr, ray, decalUp, pDecalMaterial, radius, 
 		body, noPokethru, maxLODToDecal );
-}
-
-// Function to do replacement because we always need to do this from the main thread.
-IMaterial* GetModelSpecificDecalMaterial( IMaterial* pDecalMaterial )
-{
-	Assert( ThreadInMainThread() );
-	// Since we're adding this to a studio model, check the decal to see if 
-	// there's an alternate form used for static props...
-	bool found;
-	IMaterialVar* pModelMaterialVar = pDecalMaterial->FindVar( "$modelmaterial", &found, false );
-	if ( found )
-	{
-		IMaterial* pModelMaterial = g_pMaterialSystem->FindMaterial( pModelMaterialVar->GetStringValue(), TEXTURE_GROUP_DECAL, false );
-		if ( !IsErrorMaterial( pModelMaterial ) )
-		{
-			return pModelMaterial;
-		}
-	}
-
-	return pDecalMaterial;
 }
 
 
