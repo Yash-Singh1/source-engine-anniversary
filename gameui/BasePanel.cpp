@@ -142,27 +142,28 @@ void CGameMenuItem::ApplySchemeSettings(IScheme *pScheme)
 {
 	BaseClass::ApplySchemeSettings(pScheme);
 
+	vgui::HFont hMainMenuFont = pScheme->GetFont( "MainMenuFont", IsProportional() );
+
 	// make fully transparent
 	SetFgColor(GetSchemeColor("MainMenu.TextColor", pScheme));
 	SetBgColor(Color(0, 0, 0, 0));
 	SetDefaultColor(GetSchemeColor("MainMenu.TextColor", pScheme), Color(0, 0, 0, 0));
+
+	if ( !hMainMenuFont )
+	{
+		hMainMenuFont = pScheme->GetFont( "MenuLarge", IsProportional() );
+	}
+
 	SetArmedColor(GetSchemeColor("MainMenu.ArmedTextColor", pScheme), Color(0, 0, 0, 0));
 	SetDepressedColor(GetSchemeColor("MainMenu.DepressedTextColor", pScheme), Color(0, 0, 0, 0));
-	SetContentAlignment(Label::a_west);
 	SetBorder(NULL);
 	SetDefaultBorder(NULL);
 	SetDepressedBorder(NULL);
 	SetKeyFocusBorder(NULL);
 
-	vgui::HFont hMainMenuFont = pScheme->GetFont( "MainMenuFont", IsProportional() );
-
 	if ( hMainMenuFont )
 	{
 		SetFont( hMainMenuFont );
-	}
-	else
-	{
-		SetFont( pScheme->GetFont( "MenuLarge", IsProportional() ) );
 	}
 	SetTextInset(0, 0);
 	SetArmedSound("UI/buttonrollover.wav");
@@ -179,6 +180,10 @@ void CGameMenuItem::ApplySchemeSettings(IScheme *pScheme)
 	if (m_bRightAligned)
 	{
 		SetContentAlignment(Label::a_east);
+	}
+	else
+	{
+		SetContentAlignment(Label::a_west);
 	}
 }
 
@@ -1128,9 +1133,9 @@ void CBasePanel::OnThink()
 			m_iSwitchModState = 0;
 			break;
 		}
-	}
 
-	BaseClass::OnThink();
+		BaseClass::OnThink();
+	}
 }
 
 static const char *g_rgValidCommands[] =
@@ -2163,12 +2168,18 @@ void CBasePanel::PerformLayout()
 		// place menu buttons above middle of screen
 		m_pGameMenuButtons[i]->SetPos(m_iGameTitlePos[i].x, m_iGameTitlePos[i].y + yDiff);
 		//m_pGameMenuButtons[i]->SetSize(textWide + 4, textTall + 4);
+		m_pGameMenuButtons[i]->SetVisible( true );
 	}
 
 	if ( m_pGameLogo )
 	{
 		// move the logo to sit right on top of the menu
 		m_pGameLogo->SetPos( m_iGameMenuPos.x + m_pGameLogo->GetOffsetX(), idealMenuY - m_pGameLogo->GetTall() + m_pGameLogo->GetOffsetY() );
+
+		if ( GameUI().IsInLevel() )
+		{
+			m_pGameLogo->SetAlpha( 0 );
+		}
 	}
 
 	// position self along middle of screen
@@ -2309,8 +2320,11 @@ void CBasePanel::UpdateBackgroundImages()
 		}
 		surface()->DrawSetTextureFile( m_iProductImageID, filename, false, false );
 	}
-
+#ifdef BYTEMATCH_RETAIL
+	else if ( IsPC() )
+#else
 	if ( IsPC() )
+#endif
 	{
 		// load the loading icon
 		if ( m_iLoadingImageID == -1 )
@@ -4069,12 +4083,6 @@ void CBasePanel::SystemNotification( const int notification )
 			if ( m_pGameLogo )
 			{
 				m_pGameLogo->SetVisible( false );
-			}
-
-			// Hide the standard game menu
-			for ( int i = 0; i < m_pGameMenuButtons.Count(); ++i )
-			{
-				m_pGameMenuButtons[i]->SetVisible( false );
 			}
 
 			// Hide the BasePanel's button footer
