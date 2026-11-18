@@ -1,15 +1,16 @@
 # mathlib (libtier1.a / libmathlib.a members, depot 223)
 
-Measured with devtools/bytematch (macos-cc.sh, clang-600.0.57, call targets checked) against the
-retail module that links each member: engine.dylib, or hl2 client.dylib (lightdesc, powsse,
-randsse, ssenoise, rangecheckedvar), hl2 server.dylib (stringpool), scenefilecache.dylib
-(lzmaDecoder). "identical" means matched before this lane's edits too; "edited" means it
-matches after a source change. Counts: {'identical': 81, 'uncertain': 1, 'edited': 24}.
+Measured with devtools/bytematch/tools/tier1_measure.sh (macos-cc.sh, clang-600.0.57,
+BYTEMATCH_RETAIL, call targets checked) against the retail module that links each member:
+engine.dylib, or hl2 client.dylib (lightdesc, powsse, randsse, ssenoise, rangecheckedvar), hl2
+server.dylib (stringpool), scenefilecache.dylib (lzmaDecoder). "identical" means matched before
+this lane's edits too; "edited" means it matches after a source or header change.
+Counts: {'identical': 81, 'edited': 25}.
 
-Retail compiles tier1/mathlib from source in every module; the hl2 client/server and libvstdlib
-link the same archive members (same N_OSO mtimes as engine). Lost Coast (Oct 2024) is an older
-snapshot. Members compiled but not linked by any retail module (keyvaluesjson, utlbinaryblock,
-LzmaDec.c) were removed.
+Retail compiles tier1/mathlib from source in every module; the hl2 client/server, libvstdlib and
+materialsystem link the same archive members (same N_OSO mtimes as engine). Lost Coast (Oct 2024)
+is an older snapshot. Members compiled but not linked by any retail module (keyvaluesjson,
+utlbinaryblock, LzmaDec.c) were removed.
 
 | object | function | status | note |
 |---|---|---|---|
@@ -20,7 +21,7 @@ LzmaDec.c) were removed.
 | IceKey | `IceKey::set(unsigned char const*)` | identical |  |
 | IceKey | `IceKey::~IceKey()` | identical |  |
 | bumpvects | `GetBumpNormals(Vector const&, Vector const&, Vector const&, Vector const&, Vector*)` | identical |  |
-| color_conversion | `BuildGammaTable(float, float, float, int)` | uncertain | source identical to SDK 2013; retail is 18 bytes larger, cause not found |
+| color_conversion | `BuildGammaTable(float, float, float, int)` | edited | matches with the SDK 2013 clamp() |
 | color_conversion | `ColorRGBExp32ToVector(ColorRGBExp32 const&, Vector&)` | identical |  |
 | color_conversion | `LinearToScreenGamma(float)` | identical |  |
 | color_conversion | `LinearToTexture(float)` | identical |  |
@@ -65,10 +66,10 @@ LzmaDec.c) were removed.
 | mathlib_base | `QuaternionAlign(Quaternion const&, Quaternion const&, Quaternion&)` | identical |  |
 | mathlib_base | `QuaternionAngles(Quaternion const&, QAngle&)` | identical |  |
 | mathlib_base | `QuaternionBlend(Quaternion const&, Quaternion const&, float, Quaternion&)` | identical |  |
-| mathlib_base | `QuaternionMatrix(Quaternion const&, matrix3x4_t&)` | edited | SDK asserts, MatrixBuildRotationAboutAxis |
+| mathlib_base | `QuaternionMatrix(Quaternion const&, matrix3x4_t&)` | edited | SDK asserts, MatrixBuildRotationAboutAxis, clamp |
 | mathlib_base | `QuaternionSlerp(Quaternion const&, Quaternion const&, float, Quaternion&)` | identical |  |
 | mathlib_base | `QuaternionSlerpNoAlign(Quaternion const&, Quaternion const&, float, Quaternion&)` | identical |  |
-| mathlib_base | `RGBtoHSV(Vector const&, Vector&)` | edited | SDK asserts, MatrixBuildRotationAboutAxis |
+| mathlib_base | `RGBtoHSV(Vector const&, Vector&)` | edited | SDK asserts, MatrixBuildRotationAboutAxis, clamp |
 | mathlib_base | `R_CullBox(Vector const&, Vector const&, Frustum_t const&)` | identical |  |
 | mathlib_base | `R_CullBoxSkipNear(Vector const&, Vector const&, Frustum_t const&)` | identical |  |
 | mathlib_base | `SetIdentityMatrix(matrix3x4_t&)` | identical |  |

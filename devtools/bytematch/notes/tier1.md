@@ -1,22 +1,23 @@
 # tier1 (libtier1.a / libmathlib.a members, depot 223)
 
-Measured with devtools/bytematch (macos-cc.sh, clang-600.0.57, call targets checked) against the
-retail module that links each member: engine.dylib, or hl2 client.dylib (lightdesc, powsse,
-randsse, ssenoise, rangecheckedvar), hl2 server.dylib (stringpool), scenefilecache.dylib
-(lzmaDecoder). "identical" means matched before this lane's edits too; "edited" means it
-matches after a source change. Counts: {'edited': 195, 'identical': 312, 'written new': 1, 'uncertain': 1, 'kept (fork)': 1}.
+Measured with devtools/bytematch/tools/tier1_measure.sh (macos-cc.sh, clang-600.0.57,
+BYTEMATCH_RETAIL, call targets checked) against the retail module that links each member:
+engine.dylib, or hl2 client.dylib (lightdesc, powsse, randsse, ssenoise, rangecheckedvar), hl2
+server.dylib (stringpool), scenefilecache.dylib (lzmaDecoder). "identical" means matched before
+this lane's edits too; "edited" means it matches after a source or header change.
+Counts: {'edited': 196, 'identical': 312, 'written new': 1, 'uncertain': 1}.
 
-Retail compiles tier1/mathlib from source in every module; the hl2 client/server and libvstdlib
-link the same archive members (same N_OSO mtimes as engine). Lost Coast (Oct 2024) is an older
-snapshot. Members compiled but not linked by any retail module (keyvaluesjson, utlbinaryblock,
-LzmaDec.c) were removed.
+Retail compiles tier1/mathlib from source in every module; the hl2 client/server, libvstdlib and
+materialsystem link the same archive members (same N_OSO mtimes as engine). Lost Coast (Oct 2024)
+is an older snapshot. Members compiled but not linked by any retail module (keyvaluesjson,
+utlbinaryblock, LzmaDec.c) were removed.
 
 | object | function | status | note |
 |---|---|---|---|
 | KeyValues | `CKeyValuesErrorStack::ReportError(char const*)` | edited | SDK 2013 KeyValues |
 | KeyValues | `CUtlSortVector<KeyValues*, CUtlSortVectorKeyValuesByName, CUtlVector<KeyValues*, CUtlMemory<KeyValues*, int>>>::CompareHelper(KeyValues* const*, KeyValues* const*)` | identical |  |
-| KeyValues | `EvaluateConditional(char const*)` | edited | SDK 2013 KeyValues |
-| KeyValues | `IsSteamDeck(bool)` | written new | written new from the retail disassembly |
+| KeyValues | `EvaluateConditional(char const*)` | edited | $DECK added; fork $OSX/$LINUX behaviour only without BYTEMATCH_RETAIL |
+| KeyValues | `IsSteamDeck(bool)` | written new | written new from the retail disassembly (file-local in every module, not a tier0 export) |
 | KeyValues | `KeyValues::AddSubKey(KeyValues*)` | identical |  |
 | KeyValues | `KeyValues::Clear()` | identical |  |
 | KeyValues | `KeyValues::CopySubkeys(KeyValues*) const` | identical |  |
@@ -297,9 +298,9 @@ LzmaDec.c) were removed.
 | interface | `InterfaceReg::InterfaceReg(void* (*)(), char const*)` | identical |  |
 | interface | `Sys_GetFactory(CSysModule*)` | identical |  |
 | interface | `Sys_GetFactoryThis()` | identical |  |
-| interface | `Sys_IsDebuggerPresent()` | edited | header change |
+| interface | `Sys_IsDebuggerPresent()` | edited | ICommandLine vtable, BYTEMATCH_RETAIL |
 | interface | `Sys_LoadLibrary(char const*, Sys_Flags)` | identical |  |
-| interface | `Sys_LoadModule(char const*, Sys_Flags)` | kept (fork) | kept: fork lib*/bin/ library search needed by our runtime layout |
+| interface | `Sys_LoadModule(char const*, Sys_Flags)` | edited | SDK search under BYTEMATCH_RETAIL; fork lib*/bin/ search otherwise |
 | interface | `Sys_UnloadModule(CSysModule*)` | identical |  |
 | interface | `_CreateInterface` | identical |  |
 | lzmaDecoder | `CLZMA::GetActualSize(unsigned char*)` | edited | LZMA SDK 4.43 |
