@@ -216,6 +216,14 @@ static void WaitForDebuggerConnect( int argc, char *argv[], int time )
 
 int main( int argc, char *argv[] )
 {
+#ifdef BYTEMATCH_RETAIL
+	void *launcher = dlopen( "bin/launcher" DLL_EXT_STRING, RTLD_NOW );
+	if ( !launcher )
+	{
+		fprintf( stderr, "Failed to load the launcher\n" );
+		return 0;
+	}
+#else
 	char ld_path[4196];
 	char *path = "bin/";
 	char *ld_env;
@@ -247,6 +255,7 @@ int main( int argc, char *argv[] )
 		fprintf( stderr, "%s\nFailed to load the launcher\n", dlerror() );
 		return 0;
 	}
+#endif
 
 	LauncherMain_t main = (LauncherMain_t)dlsym( launcher, "LauncherMain" );
 	if ( !main )
