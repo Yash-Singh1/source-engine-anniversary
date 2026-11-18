@@ -791,13 +791,6 @@ struct mstudioautolayer_t
 	float				end;	// end of all influence
 };
 
-struct mstudioactivitymodifier_t
-{
-	DECLARE_BYTESWAP_DATADESC();
-	
-	int					sznameindex;
-	inline char			*pszName() { return (sznameindex) ? (char *)(((byte *)this) + sznameindex ) : NULL; }
-};
 
 // sequence descriptions
 struct mstudioseqdesc_t
@@ -895,11 +888,7 @@ struct mstudioseqdesc_t
 
 	int					cycleposeindex;		// index of pose parameter to use as cycle index
 
-	int					activitymodifierindex;
-	int					numactivitymodifiers;
-	inline mstudioactivitymodifier_t *pActivityModifier( int i ) const { Assert( i >= 0 && i < numactivitymodifiers); return activitymodifierindex != 0 ? (mstudioactivitymodifier_t *)(((byte *)this) + activitymodifierindex) + i : NULL; };
-
-	int					unused[5];		// remove/add as appropriate (grow back to 8 ints on version change!)
+	int					unused[7];		// remove/add as appropriate (grow back to 8 ints on version change!)
 
 	mstudioseqdesc_t(){}
 private:
@@ -1326,8 +1315,13 @@ struct mstudio_modelvertexdata_t
 	int					GetGlobalTangentIndex( int i ) const;
 
 	// base of external vertex data stores
+#ifdef PLATFORM_64BITS
 	serializedstudioptr_t<const void> pVertexData;
 	serializedstudioptr_t<const void> pTangentData;
+#else
+	const void			*pVertexData;
+	const void			*pTangentData;
+#endif
 
     const void	*GetVertexData() const {
         return pVertexData;
@@ -1452,9 +1446,15 @@ struct mstudiomodel_t
 	int					eyeballindex;
 	inline  mstudioeyeball_t *pEyeball( int i ) { return (mstudioeyeball_t *)(((byte *)this) + eyeballindex) + i; };
 
+#ifdef PLATFORM_64BITS
     mstudio_modelvertexdata_t vertexdata; // sizeof(mstudio_modelvertexdata_t) == 16
 
 	int					unused[6];		// remove as appropriate
+#else
+	mstudio_modelvertexdata_t vertexdata;
+
+	int					unused[8];		// remove as appropriate
+#endif
 };
 
 #ifdef PLATFORM_64BITS
@@ -2139,6 +2139,7 @@ struct studiohdr2_t
 	int m_nBoneFlexDriverIndex;
 	inline mstudioboneflexdriver_t *pBoneFlexDriver( int i ) const { Assert( i >= 0 && i < m_nBoneFlexDriverCount ); return (mstudioboneflexdriver_t *)(((byte *)this) + m_nBoneFlexDriverIndex) + i; }
 
+#ifdef PLATFORM_64BITS
 	mutable serializedstudioptr_t< void	> virtualModel;
 	mutable serializedstudioptr_t< void	> animblockModel;
 
@@ -2146,6 +2147,9 @@ struct studiohdr2_t
 	serializedstudioptr_t< void> pIndexBase;
 
 	int reserved[48];
+#else
+	int reserved[56];
+#endif
 };
 
 struct studiohdr_t
@@ -2350,7 +2354,11 @@ struct studiohdr_t
 	const studiohdr_t	*FindModel( void **cache, char const *modelname ) const;
 
 	// implementation specific back pointer to virtual data
+#ifdef PLATFORM_64BITS
 	int                 unused_virtualModel;
+#else
+	mutable void		*virtualModel;
+#endif
 	virtualmodel_t		*GetVirtualModel( void ) const;
 
 	// for demand loaded animation blocks
@@ -2360,7 +2368,11 @@ struct studiohdr_t
 	int					animblockindex;
 	inline mstudioanimblock_t *pAnimBlock( int i ) const { Assert( i > 0 && i < numanimblocks); return (mstudioanimblock_t *)(((byte *)this) + animblockindex) + i; };
 
+#ifdef PLATFORM_64BITS
     int                 unused_animblockModel;
+#else
+	mutable void		*animblockModel;
+#endif
 	byte *				GetAnimBlock( int i ) const;
 
 	int					bonetablebynameindex;
@@ -2368,8 +2380,13 @@ struct studiohdr_t
 
 	// used by tools only that don't cache, but persist mdl's peer data
 	// engine uses virtualModel to back link to cache pointers
+#ifdef PLATFORM_64BITS
     int                 unused_pVertexBase;
     int                 unused_pIndexBase;
+#else
+	void				*pVertexBase;
+	void				*pIndexBase;
+#endif
 
 	// if STUDIOHDR_FLAGS_CONSTANT_DIRECTIONAL_LIGHT_DOT is set,
 	// this value is used to calculate directional components of lighting 
@@ -2417,12 +2434,21 @@ struct studiohdr_t
 	inline int			BoneFlexDriverCount() const { return studiohdr2index ? pStudioHdr2()->m_nBoneFlexDriverCount : 0; }
 	inline const mstudioboneflexdriver_t* BoneFlexDriver( int i ) const { Assert( i >= 0 && i < BoneFlexDriverCount() ); return studiohdr2index > 0 ? pStudioHdr2()->pBoneFlexDriver( i ) : NULL; }
 
+#ifdef PLATFORM_64BITS
 	void* 				VirtualModel() const { return studiohdr2index ? (void *)( pStudioHdr2()->virtualModel ) : nullptr; }
 	void				SetVirtualModel( void* ptr ) { Assert( studiohdr2index ); if ( studiohdr2index ) { pStudioHdr2()->virtualModel = ptr; } else { Msg("go fuck urself!\n"); } }
 	void*				VertexBase() const { return studiohdr2index ? (void *)( pStudioHdr2()->pVertexBase ) : nullptr; }
 	void				SetVertexBase( void* pVertexBase ) const { Assert( studiohdr2index ); if ( studiohdr2index ) { pStudioHdr2()->pVertexBase = pVertexBase; } }
 	void*				IndexBase() const { return studiohdr2index ? ( void * ) ( pStudioHdr2()->pIndexBase ) : nullptr; }
 	void				SetIndexBase( void* pIndexBase ) const { Assert( studiohdr2index ); if ( studiohdr2index ) { pStudioHdr2()->pIndexBase  = pIndexBase; } }
+#else
+	void* 				VirtualModel() const { return virtualModel; }
+	void				SetVirtualModel( void* ptr ) { virtualModel = ptr; }
+	void*				VertexBase() const { return pVertexBase; }
+	void				SetVertexBase( void* pBase ) const { const_cast<studiohdr_t *>( this )->pVertexBase = pBase; }
+	void*				IndexBase() const { return pIndexBase; }
+	void				SetIndexBase( void* pBase ) const { const_cast<studiohdr_t *>( this )->pIndexBase = pBase; }
+#endif
 
 	// NOTE: No room to add stuff? Up the .mdl file format version 
 	// [and move all fields in studiohdr2_t into studiohdr_t and kill studiohdr2_t],
