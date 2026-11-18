@@ -2055,6 +2055,98 @@ void CMatRenderContext::GetLightmapDimensions( int *w, int *h )
 	*h = GetMaterialSystem()->GetLightmapHeight( GetLightmapPage() );
 }
 
+#ifdef BYTEMATCH_RETAIL
+void CMatRenderContext::DrawScreenSpaceQuad( IMaterial* pMaterial )
+{
+	// This is required because the texture coordinates for NVidia reading
+	// out of non-power-of-two textures is borked
+	int w, h;
+
+	GetRenderTargetDimensions( w, h );
+	if ( ( w == 0 ) || ( h == 0 ) )
+		return;
+
+	// This is the size of the back-buffer we're reading from.
+	int bw, bh;
+	bw = w; bh = h;
+
+	/* FIXME: Get this to work in hammer/engine integration
+	if ( m_pRenderTargetTexture )
+	{
+	}
+	else
+	{
+		MaterialVideoMode_t mode;
+		GetDisplayMode( mode );
+		if ( ( mode.m_Width == 0 ) || ( mode.m_Height == 0 ) )
+			return;
+		bw = mode.m_Width;
+		bh = mode.m_Height;
+	}
+	*/
+
+	float s0, t0;
+	float s1, t1;
+		 	  
+	float flOffsetS = (bw != 0.0f) ? 1.0f / bw : 0.0f;
+	float flOffsetT = (bh != 0.0f) ? 1.0f / bh : 0.0f;
+	s0 = 0.5f * flOffsetS;
+	t0 = 0.5f * flOffsetT;
+	s1 = (w-0.5f) * flOffsetS;
+	t1 = (h-0.5f) * flOffsetT;
+	
+	Bind( pMaterial );
+	IMesh* pMesh = GetDynamicMesh( true );
+
+	MatrixMode( MATERIAL_VIEW );
+	PushMatrix();
+	LoadIdentity();
+
+	MatrixMode( MATERIAL_PROJECTION );
+	PushMatrix();
+	LoadIdentity();
+
+	CMeshBuilder meshBuilder;
+	meshBuilder.Begin( pMesh, MATERIAL_QUADS, 1 );
+
+	meshBuilder.Position3f( -1.0f, -1.0f, 0.0f );
+	meshBuilder.TangentS3f( 0.0f, 1.0f, 0.0f );
+	meshBuilder.TangentT3f( 1.0f, 0.0f, 0.0f );
+	meshBuilder.Normal3f( 0.0f, 0.0f, 1.0f );
+	meshBuilder.TexCoord2f( 0, s0, t1 );
+	meshBuilder.AdvanceVertex();
+
+	meshBuilder.Position3f( -1.0f, 1, 0.0f );
+	meshBuilder.TangentS3f( 0.0f, 1.0f, 0.0f );
+	meshBuilder.TangentT3f( 1.0f, 0.0f, 0.0f );
+	meshBuilder.Normal3f( 0.0f, 0.0f, 1.0f );
+	meshBuilder.TexCoord2f( 0, s0, t0 );
+	meshBuilder.AdvanceVertex();
+
+	meshBuilder.Position3f( 1, 1, 0.0f );
+	meshBuilder.TangentS3f( 0.0f, 1.0f, 0.0f );
+	meshBuilder.TangentT3f( 1.0f, 0.0f, 0.0f );
+	meshBuilder.Normal3f( 0.0f, 0.0f, 1.0f );
+	meshBuilder.TexCoord2f( 0, s1, t0 );
+	meshBuilder.AdvanceVertex();
+
+	meshBuilder.Position3f( 1, -1.0f, 0.0f );
+	meshBuilder.TangentS3f( 0.0f, 1.0f, 0.0f );
+	meshBuilder.TangentT3f( 1.0f, 0.0f, 0.0f );
+	meshBuilder.Normal3f( 0.0f, 0.0f, 1.0f );
+	meshBuilder.TexCoord2f( 0, s1, t1 );
+	meshBuilder.AdvanceVertex();
+
+	meshBuilder.End();
+	pMesh->Draw();
+
+	MatrixMode( MATERIAL_VIEW );
+	PopMatrix();
+
+	MatrixMode( MATERIAL_PROJECTION );
+	PopMatrix();
+}
+#else
 void CMatRenderContext::DrawScreenSpaceQuad( IMaterial* pMaterial )
 {
 	// Despite saying we render a full screen quad, this actually renders a single triangle
@@ -2121,6 +2213,7 @@ void CMatRenderContext::DrawScreenSpaceQuad( IMaterial* pMaterial )
 	MatrixMode( MATERIAL_PROJECTION );
 	PopMatrix();
 }
+#endif
 
 void CMatRenderContext::DrawScreenSpaceRectangle( 
 	IMaterial *pMaterial,

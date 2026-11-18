@@ -653,6 +653,108 @@ void CMaterialVar::SetIntValue( int val )
 //-----------------------------------------------------------------------------
 // string
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+const char *CMaterialVar::GetStringValue( void ) const
+{
+	CMatCallQueue *pCallQueue = MaterialSystem()->GetRenderCallQueue();
+	if ( pCallQueue && !m_bFakeMaterialVar )
+	{
+		if ( !s_bEnableThreadedAccess )
+		{
+			//DevMsg( 2, "Non-thread safe call to CMaterialVar %s!\n", GetName() );
+		}
+
+		if ( m_nTempIndex != 0xFF )
+			return s_pTempMaterialVar[m_nTempIndex].GetStringValue();
+	}
+
+	switch( m_Type )
+	{
+	case MATERIAL_VAR_TYPE_STRING:
+		return m_pStringVal;
+
+	case MATERIAL_VAR_TYPE_INT:
+		Q_snprintf( s_CharBuf, sizeof( s_CharBuf ), "%d", m_intVal );
+		return s_CharBuf;
+
+	case MATERIAL_VAR_TYPE_FLOAT:
+		Q_snprintf( s_CharBuf, sizeof( s_CharBuf ), "%f", m_VecVal[0] );
+		return s_CharBuf;
+
+	case MATERIAL_VAR_TYPE_VECTOR:
+		{
+			s_CharBuf[0] = '[';
+			s_CharBuf[1] = ' ';
+			int len = 2;
+			for (int i = 0; i < m_nNumVectorComps; ++i)
+			{
+				if (len < sizeof( s_CharBuf ))
+				{
+					Q_snprintf( s_CharBuf + len, sizeof( s_CharBuf ) - len, "%f ", m_VecVal[i] );
+					len += strlen( s_CharBuf + len );
+				}
+			}
+			if (len < sizeof( s_CharBuf ) - 1)
+			{
+				s_CharBuf[len] = ']';
+				s_CharBuf[len+1] = '\0';
+			}
+			else
+			{
+				s_CharBuf[sizeof( s_CharBuf )-1] = '\0';
+			}
+			return s_CharBuf;
+		}
+
+	case MATERIAL_VAR_TYPE_MATRIX:
+ 		{
+			s_CharBuf[0] = '[';
+			s_CharBuf[1] = ' ';
+			int len = 2;
+			for (int i = 0; i < 4; ++i)
+			{
+				for (int j = 0; j < 4; ++j)
+				{
+					if (len < sizeof( s_CharBuf ))
+						len += Q_snprintf( s_CharBuf + len, sizeof( s_CharBuf ) - len, "%.3f ", m_pMatrix->m_Matrix[j][i] );
+				}
+			}
+			if (len < sizeof( s_CharBuf ) - 1)
+			{
+				s_CharBuf[len] = ']';
+				s_CharBuf[len+1] = '\0';
+			}
+			else
+			{
+				s_CharBuf[sizeof( s_CharBuf )-1] = '\0';
+			}
+			return s_CharBuf;
+		}
+
+	case MATERIAL_VAR_TYPE_TEXTURE:
+		// check for env_cubemap
+		if( IsTextureInternalEnvCubemap( m_pTexture ) )
+		{
+			return "env_cubemap";
+		}
+		else
+		{
+			Q_snprintf( s_CharBuf, sizeof( s_CharBuf ), "%s", m_pTexture->GetName() );
+			return s_CharBuf;
+		}
+	case MATERIAL_VAR_TYPE_MATERIAL:
+		Q_snprintf( s_CharBuf, sizeof( s_CharBuf ), "%s", m_pMaterialValue->GetName() );
+		return s_CharBuf;
+
+	case MATERIAL_VAR_TYPE_UNDEFINED:
+		return "<UNDEFINED>";
+
+	default:
+		Warning( "CMaterialVar::GetStringValue: Unknown material var type\n" );
+		return "";
+	}
+}
+#else
 const char *CMaterialVar::GetStringValue( void ) const
 {
 	CMatCallQueue *pCallQueue = MaterialSystem()->GetRenderCallQueue();
@@ -745,6 +847,7 @@ const char *CMaterialVar::GetStringValue( void ) const
 		return "";
 	}
 }
+#endif
 
 void CMaterialVar::SetStringValue( const char *val )
 {
@@ -847,6 +950,67 @@ void CMaterialVar::GetFourCCValue( FourCC *type, void **ppData )
 //-----------------------------------------------------------------------------
 // texture
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+ITexture *CMaterialVar::GetTextureValue( void )
+{
+	CMatCallQueue *pCallQueue = MaterialSystem()->GetRenderCallQueue();
+	if ( pCallQueue && !m_bFakeMaterialVar )
+	{
+		if ( !s_bEnableThreadedAccess )
+		{
+			//DevMsg( 2, "Non-thread safe call to CMaterialVar %s!\n", GetName() );
+		}
+
+		if ( m_nTempIndex != 0xFF )
+			return s_pTempMaterialVar[m_nTempIndex].GetTextureValue( );
+	}
+
+	ITexture *retVal = NULL;
+	
+	if( m_pMaterial )
+	{
+		m_pMaterial->Precache();
+	}
+	
+	if( m_Type == MATERIAL_VAR_TYPE_TEXTURE )
+	{
+		if ( !IsTextureInternalEnvCubemap( m_pTexture ) )
+		{
+			retVal = static_cast<ITexture *>( m_pTexture );
+		}
+		else
+		{
+			retVal = MaterialSystem()->GetLocalCubemap();
+		}
+		if( !retVal )
+		{
+			static int bitchCount = 0;
+			if( bitchCount < 10 )
+			{
+				Warning( "Invalid texture value in CMaterialVar::GetTextureValue\n" );
+				bitchCount++;
+			}
+		}
+	}
+	else
+	{
+		static int bitchCount = 0;
+		if( bitchCount < 10 )
+		{
+			Warning( "Requesting texture value from var \"%s\" which is "
+					  "not a texture value (material: %s)\n", GetName(),
+						m_pMaterial ? m_pMaterial->GetName() : "NULL material" );
+			bitchCount++;
+		}
+	}
+
+	if( !retVal )
+	{
+		retVal = TextureManager()->ErrorTexture();
+	}
+	return retVal;
+}
+#else
 ITexture *CMaterialVar::GetTextureValue( void )
 {
 	CMatCallQueue *pCallQueue = MaterialSystem()->GetRenderCallQueue();
@@ -903,6 +1067,7 @@ ITexture *CMaterialVar::GetTextureValue( void )
 	}
 	return retVal;
 }
+#endif
 
 
 void CMaterialVar::SetTextureValueQueued( ITexture *texture )
@@ -1386,6 +1551,72 @@ void CMaterialVar::SetUndefined()
 //-----------------------------------------------------------------------------
 // Copy from another material var 
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+void CMaterialVar::CopyFrom( IMaterialVar *pMaterialVar )
+{
+	CMatCallQueue *pCallQueue = MaterialSystem()->GetRenderCallQueue();
+	if ( !m_bFakeMaterialVar && pCallQueue )
+	{
+		if ( s_bEnableThreadedAccess )
+		{
+			if ( m_nTempIndex == 0xFF )
+			{
+				m_nTempIndex = s_nTempVarsUsed++;
+			}
+			s_pTempMaterialVar[m_nTempIndex].CopyFrom( pMaterialVar );
+		}
+		pCallQueue->QueueCall( this, &CMaterialVar::CopyFrom, pMaterialVar );
+		return;
+	}
+
+	switch( pMaterialVar->GetType() )
+	{
+	case MATERIAL_VAR_TYPE_FLOAT:
+		SetFloatValue( pMaterialVar->GetFloatValue() );
+		break;
+
+	case MATERIAL_VAR_TYPE_STRING:
+		SetStringValue( pMaterialVar->GetStringValue() );
+		break;
+
+	case MATERIAL_VAR_TYPE_VECTOR:
+		SetVecValue( pMaterialVar->GetVecValue(), pMaterialVar->VectorSize() );
+		break;
+
+	case MATERIAL_VAR_TYPE_TEXTURE:
+		SetTextureValue( pMaterialVar->GetTextureValue() );
+		break;
+
+	case MATERIAL_VAR_TYPE_INT:
+		SetIntValue( pMaterialVar->GetIntValue() );
+		break;
+
+	case MATERIAL_VAR_TYPE_FOURCC:
+		{
+			FourCC fourCC;
+			void *pData;
+			pMaterialVar->GetFourCCValue( &fourCC, &pData );
+			SetFourCCValue( fourCC, pData );
+		}
+		break;
+
+	case MATERIAL_VAR_TYPE_UNDEFINED:
+		SetUndefined();
+		break;
+
+	case MATERIAL_VAR_TYPE_MATRIX:
+		SetMatrixValue( pMaterialVar->GetMatrixValue() );
+		break;
+
+	case MATERIAL_VAR_TYPE_MATERIAL:
+		SetMaterialValue( pMaterialVar->GetMaterialValue() );
+		break;
+
+	default:
+		Assert(0);
+	}
+}
+#else
 void CMaterialVar::CopyFrom( IMaterialVar *pMaterialVar )
 {
 	CMatCallQueue *pCallQueue = MaterialSystem()->GetRenderCallQueue();
@@ -1447,6 +1678,7 @@ void CMaterialVar::CopyFrom( IMaterialVar *pMaterialVar )
 		Assert(0);
 	}
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Parser utilities

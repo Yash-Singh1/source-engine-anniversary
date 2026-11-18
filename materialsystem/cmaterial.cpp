@@ -3694,6 +3694,16 @@ bool CMaterial::IsUsingVertexID( ) const
 	return ( GetMaterialVarFlags2() & MATERIAL_VAR2_USES_VERTEXID ) != 0;
 }
 
+#ifdef BYTEMATCH_RETAIL
+void CMaterial::DeleteIfUnreferenced()
+{
+	if ( m_RefCount > 0 )
+		return;
+	IMaterialVar::DeleteUnreferencedTextures( true );
+	MaterialSystem()->RemoveMaterial( this );
+	IMaterialVar::DeleteUnreferencedTextures( false );
+}
+#else
 void CMaterial::DeleteIfUnreferenced()
 {
 	if ( m_RefCount > 0 )
@@ -3702,3 +3712,4 @@ void CMaterial::DeleteIfUnreferenced()
 	IMaterialInternal::DestroyMaterial( this );
 	IMaterialVar::DeleteUnreferencedTextures( false );
 }
+#endif

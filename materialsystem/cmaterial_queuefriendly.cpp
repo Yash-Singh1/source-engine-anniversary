@@ -91,12 +91,19 @@ IMaterial *CMaterial_QueueFriendly::GetMaterialPage( void )
 	return m_pRealTimeVersion->GetMaterialPage();
 }
 
+#ifdef BYTEMATCH_RETAIL
+void CMaterial_QueueFriendly::IncrementReferenceCount( void )
+{
+	m_pRealTimeVersion->IncrementReferenceCount();
+}
+#else
 void CMaterial_QueueFriendly::IncrementReferenceCount( void )
 {
 	Assert( ThreadInMainThread() );
 	++m_nReferenceCount;
 	m_pRealTimeVersion->IncrementReferenceCount();
 }
+#endif
 
 int CMaterial_QueueFriendly::GetEnumerationID( void ) const
 {
@@ -196,6 +203,12 @@ MorphFormat_t CMaterial_QueueFriendly::GetMorphFormat() const
 	return m_pRealTimeVersion->GetMorphFormat();
 }
 
+#ifdef BYTEMATCH_RETAIL
+void CMaterial_QueueFriendly::GetLowResColorSample( float s, float t, float *color ) const
+{
+	m_pRealTimeVersion->GetLowResColorSample( s, t, color );
+}
+#else
 void CMaterial_QueueFriendly::GetLowResColorSample( float s, float t, float *color ) const
 {
 	if ( m_pRealTimeVersion )
@@ -203,6 +216,7 @@ void CMaterial_QueueFriendly::GetLowResColorSample( float s, float t, float *col
 	else
 		color[ 0 ] = color[ 1 ] = color[ 2 ] = 0.0f;
 }
+#endif
 
 
 
@@ -224,13 +238,26 @@ IMaterialVar **CMaterial_QueueFriendly::GetShaderParams( void )
 	return m_pRealTimeVersion->GetShaderParams();
 }
 
+#ifdef BYTEMATCH_RETAIL
+void CMaterial_QueueFriendly::DecrementReferenceCount( void )
+{
+	QUEUE_MATERIAL_CALL( DecrementReferenceCount );
+}
+#else
 void CMaterial_QueueFriendly::DecrementReferenceCount( void )
 {
 	Assert( ThreadInMainThread() );
 	--m_nReferenceCount;
 	QUEUE_MATERIAL_CALL( DecrementReferenceCount );
 }
+#endif
 
+#ifdef BYTEMATCH_RETAIL
+void CMaterial_QueueFriendly::DeleteIfUnreferenced()
+{
+	QUEUE_MATERIAL_CALL( DeleteIfUnreferenced );
+}
+#else
 void CMaterial_QueueFriendly::DeleteIfUnreferenced()
 {
 	Assert( ThreadInMainThread() );
@@ -240,6 +267,7 @@ void CMaterial_QueueFriendly::DeleteIfUnreferenced()
 	MaterialSystem()->RemoveMaterial( GetRealTimeVersion() );
 	QUEUE_MATERIAL_CALL( DeleteIfUnreferenced );
 }
+#endif
 
 void CMaterial_QueueFriendly::RecomputeStateSnapshots()
 {
@@ -381,6 +409,15 @@ IMaterialInternal *CMaterial_QueueFriendly::GetQueueFriendlyVersion( void )
 }
 
 
+#ifdef BYTEMATCH_RETAIL
+void CMaterial_QueueFriendly::UpdateToRealTime( void )
+{
+	m_fAlphaModulationOnQueueCompletion = m_pRealTimeVersion->GetAlphaModulation();
+	m_pRealTimeVersion->GetColorModulation( &m_vColorModulationOnQueueCompletion.x,
+											&m_vColorModulationOnQueueCompletion.y,
+											&m_vColorModulationOnQueueCompletion.z );
+}
+#else
 void CMaterial_QueueFriendly::UpdateToRealTime( void )
 {
 	m_fAlphaModulationOnQueueCompletion = m_pRealTimeVersion->GetAlphaModulation();
@@ -390,6 +427,7 @@ void CMaterial_QueueFriendly::UpdateToRealTime( void )
 	
 	m_nReferenceCount = m_pRealTimeVersion->GetReferenceCount();
 }
+#endif
 
 
 
