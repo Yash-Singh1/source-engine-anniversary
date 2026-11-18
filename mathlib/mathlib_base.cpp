@@ -1113,6 +1113,55 @@ void MatrixTranspose( const matrix3x4_t& src, matrix3x4_t& dst )
 //			matrix[][1] is left
 //			matrix[][2] is up
 //-----------------------------------------------------------------------------
+// Purpose: Builds the matrix for a counterclockwise rotation about an arbitrary axis.
+//
+//		   | ax2 + (1 - ax2)cosQ		axay(1 - cosQ) - azsinQ		azax(1 - cosQ) + aysinQ |
+// Ra(Q) = | axay(1 - cosQ) + azsinQ	ay2 + (1 - ay2)cosQ			ayaz(1 - cosQ) - axsinQ |
+//		   | azax(1 - cosQ) - aysinQ	ayaz(1 - cosQ) + axsinQ		az2 + (1 - az2)cosQ     |
+//          
+// Input  : mat - 
+//			vAxisOrRot - 
+//			angle - 
+//-----------------------------------------------------------------------------
+void MatrixBuildRotationAboutAxis( const Vector &vAxisOfRot, float angleDegrees, matrix3x4_t &dst )
+{
+	float radians;
+	float axisXSquared;
+	float axisYSquared;
+	float axisZSquared;
+	float fSin;
+	float fCos;
+
+	radians = angleDegrees * ( M_PI / 180.0 );
+	fSin = sin( radians );
+	fCos = cos( radians );
+
+	axisXSquared = vAxisOfRot[0] * vAxisOfRot[0];
+	axisYSquared = vAxisOfRot[1] * vAxisOfRot[1];
+	axisZSquared = vAxisOfRot[2] * vAxisOfRot[2];
+
+	// Column 0:
+	dst[0][0] = axisXSquared + (1 - axisXSquared) * fCos;
+	dst[1][0] = vAxisOfRot[0] * vAxisOfRot[1] * (1 - fCos) + vAxisOfRot[2] * fSin;
+	dst[2][0] = vAxisOfRot[2] * vAxisOfRot[0] * (1 - fCos) - vAxisOfRot[1] * fSin;
+
+	// Column 1:
+	dst[0][1] = vAxisOfRot[0] * vAxisOfRot[1] * (1 - fCos) - vAxisOfRot[2] * fSin;
+	dst[1][1] = axisYSquared + (1 - axisYSquared) * fCos;
+	dst[2][1] = vAxisOfRot[1] * vAxisOfRot[2] * (1 - fCos) + vAxisOfRot[0] * fSin;
+
+	// Column 2:
+	dst[0][2] = vAxisOfRot[2] * vAxisOfRot[0] * (1 - fCos) + vAxisOfRot[1] * fSin;
+	dst[1][2] = vAxisOfRot[1] * vAxisOfRot[2] * (1 - fCos) - vAxisOfRot[0] * fSin;
+	dst[2][2] = axisZSquared + (1 - axisZSquared) * fCos;
+
+	// Column 3:
+	dst[0][3] = 0;
+	dst[1][3] = 0;
+	dst[2][3] = 0;
+}
+
+//-----------------------------------------------------------------------------
 void AngleMatrix( RadianEuler const &angles, const Vector &position, matrix3x4_t& matrix )
 {
 	AngleMatrix( angles, matrix );
@@ -1775,10 +1824,7 @@ void QuaternionMult( const Quaternion &p, const Quaternion &q, Quaternion &qt )
 
 void QuaternionMatrix( const Quaternion &q, const Vector &pos, matrix3x4_t& matrix )
 {
-	if ( !HushAsserts() )
-	{
-		Assert( pos.IsValid() );
-	}
+	Assert( pos.IsValid() );
 
 	QuaternionMatrix( q, matrix );
 
@@ -1790,10 +1836,7 @@ void QuaternionMatrix( const Quaternion &q, const Vector &pos, matrix3x4_t& matr
 void QuaternionMatrix( const Quaternion &q, matrix3x4_t& matrix )
 {
 	Assert( s_bMathlibInitialized );
-	if ( !HushAsserts() )
-	{
-		Assert( q.IsValid() );
-	}
+	Assert( q.IsValid() );
 
 #ifdef _VPROF_MATHLIB
 	VPROF_BUDGET( "QuaternionMatrix", "Mathlib" );
