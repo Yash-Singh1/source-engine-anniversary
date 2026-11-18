@@ -49,6 +49,7 @@ ARCHIVE_TARGETS = {
     "libvgui_surfacelib.a": "vgui_surfacelib", "libvpklib.a": "vpklib", "libvtf.a": "vtf",
     "libhavana_constraints.a": "havana_constraints", "libhk_base.a": "hk_base", "libhk_math.a": "hk_math",
     "libivp_compactbuilder.a": "ivp_compactbuilder", "libivp_physics.a": "ivp_physics",
+    "libcef_dll_wrapper.a": "cef_dll_wrapper",
 }
 # retail module -> (tree, VPC path). "sdk" = Source SDK 2013 src/, the closest
 # public game-code VPCs; hl2_complete and lostcoast have no public VPC.
