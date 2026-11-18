@@ -280,17 +280,31 @@ class C_OP_RenderSprites : public C_OP_RenderPoints
 	virtual int GetParticlesToRender( CParticleCollection *pParticles, void *pContext, int nFirstParticle, int nRemainingVertices, int nRemainingIndices, int *pVertsUsed, int *pIndicesUsed ) const;
 	virtual void Render( IMatRenderContext *pRenderContext, CParticleCollection *pParticles, void *pContext ) const;
 	virtual void RenderUnsorted( CParticleCollection *pParticles, void *pContext, IMatRenderContext *pRenderContext, CMeshBuilder &meshBuilder, int nVertexOffset, int nFirstParticle, int nParticleCount ) const;
+#ifdef BYTEMATCH_RETAIL
+	void RenderSpriteCard( CMeshBuilder &meshBuilder, SpriteRenderInfo_t& info, int hParticle, ParticleRenderData_t const *pSortList ) const;
+	void RenderTwoSequenceSpriteCard( CMeshBuilder &meshBuilder, SpriteRenderInfo_t& info, int hParticle, ParticleRenderData_t const *pSortList ) const;
+#else
 	void RenderSpriteCard( CMeshBuilder &meshBuilder, C_OP_RenderSpritesContext_t *pCtx, SpriteRenderInfo_t& info, int hParticle, ParticleRenderData_t const *pSortList, Vector *pCamera ) const;
 	void RenderTwoSequenceSpriteCard( CMeshBuilder &meshBuilder, C_OP_RenderSpritesContext_t *pCtx, SpriteRenderInfo_t& info, int hParticle, ParticleRenderData_t const *pSortList, Vector *pCamera ) const;
+#endif
 
 	void RenderNonSpriteCardCameraFacing( CParticleCollection *pParticles, void *pContext, IMatRenderContext *pRenderContext, IMaterial *pMaterial ) const;
 
+#ifdef BYTEMATCH_RETAIL
+	void RenderNonSpriteCardZRotating( CMeshBuilder &meshBuilder, SpriteRenderInfo_t& info, int hParticle, const Vector& vecCameraPos, ParticleRenderData_t const *pSortList ) const;
+#else
 	void RenderNonSpriteCardZRotating( CMeshBuilder &meshBuilder, C_OP_RenderSpritesContext_t *pCtx, SpriteRenderInfo_t& info, int hParticle, const Vector& vecCameraPos, ParticleRenderData_t const *pSortList ) const;
+#endif
 	void RenderNonSpriteCardZRotating( CParticleCollection *pParticles, void *pContext, IMatRenderContext *pRenderContext, IMaterial *pMaterial ) const;
 	void RenderUnsortedNonSpriteCardZRotating( CParticleCollection *pParticles, void *pContext, IMatRenderContext *pRenderContext, CMeshBuilder &meshBuilder, int nVertexOffset, int nFirstParticle, int nParticleCount ) const;
 
+#ifdef BYTEMATCH_RETAIL
+	void RenderNonSpriteCardOriented( CMeshBuilder &meshBuilder, SpriteRenderInfo_t& info, int hParticle, const Vector& vecCameraPos, ParticleRenderData_t const *pSortList ) const;
+	void RenderNonSpriteCardOriented( CParticleCollection *pParticles, void *pContext, IMatRenderContext *pRenderContext, IMaterial *pMaterial ) const;
+#else
 	void RenderNonSpriteCardOriented( CMeshBuilder &meshBuilder, C_OP_RenderSpritesContext_t *pCtx, SpriteRenderInfo_t& info, int hParticle, const Vector& vecCameraPos, ParticleRenderData_t const *pSortList, bool bUseYaw ) const;
 	void RenderNonSpriteCardOriented( CParticleCollection *pParticles, void *pContext, IMatRenderContext *pRenderContext, IMaterial *pMaterial, bool bUseYaw ) const;
+#endif
 	void RenderUnsortedNonSpriteCardOriented( CParticleCollection *pParticles, void *pContext, IMatRenderContext *pRenderContext, CMeshBuilder &meshBuilder, int nVertexOffset, int nFirstParticle, int nParticleCount ) const;
 
 	// cycles per second
@@ -368,11 +382,15 @@ void C_OP_RenderSprites::RenderNonSpriteCardCameraFacing( CParticleCollection *p
 	int nParticles;
 	const ParticleRenderData_t *pSortList = pParticles->GetRenderList( pRenderContext, true, &nParticles, &pCtx->m_VisibilityData );
 
+#ifndef BYTEMATCH_RETAIL
 	bool bCameraBias = PARTICLE_VISIBILITY_CAMERA_BIAS( &pCtx->m_VisibilityData ) != 0.0f;
 	float flCameraBias = PARTICLE_VISIBILITY_CAMERA_BIAS( &pCtx->m_VisibilityData );
+#endif
 
+#ifndef BYTEMATCH_RETAIL
 	Vector vecCamera;
 	pRenderContext->GetWorldSpaceCameraPosition( &vecCamera );
+#endif
 
 	// NOTE: This is interesting to support because at first we won't have all the various
 	// pixel-shader versions of SpriteCard, like modulate, twotexture, etc. etc.
@@ -450,6 +468,7 @@ void C_OP_RenderSprites::RenderNonSpriteCardCameraFacing( CParticleCollection *p
 			int nXYZIndex = nGroup * xyz_stride;
 			Vector vecWorldPos( SubFloat( xyz[ nXYZIndex ], nOffset ), SubFloat( xyz[ nXYZIndex+1 ], nOffset ), SubFloat( xyz[ nXYZIndex+2 ], nOffset ) );
 
+#ifndef BYTEMATCH_RETAIL
 			// Move the Particle if their is a camerabias
 			if ( bCameraBias )
 			{
@@ -458,6 +477,7 @@ void C_OP_RenderSprites::RenderNonSpriteCardCameraFacing( CParticleCollection *p
 				vEyeDir *= flCameraBias;
 				vecWorldPos += vEyeDir;
 			}
+#endif
 
 			Vector vecViewPos;
 			Vector3DMultiplyPosition( tempView, vecWorldPos, vecViewPos );
@@ -530,7 +550,11 @@ void C_OP_RenderSprites::RenderNonSpriteCardCameraFacing( CParticleCollection *p
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+void C_OP_RenderSprites::RenderNonSpriteCardZRotating( CMeshBuilder &meshBuilder, SpriteRenderInfo_t& info, int hParticle, const Vector& vecCameraPos, ParticleRenderData_t const *pSortList ) const
+#else
 void C_OP_RenderSprites::RenderNonSpriteCardZRotating( CMeshBuilder &meshBuilder, C_OP_RenderSpritesContext_t *pCtx, SpriteRenderInfo_t& info, int hParticle, const Vector& vecCameraPos, ParticleRenderData_t const *pSortList ) const
+#endif
 {
 	Assert( hParticle != -1 );
 	int nGroup = hParticle / 4;
@@ -540,8 +564,10 @@ void C_OP_RenderSprites::RenderNonSpriteCardZRotating( CMeshBuilder &meshBuilder
 	if ( ac == 0 )
 		return;
 
+#ifndef BYTEMATCH_RETAIL
 	bool bCameraBias = PARTICLE_VISIBILITY_CAMERA_BIAS( &pCtx->m_VisibilityData ) != 0.0f;
 	float flCameraBias = PARTICLE_VISIBILITY_CAMERA_BIAS( &pCtx->m_VisibilityData );
+#endif
 
 	int nColorIndex = nGroup * info.m_nRGBStride;
 	float r = SubFloat( info.m_pRGB[nColorIndex], nOffset );
@@ -565,6 +591,7 @@ void C_OP_RenderSprites::RenderNonSpriteCardZRotating( CMeshBuilder &meshBuilder
 	int nXYZIndex = nGroup * info.m_nXYZStride;
 	Vector vecWorldPos( SubFloat( info.m_pXYZ[ nXYZIndex ], nOffset ), SubFloat( info.m_pXYZ[ nXYZIndex+1 ], nOffset ), SubFloat( info.m_pXYZ[ nXYZIndex+2 ], nOffset ) );
 
+#ifndef BYTEMATCH_RETAIL
 	// Move the Particle if their is a camerabias
 	if ( bCameraBias )
 	{
@@ -573,6 +600,7 @@ void C_OP_RenderSprites::RenderNonSpriteCardZRotating( CMeshBuilder &meshBuilder
 		vEyeDir *= flCameraBias;
 		vecWorldPos += vEyeDir;
 	}
+#endif
 
 	Vector vecViewToPos;
 	VectorSubtract( vecWorldPos, vecCameraPos, vecViewToPos );
@@ -675,7 +703,11 @@ void C_OP_RenderSprites::RenderNonSpriteCardZRotating( CParticleCollection *pPar
 		for( int i = 0; i < nParticlesInBatch; i++ )
 		{
 			int hParticle = (--pSortList)->m_nIndex;
+#ifdef BYTEMATCH_RETAIL
+			RenderNonSpriteCardZRotating( meshBuilder, info, hParticle, vecCameraPos, pSortList );
+#else
 			RenderNonSpriteCardZRotating( meshBuilder, pCtx, info, hParticle, vecCameraPos, pSortList );
+#endif
 		}
 		meshBuilder.End();
 		pMesh->Draw();
@@ -700,7 +732,11 @@ void C_OP_RenderSprites::RenderUnsortedNonSpriteCardZRotating( CParticleCollecti
 	int hParticle = nFirstParticle;
 	for( int i = 0; i < nParticleCount; i++, hParticle++ )
 	{
+#ifdef BYTEMATCH_RETAIL
+		RenderNonSpriteCardZRotating( meshBuilder, info, hParticle, vecCameraPos, pSortList );
+#else
 		RenderNonSpriteCardZRotating( meshBuilder, pCtx, info, hParticle, vecCameraPos, pSortList );
+#endif
 	}
 }
 
@@ -708,8 +744,13 @@ void C_OP_RenderSprites::RenderUnsortedNonSpriteCardZRotating( CParticleCollecti
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+void C_OP_RenderSprites::RenderNonSpriteCardOriented( 
+	CMeshBuilder &meshBuilder, SpriteRenderInfo_t& info, int hParticle, const Vector& vecCameraPos, ParticleRenderData_t const *pSortList ) const
+#else
 void C_OP_RenderSprites::RenderNonSpriteCardOriented( 
 	CMeshBuilder &meshBuilder, C_OP_RenderSpritesContext_t *pCtx, SpriteRenderInfo_t& info, int hParticle, const Vector& vecCameraPos, ParticleRenderData_t const *pSortList, bool bUseYaw ) const
+#endif
 {
 	Assert( hParticle != -1 );
 	int nGroup = hParticle / 4;
@@ -719,8 +760,10 @@ void C_OP_RenderSprites::RenderNonSpriteCardOriented(
 	if ( ac == 0 )
 		return;
 
+#ifndef BYTEMATCH_RETAIL
 	bool bCameraBias = PARTICLE_VISIBILITY_CAMERA_BIAS( &pCtx->m_VisibilityData ) != 0.0f;
 	float flCameraBias = PARTICLE_VISIBILITY_CAMERA_BIAS( &pCtx->m_VisibilityData );
+#endif
 
 	int nColorIndex = nGroup * info.m_nRGBStride;
 	float r = SubFloat( info.m_pRGB[nColorIndex], nOffset );
@@ -744,6 +787,7 @@ void C_OP_RenderSprites::RenderNonSpriteCardOriented(
 	int nXYZIndex = nGroup * info.m_nXYZStride;
 	Vector vecWorldPos( SubFloat( info.m_pXYZ[ nXYZIndex ], nOffset ), SubFloat( info.m_pXYZ[ nXYZIndex+1 ], nOffset ), SubFloat( info.m_pXYZ[ nXYZIndex+2 ], nOffset ) );
 
+#ifndef BYTEMATCH_RETAIL
 	// Move the Particle if their is a camerabias
 	if ( bCameraBias )
 	{
@@ -752,6 +796,7 @@ void C_OP_RenderSprites::RenderNonSpriteCardOriented(
 		vEyeDir *= flCameraBias;
 		vecWorldPos += vEyeDir;
 	}
+#endif
 
 	Vector vecViewToPos;
 	VectorSubtract( vecWorldPos, vecCameraPos, vecViewToPos );
@@ -772,6 +817,7 @@ void C_OP_RenderSprites::RenderNonSpriteCardOriented(
 			m_nOrientationControlPoint, &vecRight, &vecUp, &vecNormal );
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	if ( bUseYaw )
 	{
 		float yaw = SubFloat( info.m_pYaw[nGroup * info.m_nYawStride], nOffset );
@@ -786,6 +832,7 @@ void C_OP_RenderSprites::RenderNonSpriteCardOriented(
 			vecRight = particleRight;
 		}
 	}
+#endif
 
 	// Find the sample for this frame
 	const SheetSequenceSample_t *pSample = &s_DefaultSheetSequence;
@@ -846,7 +893,11 @@ void C_OP_RenderSprites::RenderNonSpriteCardOriented(
 	info.m_nVertexOffset += 4;
 }
 
+#ifdef BYTEMATCH_RETAIL
+void C_OP_RenderSprites::RenderNonSpriteCardOriented( CParticleCollection *pParticles, void *pContext, IMatRenderContext *pRenderContext, IMaterial *pMaterial ) const
+#else
 void C_OP_RenderSprites::RenderNonSpriteCardOriented( CParticleCollection *pParticles, void *pContext, IMatRenderContext *pRenderContext, IMaterial *pMaterial, bool bUseYaw ) const
+#endif
 {
 	C_OP_RenderSpritesContext_t *pCtx = reinterpret_cast<C_OP_RenderSpritesContext_t *>( pContext );
 
@@ -878,7 +929,11 @@ void C_OP_RenderSprites::RenderNonSpriteCardOriented( CParticleCollection *pPart
 		for( int i = 0; i < nParticlesInBatch; i++)
 		{
 			int hParticle = (--pSortList)->m_nIndex;
+#ifdef BYTEMATCH_RETAIL
+			RenderNonSpriteCardOriented( meshBuilder, info, hParticle, vecCameraPos, pSortList );
+#else
 			RenderNonSpriteCardOriented( meshBuilder, pCtx, info, hParticle, vecCameraPos, pSortList, bUseYaw );
+#endif
 		}
 
 		meshBuilder.End();
@@ -904,11 +959,19 @@ void C_OP_RenderSprites::RenderUnsortedNonSpriteCardOriented( CParticleCollectio
 	int hParticle = nFirstParticle;
 	for( int i = 0; i < nParticleCount; i++, hParticle++ )
 	{
+#ifdef BYTEMATCH_RETAIL
+		RenderNonSpriteCardOriented( meshBuilder, info, hParticle, vecCameraPos, pSortList );
+#else
 		RenderNonSpriteCardOriented( meshBuilder, pCtx, info, hParticle, vecCameraPos, pSortList, false );
+#endif
 	}
 }
 
+#ifdef BYTEMATCH_RETAIL
+void C_OP_RenderSprites::RenderSpriteCard( CMeshBuilder &meshBuilder, SpriteRenderInfo_t& info, int hParticle, ParticleRenderData_t const *pSortList ) const
+#else
 void C_OP_RenderSprites::RenderSpriteCard( CMeshBuilder &meshBuilder, C_OP_RenderSpritesContext_t *pCtx, SpriteRenderInfo_t& info, int hParticle, ParticleRenderData_t const *pSortList, Vector *pCamera ) const
+#endif
 {
 	Assert( hParticle != -1 );
 	int nGroup = hParticle / 4;
@@ -937,8 +1000,10 @@ void C_OP_RenderSprites::RenderSpriteCard( CMeshBuilder &meshBuilder, C_OP_Rende
 		return;
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	bool bCameraBias = PARTICLE_VISIBILITY_CAMERA_BIAS( &pCtx->m_VisibilityData ) != 0.0f;
 	float flCameraBias = PARTICLE_VISIBILITY_CAMERA_BIAS( &pCtx->m_VisibilityData );
+#endif
 
 	float rot = SubFloat( info.m_pRot[ nGroup * info.m_nRotStride ], nOffset );
 	float yaw = SubFloat( info.m_pYaw[ nGroup * info.m_nYawStride ], nOffset );
@@ -949,6 +1014,7 @@ void C_OP_RenderSprites::RenderSpriteCard( CMeshBuilder &meshBuilder, C_OP_Rende
 	vecWorldPos.y = SubFloat( info.m_pXYZ[ nXYZIndex+1 ], nOffset );
 	vecWorldPos.z = SubFloat( info.m_pXYZ[ nXYZIndex+2 ], nOffset );
 
+#ifndef BYTEMATCH_RETAIL
 	if ( bCameraBias )
 	{
 		Vector vEyeDir = *pCamera - vecWorldPos;
@@ -956,6 +1022,7 @@ void C_OP_RenderSprites::RenderSpriteCard( CMeshBuilder &meshBuilder, C_OP_Rende
 		vEyeDir *= flCameraBias;
 		vecWorldPos += vEyeDir;
 	}
+#endif
 
 	// Find the sample for this frame
 	const SheetSequenceSample_t *pSample = &s_DefaultSheetSequence;
@@ -1033,7 +1100,11 @@ void C_OP_RenderSprites::RenderSpriteCard( CMeshBuilder &meshBuilder, C_OP_Rende
 	}
 }
 
+#ifdef BYTEMATCH_RETAIL
+void C_OP_RenderSprites::RenderTwoSequenceSpriteCard( CMeshBuilder &meshBuilder, SpriteRenderInfo_t& info, int hParticle, ParticleRenderData_t const *pSortList ) const
+#else
 void C_OP_RenderSprites::RenderTwoSequenceSpriteCard( CMeshBuilder &meshBuilder, C_OP_RenderSpritesContext_t *pCtx, SpriteRenderInfo_t& info, int hParticle, ParticleRenderData_t const *pSortList, Vector *pCamera ) const
+#endif
 {
 	Assert( hParticle != -1 );
 	int nGroup = hParticle / 4;
@@ -1053,8 +1124,10 @@ void C_OP_RenderSprites::RenderTwoSequenceSpriteCard( CMeshBuilder &meshBuilder,
 	unsigned char bc = FastFToC( b );
 	unsigned char ac = pSortList->m_nAlpha;
 
+#ifndef BYTEMATCH_RETAIL
 	bool bCameraBias = PARTICLE_VISIBILITY_CAMERA_BIAS( &pCtx->m_VisibilityData ) != 0.0f;
 	float flCameraBias = PARTICLE_VISIBILITY_CAMERA_BIAS( &pCtx->m_VisibilityData );
+#endif
 
 	float rad = pSortList->m_flRadius;
 	float rot = SubFloat( info.m_pRot[ nGroup * info.m_nRotStride ], nOffset );
@@ -1066,6 +1139,7 @@ void C_OP_RenderSprites::RenderTwoSequenceSpriteCard( CMeshBuilder &meshBuilder,
 	vecWorldPos.y = SubFloat( info.m_pXYZ[ nXYZIndex+1 ], nOffset );
 	vecWorldPos.z = SubFloat( info.m_pXYZ[ nXYZIndex+2 ], nOffset );
 
+#ifndef BYTEMATCH_RETAIL
 	if ( bCameraBias )
 	{
 		Vector vEyeDir = *pCamera - vecWorldPos;
@@ -1073,6 +1147,7 @@ void C_OP_RenderSprites::RenderTwoSequenceSpriteCard( CMeshBuilder &meshBuilder,
 		vEyeDir *= flCameraBias;
 		vecWorldPos += vEyeDir;
 	}
+#endif
 
 	// Find the sample for this frame
 	const SheetSequenceSample_t *pSample = &s_DefaultSheetSequence;
@@ -1195,12 +1270,17 @@ void C_OP_RenderSprites::Render( IMatRenderContext *pRenderContext, CParticleCol
 			break;
 		
 		case 2:
+#ifdef BYTEMATCH_RETAIL
+			RenderNonSpriteCardOriented( pParticles, pContext, pRenderContext, pMaterial );
+			break;
+#else
 			RenderNonSpriteCardOriented( pParticles, pContext, pRenderContext, pMaterial, false );
 			break;
 
 		case 3:
 			RenderNonSpriteCardOriented( pParticles, pContext, pRenderContext, pMaterial, true );
 			break;
+#endif
 		}
 
 		return;
@@ -1236,8 +1316,10 @@ void C_OP_RenderSprites::Render( IMatRenderContext *pRenderContext, CParticleCol
 	int nParticles;
 	const ParticleRenderData_t *pSortList = pParticles->GetRenderList( pRenderContext, true, &nParticles, &pCtx->m_VisibilityData );
 
+#ifndef BYTEMATCH_RETAIL
 	Vector vecCamera;
 	pRenderContext->GetWorldSpaceCameraPosition( &vecCamera );
+#endif
 
 	while ( nParticles )
 	{
@@ -1266,7 +1348,11 @@ void C_OP_RenderSprites::Render( IMatRenderContext *pRenderContext, CParticleCol
 			for( int i = 0; i < nParticlesInBatch; i++ )
 			{
 				int hParticle = (--pSortList)->m_nIndex;
+#ifdef BYTEMATCH_RETAIL
+				RenderTwoSequenceSpriteCard( meshBuilder, info, hParticle, pSortList );
+#else
 				RenderTwoSequenceSpriteCard( meshBuilder, pCtx, info, hParticle, pSortList, &vecCamera );
+#endif
 			}
 		}
 		else
@@ -1274,7 +1360,11 @@ void C_OP_RenderSprites::Render( IMatRenderContext *pRenderContext, CParticleCol
 			for( int i = 0; i < nParticlesInBatch; i++ )
 			{
 				int hParticle = (--pSortList)->m_nIndex;
+#ifdef BYTEMATCH_RETAIL
+				RenderSpriteCard( meshBuilder, info, hParticle, pSortList );
+#else
 				RenderSpriteCard( meshBuilder, pCtx, info, hParticle, pSortList, &vecCamera );
+#endif
 			}
 		}
 		meshBuilder.End();
@@ -1320,12 +1410,18 @@ void C_OP_RenderSprites::RenderUnsorted( CParticleCollection *pParticles, void *
 	int nParticles;
 	const ParticleRenderData_t *pSortList = pParticles->GetRenderList( pRenderContext, false, &nParticles, &pCtx->m_VisibilityData );
 
+#ifndef BYTEMATCH_RETAIL
 	Vector vecCamera;
 	pRenderContext->GetWorldSpaceCameraPosition( &vecCamera );
+#endif
 
 	for( int i = 0; i < nParticleCount; i++, hParticle++ )
 	{
+#ifdef BYTEMATCH_RETAIL
+		RenderSpriteCard( meshBuilder, info, hParticle, pSortList );
+#else
 		RenderSpriteCard( meshBuilder, pCtx, info, hParticle, pSortList, &vecCamera );
+#endif
 	}
 }
 
