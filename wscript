@@ -665,3 +665,9 @@ def build(bld):
 			projects['game'] += ['togl']
 
 		bld.add_subproject(projects['game'])
+
+	# ivp only includes <alloca.h> for LINUX/SUN; macOS needs it too.
+	if bld.env.DEST_OS == 'darwin':
+		for tg in bld.get_all_task_gen():
+			if getattr(tg, 'name', None) == 'ivp_physics':
+				tg.cxxflags = tg.to_list(getattr(tg, 'cxxflags', [])) + ['-include', 'alloca.h']
