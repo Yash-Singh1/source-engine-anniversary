@@ -72,6 +72,7 @@ bytes per object).
 | `funcs MODULE` | functions extracted from any supported file (`--object`, `--symbol`, `--json`) |
 | `objects MODULE` | Mach-O debug-map objects |
 | `locate --retail M --ours X -o map.txt` | find our functions in an unnamed image (stripped PE) by masked pattern search, and write an address map |
+| `data --retail M --ours X --out P` | Mach-O data audit (strings, constant data, data references of matched functions); see below |
 | `selftest [--full]` | built-in tests (see below) |
 
 `--ours` accepts an object, an `ar` archive (`.a`/`.lib`), a linked module, or
@@ -162,6 +163,54 @@ libstdc++), `ld` cannot link i386 (the SDK `.tbd` stubs have no i386 slice), and
 its code generation is unrelated to Xcode 6. Use clang-600.0.57 for anything
 that is meant to match.
 
+## Data audit (`data`, `--data-check`)
+
+Function matching masks data references, so a function that loads a
+different string, global or constant at the same offset still matches.
+`bytematch/data.py` resolves those references on both sides (Mach-O i386):
+
+- Linked images: the PIC base is tracked over a linear decode (`call` next /
+  `pop reg`, register copies, stack spills; writes and calls kill a register),
+  and `[reg + disp]` gives the target. Objects: `SECTDIFF` relocations.
+- A target becomes an identity: the C string (`__cstring`, also through
+  `__cfstring`), the pointee of a non-lazy/lazy pointer, a function start, a
+  symbol plus offset in mutable data, or, in constant data (`__const`,
+  vtables), the content: the pointee of a pointer slot, else the operand's
+  bytes. Constant data is compared by content because symbol extents are
+  unknown and anonymous data follows named symbols.
+- Static/extern linkage alone (`_ZL5s_foo` vs `s_foo`, `_ZL3fooi` vs
+  `_Z3fooi`) and the counters of compiler-generated names
+  (`__cxx_global_array_dtorN`, `.memset_patternN`) are not differences.
+
+`diff`/`report --data-check` mark such functions `differs` (reason
+`data ref at +0x..`, JSON `data_mismatches`). It is off by default, so
+existing reports keep their numbers.
+
+`bytematch data --retail M --ours X --out P` writes `P.json` and `P.md` for one
+module pair (normally our linked module):
+
+- literals: the `__cstring` contents of both modules as sets and in order
+  (retail-only, ours-only, and literals outside the longest common order),
+  attributed to debug-map objects through the code and data that reference
+  them (or the nearest referenced neighbour);
+- differing pairs: a retail and an ours literal seen at the same reference of
+  a matched function, in the same pointer slot of a data symbol, or similar
+  text within one object; categorised `text`, `format` (only `%` conversions
+  differ), `path` (`__FILE__`, Valve's absolute build path vs our relative
+  one) and `build-stamp` (`__DATE__`/`__TIME__`);
+- matched functions whose data references differ (strings, member offsets,
+  globals, function pointers, constants);
+- named symbols in `__DATA,__data`, `__DATA,__const` and `__TEXT,__const`
+  compared by content, pointers resolved;
+- source locations: ours from the debug map's source and header files for the
+  object (then a ripgrep over the tree); retail-only literals are also looked
+  up in the tree and in the pristine leak (`--pristine`), and flagged when the
+  text is in our copy of the owning file.
+
+`toolchain/strings-report.py` runs it over a build directory and the game
+builds (same module discovery and `--game` options as `report-modules.py`) and
+writes the whole-tree report `reports/strings.{md,json}`.
+
 ## Whole-file identity (`identity/`)
 
 Function matching ignores the symbol table. `identity/identity.py` rebuilds
@@ -224,9 +273,12 @@ show up only here:
 
 ## Known gaps
 
-- Data references are masked but not checked symbolically (only call/jump
-  targets, and absolute fields in PE). Two functions that load different
-  globals at the same offsets still count as matching.
+- Data references are masked but only checked symbolically with
+  `--data-check` (Mach-O only; see the data audit). Without it, two functions
+  that load different globals or strings at the same offsets still count as
+  matching. The PIC tracking is linear, so a reference reached only through a
+  branch after the register was overwritten on the fall-through path is not
+  checked.
 - Linked-vs-linked comparisons rely on heuristics. PIC registers are tracked
   linearly and never un-tracked, so a register reused for a large struct offset
   after holding the PIC base can be over-masked.

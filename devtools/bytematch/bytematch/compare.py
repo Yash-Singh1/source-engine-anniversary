@@ -25,6 +25,7 @@ class Result:
     masked_bytes: int = 0
     target_mismatches: list = field(default_factory=list)
     line_constants: list = None      # [(offset, retail, ours)] when only __LINE__-like immediates differ
+    data_mismatches: list = field(default_factory=list)   # [(offset, retail identity, ours identity)] (--data-check)
 
     @property
     def name(self):
