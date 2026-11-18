@@ -3,7 +3,7 @@
 Measured with `--retail-osx32` (clang-600.0.57) and `devtools/bytematch` against depot 223
 build 19307283, own objects only (`gameui.build/*.o`). Lane `bytematch-gameui`.
 
-Own objects: 1736 / 1825 after lane `bytematch-gameui2` (1638 at its start on `bytematch` 39261259; 1367 / 1809 before lane `bytematch-gameui`). The tables below are from the gameui2 final run.
+Own objects: **1818 / 1825** after lane `bytematch-gameui3` (1738 at its start on `bytematch` 1b6e8971; whole dylib 4948 / 4970); 1736 after `bytematch-gameui2`, 1367 / 1809 before lane `bytematch-gameui`.
 The denominator grew by retail's `OptionsSubGamepad.o` (16 functions), which this lane wrote.
 
 ## Edited or written to the retail form (all now match unless listed below)
@@ -37,250 +37,33 @@ The denominator grew by retail's `OptionsSubGamepad.o` (16 functions), which thi
 | BonusMapsDialog | `CBonusMapPanel` keeps the .res image size and scales proportionally; base-code keys with Steam Controller pads; unbounded `strcpy` in retail mode. 37/38 |
 | LoadingDialog | Steam Deck loading screen (`LoadingDialogDeck.res`, full-screen layout, faded edges, progress strip, spinner and logo), `flOpenTime`, proportional error layout. 31/32 |
 | LoadGameDialog | Workshop campaign save loading (UGC item state, `IWorkshop::GetItem`/`LoadCampaign`, `viewonworkshop`). 11/11 |
-| OptionsSubVideo | retail `COptionsSubVideo` member layout only; the anniversary video page and advanced dialog are not written. 47/70 |
+| OptionsSubVideo | retail `COptionsSubVideo` member layout only (gameui3 wrote the rest). 47/70 |
 
-### OptionsSubVideo findings (not written yet)
+## Lane gameui3
 
-Retail `COptionsSubVideo` (0x20c bytes): `m_nSelectedHudAspect` at 0x1c4 (index from `hud_aspect`, compared in
-`OnApplyChanges`), `HudAspectRatio` combo at 0x1dc (FitDisplay / 4:3 / 16:9 / 16:10), `HDR` combo at 0x1f0
-(moved from the advanced dialog, enabled for `mat_dxlevel` >= 80), `DisplayModeCombo` at 0x1d0 built from
-`SDL_GetNumVideoDisplays()` (`#GameUI_Fullscreen` per display, `#GameUI_Windowed`, `#GameUI_NoWindowBorder`),
-HD-content and HDR availability bools at 0x208/0x209, `maps/test_hardware.bsp` hides the benchmark button.
-`COptionsSubVideoAdvancedDlg` is 0x318 bytes (ours 0x2fc) and gains `OnSliderChanged`.
+| object | change |
+|---|---|
+| OptionsSubVideo (main page) | anniversary layout written from the disassembly: display-mode combo with one `#GameUI_Fullscreen (%d)` entry per SDL display plus windowed and `%ls (%ls)` borderless entries (borderless only in retail mode: the native config and `mat_setvideomode` lack it), `HudAspectRatio` combo driven by `hud_aspect` (fit / 4:3 / 16:9 / 16:10, thresholds 1.4 and 1.7), HDR combo moved here (hidden until the .res shows it), HD content box shown only when the .res enables it and the mod has HD content, wide resolution names with localized `#GameUI_Native`, `mat_setvideomode w h windowed noborder`, `mat_hdr_level` command, `PerformLayout` is the base call. `SetUseHDContent` is a free function, `BUseHDContent`/`FOpenGameHDFile`/`GetNameForDXLevel`/`GetScreenAspectMode` are static. VR uses the anniversary `ISourceVirtualReality::IsHmdAvailable()` (slot 27) through a local extension class. 70/70 |
+| OptionsSubVideo (advanced dialog) | retail member layout (0x318 bytes): `D3D9Ex` combo (`mat_supports_d3d9ex`, `mat_disable_d3d9ex`, relaunch message), hidden HD content box, HDR and Classic Effects combos (`r_classic_fire`/`r_classic_blood`) each with a visibility flag set from the .res, `#gameui_ultra` shader level (`r_lightmap_bicubic`), `OnSliderChanged` and the FOV value label (`L"%.0f"`, 7 ticks), `ApplyButtonEnable` on OK, triple-parent query boxes |
+| CGammaDialog, *ThirdPartyCreditsDlg, COptionsSubKeyboardAdvancedDlg, CMultiplayerAdvancedDialog | parented to the GameUI panel, proportional sizes |
+| OptionsSubMouse | joystick options hidden, autoaim combo / scale slider (`m_autoaim_mode`, `m_autoaim_scale`), visibility flags from the .res. 14/14 |
+| OptionsSubDifficulty | hidden `MigrateButton` and `OnCommand` (`migrate_episodic_data` for HL2 complete). 12/12 |
+| OptionsSubAudio, OptionsSubKeyboard | query boxes parented three levels up; zeroed language buffers; proportional key-list columns |
+| GameConsole | the dialog is created in `SetParent` with the `BaseUI` panel as parent and laid out once; `Initialize` deletes an old one. 11/11 |
+| URLButton | proportional text inset, underline offset and padding. 48/48 |
+| scriptobject | `CDescription::ReadFromBuffer`/`InitFromFile` without `bAllowNewObject` |
+| key handlers | `GetBaseButtonCode` and the retail button sets in BenchmarkDialog, CommentaryDialog, CommentaryExplanationDialog, LoadCommentaryDialog, CreateMultiplayerGameDialog, leaderboard, session options/lobby, dialogmenu, OptionsDialog_Xbox, BonusMapsDialog, CGameMenu, CSaveBeforeQuitQueryDialog (some retail sets omit Steam pad down or Steam A/B; reproduced) |
+| BasePanel | `UtlStringLessFunc` is file-static and case-insensitive (utlstring.h no longer has the inline one); `PerformLayout` shows the title buttons and hides the logo in levels; `SystemNotification` no longer hides the buttons; `CGameMenuItem::ApplySchemeSettings` order; `OnThink` calls the base only while switching; Steam Deck skips the loading icon; `CloseBaseDialogs` also closes the demo player; `RefreshDialogs` reopen order. 228/230 |
+| others | Steam Deck early-outs for the commentary dialogs, `clamp<float>` for the loading fade, `V_FixDoubleSlashes` on the player model command, `V_strcat_safe` default count in imageutils |
 
-## Not matching yet
-
-### OptionsSubVideo (23 left)
-
-| function | status | note |
-|---|---|---|
-| `SetUseHDContent(bool)` | missing |  |
-| `COptionsSubVideo::PrepareResolutionList()` | differs | size retail 1449 vs ours 1384 |
-| `COptionsSubVideo::EnableOrDisableWindowedForVR()` | differs | size retail 246 vs ours 224 |
-| `COptionsSubVideo::COptionsSubVideo(vgui::Panel*)` | differs | size retail 4477 vs ours 3393 |
-| `COptionsSubVideo::OnResetData()` | differs | size retail 605 vs ours 427 |
-| `COptionsSubVideo::SetCurrentResolutionComboItem()` | differs | size retail 483 vs ours 436 |
-| `COptionsSubVideo::OnApplyChanges()` | differs | size retail 1798 vs ours 1301 |
-| `COptionsSubVideo::PerformLayout()` | differs | size retail 9 vs ours 89 |
-| `COptionsSubVideo::OnTextChanged(vgui::Panel*, char const*)` | differs | size retail 412 vs ours 388 |
-| `COptionsSubVideo::OpenAdvanced()` | differs | line constants only: 792->764 |
-| `COptionsSubVideoAdvancedDlg::RequiresRestart()` | differs | size retail 248 vs ours 239 |
-| `COptionsSubVideoAdvancedDlg::COptionsSubVideoAdvancedDlg(vgui::Panel*)` | differs | size retail 6203 vs ours 4904 |
-| `CGammaDialog::CGammaDialog(unsigned int)` | differs | size retail 1446 vs ours 1253 |
-| `COptionsSubVideoThirdPartyCreditsDlg::COptionsSubVideoThirdPartyCreditsDlg(unsigned int)` | differs | size retail 634 vs ours 455 |
-| `COptionsSubVideoAdvancedDlg::MarkDefaultSettingsAsRecommended()` | differs | size retail 3871 vs ours 3438 |
-| `COptionsSubVideoAdvancedDlg::OnCommand(char const*)` | differs | size retail 430 vs ours 324 |
-| `COptionsSubVideoAdvancedDlg::Activate()` | differs | bytes |
-| `COptionsSubVideoAdvancedDlg::OnSliderChanged(vgui::Panel*)` | missing |  |
-| `COptionsSubVideoAdvancedDlg::OnTextChanged(vgui::Panel*)` | differs | size retail 457 vs ours 221 |
-| `COptionsSubVideoAdvancedDlg::ResetDXLevelCombo()` | differs | size retail 273 vs ours 264 |
-| `COptionsSubVideoAdvancedDlg::OK_Confirmed()` | differs | size retail 113 vs ours 24 |
-| `COptionsSubVideoAdvancedDlg::ApplyChanges()` | differs | size retail 2912 vs ours 2244 |
-| `COptionsSubVideoAdvancedDlg::OnResetData()` | differs | size retail 2117 vs ours 1742 |
-
-### BasePanel (13 left)
+## Not matching yet (7)
 
 | function | status | note |
 |---|---|---|
-| `CGameMenuItem::ApplySchemeSettings(vgui::IScheme*)` | differs | size retail 780 vs ours 775 |
-| `CBasePanel::OnThink()` | differs | line constants only: 428->420, 400->392 |
-| `CBasePanel::UpdateBackgroundImages()` | differs | size retail 644 vs ours 666 |
-| `CBasePanel::UpdateTitleText(bool)` | differs | size retail 1230 vs ours 1238 |
-| `CBasePanel::OnLevelLoadingFinished()` | differs | size retail 344 vs ours 339 |
-| `CBasePanel::PerformLayout()` | differs | size retail 488 vs ours 425 |
-| `CBasePanel::OnGameUIActivated()` | differs | size retail 544 vs ours 528 |
-| `CBasePanel::SystemNotification(int)` | differs | size retail 1172 vs ours 1232 |
-| `CBasePanel::CloseBaseDialogs()` | differs | size retail 388 vs ours 351 |
-| `CBasePanel::RefreshDialogs()` | differs | size retail 2107 vs ours 2111 |
-| `UtlStringLessFunc(CUtlString const&, CUtlString const&)` | missing |  |
-| `CGameMenu::OnKeyCodePressed(ButtonCode_t)` | differs | size retail 1483 vs ours 1254 |
-| `CSaveBeforeQuitQueryDialog::OnKeyCodePressed(ButtonCode_t)` | differs | size retail 359 vs ours 142 |
-
-### OptionsSubMouse (5 left)
-
-| function | status | note |
-|---|---|---|
-| `COptionsSubMouse::COptionsSubMouse(vgui::Panel*)` | differs | size retail 3038 vs ours 2067 |
-| `COptionsSubMouse::OnResetData()` | differs | size retail 371 vs ours 245 |
-| `COptionsSubMouse::OnApplyChanges()` | differs | size retail 374 vs ours 278 |
-| `COptionsSubMouse::OnControlModified(vgui::Panel*)` | differs | size retail 582 vs ours 569 |
-| `COptionsSubMouse::OnTextChanged(vgui::Panel*)` | differs | size retail 597 vs ours 415 |
-
-### GameConsole (4 left)
-
-| function | status | note |
-|---|---|---|
-| `CGameConsole::~CGameConsole()` | differs | size retail 5 vs ours 26 |
-| `CGameConsole::Initialize()` | differs | size retail 56 vs ours 211 |
-| `CGameConsole::SetParent(int)` | differs | size retail 302 vs ours 41 |
-| `__GLOBAL__I_a` | differs | size retail 219 vs ours 232 |
-
-### CommentaryDialog (3 left)
-
-| function | status | note |
-|---|---|---|
-| `CCommentaryDialog::OnKeyCodePressed(ButtonCode_t)` | differs | size retail 317 vs ours 111 |
-| `OpenCommentaryDialog()` | differs | size retail 244 vs ours 130 |
-| `CPostCommentaryDialog::OnKeyCodePressed(ButtonCode_t)` | differs | size retail 304 vs ours 98 |
-
-### imageutils (3 left)
-
-| function | status | note |
-|---|---|---|
-| `ImgUtl_ConvertJPEGToTGA(char const*, char const*, bool)` | missing |  |
-| `ValveJpegErrorHandler(jpeg_common_struct*)` | missing |  |
-| `ImgUtl_ConvertToVTFAndDumpVMT(char const*, char const*, int, int)` | differs | size retail 1629 vs ours 1531 |
-
-### OptionsSubAudio (3 left)
-
-| function | status | note |
-|---|---|---|
-| `COptionsSubAudio::OnResetData()` | differs | size retail 1842 vs ours 1826 |
-| `COptionsSubAudio::OnCommand(char const*)` | differs | size retail 375 vs ours 340 |
-| `COptionsSubAudioThirdPartyCreditsDlg::COptionsSubAudioThirdPartyCreditsDlg(unsigned int)` | differs | size retail 634 vs ours 455 |
-
-### OptionsSubDifficulty (3 left)
-
-| function | status | note |
-|---|---|---|
-| `COptionsSubDifficulty::COptionsSubDifficulty(vgui::Panel*)` | differs | size retail 786 vs ours 595 |
-| `COptionsSubDifficulty::OnResetData()` | differs | size retail 114 vs ours 100 |
-| `COptionsSubDifficulty::OnCommand(char const*)` | missing |  |
-
-### OptionsSubKeyboard (3 left)
-
-| function | status | note |
-|---|---|---|
-| `COptionsSubKeyboard::ParseActionDescriptions()` | differs | size retail 1238 vs ours 998 |
-| `COptionsSubKeyboard::OnCommand(char const*)` | differs | size retail 521 vs ours 486 |
-| `COptionsSubKeyboardAdvancedDlg::COptionsSubKeyboardAdvancedDlg(unsigned int)` | differs | size retail 634 vs ours 455 |
-
-### URLButton (3 left)
-
-| function | status | note |
-|---|---|---|
-| `vgui::URLButton::URLButton(vgui::Panel*, char const*, char const*, vgui::Panel*, char const*)` | differs | size retail 839 vs ours 778 |
-| `vgui::URLButton::Paint()` | differs | size retail 263 vs ours 175 |
-| `vgui::URLButton::SizeToContents()` | differs | size retail 213 vs ours 69 |
-
-### achievementsdialog (2 left)
-
-| function | status | note |
-|---|---|---|
-| `CAchievementsDialog::UpdateAchievementList()` | differs | size retail 1621 vs ours 1605 |
-| `CAchievementsDialog::UpdateAchievementDialogInfo()` | differs | bytes |
-
-### CreateMultiplayerGameDialog (2 left)
-
-| function | status | note |
-|---|---|---|
-| `CCreateMultiplayerGameDialog::CCreateMultiplayerGameDialog(vgui::Panel*)` | differs | size retail 997 vs ours 855 |
-| `CCreateMultiplayerGameDialog::OnKeyCodePressed(ButtonCode_t)` | differs | size retail 550 vs ours 580 |
-
-### LoadCommentaryDialog (2 left)
-
-| function | status | note |
-|---|---|---|
-| `OpenLoadCommentaryDialog()` | differs | size retail 146 vs ours 130 |
-| `CLoadCommentaryDialog::OnKeyCodePressed(ButtonCode_t)` | differs | size retail 305 vs ours 81 |
-
-### MultiplayerAdvancedDialog (2 left)
-
-| function | status | note |
-|---|---|---|
-| `CMultiplayerAdvancedDialog::CreateControls()` | differs | size retail 2112 vs ours 1872 |
-| `CMultiplayerAdvancedDialog::CMultiplayerAdvancedDialog(vgui::Panel*)` | differs | size retail 1015 vs ours 858 |
-
-### NewGameDialog (2 left)
-
-| function | status | note |
-|---|---|---|
-| `CNewGameDialog::OnCheckButtonChecked(vgui::Panel*)` | differs | size retail 499 vs ours 483 |
-| `CNewGameDialog::ReloadChapters()` | differs | size retail 2726 vs ours 2790 |
-
-### OptionsDialog_Xbox (2 left)
-
-| function | status | note |
-|---|---|---|
-| `COptionsDialogXbox::ApplySchemeSettings(vgui::IScheme*)` | differs | size retail 1942 vs ours 1923 |
-| `COptionsDialogXbox::HandleInactiveKeyCodePressed(ButtonCode_t)` | differs | size retail 1664 vs ours 1424 |
-
-### scriptobject (2 left)
-
-| function | status | note |
-|---|---|---|
-| `CDescription::ReadFromBuffer(char const**)` | missing |  |
-| `CDescription::InitFromFile(char const*)` | missing |  |
-
-### BenchmarkDialog (1 left)
-
-| function | status | note |
-|---|---|---|
-| `CBenchmarkDialog::OnKeyCodePressed(ButtonCode_t)` | differs | size retail 275 vs ours 73 |
-
-### BonusMapsDialog (1 left)
-
-| function | status | note |
-|---|---|---|
-| `CBonusMapsDialog::OnKeyCodePressed(ButtonCode_t)` | differs | size retail 1302 vs ours 1312 |
-
-### CommentaryExplanationDialog (1 left)
-
-| function | status | note |
-|---|---|---|
-| `CCommentaryExplanationDialog::OnKeyCodePressed(ButtonCode_t)` | differs | size retail 506 vs ours 977 |
-
-### CreateMultiplayerGameGameplayPage (1 left)
-
-| function | status | note |
-|---|---|---|
-| `CCreateMultiplayerGameGameplayPage::CCreateMultiplayerGameGameplayPage(vgui::Panel*, char const*)` | differs | size retail 497 vs ours 389 |
-
-### dialogmenu (1 left)
-
-| function | status | note |
-|---|---|---|
-| `CDialogMenu::HandleKeyCode(ButtonCode_t)` | differs | size retail 812 vs ours 560 |
-
-### GameConsoleDialog (1 left)
-
-| function | status | note |
-|---|---|---|
-| `CGameConsoleDialog::CGameConsoleDialog(vgui::Panel*)` | missing |  |
-
-### leaderboarddialog (1 left)
-
-| function | status | note |
-|---|---|---|
-| `CLeaderboardDialog::OnKeyCodePressed(ButtonCode_t)` | differs | size retail 612 vs ours 320 |
-
-### LoadingDialog (1 left)
-
-| function | status | note |
-|---|---|---|
-| `CLoadingDialog::PaintBackground()` | differs | size retail 1849 vs ours 1874 |
-
-### OptionsDialog (1 left)
-
-| function | status | note |
-|---|---|---|
-| `COptionsDialog::COptionsDialog(vgui::Panel*)` | differs | line constants only: 460->456, 528->512 |
-
-### OptionsSubMultiplayer (1 left)
-
-| function | status | note |
-|---|---|---|
-| `COptionsSubMultiplayer::OnApplyChanges()` | differs | size retail 736 vs ours 718 |
-
-### sessionlobbydialog (1 left)
-
-| function | status | note |
-|---|---|---|
-| `CSessionLobbyDialog::OnKeyCodePressed(ButtonCode_t)` | differs | size retail 1360 vs ours 1080 |
-
-### sessionoptionsdialog (1 left)
-
-| function | status | note |
-|---|---|---|
-| `CSessionOptionsDialog::OnKeyCodePressed(ButtonCode_t)` | differs | size retail 401 vs ours 193 |
-
+| `CBasePanel::UpdateTitleText(bool)` | differs | 1230 vs 1238; same calls, block layout of the `CUtlVector` cleanup |
+| `CBasePanel::OnLevelLoadingFinished()` | differs | 344 vs 339; scheduling around the inlined `IsExpansionMenuCategory` |
+| `COptionsDialogXbox::ApplySchemeSettings(vgui::IScheme*)` | differs | 1942 vs 1923; register allocation, retail frame 16 bytes larger |
+| `CNewGameDialog::ReloadChapters()` | differs | 2726 vs 2790; block placement of the bonus-unlock branch |
+| `CNewGameDialog::OnCheckButtonChecked(vgui::Panel*)` | differs | 499 vs 483; how the inlined `clamp` folds |
+| `CAchievementsDialog::UpdateAchievementList()` | differs | 1621 vs 1605; scheduling |
+| `CAchievementsDialog::UpdateAchievementDialogInfo()` | differs | same size; scheduling |
