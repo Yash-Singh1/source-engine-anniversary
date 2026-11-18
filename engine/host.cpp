@@ -264,6 +264,10 @@ static CFrameTimer g_HostTimes;
 
 float host_time = 0.0;
 
+#ifdef BYTEMATCH_RETAIL
+ConVar save_transition_music( "save_transition_music", "0", FCVAR_ARCHIVE );
+#endif
+#line 268
 static ConVar	violence_hblood( "violence_hblood","1", 0, "Draw human blood" );
 static ConVar	violence_hgibs( "violence_hgibs","1", 0, "Show human gib entities" );
 static ConVar	violence_ablood( "violence_ablood","1", 0, "Draw alien blood" );
@@ -624,7 +628,12 @@ CON_COMMAND( host_timer_report, "Spew CPU timer jitter for the last 128 frames i
 // Do this when merging the game DLLs so FCVAR_CHEAT can be set on them at the same time.
 ConVar  developer( "developer", "0", FCVAR_CHEAT, "Set developer message level");
 #else
+#ifdef BYTEMATCH_RETAIL
+ConVar  developer( "developer", "0", 0, "Set developer message level." );
+#else
 ConVar  developer( "developer", "0", 0, "Set developer message level");
+#endif
+#line 629
 #endif
 
 ConVar	skill( "skill","1", FCVAR_ARCHIVE | FCVAR_ARCHIVE_XBOX, "Game skill level (1-3).", true, 1, true, 3 );			// 1 - 3
@@ -1822,7 +1831,7 @@ void Host_ShutdownServer( void )
 #ifndef BYTEMATCH_RETAIL
 	master->ShutdownConnection();
 #endif
-#line 1822
+#line 1823
 
 	Host_AllowQueuedMaterialSystem( false );
 	// clear structures
@@ -2948,7 +2957,7 @@ float Host_GetSoundDuration( const char *pSample )
 #endif
 	return 0.0f;
 #endif
-#line 2932
+#line 2933
 }
 
 CON_COMMAND( host_runofftime, "Run off some time without rendering/updating sounds\n" )
@@ -3531,7 +3540,7 @@ void _Host_RunFrame (float time)
 			modelloader->UpdateDynamicModels();
 		}
 #endif
-#line 3505
+#line 3506
 
 		//-------------------
 		// simulation
@@ -3642,7 +3651,7 @@ void Host_RunFrame( float time )
 	}
 
 #endif
-#line 3613
+#line 3614
 	if ( !host_profile.GetBool() )
 	{
 		_Host_RunFrame( time );
@@ -4099,7 +4108,7 @@ bool DLL_LOCAL Host_IsSecureServerAllowed()
 	if ( CommandLine()->FindParm( "-insecure" ) || CommandLine()->FindParm( "-textmode" ) )
 		g_bAllowSecureServers = false;
 #endif
-#line 4064
+#line 4065
 
 	return g_bAllowSecureServers;
 }
@@ -4192,7 +4201,7 @@ void Host_Init( bool bDedicated )
 	// Should have read info from steam.inf by now.
 	Assert( GetSteamInfIDVersionInfo().AppID != k_uAppIdInvalid );
 #endif
-#line 4151
+#line 4152
 
 	if ( CommandLine()->FindParm( "-nocrashdialog" ) )
 	{
@@ -4444,6 +4453,187 @@ void AddTransitionResources( CSaveRestoreData *pSaveData, const char *pLevelName
 	}
 }
 
+#ifdef BYTEMATCH_RETAIL
+void Host_Changelevel( bool loadfromsavedgame, const char *mapname, const char *start )
+{
+	char			_startspot[MAX_QPATH];
+	char			*startspot;
+	char			oldlevel[MAX_QPATH];
+#if !defined(SWDS)
+	CSaveRestoreData *pSaveData = NULL;
+#endif
+
+	if ( !sv.IsActive() )
+	{
+		ConMsg("Only the server may changelevel\n");
+		return;
+	}
+
+	// The qualified name of the map, excluding path/extension
+	char szMapName[MAX_PATH] = { 0 };
+	// The file to load the map from.
+	char szMapFile[MAX_PATH] = { 0 };
+	Q_strncpy( szMapName, mapname, sizeof( szMapName ) );
+	Host_DefaultMapFileName( szMapName, szMapFile, sizeof( szMapFile ) );
+
+	if ( !modelloader->Map_IsValid( szMapFile ) )
+	{
+		ConMsg( "Map %s was not valid\n", szMapFile );
+		return;
+	}
+
+	// If changing from the same map to the same map, optimize by not closing and reopening
+	// the packfile which is embedded in the .bsp; we do this by incrementing the packfile's
+	// refcount via BeginMapAccess()/EndMapAccess() through the base filesystem API.
+	struct LocalMapAccessScope
+	{
+		LocalMapAccessScope() : bEnabled( false ) { }
+		~LocalMapAccessScope() { if ( bEnabled ) g_pFileSystem->EndMapAccess(); }
+		bool bEnabled;
+	};
+
+	LocalMapAccessScope mapscope;
+	if ( V_strcmp( sv.GetMapName(), szMapName ) == 0 )
+	{
+		g_pFileSystem->BeginMapAccess();
+		mapscope.bEnabled = true;
+	}
+
+#ifndef SWDS
+	// FIXME:  Even needed?
+	if ( demoplayer->IsPlayingBack() )
+	{
+		ConMsg("Changelevel invalid during demo playback\n");
+		return;
+	}
+#endif
+
+	g_pFileSystem->AsyncFinishAll();
+
+	if ( !start )
+		startspot = NULL;
+	else
+	{
+		Q_strncpy (_startspot, start, sizeof( _startspot ) );
+		startspot = _startspot;
+	}
+
+	Warning( "---- Host_Changelevel ----\n" );
+	CheckForFlushMemory( sv.GetMapName(), szMapName );
+
+#if !defined( SWDS )
+	// Always save as an xsave if we're on the X360
+	saverestore->SetIsXSave( IsX360() );
+
+	// Add on time passed since the last time we kept track till this transition
+	int iAdditionalSeconds = g_ServerGlobalVariables.curtime - saverestore->GetMostRecentElapsedTimeSet();
+	int iElapsedSeconds = saverestore->GetMostRecentElapsedSeconds() + iAdditionalSeconds;
+	int iElapsedMinutes = saverestore->GetMostRecentElapsedMinutes() + ( iElapsedSeconds / 60 );
+	saverestore->SetMostRecentElapsedMinutes( iElapsedMinutes );
+	saverestore->SetMostRecentElapsedSeconds( ( iElapsedSeconds % 60 ) );
+#endif
+
+	Q_strncpy( oldlevel, sv.GetMapName(), sizeof( oldlevel ) );
+
+#if !defined(SWDS)
+	if ( loadfromsavedgame )
+	{
+		// HL2 keeps its music playing across level transitions
+		bool bStopSounds = !save_transition_music.GetBool();
+		char szExpansionId[16];
+		if ( g_pFullFileSystem->GetCurrentGameExpansionId( szExpansionId, sizeof( szExpansionId ) ) && !V_stricmp( szExpansionId, "hl2" ) )
+		{
+			bStopSounds = false;
+		}
+		if ( bStopSounds )
+		{
+			S_StopAllSounds( true );
+		}
+
+		// save the current level's state
+		saverestore->SaveGameState( true, &pSaveData );
+
+		if ( !pSaveData )
+		{
+			Warning( "Failed to save data for transition\n" );
+			SCR_EndLoadingPlaque();
+			return;
+		}
+	}
+
+	SCR_BeginLoadingPlaque();
+
+	// stop sounds (especially looping!)
+	S_StopAllSounds(true);
+#endif
+	g_pServerPluginHandler->LevelShutdown();
+
+#if !defined(SWDS)
+	audiosourcecache->LevelShutdown();
+#endif
+
+	// Prepare new level
+	sv.InactivateClients();
+
+#if !defined(SWDS)
+	saverestore->FinishAsyncSave();
+#endif
+
+	if ( sv.RestartOnLevelChange() )
+	{
+		Cbuf_Clear();
+		Cbuf_AddText( "quit\n" );
+		return;
+	}
+
+	DownloadListGenerator().OnLevelLoadStart( szMapName );
+
+	if ( !sv.SpawnServer( szMapName, szMapFile, startspot ) )
+	{
+		return;
+	}
+
+#ifndef SWDS
+	if ( loadfromsavedgame )
+	{
+		// Finish saving gamestate
+		saverestore->Finish( pSaveData );
+
+		g_ServerGlobalVariables.curtime = sv.GetTime();
+
+		audiosourcecache->LevelInit( szMapName );
+		g_pServerPluginHandler->LevelInit( szMapName, CM_EntityString(), oldlevel, startspot, true, false );
+
+		sv.SetPaused( true ); // pause until client connects
+		sv.m_bLoadgame = true;
+	}
+	else
+#endif
+	{
+		g_ServerGlobalVariables.curtime = sv.GetTime();
+#if !defined(SWDS)
+		audiosourcecache->LevelInit( szMapName );
+#endif
+		g_pServerPluginHandler->LevelInit( szMapName, CM_EntityString(), NULL, NULL, false, false );
+	}
+
+	SV_ActivateServer();
+
+#if !defined(SWDS)
+	// Offset stored elapsed time by the current elapsed time for this new map
+	int maptime = sv.GetTime();
+	int minutes = (int)( maptime / 60.0f );
+	int seconds = (int)fmod( maptime, 60.0f );
+	saverestore->SetMostRecentElapsedMinutes( saverestore->GetMostRecentElapsedMinutes() - minutes );
+	saverestore->SetMostRecentElapsedSeconds( saverestore->GetMostRecentElapsedSeconds() - seconds );
+#endif
+
+	NotifyDedicatedServerUI("UpdateMap");
+
+	DownloadListGenerator().OnLevelLoadEnd();
+
+}
+#else
 bool Host_Changelevel( bool loadfromsavedgame, const char *mapname, const char *start )
 {
 	char			_startspot[MAX_QPATH];
@@ -4657,6 +4847,8 @@ bool Host_Changelevel( bool loadfromsavedgame, const char *mapname, const char *
 
 	return true;
 }
+#endif
+#line 4582
 
 #ifdef BYTEMATCH_RETAIL
 void GetPlatformMapPath( const char *pMapPath, char *pPlatformMapPath, int maxLength )
@@ -4671,7 +4863,7 @@ void GetPlatformMapPath( const char *pMapPath, char *pPlatformMapPath, int maxLe
 	}
 }
 #endif
-#line 4627
+#line 4594
 
 /*
 ===============================================================================
