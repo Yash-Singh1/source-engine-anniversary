@@ -35,6 +35,10 @@
 #include "vgui_baseui_interface.h"
 #endif
 #include "tier0/etwprof.h"
+#ifdef BYTEMATCH_RETAIL
+#include "../dedicated/console/TextConsoleUnix.h"
+#endif
+#line 38
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -163,6 +167,10 @@ private:
 	float			m_flMinFrameTime; // Expected duration of a frame, or zero if it is unlimited.
 	float			m_flLastRemainder; // 'Unused' time on the last render loop.
 	bool			m_bCatchupTime;
+#ifdef BYTEMATCH_RETAIL
+	CTextConsoleUnix m_TextConsole;
+#endif
+#line 166
 };
 
 static CEngine g_Engine;
@@ -206,6 +214,10 @@ void CEngine::Unload( void )
 
 	m_nDLLState			= DLL_INACTIVE;
 	m_nNextDLLState		= DLL_INACTIVE;
+#ifdef BYTEMATCH_RETAIL
+	m_TextConsole.ShutDown();
+#endif
+#line 209
 }
 
 //-----------------------------------------------------------------------------
@@ -230,6 +242,10 @@ bool CEngine::Load( bool bDedicated, const char *rootdir )
 
 		UpdateMaterialSystemConfig();
 	}
+#ifdef BYTEMATCH_RETAIL
+	m_TextConsole.Init();
+#endif
+#line 233
 	
 	return success;
 }
@@ -298,7 +314,10 @@ void CEngine::Frame( void )
 	// FIXME:  Move this to main windows message pump?
 	if ( IsPC() && !game->IsActiveApp() && !sv.IsDedicated() && engine_no_focus_sleep.GetInt() > 0 )
 	{
+#ifndef BYTEMATCH_RETAIL
 		VPROF_BUDGET( "Sleep", VPROF_BUDGETGROUP_SLEEPING );
+#endif
+#line 302
 #if defined( RAD_TELEMETRY_ENABLED )
 		if( !g_Telemetry.Level )
 #endif
@@ -311,6 +330,7 @@ void CEngine::Frame( void )
 		m_flPreviousTime = Sys_FloatTime() - m_flMinFrameTime;
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	// Watch for data from the CPU frequency monitoring system and print it to the console.
 	const CPUFrequencyResults frequency = GetCPUFrequencyResults();
 	static double s_lastFrequencyTimestamp;
@@ -320,6 +340,8 @@ void CEngine::Frame( void )
 		Msg( "~CPU Freq: %1.3f GHz    Percent of requested: %3.1f%%    Minimum percent seen: %3.1f%%\n",
 					frequency.m_GHz, frequency.m_percentage, frequency.m_lowestPercentage );
 	}
+#endif
+#line 323
 
 	// Loop until it is time for our frame. Don't return early because pumping messages
 	// and processing console input is expensive (0.1 ms for each call to ProcessConsoleInput).
@@ -362,8 +384,26 @@ void CEngine::Frame( void )
 			// to avoid wasting power and to let other threads/processes run.
 			// Calculate how long we need to wait.
 			int nSleepMS = (int)( ( m_flMinFrameTime - m_flFrameTime ) * 1000 - fBusyWaitMS );
+#ifdef BYTEMATCH_RETAIL
+			if ( nSleepMS > 0 )
+			{
+				ThreadSleep( nSleepMS );
+			}
+			else
+			{
+				// On x86, busy-wait using PAUSE instruction which encourages
+				// power savings by idling for ~10 cycles (also yielding to
+				// the other logical hyperthread core if the CPU supports it)
+				for (int i = 2000; i >= 0; --i)
+				{
+					__asm( "pause" ); __asm( "pause" ); __asm( "pause" ); __asm( "pause" );
+				}
+			}
+#else
 			if ( nSleepMS > 0 )
 				ThreadSleep( nSleepMS );
+#endif
+#line 367
 
 			// Go back to the top of the loop and see if it is time yet.
 		}
@@ -467,6 +507,18 @@ void CEngine::Frame( void )
 
 	// Remember old time
 	m_flPreviousTime = m_flCurrentTime;
+#ifdef BYTEMATCH_RETAIL
+
+	// Process console input typed into the terminal we were launched from
+	char *pLine;
+	while ( ( pLine = m_TextConsole.GetLine() ) != NULL )
+	{
+		char szCommand[ 256 ];
+		V_snprintf( szCommand, sizeof( szCommand ), "%s\n", pLine );
+		engineClient->ClientCmd_Unrestricted( szCommand );
+	}
+#endif
+#line 470
 
 #if defined( VPROF_ENABLED ) && defined( _X360 )
 	UpdateVXConsoleProfile();
