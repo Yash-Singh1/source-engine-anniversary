@@ -585,8 +585,11 @@ CON_COMMAND( status, "Display map and connection status." )
 	}
 
 	print( "map     : %s at: %d x, %d y, %d z\n", sv.GetMapName(), (int)MainViewOrigin()[0], (int)MainViewOrigin()[1], (int)MainViewOrigin()[2]);
+#ifndef BYTEMATCH_RETAIL
 	static ConVarRef sv_tags( "sv_tags" );
 	print( "tags    : %s\n", sv_tags.GetString() );
+#endif
+#line 588
 
 	if ( hltv && hltv->IsActive() )
 	{
@@ -607,7 +610,10 @@ CON_COMMAND( status, "Display map and connection status." )
 	print( "players : %i humans, %i bots (%i max)\n", nHumans, nBots, sv.GetMaxClients() );
 	// ============================================================
 
+#ifndef BYTEMATCH_RETAIL
 	print( "edicts  : %d used of %d max\n", sv.num_edicts - sv.free_edicts, sv.max_edicts );
+#endif
+#line 608
 
 	// Early exit for this server.
 	if ( args.ArgC() == 2 )
@@ -2258,6 +2264,7 @@ CON_COMMAND( cache_print_summary, "cache_print_summary [section]\nPrint out a su
 	g_pDataCache->OutputReport( DC_SUMMARY_REPORT, pszSection );
 }
 
+#ifndef BYTEMATCH_RETAIL
 CON_COMMAND( sv_dump_edicts, "Display a list of edicts allocated on the server." )
 {
 	if ( !sv.IsActive() )
@@ -2286,6 +2293,8 @@ CON_COMMAND( sv_dump_edicts, "Display a list of edicts allocated on the server."
 	Msg( "NumEdicts: %d\n", sv.num_edicts );
 	Msg( "FreeEdicts: %d\n\n", sv.free_edicts );
 }
+#endif
+#line 2258
 
 // make valve_ds only?
 CON_COMMAND_F( memory_list, "dump memory list (linux only)", FCVAR_CHEAT )
@@ -2359,7 +2368,7 @@ CON_COMMAND( namelockid, "Prevent name changes for this userID." )
 	}
 }
 #endif
-#line 2316
+#line 2285
 
 #if defined( STAGING_ONLY ) || defined( _DEBUG )
 CON_COMMAND( fs_find, "Run virtual filesystem find" )

@@ -410,7 +410,10 @@ void CGameServer::Clear( void )
 	
 	num_edicts = 0;
 	max_edicts = 0;
+#ifndef BYTEMATCH_RETAIL
 	free_edicts = 0;
+#endif
+#line 389
 	edicts = NULL;
 	
 	// Clear the instance baseline indices in the ServerClasses.
@@ -1254,7 +1257,7 @@ void SV_DetermineMulticastRecipients( bool usepas, const Vector& origin, CBitVec
 #else
 		if ( iBitNumber < 0 || !(pMask[iBitNumber>>3] & (1<<(iBitNumber&7)) ) )
 #endif
-#line 1229
+#line 1228
 			continue;
 
 		playerbits.Set( i );
@@ -1431,7 +1434,7 @@ bool CGameServer::FinishCertificateCheck( netadr_t &adr, int nAuthProtocol, cons
 			return false;
 		}
 #endif
-#line 1403
+#line 1402
 
 		int nHashCount = 0;
 
@@ -1579,7 +1582,7 @@ static void OnHibernateWhenEmptyChanged( IConVar *var, const char *pOldValue, fl
 	sv.UpdateHibernationState( );
 }
 #endif
-#line 1541
+#line 1540
 
 static bool s_bExitWhenEmpty = false;
 static ConVar sv_memlimit(  "sv_memlimit", "0", 0, 
@@ -1790,7 +1793,7 @@ void CGameServer::UpdateHibernationState()
 #else
 	SetHibernating( sv_hibernate_when_empty.GetBool() && hibernateFromGCServer && !bHaveAnyClients );
 #endif
-#line 1747
+#line 1746
 }
 
 void CGameServer::FinishRestore()
@@ -2361,7 +2364,10 @@ static void SV_AllocateEdicts()
 		sv.edicts[i].m_EdictIndex = i;
 		sv.edicts[i].freetime = 0;
 	}
+#ifndef BYTEMATCH_RETAIL
 	ED_ClearFreeEdictList();
+#endif
+#line 2316
 
 	sv.edictchangeinfo = (IChangeInfoAccessor *)Hunk_AllocName( sv.max_edicts * sizeof( IChangeInfoAccessor ), "edictchangeinfo" );
 }
@@ -2716,8 +2722,13 @@ bool CGameServer::SpawnServer( const char *szMapName, const char *szMapFile, con
 
 	InitializeEntityDLLFields( edicts );
 
+#ifdef BYTEMATCH_RETAIL
+	edicts->ClearFree();
+#else
 	// Clear the free bit on the world edict (entindex: 0).
 	ED_ClearFreeFlag( &edicts[0] );
+#endif
+#line 2671
 
 	if (coop.GetFloat())
 	{
@@ -2895,7 +2906,7 @@ void SV_Think( bool bIsSimulating )
 	if( bIsSimulating )
 		GetBenchResultsMgr()->Frame();
 #endif
-#line 2847
+#line 2844
 }
 
 //-----------------------------------------------------------------------------

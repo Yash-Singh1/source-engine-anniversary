@@ -672,7 +672,12 @@ public:
 	
 	virtual int	GetEntityCount( void )
 	{
+#ifdef BYTEMATCH_RETAIL
+		return sv.num_edicts;
+#else
 		return sv.num_edicts - sv.free_edicts;
+#endif
+#line 638
 	}
 	
 	
