@@ -78,7 +78,7 @@ public:
 		x = y = z = VEC_T_NAN;
 	}
 #else
-	Vector(void) = default;
+	Vector(void) {}
 #endif
 
 	Vector(vec_t X, vec_t Y, vec_t Z);
@@ -383,7 +383,7 @@ public:
 class ALIGN16 VectorAligned : public Vector
 {
 public:
-	inline VectorAligned(void) = default;
+	inline VectorAligned(void) {}
 	inline VectorAligned(vec_t X, vec_t Y, vec_t Z) 
 	{
 		Init(X,Y,Z);
@@ -1546,7 +1546,7 @@ public:
 		x = y = z = w = VEC_T_NAN;
 	}
 #else
-	Quaternion(void) = default;
+	Quaternion(void) {}
 #endif
 
 	inline Quaternion(vec_t ix, vec_t iy, vec_t iz, vec_t iw) : x(ix), y(iy), z(iz), w(iw) { }
@@ -1622,7 +1622,7 @@ inline bool QuaternionsAreEqual( const Quaternion& src1, const Quaternion& src2,
 class ALIGN16 QuaternionAligned : public Quaternion
 {
 public:
-	inline QuaternionAligned(void) = default;
+	inline QuaternionAligned(void) {}
 	inline QuaternionAligned(vec_t X, vec_t Y, vec_t Z, vec_t W) 
 	{
 		Init(X,Y,Z,W);
@@ -1659,7 +1659,7 @@ class QAngle;
 class RadianEuler
 {
 public:
-	inline RadianEuler(void) = default;
+	inline RadianEuler(void) {}
 	inline RadianEuler(vec_t X, vec_t Y, vec_t Z)		{ x = X; y = Y; z = Z; }
 	inline RadianEuler(Quaternion const &q);	// evil auto type promotion!!!
 	inline RadianEuler(QAngle const &angles);	// evil auto type promotion!!!
@@ -1777,7 +1777,7 @@ public:
 		x = y = z = VEC_T_NAN;
 	}
 #else
-	QAngle(void) = default;
+	QAngle(void) {}
 #endif
 
 	QAngle(vec_t X, vec_t Y, vec_t Z);

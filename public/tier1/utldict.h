@@ -274,7 +274,14 @@ void CUtlDict<T, I>::RemoveAll()
 template <class T, class I>
 void CUtlDict<T, I>::Purge()
 {
-	RemoveAll();
+	typename DictElementMap_t::IndexType_t index = m_Elements.FirstInorder();
+	while ( index != m_Elements.InvalidIndex() )
+	{
+		free( (void *)m_Elements.Key( index ) );
+		index = m_Elements.NextInorder( index );
+	}
+
+	m_Elements.Purge();
 }
 
 

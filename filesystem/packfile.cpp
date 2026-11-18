@@ -134,16 +134,8 @@ CFileHandle *CZipPackFile::OpenFile( const char *pFileName, const char *pOptions
 		}
 		m_nOpenFiles++;
 		m_mutex.Unlock();
-		CPackFileHandle* ph = NULL;
-		if ( nCompressionMethod == ZIP_COMPRESSION_LZMA )
-		{
-			ph = new CLZMAZipPackFileHandle( this, nPosition, nOriginalSize, nCompressedSize, nIndex );
-		}
-		else
-		{
-			AssertMsg( nCompressionMethod == ZIP_COMPRESSION_NONE, "Unsupported compression type in zip pack file" );
-			ph = new CZipPackFileHandle( this, nPosition, nOriginalSize, nIndex );
-		}
+		AssertMsg( nCompressionMethod == ZIP_COMPRESSION_NONE, "Unsupported compression type in zip pack file" );
+		CPackFileHandle* ph = new CZipPackFileHandle( this, nPosition, nOriginalSize, nIndex );
 		CFileHandle *fh = new CFileHandle( m_fs );
 		fh->m_pPackFileHandle = ph;
 		fh->m_nLength = nOriginalSize;
@@ -211,9 +203,9 @@ int CZipPackFile::ReadFromPack( int nEntryIndex, void* pBuffer, int nDestBytes, 
 			int nLocalOffset = nOffset - m_PackFiles[nEntryIndex].m_nPosition;
 			byte *pPreloadData = (byte*)m_pPreloadData + pPreloadEntry->DataOffset;
 
-			if ( CLZMA::IsCompressed( pPreloadData ) )
+			if ( CLZMA().IsCompressed( pPreloadData ) )
 			{
-				unsigned int actualSize = CLZMA::GetActualSize( pPreloadData );
+				unsigned int actualSize = CLZMA().GetActualSize( pPreloadData );
 				if ( nLocalOffset + nBytes <= (int)actualSize )
 				{
 					// satisfy from compressed preload
@@ -227,14 +219,14 @@ int CZipPackFile::ReadFromPack( int nEntryIndex, void* pBuffer, int nDestBytes, 
 					if ( nLocalOffset == 0 && nDestBytes >= (int)actualSize && nBytes == (int)actualSize )
 					{
 						// uncompress directly into caller's buffer
-						CLZMA::Uncompress( (unsigned char *)pPreloadData, (unsigned char *)pBuffer );
+						CLZMA().Uncompress( (unsigned char *)pPreloadData, (unsigned char *)pBuffer );
 						return nBytes;
 					}
 
 					// uncompress into temporary memory
 					CUtlMemory< byte > tempMemory;
 					tempMemory.EnsureCapacity( actualSize );
-					CLZMA::Uncompress( pPreloadData, tempMemory.Base() );
+					CLZMA().Uncompress( pPreloadData, tempMemory.Base() );
 					// copy only what caller expects
 					V_memcpy( pBuffer, (byte*)tempMemory.Base() + nLocalOffset, nBytes );
 					return nBytes;
@@ -752,7 +744,7 @@ bool CZipPackFile::Prepare( int64 fileLen, int64 nFileOfs )
 			break;
 		}
 
-		if ( zipFileHeader.compressionMethod != ZIP_COMPRESSION_NONE && zipFileHeader.compressionMethod != ZIP_COMPRESSION_LZMA )
+		if ( zipFileHeader.compressionMethod != ZIP_COMPRESSION_NONE )
 		{
 			Warning( "Pack file uses unsupported compression method: %hi\n", zipFileHeader.compressionMethod );
 			bSuccess = false;
@@ -877,251 +869,4 @@ int CZipPackFileHandle::GetSectorSize()
 int64 CZipPackFileHandle::AbsoluteBaseOffset()
 {
 	return m_pOwner->GetPackFileBaseOffset() + m_nBase;
-}
-
-#if defined( _DEBUG ) && !defined( OSX ) && !defined( ANDROID )
-#include <atomic>
-static std::atomic<int> sLZMAPackFileHandles( 0 );
-#endif // defined( _DEBUG ) && !defined( OSX ) && !defined( ANDROID )
-
-CLZMAZipPackFileHandle::CLZMAZipPackFileHandle( CZipPackFile* pOwner, int64 nBase, unsigned int nOriginalSize, unsigned int nCompressedSize,
-                                                unsigned int nIndex, unsigned int nFilePointer )
-	: CZipPackFileHandle( pOwner, nBase, nCompressedSize, nIndex, nFilePointer ),
-	  m_BackSeekBuffer( 0, PACKFILE_COMPRESSED_FILEHANDLE_SEEK_BUFFER ),
-	  m_ReadBuffer( 0, PACKFILE_COMPRESSED_FILEHANDLE_READ_BUFFER ),
-	  m_pLZMAStream( NULL ), m_nSeekPosition( 0 ), m_nOriginalSize( nOriginalSize )
-{
-	Reset();
-#if defined( _DEBUG ) && !defined( OSX ) && !defined( ANDROID )
-	if ( ++sLZMAPackFileHandles == PACKFILE_COMPRESSED_FILE_HANDLES_WARNING )
-	{
-		// By my count a live filehandle is currently around 270k, mostly due to the LZMA dictionary (256k) with the
-		// rest being the read/seek buffers.
-		Warning( "More than %u compressed file handles in use. "
-		         "These carry large buffers around, and can cause high memory usage\n",
-		         PACKFILE_COMPRESSED_FILE_HANDLES_WARNING );
-	}
-#endif // defined( _DEBUG ) && !defined( OSX ) && !defined( ANDROID )
-}
-
-CLZMAZipPackFileHandle::~CLZMAZipPackFileHandle()
-{
-	delete m_pLZMAStream;
-	m_pLZMAStream = NULL;
-#if defined( _DEBUG ) && !defined( OSX ) && !defined( ANDROID )
-	sLZMAPackFileHandles--;
-	Assert( sLZMAPackFileHandles >= 0 );
-#endif // defined( _DEBUG ) && !defined( OSX ) && !defined( ANDROID )
-}
-
-int CLZMAZipPackFileHandle::Read( void* pBuffer, int nDestSize, int nBytes )
-{
-	int nMaxRead = Min( Min( nDestSize, nBytes ), Size() - Tell() );
-	int nBytesRead = 0;
-
-	// If we have seeked backwards into our buffer, read from there first
-	int nBackSeek = m_BackSeekBuffer.TellPut() - m_BackSeekBuffer.TellGet();
-	Assert( nBackSeek >= 0 );
-	if ( nBackSeek > 0 )
-	{
-		int nBackSeekRead = Min( nBackSeek, nMaxRead );
-		m_BackSeekBuffer.Get( pBuffer, nBackSeekRead );
-		nBytesRead += nBackSeekRead;
-	}
-
-	// Done if nothing to read
-	if ( nMaxRead - nBytesRead <= 0 )
-	{
-		m_nSeekPosition += nBytesRead;
-		return nBytesRead;
-	}
-
-	// Read bytes not fulfilled by backbuffer
-	Assert( m_BackSeekBuffer.TellPut() == m_BackSeekBuffer.TellGet() );
-	while ( nBytesRead < nMaxRead )
-	{
-		// refill read buffer if empty
-		int nRemainingReadBuffer = FillReadBuffer();
-
-		// Consume from read buffer
-		unsigned int nCompressedBytesRead = 0;
-		unsigned int nOutputBytesWritten = 0;
-		bool bSuccess = m_pLZMAStream->Read( (unsigned char *)m_ReadBuffer.PeekGet(), nRemainingReadBuffer,
-		                                     (unsigned char *)pBuffer + nBytesRead, nMaxRead - nBytesRead,
-		                                     nCompressedBytesRead, nOutputBytesWritten );
-
-		if ( bSuccess )
-		{
-			// fixup get position
-			m_ReadBuffer.SeekGet( CUtlBuffer::SEEK_CURRENT, nCompressedBytesRead );
-
-			nBytesRead += nOutputBytesWritten;
-
-			AssertMsg( nCompressedBytesRead == (unsigned int)nRemainingReadBuffer || nBytesRead == nMaxRead,
-			           "Should have consumed the readbuffer or reached nMaxRead" );
-
-			if ( nCompressedBytesRead == 0 && nOutputBytesWritten == 0 )
-			{
-				AssertMsg( nCompressedBytesRead > 0 || nOutputBytesWritten > 0,
-				           "Stuck progress in read loop, aborting. Stream may be defunct." );
-				break;
-			}
-		}
-		else
-		{
-			Warning( "Pack file: reading from LZMA stream failed\n" );
-			break;
-		}
-	}
-
-	// Finally, store last bytes output to the backseek buffer
-
-	// If we read less than BackSeekBuffer.Size() bytes, shift the end of the old backseek buffer up
-	int nOldBackSeek = m_BackSeekBuffer.TellPut();
-	int nReuseBackSeek = Max( Min( m_BackSeekBuffer.Size() - nBytesRead, nOldBackSeek ), 0 );
-	if ( nReuseBackSeek )
-	{
-		// Shift the reused chunk to the front
-		V_memmove( m_BackSeekBuffer.Base(),
-		           (unsigned char *)m_BackSeekBuffer.Base() + m_BackSeekBuffer.TellPut() - nReuseBackSeek,
-		           nReuseBackSeek );
-	}
-
-	// Update get/put position
-	m_BackSeekBuffer.SeekPut( CUtlBuffer::SEEK_HEAD, nReuseBackSeek );
-	m_BackSeekBuffer.SeekGet( CUtlBuffer::SEEK_HEAD, nReuseBackSeek );
-
-	// Fill in remainder from what we just read
-	int nReadIntoBackSeek = Min( m_BackSeekBuffer.Size() - nReuseBackSeek, nBytesRead );
-	m_BackSeekBuffer.Put( (unsigned char *)pBuffer + nBytesRead - nReadIntoBackSeek, nReadIntoBackSeek );
-	m_BackSeekBuffer.SeekGet( CUtlBuffer::SEEK_CURRENT, nReadIntoBackSeek );
-
-	m_nSeekPosition += nBytesRead;
-	return nBytesRead;
-}
-
-int CLZMAZipPackFileHandle::Seek( int nOffset, int nWhence )
-{
-	int nNewPosition = m_nSeekPosition;
-
-	if ( nWhence == SEEK_CUR )
-	{
-		nNewPosition = m_nSeekPosition + nOffset;
-	}
-	else if ( nWhence == SEEK_END )
-	{
-		nNewPosition = Size() + nOffset;
-	}
-	else if ( nWhence == SEEK_SET )
-	{
-		nNewPosition = nOffset;
-	}
-	else
-	{
-		AssertMsg( false, "Unknown seek type" );
-	}
-
-	nNewPosition = Min( Size(), nNewPosition );
-	nNewPosition = Max( 0, nNewPosition );
-
-	if ( nNewPosition == m_nSeekPosition )
-	{
-		return nNewPosition;
-	}
-
-	// Backwards seek
-	if ( nNewPosition < m_nSeekPosition )
-	{
-		int nBackSeekAvailable = m_BackSeekBuffer.TellGet();
-		int nDesiredBackSeek = m_nSeekPosition - nNewPosition;
-
-		if ( nBackSeekAvailable >= nDesiredBackSeek )
-		{
-			// Move get backwards into backseek buffer to account for seek
-			m_BackSeekBuffer.SeekGet( CUtlBuffer::SEEK_CURRENT, -nDesiredBackSeek );
-			m_nSeekPosition = nNewPosition;
-		}
-		else
-		{
-			// Seeking backwards beyond our backseek buffer. Have to restart stream. This kills the performance.
-			Warning( "LZMA file handle: seeking backwards beyond backseek buffer size ( %u ), "
-			         "replaying read & decompression of %u bytes. Should avoid large back seeks in compressed files or "
-			         "increase backseek buffer sizing.",
-			         m_BackSeekBuffer.Size(), nNewPosition );
-
-			// Reset to beginning of underlying stream
-			Reset();
-
-			// Fall through to performing a forward seek
-		}
-	}
-
-	// Forward seek
-	if ( nNewPosition > m_nSeekPosition )
-	{
-		// Can't actually seek forward without making decode progress. Issue fake reads until we've reached our target.
-		unsigned char dummyBuffer[COMPRESSED_SEEK_READ_CHUNK];
-		while ( nNewPosition > m_nSeekPosition )
-		{
-			int nReadSize = Min( nNewPosition - m_nSeekPosition, COMPRESSED_SEEK_READ_CHUNK );
-			unsigned int nBytesRead = Read( &dummyBuffer, sizeof(dummyBuffer), nReadSize );
-			m_nSeekPosition += nBytesRead;
-			if ( !nBytesRead )
-			{
-				Warning( "LZMA file handle: failed reading forward to desired seek position\n" );
-				break;
-			}
-		}
-	}
-
-	return m_nSeekPosition;
-}
-
-int CLZMAZipPackFileHandle::Tell()
-{
-	return m_nSeekPosition;
-}
-
-int CLZMAZipPackFileHandle::Size()
-{
-	return m_nOriginalSize;
-}
-
-int CLZMAZipPackFileHandle::FillReadBuffer()
-{
-	int nRemainingReadBuffer = m_ReadBuffer.TellPut() - m_ReadBuffer.TellGet();
-	int nRemainingCompressedBytes = CZipPackFileHandle::Size() - CZipPackFileHandle::Tell();
-
-	if ( nRemainingReadBuffer > 0 || nRemainingCompressedBytes <= 0 )
-	{
-		// No action if read buffer isn't empty
-		return nRemainingReadBuffer;
-	}
-
-	// Reset empty read buffer
-	m_ReadBuffer.SeekPut( CUtlBuffer::SEEK_HEAD, 0 );
-	m_ReadBuffer.SeekGet( CUtlBuffer::SEEK_HEAD, 0 );
-	int nRefillSize = Min( nRemainingCompressedBytes, m_ReadBuffer.Size() );
-	int nRefillResult = CZipPackFileHandle::Read( m_ReadBuffer.PeekPut(), m_ReadBuffer.Size(), nRefillSize );
-	AssertMsg( nRefillSize == nRefillResult, "Don't expect to fail to read here" );
-
-	// Fixup put pointer after writing into buffer's memory
-	m_ReadBuffer.SeekPut( CUtlBuffer::SEEK_CURRENT, nRefillResult );
-
-	return nRefillResult;
-}
-
-void CLZMAZipPackFileHandle::Reset()
-{
-	// Seek underlying stream back to start
-	CZipPackFileHandle::Seek( SEEK_SET, 0 );
-
-	delete m_pLZMAStream;
-	m_pLZMAStream = new CLZMAStream();
-	m_pLZMAStream->InitZIPHeader( CZipPackFileHandle::Size(), m_nOriginalSize );
-	m_nSeekPosition = 0;
-	m_BackSeekBuffer.SeekGet( CUtlBuffer::SEEK_HEAD, 0 );
-	m_BackSeekBuffer.SeekPut( CUtlBuffer::SEEK_HEAD, 0 );
-	m_ReadBuffer.SeekGet( CUtlBuffer::SEEK_HEAD, 0 );
-	m_ReadBuffer.SeekPut( CUtlBuffer::SEEK_HEAD, 0 );
 }

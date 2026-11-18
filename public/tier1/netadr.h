@@ -40,7 +40,7 @@ public:
 	void	SetIP(uint8 b1, uint8 b2, uint8 b3, uint8 b4);
 	void	SetIP(uint unIP);									// Sets IP.  unIP is in host order (little-endian)
 	void    SetIPAndPort( uint unIP, unsigned short usPort ) { SetIP( unIP ); SetPort( usPort ); }
-	bool	SetFromString(const char *pch, bool bUseDNS = false ); // if bUseDNS is true then do a DNS lookup if needed
+	void	SetFromString(const char *pch, bool bUseDNS = false ); // if bUseDNS is true then do a DNS lookup if needed
 	
 	bool	CompareAdr (const netadr_s &a, bool onlyBase = false) const;
 	bool	CompareClassBAdr (const netadr_s &a) const;

@@ -30,19 +30,27 @@
 
 typedef void (*MemoryPoolReportFunc_t)( PRINTF_FORMAT_STRING char const* pMsg, ... );
 
+// Ways a memory pool can grow when it needs to make a new blob:
+enum MemoryPoolGrowType_t
+{
+	UTLMEMORYPOOL_GROW_NONE=0,		// Don't allow new blobs.
+	UTLMEMORYPOOL_GROW_FAST=1,		// New blob size is numElements * (i+1)  (ie: the blocks it allocates
+									// get larger and larger each time it allocates one).
+	UTLMEMORYPOOL_GROW_SLOW=2		// New blob size is numElements.
+};
+
 class CUtlMemoryPool
 {
 public:
-	// Ways the memory pool can grow when it needs to make a new blob.
+	// !KLUDGE! For legacy code support, import the global enum into this scope
 	enum MemoryPoolGrowType_t
 	{
-		GROW_NONE=0,		// Don't allow new blobs.
-		GROW_FAST=1,		// New blob size is numElements * (i+1)  (ie: the blocks it allocates
-							// get larger and larger each time it allocates one).
-		GROW_SLOW=2			// New blob size is numElements.
+		GROW_NONE=UTLMEMORYPOOL_GROW_NONE,
+		GROW_FAST=UTLMEMORYPOOL_GROW_FAST,
+		GROW_SLOW=UTLMEMORYPOOL_GROW_SLOW
 	};
 
-				CUtlMemoryPool( int blockSize, int numElements, int growMode = GROW_FAST, const char *pszAllocOwner = NULL, int nAlignment = 0 );
+				CUtlMemoryPool( int blockSize, int numElements, int growMode = UTLMEMORYPOOL_GROW_FAST, const char *pszAllocOwner = NULL, int nAlignment = 0 );
 				~CUtlMemoryPool();
 
 	void*		Alloc();	// Allocate the element size you specified in the constructor.
@@ -85,13 +93,14 @@ protected:
 
 	int			m_GrowMode;	// GROW_ enum.
 
+	// Put m_BlocksAllocated in front of m_pHeadOfFreeList for better
+	// packing on 64-bit where pointers are 8-byte aligned.
 	int				m_BlocksAllocated;
+	// FIXME: Change m_ppMemBlob into a growable array?
+	void			*m_pHeadOfFreeList;
 	int				m_PeakAlloc;
 	unsigned short	m_nAlignment;
 	unsigned short	m_NumBlobs;
-	// Group up pointers at the end of the class to avoid padding bloat
-	// FIXME: Change m_ppMemBlob into a growable array?
-	void			*m_pHeadOfFreeList;
 	const char *	m_pszAllocOwner;
 	// CBlob could be not a multiple of 4 bytes so stuff it at the end here to keep us otherwise aligned
 	CBlob			m_BlobHead;

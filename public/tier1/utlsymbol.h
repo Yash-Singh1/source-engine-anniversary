@@ -65,10 +65,6 @@ public:
 	// Modules can choose to disable the static symbol table so to prevent accidental use of them.
 	static void DisableStaticSymbolTable();
 
-	// Methods with explicit locking mechanism. Only use for optimization reasons.
-	static void LockTableForRead();
-	static void UnlockTableForRead();
-	const char * StringNoLock() const;
 
 protected:
 	UtlSymId_t   m_Id;
@@ -105,7 +101,7 @@ class CUtlSymbolTable
 {
 public:
 	// constructor, destructor
-	CUtlSymbolTable( int growSize = 0, int initSize = 16, bool caseInsensitive = false );
+	CUtlSymbolTable( int growSize = 0, int initSize = 32, bool caseInsensitive = false );
 	~CUtlSymbolTable();
 	
 	// Finds and/or creates a symbol based on the string
@@ -130,15 +126,12 @@ public:
 		return m_Lookup.Count();
 	}
 
-	// We store one of these at the beginning of every string to speed
-	// up comparisons.
-	typedef unsigned short hashDecoration_t; 
 
 protected:
 	class CStringPoolIndex
 	{
 	public:
-		inline CStringPoolIndex() = default;
+		inline CStringPoolIndex() {}
 
 		inline CStringPoolIndex( unsigned short iPool, unsigned short iOffset )
 			: 	m_iPool(iPool), m_iOffset(iOffset)
@@ -179,8 +172,6 @@ protected:
 	CTree m_Lookup;
 
 	bool m_bInsensitive;
-	mutable unsigned short m_nUserSearchStringHash;
-	mutable const char* m_pUserSearchString;
 
 	// stores the string data
 	CUtlVector<StringPool_t*> m_StringPools;
@@ -188,7 +179,6 @@ protected:
 private:
 	int FindPoolWithSpace( int len ) const;
 	const char* StringFromIndex( const CStringPoolIndex &index ) const;
-	const char* DecoratedStringFromIndex( const CStringPoolIndex &index ) const;
 
 	friend class CLess;
 	friend class CSymbolHash;

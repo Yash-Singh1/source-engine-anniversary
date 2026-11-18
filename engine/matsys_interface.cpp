@@ -355,7 +355,7 @@ static void WriteVideoConfigInt( const char *pName, int nEntry )
 	
 	pVideoConfig->SetInt( pName, nEntry );
 	
-	pVideoConfig->SaveToFile( g_pFullFileSystem, MOD_VIDEO_CONFIG_SETTINGS, "MOD", false, false, true );
+	pVideoConfig->SaveToFile( g_pFullFileSystem, MOD_VIDEO_CONFIG_SETTINGS, "MOD", false, false );
 	pVideoConfig->deleteThis();
 #else
 	registry->WriteInt( pName, nEntry );
@@ -374,7 +374,7 @@ static void WriteVideoConfigString( const char *pName, const char *pString )
 	
 	pVideoConfig->SetString( pName, pString );
 	
-	pVideoConfig->SaveToFile( g_pFullFileSystem, MOD_VIDEO_CONFIG_SETTINGS, "MOD", false, false, true );
+	pVideoConfig->SaveToFile( g_pFullFileSystem, MOD_VIDEO_CONFIG_SETTINGS, "MOD", false, false );
 	pVideoConfig->deleteThis();
 #else
 	registry->WriteString( pName, pString );
