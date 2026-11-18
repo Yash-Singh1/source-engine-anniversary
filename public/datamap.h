@@ -438,7 +438,12 @@ public:
 	{
 		for ( int i = 0; i < m_Names.Count(); i++ )
 		{
+#ifdef BYTEMATCH_RETAIL
+			delete m_Names[i];
+#else
 			delete[] m_Names[i];
+#endif
+#line 442
 		}
 	}
 	
