@@ -47,7 +47,12 @@
 #endif
 
 // Max decorated map name, with things like workshop/cp_foo.ugc123456
+#ifdef BYTEMATCH_RETAIL
+#define MAX_MAP_NAME				32
+#else
 #define MAX_MAP_NAME				96
+#endif
+#line 51
 
 // Max name used in save files. Needs to be left at 32 for SourceSDK compatibility.
 #define MAX_MAP_NAME_SAVE			32

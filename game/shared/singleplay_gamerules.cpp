@@ -19,7 +19,7 @@
 	#include "achievementmgr.h"
 	#include "SourceAppInfo.h"
 	#include "tier0/icommandline.h"
-	#include "steam_accessors.h"
+	#include "steam/steam_api.h"
 
 #endif
 

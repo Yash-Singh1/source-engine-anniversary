@@ -56,6 +56,10 @@ EXTRA_CXXFLAGS = dict((t, ['-include', 'alloca.h']) for t in
 	('ivp_physics', 'ivp_compactbuilder', 'havana_constraints', 'hk_base', 'hk_math'))
 EXTRA_CXXFLAGS['vgui_surfacelib'] = ['-Wno-c++11-narrowing']
 
+# Extra compiler flags per source file. Valve builds coroutine.cpp into libcoroutine_osx.a
+# (vstdlib/coroutine_osx.vpc) without the stack protector, since it switches stacks.
+EXTRA_FILE_CXXFLAGS = {'vstdlib/coroutine.cpp': ['-fno-stack-protector']}
+
 # Modules whose VPC the manifest couldn't evaluate: take a sibling's base defines.
 DEFINES_FROM = {'bin/video_quicktime': 'bin/video_services'}
 
@@ -293,6 +297,10 @@ def retail_osx32_defines(self):
 		if as_cxx and t.__class__.__name__ == 'c':
 			t.env.CC = self.env.CXX
 			t.env.CFLAGS = list(self.env.CXXFLAGS) + ['-x', 'c++']
+		file_extra = EXTRA_FILE_CXXFLAGS.get(t.inputs[0].path_from(self.bld.srcnode).replace(os.sep, '/'))
+		if file_extra:
+			t.env = t.env.derive()
+			t.env.CXXFLAGS = list(t.env.CXXFLAGS) + file_extra
 
 @feature('cprogram', 'cxxprogram')
 @before_method('apply_link')

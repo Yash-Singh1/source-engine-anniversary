@@ -15,7 +15,7 @@
 #include "iachievementmgr.h"
 #include "utlmap.h"
 #ifndef NO_STEAM
-#include "steam_accessors.h"
+#include "steam/steam_api.h"
 #endif
 
 #define THINK_CLEAR		-1

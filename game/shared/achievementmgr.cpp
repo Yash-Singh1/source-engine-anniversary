@@ -83,6 +83,14 @@ extern ConVar developer;
 
 #define DEBUG_ACHIEVEMENTS_IN_RELEASE 0
 
+
+
+
+
+
+
+
+
 //-----------------------------------------------------------------------------
 // Purpose: Write helper
 //-----------------------------------------------------------------------------
@@ -146,16 +154,9 @@ static void WriteAchievementGlobalState( KeyValues *pKV, bool bPersistToSteamClo
 
         if (pRemoteStorage)
         {
-#if defined( STEAM_API_COMMON_H )
             uint64 availableBytes = 0;
             uint64 totalBytes = 0;
-#else
-            int32 availableBytes = 0;
-            int32 totalBytes = 0;
-#endif
-#if defined( STEAM_API_COMMON_H )
             pRemoteStorage->BeginFileWriteBatch();
-#endif
             if ( pRemoteStorage->GetQuota( &totalBytes, &availableBytes ) )
             {
                 if ( totalBytes > 0 )
@@ -190,9 +191,7 @@ static void WriteAchievementGlobalState( KeyValues *pKV, bool bPersistToSteamClo
                     }
                 }
             }
-#if defined( STEAM_API_COMMON_H )
             pRemoteStorage->EndFileWriteBatch();
-#endif
         }
 #endif
     }

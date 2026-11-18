@@ -21,7 +21,7 @@
 
 #if !defined( _X360 ) && !defined( NO_STEAM )
 #include "steam/isteamuser.h"
-#include "steam_accessors.h"
+#include "steam/steam_api.h"
 #endif
 
 const char *COM_GetModDirectory(); // return the mod dir (rather than the complete -game param, which can be a path)

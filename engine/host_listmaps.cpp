@@ -166,11 +166,12 @@ public:
 
 	void			Think( void );
 
+	// Rebuild list from scratch
+	void			BuildList( void );
+
 private:
 	// Clear list
 	void			ClearList( void );
-	// Rebuild list from scratch
-	void			BuildList( void );
 
 private:
 	// Dictionary of items
@@ -188,6 +189,11 @@ static CMapListManager g_MapListMgr;
 void Host_UpdateMapList( void )
 {
 	g_MapListMgr.Think();
+}
+
+void Host_MapListFlush( void )
+{
+	g_MapListMgr.BuildList();
 }
 
 //-----------------------------------------------------------------------------

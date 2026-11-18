@@ -2525,6 +2525,47 @@ bool MIX_ScaleChannelVolume( paintbuffer_t *ppaint, channel_t *pChannel, int vol
 	if ( g_bDspOff || DSP_RoomDSPIsOff() )
 		dspmix = 0.0;
 	
+#ifdef BYTEMATCH_RETAIL
+	// duck everything but commentary and voice while commentary plays
+	int duckScale = (int)(g_DuckScaleCommentary * 256);
+	if( duckScale < 256 )
+	{
+		if( pChannel->pMixer )
+		{
+			CAudioSource *pSource = pChannel->pMixer->GetSource();
+			if( !pSource->IsCommentarySource() && !pSource->IsVoiceSource() )
+			{
+				for (i = 0; i < CCHANVOLUMES; i++)
+					volume[i] = (volume[i] * duckScale) >> 8;
+			}
+		}
+	}
+
+	// duck other players' voices while commentary plays
+	duckScale = (int)(g_DuckScaleVoice * 256);
+	if( duckScale < 256 )
+	{
+		if( pChannel->pMixer )
+		{
+			CAudioSource *pSource = pChannel->pMixer->GetSource();
+			if( pSource->IsVoiceSource() && !pSource->IsCommentarySource() )
+			{
+				for (i = 0; i < CCHANVOLUMES; i++)
+					volume[i] = (volume[i] * duckScale) >> 8;
+			}
+		}
+	}
+
+	// duck all sound volumes except speaker's voice
+	duckScale = min((int)(g_DuckScale * 256), g_SND_VoiceOverdriveInt);
+	if( duckScale < 256 )
+	{
+		if( pChannel->pMixer )
+		{
+			CAudioSource *pSource = pChannel->pMixer->GetSource();
+			if( !pSource->IsVoiceSource() && !pSource->IsCommentarySource() )
+			{
+#else
 	// duck all sound volumes except speaker's voice
 #if !defined( NO_VOICE )
 	int duckScale = min((int)(g_DuckScale * 256), g_SND_VoiceOverdriveInt);
@@ -2538,6 +2579,8 @@ bool MIX_ScaleChannelVolume( paintbuffer_t *ppaint, channel_t *pChannel, int vol
 			CAudioSource *pSource = pChannel->pMixer->GetSource();
 			if( !pSource->IsVoiceSource() )
 			{
+#endif
+#line 2567
 				// Apply voice overdrive..
 				for (i = 0; i < CCHANVOLUMES; i++)
 					volume[i] = (volume[i] * duckScale) >> 8;

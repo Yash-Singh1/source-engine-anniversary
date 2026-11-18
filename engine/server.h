@@ -99,7 +99,10 @@ public:
 	
 	int			num_edicts;
 	int			max_edicts;
+#ifndef BYTEMATCH_RETAIL
 	int			free_edicts; // how many edicts in num_edicts are free, in use is num_edicts - free_edicts
+#endif
+#line 102
 	edict_t		*edicts;			// Can array index now, edict_t is fixed
 	IChangeInfoAccessor *edictchangeinfo; // HACK to allow backward compat since we can't change edict_t layout
 

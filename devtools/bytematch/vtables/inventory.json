@@ -3077,8 +3077,8 @@
    "public/materialsystem/imaterialsystemstub.h"
   ],
   "reference": "bin/materialsystem:CDummyMaterialSystem",
-  "retail_len": 334,
-  "retail_len_basis": "first implementer destructor",
+  "retail_len": 128,
+  "retail_len_basis": "override: slots 128+ of CDummyMaterialSystem are its own IMatRenderContext-style methods (BindLocalCubemap...); the first 128 are IMaterialSystemStub's",
   "sdk2013_len": 127,
   "versions": {
    "ours": [
@@ -5720,9 +5720,9 @@
   "headers": [
    "public/game/client/iviewport.h"
   ],
-  "reference": "hl2mp/client:IViewPortPanel",
-  "retail_len": 2,
-  "retail_len_basis": "own vtable",
+  "reference": "hl2/client:CTextWindow (IViewPortPanel subobject)",
+  "retail_len": 12,
+  "retail_len_basis": "IViewPortPanel subobject",
   "sdk2013_len": 12,
   "versions": {
    "ours": [],

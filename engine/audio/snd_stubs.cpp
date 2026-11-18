@@ -71,7 +71,7 @@ bool CEngineVoiceSteam::IsHeadsetPresent( int iController )
 bool CEngineVoiceSteam::IsLocalPlayerTalking( int iController )
 {
 	uint32 nBytes = 0;
-	EVoiceResult res = Steam3Client().SteamUser()->GetAvailableVoice( &nBytes, NULL, 0 );
+	EVoiceResult res = SteamUser()->GetAvailableVoice( &nBytes, NULL, 0 );
 	switch ( res )
 	{
 	case k_EVoiceResultOK:
@@ -137,7 +137,7 @@ void CEngineVoiceSteam::GetRemoteTalkers( int *pNumTalkers, XUID *pRemoteTalkers
 bool CEngineVoiceSteam::VoiceUpdateData( int iController )
 {
 	uint32 nBytes = 0;
-	EVoiceResult res = Steam3Client().SteamUser()->GetAvailableVoice( &nBytes, NULL, 0 );
+	EVoiceResult res = SteamUser()->GetAvailableVoice( &nBytes, NULL, 0 );
 	switch ( res )
 	{
 	case k_EVoiceResultOK:
@@ -155,7 +155,7 @@ void CEngineVoiceSteam::GetVoiceData( int iController, const byte **ppvVoiceData
 	byte *pbVoiceData = m_pbVoiceData + iController * ARRAYSIZE( m_pbVoiceData ) / XUSER_MAX_COUNT;
 	*ppvVoiceDataBuffer = pbVoiceData;
 	
-	EVoiceResult res = Steam3Client().SteamUser()->GetVoice( true, pbVoiceData, size, pnumVoiceDataBytes, false, NULL, 0, NULL, 0 );
+	EVoiceResult res = SteamUser()->GetVoice( true, pbVoiceData, size, pnumVoiceDataBytes, false, NULL, 0, NULL, 0 );
 	switch ( res )
 	{
 	case k_EVoiceResultNoData:
@@ -197,7 +197,7 @@ void CEngineVoiceSteam::PlayIncomingVoiceData( XUID xuid, const byte *pbData, un
 	// Uncompress the voice data
 	char pbUncompressedVoice[ 11025 * 2 ];
 	uint32 numUncompressedBytes;
-	EVoiceResult res = Steam3Client().SteamUser()->DecompressVoice( const_cast< byte * >( pbData ), dwDataSize,
+	EVoiceResult res = SteamUser()->DecompressVoice( const_cast< byte * >( pbData ), dwDataSize,
 		pbUncompressedVoice, sizeof( pbUncompressedVoice ), &numUncompressedBytes, 0 );
 
 	if ( res != k_EVoiceResultOK )

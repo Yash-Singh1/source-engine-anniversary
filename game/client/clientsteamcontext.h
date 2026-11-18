@@ -5,7 +5,7 @@
 #pragma once
 #endif
 
-#include "steam_accessors.h"
+#include "steam/steam_api.h"
 #include "utldelegate.h"
 
 struct SteamLoggedOnChange_t

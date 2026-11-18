@@ -97,8 +97,8 @@ void CDODPlayerStats::FireGameEvent( IGameEvent *event )
 	{
 		// Store our stat data
 
-		Assert( steamapicontext->SteamUserStats() );
-		if ( !steamapicontext->SteamUserStats() )
+		Assert( SteamUserStats() );
+		if ( !SteamUserStats() )
 			return; 
 
 		CGameID gameID( engine->GetAppID() );
@@ -121,7 +121,7 @@ void CDODPlayerStats::FireGameEvent( IGameEvent *event )
 
 						Q_snprintf( szStatName, ARRAYSIZE( szStatName ), "%s.%s.%s", g_pszShortTeamNames[iTeam], g_pszClassNames[iClass], g_pszStatNames[iStat] );
 
-						if ( steamapicontext->SteamUserStats()->GetStat( szStatName, &iData ) )
+						if ( SteamUserStats()->GetStat( szStatName, &iData ) )
 						{
 							// use Steam's value
 							m_PlayerStats[iTeam][iClass].m_iStat[iStat] = iData;
@@ -143,7 +143,7 @@ void CDODPlayerStats::FireGameEvent( IGameEvent *event )
 
 					Q_snprintf( szStatName, ARRAYSIZE( szStatName ), "%s.%s", s_WeaponAliasInfo[iWeapon], g_pszStatNames[iStat] );
 
-					if ( steamapicontext->SteamUserStats()->GetStat( szStatName, &iData ) )
+					if ( SteamUserStats()->GetStat( szStatName, &iData ) )
 					{
 						// use Steam's value
 						m_WeaponStats[iWeapon].m_iStat[iStat] = iData;
@@ -235,7 +235,7 @@ void CDODPlayerStats::MsgFunc_DODPlayerStatsUpdate( bf_read &msg )
 void CDODPlayerStats::UploadStats()
 {
 	// only upload if Steam is running
-	if ( !steamapicontext->SteamUserStats() )
+	if ( !SteamUserStats() )
 		return; 
 
 	CGameID gameID( engine->GetAppID() );
@@ -254,7 +254,7 @@ void CDODPlayerStats::UploadStats()
 					{
 						Q_snprintf( szStatName, ARRAYSIZE( szStatName ), "%s.%s.%s", g_pszShortTeamNames[iTeam], g_pszClassNames[iClass], g_pszStatNames[iStat] );
 
-						steamapicontext->SteamUserStats()->SetStat( szStatName, m_PlayerStats[iTeam][iClass].m_iStat[iStat] );
+						SteamUserStats()->SetStat( szStatName, m_PlayerStats[iTeam][iClass].m_iStat[iStat] );
 					}
 				}				
 			}		
@@ -272,7 +272,7 @@ void CDODPlayerStats::UploadStats()
 				{
 					Q_snprintf( szStatName, ARRAYSIZE( szStatName ), "%s.%s", s_WeaponAliasInfo[iWeapon], g_pszStatNames[iStat] );
 
-					steamapicontext->SteamUserStats()->SetStat( szStatName, m_WeaponStats[iWeapon].m_iStat[iStat] );
+					SteamUserStats()->SetStat( szStatName, m_WeaponStats[iWeapon].m_iStat[iStat] );
 				}	
 			}								
 		}	

@@ -18,7 +18,7 @@
 #include <vgui_controls/Label.h>
 #include <vgui_controls/ImagePanel.h>
 #include "achievement_notification_panel.h"
-#include "steam_accessors.h"
+#include "steam/steam_api.h"
 #include "iachievementmgr.h"
 #include "fmtstr.h"
 

@@ -2197,7 +2197,7 @@ void CBasePanel::RunMenuCommand(const char *command)
 		if ( IsPC() )
 		{
 #ifndef NO_STEAM
-			if ( !steamapicontext->SteamUser() || !steamapicontext->SteamUser()->BLoggedOn() )
+			if ( !SteamUser() || !SteamUser()->BLoggedOn() )
 			{
 #ifdef BYTEMATCH_RETAIL
 				vgui::MessageBox *pMessageBox = new vgui::MessageBox("#GameUI_Achievements_SteamRequired_Title", "#GameUI_Achievements_SteamRequired_Message");
@@ -2224,7 +2224,7 @@ void CBasePanel::RunMenuCommand(const char *command)
     {
         if ( IsPC() )
         {
-            if ( !steamapicontext->SteamUser() || !steamapicontext->SteamUser()->BLoggedOn() )
+            if ( !SteamUser() || !SteamUser()->BLoggedOn() )
             {
                 vgui::MessageBox *pMessageBox = new vgui::MessageBox("#GameUI_Achievements_SteamRequired_Title", "#GameUI_Achievements_SteamRequired_Message", this );
                 pMessageBox->DoModal();
@@ -3473,7 +3473,7 @@ void CBasePanel::OnOpenCSAchievementsDialog()
 		// [smessick] For lower resolutions, open the Steam achievements instead of the CSS achievements screen.
 		if ( screenWide < GameClientExports()->GetAchievementsPanelMinWidth() )
 		{
-			ISteamFriends *friends = steamapicontext->SteamFriends();
+			ISteamFriends *friends = SteamFriends();
 			if ( friends )
 			{
 				friends->ActivateGameOverlay( "Achievements" );

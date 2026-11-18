@@ -26,6 +26,7 @@ class IDataCache;
 class IMDLCache;
 class IServerEngineTools;
 class IXboxSystem;
+
 class CSteamGameServerAPIContext;
 
 extern IVEngineServer			*engine;
@@ -42,6 +43,7 @@ extern IDataCache				*datacache;
 extern IMDLCache				*mdlcache;
 extern IServerEngineTools		*serverenginetools;
 extern IXboxSystem				*xboxsystem; // 360 only
+
 extern CSteamGameServerAPIContext *steamgameserverapicontext; //available on game servers
 
 

@@ -46,7 +46,7 @@
 #include "replay/ireplaysystem.h"
 #include "replay/ienginereplay.h"
 #endif
-#include "steam_accessors.h"
+#include "steam/steam_api.h"
 #include "sourcevr/isourcevirtualreality.h"
 #include "client_virtualreality.h"
 

@@ -104,8 +104,8 @@ void ServerSessionIDChangeCallback( IConVar *pConVar, const char *pOldString, fl
 //-----------------------------------------------------------------------------
 time_t CSteamWorksGameStatsUploader::GetTimeSinceEpoch( void )
 {
-	if ( steamapicontext && steamapicontext->SteamUtils() )
-		return steamapicontext->SteamUtils()->GetServerRealTime();
+	if ( SteamUtils() )
+		return SteamUtils()->GetServerRealTime();
 	else
 	{
 		// Default to system time.
@@ -823,7 +823,7 @@ bool CSteamWorksGameStatsUploader::AccessToSteamAPI( void )
 #ifdef	GAME_DLL
 	return ( steamgameserverapicontext && steamgameserverapicontext->SteamGameServer() && g_pSteamClientGameServer && steamgameserverapicontext->SteamGameServerUtils() );
 #elif	CLIENT_DLL
-	return ( steamapicontext && steamapicontext->SteamUser() && steamapicontext->SteamUser()->BLoggedOn() && steamapicontext->SteamFriends() && steamapicontext->SteamMatchmaking() );
+	return ( SteamUser() && SteamUser()->BLoggedOn() && SteamFriends() && SteamMatchmaking() );
 #endif
 	return false;
 }
@@ -852,11 +852,11 @@ ISteamGameStats* CSteamWorksGameStatsUploader::GetInterface( void )
 		return (ISteamGameStats*)g_pSteamClientGameServer->GetISteamGenericInterface( hSteamUser, hSteamPipe, STEAMGAMESTATS_INTERFACE_VERSION );
 	}	
 #elif	CLIENT_DLL
-	if ( steamapicontext && steamapicontext->SteamUser() && steamapicontext->SteamUtils() )
+	if ( SteamUser() && SteamUtils() )
 	{
-		m_UserID = steamapicontext->SteamUser()->GetSteamID().ConvertToUint64();
-		m_iAppID = steamapicontext->SteamUtils()->GetAppID();
-		hSteamUser = steamapicontext->SteamUser()->GetHSteamUser();
+		m_UserID = SteamUser()->GetSteamID().ConvertToUint64();
+		m_iAppID = SteamUtils()->GetAppID();
+		hSteamUser = SteamUser()->GetHSteamUser();
 		hSteamPipe = GetHSteamPipe();
 	}
 #endif
@@ -1094,28 +1094,28 @@ int CSteamWorksGameStatsUploader::GetFriendCountInGame()
 	// Do we have access to the steam API?
 	if ( AccessToSteamAPI() )
 	{
-		CSteamID m_SteamID = steamapicontext->SteamUser()->GetSteamID();
+		CSteamID m_SteamID = SteamUser()->GetSteamID();
 		// Let's get our game info so we can use that to test if our friends are connected to the same game as us
 		FriendGameInfo_t myGameInfo;
-		steamapicontext->SteamFriends()->GetFriendGamePlayed( m_SteamID, &myGameInfo );
-		CSteamID myLobby = steamapicontext->SteamMatchmaking()->GetLobbyOwner( myGameInfo.m_steamIDLobby );
+		SteamFriends()->GetFriendGamePlayed( m_SteamID, &myGameInfo );
+		CSteamID myLobby = SteamMatchmaking()->GetLobbyOwner( myGameInfo.m_steamIDLobby );
 
 		// This returns the number of friends that are playing a game
-		int activeFriendCnt = steamapicontext->SteamFriends()->GetFriendCount( k_EFriendFlagImmediate );
+		int activeFriendCnt = SteamFriends()->GetFriendCount( k_EFriendFlagImmediate );
 
 		// Check each active friend's lobby ID to see if they are in our game
 		for ( int h=0; h< activeFriendCnt ; ++h )
 		{
 			FriendGameInfo_t friendInfo;
-			CSteamID friendID = steamapicontext->SteamFriends()->GetFriendByIndex( h, k_EFriendFlagImmediate );
+			CSteamID friendID = SteamFriends()->GetFriendByIndex( h, k_EFriendFlagImmediate );
 
-			if ( steamapicontext->SteamFriends()->GetFriendGamePlayed( friendID, &friendInfo ) )
+			if ( SteamFriends()->GetFriendGamePlayed( friendID, &friendInfo ) )
 			{
 				// Does our friend have a valid lobby ID?
 				if ( friendInfo.m_gameID.IsValid() )
 				{
 					// Get our friend's lobby info
-					CSteamID friendLobby = steamapicontext->SteamMatchmaking()->GetLobbyOwner( friendInfo.m_steamIDLobby );
+					CSteamID friendLobby = SteamMatchmaking()->GetLobbyOwner( friendInfo.m_steamIDLobby );
 
 					// Double check the validity of the friend lobby ID then check to see if they are in our game
 					if ( friendLobby.IsValid() && myLobby == friendLobby )

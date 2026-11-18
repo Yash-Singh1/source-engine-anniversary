@@ -5,8 +5,7 @@
 //===========================================================================//
 
 #include "cbase.h"
-// Steamworks 1.60 interfaces; must precede iinputsystem.h so the older public/steam headers are skipped by their include guards
-#include "../../inputsystem/steam/steam_api.h"
+#include "steam/steam_api.h"
 #include "kbutton.h"
 #include "usercmd.h"
 #include "input.h"
@@ -21,10 +20,6 @@
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
-
-// Anniversary GameActionSet_t values; delete when public/inputsystem/InputEnums.h has them
-#define GAME_ACTION_SET_GAMECONTROLS	( (GameActionSet_t)0 )
-#define GAME_ACTION_SET_VEHICLECONTROLS	( (GameActionSet_t)1 )
 
 // up / down
 #define	PITCH	0

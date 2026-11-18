@@ -34,7 +34,7 @@
 #include "voice_status.h"
 extern const ConVar *sv_cheats;
 #if !defined(NO_STEAM)
-#include "steam_accessors.h"
+#include "steam/steam_api.h"
 #endif
 #endif
 
