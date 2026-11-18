@@ -9,7 +9,7 @@ PROJECT_NAME = 'chromehtml'
 
 # CEF's C++ wrapper (lib/public/osx32/libcef_dll_wrapper.a in Valve's tree), in
 # cef_paths2.gypi order; libcef_dll_wrapper2.cc needs Chromium's NPAPI headers.
-CEF_WRAPPER_SOURCES = ['libcef_dll/' + s for s in [
+CEF_WRAPPER_SOURCES = ['../../external/cef/libcef_dll/' + s for s in [
 	'transfer_util.cpp',
 	'wrapper/cef_byte_read_handler.cc',
 	'wrapper/cef_xml_object.cc',
@@ -81,16 +81,14 @@ def configure(conf):
 	return
 
 def build(bld):
-	cef = bld.path.find_dir('../../external/cef')
-
 	# Built like Chromium's own targets: no RTTI or exceptions (the retail
 	# wrapper's vtables have no typeinfo).
 	bld.stlib(
-		source   = [cef.find_resource(s) for s in CEF_WRAPPER_SOURCES],
+		source   = CEF_WRAPPER_SOURCES,
 		target   = 'cef_dll_wrapper',
 		name     = 'cef_dll_wrapper',
 		features = 'cxx',
-		includes = [cef.abspath()],
+		includes = ['../../external/cef'],
 		defines  = ['USING_CEF_SHARED'],
 		cxxflags = ['-fno-rtti', '-fno-exceptions'],
 		idx      = bld.get_taskgen_count()
