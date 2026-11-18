@@ -12,7 +12,7 @@
 #endif
 
 void ApplyScanlineEffectToTexture( int rgbaWide, int rgbaTall, unsigned char *rgba, int iScanLines );
-void ApplyGaussianBlurToTexture(int rgbaWide, int rgbaTall, unsigned char *rgba, int iBlur );
+void ApplyGaussianBlurToTexture(int rgbaWide, int rgbaTall, unsigned char *rgba, int iBlur, bool bBlurColor = false );
 void ApplyDropShadowToTexture( int rgbaWide, int rgbaTall, unsigned char *rgba, int iDropShadowOffset );
 void ApplyOutlineToTexture( int rgbaWide, int rgbaTall, unsigned char *rgba, int iOutlineSize );
 void ApplyRotaryEffectToTexture( int rgbaWide, int rgbaTall, unsigned char *rgba, bool bRotary );
