@@ -235,7 +235,7 @@ void C_PropVehicleDriveable::GetVehicleClipPlanes( float &flZNear, float &flZFar
 	// FIXME: Need something a better long-term, this fixes the buggy.
 #ifdef HL2_ANNIVERSARY_NOV2024
 	// Wide views would clip the vehicle model at 6.
-	if ( default_fov.GetFloat() > 90.0f || engine->GetScreenAspectRatio() > 1.77779f )
+	if ( default_fov.GetFloat() > 90.0f || engine->GetScreenAspectRatio() > ( 16.0f / 9.0f ) + 100.0f * FLT_EPSILON )
 	{
 		flZNear = 3;
 	}
