@@ -12,7 +12,7 @@ flags, so these are known non-matching inputs: they let modules link in
 --retail-osx32 mode, not byte-match. Sources are pinned by sha256. protobuf
 2.3.0 is not built here; Source SDK 2013 ships the period osx32 archive.
 
-Installs <prefix>/thirdparty-osx32/{lib,include}.
+Installs <prefix>/<retailflags.THIRDPARTY_DIR>/{lib,include}.
 Usage: build-thirdparty.py [--prefix DIR] [--only jpeg,png,cryptopp,speex]
 """
 import argparse
@@ -121,7 +121,9 @@ def build(name, src, p, out):
         headers = [(os.path.join(src, h), "") for h in ("jpeglib.h", "jconfig.h", "jmorecfg.h", "jerror.h")]
     elif name == "png":
         shutil.copy(os.path.join(src, "scripts", "pnglibconf.h.prebuilt"), os.path.join(src, "pnglibconf.h"))
-        flags = [p["cc"]] + rf.cflags(sdk)
+        # Retail modules that link libpng export its functions (lane-chromehtml2.md),
+        # so dead stripping keeps them all; libjpeg stays hidden as in retail.
+        flags = [p["cc"]] + [f for f in rf.cflags(sdk) if f != "-fvisibility=hidden"]
         files = [os.path.join(src, f + ".c") for f in PNG_LIB]
         headers = [(os.path.join(src, h), "") for h in ("png.h", "pngconf.h", "pnglibconf.h")]
     elif name == "cryptopp":
@@ -165,7 +167,7 @@ def main():
     ap.add_argument("--only", default="jpeg,png,cryptopp,speex")
     a = ap.parse_args()
     p = rf.paths(a.prefix)
-    out = os.path.join(a.prefix, "thirdparty-osx32")
+    out = os.path.join(a.prefix, rf.THIRDPARTY_DIR)
     work = os.path.join(a.prefix, "work", "thirdparty")
     os.makedirs(work, exist_ok=True)
     for name in a.only.split(","):

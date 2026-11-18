@@ -208,7 +208,7 @@ def retail_osx32_configure(conf):
 	v.FRAMEWORK_COREGRAPHICS = 'ApplicationServices'
 
 	# Period third-party archives (see thirdparty-static.md). protobuf 2.3.0 is
-	# SDK 2013's osx32 prebuilt; the others come from build-thirdparty.sh.
+	# SDK 2013's osx32 prebuilt; the others come from build-thirdparty.py.
 	sdk2013 = os.environ.get('SOURCE_SDK_2013', '/Volumes/Storage/sco/source-sdk-2013/src')
 	pb = os.path.join(sdk2013, 'lib', 'public', 'osx32', 'libprotobuf.a')
 	if os.path.exists(pb):
@@ -217,7 +217,9 @@ def retail_osx32_configure(conf):
 		# Valve's include paths: thirdparty (for "protobuf-2.3.0/src/...") and the protobuf src dir.
 		tp_sdk = os.path.join(sdk2013, 'thirdparty')
 		v.INCLUDES_PROTOBUF = [tp_sdk, os.path.join(tp_sdk, 'protobuf-2.3.0', 'src')]
-	tp = os.path.join(os.path.dirname(os.path.dirname(p['sdk'])), 'thirdparty-osx32')
+	tp = os.path.join(os.path.dirname(os.path.dirname(p['sdk'])), rf.THIRDPARTY_DIR)
+	if not os.path.isdir(tp):
+		Logs.warn('retail-osx32: %s missing; run %s/build-thirdparty.py' % (tp, TOOLCHAIN_DIR))
 	for name, lib in (('JPEG', 'jpeg'), ('PNG', 'png'), ('CRYPTOPP', 'cryptopp'), ('SPEEX', 'speex')):
 		if os.path.exists(os.path.join(tp, 'lib', 'lib%s.a' % lib)):
 			v['STLIB_' + name] = [lib]

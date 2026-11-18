@@ -12,6 +12,10 @@ TOOLCHAIN = os.environ.get("BYTEMATCH_TOOLCHAIN",
 CLANG_VERSION = "600.0.57"
 LD64_VERSION = "242"
 SDK_NAME = "MacOSX10.9.sdk"
+# build-thirdparty.py's install dir under the toolchain prefix. Bump the suffix when
+# the archives change, so builds running against the old ones keep working.
+# -2: libpng with default visibility.
+THIRDPARTY_DIR = "thirdparty-osx32-2"
 MIN_OSX = "10.6"
 RETAIL_DEPOT = "/Volumes/Expansion/mac-ports/hl2-anniversary-depot/depots/223/19307283"
 
