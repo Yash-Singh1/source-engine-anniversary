@@ -407,8 +407,10 @@ private:
 
 	CByteswap		m_Swap;
 
+#ifndef BYTEMATCH_RETAIL
 	int				m_nFinestMipmapLevel;
 	int				m_nCoarsestMipmapLevel;
+#endif
 
 #if defined( _X360 )
 	int				m_iPreloadDataSize;
