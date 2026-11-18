@@ -33,4 +33,5 @@ Before: 14/16 byte-identical. After: 14/16 with the current tier1 header,
 | IsBufferBinaryVCD | uncertain | not in retail; unused global, a dead-stripped copy would look the same, so kept |
 
 Link composition: retail has no `memoverride.o` (NO_MALLOC_OVERRIDE); our
-wscript adds `public/tier0/memoverride.cpp`. Retail links `iconv`.
+wscript adds `public/tier0/memoverride.cpp`. Retail load commands: libtier0,
+libvstdlib, libiconv, libstdc++, libSystem; our wscript does not list vstdlib.

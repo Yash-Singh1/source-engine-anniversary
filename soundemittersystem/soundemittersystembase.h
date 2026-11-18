@@ -144,9 +144,6 @@ public:
 
 private:
 
-	bool InternalModInit();
-	void InternalModShutdown();
-
 	void AddSoundsFromFile( const char *filename, bool bPreload, bool bIsOverride = false, bool bRefresh = false );
 
 	bool		InitSoundInternalParameters( const char *soundname, KeyValues *kv, CSoundParametersInternal& params );

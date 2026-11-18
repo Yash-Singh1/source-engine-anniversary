@@ -27,5 +27,6 @@ hdrfix.
 | CValveVideoServices::GetFileExtension, GetIndexForSystem, GetSystemForIndex, IsMatchAnyExtension, DestroyAllVideoInterfaces, SetResult, constructors, CVideoCommonServices::ResetInputHandlerState | identical | inlined everywhere; out-of-line copies are dead-stripped in retail, not ours-only |
 
 Link composition: retail objects are videoservices.o, tier2.o, tier3.o and tier1
-members; no `memoverride.o`. Retail links Carbon and iconv; our wscript links
-CoreGraphics.
+members; no `memoverride.o`. Retail load commands: libtier0, Carbon,
+libvstdlib, libiconv, libstdc++, libSystem, ApplicationServices; our wscript
+links CoreGraphics instead of Carbon/ApplicationServices.
