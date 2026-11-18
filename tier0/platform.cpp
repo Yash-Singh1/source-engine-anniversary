@@ -106,6 +106,7 @@ uint32 Plat_MSTime()
 	return (uint32) ( ( CurrentTime.QuadPart - g_ClockStart.QuadPart ) * g_PerformanceCounterToMS );
 }
 
+#ifndef BYTEMATCH_RETAIL
 uint64 Plat_USTime()
 {
 	if (! s_bTimeInitted )
@@ -122,6 +123,8 @@ uint64 Plat_USTime()
 
 	return (uint64) ( ( CurrentTime.QuadPart - g_ClockStart.QuadPart ) * g_PerformanceCounterToUS );
 }
+#endif
+#line 125
 
 void GetCurrentDate( int *pDay, int *pMonth, int *pYear )
 {
@@ -304,6 +307,7 @@ const tchar *Plat_GetCommandLine()
 #endif
 }
 
+#ifndef BYTEMATCH_RETAIL
 bool GetMemoryInformation( MemoryInformation *pOutMemoryInfo )
 {
 	if ( !pOutMemoryInfo ) 
@@ -334,6 +338,8 @@ bool GetMemoryInformation( MemoryInformation *pOutMemoryInfo )
 
 	return true;
 }
+#endif
+#line 337
 
 
 const char *Plat_GetCommandLineA()
@@ -344,6 +350,7 @@ const char *Plat_GetCommandLineA()
 //--------------------------------------------------------------------------------------------------
 // Watchdog timer
 //--------------------------------------------------------------------------------------------------
+#ifndef BYTEMATCH_RETAIL
 void Plat_BeginWatchdogTimer( int nSecs )
 {
 }
@@ -357,6 +364,8 @@ int Plat_GetWatchdogTime( void )
 void Plat_SetWatchdogHandlerFunction( Plat_WatchDogHandlerFunction_t function )
 {
 }
+#endif
+#line 360
 
 bool Is64BitOS()
 {
