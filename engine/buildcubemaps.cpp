@@ -1012,7 +1012,12 @@ void R_BuildCubemapSamples( int numIterations )
 
 		char matDir[MAX_PATH];
 		Q_snprintf( matDir, sizeof(matDir), "materials/maps/%s", cl.m_szLevelBaseName );
+#ifdef BYTEMATCH_RETAIL
+		g_pFileSystem->CreateDirHierarchy( matDir, "MOD" );
+#else
 		g_pFileSystem->CreateDirHierarchy( matDir, "DEFAULT_WRITE_PATH" );
+#endif
+#line 1016
 
 		char pTemp[MAX_PATH];
 		Q_snprintf( pTemp, sizeof(pTemp), "materialsrc/maps/%s", cl.m_szLevelBaseName );
@@ -1023,7 +1028,21 @@ void R_BuildCubemapSamples( int numIterations )
 		g_pFileSystem->CreateDirHierarchy( pMaterialSrcDir, NULL );
 
 		char gameDir[MAX_OSPATH];
+#ifdef BYTEMATCH_RETAIL
+		if ( !g_pFileSystem->RelativePathToFullPath( "gameinfo.txt", "MOD", gameDir, sizeof( gameDir ) ) )
+		{
+			Error( "Couldn't find gameinfo.txt" );
+		}
+		char *pGameInfo = (char *)V_GetFileName( gameDir );
+		if ( !pGameInfo )
+		{
+			Error( "Couldn't find gameinfo.txt" );
+		}
+		*pGameInfo = 0;
+#else
 		COM_GetGameDir( gameDir, sizeof( gameDir ) );
+#endif
+#line 1027
 
 		model_t *pWorldModel = ( model_t *)world->GetModel();
 		int i;
@@ -1042,7 +1061,12 @@ void R_BuildCubemapSamples( int numIterations )
 			}
 		}
 
+#ifdef BYTEMATCH_RETAIL
+		bool bSupportsHDR = g_pMaterialSystemHardwareConfig->GetHDRType() != HDR_TYPE_NONE;
+#else
 		bool bSupportsHDR = true; //g_pMaterialSystemHardwareConfig->GetHDRType() != HDR_TYPE_NONE;
+#endif
+#line 1046
 
 		for( i = 0; i < pWorldModel->brush.pShared->m_nCubemapSamples; i++ )
 		{
@@ -1080,7 +1104,12 @@ void R_BuildCubemapSamples( int numIterations )
 			return;
 		}
 
+#ifdef BYTEMATCH_RETAIL
+		iBSPPack->SetHDRMode( g_pMaterialSystemHardwareConfig->GetHDRType() != HDR_TYPE_NONE );
+#else
 		iBSPPack->SetHDRMode( true /*g_pMaterialSystemHardwareConfig->GetHDRType() != HDR_TYPE_NONE*/ );
+#endif
+#line 1084
 
 		iBSPPack->LoadBSPFile( g_pFileSystem, cl.m_szLevelFileName );
 
