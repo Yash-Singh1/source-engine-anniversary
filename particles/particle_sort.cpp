@@ -50,8 +50,8 @@ template<EParticleSortKeyType eSortKeyMode> void s_GenerateData( Vector CameraPo
 	fl4OutIdx = AddSIMD( fl4OutIdx, Four_2ToThe23s);							// fix as int
 
 	bool bUseVis = pVisibilityData->m_bUseVisibility;
-	bool bCameraBias = pVisibilityData->m_flCameraBias != 0.0f;
-	fltx4 fl4Bias = ReplicateX4( pVisibilityData->m_flCameraBias );
+	bool bCameraBias = PARTICLE_VISIBILITY_CAMERA_BIAS( pVisibilityData ) != 0.0f;
+	fltx4 fl4Bias = ReplicateX4( PARTICLE_VISIBILITY_CAMERA_BIAS( pVisibilityData ) );
 
 	fltx4 fl4AlphaScale = ReplicateX4( 255.0 );
 

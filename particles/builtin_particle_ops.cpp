@@ -197,7 +197,11 @@ void C_OP_BasicMovement::Operate( CParticleCollection *pParticles, float flStren
 		bool bFinalConstraint[ MAXIMUM_NUMBER_OF_CONSTRAINTS ];
 		for(int i=0;i<nConstraints; i++)
 		{
+#ifdef BYTEMATCH_RETAIL
+			bFinalConstraint[i] = pParticles->m_pDef->m_Constraints[i]->IsFinalConstaint();
+#else
 			bFinalConstraint[i] = pParticles->m_pDef->m_Constraints[i]->IsFinalConstraint();
+#endif
 
 			bConstraintSatisfied[i] = false;
 			pParticles->m_pDef->m_Constraints[i]->SetupConstraintPerFrameData(

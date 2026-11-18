@@ -57,6 +57,10 @@ EXTRA_CXXFLAGS = dict((t, ['-include', 'alloca.h']) for t in
 	('ivp_physics', 'ivp_compactbuilder', 'havana_constraints', 'hk_base', 'hk_math'))
 EXTRA_CXXFLAGS['vgui_surfacelib'] = ['-Wno-c++11-narrowing']
 
+# Defines Valve's VPCs add that the manifest's evaluation missed, per task generator name.
+# client_base.vpc and server_base.vpc include source_replay.vpc (REPLAY_ENABLED).
+EXTRA_DEFINES = {'client': ['REPLAY_ENABLED'], 'server': ['REPLAY_ENABLED']}
+
 # Modules whose VPC the manifest couldn't evaluate: take a sibling's base defines.
 DEFINES_FROM = {'bin/video_quicktime': 'bin/video_services'}
 
@@ -280,6 +284,9 @@ def retail_osx32_defines(self):
 	names = set(_name(d) for d in valve)
 	defs = []
 	for d in valve + [d for d in ours if _name(d) not in names]:
+		if d not in defs:
+			defs.append(d)
+	for d in EXTRA_DEFINES.get(getattr(self, 'name', None), []):
 		if d not in defs:
 			defs.append(d)
 	self.env.DEFINES = defs
