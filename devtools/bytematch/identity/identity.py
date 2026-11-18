@@ -129,8 +129,9 @@ def module_key(m, target):
     for key, mod in m['modules'].items():
         if mod.get('waf_target') == target and mod['retail'].get('filetype') == 'MH_DYLIB':
             return key
-    if target in m['modules']:
-        return target
+    for key in (target, 'bin/' + target):
+        if key in m['modules']:
+            return key
     return None
 
 
@@ -239,7 +240,8 @@ def lang_of(src):
 
 
 def default_so_name(src, lang):
-    return os.path.basename(src)[:10] + '.tmp.identity.0' + LANG_EXT[lang]
+    """ccache 3 temp name: first 10 characters of the stem, host, pid."""
+    return os.path.splitext(os.path.basename(src))[0][:10] + '.tmp.identity.0' + LANG_EXT[lang]
 
 
 class Module:
@@ -259,12 +261,14 @@ class Module:
         self.out = os.path.join(out_dir, os.path.basename(self.link['output']))
         with open(os.path.join(MODULE_DIR, self.key.replace('/', '.') + '.json')) as f:
             self.objects = json.load(f)['objects']
+        ours = self.mod.get('objects', [])
         self.dmap = retail_debug_map(self.retail)
-        if len(self.dmap) != len(self.objects):
-            raise SystemExit('%s: debug map has %d objects, manifest %d' % (target, len(self.dmap), len(self.objects)))
-        for o, d in zip(self.objects, self.dmap):
+        if not (len(self.dmap) == len(self.objects) == len(ours)):
+            raise SystemExit('%s: debug map has %d objects, manifest %d/%d' % (target, len(self.dmap), len(self.objects), len(ours)))
+        for o, our, d in zip(self.objects, ours, self.dmap):
             rel = o['oso']
             o.update(d)
+            o['source'] = our.get('source')  # path in our tree (retail's may differ, see aliases.json)
             o['valve_src'] = d['oso'][:-len(rel)] if d['oso'].endswith(rel) and d['oso'] != rel else None
         self.valve_src = next((o['valve_src'] for o in self.objects if o['valve_src'] and o['kind'] == 'object'),
                               next((o['valve_src'] for o in self.objects if o['valve_src']), None))

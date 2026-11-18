@@ -5,6 +5,11 @@
       "ours": "inputsystem/steam/",
       "valve": "public/steam/",
       "why": "Steamworks 1.60 headers vendored module-locally by the inputsystem lane; retail has them in public/steam (headers lane migration pending)"
+    },
+    {
+      "ours": "video/video_quicktime/",
+      "valve": "video/",
+      "why": "retail compiled video_quicktime from src/video/quicktime_*.cpp (debug map); our tree keeps those files in video/video_quicktime/"
     }
   ]
 }
