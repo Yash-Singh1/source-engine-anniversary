@@ -20,9 +20,21 @@ void InitParamsRefract_DX9( CBaseVSShader *pShader, IMaterialVar** params, const
 {
 	SET_FLAGS2( MATERIAL_VAR2_NEEDS_TANGENT_SPACES );
 	SET_FLAGS( MATERIAL_VAR_TRANSLUCENT );
+	static ConVarRef mat_specular_scalar( "mat_specular_scalar" );
+	float flSpecularScalar = mat_specular_scalar.IsValid() ? mat_specular_scalar.GetFloat() : -1.0f;
+	if ( flSpecularScalar < 0.0f )
+		flSpecularScalar = 1.0f;
+
 	if( !params[info.m_nEnvmapTint]->IsDefined() )
 	{
-		params[info.m_nEnvmapTint]->SetVecValue( 1.0f, 1.0f, 1.0f );
+		params[info.m_nEnvmapTint]->SetVecValue( flSpecularScalar, flSpecularScalar, flSpecularScalar );
+	}
+	else if ( flSpecularScalar != 1.0f )
+	{
+		// Retail writes the tint back unscaled here.
+		float vTint[3];
+		params[info.m_nEnvmapTint]->GetVecValue( vTint, 3 );
+		params[info.m_nEnvmapTint]->SetVecValue( vTint, 3 );
 	}
 	if( !params[info.m_nEnvmapContrast]->IsDefined() )
 	{
@@ -306,7 +318,7 @@ void DrawRefract_DX9( CBaseVSShader *pShader, IMaterialVar** params, IShaderDyna
 #else
 			SET_DYNAMIC_PIXEL_SHADER_COMBO( PIXELFOGTYPE, pShaderAPI->GetPixelFogCombo() );
 #endif
-#line 305
+#line 317
 			SET_DYNAMIC_PIXEL_SHADER_COMBO( WRITE_DEPTH_TO_DESTALPHA, bWriteZ && bFullyOpaque && pShaderAPI->ShouldWriteDepthToDestAlpha() );
 			SET_DYNAMIC_PIXEL_SHADER( refract_ps20b );
 		}

@@ -100,8 +100,24 @@ void InitParamsLightmappedGeneric_DX9( CBaseVSShader *pShader, IMaterialVar** pa
 		params[info.m_nBlendModulateTexture]->SetUndefined();
 	}
 
+	static ConVarRef mat_specular_scalar( "mat_specular_scalar" );
+	float flSpecularScalar = mat_specular_scalar.IsValid() ? mat_specular_scalar.GetFloat() : -1.0f;
+	if ( flSpecularScalar < 0.0f )
+		flSpecularScalar = 1.0f;
+
 	if( !params[info.m_nEnvmapTint]->IsDefined() )
-		params[info.m_nEnvmapTint]->SetVecValue( 1.0f, 1.0f, 1.0f );
+	{
+		params[info.m_nEnvmapTint]->SetVecValue( flSpecularScalar, flSpecularScalar, flSpecularScalar );
+	}
+	else if ( flSpecularScalar != 1.0f )
+	{
+		float vTint[3];
+		params[info.m_nEnvmapTint]->GetVecValue( vTint, 3 );
+		vTint[0] *= flSpecularScalar;
+		vTint[1] *= flSpecularScalar;
+		vTint[2] *= flSpecularScalar;
+		params[info.m_nEnvmapTint]->SetVecValue( vTint, 3 );
+	}
 
 	if( !params[info.m_nNoDiffuseBumpLighting]->IsDefined() )
 		params[info.m_nNoDiffuseBumpLighting]->SetIntValue( 0 );
@@ -996,7 +1012,7 @@ void DrawLightmappedGeneric_DX9_Internal(CBaseVSShader *pShader, IMaterialVar** 
 #else
 			SET_DYNAMIC_PIXEL_SHADER_COMBO( PIXELFOGTYPE, pShaderAPI->GetPixelFogCombo() );
 #endif
-#line 992
+#line 1008
 			
 			// Don't write fog to alpha if we're using translucency
 			SET_DYNAMIC_PIXEL_SHADER_COMBO( WRITE_DEPTH_TO_DESTALPHA, bWriteDepthToAlpha );
@@ -1005,7 +1021,7 @@ void DrawLightmappedGeneric_DX9_Internal(CBaseVSShader *pShader, IMaterialVar** 
 #ifdef BYTEMATCH_RETAIL
 			SET_DYNAMIC_PIXEL_SHADER_COMBO( BICUBIC_LIGHTMAP, r_lightmap_bicubic.GetBool() ? 1 : 0 );
 #endif
-#line 998
+#line 1014
 			
 			SET_DYNAMIC_PIXEL_SHADER_CMD( DynamicCmdsOut, lightmappedgeneric_ps20b );
 		}
