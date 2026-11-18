@@ -190,10 +190,18 @@ def retail_win32_configure(conf):
 		os.symlink(tm, link)
 		v.RETAIL_TELEMETRY_INCLUDE = inc.abspath()
 		v.RETAIL_TELEMETRY_DEFINES = []
+		obj = libdir.make_node('telemetry_stub.obj')
+		lib = libdir.make_node('telemetry32.lib')
+		if conf.exec_command(v.CC + ['/nologo', '/c', '/O2', '/GS-', '/Zl', '/I' + os.path.join(tm, 'include'),
+				'/Fo' + obj.abspath(), os.path.join(tdir, 'telemetry_stub.c')]) or \
+				conf.exec_command(v.AR + ['/nologo', '/MACHINE:X86', '/OUT:' + lib.abspath(), obj.abspath()]):
+			conf.fatal('could not build %s' % lib.abspath())
+		v.RETAIL_TELEMETRY_LIB = lib.abspath()
 	else:
 		Logs.warn('retail-win32: %s not found; RAD Telemetry zones compiled out (RAD_TELEMETRY_DISABLED)' % tm)
 		v.RETAIL_TELEMETRY_INCLUDE = ''
 		v.RETAIL_TELEMETRY_DEFINES = ['RAD_TELEMETRY_DISABLED']
+		v.RETAIL_TELEMETRY_LIB = ''
 	Logs.info('retail-win32: MSVC %s, wine %s, modules %s' % (V.VS, V.WINE_BIN, ','.join(want)))
 
 def closure(m, names):
@@ -283,6 +291,9 @@ def retail_win32_module(bld, name, m, idx, subdir=None):
 			use.append(l['project'])
 			continue
 		fname = os.path.basename(l.get('prebuilt') or l.get('external'))
+		if fname == 'telemetry32.link' and bld.env.RETAIL_TELEMETRY_LIB:
+			ldflags.append(bld.env.RETAIL_TELEMETRY_LIB)
+			continue
 		if fname.endswith('.link'):
 			Logs.warn('%s: %s is proprietary and not available, skipped' % (name, fname))
 			continue
