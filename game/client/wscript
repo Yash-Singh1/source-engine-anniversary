@@ -89,6 +89,7 @@ def build(bld):
 	retail_module = None
 	if retail:
 		retail_module = '%s/%s' % (bld.env.GAMES, PROJECT_NAME)
+		libs += ['JPEG', 'PNG']
 		source, libs = bld.retail_manifest(retail_module, bld.retail_manifest_sources(retail_module), libs)
 	else:
 		source = [ 'in_touch.cpp' ] + game["sources"] + ['../../public/tier0/memoverride.cpp']
