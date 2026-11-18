@@ -155,6 +155,7 @@ private:
 	void		ControllerMove ( float frametime, CUserCmd *cmd );
 	void		JoyStickMove ( float frametime, CUserCmd *cmd );
 	float		ScaleAxisValue( const float axisValue, const float axisThreshold );
+	void		UpdateQuickTurnAndCameraReset( QAngle &viewangles, float frametime );
 	virtual void SteamControllerMove( float frametime, CUserCmd *cmd );
 	virtual float JoyStickAdjustYaw( float flSpeed ) { return flSpeed; }
 
@@ -228,8 +229,8 @@ private:
 	// Quick turn and camera reset (UpdateQuickTurnAndCameraReset)
 	Vector2D	m_vecQuickTurn;
 	bool		m_bQuickTurnFlip;
-	bool		m_bQuickTurnWasDown;
 	bool		m_bCameraResetWasDown;
+	bool		m_bQuickTurnWasDown;
 	// Last auto-aim target position (DoAutoAimMagnetism)
 	Vector		m_vecLastAutoAimTarget;
 
@@ -304,6 +305,8 @@ extern kbutton_t in_moveright;
 extern kbutton_t in_forward;
 extern kbutton_t in_back;
 extern kbutton_t in_joyspeed;
+extern kbutton_t in_lookspin;
+extern kbutton_t in_resetcamera;
 
 extern class ConVar in_joystick;
 extern class ConVar joy_autosprint;

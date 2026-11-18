@@ -147,6 +147,8 @@ static  kbutton_t   in_grenade1;
 static  kbutton_t   in_grenade2;
 static	kbutton_t	in_attack3;
 kbutton_t	in_ducktoggle;
+kbutton_t	in_lookspin;
+kbutton_t	in_resetcamera;
 
 /*
 ===========
@@ -476,6 +478,10 @@ void IN_JumpDown ( const CCommand &args ) {KeyDown(&in_jump, args[1] );}
 void IN_JumpUp ( const CCommand &args ) {KeyUp(&in_jump, args[1] );}
 void IN_DuckDown( const CCommand &args ) {KeyDown(&in_duck, args[1] );}
 void IN_DuckUp( const CCommand &args ) {KeyUp(&in_duck, args[1] );}
+void IN_LookSpinDown( const CCommand &args ) {KeyDown(&in_lookspin, args[1] );}
+void IN_LookSpinUp( const CCommand &args ) {KeyUp(&in_lookspin, args[1] );}
+void IN_ResetCameraDown( const CCommand &args ) {KeyDown(&in_resetcamera, args[1] );}
+void IN_ResetCameraUp( const CCommand &args ) {KeyUp(&in_resetcamera, args[1] );}
 void IN_ReloadDown( const CCommand &args ) {KeyDown(&in_reload, args[1] );}
 void IN_ReloadUp( const CCommand &args ) {KeyUp(&in_reload, args[1] );}
 void IN_Alt1Down( const CCommand &args ) {KeyDown(&in_alt1, args[1] );}
@@ -1617,6 +1623,10 @@ static ConCommand startjlook("+jlook", IN_JLookDown);
 static ConCommand endjlook("-jlook", IN_JLookUp);
 static ConCommand startduck("+duck", IN_DuckDown);
 static ConCommand endduck("-duck", IN_DuckUp);
+static ConCommand startlookspin("+lookspin", IN_LookSpinDown);
+static ConCommand endlookspin("-lookspin", IN_LookSpinUp);
+static ConCommand startresetcamera("+resetcamera", IN_ResetCameraDown);
+static ConCommand endresetcamera("-resetcamera", IN_ResetCameraUp);
 static ConCommand startreload("+reload", IN_ReloadDown);
 static ConCommand endreload("-reload", IN_ReloadUp);
 static ConCommand startalt1("+alt1", IN_Alt1Down);
