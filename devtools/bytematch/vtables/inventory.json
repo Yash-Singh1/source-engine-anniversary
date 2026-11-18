@@ -1257,6 +1257,7 @@
  "GLMDisplayDB": {
   "headers": [
    "public/togl/linuxwin/glmdisplaydb.h",
+   "public/togl/osx/glmdisplaydb.h",
    "public/togles/linuxwin/glmdisplaydb.h"
   ],
   "reference": "bin/launcher:GLMDisplayDB",
@@ -4568,8 +4569,7 @@
   "versions": {
    "ours": [
     "VSERVERTOOLS001",
-    "VSERVERTOOLS002",
-    "VSERVERTOOLS003"
+    "VSERVERTOOLS002"
    ],
    "retail": [
     "VSERVERTOOLS002"
@@ -4586,8 +4586,7 @@
   "versions": {
    "ours": [
     "VSERVERTOOLS001",
-    "VSERVERTOOLS002",
-    "VSERVERTOOLS003"
+    "VSERVERTOOLS002"
    ],
    "retail": [
     "VSERVERTOOLS001"
@@ -5054,8 +5053,8 @@
    "public/materialsystem/itexture.h"
   ],
   "reference": "bin/materialsystem:CDummyTexture",
-  "retail_len": 31,
-  "retail_len_basis": "shortest deriving subtable",
+  "retail_len": 30,
+  "retail_len_basis": "override: GetEmbeddedTexture is CDummyTexture's own virtual (SDK 2013 ITexture has 30 slots; CTexture gets it from ITextureInternal)",
   "sdk2013_len": 30,
   "versions": {
    "ours": [],
@@ -5155,6 +5154,20 @@
    "sdk2013": [
     "VEngineRandom001"
    ]
+  }
+ },
+ "IUnknown": {
+  "headers": [
+   "public/togl/dx_iunknown.h"
+  ],
+  "reference": "bin/libtogl:IDirect3D9",
+  "retail_len": 2,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
   }
  },
  "IUploadGameStats": {

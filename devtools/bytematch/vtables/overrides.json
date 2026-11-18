@@ -251,6 +251,10 @@
   "retail_len": 35,
   "why": "extra slots belong to ISpatialPartitionInternal"
  },
+ "ITexture": {
+  "retail_len": 30,
+  "why": "GetEmbeddedTexture is CDummyTexture's own virtual (SDK 2013 ITexture has 30 slots; CTexture gets it from ITextureInternal)"
+ },
  "IToolFrameworkInternal": {
   "retail_len": 48,
   "why": "extra slots are CToolFrameworkInternal's own"
