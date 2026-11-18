@@ -38,6 +38,8 @@ RETAIL_MODULES = [
 TREE_ONLY_DEFINES = ['PLATFORM_POSIX', 'NO_MEMOVERRIDE_NEW_DELETE', 'GIT_COMMIT_HASH',
 	'DX_TO_GL_ABSTRACTION_DISABLED']
 
+BUILD_PATH_DEFINES = ['WAF_CFLAGS', 'WAF_LDFLAGS']
+
 # Retail third-party dylibs, linked from the depot (user-provided, never rebuilt).
 DEPOT_DYLIBS = ['libSDL2-2.0.0.dylib', 'libsteam_api.dylib', 'libMilesX86.dylib', 'libcef.dylib']
 
@@ -91,7 +93,7 @@ def retail_osx32_configure(conf):
 	p = rf.paths(o.RETAIL_TOOLCHAIN, o.RETAIL_CLANG, o.RETAIL_LD64)
 	for k in ('cc', 'sdk'):
 		if not os.path.exists(p[k]):
-			conf.fatal('%s not found; build the toolchain with %s/*.sh (see its README)' % (p[k], TOOLCHAIN_DIR))
+			conf.fatal('%s not found; build the toolchain with %s/*.sh (see %s/README.md)' % (p[k], TOOLCHAIN_DIR, TOOLCHAIN_DIR))
 	if not os.path.exists(os.path.join(p['ld_dir'], 'ld')):
 		conf.fatal('ld64 not found in %s' % p['ld_dir'])
 
@@ -203,6 +205,8 @@ def retail_osx32_defines(self):
 		e = e[1]
 	undef = set(self.env.RETAIL_UNDEFINED)
 	ours = [d for d in self.env.DEFINES if _name(d) not in TREE_ONLY_DEFINES]
+	# tier0's log banner embeds the configure flags, i.e. local toolchain paths.
+	ours = [_name(d) + '=""' if _name(d) in BUILD_PATH_DEFINES else d for d in ours]
 	valve = []
 	if e:
 		valve = [d for d in e['defines']['xcconfig'] + e['defines']['vpc'] if _name(d) not in undef]
