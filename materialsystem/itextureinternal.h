@@ -153,6 +153,13 @@ public:
 	virtual ResidencyType_t GetTargetResidence() const = 0;
 	virtual bool MakeResident( ResidencyType_t newResidence ) = 0;
 	virtual void UpdateLodBias() = 0;
+
+	// Copy this texture, which must be a render target or a renderable texture, to the destination texture, 
+	// which must have been created with the STAGING bit.
+	virtual void CopyToStagingTexture( ITexture* pDstTex ) = 0;
+
+	// Set that this texture should return true for the call "IsError"
+	virtual void SetErrorTexture( bool bIsErrorTexture ) = 0;
 };
 
 inline bool IsTextureInternalEnvCubemap( const ITextureInternal *pTexture )

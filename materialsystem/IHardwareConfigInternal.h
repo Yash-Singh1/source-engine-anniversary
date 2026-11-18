@@ -24,6 +24,8 @@ class IHardwareConfigInternal : public IMaterialSystemHardwareConfig
 public:
 	// Gets at the HW specific shader DLL name
 	virtual const char *GetHWSpecificShaderDLLName() const = 0;
+
+	virtual bool CanStretchRectFromTextures() const = 0;
 };
 
 

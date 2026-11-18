@@ -3068,7 +3068,7 @@ void CMatRenderContext::AsyncCopyRenderTargetToStagingTexture( ITexture* pDst, I
 		OnAsyncCopyRenderTargetToStagingTexture( pDst, pSrc, pRecipient );
 	}
 
-	pSrc->CopyToStagingTexture( pDst );
+	static_cast< ITextureInternal * >( pSrc )->CopyToStagingTexture( pDst );
 	pRecipient->OnAsyncReadbackBegin( pDst, pSrc, pExtraArgs );
 
 	SafeRelease( &pDst );
