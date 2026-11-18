@@ -1,0 +1,63 @@
+//-----------------------------------------------------------------------------
+//	CHROMEHTML.VPC
+//
+//	Project Script
+//-----------------------------------------------------------------------------
+
+$Macro SRCDIR		"..\.."
+$Macro OUTBINDIR	"$SRCDIR\..\game\bin"
+$Macro GENERATED_PROTO_DIR	"generated_proto"
+
+$Include "$SRCDIR\vpc_scripts\source_dll_base.vpc"
+$Include "$SRCDIR\vpc_scripts\protobuf_builder.vpc"
+
+$Configuration
+{
+	$Compiler
+	{
+		$AdditionalIncludeDirectories		"$BASE;$SRCDIR\thirdparty;$SRCDIR\thirdparty\cef;$GENERATED_PROTO_DIR;$SRCDIR\public\jpeglib"
+	}
+	$Linker
+	{
+		$SystemFrameworks					"Carbon;Cocoa;Foundation;CoreFoundation;CoreServices" [$OSXALL]
+		$SystemLibraries					"z" [$OSXALL]
+	}
+}
+
+$Project "chromehtml"
+{
+	$Folder	"Source Files"
+	{
+		$File	"$SRCDIR\common\jpegloader.cpp"
+		$File	"$SRCDIR\common\jpegloader_common.cpp"
+		$File	"$SRCDIR\public\html\htmlprotobuf.cpp"
+		$File	"$SRCDIR\tier1\fileio.cpp"
+		$File	"chromewrapper.cpp"
+		$File	"$GENERATED_PROTO_DIR\htmlmessages.pb.cc"
+		$File	"html_chrome.cpp"
+		$File	"html_mac.mm" [$OSXALL]
+	}
+
+	$Folder	"Header Files"
+	{
+		$File	"html_chrome.h"
+		$File	"$SRCDIR\public\html\htmlmessages.h"
+		$File	"$SRCDIR\public\html\htmlprotobuf.h"
+		$File	"$SRCDIR\public\html\ichromehtmlwrapper.h"
+		$File	"$SRCDIR\public\html\ihtmlchrome.h"
+	}
+
+	$Folder	"Protobuf Files"
+	{
+		$File	"htmlmessages.proto"
+	}
+
+	$Folder	"Link Libraries"
+	{
+		$Lib	libjpeg
+		$Lib	libpng
+		$Lib	libprotobuf
+		$Lib	"$LIBPUBLIC\libcef_dll_wrapper" [$OSXALL]
+		$ImpLib	"$SRCDIR\..\game\bin\libcef" [$OSXALL]
+	}
+}

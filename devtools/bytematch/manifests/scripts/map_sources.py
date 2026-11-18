@@ -24,7 +24,7 @@ import waf_sources  # noqa: E402
 
 # retail module -> (our waf target, GAMES value, note)
 MODULE_TARGETS = {
-    "bin/datacache": ("datacache", None), "bin/engine": ("engine", None),
+    "bin/chromehtml": ("chromehtml", None), "bin/datacache": ("datacache", None), "bin/engine": ("engine", None),
     "bin/filesystem_stdio": ("filesystem_stdio", None), "bin/GameUI": ("GameUI", None),
     "bin/inputsystem": ("inputsystem", None), "bin/launcher": ("launcher", None),
     "bin/libtier0": ("tier0", None), "bin/libtogl": ("togl", None), "bin/libvstdlib": ("vstdlib", None),
@@ -32,7 +32,7 @@ MODULE_TARGETS = {
     "bin/ServerBrowser": ("serverbrowser", None), "bin/shaderapidx9": ("shaderapidx9", None),
     "bin/shaderapiempty": ("shaderapiempty", None), "bin/soundemittersystem": ("soundemittersystem", None),
     "bin/stdshader_dx9": ("stdshader_dx9", None), "bin/studiorender": ("studiorender", None),
-    "bin/vaudio_speex": ("vaudio_speex", None), "bin/vgui2": ("vgui2", None),
+    "bin/vaudio_miles": ("vaudio_miles", None), "bin/vaudio_speex": ("vaudio_speex", None), "bin/vgui2": ("vgui2", None),
     "bin/vguimatsurface": ("vguimatsurface", None), "bin/video_services": ("video_services", None),
     "bin/vphysics": ("vphysics", None), "bin/vtex_dll": ("vtex_dll", None), "hl2_osx": ("hl2_launcher", None),
     "hl2/client": ("client", "hl2"), "hl2/server": ("server", "hl2"),
@@ -53,6 +53,7 @@ ARCHIVE_TARGETS = {
 # retail module -> (tree, VPC path). "sdk" = Source SDK 2013 src/, the closest
 # public game-code VPCs; hl2_complete and lostcoast have no public VPC.
 MODULE_VPCS = {
+    "bin/chromehtml": ("ours", "vgui2/chromehtml/chromehtml.vpc"),
     "bin/datacache": ("ours", "datacache/datacache.vpc"), "bin/engine": ("ours", "engine/engine.vpc"),
     "bin/filesystem_stdio": ("ours", "filesystem/filesystem_stdio.vpc"), "bin/GameUI": ("ours", "gameui/GameUI.vpc"),
     "bin/inputsystem": ("ours", "inputsystem/inputsystem.vpc"), "bin/launcher": ("ours", "launcher/launcher.vpc"),
@@ -65,6 +66,7 @@ MODULE_VPCS = {
     "bin/soundemittersystem": ("ours", "soundemittersystem/soundemittersystem.vpc"),
     "bin/stdshader_dx9": ("ours", "materialsystem/stdshaders/stdshader_dx9.vpc"),
     "bin/studiorender": ("ours", "studiorender/studiorender.vpc"),
+    "bin/vaudio_miles": ("ours", "engine/voice_codecs/miles/vaudio_miles.vpc"),
     "bin/vaudio_speex": ("ours", "engine/voice_codecs/speex/vaudio_speex.vpc"),
     "bin/vgui2": ("ours", "vgui2/src/vgui_dll.vpc"), "bin/vguimatsurface": ("ours", "vguimatsurface/vguimatsurface.vpc"),
     "bin/video_services": ("ours", "video/video_services.vpc"), "bin/vphysics": ("ours", "vphysics/vphysics.vpc"),

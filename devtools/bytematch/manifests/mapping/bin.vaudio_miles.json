@@ -1,14 +1,40 @@
 {
  "module": "bin/vaudio_miles",
- "our_target": null,
+ "our_target": "vaudio_miles",
  "our_games": null,
  "project_dir": "engine/voice_codecs/miles",
  "order_rule_inversions": 0,
  "counts": {
-  "exact": 1,
-  "missing": 3
+  "exact": 4
  },
  "counts_sdk": {
   "missing": 4
+ },
+ "diff": {
+  "add": [],
+  "remove": [
+   {
+    "path": "tier1/interface.cpp",
+    "note": "retail links interface.o from build/Release/libtier1.a"
+   }
+  ],
+  "path_differs": [],
+  "order": {
+   "common": 4,
+   "in_order_lis": 4,
+   "need_moving": 0,
+   "identical": true
+  },
+  "libraries": {
+   "retail": [
+    "tier1"
+   ],
+   "ours": [
+    "tier1"
+   ],
+   "retail_only": [],
+   "ours_only": [],
+   "same_relative_order": true
+  }
  }
 }

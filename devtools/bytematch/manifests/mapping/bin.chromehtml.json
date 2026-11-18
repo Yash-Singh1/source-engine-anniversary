@@ -1,15 +1,53 @@
 {
  "module": "bin/chromehtml",
- "our_target": null,
+ "our_target": "chromehtml",
  "our_games": null,
  "project_dir": "vgui2/chromehtml",
  "order_rule_inversions": 0,
  "counts": {
-  "exact": 3,
-  "missing": 5
+  "exact": 6,
+  "missing": 2
  },
  "counts_sdk": {
   "missing": 3,
   "exact": 5
+ },
+ "diff": {
+  "add": [
+   {
+    "path": "vgui2/chromehtml/chromewrapper.cpp",
+    "in_our_tree": "missing",
+    "in_sdk": "exact",
+    "alternatives": null
+   },
+   {
+    "path": "vgui2/chromehtml/html_chrome.cpp",
+    "in_our_tree": "missing",
+    "in_sdk": "exact",
+    "alternatives": null
+   }
+  ],
+  "remove": [],
+  "path_differs": [],
+  "order": {
+   "common": 6,
+   "in_order_lis": 6,
+   "need_moving": 0,
+   "identical": true
+  },
+  "libraries": {
+   "retail": [
+    "libcef_dll_wrapper.a",
+    "tier1"
+   ],
+   "ours": [
+    "tier1"
+   ],
+   "retail_only": [
+    "libcef_dll_wrapper.a"
+   ],
+   "ours_only": [],
+   "same_relative_order": true
+  }
  }
 }
