@@ -105,10 +105,10 @@
 #ifdef BYTEMATCH_RETAIL
 #include "GameEventManager.h"
 #include "inputsystem/iinputsystem.h"
-#endif
 #include "host.h"
 #include "modelloader.h"
 void CL_GetBackgroundLevelName( char *pszBackgroundName, int bufSize, bool bMapName );
+#endif
 #line 107
 #include "tier0/memdbgon.h"
 
@@ -680,6 +680,7 @@ void CEngineVGui::Init()
 		CCommand ccommand;
 		if ( CL_ShouldLoadBackgroundLevel( ccommand ) )
 		{
+#ifdef BYTEMATCH_RETAIL
 			char szBackgroundName[1024];
 			CL_GetBackgroundLevelName( szBackgroundName, sizeof( szBackgroundName ), true );
 
@@ -698,6 +699,13 @@ void CEngineVGui::Init()
 				// that the game ui is not aware of until 1 frame later.
 				staticGameUIFuncs->SetProgressOnStart();
 			}
+#else
+			// Must be before the game ui base panel starts up
+			// This is a hint to avoid the menu pop due to the impending background map
+			// that the game ui is not aware of until 1 frame later.
+			staticGameUIFuncs->SetProgressOnStart();
+#endif
+#line 666
 		}
 	}
 
