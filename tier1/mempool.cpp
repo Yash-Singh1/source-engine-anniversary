@@ -1,4 +1,4 @@
-//===== Copyright 1996-2005, Valve Corporation, All rights reserved. ======//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -6,22 +6,19 @@
 
 #include "tier1/mempool.h"
 #include <stdio.h>
-#include <memory.h>
-#include "tier0/dbg.h"
-#include <ctype.h>
-#include "tier1/strtools.h"
-
-#ifndef _PS3
 #ifdef _OSX
 #include <malloc/malloc.h>
 #else
 #include <malloc.h>
 #endif
-#endif
+#include <memory.h>
+#include "tier0/dbg.h"
+#include <ctype.h>
+#include "tier1/strtools.h"
 
 // Should be last include
 #include "tier0/memdbgon.h"
-
+ 
 MemoryPoolReportFunc_t CUtlMemoryPool::g_ReportFunc = 0;
 
 //-----------------------------------------------------------------------------
@@ -39,7 +36,7 @@ void CUtlMemoryPool::SetErrorReportFunc( MemoryPoolReportFunc_t func )
 CUtlMemoryPool::CUtlMemoryPool( int blockSize, int numElements, int growMode, const char *pszAllocOwner, int nAlignment )
 {
 #ifdef _X360
-	if( numElements > 0 && growMode != GROW_NONE )
+	if( numElements > 0 && growMode != UTLMEMORYPOOL_GROW_NONE )
 	{
 		numElements = 1;
 	}
@@ -48,9 +45,8 @@ CUtlMemoryPool::CUtlMemoryPool( int blockSize, int numElements, int growMode, co
 #ifdef PLATFORM_64BITS
 	m_nAlignment = ( nAlignment != 0 ) ? nAlignment : 8;
 #else
-	m_nAlignment = ( nAlignment != 0 ) ? nAlignment : 4;
+	m_nAlignment = ( nAlignment != 0 ) ? nAlignment : 1;
 #endif
-
 	Assert( IsPowerOfTwo( m_nAlignment ) );
 	m_BlockSize = blockSize < sizeof(void*) ? sizeof(void*) : blockSize;
 	m_BlockSize = AlignValue( m_BlockSize, m_nAlignment );
@@ -108,7 +104,6 @@ void CUtlMemoryPool::Clear()
 	Init();
 }
 
-
 //-----------------------------------------------------------------------------
 // Is an allocation within the pool? 
 //-----------------------------------------------------------------------------
@@ -134,14 +129,15 @@ bool CUtlMemoryPool::IsAllocationWithinPool( void *pMem ) const
 //-----------------------------------------------------------------------------
 // Purpose: Reports memory leaks 
 //-----------------------------------------------------------------------------
+
 void CUtlMemoryPool::ReportLeaks()
 {
-#ifdef _DEBUG
 	if (!g_ReportFunc)
 		return;
 
 	g_ReportFunc("Memory leak: mempool blocks left in memory: %d\n", m_BlocksAllocated);
 
+#ifdef _DEBUG
 	// walk and destroy the free list so it doesn't intefere in the scan
 	while (m_pHeadOfFreeList != NULL)
 	{
@@ -162,7 +158,7 @@ void CUtlMemoryPool::ReportLeaks()
 		while (scanPoint < scanEnd)
 		{
 			// search for and dump any strings
-			if ((unsigned)(*scanPoint + 1) <= 256 && V_isprint(*scanPoint))
+			if ((unsigned)(*scanPoint + 1) <= 256 && isprint(*scanPoint))
 			{
 				g_ReportFunc("%c", *scanPoint);
 				needSpace = true;
@@ -191,18 +187,18 @@ void CUtlMemoryPool::AddNewBlob()
 
 	int sizeMultiplier;
 
-	if( m_GrowMode == GROW_SLOW )
+	if( m_GrowMode == UTLMEMORYPOOL_GROW_SLOW )
 	{
 		sizeMultiplier = 1;
 	}
 	else
 	{
-		if ( m_GrowMode == GROW_NONE )
+		if ( m_GrowMode == UTLMEMORYPOOL_GROW_NONE )
 		{
 			// Can only have one allocation when we're in this mode
 			if( m_NumBlobs != 0 )
 			{
-				Assert( !"CUtlMemoryPool::AddNewBlob: mode == GROW_NONE" );
+				Assert( !"CUtlMemoryPool::AddNewBlob: mode == UTLMEMORYPOOL_GROW_NONE" );
 				return;
 			}
 		}
@@ -260,15 +256,15 @@ void *CUtlMemoryPool::Alloc( size_t amount )
 {
 	void *returnBlock;
 
-	if ( amount > (size_t)m_BlockSize )
+	if ( amount > (unsigned int)m_BlockSize )
 		return NULL;
 
-	if ( !m_pHeadOfFreeList )
+	if( !m_pHeadOfFreeList )
 	{
-		// returning NULL is fine in GROW_NONE
-		if ( m_GrowMode == GROW_NONE && m_NumBlobs > 0 )
+		// returning NULL is fine in UTLMEMORYPOOL_GROW_NONE
+		if( m_GrowMode == UTLMEMORYPOOL_GROW_NONE )
 		{
-			//Assert( !"CUtlMemoryPool::Alloc: tried to make new blob with GROW_NONE" );
+			//Assert( !"CUtlMemoryPool::Alloc: tried to make new blob with UTLMEMORYPOOL_GROW_NONE" );
 			return NULL;
 		}
 
@@ -276,14 +272,14 @@ void *CUtlMemoryPool::Alloc( size_t amount )
 		AddNewBlob();
 
 		// still failure, error out
-		if ( !m_pHeadOfFreeList )
+		if( !m_pHeadOfFreeList )
 		{
 			Assert( !"CUtlMemoryPool::Alloc: ran out of memory" );
 			return NULL;
 		}
 	}
 	m_BlocksAllocated++;
-	m_PeakAlloc = MAX(m_PeakAlloc, m_BlocksAllocated);
+	m_PeakAlloc = max(m_PeakAlloc, m_BlocksAllocated);
 
 	returnBlock = m_pHeadOfFreeList;
 
@@ -302,7 +298,7 @@ void *CUtlMemoryPool::AllocZero( size_t amount )
 	void *mem = Alloc( amount );
 	if ( mem )
 	{
-		V_memset( mem, 0x00, ( int )amount );
+		V_memset( mem, 0x00, amount );
 	}
 	return mem;
 }
@@ -343,14 +339,4 @@ void CUtlMemoryPool::Free( void *memBlock )
 	m_pHeadOfFreeList = memBlock;
 }
 
-int CUtlMemoryPool::Size() const		
-{ 
-	uint32 size = 0;
-
-	for( CBlob *pCur=m_BlobHead.m_pNext; pCur != &m_BlobHead; pCur=pCur->m_pNext )
-	{
-		size += pCur->m_NumBytes;
-	}
-	return size;
-}
 
