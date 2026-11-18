@@ -872,6 +872,7 @@ void CFuncTank::Spawn( void )
 void CFuncTank::Activate( void )
 {
 	BaseClass::Activate();
+#ifndef BYTEMATCH_RETAIL
 	
 	CBaseEntity *pParent = gEntList.FindEntityByName( NULL, m_iParent );
 
@@ -931,6 +932,7 @@ void CFuncTank::Activate( void )
 		}
 	}
 	
+#endif
 	// Necessary for save/load
 	if ( (m_iszBarrelAttachment != NULL_STRING) && (m_nBarrelAttachment == 0) )
 	{

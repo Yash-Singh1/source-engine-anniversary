@@ -1217,122 +1217,127 @@ int CNPC_Citizen::SelectSchedulePriorityAction()
 int CNPC_Citizen::SelectScheduleHeal()
 {
 	// episodic medics may toss the healthkits rather than poke you with them
-#if HL2_EPISODIC
-
-	if ( CanHeal() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
-		CBaseEntity *pEntity = PlayerInRange( GetLocalOrigin(), HEAL_TOSS_TARGET_RANGE );
-		if ( pEntity )
+#ifdef HL2_EPISODIC
+
+		if ( CanHeal() )
 		{
-			if ( USE_EXPERIMENTAL_MEDIC_CODE() && IsMedic() )
+			CBaseEntity *pEntity = PlayerInRange( GetLocalOrigin(), HEAL_TOSS_TARGET_RANGE );
+			if ( pEntity )
 			{
-				// use the new heal toss algorithm
-				if ( ShouldHealTossTarget( pEntity, HasCondition( COND_CIT_PLAYERHEALREQUEST ) ) )
+				if ( USE_EXPERIMENTAL_MEDIC_CODE() && IsMedic() )
 				{
-					SetTarget( pEntity );
-					return SCHED_CITIZEN_HEAL_TOSS;
+					// use the new heal toss algorithm
+					if ( ShouldHealTossTarget( pEntity, HasCondition( COND_CIT_PLAYERHEALREQUEST ) ) )
+					{
+						SetTarget( pEntity );
+						return SCHED_CITIZEN_HEAL_TOSS;
+					}
 				}
+				else if ( PlayerInRange( GetLocalOrigin(), HEAL_MOVE_RANGE ) )
+				{
+					// use old mechanism for ammo
+					if ( ShouldHealTarget( pEntity, HasCondition( COND_CIT_PLAYERHEALREQUEST ) ) )
+					{
+						SetTarget( pEntity );
+						return SCHED_CITIZEN_HEAL;
+					}
+				}
+
 			}
-			else if ( PlayerInRange( GetLocalOrigin(), HEAL_MOVE_RANGE ) )
+		
+			if ( m_pSquad )
 			{
-				// use old mechanism for ammo
-				if ( ShouldHealTarget( pEntity, HasCondition( COND_CIT_PLAYERHEALREQUEST ) ) )
+				pEntity = NULL;
+				float distClosestSq = HEAL_MOVE_RANGE*HEAL_MOVE_RANGE;
+				float distCurSq;
+			
+				AISquadIter_t iter;
+				CAI_BaseNPC *pSquadmate = m_pSquad->GetFirstMember( &iter );
+				while ( pSquadmate )
+				{
+					if ( pSquadmate != this )
+					{
+						distCurSq = ( GetAbsOrigin() - pSquadmate->GetAbsOrigin() ).LengthSqr();
+						if ( distCurSq < distClosestSq && ShouldHealTarget( pSquadmate ) )
+						{
+							distClosestSq = distCurSq;
+							pEntity = pSquadmate;
+						}
+					}
+
+					pSquadmate = m_pSquad->GetNextMember( &iter );
+				}
+			
+				if ( pEntity )
 				{
 					SetTarget( pEntity );
 					return SCHED_CITIZEN_HEAL;
 				}
 			}
-
 		}
-		
-		if ( m_pSquad )
+		else
 		{
-			pEntity = NULL;
-			float distClosestSq = HEAL_MOVE_RANGE*HEAL_MOVE_RANGE;
-			float distCurSq;
-			
-			AISquadIter_t iter;
-			CAI_BaseNPC *pSquadmate = m_pSquad->GetFirstMember( &iter );
-			while ( pSquadmate )
-			{
-				if ( pSquadmate != this )
-				{
-					distCurSq = ( GetAbsOrigin() - pSquadmate->GetAbsOrigin() ).LengthSqr();
-					if ( distCurSq < distClosestSq && ShouldHealTarget( pSquadmate ) )
-					{
-						distClosestSq = distCurSq;
-						pEntity = pSquadmate;
-					}
-				}
-
-				pSquadmate = m_pSquad->GetNextMember( &iter );
-			}
-			
-			if ( pEntity )
-			{
-				SetTarget( pEntity );
-				return SCHED_CITIZEN_HEAL;
-			}
+			if ( HasCondition( COND_CIT_PLAYERHEALREQUEST ) )
+				DevMsg( "Would say: sorry, need to recharge\n" );
 		}
-	}
-	else
-	{
-		if ( HasCondition( COND_CIT_PLAYERHEALREQUEST ) )
-			DevMsg( "Would say: sorry, need to recharge\n" );
-	}
 	
-	return SCHED_NONE;
-
-#else
-
-	if ( CanHeal() )
-	{
-		CBaseEntity *pEntity = PlayerInRange( GetLocalOrigin(), HEAL_MOVE_RANGE );
-		if ( pEntity && ShouldHealTarget( pEntity, HasCondition( COND_CIT_PLAYERHEALREQUEST ) ) )
-		{
-			SetTarget( pEntity );
-			return SCHED_CITIZEN_HEAL;
-		}
-
-		if ( m_pSquad )
-		{
-			pEntity = NULL;
-			float distClosestSq = HEAL_MOVE_RANGE*HEAL_MOVE_RANGE;
-			float distCurSq;
-
-			AISquadIter_t iter;
-			CAI_BaseNPC *pSquadmate = m_pSquad->GetFirstMember( &iter );
-			while ( pSquadmate )
-			{
-				if ( pSquadmate != this )
-				{
-					distCurSq = ( GetAbsOrigin() - pSquadmate->GetAbsOrigin() ).LengthSqr();
-					if ( distCurSq < distClosestSq && ShouldHealTarget( pSquadmate ) )
-					{
-						distClosestSq = distCurSq;
-						pEntity = pSquadmate;
-					}
-				}
-
-				pSquadmate = m_pSquad->GetNextMember( &iter );
-			}
-
-			if ( pEntity )
-			{
-				SetTarget( pEntity );
-				return SCHED_CITIZEN_HEAL;
-			}
-		}
-	}
-	else
-	{
-		if ( HasCondition( COND_CIT_PLAYERHEALREQUEST ) )
-			DevMsg( "Would say: sorry, need to recharge\n" );
-	}
-
-	return SCHED_NONE;
+		return SCHED_NONE;
 
 #endif
+	}
+	else
+	{
+
+		if ( CanHeal() )
+		{
+			CBaseEntity *pEntity = PlayerInRange( GetLocalOrigin(), HEAL_MOVE_RANGE );
+			if ( pEntity && ShouldHealTarget( pEntity, HasCondition( COND_CIT_PLAYERHEALREQUEST ) ) )
+			{
+				SetTarget( pEntity );
+				return SCHED_CITIZEN_HEAL;
+			}
+
+			if ( m_pSquad )
+			{
+				pEntity = NULL;
+				float distClosestSq = HEAL_MOVE_RANGE*HEAL_MOVE_RANGE;
+				float distCurSq;
+
+				AISquadIter_t iter;
+				CAI_BaseNPC *pSquadmate = m_pSquad->GetFirstMember( &iter );
+				while ( pSquadmate )
+				{
+					if ( pSquadmate != this )
+					{
+						distCurSq = ( GetAbsOrigin() - pSquadmate->GetAbsOrigin() ).LengthSqr();
+						if ( distCurSq < distClosestSq && ShouldHealTarget( pSquadmate ) )
+						{
+							distClosestSq = distCurSq;
+							pEntity = pSquadmate;
+						}
+					}
+
+					pSquadmate = m_pSquad->GetNextMember( &iter );
+				}
+
+				if ( pEntity )
+				{
+					SetTarget( pEntity );
+					return SCHED_CITIZEN_HEAL;
+				}
+			}
+		}
+		else
+		{
+			if ( HasCondition( COND_CIT_PLAYERHEALREQUEST ) )
+				DevMsg( "Would say: sorry, need to recharge\n" );
+		}
+
+		return SCHED_NONE;
+
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -1885,24 +1890,29 @@ void CNPC_Citizen::HandleAnimEvent( animevent_t *pEvent )
 	else if ( pEvent->event == AE_CITIZEN_HEAL )
 	{
 		// Heal my target (if within range)
-#if HL2_EPISODIC
-		if ( USE_EXPERIMENTAL_MEDIC_CODE() && IsMedic() )
+		if ( HL2_EPISODIC_ACTIVE() )
 		{
-			CBaseCombatCharacter *pTarget = dynamic_cast<CBaseCombatCharacter *>( GetTarget() );
-			Assert(pTarget);
-			if ( pTarget )
+#ifdef HL2_EPISODIC
+			if ( USE_EXPERIMENTAL_MEDIC_CODE() && IsMedic() )
 			{
-				m_flPlayerHealTime 	= gpGlobals->curtime + sk_citizen_heal_toss_player_delay.GetFloat();;
-				TossHealthKit( pTarget, Vector(48.0f, 0.0f, 0.0f)  );
+				CBaseCombatCharacter *pTarget = dynamic_cast<CBaseCombatCharacter *>( GetTarget() );
+				Assert(pTarget);
+				if ( pTarget )
+				{
+					m_flPlayerHealTime 	= gpGlobals->curtime + sk_citizen_heal_toss_player_delay.GetFloat();;
+					TossHealthKit( pTarget, Vector(48.0f, 0.0f, 0.0f)  );
+				}
 			}
+			else
+			{
+				Heal();
+			}
+#endif
 		}
 		else
 		{
 			Heal();
 		}
-#else
-		Heal();
-#endif
 		return;
 	}
 

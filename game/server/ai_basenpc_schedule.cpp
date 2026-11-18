@@ -3681,23 +3681,28 @@ void CAI_BaseNPC::RunTask( const Task_t *pTask )
 						}
 					}
 
-#ifdef HL2_EPISODIC
-					// See if we're moving away from a vehicle
-					CSound *pBestSound = GetBestSound( SOUND_MOVE_AWAY );
-					if ( pBestSound && pBestSound->m_hOwner && pBestSound->m_hOwner->GetServerVehicle() )
+					if ( HL2_EPISODIC_ACTIVE() )
 					{
-						// Move away from the vehicle's center, regardless of our facing
-						move = ( GetAbsOrigin() - pBestSound->m_hOwner->WorldSpaceCenter() );
-						VectorNormalize( move );
+#ifdef HL2_EPISODIC
+						// See if we're moving away from a vehicle
+						CSound *pBestSound = GetBestSound( SOUND_MOVE_AWAY );
+						if ( pBestSound && pBestSound->m_hOwner && pBestSound->m_hOwner->GetServerVehicle() )
+						{
+							// Move away from the vehicle's center, regardless of our facing
+							move = ( GetAbsOrigin() - pBestSound->m_hOwner->WorldSpaceCenter() );
+							VectorNormalize( move );
+						}
+						else
+						{
+							// Use the first angles
+							AngleVectors( ang, &move );
+						}
+#endif
 					}
 					else
 					{
-						// Use the first angles
 						AngleVectors( ang, &move );
 					}
-#else
-					AngleVectors( ang, &move );
-#endif	//HL2_EPISODIC
 					if ( GetNavigator()->SetVectorGoal( move, (float)pTask->flTaskData, MIN(36,pTask->flTaskData), true ) && IsValidMoveAwayDest( GetNavigator()->GetGoalPos() ))
 					{
 						TaskComplete();

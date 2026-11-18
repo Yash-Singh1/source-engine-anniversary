@@ -2408,14 +2408,17 @@ bool CWeaponPhysCannon::AttachObject( CBaseEntity *pObject, const Vector &vPosit
 	m_bActive = true;
 	if( pOwner )
 	{
-#ifdef HL2_EPISODIC
-		CBreakableProp *pProp = dynamic_cast< CBreakableProp * >( pObject );
-
-		if ( pProp && pProp->HasInteraction( PROPINTER_PHYSGUN_CREATE_FLARE ) )
+		if ( HL2_EPISODIC_ACTIVE() )
 		{
-			pOwner->FlashlightTurnOff();
-		}
+#ifdef HL2_EPISODIC
+			CBreakableProp *pProp = dynamic_cast< CBreakableProp * >( pObject );
+
+			if ( pProp && pProp->HasInteraction( PROPINTER_PHYSGUN_CREATE_FLARE ) )
+			{
+				pOwner->FlashlightTurnOff();
+			}
 #endif
+		}
 
 		// NOTE: This can change the mass; so it must be done before max speed setting
 		Physgun_OnPhysGunPickup( pObject, pOwner, PICKED_UP_BY_CANNON );
@@ -3109,16 +3112,19 @@ void CWeaponPhysCannon::DoEffectIdle( void )
 		{
 			EmitSound( "Weapon_Physgun.Off" );
 
-#ifdef HL2_EPISODIC
-			ForceDrop();
-
-			CHL2_Player *pPlayer = dynamic_cast<CHL2_Player*>( pOwner );
-
-			if ( pPlayer )
+			if ( HL2_EPISODIC_ACTIVE() )
 			{
-				pPlayer->StartArmorReduction();
-			}
+#ifdef HL2_EPISODIC
+				ForceDrop();
+
+				CHL2_Player *pPlayer = dynamic_cast<CHL2_Player*>( pOwner );
+
+				if ( pPlayer )
+				{
+					pPlayer->StartArmorReduction();
+				}
 #endif
+			}
 
 			CCitadelEnergyCore *pCore = static_cast<CCitadelEnergyCore*>( CreateEntityByName( "env_citadel_energy_core" ) );
 

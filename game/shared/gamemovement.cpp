@@ -4195,7 +4195,12 @@ void CGameMovement::FinishUnDuckJump( trace_t &trace )
 //-----------------------------------------------------------------------------
 void CGameMovement::FinishDuck( void )
 {
+#ifdef BYTEMATCH_RETAIL
+	if ( player->GetFlags() & FL_DUCKING )
+		return;
+#else
 	// if ( player->GetFlags() & FL_DUCKING ) return;
+#endif
 
 	player->AddFlag( FL_DUCKING );
 	player->m_Local.m_bDucked = true;
