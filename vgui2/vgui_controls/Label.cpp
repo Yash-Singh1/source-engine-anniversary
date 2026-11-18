@@ -88,6 +88,7 @@ void Label::Init()
 	_fontOverrideName = NULL;
 	m_bWrap = false;
 	m_bCenterWrap = false;
+	m_bAllCaps = false;
 	m_bAutoWideToContents = false;
 	m_bUseProportionalInsets = false;
 	m_bAutoWideDirty = false;
@@ -1251,11 +1252,18 @@ void Label::ApplySettings( KeyValues *inResourceData )
 
 	int inset_x = inResourceData->GetInt("textinsetx", _textInset[0]);
 	int inset_y = inResourceData->GetInt("textinsety", _textInset[1]);
+	float flInsetY = inResourceData->GetFloat("textinsety", (float)_textInset[1]);
 	// Had to play it safe and add a new key for backwards compatibility
 	m_bUseProportionalInsets = inResourceData->GetInt("use_proportional_insets", 0) > 0;
 	if ( m_bUseProportionalInsets )
 	{
 		inset_x = scheme()->GetProportionalScaledValueEx( GetScheme(), inset_x );
+	}
+
+	if ( m_bUseProportionalInsets && !inResourceData->IsEmpty( "textinsety" ) )
+	{
+		int nScale = scheme()->GetProportionalScaledValueEx( GetScheme(), 1000 );
+		inset_y = int( ceilf( ( flInsetY * nScale ) / 1000.0f ) );
 	}
 
 	SetTextInset( inset_x, inset_y );
