@@ -103,7 +103,6 @@ namespace vgui
 
 	public:
 		virtual void GetInternalAbsPos(int &x, int &y);
-		virtual void TraverseLevel( int val );
 
 	private:
 		Dar<VPanel*> _childDar;
@@ -114,15 +113,15 @@ namespace vgui
 		// our companion Client panel
 		IClientPanel *_clientPanel;
 
-		short _pos[2];
-		short _size[2];
-		short _minimumSize[2];
+		int _pos[2];
+		int _size[2];
+		int _minimumSize[2];
 
-		short _inset[4];
-		short _clipRect[4];
-		short _absPos[2];
+		int _inset[4];
+		int _clipRect[4];
+		int _absPos[2];
 
-		short _zpos;	// z-order position
+		int _zpos;	// z-order position
 
 		bool _visible : 1;
 		bool _enabled : 1;
@@ -136,8 +135,6 @@ namespace vgui
 		byte	_pinsibling_their_corner;
 
 		int	 m_nMessageContextId;
-		int m_nThinkTraverseLevel;
-		HPanel _clientPanelHandle; // Temp to check if _clientPanel is valid.
 	};
 
 }
