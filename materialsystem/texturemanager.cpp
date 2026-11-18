@@ -128,7 +128,10 @@ public:
 	{
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	virtual ~CCheckerboardTexture() { }
+#endif
+#line 132
 
 	virtual void RegenerateTextureBits( ITexture *pTexture, IVTFTexture *pVTFTexture, Rect_t *pSubRect )
 	{
@@ -194,7 +197,10 @@ public:
 	{
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	virtual ~CSolidTexture() { }
+#endif
+#line 198
 
 	virtual void RegenerateTextureBits( ITexture *pTexture, IVTFTexture *pVTFTexture, Rect_t *pSubRect )
 	{
@@ -276,7 +282,7 @@ public:
 				{
 					float u = x * flInvWidth - 1.0f;
 					float oow = 1.0f / sqrt( 1.0f + u*u + v*v );
-#ifdef DX_TO_GL_ABSTRACTION
+#if defined( DX_TO_GL_ABSTRACTION ) && !defined( BYTEMATCH_RETAIL )
 					float flX = (255.0f * 0.5 * (u*oow + 1.0f) + 0.5f);
 					float flY = (255.0f * 0.5 * (v*oow + 1.0f) + 0.5f);
 					float flZ = (255.0f * 0.5 * (oow + 1.0f) + 0.5f);
@@ -384,7 +390,11 @@ public:
 					float u = x * flInvWidth - 1.0f;
 					float oow = 1.0f / sqrt( 1.0f + u*u + v*v );
 
-#ifdef DX_TO_GL_ABSTRACTION
+#if defined( DX_TO_GL_ABSTRACTION ) || defined( BYTEMATCH_RETAIL )
+#ifdef BYTEMATCH_RETAIL
+					if ( IsOpenGL() )
+					{
+#endif
 					float flX = (255.0f * 0.5 * (u*oow + 1.0f) + 0.5f);
 					float flY = (255.0f * 0.5 * (v*oow + 1.0f) + 0.5f);
 					float flZ = (255.0f * 0.5 * (oow + 1.0f) + 0.5f);
@@ -448,7 +458,13 @@ public:
 						default:
 							break;
 					}
-#else
+#ifdef BYTEMATCH_RETAIL
+					}
+					else
+					{
+#endif
+#endif
+#if !defined( DX_TO_GL_ABSTRACTION ) || defined( BYTEMATCH_RETAIL )
 					int ix = (int)(255 * 0.5 * (u*oow + 1.0f) + 0.5f);
 					ix = clamp( ix, 0, 255 );
 					int iy = (int)(255 * 0.5 * (v*oow + 1.0f) + 0.5f);
@@ -528,6 +544,9 @@ public:
 					default:
 						break;
 					}
+#ifdef BYTEMATCH_RETAIL
+					}
+#endif
 #endif
 				} // x
 			} // y
@@ -565,7 +584,10 @@ public:
 	{
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	virtual ~CColorCorrectionTexture() { }
+#endif
+#line 582
 
 	virtual void RegenerateTextureBits( ITexture *pTexture, IVTFTexture *pVTFTexture, Rect_t *pSubRect )
 	{
@@ -1569,15 +1591,19 @@ void CTextureManager::Init( int nFlags )
 	if ( HardwareConfig()->GetMaxDXSupportLevel() >= 80 )
 	{
 #ifdef BYTEMATCH_RETAIL
-		ImageFormat fmt = IMAGE_FORMAT_BGRX8888;
+		// Create a normalization cubemap
+		m_pNormalizationCubemap = CreateProceduralTexture( "normalize", TEXTURE_GROUP_CUBE_MAP,
+			NORMALIZATION_CUBEMAP_SIZE, NORMALIZATION_CUBEMAP_SIZE, 1, IMAGE_FORMAT_BGRX8888,
+			TEXTUREFLAGS_ENVMAP | TEXTUREFLAGS_NOMIP | TEXTUREFLAGS_SINGLECOPY |
+			TEXTUREFLAGS_CLAMPS | TEXTUREFLAGS_CLAMPT | TEXTUREFLAGS_CLAMPU );
 #else
 		ImageFormat fmt = IsOpenGL() ? IMAGE_FORMAT_RGBA16161616F : IMAGE_FORMAT_BGRX8888;
-#endif
 
 		// Create a normalization cubemap
 		m_pNormalizationCubemap = CreateProceduralTexture( "normalize", TEXTURE_GROUP_CUBE_MAP,
 			NORMALIZATION_CUBEMAP_SIZE, NORMALIZATION_CUBEMAP_SIZE, 1, fmt,
 			nTextureFlags );
+#endif
 		CreateNormalizationCubemap( m_pNormalizationCubemap );
 	}
 
