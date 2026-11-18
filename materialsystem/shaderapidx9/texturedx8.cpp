@@ -1365,6 +1365,18 @@ void LoadTextureFromVTF( TextureLoadInfo_t &info, IVTFTexture* pVTF, int iVTFFra
 	}
 #endif
 
+#ifdef BYTEMATCH_RETAIL
+	for ( int iMip = 0; iMip < iMipCount; ++iMip )
+	{
+		int w, h, d;
+		pVTF->ComputeMipLevelDimensions( iMip, &w, &h, &d );
+		mipInfo.m_nLevel = iMip;
+		mipInfo.m_nWidth = w;
+		mipInfo.m_nHeight = h;
+		mipInfo.m_pSrcData = pVTF->ImageData( iVTFFrame, iVTFFaceNum, iMip );
+		BlitTextureBits( mipInfo, 0, 0, 0 );
+	}
+#else
 	// Get the clamped resolutions from the VTF, then apply any clamping we've done from the higher level code.
 	// (For example, we chop off the bottom of the mipmap pyramid at 32x32--that is reflected in iMipCount, so 
 	// honor that here).
@@ -1390,6 +1402,8 @@ void LoadTextureFromVTF( TextureLoadInfo_t &info, IVTFTexture* pVTF, int iVTFFra
 			BlitTextureBits( mipInfo, 0, 0, 0 );
 		}
 	}
+#endif
+#line 1393
 
 #if !defined( _X360 ) && !defined( DX_TO_GL_ABSTRACTION )
 	if ( pStagingTexture )
