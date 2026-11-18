@@ -229,17 +229,12 @@ bool CDedicatedAppSystemGroup::Create( )
 	if ( !pSystem )
 		return false;
 
+	// Dedicated server should skip controller initialization to avoid initializing Steam, because we don't want the user to be
+	// flagged as "playing" the game. The input system reads this in its constructor, so it must be set before the modules load.
+	CommandLine()->AppendParm( "-nosteamcontroller", NULL );
+
 	if ( sys->LoadModules( this ) )
 	{
-		// Find the input system and tell it to skip Steam Controller initialization (we have to set this flag before Init gets called on the
-		// input system). Dedicated server should skip controller initialization to avoid initializing Steam, because we don't want the user to be
-		// flagged as "playing" the game.
-		auto inputsystem = ( IInputSystem* )FindSystem( INPUTSYSTEM_INTERFACE_VERSION );
-		if ( inputsystem )
-		{
-			inputsystem->SetSkipControllerInitialization( true );
-		}
-
 		return true;
 	}
 	else
