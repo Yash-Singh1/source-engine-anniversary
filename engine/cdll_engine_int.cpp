@@ -364,7 +364,10 @@ public:
 	CSentence *GetSentence( CAudioSource *pAudioSource );
 	float GetSentenceLength( CAudioSource *pAudioSource );
 	bool IsStreaming( CAudioSource *pAudioSource ) const;
+#ifndef BYTEMATCH_RETAIL
 	void AddPhonemeFile( const char *pszPhonemeFile );
+#endif
+#line 367
 
 	// FIXME, move entirely to client .dll
 	void GetViewAngles( QAngle& va );
@@ -799,12 +802,15 @@ CSentence *CEngineClient::GetSentence( CAudioSource *pAudioSource )
 	return NULL;
 }
 
+#ifndef BYTEMATCH_RETAIL
 void AddPhonemesFromFile( const char *pszFileName );
 
 void CEngineClient::AddPhonemeFile( const char *pszPhonemeFile )
 {
 	AddPhonemesFromFile( pszPhonemeFile );
 }
+#endif
+#line 801
 
 float CEngineClient::GetSentenceLength( CAudioSource *pAudioSource )
 {
