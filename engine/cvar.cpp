@@ -758,7 +758,12 @@ static void PrintCvar( const ConVar *var, bool logging, FileHandle_t& fh )
 
 
 	char valstr[ 32 ];
+#ifdef BYTEMATCH_RETAIL
+	char tempbuff[128];
+#else
 	char tempbuff[512] = { 0 };
+#endif
+#line 737
 
 	// Clean up integers
 	if ( var->GetInt() == (int)var->GetFloat() )   
@@ -781,7 +786,12 @@ static void PrintCvar( const ConVar *var, bool logging, FileHandle_t& fh )
 static void PrintCommand( const ConCommand *cmd, bool logging, FileHandle_t& f )
 {
 	// Print to console
+#ifdef BYTEMATCH_RETAIL
+	char tempbuff[128];
+#else
 	char tempbuff[512] = { 0 };
+#endif
+#line 760
 	ConMsg ("%-40s : %-8s : %-16s : %s\n",cmd->GetName(), "cmd", "", StripTabsAndReturns( cmd->GetHelpText(), tempbuff, sizeof(tempbuff) ) );
 	if ( logging )
 	{

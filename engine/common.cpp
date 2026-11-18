@@ -501,11 +501,28 @@ Only used for CopyFile
 */
 void COM_CreatePath (const char *path)
 {
+#ifdef BYTEMATCH_RETAIL
+	char temppath[512];
+	Q_strncpy( temppath, path, sizeof(temppath) );
+
+	for (char *ofs = temppath+1 ; *ofs ; ofs++)
+	{
+		if (*ofs == '/' || *ofs == '\\')
+		{       // create the directory
+			char old = *ofs;
+			*ofs = 0;
+			Sys_mkdir (temppath);
+			*ofs = old;
+		}
+	}
+#else
 	char temppath[1024];
 	Q_strncpy(temppath, path, sizeof(temppath));
 	Q_StripFilename( temppath );
 
 	Sys_mkdir( temppath );
+#endif
+#line 509
 }
 
 
@@ -831,6 +848,12 @@ const char *COM_GetModDirectory()
 	if ( Q_strlen( modDir ) == 0 )
 	{
 		const char *gamedir = CommandLine()->ParmValue("-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) );
+#ifdef BYTEMATCH_RETAIL
+		char szExpansionId[16];
+		if ( g_pFullFileSystem->GetCurrentGameExpansionId( szExpansionId, sizeof( szExpansionId ) ) )
+			gamedir = szExpansionId;
+#endif
+#line 834
 		Q_strncpy( modDir, gamedir, sizeof(modDir) );
 		if ( strchr( modDir, '/' ) || strchr( modDir, '\\' ) )
 		{
@@ -939,7 +962,10 @@ void COM_InitFilesystem( const char *pFullModPath )
 	Host_CheckGore();
 
 	initInfo.m_bLowViolence = g_bLowViolence;
+#ifndef BYTEMATCH_RETAIL
 	initInfo.m_bMountHDContent = BLoadHDContent( initInfo.m_pDirectoryName, GetBaseDirectory() );
+#endif
+#line 929
 
 	// Load gameinfo.txt and setup all the search paths, just like the tools do.
 	FileSystem_LoadSearchPaths( initInfo );

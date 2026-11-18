@@ -736,6 +736,7 @@ bool CEngineClient::GetPlayerInfo( int ent_num, player_info_t *pinfo )
 	}
 
 	Assert( cl.m_pUserInfoTable );
+#ifndef BYTEMATCH_RETAIL
 	if ( !cl.m_pUserInfoTable )
 	{
 		Q_memset( pinfo, 0, sizeof( player_info_t ) );
@@ -748,6 +749,8 @@ bool CEngineClient::GetPlayerInfo( int ent_num, player_info_t *pinfo )
 		Q_memset( pinfo, 0, sizeof( player_info_t ) );
 		return false;
 	}
+#endif
+#line 742
 
 	int cubPlayerInfo;
 	player_info_t *pi = (player_info_t*) cl.m_pUserInfoTable->GetStringUserData( ent_num, &cubPlayerInfo );
@@ -1147,8 +1150,13 @@ int	CEngineClient::GetPlayerForUserID(int userID)
 	//   engine.dll	CGameEventManager::FireEventClientSide
 	//   engine.dll	CClientState::ProcessGameEvent
 	// So add check to make sure we don't go over m_pUserInfoTable size.
+#ifdef BYTEMATCH_RETAIL
+	for ( int i = 0; i < cl.m_nMaxClients; i++ )
+#else
 	int nMaxClients = Min( cl.m_nMaxClients, cl.m_pUserInfoTable->GetNumStrings() );
 	for ( int i = 0; i < nMaxClients; i++ )
+#endif
+#line 1134
 	{
 		player_info_t *pi = (player_info_t*) cl.m_pUserInfoTable->GetStringUserData( i, NULL );
 
@@ -1435,12 +1443,15 @@ void CEngineClient::ChangeTeam( const char *pTeamName )
 //-----------------------------------------------------------------------------
 bool CEngineClient::CopyFrameBufferToMaterial( const char *pMaterialName )
 {
+#ifndef BYTEMATCH_RETAIL
 	if ( !IsX360() )
 	{
 		// not for PC
 		Assert( 0 );
 		return false;
 	}
+#endif
+#line 1426
 
 	IMaterial *pMaterial = materials->FindMaterial( pMaterialName, TEXTURE_GROUP_OTHER );
 	if ( pMaterial->IsErrorMaterial() )
@@ -2129,14 +2140,30 @@ IMatchEventsSubscription *CEngineClient::GetEventsSubscription()
 
 const char *CEngineClient::GetMapName()
 {
+#ifdef BYTEMATCH_RETAIL
+	if ( sv.IsDedicated() )
+		return "Dedicated Server";
+
+	if ( !cl.IsConnected() )
+		return "";
+
+	return cl.m_szLevelBaseName;
+#else
 	// UNIMPLEMENTED: retail also has a fixed-name case; this returns the current level's base name.
 	return cl.m_szLevelBaseName;
+#endif
+#line 2111
 }
 
 const char *CEngineClient::GetPatchVersion()
 {
+#ifdef BYTEMATCH_RETAIL
+	return gpszVersionString;
+#else
 	// UNIMPLEMENTED: retail returns its own version buffer; this uses the steam.inf version string.
 	return GetSteamInfIDVersionInfo().szVersionString;
+#endif
+#line 2117
 }
 
 //-----------------------------------------------------------------------------

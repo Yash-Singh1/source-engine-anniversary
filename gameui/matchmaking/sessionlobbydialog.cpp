@@ -511,6 +511,7 @@ void CSessionLobbyDialog::UpdateCountdown( int seconds )
 //-----------------------------------------------------------------
 void CSessionLobbyDialog::OnKeyCodePressed( vgui::KeyCode code )
 {
+	ButtonCode_t nButtonCode = GetBaseButtonCode( code );
 	CDialogMenu *pMenu = &m_Menus[m_iActiveMenu];
 	if ( !pMenu )
 		return;
@@ -524,11 +525,12 @@ void CSessionLobbyDialog::OnKeyCodePressed( vgui::KeyCode code )
 
 	SetDeleteSelfOnClose( true );
 
-	switch( code )
+	switch( nButtonCode )
 	{
 	case KEY_XBUTTON_DOWN:
 	case KEY_XSTICK1_DOWN:
 	case STEAMCONTROLLER_DPAD_DOWN:
+	case STEAMCONTROLLER_LEFT_PAD_DOWN:
 		if ( idx >= itemCt - 1 )
 		{
 			ActivateNextMenu();
@@ -542,6 +544,7 @@ void CSessionLobbyDialog::OnKeyCodePressed( vgui::KeyCode code )
 	case KEY_XBUTTON_UP:
 	case KEY_XSTICK1_UP:
 	case STEAMCONTROLLER_DPAD_UP:
+	case STEAMCONTROLLER_LEFT_PAD_UP:
 		if ( idx <= 0 )
 		{
 			ActivatePreviousMenu();
@@ -560,6 +563,7 @@ void CSessionLobbyDialog::OnKeyCodePressed( vgui::KeyCode code )
 		break;
 
 	case KEY_XBUTTON_RIGHT_SHOULDER:
+	case STEAMCONTROLLER_RIGHT_BUMPER:
 #ifdef _X360
 		{
 			// Don't allow player reviews in system link games
@@ -573,6 +577,7 @@ void CSessionLobbyDialog::OnKeyCodePressed( vgui::KeyCode code )
 		break;
 
 	case KEY_XBUTTON_LEFT_SHOULDER:
+	case STEAMCONTROLLER_LEFT_BUMPER:
 		{
 			// Don't kick ourselves
 			if ( m_bHostLobby )
@@ -628,6 +633,7 @@ void CSessionLobbyDialog::OnKeyCodePressed( vgui::KeyCode code )
 		break;
 
 	case KEY_XBUTTON_START:
+	case STEAMCONTROLLER_START:
 		SetStartGame( !m_bStartingGame );
 		break;
 

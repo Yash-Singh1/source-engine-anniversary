@@ -599,6 +599,7 @@ int NET_OpenSocket ( const char *net_interface, int& port, int protocol )
 		return 0;
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	opt = net_udp_rcvbuf.GetInt(); // set UDP send buffer size
 	VCR_NONPLAYBACKFN( setsockopt(newsocket, SOL_SOCKET, SO_SNDBUF, (char *)&opt, sizeof(opt)), ret, "setsockopt" );
 	if (ret == -1)
@@ -607,6 +608,8 @@ int NET_OpenSocket ( const char *net_interface, int& port, int protocol )
 		Msg ("WARNING: NET_OpenSocket: setsockopt SO_SNDBUF: %s\n", NET_ErrorString(net_error));
 		return 0;
 	}
+#endif
+#line 601
 
 
 	// VDP protocol (Xbox 360 secure network) doesn't support SO_BROADCAST
@@ -694,7 +697,12 @@ int NET_OpenSocket ( const char *net_interface, int& port, int protocol )
 		if ( bStrictBind )
 		{
 			// The server op wants to exit if the desired port was not avialable.
+#ifdef BYTEMATCH_RETAIL
+			Sys_Exit( "ERROR: Port %i was unavailable - quitting due to \"-strictportbind\" command-line flag!\n", port - port_offset, port );
+#else
 			Sys_Exit( "ERROR: Port %i was unavailable - quitting due to \"-strictportbind\" command-line flag!\n", port - port_offset );
+#endif
+#line 689
 		}
 		else
 		{
@@ -1261,6 +1269,15 @@ bool NET_GetLong( const int sock, netpacket_t *packet )
 	if ( nSplitSizeMinusHeader < MIN_SPLIT_SIZE ||
 		 nSplitSizeMinusHeader > MAX_SPLIT_SIZE )
 	{
+#ifdef BYTEMATCH_RETAIL
+		Msg( "NET_GetLong:  Split packet from %s with invalid split size (number %i/ count %i) where size %i is out of valid range [%d - %d ]\n", 
+			packet->from.ToString(), 
+			packetNumber, 
+			packetCount, 
+			nSplitSizeMinusHeader,
+			MIN_SPLIT_SIZE,
+			MAX_SPLIT_SIZE );
+#else
 		Msg( "NET_GetLong:  Split packet from %s with invalid split size (number %i/ count %i) where size %i is out of valid range [%llu - %llu]\n", 
 			packet->from.ToString(), 
 			packetNumber, 
@@ -1268,17 +1285,28 @@ bool NET_GetLong( const int sock, netpacket_t *packet )
 			nSplitSizeMinusHeader,
 			(uint64)MIN_SPLIT_SIZE,
 			(uint64)MAX_SPLIT_SIZE );
+#endif
+#line 1262
 		return false;
 	}
 
 	if ( packetNumber >= MAX_SPLITPACKET_SPLITS ||
 		 packetCount > MAX_SPLITPACKET_SPLITS )
 	{
+#ifdef BYTEMATCH_RETAIL
+		Msg( "NET_GetLong:  Split packet from %s with too many split parts (number %i/ count %i) where %i is max count allowed\n", 
+			packet->from.ToString(), 
+			packetNumber, 
+			packetCount, 
+			MAX_SPLITPACKET_SPLITS );
+#else
 		Msg( "NET_GetLong:  Split packet from %s with too many split parts (number %i/ count %i) where %llu is max count allowed\n", 
 			packet->from.ToString(), 
 			packetNumber, 
 			packetCount, 
 			(uint64)MAX_SPLITPACKET_SPLITS );
+#endif
+#line 1273
 		return false;
 	}
 
@@ -1327,6 +1355,16 @@ bool NET_GetLong( const int sock, netpacket_t *packet )
 
 		if ( net_showsplits.GetInt() && net_showsplits.GetInt() != 3 )
 		{
+#ifdef BYTEMATCH_RETAIL
+			Msg( "<-- [%s] Split packet %4i/%4i seq %5i size %4i mtu %4i from %s\n", 
+				DescribeSocket( sock ),
+				packetNumber + 1, 
+				packetCount, 
+				sequenceNumber,
+				size, 
+				nSplitSizeMinusHeader + sizeof( SPLITPACKET ), 
+				packet->from.ToString() );
+#else
 			Msg( "<-- [%s] Split packet %4i/%4i seq %5i size %4i mtu %4llu from %s\n", 
 				DescribeSocket( sock ),
 				packetNumber + 1, 
@@ -1335,6 +1373,8 @@ bool NET_GetLong( const int sock, netpacket_t *packet )
 				size, 
 				(uint64)(nSplitSizeMinusHeader + sizeof( SPLITPACKET )), 
 				packet->from.ToString() );
+#endif
+#line 1329
 		}
 	}
 	else
@@ -2619,8 +2659,13 @@ enum
 	OSOCKET_FLAG_FAIL        = 0x00000002, // Call Sys_exit on error.
 };
 
+#ifdef BYTEMATCH_RETAIL
+static bool OpenSocketInternal( int nModule, int nSetPort, int nDefaultPort, const char *pName, int nProtocol, bool bTryAny )
+#else
 static bool OpenSocketInternal( int nModule, int nSetPort, int nDefaultPort, const char *pName, int nProtocol, bool bTryAny,
 								int flags = ( OSOCKET_FLAG_USE_IPNAME | OSOCKET_FLAG_FAIL ) )
+#endif
+#line 2600
 {
 	int port = nSetPort ? nSetPort : nDefaultPort;
 	int *handle = NULL;
@@ -2641,6 +2686,14 @@ static bool OpenSocketInternal( int nModule, int nSetPort, int nDefaultPort, con
 
 	if ( !net_sockets[nModule].nPort )
 	{
+#ifdef BYTEMATCH_RETAIL
+		*handle = NET_OpenSocket ( ipname.GetString(), port, nProtocol );
+		if ( !*handle && bTryAny )
+		{
+			port = PORT_ANY;	// try again with PORT_ANY
+			*handle = NET_OpenSocket ( ipname.GetString(), port, nProtocol );
+		}
+#else
 		const char *netinterface = ( flags & OSOCKET_FLAG_USE_IPNAME ) ? ipname.GetString() : NULL;
 
 		*handle = NET_OpenSocket (netinterface, port, nProtocol );
@@ -2649,10 +2702,15 @@ static bool OpenSocketInternal( int nModule, int nSetPort, int nDefaultPort, con
 			port = PORT_ANY;	// try again with PORT_ANY
 			*handle = NET_OpenSocket ( netinterface, port, nProtocol );
 		}
+#endif
+#line 2628
 
 		if ( !*handle )
 		{
+#ifndef BYTEMATCH_RETAIL
 			if ( flags & OSOCKET_FLAG_FAIL )
+#endif
+#line 2632
 				Sys_Exit( "Couldn't allocate any %s IP port", pName );
 			return false;
 		}
@@ -3444,6 +3502,14 @@ CON_COMMAND( net_status, "Shows current network status" )
 		net_dedicated?"dedicated":"listen",
 		numChannels	);
 
+#ifdef BYTEMATCH_RETAIL
+	ConMsg("- Ports: Client %u, Server %u, HLTV %u, Matchmaking %u, Systemlink %u\n",
+		net_sockets[NS_CLIENT].nPort,
+		net_sockets[NS_SERVER].nPort, 
+		net_sockets[NS_HLTV].nPort, 
+		net_sockets[NS_MATCHMAKING].nPort, 
+		net_sockets[NS_SYSTEMLINK].nPort );
+#else
 	CFmtStrN<128> lan_str;
 #ifdef LINUX
 	lan_str.sprintf( ", Lan %u", net_sockets[NS_SVLAN].nPort );
@@ -3456,6 +3522,8 @@ CON_COMMAND( net_status, "Shows current network status" )
 		net_sockets[NS_MATCHMAKING].nPort, 
 		net_sockets[NS_SYSTEMLINK].nPort,
 		lan_str.Get() );
+#endif
+#line 3419
 
 	if ( numChannels <= 0 )
 	{

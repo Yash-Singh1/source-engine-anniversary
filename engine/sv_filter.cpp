@@ -573,6 +573,22 @@ CON_COMMAND( removeid, "Remove a user ID from the ban list." )
 
 	// if the first letter is a character then
 	// we're searching for a uniqueid ( e.g. STEAM_ )
+#ifdef BYTEMATCH_RETAIL
+	if ( *pszArg1 < '0' || *pszArg1 > '9' )
+	{
+		// SteamID ( need to reassemble it )
+		if ( !Q_strnicmp( pszArg1, STEAM_PREFIX, Q_strlen( STEAM_PREFIX ) ) && Q_strstr( args[2], ":" ) )
+		{
+			Q_snprintf( szSearchString, sizeof( szSearchString ), "%s:%s:%s", pszArg1, args[3], args[5] );
+		}
+		// some other ID (e.g. "UNKNOWN", "STEAM_ID_PENDING", "STEAM_ID_LAN")
+		// NOTE: assumed to be one argument
+		else
+		{
+			ConMsg( "removeid:  invalid ban ID \"%s\"\n", pszArg1 );
+			return;
+		}
+#else
 	if ( *pszArg1 < '0' || *pszArg1 > '9' || V_atoi64( pszArg1 ) > ( (uint32)~0 ) )
 	{
 		bool bValid = false;
@@ -609,6 +625,8 @@ CON_COMMAND( removeid, "Remove a user ID from the ban list." )
 			ConMsg( "removeid:  invalid ban ID \"%s\"\n", pszArg1 );
 			return;
 		}
+#endif
+#line 612
 
 		for ( i = 0 ; i < g_UserFilters.Count() ; i++ )
 		{

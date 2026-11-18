@@ -116,7 +116,12 @@ void CAskConnectPanel::SetHostName( const char *pHostName )
 
 	int x2, y2, wide2, tall2;
 	wchar_t wcMessage[512];
+#ifdef BYTEMATCH_RETAIL
+	g_pVGuiLocalize->ConstructString( wcMessage, sizeof( wcMessage ), g_pVGuiLocalize->Find("#Valve_ServerOfferingToConnect"), 0 );
+#else
 	g_pVGuiLocalize->ConstructString_safe( wcMessage, g_pVGuiLocalize->Find("#Valve_ServerOfferingToConnect"), 0 );
+#endif
+#line 120
 	m_pInfoLabel->SetText( wcMessage );
 	m_pInfoLabel->SizeToContents();
 	m_pInfoLabel->GetBounds( x2, y2, wide2, tall2 );	
@@ -154,7 +159,12 @@ void CAskConnectPanel::StartSlideAnimation( float flDuration )
 	{
 		wchar_t wcKeyName[64], wcMessage[512];
 		g_pVGuiLocalize->ConvertANSIToUnicode( pKeyName, wcKeyName, sizeof( wcKeyName ) );
+#ifdef BYTEMATCH_RETAIL
+		g_pVGuiLocalize->ConstructString( wcMessage, sizeof( wcMessage ), g_pVGuiLocalize->Find("#Valve_PressKeyToAccept"), 1, wcKeyName );
+#else
 		g_pVGuiLocalize->ConstructString_safe( wcMessage, g_pVGuiLocalize->Find("#Valve_PressKeyToAccept"), 1, wcKeyName );
+#endif
+#line 158
 		m_pAcceptLabel->SetText( wcMessage );
 	}
 	else
@@ -240,6 +250,7 @@ vgui::Panel* CreateAskConnectPanel( VPANEL parent )
 
 void ShowAskConnectPanel( const char *pHostName, float flDuration )
 {
+#ifndef BYTEMATCH_RETAIL
 	const int cubHostName = V_strlen( pHostName );
 	if ( cubHostName <= 0 )
 		return;
@@ -252,6 +263,8 @@ void ShowAskConnectPanel( const char *pHostName, float flDuration )
 			return;
 		}
 	}
+#endif
+#line 255
 
 	CAskConnectPanel *pPanel = CAskConnectPanel::s_pAskConnectPanel;
 	if ( pPanel )

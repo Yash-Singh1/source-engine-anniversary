@@ -63,7 +63,12 @@ inline void LocalTransfer_FastType(
 
 			const T *pSource = (const T*)( pServerBase + pCur->m_iSendOffset );
 			T *pDest = (T*)( pClientBase + pCur->m_iRecvOffset );
+#ifdef BYTEMATCH_RETAIL
+			*pDest = *pSource;
+#else
 			memcpy( pDest, pSource, sizeof(T) );
+#endif
+#line 67
 		}
 	}
 }

@@ -296,6 +296,7 @@ void SCR_UpdateScreen( void )
 		g_EngineRenderer->FrameEnd();
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	// moved dynamic model update here because this takes the materials lock
 	// and materials->EndFrame() is where we will synchronize anyway.
 	// Moved here to leave as much of the frame as possible to overlap threads in the case
@@ -306,6 +307,8 @@ void SCR_UpdateScreen( void )
 		CMDLCacheCriticalSection critsec( g_pMDLCache );
 		modelloader->UpdateDynamicModels();
 	}
+#endif
+#line 309
 
 	{
 		tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "materials_EndFrame" );

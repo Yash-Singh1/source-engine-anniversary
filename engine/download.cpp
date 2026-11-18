@@ -52,6 +52,19 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
+#ifdef BYTEMATCH_RETAIL
+// retail predates V_strdup
+inline char *CloneString( const char *str )
+{
+	int len = strlen( str ) + 1;
+	char *cloneStr = new char [ len ];
+	strcpy( cloneStr, str );
+	return cloneStr;
+}
+#define V_strdup( str ) CloneString( str )
+#endif
+#line 54
+
 extern IFileSystem *g_pFileSystem;
 static const char *CacheDirectory = "cache";
 static const char *CacheFilename = "cache/DownloadCache.db";

@@ -60,7 +60,12 @@ public:
 	
 	enum
 	{
+#ifdef BYTEMATCH_RETAIL
+		MAX_PROXY_RESULTS = 64
+#else
 		MAX_PROXY_RESULTS = 256
+#endif
+#line 64
 	};
 
 	// These point at the various values that the proxies returned. They are setup once, then 

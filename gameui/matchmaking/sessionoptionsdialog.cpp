@@ -371,11 +371,12 @@ void CSessionOptionsDialog::OverrideMenuItem( KeyValues *pItemKeys )
 //-----------------------------------------------------------------
 void CSessionOptionsDialog::OnKeyCodePressed( vgui::KeyCode code )
 {
-	if ( code == KEY_XBUTTON_A || code == STEAMCONTROLLER_A )
+	ButtonCode_t nButtonCode = GetBaseButtonCode( code );
+	if ( nButtonCode == KEY_XBUTTON_A || nButtonCode == STEAMCONTROLLER_A )
 	{
 		OnCommand( m_szCommand );
 	}
-	else if ( (code == KEY_XBUTTON_B || code == STEAMCONTROLLER_B) && m_bModifySession )
+	else if ( (nButtonCode == KEY_XBUTTON_B || nButtonCode == STEAMCONTROLLER_B) && m_bModifySession )
 	{
 		// Return to the session lobby without making any changes
 		OnCommand( "DialogClosing" );

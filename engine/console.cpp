@@ -51,7 +51,10 @@ class ConsoleLogManager
 {
 public:
 	ConsoleLogManager();
+#ifndef BYTEMATCH_RETAIL
 	~ConsoleLogManager();
+#endif
+#line 49
 
 	void RemoveConsoleLogFile();
 	bool ReadConsoleLogFile( CUtlBuffer& buf );
@@ -80,12 +83,21 @@ void ConsoleLogFileCallback( IConVar *var, const char *pOldValue, float flOldVal
 	GetConsoleLogManager().CloseFileIfOpen();
 
 	// validate the path and the .log/.txt extensions
+#ifdef BYTEMATCH_RETAIL
+	if ( !COM_IsValidPath( logFile ) )
+	{
+		con_logfile.SetValue( "console.log" );
+		return;
+	}
+#else
 	if ( !COM_IsValidPath( logFile ) || !COM_IsValidLogFilename( logFile ) )
 	{
 		ConMsg( "invalid log filename\n" );
 		con_logfile.SetValue( "console.log" );
 		return;
 	}
+#endif
+#line 83
 	else
 	{
 		const char *extension = Q_GetFileExtension( logFile );
@@ -324,6 +336,7 @@ ConsoleLogManager::ConsoleLogManager()
 	m_fh = FILESYSTEM_INVALID_HANDLE;
 }
 
+#ifndef BYTEMATCH_RETAIL
 ConsoleLogManager::~ConsoleLogManager()
 {
 	// This fails because of destructor order problems. The file
@@ -331,6 +344,8 @@ ConsoleLogManager::~ConsoleLogManager()
 	// We'll have to count on the OS to close the file for us.
 	//CloseFileIfOpen();
 }
+#endif
+#line 318
 
 void ConsoleLogManager::RemoveConsoleLogFile()
 {
@@ -373,7 +388,12 @@ void ConsoleLogManager::CloseFileIfOpen()
 const char *ConsoleLogManager::GetConsoleLogFilename() const
 {
 	const char *logFile = con_logfile.GetString();
+#ifdef BYTEMATCH_RETAIL
+	if ( !COM_IsValidPath( logFile ) )
+#else
 	if ( !COM_IsValidPath( logFile ) || !COM_IsValidLogFilename( logFile ) )
+#endif
+#line 361
 	{
 		return "console.log";
 	}
@@ -534,7 +554,12 @@ void Con_ColorPrint( const Color& clr, char const *msg )
 				if ( pszText && ( *pszText != '\0' ) && ( Q_stristr( msg, pszText ) == NULL ))
 				{
 					Color mycolor(200, 200, 200, 150 );
+#ifdef BYTEMATCH_RETAIL
+					g_pCVar->ConsoleColorPrintf( mycolor, msg );
+#else
 					g_pCVar->ConsoleColorPrintf( mycolor, "%s", msg );
+#endif
+#line 519
 					return;
 				}
 				break;
@@ -740,7 +765,12 @@ void Con_ColorPrintf( const Color& clr, const char *fmt, ... )
 	Q_vsnprintf (msg,sizeof( msg ), fmt,argptr);
 	va_end (argptr);
 
+#ifdef BYTEMATCH_RETAIL
+	LOCAL_THREAD_LOCK();
+#else
 	NOTIFY_TEXT_LOCK();
+#endif
+#line 720
 	if ( !HandleRedirectAndDebugLog( msg ) )
 	{
 		return;
@@ -1279,7 +1309,12 @@ int CConPanel::ProcessNotifyLines( int &left, int &top, int &right, int &bottom,
 				return count;
 
 			count++;
+#ifdef BYTEMATCH_RETAIL
+			int y = 20 + 10 * i;
+#else
 			y = 20 + 10 * i;
+#endif
+#line 1224
 
 			if ( bDraw )
 			{

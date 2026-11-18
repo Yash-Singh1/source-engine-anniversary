@@ -1408,7 +1408,7 @@ void CEngineAPI::SetStartupInfo( StartupInfo_t &info )
 				{
 					if ( SteamUtils() )
 					{
-						if ( SteamUtils()->IsSteamRunningInVR() && g_pSourceVR->IsHmdConnected() )
+						if ( SteamUtils()->IsSteamRunningInVR() && g_pSourceVR && g_pSourceVR->IsHmdConnected() )
 						{
 							int nForceVRAdapterIndex = g_pSourceVR->GetVRModeAdapter();
 							materials->SetAdapter( nForceVRAdapterIndex, 0 );

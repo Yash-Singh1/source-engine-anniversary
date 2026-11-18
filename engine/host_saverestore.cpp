@@ -61,6 +61,8 @@
 #include "enginebugreporter.h"
 #include "tier1/memstack.h"
 #include "vstdlib/jobthread.h"
+#include "tier1/KeyValues.h"
+#include "steam/steam_api.h"
 
 #if !defined( _X360 )
 #include "xbox/xboxstubs.h"
@@ -100,6 +102,9 @@ ConVar save_spew( "save_spew", "0" );
 #define SECTION_MAGIC_NUMBER	0x54541234
 #define SECTION_VERSION_NUMBER	2
 
+// GAME_HEADER::mapCount of saves written by the anniversary engine
+#define SAVEGAME_MAPCOUNT_ANNIVERSARY	-20
+
 CCallQueue g_AsyncSaveCallQueue;
 static bool g_ConsoleInput = false;
 
@@ -114,6 +119,7 @@ IThreadPool *g_pSaveThread;
 static bool g_bSaveInProgress = false;
 
 //-----------------------------------------------------------------------------
+#ifndef BYTEMATCH_RETAIL
 static bool HaveExactMap( const char *pszMapName )
 {
 	char szCanonName[64] = { 0 };
@@ -134,9 +140,15 @@ static bool HaveExactMap( const char *pszMapName )
 	AssertMsg( false, "Unhandled engine->FindMap return value\n" );
 	return false;
 }
+#endif
 
 void FinishAsyncSave()
 {
+	ISteamRemoteStorage *pRemoteStorage = SteamClient()?(ISteamRemoteStorage *)SteamClient()->GetISteamGenericInterface(
+		SteamAPI_GetHSteamUser(), SteamAPI_GetHSteamPipe(), STEAMREMOTESTORAGE_INTERFACE_VERSION ):NULL;
+	if ( pRemoteStorage )
+		pRemoteStorage->EndFileWriteBatch();
+
 	LOCAL_THREAD_LOCK();
 	SaveMsg( "FinishAsyncSave() (%d/%d)\n", ThreadInMainThread(), ThreadGetCurrentId() );
 	if ( g_AsyncSaveCallQueue.Count() )
@@ -320,6 +332,8 @@ public:
 	virtual bool			StorageDeviceValid( void );
 
 	virtual bool			IsSaveInProgress();
+
+	virtual KeyValues		*GetSaveAppendix( const char *pName );
 
 private:
 	bool					SaveClientState( const char *name );
@@ -763,7 +777,7 @@ int CSaveRestore::SaveGameSlot( const char *pSaveName, const char *pSaveComment,
 		gameHeader.landmark[0] = 0;
 	}
 
-	gameHeader.mapCount = 0; // No longer used. The map packer will place the map count at the head of the compound files (toml 7/18/2007)
+	gameHeader.mapCount = SAVEGAME_MAPCOUNT_ANNIVERSARY; // No longer used. The map packer will place the map count at the head of the compound files (toml 7/18/2007)
 	serverGameDLL->SaveWriteFields( pSaveData, "GameHeader", &gameHeader, NULL, GAME_HEADER::m_DataMap.dataDesc, GAME_HEADER::m_DataMap.dataNumFields );
 	serverGameDLL->SaveGlobalState( pSaveData );
 
@@ -798,6 +812,11 @@ int CSaveRestore::SaveGameSlot( const char *pSaveName, const char *pSaveComment,
 		S_ExtraUpdate();
 	}
 
+	ISteamRemoteStorage *pRemoteStorage = SteamClient()?(ISteamRemoteStorage *)SteamClient()->GetISteamGenericInterface(
+		SteamAPI_GetHSteamUser(), SteamAPI_GetHSteamPipe(), STEAMREMOTESTORAGE_INTERFACE_VERSION ):NULL;
+	if ( pRemoteStorage )
+		pRemoteStorage->BeginFileWriteBatch();
+
 	// If this isn't a dangerous auto save use it next
 	if ( bSetMostRecent )
 	{
@@ -806,8 +825,7 @@ int CSaveRestore::SaveGameSlot( const char *pSaveName, const char *pSaveComment,
 	m_bWaitingForSafeDangerousSave = bIsAutosaveDangerous;
 
 	int iHeaderBufferSize = 64 + tokenSize + pSaveData->GetCurPos();
-	void *pMem = new char[iHeaderBufferSize];
-
+	void *pMem = malloc(iHeaderBufferSize);
 	CUtlBuffer saveHeader( pMem, iHeaderBufferSize );
 
 	// Write the header -- THIS SHOULD NEVER CHANGE STRUCTURE, USE SAVE_HEADER FOR NEW HEADER INFORMATION
@@ -830,6 +848,18 @@ int CSaveRestore::SaveGameSlot( const char *pSaveName, const char *pSaveComment,
 	// Create the save game container before the directory copy 
 	g_AsyncSaveCallQueue.QueueCall( g_pSaveRestoreFileSystem, &ISaveRestoreFileSystem::AsyncWrite, CUtlEnvelope<const char *>(name), saveHeader.Base(), saveHeader.TellPut(), true, false, (FSAsyncControl_t *) NULL );
 	g_AsyncSaveCallQueue.QueueCall( this, &CSaveRestore::DirectoryCopy, CUtlEnvelope<const char *>(hlPath), CUtlEnvelope<const char *>(name), m_bIsXSave );
+
+	KeyValues *pSaveAppendix = new KeyValues( "SaveAppendix" );
+	char szExpansionId[64];
+	szExpansionId[0] = '\0';
+	if ( g_pFullFileSystem->GetCurrentGameExpansionId( szExpansionId, sizeof( szExpansionId ) ) )
+		pSaveAppendix->SetString( "Expansion", szExpansionId );
+#ifndef BYTEMATCH_RETAIL
+	char szAppendixName[MAX_PATH];
+	V_sprintf_safe( szAppendixName, "%s.kv", name );
+	pSaveAppendix->SaveToFile( g_pFullFileSystem, szAppendixName, MOD_DIR );
+	pSaveAppendix->deleteThis();
+#endif
 
 	// Finish all writes and close the save game container
 	// @TODO: this async finish all writes has to go away, very expensive and will make game hitchy. switch to a wait on the last async op
@@ -982,17 +1012,26 @@ int CSaveRestore::SaveReadHeader( FileHandle_t pFile, GAME_HEADER *pHeader, int 
 		g_szMapLoadOverride[0] = 0;
 	}
 
-	if ( pHeader->mapCount != 0 && pbOldSave)
+#ifdef BYTEMATCH_RETAIL
+	// Pre-anniversary saves of HL2 maps need the old save handling
+	if ( pbOldSave )
+		*pbOldSave = pHeader->mapCount != SAVEGAME_MAPCOUNT_ANNIVERSARY && ( !V_strnicmp( pHeader->mapName, "d1_", 3 ) || !V_strnicmp( pHeader->mapName, "d2_", 3 ) || !V_strnicmp( pHeader->mapName, "d3_", 3 ) );
+
+	if ( readGlobalState && pHeader->mapCount == SAVEGAME_MAPCOUNT_ANNIVERSARY )
+#else
+	// Saves written by earlier builds of this engine have mapCount 0 and stay loadable
+	if ( pHeader->mapCount != 0 && pHeader->mapCount != SAVEGAME_MAPCOUNT_ANNIVERSARY && pbOldSave )
 		*pbOldSave = true;
 
-	if ( readGlobalState && pHeader->mapCount == 0 ) // Alfred: Only load save games from the OB era engine where mapCount is forced to zero
+	if ( readGlobalState && ( pHeader->mapCount == 0 || pHeader->mapCount == SAVEGAME_MAPCOUNT_ANNIVERSARY ) ) // Alfred: Only load save games from the OB era engine where mapCount is forced to zero
+#endif
 	{
 		serverGameDLL->RestoreGlobalState( pSaveData );
 	}
 
 	Finish( pSaveData );
 
-	if ( pHeader->mapCount == 0 )
+	if ( pHeader->mapCount == 0 || pHeader->mapCount == -1 || pHeader->mapCount == SAVEGAME_MAPCOUNT_ANNIVERSARY )
 	{
 		if ( g_pSaveRestoreFileSystem->Read( &pHeader->mapCount, sizeof(pHeader->mapCount), pFile ) != sizeof(pHeader->mapCount) )
 			return 0;
@@ -1059,6 +1098,35 @@ bool CSaveRestore::SaveFileExists( const char *pName )
 }
 
 //-----------------------------------------------------------------------------
+// Purpose: Loads the KeyValues stored next to a save game (<save>.kv); the
+//			caller owns the result
+//-----------------------------------------------------------------------------
+KeyValues *CSaveRestore::GetSaveAppendix( const char *pName )
+{
+	char name[ MAX_PATH ];
+	if ( !CalcSaveGameName( pName, name, sizeof( name ) ) )
+	{
+		DevWarning( "Loaded bad game %s\n", pName );
+		return NULL;
+	}
+
+	char szAppendixName[ MAX_PATH ];
+	V_sprintf_safe( szAppendixName, "%s.kv", name );
+
+	KeyValues *pSaveAppendix = new KeyValues( "SaveAppendix" );
+	if ( !pSaveAppendix )
+		return NULL;
+
+	if ( !pSaveAppendix->LoadFromFile( g_pFullFileSystem, szAppendixName, "MOD" ) )
+	{
+		pSaveAppendix->deleteThis();
+		return NULL;
+	}
+
+	return pSaveAppendix;
+}
+
+//-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : *pName - 
 // Output : int
@@ -1070,7 +1138,11 @@ bool CSaveRestore::LoadGame( const char *pName )
 	FileHandle_t	pFile;
 	GAME_HEADER		gameHeader;
 	char			name[ MAX_PATH ];
+#ifdef BYTEMATCH_RETAIL
+	bool			validload = true;
+#else
 	bool			validload = false;
+#endif
 
 	FinishAsyncSave();
 	SaveResetMemory();
@@ -1081,6 +1153,9 @@ bool CSaveRestore::LoadGame( const char *pName )
 		Assert(0);
 		return false;
 	}
+
+	KeyValues *pSaveAppendix = GetSaveAppendix( pName );
+	KeyValues::AutoDelete autodelete_pSaveAppendix( pSaveAppendix );
 
 	// store off the most recent save
 	SetMostRecentSaveGame( pName );
@@ -1143,16 +1218,36 @@ bool CSaveRestore::LoadGame( const char *pName )
 		// Reset the file pointer to the start of the file
 		g_pSaveRestoreFileSystem->Seek( pFile, 0, FILESYSTEM_SEEK_HEAD );
 
+		if ( pSaveAppendix )
+		{
+			KeyValues *pWorkshop = pSaveAppendix->FindKey( "Workshop" );
+			if ( pWorkshop )
+			{
+				// Workshop campaigns are not mounted on this platform
+				pWorkshop->GetUint64( "Campaign" );
+			}
+		}
+
 		if ( SaveReadHeader( pFile, &gameHeader, 1, &bOldSave ) )
 		{
 			validload = DirectoryExtract( pFile, gameHeader.mapCount );
 		}
 
+#ifdef BYTEMATCH_RETAIL
+		char szMapFile[ MAX_PATH ] = { 0 };
+		Host_DefaultMapFileName( gameHeader.mapName, szMapFile, sizeof( szMapFile ) );
+		if ( !g_pVEngineServer->IsMapValid( szMapFile ) )
+		{
+			Msg( "Map '%s' missing or invalid\n", szMapFile );
+			validload = false;
+		}
+#else
 		if ( !HaveExactMap( gameHeader.mapName ) )
 		{
 			Msg( "Map '%s' missing or invalid\n", gameHeader.mapName );
 			validload = false;
 		}
+#endif
 
 		g_pSaveRestoreFileSystem->Close( pFile );
 		
@@ -1478,8 +1573,12 @@ bool CSaveRestore::SaveGameState( bool bTransition, CSaveRestoreData **ppReturnS
 	if ( !IsXSave() )
 	{
 		Q_snprintf( name, 256, "//%s/%s%s.HL1", MOD_DIR, GetSaveDir(), GetSaveGameMapName( sv.GetMapName() ) ); // DON'T FixSlashes on this, it needs to be //MOD
+#ifdef BYTEMATCH_RETAIL
+		g_AsyncSaveCallQueue.QueueCall( &Sys_mkdir, CUtlEnvelope<const char *>(GetSaveDir()) );
+#else
 		SaveMsg( "Queue COM_CreatePath\n" );
 		g_AsyncSaveCallQueue.QueueCall( &COM_CreatePath, CUtlEnvelope<const char *>(name) );
+#endif
 	}
 	else
 	{
@@ -2129,7 +2228,11 @@ int CSaveRestore::SaveReadNameAndComment( FileHandle_t f, OUT_Z_CAP(nameSize) ch
 	int nNumberOfFields;
 
 	char *pData;
+#ifdef BYTEMATCH_RETAIL
+	int nFieldSize;
+#else
 	short nFieldSize;
+#endif
 
 	pData = pSaveData;
 
@@ -2150,11 +2253,17 @@ int CSaveRestore::SaveReadNameAndComment( FileHandle_t f, OUT_Z_CAP(nameSize) ch
 
 	// short, short (size, index of field name)
 
+#ifdef BYTEMATCH_RETAIL
+	nFieldSize = *(short *)pData;
+	pData += sizeof(short);
+	pFieldName = pTokenList[ *(short *)pData ];
+#else
 	Q_memcpy( &nFieldSize, pData, sizeof(short) );
 	pData += sizeof(short);
 	short index = 0;
 	Q_memcpy( &index, pData, sizeof(short) );
 	pFieldName = pTokenList[index];
+#endif
 
 	if ( !pFieldName || Q_stricmp( pFieldName, "GameHeader" ) )
 	{
@@ -2165,7 +2274,11 @@ int CSaveRestore::SaveReadNameAndComment( FileHandle_t f, OUT_Z_CAP(nameSize) ch
 
 	// int (fieldcount)
 	pData += sizeof(short);
+#ifdef BYTEMATCH_RETAIL
+	nNumberOfFields = *(int*)pData;
+#else
 	Q_memcpy( &nNumberOfFields, pData, sizeof(int) );
+#endif
 	pData += nFieldSize;
 
 	// Each field is a short (size), short (index of name), binary string of "size" bytes (data)
@@ -2176,11 +2289,18 @@ int CSaveRestore::SaveReadNameAndComment( FileHandle_t f, OUT_Z_CAP(nameSize) ch
 		// szName
 		// Actual Data
 
+#ifdef BYTEMATCH_RETAIL
+		nFieldSize = *(short *)pData;
+		pData += sizeof(short);
+
+		pFieldName = pTokenList[ *(short *)pData ];
+#else
 		Q_memcpy( &nFieldSize, pData, sizeof(short) );
 		pData += sizeof(short);
 
 		Q_memcpy( &index, pData, sizeof(short) );
 		pFieldName = pTokenList[index];
+#endif
 		pData += sizeof(short);
 
 		if ( !Q_stricmp( pFieldName, "comment" ) )
@@ -2865,6 +2985,29 @@ void CSaveRestore::AutoSaveDangerousIsSafe()
 		return;
 	}
 
+	// Rename the save appendix along with it
+	if ( !IsXSave() )
+	{
+		Q_snprintf( szOldName, sizeof( szOldName ), "//%s/%sautosavedangerous%s.sav.kv", MOD_DIR, GetSaveDir(), GetPlatformExt() );
+		Q_snprintf( szNewName, sizeof( szNewName ), "//%s/%sautosave%s.sav.kv", MOD_DIR, GetSaveDir(), GetPlatformExt() );
+	}
+	else
+	{
+		Q_snprintf( szOldName, sizeof( szOldName ), "%s:\\autosavedangerous%s.sav.kv", GetCurrentMod(), GetPlatformExt() );
+		Q_snprintf( szNewName, sizeof( szNewName ), "%s:\\autosave%s.sav.kv", GetCurrentMod(), GetPlatformExt() );
+	}
+
+	// there could be an old version, remove it
+	if ( g_pFileSystem->FileExists( szNewName ) )
+	{
+		g_pFileSystem->RemoveFile( szNewName );
+	}
+
+	if ( !g_pFileSystem->RenameFile( szOldName, szNewName ) )
+	{
+		Warning( "Couldn't rename save appendix %s to %s. This is bad... probably!\n", szOldName, szNewName );
+	}
+
 	// Use this as the most recent now that it's safe
 	SetMostRecentSaveGame( "autosave" );
 
@@ -3115,6 +3258,11 @@ CON_COMMAND( autosave, "Autosave" )
 		CL_HudMessage( pchSaving );
 #endif
 		g_SaveRestore.AddDeferredCommand( "_autosave" );
+	}
+	else if ( sv.m_bLoadgame )
+	{
+		// Retry once the save game being loaded has finished restoring
+		g_SaveRestore.AddDeferredCommand( "autosave" );
 	}
 	else
 	{

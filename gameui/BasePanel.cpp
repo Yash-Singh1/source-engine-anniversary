@@ -142,27 +142,28 @@ void CGameMenuItem::ApplySchemeSettings(IScheme *pScheme)
 {
 	BaseClass::ApplySchemeSettings(pScheme);
 
+	vgui::HFont hMainMenuFont = pScheme->GetFont( "MainMenuFont", IsProportional() );
+
 	// make fully transparent
 	SetFgColor(GetSchemeColor("MainMenu.TextColor", pScheme));
 	SetBgColor(Color(0, 0, 0, 0));
 	SetDefaultColor(GetSchemeColor("MainMenu.TextColor", pScheme), Color(0, 0, 0, 0));
+
+	if ( !hMainMenuFont )
+	{
+		hMainMenuFont = pScheme->GetFont( "MenuLarge", IsProportional() );
+	}
+
 	SetArmedColor(GetSchemeColor("MainMenu.ArmedTextColor", pScheme), Color(0, 0, 0, 0));
 	SetDepressedColor(GetSchemeColor("MainMenu.DepressedTextColor", pScheme), Color(0, 0, 0, 0));
-	SetContentAlignment(Label::a_west);
 	SetBorder(NULL);
 	SetDefaultBorder(NULL);
 	SetDepressedBorder(NULL);
 	SetKeyFocusBorder(NULL);
 
-	vgui::HFont hMainMenuFont = pScheme->GetFont( "MainMenuFont", IsProportional() );
-
 	if ( hMainMenuFont )
 	{
 		SetFont( hMainMenuFont );
-	}
-	else
-	{
-		SetFont( pScheme->GetFont( "MenuLarge", IsProportional() ) );
 	}
 	SetTextInset(0, 0);
 	SetArmedSound("UI/buttonrollover.wav");
@@ -179,6 +180,10 @@ void CGameMenuItem::ApplySchemeSettings(IScheme *pScheme)
 	if (m_bRightAligned)
 	{
 		SetContentAlignment(Label::a_east);
+	}
+	else
+	{
+		SetContentAlignment(Label::a_west);
 	}
 }
 
@@ -518,17 +523,19 @@ public:
 			}
 		}
 
+		ButtonCode_t nButtonCode = GetBaseButtonCode( code );
 		m_KeyRepeat.KeyDown( code );
 
 		int nDir = 0;
 
-		switch ( code )
+		switch ( nButtonCode )
 		{
 		case KEY_XBUTTON_UP:
 		case KEY_XSTICK1_UP:
 		case KEY_XSTICK2_UP:
 		case KEY_UP:
 		case STEAMCONTROLLER_DPAD_UP:
+		case STEAMCONTROLLER_LEFT_PAD_UP:
 			nDir = -1;
 			break;
 
@@ -537,6 +544,7 @@ public:
 		case KEY_XSTICK2_DOWN:
 		case KEY_DOWN:
 		case STEAMCONTROLLER_DPAD_DOWN:
+		case STEAMCONTROLLER_LEFT_PAD_DOWN:
 			nDir = 1;
 			break;
 		}
@@ -552,7 +560,7 @@ public:
 				return;
 			}
 		}
-		else if ( code == KEY_XBUTTON_A || code == STEAMCONTROLLER_A )
+		else if ( nButtonCode == KEY_XBUTTON_A || nButtonCode == STEAMCONTROLLER_A )
 		{
 			CUtlSortVector< SortedPanel_t, CSortedPanelYLess > vecSortedButtons;
 			VguiPanelGetSortedChildButtonList( this, (void*)&vecSortedButtons );
@@ -570,10 +578,10 @@ public:
 		BaseClass::OnKeyCodePressed( code );
 
 		// HACK: Allow F key bindings to operate even here
-		if ( IsPC() && code >= KEY_F1 && code <= KEY_F12 )
+		if ( IsPC() && nButtonCode >= KEY_F1 && nButtonCode <= KEY_F12 )
 		{
 			// See if there is a binding for the FKey
-			const char *binding = gameuifuncs->GetBindingForButtonCode( code );
+			const char *binding = gameuifuncs->GetBindingForButtonCode( nButtonCode );
 			if ( binding && binding[0] )
 			{
 				// submit the entry as a console commmand
@@ -1125,9 +1133,9 @@ void CBasePanel::OnThink()
 			m_iSwitchModState = 0;
 			break;
 		}
-	}
 
-	BaseClass::OnThink();
+		BaseClass::OnThink();
+	}
 }
 
 static const char *g_rgValidCommands[] =
@@ -1174,6 +1182,8 @@ static void CC_GameMenuCommand( const CCommand &args )
 
 	vgui::ivgui()->PostMessage( g_pBasePanel->GetVPanel(), new KeyValues("Command", "command", args[1] ), NULL);
 }
+
+static bool UtlStringLessFunc( const CUtlString &lhs, const CUtlString &rhs );
 
 static int CC_GameMenuCompletionFunc( char const *partial, char commands[ COMMAND_COMPLETION_MAXITEMS ][ COMMAND_COMPLETION_ITEM_LENGTH ] )
 {
@@ -2158,12 +2168,20 @@ void CBasePanel::PerformLayout()
 		// place menu buttons above middle of screen
 		m_pGameMenuButtons[i]->SetPos(m_iGameTitlePos[i].x, m_iGameTitlePos[i].y + yDiff);
 		//m_pGameMenuButtons[i]->SetSize(textWide + 4, textTall + 4);
+		m_pGameMenuButtons[i]->SetVisible( true );
 	}
 
 	if ( m_pGameLogo )
 	{
 		// move the logo to sit right on top of the menu
-		m_pGameLogo->SetPos( m_iGameMenuPos.x + m_pGameLogo->GetOffsetX(), idealMenuY - m_pGameLogo->GetTall() + m_pGameLogo->GetOffsetY() );
+		int logoX = m_iGameMenuPos.x + m_pGameLogo->GetOffsetX();
+		int logoY = idealMenuY - m_pGameLogo->GetTall() + m_pGameLogo->GetOffsetY();
+		m_pGameLogo->SetPos( logoX, logoY );
+
+		if ( GameUI().IsInLevel() )
+		{
+			m_pGameLogo->SetAlpha( 0 );
+		}
 	}
 
 	// position self along middle of screen
@@ -2304,8 +2322,11 @@ void CBasePanel::UpdateBackgroundImages()
 		}
 		surface()->DrawSetTextureFile( m_iProductImageID, filename, false, false );
 	}
-
+#ifdef BYTEMATCH_RETAIL
+	else if ( IsPC() )
+#else
 	if ( IsPC() )
+#endif
 	{
 		// load the loading icon
 		if ( m_iLoadingImageID == -1 )
@@ -2392,7 +2413,7 @@ void CBasePanel::OnGameUIActivated()
 		}
 	}
 
-	if ( GameUI().IsConsoleUI() )
+	if ( GameUI().IsConsoleUI() || IsSteamDeck() )
 	{
 		ArmFirstMenuItem();
 	}
@@ -3453,16 +3474,18 @@ public:
 
 	void OnKeyCodePressed(KeyCode code)
 	{
+		ButtonCode_t nButtonCode = GetBaseButtonCode( code );
+
 		// ESC cancels
-		if ( code == KEY_XBUTTON_B || code == STEAMCONTROLLER_B || code == STEAMCONTROLLER_START )
+		if ( nButtonCode == KEY_ESCAPE || nButtonCode == KEY_XBUTTON_B || nButtonCode == STEAMCONTROLLER_B || nButtonCode == STEAMCONTROLLER_START )
 		{
 			Close();
 		}
-		else if ( code == KEY_XBUTTON_A || code == STEAMCONTROLLER_A )
+		else if ( nButtonCode == KEY_XBUTTON_A || nButtonCode == STEAMCONTROLLER_A )
 		{
 			OnCommand( "SaveAndQuit" );
 		}
-		else if ( code == KEY_XBUTTON_X || code == STEAMCONTROLLER_X )
+		else if ( nButtonCode == KEY_XBUTTON_X || nButtonCode == STEAMCONTROLLER_X )
 		{
 			OnCommand( "Quit" );
 		}
@@ -4062,12 +4085,6 @@ void CBasePanel::SystemNotification( const int notification )
 			if ( m_pGameLogo )
 			{
 				m_pGameLogo->SetVisible( false );
-			}
-
-			// Hide the standard game menu
-			for ( int i = 0; i < m_pGameMenuButtons.Count(); ++i )
-			{
-				m_pGameMenuButtons[i]->SetVisible( false );
 			}
 
 			// Hide the BasePanel's button footer
@@ -5414,6 +5431,9 @@ void CBasePanel::CloseBaseDialogs( void )
 
 	if ( m_hCreateMultiplayerGameDialog.Get() )
 		m_hCreateMultiplayerGameDialog->Close();
+
+	if ( m_hDemoPlayerDialog.Get() )
+		m_hDemoPlayerDialog->Close();
 }
 
 static void CC_GameUIShowDialog( const CCommand &args )
@@ -5534,7 +5554,15 @@ void CBasePanel::RefreshDialogs()
 	DeletePanel();
 	MakeBasePanel();
 
-	REOPEN_BASE_DIALOG( m_hNewGameDialog, bNewGameDialog, OnOpenNewGameDialog( -1, NULL ) );
+	if ( bNewGameDialog )
+	{
+		g_pBasePanel->OnOpenNewGameDialog( -1, NULL );
+		if ( g_pBasePanel->m_hNewGameDialog.Get() )
+		{
+			g_pBasePanel->m_hNewGameDialog->DisableFadeEffect();
+			((CNewGameDialog *)g_pBasePanel->m_hNewGameDialog.Get())->IsCommentaryMode();
+		}
+	}
 	REOPEN_BASE_DIALOG( m_hBonusMapsDialog, bBonusMapsDialog, OnOpenBonusMapsDialog() );
 	REOPEN_BASE_DIALOG( m_hLoadGameDialog, bLoadGameDialog, OnOpenLoadGameDialog( NULL ) );
 	REOPEN_BASE_DIALOG( m_hSaveGameDialog, bSaveGameDialog, OnOpenSaveGameDialog() );
@@ -5542,14 +5570,11 @@ void CBasePanel::RefreshDialogs()
 	if ( bOptionsDialog )
 	{
 		g_pBasePanel->OnOpenOptionsDialog();
-		if ( g_pBasePanel->m_hOptionsDialog.Get() )
+		COptionsDialog *pOptionsDialog = dynamic_cast< COptionsDialog * >( g_pBasePanel->m_hOptionsDialog.Get() );
+		if ( pOptionsDialog )
 		{
-			COptionsDialog *pOptionsDialog = dynamic_cast< COptionsDialog * >( g_pBasePanel->m_hOptionsDialog.Get() );
-			if ( pOptionsDialog )
-			{
-				pOptionsDialog->GetPropertySheet()->SetActivePage( pOptionsDialog->GetOptionsSubVideo() );
-				pOptionsDialog->DisableFadeEffect();
-			}
+			pOptionsDialog->GetPropertySheet()->SetActivePage( pOptionsDialog->GetOptionsSubVideo() );
+			pOptionsDialog->DisableFadeEffect();
 		}
 	}
 
@@ -5567,6 +5592,11 @@ static void RefreshOptionsDialogModeset( const CCommand &args )
 	g_pBasePanel->RefreshDialogs();
 }
 static ConCommand refresh_gameui_dialogs_modeset( "refresh_gameui_dialogs_modeset", RefreshOptionsDialogModeset, "Refresh ALL GameUI Dialogs", 0 );
+
+static bool UtlStringLessFunc( const CUtlString &lhs, const CUtlString &rhs )
+{
+	return V_stricmp( lhs.Get(), rhs.Get() ) < 0;
+}
 
 void CGameMenu::SetMenuCategory( const char *pszMenuCategory )
 {

@@ -22,6 +22,7 @@ namespace vgui
 {
     class Label;
     class Panel;
+    class ComboBox;
 }
 
 //-----------------------------------------------------------------------------
@@ -73,6 +74,13 @@ private:
 	vgui::Label					*m_pJoyYawSensitivityPreLabel;
 	CCvarSlider					*m_pJoyPitchSensitivitySlider;
 	vgui::Label					*m_pJoyPitchSensitivityPreLabel;
+
+	vgui::ComboBox				*m_pAutoaimCombo;
+	vgui::Label					*m_pAutoaimScaleLabel;
+	CCvarSlider					*m_pAutoaimScaleSlider;
+
+	bool						m_bJoystickVisible;
+	bool						m_bAutoaimVisible;
 };
 
 

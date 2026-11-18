@@ -9,8 +9,10 @@
 #include "tier1/convar.h"
 #include "EngineInterface.h"
 #include "tier1/KeyValues.h"
+#include "ModInfo.h"
 
 #include "vgui_controls/RadioButton.h"
+#include "vgui_controls/Button.h"
 
 using namespace vgui;
 
@@ -24,7 +26,15 @@ COptionsSubDifficulty::COptionsSubDifficulty(vgui::Panel *parent) : BaseClass(pa
 	m_pNormalRadio = new RadioButton(this, "Skill2Radio", "#GameUI_SkillNormal");
 	m_pHardRadio = new RadioButton(this, "Skill3Radio", "#GameUI_SkillHard");
 
+	m_pMigrateButton = new Button( this, "MigrateButton", "#GameUI_MigrateEpisodicData" );
+	m_pMigrateButton->SizeToContents();
+	m_pMigrateButton->SetEnabled( false );
+	m_pMigrateButton->SetVisible( false );
+
 	LoadControlSettings("Resource/OptionsSubDifficulty.res");
+
+	m_pMigrateButton->SetEnabled( false );
+	m_pMigrateButton->SetVisible( false );
 }
 
 //-----------------------------------------------------------------------------
@@ -46,6 +56,25 @@ void COptionsSubDifficulty::OnResetData()
 	{
 		m_pNormalRadio->SetSelected(true);
 	}
+
+	if ( m_pMigrateButton )
+	{
+		// episodic data migration is not offered; the button stays hidden
+		ModInfo();
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void COptionsSubDifficulty::OnCommand( const char *command )
+{
+	if ( ModInfo().IsHL2Complete() && !stricmp( command, "MigrateData" ) )
+	{
+		engine->ClientCmd_Unrestricted( "migrate_episodic_data" );
+	}
+
+	BaseClass::OnCommand( command );
 }
 
 //-----------------------------------------------------------------------------

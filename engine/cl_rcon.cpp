@@ -80,6 +80,15 @@ static void RconAddressChanged_f( IConVar *pConVar, const char *pOldString, floa
 	ConVarRef var( pConVar );
 	netadr_t to;
 
+#ifdef BYTEMATCH_RETAIL
+	if ( !NET_StringToAdr( var.GetString(), &to ) )
+	{
+		Msg( "Unable to resolve rcon address %s\n", var.GetString() );
+		return;
+	}
+
+	RCONClient().SetAddress( to );
+#else
 	const char *cmdargs = var.GetString(); 
 	if ( ( !cmdargs || !cmdargs[ 0 ] ) && cl.m_NetChannel )
 	{
@@ -93,6 +102,8 @@ static void RconAddressChanged_f( IConVar *pConVar, const char *pOldString, floa
 
 	Msg( "Setting rcon_address: %s:%d\n", to.ToString( true ), to.GetPort() );
 	RCONClient().SetAddress( to );
+#endif
+#line 96
 #endif
 }
 
@@ -191,7 +202,12 @@ void CRConVProfExport::OnRemoteGroupData( const void *data, int len )
 		green = buf.GetUnsignedChar( );
 		blue = buf.GetUnsignedChar( );
 		alpha = buf.GetUnsignedChar( );
+#ifdef BYTEMATCH_RETAIL
+		buf.GetString( temp, sizeof( temp ) );
+#else
 		buf.GetString( temp );
+#endif
+#line 195
 		int nLen = Q_strlen( temp );
 
 		pInfo->m_Color.SetColor( red, green, blue, alpha );
@@ -433,8 +449,14 @@ void CRConClient::ParseReceivedData()
 					m_bAuthenticated = true;
 				}
 				char dummy[2];
+#ifdef BYTEMATCH_RETAIL
+				m_RecvBuffer.GetString( dummy, sizeof( dummy ) );
+				m_RecvBuffer.GetString( dummy, sizeof( dummy ) );
+#else
 				m_RecvBuffer.GetString( dummy );
 				m_RecvBuffer.GetString( dummy );
+#endif
+#line 438
 			}
 			break;
 
@@ -473,7 +495,12 @@ void CRConClient::ParseReceivedData()
 		case SERVERDATA_RESPONSE_STRING:
 			{
 				char pBuf[2048];
+#ifdef BYTEMATCH_RETAIL
+				m_RecvBuffer.GetString( pBuf, sizeof( pBuf ) );
+#else
 				m_RecvBuffer.GetString( pBuf );
+#endif
+#line 477
 				Msg( "%s", pBuf );
 			}
 			break;

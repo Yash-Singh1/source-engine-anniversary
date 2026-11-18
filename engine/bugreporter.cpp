@@ -101,6 +101,11 @@
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
+#ifdef BYTEMATCH_RETAIL
+// retail predates the bounded copies
+#define V_strcpy_safe( dest, src )	Q_strcpy( dest, src )
+#endif
+#line 104
 
 #define DENY_SOUND		"common/bugreporter_failed"
 #define SUCCEED_SOUND	"common/bugreporter_succeeded"

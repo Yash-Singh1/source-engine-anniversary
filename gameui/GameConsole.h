@@ -46,6 +46,7 @@ public:
 private:
 
 	bool m_bInitialized;
+	bool m_bConsoleLaidOut;
 	CGameConsoleDialog *m_pConsole;
 };
 

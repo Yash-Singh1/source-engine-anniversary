@@ -105,6 +105,9 @@
 #ifdef BYTEMATCH_RETAIL
 #include "GameEventManager.h"
 #include "inputsystem/iinputsystem.h"
+#include "host.h"
+#include "modelloader.h"
+void CL_GetBackgroundLevelName( char *pszBackgroundName, int bufSize, bool bMapName );
 #endif
 #line 107
 #include "tier0/memdbgon.h"
@@ -621,7 +624,10 @@ void CEngineVGui::Init()
 
 	// Get our langauge string
 	char lang[ 64 ];
+#ifndef BYTEMATCH_RETAIL
 	lang[0] = 0;
+#endif
+#line 607
 	engineClient->GetUILanguage( lang, sizeof( lang ) );
 	if ( lang[0] )
 		vgui::system()->SetRegistryString( "HKEY_CURRENT_USER\\Software\\Valve\\Source\\Language", lang );
@@ -674,10 +680,32 @@ void CEngineVGui::Init()
 		CCommand ccommand;
 		if ( CL_ShouldLoadBackgroundLevel( ccommand ) )
 		{
+#ifdef BYTEMATCH_RETAIL
+			char szBackgroundName[1024];
+			CL_GetBackgroundLevelName( szBackgroundName, sizeof( szBackgroundName ), true );
+
+			char szMapName[96];
+			GetPlatformMapPath( szBackgroundName, szMapName, sizeof( szMapName ) );
+			int nLen = Q_strlen( szMapName );
+			if ( nLen > 4 && !Q_stricmp( szMapName + nLen - 4, ".bsp" ) )
+			{
+				szMapName[ nLen - 4 ] = 0;
+			}
+
+			if ( modelloader->Map_IsValid( szMapName ) )
+			{
+				// Must be before the game ui base panel starts up
+				// This is a hint to avoid the menu pop due to the impending background map
+				// that the game ui is not aware of until 1 frame later.
+				staticGameUIFuncs->SetProgressOnStart();
+			}
+#else
 			// Must be before the game ui base panel starts up
 			// This is a hint to avoid the menu pop due to the impending background map
 			// that the game ui is not aware of until 1 frame later.
 			staticGameUIFuncs->SetProgressOnStart();
+#endif
+#line 666
 		}
 	}
 
@@ -1787,7 +1815,12 @@ bool CEngineVGui::Key_Event( const InputEvent_t &event )
 #endif
 			   
 	// ESCAPE toggles game ui
+#ifdef BYTEMATCH_RETAIL
+	if ( bDown && ( GetBaseButtonCode( code ) == KEY_ESCAPE || GetBaseButtonCode( code ) == STEAMCONTROLLER_START ) )
+#else
 	if ( bDown && ( code == KEY_ESCAPE || code == KEY_XBUTTON_START || code == STEAMCONTROLLER_START) && !g_ClientDLL->HandleUiToggle() )
+#endif
+#line 1716
 	{
 		if ( IsPC() )
 		{
@@ -1880,6 +1913,14 @@ void CEngineVGui::Simulate()
 
 		vgui::surface()->CalculateMouseVisible();
 		VGui_ActivateMouse();
+#ifdef BYTEMATCH_RETAIL
+
+		if ( IsGameUIVisible() )
+		{
+			g_pInputSystem->ActivateSteamControllerActionSet( GAME_ACTION_SET_MENUCONTROLS );
+		}
+#endif
+#line 1808
 	}
 
 //	if ( !vgui::ivgui()->IsRunning() )
