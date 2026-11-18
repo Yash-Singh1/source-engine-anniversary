@@ -333,7 +333,7 @@ void C_SmokeStack::Update(float fTimeDelta)
 		{
 			int iRandomFrame = random->RandomInt( 0, m_iMaxFrames );
 
-		if ( IsHL2Episodic() )
+		if ( HL2_EPISODIC_ACTIVE() )
 		{
 		}
 		else
@@ -359,7 +359,7 @@ void C_SmokeStack::Update(float fTimeDelta)
 				pParticle->m_Lifetime = 0;
 				pParticle->m_flAngle = 0.0f;
 
-			if ( IsHL2Episodic() )
+			if ( HL2_EPISODIC_ACTIVE() )
 			{
 #ifdef HL2_EPISODIC
 					pParticle->m_flAngle = RandomFloat( 0, 360 );
@@ -448,7 +448,7 @@ void C_SmokeStack::SimulateParticles( CParticleSimulateIterator *pIterator )
 		bQuickTest = true;
 	}
 
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 	}
 	else
@@ -486,7 +486,7 @@ void C_SmokeStack::SimulateParticles( CParticleSimulateIterator *pIterator )
 				pParticle->m_Pos.y = vTwist.x * m_TwistMat[1][0] + vTwist.y * m_TwistMat[1][1] + GetAbsOrigin().y;
 			}
 
-		if ( IsHL2Episodic() )
+		if ( HL2_EPISODIC_ACTIVE() )
 		{
 #ifdef HL2_EPISODIC
 				pParticle->m_Pos = pParticle->m_Pos + pParticle->m_Velocity * pIterator->GetTimeDelta() + pParticle->m_vAccel * pIterator->GetTimeDelta();

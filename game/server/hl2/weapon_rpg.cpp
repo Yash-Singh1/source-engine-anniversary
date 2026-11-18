@@ -688,7 +688,7 @@ void CMissile::SeekThink( void )
 	// Think as soon as possible
 	SetNextThink( gpGlobals->curtime );
 
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 
@@ -1158,7 +1158,7 @@ void CAPCMissile::DoExplosion( void )
 	}
 	else
 	{
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 			ExplosionCreate( GetAbsOrigin(), GetAbsAngles(), this, APC_MISSILE_DAMAGE, 100, true, 20000 );

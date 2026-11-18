@@ -444,7 +444,7 @@ int CFastZombie::SelectSchedule ( void )
 {
 
 // ========================================================
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 
@@ -667,7 +667,7 @@ void CFastZombie::Spawn( void )
 		m_fIsTorso = true;
 	}
 
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 		SetBloodColor( BLOOD_COLOR_ZOMBIE );
@@ -1772,7 +1772,7 @@ void CFastZombie::BuildScheduleTestBits( void )
 	if ( GetRunningBehavior() )
 		GetRunningBehavior()->BridgeBuildScheduleTestBits(); 
 
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 		SetCustomInterruptCondition( COND_PROVOKED );

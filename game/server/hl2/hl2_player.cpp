@@ -571,7 +571,7 @@ void CHL2_Player::PreThink(void)
 		NDebugOverlay::Line( GetAbsOrigin(), predPos, 0, 255, 0, 0, 0.01f );
 	}
 
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 		if( m_hLocatorTargetEntity != NULL )
@@ -648,7 +648,7 @@ void CHL2_Player::PreThink(void)
 
 	VPROF_SCOPE_BEGIN( "CHL2_Player::PreThink-Speed" );
 	HandleSpeedChanges();
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 		HandleArmorReduction();
@@ -736,7 +736,7 @@ void CHL2_Player::PreThink(void)
 		return;
 	}
 
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 		CheckFlashlight();
@@ -964,7 +964,7 @@ void CHL2_Player::Activate( void )
 	BaseClass::Activate();
 	InitSprinting();
 
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 
@@ -3178,7 +3178,7 @@ void CHL2_Player::ForceDropOfCarriedPhysObjects( CBaseEntity *pOnlyIfHoldingThis
 		return;
 	}
 
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 		if ( IsHL2Episodic() )
@@ -3259,7 +3259,7 @@ void CHL2_Player::UpdateClientData( void )
 	}
 
 	// Update Flashlight
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 		if ( Flashlight_UseLegacyVersion() == false )

@@ -204,7 +204,7 @@ int CHalfLife2::Damage_GetTimeBased( void )
 bool CHalfLife2::Damage_IsTimeBased( int iDmgType )
 {
 	// Damage types that are time-based.
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 		// This makes me think EP2 should have its own rules, but they are #ifdef all over in here.

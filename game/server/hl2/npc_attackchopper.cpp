@@ -1064,7 +1064,7 @@ void CNPC_AttackHelicopter::Spawn( void )
 	
 	SetHullSizeNormal();
 
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 		CreateVPhysics();
@@ -5037,7 +5037,7 @@ void CGrenadeHelicopter::Spawn( void )
 	// use a lower gravity for grenades to make them easier to see
 	SetGravity( UTIL_ScaleForGravity( 400 ) );
 
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 		m_bPickedUp = false;
@@ -5153,7 +5153,7 @@ void CGrenadeHelicopter::BecomeActive()
 
 	SetContextThink( &CGrenadeHelicopter::WarningBlinkerThink, gpGlobals->curtime + (GetBombLifetime() - 2.0f), s_pWarningBlinkerContext );
 
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 		m_flBlinkFastTime = gpGlobals->curtime + GetBombLifetime() - 1.0f;
@@ -5181,7 +5181,7 @@ void CGrenadeHelicopter::RampSoundThink( )
 //------------------------------------------------------------------------------
 void CGrenadeHelicopter::WarningBlinkerThink()
 {
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 	}
 	else
@@ -5231,7 +5231,7 @@ void CGrenadeHelicopter::WarningBlinkerThink()
 	// Frighten people
 	CSoundEnt::InsertSound ( SOUND_DANGER, WorldSpaceCenter(), g_helicopter_bomb_danger_radius.GetFloat(), 0.2f, this, SOUNDENT_CHANNEL_REPEATED_DANGER );
 
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 		if( gpGlobals->curtime >= m_flBlinkFastTime )
@@ -5316,7 +5316,7 @@ void CGrenadeHelicopter::VPhysicsCollision( int index, gamevcollisionevent_t *pE
 	BaseClass::VPhysicsCollision( index, pEvent );
 	BecomeActive();
 
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 	}
 	else
@@ -5436,7 +5436,7 @@ void CGrenadeHelicopter::ExplodeThink(void)
 	GetVelocity( &vecVelocity, NULL );
 	DoExplosion( GetAbsOrigin(), vecVelocity );
 
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 		// if we were thrown by player, look at health of helicopter after explosion and determine if we damaged it
@@ -5542,7 +5542,7 @@ void CGrenadeHelicopter::OnPhysGunPickup(CBasePlayer *pPhysGunUser, PhysGunPicku
 
 			SetContextThink( &CGrenadeHelicopter::WarningBlinkerThink, gpGlobals->curtime + GetBombLifetime() - 2.0f, s_pWarningBlinkerContext );
 
-		if ( IsHL2Episodic() )
+		if ( HL2_EPISODIC_ACTIVE() )
 		{
 #ifdef HL2_EPISODIC
 				m_nSkin = (int)SKIN_REGULAR;

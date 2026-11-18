@@ -1577,7 +1577,7 @@ void CNPC_Barnacle::BitePrey( void )
 
 	CBaseCombatCharacter *pVictim = GetEnemyCombatCharacterPointer();
 
- if ( IsHL2Episodic() )
+ if ( HL2_EPISODIC_ACTIVE() )
  {
 #ifdef HL2_EPISODIC
 	 	if ( pVictim == NULL )
@@ -1654,7 +1654,7 @@ void CNPC_Barnacle::BitePrey( void )
 	m_cGibs = 3;
 
 	// In episodic, bite the zombie's headcrab off & drop the body
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 
@@ -2440,7 +2440,7 @@ CBaseEntity *CNPC_Barnacle::TongueTouchEnt ( float *pflLength )
 
 	int iMask = MASK_SOLID_BRUSHONLY;
 
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 		iMask = MASK_NPCSOLID;
@@ -2519,7 +2519,7 @@ CBaseEntity *CNPC_Barnacle::TongueTouchEnt ( float *pflLength )
 				}
 
 				// Allow the barnacles to grab stuff while their tongue is lowering
-			if ( IsHL2Episodic() )
+			if ( HL2_EPISODIC_ACTIVE() )
 			{
 #ifdef HL2_EPISODIC
 					length = fabs( GetAbsOrigin().z - pTest->WorldSpaceCenter().z );
@@ -2550,7 +2550,7 @@ CBaseEntity *CNPC_Barnacle::TongueTouchEnt ( float *pflLength )
 		{
 
 			// Allow the barnacles to grab stuff while their tongue is lowering
-		if ( IsHL2Episodic() )
+		if ( HL2_EPISODIC_ACTIVE() )
 		{
 #ifdef HL2_EPISODIC
 				length = fabs( GetAbsOrigin().z - pTest->WorldSpaceCenter().z );

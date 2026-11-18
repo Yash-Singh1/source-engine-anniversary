@@ -2868,7 +2868,7 @@ void CAI_BaseNPC::StartTask( const Task_t *pTask )
 				// FIXME: too many ss assume its safe to leave the npc is whatever sequence they were in before, so only slam their activity
 				//		  if they're playing a recognizable movement animation
 				//
-			if ( IsHL2Episodic() )
+			if ( HL2_EPISODIC_ACTIVE() )
 			{
 #ifdef HL2_EPISODIC
 					// dvs: Check current activity rather than ideal activity. Since scripted NPCs early out in MaintainActivity,

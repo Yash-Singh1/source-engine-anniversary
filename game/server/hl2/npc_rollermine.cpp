@@ -520,7 +520,7 @@ void CNPC_RollerMine::Precache( void )
 	PrecacheMaterial( "effects/rollerglow" );
 
 	gm_iszDropshipClassname = AllocPooledString( "npc_combinedropship" ); // For fast string compares.
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 		PrecacheScriptSound( "RagdollBoogie.Zap" );

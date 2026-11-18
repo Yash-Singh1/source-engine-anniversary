@@ -1679,7 +1679,7 @@ void CAI_BaseActor::MaintainLookTargets( float flInterval )
 			absVel = absVel + ground->GetAbsVelocity();
 		}
 
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 			// Translate our position if riding in a vehicle
@@ -1805,7 +1805,7 @@ void CAI_BaseActor::OnStateChange( NPC_STATE OldState, NPC_STATE NewState )
 {
 	PlayExpressionForState( NewState );
 
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 		// If we've just switched states, ensure we stop any scenes that asked to be stopped

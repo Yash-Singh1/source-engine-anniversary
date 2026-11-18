@@ -275,7 +275,7 @@ void CZombie::Spawn( void )
 
 	m_fIsHeadless = false;
 
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 		SetBloodColor( BLOOD_COLOR_ZOMBIE );
@@ -826,7 +826,7 @@ void CZombie::Extinguish()
 //---------------------------------------------------------
 int CZombie::OnTakeDamage_Alive( const CTakeDamageInfo &inputInfo )
 {
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 	}
 	else
@@ -851,7 +851,7 @@ int CZombie::OnTakeDamage_Alive( const CTakeDamageInfo &inputInfo )
 //-----------------------------------------------------------------------------
 bool CZombie::IsHeavyDamage( const CTakeDamageInfo &info )
 {
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 		if ( info.GetDamageType() & DMG_BUCKSHOT )

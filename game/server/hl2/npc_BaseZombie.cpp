@@ -584,7 +584,7 @@ int CNPC_BaseZombie::MeleeAttack1Conditions ( float flDot, float flDist )
 	if( tr.fraction == 1.0 || !tr.m_pEnt )
 	{
 
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 
@@ -633,7 +633,7 @@ int CNPC_BaseZombie::MeleeAttack1Conditions ( float flDot, float flDist )
 		}
 	}
 
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 
@@ -2153,7 +2153,7 @@ void CNPC_BaseZombie::StartTask( const Task_t *pTask )
 
 	case TASK_ZOMBIE_WAIT_POST_MELEE:
 		{
-		if ( IsHL2Episodic() )
+		if ( HL2_EPISODIC_ACTIVE() )
 		{
 		}
 		else

@@ -543,7 +543,7 @@ void CAI_PlayerAlly::PrescheduleThink( void )
 		TakeHealth( flHealthRegen, DMG_GENERIC );
 	}
 
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 		if ( (GetState() == NPC_STATE_IDLE || GetState() == NPC_STATE_ALERT) 

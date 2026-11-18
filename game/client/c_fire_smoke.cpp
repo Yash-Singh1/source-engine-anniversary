@@ -382,7 +382,7 @@ void C_EntityFlame::Simulate( void )
 	if ( gpGlobals->frametime <= 0.0f )
 		return;
 
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 

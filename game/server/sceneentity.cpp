@@ -2314,7 +2314,7 @@ bool CSceneEntity::CheckActors()
 						bShouldWait = true;
 					}
 					
-				if ( IsHL2Episodic() )
+				if ( HL2_EPISODIC_ACTIVE() )
 				{
 #ifdef HL2_EPISODIC
 						// HACK: Alyx cannot play scenes when she's in the middle of transitioning					

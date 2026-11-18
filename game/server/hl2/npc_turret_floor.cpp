@@ -2031,7 +2031,7 @@ void CNPC_FloorTurret::BreakThink( void )
 	Vector vecOrigin = WorldSpaceCenter() + ( vecUp * 12.0f );
 
 	// Our effect
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 		DispatchParticleEffect( "explosion_turret_break", vecOrigin, GetAbsAngles() );

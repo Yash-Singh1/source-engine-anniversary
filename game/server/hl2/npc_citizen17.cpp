@@ -964,7 +964,7 @@ void CNPC_Citizen::GatherConditions()
 				}
 			}
 
-		if ( IsHL2Episodic() )
+		if ( HL2_EPISODIC_ACTIVE() )
 		{
 #ifdef HL2_EPISODIC
 				// Heal if I'm on an assault. The player hasn't had time to stare at me.
@@ -1098,7 +1098,7 @@ void CNPC_Citizen::BuildScheduleTestBits()
 		SetCustomInterruptCondition( COND_BETTER_WEAPON_AVAILABLE );
 	}
 
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 		if( IsMedic() && m_AssaultBehavior.IsRunning() )

@@ -1525,7 +1525,7 @@ void CAI_LeadGoal::InputActivate( inputdata_t &inputdata )
 		DevMsg( "Lead goal entity activated for an NPC that doesn't have the lead behavior\n" );
 		return;
 	}
- if ( IsHL2Episodic() )
+ if ( HL2_EPISODIC_ACTIVE() )
  {
 #ifdef HL2_EPISODIC
 	 	if ( (m_flLeadDistance*4) < m_flRetrieveDistance )
@@ -1537,7 +1537,7 @@ void CAI_LeadGoal::InputActivate( inputdata_t &inputdata )
 
 	if ( m_flRetrieveDistance < (m_flLeadDistance + LEAD_MIN_RETRIEVEDIST_OFFSET) )
 	{
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 			Warning("ai_goal_lead '%s': retrieve distance (%.2f) < lead distance (%.2f) + %d. Retrieve distance should be at least %d greater than the lead distance, or NPC will ping-pong while retrieving.\n", GetDebugName(), m_flRetrieveDistance, m_flLeadDistance, LEAD_MIN_RETRIEVEDIST_OFFSET, LEAD_MIN_RETRIEVEDIST_OFFSET );

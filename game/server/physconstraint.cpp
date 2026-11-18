@@ -572,7 +572,7 @@ void CPhysConstraint::GetConstraintObjects( hl_constraint_info_t &info )
 		if ( Q_strlen(STRING(m_nameAttach1)) )
 		{
 			Warning("Bogus constraint %s (attaches ENTITY NOT FOUND:%s to %s)\n", GetDebugName(), STRING(m_nameAttach1), STRING(m_nameAttach2));
-		if ( IsHL2Episodic() )
+		if ( HL2_EPISODIC_ACTIVE() )
 		{
 #ifdef HL2_EPISODIC
 				info.pObjects[0] = info.pObjects[1] = NULL;
@@ -588,7 +588,7 @@ void CPhysConstraint::GetConstraintObjects( hl_constraint_info_t &info )
 		if ( Q_strlen(STRING(m_nameAttach2)) )
 		{
 			Warning("Bogus constraint %s (attaches %s to ENTITY NOT FOUND:%s)\n", GetDebugName(), STRING(m_nameAttach1), STRING(m_nameAttach2));
-		if ( IsHL2Episodic() )
+		if ( HL2_EPISODIC_ACTIVE() )
 		{
 #ifdef HL2_EPISODIC
 				info.pObjects[0] = info.pObjects[1] = NULL;

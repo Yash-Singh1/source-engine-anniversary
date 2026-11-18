@@ -79,7 +79,7 @@ int CRallyPoint::DrawDebugTextOverlays()
 //---------------------------------------------------------
 bool CRallyPoint::IsExclusive()
 {
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 		if( m_sExclusivity == RALLY_EXCLUSIVE_NOT_EVALUATED )
@@ -1500,7 +1500,7 @@ int CAI_AssaultBehavior::SelectSchedule()
 		}
 	}
 
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 		// This ugly patch fixes a bug where Combine Soldiers on an assault would not shoot through glass, because of the way

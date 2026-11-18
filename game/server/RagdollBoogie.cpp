@@ -119,7 +119,7 @@ void CRagdollBoogie::ZapThink()
 		DispatchEffect( "TeslaHitboxes", data );	
 	}
 
-	if ( IsHL2Episodic() )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
 #ifdef HL2_EPISODIC
 		EmitSound( "RagdollBoogie.Zap" );
