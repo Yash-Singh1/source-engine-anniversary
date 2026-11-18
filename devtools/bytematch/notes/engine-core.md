@@ -657,3 +657,84 @@ hl2 server.dylib (+3, `UtlCachedFileData.h`) and bsppack.dylib (+1) change.
 | sys_engine | `CEngine::Load`/`Unload`/`Frame`, static init | OB-era text console (`textconsole.cpp`, `TextConsoleUnix.cpp`, `CTextConsoleUnix` at `CEngine+0x38`) |
 | cdll_engine_int | `GetEventsSubscription` | retail `CMatchEventsSubscription` object, not in the manifest |
 | Overlay, l_studio, gl_*, disp_*, shadowmgr, snd_mix, cmodel_disp | | not investigated |
+
+
+# Round 5 (engine5 lane)
+
+Branch `bytematch-engine5`, started at `bytematch` 48858870. Measured with
+`lane-engine5-scratch/run.sh` (engine/ objects) and a whole-dylib report.
+
+Totals: engine.dylib 12895/12999 (97.29% bytes) -> 12983/13025 (97.93%). The
+total grew by 26 because `textconsole` (16) and `mm_events` (10) are now linked
+and counted. engine/ objects 8635/8715 -> 8686/8725 (97.14%). No function
+matched at the start is lost. Native arm64 build passes.
+
+## Per object (start -> end / total)
+
+| object | start | end | total | cause |
+|---|---:|---:|---:|---|
+| textconsole, TextConsoleUnix | 0, 0 | 16, 8 | 16, 8 | OB-era console (base class keeps the input line and history, Unix child does termios I/O), retail-only under `BYTEMATCH_RETAIL` in dedicated/console |
+| sys_engine | 11 | 15 | 15 | `CTextConsoleUnix` member at `CEngine+0x38` (Load inits, Unload shuts down, Frame feeds lines to `ClientCmd_Unrestricted`); no Sleep VPROF or CPU frequency report; PAUSE busy-wait |
+| mm_events, cdll_engine_int | 0, 163 | 10, 164 | 10, 164 | new engine/mm_events.cpp (`CMatchEventsSubscription`, from disassembly), public/matchmaking/imatchevents.h; `GetEventsSubscription` returns `g_pMatchEventsSubscription` |
+| sv_uploadgamestats | 3 | 9 | 9 | `CUploadGameStats` is a member-less stub; CSER uploader compiled out |
+| sys_dll | 28 | 34 | 34 | `CUtlLinkedList<CUtlString>` copies attributed here link again |
+| sys_mainwind | 23 | 26 | 26 | window title " - <render backend>", `m_pSDLWindow` reset, SDL 2.0.14 `SDL_VERSION` |
+| engsoundservice | 40 | 43 | 43 | Steam overlay speaking state, sized `ConstructString` |
+| cbenchmark | 2 | 5 | 5 | pristine layout (int start time, host_framerate set/reset, no FPS list) |
+| netmessages | 400 | 403 | 403 | empty-list `NET_SetConVar::ToString`, keep list on empty message, no `numBytes <= 0` |
+| hltvserver, hltvdemo, replaydemo, demofile | 162, 22, 22, 28 | 164, 23, 23, 29 | | `ReadCompeleteDemoFile` (Valve spelling), single 512 KB string-table buffers, older `ReadRawData` |
+| bugreporter | 86 | 88 | 88 | dialogs sized with `PROPORTIONAL_VALUE` |
+| steamid (+ strtools `V_atoui64`) | 1 | 2 | 2 | newer `SetFromString` with `V_atoui64` fallback |
+| others (+1 each) | | | | ModelInfo, cl_entityreport (portable forms), baseclient (`ValidateName`), dt_encode, hltvclientstate, lightcache (anniversary min lighting), matchmakingshared (`ReadBitsClamped`), sentence, snd_wave_data, snd_wave_source, sv_main (inlined Steam init, no heartbeat), sv_plugin, sv_rcon (init order), vgui_DebugSystemPanel, vgui_vprofgraphpanel, vgui_vprofpanel |
+
+Also: `RETAIL_KEEP` for bin/engine is empty now (sv_uploaddata, language, MPAHeader,
+VBRHeader, masterserver are unreferenced), so `__DATA,__data`, `__DATA,__const` and
+`__mod_init_func` have retail sizes. A `__cstring` audit found string literals that byte
+masking hides; those in engine files are fixed (see lane report).
+
+## Still differing
+
+| object | function | retail | ours | note |
+|---|---|---:|---:|---|
+| MPAFile | `mp3d_find_frame(unsigned char const*, int, int*, int*)` | 1663 | 1494 | minimp3 revision (third-party minimp3.h) |
+| Overlay | `Overlay_TriTLToBR(CDispInfo*, CMeshReader*, Vector&, float, float, int, Vector const&)` | 2321 | 2111 | 48 more frame bytes in retail; Vector temporaries (mathlib inlines) |
+| Overlay | `Overlay_TriBLToTR(CDispInfo*, CMeshReader*, Vector&, float, float, int, Vector const&)` | 2305 | 2113 | 48 more frame bytes in retail; Vector temporaries (mathlib inlines) |
+| buildcubemaps | `R_BuildCubemapSamples(int)` | 2542 | 2540 | constant hoisting order |
+| builddisp | `CCoreDispInfo::InitDispInfo(int, int, float, CDispVert const*, CDispTri const*)` | 571 | 566 | public/builddisp.cpp, not investigated |
+| byteswap | `CByteswap::SwapFieldToTargetEndian(void*, void*, typedescription_t*)` | 1024 | 848 | tier1 (not this lane) |
+| cmodel | `void CM_TraceToLeaf<false>(TraceInfo_t*, int, float, float)` | 1660 | 1602 | not investigated (trace code; likely mathlib/collision inlines) |
+| cmodel | `void CM_TraceToLeaf<true>(TraceInfo_t*, int, float, float)` | 1564 | 1517 | not investigated (trace code; likely mathlib/collision inlines) |
+| cmodel | `CM_TestInLeaf(TraceInfo_t*, int)` | 702 | 686 | not investigated (trace code; likely mathlib/collision inlines) |
+| cmodel_disp | `CM_TestInDispTree(TraceInfo_t*, cleaf_t*, Vector const&, Vector const&, Vector const&, int, CGameTrace*)` | 632 | 582 | not investigated |
+| cmodel_disp | `CDispLeafBuilder::CDispLeafBuilder(CCollisionBSPData*)` | 398 | 398 | not investigated |
+| cvar | `CCvarUtilities::CvarList(CCommand const&)` | 3136 | 3152 | stack slots |
+| disp_interface | `DispInfo_RenderList(int, msurface2_t**, int, bool, unsigned long, ERenderDepthMode)` | 689 | 689 | same size; register allocation |
+| disp_interface | `DispInfo_BuildPrimLists(int, msurface2_t**, int, bool, CDispInfo**, int&)` | 531 | 531 | same size; register allocation |
+| disp_mapload | `DispInfo_LoadDisplacements(model_t*, bool)` | 2709 | 2622 | not investigated |
+| disp_mapload | `DispInfo_CreateFromMapDisp(model_t*, int, ddispinfo_t const*, CCoreDispInfo*, CDispVert const*, CDispTri const*, MaterialSystem_SortInfo_t const*, bool)` | 1705 | 1767 | not investigated |
+| enginetrace | `CEngineTrace::GetCollidableFromDisplacementsInAABB(Vector const&, Vector const&)` | 1152 | 1116 | not investigated |
+| gl_drawlights | `DrawLightSprite(dworldlight_t*, float)` | 4496 | 4468 | not investigated |
+| gl_lightmap | `R_AddDynamicLights(dlight_t*, msurface2_t*, matrix3x4_t const&, bool, unsigned int)` | 4450 | 4466 | not investigated |
+| gl_matsysiface | `MaterialSystem_RegisterLightmapSurfaces()` | 928 | 928 | same size; register allocation |
+| gl_rmain | `CRender::ViewDrawFade(unsigned char*, IMaterial*)` | 3312 | 3408 | not investigated |
+| gl_rsurf | `R_DrawBrushModel(IClientEntity*, model_t*, Vector const&, QAngle const&, ERenderDepthMode, bool, bool)` | 2458 | 2408 | not investigated |
+| gl_warp | `R_DrawSkyBox(float, int)` | 3264 | 3304 | 16 extra frame bytes |
+| host | `Host_WriteConfiguration(char const*)` | 2126 | 2141 | register allocation (g_bConfigCfgExecuted) |
+| host | `Host_ReadPreStartupConfiguration()` | 1022 | 975 | register allocation (g_bConfigCfgExecuted) |
+| host | `Host_ReadConfiguration()` | 979 | 967 | register allocation (g_bConfigCfgExecuted) |
+| host_saverestore | `CSaveRestore::SaveReadHeader(void*, GAME_HEADER*, int, bool*)` | 1522 | 1499 | block layout |
+| l_studio | `CModelRender::UpdateStaticPropColorData(IHandleEntity*, unsigned short)` | 4832 | 4896 | not investigated |
+| modelloader | `Mod_LoadMarksurfaces()` | 899 | 899 | register allocation / scheduling |
+| modelloader | `CResourcePreloadModel::CreateResource(char const*)` | 810 | 808 | register allocation / scheduling |
+| net_ws | `__GLOBAL__I_a` | 2860 | 2828 | CUtlVectorMT MUTEX_TYPE Mutex_t (public/tier1/utlvector.h, headers lane) |
+| shadowmgr | `CShadowMgr::DrawFlashlightDepthTexture()` | 2896 | 2540 | CMeshBuilder / CUtlLinkedList inlines (public/materialsystem/imesh.h, utllinkedlist.h) |
+| shadowmgr | `CUtlLinkedList<CShadowMgr::SurfaceBounds_t, unsigned short, false, int, CUtlMemoryFixed<UtlLinkedListElem_t<CShadowMgr::SurfaceBounds_t, unsigned short>, 1024ul, 16>>::LinkAfter(int, int)` | 277 | 285 | CMeshBuilder / CUtlLinkedList inlines (public/materialsystem/imesh.h, utllinkedlist.h) |
+| shadowmgr | `CUtlLinkedList<CShadowMgr::SurfaceBounds_t, unsigned short, false, int, CUtlMemoryFixed<UtlLinkedListElem_t<CShadowMgr::SurfaceBounds_t, unsigned short>, 1024ul, 16>>::AllocInternal(bool)` | 255 | 351 | CMeshBuilder / CUtlLinkedList inlines (public/materialsystem/imesh.h, utllinkedlist.h) |
+| snd_dma | `S_Update(AudioState_t const*)` | 4721 | 4721 | scheduling (S_Update), not investigated |
+| snd_dma | `SND_GetGainObscured(channel_t*, bool, bool, bool)` | 3591 | 3546 | scheduling (S_Update), not investigated |
+| snd_dsp | `RVA_Params(prc_t*)` | 1103 | 1071 | not investigated |
+| snd_dsp | `RVA_ConstructDelays(float*, float*, int, int*, int*, int*, float, float)` | 797 | 794 | not investigated |
+| snd_mix | `MIX_BuildChannelList(CChannelList&)` | 1872 | 1900 | not investigated |
+| snd_mix | `MIX_MixChannelsToPaintbuffer(CChannelList&, int, int, int, int)` | 1340 | 1292 | not investigated |
+| spatialpartition | `CVoxelTree::EnumerateElementsAlongRay_Ray(int, Ray_t const&, Vector const&, Vector const&, IPartitionEnumerator*)` | 1499 | 1363 | register allocation |
+| vgui_basebudgetpanel | `CBaseBudgetPanel::PerformLayout()` | 1411 | 1403 | identical to pristine; 16 more frame bytes from shared vgui headers |
