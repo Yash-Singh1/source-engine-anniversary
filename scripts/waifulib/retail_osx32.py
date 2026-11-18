@@ -167,6 +167,7 @@ def retail_osx32_configure(conf):
 	v.LIB_STEAM_API = ['steam_api']
 
 	v.RETAIL_MANIFEST = conf.path.find_node(MANIFEST).abspath()
+	v.RETAIL_SELECT = True
 	v.LIBDIR = v.PREFIX + '/bin/'
 	v.BINDIR = v.PREFIX
 	v.RETAIL_PROJECTS = (o.RETAIL_MODULES.split(',') if o.RETAIL_MODULES else RETAIL_MODULES)
@@ -176,15 +177,11 @@ def retail_osx32_configure(conf):
 def _entry(tg):
 	if not tg.env.RETAIL_MANIFEST:
 		return None, None
-	m, by_target, archives = load_manifest(tg.env.RETAIL_MANIFEST)
-	for name in (getattr(tg, 'name', None), os.path.basename(str(tg.target))):
-		if not name:
-			continue
-		for table, kind in ((by_target, 'module'), (archives, 'archive')):
-			for key in (name, name.lower()):
-				if key in table:
-					return kind, table[key]
-	return None, None
+	import retail_manifest
+	kind, key, e = retail_manifest.lookup(tg)
+	if kind == 'module':
+		return kind, (key, e)
+	return kind, e
 
 def _name(d):
 	return d.split('=')[0]
