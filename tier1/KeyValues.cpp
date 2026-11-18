@@ -1867,6 +1867,7 @@ KeyValues *KeyValues::MakeCopy( void ) const
 }
 
 
+#ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -1887,6 +1888,8 @@ KeyValues *KeyValues::MakeCopy( bool copySiblings ) const
 	return rootDest;
 }
 
+#endif
+#line 1890
 //-----------------------------------------------------------------------------
 // Purpose: Check if a keyName has no value assigned to it.
 //-----------------------------------------------------------------------------
