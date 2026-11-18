@@ -48,11 +48,12 @@ class CefApp;
 ///
 // This function should be called on the main application thread to initialize
 // CEF when the application is started. The |application| parameter may be
-// empty. A return value of true indicates that it succeeded and false indicates
-// that it failed.
+// empty. |path| is a Valve addition (Steam passes an empty string). A return
+// value of true indicates that it succeeded and false indicates that it failed.
 ///
-/*--cef(revision_check,optional_param=application)--*/
-bool CefInitialize(const CefSettings& settings, CefRefPtr<CefApp> application);
+/*--cef(revision_check,optional_param=application,optional_param=path)--*/
+bool CefInitialize(const CefSettings& settings, CefRefPtr<CefApp> application,
+                   const CefString& path);
 
 ///
 // This function should be called on the main application thread to shut down

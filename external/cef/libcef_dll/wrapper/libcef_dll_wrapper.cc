@@ -89,7 +89,7 @@
 // GLOBAL METHODS - Body may be edited by hand.
 
 CEF_GLOBAL bool CefInitialize(const CefSettings& settings,
-    CefRefPtr<CefApp> application) {
+    CefRefPtr<CefApp> application, const CefString& path) {
   int build_revision = cef_build_revision();
   if (build_revision != CEF_REVISION) {
     // The libcef build revision does not match the CEF API revision.
@@ -99,12 +99,13 @@ CEF_GLOBAL bool CefInitialize(const CefSettings& settings,
 
   // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
 
-  // Unverified params: application
+  // Unverified params: application, path
 
   // Execute
   int _retval = cef_initialize(
       &settings,
-      CefAppCppToC::Wrap(application));
+      CefAppCppToC::Wrap(application),
+      path.GetStruct());
 
   // Return type: bool
   return _retval?true:false;

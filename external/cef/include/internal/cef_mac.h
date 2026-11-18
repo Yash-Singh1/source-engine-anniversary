@@ -99,6 +99,7 @@ struct CefWindowInfoTraits {
     target->m_nWidth = src->m_nWidth;
     target->m_nHeight = src->m_nHeight;
     target->m_bHidden = src->m_bHidden;
+    target->m_bPopupWindow = src->m_bPopupWindow;
     target->m_bWindowRenderingDisabled = src->m_bWindowRenderingDisabled;
     target->m_bTransparentPainting = src->m_bTransparentPainting;
   }

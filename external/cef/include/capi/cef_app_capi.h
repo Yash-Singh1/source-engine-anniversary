@@ -52,7 +52,7 @@ extern "C" {
 // indicates that it failed.
 ///
 CEF_EXPORT int cef_initialize(const struct _cef_settings_t* settings,
-    struct _cef_app_t* application);
+    struct _cef_app_t* application, const cef_string_t* path);
 
 ///
 // This function should be called on the main application thread to shut down

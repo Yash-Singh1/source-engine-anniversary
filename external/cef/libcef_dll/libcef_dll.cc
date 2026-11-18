@@ -85,14 +85,14 @@
 // GLOBAL FUNCTIONS - Body may be edited by hand.
 
 CEF_EXPORT int cef_initialize(const struct _cef_settings_t* settings,
-    struct _cef_app_t* application) {
+    struct _cef_app_t* application, const cef_string_t* path) {
   // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
 
   // Verify param: settings; type: struct_byref_const
   DCHECK(settings);
   if (!settings)
     return 0;
-  // Unverified params: application
+  // Unverified params: application, path
 
   // Translate param: settings; type: struct_byref_const
   CefSettings settingsObj;
@@ -102,7 +102,8 @@ CEF_EXPORT int cef_initialize(const struct _cef_settings_t* settings,
   // Execute
   bool _retval = CefInitialize(
       settingsObj,
-      CefAppCToCpp::Wrap(application));
+      CefAppCToCpp::Wrap(application),
+      CefString(path));
 
   // Return type: bool
   return _retval;

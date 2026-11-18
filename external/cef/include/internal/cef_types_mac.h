@@ -76,6 +76,9 @@ typedef struct _cef_window_info_t {
   int m_nHeight;
   int m_bHidden;
 
+  // Set to true if the browser is a popup window.
+  int m_bPopupWindow;
+
   // NSView pointer for the parent view.
   cef_window_handle_t m_ParentView;
 
