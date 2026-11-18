@@ -98,17 +98,23 @@ def split_member(oso):
 class Build:
     def __init__(self, bld):
         self.bld = os.path.abspath(bld)
-        with open(os.path.join(self.bld, 'compile_commands.json')) as f:
-            cc = json.load(f)
-        self.compile = {}
-        for e in cc:
-            args = e['arguments']
-            out = next((a[2:] if a != '-o' else args[i + 1]) for i, a in enumerate(args)
-                       if a.startswith('-o'))
-            self.compile[os.path.normpath(os.path.join(e['directory'], out))] = e
         path = os.path.join(self.bld, 'link_commands.json')
         if not os.path.exists(path):
             raise SystemExit('%s missing: run `python3 waf retail_linkdb` first' % path)
+        # compile_commands.json keeps one entry per source file, so a source compiled by
+        # two targets (tier1/interface.cpp in tier1 and vaudio_speex) loses one of them.
+        self.compile = {}
+        for name in ('compile_commands.json', 'retail_compile_commands.json'):
+            p = os.path.join(self.bld, name)
+            if not os.path.exists(p):
+                continue
+            with open(p) as f:
+                cc = json.load(f)
+            for e in cc:
+                args = e['arguments']
+                out = next((a[2:] if a != '-o' else args[i + 1]) for i, a in enumerate(args)
+                           if a.startswith('-o'))
+                self.compile[os.path.normpath(os.path.join(e['directory'], out))] = e
         with open(path) as f:
             self.links = json.load(f)
         self.by_target = dict((e['target'], e) for e in self.links)
@@ -452,10 +458,13 @@ def main():
     rc = 0
     summary = []
     for t in targets:
+        m = None
         try:
             m = Module(t, build, manifest, comp, depot, scratch, os.path.join(scratch, 'out'))
             out = m.run(shim)
         except (RuntimeError, SystemExit) as e:
+            for n in (m.notes if m else []):
+                log('%s: note: %s' % (t, n))
             log('%s: FAILED: %s' % (t, e))
             summary.append((t, 'failed', str(e).splitlines()[0]))
             rc = 1

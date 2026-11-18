@@ -393,9 +393,12 @@ def retail_osx32_link_order(self):
 	env.LDFLAGS = args
 
 LINK_TASK_CLASSES = ('cshlib', 'cxxshlib', 'cprogram', 'cxxprogram', 'cstlib', 'cxxstlib')
+COMPILE_TASK_CLASSES = ('c', 'cxx')
 
 class RetailLinkDb(Build.BuildContext):
-	'''writes link_commands.json: the link and archive commands of the configured modules (for devtools/bytematch/identity)'''
+	'''writes link_commands.json (link and archive commands) and retail_compile_commands.json
+	(every compile command, one per object; compile_commands.json keeps one per source file)
+	for devtools/bytematch/identity'''
 	cmd = 'retail_linkdb'
 
 	def execute(self):
@@ -407,13 +410,30 @@ class RetailLinkDb(Build.BuildContext):
 
 		def exec_command(*k, **kw):
 			return 0
-		entries = []
+		entries, compiles = [], []
 		for g in self.groups:
 			for tg in g:
 				if hasattr(tg, 'post'):
 					tg.post()
 				for tsk in getattr(tg, 'tasks', []):
 					kind = tsk.__class__.__name__
+					if kind in COMPILE_TASK_CLASSES:
+						tsk.keep_last_cmd = True
+						old = tsk.exec_command
+						tsk.exec_command = exec_command
+						try:
+							tsk.run()
+						finally:
+							tsk.exec_command = old
+						cmd = getattr(tsk, 'last_cmd', None)
+						if cmd:
+							compiles.append({
+								'directory': tsk.get_cwd().abspath(),
+								'arguments': cmd if isinstance(cmd, list) else Utils.split_quoted(cmd),
+								'file': tsk.inputs[0].abspath(),
+								'output': tsk.outputs[0].abspath(),
+							})
+						continue
 					if kind not in LINK_TASK_CLASSES:
 						continue
 					if kind.endswith('stlib'):
@@ -445,3 +465,6 @@ class RetailLinkDb(Build.BuildContext):
 		node = self.bldnode.make_node('link_commands.json')
 		node.write_json(entries)
 		Logs.info('Link commands stored in %s', node.path_from(self.path))
+		node = self.bldnode.make_node('retail_compile_commands.json')
+		node.write_json(compiles)
+		Logs.info('Compile commands stored in %s', node.path_from(self.path))
