@@ -72,6 +72,9 @@ void IVP_U_Memory::end_memory_transaction()
 	    transaction_in_use--;
     //}
     //IVP_ASSERT(transaction_in_use==0);
+#ifdef BYTEMATCH_RETAIL
+    if ( transaction_in_use == 0 )
+#endif
     free_mem_transaction();
     IVP_IF(1) {
 #ifdef SUN
