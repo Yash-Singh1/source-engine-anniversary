@@ -67,7 +67,12 @@ Studio models are position independent, so the cache manager can move them.
 ==============================================================================
 */
 
+#ifdef BYTEMATCH_RETAIL
+#define STUDIO_VERSION		48
+#else
 #define STUDIO_VERSION		49
+#endif
+#line 71
 
 #ifndef _XBOX
 #define MAXSTUDIOTRIANGLES	65536	// TODO: tune this
@@ -3105,7 +3110,7 @@ inline const mstudioflexcontroller_t *mstudioflexcontrollerui_t::pController( in
 // If we only support the current version, this function should be empty.
 inline bool Studio_ConvertStudioHdrToNewVersion( studiohdr_t *pStudioHdr )
 {
-	COMPILE_TIME_ASSERT( STUDIO_VERSION == 49 ); //  put this to make sure this code is updated upon changing version.
+	COMPILE_TIME_ASSERT( STUDIO_VERSION == 48 || STUDIO_VERSION == 49 ); //  put this to make sure this code is updated upon changing version.
 
 	int version = pStudioHdr->version;
 	if ( version == STUDIO_VERSION )
@@ -3165,7 +3170,12 @@ inline bool Studio_ConvertStudioHdrToNewVersion( studiohdr_t *pStudioHdr )
 	// for now, just slam the version number since they're compatible
 
 	// nillerusr: that's stupid, comment this shit
+#ifdef BYTEMATCH_RETAIL
+	pStudioHdr->version = STUDIO_VERSION;
+#else
 	//pStudioHdr->version = STUDIO_VERSION;
+#endif
+#line 3169
 
 	return bResult;
 }
