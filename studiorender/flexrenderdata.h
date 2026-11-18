@@ -254,7 +254,10 @@ inline void CCachedRenderData::SetBodyModelMesh( int body, int model, int mesh)
 	m_Mesh = mesh;
 
 	Assert((m_Model >= 0) && (m_Body >= 0));
+#ifndef BYTEMATCH_RETAIL
 	m_CacheDict[m_Body][m_Model].EnsureCount(m_Mesh+1);
+#endif
+#line 258
 
 	// At this point, we should have all 3 defined.
 	CacheDict_t& dict = m_CacheDict[m_Body][m_Model][m_Mesh];
