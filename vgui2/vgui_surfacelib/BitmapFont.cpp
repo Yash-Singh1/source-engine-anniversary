@@ -244,7 +244,7 @@ void CBitmapFont::SetScale( float sx, float sy )
 // Purpose: gets the abc widths for a character
 //-----------------------------------------------------------------------------
 #ifdef VGUI_FONT_INTERFACE
-void CBitmapFont::GetCharABCWidths( int ch, int &a, int &b, int &c, int *pVerticalOffset )
+void CBitmapFont::GetCharABCWidths( int ch, int &a, int &b, int &c, int *pColorGlyph )
 #else
 void CBitmapFont::GetCharABCWidths( int ch, int &a, int &b, int &c )
 #endif

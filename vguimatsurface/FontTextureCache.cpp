@@ -123,16 +123,16 @@ bool CFontTextureCache::CacheEntryLessFunc(CacheEntry_t const &lhs, CacheEntry_t
 //-----------------------------------------------------------------------------
 // Purpose: returns the texture info for the given char & font
 //-----------------------------------------------------------------------------
-bool CFontTextureCache::GetTextureForChar( vgui::HFont font, vgui::FontDrawType_t type, wchar_t wch, int *textureID, float **texCoords, int *pVerticalOffset )
+bool CFontTextureCache::GetTextureForChar( vgui::HFont font, vgui::FontDrawType_t type, wchar_t wch, int *textureID, float **texCoords, int *pColorGlyph )
 {
 	// Ask for just one character
-	return GetTextureForChars( font, type, &wch, textureID, texCoords, 1, pVerticalOffset );
+	return GetTextureForChars( font, type, &wch, textureID, texCoords, 1, pColorGlyph );
 }
 
 //-----------------------------------------------------------------------------
 // Purpose: returns the texture info for the given chars & font
 //-----------------------------------------------------------------------------
-bool CFontTextureCache::GetTextureForChars( vgui::HFont font, vgui::FontDrawType_t type, const wchar_t *wch, int *textureID, float **texCoords, int numChars, int *pVerticalOffset )
+bool CFontTextureCache::GetTextureForChars( vgui::HFont font, vgui::FontDrawType_t type, const wchar_t *wch, int *textureID, float **texCoords, int numChars, int *pColorGlyph )
 {
 	Assert( wch && textureID && texCoords );
 	Assert( numChars >= 1 );
@@ -145,9 +145,9 @@ bool CFontTextureCache::GetTextureForChars( vgui::HFont font, vgui::FontDrawType
 	int typePage = (int)type - 1;
 	typePage = clamp( typePage, 0, (int)vgui::FONT_DRAW_TYPE_COUNT - 1 );
 
-	if ( pVerticalOffset )
+	if ( pColorGlyph )
 	{
-		*pVerticalOffset = 0;
+		*pColorGlyph = 0;
 	}
 
 	if ( FontManager().IsBitmapFont( font ) )
@@ -226,7 +226,7 @@ bool CFontTextureCache::GetTextureForChars( vgui::HFont font, vgui::FontDrawType
 			CacheEntry_t cacheItem;
 			cacheItem.font = font;
 			cacheItem.wch = wch[i];
-			cacheItem.verticalOffset = 0;
+			cacheItem.colorGlyph = 0;
 			HCacheEntry cacheHandle = m_CharCache.Find( cacheItem );
 			if ( ! m_CharCache.IsValidIndex( cacheHandle ) )
 			{
@@ -237,8 +237,8 @@ bool CFontTextureCache::GetTextureForChars( vgui::HFont font, vgui::FontDrawType
 				// get the char details
 				int a, b, c;
 #ifdef VGUI_FONT_INTERFACE
-				int verticalOffset = 0;
-				winFont->GetCharABCWidths( wch[i], a, b, c, &verticalOffset );
+				int colorGlyph = 0;
+				winFont->GetCharABCWidths( wch[i], a, b, c, &colorGlyph );
 #else
 				winFont->GetCharABCWidths( wch[i], a, b, c );
 #endif
@@ -283,7 +283,7 @@ bool CFontTextureCache::GetTextureForChars( vgui::HFont font, vgui::FontDrawType
 				cacheItem.texCoords[2] = (float)( (double)(drawX + fontWide) / (double)twide );
 				cacheItem.texCoords[3] = (float)( (double)(drawY + fontTall) / (double)ttall );
 #ifdef VGUI_FONT_INTERFACE
-				cacheItem.verticalOffset = verticalOffset;
+				cacheItem.colorGlyph = colorGlyph;
 #endif
 
 				m_CharCache.Insert(cacheItem);
@@ -294,9 +294,9 @@ bool CFontTextureCache::GetTextureForChars( vgui::HFont font, vgui::FontDrawType
 			int page = m_CharCache[cacheHandle].page;
 			textureID[i] = m_PageList[page].textureID[typePage];
 			texCoords[i] = m_CharCache[cacheHandle].texCoords;
-			if ( pVerticalOffset )
+			if ( pColorGlyph )
 			{
-				*pVerticalOffset = m_CharCache[cacheHandle].verticalOffset;
+				*pColorGlyph = m_CharCache[cacheHandle].colorGlyph;
 			}
 		}
 

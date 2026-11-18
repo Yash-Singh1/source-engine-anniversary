@@ -33,7 +33,7 @@ public:
 
 	// gets the abc widths for a character
 #ifdef VGUI_FONT_INTERFACE
-	virtual void GetCharABCWidths(int ch, int &a, int &b, int &c, int *pVerticalOffset = NULL);
+	virtual void GetCharABCWidths(int ch, int &a, int &b, int &c, int *pColorGlyph = NULL);
 #else
 	virtual void GetCharABCWidths(int ch, int &a, int &b, int &c);
 #endif

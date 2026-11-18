@@ -39,7 +39,7 @@ public:
 	virtual void GetCharRGBA( wchar_t ch, int rgbaWide, int rgbaTall, unsigned char *rgba ) = 0;
 	virtual bool IsEqualTo( const char *windowsFontName, int tall, int weight, int blur, int scanlines, int flags ) = 0;
 	virtual bool IsValid() = 0;
-	virtual void GetCharABCWidths( int ch, int &a, int &b, int &c, int *pVerticalOffset = NULL ) = 0;
+	virtual void GetCharABCWidths( int ch, int &a, int &b, int &c, int *pColorGlyph = NULL ) = 0;
 	virtual void *SetAsActiveFont( void *pContext ) = 0;
 	virtual int GetHeight() = 0;
 	virtual int GetHeightRequested() = 0;

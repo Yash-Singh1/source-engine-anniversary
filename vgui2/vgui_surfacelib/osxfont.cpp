@@ -381,7 +381,7 @@ void COSXFont::GetCharRGBA( wchar_t ch, int rgbaWide, int rgbaTall, unsigned cha
 //-----------------------------------------------------------------------------
 // Purpose: gets the abc widths for a character
 //-----------------------------------------------------------------------------
-void COSXFont::GetCharABCWidths( int ch, int &a, int &b, int &c, int *pVerticalOffset )
+void COSXFont::GetCharABCWidths( int ch, int &a, int &b, int &c, int *pColorGlyph )
 {
 	Assert( IsValid() );
 

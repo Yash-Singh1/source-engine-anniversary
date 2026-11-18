@@ -69,6 +69,7 @@ public:
 	{ 
 		m_pFileSystem = pFileSystem; 
 		m_pMaterialSystem = pMaterialSystem;
+		InitFreetype();
 	}
 	IFileSystem *FileSystem() { return m_pFileSystem; }
 	IMaterialSystem *MaterialSystem() { return m_pMaterialSystem; }

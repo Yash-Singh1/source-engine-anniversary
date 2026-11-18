@@ -333,7 +333,7 @@ public:
 
 	virtual const char *GetWebkitHTMLUserAgentString() { return "Valve Client"; }
 
-	virtual void *AccessChromeHTMLController() { return NULL; }
+	virtual void *AccessChromeHTMLController() { return m_pChromeHTMLController; }
 
 	virtual void SetFullscreenViewport( int x, int y, int w, int h ) OVERRIDE;
 	virtual void SetFullscreenViewportAndRenderTarget( int x, int y, int w, int h, ITexture *pRenderTarget ) OVERRIDE;
@@ -470,9 +470,14 @@ private:
 	// Stack of paint state...
 	CUtlVector<	PaintState_t > m_PaintStateStack;
 
+	// present in the retail layout; nothing in this module uses it
+	CUtlVector< int > m_UnusedList;
+	void *m_pChromeHTMLController;
+
 	vgui::HFont				m_hCurrentFont;
 	vgui::HCursor			_currentCursor;
 	bool					m_cursorAlwaysVisible;
+	int						m_nUnused;
 
 	// The currently bound texture
 	int m_iBoundTexture;
@@ -481,6 +486,9 @@ private:
 	enum { MAX_BATCHED_CHAR_VERTS = 4096 };
 	vgui::Vertex_t m_BatchedCharVerts[ MAX_BATCHED_CHAR_VERTS ];
 	int m_nBatchedCharVertCount;
+
+	// the batched characters are colour glyphs, drawn untinted
+	bool m_bBatchedColorGlyphs;
 
 	// What's the rectangle we're drawing in 3D paint mode?
 	int m_n3DLeft, m_n3DRight, m_n3DTop, m_n3DBottom;
@@ -559,6 +567,7 @@ private:
 	int m_nFullscreenViewportWidth;
 	int m_nFullscreenViewportHeight;
 	ITexture *m_pFullscreenRenderTarget;
+	bool m_bUnused;
 
 #if defined(LINUX) || defined(OSX) || defined(PLATFORM_BSD)
 	struct font_entry

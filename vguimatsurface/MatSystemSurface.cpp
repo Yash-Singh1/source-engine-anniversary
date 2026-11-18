@@ -146,6 +146,11 @@ CMatSystemSurface g_MatSystemSurface;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR( CMatSystemSurface, ISurface, 
 						VGUI_SURFACE_INTERFACE_VERSION, g_MatSystemSurface );
 
+CON_COMMAND( vgui_font_reload, "" )
+{
+	g_MatSystemSurface.ResetFontCaches();
+}
+
 #ifdef VGUI_FONT_FREETYPE
 CUtlDict< CMatSystemSurface::font_entry, unsigned short > CMatSystemSurface::m_FontData;
 #endif
@@ -197,6 +202,8 @@ CMatSystemSurface::CMatSystemSurface() : m_pEmbeddedPanel(NULL), m_pWhite(NULL)
 	m_bAllowJavaScript = false;
 	m_bAppDrivesInput = false;
 	m_nLastInputPollCount = 0;
+	m_pChromeHTMLController = NULL;
+	m_nUnused = 0;
 
 	m_hCurrentFont = NULL;
 	m_pRestrictedPanel = NULL;
@@ -208,10 +215,12 @@ CMatSystemSurface::CMatSystemSurface() : m_pEmbeddedPanel(NULL), m_pWhite(NULL)
 
 	memset( m_WorkSpaceInsets, 0, sizeof( m_WorkSpaceInsets ) );
 	m_nBatchedCharVertCount = 0;
+	m_bBatchedColorGlyphs = false;
 
 	m_nFullscreenViewportX = m_nFullscreenViewportY = 0;
 	m_nFullscreenViewportWidth = m_nFullscreenViewportHeight = 0;
 	m_pFullscreenRenderTarget = NULL;
+	m_bUnused = false;
 
 	m_cursorAlwaysVisible = false;
 }
@@ -1854,10 +1863,16 @@ bool CMatSystemSurface::AddCustomFontFile( const char *fontName, const char *fon
 	}
 	MAT_FUNC;
 
+#ifdef BYTEMATCH_RETAIL
+	// fonts packed in VPKs are extracted to a temp file
+	char fullPath[2048];
+	bool bFound = g_pFullFileSystem->GetFontTempFile( fontFileName, fullPath, sizeof( fullPath ) );
+#else
 	char fullPath[MAX_PATH];
 	bool bFound = false;
 	// windows needs an absolute path for ttf
 	bFound = g_pFullFileSystem->GetLocalPath( fontFileName, fullPath, sizeof( fullPath ) );
+#endif
 	if ( !bFound )
 	{
 		Warning( "Couldn't find custom font file '%s'\n", fontFileName );
@@ -1877,6 +1892,7 @@ bool CMatSystemSurface::AddCustomFontFile( const char *fontName, const char *fon
 	{
 	 	m_CustomFontFileNames.AddToTail( fullPath );
 
+#ifndef BYTEMATCH_RETAIL
 		if ( IsPC() )
 		{
 			// make sure it's on disk
@@ -1884,6 +1900,7 @@ bool CMatSystemSurface::AddCustomFontFile( const char *fontName, const char *fon
 			// registered font file, causing windows to invalidate the font
 			g_pFullFileSystem->GetLocalCopy( fullPath );
 		}
+#endif
 	}
 
 	// try and use the optimal custom font loader, will makes sure fonts are unloaded properly
@@ -2176,7 +2193,17 @@ void CMatSystemSurface::DrawFlushText()
 		
 		IMaterial *pMaterial = TextureDictionary()->GetTextureMaterial(m_iBoundTexture);
 		InternalSetMaterial( pMaterial );
-		DrawQuadArray( m_nBatchedCharVertCount / 2, m_BatchedCharVerts, m_DrawTextColor );
+#ifdef BYTEMATCH_RETAIL
+		if ( m_bBatchedColorGlyphs )
+		{
+			unsigned char color[4] = { 255, 255, 255, m_DrawTextColor[3] };
+			DrawQuadArray( m_nBatchedCharVertCount / 2, m_BatchedCharVerts, color );
+		}
+		else
+#endif
+		{
+			DrawQuadArray( m_nBatchedCharVertCount / 2, m_BatchedCharVerts, m_DrawTextColor );
+		}
 		m_nBatchedCharVertCount = 0;
 	}
 }
@@ -2249,7 +2276,7 @@ void CMatSystemSurface::DrawUnicodeString( const wchar_t *pString, FontDrawType_
 		return;
 
 	//hushed MAT_FUNC;
-#ifdef POSIX
+#if defined( POSIX ) && !defined( BYTEMATCH_RETAIL )
 	DrawPrintText( pString, V_wcslen( pString ) , drawType );
 #else
 	wchar_t	ch;
@@ -2316,6 +2343,24 @@ bool CMatSystemSurface::DrawGetUnicodeCharRenderInfo( wchar_t ch, CharRenderInfo
 	// get the character texture from the cache
 	info.textureId = 0;
 	float *texCoords = NULL;
+#ifdef BYTEMATCH_RETAIL
+	int bColorGlyph = 0;
+	if (!g_FontTextureCache.GetTextureForChar(m_hCurrentFont, info.drawType, ch, &info.textureId, &texCoords, &bColorGlyph))
+	{
+		info.valid = false;
+		return info.valid;
+	}
+
+	// colour glyphs are batched separately since they are drawn untinted
+	if ( m_bBatchedColorGlyphs != ( bColorGlyph != 0 ) )
+	{
+		DrawFlushText();
+		m_bBatchedColorGlyphs = ( bColorGlyph != 0 );
+	}
+
+	// glyphs are cached with a texel of padding on each side
+	int fontWide = info.abcB + 2;
+#else
 	if (!g_FontTextureCache.GetTextureForChar(m_hCurrentFont, info.drawType, ch, &info.textureId, &texCoords))
 	{
 		info.valid = false;
@@ -2323,6 +2368,7 @@ bool CMatSystemSurface::DrawGetUnicodeCharRenderInfo( wchar_t ch, CharRenderInfo
 	}
 
 	int fontWide = info.abcB;
+#endif
 	if ( bUnderlined )
 	{
 		fontWide += ( info.abcA + info.abcC );
@@ -2339,7 +2385,11 @@ bool CMatSystemSurface::DrawGetUnicodeCharRenderInfo( wchar_t ch, CharRenderInfo
 	// This avoid copying the data in the nonclipped case!!! (X360)
 	info.verts = &m_BatchedCharVerts[ m_nBatchedCharVertCount ];
 	InitVertex( info.verts[0], info.x, info.y, texCoords[0], texCoords[1] );
+#ifdef BYTEMATCH_RETAIL
+	InitVertex( info.verts[1], info.x + fontWide, info.y + info.fontTall + 2, texCoords[2], texCoords[3] );
+#else
 	InitVertex( info.verts[1], info.x + fontWide, info.y + info.fontTall, texCoords[2], texCoords[3] );
+#endif
 
 	info.shouldclip = true;
 
@@ -2417,8 +2467,17 @@ void CMatSystemSurface::DrawPrintText(const wchar_t *text, int iTextLen, FontDra
 	int x = m_pDrawTextPos[0] + m_nTranslateX;
 	int y = m_pDrawTextPos[1] + m_nTranslateY;
 
+#ifdef BYTEMATCH_RETAIL
+	// glyphs are cached with a texel of padding on each side
+	int iTall = GetFontTall(m_hCurrentFont) + 2;
+#else
 	int iTall = GetFontTall(m_hCurrentFont);
+#endif
 	int iLastTexId = -1;
+#ifdef BYTEMATCH_RETAIL
+	int iLastColorGlyph = -1;
+	int bColorGlyph = 0;
+#endif
 
 	int iCount = 0;
 	vgui::Vertex_t *pQuads = (vgui::Vertex_t*)stackalloc((2 * iTextLen) * sizeof(vgui::Vertex_t) );
@@ -2447,7 +2506,12 @@ void CMatSystemSurface::DrawPrintText(const wchar_t *text, int iTextLen, FontDra
 		// different to the amount we step ahead once rendered
 		GetCharABCwide(m_hCurrentFont, ch, abcA, abcB, abcC);
 		
+#ifdef BYTEMATCH_RETAIL
+		// glyphs are cached with a texel of padding on each side
+		int textureWide = abcB + 2;
+#else
 		int textureWide = abcB;
+#endif
 		if ( bUnderlined )
 		{
 			textureWide += ( abcA + abcC );
@@ -2471,12 +2535,19 @@ void CMatSystemSurface::DrawPrintText(const wchar_t *text, int iTextLen, FontDra
 			// get the character texture from the cache
 			int iTexId = 0;
 			float *texCoords = NULL;
+#ifdef BYTEMATCH_RETAIL
+			if (!g_FontTextureCache.GetTextureForChar(m_hCurrentFont, drawType, ch, &iTexId, &texCoords, &bColorGlyph))
+				continue;
+
+			if (iTexId != iLastTexId || iLastColorGlyph != bColorGlyph)
+#else
 			if (!g_FontTextureCache.GetTextureForChar(m_hCurrentFont, drawType, ch, &iTexId, &texCoords))
 				continue;
 
 			Assert( texCoords );
 
 			if (iTexId != iLastTexId)
+#endif
 			{
 				// FIXME: At the moment, we just draw all the batched up
 				// text when the font changes. We Should batch up per material
@@ -2485,11 +2556,25 @@ void CMatSystemSurface::DrawPrintText(const wchar_t *text, int iTextLen, FontDra
 				{
 					IMaterial *pMaterial = TextureDictionary()->GetTextureMaterial(iLastTexId);
 					InternalSetMaterial( pMaterial );
-					DrawQuadArray( iCount, pQuads, m_DrawTextColor, IsPC() );
+#ifdef BYTEMATCH_RETAIL
+					if ( iLastColorGlyph )
+					{
+						// colour glyphs are drawn untinted
+						unsigned char color[4] = { 255, 255, 255, m_DrawTextColor[3] };
+						DrawQuadArray( iCount, pQuads, color, IsPC() );
+					}
+					else
+#endif
+					{
+						DrawQuadArray( iCount, pQuads, m_DrawTextColor, IsPC() );
+					}
 					iCount = 0;
 				}
 
 				iLastTexId = iTexId;
+#ifdef BYTEMATCH_RETAIL
+				iLastColorGlyph = bColorGlyph;
+#endif
 			}
 
  			vgui::Vertex_t &ul = pQuads[2*iCount];
@@ -2528,7 +2613,17 @@ void CMatSystemSurface::DrawPrintText(const wchar_t *text, int iTextLen, FontDra
 	{
 		IMaterial *pMaterial = TextureDictionary()->GetTextureMaterial(iLastTexId);
 		InternalSetMaterial( pMaterial );
-		DrawQuadArray( iCount, pQuads, m_DrawTextColor, IsPC() );
+#ifdef BYTEMATCH_RETAIL
+		if ( bColorGlyph )
+		{
+			unsigned char color[4] = { 255, 255, 255, m_DrawTextColor[3] };
+			DrawQuadArray( iCount, pQuads, color, IsPC() );
+		}
+		else
+#endif
+		{
+			DrawQuadArray( iCount, pQuads, m_DrawTextColor, IsPC() );
+		}
 	}
 
 	m_pDrawTextPos[0] += iTotalWidth;
@@ -2610,6 +2705,11 @@ void CMatSystemSurface::OnScreenSizeChanged( int nOldWidth, int nOldHeight )
 	// update the root panel size
 	ipanel()->SetSize(m_pEmbeddedPanel, iNewWidth, iNewHeight);
 
+#ifdef BYTEMATCH_RETAIL
+	// clear font texture cache
+	ResetFontCaches();
+#endif
+
 	// notify every panel
 	VPANEL panel = GetEmbeddedPanel();
 	ivgui()->PostMessage(panel, new KeyValues("OnScreenSizeChanged", "oldwide", nOldWidth, "oldtall", nOldHeight), NULL);
@@ -2617,8 +2717,10 @@ void CMatSystemSurface::OnScreenSizeChanged( int nOldWidth, int nOldHeight )
 	// Run a frame of the GUI to notify all subwindows of the message size change
 	ivgui()->RunFrame();
 
+#ifndef BYTEMATCH_RETAIL
 	// clear font texture cache
 	ResetFontCaches();
+#endif
 }
 
 // Causes fonts to get reloaded, etc.
@@ -3057,7 +3159,12 @@ void CMatSystemSurface::InternalSolveTraverse(VPANEL panel)
 
 	// WARNING: Some of the think functions add/remove children, so make sure we
 	//  explicitly check for children.Count().
+#ifdef BYTEMATCH_RETAIL
+	int nChildCount = children.Count();
+	for ( int i = 0; i < nChildCount; ++i )
+#else
 	for ( int i = 0; i < children.Count(); ++i )
+#endif
 	{
 		VPanel *child = children[ i ];
 		if (child->IsVisible())
@@ -3086,7 +3193,12 @@ void CMatSystemSurface::InternalThinkTraverse(VPANEL panel)
 
 	// WARNING: Some of the think functions add/remove children, so make sure we
 	//  explicitly check for children.Count().
+#ifdef BYTEMATCH_RETAIL
+	int nChildCount = children.Count();
+	for ( int i = 0; i < nChildCount; ++i )
+#else
 	for ( int i = 0; i < children.Count(); ++i )
+#endif
 	{
 		VPanel *child = children[ i ];
 		if ( child->IsVisible() )
@@ -3109,7 +3221,12 @@ void CMatSystemSurface::InternalSchemeSettingsTraverse(VPANEL panel, bool forceA
 	CUtlVector< VPanel * > &children = vp->GetChildren();
 
 	// apply to the children...
+#ifdef BYTEMATCH_RETAIL
+	int nChildCount = children.Count();
+	for ( int i = 0; i < nChildCount; ++i )
+#else
 	for ( int i = 0; i < children.Count(); ++i )
+#endif
 	{
 		VPanel *child = children[ i ];
 		if ( forceApplySchemeSettings || child->IsVisible() )

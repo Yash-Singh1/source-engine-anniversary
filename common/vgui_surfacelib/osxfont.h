@@ -39,7 +39,7 @@ public:
 	virtual bool IsValid();
 
 	// gets the abc widths for a character
-	virtual void GetCharABCWidths(int ch, int &a, int &b, int &c, int *pVerticalOffset = NULL);
+	virtual void GetCharABCWidths(int ch, int &a, int &b, int &c, int *pColorGlyph = NULL);
 
 	// returns the height of the font, in pixels
 	virtual int GetHeight();
