@@ -140,8 +140,6 @@ public:
 	virtual void						DynamicLoadMapResource( const char *pFilename, DynamicResourceCallback_t pCallback, void *pContext, void *pContext2 );
 	virtual void						QueueDynamicLoadFunctor( CFunctor* pFunctor );
 	virtual bool						CompleteDynamicLoad();
-	virtual void						QueueCleanupDynamicLoadFunctor( CFunctor* pFunctor );
-	virtual bool						CleanupDynamicLoad();
 	virtual bool						ClaimAnonymousJob( const char *pFilename, QueuedLoaderCallback_t pCallback, void *pContext, void *pContext2 );
 	virtual bool						ClaimAnonymousJob( const char *pFilename, void **pData, int *pDataSize, LoaderError_t *pError );
 	virtual bool						IsMapLoading() const;
@@ -208,7 +206,6 @@ private:
 	void*								m_pDynamicContext2;
 	CThreadFastMutex					m_FunctorQueueMutex;
 	CUtlVector< CFunctor* >				m_FunctorQueue;
-	CUtlVector< CFunctor* >				m_CleanupFunctorQueue;
 
 	CUtlFilenameSymbolTable				m_Filenames;
 	CTSList< FileJob_t* >				m_PendingJobs;
@@ -1953,26 +1950,5 @@ bool CQueuedLoader::CompleteDynamicLoad()
 		}
 	}
 	return bDone;
-}
-
-void CQueuedLoader::QueueCleanupDynamicLoadFunctor( CFunctor* pFunctor )
-{
-	Assert( ThreadInMainThread() );
-
-	m_CleanupFunctorQueue.AddToTail( pFunctor );
-}
-
-bool CQueuedLoader::CleanupDynamicLoad()
-{
-	Assert( ThreadInMainThread() );
-
-	FOR_EACH_VEC( m_CleanupFunctorQueue, i )
-	{
-		( *m_CleanupFunctorQueue[i] )();
-		m_CleanupFunctorQueue[i]->Release();
-	}
-	m_CleanupFunctorQueue.Purge();
-
-	return true;
 }
 
