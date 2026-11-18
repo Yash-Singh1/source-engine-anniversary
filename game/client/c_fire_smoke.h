@@ -16,6 +16,8 @@
 
 class CFireOverlay;
 
+bool BIsCurrentFireTypeClassic();
+
 class C_FireSprite : public C_Sprite
 {
 	DECLARE_CLASS( C_FireSprite, C_Sprite );

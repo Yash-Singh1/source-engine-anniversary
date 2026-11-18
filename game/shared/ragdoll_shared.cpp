@@ -1138,6 +1138,13 @@ C_EntityFlame *FireEffect( C_BaseAnimating *pTarget, C_BaseEntity *pServerFire, 
 		pFire->SetParent( pTarget );
 		pFire->m_hEntAttached = (C_BaseEntity *) pTarget;
 
+		if ( BIsCurrentFireTypeClassic() )
+		{
+			pFire->m_bUseHitboxes = true;
+			pFire->m_bCreatedClientside = true;
+			pFire->m_iNumHitboxFires = 10;
+		}
+
 		pFire->OnDataChanged( DATA_UPDATE_CREATED );
 		pFire->SetAbsOrigin( pTarget->GetAbsOrigin() );
 
@@ -1159,6 +1166,19 @@ C_EntityFlame *FireEffect( C_BaseAnimating *pTarget, C_BaseEntity *pServerFire, 
 		CPASAttenuationFilter filter( pTarget );
 		pTarget->EmitSound( filter, pTarget->GetSoundSourceIndex(), "General.BurningFlesh" );
 
+		if ( BIsCurrentFireTypeClassic() )
+		{
+			for ( int i = 0; i < NUM_HITBOX_FIRES; i++ )
+			{
+				if ( pFire->m_pFireSmoke[i] != NULL )
+				{
+					pFire->m_pFireSmoke[i]->m_flScaleEnd = flScaleEnd[i];
+					pFire->m_pFireSmoke[i]->m_flScaleTimeStart = flTimeStart[i];
+					pFire->m_pFireSmoke[i]->m_flScaleTimeEnd = flTimeEnd[i];
+				}
+			}
+		}
+
 		pFire->SetNextClientThink( gpGlobals->curtime + 7.0f );
 	}
 
@@ -1176,7 +1196,35 @@ void C_BaseAnimating::IgniteRagdoll( C_BaseAnimating *pSource )
 
 		if ( pFireChild )
 		{
-			pRagdoll->SetEffectEntity ( FireEffect( pRagdoll, pFireChild, NULL, NULL, NULL ) );
+			if ( BIsCurrentFireTypeClassic() )
+			{
+				float flScaleEnd[NUM_HITBOX_FIRES];
+				float flScaleTimeStart[NUM_HITBOX_FIRES];
+				float flScaleTimeEnd[NUM_HITBOX_FIRES];
+
+				for ( int i = 0; i < NUM_HITBOX_FIRES; i++ )
+				{
+					if ( pFireChild->m_pFireSmoke[i] != NULL )
+					{
+						flScaleEnd[i] = pFireChild->m_pFireSmoke[i]->m_flScaleEnd;
+						flScaleTimeStart[i] = pFireChild->m_pFireSmoke[i]->m_flScaleTimeStart;
+						flScaleTimeEnd[i] = pFireChild->m_pFireSmoke[i]->m_flScaleTimeEnd;
+					}
+					else
+					{
+						// Default value, since this fire is not there anymore
+						flScaleEnd[i] = 0.2f;
+						flScaleTimeStart[i] = 1.0f;
+						flScaleTimeEnd[i] = 2.0f;
+					}
+				}
+
+				pRagdoll->SetEffectEntity ( FireEffect( pRagdoll, pFireChild, flScaleEnd, flScaleTimeStart, flScaleTimeEnd ) );
+			}
+			else
+			{
+				pRagdoll->SetEffectEntity ( FireEffect( pRagdoll, pFireChild, NULL, NULL, NULL ) );
+			}
 		}
 	}
 }
