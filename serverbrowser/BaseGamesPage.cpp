@@ -151,8 +151,10 @@ CBaseGamesPage::CBaseGamesPage( vgui::Panel *parent, const char *name, EPageType
 	SetDefLessFunc( m_mapServerIP );
 	SetDefLessFunc( m_mapGamesFilterItem );
 
+#ifndef BYTEMATCH_RETAIL
 	// Not always loaded
 	m_pWorkshopFilter = NULL;
+#endif
 
 	bool bRunningTF2 = GameSupportsReplay();
 
@@ -683,6 +685,7 @@ bool CBaseGamesPage::TagsExclude( void )
 	return m_pTagsIncludeFilter->GetActiveItem();
 }
 
+#ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
 // Purpose: What mode the workshop selection is in for pages that use it
 //-----------------------------------------------------------------------------
@@ -695,6 +698,7 @@ CBaseGamesPage::eWorkshopMode CBaseGamesPage::WorkshopMode()
 
 	return (eWorkshopMode)m_pWorkshopFilter->GetActiveItem();
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -753,6 +757,7 @@ void CBaseGamesPage::CreateFilters()
 	m_pTagsIncludeFilter->AddItem("#ServerBrowser_TagsDoNotInclude", NULL);
 	m_pTagsIncludeFilter->SetVisible( false );
 
+#ifndef BYTEMATCH_RETAIL
 	if ( ServerBrowser().IsWorkshopEnabled() )
 	{
 		m_pWorkshopFilter = new ComboBox(this, "WorkshopFilter", 3, false);
@@ -761,6 +766,7 @@ void CBaseGamesPage::CreateFilters()
 		m_pWorkshopFilter->AddItem("#ServerBrowser_WorkshopFilterSubscribed", NULL);
 		m_pWorkshopFilter->SetVisible( false );
 	}
+#endif
 
 	m_pNoEmptyServersFilterCheck = new CheckButton(this, "ServerEmptyFilterCheck", "");
 	m_pNoFullServersFilterCheck = new CheckButton(this, "ServerFullFilterCheck", "");
@@ -825,11 +831,13 @@ void CBaseGamesPage::LoadFilterSettings()
 	int tagsinclude = filter->GetInt("tagsinclude");
 	m_pTagsIncludeFilter->ActivateItem( tagsinclude );
 
+#ifndef BYTEMATCH_RETAIL
 	if ( m_pWorkshopFilter )
 	{
 		int workshopFilter = filter->GetInt("workshopfilter");
 		m_pWorkshopFilter->ActivateItem( workshopFilter );
 	}
+#endif
 
 	// apply to the controls
 	UpdateGameFilter();
@@ -1541,10 +1549,12 @@ void CBaseGamesPage::UpdateFilterSettings()
 	filter->SetInt("Secure", m_iSecureFilter);
 	filter->SetInt("QuickList", m_pQuickListCheckButton->IsSelected() );
 	filter->SetInt("tagsinclude", m_pTagsIncludeFilter->GetActiveItem() );
+#ifndef BYTEMATCH_RETAIL
 	if ( m_pWorkshopFilter )
 	{
 		filter->SetInt("workshopfilter", m_pWorkshopFilter->GetActiveItem() );
 	}
+#endif
 	filter->SetInt("Replay", m_bFilterReplayServers);
 
 	OnSaveFilter(filter);
@@ -1775,7 +1785,11 @@ bool CBaseGamesPage::CheckSecondaryFilters( newgameserver_t &server )
 		}
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	return CheckTagFilter( server );
+#else
 	return CheckTagFilter( server ) && CheckWorkshopFilter( server );
+#endif
 }
 
 //-----------------------------------------------------------------------------

@@ -56,6 +56,7 @@ public:
 	// true if the user can't play a game
 	bool IsVACBannedFromGame( int nAppID );
 
+#ifndef BYTEMATCH_RETAIL
 	// Enable filtering of workshop maps, requires the game/tool loading us to feed subscription data. This is a
 	// slightly ugly workaround to TF2 not yet having native workshop UI in quickplay, once that is in place this should
 	// either be stripped back out or expanded to be directly aware of the steam workshop without being managed.
@@ -65,11 +66,14 @@ public:
 
 	bool IsWorkshopEnabled();
 	bool IsWorkshopSubscribedMap( const char *pszMapName );
+#endif
 private:
 	vgui::DHANDLE<CServerBrowserDialog> m_hInternetDlg;
 
+#ifndef BYTEMATCH_RETAIL
 	bool m_bWorkshopEnabled;
 	CUtlVector< CUtlString > m_vecWorkshopSubscribedMaps;
+#endif
 };
 
 // singleton accessor
