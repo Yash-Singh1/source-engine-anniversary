@@ -169,6 +169,9 @@ public:
     void change_stabilizer_constant(IVP_POS_AXIS pos, IVP_FLOAT stabi_constant); // [Newton/meter]
 	void change_fast_turn_factor( IVP_FLOAT fast_turn_factor_ );  // not implemented for raycasts
     void change_wheel_torque(IVP_POS_WHEEL pos, IVP_FLOAT torque);
+#ifdef BYTEMATCH_RETAIL
+    IVP_FLOAT get_wheel_torque(IVP_POS_WHEEL pos);
+#endif
     
 	void update_throttle( IVP_FLOAT flThrottle ) {}
 

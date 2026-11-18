@@ -155,6 +155,9 @@ public:
 	virtual void change_fast_turn_factor( IVP_FLOAT fast_turn_factor ) = 0;
   
     virtual void change_wheel_torque(IVP_POS_WHEEL pos, IVP_FLOAT torque)=0;
+#ifdef BYTEMATCH_RETAIL
+    virtual IVP_FLOAT get_wheel_torque(IVP_POS_WHEEL pos)=0;
+#endif
     virtual void update_body_countertorque()=0;		// rotate the body in the opposite direction of the wheels
     
 	virtual void update_throttle( IVP_FLOAT flThrottle ) = 0;
@@ -162,6 +165,9 @@ public:
     virtual void change_body_downforce(IVP_FLOAT force)=0; // extra force to keep flipped objects flipped over
 
     virtual void fix_wheel( IVP_POS_WHEEL, IVP_BOOL stop_wheel )=0; // stop wheel completely (e.g. handbrake )
+#ifdef BYTEMATCH_RETAIL
+    virtual void set_powerslide(IVP_FLOAT front_accel, IVP_FLOAT rear_accel) = 0;
+#endif
     
     // Car Info
     virtual IVP_DOUBLE get_body_speed(IVP_COORDINATE_INDEX idx_z = IVP_INDEX_Z)=0; // km/h in 'z' direction
@@ -170,7 +176,9 @@ public:
     virtual IVP_DOUBLE get_orig_front_wheel_distance()=0;
     virtual IVP_DOUBLE get_orig_axles_distance()=0;
 	virtual void get_skid_info( IVP_Wheel_Skid_Info *array_of_skid_info_out) = 0;
+#ifndef BYTEMATCH_RETAIL
     virtual void set_powerslide(IVP_FLOAT front_accel, IVP_FLOAT rear_accel) = 0;
+#endif
     // Tools
     static IVP_FLOAT calc_ackerman_angle(IVP_FLOAT alpha, IVP_FLOAT dx, IVP_FLOAT dz); // alpha refers to innermost wheel
 
@@ -188,7 +196,11 @@ public:
 	virtual void GetCarSystemDebugData( IVP_CarSystemDebugData_t &carSystemDebugData ) = 0;
 
     // handle events
+#ifdef BYTEMATCH_RETAIL
+    void event_object_deleted(IVP_Event_Object* pEvent) { };
+#else
     virtual void event_object_deleted(IVP_Event_Object* pEvent) { };
+#endif
 };
 
 
@@ -256,6 +268,9 @@ public:
     void change_stabilizer_constant(IVP_POS_AXIS pos, IVP_FLOAT stabi_constant); // [Newton/meter]
 	void change_fast_turn_factor( IVP_FLOAT );  
     void change_wheel_torque(IVP_POS_WHEEL pos, IVP_FLOAT torque);
+#ifdef BYTEMATCH_RETAIL
+    IVP_FLOAT get_wheel_torque(IVP_POS_WHEEL pos);
+#endif
 	void change_wheel_speed_dampening( IVP_POS_WHEEL wheel_nr, IVP_FLOAT dampening );
     void update_body_countertorque();		// rotate the body in the opposite direction of the wheels
 

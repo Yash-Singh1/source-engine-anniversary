@@ -539,6 +539,14 @@ void IVP_Controller_Raycast_Car::change_wheel_torque(IVP_POS_WHEEL pos, IVP_FLOA
 	car_body->get_environment()->get_controller_manager()->ensure_controller_in_simulation( this );
 }
 
+#ifdef BYTEMATCH_RETAIL
+IVP_FLOAT IVP_Controller_Raycast_Car::get_wheel_torque(IVP_POS_WHEEL pos)
+{
+    IVP_Raycast_Car_Wheel *wheel = get_wheel(pos);
+    return wheel->torque;
+}
+#endif
+
 
 void IVP_Controller_Raycast_Car::fix_wheel(IVP_POS_WHEEL pos, IVP_BOOL stop_wheel)
 {

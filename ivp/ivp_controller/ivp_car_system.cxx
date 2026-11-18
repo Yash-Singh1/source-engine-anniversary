@@ -100,6 +100,13 @@ void IVP_Car_System_Real_Wheels::change_wheel_torque(IVP_POS_WHEEL wheel_nr, IVP
   actuator->set_torque(torque);
 }
 
+#ifdef BYTEMATCH_RETAIL
+IVP_FLOAT IVP_Car_System_Real_Wheels::get_wheel_torque(IVP_POS_WHEEL wheel_nr)
+{
+  return this->car_act_torque[(int)wheel_nr]->get_torque();
+}
+#endif
+
 /********************************************************************************
  *	Name:	       		change_wheel_dampening
  *	Description:		object is ensured to be in simulation
@@ -789,5 +796,12 @@ void IVP_Car_System_Real_Wheels::SetCarSystemDebugData( const IVP_CarSystemDebug
 //-----------------------------------------------------------------------------
 void IVP_Car_System_Real_Wheels::GetCarSystemDebugData( IVP_CarSystemDebugData_t &carSystemDebugData )
 {
+#ifdef BYTEMATCH_RETAIL
+	const IVP_U_Matrix *m_world_f_core = car_body->get_core()->get_m_world_f_core_PSI();
+	m_world_f_core->vmult4( &car_act_powerslide_back->get_actuator_anchor(0)->core_pos, &carSystemDebugData.backActuatorLeft );
+	m_world_f_core->vmult4( &car_act_powerslide_back->get_actuator_anchor(1)->core_pos, &carSystemDebugData.backActuatorRight );
+	m_world_f_core->vmult4( &car_act_powerslide_front->get_actuator_anchor(0)->core_pos, &carSystemDebugData.frontActuatorLeft );
+	m_world_f_core->vmult4( &car_act_powerslide_front->get_actuator_anchor(1)->core_pos, &carSystemDebugData.frontActuatorRight );
+#endif
 	return;
 }
