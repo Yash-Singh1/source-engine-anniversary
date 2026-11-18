@@ -77,7 +77,7 @@ CBaseEntity *CreateEntityByName( const char *className, int iForceEdictIndex, bo
 template< class T >
 T *_CreateEntity( T *newClass, const char *className )
 {
-	T *newEnt = dynamic_cast<T*>( CreateEntityByName(className, -1, false) );
+	T *newEnt = dynamic_cast<T*>( CreateEntityByName(className, -1, true) );
 	if ( !newEnt )
 	{
 		Warning( "classname %s used to create wrong class type\n", className );

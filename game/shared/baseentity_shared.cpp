@@ -415,7 +415,11 @@ bool CBaseEntity::KeyValue( const char *szKeyName, const char *szValue )
 		}
 
 		// Do this so inherited classes looking for 'angles' don't have to bother with 'angle'
+#ifdef BYTEMATCH_RETAIL
+		return KeyValue( szKeyName, szBuf );
+#else
 		return KeyValue( "angles", szBuf );
+#endif
 	}
 
 	// NOTE: Have to do these separate because they set two values instead of one
