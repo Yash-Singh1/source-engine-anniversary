@@ -24,14 +24,15 @@ MANIFEST = 'devtools/bytematch/manifests/retail-osx32.json'
 TOOLCHAIN_DIR = 'devtools/bytematch/toolchain'
 
 # Modules that compile and link in this mode. Not yet: vgui_surfacelib/vguimatsurface
-# (FreeType fonts; retail uses the OSX font path).
+# (FreeType fonts; retail uses the OSX font path), shaderapidx9 (compiles; our source
+# needs D3DX helpers that retail's togl doesn't export).
 RETAIL_MODULES = [
 	'tier0', 'tier1', 'mathlib', 'tier2', 'tier3', 'vstdlib',
 	'appframework', 'bitmap', 'vtf', 'choreoobjects', 'dmxloader', 'particles', 'vpklib',
 	'materialsystem/shaderlib', 'vgui2/vgui_controls', 'vgui2/matsys_controls',
 	'scenefilecache', 'soundemittersystem', 'datacache', 'video', 'inputsystem',
 	'filesystem', 'vgui2/src', 'studiorender', 'serverbrowser', 'utils/vtex',
-	'togl',
+	'togl', 'materialsystem', 'launcher',
 ]
 
 # Defines our top-level wscript adds that Valve's build doesn't have.
