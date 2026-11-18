@@ -34,7 +34,12 @@ enum
 {
 	GAMELUMP_DETAIL_PROPS_VERSION = 4,
 	GAMELUMP_DETAIL_PROP_LIGHTING_VERSION = 0,
+#ifdef BYTEMATCH_RETAIL
+	GAMELUMP_STATIC_PROPS_VERSION = 6,
+#else
 	GAMELUMP_STATIC_PROPS_VERSION = 10,
+#endif
+#line 38
 	GAMELUMP_STATIC_PROP_LIGHTING_VERSION = 0,
 	GAMELUMP_DETAIL_PROP_LIGHTING_HDR_VERSION = 0,
 };
@@ -137,9 +142,14 @@ enum
 	
 	STATIC_PROP_NO_SELF_SHADOWING = 0x80,					// disable self shadowing in vrad
 
+#ifdef BYTEMATCH_RETAIL
+	STATIC_PROP_WC_MASK		= 0xd8,							// all flags settable in hammer (?)
+#else
 	STATIC_PROP_NO_PER_TEXEL_LIGHTING = 0x100,				// whether we should do per-texel lightmaps in vrad.
 
 	STATIC_PROP_WC_MASK		= 0x1d8,						// all flags settable in hammer (?)
+#endif
+#line 141
 };
 
 struct StaticPropDictLump_t
@@ -183,7 +193,12 @@ struct StaticPropLumpV5_t
 //	int				m_Lighting;			// index into the GAMELUMP_STATIC_PROP_LIGHTING lump
 };
 
+#ifdef BYTEMATCH_RETAIL
+struct StaticPropLump_t
+#else
 struct StaticPropLumpV6_t
+#endif
+#line 185
 {
 	DECLARE_BYTESWAP_DATADESC();
 	Vector			m_Origin;
@@ -202,6 +217,9 @@ struct StaticPropLumpV6_t
 	unsigned short	m_nMaxDXLevel;
 	//	int				m_Lighting;			// index into the GAMELUMP_STATIC_PROP_LIGHTING lump
 };
+#ifdef BYTEMATCH_RETAIL
+
+#else
 
 struct StaticPropLumpV7_t
 {
@@ -451,6 +469,8 @@ struct StaticPropLump_t
 	}
 };
 
+#endif
+#line 204
 struct StaticPropLeafLump_t
 {
 	DECLARE_BYTESWAP_DATADESC();

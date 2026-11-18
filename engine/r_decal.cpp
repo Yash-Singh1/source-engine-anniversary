@@ -1216,6 +1216,17 @@ static void R_DecalShoot_( IMaterial *pMaterial, int entity, const model_t *mode
 		decalInfo.m_scale = 1.0f;
 	}
 
+	// Fading decals
+	IMaterialVar *decalFadeVar = decalInfo.m_pMaterial->FindVar( "$decalFadeDuration", &found, false );
+	if ( found )
+	{
+		decalInfo.m_Flags |= FDECAL_DYNAMIC;
+		decalInfo.m_flFadeDuration = decalFadeVar->GetFloatValue();
+		decalFadeVar = decalInfo.m_pMaterial->FindVar( "$decalFadeTime", &found, false );
+		decalInfo.m_flFadeStartTime = found ? decalFadeVar->GetFloatValue() : 0.0f;
+		decalInfo.m_flFadeStartTime += cl.GetTime();
+	}
+
 	// compute the decal dimensions in world space
 	decalInfo.m_decalWidth = pMaterial->GetMappingWidth() / decalInfo.m_scale;
 	decalInfo.m_decalHeight = pMaterial->GetMappingHeight() / decalInfo.m_scale;
@@ -1722,7 +1733,6 @@ static void R_DecalCreate( decalinfo_t* decalinfo, SurfaceHandle_t surfID, float
 		pdecal->flags |= FDECAL_DYNAMIC;
 		pdecal->fadeDuration = decalinfo->m_flFadeDuration;
 		pdecal->fadeStartTime = decalinfo->m_flFadeStartTime;
-		pdecal->fadeStartTime += cl.GetTime();
 	}
 
 	// check for a player spray

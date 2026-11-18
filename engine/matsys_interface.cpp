@@ -2311,7 +2311,13 @@ void SurfSetupSurfaceContext( SurfaceCtx_t& ctx, SurfaceHandle_t surfID )
 
 	if ( ctx.m_LightmapPageSize[0] != 0.0f )
 	{
+#ifdef BYTEMATCH_RETAIL
+		// bumped lightmaps sit next to each other with a one texel border on each side
+		ctx.m_BumpSTexCoordOffset = ( float )( ctx.m_LightmapSize[0] + 2 ) / ( float )ctx.m_LightmapPageSize[0];
+#else
 		ctx.m_BumpSTexCoordOffset = ( float )ctx.m_LightmapSize[0] / ( float )ctx.m_LightmapPageSize[0];
+#endif
+#line 2316
 	}
 	else
 	{

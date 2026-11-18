@@ -37,6 +37,9 @@ static inline bool CanCheat()
 	if ( bRespectCheatVars )
 		return sv_cheats.GetBool();
 	return true;
+#elif defined( BYTEMATCH_RETAIL )
+	extern bool Cmd_IsRptActive();
+	return ( sv_cheats.GetBool() || Cmd_IsRptActive() );
 #else
 	return sv_cheats.GetBool();
 	// johns 07/10/2015 - Disabled -- RPT's conditions for activating are not sufficient for this to be reasonable -
