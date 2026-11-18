@@ -571,6 +571,24 @@ bool CCvarUtilities::IsValidToggleCommand( const char *cmd )
 // Purpose: 
 // Input  : *f - 
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+void CCvarUtilities::WriteVariables( CUtlBuffer &buff )
+{
+	const ConCommandBase	*var;
+
+	for (var = g_pCVar->GetCommands() ; var ; var = var->GetNext())
+	{
+		if ( var->IsCommand() )
+			continue;
+
+		bool archive = var->IsFlagSet( IsX360() ? FCVAR_ARCHIVE_XBOX : FCVAR_ARCHIVE );
+		if ( archive )
+		{
+			buff.Printf( "%s \"%s\"\n", var->GetName(), ((ConVar *)var)->GetString() );
+		}
+	}
+}
+#else
 void CCvarUtilities::WriteVariables( CUtlBuffer &buff, bool bAllVars )
 {
 	const ConCommandBase	*var;
@@ -592,6 +610,8 @@ void CCvarUtilities::WriteVariables( CUtlBuffer &buff, bool bAllVars )
 		}
 	}
 }
+#endif
+#line 590
 
 static char *StripTabsAndReturns( const char *inbuffer, char *outbuffer, int outbufferSize )
 {

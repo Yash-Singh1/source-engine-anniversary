@@ -401,6 +401,31 @@ void CHostState::State_LoadGame()
 }
 
 
+#ifdef BYTEMATCH_RETAIL
+void CHostState::State_ChangeLevelMP()
+{
+	if ( Host_ValidGame() )
+	{
+		Steam3Server().NotifyOfLevelChange();
+
+		g_pServerPluginHandler->LevelShutdown();
+#if !defined(SWDS)
+		audiosourcecache->LevelShutdown();
+#endif
+
+#ifndef SWDS
+		// start progress bar immediately for multiplayer level transitions
+		EngineVGui()->EnabledProgressBarForNextLoad();
+#endif
+		Host_Changelevel( false, m_levelName, m_landmarkName );
+		SetState( HS_RUN, true );
+		return;
+	}
+	// fail
+	ConMsg( "Unable to change level!\n" );
+	SetState( HS_RUN, true );
+}
+#else
 void CHostState::State_ChangeLevelMP()
 {
 	if ( Host_ValidGame() )
@@ -428,6 +453,8 @@ void CHostState::State_ChangeLevelMP()
 		g_GameEventManager.FireEvent( event );
 	}
 }
+#endif
+#line 427
 
 
 void CHostState::State_ChangeLevelSP()

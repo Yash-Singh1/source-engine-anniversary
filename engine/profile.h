@@ -17,6 +17,11 @@
 #endif
 
 void Host_ReadConfiguration();
+#ifdef BYTEMATCH_RETAIL
+void Host_WriteConfiguration( const char *filename = NULL );
+#else
 void Host_WriteConfiguration( const char *filename = NULL, bool bAllVars = false );
+#endif
+#line 21
 
 #endif // PROFILE_H
