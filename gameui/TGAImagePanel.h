@@ -34,7 +34,9 @@ public:
 private:
 	int m_iTextureID;
 	int m_iImageWidth, m_iImageHeight;
+#ifndef BYTEMATCH_RETAIL
 	int m_iImageRealWidth, m_iImageRealHeight;
+#endif
 	bool m_bHasValidTexture, m_bLoadedTexture;
 	char m_szTGAName[256];
 };

@@ -127,7 +127,11 @@ void CLanGames::ServerFailedToRespond( HServerListRequest hReq, int iServer )
 //-----------------------------------------------------------------------------
 // Purpose: called when the current refresh list is complete
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+void CLanGames::RefreshComplete( HServerListRequest hReq, EMatchMakingServerResponse response )
+#else
 void CLanGames::RefreshComplete( NServerResponse response )
+#endif
 {
 	SetRefreshing( false );
 	m_pGameList->SortList();
@@ -135,7 +139,11 @@ void CLanGames::RefreshComplete( NServerResponse response )
 	m_pGameList->SetEmptyListText("#ServerBrowser_NoLanServers");
 	SetEmptyListText();
 
+#ifdef BYTEMATCH_RETAIL
+	BaseClass::RefreshComplete( hReq, response );
+#else
 	BaseClass::RefreshComplete( response );
+#endif
 }
 
 void CLanGames::SetEmptyListText()
