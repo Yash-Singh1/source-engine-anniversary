@@ -49,7 +49,7 @@ public:
 		x = y = z = w = VEC_T_NAN;
 	}
 #else
-	Vector4D(void) = default;
+	Vector4D(void) {}
 #endif
 
 	Vector4D(vec_t X, vec_t Y, vec_t Z, vec_t W);
@@ -148,7 +148,7 @@ const Vector4D vec4_invalid( FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX );
 class ALIGN16 Vector4DAligned : public Vector4D
 {
 public:
-	Vector4DAligned(void) = default;
+	Vector4DAligned(void) {}
 	Vector4DAligned( vec_t X, vec_t Y, vec_t Z, vec_t W );
 
 	inline void Set( vec_t X, vec_t Y, vec_t Z, vec_t W );

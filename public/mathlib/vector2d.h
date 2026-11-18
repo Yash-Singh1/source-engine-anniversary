@@ -43,7 +43,7 @@ public:
 		x = y = VEC_T_NAN;
 	}
 #else
-	Vector2D(void) = default;
+	Vector2D(void) {}
 #endif
 
 	Vector2D(vec_t X, vec_t Y);
