@@ -35,6 +35,7 @@ private:
 	bool Test_Protocol( const char *pDescription, const char *pProtocol, const char **pAcceptableProtocols );
 	bool Test_Port( int nPort );
 	bool Test_Path( const char *pDescription, const char *pPath, bool bForwardSlashesAllowed, bool bBackslashesAllowed );
+	bool Test_RemoteWebServerCVars();
 	bool Test_LocalWebServerCVars();
 	bool Test_IO( const char *pFilename );
 	bool Test_FilePublish( const char *pFilename, bool bOffload );
@@ -221,6 +222,44 @@ bool CPublishTester::Test_Protocol( const char *pDescription, const char *pProto
 	return true;
 }
 
+bool CPublishTester::Test_RemoteWebServerCVars()
+{
+	extern ConVar replay_fileserver_offload_protocol;
+	if ( !Test_Protocol( "Upload protocol", replay_fileserver_offload_protocol.GetString(), g_pAcceptableOffloadProtocols ) )
+		return false;
+
+	extern ConVar replay_fileserver_offload_hostname;
+	if ( !Test_Hostname( replay_fileserver_offload_hostname.GetString(), "\"ftp\"" ) )
+		return false;
+
+	extern ConVar replay_fileserver_offload_port;
+	if ( !Test_Port( replay_fileserver_offload_port.GetInt() ) )
+		return false;
+
+	extern ConVar replay_fileserver_offload_useproxy;
+	if ( replay_fileserver_offload_useproxy.GetBool() )
+	{
+		extern ConVar replay_fileserver_offload_proxy_host;
+		if ( !Test_Hostname( replay_fileserver_offload_proxy_host.GetString(), "\"http\"" ) )
+			return false;
+
+		extern ConVar replay_fileserver_offload_proxy_port;
+		if ( !Test_Port( replay_fileserver_offload_proxy_port.GetInt() ) )
+			return false;
+	}
+
+	extern ConVar replay_fileserver_offload_remotepath;
+	if ( !Test_Path( "Remote path", replay_fileserver_offload_remotepath.GetString(), true, false ) )
+		return false;
+
+	extern ConVar replay_fileserver_offload_login;
+	if ( !Test_Emptyness( "Login", replay_fileserver_offload_login.GetString(), true ) )
+		return false;
+
+	g_pBlockSpewer->PrintValue( "Password", "(not shown)" );
+
+	return true;
+}
 
 bool CPublishTester::Test_LocalWebServerCVars()
 {
@@ -278,12 +317,25 @@ bool CPublishTester::Test_IO( const char *pFilename )
 bool CPublishTester::Test_FilePublish( const char *pFilename, bool bOffload )
 {
 	g_pBlockSpewer->PrintTestHeader( "Testing file publisher" );
-	g_pBlockSpewer->PrintValue( "Fileserver type", "Local Web server" );
 
-	if ( !Test_LocalWebServerCVars() )
-		return false;
+	if ( bOffload )
+	{
+		g_pBlockSpewer->PrintValue( "Fileserver type", "Remote Web server" );
 
-	m_pJob = SV_CreateLocalPublishJob( pFilename );
+		if ( !Test_RemoteWebServerCVars() )
+			return false;
+
+		m_pJob = SV_CreateFtpUploadJob( pFilename );
+	}
+	else
+	{
+		g_pBlockSpewer->PrintValue( "Fileserver type", "Local Web server" );
+
+		if ( !Test_LocalWebServerCVars() )
+			return false;
+
+		m_pJob = SV_CreateLocalPublishJob( pFilename );
+	}
 
 	g_pBlockSpewer->PrintEmptyLine();
 
@@ -342,7 +394,8 @@ void CPublishTester::PrintBaseUrlWarning()
 
 bool CPublishTester::Go()
 {
-	const bool bOffload = false;
+	extern ConVar replay_fileserver_offload_enable;
+	const bool bOffload = replay_fileserver_offload_enable.GetBool();
 
 	// Force anyone outside of Go() to use the block spewer until we're done.
 	CSpewScope SpewScope( g_pBlockSpewer );

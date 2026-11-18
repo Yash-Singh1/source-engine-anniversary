@@ -52,6 +52,17 @@ ConVar replay_dofileserver_cleanup_on_start( "replay_dofileserver_cleanup_on_sta
 //
 // FTP offloading
 //
+ConVar replay_fileserver_offload_enable( "replay_fileserver_offload_enable", "0", FCVAR_GAMEDLL, "If enabled, offload session blocks to a secondary machine using the replay_offload_* convars." );
+ConVar replay_fileserver_offload_protocol( "replay_fileserver_offload_protocol", "ftp", FCVAR_GAMEDLL, "Must be \"ftp\"" );
+ConVar replay_fileserver_offload_hostname( "replay_fileserver_offload_hostname", "", FCVAR_GAMEDLL, "Hostname for FTP server where session blocks will be offloaded.", OnFileserverHostnameChanged );
+ConVar replay_fileserver_offload_port( "replay_fileserver_offload_port", "21", FCVAR_GAMEDLL, "Port number for FTP server where session blocks will be offloaded." );
+ConVar replay_fileserver_offload_useproxy( "replay_fileserver_offload_useproxy", "0", FCVAR_GAMEDLL, "If enabled, a proxy will be used for FTP connections." );
+ConVar replay_fileserver_offload_proxy_host( "replay_fileserver_offload_proxy_host", "", FCVAR_GAMEDLL, "The hostname of the proxy server.", OnFileserverProxyHostnameChanged );
+ConVar replay_fileserver_offload_proxy_port( "replay_fileserver_offload_proxy_port", "8080", FCVAR_GAMEDLL, "The port of the proxy server." );
+ConVar replay_fileserver_offload_remotepath( "replay_fileserver_offload_remotepath", "/", FCVAR_GAMEDLL, "Remote path where blocks will be stored on the FTP server for session block offloading." );
+ConVar replay_fileserver_offload_login( "replay_fileserver_offload_login", "", FCVAR_GAMEDLL, "Login for session block offloading." );
+ConVar replay_fileserver_offload_password( "replay_fileserver_offload_password", "", FCVAR_GAMEDLL | FCVAR_PROTECTED, "Login for session block offloading." );
+ConVar replay_fileserver_offload_maxuploads( "replay_fileserver_offload_maxuploads", "1", FCVAR_GAMEDLL, "The maximum number of concurrent uploads allowed." );
 ConVar replay_fileserver_autocleanup( "replay_fileserver_autocleanup", "0", FCVAR_GAMEDLL, "Automatically do fileserver cleanup in between rounds?  This is the same as explicitly calling replay_docleanup." );
 ConVar replay_fileserver_offload_aborttime( "replay_fileserver_offload_aborttime", "60", FCVAR_GAMEDLL, "The time after which publishing will be aborted for a session block or session info file.", true, 30.0f, true, 60.0f );
 

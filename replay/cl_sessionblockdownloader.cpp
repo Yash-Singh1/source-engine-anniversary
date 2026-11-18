@@ -45,7 +45,7 @@ void CSessionBlockDownloader::AbortDownloadsAndCleanup( CClientRecordingSession 
 
 	// Abort any remaining downloads - callbacks will be invoked, so this shutdown
 	// should be called before any of those objects are cleaned up.
-	FOR_EACH_LL( m_lstDownloaders, i )
+	for ( int i = 0; i < m_lstDownloaders.Count(); i++ )
 	{
 		CHttpDownloader *pCurDownloader = m_lstDownloaders[ i ];
 

@@ -4,6 +4,7 @@
 
 #include "../utils/bzip2/bzlib.h"
 #include "sv_filepublish.h"
+#include "sv_ftp.h"
 #include "utlstring.h"
 #include "strtools.h"
 #include "sv_replaycontext.h"
@@ -762,7 +763,19 @@ public:
 	}
 };
 
+//----------------------------------------------------------------------------------------
 
+class CFtpFileserverPublisher : public CBaseFilePublisher
+{
+	typedef CBaseFilePublisher BaseClass;
+public:
+	virtual CBasePublishJob *GetPublishJob() const
+	{
+		IF_REPLAY_DBG2( Warning( "Attempting to upload file via FTP...\n" ) );
+
+		return SV_CreateFtpUploadJob( m_szOutFilename );
+	}
+};
 
 //----------------------------------------------------------------------------------------
 
@@ -772,7 +785,14 @@ IFilePublisher *SV_PublishFile( const PublishFileParams_t &params )
 
 	IFilePublisher *pResult;
 
-	pResult = new CLocalFileserverPublisher();
+	if ( SV_GetRecordingSessionManager()->ShouldOffload() )
+	{
+		pResult = new CFtpFileserverPublisher();
+	}
+	else
+	{
+		pResult = new CLocalFileserverPublisher();
+	}
 	
 	pResult->Publish( params );
 
