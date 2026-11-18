@@ -22,6 +22,7 @@ def build(bld):
 		'../../common/jpegloader_common.cpp',
 		'../../public/html/htmlprotobuf.cpp',
 		'../../tier1/fileio.cpp',
+		'chromewrapper.cpp',
 		'generated_proto/htmlmessages.pb.cc',
 		'html_mac.mm',
 	]
@@ -40,7 +41,7 @@ def build(bld):
 
 	libs = ['tier0','tier1','vstdlib','JPEG','PROTOBUF','ZLIB']
 
-	# chromewrapper.cpp and html_chrome.cpp (the CEF client) are not written yet,
+	# html_chrome.cpp (the CEF client) is not written yet,
 	# so the module is compiled to objects only; it becomes a shlib linking the
 	# depot's libcef.dylib and a libcef_dll_wrapper once they exist.
 	bld(
