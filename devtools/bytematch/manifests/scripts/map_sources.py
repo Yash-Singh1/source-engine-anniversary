@@ -24,7 +24,7 @@ import waf_sources  # noqa: E402
 
 # retail module -> (our waf target, GAMES value, note)
 MODULE_TARGETS = {
-    "bin/datacache": ("datacache", None), "bin/engine": ("engine", None),
+    "bin/chromehtml": ("chromehtml", None), "bin/datacache": ("datacache", None), "bin/engine": ("engine", None),
     "bin/filesystem_stdio": ("filesystem_stdio", None), "bin/GameUI": ("GameUI", None),
     "bin/inputsystem": ("inputsystem", None), "bin/launcher": ("launcher", None),
     "bin/libtier0": ("tier0", None), "bin/libtogl": ("togl", None), "bin/libvstdlib": ("vstdlib", None),
@@ -53,6 +53,7 @@ ARCHIVE_TARGETS = {
 # retail module -> (tree, VPC path). "sdk" = Source SDK 2013 src/, the closest
 # public game-code VPCs; hl2_complete and lostcoast have no public VPC.
 MODULE_VPCS = {
+    "bin/chromehtml": ("ours", "vgui2/chromehtml/chromehtml.vpc"),
     "bin/datacache": ("ours", "datacache/datacache.vpc"), "bin/engine": ("ours", "engine/engine.vpc"),
     "bin/filesystem_stdio": ("ours", "filesystem/filesystem_stdio.vpc"), "bin/GameUI": ("ours", "gameui/GameUI.vpc"),
     "bin/inputsystem": ("ours", "inputsystem/inputsystem.vpc"), "bin/launcher": ("ours", "launcher/launcher.vpc"),

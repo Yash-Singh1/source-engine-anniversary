@@ -38,7 +38,7 @@ RETAIL_MODULES = [
 	'utils/bsppack', 'utils/bugreporter_filequeue', 'utils/bugreporter_public', 'utils/vpk',
 	'vgui2/vgui_surfacelib', 'vguimatsurface', 'gameui', 'engine',
 	'togl', 'materialsystem', 'launcher', 'materialsystem/shaderapidx9',
-	'engine/voice_codecs/miles',
+	'engine/voice_codecs/miles', 'vgui2/chromehtml',
 ]
 
 GAME_MODULES = ['game/client', 'game/server']
@@ -196,6 +196,9 @@ def retail_osx32_configure(conf):
 	if os.path.exists(pb):
 		v.STLIB_PROTOBUF = ['protobuf']
 		v.STLIBPATH_PROTOBUF = [os.path.dirname(pb)]
+		# Valve's include paths: thirdparty (for "protobuf-2.3.0/src/...") and the protobuf src dir.
+		tp_sdk = os.path.join(sdk2013, 'thirdparty')
+		v.INCLUDES_PROTOBUF = [tp_sdk, os.path.join(tp_sdk, 'protobuf-2.3.0', 'src')]
 	tp = os.path.join(os.path.dirname(os.path.dirname(p['sdk'])), 'thirdparty-osx32')
 	for name, lib in (('JPEG', 'jpeg'), ('PNG', 'png'), ('CRYPTOPP', 'cryptopp'), ('SPEEX', 'speex')):
 		if os.path.exists(os.path.join(tp, 'lib', 'lib%s.a' % lib)):
