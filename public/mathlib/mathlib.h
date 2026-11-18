@@ -92,11 +92,35 @@ private:
 	FPExceptionEnabler& operator=(const FPExceptionEnabler&);
 };
 
-inline float clamp( const float val, const float minVal, const float maxVal )
+#ifdef DEBUG  // stop crashing edit-and-continue
+FORCEINLINE float clamp( float val, float minVal, float maxVal )
 {
-	const float t = val < minVal ? minVal : val;
-	return t > maxVal ? maxVal : t;
+	if ( maxVal < minVal )
+		return maxVal;
+	else if( val < minVal )
+		return minVal;
+	else if( val > maxVal )
+		return maxVal;
+	else
+		return val;
 }
+#else // DEBUG
+FORCEINLINE float clamp( float val, float minVal, float maxVal )
+{
+#if defined(__i386__) || defined(_M_IX86)
+	_mm_store_ss( &val,
+		_mm_min_ss(
+			_mm_max_ss(
+				_mm_load_ss(&val),
+				_mm_load_ss(&minVal) ),
+			_mm_load_ss(&maxVal) ) );
+#else
+	val = fpmax(minVal, val);
+	val = fpmin(maxVal, val);
+#endif
+	return val;
+}
+#endif // DEBUG
 
 //
 // Returns a clamped value in the range [min, max].
@@ -104,8 +128,14 @@ inline float clamp( const float val, const float minVal, const float maxVal )
 template< class T >
 inline T clamp( T const &val, T const &minVal, T const &maxVal )
 {
-	const T t = val< minVal ? minVal : val;
-	return t > maxVal ? maxVal : t;
+	if ( maxVal < minVal )
+		return maxVal;
+	else if( val < minVal )
+		return minVal;
+	else if( val > maxVal )
+		return maxVal;
+	else
+		return val;
 }
 
 // plane_t structure

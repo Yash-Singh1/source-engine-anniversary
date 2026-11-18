@@ -1452,7 +1452,7 @@ int V_UnicodeToUTF8( const wchar_t *pUnicode, char *pUTF8, int cubDestSizeInByte
 //-----------------------------------------------------------------------------
 // Purpose: Converts a ucs2 string to a unicode (wchar_t) one, no-op on win32
 //-----------------------------------------------------------------------------
-int _V_UCS2ToUnicode( const ucs2 *pUCS2, wchar_t *pUnicode, int cubDestSizeInBytes )
+int V_UCS2ToUnicode( const ucs2 *pUCS2, wchar_t *pUnicode, int cubDestSizeInBytes )
 {
 	Assert( cubDestSizeInBytes >= sizeof( *pUnicode ) );
 	AssertValidWritePtr(pUnicode);
@@ -1492,7 +1492,7 @@ int _V_UCS2ToUnicode( const ucs2 *pUCS2, wchar_t *pUnicode, int cubDestSizeInByt
 //-----------------------------------------------------------------------------
 // Purpose: Converts a wchar_t string into a UCS2 string -noop on windows
 //-----------------------------------------------------------------------------
-int _V_UnicodeToUCS2( const wchar_t *pUnicode, int cubSrcInBytes, char *pUCS2, int cubDestSizeInBytes )
+int V_UnicodeToUCS2( const wchar_t *pUnicode, int cubSrcInBytes, char *pUCS2, int cubDestSizeInBytes )
 {
 #ifdef _WIN32
 	// Figure out which buffer is smaller and convert from bytes to character
@@ -1528,7 +1528,7 @@ int _V_UnicodeToUCS2( const wchar_t *pUnicode, int cubSrcInBytes, char *pUCS2, i
 //-----------------------------------------------------------------------------
 // Purpose: Converts a ucs-2 (windows wchar_t) string into a UTF8 (standard) string
 //-----------------------------------------------------------------------------
-int _V_UCS2ToUTF8( const ucs2 *pUCS2, char *pUTF8, int cubDestSizeInBytes )
+int V_UCS2ToUTF8( const ucs2 *pUCS2, char *pUTF8, int cubDestSizeInBytes )
 {
 	AssertValidStringPtr(pUTF8, cubDestSizeInBytes);
 	AssertValidReadPtr(pUCS2);
@@ -1582,7 +1582,7 @@ int _V_UCS2ToUTF8( const ucs2 *pUCS2, char *pUTF8, int cubDestSizeInBytes )
 //-----------------------------------------------------------------------------
 // Purpose: Converts a UTF8 to ucs-2 (windows wchar_t)
 //-----------------------------------------------------------------------------
-int _V_UTF8ToUCS2( const char *pUTF8, int cubSrcInBytes, ucs2 *pUCS2, int cubDestSizeInBytes )
+int V_UTF8ToUCS2( const char *pUTF8, int cubSrcInBytes, ucs2 *pUCS2, int cubDestSizeInBytes )
 {
 	Assert( cubDestSizeInBytes >= sizeof(pUCS2[0]) );
 	AssertValidStringPtr(pUTF8, cubDestSizeInBytes);
