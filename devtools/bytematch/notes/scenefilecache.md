@@ -21,7 +21,7 @@ does not compile against the retail header), 16/16 with hdrfix.
 | CSceneFileCache::Init | identical | byte |
 | CSceneFileCache::Shutdown | identical | byte |
 | CSceneFileCache::Reload | identical | byte |
-| CSceneFileCache::GetSceneBufferSize | edited | inlines GetSceneDataFromImage; byte with hdrfix |
+| CSceneFileCache::GetSceneBufferSize | identical | source unchanged; inlines GetSceneDataFromImage, so byte with hdrfix after that edit |
 | CSceneFileCache::GetSceneDataFromImage | edited | local `CLZMA` instance (retail passes `this`); `MIN()` macro instead of `std::min`; byte with hdrfix |
 | CSceneFileCache::FindSceneInImage | identical | byte |
 | CSceneFileCache::GetSceneData | identical | byte |
