@@ -493,7 +493,7 @@ int CModelInfo::GetModelType( const model_t *model ) const
 #if defined( DEMO_BACKWARDCOMPATABILITY ) && !defined( SWDS )
 		// dynamic model tables in old system did not have a full path with "models/" prefix
 		if ( pTable && demoplayer && demoplayer->IsPlayingBack() && demoplayer->GetProtocolVersion() < PROTOCOL_VERSION_20 &&
-			 V_strnicmp( model->strName, "models/", 7 ) == 0 && pTable->FindStringIndex( model->strName + 7 ) != INVALID_STRING_INDEX )
+			 V_strnicmp( model->strName, "models/", 7 ) == 0 && pTable->FindStringIndex( (const char *)model->strName + 7 ) != INVALID_STRING_INDEX )
 		{
 			return mod_studio;
 		}

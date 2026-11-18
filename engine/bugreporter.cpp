@@ -434,7 +434,12 @@ private:
 //-----------------------------------------------------------------------------
 CBugReportUploadProgressDialog::CBugReportUploadProgressDialog(Panel *parent, const char *name, const char *title, const char *message) : Frame(parent, name)
 {
+#ifdef BYTEMATCH_RETAIL
+	SetSize( PROPORTIONAL_VALUE( 300 ), PROPORTIONAL_VALUE( 160 ) );
+#else
 	SetSize(300, 160);
+#endif
+#line 438
 	SetSizeable(false);
 	MoveToFront();
 	SetTitle(title, true);
@@ -499,7 +504,12 @@ private:
 //-----------------------------------------------------------------------------
 CBugReportFinishedDialog::CBugReportFinishedDialog(Panel *parent, const char *name, const char *title, const char *message) : Frame(parent, name)
 {
+#ifdef BYTEMATCH_RETAIL
+	SetSize( PROPORTIONAL_VALUE( 300 ), PROPORTIONAL_VALUE( 160 ) );
+#else
 	SetSize(300, 160);
+#endif
+#line 503
 	SetSizeable(false);
 	MoveToFront();
 	SetTitle(title, true);
