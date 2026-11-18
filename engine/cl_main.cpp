@@ -2976,9 +2976,9 @@ void CL_InitLanguageCvar()
 	{
 		cl_language.SetValue( CommandLine()->ParmValue( "-language", "english" ) );
 	}
-	else if ( SteamApps() )
+	else if ( SteamUtils() )
 	{
-		cl_language.SetValue( SteamApps()->GetCurrentGameLanguage() );
+		cl_language.SetValue( SteamUtils()->GetSteamUILanguage() );
 	}
 	else
 	{
@@ -3189,7 +3189,13 @@ CON_COMMAND_F( setinfo, "Adds a new user info value", FCVAR_CLIENTCMD_CAN_EXECUT
 	else
 	{
 		// cvar not found, create it now
+#ifdef BYTEMATCH_RETAIL
+		char *pszString = new char[ Q_strlen( name ) + 1 ];
+		Q_strcpy( pszString, name );
+#else
 		char *pszString = V_strdup( name );
+#endif
+#line 2888
 
 		pCommand = new ConVar( pszString, "", FCVAR_USERINFO, "Custom user info value" );
 	}

@@ -221,7 +221,12 @@ edict_t *ED_Alloc( int iForceEdictIndex )
 	}
 
 	// Do this before clearing since clear now needs to call back into the edict to deduce the index so can get the changeinfo data in the parallel structure
+#ifdef BYTEMATCH_RETAIL
+	sv.num_edicts++;
+#else
 	pEdict = sv.edicts + sv.num_edicts++; 
+#endif
+#line 139
 
 	ED_ClearEdict( pEdict );
 

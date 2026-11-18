@@ -473,7 +473,7 @@ void CUtlCachedFileData<T>::InitSmallBuffer( FileHandle_t& fh, int fileSize, boo
 
 					// Read the element name
 					char elementFileName[ 512 ];
-					buf.GetString( elementFileName );
+					buf.GetString( elementFileName, sizeof( elementFileName ) );
 
 					// Now read the element
 					int slot = GetIndex( elementFileName );
@@ -573,7 +573,7 @@ void CUtlCachedFileData<T>::InitLargeBuffer( FileHandle_t& fh, bool& deleteFile 
 
 					// Read the element name
 					char elementFileName[ 512 ];
-					buf.GetString( elementFileName );
+					buf.GetString( elementFileName, sizeof( elementFileName ) );
 
 					// Now read the element
 					int slot = GetIndex( elementFileName );
@@ -699,7 +699,12 @@ void CUtlCachedFileData<T>::Save()
 	fh = g_pFullFileSystem->Open( m_sRepositoryFileName, "wb" );
 	if ( FILESYSTEM_INVALID_HANDLE == fh )
 	{
+#ifdef BYTEMATCH_RETAIL
+		Warning( "Unable to persist cache '%s', check file permissions\n", m_sRepositoryFileName.String() );
+#else
 		ExecuteNTimes( 25, Warning( "Unable to persist cache '%s', check file permissions\n", m_sRepositoryFileName.String() ) );
+#endif
+#line 687
 	}
 	else
 	{

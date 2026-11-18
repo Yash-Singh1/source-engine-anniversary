@@ -75,7 +75,12 @@ TraceInfo_t *BeginTrace()
 		pTraceInfo = new TraceInfo_t;
 	}
 #endif
+#ifdef BYTEMATCH_RETAIL
+	if ( pTraceInfo->m_BrushCounters[0].Count() != GetCollisionBSPData()->numbrushes + 1 || pTraceInfo->m_DispCounters[0].Count() != g_DispCollTreeCount )
+#else
 	if ( pTraceInfo->m_BrushCounters[0].Count() != GetCollisionBSPData()->numbrushes + 1 )
+#endif
+#line 79
 	{
 		memset( pTraceInfo->m_Count, 0, sizeof( pTraceInfo->m_Count ) );
 		pTraceInfo->m_nCheckDepth = -1;
@@ -2575,7 +2580,12 @@ int CM_WriteAreaBits ( byte *buffer, int buflen, int area )
 	{
 		if ( buflen < 32 )
 		{
+#ifdef BYTEMATCH_RETAIL
+			Sys_Error( "CM_WriteAreaBits with buffer % size < 32\n", buflen );
+#else
 			Sys_Error( "CM_WriteAreaBits with buffer size < 32\n" );
+#endif
+#line 2579
 		}
 
 		Q_memset( buffer, 0, 32 );
@@ -2680,12 +2690,7 @@ int	CM_BoxVisible( const Vector& mins, const Vector& maxs, const byte *visbits, 
 		int offset = cluster>>3;
 
 #ifdef BYTEMATCH_RETAIL
-		if ( offset == -1 )
-		{
-			return false;
-		}
-
-		if ( offset > vissize || offset < 0 )
+		if ( offset > vissize )
 #else
 		if ( offset == -1 )
 			return true;

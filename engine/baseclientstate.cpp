@@ -77,6 +77,25 @@ void SetNameToSteamIDName( IConVar *pConVar )
 
 void CL_NameCvarChanged( IConVar *pConVar, const char *pOldString, float flOldValue )
 {
+#ifdef BYTEMATCH_RETAIL
+	static bool bPreventRent = false;
+	if ( !bPreventRent )
+	{
+		bPreventRent = true;
+		SetNameToSteamIDName( pConVar );
+		bPreventRent = false;
+	}
+
+	ConVarRef var( pConVar );
+
+	// store off the last known name, that isn't default, in the registry
+	// this is a transition step so it can be used to display in friends
+	if ( 0 != Q_stricmp( var.GetString(), var.GetDefault()  ) 
+		&& 0 != Q_stricmp( var.GetString(), "player" ) )
+	{
+		Sys_SetRegKeyValue( "Software\\Valve\\Steam", "LastGameNameUsed", var.GetString() );
+	}
+#else
 	ConVarRef var( pConVar );
 
 	static bool bPreventRent = false;
@@ -102,6 +121,8 @@ void CL_NameCvarChanged( IConVar *pConVar, const char *pOldString, float flOldVa
 
 		bPreventRent = false;
 	}
+#endif
+#line 105
 }
 
 
@@ -573,7 +594,7 @@ bool CBaseClientState::PrepareSteamConnectResponse( uint64 unGSSteamID, bool bGS
 		return true;
 	}
 
-#if 0 //!defined( NO_STEAM ) && !defined( SWDS  ) 
+#if defined( BYTEMATCH_RETAIL ) && !defined( NO_STEAM ) && !defined( SWDS  ) 
 	if ( !SteamUser() )
 	{
 		COM_ExplainDisconnection( true, "#GameUI_ServerRequireSteam" );
@@ -581,6 +602,7 @@ bool CBaseClientState::PrepareSteamConnectResponse( uint64 unGSSteamID, bool bGS
 		return false;
 	}
 #endif
+#line 579
 
 	netadr_t checkAdr = adr;
 	if ( adr.GetType() == NA_LOOPBACK || adr.IsLocalhost() )
@@ -588,7 +610,7 @@ bool CBaseClientState::PrepareSteamConnectResponse( uint64 unGSSteamID, bool bGS
 		checkAdr.SetIP( net_local_adr.GetIPHostByteOrder() );
 	}
 
-#if 0 // #ifndef SWDS
+#if defined( BYTEMATCH_RETAIL ) && !defined( SWDS )
 	// now append the steam3 cookie
 	char steam3Cookie[ STEAM_KEYSIZE ];
 	uint32 steam3CookieLen = 0;
@@ -606,6 +628,7 @@ bool CBaseClientState::PrepareSteamConnectResponse( uint64 unGSSteamID, bool bGS
 	if ( steam3CookieLen > 0 )
 		msg.WriteBytes( steam3Cookie, steam3CookieLen );
 #endif
+#line 604
 
 	return true;
 }
@@ -878,7 +901,10 @@ bool CBaseClientState::ProcessConnectionlessPacket( netpacket_t *packet )
 
 	Assert( packet );
 
+#ifndef BYTEMATCH_RETAIL
 	master->ProcessConnectionlessPacket( packet );
+#endif
+#line 877
 
 	bf_read &msg = packet->message;	// handy shortcut 
 
@@ -941,7 +967,7 @@ bool CBaseClientState::ProcessConnectionlessPacket( netpacket_t *packet )
 								int authprotocol = msg.ReadLong();
 								uint64 unGSSteamID = 0;
 								bool bGSSecure = false;
-#if 0
+#ifdef BYTEMATCH_RETAIL
 								if ( authprotocol == PROTOCOL_STEAM )
 								{
 									if ( msg.ReadShort() != 0 )
@@ -970,6 +996,7 @@ bool CBaseClientState::ProcessConnectionlessPacket( netpacket_t *packet )
 									}
 								}
 #endif
+#line 968
 								SendConnectPacket( challenge, authprotocol, unGSSteamID, bGSSecure );
 							}
 							break;
@@ -985,7 +1012,12 @@ bool CBaseClientState::ProcessConnectionlessPacket( netpacket_t *packet )
 
 								msg.ReadString( string, sizeof(string) );
 								// Force failure dialog to come up now.
+#ifdef BYTEMATCH_RETAIL
+								COM_ExplainDisconnection( true, string );
+#else
 								COM_ExplainDisconnection( true, "%s", string );
+#endif
+#line 984
 								Disconnect( string, true );
 								// Host_Disconnect();
 							}
@@ -1036,12 +1068,35 @@ bool CBaseClientState::ProcessStringCmd( NET_StringCmd *msg )
 {
 	VPROF( "ProcessStringCmd" );
 
+#ifdef BYTEMATCH_RETAIL
+	return InternalProcessStringCmd( msg, false );
+}
+
+bool CBaseClientState::InternalProcessStringCmd( NET_StringCmd *msg, bool bIsHLTV )
+{
+#endif
+#line 1034
 	// Don't restrict commands from the server in single player or if cl_restrict_stuffed_commands is 0.
 	if ( !m_bRestrictServerCommands || sv.IsActive() )
 	{
 		Cbuf_AddText ( msg->m_szCommand );
 		return true;
 	}
+
+#ifdef BYTEMATCH_RETAIL
+	CCommand args;
+	args.Tokenize( msg->m_szCommand );
+	if ( args.ArgC() <= 0 )
+		return true;
+
+	// A relay may send the client on to another server unless matchmaking put it here
+	if ( bIsHLTV && !V_stricmp( args[0], "Connect" ) && !IsClientConnectionViaMatchMaking() )
+	{
+		Cbuf_AddText( msg->m_szCommand );
+		return true;
+	}
+#endif
+#line 1040
 
 	// Check that we can add the two execution markers
 	if ( !Cbuf_HasRoomForExecutionMarkers( 2 ) )
@@ -1362,6 +1417,25 @@ bool CBaseClientState::ProcessCreateStringTable( SVC_CreateStringTable *msg )
 		unsigned int msgUncompressedSize = msg->m_DataIn.ReadLong();
 		unsigned int msgCompressedSize = msg->m_DataIn.ReadLong();
 		unsigned int uncompressedSize = msgUncompressedSize;
+#ifdef BYTEMATCH_RETAIL
+
+		// allocate buffer for uncompressed data, align to 4 bytes boundary
+		char *uncompressedBuffer = new char[PAD_NUMBER( msgUncompressedSize, 4 )];
+		char *compressedBuffer = new char[PAD_NUMBER( msgCompressedSize, 4 )];
+
+		msg->m_DataIn.ReadBits( compressedBuffer, msgCompressedSize * 8 );
+
+		// uncompress data
+		COM_BufferToBufferDecompress( uncompressedBuffer, &uncompressedSize, compressedBuffer, msgCompressedSize );
+
+		Assert( uncompressedSize == msgUncompressedSize );
+
+		bf_read data( uncompressedBuffer, uncompressedSize );
+		table->ParseUpdate( data, msg->m_nNumEntries );
+
+		delete[] uncompressedBuffer;
+		delete[] compressedBuffer;
+#else
 		/// XXX(JohnS): 11/08/2016 - The PAD_NUMBER() call below was overflowing on UINT32_MAX-3 values.  Enforcing
 		//              resource-usage limits at this level is a lost cause without a massive overhaul, but clamp these
 		//              to somewhat reasonable ranges to prevent overflows with less-audited code in the engine.
@@ -1396,6 +1470,8 @@ bool CBaseClientState::ProcessCreateStringTable( SVC_CreateStringTable *msg )
 			Assert( false );
 			Warning("Malformed message in CBaseClientState::ProcessCreateStringTable\n");
 		}
+#endif
+#line 1394
 	}
 	else
 	{

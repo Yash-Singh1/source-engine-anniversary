@@ -757,6 +757,7 @@ bool CL_PortalDemo_MapCheck( const char *name )
 	return true;
 }
 
+#ifndef BYTEMATCH_RETAIL
 int _Host_Map_f_CompletionFunc( char const *cmdname, char const *partial, char commands[ COMMAND_COMPLETION_MAXITEMS ][ COMMAND_COMPLETION_ITEM_LENGTH ] );
 
 // Note, leaves name alone if no match possible
@@ -774,6 +775,8 @@ static bool Host_Map_Helper_FuzzyName( const CCommand &args, char *name, size_t 
 	}
 	return false;
 }
+#endif
+#line 745
 
 void Host_Map_Helper( const CCommand &args, bool bEditmode, bool bBackground, bool bCommentary )
 {

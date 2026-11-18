@@ -161,9 +161,14 @@ bool BuildGeneralMapList( CUtlVector<maplist_map_t> *aMaps, bool bUseMapListFile
 		if ( CommandLine()->CheckParm( "+map", &pMapName ) && pMapName )
 		{
 			// ensure validity
+#ifdef BYTEMATCH_RETAIL
+			if (g_pVEngineServer->IsMapValid( pMapName ))
+#else
 			char szMapFile[64] = { 0 };
 			V_snprintf( szMapFile, sizeof( szMapFile ), "maps/%s.bsp", pMapName );
 			if (modelloader->Map_IsValid( szMapFile ))
+#endif
+#line 167
 			{
 				// add to list
 				maplist_map_t newMap;
@@ -201,10 +206,16 @@ bool BuildGeneralMapList( CUtlVector<maplist_map_t> *aMaps, bool bUseMapListFile
 				findfn = Sys_FindNext( NULL, 0  );
 
 				// ensure validity
+#ifdef BYTEMATCH_RETAIL
+				if (!g_pVEngineServer->IsMapValid( sz ))
+					continue;
+#else
 				char szMapFile[64] = { 0 };
 				V_snprintf( szMapFile, sizeof( szMapFile ), "maps/%s.bsp", sz );
 				if (!modelloader->Map_IsValid( szMapFile ))
 					continue;
+#endif
+#line 208
 
 				// add to list
 				maplist_map_t newMap;
@@ -246,10 +257,16 @@ bool BuildGeneralMapList( CUtlVector<maplist_map_t> *aMaps, bool bUseMapListFile
 							Q_strncpy(szMap, com_token, sizeof(szMap));
 
 							// ensure validity
+#ifdef BYTEMATCH_RETAIL
+							if (!g_pVEngineServer->IsMapValid( szMap ))
+								continue;
+#else
 							char szMapFile[64] = { 0 };
 							V_snprintf( szMapFile, sizeof( szMapFile ), "maps/%s.bsp", szMap );
 							if (!modelloader->Map_IsValid( szMapFile ))
 								continue;
+#endif
+#line 253
 
 							// Any more tokens on this line?
 							while ( COM_TokenWaiting( pFileList ) )

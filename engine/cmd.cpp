@@ -598,6 +598,145 @@ void Cmd_Exec_f( const CCommand &args )
 {
 	LOCK_COMMAND_BUFFER();
 	char	fileName[MAX_OSPATH];
+#ifdef BYTEMATCH_RETAIL
+
+	int argc = args.ArgC();
+
+	if ( argc < 2 )
+	{
+		ConMsg( "exec <filename> [path id]: execute a script file\n" );
+		return;
+	}
+
+	const char *szFile = args[1];
+
+	const char *pPathID = "*";
+
+	if ( argc > 2 )
+	{
+		pPathID = args[2];
+	}
+
+	if ( !Q_stricmp( pPathID, "T" ) )
+	{
+		// Tools path...
+		Q_snprintf( fileName, sizeof( fileName ), "T:/cfg/%s", szFile );
+	}
+	else
+	{
+		Q_snprintf( fileName, sizeof( fileName ), "//%s/cfg/%s", pPathID, szFile );
+		Q_DefaultExtension( fileName, ".cfg", sizeof( fileName ) );
+
+		// check path validity
+		if ( !COM_IsValidPath( fileName ) )
+		{
+			ConMsg( "exec %s: invalid path.\n", fileName );
+			return;
+		}
+	}
+
+	// check for invalid file extensions
+	if ( !IsValidFileExtension( fileName ) )
+	{
+		ConMsg( "exec %s: invalid file type.\n", fileName );
+		return;
+	}
+
+	// 360 doesn't need to do costly existence checks
+	if ( IsPC() )
+	{
+		if ( g_pFileSystem->FileExists( fileName ) )
+		{
+			// don't want to exec files larger than 1 MB
+			// probably not a valid file to exec
+			unsigned int size = g_pFileSystem->Size( fileName );
+			if ( size > 1*1024*1024 )
+			{
+				ConMsg( "exec %s: file size larger than 1 MB!\n", szFile );
+				return;
+			}
+		}
+		else
+		{
+			// Many exec files are optional.  make the error message slightly
+			// more informative and less like there is a problem.
+			if ( !V_stristr( szFile, "autoexec.cfg" ) && !V_stristr( szFile, "joystick.cfg" ) && !V_stristr( szFile, "game.cfg" ) )
+			{
+				ConMsg( "'%s' not present; not executing.\n", szFile );
+			}
+			return;
+		}
+	}
+
+	char buf[16384];
+	char *f;
+	int len;
+	f = (char *)COM_LoadStackFile( fileName, buf, sizeof( buf ), len );
+	if ( !f )
+	{
+		ConMsg( "exec: couldn't exec %s\n", szFile );
+		return;
+	}
+
+	char *original_f = f;
+	VCRHook_Cmd_Exec(&f);
+
+	// In case f was allocated and VCR mode spoofed f, free the old one we allocated earlier.
+	if ( original_f != buf && original_f != f )
+	{
+		free( original_f );
+	}
+
+	ConDMsg( "execing %s\n", szFile );
+
+	// check to make sure we're not going to overflow the cmd_text buffer
+	CommandHandle_t hCommand = s_CommandBuffer.GetNextCommandHandle();
+
+	// Execute each command immediately
+	const char *pszDataPtr = f;
+	while( true )
+	{
+		// parse a line out of the source
+		pszDataPtr = COM_ParseLine( pszDataPtr );
+
+		// no more tokens
+		if ( Q_strlen( com_token ) <= 0 )
+			break;
+
+		if ( pszDataPtr && Q_strlen( pszDataPtr ) > 0 && pszDataPtr[0] == '#' )
+			continue;
+
+		Cbuf_InsertText( com_token );
+
+		// Execute all commands provoked by the current line read from the file
+		while ( s_CommandBuffer.GetNextCommandHandle() != hCommand )
+		{
+			if( s_CommandBuffer.DequeueNextCommand( ) )
+			{
+				Cbuf_ExecuteCommand( s_CommandBuffer.GetCommand(), src_command );
+			}
+			else
+			{
+				Assert( 0 );
+				break;
+			}
+		}
+	}
+
+	if ( f != buf )
+	{
+		// Hack for VCR playback. vcrmode allocates the memory but doesn't use the debug memory allocator,
+		// so we don't want to free what it allocated.
+		if ( f == original_f )
+		{
+			free( f );
+		}
+	}
+
+	// force any queued convar changes to flush before reading/writing them
+	UpdateMaterialSystemConfig();
+}
+#else
 
 	int argc = args.ArgC();
 
@@ -721,6 +860,8 @@ void Cmd_Exec_f( const CCommand &args )
 	// force any queued convar changes to flush before reading/writing them
 	UpdateMaterialSystemConfig();
 }
+#endif
+#line 718
 
 
 /*
@@ -1078,12 +1219,15 @@ const ConCommandBase *Cmd_ExecuteCommand( const CCommand &command, cmd_source_t 
 		}
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	// Bail out before we update convars if we're runnign in default mode.
 	if ( pCommand && src == src_command && CommandLine()->CheckParm( "-default" ) && !pCommand->IsFlagSet( FCVAR_EXEC_DESPITE_DEFAULT ) )
 	{
 		Msg( "Ignoring cvar \"%s\" due to -default on command line\n", pCommand->GetName() );
 		return NULL;
 	}
+#endif
+#line 1081
 
 	// check cvars
 	if ( cv->IsCommand( command ) )

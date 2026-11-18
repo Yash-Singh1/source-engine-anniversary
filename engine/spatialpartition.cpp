@@ -2878,7 +2878,12 @@ void CVoxelTree::ReportStats( const char *pFileName )
 
 void CSpatialPartition::ReportStats( const char *pFileName )
 {
+#ifdef BYTEMATCH_RETAIL
+	Msg( "Handle Count %d (%d bytes)\n", m_aHandles.Count(), m_aHandles.Count() * ( sizeof(EntityInfo_t) + 2 * sizeof(SpatialPartitionHandle_t) ) );
+#else
 	Msg( "Handle Count %d (%llu bytes)\n", m_aHandles.Count(), (uint64)( m_aHandles.Count() * ( sizeof(EntityInfo_t) + 2 * sizeof(SpatialPartitionHandle_t) ) ) );
+#endif
+#line 2882
 	for ( int i = 0; i < NUM_TREES; i++ )
 	{
 		m_VoxelTrees[i].ReportStats( pFileName );

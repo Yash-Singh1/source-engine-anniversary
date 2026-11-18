@@ -141,11 +141,14 @@ CAudioMixer *CreateWaveMixer( IWaveData *data, int format, int nChannels, int bi
 //-----------------------------------------------------------------------------
 CAudioMixerWave::CAudioMixerWave( IWaveData *data ) : m_pData(data)
 {
+#ifndef BYTEMATCH_RETAIL
 	CAudioSource *pSource = GetSource();
 	if ( pSource )
 	{
 		pSource->ReferenceAdd( this );
 	}
+#endif
+#line 149
 
 	m_fsample_index = 0;
 	m_sample_max_loaded = 0;

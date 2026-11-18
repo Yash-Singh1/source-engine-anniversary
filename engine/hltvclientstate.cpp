@@ -30,6 +30,11 @@
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
+#ifdef BYTEMATCH_RETAIL
+// retail predates the bounded copies
+#define V_strcpy_safe( dest, src )	Q_strcpy( dest, src )
+#endif
+#line 33
 
 // copy message data from in to out buffer
 #define CopyDataInToOut(msg)									\

@@ -1006,9 +1006,14 @@ void CollisionBSPData_LoadEntityString( CCollisionBSPData *pBSPData )
 
 	pBSPData->numentitychars = lh.LumpSize();
 	MEM_ALLOC_CREDIT();
+#ifdef BYTEMATCH_RETAIL
+	pBSPData->map_entitystring.Init( lh.GetDiskName(), lh.LumpOffset(), lh.LumpSize() );
+#else
 	char szMapName[MAX_PATH] = { 0 };
 	V_strncpy( szMapName, lh.GetMapName(), sizeof( szMapName ) );
 	pBSPData->map_entitystring.Init( szMapName, lh.LumpOffset(), lh.LumpSize(), lh.LumpBase() );
+#endif
+#line 1012
 }
 
 

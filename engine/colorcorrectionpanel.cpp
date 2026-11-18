@@ -240,7 +240,7 @@ static const char *s_pColorCorrectionToolNames[CC_TOOL_COUNT] =
 //-----------------------------------------------------------------------------
 // Converts RGB to normalized
 //-----------------------------------------------------------------------------
-static void Color24ToVector( color24 inColor, Vector *pOutVector )
+static void Color24ToVector( const color24 &inColor, Vector *pOutVector )
 {
 	pOutVector->Init( inColor.r / 255.0f, inColor.g / 255.0f, inColor.b / 255.0f ); 
 }

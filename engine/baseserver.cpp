@@ -663,7 +663,10 @@ bool CBaseServer::ValidInfoChallenge( netadr_t & adr, const char *nugget )
 
 bool CBaseServer::ProcessConnectionlessPacket(netpacket_t * packet)
 {
+#ifndef BYTEMATCH_RETAIL
 	master->ProcessConnectionlessPacket( packet );
+#endif
+#line 667
 
 	bf_read msg = packet->message;	// handy shortcut 
 
@@ -748,7 +751,8 @@ bool CBaseServer::ProcessConnectionlessPacket(netpacket_t * packet)
 //					break;
 // 				}
 
-/*				if ( authProtocol == PROTOCOL_STEAM )
+#ifdef BYTEMATCH_RETAIL
+				if ( authProtocol == PROTOCOL_STEAM )
 				{
 					int keyLen = msg.ReadShort();
 					if ( keyLen < 0 || keyLen > sizeof(cdkey) )
@@ -760,7 +764,9 @@ bool CBaseServer::ProcessConnectionlessPacket(netpacket_t * packet)
 
 					ConnectClient( packet->from, protocol, challengeNr, clientChallenge, authProtocol, name, password, cdkey, keyLen );	// cd key is actually a raw encrypted key	
 				}
-				else*/
+				else
+#endif
+#line 759
 				{
 					msg.ReadString( cdkey, sizeof(cdkey) );
 					ConnectClient( packet->from, protocol, challengeNr, clientChallenge, authProtocol, name, password, cdkey, strlen(cdkey) );
@@ -889,7 +895,12 @@ bool CBaseServer::GetPlayerInfo( int nClientIndex, player_info_t *pinfo )
 	if ( !pinfo )
 		return false;
 
+#ifdef BYTEMATCH_RETAIL
+	if ( nClientIndex < 0 || nClientIndex >= GetUserInfoTable()->GetNumStrings() )
+#else
 	if ( nClientIndex < 0 || !GetUserInfoTable() || nClientIndex >= GetUserInfoTable()->GetNumStrings() )
+#endif
+#line 888
 	{
 		Q_memset( pinfo, 0, sizeof( player_info_t ) );
 		return false;
@@ -1108,6 +1119,15 @@ void CBaseServer::CalculateCPUUsage( void )
 
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__ );
 
+#ifdef BYTEMATCH_RETAIL
+	if ( m_fStartTime == 0 )
+	// record when we started
+	{
+		m_fStartTime = Sys_FloatTime();
+	}
+
+	if( Sys_FloatTime() > m_fLastCPUCheckTime + 1 )
+#else
 	float curtime = Sys_FloatTime();
 
 	if ( m_fStartTime == 0 )
@@ -1117,9 +1137,15 @@ void CBaseServer::CalculateCPUUsage( void )
 	}
 
 	if( curtime > m_fLastCPUCheckTime + 1 )
+#endif
+#line 1115
 	// only do this every 1 second
 	{
 #if defined ( _WIN32 ) 
+#ifdef BYTEMATCH_RETAIL
+		float curtime = Sys_FloatTime();
+#endif
+#line 1118
 		static float lastAvg=0;
 		static __int64 lastTotalTime=0,lastNow=0;
 
@@ -1182,7 +1208,12 @@ void CBaseServer::CalculateCPUUsage( void )
 #else
 #error
 #endif
+#ifdef BYTEMATCH_RETAIL
+		m_fLastCPUCheckTime = Sys_FloatTime();
+#else
 		m_fLastCPUCheckTime = curtime; 
+#endif
+#line 1181
 	}
 }
 
@@ -1408,12 +1439,22 @@ bool CBaseServer::CheckProtocol( netadr_t &adr, int nProtocol, int clientChallen
 		// Client is newer than server
 		if ( nProtocol > PROTOCOL_VERSION )
 		{
+#ifdef BYTEMATCH_RETAIL
+			RejectConnection( adr, clientChallenge, "#GameUI_ServerRejectOldProtocol" );
+#else
 			RejectConnection( adr, clientChallenge, "#GameUI_ServerRejectOldVersion" );
+#endif
+#line 1407
 		}
 		else
 		// Server is newer than client
 		{
+#ifdef BYTEMATCH_RETAIL
+			RejectConnection( adr, clientChallenge, "#GameUI_ServerRejectNewProtocol" );
+#else
 			RejectConnection( adr, clientChallenge, "#GameUI_ServerRejectNewVersion" );
+#endif
+#line 1412
 		}
 		return false;
 	}
@@ -1441,13 +1482,14 @@ bool CBaseServer::CheckChallengeType( CBaseClient * client, int nNewUserID, neta
 		return false;
 	}
 
-#if 0
+#ifdef BYTEMATCH_RETAIL
 	if ( ( nAuthProtocol == PROTOCOL_HASHEDCDKEY ) && (Q_strlen( pchLogonCookie ) <= 0 ||  Q_strlen(pchLogonCookie) != 32 ) )
 	{
 		RejectConnection( adr, clientChallenge, "#GameUI_ServerRejectInvalidCertLen" );
 		return false;
 	}
 #endif
+#line 1446
 
 	Assert( !IsReplay() );
 
@@ -1479,17 +1521,20 @@ bool CBaseServer::CheckChallengeType( CBaseClient * client, int nNewUserID, neta
 		client->SetSteamID( CSteamID() ); // set an invalid SteamID
 
 		// Convert raw certificate back into data
-/*		if ( cbCookie <= 0 || cbCookie >= STEAM_KEYSIZE )
+#ifdef BYTEMATCH_RETAIL
+		if ( cbCookie <= 0 || cbCookie >= STEAM_KEYSIZE )
 		{
 			RejectConnection( adr, clientChallenge, "#GameUI_ServerRejectInvalidSteamCertLen" );
 			return false;
-		}*/
+		}
+#endif
+#line 1482
 		netadr_t checkAdr = adr;
 		if ( adr.GetType() == NA_LOOPBACK || adr.IsLocalhost() )
 		{
 			checkAdr.SetIP( net_local_adr.GetIPHostByteOrder() );
 		}
-#if 0
+#ifdef BYTEMATCH_RETAIL
 		if ( !Steam3Server().NotifyClientConnect( client, nNewUserID, checkAdr, pchLogonCookie, cbCookie ) 
 			&& !Steam3Server().BLanOnly() ) // the userID isn't alloc'd yet so we need to fill it in manually
 		{
@@ -1497,6 +1542,7 @@ bool CBaseServer::CheckChallengeType( CBaseClient * client, int nNewUserID, neta
 			return false;
 		}
 #endif
+#line 1495
 
 		//
 		// Any rejections below this must call SendUserDisconnect

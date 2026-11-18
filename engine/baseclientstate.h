@@ -166,6 +166,12 @@ public:
 
 	static bool ConnectMethodAllowsRedirects( void );
 
+#ifdef BYTEMATCH_RETAIL
+protected:
+	bool InternalProcessStringCmd( NET_StringCmd *msg, bool bIsHLTV );
+
+#endif
+#line 169
 private:
 	bool PrepareSteamConnectResponse( uint64 unGSSteamID, bool bGSSecure, const netadr_t &adr, bf_write &msg );
 

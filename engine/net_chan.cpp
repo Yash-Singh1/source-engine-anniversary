@@ -166,8 +166,11 @@ void CNetChan::CompressFragments()
 
 		if ( data->buffer )	
 		{
+#ifndef BYTEMATCH_RETAIL
 			CFastTimer compressTimer;
 			compressTimer.Start();
+#endif
+#line 163
 
 			// fragments data is in memory
 			unsigned int compressedSize = COM_GetIdealDestinationCompressionBufferSize_Snappy( data->bytes );
@@ -176,9 +179,14 @@ void CNetChan::CompressFragments()
 			if ( COM_BufferToBufferCompress_Snappy( compressedData, &compressedSize, data->buffer, data->bytes ) &&
 				( compressedSize < data->bytes ) )
 			{
+#ifdef BYTEMATCH_RETAIL
+				DevMsg("Compressing fragments (%d -> %d bytes)\n", data->bytes, compressedSize );
+#else
 				compressTimer.End(); 
 				DevMsg("Compressing fragments (%d -> %d bytes): %.2fms\n",
 						data->bytes, compressedSize, compressTimer.GetDuration().GetMillisecondsF() );
+#endif
+#line 174
 
 				// copy compressed data but dont reallocate memory
 				Q_memcpy( data->buffer, compressedData, compressedSize );
@@ -1396,11 +1404,20 @@ bool CNetChan::ReadSubChannelData( bf_read &buf, int stream  )
 		{
 			// last transmission was aborted, free data
 			delete [] data->buffer;
+#ifdef BYTEMATCH_RETAIL
+			ConDMsg( "Fragment transmission aborted at %i/%i.\n", data->ackedFragments, data->numFragments );
+#else
 			data->buffer = NULL;
 			ConDMsg( "Fragment transmission aborted at %i/%i from %s.\n", data->ackedFragments, data->numFragments, GetAddress() );
+#endif
+#line 1372
 		}
 
 		data->bits = data->bytes * 8;
+#ifdef BYTEMATCH_RETAIL
+		data->buffer = new char[PAD_NUMBER(data->bytes, 4)];
+#endif
+#line 1375
 		data->asTCP = false;
 		data->numFragments = BYTES2FRAGMENTS(data->bytes);
 		data->ackedFragments = 0;
@@ -1412,6 +1429,7 @@ bool CNetChan::ReadSubChannelData( bf_read &buf, int stream  )
 			length = numFragments * FRAGMENT_SIZE;
 		}
 
+#ifndef BYTEMATCH_RETAIL
 		if ( data->bytes > MAX_FILE_SIZE )
 		{
 			// This can happen with the compressed path above, which uses VarInt32 rather than MAX_FILE_SIZE_BITS
@@ -1421,6 +1439,8 @@ bool CNetChan::ReadSubChannelData( bf_read &buf, int stream  )
 		}
 
 		data->buffer = new char[PAD_NUMBER(data->bytes, 4)];
+#endif
+#line 1395
 	}
 	else
 	{
@@ -1440,6 +1460,7 @@ bool CNetChan::ReadSubChannelData( bf_read &buf, int stream  )
 		if ( rest < FRAGMENT_SIZE )
 			length -= rest;
 	}
+#ifndef BYTEMATCH_RETAIL
 	else if ( ( startFragment + numFragments ) > data->numFragments )
 	{
 		// a malicious client can send a fragment beyond what was arranged in fragment#0 header
@@ -1449,6 +1470,8 @@ bool CNetChan::ReadSubChannelData( bf_read &buf, int stream  )
 		ConDMsg( "Received fragment chunk out of bounds: %i+%i>%i from %s\n", startFragment, numFragments, data->numFragments, GetAddress() );
 		return false;
 	}
+#endif
+#line 1423
 
 	Assert ( (offset + length) <= data->bytes );
 	if ( length == 0 || ( offset + length > data->bytes ) )

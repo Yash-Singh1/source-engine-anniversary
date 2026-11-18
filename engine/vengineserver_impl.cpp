@@ -58,7 +58,10 @@
 
 void SV_DetermineMulticastRecipients( bool usepas, const Vector& origin, CBitVec< ABSOLUTE_PLAYER_LIMIT >& playerbits );
 
+#ifndef BYTEMATCH_RETAIL
 int MapList_ListMaps( const char *pszSubString, bool listobsolete, bool verbose, int maxcount, int maxitemlength, char maplist[][ 64 ] );
+#endif
+#line 62
 
 extern CNetworkStringTableContainer *networkStringTableContainerServer;
 
@@ -275,6 +278,33 @@ public:
 
 	virtual void ChangeLevel( const char* s1, const char* s2)
 	{
+#ifdef BYTEMATCH_RETAIL
+		static int	last_spawncount;
+		char		cmd[ 256 ];
+
+		// make sure we don't issue two changelevels
+		if ( sv.GetSpawnCount() == last_spawncount )
+			return;
+
+		last_spawncount = sv.GetSpawnCount();
+
+		if ( !s1 )
+		{
+			Sys_Error( "CVEngineServer::Changelevel with NULL s1\n" );
+		}
+
+		if ( !s2 ) // no indication of where they are coming from;  so just do a standard old changelevel
+		{
+			Q_snprintf( cmd, sizeof( cmd ), "changelevel %s\n", s1 );
+		}
+		else
+		{
+			Q_snprintf( cmd, sizeof( cmd ), "changelevel2 %s %s\n", s1, s2 );
+		}
+
+		Cbuf_AddText( cmd );
+	}
+#else
 		if ( !s1 )
 		{
 			Sys_Error( "CVEngineServer::Changelevel with NULL s1\n" );
@@ -308,13 +338,20 @@ public:
 
 		Cbuf_AddText( cmd );
 	}
+#endif
+#line 311
 
 	virtual int	IsMapValid( const char *filename )
 	{
+#ifdef BYTEMATCH_RETAIL
+		return modelloader->Map_IsValid( filename );
+#else
 		char szWrappedName[MAX_PATH] = { 0 };
 		V_snprintf( szWrappedName, sizeof( szWrappedName ), "maps/%s.bsp", filename );
 
 		return modelloader->Map_IsValid( szWrappedName );
+#endif
+#line 318
 	}
 
 	virtual bool IsDedicatedServer( void )
@@ -610,6 +647,7 @@ public:
 #endif
 #line 574
 
+#ifndef BYTEMATCH_RETAIL
 	// The canonical map lookup spot (see VEngineServer_FindMap)
 	eFindMapResult FindMap( /* in/out */ char *pMapName, int nMapNameMax )
 	{
@@ -635,6 +673,8 @@ public:
 
 		return eFindMap_NotFound;
 	}
+#endif
+#line 600
 
 	virtual int IndexOfEdict(const edict_t *pEdict)
 	{
@@ -1750,10 +1790,13 @@ EXPOSE_SINGLE_INTERFACE_GLOBALVAR( CVEngineServer, IVEngineServer, INTERFACEVERS
 //-----------------------------------------------------------------------------
 IVEngineServer *g_pVEngineServer = &g_VEngineServer;
 
+#ifndef BYTEMATCH_RETAIL
 IVEngineServer::eFindMapResult VEngineServer_FindMap( char *pMapName, int nMapNameMax )
 {
 	return g_VEngineServer.FindMap( pMapName, nMapNameMax );
 }
+#endif
+#line 1709
 
 
 //-----------------------------------------------------------------------------
@@ -1810,7 +1853,12 @@ void CVEngineServer::PlaybackTempEntity( IRecipientFilter& filter, float delay, 
 
 	newEvent->bits = buffer.GetNumBitsWritten();
 	int size = Bits2Bytes( buffer.GetNumBitsWritten() );
+#ifdef BYTEMATCH_RETAIL
+	newEvent->pData = new byte[size];
+#else
 	newEvent->pData = new byte[ALIGN_VALUE(size,4)];
+#endif
+#line 1766
 	Q_memcpy( newEvent->pData, data, size );
 
 	// add to list

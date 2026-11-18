@@ -604,3 +604,56 @@ at the start is lost.
 | host_saverestore | `SaveGameSlot`, `GetSaveAppendix` (missing), `LoadGame`, `SaveReadHeader`, `AutoSaveDangerousIsSafe` | anniversary save appendix (`SaveAppendix` KeyValues with `Expansion`), Steam remote storage call, `malloc` save buffer; not written |
 | console | `Con_ColorPrintf`, `Con_DebugLog`, `ConsoleLogFileCallback`, `GetConsoleLogFileData`, `Con_Init`, `ProcessNotifyLines` | console log manager differences, not investigated |
 | sys_dll, sv_rcon, snd_dma, snd_dsp, snd_mix, net_ws, host | static init | `FCVAR_INTERNAL_USE`/`FCVAR_ALLOWED_IN_COMPETITIVE` = 0 (bytematch-headers4 4876c7d2) |
+
+# Round 4 (engine4 lane)
+
+Branch `bytematch-engine4`, started at `bytematch` 8ae75041. Measured with
+`lane-engine4-scratch/run.sh` (engine/ objects).
+
+Totals: 8481/8715 (91.64% bytes) at 8ae75041 -> 8635/8715 (96.48%) at the head.
+Whole engine.dylib: 12732 -> 12895/12999 functions, 94.15% -> 97.29% of bytes.
+No function matched at the start is lost; elsewhere in the tree only
+hl2 server.dylib (+3, `UtlCachedFileData.h`) and bsppack.dylib (+1) change.
+
+## Per object (start -> end / total)
+
+| object | start | end | total | cause |
+|---|---:|---:|---:|---|
+| host_listmaps | 19 | 29 | 29 | SDK 2013 map list: keyed by `maps/<name>.bsp`, `RefreshList(bool bForce)`, static `void MapList_ListMaps` without refresh, static `_Host_Map_f_CompletionFunc` stripping `.bsp`; no fuzzy `FindMap` (host_cmd, vengineserver_impl) |
+| snd_wave_source, snd_wave_mixer | 123, 35 | 132, 37 | 133, 37 | mixer ctor without `ReferenceAdd` (sources add it), streamed MP3 sources, cache version 3, temporary cache per search path in `BuildCache` |
+| host_saverestore | 137 | 145 | 146 | anniversary save appendix (`GetSaveAppendix`, slot 35 of `ISaveRestore`), Steam remote storage write batch, `malloc` header buffer, `mapCount == -20` saves, old-save detection by map prefix |
+| baseclientstate, servermsghandler, baseserver, client | 84, 46, 102, 51 | 92, 50, 106, 55 | 92, 50, 106, 55 | Steam auth code compiled in retail, no master-server hook, pre-2016 string tables, old protocol strings |
+| console | 23 | 30 | 30 | log manager without dtor, `COM_IsValidPath` only, `LOCAL_THREAD_LOCK` in `Con_ColorPrintf` |
+| MPAFile | 13 | 20 | 21 | MP3 duration through minimp3_ex iterate callbacks (`MINIMP3_NO_STDIO`); `CMPAFile` native only |
+| cmodel_bsp, cmodel | 16, 56 | 22, 60 | 22, 63 | retail `MAX_MAP_*` limits (public/bspfile.h), entity string via `Init`, `Purge` discard, disp counter check in `BeginTrace` |
+| dt_stack, dt_localtransfer, dt_send_eng, dt_recv_eng, dt | 0, 15, 14, 36, 24 | 2, 20, 18, 38, 25 | 2, 20, 18, 38, 25 | `MAX_PROXY_RESULTS` 64, plain struct copy in local transfer |
+| cdll_engine_int | 158 | 163 | 164 | `GetPlayerInfo`/`GetPlayerForUserID` trust the table size, `GetMapName` dedicated/disconnected cases, `GetPatchVersion` = `gpszVersionString`, `CopyFrameBufferToMaterial` on PC |
+| net_ws, net_chan | 73, 96 | 78, 98 | 79, 98 | 6-argument `OpenSocketInternal`, old `NET_GetLong` formats; fragment receive without size/range checks, untimed `CompressFragments` |
+| vox, hltvclientstate, bugreporter | 68, 61, 85 | 73, 65, 86 | 73, 66, 88 | `V_strcpy_safe` -> `Q_strcpy` |
+| host | 80 | 85 | 88 | `Host_NewGame` events/rich presence block, `save_transition_music` order, thread pool `Start`, `mat_picmip` range |
+| common | 31 | 35 | 35 | Quake-style `COM_CreatePath`, expansion id in `COM_GetModDirectory`, no `BLoadHDContent` |
+| keys | 19 | 22 | 22 | `[code:joystick]` listing, unbound warning includes Steam Controller, no `g_pInputSystem` check |
+| vgui_askconnectpanel | 14 | 18 | 18 | sized `ConstructString`, no hostname filter |
+| vengineserver_impl | 124 | 127 | 127 | SDK 2013 `ChangeLevel` (spawn-count guard, no escaping), `IsMapValid` passes the name through, unpadded temp entity data |
+| cmd | 27 | 29 | 29 | SDK 2013 `Cmd_Exec_f` (path id, `T:` tools path, 16 KB stack buffer, `#` skip), no `-default` filter |
+| pure_server, cl_rcon, vgui_baseui_interface, cl_main, download | 81, 44, 84, 92, 38 | 84, 47, 87, 94, 40 | 84, 47, 87, 94, 40 | explicit `GetString` sizes, Steam Controller escape, background map validation, `GetSteamUILanguage`, inline string clones |
+| sys_dll2, colorcorrectionpanel, sv_ents_write | 58, 333, 4 | 59, 334, 5 | 59, 334, 5 | VR `IsHmdConnected` condition, static `Color24ToVector`, SDK 2013 `FindNextSetBit` (public/bitvec.h) |
+| others (+1 each) | | | | MapReslistGenerator (`IsMapValid`), sv_filter (`removeid`), pr_edict (`ED_Alloc` append), gl_screen (no dynamic model update), spatialpartition (32-bit stats), baseclient, hltvserver, snd_dma |
+
+## Still differing
+
+| object | function | note |
+|---|---|---|
+| snd_dma | `S_Update`, `SND_GetGainObscured` | scheduling / not investigated |
+| host | `Host_WriteConfiguration`, `Host_ReadConfiguration`, `Host_ReadPreStartupConfiguration` | register allocation |
+| host_saverestore | `SaveReadHeader` | block layout |
+| snd_wave_source | `GetCacheData` | condition order |
+| MPAFile | `mp3d_find_frame` | minimp3 revision |
+| cmodel | `CM_TestInLeaf`, `CM_TraceToLeaf<>` | not investigated |
+| buildcubemaps | `R_BuildCubemapSamples` | constant hoisting order |
+| cvar | `CvarList` | stack slots |
+| gl_warp | `R_DrawSkyBox` | 16 extra frame bytes |
+| net_ws | static init | `CUtlVectorMT` `MUTEX_TYPE Mutex_t` (public/tier1/utlvector.h, SDK 2013) |
+| sys_engine | `CEngine::Load`/`Unload`/`Frame`, static init | OB-era text console (`textconsole.cpp`, `TextConsoleUnix.cpp`, `CTextConsoleUnix` at `CEngine+0x38`) |
+| cdll_engine_int | `GetEventsSubscription` | retail `CMatchEventsSubscription` object, not in the manifest |
+| Overlay, l_studio, gl_*, disp_*, shadowmgr, snd_mix, cmodel_disp | | not investigated |

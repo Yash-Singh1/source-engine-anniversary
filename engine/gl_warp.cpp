@@ -341,9 +341,12 @@ void R_DrawSkyBox( float zFar, int nDrawFlags /*= 0x3F*/  )
 			CMeshBuilder meshBuilder;
 			meshBuilder.Begin( pMesh, MATERIAL_TRIANGLES, 4, 6 );
 
+#ifndef BYTEMATCH_RETAIL
 			// meshbuilder Begin can fail if dynamic mesh is not available (eg, alt-tabbed away)
 			if ( meshBuilder.BaseVertexData() == NULL )
 				continue;
+#endif
+#line 347
 
 			for (int j = 0; j < 4; ++j)
 			{
