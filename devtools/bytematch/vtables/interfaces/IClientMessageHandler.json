@@ -10,7 +10,7 @@
  },
  "version_macros": [],
  "registrations": [],
- "sdk2013_len": 15,
+ "sdk2013_len": 16,
  "sdk2013_slots": [
   "~__bm_probe()",
   "~__bm_probe()",
@@ -26,6 +26,7 @@
   "ProcessRespondCvarValue(CLC_RespondCvarValue*)",
   "ProcessFileCRCCheck(CLC_FileCRCCheck*)",
   "ProcessFileMD5Check(CLC_FileMD5Check*)",
+  "ProcessSaveReplay(CLC_SaveReplay*)",
   "ProcessCmdKeyValues(CLC_CmdKeyValues*)"
  ],
  "retail_reference": {

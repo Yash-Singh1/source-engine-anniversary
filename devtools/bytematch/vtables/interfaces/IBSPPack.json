@@ -8,7 +8,7 @@
    "IBSPPACK003"
   ],
   "ours": [
-   "IBSPPACK004"
+   "IBSPPACK003"
   ],
   "sdk2013": [
    "IBSPPACK003"
@@ -24,7 +24,19 @@
    "class": "CBSPPack"
   }
  ],
- "sdk2013_len": null,
+ "sdk2013_len": 10,
+ "sdk2013_slots": [
+  "LoadBSPFile(IFileSystem*, char*)",
+  "WriteBSPFile(char*)",
+  "ClearPackFile()",
+  "AddFileToPack(char const*, char const*)",
+  "AddBufferToPack(char const*, void*, int, bool)",
+  "SetHDRMode(bool)",
+  "SwapBSPFile(IFileSystem*, char const*, char const*, bool, bool (*)(char const*, CUtlBuffer&, CUtlBuffer&, bool (*)(CUtlBuffer&, CUtlBuffer&)), bool (*)(char const*, char const*, CUtlBuffer&, CUtlBuffer&), bool (*)(CUtlBuffer&, CUtlBuffer&))",
+  "GetPakFileLump(IFileSystem*, char const*, void**, int*)",
+  "SetPakFileLump(IFileSystem*, char const*, char const*, void*, int)",
+  "GetBSPDependants(IFileSystem*, char const*, CUtlVector<CUtlString, CUtlMemory<CUtlString, int>>*)"
+ ],
  "retail_reference": {
   "module": "bin/bsppack",
   "class": "CBSPPack",

@@ -10,7 +10,7 @@
  },
  "version_macros": [],
  "registrations": [],
- "sdk2013_len": 40,
+ "sdk2013_len": 41,
  "sdk2013_slots": [
   "~__bm_probe()",
   "~__bm_probe()",
@@ -49,6 +49,7 @@
   "IsActive() const",
   "IsFakeClient() const",
   "IsHLTV() const",
+  "IsReplay() const",
   "IsHearingClient(int) const",
   "IsProximityHearingClient(int) const",
   "SetMaxRoutablePayloadSize(int)"
