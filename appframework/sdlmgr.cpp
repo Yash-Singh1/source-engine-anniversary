@@ -680,7 +680,7 @@ InitReturnVal_t CSDLMgr::Init()
 	//  GL entry points, but the game hasn't made a window yet. So it's time
 	//  to make a window! We make a 640x480 one here, and later, when asked
 	//  to really actually make a window, we just resize the one we built here.
-#ifdef VPC
+#ifdef BYTEMATCH_RETAIL
 	if ( !CreateHiddenGameWindow( "", 640, 480 ) )
 #else
 	if ( !CreateHiddenGameWindow( "", 1280, 720 ) )
@@ -1481,7 +1481,7 @@ void CSDLMgr::SetWindowFullScreen( bool bFullScreen, int nWidth, int nHeight )
 
 		mode.format = (Uint32)SDL_PIXELFORMAT_RGBX8888;
 
-#ifdef VPC
+#ifdef BYTEMATCH_RETAIL
 		m_flMouseXScale = ( float )nWidth / ( float )mode.w;
 		m_flMouseYScale = ( float )nHeight / ( float )mode.h;
 #endif
@@ -1493,7 +1493,7 @@ void CSDLMgr::SetWindowFullScreen( bool bFullScreen, int nWidth, int nHeight )
 		mode.w = nWidth;
 		mode.h = nHeight;
 		mode.driverdata = 0;
-#ifdef VPC
+#ifdef BYTEMATCH_RETAIL
 		m_flMouseXScale = 1.0f;
 		m_flMouseYScale = 1.0f;
 #endif
@@ -1544,7 +1544,7 @@ void CSDLMgr::SetWindowFullScreen( bool bFullScreen, int nWidth, int nHeight )
 		m_bFullScreen = bFullScreen;
 	}
 
-#ifndef VPC
+#ifndef BYTEMATCH_RETAIL
 	if (bFullScreen)
 	{
 		int drawableW, drawableH;

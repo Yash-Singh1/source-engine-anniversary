@@ -552,7 +552,7 @@ FSReturnCode_t FileSystem_LoadSearchPaths( CFSSearchPathsInit &initInfo )
 	if ( !FileSystem_GetBaseDir( baseDir, sizeof( baseDir ) ) )
 		return SetupFileSystemError( false, FS_INVALID_PARAMETERS, "FileSystem_GetBaseDir failed." );
 
-#ifndef VPC
+#ifndef BYTEMATCH_RETAIL
 	Msg("filesystem BaseDir: %s\n", baseDir);
 #endif
 
@@ -581,7 +581,7 @@ FSReturnCode_t FileSystem_LoadSearchPaths( CFSSearchPathsInit &initInfo )
 		}
 	}
 
-#ifndef VPC
+#ifndef BYTEMATCH_RETAIL
 	const char *ExtraVpkPaths = getenv( "EXTRAS_VPK_PATH" );
 	if( ExtraVpkPaths )
 	{
@@ -1215,7 +1215,7 @@ FSReturnCode_t FileSystem_GetFileSystemDLLName( char *pFileSystemDLL, int nMaxLe
 		return SetupFileSystemError( false, FS_INVALID_PARAMETERS, "FileSystem_GetExecutableDir failed." );
 
 	// Assume we'll use local files
-#ifdef VPC
+#ifdef BYTEMATCH_RETAIL
 	Q_snprintf( pFileSystemDLL, nMaxLen, "%s%cfilesystem_stdio" DLL_EXT_STRING, executablePath, CORRECT_PATH_SEPARATOR );
 #else
 	// waf builds name POSIX shared libraries lib<name>; VPC builds don't.
@@ -1235,7 +1235,7 @@ FSReturnCode_t FileSystem_GetFileSystemDLLName( char *pFileSystemDLL, int nMaxLe
 				_access( pFileSystemDLL, 0 ) != 0
 			#endif
 		) {
-#ifdef VPC
+#ifdef BYTEMATCH_RETAIL
 			Q_snprintf( pFileSystemDLL, nMaxLen, "%s%cfilesystem_steam" DLL_EXT_STRING, executablePath, CORRECT_PATH_SEPARATOR );
 			bSteam = true;
 #else

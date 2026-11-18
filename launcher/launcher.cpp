@@ -104,7 +104,7 @@ static IEngineAPI *g_pEngineAPI;
 static IHammer *g_pHammer;
 
 bool g_bTextMode = false;
-#ifndef VPC
+#ifndef BYTEMATCH_RETAIL
 bool g_MultiRun = false;
 #endif
 
@@ -915,7 +915,7 @@ char g_lockFilename[MAX_PATH];
 #endif
 bool GrabSourceMutex()
 {
-#ifndef VPC
+#ifndef BYTEMATCH_RETAIL
 	if( g_MultiRun )
 		return true;
 #endif
@@ -1014,7 +1014,7 @@ bool GrabSourceMutex()
 
 void ReleaseSourceMutex()
 {
-#ifndef VPC
+#ifndef BYTEMATCH_RETAIL
 	if( g_MultiRun )
 		return;
 #endif
@@ -1222,7 +1222,7 @@ DLL_EXPORT int LauncherMain( int argc, char **argv )
 
 #endif // LINUX
 
-#if defined( USE_SDL ) && !defined( VPC )
+#if defined( USE_SDL ) && !defined( BYTEMATCH_RETAIL )
 	SDL_version ver;
 	SDL_GetVersion( &ver );
 	Msg("SDL version: %d.%d.%d rev: %s\n", (int)ver.major, (int)ver.minor, (int)ver.patch, SDL_GetRevision());
@@ -1273,7 +1273,7 @@ DLL_EXPORT int LauncherMain( int argc, char **argv )
 	// Figure out the directory the executable is running from
 	UTIL_ComputeBaseDir();
 
-#ifndef VPC
+#ifndef BYTEMATCH_RETAIL
 	// Allow the user to explicitly say they want to be able to run multiple instances of the source mutex.
 	// Useful for side-by-side comparisons of different renderers.
 	g_MultiRun = CommandLine()->CheckParm( "-multirun" ) != NULL;
