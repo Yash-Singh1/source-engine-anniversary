@@ -30,7 +30,7 @@ CFavoriteGames::~CFavoriteGames()
 //-----------------------------------------------------------------------------
 void CFavoriteGames::LoadFavoritesList()
 {
-	if ( steamapicontext->SteamMatchmaking() && steamapicontext->SteamMatchmaking()->GetFavoriteGameCount() == 0 )
+	if ( SteamMatchmaking() && SteamMatchmaking()->GetFavoriteGameCount() == 0 )
 	{
 		// set empty message
 		m_pGameList->SetEmptyListText("#ServerBrowser_NoFavoriteServers");
@@ -80,7 +80,7 @@ void CFavoriteGames::RefreshComplete( NServerResponse response )
 #endif
 {
 	SetRefreshing(false);
-	if ( steamapicontext->SteamMatchmaking() && steamapicontext->SteamMatchmaking()->GetFavoriteGameCount() == 0 )
+	if ( SteamMatchmaking() && SteamMatchmaking()->GetFavoriteGameCount() == 0 )
 	{
 		// set empty message
 		m_pGameList->SetEmptyListText("#ServerBrowser_NoFavoriteServers");
@@ -130,7 +130,7 @@ void CFavoriteGames::OnOpenContextMenu(int itemID)
 //-----------------------------------------------------------------------------
 void CFavoriteGames::OnRemoveFromFavorites()
 {
-	if ( !steamapicontext->SteamMatchmakingServers() || !steamapicontext->SteamMatchmaking() )
+	if ( !SteamMatchmakingServers() || !SteamMatchmaking() )
 		return;
 
 	// iterate the selection
@@ -139,11 +139,11 @@ void CFavoriteGames::OnRemoveFromFavorites()
 		int itemID = m_pGameList->GetSelectedItem( iGame );
 		int serverID = m_pGameList->GetItemData(itemID)->userData;
 		
-		gameserveritem_t *pServer = steamapicontext->SteamMatchmakingServers()->GetServerDetails( m_hRequest, serverID );
+		gameserveritem_t *pServer = SteamMatchmakingServers()->GetServerDetails( m_hRequest, serverID );
 		
 		if ( pServer )
 		{
-			steamapicontext->SteamMatchmaking()->RemoveFavoriteGame( pServer->m_nAppID, pServer->m_NetAdr.GetIP(), pServer->m_NetAdr.GetConnectionPort(), pServer->m_NetAdr.GetQueryPort(), k_unFavoriteFlagFavorite );
+			SteamMatchmaking()->RemoveFavoriteGame( pServer->m_nAppID, pServer->m_NetAdr.GetIP(), pServer->m_NetAdr.GetConnectionPort(), pServer->m_NetAdr.GetQueryPort(), k_unFavoriteFlagFavorite );
 		}
 	}
 
@@ -170,9 +170,9 @@ void CFavoriteGames::OnAddCurrentServer()
 {
 	gameserveritem_t *pConnected = ServerBrowserDialog().GetCurrentConnectedServer();
 
-	if ( pConnected && steamapicontext->SteamMatchmaking() )
+	if ( pConnected && SteamMatchmaking() )
 	{
-		steamapicontext->SteamMatchmaking()->AddFavoriteGame( pConnected->m_nAppID, pConnected->m_NetAdr.GetIP(), pConnected->m_NetAdr.GetConnectionPort(), pConnected->m_NetAdr.GetQueryPort(), k_unFavoriteFlagFavorite, time( NULL ) );
+		SteamMatchmaking()->AddFavoriteGame( pConnected->m_nAppID, pConnected->m_NetAdr.GetIP(), pConnected->m_NetAdr.GetConnectionPort(), pConnected->m_NetAdr.GetQueryPort(), k_unFavoriteFlagFavorite, time( NULL ) );
 		m_bRefreshOnListReload = true;
 
 		if ( GameSupportsReplay() )

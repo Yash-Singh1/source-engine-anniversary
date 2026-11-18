@@ -88,9 +88,9 @@ void StatCard::UpdateInfo()
 		g_pVGuiLocalize->Find( "#GameUI_Stats_LastMatch_MVPS" ), 1, numBuf );		
 	m_pStars->SetText( buf );
 
-	if (steamapicontext)
+	if (SteamFriends())
 	{
-		ISteamFriends* friends = steamapicontext->SteamFriends();
+		ISteamFriends* friends = SteamFriends();
 		if (friends)
 		{
 			m_pName->SetText(friends->GetPersonaName());
@@ -98,9 +98,9 @@ void StatCard::UpdateInfo()
 	}
 
 	// Display the player avatar
-	if (m_pAvatar && steamapicontext && steamapicontext->SteamUser())
+	if (m_pAvatar && SteamUser())
 	{
-		m_pAvatar->SetPlayer( steamapicontext->SteamUser()->GetSteamID(), k_EAvatarSize64x64 );	
+		m_pAvatar->SetPlayer( SteamUser()->GetSteamID(), k_EAvatarSize64x64 );	
 		m_pAvatar->SetVisible( true );
 	}
 }

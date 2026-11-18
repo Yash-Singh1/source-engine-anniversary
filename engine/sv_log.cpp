@@ -31,8 +31,11 @@ static ConVar sv_log_onefile( "sv_log_onefile", "0", FCVAR_ARCHIVE, "Log server 
 static ConVar sv_logbans( "sv_logbans", "0", FCVAR_ARCHIVE, "Log server bans in the server logs." ); // should sv_banid() calls be logged in the server logs?
 static ConVar sv_logsecret( "sv_logsecret", "0", 0, "If set then include this secret when doing UDP logging (will use 0x53 as packet type, not usual 0x52)" ); 
 
+#ifndef BYTEMATCH_RETAIL
 static ConVar sv_logfilename_format( "sv_logfilename_format", "", FCVAR_ARCHIVE, "Log filename format. See strftime for formatting codes." );
 static ConVar sv_logfilecompress( "sv_logfilecompress", "0", FCVAR_ARCHIVE, "Gzip compress logfile and rename to logfilename.log.gz on close." );
+#endif
+#line 34
 
 CLog g_Log;	// global Log object
 
@@ -274,7 +277,10 @@ void CLog::Reset( void )	// reset all logging streams
 	m_LogAddresses.RemoveAll();
 
 	m_hLogFile = FILESYSTEM_INVALID_HANDLE;
+#ifndef BYTEMATCH_RETAIL
 	m_LogFilename = NULL;
+#endif
+#line 275
 
 	m_bActive = false;
 	m_flLastLogFlush = realtime;
@@ -482,6 +488,21 @@ void CLog::Print( const char * text )
 		return;
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	if ( Q_strlen( text ) > 1024 )
+	{
+		DevMsg( 1, "CLog::Print: string too long (>1024 bytes)." );
+		return;
+	}
+
+	tm today;
+	VCRHook_LocalTime( &today );
+
+	static char	string[1100];
+	Q_snprintf( string, sizeof( string ), "L %02i/%02i/%04i - %02i:%02i:%02i: %s",
+		today.tm_mon+1, today.tm_mday, 1900 + today.tm_year,
+		today.tm_hour, today.tm_min, today.tm_sec, text );
+#else
 	tm today;
 	VCRHook_LocalTime( &today );
 
@@ -495,6 +516,8 @@ void CLog::Print( const char * text )
 	V_sprintf_safe( string, "L %02i/%02i/%04i - %02i:%02i:%02i: %s",
 		today.tm_mon+1, today.tm_mday, 1900 + today.tm_year,
 		today.tm_hour, today.tm_min, today.tm_sec, text );
+#endif
+#line 495
 
 	// Echo to server console
 	if ( sv_logecho.GetInt() ) 
@@ -644,6 +667,7 @@ void CLog::FireGameEvent( IGameEvent *event )
 	}
 }
 
+#ifndef BYTEMATCH_RETAIL
 struct TempFilename_t
 {
 	bool IsGzip;
@@ -787,6 +811,8 @@ static void FixupInvalidPathChars( char *filename )
 		}
 	}
 }
+#endif
+#line 644
 
 /*
 ====================
@@ -795,6 +821,18 @@ Log_Close
 Close logging file
 ====================
 */
+#ifdef BYTEMATCH_RETAIL
+void CLog::Close( void )
+{
+	if ( m_hLogFile != FILESYSTEM_INVALID_HANDLE )
+	{
+		Printf( "Log file closed\n" );
+		g_pFileSystem->Close( m_hLogFile );
+	}
+
+	m_hLogFile = FILESYSTEM_INVALID_HANDLE;
+}
+#else
 void CLog::Close( void )
 {
 	if ( m_hLogFile != FILESYSTEM_INVALID_HANDLE )
@@ -816,6 +854,8 @@ void CLog::Close( void )
 	m_hLogFile = FILESYSTEM_INVALID_HANDLE;
 	m_LogFilename = NULL;
 }
+#endif
+#line 662
 
 /*
 ====================
@@ -839,6 +879,74 @@ Log_Open
 Open logging file
 ====================
 */
+#ifdef BYTEMATCH_RETAIL
+void CLog::Open( void )
+{
+	if ( !m_bActive || !sv_logfile.GetInt() )
+		return;
+
+	// Do we already have a log file (and we only want one)?
+	if ( m_hLogFile && sv_log_onefile.GetInt() )
+		return;
+
+	Close();
+
+	// Find a new log file slot
+	char szFileBase[ MAX_OSPATH ];
+	char szTestFile[ MAX_OSPATH ];
+	int i;
+	FileHandle_t fp = 0;
+
+	tm today;
+	VCRHook_LocalTime( &today );
+
+	// safety check for invalid paths
+	const char *pszLogsDir = sv_logsdir.GetString();
+	if ( !COM_IsValidPath( pszLogsDir ) )
+		pszLogsDir = "logs";
+
+	Q_snprintf( szFileBase, sizeof( szFileBase ), "%s/L%02i%02i", pszLogsDir, today.tm_mon + 1, today.tm_mday );
+
+	for ( i = 0; i < 1000; i++ )
+	{
+		Q_snprintf( szTestFile, sizeof( szTestFile ), "%s%03i.log", szFileBase, i );
+
+		Q_FixSlashes( szTestFile );
+		COM_CreatePath( szTestFile );
+
+		fp = g_pFileSystem->Open( szTestFile, "r", "LOGDIR" );
+		if ( !fp )
+		{
+			COM_CreatePath( szTestFile );
+
+			fp = g_pFileSystem->Open( szTestFile, "wt", "LOGDIR" );
+			if ( !fp )
+			{
+				i = 1000;
+			}
+			else
+			{
+				ConMsg( "Server logging data to file %s\n", szTestFile );
+			}
+			break;
+		}
+		g_pFileSystem->Close( fp );
+	}
+
+	if ( i == 1000 )
+	{
+		ConMsg( "Unable to open logfiles under %s\nLogging disabled\n", szFileBase );
+		return;
+	}
+
+	if ( fp )
+	{
+		m_hLogFile = fp;
+	}
+
+	Printf( "Log file started (file \"%s\") (game \"%s\") (version \"%i\")\n", szTestFile, com_gamedir, build_number() );
+}
+#else
 void CLog::Open( void )
 {
 	if ( !m_bActive || !sv_logfile.GetBool() )
@@ -901,3 +1009,5 @@ void CLog::Open( void )
 	ConMsg( "Server logging data to file %s\n", m_LogFilename.Get() );
 	Printf( "Log file started (file \"%s\") (game \"%s\") (version \"%i\")\n", m_LogFilename.Get(), com_gamedir, build_number() );
 }
+#endif
+#line 751

@@ -147,6 +147,8 @@ static  kbutton_t   in_grenade1;
 static  kbutton_t   in_grenade2;
 static	kbutton_t	in_attack3;
 kbutton_t	in_ducktoggle;
+kbutton_t	in_lookspin;
+kbutton_t	in_resetcamera;
 
 /*
 ===========
@@ -476,6 +478,10 @@ void IN_JumpDown ( const CCommand &args ) {KeyDown(&in_jump, args[1] );}
 void IN_JumpUp ( const CCommand &args ) {KeyUp(&in_jump, args[1] );}
 void IN_DuckDown( const CCommand &args ) {KeyDown(&in_duck, args[1] );}
 void IN_DuckUp( const CCommand &args ) {KeyUp(&in_duck, args[1] );}
+void IN_LookSpinDown( const CCommand &args ) {KeyDown(&in_lookspin, args[1] );}
+void IN_LookSpinUp( const CCommand &args ) {KeyUp(&in_lookspin, args[1] );}
+void IN_ResetCameraDown( const CCommand &args ) {KeyDown(&in_resetcamera, args[1] );}
+void IN_ResetCameraUp( const CCommand &args ) {KeyUp(&in_resetcamera, args[1] );}
 void IN_ReloadDown( const CCommand &args ) {KeyDown(&in_reload, args[1] );}
 void IN_ReloadUp( const CCommand &args ) {KeyUp(&in_reload, args[1] );}
 void IN_Alt1Down( const CCommand &args ) {KeyDown(&in_alt1, args[1] );}
@@ -640,6 +646,8 @@ DetermineKeySpeed
 ==============================
 */
 static ConVar in_usekeyboardsampletime( "in_usekeyboardsampletime", "1", 0, "Use keyboard sample time smoothing." );
+ConVar sc_last_used_input( "sc_last_used_input", "0", 0 );
+ConVar sc_controller_mode( "sc_controller_mode", "0", 0 );
 
 float CInput::DetermineKeySpeed( float frametime )
 {
@@ -1615,6 +1623,10 @@ static ConCommand startjlook("+jlook", IN_JLookDown);
 static ConCommand endjlook("-jlook", IN_JLookUp);
 static ConCommand startduck("+duck", IN_DuckDown);
 static ConCommand endduck("-duck", IN_DuckUp);
+static ConCommand startlookspin("+lookspin", IN_LookSpinDown);
+static ConCommand endlookspin("-lookspin", IN_LookSpinUp);
+static ConCommand startresetcamera("+resetcamera", IN_ResetCameraDown);
+static ConCommand endresetcamera("-resetcamera", IN_ResetCameraUp);
 static ConCommand startreload("+reload", IN_ReloadDown);
 static ConCommand endreload("-reload", IN_ReloadUp);
 static ConCommand startalt1("+alt1", IN_Alt1Down);
@@ -1674,6 +1686,14 @@ void CInput::Init_All (void)
 	m_fJoystickAdvancedInit = false;
 	m_fHadJoysticks = false;
 	m_flLastForwardMove = 0.0;
+
+	m_vecQuickTurn = vec2_origin;
+	m_bQuickTurnFlip = false;
+	m_bQuickTurnWasDown = false;
+	m_bCameraResetWasDown = false;
+
+	SetControllerModeActive( false );
+	m_nUnused = 0;
 
 	// Initialize inputs
 	if ( IsPC() )

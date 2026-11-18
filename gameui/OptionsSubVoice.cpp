@@ -269,9 +269,9 @@ void COptionsSubVoice::OnCommand( const char *command)
     }
 	else if (!stricmp(command, "SteamVoiceSettings"))
 	{
-		if ( steamapicontext && steamapicontext->SteamFriends() )
+		if ( SteamFriends() )
 		{
-			steamapicontext->SteamFriends()->ActivateGameOverlay( "voicesettings" );
+			SteamFriends()->ActivateGameOverlay( "voicesettings" );
 		}
 	}
     else

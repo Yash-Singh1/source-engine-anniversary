@@ -99,7 +99,7 @@ void ColorCorrectionLookup_t::AllocTexture()
 
 void ColorCorrectionLookup_t::ReleaseTexture()
 {
-	m_pColorCorrectionTexture->ReleaseMemory();
+	m_pColorCorrectionTexture->Release();
 }
 
 void ColorCorrectionLookup_t::RestoreTexture()

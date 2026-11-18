@@ -121,6 +121,9 @@ void CHudLocator::VidInit( void )
 //-----------------------------------------------------------------------------
 bool CHudLocator::ShouldDraw( void )
 {
+	if ( !HL2_EPISODIC_ACTIVE() )
+		return false;
+
 	C_BaseHLPlayer *pPlayer = (C_BaseHLPlayer *)C_BasePlayer::GetLocalPlayer();
 	if ( !pPlayer )
 		return false;

@@ -172,7 +172,11 @@ void CParticleSystemPanel::OnTick()
 
 	if ( !bIsInvalid )
 	{
+#ifdef BYTEMATCH_RETAIL
+		m_pParticleSystem->Simulate( flDt );
+#else
 		m_pParticleSystem->Simulate( flDt, false );
+#endif
 	}
 
 	if ( m_pParticleSystem->IsFinished() || bIsInvalid )

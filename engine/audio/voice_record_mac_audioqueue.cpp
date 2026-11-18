@@ -15,6 +15,10 @@
 #include "tier0/threadtools.h"
 //#include "tier0/vcrmode.h"
 #include "ivoicerecord.h"
+#ifdef BYTEMATCH_RETAIL
+extern int Voice_SamplesPerSec();
+#endif
+#line 19
 
 
 #define kNumSecAudioBuffer	1.0f
@@ -38,7 +42,12 @@ public:
 	
 	// Initialize. The format of the data we expect from the provider is
 	// 8-bit signed mono at the specified sample rate.
+#ifdef BYTEMATCH_RETAIL
+	virtual bool		Init();
+#else
 	virtual bool		Init( int nSampleRate );
+#endif
+#line 43
 
 	virtual void		Idle();
 	
@@ -93,6 +102,11 @@ m_nSampleRate( 0 ), m_AudioUnit( NULL ), m_SampleBufferSize(0), m_SampleBuffer(N
 m_SampleBufferReadPos(0), m_SampleBufferWritePos(0), m_bRecordingAudio(false), m_hThread( NULL ), m_bFirstInit( true )
 {
 	ClearInterfaces();
+#ifdef BYTEMATCH_RETAIL
+	m_nSampleRate = Voice_SamplesPerSec();
+	Init();
+#endif
+#line 99
 }
 
 
@@ -121,7 +135,12 @@ uintp StartAudio( void *pRecorder )
 	}
 	//printf( "StartAudio thread done\n" );
 
+#ifdef BYTEMATCH_RETAIL
+	return 1;
+#else
 	return 0;
+#endif
+#line 128
 }
 
 bool VoiceRecord_AudioQueue::RecordStart()
@@ -416,6 +435,25 @@ bool VoiceRecord_AudioQueue::InitalizeInterfaces()
 	return true;
 }
 
+#ifdef BYTEMATCH_RETAIL
+bool VoiceRecord_AudioQueue::Init()
+{
+	// Re-initialize the capture buffer if neccesary
+	if ( !m_AudioUnit )
+	{
+		InitalizeInterfaces();
+	}
+
+	m_SampleBufferReadPos = m_SampleBufferWritePos = 0;
+
+	// Initialise
+	OSStatus status = AudioUnitInitialize( m_AudioUnit );
+	if ( status != noErr )
+		return false;
+
+	return true;
+}
+#else
 bool VoiceRecord_AudioQueue::Init( int nSampleRate )
 {
 	if ( m_AudioUnit && m_nSampleRate != nSampleRate )
@@ -442,6 +480,8 @@ bool VoiceRecord_AudioQueue::Init( int nSampleRate )
 
 	return true;
 }
+#endif
+#line 439
 
 
 void VoiceRecord_AudioQueue::ReleaseInterfaces()
@@ -516,7 +556,12 @@ int VoiceRecord_AudioQueue::GetRecordedData(short *pOut, int nSamples )
 VoiceRecord_AudioQueue g_AudioQueueVoiceRecord;
 IVoiceRecord* CreateVoiceRecord_AudioQueue( int sampleRate )
 {
+#ifdef BYTEMATCH_RETAIL
+	if ( g_AudioQueueVoiceRecord.Init() )
+#else
 	if ( g_AudioQueueVoiceRecord.Init( sampleRate ) )
+#endif
+#line 514
 	{
 		return &g_AudioQueueVoiceRecord;
 	}

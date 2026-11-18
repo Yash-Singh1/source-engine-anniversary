@@ -24,8 +24,7 @@ from waflib.TaskGen import feature, before_method, after_method
 MANIFEST = 'devtools/bytematch/manifests/retail-osx32.json'
 TOOLCHAIN_DIR = 'devtools/bytematch/toolchain'
 
-# Modules that compile and link in this mode. Not here: shaderapidx9 (compiles; our source
-# needs D3DX helpers that retail's togl doesn't export), the game modules (game lane),
+# Modules that compile and link in this mode (game modules are in GAME_MODULES). Not here:
 # chromehtml and vaudio_miles (sources missing from this tree).
 RETAIL_MODULES = [
 	'tier0', 'tier1', 'mathlib', 'tier2', 'tier3', 'vstdlib',
@@ -39,7 +38,7 @@ RETAIL_MODULES = [
 	'utils/bzip2', 'replay/common', 'replay', 'sourcevr', 'video/video_quicktime',
 	'utils/bsppack', 'utils/bugreporter_filequeue', 'utils/bugreporter_public', 'utils/vpk',
 	'vgui2/vgui_surfacelib', 'vguimatsurface', 'gameui', 'engine',
-	'togl', 'materialsystem', 'launcher',
+	'togl', 'materialsystem', 'launcher', 'materialsystem/shaderapidx9',
 ]
 
 GAME_MODULES = ['game/client', 'game/server']
@@ -56,6 +55,10 @@ BUILD_PATH_DEFINES = ['WAF_CFLAGS', 'WAF_LDFLAGS']
 EXTRA_CXXFLAGS = dict((t, ['-include', 'alloca.h']) for t in
 	('ivp_physics', 'ivp_compactbuilder', 'havana_constraints', 'hk_base', 'hk_math'))
 EXTRA_CXXFLAGS['vgui_surfacelib'] = ['-Wno-c++11-narrowing']
+
+# Extra compiler flags per source file. Valve builds coroutine.cpp into libcoroutine_osx.a
+# (vstdlib/coroutine_osx.vpc) without the stack protector, since it switches stacks.
+EXTRA_FILE_CXXFLAGS = {'vstdlib/coroutine.cpp': ['-fno-stack-protector']}
 
 # Modules whose VPC the manifest couldn't evaluate: take a sibling's base defines.
 DEFINES_FROM = {'bin/video_quicktime': 'bin/video_services'}
@@ -294,6 +297,10 @@ def retail_osx32_defines(self):
 		if as_cxx and t.__class__.__name__ == 'c':
 			t.env.CC = self.env.CXX
 			t.env.CFLAGS = list(self.env.CXXFLAGS) + ['-x', 'c++']
+		file_extra = EXTRA_FILE_CXXFLAGS.get(t.inputs[0].path_from(self.bld.srcnode).replace(os.sep, '/'))
+		if file_extra:
+			t.env = t.env.derive()
+			t.env.CXXFLAGS = list(t.env.CXXFLAGS) + file_extra
 
 @feature('cprogram', 'cxxprogram')
 @before_method('apply_link')

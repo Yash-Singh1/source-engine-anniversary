@@ -1,28 +1,28 @@
 {
  "meta": {
-  "generated": "2026-11-18T08:06:14Z",
+  "generated": "2026-11-18T11:44:54Z",
   "depot_build": "19307283",
   "clang": "600.0.57",
   "ld64": "242"
  },
  "total": {
   "functions": {
-   "total": 36723,
-   "exact": 8384,
-   "matches_after_masking": 17711,
-   "differs": 9525,
-   "missing": 1103,
-   "matched": 26095,
-   "pct": 71.06
+   "total": 46215,
+   "exact": 13566,
+   "matches_after_masking": 26474,
+   "differs": 4936,
+   "missing": 1239,
+   "matched": 40040,
+   "pct": 86.64
   },
   "bytes": {
-   "total": 9911678,
-   "exact": 618756,
-   "matches_after_masking": 4803702,
-   "differs": 4200099,
-   "missing": 289121,
-   "matched": 5422458,
-   "pct": 54.71
+   "total": 11821263,
+   "exact": 865904,
+   "matches_after_masking": 7832779,
+   "differs": 2877693,
+   "missing": 244887,
+   "matched": 8698683,
+   "pct": 73.59
   }
  },
  "rows": [
@@ -35,21 +35,21 @@
    "summary": {
     "functions": {
      "total": 406,
-     "exact": 127,
-     "matches_after_masking": 272,
-     "differs": 7,
+     "exact": 201,
+     "matches_after_masking": 200,
+     "differs": 5,
      "missing": 0,
-     "matched": 399,
-     "pct": 98.28
+     "matched": 401,
+     "pct": 98.77
     },
     "bytes": {
      "total": 138135,
-     "exact": 12257,
-     "matches_after_masking": 117155,
-     "differs": 8723,
+     "exact": 25260,
+     "matches_after_masking": 107195,
+     "differs": 5680,
      "missing": 0,
-     "matched": 129412,
-     "pct": 93.69
+     "matched": 132455,
+     "pct": 95.89
     }
    }
   },
@@ -61,22 +61,22 @@
    "ours": "engine/engine.dylib",
    "summary": {
     "functions": {
-     "total": 12787,
-     "exact": 2518,
-     "matches_after_masking": 6744,
-     "differs": 3134,
-     "missing": 391,
-     "matched": 9262,
-     "pct": 72.43
+     "total": 12986,
+     "exact": 3151,
+     "matches_after_masking": 8464,
+     "differs": 1095,
+     "missing": 276,
+     "matched": 11615,
+     "pct": 89.44
     },
     "bytes": {
-     "total": 3787995,
-     "exact": 142905,
-     "matches_after_masking": 1998569,
-     "differs": 1548756,
-     "missing": 97765,
-     "matched": 2141474,
-     "pct": 56.53
+     "total": 3809922,
+     "exact": 179124,
+     "matches_after_masking": 2776278,
+     "differs": 773315,
+     "missing": 81205,
+     "matched": 2955402,
+     "pct": 77.57
     }
    }
   },
@@ -115,22 +115,22 @@
    "ours": "filesystem/filesystem_stdio.dylib",
    "summary": {
     "functions": {
-     "total": 1021,
-     "exact": 191,
-     "matches_after_masking": 513,
-     "differs": 207,
-     "missing": 110,
-     "matched": 704,
-     "pct": 68.95
+     "total": 1953,
+     "exact": 297,
+     "matches_after_masking": 696,
+     "differs": 668,
+     "missing": 292,
+     "matched": 993,
+     "pct": 50.84
     },
     "bytes": {
-     "total": 345776,
-     "exact": 9979,
-     "matches_after_masking": 154510,
-     "differs": 137021,
-     "missing": 44266,
-     "matched": 164489,
-     "pct": 47.57
+     "total": 567545,
+     "exact": 13397,
+     "matches_after_masking": 240548,
+     "differs": 258127,
+     "missing": 55473,
+     "matched": 253945,
+     "pct": 44.74
     }
    }
   },
@@ -143,21 +143,21 @@
    "summary": {
     "functions": {
      "total": 4888,
-     "exact": 408,
-     "matches_after_masking": 2024,
-     "differs": 2336,
-     "missing": 120,
-     "matched": 2432,
-     "pct": 49.75
+     "exact": 948,
+     "matches_after_masking": 3334,
+     "differs": 513,
+     "missing": 93,
+     "matched": 4282,
+     "pct": 87.6
     },
     "bytes": {
      "total": 1159816,
-     "exact": 11938,
-     "matches_after_masking": 305005,
-     "differs": 811547,
-     "missing": 31326,
-     "matched": 316943,
-     "pct": 27.33
+     "exact": 43543,
+     "matches_after_masking": 797459,
+     "differs": 291961,
+     "missing": 26853,
+     "matched": 841002,
+     "pct": 72.51
     }
    }
   },
@@ -185,6 +185,87 @@
      "missing": 2350,
      "matched": 9932,
      "pct": 34.35
+    }
+   }
+  },
+  {
+   "kind": "module",
+   "module": "bin/launcher",
+   "name": "launcher.dylib",
+   "retail": "223/19307283/bin/launcher.dylib",
+   "ours": "launcher/launcher.dylib",
+   "summary": {
+    "functions": {
+     "total": 361,
+     "exact": 107,
+     "matches_after_masking": 245,
+     "differs": 9,
+     "missing": 0,
+     "matched": 352,
+     "pct": 97.51
+    },
+    "bytes": {
+     "total": 89485,
+     "exact": 4956,
+     "matches_after_masking": 74260,
+     "differs": 10269,
+     "missing": 0,
+     "matched": 79216,
+     "pct": 88.52
+    }
+   }
+  },
+  {
+   "kind": "module",
+   "module": "bin/materialsystem",
+   "name": "materialsystem.dylib",
+   "retail": "223/19307283/bin/materialsystem.dylib",
+   "ours": "materialsystem/materialsystem.dylib",
+   "summary": {
+    "functions": {
+     "total": 3747,
+     "exact": 1756,
+     "matches_after_masking": 1800,
+     "differs": 180,
+     "missing": 11,
+     "matched": 3556,
+     "pct": 94.9
+    },
+    "bytes": {
+     "total": 552250,
+     "exact": 51167,
+     "matches_after_masking": 358533,
+     "differs": 136901,
+     "missing": 5649,
+     "matched": 409700,
+     "pct": 74.19
+    }
+   }
+  },
+  {
+   "kind": "module",
+   "module": "bin/shaderapidx9",
+   "name": "shaderapidx9.dylib",
+   "retail": "223/19307283/bin/shaderapidx9.dylib",
+   "ours": "materialsystem/shaderapidx9/shaderapidx9.dylib",
+   "summary": {
+    "functions": {
+     "total": 1592,
+     "exact": 622,
+     "matches_after_masking": 916,
+     "differs": 52,
+     "missing": 2,
+     "matched": 1538,
+     "pct": 96.61
+    },
+    "bytes": {
+     "total": 302451,
+     "exact": 25003,
+     "matches_after_masking": 241763,
+     "differs": 35161,
+     "missing": 524,
+     "matched": 266766,
+     "pct": 88.2
     }
    }
   },
@@ -224,21 +305,21 @@
    "summary": {
     "functions": {
      "total": 1963,
-     "exact": 307,
-     "matches_after_masking": 1604,
-     "differs": 47,
+     "exact": 308,
+     "matches_after_masking": 1617,
+     "differs": 33,
      "missing": 5,
-     "matched": 1911,
-     "pct": 97.35
+     "matched": 1925,
+     "pct": 98.06
     },
     "bytes": {
      "total": 535678,
-     "exact": 7653,
-     "matches_after_masking": 367160,
-     "differs": 159999,
+     "exact": 7691,
+     "matches_after_masking": 382086,
+     "differs": 145035,
      "missing": 866,
-     "matched": 374813,
-     "pct": 69.97
+     "matched": 389777,
+     "pct": 72.76
     }
    }
   },
@@ -252,20 +333,20 @@
     "functions": {
      "total": 1405,
      "exact": 483,
-     "matches_after_masking": 828,
-     "differs": 43,
-     "missing": 51,
-     "matched": 1311,
-     "pct": 93.31
+     "matches_after_masking": 853,
+     "differs": 19,
+     "missing": 50,
+     "matched": 1336,
+     "pct": 95.09
     },
     "bytes": {
      "total": 254041,
      "exact": 18413,
-     "matches_after_masking": 213224,
-     "differs": 17363,
-     "missing": 5041,
-     "matched": 231637,
-     "pct": 91.18
+     "matches_after_masking": 221886,
+     "differs": 8886,
+     "missing": 4856,
+     "matched": 240299,
+     "pct": 94.59
     }
    }
   },
@@ -304,22 +385,22 @@
    "ours": "serverbrowser/ServerBrowser.dylib",
    "summary": {
     "functions": {
-     "total": 3117,
-     "exact": 351,
-     "matches_after_masking": 1107,
-     "differs": 1416,
-     "missing": 243,
-     "matched": 1458,
-     "pct": 46.78
+     "total": 3380,
+     "exact": 842,
+     "matches_after_masking": 2267,
+     "differs": 247,
+     "missing": 24,
+     "matched": 3109,
+     "pct": 91.98
     },
     "bytes": {
-     "total": 731116,
-     "exact": 10403,
-     "matches_after_masking": 194604,
-     "differs": 453775,
-     "missing": 72334,
-     "matched": 205007,
-     "pct": 28.04
+     "total": 788052,
+     "exact": 38849,
+     "matches_after_masking": 589508,
+     "differs": 153801,
+     "missing": 5894,
+     "matched": 628357,
+     "pct": 79.74
     }
    }
   },
@@ -387,20 +468,20 @@
     "functions": {
      "total": 988,
      "exact": 254,
-     "matches_after_masking": 723,
-     "differs": 11,
+     "matches_after_masking": 725,
+     "differs": 9,
      "missing": 0,
-     "matched": 977,
-     "pct": 98.89
+     "matched": 979,
+     "pct": 99.09
     },
     "bytes": {
      "total": 507743,
      "exact": 44193,
-     "matches_after_masking": 435200,
-     "differs": 28350,
+     "matches_after_masking": 438320,
+     "differs": 25230,
      "missing": 0,
-     "matched": 479393,
-     "pct": 94.42
+     "matched": 482513,
+     "pct": 95.03
     }
    }
   },
@@ -433,6 +514,33 @@
   },
   {
    "kind": "module",
+   "module": "bin/libtogl",
+   "name": "libtogl.dylib",
+   "retail": "223/19307283/bin/libtogl.dylib",
+   "ours": "togl/libtogl.dylib",
+   "summary": {
+    "functions": {
+     "total": 502,
+     "exact": 163,
+     "matches_after_masking": 293,
+     "differs": 46,
+     "missing": 0,
+     "matched": 456,
+     "pct": 90.84
+    },
+    "bytes": {
+     "total": 179003,
+     "exact": 11880,
+     "matches_after_masking": 119316,
+     "differs": 47807,
+     "missing": 0,
+     "matched": 131196,
+     "pct": 73.29
+    }
+   }
+  },
+  {
+   "kind": "module",
    "module": "bin/bsppack",
    "name": "bsppack.dylib",
    "retail": "223/19307283/bin/bsppack.dylib",
@@ -440,21 +548,21 @@
    "summary": {
     "functions": {
      "total": 368,
-     "exact": 56,
-     "matches_after_masking": 242,
-     "differs": 53,
-     "missing": 17,
-     "matched": 298,
-     "pct": 80.98
+     "exact": 96,
+     "matches_after_masking": 245,
+     "differs": 18,
+     "missing": 9,
+     "matched": 341,
+     "pct": 92.66
     },
     "bytes": {
      "total": 153265,
-     "exact": 2397,
-     "matches_after_masking": 73177,
-     "differs": 71095,
-     "missing": 6596,
-     "matched": 75574,
-     "pct": 49.31
+     "exact": 8743,
+     "matches_after_masking": 100642,
+     "differs": 41166,
+     "missing": 2714,
+     "matched": 109385,
+     "pct": 71.37
     }
    }
   },
@@ -520,22 +628,22 @@
    "ours": "utils/vtex/vtex_dll.dylib",
    "summary": {
     "functions": {
-     "total": 426,
-     "exact": 124,
-     "matches_after_masking": 229,
-     "differs": 62,
-     "missing": 11,
-     "matched": 353,
-     "pct": 82.86
+     "total": 439,
+     "exact": 135,
+     "matches_after_masking": 266,
+     "differs": 34,
+     "missing": 4,
+     "matched": 401,
+     "pct": 91.34
     },
     "bytes": {
-     "total": 149120,
-     "exact": 11969,
-     "matches_after_masking": 72168,
-     "differs": 63137,
-     "missing": 1846,
-     "matched": 84137,
-     "pct": 56.42
+     "total": 149812,
+     "exact": 13365,
+     "matches_after_masking": 103088,
+     "differs": 32778,
+     "missing": 581,
+     "matched": 116453,
+     "pct": 77.73
     }
    }
   },
@@ -575,21 +683,21 @@
    "summary": {
     "functions": {
      "total": 2987,
-     "exact": 423,
-     "matches_after_masking": 1152,
-     "differs": 1366,
-     "missing": 46,
-     "matched": 1575,
-     "pct": 52.73
+     "exact": 810,
+     "matches_after_masking": 1885,
+     "differs": 265,
+     "missing": 27,
+     "matched": 2695,
+     "pct": 90.22
     },
     "bytes": {
      "total": 709304,
-     "exact": 16733,
-     "matches_after_masking": 220552,
-     "differs": 454771,
-     "missing": 17248,
-     "matched": 237285,
-     "pct": 33.45
+     "exact": 40316,
+     "matches_after_masking": 516801,
+     "differs": 138264,
+     "missing": 13923,
+     "matched": 557117,
+     "pct": 78.54
     }
    }
   },
@@ -656,21 +764,21 @@
    "summary": {
     "functions": {
      "total": 2963,
-     "exact": 774,
-     "matches_after_masking": 1451,
-     "differs": 675,
-     "missing": 63,
-     "matched": 2225,
-     "pct": 75.09
+     "exact": 777,
+     "matches_after_masking": 1460,
+     "differs": 662,
+     "missing": 64,
+     "matched": 2237,
+     "pct": 75.5
     },
     "bytes": {
      "total": 891892,
-     "exact": 43455,
-     "matches_after_masking": 476910,
-     "differs": 364259,
-     "missing": 7268,
-     "matched": 520365,
-     "pct": 58.34
+     "exact": 43767,
+     "matches_after_masking": 479562,
+     "differs": 361222,
+     "missing": 7341,
+     "matched": 523329,
+     "pct": 58.68
     }
    }
   },
@@ -683,21 +791,21 @@
    "summary": {
     "functions": {
      "total": 355,
-     "exact": 105,
-     "matches_after_masking": 242,
-     "differs": 8,
+     "exact": 106,
+     "matches_after_masking": 245,
+     "differs": 4,
      "missing": 0,
-     "matched": 347,
-     "pct": 97.75
+     "matched": 351,
+     "pct": 98.87
     },
     "bytes": {
      "total": 55390,
-     "exact": 2861,
-     "matches_after_masking": 46662,
-     "differs": 5867,
+     "exact": 2870,
+     "matches_after_masking": 49100,
+     "differs": 3420,
      "missing": 0,
-     "matched": 49523,
-     "pct": 89.41
+     "matched": 51970,
+     "pct": 93.83
     }
    }
   },
@@ -725,6 +833,33 @@
      "missing": 0,
      "matched": 0,
      "pct": 0.0
+    }
+   }
+  },
+  {
+   "kind": "module",
+   "module": "bin/vpk_osx32",
+   "name": "vpk_osx32",
+   "retail": "223/19307283/bin/vpk_osx32",
+   "ours": "utils/vpk/vpk_osx32",
+   "summary": {
+    "functions": {
+     "total": 1883,
+     "exact": 247,
+     "matches_after_masking": 383,
+     "differs": 917,
+     "missing": 336,
+     "matched": 630,
+     "pct": 33.46
+    },
+    "bytes": {
+     "total": 485072,
+     "exact": 9767,
+     "matches_after_masking": 107628,
+     "differs": 333234,
+     "missing": 34443,
+     "matched": 117395,
+     "pct": 24.2
     }
    }
   },
@@ -823,20 +958,20 @@
     "functions": {
      "total": 99,
      "exact": 13,
-     "matches_after_masking": 85,
-     "differs": 1,
+     "matches_after_masking": 86,
+     "differs": 0,
      "missing": 0,
-     "matched": 98,
-     "pct": 98.99
+     "matched": 99,
+     "pct": 100.0
     },
     "bytes": {
      "total": 37092,
      "exact": 463,
-     "matches_after_masking": 36320,
-     "differs": 309,
+     "matches_after_masking": 36629,
+     "differs": 0,
      "missing": 0,
-     "matched": 36783,
-     "pct": 99.17
+     "matched": 37092,
+     "pct": 100.0
     }
    }
   },
@@ -991,20 +1126,20 @@
     "functions": {
      "total": 13,
      "exact": 4,
-     "matches_after_masking": 8,
-     "differs": 1,
+     "matches_after_masking": 9,
+     "differs": 0,
      "missing": 0,
-     "matched": 12,
-     "pct": 92.31
+     "matched": 13,
+     "pct": 100.0
     },
     "bytes": {
      "total": 1314,
      "exact": 108,
-     "matches_after_masking": 995,
-     "differs": 211,
+     "matches_after_masking": 1206,
+     "differs": 0,
      "missing": 0,
-     "matched": 1103,
-     "pct": 83.94
+     "matched": 1314,
+     "pct": 100.0
     }
    }
   },
@@ -1047,20 +1182,20 @@
     "functions": {
      "total": 1463,
      "exact": 813,
-     "matches_after_masking": 512,
-     "differs": 128,
+     "matches_after_masking": 513,
+     "differs": 127,
      "missing": 10,
-     "matched": 1325,
-     "pct": 90.57
+     "matched": 1326,
+     "pct": 90.64
     },
     "bytes": {
      "total": 285508,
      "exact": 12939,
-     "matches_after_masking": 169463,
-     "differs": 88513,
+     "matches_after_masking": 170398,
+     "differs": 87578,
      "missing": 14593,
-     "matched": 182402,
-     "pct": 63.89
+     "matched": 183337,
+     "pct": 64.21
     }
    }
   },
@@ -1214,21 +1349,21 @@
    "summary": {
     "functions": {
      "total": 28,
-     "exact": 0,
-     "matches_after_masking": 11,
-     "differs": 16,
-     "missing": 1,
-     "matched": 11,
-     "pct": 39.29
+     "exact": 5,
+     "matches_after_masking": 23,
+     "differs": 0,
+     "missing": 0,
+     "matched": 28,
+     "pct": 100.0
     },
     "bytes": {
      "total": 6761,
-     "exact": 0,
-     "matches_after_masking": 1392,
-     "differs": 5335,
-     "missing": 34,
-     "matched": 1392,
-     "pct": 20.59
+     "exact": 145,
+     "matches_after_masking": 6616,
+     "differs": 0,
+     "missing": 0,
+     "matched": 6761,
+     "pct": 100.0
     }
    }
   },
@@ -1242,21 +1377,21 @@
    "summary": {
     "functions": {
      "total": 2508,
-     "exact": 252,
-     "matches_after_masking": 868,
-     "differs": 1370,
-     "missing": 18,
-     "matched": 1120,
-     "pct": 44.66
+     "exact": 667,
+     "matches_after_masking": 1728,
+     "differs": 113,
+     "missing": 0,
+     "matched": 2395,
+     "pct": 95.49
     },
     "bytes": {
      "total": 595734,
-     "exact": 6027,
-     "matches_after_masking": 138084,
-     "differs": 447804,
-     "missing": 3819,
-     "matched": 144111,
-     "pct": 24.19
+     "exact": 30148,
+     "matches_after_masking": 480993,
+     "differs": 84593,
+     "missing": 0,
+     "matched": 511141,
+     "pct": 85.8
     }
    }
   },
@@ -1297,22 +1432,22 @@
    "compared_with": "bin/filesystem_stdio",
    "summary": {
     "functions": {
-     "total": 65,
-     "exact": 5,
-     "matches_after_masking": 35,
-     "differs": 24,
-     "missing": 1,
-     "matched": 40,
-     "pct": 61.54
+     "total": 241,
+     "exact": 81,
+     "matches_after_masking": 156,
+     "differs": 4,
+     "missing": 0,
+     "matched": 237,
+     "pct": 98.34
     },
     "bytes": {
-     "total": 37127,
-     "exact": 517,
-     "matches_after_masking": 14676,
-     "differs": 21418,
-     "missing": 516,
-     "matched": 15193,
-     "pct": 40.92
+     "total": 55440,
+     "exact": 2036,
+     "matches_after_masking": 51731,
+     "differs": 1673,
+     "missing": 0,
+     "matched": 53767,
+     "pct": 96.98
     }
    }
   },
@@ -1326,23 +1461,205 @@
    "summary": {
     "functions": {
      "total": 82,
-     "exact": 26,
-     "matches_after_masking": 30,
-     "differs": 24,
-     "missing": 2,
-     "matched": 56,
-     "pct": 68.29
+     "exact": 29,
+     "matches_after_masking": 42,
+     "differs": 11,
+     "missing": 0,
+     "matched": 71,
+     "pct": 86.59
     },
     "bytes": {
      "total": 25047,
-     "exact": 1852,
-     "matches_after_masking": 10205,
-     "differs": 12004,
-     "missing": 986,
-     "matched": 12057,
-     "pct": 48.14
+     "exact": 2303,
+     "matches_after_masking": 17299,
+     "differs": 5445,
+     "missing": 0,
+     "matched": 19602,
+     "pct": 78.26
+    }
+   }
+  },
+  {
+   "kind": "game",
+   "module": "episodic/server",
+   "name": "episodic/server.dylib",
+   "retail": "380/19307283/episodic/bin/server.dylib",
+   "ours": "/Volumes/Storage/sco/byte-match-survey/integration-2-scratch/games/episodic/server.dylib",
+   "summary": {
+    "functions": {
+     "total": 22744,
+     "exact": 5237,
+     "matches_after_masking": 16627,
+     "differs": 730,
+     "missing": 150,
+     "matched": 21864,
+     "pct": 96.13
+    },
+    "bytes": {
+     "total": 7696434,
+     "exact": 155089,
+     "matches_after_masking": 6856497,
+     "differs": 663492,
+     "missing": 21356,
+     "matched": 7011586,
+     "pct": 91.1
+    }
+   }
+  },
+  {
+   "kind": "game",
+   "module": "episodic/client",
+   "name": "episodic/client.dylib",
+   "retail": "380/19307283/episodic/bin/client.dylib",
+   "ours": "/Volumes/Storage/sco/byte-match-survey/integration-2-scratch/games/episodic/client.dylib",
+   "summary": {
+    "functions": {
+     "total": 17809,
+     "exact": 5249,
+     "matches_after_masking": 11538,
+     "differs": 836,
+     "missing": 186,
+     "matched": 16787,
+     "pct": 94.26
+    },
+    "bytes": {
+     "total": 4434694,
+     "exact": 180930,
+     "matches_after_masking": 3594879,
+     "differs": 594963,
+     "missing": 63922,
+     "matched": 3775809,
+     "pct": 85.14
+    }
+   }
+  },
+  {
+   "kind": "game",
+   "module": "lostcoast/server",
+   "name": "lostcoast/server.dylib",
+   "retail": "340/19307283/lostcoast/bin/server.dylib",
+   "ours": "/Volumes/Storage/sco/byte-match-survey/integration-2-scratch/games/lostcoast/server.dylib",
+   "summary": {
+    "functions": {
+     "total": 21442,
+     "exact": 5047,
+     "matches_after_masking": 15166,
+     "differs": 1173,
+     "missing": 56,
+     "matched": 20213,
+     "pct": 94.27
+    },
+    "bytes": {
+     "total": 7181480,
+     "exact": 148407,
+     "matches_after_masking": 6152654,
+     "differs": 870906,
+     "missing": 9513,
+     "matched": 6301061,
+     "pct": 87.74
+    }
+   }
+  },
+  {
+   "kind": "game",
+   "module": "lostcoast/client",
+   "name": "lostcoast/client.dylib",
+   "retail": "340/19307283/lostcoast/bin/client.dylib",
+   "ours": "/Volumes/Storage/sco/byte-match-survey/integration-2-scratch/games/lostcoast/client.dylib",
+   "summary": {
+    "functions": {
+     "total": 17459,
+     "exact": 5112,
+     "matches_after_masking": 11049,
+     "differs": 1124,
+     "missing": 174,
+     "matched": 16161,
+     "pct": 92.57
+    },
+    "bytes": {
+     "total": 4349835,
+     "exact": 171881,
+     "matches_after_masking": 3429969,
+     "differs": 696211,
+     "missing": 51774,
+     "matched": 3601850,
+     "pct": 82.8
+    }
+   }
+  },
+  {
+   "kind": "game",
+   "module": "hl2/server",
+   "name": "hl2/server.dylib",
+   "retail": "223/19307283/hl2/bin/server.dylib",
+   "ours": "/Volumes/Storage/sco/byte-match-survey/integration-2-scratch/games/hl2/server.dylib",
+   "summary": {
+    "functions": {
+     "total": 22744,
+     "exact": 5237,
+     "matches_after_masking": 16627,
+     "differs": 730,
+     "missing": 150,
+     "matched": 21864,
+     "pct": 96.13
+    },
+    "bytes": {
+     "total": 7696434,
+     "exact": 155089,
+     "matches_after_masking": 6856497,
+     "differs": 663492,
+     "missing": 21356,
+     "matched": 7011586,
+     "pct": 91.1
+    }
+   }
+  },
+  {
+   "kind": "game",
+   "module": "hl2/client",
+   "name": "hl2/client.dylib",
+   "retail": "223/19307283/hl2/bin/client.dylib",
+   "ours": "/Volumes/Storage/sco/byte-match-survey/integration-2-scratch/games/hl2/client.dylib",
+   "summary": {
+    "functions": {
+     "total": 17808,
+     "exact": 5249,
+     "matches_after_masking": 11537,
+     "differs": 836,
+     "missing": 186,
+     "matched": 16786,
+     "pct": 94.26
+    },
+    "bytes": {
+     "total": 4434639,
+     "exact": 180930,
+     "matches_after_masking": 3594852,
+     "differs": 594922,
+     "missing": 63935,
+     "matched": 3775782,
+     "pct": 85.14
     }
    }
   }
- ]
+ ],
+ "total_with_games": {
+  "functions": {
+   "total": 166221,
+   "exact": 44697,
+   "matches_after_masking": 109018,
+   "differs": 10365,
+   "missing": 2141,
+   "matched": 153715,
+   "pct": 92.48
+  },
+  "bytes": {
+   "total": 47614779,
+   "exact": 1858230,
+   "matches_after_masking": 38318127,
+   "differs": 6961679,
+   "missing": 476743,
+   "matched": 40176357,
+   "pct": 84.38
+  }
+ }
 }

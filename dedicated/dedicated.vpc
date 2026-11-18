@@ -77,7 +77,6 @@ $Project "Dedicated"
 		{
 			$File	"$SRCDIR\filesystem\filetracker.cpp"
 			$File	"$SRCDIR\filesystem\basefilesystem.cpp"
-			$File	"$SRCDIR\filesystem\packfile.cpp"
 			$File	"$SRCDIR\filesystem\filesystem_async.cpp"
 			$File	"$SRCDIR\filesystem\filesystem_stdio.cpp"
 			$File	"$SRCDIR\filesystem\QueuedLoader.cpp"

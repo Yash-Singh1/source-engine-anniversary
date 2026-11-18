@@ -43,7 +43,11 @@ struct PhysBlockHeader_t
 BEGIN_SIMPLE_DATADESC( PhysBlockHeader_t )
 	DEFINE_FIELD( nSaved,	FIELD_INTEGER ),
 	// NOTE: We want to save the actual address here for remapping, so use an integer
+#ifdef BYTEMATCH_RETAIL
+	DEFINE_FIELD( pWorldObject, FIELD_INTEGER ),	
+#else
 	DEFINE_FIELD( pWorldObject, FIELD_POINTER ),	
+#endif
 END_DATADESC()
 
 #if defined(_STATIC_LINKED) && defined(CLIENT_DLL)

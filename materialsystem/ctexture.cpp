@@ -334,12 +334,16 @@ public:
 	void InitProceduralTexture( const char *pTextureName, const char *pTextureGroupName, int w, int h, int d, ImageFormat fmt, int nFlags, ITextureRegenerator* generator = NULL );
 
 	// Releases the texture's hw memory
-	void ReleaseMemory();
+	void Release();
 
 	virtual void OnRestore();
 
 	// Sets the filtering modes on the texture we're modifying
+#ifdef BYTEMATCH_RETAIL
+	void SetFilteringAndClampingMode();
+#else
 	void SetFilteringAndClampingMode( bool bOnlyLodValues = false );
+#endif
 	void Download( Rect_t *pRect = NULL, int nAdditionalCreationFlags = 0 );
 
 	// Loads up information about the texture 
@@ -396,6 +400,7 @@ public:
 	// Save texture to a file.
 	virtual bool SaveToFile( const char *fileName );
 	
+#ifndef BYTEMATCH_RETAIL
 	// Load the texture from a file.
 	bool AsyncReadTextureFromFile( IVTFTexture* pVTFTexture, unsigned int nAdditionalCreationFlags );
 	void AsyncCancelReadTexture( );
@@ -407,6 +412,7 @@ public:
 	virtual ResidencyType_t GetTargetResidence() const { return m_residenceTarget; }
 	virtual bool MakeResident( ResidencyType_t newResidence );
 	virtual void UpdateLodBias();
+#endif
 
 protected:
 	bool IsDepthTextureFormat( ImageFormat fmt );
@@ -455,8 +461,10 @@ protected:
 	// Sets the texture filtering state on the currently modified frame
 	void SetFilterState();
 
+#ifndef BYTEMATCH_RETAIL
 	// Sets the lod state on the currently modified frame
 	void SetLodState();
+#endif
 
 	// Loads the texture bits from a file. Optionally provides absolute path
 	IVTFTexture *LoadTextureBitsFromFile( char *pCacheFileName, char **pResolvedFilename );
@@ -493,6 +501,7 @@ protected:
 
 	virtual void SetErrorTexture( bool _isErrorTexture );
 
+#ifndef BYTEMATCH_RETAIL
 	// Texture streaming
 	void MakeNonResident();
 	void MakePartiallyResident();
@@ -500,6 +509,7 @@ protected:
 
 	void CancelStreamingJob( bool bJobMustExist = true );
 	void OnStreamingJobComplete( ResidencyType_t newResidenceCurrent );
+#endif
 
 protected:
 #ifdef _DEBUG
@@ -629,6 +639,7 @@ protected:
 	friend class CTextureStreamingJob;
 };
 
+#ifndef BYTEMATCH_RETAIL
 class CTextureStreamingJob : public IAsyncTextureOperationReceiver
 {
 public:
@@ -650,6 +661,7 @@ private:
 	CInterlockedInt m_referenceCount;
 	CTexture* m_pOwner;
 };
+#endif
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -702,12 +714,16 @@ public:
 	virtual int GetActualDepth() const { return 1; }
 
 	// Releases the texture's hw memory
-	void ReleaseMemory() { NULL; }
+	void Release() { NULL; }
 
 	virtual void OnRestore() { NULL; }
 
 	// Sets the filtering modes on the texture we're modifying
+#ifdef BYTEMATCH_RETAIL
+	void SetFilteringAndClampingMode() { NULL; }
+#else
 	void SetFilteringAndClampingMode( bool bOnlyLodValues = false ) { NULL; }
+#endif
 	void Download( Rect_t *pRect = NULL, int nAdditionalCreationFlags = 0 ) { NULL; }
 
 	// Loads up information about the texture 
@@ -763,11 +779,14 @@ public:
 	// Save texture to a file.
 	virtual bool SaveToFile( const char *fileName ) { return false; }
 
+#ifndef BYTEMATCH_RETAIL
 	virtual bool AsyncReadTextureFromFile( IVTFTexture* pVTFTexture, unsigned int nAdditionalCreationFlags ) { Assert( !"Should never get here." ); return false; }
 	virtual void AsyncCancelReadTexture() { Assert( !"Should never get here." ); }
+#endif
 
 	virtual void CopyToStagingTexture( ITexture* pDstTex ) { Assert( !"Should never get here." ); };
 
+#ifndef BYTEMATCH_RETAIL
 	// Map and unmap. These can fail. And can cause a very significant perf penalty. Be very careful with them.
 	virtual void Map( void** pOutBits, int* pOutPitch ) { }
 	virtual void Unmap() { }
@@ -776,6 +795,7 @@ public:
 	virtual ResidencyType_t GetTargetResidence() const { return RESIDENT_FULL; }
 	virtual bool MakeResident( ResidencyType_t newResidence ) { Assert( !"Unimpl" ); return true; }
 	virtual void UpdateLodBias() {}
+#endif
 
 	virtual void SetErrorTexture( bool isErrorTexture ) { }
 
@@ -982,7 +1002,7 @@ void ITextureInternal::ChangeRenderTarget(
 	unsigned int textureFlags, 
 	unsigned int renderTargetFlags )
 {
-	pTex->ReleaseMemory();
+	pTex->Release();
 	dynamic_cast< CTexture * >(pTex)->InitRenderTarget( pTex->GetName(), w, h, sizeMode, fmt, type, textureFlags, renderTargetFlags );
 }
 
@@ -1124,7 +1144,9 @@ void CTexture::Init( int w, int h, int d, ImageFormat fmt, int iFlags, int iFram
 	m_nFlags &= ~TEXTUREFLAGS_DEPTHRENDERTARGET;
 	m_nFlags |= iFlags;
 
+#ifndef BYTEMATCH_RETAIL
 	CancelStreamingJob( false );
+#endif
 	m_residenceTarget = RESIDENT_NONE;
 	m_residenceCurrent = RESIDENT_NONE;
 	m_lodClamp = 0;
@@ -1162,7 +1184,9 @@ void CTexture::Shutdown()
 		m_pTextureRegenerator = NULL;
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	CancelStreamingJob( false );
+#endif
 
 	m_residenceTarget = RESIDENT_NONE;
 	m_residenceCurrent = RESIDENT_NONE;
@@ -1176,7 +1200,7 @@ void CTexture::Shutdown()
 	NotifyUnloadedFile();
 }
 
-void CTexture::ReleaseMemory()
+void CTexture::Release()
 {
 	FreeShaderAPITextures();
 	NotifyUnloadedFile();
@@ -1202,6 +1226,7 @@ void CTexture::ReleaseScratchVTFTexture( IVTFTexture* tex )
 	Assert( cbThreadInMatQueue || ThreadInMainThread() );
 	Assert( m_pStreamingVTF == NULL || ThreadInMainThread() );	// Can only manipulate m_pStreamingVTF to release safely in main thread.
 
+#ifndef BYTEMATCH_RETAIL
 	if ( m_pStreamingVTF )
 	{
 		Assert( tex == m_pStreamingVTF );
@@ -1209,6 +1234,7 @@ void CTexture::ReleaseScratchVTFTexture( IVTFTexture* tex )
 		m_pStreamingVTF = NULL;
 		return;
 	}
+#endif
 
 	// Normal scratch main-thread vtf doesn't need to do anything.
 
@@ -1418,6 +1444,7 @@ void CTexture::CopyToStagingTexture( ITexture* pDstTex )
 		g_pShaderAPIStreaming->CopyRenderTargetToScratchTexture( m_pTextureHandles[0], pDstTexActual->m_pTextureHandles[0] );
 }
 
+#ifndef BYTEMATCH_RETAIL
 void CTexture::Map( void** pOutBits, int* pOutPitch )
 {
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__ );
@@ -1657,6 +1684,7 @@ void CTexture::OnStreamingJobComplete( ResidencyType_t newResidenceCurrent )
 	// The job is complete, Cancel handles cleanup correctly.
 	CancelStreamingJob();
 }
+#endif
 
 void CTexture::SetErrorTexture( bool bIsErrorTexture )
 {
@@ -1795,6 +1823,7 @@ void CTexture::OnRestore()
 			return;
 		}
 	}
+#ifndef BYTEMATCH_RETAIL
 	else
 	{
 		if ( m_nFlags & TEXTUREFLAGS_STREAMABLE_FINE )
@@ -1802,6 +1831,7 @@ void CTexture::OnRestore()
 			MakeResident( RESIDENT_NONE );
 		}
 	}
+#endif
 }
 
 
@@ -2279,12 +2309,15 @@ void CTexture::SetFilterState()
 		}
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	SetLodState();
+#endif
 }
 
 //-----------------------------------------------------------------------------
 // Sets the lod state on the currently modified frame
 //-----------------------------------------------------------------------------
+#ifndef BYTEMATCH_RETAIL
 void CTexture::SetLodState()
 {
 	// Set the lod clamping value to ensure we don't see anything we're not supposed to.
@@ -2294,6 +2327,7 @@ void CTexture::SetLodState()
 		g_pShaderAPIStreaming->TexLodBias( m_lodBiasCurrent );
 	}
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Download bits main entry point!!
@@ -2370,10 +2404,14 @@ bool CTexture::SaveToFile( const char *fileName )
 		// Need to allocate a temporarily renderable surface. Sadness.
 		if ( width > pTexture->GetActualWidth() || height > pTexture->GetActualHeight() )
 		{
+#ifndef BYTEMATCH_RETAIL
 			MaterialSystem()->OverrideRenderTargetAllocation( true );
+#endif
 			// This one bumps the ref automatically for us.
 			pTexture = materials->CreateNamedRenderTargetTextureEx( "_rt_savetofile", width, height, RT_SIZE_LITERAL, IMAGE_FORMAT_BGRA8888, MATERIAL_RT_DEPTH_NONE, TEXTUREFLAGS_IMMEDIATE_CLEANUP );
+#ifndef BYTEMATCH_RETAIL
 			MaterialSystem()->OverrideRenderTargetAllocation( false );
+#endif
 
 			if ( !pTexture || pTexture->IsError() )
 			{
@@ -2450,6 +2488,7 @@ bool CTexture::SaveToFile( const char *fileName )
 	return bRet;
 }
 
+#ifndef BYTEMATCH_RETAIL
 bool CTexture::AsyncReadTextureFromFile( IVTFTexture* pVTFTexture, unsigned int nAdditionalCreationFlags )
 {
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__ );
@@ -2489,7 +2528,9 @@ bool CTexture::AsyncReadTextureFromFile( IVTFTexture* pVTFTexture, unsigned int 
 
 	return true;
 }
+#endif
 
+#ifndef BYTEMATCH_RETAIL
 void CTexture::AsyncCancelReadTexture( )
 {
 	Assert( m_bStreamingFileReadFailed || m_pStreamingVTF != NULL );
@@ -2499,6 +2540,7 @@ void CTexture::AsyncCancelReadTexture( )
 		m_pStreamingVTF = NULL;
 	}
 }
+#endif
 
 void CTexture::Bind( Sampler_t sampler )
 {
@@ -2512,7 +2554,9 @@ void CTexture::Bind( Sampler_t sampler1, int nFrame, Sampler_t sampler2 /* = -1 
 {
 	if ( g_pShaderDevice->IsUsingGraphics() )
 	{
+#ifndef BYTEMATCH_RETAIL
 		TextureManager()->RequestAllMipmaps( this );
+#endif
 
 		if ( nFrame < 0 || nFrame >= m_nFrameCount )
 		{
@@ -2610,12 +2654,16 @@ void CTexture::IncrementReferenceCount( void )
 
 void CTexture::DecrementReferenceCount( void )
 {
+#ifdef BYTEMATCH_RETAIL
+	--m_nRefCount;
+#else
 	if ( ( --m_nRefCount <= 0 ) && ( m_nFlags & TEXTUREFLAGS_IMMEDIATE_CLEANUP ) != 0 )
 	{
 		Assert( m_nRefCount == 0 );
 		// Just inform the texture manager, it will decide to free us at a later date.
 		TextureManager()->MarkUnreferencedTextureForCleanup( this );
 	}
+#endif
 }
 
 int CTexture::GetReferenceCount( )
@@ -2769,6 +2817,21 @@ bool CTexture::IsVolumeTexture() const
 //-----------------------------------------------------------------------------
 // Sets the filtering + clamping modes on the texture
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+void CTexture::SetFilteringAndClampingMode()
+{
+	if( !HasBeenAllocated() )
+		return;
+
+	for ( int iFrame = 0; iFrame < m_nFrameCount; ++iFrame )
+	{
+		Modify( iFrame );			// Indicate we're changing state with respect to a particular frame
+		SetWrapState();			// Send the appropriate wrap/clamping modes to the shaderapi.
+		SetFilterState();		// Set the filtering mode for the texture after downloading it.
+								// NOTE: Apparently, the filter state cannot be set until after download
+	}
+}
+#else
 void CTexture::SetFilteringAndClampingMode( bool bOnlyLodValues )
 {
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__ );
@@ -2789,6 +2852,7 @@ void CTexture::SetFilteringAndClampingMode( bool bOnlyLodValues )
 			SetLodState();
 	}
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Loads up the non-fallback information about the texture 
@@ -4037,6 +4101,9 @@ void CTexture::DeleteIfUnreferenced()
 	if ( m_nRefCount > 0 )
 		return;
 
+#ifdef BYTEMATCH_RETAIL
+	TextureManager()->RemoveTexture( this );
+#else
 	if ( ThreadInMainThread() )
 	{
 		// Render thread better not be active or bad things can happen.
@@ -4048,6 +4115,7 @@ void CTexture::DeleteIfUnreferenced()
 	// Can't actually clean up from render thread--just safely mark this texture as
 	// one we should check for cleanup next EndFrame when it's safe.
 	TextureManager()->MarkUnreferencedTextureForCleanup( this );	
+#endif
 }
 
 //Swap everything about a texture except the name. Created to support Portal mod's need for swapping out water render targets in recursive stencil views
@@ -4138,6 +4206,7 @@ bool CTexture::UpdateExcludedState( void )
 	return true;
 }
 
+#ifndef BYTEMATCH_RETAIL
 void CTextureStreamingJob::OnAsyncFindComplete( ITexture* pTex, void* pExtraArgs )
 {
 	const intp cArgsAsInt = ( intp ) pExtraArgs;
@@ -4149,6 +4218,7 @@ void CTextureStreamingJob::OnAsyncFindComplete( ITexture* pTex, void* pExtraArgs
 	// OnStreamingJobComplete should've cleaned us up
 	Assert( m_pOwner == NULL );
 }
+#endif
 
 // ------------------------------------------------------------------------------------------------
 int GetThreadId()
@@ -4161,10 +4231,12 @@ int GetThreadId()
 		retVal = 0;
 	else if ( MaterialSystem()->GetRenderThreadId() == ThreadGetCurrentId() )
 		retVal = 1;
+#ifndef BYTEMATCH_RETAIL
 	else if ( TextureManager()->ThreadInAsyncLoadThread() )
 		retVal = 2;
 	else if ( TextureManager()->ThreadInAsyncReadThread() )
 		retVal = 3;
+#endif
 	else
 	{
 		STAGING_ONLY_EXEC( AssertAlways( !"Unexpected thread in GetThreadId, need to debug this--crash is next. Tell McJohn." ) );

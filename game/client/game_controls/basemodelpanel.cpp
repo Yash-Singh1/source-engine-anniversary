@@ -92,6 +92,7 @@ void CModelPanel::ApplySettings( KeyValues *inResourceData )
 	}
 }
 
+#ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -106,6 +107,7 @@ void CModelPanel::OnCommand( const char *command )
 
 	BaseClass::OnCommand(command);
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -364,6 +366,7 @@ const char *CModelPanel::GetModelName( void )
 	return m_pModelInfo->m_pszModelName;
 }
 
+#ifndef BYTEMATCH_RETAIL
 void CModelPanel::SetBodyGroup( const char* pszBodyGroupName, int nGroup )
 {
 	if ( !m_pModelInfo )
@@ -380,6 +383,7 @@ void CModelPanel::SetBodyGroup( const char* pszBodyGroupName, int nGroup )
 	m_pModelInfo->m_mapBodygroupValues.InsertOrReplace( nBodyGroupNum, nGroup );
 	m_bPanelDirty = true;
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -422,10 +426,12 @@ void CModelPanel::SetupModel( void )
 		pEnt->m_nSkin = m_pModelInfo->m_nSkin;
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	FOR_EACH_MAP_FAST( m_pModelInfo->m_mapBodygroupValues, i )
 	{
 		pEnt->SetBodygroup( m_pModelInfo->m_mapBodygroupValues.Key( i ), m_pModelInfo->m_mapBodygroupValues[ i ] );
 	}
+#endif
 
 	// do we have any animation information?
 	if ( m_pModelInfo->m_Animations.Count() > 0 && m_pModelInfo->m_Animations.IsValidIndex( m_iDefaultAnimation ) )
@@ -741,6 +747,7 @@ bool CModelPanel::SetSequence( const char *pszName )
 	return bRetVal;
 }
 
+#ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -752,6 +759,7 @@ void CModelPanel::SetSkin( int nSkin )
 		m_bPanelDirty = true;
 	}
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 

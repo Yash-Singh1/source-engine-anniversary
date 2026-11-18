@@ -154,7 +154,9 @@ enum ParticleFunctionType_t
 
 struct CParticleVisibilityInputs
 {
+#ifndef BYTEMATCH_RETAIL
 	float	m_flCameraBias;
+#endif
 	float	m_flInputMin;
 	float	m_flInputMax;
 	float	m_flAlphaScaleMin;
@@ -669,7 +671,11 @@ public:
 	}
 	
 	// should the constraint be run only once after all other constraints?
+#ifdef BYTEMATCH_RETAIL
+	virtual bool IsFinalConstaint( void ) const
+#else
 	virtual bool IsFinalConstraint( void ) const
+#endif
 	{
 		return false;
 	}
@@ -721,11 +727,13 @@ public:
 		return false;
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	// Does this operator require that particles remain in the order they were emitted?
 	virtual bool RequiresOrderInvariance( void ) const
 	{
 		return false;
 	}
+#endif
 
 	// Called when the SFM wants to skip forward in time
 	virtual void SkipToTime( float flTime, CParticleCollection *pParticles, void *pContext ) const {}
@@ -879,6 +887,12 @@ private:
 #define END_PARTICLE_OPERATOR_UNPACK( _className )		\
 	END_DMXELEMENT_UNPACK_TEMPLATE( _className, CParticleOperatorDefinition<_className>::m_pUnpackParams )
 
+#ifdef BYTEMATCH_RETAIL
+#define DMXELEMENT_UNPACK_PARTICLE_CAMERA_BIAS
+#else
+#define DMXELEMENT_UNPACK_PARTICLE_CAMERA_BIAS DMXELEMENT_UNPACK_FIELD( "Visibility Camera Depth Bias", "0", float, VisibilityInputs.m_flCameraBias )
+#endif
+
 #define BEGIN_PARTICLE_RENDER_OPERATOR_UNPACK( _className )											\
 	BEGIN_PARTICLE_OPERATOR_UNPACK( _className )													\
 	DMXELEMENT_UNPACK_FIELD( "Visibility Proxy Input Control Point Number", "-1", int, VisibilityInputs.m_nCPin )	\
@@ -889,7 +903,7 @@ private:
 	DMXELEMENT_UNPACK_FIELD( "Visibility Alpha Scale maximum","1", float, VisibilityInputs.m_flAlphaScaleMax )		\
 	DMXELEMENT_UNPACK_FIELD( "Visibility Radius Scale minimum","1", float, VisibilityInputs.m_flRadiusScaleMin )		\
 	DMXELEMENT_UNPACK_FIELD( "Visibility Radius Scale maximum","1", float, VisibilityInputs.m_flRadiusScaleMax )	\
-	DMXELEMENT_UNPACK_FIELD( "Visibility Camera Depth Bias", "0", float, VisibilityInputs.m_flCameraBias )
+	DMXELEMENT_UNPACK_PARTICLE_CAMERA_BIAS
 
 //	DMXELEMENT_UNPACK_FIELD( "Visibility Use Bounding Box for Proxy", "0", bool, VisibilityInputs.m_bUseBBox )		
 //	DMXELEMENT_UNPACK_FIELD( "Visibility Bounding Box Scale", "1.0", float, VisibilityInputs.m_flBBoxScale )		
@@ -970,9 +984,17 @@ struct CParticleVisibilityData
 {
 	float	m_flAlphaVisibility;
 	float	m_flRadiusVisibility;
+#ifndef BYTEMATCH_RETAIL
 	float	m_flCameraBias;
+#endif
 	bool	m_bUseVisibility;
 };
+
+#ifdef BYTEMATCH_RETAIL
+#define PARTICLE_VISIBILITY_CAMERA_BIAS( pVisibilityData ) 0.0f
+#else
+#define PARTICLE_VISIBILITY_CAMERA_BIAS( pVisibilityData ) ( pVisibilityData )->m_flCameraBias
+#endif
 
 struct CParticleControlPoint
 {
@@ -1072,7 +1094,11 @@ public:
 	float *GetInitialFloatAttributePtrForWrite( int nAttribute, int nParticleNumber );
 	fltx4 *GetInitialM128AttributePtrForWrite( int nAttribute, size_t *pStrideOut );
 
+#ifdef BYTEMATCH_RETAIL
+	void Simulate( float dt );
+#else
 	void Simulate( float dt, bool updateBboxOnly = false );
+#endif
 	void SkipToTime( float t );
 
 	// the camera objetc may be compared for equality against control point objects
@@ -1104,16 +1130,23 @@ public:
 
 	// Used to retrieve the position of a control point
 	// somewhere between m_fCurTime and m_fCurTime - m_fPreviousDT
+#ifdef BYTEMATCH_RETAIL
+	void GetControlPointAtTime( int nControlPoint, float flTime, Vector *pControlPoint );
+	void GetControlPointAtPrevTime( int nControlPoint, Vector *pControlPoint );
+#else
 	void GetControlPointAtTime( int nControlPoint, float flTime, Vector *pControlPoint ) const;
 	void GetControlPointAtPrevTime( int nControlPoint, Vector *pControlPoint ) const;
+#endif
 	void GetControlPointOrientationAtTime( int nControlPoint, float flTime, Vector *pForward, Vector *pRight, Vector *pUp );
 	void GetControlPointTransformAtTime( int nControlPoint, float flTime, matrix3x4_t *pMat );
 	void GetControlPointTransformAtTime( int nControlPoint, float flTime, VMatrix *pMat );
 	void GetControlPointTransformAtTime( int nControlPoint, float flTime, CParticleSIMDTransformation *pXForm );
 	int GetHighestControlPoint( void ) const;
 
+#ifndef BYTEMATCH_RETAIL
 	// Has this particle moved recently (since the last simulation?)
 	bool HasMoved() const;
+#endif
 
 	// Control point accessed:
 	// NOTE: Unlike the definition's version of these methods,
@@ -1262,7 +1295,9 @@ private:
 	bool ComputeIsTranslucent();
 	bool ComputeIsTwoPass();
 	bool ComputeIsBatchable();
+#ifndef BYTEMATCH_RETAIL
 	bool ComputeRequiresOrderInvariance();
+#endif
 
 	void LabelTextureUsage( void );
 
@@ -1284,7 +1319,9 @@ public:
 	int m_nMaxAllowedParticles;
 	bool m_bDormant;
 	bool m_bEmissionStopped;
+#ifndef BYTEMATCH_RETAIL
 	bool m_bRequiresOrderInvariance;
+#endif
 
 	int m_LocalLightingCP;
 	Color m_LocalLighting;
@@ -1352,7 +1389,9 @@ private:
 	
 	// How many frames have we drawn?
 	int m_nDrawnFrames;
+#ifndef BYTEMATCH_RETAIL
 	int m_nSimulatedFrames;
+#endif
 
 	Vector m_Center;										// average of particle centers
 
@@ -1820,7 +1859,9 @@ inline fltx4 *CParticleCollection::GetM128AttributePtrForWrite( int nAttribute, 
 {
 	// NOTE: If you hit this assertion, it means your particle operator isn't returning
 	// the appropriate fields in the RequiredAttributesMask call
+#ifndef BYTEMATCH_RETAIL
 	if ( !HushAsserts() )
+#endif
 	{
 		Assert( !m_bIsRunningInitializers || ( m_nPerParticleInitializedAttributeMask & (1 << nAttribute) ) );
 		Assert( !m_bIsRunningOperators || ( m_nPerParticleUpdatedAttributeMask & (1 << nAttribute) ) );

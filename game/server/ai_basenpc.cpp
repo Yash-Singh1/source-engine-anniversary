@@ -11334,7 +11334,9 @@ CAI_BaseNPC::CAI_BaseNPC(void)
 	m_flHeadYaw					= 0;
 	m_flHeadPitch				= 0;
 	m_spawnEquipment			= NULL_STRING;
+#ifndef BYTEMATCH_RETAIL
 	m_SquadName = NULL_STRING;
+#endif
 	m_pEnemies					= new CAI_Enemies;
 	m_bIgnoreUnseenEnemies		= false;
 	m_flEyeIntegRate			= 0.95;

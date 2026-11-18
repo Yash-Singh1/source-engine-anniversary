@@ -903,7 +903,9 @@ C_BaseEntity::C_BaseEntity() :
 
 	m_DataChangeEventRef = -1;
 	m_EntClientFlags = 0;
+#ifndef BYTEMATCH_RETAIL
 	m_bEnableRenderingClipPlane = false;
+#endif
 
 	m_iParentAttachment = 0;
 	m_nRenderFXBlend = 255;
@@ -944,8 +946,10 @@ C_BaseEntity::C_BaseEntity() :
 	//NOTE: not virtual! we are in the constructor!
 	C_BaseEntity::Clear();
 
+#ifndef BYTEMATCH_RETAIL
 	SetModelName( NULL_STRING );
 	m_iClassname = NULL_STRING;
+#endif
 
 	m_InterpolationListEntry = 0xFFFF;
 	m_TeleportListEntry = 0xFFFF;
@@ -1000,7 +1004,9 @@ void C_BaseEntity::Clear( void )
 	SetLocalOrigin( vec3_origin );
 	SetLocalAngles( vec3_angle );
 	model = NULL;
+#ifndef BYTEMATCH_RETAIL
 	m_pOriginalData = NULL;
+#endif
 	m_vecAbsOrigin.Init();
 	m_angAbsRotation.Init();
 	m_vecVelocity.Init();
@@ -5335,8 +5341,10 @@ static int g_FieldSizes[FIELD_TYPECOUNT] =
 	FIELD_SIZE( FIELD_MATERIALINDEX ),
 
 	FIELD_SIZE( FIELD_VECTOR2D ),
+#ifndef BYTEMATCH_RETAIL
 	FIELD_SIZE( FIELD_INTEGER64 ),
 	FIELD_SIZE( FIELD_POINTER ),
+#endif
 };
 
 //-----------------------------------------------------------------------------

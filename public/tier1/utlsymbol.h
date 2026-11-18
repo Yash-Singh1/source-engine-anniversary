@@ -203,10 +203,18 @@ public:
 
 	CUtlSymbol Find( const char* pString ) const
 	{
-		m_lock.LockForWrite();
+		m_lock.LockForRead();
 		CUtlSymbol result = CUtlSymbolTable::Find( pString );
-		m_lock.UnlockWrite();
+		m_lock.UnlockRead();
 		return result;
+	}
+
+	// Retail takes the read lock here too.
+	void RemoveAll()
+	{
+		m_lock.LockForRead();
+		CUtlSymbolTable::RemoveAll();
+		m_lock.UnlockRead();
 	}
 
 	const char* String( CUtlSymbol id ) const

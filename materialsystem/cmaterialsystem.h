@@ -339,8 +339,10 @@ public:
 	//---------------------------------------------------------
 	// Compositor Support
 	//---------------------------------------------------------
+#ifndef BYTEMATCH_RETAIL
 	void									CreateCompositorMaterials();
 	void									CleanUpCompositorMaterials();
+#endif
 
 	//---------------------------------------------------------
 	// Misc features
@@ -378,8 +380,10 @@ public:
 	//---------------------------------------------------------
 	// Stop attempting to stream in textures in response to usage.  Useful for phases such as loading or other explicit
 	// operations that shouldn't take usage of textures as a signal to stream them in at full rez.
+#ifndef BYTEMATCH_RETAIL
 	void									SuspendTextureStreaming( );
 	void									ResumeTextureStreaming( );
+#endif
 	void									UncacheAllMaterials();
 	void									UncacheUnusedMaterials( bool bRecomputeStateSnapshots );
 	void									CacheUsedMaterials();
@@ -469,22 +473,26 @@ public:
 																				unsigned int textureFlags = TEXTUREFLAGS_CLAMPS | TEXTUREFLAGS_CLAMPT,
 																				unsigned int renderTargetFlags = 0 );
 
+#ifndef BYTEMATCH_RETAIL
 	ITexture*					CreateTextureFromBits(int w, int h, int mips, ImageFormat fmt, int srcBufferSize, byte* srcBits);
 
 	virtual void				OverrideRenderTargetAllocation( bool rtAlloc ) OVERRIDE;
 
 	ITextureCompositor*			NewTextureCompositor( int w, int h, const char* pCompositeName, int nTeamNum, uint64 randomSeed, KeyValues* stageDesc, uint32 texCompositeCreateFlags = 0 );
 	void						ScheduleTextureComposite( CTextureCompositor* _texCompositor );
+#endif
 
 
 	virtual void				SetRenderTargetFrameBufferSizeOverrides( int nWidth, int nHeight ) OVERRIDE;
 	virtual void				GetRenderTargetFrameBufferDimensions( int & nWidth, int & nHeight ) OVERRIDE;
 
+#ifndef BYTEMATCH_RETAIL
 	virtual void				AsyncFindTexture( const char* pFilename, const char *pTextureGroupName, IAsyncTextureOperationReceiver* pRecipient, void* pExtraArgs, bool bComplain = true, int nAdditionalCreationFlags = 0 ) OVERRIDE;
 	virtual ITexture*			CreateNamedTextureFromBitsEx( const char* pName, const char *pTextureGroupName, int w, int h, int mips, ImageFormat fmt, int srcBufferSize, byte* srcBits, int nFlags ) OVERRIDE;
 
 	bool						AddTextureCompositorTemplate( const char* pName, KeyValues* pTmplDesc, int nTexCompositeTemplateFlags = 0 );
 	bool						VerifyTextureCompositorTemplates();
+#endif
 
 	virtual RenderBackend_t		GetRenderBackend() const OVERRIDE;
 
@@ -633,7 +641,9 @@ private:
 	//---------------------------------
 
 	char *									m_pShaderDLL;
+#ifndef BYTEMATCH_RETAIL
 	RenderBackend_t							m_eRenderBackend;
+#endif
 	CSysModule *							m_ShaderHInst; // Used to dynamically load the shader DLL
 	CreateInterfaceFn						m_ShaderAPIFactory;
 
@@ -695,7 +705,9 @@ private:
     IMaterialInternal *						m_pBufferClearObeyStencil[BUFFER_CLEAR_TYPE_COUNT];
 	IMaterialInternal *						m_pDrawFlatMaterial;
 	IMaterialInternal *						m_pRenderTargetBlitMaterial;
+#ifndef BYTEMATCH_RETAIL
 	CUtlVector< IMaterialInternal* >		m_pCompositorMaterials;
+#endif
 
 	//---------------------------------
 
@@ -710,6 +722,9 @@ private:
 	bool									m_bAllowQueuedRendering;
 	volatile bool							m_bThreadHasOwnership;
 	uint									m_ThreadOwnershipID;
+#ifdef BYTEMATCH_RETAIL
+	RenderBackend_t							m_eRenderBackend;
+#endif
 
 	//---------------------------------
 
@@ -723,8 +738,10 @@ private:
 	int										m_nRenderTargetFrameBufferWidthOverride;
 	int										m_nRenderTargetFrameBufferHeightOverride;
 
+#ifndef BYTEMATCH_RETAIL
 	CUtlVector< CTextureCompositor* >		m_scheduledComposites;
 	CUtlVector< CTextureCompositor* >		m_pendingComposites;
+#endif
 };
 
 //-----------------------------------------------------------------------------

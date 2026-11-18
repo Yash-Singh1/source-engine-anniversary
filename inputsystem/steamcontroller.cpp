@@ -5,12 +5,8 @@
 #include "inputsystem.h"
 #include "key_translation.h"
 #include "filesystem.h"
-#include "steam/isteamcontroller.h"
+#include "steam/isteaminput.h"
 #include "math.h"
-
-#ifndef UINT64_MAX
-const uint64 UINT64_MAX = 0xffffffffffffffff;
-#endif
 
 #if !defined( NO_STEAM )
 #include "steam/steam_api.h"
@@ -20,53 +16,6 @@ const uint64 UINT64_MAX = 0xffffffffffffffff;
 #include <tier0/memdbgon.h>
 
 ConVar sc_joystick_map( "sc_joystick_map", "1", FCVAR_ARCHIVE, "How to map the analog joystick deadzone and extents 0 = Scaled Cross, 1 = Concentric Mapping to Square." );
-
-#define STEAMPAD_MAX_ANALOGSAMPLE_GYRO		32768
-#define STEAMPAD_MAX_ANALOGSAMPLE_TRIGGER	32768
-#define STEAMPAD_MAX_ANALOGSAMPLE_LEFT		32768
-#define STEAMPAD_MAX_ANALOGSAMPLE_RIGHT		32767
-#define STEAMPAD_MAX_ANALOGSAMPLE_DOWN		32768
-#define STEAMPAD_MAX_ANALOGSAMPLE_UP		32767
-#define STEAMPAD_MAX_ANALOGSAMPLE_MAX		32768
-#define STEAMPAD_ANALOG_SCALE_LEFT(x) 		( ( float )STEAMPAD_MAX_ANALOGSAMPLE_LEFT/( float )( STEAMPAD_MAX_ANALOGSAMPLE_LEFT-(x) ) )
-#define STEAMPAD_ANALOG_SCALE_RIGHT(x) 		( ( float )STEAMPAD_MAX_ANALOGSAMPLE_RIGHT/( float )( STEAMPAD_MAX_ANALOGSAMPLE_RIGHT-(x) ) )
-#define STEAMPAD_ANALOG_SCALE_DOWN(x) 		( ( float )STEAMPAD_MAX_ANALOGSAMPLE_DOWN/( float )( STEAMPAD_MAX_ANALOGSAMPLE_DOWN-(x) ) )
-#define STEAMPAD_ANALOG_SCALE_UP(x)	 		( ( float )STEAMPAD_MAX_ANALOGSAMPLE_UP/( float )( STEAMPAD_MAX_ANALOGSAMPLE_UP-(x) ) )
-
-
-#define STEAMPAD_ANALOG_TRIGGER_THRESHOLD	( ( int )( STEAMPAD_MAX_ANALOGSAMPLE_TRIGGER * 0.5f ) )
-#define STEAMPAD_ANALOG_PAD_THRESHOLD		( ( int )( STEAMPAD_MAX_ANALOGSAMPLE_MAX * 0.25f ) )
-#define STEAMPAD_ANALOG_GYRO_THRESHOLD		( ( int ) ( STEAMPAD_MAX_ANALOGSAMPLE_GYRO * 0.3f ) )
-#define STEAMPAD_DIGITAL_PAD_THRESHOLD		( ( int )( STEAMPAD_MAX_ANALOGSAMPLE_MAX * 0.52f ) )
-
-#define STEAMPAD_AXIS_REPEAT_INTERVAL_START	0.6f
-#define STEAMPAD_AXIS_REPEAT_INTERVAL_END	0.05f
-#define STEAMPAD_AXIS_REPEAT_CURVE_TIME		1.75f
-
-#define PAD_ANALOG_BUTTON_THRESHOLD			( ( int )( STEAMPAD_MAX_ANALOGSAMPLE_MAX * 0.285f ) )
-#define PAD_ANALOG_BUTTON_THRESHOLD_STRONG	( ( int )( STEAMPAD_MAX_ANALOGSAMPLE_MAX * 0.68f ) )
-
-#define SQRT2 1.414213562
-
-// key translation
-typedef struct
-{
-	uint64			steampadinput;
-	ButtonCode_t	steampadkey;
-} steampadInputTosteampadKey_t;
-
-static const int s_nSteamPadDeadZoneTable[] =
-{
-	STEAMPAD_ANALOG_PAD_THRESHOLD,		// LEFTPAD_AXIS_X
-	STEAMPAD_ANALOG_PAD_THRESHOLD,		// LEFTPAD_AXIS_Y
-	STEAMPAD_ANALOG_PAD_THRESHOLD,		// RIGHTPAD_AXIS_X
-	STEAMPAD_ANALOG_PAD_THRESHOLD,		// RIGHTPAD_AXIS_Y
-	STEAMPAD_ANALOG_TRIGGER_THRESHOLD,  //LEFT_TRIGGER_AXIS
-	STEAMPAD_ANALOG_TRIGGER_THRESHOLD,  //RIGHT_TRIGGER_AXIS
-	STEAMPAD_ANALOG_GYRO_THRESHOLD,		//GYRO_AXIS_PITCH
-	STEAMPAD_ANALOG_GYRO_THRESHOLD,		//GYRO_AXIS_ROLL
-	STEAMPAD_ANALOG_GYRO_THRESHOLD,		//GYRO_AXIS_YAW
-};
 
 //-----------------------------------------------------------------------------
 // Purpose: Counts the number of active gamepads connected
@@ -80,164 +29,102 @@ struct SDigitalMenuAction
 {
 	const char *strName;
 	ButtonCode_t buttonCode;
-	ControllerDigitalActionHandle_t handle;
-	bool bState[STEAM_CONTROLLER_MAX_COUNT];
-	bool bAwaitingDebounce[STEAM_CONTROLLER_MAX_COUNT];
+	InputDigitalActionHandle_t handle;
+	bool bState[STEAM_INPUT_MAX_COUNT];
 };
 
 static SDigitalMenuAction g_DigitalMenuActions[] = {
-	{ "menu_left", STEAMCONTROLLER_DPAD_LEFT, 0, { false }, { false } },
-	{ "menu_right", STEAMCONTROLLER_DPAD_RIGHT, 0, { false }, { false } },
-	{ "menu_up", STEAMCONTROLLER_DPAD_UP, 0, { false }, { false } },
-	{ "menu_down", STEAMCONTROLLER_DPAD_DOWN, 0, { false }, { false } },
-	{ "menu_cancel", STEAMCONTROLLER_B, 0, { false }, { false } },
-	{ "menu_select", STEAMCONTROLLER_A, 0, { false }, { false } },
-	{ "resume_esc", STEAMCONTROLLER_START, 0, { false }, { false } },
-	{ "menu_toggle_function", STEAMCONTROLLER_Y, 0, { false }, { false }, },				// Command is in the in-game HUD action set
-	{ "menu_alt_function", STEAMCONTROLLER_X, 0, { false }, { false } },					// Command is in the in-game HUD action set
-	{ "cancelselect", STEAMCONTROLLER_START, 0, { false }, { false } },						// Command is in the in-game action set
+	{ "menu_left", STEAMCONTROLLER_DPAD_LEFT, 0, { false } },
+	{ "menu_right", STEAMCONTROLLER_DPAD_RIGHT, 0, { false } },
+	{ "menu_up", STEAMCONTROLLER_DPAD_UP, 0, { false } },
+	{ "menu_down", STEAMCONTROLLER_DPAD_DOWN, 0, { false } },
+	{ "menu_cancel", STEAMCONTROLLER_B, 0, { false } },
+	{ "menu_select", STEAMCONTROLLER_A, 0, { false } },
+	{ "menu_x", STEAMCONTROLLER_X, 0, { false } },
+	{ "menu_y", STEAMCONTROLLER_Y, 0, { false } },
+	{ "menu_lb", STEAMCONTROLLER_LEFT_BUMPER, 0, { false } },
+	{ "menu_rb", STEAMCONTROLLER_RIGHT_BUMPER, 0, { false } },
+	{ "pause_menu", STEAMCONTROLLER_START, 0, { false } },
+	{ "menu_4", STEAMCONTROLLER_SELECT, 0, { false } },
 };
 
 struct SAnalogAction
 {
 	const char *strName;
 	JoystickAxis_t joystickAxisX, joystickAxisY;
-	ControllerAnalogActionHandle_t handle;
+	InputAnalogActionHandle_t handle;
+};
+
+static SAnalogAction g_AnalogActions[] = {
+	{ "RadialMenuStick", JOY_AXIS_X, JOY_AXIS_R, 0 },
 };
 
 struct SGameActionSet
 {
 	const char *strName;
 	GameActionSet_t eGameActionSet;
-	ControllerActionSetHandle_t handle;
+	InputActionSetHandle_t handle;
 };
+
 static SGameActionSet g_GameActionSets[] = {
+	{ "GameControls", GAME_ACTION_SET_GAMECONTROLS, 0 },
+	{ "VehicleControls", GAME_ACTION_SET_VEHICLECONTROLS, 0 },
 	{ "MenuControls", GAME_ACTION_SET_MENUCONTROLS, 0 },
-	{ "FPSControls", GAME_ACTION_SET_FPSCONTROLS, 0 },
-	{ "InGameHUDControls", GAME_ACTION_SET_IN_GAME_HUD, 0 },
-	{ "SpectatorControls", GAME_ACTION_SET_SPECTATOR, 0 },
 };
 
+bool g_bInitialized = false;
 
-// Table that maps a physical steam controller origin to the corresponding character in our icon font.
-// If the EControllerActionOrigin enum or the font changes, this table must be changed to match.
-static const wchar_t* g_MapSteamControllerOriginToIconFont[] = {
-	L"",					// k_EControllerActionOrigin_None 
-	L"A",					// k_EControllerActionOrigin_A
-	L"B",					// k_EControllerActionOrigin_B
-	L"X",					// k_EControllerActionOrigin_X
-	L"Y",					// k_EControllerActionOrigin_Y
-	L"2",					// k_EControllerActionOrigin_LeftBumper
-	L"3",					// k_EControllerActionOrigin_RightBumper
-	L"(",					// k_EControllerActionOrigin_LeftGrip
-	L")",					// k_EControllerActionOrigin_RightGrip
-	L"5",					// k_EControllerActionOrigin_Start
-	L"4",					// k_EControllerActionOrigin_Back
-	L"q",					// k_EControllerActionOrigin_LeftPad_Touch
-	L"w",					// k_EControllerActionOrigin_LeftPad_Swipe
-	L"e",					// k_EControllerActionOrigin_LeftPad_Click
-	L"a",					// k_EControllerActionOrigin_LeftPad_DPadNorth
-	L"s",					// k_EControllerActionOrigin_LeftPad_DPadSouth
-	L"d",					// k_EControllerActionOrigin_LeftPad_DPadWest
-	L"f",					// k_EControllerActionOrigin_LeftPad_DPadEast					
-	L"y",					// k_EControllerActionOrigin_RightPad_Touch
-	L"u",					// k_EControllerActionOrigin_RightPad_Swipe
-	L"i",					// k_EControllerActionOrigin_RightPad_Click
-	L"h",					// k_EControllerActionOrigin_RightPad_DPadNorth
-	L"j",					// k_EControllerActionOrigin_RightPad_DPadSouth
-	L"k",					// k_EControllerActionOrigin_RightPad_DPadWest
-	L"l",					// k_EControllerActionOrigin_RightPad_DEast
-	L"z",					// k_EControllerActionOrigin_LeftTrigger_Pull
-	L"x",					// k_EControllerActionOrigin_LeftTrigger_Click
-	L"n",					// k_EControllerActionOrigin_RightTrigger_Pull
-	L"m",					// k_EControllerActionOrigin_RightTrigger_Click
-	L"C",					// k_EControllerActionOrigin_LeftStick_Move
-	L"V",					// k_EControllerActionOrigin_LeftStick_Click
-	L"7",					// k_EControllerActionOrigin_LeftStick_DPadNorth
-	L"8",					// k_EControllerActionOrigin_LeftStick_DPadSouth
-	L"9",					// k_EControllerActionOrigin_LeftStick_DPadWest
-	L"0",					// k_EControllerActionOrigin_LeftStick_DPadEast
-	L"6",					// k_EControllerActionOrigin_Gyro_Move
-	L"6",					// k_EControllerActionOrigin_Gyro_Pitch
-	L"6",					// k_EControllerActionOrigin_Gyro_Yaw
-	L"6",					// k_EControllerActionOrigin_Gyro_Roll
-};
-
-// Table that maps a physical steam controller origin to a short description string for user display (only use this
-// if it's impractical to use the icon font).
-// If the EControllerActionOrigin enum changes, this table must be changed to match.
-static const wchar_t* g_MapSteamControllerOriginToDescription[] = {
-	L"",					// k_EControllerActionOrigin_None 
-	L"A",					// k_EControllerActionOrigin_A
-	L"B",					// k_EControllerActionOrigin_B
-	L"X",					// k_EControllerActionOrigin_X
-	L"Y",					// k_EControllerActionOrigin_Y
-	L"LB",					// k_EControllerActionOrigin_LeftBumper
-	L"RB",					// k_EControllerActionOrigin_RightBumper
-	L"LG",					// k_EControllerActionOrigin_LeftGrip
-	L"RG",					// k_EControllerActionOrigin_RightGrip
-	L"START",				// k_EControllerActionOrigin_Start
-	L"BACK",				// k_EControllerActionOrigin_Back
-	L"LPTOUCH",				// k_EControllerActionOrigin_LeftPad_Touch
-	L"LPSWIPE",				// k_EControllerActionOrigin_LeftPad_Swipe
-	L"LPCLICK",				// k_EControllerActionOrigin_LeftPad_Click
-	L"LPUP",				// k_EControllerActionOrigin_LeftPad_DPadNorth
-	L"LPDOWN",				// k_EControllerActionOrigin_LeftPad_DPadSouth
-	L"LPLEFT",				// k_EControllerActionOrigin_LeftPad_DPadWest
-	L"LPRIGHT",				// k_EControllerActionOrigin_LeftPad_DPadEast					
-	L"RPTOUCH",				// k_EControllerActionOrigin_RightPad_Touch
-	L"RPSWIPE",				// k_EControllerActionOrigin_RightPad_Swipe
-	L"RPCLICK",				// k_EControllerActionOrigin_RightPad_Click
-	L"RPUP",				// k_EControllerActionOrigin_RightPad_DPadNorth
-	L"RPDOWN",				// k_EControllerActionOrigin_RightPad_DPadSouth
-	L"RPLEFT",				// k_EControllerActionOrigin_RightPad_DPadWest
-	L"RPRIGHT",				// k_EControllerActionOrigin_RightPad_DEast
-	L"LT",					// k_EControllerActionOrigin_LeftTrigger_Pull
-	L"LT",					// k_EControllerActionOrigin_LeftTrigger_Click
-	L"LT",					// k_EControllerActionOrigin_RightTrigger_Pull
-	L"LT",					// k_EControllerActionOrigin_RightTrigger_Click
-	L"LS",					// k_EControllerActionOrigin_LeftStick_Move
-	L"LSCLICK",				// k_EControllerActionOrigin_LeftStick_Click
-	L"LSUP",				// k_EControllerActionOrigin_LeftStick_DPadNorth
-	L"LSDOWN",				// k_EControllerActionOrigin_LeftStick_DPadSouth
-	L"LSLEFT",				// k_EControllerActionOrigin_LeftStick_DPadWest
-	L"LSRIGHT",				// k_EControllerActionOrigin_LeftStick_DPadEast
-	L"GYRO",				// k_EControllerActionOrigin_Gyro_Move
-	L"GYRO",				// k_EControllerActionOrigin_Gyro_Pitch
-	L"GYRO",				// k_EControllerActionOrigin_Gyro_Yaw
-	L"GYRO",				// k_EControllerActionOrigin_Gyro_Roll
-};
-
-
-bool CInputSystem::InitializeSteamControllerActionSets()
+static bool InitDigitalMenuActions()
 {
-	auto psteamcontroller = SteamControllerInterface();
-	if ( !psteamcontroller )
+	for ( int i = 0; i != ARRAYSIZE( g_GameActionSets ); ++i )
 	{
-		return false;
+		g_GameActionSets[i].handle = SteamInput()->GetActionSetHandle( g_GameActionSets[i].strName );
 	}
-
-	bool bGotHandles = true;
 
 	for ( int i = 0; i != ARRAYSIZE( g_DigitalMenuActions ); ++i )
 	{
-		g_DigitalMenuActions[i].handle = psteamcontroller->GetDigitalActionHandle( g_DigitalMenuActions[i].strName );
-		bGotHandles = bGotHandles && ( g_DigitalMenuActions[i].handle != 0 );
+		g_DigitalMenuActions[i].handle = SteamInput()->GetDigitalActionHandle( g_DigitalMenuActions[i].strName );
 
 		// Init the button state array 
-		for( int j = 0; j < STEAM_CONTROLLER_MAX_COUNT; j++ )
+		for ( int j = 0; j < STEAM_INPUT_MAX_COUNT; j++ )
 		{
 			g_DigitalMenuActions[i].bState[j] = false;
 		}
 	}
 
-	for ( int i = 0; i != ARRAYSIZE( g_GameActionSets ); ++i )
+	for ( int i = 0; i != ARRAYSIZE( g_AnalogActions ); ++i )
 	{
-		g_GameActionSets[i].handle = psteamcontroller->GetActionSetHandle( g_GameActionSets[i].strName );
-		bGotHandles = bGotHandles &&  g_GameActionSets[i].handle;
+		g_AnalogActions[i].handle = SteamInput()->GetDigitalActionHandle( g_AnalogActions[i].strName );
 	}
 
-	return bGotHandles;
+	return g_GameActionSets[GAME_ACTION_SET_GAMECONTROLS].handle && g_GameActionSets[GAME_ACTION_SET_MENUCONTROLS].handle;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Steam reloaded the controller bindings; re-fetch the action handles
+//-----------------------------------------------------------------------------
+void CInputSystem::OnSteamInputConfigurationLoaded( SteamInputConfigurationLoaded_t *pParam )
+{
+	if ( m_hConfigurationDevice == pParam->m_ulDeviceHandle &&
+		 m_unConfigurationMajorRevision == pParam->m_unMajorRevision &&
+		 m_unConfigurationMinorRevision == pParam->m_unMinorRevision )
+	{
+		return;
+	}
+
+	InitDigitalMenuActions();
+
+	for ( int i = 0; i != ARRAYSIZE( g_GameActionSets ); ++i )
+	{
+		if ( !g_GameActionSets[i].handle )
+		{
+			return;
+		}
+	}
+
+	m_hConfigurationDevice = pParam->m_ulDeviceHandle;
+	m_unConfigurationMajorRevision = pParam->m_unMajorRevision;
+	m_unConfigurationMinorRevision = pParam->m_unMinorRevision;
 }
 
 ConVar sc_debug_sets( "sc_debug_sets", "0", FCVAR_ARCHIVE, "Debugging" );
@@ -245,77 +132,106 @@ ConVar sc_debug_sets( "sc_debug_sets", "0", FCVAR_ARCHIVE, "Debugging" );
 void CInputSystem::PollSteamControllers( void )
 {
 	// Make sure we've got the appropriate connections to Steam
-	auto steamcontroller = SteamControllerInterface();
-	if ( !steamcontroller )
+	if ( !SteamInput() )
 	{
 		return;
 	}
 
-	steamcontroller->RunFrame();
+	SteamInput()->RunFrame();
 
-	uint64 nControllerHandles[STEAM_CONTROLLER_MAX_COUNT];
-	m_unNumConnected = steamcontroller->GetConnectedControllers( nControllerHandles );
+	InputHandle_t nControllerHandles[STEAM_INPUT_MAX_COUNT];
+	m_unNumConnected = SteamInput()->GetConnectedControllers( nControllerHandles );
 
-	if ( m_unNumConnected > 0 )
+	// Forget the active controller if it was unplugged
+	if ( m_hActiveSteamInput )
 	{
-		if ( !m_bSteamControllerActionsInitialized )
+		bool bFound = false;
+		for ( uint32 i = 0; i < m_unNumConnected; ++i )
 		{
-			// Retry initialization of controller actions if we didn't acquire them all before for some reason.
-			m_bSteamControllerActionsInitialized = m_bSteamController && InitializeSteamControllerActionSets();
-			g_pInputSystem->ActivateSteamControllerActionSet( GAME_ACTION_SET_MENUCONTROLS );
+			if ( nControllerHandles[i] == m_hActiveSteamInput )
+			{
+				bFound = true;
+				break;
+			}
 		}
 
-		if ( m_bSteamControllerActionsInitialized )
-		{  
-			// If we successfully initialized all the actions, and we have a connected controller, then we're considered "active".
-			m_bSteamControllerActive = true;
+		if ( !bFound )
+		{
+			m_hActiveSteamInput = 0;
+		}
+	}
 
-			// For each digital action
-			for ( int i = 0; i != ARRAYSIZE( g_DigitalMenuActions ); ++i )
+	if ( m_unNumConnected > 0 && !g_bInitialized )
+	{
+		if ( InitDigitalMenuActions() )
+		{
+			g_pInputSystem->ActivateSteamControllerActionSet( GAME_ACTION_SET_MENUCONTROLS );
+			m_hActiveSteamInput = 0;
+			g_bInitialized = true;
+		}
+	}
+
+	if ( m_unNumConnected == 0 || !g_bInitialized )
+	{
+		return;
+	}
+
+	// For each digital action
+	for ( int i = 0; i != ARRAYSIZE( g_DigitalMenuActions ); ++i )
+	{
+		SDigitalMenuAction& action = g_DigitalMenuActions[i];
+
+		// and for each controller
+		for ( uint64 j = 0; j < m_unNumConnected; ++j )
+		{
+			// Get the action's current state
+			InputDigitalActionData_t data = SteamInput()->GetDigitalActionData( nControllerHandles[j], action.handle );
+
+			// We only care if the action is active
+			if ( data.bActive )
 			{
-				SDigitalMenuAction& action = g_DigitalMenuActions[i];
-
-				// and for each controller
-				for ( uint64 j = 0; j < m_unNumConnected; ++j )
+				// If the action's state has changed
+				if ( data.bState != action.bState[j] )
 				{
+					action.bState[j] = data.bState;
+					m_eActiveInputType = ACTIVE_INPUT_TYPE_STEAM_INPUT;
 
-					// Get the action's current state
-					ControllerDigitalActionData_t data = steamcontroller->GetDigitalActionData( nControllerHandles[j], action.handle );
+					// Press the key for the correct controller
+					ButtonCode_t buttonCode = ButtonCodeToJoystickButtonCode( action.buttonCode, j );
 
-					// We only care if the action is active
-					if ( data.bActive )
+					if ( action.bState[j] )
 					{
-						action.bAwaitingDebounce[j] = action.bAwaitingDebounce[j] && data.bState;
-
-						// If the action's state has changed
-						if ( data.bState != action.bState[j] )
-						{
-							action.bState[j] = data.bState;
-
-							// Press the key for the correct controller
-							ButtonCode_t buttonCode = ButtonCodeToJoystickButtonCode( action.buttonCode, j );
-
-							if ( action.bState[j] )
-							{
-								if ( !action.bAwaitingDebounce[j] )
-								{
-									PostButtonPressedEvent( IE_ButtonPressed, m_nLastSampleTick, buttonCode, buttonCode );
-								}
-							}
-							else
-							{
-								PostButtonReleasedEvent( IE_ButtonReleased, m_nLastSampleTick, buttonCode, buttonCode );
-							}
-						}
+						PostButtonPressedEvent( IE_ButtonPressed, m_nLastSampleTick, buttonCode, buttonCode );
+						m_hActiveSteamInput = nControllerHandles[j];
+					}
+					else
+					{
+						PostButtonReleasedEvent( IE_ButtonReleased, m_nLastSampleTick, buttonCode, buttonCode );
 					}
 				}
 			}
 		}
 	}
-	else
+
+	// Radial menu stick, per controller
+	for ( uint64 i = 0; i < m_unNumConnected; ++i )
 	{
-		// If no controllers are connected, unflag the active state.
-		m_bSteamControllerActive = false;
+		InputAnalogActionData_t data = SteamInput()->GetAnalogActionData( nControllerHandles[i], g_AnalogActions[0].handle );
+		if ( data.bActive )
+		{
+			m_pRadialMenuStickVal[i][0] = data.x;
+			m_pRadialMenuStickVal[i][1] = data.y;
+
+			if ( abs( data.x ) > 2 || abs( data.y ) > 2 )
+			{
+				m_eActiveInputType = ACTIVE_INPUT_TYPE_STEAM_INPUT;
+			}
+		}
+		else
+		{
+			m_pRadialMenuStickVal[i][0] = 0.0f;
+			m_pRadialMenuStickVal[i][1] = 0.0f;
+		}
 	}
 }
 
@@ -329,26 +245,35 @@ bool CInputSystem::GetRadialMenuStickValues( int nSlot, float &fX, float &fY )
 
 bool CInputSystem::IsSteamControllerActive( void )
 {
-	return m_bSteamControllerActive;
+	return m_eActiveInputType == ACTIVE_INPUT_TYPE_STEAM_INPUT;
+}
+
+bool CInputSystem::IsXinputControllerActive( void )
+{
+	return m_eActiveInputType == ACTIVE_INPUT_TYPE_XINPUT;
+}
+
+bool CInputSystem::IsMouseKeyboardActive( void )
+{
+	return m_eActiveInputType == ACTIVE_INPUT_TYPE_MOUSE_KEYBOARD;
 }
 
 bool CInputSystem::InitializeSteamControllers()
 {
 	m_flLastSteamControllerInput = -FLT_MAX;
-	auto steamcontroller = SteamControllerInterface();
-	if ( steamcontroller )
+
+	SteamAPI_Init();
+	if ( SteamInput() )
 	{
-		if ( !steamcontroller->Init() )
-		{
-			return false;
-		}
-	}
-	else
-	{
-		return false;
+		SteamInput()->Init( true );
 	}
 
-	for( int i=0; i<STEAM_CONTROLLER_MAX_COUNT; i++ )
+	if ( !m_bOnDiscManifestLoaded )
+	{
+		m_bOnDiscManifestLoaded = BLoadOnDiscManifest();
+	}
+
+	for( int i=0; i<STEAM_INPUT_MAX_COUNT; i++ )
 	{
 		m_pRadialMenuStickVal[i][0] = 0.0f;
 		m_pRadialMenuStickVal[i][1] = 0.0f;
@@ -357,11 +282,10 @@ bool CInputSystem::InitializeSteamControllers()
 	// We have to account for other joysticks prior to adding steam controllers
 	// So we get the baseline number here when first initializing
 	m_nJoystickBaseline = m_nJoystickCount;
-	if ( steamcontroller )
+	if ( SteamInput() )
 	{
-		uint64 nControllerHandles[STEAM_CONTROLLER_MAX_COUNT];
-		m_unNumConnected = steamcontroller->GetConnectedControllers( nControllerHandles );
-		steamcontroller->RunFrame();
+		InputHandle_t nControllerHandles[STEAM_INPUT_MAX_COUNT];
+		m_unNumConnected = SteamInput()->GetConnectedControllers( nControllerHandles );
 
 		if ( m_unNumConnected > 0 )
 		{
@@ -375,12 +299,54 @@ bool CInputSystem::InitializeSteamControllers()
 				}
 				m_nControllerType[m_Device[i].m_nJoystickIndex] = INPUT_TYPE_STEAMCONTROLLER;
 			}
-		}
 
-		return true;
+			SteamInput()->RunFrame();
+			return true;
+		}
 	}
 
 	return false;	
+}
+
+bool CInputSystem::BLoadOnDiscManifest()
+{
+	if ( !SteamInput() )
+	{
+		return false;
+	}
+
+	char szCurrentDir[MAX_PATH + 1];
+	if ( !g_pFullFileSystem->GetCurrentDirectory( szCurrentDir, sizeof( szCurrentDir ) ) )
+	{
+		Msg( "Couldn't get current directory.\n" );
+	}
+	V_StripTrailingSlash( szCurrentDir );
+
+	const char *pszActionManifest = "steam_input\\action_manifest_hl2.vdf";
+	char szManifestPath[MAX_PATH + 1];
+	V_snprintf( szManifestPath, sizeof( szManifestPath ), "%s\\%s", szCurrentDir, pszActionManifest );
+	Msg( "Loading action manifest: %s\n", szManifestPath );
+
+	if ( g_pFullFileSystem->FileExists( szManifestPath ) )
+	{
+		Msg( "[SteamInput] Loading action manifest from console: %s\n", szManifestPath );
+		SteamInput()->SetInputActionManifestFilePath( szManifestPath );
+		if ( SteamInput()->SetInputActionManifestFilePath( szManifestPath ) )
+		{
+			DevMsg( "- [SteamInput] Local IGA file exists for this Mod. \"%s\".\n It will be used for canonical inputs instead of the Steam Workshop.\n Be sure to set \"Custom Configuration (Bundled with Game)\" on Steam Partner site for this App ID.\n", szManifestPath );
+			return true;
+		}
+		else
+		{
+			DevMsg( "- [SteamInput] Local IGA file exists for this Mod \"%s\".\n, but it could not be parsed successfully.]\n", szManifestPath );
+			return false;
+		}
+	}
+	else
+	{
+		DevMsg( "- [SteamInput ]Local IGA file does not exist for this Mod\"%s\".\n. Partner site should be set to \"Custom Configuration (Bundled with Game)\" for this app for cloud settings to work.\n", szManifestPath );
+		return false;
+	}
 }
 
 ControllerActionSetHandle_t CInputSystem::GetActionSetHandle( GameActionSet_t eActionSet )
@@ -388,105 +354,146 @@ ControllerActionSetHandle_t CInputSystem::GetActionSetHandle( GameActionSet_t eA
 	return g_GameActionSets[eActionSet].handle;
 }
 
-ControllerActionSetHandle_t CInputSystem::GetActionSetHandle( const char* szActionSet )
-{
-	for ( int i = 0; i != ARRAYSIZE( g_GameActionSets ); ++i )
-	{
-		if ( !Q_strcmp( szActionSet, g_GameActionSets[i].strName ) )
-		{
-			return g_GameActionSets[i].handle;
-		}
-	}
-
-	return 0;
-}
-
-
 void CInputSystem::ActivateSteamControllerActionSetForSlot( uint64 nSlot, GameActionSet_t eActionSet )
 {
-	auto steamcontroller = SteamControllerInterface();
-	bool bChangedActionSet = false;
-
-	if ( steamcontroller )
+	if ( !SteamInput() )
 	{
-		if ( nSlot == STEAM_CONTROLLER_HANDLE_ALL_CONTROLLERS )
-		{
-			for ( int i = 0; i < STEAM_CONTROLLER_MAX_COUNT; i++ )
-			{
-				if ( m_currentActionSet[i] != eActionSet )
-				{
-					bChangedActionSet = true;
-					m_currentActionSet[i] = eActionSet;
-				}
-			}
-
-			steamcontroller->ActivateActionSet( STEAM_CONTROLLER_HANDLE_ALL_CONTROLLERS, g_GameActionSets[eActionSet].handle );
-		}
-		else
-		{
-			uint64 nControllerHandles[STEAM_CONTROLLER_MAX_COUNT];
-			int unNumConnected = steamcontroller->GetConnectedControllers( nControllerHandles );
-
-			if( nSlot < unNumConnected )
-			{
-				if ( m_currentActionSet[nSlot] != eActionSet )
-				{
-					bChangedActionSet = true;
-					m_currentActionSet[nSlot] = eActionSet;
-				}
-
-				steamcontroller->ActivateActionSet( nControllerHandles[nSlot], g_GameActionSets[eActionSet].handle );
-			}
-		}
+		return;
 	}
 
-	if ( bChangedActionSet )
+	InputActionSetHandle_t hActionSet = g_GameActionSets[eActionSet].handle;
+
+	InputHandle_t nControllerHandles[STEAM_INPUT_MAX_COUNT];
+	int nNumConnected = SteamInput()->GetConnectedControllers( nControllerHandles );
+
+	if ( nSlot == STEAM_INPUT_HANDLE_ALL_CONTROLLERS || nSlot >= nNumConnected )
 	{
-		// If we changed action set, then flag everything for a debounce (meaning we demand to see an unpressed state before we'll register a pressed one)
-		for ( int i = 0; i < STEAM_CONTROLLER_MAX_COUNT; i++ )
+		SteamInput()->ActivateActionSet( STEAM_INPUT_HANDLE_ALL_CONTROLLERS, g_GameActionSets[eActionSet].handle );
+	}
+	else
+	{
+		InputHandle_t hController = nControllerHandles[nSlot];
+		if ( SteamInput()->GetCurrentActionSet( hController ) != hActionSet )
 		{
-			for ( int j = 0; j != ARRAYSIZE( g_DigitalMenuActions ); ++j )
-			{
-				g_DigitalMenuActions[j].bAwaitingDebounce[i] = true;
-			}
+			SteamInput()->ActivateActionSet( hController, g_GameActionSets[eActionSet].handle );
 		}
 	}
 }
 
-const int CInputSystem::GetSteamPadDeadZone( ESteamPadAxis axis )
+void CInputSystem::SetSteamInputRumble( float fLeftMotor, float fRightMotor, int userId )
 {
-  int nDeadzone = s_nSteamPadDeadZoneTable[ axis ];
+	if ( userId >= STEAM_INPUT_MAX_COUNT )
+	{
+		return;
+	}
 
-  // Do modifications if required here?
+#ifndef BYTEMATCH_RETAIL
+	// stub_steam has no Steam Input
+	if ( !SteamInput() )
+		return;
+#else
 
-  return nDeadzone;
+
+
+#endif
+
+	// Only stop rumble on a controller the player isn't using
+	if ( m_eActiveInputType != ACTIVE_INPUT_TYPE_STEAM_INPUT && ( fLeftMotor != 0.0f || fRightMotor != 0.0f ) )
+	{
+		return;
+	}
+
+	if ( m_hActiveSteamInput )
+	{
+		SteamInput()->TriggerVibration( m_hActiveSteamInput, (unsigned short)( fLeftMotor * 32767.0f ), (unsigned short)( fRightMotor * 32767.0f ) );
+		return;
+	}
+
+	InputHandle_t hController = STEAM_INPUT_HANDLE_ALL_CONTROLLERS;
+	if ( userId > 0 )
+	{
+		InputHandle_t nControllerHandles[STEAM_INPUT_MAX_COUNT];
+		SteamInput()->GetConnectedControllers( nControllerHandles );
+		hController = nControllerHandles[userId];
+		if ( !hController )
+		{
+			return;
+		}
+	}
+
+	SteamInput()->TriggerVibration( hController, (unsigned short)( fLeftMotor * 32767.0f ), (unsigned short)( fRightMotor * 32767.0f ) );
 }
 
 //-----------------------------------------------------------------------------
-// Purpose: Processes data for controller
+// Purpose: Which physical input the menu action bound to a Steam Controller
+//			button code maps to, for button glyphs
 //-----------------------------------------------------------------------------
-void CInputSystem::ReadSteamController( int iIndex )
+EControllerActionOrigin CInputSystem::GetActionOriginForSlotAndCode( int nSlot, ButtonCode_t code )
 {
+#ifndef BYTEMATCH_RETAIL
+	// stub_steam has no Steam Input
+	if ( !SteamInput() )
+		return k_EControllerActionOrigin_None;
+#else
+
+
+
+#endif
+
+	InputHandle_t hController;
+	if ( nSlot == -1 && m_hActiveSteamInput )
+	{
+		hController = m_hActiveSteamInput;
+	}
+	else
+	{
+		InputHandle_t nControllerHandles[STEAM_INPUT_MAX_COUNT];
+		SteamInput()->GetConnectedControllers( nControllerHandles );
+		hController = nControllerHandles[0];
+	}
+
+	InputDigitalActionHandle_t hAction;
+	switch ( code )
+	{
+	case STEAMCONTROLLER_A:
+		hAction = g_DigitalMenuActions[5].handle;
+		break;
+	case STEAMCONTROLLER_B:
+		hAction = g_DigitalMenuActions[4].handle;
+		break;
+	case STEAMCONTROLLER_X:
+		hAction = g_DigitalMenuActions[6].handle;
+		break;
+	case STEAMCONTROLLER_Y:
+		hAction = g_DigitalMenuActions[7].handle;
+		break;
+	case STEAMCONTROLLER_LEFT_BUMPER:
+		hAction = g_DigitalMenuActions[9].handle;
+		break;
+	case STEAMCONTROLLER_SELECT:
+		hAction = g_DigitalMenuActions[10].handle;
+		break;
+	case STEAMCONTROLLER_START:
+		hAction = g_DigitalMenuActions[8].handle;
+		break;
+	default:
+		return k_EControllerActionOrigin_None;
+	}
+
+	EInputActionOrigin origins[STEAM_INPUT_MAX_ORIGINS] = {};
+	SteamInput()->GetDigitalActionOrigins( hController, g_pInputSystem->GetActionSetHandle( GAME_ACTION_SET_MENUCONTROLS ), hAction, origins );
+	return (EControllerActionOrigin)origins[0];
 }
 
 //-----------------------------------------------------------------------------
 //	Purpose: Pulse haptic feedback
 //-----------------------------------------------------------------------------
-/* void CInputSystem::PulseHapticOnSteamController( uint32 nControllerIndex, ESteamControllerPad ePad, unsigned short durationMicroSec )
+void CInputSystem::PulseHapticOnSteamController( uint32 nControllerIndex, ESteamControllerPad ePad, unsigned short usDurationMicroSec )
 {
-	auto steamcontroller = SteamControllerInterface();
-	if ( steamcontroller )
+	if ( SteamInput() )
 	{
-			steamcontroller->TriggerHapticPulse( nControllerIndex, ePad, durationMicroSec );
+		SteamInput()->Legacy_TriggerHapticPulse( nControllerIndex, ePad, usDurationMicroSec );
 	}
-}*/
-
-//-----------------------------------------------------------------------------
-//	Purpose: Returns the controller State for a particular joystick slot
-//-----------------------------------------------------------------------------
-bool CInputSystem::GetControllerStateForSlot( int nSlot )
-{
-	return false;
 }
 
 int CInputSystem::GetSteamControllerIndexForSlot( int nSlot )
@@ -499,194 +506,4 @@ int CInputSystem::GetSteamControllerIndexForSlot( int nSlot )
 		}
 	}
 	return -1;
-}
-
-//-----------------------------------------------------------------------------
-//	Purpose: Post events, ignoring key repeats
-//-----------------------------------------------------------------------------
-void CInputSystem::PostKeyEvent( int iIndex, sKey_t sKey, int nSample )
-{
-	// Rework of xbox code here :
-
-	AnalogCode_t	code	= ANALOG_CODE_LAST;
-	float			value	= 0.f;
-	//int nMsgSlot = iIndex;
-	int nMsgSlot = m_Device[iIndex].m_nJoystickIndex;
-	int nSampleThreshold = 1; 
-
-	// Look for changes on the analog axes
-	switch( sKey )
-	{
-	case SK_BUTTON_LPAD_LEFT:
-	case SK_BUTTON_LPAD_RIGHT:
-		{
-			code = (AnalogCode_t)JOYSTICK_AXIS( nMsgSlot, JOY_AXIS_X );
-			value = ( sKey == SK_BUTTON_LPAD_LEFT ) ? -nSample : nSample;
-			// Kind of a hack to horizontal values for menu selection items in Portal 2
-			// The additional 5k helps accidental horizontals in menus.
-			nSampleThreshold = ( int )( STEAMPAD_DIGITAL_PAD_THRESHOLD ) + 5000;  
-		}
-		break;
-
-	case SK_BUTTON_LPAD_UP:
-	case SK_BUTTON_LPAD_DOWN:
-		{
-			code = (AnalogCode_t)JOYSTICK_AXIS( nMsgSlot, JOY_AXIS_Y );
-			value = ( sKey == SK_BUTTON_LPAD_UP ) ? -nSample : nSample;
-			nSampleThreshold = ( int )( STEAMPAD_DIGITAL_PAD_THRESHOLD );
-		}
-		break;
-
-	case SK_BUTTON_RPAD_LEFT:
-	case SK_BUTTON_RPAD_RIGHT:
-		{
-			code = (AnalogCode_t)JOYSTICK_AXIS( nMsgSlot, JOY_AXIS_U );
-			value = ( sKey == SK_BUTTON_RPAD_LEFT ) ? -nSample : nSample;
-			// Kind of a hack to horizontal values for menu selection items in Portal 2
-			// The additional 5k helps accidental horizontals in menus.
-			nSampleThreshold = ( int )( STEAMPAD_DIGITAL_PAD_THRESHOLD ) + 5000;;
-		}
-		break;
-
-	case SK_BUTTON_RPAD_UP:
-	case SK_BUTTON_RPAD_DOWN:
-		{
-			code = (AnalogCode_t)JOYSTICK_AXIS( nMsgSlot, JOY_AXIS_R );
-			value = ( sKey == SK_BUTTON_RPAD_UP ) ? -nSample : nSample;
-			nSampleThreshold = ( int )( STEAMPAD_DIGITAL_PAD_THRESHOLD );
-		}
-		break;
-	}
-
-	// Store the analog event
-	if ( ANALOG_CODE_LAST != code )
-	{
-		InputState_t &state = m_InputState[ m_bIsPolling ];
-		state.m_pAnalogDelta[ code ] = ( int )( value - state.m_pAnalogValue[ code ] );
-		state.m_pAnalogValue[ code ] = ( int )value;
-		if ( state.m_pAnalogDelta[ code ] != 0 )
-		{
-			PostEvent( IE_AnalogValueChanged, m_nLastSampleTick, code, ( int )value, state.m_pAnalogDelta[ code ] );
-		}
-	}
-
-	// store the key
-	m_Device[iIndex].m_appSKeys[sKey].sample = nSample;
-	if ( nSample > nSampleThreshold )
-	{
-		m_Device[iIndex].m_appSKeys[sKey].repeats++;
-	}
-	else
-	{
-		m_Device[iIndex].m_appSKeys[sKey].repeats = 0;
-		nSample = 0;
-	}
-
-	if ( m_Device[iIndex].m_appSKeys[sKey].repeats > 1 )
-	{
-		// application cannot handle streaming keys
-		// first keypress is the only edge trigger
-		return;
-	}
-
-	// package the key
-	ButtonCode_t buttonCode = SKeyToButtonCode( nMsgSlot, sKey );
-	if ( nSample )
-	{
-		PostButtonPressedEvent( IE_ButtonPressed, m_nLastSampleTick, buttonCode, buttonCode );
-	}
-	else
-	{
-		PostButtonReleasedEvent( IE_ButtonReleased, m_nLastSampleTick, buttonCode, buttonCode );
-	}
-}
-
-// Gets the action origin (i.e. which physical input) maps to the given virtual button for the given action set
-EControllerActionOrigin CInputSystem::GetSteamControllerActionOrigin( const char* action, GameActionSet_t action_set )
-{
-	auto pSC = SteamControllerInterface();
-	if ( pSC )
-	{
-		ControllerHandle_t hConnected[STEAM_CONTROLLER_MAX_COUNT];
-		auto nConnected = pSC->GetConnectedControllers( hConnected );
-		if ( nConnected == 0 )
-		{
-			return k_EControllerActionOrigin_None;
-		}
-
-		SGameActionSet* pActionSet = nullptr;
-		for ( int i = 0; i < ARRAYSIZE( g_GameActionSets ); i++ )
-		{
-			if ( g_GameActionSets[i].eGameActionSet == action_set )
-			{
-				pActionSet = &g_GameActionSets[i];
-				break;
-			}
-		}
-
-		if ( pActionSet )
-		{
-			auto actionHandle = pSC->GetDigitalActionHandle( action );
-			EControllerActionOrigin origins[STEAM_CONTROLLER_MAX_ORIGINS];
-			int nOrigins = pSC->GetDigitalActionOrigins( hConnected[0], pActionSet->handle, actionHandle, origins );
-			if ( nOrigins > 0 )
-			{
-				return origins[0];
-			}
-		}
-	}
-
-	return k_EControllerActionOrigin_None;
-}
-
-// Gets the action origin (i.e. which physical input) maps to the given virtual button for the given action set
-EControllerActionOrigin CInputSystem::GetSteamControllerActionOrigin( const char* action, ControllerActionSetHandle_t action_set_handle )
-{
-	auto pSC = SteamControllerInterface();
-	if ( pSC && action_set_handle )
-	{
-		ControllerHandle_t hConnected[STEAM_CONTROLLER_MAX_COUNT];
-		auto nConnected = pSC->GetConnectedControllers( hConnected );
-		if ( nConnected == 0 )
-		{
-			return k_EControllerActionOrigin_None;
-		}
-
-		auto actionHandle = pSC->GetDigitalActionHandle( action );
-		EControllerActionOrigin origins[STEAM_CONTROLLER_MAX_ORIGINS];
-		int nOrigins = pSC->GetDigitalActionOrigins( hConnected[0], action_set_handle, actionHandle, origins );
-		if ( nOrigins > 0 )
-		{
-			return origins[0];
-		}
-	}
-
-	return k_EControllerActionOrigin_None;
-}
-
-// Maps a Steam Controller action origin to a string (consisting of a single character) in our SC icon font
-const wchar_t*	CInputSystem::GetSteamControllerFontCharacterForActionOrigin( EControllerActionOrigin origin )
-{
-	if ( origin >= 0 && origin < ARRAYSIZE( g_MapSteamControllerOriginToIconFont ) )
-	{
-		return g_MapSteamControllerOriginToIconFont[origin];
-	}
-	else
-	{
-		return L"";
-	}
-}
-
-// Maps a Steam Controller action origin to a short text string (e.g. "X", "LB", "LDOWN") describing the control.
-// Prefer to actually use the icon font wherever possible.
-const wchar_t* CInputSystem::GetSteamControllerDescriptionForActionOrigin( EControllerActionOrigin origin )
-{
-	if ( origin >= 0 && origin < ARRAYSIZE( g_MapSteamControllerOriginToDescription ) )
-	{
-		return g_MapSteamControllerOriginToDescription[origin];
-	}
-	else
-	{
-		return L"";
-	}
 }

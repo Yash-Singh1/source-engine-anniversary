@@ -16,6 +16,9 @@
 	void* GetCurrentThread();
 	void SetThreadAffinityMask( void *hThread, int nMask );
 	void GlobalMemoryStatus( MEMORYSTATUS *pOut );
+#if defined( TOGL_OSX )
+	void nativeGetClientRect( void *hWnd, RECT *destRect );
+#endif
 #endif
 
 #endif // WINUTILS_H

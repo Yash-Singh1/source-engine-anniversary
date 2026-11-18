@@ -23,7 +23,8 @@ Known differences:
 - cglmprogram `SelectShaderPair`, `LogSlow`: stack layout and register allocation only.
 - libtogl exports match retail except tier1's `cvar`, which retail exports.
 
-shaderapidx9 compiles against these headers but does not link: our source calls
-`D3DXCreateMatrixStack`, `ID3DXMatrixStack`, `D3DXMatrixTranspose`,
-`D3DXPlaneTransform`, `D3DXCompileShader` and other D3DX helpers, which retail's
-libtogl does not export (retail shaderapidx9 keeps a local `D3DXMatrixTranspose`).
+shaderapidx9 links since the matsys lane: retail keeps the D3DX helpers out of libtogl and
+inlines them from `public/togl/d3dx_impl.h` (named by shaderapidx9's debug map), so the osx
+`dxabstract.h` no longer declares them. `imageformat.h` gives `D3DFORMAT` its D3D9 values
+under `TOGL_OSX`, as retail's format name table shows; `glmgrbasics.cpp` still lists the
+old names `D3DFMT_R5G6R5`/`D3DFMT_A` (retail: `D3DFMT_R5G6B5`/`D3DFMT_A8`), kept as aliases.

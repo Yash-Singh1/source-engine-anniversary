@@ -111,6 +111,13 @@ public:
 	virtual void		CAM_CameraThirdThink( void ) = 0;
 
 	virtual	bool		EnableJoystickMode() = 0;
+
+	// Steam Input
+	virtual void		SetControllerModeActive( bool bActive ) = 0;
+	virtual bool		ControllerModeActive( void ) = 0;
+	virtual void		SetLastUsedInput( int nInputType ) = 0;
+	virtual int			GetLastUsedInput( void ) = 0;
+	virtual void		SteamInput_SetSampleTime( float frametime ) = 0;
 };
 
 extern ::IInput *input;
