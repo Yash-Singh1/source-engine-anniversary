@@ -13,27 +13,44 @@ def options(opt):
 
 def configure(conf):
 	conf.define('TOGL_DLL_EXPORT',1)
-	conf.env.append_unique('DEFINES',['strncpy=use_Q_strncpy_instead',
-		'_snprintf=use_Q_snprintf_instead'])
+	if not conf.env.RETAIL_OSX32:
+		conf.env.append_unique('DEFINES',['strncpy=use_Q_strncpy_instead',
+			'_snprintf=use_Q_snprintf_instead'])
 
 def build(bld):
-	source = [
-		'linuxwin/dx9asmtogl2.cpp',
-		'linuxwin/dxabstract.cpp',
-		'linuxwin/glentrypoints.cpp',	
-		'linuxwin/glmgr.cpp',			
-		'linuxwin/glmgrbasics.cpp',	
-		'linuxwin/cglmtex.cpp',		
-		'linuxwin/cglmfbo.cpp',		
-		'linuxwin/cglmprogram.cpp',	
-		'linuxwin/cglmbuffer.cpp',	
-		'linuxwin/cglmquery.cpp',
-		'linuxwin/asanstubs.cpp'
-	]
-	if bld.env.DEST_OS == "darwin":
-		source += [
-			'linuxwin/glmgrcocoa.mm',
+	if bld.env.RETAIL_OSX32:
+		# Valve's macOS build uses the older togl/osx generation (Source SDK 2013 headers)
+		source = [
+			'osx/cglmbuffer.cpp',
+			'osx/cglmfbo.cpp',
+			'osx/cglmprogram.cpp',
+			'osx/cglmquery.cpp',
+			'osx/cglmtex.cpp',
+			'osx/dx9asmtogl2.cpp',
+			'osx/dxabstract.cpp',
+			'osx/glentrypoints.cpp',
+			'osx/glmgr.cpp',
+			'osx/glmgrbasics.cpp',
+			'osx/glmgrcocoa.mm'
 		]
+	else:
+		source = [
+			'linuxwin/dx9asmtogl2.cpp',
+			'linuxwin/dxabstract.cpp',
+			'linuxwin/glentrypoints.cpp',	
+			'linuxwin/glmgr.cpp',			
+			'linuxwin/glmgrbasics.cpp',	
+			'linuxwin/cglmtex.cpp',		
+			'linuxwin/cglmfbo.cpp',		
+			'linuxwin/cglmprogram.cpp',	
+			'linuxwin/cglmbuffer.cpp',	
+			'linuxwin/cglmquery.cpp',
+			'linuxwin/asanstubs.cpp'
+		]
+		if bld.env.DEST_OS == "darwin":
+			source += [
+				'linuxwin/glmgrcocoa.mm',
+			]
 
 	includes = [
 		'.',
@@ -49,6 +66,8 @@ def build(bld):
 	if bld.env.DEST_OS == "darwin":
 		libs += ["OPENGL", "CARBON"]
 
+	source, libs = bld.retail_manifest('bin/libtogl', source, libs)
+
 	install_path = bld.env.LIBDIR
 
 	bld.shlib(
@@ -63,4 +82,3 @@ def build(bld):
 		subsystem = bld.env.MSVC_SUBSYSTEM,
 		idx      = bld.get_taskgen_count()
 	)
-

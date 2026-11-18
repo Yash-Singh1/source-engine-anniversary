@@ -23,9 +23,9 @@ from waflib.TaskGen import feature, before_method, after_method
 MANIFEST = 'devtools/bytematch/manifests/retail-osx32.json'
 TOOLCHAIN_DIR = 'devtools/bytematch/toolchain'
 
-# Modules that compile and link in this mode. Not here: togl, materialsystem, shaderapidx9
-# and launcher (ToGL lane), the game modules (game lane), chromehtml, vaudio_miles and
-# vpk_osx32 (sources missing from this tree).
+# Modules that compile and link in this mode. Not here: shaderapidx9 (compiles; our source
+# needs D3DX helpers that retail's togl doesn't export), the game modules (game lane),
+# chromehtml, vaudio_miles and vpk_osx32 (sources missing from this tree).
 RETAIL_MODULES = [
 	'tier0', 'tier1', 'mathlib', 'tier2', 'tier3', 'vstdlib',
 	'appframework', 'bitmap', 'vtf', 'choreoobjects', 'dmxloader', 'particles', 'vpklib',
@@ -38,6 +38,7 @@ RETAIL_MODULES = [
 	'utils/bzip2', 'replay/common', 'replay', 'sourcevr', 'video/video_quicktime',
 	'utils/bsppack', 'utils/bugreporter_filequeue', 'utils/bugreporter_public',
 	'vgui2/vgui_surfacelib', 'vguimatsurface', 'gameui', 'engine',
+	'togl', 'materialsystem', 'launcher',
 ]
 
 # Defines our top-level wscript adds that Valve's build doesn't have.
