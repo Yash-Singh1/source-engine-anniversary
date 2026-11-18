@@ -36,7 +36,12 @@ ConVar jalopy_blocked_exit_max_speed( "jalopy_blocked_exit_max_speed", "50" );
 #define JEEP_CARBAR_BODYGROUP   3
 
 #define RADAR_PANEL_MATERIAL	"vgui/screens/radar"
+#ifdef BYTEMATCH_RETAIL
+#define RADAR_PANEL_WRITEZ		"vgui/screens/vgui_overlay"
+#else
 #define RADAR_PANEL_WRITEZ		"engine/writez"
+#endif
+#line 40
 
 static const char *s_szHazardSprite = "sprites/light_glow01.vmt";
 

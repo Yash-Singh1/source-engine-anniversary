@@ -428,7 +428,12 @@ void CHudCredits::DrawLogo( void )
 	}
 	else
 	{
+#ifdef BYTEMATCH_RETAIL
+		Q_snprintf( szLogoFont, sizeof( szLogoFont ), "CreditsIcons" );
+#else
 		Q_snprintf( szLogoFont, sizeof( szLogoFont ), "WeaponIcons" );
+#endif
+#line 432
 	}
 
 	vgui::HScheme scheme = vgui::scheme()->GetScheme( "ClientScheme" );

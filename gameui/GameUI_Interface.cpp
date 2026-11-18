@@ -424,7 +424,12 @@ void CGameUI::PlayGameStartupSound()
 			pszHoliday = GameClientExports()->GetHolidayString();
 			if ( pszHoliday && pszHoliday[0] )
 			{
+#ifdef BYTEMATCH_RETAIL
+				Q_snprintf( path, sizeof( path ), "sound/ui/holiday/gamestartup_%s.mp3", pszHoliday );
+#else
 				Q_snprintf( path, sizeof( path ), "sound/ui/holiday/gamestartup_%s*.mp3", pszHoliday );
+#endif
+#line 428
 				Q_FixSlashes( path );
 
 				char const *fn = g_pFullFileSystem->FindFirstEx( path, "MOD", &fh );

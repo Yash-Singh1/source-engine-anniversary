@@ -2084,7 +2084,12 @@ void CClientState::RunFrame()
 	else if ( s_bLowPagedPoolMemoryWarning )
 	{
 		s_bLowPagedPoolMemoryWarning = false;
+#ifdef BYTEMATCH_RETAIL
+		Msg( "Info: OS Paged Pool Memory restored - currently %d pages free (%d Kb) of total %d pages (%d Kb total).\n",
+#else
 		Msg( "Info: OS Paged Pool Memory restored - currently %lu pages free (%lu Kb) of total %lu pages (%lu Kb total).\n",
+#endif
+#line 1978
 			ppi.numPagesFree, ppi.numPagesFree * Plat_GetMemPageSize(),
 			( ppi.numPagesFree + ppi.numPagesUsed ), ( ppi.numPagesFree + ppi.numPagesUsed ) * Plat_GetMemPageSize() );
 	}
