@@ -78,8 +78,6 @@ IMPLEMENT_NETWORKCLASS_ALIASED( PortalGameRulesProxy, DT_PortalGameRulesProxy )
 
 extern ConVar	sv_robust_explosions;
 extern ConVar	sk_allow_autoaim;
-extern ConVar	sk_autoaim_scale1;
-extern ConVar	sk_autoaim_scale2;
 
 #if !defined ( CLIENT_DLL )
 extern ConVar	sv_alternateticks;
@@ -1168,22 +1166,6 @@ bool CPortalGameRules::ShouldAutoAim( CBasePlayer *pPlayer, edict_t *target )
 	return sk_allow_autoaim.GetBool() != 0;
 }
 
-//---------------------------------------------------------
-//---------------------------------------------------------
-float CPortalGameRules::GetAutoAimScale( CBasePlayer *pPlayer )
-{
-	switch( GetSkillLevel() )
-	{
-	case SKILL_EASY:
-		return sk_autoaim_scale1.GetFloat();
-
-	case SKILL_MEDIUM:
-		return sk_autoaim_scale2.GetFloat();
-
-	default:
-		return 0.0f;
-	}
-}
 
 //-----------------------------------------------------------------------------
 // This takes the long way around to see if a prop should emit a DLIGHT when it

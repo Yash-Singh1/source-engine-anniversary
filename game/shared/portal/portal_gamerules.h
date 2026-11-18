@@ -52,7 +52,6 @@ public:
 	virtual bool	ShouldUseRobustRadiusDamage(CBaseEntity *pEntity);
 #ifndef CLIENT_DLL
 	virtual bool	ShouldAutoAim( CBasePlayer *pPlayer, edict_t *target );
-	virtual float	GetAutoAimScale( CBasePlayer *pPlayer );
 #endif
 
 #ifdef CLIENT_DLL

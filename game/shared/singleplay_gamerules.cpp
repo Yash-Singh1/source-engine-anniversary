@@ -22,6 +22,11 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
+extern ConVar sk_allow_autoaim;
+extern ConVar sc_autoaim_scale;
+extern ConVar joy_autoaim_scale;
+extern ConVar m_autoaim_scale;
+
 
 
 //=========================================================
@@ -317,7 +322,41 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 	//=========================================================
 	int	CSingleplayRules::GetAutoAimMode()
 	{
-		return sk_autoaim_mode.GetInt();
+		if ( !sk_allow_autoaim.GetBool() )
+			return AUTOAIM_NONE;
+
+		// The client's input mode picks the aim assist settings
+		static ConVarRef sc_controller_mode( "sc_controller_mode" );
+		static ConVarRef in_joystick( "joystick" );
+		static ConVarRef joy_found( "joy_xcontroller_found" );
+
+		if ( sc_controller_mode.IsValid() && sc_controller_mode.GetBool() )
+			return sc_autoaim_mode.GetInt();
+
+		if ( in_joystick.IsValid() && in_joystick.GetBool() && joy_found.IsValid() && joy_found.GetBool() )
+			return joy_autoaim_mode.GetInt();
+
+		return m_autoaim_mode.GetInt();
+	}
+
+	//=========================================================
+	//=========================================================
+	float CSingleplayRules::GetAutoAimScale()
+	{
+		if ( !sk_allow_autoaim.GetBool() )
+			return 1.0f;
+
+		ConVarRef sc_controller_mode( "sc_controller_mode" );
+		ConVarRef in_joystick( "joystick" );
+		ConVarRef joy_found( "joy_xcontroller_found" );
+
+		if ( sc_controller_mode.IsValid() && sc_controller_mode.GetBool() )
+			return sc_autoaim_scale.GetFloat();
+
+		if ( in_joystick.IsValid() && in_joystick.GetBool() && joy_found.IsValid() && joy_found.GetBool() )
+			return joy_autoaim_scale.GetFloat();
+
+		return m_autoaim_scale.GetFloat();
 	}
 
 	//=========================================================
