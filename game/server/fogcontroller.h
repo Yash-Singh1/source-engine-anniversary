@@ -43,8 +43,11 @@ public:
 	void InputTurnOff(inputdata_t &data);
 	void InputSetColor(inputdata_t &data);
 	void InputSetColorSecondary(inputdata_t &data);
+#if defined( HL2_EPISODIC ) || !defined( BYTEMATCH_RETAIL )
 	void InputSetColorHDR(inputdata_t &data);
 	void InputSetColorSecondaryHDR(inputdata_t &data);
+#endif
+#line 48
 	void InputSetFarZ( inputdata_t &data );
 	void InputSetAngles( inputdata_t &inputdata );
 	void InputSetRadial( inputdata_t &inputdata );

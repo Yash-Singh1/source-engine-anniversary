@@ -66,8 +66,11 @@ BEGIN_SEND_TABLE_NOBASE( CPlayerLocalData, DT_Local )
 	SendPropVector( SENDINFO_STRUCTELEM(m_skybox3d.fog.dirPrimary), -1, SPROP_COORD),
 	SendPropInt( SENDINFO_STRUCTELEM( m_skybox3d.fog.colorPrimary ), 32, SPROP_UNSIGNED ),
 	SendPropInt( SENDINFO_STRUCTELEM( m_skybox3d.fog.colorSecondary ), 32, SPROP_UNSIGNED ),
+#if defined( HL2_EPISODIC ) || !defined( BYTEMATCH_RETAIL )
 	SendPropInt( SENDINFO_STRUCTELEM( m_skybox3d.fog.colorPrimaryHDR ), 32, SPROP_UNSIGNED ),
 	SendPropInt( SENDINFO_STRUCTELEM( m_skybox3d.fog.colorSecondaryHDR ), 32, SPROP_UNSIGNED ),
+#endif
+#line 71
 	SendPropFloat( SENDINFO_STRUCTELEM( m_skybox3d.fog.start ), 0, SPROP_NOSCALE ),
 	SendPropFloat( SENDINFO_STRUCTELEM( m_skybox3d.fog.end ), 0, SPROP_NOSCALE ),
 	SendPropFloat( SENDINFO_STRUCTELEM( m_skybox3d.fog.maxdensity ), 0, SPROP_NOSCALE ),
@@ -106,8 +109,11 @@ BEGIN_SIMPLE_DATADESC( fogparams_t )
 	DEFINE_FIELD( dirPrimary, FIELD_VECTOR ),
 	DEFINE_FIELD( colorPrimary, FIELD_COLOR32 ),
 	DEFINE_FIELD( colorSecondary, FIELD_COLOR32 ),
+#if defined( HL2_EPISODIC ) || !defined( BYTEMATCH_RETAIL )
 	DEFINE_FIELD( colorPrimaryHDR, FIELD_COLOR32 ),
 	DEFINE_FIELD( colorSecondaryHDR, FIELD_COLOR32 ),
+#endif
+#line 111
 	DEFINE_FIELD( start, FIELD_FLOAT ),
 	DEFINE_FIELD( end, FIELD_FLOAT ),
 	DEFINE_FIELD( farz, FIELD_FLOAT ),

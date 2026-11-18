@@ -45,14 +45,20 @@ private:
 	float m_Resolution;
 	bool m_bFogEnable;
 	color32 m_FogColor;
+#if defined( HL2_EPISODIC ) || !defined( BYTEMATCH_RETAIL )
 	color32 m_FogColor_HDR;
+#endif
+#line 49
 	float m_flFogStart;
 	float m_flFogEnd;
 	float m_flFogMaxDensity;
 	bool m_bFogRadial;
 	bool m_bActive;
 	bool m_bUseScreenAspectRatio;
+#if defined( HL2_EPISODIC ) || !defined( BYTEMATCH_RETAIL )
 	bool m_bUseHDCamera;
+#endif
+#line 56
 
 public:
 	C_PointCamera	*m_pNext;
