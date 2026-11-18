@@ -835,12 +835,12 @@ void Menu::PerformLayout()
 		}
 
 		// take into account inset
-		child->SetPos( PROPORTIONAL_VALUE( child->GetXIndent() ), menuTall );
+		child->SetPos( QuickPropScale( child->GetXIndent() ), menuTall );
 
 		int nExtraTall = 0;
 		if ( child->GetExtraTall() )
 		{
-			nExtraTall = PROPORTIONAL_VALUE( child->GetExtraTall() );
+			nExtraTall = QuickPropScale( child->GetExtraTall() );
 
 			// keep extra-tall items within reach on short screens
 			int sw, sh;

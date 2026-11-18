@@ -71,11 +71,10 @@ void Button::Init()
 	_keyFocusBorder = NULL;
 	m_bSelectionStateSaved = false;
 	m_bStaySelectedOnClick = false;
-	m_bStayArmedOnClick = false;
 	m_sArmedSoundName = UTL_INVAL_SYMBOL;
 	m_sDepressedSoundName = UTL_INVAL_SYMBOL;
 	m_sReleasedSoundName = UTL_INVAL_SYMBOL;
-	SetTextInset(6, 0);
+	SetTextInset( QuickPropScale( 6 ), 0);
 	SetMouseClickEnabled( MOUSE_LEFT, true );
 	SetButtonActivationType(ACTIVATE_ONPRESSEDANDRELEASED);
 
@@ -139,12 +138,13 @@ void Button::SetSelected( bool state )
 		InvalidateLayout(false);
 	}
 
-	// Jusic: idk what is it for
-	//if (!m_bStayArmedOnClick && state && _buttonFlags.IsFlagSet(ARMED))
-	//{
-	//	_buttonFlags.SetFlag( ARMED,  false );
-	//	InvalidateLayout(false);
-	//}
+#ifdef BYTEMATCH_RETAIL
+	if ( state && _buttonFlags.IsFlagSet( ARMED ) )
+	{
+		_buttonFlags.SetFlag( ARMED,  false );
+		InvalidateLayout(false);
+	}
+#endif
 }
 
 void Button::SetBlink( bool state )
@@ -689,6 +689,15 @@ void Button::SetReleasedSound(const char *sound)
 	}
 }
 
+inline int MouseCodeToMask( MouseCode code )
+{
+	// MouseCodes do not start at zero. Make them start at zero before trying to fit them into a 32 bit mask..
+	// Otherwise, you would be trying to set bit 107 of an integer, and that would be bad.
+	const int recode = code - MOUSE_FIRST;
+	AssertMsg1( recode >= 0 && recode < 32, "MouseCode %d is invalid and cannot fit into a 32-bit mask\n", code );
+	return 1 << recode ;
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: Set button to be mouse clickable or not.
 //-----------------------------------------------------------------------------
@@ -697,12 +706,12 @@ void Button::SetMouseClickEnabled(MouseCode code,bool state)
 	if(state)
 	{
 		//set bit to 1
-		_mouseClickMask|=1<<(static_cast<int>(code-MOUSE_FIRST));
+		_mouseClickMask |= MouseCodeToMask(code); //set bit to 1
 	}
 	else
 	{
 		//set bit to 0
-		_mouseClickMask&=~(static_cast<int>(code-MOUSE_FIRST));
+		_mouseClickMask &= ~MouseCodeToMask(code); //set bit to 0
 	}
 }
 
@@ -711,7 +720,7 @@ void Button::SetMouseClickEnabled(MouseCode code,bool state)
 //-----------------------------------------------------------------------------
 bool Button::IsMouseClickEnabled(MouseCode code)
 {
-	if(_mouseClickMask&(1<<(static_cast<int>(code-MOUSE_FIRST))))
+	if ( _mouseClickMask & MouseCodeToMask(code) )
 	{
 		return true;
 	}
@@ -834,6 +843,8 @@ void Button::GetSettings( KeyValues *outResourceData )
 //-----------------------------------------------------------------------------
 void Button::ApplySettings( KeyValues *inResourceData )
 {
+	SetTextInset( QuickPropScale( 6 ), 0 );
+
 	BaseClass::ApplySettings(inResourceData);
 
 	const char *cmd = inResourceData->GetString("command", "");
@@ -859,7 +870,6 @@ void Button::ApplySettings( KeyValues *inResourceData )
 	}
 
 	m_bStaySelectedOnClick = inResourceData->GetBool( "stayselectedonclick", false );
-	m_bStayArmedOnClick = inResourceData->GetBool( "stay_armed_on_click", false );
 
 	const char *sound = inResourceData->GetString("sound_armed", "");
 	if (*sound)
@@ -877,11 +887,17 @@ void Button::ApplySettings( KeyValues *inResourceData )
 		SetReleasedSound(sound);
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	_activationType = (ActivationType_t)inResourceData->GetInt( "button_activation_type",
+		this->IsToggleButton() ? ACTIVATE_ONRELEASED : ACTIVATE_ONPRESSEDANDRELEASED
+	);
+#else
 	int iButtonActivationType = inResourceData->GetInt( "button_activation_type", -1 );
 	if (iButtonActivationType != -1)
 	{
 		_activationType = (ActivationType_t)iButtonActivationType;
 	}
+#endif
 }
 
 
@@ -1022,7 +1038,7 @@ void Button::OnKeyCodePressed(KeyCode code)
 	{
 		SetArmed( true );
 		_buttonFlags.SetFlag( BUTTON_KEY_DOWN );
-		if( _activationType != ACTIVATE_ONRELEASED )
+		if( _activationType == ACTIVATE_ONPRESSED )
 		{
 			DoClick();
 		}
@@ -1051,7 +1067,7 @@ void Button::OnKeyCodeReleased( KeyCode keycode )
 {
 	vgui::KeyCode code = GetBaseButtonCode( keycode );
 
-	if ( _buttonFlags.IsFlagSet( BUTTON_KEY_DOWN ) && ( code == KEY_XBUTTON_A || code == KEY_XBUTTON_START || code == STEAMCONTROLLER_A ) )
+	if ( _buttonFlags.IsFlagSet( BUTTON_KEY_DOWN ) && ( code == KEY_XBUTTON_A || code == KEY_XBUTTON_START || code == STEAMCONTROLLER_A || code == STEAMCONTROLLER_START ) )
 	{
 		SetArmed( true );
 		if( _activationType != ACTIVATE_ONPRESSED )
@@ -1073,6 +1089,8 @@ void Button::OnKeyCodeReleased( KeyCode keycode )
 	if ( !( code == KEY_XSTICK1_UP || code == KEY_XSTICK1_DOWN || code == KEY_XSTICK1_LEFT || code == KEY_XSTICK1_RIGHT || 
 			code == KEY_XSTICK2_UP || code == KEY_XSTICK2_DOWN || code == KEY_XSTICK2_LEFT || code == KEY_XSTICK2_RIGHT || 
 			code == KEY_XBUTTON_UP || code == KEY_XBUTTON_DOWN || code == KEY_XBUTTON_LEFT || code == KEY_XBUTTON_RIGHT || 
+			code == STEAMCONTROLLER_DPAD_UP || code == STEAMCONTROLLER_DPAD_DOWN || code == STEAMCONTROLLER_DPAD_LEFT || code == STEAMCONTROLLER_DPAD_RIGHT || 
+			code == STEAMCONTROLLER_LEFT_PAD_UP || code == STEAMCONTROLLER_LEFT_PAD_DOWN || code == STEAMCONTROLLER_LEFT_PAD_LEFT || code == STEAMCONTROLLER_LEFT_PAD_RIGHT || 
 			keycode == KEY_UP|| keycode == KEY_DOWN || keycode == KEY_LEFT || keycode == KEY_RIGHT ) )
 	{
 		SetArmed( false );
@@ -1084,11 +1102,12 @@ void Button::OnKeyCodeReleased( KeyCode keycode )
 //-----------------------------------------------------------------------------
 void Button::DrawFocusBorder(int tx0, int ty0, int tx1, int ty1)
 {
+	int nSize = QuickPropScale( 1 );
 	surface()->DrawSetColor(_keyboardFocusColor);
-	DrawDashedLine(tx0, ty0, tx1, ty0+1, 1, 1);		// top
-	DrawDashedLine(tx0, ty0, tx0+1, ty1, 1, 1);		// left
-	DrawDashedLine(tx0, ty1-1, tx1, ty1, 1, 1);		// bottom
-	DrawDashedLine(tx1-1, ty0, tx1, ty1, 1, 1);		// right
+	DrawDashedLine(tx0, ty0, tx1, ty0+1, nSize, nSize );		// top
+	DrawDashedLine(tx0, ty0, tx0+1, ty1, nSize, nSize );		// left
+	DrawDashedLine(tx0, ty1-1, tx1, ty1, nSize, nSize );		// bottom
+	DrawDashedLine(tx1-1, ty0, tx1, ty1, nSize, nSize );		// right
 }
 
 //-----------------------------------------------------------------------------
@@ -1098,5 +1117,7 @@ void Button::SizeToContents()
 {
 	int wide, tall;
 	GetContentSize(wide, tall);
-	SetSize(wide + Label::Content, tall + Label::Content);
+
+	int nBuffer = QuickPropScale( Label::Content );
+	SetSize(wide + nBuffer, tall + nBuffer);
 }

@@ -650,7 +650,7 @@ void MenuItem::GetContentSize( int& cw, int &ch )
 	BaseClass::GetContentSize( cw, ch );
 	if ( m_nXIndent > 0 )
 	{
-		cw += PROPORTIONAL_VALUE( m_nXIndent );
+		cw += QuickPropScale( m_nXIndent );
 	}
 
 	if ( !m_pCurrentKeyBinding )
@@ -659,6 +659,6 @@ void MenuItem::GetContentSize( int& cw, int &ch )
 	int iw, ih;
 	m_pCurrentKeyBinding->GetSize( iw, ih );
 
-	cw += iw + PROPORTIONAL_VALUE( KEYBINDING_INSET );
+	cw += iw + QuickPropScale( KEYBINDING_INSET );
 	ch = max( ch, ih );
 }
