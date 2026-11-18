@@ -229,6 +229,22 @@
   "retail_len": 12,
   "why": "DirectInit is CRegistry's own"
  },
+ "IRestore": {
+  "includes": [
+   "#define NO_STRING_T",
+   "datamap.h",
+   "#define CBaseEntity C_BaseEntity"
+  ],
+  "why": "retail reference is the client: NO_STRING_T (client_base.vpc) and CBaseEntity is C_BaseEntity"
+ },
+ "ISave": {
+  "includes": [
+   "#define NO_STRING_T",
+   "datamap.h",
+   "#define CBaseEntity C_BaseEntity"
+  ],
+  "why": "retail reference is the client: NO_STRING_T (client_base.vpc) and CBaseEntity is C_BaseEntity"
+ },
  "IServer": {
   "retail_len": 35,
   "why": "extra slots are CBaseServer's own"
@@ -285,9 +301,17 @@
   "retail_len": 52,
   "why": "EnumerateLeaf overrides the secondary base ISpatialLeafEnumerator"
  },
+ "IVTFTexture": {
+  "retail_len": 55,
+  "why": "NormalizeTopMipLevel is CVTFTexture's own virtual (SDK 2013 IVTFTexture has 55 slots)"
+ },
  "IVTex": {
   "retail_len": 7,
   "why": "main overrides the secondary base ILaunchableDLL"
+ },
+ "IVoiceRecord": {
+  "retail_len": 7,
+  "why": "Init() is VoiceRecord_AudioQueue's own virtual (ours is Init(int); engine voice code, not the interface)"
  },
  "aligned_tmp_t": {
   "skip": "not a polymorphic class in our header"
