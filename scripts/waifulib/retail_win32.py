@@ -277,35 +277,46 @@ def retail_win32_asm(self, node):
 @after_method('process_source')
 def retail_win32_per_file(self):
 	'''Per-file switches and precompiled headers, as the VPC's per-file $Configuration blocks.'''
-	create, users = None, []
+	create, users, envs = None, [], {}
 	pch = self.path.get_bld().make_node(self.name + '.pch')
+	pdb = self.path.get_bld().make_node('vc120.pdb')
+
+	def derived(key, make):
+		# one env per distinct setting, so files that share switches can share a cl run
+		if key not in envs:
+			envs[key] = make()
+		return envs[key]
+
 	for t in getattr(self, 'compiled_tasks', []):
 		s = self.retail_files.get(t.inputs[0].abspath())
 		if s is None or s['lang'] not in ('c', 'c++'):
 			continue
-		flags = list(s.get('cl') or [])
-		if flags:
-			flags.append('/FI' + self.env.RETAIL_COMPAT_H)
-			if '/Zi' in flags:
-				flags += ['/FS', '/Fd' + self.path.get_bld().make_node('vc120.pdb').abspath()]
-			t.env = t.env.derive()
-			t.env.CFLAGS = t.env.CXXFLAGS = self.retail_base + flags
-		if s.get('defines'):
-			t.env = t.env.derive()
-			t.env.DEFINES = s['defines'] + RETAIL_DEFINES
+		flags = tuple(s.get('cl') or ())
+		defines = tuple(s.get('defines') or ())
 		mode = s.get('pch')
-		if mode:
-			hdr = s.get('pch_header') or self.retail_pch
-			t.env = t.env.derive()
-			if mode == 'create':
-				t.env.append_value('CXXFLAGS', ['/Yc' + hdr, '/Fp' + pch.abspath()])
-				t.env.append_value('CFLAGS', ['/Yc' + hdr, '/Fp' + pch.abspath()])
-				t.outputs.append(pch)
-				create = t
-			else:
-				t.env.append_value('CXXFLAGS', ['/Yu' + hdr, '/Fp' + pch.abspath()])
-				t.env.append_value('CFLAGS', ['/Yu' + hdr, '/Fp' + pch.abspath()])
-				users.append(t)
+		hdr = s.get('pch_header') or self.retail_pch
+		if not (flags or defines or mode):
+			continue
+		def make(base=t.env):
+			e = base.derive()
+			if flags:
+				f = list(flags) + ['/FI' + self.env.RETAIL_COMPAT_H]
+				if '/Zi' in f:
+					f += ['/FS', '/Fd' + pdb.abspath()]
+				e.CFLAGS = e.CXXFLAGS = self.retail_base + f
+			if defines:
+				e.DEFINES = list(defines) + RETAIL_DEFINES
+			if mode:
+				sw = ['/Yc' + hdr if mode == 'create' else '/Yu' + hdr, '/Fp' + pch.abspath()]
+				e.CFLAGS = list(e.CFLAGS) + sw
+				e.CXXFLAGS = list(e.CXXFLAGS) + sw
+			return e
+		t.env = derived((flags, defines, mode, hdr), make)
+		if mode == 'create':
+			t.outputs.append(pch)
+			create = t
+		elif mode == 'use':
+			users.append(t)
 	for t in users:
 		if create:
 			t.set_run_after(create)
@@ -316,3 +327,75 @@ def retail_win32_per_file(self):
 		for t in self.compiled_tasks:
 			for g in gen.tasks:
 				t.set_run_after(g)
+	retail_win32_batch(self, create)
+
+BATCH_SIZE = 12
+
+class retail_clbatch(Task.Task):
+	'''Several sources with identical switches in one cl.exe run, like MSBuild's
+	ClCompile. Each wine process pays Rosetta's translation of c1xx/c2 once.'''
+	color = 'GREEN'
+
+	def __str__(self):
+		return '%d sources: %s' % (len(self.inputs), ' '.join(n.name for n in self.inputs[:4]) + (' ...' if len(self.inputs) > 4 else ''))
+
+	def keyword(self):
+		return 'Compiling'
+
+	def scan(self):
+		from waflib.Tools import c_preproc
+		nodes, names = [], []
+		incn = self.generator.includes_nodes
+		paths = [x for x in incn if x.is_child_of(x.ctx.srcnode) or x.is_child_of(x.ctx.bldnode)]
+		for src in self.inputs:
+			p = c_preproc.c_parser(paths)
+			p.start(src, self.env)
+			nodes += [n for n in p.nodes if n not in nodes]
+			names += [n for n in p.names if n not in names]
+		return nodes, names
+
+	def run(self):
+		env = self.env
+		cxx = self.lang == 'c++'
+		tmp = self.outputs[0].parent.make_node('.batch-%s' % self.outputs[0].name)
+		tmp.mkdir()
+		cmd = list(env.CXX if cxx else env.CC) + list(env.CXXFLAGS if cxx else env.CFLAGS)
+		cmd += ['/I' + p for p in env.INCPATHS] + ['/D' + d for d in env.DEFINES]
+		cmd += ['/c', '/FC', '/Fo' + tmp.abspath() + '/'] + [n.abspath() for n in self.inputs] + list(env.CPPFLAGS)
+		ret = self.exec_command(cmd)
+		if ret:
+			return ret
+		for src, out in zip(self.inputs, self.outputs):
+			os.replace(os.path.join(tmp.abspath(), os.path.splitext(src.name)[0] + '.obj'), out.abspath())
+		return 0
+
+def retail_win32_batch(self, create):
+	'''Replace per-file compile tasks (except the PCH creator) with batched cl runs.'''
+	groups = {}
+	for t in self.compiled_tasks:
+		if t is create or t.__class__.__name__ not in ('c', 'cxx'):
+			continue
+		lang = 'c++' if t.__class__.__name__ == 'cxx' else 'c'
+		key = (lang, id(t.env))
+		groups.setdefault(key, []).append(t)
+	for (lang, _), ts in groups.items():
+		batches = []
+		for t in ts:
+			b = next((b for b in batches if len(b) < BATCH_SIZE and t.inputs[0].name.lower() not in
+				set(x.inputs[0].name.lower() for x in b)), None)
+			if b is None:
+				b = []
+				batches.append(b)
+			b.append(t)
+		for b in batches:
+			bt = self.create_task('retail_clbatch', [t.inputs[0] for t in b], [t.outputs[0] for t in b])
+			bt.env = b[0].env
+			bt.lang = lang
+			for t in b:
+				self.tasks.remove(t)
+				for dep in t.dep_nodes:
+					if dep not in bt.dep_nodes:
+						bt.dep_nodes.append(dep)
+				for r in t.run_after:
+					bt.set_run_after(r)
+
