@@ -311,14 +311,14 @@ void CL_InitHL2DemoFlag()
 	static bool initialized = false;
 	if ( !initialized )
 	{
-		if ( Steam3Client().SteamApps() && !Q_stricmp( COM_GetModDirectory(), "hl2" ) )
+		if ( SteamApps() && !Q_stricmp( COM_GetModDirectory(), "hl2" ) )
 		{
 			initialized = true;
 
 			// if user didn't buy HL2 yet, this must be the free demo
 			if ( VCRGetMode() != VCR_Playback )
 			{
-				s_bIsHL2Demo = !Steam3Client().SteamApps()->BIsSubscribedApp( GetAppSteamAppId( k_App_HL2 ) );
+				s_bIsHL2Demo = !SteamApps()->BIsSubscribedApp( GetAppSteamAppId( k_App_HL2 ) );
 			}
 #if !defined( NO_VCR )
 			VCRGenericValue( "e", &s_bIsHL2Demo, sizeof( s_bIsHL2Demo ) );
@@ -351,14 +351,14 @@ void CL_InitPortalDemoFlag()
 	static bool initialized = false;
 	if ( !initialized )
 	{
-		if ( Steam3Client().SteamApps() && !Q_stricmp( COM_GetModDirectory(), "portal" ) )
+		if ( SteamApps() && !Q_stricmp( COM_GetModDirectory(), "portal" ) )
 		{
 			initialized = true;
 		
 			// if user didn't buy Portal yet, this must be the free demo
 			if ( VCRGetMode() != VCR_Playback )
 			{
-				s_bIsPortalDemo = !Steam3Client().SteamApps()->BIsSubscribedApp( GetAppSteamAppId( k_App_PORTAL ) );
+				s_bIsPortalDemo = !SteamApps()->BIsSubscribedApp( GetAppSteamAppId( k_App_PORTAL ) );
 			}
 				
 #if !defined( NO_VCR )
@@ -2755,9 +2755,9 @@ void CL_InitLanguageCvar()
 	Msg("CL_InitLanguageCvar\n");
 #endif
 #line 2741
-	if ( Steam3Client().SteamApps() )
+	if ( SteamApps() )
 	{
-		cl_language.SetValue( Steam3Client().SteamApps()->GetCurrentGameLanguage() );
+		cl_language.SetValue( SteamApps()->GetCurrentGameLanguage() );
 	}
 	else
 	{
@@ -2791,10 +2791,10 @@ ConVar cl_cloud_settings( "cl_cloud_settings", "1", FCVAR_HIDDEN, "Cloud enabled
 void CL_ChangeCloudSettingsCvar( IConVar *var, const char *pOldValue, float flOldValue )
 {
 	// !! bug do i need to do something linux-wise here.
-	if ( IsPC() && Steam3Client().SteamRemoteStorage() )
+	if ( IsPC() && SteamRemoteStorage() )
 	{
 		ConVarRef ref( var->GetName() );
-		Steam3Client().SteamRemoteStorage()->SetCloudEnabledForApp( ref.GetBool() );
+		SteamRemoteStorage()->SetCloudEnabledForApp( ref.GetBool() );
 		if ( cl_cloud_settings.GetInt() == STEAMREMOTESTORAGE_CLOUD_ON && flOldValue == STEAMREMOTESTORAGE_CLOUD_OFF )
 		{
 			// If we were just turned on, get our configuration from remote storage.
@@ -2807,10 +2807,10 @@ void CL_ChangeCloudSettingsCvar( IConVar *var, const char *pOldValue, float flOl
 
 void CL_InitCloudSettingsCvar()
 {
-	if ( IsPC()	&& Steam3Client().SteamRemoteStorage() )
+	if ( IsPC()	&& SteamRemoteStorage() )
 	{
 		int iCloudSettings = STEAMREMOTESTORAGE_CLOUD_OFF;
-		if ( Steam3Client().SteamRemoteStorage()->IsCloudEnabledForApp() )
+		if ( SteamRemoteStorage()->IsCloudEnabledForApp() )
 			iCloudSettings = STEAMREMOTESTORAGE_CLOUD_ON;
 		
 		cl_cloud_settings.SetValue( iCloudSettings );

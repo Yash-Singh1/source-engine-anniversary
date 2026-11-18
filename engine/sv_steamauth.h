@@ -63,7 +63,7 @@ public:
 	uint16 GetQueryPort() const	{ return m_QueryPort; }
 
 	// Fetch public IP.  Might return 0 if we don't know
-	uint32 GetPublicIP() { return SteamGameServer() ? SteamGameServer()->GetPublicIP() : 0; }
+	uint32 GetPublicIP() { if ( !SteamGameServer() ) return 0; SteamIPAddress_t addr = SteamGameServer()->GetPublicIP(); return addr.m_eType == k_ESteamIPTypeIPv4 ? addr.m_unIPv4 : 0; }
 	
 	bool IsMasterServerUpdaterSharingGameSocket();
 
@@ -112,5 +112,11 @@ private:
 // singleton accessor
 CSteam3Server &Steam3Server();
 
+// Steamworks 1.60 keeps the master server heartbeat call in the private part of ISteamGameServer.
+inline void SteamGameServer_ForceHeartbeat( ISteamGameServer *pSteamGameServer )
+{
+	struct CHeartbeatAccess : public ISteamGameServer { using ISteamGameServer::ForceMasterServerHeartbeat_DEPRECATED; };
+	static_cast<CHeartbeatAccess *>( pSteamGameServer )->ForceMasterServerHeartbeat_DEPRECATED();
+}
 
 #endif

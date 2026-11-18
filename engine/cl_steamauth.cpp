@@ -79,7 +79,7 @@ void CSteam3Client::Shutdown()
 	m_bActive = false;	
 #if !defined( NO_STEAM )
 	SteamAPI_Shutdown();
-	Clear(); // clear our interface pointers now they are invalid
+
 #endif
 }
 
@@ -98,7 +98,7 @@ void CSteam3Client::Activate()
 #if !defined( NO_STEAM )
 	SteamAPI_InitSafe(); // ignore failure, that will fall out later when they don't get a valid logon cookie
 	SteamAPI_SetTryCatchCallbacks( false ); // We don't use exceptions, so tell steam not to use try/catch in callback handlers
-	Init(); // Steam API context init
+
 #endif
 }
 
@@ -149,7 +149,7 @@ void CSteam3Client::GetAuthSessionTicket( void *pTicket, int cbMaxTicket, uint32
 
 		// Ask Steam for a ticket
 		m_nTicketSize = 0;
-		m_hAuthTicket = SteamUser()->GetAuthSessionTicket( m_arbTicketData+sizeof(uint64), sizeof(m_arbTicketData)-sizeof(uint64), &m_nTicketSize );
+		m_hAuthTicket = SteamUser()->GetAuthSessionTicket( m_arbTicketData+sizeof(uint64), sizeof(m_arbTicketData)-sizeof(uint64), &m_nTicketSize, NULL );
 		if ( m_hAuthTicket == k_HAuthTicketInvalid || m_nTicketSize <= 0 )
 		{
 			// Failed!

@@ -889,7 +889,7 @@ void SV_InitGameDLL( void )
 	} 
 
 	// check permissions
-	if ( Steam3Client().SteamApps() && !CL_IsHL2Demo() && !CL_IsPortalDemo() )
+	if ( SteamApps() && !CL_IsHL2Demo() && !CL_IsPortalDemo() )
 	{
 		bool bVerifiedMod = false;
 
@@ -899,7 +899,7 @@ void SV_InitGameDLL( void )
 			if ( !Q_stricmp( COM_GetModDirectory(), g_ModDirPermissions[i].m_pchGameDir ) )
 			{
 				// we've found the mod, make sure we own the app
-				if (  Steam3Client().SteamApps()->BIsSubscribedApp( g_ModDirPermissions[i].m_iAppID ) )
+				if (  SteamApps()->BIsSubscribedApp( g_ModDirPermissions[i].m_iAppID ) )
 				{
 					bVerifiedMod = true;
 				}
@@ -916,7 +916,7 @@ void SV_InitGameDLL( void )
 		if ( !bVerifiedMod )
 		{
 			// make sure they can run the Source engine
-			if ( ! Steam3Client().SteamApps()->BIsSubscribedApp( 215  ) )
+			if ( ! SteamApps()->BIsSubscribedApp( 215  ) )
 			{
 				Error( "A Source engine game is required to run mods\n" );
 				return;
@@ -1750,7 +1750,7 @@ void CGameServer::SetHibernating( bool bHibernating )
 		Steam3Server().SendUpdatedServerDetails();
 		if ( Steam3Server().SteamGameServer() )
 		{
-			Steam3Server().SteamGameServer()->ForceHeartbeat();
+			SteamGameServer_ForceHeartbeat( Steam3Server().SteamGameServer() );
 		}
 	}
 }
@@ -2338,7 +2338,7 @@ bool SV_ActivateServer()
 	Steam3Server().SendUpdatedServerDetails();
 	if ( Steam3Server().SteamGameServer() )
 	{
-		Steam3Server().SteamGameServer()->ForceHeartbeat();
+		SteamGameServer_ForceHeartbeat( Steam3Server().SteamGameServer() );
 	}
 
 	COM_TimestampedLog( "SV_ActivateServer(finished)" );
