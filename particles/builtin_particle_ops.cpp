@@ -4102,7 +4102,11 @@ void C_OP_MaintainSequentialPath::Operate( CParticleCollection *pParticles, floa
 			else
 			{
 				pCtx->m_nCountAmount *= -1;
+#ifdef BYTEMATCH_RETAIL
+				pCtx->m_nParticleCount = min ( (float)pCtx->m_nParticleCount, m_flNumToAssign - 1 );
+#else
 				pCtx->m_nParticleCount = min ( pCtx->m_nParticleCount, (int)( m_flNumToAssign - 1) );
+#endif
 				pCtx->m_nParticleCount = max ( pCtx->m_nParticleCount, 1 );
 			}
 		}
