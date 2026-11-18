@@ -8,6 +8,7 @@
     {"target": "scenefilecache", "retail": "bin/scenefilecache.dylib", "size": 32176, "sha256": "44059c66b94272f09686d765d6bd4b15b04b3630be265bcc1ca23cd926ff010f"},
     {"target": "bugreporter_public", "retail": "bin/bugreporter_public.dylib", "size": 90548, "sha256": "ca8ffcdceb13d66fb2b657cb3811ac596bf48cf345d26ff200bd56bad4a56999"},
     {"target": "bugreporter_filequeue", "retail": "bin/bugreporter_filequeue.dylib", "size": 107324, "sha256": "f429f26805e6992e93fe017be30697868cf2b2ada2ce05c992658e2b1500ed31"},
-    {"target": "stdshader_dx9", "retail": "bin/stdshader_dx9.dylib", "size": 1269984, "sha256": "13ed4a7060245ba39519fe9e62f9e848a1b4315e61ce1c626c0a9f48a014bd3d"}
+    {"target": "stdshader_dx9", "retail": "bin/stdshader_dx9.dylib", "size": 1269984, "sha256": "13ed4a7060245ba39519fe9e62f9e848a1b4315e61ce1c626c0a9f48a014bd3d"},
+    {"target": "vstdlib", "retail": "bin/libvstdlib.dylib", "size": 181248, "sha256": "0305b99d8d3ce20b47aa07356cced03c3e9383be9b20b06cd474c75a7e2a079f"}
   ]
 }
