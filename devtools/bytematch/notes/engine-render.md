@@ -22,6 +22,13 @@ engine-core lane's `baseclientstate.h` (6471c6ec), SDK 2013's
 | cl_ents_parse | 6/10 | 6/10 | 10 | 17.5% | 17.5% |
 | staticpropmgr | 217/220 | 218/220 | 218 | 90.1% | 94.1% |
 
+After merging bytematch 88902342 (engine-core's CBaseClientState, headers3:
+utlvector, Steam headers, MAX_MAP_NAME), branch alone: file set 2528/2564
+functions (98.6%), up from 2294; client 51/55 (55 with the bitvec.h loop),
+modelloader 167/169, cl_main 92/94, vgui_baseui_interface 84/87, and cl_demo,
+cl_ents_parse, cl_steamauth, cl_texturelistpanel, staticpropmgr, view,
+r_areaportal, vgui_helpers at 100%.
+
 Smaller objects gained through the shared fixes (`CanCheat`, `IModelLoader`,
 `IVideoMode` slots): vgui_texturebudgetpanel, gl_rmisc, cl_demoaction_types and
 vgui_budgetpanel now 100%; vgui_vprofpanel, cl_entityreport, gl_matsysiface, view,
