@@ -147,6 +147,7 @@ public:
 //From the server
 public:
 	float	m_flStartScale;
+	float	m_flOriginalStartScale;
 	float	m_flScale;
 	float	m_flScaleTime;
 	int		m_nFlags;
@@ -171,6 +172,7 @@ public:
 protected:
 
 	void	UpdateEffects( void );
+	void	ChangeFireEffectType( void );
 
 	//CSmartPtr<CEmberEffect> m_pEmberEmitter;
 	CSmartPtr<CLitSmokeEmitter> m_pSmokeEmitter;
@@ -184,7 +186,9 @@ protected:
 	CFireOverlay		*m_pFireOverlay;
 
 	// New Particle Fire Effect
-	CNewParticleEffect *m_hEffect;
+	HPARTICLEFFECT		m_hEffect;
+
+	bool				m_bClassicFire;
 private:
 	C_FireSmoke( const C_FireSmoke & );
 };
@@ -274,6 +278,7 @@ public:
 //
 
 #define	NUM_FLAMELETS	5
+#define	NUM_HITBOX_FIRES	10
 
 class C_EntityFlame : public C_BaseEntity
 {
@@ -287,16 +292,47 @@ public:
 	virtual void	Simulate( void );
 	virtual void	UpdateOnRemove( void );
 	virtual void	OnDataChanged( DataUpdateType_t updateType );
+	virtual RenderGroup_t GetRenderGroup() { return RENDER_GROUP_TRANSLUCENT_ENTITY; }
 	virtual void	ClientThink( void );
 
 	CNewParticleEffect *m_hEffect;
 	EHANDLE				m_hEntAttached;		// The entity that we are burning (attached to).
 	EHANDLE				m_hOldAttached;
 
+	bool				m_bUseHitboxes;
+	int					m_iNumHitboxFires;
+	int					m_iOldNumHitboxFires;
+	float				m_flHitboxFireScale;
+	float				m_flOldHitboxFireScale;
+	bool				m_bCreatedClientside;
+
+	C_FireSmoke			*m_pFireSmoke[NUM_HITBOX_FIRES];
+
+	float				m_flSize;
+
 protected:
 
 	void	CreateEffect( void );
-	void	StopEffect( void );
+	void	CreateClassicEffect( void );
+	void	ChangeFireEffectType( void );
+	void	CleanUpRagdollOnRemove( void );
+
+	void	AttachToHitBoxes( void );
+	void	UpdateHitBoxFlames( void );
+	void	DeleteHitBoxFlames( void );
+
+	CSmartPtr<CEmberEffect> m_pEmitter;
+	TimedEvent			m_ParticleSpawn;
+	bool				m_bAttachedToHitboxes;
+	float				m_flLifetime;
+	bool				m_bStartedFading;
+	const model_t		*m_pCachedModel;
+	Vector				m_vecLastPosition;
+	PMaterialHandle		m_MaterialHandle[NUM_FLAMELETS];
+	Vector				m_vecFireOrigin[NUM_HITBOX_FIRES];
+	int					m_nHitbox[NUM_HITBOX_FIRES];
+
+	bool				m_bClassicFire;
 };
 
 #endif //C_FIRE_SMOKE_H
