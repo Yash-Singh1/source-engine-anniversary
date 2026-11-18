@@ -42,6 +42,16 @@ public:
 
 	// Returns the count of elements in the stack
 	int			Count() const { return m_heap.Count(); }
+	bool		IsEmpty() const { return Count() == 0; }
+
+	// Removes the front item into removedElement; false if the queue is empty
+	bool		RemoveAtHead( T &removedElement )
+	{
+		if ( IsEmpty() )
+			return false;
+		removedElement = RemoveAtHead();
+		return true;
+	}
 	
 	// doesn't deallocate memory
 	void		RemoveAll() { m_heap.RemoveAll(); }
