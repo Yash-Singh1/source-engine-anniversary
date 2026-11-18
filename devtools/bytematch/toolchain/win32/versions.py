@@ -7,6 +7,8 @@ with Update 5 ISO. Wine is Gcenx's macOS build of WineHQ wine-stable.
 Shared by the scripts in this directory and scripts/waifulib/retail_win32.py.
 """
 import os
+import shutil
+import sys
 
 TOOLCHAIN = os.environ.get("BYTEMATCH_TOOLCHAIN", os.path.expanduser("~/.cache/source-bytematch/toolchain"))
 ROOT = os.path.join(TOOLCHAIN, "win32")
@@ -127,3 +129,7 @@ WINE_URL = ("https://github.com/Gcenx/macOS_Wine_builds/releases/download/11.0_1
 WINE_SHA256 = "b50dc50ec7f41d58b115a6b685d4d1315ba3c797bd3aa0f49213f2703cb82388"
 WINE_DIR = os.path.join(ROOT, "wine-stable-" + WINE_VERSION)
 WINE_BIN = os.path.join(WINE_DIR, "Wine Stable.app", "Contents", "Resources", "wine", "bin")
+if sys.platform != "darwin":
+    # Linux hosts and docker/: the distribution's wine (old-style WoW64 with wine32).
+    WINE_BIN = os.path.dirname(shutil.which("wine") or "/usr/bin/wine")
+    PREFIX = os.environ.get("WINEPREFIX", PREFIX)
