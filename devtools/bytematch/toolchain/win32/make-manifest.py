@@ -73,6 +73,12 @@ TREE_VPC_FILES = {
 # vector_fpu.inl includes ivu_types.hxx for intp).
 FORK_INCLUDES = {"hk_math": ["ivp/ivp_utility"]}
 
+# Switches and defines this fork's sources need under MSVC 2013: the retail-mode
+# inertia clamp in ivp_core.cxx calls POSIX finite(); qhull calls sqrt( int ),
+# which needs <cmath>'s integral overloads (Valve linked prebuilt ivp libraries).
+FORK_CL = {"ivp_compactbuilder": ["/FIcmath"]}
+FORK_DEFINES = {"ivp_physics": ["finite=_finite"]}
+
 # Static-library projects whose outputs other projects name in $Lib.
 LIB_PROJECTS = ["jpeglib", "tier1", "tier2", "tier3", "mathlib", "bitmap", "vtf", "appframework", "dmxloader",
                 "matsys_controls", "vgui_controls", "bzip2", "replay_common", "choreoobjects",
@@ -185,7 +191,7 @@ class Module:
         for fi in split_list(self.get("compiler.forceincludes", f), ";"):
             sw.append("/FI" + fi)
         sw += (self.get("compiler.additionaloptions", f) or "").split()
-        return dedupe([s for s in sw if s not in DROP_SWITCHES])
+        return dedupe([s for s in sw if s not in DROP_SWITCHES] + FORK_CL.get(self.name, []))
 
     def defines(self, f=None):
         d = split_list(self.get("compiler.preprocessordefinitions", f), ";")
@@ -198,7 +204,7 @@ class Module:
             d.append("_MBCS")
         elif "unicode" in cs:
             d += ["_UNICODE", "UNICODE"]
-        return dedupe(d)
+        return dedupe(d + FORK_DEFINES.get(self.name, []))
 
     def includes(self, f=None):
         out = []

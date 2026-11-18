@@ -20239,7 +20239,8 @@
     "/Zo",
     "/Oy-",
     "/Gw",
-    "/Zc:inline"
+    "/Zc:inline",
+    "/FIcmath"
    ],
    "pch_header": "ivp_physics.hxx",
    "sources": [
@@ -20497,7 +20498,8 @@
     "HAVANA_CONSTRAINTS",
     "HAVOK_MOPP",
     "_USING_V110_SDK71_",
-    "_MBCS"
+    "_MBCS",
+    "finite=_finite"
    ],
    "includes": [
     "common",
