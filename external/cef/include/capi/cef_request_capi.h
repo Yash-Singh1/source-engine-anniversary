@@ -137,6 +137,23 @@ typedef struct _cef_request_t {
   ///
   void (CEF_CALLBACK *set_first_party_for_cookies)(struct _cef_request_t* self,
       const cef_string_t* url);
+
+  ///
+  // Set the SSL details of the connection that made this request.
+  ///
+  void (CEF_CALLBACK *set_security_details)(struct _cef_request_t* self,
+      struct _cef_security_details_t* details);
+
+  ///
+  // Returns true (1) if the request was made over a secure connection.
+  ///
+  int (CEF_CALLBACK *bis_secure_request)(struct _cef_request_t* self);
+
+  ///
+  // Returns the SSL details of the connection that made this request.
+  ///
+  struct _cef_security_details_t* (CEF_CALLBACK *security_details)(
+      struct _cef_request_t* self);
 } cef_request_t;
 
 
@@ -144,6 +161,56 @@ typedef struct _cef_request_t {
 // Create a new cef_request_t object.
 ///
 CEF_EXPORT cef_request_t* cef_request_create();
+
+
+///
+// Structure describing the SSL state and certificate of a request.
+///
+typedef struct _cef_security_details_t {
+  ///
+  // Base structure.
+  ///
+  cef_base_t base;
+
+  ///
+  // Returns true (1) if the connection is secure.
+  ///
+  int (CEF_CALLBACK *bis_secure)(struct _cef_security_details_t* self);
+
+  ///
+  // Returns true (1) if the certificate has an error.
+  ///
+  int (CEF_CALLBACK *bhas_cert_error)(struct _cef_security_details_t* self);
+
+  ///
+  // Returns the certificate's common name.
+  ///
+  // The resulting string must be freed by calling cef_string_userfree_free().
+  cef_string_userfree_t (CEF_CALLBACK *pch_cert_common_name)(
+      struct _cef_security_details_t* self);
+
+  ///
+  // Returns the certificate's issuer.
+  ///
+  // The resulting string must be freed by calling cef_string_userfree_free().
+  cef_string_userfree_t (CEF_CALLBACK *pch_cert_issuer)(
+      struct _cef_security_details_t* self);
+
+  ///
+  // Returns the certificate's expiry time.
+  ///
+  int (CEF_CALLBACK *tcert_expiry)(struct _cef_security_details_t* self);
+
+  ///
+  // Returns the certificate's key size in bits.
+  ///
+  int (CEF_CALLBACK *ncert_bits)(struct _cef_security_details_t* self);
+
+  ///
+  // Returns true (1) if this is an extended validation certificate.
+  ///
+  int (CEF_CALLBACK *bis_evcert)(struct _cef_security_details_t* self);
+} cef_security_details_t;
 
 
 ///

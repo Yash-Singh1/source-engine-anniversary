@@ -239,7 +239,7 @@ typedef struct _cef_browser_t {
   ///
   // Invalidate the |dirtyRect| region of the view. This function is only used
   // when window rendering is disabled and will result in a call to
-  // HandlePaint().
+  // Handlepaint().
   ///
   void (CEF_CALLBACK *invalidate)(struct _cef_browser_t* self,
       const cef_rect_t* dirtyRect);
@@ -295,6 +295,123 @@ typedef struct _cef_browser_t {
   // Send a capture lost event to the browser.
   ///
   void (CEF_CALLBACK *send_capture_lost_event)(struct _cef_browser_t* self);
+
+  ///
+  // Force a repaint of the browser contents.
+  ///
+  void (CEF_CALLBACK *paint)(struct _cef_browser_t* self);
+
+  ///
+  // Returns true (1) if the page has painted something other than the
+  // background.
+  ///
+  int (CEF_CALLBACK *is_visually_non_empty)(struct _cef_browser_t* self);
+
+  ///
+  // Show or hide the browser's own scroll bars.
+  ///
+  void (CEF_CALLBACK *set_show_scroll_bars)(struct _cef_browser_t* self,
+      int show);
+
+  ///
+  // Returns the position and size of the horizontal scroll bar.
+  ///
+  void (CEF_CALLBACK *horizontal_scroll_bar_size)(struct _cef_browser_t* self,
+      int* x, int* y, int* wide, int* tall);
+
+  ///
+  // Returns the position and size of the vertical scroll bar.
+  ///
+  void (CEF_CALLBACK *vertical_scroll_bar_size)(struct _cef_browser_t* self,
+      int* x, int* y, int* wide, int* tall);
+
+  ///
+  // Returns the horizontal scroll position.
+  ///
+  int (CEF_CALLBACK *horizontal_scroll)(struct _cef_browser_t* self);
+
+  ///
+  // Returns the vertical scroll position.
+  ///
+  int (CEF_CALLBACK *vertical_scroll)(struct _cef_browser_t* self);
+
+  ///
+  // Returns the maximum horizontal scroll position.
+  ///
+  int (CEF_CALLBACK *horizontal_scroll_max)(struct _cef_browser_t* self);
+
+  ///
+  // Returns the maximum vertical scroll position.
+  ///
+  int (CEF_CALLBACK *vertical_scroll_max)(struct _cef_browser_t* self);
+
+  ///
+  // Returns true (1) if the horizontal scroll bar is visible.
+  ///
+  int (CEF_CALLBACK *is_horizontal_scroll_bar_visible)(
+      struct _cef_browser_t* self);
+
+  ///
+  // Returns true (1) if the vertical scroll bar is visible.
+  ///
+  int (CEF_CALLBACK *is_veritcal_scroll_bar_visible)(
+      struct _cef_browser_t* self);
+
+  ///
+  // Set the horizontal scroll position.
+  ///
+  void (CEF_CALLBACK *set_horizontal_scroll)(struct _cef_browser_t* self,
+      int scroll);
+
+  ///
+  // Set the vertical scroll position.
+  ///
+  void (CEF_CALLBACK *set_vertical_scroll)(struct _cef_browser_t* self,
+      int scroll);
+
+  ///
+  // Set the user agent string used by this browser.
+  ///
+  void (CEF_CALLBACK *set_user_agent)(struct _cef_browser_t* self,
+      const cef_string_t* userAgent);
+
+  ///
+  // Returns the URL of the link at the given view position and its position.
+  ///
+  void (CEF_CALLBACK *get_link_at_position)(struct _cef_browser_t* self, int x,
+      int y, cef_string_t* url, int* linkX, int* linkY);
+
+  ///
+  // Zoom the page to fit the element at the given position. Returns the new
+  // scale factor.
+  ///
+  float (CEF_CALLBACK *scale_page_to_fit_element_at)(
+      struct _cef_browser_t* self, int x, int y, cef_rect_t* elementRect,
+      cef_rect_t* visibleRect);
+
+  ///
+  // Zoom the page to fit the focused element. Returns the new scale factor.
+  ///
+  float (CEF_CALLBACK *scale_page_to_focused_element)(
+      struct _cef_browser_t* self, int x, int y, cef_rect_t* elementRect,
+      cef_rect_t* visibleRect);
+
+  ///
+  // Set the page scale factor around the given origin. Returns the new scale
+  // factor.
+  ///
+  float (CEF_CALLBACK *set_page_scale_factor)(struct _cef_browser_t* self,
+      float scale, float x, float y);
+
+  ///
+  // Leave full screen mode.
+  ///
+  void (CEF_CALLBACK *exit_full_screen)(struct _cef_browser_t* self);
+
+  ///
+  // Returns the current page scale factor.
+  ///
+  float (CEF_CALLBACK *page_scale_factor)(struct _cef_browser_t* self);
 } cef_browser_t;
 
 

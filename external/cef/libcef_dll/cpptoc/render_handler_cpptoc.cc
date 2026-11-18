@@ -17,7 +17,7 @@
 // MEMBER FUNCTIONS - Body may be edited by hand.
 
 int CEF_CALLBACK render_handler_get_view_rect(
-    struct _cef_render_handler_t* self, cef_browser_t* browser,
+    struct _cef_render_handler_t* self, struct _cef_browser_t* browser,
     cef_rect_t* rect) {
   // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
 
@@ -50,7 +50,7 @@ int CEF_CALLBACK render_handler_get_view_rect(
 }
 
 int CEF_CALLBACK render_handler_get_screen_rect(
-    struct _cef_render_handler_t* self, cef_browser_t* browser,
+    struct _cef_render_handler_t* self, struct _cef_browser_t* browser,
     cef_rect_t* rect) {
   // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
 
@@ -83,8 +83,8 @@ int CEF_CALLBACK render_handler_get_screen_rect(
 }
 
 int CEF_CALLBACK render_handler_get_screen_point(
-    struct _cef_render_handler_t* self, cef_browser_t* browser, int viewX,
-    int viewY, int* screenX, int* screenY) {
+    struct _cef_render_handler_t* self, struct _cef_browser_t* browser,
+    int viewX, int viewY, int* screenX, int* screenY) {
   // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
 
   DCHECK(self);
@@ -128,7 +128,8 @@ int CEF_CALLBACK render_handler_get_screen_point(
 }
 
 void CEF_CALLBACK render_handler_on_popup_show(
-    struct _cef_render_handler_t* self, cef_browser_t* browser, int show) {
+    struct _cef_render_handler_t* self, struct _cef_browser_t* browser,
+    int show) {
   // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
 
   DCHECK(self);
@@ -146,7 +147,7 @@ void CEF_CALLBACK render_handler_on_popup_show(
 }
 
 void CEF_CALLBACK render_handler_on_popup_size(
-    struct _cef_render_handler_t* self, cef_browser_t* browser,
+    struct _cef_render_handler_t* self, struct _cef_browser_t* browser,
     const cef_rect_t* rect) {
   // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
 
@@ -172,7 +173,7 @@ void CEF_CALLBACK render_handler_on_popup_size(
 }
 
 void CEF_CALLBACK render_handler_on_paint(struct _cef_render_handler_t* self,
-    cef_browser_t* browser, enum cef_paint_element_type_t type,
+    struct _cef_browser_t* browser, enum cef_paint_element_type_t type,
     size_t dirtyRectsCount, cef_rect_t const* dirtyRects,
     const void* buffer) {
   // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
@@ -210,7 +211,7 @@ void CEF_CALLBACK render_handler_on_paint(struct _cef_render_handler_t* self,
 }
 
 void CEF_CALLBACK render_handler_on_cursor_change(
-    struct _cef_render_handler_t* self, cef_browser_t* browser,
+    struct _cef_render_handler_t* self, struct _cef_browser_t* browser,
     cef_cursor_handle_t cursor) {
   // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
 
@@ -228,6 +229,101 @@ void CEF_CALLBACK render_handler_on_cursor_change(
       cursor);
 }
 
+int CEF_CALLBACK render_handler_on_set_cursor(
+    struct _cef_render_handler_t* self, struct _cef_browser_t* browser,
+    enum cef_handler_cursortype_t type, const void* iconData, int width,
+    int height, int xHotSpot, int yHotSpot) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return 0;
+  // Verify param: browser; type: refptr_diff
+  DCHECK(browser);
+  if (!browser)
+    return 0;
+  // Unverified params: iconData
+
+  // Execute
+  bool _retval = CefRenderHandlerCppToC::Get(self)->OnSetCursor(
+      CefBrowserCToCpp::Wrap(browser),
+      type,
+      iconData,
+      width,
+      height,
+      xHotSpot,
+      yHotSpot);
+
+  // Return type: bool
+  return _retval;
+}
+
+int CEF_CALLBACK render_handler_on_file_open_dialog(
+    struct _cef_render_handler_t* self, struct _cef_browser_t* browser,
+    int bMultiSelect, const cef_string_t* default_title,
+    const cef_string_t* default_file,
+    struct _cef_web_file_chooser_callback_t* callback) {
+  DCHECK(self);
+  if (!self)
+    return 0;
+  // Verify param: browser; type: refptr_diff
+  DCHECK(browser);
+  if (!browser)
+    return 0;
+  // Unverified params: default_title, default_file, callback
+
+  // Execute
+  bool _retval = CefRenderHandlerCppToC::Get(self)->OnFileOpenDialog(
+      CefBrowserCToCpp::Wrap(browser),
+      bMultiSelect > 0,
+      CefString(default_title),
+      CefString(default_file),
+      callback);
+
+  // Return type: bool
+  return _retval;
+}
+
+int CEF_CALLBACK render_handler_on_enter_full_screen(
+    struct _cef_render_handler_t* self, struct _cef_browser_t* browser) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return 0;
+  // Verify param: browser; type: refptr_diff
+  DCHECK(browser);
+  if (!browser)
+    return 0;
+
+  // Execute
+  bool _retval = CefRenderHandlerCppToC::Get(self)->OnEnterFullScreen(
+      CefBrowserCToCpp::Wrap(browser));
+
+  // Return type: bool
+  return _retval;
+}
+
+int CEF_CALLBACK render_handler_on_exit_full_screen(
+    struct _cef_render_handler_t* self, struct _cef_browser_t* browser) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return 0;
+  // Verify param: browser; type: refptr_diff
+  DCHECK(browser);
+  if (!browser)
+    return 0;
+
+  // Execute
+  bool _retval = CefRenderHandlerCppToC::Get(self)->OnExitFullScreen(
+      CefBrowserCToCpp::Wrap(browser));
+
+  // Return type: bool
+  return _retval;
+}
+
 
 // CONSTRUCTOR - Do not edit by hand.
 
@@ -241,6 +337,10 @@ CefRenderHandlerCppToC::CefRenderHandlerCppToC(CefRenderHandler* cls)
   struct_.struct_.on_popup_size = render_handler_on_popup_size;
   struct_.struct_.on_paint = render_handler_on_paint;
   struct_.struct_.on_cursor_change = render_handler_on_cursor_change;
+  struct_.struct_.on_set_cursor = render_handler_on_set_cursor;
+  struct_.struct_.on_file_open_dialog = render_handler_on_file_open_dialog;
+  struct_.struct_.on_enter_full_screen = render_handler_on_enter_full_screen;
+  struct_.struct_.on_exit_full_screen = render_handler_on_exit_full_screen;
 }
 
 #ifndef NDEBUG

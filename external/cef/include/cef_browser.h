@@ -331,6 +331,132 @@ class CefBrowser : public virtual CefBase {
   ///
   /*--cef()--*/
   virtual void SendCaptureLostEvent() =0;
+
+  ///
+  // Force a repaint of the browser contents.
+  ///
+  /*--cef()--*/
+  virtual void Paint() =0;
+
+  ///
+  // Returns true if the page has painted something other than the background.
+  ///
+  /*--cef()--*/
+  virtual bool IsVisuallyNonEmpty() =0;
+
+  ///
+  // Show or hide the browser's own scroll bars.
+  ///
+  /*--cef()--*/
+  virtual void SetShowScrollBars(bool show) =0;
+
+  ///
+  // Returns the position and size of the horizontal scroll bar.
+  ///
+  /*--cef()--*/
+  virtual void HorizontalScrollBarSize(int& x, int& y, int& wide,
+                                       int& tall) =0;
+
+  ///
+  // Returns the position and size of the vertical scroll bar.
+  ///
+  /*--cef()--*/
+  virtual void VerticalScrollBarSize(int& x, int& y, int& wide, int& tall) =0;
+
+  ///
+  // Returns the horizontal scroll position.
+  ///
+  /*--cef()--*/
+  virtual int HorizontalScroll() =0;
+
+  ///
+  // Returns the vertical scroll position.
+  ///
+  /*--cef()--*/
+  virtual int VerticalScroll() =0;
+
+  ///
+  // Returns the maximum horizontal scroll position.
+  ///
+  /*--cef()--*/
+  virtual int HorizontalScrollMax() =0;
+
+  ///
+  // Returns the maximum vertical scroll position.
+  ///
+  /*--cef()--*/
+  virtual int VerticalScrollMax() =0;
+
+  ///
+  // Returns true if the horizontal scroll bar is visible.
+  ///
+  /*--cef()--*/
+  virtual bool IsHorizontalScrollBarVisible() =0;
+
+  ///
+  // Returns true if the vertical scroll bar is visible.
+  ///
+  /*--cef()--*/
+  virtual bool IsVeritcalScrollBarVisible() =0;
+
+  ///
+  // Set the horizontal scroll position.
+  ///
+  /*--cef()--*/
+  virtual void SetHorizontalScroll(int scroll) =0;
+
+  ///
+  // Set the vertical scroll position.
+  ///
+  /*--cef()--*/
+  virtual void SetVerticalScroll(int scroll) =0;
+
+  ///
+  // Set the user agent string used by this browser.
+  ///
+  /*--cef()--*/
+  virtual void SetUserAgent(const CefString& userAgent) =0;
+
+  ///
+  // Returns the URL of the link at the given view position and its position.
+  ///
+  /*--cef()--*/
+  virtual void GetLinkAtPosition(int x, int y, CefString& url, int& linkX,
+                                 int& linkY) =0;
+
+  ///
+  // Zoom the page to fit the element at the given position. Returns the new
+  // scale factor.
+  ///
+  /*--cef()--*/
+  virtual float scalePageToFitElementAt(int x, int y, CefRect& elementRect,
+                                        CefRect& visibleRect) =0;
+
+  ///
+  // Zoom the page to fit the focused element. Returns the new scale factor.
+  ///
+  /*--cef()--*/
+  virtual float scalePageToFocusedElement(int x, int y, CefRect& elementRect,
+                                          CefRect& visibleRect) =0;
+
+  ///
+  // Set the page scale factor around the given origin. Returns the new scale
+  // factor.
+  ///
+  /*--cef()--*/
+  virtual float setPageScaleFactor(float scale, float x, float y) =0;
+
+  ///
+  // Leave full screen mode.
+  ///
+  /*--cef()--*/
+  virtual void ExitFullScreen() =0;
+
+  ///
+  // Returns the current page scale factor.
+  ///
+  /*--cef()--*/
+  virtual float pageScaleFactor() =0;
 };
 
 #endif  // CEF_INCLUDE_CEF_BROWSER_H_

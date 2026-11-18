@@ -25,7 +25,7 @@
 
 bool CefRequestHandlerCToCpp::OnBeforeBrowse(CefRefPtr<CefBrowser> browser,
     CefRefPtr<CefFrame> frame, CefRefPtr<CefRequest> request, NavType navType,
-    bool isRedirect) {
+    bool isRedirect, bool isNewTabRequest) {
   if (CEF_MEMBER_MISSING(struct_, on_before_browse))
     return false;
 
@@ -50,7 +50,8 @@ bool CefRequestHandlerCToCpp::OnBeforeBrowse(CefRefPtr<CefBrowser> browser,
       CefFrameCppToC::Wrap(frame),
       CefRequestCppToC::Wrap(request),
       navType,
-      isRedirect);
+      isRedirect,
+      isNewTabRequest);
 
   // Return type: bool
   return _retval?true:false;

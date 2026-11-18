@@ -100,6 +100,19 @@ class CefLifeSpanHandler : public virtual CefBase {
   ///
   /*--cef()--*/
   virtual void OnBeforeClose(CefRefPtr<CefBrowser> browser) {}
+
+  ///
+  // Called before a new tab is created. Same as OnBeforePopup; |bForeground|
+  // is true if the tab should be opened in the foreground.
+  ///
+  /*--cef(optional_param=url)--*/
+  virtual bool OnNewTab(CefRefPtr<CefBrowser> parentBrowser,
+                        const CefPopupFeatures& popupFeatures,
+                        CefWindowInfo& windowInfo,
+                        const CefString& url,
+                        bool bForeground,
+                        CefRefPtr<CefClient>& client,
+                        CefBrowserSettings& settings) { return false; }
 };
 
 #endif  // CEF_INCLUDE_CEF_LIFE_SPAN_HANDLER_H_

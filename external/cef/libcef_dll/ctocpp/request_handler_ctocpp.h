@@ -36,7 +36,7 @@ class CefRequestHandlerCToCpp
   // CefRequestHandler methods
   virtual bool OnBeforeBrowse(CefRefPtr<CefBrowser> browser,
       CefRefPtr<CefFrame> frame, CefRefPtr<CefRequest> request,
-      NavType navType, bool isRedirect) OVERRIDE;
+      NavType navType, bool isRedirect, bool isNewTabRequest) OVERRIDE;
   virtual bool OnBeforeResourceLoad(CefRefPtr<CefBrowser> browser,
       CefRefPtr<CefRequest> request, CefString& redirectUrl,
       CefRefPtr<CefStreamReader>& resourceStream,

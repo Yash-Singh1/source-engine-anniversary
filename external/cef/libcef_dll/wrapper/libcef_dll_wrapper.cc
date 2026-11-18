@@ -71,6 +71,7 @@
 #include "libcef_dll/ctocpp/request_ctocpp.h"
 #include "libcef_dll/ctocpp/response_ctocpp.h"
 #include "libcef_dll/ctocpp/scheme_handler_callback_ctocpp.h"
+#include "libcef_dll/ctocpp/security_details_ctocpp.h"
 #include "libcef_dll/ctocpp/stream_reader_ctocpp.h"
 #include "libcef_dll/ctocpp/stream_writer_ctocpp.h"
 #include "libcef_dll/ctocpp/v8context_ctocpp.h"
@@ -150,6 +151,7 @@ CEF_GLOBAL void CefShutdown() {
   DCHECK_EQ(CefResourceBundleHandlerCppToC::DebugObjCt, 0);
   DCHECK_EQ(CefResponseCToCpp::DebugObjCt, 0);
   DCHECK_EQ(CefSchemeHandlerCallbackCToCpp::DebugObjCt, 0);
+  DCHECK_EQ(CefSecurityDetailsCToCpp::DebugObjCt, 0);
   DCHECK_EQ(CefSchemeHandlerCppToC::DebugObjCt, 0);
   DCHECK_EQ(CefSchemeHandlerFactoryCppToC::DebugObjCt, 0);
   DCHECK_EQ(CefStorageVisitorCppToC::DebugObjCt, 0);

@@ -35,9 +35,10 @@ class CefLoadHandlerCToCpp
 
   // CefLoadHandler methods
   virtual void OnLoadStart(CefRefPtr<CefBrowser> browser,
-      CefRefPtr<CefFrame> frame) OVERRIDE;
+      CefRefPtr<CefFrame> frame, bool bIsNewNavigation) OVERRIDE;
   virtual void OnLoadEnd(CefRefPtr<CefBrowser> browser,
-      CefRefPtr<CefFrame> frame, int httpStatusCode) OVERRIDE;
+      CefRefPtr<CefFrame> frame, int httpStatusCode,
+      CefRefPtr<CefRequest> request) OVERRIDE;
   virtual bool OnLoadError(CefRefPtr<CefBrowser> browser,
       CefRefPtr<CefFrame> frame, ErrorCode errorCode,
       const CefString& failedUrl, CefString& errorText) OVERRIDE;

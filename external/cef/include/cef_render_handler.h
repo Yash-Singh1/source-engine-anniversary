@@ -40,7 +40,16 @@
 
 #include "include/cef_base.h"
 #include "include/cef_browser.h"
+#include <string>
 #include <vector>
+
+///
+// Receives the files chosen in a file open dialog (see
+// CefRenderHandler::OnFileOpenDialog).
+///
+struct _cef_web_file_chooser_callback_t {
+  virtual void OnFileChoose(const std::vector<std::wstring>& files) =0;
+};
 
 ///
 // Implement this interface to handle events when window rendering is disabled.
@@ -51,6 +60,8 @@ class CefRenderHandler : public virtual CefBase {
  public:
   typedef cef_paint_element_type_t PaintElementType;
   typedef std::vector<CefRect> RectList;
+  typedef cef_handler_cursortype_t CursorType;
+  typedef _cef_web_file_chooser_callback_t CefWebFileChooserCallback;
 
   ///
   // Called to retrieve the view rectangle which is relative to screen
@@ -116,6 +127,48 @@ class CefRenderHandler : public virtual CefBase {
   /*--cef()--*/
   virtual void OnCursorChange(CefRefPtr<CefBrowser> browser,
                               CefCursorHandle cursor) {}
+
+  ///
+  // Called when the cursor changes. |type| is the cursor type; for custom
+  // cursors |iconData| points to |width| x |height| RGBA pixels with the
+  // given hot spot. Return true if the cursor was handled.
+  ///
+  /*--cef(optional_param=iconData)--*/
+  virtual bool OnSetCursor(CefRefPtr<CefBrowser> browser,
+                           const CursorType type,
+                           const void* iconData,
+                           int width,
+                           int height,
+                           int xHotSpot,
+                           int yHotSpot) { return false; }
+
+  ///
+  // Called when a file open dialog should be shown. Pass the chosen files to
+  // |callback|. Return true if the dialog was handled.
+  ///
+  virtual bool OnFileOpenDialog(CefRefPtr<CefBrowser> browser,
+                                bool bMultiSelect,
+                                const CefString& default_title,
+                                const CefString& default_file,
+                                CefWebFileChooserCallback* callback) {
+    return false;
+  }
+
+  ///
+  // Called when the page asks to go full screen. Return true to allow it.
+  ///
+  /*--cef()--*/
+  virtual bool OnEnterFullScreen(CefRefPtr<CefBrowser> browser) {
+    return false;
+  }
+
+  ///
+  // Called when the page leaves full screen mode.
+  ///
+  /*--cef()--*/
+  virtual bool OnExitFullScreen(CefRefPtr<CefBrowser> browser) {
+    return false;
+  }
 };
 
 #endif  // CEF_INCLUDE_CEF_RENDER_HANDLER_H_

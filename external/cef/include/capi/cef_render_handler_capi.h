@@ -110,6 +110,37 @@ typedef struct _cef_render_handler_t {
   ///
   void (CEF_CALLBACK *on_cursor_change)(struct _cef_render_handler_t* self,
       struct _cef_browser_t* browser, cef_cursor_handle_t cursor);
+
+  ///
+  // Called when the cursor changes. |type| is the cursor type; for custom
+  // cursors |iconData| points to |width| x |height| RGBA pixels with the given
+  // hot spot. Return true (1) if the cursor was handled.
+  ///
+  int (CEF_CALLBACK *on_set_cursor)(struct _cef_render_handler_t* self,
+      struct _cef_browser_t* browser, enum cef_handler_cursortype_t type,
+      const void* iconData, int width, int height, int xHotSpot,
+      int yHotSpot);
+
+  ///
+  // Called when a file open dialog should be shown. Pass the chosen files to
+  // |callback|. Return true (1) if the dialog was handled.
+  ///
+  int (CEF_CALLBACK *on_file_open_dialog)(struct _cef_render_handler_t* self,
+      struct _cef_browser_t* browser, int bMultiSelect,
+      const cef_string_t* default_title, const cef_string_t* default_file,
+      struct _cef_web_file_chooser_callback_t* callback);
+
+  ///
+  // Called when the page asks to go full screen. Return true (1) to allow it.
+  ///
+  int (CEF_CALLBACK *on_enter_full_screen)(struct _cef_render_handler_t* self,
+      struct _cef_browser_t* browser);
+
+  ///
+  // Called when the page leaves full screen mode.
+  ///
+  int (CEF_CALLBACK *on_exit_full_screen)(struct _cef_render_handler_t* self,
+      struct _cef_browser_t* browser);
 } cef_render_handler_t;
 
 

@@ -18,10 +18,10 @@
 // MEMBER FUNCTIONS - Body may be edited by hand.
 
 int CEF_CALLBACK life_span_handler_on_before_popup(
-    struct _cef_life_span_handler_t* self, cef_browser_t* parentBrowser,
+    struct _cef_life_span_handler_t* self, struct _cef_browser_t* parentBrowser,
     const struct _cef_popup_features_t* popupFeatures,
     cef_window_info_t* windowInfo, const cef_string_t* url,
-    cef_client_t** client, struct _cef_browser_settings_t* settings) {
+    struct _cef_client_t** client, struct _cef_browser_settings_t* settings) {
   // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
 
   DCHECK(self);
@@ -98,7 +98,7 @@ int CEF_CALLBACK life_span_handler_on_before_popup(
 }
 
 void CEF_CALLBACK life_span_handler_on_after_created(
-    struct _cef_life_span_handler_t* self, cef_browser_t* browser) {
+    struct _cef_life_span_handler_t* self, struct _cef_browser_t* browser) {
   // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
 
   DCHECK(self);
@@ -115,7 +115,7 @@ void CEF_CALLBACK life_span_handler_on_after_created(
 }
 
 int CEF_CALLBACK life_span_handler_run_modal(
-    struct _cef_life_span_handler_t* self, cef_browser_t* browser) {
+    struct _cef_life_span_handler_t* self, struct _cef_browser_t* browser) {
   // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
 
   DCHECK(self);
@@ -135,7 +135,7 @@ int CEF_CALLBACK life_span_handler_run_modal(
 }
 
 int CEF_CALLBACK life_span_handler_do_close(
-    struct _cef_life_span_handler_t* self, cef_browser_t* browser) {
+    struct _cef_life_span_handler_t* self, struct _cef_browser_t* browser) {
   // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
 
   DCHECK(self);
@@ -155,7 +155,7 @@ int CEF_CALLBACK life_span_handler_do_close(
 }
 
 void CEF_CALLBACK life_span_handler_on_before_close(
-    struct _cef_life_span_handler_t* self, cef_browser_t* browser) {
+    struct _cef_life_span_handler_t* self, struct _cef_browser_t* browser) {
   // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
 
   DCHECK(self);
@@ -171,6 +171,87 @@ void CEF_CALLBACK life_span_handler_on_before_close(
       CefBrowserCToCpp::Wrap(browser));
 }
 
+int CEF_CALLBACK life_span_handler_on_new_tab(
+    struct _cef_life_span_handler_t* self, struct _cef_browser_t* parentBrowser,
+    const struct _cef_popup_features_t* popupFeatures,
+    cef_window_info_t* windowInfo, const cef_string_t* url, int bForeground,
+    struct _cef_client_t** client, struct _cef_browser_settings_t* settings) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return 0;
+  // Verify param: parentBrowser; type: refptr_diff
+  DCHECK(parentBrowser);
+  if (!parentBrowser)
+    return 0;
+  // Verify param: popupFeatures; type: struct_byref_const
+  DCHECK(popupFeatures);
+  if (!popupFeatures)
+    return 0;
+  // Verify param: windowInfo; type: struct_byref
+  DCHECK(windowInfo);
+  if (!windowInfo)
+    return 0;
+  // Verify param: client; type: refptr_same_byref
+  DCHECK(client);
+  if (!client)
+    return 0;
+  // Verify param: settings; type: struct_byref
+  DCHECK(settings);
+  if (!settings)
+    return 0;
+  // Unverified params: url
+
+  // Translate param: popupFeatures; type: struct_byref_const
+  CefPopupFeatures popupFeaturesObj;
+  if (popupFeatures)
+    popupFeaturesObj.Set(*popupFeatures, false);
+  // Translate param: windowInfo; type: struct_byref
+  CefWindowInfo windowInfoObj;
+  if (windowInfo)
+    windowInfoObj.AttachTo(*windowInfo);
+  // Translate param: client; type: refptr_same_byref
+  CefRefPtr<CefClient> clientPtr;
+  if (client && *client)
+    clientPtr = CefClientCppToC::Unwrap(*client);
+  CefClient* clientOrig = clientPtr.get();
+  // Translate param: settings; type: struct_byref
+  CefBrowserSettings settingsObj;
+  if (settings)
+    settingsObj.AttachTo(*settings);
+
+  // Execute
+  bool _retval = CefLifeSpanHandlerCppToC::Get(self)->OnNewTab(
+      CefBrowserCToCpp::Wrap(parentBrowser),
+      popupFeaturesObj,
+      windowInfoObj,
+      CefString(url),
+      bForeground?true:false,
+      clientPtr,
+      settingsObj);
+
+  // Restore param: windowInfo; type: struct_byref
+  if (windowInfo)
+    windowInfoObj.DetachTo(*windowInfo);
+  // Restore param: client; type: refptr_same_byref
+  if (client) {
+    if (clientPtr.get()) {
+      if (clientPtr.get() != clientOrig) {
+        *client = CefClientCppToC::Wrap(clientPtr);
+      }
+    } else {
+      *client = NULL;
+    }
+  }
+  // Restore param: settings; type: struct_byref
+  if (settings)
+    settingsObj.DetachTo(*settings);
+
+  // Return type: bool
+  return _retval;
+}
+
 
 // CONSTRUCTOR - Do not edit by hand.
 
@@ -182,6 +263,7 @@ CefLifeSpanHandlerCppToC::CefLifeSpanHandlerCppToC(CefLifeSpanHandler* cls)
   struct_.struct_.run_modal = life_span_handler_run_modal;
   struct_.struct_.do_close = life_span_handler_do_close;
   struct_.struct_.on_before_close = life_span_handler_on_before_close;
+  struct_.struct_.on_new_tab = life_span_handler_on_new_tab;
 }
 
 #ifndef NDEBUG

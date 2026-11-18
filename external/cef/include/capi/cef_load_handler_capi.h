@@ -64,7 +64,8 @@ typedef struct _cef_load_handler_t {
   // that frame fails.
   ///
   void (CEF_CALLBACK *on_load_start)(struct _cef_load_handler_t* self,
-      struct _cef_browser_t* browser, struct _cef_frame_t* frame);
+      struct _cef_browser_t* browser, struct _cef_frame_t* frame,
+      int bIsNewNavigation);
 
   ///
   // Called when the browser is done loading a frame. The |frame| value will
@@ -76,7 +77,7 @@ typedef struct _cef_load_handler_t {
   ///
   void (CEF_CALLBACK *on_load_end)(struct _cef_load_handler_t* self,
       struct _cef_browser_t* browser, struct _cef_frame_t* frame,
-      int httpStatusCode);
+      int httpStatusCode, struct _cef_request_t* request);
 
   ///
   // Called when the browser fails to load a resource. |errorCode| is the error

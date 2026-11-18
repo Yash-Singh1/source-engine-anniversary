@@ -12,6 +12,7 @@
 
 #include "libcef_dll/cpptoc/post_data_cpptoc.h"
 #include "libcef_dll/cpptoc/request_cpptoc.h"
+#include "libcef_dll/cpptoc/security_details_cpptoc.h"
 #include "libcef_dll/transfer_util.h"
 
 
@@ -266,6 +267,50 @@ void CEF_CALLBACK request_set_first_party_for_cookies(
       CefString(url));
 }
 
+void CEF_CALLBACK request_set_security_details(struct _cef_request_t* self,
+    struct _cef_security_details_t* details) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return;
+  // Unverified params: details
+
+  // Execute
+  CefRequestCppToC::Get(self)->SetSecurityDetails(
+      CefSecurityDetailsCppToC::Unwrap(details));
+}
+
+int CEF_CALLBACK request_bis_secure_request(struct _cef_request_t* self) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return 0;
+
+  // Execute
+  bool _retval = CefRequestCppToC::Get(self)->BIsSecureRequest();
+
+  // Return type: bool
+  return _retval;
+}
+
+struct _cef_security_details_t* CEF_CALLBACK request_security_details(
+    struct _cef_request_t* self) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return NULL;
+
+  // Execute
+  CefRefPtr<CefSecurityDetails> _retval = CefRequestCppToC::Get(
+      self)->SecurityDetails();
+
+  // Return type: refptr_same
+  return CefSecurityDetailsCppToC::Wrap(_retval);
+}
+
 
 // CONSTRUCTOR - Do not edit by hand.
 
@@ -286,6 +331,9 @@ CefRequestCppToC::CefRequestCppToC(CefRequest* cls)
       request_get_first_party_for_cookies;
   struct_.struct_.set_first_party_for_cookies =
       request_set_first_party_for_cookies;
+  struct_.struct_.set_security_details = request_set_security_details;
+  struct_.struct_.bis_secure_request = request_bis_secure_request;
+  struct_.struct_.security_details = request_security_details;
 }
 
 #ifndef NDEBUG

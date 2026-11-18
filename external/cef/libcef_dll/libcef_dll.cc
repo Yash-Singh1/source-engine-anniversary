@@ -38,6 +38,7 @@
 #include "libcef_dll/cpptoc/request_cpptoc.h"
 #include "libcef_dll/cpptoc/response_cpptoc.h"
 #include "libcef_dll/cpptoc/scheme_handler_callback_cpptoc.h"
+#include "libcef_dll/cpptoc/security_details_cpptoc.h"
 #include "libcef_dll/cpptoc/stream_reader_cpptoc.h"
 #include "libcef_dll/cpptoc/stream_writer_cpptoc.h"
 #include "libcef_dll/cpptoc/v8context_cpptoc.h"
@@ -150,6 +151,7 @@ CEF_EXPORT void cef_shutdown() {
   DCHECK_EQ(CefSchemeHandlerCToCpp::DebugObjCt, 0);
   DCHECK_EQ(CefSchemeHandlerCallbackCppToC::DebugObjCt, 0);
   DCHECK_EQ(CefSchemeHandlerFactoryCToCpp::DebugObjCt, 0);
+  DCHECK_EQ(CefSecurityDetailsCppToC::DebugObjCt, 0);
   DCHECK_EQ(CefStorageVisitorCToCpp::DebugObjCt, 0);
   DCHECK_EQ(CefStreamReaderCppToC::DebugObjCt, 0);
   DCHECK_EQ(CefStreamWriterCppToC::DebugObjCt, 0);

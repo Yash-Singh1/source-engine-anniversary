@@ -12,6 +12,7 @@
 
 #include "libcef_dll/ctocpp/post_data_ctocpp.h"
 #include "libcef_dll/ctocpp/request_ctocpp.h"
+#include "libcef_dll/ctocpp/security_details_ctocpp.h"
 #include "libcef_dll/transfer_util.h"
 
 
@@ -254,6 +255,46 @@ void CefRequestCToCpp::SetFirstPartyForCookies(const CefString& url) {
   // Execute
   struct_->set_first_party_for_cookies(struct_,
       url.GetStruct());
+}
+
+void CefRequestCToCpp::SetSecurityDetails(
+    CefRefPtr<CefSecurityDetails> details) {
+  if (CEF_MEMBER_MISSING(struct_, set_security_details))
+    return;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Unverified params: details
+
+  // Execute
+  struct_->set_security_details(struct_,
+      CefSecurityDetailsCToCpp::Unwrap(details));
+}
+
+bool CefRequestCToCpp::BIsSecureRequest() {
+  if (CEF_MEMBER_MISSING(struct_, bis_secure_request))
+    return false;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Execute
+  int _retval = struct_->bis_secure_request(struct_);
+
+  // Return type: bool
+  return _retval?true:false;
+}
+
+CefRefPtr<CefSecurityDetails> CefRequestCToCpp::SecurityDetails() {
+  if (CEF_MEMBER_MISSING(struct_, security_details))
+    return NULL;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Execute
+  cef_security_details_t* _retval = struct_->security_details(struct_);
+
+  // Return type: refptr_same
+  return CefSecurityDetailsCToCpp::Wrap(_retval);
 }
 
 

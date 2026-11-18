@@ -130,6 +130,50 @@ void CefLifeSpanHandlerCToCpp::OnBeforeClose(CefRefPtr<CefBrowser> browser) {
       CefBrowserCppToC::Wrap(browser));
 }
 
+bool CefLifeSpanHandlerCToCpp::OnNewTab(CefRefPtr<CefBrowser> parentBrowser,
+    const CefPopupFeatures& popupFeatures, CefWindowInfo& windowInfo,
+    const CefString& url, bool bForeground, CefRefPtr<CefClient>& client,
+    CefBrowserSettings& settings) {
+  if (CEF_MEMBER_MISSING(struct_, on_new_tab))
+    return false;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Verify param: parentBrowser; type: refptr_diff
+  DCHECK(parentBrowser.get());
+  if (!parentBrowser.get())
+    return false;
+  // Unverified params: url
+
+  // Translate param: client; type: refptr_same_byref
+  cef_client_t* clientStruct = NULL;
+  if (client.get())
+    clientStruct = CefClientCToCpp::Unwrap(client);
+  cef_client_t* clientOrig = clientStruct;
+
+  // Execute
+  int _retval = struct_->on_new_tab(struct_,
+      CefBrowserCppToC::Wrap(parentBrowser),
+      &popupFeatures,
+      &windowInfo,
+      url.GetStruct(),
+      bForeground,
+      &clientStruct,
+      &settings);
+
+  // Restore param:client; type: refptr_same_byref
+  if (clientStruct) {
+    if (clientStruct != clientOrig) {
+      client = CefClientCToCpp::Wrap(clientStruct);
+    }
+  } else {
+    client = NULL;
+  }
+
+  // Return type: bool
+  return _retval?true:false;
+}
+
 
 #ifndef NDEBUG
 template<> long CefCToCpp<CefLifeSpanHandlerCToCpp, CefLifeSpanHandler,

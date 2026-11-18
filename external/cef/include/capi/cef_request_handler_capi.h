@@ -62,7 +62,7 @@ typedef struct _cef_request_handler_t {
   int (CEF_CALLBACK *on_before_browse)(struct _cef_request_handler_t* self,
       struct _cef_browser_t* browser, struct _cef_frame_t* frame,
       struct _cef_request_t* request, enum cef_handler_navtype_t navType,
-      int isRedirect);
+      int isRedirect, int isNewTabRequest);
 
   ///
   // Called on the IO thread before a resource is loaded.  To allow the resource

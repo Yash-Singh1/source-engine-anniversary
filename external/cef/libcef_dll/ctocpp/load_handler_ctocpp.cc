@@ -12,13 +12,14 @@
 
 #include "libcef_dll/cpptoc/browser_cpptoc.h"
 #include "libcef_dll/cpptoc/frame_cpptoc.h"
+#include "libcef_dll/cpptoc/request_cpptoc.h"
 #include "libcef_dll/ctocpp/load_handler_ctocpp.h"
 
 
 // VIRTUAL METHODS - Body may be edited by hand.
 
 void CefLoadHandlerCToCpp::OnLoadStart(CefRefPtr<CefBrowser> browser,
-    CefRefPtr<CefFrame> frame) {
+    CefRefPtr<CefFrame> frame, bool bIsNewNavigation) {
   if (CEF_MEMBER_MISSING(struct_, on_load_start))
     return;
 
@@ -36,11 +37,13 @@ void CefLoadHandlerCToCpp::OnLoadStart(CefRefPtr<CefBrowser> browser,
   // Execute
   struct_->on_load_start(struct_,
       CefBrowserCppToC::Wrap(browser),
-      CefFrameCppToC::Wrap(frame));
+      CefFrameCppToC::Wrap(frame),
+      bIsNewNavigation);
 }
 
 void CefLoadHandlerCToCpp::OnLoadEnd(CefRefPtr<CefBrowser> browser,
-    CefRefPtr<CefFrame> frame, int httpStatusCode) {
+    CefRefPtr<CefFrame> frame, int httpStatusCode,
+    CefRefPtr<CefRequest> request) {
   if (CEF_MEMBER_MISSING(struct_, on_load_end))
     return;
 
@@ -54,12 +57,14 @@ void CefLoadHandlerCToCpp::OnLoadEnd(CefRefPtr<CefBrowser> browser,
   DCHECK(frame.get());
   if (!frame.get())
     return;
+  // Unverified params: request
 
   // Execute
   struct_->on_load_end(struct_,
       CefBrowserCppToC::Wrap(browser),
       CefFrameCppToC::Wrap(frame),
-      httpStatusCode);
+      httpStatusCode,
+      CefRequestCppToC::Wrap(request));
 }
 
 bool CefLoadHandlerCToCpp::OnLoadError(CefRefPtr<CefBrowser> browser,

@@ -703,6 +703,447 @@ void CEF_CALLBACK browser_send_capture_lost_event(struct _cef_browser_t* self) {
   CefBrowserCppToC::Get(self)->SendCaptureLostEvent();
 }
 
+void CEF_CALLBACK browser_paint(struct _cef_browser_t* self) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return;
+
+  // Execute
+  CefBrowserCppToC::Get(self)->Paint();
+}
+
+int CEF_CALLBACK browser_is_visually_non_empty(struct _cef_browser_t* self) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return 0;
+
+  // Execute
+  bool _retval = CefBrowserCppToC::Get(self)->IsVisuallyNonEmpty();
+
+  // Return type: bool
+  return _retval;
+}
+
+void CEF_CALLBACK browser_set_show_scroll_bars(struct _cef_browser_t* self,
+    int show) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return;
+
+  // Execute
+  CefBrowserCppToC::Get(self)->SetShowScrollBars(
+      show?true:false);
+}
+
+void CEF_CALLBACK browser_horizontal_scroll_bar_size(
+    struct _cef_browser_t* self, int* x, int* y, int* wide, int* tall) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return;
+  // Verify param: x; type: simple_byref
+  DCHECK(x);
+  if (!x)
+    return;
+  // Verify param: y; type: simple_byref
+  DCHECK(y);
+  if (!y)
+    return;
+  // Verify param: wide; type: simple_byref
+  DCHECK(wide);
+  if (!wide)
+    return;
+  // Verify param: tall; type: simple_byref
+  DCHECK(tall);
+  if (!tall)
+    return;
+
+  // Translate param: x; type: simple_byref
+  int xVal = x?*x:0;
+  // Translate param: y; type: simple_byref
+  int yVal = y?*y:0;
+  // Translate param: wide; type: simple_byref
+  int wideVal = wide?*wide:0;
+  // Translate param: tall; type: simple_byref
+  int tallVal = tall?*tall:0;
+
+  // Execute
+  CefBrowserCppToC::Get(self)->HorizontalScrollBarSize(
+      xVal,
+      yVal,
+      wideVal,
+      tallVal);
+
+  // Restore param: x; type: simple_byref
+  if (x)
+    *x = xVal;
+  // Restore param: y; type: simple_byref
+  if (y)
+    *y = yVal;
+  // Restore param: wide; type: simple_byref
+  if (wide)
+    *wide = wideVal;
+  // Restore param: tall; type: simple_byref
+  if (tall)
+    *tall = tallVal;
+}
+
+void CEF_CALLBACK browser_vertical_scroll_bar_size(struct _cef_browser_t* self,
+    int* x, int* y, int* wide, int* tall) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return;
+  // Verify param: x; type: simple_byref
+  DCHECK(x);
+  if (!x)
+    return;
+  // Verify param: y; type: simple_byref
+  DCHECK(y);
+  if (!y)
+    return;
+  // Verify param: wide; type: simple_byref
+  DCHECK(wide);
+  if (!wide)
+    return;
+  // Verify param: tall; type: simple_byref
+  DCHECK(tall);
+  if (!tall)
+    return;
+
+  // Translate param: x; type: simple_byref
+  int xVal = x?*x:0;
+  // Translate param: y; type: simple_byref
+  int yVal = y?*y:0;
+  // Translate param: wide; type: simple_byref
+  int wideVal = wide?*wide:0;
+  // Translate param: tall; type: simple_byref
+  int tallVal = tall?*tall:0;
+
+  // Execute
+  CefBrowserCppToC::Get(self)->VerticalScrollBarSize(
+      xVal,
+      yVal,
+      wideVal,
+      tallVal);
+
+  // Restore param: x; type: simple_byref
+  if (x)
+    *x = xVal;
+  // Restore param: y; type: simple_byref
+  if (y)
+    *y = yVal;
+  // Restore param: wide; type: simple_byref
+  if (wide)
+    *wide = wideVal;
+  // Restore param: tall; type: simple_byref
+  if (tall)
+    *tall = tallVal;
+}
+
+int CEF_CALLBACK browser_horizontal_scroll(struct _cef_browser_t* self) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return 0;
+
+  // Execute
+  int _retval = CefBrowserCppToC::Get(self)->HorizontalScroll();
+
+  // Return type: simple
+  return _retval;
+}
+
+int CEF_CALLBACK browser_vertical_scroll(struct _cef_browser_t* self) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return 0;
+
+  // Execute
+  int _retval = CefBrowserCppToC::Get(self)->VerticalScroll();
+
+  // Return type: simple
+  return _retval;
+}
+
+int CEF_CALLBACK browser_horizontal_scroll_max(struct _cef_browser_t* self) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return 0;
+
+  // Execute
+  int _retval = CefBrowserCppToC::Get(self)->HorizontalScrollMax();
+
+  // Return type: simple
+  return _retval;
+}
+
+int CEF_CALLBACK browser_vertical_scroll_max(struct _cef_browser_t* self) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return 0;
+
+  // Execute
+  int _retval = CefBrowserCppToC::Get(self)->VerticalScrollMax();
+
+  // Return type: simple
+  return _retval;
+}
+
+int CEF_CALLBACK browser_is_horizontal_scroll_bar_visible(
+    struct _cef_browser_t* self) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return 0;
+
+  // Execute
+  bool _retval = CefBrowserCppToC::Get(self)->IsHorizontalScrollBarVisible();
+
+  // Return type: bool
+  return _retval;
+}
+
+int CEF_CALLBACK browser_is_veritcal_scroll_bar_visible(
+    struct _cef_browser_t* self) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return 0;
+
+  // Execute
+  bool _retval = CefBrowserCppToC::Get(self)->IsVeritcalScrollBarVisible();
+
+  // Return type: bool
+  return _retval;
+}
+
+void CEF_CALLBACK browser_set_horizontal_scroll(struct _cef_browser_t* self,
+    int scroll) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return;
+
+  // Execute
+  CefBrowserCppToC::Get(self)->SetHorizontalScroll(
+      scroll);
+}
+
+void CEF_CALLBACK browser_set_vertical_scroll(struct _cef_browser_t* self,
+    int scroll) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return;
+
+  // Execute
+  CefBrowserCppToC::Get(self)->SetVerticalScroll(
+      scroll);
+}
+
+void CEF_CALLBACK browser_set_user_agent(struct _cef_browser_t* self,
+    const cef_string_t* userAgent) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return;
+  // Verify param: userAgent; type: string_byref_const
+  DCHECK(userAgent);
+  if (!userAgent)
+    return;
+
+  // Execute
+  CefBrowserCppToC::Get(self)->SetUserAgent(
+      CefString(userAgent));
+}
+
+void CEF_CALLBACK browser_get_link_at_position(struct _cef_browser_t* self,
+    int x, int y, cef_string_t* url, int* linkX, int* linkY) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return;
+  // Verify param: url; type: string_byref
+  DCHECK(url);
+  if (!url)
+    return;
+  // Verify param: linkX; type: simple_byref
+  DCHECK(linkX);
+  if (!linkX)
+    return;
+  // Verify param: linkY; type: simple_byref
+  DCHECK(linkY);
+  if (!linkY)
+    return;
+
+  // Translate param: url; type: string_byref
+  CefString urlStr(url);
+  // Translate param: linkX; type: simple_byref
+  int linkXVal = linkX?*linkX:0;
+  // Translate param: linkY; type: simple_byref
+  int linkYVal = linkY?*linkY:0;
+
+  // Execute
+  CefBrowserCppToC::Get(self)->GetLinkAtPosition(
+      x,
+      y,
+      urlStr,
+      linkXVal,
+      linkYVal);
+
+  // Restore param: linkX; type: simple_byref
+  if (linkX)
+    *linkX = linkXVal;
+  // Restore param: linkY; type: simple_byref
+  if (linkY)
+    *linkY = linkYVal;
+}
+
+float CEF_CALLBACK browser_scale_page_to_fit_element_at(
+    struct _cef_browser_t* self, int x, int y, cef_rect_t* elementRect,
+    cef_rect_t* visibleRect) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return 0;
+  // Verify param: elementRect; type: simple_byref
+  DCHECK(elementRect);
+  if (!elementRect)
+    return 0;
+  // Verify param: visibleRect; type: simple_byref
+  DCHECK(visibleRect);
+  if (!visibleRect)
+    return 0;
+
+  // Translate param: elementRect; type: simple_byref
+  CefRect elementRectVal = elementRect?*elementRect:CefRect();
+  // Translate param: visibleRect; type: simple_byref
+  CefRect visibleRectVal = visibleRect?*visibleRect:CefRect();
+
+  // Execute
+  float _retval = CefBrowserCppToC::Get(self)->scalePageToFitElementAt(
+      x,
+      y,
+      elementRectVal,
+      visibleRectVal);
+
+  // Restore param: elementRect; type: simple_byref
+  if (elementRect)
+    *elementRect = elementRectVal;
+  // Restore param: visibleRect; type: simple_byref
+  if (visibleRect)
+    *visibleRect = visibleRectVal;
+
+  // Return type: simple
+  return _retval;
+}
+
+float CEF_CALLBACK browser_scale_page_to_focused_element(
+    struct _cef_browser_t* self, int x, int y, cef_rect_t* elementRect,
+    cef_rect_t* visibleRect) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return 0;
+  // Verify param: elementRect; type: simple_byref
+  DCHECK(elementRect);
+  if (!elementRect)
+    return 0;
+  // Verify param: visibleRect; type: simple_byref
+  DCHECK(visibleRect);
+  if (!visibleRect)
+    return 0;
+
+  // Translate param: elementRect; type: simple_byref
+  CefRect elementRectVal = elementRect?*elementRect:CefRect();
+  // Translate param: visibleRect; type: simple_byref
+  CefRect visibleRectVal = visibleRect?*visibleRect:CefRect();
+
+  // Execute
+  float _retval = CefBrowserCppToC::Get(self)->scalePageToFocusedElement(
+      x,
+      y,
+      elementRectVal,
+      visibleRectVal);
+
+  // Restore param: elementRect; type: simple_byref
+  if (elementRect)
+    *elementRect = elementRectVal;
+  // Restore param: visibleRect; type: simple_byref
+  if (visibleRect)
+    *visibleRect = visibleRectVal;
+
+  // Return type: simple
+  return _retval;
+}
+
+float CEF_CALLBACK browser_set_page_scale_factor(struct _cef_browser_t* self,
+    float scale, float x, float y) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return 0;
+
+  // Execute
+  float _retval = CefBrowserCppToC::Get(self)->setPageScaleFactor(
+      scale,
+      x,
+      y);
+
+  // Return type: simple
+  return _retval;
+}
+
+void CEF_CALLBACK browser_exit_full_screen(struct _cef_browser_t* self) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return;
+
+  // Execute
+  CefBrowserCppToC::Get(self)->ExitFullScreen();
+}
+
+float CEF_CALLBACK browser_page_scale_factor(struct _cef_browser_t* self) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return 0;
+
+  // Execute
+  float _retval = CefBrowserCppToC::Get(self)->pageScaleFactor();
+
+  // Return type: simple
+  return _retval;
+}
+
 
 // CONSTRUCTOR - Do not edit by hand.
 
@@ -748,6 +1189,31 @@ CefBrowserCppToC::CefBrowserCppToC(CefBrowser* cls)
   struct_.struct_.send_mouse_wheel_event = browser_send_mouse_wheel_event;
   struct_.struct_.send_focus_event = browser_send_focus_event;
   struct_.struct_.send_capture_lost_event = browser_send_capture_lost_event;
+  struct_.struct_.paint = browser_paint;
+  struct_.struct_.is_visually_non_empty = browser_is_visually_non_empty;
+  struct_.struct_.set_show_scroll_bars = browser_set_show_scroll_bars;
+  struct_.struct_.horizontal_scroll_bar_size =
+      browser_horizontal_scroll_bar_size;
+  struct_.struct_.vertical_scroll_bar_size = browser_vertical_scroll_bar_size;
+  struct_.struct_.horizontal_scroll = browser_horizontal_scroll;
+  struct_.struct_.vertical_scroll = browser_vertical_scroll;
+  struct_.struct_.horizontal_scroll_max = browser_horizontal_scroll_max;
+  struct_.struct_.vertical_scroll_max = browser_vertical_scroll_max;
+  struct_.struct_.is_horizontal_scroll_bar_visible =
+      browser_is_horizontal_scroll_bar_visible;
+  struct_.struct_.is_veritcal_scroll_bar_visible =
+      browser_is_veritcal_scroll_bar_visible;
+  struct_.struct_.set_horizontal_scroll = browser_set_horizontal_scroll;
+  struct_.struct_.set_vertical_scroll = browser_set_vertical_scroll;
+  struct_.struct_.set_user_agent = browser_set_user_agent;
+  struct_.struct_.get_link_at_position = browser_get_link_at_position;
+  struct_.struct_.scale_page_to_fit_element_at =
+      browser_scale_page_to_fit_element_at;
+  struct_.struct_.scale_page_to_focused_element =
+      browser_scale_page_to_focused_element;
+  struct_.struct_.set_page_scale_factor = browser_set_page_scale_factor;
+  struct_.struct_.exit_full_screen = browser_exit_full_screen;
+  struct_.struct_.page_scale_factor = browser_page_scale_factor;
 }
 
 #ifndef NDEBUG

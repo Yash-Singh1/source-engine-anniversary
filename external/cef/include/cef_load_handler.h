@@ -41,6 +41,7 @@
 #include "include/cef_base.h"
 #include "include/cef_browser.h"
 #include "include/cef_frame.h"
+#include "include/cef_request.h"
 
 ///
 // Implement this interface to handle events related to browser load status. The
@@ -61,7 +62,8 @@ class CefLoadHandler : public virtual CefBase {
   ///
   /*--cef()--*/
   virtual void OnLoadStart(CefRefPtr<CefBrowser> browser,
-                           CefRefPtr<CefFrame> frame) {}
+                           CefRefPtr<CefFrame> frame,
+                           bool bIsNewNavigation) {}
 
   ///
   // Called when the browser is done loading a frame. The |frame| value will
@@ -71,10 +73,11 @@ class CefLoadHandler : public virtual CefBase {
   // will always be called for all frames irrespective of whether the request
   // completes successfully.
   ///
-  /*--cef()--*/
+  /*--cef(optional_param=request)--*/
   virtual void OnLoadEnd(CefRefPtr<CefBrowser> browser,
                          CefRefPtr<CefFrame> frame,
-                         int httpStatusCode) {}
+                         int httpStatusCode,
+                         CefRefPtr<CefRequest> request) {}
 
   ///
   // Called when the browser fails to load a resource. |errorCode| is the error

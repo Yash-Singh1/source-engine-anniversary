@@ -66,7 +66,8 @@ class CefRequestHandler : public virtual CefBase {
                               CefRefPtr<CefFrame> frame,
                               CefRefPtr<CefRequest> request,
                               NavType navType,
-                              bool isRedirect) { return false; }
+                              bool isRedirect,
+                              bool isNewTabRequest) { return false; }
 
   ///
   // Called on the IO thread before a resource is loaded.  To allow the resource

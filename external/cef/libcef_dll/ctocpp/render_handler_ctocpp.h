@@ -47,6 +47,15 @@ class CefRenderHandlerCToCpp
       const RectList& dirtyRects, const void* buffer) OVERRIDE;
   virtual void OnCursorChange(CefRefPtr<CefBrowser> browser,
       CefCursorHandle cursor) OVERRIDE;
+  virtual bool OnSetCursor(CefRefPtr<CefBrowser> browser, const CursorType type,
+      const void* iconData, int width, int height, int xHotSpot,
+      int yHotSpot) OVERRIDE;
+  virtual bool OnFileOpenDialog(CefRefPtr<CefBrowser> browser,
+      bool bMultiSelect, const CefString& default_title,
+      const CefString& default_file,
+      CefWebFileChooserCallback* callback) OVERRIDE;
+  virtual bool OnEnterFullScreen(CefRefPtr<CefBrowser> browser) OVERRIDE;
+  virtual bool OnExitFullScreen(CefRefPtr<CefBrowser> browser) OVERRIDE;
 };
 
 #endif  // BUILDING_CEF_SHARED

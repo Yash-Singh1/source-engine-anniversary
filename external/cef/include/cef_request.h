@@ -44,6 +44,7 @@
 
 class CefPostData;
 class CefPostDataElement;
+class CefSecurityDetails;
 
 ///
 // Class used to represent a web request. The methods of this class may be
@@ -138,6 +139,74 @@ class CefRequest : public virtual CefBase {
   ///
   /*--cef()--*/
   virtual void SetFirstPartyForCookies(const CefString& url) =0;
+
+  ///
+  // Set the SSL details of the connection that made this request.
+  ///
+  /*--cef(optional_param=details)--*/
+  virtual void SetSecurityDetails(CefRefPtr<CefSecurityDetails> details) =0;
+
+  ///
+  // Returns true if the request was made over a secure connection.
+  ///
+  /*--cef()--*/
+  virtual bool BIsSecureRequest() =0;
+
+  ///
+  // Returns the SSL details of the connection that made this request.
+  ///
+  /*--cef()--*/
+  virtual CefRefPtr<CefSecurityDetails> SecurityDetails() =0;
+};
+
+
+///
+// Class describing the SSL state and certificate of a request.
+///
+/*--cef(source=library)--*/
+class CefSecurityDetails : public virtual CefBase {
+ public:
+  ///
+  // Returns true if the connection is secure.
+  ///
+  /*--cef()--*/
+  virtual bool BIsSecure() =0;
+
+  ///
+  // Returns true if the certificate has an error.
+  ///
+  /*--cef()--*/
+  virtual bool BHasCertError() =0;
+
+  ///
+  // Returns the certificate's common name.
+  ///
+  /*--cef()--*/
+  virtual CefString PchCertCommonName() =0;
+
+  ///
+  // Returns the certificate's issuer.
+  ///
+  /*--cef()--*/
+  virtual CefString PchCertIssuer() =0;
+
+  ///
+  // Returns the certificate's expiry time.
+  ///
+  /*--cef()--*/
+  virtual int TCertExpiry() =0;
+
+  ///
+  // Returns the certificate's key size in bits.
+  ///
+  /*--cef()--*/
+  virtual int NCertBits() =0;
+
+  ///
+  // Returns true if this is an extended validation certificate.
+  ///
+  /*--cef()--*/
+  virtual bool BIsEVCert() =0;
 };
 
 

@@ -13,12 +13,14 @@
 #include "libcef_dll/cpptoc/load_handler_cpptoc.h"
 #include "libcef_dll/ctocpp/browser_ctocpp.h"
 #include "libcef_dll/ctocpp/frame_ctocpp.h"
+#include "libcef_dll/ctocpp/request_ctocpp.h"
 
 
 // MEMBER FUNCTIONS - Body may be edited by hand.
 
 void CEF_CALLBACK load_handler_on_load_start(struct _cef_load_handler_t* self,
-    cef_browser_t* browser, cef_frame_t* frame) {
+    cef_browser_t* browser, struct _cef_frame_t* frame,
+    int bIsNewNavigation) {
   // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
 
   DCHECK(self);
@@ -36,11 +38,13 @@ void CEF_CALLBACK load_handler_on_load_start(struct _cef_load_handler_t* self,
   // Execute
   CefLoadHandlerCppToC::Get(self)->OnLoadStart(
       CefBrowserCToCpp::Wrap(browser),
-      CefFrameCToCpp::Wrap(frame));
+      CefFrameCToCpp::Wrap(frame),
+      bIsNewNavigation?true:false);
 }
 
 void CEF_CALLBACK load_handler_on_load_end(struct _cef_load_handler_t* self,
-    cef_browser_t* browser, cef_frame_t* frame, int httpStatusCode) {
+    cef_browser_t* browser, struct _cef_frame_t* frame, int httpStatusCode,
+    struct _cef_request_t* request) {
   // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
 
   DCHECK(self);
@@ -54,16 +58,18 @@ void CEF_CALLBACK load_handler_on_load_end(struct _cef_load_handler_t* self,
   DCHECK(frame);
   if (!frame)
     return;
+  // Unverified params: request
 
   // Execute
   CefLoadHandlerCppToC::Get(self)->OnLoadEnd(
       CefBrowserCToCpp::Wrap(browser),
       CefFrameCToCpp::Wrap(frame),
-      httpStatusCode);
+      httpStatusCode,
+      CefRequestCToCpp::Wrap(request));
 }
 
 int CEF_CALLBACK load_handler_on_load_error(struct _cef_load_handler_t* self,
-    cef_browser_t* browser, cef_frame_t* frame,
+    cef_browser_t* browser, struct _cef_frame_t* frame,
     enum cef_handler_errorcode_t errorCode, const cef_string_t* failedUrl,
     cef_string_t* errorText) {
   // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING

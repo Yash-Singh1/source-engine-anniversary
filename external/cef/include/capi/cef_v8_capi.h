@@ -196,8 +196,8 @@ typedef struct _cef_v8handler_t {
 
 ///
 // Structure that should be implemented to handle V8 accessor calls. Accessor
-// identifiers are registered by calling cef_v8value_t::set_value_byaccessor().
-// The functions of this structure will always be called on the UI thread.
+// identifiers are registered by calling cef_v8value_t::set_value(). The
+// functions of this structure will always be called on the UI thread.
 ///
 typedef struct _cef_v8accessor_t {
   ///

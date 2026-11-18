@@ -178,6 +178,96 @@ void CefRenderHandlerCToCpp::OnCursorChange(CefRefPtr<CefBrowser> browser,
       cursor);
 }
 
+bool CefRenderHandlerCToCpp::OnSetCursor(CefRefPtr<CefBrowser> browser,
+    const CursorType type, const void* iconData, int width, int height,
+    int xHotSpot, int yHotSpot) {
+  if (CEF_MEMBER_MISSING(struct_, on_set_cursor))
+    return false;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Verify param: browser; type: refptr_diff
+  DCHECK(browser.get());
+  if (!browser.get())
+    return false;
+  // Unverified params: iconData
+
+  // Execute
+  int _retval = struct_->on_set_cursor(struct_,
+      CefBrowserCppToC::Wrap(browser),
+      type,
+      iconData,
+      width,
+      height,
+      xHotSpot,
+      yHotSpot);
+
+  // Return type: bool
+  return _retval?true:false;
+}
+
+bool CefRenderHandlerCToCpp::OnFileOpenDialog(CefRefPtr<CefBrowser> browser,
+    bool bMultiSelect, const CefString& default_title,
+    const CefString& default_file, CefWebFileChooserCallback* callback) {
+  if (CEF_MEMBER_MISSING(struct_, on_file_open_dialog))
+    return false;
+
+  // Verify param: browser; type: refptr_diff
+  DCHECK(browser.get());
+  if (!browser.get())
+    return false;
+  // Unverified params: default_title, default_file, callback
+
+  // Execute
+  int _retval = struct_->on_file_open_dialog(struct_,
+      CefBrowserCppToC::Wrap(browser),
+      bMultiSelect,
+      default_title.GetStruct(),
+      default_file.GetStruct(),
+      callback);
+
+  // Return type: bool
+  return _retval?true:false;
+}
+
+bool CefRenderHandlerCToCpp::OnEnterFullScreen(CefRefPtr<CefBrowser> browser) {
+  if (CEF_MEMBER_MISSING(struct_, on_enter_full_screen))
+    return false;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Verify param: browser; type: refptr_diff
+  DCHECK(browser.get());
+  if (!browser.get())
+    return false;
+
+  // Execute
+  int _retval = struct_->on_enter_full_screen(struct_,
+      CefBrowserCppToC::Wrap(browser));
+
+  // Return type: bool
+  return _retval?true:false;
+}
+
+bool CefRenderHandlerCToCpp::OnExitFullScreen(CefRefPtr<CefBrowser> browser) {
+  if (CEF_MEMBER_MISSING(struct_, on_exit_full_screen))
+    return false;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Verify param: browser; type: refptr_diff
+  DCHECK(browser.get());
+  if (!browser.get())
+    return false;
+
+  // Execute
+  int _retval = struct_->on_exit_full_screen(struct_,
+      CefBrowserCppToC::Wrap(browser));
+
+  // Return type: bool
+  return _retval?true:false;
+}
+
 
 #ifndef NDEBUG
 template<> long CefCToCpp<CefRenderHandlerCToCpp, CefRenderHandler,

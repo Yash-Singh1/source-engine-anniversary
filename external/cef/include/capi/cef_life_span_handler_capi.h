@@ -104,6 +104,17 @@ typedef struct _cef_life_span_handler_t {
   ///
   void (CEF_CALLBACK *on_before_close)(struct _cef_life_span_handler_t* self,
       struct _cef_browser_t* browser);
+
+  ///
+  // Called before a new tab is created. Same as OnBeforePopup; |bForeground| is
+  // true (1) if the tab should be opened in the foreground.
+  ///
+  int (CEF_CALLBACK *on_new_tab)(struct _cef_life_span_handler_t* self,
+      struct _cef_browser_t* parentBrowser,
+      const struct _cef_popup_features_t* popupFeatures,
+      struct _cef_window_info_t* windowInfo, const cef_string_t* url,
+      int bForeground, struct _cef_client_t** client,
+      struct _cef_browser_settings_t* settings);
 } cef_life_span_handler_t;
 
 

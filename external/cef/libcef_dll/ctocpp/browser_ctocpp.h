@@ -79,6 +79,31 @@ class CefBrowserCToCpp
       int deltaY) OVERRIDE;
   virtual void SendFocusEvent(bool setFocus) OVERRIDE;
   virtual void SendCaptureLostEvent() OVERRIDE;
+  virtual void Paint() OVERRIDE;
+  virtual bool IsVisuallyNonEmpty() OVERRIDE;
+  virtual void SetShowScrollBars(bool show) OVERRIDE;
+  virtual void HorizontalScrollBarSize(int& x, int& y, int& wide,
+      int& tall) OVERRIDE;
+  virtual void VerticalScrollBarSize(int& x, int& y, int& wide,
+      int& tall) OVERRIDE;
+  virtual int HorizontalScroll() OVERRIDE;
+  virtual int VerticalScroll() OVERRIDE;
+  virtual int HorizontalScrollMax() OVERRIDE;
+  virtual int VerticalScrollMax() OVERRIDE;
+  virtual bool IsHorizontalScrollBarVisible() OVERRIDE;
+  virtual bool IsVeritcalScrollBarVisible() OVERRIDE;
+  virtual void SetHorizontalScroll(int scroll) OVERRIDE;
+  virtual void SetVerticalScroll(int scroll) OVERRIDE;
+  virtual void SetUserAgent(const CefString& userAgent) OVERRIDE;
+  virtual void GetLinkAtPosition(int x, int y, CefString& url, int& linkX,
+      int& linkY) OVERRIDE;
+  virtual float scalePageToFitElementAt(int x, int y, CefRect& elementRect,
+      CefRect& visibleRect) OVERRIDE;
+  virtual float scalePageToFocusedElement(int x, int y, CefRect& elementRect,
+      CefRect& visibleRect) OVERRIDE;
+  virtual float setPageScaleFactor(float scale, float x, float y) OVERRIDE;
+  virtual void ExitFullScreen() OVERRIDE;
+  virtual float pageScaleFactor() OVERRIDE;
 };
 
 #endif  // USING_CEF_SHARED

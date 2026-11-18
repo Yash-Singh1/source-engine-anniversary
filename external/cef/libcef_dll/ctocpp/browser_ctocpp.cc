@@ -570,6 +570,277 @@ void CefBrowserCToCpp::SendCaptureLostEvent() {
   struct_->send_capture_lost_event(struct_);
 }
 
+void CefBrowserCToCpp::Paint() {
+  if (CEF_MEMBER_MISSING(struct_, paint))
+    return;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Execute
+  struct_->paint(struct_);
+}
+
+bool CefBrowserCToCpp::IsVisuallyNonEmpty() {
+  if (CEF_MEMBER_MISSING(struct_, is_visually_non_empty))
+    return false;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Execute
+  int _retval = struct_->is_visually_non_empty(struct_);
+
+  // Return type: bool
+  return _retval?true:false;
+}
+
+void CefBrowserCToCpp::SetShowScrollBars(bool show) {
+  if (CEF_MEMBER_MISSING(struct_, set_show_scroll_bars))
+    return;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Execute
+  struct_->set_show_scroll_bars(struct_,
+      show);
+}
+
+void CefBrowserCToCpp::HorizontalScrollBarSize(int& x, int& y, int& wide,
+    int& tall) {
+  if (CEF_MEMBER_MISSING(struct_, horizontal_scroll_bar_size))
+    return;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Execute
+  struct_->horizontal_scroll_bar_size(struct_,
+      &x,
+      &y,
+      &wide,
+      &tall);
+}
+
+void CefBrowserCToCpp::VerticalScrollBarSize(int& x, int& y, int& wide,
+    int& tall) {
+  if (CEF_MEMBER_MISSING(struct_, vertical_scroll_bar_size))
+    return;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Execute
+  struct_->vertical_scroll_bar_size(struct_,
+      &x,
+      &y,
+      &wide,
+      &tall);
+}
+
+int CefBrowserCToCpp::HorizontalScroll() {
+  if (CEF_MEMBER_MISSING(struct_, horizontal_scroll))
+    return 0;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Execute
+  int _retval = struct_->horizontal_scroll(struct_);
+
+  // Return type: simple
+  return _retval;
+}
+
+int CefBrowserCToCpp::VerticalScroll() {
+  if (CEF_MEMBER_MISSING(struct_, vertical_scroll))
+    return 0;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Execute
+  int _retval = struct_->vertical_scroll(struct_);
+
+  // Return type: simple
+  return _retval;
+}
+
+int CefBrowserCToCpp::HorizontalScrollMax() {
+  if (CEF_MEMBER_MISSING(struct_, horizontal_scroll_max))
+    return 0;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Execute
+  int _retval = struct_->horizontal_scroll_max(struct_);
+
+  // Return type: simple
+  return _retval;
+}
+
+int CefBrowserCToCpp::VerticalScrollMax() {
+  if (CEF_MEMBER_MISSING(struct_, vertical_scroll_max))
+    return 0;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Execute
+  int _retval = struct_->vertical_scroll_max(struct_);
+
+  // Return type: simple
+  return _retval;
+}
+
+bool CefBrowserCToCpp::IsHorizontalScrollBarVisible() {
+  if (CEF_MEMBER_MISSING(struct_, is_horizontal_scroll_bar_visible))
+    return false;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Execute
+  int _retval = struct_->is_horizontal_scroll_bar_visible(struct_);
+
+  // Return type: bool
+  return _retval?true:false;
+}
+
+bool CefBrowserCToCpp::IsVeritcalScrollBarVisible() {
+  if (CEF_MEMBER_MISSING(struct_, is_veritcal_scroll_bar_visible))
+    return false;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Execute
+  int _retval = struct_->is_veritcal_scroll_bar_visible(struct_);
+
+  // Return type: bool
+  return _retval?true:false;
+}
+
+void CefBrowserCToCpp::SetHorizontalScroll(int scroll) {
+  if (CEF_MEMBER_MISSING(struct_, set_horizontal_scroll))
+    return;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Execute
+  struct_->set_horizontal_scroll(struct_,
+      scroll);
+}
+
+void CefBrowserCToCpp::SetVerticalScroll(int scroll) {
+  if (CEF_MEMBER_MISSING(struct_, set_vertical_scroll))
+    return;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Execute
+  struct_->set_vertical_scroll(struct_,
+      scroll);
+}
+
+void CefBrowserCToCpp::SetUserAgent(const CefString& userAgent) {
+  if (CEF_MEMBER_MISSING(struct_, set_user_agent))
+    return;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Verify param: userAgent; type: string_byref_const
+  DCHECK(!userAgent.empty());
+  if (userAgent.empty())
+    return;
+
+  // Execute
+  struct_->set_user_agent(struct_,
+      userAgent.GetStruct());
+}
+
+void CefBrowserCToCpp::GetLinkAtPosition(int x, int y, CefString& url,
+    int& linkX, int& linkY) {
+  if (CEF_MEMBER_MISSING(struct_, get_link_at_position))
+    return;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Execute
+  struct_->get_link_at_position(struct_,
+      x,
+      y,
+      url.GetWritableStruct(),
+      &linkX,
+      &linkY);
+}
+
+float CefBrowserCToCpp::scalePageToFitElementAt(int x, int y,
+    CefRect& elementRect, CefRect& visibleRect) {
+  if (CEF_MEMBER_MISSING(struct_, scale_page_to_fit_element_at))
+    return 0;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Execute
+  float _retval = struct_->scale_page_to_fit_element_at(struct_,
+      x,
+      y,
+      &elementRect,
+      &visibleRect);
+
+  // Return type: simple
+  return _retval;
+}
+
+float CefBrowserCToCpp::scalePageToFocusedElement(int x, int y,
+    CefRect& elementRect, CefRect& visibleRect) {
+  if (CEF_MEMBER_MISSING(struct_, scale_page_to_focused_element))
+    return 0;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Execute
+  float _retval = struct_->scale_page_to_focused_element(struct_,
+      x,
+      y,
+      &elementRect,
+      &visibleRect);
+
+  // Return type: simple
+  return _retval;
+}
+
+float CefBrowserCToCpp::setPageScaleFactor(float scale, float x, float y) {
+  if (CEF_MEMBER_MISSING(struct_, set_page_scale_factor))
+    return 0;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Execute
+  float _retval = struct_->set_page_scale_factor(struct_,
+      scale,
+      x,
+      y);
+
+  // Return type: simple
+  return _retval;
+}
+
+void CefBrowserCToCpp::ExitFullScreen() {
+  if (CEF_MEMBER_MISSING(struct_, exit_full_screen))
+    return;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Execute
+  struct_->exit_full_screen(struct_);
+}
+
+float CefBrowserCToCpp::pageScaleFactor() {
+  if (CEF_MEMBER_MISSING(struct_, page_scale_factor))
+    return 0;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Execute
+  float _retval = struct_->page_scale_factor(struct_);
+
+  // Return type: simple
+  return _retval;
+}
+
 
 #ifndef NDEBUG
 template<> long CefCToCpp<CefBrowserCToCpp, CefBrowser,

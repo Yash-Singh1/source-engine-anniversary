@@ -44,6 +44,10 @@ class CefLifeSpanHandlerCToCpp
   virtual bool RunModal(CefRefPtr<CefBrowser> browser) OVERRIDE;
   virtual bool DoClose(CefRefPtr<CefBrowser> browser) OVERRIDE;
   virtual void OnBeforeClose(CefRefPtr<CefBrowser> browser) OVERRIDE;
+  virtual bool OnNewTab(CefRefPtr<CefBrowser> parentBrowser,
+      const CefPopupFeatures& popupFeatures, CefWindowInfo& windowInfo,
+      const CefString& url, bool bForeground, CefRefPtr<CefClient>& client,
+      CefBrowserSettings& settings) OVERRIDE;
 };
 
 #endif  // BUILDING_CEF_SHARED

@@ -995,6 +995,56 @@ enum cef_handler_statustype_t {
 };
 
 ///
+// Cursor types (WebKit's WebCursorInfo::Type).
+///
+enum cef_handler_cursortype_t {
+  TypePointer = 0,
+  TypeCross,
+  TypeHand,
+  TypeIBeam,
+  TypeWait,
+  TypeHelp,
+  TypeEastResize,
+  TypeNorthResize,
+  TypeNorthEastResize,
+  TypeNorthWestResize,
+  TypeSouthResize,
+  TypeSouthEastResize,
+  TypeSouthWestResize,
+  TypeWestResize,
+  TypeNorthSouthResize,
+  TypeEastWestResize,
+  TypeNorthEastSouthWestResize,
+  TypeNorthWestSouthEastResize,
+  TypeColumnResize,
+  TypeRowResize,
+  TypeMiddlePanning,
+  TypeEastPanning,
+  TypeNorthPanning,
+  TypeNorthEastPanning,
+  TypeNorthWestPanning,
+  TypeSouthPanning,
+  TypeSouthEastPanning,
+  TypeSouthWestPanning,
+  TypeWestPanning,
+  TypeMove,
+  TypeVerticalText,
+  TypeCell,
+  TypeContextMenu,
+  TypeAlias,
+  TypeProgress,
+  TypeNoDrop,
+  TypeCopy,
+  TypeNone,
+  TypeNotAllowed,
+  TypeZoomIn,
+  TypeZoomOut,
+  TypeGrab,
+  TypeGrabbing,
+  TypeCustom,
+};
+
+///
 // Popup window features.
 ///
 typedef struct _cef_popup_features_t {
