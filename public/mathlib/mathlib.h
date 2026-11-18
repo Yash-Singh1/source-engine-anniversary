@@ -447,6 +447,11 @@ void inline SinCos( float radians, float *sine, float *cosine )
 		fstp DWORD PTR [edx]
 		fstp DWORD PTR [eax]
 	}
+#elif defined( OSX ) && !defined( PLATFORM_64BITS ) && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1060
+	double __cosr, __sinr;
+	__asm ("fsincos" : "=t" (__cosr), "=u" (__sinr) : "0" (radians));
+	*sine = __sinr;
+	*cosine = __cosr;
 #elif defined( PLATFORM_WINDOWS_PC64 ) || ( defined( OSX ) && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1090 )
 	*sine = sin( radians );
 	*cosine = cos( radians );
@@ -455,6 +460,7 @@ void inline SinCos( float radians, float *sine, float *cosine )
 #elif defined( POSIX )
 	sincosf(radians, sine, cosine);
 #endif
+#line 458
 }
 
 #define SIN_TABLE_SIZE	256
