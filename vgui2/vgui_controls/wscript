@@ -108,6 +108,8 @@ def build(bld):
 
 	if bld.env.DEST_OS == 'win32':
 		libs += ['SHELL32']
+	if bld.env.INCLUDES_PROTOBUF:
+		libs += ['PROTOBUF']
 
 	bld.stlib(
 		source   = source,
