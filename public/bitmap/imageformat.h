@@ -102,10 +102,18 @@ enum ImageFormat
 	IMAGE_FORMAT_LE_BGRA8888,
 #endif
 
+#ifndef BYTEMATCH_RETAIL
 	IMAGE_FORMAT_DXT1_RUNTIME,
 	IMAGE_FORMAT_DXT5_RUNTIME,
+#endif
 
 	NUM_IMAGE_FORMATS
+#ifdef BYTEMATCH_RETAIL
+	,
+	// Retail has no runtime-compressed formats; out of range so fork code still compiles.
+	IMAGE_FORMAT_DXT1_RUNTIME,
+	IMAGE_FORMAT_DXT5_RUNTIME,
+#endif
 };
 
 #if defined( TOGL_OSX )

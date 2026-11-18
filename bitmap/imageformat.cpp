@@ -91,8 +91,10 @@ static const ImageFormatInfo_t g_ImageFormatInfo[] =
 	{ "LE_BGRA8888",				4, 8, 8, 8, 8, false },			// IMAGE_FORMAT_LE_BGRA8888
 #endif
 
+#ifndef BYTEMATCH_RETAIL
 	{ "DXT1_RUNTIME",				0, 0, 0, 0, 0, true, },			// IMAGE_FORMAT_DXT1_RUNTIME
 	{ "DXT5_RUNTIME",				0, 0, 0, 0, 8, true, },			// IMAGE_FORMAT_DXT5_RUNTIME
+#endif
 };
 
 
@@ -438,10 +440,13 @@ D3DFORMAT ImageFormatToD3DFormat( ImageFormat format )
 #endif
 	case IMAGE_FORMAT_BGRA8888:
 		return D3DFMT_A8R8G8B8;
+#ifndef BYTEMATCH_RETAIL
 	case IMAGE_FORMAT_RGB888:
 		return D3DFMT_R8G8B8;
 	case IMAGE_FORMAT_RGBA8888:
 		return D3DFMT_A8R8G8B8;
+#endif
+#line 447
 	case IMAGE_FORMAT_BGRX8888:
 		return D3DFMT_X8R8G8B8;
 	case IMAGE_FORMAT_BGR565:
@@ -525,10 +530,13 @@ D3DFORMAT ImageFormatToD3DFormat( ImageFormat format )
 		return D3DFMT_D24FS8;
 #endif
 
+#ifndef BYTEMATCH_RETAIL
 	case IMAGE_FORMAT_DXT1_RUNTIME:
 		return D3DFMT_DXT1;
 	case IMAGE_FORMAT_DXT5_RUNTIME:
 		return D3DFMT_DXT5;
+#endif
+#line 534
 	}
 
 	Assert( 0 );
