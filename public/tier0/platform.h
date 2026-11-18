@@ -1171,6 +1171,19 @@ FORCEINLINE void StoreLittleDWord( uint32 *base, unsigned int dwordIndex, uint32
 	{
 		base[dwordIndex] = LittleDWord(dword);
 	}
+
+#ifndef PLATFORM_64BITS
+// The SDK 2013 signatures; on 32-bit targets unsigned long is a distinct 32-bit type.
+FORCEINLINE unsigned long LoadLittleDWord( const unsigned long *base, unsigned int dwordIndex )
+	{
+		return LittleDWord( base[dwordIndex] );
+	}
+
+FORCEINLINE void StoreLittleDWord( unsigned long *base, unsigned int dwordIndex, unsigned long dword )
+	{
+		base[dwordIndex] = LittleDWord(dword);
+	}
+#endif
 #endif
 
 
