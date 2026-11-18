@@ -784,6 +784,7 @@ bool ResampleRGB323232F( const ResampleInfo_t& info )
 	return true;
 }
 
+#ifndef BYTEMATCH_RETAIL
 bool ResampleRGBA32323232F( const ResampleInfo_t& info )
 {
 	// HDRFIXME: This is some lame shit right here. (We need to get NICE working, etc, etc.)
@@ -827,6 +828,8 @@ bool ResampleRGBA32323232F( const ResampleInfo_t& info )
 	}
 	return true;
 }
+#endif
+#line 830
 
 //-----------------------------------------------------------------------------
 // Generates mipmap levels
@@ -887,6 +890,7 @@ void GenerateMipmapLevels( unsigned char* pSrc, unsigned char* pDst, int width,
 	}
 }
 
+#ifndef BYTEMATCH_RETAIL
 void GenerateMipmapLevelsLQ( unsigned char* pSrc, unsigned char* pDst, int width, int height,
 		                     ImageFormat imageFormat, int numLevels )
 {
@@ -956,6 +960,8 @@ void GenerateMipmapLevelsLQ( unsigned char* pSrc, unsigned char* pDst, int width
 		srcHeight = Max( 1, srcHeight >> 1 );
 	} while ( srcWidth > 1 || srcHeight > 1 );
 }
+#endif
+#line 959
 
 
 } // ImageLoader namespace ends

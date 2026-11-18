@@ -758,7 +758,7 @@ FSReturnCode_t FileSystem_LoadSearchPaths( CFSSearchPathsInit &initInfo )
 
 bool CFSSearchPathsInit::m_bMountHDContent;
 
-#ifdef ENGINE_DLL
+#if defined( ENGINE_DLL ) || defined( BYTEMATCH_RETAIL )
 const char *COM_Parse( const char *data );
 extern char com_token[1024];
 

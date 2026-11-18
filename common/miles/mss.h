@@ -88,6 +88,14 @@ typedef S32 ( AILCALL *ASI_STREAM_PROPERTY )( HASISTREAM stream, HPROPERTY prope
 // On 32-bit OS X, Miles calls back with a 4-byte aligned stack. Callbacks are
 // registered through a thunk that realigns it to 16 bytes and forwards the four
 // stack arguments.
+//
+// Like RAD's macro, MSS_DEF_CB_STACK_ALIGN defines two out-of-line functions per
+// callback: name##_fixup, the realigning thunk that is handed to Miles, and
+// name##_fixup_noalign, an entry for callers whose stack is already aligned,
+// which jumps straight to the callback. Nothing here takes the second one, so
+// the linker strips it, but it must still be defined: retail's
+// voice_codec_miles.o numbers its GCC_except_table labels with one function per
+// use beyond the thunk. RAD's own name and body for it are not known.
 #if defined( __APPLE__ ) && defined( __i386__ )
 #define MSS_CALLBACK_ALIGNED_NAME( name )	name##_fixup
 #define MSS_DEC_CB_STACK_ALIGN( name )		void * name##_fixup( void );
@@ -108,6 +116,14 @@ typedef S32 ( AILCALL *ASI_STREAM_PROPERTY )( HASISTREAM stream, HPROPERTY prope
 			"addl $64, %%esp\n\t"											\
 			"popl %%ebp\n\t"												\
 			"ret\n\t"														\
+			: : "c" ( name ) );												\
+		__builtin_unreachable();											\
+	}																		\
+	void * name##_fixup_noalign( void )										\
+	{																		\
+		__asm__ __volatile__ (												\
+			"popl %%ebp\n\t"												\
+			"jmp *%0\n\t"													\
 			: : "c" ( name ) );												\
 		__builtin_unreachable();											\
 	}
