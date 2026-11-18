@@ -3614,6 +3614,56 @@ void CBaseFileSystem::RegisterFileWhitelist( IPureServerWhitelist *pWhiteList, I
 		*pFilesToReload = m_FileTracker2.GetFilesToUnloadForWhitelistChange( pWhiteList );
 }
 
+// UNIMPLEMENTED: the anniversary game-expansion, HD-mount, low-violence and audio-language
+// search path management. These keep the retail IFileSystem layout; our filesystem still
+// builds its search paths through FileSystem_LoadSearchPaths.
+void CBaseFileSystem::SetCurrentGameExpansionId( const char *pszExpansionId )
+{
+}
+
+bool CBaseFileSystem::GetCurrentGameExpansionId( char *pszExpansionId, int nMaxLen )
+{
+	return false;
+}
+
+void CBaseFileSystem::UpdateSearchPathsForCurrentGameExpansion()
+{
+}
+
+void CBaseFileSystem::AddGameAndModSearchPathsFromGameInfo( const char *pszGameDir, const char *pszModDir, KeyValues *pGameInfo )
+{
+}
+
+void CBaseFileSystem::SetUseLowViolancePaths( bool bUseLowViolence )
+{
+}
+
+void CBaseFileSystem::SetUseHDMount( bool bUseHD )
+{
+}
+
+void CBaseFileSystem::SetAudioLanguageOverride( const char *pszLanguage )
+{
+}
+
+int CBaseFileSystem::GetSearchPaths2( const char *pszPathID, bool bGetPackFiles, CUtlVector< CUtlString > &searchPaths )
+{
+	return 0;
+}
+
+bool CBaseFileSystem::GetFontTempFile( const char *pszFontFile, char *pszTempFile, int nMaxLen )
+{
+	return false;
+}
+
+void CBaseFileSystem::PushNoFinishAllOnSearchPaths()
+{
+}
+
+void CBaseFileSystem::PopNoFinishAllOnSearchPaths()
+{
+}
+
 void CBaseFileSystem::NotifyFileUnloaded( const char *pszFilename, const char *pPathId )
 {
 	m_FileTracker2.NoteFileUnloaded( pszFilename, pPathId );
