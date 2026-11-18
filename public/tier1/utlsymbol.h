@@ -65,10 +65,6 @@ public:
 	// Modules can choose to disable the static symbol table so to prevent accidental use of them.
 	static void DisableStaticSymbolTable();
 
-	// Methods with explicit locking mechanism. Only use for optimization reasons.
-	static void LockTableForRead();
-	static void UnlockTableForRead();
-	const char * StringNoLock() const;
 
 protected:
 	UtlSymId_t   m_Id;
@@ -130,9 +126,6 @@ public:
 		return m_Lookup.Count();
 	}
 
-	// We store one of these at the beginning of every string to speed
-	// up comparisons.
-	typedef unsigned short hashDecoration_t; 
 
 protected:
 	class CStringPoolIndex
@@ -179,8 +172,6 @@ protected:
 	CTree m_Lookup;
 
 	bool m_bInsensitive;
-	mutable unsigned short m_nUserSearchStringHash;
-	mutable const char* m_pUserSearchString;
 
 	// stores the string data
 	CUtlVector<StringPool_t*> m_StringPools;
@@ -188,7 +179,6 @@ protected:
 private:
 	int FindPoolWithSpace( int len ) const;
 	const char* StringFromIndex( const CStringPoolIndex &index ) const;
-	const char* DecoratedStringFromIndex( const CStringPoolIndex &index ) const;
 
 	friend class CLess;
 	friend class CSymbolHash;
