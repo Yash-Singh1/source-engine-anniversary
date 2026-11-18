@@ -1077,13 +1077,13 @@ CZipPackFile::CZipPackFile( CBaseFileSystem* fs, void *pSection )
  : m_PackFiles()
 {
 	m_fs = fs;
+	m_pSection = pSection;
 	m_pPreloadDirectory = NULL;
 	m_pPreloadData = NULL;
 	m_pPreloadHeader = NULL;
 	m_pPreloadRemapTable = NULL;
 	m_nPreloadSectionOffset = 0;
 	m_nPreloadSectionSize = 0;
-	m_pSection = pSection;
 }
 
 //-----------------------------------------------------------------------------
@@ -1628,6 +1628,13 @@ void CBaseFileSystem::AddPackFiles( const char *pPath, const CUtlSymbol &pathID,
 
 			pf->m_hPackFileHandleFS = Trace_FOpen( fullpath, "rb", 0, NULL );
 
+#if defined( SUPPORT_PACKED_STORE )
+			if ( !pf->m_hPackFileHandleFS )
+			{
+				pf->m_hPackFileHandleVPK = FindFileInVPKs( pPath );
+			}
+#endif
+
 			if ( pf->m_hPackFileHandleFS )
 			{
 				FS_setbufsize( pf->m_hPackFileHandleFS, 32*1024 );	// 32k buffer.
@@ -1647,14 +1654,23 @@ void CBaseFileSystem::AddPackFiles( const char *pPath, const CUtlSymbol &pathID,
 					m_SearchPaths.Remove( nIndex );
 				}
 			}
+#if defined( SUPPORT_PACKED_STORE )
+			else if ( pf->m_hPackFileHandleVPK )
+			{
+				if ( !pf->Prepare( pakSizes[i] ) )
+				{
+					// Failed for some reason, ignore it
+					if ( pf->m_hPackFileHandleVPK )
+					{
+						pf->m_hPackFileHandleVPK = CPackedStoreFileHandle();
+					}
+					m_SearchPaths.Remove( nIndex );
+				}
+			}
+#endif
 			else
 			{
-				// !NOTE! Pack files inside of VPK not supported
-				//pf->m_hPackFileHandleVPK = FindFileInVPKs( fullpath );
-				//if ( !pf->m_hPackFileHandleVPK || !pf->Prepare( pakSizes[i] ) )
-				{
-					m_SearchPaths.Remove( nIndex );
-				} 
+				m_SearchPaths.Remove( nIndex );
 			}
 		}
 	}
@@ -1715,13 +1731,21 @@ void CBaseFileSystem::AddMapPackFile( const char *pPath, const char *pPathID, Se
 		}
 	}
 
+	// Get the map file name, the file has been verified to exist, no reason to return the error.
+#if defined( SUPPORT_PACKED_STORE )
+	CPackedStoreFileHandle fhandle = FindFileInVPKs( pPath );
+	const char *pFullpath = fhandle ? pPath : fullpath;
+#else
+	const char *pFullpath = fullpath;
+#endif
+
 	int c = m_SearchPaths.Count();
 	for ( int i = c - 1; i >= 0; i-- )
 	{
 		if ( !( m_SearchPaths[i].GetPackFile() && m_SearchPaths[i].GetPackFile()->m_bIsMapPath ) )
 			continue;
 		
-		if ( V_stricmp( m_SearchPaths[i].GetPackFile()->m_ZipName.Get(), fullpath ) == 0 )
+		if ( V_stricmp( m_SearchPaths[i].GetPackFile()->m_ZipName.Get(), pFullpath ) == 0 )
 		{
 			// Already set as map path
 			return;
@@ -1732,14 +1756,14 @@ void CBaseFileSystem::AddMapPackFile( const char *pPath, const char *pPathID, Se
 
 	CUtlSymbol pathSymbol = g_PathIDTable.AddString( newPath );
 
-	int iStoreId = CRC32_ProcessSingleBuffer( fullpath, V_strlen(fullpath) ) | 0x80000000; // set store ID based on .bsp filename, so if we remount the same map file, it will have the same storeid
+	int iStoreId = CRC32_ProcessSingleBuffer( pFullpath, V_strlen(pFullpath) ) | 0x80000000; // set store ID based on .bsp filename, so if we remount the same map file, it will have the same storeid
 
 	// Look through already-open packfiles in case we intentionally
 	// preserved this ZIP across a map reload via refcount holding
 	FOR_EACH_VEC( m_ZipFiles, i )
 	{
 		CPackFile* pf = m_ZipFiles[i];
-		if ( pf && pf->m_bIsMapPath && pf->GetPath() == pathSymbol && V_stricmp( pf->m_ZipName.Get(), fullpath ) == 0 )
+		if ( pf && pf->m_bIsMapPath && pf->GetPath() == pathSymbol && V_stricmp( pf->m_ZipName.Get(), pFullpath ) == 0 )
 		{
 			CSearchPath *sp = &m_SearchPaths[ ( addType == PATH_ADD_TO_TAIL ) ? m_SearchPaths.AddToTail() : m_SearchPaths.AddToHead() ];
 			pf->AddRef();
@@ -1757,20 +1781,35 @@ void CBaseFileSystem::AddMapPackFile( const char *pPath, const char *pPathID, Se
 	}
 
 	{
-		FILE *fp = Trace_FOpen( fullpath, "rb", 0, NULL );
-		if ( !fp )
-		{
-			// Couldn't open it
-			Warning( FILESYSTEM_WARNING, "Couldn't open .bsp %s for embedded pack file check\n", fullpath );
-			return;
-		}
-	
-		// Get the .bsp file header
+		FILE *fp = NULL;
 		dheader_t header;
-		memset( &header, 0, sizeof(dheader_t) );
-		m_Stats.nBytesRead += FS_fread( &header, sizeof( header ), fp );
+		int nBytesRead;
+
+#if defined( SUPPORT_PACKED_STORE )
+		if ( fhandle )
+		{
+			// Get the .bsp file header
+			memset( &header, 0, sizeof(dheader_t) );
+			nBytesRead = fhandle.Read( &header, sizeof( header ) );
+		}
+		else
+#endif
+		{
+			fp = Trace_FOpen( fullpath, "rb", 0, NULL );
+			if ( !fp )
+			{
+				// Couldn't open it
+				Warning( FILESYSTEM_WARNING, "Couldn't open .bsp %s for embedded pack file check\n", fullpath );
+				return;
+			}
+
+			// Get the .bsp file header
+			memset( &header, 0, sizeof(dheader_t) );
+			nBytesRead = FS_fread( &header, sizeof( header ), fp );
+		}
+		m_Stats.nBytesRead += nBytesRead;
 		m_Stats.nReads++;
-	
+
 		if ( header.ident != IDBSPHEADER || header.version < MINBSPVERSION || header.version > BSPVERSION )
 		{
 			Trace_FClose( fp );
@@ -1787,15 +1826,31 @@ void CBaseFileSystem::AddMapPackFile( const char *pPath, const char *pPathID, Se
 		}
 	
 		// Seek to correct position
-		FS_fseek( fp, packfile->fileofs, FILESYSTEM_SEEK_HEAD );
+#if defined( SUPPORT_PACKED_STORE )
+		if ( fhandle )
+		{
+			fhandle.Seek( packfile->fileofs, FILESYSTEM_SEEK_HEAD );
+		}
+		else
+#endif
+		{
+			FS_fseek( fp, packfile->fileofs, FILESYSTEM_SEEK_HEAD );
+		}
 	
 		CPackFile *pf = new CZipPackFile( this );
 	
 		pf->m_bIsMapPath = true;
 		pf->m_hPackFileHandleFS = fp;
+#if defined( SUPPORT_PACKED_STORE )
+		pf->m_hPackFileHandleVPK = fhandle;
+#endif
 
 		MEM_ALLOC_CREDIT();
+#if defined( SUPPORT_PACKED_STORE )
+		pf->m_ZipName = fhandle ? pPath : fullpath;
+#else
 		pf->m_ZipName = fullpath;
+#endif
 	
 		if ( pf->Prepare( packfile->filelen, packfile->fileofs ) )
 		{
@@ -1826,6 +1881,9 @@ void CBaseFileSystem::AddMapPackFile( const char *pPath, const char *pPathID, Se
 	
 			Trace_FClose( pf->m_hPackFileHandleFS );
 			pf->m_hPackFileHandleFS = NULL;
+#if defined( SUPPORT_PACKED_STORE )
+			pf->m_hPackFileHandleVPK = CPackedStoreFileHandle();
+#endif
 
 			m_ZipFiles.AddToTail( pf );
 
@@ -1863,13 +1921,12 @@ void CBaseFileSystem::BeginMapAccess()
 					// Try opening the file as a regular file 
 					pPackFile->m_hPackFileHandleFS = Trace_FOpen( pPackFile->m_ZipName, "rb", 0, NULL );
 
-// !NOTE! Pack files inside of VPK not supported
-//#if defined( SUPPORT_PACKED_STORE )
-//					if ( !pPackFile->m_hPackFileHandleFS )
-//					{
-//						pPackFile->m_hPackFileHandleVPK = FindFileInVPKs( pPackFile->m_ZipName );
-//					}
-//#endif
+#if defined( SUPPORT_PACKED_STORE )
+					if ( !pPackFile->m_hPackFileHandleFS )
+					{
+						pPackFile->m_hPackFileHandleVPK = FindFileInVPKs( pPackFile->m_ZipName );
+					}
+#endif
 				}
 				pPackFile->m_nOpenFiles++;
 				pPackFile->m_mutex.Unlock();
@@ -1900,6 +1957,12 @@ void CBaseFileSystem::EndMapAccess()
 						Trace_FClose( pPackFile->m_hPackFileHandleFS );
 						pPackFile->m_hPackFileHandleFS = NULL;
 					}
+#if defined( SUPPORT_PACKED_STORE )
+					if ( pPackFile->m_hPackFileHandleVPK )
+					{
+						pPackFile->m_hPackFileHandleVPK = CPackedStoreFileHandle();
+					}
+#endif
 				}
 				pPackFile->m_mutex.Unlock();
 				pPackFile->Release();

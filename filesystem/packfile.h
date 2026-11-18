@@ -198,6 +198,9 @@ inline CPackFile::CPackFile()
 {
 	m_FileLength = 0;
 	m_hPackFileHandleFS = NULL;
+#if defined( SUPPORT_PACKED_STORE )
+	m_hPackFileHandleVPK = CPackedStoreFileHandle();
+#endif
 	m_fs = NULL;
 	m_nBaseOffset = 0;
 	m_bIsMapPath = false;
