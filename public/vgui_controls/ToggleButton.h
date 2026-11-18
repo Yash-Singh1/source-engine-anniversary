@@ -30,6 +30,8 @@ public:
 
 	virtual void DoClick();
 
+	virtual bool IsToggleButton() { return true; }
+
 	/* messages sent (get via AddActionSignalTarget()):
 		"ButtonToggled"
 			int "state"
