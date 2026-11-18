@@ -243,6 +243,16 @@
      "prebuilt": "thirdparty/telemetry/lib/telemetry32.link"
     }
    ],
+   "file_libs": [
+    {
+     "path": "tier0/DESKey/ALGO32.LIB",
+     "valve_path": "tier0/DESKey/ALGO32.LIB"
+    },
+    {
+     "path": "tier0/DESKey/DK2WIN32.LIB",
+     "valve_path": "tier0/DESKey/DK2WIN32.LIB"
+    }
+   ],
    "link": [
     "/INCREMENTAL:NO",
     "/DEBUG",
@@ -398,6 +408,7 @@
      "path": "lib/public/tier1.lib"
     }
    ],
+   "file_libs": [],
    "link": [
     "/INCREMENTAL:NO",
     "/DEBUG",
@@ -534,6 +545,7 @@
      "implib": true
     }
    ],
+   "file_libs": [],
    "link": [
     "/INCREMENTAL:NO",
     "/DEBUG",
@@ -677,6 +689,7 @@
      "implib": true
     }
    ],
+   "file_libs": [],
    "link": [
     "/INCREMENTAL:NO",
     "/DEBUG",
@@ -832,6 +845,7 @@
      "path": "lib/public/tier3.lib"
     }
    ],
+   "file_libs": [],
    "link": [
     "/INCREMENTAL:NO",
     "/DEBUG",
@@ -1021,6 +1035,7 @@
      "path": "lib/public/tier3.lib"
     }
    ],
+   "file_libs": [],
    "link": [
     "/INCREMENTAL:NO",
     "/DEBUG",
@@ -1188,6 +1203,7 @@
      "prebuilt": "lib/public/steam_api.lib"
     }
    ],
+   "file_libs": [],
    "link": [
     "/INCREMENTAL:NO",
     "/DEBUG",
@@ -2643,6 +2659,11 @@
      "lang": "c++",
      "pch": "use",
      "pch_header": "client_pch.h"
+    },
+    {
+     "path": "engine/masterserver.cpp",
+     "lang": "c++",
+     "fork_only": true
     }
    ],
    "libs": [
@@ -2720,6 +2741,16 @@
     },
     {
      "prebuilt": "lib/common/binkw32.lib"
+    }
+   ],
+   "file_libs": [
+    {
+     "path": "dx9sdk/lib/x86/dsound.lib",
+     "valve_path": "DX9SDK/lib/dsound.lib"
+    },
+    {
+     "path": "dx9sdk/lib/x86/dxguid.lib",
+     "valve_path": "DX9SDK/lib/dxguid.lib"
     }
    ],
    "link": [
@@ -3022,7 +3053,8 @@
      "lang": "c++"
     }
    ],
-   "libs": []
+   "libs": [],
+   "file_libs": []
   },
   "tier2": {
    "vpc": "tier2/tier2.vpc",
@@ -3164,7 +3196,8 @@
      "lang": "c++"
     }
    ],
-   "libs": []
+   "libs": [],
+   "file_libs": []
   },
   "tier3": {
    "vpc": "tier3/tier3.vpc",
@@ -3253,7 +3286,8 @@
      "lang": "c++"
     }
    ],
-   "libs": []
+   "libs": [],
+   "file_libs": []
   },
   "bitmap": {
    "vpc": "bitmap/bitmap.vpc",
@@ -3388,7 +3422,8 @@
     {
      "prebuilt": "lib/public/ATI_Compress_MT_VC10.lib"
     }
-   ]
+   ],
+   "file_libs": []
   },
   "mathlib": {
    "vpc": "mathlib/mathlib.vpc",
@@ -3547,7 +3582,8 @@
      "lang": "c++"
     }
    ],
-   "libs": []
+   "libs": [],
+   "file_libs": []
   },
   "replay_common": {
    "vpc": "replay/common/replay_common.vpc",
@@ -3646,7 +3682,8 @@
      "lang": "c++"
     }
    ],
-   "libs": []
+   "libs": [],
+   "file_libs": []
   },
   "appframework": {
    "vpc": "appframework/appframework.vpc",
@@ -3731,7 +3768,8 @@
      "lang": "c++"
     }
    ],
-   "libs": []
+   "libs": [],
+   "file_libs": []
   },
   "bzip2": {
    "vpc": "utils/bzip2/bzip2.vpc",
@@ -3832,7 +3870,8 @@
      "lang": "c"
     }
    ],
-   "libs": []
+   "libs": [],
+   "file_libs": []
   },
   "jpeglib": {
    "vpc": "utils/jpeglib/jpeglib.vpc",
@@ -4088,7 +4127,8 @@
      "lang": "c"
     }
    ],
-   "libs": []
+   "libs": [],
+   "file_libs": []
   },
   "dmxloader": {
    "vpc": "dmxloader/dmxloader.vpc",
@@ -4178,7 +4218,8 @@
      "lang": "c++"
     }
    ],
-   "libs": []
+   "libs": [],
+   "file_libs": []
   },
   "matsys_controls": {
    "vpc": "vgui2/matsys_controls/matsys_controls.vpc",
@@ -4336,7 +4377,8 @@
      "project": "bitmap",
      "path": "lib/public/bitmap.lib"
     }
-   ]
+   ],
+   "file_libs": []
   },
   "vtf": {
    "vpc": "vtf/vtf.vpc",
@@ -4419,7 +4461,8 @@
      "lang": "c++"
     }
    ],
-   "libs": []
+   "libs": [],
+   "file_libs": []
   },
   "vgui_controls": {
    "vpc": "vgui2/vgui_controls/vgui_controls.vpc",
@@ -4800,7 +4843,8 @@
      "lang": "c++"
     }
    ],
-   "libs": []
+   "libs": [],
+   "file_libs": []
   }
  },
  "missing_projects": [

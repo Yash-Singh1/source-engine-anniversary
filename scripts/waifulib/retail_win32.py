@@ -34,7 +34,12 @@ RETAIL_DEFINES = ['BYTEMATCH_RETAIL', 'NO_X360_XDK']
 
 # Valve include paths that only resolve with Valve's directory layout:
 # shim directory entry -> where this tree keeps it.
-LAYOUT_SHIMS = {'audio/public': 'public/engine/audio'}
+LAYOUT_SHIMS = {'audio/public': 'public/engine/audio', 'audio/private': 'engine/audio'}
+
+# Headers in this tree's dx9sdk/include that are older than the 7.1A SDK and
+# clash with it (ksmedia.h lacks the STATIC_* guards the SDK's mmreg.h relies on).
+# A generated directory ahead of the module's includes forwards them to the SDK.
+SDK_OVERRIDES = {'ksmedia.h': 'KsMedia.h'}
 
 # Retail third-party DLLs whose import libraries are generated from their exports.
 DEPOT_IMPLIBS = ['steam_api', 'SDL2', 'binkw32']
@@ -125,7 +130,7 @@ def retail_win32_configure(conf):
 	v.DEST_SIZEOF_VOID_P = 4
 	v.COMPILER_CC = 'msvc'
 	v.RETAIL_WIN32 = True
-	v.WINRC_TGT_F = '/fo'
+	v.WINRC_TGT_F = '-fo'  # not '/fo': waf's winres then moves /I paths into INCLUDE, which msvc.py replaces
 	v.WINRC_SRC_F = ''
 	v.WINRCFLAGS = ['/nologo', '/l', '0x409', '/i', os.path.join(tdir, 'rc-include')]
 
@@ -181,6 +186,13 @@ def retail_win32_build(bld):
 			os.makedirs(os.path.dirname(link), exist_ok=True)
 			os.symlink(bld.srcnode.make_node(target).abspath(), link)
 	bld.retail_shim = shim
+	over = bld.bldnode.make_node('retail-win32-override')
+	over.mkdir()
+	_, V = toolchain(bld)
+	for name, sdkname in SDK_OVERRIDES.items():
+		target = 'Z:' + os.path.join(V.VS, 'sdk71a', 'Include', sdkname).replace('/', '\\')
+		over.make_node(name).write('#include "%s"\n' % target)
+	bld.retail_override = over
 	for idx, name in enumerate(closure(manifest, bld.env.RETAIL_WIN32_MODULES)):
 		retail_win32_module(bld, name, manifest[name], idx + 1)
 
@@ -199,7 +211,7 @@ def retail_win32_module(bld, name, m, idx):
 	sources, files, mc = [], {}, None
 	for s in m['sources']:
 		if s.get('missing'):
-			if s.get('pch') == 'create' and m.get('pch_header'):
+			if s.get('pch') == 'create' and (s.get('pch_header') or m.get('pch_header')):
 				node = bdir.make_node(os.path.basename(s['path']))
 				node.write('#include "%s"\n' % (s.get('pch_header') or m['pch_header']))
 				Logs.warn('%s: %s is not in this tree; generated it from the PCH header' % (name, s['path']))
@@ -218,6 +230,8 @@ def retail_win32_module(bld, name, m, idx):
 		files[node.abspath()] = s
 
 	includes = [src.make_node(i) for i in m['includes']] + [bdir, bld.retail_shim]
+	if 'dx9sdk/include' in m['includes']:
+		includes.insert(0, bld.retail_override)
 	cl = m['cl'] + ['/FS', '/Fd' + bdir.make_node('vc120.pdb').abspath()] if '/Zi' in m['cl'] else list(m['cl'])
 	cl.append('/FI' + bld.env.RETAIL_COMPAT_H)
 	use, ldflags = [], []
@@ -234,6 +248,12 @@ def retail_win32_module(bld, name, m, idx):
 			ldflags.append(p)
 		else:
 			Logs.warn('%s: no %s to link' % (name, fname))
+	for fl in m.get('file_libs', []):
+		n = None if fl.get('missing') else src.find_node(fl['path'])
+		if n:
+			ldflags.append(n.abspath())
+		else:
+			Logs.warn('%s: %s is not in this tree' % (name, fl['path']))
 	linkflags = []
 	if m['type'] != 'lib':
 		linkflags = list(m['link']) + list(m['system_libs'])
@@ -288,8 +308,7 @@ def retail_win32_asm(self, node):
 @after_method('process_source')
 def retail_win32_per_file(self):
 	'''Per-file switches and precompiled headers, as the VPC's per-file $Configuration blocks.'''
-	create, users, envs = None, [], {}
-	pch = self.path.get_bld().make_node(self.name + '.pch')
+	creators, users, envs = {}, [], {}
 	pdb = self.path.get_bld().make_node('vc120.pdb')
 
 	def derived(key, make):
@@ -308,7 +327,8 @@ def retail_win32_per_file(self):
 		hdr = s.get('pch_header') or self.retail_pch
 		if not (flags or defines or mode):
 			continue
-		def make(base=t.env):
+		pch = self.path.get_bld().make_node('%s-%s.pch' % (self.name, os.path.splitext(os.path.basename(hdr or 'none'))[0]))
+		def make(base=t.env, pch=pch):
 			e = base.derive()
 			if flags:
 				f = list(flags) + ['/FI' + self.env.RETAIL_COMPAT_H]
@@ -319,19 +339,22 @@ def retail_win32_per_file(self):
 				e.DEFINES = list(defines) + RETAIL_DEFINES
 			if mode:
 				sw = ['/Yc' + hdr if mode == 'create' else '/Yu' + hdr, '/Fp' + pch.abspath()]
-				e.CFLAGS = list(e.CFLAGS) + sw
-				e.CXXFLAGS = list(e.CXXFLAGS) + sw
+				# a PCH's creator and users share a PDB; separate PCHs get separate PDBs so
+				# their creators don't contend for one under wine's mspdbsrv (C1033)
+				fd = '/Fd' + pch.change_ext('.pdb').abspath()
+				e.CFLAGS = [fd if f.startswith('/Fd') else f for f in e.CFLAGS] + sw
+				e.CXXFLAGS = [fd if f.startswith('/Fd') else f for f in e.CXXFLAGS] + sw
 			e.RETAIL_BATCH_KEY = repr((flags, defines, mode, hdr))
 			return e
 		t.env = derived((flags, defines, mode, hdr), make)
 		if mode == 'create':
 			t.outputs.append(pch)
-			create = t
+			creators[hdr] = t
 		elif mode == 'use':
-			users.append(t)
-	for t in users:
-		if create:
-			t.set_run_after(create)
+			users.append((t, hdr, pch))
+	for t, hdr, pch in users:
+		if hdr in creators:
+			t.set_run_after(creators[hdr])
 			t.dep_nodes.append(pch)
 	gen = self.retail_mc
 	if gen:
@@ -339,7 +362,7 @@ def retail_win32_per_file(self):
 		for t in self.compiled_tasks:
 			for g in gen.tasks:
 				t.set_run_after(g)
-	retail_win32_batch(self, create)
+	retail_win32_batch(self, set(creators.values()))
 
 BATCH_SIZE = 12
 
@@ -375,7 +398,8 @@ class retail_clbatch(Task.Task):
 		cmd += ['/I' + p for p in env.INCPATHS] + ['/D' + d for d in env.DEFINES]
 		cmd += ['/c', '/FC', '/Fo' + tmp.abspath() + '/'] + [n.abspath() for n in self.inputs] + list(env.CPPFLAGS)
 		for attempt in range(3):
-			p = Utils.subprocess.run(cmd, stdout=Utils.subprocess.PIPE, stderr=Utils.subprocess.STDOUT)
+			p = Utils.subprocess.run(cmd, cwd=self.get_cwd().abspath(), stdout=Utils.subprocess.PIPE,
+				stderr=Utils.subprocess.STDOUT)
 			out = p.stdout.decode(errors='replace')
 			# C1033: mspdbsrv under wine occasionally refuses a PDB to concurrent cl runs
 			if p.returncode == 0 or 'C1033' not in out:
@@ -388,11 +412,11 @@ class retail_clbatch(Task.Task):
 			os.replace(os.path.join(tmp.abspath(), os.path.splitext(src.name)[0] + '.obj'), out.abspath())
 		return 0
 
-def retail_win32_batch(self, create):
+def retail_win32_batch(self, creators):
 	'''Replace per-file compile tasks (except the PCH creator) with batched cl runs.'''
 	groups = {}
 	for t in self.compiled_tasks:
-		if t is create or t.__class__.__name__ not in ('c', 'cxx'):
+		if t in creators or t.__class__.__name__ not in ('c', 'cxx'):
 			continue
 		lang = 'c++' if t.__class__.__name__ == 'cxx' else 'c'
 		key = (lang, str(t.env.RETAIL_BATCH_KEY or ''))

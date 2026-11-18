@@ -42,7 +42,10 @@ INCLUDE_ALIASES = {"thirdparty/SDL2": "thirdparty/SDL", "engine/audio/private": 
                    "engine/audio/public": "public/engine/audio"}
 
 # This fork's sources a module needs because other files call into them unconditionally.
-FORK_SOURCES = {"inputsystem": ["inputsystem/touch_sdl.cpp"]}
+FORK_SOURCES = {"inputsystem": ["inputsystem/touch_sdl.cpp"], "engine": ["engine/masterserver.cpp"]}
+
+# Valve library paths ($File "...lib") that live elsewhere in this tree.
+LIB_FILE_ALIASES = {"dx9sdk/lib": "dx9sdk/lib/x86"}
 
 # Library file stem -> project that builds it. Retail links an older prebuilt
 # libjpeg (VS2010 SP1, see thirdparty-static.md); Valve's own project is the stand-in.
@@ -280,6 +283,19 @@ class Module:
         found = [os.path.join(d, f) for d, _, fs in os.walk(root) for f in fs if f.lower() == name]
         return os.path.relpath(found[0], REPO) if len(found) == 1 else None
 
+    def file_libs(self):
+        """.lib files listed as $File: MSBuild passes them to link as library inputs."""
+        out = []
+        for f in self.generator_order():
+            if not f["path"].lower().endswith(".lib") or self.p.excluded(f):
+                continue
+            rel = self.p.rel(f["path"])
+            d, base = os.path.split(rel)
+            d = next((v for k, v in LIB_FILE_ALIASES.items() if d.lower() == k.lower()), d)
+            ours = self.locate(os.path.join(d, base))
+            out.append({"path": ours or rel, "valve_path": rel} if ours else {"path": rel, "missing": True})
+        return out
+
     def libs(self):
         out = []
         for l in self.p.libs:
@@ -313,6 +329,7 @@ class Module:
             "pch_header": pchhdr if self.pch() or any(self.pch(f) for f in self.p.files) else None,
             "sources": self.sources(),
             "libs": self.libs(),
+            "file_libs": self.file_libs(),
         }
         if m["type"] != "lib":
             m["link"] = lsw
