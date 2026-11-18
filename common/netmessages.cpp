@@ -590,7 +590,12 @@ bool Base_CmdKeyValues::ReadFromBuffer( bf_read &buffer )
 	m_pKeyValues->Clear();
 
 	int numBytes = buffer.ReadLong();
+#ifdef BYTEMATCH_RETAIL
+	if ( numBytes > buffer.GetNumBytesLeft() )
+#else
 	if ( numBytes <= 0 || numBytes > buffer.GetNumBytesLeft() )
+#endif
+#line 594
 	{
 		return false; // don't read past the end of the buffer
 	}
@@ -1165,6 +1170,10 @@ bool NET_SetConVar::ReadFromBuffer( bf_read &buffer )
 
 	int numvars = buffer.ReadByte();
 
+#ifdef BYTEMATCH_RETAIL
+	if ( numvars > 0 )
+#endif
+#line 1168
 	m_ConVars.RemoveAll();
 
 	for (int i=0; i< numvars; i++ )
@@ -1180,11 +1189,13 @@ bool NET_SetConVar::ReadFromBuffer( bf_read &buffer )
 
 const char *NET_SetConVar::ToString(void) const
 {
-	Q_snprintf(s_text, sizeof(s_text), "%s: %i cvars, \"%s\"=\"%s\"", 
-		GetName(), m_ConVars.Count(), 
-		m_ConVars[0].name, m_ConVars[0].value );
+	if ( m_ConVars.Count() )
+		Q_snprintf(s_text, sizeof(s_text), "%s: %i cvars, \"%s\"=\"%s\"", GetName(), m_ConVars.Count(), m_ConVars[0].name, m_ConVars[0].value );
+	else
+		Q_snprintf(s_text, sizeof(s_text), "%s: %i cvars", GetName(), m_ConVars.Count() );
 	return s_text;
 }
+#line 1188
 
 bool SVC_UpdateStringTable::WriteToBuffer( bf_write &buffer )
 {
