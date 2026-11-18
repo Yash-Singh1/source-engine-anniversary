@@ -75,6 +75,38 @@ QueryBox::~QueryBox()
 //-----------------------------------------------------------------------------
 // Purpose: Layout the window for drawing 
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+void QueryBox::PerformLayout()
+{
+	BaseClass::PerformLayout();
+
+	int boxWidth, boxTall;
+	GetSize(boxWidth, boxTall);
+
+	int x, y, wide, tall;
+	GetClientArea(x, y, wide, tall);
+	wide += x;
+	tall += y;
+
+	int oldWide, oldTall;
+	m_pCancelButton->GetSize(oldWide, oldTall);
+	
+	int btnWide, btnTall;
+	m_pCancelButton->GetContentSize(btnWide, btnTall);
+	btnWide = max(oldWide, btnWide + 10);
+	btnTall = max(oldTall, btnTall + 10);
+	m_pCancelButton->SetSize(btnWide, btnTall);
+
+//nt boxWidth, boxTall;
+	GetSize(boxWidth, boxTall);
+//	wide = max(wide, btnWide * 2 + 100);
+//	SetSize(wide, tall);
+
+	m_pOkButton->SetPos((wide/2)-(m_pOkButton->GetWide())-1 + x, tall - m_pOkButton->GetTall() - 15);
+	m_pCancelButton->SetPos((wide/2) + x+16, tall - m_pCancelButton->GetTall() - 15);
+
+}
+#else
 void QueryBox::PerformLayout()
 {
 	BaseClass::PerformLayout();
@@ -118,6 +150,7 @@ void QueryBox::PerformLayout()
 	m_pCancelButton->SetPos((wide/2) + x+16*scale, tall - m_pCancelButton->GetTall() - 15 * scale);
 
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: Handles command text from the buttons

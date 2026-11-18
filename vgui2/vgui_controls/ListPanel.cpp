@@ -1901,7 +1901,7 @@ void ListPanel::PerformLayout()
 				if (!header->IsVisible())
 					continue;
 
-				wide = header->GetWide();
+				int wide = header->GetWide();
 
 				if ( itemID == m_iEditModeItemID &&
 					 j == m_iEditModeColumn )
@@ -1922,8 +1922,6 @@ void ListPanel::PerformLayout()
 
 	Repaint();
 	m_iColumnDraggerMoved = -1; // reset to invalid column
-
-	m_iHeaderHeight = m_ColumnsData[0].m_pHeader ? m_ColumnsData[0].m_pHeader->GetTall() : m_iHeaderHeight;
 }
 
 //-----------------------------------------------------------------------------
@@ -1990,7 +1988,7 @@ void ListPanel::Paint()
 			if (!header->IsVisible())
 				continue;
 
-			int hWide = header->GetWide();
+			int wide = header->GetWide();
 
 			if (render)
 			{
@@ -2007,7 +2005,7 @@ void ListPanel::Paint()
 
 				render->SetPos( xpos, (drawcount * m_iRowHeight) + m_iTableStartY);
 
-				int right = min( xpos + hWide, maxw );
+				int right = min( xpos + wide, maxw );
 				int usew = right - xpos;
 				render->SetSize( usew, m_iRowHeight - 1 );
 
@@ -2040,7 +2038,7 @@ void ListPanel::Paint()
 			}
 			*/
 
-			x += hWide;
+			x += wide;
 		}
 
 		drawcount++;
@@ -2464,7 +2462,6 @@ void ListPanel::OnKeyCodePressed(KeyCode code)
 	case KEY_XBUTTON_UP:
 	case KEY_XSTICK1_UP:
 	case KEY_XSTICK2_UP:
-	case STEAMCONTROLLER_DPAD_UP:
 		if ( nTotalRows > 0 )
 		{
 			nSelectedRow--;
@@ -2476,7 +2473,6 @@ void ListPanel::OnKeyCodePressed(KeyCode code)
 	case KEY_XBUTTON_DOWN:
 	case KEY_XSTICK1_DOWN:
 	case KEY_XSTICK2_DOWN:
-	case STEAMCONTROLLER_DPAD_DOWN:
 		if ( nTotalRows > 0 )
 		{
 			nSelectedRow++;
@@ -2534,7 +2530,7 @@ void ListPanel::OnKeyCodePressed(KeyCode code)
 	// move the newly selected item to within the visible range
 	if ( nRowsPerPage < nTotalRows )
 	{
-		nStartItem = m_vbar->GetValue();
+		int nStartItem = m_vbar->GetValue();
 		if ( nSelectedRow < nStartItem )
 		{
 			// move the list back to match
@@ -2828,7 +2824,7 @@ void ListPanel::SortList( void )
 //-----------------------------------------------------------------------------
 void ListPanel::SetFont(HFont font)
 {
-    Assert( font );
+	Assert( font );
 	if ( !font )
 		return;
 

@@ -101,6 +101,44 @@ void PropertyDialog::ApplyChanges()
 //-----------------------------------------------------------------------------
 // Purpose: Sets up the sheet
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+void PropertyDialog::PerformLayout()
+{
+	BaseClass::PerformLayout();
+
+	int iBottom = m_iSheetInsetBottom;
+	if ( IsProportional() )
+	{
+		iBottom = scheme()->GetProportionalScaledValueEx( GetScheme(), iBottom );
+	}
+
+	int x, y, wide, tall;
+	GetClientArea(x, y, wide, tall);
+	_propertySheet->SetBounds(x, y, wide, tall - iBottom);
+
+
+	// move the buttons to the bottom-right corner
+	int xpos = x + wide - 80;
+	int ypos = tall + y - 28;
+
+	if (_applyButton->IsVisible())
+	{
+		_applyButton->SetBounds(xpos, ypos, 72, 24);
+		xpos -= 80;
+	}
+
+	if (_cancelButton->IsVisible())
+	{
+		_cancelButton->SetBounds(xpos, ypos, 72, 24);
+		xpos -= 80;
+	}
+
+	_okButton->SetBounds(xpos, ypos, 72, 24);
+
+	_propertySheet->InvalidateLayout(); // tell the propertysheet to redraw!
+	Repaint();
+}
+#else
 void PropertyDialog::PerformLayout()
 {
 	BaseClass::PerformLayout();
@@ -149,6 +187,7 @@ void PropertyDialog::PerformLayout()
 	_propertySheet->InvalidateLayout(); // tell the propertysheet to redraw!
 	Repaint();
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: Handles command text from the buttons

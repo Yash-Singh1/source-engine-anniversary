@@ -1500,8 +1500,10 @@ void FileOpenDialog::OnOpen()
 	char pFileName[MAX_PATH];
 	GetSelectedFileName( pFileName, sizeof( pFileName ) );
 
+#ifndef BYTEMATCH_RETAIL
 	if( !pFileName[0] )
 		return;
+#endif
 
 	int nLen = Q_strlen( pFileName );
 	bool bSpecifiedDirectory = ( pFileName[nLen-1] == '/' || pFileName[nLen-1] == '\\' ) && (!IsOSX() || ( IsOSX() && !Q_stristr( pFileName, ".app" ) ) );

@@ -1216,6 +1216,104 @@ int Frame::GetCaptionHeight()
 //-----------------------------------------------------------------------------
 // Purpose: Recalculate the position of all items
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+void Frame::PerformLayout()
+{
+	// chain back
+	BaseClass::PerformLayout();
+	
+	// move everything into place
+	int wide, tall;
+	GetSize(wide, tall);
+		
+#if !defined( _X360 )
+	int DRAGGER_SIZE = GetDraggerSize();
+	int CORNER_SIZE = GetCornerSize();
+	int CORNER_SIZE2 = CORNER_SIZE * 2;
+	int BOTTOMRIGHTSIZE = GetBottomRightSize();
+
+	_topGrip->SetBounds(CORNER_SIZE, 0, wide - CORNER_SIZE2, DRAGGER_SIZE);
+	_leftGrip->SetBounds(0, CORNER_SIZE, DRAGGER_SIZE, tall - CORNER_SIZE2);
+	_topLeftGrip->SetBounds(0, 0, CORNER_SIZE, CORNER_SIZE);
+	_topRightGrip->SetBounds(wide - CORNER_SIZE, 0, CORNER_SIZE, CORNER_SIZE);
+	_bottomLeftGrip->SetBounds(0, tall - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE);
+
+	// make the bottom-right grip larger
+	_bottomGrip->SetBounds(CORNER_SIZE, tall - DRAGGER_SIZE, wide - (CORNER_SIZE + BOTTOMRIGHTSIZE), DRAGGER_SIZE);
+	_rightGrip->SetBounds(wide - DRAGGER_SIZE, CORNER_SIZE, DRAGGER_SIZE, tall - (CORNER_SIZE + BOTTOMRIGHTSIZE));
+
+	_bottomRightGrip->SetBounds(wide - BOTTOMRIGHTSIZE, tall - BOTTOMRIGHTSIZE, BOTTOMRIGHTSIZE, BOTTOMRIGHTSIZE);
+	
+	_captionGrip->SetSize(wide-10,GetCaptionHeight());
+	
+	_topGrip->MoveToFront();
+	_bottomGrip->MoveToFront();
+	_leftGrip->MoveToFront();
+	_rightGrip->MoveToFront();
+	_topLeftGrip->MoveToFront();
+	_topRightGrip->MoveToFront();
+	_bottomLeftGrip->MoveToFront();
+	_bottomRightGrip->MoveToFront();
+	
+	_maximizeButton->MoveToFront();
+	_menuButton->MoveToFront();
+	_minimizeButton->MoveToFront();
+	_minimizeToSysTrayButton->MoveToFront();
+	_menuButton->SetBounds(5+2, 5+3, GetCaptionHeight()-5, GetCaptionHeight()-5);
+#endif
+
+	float scale = 1;
+	if (IsProportional())
+	{
+		int screenW, screenH;
+		surface()->GetScreenSize( screenW, screenH );
+
+		int proW,proH;
+		surface()->GetProportionalBase( proW, proH );
+
+		scale =	( (float)( screenH ) / (float)( proH ) );
+	}
+	
+#if !defined( _X360 )
+	int offset_start = (int)( 20 * scale );
+	int offset = offset_start;
+
+	int top_border_offset = (int) ( ( 5+3 ) * scale );
+	if ( m_bSmallCaption )
+	{
+		top_border_offset = (int) ( ( 3 ) * scale );
+	}
+
+	int side_border_offset = (int) ( 5 * scale );
+	// push the buttons against the east side
+	if (_closeButton->IsVisible())
+	{
+		_closeButton->SetPos((wide-side_border_offset)-offset,top_border_offset);
+		offset += offset_start;
+		LayoutProportional( _closeButton );
+
+	}
+	if (_minimizeToSysTrayButton->IsVisible())
+	{
+		_minimizeToSysTrayButton->SetPos((wide-side_border_offset)-offset,top_border_offset);
+		offset += offset_start;
+		LayoutProportional( _minimizeToSysTrayButton );
+	}
+	if (_maximizeButton->IsVisible())
+	{
+		_maximizeButton->SetPos((wide-side_border_offset)-offset,top_border_offset);
+		offset += offset_start;
+		LayoutProportional( _maximizeButton );
+	}
+	if (_minimizeButton->IsVisible())
+	{
+		_minimizeButton->SetPos((wide-side_border_offset)-offset,top_border_offset);
+		offset += offset_start;
+		LayoutProportional( _minimizeButton );
+	}
+#endif
+}
+#else
 void Frame::PerformLayout()
 {
 	// chain back
@@ -1312,6 +1410,7 @@ void Frame::PerformLayout()
 	}
 #endif
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: Set the text in the title bar.

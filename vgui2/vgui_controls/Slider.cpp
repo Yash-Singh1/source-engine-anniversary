@@ -385,9 +385,17 @@ void Slider::GetTrackRect( int& x, int& y, int& w, int& h )
 	GetPaintSize( wide, tall );
 
 	x = 0;
+#ifdef BYTEMATCH_RETAIL
+	y = 8;
+#else
 	y = IsProportional() ? scheme()->GetProportionalScaledValue( 8.f ) : 8;;
+#endif
 	w = wide - (int)_nobSize;
+#ifdef BYTEMATCH_RETAIL
+	h = 4;
+#else
 	h = IsProportional() ? scheme()->GetProportionalScaledValue( 4.f ) : 4;
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -523,7 +531,11 @@ void Slider::DrawNob()
 #endif
 	surface()->DrawSetColor(col);
 
+#ifdef BYTEMATCH_RETAIL
+	int nobheight = 16;
+#else
 	int nobheight = IsProportional() ? scheme()->GetProportionalScaledValue( 16.f ) : 16.f;
+#endif
 
 	surface()->DrawFilledRect(
 		_nobPos[0], 
@@ -940,7 +952,11 @@ void Slider::SetButtonOffset(int buttonOffset)
 
 void Slider::SetThumbWidth( int width )
 {
+#ifdef BYTEMATCH_RETAIL
+	_nobSize = (float)width;
+#else
 	_nobSize = IsProportional() ? scheme()->GetProportionalScaledValue( (float)width) : (float)width;
+#endif
 }
 
 
