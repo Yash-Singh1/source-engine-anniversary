@@ -9019,6 +9019,7 @@ static inline RECT* RectToRECT( Rect_t *pSrcRect, RECT &dstRect )
 	return &dstRect;
 }
 
+#line 8891
 void CShaderAPIDx8::CopyRenderTargetToTextureEx( ShaderAPITextureHandle_t textureHandle, int nRenderTargetID, Rect_t *pSrcRect, Rect_t *pDstRect )
 {
 	LOCK_SHADERAPI();

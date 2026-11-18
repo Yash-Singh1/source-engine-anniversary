@@ -164,8 +164,8 @@ def main():
         for f in json.load(open(r))["functions"]:
             if f.get("status") != "differs" or not f.get("line_constants"):
                 continue
-            stem = os.path.splitext(os.path.basename(f.get("ours_object") or f.get("object") or ""))[0]
-            stem = re.sub(r"\.\d+$", "", stem).lower()
+            stem = os.path.basename(f.get("ours_object") or f.get("object") or "")
+            stem = re.sub(r"(\.(cpp|cxx|cc|c))?(\.\d+)?\.(o|obj)$", "", stem, flags=re.I).lower()
             for p in by_stem.get(stem, ()):
                 for lc in f["line_constants"]:
                     evidence[p].add((lc["ours"], lc["retail"], f["name"]))

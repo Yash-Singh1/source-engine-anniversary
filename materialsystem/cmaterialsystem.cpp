@@ -3895,6 +3895,7 @@ ConVar mat_queue_mode( "mat_queue_mode", "-1", FCVAR_ARCHIVE, "The queue/thread 
 
 ConVar mat_queue_report( "mat_queue_report", "0", FCVAR_ARCHIVE, "Report thread stalls.  Positive number will filter by stalls >= time in ms.  -1 reports all locks." );
 
+#line 3393
 void CMaterialSystem::ThreadExecuteQueuedContext( CMatQueuedRenderContext *pContext )
 {
 #ifdef RAD_TELEMETRY_ENABLED
@@ -3915,7 +3916,7 @@ void CMaterialSystem::ThreadExecuteQueuedContext( CMatQueuedRenderContext *pCont
 	pContext->EndQueue( true );
 	m_pRenderContext.Set( pSavedRenderContext );
 #endif
-#line 3660
+#line 3407
 	m_nRenderThreadID = (uintp)-1;
 }
 
@@ -4070,7 +4071,7 @@ void CMaterialSystem::EndFrame( void )
 #ifndef BYTEMATCH_RETAIL
 		OnRenderingAsyncComplete();
 #endif
-#line 3812
+#line 3559
 		break;
 
 	case MATERIAL_QUEUED_THREADED:
@@ -4095,7 +4096,7 @@ void CMaterialSystem::EndFrame( void )
 #ifndef BYTEMATCH_RETAIL
 			OnRenderingAsyncComplete();
 #endif
-#line 3834
+#line 3581
 
 			CMatQueuedRenderContext *pPrevContext = &m_QueuedRenderContexts[m_iCurQueuedContext];
 
@@ -4132,7 +4133,7 @@ void CMaterialSystem::EndFrame( void )
 #ifndef BYTEMATCH_RETAIL
 			OnRenderingAsyncComplete();
 #endif
-#line 3868
+#line 3615
 
 			CMatQueuedRenderContext *pPrevContext = &m_QueuedRenderContexts[m_iCurQueuedContext];
 
@@ -4151,7 +4152,7 @@ void CMaterialSystem::EndFrame( void )
 
 			pThreadPool->AddJob( m_pActiveAsyncJob );
 #endif
-#line 3956
+#line 3703
 			break;
 		}
 
@@ -4159,7 +4160,7 @@ void CMaterialSystem::EndFrame( void )
 #ifndef BYTEMATCH_RETAIL
 		OnRenderingAsyncComplete();
 #endif
-#line 3961
+#line 3708
 		break;
 
 #ifdef MAT_QUEUE_MODE_PROFILE
@@ -4846,7 +4847,7 @@ ITexture* CMaterialSystem::CreateNamedRenderTargetTextureEx(
 #else
 	if ( (!gl_canMixTargetSizes && IsPosix()) || IsEmulatingGL() )
 #endif
-#line 4643
+#line 4390
 	{
 		if ( depth != MATERIAL_RT_DEPTH_SEPARATE && depth != MATERIAL_RT_DEPTH_NONE )
 		{
@@ -5100,7 +5101,7 @@ void CMaterialSystem::EndRenderTargetAllocation( void )
 	g_pShaderDevice->ReleaseResources();
 	g_pShaderDevice->ReacquireResources();
 #endif
-#line 4892
+#line 4639
 
 	TextureManager()->CacheExternalStandardRenderTargets();
 }
@@ -5300,7 +5301,7 @@ void CMaterialSystem::ThreadRelease( )
 #else
 	int do_report = mat_queue_report.GetInt();
 #endif
-#line 5087
+#line 4834
 
 	if ( do_report )
 	{
@@ -5337,7 +5338,7 @@ void CMaterialSystem::ThreadRelease( )
 	}
 }
 #undef do_report
-#line 5122
+#line 4869
 
 
 void CMaterialSystem::ThreadAcquire( bool bForce )
@@ -5353,7 +5354,7 @@ void CMaterialSystem::ThreadAcquire( bool bForce )
 #else
 	int do_report = mat_queue_report.GetInt();
 #endif
-#line 5133
+#line 4880
 
 	if ( do_report )
 	{
@@ -5386,7 +5387,7 @@ void CMaterialSystem::ThreadAcquire( bool bForce )
 	}
 }
 #undef do_report
-#line 5164
+#line 4911
 
 
 //-----------------------------------------------------------------------------------------------------
@@ -5399,13 +5400,13 @@ MaterialLock_t CMaterialSystem::Lock()
 #else
 	double flStartTime;
 #endif
-#line 5172
+#line 4919
 #ifdef BYTEMATCH_RETAIL
 #define do_report mat_queue_report.GetInt()
 #else
 	int do_report = mat_queue_report.GetInt();
 #endif
-#line 5173
+#line 4920
 
 	if ( do_report )
 	{
@@ -5460,7 +5461,7 @@ MaterialLock_t CMaterialSystem::Lock()
 	return hMaterialLock;
 }
 #undef do_report
-#line 5226
+#line 4973
 
 //-----------------------------------------------------------------------------------------------------
 //
@@ -5472,13 +5473,13 @@ void CMaterialSystem::Unlock( MaterialLock_t hMaterialLock )
 #else
 	double flStartTime;
 #endif
-#line 5233
+#line 4980
 #ifdef BYTEMATCH_RETAIL
 #define do_report mat_queue_report.GetInt()
 #else
 	int do_report = mat_queue_report.GetInt();
 #endif
-#line 5234
+#line 4981
 
 	if ( do_report )
 	{
@@ -5522,7 +5523,7 @@ void CMaterialSystem::Unlock( MaterialLock_t hMaterialLock )
 #else
 		if ( do_report || flResult > mat_queue_report.GetFloat() )
 #endif
-#line 5273
+#line 5020
 		{
 			Color red(  200,  20,  20, 255 );
 			ConColorMsg( red, "*CMaterialSystem::Unlock: %0.2fms\n", flResult );
@@ -5530,7 +5531,7 @@ void CMaterialSystem::Unlock( MaterialLock_t hMaterialLock )
 	}
 }
 #undef do_report
-#line 5279
+#line 5026
 
 //-----------------------------------------------------------------------------------------------------
 //
@@ -5578,7 +5579,7 @@ CReplacementProxy::CReplacementProxy( void )
 #else
 CReplacementProxy::CReplacementProxy( void ) : m_pReplaceMaterial ( NULL )
 #endif
-#line 5322
+#line 5069
 {
 }
 
@@ -5605,12 +5606,12 @@ bool CReplacementProxy::Init( IMaterial *pMaterial, KeyValues *pKeyValues )
 #else
 	V_sprintf_safe( szNewName, "%s" REPLACEMENT_NAME, pszFileName );
 #endif
-#line 5344
+#line 5091
 	m_pReplaceMaterial = materials->CreateMaterial( szNewName, pKeyValues );
 #ifdef BYTEMATCH_RETAIL
 	m_pReplaceMaterial->IncrementReferenceCount();
 #endif
-#line 5345
+#line 5092
 
 	return true;
 }
@@ -5634,7 +5635,7 @@ void CReplacementProxy::Release( )
 	m_pReplaceMaterial->DeleteIfUnreferenced();
 	m_pReplaceMaterial = NULL;
 #endif
-#line 5366
+#line 5113
 }
 
 
@@ -5678,7 +5679,7 @@ void CMaterialSystem::ScanDirForReplacements( const char *pszPathName )
 #ifdef BYTEMATCH_RETAIL
 #define V_sprintf_safe( buf, ... ) V_snprintf( buf, sizeof( buf ), __VA_ARGS__ )
 #endif
-#line 5406
+#line 5153
 	char szBaseName[ MAX_PATH ];
 
 	V_sprintf_safe( szBaseName, "%s/replacements.vmt", pszPathName );
@@ -5716,7 +5717,7 @@ void CMaterialSystem::ScanDirForReplacements( const char *pszPathName )
 	g_pFullFileSystem->FindClose( FindHandle );
 
 #undef V_sprintf_safe
-#line 5442
+#line 5189
 }
 
 void CMaterialSystem::InitReplacementsFromFile( const char *pszPathName )
@@ -5762,7 +5763,7 @@ void CMaterialSystem::PreloadReplacements( )
 	LoadReplacementMaterials();
 	COM_TimestampedLog( "LoadReplacementMaterials(): End" );
 #endif
-#line 5483
+#line 5230
 
 	m_bReplacementFilesValid = true;
 }
@@ -5958,7 +5959,7 @@ void CMaterialSystem::OnRenderingAsyncComplete()
 		ThreadAcquire( true );
 }
 #endif
-#line 5676
+#line 5423
 
 //-----------------------------------------------------------------------------
 // Material + texture related commands

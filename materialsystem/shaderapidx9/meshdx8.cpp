@@ -3468,6 +3468,7 @@ void CMeshDX8::CheckIndices( CPrimList *pPrim, int numPrimitives )
 //-----------------------------------------------------------------------------
 // Actually does the dirty deed of rendering
 //-----------------------------------------------------------------------------
+#line 3422
 void CMeshDX8::RenderPass()
 {
 	LOCK_SHADERAPI();
@@ -3596,7 +3597,7 @@ void CDynamicMeshDX8::Reset()
 	m_pVertexBuffer = 0;
 	SafeRelease( &m_pIndexBuffer );
 #endif
-#line 3547
+#line 3545
 	ResetVertexAndIndexCounts();
 
 	// Force the render state to be updated next time
@@ -5018,7 +5019,7 @@ void CMeshMgr::CreateDynamicIndexBuffer()
 #else
 	SafeAssign( &m_pDynamicIndexBuffer, new CIndexBuffer( Dx9Device(), INDEX_BUFFER_SIZE, ShaderAPI()->UsingSoftwareVertexProcessing(), true ) );
 #endif
-#line 4964
+#line 4962
 }
 
 void CMeshMgr::DestroyDynamicIndexBuffer()
@@ -5032,7 +5033,7 @@ void CMeshMgr::DestroyDynamicIndexBuffer()
 #else
 	SafeRelease( &m_pDynamicIndexBuffer );
 #endif
-#line 4969
+#line 4967
 }
 
 //-----------------------------------------------------------------------------
@@ -5144,6 +5145,7 @@ bool CMeshMgr::IsDynamicIndexBuffer( IIndexBuffer *pIndexBuffer ) const
 //-----------------------------------------------------------------------------
 // Discards the dynamic vertex and index buffer
 //-----------------------------------------------------------------------------
+#line 5082
 void CMeshMgr::DiscardVertexBuffers()
 {
 	VPROF_BUDGET( "CMeshMgr::DiscardVertexBuffers", VPROF_BUDGETGROUP_SWAP_BUFFERS );
@@ -5572,7 +5574,7 @@ int CMeshMgr::GetMaxVerticesToRender( IMaterial *pMaterial )
 		// unable to determine vertex format information, possibly due to device loss.
 		Warning( "bad vertex size for material %s\n", pMaterial->GetName() );
 #endif
-#line 5506
+#line 5508
 		return 0;
 	}
 
@@ -6049,7 +6051,7 @@ void CMeshMgr::SetIndexStreamState( int firstVertexIdx )
 		SafeRelease( &g_pLastIndex );
 		g_LastVertexIdx = -1;
 #endif
-#line 5977
+#line 5979
 	}
 }
 
