@@ -744,6 +744,7 @@ bool CVTFTexture::LoadLowResData( CUtlBuffer &buf )
 //-----------------------------------------------------------------------------
 // Unserialization of image data
 //-----------------------------------------------------------------------------
+#ifndef BYTEMATCH_RETAIL
 bool CVTFTexture::LoadImageData( CUtlBuffer &buf, const VTFFileHeader_t &header, int nSkipMipLevels )
 {
 	// Fix up the mip count + size based on how many mip levels we skip...
@@ -765,7 +766,6 @@ bool CVTFTexture::LoadImageData( CUtlBuffer &buf, const VTFFileHeader_t &header,
 	int iImageSize = ComputeFaceSize();
 	iImageSize *= m_nFaceCount * m_nFrameCount;
 
-#ifndef BYTEMATCH_RETAIL
 	if ( !AllocateImageData( iImageSize ) )
 		return false;
 
@@ -788,60 +788,6 @@ bool CVTFTexture::LoadImageData( CUtlBuffer &buf, const VTFFileHeader_t &header,
 	int nGet = buf.TellGet();
 
 retryCubemapLoad:
-#else
-	// For backwards compatibility, we don't read in the spheremap fallback on
-	// older format .VTF files...
-	int nFacesToRead = m_nFaceCount;
-	if ( IsCubeMap() )
-	{
-		if ((header.version[0] == 7) && (header.version[1] < 1))
-			nFacesToRead = 6;
-	}
-
-	// Even if we are preloading partial data, always do the full allocation here. We'll use LOD clamping to ensure we only 
-	// reference data that is available.
-	if ( !AllocateImageData( iImageSize ) )
-		return false;
-
-	// We may only have part of the data available--if so we will stream in the rest later. 
-	// If we have the data available but we're ignoring it (for example during development), then we 
-	// need to skip over the data we're ignoring below, otherwise we'll be sad pandas.
-	bool bMipDataPresent = true;
-	int nFirstAvailableMip = 0;
-	int nLastAvailableMip = m_nMipCount - 1;
-	TextureStreamSettings_t const *pStreamSettings = ( TextureStreamSettings_t const * ) GetResourceData( VTF_RSRC_TEXTURE_STREAM_SETTINGS, NULL );
-	if ( pStreamSettings ) 
-	{
-		nFirstAvailableMip = Max( 0, pStreamSettings->m_firstAvailableMip - nSkipMipLevels );
-		nLastAvailableMip = Max( 0, pStreamSettings->m_lastAvailableMip - nSkipMipLevels );
-		bMipDataPresent = false;
-	} 
-	
-	// If we have coarse mips but not the fine mips (yet)
-	if ( ( header.flags & TEXTUREFLAGS_STREAMABLE ) == TEXTUREFLAGS_STREAMABLE_COARSE )
-	{
-		nFirstAvailableMip = Max( 0, Max( nFirstAvailableMip, STREAMING_START_MIPMAP ) - nSkipMipLevels );
-	}
-
-	if ( header.flags & TEXTUREFLAGS_STREAMABLE_FINE )
-	{
-		// Don't need to subtract nSkipMipLevels: m_nMipCount has subtracted that above--assuming this assert doesn't fire.
-		Assert( m_nMipCount == header.numMipLevels - nSkipMipLevels );
-		nLastAvailableMip = Min( nLastAvailableMip, STREAMING_START_MIPMAP - 1 );
-	}
-
-	// Valid settings? 
-	Assert( nFirstAvailableMip >= 0 && nFirstAvailableMip <= nLastAvailableMip && nLastAvailableMip < m_nMipCount );
-
-#ifndef BYTEMATCH_RETAIL
-	// Store the clamp settings
-	m_nFinestMipmapLevel = nFirstAvailableMip;
-	m_nCoarsestMipmapLevel = nLastAvailableMip;
-#endif
-
-	// NOTE: The mip levels are stored ascending from smallest (1x1) to largest (NxN)
-	// in order to allow for truncated reads of the minimal required data
-#endif
 	for (int iMip = m_nMipCount; --iMip >= 0; )
 	{
 		// NOTE: This is for older versions...
@@ -850,7 +796,6 @@ retryCubemapLoad:
 
 		int iMipSize = ComputeMipSize( iMip );
 
-#ifndef BYTEMATCH_RETAIL
 		for (int iFrame = 0; iFrame < m_nFrameCount; ++iFrame)
 		{
 			for (int iFace = 0; iFace < m_nFaceCount; ++iFace)
@@ -880,25 +825,55 @@ retryCubemapLoad:
 		Warning( "** Encountered stale cubemap! Please rebuild the following vtf:\n" );
 	}
 	return bOk;
+}
 #else
-		// Skip over any levels we don't have data for--we'll get them later. 
-		if ( iMip > nLastAvailableMip || iMip < nFirstAvailableMip )
+bool CVTFTexture::LoadImageData( CUtlBuffer &buf, const VTFFileHeader_t &header, int nSkipMipLevels )
+{
+	// Fix up the mip count + size based on how many mip levels we skip...
+	if (nSkipMipLevels > 0)
+	{
+		Assert( m_nMipCount > nSkipMipLevels );
+		if (header.numMipLevels < nSkipMipLevels)
 		{
-			// If the data is there but we're ignoring it, need to update the get pointer.
-			if ( bMipDataPresent ) 
-			{
-				for ( int iFrame = 0; iFrame < m_nFrameCount; ++iFrame )
-					for ( int iFace = 0; iFace < nFacesToRead; ++iFace )
-						buf.SeekGet( CUtlBuffer::SEEK_CURRENT, iMipSize );
-			}
-			continue;
+			// NOTE: This can only happen with older format .vtf files
+			Warning("Warning! Encountered old format VTF file; please rebuild it!\n");
+			return false;
 		}
+
+		ComputeMipLevelDimensions( nSkipMipLevels, &m_nWidth, &m_nHeight, &m_nDepth );
+		m_nMipCount -= nSkipMipLevels;
+	}
+
+	// read the texture image (including mipmaps if they are there and needed.)
+	int iImageSize = ComputeFaceSize();
+	iImageSize *= m_nFaceCount * m_nFrameCount;
+
+	// For backwards compatibility, we don't read in the spheremap fallback on
+	// older format .VTF files...
+	int nFacesToRead = m_nFaceCount;
+	if ( IsCubeMap() )
+	{
+		if ((header.version[0] == 7) && (header.version[1] < 1))
+			nFacesToRead = 6;
+	}
+
+	if ( !AllocateImageData( iImageSize ) )
+		return false;
+
+	// NOTE: The mip levels are stored ascending from smallest (1x1) to largest (NxN)
+	// in order to allow for truncated reads of the minimal required data
+	for (int iMip = m_nMipCount; --iMip >= 0; )
+	{
+		// NOTE: This is for older versions...
+		if (header.numMipLevels - nSkipMipLevels <= iMip)
+			continue;
+
+		int iMipSize = ComputeMipSize( iMip );
 
 		for (int iFrame = 0; iFrame < m_nFrameCount; ++iFrame)
 		{
 			for (int iFace = 0; iFace < nFacesToRead; ++iFace)
 			{
-				// printf("\n tex %p mip %i frame %i face %i  size %i  buf offset %i", this, iMip, iFrame, iFace, iMipSize, buf.TellGet() );
 				unsigned char *pMipBits = ImageData( iFrame, iFace, iMip );
 				buf.Get( pMipBits, iMipSize );
 			}
@@ -906,8 +881,9 @@ retryCubemapLoad:
 	}
 
 	return buf.IsValid();
-#endif
 }
+#endif
+#line 911
 
 void *CVTFTexture::SetResourceData( uint32 eType, void const *pData, size_t nNumBytes )
 {
@@ -1198,10 +1174,178 @@ bool CVTFTexture::ReadHeader( CUtlBuffer &buf, VTFFileHeader_t &header )
 //-----------------------------------------------------------------------------
 // Unserialization
 //-----------------------------------------------------------------------------
+#ifndef BYTEMATCH_RETAIL
 bool CVTFTexture::Unserialize( CUtlBuffer &buf, bool bHeaderOnly, int nSkipMipLevels )
 {
 	return UnserializeEx( buf, bHeaderOnly, 0, nSkipMipLevels );
 }
+#else
+bool CVTFTexture::Unserialize( CUtlBuffer &buf, bool bHeaderOnly, int nSkipMipLevels )
+{
+	// When unserializing, we can skip a certain number of mip levels,
+	// and we also can just load everything but the image data
+	VTFFileHeader_t header;
+
+	if ( !ReadHeader( buf, header ) )
+		return false;
+
+	if ( (header.flags & TEXTUREFLAGS_ENVMAP) && (header.width != header.height) )
+	{
+		Warning( "*** Encountered VTF non-square cubemap!\n" );
+		return false;
+	}
+	if ( (header.flags & TEXTUREFLAGS_ENVMAP) && (header.depth != 1) )
+	{
+		Warning( "*** Encountered VTF volume texture cubemap!\n" );
+		return false;
+	}
+	if ( header.width <= 0 || header.height <= 0 || header.depth <= 0 )
+	{
+		Warning( "*** Encountered VTF invalid texture size!\n" );
+		return false;
+	}
+	if ( ( header.imageFormat < IMAGE_FORMAT_UNKNOWN ) || ( header.imageFormat >= NUM_IMAGE_FORMATS ) )
+	{
+		Warning( "*** Encountered VTF invalid image format!\n" );
+		return false;
+	}
+
+	m_nWidth = header.width;
+	m_nHeight = header.height;
+	m_nDepth = header.depth;
+	m_Format = header.imageFormat;
+	m_nFlags = header.flags;
+	m_nFrameCount = header.numFrames;
+
+
+	m_nFaceCount = (m_nFlags & TEXTUREFLAGS_ENVMAP) ? CUBEMAP_FACE_COUNT : 1;
+
+	// NOTE: We're going to store space for all mip levels, even if we don't 
+	// have data on disk for them. This is for backward compatibility
+	m_nMipCount = ComputeMipCount();
+
+
+	m_vecReflectivity = header.reflectivity;
+	m_flBumpScale = header.bumpScale;
+
+	// FIXME: Why is this needed?
+	m_iStartFrame = header.startFrame;
+
+	// This is to make sure old-format .vtf files are read properly
+	m_nVersion[0] = header.version[0];
+	m_nVersion[1] = header.version[1];
+
+	if ( header.lowResImageWidth == 0 || header.lowResImageHeight == 0 )
+	{
+		m_nLowResImageWidth = 0;
+		m_nLowResImageHeight = 0;
+	}
+	else
+	{
+		m_nLowResImageWidth = header.lowResImageWidth;
+		m_nLowResImageHeight = header.lowResImageHeight;
+	}
+	m_LowResImageFormat = header.lowResImageFormat;
+
+	// invalid image format
+	if ( ( m_LowResImageFormat < IMAGE_FORMAT_UNKNOWN ) || ( m_LowResImageFormat >= NUM_IMAGE_FORMATS ) )
+		return false;
+
+	// Keep the allocated memory chunks of data
+	if ( int( header.numResources ) < m_arrResourcesData.Count() )
+	{
+		m_arrResourcesData_ForReuse.EnsureCapacity( m_arrResourcesData_ForReuse.Count() + m_arrResourcesData.Count() - header.numResources );
+		for ( ResourceMemorySection const *pRms = &m_arrResourcesData[ header.numResources ],
+			*pRmsEnd = m_arrResourcesData.Base() + m_arrResourcesData.Count(); pRms < pRmsEnd; ++ pRms )
+		{
+			if ( pRms->m_pData )
+			{
+				int idxReuse = m_arrResourcesData_ForReuse.AddToTail( *pRms );
+				m_arrResourcesData_ForReuse[ idxReuse ].m_nDataLength = 0; // Data for reuse shouldn't have length set
+			}
+		}
+	}
+	m_arrResourcesData.SetCount( header.numResources );
+
+	// Read the dictionary of resources info
+	if ( header.numResources > 0 )
+	{
+		m_arrResourcesInfo.RemoveAll();
+		m_arrResourcesInfo.SetCount( header.numResources );
+		
+		buf.Get( m_arrResourcesInfo.Base(), m_arrResourcesInfo.Count() * sizeof( ResourceEntryInfo ) );
+		if ( !buf.IsValid() )
+			return false;
+
+		if ( IsX360() )
+		{
+			// Byte-swap the dictionary data offsets
+			for ( int k = 0; k < m_arrResourcesInfo.Count(); ++ k )
+			{
+				ResourceEntryInfo &rei = m_arrResourcesInfo[k];
+				if ( ( rei.eType & RSRCF_HAS_NO_DATA_CHUNK ) == 0 )
+				{
+					m_Swap.SwapBufferToTargetEndian( &rei.resData );
+				}
+			}
+		}
+	}
+	else
+	{
+		// Older version (7.0 - 7.2):
+		//	- low-res image data first (optional)
+		//	- then image data
+		m_arrResourcesInfo.RemoveAll();
+
+		// Low-res image data
+		int nLowResImageSize = ImageLoader::GetMemRequired( m_nLowResImageWidth, 
+			m_nLowResImageHeight, 1, m_LowResImageFormat, false );
+		if ( nLowResImageSize )
+		{
+			ResourceEntryInfo &rei = *FindOrCreateResourceEntryInfo( VTF_LEGACY_RSRC_LOW_RES_IMAGE );
+			rei.resData = buf.TellGet();
+		}
+		
+		// Image data
+		ResourceEntryInfo &rei = *FindOrCreateResourceEntryInfo( VTF_LEGACY_RSRC_IMAGE );
+		rei.resData = buf.TellGet() + nLowResImageSize;
+	}
+
+	// Caller wants the header component only, avoids reading large image data sets
+	if ( bHeaderOnly )
+		return true;
+
+	// Load the low res image
+	if ( ResourceEntryInfo const *pLowResDataInfo = FindResourceEntryInfo( VTF_LEGACY_RSRC_LOW_RES_IMAGE ) )
+	{
+		buf.SeekGet( CUtlBuffer::SEEK_HEAD, pLowResDataInfo->resData );
+		if ( !LoadLowResData( buf ) )
+			return false;
+	}
+
+	// Load any new resources
+	if ( !LoadNewResources( buf ) )
+	{
+		return false;
+	}
+
+	// Load the image data
+	if ( ResourceEntryInfo const *pImageDataInfo = FindResourceEntryInfo( VTF_LEGACY_RSRC_IMAGE ) )
+	{
+		buf.SeekGet( CUtlBuffer::SEEK_HEAD, pImageDataInfo->resData );
+		if ( !LoadImageData( buf, header, nSkipMipLevels ) )
+			return false;
+	}
+	else
+	{
+		// No image data
+		return false;
+	}
+
+	return true;
+}
+#endif
+#line 1181
 
 bool CVTFTexture::UnserializeEx( CUtlBuffer &buf, bool bHeaderOnly, int nForceFlags, int nSkipMipLevels )
 {
@@ -2038,6 +2182,10 @@ void CVTFTexture::ComputeMipLevelSubRect( Rect_t *pSrcRect, int nMipLevel, Rect_
 // Converts the texture's image format. Use IMAGE_FORMAT_DEFAULT
 // if you want to be able to use various tool functions below
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+#include "tier0/mem.h"
+#endif
+#line 2041
 void CVTFTexture::ConvertImageFormat( ImageFormat fmt, bool bNormalToDUDV )
 {
 	if ( !m_pImageData )
@@ -2050,11 +2198,17 @@ void CVTFTexture::ConvertImageFormat( ImageFormat fmt, bool bNormalToDUDV )
 		fmt = IMAGE_FORMAT_RGBA8888;
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	if ( bNormalToDUDV && !( fmt == IMAGE_FORMAT_UV88 || fmt == IMAGE_FORMAT_UVWQ8888 || fmt == IMAGE_FORMAT_UVLX8888 ) )
+		return;
+#else
 	if ( bNormalToDUDV && !( fmt == IMAGE_FORMAT_UV88 || fmt == IMAGE_FORMAT_UVWQ8888 || fmt == IMAGE_FORMAT_UVLX8888 ) )
 	{
 		Assert( 0 );
 		return;
 	}
+#endif
+#line 2062
 
 	if ( m_Format == fmt )
 	{
@@ -2071,11 +2225,16 @@ void CVTFTexture::ConvertImageFormat( ImageFormat fmt, bool bNormalToDUDV )
 	// FIXME: Should this be re-written to not do an allocation?
 	int iConvertedSize = ComputeTotalSize( fmt );
 
+#ifdef BYTEMATCH_RETAIL
+	unsigned char *pConvertedImage = ( iConvertedSize <= 200000 ) ? ( unsigned char * )MemAllocScratch( iConvertedSize ) : new unsigned char[ iConvertedSize ];
+#else
 	unsigned char *pConvertedImage = new unsigned char[ iConvertedSize ];
 
 	// This can happen for large, bogus textures.
 	if ( !pConvertedImage )
 		return;
+#endif
+#line 2089
 
 	for (int iMip = 0; iMip < m_nMipCount; ++iMip)
 	{
@@ -2160,8 +2319,17 @@ void CVTFTexture::ConvertImageFormat( ImageFormat fmt, bool bNormalToDUDV )
 		}
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	if ( iConvertedSize <= 200000 )
+		MemFreeScratch();
+	else
+		delete [] pConvertedImage;
+}
+#else
 	delete [] pConvertedImage;
 }
+#endif
+#line 2180
 
 
 //-----------------------------------------------------------------------------
@@ -2555,7 +2723,12 @@ void CVTFTexture::GenerateSpheremap( LookDir_t lookDir )
 	// Allocate the bits for the spheremap
 	Assert( m_nDepth == 1 );
 	int iMemRequired = ComputeFaceSize( 0, IMAGE_FORMAT_RGBA8888 );
+#ifdef BYTEMATCH_RETAIL
+	unsigned char *pSphereMapBits = ( unsigned char * )MemAllocScratch( iMemRequired );
+#else
 	unsigned char *pSphereMapBits = new unsigned char [ iMemRequired ];
+#endif
+#line 2583
 
 	// Generate a spheremap for each frame of the cubemap
 	for (int iFrame = 0; iFrame < m_nFrameCount; ++iFrame)
@@ -2579,8 +2752,14 @@ void CVTFTexture::GenerateSpheremap( LookDir_t lookDir )
 			m_nWidth, m_nHeight, m_nDepth, m_Format, 2.2, 2.2, m_nMipCount );
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	// Free memory
+	MemFreeScratch();
+#else
 	// Free memory
 	delete [] pSphereMapBits;
+#endif
+#line 2613
 }
 
 void CVTFTexture::GenerateHemisphereMap( unsigned char *pSphereMapBitsRGBA, int targetWidth, 
