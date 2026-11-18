@@ -66,6 +66,10 @@ private:
 	bool	m_bConsoleStyle;
 	float	m_flProgressFraction;	
 
+	int				m_iSpinnerTextureID;
+	int				m_iLoadingBarTextureID;
+	unsigned int	m_nSpinnerFrameCache;
+
 	CPanelAnimationVar( int, m_iAdditionalIndentX, "AdditionalIndentX", "0" );
 	CPanelAnimationVar( int, m_iAdditionalIndentY, "AdditionalIndentY", "0" );
 };

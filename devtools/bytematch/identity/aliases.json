@@ -5,6 +5,11 @@
       "ours": "video/video_quicktime/",
       "valve": "video/",
       "why": "retail compiled video_quicktime from src/video/quicktime_*.cpp (debug map); our tree keeps those files in video/video_quicktime/"
+    },
+    {
+      "ours": "external/cef/",
+      "valve": "thirdparty/cef/",
+      "why": "retail chromehtml includes CEF from src/thirdparty/cef (debug map N_SOL); thirdparty is a submodule here, so the CEF headers and wrapper live in external/cef"
     }
   ]
 }

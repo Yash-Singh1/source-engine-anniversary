@@ -55,10 +55,13 @@ public:
 
 	KeyValues *GetHiddenMaps();
 
+	bool IsHL2Complete() { return m_bHL2Complete; }
+
 private:
 	wchar_t m_wcsGameTitle[128];
 	wchar_t m_wcsGameTitle2[128];
 	KeyValues *m_pModData;
+	bool m_bHL2Complete;
 };
 
 

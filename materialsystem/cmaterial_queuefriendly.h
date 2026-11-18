@@ -18,7 +18,12 @@
 class CMaterial_QueueFriendly : public IMaterialInternal //wraps a CMaterial with queue friendly functions for game/engine code. materialsystem/shaderapi code should use CMaterial directly.
 {
 public:
+#ifdef BYTEMATCH_RETAIL
+	CMaterial_QueueFriendly() {}
+#else
 	CMaterial_QueueFriendly() : m_pRealTimeVersion(NULL) {}
+#endif
+#line 22
 
 	virtual const char *	GetName() const;
 	virtual const char *	GetTextureGroupName() const;
@@ -143,7 +148,10 @@ public:
 	void SetRealTimeVersion( IMaterialInternal *pRealTimeVersion )
 	{
 		m_pRealTimeVersion = pRealTimeVersion;
+#ifndef BYTEMATCH_RETAIL
 		m_nReferenceCount = m_pRealTimeVersion->GetReferenceCount();
+#endif
+#line 147
 	}
 	void UpdateToRealTime( void ); //update cached off variables using the real time version as a base.
 
@@ -155,7 +163,10 @@ private:
 	//some calls need to know what state the material would be in right now if the queue had completed.
 	float m_fAlphaModulationOnQueueCompletion;
 	Vector m_vColorModulationOnQueueCompletion;
+#ifndef BYTEMATCH_RETAIL
 	int m_nReferenceCount; // Only ever accessed from the main thread.
+#endif
+#line 159
 };
 
 

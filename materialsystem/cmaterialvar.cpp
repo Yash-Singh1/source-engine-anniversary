@@ -23,9 +23,16 @@
 
 #define MATERIALVAR_CHAR_BUF_SIZE 512
 
+#if defined( BYTEMATCH_RETAIL ) && !defined( _X360 )
+#pragma pack (1)
+#endif
+#line 26
+#ifndef BYTEMATCH_RETAIL
 ConVar mat_texture_tracking( "mat_texture_tracking", IsDebug() ? "1" : "0" );
 CUtlMap<ITexture*, CInterlockedInt> s_TextureRefList( DefLessFunc( ITexture* ) );
 CUtlMap<ITexture*, CInterlockedInt> *g_pTextureRefList = &s_TextureRefList;
+#endif
+#line 29
 
 struct MaterialVarMatrix_t
 {
@@ -65,7 +72,10 @@ public:
 
 	virtual ITexture *			GetTextureValue( void );
 	virtual void				SetTextureValue( ITexture * );
+#ifndef BYTEMATCH_RETAIL
 	void						SetTextureValueQueued( ITexture *texture );
+#endif
+#line 69
 
 	virtual IMaterial *			GetMaterialValue( void );
 	virtual void				SetMaterialValue( IMaterial * );
@@ -186,11 +196,14 @@ void EnableThreadedMaterialVarAccess( bool bEnable, IMaterialVar **ppParams, int
 			ppParams[i]->SetTempIndex( 0xFF );
 		}
 		s_nTempVarsUsed = 0;
+#ifndef BYTEMATCH_RETAIL
 		if ( s_nOverflowTempVars )
 		{
 			Warning("Overflowed %d temp material vars!\n", s_nOverflowTempVars );
 			s_nOverflowTempVars = 0;
 		}
+#endif
+#line 194
 	}
 }
 
@@ -201,11 +214,14 @@ CMaterialVar *CMaterialVar::AllocThreadVar()
 	{
 		if ( m_nTempIndex == 0xFF )
 		{
+#ifndef BYTEMATCH_RETAIL
 			if ( s_nTempVarsUsed >= Q_ARRAYSIZE(s_pTempMaterialVar) )
 			{
 				s_nOverflowTempVars++;
 				return NULL;
 			}
+#endif
+#line 209
 			m_nTempIndex = s_nTempVarsUsed++;
 		}
 
@@ -426,7 +442,12 @@ void CMaterialVar::CleanUpData()
 
 	case MATERIAL_VAR_TYPE_TEXTURE:
 		// garymcthack
+#ifdef BYTEMATCH_RETAIL
+		if( !IsTextureInternalEnvCubemap( m_pTexture ) )
+#else
 		if( m_pTexture )
+#endif
+#line 430
 		{
 			m_pTexture->DecrementReferenceCount();
 			if ( g_bDeleteUnreferencedTexturesEnabled )
@@ -591,11 +612,23 @@ void CMaterialVar::SetFloatValue( float val )
 	CMatCallQueue *pCallQueue = MaterialSystem()->GetRenderCallQueue();
 	if ( !m_bFakeMaterialVar && pCallQueue )
 	{
+#ifdef BYTEMATCH_RETAIL
+		if ( s_bEnableThreadedAccess )
+		{
+			if ( m_nTempIndex == 0xFF )
+			{
+				m_nTempIndex = s_nTempVarsUsed++;
+			}
+			s_pTempMaterialVar[m_nTempIndex].SetFloatValue( val );
+		}
+#else
 		CMaterialVar *pThreadVar = AllocThreadVar();
 		if ( pThreadVar )
 		{
 			pThreadVar->SetFloatValue( val );
 		}
+#endif
+#line 599
 		pCallQueue->QueueCall( this, &CMaterialVar::SetFloatValue, val );
 		return;
 	}
@@ -625,11 +658,23 @@ void CMaterialVar::SetIntValue( int val )
 	CMatCallQueue *pCallQueue = MaterialSystem()->GetRenderCallQueue();
 	if ( !m_bFakeMaterialVar && pCallQueue )
 	{
+#ifdef BYTEMATCH_RETAIL
+		if ( s_bEnableThreadedAccess )
+		{
+			if ( m_nTempIndex == 0xFF )
+			{
+				m_nTempIndex = s_nTempVarsUsed++;
+			}
+			s_pTempMaterialVar[m_nTempIndex].SetIntValue( val );
+		}
+#else
 		CMaterialVar *pThreadVar = AllocThreadVar();
 		if ( pThreadVar )
 		{
 			pThreadVar->SetIntValue( val );
 		}
+#endif
+#line 633
 		pCallQueue->QueueCall( this, &CMaterialVar::SetIntValue, val );
 		return;
 	}
@@ -855,11 +900,23 @@ void CMaterialVar::SetStringValue( const char *val )
 	CMatCallQueue *pCallQueue = MaterialSystem()->GetRenderCallQueue();
 	if ( !m_bFakeMaterialVar && pCallQueue )
 	{
+#ifdef BYTEMATCH_RETAIL
+		if ( s_bEnableThreadedAccess )
+		{
+			if ( m_nTempIndex == 0xFF )
+			{
+				m_nTempIndex = s_nTempVarsUsed++;
+			}
+			s_pTempMaterialVar[m_nTempIndex].SetStringValue( val );
+		}
+#else
 		CMaterialVar *pThreadVar = AllocThreadVar();
 		if ( pThreadVar )
 		{
 			pThreadVar->SetStringValue( val );
 		}
+#endif
+#line 863
 		pCallQueue->QueueCall( this, &CMaterialVar::SetStringValue, CUtlEnvelope<const char *>(val) );
 		return;
 	}
@@ -884,11 +941,23 @@ void CMaterialVar::SetFourCCValue( FourCC type, void *pData )
 	CMatCallQueue *pCallQueue = MaterialSystem()->GetRenderCallQueue();
 	if ( !m_bFakeMaterialVar && pCallQueue )
 	{
+#ifdef BYTEMATCH_RETAIL
+		if ( s_bEnableThreadedAccess )
+		{
+			if ( m_nTempIndex == 0xFF )
+			{
+				m_nTempIndex = s_nTempVarsUsed++;
+			}
+			s_pTempMaterialVar[m_nTempIndex].SetFourCCValue( type, pData );
+		}
+#else
 		CMaterialVar *pThreadVar = AllocThreadVar();
 		if ( pThreadVar )
 		{
 			pThreadVar->SetFourCCValue( type, pData );
 		}
+#endif
+#line 892
 		pCallQueue->QueueCall( this, &CMaterialVar::SetFourCCValue, type, pData );
 		return;
 	}
@@ -1070,6 +1139,7 @@ ITexture *CMaterialVar::GetTextureValue( void )
 #endif
 
 
+#ifndef BYTEMATCH_RETAIL
 void CMaterialVar::SetTextureValueQueued( ITexture *texture )
 {
 	SetTextureValue( texture );
@@ -1088,9 +1158,53 @@ void CMaterialVar::SetTextureValueQueued( ITexture *texture )
 }
 
 static bool s_bInitTextureRefList = false;
+#endif
+#line 1091
 
 void CMaterialVar::SetTextureValue( ITexture *texture )
 {
+#ifdef BYTEMATCH_RETAIL
+	ASSERT_NOT_DUMMY_VAR();
+	CMatCallQueue *pCallQueue = MaterialSystem()->GetRenderCallQueue();
+	if ( !m_bFakeMaterialVar && pCallQueue )
+	{
+		// FIXME (toml): deal with reference count
+		if ( s_bEnableThreadedAccess )
+		{
+			if ( m_nTempIndex == 0xFF )
+			{
+				m_nTempIndex = s_nTempVarsUsed++;
+			}
+			s_pTempMaterialVar[m_nTempIndex].SetTextureValue( texture );
+		}
+		pCallQueue->QueueCall( this, &CMaterialVar::SetTextureValue, texture );
+		return;
+	}
+
+	ITextureInternal* pTexImp = static_cast<ITextureInternal *>( texture );
+
+	// Suppress all this if we're not actually changing anything
+	if ((m_Type == MATERIAL_VAR_TYPE_TEXTURE) && (m_pTexture == pTexImp))
+		return;
+
+	// Gotta flush if we've changed state and this is the current material
+	if ( !m_bFakeMaterialVar && m_pMaterial && (m_pMaterial == MaterialSystem()->GetCurrentMaterial()))
+		g_pShaderAPI->FlushBufferedPrimitives();
+
+	if( !IsTextureInternalEnvCubemap( pTexImp ) )
+	{
+		pTexImp->IncrementReferenceCount();
+	}
+
+	CleanUpData();
+	m_pTexture = pTexImp;
+	m_Type = MATERIAL_VAR_TYPE_TEXTURE;
+	m_intVal = 0;
+	m_VecVal.Init();
+	VarChanged();
+}
+#else
+#line 1094
 	if ( !s_bInitTextureRefList )
 	{
 		g_pTextureRefList->SetLessFunc( DefLessFunc( ITexture* ) );
@@ -1112,11 +1226,23 @@ void CMaterialVar::SetTextureValue( ITexture *texture )
 	if ( !m_bFakeMaterialVar && pCallQueue )
 	{
 		// FIXME (toml): deal with reference count
+#ifdef BYTEMATCH_RETAIL
+		if ( s_bEnableThreadedAccess )
+		{
+			if ( m_nTempIndex == 0xFF )
+			{
+				m_nTempIndex = s_nTempVarsUsed++;
+			}
+			s_pTempMaterialVar[m_nTempIndex].SetTextureValue( texture );
+		}
+#else
 		CMaterialVar *pThreadVar = AllocThreadVar();
 		if ( pThreadVar )
 		{
 			pThreadVar->SetTextureValue( texture );
 		}
+#endif
+#line 1120
 
 		// Matches DecrementReferenceCount in SetTextureValueQueued
 		if ( texture )
@@ -1160,6 +1286,8 @@ void CMaterialVar::SetTextureValue( ITexture *texture )
 	m_VecVal.Init();
 	VarChanged();
 }
+#endif
+#line 1163
 
 
 //-----------------------------------------------------------------------------
@@ -1211,11 +1339,23 @@ void CMaterialVar::SetMaterialValue( IMaterial *pMaterial )
 	if ( !m_bFakeMaterialVar && pCallQueue )
 	{
 		// FIXME (toml): deal with reference count
+#ifdef BYTEMATCH_RETAIL
+		if ( s_bEnableThreadedAccess )
+		{
+			if ( m_nTempIndex == 0xFF )
+			{
+				m_nTempIndex = s_nTempVarsUsed++;
+			}
+			s_pTempMaterialVar[m_nTempIndex].SetMaterialValue( pMaterial );
+		}
+#else
 		CMaterialVar *pThreadVar = AllocThreadVar();
 		if ( pThreadVar )
 		{
 			pThreadVar->SetMaterialValue( pMaterial );
 		}
+#endif
+#line 1219
 		pCallQueue->QueueCall( this, &CMaterialVar::SetMaterialValue, pMaterial );
 		return;
 	}
@@ -1321,11 +1461,23 @@ void CMaterialVar::SetVecValueInternal( const Vector4D &vec, int nComps )
 	CMatCallQueue *pCallQueue = MaterialSystem()->GetRenderCallQueue();
 	if ( !m_bFakeMaterialVar && pCallQueue )
 	{
+#ifdef BYTEMATCH_RETAIL
+		if ( s_bEnableThreadedAccess )
+		{
+			if ( m_nTempIndex == 0xFF )
+			{
+				m_nTempIndex = s_nTempVarsUsed++;
+			}
+			s_pTempMaterialVar[m_nTempIndex].SetVecValueInternal( vec, nComps );
+		}
+#else
 		CMaterialVar *pThreadVar = AllocThreadVar();
 		if ( pThreadVar )
 		{
 			pThreadVar->SetVecValueInternal( vec, nComps );
 		}
+#endif
+#line 1329
 		pCallQueue->QueueCall( this, &CMaterialVar::SetVecValueInternal, RefToVal( vec ), nComps );
 		return;
 	}
@@ -1384,7 +1536,7 @@ void CMaterialVar::SetVecComponentValue( float fVal, int nComponent )
 {
 	ASSERT_NOT_DUMMY_VAR();
 
-#ifndef _CERT
+#if !defined( _CERT ) && !defined( BYTEMATCH_RETAIL )
 	// DIAF
 	if ( nComponent < 0 || nComponent > 3 )
 	{
@@ -1398,6 +1550,14 @@ void CMaterialVar::SetVecComponentValue( float fVal, int nComponent )
 	{
 		if ( s_bEnableThreadedAccess )
 		{
+#ifdef BYTEMATCH_RETAIL
+			if ( m_nTempIndex == 0xFF )
+			{
+				m_nTempIndex = s_nTempVarsUsed++;
+				s_pTempMaterialVar[m_nTempIndex].SetVecValue( m_VecVal.Base(), m_nNumVectorComps );
+			}
+			s_pTempMaterialVar[m_nTempIndex].SetVecComponentValue( fVal, nComponent );
+#else
 			bool bInit = ( m_nTempIndex == 0xFF ) ? true : false;
 			CMaterialVar *pThreadVar = AllocThreadVar();
 			if ( pThreadVar )
@@ -1408,6 +1568,8 @@ void CMaterialVar::SetVecComponentValue( float fVal, int nComponent )
 				}
 				pThreadVar->SetVecComponentValue( fVal, nComponent );
 			}
+#endif
+#line 1411
 		}
 		pCallQueue->QueueCall( this, &CMaterialVar::SetVecComponentValue, fVal, nComponent );
 		return;
@@ -1477,11 +1639,23 @@ void CMaterialVar::SetMatrixValue( VMatrix const& matrix )
 	CMatCallQueue *pCallQueue = MaterialSystem()->GetRenderCallQueue();
 	if ( !m_bFakeMaterialVar && pCallQueue )
 	{
+#ifdef BYTEMATCH_RETAIL
+		if ( s_bEnableThreadedAccess )
+		{
+			if ( m_nTempIndex == 0xFF )
+			{
+				m_nTempIndex = s_nTempVarsUsed++;
+			}
+			s_pTempMaterialVar[m_nTempIndex].SetMatrixValue( matrix );
+		}
+#else
 		CMaterialVar *pThreadVar = AllocThreadVar();
 		if ( pThreadVar )
 		{
 			pThreadVar->SetMatrixValue( matrix );
 		}
+#endif
+#line 1485
 		pCallQueue->QueueCall( this, &CMaterialVar::SetMatrixValue, RefToVal( matrix ) );
 		return;
 	}
@@ -1526,11 +1700,23 @@ void CMaterialVar::SetUndefined()
 	CMatCallQueue *pCallQueue = MaterialSystem()->GetRenderCallQueue();
 	if ( !m_bFakeMaterialVar && pCallQueue )
 	{
+#ifdef BYTEMATCH_RETAIL
+		if ( s_bEnableThreadedAccess )
+		{
+			if ( m_nTempIndex == 0xFF )
+			{
+				m_nTempIndex = s_nTempVarsUsed++;
+			}
+			s_pTempMaterialVar[m_nTempIndex].SetUndefined( );
+		}
+#else
 		CMaterialVar *pThreadVar = AllocThreadVar();
 		if ( pThreadVar )
 		{
 			pThreadVar->SetUndefined( );
 		}
+#endif
+#line 1534
 		pCallQueue->QueueCall( this, &CMaterialVar::SetUndefined );
 		return;
 	}

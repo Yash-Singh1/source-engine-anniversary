@@ -1,43 +1,29 @@
 //========= Copyright Valve Corporation, All rights reserved. ============//
 //
-// Purpose: Implements the IHTMLChromeController interface: the main thread
-//			side of the CEF thread's command and response queues.
+// Purpose: Creates a HTML control
 //
+// $NoKeywords: $
 //=============================================================================//
-
+#include "winlite.h"
 #include "html_chrome.h"
-#include "html/ichromehtmlwrapper.h"
-#include "html/htmlprotobuf.h"
-#include "tier0/vprof.h"
 #include "tier1/interface.h"
-#include "tier1/utlmap.h"
-#include "tier0/valve_minmax_off.h"
+#include "reliabletimer.h"
+#include "htmlmanager.h"
 
-#include "tier0/memdbgoff.h"
-#include "htmlmessages.pb.h"
-
-// memdbgon must be the last include file in a .cpp file!!!
-#include "tier0/memdbgon.h"
+#include "html/htmlprotobuf.h"
+#include <html/ichromehtmlwrapper.h>
 
 //-----------------------------------------------------------------------------
-// Purpose: owns the browser handles on the main thread and pumps the
-//			responses from the CEF thread to them
+// Purpose: owner object that gets responses from the CEF thread and dispatches them
 //-----------------------------------------------------------------------------
 class CHTMLController : public IHTMLChromeController
 {
 public:
-	CHTMLController()
-	{
-		m_BrowserSerial = 0;
-		m_nCefTargetFrameRate = 0;
-		SetDefLessFunc( m_mapBrowserRequests );
-		SetDefLessFunc( m_mapBrowsers );
-	}
+	CHTMLController() { m_BrowserSerial = 0; m_nCefTargetFrameRate = 0; SetDefLessFunc( m_mapBrowserRequests ); SetDefLessFunc( m_mapBrowsers ); }
 	~CHTMLController() {}
 
 	bool Init( const char *pchHTMLCacheDir, const char *pchCookiePath );
 	void Shutdown();
-	bool RunFrame();
 
 	void SetWebCookie( const char *pchHostname, const char *pchKey, const char *pchValue, const char *pchPath, RTime32 nExpires );
 	void GetWebCookiesForURL( CUtlString *pstrValue, const char *pchURL, const char *pchName );
@@ -47,188 +33,190 @@ public:
 
 	void CreateBrowser( IHTMLResponses *pBrowser, bool bPopupWindow, const char *pchUserAgentIdentifier );
 	void RemoveBrowser( IHTMLResponses *pBrowser );
+	bool RunFrame();
 
 	void WakeThread() { AccessHTMLWrapper().WakeThread(); }
 	HTMLCommandBuffer_t *GetFreeCommandBuffer( EHTMLCommands eCmd, int iBrowser ) { return AccessHTMLWrapper().GetFreeCommandBuffer( eCmd, iBrowser ); }
 	void PushCommand( HTMLCommandBuffer_t *pCmd ) { AccessHTMLWrapper().PushCommand( pCmd ); }
 
+
+	bool GetMainThreadCommand( HTMLCommandBuffer_t **pCmd ) { return AccessHTMLWrapper().GetMainThreadCommand( pCmd ); }
+	void ReleaseCommandBuffer( HTMLCommandBuffer_t *pCmd ) { AccessHTMLWrapper().ReleaseCommandBuffer( pCmd ); }
+
+#ifdef DBGFLAG_VALIDATE
+	void Validate( CValidator &validator, const char *pchName );
+	bool ChromePrepareForValidate();
+	bool ChromeResumeFromValidate();
+#endif
+	
 	void SetCefThreadTargetFrameRate( uint32 nFPS );
 
 private:
-	// browsers we have asked the CEF thread to create, keyed by request id
-	CUtlMap<uint32, IHTMLResponses *, int> m_mapBrowserRequests;
+	// keeps track of outstanding browser create requests
+	CUtlMap< uint32, IHTMLResponses *, int > m_mapBrowserRequests;
+	// the next unique identifier to use when doing a browser create
 	uint32 m_BrowserSerial;
-	// live browsers, keyed by the CEF thread's browser handle
-	CUtlMap<uint32, IHTMLResponses *, int> m_mapBrowsers;
-	uint32 m_nCefTargetFrameRate;
+	// the map of browser handles to our html panel objects, used for cef thread command dispatching
+	CUtlMap< uint32, IHTMLResponses *, int > m_mapBrowsers;
+
+	int m_nCefTargetFrameRate;
 };
+
 
 static CHTMLController s_HTMLController;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR( CHTMLController, IHTMLChromeController, CHROMEHTML_CONTROLLER_INTERFACE_VERSION, s_HTMLController );
 
 
 //-----------------------------------------------------------------------------
-// Purpose: request a new browser; the CEF thread answers with a
-//			BrowserCreateResponse carrying the browser handle
+// Purpose: request the cef thread to make a new browser
 //-----------------------------------------------------------------------------
 void CHTMLController::CreateBrowser( IHTMLResponses *pBrowser, bool bPopupWindow, const char *pchUserAgentIdentifier )
 {
-	++m_BrowserSerial;
+	m_BrowserSerial++;
 	m_mapBrowserRequests.Insert( m_BrowserSerial, pBrowser );
 
 	CHTMLProtoBufMsg<CMsgBrowserCreate> cmd( eHTMLCommands_BrowserCreate );
 	cmd.Body().set_request_id( m_BrowserSerial );
 	cmd.Body().set_popup( bPopupWindow );
 	cmd.Body().set_useragent( pchUserAgentIdentifier );
-	HTMLCommandBuffer_t *pBuf = AccessHTMLWrapper().GetFreeCommandBuffer( eHTMLCommands_BrowserCreate, -1 );
-	cmd.SerializeCrossProc( &pBuf->m_Buffer );
-	AccessHTMLWrapper().PushCommand( pBuf );
+	HTMLCommandBuffer_t *pBuf = AccessHTMLWrapper().GetFreeCommandBuffer( eHTMLCommands_BrowserCreate, -1 ); 
+	cmd.SerializeCrossProc( &pBuf->m_Buffer ); 
+	AccessHTMLWrapper().PushCommand( pBuf ); 
 }
 
 
 //-----------------------------------------------------------------------------
-// Purpose: tell the CEF thread to close this browser and forget about it
+// Purpose: delete a browser we have
 //-----------------------------------------------------------------------------
 void CHTMLController::RemoveBrowser( IHTMLResponses *pBrowser )
 {
-	FOR_EACH_MAP_FAST( m_mapBrowsers, i )
+	
+	// pull ourselves from the browser handle list as we are doing away
+	FOR_EACH_MAP_FAST( m_mapBrowsers, i)
 	{
 		if ( m_mapBrowsers[i] == pBrowser )
 		{
+			// tell the cef thread this browser is going away
 			CHTMLProtoBufMsg<CMsgBrowserRemove> cmd( eHTMLCommands_BrowserRemove );
 			cmd.Body().set_browser_handle( pBrowser->BrowserGetIndex() );
-			HTMLCommandBuffer_t *pBuf = AccessHTMLWrapper().GetFreeCommandBuffer( eHTMLCommands_BrowserRemove, pBrowser->BrowserGetIndex() );
-			cmd.SerializeCrossProc( &pBuf->m_Buffer );
-			AccessHTMLWrapper().PushCommand( pBuf );
+			HTMLCommandBuffer_t *pBuf = AccessHTMLWrapper().GetFreeCommandBuffer( eHTMLCommands_BrowserRemove, pBrowser->BrowserGetIndex() ); 
+			cmd.SerializeCrossProc( &pBuf->m_Buffer ); 
+			AccessHTMLWrapper().PushCommand( pBuf ); 
+
+			// now kill it
 			m_mapBrowsers.RemoveAt( i );
 		}
 	}
 
-	FOR_EACH_MAP_FAST( m_mapBrowserRequests, i )
+	// also remove us from pending list if in it
+	FOR_EACH_MAP_FAST( m_mapBrowserRequests, i)
 	{
 		if ( m_mapBrowserRequests[i] == pBrowser )
-		{
 			m_mapBrowserRequests.RemoveAt( i );
-		}
 	}
 }
 
 
 //-----------------------------------------------------------------------------
-// Purpose: start the CEF thread
+// Purpose: turn on the cef engine
 //-----------------------------------------------------------------------------
 bool CHTMLController::Init( const char *pchHTMLCacheDir, const char *pchCookiePath )
 {
+#if !defined(WIN64) && !defined(STATIC_TIER0)
 	ChromeInit( pchHTMLCacheDir, pchCookiePath );
+#endif
+
 	return true;
 }
 
 
 //-----------------------------------------------------------------------------
-// Purpose: stop the CEF thread
+// Purpose: shutdown chrome
 //-----------------------------------------------------------------------------
 void CHTMLController::Shutdown()
 {
+#if !defined(WIN64) && !defined(STATIC_TIER0)
 	ChromeShutdown();
+#endif
 }
 
 
-//-----------------------------------------------------------------------------
-// Purpose: union a paint's update rect into the dirty region; no update rect
-//			means the whole page
-//-----------------------------------------------------------------------------
-static inline void AccumulateDirtyRect( const CMsgNeedsPaint &paint, int &nMinX, int &nMinY, int &nMaxX, int &nMaxY )
-{
-	if ( !paint.updatewide() || !paint.updatetall() )
-	{
-		nMinX = 0;
-		nMinY = 0;
-		nMaxX = INT_MAX;
-		nMaxY = INT_MAX;
-		return;
-	}
 
-	int x0 = paint.updatex();
-	int x1 = x0 + (int)paint.updatewide();
-	if ( x0 >= x1 )
-		return;
-
-	int y0 = paint.updatey();
-	int y1 = y0 + (int)paint.updatetall();
-	if ( y0 >= y1 )
-		return;
-
-	nMinX = MIN( nMinX, x0 );
-	nMinY = MIN( nMinY, y0 );
-	nMaxX = MAX( nMaxX, x1 );
-	nMaxY = MAX( nMaxY, y1 );
-}
-
-
+// helper macro to dispatch messages from the cef thread
 #define HTML_MSG_FUNC( eHTMLCommand, bodyType, commandFunc ) \
 	case eHTMLCommand: \
-	{ \
-		CHTMLProtoBufMsg< bodyType > cmd( pCmd->m_eCmd ); \
-		if ( !cmd.BDeserializeCrossProc( &pCmd->m_Buffer ) ) \
-		{ \
-			bError = true; \
-		} \
-		else \
-		{ \
-			int iClient = m_mapBrowsers.Find( cmd.BodyConst().browser_handle() ); \
-			if ( iClient != m_mapBrowsers.InvalidIndex() ) \
-			{ \
-				if ( m_mapBrowsers[iClient] ) \
-					m_mapBrowsers[iClient]->commandFunc( &cmd.BodyConst() ); \
-			} \
-		} \
-	} \
-	break; \
+{ \
+	CHTMLProtoBufMsg< bodyType > cmd( pCmd->m_eCmd ); \
+	if ( !cmd.BDeserializeCrossProc( &pCmd->m_Buffer ) ) \
+{ \
+	bError = true; \
+} \
+	else \
+{ \
+	int idx = m_mapBrowsers.Find( cmd.BodyConst().browser_handle() ); \
+	if ( idx != m_mapBrowsers.InvalidIndex() ) \
+{ \
+	if ( m_mapBrowsers[idx] ) \
+	m_mapBrowsers[idx]->commandFunc( &cmd.BodyConst() ); \
+} \
+} \
+} \
+	break;  \
 
 
 //-----------------------------------------------------------------------------
-// Purpose: dispatch the CEF thread's responses to their browsers
+// Purpose: process any ipc responses we have pending
 //-----------------------------------------------------------------------------
 bool CHTMLController::RunFrame()
 {
-	VPROF_BUDGET( "CHTMLController::RunFrame", VPROF_BUDGETGROUP_OTHER_VGUI );
-
+	VPROF_BUDGET( "CHTMLController::RunFrame", VPROF_BUDGETGROUP_TENFOOT );
 	HTMLCommandBuffer_t *pCmd;
 	bool bError = false;
-	bool bDidWork = false;
-	CUtlVector<HTMLCommandBuffer_t *> vecNeedsPaint;
-	while ( AccessHTMLWrapper().GetMainThreadCommand( &pCmd ) )
+	bool bDidwork = false;
+    
+    // Paint messages are dispatched last to avoid doing excessive work on
+    // the main thread when two paint messages have stacked up in the queue.
+    // This could be greatly optimized by doing atomic buffer swaps instead
+    // of pushing the paint updates through a queue, but this helps for now.
+    // -henryg
+    CUtlVector< HTMLCommandBuffer_t * > vecDeferredPaint;
+    
+	while( GetMainThreadCommand( &pCmd ) )
 	{
-		bool bRelease = true;
-		switch ( pCmd->m_eCmd )
+        bool bRelease = true;
+		bDidwork = true;
+		//Msg( "Got response %d\n", pCmd->m_eCmd );
+		switch( pCmd->m_eCmd )
 		{
-			case eHTMLCommands_BrowserCreateResponse:
-			{
+		default:
+			break;
+		case eHTMLCommands_BrowserCreateResponse:
+			{	
 				CHTMLProtoBufMsg< CMsgBrowserCreateResponse > cmd( pCmd->m_eCmd );
 				if ( !cmd.BDeserializeCrossProc( &pCmd->m_Buffer ) )
-				{
+				{ 
 					bError = true;
 				}
 				else
 				{
-					int iRequest = m_mapBrowserRequests.Find( cmd.BodyConst().request_id() );
-					if ( iRequest != m_mapBrowserRequests.InvalidIndex() )
+					int idx = m_mapBrowserRequests.Find( cmd.BodyConst().request_id() );
+					if ( idx != m_mapBrowserRequests.InvalidIndex() )
 					{
-						m_mapBrowsers.Insert( cmd.BodyConst().browser_handle(), m_mapBrowserRequests[iRequest] );
-						m_mapBrowserRequests[iRequest]->BrowserSetIndex( cmd.BodyConst().browser_handle() );
-						m_mapBrowserRequests.RemoveAt( iRequest );
+						m_mapBrowsers.Insert( cmd.BodyConst().browser_handle(), m_mapBrowserRequests[idx] );
+						m_mapBrowserRequests[idx]->BrowserSetIndex( cmd.BodyConst().browser_handle() );
+						m_mapBrowserRequests.RemoveAt( idx );
 					}
 				}
 			}
 			break;
+        case eHTMLCommands_NeedsPaint:
+            {
+                bRelease = false;
+                vecDeferredPaint.AddToTail( pCmd );
+            }
+            break;
 
-			HTML_MSG_FUNC( eHTMLCommands_BrowserReady, CMsgBrowserReady, BrowserReady );
-			case eHTMLCommands_NeedsPaint:
-				// paints are coalesced below, once the queue is drained
-				vecNeedsPaint.AddToTail( pCmd );
-				bRelease = false;
-				break;
-
+            HTML_MSG_FUNC( eHTMLCommands_BrowserReady, CMsgBrowserReady, BrowserReady );
 			HTML_MSG_FUNC( eHTMLCommands_StartRequest, CMsgStartRequest, BrowserStartRequest );
 			HTML_MSG_FUNC( eHTMLCommands_URLChanged, CMsgURLChanged, BrowserURLChanged );
 			HTML_MSG_FUNC( eHTMLCommands_FinishedRequest, CMsgFinishedRequest, BrowserFinishedRequest );
@@ -263,117 +251,144 @@ bool CHTMLController::RunFrame()
 			HTML_MSG_FUNC( eHTMLCommands_NodeGotFocus, CMsgNodeHasFocus, BrowserNodeGotFocus );
 			HTML_MSG_FUNC( eHTMLCommands_SavePageToJPEGResponse, CMsgSavePageToJPEGResponse, BrowserSavePageToJPEGResponse );
 			HTML_MSG_FUNC( eHTMLCommands_GetFocusedNodeValueResponse, CMsgFocusedNodeTextResponse, BrowserFocusedNodeValueResponse );
-
-			default:
-				break;
 		}
-
 		if ( bError )
 		{
 			Warning( "Failed to parse command %d", pCmd->m_eCmd );
+			Assert( !"Bad Command" );
 		}
-		bDidWork = true;
-
-		if ( bRelease )
-			AccessHTMLWrapper().ReleaseCommandBuffer( pCmd );
+        if ( bRelease )
+        {
+            ReleaseCommandBuffer( pCmd );
+        }
 	}
+    
+    // Collapse deferred paints by browser ID and process them; the latest texture always
+    // has fully updated bits, we simply union its dirty rect with the skipped updates.
+    // Note: browser resizes always include a full dirty rect, we don't have to check here.
+    while ( vecDeferredPaint.Count() )
+    {
+        // Pull the last paint off the queue
+        pCmd = vecDeferredPaint[ vecDeferredPaint.Count() - 1 ];
+        int iBrowser = pCmd->m_iBrowser;
+        CHTMLProtoBufMsg<CMsgNeedsPaint> cmd( eHTMLCommands_NeedsPaint );
+        DbgVerify( cmd.BDeserializeCrossProc( &pCmd->m_Buffer ) );
+        ReleaseCommandBuffer( pCmd );
+        vecDeferredPaint.Remove( vecDeferredPaint.Count() - 1 );
 
-	// only the newest paint for a browser gets drawn; older ones are merged into
-	// its dirty region and handed straight back so their textures can be reused
-	while ( vecNeedsPaint.Count() )
-	{
-		HTMLCommandBuffer_t *pPaintCmd = vecNeedsPaint[ vecNeedsPaint.Count() - 1 ];
-		int iBrowser = pPaintCmd->m_iBrowser;
-		CHTMLProtoBufMsg< CMsgNeedsPaint > cmd( eHTMLCommands_NeedsPaint );
-		cmd.BDeserializeCrossProc( &pPaintCmd->m_Buffer );
-		AccessHTMLWrapper().ReleaseCommandBuffer( pPaintCmd );
+        
+        CMsgNeedsPaint &body = cmd.Body();        
+        CChromeUpdateRegion region;
+        if ( body.updatewide() && body.updatetall() )
+        {
+            region.MarkDirtyRect( body.updatex(), body.updatey(), body.updatex() + body.updatewide(), body.updatey() + body.updatetall() );
+        }
+        else
+        {
+            region.MarkAllDirty();
+        }
 
-		int nMinX = INT_MAX, nMinY = INT_MAX, nMaxX = 0, nMaxY = 0;
-		AccumulateDirtyRect( cmd.BodyConst(), nMinX, nMinY, nMaxX, nMaxY );
-		vecNeedsPaint.Remove( vecNeedsPaint.Count() - 1 );
+        // Remove earlier paints for the same browser from the queue
+        for ( int i = vecDeferredPaint.Count() - 1; i >= 0; --i )
+        {
+            if ( vecDeferredPaint[i]->m_iBrowser == iBrowser )
+            {
+                // Decode
+                CHTMLProtoBufMsg<CMsgNeedsPaint> cmdMerge( eHTMLCommands_NeedsPaint );
+                DbgVerify( cmdMerge.BDeserializeCrossProc( &vecDeferredPaint[i]->m_Buffer ) );
+                CMsgNeedsPaint &bodyMerge = cmdMerge.Body();
+                
+                if ( body.browser_handle() == bodyMerge.browser_handle() )
+                {
+                    ReleaseCommandBuffer( vecDeferredPaint[i] );
+                    vecDeferredPaint.Remove( i );
+                    
+                    // Merge update region
+                    if ( bodyMerge.updatewide() && bodyMerge.updatetall() )
+                    {
+                        region.MarkDirtyRect( bodyMerge.updatex(), bodyMerge.updatey(), bodyMerge.updatex() + bodyMerge.updatewide(), bodyMerge.updatey() + bodyMerge.updatetall() );
+                    }
+                    else
+                    {
+                        region.MarkAllDirty();
+                    }
+                    
+                    // Send response to the skipped paint update to free up the texture slot
+                    pCmd = GetFreeCommandBuffer( eHTMLCommands_NeedsPaintResponse, bodyMerge.browser_handle() );
+                    CHTMLProtoBufMsg<CMsgNeedsPaintResponse> cmdResponse( eHTMLCommands_NeedsPaintResponse );
+                    cmdResponse.Body().set_browser_handle( bodyMerge.browser_handle() );
+                    cmdResponse.Body().set_textureid( bodyMerge.textureid() );
+                    cmdResponse.SerializeCrossProc( &pCmd->m_Buffer );
+                    PushCommand( pCmd );
+                }
+            }
+        }
 
-		for ( int i = vecNeedsPaint.Count() - 1; i >= 0; i-- )
-		{
-			if ( vecNeedsPaint[i]->m_iBrowser != iBrowser )
-				continue;
+        // Dispatch the merged update
+        int idxBrowser = m_mapBrowsers.Find( body.browser_handle() );
+        if ( idxBrowser != m_mapBrowsers.InvalidIndex() )
+        {
+            if ( m_mapBrowsers[idxBrowser] )
+            {
+                int updateWide = region.GetUpdateWide( body.wide() );
+                int updateTall = region.GetUpdateTall( body.tall() );
+                if ( updateWide != body.wide() || updateTall != body.tall() )
+                {
+                    body.set_updatex( region.GetUpdateX( body.wide() ) );
+                    body.set_updatey( region.GetUpdateY( body.tall() ) );
+                    body.set_updatewide( updateWide );
+                    body.set_updatetall( updateTall );
+                }
+                else
+                {
+                    body.clear_updatex();
+                    body.clear_updatey();
+                    body.clear_updatewide();
+                    body.clear_updatetall();
+                }
+                m_mapBrowsers[idxBrowser]->BrowserNeedsPaint( &body );
+            }
+        }
+    }
 
-			CHTMLProtoBufMsg< CMsgNeedsPaint > cmdOld( eHTMLCommands_NeedsPaint );
-			cmdOld.BDeserializeCrossProc( &vecNeedsPaint[i]->m_Buffer );
-			if ( cmd.BodyConst().browser_handle() != cmdOld.BodyConst().browser_handle() )
-				continue;
-
-			AccessHTMLWrapper().ReleaseCommandBuffer( vecNeedsPaint[i] );
-			vecNeedsPaint.Remove( i );
-			AccumulateDirtyRect( cmdOld.BodyConst(), nMinX, nMinY, nMaxX, nMaxY );
-
-			HTMLCommandBuffer_t *pBuf = GetFreeCommandBuffer( eHTMLCommands_NeedsPaintResponse, cmdOld.BodyConst().browser_handle() );
-			CHTMLProtoBufMsg< CMsgNeedsPaintResponse > cmdResponse( eHTMLCommands_NeedsPaintResponse );
-			cmdResponse.Body().set_browser_handle( cmdOld.BodyConst().browser_handle() );
-			cmdResponse.Body().set_textureid( cmdOld.BodyConst().textureid() );
-			cmdResponse.SerializeCrossProc( &pBuf->m_Buffer );
-			PushCommand( pBuf );
-		}
-
-		int iClient = m_mapBrowsers.Find( cmd.BodyConst().browser_handle() );
-		if ( iClient != m_mapBrowsers.InvalidIndex() && m_mapBrowsers[iClient] )
-		{
-			int nWide = cmd.BodyConst().wide();
-			int nTall = cmd.BodyConst().tall();
-			int x0 = clamp( nMinX, 0, nWide );
-			int x1 = clamp( nMaxX, 0, nWide );
-			int y0 = clamp( nMinY, 0, nTall );
-			int y1 = clamp( nMaxY, 0, nTall );
-			if ( x1 - x0 == nWide && y1 - y0 == nTall )
-			{
-				cmd.Body().clear_updatex();
-				cmd.Body().clear_updatey();
-				cmd.Body().clear_updatewide();
-				cmd.Body().clear_updatetall();
-			}
-			else
-			{
-				cmd.Body().set_updatex( clamp( nMinX, 0, nWide ) );
-				cmd.Body().set_updatey( clamp( nMinY, 0, nTall ) );
-				cmd.Body().set_updatewide( x1 - x0 );
-				cmd.Body().set_updatetall( y1 - y0 );
-			}
-			m_mapBrowsers[iClient]->BrowserNeedsPaint( &cmd.BodyConst() );
-		}
-	}
-
-	return bDidWork;
+	return bDidwork;
 }
 
-
 //-----------------------------------------------------------------------------
-// Purpose: set a cookie in the CEF cookie store
+// Purpose: set a cef cookie
 //-----------------------------------------------------------------------------
 void CHTMLController::SetWebCookie( const char *pchHostname, const char *pchKey, const char *pchValue, const char *pchPath, RTime32 nExpires )
 {
+#if !defined(WIN64) && !defined(STATIC_TIER0)
 	ChromeSetWebCookie( pchHostname, pchKey, pchValue, pchPath, nExpires );
+#endif
 }
 
 
 //-----------------------------------------------------------------------------
-// Purpose: the steam client build id, for the user agent
+// Purpose: set the buildid to report
 //-----------------------------------------------------------------------------
 void CHTMLController::SetClientBuildID( uint64 ulBuildID )
 {
+#if !defined(WIN64) && !defined(STATIC_TIER0)
 	ChromeSetClientBuildID( ulBuildID );
+#endif
 }
 
 
 //-----------------------------------------------------------------------------
-// Purpose: read a cookie from the CEF cookie store
+// Purpose: get the cef cookies for a url
 //-----------------------------------------------------------------------------
 void CHTMLController::GetWebCookiesForURL( CUtlString *pstrValue, const char *pchURL, const char *pchName )
 {
+#if !defined(WIN64) && !defined(STATIC_TIER0)
 	ChromeGetWebCookiesForURL( pstrValue, pchURL, pchName );
+#endif
 }
 
 
 //-----------------------------------------------------------------------------
-// Purpose: are there responses waiting for RunFrame?
+// Purpose: true if any pending html message in the queue
 //-----------------------------------------------------------------------------
 bool CHTMLController::BHasPendingMessages()
 {
@@ -382,7 +397,7 @@ bool CHTMLController::BHasPendingMessages()
 
 
 //-----------------------------------------------------------------------------
-// Purpose: how often the CEF thread should pump CEF
+// Purpose: tell the cef thread the frame rate to use if it changes
 //-----------------------------------------------------------------------------
 void CHTMLController::SetCefThreadTargetFrameRate( uint32 nFPS )
 {
@@ -391,8 +406,36 @@ void CHTMLController::SetCefThreadTargetFrameRate( uint32 nFPS )
 		m_nCefTargetFrameRate = nFPS;
 		CHTMLProtoBufMsg<CMsgSetTargetFrameRate> cmd( eHTMLCommands_SetTargetFrameRate );
 		cmd.Body().set_ntargetframerate( nFPS );
-		HTMLCommandBuffer_t *pBuf = AccessHTMLWrapper().GetFreeCommandBuffer( eHTMLCommands_SetTargetFrameRate, -1 );
-		cmd.SerializeCrossProc( &pBuf->m_Buffer );
-		AccessHTMLWrapper().PushCommand( pBuf );
+		HTMLCommandBuffer_t *pBuf = AccessHTMLWrapper().GetFreeCommandBuffer( eHTMLCommands_SetTargetFrameRate, -1 ); 
+		cmd.SerializeCrossProc( &pBuf->m_Buffer ); 
+		AccessHTMLWrapper().PushCommand( pBuf ); 
 	}
 }
+
+#ifdef DBGFLAG_VALIDATE
+//-----------------------------------------------------------------------------
+// Purpose: validate mem
+//-----------------------------------------------------------------------------
+void CHTMLController::Validate( CValidator &validator, const char *pchName )
+{
+	ChromeValidate( validator, "ChromeValidate" );
+
+	validator.Push( "CHTMLController::ValidateStatics", NULL, pchName );
+	ValidateObj( m_mapBrowserRequests );
+	ValidateObj( m_mapBrowsers );
+	validator.Pop();
+}
+
+bool CHTMLController::ChromeResumeFromValidate()
+{
+	return ::ChromeResumeFromValidate();
+}
+
+bool CHTMLController::ChromePrepareForValidate()
+{
+	return ::ChromePrepareForValidate();
+}
+#endif	// DBGFLAG_VALIDATE
+
+
+

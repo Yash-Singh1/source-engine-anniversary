@@ -131,11 +131,6 @@ extern IVideoMode *videomode;
 void VideoMode_Create();
 void VideoMode_Destroy();
 
-#ifdef BYTEMATCH_RETAIL
-// Retail's MaterialSystem_Config_t flags; materialsystem_config.h lacks them.
-#define MATSYS_VIDCFG_FLAGS_NO_WINDOW_BORDER	( 1 << 18 )
-#define MATSYS_VIDCFG_FLAGS_LIGHTMAP_BICUBIC	( 1 << 19 )
-#endif
 #line 124
 
 #endif // IVIDEOMODE_H

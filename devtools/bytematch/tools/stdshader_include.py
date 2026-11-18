@@ -11,8 +11,9 @@ HL2 differences:
   dylib, and absent from the HL2 VCS combo counts) are removed;
 - HL2's vertexlit vertex shaders keep the single STATIC_LIGHT axis where TF2
   has STATIC_LIGHT_VERTEX and STATIC_LIGHT_LIGHTMAP;
-- old-format headers whose only difference is such an axis are omitted, so the
-  build falls back to fxctmp9/, which already has the HL2 layout.
+- old-format headers whose only difference is such an axis are copied from
+  fxctmp9/, which already has the HL2 layout (retail's debug map names them
+  under include/).
 
 Usage: stdshader_include.py [SDK2013_CHECKOUT] (default ../source-sdk-2013)
 """
@@ -26,7 +27,7 @@ OUT = os.path.join(ROOT, 'materialsystem', 'stdshaders', 'include')
 REV = '0759e2e8'
 SRC = 'src/materialsystem/stdshaders/include'
 
-# Old-format TF2 headers that only add an axis HL2 lacks: fxctmp9 has the HL2 form.
+# Old-format TF2 headers that only add an axis HL2 lacks: copied from fxctmp9, which has the HL2 form.
 OMIT = ['depthwrite_vs20', 'depthwrite_vs30', 'vertexlit_and_unlit_generic_ps20']
 
 # Bitfield-format headers: axes to drop, axes to rename.
@@ -97,8 +98,10 @@ def main():
 		base = os.path.basename(path)
 		name = base[:-len('.inc')]
 		if name in OMIT:
-			continue
-		text = subprocess.check_output(['git', '-C', sdk, 'show', '%s:%s' % (REV, path)]).decode('latin-1').replace('\r\n', '\n')
+			with open(os.path.join(OUT, '..', 'fxctmp9', base), encoding='latin-1', newline='') as f:
+				text = f.read()
+		else:
+			text = subprocess.check_output(['git', '-C', sdk, 'show', '%s:%s' % (REV, path)]).decode('latin-1').replace('\r\n', '\n')
 		if name in EDITS:
 			text = edit(text, name.lower() if name.startswith('VertexLit') else name, *EDITS[name])
 		with open(os.path.join(OUT, base), 'w', encoding='latin-1', newline='\n') as f:

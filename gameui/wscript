@@ -88,6 +88,7 @@ def build(bld):
 		'OptionsSubGame.cpp',
 		'OptionsSubKeyboard.cpp',
 		'OptionsSubMouse.cpp',
+		'OptionsSubGamepad.cpp',
 		'OptionsSubTouch.cpp',
 		'OptionsSubMultiplayer.cpp',
 		'OptionsSubPortal.cpp',

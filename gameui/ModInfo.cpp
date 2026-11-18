@@ -11,6 +11,7 @@
 #include "vgui_controls/Controls.h"
 #include "filesystem.h"
 #include "EngineInterface.h"
+#include "tier0/icommandline.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include <tier0/memdbgon.h>
@@ -31,6 +32,12 @@ CModInfo::CModInfo()
 {
 	m_pModData = new KeyValues("ModData");
 	m_wcsGameTitle[0] = 0;
+	m_bHL2Complete = false;
+
+	if ( !V_stricmp( CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) ), "hl2_complete" ) )
+	{
+		m_bHL2Complete = true;
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -93,7 +100,7 @@ const wchar_t *CModInfo::GetGameTitle()
 		// the '²' character in 'HALF-LIFE²' - so just do a straight upconvert to unicode
 		const char *title = m_pModData->GetString("title", "");
 		int i = 0;
-		for (; title[i] != 0; ++i)
+		for (; title[i] != 0 && i < 127; ++i)
 		{
 			m_wcsGameTitle[i] = (wchar_t)title[i];
 		}
@@ -114,7 +121,7 @@ const wchar_t *CModInfo::GetGameTitle2()
 		// the '²' character in 'HALF-LIFE²' - so just do a straight upconvert to unicode
 		const char *title2 = m_pModData->GetString("title2", "");
 		int i = 0;
-		for (; title2[i] != 0; ++i)
+		for (; title2[i] != 0 && i < 127; ++i)
 		{
 			m_wcsGameTitle2[i] = (wchar_t)title2[i];
 		}
@@ -213,7 +220,14 @@ void CModInfo::LoadCurrentGameInfo()
 {
 	// Load up gameinfo for the current mod
 	char const *filename = "gameinfo.txt";
-	m_pModData->LoadFromFile( g_pFullFileSystem, filename );
+	if ( g_pFullFileSystem->FileExists( filename, "ROOT_MOD" ) )
+	{
+		m_pModData->LoadFromFile( g_pFullFileSystem, filename, "ROOT_MOD" );
+	}
+	else
+	{
+		m_pModData->LoadFromFile( g_pFullFileSystem, filename );
+	}
 }
 
 //-----------------------------------------------------------------------------

@@ -484,13 +484,13 @@ DBG_INTERFACE bool DoNewAssertDialog( const tchar *pFilename, int line, const tc
 	}
 
 #elif defined( POSIX ) && defined ( USE_SDL )
-	if ( Plat_IsInDebugSession( true ) )
+	if ( !Plat_IsInDebugSession( true ) )
 	{
-		fprintf( stderr, "%s %i %s\n", pFilename, line, pExpression );
+		fprintf( stderr, "\033[1;33mASSERT: \033[1;31m%s\033[1;32m:%i:\033[1;31m%s\033[0m\n", pFilename, line, pExpression );
 	}
 	else
 	{
-		fprintf( stderr, "\033[1;33mASSERT: \033[1;31m%s\033[1;32m:%i:\033[1;31m%s\033[0m\n", pFilename, line, pExpression );
+		fprintf( stderr, "%s %i %s\n", pFilename, line, pExpression );
 	}
 
 	static FUNC_SDL_ShowMessageBox *pfnSDLShowMessageBox = NULL;

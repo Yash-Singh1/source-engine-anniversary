@@ -1772,6 +1772,10 @@ void CMorphMgr::AllocateMaterials()
 	pVMTKeyValues->SetString( "$nocull", "1" );
 	pVMTKeyValues->SetString( "$ignorez", "1" );
 	m_pVisualizeMorphAccum = g_pMaterialSystem->CreateMaterial( "___visualizeMorphAccum.vmt", pVMTKeyValues );
+#ifdef BYTEMATCH_RETAIL
+	m_pVisualizeMorphAccum->IncrementReferenceCount();
+#endif
+#line 1775
 
 	if ( !m_bUsingConstantRegisters )
 	{
@@ -1780,12 +1784,20 @@ void CMorphMgr::AllocateMaterials()
 		pVMTKeyValues->SetString( "$nocull", "1" );
 		pVMTKeyValues->SetString( "$ignorez", "1" );
 		m_pRenderMorphWeight = g_pMaterialSystem->CreateMaterial( "___morphweight.vmt", pVMTKeyValues );
+#ifdef BYTEMATCH_RETAIL
+		m_pRenderMorphWeight->IncrementReferenceCount();
+#endif
+#line 1783
 
 		pVMTKeyValues = new KeyValues( "debugmorphaccumulator" );
 		pVMTKeyValues->SetString( "$basetexture", "_rt_MorphWeight" );
 		pVMTKeyValues->SetString( "$nocull", "1" );
 		pVMTKeyValues->SetString( "$ignorez", "1" );
 		m_pVisualizeMorphWeight = g_pMaterialSystem->CreateMaterial( "___visualizeMorphWeight.vmt", pVMTKeyValues );
+#ifdef BYTEMATCH_RETAIL
+		m_pVisualizeMorphWeight->IncrementReferenceCount();
+#endif
+#line 1789
 	}
 }
 

@@ -5,49 +5,34 @@
  "project_dir": "vgui2/chromehtml",
  "order_rule_inversions": 0,
  "counts": {
-  "exact": 6,
-  "missing": 2
+  "exact": 8
  },
  "counts_sdk": {
   "missing": 3,
   "exact": 5
  },
  "diff": {
-  "add": [
-   {
-    "path": "vgui2/chromehtml/chromewrapper.cpp",
-    "in_our_tree": "missing",
-    "in_sdk": "exact",
-    "alternatives": null
-   },
-   {
-    "path": "vgui2/chromehtml/html_chrome.cpp",
-    "in_our_tree": "missing",
-    "in_sdk": "exact",
-    "alternatives": null
-   }
-  ],
+  "add": [],
   "remove": [],
   "path_differs": [],
   "order": {
-   "common": 6,
-   "in_order_lis": 6,
+   "common": 8,
+   "in_order_lis": 8,
    "need_moving": 0,
    "identical": true
   },
   "libraries": {
    "retail": [
-    "libcef_dll_wrapper.a",
+    "cef_dll_wrapper",
     "tier1"
    ],
    "ours": [
-    "tier1"
+    "tier1",
+    "cef_dll_wrapper"
    ],
-   "retail_only": [
-    "libcef_dll_wrapper.a"
-   ],
+   "retail_only": [],
    "ours_only": [],
-   "same_relative_order": true
+   "same_relative_order": false
   }
  }
 }

@@ -11,6 +11,10 @@
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
+#ifdef BYTEMATCH_RETAIL
+#define V_strcpy_safe( pDest, pSrc ) Q_strcpy( pDest, pSrc )
+#endif
+#line 14
 
 using namespace vgui;
 
@@ -38,6 +42,11 @@ CTGAImagePanel::~CTGAImagePanel()
 		vgui::surface()->DestroyTextureID( m_iTextureID );
 		m_iTextureID = -1;
 	}
+}
+
+void CTGAImagePanel::SetTGA( const char *filename, const char *pathID )
+{
+	Q_snprintf( m_szTGAName, sizeof(m_szTGAName), "//%s/%s", pathID, filename );
 }
 
 void CTGAImagePanel::SetTGA( const char *filename )

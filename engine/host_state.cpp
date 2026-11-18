@@ -273,10 +273,13 @@ void HostState_SetSpawnPoint(Vector &position, QAngle &angle)
 }
 
 //-----------------------------------------------------------------------------
+#ifndef BYTEMATCH_RETAIL
 static void WatchDogHandler()
 {
 	Host_Error( "WatchdogHandler called - server exiting.\n" );
 }
+#endif
+#line 273
 
 //-----------------------------------------------------------------------------
 // Class implementation
@@ -513,7 +516,7 @@ void CHostState::State_Run( float frameTime )
 #ifndef BYTEMATCH_RETAIL
 	static bool s_bFirstRunFrame = true;
 #endif
-#line 473
+#line 477
 
 	if ( m_flShortFrameTime > 0 )
 	{
@@ -528,9 +531,7 @@ void CHostState::State_Run( float frameTime )
 		}
 	}
 
-#ifdef BYTEMATCH_RETAIL
-	Host_RunFrame( frameTime );
-#else
+#ifndef BYTEMATCH_RETAIL
 	// Nice big timeout to play it safe while still ensuring that we don't get stuck in
 	// infinite loops.
 	int nTimerWaitSeconds = 60;
@@ -544,15 +545,18 @@ void CHostState::State_Run( float frameTime )
 	{
 		Plat_BeginWatchdogTimer( nTimerWaitSeconds );
 	}
+#endif
+#line 504
 
 	Host_RunFrame( frameTime );
 
+#ifndef BYTEMATCH_RETAIL
 	if ( sv.IsDedicated() )
 	{
 		Plat_EndWatchdogTimer();
 	}
 #endif
-#line 507
+#line 511
 
 	switch( m_nextState )
 	{
