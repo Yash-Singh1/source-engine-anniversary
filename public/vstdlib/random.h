@@ -102,7 +102,7 @@ VSTDLIB_INTERFACE float	RandomGaussianFloat( float flMean = 0.0f, float flStdDev
 //-----------------------------------------------------------------------------
 // IUniformRandomStream interface for free functions
 //-----------------------------------------------------------------------------
-class VSTDLIB_CLASS CDefaultUniformRandomStream : public IUniformRandomStream
+class CDefaultUniformRandomStream : public IUniformRandomStream
 {
 public:
 	virtual void	SetSeed( int iSeed ) OVERRIDE												{ RandomSeed( iSeed ); }
