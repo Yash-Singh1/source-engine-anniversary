@@ -91,6 +91,8 @@ CInputSystem::CInputSystem()
 
 	m_bConsoleTextMode = false;
 	m_bSkipControllerInitialization = false;
+	m_eActiveInputType = ACTIVE_INPUT_TYPE_MOUSE_KEYBOARD;
+	m_hActiveSteamInput = 0;
 
 	if ( CommandLine()->CheckParm( "-nosteamcontroller" ) )
 	{
@@ -1553,9 +1555,53 @@ ISteamController* CInputSystem::SteamControllerInterface()
 	}
 }
 
-void CInputSystem::StartTextInput()
+void CInputSystem::PulseHapticOnSteamController( uint32 nControllerIndex, ESteamControllerPad ePad, unsigned short usDurationMicroSec )
 {
-#ifdef USE_SDL
-	SDL_StartTextInput();
-#endif
+	ISteamController *pSteamController = SteamControllerInterface();
+	if ( pSteamController )
+	{
+		pSteamController->TriggerHapticPulse( nControllerIndex, ePad, usDurationMicroSec );
+	}
+}
+
+int CInputSystem::GetControllerTypeForSlot( int nSlot )
+{
+	return m_nControllerType[nSlot];
+}
+
+EControllerActionOrigin CInputSystem::GetActionOriginForSlotAndCode( int nSlot, ButtonCode_t code )
+{
+	// UNIMPLEMENTED: anniversary Steam Input glyph lookup; our tree has no Steam Input action manifest.
+	return k_EControllerActionOrigin_None;
+}
+
+void CInputSystem::SetActiveInputType( EActiveInputType_t eType, uint64 hInputHandle )
+{
+	m_eActiveInputType = eType;
+	if ( hInputHandle )
+	{
+		m_hActiveSteamInput = hInputHandle;
+	}
+}
+
+uint64 CInputSystem::GetActiveSteamInputHandle()
+{
+	return m_hActiveSteamInput;
+}
+
+bool CInputSystem::IsXinputControllerActive()
+{
+	return m_eActiveInputType == ACTIVE_INPUT_TYPE_XINPUT;
+}
+
+bool CInputSystem::IsMouseKeyboardActive()
+{
+	return m_eActiveInputType == ACTIVE_INPUT_TYPE_MOUSE_KEYBOARD;
+}
+
+void CInputSystem::SteamControllerSkipVideo( bool *pbSkip, bool *pbEscape )
+{
+	// UNIMPLEMENTED: retail polls Steam Input for skip/escape actions during video playback.
+	*pbSkip = false;
+	*pbEscape = false;
 }

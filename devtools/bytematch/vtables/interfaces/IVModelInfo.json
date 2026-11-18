@@ -1,0 +1,476 @@
+{
+ "interface": "IVModelInfo",
+ "headers": [
+  "public/engine/ivmodelinfo.h"
+ ],
+ "versions": {
+  "retail": [
+   "VModelInfoServer004"
+  ],
+  "ours": [
+   "VModelInfoServer003",
+   "VModelInfoServer004"
+  ],
+  "sdk2013": [
+   "VModelInfoServer003",
+   "VModelInfoServer004"
+  ]
+ },
+ "version_macros": [
+  "VMODELINFO_SERVER_INTERFACE_VERSION",
+  "VMODELINFO_SERVER_INTERFACE_VERSION_3"
+ ],
+ "registrations": [
+  {
+   "module": "bin/engine",
+   "version": "VModelInfoServer004",
+   "class": "CModelInfoServer"
+  }
+ ],
+ "sdk2013_len": 59,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "GetModel(int)",
+  "GetModelIndex(char const*) const",
+  "GetModelName(model_t const*) const",
+  "GetVCollide(model_t const*)",
+  "GetVCollide(int)",
+  "GetModelBounds(model_t const*, Vector&, Vector&) const",
+  "GetModelRenderBounds(model_t const*, Vector&, Vector&) const",
+  "GetModelFrameCount(model_t const*) const",
+  "GetModelType(model_t const*) const",
+  "GetModelExtraData(model_t const*)",
+  "ModelHasMaterialProxy(model_t const*) const",
+  "IsTranslucent(model_t const*) const",
+  "IsTranslucentTwoPass(model_t const*) const",
+  "RecomputeTranslucency(model_t const*, int, int, void*, float)",
+  "GetModelMaterialCount(model_t const*) const",
+  "GetModelMaterials(model_t const*, int, IMaterial**)",
+  "IsModelVertexLit(model_t const*) const",
+  "GetModelKeyValueText(model_t const*)",
+  "GetModelKeyValue(model_t const*, CUtlBuffer&)",
+  "GetModelRadius(model_t const*)",
+  "FindModel(studiohdr_t const*, void**, char const*) const",
+  "FindModel(void*) const",
+  "GetVirtualModel(studiohdr_t const*) const",
+  "GetAnimBlock(studiohdr_t const*, int) const",
+  "GetModelMaterialColorAndLighting(model_t const*, Vector const&, QAngle const&, CGameTrace*, Vector&, Vector&)",
+  "GetIlluminationPoint(model_t const*, IClientRenderable*, Vector const&, QAngle const&, Vector*)",
+  "GetModelContents(int)",
+  "GetStudiomodel(model_t const*)",
+  "GetModelSpriteWidth(model_t const*) const",
+  "GetModelSpriteHeight(model_t const*) const",
+  "SetLevelScreenFadeRange(float, float)",
+  "GetLevelScreenFadeRange(float*, float*) const",
+  "SetViewScreenFadeRange(float, float)",
+  "ComputeLevelScreenFade(Vector const&, float, float) const",
+  "ComputeViewScreenFade(Vector const&, float, float) const",
+  "GetAutoplayList(studiohdr_t const*, unsigned short**) const",
+  "GetCollideForVirtualTerrain(int)",
+  "IsUsingFBTexture(model_t const*, int, int, void*) const",
+  "FindOrLoadModel(char const*)",
+  "InitDynamicModels()",
+  "ShutdownDynamicModels()",
+  "AddDynamicModel(char const*, int)",
+  "ReferenceModel(int)",
+  "UnreferenceModel(int)",
+  "CleanupDynamicModels(bool)",
+  "GetCacheHandle(model_t const*) const",
+  "GetBrushModelPlaneCount(model_t const*) const",
+  "GetBrushModelPlane(model_t const*, int, cplane_t&, Vector*) const",
+  "GetSurfacepropsForVirtualTerrain(int)",
+  "OnLevelChange()",
+  "GetModelClientSideIndex(char const*) const",
+  "RegisterDynamicModel(char const*, bool)",
+  "IsDynamicModelLoading(int)",
+  "AddRefDynamicModel(int)",
+  "ReleaseDynamicModel(int)",
+  "RegisterModelLoadCallback(int, IModelLoadCallback*, bool)",
+  "UnregisterModelLoadCallback(int, IModelLoadCallback*)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CModelInfoServer",
+  "offset": 0,
+  "chain": [
+   "CModelInfoServer",
+   "CModelInfo",
+   "IVModelInfoClient",
+   "IVModelInfo"
+  ]
+ },
+ "retail_len": 59,
+ "retail_len_basis": "override: extra slots are CModelInfo's own",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 62,
+  "first own method of IVModelInfoClient": 59
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CModelInfoServer",
+   "sig": "~CModelInfoServer()",
+   "symbol": "CModelInfoServer::~CModelInfoServer()"
+  },
+  {
+   "index": 1,
+   "name": "~CModelInfoServer",
+   "sig": "~CModelInfoServer()",
+   "symbol": "CModelInfoServer::~CModelInfoServer()"
+  },
+  {
+   "index": 2,
+   "name": "GetModel",
+   "sig": "GetModel(int)",
+   "symbol": "CModelInfoServer::GetModel(int)"
+  },
+  {
+   "index": 3,
+   "name": "GetModelIndex",
+   "sig": "GetModelIndex(char const*) const",
+   "symbol": "CModelInfo::GetModelIndex(char const*) const"
+  },
+  {
+   "index": 4,
+   "name": "GetModelName",
+   "sig": "GetModelName(model_t const*) const",
+   "symbol": "CModelInfo::GetModelName(model_t const*) const"
+  },
+  {
+   "index": 5,
+   "name": "GetVCollide",
+   "sig": "GetVCollide(model_t const*)",
+   "symbol": "CModelInfo::GetVCollide(model_t const*)"
+  },
+  {
+   "index": 6,
+   "name": "GetVCollide",
+   "sig": "GetVCollide(int)",
+   "symbol": "CModelInfo::GetVCollide(int)"
+  },
+  {
+   "index": 7,
+   "name": "GetModelBounds",
+   "sig": "GetModelBounds(model_t const*, Vector&, Vector&) const",
+   "symbol": "CModelInfo::GetModelBounds(model_t const*, Vector&, Vector&) const"
+  },
+  {
+   "index": 8,
+   "name": "GetModelRenderBounds",
+   "sig": "GetModelRenderBounds(model_t const*, Vector&, Vector&) const",
+   "symbol": "CModelInfo::GetModelRenderBounds(model_t const*, Vector&, Vector&) const"
+  },
+  {
+   "index": 9,
+   "name": "GetModelFrameCount",
+   "sig": "GetModelFrameCount(model_t const*) const",
+   "symbol": "CModelInfo::GetModelFrameCount(model_t const*) const"
+  },
+  {
+   "index": 10,
+   "name": "GetModelType",
+   "sig": "GetModelType(model_t const*) const",
+   "symbol": "CModelInfo::GetModelType(model_t const*) const"
+  },
+  {
+   "index": 11,
+   "name": "GetModelExtraData",
+   "sig": "GetModelExtraData(model_t const*)",
+   "symbol": "CModelInfo::GetModelExtraData(model_t const*)"
+  },
+  {
+   "index": 12,
+   "name": "ModelHasMaterialProxy",
+   "sig": "ModelHasMaterialProxy(model_t const*) const",
+   "symbol": "CModelInfo::ModelHasMaterialProxy(model_t const*) const"
+  },
+  {
+   "index": 13,
+   "name": "IsTranslucent",
+   "sig": "IsTranslucent(model_t const*) const",
+   "symbol": "CModelInfo::IsTranslucent(model_t const*) const"
+  },
+  {
+   "index": 14,
+   "name": "IsTranslucentTwoPass",
+   "sig": "IsTranslucentTwoPass(model_t const*) const",
+   "symbol": "CModelInfo::IsTranslucentTwoPass(model_t const*) const"
+  },
+  {
+   "index": 15,
+   "name": "RecomputeTranslucency",
+   "sig": "RecomputeTranslucency(model_t const*, int, int, void*, float)",
+   "symbol": "CModelInfo::RecomputeTranslucency(model_t const*, int, int, void*, float)"
+  },
+  {
+   "index": 16,
+   "name": "GetModelMaterialCount",
+   "sig": "GetModelMaterialCount(model_t const*) const",
+   "symbol": "CModelInfo::GetModelMaterialCount(model_t const*) const"
+  },
+  {
+   "index": 17,
+   "name": "GetModelMaterials",
+   "sig": "GetModelMaterials(model_t const*, int, IMaterial**)",
+   "symbol": "CModelInfo::GetModelMaterials(model_t const*, int, IMaterial**)"
+  },
+  {
+   "index": 18,
+   "name": "IsModelVertexLit",
+   "sig": "IsModelVertexLit(model_t const*) const",
+   "symbol": "CModelInfo::IsModelVertexLit(model_t const*) const"
+  },
+  {
+   "index": 19,
+   "name": "GetModelKeyValueText",
+   "sig": "GetModelKeyValueText(model_t const*)",
+   "symbol": "CModelInfo::GetModelKeyValueText(model_t const*)"
+  },
+  {
+   "index": 20,
+   "name": "GetModelKeyValue",
+   "sig": "GetModelKeyValue(model_t const*, CUtlBuffer&)",
+   "symbol": "CModelInfo::GetModelKeyValue(model_t const*, CUtlBuffer&)"
+  },
+  {
+   "index": 21,
+   "name": "GetModelRadius",
+   "sig": "GetModelRadius(model_t const*)",
+   "symbol": "CModelInfo::GetModelRadius(model_t const*)"
+  },
+  {
+   "index": 22,
+   "name": "FindModel",
+   "sig": "FindModel(studiohdr_t const*, void**, char const*) const",
+   "symbol": "CModelInfo::FindModel(studiohdr_t const*, void**, char const*) const"
+  },
+  {
+   "index": 23,
+   "name": "FindModel",
+   "sig": "FindModel(void*) const",
+   "symbol": "CModelInfo::FindModel(void*) const"
+  },
+  {
+   "index": 24,
+   "name": "GetVirtualModel",
+   "sig": "GetVirtualModel(studiohdr_t const*) const",
+   "symbol": "CModelInfo::GetVirtualModel(studiohdr_t const*) const"
+  },
+  {
+   "index": 25,
+   "name": "GetAnimBlock",
+   "sig": "GetAnimBlock(studiohdr_t const*, int) const",
+   "symbol": "CModelInfo::GetAnimBlock(studiohdr_t const*, int) const"
+  },
+  {
+   "index": 26,
+   "name": "GetModelMaterialColorAndLighting",
+   "sig": "GetModelMaterialColorAndLighting(model_t const*, Vector const&, QAngle const&, CGameTrace*, Vector&, Vector&)",
+   "symbol": "CModelInfoServer::GetModelMaterialColorAndLighting(model_t const*, Vector const&, QAngle const&, CGameTrace*, Vector&, Vector&)"
+  },
+  {
+   "index": 27,
+   "name": "GetIlluminationPoint",
+   "sig": "GetIlluminationPoint(model_t const*, IClientRenderable*, Vector const&, QAngle const&, Vector*)",
+   "symbol": "CModelInfo::GetIlluminationPoint(model_t const*, IClientRenderable*, Vector const&, QAngle const&, Vector*)"
+  },
+  {
+   "index": 28,
+   "name": "GetModelContents",
+   "sig": "GetModelContents(int)",
+   "symbol": "CModelInfo::GetModelContents(int)"
+  },
+  {
+   "index": 29,
+   "name": "GetStudiomodel",
+   "sig": "GetStudiomodel(model_t const*)",
+   "symbol": "CModelInfo::GetStudiomodel(model_t const*)"
+  },
+  {
+   "index": 30,
+   "name": "GetModelSpriteWidth",
+   "sig": "GetModelSpriteWidth(model_t const*) const",
+   "symbol": "CModelInfo::GetModelSpriteWidth(model_t const*) const"
+  },
+  {
+   "index": 31,
+   "name": "GetModelSpriteHeight",
+   "sig": "GetModelSpriteHeight(model_t const*) const",
+   "symbol": "CModelInfo::GetModelSpriteHeight(model_t const*) const"
+  },
+  {
+   "index": 32,
+   "name": "SetLevelScreenFadeRange",
+   "sig": "SetLevelScreenFadeRange(float, float)",
+   "symbol": "CModelInfo::SetLevelScreenFadeRange(float, float)"
+  },
+  {
+   "index": 33,
+   "name": "GetLevelScreenFadeRange",
+   "sig": "GetLevelScreenFadeRange(float*, float*) const",
+   "symbol": "CModelInfo::GetLevelScreenFadeRange(float*, float*) const"
+  },
+  {
+   "index": 34,
+   "name": "SetViewScreenFadeRange",
+   "sig": "SetViewScreenFadeRange(float, float)",
+   "symbol": "CModelInfo::SetViewScreenFadeRange(float, float)"
+  },
+  {
+   "index": 35,
+   "name": "ComputeLevelScreenFade",
+   "sig": "ComputeLevelScreenFade(Vector const&, float, float) const",
+   "symbol": "CModelInfo::ComputeLevelScreenFade(Vector const&, float, float) const"
+  },
+  {
+   "index": 36,
+   "name": "ComputeViewScreenFade",
+   "sig": "ComputeViewScreenFade(Vector const&, float, float) const",
+   "symbol": "CModelInfo::ComputeViewScreenFade(Vector const&, float, float) const"
+  },
+  {
+   "index": 37,
+   "name": "GetAutoplayList",
+   "sig": "GetAutoplayList(studiohdr_t const*, unsigned short**) const",
+   "symbol": "CModelInfo::GetAutoplayList(studiohdr_t const*, unsigned short**) const"
+  },
+  {
+   "index": 38,
+   "name": "GetCollideForVirtualTerrain",
+   "sig": "GetCollideForVirtualTerrain(int)",
+   "symbol": "CModelInfo::GetCollideForVirtualTerrain(int)"
+  },
+  {
+   "index": 39,
+   "name": "IsUsingFBTexture",
+   "sig": "IsUsingFBTexture(model_t const*, int, int, void*) const",
+   "symbol": "CModelInfo::IsUsingFBTexture(model_t const*, int, int, void*) const"
+  },
+  {
+   "index": 40,
+   "name": "FindOrLoadModel",
+   "sig": "FindOrLoadModel(char const*)",
+   "symbol": "CModelInfoServer::FindOrLoadModel(char const*)"
+  },
+  {
+   "index": 41,
+   "name": "InitDynamicModels",
+   "sig": "InitDynamicModels()",
+   "symbol": "IVModelInfo::InitDynamicModels()"
+  },
+  {
+   "index": 42,
+   "name": "ShutdownDynamicModels",
+   "sig": "ShutdownDynamicModels()",
+   "symbol": "IVModelInfo::ShutdownDynamicModels()"
+  },
+  {
+   "index": 43,
+   "name": "AddDynamicModel",
+   "sig": "AddDynamicModel(char const*, int)",
+   "symbol": "IVModelInfo::AddDynamicModel(char const*, int)"
+  },
+  {
+   "index": 44,
+   "name": "ReferenceModel",
+   "sig": "ReferenceModel(int)",
+   "symbol": "IVModelInfo::ReferenceModel(int)"
+  },
+  {
+   "index": 45,
+   "name": "UnreferenceModel",
+   "sig": "UnreferenceModel(int)",
+   "symbol": "IVModelInfo::UnreferenceModel(int)"
+  },
+  {
+   "index": 46,
+   "name": "CleanupDynamicModels",
+   "sig": "CleanupDynamicModels(bool)",
+   "symbol": "IVModelInfo::CleanupDynamicModels(bool)"
+  },
+  {
+   "index": 47,
+   "name": "GetCacheHandle",
+   "sig": "GetCacheHandle(model_t const*) const",
+   "symbol": "CModelInfo::GetCacheHandle(model_t const*) const"
+  },
+  {
+   "index": 48,
+   "name": "GetBrushModelPlaneCount",
+   "sig": "GetBrushModelPlaneCount(model_t const*) const",
+   "symbol": "CModelInfo::GetBrushModelPlaneCount(model_t const*) const"
+  },
+  {
+   "index": 49,
+   "name": "GetBrushModelPlane",
+   "sig": "GetBrushModelPlane(model_t const*, int, cplane_t&, Vector*) const",
+   "symbol": "CModelInfo::GetBrushModelPlane(model_t const*, int, cplane_t&, Vector*) const"
+  },
+  {
+   "index": 50,
+   "name": "GetSurfacepropsForVirtualTerrain",
+   "sig": "GetSurfacepropsForVirtualTerrain(int)",
+   "symbol": "CModelInfo::GetSurfacepropsForVirtualTerrain(int)"
+  },
+  {
+   "index": 51,
+   "name": "OnLevelChange",
+   "sig": "OnLevelChange()",
+   "symbol": "CModelInfo::OnLevelChange()"
+  },
+  {
+   "index": 52,
+   "name": "GetModelClientSideIndex",
+   "sig": "GetModelClientSideIndex(char const*) const",
+   "symbol": "CModelInfo::GetModelClientSideIndex(char const*) const"
+  },
+  {
+   "index": 53,
+   "name": "RegisterDynamicModel",
+   "sig": "RegisterDynamicModel(char const*, bool)",
+   "symbol": "CModelInfoServer::RegisterDynamicModel(char const*, bool)"
+  },
+  {
+   "index": 54,
+   "name": "IsDynamicModelLoading",
+   "sig": "IsDynamicModelLoading(int)",
+   "symbol": "CModelInfo::IsDynamicModelLoading(int)"
+  },
+  {
+   "index": 55,
+   "name": "AddRefDynamicModel",
+   "sig": "AddRefDynamicModel(int)",
+   "symbol": "CModelInfo::AddRefDynamicModel(int)"
+  },
+  {
+   "index": 56,
+   "name": "ReleaseDynamicModel",
+   "sig": "ReleaseDynamicModel(int)",
+   "symbol": "CModelInfo::ReleaseDynamicModel(int)"
+  },
+  {
+   "index": 57,
+   "name": "RegisterModelLoadCallback",
+   "sig": "RegisterModelLoadCallback(int, IModelLoadCallback*, bool)",
+   "symbol": "CModelInfo::RegisterModelLoadCallback(int, IModelLoadCallback*, bool)"
+  },
+  {
+   "index": 58,
+   "name": "UnregisterModelLoadCallback",
+   "sig": "UnregisterModelLoadCallback(int, IModelLoadCallback*)",
+   "symbol": "CModelInfo::UnregisterModelLoadCallback(int, IModelLoadCallback*)"
+  }
+ ],
+ "implementer_tail": [
+  "OnDynamicModelsStringTableChange(int, char const*, void const*)",
+  "GetDynamicModelStringTable() const",
+  "LookupPrecachedModelIndex(char const*) const"
+ ],
+ "derived": [
+  "bin/engine:CModelInfo",
+  "bin/engine:CModelInfoClient",
+  "bin/engine:CModelInfoServer"
+ ],
+ "derived_count": 3
+}

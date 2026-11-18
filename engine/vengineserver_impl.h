@@ -14,6 +14,10 @@
 // splitting them into naked functions and sharing.
 extern IVEngineServer *g_pVEngineServer;
 
+// Find the canonical name of a map, given a partial or non-canonical map name.
+// Except in the case of an exact match, pMapName is updated to the canonical name of the match.
+IVEngineServer::eFindMapResult VEngineServer_FindMap( /* in/out */ char *pMapName, int nMapNameMax );
+
 // Used to seed the random # stream
 void SeedRandomNumberGenerator( bool random_invariant );
 

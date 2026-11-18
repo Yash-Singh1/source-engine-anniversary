@@ -311,7 +311,10 @@ public:
 
 	virtual int	IsMapValid( const char *filename )
 	{
-		return modelloader->Map_IsValid( filename );
+		char szWrappedName[MAX_PATH] = { 0 };
+		V_snprintf( szWrappedName, sizeof( szWrappedName ), "maps/%s.bsp", filename );
+
+		return modelloader->Map_IsValid( szWrappedName );
 	}
 
 	virtual bool IsDedicatedServer( void )
@@ -568,7 +571,7 @@ public:
 
 	}
 	
-	virtual bool IsPlayerNameLocked( const edict_t *pEdict )
+	bool IsPlayerNameLocked( const edict_t *pEdict )
 	{
 		if ( !sv.IsActive() || !pEdict )
 			return false;
@@ -586,7 +589,7 @@ public:
 		return false;
 	}
 
-	virtual bool CanPlayerChangeName( const edict_t *pEdict )
+	bool CanPlayerChangeName( const edict_t *pEdict )
 	{
 		if ( !sv.IsActive() || !pEdict )
 			return false;
@@ -604,32 +607,9 @@ public:
 		return false;
 	}
 
-	// See header comment. This is the canonical map lookup spot, and a superset of the server gameDLL's
-	// CanProvideLevel/PrepareLevelResources
-	virtual eFindMapResult FindMap( /* in/out */ char *pMapName, int nMapNameMax )
+	// The canonical map lookup spot (see VEngineServer_FindMap)
+	eFindMapResult FindMap( /* in/out */ char *pMapName, int nMapNameMax )
 	{
-		char szOriginalName[256] = { 0 };
-		V_strncpy( szOriginalName, pMapName, sizeof( szOriginalName ) );
-
-		IServerGameDLL::eCanProvideLevelResult eCanGameDLLProvide = IServerGameDLL::eCanProvideLevel_CannotProvide;
-		if ( g_iServerGameDLLVersion >= 10 )
-		{
-			eCanGameDLLProvide = serverGameDLL->CanProvideLevel( pMapName, nMapNameMax );
-		}
-
-		if ( eCanGameDLLProvide == IServerGameDLL::eCanProvideLevel_Possibly )
-		{
-			return eFindMap_PossiblyAvailable;
-		}
-		else if ( eCanGameDLLProvide == IServerGameDLL::eCanProvideLevel_CanProvide )
-		{
-			// See if the game dll fixed up the map name
-			return ( V_strcmp( szOriginalName, pMapName ) == 0 ) ? eFindMap_Found : eFindMap_NonCanonical;
-		}
-
-		AssertMsg( eCanGameDLLProvide == IServerGameDLL::eCanProvideLevel_CannotProvide,
-		           "Unhandled enum member" );
-
 		char szDiskName[MAX_PATH] = { 0 };
 		// Check if we can directly use this as a map
 		Host_DefaultMapFileName( pMapName, szDiskName, sizeof( szDiskName ) );
@@ -1720,15 +1700,6 @@ public:
 		return sv.GetTime();
 	}
 
-	virtual IServer *GetIServer() OVERRIDE
-	{
-		return (IServer *)&sv;
-	}
-
-	virtual void SetPausedForced( bool bPaused, float flDuration /*= -1.f*/ ) OVERRIDE
-	{
-		sv.SetPausedForced( bPaused, flDuration );
-	}
 
 private:
 	
@@ -1755,37 +1726,21 @@ private:
 	virtual void 		DestroySpatialPartition( ISpatialPartition *pPartition )						{ ::DestroySpatialPartition( pPartition );					}
 };
 
-// Backwards-compat shim that inherits newest then provides overrides for the legacy behavior
-class CVEngineServer22 : public CVEngineServer
-{
-	virtual int	IsMapValid( const char *filename ) OVERRIDE
-	{
-		// For users of the older interface, preserve here the old modelloader behavior of wrapping maps/%.bsp around
-		// the filename. This went away in newer interfaces since maps can now live in other places.
-		char szWrappedName[MAX_PATH] = { 0 };
-		V_snprintf( szWrappedName, sizeof( szWrappedName ), "maps/%s.bsp", filename );
-
-		return modelloader->Map_IsValid( szWrappedName );
-	}
-};
-
 //-----------------------------------------------------------------------------
 // Expose CVEngineServer to the game DLL.
 //-----------------------------------------------------------------------------
-static CVEngineServer   g_VEngineServer;
-static CVEngineServer22 g_VEngineServer22;
-// INTERFACEVERSION_VENGINESERVER_VERSION_21 is compatible with 22 latest since we only added virtuals to the end, so expose that as well.
-EXPOSE_SINGLE_INTERFACE_GLOBALVAR( CVEngineServer, IVEngineServer021, INTERFACEVERSION_VENGINESERVER_VERSION_21, g_VEngineServer22 );
-EXPOSE_SINGLE_INTERFACE_GLOBALVAR( CVEngineServer, IVEngineServer022, INTERFACEVERSION_VENGINESERVER_VERSION_22, g_VEngineServer22 );
+static CVEngineServer	g_VEngineServer;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR( CVEngineServer, IVEngineServer, INTERFACEVERSION_VENGINESERVER, g_VEngineServer );
-
-// When bumping the version to this interface, check that our assumption is still valid and expose the older version in the same way
-COMPILE_TIME_ASSERT( INTERFACEVERSION_VENGINESERVER_INT == 23 );
 
 //-----------------------------------------------------------------------------
 // Expose CVEngineServer to the engine.
 //-----------------------------------------------------------------------------
 IVEngineServer *g_pVEngineServer = &g_VEngineServer;
+
+IVEngineServer::eFindMapResult VEngineServer_FindMap( char *pMapName, int nMapNameMax )
+{
+	return g_VEngineServer.FindMap( pMapName, nMapNameMax );
+}
 
 
 //-----------------------------------------------------------------------------

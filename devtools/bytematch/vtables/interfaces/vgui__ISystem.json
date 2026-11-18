@@ -1,0 +1,308 @@
+{
+ "interface": "vgui::ISystem",
+ "headers": [
+  "public/vgui/ISystem.h"
+ ],
+ "versions": {
+  "retail": [
+   "VGUI_System010"
+  ],
+  "ours": [
+   "VGUI_System010"
+  ],
+  "sdk2013": [
+   "VGUI_System010"
+  ]
+ },
+ "version_macros": [
+  "VGUI_SYSTEM_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/vgui2",
+   "version": "VGUI_System010",
+   "class": "CSystem"
+  }
+ ],
+ "sdk2013_len": 36,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "Shutdown()",
+  "RunFrame()",
+  "ShellExecute(char const*, char const*)",
+  "GetFrameTime()",
+  "GetCurrentTime()",
+  "GetTimeMillis()",
+  "GetClipboardTextCount()",
+  "SetClipboardText(char const*, int)",
+  "SetClipboardText(wchar_t const*, int)",
+  "GetClipboardText(int, char*, int)",
+  "GetClipboardText(int, wchar_t*, int)",
+  "SetRegistryString(char const*, char const*)",
+  "GetRegistryString(char const*, char*, int)",
+  "SetRegistryInteger(char const*, int)",
+  "GetRegistryInteger(char const*, int&)",
+  "GetUserConfigFileData(char const*, int)",
+  "SetUserConfigFile(char const*, char const*)",
+  "SaveUserConfigFile()",
+  "SetWatchForComputerUse(bool)",
+  "GetTimeSinceLastUse()",
+  "GetAvailableDrives(char*, int)",
+  "CommandLineParamExists(char const*)",
+  "GetFullCommandLine()",
+  "KeyCode_VirtualKeyToVGUI(int)",
+  "GetCurrentTimeAndDate(int*, int*, int*, int*, int*, int*, int*)",
+  "GetFreeDiskSpace(char const*)",
+  "CreateShortcut(char const*, char const*, char const*, char const*, char const*)",
+  "GetShortcutTarget(char const*, char*, char*, int)",
+  "ModifyShortcutTarget(char const*, char const*, char const*, char const*)",
+  "GetCommandLineParamValue(char const*, char*, int)",
+  "DeleteRegistryKey(char const*)",
+  "GetDesktopFolderPath()",
+  "ShellExecuteEx(char const*, char const*, char const*)",
+  "SetClipboardImage(void*, int, int, int, int)"
+ ],
+ "retail_reference": {
+  "module": "bin/vgui2",
+  "class": "CSystem",
+  "offset": 0,
+  "chain": [
+   "CSystem",
+   "vgui::ISystem"
+  ]
+ },
+ "retail_len": 36,
+ "retail_len_basis": "override: KeyCode_VGUIToVirtualKey and the folder-path getters are CSystem's own virtuals, declared in retail order",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 40
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CSystem",
+   "sig": "~CSystem()",
+   "symbol": "CSystem::~CSystem()"
+  },
+  {
+   "index": 1,
+   "name": "~CSystem",
+   "sig": "~CSystem()",
+   "symbol": "CSystem::~CSystem()"
+  },
+  {
+   "index": 2,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CSystem::Shutdown()"
+  },
+  {
+   "index": 3,
+   "name": "RunFrame",
+   "sig": "RunFrame()",
+   "symbol": "CSystem::RunFrame()"
+  },
+  {
+   "index": 4,
+   "name": "ShellExecute",
+   "sig": "ShellExecute(char const*, char const*)",
+   "symbol": "CSystem::ShellExecute(char const*, char const*)"
+  },
+  {
+   "index": 5,
+   "name": "GetFrameTime",
+   "sig": "GetFrameTime()",
+   "symbol": "CSystem::GetFrameTime()"
+  },
+  {
+   "index": 6,
+   "name": "GetCurrentTime",
+   "sig": "GetCurrentTime()",
+   "symbol": "CSystem::GetCurrentTime()"
+  },
+  {
+   "index": 7,
+   "name": "GetTimeMillis",
+   "sig": "GetTimeMillis()",
+   "symbol": "CSystem::GetTimeMillis()"
+  },
+  {
+   "index": 8,
+   "name": "GetClipboardTextCount",
+   "sig": "GetClipboardTextCount()",
+   "symbol": "CSystem::GetClipboardTextCount()"
+  },
+  {
+   "index": 9,
+   "name": "SetClipboardText",
+   "sig": "SetClipboardText(char const*, int)",
+   "symbol": "CSystem::SetClipboardText(char const*, int)"
+  },
+  {
+   "index": 10,
+   "name": "SetClipboardText",
+   "sig": "SetClipboardText(wchar_t const*, int)",
+   "symbol": "CSystem::SetClipboardText(wchar_t const*, int)"
+  },
+  {
+   "index": 11,
+   "name": "GetClipboardText",
+   "sig": "GetClipboardText(int, char*, int)",
+   "symbol": "CSystem::GetClipboardText(int, char*, int)"
+  },
+  {
+   "index": 12,
+   "name": "GetClipboardText",
+   "sig": "GetClipboardText(int, wchar_t*, int)",
+   "symbol": "CSystem::GetClipboardText(int, wchar_t*, int)"
+  },
+  {
+   "index": 13,
+   "name": "SetRegistryString",
+   "sig": "SetRegistryString(char const*, char const*)",
+   "symbol": "CSystem::SetRegistryString(char const*, char const*)"
+  },
+  {
+   "index": 14,
+   "name": "GetRegistryString",
+   "sig": "GetRegistryString(char const*, char*, int)",
+   "symbol": "CSystem::GetRegistryString(char const*, char*, int)"
+  },
+  {
+   "index": 15,
+   "name": "SetRegistryInteger",
+   "sig": "SetRegistryInteger(char const*, int)",
+   "symbol": "CSystem::SetRegistryInteger(char const*, int)"
+  },
+  {
+   "index": 16,
+   "name": "GetRegistryInteger",
+   "sig": "GetRegistryInteger(char const*, int&)",
+   "symbol": "CSystem::GetRegistryInteger(char const*, int&)"
+  },
+  {
+   "index": 17,
+   "name": "GetUserConfigFileData",
+   "sig": "GetUserConfigFileData(char const*, int)",
+   "symbol": "CSystem::GetUserConfigFileData(char const*, int)"
+  },
+  {
+   "index": 18,
+   "name": "SetUserConfigFile",
+   "sig": "SetUserConfigFile(char const*, char const*)",
+   "symbol": "CSystem::SetUserConfigFile(char const*, char const*)"
+  },
+  {
+   "index": 19,
+   "name": "SaveUserConfigFile",
+   "sig": "SaveUserConfigFile()",
+   "symbol": "CSystem::SaveUserConfigFile()"
+  },
+  {
+   "index": 20,
+   "name": "SetWatchForComputerUse",
+   "sig": "SetWatchForComputerUse(bool)",
+   "symbol": "CSystem::SetWatchForComputerUse(bool)"
+  },
+  {
+   "index": 21,
+   "name": "GetTimeSinceLastUse",
+   "sig": "GetTimeSinceLastUse()",
+   "symbol": "CSystem::GetTimeSinceLastUse()"
+  },
+  {
+   "index": 22,
+   "name": "GetAvailableDrives",
+   "sig": "GetAvailableDrives(char*, int)",
+   "symbol": "CSystem::GetAvailableDrives(char*, int)"
+  },
+  {
+   "index": 23,
+   "name": "CommandLineParamExists",
+   "sig": "CommandLineParamExists(char const*)",
+   "symbol": "CSystem::CommandLineParamExists(char const*)"
+  },
+  {
+   "index": 24,
+   "name": "GetFullCommandLine",
+   "sig": "GetFullCommandLine()",
+   "symbol": "CSystem::GetFullCommandLine()"
+  },
+  {
+   "index": 25,
+   "name": "KeyCode_VirtualKeyToVGUI",
+   "sig": "KeyCode_VirtualKeyToVGUI(int)",
+   "symbol": "CSystem::KeyCode_VirtualKeyToVGUI(int)"
+  },
+  {
+   "index": 26,
+   "name": "GetCurrentTimeAndDate",
+   "sig": "GetCurrentTimeAndDate(int*, int*, int*, int*, int*, int*, int*)",
+   "symbol": "CSystem::GetCurrentTimeAndDate(int*, int*, int*, int*, int*, int*, int*)"
+  },
+  {
+   "index": 27,
+   "name": "GetFreeDiskSpace",
+   "sig": "GetFreeDiskSpace(char const*)",
+   "symbol": "CSystem::GetFreeDiskSpace(char const*)"
+  },
+  {
+   "index": 28,
+   "name": "CreateShortcut",
+   "sig": "CreateShortcut(char const*, char const*, char const*, char const*, char const*)",
+   "symbol": "CSystem::CreateShortcut(char const*, char const*, char const*, char const*, char const*)"
+  },
+  {
+   "index": 29,
+   "name": "GetShortcutTarget",
+   "sig": "GetShortcutTarget(char const*, char*, char*, int)",
+   "symbol": "CSystem::GetShortcutTarget(char const*, char*, char*, int)"
+  },
+  {
+   "index": 30,
+   "name": "ModifyShortcutTarget",
+   "sig": "ModifyShortcutTarget(char const*, char const*, char const*, char const*)",
+   "symbol": "CSystem::ModifyShortcutTarget(char const*, char const*, char const*, char const*)"
+  },
+  {
+   "index": 31,
+   "name": "GetCommandLineParamValue",
+   "sig": "GetCommandLineParamValue(char const*, char*, int)",
+   "symbol": "CSystem::GetCommandLineParamValue(char const*, char*, int)"
+  },
+  {
+   "index": 32,
+   "name": "DeleteRegistryKey",
+   "sig": "DeleteRegistryKey(char const*)",
+   "symbol": "CSystem::DeleteRegistryKey(char const*)"
+  },
+  {
+   "index": 33,
+   "name": "GetDesktopFolderPath",
+   "sig": "GetDesktopFolderPath()",
+   "symbol": "CSystem::GetDesktopFolderPath()"
+  },
+  {
+   "index": 34,
+   "name": "ShellExecuteEx",
+   "sig": "ShellExecuteEx(char const*, char const*, char const*)",
+   "symbol": "CSystem::ShellExecuteEx(char const*, char const*, char const*)"
+  },
+  {
+   "index": 35,
+   "name": "SetClipboardImage",
+   "sig": "SetClipboardImage(void*, int, int, int, int)",
+   "symbol": "CSystem::SetClipboardImage(void*, int, int, int, int)"
+  }
+ ],
+ "implementer_tail": [
+  "KeyCode_VGUIToVirtualKey(ButtonCode_t)",
+  "GetStartMenuFolderPath()",
+  "GetAllUserDesktopFolderPath()",
+  "GetAllUserStartMenuFolderPath()"
+ ],
+ "derived": [
+  "bin/vgui2:CSystem"
+ ],
+ "derived_count": 1
+}

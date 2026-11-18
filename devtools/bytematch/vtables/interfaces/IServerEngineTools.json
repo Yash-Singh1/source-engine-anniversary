@@ -1,0 +1,134 @@
+{
+ "interface": "IServerEngineTools",
+ "headers": [
+  "public/toolframework/iserverenginetools.h"
+ ],
+ "versions": {
+  "retail": [
+   "VSERVERENGINETOOLS001"
+  ],
+  "ours": [
+   "VSERVERENGINETOOLS001"
+  ],
+  "sdk2013": [
+   "VSERVERENGINETOOLS001"
+  ]
+ },
+ "version_macros": [
+  "VSERVERENGINETOOLS_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/engine",
+   "version": "VSERVERENGINETOOLS001",
+   "class": "CServerEngineTools"
+  }
+ ],
+ "sdk2013_len": 12,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "LevelInitPreEntityAllTools()",
+  "LevelInitPostEntityAllTools()",
+  "LevelShutdownPreEntityAllTools()",
+  "LevelShutdownPostEntityAllTools()",
+  "FrameUpdatePreEntityThinkAllTools()",
+  "FrameUpdatePostEntityThinkAllTools()",
+  "PreClientUpdateAllTools()",
+  "GetEntityData(char const*)",
+  "PreSetupVisibilityAllTools()",
+  "InToolMode()"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CServerEngineTools",
+  "offset": 0,
+  "chain": [
+   "CServerEngineTools",
+   "IServerEngineTools"
+  ]
+ },
+ "retail_len": 12,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 12
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CServerEngineTools",
+   "sig": "~CServerEngineTools()",
+   "symbol": "CServerEngineTools::~CServerEngineTools()"
+  },
+  {
+   "index": 1,
+   "name": "~CServerEngineTools",
+   "sig": "~CServerEngineTools()",
+   "symbol": "CServerEngineTools::~CServerEngineTools()"
+  },
+  {
+   "index": 2,
+   "name": "LevelInitPreEntityAllTools",
+   "sig": "LevelInitPreEntityAllTools()",
+   "symbol": "CServerEngineTools::LevelInitPreEntityAllTools()"
+  },
+  {
+   "index": 3,
+   "name": "LevelInitPostEntityAllTools",
+   "sig": "LevelInitPostEntityAllTools()",
+   "symbol": "CServerEngineTools::LevelInitPostEntityAllTools()"
+  },
+  {
+   "index": 4,
+   "name": "LevelShutdownPreEntityAllTools",
+   "sig": "LevelShutdownPreEntityAllTools()",
+   "symbol": "CServerEngineTools::LevelShutdownPreEntityAllTools()"
+  },
+  {
+   "index": 5,
+   "name": "LevelShutdownPostEntityAllTools",
+   "sig": "LevelShutdownPostEntityAllTools()",
+   "symbol": "CServerEngineTools::LevelShutdownPostEntityAllTools()"
+  },
+  {
+   "index": 6,
+   "name": "FrameUpdatePreEntityThinkAllTools",
+   "sig": "FrameUpdatePreEntityThinkAllTools()",
+   "symbol": "CServerEngineTools::FrameUpdatePreEntityThinkAllTools()"
+  },
+  {
+   "index": 7,
+   "name": "FrameUpdatePostEntityThinkAllTools",
+   "sig": "FrameUpdatePostEntityThinkAllTools()",
+   "symbol": "CServerEngineTools::FrameUpdatePostEntityThinkAllTools()"
+  },
+  {
+   "index": 8,
+   "name": "PreClientUpdateAllTools",
+   "sig": "PreClientUpdateAllTools()",
+   "symbol": "CServerEngineTools::PreClientUpdateAllTools()"
+  },
+  {
+   "index": 9,
+   "name": "GetEntityData",
+   "sig": "GetEntityData(char const*)",
+   "symbol": "CServerEngineTools::GetEntityData(char const*)"
+  },
+  {
+   "index": 10,
+   "name": "PreSetupVisibilityAllTools",
+   "sig": "PreSetupVisibilityAllTools()",
+   "symbol": "CServerEngineTools::PreSetupVisibilityAllTools()"
+  },
+  {
+   "index": 11,
+   "name": "InToolMode",
+   "sig": "InToolMode()",
+   "symbol": "CServerEngineTools::InToolMode()"
+  }
+ ],
+ "derived": [
+  "bin/engine:CServerEngineTools"
+ ],
+ "derived_count": 1
+}

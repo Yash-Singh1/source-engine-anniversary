@@ -1,0 +1,376 @@
+{
+ "interface": "IServerGameDLL",
+ "headers": [
+  "public/eiface.h",
+  "public/eifacev21.h"
+ ],
+ "versions": {
+  "retail": [
+   "ServerGameDLL009"
+  ],
+  "ours": [
+   "ServerGameDLL003",
+   "ServerGameDLL008",
+   "ServerGameDLL009"
+  ],
+  "sdk2013": [
+   "ServerGameDLL003",
+   "ServerGameDLL008",
+   "ServerGameDLL009"
+  ]
+ },
+ "version_macros": [
+  "INTERFACEVERSION_SERVERGAMEDLL",
+  "INTERFACEVERSION_SERVERGAMEDLL_VERSION_8",
+  "INTERFACEVERSION_SERVERGAMEDLL_VERSION_9",
+  "SERVERGAMEDLL_INTERFACEVERSION_3"
+ ],
+ "registrations": [
+  {
+   "module": "episodic/server",
+   "version": "ServerGameDLL009",
+   "class": "CServerGameDLL"
+  },
+  {
+   "module": "hl2/server",
+   "version": "ServerGameDLL009",
+   "class": "CServerGameDLL"
+  },
+  {
+   "module": "hl2_complete/server",
+   "version": "ServerGameDLL009",
+   "class": "CServerGameDLL"
+  },
+  {
+   "module": "hl2mp/server",
+   "version": "ServerGameDLL009",
+   "class": "CServerGameDLL"
+  },
+  {
+   "module": "lostcoast/server",
+   "version": "ServerGameDLL009",
+   "class": "CServerGameDLL"
+  }
+ ],
+ "sdk2013_len": 42,
+ "sdk2013_slots": [
+  "DLLInit(void* (*)(char const*, int*), void* (*)(char const*, int*), void* (*)(char const*, int*), CGlobalVars*)",
+  "ReplayInit(void* (*)(char const*, int*))",
+  "GameInit()",
+  "LevelInit(char const*, char const*, char const*, char const*, bool, bool)",
+  "ServerActivate(edict_t*, int, int)",
+  "GameFrame(bool)",
+  "PreClientUpdate(bool)",
+  "LevelShutdown()",
+  "GameShutdown()",
+  "DLLShutdown()",
+  "GetTickInterval() const",
+  "GetAllServerClasses()",
+  "GetGameDescription()",
+  "CreateNetworkStringTables()",
+  "SaveInit(int)",
+  "SaveWriteFields(CSaveRestoreData*, char const*, void*, datamap_t*, typedescription_t*, int)",
+  "SaveReadFields(CSaveRestoreData*, char const*, void*, datamap_t*, typedescription_t*, int)",
+  "SaveGlobalState(CSaveRestoreData*)",
+  "RestoreGlobalState(CSaveRestoreData*)",
+  "PreSave(CSaveRestoreData*)",
+  "Save(CSaveRestoreData*)",
+  "GetSaveComment(char*, int, float, float, bool)",
+  "WriteSaveHeaders(CSaveRestoreData*)",
+  "ReadRestoreHeaders(CSaveRestoreData*)",
+  "Restore(CSaveRestoreData*, bool)",
+  "IsRestoring()",
+  "CreateEntityTransitionList(CSaveRestoreData*, int)",
+  "BuildAdjacentMapList()",
+  "GetUserMessageInfo(int, char*, int, int&)",
+  "GetStandardSendProxies()",
+  "PostInit()",
+  "Think(bool)",
+  "PreSaveGameLoaded(char const*, bool)",
+  "ShouldHideServer()",
+  "InvalidateMdlCache()",
+  "OnQueryCvarValueFinished(int, edict_t*, EQueryCvarValueStatus, char const*, char const*)",
+  "GameServerSteamAPIActivated()",
+  "GameServerSteamAPIShutdown()",
+  "SetServerHibernation(bool)",
+  "GetServerGCLobby()",
+  "GetServerBrowserMapOverride()",
+  "GetServerBrowserGameData()"
+ ],
+ "retail_reference": {
+  "module": "episodic/server",
+  "class": "CServerGameDLL",
+  "offset": 0,
+  "chain": [
+   "CServerGameDLL",
+   "IServerGameDLL"
+  ]
+ },
+ "retail_len": 42,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 42
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "DLLInit",
+   "sig": "DLLInit(void* (*)(char const*, int*), void* (*)(char const*, int*), void* (*)(char const*, int*), CGlobalVars*)",
+   "symbol": "CServerGameDLL::DLLInit(void* (*)(char const*, int*), void* (*)(char const*, int*), void* (*)(char const*, int*), CGlobalVars*)"
+  },
+  {
+   "index": 1,
+   "name": "ReplayInit",
+   "sig": "ReplayInit(void* (*)(char const*, int*))",
+   "symbol": "CServerGameDLL::ReplayInit(void* (*)(char const*, int*))"
+  },
+  {
+   "index": 2,
+   "name": "GameInit",
+   "sig": "GameInit()",
+   "symbol": "CServerGameDLL::GameInit()"
+  },
+  {
+   "index": 3,
+   "name": "LevelInit",
+   "sig": "LevelInit(char const*, char const*, char const*, char const*, bool, bool)",
+   "symbol": "CServerGameDLL::LevelInit(char const*, char const*, char const*, char const*, bool, bool)"
+  },
+  {
+   "index": 4,
+   "name": "ServerActivate",
+   "sig": "ServerActivate(edict_t*, int, int)",
+   "symbol": "CServerGameDLL::ServerActivate(edict_t*, int, int)"
+  },
+  {
+   "index": 5,
+   "name": "GameFrame",
+   "sig": "GameFrame(bool)",
+   "symbol": "CServerGameDLL::GameFrame(bool)"
+  },
+  {
+   "index": 6,
+   "name": "PreClientUpdate",
+   "sig": "PreClientUpdate(bool)",
+   "symbol": "CServerGameDLL::PreClientUpdate(bool)"
+  },
+  {
+   "index": 7,
+   "name": "LevelShutdown",
+   "sig": "LevelShutdown()",
+   "symbol": "CServerGameDLL::LevelShutdown()"
+  },
+  {
+   "index": 8,
+   "name": "GameShutdown",
+   "sig": "GameShutdown()",
+   "symbol": "CServerGameDLL::GameShutdown()"
+  },
+  {
+   "index": 9,
+   "name": "DLLShutdown",
+   "sig": "DLLShutdown()",
+   "symbol": "CServerGameDLL::DLLShutdown()"
+  },
+  {
+   "index": 10,
+   "name": "GetTickInterval",
+   "sig": "GetTickInterval() const",
+   "symbol": "CServerGameDLL::GetTickInterval() const"
+  },
+  {
+   "index": 11,
+   "name": "GetAllServerClasses",
+   "sig": "GetAllServerClasses()",
+   "symbol": "CServerGameDLL::GetAllServerClasses()"
+  },
+  {
+   "index": 12,
+   "name": "GetGameDescription",
+   "sig": "GetGameDescription()",
+   "symbol": "CServerGameDLL::GetGameDescription()"
+  },
+  {
+   "index": 13,
+   "name": "CreateNetworkStringTables",
+   "sig": "CreateNetworkStringTables()",
+   "symbol": "CServerGameDLL::CreateNetworkStringTables()"
+  },
+  {
+   "index": 14,
+   "name": "SaveInit",
+   "sig": "SaveInit(int)",
+   "symbol": "CServerGameDLL::SaveInit(int)"
+  },
+  {
+   "index": 15,
+   "name": "SaveWriteFields",
+   "sig": "SaveWriteFields(CSaveRestoreData*, char const*, void*, datamap_t*, typedescription_t*, int)",
+   "symbol": "CServerGameDLL::SaveWriteFields(CSaveRestoreData*, char const*, void*, datamap_t*, typedescription_t*, int)"
+  },
+  {
+   "index": 16,
+   "name": "SaveReadFields",
+   "sig": "SaveReadFields(CSaveRestoreData*, char const*, void*, datamap_t*, typedescription_t*, int)",
+   "symbol": "CServerGameDLL::SaveReadFields(CSaveRestoreData*, char const*, void*, datamap_t*, typedescription_t*, int)"
+  },
+  {
+   "index": 17,
+   "name": "SaveGlobalState",
+   "sig": "SaveGlobalState(CSaveRestoreData*)",
+   "symbol": "CServerGameDLL::SaveGlobalState(CSaveRestoreData*)"
+  },
+  {
+   "index": 18,
+   "name": "RestoreGlobalState",
+   "sig": "RestoreGlobalState(CSaveRestoreData*)",
+   "symbol": "CServerGameDLL::RestoreGlobalState(CSaveRestoreData*)"
+  },
+  {
+   "index": 19,
+   "name": "PreSave",
+   "sig": "PreSave(CSaveRestoreData*)",
+   "symbol": "CServerGameDLL::PreSave(CSaveRestoreData*)"
+  },
+  {
+   "index": 20,
+   "name": "Save",
+   "sig": "Save(CSaveRestoreData*)",
+   "symbol": "CServerGameDLL::Save(CSaveRestoreData*)"
+  },
+  {
+   "index": 21,
+   "name": "GetSaveComment",
+   "sig": "GetSaveComment(char*, int, float, float, bool)",
+   "symbol": "CServerGameDLL::GetSaveComment(char*, int, float, float, bool)"
+  },
+  {
+   "index": 22,
+   "name": "WriteSaveHeaders",
+   "sig": "WriteSaveHeaders(CSaveRestoreData*)",
+   "symbol": "CServerGameDLL::WriteSaveHeaders(CSaveRestoreData*)"
+  },
+  {
+   "index": 23,
+   "name": "ReadRestoreHeaders",
+   "sig": "ReadRestoreHeaders(CSaveRestoreData*)",
+   "symbol": "CServerGameDLL::ReadRestoreHeaders(CSaveRestoreData*)"
+  },
+  {
+   "index": 24,
+   "name": "Restore",
+   "sig": "Restore(CSaveRestoreData*, bool)",
+   "symbol": "CServerGameDLL::Restore(CSaveRestoreData*, bool)"
+  },
+  {
+   "index": 25,
+   "name": "IsRestoring",
+   "sig": "IsRestoring()",
+   "symbol": "CServerGameDLL::IsRestoring()"
+  },
+  {
+   "index": 26,
+   "name": "CreateEntityTransitionList",
+   "sig": "CreateEntityTransitionList(CSaveRestoreData*, int)",
+   "symbol": "CServerGameDLL::CreateEntityTransitionList(CSaveRestoreData*, int)"
+  },
+  {
+   "index": 27,
+   "name": "BuildAdjacentMapList",
+   "sig": "BuildAdjacentMapList()",
+   "symbol": "CServerGameDLL::BuildAdjacentMapList()"
+  },
+  {
+   "index": 28,
+   "name": "GetUserMessageInfo",
+   "sig": "GetUserMessageInfo(int, char*, int, int&)",
+   "symbol": "CServerGameDLL::GetUserMessageInfo(int, char*, int, int&)"
+  },
+  {
+   "index": 29,
+   "name": "GetStandardSendProxies",
+   "sig": "GetStandardSendProxies()",
+   "symbol": "CServerGameDLL::GetStandardSendProxies()"
+  },
+  {
+   "index": 30,
+   "name": "PostInit",
+   "sig": "PostInit()",
+   "symbol": "CServerGameDLL::PostInit()"
+  },
+  {
+   "index": 31,
+   "name": "Think",
+   "sig": "Think(bool)",
+   "symbol": "CServerGameDLL::Think(bool)"
+  },
+  {
+   "index": 32,
+   "name": "PreSaveGameLoaded",
+   "sig": "PreSaveGameLoaded(char const*, bool)",
+   "symbol": "CServerGameDLL::PreSaveGameLoaded(char const*, bool)"
+  },
+  {
+   "index": 33,
+   "name": "ShouldHideServer",
+   "sig": "ShouldHideServer()",
+   "symbol": "CServerGameDLL::ShouldHideServer()"
+  },
+  {
+   "index": 34,
+   "name": "InvalidateMdlCache",
+   "sig": "InvalidateMdlCache()",
+   "symbol": "CServerGameDLL::InvalidateMdlCache()"
+  },
+  {
+   "index": 35,
+   "name": "OnQueryCvarValueFinished",
+   "sig": "OnQueryCvarValueFinished(int, edict_t*, EQueryCvarValueStatus, char const*, char const*)",
+   "symbol": "CServerGameDLL::OnQueryCvarValueFinished(int, edict_t*, EQueryCvarValueStatus, char const*, char const*)"
+  },
+  {
+   "index": 36,
+   "name": "GameServerSteamAPIActivated",
+   "sig": "GameServerSteamAPIActivated()",
+   "symbol": "CServerGameDLL::GameServerSteamAPIActivated()"
+  },
+  {
+   "index": 37,
+   "name": "GameServerSteamAPIShutdown",
+   "sig": "GameServerSteamAPIShutdown()",
+   "symbol": "CServerGameDLL::GameServerSteamAPIShutdown()"
+  },
+  {
+   "index": 38,
+   "name": "SetServerHibernation",
+   "sig": "SetServerHibernation(bool)",
+   "symbol": "CServerGameDLL::SetServerHibernation(bool)"
+  },
+  {
+   "index": 39,
+   "name": "GetServerGCLobby",
+   "sig": "GetServerGCLobby()",
+   "symbol": "CServerGameDLL::GetServerGCLobby()"
+  },
+  {
+   "index": 40,
+   "name": "GetServerBrowserMapOverride",
+   "sig": "GetServerBrowserMapOverride()",
+   "symbol": "CServerGameDLL::GetServerBrowserMapOverride()"
+  },
+  {
+   "index": 41,
+   "name": "GetServerBrowserGameData",
+   "sig": "GetServerBrowserGameData()",
+   "symbol": "CServerGameDLL::GetServerBrowserGameData()"
+  }
+ ],
+ "derived": [
+  "episodic/server:CServerGameDLL",
+  "hl2/server:CServerGameDLL",
+  "hl2_complete/server:CServerGameDLL",
+  "hl2mp/server:CServerGameDLL",
+  "lostcoast/server:CServerGameDLL"
+ ],
+ "derived_count": 5
+}

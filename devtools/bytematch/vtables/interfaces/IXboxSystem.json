@@ -1,0 +1,267 @@
+{
+ "interface": "IXboxSystem",
+ "headers": [
+  "public/ixboxsystem.h"
+ ],
+ "versions": {
+  "retail": [
+   "XboxSystemInterface001"
+  ],
+  "ours": [
+   "XboxSystemInterface001"
+  ],
+  "sdk2013": [
+   "XboxSystemInterface001"
+  ]
+ },
+ "version_macros": [
+  "XBOXSYSTEM_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/engine",
+   "version": "XboxSystemInterface001",
+   "class": "CXboxSystem"
+  }
+ ],
+ "sdk2013_len": 30,
+ "sdk2013_slots": [
+  "CreateAsyncHandle()",
+  "ReleaseAsyncHandle(void*)",
+  "GetOverlappedResult(void*, unsigned int*, bool)",
+  "CancelOverlappedOperation(void*)",
+  "GetModSaveContainerNames(char const*, wchar_t const**, char const**)",
+  "GetContainerRemainingSpace()",
+  "DeviceCapacityAdequate(unsigned int, char const*)",
+  "DiscoverUserData(unsigned int, char const*)",
+  "ShowDeviceSelector(bool, unsigned int*, void**)",
+  "ShowSigninUI(unsigned int, unsigned int)",
+  "UserSetContext(unsigned int, unsigned int, unsigned int, bool, void**)",
+  "UserSetProperty(unsigned int, unsigned int, unsigned int, void const*, bool, void**)",
+  "CreateSession(unsigned int, unsigned int, unsigned int, unsigned int, unsigned long long*, void*, void**, bool, void**)",
+  "DeleteSession(void*, bool, void**)",
+  "SessionSearch(unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, _XUSER_PROPERTY*, _XUSER_CONTEXT*, unsigned int*, _XSESSION_SEARCHRESULT_HEADER*, bool, void**)",
+  "SessionStart(void*, unsigned int, bool, void**)",
+  "SessionEnd(void*, bool, void**)",
+  "SessionJoinLocal(void*, unsigned int, unsigned int const*, bool const*, bool, void**)",
+  "SessionJoinRemote(void*, unsigned int, unsigned long long const*, bool const*, bool, void**)",
+  "SessionLeaveLocal(void*, unsigned int, unsigned int const*, bool, void**)",
+  "SessionLeaveRemote(void*, unsigned int, unsigned long long const*, bool, void**)",
+  "SessionMigrate(void*, unsigned int, void*, bool, void**)",
+  "SessionArbitrationRegister(void*, unsigned int, unsigned long long, unsigned int*, void*, bool, void**)",
+  "WriteStats(void*, unsigned long long, unsigned int, void*, bool, void**)",
+  "EnumerateAchievements(unsigned int, unsigned long long, unsigned int, unsigned int, void*, unsigned int, bool, void**)",
+  "AwardAchievement(unsigned int, unsigned int)",
+  "FinishContainerWrites()",
+  "GetContainerOpenResult()",
+  "OpenContainers()",
+  "CloseContainers()"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CXboxSystem",
+  "offset": 0,
+  "chain": [
+   "CXboxSystem",
+   "IXboxSystem"
+  ]
+ },
+ "retail_len": 30,
+ "retail_len_basis": "first implementer destructor",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 34,
+  "first implementer destructor": 30
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "CreateAsyncHandle",
+   "sig": "CreateAsyncHandle()",
+   "symbol": "CXboxSystem::CreateAsyncHandle()"
+  },
+  {
+   "index": 1,
+   "name": "ReleaseAsyncHandle",
+   "sig": "ReleaseAsyncHandle(void*)",
+   "symbol": "CXboxSystem::ReleaseAsyncHandle(void*)"
+  },
+  {
+   "index": 2,
+   "name": "GetOverlappedResult",
+   "sig": "GetOverlappedResult(void*, unsigned int*, bool)",
+   "symbol": "CXboxSystem::GetOverlappedResult(void*, unsigned int*, bool)"
+  },
+  {
+   "index": 3,
+   "name": "CancelOverlappedOperation",
+   "sig": "CancelOverlappedOperation(void*)",
+   "symbol": "CXboxSystem::CancelOverlappedOperation(void*)"
+  },
+  {
+   "index": 4,
+   "name": "GetModSaveContainerNames",
+   "sig": "GetModSaveContainerNames(char const*, wchar_t const**, char const**)",
+   "symbol": "CXboxSystem::GetModSaveContainerNames(char const*, wchar_t const**, char const**)"
+  },
+  {
+   "index": 5,
+   "name": "GetContainerRemainingSpace",
+   "sig": "GetContainerRemainingSpace()",
+   "symbol": "CXboxSystem::GetContainerRemainingSpace()"
+  },
+  {
+   "index": 6,
+   "name": "DeviceCapacityAdequate",
+   "sig": "DeviceCapacityAdequate(unsigned int, char const*)",
+   "symbol": "CXboxSystem::DeviceCapacityAdequate(unsigned int, char const*)"
+  },
+  {
+   "index": 7,
+   "name": "DiscoverUserData",
+   "sig": "DiscoverUserData(unsigned int, char const*)",
+   "symbol": "CXboxSystem::DiscoverUserData(unsigned int, char const*)"
+  },
+  {
+   "index": 8,
+   "name": "ShowDeviceSelector",
+   "sig": "ShowDeviceSelector(bool, unsigned int*, void**)",
+   "symbol": "CXboxSystem::ShowDeviceSelector(bool, unsigned int*, void**)"
+  },
+  {
+   "index": 9,
+   "name": "ShowSigninUI",
+   "sig": "ShowSigninUI(unsigned int, unsigned int)",
+   "symbol": "CXboxSystem::ShowSigninUI(unsigned int, unsigned int)"
+  },
+  {
+   "index": 10,
+   "name": "UserSetContext",
+   "sig": "UserSetContext(unsigned int, unsigned int, unsigned int, bool, void**)",
+   "symbol": "CXboxSystem::UserSetContext(unsigned int, unsigned int, unsigned int, bool, void**)"
+  },
+  {
+   "index": 11,
+   "name": "UserSetProperty",
+   "sig": "UserSetProperty(unsigned int, unsigned int, unsigned int, void const*, bool, void**)",
+   "symbol": "CXboxSystem::UserSetProperty(unsigned int, unsigned int, unsigned int, void const*, bool, void**)"
+  },
+  {
+   "index": 12,
+   "name": "CreateSession",
+   "sig": "CreateSession(unsigned int, unsigned int, unsigned int, unsigned int, unsigned long long*, void*, void**, bool, void**)",
+   "symbol": "CXboxSystem::CreateSession(unsigned int, unsigned int, unsigned int, unsigned int, unsigned long long*, void*, void**, bool, void**)"
+  },
+  {
+   "index": 13,
+   "name": "DeleteSession",
+   "sig": "DeleteSession(void*, bool, void**)",
+   "symbol": "CXboxSystem::DeleteSession(void*, bool, void**)"
+  },
+  {
+   "index": 14,
+   "name": "SessionSearch",
+   "sig": "SessionSearch(unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, _XUSER_PROPERTY*, _XUSER_CONTEXT*, unsigned int*, _XSESSION_SEARCHRESULT_HEADER*, bool, void**)",
+   "symbol": "CXboxSystem::SessionSearch(unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, _XUSER_PROPERTY*, _XUSER_CONTEXT*, unsigned int*, _XSESSION_SEARCHRESULT_HEADER*, bool, void**)"
+  },
+  {
+   "index": 15,
+   "name": "SessionStart",
+   "sig": "SessionStart(void*, unsigned int, bool, void**)",
+   "symbol": "CXboxSystem::SessionStart(void*, unsigned int, bool, void**)"
+  },
+  {
+   "index": 16,
+   "name": "SessionEnd",
+   "sig": "SessionEnd(void*, bool, void**)",
+   "symbol": "CXboxSystem::SessionEnd(void*, bool, void**)"
+  },
+  {
+   "index": 17,
+   "name": "SessionJoinLocal",
+   "sig": "SessionJoinLocal(void*, unsigned int, unsigned int const*, bool const*, bool, void**)",
+   "symbol": "CXboxSystem::SessionJoinLocal(void*, unsigned int, unsigned int const*, bool const*, bool, void**)"
+  },
+  {
+   "index": 18,
+   "name": "SessionJoinRemote",
+   "sig": "SessionJoinRemote(void*, unsigned int, unsigned long long const*, bool const*, bool, void**)",
+   "symbol": "CXboxSystem::SessionJoinRemote(void*, unsigned int, unsigned long long const*, bool const*, bool, void**)"
+  },
+  {
+   "index": 19,
+   "name": "SessionLeaveLocal",
+   "sig": "SessionLeaveLocal(void*, unsigned int, unsigned int const*, bool, void**)",
+   "symbol": "CXboxSystem::SessionLeaveLocal(void*, unsigned int, unsigned int const*, bool, void**)"
+  },
+  {
+   "index": 20,
+   "name": "SessionLeaveRemote",
+   "sig": "SessionLeaveRemote(void*, unsigned int, unsigned long long const*, bool, void**)",
+   "symbol": "CXboxSystem::SessionLeaveRemote(void*, unsigned int, unsigned long long const*, bool, void**)"
+  },
+  {
+   "index": 21,
+   "name": "SessionMigrate",
+   "sig": "SessionMigrate(void*, unsigned int, void*, bool, void**)",
+   "symbol": "CXboxSystem::SessionMigrate(void*, unsigned int, void*, bool, void**)"
+  },
+  {
+   "index": 22,
+   "name": "SessionArbitrationRegister",
+   "sig": "SessionArbitrationRegister(void*, unsigned int, unsigned long long, unsigned int*, void*, bool, void**)",
+   "symbol": "CXboxSystem::SessionArbitrationRegister(void*, unsigned int, unsigned long long, unsigned int*, void*, bool, void**)"
+  },
+  {
+   "index": 23,
+   "name": "WriteStats",
+   "sig": "WriteStats(void*, unsigned long long, unsigned int, void*, bool, void**)",
+   "symbol": "CXboxSystem::WriteStats(void*, unsigned long long, unsigned int, void*, bool, void**)"
+  },
+  {
+   "index": 24,
+   "name": "EnumerateAchievements",
+   "sig": "EnumerateAchievements(unsigned int, unsigned long long, unsigned int, unsigned int, void*, unsigned int, bool, void**)",
+   "symbol": "CXboxSystem::EnumerateAchievements(unsigned int, unsigned long long, unsigned int, unsigned int, void*, unsigned int, bool, void**)"
+  },
+  {
+   "index": 25,
+   "name": "AwardAchievement",
+   "sig": "AwardAchievement(unsigned int, unsigned int)",
+   "symbol": "CXboxSystem::AwardAchievement(unsigned int, unsigned int)"
+  },
+  {
+   "index": 26,
+   "name": "FinishContainerWrites",
+   "sig": "FinishContainerWrites()",
+   "symbol": "CXboxSystem::FinishContainerWrites()"
+  },
+  {
+   "index": 27,
+   "name": "GetContainerOpenResult",
+   "sig": "GetContainerOpenResult()",
+   "symbol": "CXboxSystem::GetContainerOpenResult()"
+  },
+  {
+   "index": 28,
+   "name": "OpenContainers",
+   "sig": "OpenContainers()",
+   "symbol": "CXboxSystem::OpenContainers()"
+  },
+  {
+   "index": 29,
+   "name": "CloseContainers",
+   "sig": "CloseContainers()",
+   "symbol": "CXboxSystem::CloseContainers()"
+  }
+ ],
+ "implementer_tail": [
+  "~CXboxSystem()",
+  "~CXboxSystem()",
+  "CreateSavegameContainer(unsigned int)",
+  "CreateUserSettingsContainer(unsigned int)"
+ ],
+ "derived": [
+  "bin/engine:CXboxSystem"
+ ],
+ "derived_count": 1
+}

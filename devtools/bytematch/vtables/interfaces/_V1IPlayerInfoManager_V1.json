@@ -1,0 +1,47 @@
+{
+ "interface": "_V1IPlayerInfoManager_V1",
+ "headers": [],
+ "versions": {
+  "retail": [
+   "PlayerInfoManager001"
+  ],
+  "ours": [
+   "PlayerInfoManager002"
+  ],
+  "sdk2013": [
+   "PlayerInfoManager002"
+  ]
+ },
+ "version_macros": [
+  "INTERFACEVERSION_PLAYERINFOMANAGER"
+ ],
+ "registrations": [
+  {
+   "module": "episodic/server",
+   "version": "PlayerInfoManager001",
+   "class": "CPlayerInfoManager"
+  },
+  {
+   "module": "hl2/server",
+   "version": "PlayerInfoManager001",
+   "class": "CPlayerInfoManager"
+  },
+  {
+   "module": "hl2_complete/server",
+   "version": "PlayerInfoManager001",
+   "class": "CPlayerInfoManager"
+  },
+  {
+   "module": "hl2mp/server",
+   "version": "PlayerInfoManager001",
+   "class": "CPlayerInfoManager"
+  },
+  {
+   "module": "lostcoast/server",
+   "version": "PlayerInfoManager001",
+   "class": "CPlayerInfoManager"
+  }
+ ],
+ "sdk2013_len": null,
+ "status": "no retail vtable"
+}

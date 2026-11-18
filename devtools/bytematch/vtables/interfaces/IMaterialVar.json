@@ -1,0 +1,258 @@
+{
+ "interface": "IMaterialVar",
+ "headers": [
+  "public/materialsystem/imaterialvar.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 31,
+ "sdk2013_slots": [
+  "GetTextureValue()",
+  "GetName() const",
+  "GetNameAsSymbol() const",
+  "SetFloatValue(float)",
+  "SetIntValue(int)",
+  "SetStringValue(char const*)",
+  "GetStringValue() const",
+  "SetFourCCValue(unsigned long, void*)",
+  "GetFourCCValue(unsigned long*, void**)",
+  "SetVecValue(float const*, int)",
+  "SetVecValue(float, float)",
+  "SetVecValue(float, float, float)",
+  "SetVecValue(float, float, float, float)",
+  "GetLinearVecValue(float*, int) const",
+  "SetTextureValue(ITexture*)",
+  "GetMaterialValue()",
+  "SetMaterialValue(IMaterial*)",
+  "IsDefined() const",
+  "SetUndefined()",
+  "SetMatrixValue(VMatrix const&)",
+  "GetMatrixValue()",
+  "MatrixIsIdentity() const",
+  "CopyFrom(IMaterialVar*)",
+  "SetValueAutodetectType(char const*)",
+  "GetOwningMaterial()",
+  "SetVecComponentValue(float, int)",
+  "GetIntValueInternal() const",
+  "GetFloatValueInternal() const",
+  "GetVecValueInternal() const",
+  "GetVecValueInternal(float*, int) const",
+  "VectorSizeInternal() const"
+ ],
+ "retail_reference": {
+  "module": "bin/materialsystem",
+  "class": "CDummyMaterialVar",
+  "offset": 0,
+  "chain": [
+   "CDummyMaterialVar",
+   "IMaterialVar"
+  ]
+ },
+ "retail_len": 31,
+ "retail_len_basis": "override: operator ITexture* / GetType are implementer virtuals",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 33
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "GetTextureValue",
+   "sig": "GetTextureValue()",
+   "symbol": "CDummyMaterialVar::GetTextureValue()"
+  },
+  {
+   "index": 1,
+   "name": "GetName",
+   "sig": "GetName() const",
+   "symbol": "CDummyMaterialVar::GetName() const"
+  },
+  {
+   "index": 2,
+   "name": "GetNameAsSymbol",
+   "sig": "GetNameAsSymbol() const",
+   "symbol": "CDummyMaterialVar::GetNameAsSymbol() const"
+  },
+  {
+   "index": 3,
+   "name": "SetFloatValue",
+   "sig": "SetFloatValue(float)",
+   "symbol": "CDummyMaterialVar::SetFloatValue(float)"
+  },
+  {
+   "index": 4,
+   "name": "SetIntValue",
+   "sig": "SetIntValue(int)",
+   "symbol": "CDummyMaterialVar::SetIntValue(int)"
+  },
+  {
+   "index": 5,
+   "name": "SetStringValue",
+   "sig": "SetStringValue(char const*)",
+   "symbol": "CDummyMaterialVar::SetStringValue(char const*)"
+  },
+  {
+   "index": 6,
+   "name": "GetStringValue",
+   "sig": "GetStringValue() const",
+   "symbol": "CDummyMaterialVar::GetStringValue() const"
+  },
+  {
+   "index": 7,
+   "name": "SetFourCCValue",
+   "sig": "SetFourCCValue(unsigned long, void*)",
+   "symbol": "CDummyMaterialVar::SetFourCCValue(unsigned long, void*)"
+  },
+  {
+   "index": 8,
+   "name": "GetFourCCValue",
+   "sig": "GetFourCCValue(unsigned long*, void**)",
+   "symbol": "CDummyMaterialVar::GetFourCCValue(unsigned long*, void**)"
+  },
+  {
+   "index": 9,
+   "name": "SetVecValue",
+   "sig": "SetVecValue(float const*, int)",
+   "symbol": "CDummyMaterialVar::SetVecValue(float const*, int)"
+  },
+  {
+   "index": 10,
+   "name": "SetVecValue",
+   "sig": "SetVecValue(float, float)",
+   "symbol": "CDummyMaterialVar::SetVecValue(float, float)"
+  },
+  {
+   "index": 11,
+   "name": "SetVecValue",
+   "sig": "SetVecValue(float, float, float)",
+   "symbol": "CDummyMaterialVar::SetVecValue(float, float, float)"
+  },
+  {
+   "index": 12,
+   "name": "SetVecValue",
+   "sig": "SetVecValue(float, float, float, float)",
+   "symbol": "CDummyMaterialVar::SetVecValue(float, float, float, float)"
+  },
+  {
+   "index": 13,
+   "name": "GetLinearVecValue",
+   "sig": "GetLinearVecValue(float*, int) const",
+   "symbol": "CDummyMaterialVar::GetLinearVecValue(float*, int) const"
+  },
+  {
+   "index": 14,
+   "name": "SetTextureValue",
+   "sig": "SetTextureValue(ITexture*)",
+   "symbol": "CDummyMaterialVar::SetTextureValue(ITexture*)"
+  },
+  {
+   "index": 15,
+   "name": "GetMaterialValue",
+   "sig": "GetMaterialValue()",
+   "symbol": "CDummyMaterialVar::GetMaterialValue()"
+  },
+  {
+   "index": 16,
+   "name": "SetMaterialValue",
+   "sig": "SetMaterialValue(IMaterial*)",
+   "symbol": "CDummyMaterialVar::SetMaterialValue(IMaterial*)"
+  },
+  {
+   "index": 17,
+   "name": "IsDefined",
+   "sig": "IsDefined() const",
+   "symbol": "CDummyMaterialVar::IsDefined() const"
+  },
+  {
+   "index": 18,
+   "name": "SetUndefined",
+   "sig": "SetUndefined()",
+   "symbol": "CDummyMaterialVar::SetUndefined()"
+  },
+  {
+   "index": 19,
+   "name": "SetMatrixValue",
+   "sig": "SetMatrixValue(VMatrix const&)",
+   "symbol": "CDummyMaterialVar::SetMatrixValue(VMatrix const&)"
+  },
+  {
+   "index": 20,
+   "name": "GetMatrixValue",
+   "sig": "GetMatrixValue()",
+   "symbol": "CDummyMaterialVar::GetMatrixValue()"
+  },
+  {
+   "index": 21,
+   "name": "MatrixIsIdentity",
+   "sig": "MatrixIsIdentity() const",
+   "symbol": "CDummyMaterialVar::MatrixIsIdentity() const"
+  },
+  {
+   "index": 22,
+   "name": "CopyFrom",
+   "sig": "CopyFrom(IMaterialVar*)",
+   "symbol": "CDummyMaterialVar::CopyFrom(IMaterialVar*)"
+  },
+  {
+   "index": 23,
+   "name": "SetValueAutodetectType",
+   "sig": "SetValueAutodetectType(char const*)",
+   "symbol": "CDummyMaterialVar::SetValueAutodetectType(char const*)"
+  },
+  {
+   "index": 24,
+   "name": "GetOwningMaterial",
+   "sig": "GetOwningMaterial()",
+   "symbol": "CDummyMaterialVar::GetOwningMaterial()"
+  },
+  {
+   "index": 25,
+   "name": "SetVecComponentValue",
+   "sig": "SetVecComponentValue(float, int)",
+   "symbol": "CDummyMaterialVar::SetVecComponentValue(float, int)"
+  },
+  {
+   "index": 26,
+   "name": "GetIntValueInternal",
+   "sig": "GetIntValueInternal() const",
+   "symbol": "CDummyMaterialVar::GetIntValueInternal() const"
+  },
+  {
+   "index": 27,
+   "name": "GetFloatValueInternal",
+   "sig": "GetFloatValueInternal() const",
+   "symbol": "CDummyMaterialVar::GetFloatValueInternal() const"
+  },
+  {
+   "index": 28,
+   "name": "GetVecValueInternal",
+   "sig": "GetVecValueInternal() const",
+   "symbol": "CDummyMaterialVar::GetVecValueInternal() const"
+  },
+  {
+   "index": 29,
+   "name": "GetVecValueInternal",
+   "sig": "GetVecValueInternal(float*, int) const",
+   "symbol": "CDummyMaterialVar::GetVecValueInternal(float*, int) const"
+  },
+  {
+   "index": 30,
+   "name": "VectorSizeInternal",
+   "sig": "VectorSizeInternal() const",
+   "symbol": "CDummyMaterialVar::VectorSizeInternal() const"
+  }
+ ],
+ "implementer_tail": [
+  "operator ITexture*()",
+  "GetType() const"
+ ],
+ "derived": [
+  "bin/materialsystem:CDummyMaterialVar",
+  "bin/materialsystem:CMaterialVar"
+ ],
+ "derived_count": 2
+}

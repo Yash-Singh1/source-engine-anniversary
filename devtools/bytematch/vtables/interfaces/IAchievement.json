@@ -1,0 +1,154 @@
+{
+ "interface": "IAchievement",
+ "headers": [
+  "public/iachievementmgr.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 11,
+ "sdk2013_slots": [
+  "GetAchievementID()",
+  "GetName()",
+  "GetFlags()",
+  "GetGoal()",
+  "GetCount()",
+  "IsAchieved()",
+  "GetPointValue()",
+  "ShouldSaveWithGame()",
+  "ShouldHideUntilAchieved()",
+  "ShouldShowOnHUD()",
+  "SetShowOnHUD(bool)"
+ ],
+ "retail_reference": {
+  "module": "episodic/server",
+  "class": "CAchievement100",
+  "offset": 8,
+  "chain": [
+   "CAchievement100",
+   "CMapAchievement",
+   "CBaseAchievement",
+   "IAchievement"
+  ]
+ },
+ "retail_len": 11,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 11
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "GetAchievementID",
+   "sig": "GetAchievementID()",
+   "symbol": "non-virtual thunk to CBaseAchievement::GetAchievementID()"
+  },
+  {
+   "index": 1,
+   "name": "GetName",
+   "sig": "GetName()",
+   "symbol": "non-virtual thunk to CBaseAchievement::GetName()"
+  },
+  {
+   "index": 2,
+   "name": "GetFlags",
+   "sig": "GetFlags()",
+   "symbol": "non-virtual thunk to CBaseAchievement::GetFlags()"
+  },
+  {
+   "index": 3,
+   "name": "GetGoal",
+   "sig": "GetGoal()",
+   "symbol": "non-virtual thunk to CBaseAchievement::GetGoal()"
+  },
+  {
+   "index": 4,
+   "name": "GetCount",
+   "sig": "GetCount()",
+   "symbol": "non-virtual thunk to CBaseAchievement::GetCount()"
+  },
+  {
+   "index": 5,
+   "name": "IsAchieved",
+   "sig": "IsAchieved()",
+   "symbol": "non-virtual thunk to CBaseAchievement::IsAchieved()"
+  },
+  {
+   "index": 6,
+   "name": "GetPointValue",
+   "sig": "GetPointValue()",
+   "symbol": "non-virtual thunk to CBaseAchievement::GetPointValue()"
+  },
+  {
+   "index": 7,
+   "name": "ShouldSaveWithGame",
+   "sig": "ShouldSaveWithGame()",
+   "symbol": "non-virtual thunk to CBaseAchievement::ShouldSaveWithGame()"
+  },
+  {
+   "index": 8,
+   "name": "ShouldHideUntilAchieved",
+   "sig": "ShouldHideUntilAchieved()",
+   "symbol": "non-virtual thunk to CBaseAchievement::ShouldHideUntilAchieved()"
+  },
+  {
+   "index": 9,
+   "name": "ShouldShowOnHUD",
+   "sig": "ShouldShowOnHUD()",
+   "symbol": "non-virtual thunk to CBaseAchievement::ShouldShowOnHUD()"
+  },
+  {
+   "index": 10,
+   "name": "SetShowOnHUD",
+   "sig": "SetShowOnHUD(bool)",
+   "symbol": "non-virtual thunk to CBaseAchievement::SetShowOnHUD(bool)"
+  }
+ ],
+ "derived": [
+  "episodic/server:CAchievement100",
+  "episodic/server:CAchievement101",
+  "episodic/server:CAchievement103",
+  "episodic/server:CAchievement105",
+  "episodic/server:CAchievement107",
+  "episodic/server:CAchievement108",
+  "episodic/server:CAchievement109",
+  "episodic/server:CAchievement110",
+  "episodic/server:CAchievement111",
+  "episodic/server:CAchievement112",
+  "episodic/server:CAchievement113",
+  "episodic/server:CAchievement52",
+  "episodic/server:CAchievement53",
+  "episodic/server:CAchievement67",
+  "episodic/server:CAchievement70",
+  "episodic/server:CAchievement84",
+  "episodic/server:CAchievement87",
+  "episodic/server:CAchievement88",
+  "episodic/server:CAchievement89",
+  "episodic/server:CAchievement91",
+  "episodic/server:CAchievement93",
+  "episodic/server:CAchievement95",
+  "episodic/server:CAchievementACHIEVEMENT_HL2_BEAT_C1713STRIDERSTANDOFF",
+  "episodic/server:CAchievementACHIEVEMENT_HL2_BEAT_DONTTOUCHSAND",
+  "episodic/server:CAchievementACHIEVEMENT_HL2_BEAT_PLAZASTANDOFF",
+  "episodic/server:CAchievementACHIEVEMENT_HL2_BEAT_SUPRESSIONDEVICE",
+  "episodic/server:CAchievementACHIEVEMENT_HL2_BEAT_TOXICTUNNEL",
+  "episodic/server:CAchievementACHIEVEMENT_HL2_BEAT_TURRETSTANDOFF2",
+  "episodic/server:CAchievementACHIEVEMENT_HL2_BREAK_MINITELEPORTER",
+  "episodic/server:CAchievementACHIEVEMENT_HL2_ESCAPE_APARTMENTRAID",
+  "episodic/server:CAchievementACHIEVEMENT_HL2_FIND_HEVFACEPLATE",
+  "episodic/server:CAchievementACHIEVEMENT_HL2_FIND_VORTIGAUNTCAVE",
+  "episodic/server:CAchievementACHIEVEMENT_HL2_FOLLOW_FREEMAN",
+  "episodic/server:CAchievementACHIEVEMENT_HL2_GET_AIRBOAT",
+  "episodic/server:CAchievementACHIEVEMENT_HL2_GET_AIRBOATGUN",
+  "episodic/server:CAchievementACHIEVEMENT_HL2_GET_CROWBAR",
+  "episodic/server:CAchievementACHIEVEMENT_HL2_GET_GRAVITYGUN",
+  "episodic/server:CAchievementACHIEVEMENT_HL2_KILL_ALLC1709SNIPERS",
+  "episodic/server:CAchievementACHIEVEMENT_HL2_KILL_CHOPPER",
+  "episodic/server:CAchievementACHIEVEMENT_HL2_KILL_ENEMIES_WITHCRANE"
+ ],
+ "derived_count": 228
+}

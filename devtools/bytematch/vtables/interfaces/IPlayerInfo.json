@@ -1,0 +1,215 @@
+{
+ "interface": "IPlayerInfo",
+ "headers": [
+  "public/game/server/iplayerinfo.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 25,
+ "sdk2013_slots": [
+  "GetName()",
+  "GetUserID()",
+  "GetNetworkIDString()",
+  "GetTeamIndex()",
+  "ChangeTeam(int)",
+  "GetFragCount()",
+  "GetDeathCount()",
+  "IsConnected()",
+  "GetArmorValue()",
+  "IsHLTV()",
+  "IsPlayer()",
+  "IsFakeClient()",
+  "IsDead()",
+  "IsInAVehicle()",
+  "IsObserver()",
+  "GetAbsOrigin()",
+  "GetAbsAngles()",
+  "GetPlayerMins()",
+  "GetPlayerMaxs()",
+  "GetWeaponName()",
+  "GetModelName()",
+  "GetHealth()",
+  "GetMaxHealth()",
+  "GetLastUserCommand()",
+  "IsReplay()"
+ ],
+ "retail_reference": {
+  "module": "episodic/server",
+  "class": "CPlayerInfo",
+  "offset": 4,
+  "chain": [
+   "CPlayerInfo",
+   "IPlayerInfo"
+  ]
+ },
+ "retail_len": 25,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 25
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "GetName",
+   "sig": "GetName()",
+   "symbol": "non-virtual thunk to CPlayerInfo::GetName()"
+  },
+  {
+   "index": 1,
+   "name": "GetUserID",
+   "sig": "GetUserID()",
+   "symbol": "non-virtual thunk to CPlayerInfo::GetUserID()"
+  },
+  {
+   "index": 2,
+   "name": "GetNetworkIDString",
+   "sig": "GetNetworkIDString()",
+   "symbol": "non-virtual thunk to CPlayerInfo::GetNetworkIDString()"
+  },
+  {
+   "index": 3,
+   "name": "GetTeamIndex",
+   "sig": "GetTeamIndex()",
+   "symbol": "non-virtual thunk to CPlayerInfo::GetTeamIndex()"
+  },
+  {
+   "index": 4,
+   "name": "ChangeTeam",
+   "sig": "ChangeTeam(int)",
+   "symbol": "non-virtual thunk to CPlayerInfo::ChangeTeam(int)"
+  },
+  {
+   "index": 5,
+   "name": "GetFragCount",
+   "sig": "GetFragCount()",
+   "symbol": "non-virtual thunk to CPlayerInfo::GetFragCount()"
+  },
+  {
+   "index": 6,
+   "name": "GetDeathCount",
+   "sig": "GetDeathCount()",
+   "symbol": "non-virtual thunk to CPlayerInfo::GetDeathCount()"
+  },
+  {
+   "index": 7,
+   "name": "IsConnected",
+   "sig": "IsConnected()",
+   "symbol": "non-virtual thunk to CPlayerInfo::IsConnected()"
+  },
+  {
+   "index": 8,
+   "name": "GetArmorValue",
+   "sig": "GetArmorValue()",
+   "symbol": "non-virtual thunk to CPlayerInfo::GetArmorValue()"
+  },
+  {
+   "index": 9,
+   "name": "IsHLTV",
+   "sig": "IsHLTV()",
+   "symbol": "non-virtual thunk to CPlayerInfo::IsHLTV()"
+  },
+  {
+   "index": 10,
+   "name": "IsPlayer",
+   "sig": "IsPlayer()",
+   "symbol": "non-virtual thunk to CPlayerInfo::IsPlayer()"
+  },
+  {
+   "index": 11,
+   "name": "IsFakeClient",
+   "sig": "IsFakeClient()",
+   "symbol": "non-virtual thunk to CPlayerInfo::IsFakeClient()"
+  },
+  {
+   "index": 12,
+   "name": "IsDead",
+   "sig": "IsDead()",
+   "symbol": "non-virtual thunk to CPlayerInfo::IsDead()"
+  },
+  {
+   "index": 13,
+   "name": "IsInAVehicle",
+   "sig": "IsInAVehicle()",
+   "symbol": "non-virtual thunk to CPlayerInfo::IsInAVehicle()"
+  },
+  {
+   "index": 14,
+   "name": "IsObserver",
+   "sig": "IsObserver()",
+   "symbol": "non-virtual thunk to CPlayerInfo::IsObserver()"
+  },
+  {
+   "index": 15,
+   "name": "GetAbsOrigin",
+   "sig": "GetAbsOrigin()",
+   "symbol": "non-virtual thunk to CPlayerInfo::GetAbsOrigin()"
+  },
+  {
+   "index": 16,
+   "name": "GetAbsAngles",
+   "sig": "GetAbsAngles()",
+   "symbol": "non-virtual thunk to CPlayerInfo::GetAbsAngles()"
+  },
+  {
+   "index": 17,
+   "name": "GetPlayerMins",
+   "sig": "GetPlayerMins()",
+   "symbol": "non-virtual thunk to CPlayerInfo::GetPlayerMins()"
+  },
+  {
+   "index": 18,
+   "name": "GetPlayerMaxs",
+   "sig": "GetPlayerMaxs()",
+   "symbol": "non-virtual thunk to CPlayerInfo::GetPlayerMaxs()"
+  },
+  {
+   "index": 19,
+   "name": "GetWeaponName",
+   "sig": "GetWeaponName()",
+   "symbol": "non-virtual thunk to CPlayerInfo::GetWeaponName()"
+  },
+  {
+   "index": 20,
+   "name": "GetModelName",
+   "sig": "GetModelName()",
+   "symbol": "non-virtual thunk to CPlayerInfo::GetModelName()"
+  },
+  {
+   "index": 21,
+   "name": "GetHealth",
+   "sig": "GetHealth()",
+   "symbol": "non-virtual thunk to CPlayerInfo::GetHealth()"
+  },
+  {
+   "index": 22,
+   "name": "GetMaxHealth",
+   "sig": "GetMaxHealth()",
+   "symbol": "non-virtual thunk to CPlayerInfo::GetMaxHealth()"
+  },
+  {
+   "index": 23,
+   "name": "GetLastUserCommand",
+   "sig": "GetLastUserCommand()",
+   "symbol": "non-virtual thunk to CPlayerInfo::GetLastUserCommand()"
+  },
+  {
+   "index": 24,
+   "name": "IsReplay",
+   "sig": "IsReplay()",
+   "symbol": "non-virtual thunk to CPlayerInfo::IsReplay()"
+  }
+ ],
+ "derived": [
+  "episodic/server:CPlayerInfo",
+  "hl2/server:CPlayerInfo",
+  "hl2_complete/server:CPlayerInfo",
+  "hl2mp/server:CPlayerInfo",
+  "lostcoast/server:CPlayerInfo"
+ ],
+ "derived_count": 5
+}

@@ -1,0 +1,239 @@
+{
+ "interface": "IReplayMovie",
+ "headers": [
+  "common/replay/ireplaymovie.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 29,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "GetItemDate() const",
+  "IsItemRendered() const",
+  "GetItemReplay()",
+  "GetItemReplayHandle() const",
+  "GetItemHandle() const",
+  "GetItemTitle() const",
+  "SetItemTitle(wchar_t const*)",
+  "GetItemLength() const",
+  "GetUserData()",
+  "SetUserData(void*)",
+  "IsItemAMovie() const",
+  "GetMovieHandle() const",
+  "GetReplayHandle() const",
+  "GetRenderSettings()",
+  "GetFrameDimensions(int&, int&)",
+  "SetIsRendered(bool)",
+  "SetMovieFilename(char const*)",
+  "GetMovieFilename() const",
+  "SetMovieTitle(wchar_t const*)",
+  "SetRenderTime(float)",
+  "GetRenderTime() const",
+  "CaptureRecordTime()",
+  "SetLength(float)",
+  "IsUploaded() const",
+  "SetUploaded(bool)",
+  "SetUploadURL(char const*)",
+  "GetUploadURL() const"
+ ],
+ "retail_reference": {
+  "module": "bin/replay",
+  "class": "CReplayMovie",
+  "offset": 12,
+  "chain": [
+   "CReplayMovie",
+   "IReplayMovie"
+  ]
+ },
+ "retail_len": 29,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 29
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CReplayMovie",
+   "sig": "~CReplayMovie()",
+   "symbol": "non-virtual thunk to CReplayMovie::~CReplayMovie()"
+  },
+  {
+   "index": 1,
+   "name": "~CReplayMovie",
+   "sig": "~CReplayMovie()",
+   "symbol": "non-virtual thunk to CReplayMovie::~CReplayMovie()"
+  },
+  {
+   "index": 2,
+   "name": "GetItemDate",
+   "sig": "GetItemDate() const",
+   "symbol": "non-virtual thunk to CReplayMovie::GetItemDate() const"
+  },
+  {
+   "index": 3,
+   "name": "IsItemRendered",
+   "sig": "IsItemRendered() const",
+   "symbol": "non-virtual thunk to CReplayMovie::IsItemRendered() const"
+  },
+  {
+   "index": 4,
+   "name": "GetItemReplay",
+   "sig": "GetItemReplay()",
+   "symbol": "non-virtual thunk to CReplayMovie::GetItemReplay()"
+  },
+  {
+   "index": 5,
+   "name": "GetItemReplayHandle",
+   "sig": "GetItemReplayHandle() const",
+   "symbol": "non-virtual thunk to CReplayMovie::GetItemReplayHandle() const"
+  },
+  {
+   "index": 6,
+   "name": "GetItemHandle",
+   "sig": "GetItemHandle() const",
+   "symbol": "non-virtual thunk to CReplayMovie::GetItemHandle() const"
+  },
+  {
+   "index": 7,
+   "name": "GetItemTitle",
+   "sig": "GetItemTitle() const",
+   "symbol": "non-virtual thunk to CReplayMovie::GetItemTitle() const"
+  },
+  {
+   "index": 8,
+   "name": "SetItemTitle",
+   "sig": "SetItemTitle(wchar_t const*)",
+   "symbol": "non-virtual thunk to CReplayMovie::SetItemTitle(wchar_t const*)"
+  },
+  {
+   "index": 9,
+   "name": "GetItemLength",
+   "sig": "GetItemLength() const",
+   "symbol": "non-virtual thunk to CReplayMovie::GetItemLength() const"
+  },
+  {
+   "index": 10,
+   "name": "GetUserData",
+   "sig": "GetUserData()",
+   "symbol": "non-virtual thunk to CReplayMovie::GetUserData()"
+  },
+  {
+   "index": 11,
+   "name": "SetUserData",
+   "sig": "SetUserData(void*)",
+   "symbol": "non-virtual thunk to CReplayMovie::SetUserData(void*)"
+  },
+  {
+   "index": 12,
+   "name": "IsItemAMovie",
+   "sig": "IsItemAMovie() const",
+   "symbol": "non-virtual thunk to CReplayMovie::IsItemAMovie() const"
+  },
+  {
+   "index": 13,
+   "name": "GetMovieHandle",
+   "sig": "GetMovieHandle() const",
+   "symbol": "non-virtual thunk to CReplayMovie::GetMovieHandle() const"
+  },
+  {
+   "index": 14,
+   "name": "GetReplayHandle",
+   "sig": "GetReplayHandle() const",
+   "symbol": "non-virtual thunk to CReplayMovie::GetReplayHandle() const"
+  },
+  {
+   "index": 15,
+   "name": "GetRenderSettings",
+   "sig": "GetRenderSettings()",
+   "symbol": "non-virtual thunk to CReplayMovie::GetRenderSettings()"
+  },
+  {
+   "index": 16,
+   "name": "GetFrameDimensions",
+   "sig": "GetFrameDimensions(int&, int&)",
+   "symbol": "non-virtual thunk to CReplayMovie::GetFrameDimensions(int&, int&)"
+  },
+  {
+   "index": 17,
+   "name": "SetIsRendered",
+   "sig": "SetIsRendered(bool)",
+   "symbol": "non-virtual thunk to CReplayMovie::SetIsRendered(bool)"
+  },
+  {
+   "index": 18,
+   "name": "SetMovieFilename",
+   "sig": "SetMovieFilename(char const*)",
+   "symbol": "non-virtual thunk to CReplayMovie::SetMovieFilename(char const*)"
+  },
+  {
+   "index": 19,
+   "name": "GetMovieFilename",
+   "sig": "GetMovieFilename() const",
+   "symbol": "non-virtual thunk to CReplayMovie::GetMovieFilename() const"
+  },
+  {
+   "index": 20,
+   "name": "SetMovieTitle",
+   "sig": "SetMovieTitle(wchar_t const*)",
+   "symbol": "non-virtual thunk to CReplayMovie::SetMovieTitle(wchar_t const*)"
+  },
+  {
+   "index": 21,
+   "name": "SetRenderTime",
+   "sig": "SetRenderTime(float)",
+   "symbol": "non-virtual thunk to CReplayMovie::SetRenderTime(float)"
+  },
+  {
+   "index": 22,
+   "name": "GetRenderTime",
+   "sig": "GetRenderTime() const",
+   "symbol": "non-virtual thunk to CReplayMovie::GetRenderTime() const"
+  },
+  {
+   "index": 23,
+   "name": "CaptureRecordTime",
+   "sig": "CaptureRecordTime()",
+   "symbol": "non-virtual thunk to CReplayMovie::CaptureRecordTime()"
+  },
+  {
+   "index": 24,
+   "name": "SetLength",
+   "sig": "SetLength(float)",
+   "symbol": "non-virtual thunk to CReplayMovie::SetLength(float)"
+  },
+  {
+   "index": 25,
+   "name": "IsUploaded",
+   "sig": "IsUploaded() const",
+   "symbol": "non-virtual thunk to CReplayMovie::IsUploaded() const"
+  },
+  {
+   "index": 26,
+   "name": "SetUploaded",
+   "sig": "SetUploaded(bool)",
+   "symbol": "non-virtual thunk to CReplayMovie::SetUploaded(bool)"
+  },
+  {
+   "index": 27,
+   "name": "SetUploadURL",
+   "sig": "SetUploadURL(char const*)",
+   "symbol": "non-virtual thunk to CReplayMovie::SetUploadURL(char const*)"
+  },
+  {
+   "index": 28,
+   "name": "GetUploadURL",
+   "sig": "GetUploadURL() const",
+   "symbol": "non-virtual thunk to CReplayMovie::GetUploadURL() const"
+  }
+ ],
+ "derived": [
+  "bin/replay:CReplayMovie"
+ ],
+ "derived_count": 1
+}

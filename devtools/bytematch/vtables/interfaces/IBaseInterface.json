@@ -1,0 +1,93 @@
+{
+ "interface": "IBaseInterface",
+ "headers": [
+  "public/tier1/interface.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 2,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CDownloadSystem",
+  "offset": 0,
+  "chain": [
+   "CDownloadSystem",
+   "IDownloadSystem",
+   "IBaseInterface"
+  ]
+ },
+ "retail_len": 2,
+ "retail_len_basis": "override: CreateDownloadThread is CDownloadSystem's own virtual",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 3
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CDownloadSystem",
+   "sig": "~CDownloadSystem()",
+   "symbol": "CDownloadSystem::~CDownloadSystem()"
+  },
+  {
+   "index": 1,
+   "name": "~CDownloadSystem",
+   "sig": "~CDownloadSystem()",
+   "symbol": "CDownloadSystem::~CDownloadSystem()"
+  }
+ ],
+ "implementer_tail": [
+  "CreateDownloadThread(RequestContext_t*)"
+ ],
+ "derived": [
+  "bin/GameUI:CGameConsole",
+  "bin/GameUI:CRunGameEngine",
+  "bin/GameUI:CVGuiSystemModuleLoader",
+  "bin/ServerBrowser:CServerBrowser",
+  "bin/bugreporter_filequeue:CBugReporter",
+  "bin/bugreporter_public:CBugReporter",
+  "bin/engine:CClientEngineTools",
+  "bin/engine:CDownloadSystem",
+  "bin/engine:CEngineClientReplay",
+  "bin/engine:CEngineReplay",
+  "bin/engine:CEngineTool",
+  "bin/engine:CGameEventManager",
+  "bin/engine:CGameEventManagerOld",
+  "bin/engine:CHLTVServer",
+  "bin/engine:CReplayDemoPlayer",
+  "bin/engine:CReplayServer",
+  "bin/engine:CServerEngineTools",
+  "bin/engine:CServerRemoteAccess",
+  "bin/replay:CBaseRecordingSession",
+  "bin/replay:CBaseRecordingSessionBlock",
+  "bin/replay:CBaseRecordingSessionBlockManager",
+  "bin/replay:CBaseRecordingSessionManager",
+  "bin/replay:CBaseReplaySerializeable",
+  "bin/replay:CBaseThinker",
+  "bin/replay:CClientRecordingSession",
+  "bin/replay:CClientRecordingSessionBlock",
+  "bin/replay:CClientRecordingSessionBlockManager",
+  "bin/replay:CClientRecordingSessionManager",
+  "bin/replay:CClientReplayContext",
+  "bin/replay:CErrorSystem",
+  "bin/replay:CFileserverCleaner",
+  "bin/replay:CGenericPersistentManager<CBaseRecordingSession>",
+  "bin/replay:CGenericPersistentManager<CBaseRecordingSessionBlock>",
+  "bin/replay:CGenericPersistentManager<CReplay>",
+  "bin/replay:CGenericPersistentManager<CReplayMovie>",
+  "bin/replay:CPerformanceController",
+  "bin/replay:CRenderQueue",
+  "bin/replay:CReplayManager",
+  "bin/replay:CReplayMovie",
+  "bin/replay:CReplayMovieManager"
+ ],
+ "derived_count": 83
+}

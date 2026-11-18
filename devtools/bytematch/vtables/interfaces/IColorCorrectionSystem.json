@@ -1,0 +1,247 @@
+{
+ "interface": "IColorCorrectionSystem",
+ "headers": [
+  "public/materialsystem/IColorCorrection.h"
+ ],
+ "versions": {
+  "retail": [
+   "COLORCORRECTION_VERSION_1"
+  ],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [
+  {
+   "module": "bin/materialsystem",
+   "version": "COLORCORRECTION_VERSION_1",
+   "class": "CColorCorrectionSystem"
+  }
+ ],
+ "sdk2013_len": 29,
+ "sdk2013_slots": [
+  "Init()",
+  "Shutdown()",
+  "AddLookup(char const*)",
+  "RemoveLookup(unsigned int)",
+  "SetLookupWeight(unsigned int, float)",
+  "GetLookupWeight(unsigned int)",
+  "GetLookupWeight(int)",
+  "LockLookup()",
+  "LockLookup(unsigned int)",
+  "UnlockLookup()",
+  "UnlockLookup(unsigned int)",
+  "SetLookup(RGBX5551_t, color24)",
+  "SetLookup(unsigned int, RGBX5551_t, color24)",
+  "GetLookup(RGBX5551_t)",
+  "GetLookup(unsigned int, RGBX5551_t)",
+  "LoadLookup(char const*)",
+  "LoadLookup(unsigned int, char const*)",
+  "CopyLookup(color24 const*)",
+  "CopyLookup(unsigned int, color24 const*)",
+  "ResetLookup(unsigned int)",
+  "ResetLookup()",
+  "ReleaseTextures()",
+  "RestoreTextures()",
+  "ResetLookupWeights()",
+  "GetNumLookups()",
+  "ConvertToColor24(RGBX5551_t)",
+  "SetResetable(unsigned int, bool)",
+  "EnableColorCorrection(bool)",
+  "GetCurrentColorCorrection(ShaderColorCorrectionInfo_t*)"
+ ],
+ "retail_reference": {
+  "module": "bin/materialsystem",
+  "class": "CColorCorrectionSystem",
+  "offset": 0,
+  "chain": [
+   "CColorCorrectionSystem",
+   "IColorCorrectionSystem"
+  ]
+ },
+ "retail_len": 29,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 29
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "CColorCorrectionSystem::Init()"
+  },
+  {
+   "index": 1,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CColorCorrectionSystem::Shutdown()"
+  },
+  {
+   "index": 2,
+   "name": "AddLookup",
+   "sig": "AddLookup(char const*)",
+   "symbol": "CColorCorrectionSystem::AddLookup(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "RemoveLookup",
+   "sig": "RemoveLookup(unsigned int)",
+   "symbol": "CColorCorrectionSystem::RemoveLookup(unsigned int)"
+  },
+  {
+   "index": 4,
+   "name": "SetLookupWeight",
+   "sig": "SetLookupWeight(unsigned int, float)",
+   "symbol": "CColorCorrectionSystem::SetLookupWeight(unsigned int, float)"
+  },
+  {
+   "index": 5,
+   "name": "GetLookupWeight",
+   "sig": "GetLookupWeight(unsigned int)",
+   "symbol": "CColorCorrectionSystem::GetLookupWeight(unsigned int)"
+  },
+  {
+   "index": 6,
+   "name": "GetLookupWeight",
+   "sig": "GetLookupWeight(int)",
+   "symbol": "CColorCorrectionSystem::GetLookupWeight(int)"
+  },
+  {
+   "index": 7,
+   "name": "LockLookup",
+   "sig": "LockLookup()",
+   "symbol": "CColorCorrectionSystem::LockLookup()"
+  },
+  {
+   "index": 8,
+   "name": "LockLookup",
+   "sig": "LockLookup(unsigned int)",
+   "symbol": "CColorCorrectionSystem::LockLookup(unsigned int)"
+  },
+  {
+   "index": 9,
+   "name": "UnlockLookup",
+   "sig": "UnlockLookup()",
+   "symbol": "CColorCorrectionSystem::UnlockLookup()"
+  },
+  {
+   "index": 10,
+   "name": "UnlockLookup",
+   "sig": "UnlockLookup(unsigned int)",
+   "symbol": "CColorCorrectionSystem::UnlockLookup(unsigned int)"
+  },
+  {
+   "index": 11,
+   "name": "SetLookup",
+   "sig": "SetLookup(RGBX5551_t, color24)",
+   "symbol": "CColorCorrectionSystem::SetLookup(RGBX5551_t, color24)"
+  },
+  {
+   "index": 12,
+   "name": "SetLookup",
+   "sig": "SetLookup(unsigned int, RGBX5551_t, color24)",
+   "symbol": "CColorCorrectionSystem::SetLookup(unsigned int, RGBX5551_t, color24)"
+  },
+  {
+   "index": 13,
+   "name": "GetLookup",
+   "sig": "GetLookup(RGBX5551_t)",
+   "symbol": "CColorCorrectionSystem::GetLookup(RGBX5551_t)"
+  },
+  {
+   "index": 14,
+   "name": "GetLookup",
+   "sig": "GetLookup(unsigned int, RGBX5551_t)",
+   "symbol": "CColorCorrectionSystem::GetLookup(unsigned int, RGBX5551_t)"
+  },
+  {
+   "index": 15,
+   "name": "LoadLookup",
+   "sig": "LoadLookup(char const*)",
+   "symbol": "CColorCorrectionSystem::LoadLookup(char const*)"
+  },
+  {
+   "index": 16,
+   "name": "LoadLookup",
+   "sig": "LoadLookup(unsigned int, char const*)",
+   "symbol": "CColorCorrectionSystem::LoadLookup(unsigned int, char const*)"
+  },
+  {
+   "index": 17,
+   "name": "CopyLookup",
+   "sig": "CopyLookup(color24 const*)",
+   "symbol": "CColorCorrectionSystem::CopyLookup(color24 const*)"
+  },
+  {
+   "index": 18,
+   "name": "CopyLookup",
+   "sig": "CopyLookup(unsigned int, color24 const*)",
+   "symbol": "CColorCorrectionSystem::CopyLookup(unsigned int, color24 const*)"
+  },
+  {
+   "index": 19,
+   "name": "ResetLookup",
+   "sig": "ResetLookup(unsigned int)",
+   "symbol": "CColorCorrectionSystem::ResetLookup(unsigned int)"
+  },
+  {
+   "index": 20,
+   "name": "ResetLookup",
+   "sig": "ResetLookup()",
+   "symbol": "CColorCorrectionSystem::ResetLookup()"
+  },
+  {
+   "index": 21,
+   "name": "ReleaseTextures",
+   "sig": "ReleaseTextures()",
+   "symbol": "CColorCorrectionSystem::ReleaseTextures()"
+  },
+  {
+   "index": 22,
+   "name": "RestoreTextures",
+   "sig": "RestoreTextures()",
+   "symbol": "CColorCorrectionSystem::RestoreTextures()"
+  },
+  {
+   "index": 23,
+   "name": "ResetLookupWeights",
+   "sig": "ResetLookupWeights()",
+   "symbol": "CColorCorrectionSystem::ResetLookupWeights()"
+  },
+  {
+   "index": 24,
+   "name": "GetNumLookups",
+   "sig": "GetNumLookups()",
+   "symbol": "CColorCorrectionSystem::GetNumLookups()"
+  },
+  {
+   "index": 25,
+   "name": "ConvertToColor24",
+   "sig": "ConvertToColor24(RGBX5551_t)",
+   "symbol": "CColorCorrectionSystem::ConvertToColor24(RGBX5551_t)"
+  },
+  {
+   "index": 26,
+   "name": "SetResetable",
+   "sig": "SetResetable(unsigned int, bool)",
+   "symbol": "CColorCorrectionSystem::SetResetable(unsigned int, bool)"
+  },
+  {
+   "index": 27,
+   "name": "EnableColorCorrection",
+   "sig": "EnableColorCorrection(bool)",
+   "symbol": "CColorCorrectionSystem::EnableColorCorrection(bool)"
+  },
+  {
+   "index": 28,
+   "name": "GetCurrentColorCorrection",
+   "sig": "GetCurrentColorCorrection(ShaderColorCorrectionInfo_t*)",
+   "symbol": "CColorCorrectionSystem::GetCurrentColorCorrection(ShaderColorCorrectionInfo_t*)"
+  }
+ ],
+ "derived": [
+  "bin/materialsystem:CColorCorrectionSystem"
+ ],
+ "derived_count": 1
+}

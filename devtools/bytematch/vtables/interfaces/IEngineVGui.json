@@ -1,0 +1,123 @@
+{
+ "interface": "IEngineVGui",
+ "headers": [
+  "public/ienginevgui.h"
+ ],
+ "versions": {
+  "retail": [
+   "VEngineVGui001"
+  ],
+  "ours": [
+   "VEngineVGui001"
+  ],
+  "sdk2013": [
+   "VEngineVGui001"
+  ]
+ },
+ "version_macros": [
+  "VENGINE_VGUI_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/engine",
+   "version": "VEngineVGui001",
+   "class": "CEngineVGui"
+  }
+ ],
+ "sdk2013_len": 4,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "GetPanel(VGuiPanel_t)",
+  "IsGameUIVisible()"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CEngineVGui",
+  "offset": 0,
+  "chain": [
+   "CEngineVGui",
+   "IEngineVGuiInternal",
+   "IEngineVGui"
+  ]
+ },
+ "retail_len": 4,
+ "retail_len_basis": "override: next slots belong to IEngineVGuiInternal",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 46
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CEngineVGui",
+   "sig": "~CEngineVGui()",
+   "symbol": "CEngineVGui::~CEngineVGui()"
+  },
+  {
+   "index": 1,
+   "name": "~CEngineVGui",
+   "sig": "~CEngineVGui()",
+   "symbol": "CEngineVGui::~CEngineVGui()"
+  },
+  {
+   "index": 2,
+   "name": "GetPanel",
+   "sig": "GetPanel(VGuiPanel_t)",
+   "symbol": "CEngineVGui::GetPanel(VGuiPanel_t)"
+  },
+  {
+   "index": 3,
+   "name": "IsGameUIVisible",
+   "sig": "IsGameUIVisible()",
+   "symbol": "CEngineVGui::IsGameUIVisible()"
+  }
+ ],
+ "implementer_tail": [
+  "Init()",
+  "Connect()",
+  "Shutdown()",
+  "SetVGUIDirectories()",
+  "IsInitialized() const",
+  "GetGameUIFactory()",
+  "Key_Event(InputEvent_t const&)",
+  "BackwardCompatibility_Paint()",
+  "UpdateButtonState(InputEvent_t const&)",
+  "PostInit()",
+  "Paint(PaintMode_t)",
+  "ActivateGameUI()",
+  "HideGameUI()",
+  "ShowConsole()",
+  "HideConsole()",
+  "IsConsoleVisible()",
+  "ClearConsole()",
+  "HideDebugSystem()",
+  "OnLevelLoadingStarted()",
+  "OnLevelLoadingFinished()",
+  "NotifyOfServerConnect(char const*, int, int, int)",
+  "NotifyOfServerDisconnect()",
+  "EnabledProgressBarForNextLoad()",
+  "UpdateProgressBar(LevelLoadingProgress_e)",
+  "UpdateCustomProgressBar(float, wchar_t const*)",
+  "StartCustomProgress()",
+  "FinishCustomProgress()",
+  "ShowErrorMessage()",
+  "ShouldPause()",
+  "SetGameDLLPanelsVisible(bool)",
+  "ShowNewGameDialog(int)",
+  "Simulate()",
+  "SetNotAllowedToHideGameUI(bool)",
+  "SetNotAllowedToShowGameUI(bool)",
+  "SessionNotification(int, int)",
+  "SystemNotification(int)",
+  "ShowMessageDialog(unsigned int, vgui::Panel*)",
+  "UpdatePlayerInfo(unsigned long long, char const*, int, unsigned char, int, bool)",
+  "SessionSearchResult(int, void*, _XSESSION_SEARCHRESULT*, int)",
+  "OnCreditsFinished()",
+  "ValidateStorageDevice(int*)",
+  "ConfirmQuit()"
+ ],
+ "derived": [
+  "bin/engine:CEngineVGui"
+ ],
+ "derived_count": 1
+}

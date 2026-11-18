@@ -1,0 +1,53 @@
+{
+ "interface": "CMouthInfo",
+ "headers": [
+  "public/mouthinfo.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 2,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()"
+ ],
+ "retail_reference": {
+  "module": "episodic/client",
+  "class": "CMouthInfo",
+  "offset": 0,
+  "chain": [
+   "CMouthInfo"
+  ]
+ },
+ "retail_len": 2,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 2
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CMouthInfo",
+   "sig": "~CMouthInfo()",
+   "symbol": "CMouthInfo::~CMouthInfo()"
+  },
+  {
+   "index": 1,
+   "name": "~CMouthInfo",
+   "sig": "~CMouthInfo()",
+   "symbol": "CMouthInfo::~CMouthInfo()"
+  }
+ ],
+ "derived": [
+  "episodic/client:CMouthInfo",
+  "hl2/client:CMouthInfo",
+  "hl2_complete/client:CMouthInfo",
+  "hl2mp/client:CMouthInfo",
+  "lostcoast/client:CMouthInfo"
+ ],
+ "derived_count": 5
+}

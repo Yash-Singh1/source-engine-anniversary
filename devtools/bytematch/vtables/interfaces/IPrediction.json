@@ -1,0 +1,189 @@
+{
+ "interface": "IPrediction",
+ "headers": [
+  "public/iprediction.h"
+ ],
+ "versions": {
+  "retail": [
+   "VClientPrediction001"
+  ],
+  "ours": [
+   "VClientPrediction001"
+  ],
+  "sdk2013": [
+   "VClientPrediction001"
+  ]
+ },
+ "version_macros": [
+  "VCLIENT_PREDICTION_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "episodic/client",
+   "version": "VClientPrediction001",
+   "class": "CPrediction"
+  },
+  {
+   "module": "hl2/client",
+   "version": "VClientPrediction001",
+   "class": "CPrediction"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "VClientPrediction001",
+   "class": "CPrediction"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "VClientPrediction001",
+   "class": "CPrediction"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "VClientPrediction001",
+   "class": "CPrediction"
+  }
+ ],
+ "sdk2013_len": 15,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "Init()",
+  "Shutdown()",
+  "Update(int, bool, int, int)",
+  "PreEntityPacketReceived(int, int)",
+  "PostEntityPacketReceived()",
+  "PostNetworkDataReceived(int)",
+  "OnReceivedUncompressedPacket()",
+  "GetViewOrigin(Vector&)",
+  "SetViewOrigin(Vector&)",
+  "GetViewAngles(QAngle&)",
+  "SetViewAngles(QAngle&)",
+  "GetLocalViewAngles(QAngle&)",
+  "SetLocalViewAngles(QAngle&)"
+ ],
+ "retail_reference": {
+  "module": "episodic/client",
+  "class": "CPrediction",
+  "offset": 0,
+  "chain": [
+   "CPrediction",
+   "IPrediction"
+  ]
+ },
+ "retail_len": 15,
+ "retail_len_basis": "override: extra slots are CPrediction's own",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 23
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CPrediction",
+   "sig": "~CPrediction()",
+   "symbol": "CPrediction::~CPrediction()"
+  },
+  {
+   "index": 1,
+   "name": "~CPrediction",
+   "sig": "~CPrediction()",
+   "symbol": "CPrediction::~CPrediction()"
+  },
+  {
+   "index": 2,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "CPrediction::Init()"
+  },
+  {
+   "index": 3,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CPrediction::Shutdown()"
+  },
+  {
+   "index": 4,
+   "name": "Update",
+   "sig": "Update(int, bool, int, int)",
+   "symbol": "CPrediction::Update(int, bool, int, int)"
+  },
+  {
+   "index": 5,
+   "name": "PreEntityPacketReceived",
+   "sig": "PreEntityPacketReceived(int, int)",
+   "symbol": "CPrediction::PreEntityPacketReceived(int, int)"
+  },
+  {
+   "index": 6,
+   "name": "PostEntityPacketReceived",
+   "sig": "PostEntityPacketReceived()",
+   "symbol": "CPrediction::PostEntityPacketReceived()"
+  },
+  {
+   "index": 7,
+   "name": "PostNetworkDataReceived",
+   "sig": "PostNetworkDataReceived(int)",
+   "symbol": "CPrediction::PostNetworkDataReceived(int)"
+  },
+  {
+   "index": 8,
+   "name": "OnReceivedUncompressedPacket",
+   "sig": "OnReceivedUncompressedPacket()",
+   "symbol": "CPrediction::OnReceivedUncompressedPacket()"
+  },
+  {
+   "index": 9,
+   "name": "GetViewOrigin",
+   "sig": "GetViewOrigin(Vector&)",
+   "symbol": "CPrediction::GetViewOrigin(Vector&)"
+  },
+  {
+   "index": 10,
+   "name": "SetViewOrigin",
+   "sig": "SetViewOrigin(Vector&)",
+   "symbol": "CPrediction::SetViewOrigin(Vector&)"
+  },
+  {
+   "index": 11,
+   "name": "GetViewAngles",
+   "sig": "GetViewAngles(QAngle&)",
+   "symbol": "CPrediction::GetViewAngles(QAngle&)"
+  },
+  {
+   "index": 12,
+   "name": "SetViewAngles",
+   "sig": "SetViewAngles(QAngle&)",
+   "symbol": "CPrediction::SetViewAngles(QAngle&)"
+  },
+  {
+   "index": 13,
+   "name": "GetLocalViewAngles",
+   "sig": "GetLocalViewAngles(QAngle&)",
+   "symbol": "CPrediction::GetLocalViewAngles(QAngle&)"
+  },
+  {
+   "index": 14,
+   "name": "SetLocalViewAngles",
+   "sig": "SetLocalViewAngles(QAngle&)",
+   "symbol": "CPrediction::SetLocalViewAngles(QAngle&)"
+  }
+ ],
+ "implementer_tail": [
+  "InPrediction() const",
+  "IsFirstTimePredicted() const",
+  "GetIncomingPacketNumber() const",
+  "RunCommand(C_BasePlayer*, CUserCmd*, IMoveHelper*)",
+  "SetupMove(C_BasePlayer*, CUserCmd*, IMoveHelper*, CMoveData*)",
+  "FinishMove(C_BasePlayer*, CUserCmd*, CMoveData*)",
+  "SetIdealPitch(C_BasePlayer*, Vector const&, QAngle const&, Vector const&)",
+  "_Update(bool, bool, int, int)"
+ ],
+ "derived": [
+  "episodic/client:CPrediction",
+  "hl2/client:CPrediction",
+  "hl2_complete/client:CPrediction",
+  "hl2mp/client:CPrediction",
+  "lostcoast/client:CPrediction"
+ ],
+ "derived_count": 5
+}

@@ -1,0 +1,117 @@
+{
+ "interface": "CTransformManipulator",
+ "headers": [
+  "public/matsys_controls/manipulator.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 9,
+ "sdk2013_slots": [
+  "OnBeginManipulation()",
+  "OnAcceptManipulation()",
+  "OnCancelManipulation()",
+  "OnTick()",
+  "OnCursorMoved(int, int)",
+  "OnMousePressed(ButtonCode_t, int, int)",
+  "OnMouseReleased(ButtonCode_t, int, int)",
+  "OnMouseWheeled(int)",
+  "SetViewportSize(int, int)"
+ ],
+ "retail_reference": {
+  "module": "episodic/client",
+  "class": "CTransformManipulator",
+  "offset": 0,
+  "chain": [
+   "CTransformManipulator"
+  ]
+ },
+ "retail_len": 9,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 9
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "OnBeginManipulation",
+   "sig": "OnBeginManipulation()",
+   "symbol": "CBaseManipulator::OnBeginManipulation()"
+  },
+  {
+   "index": 1,
+   "name": "OnAcceptManipulation",
+   "sig": "OnAcceptManipulation()",
+   "symbol": "CBaseManipulator::OnAcceptManipulation()"
+  },
+  {
+   "index": 2,
+   "name": "OnCancelManipulation",
+   "sig": "OnCancelManipulation()",
+   "symbol": "CBaseManipulator::OnCancelManipulation()"
+  },
+  {
+   "index": 3,
+   "name": "OnTick",
+   "sig": "OnTick()",
+   "symbol": "CBaseManipulator::OnTick()"
+  },
+  {
+   "index": 4,
+   "name": "OnCursorMoved",
+   "sig": "OnCursorMoved(int, int)",
+   "symbol": "CBaseManipulator::OnCursorMoved(int, int)"
+  },
+  {
+   "index": 5,
+   "name": "OnMousePressed",
+   "sig": "OnMousePressed(ButtonCode_t, int, int)",
+   "symbol": "CBaseManipulator::OnMousePressed(ButtonCode_t, int, int)"
+  },
+  {
+   "index": 6,
+   "name": "OnMouseReleased",
+   "sig": "OnMouseReleased(ButtonCode_t, int, int)",
+   "symbol": "CBaseManipulator::OnMouseReleased(ButtonCode_t, int, int)"
+  },
+  {
+   "index": 7,
+   "name": "OnMouseWheeled",
+   "sig": "OnMouseWheeled(int)",
+   "symbol": "CBaseManipulator::OnMouseWheeled(int)"
+  },
+  {
+   "index": 8,
+   "name": "SetViewportSize",
+   "sig": "SetViewportSize(int, int)",
+   "symbol": "CBaseManipulator::SetViewportSize(int, int)"
+  }
+ ],
+ "derived": [
+  "episodic/client:CPotteryWheelManip",
+  "episodic/client:CRotationManipulator",
+  "episodic/client:CTransformManipulator",
+  "episodic/client:CTranslationManipulator",
+  "hl2/client:CPotteryWheelManip",
+  "hl2/client:CRotationManipulator",
+  "hl2/client:CTransformManipulator",
+  "hl2/client:CTranslationManipulator",
+  "hl2_complete/client:CPotteryWheelManip",
+  "hl2_complete/client:CRotationManipulator",
+  "hl2_complete/client:CTransformManipulator",
+  "hl2_complete/client:CTranslationManipulator",
+  "hl2mp/client:CPotteryWheelManip",
+  "hl2mp/client:CRotationManipulator",
+  "hl2mp/client:CTransformManipulator",
+  "hl2mp/client:CTranslationManipulator",
+  "lostcoast/client:CPotteryWheelManip",
+  "lostcoast/client:CRotationManipulator",
+  "lostcoast/client:CTransformManipulator",
+  "lostcoast/client:CTranslationManipulator"
+ ],
+ "derived_count": 20
+}

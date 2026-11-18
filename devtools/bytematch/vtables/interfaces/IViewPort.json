@@ -1,0 +1,98 @@
+{
+ "interface": "IViewPort",
+ "headers": [
+  "public/game/client/iviewport.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 7,
+ "sdk2013_slots": [
+  "UpdateAllPanels()",
+  "ShowPanel(char const*, bool)",
+  "ShowPanel(IViewPortPanel*, bool)",
+  "ShowBackGround(bool)",
+  "FindPanelByName(char const*)",
+  "GetActivePanel()",
+  "PostMessageToPanel(char const*, KeyValues*)"
+ ],
+ "retail_reference": {
+  "module": "episodic/client",
+  "class": "IViewPort",
+  "offset": 0,
+  "chain": [
+   "IViewPort"
+  ]
+ },
+ "retail_len": 7,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 0
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 1,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 2,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 3,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 4,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 5,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 6,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  }
+ ],
+ "derived": [
+  "episodic/client:CBaseViewport",
+  "episodic/client:CHudViewport",
+  "episodic/client:IViewPort",
+  "hl2/client:CBaseViewport",
+  "hl2/client:CHudViewport",
+  "hl2/client:IViewPort",
+  "hl2_complete/client:CBaseViewport",
+  "hl2_complete/client:CHudViewport",
+  "hl2_complete/client:IViewPort",
+  "hl2mp/client:CBaseViewport",
+  "hl2mp/client:CHudViewport",
+  "hl2mp/client:IViewPort",
+  "lostcoast/client:CBaseViewport",
+  "lostcoast/client:CHudViewport",
+  "lostcoast/client:IViewPort"
+ ],
+ "derived_count": 15
+}

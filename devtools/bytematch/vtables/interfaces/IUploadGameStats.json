@@ -1,0 +1,101 @@
+{
+ "interface": "IUploadGameStats",
+ "headers": [
+  "public/eiface.h",
+  "public/eifacev21.h"
+ ],
+ "versions": {
+  "retail": [
+   "ServerUploadGameStats001"
+  ],
+  "ours": [
+   "ServerUploadGameStats001"
+  ],
+  "sdk2013": [
+   "ServerUploadGameStats001"
+  ]
+ },
+ "version_macros": [
+  "INTERFACEVERSION_UPLOADGAMESTATS",
+  "UPLOADGAMESTATS_INTERFACEVERSION_1"
+ ],
+ "registrations": [
+  {
+   "module": "bin/engine",
+   "version": "ServerUploadGameStats001",
+   "class": "CUploadGameStats"
+  }
+ ],
+ "sdk2013_len": 7,
+ "sdk2013_slots": [
+  "UploadGameStats(char const*, unsigned int, unsigned int, void const*)",
+  "InitConnection()",
+  "UpdateConnection()",
+  "IsGameStatsLoggingEnabled()",
+  "GetPseudoUniqueId(char*, unsigned long)",
+  "IsCyberCafeUser()",
+  "IsHDREnabled()"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CUploadGameStats",
+  "offset": 0,
+  "chain": [
+   "CUploadGameStats",
+   "IUploadGameStats"
+  ]
+ },
+ "retail_len": 7,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 7
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "UploadGameStats",
+   "sig": "UploadGameStats(char const*, unsigned int, unsigned int, void const*)",
+   "symbol": "CUploadGameStats::UploadGameStats(char const*, unsigned int, unsigned int, void const*)"
+  },
+  {
+   "index": 1,
+   "name": "InitConnection",
+   "sig": "InitConnection()",
+   "symbol": "CUploadGameStats::InitConnection()"
+  },
+  {
+   "index": 2,
+   "name": "UpdateConnection",
+   "sig": "UpdateConnection()",
+   "symbol": "CUploadGameStats::UpdateConnection()"
+  },
+  {
+   "index": 3,
+   "name": "IsGameStatsLoggingEnabled",
+   "sig": "IsGameStatsLoggingEnabled()",
+   "symbol": "CUploadGameStats::IsGameStatsLoggingEnabled()"
+  },
+  {
+   "index": 4,
+   "name": "GetPseudoUniqueId",
+   "sig": "GetPseudoUniqueId(char*, unsigned long)",
+   "symbol": "CUploadGameStats::GetPseudoUniqueId(char*, unsigned long)"
+  },
+  {
+   "index": 5,
+   "name": "IsCyberCafeUser",
+   "sig": "IsCyberCafeUser()",
+   "symbol": "CUploadGameStats::IsCyberCafeUser()"
+  },
+  {
+   "index": 6,
+   "name": "IsHDREnabled",
+   "sig": "IsHDREnabled()",
+   "symbol": "CUploadGameStats::IsHDREnabled()"
+  }
+ ],
+ "derived": [
+  "bin/engine:CUploadGameStats"
+ ],
+ "derived_count": 1
+}

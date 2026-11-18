@@ -1,0 +1,94 @@
+{
+ "interface": "ICvarQuery",
+ "headers": [
+  "public/icvar.h"
+ ],
+ "versions": {
+  "retail": [
+   "VCvarQuery001"
+  ],
+  "ours": [
+   "VCvarQuery001"
+  ],
+  "sdk2013": [
+   "VCvarQuery001"
+  ]
+ },
+ "version_macros": [
+  "CVAR_QUERY_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/engine",
+   "version": "VCvarQuery001",
+   "class": "CCvarQuery"
+  }
+ ],
+ "sdk2013_len": 6,
+ "sdk2013_slots": [
+  "Connect(void* (*)(char const*, int*))",
+  "Disconnect()",
+  "QueryInterface(char const*)",
+  "Init()",
+  "Shutdown()",
+  "AreConVarsLinkable(ConVar const*, ConVar const*)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CCvarQuery",
+  "offset": 0,
+  "chain": [
+   "CCvarQuery",
+   "CBaseAppSystem<ICvarQuery>",
+   "ICvarQuery"
+  ]
+ },
+ "retail_len": 6,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 6
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Connect",
+   "sig": "Connect(void* (*)(char const*, int*))",
+   "symbol": "CCvarQuery::Connect(void* (*)(char const*, int*))"
+  },
+  {
+   "index": 1,
+   "name": "Disconnect",
+   "sig": "Disconnect()",
+   "symbol": "CBaseAppSystem<ICvarQuery>::Disconnect()"
+  },
+  {
+   "index": 2,
+   "name": "QueryInterface",
+   "sig": "QueryInterface(char const*)",
+   "symbol": "CCvarQuery::QueryInterface(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "CCvarQuery::Init()"
+  },
+  {
+   "index": 4,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CCvarQuery::Shutdown()"
+  },
+  {
+   "index": 5,
+   "name": "AreConVarsLinkable",
+   "sig": "AreConVarsLinkable(ConVar const*, ConVar const*)",
+   "symbol": "CCvarQuery::AreConVarsLinkable(ConVar const*, ConVar const*)"
+  }
+ ],
+ "derived": [
+  "bin/engine:CCvarQuery",
+  "bin/libvstdlib:CDefaultCvarQuery"
+ ],
+ "derived_count": 2
+}

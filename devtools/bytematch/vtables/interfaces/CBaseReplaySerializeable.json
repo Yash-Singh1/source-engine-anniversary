@@ -1,0 +1,155 @@
+{
+ "interface": "CBaseReplaySerializeable",
+ "headers": [
+  "common/replay/basereplayserializeable.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 16,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "SetHandle(unsigned int)",
+  "GetHandle() const",
+  "Read(KeyValues*)",
+  "Write(KeyValues*)",
+  "GetSubKeyTitle() const",
+  "GetFilename() const",
+  "GetPath() const",
+  "GetFullFilename() const",
+  "SetLocked(bool)",
+  "IsLocked() const",
+  "OnDelete()",
+  "OnUnload()",
+  "GetDebugName() const",
+  "OnAddedToDirtyList()"
+ ],
+ "retail_reference": {
+  "module": "bin/replay",
+  "class": "CBaseReplaySerializeable",
+  "offset": 0,
+  "chain": [
+   "CBaseReplaySerializeable"
+  ]
+ },
+ "retail_len": 16,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 16
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CBaseReplaySerializeable",
+   "sig": "~CBaseReplaySerializeable()",
+   "symbol": "CBaseReplaySerializeable::~CBaseReplaySerializeable()"
+  },
+  {
+   "index": 1,
+   "name": "~CBaseReplaySerializeable",
+   "sig": "~CBaseReplaySerializeable()",
+   "symbol": "CBaseReplaySerializeable::~CBaseReplaySerializeable()"
+  },
+  {
+   "index": 2,
+   "name": "SetHandle",
+   "sig": "SetHandle(unsigned int)",
+   "symbol": "CBaseReplaySerializeable::SetHandle(unsigned int)"
+  },
+  {
+   "index": 3,
+   "name": "GetHandle",
+   "sig": "GetHandle() const",
+   "symbol": "CBaseReplaySerializeable::GetHandle() const"
+  },
+  {
+   "index": 4,
+   "name": "Read",
+   "sig": "Read(KeyValues*)",
+   "symbol": "CBaseReplaySerializeable::Read(KeyValues*)"
+  },
+  {
+   "index": 5,
+   "name": "Write",
+   "sig": "Write(KeyValues*)",
+   "symbol": "CBaseReplaySerializeable::Write(KeyValues*)"
+  },
+  {
+   "index": 6,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 7,
+   "name": "GetFilename",
+   "sig": "GetFilename() const",
+   "symbol": "CBaseReplaySerializeable::GetFilename() const"
+  },
+  {
+   "index": 8,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 9,
+   "name": "GetFullFilename",
+   "sig": "GetFullFilename() const",
+   "symbol": "CBaseReplaySerializeable::GetFullFilename() const"
+  },
+  {
+   "index": 10,
+   "name": "SetLocked",
+   "sig": "SetLocked(bool)",
+   "symbol": "CBaseReplaySerializeable::SetLocked(bool)"
+  },
+  {
+   "index": 11,
+   "name": "IsLocked",
+   "sig": "IsLocked() const",
+   "symbol": "CBaseReplaySerializeable::IsLocked() const"
+  },
+  {
+   "index": 12,
+   "name": "OnDelete",
+   "sig": "OnDelete()",
+   "symbol": "CBaseReplaySerializeable::OnDelete()"
+  },
+  {
+   "index": 13,
+   "name": "OnUnload",
+   "sig": "OnUnload()",
+   "symbol": "CBaseReplaySerializeable::OnUnload()"
+  },
+  {
+   "index": 14,
+   "name": "GetDebugName",
+   "sig": "GetDebugName() const",
+   "symbol": "CBaseReplaySerializeable::GetDebugName() const"
+  },
+  {
+   "index": 15,
+   "name": "OnAddedToDirtyList",
+   "sig": "OnAddedToDirtyList()",
+   "symbol": "CBaseReplaySerializeable::OnAddedToDirtyList()"
+  }
+ ],
+ "derived": [
+  "bin/replay:CBaseRecordingSession",
+  "bin/replay:CBaseRecordingSessionBlock",
+  "bin/replay:CBaseReplaySerializeable",
+  "bin/replay:CClientRecordingSession",
+  "bin/replay:CClientRecordingSessionBlock",
+  "bin/replay:CReplayMovie",
+  "bin/replay:CReplayScreenshot",
+  "bin/replay:CServerRecordingSession",
+  "bin/replay:CServerRecordingSessionBlock"
+ ],
+ "derived_count": 9
+}

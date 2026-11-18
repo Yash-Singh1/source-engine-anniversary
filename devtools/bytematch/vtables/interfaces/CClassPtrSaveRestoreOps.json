@@ -1,0 +1,85 @@
+{
+ "interface": "CClassPtrSaveRestoreOps",
+ "headers": [
+  "public/isaverestore.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 5,
+ "sdk2013_slots": [
+  "Save(SaveRestoreFieldInfo_t const&, ISave*)",
+  "Restore(SaveRestoreFieldInfo_t const&, IRestore*)",
+  "IsEmpty(SaveRestoreFieldInfo_t const&)",
+  "MakeEmpty(SaveRestoreFieldInfo_t const&)",
+  "Parse(SaveRestoreFieldInfo_t const&, char const*)"
+ ],
+ "retail_reference": {
+  "module": "episodic/client",
+  "class": "CSoundPatchSaveRestoreOps",
+  "offset": 0,
+  "chain": [
+   "CSoundPatchSaveRestoreOps",
+   "CClassPtrSaveRestoreOps"
+  ]
+ },
+ "retail_len": 5,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 5
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Save",
+   "sig": "Save(SaveRestoreFieldInfo_t const&, ISave*)",
+   "symbol": "CSoundPatchSaveRestoreOps::Save(SaveRestoreFieldInfo_t const&, ISave*)"
+  },
+  {
+   "index": 1,
+   "name": "Restore",
+   "sig": "Restore(SaveRestoreFieldInfo_t const&, IRestore*)",
+   "symbol": "CSoundPatchSaveRestoreOps::Restore(SaveRestoreFieldInfo_t const&, IRestore*)"
+  },
+  {
+   "index": 2,
+   "name": "IsEmpty",
+   "sig": "IsEmpty(SaveRestoreFieldInfo_t const&)",
+   "symbol": "CClassPtrSaveRestoreOps::IsEmpty(SaveRestoreFieldInfo_t const&)"
+  },
+  {
+   "index": 3,
+   "name": "MakeEmpty",
+   "sig": "MakeEmpty(SaveRestoreFieldInfo_t const&)",
+   "symbol": "CClassPtrSaveRestoreOps::MakeEmpty(SaveRestoreFieldInfo_t const&)"
+  },
+  {
+   "index": 4,
+   "name": "Parse",
+   "sig": "Parse(SaveRestoreFieldInfo_t const&, char const*)",
+   "symbol": "CDefSaveRestoreOps::Parse(SaveRestoreFieldInfo_t const&, char const*)"
+  }
+ ],
+ "derived": [
+  "episodic/client:CSoundPatchSaveRestoreOps",
+  "episodic/server:CIKSaveRestoreOps",
+  "episodic/server:CSoundPatchSaveRestoreOps",
+  "hl2/client:CSoundPatchSaveRestoreOps",
+  "hl2/server:CIKSaveRestoreOps",
+  "hl2/server:CSoundPatchSaveRestoreOps",
+  "hl2_complete/client:CSoundPatchSaveRestoreOps",
+  "hl2_complete/server:CIKSaveRestoreOps",
+  "hl2_complete/server:CSoundPatchSaveRestoreOps",
+  "hl2mp/client:CSoundPatchSaveRestoreOps",
+  "hl2mp/server:CIKSaveRestoreOps",
+  "hl2mp/server:CSoundPatchSaveRestoreOps",
+  "lostcoast/client:CSoundPatchSaveRestoreOps",
+  "lostcoast/server:CIKSaveRestoreOps",
+  "lostcoast/server:CSoundPatchSaveRestoreOps"
+ ],
+ "derived_count": 15
+}

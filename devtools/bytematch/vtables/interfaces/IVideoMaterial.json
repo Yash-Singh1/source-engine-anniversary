@@ -1,0 +1,253 @@
+{
+ "interface": "IVideoMaterial",
+ "headers": [
+  "public/video/ivideoservices.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 31,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "GetVideoFileName()",
+  "GetLastResult()",
+  "GetVideoFrameRate()",
+  "HasAudio()",
+  "SetVolume(float)",
+  "GetVolume()",
+  "SetMuted(bool)",
+  "IsMuted()",
+  "SoundDeviceCommand(VideoSoundDeviceOperation::EVideoSoundDeviceOperation_t, void*, void*)",
+  "IsVideoReadyToPlay()",
+  "IsVideoPlaying()",
+  "IsNewFrameReady()",
+  "IsFinishedPlaying()",
+  "StartVideo()",
+  "StopVideo()",
+  "SetLooping(bool)",
+  "IsLooping()",
+  "SetPaused(bool)",
+  "IsPaused()",
+  "GetVideoDuration()",
+  "GetFrameCount()",
+  "SetFrame(int)",
+  "GetCurrentFrame()",
+  "SetTime(float)",
+  "GetCurrentVideoTime()",
+  "Update()",
+  "GetMaterial()",
+  "GetVideoTexCoordRange(float*, float*)",
+  "GetVideoImageSize(int*, int*)"
+ ],
+ "retail_reference": {
+  "module": "bin/video_quicktime",
+  "class": "CQuickTimeMaterial",
+  "offset": 0,
+  "chain": [
+   "CQuickTimeMaterial",
+   "IVideoMaterial"
+  ]
+ },
+ "retail_len": 31,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 31
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CQuickTimeMaterial",
+   "sig": "~CQuickTimeMaterial()",
+   "symbol": "CQuickTimeMaterial::~CQuickTimeMaterial()"
+  },
+  {
+   "index": 1,
+   "name": "~CQuickTimeMaterial",
+   "sig": "~CQuickTimeMaterial()",
+   "symbol": "CQuickTimeMaterial::~CQuickTimeMaterial()"
+  },
+  {
+   "index": 2,
+   "name": "GetVideoFileName",
+   "sig": "GetVideoFileName()",
+   "symbol": "CQuickTimeMaterial::GetVideoFileName()"
+  },
+  {
+   "index": 3,
+   "name": "GetLastResult",
+   "sig": "GetLastResult()",
+   "symbol": "CQuickTimeMaterial::GetLastResult()"
+  },
+  {
+   "index": 4,
+   "name": "GetVideoFrameRate",
+   "sig": "GetVideoFrameRate()",
+   "symbol": "CQuickTimeMaterial::GetVideoFrameRate()"
+  },
+  {
+   "index": 5,
+   "name": "HasAudio",
+   "sig": "HasAudio()",
+   "symbol": "CQuickTimeMaterial::HasAudio()"
+  },
+  {
+   "index": 6,
+   "name": "SetVolume",
+   "sig": "SetVolume(float)",
+   "symbol": "CQuickTimeMaterial::SetVolume(float)"
+  },
+  {
+   "index": 7,
+   "name": "GetVolume",
+   "sig": "GetVolume()",
+   "symbol": "CQuickTimeMaterial::GetVolume()"
+  },
+  {
+   "index": 8,
+   "name": "SetMuted",
+   "sig": "SetMuted(bool)",
+   "symbol": "CQuickTimeMaterial::SetMuted(bool)"
+  },
+  {
+   "index": 9,
+   "name": "IsMuted",
+   "sig": "IsMuted()",
+   "symbol": "CQuickTimeMaterial::IsMuted()"
+  },
+  {
+   "index": 10,
+   "name": "SoundDeviceCommand",
+   "sig": "SoundDeviceCommand(VideoSoundDeviceOperation::EVideoSoundDeviceOperation_t, void*, void*)",
+   "symbol": "CQuickTimeMaterial::SoundDeviceCommand(VideoSoundDeviceOperation::EVideoSoundDeviceOperation_t, void*, void*)"
+  },
+  {
+   "index": 11,
+   "name": "IsVideoReadyToPlay",
+   "sig": "IsVideoReadyToPlay()",
+   "symbol": "CQuickTimeMaterial::IsVideoReadyToPlay()"
+  },
+  {
+   "index": 12,
+   "name": "IsVideoPlaying",
+   "sig": "IsVideoPlaying()",
+   "symbol": "CQuickTimeMaterial::IsVideoPlaying()"
+  },
+  {
+   "index": 13,
+   "name": "IsNewFrameReady",
+   "sig": "IsNewFrameReady()",
+   "symbol": "CQuickTimeMaterial::IsNewFrameReady()"
+  },
+  {
+   "index": 14,
+   "name": "IsFinishedPlaying",
+   "sig": "IsFinishedPlaying()",
+   "symbol": "CQuickTimeMaterial::IsFinishedPlaying()"
+  },
+  {
+   "index": 15,
+   "name": "StartVideo",
+   "sig": "StartVideo()",
+   "symbol": "CQuickTimeMaterial::StartVideo()"
+  },
+  {
+   "index": 16,
+   "name": "StopVideo",
+   "sig": "StopVideo()",
+   "symbol": "CQuickTimeMaterial::StopVideo()"
+  },
+  {
+   "index": 17,
+   "name": "SetLooping",
+   "sig": "SetLooping(bool)",
+   "symbol": "CQuickTimeMaterial::SetLooping(bool)"
+  },
+  {
+   "index": 18,
+   "name": "IsLooping",
+   "sig": "IsLooping()",
+   "symbol": "CQuickTimeMaterial::IsLooping()"
+  },
+  {
+   "index": 19,
+   "name": "SetPaused",
+   "sig": "SetPaused(bool)",
+   "symbol": "CQuickTimeMaterial::SetPaused(bool)"
+  },
+  {
+   "index": 20,
+   "name": "IsPaused",
+   "sig": "IsPaused()",
+   "symbol": "CQuickTimeMaterial::IsPaused()"
+  },
+  {
+   "index": 21,
+   "name": "GetVideoDuration",
+   "sig": "GetVideoDuration()",
+   "symbol": "CQuickTimeMaterial::GetVideoDuration()"
+  },
+  {
+   "index": 22,
+   "name": "GetFrameCount",
+   "sig": "GetFrameCount()",
+   "symbol": "CQuickTimeMaterial::GetFrameCount()"
+  },
+  {
+   "index": 23,
+   "name": "SetFrame",
+   "sig": "SetFrame(int)",
+   "symbol": "CQuickTimeMaterial::SetFrame(int)"
+  },
+  {
+   "index": 24,
+   "name": "GetCurrentFrame",
+   "sig": "GetCurrentFrame()",
+   "symbol": "CQuickTimeMaterial::GetCurrentFrame()"
+  },
+  {
+   "index": 25,
+   "name": "SetTime",
+   "sig": "SetTime(float)",
+   "symbol": "CQuickTimeMaterial::SetTime(float)"
+  },
+  {
+   "index": 26,
+   "name": "GetCurrentVideoTime",
+   "sig": "GetCurrentVideoTime()",
+   "symbol": "CQuickTimeMaterial::GetCurrentVideoTime()"
+  },
+  {
+   "index": 27,
+   "name": "Update",
+   "sig": "Update()",
+   "symbol": "CQuickTimeMaterial::Update()"
+  },
+  {
+   "index": 28,
+   "name": "GetMaterial",
+   "sig": "GetMaterial()",
+   "symbol": "CQuickTimeMaterial::GetMaterial()"
+  },
+  {
+   "index": 29,
+   "name": "GetVideoTexCoordRange",
+   "sig": "GetVideoTexCoordRange(float*, float*)",
+   "symbol": "CQuickTimeMaterial::GetVideoTexCoordRange(float*, float*)"
+  },
+  {
+   "index": 30,
+   "name": "GetVideoImageSize",
+   "sig": "GetVideoImageSize(int*, int*)",
+   "symbol": "CQuickTimeMaterial::GetVideoImageSize(int*, int*)"
+  }
+ ],
+ "derived": [
+  "bin/video_quicktime:CQuickTimeMaterial"
+ ],
+ "derived_count": 1
+}

@@ -1,0 +1,71 @@
+{
+ "interface": "IVBAllocTracker",
+ "headers": [
+  "public/materialsystem/ivballoctracker.h"
+ ],
+ "versions": {
+  "retail": [
+   "VBAllocTracker001"
+  ],
+  "ours": [
+   "VBAllocTracker001"
+  ],
+  "sdk2013": [
+   "VBAllocTracker001"
+  ]
+ },
+ "version_macros": [
+  "VB_ALLOC_TRACKER_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/shaderapidx9",
+   "version": "VBAllocTracker001",
+   "class": "CVBAllocTracker"
+  }
+ ],
+ "sdk2013_len": 3,
+ "sdk2013_slots": [
+  "CountVB(void*, bool, int, int, unsigned long long)",
+  "UnCountVB(void*)",
+  "TrackMeshAllocations(char const*)"
+ ],
+ "retail_reference": {
+  "module": "bin/shaderapidx9",
+  "class": "CVBAllocTracker",
+  "offset": 0,
+  "chain": [
+   "CVBAllocTracker",
+   "IVBAllocTracker"
+  ]
+ },
+ "retail_len": 3,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 3
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "CountVB",
+   "sig": "CountVB(void*, bool, int, int, unsigned long long)",
+   "symbol": "CVBAllocTracker::CountVB(void*, bool, int, int, unsigned long long)"
+  },
+  {
+   "index": 1,
+   "name": "UnCountVB",
+   "sig": "UnCountVB(void*)",
+   "symbol": "CVBAllocTracker::UnCountVB(void*)"
+  },
+  {
+   "index": 2,
+   "name": "TrackMeshAllocations",
+   "sig": "TrackMeshAllocations(char const*)",
+   "symbol": "CVBAllocTracker::TrackMeshAllocations(char const*)"
+  }
+ ],
+ "derived": [
+  "bin/shaderapidx9:CVBAllocTracker"
+ ],
+ "derived_count": 1
+}

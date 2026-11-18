@@ -1,0 +1,15 @@
+{
+ "interface": "WorldListInfo_t",
+ "headers": [
+  "public/ivrenderview.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": null,
+ "status": "no retail vtable"
+}

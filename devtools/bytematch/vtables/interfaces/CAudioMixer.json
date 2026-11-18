@@ -1,0 +1,161 @@
+{
+ "interface": "CAudioMixer",
+ "headers": [
+  "public/engine/audio/snd_audio_source.h",
+  "public/soundsystem/snd_audio_source.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 21,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "MixDataToDevice(IAudioDevice*, channel_t*, int, int, int, bool)",
+  "IncrementSamples(channel_t*, int, int, int, bool)",
+  "SkipSamples(IAudioDevice*, channel_t*, int, int, int, bool)",
+  "GetSource()",
+  "GetSamplePosition()",
+  "GetScubPosition()",
+  "SetSamplePosition(int, bool)",
+  "SetLoopPosition(int)",
+  "GetStartPosition()",
+  "GetActive()",
+  "SetActive(bool)",
+  "SetModelIndex(int)",
+  "GetModelIndex() const",
+  "SetDirection(bool)",
+  "GetDirection() const",
+  "SetAutoDelete(bool)",
+  "GetAutoDelete() const",
+  "SetVolume(float)",
+  "GetChannel()"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CSentenceMixer",
+  "offset": 0,
+  "chain": [
+   "CSentenceMixer",
+   "CAudioMixer"
+  ]
+ },
+ "retail_len": 16,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 16
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CSentenceMixer",
+   "sig": "~CSentenceMixer()",
+   "symbol": "CSentenceMixer::~CSentenceMixer()"
+  },
+  {
+   "index": 1,
+   "name": "~CSentenceMixer",
+   "sig": "~CSentenceMixer()",
+   "symbol": "CSentenceMixer::~CSentenceMixer()"
+  },
+  {
+   "index": 2,
+   "name": "MixDataToDevice",
+   "sig": "MixDataToDevice(IAudioDevice*, channel_t*, int, int, int)",
+   "symbol": "CSentenceMixer::MixDataToDevice(IAudioDevice*, channel_t*, int, int, int)"
+  },
+  {
+   "index": 3,
+   "name": "SkipSamples",
+   "sig": "SkipSamples(channel_t*, int, int, int)",
+   "symbol": "CSentenceMixer::SkipSamples(channel_t*, int, int, int)"
+  },
+  {
+   "index": 4,
+   "name": "ShouldContinueMixing",
+   "sig": "ShouldContinueMixing()",
+   "symbol": "CSentenceMixer::ShouldContinueMixing()"
+  },
+  {
+   "index": 5,
+   "name": "GetSource",
+   "sig": "GetSource()",
+   "symbol": "CSentenceMixer::GetSource()"
+  },
+  {
+   "index": 6,
+   "name": "GetSamplePosition",
+   "sig": "GetSamplePosition()",
+   "symbol": "CSentenceMixer::GetSamplePosition()"
+  },
+  {
+   "index": 7,
+   "name": "ModifyPitch",
+   "sig": "ModifyPitch(float)",
+   "symbol": "CSentenceMixer::ModifyPitch(float)"
+  },
+  {
+   "index": 8,
+   "name": "GetVolumeScale",
+   "sig": "GetVolumeScale()",
+   "symbol": "CSentenceMixer::GetVolumeScale()"
+  },
+  {
+   "index": 9,
+   "name": "SetSampleStart",
+   "sig": "SetSampleStart(int)",
+   "symbol": "CSentenceMixer::SetSampleStart(int)"
+  },
+  {
+   "index": 10,
+   "name": "SetSampleEnd",
+   "sig": "SetSampleEnd(int)",
+   "symbol": "CSentenceMixer::SetSampleEnd(int)"
+  },
+  {
+   "index": 11,
+   "name": "SetStartupDelaySamples",
+   "sig": "SetStartupDelaySamples(int)",
+   "symbol": "CSentenceMixer::SetStartupDelaySamples(int)"
+  },
+  {
+   "index": 12,
+   "name": "GetMixSampleSize",
+   "sig": "GetMixSampleSize()",
+   "symbol": "CSentenceMixer::GetMixSampleSize()"
+  },
+  {
+   "index": 13,
+   "name": "IsReadyToMix",
+   "sig": "IsReadyToMix()",
+   "symbol": "CSentenceMixer::IsReadyToMix()"
+  },
+  {
+   "index": 14,
+   "name": "GetPositionForSave",
+   "sig": "GetPositionForSave()",
+   "symbol": "CSentenceMixer::GetPositionForSave()"
+  },
+  {
+   "index": 15,
+   "name": "SetPositionFromSaved",
+   "sig": "SetPositionFromSaved(int)",
+   "symbol": "CSentenceMixer::SetPositionFromSaved(int)"
+  }
+ ],
+ "derived": [
+  "bin/engine:CAudioMixerWave",
+  "bin/engine:CAudioMixerWave16Mono",
+  "bin/engine:CAudioMixerWave16Stereo",
+  "bin/engine:CAudioMixerWave8Mono",
+  "bin/engine:CAudioMixerWave8Stereo",
+  "bin/engine:CAudioMixerWaveADPCM",
+  "bin/engine:CAudioMixerWaveMP3",
+  "bin/engine:CSentenceMixer"
+ ],
+ "derived_count": 8
+}

@@ -1,0 +1,162 @@
+{
+ "interface": "IShaderDeviceMgr",
+ "headers": [
+  "public/shaderapi/IShaderDevice.h"
+ ],
+ "versions": {
+  "retail": [
+   "ShaderDeviceMgr001"
+  ],
+  "ours": [
+   "ShaderDeviceMgr001"
+  ],
+  "sdk2013": [
+   "ShaderDeviceMgr001"
+  ]
+ },
+ "version_macros": [
+  "SHADER_DEVICE_MGR_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/shaderapidx9",
+   "version": "ShaderDeviceMgr001",
+   "class": "CShaderDeviceMgrDx8"
+  },
+  {
+   "module": "bin/shaderapiempty",
+   "version": "ShaderDeviceMgr001",
+   "class": "CShaderDeviceMgrEmpty"
+  }
+ ],
+ "sdk2013_len": 15,
+ "sdk2013_slots": [
+  "Connect(void* (*)(char const*, int*))",
+  "Disconnect()",
+  "QueryInterface(char const*)",
+  "Init()",
+  "Shutdown()",
+  "GetAdapterCount() const",
+  "GetAdapterInfo(int, MaterialAdapterInfo_t&) const",
+  "GetRecommendedConfigurationInfo(int, int, KeyValues*)",
+  "GetModeCount(int) const",
+  "GetModeInfo(ShaderDisplayMode_t*, int, int) const",
+  "GetCurrentModeInfo(ShaderDisplayMode_t*, int) const",
+  "SetAdapter(int, int)",
+  "SetMode(void*, int, ShaderDeviceInfo_t const&)",
+  "AddModeChangeCallback(void (*)())",
+  "RemoveModeChangeCallback(void (*)())"
+ ],
+ "retail_reference": {
+  "module": "bin/shaderapiempty",
+  "class": "CShaderDeviceMgrEmpty",
+  "offset": 0,
+  "chain": [
+   "CShaderDeviceMgrEmpty",
+   "IShaderDeviceMgr"
+  ]
+ },
+ "retail_len": 15,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 15
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Connect",
+   "sig": "Connect(void* (*)(char const*, int*))",
+   "symbol": "CShaderDeviceMgrEmpty::Connect(void* (*)(char const*, int*))"
+  },
+  {
+   "index": 1,
+   "name": "Disconnect",
+   "sig": "Disconnect()",
+   "symbol": "CShaderDeviceMgrEmpty::Disconnect()"
+  },
+  {
+   "index": 2,
+   "name": "QueryInterface",
+   "sig": "QueryInterface(char const*)",
+   "symbol": "CShaderDeviceMgrEmpty::QueryInterface(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "CShaderDeviceMgrEmpty::Init()"
+  },
+  {
+   "index": 4,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CShaderDeviceMgrEmpty::Shutdown()"
+  },
+  {
+   "index": 5,
+   "name": "GetAdapterCount",
+   "sig": "GetAdapterCount() const",
+   "symbol": "CShaderDeviceMgrEmpty::GetAdapterCount() const"
+  },
+  {
+   "index": 6,
+   "name": "GetAdapterInfo",
+   "sig": "GetAdapterInfo(int, MaterialAdapterInfo_t&) const",
+   "symbol": "CShaderDeviceMgrEmpty::GetAdapterInfo(int, MaterialAdapterInfo_t&) const"
+  },
+  {
+   "index": 7,
+   "name": "GetRecommendedConfigurationInfo",
+   "sig": "GetRecommendedConfigurationInfo(int, int, KeyValues*)",
+   "symbol": "CShaderDeviceMgrEmpty::GetRecommendedConfigurationInfo(int, int, KeyValues*)"
+  },
+  {
+   "index": 8,
+   "name": "GetModeCount",
+   "sig": "GetModeCount(int) const",
+   "symbol": "CShaderDeviceMgrEmpty::GetModeCount(int) const"
+  },
+  {
+   "index": 9,
+   "name": "GetModeInfo",
+   "sig": "GetModeInfo(ShaderDisplayMode_t*, int, int) const",
+   "symbol": "CShaderDeviceMgrEmpty::GetModeInfo(ShaderDisplayMode_t*, int, int) const"
+  },
+  {
+   "index": 10,
+   "name": "GetCurrentModeInfo",
+   "sig": "GetCurrentModeInfo(ShaderDisplayMode_t*, int) const",
+   "symbol": "CShaderDeviceMgrEmpty::GetCurrentModeInfo(ShaderDisplayMode_t*, int) const"
+  },
+  {
+   "index": 11,
+   "name": "SetAdapter",
+   "sig": "SetAdapter(int, int)",
+   "symbol": "CShaderDeviceMgrEmpty::SetAdapter(int, int)"
+  },
+  {
+   "index": 12,
+   "name": "SetMode",
+   "sig": "SetMode(void*, int, ShaderDeviceInfo_t const&)",
+   "symbol": "CShaderDeviceMgrEmpty::SetMode(void*, int, ShaderDeviceInfo_t const&)"
+  },
+  {
+   "index": 13,
+   "name": "AddModeChangeCallback",
+   "sig": "AddModeChangeCallback(void (*)())",
+   "symbol": "CShaderDeviceMgrEmpty::AddModeChangeCallback(void (*)())"
+  },
+  {
+   "index": 14,
+   "name": "RemoveModeChangeCallback",
+   "sig": "RemoveModeChangeCallback(void (*)())",
+   "symbol": "CShaderDeviceMgrEmpty::RemoveModeChangeCallback(void (*)())"
+  }
+ ],
+ "derived": [
+  "bin/shaderapidx9:CShaderDeviceMgrBase",
+  "bin/shaderapidx9:CShaderDeviceMgrDx8",
+  "bin/shaderapiempty:CShaderDeviceMgrEmpty"
+ ],
+ "derived_count": 3
+}

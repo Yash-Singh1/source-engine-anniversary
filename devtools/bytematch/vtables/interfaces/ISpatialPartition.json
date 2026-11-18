@@ -1,0 +1,302 @@
+{
+ "interface": "ISpatialPartition",
+ "headers": [
+  "public/ispatialpartition.h"
+ ],
+ "versions": {
+  "retail": [
+   "SpatialPartition001"
+  ],
+  "ours": [
+   "SpatialPartition001"
+  ],
+  "sdk2013": [
+   "SpatialPartition001"
+  ]
+ },
+ "version_macros": [
+  "INTERFACEVERSION_SPATIALPARTITION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/engine",
+   "version": "SpatialPartition001",
+   "class": "CSpatialPartition"
+  }
+ ],
+ "sdk2013_len": 35,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "CreateHandle(IHandleEntity*)",
+  "CreateHandle(IHandleEntity*, int, Vector const&, Vector const&)",
+  "DestroyHandle(unsigned short)",
+  "Insert(int, unsigned short)",
+  "Remove(int, unsigned short)",
+  "RemoveAndInsert(int, int, unsigned short)",
+  "Remove(unsigned short)",
+  "ElementMoved(unsigned short, Vector const&, Vector const&)",
+  "HideElement(unsigned short)",
+  "UnhideElement(unsigned short, int)",
+  "InstallQueryCallback_V1(IPartitionQueryCallback*)",
+  "RemoveQueryCallback(IPartitionQueryCallback*)",
+  "EnumerateElementsInBox(int, Vector const&, Vector const&, bool, IPartitionEnumerator*)",
+  "EnumerateElementsInSphere(int, Vector const&, float, bool, IPartitionEnumerator*)",
+  "EnumerateElementsAlongRay(int, Ray_t const&, bool, IPartitionEnumerator*)",
+  "EnumerateElementsAtPoint(int, Vector const&, bool, IPartitionEnumerator*)",
+  "SuppressLists(int, bool)",
+  "GetSuppressedLists()",
+  "RenderAllObjectsInTree(float)",
+  "RenderObjectsInPlayerLeafs(Vector const&, Vector const&, float)",
+  "RenderLeafsForRayTraceStart(float)",
+  "RenderLeafsForRayTraceEnd()",
+  "RenderLeafsForHullTraceStart(float)",
+  "RenderLeafsForHullTraceEnd()",
+  "RenderLeafsForBoxStart(float)",
+  "RenderLeafsForBoxEnd()",
+  "RenderLeafsForSphereStart(float)",
+  "RenderLeafsForSphereEnd()",
+  "RenderObjectsInBox(Vector const&, Vector const&, float)",
+  "RenderObjectsInSphere(Vector const&, float, float)",
+  "RenderObjectsAlongRay(Ray_t const&, float)",
+  "ReportStats(char const*)",
+  "InstallQueryCallback(IPartitionQueryCallback*)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CSpatialPartition",
+  "offset": 0,
+  "chain": [
+   "CSpatialPartition",
+   "ISpatialPartitionInternal",
+   "ISpatialPartition"
+  ]
+ },
+ "retail_len": 35,
+ "retail_len_basis": "override: extra slots belong to ISpatialPartitionInternal",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 39
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CSpatialPartition",
+   "sig": "~CSpatialPartition()",
+   "symbol": "CSpatialPartition::~CSpatialPartition()"
+  },
+  {
+   "index": 1,
+   "name": "~CSpatialPartition",
+   "sig": "~CSpatialPartition()",
+   "symbol": "CSpatialPartition::~CSpatialPartition()"
+  },
+  {
+   "index": 2,
+   "name": "CreateHandle",
+   "sig": "CreateHandle(IHandleEntity*)",
+   "symbol": "CSpatialPartition::CreateHandle(IHandleEntity*)"
+  },
+  {
+   "index": 3,
+   "name": "CreateHandle",
+   "sig": "CreateHandle(IHandleEntity*, int, Vector const&, Vector const&)",
+   "symbol": "CSpatialPartition::CreateHandle(IHandleEntity*, int, Vector const&, Vector const&)"
+  },
+  {
+   "index": 4,
+   "name": "DestroyHandle",
+   "sig": "DestroyHandle(unsigned short)",
+   "symbol": "CSpatialPartition::DestroyHandle(unsigned short)"
+  },
+  {
+   "index": 5,
+   "name": "Insert",
+   "sig": "Insert(int, unsigned short)",
+   "symbol": "CSpatialPartition::Insert(int, unsigned short)"
+  },
+  {
+   "index": 6,
+   "name": "Remove",
+   "sig": "Remove(int, unsigned short)",
+   "symbol": "CSpatialPartition::Remove(int, unsigned short)"
+  },
+  {
+   "index": 7,
+   "name": "RemoveAndInsert",
+   "sig": "RemoveAndInsert(int, int, unsigned short)",
+   "symbol": "CSpatialPartition::RemoveAndInsert(int, int, unsigned short)"
+  },
+  {
+   "index": 8,
+   "name": "Remove",
+   "sig": "Remove(unsigned short)",
+   "symbol": "CSpatialPartition::Remove(unsigned short)"
+  },
+  {
+   "index": 9,
+   "name": "ElementMoved",
+   "sig": "ElementMoved(unsigned short, Vector const&, Vector const&)",
+   "symbol": "CSpatialPartition::ElementMoved(unsigned short, Vector const&, Vector const&)"
+  },
+  {
+   "index": 10,
+   "name": "HideElement",
+   "sig": "HideElement(unsigned short)",
+   "symbol": "CSpatialPartition::HideElement(unsigned short)"
+  },
+  {
+   "index": 11,
+   "name": "UnhideElement",
+   "sig": "UnhideElement(unsigned short, int)",
+   "symbol": "CSpatialPartition::UnhideElement(unsigned short, int)"
+  },
+  {
+   "index": 12,
+   "name": "InstallQueryCallback_V1",
+   "sig": "InstallQueryCallback_V1(IPartitionQueryCallback*)",
+   "symbol": "CSpatialPartition::InstallQueryCallback_V1(IPartitionQueryCallback*)"
+  },
+  {
+   "index": 13,
+   "name": "RemoveQueryCallback",
+   "sig": "RemoveQueryCallback(IPartitionQueryCallback*)",
+   "symbol": "CSpatialPartition::RemoveQueryCallback(IPartitionQueryCallback*)"
+  },
+  {
+   "index": 14,
+   "name": "EnumerateElementsInBox",
+   "sig": "EnumerateElementsInBox(int, Vector const&, Vector const&, bool, IPartitionEnumerator*)",
+   "symbol": "CSpatialPartition::EnumerateElementsInBox(int, Vector const&, Vector const&, bool, IPartitionEnumerator*)"
+  },
+  {
+   "index": 15,
+   "name": "EnumerateElementsInSphere",
+   "sig": "EnumerateElementsInSphere(int, Vector const&, float, bool, IPartitionEnumerator*)",
+   "symbol": "CSpatialPartition::EnumerateElementsInSphere(int, Vector const&, float, bool, IPartitionEnumerator*)"
+  },
+  {
+   "index": 16,
+   "name": "EnumerateElementsAlongRay",
+   "sig": "EnumerateElementsAlongRay(int, Ray_t const&, bool, IPartitionEnumerator*)",
+   "symbol": "CSpatialPartition::EnumerateElementsAlongRay(int, Ray_t const&, bool, IPartitionEnumerator*)"
+  },
+  {
+   "index": 17,
+   "name": "EnumerateElementsAtPoint",
+   "sig": "EnumerateElementsAtPoint(int, Vector const&, bool, IPartitionEnumerator*)",
+   "symbol": "CSpatialPartition::EnumerateElementsAtPoint(int, Vector const&, bool, IPartitionEnumerator*)"
+  },
+  {
+   "index": 18,
+   "name": "SuppressLists",
+   "sig": "SuppressLists(int, bool)",
+   "symbol": "CSpatialPartition::SuppressLists(int, bool)"
+  },
+  {
+   "index": 19,
+   "name": "GetSuppressedLists",
+   "sig": "GetSuppressedLists()",
+   "symbol": "CSpatialPartition::GetSuppressedLists()"
+  },
+  {
+   "index": 20,
+   "name": "RenderAllObjectsInTree",
+   "sig": "RenderAllObjectsInTree(float)",
+   "symbol": "CSpatialPartition::RenderAllObjectsInTree(float)"
+  },
+  {
+   "index": 21,
+   "name": "RenderObjectsInPlayerLeafs",
+   "sig": "RenderObjectsInPlayerLeafs(Vector const&, Vector const&, float)",
+   "symbol": "CSpatialPartition::RenderObjectsInPlayerLeafs(Vector const&, Vector const&, float)"
+  },
+  {
+   "index": 22,
+   "name": "RenderLeafsForRayTraceStart",
+   "sig": "RenderLeafsForRayTraceStart(float)",
+   "symbol": "CSpatialPartition::RenderLeafsForRayTraceStart(float)"
+  },
+  {
+   "index": 23,
+   "name": "RenderLeafsForRayTraceEnd",
+   "sig": "RenderLeafsForRayTraceEnd()",
+   "symbol": "CSpatialPartition::RenderLeafsForRayTraceEnd()"
+  },
+  {
+   "index": 24,
+   "name": "RenderLeafsForHullTraceStart",
+   "sig": "RenderLeafsForHullTraceStart(float)",
+   "symbol": "CSpatialPartition::RenderLeafsForHullTraceStart(float)"
+  },
+  {
+   "index": 25,
+   "name": "RenderLeafsForHullTraceEnd",
+   "sig": "RenderLeafsForHullTraceEnd()",
+   "symbol": "CSpatialPartition::RenderLeafsForHullTraceEnd()"
+  },
+  {
+   "index": 26,
+   "name": "RenderLeafsForBoxStart",
+   "sig": "RenderLeafsForBoxStart(float)",
+   "symbol": "CSpatialPartition::RenderLeafsForBoxStart(float)"
+  },
+  {
+   "index": 27,
+   "name": "RenderLeafsForBoxEnd",
+   "sig": "RenderLeafsForBoxEnd()",
+   "symbol": "CSpatialPartition::RenderLeafsForBoxEnd()"
+  },
+  {
+   "index": 28,
+   "name": "RenderLeafsForSphereStart",
+   "sig": "RenderLeafsForSphereStart(float)",
+   "symbol": "CSpatialPartition::RenderLeafsForSphereStart(float)"
+  },
+  {
+   "index": 29,
+   "name": "RenderLeafsForSphereEnd",
+   "sig": "RenderLeafsForSphereEnd()",
+   "symbol": "CSpatialPartition::RenderLeafsForSphereEnd()"
+  },
+  {
+   "index": 30,
+   "name": "RenderObjectsInBox",
+   "sig": "RenderObjectsInBox(Vector const&, Vector const&, float)",
+   "symbol": "CSpatialPartition::RenderObjectsInBox(Vector const&, Vector const&, float)"
+  },
+  {
+   "index": 31,
+   "name": "RenderObjectsInSphere",
+   "sig": "RenderObjectsInSphere(Vector const&, float, float)",
+   "symbol": "CSpatialPartition::RenderObjectsInSphere(Vector const&, float, float)"
+  },
+  {
+   "index": 32,
+   "name": "RenderObjectsAlongRay",
+   "sig": "RenderObjectsAlongRay(Ray_t const&, float)",
+   "symbol": "CSpatialPartition::RenderObjectsAlongRay(Ray_t const&, float)"
+  },
+  {
+   "index": 33,
+   "name": "ReportStats",
+   "sig": "ReportStats(char const*)",
+   "symbol": "CSpatialPartition::ReportStats(char const*)"
+  },
+  {
+   "index": 34,
+   "name": "InstallQueryCallback",
+   "sig": "InstallQueryCallback(IPartitionQueryCallback*)",
+   "symbol": "CSpatialPartition::InstallQueryCallback(IPartitionQueryCallback*)"
+  }
+ ],
+ "implementer_tail": [
+  "Init(Vector const&, Vector const&)",
+  "DrawDebugOverlays()",
+  "InsertIntoTree(unsigned short, Vector const&, Vector const&)",
+  "RemoveFromTree(unsigned short)"
+ ],
+ "derived": [
+  "bin/engine:CSpatialPartition"
+ ],
+ "derived_count": 1
+}

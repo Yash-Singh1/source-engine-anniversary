@@ -1,0 +1,577 @@
+{
+ "interface": "IMaterialSystemHardwareConfig",
+ "headers": [
+  "public/materialsystem/imaterialsystemhardwareconfig.h"
+ ],
+ "versions": {
+  "retail": [
+   "MaterialSystemHardwareConfig012"
+  ],
+  "ours": [
+   "MaterialSystemHardwareConfig012"
+  ],
+  "sdk2013": [
+   "MaterialSystemHardwareConfig012"
+  ]
+ },
+ "version_macros": [
+  "MATERIALSYSTEM_HARDWARECONFIG_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/materialsystem",
+   "version": "MaterialSystemHardwareConfig012",
+   "class": null
+  },
+  {
+   "module": "bin/shaderapidx9",
+   "version": "MaterialSystemHardwareConfig012",
+   "class": "CHardwareConfig"
+  },
+  {
+   "module": "bin/shaderapiempty",
+   "version": "MaterialSystemHardwareConfig012",
+   "class": "CShaderAPIEmpty"
+  }
+ ],
+ "sdk2013_len": 73,
+ "sdk2013_slots": [
+  "HasDestAlphaBuffer() const",
+  "HasStencilBuffer() const",
+  "GetFrameBufferColorDepth() const",
+  "GetSamplerCount() const",
+  "HasSetDeviceGammaRamp() const",
+  "SupportsCompressedTextures() const",
+  "SupportsCompressedVertices() const",
+  "SupportsNormalMapCompression() const",
+  "SupportsVertexAndPixelShaders() const",
+  "SupportsPixelShaders_1_4() const",
+  "SupportsStaticControlFlow() const",
+  "SupportsPixelShaders_2_0() const",
+  "SupportsVertexShaders_2_0() const",
+  "MaximumAnisotropicLevel() const",
+  "MaxTextureWidth() const",
+  "MaxTextureHeight() const",
+  "TextureMemorySize() const",
+  "SupportsOverbright() const",
+  "SupportsCubeMaps() const",
+  "SupportsMipmappedCubemaps() const",
+  "SupportsNonPow2Textures() const",
+  "GetTextureStageCount() const",
+  "NumVertexShaderConstants() const",
+  "NumPixelShaderConstants() const",
+  "MaxNumLights() const",
+  "SupportsHardwareLighting() const",
+  "MaxBlendMatrices() const",
+  "MaxBlendMatrixIndices() const",
+  "MaxTextureAspectRatio() const",
+  "MaxVertexShaderBlendMatrices() const",
+  "MaxUserClipPlanes() const",
+  "UseFastClipping() const",
+  "GetDXSupportLevel() const",
+  "GetShaderDLLName() const",
+  "ReadPixelsFromFrontBuffer() const",
+  "PreferDynamicTextures() const",
+  "SupportsHDR() const",
+  "HasProjectedBumpEnv() const",
+  "SupportsSpheremapping() const",
+  "NeedsAAClamp() const",
+  "NeedsATICentroidHack() const",
+  "SupportsColorOnSecondStream() const",
+  "SupportsStaticPlusDynamicLighting() const",
+  "PreferReducedFillrate() const",
+  "GetMaxDXSupportLevel() const",
+  "SpecifiesFogColorInLinearSpace() const",
+  "SupportsSRGB() const",
+  "FakeSRGBWrite() const",
+  "CanDoSRGBReadFromRTs() const",
+  "SupportsGLMixedSizeTargets() const",
+  "IsAAEnabled() const",
+  "GetVertexTextureCount() const",
+  "GetMaxVertexTextureDimension() const",
+  "MaxTextureDepth() const",
+  "GetHDRType() const",
+  "GetHardwareHDRType() const",
+  "SupportsPixelShaders_2_b() const",
+  "SupportsStreamOffset() const",
+  "StencilBufferBits() const",
+  "MaxViewports() const",
+  "OverrideStreamOffsetSupport(bool, bool)",
+  "GetShadowFilterMode() const",
+  "NeedsShaderSRGBConversion() const",
+  "UsesSRGBCorrectBlending() const",
+  "SupportsShaderModel_3_0() const",
+  "HasFastVertexTextures() const",
+  "MaxHWMorphBatchCount() const",
+  "ActuallySupportsPixelShaders_2_b() const",
+  "SupportsHDRMode(HDRType_t) const",
+  "GetHDREnabled() const",
+  "SetHDREnabled(bool)",
+  "SupportsBorderColor() const",
+  "SupportsFetch4() const"
+ ],
+ "retail_reference": {
+  "module": "bin/shaderapiempty",
+  "class": "CShaderAPIEmpty",
+  "offset": 4,
+  "chain": [
+   "CShaderAPIEmpty",
+   "IHardwareConfigInternal",
+   "IMaterialSystemHardwareConfig"
+  ]
+ },
+ "retail_len": 73,
+ "retail_len_basis": "override: GetHWSpecificShaderDLLName belongs to IHardwareConfigInternal",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 74
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "HasDestAlphaBuffer",
+   "sig": "HasDestAlphaBuffer() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::HasDestAlphaBuffer() const"
+  },
+  {
+   "index": 1,
+   "name": "HasStencilBuffer",
+   "sig": "HasStencilBuffer() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::HasStencilBuffer() const"
+  },
+  {
+   "index": 2,
+   "name": "GetFrameBufferColorDepth",
+   "sig": "GetFrameBufferColorDepth() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::GetFrameBufferColorDepth() const"
+  },
+  {
+   "index": 3,
+   "name": "GetSamplerCount",
+   "sig": "GetSamplerCount() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::GetSamplerCount() const"
+  },
+  {
+   "index": 4,
+   "name": "HasSetDeviceGammaRamp",
+   "sig": "HasSetDeviceGammaRamp() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::HasSetDeviceGammaRamp() const"
+  },
+  {
+   "index": 5,
+   "name": "SupportsCompressedTextures",
+   "sig": "SupportsCompressedTextures() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::SupportsCompressedTextures() const"
+  },
+  {
+   "index": 6,
+   "name": "SupportsCompressedVertices",
+   "sig": "SupportsCompressedVertices() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::SupportsCompressedVertices() const"
+  },
+  {
+   "index": 7,
+   "name": "SupportsNormalMapCompression",
+   "sig": "SupportsNormalMapCompression() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::SupportsNormalMapCompression() const"
+  },
+  {
+   "index": 8,
+   "name": "SupportsVertexAndPixelShaders",
+   "sig": "SupportsVertexAndPixelShaders() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::SupportsVertexAndPixelShaders() const"
+  },
+  {
+   "index": 9,
+   "name": "SupportsPixelShaders_1_4",
+   "sig": "SupportsPixelShaders_1_4() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::SupportsPixelShaders_1_4() const"
+  },
+  {
+   "index": 10,
+   "name": "SupportsStaticControlFlow",
+   "sig": "SupportsStaticControlFlow() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::SupportsStaticControlFlow() const"
+  },
+  {
+   "index": 11,
+   "name": "SupportsPixelShaders_2_0",
+   "sig": "SupportsPixelShaders_2_0() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::SupportsPixelShaders_2_0() const"
+  },
+  {
+   "index": 12,
+   "name": "SupportsVertexShaders_2_0",
+   "sig": "SupportsVertexShaders_2_0() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::SupportsVertexShaders_2_0() const"
+  },
+  {
+   "index": 13,
+   "name": "MaximumAnisotropicLevel",
+   "sig": "MaximumAnisotropicLevel() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::MaximumAnisotropicLevel() const"
+  },
+  {
+   "index": 14,
+   "name": "MaxTextureWidth",
+   "sig": "MaxTextureWidth() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::MaxTextureWidth() const"
+  },
+  {
+   "index": 15,
+   "name": "MaxTextureHeight",
+   "sig": "MaxTextureHeight() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::MaxTextureHeight() const"
+  },
+  {
+   "index": 16,
+   "name": "TextureMemorySize",
+   "sig": "TextureMemorySize() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::TextureMemorySize() const"
+  },
+  {
+   "index": 17,
+   "name": "SupportsOverbright",
+   "sig": "SupportsOverbright() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::SupportsOverbright() const"
+  },
+  {
+   "index": 18,
+   "name": "SupportsCubeMaps",
+   "sig": "SupportsCubeMaps() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::SupportsCubeMaps() const"
+  },
+  {
+   "index": 19,
+   "name": "SupportsMipmappedCubemaps",
+   "sig": "SupportsMipmappedCubemaps() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::SupportsMipmappedCubemaps() const"
+  },
+  {
+   "index": 20,
+   "name": "SupportsNonPow2Textures",
+   "sig": "SupportsNonPow2Textures() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::SupportsNonPow2Textures() const"
+  },
+  {
+   "index": 21,
+   "name": "GetTextureStageCount",
+   "sig": "GetTextureStageCount() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::GetTextureStageCount() const"
+  },
+  {
+   "index": 22,
+   "name": "NumVertexShaderConstants",
+   "sig": "NumVertexShaderConstants() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::NumVertexShaderConstants() const"
+  },
+  {
+   "index": 23,
+   "name": "NumPixelShaderConstants",
+   "sig": "NumPixelShaderConstants() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::NumPixelShaderConstants() const"
+  },
+  {
+   "index": 24,
+   "name": "MaxNumLights",
+   "sig": "MaxNumLights() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::MaxNumLights() const"
+  },
+  {
+   "index": 25,
+   "name": "SupportsHardwareLighting",
+   "sig": "SupportsHardwareLighting() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::SupportsHardwareLighting() const"
+  },
+  {
+   "index": 26,
+   "name": "MaxBlendMatrices",
+   "sig": "MaxBlendMatrices() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::MaxBlendMatrices() const"
+  },
+  {
+   "index": 27,
+   "name": "MaxBlendMatrixIndices",
+   "sig": "MaxBlendMatrixIndices() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::MaxBlendMatrixIndices() const"
+  },
+  {
+   "index": 28,
+   "name": "MaxTextureAspectRatio",
+   "sig": "MaxTextureAspectRatio() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::MaxTextureAspectRatio() const"
+  },
+  {
+   "index": 29,
+   "name": "MaxVertexShaderBlendMatrices",
+   "sig": "MaxVertexShaderBlendMatrices() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::MaxVertexShaderBlendMatrices() const"
+  },
+  {
+   "index": 30,
+   "name": "MaxUserClipPlanes",
+   "sig": "MaxUserClipPlanes() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::MaxUserClipPlanes() const"
+  },
+  {
+   "index": 31,
+   "name": "UseFastClipping",
+   "sig": "UseFastClipping() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::UseFastClipping() const"
+  },
+  {
+   "index": 32,
+   "name": "GetDXSupportLevel",
+   "sig": "GetDXSupportLevel() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::GetDXSupportLevel() const"
+  },
+  {
+   "index": 33,
+   "name": "GetShaderDLLName",
+   "sig": "GetShaderDLLName() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::GetShaderDLLName() const"
+  },
+  {
+   "index": 34,
+   "name": "ReadPixelsFromFrontBuffer",
+   "sig": "ReadPixelsFromFrontBuffer() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::ReadPixelsFromFrontBuffer() const"
+  },
+  {
+   "index": 35,
+   "name": "PreferDynamicTextures",
+   "sig": "PreferDynamicTextures() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::PreferDynamicTextures() const"
+  },
+  {
+   "index": 36,
+   "name": "SupportsHDR",
+   "sig": "SupportsHDR() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::SupportsHDR() const"
+  },
+  {
+   "index": 37,
+   "name": "HasProjectedBumpEnv",
+   "sig": "HasProjectedBumpEnv() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::HasProjectedBumpEnv() const"
+  },
+  {
+   "index": 38,
+   "name": "SupportsSpheremapping",
+   "sig": "SupportsSpheremapping() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::SupportsSpheremapping() const"
+  },
+  {
+   "index": 39,
+   "name": "NeedsAAClamp",
+   "sig": "NeedsAAClamp() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::NeedsAAClamp() const"
+  },
+  {
+   "index": 40,
+   "name": "NeedsATICentroidHack",
+   "sig": "NeedsATICentroidHack() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::NeedsATICentroidHack() const"
+  },
+  {
+   "index": 41,
+   "name": "SupportsColorOnSecondStream",
+   "sig": "SupportsColorOnSecondStream() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::SupportsColorOnSecondStream() const"
+  },
+  {
+   "index": 42,
+   "name": "SupportsStaticPlusDynamicLighting",
+   "sig": "SupportsStaticPlusDynamicLighting() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::SupportsStaticPlusDynamicLighting() const"
+  },
+  {
+   "index": 43,
+   "name": "PreferReducedFillrate",
+   "sig": "PreferReducedFillrate() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::PreferReducedFillrate() const"
+  },
+  {
+   "index": 44,
+   "name": "GetMaxDXSupportLevel",
+   "sig": "GetMaxDXSupportLevel() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::GetMaxDXSupportLevel() const"
+  },
+  {
+   "index": 45,
+   "name": "SpecifiesFogColorInLinearSpace",
+   "sig": "SpecifiesFogColorInLinearSpace() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::SpecifiesFogColorInLinearSpace() const"
+  },
+  {
+   "index": 46,
+   "name": "SupportsSRGB",
+   "sig": "SupportsSRGB() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::SupportsSRGB() const"
+  },
+  {
+   "index": 47,
+   "name": "FakeSRGBWrite",
+   "sig": "FakeSRGBWrite() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::FakeSRGBWrite() const"
+  },
+  {
+   "index": 48,
+   "name": "CanDoSRGBReadFromRTs",
+   "sig": "CanDoSRGBReadFromRTs() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::CanDoSRGBReadFromRTs() const"
+  },
+  {
+   "index": 49,
+   "name": "SupportsGLMixedSizeTargets",
+   "sig": "SupportsGLMixedSizeTargets() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::SupportsGLMixedSizeTargets() const"
+  },
+  {
+   "index": 50,
+   "name": "IsAAEnabled",
+   "sig": "IsAAEnabled() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::IsAAEnabled() const"
+  },
+  {
+   "index": 51,
+   "name": "GetVertexTextureCount",
+   "sig": "GetVertexTextureCount() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::GetVertexTextureCount() const"
+  },
+  {
+   "index": 52,
+   "name": "GetMaxVertexTextureDimension",
+   "sig": "GetMaxVertexTextureDimension() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::GetMaxVertexTextureDimension() const"
+  },
+  {
+   "index": 53,
+   "name": "MaxTextureDepth",
+   "sig": "MaxTextureDepth() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::MaxTextureDepth() const"
+  },
+  {
+   "index": 54,
+   "name": "GetHDRType",
+   "sig": "GetHDRType() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::GetHDRType() const"
+  },
+  {
+   "index": 55,
+   "name": "GetHardwareHDRType",
+   "sig": "GetHardwareHDRType() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::GetHardwareHDRType() const"
+  },
+  {
+   "index": 56,
+   "name": "SupportsPixelShaders_2_b",
+   "sig": "SupportsPixelShaders_2_b() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::SupportsPixelShaders_2_b() const"
+  },
+  {
+   "index": 57,
+   "name": "SupportsStreamOffset",
+   "sig": "SupportsStreamOffset() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::SupportsStreamOffset() const"
+  },
+  {
+   "index": 58,
+   "name": "StencilBufferBits",
+   "sig": "StencilBufferBits() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::StencilBufferBits() const"
+  },
+  {
+   "index": 59,
+   "name": "MaxViewports",
+   "sig": "MaxViewports() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::MaxViewports() const"
+  },
+  {
+   "index": 60,
+   "name": "OverrideStreamOffsetSupport",
+   "sig": "OverrideStreamOffsetSupport(bool, bool)",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::OverrideStreamOffsetSupport(bool, bool)"
+  },
+  {
+   "index": 61,
+   "name": "GetShadowFilterMode",
+   "sig": "GetShadowFilterMode() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::GetShadowFilterMode() const"
+  },
+  {
+   "index": 62,
+   "name": "NeedsShaderSRGBConversion",
+   "sig": "NeedsShaderSRGBConversion() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::NeedsShaderSRGBConversion() const"
+  },
+  {
+   "index": 63,
+   "name": "UsesSRGBCorrectBlending",
+   "sig": "UsesSRGBCorrectBlending() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::UsesSRGBCorrectBlending() const"
+  },
+  {
+   "index": 64,
+   "name": "SupportsShaderModel_3_0",
+   "sig": "SupportsShaderModel_3_0() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::SupportsShaderModel_3_0() const"
+  },
+  {
+   "index": 65,
+   "name": "HasFastVertexTextures",
+   "sig": "HasFastVertexTextures() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::HasFastVertexTextures() const"
+  },
+  {
+   "index": 66,
+   "name": "MaxHWMorphBatchCount",
+   "sig": "MaxHWMorphBatchCount() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::MaxHWMorphBatchCount() const"
+  },
+  {
+   "index": 67,
+   "name": "ActuallySupportsPixelShaders_2_b",
+   "sig": "ActuallySupportsPixelShaders_2_b() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::ActuallySupportsPixelShaders_2_b() const"
+  },
+  {
+   "index": 68,
+   "name": "SupportsHDRMode",
+   "sig": "SupportsHDRMode(HDRType_t) const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::SupportsHDRMode(HDRType_t) const"
+  },
+  {
+   "index": 69,
+   "name": "GetHDREnabled",
+   "sig": "GetHDREnabled() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::GetHDREnabled() const"
+  },
+  {
+   "index": 70,
+   "name": "SetHDREnabled",
+   "sig": "SetHDREnabled(bool)",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::SetHDREnabled(bool)"
+  },
+  {
+   "index": 71,
+   "name": "SupportsBorderColor",
+   "sig": "SupportsBorderColor() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::SupportsBorderColor() const"
+  },
+  {
+   "index": 72,
+   "name": "SupportsFetch4",
+   "sig": "SupportsFetch4() const",
+   "symbol": "non-virtual thunk to CShaderAPIEmpty::SupportsFetch4() const"
+  }
+ ],
+ "implementer_tail": [
+  "GetHWSpecificShaderDLLName() const"
+ ],
+ "derived": [
+  "bin/materialsystem:CDummyHardwareConfig",
+  "bin/shaderapidx9:CHardwareConfig",
+  "bin/shaderapiempty:CShaderAPIEmpty"
+ ],
+ "derived_count": 3
+}

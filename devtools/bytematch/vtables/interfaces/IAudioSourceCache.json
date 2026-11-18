@@ -1,0 +1,76 @@
+{
+ "interface": "IAudioSourceCache",
+ "headers": [
+  "public/engine/audio/snd_audio_source.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CAudioSourceCache",
+  "offset": 0,
+  "chain": [
+   "CAudioSourceCache",
+   "IAudioSourceCache"
+  ]
+ },
+ "retail_len": 7,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 7
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Init",
+   "sig": "Init(unsigned int)",
+   "symbol": "CAudioSourceCache::Init(unsigned int)"
+  },
+  {
+   "index": 1,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CAudioSourceCache::Shutdown()"
+  },
+  {
+   "index": 2,
+   "name": "LevelInit",
+   "sig": "LevelInit(char const*)",
+   "symbol": "CAudioSourceCache::LevelInit(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "LevelShutdown",
+   "sig": "LevelShutdown()",
+   "symbol": "CAudioSourceCache::LevelShutdown()"
+  },
+  {
+   "index": 4,
+   "name": "ForceRecheckDiskInfo",
+   "sig": "ForceRecheckDiskInfo()",
+   "symbol": "CAudioSourceCache::ForceRecheckDiskInfo()"
+  },
+  {
+   "index": 5,
+   "name": "GetInfo",
+   "sig": "GetInfo(int, bool, CSfxTable*)",
+   "symbol": "CAudioSourceCache::GetInfo(int, bool, CSfxTable*)"
+  },
+  {
+   "index": 6,
+   "name": "RebuildCacheEntry",
+   "sig": "RebuildCacheEntry(int, bool, CSfxTable*)",
+   "symbol": "CAudioSourceCache::RebuildCacheEntry(int, bool, CSfxTable*)"
+  }
+ ],
+ "derived": [
+  "bin/engine:CAudioSourceCache"
+ ],
+ "derived_count": 1
+}

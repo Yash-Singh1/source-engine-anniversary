@@ -28,6 +28,7 @@
 // forward declarations
 //-----------------------------------------------------------------------------
 class ClientClass;
+class IMatchEventsSubscription;
 struct model_t;
 class CSentence;
 struct vrect_t;
@@ -548,13 +549,6 @@ public:
 	//  returns the string name of the key to which this string is bound. Returns NULL if no such binding exists
 	// Unlike Key_LookupBinding, leading '+' characters are not stripped from bindings.
 	virtual	const char		*Key_LookupBindingExact( const char *pBinding ) = 0;
-	
-	virtual void			AddPhonemeFile( const char *pszPhonemeFile ) = 0;
-	virtual float			GetPausedExpireTime( void ) = 0;
-
-	virtual bool			StartDemoRecording( const char *pszFilename, const char *pszFolder = NULL ) = 0;
-	virtual void			StopDemoRecording( void ) = 0;
-	virtual void			TakeScreenshot( const char *pszFilename, const char *pszFolder = NULL ) = 0;
 };
 
 abstract_class IVEngineClient : public IVEngineClient013
@@ -575,6 +569,13 @@ public:
 	virtual void DisconnectInternal() = 0;
 
 	virtual int GetInstancesRunningCount( ) = 0;
+
+	// Anniversary additions (retail slots 140-144)
+	virtual void OnHL2ExpansionLoaded() = 0;
+	virtual IMatchEventsSubscription *GetEventsSubscription() = 0;
+	virtual const char *GetMapName() = 0;
+	virtual const char *GetPatchVersion() = 0;
+	virtual bool IsInCommentaryMode() = 0;
 };
 
 
@@ -789,10 +790,6 @@ public:
 	virtual bool DisconnectAttempt( void ) = 0;
 
 	virtual bool IsConnectedUserInfoChangeAllowed( IConVar *pCvar ) = 0;
-
-#ifndef BYTEMATCH_RETAIL
-	virtual void IN_TouchEvent( int type, int fingerId, int x, int y ) = 0;
-#endif
 };
 
 #define CLIENT_DLL_INTERFACE_VERSION		"VClient017"

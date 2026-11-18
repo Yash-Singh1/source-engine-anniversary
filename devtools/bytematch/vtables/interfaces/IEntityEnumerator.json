@@ -1,0 +1,52 @@
+{
+ "interface": "IEntityEnumerator",
+ "headers": [
+  "public/engine/IEngineTrace.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 1,
+ "sdk2013_slots": [
+  "EnumEntity(IHandleEntity*)"
+ ],
+ "retail_reference": {
+  "module": "episodic/server",
+  "class": "CCollideList",
+  "offset": 0,
+  "chain": [
+   "CCollideList",
+   "IEntityEnumerator"
+  ]
+ },
+ "retail_len": 1,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 1
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "EnumEntity",
+   "sig": "EnumEntity(IHandleEntity*)",
+   "symbol": "CCollideList::EnumEntity(IHandleEntity*)"
+  }
+ ],
+ "derived": [
+  "episodic/server:CCollideList",
+  "episodic/server:CTriggerTraceEnum",
+  "hl2/server:CCollideList",
+  "hl2/server:CTriggerTraceEnum",
+  "hl2_complete/server:CCollideList",
+  "hl2_complete/server:CTriggerTraceEnum",
+  "hl2mp/server:CCollideList",
+  "hl2mp/server:CTriggerTraceEnum",
+  "lostcoast/server:CCollideList",
+  "lostcoast/server:CTriggerTraceEnum"
+ ],
+ "derived_count": 10
+}

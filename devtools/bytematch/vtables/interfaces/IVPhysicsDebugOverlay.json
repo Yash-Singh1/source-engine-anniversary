@@ -1,0 +1,116 @@
+{
+ "interface": "IVPhysicsDebugOverlay",
+ "headers": [
+  "public/vphysics_interface.h",
+  "public/vphysics_interfaceV30.h"
+ ],
+ "versions": {
+  "retail": [
+   "VPhysicsDebugOverlay001"
+  ],
+  "ours": [
+   "VPhysicsDebugOverlay001"
+  ],
+  "sdk2013": [
+   "VPhysicsDebugOverlay001"
+  ]
+ },
+ "version_macros": [
+  "VPHYSICS_DEBUG_OVERLAY_INTERFACE_VERSION",
+  "VPHYSICS_DEBUG_OVERLAY_INTERFACE_VERSION_1"
+ ],
+ "registrations": [
+  {
+   "module": "bin/engine",
+   "version": "VPhysicsDebugOverlay001",
+   "class": "CIVDebugOverlay"
+  }
+ ],
+ "sdk2013_len": 9,
+ "sdk2013_slots": [
+  "AddEntityTextOverlay(int, int, float, int, int, int, int, char const*, ...)",
+  "AddBoxOverlay(Vector const&, Vector const&, Vector const&, QAngle const&, int, int, int, int, float)",
+  "AddTriangleOverlay(Vector const&, Vector const&, Vector const&, int, int, int, int, bool, float)",
+  "AddLineOverlay(Vector const&, Vector const&, int, int, int, bool, float)",
+  "AddTextOverlay(Vector const&, float, char const*, ...)",
+  "AddTextOverlay(Vector const&, int, float, char const*, ...)",
+  "AddScreenTextOverlay(float, float, float, int, int, int, int, char const*)",
+  "AddSweptBoxOverlay(Vector const&, Vector const&, Vector const&, Vector const&, QAngle const&, int, int, int, int, float)",
+  "AddTextOverlayRGB(Vector const&, int, float, float, float, float, float, char const*, ...)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CIVDebugOverlay",
+  "offset": 4,
+  "chain": [
+   "CIVDebugOverlay",
+   "IVPhysicsDebugOverlay"
+  ]
+ },
+ "retail_len": 9,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 9
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "AddEntityTextOverlay",
+   "sig": "AddEntityTextOverlay(int, int, float, int, int, int, int, char const*, ...)",
+   "symbol": "non-virtual thunk to CIVDebugOverlay::AddEntityTextOverlay(int, int, float, int, int, int, int, char const*, ...)"
+  },
+  {
+   "index": 1,
+   "name": "AddBoxOverlay",
+   "sig": "AddBoxOverlay(Vector const&, Vector const&, Vector const&, QAngle const&, int, int, int, int, float)",
+   "symbol": "non-virtual thunk to CIVDebugOverlay::AddBoxOverlay(Vector const&, Vector const&, Vector const&, QAngle const&, int, int, int, int, float)"
+  },
+  {
+   "index": 2,
+   "name": "AddTriangleOverlay",
+   "sig": "AddTriangleOverlay(Vector const&, Vector const&, Vector const&, int, int, int, int, bool, float)",
+   "symbol": "non-virtual thunk to CIVDebugOverlay::AddTriangleOverlay(Vector const&, Vector const&, Vector const&, int, int, int, int, bool, float)"
+  },
+  {
+   "index": 3,
+   "name": "AddLineOverlay",
+   "sig": "AddLineOverlay(Vector const&, Vector const&, int, int, int, bool, float)",
+   "symbol": "non-virtual thunk to CIVDebugOverlay::AddLineOverlay(Vector const&, Vector const&, int, int, int, bool, float)"
+  },
+  {
+   "index": 4,
+   "name": "AddTextOverlay",
+   "sig": "AddTextOverlay(Vector const&, float, char const*, ...)",
+   "symbol": "non-virtual thunk to CIVDebugOverlay::AddTextOverlay(Vector const&, float, char const*, ...)"
+  },
+  {
+   "index": 5,
+   "name": "AddTextOverlay",
+   "sig": "AddTextOverlay(Vector const&, int, float, char const*, ...)",
+   "symbol": "non-virtual thunk to CIVDebugOverlay::AddTextOverlay(Vector const&, int, float, char const*, ...)"
+  },
+  {
+   "index": 6,
+   "name": "AddScreenTextOverlay",
+   "sig": "AddScreenTextOverlay(float, float, float, int, int, int, int, char const*)",
+   "symbol": "non-virtual thunk to CIVDebugOverlay::AddScreenTextOverlay(float, float, float, int, int, int, int, char const*)"
+  },
+  {
+   "index": 7,
+   "name": "AddSweptBoxOverlay",
+   "sig": "AddSweptBoxOverlay(Vector const&, Vector const&, Vector const&, Vector const&, QAngle const&, int, int, int, int, float)",
+   "symbol": "non-virtual thunk to CIVDebugOverlay::AddSweptBoxOverlay(Vector const&, Vector const&, Vector const&, Vector const&, QAngle const&, int, int, int, int, float)"
+  },
+  {
+   "index": 8,
+   "name": "AddTextOverlayRGB",
+   "sig": "AddTextOverlayRGB(Vector const&, int, float, float, float, float, float, char const*, ...)",
+   "symbol": "non-virtual thunk to CIVDebugOverlay::AddTextOverlayRGB(Vector const&, int, float, float, float, float, float, char const*, ...)"
+  }
+ ],
+ "derived": [
+  "bin/engine:CIVDebugOverlay",
+  "bin/vphysics:CVPhysicsDebugOverlay"
+ ],
+ "derived_count": 2
+}

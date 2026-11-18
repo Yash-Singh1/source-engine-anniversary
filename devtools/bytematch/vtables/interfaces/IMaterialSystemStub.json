@@ -1,0 +1,2186 @@
+{
+ "interface": "IMaterialSystemStub",
+ "headers": [
+  "public/materialsystem/imaterialsystemstub.h"
+ ],
+ "versions": {
+  "retail": [
+   "VMaterialSystemStub001"
+  ],
+  "ours": [
+   "VMaterialSystemStub001"
+  ],
+  "sdk2013": [
+   "VMaterialSystemStub001"
+  ]
+ },
+ "version_macros": [
+  "MATERIAL_SYSTEM_STUB_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/materialsystem",
+   "version": "VMaterialSystemStub001",
+   "class": "CDummyMaterialSystem"
+  }
+ ],
+ "sdk2013_len": 127,
+ "sdk2013_slots": [
+  "Connect(void* (*)(char const*, int*))",
+  "Disconnect()",
+  "QueryInterface(char const*)",
+  "Init()",
+  "Shutdown()",
+  "Init(char const*, IMaterialProxyFactory*, void* (*)(char const*, int*), void* (*)(char const*, int*))",
+  "SetShaderAPI(char const*)",
+  "SetAdapter(int, int)",
+  "ModInit()",
+  "ModShutdown()",
+  "SetThreadMode(MaterialThreadMode_t, int)",
+  "GetThreadMode()",
+  "IsRenderThreadSafe()",
+  "ExecuteQueued()",
+  "GetHardwareConfig(char const*, int*)",
+  "UpdateConfig(bool)",
+  "OverrideConfig(MaterialSystem_Config_t const&, bool)",
+  "GetCurrentConfigForVideoCard() const",
+  "GetRecommendedConfigurationInfo(int, KeyValues*)",
+  "GetDisplayAdapterCount() const",
+  "GetCurrentAdapter() const",
+  "GetDisplayAdapterInfo(int, MaterialAdapterInfo_t&) const",
+  "GetModeCount(int) const",
+  "GetModeInfo(int, int, MaterialVideoMode_t&) const",
+  "AddModeChangeCallBack(void (*)())",
+  "GetDisplayMode(MaterialVideoMode_t&) const",
+  "SetMode(void*, MaterialSystem_Config_t const&)",
+  "SupportsMSAAMode(int)",
+  "GetVideoCardIdentifier() const",
+  "SpewDriverInfo() const",
+  "GetDXLevelDefaults(unsigned int&, unsigned int&)",
+  "GetBackBufferDimensions(int&, int&) const",
+  "GetBackBufferFormat() const",
+  "SupportsHDRMode(HDRType_t)",
+  "AddView(void*)",
+  "RemoveView(void*)",
+  "SetView(void*)",
+  "BeginFrame(float)",
+  "EndFrame()",
+  "Flush(bool)",
+  "SwapBuffers()",
+  "EvictManagedResources()",
+  "ReleaseResources()",
+  "ReacquireResources()",
+  "AddReleaseFunc(void (*)())",
+  "RemoveReleaseFunc(void (*)())",
+  "AddRestoreFunc(void (*)(int))",
+  "RemoveRestoreFunc(void (*)(int))",
+  "ResetTempHWMemory(bool)",
+  "HandleDeviceLost()",
+  "ShaderCount() const",
+  "GetShaders(int, int, IShader**) const",
+  "ShaderFlagCount() const",
+  "ShaderFlagName(int) const",
+  "GetShaderFallback(char const*, char*, int)",
+  "GetMaterialProxyFactory()",
+  "SetMaterialProxyFactory(IMaterialProxyFactory*)",
+  "EnableEditorMaterials()",
+  "SetInStubMode(bool)",
+  "DebugPrintUsedMaterials(char const*, bool)",
+  "DebugPrintUsedTextures()",
+  "ToggleSuppressMaterial(char const*)",
+  "ToggleDebugMaterial(char const*)",
+  "UsingFastClipping()",
+  "StencilBufferBits()",
+  "UncacheAllMaterials()",
+  "UncacheUnusedMaterials(bool)",
+  "CacheUsedMaterials()",
+  "ReloadTextures()",
+  "ReloadMaterials(char const*)",
+  "CreateMaterial(char const*, KeyValues*)",
+  "FindMaterial(char const*, char const*, bool, char const*)",
+  "IsMaterialLoaded(char const*)",
+  "FirstMaterial() const",
+  "NextMaterial(unsigned short) const",
+  "InvalidMaterial() const",
+  "GetMaterial(unsigned short) const",
+  "GetNumMaterials() const",
+  "SetAsyncTextureLoadCache(void*)",
+  "FindTexture(char const*, char const*, bool, int)",
+  "IsTextureLoaded(char const*) const",
+  "CreateProceduralTexture(char const*, char const*, int, int, ImageFormat, int)",
+  "BeginRenderTargetAllocation()",
+  "EndRenderTargetAllocation()",
+  "CreateRenderTargetTexture(int, int, RenderTargetSizeMode_t, ImageFormat, MaterialRenderTargetDepth_t)",
+  "CreateNamedRenderTargetTextureEx(char const*, int, int, RenderTargetSizeMode_t, ImageFormat, MaterialRenderTargetDepth_t, unsigned int, unsigned int)",
+  "CreateNamedRenderTargetTexture(char const*, int, int, RenderTargetSizeMode_t, ImageFormat, MaterialRenderTargetDepth_t, bool, bool)",
+  "CreateNamedRenderTargetTextureEx2(char const*, int, int, RenderTargetSizeMode_t, ImageFormat, MaterialRenderTargetDepth_t, unsigned int, unsigned int)",
+  "BeginLightmapAllocation()",
+  "EndLightmapAllocation()",
+  "AllocateLightmap(int, int, int*, IMaterial*)",
+  "AllocateWhiteLightmap(IMaterial*)",
+  "UpdateLightmap(int, int*, int*, float*, float*, float*, float*)",
+  "GetNumSortIDs()",
+  "GetSortInfo(MaterialSystem_SortInfo_t*)",
+  "GetLightmapPageSize(int, int*, int*) const",
+  "ResetMaterialLightmapPageInfo()",
+  "ClearBuffers(bool, bool, bool)",
+  "GetRenderContext()",
+  "SupportsShadowDepthTextures()",
+  "BeginUpdateLightmaps()",
+  "EndUpdateLightmaps()",
+  "Lock()",
+  "Unlock(MaterialLock_t__*)",
+  "GetShadowDepthTextureFormat()",
+  "SupportsFetch4()",
+  "CreateRenderContext(MaterialContextType_t)",
+  "SetRenderContext(IMatRenderContext*)",
+  "SupportsCSAAMode(int, int)",
+  "RemoveModeChangeCallBack(void (*)())",
+  "FindProceduralMaterial(char const*, char const*, KeyValues*)",
+  "GetNullTextureFormat()",
+  "AddTextureAlias(char const*, char const*)",
+  "RemoveTextureAlias(char const*)",
+  "AllocateDynamicLightmap(int*, int*, int)",
+  "SetExcludedTextures(char const*)",
+  "UpdateExcludedTextures()",
+  "IsInFrame() const",
+  "CompactMemory()",
+  "ReloadFilesInList(IFileList*)",
+  "AllowThreading(bool, int)",
+  "FindMaterialEx(char const*, char const*, int, bool, char const*)",
+  "DoStartupShaderPreloading()",
+  "SetRenderTargetFrameBufferSizeOverrides(int, int)",
+  "GetRenderTargetFrameBufferDimensions(int&, int&)",
+  "GetDisplayDeviceName() const",
+  "SetRealMaterialSystem(IMaterialSystem*)"
+ ],
+ "retail_reference": {
+  "module": "bin/materialsystem",
+  "class": "CDummyMaterialSystem",
+  "offset": 0,
+  "chain": [
+   "CDummyMaterialSystem",
+   "IMaterialSystemStub"
+  ]
+ },
+ "retail_len": 334,
+ "retail_len_basis": "first implementer destructor",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 336,
+  "first implementer destructor": 334
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Connect",
+   "sig": "Connect(void* (*)(char const*, int*))",
+   "symbol": "CDummyMaterialSystem::Connect(void* (*)(char const*, int*))"
+  },
+  {
+   "index": 1,
+   "name": "Disconnect",
+   "sig": "Disconnect()",
+   "symbol": "CDummyMaterialSystem::Disconnect()"
+  },
+  {
+   "index": 2,
+   "name": "QueryInterface",
+   "sig": "QueryInterface(char const*)",
+   "symbol": "CDummyMaterialSystem::QueryInterface(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "CDummyMaterialSystem::Init()"
+  },
+  {
+   "index": 4,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CDummyMaterialSystem::Shutdown()"
+  },
+  {
+   "index": 5,
+   "name": "Init",
+   "sig": "Init(char const*, IMaterialProxyFactory*, void* (*)(char const*, int*), void* (*)(char const*, int*))",
+   "symbol": "CDummyMaterialSystem::Init(char const*, IMaterialProxyFactory*, void* (*)(char const*, int*), void* (*)(char const*, int*))"
+  },
+  {
+   "index": 6,
+   "name": "SetShaderAPI",
+   "sig": "SetShaderAPI(char const*)",
+   "symbol": "CDummyMaterialSystem::SetShaderAPI(char const*)"
+  },
+  {
+   "index": 7,
+   "name": "SetAdapter",
+   "sig": "SetAdapter(int, int)",
+   "symbol": "CDummyMaterialSystem::SetAdapter(int, int)"
+  },
+  {
+   "index": 8,
+   "name": "ModInit",
+   "sig": "ModInit()",
+   "symbol": "CDummyMaterialSystem::ModInit()"
+  },
+  {
+   "index": 9,
+   "name": "ModShutdown",
+   "sig": "ModShutdown()",
+   "symbol": "CDummyMaterialSystem::ModShutdown()"
+  },
+  {
+   "index": 10,
+   "name": "SetThreadMode",
+   "sig": "SetThreadMode(MaterialThreadMode_t, int)",
+   "symbol": "CDummyMaterialSystem::SetThreadMode(MaterialThreadMode_t, int)"
+  },
+  {
+   "index": 11,
+   "name": "GetThreadMode",
+   "sig": "GetThreadMode()",
+   "symbol": "CDummyMaterialSystem::GetThreadMode()"
+  },
+  {
+   "index": 12,
+   "name": "IsRenderThreadSafe",
+   "sig": "IsRenderThreadSafe()",
+   "symbol": "CDummyMaterialSystem::IsRenderThreadSafe()"
+  },
+  {
+   "index": 13,
+   "name": "ExecuteQueued",
+   "sig": "ExecuteQueued()",
+   "symbol": "CDummyMaterialSystem::ExecuteQueued()"
+  },
+  {
+   "index": 14,
+   "name": "GetHardwareConfig",
+   "sig": "GetHardwareConfig(char const*, int*)",
+   "symbol": "CDummyMaterialSystem::GetHardwareConfig(char const*, int*)"
+  },
+  {
+   "index": 15,
+   "name": "UpdateConfig",
+   "sig": "UpdateConfig(bool)",
+   "symbol": "CDummyMaterialSystem::UpdateConfig(bool)"
+  },
+  {
+   "index": 16,
+   "name": "OverrideConfig",
+   "sig": "OverrideConfig(MaterialSystem_Config_t const&, bool)",
+   "symbol": "CDummyMaterialSystem::OverrideConfig(MaterialSystem_Config_t const&, bool)"
+  },
+  {
+   "index": 17,
+   "name": "GetCurrentConfigForVideoCard",
+   "sig": "GetCurrentConfigForVideoCard() const",
+   "symbol": "CDummyMaterialSystem::GetCurrentConfigForVideoCard() const"
+  },
+  {
+   "index": 18,
+   "name": "GetRecommendedConfigurationInfo",
+   "sig": "GetRecommendedConfigurationInfo(int, KeyValues*)",
+   "symbol": "CDummyMaterialSystem::GetRecommendedConfigurationInfo(int, KeyValues*)"
+  },
+  {
+   "index": 19,
+   "name": "GetDisplayAdapterCount",
+   "sig": "GetDisplayAdapterCount() const",
+   "symbol": "CDummyMaterialSystem::GetDisplayAdapterCount() const"
+  },
+  {
+   "index": 20,
+   "name": "GetCurrentAdapter",
+   "sig": "GetCurrentAdapter() const",
+   "symbol": "CDummyMaterialSystem::GetCurrentAdapter() const"
+  },
+  {
+   "index": 21,
+   "name": "GetDisplayAdapterInfo",
+   "sig": "GetDisplayAdapterInfo(int, MaterialAdapterInfo_t&) const",
+   "symbol": "CDummyMaterialSystem::GetDisplayAdapterInfo(int, MaterialAdapterInfo_t&) const"
+  },
+  {
+   "index": 22,
+   "name": "GetModeCount",
+   "sig": "GetModeCount(int) const",
+   "symbol": "CDummyMaterialSystem::GetModeCount(int) const"
+  },
+  {
+   "index": 23,
+   "name": "GetModeInfo",
+   "sig": "GetModeInfo(int, int, MaterialVideoMode_t&) const",
+   "symbol": "CDummyMaterialSystem::GetModeInfo(int, int, MaterialVideoMode_t&) const"
+  },
+  {
+   "index": 24,
+   "name": "AddModeChangeCallBack",
+   "sig": "AddModeChangeCallBack(void (*)())",
+   "symbol": "CDummyMaterialSystem::AddModeChangeCallBack(void (*)())"
+  },
+  {
+   "index": 25,
+   "name": "GetDisplayMode",
+   "sig": "GetDisplayMode(MaterialVideoMode_t&) const",
+   "symbol": "CDummyMaterialSystem::GetDisplayMode(MaterialVideoMode_t&) const"
+  },
+  {
+   "index": 26,
+   "name": "SetMode",
+   "sig": "SetMode(void*, MaterialSystem_Config_t const&)",
+   "symbol": "CDummyMaterialSystem::SetMode(void*, MaterialSystem_Config_t const&)"
+  },
+  {
+   "index": 27,
+   "name": "SupportsMSAAMode",
+   "sig": "SupportsMSAAMode(int)",
+   "symbol": "CDummyMaterialSystem::SupportsMSAAMode(int)"
+  },
+  {
+   "index": 28,
+   "name": "GetVideoCardIdentifier",
+   "sig": "GetVideoCardIdentifier() const",
+   "symbol": "CDummyMaterialSystem::GetVideoCardIdentifier() const"
+  },
+  {
+   "index": 29,
+   "name": "SpewDriverInfo",
+   "sig": "SpewDriverInfo() const",
+   "symbol": "CDummyMaterialSystem::SpewDriverInfo() const"
+  },
+  {
+   "index": 30,
+   "name": "GetDXLevelDefaults",
+   "sig": "GetDXLevelDefaults(unsigned int&, unsigned int&)",
+   "symbol": "CDummyMaterialSystem::GetDXLevelDefaults(unsigned int&, unsigned int&)"
+  },
+  {
+   "index": 31,
+   "name": "GetBackBufferDimensions",
+   "sig": "GetBackBufferDimensions(int&, int&) const",
+   "symbol": "CDummyMaterialSystem::GetBackBufferDimensions(int&, int&) const"
+  },
+  {
+   "index": 32,
+   "name": "GetBackBufferFormat",
+   "sig": "GetBackBufferFormat() const",
+   "symbol": "CDummyMaterialSystem::GetBackBufferFormat() const"
+  },
+  {
+   "index": 33,
+   "name": "SupportsHDRMode",
+   "sig": "SupportsHDRMode(HDRType_t)",
+   "symbol": "CDummyMaterialSystem::SupportsHDRMode(HDRType_t)"
+  },
+  {
+   "index": 34,
+   "name": "AddView",
+   "sig": "AddView(void*)",
+   "symbol": "CDummyMaterialSystem::AddView(void*)"
+  },
+  {
+   "index": 35,
+   "name": "RemoveView",
+   "sig": "RemoveView(void*)",
+   "symbol": "CDummyMaterialSystem::RemoveView(void*)"
+  },
+  {
+   "index": 36,
+   "name": "SetView",
+   "sig": "SetView(void*)",
+   "symbol": "CDummyMaterialSystem::SetView(void*)"
+  },
+  {
+   "index": 37,
+   "name": "BeginFrame",
+   "sig": "BeginFrame(float)",
+   "symbol": "CDummyMaterialSystem::BeginFrame(float)"
+  },
+  {
+   "index": 38,
+   "name": "EndFrame",
+   "sig": "EndFrame()",
+   "symbol": "CDummyMaterialSystem::EndFrame()"
+  },
+  {
+   "index": 39,
+   "name": "Flush",
+   "sig": "Flush(bool)",
+   "symbol": "CDummyMaterialSystem::Flush(bool)"
+  },
+  {
+   "index": 40,
+   "name": "SwapBuffers",
+   "sig": "SwapBuffers()",
+   "symbol": "CDummyMaterialSystem::SwapBuffers()"
+  },
+  {
+   "index": 41,
+   "name": "EvictManagedResources",
+   "sig": "EvictManagedResources()",
+   "symbol": "CDummyMaterialSystem::EvictManagedResources()"
+  },
+  {
+   "index": 42,
+   "name": "ReleaseResources",
+   "sig": "ReleaseResources()",
+   "symbol": "CDummyMaterialSystem::ReleaseResources()"
+  },
+  {
+   "index": 43,
+   "name": "ReacquireResources",
+   "sig": "ReacquireResources()",
+   "symbol": "CDummyMaterialSystem::ReacquireResources()"
+  },
+  {
+   "index": 44,
+   "name": "AddReleaseFunc",
+   "sig": "AddReleaseFunc(void (*)())",
+   "symbol": "CDummyMaterialSystem::AddReleaseFunc(void (*)())"
+  },
+  {
+   "index": 45,
+   "name": "RemoveReleaseFunc",
+   "sig": "RemoveReleaseFunc(void (*)())",
+   "symbol": "CDummyMaterialSystem::RemoveReleaseFunc(void (*)())"
+  },
+  {
+   "index": 46,
+   "name": "AddRestoreFunc",
+   "sig": "AddRestoreFunc(void (*)(int))",
+   "symbol": "CDummyMaterialSystem::AddRestoreFunc(void (*)(int))"
+  },
+  {
+   "index": 47,
+   "name": "RemoveRestoreFunc",
+   "sig": "RemoveRestoreFunc(void (*)(int))",
+   "symbol": "CDummyMaterialSystem::RemoveRestoreFunc(void (*)(int))"
+  },
+  {
+   "index": 48,
+   "name": "ResetTempHWMemory",
+   "sig": "ResetTempHWMemory(bool)",
+   "symbol": "CDummyMaterialSystem::ResetTempHWMemory(bool)"
+  },
+  {
+   "index": 49,
+   "name": "HandleDeviceLost",
+   "sig": "HandleDeviceLost()",
+   "symbol": "CDummyMaterialSystem::HandleDeviceLost()"
+  },
+  {
+   "index": 50,
+   "name": "ShaderCount",
+   "sig": "ShaderCount() const",
+   "symbol": "CDummyMaterialSystem::ShaderCount() const"
+  },
+  {
+   "index": 51,
+   "name": "GetShaders",
+   "sig": "GetShaders(int, int, IShader**) const",
+   "symbol": "CDummyMaterialSystem::GetShaders(int, int, IShader**) const"
+  },
+  {
+   "index": 52,
+   "name": "ShaderFlagCount",
+   "sig": "ShaderFlagCount() const",
+   "symbol": "CDummyMaterialSystem::ShaderFlagCount() const"
+  },
+  {
+   "index": 53,
+   "name": "ShaderFlagName",
+   "sig": "ShaderFlagName(int) const",
+   "symbol": "CDummyMaterialSystem::ShaderFlagName(int) const"
+  },
+  {
+   "index": 54,
+   "name": "GetShaderFallback",
+   "sig": "GetShaderFallback(char const*, char*, int)",
+   "symbol": "CDummyMaterialSystem::GetShaderFallback(char const*, char*, int)"
+  },
+  {
+   "index": 55,
+   "name": "GetMaterialProxyFactory",
+   "sig": "GetMaterialProxyFactory()",
+   "symbol": "CDummyMaterialSystem::GetMaterialProxyFactory()"
+  },
+  {
+   "index": 56,
+   "name": "SetMaterialProxyFactory",
+   "sig": "SetMaterialProxyFactory(IMaterialProxyFactory*)",
+   "symbol": "CDummyMaterialSystem::SetMaterialProxyFactory(IMaterialProxyFactory*)"
+  },
+  {
+   "index": 57,
+   "name": "EnableEditorMaterials",
+   "sig": "EnableEditorMaterials()",
+   "symbol": "CDummyMaterialSystem::EnableEditorMaterials()"
+  },
+  {
+   "index": 58,
+   "name": "SetInStubMode",
+   "sig": "SetInStubMode(bool)",
+   "symbol": "CDummyMaterialSystem::SetInStubMode(bool)"
+  },
+  {
+   "index": 59,
+   "name": "DebugPrintUsedMaterials",
+   "sig": "DebugPrintUsedMaterials(char const*, bool)",
+   "symbol": "CDummyMaterialSystem::DebugPrintUsedMaterials(char const*, bool)"
+  },
+  {
+   "index": 60,
+   "name": "DebugPrintUsedTextures",
+   "sig": "DebugPrintUsedTextures()",
+   "symbol": "CDummyMaterialSystem::DebugPrintUsedTextures()"
+  },
+  {
+   "index": 61,
+   "name": "ToggleSuppressMaterial",
+   "sig": "ToggleSuppressMaterial(char const*)",
+   "symbol": "CDummyMaterialSystem::ToggleSuppressMaterial(char const*)"
+  },
+  {
+   "index": 62,
+   "name": "ToggleDebugMaterial",
+   "sig": "ToggleDebugMaterial(char const*)",
+   "symbol": "CDummyMaterialSystem::ToggleDebugMaterial(char const*)"
+  },
+  {
+   "index": 63,
+   "name": "UsingFastClipping",
+   "sig": "UsingFastClipping()",
+   "symbol": "CDummyMaterialSystem::UsingFastClipping()"
+  },
+  {
+   "index": 64,
+   "name": "StencilBufferBits",
+   "sig": "StencilBufferBits()",
+   "symbol": "CDummyMaterialSystem::StencilBufferBits()"
+  },
+  {
+   "index": 65,
+   "name": "UncacheAllMaterials",
+   "sig": "UncacheAllMaterials()",
+   "symbol": "CDummyMaterialSystem::UncacheAllMaterials()"
+  },
+  {
+   "index": 66,
+   "name": "UncacheUnusedMaterials",
+   "sig": "UncacheUnusedMaterials(bool)",
+   "symbol": "CDummyMaterialSystem::UncacheUnusedMaterials(bool)"
+  },
+  {
+   "index": 67,
+   "name": "CacheUsedMaterials",
+   "sig": "CacheUsedMaterials()",
+   "symbol": "CDummyMaterialSystem::CacheUsedMaterials()"
+  },
+  {
+   "index": 68,
+   "name": "ReloadTextures",
+   "sig": "ReloadTextures()",
+   "symbol": "CDummyMaterialSystem::ReloadTextures()"
+  },
+  {
+   "index": 69,
+   "name": "ReloadMaterials",
+   "sig": "ReloadMaterials(char const*)",
+   "symbol": "CDummyMaterialSystem::ReloadMaterials(char const*)"
+  },
+  {
+   "index": 70,
+   "name": "CreateMaterial",
+   "sig": "CreateMaterial(char const*, KeyValues*)",
+   "symbol": "CDummyMaterialSystem::CreateMaterial(char const*, KeyValues*)"
+  },
+  {
+   "index": 71,
+   "name": "FindMaterial",
+   "sig": "FindMaterial(char const*, char const*, bool, char const*)",
+   "symbol": "CDummyMaterialSystem::FindMaterial(char const*, char const*, bool, char const*)"
+  },
+  {
+   "index": 72,
+   "name": "IsMaterialLoaded",
+   "sig": "IsMaterialLoaded(char const*)",
+   "symbol": "CDummyMaterialSystem::IsMaterialLoaded(char const*)"
+  },
+  {
+   "index": 73,
+   "name": "FirstMaterial",
+   "sig": "FirstMaterial() const",
+   "symbol": "CDummyMaterialSystem::FirstMaterial() const"
+  },
+  {
+   "index": 74,
+   "name": "NextMaterial",
+   "sig": "NextMaterial(unsigned short) const",
+   "symbol": "CDummyMaterialSystem::NextMaterial(unsigned short) const"
+  },
+  {
+   "index": 75,
+   "name": "InvalidMaterial",
+   "sig": "InvalidMaterial() const",
+   "symbol": "CDummyMaterialSystem::InvalidMaterial() const"
+  },
+  {
+   "index": 76,
+   "name": "GetMaterial",
+   "sig": "GetMaterial(unsigned short) const",
+   "symbol": "CDummyMaterialSystem::GetMaterial(unsigned short) const"
+  },
+  {
+   "index": 77,
+   "name": "GetNumMaterials",
+   "sig": "GetNumMaterials() const",
+   "symbol": "CDummyMaterialSystem::GetNumMaterials() const"
+  },
+  {
+   "index": 78,
+   "name": "SetAsyncTextureLoadCache",
+   "sig": "SetAsyncTextureLoadCache(void*)",
+   "symbol": "CDummyMaterialSystem::SetAsyncTextureLoadCache(void*)"
+  },
+  {
+   "index": 79,
+   "name": "FindTexture",
+   "sig": "FindTexture(char const*, char const*, bool, int)",
+   "symbol": "CDummyMaterialSystem::FindTexture(char const*, char const*, bool, int)"
+  },
+  {
+   "index": 80,
+   "name": "IsTextureLoaded",
+   "sig": "IsTextureLoaded(char const*) const",
+   "symbol": "CDummyMaterialSystem::IsTextureLoaded(char const*) const"
+  },
+  {
+   "index": 81,
+   "name": "CreateProceduralTexture",
+   "sig": "CreateProceduralTexture(char const*, char const*, int, int, ImageFormat, int)",
+   "symbol": "CDummyMaterialSystem::CreateProceduralTexture(char const*, char const*, int, int, ImageFormat, int)"
+  },
+  {
+   "index": 82,
+   "name": "BeginRenderTargetAllocation",
+   "sig": "BeginRenderTargetAllocation()",
+   "symbol": "CDummyMaterialSystem::BeginRenderTargetAllocation()"
+  },
+  {
+   "index": 83,
+   "name": "EndRenderTargetAllocation",
+   "sig": "EndRenderTargetAllocation()",
+   "symbol": "CDummyMaterialSystem::EndRenderTargetAllocation()"
+  },
+  {
+   "index": 84,
+   "name": "CreateRenderTargetTexture",
+   "sig": "CreateRenderTargetTexture(int, int, RenderTargetSizeMode_t, ImageFormat, MaterialRenderTargetDepth_t)",
+   "symbol": "CDummyMaterialSystem::CreateRenderTargetTexture(int, int, RenderTargetSizeMode_t, ImageFormat, MaterialRenderTargetDepth_t)"
+  },
+  {
+   "index": 85,
+   "name": "CreateNamedRenderTargetTextureEx",
+   "sig": "CreateNamedRenderTargetTextureEx(char const*, int, int, RenderTargetSizeMode_t, ImageFormat, MaterialRenderTargetDepth_t, unsigned int, unsigned int)",
+   "symbol": "CDummyMaterialSystem::CreateNamedRenderTargetTextureEx(char const*, int, int, RenderTargetSizeMode_t, ImageFormat, MaterialRenderTargetDepth_t, unsigned int, unsigned int)"
+  },
+  {
+   "index": 86,
+   "name": "CreateNamedRenderTargetTexture",
+   "sig": "CreateNamedRenderTargetTexture(char const*, int, int, RenderTargetSizeMode_t, ImageFormat, MaterialRenderTargetDepth_t, bool, bool)",
+   "symbol": "CDummyMaterialSystem::CreateNamedRenderTargetTexture(char const*, int, int, RenderTargetSizeMode_t, ImageFormat, MaterialRenderTargetDepth_t, bool, bool)"
+  },
+  {
+   "index": 87,
+   "name": "CreateNamedRenderTargetTextureEx2",
+   "sig": "CreateNamedRenderTargetTextureEx2(char const*, int, int, RenderTargetSizeMode_t, ImageFormat, MaterialRenderTargetDepth_t, unsigned int, unsigned int)",
+   "symbol": "CDummyMaterialSystem::CreateNamedRenderTargetTextureEx2(char const*, int, int, RenderTargetSizeMode_t, ImageFormat, MaterialRenderTargetDepth_t, unsigned int, unsigned int)"
+  },
+  {
+   "index": 88,
+   "name": "BeginLightmapAllocation",
+   "sig": "BeginLightmapAllocation()",
+   "symbol": "CDummyMaterialSystem::BeginLightmapAllocation()"
+  },
+  {
+   "index": 89,
+   "name": "EndLightmapAllocation",
+   "sig": "EndLightmapAllocation()",
+   "symbol": "CDummyMaterialSystem::EndLightmapAllocation()"
+  },
+  {
+   "index": 90,
+   "name": "AllocateLightmap",
+   "sig": "AllocateLightmap(int, int, int*, IMaterial*)",
+   "symbol": "CDummyMaterialSystem::AllocateLightmap(int, int, int*, IMaterial*)"
+  },
+  {
+   "index": 91,
+   "name": "AllocateWhiteLightmap",
+   "sig": "AllocateWhiteLightmap(IMaterial*)",
+   "symbol": "CDummyMaterialSystem::AllocateWhiteLightmap(IMaterial*)"
+  },
+  {
+   "index": 92,
+   "name": "UpdateLightmap",
+   "sig": "UpdateLightmap(int, int*, int*, float*, float*, float*, float*)",
+   "symbol": "CDummyMaterialSystem::UpdateLightmap(int, int*, int*, float*, float*, float*, float*)"
+  },
+  {
+   "index": 93,
+   "name": "GetNumSortIDs",
+   "sig": "GetNumSortIDs()",
+   "symbol": "CDummyMaterialSystem::GetNumSortIDs()"
+  },
+  {
+   "index": 94,
+   "name": "GetSortInfo",
+   "sig": "GetSortInfo(MaterialSystem_SortInfo_t*)",
+   "symbol": "CDummyMaterialSystem::GetSortInfo(MaterialSystem_SortInfo_t*)"
+  },
+  {
+   "index": 95,
+   "name": "GetLightmapPageSize",
+   "sig": "GetLightmapPageSize(int, int*, int*) const",
+   "symbol": "CDummyMaterialSystem::GetLightmapPageSize(int, int*, int*) const"
+  },
+  {
+   "index": 96,
+   "name": "ResetMaterialLightmapPageInfo",
+   "sig": "ResetMaterialLightmapPageInfo()",
+   "symbol": "CDummyMaterialSystem::ResetMaterialLightmapPageInfo()"
+  },
+  {
+   "index": 97,
+   "name": "ClearBuffers",
+   "sig": "ClearBuffers(bool, bool, bool)",
+   "symbol": "CDummyMaterialSystem::ClearBuffers(bool, bool, bool)"
+  },
+  {
+   "index": 98,
+   "name": "GetRenderContext",
+   "sig": "GetRenderContext()",
+   "symbol": "CDummyMaterialSystem::GetRenderContext()"
+  },
+  {
+   "index": 99,
+   "name": "SupportsShadowDepthTextures",
+   "sig": "SupportsShadowDepthTextures()",
+   "symbol": "CDummyMaterialSystem::SupportsShadowDepthTextures()"
+  },
+  {
+   "index": 100,
+   "name": "BeginUpdateLightmaps",
+   "sig": "BeginUpdateLightmaps()",
+   "symbol": "CDummyMaterialSystem::BeginUpdateLightmaps()"
+  },
+  {
+   "index": 101,
+   "name": "EndUpdateLightmaps",
+   "sig": "EndUpdateLightmaps()",
+   "symbol": "CDummyMaterialSystem::EndUpdateLightmaps()"
+  },
+  {
+   "index": 102,
+   "name": "Lock",
+   "sig": "Lock()",
+   "symbol": "CDummyMaterialSystem::Lock()"
+  },
+  {
+   "index": 103,
+   "name": "Unlock",
+   "sig": "Unlock(MaterialLock_t__*)",
+   "symbol": "CDummyMaterialSystem::Unlock(MaterialLock_t__*)"
+  },
+  {
+   "index": 104,
+   "name": "GetShadowDepthTextureFormat",
+   "sig": "GetShadowDepthTextureFormat()",
+   "symbol": "CDummyMaterialSystem::GetShadowDepthTextureFormat()"
+  },
+  {
+   "index": 105,
+   "name": "SupportsFetch4",
+   "sig": "SupportsFetch4()",
+   "symbol": "CDummyMaterialSystem::SupportsFetch4()"
+  },
+  {
+   "index": 106,
+   "name": "CreateRenderContext",
+   "sig": "CreateRenderContext(MaterialContextType_t)",
+   "symbol": "CDummyMaterialSystem::CreateRenderContext(MaterialContextType_t)"
+  },
+  {
+   "index": 107,
+   "name": "SetRenderContext",
+   "sig": "SetRenderContext(IMatRenderContext*)",
+   "symbol": "CDummyMaterialSystem::SetRenderContext(IMatRenderContext*)"
+  },
+  {
+   "index": 108,
+   "name": "SupportsCSAAMode",
+   "sig": "SupportsCSAAMode(int, int)",
+   "symbol": "CDummyMaterialSystem::SupportsCSAAMode(int, int)"
+  },
+  {
+   "index": 109,
+   "name": "RemoveModeChangeCallBack",
+   "sig": "RemoveModeChangeCallBack(void (*)())",
+   "symbol": "CDummyMaterialSystem::RemoveModeChangeCallBack(void (*)())"
+  },
+  {
+   "index": 110,
+   "name": "FindProceduralMaterial",
+   "sig": "FindProceduralMaterial(char const*, char const*, KeyValues*)",
+   "symbol": "CDummyMaterialSystem::FindProceduralMaterial(char const*, char const*, KeyValues*)"
+  },
+  {
+   "index": 111,
+   "name": "GetNullTextureFormat",
+   "sig": "GetNullTextureFormat()",
+   "symbol": "CDummyMaterialSystem::GetNullTextureFormat()"
+  },
+  {
+   "index": 112,
+   "name": "AddTextureAlias",
+   "sig": "AddTextureAlias(char const*, char const*)",
+   "symbol": "CDummyMaterialSystem::AddTextureAlias(char const*, char const*)"
+  },
+  {
+   "index": 113,
+   "name": "RemoveTextureAlias",
+   "sig": "RemoveTextureAlias(char const*)",
+   "symbol": "CDummyMaterialSystem::RemoveTextureAlias(char const*)"
+  },
+  {
+   "index": 114,
+   "name": "AllocateDynamicLightmap",
+   "sig": "AllocateDynamicLightmap(int*, int*, int)",
+   "symbol": "CDummyMaterialSystem::AllocateDynamicLightmap(int*, int*, int)"
+  },
+  {
+   "index": 115,
+   "name": "SetExcludedTextures",
+   "sig": "SetExcludedTextures(char const*)",
+   "symbol": "CDummyMaterialSystem::SetExcludedTextures(char const*)"
+  },
+  {
+   "index": 116,
+   "name": "UpdateExcludedTextures",
+   "sig": "UpdateExcludedTextures()",
+   "symbol": "CDummyMaterialSystem::UpdateExcludedTextures()"
+  },
+  {
+   "index": 117,
+   "name": "IsInFrame",
+   "sig": "IsInFrame() const",
+   "symbol": "CDummyMaterialSystem::IsInFrame() const"
+  },
+  {
+   "index": 118,
+   "name": "CompactMemory",
+   "sig": "CompactMemory()",
+   "symbol": "CDummyMaterialSystem::CompactMemory()"
+  },
+  {
+   "index": 119,
+   "name": "ReloadFilesInList",
+   "sig": "ReloadFilesInList(IFileList*)",
+   "symbol": "CDummyMaterialSystem::ReloadFilesInList(IFileList*)"
+  },
+  {
+   "index": 120,
+   "name": "AllowThreading",
+   "sig": "AllowThreading(bool, int)",
+   "symbol": "CDummyMaterialSystem::AllowThreading(bool, int)"
+  },
+  {
+   "index": 121,
+   "name": "FindMaterialEx",
+   "sig": "FindMaterialEx(char const*, char const*, int, bool, char const*)",
+   "symbol": "CDummyMaterialSystem::FindMaterialEx(char const*, char const*, int, bool, char const*)"
+  },
+  {
+   "index": 122,
+   "name": "DoStartupShaderPreloading",
+   "sig": "DoStartupShaderPreloading()",
+   "symbol": "CDummyMaterialSystem::DoStartupShaderPreloading()"
+  },
+  {
+   "index": 123,
+   "name": "SetRenderTargetFrameBufferSizeOverrides",
+   "sig": "SetRenderTargetFrameBufferSizeOverrides(int, int)",
+   "symbol": "CDummyMaterialSystem::SetRenderTargetFrameBufferSizeOverrides(int, int)"
+  },
+  {
+   "index": 124,
+   "name": "GetRenderTargetFrameBufferDimensions",
+   "sig": "GetRenderTargetFrameBufferDimensions(int&, int&)",
+   "symbol": "CDummyMaterialSystem::GetRenderTargetFrameBufferDimensions(int&, int&)"
+  },
+  {
+   "index": 125,
+   "name": "GetDisplayDeviceName",
+   "sig": "GetDisplayDeviceName() const",
+   "symbol": "CDummyMaterialSystem::GetDisplayDeviceName() const"
+  },
+  {
+   "index": 126,
+   "name": "GetRenderBackend",
+   "sig": "GetRenderBackend() const",
+   "symbol": "CDummyMaterialSystem::GetRenderBackend() const"
+  },
+  {
+   "index": 127,
+   "name": "SetRealMaterialSystem",
+   "sig": "SetRealMaterialSystem(IMaterialSystem*)",
+   "symbol": "CDummyMaterialSystem::SetRealMaterialSystem(IMaterialSystem*)"
+  },
+  {
+   "index": 128,
+   "name": "BindLocalCubemap",
+   "sig": "BindLocalCubemap(ITexture*)",
+   "symbol": "CDummyMaterialSystem::BindLocalCubemap(ITexture*)"
+  },
+  {
+   "index": 129,
+   "name": "GetLocalCubemap",
+   "sig": "GetLocalCubemap()",
+   "symbol": "CDummyMaterialSystem::GetLocalCubemap()"
+  },
+  {
+   "index": 130,
+   "name": "SetRenderTarget",
+   "sig": "SetRenderTarget(ITexture*)",
+   "symbol": "CDummyMaterialSystem::SetRenderTarget(ITexture*)"
+  },
+  {
+   "index": 131,
+   "name": "GetRenderTarget",
+   "sig": "GetRenderTarget()",
+   "symbol": "CDummyMaterialSystem::GetRenderTarget()"
+  },
+  {
+   "index": 132,
+   "name": "SetRenderTargetEx",
+   "sig": "SetRenderTargetEx(int, ITexture*)",
+   "symbol": "CDummyMaterialSystem::SetRenderTargetEx(int, ITexture*)"
+  },
+  {
+   "index": 133,
+   "name": "GetRenderTargetEx",
+   "sig": "GetRenderTargetEx(int)",
+   "symbol": "CDummyMaterialSystem::GetRenderTargetEx(int)"
+  },
+  {
+   "index": 134,
+   "name": "GetRenderTargetDimensions",
+   "sig": "GetRenderTargetDimensions(int&, int&) const",
+   "symbol": "CDummyMaterialSystem::GetRenderTargetDimensions(int&, int&) const"
+  },
+  {
+   "index": 135,
+   "name": "OverrideDepthEnable",
+   "sig": "OverrideDepthEnable(bool, bool)",
+   "symbol": "CDummyMaterialSystem::OverrideDepthEnable(bool, bool)"
+  },
+  {
+   "index": 136,
+   "name": "OverrideAlphaWriteEnable",
+   "sig": "OverrideAlphaWriteEnable(bool, bool)",
+   "symbol": "CDummyMaterialSystem::OverrideAlphaWriteEnable(bool, bool)"
+  },
+  {
+   "index": 137,
+   "name": "OverrideColorWriteEnable",
+   "sig": "OverrideColorWriteEnable(bool, bool)",
+   "symbol": "CDummyMaterialSystem::OverrideColorWriteEnable(bool, bool)"
+  },
+  {
+   "index": 138,
+   "name": "FlushLightmaps",
+   "sig": "FlushLightmaps()",
+   "symbol": "CDummyMaterialSystem::FlushLightmaps()"
+  },
+  {
+   "index": 139,
+   "name": "Bind",
+   "sig": "Bind(IMaterial*, void*)",
+   "symbol": "CDummyMaterialSystem::Bind(IMaterial*, void*)"
+  },
+  {
+   "index": 140,
+   "name": "BindLightmapPage",
+   "sig": "BindLightmapPage(int)",
+   "symbol": "CDummyMaterialSystem::BindLightmapPage(int)"
+  },
+  {
+   "index": 141,
+   "name": "DepthRange",
+   "sig": "DepthRange(float, float)",
+   "symbol": "CDummyMaterialSystem::DepthRange(float, float)"
+  },
+  {
+   "index": 142,
+   "name": "ClearBuffersObeyStencil",
+   "sig": "ClearBuffersObeyStencil(bool, bool)",
+   "symbol": "CDummyMaterialSystem::ClearBuffersObeyStencil(bool, bool)"
+  },
+  {
+   "index": 143,
+   "name": "ClearBuffersObeyStencilEx",
+   "sig": "ClearBuffersObeyStencilEx(bool, bool, bool)",
+   "symbol": "CDummyMaterialSystem::ClearBuffersObeyStencilEx(bool, bool, bool)"
+  },
+  {
+   "index": 144,
+   "name": "PerformFullScreenStencilOperation",
+   "sig": "PerformFullScreenStencilOperation()",
+   "symbol": "CDummyMaterialSystem::PerformFullScreenStencilOperation()"
+  },
+  {
+   "index": 145,
+   "name": "ReadPixels",
+   "sig": "ReadPixels(int, int, int, int, unsigned char*, ImageFormat)",
+   "symbol": "CDummyMaterialSystem::ReadPixels(int, int, int, int, unsigned char*, ImageFormat)"
+  },
+  {
+   "index": 146,
+   "name": "ReadPixelsAndStretch",
+   "sig": "ReadPixelsAndStretch(Rect_t*, Rect_t*, unsigned char*, ImageFormat, int)",
+   "symbol": "CDummyMaterialSystem::ReadPixelsAndStretch(Rect_t*, Rect_t*, unsigned char*, ImageFormat, int)"
+  },
+  {
+   "index": 147,
+   "name": "SetAmbientLight",
+   "sig": "SetAmbientLight(float, float, float)",
+   "symbol": "CDummyMaterialSystem::SetAmbientLight(float, float, float)"
+  },
+  {
+   "index": 148,
+   "name": "SetLight",
+   "sig": "SetLight(int, LightDesc_t const&)",
+   "symbol": "CDummyMaterialSystem::SetLight(int, LightDesc_t const&)"
+  },
+  {
+   "index": 149,
+   "name": "SetLightingOrigin",
+   "sig": "SetLightingOrigin(Vector)",
+   "symbol": "CDummyMaterialSystem::SetLightingOrigin(Vector)"
+  },
+  {
+   "index": 150,
+   "name": "SetAmbientLightCube",
+   "sig": "SetAmbientLightCube(Vector4D*)",
+   "symbol": "CDummyMaterialSystem::SetAmbientLightCube(Vector4D*)"
+  },
+  {
+   "index": 151,
+   "name": "CopyRenderTargetToTexture",
+   "sig": "CopyRenderTargetToTexture(ITexture*)",
+   "symbol": "CDummyMaterialSystem::CopyRenderTargetToTexture(ITexture*)"
+  },
+  {
+   "index": 152,
+   "name": "SetFrameBufferCopyTexture",
+   "sig": "SetFrameBufferCopyTexture(ITexture*, int)",
+   "symbol": "CDummyMaterialSystem::SetFrameBufferCopyTexture(ITexture*, int)"
+  },
+  {
+   "index": 153,
+   "name": "GetFrameBufferCopyTexture",
+   "sig": "GetFrameBufferCopyTexture(int)",
+   "symbol": "CDummyMaterialSystem::GetFrameBufferCopyTexture(int)"
+  },
+  {
+   "index": 154,
+   "name": "MatrixMode",
+   "sig": "MatrixMode(MaterialMatrixMode_t)",
+   "symbol": "CDummyMaterialSystem::MatrixMode(MaterialMatrixMode_t)"
+  },
+  {
+   "index": 155,
+   "name": "PushMatrix",
+   "sig": "PushMatrix()",
+   "symbol": "CDummyMaterialSystem::PushMatrix()"
+  },
+  {
+   "index": 156,
+   "name": "PopMatrix",
+   "sig": "PopMatrix()",
+   "symbol": "CDummyMaterialSystem::PopMatrix()"
+  },
+  {
+   "index": 157,
+   "name": "LoadMatrix",
+   "sig": "LoadMatrix(VMatrix const&)",
+   "symbol": "CDummyMaterialSystem::LoadMatrix(VMatrix const&)"
+  },
+  {
+   "index": 158,
+   "name": "LoadMatrix",
+   "sig": "LoadMatrix(matrix3x4_t const&)",
+   "symbol": "CDummyMaterialSystem::LoadMatrix(matrix3x4_t const&)"
+  },
+  {
+   "index": 159,
+   "name": "LoadBoneMatrix",
+   "sig": "LoadBoneMatrix(int, matrix3x4_t const&)",
+   "symbol": "CDummyMaterialSystem::LoadBoneMatrix(int, matrix3x4_t const&)"
+  },
+  {
+   "index": 160,
+   "name": "MultMatrix",
+   "sig": "MultMatrix(VMatrix const&)",
+   "symbol": "CDummyMaterialSystem::MultMatrix(VMatrix const&)"
+  },
+  {
+   "index": 161,
+   "name": "MultMatrix",
+   "sig": "MultMatrix(matrix3x4_t const&)",
+   "symbol": "CDummyMaterialSystem::MultMatrix(matrix3x4_t const&)"
+  },
+  {
+   "index": 162,
+   "name": "MultMatrixLocal",
+   "sig": "MultMatrixLocal(VMatrix const&)",
+   "symbol": "CDummyMaterialSystem::MultMatrixLocal(VMatrix const&)"
+  },
+  {
+   "index": 163,
+   "name": "MultMatrixLocal",
+   "sig": "MultMatrixLocal(matrix3x4_t const&)",
+   "symbol": "CDummyMaterialSystem::MultMatrixLocal(matrix3x4_t const&)"
+  },
+  {
+   "index": 164,
+   "name": "GetMatrix",
+   "sig": "GetMatrix(MaterialMatrixMode_t, VMatrix*)",
+   "symbol": "CDummyMaterialSystem::GetMatrix(MaterialMatrixMode_t, VMatrix*)"
+  },
+  {
+   "index": 165,
+   "name": "GetMatrix",
+   "sig": "GetMatrix(MaterialMatrixMode_t, matrix3x4_t*)",
+   "symbol": "CDummyMaterialSystem::GetMatrix(MaterialMatrixMode_t, matrix3x4_t*)"
+  },
+  {
+   "index": 166,
+   "name": "LoadIdentity",
+   "sig": "LoadIdentity()",
+   "symbol": "CDummyMaterialSystem::LoadIdentity()"
+  },
+  {
+   "index": 167,
+   "name": "Ortho",
+   "sig": "Ortho(double, double, double, double, double, double)",
+   "symbol": "CDummyMaterialSystem::Ortho(double, double, double, double, double, double)"
+  },
+  {
+   "index": 168,
+   "name": "PerspectiveX",
+   "sig": "PerspectiveX(double, double, double, double)",
+   "symbol": "CDummyMaterialSystem::PerspectiveX(double, double, double, double)"
+  },
+  {
+   "index": 169,
+   "name": "PickMatrix",
+   "sig": "PickMatrix(int, int, int, int)",
+   "symbol": "CDummyMaterialSystem::PickMatrix(int, int, int, int)"
+  },
+  {
+   "index": 170,
+   "name": "Rotate",
+   "sig": "Rotate(float, float, float, float)",
+   "symbol": "CDummyMaterialSystem::Rotate(float, float, float, float)"
+  },
+  {
+   "index": 171,
+   "name": "Translate",
+   "sig": "Translate(float, float, float)",
+   "symbol": "CDummyMaterialSystem::Translate(float, float, float)"
+  },
+  {
+   "index": 172,
+   "name": "Scale",
+   "sig": "Scale(float, float, float)",
+   "symbol": "CDummyMaterialSystem::Scale(float, float, float)"
+  },
+  {
+   "index": 173,
+   "name": "Viewport",
+   "sig": "Viewport(int, int, int, int)",
+   "symbol": "CDummyMaterialSystem::Viewport(int, int, int, int)"
+  },
+  {
+   "index": 174,
+   "name": "GetViewport",
+   "sig": "GetViewport(int&, int&, int&, int&) const",
+   "symbol": "CDummyMaterialSystem::GetViewport(int&, int&, int&, int&) const"
+  },
+  {
+   "index": 175,
+   "name": "CullMode",
+   "sig": "CullMode(MaterialCullMode_t)",
+   "symbol": "CDummyMaterialSystem::CullMode(MaterialCullMode_t)"
+  },
+  {
+   "index": 176,
+   "name": "SetHeightClipMode",
+   "sig": "SetHeightClipMode(MaterialHeightClipMode_t)",
+   "symbol": "CDummyMaterialSystem::SetHeightClipMode(MaterialHeightClipMode_t)"
+  },
+  {
+   "index": 177,
+   "name": "GetHeightClipMode",
+   "sig": "GetHeightClipMode()",
+   "symbol": "CDummyMaterialSystem::GetHeightClipMode()"
+  },
+  {
+   "index": 178,
+   "name": "SetHeightClipZ",
+   "sig": "SetHeightClipZ(float)",
+   "symbol": "CDummyMaterialSystem::SetHeightClipZ(float)"
+  },
+  {
+   "index": 179,
+   "name": "FogMode",
+   "sig": "FogMode(MaterialFogMode_t)",
+   "symbol": "CDummyMaterialSystem::FogMode(MaterialFogMode_t)"
+  },
+  {
+   "index": 180,
+   "name": "GetFogMode",
+   "sig": "GetFogMode()",
+   "symbol": "CDummyMaterialSystem::GetFogMode()"
+  },
+  {
+   "index": 181,
+   "name": "FogStart",
+   "sig": "FogStart(float)",
+   "symbol": "CDummyMaterialSystem::FogStart(float)"
+  },
+  {
+   "index": 182,
+   "name": "FogEnd",
+   "sig": "FogEnd(float)",
+   "symbol": "CDummyMaterialSystem::FogEnd(float)"
+  },
+  {
+   "index": 183,
+   "name": "FogMaxDensity",
+   "sig": "FogMaxDensity(float)",
+   "symbol": "CDummyMaterialSystem::FogMaxDensity(float)"
+  },
+  {
+   "index": 184,
+   "name": "SetFogZ",
+   "sig": "SetFogZ(float)",
+   "symbol": "CDummyMaterialSystem::SetFogZ(float)"
+  },
+  {
+   "index": 185,
+   "name": "GetFogDistances",
+   "sig": "GetFogDistances(float*, float*, float*)",
+   "symbol": "CDummyMaterialSystem::GetFogDistances(float*, float*, float*)"
+  },
+  {
+   "index": 186,
+   "name": "FogColor3f",
+   "sig": "FogColor3f(float, float, float)",
+   "symbol": "CDummyMaterialSystem::FogColor3f(float, float, float)"
+  },
+  {
+   "index": 187,
+   "name": "FogColor3fv",
+   "sig": "FogColor3fv(float const*)",
+   "symbol": "CDummyMaterialSystem::FogColor3fv(float const*)"
+  },
+  {
+   "index": 188,
+   "name": "FogColor3ub",
+   "sig": "FogColor3ub(unsigned char, unsigned char, unsigned char)",
+   "symbol": "CDummyMaterialSystem::FogColor3ub(unsigned char, unsigned char, unsigned char)"
+  },
+  {
+   "index": 189,
+   "name": "FogColor3ubv",
+   "sig": "FogColor3ubv(unsigned char const*)",
+   "symbol": "CDummyMaterialSystem::FogColor3ubv(unsigned char const*)"
+  },
+  {
+   "index": 190,
+   "name": "GetFogColor",
+   "sig": "GetFogColor(unsigned char*)",
+   "symbol": "CDummyMaterialSystem::GetFogColor(unsigned char*)"
+  },
+  {
+   "index": 191,
+   "name": "SetNumBoneWeights",
+   "sig": "SetNumBoneWeights(int)",
+   "symbol": "CDummyMaterialSystem::SetNumBoneWeights(int)"
+  },
+  {
+   "index": 192,
+   "name": "CreateStaticMesh",
+   "sig": "CreateStaticMesh(unsigned long long, char const*, IMaterial*)",
+   "symbol": "CDummyMaterialSystem::CreateStaticMesh(unsigned long long, char const*, IMaterial*)"
+  },
+  {
+   "index": 193,
+   "name": "DestroyStaticMesh",
+   "sig": "DestroyStaticMesh(IMesh*)",
+   "symbol": "CDummyMaterialSystem::DestroyStaticMesh(IMesh*)"
+  },
+  {
+   "index": 194,
+   "name": "GetDynamicMesh",
+   "sig": "GetDynamicMesh(bool, IMesh*, IMesh*, IMaterial*)",
+   "symbol": "CDummyMaterialSystem::GetDynamicMesh(bool, IMesh*, IMesh*, IMaterial*)"
+  },
+  {
+   "index": 195,
+   "name": "GetDynamicMeshEx",
+   "sig": "GetDynamicMeshEx(unsigned long long, bool, IMesh*, IMesh*, IMaterial*)",
+   "symbol": "CDummyMaterialSystem::GetDynamicMeshEx(unsigned long long, bool, IMesh*, IMesh*, IMaterial*)"
+  },
+  {
+   "index": 196,
+   "name": "GetFlexMesh",
+   "sig": "GetFlexMesh()",
+   "symbol": "CDummyMaterialSystem::GetFlexMesh()"
+  },
+  {
+   "index": 197,
+   "name": "SelectionMode",
+   "sig": "SelectionMode(bool)",
+   "symbol": "CDummyMaterialSystem::SelectionMode(bool)"
+  },
+  {
+   "index": 198,
+   "name": "SelectionBuffer",
+   "sig": "SelectionBuffer(unsigned int*, int)",
+   "symbol": "CDummyMaterialSystem::SelectionBuffer(unsigned int*, int)"
+  },
+  {
+   "index": 199,
+   "name": "ClearSelectionNames",
+   "sig": "ClearSelectionNames()",
+   "symbol": "CDummyMaterialSystem::ClearSelectionNames()"
+  },
+  {
+   "index": 200,
+   "name": "LoadSelectionName",
+   "sig": "LoadSelectionName(int)",
+   "symbol": "CDummyMaterialSystem::LoadSelectionName(int)"
+  },
+  {
+   "index": 201,
+   "name": "PushSelectionName",
+   "sig": "PushSelectionName(int)",
+   "symbol": "CDummyMaterialSystem::PushSelectionName(int)"
+  },
+  {
+   "index": 202,
+   "name": "PopSelectionName",
+   "sig": "PopSelectionName()",
+   "symbol": "CDummyMaterialSystem::PopSelectionName()"
+  },
+  {
+   "index": 203,
+   "name": "GetNumShaders",
+   "sig": "GetNumShaders() const",
+   "symbol": "CDummyMaterialSystem::GetNumShaders() const"
+  },
+  {
+   "index": 204,
+   "name": "GetShaderName",
+   "sig": "GetShaderName(int) const",
+   "symbol": "CDummyMaterialSystem::GetShaderName(int) const"
+  },
+  {
+   "index": 205,
+   "name": "GetNumShaderParams",
+   "sig": "GetNumShaderParams(int) const",
+   "symbol": "CDummyMaterialSystem::GetNumShaderParams(int) const"
+  },
+  {
+   "index": 206,
+   "name": "GetShaderParamName",
+   "sig": "GetShaderParamName(int, int) const",
+   "symbol": "CDummyMaterialSystem::GetShaderParamName(int, int) const"
+  },
+  {
+   "index": 207,
+   "name": "GetShaderParamHelp",
+   "sig": "GetShaderParamHelp(int, int) const",
+   "symbol": "CDummyMaterialSystem::GetShaderParamHelp(int, int) const"
+  },
+  {
+   "index": 208,
+   "name": "GetShaderParamType",
+   "sig": "GetShaderParamType(int, int) const",
+   "symbol": "CDummyMaterialSystem::GetShaderParamType(int, int) const"
+  },
+  {
+   "index": 209,
+   "name": "GetShaderParamDefault",
+   "sig": "GetShaderParamDefault(int, int) const",
+   "symbol": "CDummyMaterialSystem::GetShaderParamDefault(int, int) const"
+  },
+  {
+   "index": 210,
+   "name": "ClearColor3ub",
+   "sig": "ClearColor3ub(unsigned char, unsigned char, unsigned char)",
+   "symbol": "CDummyMaterialSystem::ClearColor3ub(unsigned char, unsigned char, unsigned char)"
+  },
+  {
+   "index": 211,
+   "name": "ClearColor4ub",
+   "sig": "ClearColor4ub(unsigned char, unsigned char, unsigned char, unsigned char)",
+   "symbol": "CDummyMaterialSystem::ClearColor4ub(unsigned char, unsigned char, unsigned char, unsigned char)"
+  },
+  {
+   "index": 212,
+   "name": "DrawScreenSpaceQuad",
+   "sig": "DrawScreenSpaceQuad(IMaterial*)",
+   "symbol": "CDummyMaterialSystem::DrawScreenSpaceQuad(IMaterial*)"
+  },
+  {
+   "index": 213,
+   "name": "SyncToken",
+   "sig": "SyncToken(char const*)",
+   "symbol": "CDummyMaterialSystem::SyncToken(char const*)"
+  },
+  {
+   "index": 214,
+   "name": "ComputePixelWidthOfSphere",
+   "sig": "ComputePixelWidthOfSphere(Vector const&, float)",
+   "symbol": "CDummyMaterialSystem::ComputePixelWidthOfSphere(Vector const&, float)"
+  },
+  {
+   "index": 215,
+   "name": "ComputePixelDiameterOfSphere",
+   "sig": "ComputePixelDiameterOfSphere(Vector const&, float)",
+   "symbol": "CDummyMaterialSystem::ComputePixelDiameterOfSphere(Vector const&, float)"
+  },
+  {
+   "index": 216,
+   "name": "CreateOcclusionQueryObject",
+   "sig": "CreateOcclusionQueryObject()",
+   "symbol": "CDummyMaterialSystem::CreateOcclusionQueryObject()"
+  },
+  {
+   "index": 217,
+   "name": "DestroyOcclusionQueryObject",
+   "sig": "DestroyOcclusionQueryObject(OcclusionQueryObjectHandle_t__*)",
+   "symbol": "CDummyMaterialSystem::DestroyOcclusionQueryObject(OcclusionQueryObjectHandle_t__*)"
+  },
+  {
+   "index": 218,
+   "name": "ResetOcclusionQueryObject",
+   "sig": "ResetOcclusionQueryObject(OcclusionQueryObjectHandle_t__*)",
+   "symbol": "CDummyMaterialSystem::ResetOcclusionQueryObject(OcclusionQueryObjectHandle_t__*)"
+  },
+  {
+   "index": 219,
+   "name": "BeginOcclusionQueryDrawing",
+   "sig": "BeginOcclusionQueryDrawing(OcclusionQueryObjectHandle_t__*)",
+   "symbol": "CDummyMaterialSystem::BeginOcclusionQueryDrawing(OcclusionQueryObjectHandle_t__*)"
+  },
+  {
+   "index": 220,
+   "name": "EndOcclusionQueryDrawing",
+   "sig": "EndOcclusionQueryDrawing(OcclusionQueryObjectHandle_t__*)",
+   "symbol": "CDummyMaterialSystem::EndOcclusionQueryDrawing(OcclusionQueryObjectHandle_t__*)"
+  },
+  {
+   "index": 221,
+   "name": "OcclusionQuery_GetNumPixelsRendered",
+   "sig": "OcclusionQuery_GetNumPixelsRendered(OcclusionQueryObjectHandle_t__*)",
+   "symbol": "CDummyMaterialSystem::OcclusionQuery_GetNumPixelsRendered(OcclusionQueryObjectHandle_t__*)"
+  },
+  {
+   "index": 222,
+   "name": "SetFlashlightMode",
+   "sig": "SetFlashlightMode(bool)",
+   "symbol": "CDummyMaterialSystem::SetFlashlightMode(bool)"
+  },
+  {
+   "index": 223,
+   "name": "GetFlashlightMode",
+   "sig": "GetFlashlightMode() const",
+   "symbol": "CDummyMaterialSystem::GetFlashlightMode() const"
+  },
+  {
+   "index": 224,
+   "name": "InFlashlightMode",
+   "sig": "InFlashlightMode() const",
+   "symbol": "CDummyMaterialSystem::InFlashlightMode() const"
+  },
+  {
+   "index": 225,
+   "name": "SetFlashlightState",
+   "sig": "SetFlashlightState(FlashlightState_t const&, VMatrix const&)",
+   "symbol": "CDummyMaterialSystem::SetFlashlightState(FlashlightState_t const&, VMatrix const&)"
+  },
+  {
+   "index": 226,
+   "name": "SetFlashlightStateEx",
+   "sig": "SetFlashlightStateEx(FlashlightState_t const&, VMatrix const&, ITexture*)",
+   "symbol": "CDummyMaterialSystem::SetFlashlightStateEx(FlashlightState_t const&, VMatrix const&, ITexture*)"
+  },
+  {
+   "index": 227,
+   "name": "SetScissorRect",
+   "sig": "SetScissorRect(int, int, int, int, bool)",
+   "symbol": "CDummyMaterialSystem::SetScissorRect(int, int, int, int, bool)"
+  },
+  {
+   "index": 228,
+   "name": "PushDeformation",
+   "sig": "PushDeformation(DeformationBase_t const*)",
+   "symbol": "CDummyMaterialSystem::PushDeformation(DeformationBase_t const*)"
+  },
+  {
+   "index": 229,
+   "name": "PopDeformation",
+   "sig": "PopDeformation()",
+   "symbol": "CDummyMaterialSystem::PopDeformation()"
+  },
+  {
+   "index": 230,
+   "name": "GetNumActiveDeformations",
+   "sig": "GetNumActiveDeformations() const",
+   "symbol": "CDummyMaterialSystem::GetNumActiveDeformations() const"
+  },
+  {
+   "index": 231,
+   "name": "EnableUserClipTransformOverride",
+   "sig": "EnableUserClipTransformOverride(bool)",
+   "symbol": "CDummyMaterialSystem::EnableUserClipTransformOverride(bool)"
+  },
+  {
+   "index": 232,
+   "name": "UserClipTransform",
+   "sig": "UserClipTransform(VMatrix const&)",
+   "symbol": "CDummyMaterialSystem::UserClipTransform(VMatrix const&)"
+  },
+  {
+   "index": 233,
+   "name": "CreateMorph",
+   "sig": "CreateMorph(unsigned int, char const*)",
+   "symbol": "CDummyMaterialSystem::CreateMorph(unsigned int, char const*)"
+  },
+  {
+   "index": 234,
+   "name": "DestroyMorph",
+   "sig": "DestroyMorph(IMorph*)",
+   "symbol": "CDummyMaterialSystem::DestroyMorph(IMorph*)"
+  },
+  {
+   "index": 235,
+   "name": "BindMorph",
+   "sig": "BindMorph(IMorph*)",
+   "symbol": "CDummyMaterialSystem::BindMorph(IMorph*)"
+  },
+  {
+   "index": 236,
+   "name": "SetMorphTargetFactors",
+   "sig": "SetMorphTargetFactors(int, float*, int)",
+   "symbol": "CDummyMaterialSystem::SetMorphTargetFactors(int, float*, int)"
+  },
+  {
+   "index": 237,
+   "name": "SetToneMappingScaleLinear",
+   "sig": "SetToneMappingScaleLinear(Vector const&)",
+   "symbol": "CDummyMaterialSystem::SetToneMappingScaleLinear(Vector const&)"
+  },
+  {
+   "index": 238,
+   "name": "GetWindowSize",
+   "sig": "GetWindowSize(int&, int&) const",
+   "symbol": "CDummyMaterialSystem::GetWindowSize(int&, int&) const"
+  },
+  {
+   "index": 239,
+   "name": "AppUsesRenderTargets",
+   "sig": "AppUsesRenderTargets()",
+   "symbol": "CDummyMaterialSystem::AppUsesRenderTargets()"
+  },
+  {
+   "index": 240,
+   "name": "DrawScreenSpaceRectangle",
+   "sig": "DrawScreenSpaceRectangle(IMaterial*, int, int, int, int, float, float, float, float, int, int, void*, int, int)",
+   "symbol": "CDummyMaterialSystem::DrawScreenSpaceRectangle(IMaterial*, int, int, int, int, float, float, float, float, int, int, void*, int, int)"
+  },
+  {
+   "index": 241,
+   "name": "PushRenderTargetAndViewport",
+   "sig": "PushRenderTargetAndViewport()",
+   "symbol": "CDummyMaterialSystem::PushRenderTargetAndViewport()"
+  },
+  {
+   "index": 242,
+   "name": "PushRenderTargetAndViewport",
+   "sig": "PushRenderTargetAndViewport(ITexture*)",
+   "symbol": "CDummyMaterialSystem::PushRenderTargetAndViewport(ITexture*)"
+  },
+  {
+   "index": 243,
+   "name": "PushRenderTargetAndViewport",
+   "sig": "PushRenderTargetAndViewport(ITexture*, int, int, int, int)",
+   "symbol": "CDummyMaterialSystem::PushRenderTargetAndViewport(ITexture*, int, int, int, int)"
+  },
+  {
+   "index": 244,
+   "name": "PushRenderTargetAndViewport",
+   "sig": "PushRenderTargetAndViewport(ITexture*, ITexture*, int, int, int, int)",
+   "symbol": "CDummyMaterialSystem::PushRenderTargetAndViewport(ITexture*, ITexture*, int, int, int, int)"
+  },
+  {
+   "index": 245,
+   "name": "PopRenderTargetAndViewport",
+   "sig": "PopRenderTargetAndViewport()",
+   "symbol": "CDummyMaterialSystem::PopRenderTargetAndViewport()"
+  },
+  {
+   "index": 246,
+   "name": "BindLightmapTexture",
+   "sig": "BindLightmapTexture(ITexture*)",
+   "symbol": "CDummyMaterialSystem::BindLightmapTexture(ITexture*)"
+  },
+  {
+   "index": 247,
+   "name": "CopyRenderTargetToTextureEx",
+   "sig": "CopyRenderTargetToTextureEx(ITexture*, int, Rect_t*, Rect_t*)",
+   "symbol": "CDummyMaterialSystem::CopyRenderTargetToTextureEx(ITexture*, int, Rect_t*, Rect_t*)"
+  },
+  {
+   "index": 248,
+   "name": "CopyTextureToRenderTargetEx",
+   "sig": "CopyTextureToRenderTargetEx(int, ITexture*, Rect_t*, Rect_t*)",
+   "symbol": "CDummyMaterialSystem::CopyTextureToRenderTargetEx(int, ITexture*, Rect_t*, Rect_t*)"
+  },
+  {
+   "index": 249,
+   "name": "PerspectiveOffCenterX",
+   "sig": "PerspectiveOffCenterX(double, double, double, double, double, double, double, double)",
+   "symbol": "CDummyMaterialSystem::PerspectiveOffCenterX(double, double, double, double, double, double, double, double)"
+  },
+  {
+   "index": 250,
+   "name": "SetFloatRenderingParameter",
+   "sig": "SetFloatRenderingParameter(int, float)",
+   "symbol": "CDummyMaterialSystem::SetFloatRenderingParameter(int, float)"
+  },
+  {
+   "index": 251,
+   "name": "SetIntRenderingParameter",
+   "sig": "SetIntRenderingParameter(int, int)",
+   "symbol": "CDummyMaterialSystem::SetIntRenderingParameter(int, int)"
+  },
+  {
+   "index": 252,
+   "name": "SetVectorRenderingParameter",
+   "sig": "SetVectorRenderingParameter(int, Vector const&)",
+   "symbol": "CDummyMaterialSystem::SetVectorRenderingParameter(int, Vector const&)"
+  },
+  {
+   "index": 253,
+   "name": "GetToneMappingScaleLinear",
+   "sig": "GetToneMappingScaleLinear()",
+   "symbol": "CDummyMaterialSystem::GetToneMappingScaleLinear()"
+  },
+  {
+   "index": 254,
+   "name": "GetMaxToRender",
+   "sig": "GetMaxToRender(IMesh*, bool, int*, int*)",
+   "symbol": "CDummyMaterialSystem::GetMaxToRender(IMesh*, bool, int*, int*)"
+  },
+  {
+   "index": 255,
+   "name": "GetMaxVerticesToRender",
+   "sig": "GetMaxVerticesToRender(IMaterial*)",
+   "symbol": "CDummyMaterialSystem::GetMaxVerticesToRender(IMaterial*)"
+  },
+  {
+   "index": 256,
+   "name": "GetMaxIndicesToRender",
+   "sig": "GetMaxIndicesToRender()",
+   "symbol": "CDummyMaterialSystem::GetMaxIndicesToRender()"
+  },
+  {
+   "index": 257,
+   "name": "SetStencilEnable",
+   "sig": "SetStencilEnable(bool)",
+   "symbol": "CDummyMaterialSystem::SetStencilEnable(bool)"
+  },
+  {
+   "index": 258,
+   "name": "SetStencilFailOperation",
+   "sig": "SetStencilFailOperation(StencilOperation_t)",
+   "symbol": "CDummyMaterialSystem::SetStencilFailOperation(StencilOperation_t)"
+  },
+  {
+   "index": 259,
+   "name": "SetStencilZFailOperation",
+   "sig": "SetStencilZFailOperation(StencilOperation_t)",
+   "symbol": "CDummyMaterialSystem::SetStencilZFailOperation(StencilOperation_t)"
+  },
+  {
+   "index": 260,
+   "name": "SetStencilPassOperation",
+   "sig": "SetStencilPassOperation(StencilOperation_t)",
+   "symbol": "CDummyMaterialSystem::SetStencilPassOperation(StencilOperation_t)"
+  },
+  {
+   "index": 261,
+   "name": "SetStencilCompareFunction",
+   "sig": "SetStencilCompareFunction(StencilComparisonFunction_t)",
+   "symbol": "CDummyMaterialSystem::SetStencilCompareFunction(StencilComparisonFunction_t)"
+  },
+  {
+   "index": 262,
+   "name": "SetStencilReferenceValue",
+   "sig": "SetStencilReferenceValue(int)",
+   "symbol": "CDummyMaterialSystem::SetStencilReferenceValue(int)"
+  },
+  {
+   "index": 263,
+   "name": "SetStencilTestMask",
+   "sig": "SetStencilTestMask(unsigned int)",
+   "symbol": "CDummyMaterialSystem::SetStencilTestMask(unsigned int)"
+  },
+  {
+   "index": 264,
+   "name": "SetStencilWriteMask",
+   "sig": "SetStencilWriteMask(unsigned int)",
+   "symbol": "CDummyMaterialSystem::SetStencilWriteMask(unsigned int)"
+  },
+  {
+   "index": 265,
+   "name": "ClearStencilBufferRectangle",
+   "sig": "ClearStencilBufferRectangle(int, int, int, int, int)",
+   "symbol": "CDummyMaterialSystem::ClearStencilBufferRectangle(int, int, int, int, int)"
+  },
+  {
+   "index": 266,
+   "name": "EnableColorCorrection",
+   "sig": "EnableColorCorrection(bool)",
+   "symbol": "CDummyMaterialSystem::EnableColorCorrection(bool)"
+  },
+  {
+   "index": 267,
+   "name": "AddLookup",
+   "sig": "AddLookup(char const*)",
+   "symbol": "CDummyMaterialSystem::AddLookup(char const*)"
+  },
+  {
+   "index": 268,
+   "name": "RemoveLookup",
+   "sig": "RemoveLookup(unsigned int)",
+   "symbol": "CDummyMaterialSystem::RemoveLookup(unsigned int)"
+  },
+  {
+   "index": 269,
+   "name": "LockLookup",
+   "sig": "LockLookup(unsigned int)",
+   "symbol": "CDummyMaterialSystem::LockLookup(unsigned int)"
+  },
+  {
+   "index": 270,
+   "name": "LoadLookup",
+   "sig": "LoadLookup(unsigned int, char const*)",
+   "symbol": "CDummyMaterialSystem::LoadLookup(unsigned int, char const*)"
+  },
+  {
+   "index": 271,
+   "name": "UnlockLookup",
+   "sig": "UnlockLookup(unsigned int)",
+   "symbol": "CDummyMaterialSystem::UnlockLookup(unsigned int)"
+  },
+  {
+   "index": 272,
+   "name": "SetLookupWeight",
+   "sig": "SetLookupWeight(unsigned int, float)",
+   "symbol": "CDummyMaterialSystem::SetLookupWeight(unsigned int, float)"
+  },
+  {
+   "index": 273,
+   "name": "ResetLookupWeights",
+   "sig": "ResetLookupWeights()",
+   "symbol": "CDummyMaterialSystem::ResetLookupWeights()"
+  },
+  {
+   "index": 274,
+   "name": "SetResetable",
+   "sig": "SetResetable(unsigned int, bool)",
+   "symbol": "CDummyMaterialSystem::SetResetable(unsigned int, bool)"
+  },
+  {
+   "index": 275,
+   "name": "PushCustomClipPlane",
+   "sig": "PushCustomClipPlane(float const*)",
+   "symbol": "CDummyMaterialSystem::PushCustomClipPlane(float const*)"
+  },
+  {
+   "index": 276,
+   "name": "PopCustomClipPlane",
+   "sig": "PopCustomClipPlane()",
+   "symbol": "CDummyMaterialSystem::PopCustomClipPlane()"
+  },
+  {
+   "index": 277,
+   "name": "EnableClipping",
+   "sig": "EnableClipping(bool)",
+   "symbol": "CDummyMaterialSystem::EnableClipping(bool)"
+  },
+  {
+   "index": 278,
+   "name": "PushHeightClipPlane",
+   "sig": "PushHeightClipPlane()",
+   "symbol": "CDummyMaterialSystem::PushHeightClipPlane()"
+  },
+  {
+   "index": 279,
+   "name": "ResetToneMappingScale",
+   "sig": "ResetToneMappingScale(float)",
+   "symbol": "CDummyMaterialSystem::ResetToneMappingScale(float)"
+  },
+  {
+   "index": 280,
+   "name": "TurnOnToneMapping",
+   "sig": "TurnOnToneMapping()",
+   "symbol": "CDummyMaterialSystem::TurnOnToneMapping()"
+  },
+  {
+   "index": 281,
+   "name": "DisableAllLocalLights",
+   "sig": "DisableAllLocalLights()",
+   "symbol": "CDummyMaterialSystem::DisableAllLocalLights()"
+  },
+  {
+   "index": 282,
+   "name": "CompareMaterialCombos",
+   "sig": "CompareMaterialCombos(IMaterial*, IMaterial*, int, int)",
+   "symbol": "CDummyMaterialSystem::CompareMaterialCombos(IMaterial*, IMaterial*, int, int)"
+  },
+  {
+   "index": 283,
+   "name": "IsDX10Card",
+   "sig": "IsDX10Card()",
+   "symbol": "CDummyMaterialSystem::IsDX10Card()"
+  },
+  {
+   "index": 284,
+   "name": "BeginPIXEvent",
+   "sig": "BeginPIXEvent(unsigned long, char const*)",
+   "symbol": "CDummyMaterialSystem::BeginPIXEvent(unsigned long, char const*)"
+  },
+  {
+   "index": 285,
+   "name": "EndPIXEvent",
+   "sig": "EndPIXEvent()",
+   "symbol": "CDummyMaterialSystem::EndPIXEvent()"
+  },
+  {
+   "index": 286,
+   "name": "SetPIXMarker",
+   "sig": "SetPIXMarker(unsigned long, char const*)",
+   "symbol": "CDummyMaterialSystem::SetPIXMarker(unsigned long, char const*)"
+  },
+  {
+   "index": 287,
+   "name": "BeginRender",
+   "sig": "BeginRender()",
+   "symbol": "CDummyMaterialSystem::BeginRender()"
+  },
+  {
+   "index": 288,
+   "name": "EndRender",
+   "sig": "EndRender()",
+   "symbol": "CDummyMaterialSystem::EndRender()"
+  },
+  {
+   "index": 289,
+   "name": "BeginBatch",
+   "sig": "BeginBatch(IMesh*)",
+   "symbol": "CDummyMaterialSystem::BeginBatch(IMesh*)"
+  },
+  {
+   "index": 290,
+   "name": "BindBatch",
+   "sig": "BindBatch(IMesh*, IMaterial*)",
+   "symbol": "CDummyMaterialSystem::BindBatch(IMesh*, IMaterial*)"
+  },
+  {
+   "index": 291,
+   "name": "DrawBatch",
+   "sig": "DrawBatch(int, int)",
+   "symbol": "CDummyMaterialSystem::DrawBatch(int, int)"
+  },
+  {
+   "index": 292,
+   "name": "EndBatch",
+   "sig": "EndBatch()",
+   "symbol": "CDummyMaterialSystem::EndBatch()"
+  },
+  {
+   "index": 293,
+   "name": "SetGoalToneMappingScale",
+   "sig": "SetGoalToneMappingScale(float)",
+   "symbol": "CDummyMaterialSystem::SetGoalToneMappingScale(float)"
+  },
+  {
+   "index": 294,
+   "name": "SetShadowDepthBiasFactors",
+   "sig": "SetShadowDepthBiasFactors(float, float)",
+   "symbol": "CDummyMaterialSystem::SetShadowDepthBiasFactors(float, float)"
+  },
+  {
+   "index": 295,
+   "name": "GetCallQueue",
+   "sig": "GetCallQueue()",
+   "symbol": "CDummyMaterialSystem::GetCallQueue()"
+  },
+  {
+   "index": 296,
+   "name": "GetWorldSpaceCameraPosition",
+   "sig": "GetWorldSpaceCameraPosition(Vector*)",
+   "symbol": "CDummyMaterialSystem::GetWorldSpaceCameraPosition(Vector*)"
+  },
+  {
+   "index": 297,
+   "name": "GetWorldSpaceCameraVectors",
+   "sig": "GetWorldSpaceCameraVectors(Vector*, Vector*, Vector*)",
+   "symbol": "CDummyMaterialSystem::GetWorldSpaceCameraVectors(Vector*, Vector*, Vector*)"
+  },
+  {
+   "index": 298,
+   "name": "GetDynamicVertexBuffer",
+   "sig": "GetDynamicVertexBuffer(bool)",
+   "symbol": "CDummyMaterialSystem::GetDynamicVertexBuffer(bool)"
+  },
+  {
+   "index": 299,
+   "name": "GetDynamicIndexBuffer",
+   "sig": "GetDynamicIndexBuffer(bool)",
+   "symbol": "CDummyMaterialSystem::GetDynamicIndexBuffer(bool)"
+  },
+  {
+   "index": 300,
+   "name": "CreateStaticVertexBuffer",
+   "sig": "CreateStaticVertexBuffer(unsigned long long, int, char const*)",
+   "symbol": "CDummyMaterialSystem::CreateStaticVertexBuffer(unsigned long long, int, char const*)"
+  },
+  {
+   "index": 301,
+   "name": "CreateStaticIndexBuffer",
+   "sig": "CreateStaticIndexBuffer(MaterialIndexFormat_t, int, char const*)",
+   "symbol": "CDummyMaterialSystem::CreateStaticIndexBuffer(MaterialIndexFormat_t, int, char const*)"
+  },
+  {
+   "index": 302,
+   "name": "DestroyVertexBuffer",
+   "sig": "DestroyVertexBuffer(IVertexBuffer*)",
+   "symbol": "CDummyMaterialSystem::DestroyVertexBuffer(IVertexBuffer*)"
+  },
+  {
+   "index": 303,
+   "name": "DestroyIndexBuffer",
+   "sig": "DestroyIndexBuffer(IIndexBuffer*)",
+   "symbol": "CDummyMaterialSystem::DestroyIndexBuffer(IIndexBuffer*)"
+  },
+  {
+   "index": 304,
+   "name": "GetDynamicVertexBuffer",
+   "sig": "GetDynamicVertexBuffer(int, unsigned long long, bool)",
+   "symbol": "CDummyMaterialSystem::GetDynamicVertexBuffer(int, unsigned long long, bool)"
+  },
+  {
+   "index": 305,
+   "name": "GetDynamicIndexBuffer",
+   "sig": "GetDynamicIndexBuffer(MaterialIndexFormat_t, bool)",
+   "symbol": "CDummyMaterialSystem::GetDynamicIndexBuffer(MaterialIndexFormat_t, bool)"
+  },
+  {
+   "index": 306,
+   "name": "BindVertexBuffer",
+   "sig": "BindVertexBuffer(int, IVertexBuffer*, int, int, int, unsigned long long, int)",
+   "symbol": "CDummyMaterialSystem::BindVertexBuffer(int, IVertexBuffer*, int, int, int, unsigned long long, int)"
+  },
+  {
+   "index": 307,
+   "name": "BindIndexBuffer",
+   "sig": "BindIndexBuffer(IIndexBuffer*, int)",
+   "symbol": "CDummyMaterialSystem::BindIndexBuffer(IIndexBuffer*, int)"
+  },
+  {
+   "index": 308,
+   "name": "Draw",
+   "sig": "Draw(MaterialPrimitiveType_t, int, int)",
+   "symbol": "CDummyMaterialSystem::Draw(MaterialPrimitiveType_t, int, int)"
+  },
+  {
+   "index": 309,
+   "name": "BeginMorphAccumulation",
+   "sig": "BeginMorphAccumulation()",
+   "symbol": "CDummyMaterialSystem::BeginMorphAccumulation()"
+  },
+  {
+   "index": 310,
+   "name": "EndMorphAccumulation",
+   "sig": "EndMorphAccumulation()",
+   "symbol": "CDummyMaterialSystem::EndMorphAccumulation()"
+  },
+  {
+   "index": 311,
+   "name": "AccumulateMorph",
+   "sig": "AccumulateMorph(IMorph*, int, MorphWeight_t const*)",
+   "symbol": "CDummyMaterialSystem::AccumulateMorph(IMorph*, int, MorphWeight_t const*)"
+  },
+  {
+   "index": 312,
+   "name": "GetMorphAccumulatorTexCoord",
+   "sig": "GetMorphAccumulatorTexCoord(Vector2D*, IMorph*, int)",
+   "symbol": "CDummyMaterialSystem::GetMorphAccumulatorTexCoord(Vector2D*, IMorph*, int)"
+  },
+  {
+   "index": 313,
+   "name": "SetFlexWeights",
+   "sig": "SetFlexWeights(int, int, MorphWeight_t const*)",
+   "symbol": "CDummyMaterialSystem::SetFlexWeights(int, int, MorphWeight_t const*)"
+  },
+  {
+   "index": 314,
+   "name": "SupportsNormalMapCompression",
+   "sig": "SupportsNormalMapCompression()",
+   "symbol": "CDummyMaterialSystem::SupportsNormalMapCompression()"
+  },
+  {
+   "index": 315,
+   "name": "SupportsBorderColor",
+   "sig": "SupportsBorderColor()",
+   "symbol": "CDummyMaterialSystem::SupportsBorderColor()"
+  },
+  {
+   "index": 316,
+   "name": "GetCurrentMaterial",
+   "sig": "GetCurrentMaterial()",
+   "symbol": "CDummyMaterialSystem::GetCurrentMaterial()"
+  },
+  {
+   "index": 317,
+   "name": "GetCurrentNumBones",
+   "sig": "GetCurrentNumBones() const",
+   "symbol": "CDummyMaterialSystem::GetCurrentNumBones() const"
+  },
+  {
+   "index": 318,
+   "name": "GetCurrentProxy",
+   "sig": "GetCurrentProxy()",
+   "symbol": "CDummyMaterialSystem::GetCurrentProxy()"
+  },
+  {
+   "index": 319,
+   "name": "SetFullScreenDepthTextureValidityFlag",
+   "sig": "SetFullScreenDepthTextureValidityFlag(bool)",
+   "symbol": "CDummyMaterialSystem::SetFullScreenDepthTextureValidityFlag(bool)"
+  },
+  {
+   "index": 320,
+   "name": "SetNonInteractivePacifierTexture",
+   "sig": "SetNonInteractivePacifierTexture(ITexture*, float, float, float)",
+   "symbol": "CDummyMaterialSystem::SetNonInteractivePacifierTexture(ITexture*, float, float, float)"
+  },
+  {
+   "index": 321,
+   "name": "SetNonInteractiveTempFullscreenBuffer",
+   "sig": "SetNonInteractiveTempFullscreenBuffer(ITexture*, MaterialNonInteractiveMode_t)",
+   "symbol": "CDummyMaterialSystem::SetNonInteractiveTempFullscreenBuffer(ITexture*, MaterialNonInteractiveMode_t)"
+  },
+  {
+   "index": 322,
+   "name": "EnableNonInteractiveMode",
+   "sig": "EnableNonInteractiveMode(MaterialNonInteractiveMode_t)",
+   "symbol": "CDummyMaterialSystem::EnableNonInteractiveMode(MaterialNonInteractiveMode_t)"
+  },
+  {
+   "index": 323,
+   "name": "RefreshFrontBufferNonInteractive",
+   "sig": "RefreshFrontBufferNonInteractive()",
+   "symbol": "CDummyMaterialSystem::RefreshFrontBufferNonInteractive()"
+  },
+  {
+   "index": 324,
+   "name": "LockRenderData",
+   "sig": "LockRenderData(int)",
+   "symbol": "CDummyMaterialSystem::LockRenderData(int)"
+  },
+  {
+   "index": 325,
+   "name": "UnlockRenderData",
+   "sig": "UnlockRenderData(void*)",
+   "symbol": "CDummyMaterialSystem::UnlockRenderData(void*)"
+  },
+  {
+   "index": 326,
+   "name": "IsRenderData",
+   "sig": "IsRenderData(void const*) const",
+   "symbol": "CDummyMaterialSystem::IsRenderData(void const*) const"
+  },
+  {
+   "index": 327,
+   "name": "AddRefRenderData",
+   "sig": "AddRefRenderData()",
+   "symbol": "CDummyMaterialSystem::AddRefRenderData()"
+  },
+  {
+   "index": 328,
+   "name": "ReleaseRenderData",
+   "sig": "ReleaseRenderData()",
+   "symbol": "CDummyMaterialSystem::ReleaseRenderData()"
+  },
+  {
+   "index": 329,
+   "name": "PrintfVA",
+   "sig": "PrintfVA(char*, char*)",
+   "symbol": "CDummyMaterialSystem::PrintfVA(char*, char*)"
+  },
+  {
+   "index": 330,
+   "name": "Printf",
+   "sig": "Printf(char const*, ...)",
+   "symbol": "CDummyMaterialSystem::Printf(char const*, ...)"
+  },
+  {
+   "index": 331,
+   "name": "Knob",
+   "sig": "Knob(char*, float*)",
+   "symbol": "CDummyMaterialSystem::Knob(char*, float*)"
+  },
+  {
+   "index": 332,
+   "name": "FogRadial",
+   "sig": "FogRadial(bool)",
+   "symbol": "CDummyMaterialSystem::FogRadial(bool)"
+  },
+  {
+   "index": 333,
+   "name": "GetFogRadial",
+   "sig": "GetFogRadial()",
+   "symbol": "CDummyMaterialSystem::GetFogRadial()"
+  }
+ ],
+ "implementer_tail": [
+  "~CDummyMaterialSystem()",
+  "~CDummyMaterialSystem()"
+ ],
+ "derived": [
+  "bin/materialsystem:CDummyMaterialSystem"
+ ],
+ "derived_count": 1
+}

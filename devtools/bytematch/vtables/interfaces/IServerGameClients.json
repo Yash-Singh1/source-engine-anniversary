@@ -1,0 +1,205 @@
+{
+ "interface": "IServerGameClients",
+ "headers": [
+  "public/eiface.h",
+  "public/eifacev21.h"
+ ],
+ "versions": {
+  "retail": [
+   "ServerGameClients004"
+  ],
+  "ours": [
+   "ServerGameClients003",
+   "ServerGameClients004"
+  ],
+  "sdk2013": [
+   "ServerGameClients003",
+   "ServerGameClients004"
+  ]
+ },
+ "version_macros": [
+  "INTERFACEVERSION_SERVERGAMECLIENTS",
+  "INTERFACEVERSION_SERVERGAMECLIENTS_VERSION_3",
+  "SERVERGAMECLIENTS_INTERFACEVERSION_3"
+ ],
+ "registrations": [
+  {
+   "module": "episodic/server",
+   "version": "ServerGameClients004",
+   "class": "CServerGameClients"
+  },
+  {
+   "module": "hl2/server",
+   "version": "ServerGameClients004",
+   "class": "CServerGameClients"
+  },
+  {
+   "module": "hl2_complete/server",
+   "version": "ServerGameClients004",
+   "class": "CServerGameClients"
+  },
+  {
+   "module": "hl2mp/server",
+   "version": "ServerGameClients004",
+   "class": "CServerGameClients"
+  },
+  {
+   "module": "lostcoast/server",
+   "version": "ServerGameClients004",
+   "class": "CServerGameClients"
+  }
+ ],
+ "sdk2013_len": 18,
+ "sdk2013_slots": [
+  "GetPlayerLimits(int&, int&, int&) const",
+  "ClientConnect(edict_t*, char const*, char const*, char*, int)",
+  "ClientActive(edict_t*, bool)",
+  "ClientDisconnect(edict_t*)",
+  "ClientPutInServer(edict_t*, char const*)",
+  "ClientCommand(edict_t*, CCommand const&)",
+  "SetCommandClient(int)",
+  "ClientSettingsChanged(edict_t*)",
+  "ClientSetupVisibility(edict_t*, edict_t*, unsigned char*, int)",
+  "ProcessUsercmds(edict_t*, bf_read*, int, int, int, bool, bool)",
+  "PostClientMessagesSent_DEPRECIATED()",
+  "GetPlayerState(edict_t*)",
+  "ClientEarPosition(edict_t*, Vector*)",
+  "GetReplayDelay(edict_t*, int&)",
+  "GetBugReportInfo(char*, int)",
+  "NetworkIDValidated(char const*, char const*)",
+  "ClientCommandKeyValues(edict_t*, KeyValues*)",
+  "ClientSpawned(edict_t*)"
+ ],
+ "retail_reference": {
+  "module": "episodic/server",
+  "class": "CServerGameClients",
+  "offset": 0,
+  "chain": [
+   "CServerGameClients",
+   "IServerGameClients"
+  ]
+ },
+ "retail_len": 18,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 18
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "GetPlayerLimits",
+   "sig": "GetPlayerLimits(int&, int&, int&) const",
+   "symbol": "CServerGameClients::GetPlayerLimits(int&, int&, int&) const"
+  },
+  {
+   "index": 1,
+   "name": "ClientConnect",
+   "sig": "ClientConnect(edict_t*, char const*, char const*, char*, int)",
+   "symbol": "CServerGameClients::ClientConnect(edict_t*, char const*, char const*, char*, int)"
+  },
+  {
+   "index": 2,
+   "name": "ClientActive",
+   "sig": "ClientActive(edict_t*, bool)",
+   "symbol": "CServerGameClients::ClientActive(edict_t*, bool)"
+  },
+  {
+   "index": 3,
+   "name": "ClientDisconnect",
+   "sig": "ClientDisconnect(edict_t*)",
+   "symbol": "CServerGameClients::ClientDisconnect(edict_t*)"
+  },
+  {
+   "index": 4,
+   "name": "ClientPutInServer",
+   "sig": "ClientPutInServer(edict_t*, char const*)",
+   "symbol": "CServerGameClients::ClientPutInServer(edict_t*, char const*)"
+  },
+  {
+   "index": 5,
+   "name": "ClientCommand",
+   "sig": "ClientCommand(edict_t*, CCommand const&)",
+   "symbol": "CServerGameClients::ClientCommand(edict_t*, CCommand const&)"
+  },
+  {
+   "index": 6,
+   "name": "SetCommandClient",
+   "sig": "SetCommandClient(int)",
+   "symbol": "CServerGameClients::SetCommandClient(int)"
+  },
+  {
+   "index": 7,
+   "name": "ClientSettingsChanged",
+   "sig": "ClientSettingsChanged(edict_t*)",
+   "symbol": "CServerGameClients::ClientSettingsChanged(edict_t*)"
+  },
+  {
+   "index": 8,
+   "name": "ClientSetupVisibility",
+   "sig": "ClientSetupVisibility(edict_t*, edict_t*, unsigned char*, int)",
+   "symbol": "CServerGameClients::ClientSetupVisibility(edict_t*, edict_t*, unsigned char*, int)"
+  },
+  {
+   "index": 9,
+   "name": "ProcessUsercmds",
+   "sig": "ProcessUsercmds(edict_t*, bf_read*, int, int, int, bool, bool)",
+   "symbol": "CServerGameClients::ProcessUsercmds(edict_t*, bf_read*, int, int, int, bool, bool)"
+  },
+  {
+   "index": 10,
+   "name": "PostClientMessagesSent_DEPRECIATED",
+   "sig": "PostClientMessagesSent_DEPRECIATED()",
+   "symbol": "CServerGameClients::PostClientMessagesSent_DEPRECIATED()"
+  },
+  {
+   "index": 11,
+   "name": "GetPlayerState",
+   "sig": "GetPlayerState(edict_t*)",
+   "symbol": "CServerGameClients::GetPlayerState(edict_t*)"
+  },
+  {
+   "index": 12,
+   "name": "ClientEarPosition",
+   "sig": "ClientEarPosition(edict_t*, Vector*)",
+   "symbol": "CServerGameClients::ClientEarPosition(edict_t*, Vector*)"
+  },
+  {
+   "index": 13,
+   "name": "GetReplayDelay",
+   "sig": "GetReplayDelay(edict_t*, int&)",
+   "symbol": "CServerGameClients::GetReplayDelay(edict_t*, int&)"
+  },
+  {
+   "index": 14,
+   "name": "GetBugReportInfo",
+   "sig": "GetBugReportInfo(char*, int)",
+   "symbol": "CServerGameClients::GetBugReportInfo(char*, int)"
+  },
+  {
+   "index": 15,
+   "name": "NetworkIDValidated",
+   "sig": "NetworkIDValidated(char const*, char const*)",
+   "symbol": "CServerGameClients::NetworkIDValidated(char const*, char const*)"
+  },
+  {
+   "index": 16,
+   "name": "ClientCommandKeyValues",
+   "sig": "ClientCommandKeyValues(edict_t*, KeyValues*)",
+   "symbol": "CServerGameClients::ClientCommandKeyValues(edict_t*, KeyValues*)"
+  },
+  {
+   "index": 17,
+   "name": "ClientSpawned",
+   "sig": "ClientSpawned(edict_t*)",
+   "symbol": "CServerGameClients::ClientSpawned(edict_t*)"
+  }
+ ],
+ "derived": [
+  "episodic/server:CServerGameClients",
+  "hl2/server:CServerGameClients",
+  "hl2_complete/server:CServerGameClients",
+  "hl2mp/server:CServerGameClients",
+  "lostcoast/server:CServerGameClients"
+ ],
+ "derived_count": 5
+}

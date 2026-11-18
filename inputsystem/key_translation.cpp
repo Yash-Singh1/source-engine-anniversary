@@ -85,19 +85,6 @@ static ButtonCode_t s_pXKeyTrans[XK_MAX_KEYS];
 	"SC_GYRO_AXIS_YAW_POSITIVE",\
 	"SC_GYRO_AXIS_YAW_NEGATIVE"
 
-#define SCONTROLLERBUTTONS_VBUTTONS( x ) \
-	"SC_F1",\
-	"SC_F2",\
-	"SC_F3",\
-	"SC_F4",\
-	"SC_F5",\
-	"SC_F6",\
-	"SC_F7",\
-	"SC_F8",\
-	"SC_F9",\
-	"SC_F10",\
-	"SC_F11",\
-	"SC_F12"
 
 static int s_pButtonCodeToVirtual[BUTTON_CODE_LAST];
 
@@ -336,14 +323,6 @@ static const char *s_pButtonCodeName[ ] =
 	SCONTROLLERBUTTONS_AXIS( 6 ),
 	SCONTROLLERBUTTONS_AXIS( 7 ),
 
-	SCONTROLLERBUTTONS_VBUTTONS( 0 ),
-	SCONTROLLERBUTTONS_VBUTTONS( 1 ),
-	SCONTROLLERBUTTONS_VBUTTONS( 2 ),
-	SCONTROLLERBUTTONS_VBUTTONS( 3 ),
-	SCONTROLLERBUTTONS_VBUTTONS( 4 ),
-	SCONTROLLERBUTTONS_VBUTTONS( 5 ),
-	SCONTROLLERBUTTONS_VBUTTONS( 6 ),
-	SCONTROLLERBUTTONS_VBUTTONS( 7 ),
 };
 
 static const char *s_pAnalogCodeName[ ] =
@@ -635,21 +614,6 @@ void ButtonCode_InitKeyTranslationTable()
 	s_pSKeytoButtonCode[SK_BUTTON_START] = STEAMCONTROLLER_START;
 	s_pSKeytoButtonCode[SK_BUTTON_STEAM] = STEAMCONTROLLER_STEAM;
 	s_pSKeytoButtonCode[SK_BUTTON_INACTIVE_START] = STEAMCONTROLLER_INACTIVE_START;
-
-	// These are fake ("virtual") steam controller buttons that don't physically exist, but we can manufacture to make internal routing
-	// to old school UI (which is expecting button code rather than actions) without clashing with other butt
-	s_pSKeytoButtonCode[SK_VBUTTON_F1] = STEAMCONTROLLER_F1;
-	s_pSKeytoButtonCode[SK_VBUTTON_F2] = STEAMCONTROLLER_F2;
-	s_pSKeytoButtonCode[SK_VBUTTON_F3] = STEAMCONTROLLER_F3;
-	s_pSKeytoButtonCode[SK_VBUTTON_F4] = STEAMCONTROLLER_F4;
-	s_pSKeytoButtonCode[SK_VBUTTON_F5] = STEAMCONTROLLER_F5;
-	s_pSKeytoButtonCode[SK_VBUTTON_F6] = STEAMCONTROLLER_F6;
-	s_pSKeytoButtonCode[SK_VBUTTON_F7] = STEAMCONTROLLER_F7;
-	s_pSKeytoButtonCode[SK_VBUTTON_F8] = STEAMCONTROLLER_F8;
-	s_pSKeytoButtonCode[SK_VBUTTON_F9] = STEAMCONTROLLER_F9;
-	s_pSKeytoButtonCode[SK_VBUTTON_F10] = STEAMCONTROLLER_F10;
-	s_pSKeytoButtonCode[SK_VBUTTON_F11] = STEAMCONTROLLER_F11;
-	s_pSKeytoButtonCode[SK_VBUTTON_F12] = STEAMCONTROLLER_F12;
 }
 
 ButtonCode_t ButtonCode_VirtualKeyToButtonCode( int keyCode )

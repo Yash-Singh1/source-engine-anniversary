@@ -293,7 +293,11 @@ public:
 	// path info
 	virtual const char			*GetLocalPath( const char *pFileName, OUT_Z_CAP(maxLenInChars) char *pDest, int maxLenInChars );
 	virtual bool				FullPathToRelativePath( const char *pFullpath, OUT_Z_CAP(maxLenInChars) char *pDest, int maxLenInChars );
-	virtual bool				GetCaseCorrectFullPath_Ptr( const char *pFullPath, OUT_Z_CAP(maxLenInChars) char *pDest, int maxLenInChars );
+	bool						GetCaseCorrectFullPath_Ptr( const char *pFullPath, OUT_Z_CAP(maxLenInChars) char *pDest, int maxLenInChars );
+	template <size_t maxLenInChars> bool GetCaseCorrectFullPath( const char *pFullPath, OUT_Z_ARRAY char( &pDest )[maxLenInChars] )
+	{
+		return GetCaseCorrectFullPath_Ptr( pFullPath, pDest, (int)maxLenInChars );
+	}
 
 	// removes a file from disk
 	virtual void				RemoveFile( char const* pRelativePath, const char *pathID );
@@ -363,6 +367,19 @@ public:
 	virtual void				CacheAllVPKFileHashes( bool bCacheAllVPKHashes, bool bRecalculateAndCheckHashes );
 	virtual bool				CheckVPKFileHash( int PackFileID, int nPackFileNumber, int nFileFraction, MD5Value_t &md5Value );
 	virtual void				NotifyFileUnloaded( const char *pszFilename, const char *pPathId ) OVERRIDE;
+
+	// Anniversary game expansion / HD content / language search path management
+	virtual void				SetCurrentGameExpansionId( const char *pszExpansionId ) OVERRIDE;
+	virtual bool				GetCurrentGameExpansionId( char *pszExpansionId, int nMaxLen ) OVERRIDE;
+	virtual void				UpdateSearchPathsForCurrentGameExpansion() OVERRIDE;
+	virtual void				AddGameAndModSearchPathsFromGameInfo( const char *pszGameDir, const char *pszModDir, KeyValues *pGameInfo ) OVERRIDE;
+	virtual void				SetUseLowViolancePaths( bool bUseLowViolence ) OVERRIDE;
+	virtual void				SetUseHDMount( bool bUseHD ) OVERRIDE;
+	virtual void				SetAudioLanguageOverride( const char *pszLanguage ) OVERRIDE;
+	virtual int					GetSearchPaths2( const char *pszPathID, bool bGetPackFiles, CUtlVector< CUtlString > &searchPaths ) OVERRIDE;
+	virtual bool				GetFontTempFile( const char *pszFontFile, char *pszTempFile, int nMaxLen ) OVERRIDE;
+	virtual void				PushNoFinishAllOnSearchPaths() OVERRIDE;
+	virtual void				PopNoFinishAllOnSearchPaths() OVERRIDE;
 
 	// Returns the file system statistics retreived by the implementation.  Returns NULL if not supported.
 	virtual const FileSystemStatistics *GetFilesystemStatistics();

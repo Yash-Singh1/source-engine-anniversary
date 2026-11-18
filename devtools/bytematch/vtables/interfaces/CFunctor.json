@@ -1,0 +1,111 @@
+{
+ "interface": "CFunctor",
+ "headers": [
+  "public/tier1/functors.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 5,
+ "sdk2013_slots": [
+  "AddRef()",
+  "Release()",
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "operator()()"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CFunctor0<void (*)(), CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>>",
+  "offset": 0,
+  "chain": [
+   "CFunctor0<void (*)(), CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>>",
+   "CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>",
+   "CFunctor"
+  ]
+ },
+ "retail_len": 5,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 5
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "AddRef",
+   "sig": "AddRef()",
+   "symbol": "CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>::AddRef()"
+  },
+  {
+   "index": 1,
+   "name": "Release",
+   "sig": "Release()",
+   "symbol": "CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>::Release()"
+  },
+  {
+   "index": 2,
+   "name": "~CFunctor0",
+   "sig": "~CFunctor0()",
+   "symbol": "CFunctor0<void (*)(), CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>>::~CFunctor0()"
+  },
+  {
+   "index": 3,
+   "name": "~CFunctor0",
+   "sig": "~CFunctor0()",
+   "symbol": "CFunctor0<void (*)(), CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>>::~CFunctor0()"
+  },
+  {
+   "index": 4,
+   "name": "operator",
+   "sig": "operator()()",
+   "symbol": "CFunctor0<void (*)(), CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>>::operator()()"
+  }
+ ],
+ "derived": [
+  "bin/datacache:CFunctor1<void (*)(ModelParts_t*), ModelParts_t*, CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>>",
+  "bin/engine:CFunctor0<void (*)(), CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>>",
+  "bin/engine:CFunctor1<void (*)(char const*), CUtlEnvelope<char const*>, CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>>",
+  "bin/engine:CFunctor1<void (*)(int), int, CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>>",
+  "bin/engine:CFunctor2<void (*)(bool, bool), bool, bool, CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>>",
+  "bin/engine:CFunctor2<void (*)(msurface2_t*, Vector), msurface2_t*, Vector, CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>>",
+  "bin/engine:CFunctor6<void (*)(dlight_t*, msurface2_t*, matrix3x4_t const&, unsigned int, bool, bool), dlight_t*, msurface2_t*, matrix3x4_t, unsigned int, bool, bool, CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>>",
+  "bin/engine:CFunctor9<void (*)(bool, int, Vector, int, decal_t**, int, int, int, float), bool, int, Vector, int, decal_t**, int, int, int, float, CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>>",
+  "bin/engine:CMemberFunctor0<CCallQueue*, void (CCallQueueT<CTSQueue<CFunctor*, false>>::*)(), CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>, CFuncMemPolicyNone>",
+  "bin/engine:CMemberFunctor0<CParallelProcessor<CGameClient*, CFuncJobItemProcessor<CGameClient*>>*, void (CParallelProcessor<CGameClient*, CFuncJobItemProcessor<CGameClient*>>::*)(), CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>, CFuncMemPolicyNone>",
+  "bin/engine:CMemberFunctor0<CParallelProcessor<PackWork_t, CFuncJobItemProcessor<PackWork_t>>*, void (CParallelProcessor<PackWork_t, CFuncJobItemProcessor<PackWork_t>>::*)(), CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>, CFuncMemPolicyNone>",
+  "bin/engine:CMemberFunctor0<CSaveRestore*, void (CSaveRestore::*)(), CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>, CFuncMemPolicyNone>",
+  "bin/engine:CMemberFunctor0<IFileSystem*, void (IFileSystem::*)(), CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>, CFuncMemPolicyNone>",
+  "bin/engine:CMemberFunctor0<IMaterialSystem*, void (IMaterialSystem::*)(), CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>, CFuncMemPolicyNone>",
+  "bin/engine:CMemberFunctor0<IXboxSystem*, void (IXboxSystem::*)(), CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>, CFuncMemPolicyNone>",
+  "bin/engine:CMemberFunctor1<CModelRender*, int (CManagedDataCacheClient<CColorMeshData, colormeshparams_t, CColorMeshData*>::*)(memhandle_t__*), memhandle_t__*, CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>, CFuncMemPolicyNone>",
+  "bin/engine:CMemberFunctor1<CSaveRestore*, void (CSaveRestore::*)(bool), bool, CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>, CFuncMemPolicyNone>",
+  "bin/engine:CMemberFunctor1<IMaterialSystem*, void (IMaterialSystem::*)(bool), bool, CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>, CFuncMemPolicyNone>",
+  "bin/engine:CMemberFunctor3<CBugUIPanel*, bool (CBugUIPanel::*)(char const*, char const*, bool), CUtlEnvelope<char const*>, CUtlEnvelope<char const*>, bool, CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>, CFuncMemPolicyNone>",
+  "bin/engine:CMemberFunctor3<CSaveRestore*, void (CSaveRestore::*)(char const*, char const*, bool), CUtlEnvelope<char const*>, CUtlEnvelope<char const*>, bool, CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>, CFuncMemPolicyNone>",
+  "bin/engine:CMemberFunctor3<CSaveRestore*, void (CSaveRestore::*)(char const*, int, bool), CUtlEnvelope<char const*>, int, bool, CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>, CFuncMemPolicyNone>",
+  "bin/engine:CMemberFunctor6<ISaveRestoreFileSystem*, FSAsyncStatus_t (ISaveRestoreFileSystem::*)(char const*, void const*, int, bool, bool, FSAsyncControl_t__**), CUtlEnvelope<char const*>, void*, int, bool, bool, FSAsyncControl_t__**, CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>, CFuncMemPolicyNone>",
+  "bin/engine:CMemberFunctor6<ISaveRestoreFileSystem*, FSAsyncStatus_t (ISaveRestoreFileSystem::*)(char const*, void const*, int, bool, bool, FSAsyncControl_t__**), CUtlEnvelope<char const*>, void*, unsigned int, bool, bool, FSAsyncControl_t__**, CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>, CFuncMemPolicyNone>",
+  "bin/filesystem_stdio:CFunctor4<void (*)(FileJob_t*, void (*)(void*, void*, void const*, int, LoaderError_t), void*, void*), FileJob_t*, void (*)(void*, void*, void const*, int, LoaderError_t), void*, void*, CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>>",
+  "bin/filesystem_stdio:CFunctor4<void (*)(FileJob_t*, void*, int, LoaderError_t), FileJob_t*, void*, int, LoaderError_t, CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>>",
+  "bin/materialsystem:CMemberFunctor0<CLateBoundPtr<IMesh>, void (IMesh::*)(), CRefCounted1<CFunctor, CRefCountServiceDestruct<CRefST>>, CFuncMemPolicyNone>",
+  "bin/materialsystem:CMemberFunctor0<CMatLightmaps*, void (CMatLightmaps::*)(), CRefCounted1<CFunctor, CRefCountServiceDestruct<CRefST>>, CFuncMemPolicyNone>",
+  "bin/materialsystem:CMemberFunctor0<CMatRenderContextBase*, void (IMatRenderContext::*)(), CRefCounted1<CFunctor, CRefCountServiceDestruct<CRefST>>, CFuncMemPolicyNone>",
+  "bin/materialsystem:CMemberFunctor0<CMatRenderContextBase*, void (IMatRenderContextInternal::*)(), CRefCounted1<CFunctor, CRefCountServiceDestruct<CRefST>>, CFuncMemPolicyNone>",
+  "bin/materialsystem:CMemberFunctor0<CMaterial*, void (CMaterial::*)(), CRefCounted1<CFunctor, CRefCountServiceDestruct<CRefST>>, CFuncMemPolicyNone>",
+  "bin/materialsystem:CMemberFunctor0<CMaterialVar*, void (CMaterialVar::*)(), CRefCounted1<CFunctor, CRefCountServiceDestruct<CRefST>>, CFuncMemPolicyNone>",
+  "bin/materialsystem:CMemberFunctor0<IColorCorrectionSystem*, void (IColorCorrectionSystem::*)(), CRefCounted1<CFunctor, CRefCountServiceDestruct<CRefST>>, CFuncMemPolicyNone>",
+  "bin/materialsystem:CMemberFunctor0<IMaterialInternal*, void (IMaterial::*)(), CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>, CFuncMemPolicyNone>",
+  "bin/materialsystem:CMemberFunctor0<IShaderAPI*, void (IShaderAPI::*)(), CRefCounted1<CFunctor, CRefCountServiceDestruct<CRefST>>, CFuncMemPolicyNone>",
+  "bin/materialsystem:CMemberFunctor14<CMatRenderContextBase*, void (IMatRenderContext::*)(IMaterial*, int, int, int, int, float, float, float, float, int, int, void*, int, int), IMaterial*, int, int, int, int, float, float, float, float, int, int, void*, int, int, CRefCounted1<CFunctor, CRefCountServiceDestruct<CRefST>>, CFuncMemPolicyNone>",
+  "bin/materialsystem:CMemberFunctor1<CLateBoundPtr<IMesh>, void (IMesh::*)(MaterialPrimitiveType_t), MaterialPrimitiveType_t, CRefCounted1<CFunctor, CRefCountServiceDestruct<CRefST>>, CFuncMemPolicyNone>",
+  "bin/materialsystem:CMemberFunctor1<CMatRenderContextBase*, bool (IMatRenderContext::*)(bool), bool, CRefCounted1<CFunctor, CRefCountServiceDestruct<CRefST>>, CFuncMemPolicyNone>",
+  "bin/materialsystem:CMemberFunctor1<CMatRenderContextBase*, void (IMatRenderContext::*)(IMaterial*), IMaterial*, CRefCounted1<CFunctor, CRefCountServiceDestruct<CRefST>>, CFuncMemPolicyNone>",
+  "bin/materialsystem:CMemberFunctor1<CMatRenderContextBase*, void (IMatRenderContext::*)(IMesh*), IMesh*, CRefCounted1<CFunctor, CRefCountServiceDestruct<CRefST>>, CFuncMemPolicyNone>",
+  "bin/materialsystem:CMemberFunctor1<CMatRenderContextBase*, void (IMatRenderContext::*)(IMorph*), IMorph*, CRefCounted1<CFunctor, CRefCountServiceDestruct<CRefST>>, CFuncMemPolicyNone>"
+ ],
+ "derived_count": 197
+}

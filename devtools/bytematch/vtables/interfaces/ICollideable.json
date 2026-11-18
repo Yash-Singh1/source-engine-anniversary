@@ -1,0 +1,196 @@
+{
+ "interface": "ICollideable",
+ "headers": [
+  "public/engine/ICollideable.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 20,
+ "sdk2013_slots": [
+  "GetEntityHandle()",
+  "OBBMinsPreScaled() const",
+  "OBBMaxsPreScaled() const",
+  "OBBMins() const",
+  "OBBMaxs() const",
+  "WorldSpaceTriggerBounds(Vector*, Vector*) const",
+  "TestCollision(Ray_t const&, unsigned int, CGameTrace&)",
+  "TestHitboxes(Ray_t const&, unsigned int, CGameTrace&)",
+  "GetCollisionModelIndex()",
+  "GetCollisionModel()",
+  "GetCollisionOrigin() const",
+  "GetCollisionAngles() const",
+  "CollisionToWorldTransform() const",
+  "GetSolid() const",
+  "GetSolidFlags() const",
+  "GetIClientUnknown()",
+  "GetCollisionGroup() const",
+  "WorldSpaceSurroundingBounds(Vector*, Vector*)",
+  "ShouldTouchTrigger(int) const",
+  "GetRootParentToWorldTransform() const"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CStaticProp",
+  "offset": 8,
+  "chain": [
+   "CStaticProp",
+   "ICollideable"
+  ]
+ },
+ "retail_len": 20,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 20
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "GetEntityHandle",
+   "sig": "GetEntityHandle()",
+   "symbol": "non-virtual thunk to CStaticProp::GetEntityHandle()"
+  },
+  {
+   "index": 1,
+   "name": "OBBMinsPreScaled",
+   "sig": "OBBMinsPreScaled() const",
+   "symbol": "non-virtual thunk to CStaticProp::OBBMinsPreScaled() const"
+  },
+  {
+   "index": 2,
+   "name": "OBBMaxsPreScaled",
+   "sig": "OBBMaxsPreScaled() const",
+   "symbol": "non-virtual thunk to CStaticProp::OBBMaxsPreScaled() const"
+  },
+  {
+   "index": 3,
+   "name": "OBBMins",
+   "sig": "OBBMins() const",
+   "symbol": "non-virtual thunk to CStaticProp::OBBMins() const"
+  },
+  {
+   "index": 4,
+   "name": "OBBMaxs",
+   "sig": "OBBMaxs() const",
+   "symbol": "non-virtual thunk to CStaticProp::OBBMaxs() const"
+  },
+  {
+   "index": 5,
+   "name": "WorldSpaceTriggerBounds",
+   "sig": "WorldSpaceTriggerBounds(Vector*, Vector*) const",
+   "symbol": "non-virtual thunk to CStaticProp::WorldSpaceTriggerBounds(Vector*, Vector*) const"
+  },
+  {
+   "index": 6,
+   "name": "TestCollision",
+   "sig": "TestCollision(Ray_t const&, unsigned int, CGameTrace&)",
+   "symbol": "non-virtual thunk to CStaticProp::TestCollision(Ray_t const&, unsigned int, CGameTrace&)"
+  },
+  {
+   "index": 7,
+   "name": "TestHitboxes",
+   "sig": "TestHitboxes(Ray_t const&, unsigned int, CGameTrace&)",
+   "symbol": "non-virtual thunk to CStaticProp::TestHitboxes(Ray_t const&, unsigned int, CGameTrace&)"
+  },
+  {
+   "index": 8,
+   "name": "GetCollisionModelIndex",
+   "sig": "GetCollisionModelIndex()",
+   "symbol": "non-virtual thunk to CStaticProp::GetCollisionModelIndex()"
+  },
+  {
+   "index": 9,
+   "name": "GetCollisionModel",
+   "sig": "GetCollisionModel()",
+   "symbol": "non-virtual thunk to CStaticProp::GetCollisionModel()"
+  },
+  {
+   "index": 10,
+   "name": "GetCollisionOrigin",
+   "sig": "GetCollisionOrigin() const",
+   "symbol": "non-virtual thunk to CStaticProp::GetCollisionOrigin() const"
+  },
+  {
+   "index": 11,
+   "name": "GetCollisionAngles",
+   "sig": "GetCollisionAngles() const",
+   "symbol": "non-virtual thunk to CStaticProp::GetCollisionAngles() const"
+  },
+  {
+   "index": 12,
+   "name": "CollisionToWorldTransform",
+   "sig": "CollisionToWorldTransform() const",
+   "symbol": "non-virtual thunk to CStaticProp::CollisionToWorldTransform() const"
+  },
+  {
+   "index": 13,
+   "name": "GetSolid",
+   "sig": "GetSolid() const",
+   "symbol": "non-virtual thunk to CStaticProp::GetSolid() const"
+  },
+  {
+   "index": 14,
+   "name": "GetSolidFlags",
+   "sig": "GetSolidFlags() const",
+   "symbol": "non-virtual thunk to CStaticProp::GetSolidFlags() const"
+  },
+  {
+   "index": 15,
+   "name": "GetIClientUnknown",
+   "sig": "GetIClientUnknown()",
+   "symbol": "non-virtual thunk to CStaticProp::GetIClientUnknown()"
+  },
+  {
+   "index": 16,
+   "name": "GetCollisionGroup",
+   "sig": "GetCollisionGroup() const",
+   "symbol": "non-virtual thunk to CStaticProp::GetCollisionGroup() const"
+  },
+  {
+   "index": 17,
+   "name": "WorldSpaceSurroundingBounds",
+   "sig": "WorldSpaceSurroundingBounds(Vector*, Vector*)",
+   "symbol": "non-virtual thunk to CStaticProp::WorldSpaceSurroundingBounds(Vector*, Vector*)"
+  },
+  {
+   "index": 18,
+   "name": "ShouldTouchTrigger",
+   "sig": "ShouldTouchTrigger(int) const",
+   "symbol": "non-virtual thunk to CStaticProp::ShouldTouchTrigger(int) const"
+  },
+  {
+   "index": 19,
+   "name": "GetRootParentToWorldTransform",
+   "sig": "GetRootParentToWorldTransform() const",
+   "symbol": "non-virtual thunk to CStaticProp::GetRootParentToWorldTransform() const"
+  }
+ ],
+ "derived": [
+  "bin/engine:CStaticProp",
+  "episodic/client:CCollisionProperty",
+  "episodic/client:C_BaseEntity::NetworkVar_m_Collision",
+  "episodic/server:CBaseEntity::NetworkVar_m_Collision",
+  "episodic/server:CCollisionProperty",
+  "hl2/client:CCollisionProperty",
+  "hl2/client:C_BaseEntity::NetworkVar_m_Collision",
+  "hl2/server:CBaseEntity::NetworkVar_m_Collision",
+  "hl2/server:CCollisionProperty",
+  "hl2_complete/client:CCollisionProperty",
+  "hl2_complete/client:C_BaseEntity::NetworkVar_m_Collision",
+  "hl2_complete/server:CBaseEntity::NetworkVar_m_Collision",
+  "hl2_complete/server:CCollisionProperty",
+  "hl2mp/client:CCollisionProperty",
+  "hl2mp/client:C_BaseEntity::NetworkVar_m_Collision",
+  "hl2mp/server:CBaseEntity::NetworkVar_m_Collision",
+  "hl2mp/server:CCollisionProperty",
+  "lostcoast/client:CCollisionProperty",
+  "lostcoast/client:C_BaseEntity::NetworkVar_m_Collision",
+  "lostcoast/server:CBaseEntity::NetworkVar_m_Collision",
+  "lostcoast/server:CCollisionProperty"
+ ],
+ "derived_count": 21
+}

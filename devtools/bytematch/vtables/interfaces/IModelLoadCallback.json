@@ -1,0 +1,81 @@
+{
+ "interface": "IModelLoadCallback",
+ "headers": [
+  "public/engine/ivmodelinfo.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 1,
+ "sdk2013_slots": [
+  "OnModelLoadComplete(model_t const*)"
+ ],
+ "retail_reference": {
+  "module": "episodic/client",
+  "class": "IModelLoadCallback",
+  "offset": 0,
+  "chain": [
+   "IModelLoadCallback"
+  ]
+ },
+ "retail_len": 1,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 0
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  }
+ ],
+ "derived": [
+  "episodic/client:CModelPanelModel",
+  "episodic/client:CPhysicsPropMultiplayer",
+  "episodic/client:C_AI_BaseNPC",
+  "episodic/client:C_AntlionGib",
+  "episodic/client:C_Barney",
+  "episodic/client:C_BaseAnimating",
+  "episodic/client:C_BaseAnimatingOverlay",
+  "episodic/client:C_BaseCombatCharacter",
+  "episodic/client:C_BaseCombatWeapon",
+  "episodic/client:C_BaseFlex",
+  "episodic/client:C_BaseGrenade",
+  "episodic/client:C_BaseHLBludgeonWeapon",
+  "episodic/client:C_BaseHLCombatWeapon",
+  "episodic/client:C_BaseHLPlayer",
+  "episodic/client:C_BaseHelicopter",
+  "episodic/client:C_BasePlayer",
+  "episodic/client:C_BaseProjectile",
+  "episodic/client:C_BasePropDoor",
+  "episodic/client:C_BaseViewModel",
+  "episodic/client:C_BreakableProp",
+  "episodic/client:C_ClientRagdoll",
+  "episodic/client:C_CombineGunship",
+  "episodic/client:C_Corpse",
+  "episodic/client:C_CrossbowBolt",
+  "episodic/client:C_DynamicProp",
+  "episodic/client:C_EnvHeadcrabCanister",
+  "episodic/client:C_EnvParticleScript",
+  "episodic/client:C_Fish",
+  "episodic/client:C_Flare",
+  "episodic/client:C_Flaregun",
+  "episodic/client:C_Gib",
+  "episodic/client:C_GrenadeHopwire",
+  "episodic/client:C_HLMachineGun",
+  "episodic/client:C_HLSelectFireMachineGun",
+  "episodic/client:C_LocalTempEntity",
+  "episodic/client:C_NPC_AntlionGuard",
+  "episodic/client:C_NPC_Barnacle",
+  "episodic/client:C_NPC_Manhack",
+  "episodic/client:C_NPC_Puppet",
+  "episodic/client:C_NPC_Vortigaunt"
+ ],
+ "derived_count": 415
+}

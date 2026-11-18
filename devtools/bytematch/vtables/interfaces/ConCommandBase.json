@@ -1,0 +1,158 @@
+{
+ "interface": "ConCommandBase",
+ "headers": [
+  "public/tier1/convar.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 11,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "IsCommand() const",
+  "IsFlagSet(int) const",
+  "AddFlags(int)",
+  "GetName() const",
+  "GetHelpText() const",
+  "IsRegistered() const",
+  "GetDLLIdentifier() const",
+  "Create(char const*, char const*, int)",
+  "Init()"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "ConCommand",
+  "offset": 0,
+  "chain": [
+   "ConCommand",
+   "ConCommandBase"
+  ]
+ },
+ "retail_len": 11,
+ "retail_len_basis": "first own method of ConCommand",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 14,
+  "first own method of ConCommand": 11
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~ConCommand",
+   "sig": "~ConCommand()",
+   "symbol": "ConCommand::~ConCommand()"
+  },
+  {
+   "index": 1,
+   "name": "~ConCommand",
+   "sig": "~ConCommand()",
+   "symbol": "ConCommand::~ConCommand()"
+  },
+  {
+   "index": 2,
+   "name": "IsCommand",
+   "sig": "IsCommand() const",
+   "symbol": "ConCommand::IsCommand() const"
+  },
+  {
+   "index": 3,
+   "name": "IsFlagSet",
+   "sig": "IsFlagSet(int) const",
+   "symbol": "ConCommandBase::IsFlagSet(int) const"
+  },
+  {
+   "index": 4,
+   "name": "AddFlags",
+   "sig": "AddFlags(int)",
+   "symbol": "ConCommandBase::AddFlags(int)"
+  },
+  {
+   "index": 5,
+   "name": "GetName",
+   "sig": "GetName() const",
+   "symbol": "ConCommandBase::GetName() const"
+  },
+  {
+   "index": 6,
+   "name": "GetHelpText",
+   "sig": "GetHelpText() const",
+   "symbol": "ConCommandBase::GetHelpText() const"
+  },
+  {
+   "index": 7,
+   "name": "IsRegistered",
+   "sig": "IsRegistered() const",
+   "symbol": "ConCommandBase::IsRegistered() const"
+  },
+  {
+   "index": 8,
+   "name": "GetDLLIdentifier",
+   "sig": "GetDLLIdentifier() const",
+   "symbol": "ConCommandBase::GetDLLIdentifier() const"
+  },
+  {
+   "index": 9,
+   "name": "Create",
+   "sig": "Create(char const*, char const*, int)",
+   "symbol": "ConCommandBase::Create(char const*, char const*, int)"
+  },
+  {
+   "index": 10,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "ConCommandBase::Init()"
+  }
+ ],
+ "implementer_tail": [
+  "AutoCompleteSuggest(char const*, CUtlVector<CUtlString, CUtlMemory<CUtlString, int>>&)",
+  "CanAutoComplete()",
+  "Dispatch(CCommand const&)"
+ ],
+ "derived": [
+  "bin/GameUI:CEmptyConVar",
+  "bin/GameUI:ConCommand",
+  "bin/GameUI:ConVar",
+  "bin/ServerBrowser:CEmptyConVar",
+  "bin/ServerBrowser:ConVar",
+  "bin/bsppack:CEmptyConVar",
+  "bin/bsppack:ConVar",
+  "bin/bugreporter_filequeue:CEmptyConVar",
+  "bin/bugreporter_filequeue:ConVar",
+  "bin/datacache:CEmptyConVar",
+  "bin/datacache:ConVar",
+  "bin/engine:CBoundedCvar_CmdRate",
+  "bin/engine:CBoundedCvar_Rate",
+  "bin/engine:CBoundedCvar_UpdateRate",
+  "bin/engine:CConCommandMemberAccessor<CEngineVGui>",
+  "bin/engine:CConCommandMemberAccessor<CTextureBudgetPanel>",
+  "bin/engine:CEmptyConVar",
+  "bin/engine:ConCommand",
+  "bin/engine:ConVar",
+  "bin/filesystem_stdio:CEmptyConVar",
+  "bin/filesystem_stdio:ConCommand",
+  "bin/filesystem_stdio:ConVar",
+  "bin/inputsystem:CEmptyConVar",
+  "bin/inputsystem:ConCommand",
+  "bin/inputsystem:ConVar",
+  "bin/launcher:CEmptyConVar",
+  "bin/launcher:ConCommand",
+  "bin/launcher:ConVar",
+  "bin/libtogl:CEmptyConVar",
+  "bin/libtogl:ConVar",
+  "bin/libvstdlib:CConCommandMemberAccessor<CCvar>",
+  "bin/libvstdlib:CEmptyConVar",
+  "bin/libvstdlib:ConCommand",
+  "bin/libvstdlib:ConVar",
+  "bin/materialsystem:CConCommandMemberAccessor<CMaterialSystem>",
+  "bin/materialsystem:CEmptyConVar",
+  "bin/materialsystem:ConCommand",
+  "bin/materialsystem:ConVar",
+  "bin/replay:CEmptyConVar",
+  "bin/replay:ConCommand"
+ ],
+ "derived_count": 122
+}

@@ -1,0 +1,149 @@
+{
+ "interface": "IPhysicsShadowController",
+ "headers": [
+  "public/vphysics_interface.h",
+  "public/vphysics_interfaceV30.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 16,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "Update(Vector const&, QAngle const&, float)",
+  "MaxSpeed(float, float)",
+  "StepUp(float)",
+  "SetTeleportDistance(float)",
+  "AllowsTranslation()",
+  "AllowsRotation()",
+  "SetPhysicallyControlled(bool)",
+  "IsPhysicallyControlled()",
+  "GetLastImpulse(Vector*)",
+  "UseShadowMaterial(bool)",
+  "ObjectMaterialChanged(int)",
+  "GetTargetPosition(Vector*, QAngle*)",
+  "GetTeleportDistance()",
+  "GetMaxSpeed(float*, float*)"
+ ],
+ "retail_reference": {
+  "module": "bin/vphysics",
+  "class": "CShadowController",
+  "offset": 4,
+  "chain": [
+   "CShadowController",
+   "IPhysicsShadowController"
+  ]
+ },
+ "retail_len": 16,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 16
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CShadowController",
+   "sig": "~CShadowController()",
+   "symbol": "non-virtual thunk to CShadowController::~CShadowController()"
+  },
+  {
+   "index": 1,
+   "name": "~CShadowController",
+   "sig": "~CShadowController()",
+   "symbol": "non-virtual thunk to CShadowController::~CShadowController()"
+  },
+  {
+   "index": 2,
+   "name": "Update",
+   "sig": "Update(Vector const&, QAngle const&, float)",
+   "symbol": "non-virtual thunk to CShadowController::Update(Vector const&, QAngle const&, float)"
+  },
+  {
+   "index": 3,
+   "name": "MaxSpeed",
+   "sig": "MaxSpeed(float, float)",
+   "symbol": "non-virtual thunk to CShadowController::MaxSpeed(float, float)"
+  },
+  {
+   "index": 4,
+   "name": "StepUp",
+   "sig": "StepUp(float)",
+   "symbol": "non-virtual thunk to CShadowController::StepUp(float)"
+  },
+  {
+   "index": 5,
+   "name": "SetTeleportDistance",
+   "sig": "SetTeleportDistance(float)",
+   "symbol": "non-virtual thunk to CShadowController::SetTeleportDistance(float)"
+  },
+  {
+   "index": 6,
+   "name": "AllowsTranslation",
+   "sig": "AllowsTranslation()",
+   "symbol": "non-virtual thunk to CShadowController::AllowsTranslation()"
+  },
+  {
+   "index": 7,
+   "name": "AllowsRotation",
+   "sig": "AllowsRotation()",
+   "symbol": "non-virtual thunk to CShadowController::AllowsRotation()"
+  },
+  {
+   "index": 8,
+   "name": "SetPhysicallyControlled",
+   "sig": "SetPhysicallyControlled(bool)",
+   "symbol": "non-virtual thunk to CShadowController::SetPhysicallyControlled(bool)"
+  },
+  {
+   "index": 9,
+   "name": "IsPhysicallyControlled",
+   "sig": "IsPhysicallyControlled()",
+   "symbol": "non-virtual thunk to CShadowController::IsPhysicallyControlled()"
+  },
+  {
+   "index": 10,
+   "name": "GetLastImpulse",
+   "sig": "GetLastImpulse(Vector*)",
+   "symbol": "non-virtual thunk to CShadowController::GetLastImpulse(Vector*)"
+  },
+  {
+   "index": 11,
+   "name": "UseShadowMaterial",
+   "sig": "UseShadowMaterial(bool)",
+   "symbol": "non-virtual thunk to CShadowController::UseShadowMaterial(bool)"
+  },
+  {
+   "index": 12,
+   "name": "ObjectMaterialChanged",
+   "sig": "ObjectMaterialChanged(int)",
+   "symbol": "non-virtual thunk to CShadowController::ObjectMaterialChanged(int)"
+  },
+  {
+   "index": 13,
+   "name": "GetTargetPosition",
+   "sig": "GetTargetPosition(Vector*, QAngle*)",
+   "symbol": "non-virtual thunk to CShadowController::GetTargetPosition(Vector*, QAngle*)"
+  },
+  {
+   "index": 14,
+   "name": "GetTeleportDistance",
+   "sig": "GetTeleportDistance()",
+   "symbol": "non-virtual thunk to CShadowController::GetTeleportDistance()"
+  },
+  {
+   "index": 15,
+   "name": "GetMaxSpeed",
+   "sig": "GetMaxSpeed(float*, float*)",
+   "symbol": "non-virtual thunk to CShadowController::GetMaxSpeed(float*, float*)"
+  }
+ ],
+ "derived": [
+  "bin/vphysics:CShadowController"
+ ],
+ "derived_count": 1
+}

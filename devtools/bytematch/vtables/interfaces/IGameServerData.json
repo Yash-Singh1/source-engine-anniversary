@@ -1,0 +1,82 @@
+{
+ "interface": "IGameServerData",
+ "headers": [
+  "common/igameserverdata.h"
+ ],
+ "versions": {
+  "retail": [
+   "GameServerData001"
+  ],
+  "ours": [
+   "GameServerData001"
+  ],
+  "sdk2013": []
+ },
+ "version_macros": [
+  "GAMESERVERDATA_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/engine",
+   "version": "GameServerData001",
+   "class": "CServerRemoteAccess"
+  }
+ ],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CServerRemoteAccess",
+  "offset": 0,
+  "chain": [
+   "CServerRemoteAccess",
+   "IGameServerData"
+  ]
+ },
+ "retail_len": 6,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 6
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CServerRemoteAccess",
+   "sig": "~CServerRemoteAccess()",
+   "symbol": "CServerRemoteAccess::~CServerRemoteAccess()"
+  },
+  {
+   "index": 1,
+   "name": "~CServerRemoteAccess",
+   "sig": "~CServerRemoteAccess()",
+   "symbol": "CServerRemoteAccess::~CServerRemoteAccess()"
+  },
+  {
+   "index": 2,
+   "name": "WriteDataRequest",
+   "sig": "WriteDataRequest(unsigned int, void const*, int)",
+   "symbol": "CServerRemoteAccess::WriteDataRequest(unsigned int, void const*, int)"
+  },
+  {
+   "index": 3,
+   "name": "ReadDataResponse",
+   "sig": "ReadDataResponse(unsigned int, void*, int)",
+   "symbol": "CServerRemoteAccess::ReadDataResponse(unsigned int, void*, int)"
+  },
+  {
+   "index": 4,
+   "name": "GetNextListenerID",
+   "sig": "GetNextListenerID(bool, netadr_s const*)",
+   "symbol": "CServerRemoteAccess::GetNextListenerID(bool, netadr_s const*)"
+  },
+  {
+   "index": 5,
+   "name": "RegisterAdminUIID",
+   "sig": "RegisterAdminUIID(unsigned int)",
+   "symbol": "CServerRemoteAccess::RegisterAdminUIID(unsigned int)"
+  }
+ ],
+ "derived": [
+  "bin/engine:CServerRemoteAccess"
+ ],
+ "derived_count": 1
+}

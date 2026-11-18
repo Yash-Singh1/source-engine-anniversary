@@ -1,0 +1,99 @@
+{
+ "interface": "IGameUIFuncs",
+ "headers": [
+  "public/IGameUIFuncs.h"
+ ],
+ "versions": {
+  "retail": [
+   "VENGINE_GAMEUIFUNCS_VERSION005"
+  ],
+  "ours": [
+   "VENGINE_GAMEUIFUNCS_VERSION005"
+  ],
+  "sdk2013": [
+   "VENGINE_GAMEUIFUNCS_VERSION005"
+  ]
+ },
+ "version_macros": [
+  "VENGINE_GAMEUIFUNCS_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/engine",
+   "version": "VENGINE_GAMEUIFUNCS_VERSION005",
+   "class": "CGameUIFuncs"
+  }
+ ],
+ "sdk2013_len": 7,
+ "sdk2013_slots": [
+  "IsKeyDown(char const*, bool&)",
+  "GetBindingForButtonCode(ButtonCode_t)",
+  "GetButtonCodeForBind(char const*)",
+  "GetVideoModes(vmode_s**, int*)",
+  "SetFriendsID(unsigned int, char const*)",
+  "GetDesktopResolution(int&, int&)",
+  "IsConnectedToVACSecureServer()"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CGameUIFuncs",
+  "offset": 0,
+  "chain": [
+   "CGameUIFuncs",
+   "IGameUIFuncs"
+  ]
+ },
+ "retail_len": 7,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 7
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "IsKeyDown",
+   "sig": "IsKeyDown(char const*, bool&)",
+   "symbol": "CGameUIFuncs::IsKeyDown(char const*, bool&)"
+  },
+  {
+   "index": 1,
+   "name": "GetBindingForButtonCode",
+   "sig": "GetBindingForButtonCode(ButtonCode_t)",
+   "symbol": "CGameUIFuncs::GetBindingForButtonCode(ButtonCode_t)"
+  },
+  {
+   "index": 2,
+   "name": "GetButtonCodeForBind",
+   "sig": "GetButtonCodeForBind(char const*)",
+   "symbol": "CGameUIFuncs::GetButtonCodeForBind(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "GetVideoModes",
+   "sig": "GetVideoModes(vmode_s**, int*)",
+   "symbol": "CGameUIFuncs::GetVideoModes(vmode_s**, int*)"
+  },
+  {
+   "index": 4,
+   "name": "SetFriendsID",
+   "sig": "SetFriendsID(unsigned int, char const*)",
+   "symbol": "CGameUIFuncs::SetFriendsID(unsigned int, char const*)"
+  },
+  {
+   "index": 5,
+   "name": "GetDesktopResolution",
+   "sig": "GetDesktopResolution(int&, int&)",
+   "symbol": "CGameUIFuncs::GetDesktopResolution(int&, int&)"
+  },
+  {
+   "index": 6,
+   "name": "IsConnectedToVACSecureServer",
+   "sig": "IsConnectedToVACSecureServer()",
+   "symbol": "CGameUIFuncs::IsConnectedToVACSecureServer()"
+  }
+ ],
+ "derived": [
+  "bin/engine:CGameUIFuncs"
+ ],
+ "derived_count": 1
+}

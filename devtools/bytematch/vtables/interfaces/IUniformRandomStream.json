@@ -1,0 +1,80 @@
+{
+ "interface": "IUniformRandomStream",
+ "headers": [],
+ "versions": {
+  "retail": [
+   "VEngineRandom001"
+  ],
+  "ours": [
+   "VEngineRandom001"
+  ],
+  "sdk2013": [
+   "VEngineRandom001"
+  ]
+ },
+ "version_macros": [
+  "VENGINE_CLIENT_RANDOM_INTERFACE_VERSION",
+  "VENGINE_SERVER_RANDOM_INTERFACE_VERSION",
+  "VENGINE_SERVER_RANDOM_INTERFACE_VERSION_1"
+ ],
+ "registrations": [
+  {
+   "module": "bin/engine",
+   "version": "VEngineRandom001",
+   "class": "CEngineUniformRandomStream"
+  }
+ ],
+ "sdk2013_len": 4,
+ "sdk2013_slots": [
+  "SetSeed(int)",
+  "RandomFloat(float, float)",
+  "RandomInt(int, int)",
+  "RandomFloatExp(float, float, float)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CEngineUniformRandomStream",
+  "offset": 0,
+  "chain": [
+   "CEngineUniformRandomStream",
+   "IUniformRandomStream"
+  ]
+ },
+ "retail_len": 4,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 4
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "SetSeed",
+   "sig": "SetSeed(int)",
+   "symbol": "CEngineUniformRandomStream::SetSeed(int)"
+  },
+  {
+   "index": 1,
+   "name": "RandomFloat",
+   "sig": "RandomFloat(float, float)",
+   "symbol": "CEngineUniformRandomStream::RandomFloat(float, float)"
+  },
+  {
+   "index": 2,
+   "name": "RandomInt",
+   "sig": "RandomInt(int, int)",
+   "symbol": "CEngineUniformRandomStream::RandomInt(int, int)"
+  },
+  {
+   "index": 3,
+   "name": "RandomFloatExp",
+   "sig": "RandomFloatExp(float, float, float)",
+   "symbol": "CEngineUniformRandomStream::RandomFloatExp(float, float, float)"
+  }
+ ],
+ "derived": [
+  "bin/engine:CEngineUniformRandomStream",
+  "bin/libvstdlib:CUniformRandomStream",
+  "bin/soundemittersystem:CSoundEmitterUniformRandomStream"
+ ],
+ "derived_count": 3
+}

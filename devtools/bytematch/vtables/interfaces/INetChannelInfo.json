@@ -1,0 +1,269 @@
+{
+ "interface": "INetChannelInfo",
+ "headers": [
+  "public/inetchannelinfo.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 26,
+ "sdk2013_slots": [
+  "GetName() const",
+  "GetAddress() const",
+  "GetTime() const",
+  "GetTimeConnected() const",
+  "GetBufferSize() const",
+  "GetDataRate() const",
+  "IsLoopback() const",
+  "IsTimingOut() const",
+  "IsPlayback() const",
+  "GetLatency(int) const",
+  "GetAvgLatency(int) const",
+  "GetAvgLoss(int) const",
+  "GetAvgChoke(int) const",
+  "GetAvgData(int) const",
+  "GetAvgPackets(int) const",
+  "GetTotalData(int) const",
+  "GetSequenceNr(int) const",
+  "IsValidPacket(int, int) const",
+  "GetPacketTime(int, int) const",
+  "GetPacketBytes(int, int, int) const",
+  "GetStreamProgress(int, int*, int*) const",
+  "GetTimeSinceLastReceived() const",
+  "GetCommandInterpolationAmount(int, int) const",
+  "GetPacketResponseLatency(int, int, int*, int*) const",
+  "GetRemoteFramerate(float*, float*) const",
+  "GetTimeoutSeconds() const"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CNetChan",
+  "offset": 0,
+  "chain": [
+   "CNetChan",
+   "INetChannel",
+   "INetChannelInfo"
+  ]
+ },
+ "retail_len": 26,
+ "retail_len_basis": "first implementer destructor",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 72,
+  "first implementer destructor": 26,
+  "first own method of INetChannel": 28
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "GetName",
+   "sig": "GetName() const",
+   "symbol": "CNetChan::GetName() const"
+  },
+  {
+   "index": 1,
+   "name": "GetAddress",
+   "sig": "GetAddress() const",
+   "symbol": "CNetChan::GetAddress() const"
+  },
+  {
+   "index": 2,
+   "name": "GetTime",
+   "sig": "GetTime() const",
+   "symbol": "CNetChan::GetTime() const"
+  },
+  {
+   "index": 3,
+   "name": "GetTimeConnected",
+   "sig": "GetTimeConnected() const",
+   "symbol": "CNetChan::GetTimeConnected() const"
+  },
+  {
+   "index": 4,
+   "name": "GetBufferSize",
+   "sig": "GetBufferSize() const",
+   "symbol": "CNetChan::GetBufferSize() const"
+  },
+  {
+   "index": 5,
+   "name": "GetDataRate",
+   "sig": "GetDataRate() const",
+   "symbol": "CNetChan::GetDataRate() const"
+  },
+  {
+   "index": 6,
+   "name": "IsLoopback",
+   "sig": "IsLoopback() const",
+   "symbol": "CNetChan::IsLoopback() const"
+  },
+  {
+   "index": 7,
+   "name": "IsTimingOut",
+   "sig": "IsTimingOut() const",
+   "symbol": "CNetChan::IsTimingOut() const"
+  },
+  {
+   "index": 8,
+   "name": "IsPlayback",
+   "sig": "IsPlayback() const",
+   "symbol": "CNetChan::IsPlayback() const"
+  },
+  {
+   "index": 9,
+   "name": "GetLatency",
+   "sig": "GetLatency(int) const",
+   "symbol": "CNetChan::GetLatency(int) const"
+  },
+  {
+   "index": 10,
+   "name": "GetAvgLatency",
+   "sig": "GetAvgLatency(int) const",
+   "symbol": "CNetChan::GetAvgLatency(int) const"
+  },
+  {
+   "index": 11,
+   "name": "GetAvgLoss",
+   "sig": "GetAvgLoss(int) const",
+   "symbol": "CNetChan::GetAvgLoss(int) const"
+  },
+  {
+   "index": 12,
+   "name": "GetAvgChoke",
+   "sig": "GetAvgChoke(int) const",
+   "symbol": "CNetChan::GetAvgChoke(int) const"
+  },
+  {
+   "index": 13,
+   "name": "GetAvgData",
+   "sig": "GetAvgData(int) const",
+   "symbol": "CNetChan::GetAvgData(int) const"
+  },
+  {
+   "index": 14,
+   "name": "GetAvgPackets",
+   "sig": "GetAvgPackets(int) const",
+   "symbol": "CNetChan::GetAvgPackets(int) const"
+  },
+  {
+   "index": 15,
+   "name": "GetTotalData",
+   "sig": "GetTotalData(int) const",
+   "symbol": "CNetChan::GetTotalData(int) const"
+  },
+  {
+   "index": 16,
+   "name": "GetSequenceNr",
+   "sig": "GetSequenceNr(int) const",
+   "symbol": "CNetChan::GetSequenceNr(int) const"
+  },
+  {
+   "index": 17,
+   "name": "IsValidPacket",
+   "sig": "IsValidPacket(int, int) const",
+   "symbol": "CNetChan::IsValidPacket(int, int) const"
+  },
+  {
+   "index": 18,
+   "name": "GetPacketTime",
+   "sig": "GetPacketTime(int, int) const",
+   "symbol": "CNetChan::GetPacketTime(int, int) const"
+  },
+  {
+   "index": 19,
+   "name": "GetPacketBytes",
+   "sig": "GetPacketBytes(int, int, int) const",
+   "symbol": "CNetChan::GetPacketBytes(int, int, int) const"
+  },
+  {
+   "index": 20,
+   "name": "GetStreamProgress",
+   "sig": "GetStreamProgress(int, int*, int*) const",
+   "symbol": "CNetChan::GetStreamProgress(int, int*, int*) const"
+  },
+  {
+   "index": 21,
+   "name": "GetTimeSinceLastReceived",
+   "sig": "GetTimeSinceLastReceived() const",
+   "symbol": "CNetChan::GetTimeSinceLastReceived() const"
+  },
+  {
+   "index": 22,
+   "name": "GetCommandInterpolationAmount",
+   "sig": "GetCommandInterpolationAmount(int, int) const",
+   "symbol": "CNetChan::GetCommandInterpolationAmount(int, int) const"
+  },
+  {
+   "index": 23,
+   "name": "GetPacketResponseLatency",
+   "sig": "GetPacketResponseLatency(int, int, int*, int*) const",
+   "symbol": "CNetChan::GetPacketResponseLatency(int, int, int*, int*) const"
+  },
+  {
+   "index": 24,
+   "name": "GetRemoteFramerate",
+   "sig": "GetRemoteFramerate(float*, float*) const",
+   "symbol": "CNetChan::GetRemoteFramerate(float*, float*) const"
+  },
+  {
+   "index": 25,
+   "name": "GetTimeoutSeconds",
+   "sig": "GetTimeoutSeconds() const",
+   "symbol": "CNetChan::GetTimeoutSeconds() const"
+  }
+ ],
+ "implementer_tail": [
+  "~CNetChan()",
+  "~CNetChan()",
+  "SetDataRate(float)",
+  "RegisterMessage(INetMessage*)",
+  "StartStreaming(unsigned int)",
+  "ResetStreaming()",
+  "SetTimeout(float)",
+  "SetDemoRecorder(IDemoRecorder*)",
+  "SetChallengeNr(unsigned int)",
+  "Reset()",
+  "Clear()",
+  "Shutdown(char const*)",
+  "ProcessPlayback()",
+  "ProcessStream()",
+  "ProcessPacket(netpacket_s*, bool)",
+  "SendNetMsg(INetMessage&, bool, bool)",
+  "SendData(bf_write&, bool)",
+  "SendFile(char const*, unsigned int)",
+  "DenyFile(char const*, unsigned int)",
+  "RequestFile_OLD(char const*, unsigned int)",
+  "SetChoked()",
+  "SendDatagram(bf_write*)",
+  "Transmit(bool)",
+  "GetRemoteAddress() const",
+  "GetMsgHandler() const",
+  "GetDropNumber() const",
+  "GetSocket() const",
+  "GetChallengeNr() const",
+  "GetSequenceData(int&, int&, int&)",
+  "SetSequenceData(int, int, int)",
+  "UpdateMessageStats(int, int)",
+  "CanPacket() const",
+  "IsOverflowed() const",
+  "IsTimedOut() const",
+  "HasPendingReliableData()",
+  "SetFileTransmissionMode(bool)",
+  "SetCompressionMode(bool)",
+  "RequestFile(char const*)",
+  "SetMaxBufferSize(bool, int, bool)",
+  "IsNull() const",
+  "GetNumBitsWritten(bool)",
+  "SetInterpolationAmount(float)",
+  "SetRemoteFramerate(float, float)",
+  "SetMaxRoutablePayloadSize(int)",
+  "GetMaxRoutablePayloadSize()",
+  "GetProtocolVersion()"
+ ],
+ "derived": [
+  "bin/engine:CNetChan"
+ ],
+ "derived_count": 1
+}

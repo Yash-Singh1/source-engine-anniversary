@@ -60,6 +60,8 @@ extern uint32 g_nDebugVarsSignature;
 extern int				g_FrameNum;
 
 extern IShaderAPI*	g_pShaderAPI;
+class IShaderAPIStreaming;
+extern IShaderAPIStreaming* g_pShaderAPIStreaming;
 extern IShaderDeviceMgr* g_pShaderDeviceMgr;
 extern IShaderDevice*	g_pShaderDevice;
 extern IShaderShadow* g_pShaderShadow;

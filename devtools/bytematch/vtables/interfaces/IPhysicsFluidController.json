@@ -1,0 +1,93 @@
+{
+ "interface": "IPhysicsFluidController",
+ "headers": [
+  "public/vphysics_interface.h",
+  "public/vphysics_interfaceV30.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 8,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "SetGameData(void*)",
+  "GetGameData() const",
+  "GetSurfacePlane(Vector*, float*) const",
+  "GetDensity() const",
+  "WakeAllSleepingObjects()",
+  "GetContents() const"
+ ],
+ "retail_reference": {
+  "module": "bin/vphysics",
+  "class": "CPhysicsFluidController",
+  "offset": 0,
+  "chain": [
+   "CPhysicsFluidController",
+   "IPhysicsFluidController"
+  ]
+ },
+ "retail_len": 8,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 8
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CPhysicsFluidController",
+   "sig": "~CPhysicsFluidController()",
+   "symbol": "CPhysicsFluidController::~CPhysicsFluidController()"
+  },
+  {
+   "index": 1,
+   "name": "~CPhysicsFluidController",
+   "sig": "~CPhysicsFluidController()",
+   "symbol": "CPhysicsFluidController::~CPhysicsFluidController()"
+  },
+  {
+   "index": 2,
+   "name": "SetGameData",
+   "sig": "SetGameData(void*)",
+   "symbol": "CPhysicsFluidController::SetGameData(void*)"
+  },
+  {
+   "index": 3,
+   "name": "GetGameData",
+   "sig": "GetGameData() const",
+   "symbol": "CPhysicsFluidController::GetGameData() const"
+  },
+  {
+   "index": 4,
+   "name": "GetSurfacePlane",
+   "sig": "GetSurfacePlane(Vector*, float*) const",
+   "symbol": "CPhysicsFluidController::GetSurfacePlane(Vector*, float*) const"
+  },
+  {
+   "index": 5,
+   "name": "GetDensity",
+   "sig": "GetDensity() const",
+   "symbol": "CPhysicsFluidController::GetDensity() const"
+  },
+  {
+   "index": 6,
+   "name": "WakeAllSleepingObjects",
+   "sig": "WakeAllSleepingObjects()",
+   "symbol": "CPhysicsFluidController::WakeAllSleepingObjects()"
+  },
+  {
+   "index": 7,
+   "name": "GetContents",
+   "sig": "GetContents() const",
+   "symbol": "CPhysicsFluidController::GetContents() const"
+  }
+ ],
+ "derived": [
+  "bin/vphysics:CPhysicsFluidController"
+ ],
+ "derived_count": 1
+}

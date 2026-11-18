@@ -1,0 +1,112 @@
+{
+ "interface": "CVEfx",
+ "headers": [
+  "public/r_efx.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 11,
+ "sdk2013_slots": [
+  "Draw_DecalIndexFromName(char*)",
+  "DecalShoot(int, int, model_t const*, Vector const&, QAngle const&, Vector const&, Vector const*, int)",
+  "DecalColorShoot(int, int, model_t const*, Vector const&, QAngle const&, Vector const&, Vector const*, int, color32_s const&)",
+  "PlayerDecalShoot(IMaterial*, void*, int, model_t const*, Vector const&, QAngle const&, Vector const&, Vector const*, int, color32_s const&)",
+  "CL_AllocDlight(int)",
+  "CL_AllocElight(int)",
+  "CL_GetActiveDLights(dlight_t**)",
+  "Draw_DecalNameFromIndex(int)",
+  "GetElightByKey(int)",
+  "~__bm_probe()",
+  "~__bm_probe()"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CVEfx",
+  "offset": 0,
+  "chain": [
+   "CVEfx"
+  ]
+ },
+ "retail_len": 11,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 11
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Draw_DecalIndexFromName",
+   "sig": "Draw_DecalIndexFromName(char*)",
+   "symbol": "CVEfx::Draw_DecalIndexFromName(char*)"
+  },
+  {
+   "index": 1,
+   "name": "DecalShoot",
+   "sig": "DecalShoot(int, int, model_t const*, Vector const&, QAngle const&, Vector const&, Vector const*, int)",
+   "symbol": "CVEfx::DecalShoot(int, int, model_t const*, Vector const&, QAngle const&, Vector const&, Vector const*, int)"
+  },
+  {
+   "index": 2,
+   "name": "DecalColorShoot",
+   "sig": "DecalColorShoot(int, int, model_t const*, Vector const&, QAngle const&, Vector const&, Vector const*, int, color32_s const&)",
+   "symbol": "CVEfx::DecalColorShoot(int, int, model_t const*, Vector const&, QAngle const&, Vector const&, Vector const*, int, color32_s const&)"
+  },
+  {
+   "index": 3,
+   "name": "PlayerDecalShoot",
+   "sig": "PlayerDecalShoot(IMaterial*, void*, int, model_t const*, Vector const&, QAngle const&, Vector const&, Vector const*, int, color32_s const&)",
+   "symbol": "CVEfx::PlayerDecalShoot(IMaterial*, void*, int, model_t const*, Vector const&, QAngle const&, Vector const&, Vector const*, int, color32_s const&)"
+  },
+  {
+   "index": 4,
+   "name": "CL_AllocDlight",
+   "sig": "CL_AllocDlight(int)",
+   "symbol": "CVEfx::CL_AllocDlight(int)"
+  },
+  {
+   "index": 5,
+   "name": "CL_AllocElight",
+   "sig": "CL_AllocElight(int)",
+   "symbol": "CVEfx::CL_AllocElight(int)"
+  },
+  {
+   "index": 6,
+   "name": "CL_GetActiveDLights",
+   "sig": "CL_GetActiveDLights(dlight_t**)",
+   "symbol": "CVEfx::CL_GetActiveDLights(dlight_t**)"
+  },
+  {
+   "index": 7,
+   "name": "Draw_DecalNameFromIndex",
+   "sig": "Draw_DecalNameFromIndex(int)",
+   "symbol": "CVEfx::Draw_DecalNameFromIndex(int)"
+  },
+  {
+   "index": 8,
+   "name": "GetElightByKey",
+   "sig": "GetElightByKey(int)",
+   "symbol": "CVEfx::GetElightByKey(int)"
+  },
+  {
+   "index": 9,
+   "name": "~CVEfx",
+   "sig": "~CVEfx()",
+   "symbol": "CVEfx::~CVEfx()"
+  },
+  {
+   "index": 10,
+   "name": "~CVEfx",
+   "sig": "~CVEfx()",
+   "symbol": "CVEfx::~CVEfx()"
+  }
+ ],
+ "derived": [
+  "bin/engine:CVEfx"
+ ],
+ "derived_count": 1
+}

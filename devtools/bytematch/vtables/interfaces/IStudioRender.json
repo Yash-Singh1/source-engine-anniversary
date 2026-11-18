@@ -1,0 +1,389 @@
+{
+ "interface": "IStudioRender",
+ "headers": [
+  "public/istudiorender.h"
+ ],
+ "versions": {
+  "retail": [
+   "VStudioRender025"
+  ],
+  "ours": [
+   "VStudioRender025"
+  ],
+  "sdk2013": [
+   "VStudioRender025"
+  ]
+ },
+ "version_macros": [
+  "STUDIO_RENDER_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/studiorender",
+   "version": "VStudioRender025",
+   "class": "CStudioRenderContext"
+  }
+ ],
+ "sdk2013_len": 47,
+ "sdk2013_slots": [
+  "Connect(void* (*)(char const*, int*))",
+  "Disconnect()",
+  "QueryInterface(char const*)",
+  "Init()",
+  "Shutdown()",
+  "BeginFrame()",
+  "EndFrame()",
+  "Mat_Stub(IMaterialSystem*)",
+  "UpdateConfig(StudioRenderConfig_t const&)",
+  "GetCurrentConfig(StudioRenderConfig_t&)",
+  "LoadModel(studiohdr_t*, void*, studiohwdata_t*)",
+  "UnloadModel(studiohwdata_t*)",
+  "RefreshStudioHdr(studiohdr_t*, studiohwdata_t*)",
+  "SetEyeViewTarget(studiohdr_t const*, int, Vector const&)",
+  "GetNumAmbientLightSamples()",
+  "GetAmbientLightDirections()",
+  "SetAmbientLightColors(Vector4D const*)",
+  "SetAmbientLightColors(Vector const*)",
+  "SetLocalLights(int, LightDesc_t const*)",
+  "SetViewState(Vector const&, Vector const&, Vector const&, Vector const&)",
+  "LockFlexWeights(int, float**, float**)",
+  "UnlockFlexWeights()",
+  "LockBoneMatrices(int)",
+  "UnlockBoneMatrices()",
+  "GetNumLODs(studiohwdata_t const&) const",
+  "GetLODSwitchValue(studiohwdata_t const&, int) const",
+  "SetLODSwitchValue(studiohwdata_t&, int, float)",
+  "SetColorModulation(float const*)",
+  "SetAlphaModulation(float)",
+  "DrawModel(DrawModelResults_t*, DrawModelInfo_t const&, matrix3x4_t*, float*, float*, Vector const&, int)",
+  "DrawModelStaticProp(DrawModelInfo_t const&, matrix3x4_t const&, int)",
+  "DrawStaticPropDecals(DrawModelInfo_t const&, matrix3x4_t const&)",
+  "DrawStaticPropShadows(DrawModelInfo_t const&, matrix3x4_t const&, int)",
+  "ForcedMaterialOverride(IMaterial*, OverrideType_t)",
+  "CreateDecalList(studiohwdata_t*)",
+  "DestroyDecalList(StudioDecalHandle_t__*)",
+  "AddDecal(StudioDecalHandle_t__*, studiohdr_t*, matrix3x4_t*, Ray_t const&, Vector const&, IMaterial*, float, int, bool, int)",
+  "ComputeLighting(Vector const*, int, LightDesc_t*, Vector const&, Vector const&, Vector&)",
+  "ComputeLightingConstDirectional(Vector const*, int, LightDesc_t*, Vector const&, Vector const&, Vector&, float)",
+  "AddShadow(IMaterial*, void*, FlashlightState_t*, VMatrix*, ITexture*)",
+  "ClearAllShadows()",
+  "ComputeModelLod(studiohwdata_t*, float, float*)",
+  "GetPerfStats(DrawModelResults_t*, DrawModelInfo_t const&, CUtlBuffer*) const",
+  "GetTriangles(DrawModelInfo_t const&, matrix3x4_t*, GetTriangles_Output_t&)",
+  "GetMaterialList(studiohdr_t*, int, IMaterial**)",
+  "GetMaterialListFromBodyAndSkin(unsigned short, int, int, int, IMaterial**)",
+  "DrawModelArray(DrawModelInfo_t const&, int, model_array_instance_t*, int, int)"
+ ],
+ "retail_reference": {
+  "module": "bin/studiorender",
+  "class": "CStudioRenderContext",
+  "offset": 0,
+  "chain": [
+   "CStudioRenderContext",
+   "CTier3AppSystem<IStudioRender, 0>",
+   "CTier2AppSystem<IStudioRender, 0>",
+   "CTier1AppSystem<IStudioRender, 0>",
+   "CTier0AppSystem<IStudioRender>",
+   "CBaseAppSystem<IStudioRender>",
+   "IStudioRender"
+  ]
+ },
+ "retail_len": 47,
+ "retail_len_basis": "first implementer destructor",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 49,
+  "first implementer destructor": 47
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Connect",
+   "sig": "Connect(void* (*)(char const*, int*))",
+   "symbol": "CStudioRenderContext::Connect(void* (*)(char const*, int*))"
+  },
+  {
+   "index": 1,
+   "name": "Disconnect",
+   "sig": "Disconnect()",
+   "symbol": "CStudioRenderContext::Disconnect()"
+  },
+  {
+   "index": 2,
+   "name": "QueryInterface",
+   "sig": "QueryInterface(char const*)",
+   "symbol": "CStudioRenderContext::QueryInterface(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "CStudioRenderContext::Init()"
+  },
+  {
+   "index": 4,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CStudioRenderContext::Shutdown()"
+  },
+  {
+   "index": 5,
+   "name": "BeginFrame",
+   "sig": "BeginFrame()",
+   "symbol": "CStudioRenderContext::BeginFrame()"
+  },
+  {
+   "index": 6,
+   "name": "EndFrame",
+   "sig": "EndFrame()",
+   "symbol": "CStudioRenderContext::EndFrame()"
+  },
+  {
+   "index": 7,
+   "name": "Mat_Stub",
+   "sig": "Mat_Stub(IMaterialSystem*)",
+   "symbol": "CStudioRenderContext::Mat_Stub(IMaterialSystem*)"
+  },
+  {
+   "index": 8,
+   "name": "UpdateConfig",
+   "sig": "UpdateConfig(StudioRenderConfig_t const&)",
+   "symbol": "CStudioRenderContext::UpdateConfig(StudioRenderConfig_t const&)"
+  },
+  {
+   "index": 9,
+   "name": "GetCurrentConfig",
+   "sig": "GetCurrentConfig(StudioRenderConfig_t&)",
+   "symbol": "CStudioRenderContext::GetCurrentConfig(StudioRenderConfig_t&)"
+  },
+  {
+   "index": 10,
+   "name": "LoadModel",
+   "sig": "LoadModel(studiohdr_t*, void*, studiohwdata_t*)",
+   "symbol": "CStudioRenderContext::LoadModel(studiohdr_t*, void*, studiohwdata_t*)"
+  },
+  {
+   "index": 11,
+   "name": "UnloadModel",
+   "sig": "UnloadModel(studiohwdata_t*)",
+   "symbol": "CStudioRenderContext::UnloadModel(studiohwdata_t*)"
+  },
+  {
+   "index": 12,
+   "name": "RefreshStudioHdr",
+   "sig": "RefreshStudioHdr(studiohdr_t*, studiohwdata_t*)",
+   "symbol": "CStudioRenderContext::RefreshStudioHdr(studiohdr_t*, studiohwdata_t*)"
+  },
+  {
+   "index": 13,
+   "name": "SetEyeViewTarget",
+   "sig": "SetEyeViewTarget(studiohdr_t const*, int, Vector const&)",
+   "symbol": "CStudioRenderContext::SetEyeViewTarget(studiohdr_t const*, int, Vector const&)"
+  },
+  {
+   "index": 14,
+   "name": "GetNumAmbientLightSamples",
+   "sig": "GetNumAmbientLightSamples()",
+   "symbol": "CStudioRenderContext::GetNumAmbientLightSamples()"
+  },
+  {
+   "index": 15,
+   "name": "GetAmbientLightDirections",
+   "sig": "GetAmbientLightDirections()",
+   "symbol": "CStudioRenderContext::GetAmbientLightDirections()"
+  },
+  {
+   "index": 16,
+   "name": "SetAmbientLightColors",
+   "sig": "SetAmbientLightColors(Vector4D const*)",
+   "symbol": "CStudioRenderContext::SetAmbientLightColors(Vector4D const*)"
+  },
+  {
+   "index": 17,
+   "name": "SetAmbientLightColors",
+   "sig": "SetAmbientLightColors(Vector const*)",
+   "symbol": "CStudioRenderContext::SetAmbientLightColors(Vector const*)"
+  },
+  {
+   "index": 18,
+   "name": "SetLocalLights",
+   "sig": "SetLocalLights(int, LightDesc_t const*)",
+   "symbol": "CStudioRenderContext::SetLocalLights(int, LightDesc_t const*)"
+  },
+  {
+   "index": 19,
+   "name": "SetViewState",
+   "sig": "SetViewState(Vector const&, Vector const&, Vector const&, Vector const&)",
+   "symbol": "CStudioRenderContext::SetViewState(Vector const&, Vector const&, Vector const&, Vector const&)"
+  },
+  {
+   "index": 20,
+   "name": "LockFlexWeights",
+   "sig": "LockFlexWeights(int, float**, float**)",
+   "symbol": "CStudioRenderContext::LockFlexWeights(int, float**, float**)"
+  },
+  {
+   "index": 21,
+   "name": "UnlockFlexWeights",
+   "sig": "UnlockFlexWeights()",
+   "symbol": "CStudioRenderContext::UnlockFlexWeights()"
+  },
+  {
+   "index": 22,
+   "name": "LockBoneMatrices",
+   "sig": "LockBoneMatrices(int)",
+   "symbol": "CStudioRenderContext::LockBoneMatrices(int)"
+  },
+  {
+   "index": 23,
+   "name": "UnlockBoneMatrices",
+   "sig": "UnlockBoneMatrices()",
+   "symbol": "CStudioRenderContext::UnlockBoneMatrices()"
+  },
+  {
+   "index": 24,
+   "name": "GetNumLODs",
+   "sig": "GetNumLODs(studiohwdata_t const&) const",
+   "symbol": "CStudioRenderContext::GetNumLODs(studiohwdata_t const&) const"
+  },
+  {
+   "index": 25,
+   "name": "GetLODSwitchValue",
+   "sig": "GetLODSwitchValue(studiohwdata_t const&, int) const",
+   "symbol": "CStudioRenderContext::GetLODSwitchValue(studiohwdata_t const&, int) const"
+  },
+  {
+   "index": 26,
+   "name": "SetLODSwitchValue",
+   "sig": "SetLODSwitchValue(studiohwdata_t&, int, float)",
+   "symbol": "CStudioRenderContext::SetLODSwitchValue(studiohwdata_t&, int, float)"
+  },
+  {
+   "index": 27,
+   "name": "SetColorModulation",
+   "sig": "SetColorModulation(float const*)",
+   "symbol": "CStudioRenderContext::SetColorModulation(float const*)"
+  },
+  {
+   "index": 28,
+   "name": "SetAlphaModulation",
+   "sig": "SetAlphaModulation(float)",
+   "symbol": "CStudioRenderContext::SetAlphaModulation(float)"
+  },
+  {
+   "index": 29,
+   "name": "DrawModel",
+   "sig": "DrawModel(DrawModelResults_t*, DrawModelInfo_t const&, matrix3x4_t*, float*, float*, Vector const&, int)",
+   "symbol": "CStudioRenderContext::DrawModel(DrawModelResults_t*, DrawModelInfo_t const&, matrix3x4_t*, float*, float*, Vector const&, int)"
+  },
+  {
+   "index": 30,
+   "name": "DrawModelStaticProp",
+   "sig": "DrawModelStaticProp(DrawModelInfo_t const&, matrix3x4_t const&, int)",
+   "symbol": "CStudioRenderContext::DrawModelStaticProp(DrawModelInfo_t const&, matrix3x4_t const&, int)"
+  },
+  {
+   "index": 31,
+   "name": "DrawStaticPropDecals",
+   "sig": "DrawStaticPropDecals(DrawModelInfo_t const&, matrix3x4_t const&)",
+   "symbol": "CStudioRenderContext::DrawStaticPropDecals(DrawModelInfo_t const&, matrix3x4_t const&)"
+  },
+  {
+   "index": 32,
+   "name": "DrawStaticPropShadows",
+   "sig": "DrawStaticPropShadows(DrawModelInfo_t const&, matrix3x4_t const&, int)",
+   "symbol": "CStudioRenderContext::DrawStaticPropShadows(DrawModelInfo_t const&, matrix3x4_t const&, int)"
+  },
+  {
+   "index": 33,
+   "name": "ForcedMaterialOverride",
+   "sig": "ForcedMaterialOverride(IMaterial*, OverrideType_t)",
+   "symbol": "CStudioRenderContext::ForcedMaterialOverride(IMaterial*, OverrideType_t)"
+  },
+  {
+   "index": 34,
+   "name": "CreateDecalList",
+   "sig": "CreateDecalList(studiohwdata_t*)",
+   "symbol": "CStudioRenderContext::CreateDecalList(studiohwdata_t*)"
+  },
+  {
+   "index": 35,
+   "name": "DestroyDecalList",
+   "sig": "DestroyDecalList(StudioDecalHandle_t__*)",
+   "symbol": "CStudioRenderContext::DestroyDecalList(StudioDecalHandle_t__*)"
+  },
+  {
+   "index": 36,
+   "name": "AddDecal",
+   "sig": "AddDecal(StudioDecalHandle_t__*, studiohdr_t*, matrix3x4_t*, Ray_t const&, Vector const&, IMaterial*, float, int, bool, int)",
+   "symbol": "CStudioRenderContext::AddDecal(StudioDecalHandle_t__*, studiohdr_t*, matrix3x4_t*, Ray_t const&, Vector const&, IMaterial*, float, int, bool, int)"
+  },
+  {
+   "index": 37,
+   "name": "ComputeLighting",
+   "sig": "ComputeLighting(Vector const*, int, LightDesc_t*, Vector const&, Vector const&, Vector&)",
+   "symbol": "CStudioRenderContext::ComputeLighting(Vector const*, int, LightDesc_t*, Vector const&, Vector const&, Vector&)"
+  },
+  {
+   "index": 38,
+   "name": "ComputeLightingConstDirectional",
+   "sig": "ComputeLightingConstDirectional(Vector const*, int, LightDesc_t*, Vector const&, Vector const&, Vector&, float)",
+   "symbol": "CStudioRenderContext::ComputeLightingConstDirectional(Vector const*, int, LightDesc_t*, Vector const&, Vector const&, Vector&, float)"
+  },
+  {
+   "index": 39,
+   "name": "AddShadow",
+   "sig": "AddShadow(IMaterial*, void*, FlashlightState_t*, VMatrix*, ITexture*)",
+   "symbol": "CStudioRenderContext::AddShadow(IMaterial*, void*, FlashlightState_t*, VMatrix*, ITexture*)"
+  },
+  {
+   "index": 40,
+   "name": "ClearAllShadows",
+   "sig": "ClearAllShadows()",
+   "symbol": "CStudioRenderContext::ClearAllShadows()"
+  },
+  {
+   "index": 41,
+   "name": "ComputeModelLod",
+   "sig": "ComputeModelLod(studiohwdata_t*, float, float*)",
+   "symbol": "CStudioRenderContext::ComputeModelLod(studiohwdata_t*, float, float*)"
+  },
+  {
+   "index": 42,
+   "name": "GetPerfStats",
+   "sig": "GetPerfStats(DrawModelResults_t*, DrawModelInfo_t const&, CUtlBuffer*) const",
+   "symbol": "CStudioRenderContext::GetPerfStats(DrawModelResults_t*, DrawModelInfo_t const&, CUtlBuffer*) const"
+  },
+  {
+   "index": 43,
+   "name": "GetTriangles",
+   "sig": "GetTriangles(DrawModelInfo_t const&, matrix3x4_t*, GetTriangles_Output_t&)",
+   "symbol": "CStudioRenderContext::GetTriangles(DrawModelInfo_t const&, matrix3x4_t*, GetTriangles_Output_t&)"
+  },
+  {
+   "index": 44,
+   "name": "GetMaterialList",
+   "sig": "GetMaterialList(studiohdr_t*, int, IMaterial**)",
+   "symbol": "CStudioRenderContext::GetMaterialList(studiohdr_t*, int, IMaterial**)"
+  },
+  {
+   "index": 45,
+   "name": "GetMaterialListFromBodyAndSkin",
+   "sig": "GetMaterialListFromBodyAndSkin(unsigned short, int, int, int, IMaterial**)",
+   "symbol": "CStudioRenderContext::GetMaterialListFromBodyAndSkin(unsigned short, int, int, int, IMaterial**)"
+  },
+  {
+   "index": 46,
+   "name": "DrawModelArray",
+   "sig": "DrawModelArray(DrawModelInfo_t const&, int, model_array_instance_t*, int, int)",
+   "symbol": "CStudioRenderContext::DrawModelArray(DrawModelInfo_t const&, int, model_array_instance_t*, int, int)"
+  }
+ ],
+ "implementer_tail": [
+  "~CStudioRenderContext()",
+  "~CStudioRenderContext()"
+ ],
+ "derived": [
+  "bin/studiorender:CStudioRenderContext"
+ ],
+ "derived_count": 1
+}

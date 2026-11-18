@@ -1,0 +1,7539 @@
+{
+ "Base_CmdKeyValues": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:Base_CmdKeyValues",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CAppSystemGroup": {
+  "headers": [
+   "public/appframework/IAppSystemGroup.h"
+  ],
+  "reference": "bin/engine:CAppSystemGroup",
+  "retail_len": 8,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 8,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CAudioMixer": {
+  "headers": [
+   "public/engine/audio/snd_audio_source.h",
+   "public/soundsystem/snd_audio_source.h"
+  ],
+  "reference": "bin/engine:CSentenceMixer",
+  "retail_len": 16,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 21,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CAudioSource": {
+  "headers": [
+   "public/engine/audio/snd_audio_source.h",
+   "public/soundsystem/snd_audio_source.h"
+  ],
+  "reference": "bin/engine:CAudioSourceMP3Cache",
+  "retail_len": 35,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 13,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CAudioSourceCachedInfo": {
+  "headers": [
+   "public/engine/audio/snd_audio_source.h"
+  ],
+  "reference": "bin/engine:CAudioSourceCachedInfo",
+  "retail_len": 5,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CBaseBudgetPanel": {
+  "headers": [
+   "common/vgui/vgui_basebudgetpanel.h"
+  ],
+  "reference": "bin/engine:CBaseBudgetPanel",
+  "retail_len": 213,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CBaseManipulator": {
+  "headers": [
+   "public/matsys_controls/manipulator.h"
+  ],
+  "reference": "episodic/client:CPotteryWheelManip",
+  "retail_len": 9,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 9,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CBaseReplaySerializeable": {
+  "headers": [
+   "common/replay/basereplayserializeable.h"
+  ],
+  "reference": "bin/replay:CBaseReplaySerializeable",
+  "retail_len": 16,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 16,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CBaseRopePhysics": {
+  "headers": [
+   "public/rope_physics.h"
+  ],
+  "reference": "episodic/client:CBaseRopePhysics",
+  "retail_len": 2,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 2,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CBaseShader": {
+  "headers": [
+   "public/shaderlib/BaseShader.h"
+  ],
+  "reference": "bin/stdshader_dx9:CBaseShader",
+  "retail_len": 20,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 20,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CBeamSegDraw": {
+  "headers": [
+   "public/tier2/beamsegdraw.h"
+  ],
+  "reference": "episodic/client:CBeamSegDraw",
+  "retail_len": 1,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 1,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CBitmapFont": {
+  "headers": [
+   "common/vgui_surfacelib/BitmapFont.h"
+  ],
+  "reference": "bin/vguimatsurface:CBitmapFont",
+  "retail_len": 15,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CBitmapImagePanel": {
+  "headers": [
+   "public/vgui_controls/BitmapImagePanel.h"
+  ],
+  "reference": "bin/GameUI:CBitmapImagePanel",
+  "retail_len": 212,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CBlockingUDPSocket": {
+  "headers": [
+   "public/blockingudpsocket.h"
+  ],
+  "reference": "bin/bugreporter_public:CBlockingUDPSocket",
+  "retail_len": 2,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 2,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CBotCmd": {
+  "headers": [
+   "public/game/server/iplayerinfo.h"
+  ],
+  "reference": "episodic/server:CBotCmd",
+  "retail_len": 2,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 2,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CBudgetBarGraphPanel": {
+  "headers": [
+   "common/vgui/vgui_budgetbargraphpanel.h"
+  ],
+  "reference": "bin/engine:CBudgetBarGraphPanel",
+  "retail_len": 210,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CBudgetHistoryPanel": {
+  "headers": [
+   "common/vgui/vgui_budgethistorypanel.h"
+  ],
+  "reference": "bin/engine:CBudgetHistoryPanel",
+  "retail_len": 210,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CBudgetPanelShared": {
+  "headers": [
+   "common/vgui/vgui_budgetpanelshared.h"
+  ],
+  "reference": "bin/engine:CBudgetPanelShared",
+  "retail_len": 215,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CCallbackBase": {
+  "headers": [
+   "public/steam/steam_api.h"
+  ],
+  "reference": "hl2mp/client:CCallback<CAvatarImage, PersonaStateChange_t, false>",
+  "retail_len": 3,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 3,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CClassPtrSaveRestoreOps": {
+  "headers": [
+   "public/isaverestore.h"
+  ],
+  "reference": "episodic/client:CSoundPatchSaveRestoreOps",
+  "retail_len": 5,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 5,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CControllerMap": {
+  "headers": [
+   "public/vgui_controls/ControllerMap.h"
+  ],
+  "reference": "bin/GameUI:CControllerMap",
+  "retail_len": 210,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 210,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CCoreDispInfo": {
+  "headers": [
+   "public/builddisp.h"
+  ],
+  "reference": "bin/engine:CCoreDispInfo",
+  "retail_len": 4,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 4,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CCurveEditorPanel": {
+  "headers": [
+   "public/matsys_controls/curveeditorpanel.h"
+  ],
+  "reference": "bin/engine:CCurveEditorPanel",
+  "retail_len": 217,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 217,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CCvarSlider": {
+  "headers": [
+   "common/GameUI/cvarslider.h"
+  ],
+  "reference": "bin/GameUI:CCvarSlider",
+  "retail_len": 237,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CDataManagerBase": {
+  "headers": [
+   "public/tier1/datamanager.h"
+  ],
+  "reference": "bin/datacache:CDataManagerBase",
+  "retail_len": 7,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 7,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CDefSaveRestoreBlockHandler": {
+  "headers": [
+   "public/isaverestore.h"
+  ],
+  "reference": "episodic/client:CViewEffectsSaveRestoreBlockHandler",
+  "retail_len": 9,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 9,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CDefSaveRestoreOps": {
+  "headers": [
+   "public/isaverestore.h"
+  ],
+  "reference": "bin/vphysics:CMaterialIndexOps",
+  "retail_len": 5,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 5,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CDefaultClientRenderable": {
+  "headers": [
+   "public/iclientrenderable.h"
+  ],
+  "reference": "episodic/client:CNewParticleEffect",
+  "retail_len": 54,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 54,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CDefaultDataCacheClient": {
+  "headers": [
+   "public/datacache/idatacache.h"
+  ],
+  "reference": "bin/engine:CAsyncWavDataCache",
+  "retail_len": 2,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 2,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CDescription": {
+  "headers": [
+   "common/GameUI/scriptobject.h"
+  ],
+  "reference": "bin/GameUI:CDescription",
+  "retail_len": 4,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CDispCollTree": {
+  "headers": [
+   "public/dispcoll.h",
+   "public/dispcoll_common.h"
+  ],
+  "reference": "bin/engine:CDispCollTree",
+  "retail_len": 1,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 1,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CDispUtilsHelper": {
+  "headers": [
+   "public/disp_common.h"
+  ],
+  "reference": "bin/engine:CCoreDispInfo",
+  "retail_len": 4,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 4,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CDllDemandLoader": {
+  "headers": [
+   "public/tier1/interface.h"
+  ],
+  "reference": "episodic/client:CDllDemandLoader",
+  "retail_len": 2,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 2,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CFunctor": {
+  "headers": [
+   "public/tier1/functors.h"
+  ],
+  "reference": "bin/engine:CFunctor0<void (*)(), CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>>",
+  "retail_len": 5,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 5,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CFunctorJob": {
+  "headers": [
+   "public/vstdlib/jobthread.h"
+  ],
+  "reference": "bin/engine:CFunctorJob",
+  "retail_len": 9,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CInfoDescription": {
+  "headers": [
+   "common/GameUI/scriptobject.h"
+  ],
+  "reference": "bin/GameUI:CInfoDescription",
+  "retail_len": 4,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CJob": {
+  "headers": [
+   "public/gcsdk/job.h",
+   "public/vstdlib/jobthread.h"
+  ],
+  "reference": "bin/engine:CJob",
+  "retail_len": 9,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CLC_BaselineAck": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:CLC_BaselineAck",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CLC_ClientInfo": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:CLC_ClientInfo",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CLC_CmdKeyValues": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:CLC_CmdKeyValues",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CLC_FileCRCCheck": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:CLC_FileCRCCheck",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CLC_FileMD5Check": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:CLC_FileMD5Check",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CLC_ListenEvents": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:CLC_ListenEvents",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CLC_Move": {
+  "headers": [
+   "common/ClientNetMessage.h",
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:CLC_Move",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CLC_RespondCvarValue": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:CLC_RespondCvarValue",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CLC_SaveReplay": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:CLC_SaveReplay",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CLC_VoiceData": {
+  "headers": [
+   "common/ClientNetMessage.h",
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:CLC_VoiceData",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CMDLPanel": {
+  "headers": [
+   "public/matsys_controls/mdlpanel.h"
+  ],
+  "reference": "episodic/client:CMDLPanel",
+  "retail_len": 247,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 247,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CMemoryFileBacking": {
+  "headers": [
+   "public/filesystem.h"
+  ],
+  "reference": "bin/filesystem_stdio:CMemoryFileBacking",
+  "retail_len": 3,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 3,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CMessageDialog": {
+  "headers": [
+   "public/vgui_controls/MessageDialog.h"
+  ],
+  "reference": "bin/GameUI:CMessageDialog",
+  "retail_len": 276,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 276,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CMouthInfo": {
+  "headers": [
+   "public/mouthinfo.h"
+  ],
+  "reference": "episodic/client:CMouthInfo",
+  "retail_len": 2,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 2,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CNetMessage": {
+  "headers": [
+   "common/ClientNetMessage.h",
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:CLC_BaselineAck",
+  "retail_len": 13,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "COSXFont": {
+  "headers": [
+   "common/vgui_surfacelib/osxfont.h"
+  ],
+  "reference": "bin/vguimatsurface:COSXFont",
+  "retail_len": 12,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CP4File": {
+  "headers": [
+   "public/tier2/p4helpers.h"
+  ],
+  "reference": "bin/engine:CP4File",
+  "retail_len": 5,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 5,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CP4File_Dummy": {
+  "headers": [
+   "public/tier2/p4helpers.h"
+  ],
+  "reference": "bin/engine:CP4File_Dummy",
+  "retail_len": 5,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 5,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CPackedStore": {
+  "headers": [
+   "public/vpklib/packedstore.h"
+  ],
+  "status": "no retail vtable",
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CParticleCollection": {
+  "headers": [
+   "public/particles/particles.h"
+  ],
+  "status": "no retail vtable",
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CParticleOperatorInstance": {
+  "headers": [
+   "public/particles/particles.h"
+  ],
+  "reference": "episodic/client:C_INIT_AgeNoise",
+  "retail_len": 31,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CParticleRenderOperatorInstance": {
+  "headers": [
+   "public/particles/particles.h"
+  ],
+  "reference": "episodic/client:C_OP_RenderPoints",
+  "retail_len": 31,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CParticleSystem": {
+  "headers": [
+   "public/panorama/layout/fillbrush.h"
+  ],
+  "reference": "episodic/server:CParticleSystem",
+  "retail_len": 188,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CPlayerState": {
+  "headers": [
+   "public/PlayerState.h"
+  ],
+  "reference": "episodic/client:CPlayerState",
+  "retail_len": 4,
+  "retail_len_basis": "override: GetPredDescMap comes from DECLARE_PREDICTABLE in the game class",
+  "sdk2013_len": 4,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CPolyhedron_AllocByNew": {
+  "headers": [
+   "public/mathlib/polyhedron.h"
+  ],
+  "reference": "bin/vphysics:CPolyhedron_AllocByNew",
+  "retail_len": 3,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 3,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CPotteryWheelManip": {
+  "headers": [
+   "public/matsys_controls/manipulator.h"
+  ],
+  "reference": "episodic/client:CPotteryWheelManip",
+  "retail_len": 9,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 9,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CPotteryWheelPanel": {
+  "headers": [
+   "public/matsys_controls/potterywheelpanel.h"
+  ],
+  "reference": "episodic/client:CPotteryWheelPanel",
+  "retail_len": 238,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 238,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CProceduralTexturePanel": {
+  "headers": [
+   "public/matsys_controls/proceduraltexturepanel.h"
+  ],
+  "reference": "bin/engine:CProceduralTexturePanel",
+  "retail_len": 239,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 239,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CRefCountServiceNull": {
+  "headers": [
+   "public/tier1/refcount.h"
+  ],
+  "reference": "bin/materialsystem:CDummyMaterialSystem",
+  "retail_len": 200,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CReplayScreenshot": {
+  "headers": [
+   "common/replay/screenshot.h"
+  ],
+  "reference": "bin/replay:CReplayScreenshot",
+  "retail_len": 16,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 16,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CResourcePreload": {
+  "headers": [
+   "public/filesystem/IQueuedLoader.h"
+  ],
+  "reference": "bin/engine:CResourcePreloadModel",
+  "retail_len": 4,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 4,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CScriptObject": {
+  "headers": [
+   "common/GameUI/scriptobject.h"
+  ],
+  "reference": "bin/GameUI:CScriptObject",
+  "retail_len": 210,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CStdStringSaveRestoreOps": {
+  "headers": [
+   "public/stdstring.h"
+  ],
+  "reference": "episodic/server:CStdStringSaveRestoreOps",
+  "retail_len": 5,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 5,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CSteamAppSystemGroup": {
+  "headers": [
+   "public/appframework/IAppSystemGroup.h"
+  ],
+  "reference": "bin/launcher:CSteamAppSystemGroup",
+  "retail_len": 8,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 8,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CSteamApplication": {
+  "headers": [
+   "public/appframework/AppFramework.h"
+  ],
+  "reference": "bin/launcher:CSteamApplication",
+  "retail_len": 8,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 8,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CThread": {
+  "headers": [
+   "public/tier0/threadtools.h"
+  ],
+  "reference": "bin/libtier0:CThread",
+  "retail_len": 8,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 8,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CTraceFilter": {
+  "headers": [
+   "public/engine/IEngineTrace.h"
+  ],
+  "reference": "bin/engine:CTraceFilterHitAll",
+  "retail_len": 2,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 2,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CTraceFilterEntitiesOnly": {
+  "headers": [
+   "public/engine/IEngineTrace.h"
+  ],
+  "reference": "episodic/server:CTraceFilterAntlion",
+  "retail_len": 2,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 2,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CTraceFilterHitAll": {
+  "headers": [
+   "public/engine/IEngineTrace.h"
+  ],
+  "reference": "bin/engine:CTraceFilterHitAll",
+  "retail_len": 2,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 2,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CTraceFilterWorldAndPropsOnly": {
+  "headers": [
+   "public/engine/IEngineTrace.h"
+  ],
+  "reference": "bin/engine:CTraceFilterWorldAndPropsOnly",
+  "retail_len": 2,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 2,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CTraceFilterWorldOnly": {
+  "headers": [
+   "public/engine/IEngineTrace.h"
+  ],
+  "reference": "bin/engine:CTraceFilterWorldOnly",
+  "retail_len": 2,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 2,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CTraceListData": {
+  "headers": [
+   "public/gametrace.h"
+  ],
+  "reference": "episodic/server:CTraceListData",
+  "retail_len": 1,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 1,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CTransformManipulator": {
+  "headers": [
+   "public/matsys_controls/manipulator.h"
+  ],
+  "reference": "episodic/client:CTransformManipulator",
+  "retail_len": 9,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 9,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CUtlCharConversion": {
+  "headers": [
+   "public/tier1/utlbuffer.h"
+  ],
+  "reference": "bin/GameUI:CUtlCharConversion",
+  "retail_len": 1,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 1,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CVEfx": {
+  "headers": [
+   "public/r_efx.h"
+  ],
+  "reference": "bin/engine:CVEfx",
+  "retail_len": 11,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 11,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CValidatableThread": {
+  "headers": [
+   "public/tier0/threadtools.h"
+  ],
+  "reference": "bin/chromehtml:CCEFThread",
+  "retail_len": 8,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 8,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CViewSetup": {
+  "headers": [
+   "public/view_shared.h"
+  ],
+  "status": "no retail vtable",
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "CWorkerThread": {
+  "headers": [
+   "public/tier0/threadtools.h"
+  ],
+  "reference": "bin/libtier0:CWorkerThread",
+  "retail_len": 8,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 8,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "ConCommand": {
+  "headers": [
+   "public/tier1/convar.h"
+  ],
+  "reference": "bin/GameUI:ConCommand",
+  "retail_len": 14,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 14,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "ConCommandBase": {
+  "headers": [
+   "public/tier1/convar.h"
+  ],
+  "reference": "bin/engine:ConCommand",
+  "retail_len": 11,
+  "retail_len_basis": "first own method of ConCommand",
+  "sdk2013_len": 11,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "ConVar": {
+  "headers": [
+   "public/tier1/convar.h"
+  ],
+  "reference": "bin/GameUI:ConVar",
+  "retail_len": 20,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 20,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "ConVar_ServerBounded": {
+  "headers": [
+   "public/tier1/convar_serverbounded.h"
+  ],
+  "reference": "bin/engine:CBoundedCvar_CmdRate",
+  "retail_len": 23,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 23,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "FileAsyncRequest_t": {
+  "headers": [
+   "public/filesystem.h"
+  ],
+  "status": "no retail vtable",
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "GLMDisplayDB": {
+  "headers": [
+   "public/togl/linuxwin/glmdisplaydb.h",
+   "public/togles/linuxwin/glmdisplaydb.h"
+  ],
+  "reference": "bin/launcher:GLMDisplayDB",
+  "retail_len": 12,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IAchievement": {
+  "headers": [
+   "public/iachievementmgr.h"
+  ],
+  "reference": "episodic/server:CAchievement100",
+  "retail_len": 11,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 11,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IAchievementMgr": {
+  "headers": [
+   "public/iachievementmgr.h"
+  ],
+  "reference": "hl2_complete/server:CAchievementMgr",
+  "retail_len": 11,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 11,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IAppSystem": {
+  "headers": [
+   "public/appframework/IAppSystem.h"
+  ],
+  "reference": "bin/engine:CCvarQuery",
+  "retail_len": 5,
+  "retail_len_basis": "first own method of ICvarQuery",
+  "sdk2013_len": 5,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IAppSystemGroup": {
+  "headers": [
+   "public/appframework/IAppSystemGroup.h"
+  ],
+  "reference": "bin/engine:CModAppSystemGroup",
+  "retail_len": 5,
+  "retail_len_basis": "first own method of CAppSystemGroup",
+  "sdk2013_len": 5,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IAsyncWavDataCache": {
+  "headers": [
+   "public/engine/audio/snd_audio_source.h"
+  ],
+  "reference": "bin/engine:CAsyncWavDataCache",
+  "retail_len": 21,
+  "retail_len_basis": "override: GetItemName overrides the secondary base IDataCacheClient",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IAudioDevice": {
+  "headers": [
+   "public/engine/audio/snd_device.h",
+   "public/soundsystem/snd_device.h"
+  ],
+  "reference": "bin/engine:CAudioDeviceAudioQueue",
+  "retail_len": 34,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IAudioSourceCache": {
+  "headers": [
+   "public/engine/audio/snd_audio_source.h"
+  ],
+  "reference": "bin/engine:CAudioSourceCache",
+  "retail_len": 7,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IAudioStream": {
+  "headers": [
+   "public/vaudio/ivaudio.h"
+  ],
+  "reference": "bin/vaudio_miles:CMilesMP3",
+  "retail_len": 8,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 8,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IAudioStreamEvent": {
+  "headers": [
+   "public/vaudio/ivaudio.h"
+  ],
+  "reference": "bin/engine:CAudioMixerWaveMP3",
+  "retail_len": 1,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 1,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IBSPPack": {
+  "headers": [
+   "public/ibsppack.h"
+  ],
+  "reference": "bin/bsppack:CBSPPack",
+  "retail_len": 10,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [
+    "IBSPPACK004"
+   ],
+   "retail": [
+    "IBSPPACK003"
+   ],
+   "sdk2013": [
+    "IBSPPACK003"
+   ]
+  }
+ },
+ "IBaseCacheInfo": {
+  "headers": [
+   "public/UtlCachedFileData.h"
+  ],
+  "reference": "episodic/server:CModelSoundsCache",
+  "retail_len": 3,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 3,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IBaseClientDLL": {
+  "headers": [
+   "public/cdll_int.h"
+  ],
+  "reference": "episodic/client:CHLClient",
+  "retail_len": 77,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 77,
+  "versions": {
+   "ours": [
+    "VClient017"
+   ],
+   "retail": [
+    "VClient017"
+   ],
+   "sdk2013": [
+    "VClient017"
+   ]
+  }
+ },
+ "IBaseFileSystem": {
+  "headers": [
+   "public/filesystem.h"
+  ],
+  "reference": "bin/filesystem_stdio:CFileSystem_Stdio",
+  "retail_len": 17,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 17,
+  "versions": {
+   "ours": [
+    "VBaseFileSystem011"
+   ],
+   "retail": [
+    "VBaseFileSystem011"
+   ],
+   "sdk2013": [
+    "VBaseFileSystem011"
+   ]
+  }
+ },
+ "IBaseInterface": {
+  "headers": [
+   "public/tier1/interface.h"
+  ],
+  "reference": "bin/engine:CDownloadSystem",
+  "retail_len": 2,
+  "retail_len_basis": "override: CreateDownloadThread is CDownloadSystem's own virtual",
+  "sdk2013_len": 2,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IBotController": {
+  "headers": [
+   "public/game/server/iplayerinfo.h"
+  ],
+  "reference": "episodic/server:CPlayerInfo",
+  "retail_len": 10,
+  "retail_len_basis": "override: retail CPlayerInfo subtable continues with IPlayerInfo methods",
+  "sdk2013_len": 10,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IBotManager": {
+  "headers": [
+   "public/game/server/iplayerinfo.h"
+  ],
+  "reference": "episodic/server:CPluginBotManager",
+  "retail_len": 2,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 2,
+  "versions": {
+   "ours": [
+    "BotManager001"
+   ],
+   "retail": [
+    "BotManager001"
+   ],
+   "sdk2013": [
+    "BotManager001"
+   ]
+  }
+ },
+ "IBrushRenderer": {
+  "headers": [
+   "public/ivrenderview.h"
+  ],
+  "reference": "episodic/client:C_BreakableSurface",
+  "retail_len": 1,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 1,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IBrushSurface": {
+  "headers": [
+   "public/ivrenderview.h"
+  ],
+  "reference": "bin/engine:CBrushSurface",
+  "retail_len": 5,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 5,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IBugReporter": {
+  "headers": [
+   "common/bugreporter/bugreporter.h"
+  ],
+  "reference": "bin/bugreporter_public:CBugReporter",
+  "retail_len": 63,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [
+    "BugReporter004"
+   ],
+   "retail": [
+    "BugReporter004"
+   ],
+   "sdk2013": []
+  }
+ },
+ "ICVar": {
+  "headers": [],
+  "status": "no retail vtable",
+  "versions": {
+   "ours": [
+    "VEngineCvar004"
+   ],
+   "retail": [
+    "VEngineCvar004"
+   ],
+   "sdk2013": [
+    "VEngineCvar004"
+   ]
+  }
+ },
+ "ICallQueue": {
+  "headers": [
+   "public/tier1/callqueue.h"
+  ],
+  "reference": "bin/materialsystem:CMatQueuedRenderContext::CCallQueueExternal",
+  "retail_len": 1,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 1,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "ICenterPrint": {
+  "headers": [
+   "public/ivguicenterprint.h"
+  ],
+  "reference": "episodic/client:CCenterPrint",
+  "retail_len": 6,
+  "retail_len_basis": "override: Create/Destroy are CCenterPrint's own virtuals",
+  "sdk2013_len": 6,
+  "versions": {
+   "ours": [
+    "VCENTERPRINT002"
+   ],
+   "retail": [
+    "VCENTERPRINT002"
+   ],
+   "sdk2013": [
+    "VCENTERPRINT002"
+   ]
+  }
+ },
+ "IClient": {
+  "headers": [
+   "public/iclient.h"
+  ],
+  "reference": "bin/engine:CGameClient",
+  "retail_len": 41,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 40,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IClientDLLSharedAppSystems": {
+  "headers": [
+   "public/cdll_int.h"
+  ],
+  "reference": "episodic/client:CClientDLLSharedAppSystems",
+  "retail_len": 3,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 3,
+  "versions": {
+   "ours": [
+    "VClientDllSharedAppSystems001"
+   ],
+   "retail": [
+    "VClientDllSharedAppSystems001"
+   ],
+   "sdk2013": [
+    "VClientDllSharedAppSystems001"
+   ]
+  }
+ },
+ "IClientEngineTools": {
+  "headers": [
+   "public/toolframework/iclientenginetools.h"
+  ],
+  "reference": "bin/engine:CClientEngineTools",
+  "retail_len": 16,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 16,
+  "versions": {
+   "ours": [
+    "VCLIENTENGINETOOLS001"
+   ],
+   "retail": [
+    "VCLIENTENGINETOOLS001"
+   ],
+   "sdk2013": [
+    "VCLIENTENGINETOOLS001"
+   ]
+  }
+ },
+ "IClientEntity": {
+  "headers": [
+   "public/icliententity.h"
+  ],
+  "reference": "episodic/client:CClient_Precipitation",
+  "retail_len": 15,
+  "retail_len_basis": "override: next slots are C_BaseEntity virtuals (GetDataDescMap, ...)",
+  "sdk2013_len": 15,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IClientEntityList": {
+  "headers": [
+   "public/icliententitylist.h"
+  ],
+  "reference": "episodic/client:CClientEntityList",
+  "retail_len": 9,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 9,
+  "versions": {
+   "ours": [
+    "VClientEntityList003"
+   ],
+   "retail": [
+    "VClientEntityList003"
+   ],
+   "sdk2013": [
+    "VClientEntityList003"
+   ]
+  }
+ },
+ "IClientLeafSystem": {
+  "headers": [],
+  "reference": "episodic/client:CClientLeafSystem",
+  "retail_len": 45,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [
+    "ClientLeafSystem001",
+    "ClientLeafSystem002"
+   ],
+   "retail": [
+    "ClientLeafSystem002"
+   ],
+   "sdk2013": [
+    "ClientLeafSystem001",
+    "ClientLeafSystem002"
+   ]
+  }
+ },
+ "IClientLeafSystemEngine": {
+  "headers": [
+   "public/engine/IClientLeafSystem.h"
+  ],
+  "reference": "episodic/client:CClientLeafSystem",
+  "retail_len": 4,
+  "retail_len_basis": "override: next slots belong to IClientLeafSystem",
+  "sdk2013_len": 4,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IClientMessageHandler": {
+  "headers": [
+   "public/inetmsghandler.h"
+  ],
+  "reference": "bin/engine:CGameClient",
+  "retail_len": 16,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 15,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IClientNetworkable": {
+  "headers": [
+   "public/iclientnetworkable.h"
+  ],
+  "reference": "episodic/client:CClient_Precipitation",
+  "retail_len": 13,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 13,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IClientRenderable": {
+  "headers": [
+   "public/iclientrenderable.h"
+  ],
+  "reference": "bin/engine:CStaticProp",
+  "retail_len": 45,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 45,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IClientReplayContext": {
+  "headers": [
+   "common/replay/iclientreplaycontext.h"
+  ],
+  "reference": "bin/replay:CClientReplayContext",
+  "retail_len": 30,
+  "retail_len_basis": "override: extra slots are CClientReplayContext's own (replay)",
+  "sdk2013_len": 30,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IClientThinkable": {
+  "headers": [
+   "public/iclientthinkable.h"
+  ],
+  "reference": "episodic/client:CClient_Precipitation",
+  "retail_len": 5,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 5,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IClientTools": {
+  "headers": [
+   "public/toolframework/itoolentity.h"
+  ],
+  "reference": "episodic/client:CClientTools",
+  "retail_len": 47,
+  "retail_len_basis": "override: OnEntityCreated/Deleted override the secondary base IClientEntityListener",
+  "sdk2013_len": 47,
+  "versions": {
+   "ours": [
+    "VCLIENTTOOLS001"
+   ],
+   "retail": [
+    "VCLIENTTOOLS001"
+   ],
+   "sdk2013": [
+    "VCLIENTTOOLS001"
+   ]
+  }
+ },
+ "IClientUnknown": {
+  "headers": [
+   "public/iclientunknown.h"
+  ],
+  "reference": "episodic/client:C_BaseTempEntity",
+  "retail_len": 10,
+  "retail_len_basis": "override: next slots come from DECLARE_CLIENTCLASS in the implementer",
+  "sdk2013_len": 10,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IClientVirtualReality": {
+  "headers": [
+   "public/iclientvirtualreality.h"
+  ],
+  "reference": "episodic/client:CClientVirtualReality",
+  "retail_len": 8,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 8,
+  "versions": {
+   "ours": [
+    "ClientVirtualReality001"
+   ],
+   "retail": [
+    "ClientVirtualReality001"
+   ],
+   "sdk2013": [
+    "ClientVirtualReality001"
+   ]
+  }
+ },
+ "ICollideable": {
+  "headers": [
+   "public/engine/ICollideable.h"
+  ],
+  "reference": "bin/engine:CStaticProp",
+  "retail_len": 20,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 20,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "ICollisionQuery": {
+  "headers": [
+   "public/vphysics_interface.h",
+   "public/vphysics_interfaceV30.h"
+  ],
+  "reference": "bin/vphysics:CCollisionQuery",
+  "retail_len": 9,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 9,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IColorCorrectionSystem": {
+  "headers": [
+   "public/materialsystem/IColorCorrection.h"
+  ],
+  "reference": "bin/materialsystem:CColorCorrectionSystem",
+  "retail_len": 29,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 29,
+  "versions": {
+   "ours": [],
+   "retail": [
+    "COLORCORRECTION_VERSION_1"
+   ],
+   "sdk2013": []
+  }
+ },
+ "ICommandCallback": {
+  "headers": [
+   "public/tier1/convar.h"
+  ],
+  "reference": "bin/engine:CConCommandMemberAccessor<CEngineVGui>",
+  "retail_len": 1,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 1,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "ICommandCompletionCallback": {
+  "headers": [
+   "public/tier1/convar.h"
+  ],
+  "reference": "bin/engine:CConCommandMemberAccessor<CEngineVGui>",
+  "retail_len": 1,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 1,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "ICommandLine": {
+  "headers": [
+   "public/tier0/icommandline.h"
+  ],
+  "reference": "bin/libtier0:CCommandLine",
+  "retail_len": 13,
+  "retail_len_basis": "first implementer destructor",
+  "sdk2013_len": 13,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IConCommandBaseAccessor": {
+  "headers": [
+   "public/tier1/convar.h"
+  ],
+  "reference": "bin/engine:CDefaultAccessor",
+  "retail_len": 1,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 1,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IConVar": {
+  "headers": [
+   "public/tier1/iconvar.h"
+  ],
+  "reference": "bin/engine:CBoundedCvar_CmdRate",
+  "retail_len": 5,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 5,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IConnectionlessPacketHandler": {
+  "headers": [
+   "public/inetmsghandler.h"
+  ],
+  "reference": "bin/engine:CBaseClientState",
+  "retail_len": 3,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 3,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IConsoleDisplayFunc": {
+  "headers": [
+   "public/icvar.h"
+  ],
+  "reference": "bin/GameUI:vgui::CConsolePanel",
+  "retail_len": 3,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 3,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IConvexInfo": {
+  "headers": [
+   "public/vphysics_interface.h",
+   "public/vphysics_interfaceV30.h"
+  ],
+  "reference": "bin/engine:CBrushConvexInfo",
+  "retail_len": 1,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 1,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "ICvar": {
+  "headers": [
+   "public/icvar.h"
+  ],
+  "reference": "bin/libvstdlib:CCvar",
+  "retail_len": 35,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 35,
+  "versions": {
+   "ours": [
+    "VEngineCvar004"
+   ],
+   "retail": [
+    "VEngineCvar004"
+   ],
+   "sdk2013": [
+    "VEngineCvar004"
+   ]
+  }
+ },
+ "ICvarQuery": {
+  "headers": [
+   "public/icvar.h"
+  ],
+  "reference": "bin/engine:CCvarQuery",
+  "retail_len": 6,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 6,
+  "versions": {
+   "ours": [
+    "VCvarQuery001"
+   ],
+   "retail": [
+    "VCvarQuery001"
+   ],
+   "sdk2013": [
+    "VCvarQuery001"
+   ]
+  }
+ },
+ "IDataCache": {
+  "headers": [
+   "public/datacache/idatacache.h"
+  ],
+  "reference": "bin/datacache:CDataCache",
+  "retail_len": 15,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 15,
+  "versions": {
+   "ours": [
+    "VDataCache003"
+   ],
+   "retail": [
+    "VDataCache003"
+   ],
+   "sdk2013": [
+    "VDataCache003"
+   ]
+  }
+ },
+ "IDataCacheClient": {
+  "headers": [
+   "public/datacache/idatacache.h"
+  ],
+  "reference": "bin/engine:CAsyncWavDataCache",
+  "retail_len": 2,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 2,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IDataCacheSection": {
+  "headers": [
+   "public/datacache/idatacache.h"
+  ],
+  "reference": "bin/datacache:CDataCacheSection",
+  "retail_len": 30,
+  "retail_len_basis": "override: OnAdd/DoFind/OnRemove are CDataCacheSection's own",
+  "sdk2013_len": 30,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IDebugTextureInfo": {
+  "headers": [
+   "public/materialsystem/idebugtextureinfo.h"
+  ],
+  "reference": "bin/shaderapidx9:CShaderAPIDx8",
+  "retail_len": 6,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 6,
+  "versions": {
+   "ours": [
+    "DebugTextureInfo001"
+   ],
+   "retail": [
+    "DebugTextureInfo001"
+   ],
+   "sdk2013": [
+    "DebugTextureInfo001"
+   ]
+  }
+ },
+ "IDedicatedServerAPI": {
+  "headers": [
+   "public/engine_hlds_api.h"
+  ],
+  "reference": "bin/engine:CDedicatedServerAPI",
+  "retail_len": 11,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 11,
+  "versions": {
+   "ours": [
+    "VENGINE_HLDS_API_VERSION002"
+   ],
+   "retail": [
+    "VENGINE_HLDS_API_VERSION002"
+   ],
+   "sdk2013": [
+    "VENGINE_HLDS_API_VERSION002"
+   ]
+  }
+ },
+ "IDownloadSystem": {
+  "headers": [
+   "common/engine/idownloadsystem.h"
+  ],
+  "reference": "bin/engine:CDownloadSystem",
+  "retail_len": 3,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [
+    "DownloadSystem001"
+   ],
+   "retail": [
+    "DownloadSystem001"
+   ],
+   "sdk2013": []
+  }
+ },
+ "IEffects": {
+  "headers": [],
+  "reference": "episodic/client:CEffectsClient",
+  "retail_len": 13,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [
+    "IEffects001"
+   ],
+   "retail": [
+    "IEffects001"
+   ],
+   "sdk2013": [
+    "IEffects001"
+   ]
+  }
+ },
+ "IEngineAPI": {
+  "headers": [
+   "common/engine_launcher_api.h"
+  ],
+  "reference": "bin/engine:CEngineAPI",
+  "retail_len": 12,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [
+    "VENGINE_LAUNCHER_API_VERSION004"
+   ],
+   "retail": [
+    "VENGINE_LAUNCHER_API_VERSION004"
+   ],
+   "sdk2013": []
+  }
+ },
+ "IEngineClientReplay": {
+  "headers": [
+   "common/replay/ienginereplay.h"
+  ],
+  "reference": "bin/engine:CEngineClientReplay",
+  "retail_len": 26,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 26,
+  "versions": {
+   "ours": [
+    "EngineClientReplay001"
+   ],
+   "retail": [
+    "EngineClientReplay001"
+   ],
+   "sdk2013": [
+    "EngineClientReplay001"
+   ]
+  }
+ },
+ "IEngineReplay": {
+  "headers": [
+   "common/replay/ienginereplay.h"
+  ],
+  "reference": "bin/engine:CEngineReplay",
+  "retail_len": 27,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 27,
+  "versions": {
+   "ours": [
+    "EngineReplay001"
+   ],
+   "retail": [
+    "EngineReplay001"
+   ],
+   "sdk2013": [
+    "EngineReplay001"
+   ]
+  }
+ },
+ "IEngineSound": {
+  "headers": [
+   "public/engine/IEngineSound.h"
+  ],
+  "reference": "bin/engine:CEngineSoundClient",
+  "retail_len": 21,
+  "retail_len_basis": "first implementer destructor",
+  "sdk2013_len": 21,
+  "versions": {
+   "ours": [
+    "IEngineSoundClient003",
+    "IEngineSoundServer003"
+   ],
+   "retail": [
+    "IEngineSoundClient003",
+    "IEngineSoundServer003"
+   ],
+   "sdk2013": [
+    "IEngineSoundClient003",
+    "IEngineSoundServer003"
+   ]
+  }
+ },
+ "IEngineTool": {
+  "headers": [
+   "public/toolframework/ienginetool.h"
+  ],
+  "reference": "bin/engine:CEngineTool",
+  "retail_len": 85,
+  "retail_len_basis": "override: SetIsInGame belongs to the engine-internal tool interface",
+  "sdk2013_len": 85,
+  "versions": {
+   "ours": [
+    "VENGINETOOL003"
+   ],
+   "retail": [
+    "VENGINETOOL003"
+   ],
+   "sdk2013": [
+    "VENGINETOOL003"
+   ]
+  }
+ },
+ "IEngineToolFramework": {
+  "headers": [
+   "public/toolframework/ienginetool.h"
+  ],
+  "reference": "bin/engine:CEngineTool",
+  "retail_len": 10,
+  "retail_len_basis": "first own method of IEngineTool",
+  "sdk2013_len": 10,
+  "versions": {
+   "ours": [
+    "VENGINETOOLFRAMEWORK003"
+   ],
+   "retail": [
+    "VENGINETOOLFRAMEWORK003"
+   ],
+   "sdk2013": [
+    "VENGINETOOLFRAMEWORK003"
+   ]
+  }
+ },
+ "IEngineTrace": {
+  "headers": [
+   "public/engine/IEngineTrace.h"
+  ],
+  "reference": "bin/engine:CEngineTraceClient",
+  "retail_len": 18,
+  "retail_len_basis": "override: extra slots are CEngineTrace's own",
+  "sdk2013_len": 18,
+  "versions": {
+   "ours": [
+    "EngineTraceClient003",
+    "EngineTraceServer003"
+   ],
+   "retail": [
+    "EngineTraceClient003",
+    "EngineTraceServer003"
+   ],
+   "sdk2013": [
+    "EngineTraceClient003",
+    "EngineTraceServer003"
+   ]
+  }
+ },
+ "IEngineVGui": {
+  "headers": [
+   "public/ienginevgui.h"
+  ],
+  "reference": "bin/engine:CEngineVGui",
+  "retail_len": 4,
+  "retail_len_basis": "override: next slots belong to IEngineVGuiInternal",
+  "sdk2013_len": 4,
+  "versions": {
+   "ours": [
+    "VEngineVGui001"
+   ],
+   "retail": [
+    "VEngineVGui001"
+   ],
+   "sdk2013": [
+    "VEngineVGui001"
+   ]
+  }
+ },
+ "IEntityEnumerator": {
+  "headers": [
+   "public/engine/IEngineTrace.h"
+  ],
+  "reference": "episodic/server:CCollideList",
+  "retail_len": 1,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 1,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IFileList": {
+  "headers": [
+   "public/ifilelist.h"
+  ],
+  "reference": "bin/filesystem_stdio:FileListToUnloadForWhitelistChange",
+  "retail_len": 2,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 2,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IFileReadBinary": {
+  "headers": [
+   "public/tier2/riff.h"
+  ],
+  "reference": "bin/engine:COM_IOReadBinary",
+  "retail_len": 6,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 6,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IFileSystem": {
+  "headers": [
+   "public/filesystem.h"
+  ],
+  "reference": "bin/filesystem_stdio:CFileSystem_Stdio",
+  "retail_len": 123,
+  "retail_len_basis": "override: slots 123+ are CBaseFileSystem overrides of the secondary base IBaseFileSystem",
+  "sdk2013_len": 112,
+  "versions": {
+   "ours": [
+    "VFileSystem022"
+   ],
+   "retail": [
+    "VFileSystem022"
+   ],
+   "sdk2013": [
+    "VFileSystem022"
+   ]
+  }
+ },
+ "IGameClientExports": {
+  "headers": [
+   "public/game/client/IGameClientExports.h"
+  ],
+  "reference": "episodic/client:CGameClientExports",
+  "retail_len": 12,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [
+    "GameClientExports001"
+   ],
+   "retail": [
+    "GameClientExports001"
+   ],
+   "sdk2013": [
+    "GameClientExports001"
+   ]
+  }
+ },
+ "IGameConsole": {
+  "headers": [
+   "common/GameUI/IGameConsole.h"
+  ],
+  "reference": "bin/GameUI:CGameConsole",
+  "retail_len": 8,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [
+    "GameConsole004"
+   ],
+   "retail": [
+    "GameConsole004"
+   ],
+   "sdk2013": []
+  }
+ },
+ "IGameEvent": {
+  "headers": [
+   "public/igameevents.h"
+  ],
+  "reference": "bin/engine:CGameEvent",
+  "retail_len": 14,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 14,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IGameEventListener2": {
+  "headers": [
+   "public/igameevents.h"
+  ],
+  "reference": "bin/engine:IGameEventListener2",
+  "retail_len": 3,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 3,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IGameEventManager": {
+  "headers": [
+   "public/igameevents.h"
+  ],
+  "reference": "bin/engine:CGameEventManagerOld",
+  "retail_len": 13,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 13,
+  "versions": {
+   "ours": [
+    "GAMEEVENTSMANAGER001",
+    "GAMEEVENTSMANAGER002"
+   ],
+   "retail": [
+    "GAMEEVENTSMANAGER001"
+   ],
+   "sdk2013": [
+    "GAMEEVENTSMANAGER001",
+    "GAMEEVENTSMANAGER002"
+   ]
+  }
+ },
+ "IGameEventManager2": {
+  "headers": [
+   "public/igameevents.h"
+  ],
+  "reference": "bin/engine:CGameEventManager",
+  "retail_len": 14,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 14,
+  "versions": {
+   "ours": [
+    "GAMEEVENTSMANAGER001",
+    "GAMEEVENTSMANAGER002"
+   ],
+   "retail": [
+    "GAMEEVENTSMANAGER002"
+   ],
+   "sdk2013": [
+    "GAMEEVENTSMANAGER001",
+    "GAMEEVENTSMANAGER002"
+   ]
+  }
+ },
+ "IGameMovement": {
+  "headers": [],
+  "reference": "episodic/client:CGameMovement",
+  "retail_len": 56,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [
+    "GameMovement001"
+   ],
+   "retail": [
+    "GameMovement001"
+   ],
+   "sdk2013": [
+    "GameMovement001"
+   ]
+  }
+ },
+ "IGameResources": {
+  "headers": [
+   "public/igameresources.h"
+  ],
+  "reference": "episodic/client:C_PlayerResource",
+  "retail_len": 16,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 16,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IGameServerData": {
+  "headers": [
+   "common/igameserverdata.h"
+  ],
+  "reference": "bin/engine:CServerRemoteAccess",
+  "retail_len": 6,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [
+    "GameServerData001"
+   ],
+   "retail": [
+    "GameServerData001"
+   ],
+   "sdk2013": []
+  }
+ },
+ "IGameUI": {
+  "headers": [
+   "common/GameUI/IGameUI.h"
+  ],
+  "reference": "bin/GameUI:CGameUI",
+  "retail_len": 38,
+  "retail_len_basis": "override: extra slots are CGameUI's own",
+  "sdk2013_len": 38,
+  "versions": {
+   "ours": [
+    "GameUI011"
+   ],
+   "retail": [
+    "GameUI011"
+   ],
+   "sdk2013": [
+    "GameUI011"
+   ]
+  }
+ },
+ "IGameUIFuncs": {
+  "headers": [
+   "public/IGameUIFuncs.h"
+  ],
+  "reference": "bin/engine:CGameUIFuncs",
+  "retail_len": 7,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 7,
+  "versions": {
+   "ours": [
+    "VENGINE_GAMEUIFUNCS_VERSION005"
+   ],
+   "retail": [
+    "VENGINE_GAMEUIFUNCS_VERSION005"
+   ],
+   "sdk2013": [
+    "VENGINE_GAMEUIFUNCS_VERSION005"
+   ]
+  }
+ },
+ "IHLTVDirector": {
+  "headers": [
+   "public/ihltvdirector.h"
+  ],
+  "reference": "episodic/server:CHLTVDirector",
+  "retail_len": 10,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 10,
+  "versions": {
+   "ours": [
+    "HLTVDirector001"
+   ],
+   "retail": [
+    "HLTVDirector001"
+   ],
+   "sdk2013": [
+    "HLTVDirector001"
+   ]
+  }
+ },
+ "IHLTVServer": {
+  "headers": [
+   "public/ihltv.h"
+  ],
+  "reference": "bin/engine:CHLTVServer",
+  "retail_len": 12,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 12,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IHTMLChromeController": {
+  "headers": [],
+  "reference": "bin/chromehtml:CHTMLController",
+  "retail_len": 15,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 15,
+  "versions": {
+   "ours": [],
+   "retail": [
+    "ChromeHTML_Controller_001"
+   ],
+   "sdk2013": [
+    "ChromeHTML_Controller_001"
+   ]
+  }
+ },
+ "IHandleEntity": {
+  "headers": [
+   "public/ihandleentity.h"
+  ],
+  "reference": "episodic/client:C_BaseTempEntity",
+  "retail_len": 4,
+  "retail_len_basis": "override: next slots belong to IClientUnknown/IServerUnknown",
+  "sdk2013_len": 4,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IIndexBuffer": {
+  "headers": [
+   "public/materialsystem/imesh.h"
+  ],
+  "reference": "bin/materialsystem:CDummyMesh",
+  "retail_len": 14,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 14,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IInput": {
+  "headers": [
+   "public/vgui/IInput.h"
+  ],
+  "reference": "hl2mp/client:CHLInput",
+  "retail_len": 51,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [
+    "VGUI_Input005"
+   ],
+   "retail": [
+    "VGUI_Input005"
+   ],
+   "sdk2013": [
+    "VGUI_Input005"
+   ]
+  }
+ },
+ "IInputInternal": {
+  "headers": [
+   "public/vgui/IInputInternal.h"
+  ],
+  "status": "no retail vtable",
+  "versions": {
+   "ours": [
+    "VGUI_InputInternal001"
+   ],
+   "retail": [
+    "VGUI_InputInternal001"
+   ],
+   "sdk2013": [
+    "VGUI_InputInternal001"
+   ]
+  }
+ },
+ "IInputSystem": {
+  "headers": [
+   "public/inputsystem/iinputsystem.h"
+  ],
+  "reference": "bin/inputsystem:CInputSystem",
+  "retail_len": 56,
+  "retail_len_basis": "first implementer destructor",
+  "sdk2013_len": 41,
+  "versions": {
+   "ours": [
+    "InputSystemVersion001"
+   ],
+   "retail": [
+    "InputSystemVersion001"
+   ],
+   "sdk2013": [
+    "InputSystemVersion001"
+   ]
+  }
+ },
+ "IKeyValuesSystem": {
+  "headers": [
+   "public/vstdlib/IKeyValuesSystem.h"
+  ],
+  "reference": "bin/libvstdlib:CKeyValuesSystem",
+  "retail_len": 7,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 7,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "ILaunchableDLL": {
+  "headers": [
+   "public/ilaunchabledll.h"
+  ],
+  "reference": "bin/vtex_dll:CVTex",
+  "retail_len": 1,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 1,
+  "versions": {
+   "ours": [],
+   "retail": [
+    "launchable_dll_1"
+   ],
+   "sdk2013": []
+  }
+ },
+ "ILauncherMgr": {
+  "headers": [
+   "public/appframework/ilaunchermgr.h"
+  ],
+  "reference": "bin/launcher:CSDLMgr",
+  "retail_len": 38,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 38,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "ILoaderProgress": {
+  "headers": [
+   "public/filesystem/IQueuedLoader.h"
+  ],
+  "reference": "bin/engine:CLoaderProgress",
+  "retail_len": 3,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 3,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "ILocalize": {
+  "headers": [
+   "public/tier1/ilocalize.h",
+   "public/vgui/ILocalize.h"
+  ],
+  "reference": "bin/vgui2:CLocalizedStringTable",
+  "retail_len": 18,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 18,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IMDLCache": {
+  "headers": [
+   "public/datacache/imdlcache.h"
+  ],
+  "reference": "bin/datacache:CMDLCache",
+  "retail_len": 45,
+  "retail_len_basis": "override: VerifyHeaders/CacheVertexData are CMDLCache's own; HandleCacheNotification/GetItemName override the secondary base IDataCacheClient",
+  "sdk2013_len": 45,
+  "versions": {
+   "ours": [
+    "MDLCache004"
+   ],
+   "retail": [
+    "MDLCache004"
+   ],
+   "sdk2013": [
+    "MDLCache004"
+   ]
+  }
+ },
+ "IMDLCacheNotify": {
+  "headers": [
+   "public/datacache/imdlcache.h"
+  ],
+  "reference": "bin/engine:CMDLCacheNotify",
+  "retail_len": 2,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 2,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IManipulator": {
+  "headers": [
+   "public/matsys_controls/manipulator.h"
+  ],
+  "reference": "episodic/client:CPotteryWheelManip",
+  "retail_len": 9,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 9,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IMatRenderContext": {
+  "headers": [
+   "public/materialsystem/imaterialsystem.h"
+  ],
+  "reference": "bin/materialsystem:CDummyMaterialSystem",
+  "retail_len": 198,
+  "retail_len_basis": "first implementer destructor",
+  "sdk2013_len": 196,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IMatSystemSurface": {
+  "headers": [
+   "public/VGuiMatSurface/IMatSystemSurface.h",
+   "public/VGuiMatSurface/IMatSystemSurfaceV5.h"
+  ],
+  "reference": "bin/vguimatsurface:CMatSystemSurface",
+  "retail_len": 175,
+  "retail_len_basis": "first implementer destructor",
+  "sdk2013_len": 174,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IMatchmaking": {
+  "headers": [
+   "public/engine/imatchmaking.h"
+  ],
+  "reference": "bin/engine:CMatchmaking",
+  "retail_len": 22,
+  "retail_len_basis": "first implementer destructor",
+  "sdk2013_len": 22,
+  "versions": {
+   "ours": [
+    "VENGINE_MATCHMAKING_VERSION001"
+   ],
+   "retail": [
+    "VENGINE_MATCHMAKING_VERSION001"
+   ],
+   "sdk2013": [
+    "VENGINE_MATCHMAKING_VERSION001"
+   ]
+  }
+ },
+ "IMatchmakingMessageHandler": {
+  "headers": [
+   "public/inetmsghandler.h"
+  ],
+  "reference": "bin/engine:CMatchmaking",
+  "retail_len": 13,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 13,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IMaterial": {
+  "headers": [
+   "public/materialsystem/imaterial.h"
+  ],
+  "reference": "bin/materialsystem:CDummyMaterial",
+  "retail_len": 57,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 57,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IMaterialProxy": {
+  "headers": [
+   "public/materialsystem/imaterialproxy.h"
+  ],
+  "reference": "bin/materialsystem:CReplacementProxy",
+  "retail_len": 6,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 6,
+  "versions": {
+   "ours": [],
+   "retail": [
+    "Abs_IMaterialProxy003",
+    "Add_IMaterialProxy003",
+    "Alpha_IMaterialProxy003",
+    "AnimateSpecificTexture_IMaterialProxy003",
+    "AnimatedEntityTexture_IMaterialProxy003",
+    "AnimatedOffsetTexture_IMaterialProxy003",
+    "AnimatedTexture_IMaterialProxy003",
+    "BreakableSurface_IMaterialProxy003",
+    "Camo_IMaterialProxy003",
+    "Clamp_IMaterialProxy003",
+    "ConveyorScroll_IMaterialProxy003",
+    "CurrentTime_IMaterialProxy003",
+    "Divide_IMaterialProxy003",
+    "Dummy_IMaterialProxy003",
+    "Empty_IMaterialProxy003",
+    "EntityOriginAlyx_IMaterialProxy003",
+    "EntityOrigin_IMaterialProxy003",
+    "EntityRandom_IMaterialProxy003",
+    "EntitySpeed_IMaterialProxy003",
+    "Ep1IntroVortRefract_IMaterialProxy003",
+    "Equals_IMaterialProxy003",
+    "Exponential_IMaterialProxy003",
+    "FleshInterior_IMaterialProxy003",
+    "Frac_IMaterialProxy003",
+    "GaussianNoise_IMaterialProxy003",
+    "Health_IMaterialProxy003",
+    "HeliBlade_IMaterialProxy003",
+    "Int_IMaterialProxy003",
+    "IsNPC_IMaterialProxy003",
+    "LessOrEqual_IMaterialProxy003",
+    "LinearRamp_IMaterialProxy003",
+    "MaterialModifyAnimated_IMaterialProxy003",
+    "MaterialModify_IMaterialProxy003",
+    "MatrixRotate_IMaterialProxy003",
+    "MotionBlur_IMaterialProxy003",
+    "Multiply_IMaterialProxy003",
+    "ParticleSphereProxy_IMaterialProxy003",
+    "PlayerLogo_IMaterialProxy003",
+    "PlayerPosition_IMaterialProxy003",
+    "PlayerProximity_IMaterialProxy003",
+    "PlayerSpeed_IMaterialProxy003",
+    "PlayerTeamMatch_IMaterialProxy003",
+    "PlayerView_IMaterialProxy003",
+    "Pupil_IMaterialProxy003",
+    "SelectFirstIfNonZero_IMaterialProxy003",
+    "ShadowModel_IMaterialProxy003",
+    "Shadow_IMaterialProxy003",
+    "Shield_IMaterialProxy003",
+    "Sine_IMaterialProxy003",
+    "Subtract_IMaterialProxy003",
+    "TextureScroll_IMaterialProxy003",
+    "TextureTransform_IMaterialProxy003",
+    "ToggleTexture_IMaterialProxy003",
+    "UniformNoise_IMaterialProxy003",
+    "VortEmissive_IMaterialProxy003",
+    "WaterLOD_IMaterialProxy003",
+    "WorldDims_IMaterialProxy003",
+    "WrapMinMax_IMaterialProxy003",
+    "engine_post_IMaterialProxy003",
+    "lampbeam_IMaterialProxy003",
+    "lamphalo_IMaterialProxy003",
+    "replace_proxy_IMaterialProxy003"
+   ],
+   "sdk2013": []
+  }
+ },
+ "IMaterialProxyFactory": {
+  "headers": [
+   "public/materialsystem/imaterialproxyfactory.h"
+  ],
+  "reference": "bin/engine:CMaterialProxyFactory",
+  "retail_len": 2,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 2,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IMaterialSystem": {
+  "headers": [
+   "public/materialsystem/imaterialsystem.h"
+  ],
+  "reference": "bin/materialsystem:CMaterialSystem",
+  "retail_len": 127,
+  "retail_len_basis": "override: IMaterialSystemInternal starts at GetCurrentMaterial",
+  "sdk2013_len": 126,
+  "versions": {
+   "ours": [
+    "VMaterialSystem080"
+   ],
+   "retail": [
+    "VMaterialSystem080"
+   ],
+   "sdk2013": [
+    "VMaterialSystem080"
+   ]
+  }
+ },
+ "IMaterialSystemHardwareConfig": {
+  "headers": [
+   "public/materialsystem/imaterialsystemhardwareconfig.h"
+  ],
+  "reference": "bin/shaderapiempty:CShaderAPIEmpty",
+  "retail_len": 73,
+  "retail_len_basis": "override: GetHWSpecificShaderDLLName belongs to IHardwareConfigInternal",
+  "sdk2013_len": 73,
+  "versions": {
+   "ours": [
+    "MaterialSystemHardwareConfig012"
+   ],
+   "retail": [
+    "MaterialSystemHardwareConfig012"
+   ],
+   "sdk2013": [
+    "MaterialSystemHardwareConfig012"
+   ]
+  }
+ },
+ "IMaterialSystemStub": {
+  "headers": [
+   "public/materialsystem/imaterialsystemstub.h"
+  ],
+  "reference": "bin/materialsystem:CDummyMaterialSystem",
+  "retail_len": 334,
+  "retail_len_basis": "first implementer destructor",
+  "sdk2013_len": 127,
+  "versions": {
+   "ours": [
+    "VMaterialSystemStub001"
+   ],
+   "retail": [
+    "VMaterialSystemStub001"
+   ],
+   "sdk2013": [
+    "VMaterialSystemStub001"
+   ]
+  }
+ },
+ "IMaterialVar": {
+  "headers": [
+   "public/materialsystem/imaterialvar.h"
+  ],
+  "reference": "bin/materialsystem:CDummyMaterialVar",
+  "retail_len": 31,
+  "retail_len_basis": "override: operator ITexture* / GetType are implementer virtuals",
+  "sdk2013_len": 31,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IMesh": {
+  "headers": [
+   "public/materialsystem/imesh.h"
+  ],
+  "reference": "bin/materialsystem:CDummyMesh",
+  "retail_len": 28,
+  "retail_len_basis": "override: slots 28+ override the secondary base IIndexBuffer",
+  "sdk2013_len": 28,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IModelLoadCallback": {
+  "headers": [
+   "public/engine/ivmodelinfo.h"
+  ],
+  "reference": "episodic/client:IModelLoadCallback",
+  "retail_len": 1,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 1,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IMorph": {
+  "headers": [
+   "public/materialsystem/imorph.h"
+  ],
+  "reference": "bin/materialsystem:CDummyMorph",
+  "retail_len": 3,
+  "retail_len_basis": "override: AccumulateMorph belongs to the internal morph interface",
+  "sdk2013_len": 3,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IMotionEvent": {
+  "headers": [
+   "public/vphysics_interface.h",
+   "public/vphysics_interfaceV30.h"
+  ],
+  "reference": "episodic/client:C_EntityDissolve",
+  "retail_len": 1,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 1,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "INetChannel": {
+  "headers": [
+   "common/networksystem/inetworksystem.h",
+   "public/inetchannel.h"
+  ],
+  "reference": "bin/engine:CNetChan",
+  "retail_len": 72,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 72,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "INetChannelHandler": {
+  "headers": [
+   "public/inetmsghandler.h"
+  ],
+  "reference": "bin/engine:CMatchmaking",
+  "retail_len": 11,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 11,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "INetChannelInfo": {
+  "headers": [
+   "public/inetchannelinfo.h"
+  ],
+  "reference": "bin/engine:CNetChan",
+  "retail_len": 26,
+  "retail_len_basis": "first implementer destructor",
+  "sdk2013_len": 26,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "INetMessage": {
+  "headers": [
+   "public/inetmessage.h"
+  ],
+  "reference": "bin/engine:CLC_BaselineAck",
+  "retail_len": 13,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 13,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "INetMessageHandler": {
+  "headers": [
+   "public/inetmsghandler.h"
+  ],
+  "reference": "bin/engine:CMatchmaking",
+  "retail_len": 6,
+  "retail_len_basis": "first own method of IMatchmakingMessageHandler",
+  "sdk2013_len": 6,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "INetworkStringTable": {
+  "headers": [
+   "public/networkstringtabledefs.h"
+  ],
+  "reference": "bin/engine:CNetworkStringTable",
+  "retail_len": 15,
+  "retail_len_basis": "override: Dump/Lock are CNetworkStringTable's own",
+  "sdk2013_len": 15,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "INetworkStringTableContainer": {
+  "headers": [
+   "public/networkstringtabledefs.h"
+  ],
+  "reference": "bin/engine:CNetworkStringTableContainer",
+  "retail_len": 9,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 9,
+  "versions": {
+   "ours": [
+    "VEngineClientStringTable001"
+   ],
+   "retail": [
+    "VEngineClientStringTable001"
+   ],
+   "sdk2013": [
+    "VEngineClientStringTable001"
+   ]
+  }
+ },
+ "IPVSNotify": {
+  "headers": [
+   "public/iclientrenderable.h"
+  ],
+  "reference": "episodic/client:C_ClientRagdoll",
+  "retail_len": 1,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 1,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IParticleOperatorDefinition": {
+  "headers": [
+   "public/particles/particles.h"
+  ],
+  "reference": "episodic/client:CChildOperatorDefinition",
+  "retail_len": 6,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IParticleSystemQuery": {
+  "headers": [
+   "public/particles/particles.h"
+  ],
+  "reference": "episodic/client:CParticleSystemQuery",
+  "retail_len": 16,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [
+    "VParticleSystemQuery001"
+   ],
+   "retail": [
+    "VParticleSystemQuery001"
+   ],
+   "sdk2013": [
+    "VParticleSystemQuery001"
+   ]
+  }
+ },
+ "IPartitionEnumerator": {
+  "headers": [
+   "public/ispatialpartition.h"
+  ],
+  "reference": "bin/engine:CEntityListAlongRay",
+  "retail_len": 1,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 1,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IPartitionQueryCallback": {
+  "headers": [
+   "public/ispatialpartition.h"
+  ],
+  "reference": "episodic/client:CDirtySpatialPartitionEntityList",
+  "retail_len": 3,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 3,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IPhysics": {
+  "headers": [
+   "public/vphysics_interface.h",
+   "public/vphysics_interfaceV30.h"
+  ],
+  "reference": "bin/vphysics:CPhysicsInterface",
+  "retail_len": 13,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 13,
+  "versions": {
+   "ours": [
+    "VPhysics030",
+    "VPhysics031"
+   ],
+   "retail": [
+    "VPhysics031"
+   ],
+   "sdk2013": [
+    "VPhysics030",
+    "VPhysics031"
+   ]
+  }
+ },
+ "IPhysicsCollision": {
+  "headers": [
+   "public/vphysics_interface.h",
+   "public/vphysics_interfaceV30.h"
+  ],
+  "reference": "bin/vphysics:CPhysicsCollision",
+  "retail_len": 53,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 53,
+  "versions": {
+   "ours": [
+    "VPhysicsCollision007"
+   ],
+   "retail": [
+    "VPhysicsCollision007"
+   ],
+   "sdk2013": [
+    "VPhysicsCollision007"
+   ]
+  }
+ },
+ "IPhysicsCollisionData": {
+  "headers": [
+   "public/vphysics_interface.h",
+   "public/vphysics_interfaceV30.h"
+  ],
+  "reference": "bin/vphysics:CAirboatFrictionData",
+  "retail_len": 3,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 3,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IPhysicsCollisionEvent": {
+  "headers": [
+   "public/vphysics_interface.h",
+   "public/vphysics_interfaceV30.h"
+  ],
+  "reference": "bin/vphysics:CEmptyCollisionListener",
+  "retail_len": 10,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 10,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IPhysicsCollisionSet": {
+  "headers": [
+   "public/vphysics/collision_set.h"
+  ],
+  "reference": "bin/vphysics:CPhysicsCollisionSet",
+  "retail_len": 3,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 3,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IPhysicsCollisionSolver": {
+  "headers": [
+   "public/vphysics_interface.h",
+   "public/vphysics_interfaceV30.h"
+  ],
+  "reference": "episodic/client:CCollisionEvent",
+  "retail_len": 5,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 5,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IPhysicsConstraint": {
+  "headers": [
+   "public/vphysics/constraints.h"
+  ],
+  "reference": "bin/vphysics:CPhysicsConstraint",
+  "retail_len": 14,
+  "retail_len_basis": "override: event_object_* come from the IVP listener base",
+  "sdk2013_len": 14,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IPhysicsConstraintEvent": {
+  "headers": [
+   "public/vphysics_interface.h",
+   "public/vphysics_interfaceV30.h"
+  ],
+  "reference": "episodic/server:CPhysConstraintEvents",
+  "retail_len": 1,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 1,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IPhysicsConstraintGroup": {
+  "headers": [
+   "public/vphysics/constraints.h"
+  ],
+  "reference": "bin/vphysics:CPhysicsConstraintGroup",
+  "retail_len": 8,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 8,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IPhysicsEnvironment": {
+  "headers": [
+   "public/vphysics_interface.h",
+   "public/vphysics_interfaceV30.h"
+  ],
+  "reference": "bin/vphysics:CPhysicsEnvironment",
+  "retail_len": 68,
+  "retail_len_basis": "override: extra slots are CPhysicsEnvironment's own",
+  "sdk2013_len": 68,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IPhysicsFluidController": {
+  "headers": [
+   "public/vphysics_interface.h",
+   "public/vphysics_interfaceV30.h"
+  ],
+  "reference": "bin/vphysics:CPhysicsFluidController",
+  "retail_len": 8,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 8,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IPhysicsFrictionSnapshot": {
+  "headers": [
+   "public/vphysics/friction.h"
+  ],
+  "reference": "bin/vphysics:CFrictionSnapshot",
+  "retail_len": 15,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 15,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IPhysicsGameTrace": {
+  "headers": [
+   "public/vphysics_interface.h",
+   "public/vphysics_interfaceV30.h"
+  ],
+  "reference": "episodic/client:CPhysicsGameTrace",
+  "retail_len": 3,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 3,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IPhysicsMotionController": {
+  "headers": [
+   "public/vphysics_interface.h",
+   "public/vphysics_interfaceV30.h"
+  ],
+  "reference": "bin/vphysics:CPhysicsMotionController",
+  "retail_len": 10,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 10,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IPhysicsObject": {
+  "headers": [
+   "public/vphysics_interface.h",
+   "public/vphysics_interfaceV30.h"
+  ],
+  "reference": "bin/vphysics:CPhysicsObject",
+  "retail_len": 83,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 83,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IPhysicsObjectEvent": {
+  "headers": [
+   "public/vphysics_interface.h",
+   "public/vphysics_interfaceV30.h"
+  ],
+  "reference": "episodic/client:CCollisionEvent",
+  "retail_len": 2,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 2,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IPhysicsObjectPairHash": {
+  "headers": [
+   "public/vphysics/object_hash.h"
+  ],
+  "reference": "bin/vphysics:CObjectPairHash",
+  "retail_len": 9,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 9,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IPhysicsPlayerController": {
+  "headers": [
+   "public/vphysics/player_controller.h"
+  ],
+  "reference": "bin/vphysics:CPlayerController",
+  "retail_len": 18,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 18,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IPhysicsPlayerControllerEvent": {
+  "headers": [
+   "public/vphysics/player_controller.h"
+  ],
+  "reference": "episodic/server:CPhysicsPlayerCallback",
+  "retail_len": 1,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 1,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IPhysicsShadowController": {
+  "headers": [
+   "public/vphysics_interface.h",
+   "public/vphysics_interfaceV30.h"
+  ],
+  "reference": "bin/vphysics:CShadowController",
+  "retail_len": 16,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 16,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IPhysicsSpring": {
+  "headers": [
+   "public/vphysics_interface.h",
+   "public/vphysics_interfaceV30.h"
+  ],
+  "reference": "bin/vphysics:CPhysicsSpring",
+  "retail_len": 8,
+  "retail_len_basis": "override: event_object_* come from the IVP listener base",
+  "sdk2013_len": 8,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IPhysicsSurfaceProps": {
+  "headers": [
+   "public/vphysics_interface.h",
+   "public/vphysics_interfaceV30.h"
+  ],
+  "reference": "bin/vphysics:CPhysicsSurfaceProps",
+  "retail_len": 11,
+  "retail_len_basis": "override: extra slots are CPhysicsSurfaceProps's own IVP helpers",
+  "sdk2013_len": 11,
+  "versions": {
+   "ours": [
+    "VPhysicsSurfaceProps001"
+   ],
+   "retail": [
+    "VPhysicsSurfaceProps001"
+   ],
+   "sdk2013": [
+    "VPhysicsSurfaceProps001"
+   ]
+  }
+ },
+ "IPhysicsVehicleController": {
+  "headers": [
+   "public/vphysics/vehicles.h"
+  ],
+  "reference": "bin/vphysics:CVehicleController",
+  "retail_len": 18,
+  "retail_len_basis": "override: event_object_* come from the IVP listener base",
+  "sdk2013_len": 18,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IPlayerInfo": {
+  "headers": [
+   "public/game/server/iplayerinfo.h"
+  ],
+  "reference": "episodic/server:CPlayerInfo",
+  "retail_len": 25,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 25,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IPlayerInfoManager": {
+  "headers": [
+   "public/game/server/iplayerinfo.h"
+  ],
+  "reference": "episodic/server:CPlayerInfoManager",
+  "retail_len": 2,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 2,
+  "versions": {
+   "ours": [
+    "PlayerInfoManager002"
+   ],
+   "retail": [
+    "PlayerInfoManager002"
+   ],
+   "sdk2013": [
+    "PlayerInfoManager002"
+   ]
+  }
+ },
+ "IPluginHelpersCheck": {
+  "headers": [
+   "public/eiface.h"
+  ],
+  "reference": "episodic/server:CPluginHelpersCheck",
+  "retail_len": 1,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 1,
+  "versions": {
+   "ours": [
+    "PluginHelpersCheck001"
+   ],
+   "retail": [
+    "PluginHelpersCheck001"
+   ],
+   "sdk2013": [
+    "PluginHelpersCheck001"
+   ]
+  }
+ },
+ "IPoseDebugger": {
+  "headers": [
+   "public/posedebugger.h"
+  ],
+  "reference": "episodic/client:CPoseDebuggerImpl",
+  "retail_len": 2,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IPrediction": {
+  "headers": [
+   "public/iprediction.h"
+  ],
+  "reference": "episodic/client:CPrediction",
+  "retail_len": 15,
+  "retail_len_basis": "override: extra slots are CPrediction's own",
+  "sdk2013_len": 15,
+  "versions": {
+   "ours": [
+    "VClientPrediction001"
+   ],
+   "retail": [
+    "VClientPrediction001"
+   ],
+   "sdk2013": [
+    "VClientPrediction001"
+   ]
+  }
+ },
+ "IPureServerWhitelist": {
+  "headers": [
+   "public/filesystem.h"
+  ],
+  "reference": "bin/engine:CPureServerWhitelist",
+  "retail_len": 5,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 5,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IQueryableReplayItem": {
+  "headers": [
+   "common/replay/iqueryablereplayitem.h"
+  ],
+  "reference": "bin/replay:CReplayMovie",
+  "retail_len": 13,
+  "retail_len_basis": "first own method of IReplayMovie",
+  "sdk2013_len": 13,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IQueuedLoader": {
+  "headers": [
+   "public/filesystem/IQueuedLoader.h"
+  ],
+  "reference": "bin/filesystem_stdio:CQueuedLoader",
+  "retail_len": 23,
+  "retail_len_basis": "first implementer destructor",
+  "sdk2013_len": 23,
+  "versions": {
+   "ours": [
+    "QueuedLoaderVersion004"
+   ],
+   "retail": [
+    "QueuedLoaderVersion004"
+   ],
+   "sdk2013": [
+    "QueuedLoaderVersion004"
+   ]
+  }
+ },
+ "IRecipientFilter": {
+  "headers": [
+   "public/irecipientfilter.h"
+  ],
+  "reference": "bin/engine:CEngineRecipientFilter",
+  "retail_len": 6,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 6,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IRecordingSession": {
+  "headers": [
+   "common/replay/irecordingsession.h"
+  ],
+  "reference": "bin/replay:CBaseRecordingSession",
+  "retail_len": 3,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 3,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IRecordingSessionBlockManager": {
+  "headers": [
+   "common/replay/irecordingsessionblockmanager.h"
+  ],
+  "reference": "bin/replay:CBaseRecordingSessionBlockManager",
+  "retail_len": 7,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IRecordingSessionManager": {
+  "headers": [
+   "common/replay/irecordingsessionmanager.h"
+  ],
+  "reference": "bin/replay:CBaseRecordingSessionManager",
+  "retail_len": 6,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 6,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IRefCounted": {
+  "headers": [
+   "public/tier1/refcount.h"
+  ],
+  "reference": "bin/engine:CFunctor0<void (*)(), CRefCounted1<CFunctor, CRefCountServiceBase<true, CRefMT>>>",
+  "retail_len": 2,
+  "retail_len_basis": "first implementer destructor",
+  "sdk2013_len": 2,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IRegistry": {
+  "headers": [
+   "public/iregistry.h"
+  ],
+  "reference": "bin/engine:CRegistry",
+  "retail_len": 12,
+  "retail_len_basis": "override: DirectInit is CRegistry's own",
+  "sdk2013_len": 12,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IReplayContext": {
+  "headers": [
+   "common/replay/ireplaycontext.h"
+  ],
+  "reference": "bin/replay:CServerReplayContext",
+  "retail_len": 13,
+  "retail_len_basis": "first own method of IServerReplayContext",
+  "sdk2013_len": 13,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IReplayDemoPlayer": {
+  "headers": [
+   "common/replay/ireplaydemoplayer.h"
+  ],
+  "reference": "bin/engine:CReplayDemoPlayer",
+  "retail_len": 12,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 12,
+  "versions": {
+   "ours": [
+    "ReplayDemoPlayer001"
+   ],
+   "retail": [
+    "ReplayDemoPlayer001"
+   ],
+   "sdk2013": [
+    "ReplayDemoPlayer001"
+   ]
+  }
+ },
+ "IReplayErrorSystem": {
+  "headers": [
+   "common/replay/ireplayerrorsystem.h"
+  ],
+  "reference": "bin/replay:CErrorSystem",
+  "retail_len": 4,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 4,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IReplayManager": {
+  "headers": [
+   "common/replay/ireplaymanager.h"
+  ],
+  "reference": "bin/replay:CReplayManager",
+  "retail_len": 13,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 13,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IReplayMovie": {
+  "headers": [
+   "common/replay/ireplaymovie.h"
+  ],
+  "reference": "bin/replay:CReplayMovie",
+  "retail_len": 29,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 29,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IReplayMovieManager": {
+  "headers": [
+   "common/replay/ireplaymoviemanager.h"
+  ],
+  "reference": "bin/replay:CReplayMovieManager",
+  "retail_len": 22,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 22,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IReplayPerformanceController": {
+  "headers": [
+   "common/replay/ireplayperformancecontroller.h"
+  ],
+  "reference": "bin/replay:CPerformanceController",
+  "retail_len": 29,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 29,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IReplayPerformanceManager": {
+  "headers": [
+   "common/replay/ireplayperformancemanager.h"
+  ],
+  "reference": "bin/replay:CReplayPerformanceManager",
+  "retail_len": 7,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 7,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IReplayRenderQueue": {
+  "headers": [
+   "common/replay/ireplayrenderqueue.h"
+  ],
+  "reference": "bin/replay:CRenderQueue",
+  "retail_len": 8,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 8,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IReplayScreenshotManager": {
+  "headers": [
+   "common/replay/ireplayscreenshotmanager.h"
+  ],
+  "reference": "bin/replay:CScreenshotManager",
+  "retail_len": 5,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 5,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IReplayScreenshotSystem": {
+  "headers": [
+   "common/replay/ireplayscreenshotsystem.h"
+  ],
+  "reference": "episodic/client:CViewRender",
+  "retail_len": 4,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 4,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IReplaySerializeable": {
+  "headers": [
+   "common/replay/ireplayserializeable.h"
+  ],
+  "reference": "bin/replay:CBaseRecordingSessionBlock",
+  "retail_len": 15,
+  "retail_len_basis": "first own method of CBaseReplaySerializeable",
+  "sdk2013_len": 15,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IReplayServer": {
+  "headers": [
+   "common/replay/ireplayserver.h"
+  ],
+  "reference": "bin/engine:CReplayServer",
+  "retail_len": 10,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 10,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IReplaySessionRecorder": {
+  "headers": [
+   "common/replay/ireplaysessionrecorder.h"
+  ],
+  "reference": "bin/replay:CSessionRecorder",
+  "retail_len": 5,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 5,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IReplaySystem": {
+  "headers": [
+   "common/replay/ireplaysystem.h"
+  ],
+  "reference": "bin/replay:CReplaySystem",
+  "retail_len": 20,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 20,
+  "versions": {
+   "ours": [
+    "ReplaySystem001"
+   ],
+   "retail": [
+    "ReplaySystem001"
+   ],
+   "sdk2013": [
+    "ReplaySystem001"
+   ]
+  }
+ },
+ "IResourcePreload": {
+  "headers": [
+   "public/filesystem/IQueuedLoader.h"
+  ],
+  "reference": "bin/engine:CResourcePreloadModel",
+  "retail_len": 4,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 4,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IRestore": {
+  "headers": [
+   "public/isaverestore.h"
+  ],
+  "reference": "episodic/client:CRestore",
+  "retail_len": 40,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 40,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IRunGameEngine": {
+  "headers": [
+   "common/IRunGameEngine.h"
+  ],
+  "reference": "bin/GameUI:CRunGameEngine",
+  "retail_len": 16,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [
+    "RunGameEngine005"
+   ],
+   "retail": [
+    "RunGameEngine005"
+   ],
+   "sdk2013": []
+  }
+ },
+ "ISave": {
+  "headers": [
+   "public/isaverestore.h"
+  ],
+  "reference": "episodic/client:CSave",
+  "retail_len": 50,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 50,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "ISaveRestoreBlockHandler": {
+  "headers": [
+   "public/isaverestore.h"
+  ],
+  "reference": "episodic/client:CEntitySaveRestoreBlockHandler",
+  "retail_len": 9,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 9,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "ISaveRestoreBlockSet": {
+  "headers": [
+   "public/isaverestore.h"
+  ],
+  "reference": "episodic/client:CSaveRestoreBlockSet",
+  "retail_len": 12,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 12,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "ISaveRestoreOps": {
+  "headers": [
+   "public/isaverestore.h"
+  ],
+  "reference": "bin/vphysics:CMaterialIndexOps",
+  "retail_len": 5,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 5,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "ISceneFileCache": {
+  "headers": [
+   "public/scenefilecache/ISceneFileCache.h"
+  ],
+  "reference": "bin/scenefilecache:CSceneFileCache",
+  "retail_len": 11,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 11,
+  "versions": {
+   "ours": [
+    "SceneFileCache002"
+   ],
+   "retail": [
+    "SceneFileCache002"
+   ],
+   "sdk2013": [
+    "SceneFileCache002"
+   ]
+  }
+ },
+ "IServer": {
+  "headers": [
+   "public/iserver.h"
+  ],
+  "reference": "bin/engine:CBaseServer",
+  "retail_len": 35,
+  "retail_len_basis": "override: extra slots are CBaseServer's own",
+  "sdk2013_len": 35,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IServerBrowser": {
+  "headers": [
+   "common/ServerBrowser/IServerBrowser.h"
+  ],
+  "reference": "bin/ServerBrowser:CServerBrowser",
+  "retail_len": 7,
+  "retail_len_basis": "first implementer destructor",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [
+    "ServerBrowser005"
+   ],
+   "retail": [
+    "ServerBrowser005"
+   ],
+   "sdk2013": []
+  }
+ },
+ "IServerChoreoTools": {
+  "headers": [
+   "public/toolframework/itoolentity.h"
+  ],
+  "reference": "episodic/server:CServerChoreoTools",
+  "retail_len": 6,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 6,
+  "versions": {
+   "ours": [
+    "VSERVERCHOREOTOOLS001"
+   ],
+   "retail": [
+    "VSERVERCHOREOTOOLS001"
+   ],
+   "sdk2013": [
+    "VSERVERCHOREOTOOLS001"
+   ]
+  }
+ },
+ "IServerDLLSharedAppSystems": {
+  "headers": [
+   "public/eiface.h"
+  ],
+  "reference": "episodic/server:CServerDLLSharedAppSystems",
+  "retail_len": 3,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 3,
+  "versions": {
+   "ours": [
+    "VServerDllSharedAppSystems001"
+   ],
+   "retail": [
+    "VServerDllSharedAppSystems001"
+   ],
+   "sdk2013": [
+    "VServerDllSharedAppSystems001"
+   ]
+  }
+ },
+ "IServerEngineTools": {
+  "headers": [
+   "public/toolframework/iserverenginetools.h"
+  ],
+  "reference": "bin/engine:CServerEngineTools",
+  "retail_len": 12,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 12,
+  "versions": {
+   "ours": [
+    "VSERVERENGINETOOLS001"
+   ],
+   "retail": [
+    "VSERVERENGINETOOLS001"
+   ],
+   "sdk2013": [
+    "VSERVERENGINETOOLS001"
+   ]
+  }
+ },
+ "IServerEntity": {
+  "headers": [
+   "public/iserverentity.h"
+  ],
+  "reference": "episodic/server:AR2Explosion",
+  "retail_len": 10,
+  "retail_len_basis": "override: next slots are CBaseEntity virtuals (GetServerClass, ...)",
+  "sdk2013_len": 10,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IServerGameClients": {
+  "headers": [
+   "public/eiface.h",
+   "public/eifacev21.h"
+  ],
+  "reference": "episodic/server:CServerGameClients",
+  "retail_len": 18,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 18,
+  "versions": {
+   "ours": [
+    "ServerGameClients003",
+    "ServerGameClients004"
+   ],
+   "retail": [
+    "ServerGameClients004"
+   ],
+   "sdk2013": [
+    "ServerGameClients003",
+    "ServerGameClients004"
+   ]
+  }
+ },
+ "IServerGameClients003": {
+  "headers": [],
+  "status": "no retail vtable",
+  "versions": {
+   "ours": [
+    "ServerGameClients003",
+    "ServerGameClients004"
+   ],
+   "retail": [
+    "ServerGameClients003"
+   ],
+   "sdk2013": [
+    "ServerGameClients003",
+    "ServerGameClients004"
+   ]
+  }
+ },
+ "IServerGameDLL": {
+  "headers": [
+   "public/eiface.h",
+   "public/eifacev21.h"
+  ],
+  "reference": "episodic/server:CServerGameDLL",
+  "retail_len": 42,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 42,
+  "versions": {
+   "ours": [
+    "ServerGameDLL003",
+    "ServerGameDLL008",
+    "ServerGameDLL009"
+   ],
+   "retail": [
+    "ServerGameDLL009"
+   ],
+   "sdk2013": [
+    "ServerGameDLL003",
+    "ServerGameDLL008",
+    "ServerGameDLL009"
+   ]
+  }
+ },
+ "IServerGameDLL008": {
+  "headers": [],
+  "status": "no retail vtable",
+  "versions": {
+   "ours": [
+    "ServerGameDLL003",
+    "ServerGameDLL008",
+    "ServerGameDLL009"
+   ],
+   "retail": [
+    "ServerGameDLL008"
+   ],
+   "sdk2013": [
+    "ServerGameDLL003",
+    "ServerGameDLL008",
+    "ServerGameDLL009"
+   ]
+  }
+ },
+ "IServerGameEnts": {
+  "headers": [
+   "public/eiface.h",
+   "public/eifacev21.h"
+  ],
+  "reference": "episodic/server:CServerGameEnts",
+  "retail_len": 8,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 8,
+  "versions": {
+   "ours": [
+    "ServerGameEnts001"
+   ],
+   "retail": [
+    "ServerGameEnts001"
+   ],
+   "sdk2013": [
+    "ServerGameEnts001"
+   ]
+  }
+ },
+ "IServerGameTags": {
+  "headers": [
+   "public/eiface.h"
+  ],
+  "reference": "episodic/server:CServerGameTags",
+  "retail_len": 1,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 1,
+  "versions": {
+   "ours": [
+    "ServerGameTags001"
+   ],
+   "retail": [
+    "ServerGameTags001"
+   ],
+   "sdk2013": [
+    "ServerGameTags001"
+   ]
+  }
+ },
+ "IServerMessageHandler": {
+  "headers": [
+   "public/inetmsghandler.h"
+  ],
+  "reference": "bin/engine:CClientState",
+  "retail_len": 31,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 31,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IServerNetworkable": {
+  "headers": [
+   "public/iservernetworkable.h"
+  ],
+  "reference": "episodic/server:CServerNetworkProperty",
+  "retail_len": 11,
+  "retail_len_basis": "override: GetDataDescMap/FireEvent are CServerNetworkProperty's own",
+  "sdk2013_len": 11,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IServerPluginHelpers": {
+  "headers": [
+   "public/engine/iserverplugin.h"
+  ],
+  "reference": "bin/engine:CServerPlugin",
+  "retail_len": 3,
+  "retail_len_basis": "override: next slots override IServerPluginCallbacks",
+  "sdk2013_len": 3,
+  "versions": {
+   "ours": [
+    "ISERVERPLUGINHELPERS001"
+   ],
+   "retail": [
+    "ISERVERPLUGINHELPERS001"
+   ],
+   "sdk2013": [
+    "ISERVERPLUGINHELPERS001"
+   ]
+  }
+ },
+ "IServerReplayContext": {
+  "headers": [
+   "common/replay/iserverreplaycontext.h"
+  ],
+  "reference": "bin/replay:CServerReplayContext",
+  "retail_len": 18,
+  "retail_len_basis": "override: extra slots are CServerReplayContext's own (replay)",
+  "sdk2013_len": 18,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IServerTools": {
+  "headers": [
+   "public/toolframework/itoolentity.h"
+  ],
+  "reference": "episodic/server:CServerTools",
+  "retail_len": 34,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 34,
+  "versions": {
+   "ours": [
+    "VSERVERTOOLS001",
+    "VSERVERTOOLS002",
+    "VSERVERTOOLS003"
+   ],
+   "retail": [
+    "VSERVERTOOLS002"
+   ],
+   "sdk2013": [
+    "VSERVERTOOLS001",
+    "VSERVERTOOLS002"
+   ]
+  }
+ },
+ "IServerTools001": {
+  "headers": [],
+  "status": "no retail vtable",
+  "versions": {
+   "ours": [
+    "VSERVERTOOLS001",
+    "VSERVERTOOLS002",
+    "VSERVERTOOLS003"
+   ],
+   "retail": [
+    "VSERVERTOOLS001"
+   ],
+   "sdk2013": [
+    "VSERVERTOOLS001",
+    "VSERVERTOOLS002"
+   ]
+  }
+ },
+ "IServerUnknown": {
+  "headers": [
+   "public/iserverunknown.h"
+  ],
+  "reference": "episodic/server:AR2Explosion",
+  "retail_len": 7,
+  "retail_len_basis": "first own method of IServerEntity",
+  "sdk2013_len": 7,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IShader": {
+  "headers": [
+   "public/materialsystem/IShader.h"
+  ],
+  "reference": "bin/stdshader_dx9:Aftershock::CShader",
+  "retail_len": 16,
+  "retail_len_basis": "first own method of CBaseShader",
+  "sdk2013_len": 16,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IShaderAPI": {
+  "headers": [
+   "public/shaderapi/ishaderapi.h"
+  ],
+  "reference": "bin/shaderapidx9:CShaderAPIDx8",
+  "retail_len": 256,
+  "retail_len_basis": "first implementer destructor",
+  "sdk2013_len": 253,
+  "versions": {
+   "ours": [
+    "ShaderApi030"
+   ],
+   "retail": [
+    "ShaderApi030"
+   ],
+   "sdk2013": [
+    "ShaderApi030"
+   ]
+  }
+ },
+ "IShaderDLL": {
+  "headers": [
+   "public/shaderlib/ShaderDLL.h"
+  ],
+  "reference": "bin/materialsystem:CShaderDLL",
+  "retail_len": 1,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 1,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IShaderDLLInternal": {
+  "headers": [],
+  "reference": "bin/materialsystem:CShaderDLL",
+  "retail_len": 7,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [
+    "ShaderDLL004"
+   ],
+   "retail": [
+    "ShaderDLL004"
+   ],
+   "sdk2013": []
+  }
+ },
+ "IShaderDevice": {
+  "headers": [
+   "public/shaderapi/IShaderDevice.h"
+  ],
+  "reference": "bin/shaderapiempty:CShaderDeviceEmpty",
+  "retail_len": 35,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 35,
+  "versions": {
+   "ours": [
+    "ShaderDevice001"
+   ],
+   "retail": [
+    "ShaderDevice001"
+   ],
+   "sdk2013": [
+    "ShaderDevice001"
+   ]
+  }
+ },
+ "IShaderDeviceMgr": {
+  "headers": [
+   "public/shaderapi/IShaderDevice.h"
+  ],
+  "reference": "bin/shaderapiempty:CShaderDeviceMgrEmpty",
+  "retail_len": 15,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 15,
+  "versions": {
+   "ours": [
+    "ShaderDeviceMgr001"
+   ],
+   "retail": [
+    "ShaderDeviceMgr001"
+   ],
+   "sdk2013": [
+    "ShaderDeviceMgr001"
+   ]
+  }
+ },
+ "IShaderDynamicAPI": {
+  "headers": [
+   "public/shaderapi/ishaderdynamic.h"
+  ],
+  "reference": "bin/shaderapidx9:CShaderAPIDx8",
+  "retail_len": 100,
+  "retail_len_basis": "first own method of IShaderAPI",
+  "sdk2013_len": 99,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IShaderInit": {
+  "headers": [
+   "public/materialsystem/ishaderapi.h"
+  ],
+  "reference": "bin/materialsystem:CShaderSystem",
+  "retail_len": 3,
+  "retail_len_basis": "override: extra slots are CShaderSystem's own",
+  "sdk2013_len": 3,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IShaderShadow": {
+  "headers": [
+   "public/shaderapi/ishadershadow.h"
+  ],
+  "reference": "bin/shaderapiempty:CShaderShadowEmpty",
+  "retail_len": 52,
+  "retail_len_basis": "first implementer destructor",
+  "sdk2013_len": 52,
+  "versions": {
+   "ours": [
+    "ShaderShadow010"
+   ],
+   "retail": [
+    "ShaderShadow010"
+   ],
+   "sdk2013": [
+    "ShaderShadow010"
+   ]
+  }
+ },
+ "IShaderSystem": {
+  "headers": [],
+  "reference": "bin/materialsystem:CShaderSystem",
+  "retail_len": 7,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [
+    "ShaderSystem002"
+   ],
+   "retail": [
+    "ShaderSystem002"
+   ],
+   "sdk2013": []
+  }
+ },
+ "IShaderUtil": {
+  "headers": [
+   "public/shaderapi/ishaderutil.h"
+  ],
+  "reference": "bin/materialsystem:CMaterialSystem",
+  "retail_len": 36,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 36,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IShadowMgr": {
+  "headers": [
+   "public/engine/ishadowmgr.h"
+  ],
+  "reference": "bin/engine:CShadowMgr",
+  "retail_len": 23,
+  "retail_len_basis": "override: extra slots belong to the internal shadow manager interface",
+  "sdk2013_len": 23,
+  "versions": {
+   "ours": [
+    "VEngineShadowMgr002"
+   ],
+   "retail": [
+    "VEngineShadowMgr002"
+   ],
+   "sdk2013": [
+    "VEngineShadowMgr002"
+   ]
+  }
+ },
+ "ISoundEmitterSystemBase": {
+  "headers": [
+   "public/SoundEmitterSystem/isoundemittersystembase.h"
+  ],
+  "reference": "bin/soundemittersystem:CSoundEmitterSystemBase",
+  "retail_len": 44,
+  "retail_len_basis": "first implementer destructor",
+  "sdk2013_len": 44,
+  "versions": {
+   "ours": [
+    "VSoundEmitter002"
+   ],
+   "retail": [
+    "VSoundEmitter002"
+   ],
+   "sdk2013": [
+    "VSoundEmitter002"
+   ]
+  }
+ },
+ "ISoundServices": {
+  "headers": [
+   "public/engine/audio/soundservice.h"
+  ],
+  "reference": "bin/engine:CEngineSoundServices",
+  "retail_len": 31,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "ISourceVirtualReality": {
+  "headers": [
+   "public/sourcevr/isourcevirtualreality.h"
+  ],
+  "status": "no retail vtable",
+  "versions": {
+   "ours": [
+    "SourceVirtualReality001"
+   ],
+   "retail": [
+    "SourceVirtualReality001"
+   ],
+   "sdk2013": [
+    "SourceVirtualReality001"
+   ]
+  }
+ },
+ "ISpatialLeafEnumerator": {
+  "headers": [
+   "public/bsptreedata.h"
+  ],
+  "reference": "bin/engine:CBrushBSPIterator",
+  "retail_len": 1,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 1,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "ISpatialPartition": {
+  "headers": [
+   "public/ispatialpartition.h"
+  ],
+  "reference": "bin/engine:CSpatialPartition",
+  "retail_len": 35,
+  "retail_len_basis": "override: extra slots belong to ISpatialPartitionInternal",
+  "sdk2013_len": 35,
+  "versions": {
+   "ours": [
+    "SpatialPartition001"
+   ],
+   "retail": [
+    "SpatialPartition001"
+   ],
+   "sdk2013": [
+    "SpatialPartition001"
+   ]
+  }
+ },
+ "ISpatialQuery": {
+  "headers": [
+   "public/bsptreedata.h"
+  ],
+  "reference": "bin/engine:CEngineBSPTree",
+  "retail_len": 5,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 5,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IStaticPropMgr": {
+  "headers": [
+   "public/engine/IStaticPropMgr.h"
+  ],
+  "reference": "bin/engine:CStaticPropMgr",
+  "retail_len": 5,
+  "retail_len_basis": "first own method of IStaticPropMgrClient",
+  "sdk2013_len": 5,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IStaticPropMgrClient": {
+  "headers": [
+   "public/engine/IStaticPropMgr.h"
+  ],
+  "reference": "bin/engine:CStaticPropMgr",
+  "retail_len": 15,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 15,
+  "versions": {
+   "ours": [
+    "StaticPropMgrClient004"
+   ],
+   "retail": [
+    "StaticPropMgrClient004"
+   ],
+   "sdk2013": [
+    "StaticPropMgrClient004"
+   ]
+  }
+ },
+ "IStaticPropMgrServer": {
+  "headers": [
+   "public/engine/IStaticPropMgr.h"
+  ],
+  "reference": "bin/engine:CStaticPropMgr",
+  "retail_len": 8,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 8,
+  "versions": {
+   "ours": [
+    "StaticPropMgrServer002"
+   ],
+   "retail": [
+    "StaticPropMgrServer002"
+   ],
+   "sdk2013": [
+    "StaticPropMgrServer002"
+   ]
+  }
+ },
+ "ISteamMatchmakingPingResponse": {
+  "headers": [
+   "public/steam/isteammatchmaking.h"
+  ],
+  "reference": "bin/ServerBrowser:ISteamMatchmakingPingResponse",
+  "retail_len": 2,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 2,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "ISteamMatchmakingPlayersResponse": {
+  "headers": [
+   "public/steam/isteammatchmaking.h"
+  ],
+  "reference": "bin/ServerBrowser:CDialogGameInfo",
+  "retail_len": 3,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 3,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "ISteamMatchmakingServerListResponse": {
+  "headers": [
+   "public/steam/isteammatchmaking.h"
+  ],
+  "reference": "bin/ServerBrowser:ISteamMatchmakingServerListResponse",
+  "retail_len": 3,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 3,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IStudioDataCache": {
+  "headers": [
+   "public/istudiorender.h"
+  ],
+  "reference": "bin/datacache:CMDLCache",
+  "retail_len": 7,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 7,
+  "versions": {
+   "ours": [
+    "VStudioDataCache005"
+   ],
+   "retail": [
+    "VStudioDataCache005"
+   ],
+   "sdk2013": [
+    "VStudioDataCache005"
+   ]
+  }
+ },
+ "IStudioRender": {
+  "headers": [
+   "public/istudiorender.h"
+  ],
+  "reference": "bin/studiorender:CStudioRenderContext",
+  "retail_len": 47,
+  "retail_len_basis": "first implementer destructor",
+  "sdk2013_len": 47,
+  "versions": {
+   "ours": [
+    "VStudioRender025"
+   ],
+   "retail": [
+    "VStudioRender025"
+   ],
+   "sdk2013": [
+    "VStudioRender025"
+   ]
+  }
+ },
+ "ITexture": {
+  "headers": [
+   "public/materialsystem/itexture.h"
+  ],
+  "reference": "bin/materialsystem:CDummyTexture",
+  "retail_len": 31,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 30,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "ITextureRegenerator": {
+  "headers": [
+   "public/materialsystem/itexture.h"
+  ],
+  "reference": "bin/engine:ITextureRegenerator",
+  "retail_len": 2,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 2,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IThreadPool": {
+  "headers": [
+   "public/vstdlib/jobthread.h"
+  ],
+  "reference": "bin/libvstdlib:CThreadPool",
+  "retail_len": 25,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IThreadedFileMD5Processor": {
+  "headers": [
+   "public/filesystem.h"
+  ],
+  "reference": "bin/filesystem_stdio:CFileTracker2",
+  "retail_len": 3,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 3,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IToolFrameworkInternal": {
+  "headers": [
+   "public/toolframework/itoolframework.h"
+  ],
+  "reference": "bin/engine:CToolFrameworkInternal",
+  "retail_len": 48,
+  "retail_len_basis": "override: extra slots are CToolFrameworkInternal's own",
+  "sdk2013_len": 48,
+  "versions": {
+   "ours": [
+    "VTOOLFRAMEWORKVERSION002"
+   ],
+   "retail": [
+    "VTOOLFRAMEWORKVERSION002"
+   ],
+   "sdk2013": [
+    "VTOOLFRAMEWORKVERSION002"
+   ]
+  }
+ },
+ "ITraceFilter": {
+  "headers": [
+   "public/engine/IEngineTrace.h"
+  ],
+  "reference": "bin/engine:CTraceFilterDAS",
+  "retail_len": 2,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 2,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IUniformRandomStream": {
+  "headers": [],
+  "reference": "bin/engine:CEngineUniformRandomStream",
+  "retail_len": 4,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 4,
+  "versions": {
+   "ours": [
+    "VEngineRandom001"
+   ],
+   "retail": [
+    "VEngineRandom001"
+   ],
+   "sdk2013": [
+    "VEngineRandom001"
+   ]
+  }
+ },
+ "IUploadGameStats": {
+  "headers": [
+   "public/eiface.h",
+   "public/eifacev21.h"
+  ],
+  "reference": "bin/engine:CUploadGameStats",
+  "retail_len": 7,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 7,
+  "versions": {
+   "ours": [
+    "ServerUploadGameStats001"
+   ],
+   "retail": [
+    "ServerUploadGameStats001"
+   ],
+   "sdk2013": [
+    "ServerUploadGameStats001"
+   ]
+  }
+ },
+ "IVAudio": {
+  "headers": [
+   "public/vaudio/ivaudio.h"
+  ],
+  "reference": "bin/vaudio_miles:CVAudio",
+  "retail_len": 4,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 4,
+  "versions": {
+   "ours": [
+    "VAudio002"
+   ],
+   "retail": [
+    "VAudio002"
+   ],
+   "sdk2013": [
+    "VAudio002"
+   ]
+  }
+ },
+ "IVBAllocTracker": {
+  "headers": [
+   "public/materialsystem/ivballoctracker.h"
+  ],
+  "reference": "bin/shaderapidx9:CVBAllocTracker",
+  "retail_len": 3,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 3,
+  "versions": {
+   "ours": [
+    "VBAllocTracker001"
+   ],
+   "retail": [
+    "VBAllocTracker001"
+   ],
+   "sdk2013": [
+    "VBAllocTracker001"
+   ]
+  }
+ },
+ "IVCRHelpers": {
+  "headers": [
+   "public/tier0/vcrmode.h"
+  ],
+  "reference": "bin/launcher:CVCRHelpers",
+  "retail_len": 2,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 2,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IVCRTrace": {
+  "headers": [
+   "public/tier0/vcrmode.h"
+  ],
+  "reference": "bin/libtier0:CVCRTrace",
+  "retail_len": 2,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 2,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IVDebugOverlay": {
+  "headers": [
+   "public/engine/ivdebugoverlay.h"
+  ],
+  "reference": "bin/engine:CIVDebugOverlay",
+  "retail_len": 19,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 19,
+  "versions": {
+   "ours": [
+    "VDebugOverlay003"
+   ],
+   "retail": [
+    "VDebugOverlay003"
+   ],
+   "sdk2013": [
+    "VDebugOverlay003"
+   ]
+  }
+ },
+ "IVEfx": {
+  "headers": [
+   "public/iefx.h"
+  ],
+  "reference": "bin/engine:CVEfx",
+  "retail_len": 9,
+  "retail_len_basis": "first implementer destructor",
+  "sdk2013_len": 9,
+  "versions": {
+   "ours": [
+    "VEngineEffects001"
+   ],
+   "retail": [
+    "VEngineEffects001"
+   ],
+   "sdk2013": [
+    "VEngineEffects001"
+   ]
+  }
+ },
+ "IVEngineClient": {
+  "headers": [
+   "public/cdll_int.h"
+  ],
+  "reference": "bin/engine:CEngineClient",
+  "retail_len": 145,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 140,
+  "versions": {
+   "ours": [
+    "VEngineClient013",
+    "VEngineClient014"
+   ],
+   "retail": [
+    "VEngineClient014"
+   ],
+   "sdk2013": [
+    "VEngineClient013",
+    "VEngineClient014"
+   ]
+  }
+ },
+ "IVEngineClient013": {
+  "headers": [
+   "public/cdll_int.h"
+  ],
+  "reference": "bin/engine:CEngineClient",
+  "retail_len": 133,
+  "retail_len_basis": "first own method of IVEngineClient",
+  "sdk2013_len": 133,
+  "versions": {
+   "ours": [
+    "VEngineClient013",
+    "VEngineClient014"
+   ],
+   "retail": [
+    "VEngineClient013"
+   ],
+   "sdk2013": [
+    "VEngineClient013",
+    "VEngineClient014"
+   ]
+  }
+ },
+ "IVEngineServer": {
+  "headers": [
+   "public/eiface.h",
+   "public/eifacev21.h"
+  ],
+  "reference": "bin/engine:CVEngineServer",
+  "retail_len": 120,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 119,
+  "versions": {
+   "ours": [
+    "VEngineServer021"
+   ],
+   "retail": [
+    "VEngineServer021"
+   ],
+   "sdk2013": [
+    "VEngineServer021"
+   ]
+  }
+ },
+ "IVGuiModule": {
+  "headers": [
+   "common/IVguiModule.h"
+  ],
+  "reference": "bin/ServerBrowser:CServerBrowser",
+  "retail_len": 11,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [
+    "VGuiModuleServerBrowser001"
+   ],
+   "sdk2013": []
+  }
+ },
+ "IVGuiModuleLoader": {
+  "headers": [
+   "common/IVGuiModuleLoader.h"
+  ],
+  "reference": "bin/GameUI:CVGuiSystemModuleLoader",
+  "retail_len": 8,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [
+    "VGuiModuleLoader003"
+   ],
+   "retail": [
+    "VGuiModuleLoader003"
+   ],
+   "sdk2013": []
+  }
+ },
+ "IVModelInfo": {
+  "headers": [
+   "public/engine/ivmodelinfo.h"
+  ],
+  "reference": "bin/engine:CModelInfoServer",
+  "retail_len": 59,
+  "retail_len_basis": "override: extra slots are CModelInfo's own",
+  "sdk2013_len": 59,
+  "versions": {
+   "ours": [
+    "VModelInfoServer003",
+    "VModelInfoServer004"
+   ],
+   "retail": [
+    "VModelInfoServer004"
+   ],
+   "sdk2013": [
+    "VModelInfoServer003",
+    "VModelInfoServer004"
+   ]
+  }
+ },
+ "IVModelInfo003": {
+  "headers": [],
+  "status": "no retail vtable",
+  "versions": {
+   "ours": [
+    "VModelInfoServer003",
+    "VModelInfoServer004"
+   ],
+   "retail": [
+    "VModelInfoServer003"
+   ],
+   "sdk2013": [
+    "VModelInfoServer003",
+    "VModelInfoServer004"
+   ]
+  }
+ },
+ "IVModelInfoClient": {
+  "headers": [
+   "public/engine/ivmodelinfo.h"
+  ],
+  "reference": "bin/engine:CModelInfoClient",
+  "retail_len": 60,
+  "retail_len_basis": "override: extra slots are CModelInfo's own",
+  "sdk2013_len": 60,
+  "versions": {
+   "ours": [
+    "VModelInfoClient006"
+   ],
+   "retail": [
+    "VModelInfoClient006"
+   ],
+   "sdk2013": [
+    "VModelInfoClient006"
+   ]
+  }
+ },
+ "IVModelRender": {
+  "headers": [
+   "public/engine/ivmodelrender.h"
+  ],
+  "reference": "bin/engine:CModelRender",
+  "retail_len": 25,
+  "retail_len_basis": "override: GetItemName overrides the secondary base IDataCacheClient",
+  "sdk2013_len": 25,
+  "versions": {
+   "ours": [
+    "VEngineModel016"
+   ],
+   "retail": [
+    "VEngineModel016"
+   ],
+   "sdk2013": [
+    "VEngineModel016"
+   ]
+  }
+ },
+ "IVPhysicsDebugOverlay": {
+  "headers": [
+   "public/vphysics_interface.h",
+   "public/vphysics_interfaceV30.h"
+  ],
+  "reference": "bin/engine:CIVDebugOverlay",
+  "retail_len": 9,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 9,
+  "versions": {
+   "ours": [
+    "VPhysicsDebugOverlay001"
+   ],
+   "retail": [
+    "VPhysicsDebugOverlay001"
+   ],
+   "sdk2013": [
+    "VPhysicsDebugOverlay001"
+   ]
+  }
+ },
+ "IVPhysicsKeyHandler": {
+  "headers": [
+   "public/vcollide_parse.h"
+  ],
+  "reference": "episodic/client:CBreakParser",
+  "retail_len": 2,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 2,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IVPhysicsKeyParser": {
+  "headers": [
+   "public/vcollide_parse.h"
+  ],
+  "reference": "bin/vphysics:CVPhysicsParse",
+  "retail_len": 11,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 11,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IVProfExport": {
+  "headers": [
+   "common/ivprofexport.h"
+  ],
+  "reference": "bin/engine:CVProfExport",
+  "retail_len": 8,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [
+    "VProfExport001"
+   ],
+   "retail": [
+    "VProfExport001"
+   ],
+   "sdk2013": []
+  }
+ },
+ "IVRenderView": {
+  "headers": [
+   "public/ivrenderview.h"
+  ],
+  "reference": "bin/engine:CVRenderView",
+  "retail_len": 52,
+  "retail_len_basis": "override: EnumerateLeaf overrides the secondary base ISpatialLeafEnumerator",
+  "sdk2013_len": 52,
+  "versions": {
+   "ours": [
+    "VEngineRenderView014"
+   ],
+   "retail": [
+    "VEngineRenderView014"
+   ],
+   "sdk2013": [
+    "VEngineRenderView014"
+   ]
+  }
+ },
+ "IVTFTexture": {
+  "headers": [
+   "public/vtf/vtf.h"
+  ],
+  "reference": "bin/engine:CVTFTexture",
+  "retail_len": 56,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 55,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IVTex": {
+  "headers": [
+   "public/ivtex.h"
+  ],
+  "reference": "bin/vtex_dll:CVTex",
+  "retail_len": 7,
+  "retail_len_basis": "override: main overrides the secondary base ILaunchableDLL",
+  "sdk2013_len": 7,
+  "versions": {
+   "ours": [
+    "VTEX_003"
+   ],
+   "retail": [
+    "VTEX_003"
+   ],
+   "sdk2013": [
+    "VTEX_003"
+   ]
+  }
+ },
+ "IVertexBuffer": {
+  "headers": [
+   "public/materialsystem/imesh.h"
+  ],
+  "reference": "bin/shaderapidx9:CVertexBufferDx8",
+  "retail_len": 12,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 12,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IVguiMatInfo": {
+  "headers": [
+   "public/vgui/IVguiMatInfo.h"
+  ],
+  "reference": "bin/vguimatsurface:CVguiMatInfo",
+  "retail_len": 4,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 4,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IVguiMatInfoVar": {
+  "headers": [
+   "public/vgui/IVguiMatInfoVar.h"
+  ],
+  "reference": "bin/vguimatsurface:CVguiMatInfoVar",
+  "retail_len": 4,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 4,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IVideoMaterial": {
+  "headers": [
+   "public/video/ivideoservices.h"
+  ],
+  "reference": "bin/video_quicktime:CQuickTimeMaterial",
+  "retail_len": 31,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 31,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IVideoRecorder": {
+  "headers": [
+   "public/video/ivideoservices.h"
+  ],
+  "reference": "bin/video_quicktime:CQuickTimeVideoRecorder",
+  "retail_len": 17,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 17,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IVideoServices": {
+  "headers": [
+   "public/video/ivideoservices.h"
+  ],
+  "reference": "bin/video_services:CValveVideoServices",
+  "retail_len": 27,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 27,
+  "versions": {
+   "ours": [
+    "IVideoServices002"
+   ],
+   "retail": [
+    "IVideoServices002"
+   ],
+   "sdk2013": [
+    "IVideoServices002"
+   ]
+  }
+ },
+ "IVideoSubSystem": {
+  "headers": [],
+  "reference": "bin/video_quicktime:CQuickTimeVideoSubSystem",
+  "retail_len": 22,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [
+    "IVideoSubSystem002"
+   ],
+   "sdk2013": []
+  }
+ },
+ "IViewPort": {
+  "headers": [
+   "public/game/client/iviewport.h"
+  ],
+  "reference": "episodic/client:IViewPort",
+  "retail_len": 7,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 7,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IViewPortPanel": {
+  "headers": [
+   "public/game/client/iviewport.h"
+  ],
+  "reference": "hl2mp/client:IViewPortPanel",
+  "retail_len": 2,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 12,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IVirtualMeshEvent": {
+  "headers": [
+   "public/vphysics/virtualmesh.h"
+  ],
+  "reference": "bin/engine:CVirtualTerrain",
+  "retail_len": 3,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 3,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IVoiceCodec": {
+  "headers": [
+   "public/engine/audio/ivoicecodec.h"
+  ],
+  "reference": "bin/vaudio_miles:VoiceCodec_Frame",
+  "retail_len": 7,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [
+    "vaudio_miles",
+    "vaudio_speex"
+   ],
+   "sdk2013": []
+  }
+ },
+ "IVoiceRecord": {
+  "headers": [
+   "public/engine/audio/ivoicerecord.h"
+  ],
+  "reference": "bin/engine:VoiceRecord_AudioQueue",
+  "retail_len": 8,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IVoiceServer": {
+  "headers": [
+   "public/ivoiceserver.h"
+  ],
+  "reference": "bin/engine:CVoiceServer",
+  "retail_len": 5,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 5,
+  "versions": {
+   "ours": [
+    "VoiceServer002"
+   ],
+   "retail": [
+    "VoiceServer002"
+   ],
+   "sdk2013": [
+    "VoiceServer002"
+   ]
+  }
+ },
+ "IWorldRenderList": {
+  "headers": [
+   "public/ivrenderview.h"
+  ],
+  "reference": "bin/engine:CWorldRenderList",
+  "retail_len": 2,
+  "retail_len_basis": "first implementer destructor",
+  "sdk2013_len": 2,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "IXboxSystem": {
+  "headers": [
+   "public/ixboxsystem.h"
+  ],
+  "reference": "bin/engine:CXboxSystem",
+  "retail_len": 30,
+  "retail_len_basis": "first implementer destructor",
+  "sdk2013_len": 30,
+  "versions": {
+   "ours": [
+    "XboxSystemInterface001"
+   ],
+   "retail": [
+    "XboxSystemInterface001"
+   ],
+   "sdk2013": [
+    "XboxSystemInterface001"
+   ]
+  }
+ },
+ "IZip": {
+  "headers": [
+   "public/zip_utils.h"
+  ],
+  "reference": "bin/bsppack:CZip",
+  "retail_len": 19,
+  "retail_len_basis": "first implementer destructor",
+  "sdk2013_len": 19,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "MM_Checkpoint": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:MM_Checkpoint",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "MM_ClientInfo": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:MM_ClientInfo",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "MM_Heartbeat": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:MM_Heartbeat",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "MM_JoinResponse": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:MM_JoinResponse",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "MM_Migrate": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:MM_Migrate",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "MM_Mutelist": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:MM_Mutelist",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "MM_RegisterResponse": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:MM_RegisterResponse",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "MaterialSystem_Config_t": {
+  "headers": [
+   "public/materialsystem/materialsystem_config.h"
+  ],
+  "status": "no retail vtable",
+  "versions": {
+   "ours": [
+    "VMaterialSystemConfig002"
+   ],
+   "retail": [
+    "VMaterialSystemConfig002"
+   ],
+   "sdk2013": [
+    "VMaterialSystemConfig002"
+   ]
+  }
+ },
+ "NET_SetConVar": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:NET_SetConVar",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "NET_SignonState": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:NET_SignonState",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "NET_StringCmd": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:NET_StringCmd",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "NET_Tick": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:NET_Tick",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "SVC_BSPDecal": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:SVC_BSPDecal",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "SVC_ClassInfo": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:SVC_ClassInfo",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "SVC_CmdKeyValues": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:SVC_CmdKeyValues",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "SVC_CreateStringTable": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:SVC_CreateStringTable",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "SVC_CrosshairAngle": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:SVC_CrosshairAngle",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "SVC_EntityMessage": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:SVC_EntityMessage",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "SVC_FixAngle": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:SVC_FixAngle",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "SVC_GameEvent": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:SVC_GameEvent",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "SVC_GameEventList": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:SVC_GameEventList",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "SVC_GetCvarValue": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:SVC_GetCvarValue",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "SVC_Menu": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:SVC_Menu",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "SVC_PacketEntities": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:SVC_PacketEntities",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "SVC_Prefetch": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:SVC_Prefetch",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "SVC_Print": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:SVC_Print",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "SVC_SendTable": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:SVC_SendTable",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "SVC_ServerInfo": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:SVC_ServerInfo",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "SVC_SetPause": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:SVC_SetPause",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "SVC_SetView": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:SVC_SetView",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "SVC_Sounds": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:SVC_Sounds",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "SVC_TempEntities": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:SVC_TempEntities",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "SVC_UpdateStringTable": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:SVC_UpdateStringTable",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "SVC_UserMessage": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:SVC_UserMessage",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "SVC_VoiceData": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:SVC_VoiceData",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "SVC_VoiceInit": {
+  "headers": [
+   "common/netmessages.h"
+  ],
+  "reference": "bin/engine:SVC_VoiceInit",
+  "retail_len": 13,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "SendProp": {
+  "headers": [
+   "public/dt_send.h"
+  ],
+  "reference": "bin/engine:SendProp",
+  "retail_len": 2,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 2,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "ServerINetworkStringTableContainer": {
+  "headers": [],
+  "status": "no retail vtable",
+  "versions": {
+   "ours": [
+    "VEngineServerStringTable001"
+   ],
+   "retail": [
+    "VEngineServerStringTable001"
+   ],
+   "sdk2013": [
+    "VEngineServerStringTable001"
+   ]
+  }
+ },
+ "WorldListInfo_t": {
+  "headers": [
+   "public/ivrenderview.h"
+  ],
+  "status": "no retail vtable",
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "_V1IPlayerInfoManager_V1": {
+  "headers": [],
+  "status": "no retail vtable",
+  "versions": {
+   "ours": [
+    "PlayerInfoManager002"
+   ],
+   "retail": [
+    "PlayerInfoManager001"
+   ],
+   "sdk2013": [
+    "PlayerInfoManager002"
+   ]
+  }
+ },
+ "aligned_tmp_t": {
+  "headers": [
+   "public/tier0/memalloc.h"
+  ],
+  "reference": "bin/vphysics:IVP_Standard_Gravity_Controller",
+  "retail_len": 9,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "mpcontrol_t": {
+  "headers": [
+   "common/GameUI/scriptobject.h"
+  ],
+  "reference": "bin/GameUI:mpcontrol_t",
+  "retail_len": 210,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": null,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "snappy::ByteArraySource": {
+  "headers": [
+   "public/tier1/snappy-sinksource.h"
+  ],
+  "reference": "bin/engine:snappy::ByteArraySource",
+  "retail_len": 5,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 5,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "snappy::Sink": {
+  "headers": [
+   "public/tier1/snappy-sinksource.h"
+  ],
+  "reference": "bin/engine:snappy::UncheckedByteArraySink",
+  "retail_len": 4,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 4,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "snappy::Source": {
+  "headers": [
+   "public/tier1/snappy-sinksource.h"
+  ],
+  "reference": "bin/engine:snappy::ByteArraySource",
+  "retail_len": 5,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 5,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "snappy::UncheckedByteArraySink": {
+  "headers": [
+   "public/tier1/snappy-sinksource.h"
+  ],
+  "reference": "bin/engine:snappy::UncheckedByteArraySink",
+  "retail_len": 4,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 4,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::AnalogBar": {
+  "headers": [
+   "public/vgui_controls/AnalogBar.h"
+  ],
+  "reference": "bin/GameUI:vgui::AnalogBar",
+  "retail_len": 213,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 213,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::AnimatingImagePanel": {
+  "headers": [
+   "public/vgui_controls/AnimatingImagePanel.h"
+  ],
+  "reference": "bin/GameUI:vgui::AnimatingImagePanel",
+  "retail_len": 215,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 215,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::AnimationController": {
+  "headers": [
+   "public/vgui_controls/AnimationController.h"
+  ],
+  "reference": "bin/GameUI:vgui::AnimationController",
+  "retail_len": 210,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 210,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::BaseInputDialog": {
+  "headers": [
+   "public/vgui_controls/InputDialog.h"
+  ],
+  "reference": "bin/GameUI:vgui::BaseInputDialog",
+  "retail_len": 277,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 277,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::BaseTooltip": {
+  "headers": [
+   "public/vgui_controls/Tooltip.h"
+  ],
+  "reference": "bin/GameUI:vgui::BaseTooltip",
+  "retail_len": 7,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 7,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::BuildGroup": {
+  "headers": [
+   "public/vgui_controls/BuildGroup.h"
+  ],
+  "reference": "bin/GameUI:vgui::BuildGroup",
+  "retail_len": 26,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 26,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::BuildModeDialog": {
+  "headers": [
+   "public/vgui_controls/BuildModeDialog.h"
+  ],
+  "reference": "bin/GameUI:vgui::BuildModeDialog",
+  "retail_len": 295,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 295,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::Button": {
+  "headers": [
+   "public/vgui_controls/Button.h"
+  ],
+  "reference": "bin/GameUI:vgui::Button",
+  "retail_len": 286,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 284,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::CBitmapImagePanel": {
+  "headers": [
+   "public/vgui_controls/BitmapImagePanel.h"
+  ],
+  "reference": "bin/GameUI:vgui::CBitmapImagePanel",
+  "retail_len": 213,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 213,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::CConsoleDialog": {
+  "headers": [
+   "public/vgui_controls/consoledialog.h"
+  ],
+  "reference": "bin/GameUI:vgui::CConsoleDialog",
+  "retail_len": 277,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 277,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::CConsolePanel": {
+  "headers": [
+   "public/vgui_controls/consoledialog.h"
+  ],
+  "reference": "bin/GameUI:vgui::CConsolePanel",
+  "retail_len": 242,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 242,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::CTreeViewListControl": {
+  "headers": [
+   "public/vgui_controls/TreeViewListControl.h"
+  ],
+  "reference": "bin/GameUI:vgui::CTreeViewListControl",
+  "retail_len": 223,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 223,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::CheckButton": {
+  "headers": [
+   "public/vgui_controls/CheckButton.h"
+  ],
+  "reference": "bin/GameUI:vgui::CheckButton",
+  "retail_len": 290,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 288,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::CheckImage": {
+  "headers": [
+   "public/vgui_controls/CheckButton.h"
+  ],
+  "reference": "bin/GameUI:vgui::CheckImage",
+  "retail_len": 41,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 41,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::CircularProgressBar": {
+  "headers": [
+   "public/vgui_controls/CircularProgressBar.h"
+  ],
+  "reference": "bin/GameUI:vgui::CircularProgressBar",
+  "retail_len": 213,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 213,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::ComboBox": {
+  "headers": [
+   "public/vgui_controls/ComboBox.h"
+  ],
+  "reference": "bin/GameUI:vgui::ComboBox",
+  "retail_len": 306,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 306,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::ComboBoxButton": {
+  "headers": [
+   "public/vgui_controls/ComboBox.h"
+  ],
+  "reference": "bin/GameUI:vgui::ComboBoxButton",
+  "retail_len": 286,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 284,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::ContinuousAnalogBar": {
+  "headers": [
+   "public/vgui_controls/AnalogBar.h"
+  ],
+  "reference": "bin/GameUI:vgui::ContinuousAnalogBar",
+  "retail_len": 213,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 213,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::ContinuousProgressBar": {
+  "headers": [
+   "public/vgui_controls/ProgressBar.h"
+  ],
+  "reference": "bin/GameUI:vgui::ContinuousProgressBar",
+  "retail_len": 213,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 213,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::DirectorySelectDialog": {
+  "headers": [
+   "public/vgui_controls/DirectorySelectDialog.h"
+  ],
+  "reference": "bin/engine:vgui::DirectorySelectDialog",
+  "retail_len": 279,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 279,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::DirectoryTreeView": {
+  "headers": [
+   "public/vgui_controls/DirectorySelectDialog.h"
+  ],
+  "reference": "bin/engine:vgui::DirectoryTreeView",
+  "retail_len": 263,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 263,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::Divider": {
+  "headers": [
+   "public/vgui_controls/Divider.h"
+  ],
+  "reference": "bin/GameUI:vgui::Divider",
+  "retail_len": 210,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 210,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::EditablePanel": {
+  "headers": [
+   "public/vgui_controls/EditablePanel.h"
+  ],
+  "reference": "bin/GameUI:vgui::EditablePanel",
+  "retail_len": 235,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 235,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::ExpandButton": {
+  "headers": [
+   "public/vgui_controls/ExpandButton.h"
+  ],
+  "reference": "bin/GameUI:vgui::ExpandButton",
+  "retail_len": 287,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 285,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::FileOpenDialog": {
+  "headers": [
+   "public/vgui_controls/FileOpenDialog.h"
+  ],
+  "reference": "bin/GameUI:vgui::FileOpenDialog",
+  "retail_len": 291,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 291,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::FocusNavGroup": {
+  "headers": [
+   "public/vgui_controls/FocusNavGroup.h"
+  ],
+  "reference": "bin/GameUI:vgui::FocusNavGroup",
+  "retail_len": 11,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 11,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::Frame": {
+  "headers": [
+   "public/vgui_controls/Frame.h"
+  ],
+  "reference": "bin/GameUI:vgui::Frame",
+  "retail_len": 276,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 276,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::GraphPanel": {
+  "headers": [
+   "public/vgui_controls/GraphPanel.h"
+  ],
+  "reference": "bin/GameUI:vgui::GraphPanel",
+  "retail_len": 210,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 210,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::HTML": {
+  "headers": [
+   "public/vgui_controls/HTML.h"
+  ],
+  "reference": "hl2mp/client:vgui::HTML",
+  "retail_len": 277,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 237,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::IBorder": {
+  "headers": [
+   "public/vgui/IBorder.h"
+  ],
+  "reference": "bin/vgui2:ImageBorder",
+  "retail_len": 13,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 12,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::IClientPanel": {
+  "headers": [
+   "public/vgui/IClientPanel.h"
+  ],
+  "reference": "bin/GameUI:vgui::IClientPanel",
+  "retail_len": 28,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 28,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::IImage": {
+  "headers": [
+   "public/vgui/IImage.h"
+  ],
+  "reference": "bin/engine:BlankImage",
+  "retail_len": 13,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 13,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::ILocalize": {
+  "headers": [
+   "public/tier1/ilocalize.h",
+   "public/vgui/ILocalize.h"
+  ],
+  "reference": "bin/vgui2:CLocalizedStringTable",
+  "retail_len": 18,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 18,
+  "versions": {
+   "ours": [
+    "VGUI_Localize005"
+   ],
+   "retail": [
+    "VGUI_Localize005"
+   ],
+   "sdk2013": [
+    "VGUI_Localize005"
+   ]
+  }
+ },
+ "vgui::IPanel": {
+  "headers": [
+   "public/vgui/IPanel.h"
+  ],
+  "reference": "bin/vgui2:VPanelWrapper",
+  "retail_len": 62,
+  "retail_len_basis": "override: Client/GetModuleName are VPanelWrapper's own virtuals",
+  "sdk2013_len": 62,
+  "versions": {
+   "ours": [
+    "VGUI_Panel009"
+   ],
+   "retail": [
+    "VGUI_Panel009"
+   ],
+   "sdk2013": [
+    "VGUI_Panel009"
+   ]
+  }
+ },
+ "vgui::IPanelAnimationPropertyConverter": {
+  "headers": [
+   "public/vgui_controls/Panel.h"
+  ],
+  "reference": "bin/engine:CBoolProperty",
+  "retail_len": 3,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 3,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::IScheme": {
+  "headers": [
+   "public/vgui/IScheme.h"
+  ],
+  "reference": "bin/vgui2:CScheme",
+  "retail_len": 13,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 12,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::ISchemeManager": {
+  "headers": [
+   "public/vgui/IScheme.h"
+  ],
+  "reference": "bin/vgui2:CSchemeManager",
+  "retail_len": 18,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 17,
+  "versions": {
+   "ours": [
+    "VGUI_Scheme010"
+   ],
+   "retail": [
+    "VGUI_Scheme010"
+   ],
+   "sdk2013": [
+    "VGUI_Scheme010"
+   ]
+  }
+ },
+ "vgui::ISurface": {
+  "headers": [
+   "public/vgui/ISurface.h",
+   "public/vgui/ISurfaceV30.h"
+  ],
+  "reference": "bin/vguimatsurface:CMatSystemSurface",
+  "retail_len": 152,
+  "retail_len_basis": "first own method of IMatSystemSurface",
+  "sdk2013_len": 152,
+  "versions": {
+   "ours": [
+    "VGUI_Surface030"
+   ],
+   "retail": [
+    "VGUI_Surface030"
+   ],
+   "sdk2013": [
+    "VGUI_Surface030"
+   ]
+  }
+ },
+ "vgui::ISystem": {
+  "headers": [
+   "public/vgui/ISystem.h"
+  ],
+  "reference": "bin/vgui2:CSystem",
+  "retail_len": 36,
+  "retail_len_basis": "override: KeyCode_VGUIToVirtualKey and the folder-path getters are CSystem's own virtuals, declared in retail order",
+  "sdk2013_len": 36,
+  "versions": {
+   "ours": [
+    "VGUI_System010"
+   ],
+   "retail": [
+    "VGUI_System010"
+   ],
+   "sdk2013": [
+    "VGUI_System010"
+   ]
+  }
+ },
+ "vgui::IVGui": {
+  "headers": [
+   "public/vgui/IVGui.h"
+  ],
+  "reference": "bin/vgui2:CVGui",
+  "retail_len": 30,
+  "retail_len_basis": "shortest deriving subtable",
+  "sdk2013_len": 30,
+  "versions": {
+   "ours": [
+    "VGUI_ivgui008"
+   ],
+   "retail": [
+    "VGUI_ivgui008"
+   ],
+   "sdk2013": [
+    "VGUI_ivgui008"
+   ]
+  }
+ },
+ "vgui::Image": {
+  "headers": [
+   "public/vgui_controls/Image.h"
+  ],
+  "reference": "bin/GameUI:vgui::Image",
+  "retail_len": 32,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 32,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::ImagePanel": {
+  "headers": [
+   "public/vgui_controls/ImagePanel.h"
+  ],
+  "reference": "bin/GameUI:vgui::ImagePanel",
+  "retail_len": 215,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 215,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::InputDialog": {
+  "headers": [
+   "public/vgui_controls/InputDialog.h"
+  ],
+  "reference": "bin/GameUI:vgui::InputDialog",
+  "retail_len": 277,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 277,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::Label": {
+  "headers": [
+   "public/vgui_controls/Label.h"
+  ],
+  "reference": "bin/GameUI:vgui::Label",
+  "retail_len": 248,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 247,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::ListPanel": {
+  "headers": [
+   "public/vgui_controls/ListPanel.h"
+  ],
+  "reference": "bin/GameUI:vgui::ListPanel",
+  "retail_len": 279,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 279,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::ListViewPanel": {
+  "headers": [
+   "public/vgui_controls/ListViewPanel.h"
+  ],
+  "reference": "bin/GameUI:vgui::ListViewPanel",
+  "retail_len": 231,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 231,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::Menu": {
+  "headers": [
+   "public/vgui_controls/Menu.h"
+  ],
+  "reference": "bin/GameUI:vgui::Menu",
+  "retail_len": 269,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 268,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::MenuBar": {
+  "headers": [
+   "public/vgui_controls/MenuBar.h"
+  ],
+  "reference": "bin/GameUI:vgui::MenuBar",
+  "retail_len": 215,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 215,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::MenuButton": {
+  "headers": [
+   "public/vgui_controls/MenuButton.h"
+  ],
+  "reference": "bin/GameUI:vgui::MenuButton",
+  "retail_len": 295,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 293,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::MenuItem": {
+  "headers": [
+   "public/vgui_controls/MenuItem.h"
+  ],
+  "reference": "bin/GameUI:vgui::MenuItem",
+  "retail_len": 290,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 288,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::MessageBox": {
+  "headers": [
+   "public/vgui_controls/MessageBox.h"
+  ],
+  "reference": "bin/GameUI:vgui::MessageBox",
+  "retail_len": 285,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 285,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::Panel": {
+  "headers": [
+   "public/vgui_controls/Panel.h"
+  ],
+  "reference": "bin/GameUI:vgui::Panel",
+  "retail_len": 210,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 210,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::PanelListPanel": {
+  "headers": [
+   "public/vgui_controls/PanelListPanel.h"
+  ],
+  "reference": "bin/GameUI:vgui::PanelListPanel",
+  "retail_len": 242,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 242,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::ProgressBar": {
+  "headers": [
+   "public/vgui_controls/ProgressBar.h"
+  ],
+  "reference": "bin/GameUI:vgui::ProgressBar",
+  "retail_len": 213,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 213,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::PropertyDialog": {
+  "headers": [
+   "public/vgui_controls/PropertyDialog.h"
+  ],
+  "reference": "bin/GameUI:vgui::PropertyDialog",
+  "retail_len": 284,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 284,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::PropertyPage": {
+  "headers": [
+   "public/vgui_controls/PropertyPage.h"
+  ],
+  "reference": "bin/GameUI:vgui::PropertyPage",
+  "retail_len": 240,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 240,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::PropertySheet": {
+  "headers": [
+   "public/vgui_controls/PropertySheet.h"
+  ],
+  "reference": "bin/GameUI:vgui::PropertySheet",
+  "retail_len": 263,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 263,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::QueryBox": {
+  "headers": [
+   "public/vgui_controls/QueryBox.h"
+  ],
+  "reference": "bin/GameUI:vgui::QueryBox",
+  "retail_len": 285,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 285,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::RadioButton": {
+  "headers": [
+   "public/vgui_controls/RadioButton.h"
+  ],
+  "reference": "bin/GameUI:vgui::RadioButton",
+  "retail_len": 291,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 289,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::RadioImage": {
+  "headers": [
+   "public/vgui_controls/RadioButton.h"
+  ],
+  "reference": "bin/GameUI:vgui::RadioImage",
+  "retail_len": 41,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 41,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::RichText": {
+  "headers": [
+   "public/vgui_controls/RichText.h"
+  ],
+  "reference": "bin/GameUI:vgui::RichText",
+  "retail_len": 221,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 221,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::ScalableImagePanel": {
+  "headers": [
+   "public/vgui_controls/ScalableImagePanel.h"
+  ],
+  "reference": "bin/GameUI:vgui::ScalableImagePanel",
+  "retail_len": 211,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 211,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::ScrollBar": {
+  "headers": [
+   "public/vgui_controls/ScrollBar.h"
+  ],
+  "reference": "bin/GameUI:vgui::ScrollBar",
+  "retail_len": 230,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 230,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::ScrollBarSlider": {
+  "headers": [
+   "public/vgui_controls/ScrollBarSlider.h"
+  ],
+  "reference": "bin/GameUI:vgui::ScrollBarSlider",
+  "retail_len": 225,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 225,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::SectionedListPanel": {
+  "headers": [
+   "public/vgui_controls/SectionedListPanel.h"
+  ],
+  "reference": "bin/GameUI:vgui::SectionedListPanel",
+  "retail_len": 262,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 262,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::SectionedListPanelHeader": {
+  "headers": [
+   "public/vgui_controls/SectionedListPanel.h"
+  ],
+  "reference": "bin/GameUI:vgui::SectionedListPanelHeader",
+  "retail_len": 248,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 247,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::Slider": {
+  "headers": [
+   "public/vgui_controls/Slider.h"
+  ],
+  "reference": "bin/GameUI:vgui::Slider",
+  "retail_len": 235,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 235,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::TextEntry": {
+  "headers": [
+   "public/vgui_controls/TextEntry.h"
+  ],
+  "reference": "bin/GameUI:vgui::TextEntry",
+  "retail_len": 282,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 282,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::TextImage": {
+  "headers": [
+   "public/vgui_controls/TextImage.h"
+  ],
+  "reference": "bin/GameUI:vgui::TextImage",
+  "retail_len": 41,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 41,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::TextTooltip": {
+  "headers": [
+   "public/vgui_controls/Tooltip.h"
+  ],
+  "reference": "bin/GameUI:vgui::TextTooltip",
+  "retail_len": 8,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 8,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::ToggleButton": {
+  "headers": [
+   "public/vgui_controls/ToggleButton.h"
+  ],
+  "reference": "bin/GameUI:vgui::ToggleButton",
+  "retail_len": 286,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 284,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::TreeView": {
+  "headers": [
+   "public/vgui_controls/TreeView.h"
+  ],
+  "reference": "bin/GameUI:vgui::TreeView",
+  "retail_len": 263,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 263,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ },
+ "vgui::URLLabel": {
+  "headers": [
+   "public/vgui_controls/URLLabel.h"
+  ],
+  "reference": "bin/GameUI:vgui::URLLabel",
+  "retail_len": 248,
+  "retail_len_basis": "own vtable",
+  "sdk2013_len": 247,
+  "versions": {
+   "ours": [],
+   "retail": [],
+   "sdk2013": []
+  }
+ }
+}

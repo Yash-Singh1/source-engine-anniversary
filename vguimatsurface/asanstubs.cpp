@@ -24,10 +24,6 @@ VPanel::~VPanel()
 {
 }
 
-void VPanel::TraverseLevel( int val )
-{
-}
-
 void VPanel::Init(IClientPanel *attachedClientPanel)
 {
 }

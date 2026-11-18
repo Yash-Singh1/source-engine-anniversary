@@ -1,0 +1,78 @@
+{
+ "interface": "IVAudio",
+ "headers": [
+  "public/vaudio/ivaudio.h"
+ ],
+ "versions": {
+  "retail": [
+   "VAudio002"
+  ],
+  "ours": [
+   "VAudio002"
+  ],
+  "sdk2013": [
+   "VAudio002"
+  ]
+ },
+ "version_macros": [
+  "VAUDIO_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/vaudio_miles",
+   "version": "VAudio002",
+   "class": null
+  }
+ ],
+ "sdk2013_len": 4,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "CreateMP3StreamDecoder(IAudioStreamEvent*)",
+  "DestroyMP3StreamDecoder(IAudioStream*)"
+ ],
+ "retail_reference": {
+  "module": "bin/vaudio_miles",
+  "class": "CVAudio",
+  "offset": 0,
+  "chain": [
+   "CVAudio",
+   "IVAudio"
+  ]
+ },
+ "retail_len": 4,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 4
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CVAudio",
+   "sig": "~CVAudio()",
+   "symbol": "CVAudio::~CVAudio()"
+  },
+  {
+   "index": 1,
+   "name": "~CVAudio",
+   "sig": "~CVAudio()",
+   "symbol": "CVAudio::~CVAudio()"
+  },
+  {
+   "index": 2,
+   "name": "CreateMP3StreamDecoder",
+   "sig": "CreateMP3StreamDecoder(IAudioStreamEvent*)",
+   "symbol": "CVAudio::CreateMP3StreamDecoder(IAudioStreamEvent*)"
+  },
+  {
+   "index": 3,
+   "name": "DestroyMP3StreamDecoder",
+   "sig": "DestroyMP3StreamDecoder(IAudioStream*)",
+   "symbol": "CVAudio::DestroyMP3StreamDecoder(IAudioStream*)"
+  }
+ ],
+ "derived": [
+  "bin/vaudio_miles:CVAudio"
+ ],
+ "derived_count": 1
+}
