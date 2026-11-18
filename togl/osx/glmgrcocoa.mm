@@ -27,6 +27,11 @@
 // some glue to let GLMgr call into NS/ObjC classes.
 // ------------------------------------------------------------------------------------ //
 
+PseudoNSGLContextPtr GetCurrentNSGLContext( )
+{
+	return (PseudoNSGLContextPtr)[NSOpenGLContext currentContext];
+}
+
 CGLContextObj GetCGLContextFromNSGL( PseudoNSGLContextPtr nsglCtx )
 {
 	return (CGLContextObj)[ (NSOpenGLContext*)nsglCtx CGLContextObj];

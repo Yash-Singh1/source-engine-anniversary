@@ -23,15 +23,15 @@ from waflib.TaskGen import feature, before_method, after_method
 MANIFEST = 'devtools/bytematch/manifests/retail-osx32.json'
 TOOLCHAIN_DIR = 'devtools/bytematch/toolchain'
 
-# Modules that compile and link in this mode. Not yet: togl and materialsystem
-# (our linuxwin togl headers vs the OSX SDK), launcher (needs togl),
-# vgui_surfacelib/vguimatsurface (FreeType fonts; retail uses the OSX font path).
+# Modules that compile and link in this mode. Not yet: vgui_surfacelib/vguimatsurface
+# (FreeType fonts; retail uses the OSX font path).
 RETAIL_MODULES = [
 	'tier0', 'tier1', 'mathlib', 'tier2', 'tier3', 'vstdlib',
 	'appframework', 'bitmap', 'vtf', 'choreoobjects', 'dmxloader', 'particles', 'vpklib',
 	'materialsystem/shaderlib', 'vgui2/vgui_controls', 'vgui2/matsys_controls',
 	'scenefilecache', 'soundemittersystem', 'datacache', 'video', 'inputsystem',
 	'filesystem', 'vgui2/src', 'studiorender', 'serverbrowser', 'utils/vtex',
+	'togl',
 ]
 
 # Defines our top-level wscript adds that Valve's build doesn't have.

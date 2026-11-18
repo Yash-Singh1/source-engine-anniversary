@@ -1,26 +1,3 @@
-//========= Copyright Valve Corporation, All rights reserved. ============//
-//                       TOGL CODE LICENSE
-//
-//  Copyright 2011-2014 Valve Corporation
-//  All Rights Reserved.
-//
-//  Permission is hereby granted, free of charge, to any person obtaining a copy
-//  of this software and associated documentation files (the "Software"), to deal
-//  in the Software without restriction, including without limitation the rights
-//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-//  copies of the Software, and to permit persons to whom the Software is
-//  furnished to do so, subject to the following conditions:
-//
-//  The above copyright notice and this permission notice shall be included in
-//  all copies or substantial portions of the Software.
-//
-//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-//  THE SOFTWARE.
 //------------------------------------------------------------------------------
 // DX9AsmToGL2.h
 //------------------------------------------------------------------------------
@@ -35,23 +12,22 @@
 #define MAX_SHADER_CONSTANTS	512
 
 #define MAX_DECLARED_OUTPUTS	32
-#define MAX_DECLARED_INPUTS	32
 
 #define HEXCODE_HEADER		"// Hex: "
 
 // Option bits
-#define D3DToGL_OptionUseEnvParams				0x0001
-#define D3DToGL_OptionDoFixupZ					0x0002		// Add instructions to put Z in the right interval for GL
-#define D3DToGL_OptionDoFixupY					0x0004		// Add instructions to flip the Y over for GL
-#define D3DToGL_OptionDoUserClipPlanes			0x0008		// ARB mode: Include OPTION vertex_program_2 and append DP4's to write into oCLP[0] and oCLP[1]
+#define D3DToGL_OptionUseEnvParams				0x001
+#define D3DToGL_OptionDoFixupZ					0x002		// Add instructions to put Z in the right interval for GL
+#define D3DToGL_OptionDoFixupY					0x004		// Add instructions to flip the Y over for GL
+#define D3DToGL_OptionDoUserClipPlanes			0x008		// ARB mode: Include OPTION vertex_program_2 and append DP4's to write into oCLP[0] and oCLP[1]
 															// GLSL mode: generate code to write gl_ClipVertex
-
-#define D3DToGL_AddHexComments					0x0020		// Include hex comments in the code for debugging
-#define D3DToGL_PutHexCommentsAfterLines		0x0040		// If D3DToGL_AddHexComments is set, this puts the codes to the right, rather than on separate lines
-#define D3DToGL_GeneratingDebugText				0x0080		// This tells it that we're just getting info for debugging so go easy on asserts and errors
-#define D3DToGL_OptionSRGBWriteSuffix			0x0400		// Tack sRGB conversion suffix on to pixel shaders
-#define D3DToGL_OptionGenerateBoneUniformBuffer	0x0800		// if enabled, the vertex shader "bone" registers (all regs DXABSTRACT_VS_FIRST_BONE_SLOT and higher) will be separated out into another uniform buffer (vcbone)
-#define D3DToGL_OptionUseBindlessTexturing		0x1000
+#define D3DToGL_OptionGLSL						0x010		// Output GLSL, rather than ASM
+#define D3DToGL_AddHexComments					0x020		// Include hex comments in the code for debugging
+#define D3DToGL_PutHexCommentsAfterLines		0x040		// If D3DToGL_AddHexComments is set, this puts the codes to the right, rather than on separate lines
+#define D3DToGL_GeneratingDebugText				0x080		// This tells it that we're just getting info for debugging so go easy on asserts and errors
+#define D3DToGL_OptionAllowStaticControlFlow	0x100
+#define D3DToGL_OptionUseBindableUniforms		0x200		// add "bindable" in front of "vc" / "pc" constant arrays (GLSL only)
+#define D3DToGL_OptionSRGBWriteSuffix			0x400		// Tack sRGB conversion suffix on to pixel shaders
 #define D3DToGL_OptionSpew						0x80000000
 
 // Code for which component of the "dummy" address register is needed by an instruction
@@ -79,10 +55,16 @@ private:
 	bool	m_bDoFixupY;				// set D3DToGL_OptionDoFixupZ
 	bool	m_bDoUserClipPlanes;		// set D3DToGL_OptionDoUserClipPlanes
 	bool	m_bSpew;					// set D3DToGL_OptionSpew
+	bool	m_bUseBindableUniforms;		// set D3DToGL_OptionUseBindableUniforms
 	bool	m_bGenerateSRGBWriteSuffix;	// set D3DToGL_OptionSRGBWriteSuffix
-	bool	m_bGenerateBoneUniformBuffer;
-	bool	m_bUseBindlessTexturing;
-		
+
+	// Default: false
+	// If you set this to true, it'll convert to GLSL instead of GL ASM.
+	bool m_bGLSL;					// set D3DToGL_OptionGLSL
+
+	// Default: false
+	bool m_bAllowStaticControlFlow;	// set D3DToGL_OptionAllowStaticControlFlow
+
 	// Counter for dealing with nested loops
 	int m_nLoopDepth;
 
@@ -110,24 +92,18 @@ private:
 	bool m_bDeclareVSOPos;
 	bool m_bDeclareVSOFog;
 	uint32 m_dwTexCoordOutMask;
-
-	int32 m_nVSPositionOutput;
 	
 	// Mask of varyings which need centroid decoration
 	uint32 m_nCentroidMask;
 
 	// Keep track of which temps are used so they can be declared
 	uint32 m_dwTempUsageMask;
-	uint32 m_dwTempBoolUsageMask;
-	bool m_bOutputColorRegister[4];
+	bool m_bOutputColorRegister[2];
 	bool m_bOutputDepthRegister;
-	
+
 	// Declaration of integer and bool constants
 	uint32 m_dwConstIntUsageMask;
 	uint32 m_dwConstBoolUsageMask;
-
-	uint32 m_dwDefConstIntUsageMask;
-	uint32 m_dwDefConstIntIterCount[32];
 	
 	// Did we use atomic_temp_var?
 	bool m_bUsedAtomicTempVar;
@@ -142,7 +118,7 @@ private:
 	uint32 m_dwSamplerUsageMask;
 
 	// Track shadow sampler usage
-	int m_nShadowDepthSamplerMask;
+	int m_nShadowDepthSampler;
 	bool m_bDeclareShadowOption;
 
 	// Track attribute references
@@ -153,7 +129,6 @@ private:
 
 	// Register high water mark
 	uint32 m_nHighestRegister;
-	int32 m_nHighestBoneRegister;
 	
 	// GLSL does indentation for readability
 	int m_NumIndentTabs;
@@ -176,13 +151,10 @@ private:
 	// In GLSL mode, these store the semantic attached to each oN register.
 	// They are the values that you pass to GetUsageIndexAndString.
 	uint32 m_DeclaredOutputs[MAX_DECLARED_OUTPUTS];
-	
-	uint32 m_DeclaredInputs[MAX_DECLARED_INPUTS];
 
 	// Have they used the tangent input semantic (i.e. is g_pTangentAttributeName declared)?
 	bool m_bTangentInputUsed;
 
-	bool m_bUsesDSTInstruction;
 
 private:
 	// Utilities to aid in decoding token stream
@@ -198,7 +170,6 @@ private:
 	void StrcatToALUCode( const char *pBuf );
 	void StrcatToParamCode( const char *pBuf );
 	void StrcatToAttribCode( const char *pBuf );
-	void PrintToBufWithIndents( CUtlBuffer &buf, const char *pFormat, ... );
 
 	// This helps write the token hex codes into the output stream for debugging.
 	void AddTokenHexCodeToBuffer( char *pBuffer, int nSize, int nLastStrlen );
@@ -230,12 +201,10 @@ private:
 	void WriteGLSLCmp( const char *pDestReg, const char *pSrc0Reg, const char *pSrc1Reg, const char *pSrc2Reg );
 	void WriteGLSLSamplerDefinitions();
 	void WriteGLSLOutputVariableAssignments();
-	void WriteGLSLInputVariableAssignments();
 	void NoteTangentInputUsed();
 
 	void Handle_DCL();
 	void Handle_DEF();
-	void Handle_DEFIB( uint32 nInstruction );
 	void Handle_MAD( uint32 nInstruction );
 	void Handle_DP2ADD();
 	void Handle_SINCOS();
@@ -253,7 +222,7 @@ private:
 public:
 	D3DToGL();
 
-	int TranslateShader( uint32* code, CUtlBuffer *pBufDisassembledCode, bool *bVertexShader, uint32 options, int32 nShadowDepthSamplerMask, uint32 nCentroidMask, char *debugLabel );
+	int TranslateShader( uint32* code, CUtlBuffer *pBufDisassembledCode, bool *bVertexShader, uint32 options, int32 nShadowDepthSampler, uint32 nCentroidMask, char *debugLabel );
 };
 
 
