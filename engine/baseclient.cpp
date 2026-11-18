@@ -390,7 +390,10 @@ void ValidateName( char *pszName, int nBuffSize )
 	}
 	else
 	{
+#ifndef BYTEMATCH_RETAIL
 		Q_RemoveAllEvilCharacters( pszName );
+#endif
+#line 394
 
 		const unsigned char *pChar = (unsigned char *)pszName;
 
