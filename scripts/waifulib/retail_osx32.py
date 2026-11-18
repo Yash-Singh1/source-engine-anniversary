@@ -23,9 +23,9 @@ from waflib.TaskGen import feature, before_method, after_method
 MANIFEST = 'devtools/bytematch/manifests/retail-osx32.json'
 TOOLCHAIN_DIR = 'devtools/bytematch/toolchain'
 
-# Modules that compile and link in this mode. Not yet: togl and materialsystem
-# (our linuxwin togl headers vs the OSX SDK), launcher (needs togl),
-# vgui_surfacelib/vguimatsurface (FreeType fonts; retail uses the OSX font path).
+# Modules that compile and link in this mode. Not here: togl, materialsystem, shaderapidx9
+# and launcher (ToGL lane), the game modules (game lane), chromehtml, vaudio_miles and
+# vpk_osx32 (sources missing from this tree).
 RETAIL_MODULES = [
 	'tier0', 'tier1', 'mathlib', 'tier2', 'tier3', 'vstdlib',
 	'appframework', 'bitmap', 'vtf', 'choreoobjects', 'dmxloader', 'particles', 'vpklib',
