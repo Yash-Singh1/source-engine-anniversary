@@ -18,6 +18,12 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
+#ifndef BYTEMATCH_RETAIL
+#define TRACE_FAR_DIST 1e16f
+#else
+#define TRACE_FAR_DIST 1e24f
+#endif
+
 // this skips the sphere tree stuff for tracing
 #define DEBUG_TEST_ALL_LEDGES 0
 // this skips the optimization that shrinks the ray as each intersection is encountered
@@ -1231,7 +1237,7 @@ loop_without_store:
 			const IVP_Compact_Ledgetree_Node *node0 = node->left_son();
 			center.set(node0->center.k);
 			// if we don't insert, this is larger than any quad distance
-			float lastDist = 1e16f;
+			float lastDist = TRACE_FAR_DIST;
 			if ( SweepHitsSphereOS( &center, node0->radius ) )
 			{
 				lastDist = m_rayStartOS.quad_distance_to(&center);
@@ -2073,7 +2079,7 @@ inline float Clip( const Vector &dir, const Vector &pos, const Vector &normal )
 		return dist / cosTheta;
 
 	// parallel or not facing the plane
-	return 1e16f;
+	return TRACE_FAR_DIST;
 }
 
 // This is the first iteration of solving time of intersection.
@@ -2258,7 +2264,7 @@ float simplex_t::ClipRayToTriangle( const Vector &dir, float epsilon )
 	}
 	float dot = DotProduct( dir, *normals[best] );
 	if ( dot <= 0 )
-		return 1e16f;
+		return TRACE_FAR_DIST;
 	dmin += epsilon/dot;
 
 	return dmin;

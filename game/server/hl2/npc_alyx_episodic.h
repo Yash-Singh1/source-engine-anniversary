@@ -12,22 +12,22 @@
 
 extern ConVar npc_alyx_readiness;
 
-class CNPC_Alyx : public CNPC_PlayerCompanion
+class CNPC_Alyx_Episodic : public CNPC_PlayerCompanion
 {
 public:
-	DECLARE_CLASS( CNPC_Alyx, CNPC_PlayerCompanion );
+	DECLARE_CLASS( CNPC_Alyx_Episodic, CNPC_PlayerCompanion );
 
 	// fast class list
-	CNPC_Alyx *m_pNext;
+	CNPC_Alyx_Episodic *m_pNext;
 
 	virtual void	ModifyOrAppendCriteria( AI_CriteriaSet &set );
 
 	bool ForceVehicleInteraction( const char *lpszInteractionName, CBaseCombatCharacter *pOther );
 
-	CNPC_Alyx( );
-	~CNPC_Alyx( );
+	CNPC_Alyx_Episodic( );
+	~CNPC_Alyx_Episodic( );
 
-	static CNPC_Alyx *GetAlyx( void );
+	static CNPC_Alyx_Episodic *GetAlyx( void );
 
 	bool	CreateBehaviors();
 	void	Spawn( void );

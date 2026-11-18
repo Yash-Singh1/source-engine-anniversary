@@ -1,0 +1,81 @@
+{
+ "interface": "IPhysicsCollisionSolver",
+ "headers": [
+  "public/vphysics_interface.h",
+  "public/vphysics_interfaceV30.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 5,
+ "sdk2013_slots": [
+  "ShouldCollide(IPhysicsObject*, IPhysicsObject*, void*, void*)",
+  "ShouldSolvePenetration(IPhysicsObject*, IPhysicsObject*, void*, void*, float)",
+  "ShouldFreezeObject(IPhysicsObject*)",
+  "AdditionalCollisionChecksThisTick(int)",
+  "ShouldFreezeContacts(IPhysicsObject**, int)"
+ ],
+ "retail_reference": {
+  "module": "episodic/client",
+  "class": "CCollisionEvent",
+  "offset": 4,
+  "chain": [
+   "CCollisionEvent",
+   "IPhysicsCollisionSolver"
+  ]
+ },
+ "retail_len": 5,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 5
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "ShouldCollide",
+   "sig": "ShouldCollide(IPhysicsObject*, IPhysicsObject*, void*, void*)",
+   "symbol": "non-virtual thunk to CCollisionEvent::ShouldCollide(IPhysicsObject*, IPhysicsObject*, void*, void*)"
+  },
+  {
+   "index": 1,
+   "name": "ShouldSolvePenetration",
+   "sig": "ShouldSolvePenetration(IPhysicsObject*, IPhysicsObject*, void*, void*, float)",
+   "symbol": "non-virtual thunk to CCollisionEvent::ShouldSolvePenetration(IPhysicsObject*, IPhysicsObject*, void*, void*, float)"
+  },
+  {
+   "index": 2,
+   "name": "ShouldFreezeObject",
+   "sig": "ShouldFreezeObject(IPhysicsObject*)",
+   "symbol": "non-virtual thunk to CCollisionEvent::ShouldFreezeObject(IPhysicsObject*)"
+  },
+  {
+   "index": 3,
+   "name": "AdditionalCollisionChecksThisTick",
+   "sig": "AdditionalCollisionChecksThisTick(int)",
+   "symbol": "non-virtual thunk to CCollisionEvent::AdditionalCollisionChecksThisTick(int)"
+  },
+  {
+   "index": 4,
+   "name": "ShouldFreezeContacts",
+   "sig": "ShouldFreezeContacts(IPhysicsObject**, int)",
+   "symbol": "non-virtual thunk to CCollisionEvent::ShouldFreezeContacts(IPhysicsObject**, int)"
+  }
+ ],
+ "derived": [
+  "episodic/client:CCollisionEvent",
+  "episodic/server:CCollisionEvent",
+  "hl2/client:CCollisionEvent",
+  "hl2/server:CCollisionEvent",
+  "hl2_complete/client:CCollisionEvent",
+  "hl2_complete/server:CCollisionEvent",
+  "hl2mp/client:CCollisionEvent",
+  "hl2mp/server:CCollisionEvent",
+  "lostcoast/client:CCollisionEvent",
+  "lostcoast/server:CCollisionEvent"
+ ],
+ "derived_count": 10
+}

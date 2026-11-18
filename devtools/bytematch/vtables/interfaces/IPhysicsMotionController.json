@@ -1,0 +1,107 @@
+{
+ "interface": "IPhysicsMotionController",
+ "headers": [
+  "public/vphysics_interface.h",
+  "public/vphysics_interfaceV30.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 10,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "SetEventHandler(IMotionEvent*)",
+  "AttachObject(IPhysicsObject*, bool)",
+  "DetachObject(IPhysicsObject*)",
+  "CountObjects()",
+  "GetObjects(IPhysicsObject**)",
+  "ClearObjects()",
+  "WakeObjects()",
+  "SetPriority(IPhysicsMotionController::priority_t)"
+ ],
+ "retail_reference": {
+  "module": "bin/vphysics",
+  "class": "CPhysicsMotionController",
+  "offset": 4,
+  "chain": [
+   "CPhysicsMotionController",
+   "IPhysicsMotionController"
+  ]
+ },
+ "retail_len": 10,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 10
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CPhysicsMotionController",
+   "sig": "~CPhysicsMotionController()",
+   "symbol": "non-virtual thunk to CPhysicsMotionController::~CPhysicsMotionController()"
+  },
+  {
+   "index": 1,
+   "name": "~CPhysicsMotionController",
+   "sig": "~CPhysicsMotionController()",
+   "symbol": "non-virtual thunk to CPhysicsMotionController::~CPhysicsMotionController()"
+  },
+  {
+   "index": 2,
+   "name": "SetEventHandler",
+   "sig": "SetEventHandler(IMotionEvent*)",
+   "symbol": "non-virtual thunk to CPhysicsMotionController::SetEventHandler(IMotionEvent*)"
+  },
+  {
+   "index": 3,
+   "name": "AttachObject",
+   "sig": "AttachObject(IPhysicsObject*, bool)",
+   "symbol": "non-virtual thunk to CPhysicsMotionController::AttachObject(IPhysicsObject*, bool)"
+  },
+  {
+   "index": 4,
+   "name": "DetachObject",
+   "sig": "DetachObject(IPhysicsObject*)",
+   "symbol": "non-virtual thunk to CPhysicsMotionController::DetachObject(IPhysicsObject*)"
+  },
+  {
+   "index": 5,
+   "name": "CountObjects",
+   "sig": "CountObjects()",
+   "symbol": "non-virtual thunk to CPhysicsMotionController::CountObjects()"
+  },
+  {
+   "index": 6,
+   "name": "GetObjects",
+   "sig": "GetObjects(IPhysicsObject**)",
+   "symbol": "non-virtual thunk to CPhysicsMotionController::GetObjects(IPhysicsObject**)"
+  },
+  {
+   "index": 7,
+   "name": "ClearObjects",
+   "sig": "ClearObjects()",
+   "symbol": "non-virtual thunk to CPhysicsMotionController::ClearObjects()"
+  },
+  {
+   "index": 8,
+   "name": "WakeObjects",
+   "sig": "WakeObjects()",
+   "symbol": "non-virtual thunk to CPhysicsMotionController::WakeObjects()"
+  },
+  {
+   "index": 9,
+   "name": "SetPriority",
+   "sig": "SetPriority(IPhysicsMotionController::priority_t)",
+   "symbol": "non-virtual thunk to CPhysicsMotionController::SetPriority(IPhysicsMotionController::priority_t)"
+  }
+ ],
+ "derived": [
+  "bin/vphysics:CPhysicsMotionController"
+ ],
+ "derived_count": 1
+}

@@ -1394,7 +1394,6 @@ bool CVideoCommonServices::ProcessFullScreenInput( bool &bAbortEvent, bool &bPau
 	g_pLauncherMgr->PeekAndRemoveKeyboardEvents( &bEscPressed, &bReturnPressed, &bSpacePressed );
 #endif
 
-#ifdef INPUTSYSTEM_HAS_STEAMCONTROLLERSKIPVIDEO
 	// Steam controller buttons act as space (skip) and escape
 	if ( g_pInputSystem )
 	{
@@ -1409,7 +1408,6 @@ bool CVideoCommonServices::ProcessFullScreenInput( bool &bAbortEvent, bool &bPau
 			bSpacePressed = true;
 		}
 	}
-#endif
 
 	// Manual debounce of the keys, only interested in unpressed->pressed transitions
 	bool bEscEvent = ( bEscPressed != m_bEscLast ) && bEscPressed;

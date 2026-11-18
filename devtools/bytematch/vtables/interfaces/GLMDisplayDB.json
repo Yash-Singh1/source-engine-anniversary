@@ -1,0 +1,107 @@
+{
+ "interface": "GLMDisplayDB",
+ "headers": [
+  "public/togl/linuxwin/glmdisplaydb.h",
+  "public/togl/osx/glmdisplaydb.h",
+  "public/togles/linuxwin/glmdisplaydb.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "bin/launcher",
+  "class": "GLMDisplayDB",
+  "offset": 0,
+  "chain": [
+   "GLMDisplayDB"
+  ]
+ },
+ "retail_len": 12,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 12
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "PopulateRenderers",
+   "sig": "PopulateRenderers()",
+   "symbol": "GLMDisplayDB::PopulateRenderers()"
+  },
+  {
+   "index": 1,
+   "name": "PopulateFakeAdapters",
+   "sig": "PopulateFakeAdapters(unsigned int)",
+   "symbol": "GLMDisplayDB::PopulateFakeAdapters(unsigned int)"
+  },
+  {
+   "index": 2,
+   "name": "Populate",
+   "sig": "Populate()",
+   "symbol": "GLMDisplayDB::Populate()"
+  },
+  {
+   "index": 3,
+   "name": "GetFakeAdapterCount",
+   "sig": "GetFakeAdapterCount()",
+   "symbol": "GLMDisplayDB::GetFakeAdapterCount()"
+  },
+  {
+   "index": 4,
+   "name": "GetFakeAdapterInfo",
+   "sig": "GetFakeAdapterInfo(int, int*, int*, GLMRendererInfoFields*, GLMDisplayInfoFields*)",
+   "symbol": "GLMDisplayDB::GetFakeAdapterInfo(int, int*, int*, GLMRendererInfoFields*, GLMDisplayInfoFields*)"
+  },
+  {
+   "index": 5,
+   "name": "GetRendererCount",
+   "sig": "GetRendererCount()",
+   "symbol": "GLMDisplayDB::GetRendererCount()"
+  },
+  {
+   "index": 6,
+   "name": "GetRendererInfo",
+   "sig": "GetRendererInfo(int, GLMRendererInfoFields*)",
+   "symbol": "GLMDisplayDB::GetRendererInfo(int, GLMRendererInfoFields*)"
+  },
+  {
+   "index": 7,
+   "name": "GetDisplayCount",
+   "sig": "GetDisplayCount(int)",
+   "symbol": "GLMDisplayDB::GetDisplayCount(int)"
+  },
+  {
+   "index": 8,
+   "name": "GetDisplayInfo",
+   "sig": "GetDisplayInfo(int, int, GLMDisplayInfoFields*)",
+   "symbol": "GLMDisplayDB::GetDisplayInfo(int, int, GLMDisplayInfoFields*)"
+  },
+  {
+   "index": 9,
+   "name": "GetModeCount",
+   "sig": "GetModeCount(int, int)",
+   "symbol": "GLMDisplayDB::GetModeCount(int, int)"
+  },
+  {
+   "index": 10,
+   "name": "GetModeInfo",
+   "sig": "GetModeInfo(int, int, int, GLMDisplayModeInfoFields*)",
+   "symbol": "GLMDisplayDB::GetModeInfo(int, int, int, GLMDisplayModeInfoFields*)"
+  },
+  {
+   "index": 11,
+   "name": "Dump",
+   "sig": "Dump()",
+   "symbol": "GLMDisplayDB::Dump()"
+  }
+ ],
+ "derived": [
+  "bin/launcher:GLMDisplayDB"
+ ],
+ "derived_count": 1
+}

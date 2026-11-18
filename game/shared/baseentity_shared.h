@@ -13,6 +13,14 @@
 
 
 extern ConVar hl2_episodic;
+#ifdef HL2_EPISODIC
+bool IsHL2Episodic();
+// Former #ifdef HL2_EPISODIC code: a runtime check where the episodic code is built (HL2 and the episodes share that build).
+#define HL2_EPISODIC_ACTIVE() IsHL2Episodic()
+#else
+inline bool IsHL2Episodic() { return hl2_episodic.GetBool(); }
+#define HL2_EPISODIC_ACTIVE() false
+#endif
 
 // Simple shared header file for common base entities
 

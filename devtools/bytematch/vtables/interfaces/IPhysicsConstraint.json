@@ -1,0 +1,140 @@
+{
+ "interface": "IPhysicsConstraint",
+ "headers": [
+  "public/vphysics/constraints.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 14,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "Activate()",
+  "Deactivate()",
+  "SetGameData(void*)",
+  "GetGameData() const",
+  "GetReferenceObject() const",
+  "GetAttachedObject() const",
+  "SetLinearMotor(float, float)",
+  "SetAngularMotor(float, float)",
+  "UpdateRagdollTransforms(matrix3x4_t const&, matrix3x4_t const&)",
+  "GetConstraintTransform(matrix3x4_t*, matrix3x4_t*) const",
+  "GetConstraintParams(constraint_breakableparams_t*) const",
+  "OutputDebugInfo()"
+ ],
+ "retail_reference": {
+  "module": "bin/vphysics",
+  "class": "CPhysicsConstraint",
+  "offset": 0,
+  "chain": [
+   "CPhysicsConstraint",
+   "IPhysicsConstraint"
+  ]
+ },
+ "retail_len": 14,
+ "retail_len_basis": "override: event_object_* come from the IVP listener base",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 18
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CPhysicsConstraint",
+   "sig": "~CPhysicsConstraint()",
+   "symbol": "CPhysicsConstraint::~CPhysicsConstraint()"
+  },
+  {
+   "index": 1,
+   "name": "~CPhysicsConstraint",
+   "sig": "~CPhysicsConstraint()",
+   "symbol": "CPhysicsConstraint::~CPhysicsConstraint()"
+  },
+  {
+   "index": 2,
+   "name": "Activate",
+   "sig": "Activate()",
+   "symbol": "CPhysicsConstraint::Activate()"
+  },
+  {
+   "index": 3,
+   "name": "Deactivate",
+   "sig": "Deactivate()",
+   "symbol": "CPhysicsConstraint::Deactivate()"
+  },
+  {
+   "index": 4,
+   "name": "SetGameData",
+   "sig": "SetGameData(void*)",
+   "symbol": "CPhysicsConstraint::SetGameData(void*)"
+  },
+  {
+   "index": 5,
+   "name": "GetGameData",
+   "sig": "GetGameData() const",
+   "symbol": "CPhysicsConstraint::GetGameData() const"
+  },
+  {
+   "index": 6,
+   "name": "GetReferenceObject",
+   "sig": "GetReferenceObject() const",
+   "symbol": "CPhysicsConstraint::GetReferenceObject() const"
+  },
+  {
+   "index": 7,
+   "name": "GetAttachedObject",
+   "sig": "GetAttachedObject() const",
+   "symbol": "CPhysicsConstraint::GetAttachedObject() const"
+  },
+  {
+   "index": 8,
+   "name": "SetLinearMotor",
+   "sig": "SetLinearMotor(float, float)",
+   "symbol": "CPhysicsConstraint::SetLinearMotor(float, float)"
+  },
+  {
+   "index": 9,
+   "name": "SetAngularMotor",
+   "sig": "SetAngularMotor(float, float)",
+   "symbol": "CPhysicsConstraint::SetAngularMotor(float, float)"
+  },
+  {
+   "index": 10,
+   "name": "UpdateRagdollTransforms",
+   "sig": "UpdateRagdollTransforms(matrix3x4_t const&, matrix3x4_t const&)",
+   "symbol": "CPhysicsConstraint::UpdateRagdollTransforms(matrix3x4_t const&, matrix3x4_t const&)"
+  },
+  {
+   "index": 11,
+   "name": "GetConstraintTransform",
+   "sig": "GetConstraintTransform(matrix3x4_t*, matrix3x4_t*) const",
+   "symbol": "CPhysicsConstraint::GetConstraintTransform(matrix3x4_t*, matrix3x4_t*) const"
+  },
+  {
+   "index": 12,
+   "name": "GetConstraintParams",
+   "sig": "GetConstraintParams(constraint_breakableparams_t*) const",
+   "symbol": "CPhysicsConstraint::GetConstraintParams(constraint_breakableparams_t*) const"
+  },
+  {
+   "index": 13,
+   "name": "OutputDebugInfo",
+   "sig": "OutputDebugInfo()",
+   "symbol": "CPhysicsConstraint::OutputDebugInfo()"
+  }
+ ],
+ "implementer_tail": [
+  "event_object_deleted(IVP_Event_Object*)",
+  "event_object_created(IVP_Event_Object*)",
+  "event_object_revived(IVP_Event_Object*)",
+  "event_object_frozen(IVP_Event_Object*)"
+ ],
+ "derived": [
+  "bin/vphysics:CPhysicsConstraint"
+ ],
+ "derived_count": 1
+}

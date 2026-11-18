@@ -24,6 +24,7 @@ using namespace vgui;
 #include "PanelListPanel.h"
 #include "scriptobject.h"
 #include <tier0/vcrmode.h>
+#include "gameui_proportional.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include <tier0/memdbgon.h>
@@ -239,12 +240,20 @@ void CCreateMultiplayerGameGameplayPage::LoadGameOptionsList()
 		{
 			pCtrl->pPrompt = new vgui::Label( pCtrl, "DescLabel", "" );
 			pCtrl->pPrompt->SetContentAlignment( vgui::Label::a_west );
+#ifdef BYTEMATCH_RETAIL
+			pCtrl->pPrompt->SetTextInset( PROPORTIONAL_VALUE( 5 ), 0 );
+#else
 			pCtrl->pPrompt->SetTextInset( 5, 0 );
+#endif
 			pCtrl->pPrompt->SetText( pObj->prompt );
 		}
 
 		pCtrl->pScrObj = pObj;
+#ifdef BYTEMATCH_RETAIL
+		pCtrl->SetSize( PROPORTIONAL_VALUE( 100 ), PROPORTIONAL_VALUE( 28 ) );
+#else
 		pCtrl->SetSize( 100, scheme()->GetProportionalScaledValue(28) );
+#endif
 		//pCtrl->SetBorder( scheme()->GetBorder(1, "DepressedButtonBorder") );
 		m_pOptionsList->AddItem( pCtrl );
 

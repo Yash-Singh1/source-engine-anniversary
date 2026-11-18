@@ -30,7 +30,11 @@ public:
 	virtual bool SupportsItem(InterfaceItem_e item);
 
 	// called when the current refresh list is complete
+#ifdef BYTEMATCH_RETAIL
+	virtual void RefreshComplete( HServerListRequest hReq, EMatchMakingServerResponse response );
+#else
 	virtual void RefreshComplete( NServerResponse response );
+#endif
 
 	// passed from main server browser window instead of messages
 	void OnConnectToGame();

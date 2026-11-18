@@ -32,7 +32,7 @@ template <typename T>
 class CDefLess
 {
 public:
-	CDefLess() = default;
+	CDefLess() {}
 	CDefLess( int i ) {}
 	inline bool operator()( const T &lhs, const T &rhs ) const { return ( lhs < rhs );	}
 	inline bool operator!() const { return false; }
@@ -295,10 +295,9 @@ protected:
 	void	Link( I elem );
 
 	// Used for sorting.
-	M m_Elements;
-
 	LessFunc_t m_LessFunc;
 
+	M m_Elements;
 	I m_Root;
 	I m_NumElements;
 	I m_FirstFree;
@@ -551,15 +550,15 @@ inline	bool CUtlRBTree<T, I, L, M>::IsLeaf( I i ) const
 //-----------------------------------------------------------------------------
 
 template < class T, class I, typename L, class M >
-inline	bool CUtlRBTree<T, I, L, M>::IsValidIndex( I i ) const
-{
+inline	bool CUtlRBTree<T, I, L, M>::IsValidIndex( I i ) const 
+{ 
 	if ( !m_Elements.IsIdxValid( i ) )
 		return false;
 
-	if ( m_LastAlloc == m_Elements.InvalidIndex() || m_Elements.IsIdxAfter( i, m_LastAlloc ) )
+	if ( m_Elements.IsIdxAfter( i, m_LastAlloc ) )
 		return false; // don't read values that have been allocated, but not constructed
 
-	return LeftChild(i) != i;
+	return LeftChild(i) != i; 
 }
 
 
@@ -1156,11 +1155,6 @@ void CUtlRBTree<T, I, L, M>::RemoveAll()
 
 	// Clear everything else out
 	m_Root = InvalidIndex(); 
-	// Technically, this iterator could become invalid. It will not, because it's 
-	// always the same iterator. If we don't clear this here, the state of this
-	// container will be invalid after we start inserting elements again.
-	m_LastAlloc = m_Elements.InvalidIterator();
-	m_FirstFree = InvalidIndex();
 	m_NumElements = 0;
 
 	Assert( IsValid() );
@@ -1174,7 +1168,9 @@ template < class T, class I, typename L, class M >
 void CUtlRBTree<T, I, L, M>::Purge()
 {
 	RemoveAll();
+	m_FirstFree = InvalidIndex();
 	m_Elements.Purge();
+	m_LastAlloc = m_Elements.InvalidIterator();
 }
 
 

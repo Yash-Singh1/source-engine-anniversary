@@ -19,7 +19,9 @@ CServerBrowser &ServerBrowser()
 }
 
 IRunGameEngine *g_pRunGameEngine = NULL;
+#ifndef BYTEMATCH_RETAIL
 IServersInfo *g_pServersInfo = NULL;
+#endif
 
 static CSteamAPIContext g_SteamAPIContext;
 CSteamAPIContext *steamapicontext = &g_SteamAPIContext;
@@ -80,11 +82,18 @@ bool CServerBrowser::Initialize(CreateInterfaceFn *factorylist, int factoryCount
 	for ( int i = 0; i < factoryCount; ++i )
 	{
 		if ( !g_pEngineReplay )
+#ifdef BYTEMATCH_RETAIL
+		{
+#endif
 			g_pEngineReplay = ( IEngineReplay * )factorylist[ i ]( ENGINE_REPLAY_INTERFACE_VERSION, NULL );
+#ifndef BYTEMATCH_RETAIL
 		if( !g_pServersInfo )
 			g_pServersInfo = ( IServersInfo * )factorylist[ i ]( SERVERLIST_INTERFACE_VERSION, NULL );
+#endif
 	}
-	
+#ifdef BYTEMATCH_RETAIL
+	}
+#endif
 
 	SteamAPI_InitSafe();
 	SteamAPI_SetTryCatchCallbacks( false ); // We don't use exceptions, so tell steam not to use try/catch in callback handlers
@@ -306,7 +315,7 @@ void CServerBrowser::Shutdown()
 //-----------------------------------------------------------------------------
 bool CServerBrowser::OpenGameInfoDialog( uint64 ulSteamIDFriend, const char *pszConnectCode )
 {
-#if 0
+#if defined( BYTEMATCH_RETAIL ) && ( !defined( _X360 ) )
 	if ( m_hInternetDlg.Get() )
 	{
 		// activate an already-existing dialog
@@ -339,11 +348,13 @@ bool CServerBrowser::OpenGameInfoDialog( uint64 ulSteamIDFriend, const char *psz
 //-----------------------------------------------------------------------------
 bool CServerBrowser::JoinGame( uint64 ulSteamIDFriend, const char *pszConnectCode )
 {
-/*	if ( OpenGameInfoDialog( ulSteamIDFriend, pszConnectCode ) )
+#ifdef BYTEMATCH_RETAIL
+	if ( OpenGameInfoDialog( ulSteamIDFriend, pszConnectCode ) )
 	{
 		CDialogGameInfo *pDialogGameInfo = m_hInternetDlg->GetDialogGameInfoForFriend( ulSteamIDFriend );
 		pDialogGameInfo->Connect();
-	}*/
+	}
+#endif
 
 	return false;
 }
@@ -364,7 +375,7 @@ bool CServerBrowser::JoinGame( uint32 unGameIP, uint16 usGamePort, const char *p
 //-----------------------------------------------------------------------------
 void CServerBrowser::CloseGameInfoDialog( uint64 ulSteamIDFriend )
 {
-#if 0
+#ifdef BYTEMATCH_RETAIL
 	CDialogGameInfo *pDialogGameInfo = m_hInternetDlg->GetDialogGameInfoForFriend( ulSteamIDFriend );
 	if ( pDialogGameInfo )
 	{

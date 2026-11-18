@@ -885,9 +885,9 @@ void EditablePanel::SetControlEnabled(const char *controlName, bool enabled)
 //-----------------------------------------------------------------------------
 // Purpose: Shortcut function to setting visibility state of control
 //-----------------------------------------------------------------------------
-void EditablePanel::SetControlVisible(const char *controlName, bool visible, bool bRecurseDown /*= false*/ )
+void EditablePanel::SetControlVisible(const char *controlName, bool visible)
 {
-	Panel *control = FindChildByName(controlName, bRecurseDown);
+	Panel *control = FindChildByName(controlName);
 	if (control)
 	{
 		control->SetVisible(visible);

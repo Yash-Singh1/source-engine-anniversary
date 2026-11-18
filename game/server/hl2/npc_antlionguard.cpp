@@ -1063,7 +1063,7 @@ int CNPC_AntlionGuard::SelectCombatSchedule( void )
 bool CNPC_AntlionGuard::ShouldCharge( const Vector &startPos, const Vector &endPos, bool useTime, bool bCheckForCancel )
 {
 	// Don't charge in tight spaces unless forced to
-	if ( hl2_episodic.GetBool() && m_bInCavern && !(m_hChargeTarget.Get() && m_hChargeTarget->IsAlive()) )
+	if ( IsHL2Episodic() && m_bInCavern && !(m_hChargeTarget.Get() && m_hChargeTarget->IsAlive()) )
 		return false;
 
 	// Must have a target
@@ -1265,7 +1265,7 @@ int CNPC_AntlionGuard::MeleeAttack1Conditions( float flDot, float flDist )
 	if ( IsCurSchedule( SCHED_ANTLIONGUARD_CHARGE ) )
 		return 0;
 
-	if ( hl2_episodic.GetBool() && m_bInCavern )
+	if ( IsHL2Episodic() && m_bInCavern )
 	{
 		// Predict where they'll be and see if THAT is within range
 		Vector vecPredPos;
@@ -1324,7 +1324,7 @@ float CNPC_AntlionGuard::MaxYawSpeed( void )
 	if ( eActivity == ACT_ANTLIONGUARD_CHARGE_START )
 		return 4.0f;
 
-	if ( hl2_episodic.GetBool() && m_bInCavern )
+	if ( IsHL2Episodic() && m_bInCavern )
 	{
 		// Allow a better turning rate when moving quickly but not charging the player
 		if ( ( eActivity == ACT_ANTLIONGUARD_CHARGE_RUN ) && IsCurSchedule( SCHED_ANTLIONGUARD_CHARGE ) == false )
@@ -1748,7 +1748,7 @@ void CNPC_AntlionGuard::HandleAnimEvent( animevent_t *pEvent )
 			}
 
 			// Toss this if we're episodic
-			if ( hl2_episodic.GetBool() )
+			if ( IsHL2Episodic() )
 			{
 				Vector vecTargetDir = vecShoveVel;
 
@@ -1887,19 +1887,29 @@ void CNPC_AntlionGuard::HandleAnimEvent( animevent_t *pEvent )
 	{
 		if ( HasSpawnFlags(SF_ANTLIONGUARD_INSIDE_FOOTSTEPS) )
 		{
-#if HL2_EPISODIC
-			Footstep( false );
-#else 
-			EmitSound("NPC_AntlionGuard.Inside.StepLight", pEvent->eventtime );
-#endif // HL2_EPISODIC
+			if ( HL2_EPISODIC_ACTIVE() )
+			{
+#ifdef HL2_EPISODIC
+				Footstep( false );
+#endif
+			}
+			else
+			{
+				EmitSound("NPC_AntlionGuard.Inside.StepLight", pEvent->eventtime );
+			}
 		}
 		else
 		{
-#if HL2_EPISODIC
-			Footstep( false );
-#else 
-			EmitSound("NPC_AntlionGuard.StepLight", pEvent->eventtime );
-#endif // HL2_EPISODIC
+			if ( HL2_EPISODIC_ACTIVE() )
+			{
+#ifdef HL2_EPISODIC
+				Footstep( false );
+#endif
+			}
+			else
+			{
+				EmitSound("NPC_AntlionGuard.StepLight", pEvent->eventtime );
+			}
 		}
 		return;
 	}
@@ -1908,19 +1918,29 @@ void CNPC_AntlionGuard::HandleAnimEvent( animevent_t *pEvent )
 	{
 		if ( HasSpawnFlags(SF_ANTLIONGUARD_INSIDE_FOOTSTEPS) )
 		{
-#if HL2_EPISODIC
-			Footstep( true );
-#else 
-			EmitSound( "NPC_AntlionGuard.Inside.StepHeavy", pEvent->eventtime );
-#endif // HL2_EPISODIC
+			if ( HL2_EPISODIC_ACTIVE() )
+			{
+#ifdef HL2_EPISODIC
+				Footstep( true );
+#endif
+			}
+			else
+			{
+				EmitSound( "NPC_AntlionGuard.Inside.StepHeavy", pEvent->eventtime );
+			}
 		}
 		else
 		{
-#if HL2_EPISODIC
-			Footstep( true );
-#else 
-			EmitSound( "NPC_AntlionGuard.StepHeavy", pEvent->eventtime );
-#endif // HL2_EPISODIC
+			if ( HL2_EPISODIC_ACTIVE() )
+			{
+#ifdef HL2_EPISODIC
+				Footstep( true );
+#endif
+			}
+			else
+			{
+				EmitSound( "NPC_AntlionGuard.StepHeavy", pEvent->eventtime );
+			}
 		}
 		return;
 	}
@@ -3371,7 +3391,7 @@ Activity CNPC_AntlionGuard::NPC_TranslateActivity( Activity baseAct )
 		return (Activity) ACT_ANTLIONGUARD_CHARGE_RUN;
 
 	// Do extra code if we're trying to close on an enemy in a confined space (unless scripted)
-	if ( hl2_episodic.GetBool() && m_bInCavern && baseAct == ACT_RUN && IsInAScript() == false )
+	if ( IsHL2Episodic() && m_bInCavern && baseAct == ACT_RUN && IsInAScript() == false )
 		return (Activity) ACT_ANTLIONGUARD_CHARGE_RUN;
 
 	if ( ( baseAct == ACT_RUN ) && ( m_iHealth <= (m_iMaxHealth/4) ) )
@@ -4356,7 +4376,7 @@ bool CNPC_AntlionGuard::CanBecomeRagdoll( void )
 	if ( IsCurSchedule( SCHED_DIE ) )
 		return true;
 
-	return hl2_episodic.GetBool();
+	return IsHL2Episodic();
 }
 
 //-----------------------------------------------------------------------------

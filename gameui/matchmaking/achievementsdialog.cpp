@@ -20,6 +20,7 @@
 #include "BasePanel.h"
 #include "fmtstr.h"
 #include "UtlSortVector.h"
+#include "../gameui_proportional.h"
 
 using namespace vgui;
 
@@ -366,11 +367,14 @@ void CAchievementsDialog_XBox::OnClose()
 CAchievementsDialog::CAchievementsDialog(vgui::Panel *parent) : BaseClass(parent, "AchievementsDialog")
 {
 	SetDeleteSelfOnClose(true);
-
+#ifdef BYTEMATCH_RETAIL
+	SetBounds(0, 0, 512, 384);
+#else
 	if( IsProportional() )
 		SetBounds(0, 0, scheme()->GetProportionalScaledValue(512), scheme()->GetProportionalScaledValue(384));
 	else
 		SetBounds(0, 0, 512, 384);
+#endif
 
 	SetMinimumSize( 256, 300 );
 	SetSizeable( true );
@@ -511,8 +515,7 @@ void CAchievementsDialog::CreateNewAchievementGroup( int iMinRange, int iMaxRang
 //----------------------------------------------------------
 void CAchievementsDialog::ApplySettings( KeyValues *pResourceData )
 {
-	int width = pResourceData->GetInt( "wide", 512 );
-	m_iFixedWidth = IsProportional() ? scheme()->GetProportionalScaledValue(width) : width;
+	m_iFixedWidth = PROPORTIONAL_VALUE( pResourceData->GetInt( "wide", 512 ) );
 
 	BaseClass::ApplySettings( pResourceData );
 }

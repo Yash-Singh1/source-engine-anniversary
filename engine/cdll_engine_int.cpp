@@ -564,11 +564,14 @@ public:
 
 	virtual int		GetInstancesRunningCount( );
 
-	virtual float	GetPausedExpireTime( void ) OVERRIDE;
+	virtual void	OnHL2ExpansionLoaded();
+	virtual IMatchEventsSubscription *GetEventsSubscription();
+	virtual const char *GetMapName();
+	virtual const char *GetPatchVersion();
 
-	virtual bool	StartDemoRecording( const char *pszFilename, const char *pszFolder = NULL );
-	virtual void	StopDemoRecording( void );
-	virtual void	TakeScreenshot( const char *pszFilename, const char *pszFolder = NULL );
+	bool			StartDemoRecording( const char *pszFilename, const char *pszFolder = NULL );
+	void			StopDemoRecording( void );
+	void			TakeScreenshot( const char *pszFilename, const char *pszFolder = NULL );
 };
 
 
@@ -2072,9 +2075,27 @@ int CEngineClient::GetInstancesRunningCount( )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-float CEngineClient::GetPausedExpireTime( void )
+void CEngineClient::OnHL2ExpansionLoaded()
 {
-	return cl.GetPausedExpireTime();
+	// UNIMPLEMENTED: retail stops all sounds and reloads content for the newly mounted HL2 expansion.
+}
+
+IMatchEventsSubscription *CEngineClient::GetEventsSubscription()
+{
+	// UNIMPLEMENTED: retail returns its CMatchEventsSubscription; our engine has no match events system.
+	return NULL;
+}
+
+const char *CEngineClient::GetMapName()
+{
+	// UNIMPLEMENTED: retail also has a fixed-name case; this returns the current level's base name.
+	return cl.m_szLevelBaseName;
+}
+
+const char *CEngineClient::GetPatchVersion()
+{
+	// UNIMPLEMENTED: retail returns its own version buffer; this uses the steam.inf version string.
+	return GetSteamInfIDVersionInfo().szVersionString;
 }
 
 //-----------------------------------------------------------------------------

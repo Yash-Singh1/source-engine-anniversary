@@ -1,0 +1,220 @@
+{
+ "interface": "ISoundServices",
+ "headers": [
+  "public/engine/audio/soundservice.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CEngineSoundServices",
+  "offset": 0,
+  "chain": [
+   "CEngineSoundServices",
+   "ISoundServices"
+  ]
+ },
+ "retail_len": 31,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 31
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "LevelAlloc",
+   "sig": "LevelAlloc(int, char const*)",
+   "symbol": "CEngineSoundServices::LevelAlloc(int, char const*)"
+  },
+  {
+   "index": 1,
+   "name": "OnExtraUpdate",
+   "sig": "OnExtraUpdate()",
+   "symbol": "CEngineSoundServices::OnExtraUpdate()"
+  },
+  {
+   "index": 2,
+   "name": "GetSoundSpatialization",
+   "sig": "GetSoundSpatialization(int, SpatializationInfo_t&)",
+   "symbol": "CEngineSoundServices::GetSoundSpatialization(int, SpatializationInfo_t&)"
+  },
+  {
+   "index": 3,
+   "name": "GetClientTime",
+   "sig": "GetClientTime()",
+   "symbol": "CEngineSoundServices::GetClientTime()"
+  },
+  {
+   "index": 4,
+   "name": "GetHostTime",
+   "sig": "GetHostTime()",
+   "symbol": "CEngineSoundServices::GetHostTime()"
+  },
+  {
+   "index": 5,
+   "name": "GetViewEntity",
+   "sig": "GetViewEntity()",
+   "symbol": "CEngineSoundServices::GetViewEntity()"
+  },
+  {
+   "index": 6,
+   "name": "GetHostFrametime",
+   "sig": "GetHostFrametime()",
+   "symbol": "CEngineSoundServices::GetHostFrametime()"
+  },
+  {
+   "index": 7,
+   "name": "SetSoundFrametime",
+   "sig": "SetSoundFrametime(float, float)",
+   "symbol": "CEngineSoundServices::SetSoundFrametime(float, float)"
+  },
+  {
+   "index": 8,
+   "name": "GetServerCount",
+   "sig": "GetServerCount()",
+   "symbol": "CEngineSoundServices::GetServerCount()"
+  },
+  {
+   "index": 9,
+   "name": "IsPlayer",
+   "sig": "IsPlayer(int)",
+   "symbol": "CEngineSoundServices::IsPlayer(int)"
+  },
+  {
+   "index": 10,
+   "name": "OnChangeVoiceStatus",
+   "sig": "OnChangeVoiceStatus(int, bool)",
+   "symbol": "CEngineSoundServices::OnChangeVoiceStatus(int, bool)"
+  },
+  {
+   "index": 11,
+   "name": "IsConnected",
+   "sig": "IsConnected()",
+   "symbol": "CEngineSoundServices::IsConnected()"
+  },
+  {
+   "index": 12,
+   "name": "EmitSentenceCloseCaption",
+   "sig": "EmitSentenceCloseCaption(char const*)",
+   "symbol": "CEngineSoundServices::EmitSentenceCloseCaption(char const*)"
+  },
+  {
+   "index": 13,
+   "name": "EmitCloseCaption",
+   "sig": "EmitCloseCaption(char const*, float)",
+   "symbol": "CEngineSoundServices::EmitCloseCaption(char const*, float)"
+  },
+  {
+   "index": 14,
+   "name": "GetGameDir",
+   "sig": "GetGameDir()",
+   "symbol": "CEngineSoundServices::GetGameDir()"
+  },
+  {
+   "index": 15,
+   "name": "IsGamePaused",
+   "sig": "IsGamePaused()",
+   "symbol": "CEngineSoundServices::IsGamePaused()"
+  },
+  {
+   "index": 16,
+   "name": "IsGameActive",
+   "sig": "IsGameActive()",
+   "symbol": "CEngineSoundServices::IsGameActive()"
+  },
+  {
+   "index": 17,
+   "name": "RestartSoundSystem",
+   "sig": "RestartSoundSystem()",
+   "symbol": "CEngineSoundServices::RestartSoundSystem()"
+  },
+  {
+   "index": 18,
+   "name": "GetAllSoundFilesReferencedInReslists",
+   "sig": "GetAllSoundFilesReferencedInReslists(CUtlRBTree<void*, int, bool (*)(void* const&, void* const&), CUtlMemory<UtlRBTreeNode_t<void*, int>, int>>&)",
+   "symbol": "CEngineSoundServices::GetAllSoundFilesReferencedInReslists(CUtlRBTree<void*, int, bool (*)(void* const&, void* const&), CUtlMemory<UtlRBTreeNode_t<void*, int>, int>>&)"
+  },
+  {
+   "index": 19,
+   "name": "GetAllManifestFiles",
+   "sig": "GetAllManifestFiles(CUtlRBTree<void*, int, bool (*)(void* const&, void* const&), CUtlMemory<UtlRBTreeNode_t<void*, int>, int>>&)",
+   "symbol": "CEngineSoundServices::GetAllManifestFiles(CUtlRBTree<void*, int, bool (*)(void* const&, void* const&), CUtlMemory<UtlRBTreeNode_t<void*, int>, int>>&)"
+  },
+  {
+   "index": 20,
+   "name": "GetAllSoundFilesInManifest",
+   "sig": "GetAllSoundFilesInManifest(CUtlRBTree<void*, int, bool (*)(void* const&, void* const&), CUtlMemory<UtlRBTreeNode_t<void*, int>, int>>&, char const*)",
+   "symbol": "CEngineSoundServices::GetAllSoundFilesInManifest(CUtlRBTree<void*, int, bool (*)(void* const&, void* const&), CUtlMemory<UtlRBTreeNode_t<void*, int>, int>>&, char const*)"
+  },
+  {
+   "index": 21,
+   "name": "CacheBuildingStart",
+   "sig": "CacheBuildingStart()",
+   "symbol": "CEngineSoundServices::CacheBuildingStart()"
+  },
+  {
+   "index": 22,
+   "name": "CacheBuildingUpdateProgress",
+   "sig": "CacheBuildingUpdateProgress(float, char const*)",
+   "symbol": "CEngineSoundServices::CacheBuildingUpdateProgress(float, char const*)"
+  },
+  {
+   "index": 23,
+   "name": "CacheBuildingFinish",
+   "sig": "CacheBuildingFinish()",
+   "symbol": "CEngineSoundServices::CacheBuildingFinish()"
+  },
+  {
+   "index": 24,
+   "name": "GetPrecachedSoundCount",
+   "sig": "GetPrecachedSoundCount()",
+   "symbol": "CEngineSoundServices::GetPrecachedSoundCount()"
+  },
+  {
+   "index": 25,
+   "name": "GetPrecachedSound",
+   "sig": "GetPrecachedSound(int)",
+   "symbol": "CEngineSoundServices::GetPrecachedSound(int)"
+  },
+  {
+   "index": 26,
+   "name": "OnSoundStarted",
+   "sig": "OnSoundStarted(int, StartSoundParams_t&, char const*)",
+   "symbol": "CEngineSoundServices::OnSoundStarted(int, StartSoundParams_t&, char const*)"
+  },
+  {
+   "index": 27,
+   "name": "OnSoundStopped",
+   "sig": "OnSoundStopped(int, int, int, char const*)",
+   "symbol": "CEngineSoundServices::OnSoundStopped(int, int, int, char const*)"
+  },
+  {
+   "index": 28,
+   "name": "GetToolSpatialization",
+   "sig": "GetToolSpatialization(int, int, SpatializationInfo_t&)",
+   "symbol": "CEngineSoundServices::GetToolSpatialization(int, int, SpatializationInfo_t&)"
+  },
+  {
+   "index": 29,
+   "name": "GetUILanguage",
+   "sig": "GetUILanguage()",
+   "symbol": "CEngineSoundServices::GetUILanguage()"
+  },
+  {
+   "index": 30,
+   "name": "ShouldSuppressNonUISounds",
+   "sig": "ShouldSuppressNonUISounds()",
+   "symbol": "CEngineSoundServices::ShouldSuppressNonUISounds()"
+  }
+ ],
+ "derived": [
+  "bin/engine:CEngineSoundServices"
+ ],
+ "derived_count": 1
+}

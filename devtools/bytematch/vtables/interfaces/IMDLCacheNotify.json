@@ -1,0 +1,50 @@
+{
+ "interface": "IMDLCacheNotify",
+ "headers": [
+  "public/datacache/imdlcache.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 2,
+ "sdk2013_slots": [
+  "OnDataLoaded(MDLCacheDataType_t, unsigned short)",
+  "OnDataUnloaded(MDLCacheDataType_t, unsigned short)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CMDLCacheNotify",
+  "offset": 0,
+  "chain": [
+   "CMDLCacheNotify",
+   "IMDLCacheNotify"
+  ]
+ },
+ "retail_len": 2,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 2
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "OnDataLoaded",
+   "sig": "OnDataLoaded(MDLCacheDataType_t, unsigned short)",
+   "symbol": "CMDLCacheNotify::OnDataLoaded(MDLCacheDataType_t, unsigned short)"
+  },
+  {
+   "index": 1,
+   "name": "OnDataUnloaded",
+   "sig": "OnDataUnloaded(MDLCacheDataType_t, unsigned short)",
+   "symbol": "CMDLCacheNotify::OnDataUnloaded(MDLCacheDataType_t, unsigned short)"
+  }
+ ],
+ "derived": [
+  "bin/engine:CMDLCacheNotify"
+ ],
+ "derived_count": 1
+}

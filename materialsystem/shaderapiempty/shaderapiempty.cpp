@@ -1204,25 +1204,10 @@ public:
 	virtual bool GetHDREnabled( void ) const { return true; }
 	virtual void SetHDREnabled( bool bEnable ) {}
 
-	virtual void CopyRenderTargetToScratchTexture( ShaderAPITextureHandle_t srcRt, ShaderAPITextureHandle_t dstTex, Rect_t *pSrcRect = NULL, Rect_t *pDstRect = NULL ) 
-	{
-	}
+	virtual int GetPixelFogCombo1( bool bSupportsRadial ) { return 0; }
+	virtual void SceneFogRadial( bool bRadial ) {}
+	virtual bool GetSceneFogRadial() { return false; }
 
-	// Allows locking and unlocking of very specific surface types.
-	virtual void LockRect( void** pOutBits, int* pOutPitch, ShaderAPITextureHandle_t texHandle, int mipmap, int x, int y, int w, int h, bool bWrite, bool bRead ) 
-	{
-	}
-
-	virtual void UnlockRect( ShaderAPITextureHandle_t texHandle, int mipmap )
-	{
-	}
-
-	virtual void TexLodClamp( int finest ) {}
-
-	virtual void TexLodBias( float bias ) {}
-
-	virtual void CopyTextureToTexture( ShaderAPITextureHandle_t srcTex, ShaderAPITextureHandle_t dstTex ) {}
-	
 	void PrintfVA( char *fmt, va_list vargs ) {}
 	void Printf( const char *fmt, ... ) {}
 	float Knob( char *knobname, float *setvalue = NULL ) { return 0.0f; };
@@ -1985,10 +1970,14 @@ bool CShaderAPIEmpty::SupportsShaderModel_3_0() const
 
 bool CShaderAPIEmpty::SupportsStaticControlFlow() const
 {
+#ifdef BYTEMATCH_RETAIL
+	return false;
+#else
 	if ( IsOpenGL() )
 		return false;
 
 	return SupportsVertexShaders_2_0();
+#endif
 }
 
 bool CShaderAPIEmpty::SupportsVertexShaders_2_0() const

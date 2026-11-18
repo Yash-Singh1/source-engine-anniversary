@@ -83,7 +83,7 @@ Studio models are position independent, so the cache manager can move them.
 #define MAXSTUDIOFLEXDESC	1024	// maximum number of low level flexes (actual morph targets)
 #define MAXSTUDIOFLEXCTRL	96		// maximum number of flexcontrollers (input sliders)
 #define MAXSTUDIOPOSEPARAM	24
-#define MAXSTUDIOBONECTRLS	5
+#define MAXSTUDIOBONECTRLS	( sizeof( void * ) == 8 ? 5 : 4 )	// 4 in SDK 2013 and retail, 5 in the fork's 64-bit builds
 #define MAXSTUDIOANIMBLOCKS 256
 
 #define MAXSTUDIOBONEBITS	7		// NOTE: MUST MATCH MAXSTUDIOBONES

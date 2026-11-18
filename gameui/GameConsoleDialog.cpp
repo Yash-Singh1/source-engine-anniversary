@@ -25,7 +25,9 @@ using namespace vgui;
 //-----------------------------------------------------------------------------
 CGameConsoleDialog::CGameConsoleDialog() : BaseClass( NULL, "GameConsole", false )
 {
+#ifndef BYTEMATCH_RETAIL
 	if( NeedProportional() ) SetProportional(true);
+#endif
 	AddActionSignalTarget( this );
 }
 

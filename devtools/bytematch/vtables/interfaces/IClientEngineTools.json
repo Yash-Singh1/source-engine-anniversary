@@ -1,0 +1,162 @@
+{
+ "interface": "IClientEngineTools",
+ "headers": [
+  "public/toolframework/iclientenginetools.h"
+ ],
+ "versions": {
+  "retail": [
+   "VCLIENTENGINETOOLS001"
+  ],
+  "ours": [
+   "VCLIENTENGINETOOLS001"
+  ],
+  "sdk2013": [
+   "VCLIENTENGINETOOLS001"
+  ]
+ },
+ "version_macros": [
+  "VCLIENTENGINETOOLS_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/engine",
+   "version": "VCLIENTENGINETOOLS001",
+   "class": "CClientEngineTools"
+  }
+ ],
+ "sdk2013_len": 16,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "LevelInitPreEntityAllTools()",
+  "LevelInitPostEntityAllTools()",
+  "LevelShutdownPreEntityAllTools()",
+  "LevelShutdownPostEntityAllTools()",
+  "PreRenderAllTools()",
+  "PostRenderAllTools()",
+  "PostToolMessage(unsigned int, KeyValues*)",
+  "AdjustEngineViewport(int&, int&, int&, int&)",
+  "SetupEngineView(Vector&, QAngle&, float&)",
+  "SetupAudioState(AudioState_t&)",
+  "VGui_PreRenderAllTools(int)",
+  "VGui_PostRenderAllTools(int)",
+  "IsThirdPersonCamera()",
+  "InToolMode()"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CClientEngineTools",
+  "offset": 0,
+  "chain": [
+   "CClientEngineTools",
+   "IClientEngineTools"
+  ]
+ },
+ "retail_len": 16,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 16
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CClientEngineTools",
+   "sig": "~CClientEngineTools()",
+   "symbol": "CClientEngineTools::~CClientEngineTools()"
+  },
+  {
+   "index": 1,
+   "name": "~CClientEngineTools",
+   "sig": "~CClientEngineTools()",
+   "symbol": "CClientEngineTools::~CClientEngineTools()"
+  },
+  {
+   "index": 2,
+   "name": "LevelInitPreEntityAllTools",
+   "sig": "LevelInitPreEntityAllTools()",
+   "symbol": "CClientEngineTools::LevelInitPreEntityAllTools()"
+  },
+  {
+   "index": 3,
+   "name": "LevelInitPostEntityAllTools",
+   "sig": "LevelInitPostEntityAllTools()",
+   "symbol": "CClientEngineTools::LevelInitPostEntityAllTools()"
+  },
+  {
+   "index": 4,
+   "name": "LevelShutdownPreEntityAllTools",
+   "sig": "LevelShutdownPreEntityAllTools()",
+   "symbol": "CClientEngineTools::LevelShutdownPreEntityAllTools()"
+  },
+  {
+   "index": 5,
+   "name": "LevelShutdownPostEntityAllTools",
+   "sig": "LevelShutdownPostEntityAllTools()",
+   "symbol": "CClientEngineTools::LevelShutdownPostEntityAllTools()"
+  },
+  {
+   "index": 6,
+   "name": "PreRenderAllTools",
+   "sig": "PreRenderAllTools()",
+   "symbol": "CClientEngineTools::PreRenderAllTools()"
+  },
+  {
+   "index": 7,
+   "name": "PostRenderAllTools",
+   "sig": "PostRenderAllTools()",
+   "symbol": "CClientEngineTools::PostRenderAllTools()"
+  },
+  {
+   "index": 8,
+   "name": "PostToolMessage",
+   "sig": "PostToolMessage(unsigned int, KeyValues*)",
+   "symbol": "CClientEngineTools::PostToolMessage(unsigned int, KeyValues*)"
+  },
+  {
+   "index": 9,
+   "name": "AdjustEngineViewport",
+   "sig": "AdjustEngineViewport(int&, int&, int&, int&)",
+   "symbol": "CClientEngineTools::AdjustEngineViewport(int&, int&, int&, int&)"
+  },
+  {
+   "index": 10,
+   "name": "SetupEngineView",
+   "sig": "SetupEngineView(Vector&, QAngle&, float&)",
+   "symbol": "CClientEngineTools::SetupEngineView(Vector&, QAngle&, float&)"
+  },
+  {
+   "index": 11,
+   "name": "SetupAudioState",
+   "sig": "SetupAudioState(AudioState_t&)",
+   "symbol": "CClientEngineTools::SetupAudioState(AudioState_t&)"
+  },
+  {
+   "index": 12,
+   "name": "VGui_PreRenderAllTools",
+   "sig": "VGui_PreRenderAllTools(int)",
+   "symbol": "CClientEngineTools::VGui_PreRenderAllTools(int)"
+  },
+  {
+   "index": 13,
+   "name": "VGui_PostRenderAllTools",
+   "sig": "VGui_PostRenderAllTools(int)",
+   "symbol": "CClientEngineTools::VGui_PostRenderAllTools(int)"
+  },
+  {
+   "index": 14,
+   "name": "IsThirdPersonCamera",
+   "sig": "IsThirdPersonCamera()",
+   "symbol": "CClientEngineTools::IsThirdPersonCamera()"
+  },
+  {
+   "index": 15,
+   "name": "InToolMode",
+   "sig": "InToolMode()",
+   "symbol": "CClientEngineTools::InToolMode()"
+  }
+ ],
+ "derived": [
+  "bin/engine:CClientEngineTools"
+ ],
+ "derived_count": 1
+}

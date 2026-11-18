@@ -31,7 +31,7 @@ enum StringPoolCase_t
 class CStringPool
 {
 public:
-	CStringPool( StringPoolCase_t caseSensitivity = StringPoolCaseInsensitive );
+	CStringPool();
 	~CStringPool();
 
 	unsigned int Count() const;

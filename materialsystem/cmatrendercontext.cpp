@@ -1008,6 +1008,7 @@ Vector CMatRenderContextBase::GetToneMappingScaleLinear( void )
 		return m_LastSetToneMapScale;
 }
 
+#ifndef BYTEMATCH_RETAIL
 void CMatRenderContextBase::OnAsyncCreateTextureFromRenderTarget( ITexture* pSrcRt, const char** ppDstName, IAsyncTextureOperationReceiver* pRecipient )
 {
 	Assert( pSrcRt != NULL );
@@ -1023,8 +1024,10 @@ void CMatRenderContextBase::OnAsyncCreateTextureFromRenderTarget( ITexture* pSrc
 	V_strcpy( pDstNameCopy, *ppDstName );
 	( *ppDstName ) = pDstNameCopy;
 }
+#endif
 
 // Map and unmap a texture. The pRecipient->OnAsyncMapComplete is called when complete. 
+#ifndef BYTEMATCH_RETAIL
 void CMatRenderContextBase::OnAsyncMap( ITextureInternal* pTexToMap, IAsyncTextureOperationReceiver* pRecipient, void* pExtraArgs )
 {
 	Assert( pTexToMap != NULL );
@@ -1033,14 +1036,18 @@ void CMatRenderContextBase::OnAsyncMap( ITextureInternal* pTexToMap, IAsyncTextu
 	pTexToMap->AddRef();
 	pRecipient->AddRef();
 }
+#endif
 
+#ifndef BYTEMATCH_RETAIL
 void CMatRenderContextBase::OnAsyncUnmap( ITextureInternal* pTexToUnmap ) 
 {
 	Assert( pTexToUnmap != NULL );
 
 	pTexToUnmap->AddRef();
 }
+#endif
 
+#ifndef BYTEMATCH_RETAIL
 void CMatRenderContextBase::OnAsyncCopyRenderTargetToStagingTexture( ITexture* pDst, ITexture* pSrc, IAsyncTextureOperationReceiver* pRecipient )
 {
 	Assert( pDst != NULL );
@@ -1051,6 +1058,7 @@ void CMatRenderContextBase::OnAsyncCopyRenderTargetToStagingTexture( ITexture* p
 	pSrc->AddRef();
 	pRecipient->AddRef();
 }
+#endif
 
 #undef g_pShaderAPI 
 
@@ -1114,10 +1122,12 @@ void CMatRenderContext::DoStartupShaderPreloading( void )
 }
 #endif
 
+#ifndef BYTEMATCH_RETAIL
 void CMatRenderContext::TextureManagerUpdate()
 {
 	TextureManager()->Update();
 }
+#endif
 
 
 inline IMaterialInternal *CMatRenderContext::GetMaterialInternal( MaterialHandle_t h ) const
@@ -2045,6 +2055,98 @@ void CMatRenderContext::GetLightmapDimensions( int *w, int *h )
 	*h = GetMaterialSystem()->GetLightmapHeight( GetLightmapPage() );
 }
 
+#ifdef BYTEMATCH_RETAIL
+void CMatRenderContext::DrawScreenSpaceQuad( IMaterial* pMaterial )
+{
+	// This is required because the texture coordinates for NVidia reading
+	// out of non-power-of-two textures is borked
+	int w, h;
+
+	GetRenderTargetDimensions( w, h );
+	if ( ( w == 0 ) || ( h == 0 ) )
+		return;
+
+	// This is the size of the back-buffer we're reading from.
+	int bw, bh;
+	bw = w; bh = h;
+
+	/* FIXME: Get this to work in hammer/engine integration
+	if ( m_pRenderTargetTexture )
+	{
+	}
+	else
+	{
+		MaterialVideoMode_t mode;
+		GetDisplayMode( mode );
+		if ( ( mode.m_Width == 0 ) || ( mode.m_Height == 0 ) )
+			return;
+		bw = mode.m_Width;
+		bh = mode.m_Height;
+	}
+	*/
+
+	float s0, t0;
+	float s1, t1;
+		 	  
+	float flOffsetS = (bw != 0.0f) ? 1.0f / bw : 0.0f;
+	float flOffsetT = (bh != 0.0f) ? 1.0f / bh : 0.0f;
+	s0 = 0.5f * flOffsetS;
+	t0 = 0.5f * flOffsetT;
+	s1 = (w-0.5f) * flOffsetS;
+	t1 = (h-0.5f) * flOffsetT;
+	
+	Bind( pMaterial );
+	IMesh* pMesh = GetDynamicMesh( true );
+
+	MatrixMode( MATERIAL_VIEW );
+	PushMatrix();
+	LoadIdentity();
+
+	MatrixMode( MATERIAL_PROJECTION );
+	PushMatrix();
+	LoadIdentity();
+
+	CMeshBuilder meshBuilder;
+	meshBuilder.Begin( pMesh, MATERIAL_QUADS, 1 );
+
+	meshBuilder.Position3f( -1.0f, -1.0f, 0.0f );
+	meshBuilder.TangentS3f( 0.0f, 1.0f, 0.0f );
+	meshBuilder.TangentT3f( 1.0f, 0.0f, 0.0f );
+	meshBuilder.Normal3f( 0.0f, 0.0f, 1.0f );
+	meshBuilder.TexCoord2f( 0, s0, t1 );
+	meshBuilder.AdvanceVertex();
+
+	meshBuilder.Position3f( -1.0f, 1, 0.0f );
+	meshBuilder.TangentS3f( 0.0f, 1.0f, 0.0f );
+	meshBuilder.TangentT3f( 1.0f, 0.0f, 0.0f );
+	meshBuilder.Normal3f( 0.0f, 0.0f, 1.0f );
+	meshBuilder.TexCoord2f( 0, s0, t0 );
+	meshBuilder.AdvanceVertex();
+
+	meshBuilder.Position3f( 1, 1, 0.0f );
+	meshBuilder.TangentS3f( 0.0f, 1.0f, 0.0f );
+	meshBuilder.TangentT3f( 1.0f, 0.0f, 0.0f );
+	meshBuilder.Normal3f( 0.0f, 0.0f, 1.0f );
+	meshBuilder.TexCoord2f( 0, s1, t0 );
+	meshBuilder.AdvanceVertex();
+
+	meshBuilder.Position3f( 1, -1.0f, 0.0f );
+	meshBuilder.TangentS3f( 0.0f, 1.0f, 0.0f );
+	meshBuilder.TangentT3f( 1.0f, 0.0f, 0.0f );
+	meshBuilder.Normal3f( 0.0f, 0.0f, 1.0f );
+	meshBuilder.TexCoord2f( 0, s1, t1 );
+	meshBuilder.AdvanceVertex();
+
+	meshBuilder.End();
+	pMesh->Draw();
+
+	MatrixMode( MATERIAL_VIEW );
+	PopMatrix();
+
+	MatrixMode( MATERIAL_PROJECTION );
+	PopMatrix();
+}
+#else
 void CMatRenderContext::DrawScreenSpaceQuad( IMaterial* pMaterial )
 {
 	// Despite saying we render a full screen quad, this actually renders a single triangle
@@ -2111,6 +2213,7 @@ void CMatRenderContext::DrawScreenSpaceQuad( IMaterial* pMaterial )
 	MatrixMode( MATERIAL_PROJECTION );
 	PopMatrix();
 }
+#endif
 
 void CMatRenderContext::DrawScreenSpaceRectangle( 
 	IMaterial *pMaterial,
@@ -2791,9 +2894,11 @@ void CMatRenderContext::BindStandardTexture( Sampler_t sampler, StandardTextureI
 			g_pShaderAPI->BindTexture( sampler, GetMaxDepthTextureHandle() );
 		return;
 
+#ifndef BYTEMATCH_RETAIL
 	case TEXTURE_DEBUG_LUXELS:
 		TextureManager()->DebugLuxels2D()->Bind( sampler );
 		return;
+#endif
 
 	default:
 		Assert(0);
@@ -2880,9 +2985,11 @@ void CMatRenderContext::GetStandardTextureDimensions( int *pWidth, int *pHeight,
 		pTexture = g_pMorphMgr->MorphWeights();
 		break;
 
+#ifndef BYTEMATCH_RETAIL
 	case TEXTURE_DEBUG_LUXELS:
 		pTexture = TextureManager()->DebugLuxels2D();
 		break;
+#endif
 	}
 
 	if ( pTexture )
@@ -3021,6 +3128,7 @@ bool CMatRenderContext::OnDrawMesh( IMesh *pMesh, CPrimList *pLists, int nLists 
 	return true;
 }
 
+#ifndef BYTEMATCH_RETAIL
 void CMatRenderContext::AsyncCreateTextureFromRenderTarget( ITexture* pSrcRt, const char* pDstName, ImageFormat dstFmt, bool bGenMips, int nAdditionalCreationFlags, IAsyncTextureOperationReceiver* pRecipient, void* pExtraArgs )
 {
 	if ( g_pMaterialSystem->GetThreadMode() == MATERIAL_SINGLE_THREADED ) 
@@ -3030,7 +3138,9 @@ void CMatRenderContext::AsyncCreateTextureFromRenderTarget( ITexture* pSrcRt, co
 
 	TextureManager()->AsyncCreateTextureFromRenderTarget( pSrcRt, pDstName, dstFmt, bGenMips, nAdditionalCreationFlags, pRecipient, pExtraArgs );
 }
+#endif
 
+#ifndef BYTEMATCH_RETAIL
 void CMatRenderContext::AsyncMap( ITextureInternal* pTexToMap, IAsyncTextureOperationReceiver* pRecipient, void* pExtraArgs )
 {
 	if ( g_pMaterialSystem->GetThreadMode() == MATERIAL_SINGLE_THREADED )
@@ -3049,7 +3159,9 @@ void CMatRenderContext::AsyncMap( ITextureInternal* pTexToMap, IAsyncTextureOper
 	SafeRelease( &pRecipient );
 	SafeRelease( &pTexToMap );
 }
+#endif
 
+#ifndef BYTEMATCH_RETAIL
 void CMatRenderContext::AsyncUnmap( ITextureInternal* pTexToUnmap )
 {
 	if ( g_pMaterialSystem->GetThreadMode() == MATERIAL_SINGLE_THREADED )
@@ -3060,7 +3172,9 @@ void CMatRenderContext::AsyncUnmap( ITextureInternal* pTexToUnmap )
 	pTexToUnmap->Unmap();
 	SafeRelease( &pTexToUnmap ); // Matches AddRef from OnAsyncUnmap
 }
+#endif
 
+#ifndef BYTEMATCH_RETAIL
 void CMatRenderContext::AsyncCopyRenderTargetToStagingTexture( ITexture* pDst, ITexture* pSrc, IAsyncTextureOperationReceiver* pRecipient, void* pExtraArgs )
 {
 	if ( g_pMaterialSystem->GetThreadMode() == MATERIAL_SINGLE_THREADED )
@@ -3068,13 +3182,14 @@ void CMatRenderContext::AsyncCopyRenderTargetToStagingTexture( ITexture* pDst, I
 		OnAsyncCopyRenderTargetToStagingTexture( pDst, pSrc, pRecipient );
 	}
 
-	pSrc->CopyToStagingTexture( pDst );
+	static_cast< ITextureInternal * >( pSrc )->CopyToStagingTexture( pDst );
 	pRecipient->OnAsyncReadbackBegin( pDst, pSrc, pExtraArgs );
 
 	SafeRelease( &pDst );
 	SafeRelease( &pSrc );
 	SafeRelease( &pRecipient );
 }
+#endif
 
 
 //-----------------------------------------------------------------------------

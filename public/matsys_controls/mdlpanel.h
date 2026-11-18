@@ -133,7 +133,7 @@ private:
 	virtual void PostPaint3D( IMatRenderContext *pRenderContext ) { };
 	virtual void RenderingRootModel( IMatRenderContext *pRenderContext, CStudioHdr *pStudioHdr, MDLHandle_t mdlHandle, matrix3x4_t *pWorldMatrix ) { };
 	virtual void RenderingMergedModel( IMatRenderContext *pRenderContext, CStudioHdr *pStudioHdr, MDLHandle_t mdlHandle, matrix3x4_t *pWorldMatrix ) { };
-	virtual IMaterial* GetOverrideMaterial( MDLHandle_t mdlHandle ) { return NULL; }
+	IMaterial* GetOverrideMaterial( MDLHandle_t mdlHandle ) { return NULL; }
 
 	void OnMouseDoublePressed( vgui::MouseCode code );
 

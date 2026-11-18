@@ -396,7 +396,7 @@ bool CAI_FollowBehavior::SetFollowGoal( CAI_FollowGoal *pGoal, bool fFinishCurSc
 	{
 		GetOuter()->ClearCommandGoal();
 
-		if( hl2_episodic.GetBool() )
+		if( IsHL2Episodic() )
 		{
 			// Poke the NPC to interrupt any stubborn schedules
 			GetOuter()->SetCondition(COND_PROVOKED);
@@ -1075,7 +1075,7 @@ int CAI_FollowBehavior::SelectScheduleMoveToFormation()
 int CAI_FollowBehavior::SelectSchedule()
 {
 	// Allow a range attack if we need to do it
-	if ( hl2_episodic.GetBool() )
+	if ( IsHL2Episodic() )
 	{
 		// Range attack
 		if ( GetOuter()->ShouldMoveAndShoot() == false && HasCondition( COND_CAN_RANGE_ATTACK1 ) )
@@ -1393,7 +1393,7 @@ void CAI_FollowBehavior::StartTask( const Task_t *pTask )
 					bool bIsEpisodicVitalAlly;
 					
 #ifdef HL2_DLL
-					bIsEpisodicVitalAlly = (hl2_episodic.GetBool() && GetOuter()->Classify() == CLASS_PLAYER_ALLY_VITAL);
+					bIsEpisodicVitalAlly = (IsHL2Episodic() && GetOuter()->Classify() == CLASS_PLAYER_ALLY_VITAL);
 #else
 					bIsEpisodicVitalAlly = false;
 #endif//HL2_DLL
@@ -1940,14 +1940,17 @@ void CAI_FollowBehavior::BuildScheduleTestBits()
 		   IsCurSchedule(SCHED_ALERT_STAND) ) ||
 		   IsCurSchedule(SCHED_ALERT_FACE_BESTSOUND ) )
 	{
+	if ( HL2_EPISODIC_ACTIVE() )
+	{
 #ifdef HL2_EPISODIC
-		if( IsCurSchedule(SCHED_RELOAD, false) && GetOuter()->Classify() == CLASS_PLAYER_ALLY_VITAL )
-		{
-			// Alyx and Barney do not stop reloading because the player has moved. 
-			// Citizens and other regular allies do.
-			bIgnoreMovedMark = true;
-		}
-#endif//HL2_EPISODIC
+			if( IsCurSchedule(SCHED_RELOAD, false) && GetOuter()->Classify() == CLASS_PLAYER_ALLY_VITAL )
+			{
+				// Alyx and Barney do not stop reloading because the player has moved. 
+				// Citizens and other regular allies do.
+				bIgnoreMovedMark = true;
+			}
+#endif
+	}
 
 		if( !bIgnoreMovedMark )
 		{
@@ -1959,24 +1962,27 @@ void CAI_FollowBehavior::BuildScheduleTestBits()
 	}
 
 	// Add logic for NPCs not able to move and shoot
-	if ( hl2_episodic.GetBool() )
+	if ( IsHL2Episodic() )
 	{
 		if ( IsCurScheduleFollowSchedule() && GetOuter()->ShouldMoveAndShoot() == false )
 		{
 			GetOuter()->SetCustomInterruptCondition( COND_CAN_RANGE_ATTACK1 );
 		}
 
+	if ( HL2_EPISODIC_ACTIVE() )
+	{
 #ifdef HL2_EPISODIC
-		// In Alyx darkness mode, break on the player turning their flashlight off
-		if ( HL2GameRules()->IsAlyxInDarknessMode() )
-		{
-			if ( IsCurSchedule(SCHED_FOLLOW, false) || IsCurSchedule(SCHED_MOVE_TO_FACE_FOLLOW_TARGET, false) ||
-				 IsCurSchedule(SCHED_FACE_FOLLOW_TARGET, false) )
+			// In Alyx darkness mode, break on the player turning their flashlight off
+			if ( HL2GameRules()->IsAlyxInDarknessMode() )
 			{
-				GetOuter()->SetCustomInterruptCondition( GetClassScheduleIdSpace()->ConditionLocalToGlobal( COND_FOLLOW_PLAYER_IS_NOT_LIT ) );
+				if ( IsCurSchedule(SCHED_FOLLOW, false) || IsCurSchedule(SCHED_MOVE_TO_FACE_FOLLOW_TARGET, false) ||
+					 IsCurSchedule(SCHED_FACE_FOLLOW_TARGET, false) )
+				{
+					GetOuter()->SetCustomInterruptCondition( GetClassScheduleIdSpace()->ConditionLocalToGlobal( COND_FOLLOW_PLAYER_IS_NOT_LIT ) );
+				}
 			}
-		}
-#endif // HL2_EPISODIC
+#endif
+	}
 	}
 
 	if ( GetNpcState() == NPC_STATE_COMBAT && IsCurScheduleFollowSchedule() )

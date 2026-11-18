@@ -21,7 +21,7 @@ static void initKeymap(void);
 #ifdef _X360
 #include "xbox/xbox_win32stubs.h"
 #endif
-ConVar joy_xcontroller_found( "joy_xcontroller_found", "1", FCVAR_HIDDEN, "Automatically set to 1 if an xcontroller has been detected." );
+ConVar joy_xcontroller_found( "joy_xcontroller_found", "1", FCVAR_NONE, "Automatically set to 1 if an xcontroller has been detected." );
 
 //-----------------------------------------------------------------------------
 // Singleton instance
@@ -68,16 +68,16 @@ CInputSystem::CInputSystem()
 	m_bIsPolling = false;
 	m_JoysticksEnabled.ClearAllFlags();
 	m_nJoystickCount = 0;
+	m_nJoystickBaseline = 0;
 	m_bJoystickInitialized = false;
+#ifndef BYTEMATCH_RETAIL
 	m_bTouchInitialized = false;
+#endif
 	m_nPollCount = 0;
 	m_PrimaryUserId = INVALID_USER_ID;
 	m_uiMouseWheel = 0;
 	m_bXController = false;
 	m_bRawInputSupported = false;
-	m_bSteamController = false;
-	m_bSteamControllerActionsInitialized = false;
-	m_bSteamControllerActive = false;
 
 	Assert( (MAX_JOYSTICKS + 7) >> 3 << sizeof(unsigned short) ); 
 
@@ -90,12 +90,7 @@ CInputSystem::CInputSystem()
 #endif
 
 	m_bConsoleTextMode = false;
-	m_bSkipControllerInitialization = false;
-
-	if ( CommandLine()->CheckParm( "-nosteamcontroller" ) )
-	{
-		m_bSkipControllerInitialization = true;
-	}
+	m_bOnDiscManifestLoaded = false;
 }
 
 CInputSystem::~CInputSystem()
@@ -133,7 +128,9 @@ InitReturnVal_t CInputSystem::Init()
 		return nRetVal;
 
 	m_StartupTimeTick = Plat_MSTime();
-
+	m_hConfigurationDevice = 0;
+	m_unConfigurationMajorRevision = 0;
+	m_unConfigurationMinorRevision = 0;
 
 #if !defined( POSIX )
 	if ( IsPC() )
@@ -146,30 +143,14 @@ InitReturnVal_t CInputSystem::Init()
 		return INIT_FAILED;
 #endif
 
-	// Initialize the input system copy of the steam API context, for use by controller stuff (don't do this if we're a dedicated server).
-	if ( !m_bSkipControllerInitialization && SteamAPI_InitSafe() )
-	{
-		m_SteamAPIContext.Init();
-		if ( m_SteamAPIContext.SteamController() )
-		{
-			m_SteamAPIContext.SteamController()->Init();
-			m_bSteamController = InitializeSteamControllers();
-			m_bSteamControllerActionsInitialized = m_bSteamController && InitializeSteamControllerActionSets();
-			if ( m_bSteamControllerActionsInitialized )
-			{
-				ActivateSteamControllerActionSet( GAME_ACTION_SET_MENUCONTROLS );
-			}
-		}
-	}
-
 	ButtonCode_InitKeyTranslationTable();
 	ButtonCode_UpdateScanCodeLayout();
 
 	joy_xcontroller_found.SetValue( 0 );
-	
+#ifndef BYTEMATCH_RETAIL
 	if( !m_bConsoleTextMode )
 		InitializeTouch();
-	
+#endif
 	if ( IsPC() && !m_bConsoleTextMode )
 	{
 		InitializeJoysticks();
@@ -191,6 +172,9 @@ InitReturnVal_t CInputSystem::Init()
 			FreeLibrary( hdl );
 		}
 #endif
+
+		m_bSteamController = InitializeSteamControllers();
+		m_flNextDeviceCheckTime = Plat_FloatTime() + 5.0f;
 	}
 
 #if defined( _X360 )
@@ -464,11 +448,6 @@ ButtonCode_t CInputSystem::ScanCodeToButtonCode( int lParam ) const
 	return ButtonCode_ScanCodeToButtonCode( lParam );
 }
 
-ButtonCode_t CInputSystem::SKeyToButtonCode( int nPort, int nXKey ) const
-{
-	return ButtonCode_SKeyToButtonCode( nPort, nXKey );
-}
-
 //-----------------------------------------------------------------------------
 // Post an event to the queue
 //-----------------------------------------------------------------------------
@@ -509,6 +488,19 @@ void CInputSystem::PostButtonPressedEvent( InputEventType_t nType, int nTick, Bu
 			ProcessEvent( WM_XCONTROLLER_KEY, scanCode, 1 );
 		}
 #endif
+	}
+
+	if ( IsKeyCode( virtualCode ) )
+	{
+		m_eActiveInputType = ACTIVE_INPUT_TYPE_MOUSE_KEYBOARD;
+	}
+	else if ( IsSteamControllerCode( virtualCode ) )
+	{
+		m_eActiveInputType = ACTIVE_INPUT_TYPE_STEAM_INPUT;
+	}
+	else if ( virtualCode >= JOYSTICK_FIRST && virtualCode <= JOYSTICK_LAST )
+	{
+		m_eActiveInputType = ACTIVE_INPUT_TYPE_XINPUT;
 	}
 }
 
@@ -866,6 +858,71 @@ void CInputSystem::PollInputState_Platform()
 
 
 //-----------------------------------------------------------------------------
+// Updates the state of all mouse buttons
+//-----------------------------------------------------------------------------
+void CInputSystem::UpdateMouseButtonState( int nButtonMask, ButtonCode_t dblClickCode )
+{
+	for ( int i = 0; i < 5; ++i )
+	{
+		ButtonCode_t code = (ButtonCode_t)( MOUSE_FIRST + i );
+		bool bDown = ( nButtonMask & ( 1 << i ) ) != 0;
+		if ( bDown )
+		{
+			InputEventType_t type = ( code != dblClickCode ) ? IE_ButtonPressed : IE_ButtonDoubleClicked; 
+			PostButtonPressedEvent( type, m_nLastSampleTick, code, code );
+			m_eActiveInputType = ACTIVE_INPUT_TYPE_MOUSE_KEYBOARD;
+		}
+		else
+		{
+			PostButtonReleasedEvent( IE_ButtonReleased, m_nLastSampleTick, code, code );
+		}
+	}
+}
+
+
+void CInputSystem::UpdateMousePositionState( InputState_t &state, short x, short y )
+{
+	int nOldX = state.m_pAnalogValue[ MOUSE_X ];
+	int nOldY = state.m_pAnalogValue[ MOUSE_Y ];
+
+	state.m_pAnalogValue[ MOUSE_X ] = x;
+	state.m_pAnalogValue[ MOUSE_Y ] = y;
+	state.m_pAnalogDelta[ MOUSE_X ] = state.m_pAnalogValue[ MOUSE_X ] - nOldX;
+	state.m_pAnalogDelta[ MOUSE_Y ] = state.m_pAnalogValue[ MOUSE_Y ] - nOldY;
+
+	if ( state.m_pAnalogDelta[ MOUSE_X ] != 0 )
+	{
+		PostEvent( IE_AnalogValueChanged, m_nLastSampleTick, MOUSE_X, state.m_pAnalogValue[ MOUSE_X ], state.m_pAnalogDelta[ MOUSE_X ] );
+	}
+	if ( state.m_pAnalogDelta[ MOUSE_Y ] != 0 )
+	{
+		PostEvent( IE_AnalogValueChanged, m_nLastSampleTick, MOUSE_Y, state.m_pAnalogValue[ MOUSE_Y ], state.m_pAnalogDelta[ MOUSE_Y ] );
+	}
+	if ( state.m_pAnalogDelta[ MOUSE_X ] != 0 || state.m_pAnalogDelta[ MOUSE_Y ] != 0 )
+	{
+		PostEvent( IE_AnalogValueChanged, m_nLastSampleTick, MOUSE_XY, state.m_pAnalogValue[ MOUSE_X ], state.m_pAnalogValue[ MOUSE_Y ] );
+	}
+}
+
+
+//-----------------------------------------------------------------------------
+// Picks up controllers connected after Init, every few seconds
+//-----------------------------------------------------------------------------
+void CInputSystem::FindNewDevices()
+{
+	if ( m_flNextDeviceCheckTime < Plat_FloatTime() )
+	{
+		m_flNextDeviceCheckTime = Plat_FloatTime() + 5.0f;
+
+		if ( m_bXController )
+			joy_xcontroller_found.SetValue( 1 );
+
+		m_bSteamController = InitializeSteamControllers();
+	}
+}
+
+
+//-----------------------------------------------------------------------------
 // Polls the current input state
 //-----------------------------------------------------------------------------
 void CInputSystem::PollInputState()
@@ -876,6 +933,8 @@ void CInputSystem::PollInputState()
 	// Deals with polled input events
 	InputState_t &queuedState = m_InputState[ INPUT_STATE_QUEUED ];
 	CopyInputState( &m_InputState[ INPUT_STATE_CURRENT ], queuedState, true );
+
+	FindNewDevices();
 
 	// Sample the joystick
 	SampleDevices();
@@ -975,7 +1034,14 @@ void CInputSystem::SetPrimaryUserId( int userId )
 //-----------------------------------------------------------------------------
 void CInputSystem::SetRumble( float fLeftMotor, float fRightMotor, int userId )
 {
-	SetXDeviceRumble( fLeftMotor, fRightMotor, userId );
+	if ( IsSteamControllerActive() )
+	{
+		SetSteamInputRumble( fLeftMotor, fRightMotor, userId );
+	}
+	else
+	{
+		SetXDeviceRumble( fLeftMotor, fRightMotor, userId );
+	}
 }
 
 
@@ -1000,7 +1066,7 @@ void CInputSystem::StopRumble( void )
 #else
 	for ( int i = 0; i < XUSER_MAX_COUNT; ++i )
 	{
-		SetRumble(0.0, 0.0, i);
+		SetXDeviceRumble( 0.0, 0.0, i );
 	}
 #endif
 }
@@ -1035,6 +1101,33 @@ int CInputSystem::GetPollTick() const
 bool CInputSystem::IsButtonDown( ButtonCode_t code ) const
 {
 	return m_InputState[INPUT_STATE_CURRENT].m_ButtonState.IsBitSet( code );
+}
+
+//-----------------------------------------------------------------------------
+// Video playback runs outside the normal input poll: sample Steam Input here
+// so face buttons skip the video and Start/Select escape it.
+//-----------------------------------------------------------------------------
+void CInputSystem::SteamControllerSkipVideo( bool *pbSkip, bool *pbEscape )
+{
+	m_bIsPolling = true;
+
+	m_bSteamController = InitializeSteamControllers();
+	PollSteamControllers();
+
+	*pbSkip = false;
+	*pbEscape = false;
+
+	if ( IsButtonDown( STEAMCONTROLLER_A ) || IsButtonDown( STEAMCONTROLLER_B ) || IsButtonDown( STEAMCONTROLLER_X ) || IsButtonDown( STEAMCONTROLLER_Y ) )
+	{
+		*pbSkip = true;
+	}
+
+	if ( IsButtonDown( STEAMCONTROLLER_START ) || IsButtonDown( STEAMCONTROLLER_SELECT ) )
+	{
+		*pbEscape = true;
+	}
+
+	m_bIsPolling = false;
 }
 
 int CInputSystem::GetAnalogValue( AnalogCode_t code ) const
@@ -1175,28 +1268,6 @@ int CInputSystem::ButtonMaskFromMouseWParam( WPARAM wParam, ButtonCode_t code, b
 
 
 //-----------------------------------------------------------------------------
-// Updates the state of all mouse buttons
-//-----------------------------------------------------------------------------
-void CInputSystem::UpdateMouseButtonState( int nButtonMask, ButtonCode_t dblClickCode )
-{
-	for ( int i = 0; i < 5; ++i )
-	{
-		ButtonCode_t code = (ButtonCode_t)( MOUSE_FIRST + i );
-		bool bDown = ( nButtonMask & ( 1 << i ) ) != 0;
-		if ( bDown )
-		{
-			InputEventType_t type = ( code != dblClickCode ) ? IE_ButtonPressed : IE_ButtonDoubleClicked; 
-			PostButtonPressedEvent( type, m_nLastSampleTick, code, code );
-		}
-		else
-		{
-			PostButtonReleasedEvent( IE_ButtonReleased, m_nLastSampleTick, code, code );
-		}
-	}
-}
-
-
-//-----------------------------------------------------------------------------
 // Handles input messages
 //-----------------------------------------------------------------------------
 void CInputSystem::SetCursorPosition( int x, int y )
@@ -1231,31 +1302,6 @@ void CInputSystem::SetCursorPosition( int x, int y )
 		PostEvent( IE_AnalogValueChanged, m_nLastSampleTick, MOUSE_Y, state.m_pAnalogValue[ MOUSE_Y ], state.m_pAnalogDelta[ MOUSE_Y ] );
 	}
 	if ( bXChanged || bYChanged )
-	{
-		PostEvent( IE_AnalogValueChanged, m_nLastSampleTick, MOUSE_XY, state.m_pAnalogValue[ MOUSE_X ], state.m_pAnalogValue[ MOUSE_Y ] );
-	}
-}
-
-
-void CInputSystem::UpdateMousePositionState( InputState_t &state, short x, short y )
-{
-	int nOldX = state.m_pAnalogValue[ MOUSE_X ];
-	int nOldY = state.m_pAnalogValue[ MOUSE_Y ];
-
-	state.m_pAnalogValue[ MOUSE_X ] = x;
-	state.m_pAnalogValue[ MOUSE_Y ] = y;
-	state.m_pAnalogDelta[ MOUSE_X ] = state.m_pAnalogValue[ MOUSE_X ] - nOldX;
-	state.m_pAnalogDelta[ MOUSE_Y ] = state.m_pAnalogValue[ MOUSE_Y ] - nOldY;
-
-	if ( state.m_pAnalogDelta[ MOUSE_X ] != 0 )
-	{
-		PostEvent( IE_AnalogValueChanged, m_nLastSampleTick, MOUSE_X, state.m_pAnalogValue[ MOUSE_X ], state.m_pAnalogDelta[ MOUSE_X ] );
-	}
-	if ( state.m_pAnalogDelta[ MOUSE_Y ] != 0 )
-	{
-		PostEvent( IE_AnalogValueChanged, m_nLastSampleTick, MOUSE_Y, state.m_pAnalogValue[ MOUSE_Y ], state.m_pAnalogDelta[ MOUSE_Y ] );
-	}
-	if ( state.m_pAnalogDelta[ MOUSE_X ] != 0 || state.m_pAnalogDelta[ MOUSE_Y ] != 0 )
 	{
 		PostEvent( IE_AnalogValueChanged, m_nLastSampleTick, MOUSE_XY, state.m_pAnalogValue[ MOUSE_X ], state.m_pAnalogValue[ MOUSE_Y ] );
 	}
@@ -1539,23 +1585,4 @@ void CInputSystem::SetConsoleTextMode( bool bConsoleTextMode )
 	}
 
 	m_bConsoleTextMode = bConsoleTextMode;
-}
-
-ISteamController* CInputSystem::SteamControllerInterface()
-{
-	if ( m_bSkipControllerInitialization )
-	{
-		return nullptr;
-	}
-	else
-	{
-		return m_SteamAPIContext.SteamController();
-	}
-}
-
-void CInputSystem::StartTextInput()
-{
-#ifdef USE_SDL
-	SDL_StartTextInput();
-#endif
 }

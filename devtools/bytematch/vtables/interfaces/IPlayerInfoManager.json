@@ -1,0 +1,88 @@
+{
+ "interface": "IPlayerInfoManager",
+ "headers": [
+  "public/game/server/iplayerinfo.h"
+ ],
+ "versions": {
+  "retail": [
+   "PlayerInfoManager002"
+  ],
+  "ours": [
+   "PlayerInfoManager002"
+  ],
+  "sdk2013": [
+   "PlayerInfoManager002"
+  ]
+ },
+ "version_macros": [
+  "INTERFACEVERSION_PLAYERINFOMANAGER"
+ ],
+ "registrations": [
+  {
+   "module": "episodic/server",
+   "version": "PlayerInfoManager002",
+   "class": "CPlayerInfoManager"
+  },
+  {
+   "module": "hl2/server",
+   "version": "PlayerInfoManager002",
+   "class": "CPlayerInfoManager"
+  },
+  {
+   "module": "hl2_complete/server",
+   "version": "PlayerInfoManager002",
+   "class": "CPlayerInfoManager"
+  },
+  {
+   "module": "hl2mp/server",
+   "version": "PlayerInfoManager002",
+   "class": "CPlayerInfoManager"
+  },
+  {
+   "module": "lostcoast/server",
+   "version": "PlayerInfoManager002",
+   "class": "CPlayerInfoManager"
+  }
+ ],
+ "sdk2013_len": 2,
+ "sdk2013_slots": [
+  "GetPlayerInfo(edict_t*)",
+  "GetGlobalVars()"
+ ],
+ "retail_reference": {
+  "module": "episodic/server",
+  "class": "CPlayerInfoManager",
+  "offset": 0,
+  "chain": [
+   "CPlayerInfoManager",
+   "IPlayerInfoManager"
+  ]
+ },
+ "retail_len": 2,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 2
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "GetPlayerInfo",
+   "sig": "GetPlayerInfo(edict_t*)",
+   "symbol": "CPlayerInfoManager::GetPlayerInfo(edict_t*)"
+  },
+  {
+   "index": 1,
+   "name": "GetGlobalVars",
+   "sig": "GetGlobalVars()",
+   "symbol": "CPlayerInfoManager::GetGlobalVars()"
+  }
+ ],
+ "derived": [
+  "episodic/server:CPlayerInfoManager",
+  "hl2/server:CPlayerInfoManager",
+  "hl2_complete/server:CPlayerInfoManager",
+  "hl2mp/server:CPlayerInfoManager",
+  "lostcoast/server:CPlayerInfoManager"
+ ],
+ "derived_count": 5
+}

@@ -1,0 +1,106 @@
+{
+ "interface": "IReplayServer",
+ "headers": [
+  "common/replay/ireplayserver.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 10,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "GetBaseServer()",
+  "GetDirector()",
+  "GetReplaySlot()",
+  "GetOnlineTime()",
+  "BroadcastEvent(IGameEvent*)",
+  "IsRecording()",
+  "StartRecording()",
+  "StopRecording()"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CReplayServer",
+  "offset": 480,
+  "chain": [
+   "CReplayServer",
+   "IReplayServer"
+  ]
+ },
+ "retail_len": 10,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 10
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CReplayServer",
+   "sig": "~CReplayServer()",
+   "symbol": "non-virtual thunk to CReplayServer::~CReplayServer()"
+  },
+  {
+   "index": 1,
+   "name": "~CReplayServer",
+   "sig": "~CReplayServer()",
+   "symbol": "non-virtual thunk to CReplayServer::~CReplayServer()"
+  },
+  {
+   "index": 2,
+   "name": "GetBaseServer",
+   "sig": "GetBaseServer()",
+   "symbol": "non-virtual thunk to CReplayServer::GetBaseServer()"
+  },
+  {
+   "index": 3,
+   "name": "GetDirector",
+   "sig": "GetDirector()",
+   "symbol": "non-virtual thunk to CReplayServer::GetDirector()"
+  },
+  {
+   "index": 4,
+   "name": "GetReplaySlot",
+   "sig": "GetReplaySlot()",
+   "symbol": "non-virtual thunk to CReplayServer::GetReplaySlot()"
+  },
+  {
+   "index": 5,
+   "name": "GetOnlineTime",
+   "sig": "GetOnlineTime()",
+   "symbol": "non-virtual thunk to CReplayServer::GetOnlineTime()"
+  },
+  {
+   "index": 6,
+   "name": "BroadcastEvent",
+   "sig": "BroadcastEvent(IGameEvent*)",
+   "symbol": "non-virtual thunk to CReplayServer::BroadcastEvent(IGameEvent*)"
+  },
+  {
+   "index": 7,
+   "name": "IsRecording",
+   "sig": "IsRecording()",
+   "symbol": "non-virtual thunk to CReplayServer::IsRecording()"
+  },
+  {
+   "index": 8,
+   "name": "StartRecording",
+   "sig": "StartRecording()",
+   "symbol": "non-virtual thunk to CReplayServer::StartRecording()"
+  },
+  {
+   "index": 9,
+   "name": "StopRecording",
+   "sig": "StopRecording()",
+   "symbol": "non-virtual thunk to CReplayServer::StopRecording()"
+  }
+ ],
+ "derived": [
+  "bin/engine:CReplayServer"
+ ],
+ "derived_count": 1
+}

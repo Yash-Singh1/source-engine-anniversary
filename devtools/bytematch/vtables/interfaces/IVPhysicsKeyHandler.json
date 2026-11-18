@@ -1,0 +1,89 @@
+{
+ "interface": "IVPhysicsKeyHandler",
+ "headers": [
+  "public/vcollide_parse.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 2,
+ "sdk2013_slots": [
+  "ParseKeyValue(void*, char const*, char const*)",
+  "SetDefaults(void*)"
+ ],
+ "retail_reference": {
+  "module": "episodic/client",
+  "class": "CBreakParser",
+  "offset": 0,
+  "chain": [
+   "CBreakParser",
+   "IVPhysicsKeyHandler"
+  ]
+ },
+ "retail_len": 2,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 2
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "ParseKeyValue",
+   "sig": "ParseKeyValue(void*, char const*, char const*)",
+   "symbol": "CBreakParser::ParseKeyValue(void*, char const*, char const*)"
+  },
+  {
+   "index": 1,
+   "name": "SetDefaults",
+   "sig": "SetDefaults(void*)",
+   "symbol": "CBreakParser::SetDefaults(void*)"
+  }
+ ],
+ "derived": [
+  "episodic/client:CBreakParser",
+  "episodic/client:CRagdollAnimatedFriction",
+  "episodic/client:CRagdollCollisionRules",
+  "episodic/client:CSolidSetDefaults",
+  "episodic/server:CBreakParser",
+  "episodic/server:CRagdollAnimatedFriction",
+  "episodic/server:CRagdollCollisionRules",
+  "episodic/server:CSkipKeys",
+  "episodic/server:CSolidSetDefaults",
+  "episodic/server:CVehicleChoreoViewParser",
+  "episodic/server:CVehicleSoundsParser",
+  "hl2/client:CBreakParser",
+  "hl2/client:CRagdollAnimatedFriction",
+  "hl2/client:CRagdollCollisionRules",
+  "hl2/client:CSolidSetDefaults",
+  "hl2/server:CBreakParser",
+  "hl2/server:CRagdollAnimatedFriction",
+  "hl2/server:CRagdollCollisionRules",
+  "hl2/server:CSkipKeys",
+  "hl2/server:CSolidSetDefaults",
+  "hl2/server:CVehicleChoreoViewParser",
+  "hl2/server:CVehicleSoundsParser",
+  "hl2_complete/client:CBreakParser",
+  "hl2_complete/client:CRagdollAnimatedFriction",
+  "hl2_complete/client:CRagdollCollisionRules",
+  "hl2_complete/client:CSolidSetDefaults",
+  "hl2_complete/server:CBreakParser",
+  "hl2_complete/server:CRagdollAnimatedFriction",
+  "hl2_complete/server:CRagdollCollisionRules",
+  "hl2_complete/server:CSkipKeys",
+  "hl2_complete/server:CSolidSetDefaults",
+  "hl2_complete/server:CVehicleChoreoViewParser",
+  "hl2_complete/server:CVehicleSoundsParser",
+  "hl2mp/client:CBreakParser",
+  "hl2mp/client:CRagdollAnimatedFriction",
+  "hl2mp/client:CRagdollCollisionRules",
+  "hl2mp/client:CSolidSetDefaults",
+  "hl2mp/server:CBreakParser",
+  "hl2mp/server:CRagdollAnimatedFriction",
+  "hl2mp/server:CRagdollCollisionRules"
+ ],
+ "derived_count": 54
+}

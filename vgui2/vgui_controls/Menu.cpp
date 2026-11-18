@@ -835,10 +835,26 @@ void Menu::PerformLayout()
 		}
 
 		// take into account inset
-		child->SetPos (0, menuTall);
-		child->SetTall( m_iMenuItemHeight ); // Width is set in a second pass
-		menuTall += m_iMenuItemHeight;
-		totalTall += m_iMenuItemHeight;
+		child->SetPos( PROPORTIONAL_VALUE( child->GetXIndent() ), menuTall );
+
+		int nExtraTall = 0;
+		if ( child->GetExtraTall() )
+		{
+			nExtraTall = PROPORTIONAL_VALUE( child->GetExtraTall() );
+
+			// keep extra-tall items within reach on short screens
+			int sw, sh;
+			surface()->GetScreenSize( sw, sh );
+			if ( sh < 800 )
+			{
+				nExtraTall = clamp( nExtraTall, 0, Ceil2Int( m_iMenuItemHeight * 1.5f ) );
+			}
+		}
+
+		int nItemTall = m_iMenuItemHeight + nExtraTall;
+		child->SetTall( nItemTall ); // Width is set in a second pass
+		menuTall += nItemTall;
+		totalTall += nItemTall;
 
 		// this will make all the menuitems line up in a column with space for the checks to the left.
 		if ( ( !child->IsCheckable() ) && ( m_iCheckImageWidth > 0 ) )
@@ -2113,7 +2129,7 @@ void Menu::ActivateItemByRow(int row)
 //-----------------------------------------------------------------------------
 // Purpose: Return the number of items currently in the menu list
 //-----------------------------------------------------------------------------
-int Menu::GetItemCount() const
+int Menu::GetItemCount()
 {
 	return m_MenuItems.Count();
 }
@@ -2175,6 +2191,17 @@ void Menu::SetItemEnabled(int itemID, bool state)
 		return;
 
 	m_MenuItems[itemID]->SetEnabled(state);
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Shows the item's text in upper case
+//-----------------------------------------------------------------------------
+void Menu::SetItemUppercase( int itemID, bool state )
+{
+	if ( !m_MenuItems.IsValidIndex( itemID ) )
+		return;
+
+	m_MenuItems[itemID]->SetAllCaps( state );
 }
 
 //-----------------------------------------------------------------------------
@@ -2365,8 +2392,14 @@ int Menu::GetCurrentlyHighlightedItem()
 //-----------------------------------------------------------------------------
 // Purpose: Respond to cursor entering a menuItem.
 //-----------------------------------------------------------------------------
+#ifdef PLATFORM_64BITS
 void Menu::OnCursorEnteredMenuItem(VPANEL menuItem)
 {
+#else
+void Menu::OnCursorEnteredMenuItem(int VPanel)
+{
+	VPANEL menuItem = (VPANEL)VPanel;
+#endif
 	// if we are in mouse mode
 	if (m_iInputMode == MOUSE)
 	{
@@ -2388,8 +2421,14 @@ void Menu::OnCursorEnteredMenuItem(VPANEL menuItem)
 //-----------------------------------------------------------------------------
 // Purpose: Respond to cursor exiting a menuItem
 //-----------------------------------------------------------------------------
+#ifdef PLATFORM_64BITS
 void Menu::OnCursorExitedMenuItem(VPANEL menuItem)
 {
+#else
+void Menu::OnCursorExitedMenuItem(int VPanel)
+{
+	VPANEL menuItem = (VPANEL)VPanel;
+#endif
 	// only care if we are in mouse mode
 	if (m_iInputMode == MOUSE)
 	{

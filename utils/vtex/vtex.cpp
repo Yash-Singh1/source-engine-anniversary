@@ -46,8 +46,15 @@
 #include "appframework/IAppSystemGroup.h"
 
 #include "tier2/tier2.h"
+#ifndef BYTEMATCH_RETAIL
 #include "tier1/checksum_crc.h"
 #include "imageutils.h"
+#else
+#include "tier2/p4helpers.h"
+#include "p4lib/ip4.h"
+
+#include "tier1/checksum_crc.h"
+#endif
 
 #define FF_TRYAGAIN 1
 #define FF_DONTPROCESS 2
@@ -61,13 +68,27 @@
 #endif
 
 //#define DEBUG_NO_COMPRESSION
+#ifndef BYTEMATCH_RETAIL
+#else
+static bool g_NoPause = false;
+#endif
 static bool g_Quiet = false;
 static const char *g_ShaderName = NULL;
 static bool g_CreateDir = true;
 static bool g_UseGameDir = true;
 
+#ifndef BYTEMATCH_RETAIL
 static bool g_bWarningsAsErrors = false;
 static bool g_bUsedAsLaunchableDLL = false;
+#else
+static bool g_bUseStandardError = false;
+static bool g_bWarningsAsErrors = false;
+
+static bool g_bUsedAsLaunchableDLL = false;
+
+static bool g_bNoTga = false;
+static bool g_bNoPsd = false;
+#endif
 
 static char g_ForcedOutputDir[MAX_PATH];
 
@@ -106,10 +127,28 @@ protected:
 static VTexVMTParam_t g_VMTParams[MAX_VMT_PARAMS];
 
 static int g_NumVMTParams = 0;
+#ifndef BYTEMATCH_RETAIL
 static enum Mode { eModePSD, eModeTGA, eModePFM, eModePNG } g_eMode = eModePSD;
 
 // NOTE: these must stay in the same order as CubeMapFaceIndex_t.
 static const char *g_CubemapFacingNames[7] = { "rt", "lf", "bk", "ft", "up", "dn", "sph" };
+#else
+static enum Mode { eModePSD, eModeTGA, eModePFM } g_eMode = eModePSD;
+
+// NOTE: these must stay in the same order as CubeMapFaceIndex_t.
+static const char *g_CubemapFacingNames[7] = { "rt", "lf", "bk", "ft", "up", "dn", "sph" };
+
+static void Pause( void )
+{
+	if( !g_NoPause )
+	{
+		printf( "Hit a key to continue\n" );
+#ifdef WIN32
+		getch();
+#endif	
+	}
+}
+#endif
 
 static bool VTexErrorAborts()
 {
@@ -134,9 +173,22 @@ static void VTexError( const char *pFormat, ... )
 		return;
 	}
 
+#ifndef BYTEMATCH_RETAIL
 
 	fprintf( stderr, "ERROR: %s", str );
 	exit( 1 );	
+#else
+	if ( g_bUseStandardError )
+	{
+		Error( "ERROR: %s", str );
+	}
+	else
+	{
+		fprintf( stderr, "ERROR: %s", str );
+		Pause();
+		exit( 1 );
+	}	
+#endif
 }
 
 
@@ -155,6 +207,10 @@ static void VTexWarning( const char *pFormat, ... )
 	else
 	{
 		fprintf( stderr, "WARN: %s", str );
+#ifndef BYTEMATCH_RETAIL
+#else
+		Pause();
+#endif
 	}	
 }
 
@@ -643,8 +699,10 @@ static const char *GetSourceExtension( void )
 		return ".tga";
 	case eModePFM:
 		return ".pfm";
+#ifndef BYTEMATCH_RETAIL
 	case eModePNG:
 		return ".png";
+#endif
 	default:
 		return ".tga";
 	}
@@ -911,6 +969,11 @@ static bool LoadFile( const char *pFileName, CUtlBuffer &buf, bool bFailOnError,
 
 	buf.SeekPut( CUtlBuffer::SEEK_HEAD, nBytesRead );
 
+#ifndef BYTEMATCH_RETAIL
+#else
+	{ CP4AutoAddFile autop4( pFileName ); /* add loaded file to P4 */ }
+
+#endif
 	// Auto-compute buffer hash if necessary
 	if ( puiHash )
 		ComputeBufferHash( buf.Base(), nBytesRead, *puiHash );
@@ -968,6 +1031,7 @@ static void InitializeSrcTexture_TGA( IVTFTexture *pTexture, const char *pInputF
 	}
 }
 
+#ifndef BYTEMATCH_RETAIL
 static void InitializeSrcTexture_PNG( IVTFTexture *pTexture, const char *pInputFileName,
 									  CUtlBuffer &pngBuffer, int nDepth, int nFrameCount,
 									  const VTexConfigInfo_t &info )
@@ -996,6 +1060,7 @@ static void InitializeSrcTexture_PNG( IVTFTexture *pTexture, const char *pInputF
 		Error( "Error initializing texture %s\n", pInputFileName );
 	}
 }
+#endif
 
 // HDRFIXME: Put this somewhere better than this.
 // This reads an integer from a binary CUtlBuffer.
@@ -1093,9 +1158,11 @@ static void InitializeSrcTexture( IVTFTexture *pTexture, const char *pInputFileN
 		break;
 	case eModeTGA:
 		InitializeSrcTexture_TGA( pTexture, pInputFileName, tgaBuffer, nDepth, nFrameCount, info );
+#ifndef BYTEMATCH_RETAIL
 		break;
 	case eModePNG:
 		InitializeSrcTexture_PNG( pTexture, pInputFileName, tgaBuffer, nDepth, nFrameCount, info );
+#endif
 		break;
 	case eModePFM:
 		InitializeSrcTexture_PFM( pTexture, pInputFileName, tgaBuffer, nDepth, nFrameCount, info );
@@ -1396,6 +1463,7 @@ static bool LoadFaceFromTGA( IVTFTexture *pTexture, CUtlBuffer &tgaBuffer, int z
 	}
 }
 
+#ifndef BYTEMATCH_RETAIL
 
 //-----------------------------------------------------------------------------
 // Loads a face from a PNG image
@@ -1421,6 +1489,7 @@ static bool LoadFaceFromPNG( IVTFTexture *pTexture, CUtlBuffer &tgaBuffer, int z
 	return true;
 }
 
+#endif
 //-----------------------------------------------------------------------------
 // Loads a face from a PFM image
 //-----------------------------------------------------------------------------
@@ -1483,9 +1552,11 @@ static bool LoadFaceFromX( IVTFTexture *pTexture, CUtlBuffer &tgaBuffer, int z, 
 		break;
 	case eModeTGA:
 		return LoadFaceFromTGA( pTexture, tgaBuffer, z, nFrame, nFace, flGamma, info );
+#ifndef BYTEMATCH_RETAIL
 		break;
 	case eModePNG:
 		return LoadFaceFromPNG( pTexture, tgaBuffer, z, nFrame, nFace, flGamma, info );
+#endif
 		break;
 	case eModePFM:
 		return LoadFaceFromPFM( pTexture, tgaBuffer, z, nFrame, nFace, flGamma, info );
@@ -1941,7 +2012,11 @@ bool ProcessFiles( const char *pFullNameWithoutExtension,
 	}
 
 	// Write it!
+#ifndef BYTEMATCH_RETAIL
 	if ( g_CreateDir )
+#else
+	if ( g_CreateDir == true )
+#endif
 		MakeDirHier( pOutputDir ); //It'll create it if it doesn't exist.
 
 	// Make sure the CRC hasn't been modified since finalized
@@ -1954,6 +2029,10 @@ bool ProcessFiles( const char *pFullNameWithoutExtension,
 	}
 
 	{
+#ifndef BYTEMATCH_RETAIL
+#else
+		CP4AutoEditAddFile autop4( dstFileName );
+#endif
 		FILE *fp = fopen( dstFileName, "wb" );
 		if( !fp )
 		{
@@ -2057,9 +2136,16 @@ static bool LoadConfigFile( const char *pFileBaseName, VTexConfigInfo_t &info, b
 
 	info.m_LookDir = LOOK_DOWN_Z;
 
+#ifndef BYTEMATCH_RETAIL
 	// Try TGA file with config
 	memcpy( pFileName + lenBaseName, ".tga", 4 );
 	if ( !bOK && ( 00 == access( pFileName, 00 ) ) ) // TGA file exists
+#else
+	
+	// Try TGA file with config
+	memcpy( pFileName + lenBaseName, ".tga", 4 );
+	if ( !bOK && !g_bNoTga && ( 00 == access( pFileName, 00 ) ) ) // TGA file exists
+#endif
 	{
 		g_eMode = eModeTGA;
 
@@ -2093,10 +2179,21 @@ static bool LoadConfigFile( const char *pFileBaseName, VTexConfigInfo_t &info, b
 		}
 	}
 	memcpy( pFileName + lenBaseName, ".tga", 4 );
+#ifndef BYTEMATCH_RETAIL
 
 	// PSD file attempt
 	memcpy( pFileName + lenBaseName, ".psd", 4 );
 	if ( !bOK && ( 00 == access( pFileName, 00 ) ) ) // If PSD mode was not disabled
+#else
+	if ( g_bNoTga && ( 00 == access( pFileName, 00 ) ) )
+	{
+		printf( "Warning: -notga disables \"%s\"\n", pFileName );
+	}
+
+	// PSD file attempt
+	memcpy( pFileName + lenBaseName, ".psd", 4 );
+	if ( !bOK && !g_bNoPsd ) // If PSD mode was not disabled
+#endif
 	{
 		g_eMode = eModePSD;
 
@@ -2138,6 +2235,7 @@ static bool LoadConfigFile( const char *pFileBaseName, VTexConfigInfo_t &info, b
 			}
 		}
 	}
+#ifndef BYTEMATCH_RETAIL
 
 	// PNG file attempt
 	memcpy( pFileName + lenBaseName, ".png", 4 );
@@ -2146,6 +2244,14 @@ static bool LoadConfigFile( const char *pFileBaseName, VTexConfigInfo_t &info, b
 		g_eMode = eModePNG;
 		info.m_nFlags |= TEXTUREFLAGS_NOMIP;
 		bOK = true;
+#else
+	else if ( 00 == access( pFileName, 00 ) )
+	{
+		if ( !bOK )
+			printf( "Warning: -nopsd disables \"%s\"\n", pFileName );
+		else
+			printf( "Warning: psd file \"%s\" exists, but not used, delete tga and txt files to use psd file directly\n", pFileName );
+#endif
 	}
 
 	// Try TXT file as config again for TGA cubemap / PFM
@@ -2187,7 +2293,15 @@ static bool LoadConfigFile( const char *pFileBaseName, VTexConfigInfo_t &info, b
 
 	if ( !bOK )
 	{
+#ifndef BYTEMATCH_RETAIL
 		VTexError( "\"%s\" does not specify valid PSD or TGA or PFM+TXT files!\n");
+#else
+		VTexError( "\"%s\" does not specify valid %s%sPFM+TXT files!\n",
+			pFileBaseName,
+			g_bNoPsd ? "" : "PSD or ",
+			g_bNoTga ? "" : "TGA or "
+			);
+#endif
 		return false;
 	}
 
@@ -2270,6 +2384,7 @@ static bool LoadConfigFile( const char *pFileBaseName, VTexConfigInfo_t &info, b
 void Usage( void )
 {
 	VTexError( 
+#ifndef BYTEMATCH_RETAIL
 		"Usage: vtex [-quiet] [-mkdir] [-shader ShaderName] [-vmtparam Param Value] tex1.txt tex2.txt . . .\n"
 		"-quiet            : don't print anything out, don't pause for input\n"
 		"-warningsaserrors : treat warnings as errors\n"
@@ -2277,6 +2392,17 @@ void Usage( void )
 		"-vmtparam         : adds parameter and value to the .vmt file\n"
 		"-deducepath       : deduce path of sources by target file names\n"
 		"-quickconvert     : use with \"-dontusegamedir -quickconvert\" to upgrade old .vmt files\n"
+#else
+		"Usage: vtex [-outdir dir] [-quiet] [-nopause] [-mkdir] [-shader ShaderName] [-vmtparam Param Value] tex1.txt tex2.txt . . .\n"
+		"-quiet            : don't print anything out, don't pause for input\n"
+		"-warningsaserrors : treat warnings as errors\n"
+		"-nopause          : don't pause for input\n"
+		"-nomkdir          : don't create destination folder if it doesn't exist\n"
+		"-vmtparam         : adds parameter and value to the .vmt file\n"
+		"-outdir <dir>     : write output to the specified dir regardless of source filename and vproject\n"
+		"-deducepath       : deduce path of sources by target file names\n"
+		"-quickconvert     : use with \"-nop4 -dontusegamedir -quickconvert\" to upgrade old .vmt files\n"
+#endif
 		"-crcvalidate      : validate .vmt against the sources\n"
 		"-crcforce         : generate a new .vmt even if sources crc matches\n"
 		"\teg: -vmtparam $ignorez 1 -vmtparam $translucent 1\n"
@@ -2297,9 +2423,13 @@ bool GetOutputDir( const char *inputName, char *outputDir )
 		Q_MakeAbsolutePath( buf, sizeof( buf ), inputName, NULL );
 		Q_FixSlashes( buf );
 
+#ifndef BYTEMATCH_RETAIL
 		char szSearch[MAX_PATH] = { 0 };
 		V_snprintf( szSearch, sizeof( szSearch ), "materialsrc%c", CORRECT_PATH_SEPARATOR );
 		const char *pTmp = Q_stristr( buf, szSearch );
+#else
+		const char *pTmp = Q_stristr( buf, "materialsrc\\" );
+#endif
 		if( !pTmp )
 		{
 			return false;
@@ -2457,7 +2587,11 @@ bool Process_File( char *pInputBaseName, int maxlen )
 	}
 
 	// Usage:
+#ifndef BYTEMATCH_RETAIL
 	//			vtex -dontusegamedir -quickconvert u:\data\game\tf\texture.vtf
+#else
+	//			vtex -nop4 -dontusegamedir -quickconvert u:\data\game\tf\texture.vtf
+#endif
 	// Will read the old texture format and write the new texture format
 	//
 	if ( CommandLine()->FindParm( "-quickconvert" ) )
@@ -2576,6 +2710,11 @@ bool Process_File( char *pInputBaseName, int maxlen )
 
 					fprintf( fp, "}\n" );
 					fclose( fp );
+#ifndef BYTEMATCH_RETAIL
+#else
+
+					CP4AutoAddFile autop4( buf );
+#endif
 				}
 				else
 				{
@@ -2598,6 +2737,10 @@ static SpewRetval_t VTexOutputFunc( SpewType_t spewType, char const *pMsg )
 	printf( "%s", pMsg );
 	if (spewType == SPEW_ERROR)
 	{
+#ifndef BYTEMATCH_RETAIL
+#else
+		Pause();
+#endif
 		return SPEW_ABORT;
 	}
 	return (spewType == SPEW_ASSERT) ? SPEW_DEBUGGER : SPEW_CONTINUE; 
@@ -2613,7 +2756,7 @@ public:
 	virtual int main( int argc, char **argv )
 	{
 		g_bUsedAsLaunchableDLL = true;
-
+#ifndef BYTEMATCH_RETAIL
 		// Being used as a launchable DLL, we don't want to blow away the host app's command line
 		CUtlString strOrigCmdLine( CommandLine()->GetCmdLine() );
 
@@ -2624,6 +2767,9 @@ public:
 		CommandLine()->CreateCmdLine( strOrigCmdLine.Get() );
 
 		return iResult;
+#else
+		return VTex( argc, argv );
+#endif
 	}
 
 	virtual int VTex( CreateInterfaceFn fsFactory, const char *pGameDir, int argc, char **argv )
@@ -2637,7 +2783,7 @@ public:
 
 		Q_strncpy( gamedir, pGameDir, sizeof( gamedir ) );
 		Q_AppendSlash( gamedir, sizeof( gamedir ) );
-
+#ifndef BYTEMATCH_RETAIL
 		// When being used embedded in a host app, we don't want to blow away the host app's command line
 		CUtlString strOrigCmdLine( CommandLine()->GetCmdLine() );
 
@@ -2647,6 +2793,9 @@ public:
 		CommandLine()->CreateCmdLine( strOrigCmdLine.Get() );
 
 		return iResult;
+#else
+		return VTex( argc, argv );
+#endif
 	}
 };
 
@@ -2688,7 +2837,11 @@ bool CSuggestGameDirHelper::MySuggestFn( CFSSteamSetupInfo const *pFsSteamSetupI
 
 int CVTex::VTex( int argc, char **argv )
 {
+#ifndef BYTEMATCH_RETAIL
 //	CommandLine()->CreateCmdLine( argc, argv );
+#else
+	CommandLine()->CreateCmdLine( argc, argv );
+#endif
 
 	if ( g_bUsedAsLaunchableDLL )
 	{
@@ -2702,7 +2855,12 @@ int CVTex::VTex( int argc, char **argv )
 		return -1;
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	g_UseGameDir = false; // make sure this is initialized to true.
+#else
+	g_UseGameDir = true; // make sure this is initialized to true.
+	const char *p4ChangelistLabel = "VTex Auto Checkout";
+#endif
 	bool bCreatedFilesystem = false;
 
 	int i;
@@ -2713,21 +2871,80 @@ int CVTex::VTex( int argc, char **argv )
 		{
 			i++;
 			g_Quiet = true;
+#ifndef BYTEMATCH_RETAIL
 		}
 		else if ( stricmp( argv[i], "-warningsaserrors" ) == 0 )
 		{
 			i++;
 			g_bWarningsAsErrors = true;
+#else
+			g_NoPause = true; // no point in pausing if we aren't going to print anything out.
+		}
+		else if( stricmp( argv[i], "-nopause" ) == 0 )
+		{
+			i++;
+			g_NoPause = true;
+		}
+		else if ( stricmp( argv[i], "-WarningsAsErrors" ) == 0 )
+		{
+			i++;
+			g_bWarningsAsErrors = true;
+		}
+		else if ( stricmp( argv[i], "-UseStandardError" ) == 0 )
+		{
+			i++;
+			g_bUseStandardError = true;
+		}
+		else if ( stricmp( argv[i], "-nopsd" ) == 0 ) 
+		{
+			i++;
+			g_bNoPsd = true;
+		}
+		else if ( stricmp( argv[i], "-notga" ) == 0 ) 
+		{
+			i++;
+			g_bNoTga = true;
+#endif
 		}
 		else if ( stricmp( argv[i], "-nomkdir" ) == 0 ) 
 		{
 			i++;
 			g_CreateDir = false;
 		}
+#ifndef BYTEMATCH_RETAIL
+#else
+		else if ( stricmp( argv[i], "-mkdir" ) == 0 ) 
+		{
+			i++;
+			g_CreateDir = true;
+		}
+		else if ( stricmp( argv[i], "-game" ) == 0 )
+		{
+			i += 2;
+		}
+#endif
 		else if ( stricmp( argv[i], "-outdir" ) == 0 )
 		{
 			V_strcpy_safe( g_ForcedOutputDir, argv[i+1] );
 			i += 2;
+#ifndef BYTEMATCH_RETAIL
+#else
+		}
+		else if ( stricmp( argv[i], "-p4changelistlabel" ) == 0 )
+		{
+			p4ChangelistLabel = argv[i+1];
+			i += 2;
+		}
+		else if ( stricmp( argv[i], "-p4skipchangelistlabel" ) == 0 )
+		{
+			p4ChangelistLabel = NULL;
+			i++;
+		}
+		else if ( stricmp( argv[i], "-dontusegamedir" ) == 0)
+		{
+			++i;
+			g_UseGameDir = false;
+#endif
 		}
 		else if( stricmp( argv[i], "-shader" ) == 0 )
 		{
@@ -2738,12 +2955,23 @@ int CVTex::VTex( int argc, char **argv )
 				i++;
 			}
 		}
+#ifndef BYTEMATCH_RETAIL
 		else if( stricmp(argv[i], "-crcvalidate") == 0 )
 		{
 			i++;
 		}
 		else if( stricmp(argv[i], "-crcforce") == 0 )
 		{
+#else
+		else if( stricmp( argv[i], "-vproject" ) == 0 )
+		{
+			// skip this one. . we dont' use it internally.
+			i += 2;
+		}
+		else if( stricmp( argv[i], "-allowdebug" ) == 0 )
+		{
+			// skip this one. . we dont' use it internally.
+#endif
 			i++;
 		}
 		else if( stricmp( argv[i], "-vmtparam" ) == 0 )
@@ -2781,6 +3009,39 @@ int CVTex::VTex( int argc, char **argv )
 				fprintf( stderr, "Exceeded max number of vmt parameters, extra ignored ( max %d )\n", MAX_VMT_PARAMS );
 			}
 		}
+#ifndef BYTEMATCH_RETAIL
+#else
+		else if( stricmp( argv[i], "-nop4" ) == 0 )
+		{
+			// Just here to signify that -nop4 is a valid flag
+			++ i;
+		}
+		else if( stricmp( argv[i], "-deducepath" ) == 0 )
+		{
+			// Just here to signify that -deducepath is a valid flag
+			++ i;
+		}
+		else if( stricmp( argv[i], "-quickconvert" ) == 0 )
+		{
+			// Just here to signify that -quickconvert is a valid flag
+			++ i;
+		}
+		else if( stricmp( argv[i], "-crcvalidate" ) == 0 )
+		{
+			// Just here to signify that -crcvalidate is a valid flag
+			++ i;
+		}
+		else if( stricmp( argv[i], "-crcforce" ) == 0 )
+		{
+			// Just here to signify that -crcforce is a valid flag
+			++ i;
+		}
+		else if( stricmp( argv[i], "-p4skip" ) == 0 )
+		{
+			// Just here to signify that -p4skip is a valid flag
+			++ i;
+		}
+#endif
 		else
 		{
 			break;
@@ -2793,13 +3054,68 @@ int CVTex::VTex( int argc, char **argv )
 	SetSuggestGameInfoDirFn( CSuggestGameDirHelper::SuggestFn );
 
 	// g_pFileSystem may have been inherited with -inherit_filesystem.
+#ifndef BYTEMATCH_RETAIL
 
+#endif
 	if (g_UseGameDir && !g_pFileSystem)
 	{
 		FileSystem_Init( argv[i] );
 		bCreatedFilesystem = true;
 
 		Q_FixSlashes( gamedir, '/' );
+#ifndef BYTEMATCH_RETAIL
+#else
+	}
+
+	if ( !CommandLine()->FindParm( "-p4skip" ) )
+	{
+		// Initialize P4
+		bool bP4DLLExists = false;
+		if ( g_pFullFileSystem )
+		{
+			bP4DLLExists = g_pFullFileSystem->FileExists( "p4lib.dll", "EXECUTABLE_PATH" );
+		}
+
+		if ( g_bUsedAsLaunchableDLL && !CommandLine()->FindParm( "-nop4" ) && bP4DLLExists )
+		{
+			const char *pModuleName = "p4lib.dll";
+			CSysModule *pModule = Sys_LoadModule( pModuleName );
+			if ( !pModule )
+			{
+				printf( "Can't load %s.\n", pModuleName );
+				return -1;
+			}
+			CreateInterfaceFn fn = Sys_GetFactory( pModule );
+			if ( !fn )
+			{
+				printf( "Can't get factory from %s.\n", pModuleName );
+				Sys_UnloadModule( pModule );
+				return -1;
+			}
+			p4 = (IP4 *)fn( P4_INTERFACE_VERSION, NULL );
+			if ( !p4 )
+			{
+				printf( "Can't get IP4 interface from %s, proceeding with -nop4.\n", pModuleName );
+				g_p4factory->SetDummyMode( true );
+			}
+			else
+			{
+				p4->Connect( FileSystem_GetFactory() );
+				p4->Init();
+			}
+		}
+		else
+		{
+			g_p4factory->SetDummyMode( true );
+		}
+
+		// Setup p4 factory
+		if ( p4ChangelistLabel && p4ChangelistLabel[0] != '\000' )
+		{
+			// Set the named changelist
+			g_p4factory->SetOpenFileChangeList( p4ChangelistLabel );
+		}
+#endif
 	}
 
 	// Parse args
@@ -2817,6 +3133,62 @@ int CVTex::VTex( int argc, char **argv )
 			Process_File( pInputBaseName, sizeof(pInputBaseName) );
 			continue;
 		}
+#ifndef BYTEMATCH_RETAIL
+#else
+
+#ifdef WIN32
+		char	search[ 128 ];
+		char	basedir[MAX_PATH];
+		char	ext[_MAX_EXT];
+		char    filename[_MAX_FNAME];
+
+		_splitpath( pInputBaseName, NULL, NULL, NULL, ext ); //find extension wanted
+
+		if ( !Q_ExtractFilePath ( pInputBaseName, basedir, sizeof( basedir ) ) )
+			strcpy( basedir, ".\\" );
+
+		sprintf( search, "%s\\*.*", basedir );
+
+		WIN32_FIND_DATA wfd;
+		HANDLE hResult;
+		memset(&wfd, 0, sizeof(WIN32_FIND_DATA));
+
+		hResult = FindFirstFile( search, &wfd );
+
+		if ( hResult != INVALID_HANDLE_VALUE )
+		{
+			sprintf( filename, "%s%s", basedir, wfd.cFileName );
+
+			if ( wfd.cFileName[0] != '.' ) 
+				Process_File( filename, sizeof( filename ) );
+
+			int iFFType = Find_Files( wfd, hResult, basedir, ext );
+
+			while ( iFFType )
+			{
+				sprintf( filename, "%s%s", basedir, wfd.cFileName );
+
+				if ( wfd.cFileName[0] != '.' && iFFType != FF_DONTPROCESS ) 
+					Process_File( filename, sizeof( filename ) );
+
+				iFFType = Find_Files( wfd, hResult, basedir, ext );
+			}
+
+			if ( iFFType == 0 )
+			{
+				FindClose( hResult );
+			}
+		}
+#endif
+
+	}
+	
+	// Shutdown P4
+	if ( g_bUsedAsLaunchableDLL && p4 && !CommandLine()->FindParm( "-p4skip" ) )
+	{
+		p4->Shutdown();
+		p4->Disconnect();
+#endif
 	}
 
 	if ( bCreatedFilesystem )
@@ -2830,6 +3202,10 @@ int CVTex::VTex( int argc, char **argv )
 		SpewOutputFunc( NULL );
 	}
 
+#ifndef BYTEMATCH_RETAIL
+#else
+	Pause();
+#endif
 	return 0;
 }
 

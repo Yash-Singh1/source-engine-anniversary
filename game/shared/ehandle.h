@@ -44,7 +44,11 @@ class CHandle : public CBaseHandle
 {
 public:
 
+#ifdef BYTEMATCH_RETAIL
+			CHandle();
+#else
 			CHandle() = default;
+#endif
 			CHandle( int iEntry, int iSerialNumber );
 			CHandle( const CBaseHandle &handle );
 			CHandle( T *pVal );
@@ -70,6 +74,14 @@ public:
 // ----------------------------------------------------------------------- //
 // Inlines.
 // ----------------------------------------------------------------------- //
+
+#ifdef BYTEMATCH_RETAIL
+template<class T>
+CHandle<T>::CHandle()
+{
+}
+#endif
+
 
 template<class T>
 CHandle<T>::CHandle( int iEntry, int iSerialNumber )

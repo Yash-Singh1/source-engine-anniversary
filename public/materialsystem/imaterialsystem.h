@@ -70,7 +70,7 @@ typedef uint64 VertexFormat_t;
 // V081 - 10/25/2016 - Added new Suspend/Resume texture streaming interfaces. Might also have added more calls here due
 //                     to the streaming work that didn't get bumped, but we're not guarding versions on the TF branch
 //                     very judiciously since we need to audit them when merging to SDK branch either way.
-#define MATERIAL_SYSTEM_INTERFACE_VERSION "VMaterialSystem081"
+#define MATERIAL_SYSTEM_INTERFACE_VERSION "VMaterialSystem080"
 
 #ifdef POSIX
 #define ABSOLUTE_MINIMUM_DXLEVEL 90
@@ -567,6 +567,15 @@ class CShadowMgr;
 
 DECLARE_POINTER_HANDLE( MaterialLock_t );
 
+enum RenderBackend_t
+{
+	RENDER_BACKEND_UNKNOWN,
+	RENDER_BACKEND_D3D9,
+	RENDER_BACKEND_TOGL,
+	RENDER_BACKEND_VULKAN,
+	RENDER_BACKEND_NULL,
+};
+
 //-----------------------------------------------------------------------------
 // 
 //-----------------------------------------------------------------------------
@@ -805,11 +814,6 @@ public:
 	//---------------------------------------------------------
 	// Material and texture management
 	//---------------------------------------------------------
-
-	// Stop attempting to stream in textures in response to usage.  Useful for phases such as loading or other explicit
-	// operations that shouldn't take usage of textures as a signal to stream them in at full rez.
-	virtual void				SuspendTextureStreaming( ) = 0;
-	virtual void				ResumeTextureStreaming( ) = 0;
 
 	// uncache all materials. .  good for forcing reload of materials.
 	virtual void				UncacheAllMaterials( ) = 0;
@@ -1067,32 +1071,7 @@ public:
 	// returns the display device name that matches the adapter index we were started with
 	virtual char *GetDisplayDeviceName() const = 0;
 
-	// creates a texture suitable for use with materials from a raw stream of bits.
-	// The bits will be retained by the material system and can be freed upon return.
-	virtual ITexture*			CreateTextureFromBits(int w, int h, int mips, ImageFormat fmt, int srcBufferSize, byte* srcBits) = 0;
-
-	// Lie to the material system to pretend to be in render target allocation mode at the beginning of time.
-	// This was a thing that mattered a lot to old hardware, but doesn't matter at all to new hardware,
-	// where new is defined to be "anything from the last decade." However, we want to preserve legacy behavior
-	// for the old games because it's easier than testing them.
-	virtual void				OverrideRenderTargetAllocation( bool rtAlloc ) = 0;
-
-	// creates a texture compositor that will attempt to composite a new textuer from the steps of the specified KeyValues.
-	virtual ITextureCompositor*	NewTextureCompositor( int w, int h, const char* pCompositeName, int nTeamNum, uint64 randomSeed, KeyValues* stageDesc, uint32 texCompositeCreateFlags = 0 ) = 0;
-
-	// Loads the texture with the specified name, calls pRecipient->OnAsyncFindComplete with the result from the main thread.
-	// once the texture load is complete. If the texture cannot be found, the returned texture will return true for IsError().
-	virtual void AsyncFindTexture( const char* pFilename, const char *pTextureGroupName, IAsyncTextureOperationReceiver* pRecipient, void* pExtraArgs, bool bComplain = true, int nAdditionalCreationFlags = 0 ) = 0;
-
-	// creates a texture suitable for use with materials from a raw stream of bits.
-	// The bits will be retained by the material system and can be freed upon return.
-	virtual ITexture*			CreateNamedTextureFromBitsEx( const char* pName, const char *pTextureGroupName, int w, int h, int mips, ImageFormat fmt, int srcBufferSize, byte* srcBits, int nFlags ) = 0;
-
-	// Creates a texture compositor template for use in later code. 
-	virtual bool				AddTextureCompositorTemplate( const char* pName, KeyValues* pTmplDesc, int nTexCompositeTemplateFlags = 0 ) = 0;
-
-	// Performs final verification of all compositor templates (after they've all been initially loaded).
-	virtual bool				VerifyTextureCompositorTemplates( ) = 0;
+	virtual RenderBackend_t		GetRenderBackend() const = 0;
 };
 
 
@@ -1555,17 +1534,18 @@ public:
 
 	virtual void ClearBuffersObeyStencilEx( bool bClearColor, bool bClearAlpha, bool bClearDepth ) = 0;
 
-	// Create a texture from the specified src render target, then call pRecipient->OnAsyncCreateComplete from the main thread.
-	// The texture will be created using the destination format, and will optionally have mipmaps generated.
-	// In case of error, the provided callback function will be called with the error texture.
-	virtual void AsyncCreateTextureFromRenderTarget( ITexture* pSrcRt, const char* pDstName, ImageFormat dstFmt, bool bGenMips, int nAdditionalCreationFlags, IAsyncTextureOperationReceiver* pRecipient, void* pExtraArgs ) = 0;
+	virtual void FogRadial( bool bRadial ) = 0;
+	virtual bool GetFogRadial() = 0;
 };
 
 template< class E > inline E* IMatRenderContext::LockRenderDataTyped( int nCount, const E* pSrcData )
 {
-	E *pDstData = (E*)LockRenderData( nCount*sizeof(E) );
+	int nSizeInBytes = nCount * sizeof(E);
+	E *pDstData = (E*)LockRenderData( nSizeInBytes );
 	if ( pSrcData && pDstData )
-		memutils::copy( pDstData, pSrcData, nCount );
+	{
+		memcpy( pDstData, pSrcData, nSizeInBytes );
+	}
 	return pDstData;
 }
 
@@ -1748,7 +1728,7 @@ class CMatRenderContextPtr : public CRefPtr<IMatRenderContext>
 {
 	typedef CRefPtr<IMatRenderContext> BaseClass;
 public:
-	CMatRenderContextPtr() = default;
+	CMatRenderContextPtr()																					{}
 	CMatRenderContextPtr( IMatRenderContext *pInit )			: BaseClass( pInit )						{ if ( BaseClass::m_pObject ) BaseClass::m_pObject->BeginRender(); }
 	CMatRenderContextPtr( IMaterialSystem *pFrom )				: BaseClass( pFrom->GetRenderContext() )	{ if ( BaseClass::m_pObject ) BaseClass::m_pObject->BeginRender(); }
 	~CMatRenderContextPtr()																					{ if ( BaseClass::m_pObject ) BaseClass::m_pObject->EndRender(); }
@@ -1821,5 +1801,12 @@ static void DoMatSysQueueMark( IMaterialSystem *pMaterialSystem, const char *psz
 
 extern IMaterialSystem *materials;
 extern IMaterialSystem *g_pMaterialSystem;
+
+#ifdef BYTEMATCH_RETAIL
+FORCEINLINE bool IsOpenGL( void )
+{
+	return g_pMaterialSystem->GetRenderBackend() == RENDER_BACKEND_TOGL;
+}
+#endif
 
 #endif // IMATERIALSYSTEM_H

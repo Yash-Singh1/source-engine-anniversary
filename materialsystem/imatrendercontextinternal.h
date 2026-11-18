@@ -62,18 +62,27 @@ public:
 	virtual void MarkRenderDataUnused( bool bBeginFrame ) = 0;
 	virtual CMatCallQueue *GetCallQueueInternal() = 0;
 
+#ifndef BYTEMATCH_RETAIL
 	// Map and unmap a texture. The pRecipient->OnAsyncMapComplete is called when complete. 
 	virtual void AsyncMap( ITextureInternal* pTexToMap, IAsyncTextureOperationReceiver* pRecipient, void* pExtraArgs ) = 0;
 	virtual void AsyncUnmap( ITextureInternal* pTexToUnmap ) = 0;
+
+	// Create a texture from the specified src render target, then call pRecipient->OnAsyncCreateComplete from the main thread.
+	// The texture will be created using the destination format, and will optionally have mipmaps generated.
+	// In case of error, the provided callback function will be called with the error texture.
+	virtual void AsyncCreateTextureFromRenderTarget( ITexture* pSrcRt, const char* pDstName, ImageFormat dstFmt, bool bGenMips, int nAdditionalCreationFlags, IAsyncTextureOperationReceiver* pRecipient, void* pExtraArgs ) = 0;
 	
 	// Copy from a render target to a staging texture, in order with other async commands.
 	virtual void AsyncCopyRenderTargetToStagingTexture( ITexture* pDst, ITexture* pSrc, IAsyncTextureOperationReceiver* pRecipient, void* pExtraArgs ) = 0;
+#endif
 
 #ifdef DX_TO_GL_ABSTRACTION
 	virtual void DoStartupShaderPreloading( void ) = 0;
 #endif
 
+#ifndef BYTEMATCH_RETAIL
 	virtual void TextureManagerUpdate() = 0;
+#endif
 };
 
 #endif // IMATRENDERCONTEXTINTERNAL_H

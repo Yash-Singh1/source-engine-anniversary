@@ -1,0 +1,57 @@
+{
+ "interface": "IThreadedFileMD5Processor",
+ "headers": [
+  "public/filesystem.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 3,
+ "sdk2013_slots": [
+  "SubmitThreadedMD5Request(unsigned char*, int, int, int, int)",
+  "BlockUntilMD5RequestComplete(int, MD5Value_t*)",
+  "IsMD5RequestComplete(int, MD5Value_t*)"
+ ],
+ "retail_reference": {
+  "module": "bin/filesystem_stdio",
+  "class": "CFileTracker2",
+  "offset": 0,
+  "chain": [
+   "CFileTracker2",
+   "IThreadedFileMD5Processor"
+  ]
+ },
+ "retail_len": 3,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 3
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "SubmitThreadedMD5Request",
+   "sig": "SubmitThreadedMD5Request(unsigned char*, int, int, int, int)",
+   "symbol": "CFileTracker2::SubmitThreadedMD5Request(unsigned char*, int, int, int, int)"
+  },
+  {
+   "index": 1,
+   "name": "BlockUntilMD5RequestComplete",
+   "sig": "BlockUntilMD5RequestComplete(int, MD5Value_t*)",
+   "symbol": "CFileTracker2::BlockUntilMD5RequestComplete(int, MD5Value_t*)"
+  },
+  {
+   "index": 2,
+   "name": "IsMD5RequestComplete",
+   "sig": "IsMD5RequestComplete(int, MD5Value_t*)",
+   "symbol": "CFileTracker2::IsMD5RequestComplete(int, MD5Value_t*)"
+  }
+ ],
+ "derived": [
+  "bin/filesystem_stdio:CFileTracker2"
+ ],
+ "derived_count": 1
+}

@@ -293,7 +293,11 @@ public:
 	// path info
 	virtual const char			*GetLocalPath( const char *pFileName, OUT_Z_CAP(maxLenInChars) char *pDest, int maxLenInChars );
 	virtual bool				FullPathToRelativePath( const char *pFullpath, OUT_Z_CAP(maxLenInChars) char *pDest, int maxLenInChars );
-	virtual bool				GetCaseCorrectFullPath_Ptr( const char *pFullPath, OUT_Z_CAP(maxLenInChars) char *pDest, int maxLenInChars );
+	bool						GetCaseCorrectFullPath_Ptr( const char *pFullPath, OUT_Z_CAP(maxLenInChars) char *pDest, int maxLenInChars );
+	template <size_t maxLenInChars> bool GetCaseCorrectFullPath( const char *pFullPath, OUT_Z_ARRAY char( &pDest )[maxLenInChars] )
+	{
+		return GetCaseCorrectFullPath_Ptr( pFullPath, pDest, (int)maxLenInChars );
+	}
 
 	// removes a file from disk
 	virtual void				RemoveFile( char const* pRelativePath, const char *pathID );
@@ -363,6 +367,19 @@ public:
 	virtual void				CacheAllVPKFileHashes( bool bCacheAllVPKHashes, bool bRecalculateAndCheckHashes );
 	virtual bool				CheckVPKFileHash( int PackFileID, int nPackFileNumber, int nFileFraction, MD5Value_t &md5Value );
 	virtual void				NotifyFileUnloaded( const char *pszFilename, const char *pPathId ) OVERRIDE;
+
+	// Anniversary game expansion / HD content / language search path management
+	virtual void				SetCurrentGameExpansionId( const char *pszExpansionId ) OVERRIDE;
+	virtual bool				GetCurrentGameExpansionId( char *pszExpansionId, int nMaxLen ) OVERRIDE;
+	virtual void				UpdateSearchPathsForCurrentGameExpansion() OVERRIDE;
+	virtual void				AddGameAndModSearchPathsFromGameInfo( const char *pszGameDir, const char *pszModDir, KeyValues *pGameInfo ) OVERRIDE;
+	virtual void				SetUseLowViolancePaths( bool bUseLowViolence ) OVERRIDE;
+	virtual void				SetUseHDMount( bool bUseHD ) OVERRIDE;
+	virtual void				SetAudioLanguageOverride( const char *pszLanguage ) OVERRIDE;
+	virtual int					GetSearchPaths2( const char *pszPathID, bool bGetPackFiles, CUtlVector< CUtlString > &searchPaths ) OVERRIDE;
+	virtual bool				GetFontTempFile( const char *pszFontFile, char *pszTempFile, int nMaxLen ) OVERRIDE;
+	virtual void				PushNoFinishAllOnSearchPaths() OVERRIDE;
+	virtual void				PopNoFinishAllOnSearchPaths() OVERRIDE;
 
 	// Returns the file system statistics retreived by the implementation.  Returns NULL if not supported.
 	virtual const FileSystemStatistics *GetFilesystemStatistics();
@@ -653,8 +670,8 @@ public:
 
 		CUtlDict<int,int>	m_VisitedFiles;			// We go through the search paths in priority order, and we use this to make sure
 													// that we don't return the same file more than once.
-		CUtlStringList		m_fileMatchesFromVPKOrPak;
-		CUtlStringList		m_dirMatchesFromVPKOrPak;
+		CUtlStringList		m_fileMatchesFromVPK;
+		CUtlStringList		m_dirMatchesFromVPK;
 	};
 
 	friend class CSearchPath;
@@ -696,6 +713,9 @@ public:
 #endif
 
 	CFileTracker2	m_FileTracker2;
+
+	// Push/PopNoFinishAllOnSearchPaths nesting; AsyncFinishAll does nothing while it is non-zero
+	int				m_nNoFinishAllOnSearchPaths;
 
 protected:
 	//----------------------------------------------------------------------------
@@ -784,14 +804,19 @@ protected:
 	// Note: if pFoundStoreID is passed in, then it will set that to the CSearchPath::m_storeId value of the search path it found the file in.
 	const char*					FindFirstHelper( const char *pWildCard, const char *pPathID, FileFindHandle_t *pHandle, int *pFoundStoreID );
 	bool						FindNextFileHelper( FindData_t *pFindData, int *pFoundStoreID );
-	bool						FindNextFileInVPKOrPakHelper( FindData_t *pFindData );
+	bool						FindNextFileInVPKHelper( FindData_t *pFindData );
 
 	void						RemoveAllMapSearchPaths( void );
 	void						AddMapPackFile( const char *pPath, const char *pPathID, SearchPathAdd_t addType );
 	void						AddPackFiles( const char *pPath, const CUtlSymbol &pathID, SearchPathAdd_t addType );
 	bool						PreparePackFile( CPackFile &packfile, int offsetofpackinmetafile, int64 filelen );
+#if defined( SUPPORT_PACKED_STORE )
+	CPackedStoreFileHandle		FindFileInVPKs( const char *pFileName, const char *pPathID = NULL );
+#endif
 	void						AddVPKFile( const char *pPath, const char *pPathID, SearchPathAdd_t addType );
+#ifndef BYTEMATCH_RETAIL
 	bool						RemoveVPKFile( const char *pPath, const char *pPathID );
+#endif
 
 	void						HandleOpenRegularFile( CFileOpenInfo &openInfo, bool bIsAbsolutePath );
 
@@ -841,8 +866,15 @@ protected:
 
 	CompiledKeyValuesPreloaders_t	m_PreloadData[ NUM_PRELOAD_TYPES ];
 
+	CUtlString					m_sCurrentGameExpansionId;
+	bool						m_bUseLowViolencePaths;
+	bool						m_bUseHDMount;
+	CUtlString					m_sAudioLanguageOverride;
+
 	static CUtlSymbol			m_GamePathID;
 	static CUtlSymbol			m_BSPPathID;
+	static CUtlSymbol			m_WorkshopAssetPathID;
+	static CUtlSymbol			m_WorkshopCampaignPathID;
 
 	static DVDMode_t			m_DVDMode;
 
@@ -937,6 +969,10 @@ inline bool CBaseFileSystem::FilterByPathID( const CSearchPath *pSearchPath, con
 		}
 		else
 		{
+			// "GAME" also searches the workshop content paths
+			bool bIsWorkshopPath = ( pSearchPath->GetPathID() == m_WorkshopAssetPathID || pSearchPath->GetPathID() == m_WorkshopCampaignPathID );
+			if ( bIsWorkshopPath && pathID == m_GamePathID )
+				return false;
 			return (pSearchPath->GetPathID() != pathID);
 		}
 	}

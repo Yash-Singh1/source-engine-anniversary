@@ -1,0 +1,42 @@
+#! /usr/bin/env python
+# encoding: utf-8
+
+top = '.'
+PROJECT_NAME = 'bsppack'
+
+def options(opt):
+	return
+
+def configure(conf):
+	conf.env.append_unique('DEFINES', ['BSPPACK_EXPORTS', 'ZIP_SUPPORT_LZMA_ENCODE'])
+
+def build(bld):
+	source = [
+		'bsppack.cpp',
+		'../common/bsplib.cpp',
+		'../common/cmdlib.cpp',
+		'../common/filesystem_tools.cpp',
+		'../common/scriplib.cpp',
+		'../../public/filesystem_init.cpp',
+		'../../public/zip_utils.cpp',
+	]
+
+	includes = [
+		'.',
+		'../common',
+		'../../public',
+		'../../public/tier0',
+		'../../public/tier1',
+		'../../common',
+	]
+
+	bld.shlib(
+		source   = source,
+		target   = PROJECT_NAME,
+		name     = PROJECT_NAME,
+		features = 'c cxx',
+		includes = includes,
+		use      = ['tier0', 'tier1', 'tier2', 'mathlib', 'vstdlib', 'ICONV'],
+		install_path = bld.env.LIBDIR,
+		idx      = bld.get_taskgen_count()
+	)

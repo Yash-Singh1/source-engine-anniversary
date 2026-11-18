@@ -28,6 +28,7 @@
 #include "materialsystem/imaterialsystem.h"
 #include "sourcevr/isourcevirtualreality.h"
 #include "VGuiMatSurface/IMatSystemSurface.h"
+#include "gameui_proportional.h"
 
 using namespace vgui;
 
@@ -202,6 +203,7 @@ void CGameMenuItem::SetRightAlignedText(bool state)
 	m_bRightAligned = state;
 }
 
+#ifndef BYTEMATCH_RETAIL
 class ImageButton : public vgui::Panel
 {
 public:
@@ -293,6 +295,7 @@ void AddUrlButton(vgui::Panel *parent, const char *imgName, const char *url )
 	panel->SetBounds( 15+i*52, 10, 48, 48 );
 	i++;
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: General purpose 1 of N menu
@@ -339,12 +342,25 @@ public:
 	{
 		BaseClass::ApplySchemeSettings(pScheme);
 
+#ifdef BYTEMATCH_RETAIL
+		int nHeight = atoi( pScheme->GetResourceString( "MainMenu.MenuItemHeight" ) );
+		nHeight = PROPORTIONAL_VALUE( nHeight );
+		int nMaxHeight = atoi( pScheme->GetResourceString( "MainMenu.MaxPropMenuItemHeight" ) );
+		if ( nMaxHeight )
+		{
+			nHeight = MIN( nMaxHeight, nHeight );
+		}
+
+		// make fully transparent
+		SetMenuItemHeight( nHeight );
+#else
 		int height = atoi(pScheme->GetResourceString("MainMenu.MenuItemHeight"));
 		if( IsProportional() )
 			height = scheme()->GetProportionalScaledValue( height );
 
 		// make fully transparent
 		SetMenuItemHeight(height);
+#endif
 		SetBgColor(Color(0, 0, 0, 0));
 		SetBorder(NULL);
 	}
@@ -398,6 +414,7 @@ public:
 		return BaseClass::AddMenuItem(item);
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	virtual int AddMenuItem(const char *itemName, wchar_t *itemText, const char *command, Panel *target, KeyValues *userData = NULL)
 	{
 		MenuItem *item = new CGameMenuItem(this, itemName);
@@ -407,6 +424,7 @@ public:
 		item->SetUserData(userData);
 		return BaseClass::AddMenuItem(item);
 	}
+#endif
 
 	virtual int AddMenuItem(const char *itemName, const char *itemText, KeyValues *command, Panel *target, KeyValues *userData = NULL)
 	{
@@ -697,8 +715,10 @@ public:
 					KeyValues *kv1 = menuItem1->GetUserData();
 					KeyValues *kv2 = menuItem2->GetUserData();
 
+#ifndef BYTEMATCH_RETAIL
 					if( !kv1 || !kv2 )
 						continue;
+#endif
 
 					if ( kv1->GetInt("InGameOrder") > kv2->GetInt("InGameOrder") )
 						MoveMenuItem( iID2, iID1 );
@@ -730,7 +750,11 @@ public:
 		}
 	}
 
-    MESSAGE_FUNC_HANDLE( OnCursorEnteredMenuItem, "CursorEnteredMenuItem", menuItem);
+#ifdef PLATFORM_64BITS
+	MESSAGE_FUNC_HANDLE( OnCursorEnteredMenuItem, "CursorEnteredMenuItem", menuItem);
+#else
+	MESSAGE_FUNC_INT( OnCursorEnteredMenuItem, "CursorEnteredMenuItem", VPanel);
+#endif
 
 private:
 	CFooterPanel *m_pConsoleFooter;
@@ -741,8 +765,14 @@ private:
 //-----------------------------------------------------------------------------
 // Purpose: Respond to cursor entering a menuItem.
 //-----------------------------------------------------------------------------
+#ifdef PLATFORM_64BITS
 void CGameMenu::OnCursorEnteredMenuItem(VPANEL menuItem)
 {
+#else
+void CGameMenu::OnCursorEnteredMenuItem(int VPanel)
+{
+	VPANEL menuItem = (VPANEL)VPanel;
+#endif
 	MenuItem *item = static_cast<MenuItem *>(ipanel()->GetPanel(menuItem, GetModuleName()));
 	KeyValues *pCommand = item->GetCommand();
 	if ( !pCommand->GetFirstSubKey() )
@@ -751,12 +781,19 @@ void CGameMenu::OnCursorEnteredMenuItem(VPANEL menuItem)
 	if ( !pszCmd || !pszCmd[0] )
 		return;
 
+#ifdef PLATFORM_64BITS
 	BaseClass::OnCursorEnteredMenuItem( menuItem );
+#else
+	BaseClass::OnCursorEnteredMenuItem( VPanel );
+#endif
 }
 
 static CBackgroundMenuButton* CreateMenuButton( CBasePanel *parent, const char *panelName, const wchar_t *panelText )
 {
 	CBackgroundMenuButton *pButton = new CBackgroundMenuButton( parent, panelName );
+#ifdef BYTEMATCH_RETAIL
+	pButton->SetProportional(true);
+#endif
 	pButton->SetCommand("OpenGameMenu");
 	pButton->SetText(panelText);
 
@@ -770,8 +807,10 @@ bool g_bIsCreatingNewGameMenuForPreFetching = false;
 //-----------------------------------------------------------------------------
 CBasePanel::CBasePanel() : Panel(NULL, "BaseGameUIPanel")
 {
+#ifndef BYTEMATCH_RETAIL
 	if( NeedProportional() )
 		SetProportional( true );
+#endif
 
 	g_pBasePanel = this;
 	m_bLevelLoading = false;
@@ -915,6 +954,7 @@ CBasePanel::CBasePanel() : Panel(NULL, "BaseGameUIPanel")
 		}
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	if( IsAndroid() )
 	{
 		AddUrlButton( this, "vgui/\x64\x69\x73\x63\x6f\x72\x64\x5f\x6c\x6f\x67\x6f", "\x68\x74\x74\x70\x73\x3a\x2f\x2f\x64\x69\x73\x63\x6f\x72\x64\x2e\x67\x67\x2f\x68\x5a\x52\x42\x37\x57\x4d\x67\x47\x77" );
@@ -922,6 +962,7 @@ CBasePanel::CBasePanel() : Panel(NULL, "BaseGameUIPanel")
 		AddUrlButton( this, "vgui/\x74\x65\x6c\x65\x67\x72\x61\x6d\x5f\x6c\x6f\x67\x6f", "\x68\x74\x74\x70\x73\x3a\x2f\x2f\x74\x2e\x6d\x65\x2f\x6e\x69\x6c\x6c\x65\x72\x75\x73\x72\x5f\x73\x6f\x75\x72\x63\x65" );
 		AddUrlButton( this, "vgui/\x67\x69\x74\x68\x75\x62\x5f\x6c\x6f\x67\x6f", "\x68\x74\x74\x70\x73\x3a\x2f\x2f\x67\x69\x74\x68\x75\x62\x2e\x63\x6f\x6d\x2f\x6e\x69\x6c\x6c\x65\x72\x75\x73\x72\x2f\x73\x6f\x75\x72\x63\x65\x2d\x65\x6e\x67\x69\x6e\x65" );
 	}
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -985,7 +1026,9 @@ CBasePanel::~CBasePanel()
 static const char *g_rgValidCommands[] =
 {
 	"OpenGameMenu",
+#ifndef BYTEMATCH_RETAIL
 	"OpenConsole",
+#endif
 	"OpenPlayerListDialog",
 	"OpenNewGameDialog",
 	"OpenLoadGameDialog",
@@ -1003,6 +1046,9 @@ static const char *g_rgValidCommands[] =
 	"QuitNoConfirm",
 	"ResumeGame",
 	"Disconnect",
+#ifdef BYTEMATCH_RETAIL
+	"OpenMainMenuDialog",
+#endif
 };
 
 static void CC_GameMenuCommand( const CCommand &args )
@@ -1600,6 +1646,7 @@ CGameMenu *CBasePanel::RecursiveLoadGameMenu(KeyValues *datafile)
 {
 	CGameMenu *menu = new CGameMenu(this, datafile->GetName());
 
+#ifndef BYTEMATCH_RETAIL
 	wchar_t *pString = g_pVGuiLocalize->Find( "#GameUI_Console" );
 
 	if( pString )
@@ -1621,6 +1668,7 @@ CGameMenu *CBasePanel::RecursiveLoadGameMenu(KeyValues *datafile)
 
 	if( !bFoundServerBrowser && !ModInfo().IsSinglePlayerOnly() )
 		menu->AddMenuItem("AntiM*dG*yButton", "#GameUI_GameMenu_FindServers", "OpenServerBrowser", this);
+#endif
 
 	// loop through all the data adding items to the menu
 	for (KeyValues *dat = datafile->GetFirstSubKey(); dat != NULL; dat = dat->GetNextKey())
@@ -1629,9 +1677,14 @@ CGameMenu *CBasePanel::RecursiveLoadGameMenu(KeyValues *datafile)
 		const char *cmd = dat->GetString("command", NULL);
 		const char *name = dat->GetString("name", label);
 
+#ifdef BYTEMATCH_RETAIL
+		if ( cmd && !Q_stricmp( cmd, "OpenFriendsDialog" ) && bSteamCommunityFriendsVersion )
+			continue;
+#else
 		if ( cmd && (!Q_stricmp( cmd, "OpenFriendsDialog" )
 			|| !Q_stricmp( cmd, "engine bug" )) )
 			continue;
+#endif
 
 		menu->AddMenuItem(name, label, cmd, this, dat);
 	}
@@ -1921,11 +1974,16 @@ void CBasePanel::ApplySchemeSettings(IScheme *pScheme)
 		// load the loading icon
 		if ( m_iLoadingImageID == -1 )
 		{
+#ifdef BYTEMATCH_RETAIL
+			m_iLoadingImageID = surface()->CreateNewTextureID();
+			surface()->DrawSetTextureFile( m_iLoadingImageID, "Console/startup_loading", false, false );
+#else
 			const char* loading = "console/startup_loading";
 			if ( IsSteamDeck() )
 				loading = "gamepadui/game_logo";
 			m_iLoadingImageID = surface()->CreateNewTextureID();
 			surface()->DrawSetTextureFile( m_iLoadingImageID, loading, false, false );
+#endif
 		}
 	}
 }
@@ -2048,10 +2106,12 @@ void CBasePanel::RunMenuCommand(const char *command)
 	{
 		OnOpenNewGameDialog();
 	}
+#ifndef BYTEMATCH_RETAIL
 	else if ( !Q_stricmp( command, "OpenConsole" ) )
 	{
 		GameConsole().Activate();
 	}
+#endif
 	else if ( !Q_stricmp( command, "OpenLoadGameDialog" ) )
 	{
 		if ( !GameUI().IsConsoleUI() )
@@ -2139,7 +2199,11 @@ void CBasePanel::RunMenuCommand(const char *command)
 #ifndef NO_STEAM
 			if ( !steamapicontext->SteamUser() || !steamapicontext->SteamUser()->BLoggedOn() )
 			{
+#ifdef BYTEMATCH_RETAIL
+				vgui::MessageBox *pMessageBox = new vgui::MessageBox("#GameUI_Achievements_SteamRequired_Title", "#GameUI_Achievements_SteamRequired_Message");
+#else
 				vgui::MessageBox *pMessageBox = new vgui::MessageBox("#GameUI_Achievements_SteamRequired_Title", "#GameUI_Achievements_SteamRequired_Message", this);
+#endif
 				pMessageBox->DoModal();
 				return;
 			}

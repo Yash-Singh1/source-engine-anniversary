@@ -82,7 +82,9 @@ void SetupParticleVisibility( CParticleCollection *pParticles, CParticleVisibili
 	pVisibilityData->m_flRadiusVisibility = RemapValClamped( flVisibility, pVisibilityInputs->m_flInputMin, 
 		pVisibilityInputs->m_flInputMax, pVisibilityInputs->m_flRadiusScaleMin, pVisibilityInputs->m_flRadiusScaleMax  );
 
+#ifndef BYTEMATCH_RETAIL
 	pVisibilityData->m_flCameraBias = pVisibilityInputs->m_flCameraBias;
+#endif
 }
 
 static SheetSequenceSample_t s_DefaultSheetSequence = 
@@ -126,7 +128,9 @@ class C_OP_RenderPoints : public CParticleRenderOperatorInstance
 	{
 		C_OP_RenderPointsContext_t *pCtx = reinterpret_cast<C_OP_RenderPointsContext_t *>( pContext );
 		pCtx->m_VisibilityData.m_bUseVisibility = false;
+#ifndef BYTEMATCH_RETAIL
 		pCtx->m_VisibilityData.m_flCameraBias = VisibilityInputs.m_flCameraBias;
+#endif
 	}
 };
 
@@ -252,7 +256,9 @@ class C_OP_RenderSprites : public C_OP_RenderPoints
 		else
 			pCtx->m_VisibilityData.m_bUseVisibility = false;
 
+#ifndef BYTEMATCH_RETAIL
 		pCtx->m_VisibilityData.m_flCameraBias = VisibilityInputs.m_flCameraBias;
+#endif
 	}
 
 	virtual uint64 GetReadControlPointMask() const
@@ -362,8 +368,8 @@ void C_OP_RenderSprites::RenderNonSpriteCardCameraFacing( CParticleCollection *p
 	int nParticles;
 	const ParticleRenderData_t *pSortList = pParticles->GetRenderList( pRenderContext, true, &nParticles, &pCtx->m_VisibilityData );
 
-	bool bCameraBias = ( &pCtx->m_VisibilityData )->m_flCameraBias != 0.0f;
-	float flCameraBias = (&pCtx->m_VisibilityData )->m_flCameraBias;
+	bool bCameraBias = PARTICLE_VISIBILITY_CAMERA_BIAS( &pCtx->m_VisibilityData ) != 0.0f;
+	float flCameraBias = PARTICLE_VISIBILITY_CAMERA_BIAS( &pCtx->m_VisibilityData );
 
 	Vector vecCamera;
 	pRenderContext->GetWorldSpaceCameraPosition( &vecCamera );
@@ -534,8 +540,8 @@ void C_OP_RenderSprites::RenderNonSpriteCardZRotating( CMeshBuilder &meshBuilder
 	if ( ac == 0 )
 		return;
 
-	bool bCameraBias = ( &pCtx->m_VisibilityData )->m_flCameraBias != 0.0f;
-	float flCameraBias = ( &pCtx->m_VisibilityData )->m_flCameraBias;
+	bool bCameraBias = PARTICLE_VISIBILITY_CAMERA_BIAS( &pCtx->m_VisibilityData ) != 0.0f;
+	float flCameraBias = PARTICLE_VISIBILITY_CAMERA_BIAS( &pCtx->m_VisibilityData );
 
 	int nColorIndex = nGroup * info.m_nRGBStride;
 	float r = SubFloat( info.m_pRGB[nColorIndex], nOffset );
@@ -713,8 +719,8 @@ void C_OP_RenderSprites::RenderNonSpriteCardOriented(
 	if ( ac == 0 )
 		return;
 
-	bool bCameraBias = ( &pCtx->m_VisibilityData )->m_flCameraBias != 0.0f;
-	float flCameraBias = ( &pCtx->m_VisibilityData )->m_flCameraBias;
+	bool bCameraBias = PARTICLE_VISIBILITY_CAMERA_BIAS( &pCtx->m_VisibilityData ) != 0.0f;
+	float flCameraBias = PARTICLE_VISIBILITY_CAMERA_BIAS( &pCtx->m_VisibilityData );
 
 	int nColorIndex = nGroup * info.m_nRGBStride;
 	float r = SubFloat( info.m_pRGB[nColorIndex], nOffset );
@@ -915,7 +921,9 @@ void C_OP_RenderSprites::RenderSpriteCard( CMeshBuilder &meshBuilder, C_OP_Rende
 
 	Assert( IsFinite(r) && IsFinite(g) && IsFinite(b) );
 	Assert( (r >= -1e-6f) && (g >= -1e-6f) && (b >= -1e-6f) );
+#ifndef BYTEMATCH_RETAIL
 	if ( !HushAsserts() )
+#endif
 		Assert( (r <= 1.0f) && (g <= 1.0f) && (b <= 1.0f) );
 
 	unsigned char rc = FastFToC( r );
@@ -929,8 +937,8 @@ void C_OP_RenderSprites::RenderSpriteCard( CMeshBuilder &meshBuilder, C_OP_Rende
 		return;
 	}
 
-	bool bCameraBias = ( &pCtx->m_VisibilityData )->m_flCameraBias != 0.0f;
-	float flCameraBias = ( &pCtx->m_VisibilityData )->m_flCameraBias;
+	bool bCameraBias = PARTICLE_VISIBILITY_CAMERA_BIAS( &pCtx->m_VisibilityData ) != 0.0f;
+	float flCameraBias = PARTICLE_VISIBILITY_CAMERA_BIAS( &pCtx->m_VisibilityData );
 
 	float rot = SubFloat( info.m_pRot[ nGroup * info.m_nRotStride ], nOffset );
 	float yaw = SubFloat( info.m_pYaw[ nGroup * info.m_nYawStride ], nOffset );
@@ -1045,8 +1053,8 @@ void C_OP_RenderSprites::RenderTwoSequenceSpriteCard( CMeshBuilder &meshBuilder,
 	unsigned char bc = FastFToC( b );
 	unsigned char ac = pSortList->m_nAlpha;
 
-	bool bCameraBias = ( &pCtx->m_VisibilityData )->m_flCameraBias != 0.0f;
-	float flCameraBias = ( &pCtx->m_VisibilityData )->m_flCameraBias;
+	bool bCameraBias = PARTICLE_VISIBILITY_CAMERA_BIAS( &pCtx->m_VisibilityData ) != 0.0f;
+	float flCameraBias = PARTICLE_VISIBILITY_CAMERA_BIAS( &pCtx->m_VisibilityData );
 
 	float rad = pSortList->m_flRadius;
 	float rot = SubFloat( info.m_pRot[ nGroup * info.m_nRotStride ], nOffset );
@@ -1369,7 +1377,9 @@ class C_OP_RenderSpritesTrail : public CParticleRenderOperatorInstance
 			pCtx->m_VisibilityData.m_bUseVisibility = true;
 		else
 			pCtx->m_VisibilityData.m_bUseVisibility = false;
+#ifndef BYTEMATCH_RETAIL
 		pCtx->m_VisibilityData.m_flCameraBias = VisibilityInputs.m_flCameraBias;
+#endif
 	}
 
 	uint32 GetWrittenAttributes( void ) const
@@ -1556,7 +1566,9 @@ void C_OP_RenderSpritesTrail::Render( IMatRenderContext *pRenderContext, CPartic
 	}
 
 	// Right now we only have a meshbuilder version!
+#ifndef BYTEMATCH_RETAIL
 	if ( !HushAsserts() )
+#endif
 		Assert( pMaterial->IsSpriteCard() == false );
 	if ( pMaterial->IsSpriteCard() )
 		return;
@@ -1723,10 +1735,12 @@ class C_OP_RenderRope : public CParticleOperatorInstance
 
 	// We connect neighboring particle instances to each other, so if the order isn't maintained we will have a particle that jumps
 	// back to the wrong place and look terrible.
+#ifndef BYTEMATCH_RETAIL
 	virtual bool RequiresOrderInvariance( void ) const OVERRIDE
 	{
 		return true;
 	}
+#endif
 
 	int		m_nSubdivCount;
 
@@ -2144,7 +2158,9 @@ class C_OP_RenderBlobs : public CParticleRenderOperatorInstance
 			pCtx->m_VisibilityData.m_bUseVisibility = true;
 		else
 			pCtx->m_VisibilityData.m_bUseVisibility = false;
+#ifndef BYTEMATCH_RETAIL
 		pCtx->m_VisibilityData.m_flCameraBias = VisibilityInputs.m_flCameraBias;
+#endif
 	}
 
 	uint32 GetWrittenAttributes( void ) const
@@ -2311,7 +2327,9 @@ class C_OP_RenderScreenVelocityRotate : public CParticleRenderOperatorInstance
 			pCtx->m_VisibilityData.m_bUseVisibility = true;
 		else
 			pCtx->m_VisibilityData.m_bUseVisibility = false;
+#ifndef BYTEMATCH_RETAIL
 		pCtx->m_VisibilityData.m_flCameraBias = VisibilityInputs.m_flCameraBias;
+#endif
 	}
 	uint32 GetWrittenAttributes( void ) const
 	{

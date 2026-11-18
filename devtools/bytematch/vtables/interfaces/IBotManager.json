@@ -1,0 +1,88 @@
+{
+ "interface": "IBotManager",
+ "headers": [
+  "public/game/server/iplayerinfo.h"
+ ],
+ "versions": {
+  "retail": [
+   "BotManager001"
+  ],
+  "ours": [
+   "BotManager001"
+  ],
+  "sdk2013": [
+   "BotManager001"
+  ]
+ },
+ "version_macros": [
+  "INTERFACEVERSION_PLAYERBOTMANAGER"
+ ],
+ "registrations": [
+  {
+   "module": "episodic/server",
+   "version": "BotManager001",
+   "class": "CPluginBotManager"
+  },
+  {
+   "module": "hl2/server",
+   "version": "BotManager001",
+   "class": "CPluginBotManager"
+  },
+  {
+   "module": "hl2_complete/server",
+   "version": "BotManager001",
+   "class": "CPluginBotManager"
+  },
+  {
+   "module": "hl2mp/server",
+   "version": "BotManager001",
+   "class": "CPluginBotManager"
+  },
+  {
+   "module": "lostcoast/server",
+   "version": "BotManager001",
+   "class": "CPluginBotManager"
+  }
+ ],
+ "sdk2013_len": 2,
+ "sdk2013_slots": [
+  "GetBotController(edict_t*)",
+  "CreateBot(char const*)"
+ ],
+ "retail_reference": {
+  "module": "episodic/server",
+  "class": "CPluginBotManager",
+  "offset": 0,
+  "chain": [
+   "CPluginBotManager",
+   "IBotManager"
+  ]
+ },
+ "retail_len": 2,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 2
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "GetBotController",
+   "sig": "GetBotController(edict_t*)",
+   "symbol": "CPluginBotManager::GetBotController(edict_t*)"
+  },
+  {
+   "index": 1,
+   "name": "CreateBot",
+   "sig": "CreateBot(char const*)",
+   "symbol": "CPluginBotManager::CreateBot(char const*)"
+  }
+ ],
+ "derived": [
+  "episodic/server:CPluginBotManager",
+  "hl2/server:CPluginBotManager",
+  "hl2_complete/server:CPluginBotManager",
+  "hl2mp/server:CPluginBotManager",
+  "lostcoast/server:CPluginBotManager"
+ ],
+ "derived_count": 5
+}

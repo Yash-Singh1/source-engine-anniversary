@@ -1,0 +1,63 @@
+{
+ "interface": "CAudioSourceCachedInfo",
+ "headers": [
+  "public/engine/audio/snd_audio_source.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CAudioSourceCachedInfo",
+  "offset": 0,
+  "chain": [
+   "CAudioSourceCachedInfo"
+  ]
+ },
+ "retail_len": 5,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 5
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Save",
+   "sig": "Save(CUtlBuffer&)",
+   "symbol": "CAudioSourceCachedInfo::Save(CUtlBuffer&)"
+  },
+  {
+   "index": 1,
+   "name": "Restore",
+   "sig": "Restore(CUtlBuffer&)",
+   "symbol": "CAudioSourceCachedInfo::Restore(CUtlBuffer&)"
+  },
+  {
+   "index": 2,
+   "name": "Rebuild",
+   "sig": "Rebuild(char const*)",
+   "symbol": "CAudioSourceCachedInfo::Rebuild(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "~CAudioSourceCachedInfo",
+   "sig": "~CAudioSourceCachedInfo()",
+   "symbol": "CAudioSourceCachedInfo::~CAudioSourceCachedInfo()"
+  },
+  {
+   "index": 4,
+   "name": "~CAudioSourceCachedInfo",
+   "sig": "~CAudioSourceCachedInfo()",
+   "symbol": "CAudioSourceCachedInfo::~CAudioSourceCachedInfo()"
+  }
+ ],
+ "derived": [
+  "bin/engine:CAudioSourceCachedInfo"
+ ],
+ "derived_count": 1
+}

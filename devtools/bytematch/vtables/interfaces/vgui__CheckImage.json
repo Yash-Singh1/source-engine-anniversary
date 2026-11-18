@@ -1,0 +1,330 @@
+{
+ "interface": "vgui::CheckImage",
+ "headers": [
+  "public/vgui_controls/CheckButton.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 41,
+ "sdk2013_slots": [
+  "Paint()",
+  "SetPos(int, int)",
+  "GetContentSize(int&, int&)",
+  "GetSize(int&, int&)",
+  "SetSize(int, int)",
+  "SetColor(Color)",
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "Evict()",
+  "GetNumFrames()",
+  "SetFrame(int)",
+  "GetID()",
+  "SetRotation(int)",
+  "GetPos(int&, int&)",
+  "SetBkColor(Color)",
+  "GetColor()",
+  "DrawSetColor(Color)",
+  "DrawSetColor(int, int, int, int)",
+  "DrawFilledRect(int, int, int, int)",
+  "DrawOutlinedRect(int, int, int, int)",
+  "DrawLine(int, int, int, int)",
+  "DrawPolyLine(int*, int*, int)",
+  "DrawSetTextFont(unsigned long)",
+  "DrawSetTextColor(Color)",
+  "DrawSetTextColor(int, int, int, int)",
+  "DrawSetTextPos(int, int)",
+  "DrawPrintText(wchar_t const*, int)",
+  "DrawPrintText(int, int, wchar_t const*, int)",
+  "DrawPrintChar(wchar_t)",
+  "DrawPrintChar(int, int, wchar_t)",
+  "DrawSetTexture(int)",
+  "DrawTexturedRect(int, int, int, int)",
+  "SetText(char const*)",
+  "SetText(wchar_t const*, bool)",
+  "GetText(char*, int)",
+  "GetText(wchar_t*, int)",
+  "GetUnlocalizedText(char*, int)",
+  "GetUnlocalizedTextSymbol()",
+  "SetFont(unsigned long)",
+  "GetFont()",
+  "GetTextSize(int&, int&)"
+ ],
+ "retail_reference": {
+  "module": "bin/GameUI",
+  "class": "vgui::CheckImage",
+  "offset": 0,
+  "chain": [
+   "vgui::CheckImage"
+  ]
+ },
+ "retail_len": 41,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 41
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Paint",
+   "sig": "Paint()",
+   "symbol": "vgui::CheckImage::Paint()"
+  },
+  {
+   "index": 1,
+   "name": "SetPos",
+   "sig": "SetPos(int, int)",
+   "symbol": "vgui::Image::SetPos(int, int)"
+  },
+  {
+   "index": 2,
+   "name": "GetContentSize",
+   "sig": "GetContentSize(int&, int&)",
+   "symbol": "vgui::TextImage::GetContentSize(int&, int&)"
+  },
+  {
+   "index": 3,
+   "name": "GetSize",
+   "sig": "GetSize(int&, int&)",
+   "symbol": "vgui::Image::GetSize(int&, int&)"
+  },
+  {
+   "index": 4,
+   "name": "SetSize",
+   "sig": "SetSize(int, int)",
+   "symbol": "vgui::TextImage::SetSize(int, int)"
+  },
+  {
+   "index": 5,
+   "name": "SetColor",
+   "sig": "SetColor(Color)",
+   "symbol": "vgui::CheckImage::SetColor(Color)"
+  },
+  {
+   "index": 6,
+   "name": "~CheckImage",
+   "sig": "~CheckImage()",
+   "symbol": "vgui::CheckImage::~CheckImage()"
+  },
+  {
+   "index": 7,
+   "name": "~CheckImage",
+   "sig": "~CheckImage()",
+   "symbol": "vgui::CheckImage::~CheckImage()"
+  },
+  {
+   "index": 8,
+   "name": "Evict",
+   "sig": "Evict()",
+   "symbol": "vgui::Image::Evict()"
+  },
+  {
+   "index": 9,
+   "name": "GetNumFrames",
+   "sig": "GetNumFrames()",
+   "symbol": "vgui::Image::GetNumFrames()"
+  },
+  {
+   "index": 10,
+   "name": "SetFrame",
+   "sig": "SetFrame(int)",
+   "symbol": "vgui::Image::SetFrame(int)"
+  },
+  {
+   "index": 11,
+   "name": "GetID",
+   "sig": "GetID()",
+   "symbol": "vgui::Image::GetID()"
+  },
+  {
+   "index": 12,
+   "name": "SetRotation",
+   "sig": "SetRotation(int)",
+   "symbol": "vgui::Image::SetRotation(int)"
+  },
+  {
+   "index": 13,
+   "name": "GetPos",
+   "sig": "GetPos(int&, int&)",
+   "symbol": "vgui::Image::GetPos(int&, int&)"
+  },
+  {
+   "index": 14,
+   "name": "SetBkColor",
+   "sig": "SetBkColor(Color)",
+   "symbol": "vgui::Image::SetBkColor(Color)"
+  },
+  {
+   "index": 15,
+   "name": "GetColor",
+   "sig": "GetColor()",
+   "symbol": "vgui::Image::GetColor()"
+  },
+  {
+   "index": 16,
+   "name": "DrawSetColor",
+   "sig": "DrawSetColor(Color)",
+   "symbol": "vgui::Image::DrawSetColor(Color)"
+  },
+  {
+   "index": 17,
+   "name": "DrawSetColor",
+   "sig": "DrawSetColor(int, int, int, int)",
+   "symbol": "vgui::Image::DrawSetColor(int, int, int, int)"
+  },
+  {
+   "index": 18,
+   "name": "DrawFilledRect",
+   "sig": "DrawFilledRect(int, int, int, int)",
+   "symbol": "vgui::Image::DrawFilledRect(int, int, int, int)"
+  },
+  {
+   "index": 19,
+   "name": "DrawOutlinedRect",
+   "sig": "DrawOutlinedRect(int, int, int, int)",
+   "symbol": "vgui::Image::DrawOutlinedRect(int, int, int, int)"
+  },
+  {
+   "index": 20,
+   "name": "DrawLine",
+   "sig": "DrawLine(int, int, int, int)",
+   "symbol": "vgui::Image::DrawLine(int, int, int, int)"
+  },
+  {
+   "index": 21,
+   "name": "DrawPolyLine",
+   "sig": "DrawPolyLine(int*, int*, int)",
+   "symbol": "vgui::Image::DrawPolyLine(int*, int*, int)"
+  },
+  {
+   "index": 22,
+   "name": "DrawSetTextFont",
+   "sig": "DrawSetTextFont(unsigned long)",
+   "symbol": "vgui::Image::DrawSetTextFont(unsigned long)"
+  },
+  {
+   "index": 23,
+   "name": "DrawSetTextColor",
+   "sig": "DrawSetTextColor(Color)",
+   "symbol": "vgui::Image::DrawSetTextColor(Color)"
+  },
+  {
+   "index": 24,
+   "name": "DrawSetTextColor",
+   "sig": "DrawSetTextColor(int, int, int, int)",
+   "symbol": "vgui::Image::DrawSetTextColor(int, int, int, int)"
+  },
+  {
+   "index": 25,
+   "name": "DrawSetTextPos",
+   "sig": "DrawSetTextPos(int, int)",
+   "symbol": "vgui::Image::DrawSetTextPos(int, int)"
+  },
+  {
+   "index": 26,
+   "name": "DrawPrintText",
+   "sig": "DrawPrintText(wchar_t const*, int)",
+   "symbol": "vgui::Image::DrawPrintText(wchar_t const*, int)"
+  },
+  {
+   "index": 27,
+   "name": "DrawPrintText",
+   "sig": "DrawPrintText(int, int, wchar_t const*, int)",
+   "symbol": "vgui::Image::DrawPrintText(int, int, wchar_t const*, int)"
+  },
+  {
+   "index": 28,
+   "name": "DrawPrintChar",
+   "sig": "DrawPrintChar(wchar_t)",
+   "symbol": "vgui::Image::DrawPrintChar(wchar_t)"
+  },
+  {
+   "index": 29,
+   "name": "DrawPrintChar",
+   "sig": "DrawPrintChar(int, int, wchar_t)",
+   "symbol": "vgui::Image::DrawPrintChar(int, int, wchar_t)"
+  },
+  {
+   "index": 30,
+   "name": "DrawSetTexture",
+   "sig": "DrawSetTexture(int)",
+   "symbol": "vgui::Image::DrawSetTexture(int)"
+  },
+  {
+   "index": 31,
+   "name": "DrawTexturedRect",
+   "sig": "DrawTexturedRect(int, int, int, int)",
+   "symbol": "vgui::Image::DrawTexturedRect(int, int, int, int)"
+  },
+  {
+   "index": 32,
+   "name": "SetText",
+   "sig": "SetText(char const*)",
+   "symbol": "vgui::TextImage::SetText(char const*)"
+  },
+  {
+   "index": 33,
+   "name": "SetText",
+   "sig": "SetText(wchar_t const*, bool)",
+   "symbol": "vgui::TextImage::SetText(wchar_t const*, bool)"
+  },
+  {
+   "index": 34,
+   "name": "GetText",
+   "sig": "GetText(char*, int)",
+   "symbol": "vgui::TextImage::GetText(char*, int)"
+  },
+  {
+   "index": 35,
+   "name": "GetText",
+   "sig": "GetText(wchar_t*, int)",
+   "symbol": "vgui::TextImage::GetText(wchar_t*, int)"
+  },
+  {
+   "index": 36,
+   "name": "GetUnlocalizedText",
+   "sig": "GetUnlocalizedText(char*, int)",
+   "symbol": "vgui::TextImage::GetUnlocalizedText(char*, int)"
+  },
+  {
+   "index": 37,
+   "name": "GetUnlocalizedTextSymbol",
+   "sig": "GetUnlocalizedTextSymbol()",
+   "symbol": "vgui::TextImage::GetUnlocalizedTextSymbol()"
+  },
+  {
+   "index": 38,
+   "name": "SetFont",
+   "sig": "SetFont(unsigned long)",
+   "symbol": "vgui::TextImage::SetFont(unsigned long)"
+  },
+  {
+   "index": 39,
+   "name": "GetFont",
+   "sig": "GetFont()",
+   "symbol": "vgui::TextImage::GetFont()"
+  },
+  {
+   "index": 40,
+   "name": "GetTextSize",
+   "sig": "GetTextSize(int&, int&)",
+   "symbol": "vgui::TextImage::GetTextSize(int&, int&)"
+  }
+ ],
+ "derived": [
+  "bin/GameUI:vgui::CheckImage",
+  "bin/ServerBrowser:vgui::CheckImage",
+  "bin/engine:vgui::CheckImage",
+  "bin/vguimatsurface:vgui::CheckImage",
+  "episodic/client:vgui::CheckImage",
+  "hl2/client:vgui::CheckImage",
+  "hl2_complete/client:vgui::CheckImage",
+  "hl2mp/client:vgui::CheckImage",
+  "lostcoast/client:vgui::CheckImage"
+ ],
+ "derived_count": 9
+}

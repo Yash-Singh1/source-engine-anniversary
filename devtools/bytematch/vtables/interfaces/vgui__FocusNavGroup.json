@@ -1,0 +1,120 @@
+{
+ "interface": "vgui::FocusNavGroup",
+ "headers": [
+  "public/vgui_controls/FocusNavGroup.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 11,
+ "sdk2013_slots": [
+  "GetDefaultPanel()",
+  "SetDefaultButton(vgui::Panel*)",
+  "GetDefaultButton()",
+  "GetCurrentDefaultButton()",
+  "FindPanelByHotkey(wchar_t)",
+  "RequestFocusPrev(unsigned int)",
+  "RequestFocusNext(unsigned int)",
+  "GetCurrentFocus()",
+  "SetCurrentFocus(unsigned int, unsigned int)",
+  "SetFocusTopLevel(bool)",
+  "SetCurrentDefaultButton(unsigned int, bool)"
+ ],
+ "retail_reference": {
+  "module": "bin/GameUI",
+  "class": "vgui::FocusNavGroup",
+  "offset": 0,
+  "chain": [
+   "vgui::FocusNavGroup"
+  ]
+ },
+ "retail_len": 11,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 11
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "GetDefaultPanel",
+   "sig": "GetDefaultPanel()",
+   "symbol": "vgui::FocusNavGroup::GetDefaultPanel()"
+  },
+  {
+   "index": 1,
+   "name": "SetDefaultButton",
+   "sig": "SetDefaultButton(vgui::Panel*)",
+   "symbol": "vgui::FocusNavGroup::SetDefaultButton(vgui::Panel*)"
+  },
+  {
+   "index": 2,
+   "name": "GetDefaultButton",
+   "sig": "GetDefaultButton()",
+   "symbol": "vgui::FocusNavGroup::GetDefaultButton()"
+  },
+  {
+   "index": 3,
+   "name": "GetCurrentDefaultButton",
+   "sig": "GetCurrentDefaultButton()",
+   "symbol": "vgui::FocusNavGroup::GetCurrentDefaultButton()"
+  },
+  {
+   "index": 4,
+   "name": "FindPanelByHotkey",
+   "sig": "FindPanelByHotkey(wchar_t)",
+   "symbol": "vgui::FocusNavGroup::FindPanelByHotkey(wchar_t)"
+  },
+  {
+   "index": 5,
+   "name": "RequestFocusPrev",
+   "sig": "RequestFocusPrev(unsigned int)",
+   "symbol": "vgui::FocusNavGroup::RequestFocusPrev(unsigned int)"
+  },
+  {
+   "index": 6,
+   "name": "RequestFocusNext",
+   "sig": "RequestFocusNext(unsigned int)",
+   "symbol": "vgui::FocusNavGroup::RequestFocusNext(unsigned int)"
+  },
+  {
+   "index": 7,
+   "name": "GetCurrentFocus",
+   "sig": "GetCurrentFocus()",
+   "symbol": "vgui::FocusNavGroup::GetCurrentFocus()"
+  },
+  {
+   "index": 8,
+   "name": "SetCurrentFocus",
+   "sig": "SetCurrentFocus(unsigned int, unsigned int)",
+   "symbol": "vgui::FocusNavGroup::SetCurrentFocus(unsigned int, unsigned int)"
+  },
+  {
+   "index": 9,
+   "name": "SetFocusTopLevel",
+   "sig": "SetFocusTopLevel(bool)",
+   "symbol": "vgui::FocusNavGroup::SetFocusTopLevel(bool)"
+  },
+  {
+   "index": 10,
+   "name": "SetCurrentDefaultButton",
+   "sig": "SetCurrentDefaultButton(unsigned int, bool)",
+   "symbol": "vgui::FocusNavGroup::SetCurrentDefaultButton(unsigned int, bool)"
+  }
+ ],
+ "derived": [
+  "bin/GameUI:vgui::FocusNavGroup",
+  "bin/ServerBrowser:vgui::FocusNavGroup",
+  "bin/engine:vgui::FocusNavGroup",
+  "bin/vguimatsurface:vgui::FocusNavGroup",
+  "episodic/client:vgui::FocusNavGroup",
+  "hl2/client:vgui::FocusNavGroup",
+  "hl2_complete/client:vgui::FocusNavGroup",
+  "hl2mp/client:vgui::FocusNavGroup",
+  "lostcoast/client:vgui::FocusNavGroup"
+ ],
+ "derived_count": 9
+}

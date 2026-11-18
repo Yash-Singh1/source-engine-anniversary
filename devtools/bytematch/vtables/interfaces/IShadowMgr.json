@@ -1,0 +1,233 @@
+{
+ "interface": "IShadowMgr",
+ "headers": [
+  "public/engine/ishadowmgr.h"
+ ],
+ "versions": {
+  "retail": [
+   "VEngineShadowMgr002"
+  ],
+  "ours": [
+   "VEngineShadowMgr002"
+  ],
+  "sdk2013": [
+   "VEngineShadowMgr002"
+  ]
+ },
+ "version_macros": [
+  "ENGINE_SHADOWMGR_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/engine",
+   "version": "VEngineShadowMgr002",
+   "class": "CShadowMgr"
+  }
+ ],
+ "sdk2013_len": 23,
+ "sdk2013_slots": [
+  "CreateShadow(IMaterial*, IMaterial*, void*, int)",
+  "DestroyShadow(unsigned short)",
+  "SetShadowMaterial(unsigned short, IMaterial*, IMaterial*, void*)",
+  "ProjectShadow(unsigned short, Vector const&, Vector const&, VMatrix const&, Vector2D const&, int, int const*, float, float, float, Vector const&)",
+  "ProjectFlashlight(unsigned short, VMatrix const&, int, int const*)",
+  "GetInfo(unsigned short)",
+  "GetFlashlightFrustum(unsigned short)",
+  "AddShadowToBrushModel(unsigned short, model_t*, Vector const&, QAngle const&)",
+  "RemoveAllShadowsFromBrushModel(model_t*)",
+  "SetShadowTexCoord(unsigned short, float, float, float, float)",
+  "AddShadowToModel(unsigned short, unsigned short)",
+  "RemoveAllShadowsFromModel(unsigned short)",
+  "ClearExtraClipPlanes(unsigned short)",
+  "AddExtraClipPlane(unsigned short, Vector const&, float)",
+  "EnableShadow(unsigned short, bool)",
+  "SetFalloffBias(unsigned short, unsigned char)",
+  "UpdateFlashlightState(unsigned short, FlashlightState_t const&)",
+  "DrawFlashlightDepthTexture()",
+  "AddFlashlightRenderable(unsigned short, IClientRenderable*)",
+  "CreateShadowEx(IMaterial*, IMaterial*, void*, int)",
+  "SetFlashlightDepthTexture(unsigned short, ITexture*, unsigned char)",
+  "GetFlashlightState(unsigned short)",
+  "SetFlashlightRenderState(unsigned short)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CShadowMgr",
+  "offset": 0,
+  "chain": [
+   "CShadowMgr",
+   "IShadowMgrInternal",
+   "IShadowMgr"
+  ]
+ },
+ "retail_len": 23,
+ "retail_len_basis": "override: extra slots belong to the internal shadow manager interface",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 42
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "CreateShadow",
+   "sig": "CreateShadow(IMaterial*, IMaterial*, void*, int)",
+   "symbol": "CShadowMgr::CreateShadow(IMaterial*, IMaterial*, void*, int)"
+  },
+  {
+   "index": 1,
+   "name": "DestroyShadow",
+   "sig": "DestroyShadow(unsigned short)",
+   "symbol": "CShadowMgr::DestroyShadow(unsigned short)"
+  },
+  {
+   "index": 2,
+   "name": "SetShadowMaterial",
+   "sig": "SetShadowMaterial(unsigned short, IMaterial*, IMaterial*, void*)",
+   "symbol": "CShadowMgr::SetShadowMaterial(unsigned short, IMaterial*, IMaterial*, void*)"
+  },
+  {
+   "index": 3,
+   "name": "ProjectShadow",
+   "sig": "ProjectShadow(unsigned short, Vector const&, Vector const&, VMatrix const&, Vector2D const&, int, int const*, float, float, float, Vector const&)",
+   "symbol": "CShadowMgr::ProjectShadow(unsigned short, Vector const&, Vector const&, VMatrix const&, Vector2D const&, int, int const*, float, float, float, Vector const&)"
+  },
+  {
+   "index": 4,
+   "name": "ProjectFlashlight",
+   "sig": "ProjectFlashlight(unsigned short, VMatrix const&, int, int const*)",
+   "symbol": "CShadowMgr::ProjectFlashlight(unsigned short, VMatrix const&, int, int const*)"
+  },
+  {
+   "index": 5,
+   "name": "GetInfo",
+   "sig": "GetInfo(unsigned short)",
+   "symbol": "CShadowMgr::GetInfo(unsigned short)"
+  },
+  {
+   "index": 6,
+   "name": "GetFlashlightFrustum",
+   "sig": "GetFlashlightFrustum(unsigned short)",
+   "symbol": "CShadowMgr::GetFlashlightFrustum(unsigned short)"
+  },
+  {
+   "index": 7,
+   "name": "AddShadowToBrushModel",
+   "sig": "AddShadowToBrushModel(unsigned short, model_t*, Vector const&, QAngle const&)",
+   "symbol": "CShadowMgr::AddShadowToBrushModel(unsigned short, model_t*, Vector const&, QAngle const&)"
+  },
+  {
+   "index": 8,
+   "name": "RemoveAllShadowsFromBrushModel",
+   "sig": "RemoveAllShadowsFromBrushModel(model_t*)",
+   "symbol": "CShadowMgr::RemoveAllShadowsFromBrushModel(model_t*)"
+  },
+  {
+   "index": 9,
+   "name": "SetShadowTexCoord",
+   "sig": "SetShadowTexCoord(unsigned short, float, float, float, float)",
+   "symbol": "CShadowMgr::SetShadowTexCoord(unsigned short, float, float, float, float)"
+  },
+  {
+   "index": 10,
+   "name": "AddShadowToModel",
+   "sig": "AddShadowToModel(unsigned short, unsigned short)",
+   "symbol": "CShadowMgr::AddShadowToModel(unsigned short, unsigned short)"
+  },
+  {
+   "index": 11,
+   "name": "RemoveAllShadowsFromModel",
+   "sig": "RemoveAllShadowsFromModel(unsigned short)",
+   "symbol": "CShadowMgr::RemoveAllShadowsFromModel(unsigned short)"
+  },
+  {
+   "index": 12,
+   "name": "ClearExtraClipPlanes",
+   "sig": "ClearExtraClipPlanes(unsigned short)",
+   "symbol": "CShadowMgr::ClearExtraClipPlanes(unsigned short)"
+  },
+  {
+   "index": 13,
+   "name": "AddExtraClipPlane",
+   "sig": "AddExtraClipPlane(unsigned short, Vector const&, float)",
+   "symbol": "CShadowMgr::AddExtraClipPlane(unsigned short, Vector const&, float)"
+  },
+  {
+   "index": 14,
+   "name": "EnableShadow",
+   "sig": "EnableShadow(unsigned short, bool)",
+   "symbol": "CShadowMgr::EnableShadow(unsigned short, bool)"
+  },
+  {
+   "index": 15,
+   "name": "SetFalloffBias",
+   "sig": "SetFalloffBias(unsigned short, unsigned char)",
+   "symbol": "CShadowMgr::SetFalloffBias(unsigned short, unsigned char)"
+  },
+  {
+   "index": 16,
+   "name": "UpdateFlashlightState",
+   "sig": "UpdateFlashlightState(unsigned short, FlashlightState_t const&)",
+   "symbol": "CShadowMgr::UpdateFlashlightState(unsigned short, FlashlightState_t const&)"
+  },
+  {
+   "index": 17,
+   "name": "DrawFlashlightDepthTexture",
+   "sig": "DrawFlashlightDepthTexture()",
+   "symbol": "CShadowMgr::DrawFlashlightDepthTexture()"
+  },
+  {
+   "index": 18,
+   "name": "AddFlashlightRenderable",
+   "sig": "AddFlashlightRenderable(unsigned short, IClientRenderable*)",
+   "symbol": "CShadowMgr::AddFlashlightRenderable(unsigned short, IClientRenderable*)"
+  },
+  {
+   "index": 19,
+   "name": "CreateShadowEx",
+   "sig": "CreateShadowEx(IMaterial*, IMaterial*, void*, int)",
+   "symbol": "CShadowMgr::CreateShadowEx(IMaterial*, IMaterial*, void*, int)"
+  },
+  {
+   "index": 20,
+   "name": "SetFlashlightDepthTexture",
+   "sig": "SetFlashlightDepthTexture(unsigned short, ITexture*, unsigned char)",
+   "symbol": "CShadowMgr::SetFlashlightDepthTexture(unsigned short, ITexture*, unsigned char)"
+  },
+  {
+   "index": 21,
+   "name": "GetFlashlightState",
+   "sig": "GetFlashlightState(unsigned short)",
+   "symbol": "CShadowMgr::GetFlashlightState(unsigned short)"
+  },
+  {
+   "index": 22,
+   "name": "SetFlashlightRenderState",
+   "sig": "SetFlashlightRenderState(unsigned short)",
+   "symbol": "CShadowMgr::SetFlashlightRenderState(unsigned short)"
+  }
+ ],
+ "implementer_tail": [
+  "LevelInit(int)",
+  "LevelShutdown()",
+  "AddShadowsOnSurfaceToRenderList(unsigned short)",
+  "RenderProjectedTextures(VMatrix const*)",
+  "RenderShadows(VMatrix const*)",
+  "RenderFlashlights(bool, VMatrix const*)",
+  "ClearShadowRenderList()",
+  "ProjectAndClipVertices(unsigned short, int, Vector**, ShadowVertex_t***)",
+  "ComputeRenderInfo(ShadowDecalRenderInfo_t*, unsigned short) const",
+  "InvalidShadowIndex()",
+  "SetModelShadowState(unsigned short)",
+  "SetNumWorldMaterialBuckets(int)",
+  "DrawFlashlightDecals(int, bool)",
+  "DrawFlashlightDecalsOnSingleSurface(msurface2_t*, bool)",
+  "DrawFlashlightOverlays(int, bool)",
+  "DrawFlashlightDecalsOnDisplacements(int, CDispInfo**, int, bool)",
+  "SetFlashlightStencilMasks(bool)",
+  "ModelHasShadows(unsigned short)",
+  "EnumerateLeaf(int, int)"
+ ],
+ "derived": [
+  "bin/engine:CShadowMgr"
+ ],
+ "derived_count": 1
+}

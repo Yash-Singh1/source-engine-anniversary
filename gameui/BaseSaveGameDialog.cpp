@@ -562,7 +562,11 @@ int SaveReadNameAndComment( FileHandle_t f, OUT_Z_CAP(nameSize) char *name, int 
 	int nNumberOfFields;
 
 	char *pData;
+#ifdef BYTEMATCH_RETAIL
+	int nFieldSize;
+#else
 	short nFieldSize;
+#endif
 	
 	pData = pSaveData;
 
@@ -582,12 +586,18 @@ int SaveReadNameAndComment( FileHandle_t f, OUT_Z_CAP(nameSize) char *name, int 
 		pTokenList = NULL;
 
 	// short, short (size, index of field name)
+#ifdef BYTEMATCH_RETAIL
+	nFieldSize = *(short *)pData;
+	pData += sizeof(short);
+	pFieldName = pTokenList[ *(short *)pData ];
+#else
 	memcpy( &nFieldSize, pData, sizeof(short) );
 
 	pData += sizeof(short);
 	short index;
 	memcpy( &index, pData, sizeof(short) );
 	pFieldName = pTokenList[index];
+#endif
 
 	if (stricmp(pFieldName, "GameHeader"))
 	{
@@ -597,7 +607,11 @@ int SaveReadNameAndComment( FileHandle_t f, OUT_Z_CAP(nameSize) char *name, int 
 
 	// int (fieldcount)
 	pData += sizeof(short);
+#ifdef BYTEMATCH_RETAIL
+	nNumberOfFields = *(int*)pData;
+#else
 	memcpy( &nNumberOfFields, pData, sizeof(int) );
+#endif
 	pData += nFieldSize;
 
 	// Each field is a short (size), short (index of name), binary string of "size" bytes (data)
@@ -608,12 +622,19 @@ int SaveReadNameAndComment( FileHandle_t f, OUT_Z_CAP(nameSize) char *name, int 
 		// szName
 		// Actual Data
 
+#ifdef BYTEMATCH_RETAIL
+		nFieldSize = *(short *)pData;
+		pData += sizeof(short);
+
+		pFieldName = pTokenList[ *(short *)pData ];
+#else
 		memcpy( &nFieldSize, pData, sizeof(short) );
 		pData += sizeof(short);
 
 		short index;
 		memcpy( &index, pData, sizeof(short));
 		pFieldName = pTokenList[index];
+#endif
 		pData += sizeof(short);
 
 		if (!stricmp(pFieldName, "comment"))

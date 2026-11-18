@@ -216,7 +216,7 @@ public:
 	virtual int GetActiveItem();		// returns the itemID (not the row) of the active item
 
 	// Return the number of items currently in the menu list
-	virtual int GetItemCount() const;
+	virtual int GetItemCount();
 
 	// return the menuID of the n'th item in the menu list, valid from [0, GetItemCount)
 	virtual int GetMenuID(int index);
@@ -252,6 +252,7 @@ public:
 	virtual void SetBgColor( Color newColor );
 
 	virtual void SetFont( HFont font );
+	virtual void SetItemUppercase( int itemID, bool state );
 
 	// Pass in NULL hotkey to remove hotkey
 	void SetCurrentKeyBinding( int itemID, char const *hotkey );
@@ -295,8 +296,13 @@ protected:
 
 	void SetCurrentlySelectedItem(MenuItem *item);
 	void SetCurrentlySelectedItem(int itemID);
-    MESSAGE_FUNC_HANDLE( OnCursorEnteredMenuItem, "CursorEnteredMenuItem", menuItem);
-    MESSAGE_FUNC_HANDLE( OnCursorExitedMenuItem, "CursorExitedMenuItem", menuItem);
+#ifdef PLATFORM_64BITS
+	MESSAGE_FUNC_HANDLE( OnCursorEnteredMenuItem, "CursorEnteredMenuItem", menuItem);
+	MESSAGE_FUNC_HANDLE( OnCursorExitedMenuItem, "CursorExitedMenuItem", menuItem);
+#else
+	MESSAGE_FUNC_INT( OnCursorEnteredMenuItem, "CursorEnteredMenuItem", VPanel);
+	MESSAGE_FUNC_INT( OnCursorExitedMenuItem, "CursorExitedMenuItem", VPanel);
+#endif
 
 	void MoveAlongMenuItemList(int direction, int loopCount); 
 

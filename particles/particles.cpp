@@ -937,8 +937,10 @@ CParticleCollection::CParticleCollection( )
 	m_nMaxAllowedParticles = 0;
 	m_bDormant = false;
 	m_bEmissionStopped = false;
+#ifndef BYTEMATCH_RETAIL
 	m_bRequiresOrderInvariance = false;
 	m_nSimulatedFrames = 0;
+#endif
 
 	m_nNumParticlesToKill = 0;
 	m_pParticleKillList = NULL;
@@ -1104,7 +1106,9 @@ void CParticleCollection::Init( CParticleSystemDefinition *pDef, float flDelay, 
 	LabelTextureUsage();
 	m_bAnyUsesPowerOfTwoFrameBufferTexture = ComputeUsesPowerOfTwoFrameBufferTexture();
 	m_bAnyUsesFullFrameBufferTexture = ComputeUsesFullFrameBufferTexture();
+#ifndef BYTEMATCH_RETAIL
 	m_bRequiresOrderInvariance = ComputeRequiresOrderInvariance();
+#endif
 }
 
 
@@ -1204,6 +1208,7 @@ void CParticleCollection::UnlinkFromDefList( )
 // Determine if this particle has moved since the last time it was simulated, 
 // which will let us know if the bbox needs to be updated.
 //-----------------------------------------------------------------------------
+#ifndef BYTEMATCH_RETAIL
 bool CParticleCollection::HasMoved() const
 {
 	// It's weird that this is possible, but it apparently is (see the many other functions that 
@@ -1234,6 +1239,7 @@ bool CParticleCollection::HasMoved() const
 
 	return false;
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Particle memory initialization
@@ -1540,6 +1546,7 @@ bool CParticleCollection::ComputeIsBatchable()
 //-----------------------------------------------------------------------------
 // Does this system require order invariance of the particles?
 //-----------------------------------------------------------------------------
+#ifndef BYTEMATCH_RETAIL
 bool CParticleCollection::ComputeRequiresOrderInvariance()
 {
 	const int nRendererCount = GetRendererCount();
@@ -1557,6 +1564,7 @@ bool CParticleCollection::ComputeRequiresOrderInvariance()
 
 	return false;
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Renderer iteration
@@ -1882,7 +1890,9 @@ void CParticleCollection::SimulateFirstFrame( )
 {
 	m_flDt = 0.0f;
 	m_nDrawnFrames = 0;
+#ifndef BYTEMATCH_RETAIL
 	m_nSimulatedFrames = 1;
+#endif
 
 	// For the first frame, copy over the initial control points
 	if ( ( m_nParticleFlags & PCFLAGS_PREV_CONTROL_POINTS_INITIALIZED ) == 0 )
@@ -1918,7 +1928,11 @@ void CParticleCollection::SimulateFirstFrame( )
 
 
 
+#ifdef BYTEMATCH_RETAIL
+void CParticleCollection::Simulate( float dt )
+#else
 void CParticleCollection::Simulate( float dt, bool updateBboxOnly )
+#endif
 {
 	VPROF_BUDGET( "CParticleCollection::Simulate", VPROF_BUDGETGROUP_PARTICLE_SIMULATION );
 	if ( dt < 0.0f )
@@ -1963,9 +1977,13 @@ void CParticleCollection::Simulate( float dt, bool updateBboxOnly )
 		bAttachedKillList = true;
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	if (!updateBboxOnly)
+#endif
 	{
+#ifndef BYTEMATCH_RETAIL
 		++m_nSimulatedFrames;
+#endif
 
 		float flRemainingDt = dt;
 		float flMaxDT = 0.1;									// default
@@ -2100,7 +2118,11 @@ void CParticleCollection::Simulate( float dt, bool updateBboxOnly )
 	for (CParticleCollection *i = m_Children.m_pHead; i; i = i->m_pNext)
 	{
 		LoanKillListTo(i);								// re-use the allocated kill list for the children
+#ifdef BYTEMATCH_RETAIL
+		i->Simulate(dt);
+#else
 		i->Simulate(dt, updateBboxOnly);
+#endif
 		i->m_pParticleKillList = NULL;
 	}
 
@@ -2221,7 +2243,11 @@ float CParticleCollection::RandomVectorInUnitSphere( int nRandomSampleId, Vector
 // Used to retrieve the position of a control point
 // somewhere between m_flCurTime and m_flCurTime - m_fPreviousDT
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+void CParticleCollection::GetControlPointAtTime( int nControlPoint, float flTime, Vector *pControlPoint )
+#else
 void CParticleCollection::GetControlPointAtTime( int nControlPoint, float flTime, Vector *pControlPoint ) const
+#endif
 {
 	Assert( m_pDef->ReadsControlPoint( nControlPoint ) );
 	if ( nControlPoint > GetHighestControlPoint() )
@@ -2272,7 +2298,11 @@ void CParticleCollection::GetControlPointAtTime( int nControlPoint, float flTime
 // Used to retrieve the previous position of a control point
 // 
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+void CParticleCollection::GetControlPointAtPrevTime( int nControlPoint, Vector *pControlPoint )
+#else
 void CParticleCollection::GetControlPointAtPrevTime( int nControlPoint, Vector *pControlPoint ) const
+#endif
 {
 	Assert( m_pDef->ReadsControlPoint( nControlPoint ) );
 	*pControlPoint = m_ControlPoints[nControlPoint].m_PrevPosition;
@@ -2360,6 +2390,7 @@ void CParticleCollection::BloatBoundsUsingControlPoint()
 	// so other particle systems had an extra point in their bounding box, that generally remained at the world origin
 	RecomputeBounds();
 
+#ifndef BYTEMATCH_RETAIL
 	// Don't do the bounding box fixup until after the second simulation (first real simulation)
 	// so that we know they're in their correct position.
 	if ( m_nSimulatedFrames > 2 )
@@ -2375,6 +2406,7 @@ void CParticleCollection::BloatBoundsUsingControlPoint()
 		}
 	}
 
+#endif
 	// Deal with children
 	// NOTE: Bounds have been recomputed for children prior to this call in Simulate
 	Vector vecMins, vecMaxs;
@@ -2746,7 +2778,9 @@ void CParticleCollection::ApplyKillList( void )
 	// Previously, this code would swap the last item that wasn't dead into this slot. 
 	// However, some lists require order invariance, so we need to collapse over holes instead of
 	// doing the (cheaper) swap from the end to the hole. 
+#ifndef BYTEMATCH_RETAIL
 	if ( !m_bRequiresOrderInvariance )
+#endif
 	{
 		while( nLeftInKillList )
 		{
@@ -2775,6 +2809,7 @@ void CParticleCollection::ApplyKillList( void )
 			nParticlesActiveNow--;
 		}
 	} 
+#ifndef BYTEMATCH_RETAIL
 	else 
 	{
 		// The calling code may tell us to kill particles that are already out of bounds.
@@ -2799,6 +2834,7 @@ void CParticleCollection::ApplyKillList( void )
 
 		nParticlesActiveNow -= decrementValue;
 	}
+#endif
 
 	// set count in system and wipe kill list
 	SetNActiveParticles( nParticlesActiveNow );

@@ -65,9 +65,11 @@ struct JiggleData
 	Vector boingVelDir;		// current estimation of jiggle bone unit velocity vector for boing effect
 	float boingSpeed;		// current estimation of jiggle bone speed for boing effect
 	float boingTime;
+#ifndef BYTEMATCH_RETAIL
 	
 	int useGoalMatrixCount;	// Count of times we need to fast draw using goal matrix.
 	int useJiggleBoneCount; // Count of times we need to draw using real jiggly bones.
+#endif
 };
 
 class CJiggleBones

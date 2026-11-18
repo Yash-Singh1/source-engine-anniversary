@@ -129,6 +129,10 @@ typedef intp PixelShader_t;
 
 #include "togl/rendermechanism.h"
 
+#if defined( DX_TO_GL_ABSTRACTION ) && defined( TOGL_OSX )
+#include "togl/d3dx_impl.h"
+#endif
+
 #if defined( _X360 )
 
 // not supported, keeping for port ease

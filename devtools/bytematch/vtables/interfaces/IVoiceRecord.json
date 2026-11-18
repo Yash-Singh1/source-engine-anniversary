@@ -1,0 +1,80 @@
+{
+ "interface": "IVoiceRecord",
+ "headers": [
+  "public/engine/audio/ivoicerecord.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "VoiceRecord_AudioQueue",
+  "offset": 0,
+  "chain": [
+   "VoiceRecord_AudioQueue",
+   "IVoiceRecord"
+  ]
+ },
+ "retail_len": 7,
+ "retail_len_basis": "override: Init() is VoiceRecord_AudioQueue's own virtual (ours is Init(int); engine voice code, not the interface)",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 8
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~VoiceRecord_AudioQueue",
+   "sig": "~VoiceRecord_AudioQueue()",
+   "symbol": "VoiceRecord_AudioQueue::~VoiceRecord_AudioQueue()"
+  },
+  {
+   "index": 1,
+   "name": "~VoiceRecord_AudioQueue",
+   "sig": "~VoiceRecord_AudioQueue()",
+   "symbol": "VoiceRecord_AudioQueue::~VoiceRecord_AudioQueue()"
+  },
+  {
+   "index": 2,
+   "name": "Release",
+   "sig": "Release()",
+   "symbol": "VoiceRecord_AudioQueue::Release()"
+  },
+  {
+   "index": 3,
+   "name": "RecordStart",
+   "sig": "RecordStart()",
+   "symbol": "VoiceRecord_AudioQueue::RecordStart()"
+  },
+  {
+   "index": 4,
+   "name": "RecordStop",
+   "sig": "RecordStop()",
+   "symbol": "VoiceRecord_AudioQueue::RecordStop()"
+  },
+  {
+   "index": 5,
+   "name": "Idle",
+   "sig": "Idle()",
+   "symbol": "VoiceRecord_AudioQueue::Idle()"
+  },
+  {
+   "index": 6,
+   "name": "GetRecordedData",
+   "sig": "GetRecordedData(short*, int)",
+   "symbol": "VoiceRecord_AudioQueue::GetRecordedData(short*, int)"
+  }
+ ],
+ "implementer_tail": [
+  "Init()"
+ ],
+ "derived": [
+  "bin/engine:VoiceRecord_AudioQueue",
+  "bin/engine:VoiceRecord_OpenAL"
+ ],
+ "derived_count": 2
+}

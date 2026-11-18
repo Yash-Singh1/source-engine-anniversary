@@ -1,0 +1,169 @@
+{
+ "interface": "IPhysicsVehicleController",
+ "headers": [
+  "public/vphysics/vehicles.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 18,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "Update(float, vehicle_controlparams_t&)",
+  "GetOperatingParams()",
+  "GetVehicleParams()",
+  "GetVehicleParamsForChange()",
+  "UpdateBooster(float)",
+  "GetWheelCount()",
+  "GetWheel(int)",
+  "GetWheelContactPoint(int, Vector*, int*)",
+  "SetSpringLength(int, float)",
+  "SetWheelFriction(int, float)",
+  "OnVehicleEnter()",
+  "OnVehicleExit()",
+  "SetEngineDisabled(bool)",
+  "IsEngineDisabled()",
+  "GetCarSystemDebugData(vehicle_debugcarsystem_t&)",
+  "VehicleDataReload()"
+ ],
+ "retail_reference": {
+  "module": "bin/vphysics",
+  "class": "CVehicleController",
+  "offset": 0,
+  "chain": [
+   "CVehicleController",
+   "IPhysicsVehicleController"
+  ]
+ },
+ "retail_len": 18,
+ "retail_len_basis": "override: event_object_* come from the IVP listener base",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 23
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CVehicleController",
+   "sig": "~CVehicleController()",
+   "symbol": "CVehicleController::~CVehicleController()"
+  },
+  {
+   "index": 1,
+   "name": "~CVehicleController",
+   "sig": "~CVehicleController()",
+   "symbol": "CVehicleController::~CVehicleController()"
+  },
+  {
+   "index": 2,
+   "name": "Update",
+   "sig": "Update(float, vehicle_controlparams_t&)",
+   "symbol": "CVehicleController::Update(float, vehicle_controlparams_t&)"
+  },
+  {
+   "index": 3,
+   "name": "GetOperatingParams",
+   "sig": "GetOperatingParams()",
+   "symbol": "CVehicleController::GetOperatingParams()"
+  },
+  {
+   "index": 4,
+   "name": "GetVehicleParams",
+   "sig": "GetVehicleParams()",
+   "symbol": "CVehicleController::GetVehicleParams()"
+  },
+  {
+   "index": 5,
+   "name": "GetVehicleParamsForChange",
+   "sig": "GetVehicleParamsForChange()",
+   "symbol": "CVehicleController::GetVehicleParamsForChange()"
+  },
+  {
+   "index": 6,
+   "name": "UpdateBooster",
+   "sig": "UpdateBooster(float)",
+   "symbol": "CVehicleController::UpdateBooster(float)"
+  },
+  {
+   "index": 7,
+   "name": "GetWheelCount",
+   "sig": "GetWheelCount()",
+   "symbol": "CVehicleController::GetWheelCount()"
+  },
+  {
+   "index": 8,
+   "name": "GetWheel",
+   "sig": "GetWheel(int)",
+   "symbol": "CVehicleController::GetWheel(int)"
+  },
+  {
+   "index": 9,
+   "name": "GetWheelContactPoint",
+   "sig": "GetWheelContactPoint(int, Vector*, int*)",
+   "symbol": "CVehicleController::GetWheelContactPoint(int, Vector*, int*)"
+  },
+  {
+   "index": 10,
+   "name": "SetSpringLength",
+   "sig": "SetSpringLength(int, float)",
+   "symbol": "CVehicleController::SetSpringLength(int, float)"
+  },
+  {
+   "index": 11,
+   "name": "SetWheelFriction",
+   "sig": "SetWheelFriction(int, float)",
+   "symbol": "CVehicleController::SetWheelFriction(int, float)"
+  },
+  {
+   "index": 12,
+   "name": "OnVehicleEnter",
+   "sig": "OnVehicleEnter()",
+   "symbol": "CVehicleController::OnVehicleEnter()"
+  },
+  {
+   "index": 13,
+   "name": "OnVehicleExit",
+   "sig": "OnVehicleExit()",
+   "symbol": "CVehicleController::OnVehicleExit()"
+  },
+  {
+   "index": 14,
+   "name": "SetEngineDisabled",
+   "sig": "SetEngineDisabled(bool)",
+   "symbol": "CVehicleController::SetEngineDisabled(bool)"
+  },
+  {
+   "index": 15,
+   "name": "IsEngineDisabled",
+   "sig": "IsEngineDisabled()",
+   "symbol": "CVehicleController::IsEngineDisabled()"
+  },
+  {
+   "index": 16,
+   "name": "GetCarSystemDebugData",
+   "sig": "GetCarSystemDebugData(vehicle_debugcarsystem_t&)",
+   "symbol": "CVehicleController::GetCarSystemDebugData(vehicle_debugcarsystem_t&)"
+  },
+  {
+   "index": 17,
+   "name": "VehicleDataReload",
+   "sig": "VehicleDataReload()",
+   "symbol": "CVehicleController::VehicleDataReload()"
+  }
+ ],
+ "implementer_tail": [
+  "event_object_deleted(IVP_Event_Object*)",
+  "event_object_created(IVP_Event_Object*)",
+  "event_object_revived(IVP_Event_Object*)",
+  "event_object_frozen(IVP_Event_Object*)",
+  "IsBoosting()"
+ ],
+ "derived": [
+  "bin/vphysics:CVehicleController"
+ ],
+ "derived_count": 1
+}

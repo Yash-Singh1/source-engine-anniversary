@@ -333,9 +333,13 @@ void C_SmokeStack::Update(float fTimeDelta)
 		{
 			int iRandomFrame = random->RandomInt( 0, m_iMaxFrames );
 
-#ifndef HL2_EPISODIC
-			iRandomFrame = 0;
-#endif
+		if ( HL2_EPISODIC_ACTIVE() )
+		{
+		}
+		else
+		{
+				iRandomFrame = 0;
+		}
 	
 			// Make a new particle.
 			if(SmokeStackParticle *pParticle = (SmokeStackParticle*)m_ParticleEffect.AddParticle(sizeof(SmokeStackParticle), m_MaterialHandle[iRandomFrame]))
@@ -355,9 +359,12 @@ void C_SmokeStack::Update(float fTimeDelta)
 				pParticle->m_Lifetime = 0;
 				pParticle->m_flAngle = 0.0f;
 
+			if ( HL2_EPISODIC_ACTIVE() )
+			{
 #ifdef HL2_EPISODIC
-				pParticle->m_flAngle = RandomFloat( 0, 360 );
+					pParticle->m_flAngle = RandomFloat( 0, 360 );
 #endif
+			}
 				pParticle->m_flRollDelta = random->RandomFloat( -m_flRollSpeed, m_flRollSpeed );
 				pParticle->m_flSortPos = pParticle->m_Pos.z;
 			}
@@ -441,10 +448,14 @@ void C_SmokeStack::SimulateParticles( CParticleSimulateIterator *pIterator )
 		bQuickTest = true;
 	}
 
-#ifndef HL2_EPISODIC
-	bQuickTest = false;
-	bSortNow = true;
-#endif
+	if ( HL2_EPISODIC_ACTIVE() )
+	{
+	}
+	else
+	{
+		bQuickTest = false;
+		bSortNow = true;
+	}
 
 	if( bQuickTest == false && m_bEmit && (!m_ParticleEffect.WasDrawnPrevFrame() && !m_ParticleEffect.GetAlwaysSimulate()) )
 		return;
@@ -475,15 +486,20 @@ void C_SmokeStack::SimulateParticles( CParticleSimulateIterator *pIterator )
 				pParticle->m_Pos.y = vTwist.x * m_TwistMat[1][0] + vTwist.y * m_TwistMat[1][1] + GetAbsOrigin().y;
 			}
 
-#ifndef HL2_EPISODIC
-			pParticle->m_Pos = pParticle->m_Pos + 
-				pParticle->m_Velocity * pIterator->GetTimeDelta() + 
-				pParticle->m_vAccel * (0.5f * pIterator->GetTimeDelta() * pIterator->GetTimeDelta());
-
-			pParticle->m_Velocity += pParticle->m_vAccel * pIterator->GetTimeDelta();
-#else
-			pParticle->m_Pos = pParticle->m_Pos + pParticle->m_Velocity * pIterator->GetTimeDelta() + pParticle->m_vAccel * pIterator->GetTimeDelta();
+		if ( HL2_EPISODIC_ACTIVE() )
+		{
+#ifdef HL2_EPISODIC
+				pParticle->m_Pos = pParticle->m_Pos + pParticle->m_Velocity * pIterator->GetTimeDelta() + pParticle->m_vAccel * pIterator->GetTimeDelta();
 #endif
+		}
+		else
+		{
+				pParticle->m_Pos = pParticle->m_Pos + 
+					pParticle->m_Velocity * pIterator->GetTimeDelta() + 
+					pParticle->m_vAccel * (0.5f * pIterator->GetTimeDelta() * pIterator->GetTimeDelta());
+
+				pParticle->m_Velocity += pParticle->m_vAccel * pIterator->GetTimeDelta();
+		}
 
 			pParticle->m_flAngle += pParticle->m_flRollDelta * pIterator->GetTimeDelta();
 

@@ -13,6 +13,8 @@
 #include <KeyValues.h>
 #include "filesystem.h"
 #include "iinput.h"
+#include "inputsystem/iinputsystem.h"
+#include "tier2/tier2.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -21,6 +23,40 @@
 
 ConVar hud_drawhistory_time( "hud_drawhistory_time", HISTORY_DRAW_TIME, 0 );
 ConVar hud_fastswitch( "hud_fastswitch", "0", FCVAR_ARCHIVE | FCVAR_ARCHIVE_XBOX );
+ConVar hud_fastswitch_reset( "hud_fastswitch_reset", "1", FCVAR_ARCHIVE );
+ConVar hud_weaponui_gamepad( "hud_weaponui_gamepad", "2", FCVAR_ARCHIVE );
+ConVar hud_fastswitch_net( "hud_fastswitch_net", "0", FCVAR_ARCHIVE | FCVAR_USERINFO | FCVAR_ARCHIVE_XBOX );
+
+//-----------------------------------------------------------------------------
+// Purpose: hud_fastswitch with mouse and keyboard, hud_weaponui_gamepad with a
+//			controller; mirrored to the server through hud_fastswitch_net.
+//-----------------------------------------------------------------------------
+int GetFastSwitchType()
+{
+	int nType = hud_fastswitch.GetInt();
+	if ( g_pInputSystem->IsMouseKeyboardActive() )
+	{
+		if ( hud_fastswitch_reset.GetBool() )
+		{
+			hud_fastswitch_reset.SetValue( 0 );
+			if ( nType >= 2 )
+			{
+				hud_fastswitch.SetValue( 0 );
+				nType = 0;
+			}
+		}
+	}
+	else
+	{
+		nType = hud_weaponui_gamepad.GetInt();
+	}
+
+	if ( hud_fastswitch_net.GetInt() != nType )
+	{
+		hud_fastswitch_net.SetValue( nType );
+	}
+	return nType;
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: Weapon Selection commands

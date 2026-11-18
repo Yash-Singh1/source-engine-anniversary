@@ -28,6 +28,8 @@ def build(bld):
 		source += [
 			'Win32Font.cpp'
 		]
+	elif bld.env.RETAIL_OSX32:
+		source += ['osxfont.cpp']
 	else:
 		source += [
 			'linuxfont.cpp'

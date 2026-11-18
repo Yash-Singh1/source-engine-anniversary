@@ -652,9 +652,11 @@ void CConsolePanel::OnTextChanged(Panel *panel)
 	// see if they've hit the tilde key (which opens & closes the console)
 	int len = Q_strlen(m_szPartialText);
 
+#ifndef BYTEMATCH_RETAIL
 	if( !len )
 		return;
 
+#endif
 	bool hitTilde = ( m_szPartialText[len - 1] == '~' || m_szPartialText[len - 1] == '`' ) ? true : false;
 
 	bool altKeyDown = ( vgui::input()->IsKeyDown( KEY_LALT ) || vgui::input()->IsKeyDown( KEY_RALT ) ) ? true : false;
@@ -844,6 +846,14 @@ void CConsolePanel::PerformLayout()
 
 	if ( !m_bStatusVersion )
 	{
+#ifdef BYTEMATCH_RETAIL
+		const int inset = 8;
+		const int entryHeight = 24;
+		const int topHeight = 4;
+		const int entryInset = 4;
+		const int submitWide = 64;
+		const int submitInset = 7; // x inset to pull the submit button away from the frame grab
+#else
 		float scale = 1;
 		if (IsProportional())
 		{
@@ -862,6 +872,7 @@ void CConsolePanel::PerformLayout()
 		const int entryInset = 4 * scale;
 		const int submitWide = 64 * scale;
 		const int submitInset = 7 * scale; // x inset to pull the submit button away from the frame grab
+#endif
 
 		m_pHistory->SetPos(inset, inset + topHeight); 
 		m_pHistory->SetSize(wide - (inset * 2), tall - (entryInset * 2 + inset * 2 + topHeight + entryHeight));
@@ -943,7 +954,9 @@ void CConsolePanel::ApplySchemeSettings(IScheme *pScheme)
 	m_DPrintColor = GetSchemeColor("Console.DevTextColor", pScheme);
 	m_pHistory->SetFont( pScheme->GetFont( "ConsoleText", IsProportional() ) );
 	m_pCompletionList->SetFont( pScheme->GetFont( "DefaultSmall", IsProportional() ) );
+#ifndef BYTEMATCH_RETAIL
 	m_pEntry->SetFont( pScheme->GetFont( "DefaultSmall", IsProportional() ) );
+#endif
 	InvalidateLayout();
 }
 

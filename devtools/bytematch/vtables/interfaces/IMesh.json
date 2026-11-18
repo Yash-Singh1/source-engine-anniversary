@@ -1,0 +1,251 @@
+{
+ "interface": "IMesh",
+ "headers": [
+  "public/materialsystem/imesh.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 28,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "VertexCount() const",
+  "GetVertexFormat() const",
+  "IsDynamic() const",
+  "BeginCastBuffer(unsigned long long)",
+  "EndCastBuffer()",
+  "GetRoomRemaining() const",
+  "Lock(int, bool, VertexDesc_t&)",
+  "Unlock(int, VertexDesc_t&)",
+  "Spew(int, VertexDesc_t const&)",
+  "ValidateData(int, VertexDesc_t const&)",
+  "SetPrimitiveType(MaterialPrimitiveType_t)",
+  "Draw(int, int)",
+  "SetColorMesh(IMesh*, int)",
+  "Draw(CPrimList*, int)",
+  "CopyToMeshBuilder(int, int, int, int, int, CMeshBuilder&)",
+  "Spew(int, int, MeshDesc_t const&)",
+  "ValidateData(int, int, MeshDesc_t const&)",
+  "LockMesh(int, int, MeshDesc_t&)",
+  "ModifyBegin(int, int, int, int, MeshDesc_t&)",
+  "ModifyEnd(MeshDesc_t&)",
+  "UnlockMesh(int, int, MeshDesc_t&)",
+  "ModifyBeginEx(bool, int, int, int, int, MeshDesc_t&)",
+  "SetFlexMesh(IMesh*, int)",
+  "DisableFlexMesh()",
+  "MarkAsDrawn()",
+  "ComputeMemoryUsed()"
+ ],
+ "retail_reference": {
+  "module": "bin/materialsystem",
+  "class": "CDummyMesh",
+  "offset": 0,
+  "chain": [
+   "CDummyMesh",
+   "IMesh"
+  ]
+ },
+ "retail_len": 28,
+ "retail_len_basis": "override: slots 28+ override the secondary base IIndexBuffer",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 34
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CDummyMesh",
+   "sig": "~CDummyMesh()",
+   "symbol": "CDummyMesh::~CDummyMesh()"
+  },
+  {
+   "index": 1,
+   "name": "~CDummyMesh",
+   "sig": "~CDummyMesh()",
+   "symbol": "CDummyMesh::~CDummyMesh()"
+  },
+  {
+   "index": 2,
+   "name": "VertexCount",
+   "sig": "VertexCount() const",
+   "symbol": "CDummyMesh::VertexCount() const"
+  },
+  {
+   "index": 3,
+   "name": "GetVertexFormat",
+   "sig": "GetVertexFormat() const",
+   "symbol": "CDummyMesh::GetVertexFormat() const"
+  },
+  {
+   "index": 4,
+   "name": "IsDynamic",
+   "sig": "IsDynamic() const",
+   "symbol": "CDummyMesh::IsDynamic() const"
+  },
+  {
+   "index": 5,
+   "name": "BeginCastBuffer",
+   "sig": "BeginCastBuffer(unsigned long long)",
+   "symbol": "CDummyMesh::BeginCastBuffer(unsigned long long)"
+  },
+  {
+   "index": 6,
+   "name": "EndCastBuffer",
+   "sig": "EndCastBuffer()",
+   "symbol": "CDummyMesh::EndCastBuffer()"
+  },
+  {
+   "index": 7,
+   "name": "GetRoomRemaining",
+   "sig": "GetRoomRemaining() const",
+   "symbol": "CDummyMesh::GetRoomRemaining() const"
+  },
+  {
+   "index": 8,
+   "name": "Lock",
+   "sig": "Lock(int, bool, VertexDesc_t&)",
+   "symbol": "CDummyMesh::Lock(int, bool, VertexDesc_t&)"
+  },
+  {
+   "index": 9,
+   "name": "Unlock",
+   "sig": "Unlock(int, VertexDesc_t&)",
+   "symbol": "CDummyMesh::Unlock(int, VertexDesc_t&)"
+  },
+  {
+   "index": 10,
+   "name": "Spew",
+   "sig": "Spew(int, VertexDesc_t const&)",
+   "symbol": "CDummyMesh::Spew(int, VertexDesc_t const&)"
+  },
+  {
+   "index": 11,
+   "name": "ValidateData",
+   "sig": "ValidateData(int, VertexDesc_t const&)",
+   "symbol": "CDummyMesh::ValidateData(int, VertexDesc_t const&)"
+  },
+  {
+   "index": 12,
+   "name": "SetPrimitiveType",
+   "sig": "SetPrimitiveType(MaterialPrimitiveType_t)",
+   "symbol": "CDummyMesh::SetPrimitiveType(MaterialPrimitiveType_t)"
+  },
+  {
+   "index": 13,
+   "name": "Draw",
+   "sig": "Draw(int, int)",
+   "symbol": "CDummyMesh::Draw(int, int)"
+  },
+  {
+   "index": 14,
+   "name": "SetColorMesh",
+   "sig": "SetColorMesh(IMesh*, int)",
+   "symbol": "CDummyMesh::SetColorMesh(IMesh*, int)"
+  },
+  {
+   "index": 15,
+   "name": "Draw",
+   "sig": "Draw(CPrimList*, int)",
+   "symbol": "CDummyMesh::Draw(CPrimList*, int)"
+  },
+  {
+   "index": 16,
+   "name": "CopyToMeshBuilder",
+   "sig": "CopyToMeshBuilder(int, int, int, int, int, CMeshBuilder&)",
+   "symbol": "CDummyMesh::CopyToMeshBuilder(int, int, int, int, int, CMeshBuilder&)"
+  },
+  {
+   "index": 17,
+   "name": "Spew",
+   "sig": "Spew(int, int, MeshDesc_t const&)",
+   "symbol": "CDummyMesh::Spew(int, int, MeshDesc_t const&)"
+  },
+  {
+   "index": 18,
+   "name": "ValidateData",
+   "sig": "ValidateData(int, int, MeshDesc_t const&)",
+   "symbol": "CDummyMesh::ValidateData(int, int, MeshDesc_t const&)"
+  },
+  {
+   "index": 19,
+   "name": "LockMesh",
+   "sig": "LockMesh(int, int, MeshDesc_t&)",
+   "symbol": "CDummyMesh::LockMesh(int, int, MeshDesc_t&)"
+  },
+  {
+   "index": 20,
+   "name": "ModifyBegin",
+   "sig": "ModifyBegin(int, int, int, int, MeshDesc_t&)",
+   "symbol": "CDummyMesh::ModifyBegin(int, int, int, int, MeshDesc_t&)"
+  },
+  {
+   "index": 21,
+   "name": "ModifyEnd",
+   "sig": "ModifyEnd(MeshDesc_t&)",
+   "symbol": "CDummyMesh::ModifyEnd(MeshDesc_t&)"
+  },
+  {
+   "index": 22,
+   "name": "UnlockMesh",
+   "sig": "UnlockMesh(int, int, MeshDesc_t&)",
+   "symbol": "CDummyMesh::UnlockMesh(int, int, MeshDesc_t&)"
+  },
+  {
+   "index": 23,
+   "name": "ModifyBeginEx",
+   "sig": "ModifyBeginEx(bool, int, int, int, int, MeshDesc_t&)",
+   "symbol": "CDummyMesh::ModifyBeginEx(bool, int, int, int, int, MeshDesc_t&)"
+  },
+  {
+   "index": 24,
+   "name": "SetFlexMesh",
+   "sig": "SetFlexMesh(IMesh*, int)",
+   "symbol": "CDummyMesh::SetFlexMesh(IMesh*, int)"
+  },
+  {
+   "index": 25,
+   "name": "DisableFlexMesh",
+   "sig": "DisableFlexMesh()",
+   "symbol": "CDummyMesh::DisableFlexMesh()"
+  },
+  {
+   "index": 26,
+   "name": "MarkAsDrawn",
+   "sig": "MarkAsDrawn()",
+   "symbol": "CDummyMesh::MarkAsDrawn()"
+  },
+  {
+   "index": 27,
+   "name": "ComputeMemoryUsed",
+   "sig": "ComputeMemoryUsed()",
+   "symbol": "CDummyMesh::ComputeMemoryUsed()"
+  }
+ ],
+ "implementer_tail": [
+  "Lock(int, bool, IndexDesc_t&)",
+  "Unlock(int, IndexDesc_t&)",
+  "ModifyBegin(bool, int, int, IndexDesc_t&)",
+  "ModifyEnd(IndexDesc_t&)",
+  "Spew(int, IndexDesc_t const&)",
+  "ValidateData(int, IndexDesc_t const&)",
+  "BeginCastBuffer(MaterialIndexFormat_t)",
+  "IndexCount() const",
+  "IndexFormat() const",
+  "GetMesh()"
+ ],
+ "derived": [
+  "bin/materialsystem:CDummyMesh",
+  "bin/materialsystem:CMatQueuedMesh",
+  "bin/shaderapidx9:CBufferedMeshDX8",
+  "bin/shaderapidx9:CDynamicMeshDX8",
+  "bin/shaderapidx9:CMeshBase",
+  "bin/shaderapidx9:CMeshDX8",
+  "bin/shaderapidx9:CTempMeshDX8",
+  "bin/shaderapiempty:CEmptyMesh"
+ ],
+ "derived_count": 8
+}

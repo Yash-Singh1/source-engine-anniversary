@@ -447,7 +447,11 @@ void CMatSystemTexture::SetTextureRGBA( const char *rgba, int wide, int tall, Im
 			format,
 			TEXTUREFLAGS_CLAMPS | TEXTUREFLAGS_CLAMPT |
 			TEXTUREFLAGS_NOMIP | TEXTUREFLAGS_NOLOD |
+#ifdef BYTEMATCH_RETAIL
+			TEXTUREFLAGS_PROCEDURAL | TEXTUREFLAGS_SINGLECOPY | TEXTUREFLAGS_POINTSAMPLE );
+#else
 			TEXTUREFLAGS_PROCEDURAL | TEXTUREFLAGS_SINGLECOPY );
+#endif
 
 		KeyValues *pVMTKeyValues = new KeyValues( "UnlitGeneric" );
 		pVMTKeyValues->SetInt( "$vertexcolor", 1 );

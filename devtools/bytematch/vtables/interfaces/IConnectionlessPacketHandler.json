@@ -1,0 +1,64 @@
+{
+ "interface": "IConnectionlessPacketHandler",
+ "headers": [
+  "public/inetmsghandler.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 3,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "ProcessConnectionlessPacket(netpacket_s*)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CBaseClientState",
+  "offset": 4,
+  "chain": [
+   "CBaseClientState",
+   "IConnectionlessPacketHandler"
+  ]
+ },
+ "retail_len": 3,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 3
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CBaseClientState",
+   "sig": "~CBaseClientState()",
+   "symbol": "non-virtual thunk to CBaseClientState::~CBaseClientState()"
+  },
+  {
+   "index": 1,
+   "name": "~CBaseClientState",
+   "sig": "~CBaseClientState()",
+   "symbol": "non-virtual thunk to CBaseClientState::~CBaseClientState()"
+  },
+  {
+   "index": 2,
+   "name": "ProcessConnectionlessPacket",
+   "sig": "ProcessConnectionlessPacket(netpacket_s*)",
+   "symbol": "non-virtual thunk to CBaseClientState::ProcessConnectionlessPacket(netpacket_s*)"
+  }
+ ],
+ "derived": [
+  "bin/engine:CBaseClientState",
+  "bin/engine:CBaseServer",
+  "bin/engine:CClientState",
+  "bin/engine:CGameServer",
+  "bin/engine:CHLTVClientState",
+  "bin/engine:CHLTVServer",
+  "bin/engine:CMatchmaking",
+  "bin/engine:CReplayServer"
+ ],
+ "derived_count": 8
+}

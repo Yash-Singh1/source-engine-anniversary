@@ -15,9 +15,6 @@
 #include "tier1/strtools.h"
 #include "limits.h"
 
-// Matched with the memdbgoff at end of header
-#include "memdbgon.h"
-
 #if defined( OSX )
 #ifndef wcsdup
 // The mem override tools may provide a copy of this if active, otherwise it is not available in OS X's libc due to
@@ -47,6 +44,97 @@ inline size_t strnlen(const char *s, size_t n)
 
 #endif
 
+
+//-----------------------------------------------------------------------------
+// Base class, containing simple memory management
+//-----------------------------------------------------------------------------
+class CUtlBinaryBlock
+{
+public:
+	CUtlBinaryBlock( int growSize = 0, int initSize = 0 );
+
+	// NOTE: nInitialLength indicates how much of the buffer starts full
+	CUtlBinaryBlock( void* pMemory, int nSizeInBytes, int nInitialLength );
+	CUtlBinaryBlock( const void* pMemory, int nSizeInBytes );
+	CUtlBinaryBlock( const CUtlBinaryBlock& src );
+
+	void		Get( void *pValue, int nMaxLen ) const;
+	void		Set( const void *pValue, int nLen );
+	const void	*Get( ) const;
+	void		*Get( );
+
+	unsigned char& operator[]( int i );
+	const unsigned char& operator[]( int i ) const;
+
+	int			Length() const;
+	void		SetLength( int nLength );	// Undefined memory will result
+	bool		IsEmpty() const;
+	void		Clear();
+	void		Purge();
+
+	bool		IsReadOnly() const;
+
+	CUtlBinaryBlock &operator=( const CUtlBinaryBlock &src );
+
+	// Test for equality
+	bool operator==( const CUtlBinaryBlock &src ) const;
+
+private:
+	CUtlMemory<unsigned char> m_Memory;
+	int m_nActualLength;
+};
+
+
+//-----------------------------------------------------------------------------
+// class inlines
+//-----------------------------------------------------------------------------
+inline const void *CUtlBinaryBlock::Get( ) const
+{
+	return m_Memory.Base();
+}
+
+inline void *CUtlBinaryBlock::Get( )
+{
+	return m_Memory.Base();
+}
+
+inline int CUtlBinaryBlock::Length() const
+{
+	return m_nActualLength;
+}
+
+inline unsigned char& CUtlBinaryBlock::operator[]( int i )
+{
+	return m_Memory[i];
+}
+
+inline const unsigned char& CUtlBinaryBlock::operator[]( int i ) const
+{
+	return m_Memory[i];
+}
+
+inline bool CUtlBinaryBlock::IsReadOnly() const
+{
+	return m_Memory.IsReadOnly();
+}
+
+inline bool CUtlBinaryBlock::IsEmpty() const
+{
+	return Length() == 0;
+}
+
+inline void CUtlBinaryBlock::Clear()
+{
+	SetLength( 0 );
+}
+
+inline void CUtlBinaryBlock::Purge()
+{
+	SetLength( 0 );
+	m_Memory.Purge();
+}
+
+
 //-----------------------------------------------------------------------------
 // Simple string class. 
 // NOTE: This is *not* optimal! Use in tools, but not runtime code
@@ -66,66 +154,40 @@ public:
 	CUtlString( const char *pString, int length );
 	CUtlString( const CUtlString& string );
 
-#ifdef MOVE_CONSTRUCTOR_SUPPORT
-	// Support moving of CUtlString objects. Long live C++11
-	// This move constructor will get called when appropriate, such as when
-	// returning objects from functions, or otherwise copying from temporaries
-	// which are about to be destroyed. It can also be explicitly invoked with
-	// std::move().
-	// Move constructor:
-	CUtlString( CUtlString&& rhs )
-	{
-		// Move the string pointer from the source to this -- be sure to
-		// zero out the source to avoid double frees.
-		m_pString = rhs.m_pString;
-		rhs.m_pString = 0;
-	}
-	// Move assignment operator:
-	CUtlString& operator=( CUtlString&& rhs )
-	{
-		// Move the string pointer from the source to this -- be sure to
-		// zero out the source to avoid double frees.
-		m_pString = rhs.m_pString;
-		rhs.m_pString = 0;
-		return *this;
-	}
-#endif
-
-	~CUtlString();
+	// Attaches the string to external memory. Useful for avoiding a copy
+	CUtlString( void* pMemory, int nSizeInBytes, int nInitialLength );
+	CUtlString( const void* pMemory, int nSizeInBytes );
 
 	const char	*Get( ) const;
 	void		Set( const char *pValue );
-	operator const char*() const;
 
-	// Set directly and don't look for a null terminator in pValue.
-	// nChars does not include the nul and this will only copy
-	// at most nChars (even if pValue is longer).  If nChars
-	// is >strlen(pValue) it will copy past the end, don't do it
-	// Does nothing if pValue == String()
-	void		SetDirect( const char *pValue, int nChars );
+	void Clear() { Set( NULL ); }
+
+	// Converts to c-strings
+	operator const char*() const;
 
 	// for compatibility switching items from UtlSymbol
 	const char  *String() const { return Get(); }
 
 	// Returns strlen
 	int			Length() const;
-	// IsEmpty() is more efficient than Length() == 0
 	bool		IsEmpty() const;
 
 	// Sets the length (used to serialize into the buffer )
 	// Note: If nLen != 0, then this adds an extra byte for a null-terminator.	
 	void		SetLength( int nLen );
-	char		*GetForModify();
-	void		Clear();
+	char		*Get();
+	char		*GetForModify() { return Get(); }
 	void		Purge();
 
 	// Case Change
 	void		ToLower();
 	void		ToUpper();
-	void		Append( const char *pAddition, int nChars );
 
 	void		Append( const char *pchAddition );
+	void		Append( const char *pchAddition, int nChars );
 	void		Append( const char chAddition ) { char temp[2] = { chAddition, 0 }; Append( temp ); }
+
 	// Strips the trailing slash
 	void		StripTrailingSlash();
 	void		FixSlashes( char cSeparator = CORRECT_PATH_SEPARATOR );
@@ -146,7 +208,14 @@ public:
 
 	// Test for equality
 	bool operator==( const CUtlString &src ) const;
+	bool operator==( const char *src ) const;
 	bool operator!=( const CUtlString &src ) const { return !operator==( src ); }
+	bool operator!=( const char *src ) const { return !operator==( src ); }
+
+	// If these are not defined, CUtlString as rhs will auto-convert
+	// to const char* and do logical operations on the raw pointers. Ugh.
+	inline friend bool operator==( const char *lhs, const CUtlString &rhs ) { return rhs.operator==( lhs ); }
+	inline friend bool operator!=( const char *lhs, const CUtlString &rhs ) { return rhs.operator!=( lhs ); }
 
 	CUtlString &operator+=( const CUtlString &rhs );
 	CUtlString &operator+=( const char *rhs );
@@ -157,46 +226,42 @@ public:
 	CUtlString operator+( const char *pOther ) const;
 	CUtlString operator+( const CUtlString &other ) const;
 	CUtlString operator+( int rhs ) const;
+	
+	// is valid?
+	bool IsValid() const;
 
 	bool MatchesPattern( const CUtlString &Pattern, int nFlags = 0 ) const;		// case SENSITIVE, use * for wildcard in pattern string
 
-	char operator[]( int i ) const;
-
-#if ! defined(SWIG)
-	// Don't let SWIG see the PRINTF_FORMAT_STRING attribute or it will complain.
-	int Format( PRINTF_FORMAT_STRING const char *pFormat, ... )  FMTFUNCTION( 2, 3 );
+	int Format( PRINTF_FORMAT_STRING const char *pFormat, ... );
 	int FormatV( PRINTF_FORMAT_STRING const char *pFormat, va_list marker );
-#else
-	int Format( const char *pFormat, ... );
-	int FormatV( const char *pFormat, va_list marker );
-#endif
+	void SetDirect( const char *pValue, int nChars );
 
 	// Defining AltArgumentType_t hints that associative container classes should
 	// also implement Find/Insert/Remove functions that take const char* params.
 	typedef const char *AltArgumentType_t;
 
-	// Get a copy of part of the string.
+	// Take a piece out of the string.
 	// If you only specify nStart, it'll go from nStart to the end.
 	// You can use negative numbers and it'll wrap around to the start.
 	CUtlString Slice( int32 nStart=0, int32 nEnd=INT_MAX ) const;
 
-	// Get a substring starting from the left or the right side.
+	// Grab a substring starting from the left or the right side.
 	CUtlString Left( int32 nChars ) const;
 	CUtlString Right( int32 nChars ) const;
 
-	// Get a string with all instances of one character replaced with another.
+	// Replace all instances of one character with another.
 	CUtlString Replace( char cFrom, char cTo ) const;
 
 	// Replace all instances of specified string with another.
 	CUtlString Replace( const char *pszFrom, const char *pszTo ) const;
 
-	// Get this string as an absolute path (calls right through to V_MakeAbsolutePath).
+	// Calls right through to V_MakeAbsolutePath.
 	CUtlString AbsPath( const char *pStartingDir=NULL ) const;	
 
 	// Gets the filename (everything except the path.. c:\a\b\c\somefile.txt -> somefile.txt).
 	CUtlString UnqualifiedFilename() const;
 	
-	// Gets a string with one directory removed. Uses V_StripLastDir but strips the last slash also!
+	// Strips off one directory. Uses V_StripLastDir but strips the last slash also!
 	CUtlString DirName() const;
 
 	// Get a string with the extension removed (with V_StripExtension).
@@ -210,7 +275,7 @@ public:
 
 	// Get a string with the file extension (with V_FileBase).
 	CUtlString GetExtension() const;
-
+	
 	// Works like V_ComposeFileName.
 	static CUtlString PathJoin( const char *pStr1, const char *pStr2 );
 
@@ -224,87 +289,20 @@ public:
 	static const CUtlString &GetEmptyString();
 
 private:
-	// INTERNALS
-	// AllocMemory allocates enough space for length characters plus a terminating zero.
-	// Previous characters are preserved, the buffer is null-terminated, but new characters
-	// are not touched.
-	void *AllocMemory( uint32 length );
-
-	// If m_pString is not NULL, it points to the start of the string, and the memory allocation.
-	char *m_pString;
+	CUtlBinaryBlock m_Storage;
 };
-
-//	// If these are not defined, CUtlConstString as rhs will auto-convert
-//	// to const char* and do logical operations on the raw pointers. Ugh.
-//	inline friend bool operator<( const T *lhs, const CUtlConstStringBase &rhs ) { return rhs.Compare( lhs ) > 0; }
-//	inline friend bool operator==( const T *lhs, const CUtlConstStringBase &rhs ) { return rhs.Compare( lhs ) == 0; }
-//	inline friend bool operator!=( const T *lhs, const CUtlConstStringBase &rhs ) { return rhs.Compare( lhs ) != 0; }
-
-inline bool operator==( const char *pString, const CUtlString &utlString )
-{
-	return utlString.IsEqual_CaseSensitive( pString );
-}
-
-inline bool operator!=( const char *pString, const CUtlString &utlString )
-{	
-	return !utlString.IsEqual_CaseSensitive( pString );
-}
-
-inline bool operator==( const CUtlString &utlString, const char *pString )
-{
-	return utlString.IsEqual_CaseSensitive( pString );
-}
-
-inline bool operator!=( const CUtlString &utlString, const char *pString )
-{
-	return !utlString.IsEqual_CaseSensitive( pString );
-}
-
-
 
 //-----------------------------------------------------------------------------
 // Inline methods
 //-----------------------------------------------------------------------------
-inline CUtlString::CUtlString()
-: m_pString( NULL )
-{
-}
-
-inline CUtlString::CUtlString( const char *pString )
-: m_pString( NULL )
-{
-	Set( pString );
-}
-
-inline CUtlString::CUtlString( const char *pString, int length )
-: m_pString( NULL )
-{
-	SetDirect( pString, length );
-}
-
-inline CUtlString::CUtlString( const CUtlString& string )
-: m_pString( NULL )
-{
-	Set( string.Get() );
-}
-
-inline CUtlString::~CUtlString()
-{
-	Purge();
-}
-
-inline int CUtlString::Length() const
-{
-	if (m_pString)
-	{
-		return V_strlen( m_pString );
-	}
-	return 0;
-}
-
 inline bool CUtlString::IsEmpty() const
 {
-	return !m_pString || m_pString[0] == 0;
+	return Length() == 0;
+}
+
+inline bool CUtlString::IsValid() const
+{
+	return ( String() != NULL );
 }
 
 inline int __cdecl CUtlString::SortCaseInsensitive( const CUtlString *pString1, const CUtlString *pString2 )
@@ -316,14 +314,6 @@ inline int __cdecl CUtlString::SortCaseSensitive( const CUtlString *pString1, co
 {
 	return V_strcmp( pString1->String(), pString2->String() );
 }
-
-// Converts to c-strings
-inline CUtlString::operator const char*() const
-{
-	return Get();
-}
-
-
 
 //-----------------------------------------------------------------------------
 // Purpose: Implementation of low-level string functionality for character types.
@@ -463,7 +453,5 @@ template < typename T > struct UTLConstStringCaselessStringEqualFunctor { bool o
 // Helper function for CUtlMaps with a CUtlString key
 inline bool UtlStringLessFunc( const CUtlString &lhs, const CUtlString &rhs ) { return V_strcmp( lhs.Get(), rhs.Get() ) < 0; } 
 inline bool UtlStringCaseInsensitiveLessFunc( const CUtlString &lhs, const CUtlString &rhs ) { return V_stricmp( lhs.Get(), rhs.Get() ) < 0; } 
-
-#include "memdbgoff.h"
 
 #endif // UTLSTRING_H

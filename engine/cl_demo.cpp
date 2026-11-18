@@ -637,6 +637,13 @@ void CDemoRecorder::StartupDemoFile( void )
 	g_ClientDLL->OnDemoRecordStart( m_szDemoBaseName );
 }
 
+#ifdef BYTEMATCH_RETAIL
+CDemoRecorder::CDemoRecorder()
+{
+}
+
+#endif
+#line 644
 CDemoRecorder::~CDemoRecorder()
 {
 	CloseDemoFile();	
@@ -686,7 +693,12 @@ void CDemoRecorder::CloseDemoFile()
 
 		m_DemoFile.Close();
 
+#ifdef BYTEMATCH_RETAIL
+		g_ClientDLL->OnDemoRecordStop();
+#else
 		if( g_ClientDLL ) g_ClientDLL->OnDemoRecordStop();
+#endif
+#line 694
 	}
 
 	m_bCloseDemoFile = false;

@@ -1,0 +1,152 @@
+{
+ "interface": "IClientMessageHandler",
+ "headers": [
+  "public/inetmsghandler.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 16,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "ProcessTick(NET_Tick*)",
+  "ProcessStringCmd(NET_StringCmd*)",
+  "ProcessSetConVar(NET_SetConVar*)",
+  "ProcessSignonState(NET_SignonState*)",
+  "ProcessClientInfo(CLC_ClientInfo*)",
+  "ProcessMove(CLC_Move*)",
+  "ProcessVoiceData(CLC_VoiceData*)",
+  "ProcessBaselineAck(CLC_BaselineAck*)",
+  "ProcessListenEvents(CLC_ListenEvents*)",
+  "ProcessRespondCvarValue(CLC_RespondCvarValue*)",
+  "ProcessFileCRCCheck(CLC_FileCRCCheck*)",
+  "ProcessFileMD5Check(CLC_FileMD5Check*)",
+  "ProcessSaveReplay(CLC_SaveReplay*)",
+  "ProcessCmdKeyValues(CLC_CmdKeyValues*)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CGameClient",
+  "offset": 8,
+  "chain": [
+   "CGameClient",
+   "CBaseClient",
+   "IClientMessageHandler"
+  ]
+ },
+ "retail_len": 16,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 16
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CGameClient",
+   "sig": "~CGameClient()",
+   "symbol": "non-virtual thunk to CGameClient::~CGameClient()"
+  },
+  {
+   "index": 1,
+   "name": "~CGameClient",
+   "sig": "~CGameClient()",
+   "symbol": "non-virtual thunk to CGameClient::~CGameClient()"
+  },
+  {
+   "index": 2,
+   "name": "ProcessTick",
+   "sig": "ProcessTick(NET_Tick*)",
+   "symbol": "non-virtual thunk to CBaseClient::ProcessTick(NET_Tick*)"
+  },
+  {
+   "index": 3,
+   "name": "ProcessStringCmd",
+   "sig": "ProcessStringCmd(NET_StringCmd*)",
+   "symbol": "non-virtual thunk to CBaseClient::ProcessStringCmd(NET_StringCmd*)"
+  },
+  {
+   "index": 4,
+   "name": "ProcessSetConVar",
+   "sig": "ProcessSetConVar(NET_SetConVar*)",
+   "symbol": "non-virtual thunk to CBaseClient::ProcessSetConVar(NET_SetConVar*)"
+  },
+  {
+   "index": 5,
+   "name": "ProcessSignonState",
+   "sig": "ProcessSignonState(NET_SignonState*)",
+   "symbol": "non-virtual thunk to CBaseClient::ProcessSignonState(NET_SignonState*)"
+  },
+  {
+   "index": 6,
+   "name": "ProcessClientInfo",
+   "sig": "ProcessClientInfo(CLC_ClientInfo*)",
+   "symbol": "non-virtual thunk to CGameClient::ProcessClientInfo(CLC_ClientInfo*)"
+  },
+  {
+   "index": 7,
+   "name": "ProcessMove",
+   "sig": "ProcessMove(CLC_Move*)",
+   "symbol": "non-virtual thunk to CGameClient::ProcessMove(CLC_Move*)"
+  },
+  {
+   "index": 8,
+   "name": "ProcessVoiceData",
+   "sig": "ProcessVoiceData(CLC_VoiceData*)",
+   "symbol": "non-virtual thunk to CGameClient::ProcessVoiceData(CLC_VoiceData*)"
+  },
+  {
+   "index": 9,
+   "name": "ProcessBaselineAck",
+   "sig": "ProcessBaselineAck(CLC_BaselineAck*)",
+   "symbol": "non-virtual thunk to CBaseClient::ProcessBaselineAck(CLC_BaselineAck*)"
+  },
+  {
+   "index": 10,
+   "name": "ProcessListenEvents",
+   "sig": "ProcessListenEvents(CLC_ListenEvents*)",
+   "symbol": "non-virtual thunk to CBaseClient::ProcessListenEvents(CLC_ListenEvents*)"
+  },
+  {
+   "index": 11,
+   "name": "ProcessRespondCvarValue",
+   "sig": "ProcessRespondCvarValue(CLC_RespondCvarValue*)",
+   "symbol": "non-virtual thunk to CGameClient::ProcessRespondCvarValue(CLC_RespondCvarValue*)"
+  },
+  {
+   "index": 12,
+   "name": "ProcessFileCRCCheck",
+   "sig": "ProcessFileCRCCheck(CLC_FileCRCCheck*)",
+   "symbol": "non-virtual thunk to CGameClient::ProcessFileCRCCheck(CLC_FileCRCCheck*)"
+  },
+  {
+   "index": 13,
+   "name": "ProcessFileMD5Check",
+   "sig": "ProcessFileMD5Check(CLC_FileMD5Check*)",
+   "symbol": "non-virtual thunk to CGameClient::ProcessFileMD5Check(CLC_FileMD5Check*)"
+  },
+  {
+   "index": 14,
+   "name": "ProcessSaveReplay",
+   "sig": "ProcessSaveReplay(CLC_SaveReplay*)",
+   "symbol": "non-virtual thunk to CGameClient::ProcessSaveReplay(CLC_SaveReplay*)"
+  },
+  {
+   "index": 15,
+   "name": "ProcessCmdKeyValues",
+   "sig": "ProcessCmdKeyValues(CLC_CmdKeyValues*)",
+   "symbol": "non-virtual thunk to CGameClient::ProcessCmdKeyValues(CLC_CmdKeyValues*)"
+  }
+ ],
+ "derived": [
+  "bin/engine:CBaseClient",
+  "bin/engine:CGameClient",
+  "bin/engine:CHLTVClient",
+  "bin/engine:CMatchmaking"
+ ],
+ "derived_count": 4
+}

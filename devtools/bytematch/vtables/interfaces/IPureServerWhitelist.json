@@ -1,0 +1,71 @@
+{
+ "interface": "IPureServerWhitelist",
+ "headers": [
+  "public/filesystem.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 5,
+ "sdk2013_slots": [
+  "AddRef()",
+  "Release()",
+  "GetFileClass(char const*)",
+  "GetTrustedKeyCount() const",
+  "GetTrustedKey(int, int*) const"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CPureServerWhitelist",
+  "offset": 0,
+  "chain": [
+   "CPureServerWhitelist",
+   "IPureServerWhitelist"
+  ]
+ },
+ "retail_len": 5,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 5
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "AddRef",
+   "sig": "AddRef()",
+   "symbol": "CPureServerWhitelist::AddRef()"
+  },
+  {
+   "index": 1,
+   "name": "Release",
+   "sig": "Release()",
+   "symbol": "CPureServerWhitelist::Release()"
+  },
+  {
+   "index": 2,
+   "name": "GetFileClass",
+   "sig": "GetFileClass(char const*)",
+   "symbol": "CPureServerWhitelist::GetFileClass(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "GetTrustedKeyCount",
+   "sig": "GetTrustedKeyCount() const",
+   "symbol": "CPureServerWhitelist::GetTrustedKeyCount() const"
+  },
+  {
+   "index": 4,
+   "name": "GetTrustedKey",
+   "sig": "GetTrustedKey(int, int*) const",
+   "symbol": "CPureServerWhitelist::GetTrustedKey(int, int*) const"
+  }
+ ],
+ "derived": [
+  "bin/engine:CPureServerWhitelist"
+ ],
+ "derived_count": 1
+}

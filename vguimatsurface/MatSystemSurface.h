@@ -108,7 +108,7 @@ public:
 
 	virtual bool DrawGetTextureFile(int id, char *filename, int maxlen );
 	virtual int	 DrawGetTextureId( char const *filename );
-	virtual int  DrawGetTextureId( ITexture *pTexture );
+	int			 DrawGetTextureId( ITexture *pTexture );
 	virtual void DrawSetTextureFile(int id, const char *filename, int hardwareFilter, bool forceReload);
 	virtual void DrawSetTexture(int id);
 	virtual void DrawGetTextureSize(int id, int &wide, int &tall);
@@ -233,8 +233,10 @@ public:
 	virtual void Begin3DPaint( int iLeft, int iTop, int iRight, int iBottom, bool bRenderToTexture = true );
 	virtual void End3DPaint();
 
-	virtual void BeginSkinCompositionPainting() OVERRIDE;
-	virtual void EndSkinCompositionPainting() OVERRIDE;
+	void BeginSkinCompositionPainting();
+	void EndSkinCompositionPainting();
+
+	virtual void DrawSetTextureRGBAEx2( int id, const unsigned char *rgba, int wide, int tall, ImageFormat imageFormat, bool bFlag1, bool bFlag2 ) OVERRIDE;
 
 	// Disable clipping during rendering
 	virtual void DisableClipping( bool bDisable ) OVERRIDE;
@@ -329,7 +331,7 @@ public:
 
 	virtual const char *GetWebkitHTMLUserAgentString() { return "Valve Client"; }
 
-	virtual void *Deprecated_AccessChromeHTMLController() { return NULL; }
+	virtual void *AccessChromeHTMLController() { return NULL; }
 
 	virtual void SetFullscreenViewport( int x, int y, int w, int h ) OVERRIDE;
 	virtual void SetFullscreenViewportAndRenderTarget( int x, int y, int w, int h, ITexture *pRenderTarget ) OVERRIDE;

@@ -41,7 +41,11 @@ class CThirdPersonManager
 {
 public:
 
+#ifdef BYTEMATCH_RETAIL
+	CThirdPersonManager();
+#else
 	CThirdPersonManager() = default;
+#endif
 	void	SetCameraOffsetAngles( Vector vecOffset ) { m_vecCameraOffset = vecOffset; }
 	Vector	GetCameraOffsetAngles( void ) { return m_vecCameraOffset; }
 	

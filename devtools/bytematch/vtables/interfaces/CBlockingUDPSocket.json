@@ -1,0 +1,50 @@
+{
+ "interface": "CBlockingUDPSocket",
+ "headers": [
+  "public/blockingudpsocket.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 2,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()"
+ ],
+ "retail_reference": {
+  "module": "bin/bugreporter_public",
+  "class": "CBlockingUDPSocket",
+  "offset": 0,
+  "chain": [
+   "CBlockingUDPSocket"
+  ]
+ },
+ "retail_len": 2,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 2
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CBlockingUDPSocket",
+   "sig": "~CBlockingUDPSocket()",
+   "symbol": "CBlockingUDPSocket::~CBlockingUDPSocket()"
+  },
+  {
+   "index": 1,
+   "name": "~CBlockingUDPSocket",
+   "sig": "~CBlockingUDPSocket()",
+   "symbol": "CBlockingUDPSocket::~CBlockingUDPSocket()"
+  }
+ ],
+ "derived": [
+  "bin/bugreporter_public:CBlockingUDPSocket",
+  "bin/engine:CBlockingUDPSocket"
+ ],
+ "derived_count": 2
+}

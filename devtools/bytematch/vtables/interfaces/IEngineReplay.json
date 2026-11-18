@@ -1,0 +1,239 @@
+{
+ "interface": "IEngineReplay",
+ "headers": [
+  "common/replay/ienginereplay.h"
+ ],
+ "versions": {
+  "retail": [
+   "EngineReplay001"
+  ],
+  "ours": [
+   "EngineReplay001"
+  ],
+  "sdk2013": [
+   "EngineReplay001"
+  ]
+ },
+ "version_macros": [
+  "ENGINE_REPLAY_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/engine",
+   "version": "EngineReplay001",
+   "class": "CEngineReplay"
+  }
+ ],
+ "sdk2013_len": 27,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "IsSupportedModAndPlatform()",
+  "GetHostTime()",
+  "GetHostTickCount()",
+  "TimeToTicks(float)",
+  "TicksToTime(int)",
+  "ReadDemoHeader(char const*, demoheader_t&)",
+  "GetGameDir()",
+  "Cbuf_AddText(char const*)",
+  "Cbuf_Execute()",
+  "Host_Disconnect(bool)",
+  "HostState_Shutdown()",
+  "GetModDir()",
+  "CopyFile(char const*, char const*)",
+  "LZSS_Compress(char*, unsigned int*, char const*, unsigned int)",
+  "LZSS_Decompress(char*, unsigned int*, char const*, unsigned int)",
+  "MD5_HashBuffer(unsigned char*, unsigned char const*, int, unsigned int*)",
+  "GetReplayServer()",
+  "GetReplayServerAsIServer()",
+  "GetGameServer()",
+  "GetSessionRecordBuffer(unsigned char**, int*)",
+  "IsDedicated()",
+  "ResetReplayRecordBuffer()",
+  "GetReplayDemoHeader()",
+  "RecalculateTags()",
+  "NET_GetHostnameAsIP(char const*, char*, int)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CEngineReplay",
+  "offset": 0,
+  "chain": [
+   "CEngineReplay",
+   "IEngineReplay"
+  ]
+ },
+ "retail_len": 27,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 27
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CEngineReplay",
+   "sig": "~CEngineReplay()",
+   "symbol": "CEngineReplay::~CEngineReplay()"
+  },
+  {
+   "index": 1,
+   "name": "~CEngineReplay",
+   "sig": "~CEngineReplay()",
+   "symbol": "CEngineReplay::~CEngineReplay()"
+  },
+  {
+   "index": 2,
+   "name": "IsSupportedModAndPlatform",
+   "sig": "IsSupportedModAndPlatform()",
+   "symbol": "CEngineReplay::IsSupportedModAndPlatform()"
+  },
+  {
+   "index": 3,
+   "name": "GetHostTime",
+   "sig": "GetHostTime()",
+   "symbol": "CEngineReplay::GetHostTime()"
+  },
+  {
+   "index": 4,
+   "name": "GetHostTickCount",
+   "sig": "GetHostTickCount()",
+   "symbol": "CEngineReplay::GetHostTickCount()"
+  },
+  {
+   "index": 5,
+   "name": "TimeToTicks",
+   "sig": "TimeToTicks(float)",
+   "symbol": "CEngineReplay::TimeToTicks(float)"
+  },
+  {
+   "index": 6,
+   "name": "TicksToTime",
+   "sig": "TicksToTime(int)",
+   "symbol": "CEngineReplay::TicksToTime(int)"
+  },
+  {
+   "index": 7,
+   "name": "ReadDemoHeader",
+   "sig": "ReadDemoHeader(char const*, demoheader_t&)",
+   "symbol": "CEngineReplay::ReadDemoHeader(char const*, demoheader_t&)"
+  },
+  {
+   "index": 8,
+   "name": "GetGameDir",
+   "sig": "GetGameDir()",
+   "symbol": "CEngineReplay::GetGameDir()"
+  },
+  {
+   "index": 9,
+   "name": "Cbuf_AddText",
+   "sig": "Cbuf_AddText(char const*)",
+   "symbol": "CEngineReplay::Cbuf_AddText(char const*)"
+  },
+  {
+   "index": 10,
+   "name": "Cbuf_Execute",
+   "sig": "Cbuf_Execute()",
+   "symbol": "CEngineReplay::Cbuf_Execute()"
+  },
+  {
+   "index": 11,
+   "name": "Host_Disconnect",
+   "sig": "Host_Disconnect(bool)",
+   "symbol": "CEngineReplay::Host_Disconnect(bool)"
+  },
+  {
+   "index": 12,
+   "name": "HostState_Shutdown",
+   "sig": "HostState_Shutdown()",
+   "symbol": "CEngineReplay::HostState_Shutdown()"
+  },
+  {
+   "index": 13,
+   "name": "GetModDir",
+   "sig": "GetModDir()",
+   "symbol": "CEngineReplay::GetModDir()"
+  },
+  {
+   "index": 14,
+   "name": "CopyFile",
+   "sig": "CopyFile(char const*, char const*)",
+   "symbol": "CEngineReplay::CopyFile(char const*, char const*)"
+  },
+  {
+   "index": 15,
+   "name": "LZSS_Compress",
+   "sig": "LZSS_Compress(char*, unsigned int*, char const*, unsigned int)",
+   "symbol": "CEngineReplay::LZSS_Compress(char*, unsigned int*, char const*, unsigned int)"
+  },
+  {
+   "index": 16,
+   "name": "LZSS_Decompress",
+   "sig": "LZSS_Decompress(char*, unsigned int*, char const*, unsigned int)",
+   "symbol": "CEngineReplay::LZSS_Decompress(char*, unsigned int*, char const*, unsigned int)"
+  },
+  {
+   "index": 17,
+   "name": "MD5_HashBuffer",
+   "sig": "MD5_HashBuffer(unsigned char*, unsigned char const*, int, unsigned int*)",
+   "symbol": "CEngineReplay::MD5_HashBuffer(unsigned char*, unsigned char const*, int, unsigned int*)"
+  },
+  {
+   "index": 18,
+   "name": "GetReplayServer",
+   "sig": "GetReplayServer()",
+   "symbol": "CEngineReplay::GetReplayServer()"
+  },
+  {
+   "index": 19,
+   "name": "GetReplayServerAsIServer",
+   "sig": "GetReplayServerAsIServer()",
+   "symbol": "CEngineReplay::GetReplayServerAsIServer()"
+  },
+  {
+   "index": 20,
+   "name": "GetGameServer",
+   "sig": "GetGameServer()",
+   "symbol": "CEngineReplay::GetGameServer()"
+  },
+  {
+   "index": 21,
+   "name": "GetSessionRecordBuffer",
+   "sig": "GetSessionRecordBuffer(unsigned char**, int*)",
+   "symbol": "CEngineReplay::GetSessionRecordBuffer(unsigned char**, int*)"
+  },
+  {
+   "index": 22,
+   "name": "IsDedicated",
+   "sig": "IsDedicated()",
+   "symbol": "CEngineReplay::IsDedicated()"
+  },
+  {
+   "index": 23,
+   "name": "ResetReplayRecordBuffer",
+   "sig": "ResetReplayRecordBuffer()",
+   "symbol": "CEngineReplay::ResetReplayRecordBuffer()"
+  },
+  {
+   "index": 24,
+   "name": "GetReplayDemoHeader",
+   "sig": "GetReplayDemoHeader()",
+   "symbol": "CEngineReplay::GetReplayDemoHeader()"
+  },
+  {
+   "index": 25,
+   "name": "RecalculateTags",
+   "sig": "RecalculateTags()",
+   "symbol": "CEngineReplay::RecalculateTags()"
+  },
+  {
+   "index": 26,
+   "name": "NET_GetHostnameAsIP",
+   "sig": "NET_GetHostnameAsIP(char const*, char*, int)",
+   "symbol": "CEngineReplay::NET_GetHostnameAsIP(char const*, char*, int)"
+  }
+ ],
+ "derived": [
+  "bin/engine:CEngineReplay"
+ ],
+ "derived_count": 1
+}

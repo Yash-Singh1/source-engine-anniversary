@@ -1,0 +1,252 @@
+{
+ "interface": "IDataCacheSection",
+ "headers": [
+  "public/datacache/idatacache.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 30,
+ "sdk2013_slots": [
+  "GetSharedCache()",
+  "GetName()",
+  "SetLimits(DataCacheLimits_t const&)",
+  "SetOptions(unsigned int)",
+  "GetStatus(DataCacheStatus_t*, DataCacheLimits_t*)",
+  "EnsureCapacity(unsigned int, unsigned int)",
+  "Add(unsigned int, void const*, unsigned int, memhandle_t__**)",
+  "Find(unsigned int)",
+  "Remove(memhandle_t__*, void const**, unsigned int*, bool)",
+  "IsPresent(memhandle_t__*)",
+  "Lock(memhandle_t__*)",
+  "Unlock(memhandle_t__*)",
+  "Get(memhandle_t__*, bool)",
+  "GetNoTouch(memhandle_t__*, bool)",
+  "BeginFrameLocking()",
+  "IsFrameLocking()",
+  "FrameLock(memhandle_t__*)",
+  "EndFrameLocking()",
+  "GetFrameUnlockCounterPtr()",
+  "GetLockCount(memhandle_t__*)",
+  "BreakLock(memhandle_t__*)",
+  "Touch(memhandle_t__*)",
+  "Age(memhandle_t__*)",
+  "Flush(bool, bool)",
+  "Purge(unsigned int)",
+  "OutputReport(DataCacheReportType_t)",
+  "UpdateSize(memhandle_t__*, unsigned int)",
+  "LockMutex()",
+  "UnlockMutex()",
+  "AddEx(unsigned int, void const*, unsigned int, unsigned int, memhandle_t__**)"
+ ],
+ "retail_reference": {
+  "module": "bin/datacache",
+  "class": "CDataCacheSection",
+  "offset": 0,
+  "chain": [
+   "CDataCacheSection",
+   "IDataCacheSection"
+  ]
+ },
+ "retail_len": 30,
+ "retail_len_basis": "override: OnAdd/DoFind/OnRemove are CDataCacheSection's own",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 33
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "GetSharedCache",
+   "sig": "GetSharedCache()",
+   "symbol": "CDataCacheSection::GetSharedCache()"
+  },
+  {
+   "index": 1,
+   "name": "GetName",
+   "sig": "GetName()",
+   "symbol": "CDataCacheSection::GetName()"
+  },
+  {
+   "index": 2,
+   "name": "SetLimits",
+   "sig": "SetLimits(DataCacheLimits_t const&)",
+   "symbol": "CDataCacheSection::SetLimits(DataCacheLimits_t const&)"
+  },
+  {
+   "index": 3,
+   "name": "SetOptions",
+   "sig": "SetOptions(unsigned int)",
+   "symbol": "CDataCacheSection::SetOptions(unsigned int)"
+  },
+  {
+   "index": 4,
+   "name": "GetStatus",
+   "sig": "GetStatus(DataCacheStatus_t*, DataCacheLimits_t*)",
+   "symbol": "CDataCacheSection::GetStatus(DataCacheStatus_t*, DataCacheLimits_t*)"
+  },
+  {
+   "index": 5,
+   "name": "EnsureCapacity",
+   "sig": "EnsureCapacity(unsigned int, unsigned int)",
+   "symbol": "CDataCacheSection::EnsureCapacity(unsigned int, unsigned int)"
+  },
+  {
+   "index": 6,
+   "name": "Add",
+   "sig": "Add(unsigned int, void const*, unsigned int, memhandle_t__**)",
+   "symbol": "CDataCacheSection::Add(unsigned int, void const*, unsigned int, memhandle_t__**)"
+  },
+  {
+   "index": 7,
+   "name": "Find",
+   "sig": "Find(unsigned int)",
+   "symbol": "CDataCacheSection::Find(unsigned int)"
+  },
+  {
+   "index": 8,
+   "name": "Remove",
+   "sig": "Remove(memhandle_t__*, void const**, unsigned int*, bool)",
+   "symbol": "CDataCacheSection::Remove(memhandle_t__*, void const**, unsigned int*, bool)"
+  },
+  {
+   "index": 9,
+   "name": "IsPresent",
+   "sig": "IsPresent(memhandle_t__*)",
+   "symbol": "CDataCacheSection::IsPresent(memhandle_t__*)"
+  },
+  {
+   "index": 10,
+   "name": "Lock",
+   "sig": "Lock(memhandle_t__*)",
+   "symbol": "CDataCacheSection::Lock(memhandle_t__*)"
+  },
+  {
+   "index": 11,
+   "name": "Unlock",
+   "sig": "Unlock(memhandle_t__*)",
+   "symbol": "CDataCacheSection::Unlock(memhandle_t__*)"
+  },
+  {
+   "index": 12,
+   "name": "Get",
+   "sig": "Get(memhandle_t__*, bool)",
+   "symbol": "CDataCacheSection::Get(memhandle_t__*, bool)"
+  },
+  {
+   "index": 13,
+   "name": "GetNoTouch",
+   "sig": "GetNoTouch(memhandle_t__*, bool)",
+   "symbol": "CDataCacheSection::GetNoTouch(memhandle_t__*, bool)"
+  },
+  {
+   "index": 14,
+   "name": "BeginFrameLocking",
+   "sig": "BeginFrameLocking()",
+   "symbol": "CDataCacheSection::BeginFrameLocking()"
+  },
+  {
+   "index": 15,
+   "name": "IsFrameLocking",
+   "sig": "IsFrameLocking()",
+   "symbol": "CDataCacheSection::IsFrameLocking()"
+  },
+  {
+   "index": 16,
+   "name": "FrameLock",
+   "sig": "FrameLock(memhandle_t__*)",
+   "symbol": "CDataCacheSection::FrameLock(memhandle_t__*)"
+  },
+  {
+   "index": 17,
+   "name": "EndFrameLocking",
+   "sig": "EndFrameLocking()",
+   "symbol": "CDataCacheSection::EndFrameLocking()"
+  },
+  {
+   "index": 18,
+   "name": "GetFrameUnlockCounterPtr",
+   "sig": "GetFrameUnlockCounterPtr()",
+   "symbol": "CDataCacheSection::GetFrameUnlockCounterPtr()"
+  },
+  {
+   "index": 19,
+   "name": "GetLockCount",
+   "sig": "GetLockCount(memhandle_t__*)",
+   "symbol": "CDataCacheSection::GetLockCount(memhandle_t__*)"
+  },
+  {
+   "index": 20,
+   "name": "BreakLock",
+   "sig": "BreakLock(memhandle_t__*)",
+   "symbol": "CDataCacheSection::BreakLock(memhandle_t__*)"
+  },
+  {
+   "index": 21,
+   "name": "Touch",
+   "sig": "Touch(memhandle_t__*)",
+   "symbol": "CDataCacheSection::Touch(memhandle_t__*)"
+  },
+  {
+   "index": 22,
+   "name": "Age",
+   "sig": "Age(memhandle_t__*)",
+   "symbol": "CDataCacheSection::Age(memhandle_t__*)"
+  },
+  {
+   "index": 23,
+   "name": "Flush",
+   "sig": "Flush(bool, bool)",
+   "symbol": "CDataCacheSection::Flush(bool, bool)"
+  },
+  {
+   "index": 24,
+   "name": "Purge",
+   "sig": "Purge(unsigned int)",
+   "symbol": "CDataCacheSection::Purge(unsigned int)"
+  },
+  {
+   "index": 25,
+   "name": "OutputReport",
+   "sig": "OutputReport(DataCacheReportType_t)",
+   "symbol": "CDataCacheSection::OutputReport(DataCacheReportType_t)"
+  },
+  {
+   "index": 26,
+   "name": "UpdateSize",
+   "sig": "UpdateSize(memhandle_t__*, unsigned int)",
+   "symbol": "CDataCacheSection::UpdateSize(memhandle_t__*, unsigned int)"
+  },
+  {
+   "index": 27,
+   "name": "LockMutex",
+   "sig": "LockMutex()",
+   "symbol": "CDataCacheSection::LockMutex()"
+  },
+  {
+   "index": 28,
+   "name": "UnlockMutex",
+   "sig": "UnlockMutex()",
+   "symbol": "CDataCacheSection::UnlockMutex()"
+  },
+  {
+   "index": 29,
+   "name": "AddEx",
+   "sig": "AddEx(unsigned int, void const*, unsigned int, unsigned int, memhandle_t__**)",
+   "symbol": "CDataCacheSection::AddEx(unsigned int, void const*, unsigned int, unsigned int, memhandle_t__**)"
+  }
+ ],
+ "implementer_tail": [
+  "OnAdd(unsigned int, memhandle_t__*)",
+  "DoFind(unsigned int)",
+  "OnRemove(unsigned int)"
+ ],
+ "derived": [
+  "bin/datacache:CDataCacheSection",
+  "bin/datacache:CDataCacheSectionFastFind"
+ ],
+ "derived_count": 2
+}

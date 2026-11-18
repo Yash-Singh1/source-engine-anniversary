@@ -335,12 +335,6 @@ private:
 	ModelParts_t& operator=(const ModelParts_t&); // no impl
 };
 
-struct CleanupModelParts_t
-{
-	FileCacheHandle_t hFileCache;
-	CUtlVector< IMaterial* > Materials;
-};
-
 //-----------------------------------------------------------------------------
 // Implementation of the simple studio data cache (no caching)
 //-----------------------------------------------------------------------------
@@ -447,7 +441,6 @@ public:
 	void ProcessQueuedData( ModelParts_t *pModelParts, bool bHeaderOnly = false );
 	static void	QueuedLoaderCallback_MDL( void *pContext, void  *pContext2, const void *pData, int nSize, LoaderError_t loaderError );
 	static void	ProcessDynamicLoad( ModelParts_t *pModelParts );
-	static void CleanupDynamicLoad( CleanupModelParts_t *pCleanup );
 
 private:
 	// Inits, shuts downs studiodata_t
@@ -3760,30 +3753,22 @@ void CMDLCache::ProcessDynamicLoad( ModelParts_t *pModelParts )
 	Assert( !pModelParts->bTexturesPending && !pModelParts->bMaterialsPending );
 
 	// pull out cached items we want to overlap with final processing
-	CleanupModelParts_t *pCleanup = new CleanupModelParts_t;
-	pCleanup->hFileCache = pModelParts->hFileCache;
-	pCleanup->Materials.Swap( pModelParts->Materials );
-	g_pQueuedLoader->QueueCleanupDynamicLoadFunctor( CreateFunctor( CleanupDynamicLoad, pCleanup ) );
+	CUtlVector< IMaterial* > Materials;
+	Materials.Swap( pModelParts->Materials );
+	FileCacheHandle_t hFileCache = pModelParts->hFileCache;
 
 	{
 		DEBUG_SCOPE_TIMER(processall);
 		g_MDLCache.ProcessQueuedData( pModelParts ); // pModelParts is deleted here
 	}
-}
-
-void CMDLCache::CleanupDynamicLoad( CleanupModelParts_t *pCleanup )
-{
-	Assert( IsPC() && ThreadInMainThread() );
 
 	// remove extra material refs, unload cached files
-	FOR_EACH_VEC( pCleanup->Materials, i )
+	FOR_EACH_VEC( Materials, i )
 	{
-		pCleanup->Materials[i]->DecrementReferenceCount();
+		Materials[i]->DecrementReferenceCount();
 	}
 
-	g_pFullFileSystem->DestroyFileCache( pCleanup->hFileCache );
-
-	delete pCleanup;
+	g_pFullFileSystem->DestroyFileCache( hFileCache );
 }
 
 //-----------------------------------------------------------------------------

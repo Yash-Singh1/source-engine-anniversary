@@ -1641,6 +1641,7 @@ void CPhysicsCollision::VCollideLoad( vcollide_t *pOutput, int solidCount, const
 		memcpy( &size, pBuffer + position, sizeof(int) );
 		position += sizeof(int);
 
+#ifndef BYTEMATCH_RETAIL
 		char *tmpbuf = new char[size];
 		memcpy(tmpbuf, pBuffer + position, size);
 
@@ -1648,6 +1649,10 @@ void CPhysicsCollision::VCollideLoad( vcollide_t *pOutput, int solidCount, const
 		position += size;
 
 		delete[] tmpbuf;
+#else
+		pOutput->solids[i] = CPhysCollide::UnserializeFromBuffer( pBuffer + position, size, i, swap );
+		position += size;
+#endif
 	}
 
 	END_IVP_ALLOCATION();

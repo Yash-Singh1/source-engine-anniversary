@@ -72,7 +72,10 @@
 #include "replay_internal.h"
 #endif
 
+#ifndef BYTEMATCH_RETAIL
 #include "language.h"
+#endif
+#line 75
 #include "igame.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
@@ -893,7 +896,12 @@ CON_COMMAND_F( connect, "Connect to specified server.", FCVAR_DONTRECORD )
 	{
 		ConMsg( "Usage:  connect <server>\n" );
 	}
+#ifdef BYTEMATCH_RETAIL
+	vecArgs.PurgeAndDeleteElements();
+#else
 	vecArgs.PurgeAndDeleteElementsArray();
+#endif
+#line 896
 }
 
 CON_COMMAND_F( redirect, "Redirect client to specified server.", FCVAR_DONTRECORD | FCVAR_SERVER_CAN_EXECUTE )
@@ -2367,8 +2375,12 @@ bool CL_ShouldLoadBackgroundLevel( const CCommand &args )
 	// don't load the map in developer or console mode
 	if ( developer.GetInt() || 
 		CommandLine()->CheckParm("-console") || 
-		CommandLine()->CheckParm("-dev") ||
-		CommandLine()->CheckParm("-nobackgroundlevel") )
+		CommandLine()->CheckParm("-dev")
+#ifndef BYTEMATCH_RETAIL
+		|| CommandLine()->CheckParm("-nobackgroundlevel")
+#endif
+#line 2370
+		)
 		return false;
 
 	// don't load the map if we're going straight into a level
@@ -2739,13 +2751,17 @@ static ConCommand startupmenu( "startupmenu", &CL_CheckToDisplayStartupMenus, "O
 ConVar cl_language( "cl_language", "english", FCVAR_USERINFO, "Language (from HKCU\\Software\\Valve\\Steam\\Language)" );
 void CL_InitLanguageCvar()
 {
+#ifndef BYTEMATCH_RETAIL
 	Msg("CL_InitLanguageCvar\n");
+#endif
+#line 2741
 	if ( Steam3Client().SteamApps() )
 	{
 		cl_language.SetValue( Steam3Client().SteamApps()->GetCurrentGameLanguage() );
 	}
 	else
 	{
+#ifndef BYTEMATCH_RETAIL
 		char *szLang = getenv("LANG");
 
 		if ( CommandLine()->CheckParm( "-language" ) )
@@ -2763,6 +2779,8 @@ void CL_InitLanguageCvar()
 				return;
 			}
 		}
+#endif
+#line 2747
 
 		cl_language.SetValue( "english" );
 	}

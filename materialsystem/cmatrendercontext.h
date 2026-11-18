@@ -156,10 +156,12 @@ public:
 	virtual	float							Knob( char *knobname, float *setvalue = NULL );
 
 protected:
+#ifndef BYTEMATCH_RETAIL
 	void									OnAsyncCreateTextureFromRenderTarget( ITexture* pSrcRt, const char** pDstName, IAsyncTextureOperationReceiver* pRecipient );
 	void									OnAsyncMap( ITextureInternal* pTexToMap, IAsyncTextureOperationReceiver* pRecipient, void* pExtraArgs );
 	void									OnAsyncUnmap( ITextureInternal* pTexToUnmap );
 	void									OnAsyncCopyRenderTargetToStagingTexture( ITexture* pDst, ITexture* pSrc, IAsyncTextureOperationReceiver* pRecipient );
+#endif
 
 protected:
 	enum MatrixStackFlags_t
@@ -536,11 +538,18 @@ public:
 	DELEGATE_TO_OBJECT_0V(					BeginFrame, g_pShaderAPI );
 	DELEGATE_TO_OBJECT_0V(					EndFrame, g_pShaderAPI );
 
+#ifndef BYTEMATCH_RETAIL
 	virtual void							AsyncCreateTextureFromRenderTarget( ITexture* pSrcRt, const char* pDstName, ImageFormat dstFmt, bool bGenMips, int nAdditionalCreationFlags, IAsyncTextureOperationReceiver* pRecipient, void* pExtraArgs );
+#endif
 
+	void									FogRadial( bool bRadial )											{ g_pShaderAPI->SceneFogRadial( bRadial ); }
+	bool									GetFogRadial()														{ return g_pShaderAPI->GetSceneFogRadial(); }
+
+#ifndef BYTEMATCH_RETAIL
 	virtual void							AsyncMap( ITextureInternal* pTexToMap, IAsyncTextureOperationReceiver* pRecipient, void* pExtraArgs ) OVERRIDE;
 	virtual void							AsyncUnmap( ITextureInternal* pTexToUnmap ) OVERRIDE;
 	virtual void							AsyncCopyRenderTargetToStagingTexture( ITexture* pDst, ITexture* pSrc, IAsyncTextureOperationReceiver* pRecipient, void* pExtraArgs ) OVERRIDE;
+#endif
 
 
 
@@ -586,7 +595,9 @@ public:
 	void									DoStartupShaderPreloading( void );
 #endif
 
+#ifndef BYTEMATCH_RETAIL
 	virtual void							TextureManagerUpdate();
+#endif
 
 	//---------------------------------------------------------
 protected:

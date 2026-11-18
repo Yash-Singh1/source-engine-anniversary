@@ -1,0 +1,110 @@
+{
+ "interface": "CDefSaveRestoreOps",
+ "headers": [
+  "public/isaverestore.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 5,
+ "sdk2013_slots": [
+  "Save(SaveRestoreFieldInfo_t const&, ISave*)",
+  "Restore(SaveRestoreFieldInfo_t const&, IRestore*)",
+  "IsEmpty(SaveRestoreFieldInfo_t const&)",
+  "MakeEmpty(SaveRestoreFieldInfo_t const&)",
+  "Parse(SaveRestoreFieldInfo_t const&, char const*)"
+ ],
+ "retail_reference": {
+  "module": "bin/vphysics",
+  "class": "CMaterialIndexOps",
+  "offset": 0,
+  "chain": [
+   "CMaterialIndexOps",
+   "CDefSaveRestoreOps"
+  ]
+ },
+ "retail_len": 5,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 5
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Save",
+   "sig": "Save(SaveRestoreFieldInfo_t const&, ISave*)",
+   "symbol": "CMaterialIndexOps::Save(SaveRestoreFieldInfo_t const&, ISave*)"
+  },
+  {
+   "index": 1,
+   "name": "Restore",
+   "sig": "Restore(SaveRestoreFieldInfo_t const&, IRestore*)",
+   "symbol": "CMaterialIndexOps::Restore(SaveRestoreFieldInfo_t const&, IRestore*)"
+  },
+  {
+   "index": 2,
+   "name": "IsEmpty",
+   "sig": "IsEmpty(SaveRestoreFieldInfo_t const&)",
+   "symbol": "CMaterialIndexOps::IsEmpty(SaveRestoreFieldInfo_t const&)"
+  },
+  {
+   "index": 3,
+   "name": "MakeEmpty",
+   "sig": "MakeEmpty(SaveRestoreFieldInfo_t const&)",
+   "symbol": "CMaterialIndexOps::MakeEmpty(SaveRestoreFieldInfo_t const&)"
+  },
+  {
+   "index": 4,
+   "name": "Parse",
+   "sig": "Parse(SaveRestoreFieldInfo_t const&, char const*)",
+   "symbol": "CDefSaveRestoreOps::Parse(SaveRestoreFieldInfo_t const&, char const*)"
+  }
+ ],
+ "derived": [
+  "bin/vphysics:CMaterialIndexOps",
+  "bin/vphysics:CVPhysPtrSaveRestoreOps",
+  "bin/vphysics:CVPhysPtrUtlVectorSaveRestoreOps",
+  "episodic/client:CPhysObjSaveRestoreOps",
+  "episodic/client:CSoundPatchSaveRestoreOps",
+  "episodic/client:CUtlVectorDataOps<CUtlVector<SaveRestoreBlockHeader_t, CUtlMemory<SaveRestoreBlockHeader_t, int>>, 10>",
+  "episodic/client:CUtlVectorDataOps<CUtlVector<int, CUtlMemory<int, int>>, 5>",
+  "episodic/server:CAI_EnemiesListSaveRestoreOps",
+  "episodic/server:CActivityDataOps",
+  "episodic/server:CConceptHistoriesDataOps",
+  "episodic/server:CIKSaveRestoreOps",
+  "episodic/server:CPhysObjSaveRestoreOps",
+  "episodic/server:CResponseSystemSaveRestoreOps",
+  "episodic/server:CSoundPatchSaveRestoreOps",
+  "episodic/server:CStdStringSaveRestoreOps",
+  "episodic/server:CStringTableSaveRestoreOps",
+  "episodic/server:CThinkContextsSaveDataOps",
+  "episodic/server:CUtlMapDataOps<CUtlMap<string_t, CSimpleSimTimer, char>, 2, 10>",
+  "episodic/server:CUtlSymbolDataOps",
+  "episodic/server:CUtlVectorDataOps<CAI_InterestTarget, 10>",
+  "episodic/server:CUtlVectorDataOps<CUtlVector<AISquadEnemyInfo_t, CUtlMemory<AISquadEnemyInfo_t, int>>, 10>",
+  "episodic/server:CUtlVectorDataOps<CUtlVector<AI_Waypoint_t, CUtlMemory<AI_Waypoint_t, int>>, 10>",
+  "episodic/server:CUtlVectorDataOps<CUtlVector<CAI_ScriptConditionsElement, CUtlMemory<CAI_ScriptConditionsElement, int>>, 10>",
+  "episodic/server:CUtlVectorDataOps<CUtlVector<CAnimationLayer, CUtlMemory<CAnimationLayer, int>>, 10>",
+  "episodic/server:CUtlVectorDataOps<CUtlVector<CBaseEntity*, CUtlMemory<CBaseEntity*, int>>, 12>",
+  "episodic/server:CUtlVectorDataOps<CUtlVector<CHandle<CAI_BaseNPC>, CUtlMemory<CHandle<CAI_BaseNPC>, int>>, 13>",
+  "episodic/server:CUtlVectorDataOps<CUtlVector<CHandle<CBaseCombatWeapon>, CUtlMemory<CHandle<CBaseCombatWeapon>, int>>, 13>",
+  "episodic/server:CUtlVectorDataOps<CUtlVector<CHandle<CBaseEntity>, CUtlMemory<CHandle<CBaseEntity>, int>>, 13>",
+  "episodic/server:CUtlVectorDataOps<CUtlVector<CHandle<CBaseFlex>, CUtlMemory<CHandle<CBaseFlex>, int>>, 13>",
+  "episodic/server:CUtlVectorDataOps<CUtlVector<CHandle<CBasePlayer>, CUtlMemory<CHandle<CBasePlayer>, int>>, 13>",
+  "episodic/server:CUtlVectorDataOps<CUtlVector<CHandle<CFish>, CUtlMemory<CHandle<CFish>, int>>, 13>",
+  "episodic/server:CUtlVectorDataOps<CUtlVector<CHandle<CNPC_Antlion>, CUtlMemory<CHandle<CNPC_Antlion>, int>>, 13>",
+  "episodic/server:CUtlVectorDataOps<CUtlVector<CHandle<CSceneEntity>, CUtlMemory<CHandle<CSceneEntity>, int>>, 13>",
+  "episodic/server:CUtlVectorDataOps<CUtlVector<CHandle<CSceneListManager>, CUtlMemory<CHandle<CSceneListManager>, int>>, 13>",
+  "episodic/server:CUtlVectorDataOps<CUtlVector<CHandle<CVGuiScreen>, CUtlMemory<CHandle<CVGuiScreen>, int>>, 13>",
+  "episodic/server:CUtlVectorDataOps<CUtlVector<CPassengerInfo, CUtlMemory<CPassengerInfo, int>>, 10>",
+  "episodic/server:CUtlVectorDataOps<CUtlVector<FailPosition_t, CUtlMemory<FailPosition_t, int>>, 10>",
+  "episodic/server:CUtlVectorDataOps<CUtlVector<Relationship_t, CUtlMemory<Relationship_t, int>>, 10>",
+  "episodic/server:CUtlVectorDataOps<CUtlVector<ResponseContext_t, CUtlMemory<ResponseContext_t, int>>, 10>",
+  "episodic/server:CUtlVectorDataOps<CUtlVector<SaveRestoreBlockHeader_t, CUtlMemory<SaveRestoreBlockHeader_t, int>>, 10>"
+ ],
+ "derived_count": 266
+}

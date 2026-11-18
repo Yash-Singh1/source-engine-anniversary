@@ -1,0 +1,160 @@
+{
+ "interface": "IDataCache",
+ "headers": [
+  "public/datacache/idatacache.h"
+ ],
+ "versions": {
+  "retail": [
+   "VDataCache003"
+  ],
+  "ours": [
+   "VDataCache003"
+  ],
+  "sdk2013": [
+   "VDataCache003"
+  ]
+ },
+ "version_macros": [
+  "DATACACHE_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/datacache",
+   "version": "VDataCache003",
+   "class": "CDataCache"
+  }
+ ],
+ "sdk2013_len": 15,
+ "sdk2013_slots": [
+  "Connect(void* (*)(char const*, int*))",
+  "Disconnect()",
+  "QueryInterface(char const*)",
+  "Init()",
+  "Shutdown()",
+  "SetSize(int)",
+  "SetOptions(unsigned int)",
+  "SetSectionLimits(char const*, DataCacheLimits_t const&)",
+  "GetStatus(DataCacheStatus_t*, DataCacheLimits_t*)",
+  "AddSection(IDataCacheClient*, char const*, DataCacheLimits_t const&, bool)",
+  "RemoveSection(char const*, bool)",
+  "FindSection(char const*)",
+  "Purge(unsigned int)",
+  "Flush(bool, bool)",
+  "OutputReport(DataCacheReportType_t, char const*)"
+ ],
+ "retail_reference": {
+  "module": "bin/datacache",
+  "class": "CDataCache",
+  "offset": 0,
+  "chain": [
+   "CDataCache",
+   "CTier3AppSystem<IDataCache, 0>",
+   "CTier2AppSystem<IDataCache, 0>",
+   "CTier1AppSystem<IDataCache, 0>",
+   "CTier0AppSystem<IDataCache>",
+   "CBaseAppSystem<IDataCache>",
+   "IDataCache"
+  ]
+ },
+ "retail_len": 15,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 15
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Connect",
+   "sig": "Connect(void* (*)(char const*, int*))",
+   "symbol": "CDataCache::Connect(void* (*)(char const*, int*))"
+  },
+  {
+   "index": 1,
+   "name": "Disconnect",
+   "sig": "Disconnect()",
+   "symbol": "CDataCache::Disconnect()"
+  },
+  {
+   "index": 2,
+   "name": "QueryInterface",
+   "sig": "QueryInterface(char const*)",
+   "symbol": "CDataCache::QueryInterface(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "CDataCache::Init()"
+  },
+  {
+   "index": 4,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CDataCache::Shutdown()"
+  },
+  {
+   "index": 5,
+   "name": "SetSize",
+   "sig": "SetSize(int)",
+   "symbol": "CDataCache::SetSize(int)"
+  },
+  {
+   "index": 6,
+   "name": "SetOptions",
+   "sig": "SetOptions(unsigned int)",
+   "symbol": "CDataCache::SetOptions(unsigned int)"
+  },
+  {
+   "index": 7,
+   "name": "SetSectionLimits",
+   "sig": "SetSectionLimits(char const*, DataCacheLimits_t const&)",
+   "symbol": "CDataCache::SetSectionLimits(char const*, DataCacheLimits_t const&)"
+  },
+  {
+   "index": 8,
+   "name": "GetStatus",
+   "sig": "GetStatus(DataCacheStatus_t*, DataCacheLimits_t*)",
+   "symbol": "CDataCache::GetStatus(DataCacheStatus_t*, DataCacheLimits_t*)"
+  },
+  {
+   "index": 9,
+   "name": "AddSection",
+   "sig": "AddSection(IDataCacheClient*, char const*, DataCacheLimits_t const&, bool)",
+   "symbol": "CDataCache::AddSection(IDataCacheClient*, char const*, DataCacheLimits_t const&, bool)"
+  },
+  {
+   "index": 10,
+   "name": "RemoveSection",
+   "sig": "RemoveSection(char const*, bool)",
+   "symbol": "CDataCache::RemoveSection(char const*, bool)"
+  },
+  {
+   "index": 11,
+   "name": "FindSection",
+   "sig": "FindSection(char const*)",
+   "symbol": "CDataCache::FindSection(char const*)"
+  },
+  {
+   "index": 12,
+   "name": "Purge",
+   "sig": "Purge(unsigned int)",
+   "symbol": "CDataCache::Purge(unsigned int)"
+  },
+  {
+   "index": 13,
+   "name": "Flush",
+   "sig": "Flush(bool, bool)",
+   "symbol": "CDataCache::Flush(bool, bool)"
+  },
+  {
+   "index": 14,
+   "name": "OutputReport",
+   "sig": "OutputReport(DataCacheReportType_t, char const*)",
+   "symbol": "CDataCache::OutputReport(DataCacheReportType_t, char const*)"
+  }
+ ],
+ "derived": [
+  "bin/datacache:CDataCache"
+ ],
+ "derived_count": 1
+}

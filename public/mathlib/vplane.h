@@ -29,7 +29,7 @@ typedef int SideType;
 class VPlane
 {
 public:
-				VPlane() = default;
+				VPlane() {}
 				VPlane(const Vector &vNormal, vec_t dist);
 
 	void		Init(const Vector &vNormal, vec_t dist);

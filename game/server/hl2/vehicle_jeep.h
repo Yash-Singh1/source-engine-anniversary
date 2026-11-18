@@ -121,6 +121,8 @@ private:
 
 protected:
 
+	virtual void UpdateSteeringAngle( void );
+	virtual bool IsJalopy( void );
 	virtual void HandleWater( void );
 	bool		 CheckWater( void );
 

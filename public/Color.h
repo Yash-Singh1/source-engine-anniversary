@@ -24,7 +24,11 @@ public:
 	// constructors
 	Color()
 	{
+#ifdef BYTEMATCH_RETAIL
+		*((int *)this) = 0;
+#else
 		Q_memset( _color, 0, sizeof _color );
+#endif
 	}
 	Color(int _r,int _g,int _b)
 	{
@@ -58,14 +62,22 @@ public:
 
 	void SetRawColor( int color32 )
 	{
+#ifdef BYTEMATCH_RETAIL
+		*((int *)this) = color32;
+#else
 		Q_memcpy( _color, &color32, sizeof _color );
+#endif
 	}
 
 	int GetRawColor() const
 	{
+#ifdef BYTEMATCH_RETAIL
+		return *((int *)this);
+#else
 		int color;
 		Q_memcpy( &color, _color, sizeof _color );
 		return color;
+#endif
 	}
 
 	inline int r() const	{ return _color[0]; }
@@ -85,7 +97,11 @@ public:
 
 	bool operator == (const Color &rhs) const
 	{
+#ifdef BYTEMATCH_RETAIL
+		return ( *((int *)this) == *((int *)&rhs) );
+#else
 		return Q_memcmp( this, &rhs, sizeof(Color) ) == 0;
+#endif
 	}
 
 	bool operator != (const Color &rhs) const

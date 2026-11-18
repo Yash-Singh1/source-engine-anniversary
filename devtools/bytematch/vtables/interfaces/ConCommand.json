@@ -1,0 +1,163 @@
+{
+ "interface": "ConCommand",
+ "headers": [
+  "public/tier1/convar.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 14,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "IsCommand() const",
+  "IsFlagSet(int) const",
+  "AddFlags(int)",
+  "GetName() const",
+  "GetHelpText() const",
+  "IsRegistered() const",
+  "GetDLLIdentifier() const",
+  "Create(char const*, char const*, int)",
+  "Init()",
+  "AutoCompleteSuggest(char const*, CUtlVector<CUtlString, CUtlMemory<CUtlString, int>>&)",
+  "CanAutoComplete()",
+  "Dispatch(CCommand const&)"
+ ],
+ "retail_reference": {
+  "module": "bin/GameUI",
+  "class": "ConCommand",
+  "offset": 0,
+  "chain": [
+   "ConCommand"
+  ]
+ },
+ "retail_len": 14,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 14
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~ConCommand",
+   "sig": "~ConCommand()",
+   "symbol": "ConCommand::~ConCommand()"
+  },
+  {
+   "index": 1,
+   "name": "~ConCommand",
+   "sig": "~ConCommand()",
+   "symbol": "ConCommand::~ConCommand()"
+  },
+  {
+   "index": 2,
+   "name": "IsCommand",
+   "sig": "IsCommand() const",
+   "symbol": "ConCommand::IsCommand() const"
+  },
+  {
+   "index": 3,
+   "name": "IsFlagSet",
+   "sig": "IsFlagSet(int) const",
+   "symbol": "ConCommandBase::IsFlagSet(int) const"
+  },
+  {
+   "index": 4,
+   "name": "AddFlags",
+   "sig": "AddFlags(int)",
+   "symbol": "ConCommandBase::AddFlags(int)"
+  },
+  {
+   "index": 5,
+   "name": "GetName",
+   "sig": "GetName() const",
+   "symbol": "ConCommandBase::GetName() const"
+  },
+  {
+   "index": 6,
+   "name": "GetHelpText",
+   "sig": "GetHelpText() const",
+   "symbol": "ConCommandBase::GetHelpText() const"
+  },
+  {
+   "index": 7,
+   "name": "IsRegistered",
+   "sig": "IsRegistered() const",
+   "symbol": "ConCommandBase::IsRegistered() const"
+  },
+  {
+   "index": 8,
+   "name": "GetDLLIdentifier",
+   "sig": "GetDLLIdentifier() const",
+   "symbol": "ConCommandBase::GetDLLIdentifier() const"
+  },
+  {
+   "index": 9,
+   "name": "Create",
+   "sig": "Create(char const*, char const*, int)",
+   "symbol": "ConCommandBase::Create(char const*, char const*, int)"
+  },
+  {
+   "index": 10,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "ConCommandBase::Init()"
+  },
+  {
+   "index": 11,
+   "name": "AutoCompleteSuggest",
+   "sig": "AutoCompleteSuggest(char const*, CUtlVector<CUtlString, CUtlMemory<CUtlString, int>>&)",
+   "symbol": "ConCommand::AutoCompleteSuggest(char const*, CUtlVector<CUtlString, CUtlMemory<CUtlString, int>>&)"
+  },
+  {
+   "index": 12,
+   "name": "CanAutoComplete",
+   "sig": "CanAutoComplete()",
+   "symbol": "ConCommand::CanAutoComplete()"
+  },
+  {
+   "index": 13,
+   "name": "Dispatch",
+   "sig": "Dispatch(CCommand const&)",
+   "symbol": "ConCommand::Dispatch(CCommand const&)"
+  }
+ ],
+ "derived": [
+  "bin/GameUI:ConCommand",
+  "bin/engine:CConCommandMemberAccessor<CEngineVGui>",
+  "bin/engine:CConCommandMemberAccessor<CTextureBudgetPanel>",
+  "bin/engine:ConCommand",
+  "bin/filesystem_stdio:ConCommand",
+  "bin/inputsystem:ConCommand",
+  "bin/launcher:ConCommand",
+  "bin/libvstdlib:CConCommandMemberAccessor<CCvar>",
+  "bin/libvstdlib:ConCommand",
+  "bin/materialsystem:CConCommandMemberAccessor<CMaterialSystem>",
+  "bin/materialsystem:ConCommand",
+  "bin/replay:ConCommand",
+  "bin/shaderapidx9:ConCommand",
+  "bin/sourcevr:ConCommand",
+  "bin/vgui2:ConCommand",
+  "bin/vguimatsurface:ConCommand",
+  "episodic/client:CConCommandMemberAccessor<CBasePresence>",
+  "episodic/client:ConCommand",
+  "episodic/server:ConCommand",
+  "hl2/client:CConCommandMemberAccessor<CBasePresence>",
+  "hl2/client:ConCommand",
+  "hl2/server:ConCommand",
+  "hl2_complete/client:CConCommandMemberAccessor<CBasePresence>",
+  "hl2_complete/client:ConCommand",
+  "hl2_complete/server:ConCommand",
+  "hl2mp/client:CConCommandMemberAccessor<CBasePresence>",
+  "hl2mp/client:ConCommand",
+  "hl2mp/server:ConCommand",
+  "lostcoast/client:CConCommandMemberAccessor<CBasePresence>",
+  "lostcoast/client:ConCommand",
+  "lostcoast/server:ConCommand"
+ ],
+ "derived_count": 31
+}

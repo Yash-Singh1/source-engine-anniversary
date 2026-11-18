@@ -1,0 +1,50 @@
+{
+ "interface": "IVCRHelpers",
+ "headers": [
+  "public/tier0/vcrmode.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 2,
+ "sdk2013_slots": [
+  "ErrorMessage(char const*)",
+  "GetMainWindow()"
+ ],
+ "retail_reference": {
+  "module": "bin/launcher",
+  "class": "CVCRHelpers",
+  "offset": 0,
+  "chain": [
+   "CVCRHelpers",
+   "IVCRHelpers"
+  ]
+ },
+ "retail_len": 2,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 2
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "ErrorMessage",
+   "sig": "ErrorMessage(char const*)",
+   "symbol": "CVCRHelpers::ErrorMessage(char const*)"
+  },
+  {
+   "index": 1,
+   "name": "GetMainWindow",
+   "sig": "GetMainWindow()",
+   "symbol": "CVCRHelpers::GetMainWindow()"
+  }
+ ],
+ "derived": [
+  "bin/launcher:CVCRHelpers"
+ ],
+ "derived_count": 1
+}

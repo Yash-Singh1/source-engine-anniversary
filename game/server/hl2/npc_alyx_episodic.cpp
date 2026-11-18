@@ -77,9 +77,9 @@ bool IsInCommentaryMode( void );
 //-----------------------------------------------------------------------------
 extern int g_interactionZombieMeleeWarning;
 
-LINK_ENTITY_TO_CLASS( npc_alyx, CNPC_Alyx );
+LINK_ENTITY_TO_CLASS( npc_alyx_episodic, CNPC_Alyx_Episodic );
 
-BEGIN_DATADESC( CNPC_Alyx )
+BEGIN_DATADESC( CNPC_Alyx_Episodic )
 
 	DEFINE_FIELD( m_hEmpTool, FIELD_EHANDLE ),
 	DEFINE_FIELD( m_hHackTarget, FIELD_EHANDLE ),
@@ -145,20 +145,20 @@ ConVar npc_alyx_readiness_transitions( "npc_alyx_readiness_transitions", "1" );
 ConVar npc_alyx_crouch( "npc_alyx_crouch", "1" );
 
 // global pointer to Alyx for fast lookups
-CEntityClassList<CNPC_Alyx> g_AlyxList;
-template <> CNPC_Alyx *CEntityClassList<CNPC_Alyx>::m_pClassList = NULL;
+CEntityClassList<CNPC_Alyx_Episodic> g_AlyxList;
+template <> CNPC_Alyx_Episodic *CEntityClassList<CNPC_Alyx_Episodic>::m_pClassList = NULL;
 
 //=========================================================
 // initialize Alyx before keyvalues are processed
 //=========================================================
-CNPC_Alyx::CNPC_Alyx()
+CNPC_Alyx_Episodic::CNPC_Alyx_Episodic()
 {
 	g_AlyxList.Insert(this);
 	// defaults to having an EMP
 	m_bShouldHaveEMP = true;
 }
 
-CNPC_Alyx::~CNPC_Alyx( )
+CNPC_Alyx_Episodic::~CNPC_Alyx_Episodic( )
 {
 	g_AlyxList.Remove(this);
 }
@@ -167,14 +167,14 @@ CNPC_Alyx::~CNPC_Alyx( )
 // Classify - indicates this NPC's place in the 
 // relationship table.
 //=========================================================
-Class_T	CNPC_Alyx::Classify ( void )
+Class_T	CNPC_Alyx_Episodic::Classify ( void )
 {
 	return	CLASS_PLAYER_ALLY_VITAL;
 }
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-bool CNPC_Alyx::FValidateHintType( CAI_Hint *pHint )
+bool CNPC_Alyx_Episodic::FValidateHintType( CAI_Hint *pHint )
 {
 	switch( pHint->HintType() )
 	{
@@ -191,7 +191,7 @@ bool CNPC_Alyx::FValidateHintType( CAI_Hint *pHint )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-int CNPC_Alyx::ObjectCaps() 
+int CNPC_Alyx_Episodic::ObjectCaps() 
 {
 	int caps = BaseClass::ObjectCaps();
 
@@ -207,7 +207,7 @@ int CNPC_Alyx::ObjectCaps()
 // HandleAnimEvent - catches the NPC-specific messages
 // that occur when tagged animation frames are played.
 //=========================================================
-void CNPC_Alyx::HandleAnimEvent( animevent_t *pEvent )
+void CNPC_Alyx_Episodic::HandleAnimEvent( animevent_t *pEvent )
 {
 	if (pEvent->event == AE_ALYX_EMPTOOL_ATTACHMENT)
 	{
@@ -293,7 +293,7 @@ void CNPC_Alyx::HandleAnimEvent( animevent_t *pEvent )
 //=========================================================
 // Returns a pointer to Alyx's entity
 //=========================================================
-CNPC_Alyx *CNPC_Alyx::GetAlyx( void )
+CNPC_Alyx_Episodic *CNPC_Alyx_Episodic::GetAlyx( void )
 {
 	return g_AlyxList.m_pClassList;
 }
@@ -301,7 +301,7 @@ CNPC_Alyx *CNPC_Alyx::GetAlyx( void )
 //=========================================================
 // 
 //=========================================================
-bool CNPC_Alyx::CreateBehaviors()
+bool CNPC_Alyx_Episodic::CreateBehaviors()
 {
 	AddBehavior( &m_FuncTankBehavior );
 	bool result = BaseClass::CreateBehaviors();
@@ -313,8 +313,11 @@ bool CNPC_Alyx::CreateBehaviors()
 //=========================================================
 // Spawn
 //=========================================================
-void CNPC_Alyx::Spawn()
+void CNPC_Alyx_Episodic::Spawn()
 {
+	// Created as npc_alyx_episodic by CreateEntityByName's episodic remap; maps and scripts see npc_alyx.
+	SetClassname( "npc_alyx" );
+
 	BaseClass::Spawn();
 
 	// If Alyx has a parent, she's currently inside a pod. Prevent her from moving.
@@ -339,7 +342,7 @@ void CNPC_Alyx::Spawn()
 
 	NPCInit();
 
-	SetUse( &CNPC_Alyx::Use );
+	SetUse( &CNPC_Alyx_Episodic::Use );
 
 	m_bInteractionAllowed = true;
 
@@ -360,7 +363,7 @@ void CNPC_Alyx::Spawn()
 //=========================================================
 // Precache - precaches all resources this NPC needs
 //=========================================================
-void CNPC_Alyx::Precache()
+void CNPC_Alyx_Episodic::Precache()
 {
 	BaseClass::Precache();
 	PrecacheScriptSound( "npc_alyx.die" );
@@ -387,7 +390,7 @@ void CNPC_Alyx::Precache()
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::Activate( void )
+void CNPC_Alyx_Episodic::Activate( void )
 {
 	// Alyx always kicks her health back up to full after loading a savegame.
 	// Avoids problems with players saving the game in places where she dies immediately afterwards.
@@ -431,7 +434,7 @@ void CNPC_Alyx::Activate( void )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::StopLoopingSounds( void )
+void CNPC_Alyx_Episodic::StopLoopingSounds( void )
 {
 	CSoundEnvelopeController::GetController().SoundDestroy( m_sndDarknessBreathing );
 	m_sndDarknessBreathing = NULL;
@@ -442,7 +445,7 @@ void CNPC_Alyx::StopLoopingSounds( void )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::SelectModel()
+void CNPC_Alyx_Episodic::SelectModel()
 {
 	// Alyx is allowed to use multiple models, because she appears in the pod.
 	// She defaults to her normal model.
@@ -456,7 +459,7 @@ void CNPC_Alyx::SelectModel()
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::SetupAlyxWithoutParent( void )
+void CNPC_Alyx_Episodic::SetupAlyxWithoutParent( void )
 {
 	SetSolid( SOLID_BBOX );
 	AddSolidFlags( FSOLID_NOT_STANDABLE );
@@ -476,7 +479,7 @@ void CNPC_Alyx::SetupAlyxWithoutParent( void )
 // Purpose: Create and initialized Alyx's EMP tool
 //-----------------------------------------------------------------------------
 
-void CNPC_Alyx::CreateEmpTool( void )
+void CNPC_Alyx_Episodic::CreateEmpTool( void )
 {
 	if (!m_bShouldHaveEMP || m_hEmpTool)
 		return;
@@ -502,7 +505,7 @@ void CNPC_Alyx::CreateEmpTool( void )
 // Purpose: Map input to create or destroy alyx's EMP tool
 //-----------------------------------------------------------------------------
 
-void CNPC_Alyx::InputGiveEMP( inputdata_t &inputdata )
+void CNPC_Alyx_Episodic::InputGiveEMP( inputdata_t &inputdata )
 {
 	m_bShouldHaveEMP = inputdata.value.Bool();
 	if (m_bShouldHaveEMP)
@@ -534,7 +537,7 @@ struct ReadinessTransition_t
 };
 
 
-void CNPC_Alyx::ReadinessLevelChanged( int iPriorLevel )
+void CNPC_Alyx_Episodic::ReadinessLevelChanged( int iPriorLevel )
 {
 	BaseClass::ReadinessLevelChanged( iPriorLevel );
 
@@ -597,7 +600,7 @@ void CNPC_Alyx::ReadinessLevelChanged( int iPriorLevel )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::PrescheduleThink( void )
+void CNPC_Alyx_Episodic::PrescheduleThink( void )
 {
 	BaseClass::PrescheduleThink();
 
@@ -670,7 +673,7 @@ void CNPC_Alyx::PrescheduleThink( void )
 // physcannon.
 //-----------------------------------------------------------------------------
 #define ALYX_INTERACT_SEARCH_FREQUENCY 1.0f // seconds
-void CNPC_Alyx::SearchForInteractTargets()
+void CNPC_Alyx_Episodic::SearchForInteractTargets()
 {
 	if( m_fTimeNextSearchForInteractTargets > gpGlobals->curtime )
 	{
@@ -713,7 +716,7 @@ void CNPC_Alyx::SearchForInteractTargets()
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::GatherConditions()
+void CNPC_Alyx_Episodic::GatherConditions()
 {
 	BaseClass::GatherConditions();
 
@@ -844,7 +847,7 @@ void CNPC_Alyx::GatherConditions()
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-bool CNPC_Alyx::ShouldPlayerAvoid( void )
+bool CNPC_Alyx_Episodic::ShouldPlayerAvoid( void )
 {
 	if( IsCurSchedule(SCHED_ALYX_NEW_WEAPON, false) )
 		return true;
@@ -867,7 +870,7 @@ bool CNPC_Alyx::ShouldPlayerAvoid( void )
 // Just heard a gunfire sound. Try to figure out how much we should know 
 // about it.
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::AnalyzeGunfireSound( CSound *pSound )
+void CNPC_Alyx_Episodic::AnalyzeGunfireSound( CSound *pSound )
 {
 	Assert( pSound != NULL );
 
@@ -912,7 +915,7 @@ void CNPC_Alyx::AnalyzeGunfireSound( CSound *pSound )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-bool CNPC_Alyx::IsValidEnemy( CBaseEntity *pEnemy )
+bool CNPC_Alyx_Episodic::IsValidEnemy( CBaseEntity *pEnemy )
 {
 	if ( HL2GameRules()->IsAlyxInDarknessMode() )
 	{
@@ -955,7 +958,7 @@ bool CNPC_Alyx::IsValidEnemy( CBaseEntity *pEnemy )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::Event_Killed( const CTakeDamageInfo &info )
+void CNPC_Alyx_Episodic::Event_Killed( const CTakeDamageInfo &info )
 {
 	// Destroy our EMP tool since it won't follow us onto the ragdoll anyway
 	if ( m_hEmpTool != NULL )
@@ -968,7 +971,7 @@ void CNPC_Alyx::Event_Killed( const CTakeDamageInfo &info )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::Event_KilledOther( CBaseEntity *pVictim, const CTakeDamageInfo &info )
+void CNPC_Alyx_Episodic::Event_KilledOther( CBaseEntity *pVictim, const CTakeDamageInfo &info )
 {
 	// comment on killing npc's
 	if ( pVictim->IsNPC() )
@@ -1015,7 +1018,7 @@ void CNPC_Alyx::Event_KilledOther( CBaseEntity *pVictim, const CTakeDamageInfo &
 // Purpose: Called by enemy NPC's when they are ignited
 // Input  : pVictim - entity that was ignited
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::EnemyIgnited( CAI_BaseNPC *pVictim )
+void CNPC_Alyx_Episodic::EnemyIgnited( CAI_BaseNPC *pVictim )
 {
 	if ( FVisible( pVictim ) )
 	{
@@ -1027,7 +1030,7 @@ void CNPC_Alyx::EnemyIgnited( CAI_BaseNPC *pVictim )
 // Purpose: Called by combine balls when they're socketed
 // Input  : pVictim - entity killed by player
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::CombineBallSocketed( int iNumBounces )
+void CNPC_Alyx_Episodic::CombineBallSocketed( int iNumBounces )
 {
 	CBasePlayer *pPlayer = AI_GetSinglePlayer();
 	
@@ -1046,7 +1049,7 @@ void CNPC_Alyx::CombineBallSocketed( int iNumBounces )
 //-----------------------------------------------------------------------------
 // Purpose: If we're a passenger in a vehicle
 //-----------------------------------------------------------------------------
-bool CNPC_Alyx::RunningPassengerBehavior( void )
+bool CNPC_Alyx_Episodic::RunningPassengerBehavior( void )
 {
 	// Must be active and not outside the vehicle
 	if ( m_PassengerBehavior.IsRunning() && m_PassengerBehavior.GetPassengerState() != PASSENGER_STATE_OUTSIDE )
@@ -1058,7 +1061,7 @@ bool CNPC_Alyx::RunningPassengerBehavior( void )
 //-----------------------------------------------------------------------------
 // Purpose: Handle "mobbed" combat condition when Alyx is overwhelmed by force
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::DoMobbedCombatAI( void )
+void CNPC_Alyx_Episodic::DoMobbedCombatAI( void )
 {
 	AIEnemiesIter_t iter;
 
@@ -1132,7 +1135,7 @@ void CNPC_Alyx::DoMobbedCombatAI( void )
 //-----------------------------------------------------------------------------
 // Purpose: Custom AI for Alyx while in combat
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::DoCustomCombatAI( void )
+void CNPC_Alyx_Episodic::DoCustomCombatAI( void )
 {
 	// Only run the following code if we're not in a vehicle
 	if ( RunningPassengerBehavior() == false )
@@ -1171,7 +1174,7 @@ void CNPC_Alyx::DoCustomCombatAI( void )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::DoCustomSpeechAI( void )
+void CNPC_Alyx_Episodic::DoCustomSpeechAI( void )
 {
 	BaseClass::DoCustomSpeechAI();
 
@@ -1426,7 +1429,7 @@ void CNPC_Alyx::DoCustomSpeechAI( void )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-bool CNPC_Alyx::SpeakIfAllowed( AIConcept_t concept, const char *modifiers /*= NULL*/, bool bRespondingToPlayer /*= false*/, char *pszOutResponseChosen /*= NULL*/, size_t bufsize /* = 0 */ )
+bool CNPC_Alyx_Episodic::SpeakIfAllowed( AIConcept_t concept, const char *modifiers /*= NULL*/, bool bRespondingToPlayer /*= false*/, char *pszOutResponseChosen /*= NULL*/, size_t bufsize /* = 0 */ )
 {
 	if ( BaseClass::SpeakIfAllowed( concept, modifiers, bRespondingToPlayer, pszOutResponseChosen, bufsize ) )
 	{
@@ -1452,7 +1455,7 @@ extern int ACT_ANTLION_ZAP_FLIP;
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-Disposition_t CNPC_Alyx::IRelationType( CBaseEntity *pTarget )
+Disposition_t CNPC_Alyx_Episodic::IRelationType( CBaseEntity *pTarget )
 {
 	Disposition_t disposition = BaseClass::IRelationType( pTarget );
 
@@ -1492,7 +1495,7 @@ Disposition_t CNPC_Alyx::IRelationType( CBaseEntity *pTarget )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-int CNPC_Alyx::IRelationPriority( CBaseEntity *pTarget )
+int CNPC_Alyx_Episodic::IRelationPriority( CBaseEntity *pTarget )
 {
 	int priority = BaseClass::IRelationPriority( pTarget );
 
@@ -1523,7 +1526,7 @@ int CNPC_Alyx::IRelationPriority( CBaseEntity *pTarget )
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 #define ALYX_360_VIEW_DIST_SQR	129600 // 30 feet
-bool CNPC_Alyx::FInViewCone( CBaseEntity *pEntity )
+bool CNPC_Alyx_Episodic::FInViewCone( CBaseEntity *pEntity )
 {
 	// Alyx can see 360 degrees but only at limited distance. This allows her to be aware of a 
 	// large mob of enemies (usually antlions or zombies) closing in. This situation is so obvious to the 
@@ -1550,7 +1553,7 @@ bool CNPC_Alyx::FInViewCone( CBaseEntity *pEntity )
 // Purpose: 
 // Input  : *pEntity - 
 //-----------------------------------------------------------------------------
-bool CNPC_Alyx::CanSeeEntityInDarkness( CBaseEntity *pEntity )
+bool CNPC_Alyx_Episodic::CanSeeEntityInDarkness( CBaseEntity *pEntity )
 {
 	/*
 	// Alyx can see enemies that are right next to her
@@ -1574,7 +1577,7 @@ bool CNPC_Alyx::CanSeeEntityInDarkness( CBaseEntity *pEntity )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-bool CNPC_Alyx::QuerySeeEntity( CBaseEntity *pEntity, bool bOnlyHateOrFearIfNPC)
+bool CNPC_Alyx_Episodic::QuerySeeEntity( CBaseEntity *pEntity, bool bOnlyHateOrFearIfNPC)
 {
 	if ( HL2GameRules()->IsAlyxInDarknessMode() )
 	{
@@ -1587,7 +1590,7 @@ bool CNPC_Alyx::QuerySeeEntity( CBaseEntity *pEntity, bool bOnlyHateOrFearIfNPC)
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-bool CNPC_Alyx::IsCoverPosition( const Vector &vecThreat, const Vector &vecPosition )
+bool CNPC_Alyx_Episodic::IsCoverPosition( const Vector &vecThreat, const Vector &vecPosition )
 {
 	return BaseClass::IsCoverPosition( vecThreat, vecPosition );
 }
@@ -1596,7 +1599,7 @@ bool CNPC_Alyx::IsCoverPosition( const Vector &vecThreat, const Vector &vecPosit
 //-----------------------------------------------------------------------------
 // Purpose:
 //-----------------------------------------------------------------------------
-Activity CNPC_Alyx::NPC_TranslateActivity( Activity activity )
+Activity CNPC_Alyx_Episodic::NPC_TranslateActivity( Activity activity )
 {
 	activity = BaseClass::NPC_TranslateActivity( activity );
 
@@ -1623,12 +1626,12 @@ Activity CNPC_Alyx::NPC_TranslateActivity( Activity activity )
 	return activity;
 }
 
-bool CNPC_Alyx::ShouldDeferToFollowBehavior()
+bool CNPC_Alyx_Episodic::ShouldDeferToFollowBehavior()
 {
 	return BaseClass::ShouldDeferToFollowBehavior();
 }
 
-void CNPC_Alyx::BuildScheduleTestBits()
+void CNPC_Alyx_Episodic::BuildScheduleTestBits()
 {
 	bool bIsInteracting = false;
 
@@ -1683,7 +1686,7 @@ void CNPC_Alyx::BuildScheduleTestBits()
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-bool CNPC_Alyx::ShouldBehaviorSelectSchedule( CAI_BehaviorBase *pBehavior )
+bool CNPC_Alyx_Episodic::ShouldBehaviorSelectSchedule( CAI_BehaviorBase *pBehavior )
 {
 	if( pBehavior == &m_AssaultBehavior )
 	{
@@ -1696,7 +1699,7 @@ bool CNPC_Alyx::ShouldBehaviorSelectSchedule( CAI_BehaviorBase *pBehavior )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-int CNPC_Alyx::SelectSchedule( void )
+int CNPC_Alyx_Episodic::SelectSchedule( void )
 {
     // If we're in darkness mode, and the player has the flashlight off, and we hear a zombie footstep,
 	// and the player isn't nearby, deliberately turn away from the zombie to let the zombie grab me.
@@ -1761,7 +1764,7 @@ int CNPC_Alyx::SelectSchedule( void )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-int CNPC_Alyx::SelectScheduleDanger( void )
+int CNPC_Alyx_Episodic::SelectScheduleDanger( void )
 {
 	if( HasCondition( COND_HEAR_DANGER ) )
 	{
@@ -1781,7 +1784,7 @@ int CNPC_Alyx::SelectScheduleDanger( void )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-int CNPC_Alyx::TranslateSchedule( int scheduleType )
+int CNPC_Alyx_Episodic::TranslateSchedule( int scheduleType )
 {
 	switch( scheduleType )
 	{
@@ -1910,7 +1913,7 @@ int CNPC_Alyx::TranslateSchedule( int scheduleType )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::StartTask( const Task_t *pTask )
+void CNPC_Alyx_Episodic::StartTask( const Task_t *pTask )
 {
 	switch( pTask->iTask )
 	{
@@ -2122,7 +2125,7 @@ void CNPC_Alyx::StartTask( const Task_t *pTask )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::RunTask( const Task_t *pTask )
+void CNPC_Alyx_Episodic::RunTask( const Task_t *pTask )
 {
 	switch( pTask->iTask )
 	{
@@ -2201,7 +2204,7 @@ void CNPC_Alyx::RunTask( const Task_t *pTask )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::OnStateChange( NPC_STATE OldState, NPC_STATE NewState )
+void CNPC_Alyx_Episodic::OnStateChange( NPC_STATE OldState, NPC_STATE NewState )
 {
 	switch( NewState )
 	{
@@ -2224,7 +2227,7 @@ void CNPC_Alyx::OnStateChange( NPC_STATE OldState, NPC_STATE NewState )
 //-----------------------------------------------------------------------------
 // Purpose:
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::TraceAttack( const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr, CDmgAccumulator *pAccumulator )
+void CNPC_Alyx_Episodic::TraceAttack( const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr, CDmgAccumulator *pAccumulator )
 {
 	BaseClass::TraceAttack( info, vecDir, ptr, pAccumulator );
 
@@ -2235,7 +2238,7 @@ void CNPC_Alyx::TraceAttack( const CTakeDamageInfo &info, const Vector &vecDir, 
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-bool CNPC_Alyx::CanBeHitByMeleeAttack( CBaseEntity *pAttacker )
+bool CNPC_Alyx_Episodic::CanBeHitByMeleeAttack( CBaseEntity *pAttacker )
 {
 	if( IsCurSchedule(SCHED_DUCK_DODGE) )
 	{
@@ -2248,7 +2251,7 @@ bool CNPC_Alyx::CanBeHitByMeleeAttack( CBaseEntity *pAttacker )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-int CNPC_Alyx::OnTakeDamage_Alive( const CTakeDamageInfo &info )
+int CNPC_Alyx_Episodic::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 {
 	//!!!HACKHACK - EP1 - Stop alyx taking all physics damage to prevent her dying
 	// in freak accidents resembling spontaneous stress damage death (which are now impossible)
@@ -2302,7 +2305,7 @@ int CNPC_Alyx::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
-bool CNPC_Alyx::FCanCheckAttacks()
+bool CNPC_Alyx_Episodic::FCanCheckAttacks()
 {
 	if( GetEnemy() && IsGunship( GetEnemy() ) )
 	{
@@ -2316,7 +2319,7 @@ bool CNPC_Alyx::FCanCheckAttacks()
 //-----------------------------------------------------------------------------
 // Purpose: Half damage against Combine Soldiers in outland_10
 //-----------------------------------------------------------------------------
-float CNPC_Alyx::GetAttackDamageScale( CBaseEntity *pVictim )
+float CNPC_Alyx_Episodic::GetAttackDamageScale( CBaseEntity *pVictim )
 {
 	if( g_HackOutland10DamageHack && pVictim->Classify() == CLASS_COMBINE )
 	{
@@ -2328,7 +2331,7 @@ float CNPC_Alyx::GetAttackDamageScale( CBaseEntity *pVictim )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-bool CNPC_Alyx::HandleInteraction(int interactionType, void *data, CBaseCombatCharacter* sourceEnt)
+bool CNPC_Alyx_Episodic::HandleInteraction(int interactionType, void *data, CBaseCombatCharacter* sourceEnt)
 {
 	if( interactionType == g_interactionZombieMeleeWarning && IsAllowedToDodge() )
 	{
@@ -2376,7 +2379,7 @@ bool CNPC_Alyx::HandleInteraction(int interactionType, void *data, CBaseCombatCh
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::HolsterPistol()
+void CNPC_Alyx_Episodic::HolsterPistol()
 {
 	if( GetActiveWeapon() )
 	{
@@ -2386,7 +2389,7 @@ void CNPC_Alyx::HolsterPistol()
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::DrawPistol()
+void CNPC_Alyx_Episodic::DrawPistol()
 {
 	if( GetActiveWeapon() )
 	{
@@ -2396,7 +2399,7 @@ void CNPC_Alyx::DrawPistol()
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::Weapon_Drop( CBaseCombatWeapon *pWeapon, const Vector *pvecTarget, const Vector *pVelocity )
+void CNPC_Alyx_Episodic::Weapon_Drop( CBaseCombatWeapon *pWeapon, const Vector *pvecTarget, const Vector *pVelocity )
 {
 	BaseClass::Weapon_Drop( pWeapon, pvecTarget, pVelocity );
 
@@ -2410,7 +2413,7 @@ void CNPC_Alyx::Weapon_Drop( CBaseCombatWeapon *pWeapon, const Vector *pvecTarge
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-bool CNPC_Alyx::IsAllowedToAim()
+bool CNPC_Alyx_Episodic::IsAllowedToAim()
 {
 	// Alyx can aim only if fully agitated
 	if( GetReadinessLevel() != AIRL_AGITATED )
@@ -2421,7 +2424,7 @@ bool CNPC_Alyx::IsAllowedToAim()
 
 
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::PainSound( const CTakeDamageInfo &info )
+void CNPC_Alyx_Episodic::PainSound( const CTakeDamageInfo &info )
 {
 	// Alex has specific sounds for when attacked in the dark
 	if ( !HasCondition( COND_ALYX_IN_DARK ) )
@@ -2435,7 +2438,7 @@ void CNPC_Alyx::PainSound( const CTakeDamageInfo &info )
 
 //-----------------------------------------------------------------------------
 
-void CNPC_Alyx::DeathSound( const CTakeDamageInfo &info )
+void CNPC_Alyx_Episodic::DeathSound( const CTakeDamageInfo &info )
 {
 	// Sentences don't play on dead NPCs
 	SentenceStop();
@@ -2449,7 +2452,7 @@ void CNPC_Alyx::DeathSound( const CTakeDamageInfo &info )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::OnSeeEntity( CBaseEntity *pEntity )
+void CNPC_Alyx_Episodic::OnSeeEntity( CBaseEntity *pEntity )
 {
 	BaseClass::OnSeeEntity(pEntity);
 
@@ -2466,7 +2469,7 @@ void CNPC_Alyx::OnSeeEntity( CBaseEntity *pEntity )
 // (Alyx's state and the object's state are not considered
 // at this stage)
 //---------------------------------------------------------
-bool CNPC_Alyx::IsValidInteractTarget( CBaseEntity *pTarget )
+bool CNPC_Alyx_Episodic::IsValidInteractTarget( CBaseEntity *pTarget )
 {
 	INPCInteractive *pInteractive = dynamic_cast<INPCInteractive *>(pTarget);
 
@@ -2511,7 +2514,7 @@ bool CNPC_Alyx::IsValidInteractTarget( CBaseEntity *pTarget )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::SetInteractTarget( CBaseEntity *pTarget )
+void CNPC_Alyx_Episodic::SetInteractTarget( CBaseEntity *pTarget )
 {
 	if( !pTarget )
 	{
@@ -2527,7 +2530,7 @@ void CNPC_Alyx::SetInteractTarget( CBaseEntity *pTarget )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::EmpZapTarget( CBaseEntity *pTarget )
+void CNPC_Alyx_Episodic::EmpZapTarget( CBaseEntity *pTarget )
 {
 	g_pEffects->Sparks( pTarget->WorldSpaceCenter() );
 
@@ -2543,7 +2546,7 @@ void CNPC_Alyx::EmpZapTarget( CBaseEntity *pTarget )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-bool CNPC_Alyx::CanInteractWithTarget( CBaseEntity *pTarget )
+bool CNPC_Alyx_Episodic::CanInteractWithTarget( CBaseEntity *pTarget )
 {
 	if( !IsValidInteractTarget(pTarget) )
 		return false;
@@ -2572,7 +2575,7 @@ bool CNPC_Alyx::CanInteractWithTarget( CBaseEntity *pTarget )
 //-----------------------------------------------------------------------------
 // Purpose: Player has illuminated this NPC with the flashlight
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::PlayerHasIlluminatedNPC( CBasePlayer *pPlayer, float flDot )
+void CNPC_Alyx_Episodic::PlayerHasIlluminatedNPC( CBasePlayer *pPlayer, float flDot )
 {
  	if ( m_bIsFlashlightBlind )
 		return;
@@ -2600,7 +2603,7 @@ void CNPC_Alyx::PlayerHasIlluminatedNPC( CBasePlayer *pPlayer, float flDot )
 //-----------------------------------------------------------------------------
 // Purpose: Check if player has illuminated this NPC with a flare
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::CheckBlindedByFlare( void )
+void CNPC_Alyx_Episodic::CheckBlindedByFlare( void )
 {
 	if ( m_bIsFlashlightBlind )
 		return;
@@ -2630,7 +2633,7 @@ void CNPC_Alyx::CheckBlindedByFlare( void )
 // Purpose: 
 // Input:   bCheckLightSources - if true, checks if any light darkness lightsources are near
 //-----------------------------------------------------------------------------
-bool CNPC_Alyx::CanBeBlindedByFlashlight( bool bCheckLightSources )
+bool CNPC_Alyx_Episodic::CanBeBlindedByFlashlight( bool bCheckLightSources )
 {
 	// Can't be blinded if we're not in alyx darkness mode
  	/*
@@ -2677,7 +2680,7 @@ bool CNPC_Alyx::CanBeBlindedByFlashlight( bool bCheckLightSources )
 // Input  : *pPlayer - 
 // Output : Returns true on success, false on failure.
 //-----------------------------------------------------------------------------
-bool CNPC_Alyx::PlayerFlashlightOnMyEyes( CBasePlayer *pPlayer )
+bool CNPC_Alyx_Episodic::PlayerFlashlightOnMyEyes( CBasePlayer *pPlayer )
 {
 	Vector vecEyes, vecPlayerForward;
  	vecEyes = EyePosition();
@@ -2711,7 +2714,7 @@ bool CNPC_Alyx::PlayerFlashlightOnMyEyes( CBasePlayer *pPlayer )
 // Input  : 
 // Output : Returns true on success, false on failure.
 //-----------------------------------------------------------------------------
-bool CNPC_Alyx::BlindedByFlare( void )
+bool CNPC_Alyx_Episodic::BlindedByFlare( void )
 {
 	Vector vecEyes = EyePosition();
 
@@ -2751,7 +2754,7 @@ bool CNPC_Alyx::BlindedByFlare( void )
 // Purpose: 
 // Output : Returns true on success, false on failure.
 //-----------------------------------------------------------------------------
-bool CNPC_Alyx::CanReload( void )
+bool CNPC_Alyx_Episodic::CanReload( void )
 {
 	if ( m_bIsFlashlightBlind )
 		return false;
@@ -2761,7 +2764,7 @@ bool CNPC_Alyx::CanReload( void )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-bool CNPC_Alyx::PickTacticalLookTarget( AILookTargetArgs_t *pArgs )
+bool CNPC_Alyx_Episodic::PickTacticalLookTarget( AILookTargetArgs_t *pArgs )
 {
 	if( HasInteractTarget() )
 	{
@@ -2782,7 +2785,7 @@ bool CNPC_Alyx::PickTacticalLookTarget( AILookTargetArgs_t *pArgs )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::OnSelectedLookTarget( AILookTargetArgs_t *pArgs )
+void CNPC_Alyx_Episodic::OnSelectedLookTarget( AILookTargetArgs_t *pArgs )
 { 
 	if ( pArgs && pArgs->hTarget )
 	{
@@ -2812,7 +2815,7 @@ void CNPC_Alyx::OnSelectedLookTarget( AILookTargetArgs_t *pArgs )
 //-----------------------------------------------------------------------------
 // Output : Behavior to use
 //-----------------------------------------------------------------------------
-CAI_FollowBehavior &CNPC_Alyx::GetFollowBehavior( void )
+CAI_FollowBehavior &CNPC_Alyx_Episodic::GetFollowBehavior( void )
 {
 	// Use the base class
 	return m_FollowBehavior;
@@ -2821,7 +2824,7 @@ CAI_FollowBehavior &CNPC_Alyx::GetFollowBehavior( void )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::AimGun( void )
+void CNPC_Alyx_Episodic::AimGun( void )
 {
 	if (m_FuncTankBehavior.IsMounted())
 	{
@@ -2862,7 +2865,7 @@ void CNPC_Alyx::AimGun( void )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-Vector CNPC_Alyx::GetActualShootPosition( const Vector &shootOrigin )
+Vector CNPC_Alyx_Episodic::GetActualShootPosition( const Vector &shootOrigin )
 {
 	if( HasShotgun() && GetEnemy() && GetEnemy()->Classify() == CLASS_ZOMBIE && random->RandomInt( 0, 1 ) == 1 )
 	{
@@ -2876,7 +2879,7 @@ Vector CNPC_Alyx::GetActualShootPosition( const Vector &shootOrigin )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-bool CNPC_Alyx::EnemyIsValidCrouchTarget( CBaseEntity *pEnemy )
+bool CNPC_Alyx_Episodic::EnemyIsValidCrouchTarget( CBaseEntity *pEnemy )
 {
 	// Don't crouch to shoot flying enemies (or jumping antlions)
 	if ( !(pEnemy->GetFlags() & FL_ONGROUND) )
@@ -2906,7 +2909,7 @@ bool CNPC_Alyx::EnemyIsValidCrouchTarget( CBaseEntity *pEnemy )
 //-----------------------------------------------------------------------------
 // Purpose: degrees to turn in 0.1 seconds
 //-----------------------------------------------------------------------------
-float CNPC_Alyx::MaxYawSpeed( void )
+float CNPC_Alyx_Episodic::MaxYawSpeed( void )
 {
 	if ( IsCrouching() )
 		return 10;
@@ -2917,7 +2920,7 @@ float CNPC_Alyx::MaxYawSpeed( void )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-bool CNPC_Alyx::Stand( void )
+bool CNPC_Alyx_Episodic::Stand( void )
 {
 	bool bWasCrouching = IsCrouching();
 	if ( !BaseClass::Stand() )
@@ -2935,7 +2938,7 @@ bool CNPC_Alyx::Stand( void )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-bool CNPC_Alyx::Crouch( void )
+bool CNPC_Alyx_Episodic::Crouch( void )
 {
 	if ( !npc_alyx_crouch.GetBool() )
 		return false;
@@ -2959,7 +2962,7 @@ bool CNPC_Alyx::Crouch( void )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::DesireCrouch( void )
+void CNPC_Alyx_Episodic::DesireCrouch( void )
 {
 	// Ignore crouch desire if we've been crouching recently to reduce oscillation
 	if ( m_flNextCrouchTime > gpGlobals->curtime )
@@ -2972,7 +2975,7 @@ void CNPC_Alyx::DesireCrouch( void )
 //-----------------------------------------------------------------------------
 // Purpose: Tack on extra criteria for responses
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::ModifyOrAppendCriteria( AI_CriteriaSet &set )
+void CNPC_Alyx_Episodic::ModifyOrAppendCriteria( AI_CriteriaSet &set )
 {
 	AIEnemiesIter_t iter;
 	float fLengthOfLastCombat;
@@ -3011,7 +3014,7 @@ void CNPC_Alyx::ModifyOrAppendCriteria( AI_CriteriaSet &set )
 //-----------------------------------------------------------------------------
 // Purpose: Turn off Alyx's readiness when she's around a vehicle
 //-----------------------------------------------------------------------------
-bool CNPC_Alyx::IsReadinessCapable( void )
+bool CNPC_Alyx_Episodic::IsReadinessCapable( void )
 {
 	// Let the convar decide
 	return npc_alyx_readiness.GetBool();;
@@ -3019,7 +3022,7 @@ bool CNPC_Alyx::IsReadinessCapable( void )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-bool CNPC_Alyx::IsAllowedToInteract()
+bool CNPC_Alyx_Episodic::IsAllowedToInteract()
 {
 	if ( RunningPassengerBehavior() )
 		return false;
@@ -3046,7 +3049,7 @@ bool CNPC_Alyx::IsAllowedToInteract()
 // Purpose: Allows the NPC to react to being given a weapon
 // Input  : *pNewWeapon - Weapon given
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::OnChangeActiveWeapon( CBaseCombatWeapon *pOldWeapon, CBaseCombatWeapon *pNewWeapon )
+void CNPC_Alyx_Episodic::OnChangeActiveWeapon( CBaseCombatWeapon *pOldWeapon, CBaseCombatWeapon *pNewWeapon )
 {
 	m_WeaponType = ComputeWeaponType();
 	BaseClass::OnChangeActiveWeapon( pOldWeapon, pNewWeapon );
@@ -3057,7 +3060,7 @@ void CNPC_Alyx::OnChangeActiveWeapon( CBaseCombatWeapon *pOldWeapon, CBaseCombat
 // Purpose: Allows the NPC to react to being given a weapon
 // Input  : *pNewWeapon - Weapon given
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::OnGivenWeapon( CBaseCombatWeapon *pNewWeapon )
+void CNPC_Alyx_Episodic::OnGivenWeapon( CBaseCombatWeapon *pNewWeapon )
 {
 	// HACK: This causes Alyx to pull her gun from a holstered position
 	if ( pNewWeapon->ClassMatches( CLASSNAME_ALYXGUN ) )
@@ -3073,7 +3076,7 @@ void CNPC_Alyx::OnGivenWeapon( CBaseCombatWeapon *pNewWeapon )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::Weapon_Equip( CBaseCombatWeapon *pWeapon )
+void CNPC_Alyx_Episodic::Weapon_Equip( CBaseCombatWeapon *pWeapon )
 {
 	m_WeaponType = ComputeWeaponType( pWeapon );
 	BaseClass::Weapon_Equip( pWeapon );
@@ -3081,7 +3084,7 @@ void CNPC_Alyx::Weapon_Equip( CBaseCombatWeapon *pWeapon )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-bool CNPC_Alyx::Weapon_CanUse( CBaseCombatWeapon *pWeapon )
+bool CNPC_Alyx_Episodic::Weapon_CanUse( CBaseCombatWeapon *pWeapon )
 {
 	if( !pWeapon->ClassMatches( CLASSNAME_SHOTGUN ) )
 		return false;
@@ -3093,7 +3096,7 @@ bool CNPC_Alyx::Weapon_CanUse( CBaseCombatWeapon *pWeapon )
 // Purpose: 
 // Input  :  - 
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::OnUpdateShotRegulator( )
+void CNPC_Alyx_Episodic::OnUpdateShotRegulator( )
 {
 	BaseClass::OnUpdateShotRegulator();
 
@@ -3108,7 +3111,7 @@ void CNPC_Alyx::OnUpdateShotRegulator( )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::BarnacleDeathSound( void )
+void CNPC_Alyx_Episodic::BarnacleDeathSound( void )
 {
 	Speak( TLK_SELF_IN_BARNACLE );
 }
@@ -3117,14 +3120,14 @@ void CNPC_Alyx::BarnacleDeathSound( void )
 // Purpose: 
 // Output : PassengerState_e
 //-----------------------------------------------------------------------------
-PassengerState_e CNPC_Alyx::GetPassengerState( void )
+PassengerState_e CNPC_Alyx_Episodic::GetPassengerState( void )
 {
 	return m_PassengerBehavior.GetPassengerState();
 }
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value )
+void CNPC_Alyx_Episodic::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value )
 {
 	// if I'm in the vehicle, the player is probably trying to use the vehicle
 	if ( GetPassengerState() == PASSENGER_STATE_INSIDE && pActivator->IsPlayer() && GetParent() )
@@ -3142,7 +3145,7 @@ void CNPC_Alyx::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE use
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-bool CNPC_Alyx::PlayerInSpread( const Vector &sourcePos, const Vector &targetPos, float flSpread, float maxDistOffCenter, bool ignoreHatedPlayers )
+bool CNPC_Alyx_Episodic::PlayerInSpread( const Vector &sourcePos, const Vector &targetPos, float flSpread, float maxDistOffCenter, bool ignoreHatedPlayers )
 {
 	// loop through all players
 	for (int i = 1; i <= gpGlobals->maxClients; i++ )
@@ -3167,7 +3170,7 @@ bool CNPC_Alyx::PlayerInSpread( const Vector &sourcePos, const Vector &targetPos
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-bool CNPC_Alyx::IsCrouchedActivity( Activity activity )
+bool CNPC_Alyx_Episodic::IsCrouchedActivity( Activity activity )
 {
 	Activity realActivity = TranslateActivity(activity);
 
@@ -3198,7 +3201,7 @@ bool CNPC_Alyx::IsCrouchedActivity( Activity activity )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-bool CNPC_Alyx::OnBeginMoveAndShoot()
+bool CNPC_Alyx_Episodic::OnBeginMoveAndShoot()
 {
 	if ( BaseClass::OnBeginMoveAndShoot() )
 	{
@@ -3212,7 +3215,7 @@ bool CNPC_Alyx::OnBeginMoveAndShoot()
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::SpeakAttacking( void )
+void CNPC_Alyx_Episodic::SpeakAttacking( void )
 {
 	if ( GetActiveWeapon() && m_AnnounceAttackTimer.Expired() )
 	{
@@ -3227,14 +3230,14 @@ void CNPC_Alyx::SpeakAttacking( void )
 //			*pOther - 
 // Output : Returns true on success, false on failure.
 //-----------------------------------------------------------------------------
-bool CNPC_Alyx::ForceVehicleInteraction( const char *lpszInteractionName, CBaseCombatCharacter *pOther )
+bool CNPC_Alyx_Episodic::ForceVehicleInteraction( const char *lpszInteractionName, CBaseCombatCharacter *pOther )
 {
 	return m_PassengerBehavior.ForceVehicleInteraction( lpszInteractionName, pOther );
 }
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-CNPC_Alyx::WeaponType_t CNPC_Alyx::ComputeWeaponType( CBaseEntity *pWeapon )
+CNPC_Alyx_Episodic::WeaponType_t CNPC_Alyx_Episodic::ComputeWeaponType( CBaseEntity *pWeapon )
 {
 	if ( !pWeapon )
 	{
@@ -3272,7 +3275,7 @@ CNPC_Alyx::WeaponType_t CNPC_Alyx::ComputeWeaponType( CBaseEntity *pWeapon )
 //-----------------------------------------------------------------------------
 // Purpose: Complain about being punted
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::InputVehiclePunted( inputdata_t &inputdata )
+void CNPC_Alyx_Episodic::InputVehiclePunted( inputdata_t &inputdata )
 {
 	// If we're in a vehicle, complain about being punted
 	if ( IsInAVehicle() && GetVehicleEntity() == inputdata.pCaller )
@@ -3286,7 +3289,7 @@ void CNPC_Alyx::InputVehiclePunted( inputdata_t &inputdata )
 // Purpose: 
 // Input  : &inputdata - 
 //-----------------------------------------------------------------------------
-void CNPC_Alyx::InputOutsideTransition( inputdata_t &inputdata )
+void CNPC_Alyx_Episodic::InputOutsideTransition( inputdata_t &inputdata )
 {
 	CBasePlayer *pPlayer = AI_GetSinglePlayer();
 	if ( pPlayer && pPlayer->IsInAVehicle() )
@@ -3307,7 +3310,7 @@ void CNPC_Alyx::InputOutsideTransition( inputdata_t &inputdata )
 // AI Schedules Specific to this NPC
 //=========================================================
 
-AI_BEGIN_CUSTOM_NPC( npc_alyx, CNPC_Alyx )
+AI_BEGIN_CUSTOM_NPC( npc_alyx, CNPC_Alyx_Episodic )
 
 	DECLARE_TASK( TASK_ALYX_BEGIN_INTERACTION )
 	DECLARE_TASK( TASK_ALYX_COMPLETE_INTERACTION )

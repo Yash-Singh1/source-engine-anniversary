@@ -29,6 +29,15 @@ CClientSendProp::~CClientSendProp()
 	delete [] m_pTableName;
 }
 
+#ifdef BYTEMATCH_RETAIL
+
+CClientSendTable::CClientSendTable()
+{
+}
+
+
+#endif
+#line 38
 CClientSendTable::~CClientSendTable()
 {
 	delete [] m_SendTable.m_pNetTableName;

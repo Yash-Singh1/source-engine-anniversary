@@ -1,0 +1,92 @@
+{
+ "interface": "CValidatableThread",
+ "headers": [
+  "public/tier0/threadtools.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 8,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "Start(unsigned int)",
+  "Init()",
+  "Run()",
+  "OnExit()",
+  "GetThreadProc()",
+  "IsThreadRunning()"
+ ],
+ "retail_reference": {
+  "module": "bin/chromehtml",
+  "class": "CCEFThread",
+  "offset": 0,
+  "chain": [
+   "CCEFThread",
+   "CValidatableThread"
+  ]
+ },
+ "retail_len": 8,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 8
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CCEFThread",
+   "sig": "~CCEFThread()",
+   "symbol": "CCEFThread::~CCEFThread()"
+  },
+  {
+   "index": 1,
+   "name": "~CCEFThread",
+   "sig": "~CCEFThread()",
+   "symbol": "CCEFThread::~CCEFThread()"
+  },
+  {
+   "index": 2,
+   "name": "Start",
+   "sig": "Start(unsigned int)",
+   "symbol": "libtier0/CThread::Start(unsigned int)"
+  },
+  {
+   "index": 3,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "libtier0/CThread::Init()"
+  },
+  {
+   "index": 4,
+   "name": "Run",
+   "sig": "Run()",
+   "symbol": "CCEFThread::Run()"
+  },
+  {
+   "index": 5,
+   "name": "OnExit",
+   "sig": "OnExit()",
+   "symbol": "libtier0/CThread::OnExit()"
+  },
+  {
+   "index": 6,
+   "name": "GetThreadProc",
+   "sig": "GetThreadProc()",
+   "symbol": "libtier0/CThread::GetThreadProc()"
+  },
+  {
+   "index": 7,
+   "name": "IsThreadRunning",
+   "sig": "IsThreadRunning()",
+   "symbol": "libtier0/CThread::IsThreadRunning()"
+  }
+ ],
+ "derived": [
+  "bin/chromehtml:CCEFThread"
+ ],
+ "derived_count": 1
+}

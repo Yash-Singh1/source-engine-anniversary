@@ -2666,19 +2666,24 @@ void CBaseEntity::VPhysicsCollision( int index, gamevcollisionevent_t *pEvent )
 	}
 	PhysCollisionScreenShake( pEvent, index );
 
-#if HL2_EPISODIC
-	// episodic does something different for when advisor shields are struck
-	if ( phit->game.material == 'Z' || pprops->game.material == 'Z')
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
-		PhysCollisionWarpEffect( pEvent, phit );
+#ifdef HL2_EPISODIC
+		// episodic does something different for when advisor shields are struck
+		if ( phit->game.material == 'Z' || pprops->game.material == 'Z')
+		{
+			PhysCollisionWarpEffect( pEvent, phit );
+		}
+		else
+		{
+			PhysCollisionDust( pEvent, phit );
+		}
+#endif
 	}
 	else
 	{
 		PhysCollisionDust( pEvent, phit );
 	}
-#else
-	PhysCollisionDust( pEvent, phit );
-#endif
 }
 
 void CBaseEntity::VPhysicsFriction( IPhysicsObject *pObject, float energy, int surfaceProps, int surfacePropsHit )
@@ -6322,7 +6327,7 @@ void CBaseEntity::ModifyOrAppendCriteria( AI_CriteriaSet& set )
 	// Append anything from I/O or keyvalues pairs
 	AppendContextToCriteria( set );
 
-	if( hl2_episodic.GetBool() )
+	if( IsHL2Episodic() )
 	{
 		set.AppendCriteria( "episodic", "1" );
 	}

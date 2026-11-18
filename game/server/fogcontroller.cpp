@@ -37,8 +37,11 @@ BEGIN_DATADESC( CFogController )
 	DEFINE_INPUTFUNC( FIELD_VOID,		"TurnOff",		InputTurnOff ),
 	DEFINE_INPUTFUNC( FIELD_COLOR32,	"SetColor",		InputSetColor ),
 	DEFINE_INPUTFUNC( FIELD_COLOR32,	"SetColorSecondary",	InputSetColorSecondary ),
+	DEFINE_INPUTFUNC( FIELD_COLOR32,	"SetColorHDR",		InputSetColorHDR ),
+	DEFINE_INPUTFUNC( FIELD_COLOR32,	"SetColorSecondaryHDR",	InputSetColorSecondaryHDR ),
 	DEFINE_INPUTFUNC( FIELD_INTEGER,	"SetFarZ",		InputSetFarZ ),
 	DEFINE_INPUTFUNC( FIELD_STRING,		"SetAngles",	InputSetAngles ),
+	DEFINE_INPUTFUNC( FIELD_BOOLEAN,	"SetRadial",	InputSetRadial ),
 
 	DEFINE_INPUTFUNC( FIELD_COLOR32,	"SetColorLerpTo",		InputSetColorLerpTo ),
 	DEFINE_INPUTFUNC( FIELD_COLOR32,	"SetColorSecondaryLerpTo",	InputSetColorSecondaryLerpTo ),
@@ -52,6 +55,8 @@ BEGIN_DATADESC( CFogController )
 	DEFINE_KEYFIELD( m_bUseAngles,			FIELD_BOOLEAN,	"use_angles" ),
 	DEFINE_KEYFIELD( m_fog.colorPrimary,	FIELD_COLOR32,	"fogcolor" ),
 	DEFINE_KEYFIELD( m_fog.colorSecondary,	FIELD_COLOR32,	"fogcolor2" ),
+	DEFINE_KEYFIELD( m_fog.colorPrimaryHDR,	FIELD_COLOR32,	"fogcolor_hdr" ),
+	DEFINE_KEYFIELD( m_fog.colorSecondaryHDR,	FIELD_COLOR32,	"fogcolor2_hdr" ),
 	DEFINE_KEYFIELD( m_fog.dirPrimary,		FIELD_VECTOR,	"fogdir" ),
 	DEFINE_KEYFIELD( m_fog.enable,			FIELD_BOOLEAN,	"fogenable" ),
 	DEFINE_KEYFIELD( m_fog.blend,			FIELD_BOOLEAN,	"fogblend" ),
@@ -60,6 +65,7 @@ BEGIN_DATADESC( CFogController )
 	DEFINE_KEYFIELD( m_fog.maxdensity,		FIELD_FLOAT,	"fogmaxdensity" ),
 	DEFINE_KEYFIELD( m_fog.farz,			FIELD_FLOAT,	"farz" ),
 	DEFINE_KEYFIELD( m_fog.duration,		FIELD_FLOAT,	"foglerptime" ),
+	DEFINE_KEYFIELD( m_fog.radial,			FIELD_BOOLEAN,	"fogradial" ),
 
 	DEFINE_THINKFUNC( SetLerpValues ),
 
@@ -77,9 +83,12 @@ IMPLEMENT_SERVERCLASS_ST_NOBASE( CFogController, DT_FogController )
 // fog data
 	SendPropInt( SENDINFO_STRUCTELEM( m_fog.enable ), 1, SPROP_UNSIGNED ),
 	SendPropInt( SENDINFO_STRUCTELEM( m_fog.blend ), 1, SPROP_UNSIGNED ),
+	SendPropInt( SENDINFO_STRUCTELEM( m_fog.radial ), 1, SPROP_UNSIGNED ),
 	SendPropVector( SENDINFO_STRUCTELEM(m_fog.dirPrimary), -1, SPROP_COORD),
 	SendPropInt( SENDINFO_STRUCTELEM( m_fog.colorPrimary ), 32, SPROP_UNSIGNED ),
 	SendPropInt( SENDINFO_STRUCTELEM( m_fog.colorSecondary ), 32, SPROP_UNSIGNED ),
+	SendPropInt( SENDINFO_STRUCTELEM( m_fog.colorPrimaryHDR ), 32, SPROP_UNSIGNED ),
+	SendPropInt( SENDINFO_STRUCTELEM( m_fog.colorSecondaryHDR ), 32, SPROP_UNSIGNED ),
 	SendPropFloat( SENDINFO_STRUCTELEM( m_fog.start ), 0, SPROP_NOSCALE ),
 	SendPropFloat( SENDINFO_STRUCTELEM( m_fog.end ), 0, SPROP_NOSCALE ),
 	SendPropFloat( SENDINFO_STRUCTELEM( m_fog.maxdensity ), 0, SPROP_NOSCALE ),
@@ -199,6 +208,22 @@ void CFogController::InputSetColorSecondary(inputdata_t &inputdata)
 	m_fog.colorSecondary = inputdata.value.Color32();
 }
 
+//------------------------------------------------------------------------------
+// Purpose: Input handler for setting the primary fog color used with HDR.
+//------------------------------------------------------------------------------
+void CFogController::InputSetColorHDR(inputdata_t &inputdata)
+{
+	m_fog.colorPrimaryHDR = inputdata.value.Color32();
+}
+
+//------------------------------------------------------------------------------
+// Purpose: Input handler for setting the secondary fog color used with HDR.
+//------------------------------------------------------------------------------
+void CFogController::InputSetColorSecondaryHDR(inputdata_t &inputdata)
+{
+	m_fog.colorSecondaryHDR = inputdata.value.Color32();
+}
+
 void CFogController::InputSetFarZ(inputdata_t &inputdata)
 {
 	m_fog.farz = inputdata.value.Int();
@@ -221,6 +246,14 @@ void CFogController::InputSetAngles( inputdata_t &inputdata )
 
 	AngleVectors( GetAbsAngles(), &m_fog.dirPrimary.GetForModify() );
 	m_fog.dirPrimary.GetForModify() *= -1.0f;
+}
+
+//------------------------------------------------------------------------------
+// Purpose: Input handler for switching between planar and radial fog.
+//------------------------------------------------------------------------------
+void CFogController::InputSetRadial( inputdata_t &inputdata )
+{
+	m_fog.radial = inputdata.value.Bool();
 }
 
 

@@ -1,0 +1,407 @@
+{
+ "interface": "IClientTools",
+ "headers": [
+  "public/toolframework/itoolentity.h"
+ ],
+ "versions": {
+  "retail": [
+   "VCLIENTTOOLS001"
+  ],
+  "ours": [
+   "VCLIENTTOOLS001"
+  ],
+  "sdk2013": [
+   "VCLIENTTOOLS001"
+  ]
+ },
+ "version_macros": [
+  "VCLIENTTOOLS_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "episodic/client",
+   "version": "VCLIENTTOOLS001",
+   "class": "CClientTools"
+  },
+  {
+   "module": "hl2/client",
+   "version": "VCLIENTTOOLS001",
+   "class": "CClientTools"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "VCLIENTTOOLS001",
+   "class": "CClientTools"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "VCLIENTTOOLS001",
+   "class": "CClientTools"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "VCLIENTTOOLS001",
+   "class": "CClientTools"
+  }
+ ],
+ "sdk2013_len": 47,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "AttachToEntity(void*)",
+  "DetachFromEntity(void*)",
+  "IsValidHandle(unsigned int)",
+  "GetNumRecordables()",
+  "GetRecordable(int)",
+  "NextEntity(void*)",
+  "SetEnabled(unsigned int, bool)",
+  "SetRecording(unsigned int, bool)",
+  "ShouldRecord(unsigned int)",
+  "GetToolHandleForEntityByIndex(int)",
+  "GetModelIndex(unsigned int)",
+  "GetModelName(unsigned int)",
+  "GetClassname(unsigned int)",
+  "AddClientRenderable(IClientRenderable*, int)",
+  "RemoveClientRenderable(IClientRenderable*)",
+  "SetRenderGroup(IClientRenderable*, int)",
+  "MarkClientRenderableDirty(IClientRenderable*)",
+  "UpdateProjectedTexture(unsigned short, bool)",
+  "DrawSprite(IClientRenderable*, float, float, int, int, Color const&, float, int*)",
+  "GetLocalPlayer()",
+  "GetLocalPlayerEyePosition(Vector&, QAngle&, float&)",
+  "CreateShadow(CBaseHandle, int)",
+  "DestroyShadow(unsigned short)",
+  "CreateFlashlight(FlashlightState_t const&)",
+  "DestroyFlashlight(unsigned short)",
+  "UpdateFlashlightState(unsigned short, FlashlightState_t const&)",
+  "AddToDirtyShadowList(unsigned short, bool)",
+  "MarkRenderToTextureShadowDirty(unsigned short)",
+  "EnableRecordingMode(bool)",
+  "IsInRecordingMode() const",
+  "TriggerTempEntity(KeyValues*)",
+  "GetOwningWeaponEntIndex(int)",
+  "GetEntIndex(void*)",
+  "FindGlobalFlexcontroller(char const*)",
+  "GetGlobalFlexControllerName(int)",
+  "GetOwnerEntity(void*)",
+  "IsPlayer(void*)",
+  "IsBaseCombatCharacter(void*)",
+  "IsNPC(void*)",
+  "GetAbsOrigin(unsigned int)",
+  "GetAbsAngles(unsigned int)",
+  "ReloadParticleDefintions(char const*, void const*, int)",
+  "PostToolMessage(KeyValues*)",
+  "EnableParticleSystems(bool)",
+  "IsRenderingThirdPerson() const"
+ ],
+ "retail_reference": {
+  "module": "episodic/client",
+  "class": "CClientTools",
+  "offset": 0,
+  "chain": [
+   "CClientTools",
+   "IClientTools"
+  ]
+ },
+ "retail_len": 47,
+ "retail_len_basis": "override: OnEntityCreated/Deleted override the secondary base IClientEntityListener",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 49
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CClientTools",
+   "sig": "~CClientTools()",
+   "symbol": "CClientTools::~CClientTools()"
+  },
+  {
+   "index": 1,
+   "name": "~CClientTools",
+   "sig": "~CClientTools()",
+   "symbol": "CClientTools::~CClientTools()"
+  },
+  {
+   "index": 2,
+   "name": "AttachToEntity",
+   "sig": "AttachToEntity(void*)",
+   "symbol": "CClientTools::AttachToEntity(void*)"
+  },
+  {
+   "index": 3,
+   "name": "DetachFromEntity",
+   "sig": "DetachFromEntity(void*)",
+   "symbol": "CClientTools::DetachFromEntity(void*)"
+  },
+  {
+   "index": 4,
+   "name": "IsValidHandle",
+   "sig": "IsValidHandle(unsigned int)",
+   "symbol": "CClientTools::IsValidHandle(unsigned int)"
+  },
+  {
+   "index": 5,
+   "name": "GetNumRecordables",
+   "sig": "GetNumRecordables()",
+   "symbol": "CClientTools::GetNumRecordables()"
+  },
+  {
+   "index": 6,
+   "name": "GetRecordable",
+   "sig": "GetRecordable(int)",
+   "symbol": "CClientTools::GetRecordable(int)"
+  },
+  {
+   "index": 7,
+   "name": "NextEntity",
+   "sig": "NextEntity(void*)",
+   "symbol": "CClientTools::NextEntity(void*)"
+  },
+  {
+   "index": 8,
+   "name": "SetEnabled",
+   "sig": "SetEnabled(unsigned int, bool)",
+   "symbol": "CClientTools::SetEnabled(unsigned int, bool)"
+  },
+  {
+   "index": 9,
+   "name": "SetRecording",
+   "sig": "SetRecording(unsigned int, bool)",
+   "symbol": "CClientTools::SetRecording(unsigned int, bool)"
+  },
+  {
+   "index": 10,
+   "name": "ShouldRecord",
+   "sig": "ShouldRecord(unsigned int)",
+   "symbol": "CClientTools::ShouldRecord(unsigned int)"
+  },
+  {
+   "index": 11,
+   "name": "GetToolHandleForEntityByIndex",
+   "sig": "GetToolHandleForEntityByIndex(int)",
+   "symbol": "CClientTools::GetToolHandleForEntityByIndex(int)"
+  },
+  {
+   "index": 12,
+   "name": "GetModelIndex",
+   "sig": "GetModelIndex(unsigned int)",
+   "symbol": "CClientTools::GetModelIndex(unsigned int)"
+  },
+  {
+   "index": 13,
+   "name": "GetModelName",
+   "sig": "GetModelName(unsigned int)",
+   "symbol": "CClientTools::GetModelName(unsigned int)"
+  },
+  {
+   "index": 14,
+   "name": "GetClassname",
+   "sig": "GetClassname(unsigned int)",
+   "symbol": "CClientTools::GetClassname(unsigned int)"
+  },
+  {
+   "index": 15,
+   "name": "AddClientRenderable",
+   "sig": "AddClientRenderable(IClientRenderable*, int)",
+   "symbol": "CClientTools::AddClientRenderable(IClientRenderable*, int)"
+  },
+  {
+   "index": 16,
+   "name": "RemoveClientRenderable",
+   "sig": "RemoveClientRenderable(IClientRenderable*)",
+   "symbol": "CClientTools::RemoveClientRenderable(IClientRenderable*)"
+  },
+  {
+   "index": 17,
+   "name": "SetRenderGroup",
+   "sig": "SetRenderGroup(IClientRenderable*, int)",
+   "symbol": "CClientTools::SetRenderGroup(IClientRenderable*, int)"
+  },
+  {
+   "index": 18,
+   "name": "MarkClientRenderableDirty",
+   "sig": "MarkClientRenderableDirty(IClientRenderable*)",
+   "symbol": "CClientTools::MarkClientRenderableDirty(IClientRenderable*)"
+  },
+  {
+   "index": 19,
+   "name": "UpdateProjectedTexture",
+   "sig": "UpdateProjectedTexture(unsigned short, bool)",
+   "symbol": "CClientTools::UpdateProjectedTexture(unsigned short, bool)"
+  },
+  {
+   "index": 20,
+   "name": "DrawSprite",
+   "sig": "DrawSprite(IClientRenderable*, float, float, int, int, Color const&, float, int*)",
+   "symbol": "CClientTools::DrawSprite(IClientRenderable*, float, float, int, int, Color const&, float, int*)"
+  },
+  {
+   "index": 21,
+   "name": "GetLocalPlayer",
+   "sig": "GetLocalPlayer()",
+   "symbol": "CClientTools::GetLocalPlayer()"
+  },
+  {
+   "index": 22,
+   "name": "GetLocalPlayerEyePosition",
+   "sig": "GetLocalPlayerEyePosition(Vector&, QAngle&, float&)",
+   "symbol": "CClientTools::GetLocalPlayerEyePosition(Vector&, QAngle&, float&)"
+  },
+  {
+   "index": 23,
+   "name": "CreateShadow",
+   "sig": "CreateShadow(CBaseHandle, int)",
+   "symbol": "CClientTools::CreateShadow(CBaseHandle, int)"
+  },
+  {
+   "index": 24,
+   "name": "DestroyShadow",
+   "sig": "DestroyShadow(unsigned short)",
+   "symbol": "CClientTools::DestroyShadow(unsigned short)"
+  },
+  {
+   "index": 25,
+   "name": "CreateFlashlight",
+   "sig": "CreateFlashlight(FlashlightState_t const&)",
+   "symbol": "CClientTools::CreateFlashlight(FlashlightState_t const&)"
+  },
+  {
+   "index": 26,
+   "name": "DestroyFlashlight",
+   "sig": "DestroyFlashlight(unsigned short)",
+   "symbol": "CClientTools::DestroyFlashlight(unsigned short)"
+  },
+  {
+   "index": 27,
+   "name": "UpdateFlashlightState",
+   "sig": "UpdateFlashlightState(unsigned short, FlashlightState_t const&)",
+   "symbol": "CClientTools::UpdateFlashlightState(unsigned short, FlashlightState_t const&)"
+  },
+  {
+   "index": 28,
+   "name": "AddToDirtyShadowList",
+   "sig": "AddToDirtyShadowList(unsigned short, bool)",
+   "symbol": "CClientTools::AddToDirtyShadowList(unsigned short, bool)"
+  },
+  {
+   "index": 29,
+   "name": "MarkRenderToTextureShadowDirty",
+   "sig": "MarkRenderToTextureShadowDirty(unsigned short)",
+   "symbol": "CClientTools::MarkRenderToTextureShadowDirty(unsigned short)"
+  },
+  {
+   "index": 30,
+   "name": "EnableRecordingMode",
+   "sig": "EnableRecordingMode(bool)",
+   "symbol": "CClientTools::EnableRecordingMode(bool)"
+  },
+  {
+   "index": 31,
+   "name": "IsInRecordingMode",
+   "sig": "IsInRecordingMode() const",
+   "symbol": "CClientTools::IsInRecordingMode() const"
+  },
+  {
+   "index": 32,
+   "name": "TriggerTempEntity",
+   "sig": "TriggerTempEntity(KeyValues*)",
+   "symbol": "CClientTools::TriggerTempEntity(KeyValues*)"
+  },
+  {
+   "index": 33,
+   "name": "GetOwningWeaponEntIndex",
+   "sig": "GetOwningWeaponEntIndex(int)",
+   "symbol": "CClientTools::GetOwningWeaponEntIndex(int)"
+  },
+  {
+   "index": 34,
+   "name": "GetEntIndex",
+   "sig": "GetEntIndex(void*)",
+   "symbol": "CClientTools::GetEntIndex(void*)"
+  },
+  {
+   "index": 35,
+   "name": "FindGlobalFlexcontroller",
+   "sig": "FindGlobalFlexcontroller(char const*)",
+   "symbol": "CClientTools::FindGlobalFlexcontroller(char const*)"
+  },
+  {
+   "index": 36,
+   "name": "GetGlobalFlexControllerName",
+   "sig": "GetGlobalFlexControllerName(int)",
+   "symbol": "CClientTools::GetGlobalFlexControllerName(int)"
+  },
+  {
+   "index": 37,
+   "name": "GetOwnerEntity",
+   "sig": "GetOwnerEntity(void*)",
+   "symbol": "CClientTools::GetOwnerEntity(void*)"
+  },
+  {
+   "index": 38,
+   "name": "IsPlayer",
+   "sig": "IsPlayer(void*)",
+   "symbol": "CClientTools::IsPlayer(void*)"
+  },
+  {
+   "index": 39,
+   "name": "IsBaseCombatCharacter",
+   "sig": "IsBaseCombatCharacter(void*)",
+   "symbol": "CClientTools::IsBaseCombatCharacter(void*)"
+  },
+  {
+   "index": 40,
+   "name": "IsNPC",
+   "sig": "IsNPC(void*)",
+   "symbol": "CClientTools::IsNPC(void*)"
+  },
+  {
+   "index": 41,
+   "name": "GetAbsOrigin",
+   "sig": "GetAbsOrigin(unsigned int)",
+   "symbol": "CClientTools::GetAbsOrigin(unsigned int)"
+  },
+  {
+   "index": 42,
+   "name": "GetAbsAngles",
+   "sig": "GetAbsAngles(unsigned int)",
+   "symbol": "CClientTools::GetAbsAngles(unsigned int)"
+  },
+  {
+   "index": 43,
+   "name": "ReloadParticleDefintions",
+   "sig": "ReloadParticleDefintions(char const*, void const*, int)",
+   "symbol": "CClientTools::ReloadParticleDefintions(char const*, void const*, int)"
+  },
+  {
+   "index": 44,
+   "name": "PostToolMessage",
+   "sig": "PostToolMessage(KeyValues*)",
+   "symbol": "CClientTools::PostToolMessage(KeyValues*)"
+  },
+  {
+   "index": 45,
+   "name": "EnableParticleSystems",
+   "sig": "EnableParticleSystems(bool)",
+   "symbol": "CClientTools::EnableParticleSystems(bool)"
+  },
+  {
+   "index": 46,
+   "name": "IsRenderingThirdPerson",
+   "sig": "IsRenderingThirdPerson() const",
+   "symbol": "CClientTools::IsRenderingThirdPerson() const"
+  }
+ ],
+ "implementer_tail": [
+  "OnEntityDeleted(C_BaseEntity*)",
+  "OnEntityCreated(C_BaseEntity*)"
+ ],
+ "derived": [
+  "episodic/client:CClientTools",
+  "hl2/client:CClientTools",
+  "hl2_complete/client:CClientTools",
+  "hl2mp/client:CClientTools",
+  "lostcoast/client:CClientTools"
+ ],
+ "derived_count": 5
+}

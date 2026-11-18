@@ -1,0 +1,58 @@
+{
+ "interface": "IUnknown",
+ "headers": [
+  "public/togl/dx_iunknown.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "bin/libtogl",
+  "class": "IDirect3D9",
+  "offset": 0,
+  "chain": [
+   "IDirect3D9",
+   "IUnknown"
+  ]
+ },
+ "retail_len": 2,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 2
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~IDirect3D9",
+   "sig": "~IDirect3D9()",
+   "symbol": "IDirect3D9::~IDirect3D9()"
+  },
+  {
+   "index": 1,
+   "name": "~IDirect3D9",
+   "sig": "~IDirect3D9()",
+   "symbol": "IDirect3D9::~IDirect3D9()"
+  }
+ ],
+ "derived": [
+  "bin/libtogl:IDirect3D9",
+  "bin/libtogl:IDirect3DBaseTexture9",
+  "bin/libtogl:IDirect3DCubeTexture9",
+  "bin/libtogl:IDirect3DDevice9",
+  "bin/libtogl:IDirect3DIndexBuffer9",
+  "bin/libtogl:IDirect3DPixelShader9",
+  "bin/libtogl:IDirect3DQuery9",
+  "bin/libtogl:IDirect3DSurface9",
+  "bin/libtogl:IDirect3DTexture9",
+  "bin/libtogl:IDirect3DVertexBuffer9",
+  "bin/libtogl:IDirect3DVertexDeclaration9",
+  "bin/libtogl:IDirect3DVertexShader9",
+  "bin/libtogl:IDirect3DVolumeTexture9"
+ ],
+ "derived_count": 13
+}

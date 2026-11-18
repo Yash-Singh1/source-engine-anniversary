@@ -27,10 +27,14 @@ BEGIN_BYTESWAP_DATADESC( VTFFileBaseHeader_t )
 	DEFINE_FIELD( headerSize, FIELD_INTEGER ),
 END_DATADESC()
 
+#ifndef BYTEMATCH_RETAIL
 BEGIN_BYTESWAP_DATADESC( VTFFileHeaderV7_1_t )
 	DEFINE_ARRAY( fileTypeString, FIELD_CHARACTER, 4 ),
 	DEFINE_ARRAY( version, FIELD_INTEGER, 2 ),
 	DEFINE_FIELD( headerSize, FIELD_INTEGER ),
+#else
+BEGIN_BYTESWAP_DATADESC_( VTFFileHeaderV7_1_t, VTFFileBaseHeader_t )
+#endif
 	DEFINE_FIELD( width, FIELD_SHORT ),
 	DEFINE_FIELD( height, FIELD_SHORT ),
 	DEFINE_FIELD( flags, FIELD_INTEGER ),
@@ -45,6 +49,7 @@ BEGIN_BYTESWAP_DATADESC( VTFFileHeaderV7_1_t )
 	DEFINE_FIELD( lowResImageHeight, FIELD_CHARACTER ),
 END_DATADESC()
 
+#ifndef BYTEMATCH_RETAIL
 BEGIN_BYTESWAP_DATADESC( VTFFileHeaderV7_2_t )
 	DEFINE_ARRAY( fileTypeString, FIELD_CHARACTER, 4 ),
 	DEFINE_ARRAY( version, FIELD_INTEGER, 2 ),
@@ -82,6 +87,17 @@ BEGIN_BYTESWAP_DATADESC( VTFFileHeaderV7_3_t )
 	DEFINE_FIELD( lowResImageHeight, FIELD_CHARACTER ),
 	DEFINE_FIELD( depth, FIELD_SHORT ),
 	DEFINE_FIELD( numResources, FIELD_INTEGER ),
+#else
+BEGIN_BYTESWAP_DATADESC_( VTFFileHeaderV7_2_t, VTFFileHeaderV7_1_t )
+	DEFINE_FIELD( depth, FIELD_SHORT ),
+END_DATADESC()
+
+BEGIN_BYTESWAP_DATADESC_( VTFFileHeaderV7_3_t, VTFFileHeaderV7_2_t )
+	DEFINE_FIELD( numResources, FIELD_INTEGER ),
+END_DATADESC()
+
+BEGIN_BYTESWAP_DATADESC_( VTFFileHeader_t, VTFFileHeaderV7_2_t )
+#endif
 END_DATADESC()
 
 BEGIN_BYTESWAP_DATADESC_( VTFFileHeaderX360_t, VTFFileBaseHeader_t )
@@ -221,11 +237,15 @@ IVTFTexture *CreateVTFTexture()
 
 void DestroyVTFTexture( IVTFTexture *pTexture )
 {
+#ifndef BYTEMATCH_RETAIL
 	CVTFTexture *pTex = static_cast<CVTFTexture*>(pTexture);
 	if ( pTex )
 	{
 		delete pTex;
 	}
+#else
+	delete pTexture;
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -255,7 +275,9 @@ int VTFFileHeaderSize( int nMajorVersion, int nMinorVersion )
 			return sizeof( VTFFileHeaderV7_2_t );
 		case 3:
 			return sizeof( VTFFileHeaderV7_3_t ) + sizeof( ResourceEntryInfo ) * MAX_RSRC_DICTIONARY_ENTRIES;
+#ifndef BYTEMATCH_RETAIL
 		case 4:
+#endif
 		case VTF_MINOR_VERSION:
 			int size1 = sizeof( VTFFileHeader_t );
 			int size2 = sizeof( ResourceEntryInfo ) * MAX_RSRC_DICTIONARY_ENTRIES;
@@ -322,8 +344,10 @@ CVTFTexture::CVTFTexture()
 	memset( &m_Options, 0, sizeof( m_Options ) );
 	m_Options.cbSize = sizeof( m_Options );
 
+#ifndef BYTEMATCH_RETAIL
 	m_nFinestMipmapLevel = 0;
 	m_nCoarsestMipmapLevel = 0;
+#endif
 }
 
 CVTFTexture::~CVTFTexture()
@@ -424,6 +448,7 @@ bool CVTFTexture::Init( int nWidth, int nHeight, int nDepth, ImageFormat fmt, in
 		}
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	if ( ( fmt == IMAGE_FORMAT_DXT1 ) || ( fmt == IMAGE_FORMAT_DXT3 ) || ( fmt == IMAGE_FORMAT_DXT5 ) ||
 		 ( fmt == IMAGE_FORMAT_DXT1_RUNTIME ) || ( fmt == IMAGE_FORMAT_DXT5_RUNTIME ) )
 	{
@@ -432,6 +457,12 @@ bool CVTFTexture::Init( int nWidth, int nHeight, int nDepth, ImageFormat fmt, in
 			Warning( "Image dimensions must be multiple of 4!\n" );
 			return false;
 		}
+#else
+	if ( !IsMultipleOf4( nWidth ) || !IsMultipleOf4( nHeight ) || !IsMultipleOf4( nDepth ) )
+	{
+		Warning( "Image dimensions must be multiple of 4!\n" );
+		return false;
+#endif
 	}
 
 	if ( fmt == IMAGE_FORMAT_DEFAULT )
@@ -464,6 +495,14 @@ bool CVTFTexture::Init( int nWidth, int nHeight, int nDepth, ImageFormat fmt, in
 	m_nFrameCount = iFrameCount;
 
 	m_nFaceCount = (iFlags & TEXTUREFLAGS_ENVMAP) ? CUBEMAP_FACE_COUNT : 1;
+#ifndef BYTEMATCH_RETAIL
+#else
+	if ( IsX360() && ( iFlags & TEXTUREFLAGS_ENVMAP ) )
+	{
+		// 360 has no reason to support sphere map
+		m_nFaceCount = CUBEMAP_FACE_COUNT-1;
+	}
+#endif
 
 #if defined( _X360 )
 	m_nMipSkipCount = 0;
@@ -632,7 +671,11 @@ void CVTFTexture::ImageFileInfo( int nFrame, int nFace, int nMipLevel, int *pSta
 	int nFacesToRead = m_nFaceCount;
 	if ( IsCubeMap() )
 	{
+#ifndef BYTEMATCH_RETAIL
 		if ((m_nVersion[0] == 7) && (m_nVersion[1] < 1 || m_nVersion[1] > 4))
+#else
+		if ((m_nVersion[0] == 7) && (m_nVersion[1] < 1))
+#endif
 		{
 			nFacesToRead = 6;
 			if (nFace == CUBEMAP_FACE_SPHEREMAP)
@@ -711,6 +754,7 @@ bool CVTFTexture::LoadImageData( CUtlBuffer &buf, const VTFFileHeader_t &header,
 	int iImageSize = ComputeFaceSize();
 	iImageSize *= m_nFaceCount * m_nFrameCount;
 
+#ifndef BYTEMATCH_RETAIL
 	if ( !AllocateImageData( iImageSize ) )
 		return false;
 
@@ -733,6 +777,60 @@ bool CVTFTexture::LoadImageData( CUtlBuffer &buf, const VTFFileHeader_t &header,
 	int nGet = buf.TellGet();
 
 retryCubemapLoad:
+#else
+	// For backwards compatibility, we don't read in the spheremap fallback on
+	// older format .VTF files...
+	int nFacesToRead = m_nFaceCount;
+	if ( IsCubeMap() )
+	{
+		if ((header.version[0] == 7) && (header.version[1] < 1))
+			nFacesToRead = 6;
+	}
+
+	// Even if we are preloading partial data, always do the full allocation here. We'll use LOD clamping to ensure we only 
+	// reference data that is available.
+	if ( !AllocateImageData( iImageSize ) )
+		return false;
+
+	// We may only have part of the data available--if so we will stream in the rest later. 
+	// If we have the data available but we're ignoring it (for example during development), then we 
+	// need to skip over the data we're ignoring below, otherwise we'll be sad pandas.
+	bool bMipDataPresent = true;
+	int nFirstAvailableMip = 0;
+	int nLastAvailableMip = m_nMipCount - 1;
+	TextureStreamSettings_t const *pStreamSettings = ( TextureStreamSettings_t const * ) GetResourceData( VTF_RSRC_TEXTURE_STREAM_SETTINGS, NULL );
+	if ( pStreamSettings ) 
+	{
+		nFirstAvailableMip = Max( 0, pStreamSettings->m_firstAvailableMip - nSkipMipLevels );
+		nLastAvailableMip = Max( 0, pStreamSettings->m_lastAvailableMip - nSkipMipLevels );
+		bMipDataPresent = false;
+	} 
+	
+	// If we have coarse mips but not the fine mips (yet)
+	if ( ( header.flags & TEXTUREFLAGS_STREAMABLE ) == TEXTUREFLAGS_STREAMABLE_COARSE )
+	{
+		nFirstAvailableMip = Max( 0, Max( nFirstAvailableMip, STREAMING_START_MIPMAP ) - nSkipMipLevels );
+	}
+
+	if ( header.flags & TEXTUREFLAGS_STREAMABLE_FINE )
+	{
+		// Don't need to subtract nSkipMipLevels: m_nMipCount has subtracted that above--assuming this assert doesn't fire.
+		Assert( m_nMipCount == header.numMipLevels - nSkipMipLevels );
+		nLastAvailableMip = Min( nLastAvailableMip, STREAMING_START_MIPMAP - 1 );
+	}
+
+	// Valid settings? 
+	Assert( nFirstAvailableMip >= 0 && nFirstAvailableMip <= nLastAvailableMip && nLastAvailableMip < m_nMipCount );
+
+#ifndef BYTEMATCH_RETAIL
+	// Store the clamp settings
+	m_nFinestMipmapLevel = nFirstAvailableMip;
+	m_nCoarsestMipmapLevel = nLastAvailableMip;
+#endif
+
+	// NOTE: The mip levels are stored ascending from smallest (1x1) to largest (NxN)
+	// in order to allow for truncated reads of the minimal required data
+#endif
 	for (int iMip = m_nMipCount; --iMip >= 0; )
 	{
 		// NOTE: This is for older versions...
@@ -741,6 +839,7 @@ retryCubemapLoad:
 
 		int iMipSize = ComputeMipSize( iMip );
 
+#ifndef BYTEMATCH_RETAIL
 		for (int iFrame = 0; iFrame < m_nFrameCount; ++iFrame)
 		{
 			for (int iFace = 0; iFace < m_nFaceCount; ++iFace)
@@ -770,6 +869,33 @@ retryCubemapLoad:
 		Warning( "** Encountered stale cubemap! Please rebuild the following vtf:\n" );
 	}
 	return bOk;
+#else
+		// Skip over any levels we don't have data for--we'll get them later. 
+		if ( iMip > nLastAvailableMip || iMip < nFirstAvailableMip )
+		{
+			// If the data is there but we're ignoring it, need to update the get pointer.
+			if ( bMipDataPresent ) 
+			{
+				for ( int iFrame = 0; iFrame < m_nFrameCount; ++iFrame )
+					for ( int iFace = 0; iFace < nFacesToRead; ++iFace )
+						buf.SeekGet( CUtlBuffer::SEEK_CURRENT, iMipSize );
+			}
+			continue;
+		}
+
+		for (int iFrame = 0; iFrame < m_nFrameCount; ++iFrame)
+		{
+			for (int iFace = 0; iFace < nFacesToRead; ++iFace)
+			{
+				// printf("\n tex %p mip %i frame %i face %i  size %i  buf offset %i", this, iMip, iFrame, iFace, iMipSize, buf.TellGet() );
+				unsigned char *pMipBits = ImageData( iFrame, iFace, iMip );
+				buf.Get( pMipBits, iMipSize );
+			}
+		}
+	}
+
+	return buf.IsValid();
+#endif
 }
 
 void *CVTFTexture::SetResourceData( uint32 eType, void const *pData, size_t nNumBytes )
@@ -923,7 +1049,11 @@ bool CVTFTexture::SetupByteSwap( CUtlBuffer &buf )
 static bool ReadHeaderFromBufferPastBaseHeader( CUtlBuffer &buf, VTFFileHeader_t &header )
 {
 	unsigned char *pBuf = (unsigned char*)(&header) + sizeof(VTFFileBaseHeader_t);
+#ifndef BYTEMATCH_RETAIL
 	if ( header.version[1] <= VTF_MINOR_VERSION && header.version[1] >= 4 )
+#else
+	if ( header.version[1] == VTF_MINOR_VERSION )
+#endif
 	{
 		buf.Get( pBuf, sizeof(VTFFileHeader_t) - sizeof(VTFFileBaseHeader_t) );
 	}
@@ -934,11 +1064,31 @@ static bool ReadHeaderFromBufferPastBaseHeader( CUtlBuffer &buf, VTFFileHeader_t
 	else if ( header.version[1] == 2 )
 	{
 		buf.Get( pBuf, sizeof(VTFFileHeaderV7_2_t) - sizeof(VTFFileBaseHeader_t) );
+#ifndef BYTEMATCH_RETAIL
 	}
 	else if ( header.version[1] == 1 || header.version[1] == 0 )
 	{
 		// previous version 7.0 or 7.1
 		buf.Get( pBuf, sizeof(VTFFileHeaderV7_1_t) - sizeof(VTFFileBaseHeader_t) );
+#else
+
+		#if defined( _X360 ) || defined (POSIX)
+			// read 15 dummy bytes to be properly positioned with 7.2 PC data
+			byte dummy[15];
+			buf.Get( dummy, 15 );
+		#endif
+	}
+	else if ( header.version[1] == 1 || header.version[1] == 0 )
+	{
+		// previous version 7.0 or 7.1
+		buf.Get( pBuf, sizeof(VTFFileHeaderV7_1_t) - sizeof(VTFFileBaseHeader_t) );
+
+		#if defined( _X360 ) || defined (POSIX)
+			// read a dummy byte to be properly positioned with 7.0/1 PC data
+			byte dummy;
+			buf.Get( &dummy, 1 );
+		#endif
+#endif
 	}
 	else
 	{
@@ -973,7 +1123,11 @@ bool CVTFTexture::ReadHeader( CUtlBuffer &buf, VTFFileHeader_t &header )
 			{
 				m_Swap.SwapFieldsToTargetEndian( (VTFFileHeaderV7_3_t*)buf.PeekGet() );
 			}
+#ifndef BYTEMATCH_RETAIL
 			else if ( baseHeader.version[1] >= 4 && baseHeader.version[1] <= VTF_MINOR_VERSION )
+#else
+			else if ( baseHeader.version[1] == VTF_MINOR_VERSION )
+#endif
 			{
 				m_Swap.SwapFieldsToTargetEndian( (VTFFileHeader_t*)buf.PeekGet() );
 			}
@@ -1020,7 +1174,9 @@ bool CVTFTexture::ReadHeader( CUtlBuffer &buf, VTFFileHeader_t &header )
 	case 3:
 		header.flags &= VERSIONED_VTF_FLAGS_MASK_7_3;
 		// fall-through
+#ifndef BYTEMATCH_RETAIL
 	case 4:
+#endif
 	case VTF_MINOR_VERSION:
 		break;
 	}
@@ -1093,8 +1249,10 @@ bool CVTFTexture::UnserializeEx( CUtlBuffer &buf, bool bHeaderOnly, int nForceFl
 	// have data on disk for them. This is for backward compatibility
 	m_nMipCount = ComputeMipCount();
 
+#ifndef BYTEMATCH_RETAIL
 	m_nFinestMipmapLevel = 0;
 	m_nCoarsestMipmapLevel = m_nMipCount - 1;
+#endif
 
 	m_vecReflectivity = header.reflectivity;
 	m_flBumpScale = header.bumpScale;
@@ -1218,11 +1376,20 @@ bool CVTFTexture::UnserializeEx( CUtlBuffer &buf, bool bHeaderOnly, int nForceFl
 
 void CVTFTexture::GetMipmapRange( int* pOutFinest, int* pOutCoarsest )
 {
+#ifndef BYTEMATCH_RETAIL
 	if ( pOutFinest )
 		*pOutFinest = m_nFinestMipmapLevel;
 
 	if ( pOutCoarsest )
 		*pOutCoarsest = m_nCoarsestMipmapLevel;
+#else
+	// Retail CVTFTexture has no streaming clamps; every loaded mip is available.
+	if ( pOutFinest )
+		*pOutFinest = 0;
+
+	if ( pOutCoarsest )
+		*pOutCoarsest = m_nMipCount - 1;
+#endif
 }
 
 bool CVTFTexture::LoadNewResources( CUtlBuffer &buf )
@@ -2528,7 +2695,11 @@ void CVTFTexture::GenerateMipmaps()
 //		return;
 //	}
 
+#ifndef BYTEMATCH_RETAIL
 	Assert( m_Format == IMAGE_FORMAT_RGBA8888 || m_Format == IMAGE_FORMAT_RGB323232F || m_Format == IMAGE_FORMAT_RGBA32323232F );
+#else
+	Assert( m_Format == IMAGE_FORMAT_RGBA8888 || m_Format == IMAGE_FORMAT_RGB323232F );
+#endif
 
 	// FIXME: Should we be doing anything special for normalmaps other than a final normalization pass?
 	ImageLoader::ResampleInfo_t info;
@@ -2667,11 +2838,15 @@ void CVTFTexture::GenerateMipmaps()
 				info.m_pSrc = pSrcLevel;
 				info.m_pDest = pDstLevel;
 				ComputeMipLevelDimensions( nSrcMipLevel, &info.m_nSrcWidth, &info.m_nSrcHeight, &info.m_nSrcDepth );
+#ifndef BYTEMATCH_RETAIL
 				if( m_Format == IMAGE_FORMAT_RGBA32323232F )
 				{
 					ImageLoader::ResampleRGBA32323232F( info );
 				}
 				else if( m_Format == IMAGE_FORMAT_RGB323232F )
+#else
+				if( m_Format == IMAGE_FORMAT_RGB323232F )
+#endif
 				{
 					ImageLoader::ResampleRGB323232F( info );
 				}

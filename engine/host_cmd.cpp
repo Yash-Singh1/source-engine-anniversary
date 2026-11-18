@@ -609,11 +609,6 @@ CON_COMMAND( status, "Display map and connection status." )
 
 	print( "edicts  : %d used of %d max\n", sv.num_edicts - sv.free_edicts, sv.max_edicts );
 
-	if ( ( g_iServerGameDLLVersion >= 10 ) && serverGameDLL )
-	{
-		serverGameDLL->Status( print );
-	}
-
 	// Early exit for this server.
 	if ( args.ArgC() == 2 )
 	{
@@ -761,21 +756,11 @@ void Host_Map_Helper( const CCommand &args, bool bEditmode, bool bBackground, bo
 		return;
 	}
 
-	const char *pszReason = NULL;
-	if ( ( g_iServerGameDLLVersion >= 10 ) && !serverGameDLL->IsManualMapChangeOkay( &pszReason ) )
-	{
-		if ( pszReason && pszReason[0] )
-		{
-			Warning( "%s\n", pszReason );
-		}
-		return;
-	}
-
 	char szMapName[ MAX_QPATH ] = { 0 };
 	V_strncpy( szMapName, args[ 1 ], sizeof( szMapName ) );
 
 	// Call find map, proceed for any value besides NotFound
-	IVEngineServer::eFindMapResult eResult = g_pVEngineServer->FindMap( szMapName, sizeof( szMapName ) );
+	IVEngineServer::eFindMapResult eResult = VEngineServer_FindMap( szMapName, sizeof( szMapName ) );
 	if ( eResult == IVEngineServer::eFindMap_NotFound )
 	{
 		Warning( "map load failed: %s not found or invalid\n", args[ 1 ] );
@@ -1028,7 +1013,7 @@ void Host_Changelevel_f( const CCommand &args )
 	V_strncpy( szName, args[1], sizeof( szName ) );
 
 	// Call find map to attempt to resolve fuzzy/non-canonical map names
-	IVEngineServer::eFindMapResult eResult = g_pVEngineServer->FindMap( szName, sizeof( szName ) );
+	IVEngineServer::eFindMapResult eResult = VEngineServer_FindMap( szName, sizeof( szName ) );
 	if ( eResult == IVEngineServer::eFindMap_NotFound )
 	{
 		// Warn, but but proceed even if the map is not found, such that we hit the proper server_levelchange_failed
@@ -1045,16 +1030,6 @@ void Host_Changelevel_f( const CCommand &args )
 	if ( !CL_PortalDemo_MapCheck(szName) )
 	{
 		Warning( "changelevel failed: %s not found\n", szName );
-		return;
-	}
-
-	const char *pszReason = NULL;
-	if ( ( g_iServerGameDLLVersion >= 10 ) && !serverGameDLL->IsManualMapChangeOkay( &pszReason ) )
-	{
-		if ( pszReason && pszReason[0] )
-		{
-			Warning( "%s", pszReason );
-		}
 		return;
 	}
 
@@ -1080,7 +1055,7 @@ void Host_Changelevel2_f( const CCommand &args )
 
 	char szName[MAX_PATH] = { 0 };
 	V_strncpy( szName, args[1], sizeof( szName ) );
-	IVEngineServer::eFindMapResult eResult = g_pVEngineServer->FindMap( szName, sizeof( szName ) );
+	IVEngineServer::eFindMapResult eResult = VEngineServer_FindMap( szName, sizeof( szName ) );
 	if ( eResult == IVEngineServer::eFindMap_NotFound )
 	{
 		if ( !CL_IsHL2Demo() || (CL_IsHL2Demo() && !(!Q_stricmp( szName, "d1_trainstation_03" ) || !Q_stricmp( szName, "d1_town_02a" ))) )	
@@ -2338,6 +2313,7 @@ CON_COMMAND_F( memory_diff, "show memory stats relative to snapshot", FCVAR_CHEA
 //-----------------------------------------------------------------------------
 // 
 //-----------------------------------------------------------------------------
+#ifndef BYTEMATCH_RETAIL
 CON_COMMAND( namelockid, "Prevent name changes for this userID." )
 {
 	if ( args.ArgC() <= 2 )
@@ -2382,6 +2358,8 @@ CON_COMMAND( namelockid, "Prevent name changes for this userID." )
 		ConMsg( "Player id \"%d\" not found.\n", iIndex );
 	}
 }
+#endif
+#line 2316
 
 #if defined( STAGING_ONLY ) || defined( _DEBUG )
 CON_COMMAND( fs_find, "Run virtual filesystem find" )

@@ -222,6 +222,8 @@ private:
 	unsigned	m_nIters;
 	CCycleCount m_Total;
 	CCycleCount	m_Peak;
+	bool		m_fReport;
+	const tchar *m_pszName;
 };
 
 // -------------------------------------------------------------------------- // 
@@ -494,7 +496,7 @@ inline CAverageTimeMarker::~CAverageTimeMarker()
 class CLimitTimer
 {
 public:
-	CLimitTimer() = default;
+	CLimitTimer() {}
 	CLimitTimer( uint64 cMicroSecDuration ) { SetLimit( cMicroSecDuration ); }
 	void SetLimit( uint64 m_cMicroSecDuration );
 	bool BLimitReached() const;

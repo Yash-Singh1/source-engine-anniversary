@@ -23,7 +23,13 @@ ConVar cl_jiggle_bone_debug_yaw_constraints( "cl_jiggle_bone_debug_yaw_constrain
 ConVar cl_jiggle_bone_debug_pitch_constraints( "cl_jiggle_bone_debug_pitch_constraints", "0", FCVAR_CHEAT, "Display physics-based 'jiggle bone' debugging information" );
 #endif // CLIENT_DLL
 
+#ifdef BYTEMATCH_RETAIL
+ConVar cl_jiggle_bone_framerate_cutoff( "cl_jiggle_bone_framerate_cutoff", "45", 0, "Skip jiggle bone simulation if framerate drops below this value (frames/second)" );
+#define JIGGLE_DEBUGOVERLAY true
+#else
+#define JIGGLE_DEBUGOVERLAY debugoverlay
 ConVar cl_jiggle_bone_framerate_cutoff( "cl_jiggle_bone_framerate_cutoff", "20", 0, "Skip jiggle bone simulation if framerate drops below this value (frames/second)" );
+#endif
 
 
 //-----------------------------------------------------------------------------
@@ -40,9 +46,11 @@ JiggleData * CJiggleBones::GetJiggleData( int bone, float currenttime, const Vec
 	JiggleData data;
 	data.Init( bone, currenttime, initBasePos, initTipPos );
 
+#ifndef BYTEMATCH_RETAIL
 	// Start out using jiggle bones for at least 16 frames.
 	data.useGoalMatrixCount = 0;
 	data.useJiggleBoneCount = 16;
+#endif
 
 	int idx = m_jiggleBoneState.AddToHead( data );
 	if ( idx == m_jiggleBoneState.InvalidIndex() )
@@ -100,6 +108,13 @@ void CJiggleBones::BuildJiggleTransformations( int boneIndex, float currenttime,
 	float deltaT = currenttime - data->lastUpdate;
 
 	const float thousandHZ = 0.001f;
+#ifdef BYTEMATCH_RETAIL
+	if ( deltaT < thousandHZ )
+	{
+		deltaT = thousandHZ;
+	}
+	else if ( cl_jiggle_bone_framerate_cutoff.GetFloat() <= 0.0f || deltaT > ( 1.0f / cl_jiggle_bone_framerate_cutoff.GetFloat() ) )
+#else
 	bool bMaxDeltaT = deltaT < thousandHZ;
 	bool bUseGoalMatrix = cl_jiggle_bone_framerate_cutoff.GetFloat() <= 0.0f || deltaT > ( 1.0f / cl_jiggle_bone_framerate_cutoff.GetFloat() );
 
@@ -134,6 +149,7 @@ void CJiggleBones::BuildJiggleTransformations( int boneIndex, float currenttime,
 		deltaT = thousandHZ;
 	}
 	else if ( bUseGoalMatrix )
+#endif
 	{
 		// disable jigglebone - just use goal matrix
 		boneMX = goalMX;
@@ -280,7 +296,7 @@ void CJiggleBones::BuildJiggleTransformations( int boneIndex, float currenttime,
 					{
 						float dT = 0.01f;
 						const float axisSize = 10.0f;
-						if ( debugoverlay )
+						if ( JIGGLE_DEBUGOVERLAY )
 						{
 							debugoverlay->AddLineOverlay( goalBasePosition, goalBasePosition + axisSize * limitLeft, 0, 255, 255, true, dT );
 							debugoverlay->AddLineOverlay( goalBasePosition, goalBasePosition + axisSize * limitUp, 255, 255, 0, true, dT );
@@ -378,7 +394,7 @@ void CJiggleBones::BuildJiggleTransformations( int boneIndex, float currenttime,
 					{
 						float dT = 0.01f;
 						const float axisSize = 10.0f;
-						if ( debugoverlay )
+						if ( JIGGLE_DEBUGOVERLAY )
 						{
 							debugoverlay->AddLineOverlay( goalBasePosition, goalBasePosition + axisSize * limitLeft, 0, 255, 255, true, dT );
 							debugoverlay->AddLineOverlay( goalBasePosition, goalBasePosition + axisSize * limitUp, 255, 255, 0, true, dT );
@@ -457,7 +473,7 @@ void CJiggleBones::BuildJiggleTransformations( int boneIndex, float currenttime,
 #ifdef CLIENT_DLL
 		if ( cl_jiggle_bone_debug.GetBool() )
 		{
-			if ( debugoverlay )
+			if ( JIGGLE_DEBUGOVERLAY )
 			{
 				debugoverlay->AddLineOverlay( goalBasePosition, goalBasePosition + 10.0f * data->lastLeft, 255, 0, 255, true, 0.01f );
 			}
@@ -583,7 +599,7 @@ void CJiggleBones::BuildJiggleTransformations( int boneIndex, float currenttime,
 #ifdef CLIENT_DLL
 		if ( cl_jiggle_bone_debug.GetBool() )
 		{
-			if ( debugoverlay )
+			if ( JIGGLE_DEBUGOVERLAY )
 			{
 				debugoverlay->AddLineOverlay( data->lastBoingPos, goalBasePosition, 0, 128, ( gpGlobals->framecount & 0x1 ) ? 0 : 200, true, 999.9f );
 			}
@@ -618,7 +634,7 @@ void CJiggleBones::BuildJiggleTransformations( int boneIndex, float currenttime,
 #ifdef CLIENT_DLL
 				if ( cl_jiggle_bone_debug.GetBool() )
 				{
-					if ( debugoverlay )
+					if ( JIGGLE_DEBUGOVERLAY )
 					{
 						debugoverlay->AddLineOverlay( goalBasePosition, goalBasePosition + 5.0f * data->boingDir, 255, 255, 0, true, 999.9f );
 						debugoverlay->AddLineOverlay( goalBasePosition, goalBasePosition + Vector( 0.1, 0, 0 ), 128, 128, 0, true, 999.9f );
@@ -746,7 +762,7 @@ void CJiggleBones::BuildJiggleTransformations( int boneIndex, float currenttime,
 			if ( cl_jiggle_bone_debug.GetBool() )
 			{
 				float dT = 0.01f;
-				if ( debugoverlay )
+				if ( JIGGLE_DEBUGOVERLAY )
 				{
 					debugoverlay->AddLineOverlay( goalBasePosition, goalBasePosition + 50.0f * data->boingDir, 255, 255, 0, true, dT );
 					debugoverlay->AddLineOverlay( goalBasePosition, goalBasePosition + 50.0f * boingSide, 255, 0, 255, true, dT );
@@ -772,7 +788,7 @@ void CJiggleBones::BuildJiggleTransformations( int boneIndex, float currenttime,
 	{
 		float dT = 0.01f;
 		const float axisSize = 5.0f;
-		if ( debugoverlay )
+		if ( JIGGLE_DEBUGOVERLAY )
 		{
 			debugoverlay->AddLineOverlay( goalBasePosition, goalBasePosition + axisSize * goalLeft, 255, 0, 0, true, dT );
 			debugoverlay->AddLineOverlay( goalBasePosition, goalBasePosition + axisSize * goalUp, 0, 255, 0, true, dT );
@@ -794,7 +810,7 @@ void CJiggleBones::BuildJiggleTransformations( int boneIndex, float currenttime,
 
 		if ( jiggleInfo->flags & ( JIGGLE_IS_FLEXIBLE | JIGGLE_IS_RIGID ) )
 		{
-			if ( debugoverlay )
+			if ( JIGGLE_DEBUGOVERLAY )
 			{
 				debugoverlay->AddLineOverlay( goalBasePosition, 
 					data->tipPos, 255, 255, 0, true, dT );
@@ -810,7 +826,7 @@ void CJiggleBones::BuildJiggleTransformations( int boneIndex, float currenttime,
 
 		if ( jiggleInfo->flags & JIGGLE_HAS_BASE_SPRING )
 		{
-			if ( debugoverlay )
+			if ( JIGGLE_DEBUGOVERLAY )
 			{
 				debugoverlay->AddLineOverlay( data->basePos + Vector( -sz, 0, 0 ), 
 					data->basePos + Vector( sz, 0, 0 ), 255, 0, 255, true, dT );

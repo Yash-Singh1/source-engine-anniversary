@@ -1,0 +1,97 @@
+{
+ "interface": "CCallbackBase",
+ "headers": [
+  "public/steam/steam_api.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 3,
+ "sdk2013_slots": [
+  "Run(void*)",
+  "Run(void*, bool, unsigned long long)",
+  "GetCallbackSizeBytes()"
+ ],
+ "retail_reference": {
+  "module": "hl2mp/client",
+  "class": "CCallback<CAvatarImage, PersonaStateChange_t, false>",
+  "offset": 0,
+  "chain": [
+   "CCallback<CAvatarImage, PersonaStateChange_t, false>",
+   "CCallbackImpl<12>",
+   "CCallbackBase"
+  ]
+ },
+ "retail_len": 3,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 3
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Run",
+   "sig": "Run(void*)",
+   "symbol": "CCallback<CAvatarImage, PersonaStateChange_t, false>::Run(void*)"
+  },
+  {
+   "index": 1,
+   "name": "Run",
+   "sig": "Run(void*, bool, unsigned long long)",
+   "symbol": "CCallback<CAvatarImage, PersonaStateChange_t, false>::Run(void*, bool, unsigned long long)"
+  },
+  {
+   "index": 2,
+   "name": "GetCallbackSizeBytes",
+   "sig": "GetCallbackSizeBytes()",
+   "symbol": "CCallback<CAvatarImage, PersonaStateChange_t, false>::GetCallbackSizeBytes()"
+  }
+ ],
+ "derived": [
+  "bin/ServerBrowser:CCallback<CBaseGamesPage, FavoritesListChanged_t, false>",
+  "bin/ServerBrowser:CCallback<CDialogGameInfo, PersonaStateChange_t, false>",
+  "bin/ServerBrowser:CCallbackImpl<12>",
+  "bin/ServerBrowser:CCallbackImpl<28>",
+  "bin/engine:CCallback<CSteam3Client, ClientGameServerDeny_t, false>",
+  "bin/engine:CCallback<CSteam3Client, GameOverlayActivated_t, false>",
+  "bin/engine:CCallback<CSteam3Client, GameServerChangeRequested_t, false>",
+  "bin/engine:CCallback<CSteam3Client, LowBatteryPower_t, false>",
+  "bin/engine:CCallback<CSteam3Client, PersonaStateChange_t, false>",
+  "bin/engine:CCallback<CSteam3Server, ComputeNewPlayerCompatibilityResult_t, true>",
+  "bin/engine:CCallback<CSteam3Server, GSPolicyResponse_t, true>",
+  "bin/engine:CCallback<CSteam3Server, SteamServerConnectFailure_t, true>",
+  "bin/engine:CCallback<CSteam3Server, SteamServersConnected_t, true>",
+  "bin/engine:CCallback<CSteam3Server, SteamServersDisconnected_t, true>",
+  "bin/engine:CCallback<CSteam3Server, ValidateAuthTicketResponse_t, true>",
+  "bin/engine:CCallbackImpl<128>",
+  "bin/engine:CCallbackImpl<12>",
+  "bin/engine:CCallbackImpl<16>",
+  "bin/engine:CCallbackImpl<1>",
+  "bin/engine:CCallbackImpl<20>",
+  "bin/engine:CCallbackImpl<24>",
+  "bin/engine:CCallbackImpl<4>",
+  "bin/engine:CCallbackImpl<8>",
+  "bin/inputsystem:CCallbackImpl<32>",
+  "bin/inputsystem:CInputSystem::CCallbackInternal_OnSteamInputConfigurationLoaded",
+  "episodic/client:CCallback<CAvatarImage, PersonaStateChange_t, false>",
+  "episodic/client:CCallback<CClientSteamContext, SteamServerConnectFailure_t, false>",
+  "episodic/client:CCallback<CClientSteamContext, SteamServersConnected_t, false>",
+  "episodic/client:CCallback<CClientSteamContext, SteamServersDisconnected_t, false>",
+  "episodic/client:CCallbackImpl<12>",
+  "episodic/client:CCallbackImpl<1>",
+  "episodic/client:CCallbackImpl<4>",
+  "episodic/client:CCallbackImpl<8>",
+  "episodic/server:CCallback<CAchievementMgr, UserStatsReceived_t, false>",
+  "episodic/server:CCallback<CAchievementMgr, UserStatsStored_t, false>",
+  "episodic/server:CCallbackImpl<12>",
+  "episodic/server:CCallbackImpl<20>",
+  "hl2/client:CCallback<CAvatarImage, PersonaStateChange_t, false>",
+  "hl2/client:CCallback<CClientSteamContext, SteamServerConnectFailure_t, false>",
+  "hl2/client:CCallback<CClientSteamContext, SteamServersConnected_t, false>"
+ ],
+ "derived_count": 77
+}

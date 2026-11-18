@@ -77,14 +77,13 @@ BEGIN_DATADESC( CFuncTank )
 	DEFINE_KEYFIELD( m_iBulletDamageVsPlayer, FIELD_INTEGER, "bullet_damage_vs_player" ),
 	DEFINE_KEYFIELD( m_iszMaster, FIELD_STRING, "master" ),
 	
-#ifdef HL2_EPISODIC	
+#ifdef HL2_EPISODIC
 	DEFINE_KEYFIELD( m_iszAmmoType, FIELD_STRING, "ammotype" ),
 	DEFINE_FIELD( m_iAmmoType, FIELD_INTEGER ),
-#else
+#endif // HL2_EPISODIC
 	DEFINE_FIELD( m_iSmallAmmoType, FIELD_INTEGER ),
 	DEFINE_FIELD( m_iMediumAmmoType, FIELD_INTEGER ),
 	DEFINE_FIELD( m_iLargeAmmoType, FIELD_INTEGER ),
-#endif // HL2_EPISODIC
 
 	DEFINE_KEYFIELD( m_soundStartRotate, FIELD_SOUNDNAME, "rotatestartsound" ),
 	DEFINE_KEYFIELD( m_soundStopRotate, FIELD_SOUNDNAME, "rotatestopsound" ),
@@ -735,13 +734,18 @@ void CFuncTank::Spawn( void )
 {
 	Precache();
 
+	if ( HL2_EPISODIC_ACTIVE() )
+	{
 #ifdef HL2_EPISODIC
-	m_iAmmoType = GetAmmoDef()->Index( STRING( m_iszAmmoType ) );
-#else
-	m_iSmallAmmoType	= GetAmmoDef()->Index("Pistol");
-	m_iMediumAmmoType	= GetAmmoDef()->Index("SMG1");
-	m_iLargeAmmoType	= GetAmmoDef()->Index("AR2");
-#endif // HL2_EPISODIC
+		m_iAmmoType = GetAmmoDef()->Index( STRING( m_iszAmmoType ) );
+#endif
+	}
+	else
+	{
+		m_iSmallAmmoType	= GetAmmoDef()->Index("Pistol");
+		m_iMediumAmmoType	= GetAmmoDef()->Index("SMG1");
+		m_iLargeAmmoType	= GetAmmoDef()->Index("AR2");
+	}
 
 	SetMoveType( MOVETYPE_PUSH );  // so it doesn't get pushed by anything
 	SetSolid( SOLID_VPHYSICS );
@@ -868,6 +872,7 @@ void CFuncTank::Spawn( void )
 void CFuncTank::Activate( void )
 {
 	BaseClass::Activate();
+#ifndef BYTEMATCH_RETAIL
 	
 	CBaseEntity *pParent = gEntList.FindEntityByName( NULL, m_iParent );
 
@@ -927,6 +932,7 @@ void CFuncTank::Activate( void )
 		}
 	}
 	
+#endif
 	// Necessary for save/load
 	if ( (m_iszBarrelAttachment != NULL_STRING) && (m_nBarrelAttachment == 0) )
 	{
@@ -2517,41 +2523,46 @@ void CFuncTankGun::Fire( int bulletCount, const Vector &barrelEnd, const Vector 
 	info.m_pAttacker = pAttacker;
 	info.m_pAdditionalIgnoreEnt = GetParent();
 
+	if ( HL2_EPISODIC_ACTIVE() )
+	{
 #ifdef HL2_EPISODIC
-	if ( m_iAmmoType != -1 )
+		if ( m_iAmmoType != -1 )
+		{
+			for ( i = 0; i < bulletCount; i++ )
+			{
+				info.m_iAmmoType = m_iAmmoType;
+				FireBullets( info );
+			}
+		}
+#endif
+	}
+	else
 	{
 		for ( i = 0; i < bulletCount; i++ )
 		{
-			info.m_iAmmoType = m_iAmmoType;
-			FireBullets( info );
+			switch( m_bulletType )
+			{
+			case TANK_BULLET_SMALL:
+				info.m_iAmmoType = m_iSmallAmmoType;
+				FireBullets( info );
+				break;
+
+			case TANK_BULLET_MEDIUM:
+				info.m_iAmmoType = m_iMediumAmmoType;
+				FireBullets( info );
+				break;
+
+			case TANK_BULLET_LARGE:
+				info.m_iAmmoType = m_iLargeAmmoType;
+				FireBullets( info );
+				break;
+
+			default:
+			case TANK_BULLET_NONE:
+				break;
+			}
 		}
 	}
-#else
-	for ( i = 0; i < bulletCount; i++ )
-	{
-		switch( m_bulletType )
-		{
-		case TANK_BULLET_SMALL:
-			info.m_iAmmoType = m_iSmallAmmoType;
-			FireBullets( info );
-			break;
-
-		case TANK_BULLET_MEDIUM:
-			info.m_iAmmoType = m_iMediumAmmoType;
-			FireBullets( info );
-			break;
-
-		case TANK_BULLET_LARGE:
-			info.m_iAmmoType = m_iLargeAmmoType;
-			FireBullets( info );
-			break;
-
-		default:
-		case TANK_BULLET_NONE:
-			break;
-		}
-	}
-#endif // HL2_EPISODIC
 
 	CFuncTank::Fire( bulletCount, barrelEnd, forward, pAttacker, bIgnoreSpread );
 }

@@ -1,0 +1,362 @@
+{
+ "interface": "IRestore",
+ "headers": [
+  "public/isaverestore.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 40,
+ "sdk2013_slots": [
+  "GetReadPos() const",
+  "SetReadPos(int)",
+  "ReadAll(void*, datamap_t*)",
+  "ReadFields(char const*, void*, datamap_t*, typedescription_t*, int)",
+  "EmptyFields(void*, typedescription_t*, int)",
+  "StartBlock(SaveRestoreRecordHeader_t*)",
+  "StartBlock(char*)",
+  "StartBlock()",
+  "EndBlock()",
+  "ReadHeader(SaveRestoreRecordHeader_t*)",
+  "SkipHeader()",
+  "StringFromHeaderSymbol(int)",
+  "ReadShort()",
+  "ReadShort(short*, int, int)",
+  "ReadInt(int*, int, int)",
+  "ReadInt()",
+  "ReadBool(bool*, int, int)",
+  "ReadFloat(float*, int, int)",
+  "ReadData(char*, int, int)",
+  "ReadString(char*, int, int)",
+  "ReadString(char const**, int, int)",
+  "ReadVector(Vector*)",
+  "ReadVector(Vector*, int, int)",
+  "ReadQuaternion(Quaternion*)",
+  "ReadQuaternion(Quaternion*, int, int)",
+  "ReadTime(float*, int, int)",
+  "ReadTick(int*, int, int)",
+  "ReadPositionVector(Vector*)",
+  "ReadPositionVector(Vector*, int, int)",
+  "ReadFunction(datamap_t*, void (CBaseEntity::***)(inputdata_t&), int, int)",
+  "ReadEntityPtr(C_BaseEntity**, int, int)",
+  "ReadEdictPtr(edict_t**, int, int)",
+  "ReadEHandle(CHandle<C_BaseEntity>*, int, int)",
+  "ReadVMatrix(VMatrix*, int, int)",
+  "ReadVMatrixWorldspace(VMatrix*, int, int)",
+  "ReadMatrix3x4Worldspace(matrix3x4_t*, int, int)",
+  "GetPrecacheMode()",
+  "GetGameSaveRestoreInfo()",
+  "~__bm_probe()",
+  "~__bm_probe()"
+ ],
+ "retail_reference": {
+  "module": "episodic/client",
+  "class": "CRestore",
+  "offset": 0,
+  "chain": [
+   "CRestore",
+   "IRestore"
+  ]
+ },
+ "retail_len": 40,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 40
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "GetReadPos",
+   "sig": "GetReadPos() const",
+   "symbol": "CRestore::GetReadPos() const"
+  },
+  {
+   "index": 1,
+   "name": "SetReadPos",
+   "sig": "SetReadPos(int)",
+   "symbol": "CRestore::SetReadPos(int)"
+  },
+  {
+   "index": 2,
+   "name": "ReadAll",
+   "sig": "ReadAll(void*, datamap_t*)",
+   "symbol": "CRestore::ReadAll(void*, datamap_t*)"
+  },
+  {
+   "index": 3,
+   "name": "ReadFields",
+   "sig": "ReadFields(char const*, void*, datamap_t*, typedescription_t*, int)",
+   "symbol": "CRestore::ReadFields(char const*, void*, datamap_t*, typedescription_t*, int)"
+  },
+  {
+   "index": 4,
+   "name": "EmptyFields",
+   "sig": "EmptyFields(void*, typedescription_t*, int)",
+   "symbol": "CRestore::EmptyFields(void*, typedescription_t*, int)"
+  },
+  {
+   "index": 5,
+   "name": "StartBlock",
+   "sig": "StartBlock(SaveRestoreRecordHeader_t*)",
+   "symbol": "CRestore::StartBlock(SaveRestoreRecordHeader_t*)"
+  },
+  {
+   "index": 6,
+   "name": "StartBlock",
+   "sig": "StartBlock(char*)",
+   "symbol": "CRestore::StartBlock(char*)"
+  },
+  {
+   "index": 7,
+   "name": "StartBlock",
+   "sig": "StartBlock()",
+   "symbol": "CRestore::StartBlock()"
+  },
+  {
+   "index": 8,
+   "name": "EndBlock",
+   "sig": "EndBlock()",
+   "symbol": "CRestore::EndBlock()"
+  },
+  {
+   "index": 9,
+   "name": "ReadHeader",
+   "sig": "ReadHeader(SaveRestoreRecordHeader_t*)",
+   "symbol": "CRestore::ReadHeader(SaveRestoreRecordHeader_t*)"
+  },
+  {
+   "index": 10,
+   "name": "SkipHeader",
+   "sig": "SkipHeader()",
+   "symbol": "CRestore::SkipHeader()"
+  },
+  {
+   "index": 11,
+   "name": "StringFromHeaderSymbol",
+   "sig": "StringFromHeaderSymbol(int)",
+   "symbol": "CRestore::StringFromHeaderSymbol(int)"
+  },
+  {
+   "index": 12,
+   "name": "ReadShort",
+   "sig": "ReadShort()",
+   "symbol": "CRestore::ReadShort()"
+  },
+  {
+   "index": 13,
+   "name": "ReadShort",
+   "sig": "ReadShort(short*, int, int)",
+   "symbol": "CRestore::ReadShort(short*, int, int)"
+  },
+  {
+   "index": 14,
+   "name": "ReadInt",
+   "sig": "ReadInt(int*, int, int)",
+   "symbol": "CRestore::ReadInt(int*, int, int)"
+  },
+  {
+   "index": 15,
+   "name": "ReadInt",
+   "sig": "ReadInt()",
+   "symbol": "CRestore::ReadInt()"
+  },
+  {
+   "index": 16,
+   "name": "ReadBool",
+   "sig": "ReadBool(bool*, int, int)",
+   "symbol": "CRestore::ReadBool(bool*, int, int)"
+  },
+  {
+   "index": 17,
+   "name": "ReadFloat",
+   "sig": "ReadFloat(float*, int, int)",
+   "symbol": "CRestore::ReadFloat(float*, int, int)"
+  },
+  {
+   "index": 18,
+   "name": "ReadData",
+   "sig": "ReadData(char*, int, int)",
+   "symbol": "CRestore::ReadData(char*, int, int)"
+  },
+  {
+   "index": 19,
+   "name": "ReadString",
+   "sig": "ReadString(char*, int, int)",
+   "symbol": "CRestore::ReadString(char*, int, int)"
+  },
+  {
+   "index": 20,
+   "name": "ReadString",
+   "sig": "ReadString(char const**, int, int)",
+   "symbol": "CRestore::ReadString(char const**, int, int)"
+  },
+  {
+   "index": 21,
+   "name": "ReadVector",
+   "sig": "ReadVector(Vector*)",
+   "symbol": "CRestore::ReadVector(Vector*)"
+  },
+  {
+   "index": 22,
+   "name": "ReadVector",
+   "sig": "ReadVector(Vector*, int, int)",
+   "symbol": "CRestore::ReadVector(Vector*, int, int)"
+  },
+  {
+   "index": 23,
+   "name": "ReadQuaternion",
+   "sig": "ReadQuaternion(Quaternion*)",
+   "symbol": "CRestore::ReadQuaternion(Quaternion*)"
+  },
+  {
+   "index": 24,
+   "name": "ReadQuaternion",
+   "sig": "ReadQuaternion(Quaternion*, int, int)",
+   "symbol": "CRestore::ReadQuaternion(Quaternion*, int, int)"
+  },
+  {
+   "index": 25,
+   "name": "ReadTime",
+   "sig": "ReadTime(float*, int, int)",
+   "symbol": "CRestore::ReadTime(float*, int, int)"
+  },
+  {
+   "index": 26,
+   "name": "ReadTick",
+   "sig": "ReadTick(int*, int, int)",
+   "symbol": "CRestore::ReadTick(int*, int, int)"
+  },
+  {
+   "index": 27,
+   "name": "ReadPositionVector",
+   "sig": "ReadPositionVector(Vector*)",
+   "symbol": "CRestore::ReadPositionVector(Vector*)"
+  },
+  {
+   "index": 28,
+   "name": "ReadPositionVector",
+   "sig": "ReadPositionVector(Vector*, int, int)",
+   "symbol": "CRestore::ReadPositionVector(Vector*, int, int)"
+  },
+  {
+   "index": 29,
+   "name": "ReadFunction",
+   "sig": "ReadFunction(datamap_t*, void (CBaseEntity::***)(inputdata_t&), int, int)",
+   "symbol": "CRestore::ReadFunction(datamap_t*, void (CBaseEntity::***)(inputdata_t&), int, int)"
+  },
+  {
+   "index": 30,
+   "name": "ReadEntityPtr",
+   "sig": "ReadEntityPtr(C_BaseEntity**, int, int)",
+   "symbol": "CRestore::ReadEntityPtr(C_BaseEntity**, int, int)"
+  },
+  {
+   "index": 31,
+   "name": "ReadEdictPtr",
+   "sig": "ReadEdictPtr(edict_t**, int, int)",
+   "symbol": "CRestore::ReadEdictPtr(edict_t**, int, int)"
+  },
+  {
+   "index": 32,
+   "name": "ReadEHandle",
+   "sig": "ReadEHandle(CHandle<C_BaseEntity>*, int, int)",
+   "symbol": "CRestore::ReadEHandle(CHandle<C_BaseEntity>*, int, int)"
+  },
+  {
+   "index": 33,
+   "name": "ReadVMatrix",
+   "sig": "ReadVMatrix(VMatrix*, int, int)",
+   "symbol": "CRestore::ReadVMatrix(VMatrix*, int, int)"
+  },
+  {
+   "index": 34,
+   "name": "ReadVMatrixWorldspace",
+   "sig": "ReadVMatrixWorldspace(VMatrix*, int, int)",
+   "symbol": "CRestore::ReadVMatrixWorldspace(VMatrix*, int, int)"
+  },
+  {
+   "index": 35,
+   "name": "ReadMatrix3x4Worldspace",
+   "sig": "ReadMatrix3x4Worldspace(matrix3x4_t*, int, int)",
+   "symbol": "CRestore::ReadMatrix3x4Worldspace(matrix3x4_t*, int, int)"
+  },
+  {
+   "index": 36,
+   "name": "GetPrecacheMode",
+   "sig": "GetPrecacheMode()",
+   "symbol": "CRestore::GetPrecacheMode()"
+  },
+  {
+   "index": 37,
+   "name": "GetGameSaveRestoreInfo",
+   "sig": "GetGameSaveRestoreInfo()",
+   "symbol": "CRestore::GetGameSaveRestoreInfo()"
+  },
+  {
+   "index": 38,
+   "name": "~CRestore",
+   "sig": "~CRestore()",
+   "symbol": "CRestore::~CRestore()"
+  },
+  {
+   "index": 39,
+   "name": "~CRestore",
+   "sig": "~CRestore()",
+   "symbol": "CRestore::~CRestore()"
+  }
+ ],
+ "derived_disagreements": [
+  {
+   "module": "episodic/server",
+   "class": "CRestore",
+   "index": 20,
+   "ref": "ReadString(char const**, int, int)",
+   "got": "ReadString(string_t*, int, int)"
+  },
+  {
+   "module": "hl2/server",
+   "class": "CRestore",
+   "index": 20,
+   "ref": "ReadString(char const**, int, int)",
+   "got": "ReadString(string_t*, int, int)"
+  },
+  {
+   "module": "hl2_complete/server",
+   "class": "CRestore",
+   "index": 20,
+   "ref": "ReadString(char const**, int, int)",
+   "got": "ReadString(string_t*, int, int)"
+  },
+  {
+   "module": "hl2mp/server",
+   "class": "CRestore",
+   "index": 20,
+   "ref": "ReadString(char const**, int, int)",
+   "got": "ReadString(string_t*, int, int)"
+  },
+  {
+   "module": "lostcoast/server",
+   "class": "CRestore",
+   "index": 20,
+   "ref": "ReadString(char const**, int, int)",
+   "got": "ReadString(string_t*, int, int)"
+  }
+ ],
+ "derived": [
+  "episodic/client:CRestore",
+  "episodic/server:CRestore",
+  "hl2/client:CRestore",
+  "hl2/server:CRestore",
+  "hl2_complete/client:CRestore",
+  "hl2_complete/server:CRestore",
+  "hl2mp/client:CRestore",
+  "hl2mp/server:CRestore",
+  "lostcoast/client:CRestore",
+  "lostcoast/server:CRestore"
+ ],
+ "derived_count": 10
+}

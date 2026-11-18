@@ -1,0 +1,120 @@
+{
+ "interface": "ICenterPrint",
+ "headers": [
+  "public/ivguicenterprint.h"
+ ],
+ "versions": {
+  "retail": [
+   "VCENTERPRINT002"
+  ],
+  "ours": [
+   "VCENTERPRINT002"
+  ],
+  "sdk2013": [
+   "VCENTERPRINT002"
+  ]
+ },
+ "version_macros": [
+  "VCENTERPRINT_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "episodic/client",
+   "version": "VCENTERPRINT002",
+   "class": "CCenterPrint"
+  },
+  {
+   "module": "hl2/client",
+   "version": "VCENTERPRINT002",
+   "class": "CCenterPrint"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "VCENTERPRINT002",
+   "class": "CCenterPrint"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "VCENTERPRINT002",
+   "class": "CCenterPrint"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "VCENTERPRINT002",
+   "class": "CCenterPrint"
+  }
+ ],
+ "sdk2013_len": 6,
+ "sdk2013_slots": [
+  "SetTextColor(int, int, int, int)",
+  "Print(char*)",
+  "Print(wchar_t*)",
+  "ColorPrint(int, int, int, int, char*)",
+  "ColorPrint(int, int, int, int, wchar_t*)",
+  "Clear()"
+ ],
+ "retail_reference": {
+  "module": "episodic/client",
+  "class": "CCenterPrint",
+  "offset": 0,
+  "chain": [
+   "CCenterPrint",
+   "ICenterPrint"
+  ]
+ },
+ "retail_len": 6,
+ "retail_len_basis": "override: Create/Destroy are CCenterPrint's own virtuals",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 8
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "SetTextColor",
+   "sig": "SetTextColor(int, int, int, int)",
+   "symbol": "CCenterPrint::SetTextColor(int, int, int, int)"
+  },
+  {
+   "index": 1,
+   "name": "Print",
+   "sig": "Print(char*)",
+   "symbol": "CCenterPrint::Print(char*)"
+  },
+  {
+   "index": 2,
+   "name": "Print",
+   "sig": "Print(wchar_t*)",
+   "symbol": "CCenterPrint::Print(wchar_t*)"
+  },
+  {
+   "index": 3,
+   "name": "ColorPrint",
+   "sig": "ColorPrint(int, int, int, int, char*)",
+   "symbol": "CCenterPrint::ColorPrint(int, int, int, int, char*)"
+  },
+  {
+   "index": 4,
+   "name": "ColorPrint",
+   "sig": "ColorPrint(int, int, int, int, wchar_t*)",
+   "symbol": "CCenterPrint::ColorPrint(int, int, int, int, wchar_t*)"
+  },
+  {
+   "index": 5,
+   "name": "Clear",
+   "sig": "Clear()",
+   "symbol": "CCenterPrint::Clear()"
+  }
+ ],
+ "implementer_tail": [
+  "Create(unsigned int)",
+  "Destroy()"
+ ],
+ "derived": [
+  "episodic/client:CCenterPrint",
+  "hl2/client:CCenterPrint",
+  "hl2_complete/client:CCenterPrint",
+  "hl2mp/client:CCenterPrint",
+  "lostcoast/client:CCenterPrint"
+ ],
+ "derived_count": 5
+}

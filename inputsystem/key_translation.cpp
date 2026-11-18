@@ -85,19 +85,26 @@ static ButtonCode_t s_pXKeyTrans[XK_MAX_KEYS];
 	"SC_GYRO_AXIS_YAW_POSITIVE",\
 	"SC_GYRO_AXIS_YAW_NEGATIVE"
 
-#define SCONTROLLERBUTTONS_VBUTTONS( x ) \
-	"SC_F1",\
-	"SC_F2",\
-	"SC_F3",\
-	"SC_F4",\
-	"SC_F5",\
-	"SC_F6",\
-	"SC_F7",\
-	"SC_F8",\
-	"SC_F9",\
-	"SC_F10",\
-	"SC_F11",\
-	"SC_F12"
+static const char *s_pSControllerButtonCodeNames[ ] =
+{
+	SCONTROLLERBUTTONS_BUTTONS( 0 ),
+	SCONTROLLERBUTTONS_BUTTONS( 1 ),
+	SCONTROLLERBUTTONS_BUTTONS( 2 ),
+	SCONTROLLERBUTTONS_BUTTONS( 3 ),
+	SCONTROLLERBUTTONS_BUTTONS( 4 ),
+	SCONTROLLERBUTTONS_BUTTONS( 5 ),
+	SCONTROLLERBUTTONS_BUTTONS( 6 ),
+	SCONTROLLERBUTTONS_BUTTONS( 7 ),
+
+	SCONTROLLERBUTTONS_AXIS( 0 ),
+	SCONTROLLERBUTTONS_AXIS( 1 ),
+	SCONTROLLERBUTTONS_AXIS( 2 ),
+	SCONTROLLERBUTTONS_AXIS( 3 ),
+	SCONTROLLERBUTTONS_AXIS( 4 ),
+	SCONTROLLERBUTTONS_AXIS( 5 ),
+	SCONTROLLERBUTTONS_AXIS( 6 ),
+	SCONTROLLERBUTTONS_AXIS( 7 ),
+};
 
 static int s_pButtonCodeToVirtual[BUTTON_CODE_LAST];
 
@@ -336,14 +343,6 @@ static const char *s_pButtonCodeName[ ] =
 	SCONTROLLERBUTTONS_AXIS( 6 ),
 	SCONTROLLERBUTTONS_AXIS( 7 ),
 
-	SCONTROLLERBUTTONS_VBUTTONS( 0 ),
-	SCONTROLLERBUTTONS_VBUTTONS( 1 ),
-	SCONTROLLERBUTTONS_VBUTTONS( 2 ),
-	SCONTROLLERBUTTONS_VBUTTONS( 3 ),
-	SCONTROLLERBUTTONS_VBUTTONS( 4 ),
-	SCONTROLLERBUTTONS_VBUTTONS( 5 ),
-	SCONTROLLERBUTTONS_VBUTTONS( 6 ),
-	SCONTROLLERBUTTONS_VBUTTONS( 7 ),
 };
 
 static const char *s_pAnalogCodeName[ ] =
@@ -596,14 +595,6 @@ void ButtonCode_InitKeyTranslationTable()
 	s_pXKeyTrans[XK_STICK2_RIGHT]			= KEY_XSTICK2_RIGHT;
 #endif // PLATFORM_POSIX
 
-	// create reverse table engine to virtual
-	for ( int i = 0; i < ARRAYSIZE( s_pVirtualKeyToButtonCode ); i++ )
-	{
-		s_pButtonCodeToVirtual[ s_pVirtualKeyToButtonCode[i] ] = i;
-	}
-
-	s_pButtonCodeToVirtual[0] = 0;
-
 	s_pSKeytoButtonCode[SK_NULL] = KEY_NONE;
 	s_pSKeytoButtonCode[SK_BUTTON_A] = STEAMCONTROLLER_A;
 	s_pSKeytoButtonCode[SK_BUTTON_B] = STEAMCONTROLLER_B;
@@ -636,20 +627,13 @@ void ButtonCode_InitKeyTranslationTable()
 	s_pSKeytoButtonCode[SK_BUTTON_STEAM] = STEAMCONTROLLER_STEAM;
 	s_pSKeytoButtonCode[SK_BUTTON_INACTIVE_START] = STEAMCONTROLLER_INACTIVE_START;
 
-	// These are fake ("virtual") steam controller buttons that don't physically exist, but we can manufacture to make internal routing
-	// to old school UI (which is expecting button code rather than actions) without clashing with other butt
-	s_pSKeytoButtonCode[SK_VBUTTON_F1] = STEAMCONTROLLER_F1;
-	s_pSKeytoButtonCode[SK_VBUTTON_F2] = STEAMCONTROLLER_F2;
-	s_pSKeytoButtonCode[SK_VBUTTON_F3] = STEAMCONTROLLER_F3;
-	s_pSKeytoButtonCode[SK_VBUTTON_F4] = STEAMCONTROLLER_F4;
-	s_pSKeytoButtonCode[SK_VBUTTON_F5] = STEAMCONTROLLER_F5;
-	s_pSKeytoButtonCode[SK_VBUTTON_F6] = STEAMCONTROLLER_F6;
-	s_pSKeytoButtonCode[SK_VBUTTON_F7] = STEAMCONTROLLER_F7;
-	s_pSKeytoButtonCode[SK_VBUTTON_F8] = STEAMCONTROLLER_F8;
-	s_pSKeytoButtonCode[SK_VBUTTON_F9] = STEAMCONTROLLER_F9;
-	s_pSKeytoButtonCode[SK_VBUTTON_F10] = STEAMCONTROLLER_F10;
-	s_pSKeytoButtonCode[SK_VBUTTON_F11] = STEAMCONTROLLER_F11;
-	s_pSKeytoButtonCode[SK_VBUTTON_F12] = STEAMCONTROLLER_F12;
+	// create reverse table engine to virtual
+	for ( int i = 0; i < ARRAYSIZE( s_pVirtualKeyToButtonCode ); i++ )
+	{
+		s_pButtonCodeToVirtual[ s_pVirtualKeyToButtonCode[i] ] = i;
+	}
+
+	s_pButtonCodeToVirtual[0] = 0;
 }
 
 ButtonCode_t ButtonCode_VirtualKeyToButtonCode( int keyCode )
@@ -704,6 +688,21 @@ ButtonCode_t ButtonCode_XKeyToButtonCode( int nPort, int keyCode )
 // Convert back + forth between ButtonCode/AnalogCode + strings
 const char *ButtonCode_ButtonCodeToString( ButtonCode_t code, bool bXController )
 {
+	if ( IsSteamControllerCode( code ) )
+	{
+		if ( IsSteamControllerButtonCode( code ) )
+		{
+			int nOffset = ( code - STEAMCONTROLLER_FIRST_BUTTON ) % STEAMCONTROLLER_MAX_BUTTON_COUNT;
+			return s_pSControllerButtonCodeNames[ nOffset ];
+		}
+
+		if ( IsSteamControllerAxisCode( code ) )
+		{
+			int nOffset = ( code - STEAMCONTROLLER_FIRST_AXIS_BUTTON ) % STEAMCONTROLLER_AXIS_BUTTON_COUNT;
+			return s_pSControllerButtonCodeNames[ STEAMCONTROLLER_FIRST_AXIS_BUTTON - STEAMCONTROLLER_FIRST + nOffset ];
+		}
+	}
+
 #if !defined ( _X360 )
 	if ( bXController && code >= JOYSTICK_FIRST_BUTTON && code <= JOYSTICK_LAST_AXIS_BUTTON )
 		return s_pXControllerButtonCodeNames[ code - JOYSTICK_FIRST_BUTTON ];

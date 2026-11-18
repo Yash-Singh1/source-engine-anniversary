@@ -361,8 +361,6 @@ CON_COMMAND( mem_test, "" )
 	MemAlloc_CrtCheckMemory();
 }
 
-static ConVar host_competitive_ever_enabled( "host_competitive_ever_enabled", "0", FCVAR_HIDDEN, "Has competitive ever been enabled this run?", true, 0, true, 1, true, 1, false, 1, NULL  );
-
 static ConVar mem_test_each_frame( "mem_test_each_frame", "0", 0, "Run heap check at end of every frame\n" );
 static ConVar mem_test_every_n_seconds( "mem_test_every_n_seconds", "0", 0, "Run heap check at a specified interval\n" );
 
@@ -1216,7 +1214,7 @@ void Host_WriteConfiguration( const char *filename, bool bAllVars )
 
 	// Don't write config when in default--most of the values are defaults which is not what the player wants.
 	// If bAllVars is set, go ahead and write out the file anyways, since it was requested explicitly.
-	if ( !cbIsUserRequested && ( CommandLine()->CheckParm( "-default" ) || host_competitive_ever_enabled.GetBool() ) )
+	if ( !cbIsUserRequested && CommandLine()->CheckParm( "-default" ) )
 		return;
 	
 	// Write to internal storage on the 360
@@ -4450,22 +4448,13 @@ bool Host_Changelevel( bool loadfromsavedgame, const char *mapname, const char *
 	Q_strncpy( szMapName, mapname, sizeof( szMapName ) );
 	Host_DefaultMapFileName( szMapName, szMapFile, sizeof( szMapFile ) );
 
-	// Ask serverDLL to prepare this load
-	if ( g_iServerGameDLLVersion >= 10 )
-	{
-		serverGameDLL->PrepareLevelResources( szMapName, sizeof( szMapName ), szMapFile, sizeof( szMapFile ) );
-	}
-
 	if ( !modelloader->Map_IsValid( szMapFile ) )
 	{
 #ifndef SWDS
 		SCR_EndLoadingPlaque();
 #endif
-		// We have already inactivated clients at this point due to PrepareLevelResources being blocking, false alarm,
-		// tell them to reconnect (which doesn't mean full reconnect, just start rejoining the map)
-		//
-		// In the likely case that the game DLL tries another map this is harmless, they'll wait on the game server in
-		// the connect process if its in another level change by time they get there.
+		// We have already inactivated clients at this point, false alarm, tell them to reconnect (which doesn't
+		// mean full reconnect, just start rejoining the map)
 		sv.ReconnectClients();
 		return false;
 	}
@@ -4658,12 +4647,6 @@ bool Host_NewGame( char *mapName, bool loadGame, bool bBackgroundLevel, const ch
 	// Steam may not have been started yet, ensure it is available to the game DLL before we ask it to prepare level
 	// resources
 	SV_InitGameServerSteam();
-
-	// Ask serverDLL to prepare this load
-	if ( g_iServerGameDLLVersion >= 10 )
-	{
-		serverGameDLL->PrepareLevelResources( szMapName, sizeof( szMapName ), szMapFile, sizeof( szMapFile ) );
-	}
 
 	if ( !modelloader->Map_IsValid( szMapFile ) )
 	{

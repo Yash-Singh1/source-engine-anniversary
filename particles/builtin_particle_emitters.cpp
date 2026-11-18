@@ -392,7 +392,11 @@ class C_OP_ContinuousEmitter : public CParticleOperatorInstance
 			pParticles->m_fl4CurTime = ReplicateX4( flPrevDrawTime );
 			for( float i = flPrevDrawTime; i < flCurrDrawTime; i += 0.1 )
 			{
+#ifdef BYTEMATCH_RETAIL
+				pParticles->Simulate( .1 );
+#else
 				pParticles->Simulate( .1, false );
+#endif
 			}
 		}
 	}

@@ -3151,7 +3151,7 @@ WeaponProficiency_t CNPC_Combine::CalcWeaponProficiency( CBaseCombatWeapon *pWea
 {
 	if( FClassnameIs( pWeapon, "weapon_ar2" ) )
 	{
-		if( hl2_episodic.GetBool() )
+		if( IsHL2Episodic() )
 		{
 			return WEAPON_PROFICIENCY_VERY_GOOD;
 		}

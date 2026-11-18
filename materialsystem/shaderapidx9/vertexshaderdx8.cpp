@@ -164,8 +164,8 @@ static FILE *GetDebugFileHandle( void )
 	// to the filename glshaders.cfg
 	//
 
-	ConVar mat_autosave_glshaders( "mat_autosave_glshaders", "1" );
 	ConVar mat_autoload_glshaders( "mat_autoload_glshaders", "1" );
+	ConVar mat_autosave_glshaders( "mat_autosave_glshaders", "1" );
 #endif
 //-----------------------------------------------------------------------------
 // Explicit instantiation of shader buffer implementation
@@ -2317,7 +2317,7 @@ bool CShaderManager::CreateDynamicCombos_Ver5( void *pContext, uint8 *pComboBuff
 			{
 				nBlockSize &= 0x3fffffff;
 
-				size_t nOutsize = CLZMA::Uncompress(
+				size_t nOutsize = CLZMA().Uncompress(
 					reinterpret_cast<uint8 *>( pCompressedShaders ),
 					pUnpackBuffer );
 				pCompressedShaders += nBlockSize;

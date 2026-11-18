@@ -134,59 +134,64 @@ void CWeaponAlyxGun::Equip( CBaseCombatCharacter *pOwner )
 //-----------------------------------------------------------------------------
 int CWeaponAlyxGun::WeaponRangeAttack1Condition( float flDot, float flDist )
 {
+	if ( HL2_EPISODIC_ACTIVE() )
+	{
 #ifdef HL2_EPISODIC
 	
-	if( flDist < m_fMinRange1 )
-	{
-		// If Alyx is not able to fire because an enemy is too close, start a timer.
-		// If the condition persists, allow her to ignore it and defend herself. The idea
-		// is to stop Alyx being content to fire point blank at enemies if she's able to move
-		// away, without making her defenseless if she's not able to move.
-		float flTime;
-
-		if( m_flTooCloseTimer == TOOCLOSETIMER_OFF )
+		if( flDist < m_fMinRange1 )
 		{
-			m_flTooCloseTimer = gpGlobals->curtime;
+			// If Alyx is not able to fire because an enemy is too close, start a timer.
+			// If the condition persists, allow her to ignore it and defend herself. The idea
+			// is to stop Alyx being content to fire point blank at enemies if she's able to move
+			// away, without making her defenseless if she's not able to move.
+			float flTime;
+
+			if( m_flTooCloseTimer == TOOCLOSETIMER_OFF )
+			{
+				m_flTooCloseTimer = gpGlobals->curtime;
+			}
+
+			flTime = gpGlobals->curtime - m_flTooCloseTimer;
+
+			if( flTime > ALYX_TOOCLOSETIMER )
+			{
+				// Fake the range to allow Alyx to shoot.
+				flDist = m_fMinRange1 + 1.0f;
+			}
+		}
+		else
+		{
+			m_flTooCloseTimer = TOOCLOSETIMER_OFF;
 		}
 
-		flTime = gpGlobals->curtime - m_flTooCloseTimer;
+		int nBaseCondition = BaseClass::WeaponRangeAttack1Condition( flDot, flDist );
 
-		if( flTime > ALYX_TOOCLOSETIMER )
+		// While in a vehicle, we extend our aiming cone (this relies on COND_NOT_FACING_ATTACK 
+		// TODO: This needs to be rolled in at the animation level
+		if ( GetOwner()->IsInAVehicle() )
 		{
-			// Fake the range to allow Alyx to shoot.
-			flDist = m_fMinRange1 + 1.0f;
+			Vector vecRoughDirection = ( GetOwner()->GetEnemy()->WorldSpaceCenter() - WorldSpaceCenter() );
+			Vector vecRight;
+			GetVectors( NULL, &vecRight, NULL );
+			bool bRightSide = ( DotProduct( vecRoughDirection, vecRight ) > 0.0f );
+			float flTargetDot = ( bRightSide ) ? -0.7f : 0.0f;
+		
+			if ( nBaseCondition == COND_NOT_FACING_ATTACK && flDot >= flTargetDot )
+			{
+				nBaseCondition = COND_CAN_RANGE_ATTACK1;
+			}
 		}
+
+		return nBaseCondition;
+
+#endif
 	}
 	else
 	{
-		m_flTooCloseTimer = TOOCLOSETIMER_OFF;
+
+		return BaseClass::WeaponRangeAttack1Condition( flDot, flDist );
+
 	}
-
-	int nBaseCondition = BaseClass::WeaponRangeAttack1Condition( flDot, flDist );
-
-	// While in a vehicle, we extend our aiming cone (this relies on COND_NOT_FACING_ATTACK 
-	// TODO: This needs to be rolled in at the animation level
-	if ( GetOwner()->IsInAVehicle() )
-	{
-		Vector vecRoughDirection = ( GetOwner()->GetEnemy()->WorldSpaceCenter() - WorldSpaceCenter() );
-		Vector vecRight;
-		GetVectors( NULL, &vecRight, NULL );
-		bool bRightSide = ( DotProduct( vecRoughDirection, vecRight ) > 0.0f );
-		float flTargetDot = ( bRightSide ) ? -0.7f : 0.0f;
-		
-		if ( nBaseCondition == COND_NOT_FACING_ATTACK && flDot >= flTargetDot )
-		{
-			nBaseCondition = COND_CAN_RANGE_ATTACK1;
-		}
-	}
-
-	return nBaseCondition;
-
-#else 
-
-	return BaseClass::WeaponRangeAttack1Condition( flDot, flDist );
-
-#endif//HL2_EPISODIC
 }
 
 //-----------------------------------------------------------------------------
@@ -224,7 +229,7 @@ void CWeaponAlyxGun::FireNPCPrimaryAttack( CBaseCombatCharacter *pOperator, bool
 
 	WeaponSound( SINGLE_NPC );
 
-	if( hl2_episodic.GetBool() )
+	if( IsHL2Episodic() )
 	{
 		pOperator->FireBullets( 1, vecShootOrigin, vecShootDir, VECTOR_CONE_PRECALCULATED, MAX_TRACE_LENGTH, m_iPrimaryAmmoType, 1 );
 	}
@@ -235,7 +240,7 @@ void CWeaponAlyxGun::FireNPCPrimaryAttack( CBaseCombatCharacter *pOperator, bool
 
 	pOperator->DoMuzzleFlash();
 
-	if( hl2_episodic.GetBool() )
+	if( IsHL2Episodic() )
 	{
 		// Never fire Alyx's last bullet just in case there's an emergency
 		// and she needs to be able to shoot without reloading.
@@ -289,7 +294,7 @@ void CWeaponAlyxGun::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatC
 //-----------------------------------------------------------------------------
 bool IsAlyxInInjuredMode( void )
 {
-	if ( hl2_episodic.GetBool() == false )
+	if ( IsHL2Episodic() == false )
 		return false;
 
 	return ( GlobalEntity_GetState("ep2_alyx_injured") == GLOBAL_ON );

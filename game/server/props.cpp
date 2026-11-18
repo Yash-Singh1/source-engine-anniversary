@@ -2873,7 +2873,7 @@ int CPhysicsProp::ObjectCaps()
 	{
 		caps |= FCAP_IMPULSE_USE;
 
-		if( hl2_episodic.GetBool() && HasInteraction( PROPINTER_PHYSGUN_CREATE_FLARE )  )
+		if( IsHL2Episodic() && HasInteraction( PROPINTER_PHYSGUN_CREATE_FLARE )  )
 		{
 			caps |= FCAP_USE_IN_RADIUS;
 		}
@@ -3104,7 +3104,7 @@ int CPhysicsProp::OnTakeDamage( const CTakeDamageInfo &info )
 
 				int dangerRadius = 256; // generous radius to begin with
 
-				if( hl2_episodic.GetBool() )
+				if( IsHL2Episodic() )
 				{
 					// In Episodic, burning items (such as destroyed APCs) are making very large
 					// danger sounds which frighten NPCs. This danger sound was designed to frighten

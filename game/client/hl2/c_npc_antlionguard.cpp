@@ -82,12 +82,15 @@ void C_NPC_AntlionGuard::OnDataChanged( DataUpdateType_t type )
 	}
 
 
-#if HL2_EPISODIC
-	if (m_iBleedingLevel != m_iPerformingBleedingLevel)
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
-		UpdateBleedingPerformance();
-	}
+#ifdef HL2_EPISODIC
+		if (m_iBleedingLevel != m_iPerformingBleedingLevel)
+		{
+			UpdateBleedingPerformance();
+		}
 #endif
+	}
 
 }
 

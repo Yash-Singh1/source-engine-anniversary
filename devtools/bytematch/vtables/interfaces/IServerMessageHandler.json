@@ -1,0 +1,256 @@
+{
+ "interface": "IServerMessageHandler",
+ "headers": [
+  "public/inetmsghandler.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 31,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "ProcessTick(NET_Tick*)",
+  "ProcessStringCmd(NET_StringCmd*)",
+  "ProcessSetConVar(NET_SetConVar*)",
+  "ProcessSignonState(NET_SignonState*)",
+  "GetDemoProtocolVersion() const",
+  "ProcessPrint(SVC_Print*)",
+  "ProcessServerInfo(SVC_ServerInfo*)",
+  "ProcessSendTable(SVC_SendTable*)",
+  "ProcessClassInfo(SVC_ClassInfo*)",
+  "ProcessSetPause(SVC_SetPause*)",
+  "ProcessCreateStringTable(SVC_CreateStringTable*)",
+  "ProcessUpdateStringTable(SVC_UpdateStringTable*)",
+  "ProcessVoiceInit(SVC_VoiceInit*)",
+  "ProcessVoiceData(SVC_VoiceData*)",
+  "ProcessSounds(SVC_Sounds*)",
+  "ProcessSetView(SVC_SetView*)",
+  "ProcessFixAngle(SVC_FixAngle*)",
+  "ProcessCrosshairAngle(SVC_CrosshairAngle*)",
+  "ProcessBSPDecal(SVC_BSPDecal*)",
+  "ProcessGameEvent(SVC_GameEvent*)",
+  "ProcessUserMessage(SVC_UserMessage*)",
+  "ProcessEntityMessage(SVC_EntityMessage*)",
+  "ProcessPacketEntities(SVC_PacketEntities*)",
+  "ProcessTempEntities(SVC_TempEntities*)",
+  "ProcessPrefetch(SVC_Prefetch*)",
+  "ProcessMenu(SVC_Menu*)",
+  "ProcessGameEventList(SVC_GameEventList*)",
+  "ProcessGetCvarValue(SVC_GetCvarValue*)",
+  "ProcessCmdKeyValues(SVC_CmdKeyValues*)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CClientState",
+  "offset": 8,
+  "chain": [
+   "CClientState",
+   "CBaseClientState",
+   "IServerMessageHandler"
+  ]
+ },
+ "retail_len": 31,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 31
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CClientState",
+   "sig": "~CClientState()",
+   "symbol": "non-virtual thunk to CClientState::~CClientState()"
+  },
+  {
+   "index": 1,
+   "name": "~CClientState",
+   "sig": "~CClientState()",
+   "symbol": "non-virtual thunk to CClientState::~CClientState()"
+  },
+  {
+   "index": 2,
+   "name": "ProcessTick",
+   "sig": "ProcessTick(NET_Tick*)",
+   "symbol": "non-virtual thunk to CClientState::ProcessTick(NET_Tick*)"
+  },
+  {
+   "index": 3,
+   "name": "ProcessStringCmd",
+   "sig": "ProcessStringCmd(NET_StringCmd*)",
+   "symbol": "non-virtual thunk to CClientState::ProcessStringCmd(NET_StringCmd*)"
+  },
+  {
+   "index": 4,
+   "name": "ProcessSetConVar",
+   "sig": "ProcessSetConVar(NET_SetConVar*)",
+   "symbol": "non-virtual thunk to CBaseClientState::ProcessSetConVar(NET_SetConVar*)"
+  },
+  {
+   "index": 5,
+   "name": "ProcessSignonState",
+   "sig": "ProcessSignonState(NET_SignonState*)",
+   "symbol": "non-virtual thunk to CBaseClientState::ProcessSignonState(NET_SignonState*)"
+  },
+  {
+   "index": 6,
+   "name": "GetDemoProtocolVersion",
+   "sig": "GetDemoProtocolVersion() const",
+   "symbol": "non-virtual thunk to CBaseClientState::GetDemoProtocolVersion() const"
+  },
+  {
+   "index": 7,
+   "name": "ProcessPrint",
+   "sig": "ProcessPrint(SVC_Print*)",
+   "symbol": "non-virtual thunk to CBaseClientState::ProcessPrint(SVC_Print*)"
+  },
+  {
+   "index": 8,
+   "name": "ProcessServerInfo",
+   "sig": "ProcessServerInfo(SVC_ServerInfo*)",
+   "symbol": "non-virtual thunk to CClientState::ProcessServerInfo(SVC_ServerInfo*)"
+  },
+  {
+   "index": 9,
+   "name": "ProcessSendTable",
+   "sig": "ProcessSendTable(SVC_SendTable*)",
+   "symbol": "non-virtual thunk to CBaseClientState::ProcessSendTable(SVC_SendTable*)"
+  },
+  {
+   "index": 10,
+   "name": "ProcessClassInfo",
+   "sig": "ProcessClassInfo(SVC_ClassInfo*)",
+   "symbol": "non-virtual thunk to CClientState::ProcessClassInfo(SVC_ClassInfo*)"
+  },
+  {
+   "index": 11,
+   "name": "ProcessSetPause",
+   "sig": "ProcessSetPause(SVC_SetPause*)",
+   "symbol": "non-virtual thunk to CClientState::ProcessSetPause(SVC_SetPause*)"
+  },
+  {
+   "index": 12,
+   "name": "ProcessCreateStringTable",
+   "sig": "ProcessCreateStringTable(SVC_CreateStringTable*)",
+   "symbol": "non-virtual thunk to CBaseClientState::ProcessCreateStringTable(SVC_CreateStringTable*)"
+  },
+  {
+   "index": 13,
+   "name": "ProcessUpdateStringTable",
+   "sig": "ProcessUpdateStringTable(SVC_UpdateStringTable*)",
+   "symbol": "non-virtual thunk to CBaseClientState::ProcessUpdateStringTable(SVC_UpdateStringTable*)"
+  },
+  {
+   "index": 14,
+   "name": "ProcessVoiceInit",
+   "sig": "ProcessVoiceInit(SVC_VoiceInit*)",
+   "symbol": "non-virtual thunk to CClientState::ProcessVoiceInit(SVC_VoiceInit*)"
+  },
+  {
+   "index": 15,
+   "name": "ProcessVoiceData",
+   "sig": "ProcessVoiceData(SVC_VoiceData*)",
+   "symbol": "non-virtual thunk to CClientState::ProcessVoiceData(SVC_VoiceData*)"
+  },
+  {
+   "index": 16,
+   "name": "ProcessSounds",
+   "sig": "ProcessSounds(SVC_Sounds*)",
+   "symbol": "non-virtual thunk to CClientState::ProcessSounds(SVC_Sounds*)"
+  },
+  {
+   "index": 17,
+   "name": "ProcessSetView",
+   "sig": "ProcessSetView(SVC_SetView*)",
+   "symbol": "non-virtual thunk to CBaseClientState::ProcessSetView(SVC_SetView*)"
+  },
+  {
+   "index": 18,
+   "name": "ProcessFixAngle",
+   "sig": "ProcessFixAngle(SVC_FixAngle*)",
+   "symbol": "non-virtual thunk to CClientState::ProcessFixAngle(SVC_FixAngle*)"
+  },
+  {
+   "index": 19,
+   "name": "ProcessCrosshairAngle",
+   "sig": "ProcessCrosshairAngle(SVC_CrosshairAngle*)",
+   "symbol": "non-virtual thunk to CClientState::ProcessCrosshairAngle(SVC_CrosshairAngle*)"
+  },
+  {
+   "index": 20,
+   "name": "ProcessBSPDecal",
+   "sig": "ProcessBSPDecal(SVC_BSPDecal*)",
+   "symbol": "non-virtual thunk to CClientState::ProcessBSPDecal(SVC_BSPDecal*)"
+  },
+  {
+   "index": 21,
+   "name": "ProcessGameEvent",
+   "sig": "ProcessGameEvent(SVC_GameEvent*)",
+   "symbol": "non-virtual thunk to CClientState::ProcessGameEvent(SVC_GameEvent*)"
+  },
+  {
+   "index": 22,
+   "name": "ProcessUserMessage",
+   "sig": "ProcessUserMessage(SVC_UserMessage*)",
+   "symbol": "non-virtual thunk to CClientState::ProcessUserMessage(SVC_UserMessage*)"
+  },
+  {
+   "index": 23,
+   "name": "ProcessEntityMessage",
+   "sig": "ProcessEntityMessage(SVC_EntityMessage*)",
+   "symbol": "non-virtual thunk to CClientState::ProcessEntityMessage(SVC_EntityMessage*)"
+  },
+  {
+   "index": 24,
+   "name": "ProcessPacketEntities",
+   "sig": "ProcessPacketEntities(SVC_PacketEntities*)",
+   "symbol": "non-virtual thunk to CClientState::ProcessPacketEntities(SVC_PacketEntities*)"
+  },
+  {
+   "index": 25,
+   "name": "ProcessTempEntities",
+   "sig": "ProcessTempEntities(SVC_TempEntities*)",
+   "symbol": "non-virtual thunk to CClientState::ProcessTempEntities(SVC_TempEntities*)"
+  },
+  {
+   "index": 26,
+   "name": "ProcessPrefetch",
+   "sig": "ProcessPrefetch(SVC_Prefetch*)",
+   "symbol": "non-virtual thunk to CClientState::ProcessPrefetch(SVC_Prefetch*)"
+  },
+  {
+   "index": 27,
+   "name": "ProcessMenu",
+   "sig": "ProcessMenu(SVC_Menu*)",
+   "symbol": "non-virtual thunk to CBaseClientState::ProcessMenu(SVC_Menu*)"
+  },
+  {
+   "index": 28,
+   "name": "ProcessGameEventList",
+   "sig": "ProcessGameEventList(SVC_GameEventList*)",
+   "symbol": "non-virtual thunk to CBaseClientState::ProcessGameEventList(SVC_GameEventList*)"
+  },
+  {
+   "index": 29,
+   "name": "ProcessGetCvarValue",
+   "sig": "ProcessGetCvarValue(SVC_GetCvarValue*)",
+   "symbol": "non-virtual thunk to CBaseClientState::ProcessGetCvarValue(SVC_GetCvarValue*)"
+  },
+  {
+   "index": 30,
+   "name": "ProcessCmdKeyValues",
+   "sig": "ProcessCmdKeyValues(SVC_CmdKeyValues*)",
+   "symbol": "non-virtual thunk to CBaseClientState::ProcessCmdKeyValues(SVC_CmdKeyValues*)"
+  }
+ ],
+ "derived": [
+  "bin/engine:CBaseClientState",
+  "bin/engine:CClientState",
+  "bin/engine:CHLTVClientState"
+ ],
+ "derived_count": 3
+}

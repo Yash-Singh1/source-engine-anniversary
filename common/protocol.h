@@ -139,9 +139,8 @@ enum
 #define svc_GetCvarValue	31	// Server wants to know the value of a cvar on the client
 
 #define svc_CmdKeyValues	32	// Server submits KeyValues command for the client
-#define svc_SetPauseTimed	33	// Timed pause - to avoid breaking demos
 
-#define SVC_LASTMSG			33	// last known server messages
+#define SVC_LASTMSG			32	// last known server messages
 
 //
 // client to server

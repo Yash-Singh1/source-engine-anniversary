@@ -181,9 +181,12 @@ BEGIN_RECV_TABLE_NOBASE( CPlayerLocalData, DT_Local )
 	// 3d skybox fog data
 	RecvPropInt( RECVINFO( m_skybox3d.fog.enable ) ),
 	RecvPropInt( RECVINFO( m_skybox3d.fog.blend ) ),
+	RecvPropInt( RECVINFO( m_skybox3d.fog.radial ) ),
 	RecvPropVector( RECVINFO( m_skybox3d.fog.dirPrimary ) ),
 	RecvPropInt( RECVINFO( m_skybox3d.fog.colorPrimary ) ),
 	RecvPropInt( RECVINFO( m_skybox3d.fog.colorSecondary ) ),
+	RecvPropInt( RECVINFO( m_skybox3d.fog.colorPrimaryHDR ) ),
+	RecvPropInt( RECVINFO( m_skybox3d.fog.colorSecondaryHDR ) ),
 	RecvPropFloat( RECVINFO( m_skybox3d.fog.start ) ),
 	RecvPropFloat( RECVINFO( m_skybox3d.fog.end ) ),
 	RecvPropFloat( RECVINFO( m_skybox3d.fog.maxdensity ) ),

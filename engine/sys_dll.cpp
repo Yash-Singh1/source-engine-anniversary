@@ -467,7 +467,13 @@ void Sys_Error_Internal( bool bMinidump, const char *error, va_list argsList )
 		printf("\n ##### Sys_Error: %s", text );
 		fflush(stdout );
 
+#ifdef BYTEMATCH_RETAIL
+		int *p = 0;
+		*p = 0xdeadbeef;
+#else
 		raise(SIGTRAP);
+#endif
+#line 472
 #else
 #warning "need minidump impl on sys_error"
 #endif

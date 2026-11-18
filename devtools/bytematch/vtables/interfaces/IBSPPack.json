@@ -1,0 +1,120 @@
+{
+ "interface": "IBSPPack",
+ "headers": [
+  "public/ibsppack.h"
+ ],
+ "versions": {
+  "retail": [
+   "IBSPPACK003"
+  ],
+  "ours": [
+   "IBSPPACK003"
+  ],
+  "sdk2013": [
+   "IBSPPACK003"
+  ]
+ },
+ "version_macros": [
+  "IBSPPACK_VERSION_STRING"
+ ],
+ "registrations": [
+  {
+   "module": "bin/bsppack",
+   "version": "IBSPPACK003",
+   "class": "CBSPPack"
+  }
+ ],
+ "sdk2013_len": 10,
+ "sdk2013_slots": [
+  "LoadBSPFile(IFileSystem*, char*)",
+  "WriteBSPFile(char*)",
+  "ClearPackFile()",
+  "AddFileToPack(char const*, char const*)",
+  "AddBufferToPack(char const*, void*, int, bool)",
+  "SetHDRMode(bool)",
+  "SwapBSPFile(IFileSystem*, char const*, char const*, bool, bool (*)(char const*, CUtlBuffer&, CUtlBuffer&, bool (*)(CUtlBuffer&, CUtlBuffer&)), bool (*)(char const*, char const*, CUtlBuffer&, CUtlBuffer&), bool (*)(CUtlBuffer&, CUtlBuffer&))",
+  "GetPakFileLump(IFileSystem*, char const*, void**, int*)",
+  "SetPakFileLump(IFileSystem*, char const*, char const*, void*, int)",
+  "GetBSPDependants(IFileSystem*, char const*, CUtlVector<CUtlString, CUtlMemory<CUtlString, int>>*)"
+ ],
+ "retail_reference": {
+  "module": "bin/bsppack",
+  "class": "CBSPPack",
+  "offset": 0,
+  "chain": [
+   "CBSPPack",
+   "IBSPPack"
+  ]
+ },
+ "retail_len": 10,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 10
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "LoadBSPFile",
+   "sig": "LoadBSPFile(IFileSystem*, char*)",
+   "symbol": "CBSPPack::LoadBSPFile(IFileSystem*, char*)"
+  },
+  {
+   "index": 1,
+   "name": "WriteBSPFile",
+   "sig": "WriteBSPFile(char*)",
+   "symbol": "CBSPPack::WriteBSPFile(char*)"
+  },
+  {
+   "index": 2,
+   "name": "ClearPackFile",
+   "sig": "ClearPackFile()",
+   "symbol": "CBSPPack::ClearPackFile()"
+  },
+  {
+   "index": 3,
+   "name": "AddFileToPack",
+   "sig": "AddFileToPack(char const*, char const*)",
+   "symbol": "CBSPPack::AddFileToPack(char const*, char const*)"
+  },
+  {
+   "index": 4,
+   "name": "AddBufferToPack",
+   "sig": "AddBufferToPack(char const*, void*, int, bool)",
+   "symbol": "CBSPPack::AddBufferToPack(char const*, void*, int, bool)"
+  },
+  {
+   "index": 5,
+   "name": "SetHDRMode",
+   "sig": "SetHDRMode(bool)",
+   "symbol": "CBSPPack::SetHDRMode(bool)"
+  },
+  {
+   "index": 6,
+   "name": "SwapBSPFile",
+   "sig": "SwapBSPFile(IFileSystem*, char const*, char const*, bool, bool (*)(char const*, CUtlBuffer&, CUtlBuffer&, bool (*)(CUtlBuffer&, CUtlBuffer&)), bool (*)(char const*, char const*, CUtlBuffer&, CUtlBuffer&), bool (*)(CUtlBuffer&, CUtlBuffer&))",
+   "symbol": "CBSPPack::SwapBSPFile(IFileSystem*, char const*, char const*, bool, bool (*)(char const*, CUtlBuffer&, CUtlBuffer&, bool (*)(CUtlBuffer&, CUtlBuffer&)), bool (*)(char const*, char const*, CUtlBuffer&, CUtlBuffer&), bool (*)(CUtlBuffer&, CUtlBuffer&))"
+  },
+  {
+   "index": 7,
+   "name": "GetPakFileLump",
+   "sig": "GetPakFileLump(IFileSystem*, char const*, void**, int*)",
+   "symbol": "CBSPPack::GetPakFileLump(IFileSystem*, char const*, void**, int*)"
+  },
+  {
+   "index": 8,
+   "name": "SetPakFileLump",
+   "sig": "SetPakFileLump(IFileSystem*, char const*, char const*, void*, int)",
+   "symbol": "CBSPPack::SetPakFileLump(IFileSystem*, char const*, char const*, void*, int)"
+  },
+  {
+   "index": 9,
+   "name": "GetBSPDependants",
+   "sig": "GetBSPDependants(IFileSystem*, char const*, CUtlVector<CUtlString, CUtlMemory<CUtlString, int>>*)",
+   "symbol": "CBSPPack::GetBSPDependants(IFileSystem*, char const*, CUtlVector<CUtlString, CUtlMemory<CUtlString, int>>*)"
+  }
+ ],
+ "derived": [
+  "bin/bsppack:CBSPPack"
+ ],
+ "derived_count": 1
+}

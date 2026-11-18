@@ -12,7 +12,8 @@ implies --retail-manifest. Third-party dylibs (SDL2, steam_api, Miles, CEF)
 are linked from the retail depot, thinned to i386.
 
 Only the modules in RETAIL_MODULES (or --retail-modules) are configured.
-The default build is untouched when the option is off.
+Passing --build-games (hl2, episodic or lostcoast) adds game/client and
+game/server. The default build is untouched when the option is off.
 '''
 
 import json, os, shutil, subprocess, sys
@@ -23,25 +24,58 @@ from waflib.TaskGen import feature, before_method, after_method
 MANIFEST = 'devtools/bytematch/manifests/retail-osx32.json'
 TOOLCHAIN_DIR = 'devtools/bytematch/toolchain'
 
-# Modules that compile and link in this mode. Not yet: togl and materialsystem
-# (our linuxwin togl headers vs the OSX SDK), launcher (needs togl),
-# vgui_surfacelib/vguimatsurface (FreeType fonts; retail uses the OSX font path).
+# Modules that compile and link in this mode (game modules are in GAME_MODULES). Not here:
+# chromehtml and vaudio_miles (sources missing from this tree).
 RETAIL_MODULES = [
 	'tier0', 'tier1', 'mathlib', 'tier2', 'tier3', 'vstdlib',
 	'appframework', 'bitmap', 'vtf', 'choreoobjects', 'dmxloader', 'particles', 'vpklib',
 	'materialsystem/shaderlib', 'vgui2/vgui_controls', 'vgui2/matsys_controls',
 	'scenefilecache', 'soundemittersystem', 'datacache', 'video', 'inputsystem',
 	'filesystem', 'vgui2/src', 'studiorender', 'serverbrowser', 'utils/vtex',
+	'materialsystem/shaderapiempty', 'engine/voice_codecs/speex', 'launcher_main',
+	'ivp/havana', 'ivp/havana/havok/hk_base', 'ivp/havana/havok/hk_math',
+	'ivp/ivp_compact_builder', 'ivp/ivp_physics', 'vphysics', 'materialsystem/stdshaders',
+	'utils/bzip2', 'replay/common', 'replay', 'sourcevr', 'video/video_quicktime',
+	'utils/bsppack', 'utils/bugreporter_filequeue', 'utils/bugreporter_public', 'utils/vpk',
+	'vgui2/vgui_surfacelib', 'vguimatsurface', 'gameui', 'engine',
+	'togl', 'materialsystem', 'launcher', 'materialsystem/shaderapidx9',
 ]
+
+GAME_MODULES = ['game/client', 'game/server']
 
 # Defines our top-level wscript adds that Valve's build doesn't have.
 TREE_ONLY_DEFINES = ['PLATFORM_POSIX', 'NO_MEMOVERRIDE_NEW_DELETE', 'GIT_COMMIT_HASH',
-	'DX_TO_GL_ABSTRACTION_DISABLED']
+	'DX_TO_GL_ABSTRACTION_DISABLED', 'NO_STEAM', 'DISABLE_STEAM']
 
 BUILD_PATH_DEFINES = ['WAF_CFLAGS', 'WAF_LDFLAGS']
 
+# Extra compiler flags per task generator name. ivp includes <malloc/malloc.h> when
+# OSX is defined, which doesn't declare alloca on the 10.6 headers.
+# osxfont.cpp brace-initialises a CGRect from ints, an error under clang-600's C++11.
+EXTRA_CXXFLAGS = dict((t, ['-include', 'alloca.h']) for t in
+	('ivp_physics', 'ivp_compactbuilder', 'havana_constraints', 'hk_base', 'hk_math'))
+EXTRA_CXXFLAGS['vgui_surfacelib'] = ['-Wno-c++11-narrowing']
+
+# Modules whose VPC the manifest couldn't evaluate: take a sibling's base defines.
+DEFINES_FROM = {'bin/video_quicktime': 'bin/video_services'}
+
+# Valve's Xcode projects compile these C sources as C++ (N_SO names *.ii).
+COMPILE_C_AS_CXX = ['bzip2']
+
 # Retail third-party dylibs, linked from the depot (user-provided, never rebuilt).
 DEPOT_DYLIBS = ['libSDL2-2.0.0.dylib', 'libsteam_api.dylib', 'libMilesX86.dylib', 'libcef.dylib']
+
+# Symbols whose definition is source drift with no retail counterpart: left for
+# dynamic lookup instead of linking libraries retail doesn't link.
+UNDEFINED_OK = {
+	'bin/engine': ['_GetCPUFrequencyResults'],  # tier0 cpumonitoring, absent from retail tier0
+}
+
+# Exports retail modules bind from an older libsteam_api than the depot's.
+# module -> (depot dylib, extra symbols); a stub with the depot exports plus these is linked.
+DEPOT_STUBS = {
+	'bin/sourcevr': ('libsteam_api.dylib', ['_VR_Init', '_VR_IsHmdPresent', '_VR_Shutdown']),
+}
 
 _manifest = {}
 
@@ -86,6 +120,29 @@ def thin_copy(src, dst):
 		shutil.copy2(src, dst)  # already thin
 	return True
 
+def make_depot_stub(conf, p, src, outdir, extra):
+	'''i386 dylib with src's install name, versions and exports plus `extra`.'''
+	if not os.path.exists(src):
+		return
+	if not os.path.isdir(outdir):
+		os.makedirs(outdir)
+	syms = subprocess.check_output(['nm', '-gUj', src]).decode().split()
+	names = sorted(set(syms + extra))
+	cfile = os.path.join(outdir, 'stub.c')
+	with open(cfile, 'w') as f:
+		for n in names:
+			f.write('void %s(void) {}\n' % n[1:])
+	ident = subprocess.check_output(['otool', '-D', src]).decode().split('\n')[1].strip()
+	ver = subprocess.check_output(['otool', '-L', src]).decode().split('\n')[1]
+	compat = ver.split('compatibility version ')[1].split(',')[0]
+	current = ver.split('current version ')[1].split(')')[0]
+	out = os.path.join(outdir, os.path.basename(src))
+	cmd = [p['cc'], '-arch', 'i386', '-isysroot', p['sdk'], '-mmacosx-version-min=10.6', '-dynamiclib',
+		'-nostdlib', '-B', p['ld_dir'], '-mlinker-version=' + p['ld_version'], '-Wl,-undefined,dynamic_lookup',
+		'-install_name', ident, '-compatibility_version', compat, '-current_version', current, cfile, '-o', out]
+	if subprocess.call(cmd) != 0:
+		conf.fatal('retail-osx32: could not build stub %s' % out)
+
 @conf
 def retail_osx32_configure(conf):
 	rf = retailflags(conf)
@@ -116,7 +173,8 @@ def retail_osx32_configure(conf):
 	v.CPPFLAGS = list(rf.UNDEFS)
 	v.LINKFLAGS = rf.linkflags(p)
 	v.CFLAGS_cshlib = v.CXXFLAGS_cxxshlib = []
-	v.DEFINES = list(rf.DEFINES)
+	# Retail modules were built against the togl/osx headers (debug map: public/togl/osx/*.h).
+	v.DEFINES = list(rf.DEFINES) + ['TOGL_OSX']
 	v.RETAIL_UNDEFINED = list(rf.UNDEFINED_NAMES)
 	v.INCLUDES = [conf.path.find_node('common').abspath()]
 	conf.load('gccdeps')
@@ -156,6 +214,9 @@ def retail_osx32_configure(conf):
 		Logs.warn('retail-osx32: %s not found in %s' % (name, depot))
 	v.RETAIL_DEPOT = depot
 	v.RETAIL_LIBDIR = libdir.abspath()
+	for key, (name, extra) in DEPOT_STUBS.items():
+		make_depot_stub(conf, p, os.path.join(libdir.abspath(), name),
+			os.path.join(libdir.abspath(), key.replace('/', '_')), extra)
 	# source_video_base.vpc puts ../thirdparty/SDL on every module's include path.
 	sdl = conf.path.find_node('thirdparty/SDL')
 	if not sdl or not sdl.find_node('SDL.h'):
@@ -167,24 +228,23 @@ def retail_osx32_configure(conf):
 	v.LIB_STEAM_API = ['steam_api']
 
 	v.RETAIL_MANIFEST = conf.path.find_node(MANIFEST).abspath()
+	v.RETAIL_SELECT = True
 	v.LIBDIR = v.PREFIX + '/bin/'
 	v.BINDIR = v.PREFIX
-	v.RETAIL_PROJECTS = (o.RETAIL_MODULES.split(',') if o.RETAIL_MODULES else RETAIL_MODULES)
+	v.RETAIL_PROJECTS = (o.RETAIL_MODULES.split(',') if o.RETAIL_MODULES else list(RETAIL_MODULES))
+	if any(a == '--build-games' or a.startswith('--build-games=') for a in sys.argv):
+		v.RETAIL_PROJECTS += [g for g in GAME_MODULES if g not in v.RETAIL_PROJECTS]
 	Logs.info('retail-osx32: clang %s, ld64 %s, sdk %s' % (p['cc'], p['ld_dir'], sdk))
 	conf.add_subproject(v.RETAIL_PROJECTS)
 
 def _entry(tg):
 	if not tg.env.RETAIL_MANIFEST:
 		return None, None
-	m, by_target, archives = load_manifest(tg.env.RETAIL_MANIFEST)
-	for name in (getattr(tg, 'name', None), os.path.basename(str(tg.target))):
-		if not name:
-			continue
-		for table, kind in ((by_target, 'module'), (archives, 'archive')):
-			for key in (name, name.lower()):
-				if key in table:
-					return kind, table[key]
-	return None, None
+	import retail_manifest
+	kind, key, e = retail_manifest.lookup(tg)
+	if kind == 'module':
+		return kind, (key, e)
+	return kind, e
 
 def _name(d):
 	return d.split('=')[0]
@@ -202,22 +262,46 @@ def retail_osx32_defines(self):
 		return
 	kind, e = _entry(self)
 	if kind == 'module':
-		e = e[1]
+		key, e = e
+		if not (e.get('defines') or {}).get('vpc') and key in DEFINES_FROM:
+			import retail_manifest
+			src = retail_manifest._load(self.env.RETAIL_MANIFEST)['modules'][DEFINES_FROM[key]]
+			dllname = 'DLLNAME=' + os.path.basename(key)
+			e = {'defines': {'xcconfig': src['defines']['xcconfig'],
+				'vpc': [dllname if d.startswith('DLLNAME=') else d for d in src['defines']['vpc']]}}
 	undef = set(self.env.RETAIL_UNDEFINED)
 	ours = [d for d in self.env.DEFINES if _name(d) not in TREE_ONLY_DEFINES]
 	# tier0's log banner embeds the configure flags, i.e. local toolchain paths.
 	ours = [_name(d) + '=""' if _name(d) in BUILD_PATH_DEFINES else d for d in ours]
 	valve = []
-	if e:
-		valve = [d for d in e['defines']['xcconfig'] + e['defines']['vpc'] if _name(d) not in undef]
+	if e and e.get('defines'):
+		valve = [d for d in (e['defines']['xcconfig'] or []) + (e['defines']['vpc'] or []) if _name(d) not in undef]
 	names = set(_name(d) for d in valve)
 	defs = []
 	for d in valve + [d for d in ours if _name(d) not in names]:
 		if d not in defs:
 			defs.append(d)
 	self.env.DEFINES = defs
+	extra = EXTRA_CXXFLAGS.get(getattr(self, 'name', None), [])
+	if extra:
+		self.env.append_value('CXXFLAGS', extra)
+	as_cxx = getattr(self, 'name', None) in COMPILE_C_AS_CXX
 	for t in getattr(self, 'compiled_tasks', []):
 		t.env.DEFINES = defs
+		if extra:
+			t.env.CXXFLAGS = self.env.CXXFLAGS
+		if as_cxx and t.__class__.__name__ == 'c':
+			t.env.CC = self.env.CXX
+			t.env.CFLAGS = list(self.env.CXXFLAGS) + ['-x', 'c++']
+
+@feature('cprogram', 'cxxprogram')
+@before_method('apply_link')
+def retail_osx32_exe_name(self):
+	if not self.env.RETAIL_OSX32:
+		return
+	kind, e = _entry(self)
+	if kind == 'module':
+		self.target = os.path.join(os.path.dirname(self.target), os.path.basename(e[1]['retail']['path']))
 
 @feature('cshlib', 'cxxshlib')
 @before_method('apply_link')
@@ -271,6 +355,9 @@ def retail_osx32_link_order(self):
 				args.append(node.abspath())
 			else:
 				lib = os.path.join(self.env.RETAIL_LIBDIR, os.path.basename(path))
+				stub = DEPOT_STUBS.get(e[0])
+				if stub and stub[0] == os.path.basename(path):
+					lib = os.path.join(self.env.RETAIL_LIBDIR, e[0].replace('/', '_'), stub[0])
 				if not os.path.exists(lib):
 					src = os.path.join(self.env.RETAIL_DEPOT, 'bin', os.path.basename(path))
 					if not os.path.exists(src) or not thin_copy(src, lib):
@@ -292,5 +379,7 @@ def retail_osx32_link_order(self):
 			next(it, None)
 		else:
 			flags.append(f)
+	for sym in UNDEFINED_OK.get(e[0], []):
+		flags.append('-Wl,-U,' + sym)
 	env.LINKFLAGS = flags
 	env.LDFLAGS = args

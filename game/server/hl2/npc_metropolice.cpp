@@ -461,6 +461,14 @@ void CNPC_MetroPolice::NotifyDeadFriend( CBaseEntity* pFriend )
 	m_Sentences.Speak( "METROPOLICE_MAN_DOWN", SENTENCE_PRIORITY_MEDIUM );
 }
 
+#ifdef BYTEMATCH_RETAIL
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+CNPC_MetroPolice::CNPC_MetroPolice()
+{
+}
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------

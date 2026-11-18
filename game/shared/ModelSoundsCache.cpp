@@ -33,6 +33,12 @@ void VerifySequenceIndex( CStudioHdr *pstudiohdr );
 
 extern ISoundEmitterSystemBase *soundemitterbase;
 
+#ifdef BYTEMATCH_RETAIL
+CModelSoundsCache::CModelSoundsCache()
+{
+}
+#endif
+
 CModelSoundsCache::CModelSoundsCache( const CModelSoundsCache& src )
 {
 	sounds = src.sounds;

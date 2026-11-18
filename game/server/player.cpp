@@ -580,6 +580,7 @@ CBasePlayer::CBasePlayer( )
 
 	m_iHealth = 0;
 	Weapon_SetLast( NULL );
+	Weapon_SetLastPending( NULL );
 	m_bitsDamageType = 0;
 
 	m_bForceOrigin = false;
@@ -1348,7 +1349,7 @@ int CBasePlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 
 	float flPunch = -2;
 
-	if( hl2_episodic.GetBool() && info.GetAttacker() && !FInViewCone( info.GetAttacker() ) )
+	if( IsHL2Episodic() && info.GetAttacker() && !FInViewCone( info.GetAttacker() ) )
 	{
 		if( info.GetDamage() > 10.0f )
 			flPunch = -10;
@@ -1549,6 +1550,7 @@ void CBasePlayer::RemoveAllItems( bool removeSuit )
 	}
 
 	Weapon_SetLast( NULL );
+	Weapon_SetLastPending( NULL );
 	RemoveAllWeapons();
  	RemoveAllAmmo();
 
@@ -5992,7 +5994,7 @@ static void CreateJalopy( CBasePlayer *pPlayer )
 	// Cheat to create a jeep in front of the player
 	Vector vecForward;
 	AngleVectors( pPlayer->EyeAngles(), &vecForward );
-	CBaseEntity *pJeep = (CBaseEntity *)CreateEntityByName( "prop_vehicle_jeep" );
+	CBaseEntity *pJeep = (CBaseEntity *)CreateEntityByName( "prop_vehicle_jalopy", -1, false );
 	if ( pJeep )
 	{
 		Vector vecOrigin = pPlayer->GetAbsOrigin() + vecForward * 256 + Vector(0,0,64);
@@ -6029,7 +6031,7 @@ static void CreateJeep( CBasePlayer *pPlayer )
 	// Cheat to create a jeep in front of the player
 	Vector vecForward;
 	AngleVectors( pPlayer->EyeAngles(), &vecForward );
-	CBaseEntity *pJeep = (CBaseEntity *)CreateEntityByName( "prop_vehicle_jeep" );
+	CBaseEntity *pJeep = (CBaseEntity *)CreateEntityByName( "prop_vehicle_jeep", -1, false );
 	if ( pJeep )
 	{
 		Vector vecOrigin = pPlayer->GetAbsOrigin() + vecForward * 256 + Vector(0,0,64);
@@ -6585,7 +6587,7 @@ bool CBasePlayer::BumpWeapon( CBaseCombatWeapon *pWeapon )
 	}
 
 	// Act differently in the episodes
-	if ( hl2_episodic.GetBool() )
+	if ( IsHL2Episodic() )
 	{
 		// Don't let the player touch the item unless unobstructed
 		if ( !UTIL_ItemCanBeTouchedByPlayer( pWeapon, this ) && !gEvilImpulse101 )
@@ -6674,6 +6676,11 @@ bool CBasePlayer::RemovePlayerItem( CBaseCombatWeapon *pItem )
 	if ( m_hLastWeapon.Get() == pItem )
 	{
 		Weapon_SetLast( NULL );
+	}
+
+	if ( m_hLastWeaponPending.Get() == pItem )
+	{
+		Weapon_SetLastPending( NULL );
 	}
 
 	return Weapon_Detach( pItem );

@@ -1,0 +1,163 @@
+{
+ "interface": "IAsyncWavDataCache",
+ "headers": [
+  "public/engine/audio/snd_audio_source.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CAsyncWavDataCache",
+  "offset": 0,
+  "chain": [
+   "CAsyncWavDataCache",
+   "IAsyncWavDataCache"
+  ]
+ },
+ "retail_len": 21,
+ "retail_len_basis": "override: GetItemName overrides the secondary base IDataCacheClient",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 22
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Init",
+   "sig": "Init(unsigned int)",
+   "symbol": "CAsyncWavDataCache::Init(unsigned int)"
+  },
+  {
+   "index": 1,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CAsyncWavDataCache::Shutdown()"
+  },
+  {
+   "index": 2,
+   "name": "AsyncLoadCache",
+   "sig": "AsyncLoadCache(char const*, int, int, bool)",
+   "symbol": "CAsyncWavDataCache::AsyncLoadCache(char const*, int, int, bool)"
+  },
+  {
+   "index": 3,
+   "name": "PrefetchCache",
+   "sig": "PrefetchCache(char const*, int, int)",
+   "symbol": "CAsyncWavDataCache::PrefetchCache(char const*, int, int)"
+  },
+  {
+   "index": 4,
+   "name": "CopyDataIntoMemory",
+   "sig": "CopyDataIntoMemory(char const*, int, int, void*, int, int, int, bool*)",
+   "symbol": "CAsyncWavDataCache::CopyDataIntoMemory(char const*, int, int, void*, int, int, int, bool*)"
+  },
+  {
+   "index": 5,
+   "name": "CopyDataIntoMemory",
+   "sig": "CopyDataIntoMemory(memhandle_t__*&, char const*, int, int, void*, int, int, int, bool*)",
+   "symbol": "CAsyncWavDataCache::CopyDataIntoMemory(memhandle_t__*&, char const*, int, int, void*, int, int, int, bool*)"
+  },
+  {
+   "index": 6,
+   "name": "IsDataLoadCompleted",
+   "sig": "IsDataLoadCompleted(memhandle_t__*, bool*)",
+   "symbol": "CAsyncWavDataCache::IsDataLoadCompleted(memhandle_t__*, bool*)"
+  },
+  {
+   "index": 7,
+   "name": "RestartDataLoad",
+   "sig": "RestartDataLoad(memhandle_t__**, char const*, int, int)",
+   "symbol": "CAsyncWavDataCache::RestartDataLoad(memhandle_t__**, char const*, int, int)"
+  },
+  {
+   "index": 8,
+   "name": "GetDataPointer",
+   "sig": "GetDataPointer(memhandle_t__*&, char const*, int, int, void**, int, bool*)",
+   "symbol": "CAsyncWavDataCache::GetDataPointer(memhandle_t__*&, char const*, int, int, void**, int, bool*)"
+  },
+  {
+   "index": 9,
+   "name": "SetPostProcessed",
+   "sig": "SetPostProcessed(memhandle_t__*, bool)",
+   "symbol": "CAsyncWavDataCache::SetPostProcessed(memhandle_t__*, bool)"
+  },
+  {
+   "index": 10,
+   "name": "Unload",
+   "sig": "Unload(memhandle_t__*)",
+   "symbol": "CAsyncWavDataCache::Unload(memhandle_t__*)"
+  },
+  {
+   "index": 11,
+   "name": "OpenStreamedLoad",
+   "sig": "OpenStreamedLoad(char const*, int, int, int, int, int, int, unsigned int)",
+   "symbol": "CAsyncWavDataCache::OpenStreamedLoad(char const*, int, int, int, int, int, int, unsigned int)"
+  },
+  {
+   "index": 12,
+   "name": "CloseStreamedLoad",
+   "sig": "CloseStreamedLoad(int)",
+   "symbol": "CAsyncWavDataCache::CloseStreamedLoad(int)"
+  },
+  {
+   "index": 13,
+   "name": "CopyStreamedDataIntoMemory",
+   "sig": "CopyStreamedDataIntoMemory(int, void*, int, int, int)",
+   "symbol": "CAsyncWavDataCache::CopyStreamedDataIntoMemory(int, void*, int, int, int)"
+  },
+  {
+   "index": 14,
+   "name": "IsStreamedDataReady",
+   "sig": "IsStreamedDataReady(int)",
+   "symbol": "CAsyncWavDataCache::IsStreamedDataReady(int)"
+  },
+  {
+   "index": 15,
+   "name": "MarkBufferDiscarded",
+   "sig": "MarkBufferDiscarded(int)",
+   "symbol": "CAsyncWavDataCache::MarkBufferDiscarded(int)"
+  },
+  {
+   "index": 16,
+   "name": "GetStreamedDataPointer",
+   "sig": "GetStreamedDataPointer(int, bool)",
+   "symbol": "CAsyncWavDataCache::GetStreamedDataPointer(int, bool)"
+  },
+  {
+   "index": 17,
+   "name": "IsDataLoadInProgress",
+   "sig": "IsDataLoadInProgress(memhandle_t__*)",
+   "symbol": "CAsyncWavDataCache::IsDataLoadInProgress(memhandle_t__*)"
+  },
+  {
+   "index": 18,
+   "name": "Flush",
+   "sig": "Flush()",
+   "symbol": "CAsyncWavDataCache::Flush()"
+  },
+  {
+   "index": 19,
+   "name": "OnMixBegin",
+   "sig": "OnMixBegin()",
+   "symbol": "CAsyncWavDataCache::OnMixBegin()"
+  },
+  {
+   "index": 20,
+   "name": "OnMixEnd",
+   "sig": "OnMixEnd()",
+   "symbol": "CAsyncWavDataCache::OnMixEnd()"
+  }
+ ],
+ "implementer_tail": [
+  "GetItemName(unsigned int, void const*, char*, unsigned int)"
+ ],
+ "derived": [
+  "bin/engine:CAsyncWavDataCache"
+ ],
+ "derived_count": 1
+}

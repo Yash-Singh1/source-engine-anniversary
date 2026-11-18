@@ -84,6 +84,8 @@ MenuItem::MenuItem(Menu *parent, const char *panelName, const char *text, Menu *
 	SetButtonActivationType(ACTIVATE_ONRELEASED);
 	m_pUserData = NULL;
 	m_pCurrentKeyBinding = NULL;
+	m_nExtraTall = 0;
+	m_nXIndent = 0;
 
 	// only one arg should be passed in.
 	Assert (!(cascadeMenu && checkable));
@@ -106,6 +108,8 @@ MenuItem::MenuItem(Menu *parent, const char *panelName, const wchar_t *wszText, 
 	SetButtonActivationType(ACTIVATE_ONRELEASED);
 	m_pUserData = NULL;
 	m_pCurrentKeyBinding = NULL;
+	m_nExtraTall = 0;
+	m_nXIndent = 0;
 
 	// only one arg should be passed in.
 	Assert (!(cascadeMenu && checkable));
@@ -222,7 +226,11 @@ void MenuItem::OnCursorEntered()
 	// forward the message on to the parent of this menu.
 	KeyValues *msg = new KeyValues ("CursorEnteredMenuItem");
 	// tell the parent this menuitem is the one that was entered so it can highlight it
-    msg->SetInt("menuItem", ToHandle() );
+#ifdef PLATFORM_64BITS
+	msg->SetInt("menuItem", ToHandle() );
+#else
+	msg->SetInt("VPanel", GetVPanel());
+#endif
 
 	ivgui()->PostMessage(GetVParent(), msg, NULL);
 }
@@ -236,7 +244,11 @@ void MenuItem::OnCursorExited()
 	// forward the message on to the parent of this menu.
 	KeyValues *msg = new KeyValues ("CursorExitedMenuItem");
 	// tell the parent this menuitem is the one that was entered so it can unhighlight it
-    msg->SetInt("menuItem", ToHandle() );
+#ifdef PLATFORM_64BITS
+	msg->SetInt("menuItem", ToHandle() );
+#else
+	msg->SetInt("VPanel", GetVPanel());
+#endif
 
 	ivgui()->PostMessage(GetVParent(), msg, NULL);
 }
@@ -636,12 +648,17 @@ void MenuItem::Paint()
 void MenuItem::GetContentSize( int& cw, int &ch )
 {
 	BaseClass::GetContentSize( cw, ch );
+	if ( m_nXIndent > 0 )
+	{
+		cw += PROPORTIONAL_VALUE( m_nXIndent );
+	}
+
 	if ( !m_pCurrentKeyBinding )
 		return;
 
 	int iw, ih;
 	m_pCurrentKeyBinding->GetSize( iw, ih );
 
-	cw += iw + KEYBINDING_INSET;
+	cw += iw + PROPORTIONAL_VALUE( KEYBINDING_INSET );
 	ch = max( ch, ih );
 }

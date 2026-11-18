@@ -146,7 +146,7 @@ CMatSystemSurface g_MatSystemSurface;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR( CMatSystemSurface, ISurface, 
 						VGUI_SURFACE_INTERFACE_VERSION, g_MatSystemSurface );
 
-#if defined(LINUX) || defined(OSX) || defined(PLATFORM_BSD)
+#ifdef VGUI_FONT_FREETYPE
 CUtlDict< CMatSystemSurface::font_entry, unsigned short > CMatSystemSurface::m_FontData;
 #endif
 
@@ -407,7 +407,7 @@ InitReturnVal_t CMatSystemSurface::Init( void )
 		FontManager().SetLanguage( "english" );
 	}
 
-#if defined(LINUX) || defined(OSX) || defined(PLATFORM_BSD)
+#ifdef VGUI_FONT_FREETYPE
 	FontManager().SetFontDataHelper( &CMatSystemSurface::FontDataHelper );
 #endif
 
@@ -1542,6 +1542,12 @@ int CMatSystemSurface::DrawGetTextureId( ITexture *pTexture )
 }
 
 
+void CMatSystemSurface::DrawSetTextureRGBAEx2( int id, const unsigned char *rgba, int wide, int tall, ImageFormat imageFormat, bool bFlag1, bool bFlag2 )
+{
+	// UNIMPLEMENTED: retail hands both flags to an anniversary texture dictionary entry point our tree lacks.
+	DrawSetTextureRGBAEx( id, rgba, wide, tall, imageFormat );
+}
+
 //-----------------------------------------------------------------------------
 // Associates a texture with a material file (also binds it)
 //-----------------------------------------------------------------------------
@@ -1907,7 +1913,16 @@ bool CMatSystemSurface::AddCustomFontFile( const char *fontName, const char *fon
 	}
 	Assert( success );
 	return success;
-#elif defined(LINUX) || defined(OSX) || defined(PLATFORM_BSD)
+#elif defined(OSX) && !defined(VGUI_FONT_FREETYPE)
+
+	FSRef ref;
+	OSStatus err = FSPathMakeRef( (const UInt8*)fullPath, &ref, NULL );
+	if ( err == noErr )
+		err = ATSFontActivateFromFileReference( &ref, kATSFontContextLocal, kATSFontFormatUnspecified, NULL, kATSOptionFlagsDefault, NULL );
+
+	return err == noErr;
+
+#elif defined(VGUI_FONT_FREETYPE)
 
 	int size;
 	if ( CMatSystemSurface::FontDataHelper( fontName, size, fontFileName ) )
@@ -1921,7 +1936,7 @@ bool CMatSystemSurface::AddCustomFontFile( const char *fontName, const char *fon
 #endif
 }
 
-#if defined(LINUX) || defined(OSX) || defined(PLATFORM_BSD)
+#ifdef VGUI_FONT_FREETYPE
 
 static void RemoveSpaces( CUtlString &str )
 {
@@ -3032,7 +3047,6 @@ void CMatSystemSurface::InternalSolveTraverse(VPANEL panel)
 {
 	VPanel * RESTRICT vp = (VPanel *)panel;
 
-	vp->TraverseLevel( 1 );
 	tmZone( TELEMETRY_LEVEL1, TMZF_NONE, "%s - %s", __FUNCTION__, vp->GetName() );
 
 	// solve the parent
@@ -3051,7 +3065,6 @@ void CMatSystemSurface::InternalSolveTraverse(VPANEL panel)
 		}
 	}
 
-	vp->TraverseLevel( -1 );
 }
 
 //-----------------------------------------------------------------------------
@@ -3063,7 +3076,6 @@ void CMatSystemSurface::InternalThinkTraverse(VPANEL panel)
 {
 	VPanel * RESTRICT vp = (VPanel *)panel;
 
-	vp->TraverseLevel( 1 );
 	tmZone( TELEMETRY_LEVEL1, TMZF_NONE, "%s - %s", __FUNCTION__, vp->GetName() );
 
 	// think the parent
@@ -3082,7 +3094,6 @@ void CMatSystemSurface::InternalThinkTraverse(VPANEL panel)
 		}
 	}
 	
-	vp->TraverseLevel( -1 );
 }
 
 //-----------------------------------------------------------------------------
@@ -3092,7 +3103,6 @@ void CMatSystemSurface::InternalSchemeSettingsTraverse(VPANEL panel, bool forceA
 {
 	VPanel * RESTRICT vp = (VPanel *)panel;
 
-	vp->TraverseLevel( 1 );
 	tmZone( TELEMETRY_LEVEL1, TMZF_NONE, "%s - %s", __FUNCTION__, vp->GetName() );
 
 	CUtlVector< VPanel * > &children = vp->GetChildren();
@@ -3109,7 +3119,6 @@ void CMatSystemSurface::InternalSchemeSettingsTraverse(VPANEL panel, bool forceA
 	// and then the parent
 	vp->Client()->PerformApplySchemeSettings();
 
-	vp->TraverseLevel( -1 );
 }
 
 //-----------------------------------------------------------------------------

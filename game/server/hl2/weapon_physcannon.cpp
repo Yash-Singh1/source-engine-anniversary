@@ -219,7 +219,7 @@ protected:
 void UTIL_PhyscannonTraceLine( const Vector &vecAbsStart, const Vector &vecAbsEnd, CBaseEntity *pTraceOwner, trace_t *pTrace )
 {
 	// Default to HL2 vanilla
-	if ( hl2_episodic.GetBool() == false )
+	if ( IsHL2Episodic() == false )
 	{
 		CTraceFilterNoOwnerTest filter( pTraceOwner, COLLISION_GROUP_NONE );
 		UTIL_TraceLine( vecAbsStart, vecAbsEnd, (MASK_SHOT|CONTENTS_GRATE), &filter, pTrace );
@@ -251,7 +251,7 @@ void UTIL_PhyscannonTraceLine( const Vector &vecAbsStart, const Vector &vecAbsEn
 void UTIL_PhyscannonTraceHull( const Vector &vecAbsStart, const Vector &vecAbsEnd, const Vector &vecAbsMins, const Vector &vecAbsMaxs, CBaseEntity *pTraceOwner, trace_t *pTrace )
 {
 	// Default to HL2 vanilla
-	if ( hl2_episodic.GetBool() == false )
+	if ( IsHL2Episodic() == false )
 	{
 		CTraceFilterNoOwnerTest filter( pTraceOwner, COLLISION_GROUP_NONE );
 		UTIL_TraceHull( vecAbsStart, vecAbsEnd, vecAbsMins, vecAbsMaxs, (MASK_SHOT|CONTENTS_GRATE), &filter, pTrace );
@@ -1805,7 +1805,7 @@ void CWeaponPhysCannon::Physgun_OnPhysGunPickup( CBaseEntity *pEntity, CBasePlay
 	}
 
 	// Warn Alyx if the player is punting a car around.
-	if( hl2_episodic.GetBool() && mass > 250.0f )
+	if( IsHL2Episodic() && mass > 250.0f )
 	{
 		CAI_BaseNPC **ppAIs = g_AI_Manager.AccessAIs();
 		int nAIs = g_AI_Manager.NumAIs();
@@ -1957,24 +1957,29 @@ void CWeaponPhysCannon::ApplyVelocityBasedForce( CBaseEntity *pEntity, const Vec
 	CRagdollProp *pRagdoll = dynamic_cast<CRagdollProp*>( pEntity );
 	if ( pRagdoll == NULL )
 	{
+	if ( HL2_EPISODIC_ACTIVE() )
+	{
 #ifdef HL2_EPISODIC
-		// The jeep being punted needs special force overrides
-		if ( reason == PHYSGUN_FORCE_PUNTED && pEntity->GetServerVehicle() )
-		{
-			// We want the point to emanate low on the vehicle to move it along the ground, not to twist it
-			Vector vecFinalPos = vecHitPos;
-			vecFinalPos.z = pEntity->GetAbsOrigin().z;
-			pPhysicsObject->ApplyForceOffset( vVel, vecFinalPos );
-		}
-		else
-		{
+			// The jeep being punted needs special force overrides
+			if ( reason == PHYSGUN_FORCE_PUNTED && pEntity->GetServerVehicle() )
+			{
+				// We want the point to emanate low on the vehicle to move it along the ground, not to twist it
+				Vector vecFinalPos = vecHitPos;
+				vecFinalPos.z = pEntity->GetAbsOrigin().z;
+				pPhysicsObject->ApplyForceOffset( vVel, vecFinalPos );
+			}
+			else
+			{
+				pPhysicsObject->AddVelocity( &vVel, &aVel );
+			}
+#endif
+	}
+	else
+	{
+
 			pPhysicsObject->AddVelocity( &vVel, &aVel );
-		}
-#else
 
-		pPhysicsObject->AddVelocity( &vVel, &aVel );
-
-#endif // HL2_EPISODIC
+	}
 	}
 	else
 	{
@@ -2176,7 +2181,7 @@ void CWeaponPhysCannon::PrimaryAttack( void )
 		UTIL_PhyscannonTraceLine( start, end, pOwner, &tr );
 		if ( tr.fraction == 1 || !tr.m_pEnt || tr.m_pEnt->IsEFlagSet( EFL_NO_PHYSCANNON_INTERACTION ) )
 		{
-			if( hl2_episodic.GetBool() )
+			if( IsHL2Episodic() )
 			{
 				// Try to find something in a very small cone. 
 				CBaseEntity *pObject = FindObjectInCone( start, forward, physcannon_punt_cone.GetFloat() );
@@ -2403,14 +2408,17 @@ bool CWeaponPhysCannon::AttachObject( CBaseEntity *pObject, const Vector &vPosit
 	m_bActive = true;
 	if( pOwner )
 	{
-#ifdef HL2_EPISODIC
-		CBreakableProp *pProp = dynamic_cast< CBreakableProp * >( pObject );
-
-		if ( pProp && pProp->HasInteraction( PROPINTER_PHYSGUN_CREATE_FLARE ) )
+		if ( HL2_EPISODIC_ACTIVE() )
 		{
-			pOwner->FlashlightTurnOff();
-		}
+#ifdef HL2_EPISODIC
+			CBreakableProp *pProp = dynamic_cast< CBreakableProp * >( pObject );
+
+			if ( pProp && pProp->HasInteraction( PROPINTER_PHYSGUN_CREATE_FLARE ) )
+			{
+				pOwner->FlashlightTurnOff();
+			}
 #endif
+		}
 
 		// NOTE: This can change the mass; so it must be done before max speed setting
 		Physgun_OnPhysGunPickup( pObject, pOwner, PICKED_UP_BY_CANNON );
@@ -2477,7 +2485,7 @@ void CWeaponPhysCannon::FindObjectTrace( CBasePlayer *pPlayer, trace_t *pTraceRe
 	float	testLength = TraceLength() * 4.0f;
 	Vector	end = start + forward * testLength;
 
-	if( IsMegaPhysCannon() && hl2_episodic.GetBool() )
+	if( IsMegaPhysCannon() && IsHL2Episodic() )
 	{
 		Vector vecAutoAimDir = pPlayer->GetAutoaimVector( 1.0f, testLength );
 		end = start + vecAutoAimDir * testLength;
@@ -3104,16 +3112,19 @@ void CWeaponPhysCannon::DoEffectIdle( void )
 		{
 			EmitSound( "Weapon_Physgun.Off" );
 
-#ifdef HL2_EPISODIC
-			ForceDrop();
-
-			CHL2_Player *pPlayer = dynamic_cast<CHL2_Player*>( pOwner );
-
-			if ( pPlayer )
+			if ( HL2_EPISODIC_ACTIVE() )
 			{
-				pPlayer->StartArmorReduction();
-			}
+#ifdef HL2_EPISODIC
+				ForceDrop();
+
+				CHL2_Player *pPlayer = dynamic_cast<CHL2_Player*>( pOwner );
+
+				if ( pPlayer )
+				{
+					pPlayer->StartArmorReduction();
+				}
 #endif
+			}
 
 			CCitadelEnergyCore *pCore = static_cast<CCitadelEnergyCore*>( CreateEntityByName( "env_citadel_energy_core" ) );
 
@@ -3338,7 +3349,7 @@ void CWeaponPhysCannon::ItemPostFrame()
 		WeaponIdle();
 	}
 
-	if ( hl2_episodic.GetBool() == true )
+	if ( IsHL2Episodic() == true )
 	{
 		if ( IsMegaPhysCannon() )
 		{

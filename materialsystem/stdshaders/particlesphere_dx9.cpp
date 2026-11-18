@@ -132,6 +132,7 @@ BEGIN_VS_SHADER_FLAGS( ParticleSphere_DX9, "Help for BumpmappedEnvMap", SHADER_N
 			// (It does this by seeing if the intensity*1/distSqr is > 1. If so, then it scales it so
 			// it is equal to 1).
 			const float *f = params[LIGHT_COLOR]->GetVecValue();
+#ifndef BYTEMATCH_RETAIL
 			Vector4D vLightColor( f[0], f[1], f[2], 0.f );
 			float flScale = max( vLightColor.x, max( vLightColor.y, vLightColor.z ) );
 			if ( flScale < 0.01f )
@@ -142,6 +143,17 @@ BEGIN_VS_SHADER_FLAGS( ParticleSphere_DX9, "Help for BumpmappedEnvMap", SHADER_N
 
 			pShaderAPI->SetVertexShaderConstant( VERTEX_SHADER_SHADER_SPECIFIC_CONST_1, vLightColor.Base() );
 			pShaderAPI->SetVertexShaderConstant( VERTEX_SHADER_SHADER_SPECIFIC_CONST_2, vScaleVec.Base() );
+#else
+			Vector vLightColor( f[0], f[1], f[2] );
+			float flScale = max( vLightColor.x, max( vLightColor.y, vLightColor.z ) );
+			if ( flScale < 0.01f )
+				flScale = 0.01f;
+			float vScaleVec[3] = { flScale, flScale, flScale };
+			vLightColor /= flScale;
+
+			pShaderAPI->SetVertexShaderConstant( VERTEX_SHADER_SHADER_SPECIFIC_CONST_1, vLightColor.Base() );
+			pShaderAPI->SetVertexShaderConstant( VERTEX_SHADER_SHADER_SPECIFIC_CONST_2, vScaleVec );
+#endif
 
 			pShaderAPI->SetPixelShaderFogParams( PSREG_FOG_PARAMS );
 

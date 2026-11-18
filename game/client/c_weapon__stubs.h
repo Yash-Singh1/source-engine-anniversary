@@ -15,6 +15,12 @@
 
 // This is an ugly hack to link client classes to weapons for now
 //  these will be removed once we predict all weapons, especially TF2 weapons
+#ifdef BYTEMATCH_RETAIL
+#define STUB_WEAPON_CTOR_BODY {};
+#else
+#define STUB_WEAPON_CTOR_BODY = default;
+#endif
+
 #define STUB_WEAPON_CLASS_IMPLEMENT( entityName, className )		\
 	BEGIN_PREDICTION_DATA( className )								\
 	END_PREDICTION_DATA()											\
@@ -28,7 +34,7 @@
 	public:															\
 		DECLARE_PREDICTABLE();										\
 		DECLARE_CLIENTCLASS();										\
-		C_##className() = default;											\
+		C_##className() STUB_WEAPON_CTOR_BODY								\
 	private:														\
 		C_##className( const C_##className & );						\
 	};																\

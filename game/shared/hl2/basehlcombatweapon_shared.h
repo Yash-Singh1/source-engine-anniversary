@@ -58,7 +58,7 @@ public:
 
 protected:
 
-#ifndef GAME_DLL
+#if !defined( GAME_DLL ) || defined( BYTEMATCH_RETAIL )
 	bool			m_bLowered;			// Whether the viewmodel is raised or lowered
 	float			m_flRaiseTime;		// If lowered, the time we should raise the viewmodel
 #endif

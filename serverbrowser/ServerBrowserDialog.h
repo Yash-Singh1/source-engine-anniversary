@@ -31,7 +31,11 @@ public:
 	void		Open( void );
 
 	// gets server info
+#ifdef BYTEMATCH_RETAIL
+	gameserveritem_t *GetServer(unsigned int serverID);
+#else
 	newgameserver_t *GetServer(unsigned int serverID);
+#endif
 	// called every frame
 	virtual void OnTick();
 
@@ -49,23 +53,41 @@ public:
 	static CServerBrowserDialog *GetInstance();
 
 	// Adds a server to the list of favorites
+#ifdef BYTEMATCH_RETAIL
+	void AddServerToFavorites(gameserveritem_t &server);
+	// Adds a server to our list of blacklisted servers
+	void AddServerToBlacklist(gameserveritem_t &server);
+	bool IsServerBlacklisted(gameserveritem_t &server); 
+#else
 	void AddServerToFavorites(newgameserver_t &server);
+#endif
 
 	// begins the process of joining a server from a game list
 	// the game info dialog it opens will also update the game list
+#ifdef BYTEMATCH_RETAIL
+	CDialogGameInfo *JoinGame(IGameList *gameList, unsigned int serverIndex);
+#else
 	CDialogGameInfo *JoinGame(IGameList *gameList, newgameserver_t *pServer);
+#endif
 
 	// joins a game by a specified IP, not attached to any game list
 	CDialogGameInfo *JoinGame(int serverIP, int serverPort, const char *pszConnectCode);
 
 	// opens a game info dialog from a game list
+#ifdef BYTEMATCH_RETAIL
+	CDialogGameInfo *OpenGameInfoDialog(IGameList *gameList, unsigned int serverIndex);
+#else
 	CDialogGameInfo *OpenGameInfoDialog(IGameList *gameList, newgameserver_t *pServer);
+#endif
 
 	// opens a game info dialog by a specified IP, not attached to any game list
 	CDialogGameInfo *OpenGameInfoDialog( int serverIP, uint16 connPort, uint16 queryPort, const char *pszConnectCode );
 
 	// closes all the game info dialogs
 	void CloseAllGameInfoDialogs();
+#ifdef BYTEMATCH_RETAIL
+	CDialogGameInfo *GetDialogGameInfoForFriend( uint64 ulSteamIDFriend );
+#endif
 
 	// accessor to the filter save data
 	KeyValues *GetFilterSaveData(const char *filterSet);
@@ -86,6 +108,11 @@ public:
 	{
 		return &m_CurrentConnection;
 	}
+#ifdef BYTEMATCH_RETAIL
+
+	void		BlacklistsChanged();
+	CBlacklistedServers *GetBlacklistPage( void ) { return m_pBlacklist; }
+#endif
 
 private:
 
@@ -118,12 +145,24 @@ private:
 
 	// property sheet
 	vgui::PropertySheet *m_pTabPanel;
-
+#ifdef BYTEMATCH_RETAIL
+	CFavoriteGames *m_pFavorites;
+	CBlacklistedServers *m_pBlacklist;
+	CHistoryGames *m_pHistory;
+#endif
 	CInternetGames *m_pInternetGames;
+#ifdef BYTEMATCH_RETAIL
+	CSpectateGames *m_pSpectateGames;
+#else
 	//CSpectateGames *m_pSpectateGames;
+#endif
 	CLanGames *m_pLanGames;
+#ifdef BYTEMATCH_RETAIL
+	CFriendsGames *m_pFriendsGames;
+#else
 	CFavoriteGames *m_pFavorites;
 	CHistoryGames *m_pHistory;
+#endif
 
 	KeyValues *m_pSavedData;
 	KeyValues *m_pFilterData;

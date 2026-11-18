@@ -425,6 +425,8 @@ bool InputHandleInputEvent( const InputEvent_t &event )
 			}
 		}
 		break;
+
+#ifndef BYTEMATCH_RETAIL
 	case IE_FingerDown:
 		{
 			int w,h,x,y; g_MatSystemSurface.GetScreenSize(w, h);
@@ -459,6 +461,7 @@ bool InputHandleInputEvent( const InputEvent_t &event )
 			g_pIInput->InternalCursorMoved( x, y );
 		}
 		return true;
+#endif
 	case IE_ButtonDoubleClicked:
 		{
 			// NOTE: data2 is the virtual key code (data1 contains the scan-code one)

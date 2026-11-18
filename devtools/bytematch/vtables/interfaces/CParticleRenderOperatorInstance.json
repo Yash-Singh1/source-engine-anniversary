@@ -1,0 +1,239 @@
+{
+ "interface": "CParticleRenderOperatorInstance",
+ "headers": [
+  "public/particles/particles.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "episodic/client",
+  "class": "C_OP_RenderPoints",
+  "offset": 0,
+  "chain": [
+   "C_OP_RenderPoints",
+   "CParticleRenderOperatorInstance"
+  ]
+ },
+ "retail_len": 31,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 31
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "InitParams",
+   "sig": "InitParams(CParticleSystemDefinition*, CDmxElement*)",
+   "symbol": "CParticleOperatorInstance::InitParams(CParticleSystemDefinition*, CDmxElement*)"
+  },
+  {
+   "index": 1,
+   "name": "GetRequiredContextBytes",
+   "sig": "GetRequiredContextBytes() const",
+   "symbol": "C_OP_RenderPoints::GetRequiredContextBytes() const"
+  },
+  {
+   "index": 2,
+   "name": "InitializeContextData",
+   "sig": "InitializeContextData(CParticleCollection*, void*) const",
+   "symbol": "C_OP_RenderPoints::InitializeContextData(CParticleCollection*, void*) const"
+  },
+  {
+   "index": 3,
+   "name": "GetWrittenAttributes",
+   "sig": "GetWrittenAttributes() const",
+   "symbol": "C_OP_RenderPoints::GetWrittenAttributes() const"
+  },
+  {
+   "index": 4,
+   "name": "GetReadAttributes",
+   "sig": "GetReadAttributes() const",
+   "symbol": "C_OP_RenderPoints::GetReadAttributes() const"
+  },
+  {
+   "index": 5,
+   "name": "GetReadControlPointMask",
+   "sig": "GetReadControlPointMask() const",
+   "symbol": "CParticleOperatorInstance::GetReadControlPointMask() const"
+  },
+  {
+   "index": 6,
+   "name": "GetReadInitialAttributes",
+   "sig": "GetReadInitialAttributes() const",
+   "symbol": "CParticleOperatorInstance::GetReadInitialAttributes() const"
+  },
+  {
+   "index": 7,
+   "name": "Operate",
+   "sig": "Operate(CParticleCollection*, float, void*) const",
+   "symbol": "CParticleOperatorInstance::Operate(CParticleCollection*, float, void*) const"
+  },
+  {
+   "index": 8,
+   "name": "Render",
+   "sig": "Render(IMatRenderContext*, CParticleCollection*, void*) const",
+   "symbol": "C_OP_RenderPoints::Render(IMatRenderContext*, CParticleCollection*, void*) const"
+  },
+  {
+   "index": 9,
+   "name": "IsBatchable",
+   "sig": "IsBatchable() const",
+   "symbol": "CParticleOperatorInstance::IsBatchable() const"
+  },
+  {
+   "index": 10,
+   "name": "RenderUnsorted",
+   "sig": "RenderUnsorted(CParticleCollection*, void*, IMatRenderContext*, CMeshBuilder&, int, int, int) const",
+   "symbol": "CParticleOperatorInstance::RenderUnsorted(CParticleCollection*, void*, IMatRenderContext*, CMeshBuilder&, int, int, int) const"
+  },
+  {
+   "index": 11,
+   "name": "GetParticlesToRender",
+   "sig": "GetParticlesToRender(CParticleCollection*, void*, int, int, int, int*, int*) const",
+   "symbol": "CParticleOperatorInstance::GetParticlesToRender(CParticleCollection*, void*, int, int, int, int*, int*) const"
+  },
+  {
+   "index": 12,
+   "name": "Emit",
+   "sig": "Emit(CParticleCollection*, float, void*) const",
+   "symbol": "CParticleOperatorInstance::Emit(CParticleCollection*, float, void*) const"
+  },
+  {
+   "index": 13,
+   "name": "StopEmission",
+   "sig": "StopEmission(CParticleCollection*, void*, bool) const",
+   "symbol": "CParticleOperatorInstance::StopEmission(CParticleCollection*, void*, bool) const"
+  },
+  {
+   "index": 14,
+   "name": "StartEmission",
+   "sig": "StartEmission(CParticleCollection*, void*, bool) const",
+   "symbol": "CParticleOperatorInstance::StartEmission(CParticleCollection*, void*, bool) const"
+  },
+  {
+   "index": 15,
+   "name": "Restart",
+   "sig": "Restart(CParticleCollection*, void*)",
+   "symbol": "CParticleOperatorInstance::Restart(CParticleCollection*, void*)"
+  },
+  {
+   "index": 16,
+   "name": "InitParticleSystem",
+   "sig": "InitParticleSystem(CParticleCollection*, void*) const",
+   "symbol": "CParticleOperatorInstance::InitParticleSystem(CParticleCollection*, void*) const"
+  },
+  {
+   "index": 17,
+   "name": "AddForces",
+   "sig": "AddForces(FourVectors*, CParticleCollection*, int, float, void*) const",
+   "symbol": "CParticleOperatorInstance::AddForces(FourVectors*, CParticleCollection*, int, float, void*) const"
+  },
+  {
+   "index": 18,
+   "name": "SetupConstraintPerFrameData",
+   "sig": "SetupConstraintPerFrameData(CParticleCollection*, void*) const",
+   "symbol": "CParticleOperatorInstance::SetupConstraintPerFrameData(CParticleCollection*, void*) const"
+  },
+  {
+   "index": 19,
+   "name": "EnforceConstraint",
+   "sig": "EnforceConstraint(int, int, CParticleCollection*, void*, int) const",
+   "symbol": "CParticleOperatorInstance::EnforceConstraint(int, int, CParticleCollection*, void*, int) const"
+  },
+  {
+   "index": 20,
+   "name": "IsFinalConstaint",
+   "sig": "IsFinalConstaint() const",
+   "symbol": "CParticleOperatorInstance::IsFinalConstaint() const"
+  },
+  {
+   "index": 21,
+   "name": "InitMultipleOverride",
+   "sig": "InitMultipleOverride()",
+   "symbol": "CParticleOperatorInstance::InitMultipleOverride()"
+  },
+  {
+   "index": 22,
+   "name": "IsScrubSafe",
+   "sig": "IsScrubSafe()",
+   "symbol": "CParticleOperatorInstance::IsScrubSafe()"
+  },
+  {
+   "index": 23,
+   "name": "InitNewParticlesScalar",
+   "sig": "InitNewParticlesScalar(CParticleCollection*, int, int, int, void*) const",
+   "symbol": "CParticleOperatorInstance::InitNewParticlesScalar(CParticleCollection*, int, int, int, void*) const"
+  },
+  {
+   "index": 24,
+   "name": "InitNewParticlesBlock",
+   "sig": "InitNewParticlesBlock(CParticleCollection*, int, int, int, void*) const",
+   "symbol": "CParticleOperatorInstance::InitNewParticlesBlock(CParticleCollection*, int, int, int, void*) const"
+  },
+  {
+   "index": 25,
+   "name": "MayCreateMoreParticles",
+   "sig": "MayCreateMoreParticles(CParticleCollection*, void*) const",
+   "symbol": "CParticleOperatorInstance::MayCreateMoreParticles(CParticleCollection*, void*) const"
+  },
+  {
+   "index": 26,
+   "name": "ShouldRunBeforeEmitters",
+   "sig": "ShouldRunBeforeEmitters() const",
+   "symbol": "CParticleOperatorInstance::ShouldRunBeforeEmitters() const"
+  },
+  {
+   "index": 27,
+   "name": "SkipToTime",
+   "sig": "SkipToTime(float, CParticleCollection*, void*) const",
+   "symbol": "CParticleOperatorInstance::SkipToTime(float, CParticleCollection*, void*) const"
+  },
+  {
+   "index": 28,
+   "name": "Render",
+   "sig": "Render(CParticleCollection*) const",
+   "symbol": "CParticleOperatorInstance::Render(CParticleCollection*) const"
+  },
+  {
+   "index": 29,
+   "name": "~C_OP_RenderPoints",
+   "sig": "~C_OP_RenderPoints()",
+   "symbol": "C_OP_RenderPoints::~C_OP_RenderPoints()"
+  },
+  {
+   "index": 30,
+   "name": "~C_OP_RenderPoints",
+   "sig": "~C_OP_RenderPoints()",
+   "symbol": "C_OP_RenderPoints::~C_OP_RenderPoints()"
+  }
+ ],
+ "derived": [
+  "episodic/client:C_OP_RenderPoints",
+  "episodic/client:C_OP_RenderScreenVelocityRotate",
+  "episodic/client:C_OP_RenderSprites",
+  "episodic/client:C_OP_RenderSpritesTrail",
+  "hl2/client:C_OP_RenderPoints",
+  "hl2/client:C_OP_RenderScreenVelocityRotate",
+  "hl2/client:C_OP_RenderSprites",
+  "hl2/client:C_OP_RenderSpritesTrail",
+  "hl2_complete/client:C_OP_RenderPoints",
+  "hl2_complete/client:C_OP_RenderScreenVelocityRotate",
+  "hl2_complete/client:C_OP_RenderSprites",
+  "hl2_complete/client:C_OP_RenderSpritesTrail",
+  "hl2mp/client:C_OP_RenderPoints",
+  "hl2mp/client:C_OP_RenderScreenVelocityRotate",
+  "hl2mp/client:C_OP_RenderSprites",
+  "hl2mp/client:C_OP_RenderSpritesTrail",
+  "lostcoast/client:C_OP_RenderPoints",
+  "lostcoast/client:C_OP_RenderScreenVelocityRotate",
+  "lostcoast/client:C_OP_RenderSprites",
+  "lostcoast/client:C_OP_RenderSpritesTrail"
+ ],
+ "derived_count": 20
+}

@@ -412,6 +412,7 @@ public:
 	virtual	void			Weapon_Drop( CBaseCombatWeapon *pWeapon, const Vector *pvecTarget /* = NULL */, const Vector *pVelocity /* = NULL */ );
 	virtual	bool			Weapon_Switch( CBaseCombatWeapon *pWeapon, int viewmodelindex = 0 );		// Switch to given weapon if has ammo (false if failed)
 	virtual void			Weapon_SetLast( CBaseCombatWeapon *pWeapon );
+	virtual void			Weapon_SetLastPending( CBaseCombatWeapon *pWeapon );
 	virtual bool			Weapon_ShouldSetLast( CBaseCombatWeapon *pOldWeapon, CBaseCombatWeapon *pNewWeapon ) { return true; }
 	virtual bool			Weapon_ShouldSelectItem( CBaseCombatWeapon *pWeapon );
 	void					Weapon_DropSlot( int weaponSlot );
@@ -1046,6 +1047,10 @@ private:
 
 	// player locking
 	int						m_iPlayerLocked;
+
+public:
+	// client's hud_fastswitch_net, from ClientSettingsChanged
+	int						m_iHudFastSwitch;
 		
 protected:
 	// the player's personal view model
@@ -1105,6 +1110,7 @@ private:
 	float					m_fLastPlayerTalkTime;
 	
 	CNetworkVar( CBaseCombatWeaponHandle, m_hLastWeapon );
+	CNetworkVar( CBaseCombatWeaponHandle, m_hLastWeaponPending );
 
 #if !defined( NO_ENTITY_PREDICTION )
 	CUtlVector< CHandle< CBaseEntity > > m_SimulatedByThisPlayer;

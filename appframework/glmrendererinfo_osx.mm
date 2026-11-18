@@ -198,7 +198,11 @@ GLMRendererInfo::GLMRendererInfo( GLMRendererInfoFields *info )
 
 	// absorb info obtained so far by caller
 	m_info = *info;
+#ifdef TOGL_OSX
+	m_display = NULL;
+#else
 	m_displays = NULL;
+#endif
 
 	// gather more info using a dummy context
 	unsigned int attribs[] = 
@@ -450,6 +454,7 @@ GLMRendererInfo::GLMRendererInfo( GLMRendererInfoFields *info )
 	if ( (m_info.m_atiR6xx) && (m_info.m_osComboVersion < 0x000A0605) )	// or r6xx prior to 10.6.5
 		m_info.m_costlyGammaFlips = true;
 
+#ifndef TOGL_OSX
 	// The OpenGL driver for Intel HD4000 on 10.8 has a bug in the GLSL compiler, which was fixed
 	// in 10.9 (and unlikely to be fixed in 10.8). See intelglmallocworkaround.h for more info.
 	bool mountainLion = (m_info.m_osComboVersion >= 0x000A0800) && (m_info.m_osComboVersion < 0x000A0900);
@@ -462,12 +467,52 @@ GLMRendererInfo::GLMRendererInfo( GLMRendererInfoFields *info )
 	{
 		m_info.m_badDriver108Intel = false;
 	}
+#endif
 
 	[nsglCtx release];
 	[pixFmt release];
 	
 	[tempPool release];
 }
+
+#ifdef TOGL_OSX
+
+GLMRendererInfo::~GLMRendererInfo( void )
+{
+	if (m_display)
+	{
+		delete m_display;
+		m_display = NULL;
+	}
+}
+
+void	GLMRendererInfo::PopulateDisplays( void )
+{
+	Assert( !m_display );
+	m_display = new GLMDisplayInfo;
+
+	// Populate display mode table.
+	m_display->PopulateModes();
+}
+
+void	GLMRendererInfo::Dump( int which )
+{
+	GLMPRINTF(("\n     #%d: GLMRendererInfo @ %08x, renderer-id=(%08x)  display-mask=%08x  vram=%dMB",
+		which, this,
+		m_info.m_rendererID,
+		m_info.m_displayMask,
+		m_info.m_vidMemory >> 20
+	));
+	GLMPRINTF(("\n       VendorID=%04x  DeviceID=%04x  Model=%s",
+		m_info.m_pciVendorID,
+		m_info.m_pciDeviceID,
+		m_info.m_pciModelString
+	));
+
+	m_display->Dump( which );
+}
+
+#else
 
 GLMRendererInfo::~GLMRendererInfo( void )
 {
@@ -606,6 +651,8 @@ void	GLMRendererInfo::Dump( int which )
 	}
 }
 
+
+#endif // TOGL_OSX
 
 //===============================================================================
 
@@ -1107,7 +1154,9 @@ void	GLMDisplayDB::PopulateRenderers( void )
 								{
 									case	0x27A6:	fields.m_intel95x = true;		break;	// GMA 950
 									case	0x2A02:	fields.m_intel3100 = true;		break;	// X3100
+#ifndef TOGL_OSX
 									case	0x0166: fields.m_intelHD4000 = true;	break;	// HD4000
+#endif
 								}
 							}
 							break;
@@ -1298,6 +1347,73 @@ bool	GLMDisplayDB::GetRendererInfo( int rendererIndex, GLMRendererInfoFields *in
 	return false;
 }
 
+#ifdef TOGL_OSX
+
+int		GLMDisplayDB::GetDisplayCount( int rendererIndex )
+{
+	if (rendererIndex >= GetRendererCount())
+		return 0; // fail
+	
+	return 1;
+}
+
+bool	GLMDisplayDB::GetDisplayInfo( int rendererIndex, int displayIndex, GLMDisplayInfoFields *infoOut )
+{
+	memset( infoOut, 0, sizeof( GLMDisplayInfoFields ) );
+	
+	if (rendererIndex >= GetRendererCount())
+		return true; // fail
+	
+	if (displayIndex >= GetDisplayCount(rendererIndex))
+		return true; // fail
+	
+	*infoOut = (*m_renderers)[rendererIndex]->m_display->m_info;
+
+	return false;
+}
+
+int		GLMDisplayDB::GetModeCount( int rendererIndex, int displayIndex )
+{
+	if (rendererIndex >= GetRendererCount())
+		return 0; // fail
+	
+	if (displayIndex >= GetDisplayCount(rendererIndex))
+		return 0; // fail
+		
+	return (*m_renderers)[rendererIndex]->m_display->m_modes->Count();
+}
+
+bool	GLMDisplayDB::GetModeInfo( int rendererIndex, int displayIndex, int modeIndex, GLMDisplayModeInfoFields *infoOut )
+{
+	memset( infoOut, 0, sizeof( GLMDisplayModeInfoFields ) );
+	
+	if (rendererIndex >= GetRendererCount())
+		return true; // fail
+	
+	if (displayIndex >= GetDisplayCount(rendererIndex))
+		return true; // fail
+	
+	if (modeIndex >= GetModeCount(rendererIndex,displayIndex))
+		return true; // fail
+	
+	GLMDisplayInfo *displayInfo = (*m_renderers)[rendererIndex]->m_display;
+	if (modeIndex>=0)
+	{
+		*infoOut = displayInfo->m_modes->Element( modeIndex )->m_info;
+	}
+	else
+	{
+		// passing modeIndex = -1 means "tell me about current mode"..
+		infoOut->m_modePixelWidth = displayInfo->m_info.m_displayPixelWidth;
+		infoOut->m_modePixelHeight = displayInfo->m_info.m_displayPixelHeight;
+		infoOut->m_modeRefreshHz = 0;
+	}
+
+	return false;
+}
+
+#else
+
 int		GLMDisplayDB::GetDisplayCount( int rendererIndex )
 {
 	if (rendererIndex >= GetRendererCount())
@@ -1425,6 +1541,8 @@ bool	GLMDisplayDB::GetModeInfo( int rendererIndex, int displayIndex, int modeInd
 }
 
 
+#endif // TOGL_OSX
+
 void	GLMDisplayDB::Dump( void )
 {
 	GLMPRINTF(("\n GLMDisplayDB @ %08x ",this ));
@@ -1434,6 +1552,8 @@ void	GLMDisplayDB::Dump( void )
 		(*m_renderers)[i]->Dump(i);
 	}
 }
+
+#ifndef TOGL_OSX
 
 //===============================================================================
 
@@ -1581,3 +1701,5 @@ void	GLMDisplayInfo::Dump( int which )
 		(*m_modes)[i]->Dump(i);
 	}
 }
+
+#endif // !TOGL_OSX

@@ -72,7 +72,10 @@
 #include "cl_rcon.h"
 #include "host_state.h"
 #include "voice.h"
+#ifndef BYTEMATCH_RETAIL
 #include "cbenchmark.h"
+#endif
+#line 75
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -80,8 +83,14 @@
 
 extern CNetworkStringTableContainer *networkStringTableContainerServer;
 extern CNetworkStringTableContainer *networkStringTableContainerClient;
+#ifdef BYTEMATCH_RETAIL
+//void OnHibernateWhenEmptyChanged( IConVar *var, const char *pOldValue, float flOldValue );
+//ConVar sv_hibernate_when_empty( "sv_hibernate_when_empty", "1", 0, "Puts the server into extremely low CPU usage mode when no clients connected", OnHibernateWhenEmptyChanged );
+#else
 static void OnHibernateWhenEmptyChanged( IConVar *var, const char *pOldValue, float flOldValue );
 ConVar sv_hibernate_when_empty( "sv_hibernate_when_empty", "1", 0, "Puts the server into extremely low CPU usage mode when no clients connected", OnHibernateWhenEmptyChanged );
+#endif
+#line 84
 //ConVar sv_hibernate_ms( "sv_hibernate_ms", "20", 0, "# of milliseconds to sleep per frame while hibernating" );
 //ConVar sv_hibernate_ms_vgui( "sv_hibernate_ms_vgui", "20", 0, "# of milliseconds to sleep per frame while hibernating but running the vgui dedicated server frontend" );
 //static ConVar sv_hibernate_postgame_delay( "sv_hibernate_postgame_delay", "5", 0, "# of seconds to wait after final client leaves before hibernating.");
@@ -210,6 +219,17 @@ static ConVar sv_consistency( "sv_consistency", "1", FCVAR_REPLICATED, "Legacy v
 
 /// XXX(JohnS): When steam voice gets ugpraded to Opus we will probably default back to steam.  At that time we should
 ///             note that Steam voice is the highest quality codec below.
+#ifdef BYTEMATCH_RETAIL
+static ConVar sv_voicecodec( "sv_voicecodec", "vaudio_celt", 0,
+                             "Specifies which voice codec to use. Valid options are:\n"
+                             "vaudio_speex - Legacy Speex codec (lowest quality)\n"
+                             "vaudio_celt - Newer CELT codec\n"
+                             "steam - Use Steam voice API" );
+
+
+ConVar  sv_mincmdrate( "sv_mincmdrate", "10", FCVAR_REPLICATED, "This sets the minimum value for cl_cmdrate. 0 == unlimited." );
+ConVar  sv_maxcmdrate( "sv_maxcmdrate", "66", FCVAR_REPLICATED, "(If sv_mincmdrate is > 0), this sets the maximum value for cl_cmdrate." );
+#else
 static ConVar sv_voicecodec( "sv_voicecodec", "vaudio_opus", 0,
                              "Specifies which voice codec to use. Valid options are:\n"
                              "vaudio_speex - Legacy Speex codec (lowest quality)\n"
@@ -220,6 +240,8 @@ static ConVar sv_voicecodec( "sv_voicecodec", "vaudio_opus", 0,
 
 ConVar  sv_mincmdrate( "sv_mincmdrate", "20", FCVAR_REPLICATED, "This sets the minimum value for cl_cmdrate. 0 == unlimited." );
 ConVar  sv_maxcmdrate( "sv_maxcmdrate", "100", FCVAR_REPLICATED, "(If sv_mincmdrate is > 0), this sets the maximum value for cl_cmdrate." );
+#endif
+#line 221
 ConVar  sv_client_cmdrate_difference( "sv_client_cmdrate_difference", "20", FCVAR_REPLICATED, 
 	"cl_cmdrate is moved to within sv_client_cmdrate_difference units of cl_updaterate before it "
 	"is clamped between sv_mincmdrate and sv_maxcmdrate." );
@@ -1227,7 +1249,12 @@ void SV_DetermineMulticastRecipients( bool usepas, const Vector& origin, CBitVec
 		serverGameClients->ClientEarPosition( pClient->edict, &vecEarPosition );
 
 		int iBitNumber = CM_LeafCluster( CM_PointLeafnum( vecEarPosition ) );
+#ifdef BYTEMATCH_RETAIL
+		if ( !(pMask[iBitNumber>>3] & (1<<(iBitNumber&7)) ) )
+#else
 		if ( iBitNumber < 0 || !(pMask[iBitNumber>>3] & (1<<(iBitNumber&7)) ) )
+#endif
+#line 1229
 			continue;
 
 		playerbits.Set( i );
@@ -1391,7 +1418,7 @@ bool CGameServer::FinishCertificateCheck( netadr_t &adr, int nAuthProtocol, cons
 		if ( AllowDebugDedicatedServerOutsideSteam() )
 			return true;
 
-/*
+#ifdef BYTEMATCH_RETAIL
 		if ( !Host_IsSinglePlayerGame() || sv.IsDedicated()) // PROTOCOL_HASHEDCDKEY isn't allowed for multiplayer servers
 		{
 			RejectConnection( adr, clientChallenge, "#GameUI_ServerCDKeyAuthInvalid" );
@@ -1402,7 +1429,9 @@ bool CGameServer::FinishCertificateCheck( netadr_t &adr, int nAuthProtocol, cons
 		{
 			RejectConnection( adr, clientChallenge, "#GameUI_ServerInvalidCDKey" );
 			return false;
-		}*/
+		}
+#endif
+#line 1403
 
 		int nHashCount = 0;
 
@@ -1541,6 +1570,7 @@ CPureServerWhitelist * CGameServer::GetPureServerWhitelist() const
 	return m_pPureServerWhitelist;
 }
 
+#ifndef BYTEMATCH_RETAIL
 static void OnHibernateWhenEmptyChanged( IConVar *var, const char *pOldValue, float flOldValue )
 {
 	// We only need to do something special if we were preventing hibernation
@@ -1548,6 +1578,8 @@ static void OnHibernateWhenEmptyChanged( IConVar *var, const char *pOldValue, fl
 	// In that case, punt all connected clients.
 	sv.UpdateHibernationState( );
 }
+#endif
+#line 1541
 
 static bool s_bExitWhenEmpty = false;
 static ConVar sv_memlimit(  "sv_memlimit", "0", 0, 
@@ -1753,7 +1785,12 @@ void CGameServer::UpdateHibernationState()
 		s_bExitWhenEmpty = true;
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	SetHibernating( hibernateFromGCServer && !bHaveAnyClients );
+#else
 	SetHibernating( sv_hibernate_when_empty.GetBool() && hibernateFromGCServer && !bHaveAnyClients );
+#endif
+#line 1747
 }
 
 void CGameServer::FinishRestore()
@@ -2854,8 +2891,11 @@ void SV_Think( bool bIsSimulating )
 
 	g_pServerPluginHandler->GameFrame( bIsSimulating );
 
+#ifndef BYTEMATCH_RETAIL
 	if( bIsSimulating )
 		GetBenchResultsMgr()->Frame();
+#endif
+#line 2847
 }
 
 //-----------------------------------------------------------------------------

@@ -1,0 +1,85 @@
+{
+ "interface": "IReplayPerformanceManager",
+ "headers": [
+  "common/replay/ireplayperformancemanager.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 7,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "CreatePerformance(CReplay*)",
+  "DeletePerformance(CReplayPerformance*)",
+  "GetRelativePath() const",
+  "GetFullPath() const",
+  "GeneratePerformanceFilename(CReplay*)"
+ ],
+ "retail_reference": {
+  "module": "bin/replay",
+  "class": "CReplayPerformanceManager",
+  "offset": 0,
+  "chain": [
+   "CReplayPerformanceManager",
+   "IReplayPerformanceManager"
+  ]
+ },
+ "retail_len": 7,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 7
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CReplayPerformanceManager",
+   "sig": "~CReplayPerformanceManager()",
+   "symbol": "CReplayPerformanceManager::~CReplayPerformanceManager()"
+  },
+  {
+   "index": 1,
+   "name": "~CReplayPerformanceManager",
+   "sig": "~CReplayPerformanceManager()",
+   "symbol": "CReplayPerformanceManager::~CReplayPerformanceManager()"
+  },
+  {
+   "index": 2,
+   "name": "CreatePerformance",
+   "sig": "CreatePerformance(CReplay*)",
+   "symbol": "CReplayPerformanceManager::CreatePerformance(CReplay*)"
+  },
+  {
+   "index": 3,
+   "name": "DeletePerformance",
+   "sig": "DeletePerformance(CReplayPerformance*)",
+   "symbol": "CReplayPerformanceManager::DeletePerformance(CReplayPerformance*)"
+  },
+  {
+   "index": 4,
+   "name": "GetRelativePath",
+   "sig": "GetRelativePath() const",
+   "symbol": "CReplayPerformanceManager::GetRelativePath() const"
+  },
+  {
+   "index": 5,
+   "name": "GetFullPath",
+   "sig": "GetFullPath() const",
+   "symbol": "CReplayPerformanceManager::GetFullPath() const"
+  },
+  {
+   "index": 6,
+   "name": "GeneratePerformanceFilename",
+   "sig": "GeneratePerformanceFilename(CReplay*)",
+   "symbol": "CReplayPerformanceManager::GeneratePerformanceFilename(CReplay*)"
+  }
+ ],
+ "derived": [
+  "bin/replay:CReplayPerformanceManager"
+ ],
+ "derived_count": 1
+}

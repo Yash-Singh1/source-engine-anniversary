@@ -65,7 +65,7 @@ public:
 	int		GetDeviceID( void ) const { return m_bitsDeviceID; }
 	float	GetDeviceDrainRate( void ) const
 	{	
-		if( g_pGameRules->GetSkillLevel() == SKILL_EASY && hl2_episodic.GetBool() && !(GetDeviceID()&bits_SUIT_DEVICE_SPRINT) )
+		if( g_pGameRules->GetSkillLevel() == SKILL_EASY && IsHL2Episodic() && !(GetDeviceID()&bits_SUIT_DEVICE_SPRINT) )
 			return m_flDrainRate * 0.5f;
 		else
 			return m_flDrainRate; 

@@ -7,6 +7,7 @@
 /* For force feedback testing. */
 #include "inputsystem.h"
 #include "tier1/convar.h"
+#include "tier1/KeyValues.h"
 #include "tier0/icommandline.h"
 
 #include "SDL.h"
@@ -70,28 +71,6 @@ void SearchForDevice()
 void joy_active_changed_f( IConVar *var, const char *pOldValue, float flOldValue )
 {
 	SearchForDevice();
-}
-
-//---------------------------------------------------------------------------------------
-// Reinitialize the game controller layer when the joy_gamecontroller_config is updated.
-//---------------------------------------------------------------------------------------
-void joy_gamecontroller_config_changed_f( IConVar *var, const char *pOldValue, float flOldValue )
-{
-	CInputSystem *pInputSystem = (CInputSystem *)g_pInputSystem;
-	if ( pInputSystem && SDL_WasInit(SDL_INIT_GAMECONTROLLER) )
-	{
-		bool oldValuePresent = pOldValue && ( strlen( pOldValue ) > 0 );
-		bool newValuePresent = ( strlen( joy_gamecontroller_config.GetString() ) > 0 );
-		if ( !oldValuePresent && !newValuePresent )
-		{
-			return;
-		}
-
-		// We need to reinitialize the whole thing (i.e. undo CInputSystem::InitializeJoysticks and then call it again)
-		// due to SDL_GameController only reading the SDL_HINT_GAMECONTROLLERCONFIG on init.
-		pInputSystem->ShutdownJoysticks();
-		pInputSystem->InitializeJoysticks();
-	}
 }
 
 //-----------------------------------------------------------------------------
@@ -177,6 +156,11 @@ void CInputSystem::InitializeJoysticks( void )
 	// abort startup if user requests no joystick
 	if ( CommandLine()->FindParm("-nojoy") ) return;
 
+#ifdef BYTEMATCH_RETAIL
+	// Steam Input handles the Steam Deck's built-in controls (stub_steam has none, so native builds keep SDL)
+	if ( !CommandLine()->FindParm("-forcejoy") && IsSteamDeck() ) return;
+#endif
+
 	const char *controllerConfig = joy_gamecontroller_config.GetString();
 	if ( strlen(controllerConfig) > 0 )
 	{
@@ -214,7 +198,7 @@ void CInputSystem::InitializeJoysticks( void )
 
 	if ( totalSticks < 1 )
 	{
-		Msg("Did not detect any valid joysticks.\n");
+		DevMsg( 2, "Did not detect any valid joysticks.\n" );
 	}
 }
 
@@ -233,6 +217,28 @@ void CInputSystem::ShutdownJoysticks()
 	SDL_QuitSubSystem( SDL_INIT_GAMECONTROLLER | SDL_INIT_HAPTIC );
 
 	m_bJoystickInitialized = false;
+}
+
+//---------------------------------------------------------------------------------------
+// Reinitialize the game controller layer when the joy_gamecontroller_config is updated.
+//---------------------------------------------------------------------------------------
+void joy_gamecontroller_config_changed_f( IConVar *var, const char *pOldValue, float flOldValue )
+{
+	CInputSystem *pInputSystem = (CInputSystem *)g_pInputSystem;
+	if ( pInputSystem && SDL_WasInit(SDL_INIT_GAMECONTROLLER) )
+	{
+		bool oldValuePresent = pOldValue && ( strlen( pOldValue ) > 0 );
+		bool newValuePresent = ( strlen( joy_gamecontroller_config.GetString() ) > 0 );
+		if ( !oldValuePresent && !newValuePresent )
+		{
+			return;
+		}
+
+		// We need to reinitialize the whole thing (i.e. undo CInputSystem::InitializeJoysticks and then call it again)
+		// due to SDL_GameController only reading the SDL_HINT_GAMECONTROLLERCONFIG on init.
+		pInputSystem->ShutdownJoysticks();
+		pInputSystem->InitializeJoysticks();
+	}
 }
 
 // Update the joy_xcontroller_found convar to force CInput::JoyStickMove to re-exec 360controller-linux.cfg

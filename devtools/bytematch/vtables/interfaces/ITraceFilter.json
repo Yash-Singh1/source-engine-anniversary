@@ -1,0 +1,126 @@
+{
+ "interface": "ITraceFilter",
+ "headers": [
+  "public/engine/IEngineTrace.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 2,
+ "sdk2013_slots": [
+  "ShouldHitEntity(IHandleEntity*, int)",
+  "GetTraceType() const"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CTraceFilterDAS",
+  "offset": 0,
+  "chain": [
+   "CTraceFilterDAS",
+   "ITraceFilter"
+  ]
+ },
+ "retail_len": 2,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 2
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "ShouldHitEntity",
+   "sig": "ShouldHitEntity(IHandleEntity*, int)",
+   "symbol": "CTraceFilterDAS::ShouldHitEntity(IHandleEntity*, int)"
+  },
+  {
+   "index": 1,
+   "name": "GetTraceType",
+   "sig": "GetTraceType() const",
+   "symbol": "CTraceFilterDAS::GetTraceType() const"
+  }
+ ],
+ "derived_disagreements": [
+  {
+   "module": "episodic/server",
+   "class": "CDecal::StaticDecal()::CTraceFilterValidForDecal",
+   "index": 0,
+   "ref": "ShouldHitEntity(IHandleEntity*, int)",
+   "got": "StaticDecal()::CTraceFilterValidForDecal::ShouldHitEntity(IHandleEntity*, int)"
+  },
+  {
+   "module": "hl2/server",
+   "class": "CDecal::StaticDecal()::CTraceFilterValidForDecal",
+   "index": 0,
+   "ref": "ShouldHitEntity(IHandleEntity*, int)",
+   "got": "StaticDecal()::CTraceFilterValidForDecal::ShouldHitEntity(IHandleEntity*, int)"
+  },
+  {
+   "module": "hl2_complete/server",
+   "class": "CDecal::StaticDecal()::CTraceFilterValidForDecal",
+   "index": 0,
+   "ref": "ShouldHitEntity(IHandleEntity*, int)",
+   "got": "StaticDecal()::CTraceFilterValidForDecal::ShouldHitEntity(IHandleEntity*, int)"
+  },
+  {
+   "module": "hl2mp/server",
+   "class": "CDecal::StaticDecal()::CTraceFilterValidForDecal",
+   "index": 0,
+   "ref": "ShouldHitEntity(IHandleEntity*, int)",
+   "got": "StaticDecal()::CTraceFilterValidForDecal::ShouldHitEntity(IHandleEntity*, int)"
+  },
+  {
+   "module": "lostcoast/server",
+   "class": "CDecal::StaticDecal()::CTraceFilterValidForDecal",
+   "index": 0,
+   "ref": "ShouldHitEntity(IHandleEntity*, int)",
+   "got": "StaticDecal()::CTraceFilterValidForDecal::ShouldHitEntity(IHandleEntity*, int)"
+  }
+ ],
+ "derived": [
+  "bin/engine:CTraceFilterDAS",
+  "bin/engine:CTraceFilterHitAll",
+  "bin/engine:CTraceFilterWorldAndProps",
+  "bin/engine:CTraceFilterWorldAndPropsOnly",
+  "bin/engine:CTraceFilterWorldOnly",
+  "bin/replay:CTraceFilterWorldAndPropsOnly",
+  "episodic/client:CTraceFilterGlow",
+  "episodic/client:CTraceFilterHitAll",
+  "episodic/client:CTraceFilterNoCombatCharacters",
+  "episodic/client:CTraceFilterNoNPCsOrPlayer",
+  "episodic/client:CTraceFilterSimple",
+  "episodic/client:CTraceFilterSimpleList",
+  "episodic/client:CTraceFilterSkipNPCsAndPlayers",
+  "episodic/client:CTraceFilterSkipPlayerAndViewModel",
+  "episodic/client:CTraceFilterSkipTwoEntities",
+  "episodic/client:CTraceFilterWorldOnly",
+  "episodic/server:CBarnacleTongueFilter",
+  "episodic/server:CBulletsTraceFilter",
+  "episodic/server:CDecal::StaticDecal()::CTraceFilterValidForDecal",
+  "episodic/server:CHunterTraceFilterSkipPhysics",
+  "episodic/server:CTraceFilterAgainstEntityList",
+  "episodic/server:CTraceFilterAntlion",
+  "episodic/server:CTraceFilterCharge",
+  "episodic/server:CTraceFilterChopper",
+  "episodic/server:CTraceFilterCollisionGroupDelta",
+  "episodic/server:CTraceFilterDoor",
+  "episodic/server:CTraceFilterEntity",
+  "episodic/server:CTraceFilterEntityIgnoreOther",
+  "episodic/server:CTraceFilterLOS",
+  "episodic/server:CTraceFilterMelee",
+  "episodic/server:CTraceFilterMetroPolice",
+  "episodic/server:CTraceFilterNav",
+  "episodic/server:CTraceFilterNoCombatCharacters",
+  "episodic/server:CTraceFilterNoNPCsOrPlayer",
+  "episodic/server:CTraceFilterNoOwnerTest",
+  "episodic/server:CTraceFilterOnlyBrushes",
+  "episodic/server:CTraceFilterOnlyNPCsAndPlayer",
+  "episodic/server:CTraceFilterPhyscannon",
+  "episodic/server:CTraceFilterPlayersNPCs",
+  "episodic/server:CTraceFilterPlayersNPCsPhysicsProps"
+ ],
+ "derived_count": 239
+}

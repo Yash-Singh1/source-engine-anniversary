@@ -704,11 +704,24 @@ public:
 		AssertMsg( 0, "CMatNullRenderContext only provides base features, not a stub (right now)" );
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	void AsyncCreateTextureFromRenderTarget( ITexture* pSrcRt, const char* pDstName, ImageFormat dstFmt, bool bGenMips, int nAdditionalCreationFlags, IAsyncTextureOperationReceiver* pRecipient, void* pExtraArgs ) OVERRIDE
 	{
 		AssertMsg( 0, "CMatNullRenderContext only provides base features, not a stub (right now)" );
 	}
 
+#endif
+
+	void FogRadial( bool bRadial )
+	{
+	}
+
+	bool GetFogRadial()
+	{
+		return false;
+	}
+
+#ifndef BYTEMATCH_RETAIL
 	virtual void AsyncMap( ITextureInternal* pTexToMap, IAsyncTextureOperationReceiver* pRecipient, void* pExtraArgs ) OVERRIDE
 	{
 	
@@ -723,6 +736,8 @@ public:
 	{
 
 	}
+
+#endif
 
 	void SetShadowDepthBiasFactors( float fSlopeScaleDepthBias, float fDepthBias )
 	{
@@ -835,7 +850,9 @@ public:
 	void									DoStartupShaderPreloading( void ) {};
 #endif
 
+#ifndef BYTEMATCH_RETAIL
 	void									TextureManagerUpdate( void ) { }
+#endif
 
 	int m_WidthBackBuffer, m_HeightBackBuffer;
 };

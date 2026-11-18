@@ -1,0 +1,31 @@
+#! /usr/bin/env python
+# encoding: utf-8
+
+top = '.'
+PROJECT_NAME = 'sourcevr'
+
+def options(opt):
+	return
+
+def configure(conf):
+	conf.env.append_unique('DEFINES', ['SOURCEVR_DLL', 'VERSION_SAFE_STEAM_API_INTERFACES'])
+
+def build(bld):
+	includes = [
+		'.',
+		'../public',
+		'../public/tier0',
+		'../public/tier1',
+		'../common',
+	]
+
+	bld.shlib(
+		source   = ['sourcevirtualreality.cpp'],
+		target   = PROJECT_NAME,
+		name     = PROJECT_NAME,
+		features = 'c cxx',
+		includes = includes,
+		use      = ['tier0', 'tier1', 'tier2', 'tier3', 'mathlib', 'vstdlib', 'steam_api', 'filesystem_stdio'],
+		install_path = bld.env.LIBDIR,
+		idx      = bld.get_taskgen_count()
+	)

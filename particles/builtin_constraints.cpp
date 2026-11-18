@@ -659,7 +659,11 @@ class C_OP_WorldTraceConstraint : public CParticleOperatorInstance
 
 	bool m_bKillonContact;
 
+#ifdef BYTEMATCH_RETAIL
+	virtual bool IsFinalConstaint( void ) const
+#else
 	virtual bool IsFinalConstraint( void ) const
+#endif
 	{
 		return ( m_flBounceAmount != 0. ) || ( m_flSlideAmount != 0. );
 	}

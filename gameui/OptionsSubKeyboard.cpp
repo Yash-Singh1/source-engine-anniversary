@@ -761,6 +761,10 @@ public:
 	{
 		// parent is ignored, since we want look like we're steal focus from the parent (we'll become modal below)
 
+#ifdef BYTEMATCH_RETAIL
+		SetTitle("#GameUI_KeyboardAdvanced_Title", true);
+		SetSize( 280, 140 );
+#else
 		if( NeedProportional() )
 			SetProportional(true);
 
@@ -769,6 +773,7 @@ public:
 			SetSize( scheme()->GetProportionalScaledValue( 280 ), scheme()->GetProportionalScaledValue( 140 ) );
 		else
 			SetSize( 280, 140 );
+#endif
 
 		LoadControlSettings( "resource/OptionsSubKeyboardAdvancedDlg.res" );
 		MoveToCenterOfScreen();

@@ -1,0 +1,128 @@
+{
+ "interface": "vgui::IBorder",
+ "headers": [
+  "public/vgui/IBorder.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 12,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "Paint(unsigned int)",
+  "Paint(int, int, int, int)",
+  "Paint(int, int, int, int, int, int, int)",
+  "SetInset(int, int, int, int)",
+  "GetInset(int&, int&, int&, int&)",
+  "ApplySchemeSettings(vgui::IScheme*, KeyValues*)",
+  "GetName()",
+  "SetName(char const*)",
+  "GetBackgroundType()",
+  "PaintFirst()"
+ ],
+ "retail_reference": {
+  "module": "bin/vgui2",
+  "class": "ImageBorder",
+  "offset": 0,
+  "chain": [
+   "ImageBorder",
+   "vgui::IBorder"
+  ]
+ },
+ "retail_len": 13,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 13
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~ImageBorder",
+   "sig": "~ImageBorder()",
+   "symbol": "ImageBorder::~ImageBorder()"
+  },
+  {
+   "index": 1,
+   "name": "~ImageBorder",
+   "sig": "~ImageBorder()",
+   "symbol": "ImageBorder::~ImageBorder()"
+  },
+  {
+   "index": 2,
+   "name": "Paint",
+   "sig": "Paint(unsigned int)",
+   "symbol": "ImageBorder::Paint(unsigned int)"
+  },
+  {
+   "index": 3,
+   "name": "Paint",
+   "sig": "Paint(int, int, int, int)",
+   "symbol": "ImageBorder::Paint(int, int, int, int)"
+  },
+  {
+   "index": 4,
+   "name": "Paint",
+   "sig": "Paint(int, int, int, int, int, int, int)",
+   "symbol": "ImageBorder::Paint(int, int, int, int, int, int, int)"
+  },
+  {
+   "index": 5,
+   "name": "SetInset",
+   "sig": "SetInset(int, int, int, int)",
+   "symbol": "ImageBorder::SetInset(int, int, int, int)"
+  },
+  {
+   "index": 6,
+   "name": "GetInset",
+   "sig": "GetInset(int&, int&, int&, int&)",
+   "symbol": "ImageBorder::GetInset(int&, int&, int&, int&)"
+  },
+  {
+   "index": 7,
+   "name": "ApplySchemeSettings",
+   "sig": "ApplySchemeSettings(vgui::IScheme*, KeyValues*)",
+   "symbol": "ImageBorder::ApplySchemeSettings(vgui::IScheme*, KeyValues*)"
+  },
+  {
+   "index": 8,
+   "name": "GetName",
+   "sig": "GetName()",
+   "symbol": "ImageBorder::GetName()"
+  },
+  {
+   "index": 9,
+   "name": "SetName",
+   "sig": "SetName(char const*)",
+   "symbol": "ImageBorder::SetName(char const*)"
+  },
+  {
+   "index": 10,
+   "name": "GetBackgroundType",
+   "sig": "GetBackgroundType()",
+   "symbol": "ImageBorder::GetBackgroundType()"
+  },
+  {
+   "index": 11,
+   "name": "PaintFirst",
+   "sig": "PaintFirst()",
+   "symbol": "ImageBorder::PaintFirst()"
+  },
+  {
+   "index": 12,
+   "name": "Paint2",
+   "sig": "Paint2(int, int, int, int, int, int, int, int)",
+   "symbol": "vgui::IBorder::Paint2(int, int, int, int, int, int, int, int)"
+  }
+ ],
+ "derived": [
+  "bin/vgui2:ImageBorder",
+  "bin/vgui2:ScalableImageBorder",
+  "bin/vgui2:vgui::Border"
+ ],
+ "derived_count": 3
+}

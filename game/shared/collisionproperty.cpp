@@ -52,6 +52,7 @@ public:
 	void AddEntity( CBaseEntity *pEntity );
 
 	~CDirtySpatialPartitionEntityList();
+#ifdef g_nThreadID
 	void LockPartitionForRead()
 	{
 		int nThreadId = g_nThreadID;
@@ -70,15 +71,41 @@ public:
 			m_partitionMutex.UnlockRead();
 		}
 	}
+	bool IsReadLocked() { return m_nReadLockCount[g_nThreadID] != 0; }
+	uint32 WriterId() { return g_nThreadID + 1; }
+#else
+	void LockPartitionForRead()
+	{
+		if ( m_readLockCount == 0 )
+		{
+			m_partitionMutex.LockForRead();
+		}
+		m_readLockCount++;
+	}
+	void UnlockPartitionForRead()
+	{
+		m_readLockCount--;
+		if ( m_readLockCount == 0 )
+		{
+			m_partitionMutex.UnlockRead();
+		}
+	}
+	bool IsReadLocked() { return m_readLockCount != 0; }
+	uint32 WriterId() { return ThreadGetCurrentId(); }
+#endif
 
 
 private:
+#ifdef g_nThreadID
 	int m_nReadLockCount[MAX_THREADS_SUPPORTED];
+#endif
 
 	CTSListWithFreeList<CBaseHandle> m_DirtyEntities;
 	CThreadSpinRWLock	 m_partitionMutex;
 	uint32			 m_partitionWriteId;
-	CTHREADLOCALINT	 m_readLockCount;
+#ifndef g_nThreadID
+	CThreadLocalInt<>	 m_readLockCount;
+#endif
 };
 
 
@@ -110,7 +137,11 @@ void UpdateDirtySpatialPartitionEntities()
 CDirtySpatialPartitionEntityList::CDirtySpatialPartitionEntityList( char const *name ) : CAutoGameSystem( name )
 {
 	m_DirtyEntities.Purge();
+#ifdef g_nThreadID
 	memset( m_nReadLockCount, 0, sizeof( m_nReadLockCount ) );
+#else
+	m_readLockCount = 0;
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -168,9 +199,7 @@ void CDirtySpatialPartitionEntityList::OnPreQuery( SpatialPartitionListMask_t li
 	if ( !( listMask & validMask ) )
 		return;
 
-	int nThreadID = g_nThreadID;
-
-	if ( m_partitionWriteId != 0 && m_partitionWriteId == nThreadID + 1 )
+	if ( m_partitionWriteId != 0 && m_partitionWriteId == WriterId() )
 		return;
 
 #ifdef CLIENT_DLL
@@ -186,11 +215,11 @@ void CDirtySpatialPartitionEntityList::OnPreQuery( SpatialPartitionListMask_t li
 	// or became dirty due to some other thread or callback. Updating them may cause corruption further up the
 	// stack (e.g. partition iterator).  Ignoring the state change should be safe since it happened after the 
 	// trace was requested or was unable to be resolved in a previous attempt (still dirty).
-	if ( m_DirtyEntities.Count() && !m_nReadLockCount[nThreadID] )
+	if ( m_DirtyEntities.Count() && !IsReadLocked() )
 	{
 		CUtlVector< CBaseHandle > vecStillDirty;
 		m_partitionMutex.LockForWrite();
-		m_partitionWriteId = nThreadID + 1;
+		m_partitionWriteId = WriterId();
 		CTSListWithFreeList<CBaseHandle>::Node_t *pCurrent, *pNext;
 		while ( ( pCurrent = m_DirtyEntities.Detach() ) != NULL )
 		{

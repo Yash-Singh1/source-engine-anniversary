@@ -35,9 +35,15 @@ public:
 	MESSAGE_FUNC( GetNewServerList, "GetNewServerList" );
 
 	// serverlist refresh responses
+#ifdef BYTEMATCH_RETAIL
+	virtual void ServerResponded( HServerListRequest hReq, int iServer );
+	virtual void ServerFailedToRespond( HServerListRequest hReq, int iServer );
+	virtual void RefreshComplete( HServerListRequest hReq, EMatchMakingServerResponse response );
+#else
 	virtual void ServerResponded( newgameserver_t &server );
 	//virtual void ServerFailedToRespond( HServerListRequest hReq, int iServer );
 	virtual void RefreshComplete( NServerResponse response );
+#endif
 	MESSAGE_FUNC_INT( OnRefreshServer, "RefreshServer", serverID );
 
 	virtual int GetRegionCodeToFilter();

@@ -1,0 +1,94 @@
+{
+ "interface": "IViewPortPanel",
+ "headers": [
+  "public/game/client/iviewport.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 12,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "GetName()",
+  "SetData(KeyValues*)",
+  "Reset()",
+  "Update()",
+  "NeedsUpdate()",
+  "HasInputElements()",
+  "ShowPanel(bool)",
+  "GetVPanel()",
+  "IsVisible()",
+  "SetParent(unsigned int)"
+ ],
+ "retail_reference": {
+  "module": "hl2mp/client",
+  "class": "IViewPortPanel",
+  "offset": 0,
+  "chain": [
+   "IViewPortPanel"
+  ]
+ },
+ "retail_len": 2,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 2
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~IViewPortPanel",
+   "sig": "~IViewPortPanel()",
+   "symbol": "IViewPortPanel::~IViewPortPanel()"
+  },
+  {
+   "index": 1,
+   "name": "~IViewPortPanel",
+   "sig": "~IViewPortPanel()",
+   "symbol": "IViewPortPanel::~IViewPortPanel()"
+  }
+ ],
+ "derived": [
+  "episodic/client:CClientScoreBoardDialog",
+  "episodic/client:CCommentaryModelViewer",
+  "episodic/client:CNavProgress",
+  "episodic/client:CSpectatorGUI",
+  "episodic/client:CSpectatorMenu",
+  "episodic/client:CTeamMenu",
+  "episodic/client:CTextWindow",
+  "hl2/client:CClientScoreBoardDialog",
+  "hl2/client:CCommentaryModelViewer",
+  "hl2/client:CNavProgress",
+  "hl2/client:CSpectatorGUI",
+  "hl2/client:CSpectatorMenu",
+  "hl2/client:CTeamMenu",
+  "hl2/client:CTextWindow",
+  "hl2_complete/client:CClientScoreBoardDialog",
+  "hl2_complete/client:CCommentaryModelViewer",
+  "hl2_complete/client:CNavProgress",
+  "hl2_complete/client:CSpectatorGUI",
+  "hl2_complete/client:CSpectatorMenu",
+  "hl2_complete/client:CTeamMenu",
+  "hl2_complete/client:CTextWindow",
+  "hl2mp/client:CClientScoreBoardDialog",
+  "hl2mp/client:CCommentaryModelViewer",
+  "hl2mp/client:CNavProgress",
+  "hl2mp/client:CSpectatorGUI",
+  "hl2mp/client:CSpectatorMenu",
+  "hl2mp/client:CTeamMenu",
+  "hl2mp/client:CTextWindow",
+  "hl2mp/client:IViewPortPanel",
+  "lostcoast/client:CClientScoreBoardDialog",
+  "lostcoast/client:CCommentaryModelViewer",
+  "lostcoast/client:CNavProgress",
+  "lostcoast/client:CSpectatorGUI",
+  "lostcoast/client:CSpectatorMenu",
+  "lostcoast/client:CTeamMenu",
+  "lostcoast/client:CTextWindow"
+ ],
+ "derived_count": 36
+}

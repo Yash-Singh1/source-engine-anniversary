@@ -69,7 +69,7 @@ T *_CreateEntityTemplate( T *newEnt, const char *className )
 
 #include "tier0/memdbgoff.h"
 
-CBaseEntity *CreateEntityByName( const char *className, int iForceEdictIndex );
+CBaseEntity *CreateEntityByName( const char *className, int iForceEdictIndex, bool bEpisodicRemap );
 
 // creates an entity by name, and ensure it's correctness
 // does not spawn the entity
@@ -77,7 +77,7 @@ CBaseEntity *CreateEntityByName( const char *className, int iForceEdictIndex );
 template< class T >
 T *_CreateEntity( T *newClass, const char *className )
 {
-	T *newEnt = dynamic_cast<T*>( CreateEntityByName(className, -1) );
+	T *newEnt = dynamic_cast<T*>( CreateEntityByName(className, -1, true) );
 	if ( !newEnt )
 	{
 		Warning( "classname %s used to create wrong class type\n", className );

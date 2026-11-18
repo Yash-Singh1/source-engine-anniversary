@@ -165,16 +165,33 @@ void CQuickListPanel::SetMapName( const char *pMapName )
 //-----------------------------------------------------------------------------
 void CQuickListPanel::SetGameType( const char *pGameType )
 {
+#ifdef BYTEMATCH_RETAIL
+	if ( strlen ( pGameType ) == 0 )
+	{
+#endif
 	m_pGameTypeLabel->SetVisible( false );
+#ifndef BYTEMATCH_RETAIL
 
 	if ( strlen ( pGameType ) == 0 || !m_pMapNameLabel )
+#endif
 		return;
+#ifdef BYTEMATCH_RETAIL
+	}
+#endif
 
 	char gametype[ 512 ];
+#ifdef BYTEMATCH_RETAIL
+	Q_snprintf( gametype, sizeof( gametype ), "(%s)", pGameType );
+#else
 	Q_snprintf( gametype, sizeof( gametype ), "%s (%s)", m_szMapName, pGameType );
+#endif
 
+#ifdef BYTEMATCH_RETAIL
+	m_pGameTypeLabel->SetText( gametype );
+#else
 	m_pMapNameLabel->SetText( gametype );
 	m_pMapNameLabel->SizeToContents();
+#endif
 }
 
 //-----------------------------------------------------------------------------

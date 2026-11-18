@@ -66,7 +66,11 @@ void CGameConsole::Initialize()
 		swide / 2 - offsetx,
 		offsety,
 		swide / 2,
+#ifdef BYTEMATCH_RETAIL
+		stall - (offsety * 2));
+#else
 		(IsAndroid() ? 0.5f : 1.f )*(stall - (offsety * 2)));
+#endif
 
 	m_bInitialized = true;
 #endif
@@ -149,12 +153,14 @@ void CGameConsole::SetParent( intp parent )
 
 	m_pConsole->SetParent( static_cast<vgui::VPANEL>( parent ));
 
+#ifndef BYTEMATCH_RETAIL
 	// apply proportionality from parent
 	if (vgui::ipanel()->IsProportional(static_cast<vgui::VPANEL>(parent)))
 	{
 		m_pConsole->SetProportional(true);
 		m_pConsole->InvalidateLayout(true, true);
 	}
+#endif
 #endif
 }
 

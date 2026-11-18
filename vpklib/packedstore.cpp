@@ -29,7 +29,9 @@
 
 typedef uint16 PackFileIndex_t;
 #define PACKFILEINDEX_END 0xffff
+#ifndef BYTEMATCH_RETAIL
 const uint16 packedfileindex_end = 0xffff;
+#endif
 
 #pragma pack(1)
 struct CFilePartDescr
@@ -121,11 +123,18 @@ static int SkipFile( char const * &pData )					// returns highest file index
 	pData += 1 + V_strlen( pData );
 	pData += sizeof( uint32 );
 
+#ifdef BYTEMATCH_RETAIL
+	int nMetaDataSize = *(reinterpret_cast<uint16 const *>( pData ) );
+	pData += sizeof( uint16 );
+	while ( *( ( PackFileIndex_t const *) pData ) != PACKFILEINDEX_END )
+#else
+	// unaligned reads
 	uint16 nMetaDataSize;
 	Q_memcpy( &nMetaDataSize, pData, sizeof( uint16 ) );
 
 	pData += sizeof( uint16 );
 	while ( Q_memcmp( pData, &packedfileindex_end, sizeof( packedfileindex_end ) ) != 0 )
+#endif
 	{
 		int nIdx = reinterpret_cast<CFilePartDescr const *>(pData)->m_nFileNumber;
 
@@ -473,11 +482,19 @@ CPackedStore::~CPackedStore( void )
 	}
 
 	// Free the FindFirst cache data
+#ifdef BYTEMATCH_RETAIL
+	m_directoryList.PurgeAndDeleteElements();
+#else
 	m_directoryList.PurgeAndDeleteElementsArray();
+#endif
 
 	FOR_EACH_MAP( m_dirContents, i )
 	{
+#ifdef BYTEMATCH_RETAIL
+		m_dirContents[i]->PurgeAndDeleteElements();
+#else
 		m_dirContents[i]->PurgeAndDeleteElementsArray();
+#endif
 		delete m_dirContents[i];
 	}
 }
@@ -502,7 +519,11 @@ void SplitFileComponents( char const *pFileName, char *pDirOut, char *pBaseOut, 
 
 	if ( !pDirOut[0] )
 		strcpy( pDirOut, " " );								// blank dir name
+#ifdef BYTEMATCH_RETAIL
+	V_strcpy( pBaseOut, V_UnqualifiedFileName( pFileName ) );
+#else
 	V_strncpy( pBaseOut, V_UnqualifiedFileName( pFileName ), MAX_PATH );
+#endif
 	char *pDot = strrchr( pBaseOut, '.' );
 	if ( pDot )
 	{
@@ -634,10 +655,11 @@ void CPackedStore::Write( void )
 
 	// Do we plan on signing this thing and writing a signature?
 	m_Signature.Purge();
+	uint32 nExpectedSignatureSize = 0;
 	if ( m_SignaturePrivateKey.Count() > 0 && m_SignaturePublicKey.Count() > 0 )
 	{
 		#ifdef VPK_ENABLE_SIGNING
-			uint32 nExpectedSignatureSize = k_cubRSASignature;
+			nExpectedSignatureSize = k_cubRSASignature;
 			headerOut.m_nSignatureSize = sizeof(uint32) + m_SignaturePublicKey.Count() + sizeof(uint32) + nExpectedSignatureSize;
 		#else
 			Error( "VPK signing not implemented" );

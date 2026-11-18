@@ -1,0 +1,288 @@
+{
+ "interface": "IShaderUtil",
+ "headers": [
+  "public/shaderapi/ishaderutil.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 36,
+ "sdk2013_slots": [
+  "Connect(void* (*)(char const*, int*))",
+  "Disconnect()",
+  "QueryInterface(char const*)",
+  "Init()",
+  "Shutdown()",
+  "GetConfig()",
+  "ConvertImageFormat(unsigned char*, ImageFormat, unsigned char*, ImageFormat, int, int, int, int)",
+  "GetMemRequired(int, int, int, ImageFormat, bool)",
+  "ImageFormatInfo(ImageFormat) const",
+  "BindStandardTexture(Sampler_t, StandardTextureId_t)",
+  "GetLightmapDimensions(int*, int*)",
+  "ReleaseShaderObjects()",
+  "RestoreShaderObjects(void* (*)(char const*, int*), int)",
+  "IsInStubMode()",
+  "InFlashlightMode() const",
+  "NoteAnisotropicLevel(int)",
+  "InEditorMode() const",
+  "GetBoundMorphFormat()",
+  "GetRenderTargetEx(int)",
+  "DrawClearBufferQuad(unsigned char, unsigned char, unsigned char, unsigned char, bool, bool, bool)",
+  "OnDrawMesh(IMesh*, int, int)",
+  "OnDrawMesh(IMesh*, CPrimList*, int)",
+  "OnSetFlexMesh(IMesh*, IMesh*, int)",
+  "OnSetColorMesh(IMesh*, IMesh*, int)",
+  "OnSetPrimitiveType(IMesh*, MaterialPrimitiveType_t)",
+  "OnFlushBufferedPrimitives()",
+  "SyncMatrices()",
+  "SyncMatrix(MaterialMatrixMode_t)",
+  "BindStandardVertexTexture(VertexTextureSampler_t, StandardTextureId_t)",
+  "GetStandardTextureDimensions(int*, int*, StandardTextureId_t)",
+  "MaxHWMorphBatchCount() const",
+  "GetCurrentColorCorrection(ShaderColorCorrectionInfo_t*)",
+  "OnThreadEvent(unsigned int)",
+  "GetThreadMode()",
+  "IsRenderThreadSafe()",
+  "UncacheUnusedMaterials(bool)"
+ ],
+ "retail_reference": {
+  "module": "bin/materialsystem",
+  "class": "CMaterialSystem",
+  "offset": 8,
+  "chain": [
+   "CMaterialSystem",
+   "IShaderUtil"
+  ]
+ },
+ "retail_len": 36,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 36
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Connect",
+   "sig": "Connect(void* (*)(char const*, int*))",
+   "symbol": "non-virtual thunk to CMaterialSystem::Connect(void* (*)(char const*, int*))"
+  },
+  {
+   "index": 1,
+   "name": "Disconnect",
+   "sig": "Disconnect()",
+   "symbol": "non-virtual thunk to CMaterialSystem::Disconnect()"
+  },
+  {
+   "index": 2,
+   "name": "QueryInterface",
+   "sig": "QueryInterface(char const*)",
+   "symbol": "non-virtual thunk to CMaterialSystem::QueryInterface(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "non-virtual thunk to CMaterialSystem::Init()"
+  },
+  {
+   "index": 4,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "non-virtual thunk to CMaterialSystem::Shutdown()"
+  },
+  {
+   "index": 5,
+   "name": "GetConfig",
+   "sig": "GetConfig()",
+   "symbol": "non-virtual thunk to CMaterialSystem::GetConfig()"
+  },
+  {
+   "index": 6,
+   "name": "ConvertImageFormat",
+   "sig": "ConvertImageFormat(unsigned char*, ImageFormat, unsigned char*, ImageFormat, int, int, int, int)",
+   "symbol": "non-virtual thunk to CMaterialSystem::ConvertImageFormat(unsigned char*, ImageFormat, unsigned char*, ImageFormat, int, int, int, int)"
+  },
+  {
+   "index": 7,
+   "name": "GetMemRequired",
+   "sig": "GetMemRequired(int, int, int, ImageFormat, bool)",
+   "symbol": "non-virtual thunk to CMaterialSystem::GetMemRequired(int, int, int, ImageFormat, bool)"
+  },
+  {
+   "index": 8,
+   "name": "ImageFormatInfo",
+   "sig": "ImageFormatInfo(ImageFormat) const",
+   "symbol": "non-virtual thunk to CMaterialSystem::ImageFormatInfo(ImageFormat) const"
+  },
+  {
+   "index": 9,
+   "name": "BindStandardTexture",
+   "sig": "BindStandardTexture(Sampler_t, StandardTextureId_t)",
+   "symbol": "non-virtual thunk to CMaterialSystem::BindStandardTexture(Sampler_t, StandardTextureId_t)"
+  },
+  {
+   "index": 10,
+   "name": "GetLightmapDimensions",
+   "sig": "GetLightmapDimensions(int*, int*)",
+   "symbol": "non-virtual thunk to CMaterialSystem::GetLightmapDimensions(int*, int*)"
+  },
+  {
+   "index": 11,
+   "name": "ReleaseShaderObjects",
+   "sig": "ReleaseShaderObjects()",
+   "symbol": "non-virtual thunk to CMaterialSystem::ReleaseShaderObjects()"
+  },
+  {
+   "index": 12,
+   "name": "RestoreShaderObjects",
+   "sig": "RestoreShaderObjects(void* (*)(char const*, int*), int)",
+   "symbol": "non-virtual thunk to CMaterialSystem::RestoreShaderObjects(void* (*)(char const*, int*), int)"
+  },
+  {
+   "index": 13,
+   "name": "IsInStubMode",
+   "sig": "IsInStubMode()",
+   "symbol": "non-virtual thunk to CMaterialSystem::IsInStubMode()"
+  },
+  {
+   "index": 14,
+   "name": "InFlashlightMode",
+   "sig": "InFlashlightMode() const",
+   "symbol": "non-virtual thunk to CMaterialSystem::InFlashlightMode() const"
+  },
+  {
+   "index": 15,
+   "name": "NoteAnisotropicLevel",
+   "sig": "NoteAnisotropicLevel(int)",
+   "symbol": "non-virtual thunk to CMaterialSystem::NoteAnisotropicLevel(int)"
+  },
+  {
+   "index": 16,
+   "name": "InEditorMode",
+   "sig": "InEditorMode() const",
+   "symbol": "non-virtual thunk to CMaterialSystem::InEditorMode() const"
+  },
+  {
+   "index": 17,
+   "name": "GetBoundMorphFormat",
+   "sig": "GetBoundMorphFormat()",
+   "symbol": "non-virtual thunk to CMaterialSystem::GetBoundMorphFormat()"
+  },
+  {
+   "index": 18,
+   "name": "GetRenderTargetEx",
+   "sig": "GetRenderTargetEx(int)",
+   "symbol": "non-virtual thunk to CMaterialSystem::GetRenderTargetEx(int)"
+  },
+  {
+   "index": 19,
+   "name": "DrawClearBufferQuad",
+   "sig": "DrawClearBufferQuad(unsigned char, unsigned char, unsigned char, unsigned char, bool, bool, bool)",
+   "symbol": "non-virtual thunk to CMaterialSystem::DrawClearBufferQuad(unsigned char, unsigned char, unsigned char, unsigned char, bool, bool, bool)"
+  },
+  {
+   "index": 20,
+   "name": "OnDrawMesh",
+   "sig": "OnDrawMesh(IMesh*, int, int)",
+   "symbol": "non-virtual thunk to CMaterialSystem::OnDrawMesh(IMesh*, int, int)"
+  },
+  {
+   "index": 21,
+   "name": "OnDrawMesh",
+   "sig": "OnDrawMesh(IMesh*, CPrimList*, int)",
+   "symbol": "non-virtual thunk to CMaterialSystem::OnDrawMesh(IMesh*, CPrimList*, int)"
+  },
+  {
+   "index": 22,
+   "name": "OnSetFlexMesh",
+   "sig": "OnSetFlexMesh(IMesh*, IMesh*, int)",
+   "symbol": "non-virtual thunk to CMaterialSystem::OnSetFlexMesh(IMesh*, IMesh*, int)"
+  },
+  {
+   "index": 23,
+   "name": "OnSetColorMesh",
+   "sig": "OnSetColorMesh(IMesh*, IMesh*, int)",
+   "symbol": "non-virtual thunk to CMaterialSystem::OnSetColorMesh(IMesh*, IMesh*, int)"
+  },
+  {
+   "index": 24,
+   "name": "OnSetPrimitiveType",
+   "sig": "OnSetPrimitiveType(IMesh*, MaterialPrimitiveType_t)",
+   "symbol": "non-virtual thunk to CMaterialSystem::OnSetPrimitiveType(IMesh*, MaterialPrimitiveType_t)"
+  },
+  {
+   "index": 25,
+   "name": "OnFlushBufferedPrimitives",
+   "sig": "OnFlushBufferedPrimitives()",
+   "symbol": "non-virtual thunk to CMaterialSystem::OnFlushBufferedPrimitives()"
+  },
+  {
+   "index": 26,
+   "name": "SyncMatrices",
+   "sig": "SyncMatrices()",
+   "symbol": "non-virtual thunk to CMaterialSystem::SyncMatrices()"
+  },
+  {
+   "index": 27,
+   "name": "SyncMatrix",
+   "sig": "SyncMatrix(MaterialMatrixMode_t)",
+   "symbol": "non-virtual thunk to CMaterialSystem::SyncMatrix(MaterialMatrixMode_t)"
+  },
+  {
+   "index": 28,
+   "name": "BindStandardVertexTexture",
+   "sig": "BindStandardVertexTexture(VertexTextureSampler_t, StandardTextureId_t)",
+   "symbol": "non-virtual thunk to CMaterialSystem::BindStandardVertexTexture(VertexTextureSampler_t, StandardTextureId_t)"
+  },
+  {
+   "index": 29,
+   "name": "GetStandardTextureDimensions",
+   "sig": "GetStandardTextureDimensions(int*, int*, StandardTextureId_t)",
+   "symbol": "non-virtual thunk to CMaterialSystem::GetStandardTextureDimensions(int*, int*, StandardTextureId_t)"
+  },
+  {
+   "index": 30,
+   "name": "MaxHWMorphBatchCount",
+   "sig": "MaxHWMorphBatchCount() const",
+   "symbol": "non-virtual thunk to CMaterialSystem::MaxHWMorphBatchCount() const"
+  },
+  {
+   "index": 31,
+   "name": "GetCurrentColorCorrection",
+   "sig": "GetCurrentColorCorrection(ShaderColorCorrectionInfo_t*)",
+   "symbol": "non-virtual thunk to CMaterialSystem::GetCurrentColorCorrection(ShaderColorCorrectionInfo_t*)"
+  },
+  {
+   "index": 32,
+   "name": "OnThreadEvent",
+   "sig": "OnThreadEvent(unsigned int)",
+   "symbol": "non-virtual thunk to CMaterialSystem::OnThreadEvent(unsigned int)"
+  },
+  {
+   "index": 33,
+   "name": "GetThreadMode",
+   "sig": "GetThreadMode()",
+   "symbol": "non-virtual thunk to CMaterialSystem::GetThreadMode()"
+  },
+  {
+   "index": 34,
+   "name": "IsRenderThreadSafe",
+   "sig": "IsRenderThreadSafe()",
+   "symbol": "non-virtual thunk to CMaterialSystem::IsRenderThreadSafe()"
+  },
+  {
+   "index": 35,
+   "name": "UncacheUnusedMaterials",
+   "sig": "UncacheUnusedMaterials(bool)",
+   "symbol": "non-virtual thunk to CMaterialSystem::UncacheUnusedMaterials(bool)"
+  }
+ ],
+ "derived": [
+  "bin/materialsystem:CMaterialSystem"
+ ],
+ "derived_count": 1
+}

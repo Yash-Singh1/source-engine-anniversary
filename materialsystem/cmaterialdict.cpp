@@ -41,6 +41,17 @@ bool CMaterialDict::MissingMaterialLessFunc( const MissingMaterial_t& src1,
 	return src1.m_Name < src2.m_Name;
 }
 
+#ifdef BYTEMATCH_RETAIL
+void CMaterialDict::Shutdown( )
+{
+	// Clean up all materials..
+	RemoveAllMaterials();
+
+	// FIXME: Could dump list here...
+	m_MissingList.RemoveAll();
+
+}
+#else
 void CMaterialDict::Shutdown( )
 {
 	Assert( ThreadInMainThread() );
@@ -52,6 +63,7 @@ void CMaterialDict::Shutdown( )
 		DevMsg( "%s m_MissingList count: %d\n", __FUNCTION__, m_MissingList.Count() );
 	m_MissingList.RemoveAll();
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Adds/removes the material to the list of all materials
@@ -108,12 +120,21 @@ IMaterialInternal* CMaterialDict::AddMaterial( char const* pName, const char *pT
 	return pMaterial;
 }
 
+#ifdef BYTEMATCH_RETAIL
+void CMaterialDict::RemoveMaterial( IMaterialInternal* pMaterial )
+{
+	Assert( (pMaterial == NULL) || pMaterial->IsRealTimeVersion() );
+	RemoveMaterialFromMaterialList( pMaterial );
+	IMaterialInternal::DestroyMaterial( pMaterial );
+}
+#else
 void CMaterialDict::RemoveMaterial( IMaterialInternal* pMaterial )
 {
 	Assert( ThreadInMainThread() );
 	Assert( (pMaterial == NULL) || pMaterial->IsRealTimeVersion() );
 	RemoveMaterialFromMaterialList( pMaterial );
 }
+#endif
 
 IMaterialInternal *CMaterialDict::AddMaterialSubRect( const char *pName, const char *pTextureGroupName, KeyValues *pKeyValues, KeyValues *pPatchKeyValues )
 {

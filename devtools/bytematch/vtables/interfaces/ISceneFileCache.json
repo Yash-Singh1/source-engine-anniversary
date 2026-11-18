@@ -1,0 +1,128 @@
+{
+ "interface": "ISceneFileCache",
+ "headers": [
+  "public/scenefilecache/ISceneFileCache.h"
+ ],
+ "versions": {
+  "retail": [
+   "SceneFileCache002"
+  ],
+  "ours": [
+   "SceneFileCache002"
+  ],
+  "sdk2013": [
+   "SceneFileCache002"
+  ]
+ },
+ "version_macros": [
+  "SCENE_FILE_CACHE_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/scenefilecache",
+   "version": "SceneFileCache002",
+   "class": "CSceneFileCache"
+  }
+ ],
+ "sdk2013_len": 11,
+ "sdk2013_slots": [
+  "Connect(void* (*)(char const*, int*))",
+  "Disconnect()",
+  "QueryInterface(char const*)",
+  "Init()",
+  "Shutdown()",
+  "GetSceneBufferSize(char const*)",
+  "GetSceneData(char const*, unsigned char*, unsigned long)",
+  "GetSceneCachedData(char const*, SceneCachedData_t*)",
+  "GetSceneCachedSound(int, int)",
+  "GetSceneString(short)",
+  "Reload()"
+ ],
+ "retail_reference": {
+  "module": "bin/scenefilecache",
+  "class": "CSceneFileCache",
+  "offset": 0,
+  "chain": [
+   "CSceneFileCache",
+   "CBaseAppSystem<ISceneFileCache>",
+   "ISceneFileCache"
+  ]
+ },
+ "retail_len": 11,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 11
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Connect",
+   "sig": "Connect(void* (*)(char const*, int*))",
+   "symbol": "CSceneFileCache::Connect(void* (*)(char const*, int*))"
+  },
+  {
+   "index": 1,
+   "name": "Disconnect",
+   "sig": "Disconnect()",
+   "symbol": "CSceneFileCache::Disconnect()"
+  },
+  {
+   "index": 2,
+   "name": "QueryInterface",
+   "sig": "QueryInterface(char const*)",
+   "symbol": "CBaseAppSystem<ISceneFileCache>::QueryInterface(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "CSceneFileCache::Init()"
+  },
+  {
+   "index": 4,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CSceneFileCache::Shutdown()"
+  },
+  {
+   "index": 5,
+   "name": "GetSceneBufferSize",
+   "sig": "GetSceneBufferSize(char const*)",
+   "symbol": "CSceneFileCache::GetSceneBufferSize(char const*)"
+  },
+  {
+   "index": 6,
+   "name": "GetSceneData",
+   "sig": "GetSceneData(char const*, unsigned char*, unsigned long)",
+   "symbol": "CSceneFileCache::GetSceneData(char const*, unsigned char*, unsigned long)"
+  },
+  {
+   "index": 7,
+   "name": "GetSceneCachedData",
+   "sig": "GetSceneCachedData(char const*, SceneCachedData_t*)",
+   "symbol": "CSceneFileCache::GetSceneCachedData(char const*, SceneCachedData_t*)"
+  },
+  {
+   "index": 8,
+   "name": "GetSceneCachedSound",
+   "sig": "GetSceneCachedSound(int, int)",
+   "symbol": "CSceneFileCache::GetSceneCachedSound(int, int)"
+  },
+  {
+   "index": 9,
+   "name": "GetSceneString",
+   "sig": "GetSceneString(short)",
+   "symbol": "CSceneFileCache::GetSceneString(short)"
+  },
+  {
+   "index": 10,
+   "name": "Reload",
+   "sig": "Reload()",
+   "symbol": "CSceneFileCache::Reload()"
+  }
+ ],
+ "derived": [
+  "bin/scenefilecache:CSceneFileCache"
+ ],
+ "derived_count": 1
+}

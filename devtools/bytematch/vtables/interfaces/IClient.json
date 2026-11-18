@@ -1,0 +1,326 @@
+{
+ "interface": "IClient",
+ "headers": [
+  "public/iclient.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 41,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "ConnectionStart(INetChannel*)",
+  "ConnectionClosing(char const*)",
+  "ConnectionCrashed(char const*)",
+  "PacketStart(int, int)",
+  "PacketEnd()",
+  "FileRequested(char const*, unsigned int)",
+  "FileReceived(char const*, unsigned int)",
+  "FileDenied(char const*, unsigned int)",
+  "FileSent(char const*, unsigned int)",
+  "Connect(char const*, int, INetChannel*, bool, int)",
+  "Inactivate()",
+  "Reconnect()",
+  "Disconnect(char const*, ...)",
+  "GetPlayerSlot() const",
+  "GetUserID() const",
+  "GetNetworkID() const",
+  "GetClientName() const",
+  "GetNetChannel()",
+  "GetServer()",
+  "GetUserSetting(char const*) const",
+  "GetNetworkIDString() const",
+  "SetRate(int, bool)",
+  "GetRate() const",
+  "SetUpdateRate(int, bool)",
+  "GetUpdateRate() const",
+  "Clear()",
+  "GetMaxAckTickCount() const",
+  "ExecuteStringCommand(char const*)",
+  "SendNetMsg(INetMessage&, bool)",
+  "ClientPrintf(char const*, ...)",
+  "IsConnected() const",
+  "IsSpawned() const",
+  "IsActive() const",
+  "IsFakeClient() const",
+  "IsHLTV() const",
+  "IsReplay() const",
+  "IsHearingClient(int) const",
+  "IsProximityHearingClient(int) const",
+  "SetMaxRoutablePayloadSize(int)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CGameClient",
+  "offset": 4,
+  "chain": [
+   "CGameClient",
+   "CBaseClient",
+   "IClient"
+  ]
+ },
+ "retail_len": 41,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 41
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CGameClient",
+   "sig": "~CGameClient()",
+   "symbol": "non-virtual thunk to CGameClient::~CGameClient()"
+  },
+  {
+   "index": 1,
+   "name": "~CGameClient",
+   "sig": "~CGameClient()",
+   "symbol": "non-virtual thunk to CGameClient::~CGameClient()"
+  },
+  {
+   "index": 2,
+   "name": "ConnectionStart",
+   "sig": "ConnectionStart(INetChannel*)",
+   "symbol": "non-virtual thunk to CBaseClient::ConnectionStart(INetChannel*)"
+  },
+  {
+   "index": 3,
+   "name": "ConnectionClosing",
+   "sig": "ConnectionClosing(char const*)",
+   "symbol": "non-virtual thunk to CGameClient::ConnectionClosing(char const*)"
+  },
+  {
+   "index": 4,
+   "name": "ConnectionCrashed",
+   "sig": "ConnectionCrashed(char const*)",
+   "symbol": "non-virtual thunk to CGameClient::ConnectionCrashed(char const*)"
+  },
+  {
+   "index": 5,
+   "name": "PacketStart",
+   "sig": "PacketStart(int, int)",
+   "symbol": "non-virtual thunk to CGameClient::PacketStart(int, int)"
+  },
+  {
+   "index": 6,
+   "name": "PacketEnd",
+   "sig": "PacketEnd()",
+   "symbol": "non-virtual thunk to CGameClient::PacketEnd()"
+  },
+  {
+   "index": 7,
+   "name": "FileRequested",
+   "sig": "FileRequested(char const*, unsigned int)",
+   "symbol": "non-virtual thunk to CGameClient::FileRequested(char const*, unsigned int)"
+  },
+  {
+   "index": 8,
+   "name": "FileReceived",
+   "sig": "FileReceived(char const*, unsigned int)",
+   "symbol": "non-virtual thunk to CGameClient::FileReceived(char const*, unsigned int)"
+  },
+  {
+   "index": 9,
+   "name": "FileDenied",
+   "sig": "FileDenied(char const*, unsigned int)",
+   "symbol": "non-virtual thunk to CGameClient::FileDenied(char const*, unsigned int)"
+  },
+  {
+   "index": 10,
+   "name": "FileSent",
+   "sig": "FileSent(char const*, unsigned int)",
+   "symbol": "non-virtual thunk to CGameClient::FileSent(char const*, unsigned int)"
+  },
+  {
+   "index": 11,
+   "name": "Connect",
+   "sig": "Connect(char const*, int, INetChannel*, bool, int)",
+   "symbol": "non-virtual thunk to CGameClient::Connect(char const*, int, INetChannel*, bool, int)"
+  },
+  {
+   "index": 12,
+   "name": "Inactivate",
+   "sig": "Inactivate()",
+   "symbol": "non-virtual thunk to CGameClient::Inactivate()"
+  },
+  {
+   "index": 13,
+   "name": "Reconnect",
+   "sig": "Reconnect()",
+   "symbol": "non-virtual thunk to CGameClient::Reconnect()"
+  },
+  {
+   "index": 14,
+   "name": "Disconnect",
+   "sig": "Disconnect(char const*, ...)",
+   "symbol": "non-virtual thunk to CGameClient::Disconnect(char const*, ...)"
+  },
+  {
+   "index": 15,
+   "name": "GetPlayerSlot",
+   "sig": "GetPlayerSlot() const",
+   "symbol": "non-virtual thunk to CBaseClient::GetPlayerSlot() const"
+  },
+  {
+   "index": 16,
+   "name": "GetUserID",
+   "sig": "GetUserID() const",
+   "symbol": "non-virtual thunk to CBaseClient::GetUserID() const"
+  },
+  {
+   "index": 17,
+   "name": "GetNetworkID",
+   "sig": "GetNetworkID() const",
+   "symbol": "non-virtual thunk to CBaseClient::GetNetworkID() const"
+  },
+  {
+   "index": 18,
+   "name": "GetClientName",
+   "sig": "GetClientName() const",
+   "symbol": "non-virtual thunk to CBaseClient::GetClientName() const"
+  },
+  {
+   "index": 19,
+   "name": "GetNetChannel",
+   "sig": "GetNetChannel()",
+   "symbol": "non-virtual thunk to CBaseClient::GetNetChannel()"
+  },
+  {
+   "index": 20,
+   "name": "GetServer",
+   "sig": "GetServer()",
+   "symbol": "non-virtual thunk to CBaseClient::GetServer()"
+  },
+  {
+   "index": 21,
+   "name": "GetUserSetting",
+   "sig": "GetUserSetting(char const*) const",
+   "symbol": "non-virtual thunk to CBaseClient::GetUserSetting(char const*) const"
+  },
+  {
+   "index": 22,
+   "name": "GetNetworkIDString",
+   "sig": "GetNetworkIDString() const",
+   "symbol": "non-virtual thunk to CBaseClient::GetNetworkIDString() const"
+  },
+  {
+   "index": 23,
+   "name": "SetRate",
+   "sig": "SetRate(int, bool)",
+   "symbol": "non-virtual thunk to CGameClient::SetRate(int, bool)"
+  },
+  {
+   "index": 24,
+   "name": "GetRate",
+   "sig": "GetRate() const",
+   "symbol": "non-virtual thunk to CBaseClient::GetRate() const"
+  },
+  {
+   "index": 25,
+   "name": "SetUpdateRate",
+   "sig": "SetUpdateRate(int, bool)",
+   "symbol": "non-virtual thunk to CGameClient::SetUpdateRate(int, bool)"
+  },
+  {
+   "index": 26,
+   "name": "GetUpdateRate",
+   "sig": "GetUpdateRate() const",
+   "symbol": "non-virtual thunk to CBaseClient::GetUpdateRate() const"
+  },
+  {
+   "index": 27,
+   "name": "Clear",
+   "sig": "Clear()",
+   "symbol": "non-virtual thunk to CGameClient::Clear()"
+  },
+  {
+   "index": 28,
+   "name": "GetMaxAckTickCount",
+   "sig": "GetMaxAckTickCount() const",
+   "symbol": "non-virtual thunk to CBaseClient::GetMaxAckTickCount() const"
+  },
+  {
+   "index": 29,
+   "name": "ExecuteStringCommand",
+   "sig": "ExecuteStringCommand(char const*)",
+   "symbol": "non-virtual thunk to CGameClient::ExecuteStringCommand(char const*)"
+  },
+  {
+   "index": 30,
+   "name": "SendNetMsg",
+   "sig": "SendNetMsg(INetMessage&, bool)",
+   "symbol": "non-virtual thunk to CGameClient::SendNetMsg(INetMessage&, bool)"
+  },
+  {
+   "index": 31,
+   "name": "ClientPrintf",
+   "sig": "ClientPrintf(char const*, ...)",
+   "symbol": "non-virtual thunk to CBaseClient::ClientPrintf(char const*, ...)"
+  },
+  {
+   "index": 32,
+   "name": "IsConnected",
+   "sig": "IsConnected() const",
+   "symbol": "non-virtual thunk to CBaseClient::IsConnected() const"
+  },
+  {
+   "index": 33,
+   "name": "IsSpawned",
+   "sig": "IsSpawned() const",
+   "symbol": "non-virtual thunk to CBaseClient::IsSpawned() const"
+  },
+  {
+   "index": 34,
+   "name": "IsActive",
+   "sig": "IsActive() const",
+   "symbol": "non-virtual thunk to CBaseClient::IsActive() const"
+  },
+  {
+   "index": 35,
+   "name": "IsFakeClient",
+   "sig": "IsFakeClient() const",
+   "symbol": "non-virtual thunk to CBaseClient::IsFakeClient() const"
+  },
+  {
+   "index": 36,
+   "name": "IsHLTV",
+   "sig": "IsHLTV() const",
+   "symbol": "non-virtual thunk to CBaseClient::IsHLTV() const"
+  },
+  {
+   "index": 37,
+   "name": "IsReplay",
+   "sig": "IsReplay() const",
+   "symbol": "non-virtual thunk to CBaseClient::IsReplay() const"
+  },
+  {
+   "index": 38,
+   "name": "IsHearingClient",
+   "sig": "IsHearingClient(int) const",
+   "symbol": "non-virtual thunk to CGameClient::IsHearingClient(int) const"
+  },
+  {
+   "index": 39,
+   "name": "IsProximityHearingClient",
+   "sig": "IsProximityHearingClient(int) const",
+   "symbol": "non-virtual thunk to CGameClient::IsProximityHearingClient(int) const"
+  },
+  {
+   "index": 40,
+   "name": "SetMaxRoutablePayloadSize",
+   "sig": "SetMaxRoutablePayloadSize(int)",
+   "symbol": "non-virtual thunk to CBaseClient::SetMaxRoutablePayloadSize(int)"
+  }
+ ],
+ "derived": [
+  "bin/engine:CBaseClient",
+  "bin/engine:CGameClient",
+  "bin/engine:CHLTVClient"
+ ],
+ "derived_count": 3
+}

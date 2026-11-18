@@ -1,0 +1,123 @@
+{
+ "interface": "IRegistry",
+ "headers": [
+  "public/iregistry.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 12,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "Init(char const*)",
+  "Shutdown()",
+  "ReadInt(char const*, int)",
+  "WriteInt(char const*, int)",
+  "ReadString(char const*, char const*)",
+  "WriteString(char const*, char const*)",
+  "ReadInt(char const*, char const*, int)",
+  "WriteInt(char const*, char const*, int)",
+  "ReadString(char const*, char const*, char const*)",
+  "WriteString(char const*, char const*, char const*)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CRegistry",
+  "offset": 0,
+  "chain": [
+   "CRegistry",
+   "IRegistry"
+  ]
+ },
+ "retail_len": 12,
+ "retail_len_basis": "override: DirectInit is CRegistry's own",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 13
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CRegistry",
+   "sig": "~CRegistry()",
+   "symbol": "CRegistry::~CRegistry()"
+  },
+  {
+   "index": 1,
+   "name": "~CRegistry",
+   "sig": "~CRegistry()",
+   "symbol": "CRegistry::~CRegistry()"
+  },
+  {
+   "index": 2,
+   "name": "Init",
+   "sig": "Init(char const*)",
+   "symbol": "CRegistry::Init(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CRegistry::Shutdown()"
+  },
+  {
+   "index": 4,
+   "name": "ReadInt",
+   "sig": "ReadInt(char const*, int)",
+   "symbol": "CRegistry::ReadInt(char const*, int)"
+  },
+  {
+   "index": 5,
+   "name": "WriteInt",
+   "sig": "WriteInt(char const*, int)",
+   "symbol": "CRegistry::WriteInt(char const*, int)"
+  },
+  {
+   "index": 6,
+   "name": "ReadString",
+   "sig": "ReadString(char const*, char const*)",
+   "symbol": "CRegistry::ReadString(char const*, char const*)"
+  },
+  {
+   "index": 7,
+   "name": "WriteString",
+   "sig": "WriteString(char const*, char const*)",
+   "symbol": "CRegistry::WriteString(char const*, char const*)"
+  },
+  {
+   "index": 8,
+   "name": "ReadInt",
+   "sig": "ReadInt(char const*, char const*, int)",
+   "symbol": "CRegistry::ReadInt(char const*, char const*, int)"
+  },
+  {
+   "index": 9,
+   "name": "WriteInt",
+   "sig": "WriteInt(char const*, char const*, int)",
+   "symbol": "CRegistry::WriteInt(char const*, char const*, int)"
+  },
+  {
+   "index": 10,
+   "name": "ReadString",
+   "sig": "ReadString(char const*, char const*, char const*)",
+   "symbol": "CRegistry::ReadString(char const*, char const*, char const*)"
+  },
+  {
+   "index": 11,
+   "name": "WriteString",
+   "sig": "WriteString(char const*, char const*, char const*)",
+   "symbol": "CRegistry::WriteString(char const*, char const*, char const*)"
+  }
+ ],
+ "implementer_tail": [
+  "DirectInit(char const*)"
+ ],
+ "derived": [
+  "bin/engine:CRegistry"
+ ],
+ "derived_count": 1
+}

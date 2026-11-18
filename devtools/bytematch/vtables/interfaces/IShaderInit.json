@@ -1,0 +1,86 @@
+{
+ "interface": "IShaderInit",
+ "headers": [
+  "public/materialsystem/ishaderapi.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 3,
+ "sdk2013_slots": [
+  "LoadTexture(IMaterialVar*, char const*, int)",
+  "LoadBumpMap(IMaterialVar*, char const*)",
+  "LoadCubeMap(IMaterialVar**, IMaterialVar*, int)"
+ ],
+ "retail_reference": {
+  "module": "bin/materialsystem",
+  "class": "CShaderSystem",
+  "offset": 0,
+  "chain": [
+   "CShaderSystem",
+   "IShaderSystemInternal",
+   "IShaderInit"
+  ]
+ },
+ "retail_len": 3,
+ "retail_len_basis": "override: extra slots are CShaderSystem's own",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 29
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "LoadTexture",
+   "sig": "LoadTexture(IMaterialVar*, char const*, int)",
+   "symbol": "CShaderSystem::LoadTexture(IMaterialVar*, char const*, int)"
+  },
+  {
+   "index": 1,
+   "name": "LoadBumpMap",
+   "sig": "LoadBumpMap(IMaterialVar*, char const*)",
+   "symbol": "CShaderSystem::LoadBumpMap(IMaterialVar*, char const*)"
+  },
+  {
+   "index": 2,
+   "name": "LoadCubeMap",
+   "sig": "LoadCubeMap(IMaterialVar**, IMaterialVar*, int)",
+   "symbol": "CShaderSystem::LoadCubeMap(IMaterialVar**, IMaterialVar*, int)"
+  }
+ ],
+ "implementer_tail": [
+  "Init()",
+  "Shutdown()",
+  "ModInit()",
+  "ModShutdown()",
+  "LoadShaderDLL(char const*)",
+  "UnloadShaderDLL(char const*)",
+  "FindShader(char const*)",
+  "ShaderStateString(int) const",
+  "ShaderStateCount() const",
+  "CreateDebugMaterials()",
+  "CleanUpDebugMaterials()",
+  "InitShaderParameters(IShader*, IMaterialVar**, char const*)",
+  "InitShaderInstance(IShader*, IMaterialVar**, char const*, char const*)",
+  "InitRenderState(IShader*, int, IMaterialVar**, ShaderRenderState_t*, char const*)",
+  "CleanupRenderState(ShaderRenderState_t*)",
+  "DrawElements(IShader*, IMaterialVar**, ShaderRenderState_t*, VertexCompressionType_t, unsigned int)",
+  "ShaderCount() const",
+  "GetShaders(int, int, IShader**) const",
+  "GetShaderAPITextureBindHandle(ITexture*, int, int)",
+  "BindTexture(Sampler_t, ITexture*, int)",
+  "BindTexture(Sampler_t, Sampler_t, ITexture*, int)",
+  "TakeSnapshot()",
+  "DrawSnapshot(bool)",
+  "IsUsingGraphics() const",
+  "CanUseEditorMaterials() const",
+  "LoadShaderDLL(char const*, char const*, bool)"
+ ],
+ "derived": [
+  "bin/materialsystem:CShaderSystem"
+ ],
+ "derived_count": 1
+}

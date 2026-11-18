@@ -44,7 +44,15 @@
 
 #include "steam/steam_api.h"
 
+// Anniversary GameActionSet_t values (the action set names in the HL2 Steam Input manifest).
+// Drop these once public/inputsystem/InputEnums.h carries them.
+#define GAME_ACTION_SET_GAMECONTROLS	( (GameActionSet_t)0 )
+#define GAME_ACTION_SET_VEHICLECONTROLS	( (GameActionSet_t)1 )
+#define GAME_ACTION_SET_MENUCONTROLS	( (GameActionSet_t)2 )
+
+#ifndef BYTEMATCH_RETAIL
 #define TOUCH_FINGER_MAX_COUNT 10
+#endif
 
 //-----------------------------------------------------------------------------
 // Implementation of the input system
@@ -103,13 +111,41 @@ public:
 	virtual void *GetHapticsInterfaceAddress() const { return NULL;}	
 #endif
 	bool GetRawMouseAccumulators( int& accumX, int& accumY );
-	virtual bool GetTouchAccumulators( int fingerId, float &dx, float &dy );
+#ifndef BYTEMATCH_RETAIL
+	bool GetTouchAccumulators( int fingerId, float &dx, float &dy );
+#endif
 
 	virtual void SetConsoleTextMode( bool bConsoleTextMode );
+
+	// Steam Input
+	virtual uint32 GetNumSteamControllersConnected();
+	virtual bool IsSteamControllerActive();
+	virtual bool IsSteamControllerConnected() { return m_bSteamController; }
+	virtual void PulseHapticOnSteamController( uint32 nControllerIndex, ESteamControllerPad ePad, unsigned short usDurationMicroSec );
+	virtual int GetSteamControllerIndexForSlot( int nSlot );
+	virtual int GetControllerTypeForSlot( int nSlot ) { return m_nControllerType[nSlot]; }
+	virtual bool GetRadialMenuStickValues( int nSlot, float &fX, float &fY );
+	virtual void ActivateSteamControllerActionSetForSlot( uint64 nSlot, GameActionSet_t eActionSet );
+	virtual ControllerActionSetHandle_t GetActionSetHandle( GameActionSet_t eActionSet );
+	virtual EControllerActionOrigin GetActionOriginForSlotAndCode( int nSlot, ButtonCode_t code );
+	virtual void SetActiveInputType( EActiveInputType_t eType, uint64 hInputHandle )
+	{
+		m_eActiveInputType = eType;
+		if ( hInputHandle )
+		{
+			m_hActiveSteamInput = hInputHandle;
+		}
+	}
+	virtual uint64 GetActiveSteamInputHandle() { return m_hActiveSteamInput; }
+	virtual bool IsXinputControllerActive();
+	virtual bool IsMouseKeyboardActive();
+	virtual void SteamControllerSkipVideo( bool *pbSkip, bool *pbEscape );
 
 	// Windows proc
 	LRESULT WindowProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 
+	// Looks for controllers that were connected since the last check
+	virtual void FindNewDevices();
 
 private:
 	enum
@@ -244,13 +280,14 @@ public:
 
 	// Record button state and post the event
 	void JoystickButtonEvent( ButtonCode_t button, int sample );
-	
+
+#ifndef BYTEMATCH_RETAIL
 	// Init touch
 	void InitializeTouch( void );
 	
 	// Shut down touch	
 	void ShutdownTouch( void );
-	
+#endif
 
 #if defined( WIN32 ) && !defined ( _X360 )
 	// NVNT attaches window to novint devices
@@ -316,14 +353,17 @@ public:
 	// Called for mouse move events. Sets the current x and y and posts events for the mouse moving.
 	void UpdateMousePositionState( InputState_t &state, short x, short y );
 
-	// Initializes SteamControllers - Returns true if steam is running and finds controllers, otherwise false
+	// Initializes Steam Input - Returns true if steam is running and finds controllers, otherwise false
 	bool InitializeSteamControllers( void );
-
-	// Returns number of connected Steam Controllers
-	uint32 GetNumSteamControllersConnected();
 
 	// Update and sample steam controllers
 	void PollSteamControllers( void );
+
+	// Loads steam_input/action_manifest_hl2.vdf from the game directory, if present
+	static bool BLoadOnDiscManifest();
+
+	// Forwards rumble to the active Steam Input controller
+	void SetSteamInputRumble( float fLeftMotor, float fRightMotor, int userId );
 
 #if defined( PLATFORM_WINDOWS_PC )
 	void PollInputState_Windows();
@@ -335,79 +375,15 @@ public:
 	void JoystickButtonRelease( int joystickId, int button ); // same as above.
 	void JoystickAxisMotion( int joystickId, int axis, int value );
 
+#ifndef BYTEMATCH_RETAIL
 	void FingerEvent( int eventType, int fingerId, float x, float y, float dx, float dy );	
-	
-	// Steam Controller
-	void ReadSteamController( int iIndex );
-	void PostKeyEvent( int iIndex, sKey_t sKey, int nSample );
-	const int GetSteamPadDeadZone( ESteamPadAxis axis );
-	bool IsSteamControllerConnected( void ) { return m_bSteamController; }
-	bool IsSteamControllerActive( void );
-	void ActivateSteamControllerActionSetForSlot( uint64 nSlot, GameActionSet_t eActionSet );
-	ControllerActionSetHandle_t GetActionSetHandle( GameActionSet_t eActionSet );
-	ControllerActionSetHandle_t GetActionSetHandle( const char* szActionSet );
-	bool GetControllerStateForSlot( int nSlot );
-	int GetSteamControllerIndexForSlot( int nSlot );
-	bool GetRadialMenuStickValues( int nSlot, float &fX, float &fY );
-	virtual ISteamController* SteamControllerInterface();
-	bool InitializeSteamControllerActionSets();
-
-	// Gets the action origin (i.e. which physical input) maps to the given action name
-	virtual EControllerActionOrigin GetSteamControllerActionOrigin( const char* action, GameActionSet_t action_set );
-	virtual EControllerActionOrigin GetSteamControllerActionOrigin( const char* action, ControllerActionSetHandle_t action_set_handle );
-
-	// Maps a Steam Controller action origin to a string (consisting of a single character) in our SC icon font
-	virtual const wchar_t*	GetSteamControllerFontCharacterForActionOrigin( EControllerActionOrigin origin );
-
-	// Maps a Steam Controller action origin to a short text string (e.g. "X", "LB", "LDOWN") describing the control.
-	// Prefer to actually use the icon font wherever possible.
-	virtual const wchar_t* GetSteamControllerDescriptionForActionOrigin( EControllerActionOrigin origin );
-
-	// Converts SteamController keys to button codes
-	ButtonCode_t SKeyToButtonCode( int nUserId, int nXKey ) const;
-
-	// This is called with "true" by dedicated server initialization (before calling Init) in order to
-	// force us to skip initialization of Steam (which messes up dedicated servers).
-	virtual void SetSkipControllerInitialization( bool bSkip )
-	{
-		m_bSkipControllerInitialization = bSkip;
-	}
-
-	virtual void StartTextInput();
+#endif
 
 #if defined( USE_SDL )
 	void PollInputState_Platform();
-
-	ILauncherMgr *m_pLauncherMgr;
 #endif
 
-	WNDPROC m_ChainedWndProc;
-	HWND m_hAttachedHWnd;
-	bool m_bEnabled;
-	bool m_bPumpEnabled;
-	bool m_bIsPolling;
-
-	// Current button state
-	InputState_t m_InputState[INPUT_STATE_COUNT];
-
-	// Current action set
-	GameActionSet_t m_currentActionSet[STEAM_CONTROLLER_MAX_COUNT];
-
-	DWORD m_StartupTimeTick;
-	int m_nLastPollTick;
-	int m_nLastSampleTick;
-	int m_nPollCount;
-
-	// Mouse wheel hack
-	UINT m_uiMouseWheel;
-
-	// Joystick info
-	CUtlFlags<unsigned short> m_JoysticksEnabled;
-	int m_nJoystickCount;
-	bool m_bJoystickInitialized;
-	bool m_bTouchInitialized;
-	bool m_bXController;
-	JoystickInfo_t m_pJoystickInfo[ MAX_JOYSTICKS ];
+	STEAM_CALLBACK( CInputSystem, OnSteamInputConfigurationLoaded, SteamInputConfigurationLoaded_t );
 
 	// Steam Controller
 	struct steampad_t
@@ -434,16 +410,44 @@ public:
 		uint32				m_nLastPacketIndex;
 	};
 
-	float m_pRadialMenuStickVal[STEAM_CONTROLLER_MAX_COUNT][2];
-	steampad_t m_Device[STEAM_CONTROLLER_MAX_COUNT];
+	steampad_t m_Device[MAX_STEAM_CONTROLLERS];
 	uint32 m_unNumConnected;
-	float m_flLastSteamControllerInput;
-	int m_nJoystickBaseline;
-	int m_nControllerType[MAX_JOYSTICKS+STEAM_CONTROLLER_MAX_COUNT];
+	InputHandle_t m_hActiveSteamInput;				// controller that last pressed a menu action
+	int m_nReserved;
+	int m_nControllerType[MAX_JOYSTICKS+MAX_STEAM_CONTROLLERS];
+	EActiveInputType_t m_eActiveInputType;
 
-	bool m_bSteamController;						// true if the Steam Controller system has been initialized successfully (this doesn't mean one is actually connected necessarily)
-	bool m_bSteamControllerActionsInitialized;		// true if our action sets and handles were successfully initialized (this doesn't mean a controller is necessarily connected, or that in-game client actions were initialized)
-	bool m_bSteamControllerActive;					// true if our action sets and handles were successfully initialized *and* that at least one controller is actually connected and switched on.
+#if defined( USE_SDL )
+	ILauncherMgr *m_pLauncherMgr;
+#endif
+
+	WNDPROC m_ChainedWndProc;
+	HWND m_hAttachedHWnd;
+	bool m_bEnabled;
+	bool m_bPumpEnabled;
+	bool m_bIsPolling;
+
+	// Current button state
+	InputState_t m_InputState[INPUT_STATE_COUNT];
+
+	DWORD m_StartupTimeTick;
+	int m_nLastPollTick;
+	int m_nLastSampleTick;
+	int m_nPollCount;
+
+	// Mouse wheel hack
+	UINT m_uiMouseWheel;
+
+	// Joystick info
+	CUtlFlags<unsigned short> m_JoysticksEnabled;
+	int m_nJoystickCount;
+	int m_nJoystickBaseline;
+	bool m_bJoystickInitialized;
+	bool m_bXController;
+	bool m_bSteamController;						// true if Steam Input found at least one controller
+	float m_flLastSteamControllerInput;
+	float m_pRadialMenuStickVal[STEAM_INPUT_MAX_COUNT][2];
+	JoystickInfo_t m_pJoystickInfo[ MAX_JOYSTICKS ];
 
 #if defined( WIN32 ) && !defined ( _X360 )
 	// NVNT Novint device info
@@ -460,8 +464,6 @@ public:
 	bool m_bRawInputSupported;
 	int	 m_mouseRawAccumX, m_mouseRawAccumY;
 
-	float m_touchAccumX[TOUCH_FINGER_MAX_COUNT], m_touchAccumY[TOUCH_FINGER_MAX_COUNT];
-
 	// For the 'SleepUntilInput' feature
 	HANDLE m_hEvent;
 
@@ -473,15 +475,20 @@ public:
 	CSysModule	 *m_pNovintDLL;
 #endif
 
+	// Last Steam Input configuration we built action handles for
+	InputHandle_t m_hConfigurationDevice;
+	uint32 m_unConfigurationMajorRevision;
+	uint32 m_unConfigurationMinorRevision;
+
+	float m_flNextDeviceCheckTime;
+
 	bool m_bConsoleTextMode;
+	bool m_bOnDiscManifestLoaded;
 
-public:
-	// Steam API context for use by input system for access to steam controllers.
-	CSteamAPIContext& SteamAPIContext() { return m_SteamAPIContext; }
-
-private:
-	CSteamAPIContext m_SteamAPIContext;
-	bool m_bSkipControllerInitialization;
+#ifndef BYTEMATCH_RETAIL
+	bool m_bTouchInitialized;
+	float m_touchAccumX[TOUCH_FINGER_MAX_COUNT], m_touchAccumY[TOUCH_FINGER_MAX_COUNT];
+#endif
 };
 
 #endif // INPUTSYSTEM_H

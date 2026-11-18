@@ -4623,8 +4623,12 @@ void CTriggerVPhysicsMotion::StartTouch( CBaseEntity *pOther )
 #ifndef _XBOX
 	if ( m_ParticleTrail.m_strMaterialName != NULL_STRING )
 	{
+#ifdef BYTEMATCH_RETAIL
+		CEntityParticleTrail::Create( pOther, m_ParticleTrail, this ); 
+#else
 		CEntityParticleTrail *pTrail = CEntityParticleTrail::Create( pOther, m_ParticleTrail, this ); 
 		pTrail->SetShouldDeletedOnChangelevel( true );
+#endif
 	}
 #endif
 

@@ -1,0 +1,99 @@
+{
+ "interface": "vgui::TextTooltip",
+ "headers": [
+  "public/vgui_controls/Tooltip.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 8,
+ "sdk2013_slots": [
+  "SetText(char const*)",
+  "GetText()",
+  "ShowTooltip(vgui::Panel*)",
+  "HideTooltip()",
+  "PerformLayout()",
+  "PositionWindow(vgui::Panel*)",
+  "ApplySchemeSettings(vgui::IScheme*)",
+  "SizeTextWindow()"
+ ],
+ "retail_reference": {
+  "module": "bin/GameUI",
+  "class": "vgui::TextTooltip",
+  "offset": 0,
+  "chain": [
+   "vgui::TextTooltip"
+  ]
+ },
+ "retail_len": 8,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 8
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "SetText",
+   "sig": "SetText(char const*)",
+   "symbol": "vgui::TextTooltip::SetText(char const*)"
+  },
+  {
+   "index": 1,
+   "name": "GetText",
+   "sig": "GetText()",
+   "symbol": "vgui::BaseTooltip::GetText()"
+  },
+  {
+   "index": 2,
+   "name": "ShowTooltip",
+   "sig": "ShowTooltip(vgui::Panel*)",
+   "symbol": "vgui::TextTooltip::ShowTooltip(vgui::Panel*)"
+  },
+  {
+   "index": 3,
+   "name": "HideTooltip",
+   "sig": "HideTooltip()",
+   "symbol": "vgui::TextTooltip::HideTooltip()"
+  },
+  {
+   "index": 4,
+   "name": "PerformLayout",
+   "sig": "PerformLayout()",
+   "symbol": "vgui::TextTooltip::PerformLayout()"
+  },
+  {
+   "index": 5,
+   "name": "PositionWindow",
+   "sig": "PositionWindow(vgui::Panel*)",
+   "symbol": "vgui::BaseTooltip::PositionWindow(vgui::Panel*)"
+  },
+  {
+   "index": 6,
+   "name": "ApplySchemeSettings",
+   "sig": "ApplySchemeSettings(vgui::IScheme*)",
+   "symbol": "vgui::TextTooltip::ApplySchemeSettings(vgui::IScheme*)"
+  },
+  {
+   "index": 7,
+   "name": "SizeTextWindow",
+   "sig": "SizeTextWindow()",
+   "symbol": "vgui::TextTooltip::SizeTextWindow()"
+  }
+ ],
+ "derived": [
+  "bin/GameUI:vgui::TextTooltip",
+  "bin/ServerBrowser:vgui::TextTooltip",
+  "bin/engine:vgui::TextTooltip",
+  "bin/vguimatsurface:vgui::TextTooltip",
+  "episodic/client:vgui::TextTooltip",
+  "hl2/client:vgui::TextTooltip",
+  "hl2_complete/client:vgui::TextTooltip",
+  "hl2mp/client:vgui::TextTooltip",
+  "lostcoast/client:vgui::TextTooltip"
+ ],
+ "derived_count": 9
+}

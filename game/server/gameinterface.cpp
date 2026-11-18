@@ -559,11 +559,11 @@ void DrawAllDebugOverlays( void )
 
 CServerGameDLL g_ServerGameDLL;
 // INTERFACEVERSION_SERVERGAMEDLL_VERSION_8 is compatible with the latest since we're only adding things to the end, so expose that as well.
-//EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CServerGameDLL, IServerGameDLL008, INTERFACEVERSION_SERVERGAMEDLL_VERSION_8, g_ServerGameDLL );
+EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CServerGameDLL, IServerGameDLL008, INTERFACEVERSION_SERVERGAMEDLL_VERSION_8, g_ServerGameDLL );
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CServerGameDLL, IServerGameDLL, INTERFACEVERSION_SERVERGAMEDLL, g_ServerGameDLL);
 
 // When bumping the version to this interface, check that our assumption is still valid and expose the older version in the same way
-COMPILE_TIME_ASSERT( INTERFACEVERSION_SERVERGAMEDLL_INT == 10 );
+COMPILE_TIME_ASSERT( INTERFACEVERSION_SERVERGAMEDLL_INT == 9 );
 
 bool CServerGameDLL::DLLInit( CreateInterfaceFn appSystemFactory, 
 		CreateInterfaceFn physicsFactory, CreateInterfaceFn fileSystemFactory, 
@@ -1916,62 +1916,6 @@ const char *CServerGameDLL::GetServerBrowserGameData()
 	static char rchResult[2048];
 	V_strcpy_safe( rchResult, sResult );
 	return rchResult;
-}
-
-//-----------------------------------------------------------------------------
-void CServerGameDLL::Status( void (*print) (const char *fmt, ...) )
-{
-/*	if ( g_pGameRules )
-	{
-		g_pGameRules->Status( print );
-	}*/
-}
-
-//-----------------------------------------------------------------------------
-void CServerGameDLL::PrepareLevelResources( /* in/out */ char *pszMapName, size_t nMapNameSize,
-                                            /* in/out */ char *pszMapFile, size_t nMapFileSize )
-{
-#ifdef TF_DLL
-	TFMapsWorkshop()->PrepareLevelResources( pszMapName, nMapNameSize, pszMapFile, nMapFileSize );
-#endif // TF_DLL
-}
-
-//-----------------------------------------------------------------------------
-IServerGameDLL::ePrepareLevelResourcesResult
-CServerGameDLL::AsyncPrepareLevelResources( /* in/out */ char *pszMapName, size_t nMapNameSize,
-                                            /* in/out */ char *pszMapFile, size_t nMapFileSize,
-                                            float *flProgress /* = NULL */ )
-{
-#ifdef TF_DLL
-	return TFMapsWorkshop()->AsyncPrepareLevelResources( pszMapName, nMapNameSize, pszMapFile, nMapFileSize, flProgress );
-#endif // TF_DLL
-
-	if ( flProgress )
-	{
-		*flProgress = 1.f;
-	}
-	return IServerGameDLL::ePrepareLevelResources_Prepared;
-}
-
-//-----------------------------------------------------------------------------
-IServerGameDLL::eCanProvideLevelResult CServerGameDLL::CanProvideLevel( /* in/out */ char *pMapName, int nMapNameMax )
-{
-#ifdef TF_DLL
-	return TFMapsWorkshop()->OnCanProvideLevel( pMapName, nMapNameMax );
-#endif // TF_DLL
-	return IServerGameDLL::eCanProvideLevel_CannotProvide;
-}
-
-//-----------------------------------------------------------------------------
-bool CServerGameDLL::IsManualMapChangeOkay( const char **pszReason )
-{
-/*
-	if ( GameRules() )
-	{
-		return GameRules()->IsManualMapChangeOkay( pszReason );
-	}
-*/
-	return true;
 }
 
 //-----------------------------------------------------------------------------

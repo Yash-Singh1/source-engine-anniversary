@@ -1,0 +1,177 @@
+{
+ "interface": "vgui::ILocalize",
+ "headers": [
+  "public/tier1/ilocalize.h",
+  "public/vgui/ILocalize.h"
+ ],
+ "versions": {
+  "retail": [
+   "VGUI_Localize005"
+  ],
+  "ours": [
+   "VGUI_Localize005"
+  ],
+  "sdk2013": [
+   "VGUI_Localize005"
+  ]
+ },
+ "version_macros": [
+  "VGUI_LOCALIZE_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/vgui2",
+   "version": "VGUI_Localize005",
+   "class": "CLocalizedStringTable"
+  }
+ ],
+ "sdk2013_len": 18,
+ "sdk2013_slots": [
+  "AddFile(char const*, char const*, bool)",
+  "RemoveAll()",
+  "Find(char const*)",
+  "FindIndex(char const*)",
+  "GetNameByIndex(unsigned long)",
+  "GetValueByIndex(unsigned long)",
+  "GetFirstStringIndex()",
+  "GetNextStringIndex(unsigned long)",
+  "AddString(char const*, wchar_t*, char const*)",
+  "SetValueByIndex(unsigned long, wchar_t*)",
+  "SaveToFile(char const*)",
+  "GetLocalizationFileCount()",
+  "GetLocalizationFileName(int)",
+  "GetFileNameByIndex(unsigned long)",
+  "ReloadLocalizationFiles()",
+  "FindAsUTF8(char const*)",
+  "ConstructString(wchar_t*, int, char const*, KeyValues*)",
+  "ConstructString(wchar_t*, int, unsigned long, KeyValues*)"
+ ],
+ "retail_reference": {
+  "module": "bin/vgui2",
+  "class": "CLocalizedStringTable",
+  "offset": 0,
+  "chain": [
+   "CLocalizedStringTable",
+   "vgui::ILocalize"
+  ]
+ },
+ "retail_len": 18,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 18
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "AddFile",
+   "sig": "AddFile(char const*, char const*, bool)",
+   "symbol": "CLocalizedStringTable::AddFile(char const*, char const*, bool)"
+  },
+  {
+   "index": 1,
+   "name": "RemoveAll",
+   "sig": "RemoveAll()",
+   "symbol": "CLocalizedStringTable::RemoveAll()"
+  },
+  {
+   "index": 2,
+   "name": "Find",
+   "sig": "Find(char const*)",
+   "symbol": "CLocalizedStringTable::Find(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "FindIndex",
+   "sig": "FindIndex(char const*)",
+   "symbol": "CLocalizedStringTable::FindIndex(char const*)"
+  },
+  {
+   "index": 4,
+   "name": "GetNameByIndex",
+   "sig": "GetNameByIndex(unsigned long)",
+   "symbol": "CLocalizedStringTable::GetNameByIndex(unsigned long)"
+  },
+  {
+   "index": 5,
+   "name": "GetValueByIndex",
+   "sig": "GetValueByIndex(unsigned long)",
+   "symbol": "CLocalizedStringTable::GetValueByIndex(unsigned long)"
+  },
+  {
+   "index": 6,
+   "name": "GetFirstStringIndex",
+   "sig": "GetFirstStringIndex()",
+   "symbol": "CLocalizedStringTable::GetFirstStringIndex()"
+  },
+  {
+   "index": 7,
+   "name": "GetNextStringIndex",
+   "sig": "GetNextStringIndex(unsigned long)",
+   "symbol": "CLocalizedStringTable::GetNextStringIndex(unsigned long)"
+  },
+  {
+   "index": 8,
+   "name": "AddString",
+   "sig": "AddString(char const*, wchar_t*, char const*)",
+   "symbol": "CLocalizedStringTable::AddString(char const*, wchar_t*, char const*)"
+  },
+  {
+   "index": 9,
+   "name": "SetValueByIndex",
+   "sig": "SetValueByIndex(unsigned long, wchar_t*)",
+   "symbol": "CLocalizedStringTable::SetValueByIndex(unsigned long, wchar_t*)"
+  },
+  {
+   "index": 10,
+   "name": "SaveToFile",
+   "sig": "SaveToFile(char const*)",
+   "symbol": "CLocalizedStringTable::SaveToFile(char const*)"
+  },
+  {
+   "index": 11,
+   "name": "GetLocalizationFileCount",
+   "sig": "GetLocalizationFileCount()",
+   "symbol": "CLocalizedStringTable::GetLocalizationFileCount()"
+  },
+  {
+   "index": 12,
+   "name": "GetLocalizationFileName",
+   "sig": "GetLocalizationFileName(int)",
+   "symbol": "CLocalizedStringTable::GetLocalizationFileName(int)"
+  },
+  {
+   "index": 13,
+   "name": "GetFileNameByIndex",
+   "sig": "GetFileNameByIndex(unsigned long)",
+   "symbol": "CLocalizedStringTable::GetFileNameByIndex(unsigned long)"
+  },
+  {
+   "index": 14,
+   "name": "ReloadLocalizationFiles",
+   "sig": "ReloadLocalizationFiles()",
+   "symbol": "CLocalizedStringTable::ReloadLocalizationFiles()"
+  },
+  {
+   "index": 15,
+   "name": "FindAsUTF8",
+   "sig": "FindAsUTF8(char const*)",
+   "symbol": "CLocalizedStringTable::FindAsUTF8(char const*)"
+  },
+  {
+   "index": 16,
+   "name": "ConstructString",
+   "sig": "ConstructString(wchar_t*, int, char const*, KeyValues*)",
+   "symbol": "CLocalizedStringTable::ConstructString(wchar_t*, int, char const*, KeyValues*)"
+  },
+  {
+   "index": 17,
+   "name": "ConstructString",
+   "sig": "ConstructString(wchar_t*, int, unsigned long, KeyValues*)",
+   "symbol": "CLocalizedStringTable::ConstructString(wchar_t*, int, unsigned long, KeyValues*)"
+  }
+ ],
+ "derived": [
+  "bin/vgui2:CLocalizedStringTable"
+ ],
+ "derived_count": 1
+}

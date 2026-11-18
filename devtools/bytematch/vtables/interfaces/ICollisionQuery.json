@@ -1,0 +1,100 @@
+{
+ "interface": "ICollisionQuery",
+ "headers": [
+  "public/vphysics_interface.h",
+  "public/vphysics_interfaceV30.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 9,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "ConvexCount()",
+  "TriangleCount(int)",
+  "GetGameData(int)",
+  "GetTriangleVerts(int, int, Vector*)",
+  "SetTriangleVerts(int, int, Vector const*)",
+  "GetTriangleMaterialIndex(int, int)",
+  "SetTriangleMaterialIndex(int, int, int)"
+ ],
+ "retail_reference": {
+  "module": "bin/vphysics",
+  "class": "CCollisionQuery",
+  "offset": 0,
+  "chain": [
+   "CCollisionQuery",
+   "ICollisionQuery"
+  ]
+ },
+ "retail_len": 9,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 9
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CCollisionQuery",
+   "sig": "~CCollisionQuery()",
+   "symbol": "CCollisionQuery::~CCollisionQuery()"
+  },
+  {
+   "index": 1,
+   "name": "~CCollisionQuery",
+   "sig": "~CCollisionQuery()",
+   "symbol": "CCollisionQuery::~CCollisionQuery()"
+  },
+  {
+   "index": 2,
+   "name": "ConvexCount",
+   "sig": "ConvexCount()",
+   "symbol": "CCollisionQuery::ConvexCount()"
+  },
+  {
+   "index": 3,
+   "name": "TriangleCount",
+   "sig": "TriangleCount(int)",
+   "symbol": "CCollisionQuery::TriangleCount(int)"
+  },
+  {
+   "index": 4,
+   "name": "GetGameData",
+   "sig": "GetGameData(int)",
+   "symbol": "CCollisionQuery::GetGameData(int)"
+  },
+  {
+   "index": 5,
+   "name": "GetTriangleVerts",
+   "sig": "GetTriangleVerts(int, int, Vector*)",
+   "symbol": "CCollisionQuery::GetTriangleVerts(int, int, Vector*)"
+  },
+  {
+   "index": 6,
+   "name": "SetTriangleVerts",
+   "sig": "SetTriangleVerts(int, int, Vector const*)",
+   "symbol": "CCollisionQuery::SetTriangleVerts(int, int, Vector const*)"
+  },
+  {
+   "index": 7,
+   "name": "GetTriangleMaterialIndex",
+   "sig": "GetTriangleMaterialIndex(int, int)",
+   "symbol": "CCollisionQuery::GetTriangleMaterialIndex(int, int)"
+  },
+  {
+   "index": 8,
+   "name": "SetTriangleMaterialIndex",
+   "sig": "SetTriangleMaterialIndex(int, int, int)",
+   "symbol": "CCollisionQuery::SetTriangleMaterialIndex(int, int, int)"
+  }
+ ],
+ "derived": [
+  "bin/vphysics:CCollisionQuery"
+ ],
+ "derived_count": 1
+}

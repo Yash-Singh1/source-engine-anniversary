@@ -1,0 +1,184 @@
+{
+ "interface": "IParticleSystemQuery",
+ "headers": [
+  "public/particles/particles.h"
+ ],
+ "versions": {
+  "retail": [
+   "VParticleSystemQuery001"
+  ],
+  "ours": [
+   "VParticleSystemQuery001"
+  ],
+  "sdk2013": [
+   "VParticleSystemQuery001"
+  ]
+ },
+ "version_macros": [
+  "PARTICLE_SYSTEM_QUERY_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "episodic/client",
+   "version": "VParticleSystemQuery001",
+   "class": "CParticleSystemQuery"
+  },
+  {
+   "module": "hl2/client",
+   "version": "VParticleSystemQuery001",
+   "class": "CParticleSystemQuery"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "VParticleSystemQuery001",
+   "class": "CParticleSystemQuery"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "VParticleSystemQuery001",
+   "class": "CParticleSystemQuery"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "VParticleSystemQuery001",
+   "class": "CParticleSystemQuery"
+  }
+ ],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "episodic/client",
+  "class": "CParticleSystemQuery",
+  "offset": 0,
+  "chain": [
+   "CParticleSystemQuery",
+   "CBaseAppSystem<IParticleSystemQuery>",
+   "IParticleSystemQuery"
+  ]
+ },
+ "retail_len": 16,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 16
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Connect",
+   "sig": "Connect(void* (*)(char const*, int*))",
+   "symbol": "CBaseAppSystem<IParticleSystemQuery>::Connect(void* (*)(char const*, int*))"
+  },
+  {
+   "index": 1,
+   "name": "Disconnect",
+   "sig": "Disconnect()",
+   "symbol": "CBaseAppSystem<IParticleSystemQuery>::Disconnect()"
+  },
+  {
+   "index": 2,
+   "name": "QueryInterface",
+   "sig": "QueryInterface(char const*)",
+   "symbol": "CBaseAppSystem<IParticleSystemQuery>::QueryInterface(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "CBaseAppSystem<IParticleSystemQuery>::Init()"
+  },
+  {
+   "index": 4,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CBaseAppSystem<IParticleSystemQuery>::Shutdown()"
+  },
+  {
+   "index": 5,
+   "name": "GetLightingAtPoint",
+   "sig": "GetLightingAtPoint(Vector const&, Color&)",
+   "symbol": "CParticleSystemQuery::GetLightingAtPoint(Vector const&, Color&)"
+  },
+  {
+   "index": 6,
+   "name": "TraceLine",
+   "sig": "TraceLine(Vector const&, Vector const&, unsigned int, IHandleEntity const*, int, CBaseTrace*)",
+   "symbol": "CParticleSystemQuery::TraceLine(Vector const&, Vector const&, unsigned int, IHandleEntity const*, int, CBaseTrace*)"
+  },
+  {
+   "index": 7,
+   "name": "MovePointInsideControllingObject",
+   "sig": "MovePointInsideControllingObject(CParticleCollection*, void*, Vector*)",
+   "symbol": "CParticleSystemQuery::MovePointInsideControllingObject(CParticleCollection*, void*, Vector*)"
+  },
+  {
+   "index": 8,
+   "name": "IsPointInControllingObjectHitBox",
+   "sig": "IsPointInControllingObjectHitBox(CParticleCollection*, int, Vector, bool)",
+   "symbol": "CParticleSystemQuery::IsPointInControllingObjectHitBox(CParticleCollection*, int, Vector, bool)"
+  },
+  {
+   "index": 9,
+   "name": "GetCollisionGroupFromName",
+   "sig": "GetCollisionGroupFromName(char const*)",
+   "symbol": "CParticleSystemQuery::GetCollisionGroupFromName(char const*)"
+  },
+  {
+   "index": 10,
+   "name": "GetRandomPointsOnControllingObjectHitBox",
+   "sig": "GetRandomPointsOnControllingObjectHitBox(CParticleCollection*, int, int, float, int, Vector*, Vector, Vector*, int*)",
+   "symbol": "CParticleSystemQuery::GetRandomPointsOnControllingObjectHitBox(CParticleCollection*, int, int, float, int, Vector*, Vector, Vector*, int*)"
+  },
+  {
+   "index": 11,
+   "name": "GetControllingObjectHitBoxInfo",
+   "sig": "GetControllingObjectHitBoxInfo(CParticleCollection*, int, int, ModelHitBoxInfo_t*)",
+   "symbol": "CParticleSystemQuery::GetControllingObjectHitBoxInfo(CParticleCollection*, int, int, ModelHitBoxInfo_t*)"
+  },
+  {
+   "index": 12,
+   "name": "GetLocalPlayerPos",
+   "sig": "GetLocalPlayerPos()",
+   "symbol": "CParticleSystemQuery::GetLocalPlayerPos()"
+  },
+  {
+   "index": 13,
+   "name": "GetLocalPlayerEyeVectors",
+   "sig": "GetLocalPlayerEyeVectors(Vector*, Vector*, Vector*)",
+   "symbol": "CParticleSystemQuery::GetLocalPlayerEyeVectors(Vector*, Vector*, Vector*)"
+  },
+  {
+   "index": 14,
+   "name": "GetPixelVisibility",
+   "sig": "GetPixelVisibility(int*, Vector const&, float)",
+   "symbol": "CParticleSystemQuery::GetPixelVisibility(int*, Vector const&, float)"
+  },
+  {
+   "index": 15,
+   "name": "SetUpLightingEnvironment",
+   "sig": "SetUpLightingEnvironment(Vector const&)",
+   "symbol": "CParticleSystemQuery::SetUpLightingEnvironment(Vector const&)"
+  }
+ ],
+ "derived": [
+  "episodic/client:CDefaultParticleSystemQuery",
+  "episodic/client:CParticleSystemQuery",
+  "episodic/server:CDefaultParticleSystemQuery",
+  "episodic/server:CParticleSystemQuery",
+  "hl2/client:CDefaultParticleSystemQuery",
+  "hl2/client:CParticleSystemQuery",
+  "hl2/server:CDefaultParticleSystemQuery",
+  "hl2/server:CParticleSystemQuery",
+  "hl2_complete/client:CDefaultParticleSystemQuery",
+  "hl2_complete/client:CParticleSystemQuery",
+  "hl2_complete/server:CDefaultParticleSystemQuery",
+  "hl2_complete/server:CParticleSystemQuery",
+  "hl2mp/client:CDefaultParticleSystemQuery",
+  "hl2mp/client:CParticleSystemQuery",
+  "hl2mp/server:CDefaultParticleSystemQuery",
+  "hl2mp/server:CParticleSystemQuery",
+  "lostcoast/client:CDefaultParticleSystemQuery",
+  "lostcoast/client:CParticleSystemQuery",
+  "lostcoast/server:CDefaultParticleSystemQuery",
+  "lostcoast/server:CParticleSystemQuery"
+ ],
+ "derived_count": 20
+}

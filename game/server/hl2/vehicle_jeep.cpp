@@ -143,10 +143,7 @@ IMPLEMENT_SERVERCLASS_ST( CPropJeep, DT_PropJeep )
 	SendPropBool( SENDINFO( m_bHeadlightIsOn ) ),
 END_SEND_TABLE();
 
-// This is overriden for the episodic jeep
-#ifndef HL2_EPISODIC
 LINK_ENTITY_TO_CLASS( prop_vehicle_jeep, CPropJeep );
-#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -792,7 +789,7 @@ void CPropJeep::Think( void )
 			}
 		}
 		
-		if ( hl2_episodic.GetBool() )
+		if ( IsHL2Episodic() )
 		{
 			// Set its running animation idle
 			if ( m_bEnterAnimOn )
@@ -810,7 +807,7 @@ void CPropJeep::Think( void )
 		}
 
 		// If we're exiting and have had the tau cannon removed, we don't want to reset the animation
-		if ( hl2_episodic.GetBool() )
+		if ( IsHL2Episodic() )
 		{
 			// Reset on exit anim
 			GetServerVehicle()->HandleEntryExitFinish( m_bExitAnimOn, m_bExitAnimOn );
@@ -1379,8 +1376,30 @@ void CPropJeep::ProcessMovement( CBasePlayer *pPlayer, CMoveData *pMoveData )
 {
 	BaseClass::ProcessMovement( pPlayer, pMoveData );
 
+	// Update the steering angles based on speed.
+	UpdateSteeringAngle();
+
 	// Create dangers sounds in front of the vehicle.
 	CreateDangerSounds();
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CPropJeep::UpdateSteeringAngle( void )
+{
+	float flMaxSpeed = m_VehiclePhysics.GetMaxSpeed();
+	float flSpeed = m_VehiclePhysics.GetSpeed();
+
+	float flRatio = 1.0f - ( flSpeed / flMaxSpeed );
+	float flSteeringDegrees = JEEP_STEERING_FAST_ANGLE + ( ( JEEP_STEERING_SLOW_ANGLE - JEEP_STEERING_FAST_ANGLE ) * flRatio );
+	flSteeringDegrees = clamp( flSteeringDegrees, JEEP_STEERING_FAST_ANGLE, JEEP_STEERING_SLOW_ANGLE );
+	m_VehiclePhysics.SetSteeringDegrees( flSteeringDegrees );
+}
+
+bool CPropJeep::IsJalopy( void )
+{
+	return false;
 }
 
 //-----------------------------------------------------------------------------

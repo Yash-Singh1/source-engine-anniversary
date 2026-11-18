@@ -23,7 +23,11 @@ class CModelSoundsCache : public IBaseCacheInfo
 public:
 	CUtlVector< unsigned short > sounds;
 
+#ifdef BYTEMATCH_RETAIL
+	CModelSoundsCache();
+#else
 	CModelSoundsCache() = default;
+#endif
 	CModelSoundsCache( const CModelSoundsCache& src );
 
 	void PrecacheSoundList();

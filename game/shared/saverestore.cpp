@@ -91,8 +91,10 @@ static int gSizes[FIELD_TYPECOUNT] =
 	FIELD_SIZE( FIELD_MATERIALINDEX ),
 
 	FIELD_SIZE( FIELD_VECTOR2D ),
+#ifndef BYTEMATCH_RETAIL
 	FIELD_SIZE( FIELD_INTEGER64 ),
 	FIELD_SIZE( FIELD_POINTER ),
+#endif
 };
 
 
@@ -1315,9 +1317,11 @@ bool CSave::WriteGameField( const char *pname, void *pData, datamap_t *pRootMap,
 			WriteInterval( pField->fieldName, (interval_t *)pData, pField->fieldSize );
 			break;
 
+#ifndef BYTEMATCH_RETAIL
 		case FIELD_POINTER:
 			WriteData( pField->fieldName, sizeof(void*)*pField->fieldSize, (char *)pData );
 			break;
+#endif
 
 		default:
 			Warning( "Bad field type\n" );
@@ -2159,9 +2163,11 @@ void CRestore::ReadGameField( const SaveRestoreRecordHeader_t &header, void *pDe
 			ReadInterval( (interval_t *)pDest, pField->fieldSize, header.size );
 			break;
 
+#ifndef BYTEMATCH_RETAIL
 		case FIELD_POINTER:
 			ReadData( (char *)pDest, sizeof(void*)*pField->fieldSize, header.size );
 			break;
+#endif
 
 		default:
 			Warning( "Bad field type\n" );

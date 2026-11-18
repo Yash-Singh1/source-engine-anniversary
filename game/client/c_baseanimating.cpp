@@ -677,7 +677,9 @@ C_BaseAnimating::C_BaseAnimating() :
 	m_pRagdoll		= NULL;
 	m_builtRagdoll = false;
 	m_hitboxBoneCacheHandle = 0;
+#ifndef BYTEMATCH_RETAIL
 	m_nHitboxSet = 0;
+#endif
 
 	int i;
 	for ( i = 0; i < ARRAYSIZE( m_flEncodedController ); i++ )
@@ -696,8 +698,10 @@ C_BaseAnimating::C_BaseAnimating() :
 
 	m_bStoreRagdollInfo = false;
 	m_pRagdollInfo = NULL;
+#ifndef BYTEMATCH_RETAIL
 	m_pJiggleBones = NULL;
 	m_pBoneMergeCache = NULL;
+#endif
 
 	m_flPlaybackRate = 1.0f;
 

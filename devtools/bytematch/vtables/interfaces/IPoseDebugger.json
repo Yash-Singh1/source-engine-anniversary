@@ -1,0 +1,59 @@
+{
+ "interface": "IPoseDebugger",
+ "headers": [
+  "public/posedebugger.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 2,
+ "sdk2013_slots": [
+  "StartBlending(IClientNetworkable*, CStudioHdr const*)",
+  "AccumulatePose(CStudioHdr const*, CIKContext*, Vector*, Quaternion*, int, float, float const*, int, float, float)"
+ ],
+ "retail_reference": {
+  "module": "episodic/client",
+  "class": "CPoseDebuggerImpl",
+  "offset": 0,
+  "chain": [
+   "CPoseDebuggerImpl",
+   "IPoseDebugger"
+  ]
+ },
+ "retail_len": 2,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 2
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "StartBlending",
+   "sig": "StartBlending(IClientNetworkable*, CStudioHdr const*)",
+   "symbol": "CPoseDebuggerImpl::StartBlending(IClientNetworkable*, CStudioHdr const*)"
+  },
+  {
+   "index": 1,
+   "name": "AccumulatePose",
+   "sig": "AccumulatePose(CStudioHdr const*, CIKContext*, Vector*, Quaternion*, int, float, float const*, int, float, float)",
+   "symbol": "CPoseDebuggerImpl::AccumulatePose(CStudioHdr const*, CIKContext*, Vector*, Quaternion*, int, float, float const*, int, float, float)"
+  }
+ ],
+ "derived": [
+  "episodic/client:CPoseDebuggerImpl",
+  "episodic/client:CPoseDebuggerStub",
+  "hl2/client:CPoseDebuggerImpl",
+  "hl2/client:CPoseDebuggerStub",
+  "hl2_complete/client:CPoseDebuggerImpl",
+  "hl2_complete/client:CPoseDebuggerStub",
+  "hl2mp/client:CPoseDebuggerImpl",
+  "hl2mp/client:CPoseDebuggerStub",
+  "lostcoast/client:CPoseDebuggerImpl",
+  "lostcoast/client:CPoseDebuggerStub"
+ ],
+ "derived_count": 10
+}
