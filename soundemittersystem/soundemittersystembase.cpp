@@ -979,17 +979,6 @@ void CSoundEmitterSystemBase::ReloadSoundEntriesInList( IFileList *pFilesToReloa
 
 
 //-----------------------------------------------------------------------------
-// Purpose: Force ModShutdown and ModInit, skips checks for how many systems have 
-// requested inits (for con commands).
-//-----------------------------------------------------------------------------
-void CSoundEmitterSystemBase::Flush()
-{
-	InternalModShutdown();
-	InternalModInit();
-}
-
-
-//-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
 int CSoundEmitterSystemBase::CheckForMissingWavFiles( bool verbose )

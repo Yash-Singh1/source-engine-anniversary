@@ -139,9 +139,6 @@ public:
 
 	virtual void		ReloadSoundEntriesInList( IFileList *pFilesToReload );
 
-	// Called by either client or server to force ModShutdown and ModInit
-	virtual void			Flush();
-
 private:
 
 	bool InternalModInit();
