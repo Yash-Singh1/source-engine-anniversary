@@ -60,9 +60,13 @@ protected:
 
 	void			HandleInput( bool active );
 
+	// until the first slider message every slider pushes its value
+	bool				m_bSlidersSynced;
+
 	// World fog
 	vgui::CheckButton	*m_pFogOverride;
 	vgui::CheckButton	*m_pFogEnable;
+	vgui::CheckButton	*m_pFogRadial;
 
 	vgui::Slider		*m_pFogStart;
 	vgui::TextEntry		*m_pFogStartText;
@@ -78,6 +82,7 @@ protected:
 
 	// Skybox fog
 	vgui::CheckButton	*m_pFogEnableSky;
+	vgui::CheckButton	*m_pFogRadialSky;
 
 	vgui::Slider		*m_pFogStartSky;
 	vgui::TextEntry		*m_pFogStartTextSky;

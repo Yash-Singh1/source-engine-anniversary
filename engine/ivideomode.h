@@ -64,6 +64,10 @@ public:
 	virtual int				GetModeWidth() const = 0;
 	virtual int				GetModeHeight() const = 0;
 	virtual	bool			IsWindowedMode() const = 0;
+#ifdef BYTEMATCH_RETAIL
+	virtual bool			NoWindowBorder() const { return false; }
+#endif
+#line 68
 
 	// Returns the video mode width + height for a single stereo display.
 	// if the game isn't running in side by side stereo, this is the same

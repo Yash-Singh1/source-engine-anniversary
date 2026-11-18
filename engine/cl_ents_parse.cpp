@@ -300,11 +300,20 @@ void CL_CopyNewEntity(
 	int iSerialNum
 	)
 {
+#ifdef BYTEMATCH_RETAIL
+	if ( u.m_nNewEntity >= MAX_EDICTS )
+	{
+		Host_Error ("CL_CopyNewEntity: m_nNewEntity >= MAX_EDICTS");
+		return;
+	}
+#else
 	if ( u.m_nNewEntity < 0 || u.m_nNewEntity >= MAX_EDICTS )
 	{
 		Host_Error ("CL_CopyNewEntity: u.m_nNewEntity < 0 || m_nNewEntity >= MAX_EDICTS");
 		return;
 	}
+#endif
+#line 308
 
 	// If it's new, make sure we have a slot for it.
 	IClientNetworkable *ent = entitylist->GetClientNetworkable( u.m_nNewEntity );
@@ -431,6 +440,7 @@ void CL_CopyNewEntity(
 	}
 }
 
+#ifndef BYTEMATCH_RETAIL
 void CL_PreserveExistingEntity( int nOldEntity )
 {
 	IClientNetworkable *pEnt = entitylist->GetClientNetworkable( nOldEntity );
@@ -453,6 +463,8 @@ void CL_PreserveExistingEntity( int nOldEntity )
 
 //	pEnt->OnDataUnchangedInPVS();
 }
+#endif
+#line 434
 
 void CL_CopyExistingEntity( CEntityReadInfo &u )
 {
