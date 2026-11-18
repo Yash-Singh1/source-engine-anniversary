@@ -1898,6 +1898,19 @@ void CBaseGamesPage::OnItemSelected()
 //-----------------------------------------------------------------------------
 void CBaseGamesPage::OnKeyCodePressed(vgui::KeyCode code)
 {
+#ifdef BYTEMATCH_RETAIL
+	if ( code == KEY_XBUTTON_A )
+	{
+		m_pConnect->DoClick();
+	}
+	else if ( code == KEY_F5 || code == KEY_XBUTTON_X )
+	{
+		StartRefresh();
+	}
+	else if (  m_pGameList->GetItemCount() > 0 &&
+			   ( code == KEY_XBUTTON_UP || code == KEY_XSTICK1_UP || code == KEY_XSTICK2_UP ||
+				 code == KEY_XBUTTON_DOWN || code == KEY_XSTICK1_DOWN || code == KEY_XSTICK2_DOWN ) )
+#else
 	if ( code == KEY_XBUTTON_A || code == STEAMCONTROLLER_A )
 	{
 		m_pConnect->DoClick();
@@ -1909,6 +1922,7 @@ void CBaseGamesPage::OnKeyCodePressed(vgui::KeyCode code)
 	else if (  m_pGameList->GetItemCount() > 0 &&
 			   ( code == KEY_XBUTTON_UP || code == KEY_XSTICK1_UP || code == KEY_XSTICK2_UP || code == STEAMCONTROLLER_DPAD_UP || 
 				 code == KEY_XBUTTON_DOWN || code == KEY_XSTICK1_DOWN || code == KEY_XSTICK2_DOWN || code == STEAMCONTROLLER_DPAD_DOWN ) )
+#endif
 	{
 		m_pGameList->RequestFocus();
 	}
