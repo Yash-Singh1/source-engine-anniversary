@@ -289,7 +289,27 @@ void CC_ToggleDuck( void )
 	pPlayer->ToggleDuck();
 }
 
-static ConCommand toggle_duck("toggle_duck", CC_ToggleDuck, "Toggles duck" );
+static ConCommand toggle_duck("toggle_duck", CC_ToggleDuck, "Toggles duck." );
+
+void CC_CancelDuckToggle( const CCommand &args )
+{
+	CBasePlayer *pBasePlayer = UTIL_GetCommandClient();
+	if ( pBasePlayer == NULL )
+		return;
+
+	CHL2_Player *pPlayer = dynamic_cast< CHL2_Player * >( pBasePlayer );
+
+	// Optional minimum stick deflection (lateral wish speed) needed to cancel
+	const char *pszMinSpeed = args[1];
+	float flMinSpeed = pszMinSpeed ? V_atof( pszMinSpeed ) : 0.0f;
+
+	if ( pPlayer && pPlayer->GetToggledDuckState() && pPlayer->GetStickDist() >= flMinSpeed )
+	{
+		pPlayer->ToggleDuck();
+	}
+}
+
+static ConCommand cancel_duck_toggle( "cancel_duck_toggle", CC_CancelDuckToggle, "Forces the duck toggle off. Add a value for the minimum lateral player wish speed required to also cancel (i.e. stick deflection)." );
 
 #ifndef HL2MP
 #ifndef PORTAL
@@ -355,6 +375,7 @@ BEGIN_DATADESC( CHL2_Player )
 	DEFINE_FIELD( m_flAdmireGlovesAnimTime, FIELD_TIME ),
 	DEFINE_FIELD( m_flNextFlashlightCheckTime, FIELD_TIME ),
 	DEFINE_FIELD( m_flFlashlightPowerDrainScale, FIELD_FLOAT ),
+	DEFINE_FIELD( m_flLastCombatCheckTime, FIELD_TIME ),
 	DEFINE_FIELD( m_bFlashlightDisabled, FIELD_BOOLEAN ),
 
 	DEFINE_FIELD( m_bUseCappedPhysicsDamageTable, FIELD_BOOLEAN ),
@@ -403,17 +424,13 @@ CHL2_Player::CHL2_Player()
 #define SUITPOWER_CHARGE_RATE	12.5											// 100 units in 8 seconds
 
 #ifdef HL2MP
-	CSuitPowerDevice SuitDeviceSprint( bits_SUIT_DEVICE_SPRINT, 25.0f );				// 100 units in 4 seconds
+	CSuitPowerDevice SuitDeviceSprint( bits_SUIT_DEVICE_SPRINT, 25.0f, -1.0f );				// 100 units in 4 seconds
 #else
-	CSuitPowerDevice SuitDeviceSprint( bits_SUIT_DEVICE_SPRINT, 12.5f );				// 100 units in 8 seconds
+	CSuitPowerDevice SuitDeviceSprint( bits_SUIT_DEVICE_SPRINT, 12.5f, -1.0f );				// 100 units in 8 seconds
 #endif
 
-#ifdef HL2_EPISODIC
-	CSuitPowerDevice SuitDeviceFlashlight( bits_SUIT_DEVICE_FLASHLIGHT, 1.111 );	// 100 units in 90 second
-#else
-	CSuitPowerDevice SuitDeviceFlashlight( bits_SUIT_DEVICE_FLASHLIGHT, 2.222 );	// 100 units in 45 second
-#endif
-CSuitPowerDevice SuitDeviceBreather( bits_SUIT_DEVICE_BREATHER, 6.7f );		// 100 units in 15 seconds (plus three padded seconds)
+CSuitPowerDevice SuitDeviceFlashlight( bits_SUIT_DEVICE_FLASHLIGHT, 2.222, 1.111 );	// 100 units in 45 seconds, 90 seconds in the episodes
+CSuitPowerDevice SuitDeviceBreather( bits_SUIT_DEVICE_BREATHER, 6.7f, -1.0f );		// 100 units in 15 seconds (plus three padded seconds)
 
 
 IMPLEMENT_SERVERCLASS_ST(CHL2_Player, DT_HL2_Player)
@@ -910,6 +927,31 @@ void CHL2_Player::PostThink( void )
 	if ( !g_fGameOver && !IsPlayerLockedInPlace() && IsAlive() )
 	{
 		 HandleAdmireGlovesAnimation();
+	}
+
+	// Tell the client once a second whether any NPC is fighting us
+	if ( gpGlobals->curtime - m_flLastCombatCheckTime > 1.0f )
+	{
+		m_flLastCombatCheckTime = gpGlobals->curtime;
+
+		bool bInCombat = false;
+		for ( int i = 0; i < g_AI_Manager.NumAIs(); i++ )
+		{
+			CAI_BaseNPC *pNPC = g_AI_Manager.AccessAIs()[i];
+			if ( pNPC->GetEnemy() && pNPC->GetEnemy() == this && pNPC->Classify() != CLASS_EARTH_FAUNA )
+			{
+				bInCombat = true;
+				break;
+			}
+		}
+
+		IGameEvent *event = gameeventmanager->CreateEvent( "combat_event" );
+		if ( event )
+		{
+			event->SetBool( "in_combat", bInCombat );
+			event->SetInt( "player", entindex() );
+			gameeventmanager->FireEvent( event );
+		}
 	}
 }
 
@@ -2480,6 +2522,12 @@ void CHL2_Player::Event_Killed( const CTakeDamageInfo &info )
 
 	FirePlayerProxyOutput( "PlayerDied", variant_t(), this, this );
 	NotifyScriptsOfDeath();
+
+	IGameEvent *event = gameeventmanager->CreateEvent( "single_player_death" );
+	if ( event )
+	{
+		gameeventmanager->FireEvent( event );
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -2642,11 +2690,34 @@ int CHL2_Player::GiveAmmo( int nCount, int nAmmoIndex, bool bSuppressSound)
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
+ConVar stunstick_pickupable( "stunstick_pickupable", "0", FCVAR_CHEAT );
+
 bool CHL2_Player::Weapon_CanUse( CBaseCombatWeapon *pWeapon )
 {
 #ifndef HL2MP	
 	if ( pWeapon->ClassMatches( "weapon_stunstick" ) )
 	{
+		if ( stunstick_pickupable.GetBool() )
+		{
+			// Give the player their own stunstick the first time they touch one
+			bool bHasStunstick = false;
+			for ( int i = 0; i < MAX_WEAPONS; i++ )
+			{
+				CBaseCombatWeapon *pMyWeapon = GetWeapon( i );
+				if ( pMyWeapon && pMyWeapon->ClassMatches( "weapon_stunstick_player" ) )
+				{
+					bHasStunstick = true;
+				}
+			}
+
+			if ( !bHasStunstick )
+			{
+				GiveNamedItem( "weapon_stunstick_player" );
+				UTIL_Remove( pWeapon );
+				return false;
+			}
+		}
+
 		if ( ApplyBattery( 0.5 ) )
 			UTIL_Remove( pWeapon );
 		return false;
