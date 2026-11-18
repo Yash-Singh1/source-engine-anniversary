@@ -34,6 +34,7 @@ static int s_pBufStackDepth[MAX_STACK_DEPTH];
 static int s_nBufDepth = -1;
 static int s_nBufCurSize = 0;
 static int s_nBufAllocSize = 0;
+#ifndef BYTEMATCH_RETAIL
 static bool s_oomerror_called = false;
 
 void MemAllocOOMError( size_t nSize )
@@ -50,6 +51,8 @@ void MemAllocOOMError( size_t nSize )
 		Error( "Out of memory or address space.  Texture quality setting may be too high.\n" );
 	}
 }
+#endif
+#line 53
 
 //-----------------------------------------------------------------------------
 // Other DLL-exported methods for particular kinds of memory

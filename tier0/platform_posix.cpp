@@ -330,6 +330,7 @@ unsigned int Plat_MSTime()
 	}
 }
 
+#ifndef BYTEMATCH_RETAIL
 uint64 Plat_USTime()
 {
 	if ( g_bBenchmarkMode )
@@ -355,6 +356,8 @@ uint64 Plat_USTime()
 		return ( uint64 )( Plat_FloatTime() * 1000000 );
 	}
 }
+#endif
+#line 358
 
 // Wraps the thread-safe versions of ctime. buf must be at least 26 bytes 
 char *Plat_ctime( const time_t *timep, char *buf, size_t bufsize )
@@ -573,6 +576,7 @@ PLATFORM_INTERFACE const char *Plat_GetCommandLineA()
 	return Plat_GetCommandLine();
 }
 
+#ifndef BYTEMATCH_RETAIL
 PLATFORM_INTERFACE bool GetMemoryInformation( MemoryInformation *pOutMemoryInfo )
 {
 	#if defined( LINUX ) || defined( OSX ) || defined(PLATFORM_BSD)
@@ -581,6 +585,8 @@ PLATFORM_INTERFACE bool GetMemoryInformation( MemoryInformation *pOutMemoryInfo 
 		#error "Need to fill out GetMemoryInformation or at least return false for this platform"
 	#endif
 }
+#endif
+#line 584
 
 
 PLATFORM_INTERFACE bool Is64BitOS()
@@ -609,6 +615,7 @@ PLATFORM_INTERFACE void Plat_ExitProcess( int nCode )
 }
 
 
+#ifndef BYTEMATCH_RETAIL
 static int s_nWatchDogTimerTimeScale = 0;
 static bool s_bInittedWD = false;
 static int s_WatchdogTime = 0;
@@ -681,6 +688,8 @@ PLATFORM_INTERFACE void Plat_SetWatchdogHandlerFunction( Plat_WatchDogHandlerFun
 {
 	s_pWatchDogHandlerFunction = function;
 }
+#endif
+#line 684
 
 #ifndef NO_HOOK_MALLOC
 
