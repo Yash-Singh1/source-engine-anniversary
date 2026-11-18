@@ -69,6 +69,10 @@ TREE_VPC_FILES = {
     "hk_math": "ivp/havana/havok/hk_math/hk_math.vpc",
 }
 
+# Include directories this fork's sources need beyond Valve's (the fork's
+# vector_fpu.inl includes ivu_types.hxx for intp).
+FORK_INCLUDES = {"hk_math": ["ivp/ivp_utility"]}
+
 # Static-library projects whose outputs other projects name in $Lib.
 LIB_PROJECTS = ["jpeglib", "tier1", "tier2", "tier3", "mathlib", "bitmap", "vtf", "appframework", "dmxloader",
                 "matsys_controls", "vgui_controls", "bzip2", "replay_common", "choreoobjects",
@@ -202,7 +206,7 @@ class Module:
             r = self.tree_rel(i)
             if r is not None:
                 out.append(INCLUDE_ALIASES.get(r, r))
-        return dedupe(out)
+        return dedupe(out + FORK_INCLUDES.get(self.name, []))
 
     def pch(self, f=None):
         mode = (self.get("compiler.create/useprecompiledheader", f) or "").lower()

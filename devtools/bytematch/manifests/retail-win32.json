@@ -20042,7 +20042,8 @@
     "public/tier0",
     "public/tier1",
     "ivp/havana/havok",
-    "ivp/havana"
+    "ivp/havana",
+    "ivp/ivp_utility"
    ],
    "cl": [
     "/O2",
