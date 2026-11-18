@@ -137,18 +137,6 @@ typedef enum
 	SK_BUTTON_START,
 	SK_BUTTON_STEAM,
 	SK_BUTTON_INACTIVE_START,
-	SK_VBUTTON_F1,						// These are "virtual" buttons. Useful if you want to have flow that maps an action to button code to be interpreted by some UI that accepts keystrokes, but you
-	SK_VBUTTON_F2,						// don't want to map to real button (perhaps because it would be interpreted by UI in a way you don't like). 																																										
-	SK_VBUTTON_F3,
-	SK_VBUTTON_F4,
-	SK_VBUTTON_F5,
-	SK_VBUTTON_F6,
-	SK_VBUTTON_F7,
-	SK_VBUTTON_F8,
-	SK_VBUTTON_F9,
-	SK_VBUTTON_F10,
-	SK_VBUTTON_F11,
-	SK_VBUTTON_F12,
 	SK_MAX_KEYS
 } sKey_t;
 
