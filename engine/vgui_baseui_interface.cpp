@@ -102,6 +102,11 @@
 #endif
 
 // memdbgon must be the last include file in a .cpp file!!!
+#ifdef BYTEMATCH_RETAIL
+#include "GameEventManager.h"
+#include "inputsystem/iinputsystem.h"
+#endif
+#line 107
 #include "tier0/memdbgon.h"
 
 #ifndef USE_SDL
@@ -133,7 +138,7 @@ static ConVar vgui_ui_scale_factor( "vgui_ui_scale_factor", "1", 0 );
 // root of the panels that are laid out against the scaled UI size
 #define PANEL_STATIC_SIZING ( (VGuiPanel_t)( PANEL_CLIENTDLL_TOOLS + 1 ) )
 #endif
-#line 134
+#line 136
 
 void Con_CreateConsolePanel( vgui::Panel *parent );
 void CL_CreateEntityReportPanel( vgui::Panel *parent );
@@ -383,7 +388,7 @@ private:
 #ifdef BYTEMATCH_RETAIL
 	void UpdateStaticSizingPanelSize( int nWidth, int nHeight );
 #endif
-#line 381
+#line 383
 	void SetEngineVisible( bool state );
 	void DrawMouseFocus( void );
 	void CreateVProfPanels( vgui::Panel *pParent );
@@ -420,7 +425,7 @@ private:
 #ifdef BYTEMATCH_RETAIL
 	CEnginePanel *staticSizingPanel;
 #endif
-#line 415
+#line 417
 
 	// Want engine tools to be on top of other engine panels
 	CEnginePanel *staticEngineToolsPanel;
@@ -539,7 +544,7 @@ CEngineVGui::CEngineVGui()
 #ifdef BYTEMATCH_RETAIL
 	staticSizingPanel = NULL;
 #endif
-#line 531
+#line 533
 	staticEngineToolsPanel = NULL;
 	staticDebugSystemPanel = NULL;
 	staticFocusOverlayPanel = NULL;
@@ -659,7 +664,7 @@ void CEngineVGui::Init()
 		return;
 	}
 #endif
-#line 640
+#line 642
 
 	if ( IsX360() || IsSteamDeck() )
 	{
@@ -1044,7 +1049,7 @@ inline vgui::Panel *CEngineVGui::GetRootPanel( VGuiPanel_t type )
 	case PANEL_STATIC_SIZING:
 		return staticSizingPanel;
 #endif
-#line 1022
+#line 1024
 	}
 }
 
@@ -1118,7 +1123,7 @@ void CEngineVGui::UpdateStaticSizingPanelSize( int nWidth, int nHeight )
 	engineClient->ExecuteClientCmd( "refresh_gameui_dialogs_modeset\n" );
 }
 #endif
-#line 1093
+#line 1095
 
 vgui::VPANEL CEngineVGui::GetPanel( VGuiPanel_t type )
 {
@@ -1175,6 +1180,14 @@ void CEngineVGui::ActivateGameUI()
 		return;
 #endif
 
+#ifdef BYTEMATCH_RETAIL
+	if ( g_pInputSystem )
+	{
+		g_pInputSystem->ActivateSteamControllerActionSet( GAME_ACTION_SET_MENUCONTROLS );
+	}
+#endif
+#line 1155
+
 	// clear any keys that might be stuck down
 	ClearIOStates();
 
@@ -1192,6 +1205,15 @@ void CEngineVGui::ActivateGameUI()
 	SetEngineVisible( false );
 
 	staticGameUIFuncs->OnGameUIActivated();
+
+#ifdef BYTEMATCH_RETAIL
+	IGameEvent *event = g_GameEventManager.CreateEvent( "gameui_activate" );
+	if ( event )
+	{
+		g_GameEventManager.FireEventClientSide( event );
+	}
+#endif
+#line 1179
 }
 
 //-----------------------------------------------------------------------------
@@ -1234,6 +1256,15 @@ bool CEngineVGui::HideGameUI()
 	}
 
 	VGui_MoveDrawTreePanelToFront();
+
+#ifdef BYTEMATCH_RETAIL
+	IGameEvent *event = g_GameEventManager.CreateEvent( "gameui_hide" );
+	if ( event )
+	{
+		g_GameEventManager.FireEventClientSide( event );
+	}
+#endif
+#line 1227
 
 	return true;
 }
@@ -1431,6 +1462,16 @@ void CEngineVGui::OnLevelLoadingStarted()
 	}
 
 	m_bShowProgressDialog = false;
+
+#ifdef BYTEMATCH_RETAIL
+	IGameEvent *event = g_GameEventManager.CreateEvent( "loading_level" );
+	if ( event )
+	{
+		event->SetBool( "is_loading", true );
+		g_GameEventManager.FireEventClientSide( event );
+	}
+#endif
+#line 1431
 }
 
 //-----------------------------------------------------------------------------
@@ -1508,6 +1549,16 @@ void CEngineVGui::OnLevelLoadingFinished()
 			pSyncReportConVar->SetValue( g_syncReportLevel );
 		}
 	}
+
+#ifdef BYTEMATCH_RETAIL
+	IGameEvent *event = g_GameEventManager.CreateEvent( "loading_level" );
+	if ( event )
+	{
+		event->SetBool( "is_loading", false );
+		g_GameEventManager.FireEventClientSide( event );
+	}
+#endif
+#line 1515
 }
 
 
@@ -1845,7 +1896,7 @@ void CEngineVGui::Paint( PaintMode_t mode )
 #ifdef BYTEMATCH_RETAIL
 		UpdateStaticSizingPanelSize( w, h );
 #endif
-#line 1817
+#line 1850
 	}
 
 	panel->Repaint();
