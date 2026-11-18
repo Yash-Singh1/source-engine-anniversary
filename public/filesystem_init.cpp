@@ -224,7 +224,11 @@ CFSSearchPathsInit::CFSSearchPathsInit()
 	m_pDirectoryName = NULL;
 	m_pLanguage = NULL;
 	m_ModPath[0] = 0;
+#ifdef BYTEMATCH_RETAIL
+	m_bLowViolence = false;
+#else
 	m_bMountHDContent = m_bLowViolence = false;
+#endif
 }
 
 
@@ -471,6 +475,7 @@ FSReturnCode_t LoadGameInfoFile(
 }
 
 
+#ifndef BYTEMATCH_RETAIL
 static void FileSystem_AddLoadedSearchPath( 
 	CFSSearchPathsInit &initInfo, 
 	const char *pPathID, 
@@ -748,6 +753,148 @@ FSReturnCode_t FileSystem_LoadSearchPaths( CFSSearchPathsInit &initInfo )
 
 	return FS_OK;
 }
+#else
+#include "tier1/convar.h"
+
+bool CFSSearchPathsInit::m_bMountHDContent;
+
+#ifdef ENGINE_DLL
+const char *COM_Parse( const char *data );
+extern char com_token[1024];
+
+bool LoadExpansionInfo( const char *pDirectoryName, char *pszExpansion, unsigned long nExpansionLen )
+{
+	char szConfigFile[MAX_PATH];
+	V_strncpy( szConfigFile, pDirectoryName, sizeof( szConfigFile ) );
+	V_strncat( szConfigFile, "/cfg/config.cfg", sizeof( szConfigFile ), COPY_ALL_CHARACTERS );
+	V_FixSlashes( szConfigFile, '/' );
+
+	FILE *fp = fopen( szConfigFile, "rb" );
+	if ( !fp )
+		return false;
+
+	fseek( fp, 0, SEEK_END );
+	int nSize = ftell( fp );
+	if ( nSize <= 0 )
+		return false;
+
+	char *pBuffer = new char[ nSize + 1 ];
+	fseek( fp, 0, SEEK_SET );
+	fread( pBuffer, 1, nSize, fp );
+	fclose( fp );
+	pBuffer[ nSize ] = 0;
+
+	const char *pszExpansionKey = V_stristr( pBuffer, "hl2_expansion" );
+	if ( pszExpansionKey )
+	{
+		pszExpansionKey = COM_Parse( pszExpansionKey );
+		COM_Parse( pszExpansionKey );
+		V_snprintf( pszExpansion, nExpansionLen, com_token );
+	}
+
+	return true;
+}
+#endif
+
+static bool HasHDContent( const char *pModPath, const char *pBaseDir )
+{
+	char szHDFile[1024];
+	V_ComposeFileName( pModPath, "game_hd.txt", szHDFile, sizeof( szHDFile ) );
+	char szAbsHDFile[1024];
+	V_MakeAbsolutePath( szAbsHDFile, sizeof( szAbsHDFile ), szHDFile, pBaseDir );
+	FILE *fp = fopen( szAbsHDFile, "rb" );
+	if ( !fp )
+		return false;
+	fclose( fp );
+	return true;
+}
+
+FSReturnCode_t FileSystem_LoadSearchPaths( CFSSearchPathsInit &initInfo )
+{
+	if ( !initInfo.m_pFileSystem || !initInfo.m_pDirectoryName )
+		return SetupFileSystemError( false, FS_INVALID_PARAMETERS, "FileSystem_LoadSearchPaths: Invalid parameters specified." );
+
+	const char *pszGameDir = CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) );
+
+	KeyValues *pMainFile, *pFileSystemInfo, *pSearchPaths;
+	FSReturnCode_t retVal = LoadGameInfoFile( initInfo.m_pDirectoryName, pMainFile, pFileSystemInfo, pSearchPaths );
+	if ( retVal != FS_OK )
+		return retVal;
+
+	// All paths except those marked with |gameinfo_path| are relative to the base dir.
+	char baseDir[MAX_PATH];
+	if ( !FileSystem_GetBaseDir( baseDir, sizeof( baseDir ) ) )
+		return SetupFileSystemError( false, FS_INVALID_PARAMETERS, "FileSystem_GetBaseDir failed." );
+
+	// The MOD directory is always the one that contains gameinfo.txt
+	Q_strncpy( initInfo.m_ModPath, initInfo.m_pDirectoryName, sizeof( initInfo.m_ModPath ) );
+
+	bool bUseHDContent = HasHDContent( initInfo.m_ModPath, baseDir );
+	const char *pszLanguage = initInfo.m_pLanguage;
+
+	initInfo.m_pFileSystem->SetUseLowViolancePaths( initInfo.m_bLowViolence );
+	initInfo.m_pFileSystem->SetUseHDMount( bUseHDContent );
+	initInfo.m_pFileSystem->SetAudioLanguageOverride( pszLanguage );
+	initInfo.m_pFileSystem->AddGameAndModSearchPathsFromGameInfo( initInfo.m_ModPath, baseDir, pSearchPaths );
+
+	bool bComplete = V_stricmp( pszGameDir, "hl2_complete" ) == 0;
+
+	char szExpansionPath[MAX_PATH];
+	char szRootModPath[MAX_PATH];
+	char szBaseDir[MAX_PATH];
+	V_strncpy( szBaseDir, baseDir, sizeof( szBaseDir ) );
+	V_StripTrailingSlash( szBaseDir );
+
+	V_snprintf( szRootModPath, sizeof( szRootModPath ), "%s/%s", szBaseDir, pszGameDir );
+	V_FixSlashes( szRootModPath, '/' );
+
+	if ( !bComplete )
+	{
+		V_snprintf( szExpansionPath, sizeof( szExpansionPath ), "%s/%s", szBaseDir, pszGameDir );
+		V_FixSlashes( szExpansionPath, '/' );
+		initInfo.m_pFileSystem->SetCurrentGameExpansionId( "" );
+	}
+	else
+	{
+		char szExpansion[16] = { 0 };
+#ifdef ENGINE_DLL
+		LoadExpansionInfo( initInfo.m_pDirectoryName, szExpansion, sizeof( szExpansion ) );
+		if ( !szExpansion[0] )
+#endif
+			V_snprintf( szExpansion, sizeof( szExpansion ), "hl2" );
+		initInfo.m_pFileSystem->SetCurrentGameExpansionId( szExpansion );
+		V_snprintf( szExpansionPath, sizeof( szExpansionPath ), "%s/%s", szBaseDir, szExpansion );
+		V_FixSlashes( szExpansionPath, '/' );
+	}
+
+	initInfo.m_pFileSystem->AddSearchPath( szExpansionPath, "exp", PATH_ADD_TO_TAIL );
+	initInfo.m_pFileSystem->AddSearchPath( szRootModPath, "root_mod", PATH_ADD_TO_TAIL );
+
+	pMainFile->deleteThis();
+
+	// Also, mark specific path IDs as "by request only". That way, we won't waste time searching in them
+	// when people forget to specify a search path.
+	initInfo.m_pFileSystem->MarkPathIDByRequestOnly( "exp", true );
+	initInfo.m_pFileSystem->MarkPathIDByRequestOnly( "executable_path", true );
+	initInfo.m_pFileSystem->MarkPathIDByRequestOnly( "gamebin", true );
+	initInfo.m_pFileSystem->MarkPathIDByRequestOnly( "download", true );
+	initInfo.m_pFileSystem->MarkPathIDByRequestOnly( "mod", true );
+	initInfo.m_pFileSystem->MarkPathIDByRequestOnly( "game_write", true );
+	initInfo.m_pFileSystem->MarkPathIDByRequestOnly( "mod_write", true );
+	initInfo.m_pFileSystem->MarkPathIDByRequestOnly( "root_mod", true );
+
+	ConVarRef developer( "developer" );
+	if ( developer.IsValid() && developer.GetInt() )
+	{
+	}
+	initInfo.m_pFileSystem->PrintSearchPaths();
+
+	initInfo.m_pFileSystem->UpdateSearchPathsForCurrentGameExpansion();
+
+	return FS_OK;
+}
+#endif
+#line 751
 
 bool DoesFileExistIn( const char *pDirectoryName, const char *pFilename )
 {

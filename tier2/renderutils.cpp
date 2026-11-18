@@ -43,23 +43,35 @@ void InitializeStandardMaterials()
 	KeyValues *pVMTKeyValues = new KeyValues( "wireframe" );
 	pVMTKeyValues->SetInt( "$vertexcolor", 1 );
 	s_pWireframe = g_pMaterialSystem->CreateMaterial( "__utilWireframe", pVMTKeyValues );
+#ifdef BYTEMATCH_RETAIL
+	s_pWireframe->IncrementReferenceCount();
+#endif
 
 	pVMTKeyValues = new KeyValues( "wireframe" );
 	pVMTKeyValues->SetInt( "$vertexcolor", 1 );
 	pVMTKeyValues->SetInt( "$vertexalpha", 1 );
 	pVMTKeyValues->SetInt( "$ignorez", 1 );
 	s_pWireframeIgnoreZ = g_pMaterialSystem->CreateMaterial( "__utilWireframeIgnoreZ", pVMTKeyValues );
+#ifdef BYTEMATCH_RETAIL
+	s_pWireframeIgnoreZ->IncrementReferenceCount();
+#endif
 
 	pVMTKeyValues = new KeyValues( "unlitgeneric" );
 	pVMTKeyValues->SetInt( "$vertexcolor", 1 );
 	pVMTKeyValues->SetInt( "$vertexalpha", 1 );
 	s_pVertexColor = g_pMaterialSystem->CreateMaterial( "__utilVertexColor", pVMTKeyValues );
+#ifdef BYTEMATCH_RETAIL
+	s_pVertexColor->IncrementReferenceCount();
+#endif
 
 	pVMTKeyValues = new KeyValues( "unlitgeneric" );
 	pVMTKeyValues->SetInt( "$vertexcolor", 1 );
 	pVMTKeyValues->SetInt( "$vertexalpha", 1 );
 	pVMTKeyValues->SetInt( "$ignorez", 1 );
 	s_pVertexColorIgnoreZ = g_pMaterialSystem->CreateMaterial( "__utilVertexColorIgnoreZ", pVMTKeyValues );
+#ifdef BYTEMATCH_RETAIL
+	s_pVertexColorIgnoreZ->IncrementReferenceCount();
+#endif
 }
 
 void ShutdownStandardMaterials()
@@ -808,7 +820,11 @@ void DrawScreenSpaceRectangle( IMaterial *pMaterial,
 	int nScreenWidth, nScreenHeight;
 	pRenderContext->GetRenderTargetDimensions( nScreenWidth, nScreenHeight );
 
+#ifdef BYTEMATCH_RETAIL
+	float flOffset = IsPosix() ? 0.0f : 0.5f;
+#else
 	float flOffset = 0.5f;
+#endif
 	
 	float flLeftX = nDestX - flOffset;
 	float flRightX = nDestX + nWidth - flOffset;

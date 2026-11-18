@@ -46,10 +46,18 @@ inline PixRGBAF PixRGBA8_to_F( PixRGBA8 const &x )
 inline PixRGBA8 PixRGBAF_to_8( PixRGBAF const &f )
 {
 	PixRGBA8 x;
+#ifdef BYTEMATCH_RETAIL
+	x.Red = max( 0.0, min( 255.0,255.0*f.Red ) );
+	x.Green = max( 0.0, min( 255.0,255.0*f.Green ) );
+	x.Blue = max( 0.0, min( 255.0,255.0*f.Blue ) );
+	x.Alpha = max( 0.0, min( 255.0,255.0*f.Alpha ) );
+#else
 	x.Red = max( 0.f, min( 255.f,255.f*f.Red ) );
 	x.Green = max( 0.f, min( 255.f,255.f*f.Green ) );
 	x.Blue = max( 0.f, min( 255.f,255.f*f.Blue ) );
 	x.Alpha = max( 0.f, min( 255.f,255.f*f.Alpha ) );
+#endif
+#line 53
 	return x;
 }
 

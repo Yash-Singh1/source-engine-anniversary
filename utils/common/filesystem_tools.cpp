@@ -84,6 +84,11 @@ bool FileSystem_Init_Normal( const char *pFilename, FSInitType_t initType, bool 
 		if ( FileSystem_GetFileSystemDLLName( fileSystemDLLName, MAX_PATH, bSteam ) != FS_OK )
 			return false;
 
+#ifdef BYTEMATCH_RETAIL
+		// If we're under Steam we need extra setup to let us find the proper modules
+		FileSystem_SetupSteamInstallPath();
+#endif
+#line 87
 		// Next, load the module, call Connect/Init.
 		CFSLoadModuleInfo loadModuleInfo;
 		loadModuleInfo.m_pFileSystemDLLName = fileSystemDLLName;
