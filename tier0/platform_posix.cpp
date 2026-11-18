@@ -453,9 +453,9 @@ bool Plat_IsInDebugSession( bool bForceRecheck )
 	int                 mib[4];
 	struct kinfo_proc   info;
 	size_t              size;
-	static int s_IsInDebugSession = -1;
+	static int IsInDebugSession = -1;
 
-	if ( s_IsInDebugSession == -1 || bForceRecheck )
+	if ( IsInDebugSession == -1 || bForceRecheck )
 	{
 		// Initialize the flags so that, if sysctl fails for some bizarre 
 		// reason, we get a predictable result.
@@ -478,13 +478,13 @@ bool Plat_IsInDebugSession( bool bForceRecheck )
 
 		// We're being debugged if the P_TRACED flag is set.
 #ifdef PLATFORM_BSD
-		s_IsInDebugSession = ( ( info.ki_flag & P_TRACED ) != 0 );
+		IsInDebugSession = ( ( info.ki_flag & P_TRACED ) != 0 );
 #else
-		s_IsInDebugSession = ( ( info.kp_proc.p_flag & P_TRACED ) != 0 );
+		IsInDebugSession = ( ( info.kp_proc.p_flag & P_TRACED ) != 0 );
 #endif
 	}
 
-	return !!s_IsInDebugSession;
+	return !!IsInDebugSession;
 }
 
 #elif defined( LINUX )
