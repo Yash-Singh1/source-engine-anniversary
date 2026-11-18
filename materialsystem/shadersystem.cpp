@@ -32,7 +32,10 @@
 
 //#define DEBUG_DEPTH 1
 
+#ifndef BYTEMATCH_RETAIL
 CDummyTextureInternal g_BitchCubemapTexture("bitch_cubemap");
+#endif
+#line 36
 
 //-----------------------------------------------------------------------------
 // Lovely convars
@@ -1033,6 +1036,7 @@ void CShaderSystem::InitShaderParameters( IShader *pShader, IMaterialVar **param
 				params[i]->SetMatrixValue( identity );
 			}
 			break;
+#ifndef BYTEMATCH_RETAIL
 		case SHADER_PARAM_TYPE_MATRIX4X2:
 			{
 				VMatrix identity;
@@ -1040,6 +1044,8 @@ void CShaderSystem::InitShaderParameters( IShader *pShader, IMaterialVar **param
 				params[i]->SetMatrixValue( identity );
 			}
 			break;
+#endif
+#line 1043
 
 
 		default:
