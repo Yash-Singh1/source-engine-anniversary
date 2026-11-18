@@ -276,6 +276,11 @@ long CSystem::GetTimeMillis()
 //-----------------------------------------------------------------------------
 void CSystem::ShellExecute(const char *command, const char *file)
 {
+#ifdef OSX
+	char szCmd[1024];
+	V_snprintf( szCmd, sizeof( szCmd ), "open %s", file );
+	system( szCmd );
+#else
 	if ( V_strcmp( command, "open" ) != 0 )
 	{
 		// Nope
@@ -315,12 +320,13 @@ void CSystem::ShellExecute(const char *command, const char *file)
 		execlp( szCommand, szCommand, file, (char *)0 );
 		Assert( !"execlp failed" );
 	}
+#endif
 }
 
 void CSystem::ShellExecuteEx( const char *command, const char *file, const char *pParams )
 {
 	NOTE_UNUSED( pParams );
-	ShellExecute( command, file );
+	CSystem::ShellExecute( command, file );
 }
 
 void CSystem::SetClipboardText(const char *text, int textLen)

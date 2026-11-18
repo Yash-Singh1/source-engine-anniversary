@@ -204,7 +204,6 @@ private:
 		VPanel	*panel;
 		int		interval;
 		int		nexttick;
-		bool	bMarkDeleted;
 		// Debugging
 		char	panelname[ 64 ];
 	};
@@ -233,7 +232,6 @@ private:
 	bool m_InDispatcher : 1;
 	bool m_bDebugMessages : 1;
 	bool m_bVRMode : 1;
-	bool m_bCanRemoveTickSignal : 1;
 	int m_nReentrancyCount;
 
 	CUtlVector< Tick_t * > m_TickSignalVec;
@@ -279,7 +277,6 @@ CVGui::CVGui() : m_DelayedMessageQueue(0, 4, PriorityQueueComp)
 	m_bDebugMessages = false;
 	m_bDoSleep = true;
 	m_bVRMode = false;
-	m_bCanRemoveTickSignal = true;
 	m_nReentrancyCount = 0;
 	m_hContext = DEFAULT_VGUI_CONTEXT;
 	m_DefaultContext.m_hInputContext = DEFAULT_INPUT_CONTEXT;
@@ -472,17 +469,12 @@ void CVGui::RunFrame()
 		//  until next frame
 		int time = g_pSystem->GetTimeMillis();
 
-		m_bCanRemoveTickSignal = false;
-
 		tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s - Ticks", __FUNCTION__ );
 		// directly invoke tick all who asked to be ticked
 		int count = m_TickSignalVec.Count();
 		for (int i = count - 1; i >= 0; i-- )
 		{
 			Tick_t *t = m_TickSignalVec[i];
-			if ( t->bMarkDeleted )
-				continue;
-
 			if ( t->interval != 0 )
 			{
 				if ( time < t->nexttick )
@@ -495,21 +487,6 @@ void CVGui::RunFrame()
 			tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s - Ticks: %s", __FUNCTION__, t->panel->Client()->GetName() );
 		}
 
-		m_bCanRemoveTickSignal = true;
-
-		// get count again. panels could be added to tick vector in OnTick
-		count = m_TickSignalVec.Count();
-
-		// Remove all panels that tried to remove tick in OnTick
-		for (int i = count - 1; i >= 0; i-- )
-		{
-			Tick_t *t = m_TickSignalVec[i];
-			if ( t->bMarkDeleted )
-			{
-				m_TickSignalVec.Remove( i );
-				delete t;
-			}
-		}
 	}
 
 	{
@@ -670,9 +647,6 @@ CVGui::Tick_t* CVGui::CreateNewTick( VPANEL panel, int intervalMilliseconds )
 			// Go ahead and update intervals
 			t->interval = intervalMilliseconds;
 			t->nexttick = g_pSystem->GetTimeMillis() + t->interval;
-
-			// Somebody added this panel back to the tick list, don't delete it
-			t->bMarkDeleted = false;
 			return NULL;
 		}
 	}
@@ -683,7 +657,6 @@ CVGui::Tick_t* CVGui::CreateNewTick( VPANEL panel, int intervalMilliseconds )
 	t->panel = (VPanel *)panel;
 	t->interval = intervalMilliseconds;
 	t->nexttick = g_pSystem->GetTimeMillis() + t->interval;
-	t->bMarkDeleted = false;
 
 	if ( strlen( ((VPanel *)panel)->Client()->GetName() ) > 0 )
 	{
@@ -743,16 +716,8 @@ void CVGui::RemoveTickSignal( VPANEL panel )
 		Tick_t *tick = m_TickSignalVec[i];
 		if ( tick->panel == search )
 		{
-			if ( m_bCanRemoveTickSignal )
-			{
-				m_TickSignalVec.Remove( i );
-				delete tick;
-			}
-			else
-			{
-				tick->bMarkDeleted = true;
-			}
-			
+			m_TickSignalVec.Remove( i );
+			delete tick;
 			return;
 		}
 	}

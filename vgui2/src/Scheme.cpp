@@ -88,11 +88,15 @@ public:
 	// Get color data
 	virtual const KeyValues *GetColorData() const;
 
+	// returns NULL rather than the base border when borderName isn't found
+	virtual IBorder *GetBorder2(const char *borderName);
+
+	void LoadFonts();
+	void LoadBorders();
+
 private:
 	const char *LookupSchemeSetting(const char *pchSetting);
 	const char *GetMungedFontName( const char *fontName, const char *scheme, bool proportional);
-	void LoadFonts();
-	void LoadBorders();
 	HFont FindFontInAliasList( const char *fontName );
 	int GetMinimumFontHeightForCurrentLanguage();
 
@@ -116,6 +120,7 @@ private:
 #pragma pack(1)
 	struct fontalias_t
 	{
+		CUtlSymbol _fontName;
 		CUtlSymbol _trueFontName;
 		unsigned short _font : 15;
 		unsigned short m_bProportional : 1;
@@ -123,17 +128,18 @@ private:
 #pragma pack()
 	friend struct fontalias_t;
 
-	CUtlDict< fontalias_t, int >	m_FontAliases;
+	CUtlVector< fontalias_t >	m_FontAliases;
 	VPANEL m_SizingPanel;
 	int			m_nScreenWide;
 	int			m_nScreenTall;
 
 	struct fontrange_t
 	{
+		CUtlSymbol _fontName;
 		int _min;
 		int _max;
 	};
-	CUtlDict< fontrange_t, int >	m_FontRanges;
+	CUtlVector< fontrange_t >	m_FontRanges;
 };
 
 
@@ -183,6 +189,9 @@ public:
 
 	virtual bool DeleteImage( const char *pImageName );
 
+	// reloads the borders of all loaded schemes
+	virtual void UpdateBorders();
+
 	// gets the proportional coordinates for doing screen-size independant panel layouts
 	// use these for font, image and panel size scaling (they all use the pixel height of the display for scaling)
 	int GetProportionalScaledValueEx( CScheme *pScheme, int normalizedValue );
@@ -207,6 +216,9 @@ private:
 	};
 	static bool BitmapHandleSearchFunc(const CachedBitmapHandle_t &, const CachedBitmapHandle_t &);
 	CUtlRBTree<CachedBitmapHandle_t, int> m_Bitmaps;
+
+	bool m_bReloadingSchemes;
+	HScheme m_hReloadingScheme;
 };
 
 const char *CSchemeManager::s_pszSearchString = NULL;
@@ -249,6 +261,9 @@ CON_COMMAND( vgui_spew_fonts, "" )
 //-----------------------------------------------------------------------------
 CSchemeManager::CSchemeManager()
 {
+	m_bReloadingSchemes = false;
+	m_hReloadingScheme = 0;
+
 	// 0th element is null, since that would be an invalid handle
 	CScheme *nullScheme = new CScheme();
 	m_Schemes.AddToTail(nullScheme);
@@ -286,7 +301,18 @@ void CSchemeManager::ReloadFonts()
 {
 	for (int i = 1; i < m_Schemes.Count(); i++)
 	{
-		m_Schemes[i]->ReloadFontGlyphs();
+		m_Schemes[i]->LoadFonts();
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: reloads the borders of all schemes
+//-----------------------------------------------------------------------------
+void CSchemeManager::UpdateBorders()
+{
+	for (int i = 1; i < m_Schemes.Count(); i++)
+	{
+		m_Schemes[i]->LoadBorders();
 	}
 }
 
@@ -362,16 +388,27 @@ CScheme::CScheme()
 // first scheme loaded becomes the default scheme, and all subsequent loaded scheme are derivitives of that
 HScheme  CSchemeManager::LoadSchemeFromFileEx( VPANEL sizingPanel, const char *fileName, const char *tag)
 {
-	// Look to see if we've already got this scheme...
-	HScheme hScheme = FindLoadedScheme(fileName);
-	if (hScheme != 0)
+	HScheme hScheme = 0;
+	if ( m_bReloadingSchemes )
 	{
-		CScheme *pScheme = static_cast< CScheme * >( GetIScheme( hScheme ) );
-		if ( IsPC() && pScheme )
+		hScheme = m_hReloadingScheme;
+	}
+	else
+	{
+		// Look to see if we've already got this scheme...
+		hScheme = FindLoadedScheme(fileName);
+		if (hScheme != 0)
 		{
-			pScheme->ReloadFontGlyphs();
+			CScheme *pScheme = static_cast< CScheme * >( GetIScheme( hScheme ) );
+			if ( pScheme->GetSizingPanel() == sizingPanel )
+			{
+				if ( IsPC() && pScheme )
+				{
+					pScheme->ReloadFontGlyphs();
+				}
+				return hScheme;
+			}
 		}
-		return hScheme;
 	}
 
 	KeyValues *data;
@@ -393,10 +430,6 @@ HScheme  CSchemeManager::LoadSchemeFromFileEx( VPANEL sizingPanel, const char *f
 		return 0;
 	}
 	
-	if ( IsX360() )
-	{
-		data->ProcessResolutionKeys( g_pSurface->GetResolutionKey() );
-	}
 	if ( IsPC() )
 	{
 		ConVarRef cl_hud_minmode( "cl_hud_minmode", true );
@@ -405,15 +438,32 @@ HScheme  CSchemeManager::LoadSchemeFromFileEx( VPANEL sizingPanel, const char *f
 			data->ProcessResolutionKeys( "_minmode" );
 		}
 	}
+	data->ProcessResolutionKeys( g_pSurface->GetResolutionKey() );
 	if( g_pIVgui->GetVRMode() )
 	{
 		data->ProcessResolutionKeys( "_vrmode" );
 	}
 
-	CScheme *newScheme = new CScheme();
-	newScheme->LoadFromFile( sizingPanel, fileName, tag, data );
+	CScheme *newScheme;
+	if ( m_bReloadingSchemes )
+	{
+		newScheme = static_cast< CScheme * >( GetIScheme( hScheme ) );
+	}
+	else
+	{
+		newScheme = new CScheme();
+	}
 
-	return m_Schemes.AddToTail(newScheme);
+	if ( newScheme )
+	{
+		newScheme->LoadFromFile( sizingPanel, fileName, tag, data );
+		if ( !m_bReloadingSchemes )
+		{
+			hScheme = m_Schemes.AddToTail( newScheme );
+		}
+	}
+
+	return hScheme;
 }
 
 //-----------------------------------------------------------------------------
@@ -638,12 +688,14 @@ void CScheme::LoadFromFile( VPANEL sizingPanel, const char *inFilename, const ch
 //-----------------------------------------------------------------------------
 bool CScheme::GetFontRange( const char *fontname, int &nMin, int &nMax )
 {
-	int i = m_FontRanges.Find( fontname );
-	if ( i != m_FontRanges.InvalidIndex() )
+	for ( int i = 0 ; i < m_FontRanges.Count(); i++ )
 	{
-		nMin = m_FontRanges[i]._min;
-		nMax = m_FontRanges[i]._max;
-		return true;
+		if ( Q_stricmp( m_FontRanges[i]._fontName.String(), fontname ) == 0 )
+		{
+			nMin = m_FontRanges[i]._min;
+			nMax = m_FontRanges[i]._max;
+			return true;
+		}
 	}
 
 	return false;
@@ -654,17 +706,20 @@ bool CScheme::GetFontRange( const char *fontname, int &nMin, int &nMax )
 //-----------------------------------------------------------------------------
 void CScheme::SetFontRange( const char *fontname, int nMin, int nMax )
 {
-	int i = m_FontRanges.Find( fontname );
-	if ( i != m_FontRanges.InvalidIndex() )
+	for ( int i = 0 ; i < m_FontRanges.Count(); i++ )
 	{
-		m_FontRanges[i]._min = nMin;
-		m_FontRanges[i]._max = nMax;
-		return;
+		if ( Q_stricmp( m_FontRanges[i]._fontName.String(), fontname ) == 0 )
+		{
+			m_FontRanges[i]._min = nMin;
+			m_FontRanges[i]._max = nMax;
+			return;
+		}
 	}
 
 	// not already in our list
-	int iNew = m_FontRanges.Insert( fontname );
+	int iNew = m_FontRanges.AddToTail();
 	
+	m_FontRanges[iNew]._fontName = fontname;
 	m_FontRanges[iNew]._min = nMin;
 	m_FontRanges[iNew]._max = nMax;
 }
@@ -770,20 +825,39 @@ void CScheme::LoadFonts()
 		}
 	}
 
-	// create the fonts
-	for (KeyValues *kv = m_pData->FindKey("Fonts", true)->GetFirstSubKey(); kv != NULL; kv = kv->GetNextKey())
+	// create the fonts; when reloading, the aliases already exist and only the glyphs are rebuilt
+	if ( m_FontAliases.Count() == 0 )
 	{
-		for ( int i = 0; i < 2; i++ )
+		for (KeyValues *kv = m_pData->FindKey("Fonts", true)->GetFirstSubKey(); kv != NULL; kv = kv->GetNextKey())
 		{
-			// create the base font
-			bool proportionalFont = static_cast<bool>( i );
-			const char *fontName = GetMungedFontName( kv->GetName(), tag, proportionalFont ); // first time it adds a normal font, and then a proportional one
-			HFont font = g_pSurface->CreateFont();
+			for ( int i = 0; i < 2; i++ )
+			{
+				// create the base font
+				bool proportionalFont;
 
-			int j = m_FontAliases.Insert( fontName );
-			m_FontAliases[j]._trueFontName = kv->GetName();
-			m_FontAliases[j]._font = font;
-			m_FontAliases[j].m_bProportional = proportionalFont;
+				// "isproportional" "only" skips the non-proportional version
+				const char *pszProportional = kv->GetString( "isproportional", "" );
+				if ( pszProportional && pszProportional[0] && !strcmp( pszProportional, "only" ) )
+				{
+					if ( i == 0 )
+						continue;
+
+					proportionalFont = true;
+				}
+				else
+				{
+					proportionalFont = static_cast<bool>( i );
+				}
+
+				const char *fontName = GetMungedFontName( kv->GetName(), tag, proportionalFont ); // first time it adds a normal font, and then a proportional one
+				HFont font = g_pSurface->CreateFont();
+
+				int j = m_FontAliases.AddToTail();
+				m_FontAliases[j]._fontName = fontName;
+				m_FontAliases[j]._trueFontName = kv->GetName();
+				m_FontAliases[j]._font = font;
+				m_FontAliases[j].m_bProportional = proportionalFont;
+			}
 		}
 	}
 
@@ -813,13 +887,18 @@ void CScheme::ReloadFontGlyphs()
 
 	// add the data to all the fonts
 	KeyValues *fonts = m_pData->FindKey("Fonts", true);
-	FOR_EACH_DICT_FAST( m_FontAliases, i )
+	for (int i = 0; i < m_FontAliases.Count(); i++)
 	{
 		KeyValues *kv = fonts->FindKey( m_FontAliases[i]._trueFontName.String(), true );
 	
 		// walk through creating adding the first matching glyph set to the font
 		for (KeyValues *fontdata = kv->GetFirstSubKey(); fontdata != NULL; fontdata = fontdata->GetNextKey())
 		{
+			// "isproportional" is a setting of the font, not a glyph set
+			static int nIsProportional = KeyValuesSystem()->GetSymbolForString( "isproportional" );
+			if ( fontdata->GetNameSymbol() == nIsProportional )
+				continue;
+
 			// skip over fonts not meant for this resolution
 			int fontYResMin = 0, fontYResMax = 0;
 			sscanf(fontdata->GetString("yres", ""), "%d %d", &fontYResMin, &fontYResMax);
@@ -889,17 +968,24 @@ void CScheme::ReloadFontGlyphs()
 			// only grow this font if it doesn't have a resolution filter specified
 			if ( ( !fontYResMin && !fontYResMax ) && m_FontAliases[i].m_bProportional )
 			{
+				int nUnscaledTall = tall;
 				tall = g_Scheme.GetProportionalScaledValueEx( this, tall );
 				blur = g_Scheme.GetProportionalScaledValueEx( this, blur );
 				scanlines = g_Scheme.GetProportionalScaledValueEx( this, scanlines ); 
 				scalex = g_Scheme.GetProportionalScaledValueEx( this, scalex * 10000.0f ) * 0.0001f;
 				scaley = g_Scheme.GetProportionalScaledValueEx( this, scaley * 10000.0f ) * 0.0001f;
+
+				// rescaled glyphs need antialiasing
+				if ( nUnscaledTall != tall )
+				{
+					flags |= ISurface::FONTFLAG_ANTIALIAS;
+				}
 			}
 
 			// clip the font size so that fonts can't be too big
-			if ( tall > 127 )
+			if ( tall > 256 )
 			{
-				tall = 127;
+				tall = 256;
 			}
 
 			// check our minimum font height
@@ -921,15 +1007,17 @@ void CScheme::ReloadFontGlyphs()
 			else
 			{
 				int nRangeMin, nRangeMax;
+				int weight = fontdata->GetInt( "weight" );
+				const char *pszFontName = fontdata->GetString( "name" );
 
-				if ( GetFontRange( fontdata->GetString( "name" ), nRangeMin, nRangeMax ) )
+				if ( GetFontRange( pszFontName, nRangeMin, nRangeMax ) )
 				{
 					// add the new set
 					g_pSurface->SetFontGlyphSet(
 						m_FontAliases[i]._font,
-						fontdata->GetString( "name" ), 
+						pszFontName, 
 						tall, 
-						fontdata->GetInt( "weight" ), 
+						weight, 
 						blur,
 						scanlines,
 						flags,
@@ -941,9 +1029,9 @@ void CScheme::ReloadFontGlyphs()
 					// add the new set
 					g_pSurface->SetFontGlyphSet(
 						m_FontAliases[i]._font,
-						fontdata->GetString( "name" ), 
+						pszFontName, 
 						tall, 
-						fontdata->GetInt( "weight" ), 
+						weight, 
 						blur,
 						scanlines,
 						flags);
@@ -972,6 +1060,14 @@ void CScheme::LoadBorders()
 		}
 		else
 		{
+			// UpdateBorders reapplies settings to borders we already have
+			IBorder *pExistingBorder = GetBorder( kv->GetName() );
+			if ( pExistingBorder )
+			{
+				pExistingBorder->ApplySchemeSettings( this, kv );
+				continue;
+			}
+
 			int i = m_BorderList.AddToTail();
 
 			IBorder *border = NULL;
@@ -1032,14 +1128,14 @@ void CScheme::LoadBorders()
 void CScheme::SpewFonts( void )
 {
 	Msg( "Scheme: %s (%s)\n", GetName(), GetFileName() );
-	FOR_EACH_DICT_FAST( m_FontAliases, i )
+	for ( int i = 0; i < m_FontAliases.Count(); i++ )
 	{
 		const fontalias_t& FontAlias = m_FontAliases[ i ];
 		uint32 Font = FontAlias._font;
 		const char *szFontName = g_pSurface->GetFontName( Font );
 		const char *szFontFamilyName = g_pSurface->GetFontFamilyName( Font );
 		const char *szTrueFontName = FontAlias._trueFontName.String();
-		const char *szFontAlias = m_FontAliases.GetElementName( i );
+		const char *szFontAlias = FontAlias._fontName.String();
 
 		Msg( "  %2d: HFont:0x%8.8x, %s, %s, font:%s, tall:%d(%d). %s\n", 
 			i, 
@@ -1059,13 +1155,17 @@ void CScheme::SpewFonts( void )
 void CSchemeManager::ReloadSchemes()
 {
 	int count = m_Schemes.Count();
-	Shutdown( false );
+	m_bReloadingSchemes = true;
 	
-	// reload the scheme
+	// reload the schemes in place
 	for (int i = 1; i < count; i++)
 	{
-		LoadSchemeFromFile(m_Schemes[i]->GetFileName(), m_Schemes[i]->GetName());
+		m_hReloadingScheme = i;
+		LoadSchemeFromFileEx( m_Schemes[i]->GetSizingPanel(), m_Schemes[i]->GetFileName(), m_Schemes[i]->GetName() );
 	}
+
+	m_hReloadingScheme = 0;
+	m_bReloadingSchemes = false;
 }
 
 //-----------------------------------------------------------------------------
@@ -1251,7 +1351,7 @@ IImage *CSchemeManager::GetImage(const char *imageName, bool hardwareFiltered)
 	//}
 	//else
 	{
-		if ( Q_stristr( imageName, ".pic" ) )
+		if ( Q_stristr( imageName, "vgui/" ) || Q_stristr( imageName, ".pic" ) )
 		{
 			Q_snprintf( szFileName, sizeof(szFileName), "%s", imageName );
 		}
@@ -1332,6 +1432,18 @@ bool CSchemeManager::DeleteImage( const char *pImageName )
 //-----------------------------------------------------------------------------
 IBorder *CScheme::GetBorder(const char *borderName)
 {
+	IBorder *border = GetBorder2( borderName );
+	if ( !border )
+		return m_pBaseBorder;
+
+	return border;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: finds a border, or NULL if the scheme doesn't have it
+//-----------------------------------------------------------------------------
+IBorder *CScheme::GetBorder2(const char *borderName)
+{
 	int symbol = KeyValuesSystem()->GetSymbolForString(borderName);
 	for (int i = 0; i < m_BorderList.Count(); i++)
 	{
@@ -1341,7 +1453,7 @@ IBorder *CScheme::GetBorder(const char *borderName)
 		}
 	}
 
-	return m_pBaseBorder;
+	return NULL;
 }
 
 //-----------------------------------------------------------------------------
@@ -1368,10 +1480,15 @@ IBorder *CScheme::GetBorderAtIndex( int iIndex )
 //-----------------------------------------------------------------------------
 HFont CScheme::FindFontInAliasList( const char *fontName )
 {
-	int i = m_FontAliases.Find( fontName );
-	if ( i != m_FontAliases.InvalidIndex() )
+	// FIXME: Slow!!!
+	for (int i = m_FontAliases.Count(); --i >= 0; )
 	{
-		return m_FontAliases[i]._font;
+		const char *name = m_FontAliases[i]._fontName.String();
+		Assert( name );
+		if (!Q_strnicmp(fontName, name, FONT_ALIAS_NAME_LENGTH ))
+		{
+			return m_FontAliases[i]._font;
+		}
 	}
 
 	// No dice

@@ -86,7 +86,7 @@ public:
 		if ( pValue )
 		{
 			m_bExisted = true;
-			m_OriginalValue.SetSize( Q_strlen( pValue ) + 1 );
+			m_OriginalValue.SetSize( strlen( pValue ) + 1 );
 			memcpy( m_OriginalValue.Base(), pValue, m_OriginalValue.Count() );
 		}
 		else
@@ -344,20 +344,18 @@ bool FileSystem_GetExecutableDir( char *exedir, int exeDirLen )
 
 	Q_FixSlashes( exedir );
 
-	const char* libDir = "bin";
-
 	// Return the bin directory as the executable dir if it's not in there
 	// because that's really where we're running from...
 	char ext[MAX_PATH];
 	Q_StrRight( exedir, 4, ext, sizeof( ext ) );
-	if ( ext[0] != CORRECT_PATH_SEPARATOR || Q_stricmp( ext+1, libDir ) != 0 )
+	if ( ext[0] != CORRECT_PATH_SEPARATOR || Q_stricmp( ext+1, "bin" ) != 0 )
 	{
 		Q_strncat( exedir, CORRECT_PATH_SEPARATOR_S, exeDirLen, COPY_ALL_CHARACTERS );
-		Q_strncat( exedir, libDir, exeDirLen, COPY_ALL_CHARACTERS );
+		Q_strncat( exedir, "bin", exeDirLen, COPY_ALL_CHARACTERS );
 		Q_FixSlashes( exedir );
 	}
 #endif
-
+	
 	return true;
 }
 
@@ -372,7 +370,7 @@ static bool FileSystem_GetBaseDir( char *baseDir, int baseDirLen )
 		Q_StripFilename( baseDir );
 		return true;
 	}
-
+	
 	return false;
 #endif
 }
@@ -554,7 +552,9 @@ FSReturnCode_t FileSystem_LoadSearchPaths( CFSSearchPathsInit &initInfo )
 	if ( !FileSystem_GetBaseDir( baseDir, sizeof( baseDir ) ) )
 		return SetupFileSystemError( false, FS_INVALID_PARAMETERS, "FileSystem_GetBaseDir failed." );
 
+#ifndef BYTEMATCH_RETAIL
 	Msg("filesystem BaseDir: %s\n", baseDir);
+#endif
 
 	// The MOD directory is always the one that contains gameinfo.txt
 	Q_strncpy( initInfo.m_ModPath, initInfo.m_pDirectoryName, sizeof( initInfo.m_ModPath ) );
@@ -581,9 +581,8 @@ FSReturnCode_t FileSystem_LoadSearchPaths( CFSSearchPathsInit &initInfo )
 		}
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	const char *ExtraVpkPaths = getenv( "EXTRAS_VPK_PATH" );
-	char szAbsSearchPath[MAX_PATH];
-
 	if( ExtraVpkPaths )
 	{
 		CUtlStringList vecPaths;
@@ -595,6 +594,7 @@ FSReturnCode_t FileSystem_LoadSearchPaths( CFSSearchPathsInit &initInfo )
 			FileSystem_AddLoadedSearchPath( initInfo, "GAME", vecPaths[idxExtraPath], false );
 		}
 	}
+#endif
 
 	bool bLowViolence = initInfo.m_bLowViolence;
 	for ( KeyValues *pCur=pSearchPaths->GetFirstValue(); pCur; pCur=pCur->GetNextValue() )
@@ -617,12 +617,11 @@ FSReturnCode_t FileSystem_LoadSearchPaths( CFSSearchPathsInit &initInfo )
 			// We need a special identifier in the gameinfo.txt here because the base hl2 folder exists in different places.
 			// In the case of a game or a Steam-launched dedicated server, all the necessary prior engine content is mapped in with the Steam depots,
 			// so we can just use the path as-is.
-
 			pLocation += strlen( BASESOURCEPATHS_TOKEN );
 		}
 
-
 		CUtlStringList vecFullLocationPaths;
+		char szAbsSearchPath[MAX_PATH];
 		V_MakeAbsolutePath( szAbsSearchPath, sizeof( szAbsSearchPath ), pLocation, pszBaseDir );
 
 		// Now resolve any ./'s.
@@ -1011,6 +1010,77 @@ bool DoesPathExistAlready( const char *pPathEnvVar, const char *pTestPath )
 	}
 }
 
+FSReturnCode_t SetSteamInstallPath( char *steamInstallPath, int steamInstallPathLen, CSteamEnvVars &steamEnvVars, bool bErrorsAsWarnings )
+{
+	if ( IsConsole() )
+	{
+		// consoles don't use steam
+		return FS_MISSING_STEAM_DLL;
+	}
+
+	if ( IsPosix() )
+		return FS_OK; // under posix the content does not live with steam.dll up the path, rely on the environment already being set by steam
+	
+	// Start at our bin directory and move up until we find a directory with steam.dll in it.
+	char executablePath[MAX_PATH];
+	if ( !FileSystem_GetExecutableDir( executablePath, sizeof( executablePath ) )	)
+	{
+		if ( bErrorsAsWarnings )
+		{
+			Warning( "SetSteamInstallPath: FileSystem_GetExecutableDir failed.\n" );
+			return FS_INVALID_PARAMETERS;
+		}
+		else
+		{
+			return SetupFileSystemError( false, FS_INVALID_PARAMETERS, "FileSystem_GetExecutableDir failed." );
+		}
+	}
+
+	Q_strncpy( steamInstallPath, executablePath, steamInstallPathLen );
+#ifdef WIN32
+	const char *pchSteamDLL = "steam" DLL_EXT_STRING;
+#elif defined(POSIX)
+	// under osx the bin lives in the bin/ folder, so step back one
+	Q_StripLastDir( steamInstallPath, steamInstallPathLen );
+	const char *pchSteamDLL = "libsteam" DLL_EXT_STRING;	
+#else
+	#error
+#endif
+	while ( 1 )
+	{
+		// Ignore steamapp.cfg here in case they're debugging. We still need to know the real steam path so we can find their username.
+		// find 
+		if ( DoesFileExistIn( steamInstallPath, pchSteamDLL ) && !DoesFileExistIn( steamInstallPath, "steamapp.cfg" ) )
+			break;
+	
+		if ( !Q_StripLastDir( steamInstallPath, steamInstallPathLen ) )
+		{
+			if ( bErrorsAsWarnings )
+			{
+				Warning( "Can't find %s relative to executable path: %s.\n", pchSteamDLL, executablePath );
+				return FS_MISSING_STEAM_DLL;
+			}
+			else
+			{
+				return SetupFileSystemError( false, FS_MISSING_STEAM_DLL, "Can't find %s relative to executable path: %s.", pchSteamDLL, executablePath );
+			}
+		}			
+	}
+
+	// Also, add the install path to their PATH environment variable, so filesystem_steam.dll can get to steam.dll.
+	char szPath[ 8192 ];
+	steamEnvVars.m_Path.GetValue( szPath, sizeof( szPath ) );
+	if ( !DoesPathExistAlready( szPath, steamInstallPath ) )
+	{
+#ifdef WIN32
+#define PATH_SEP ";"
+#else
+#define PATH_SEP ":"
+#endif	
+		steamEnvVars.m_Path.SetValue( "%s%s%s", szPath, PATH_SEP, steamInstallPath );
+	}
+	return FS_OK;
+}
 
 FSReturnCode_t GetSteamCfgPath( char *steamCfgPath, int steamCfgPathLen )
 {
@@ -1090,6 +1160,29 @@ void SetSteamUserPassphrase( KeyValues *pSteamInfo, CSteamEnvVars &steamEnvVars 
 	}
 }
 
+FSReturnCode_t SetupSteamStartupEnvironment( KeyValues *pFileSystemInfo, const char *pGameInfoDirectory, CSteamEnvVars &steamEnvVars )
+{
+	// Ok, we're going to run Steam. See if they have SteamInfo.txt. If not, we'll try to deduce what we can.
+	char steamInfoFile[MAX_PATH];
+	Q_strncpy( steamInfoFile, pGameInfoDirectory, sizeof( steamInfoFile ) );
+	Q_AppendSlash( steamInfoFile, sizeof( steamInfoFile ) );
+	Q_strncat( steamInfoFile, "steaminfo.txt", sizeof( steamInfoFile ), COPY_ALL_CHARACTERS );
+	KeyValues *pSteamInfo = ReadKeyValuesFile( steamInfoFile );
+
+	char steamInstallPath[MAX_PATH];
+	FSReturnCode_t ret = SetSteamInstallPath( steamInstallPath, sizeof( steamInstallPath ), steamEnvVars, false );
+	if ( ret != FS_OK )
+		return ret;
+
+	SetSteamAppUser( pSteamInfo, steamInstallPath, steamEnvVars );
+	SetSteamUserPassphrase( pSteamInfo, steamEnvVars );
+
+	if ( pSteamInfo )
+		pSteamInfo->deleteThis();
+
+	return FS_OK;
+}
+
 FSReturnCode_t FileSystem_SetBasePaths( IFileSystem *pFileSystem )
 {
 	pFileSystem->RemoveSearchPaths( "EXECUTABLE_PATH" );
@@ -1113,7 +1206,6 @@ FSReturnCode_t FileSystem_SetBasePaths( IFileSystem *pFileSystem )
 //-----------------------------------------------------------------------------
 FSReturnCode_t FileSystem_GetFileSystemDLLName( char *pFileSystemDLL, int nMaxLen, bool &bSteam )
 {
-#if 0
 	bSteam = false;
 
 	// Inside of here, we don't have a filesystem yet, so we have to assume that the filesystem_stdio or filesystem_steam
@@ -1123,7 +1215,12 @@ FSReturnCode_t FileSystem_GetFileSystemDLLName( char *pFileSystemDLL, int nMaxLe
 		return SetupFileSystemError( false, FS_INVALID_PARAMETERS, "FileSystem_GetExecutableDir failed." );
 
 	// Assume we'll use local files
+#ifdef BYTEMATCH_RETAIL
 	Q_snprintf( pFileSystemDLL, nMaxLen, "%s%cfilesystem_stdio" DLL_EXT_STRING, executablePath, CORRECT_PATH_SEPARATOR );
+#else
+	// waf builds name POSIX shared libraries lib<name>; VPC builds don't.
+	Q_snprintf( pFileSystemDLL, nMaxLen, "%s%clibfilesystem_stdio" DLL_EXT_STRING, executablePath, CORRECT_PATH_SEPARATOR );
+#endif
 
 	#if !defined( _X360 )
 
@@ -1138,39 +1235,30 @@ FSReturnCode_t FileSystem_GetFileSystemDLLName( char *pFileSystemDLL, int nMaxLe
 				_access( pFileSystemDLL, 0 ) != 0
 			#endif
 		) {
+#ifdef BYTEMATCH_RETAIL
 			Q_snprintf( pFileSystemDLL, nMaxLen, "%s%cfilesystem_steam" DLL_EXT_STRING, executablePath, CORRECT_PATH_SEPARATOR );
 			bSteam = true;
-		}
-	#endif
 #else
-	char executablePath[MAX_PATH];
-	if ( !FileSystem_GetExecutableDir( executablePath, sizeof( executablePath ) )	)
-		return SetupFileSystemError( false, FS_INVALID_PARAMETERS, "FileSystem_GetExecutableDir failed." );
-
-	// Assume we'll use local files
-	Q_snprintf( pFileSystemDLL, nMaxLen, "%s%clibfilesystem_stdio" DLL_EXT_STRING, executablePath, CORRECT_PATH_SEPARATOR );
-
-	#if !defined( _X360 )
-		// Use filsystem_steam if it exists?
-		#if defined( OSX ) || defined( LINUX )
-			struct stat statBuf;
-		#endif
-		if (
-			#if defined( OSX ) || defined( LINUX )
-				stat( pFileSystemDLL, &statBuf ) != 0
-			#else
-				_access( pFileSystemDLL, 0 ) != 0
-			#endif
-		) {
 			Q_snprintf( pFileSystemDLL, nMaxLen, "%s%cfilesystem_stdio" DLL_EXT_STRING, executablePath, CORRECT_PATH_SEPARATOR );
+#endif
 		}
 	#endif
-
-#endif
 
 	return FS_OK;
 }
 
+//-----------------------------------------------------------------------------
+// Sets up the steam.dll install path in our PATH env var (so you can then just 
+// LoadLibrary() on filesystem_steam.dll without having to copy steam.dll anywhere special )
+//-----------------------------------------------------------------------------
+FSReturnCode_t FileSystem_SetupSteamInstallPath()
+{
+	CSteamEnvVars steamEnvVars;
+	char steamInstallPath[MAX_PATH];
+	FSReturnCode_t ret = SetSteamInstallPath( steamInstallPath, sizeof( steamInstallPath ), steamEnvVars, true );
+	steamEnvVars.m_Path.SetRestoreOriginalValue( false ); // We want to keep the change to the path going forward.
+	return ret;
+}
 
 //-----------------------------------------------------------------------------
 // Sets up the steam environment + gets back the gameinfo.txt path
@@ -1190,6 +1278,42 @@ FSReturnCode_t FileSystem_SetupSteamEnvironment( CFSSteamSetupInfo &fsInfo )
 #else
 	setenv( GAMEDIR_TOKEN, fsInfo.m_GameInfoPath, 1 );
 #endif
+	
+	CSteamEnvVars steamEnvVars;
+	if ( fsInfo.m_bSteam )
+	{
+		if ( fsInfo.m_bToolsMode )
+		{
+			// Now, load gameinfo.txt (to make sure it's there)
+			KeyValues *pMainFile, *pFileSystemInfo, *pSearchPaths;
+			ret = LoadGameInfoFile( fsInfo.m_GameInfoPath, pMainFile, pFileSystemInfo, pSearchPaths );
+			if ( ret != FS_OK )
+				return ret;
+
+			// If filesystem_stdio.dll is missing or -steam is specified, then load filesystem_steam.dll.
+			// There are two command line parameters for Steam:
+			//		1) -steam (runs Steam in remote filesystem mode; requires Steam backend)
+			//		2) -steamlocal (runs Steam in local filesystem mode (all content off HDD)
+
+			// Setup all the environment variables related to Steam so filesystem_steam.dll knows how to initialize Steam.
+			ret = SetupSteamStartupEnvironment( pFileSystemInfo, fsInfo.m_GameInfoPath, steamEnvVars );
+			if ( ret != FS_OK )
+				return ret;
+
+			steamEnvVars.m_SteamAppId.SetRestoreOriginalValue( false ); // We want to keep the change to the path going forward.
+
+			// We're done with main file
+			pMainFile->deleteThis();
+		}
+		else if ( fsInfo.m_bSetSteamDLLPath )
+		{
+			// This is used by the engine to automatically set the path to their steam.dll when running the engine,
+			// so they can debug it without having to copy steam.dll up into their hl2.exe folder.
+			char steamInstallPath[MAX_PATH];
+			ret = SetSteamInstallPath( steamInstallPath, sizeof( steamInstallPath ), steamEnvVars, true );
+			steamEnvVars.m_Path.SetRestoreOriginalValue( false ); // We want to keep the change to the path going forward.
+		}
+	}
 
 	return FS_OK;
 }
