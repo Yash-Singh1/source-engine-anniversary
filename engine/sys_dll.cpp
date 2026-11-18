@@ -860,6 +860,94 @@ void GetSpew( char *buf, size_t buflen )
 	*pcur = 0;
 }
 
+#ifdef BYTEMATCH_RETAIL
+SpewRetval_t Sys_SpewFunc( SpewType_t spewType, const char *pMsg )
+{
+	bool suppress = g_bInSpew;
+
+	g_bInSpew = true;
+
+	// Escape '%' so the message can be used as a format string below.
+	char temp[8192];
+	char *pDst = temp;
+	const char *pDstLimit = &temp[ sizeof( temp ) - 2 ];
+	for ( const char *pSrc = pMsg; *pSrc && pDst < pDstLimit; pSrc++ )
+	{
+		*pDst++ = *pSrc;
+		if ( *pSrc == '%' )
+			*pDst++ = '%';
+	}
+	*pDst = 0;
+
+	AddSpewRecord( pMsg );
+
+	if ( !suppress )
+	{
+		// If this is a dedicated server, then we have taken over its spew function, but we still
+		// want its vgui console to show the spew, so pass it into the dedicated server.
+		if ( dedicated )
+			dedicated->Sys_Printf( (char*)pMsg );
+
+		Plat_DebugString( pMsg );
+
+		if ( g_bTextMode )
+		{
+			printf( "%s", pMsg );
+		}
+
+		if ((spewType != SPEW_LOG) || (sv.GetMaxClients() == 1))
+		{
+			Color color;
+			switch ( spewType )
+			{
+#ifndef SWDS
+			case SPEW_WARNING:
+				{
+					color.SetColor( 255, 90, 90, 255 );
+				}
+				break;
+			case SPEW_ASSERT:
+				{
+					color.SetColor( 255, 20, 20, 255 );
+				}
+				break;
+			case SPEW_ERROR:
+				{
+					color.SetColor( 20, 70, 255, 255 );
+				}
+				break;
+#endif
+			default:
+				{
+					color = *GetSpewOutputColor();
+				}
+				break;
+			}
+			Con_ColorPrintf( color, temp );
+		}
+		else
+		{
+			g_Log.Printf( temp );
+		}
+	}
+
+	g_bInSpew = false;
+
+	if (spewType == SPEW_ERROR)
+	{
+		Sys_Error( temp );
+		return SPEW_ABORT;
+	}
+	if (spewType == SPEW_ASSERT)
+	{
+		if ( CommandLine()->FindParm( "-noassert" ) == 0 )
+			return SPEW_DEBUGGER;
+		else
+			return SPEW_CONTINUE;
+	}
+	return SPEW_CONTINUE;
+}
+#else
 ConVar spew_consolelog_to_debugstring( "spew_consolelog_to_debugstring", "0", 0, "Send console log to PLAT_DebugString()" );
 
 SpewRetval_t Sys_SpewFunc( SpewType_t spewType, const char *pMsg )
@@ -947,6 +1035,8 @@ SpewRetval_t Sys_SpewFunc( SpewType_t spewType, const char *pMsg )
 	}
 	return SPEW_CONTINUE;
 }
+#endif
+#line 945
 
 void DeveloperChangeCallback( IConVar *pConVar, const char *pOldString, float flOldValue )
 {

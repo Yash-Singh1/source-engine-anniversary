@@ -41,6 +41,15 @@ extern double realtime;
 #define DEFAULT_XBOX_WAV_MEMORY_CACHE ( 16 * 1024 * 1024 )
 #define TF_XBOX_WAV_MEMORY_CACHE ( 24 * 1024 * 1024 ) // Team Fortress uses a larger cache
 
+#ifdef BYTEMATCH_RETAIL
+ConVar snd_async_spew_blocking( "snd_async_spew_blocking", "0", 0, "Spew message to console any time async sound loading blocks on file i/o." );
+ConVar snd_async_fullyasync( "snd_async_fullyasync", "0", 0, "All playback is fully async (sound doesn't play until data arrives)." );
+ConVar snd_async_stream_spew( "snd_async_stream_spew", "0", 0, "Spew streaming info ( 0=Off, 1=streams, 2=buffers" );
+
+#define SndAsyncSpewBlocking()	snd_async_spew_blocking.GetBool()
+#define SndAsyncSpew()			( snd_async_spew_blocking.GetInt() >= 2 )
+#define SndAsyncBlockingMsg		DevMsg
+#else
 // Dev builds will be missing soundcaches and hitch sometimes, we only care if its being properly launched from steam where sound caches should be complete.
 ConVar snd_async_spew_blocking( "snd_async_spew_blocking", "1", 0, "Spew message to console any time async sound loading blocks on file i/o. ( 0=Off, 1=With -steam only, 2=Always" );
 ConVar snd_async_spew( "snd_async_spew", "0", 0, "Spew all async sound reads, including success" );
@@ -52,6 +61,11 @@ static bool SndAsyncSpewBlocking()
 	int pref = snd_async_spew_blocking.GetInt();
 	return ( pref >= 2 ) || ( pref == 1 && CommandLine()->FindParm( "-steam" ) != 0 );
 }
+
+#define SndAsyncSpew()			snd_async_spew.GetBool()
+#define SndAsyncBlockingMsg		Warning
+#endif
+#line 55
 
 #define SndAlignReads() 1
 
@@ -418,7 +432,7 @@ bool CAsyncWaveData::BlockingCopyData( void *destbuffer, int destbufsize, int st
 			float st = ( float )Plat_FloatTime();
 			g_pFileSystem->AsyncFinish( m_hAsyncControl, true );
 			float ed = ( float )Plat_FloatTime();
-			Warning( "%f BCD:  Async I/O Force %s (%8.2f msec / %8.2f msec total)\n", realtime, GetFileName(), 1000.0f * (float)( ed - st ), 1000.0f * (float)( m_arrival - m_start ) );
+			SndAsyncBlockingMsg( "%f BCD:  Async I/O Force %s (%8.2f msec / %8.2f msec total)\n", realtime, GetFileName(), 1000.0f * (float)( ed - st ), 1000.0f * (float)( m_arrival - m_start ) );
 		}
 		else
 		{
@@ -443,7 +457,7 @@ bool CAsyncWaveData::BlockingCopyData( void *destbuffer, int destbufsize, int st
 	{
 		return false;
 	}
-	else if ( m_arrival != 0 && snd_async_spew.GetBool() )
+	else if ( m_arrival != 0 && SndAsyncSpew() )
 	{
 		DevMsg( "%f Async I/O Read successful %s (%8.2f msec)\n", realtime, GetFileName(), 1000.0f * (float)( m_arrival - m_start ) );
 		m_arrival = 0;
@@ -496,7 +510,7 @@ bool CAsyncWaveData::BlockingGetDataPointer( void **ppData )
 			float st = ( float )Plat_FloatTime();
 			g_pFileSystem->AsyncFinish( m_hAsyncControl, true );
 			float ed = ( float )Plat_FloatTime();
-			Warning( "%f BlockingGetDataPointer:  Async I/O Force %s (%8.2f msec / %8.2f msec total )\n", realtime, GetFileName(), 1000.0f * (float)( ed - st ), 1000.0f * (float)( m_arrival - m_start ) );
+			SndAsyncBlockingMsg( "%f BlockingGetDataPointer:  Async I/O Force %s (%8.2f msec / %8.2f msec total )\n", realtime, GetFileName(), 1000.0f * (float)( ed - st ), 1000.0f * (float)( m_arrival - m_start ) );
 		}
 		else
 		{
@@ -521,7 +535,7 @@ bool CAsyncWaveData::BlockingGetDataPointer( void **ppData )
 	{
 		return false;
 	}
-	else if ( m_arrival != 0 && snd_async_spew.GetBool() )
+	else if ( m_arrival != 0 && SndAsyncSpew() )
 	{
 		DevMsg( "%f Async I/O Read successful %s (%8.2f msec)\n", realtime, GetFileName(), 1000.0f * (float)( m_arrival - m_start ) );
 		m_arrival = 0;
@@ -541,7 +555,7 @@ void CAsyncWaveData::SetAsyncPriority( int priority )
 	{
 		m_async.priority = priority;
 		g_pFileSystem->AsyncSetPriority( m_hAsyncControl, m_async.priority );
-		if ( snd_async_spew.GetBool() )
+		if ( SndAsyncSpew() )
 		{
 			DevMsg( "%f Async I/O Bumped priority for %s (%8.2f msec)\n", realtime, GetFileName(), 1000.0f * (float)( Plat_FloatTime() - m_start ) );
 		}

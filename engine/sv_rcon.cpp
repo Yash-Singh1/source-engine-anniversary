@@ -93,7 +93,10 @@ ConVar sv_rcon_banpenalty( "sv_rcon_banpenalty", "0", 0, "Number of minutes to b
 ConVar sv_rcon_maxfailures( "sv_rcon_maxfailures", "10", 0, "Max number of times a user can fail rcon authentication before being banned", true, 1, true, 20 );
 ConVar sv_rcon_minfailures( "sv_rcon_minfailures", "5", 0, "Number of times a user can fail rcon authentication in sv_rcon_minfailuretime before being banned", true, 1, true, 20 );
 ConVar sv_rcon_minfailuretime( "sv_rcon_minfailuretime", "30", 0, "Number of seconds to track failed rcon authentications", true, 1, false, 0 );
+#ifndef BYTEMATCH_RETAIL
 ConVar sv_rcon_whitelist_address( "sv_rcon_whitelist_address", "", 0, "When set, rcon failed authentications will never ban this address, e.g. '127.0.0.1'" );
+#endif
+#line 97
 
 ConVar sv_rcon_maxpacketsize( "sv_rcon_maxpacketsize", "1024", 0, "The maximum number of bytes to allow in a command packet", true, 0, false, 0 );
 ConVar sv_rcon_maxpacketbans( "sv_rcon_maxpacketbans", "1", 0, "Ban IPs for sending RCON packets exceeding the value specified in sv_rcon_maxpacketsize", true, 0, true, 1 );
@@ -521,6 +524,7 @@ bool CRConServer::FailedRCon_t::operator<(const struct CRConServer::FailedRCon_t
 //-----------------------------------------------------------------------------
 bool CRConServer::HandleFailedRconAuth( const netadr_t & adr )
 {
+#ifndef BYTEMATCH_RETAIL
 	if ( sv_rcon_whitelist_address.GetString()[0] )
 	{
 		if ( !V_strcmp( adr.ToString( true ), sv_rcon_whitelist_address.GetString() ) )
@@ -529,6 +533,8 @@ bool CRConServer::HandleFailedRconAuth( const netadr_t & adr )
 			return false;
 		}
 	}
+#endif
+#line 532
 
 	int i;
 	FailedRCon_t *failedRcon = NULL;

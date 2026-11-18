@@ -205,10 +205,13 @@ CON_COMMAND( BindToggle, "Performs a bind <key> \"increment var <cvar> 0 1 1\"" 
 	Cbuf_InsertText( newCmd );
 }
 
+#ifndef BYTEMATCH_RETAIL
 CON_COMMAND_F( PerfMark, "inserts a telemetry marker into the stream. If args are provided, they will be included.", FCVAR_NONE )
 {
 	// Nothing to do, we had our message written out by Cbuf_ExecuteCommand. 
 }
+#endif
+#line 212
 
 
 //-----------------------------------------------------------------------------
@@ -479,6 +482,7 @@ static const char *ParmValueAfter( int nIndex )
 	return pValue;
 }
 #endif
+#line 482
 
 //-----------------------------------------------------------------------------
 // Purpose: Adds command line parameters as script statements
@@ -514,6 +518,7 @@ CON_COMMAND( stuffcmds, "Parses and stuffs command line + commands to command bu
 #else
 			const char *szValue = ParmValueAfter( i );
 #endif
+#line 517
 			if ( szValue )
 				i++;
 			continue;
@@ -526,6 +531,7 @@ CON_COMMAND( stuffcmds, "Parses and stuffs command line + commands to command bu
 #else
 			const char *szValue = ParmValueAfter( i );
 #endif
+#line 529
 			if (szValue)
 			{
 				build.PutString(va("%s %s\n", szParm+1, szValue));

@@ -483,7 +483,10 @@ extern CTHREADLOCALINT g_bInSpew;
 
 void Con_Printf( const char *fmt, ... );
 
+#ifndef BYTEMATCH_RETAIL
 extern ConVar spew_consolelog_to_debugstring;
+#endif
+#line 487
 
 void Con_ColorPrint( const Color& clr, char const *msg )
 {
@@ -529,7 +532,12 @@ void Con_ColorPrint( const Color& clr, char const *msg )
 		g_bInColorPrint = true;
 
 		// also echo to debugging console
+#ifdef BYTEMATCH_RETAIL
+		if ( Plat_IsInDebugSession() && !con_trace.GetInt() )
+#else
 		if ( Plat_IsInDebugSession() && !con_trace.GetInt() && !spew_consolelog_to_debugstring.GetBool() )
+#endif
+#line 533
 		{
 			Sys_OutputDebugString(msg);
 		}

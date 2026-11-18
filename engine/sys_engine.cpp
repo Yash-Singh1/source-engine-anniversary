@@ -72,7 +72,12 @@ static void fps_max_callback( IConVar *var, const char *pOldValue, float flOldVa
 		s_nDesiredFPSMax = ( (ConVar *)var)->GetInt();
 	}
 }
+#ifdef BYTEMATCH_RETAIL
+ConVar fps_max( "fps_max", DEFAULT_FPS_MAX_S, 0, "Frame rate limiter, cannot be set while connected to a server.", fps_max_callback );
+#else
 ConVar fps_max( "fps_max", DEFAULT_FPS_MAX_S, FCVAR_NOT_CONNECTED, "Frame rate limiter, cannot be set while connected to a server.", fps_max_callback );
+#endif
+#line 76
 
 // When set, this ConVar (typically driven from the advanced video settings) will drive fps_max (see above) to
 // half of the refresh rate, if the user hasn't otherwise set fps_max (via console, commandline etc)
