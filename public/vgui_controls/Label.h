@@ -192,9 +192,9 @@ private:
 	struct TImageInfo
 	{
 		IImage *image;
-		short offset;
-		short xpos;
-		short width;
+		int offset;
+		int xpos;
+		int width;
 	};
 	CUtlVector<TImageInfo> _imageDar;
 

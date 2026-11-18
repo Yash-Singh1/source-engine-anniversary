@@ -369,14 +369,8 @@ void Label::SetTextInset(int xInset, int yInset)
 //-----------------------------------------------------------------------------
 void Label::GetTextInset(int *xInset, int *yInset )
 {
-	if ( xInset )
-	{
-		*xInset = _textInset[0];
-	}
-	if ( yInset )
-	{
-		*yInset = _textInset[1];
-	}
+	*xInset = _textInset[0];
+	*yInset = _textInset[1];
 }
 
 //-----------------------------------------------------------------------------
@@ -834,7 +828,7 @@ int Label::AddImage(IImage *image, int offset)
 {
 	int newImage = _imageDar.AddToTail();
 	_imageDar[newImage].image = image;
-	_imageDar[newImage].offset = (short)offset;
+	_imageDar[newImage].offset = offset;
 	_imageDar[newImage].xpos = -1;
 	_imageDar[newImage].width = -1;
 	InvalidateLayout();
@@ -872,7 +866,7 @@ void Label::SetImageAtIndex(int index, IImage *image, int offset)
 	if ( _imageDar[index].image != image || _imageDar[index].offset != offset)
 	{
 		_imageDar[index].image = image;
-		_imageDar[index].offset = (short)offset;
+		_imageDar[index].offset = offset;
 		InvalidateLayout();
 	}
 }
@@ -939,7 +933,7 @@ void Label::SetImagePreOffset(int index, int preOffset)
 {
 	if (_imageDar.IsValidIndex(index) && _imageDar[index].offset != preOffset)
 	{
-		_imageDar[index].offset = (short)preOffset;
+		_imageDar[index].offset = preOffset;
 		InvalidateLayout();
 	}
 }
@@ -949,8 +943,8 @@ void Label::SetImagePreOffset(int index, int preOffset)
 //-----------------------------------------------------------------------------
 void Label::SetImageBounds(int index, int x, int width)
 {
-	_imageDar[index].xpos = (short)x;
-	_imageDar[index].width = (short)width;
+	_imageDar[index].xpos = x;
+	_imageDar[index].width = width;
 }
 
 //-----------------------------------------------------------------------------
