@@ -12,9 +12,9 @@ slots (+80/+100/+108/+112). `public/togl/dx_iunknown.h` is retail's `IUnknown`
 
 | file | base | matched |
 |---|---|---:|
-| cglmbuffer, cglmfbo, cglmquery, cglmprogram | written from the retail disassembly, linuxwin as reference | 4/7, 4/4, 10/11, 15/18 |
-| glmgrbasics, glentrypoints, glmgrcocoa.mm | ToGL 2014 linuxwin, cut back to what retail has | 10/12, 6/6, 1/1 |
-| glmgr, cglmtex, dxabstract, dx9asmtogl2 | Source SDK 2012 `materialsystem/glmgr` and `shaderapidx9` (the direct ancestors), moved to the 2013 SDL/gGL model | 68/81, 7/29, 136/158, 13/35 |
+| cglmbuffer, cglmfbo, cglmquery, cglmprogram | written from the retail disassembly, linuxwin as reference | 6/7, 4/4, 11/11, 16/18 |
+| glmgrbasics, glentrypoints, glmgrcocoa.mm | ToGL 2014 linuxwin, cut back to what retail has | 12/12, 6/6, 1/1 |
+| glmgr, cglmtex, dxabstract, dx9asmtogl2 | Source SDK 2012 `materialsystem/glmgr` and `shaderapidx9` (the direct ancestors), moved to the 2013 SDL/gGL model | 69/81, 23/29, 140/158, 24/35 |
 
 Known differences:
 
