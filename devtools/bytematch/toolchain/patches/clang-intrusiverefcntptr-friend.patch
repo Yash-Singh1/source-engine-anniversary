@@ -1,0 +1,15 @@
+Modern libc++/clang reject IntrusiveRefCntPtr's converting constructors,
+which read X::Obj of a different specialization. Declare all specializations
+friends. Applies to clang-503.0.38 and clang-600.0.5x (offset differs).
+Host-tool fix only; no effect on generated code.
+
+--- a/src/include/llvm/ADT/IntrusiveRefCntPtr.h
++++ b/src/include/llvm/ADT/IntrusiveRefCntPtr.h
+@@ -134,6 +134,7 @@
+ //===----------------------------------------------------------------------===//
+   template <typename T>
+   class IntrusiveRefCntPtr {
++    template <typename X> friend class IntrusiveRefCntPtr;
+     T* Obj;
+     typedef IntrusiveRefCntPtr this_type;
+   public:
