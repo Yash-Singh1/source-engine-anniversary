@@ -631,26 +631,29 @@ int CNPC_Vortigaunt::RangeAttack1Conditions( float flDot, float flDist )
 		return( COND_NOT_FACING_ATTACK );
 	}
 
+	if ( IsHL2Episodic() )
+	{
 #ifdef HL2_EPISODIC
 
-	// Do an extra check for workers near myself or the player
-	if ( IsAntlionWorker( GetEnemy() ) )
-	{
-		// See if it's too close to me
-		if ( ( GetAbsOrigin() - GetEnemy()->GetAbsOrigin() ).LengthSqr() < Square( AntlionWorkerBurstRadius() ) )
-			return COND_TOO_CLOSE_TO_ATTACK;
-
-		CBasePlayer *pPlayer = AI_GetSinglePlayer();
-		if ( pPlayer && ( pPlayer->GetAbsOrigin() - GetEnemy()->GetAbsOrigin() ).LengthSqr() < Square( AntlionWorkerBurstRadius() ) )
+		// Do an extra check for workers near myself or the player
+		if ( IsAntlionWorker( GetEnemy() ) )
 		{
-			// Warn the player to get away!
-			CFmtStrN<128> modifiers( "antlion_worker:true" );
-			SpeakIfAllowed( TLK_DANGER, modifiers );
-			return COND_NONE;
-		}
-	}
+			// See if it's too close to me
+			if ( ( GetAbsOrigin() - GetEnemy()->GetAbsOrigin() ).LengthSqr() < Square( AntlionWorkerBurstRadius() ) )
+				return COND_TOO_CLOSE_TO_ATTACK;
 
-#endif // HL2_EPISODIC
+			CBasePlayer *pPlayer = AI_GetSinglePlayer();
+			if ( pPlayer && ( pPlayer->GetAbsOrigin() - GetEnemy()->GetAbsOrigin() ).LengthSqr() < Square( AntlionWorkerBurstRadius() ) )
+			{
+				// Warn the player to get away!
+				CFmtStrN<128> modifiers( "antlion_worker:true" );
+				SpeakIfAllowed( TLK_DANGER, modifiers );
+				return COND_NONE;
+			}
+		}
+
+#endif
+	}
 
 	return COND_CAN_RANGE_ATTACK1;
 }
@@ -1080,10 +1083,14 @@ void CNPC_Vortigaunt::Event_Killed( const CTakeDamageInfo &info )
 //-----------------------------------------------------------------------------
 void CNPC_Vortigaunt::Spawn( void )
 {
-#if !defined( HL2_EPISODIC )
-	// Disable back-away
-	AddSpawnFlags( SF_NPC_NO_PLAYER_PUSHAWAY );
-#endif // HL2_EPISODIC
+	if ( IsHL2Episodic() )
+	{
+	}
+	else
+	{
+		// Disable back-away
+		AddSpawnFlags( SF_NPC_NO_PLAYER_PUSHAWAY );
+	}
 
 	// Allow multiple models (for slaves), but default to vortigaunt.mdl
 	char *szModel = (char *)STRING( GetModelName() );
@@ -1143,7 +1150,7 @@ void CNPC_Vortigaunt::Precache()
 	PrecacheModel("sprites/vortring1.vmt");
 
 	// HACK: Only precache this for EP2 because reslists cannot be rebuilt - 08/22/07 - jdw
-	if ( hl2_episodic.GetBool() )
+	if ( IsHL2Episodic() )
 	{
 		char modDir[MAX_PATH];
 		if ( UTIL_GetModDir( modDir, sizeof(modDir) ) )
@@ -1550,13 +1557,18 @@ int CNPC_Vortigaunt::SelectSchedule( void )
 			return nSchedule;
 	}
 
-#ifndef HL2_EPISODIC
-	if ( BehaviorSelectSchedule() )
-		return BaseClass::SelectSchedule();
-#else
-	if ( IsInAScript() )
-		return BaseClass::SelectSchedule();
+	if ( IsHL2Episodic() )
+	{
+#ifdef HL2_EPISODIC
+		if ( IsInAScript() )
+			return BaseClass::SelectSchedule();
 #endif
+	}
+	else
+	{
+		if ( BehaviorSelectSchedule() )
+			return BaseClass::SelectSchedule();
+	}
 
 	// If we're currently supposed to be doing something scripted, do it immediately.
 	if ( m_bExtractingBugbait )

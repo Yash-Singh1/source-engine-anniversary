@@ -3008,7 +3008,7 @@ void CAI_BaseNPC::RunAnimation( void )
 			//But here it doesn't and not setting it causes any animation set through here to be stomped by the 
 			//ideal sequence before it has a chance of playing out (since there's code that reselects the ideal 
 			//sequence if it doesn't match the current one).
-			if ( hl2_episodic.GetBool() )
+			if ( IsHL2Episodic() )
 			{
 				m_nIdealSequence = iSequence;
 			}
@@ -4746,9 +4746,12 @@ void CAI_BaseNPC::GatherConditions( void )
 //-----------------------------------------------------------------------------
 void CAI_BaseNPC::PrescheduleThink( void )
 {
+	if ( IsHL2Episodic() )
+	{
 #ifdef HL2_EPISODIC
-	CheckForScriptedNPCInteractions();
+		CheckForScriptedNPCInteractions();
 #endif
+	}
 
 	// If we use weapons, and our desired weapon state is not the current, fix it
 	if( (CapabilitiesGet() & bits_CAP_USE_WEAPONS) && (m_iDesiredWeaponState == DESIREDWEAPONSTATE_HOLSTERED || m_iDesiredWeaponState == DESIREDWEAPONSTATE_UNHOLSTERED || m_iDesiredWeaponState == DESIREDWEAPONSTATE_HOLSTERED_DESTROYED ) )
@@ -12045,21 +12048,24 @@ bool CAI_BaseNPC::IsNavigationUrgent()
 
 bool CAI_BaseNPC::ShouldFailNav( bool bMovementFailed )
 {
+	if ( IsHL2Episodic() )
+	{
 #ifdef HL2_EPISODIC
 
-	if ( ai_vehicle_avoidance.GetBool() )
-	{
-		// Never be blocked this way by a vehicle (creates too many headaches around the levels)
-		CBaseEntity *pEntity = GetNavigator()->GetBlockingEntity();
-		if ( pEntity && pEntity->GetServerVehicle() )
+		if ( ai_vehicle_avoidance.GetBool() )
 		{
-			// Vital allies never get stuck, and urgent moves cannot be blocked by a vehicle
-			if ( Classify() == CLASS_PLAYER_ALLY_VITAL || IsNavigationUrgent() )
-				return false;
+			// Never be blocked this way by a vehicle (creates too many headaches around the levels)
+			CBaseEntity *pEntity = GetNavigator()->GetBlockingEntity();
+			if ( pEntity && pEntity->GetServerVehicle() )
+			{
+				// Vital allies never get stuck, and urgent moves cannot be blocked by a vehicle
+				if ( Classify() == CLASS_PLAYER_ALLY_VITAL || IsNavigationUrgent() )
+					return false;
+			}
 		}
-	}
 
-#endif // HL2_EPISODIC
+#endif
+	}
 
 	// It's up to the schedule that requested movement to deal with failed movement.  Currently, only a handfull of 
 	// schedules are considered Urgent, and they need to deal with what to do when there's no route, which by inspection
@@ -12608,7 +12614,7 @@ bool CAI_BaseNPC::IsCoverPosition( const Vector &vecThreat, const Vector &vecPos
 
 	AI_TraceLOS( vecThreat, vecPosition, this, &tr, &filter );
 
-	if( tr.fraction != 1.0 && hl2_episodic.GetBool() )
+	if( tr.fraction != 1.0 && IsHL2Episodic() )
 	{
 		if( tr.m_pEnt->m_iClassname == m_iClassname )
 		{

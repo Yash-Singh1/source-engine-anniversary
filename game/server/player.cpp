@@ -1349,7 +1349,7 @@ int CBasePlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 
 	float flPunch = -2;
 
-	if( hl2_episodic.GetBool() && info.GetAttacker() && !FInViewCone( info.GetAttacker() ) )
+	if( IsHL2Episodic() && info.GetAttacker() && !FInViewCone( info.GetAttacker() ) )
 	{
 		if( info.GetDamage() > 10.0f )
 			flPunch = -10;
@@ -6587,7 +6587,7 @@ bool CBasePlayer::BumpWeapon( CBaseCombatWeapon *pWeapon )
 	}
 
 	// Act differently in the episodes
-	if ( hl2_episodic.GetBool() )
+	if ( IsHL2Episodic() )
 	{
 		// Don't let the player touch the item unless unobstructed
 		if ( !UTIL_ItemCanBeTouchedByPlayer( pWeapon, this ) && !gEvilImpulse101 )

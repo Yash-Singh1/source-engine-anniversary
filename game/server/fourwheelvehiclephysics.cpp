@@ -665,7 +665,7 @@ int CFourWheelVehiclePhysics::DrawDebugTextOverlays( int nOffset )
 void CFourWheelVehiclePhysics::PlaceWheelDust( int wheelIndex, bool ignoreSpeed )
 {
 	// New vehicles handle this deeper into the base class
-	if ( hl2_episodic.GetBool() )
+	if ( IsHL2Episodic() )
 		return;
 
 	// Old dust

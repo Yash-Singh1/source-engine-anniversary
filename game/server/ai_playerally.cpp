@@ -459,7 +459,7 @@ void CAI_PlayerAlly::GatherEnemyConditions( CBaseEntity *pEnemy )
 #ifdef HL2_DLL
 		if ( HasCondition( COND_SEE_ENEMY ) && ( pEnemy->Classify() != CLASS_BULLSEYE ) )
 		{
-			if( Classify() == CLASS_PLAYER_ALLY_VITAL && hl2_episodic.GetBool() )
+			if( Classify() == CLASS_PLAYER_ALLY_VITAL && IsHL2Episodic() )
 			{
 				CBasePlayer *pPlayer = AI_GetSinglePlayer();
 
@@ -543,26 +543,29 @@ void CAI_PlayerAlly::PrescheduleThink( void )
 		TakeHealth( flHealthRegen, DMG_GENERIC );
 	}
 
-#ifdef HL2_EPISODIC
-	if ( (GetState() == NPC_STATE_IDLE || GetState() == NPC_STATE_ALERT) 
-		 && !HasCondition(COND_RECEIVED_ORDERS) && !IsInAScript() )
+	if ( IsHL2Episodic() )
 	{
-		if ( m_flNextIdleSpeechTime && m_flNextIdleSpeechTime < gpGlobals->curtime )
+#ifdef HL2_EPISODIC
+		if ( (GetState() == NPC_STATE_IDLE || GetState() == NPC_STATE_ALERT) 
+			 && !HasCondition(COND_RECEIVED_ORDERS) && !IsInAScript() )
 		{
-			AISpeechSelection_t selection;
-			if ( SelectNonCombatSpeech( &selection ) )
+			if ( m_flNextIdleSpeechTime && m_flNextIdleSpeechTime < gpGlobals->curtime )
 			{
-				SetSpeechTarget( selection.hSpeechTarget );
-				SpeakDispatchResponse( selection.concept.c_str(), selection.pResponse );
-				m_flNextIdleSpeechTime = gpGlobals->curtime + RandomFloat( 20,30 );
-			}
-			else
-			{
-				m_flNextIdleSpeechTime = gpGlobals->curtime + RandomFloat( 10,20 );
+				AISpeechSelection_t selection;
+				if ( SelectNonCombatSpeech( &selection ) )
+				{
+					SetSpeechTarget( selection.hSpeechTarget );
+					SpeakDispatchResponse( selection.concept.c_str(), selection.pResponse );
+					m_flNextIdleSpeechTime = gpGlobals->curtime + RandomFloat( 20,30 );
+				}
+				else
+				{
+					m_flNextIdleSpeechTime = gpGlobals->curtime + RandomFloat( 10,20 );
+				}
 			}
 		}
+#endif
 	}
-#endif // HL2_EPISODIC
 
 #endif // HL2_DLL
 }

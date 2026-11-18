@@ -379,7 +379,7 @@ int	CNPC_Barnacle::OnTakeDamage_Alive( const CTakeDamageInfo &inputInfo )
 		SetActivity( ACT_SMALL_FLINCH );
 	}
 
-	if( hl2_episodic.GetBool() && info.GetAttacker() && info.GetAttacker()->Classify() == CLASS_PLAYER_ALLY_VITAL )
+	if( IsHL2Episodic() && info.GetAttacker() && info.GetAttacker()->Classify() == CLASS_PLAYER_ALLY_VITAL )
 	{
 		if( FClassnameIs( info.GetAttacker(), "npc_alyx" ) )
 		{
@@ -1049,7 +1049,7 @@ void CNPC_Barnacle::LiftRagdoll( float flBiteZOffset )
   		if ( GetEnemy()->Classify() == CLASS_ZOMBIE )
 		{
 			// lifted the prey high enough to see it's a zombie. Spit it out.
-			if ( hl2_episodic.GetBool() )
+			if ( IsHL2Episodic() )
 			{
 				m_bLiftingPrey = false;
 				SetActivity( (Activity)ACT_BARNACLE_BITE_SMALL_THINGS );
@@ -1145,7 +1145,7 @@ void CNPC_Barnacle::LiftPhysicsObject( float flBiteZOffset )
 		// If we got a physics prop, wait until the thing has settled down
 		m_bLiftingPrey = false;
 
-		if ( hl2_episodic.GetBool() )
+		if ( IsHL2Episodic() )
 		{
 			CBounceBomb *pBounce = dynamic_cast<CBounceBomb *>( pVictim );
 
@@ -1577,37 +1577,40 @@ void CNPC_Barnacle::BitePrey( void )
 
 	CBaseCombatCharacter *pVictim = GetEnemyCombatCharacterPointer();
 
+ if ( IsHL2Episodic() )
+ {
 #ifdef HL2_EPISODIC
- 	if ( pVictim == NULL )
-	{
-		if ( GetEnemy() )
+	 	if ( pVictim == NULL )
 		{
-			CBounceBomb *pBounce = dynamic_cast<CBounceBomb *>( GetEnemy() );
-
-			if ( pBounce )
+			if ( GetEnemy() )
 			{
-				// Stop the ragdoll moving and start to pull the sucker up into our mouth
-				m_bSwallowingPrey = true;
-				m_bSwallowingBomb = true;
-				IPhysicsObject *pTonguePhys = m_hTongueTip->VPhysicsGetObject();
+				CBounceBomb *pBounce = dynamic_cast<CBounceBomb *>( GetEnemy() );
 
-				// Stop the tongue's spring getting in the way of swallowing
-				m_hTongueTip->m_pSpring->SetSpringConstant( 0 );
+				if ( pBounce )
+				{
+					// Stop the ragdoll moving and start to pull the sucker up into our mouth
+					m_bSwallowingPrey = true;
+					m_bSwallowingBomb = true;
+					IPhysicsObject *pTonguePhys = m_hTongueTip->VPhysicsGetObject();
 
-				// Switch the tongue tip to shadow and drag it up
-				pTonguePhys->SetShadow( 1e4, 1e4, false, false );
-				pTonguePhys->UpdateShadow( m_hTongueTip->GetAbsOrigin(), m_hTongueTip->GetAbsAngles(), false, 0 );
-				m_hTongueTip->SetMoveType( MOVETYPE_NOCLIP );
-				m_hTongueTip->SetAbsVelocity( Vector(0,0,32) );
+					// Stop the tongue's spring getting in the way of swallowing
+					m_hTongueTip->m_pSpring->SetSpringConstant( 0 );
+
+					// Switch the tongue tip to shadow and drag it up
+					pTonguePhys->SetShadow( 1e4, 1e4, false, false );
+					pTonguePhys->UpdateShadow( m_hTongueTip->GetAbsOrigin(), m_hTongueTip->GetAbsAngles(), false, 0 );
+					m_hTongueTip->SetMoveType( MOVETYPE_NOCLIP );
+					m_hTongueTip->SetAbsVelocity( Vector(0,0,32) );
 				
 
-				SetAltitude( (GetAbsOrigin().z - m_hTongueTip->GetAbsOrigin().z) );
+					SetAltitude( (GetAbsOrigin().z - m_hTongueTip->GetAbsOrigin().z) );
+				}
 			}
-		}
 		
-		return;
-	}
+			return;
+		}
 #endif
+ }
 	
 	Assert( pVictim );
 	if ( !pVictim )
@@ -1651,55 +1654,58 @@ void CNPC_Barnacle::BitePrey( void )
 	m_cGibs = 3;
 
 	// In episodic, bite the zombie's headcrab off & drop the body
+	if ( IsHL2Episodic() )
+	{
 #ifdef HL2_EPISODIC
 
-	if ( enemyClass == CLASS_ZOMBIE )
-	{
-		if ( m_hRagdoll )
+		if ( enemyClass == CLASS_ZOMBIE )
 		{
-			m_hRagdoll->SetBodygroup( ZOMBIE_BODYGROUP_HEADCRAB, false );
-			DetachAttachedRagdoll( m_hRagdoll );
-			m_hLastSpitEnemy = m_hRagdoll.Get();
-			m_hRagdoll->EmitSound( "NPC_HeadCrab.Die" );
-			m_hRagdoll = NULL;
+			if ( m_hRagdoll )
+			{
+				m_hRagdoll->SetBodygroup( ZOMBIE_BODYGROUP_HEADCRAB, false );
+				DetachAttachedRagdoll( m_hRagdoll );
+				m_hLastSpitEnemy = m_hRagdoll.Get();
+				m_hRagdoll->EmitSound( "NPC_HeadCrab.Die" );
+				m_hRagdoll = NULL;
+			}
+
+			// Create some blood to hide the vanishing headcrab
+			Vector vecBloodPos;
+			CollisionProp()->NormalizedToWorldSpace( Vector( 0.5f, 0.5f, 0.0f ), &vecBloodPos );
+			UTIL_BloodSpray( vecBloodPos, Vector(0,0,-1), GetEnemy()->BloodColor(), 8, FX_BLOODSPRAY_ALL );
+		
+			m_flDigestFinish = gpGlobals->curtime + 10.0;
+			return;
 		}
 
-		// Create some blood to hide the vanishing headcrab
-		Vector vecBloodPos;
-		CollisionProp()->NormalizedToWorldSpace( Vector( 0.5f, 0.5f, 0.0f ), &vecBloodPos );
-		UTIL_BloodSpray( vecBloodPos, Vector(0,0,-1), GetEnemy()->BloodColor(), 8, FX_BLOODSPRAY_ALL );
-		
-		m_flDigestFinish = gpGlobals->curtime + 10.0;
-		return;
-	}
-
-	// in episodic, where barnacles can eat antlions, vanish the ragdoll because the gibs will spray everywhere
-	// and hide it.
-	if ( enemyClass == CLASS_ANTLION )
-	{
+		// in episodic, where barnacles can eat antlions, vanish the ragdoll because the gibs will spray everywhere
+		// and hide it.
+		if ( enemyClass == CLASS_ANTLION )
+		{
 		
 #ifndef _XBOX
-		m_nBloodColor = pVictim->BloodColor(); 
+			m_nBloodColor = pVictim->BloodColor(); 
 #endif
-		m_flNextBloodTime = 0.0f;
-		SprayBlood();
+			m_flNextBloodTime = 0.0f;
+			SprayBlood();
 
-		m_flDigestFinish = gpGlobals->curtime + 10.0;
-		if (m_hRagdoll)
-		{
-			UTIL_Remove( m_hRagdoll );
+			m_flDigestFinish = gpGlobals->curtime + 10.0;
+			if (m_hRagdoll)
+			{
+				UTIL_Remove( m_hRagdoll );
+			}
+
+
+			if ( m_bSwallowingPoison )
+			{	// hurt me
+				TakeDamage( CTakeDamageInfo( this, this, m_iHealth, DMG_ACID ) );
+			}
+
+			return;
 		}
 
-
-		if ( m_bSwallowingPoison )
-		{	// hurt me
-			TakeDamage( CTakeDamageInfo( this, this, m_iHealth, DMG_ACID ) );
-		}
-
-		return;
+#endif
 	}
-
-#endif
 
 	// Players are never swallowed, nor is anything we don't have a ragdoll for
 	if ( !m_hRagdoll || pVictim->IsPlayer() )
@@ -2434,9 +2440,12 @@ CBaseEntity *CNPC_Barnacle::TongueTouchEnt ( float *pflLength )
 
 	int iMask = MASK_SOLID_BRUSHONLY;
 
+	if ( IsHL2Episodic() )
+	{
 #ifdef HL2_EPISODIC
-	iMask = MASK_NPCSOLID;
+		iMask = MASK_NPCSOLID;
 #endif
+	}
 
 	// trace once to hit architecture and see if the tongue needs to change position.
 	CBarnacleTongueFilter tongueFilter( m_hLastSpitEnemy, this, COLLISION_GROUP_NONE );
@@ -2510,15 +2519,18 @@ CBaseEntity *CNPC_Barnacle::TongueTouchEnt ( float *pflLength )
 				}
 
 				// Allow the barnacles to grab stuff while their tongue is lowering
+			if ( IsHL2Episodic() )
+			{
 #ifdef HL2_EPISODIC
-				length = fabs( GetAbsOrigin().z - pTest->WorldSpaceCenter().z );
-				// Pull it up a tad
-				length = MAX(8, length - m_flRestUnitsAboveGround);
-				if ( pflLength )
-				{
-					*pflLength = length;
-				}
+					length = fabs( GetAbsOrigin().z - pTest->WorldSpaceCenter().z );
+					// Pull it up a tad
+					length = MAX(8, length - m_flRestUnitsAboveGround);
+					if ( pflLength )
+					{
+						*pflLength = length;
+					}
 #endif
+			}
 
 				return pTest;
 			}
@@ -2538,15 +2550,18 @@ CBaseEntity *CNPC_Barnacle::TongueTouchEnt ( float *pflLength )
 		{
 
 			// Allow the barnacles to grab stuff while their tongue is lowering
+		if ( IsHL2Episodic() )
+		{
 #ifdef HL2_EPISODIC
-			length = fabs( GetAbsOrigin().z - pTest->WorldSpaceCenter().z );
-			// Pull it up a tad
-			length = MAX(8, length - m_flRestUnitsAboveGround);
-			if ( pflLength )
-			{
-				*pflLength = length;
-			}
+				length = fabs( GetAbsOrigin().z - pTest->WorldSpaceCenter().z );
+				// Pull it up a tad
+				length = MAX(8, length - m_flRestUnitsAboveGround);
+				if ( pflLength )
+				{
+					*pflLength = length;
+				}
 #endif
+		}
 
 			return pTest;
 		}

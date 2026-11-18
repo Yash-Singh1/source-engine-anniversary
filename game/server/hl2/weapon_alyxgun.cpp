@@ -224,7 +224,7 @@ void CWeaponAlyxGun::FireNPCPrimaryAttack( CBaseCombatCharacter *pOperator, bool
 
 	WeaponSound( SINGLE_NPC );
 
-	if( hl2_episodic.GetBool() )
+	if( IsHL2Episodic() )
 	{
 		pOperator->FireBullets( 1, vecShootOrigin, vecShootDir, VECTOR_CONE_PRECALCULATED, MAX_TRACE_LENGTH, m_iPrimaryAmmoType, 1 );
 	}
@@ -235,7 +235,7 @@ void CWeaponAlyxGun::FireNPCPrimaryAttack( CBaseCombatCharacter *pOperator, bool
 
 	pOperator->DoMuzzleFlash();
 
-	if( hl2_episodic.GetBool() )
+	if( IsHL2Episodic() )
 	{
 		// Never fire Alyx's last bullet just in case there's an emergency
 		// and she needs to be able to shoot without reloading.
@@ -289,7 +289,7 @@ void CWeaponAlyxGun::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatC
 //-----------------------------------------------------------------------------
 bool IsAlyxInInjuredMode( void )
 {
-	if ( hl2_episodic.GetBool() == false )
+	if ( IsHL2Episodic() == false )
 		return false;
 
 	return ( GlobalEntity_GetState("ep2_alyx_injured") == GLOBAL_ON );

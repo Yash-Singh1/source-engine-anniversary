@@ -287,11 +287,16 @@ void CNPC_PoisonZombie::Spawn( void )
 
 	m_fIsTorso = m_fIsHeadless = false;
 
+	if ( IsHL2Episodic() )
+	{
 #ifdef HL2_EPISODIC
-	SetBloodColor( BLOOD_COLOR_ZOMBIE );
-#else
-	SetBloodColor( BLOOD_COLOR_YELLOW );
-#endif // HL2_EPISODIC
+		SetBloodColor( BLOOD_COLOR_ZOMBIE );
+#endif
+	}
+	else
+	{
+		SetBloodColor( BLOOD_COLOR_YELLOW );
+	}
 
 	m_iHealth = sk_zombie_poison_health.GetFloat();
 	m_flFieldOfView = 0.2;

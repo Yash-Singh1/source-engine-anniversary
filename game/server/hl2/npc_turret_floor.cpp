@@ -513,7 +513,7 @@ void CNPC_FloorTurret::OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup
 		bool bBehind = DotProduct( vecToTurret, forward ) < 0.85f;
 
 		// Correct our angles only if we're not upright or we're mostly behind the turret
-		if ( hl2_episodic.GetBool() )
+		if ( IsHL2Episodic() )
 		{
 			m_bUseCarryAngles = ( bUpright == false || bBehind );
 		}
@@ -2031,9 +2031,12 @@ void CNPC_FloorTurret::BreakThink( void )
 	Vector vecOrigin = WorldSpaceCenter() + ( vecUp * 12.0f );
 
 	// Our effect
+	if ( IsHL2Episodic() )
+	{
 #ifdef HL2_EPISODIC
-	DispatchParticleEffect( "explosion_turret_break", vecOrigin, GetAbsAngles() );
-#endif // HL2_EPISODIC
+		DispatchParticleEffect( "explosion_turret_break", vecOrigin, GetAbsAngles() );
+#endif
+	}
 
 	// K-boom
 	RadiusDamage( CTakeDamageInfo( this, this, 15.0f, DMG_BLAST ), vecOrigin, (10*12), CLASS_NONE, this );

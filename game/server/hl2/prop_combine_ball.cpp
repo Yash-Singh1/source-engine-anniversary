@@ -261,7 +261,7 @@ void CPropCombineBall::Precache( void )
 	PrecacheScriptSound( "NPC_CombineBall.Launch" );
 	PrecacheScriptSound( "NPC_CombineBall.KillImpact" );
 
-	if ( hl2_episodic.GetBool() )
+	if ( IsHL2Episodic() )
 	{
 		PrecacheScriptSound( "NPC_CombineBall_Episodic.Explosion" );
 		PrecacheScriptSound( "NPC_CombineBall_Episodic.WhizFlyby" );
@@ -608,7 +608,7 @@ void CPropCombineBall::UpdateOnRemove()
 	}
 
 	//Sigh... this is the only place where I can get a message after the ball is done dissolving.
-	if ( hl2_episodic.GetBool()  )
+	if ( IsHL2Episodic()  )
 	{
 		if ( IsDissolving() )
 		{
@@ -650,7 +650,7 @@ void CPropCombineBall::DieThink()
 	if ( GetSpawner() )
 	{
 		//Let the spawner know we died so it does it's thing
-		if( hl2_episodic.GetBool() && IsInField() )
+		if( IsHL2Episodic() && IsInField() )
 		{
 			GetSpawner()->BallGrabbed( this );
 		}
@@ -725,7 +725,7 @@ void CPropCombineBall::WhizSoundThink()
 
 					EmitSound_t ep;
 					ep.m_nChannel = CHAN_STATIC;
-					if ( hl2_episodic.GetBool() )
+					if ( IsHL2Episodic() )
 					{
 						ep.m_pSoundName = "NPC_CombineBall_Episodic.WhizFlyby";
 					}
@@ -806,7 +806,7 @@ void CPropCombineBall::OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup
 		EmitSound_t ep;
 		ep.m_nChannel = CHAN_STATIC;
 
-		if( hl2_episodic.GetBool() )
+		if( IsHL2Episodic() )
 		{
 			ep.m_pSoundName = "NPC_CombineBall_Episodic.HoldingInPhysCannon";
 		}
@@ -981,7 +981,7 @@ float CPropCombineBall::GetBallHoldDissolveTime()
 {
 	float flDissolveTime = PROP_COMBINE_BALL_HOLD_DISSOLVE_TIME;
 
-	if( g_pGameRules->IsSkillLevel( 1 ) && hl2_episodic.GetBool() )
+	if( g_pGameRules->IsSkillLevel( 1 ) && IsHL2Episodic() )
 	{
 		// Give players more time to handle/aim combine balls on Easy.
 		flDissolveTime *= 1.5f;
@@ -1022,7 +1022,7 @@ void CPropCombineBall::DoExplosion( )
 
 	if ( OutOfBounces() == false )
 	{
-		if ( hl2_episodic.GetBool() )
+		if ( IsHL2Episodic() )
 		{
 			EmitSound( "NPC_CombineBall_Episodic.Explosion" );
 		}
@@ -1101,7 +1101,7 @@ void CPropCombineBall::DoExplosion( )
 			);
 	}
 
-	if( hl2_episodic.GetBool() )
+	if( IsHL2Episodic() )
 	{
 		CSoundEnt::InsertSound( SOUND_COMBAT | SOUND_CONTEXT_EXPLOSION, WorldSpaceCenter(), 180.0f, 0.25, this );
 	}
@@ -1114,7 +1114,7 @@ void CPropCombineBall::DoExplosion( )
 	m_bEmit = false;
 
 	
-	if( !m_bStruckEntity && hl2_episodic.GetBool() && GetOwnerEntity() != NULL )
+	if( !m_bStruckEntity && IsHL2Episodic() && GetOwnerEntity() != NULL )
 	{
 		// Notify the player proxy that this combine ball missed so that it can fire an output.
 		CHL2_Player *pPlayer = dynamic_cast<CHL2_Player *>( GetOwnerEntity() );
@@ -1231,7 +1231,7 @@ void CPropCombineBall::OnHitEntity( CBaseEntity *pHitEntity, float flSpeed, int 
 				{
 					EmitSound( "NPC_CombineBall.KillImpact" );
 
-					if ( pHitEntity->IsNPC() && pHitEntity->Classify() != CLASS_PLAYER_ALLY_VITAL && hl2_episodic.GetBool() == true )
+					if ( pHitEntity->IsNPC() && pHitEntity->Classify() != CLASS_PLAYER_ALLY_VITAL && IsHL2Episodic() == true )
 					{
 						if ( pHitEntity->Classify() != CLASS_PLAYER_ALLY || ( pHitEntity->Classify() == CLASS_PLAYER_ALLY && m_bStruckEntity == false ) )
 						{
@@ -1322,7 +1322,7 @@ void CPropCombineBall::DoImpactEffect( const Vector &preVelocity, int index, gam
 		DispatchEffect( "cball_bounce", data );
 	}
 
-	if ( hl2_episodic.GetBool() )
+	if ( IsHL2Episodic() )
 	{
 		EmitSound( "NPC_CombineBall_Episodic.Impact" );
 	}
@@ -1571,7 +1571,7 @@ void CPropCombineBall::VPhysicsCollision( int index, gamevcollisionevent_t *pEve
 	{
 		const surfacedata_t *pHit = physprops->GetSurfaceData( pEvent->surfaceProps[!index] );
 
-		if( pHit->game.material != CHAR_TEX_FLESH || !hl2_episodic.GetBool() )
+		if( pHit->game.material != CHAR_TEX_FLESH || !IsHL2Episodic() )
 		{
 			CBaseEntity *pHitEntity = pEvent->pEntities[!index];
 			if ( pHitEntity && IsHittableEntity( pHitEntity ) )

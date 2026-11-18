@@ -233,7 +233,7 @@ void CWeaponShotgun::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatC
 //-----------------------------------------------------------------------------
 float CWeaponShotgun::GetMinRestTime()
 {
-	if( hl2_episodic.GetBool() && GetOwner() && GetOwner()->Classify() == CLASS_COMBINE )
+	if( IsHL2Episodic() && GetOwner() && GetOwner()->Classify() == CLASS_COMBINE )
 	{
 		return 1.2f;
 	}
@@ -245,7 +245,7 @@ float CWeaponShotgun::GetMinRestTime()
 //-----------------------------------------------------------------------------
 float CWeaponShotgun::GetMaxRestTime()
 {
-	if( hl2_episodic.GetBool() && GetOwner() && GetOwner()->Classify() == CLASS_COMBINE )
+	if( IsHL2Episodic() && GetOwner() && GetOwner()->Classify() == CLASS_COMBINE )
 	{
 		return 1.5f;
 	}
@@ -259,7 +259,7 @@ float CWeaponShotgun::GetMaxRestTime()
 //-----------------------------------------------------------------------------
 float CWeaponShotgun::GetFireRate()
 {
-	if( hl2_episodic.GetBool() && GetOwner() && GetOwner()->Classify() == CLASS_COMBINE )
+	if( IsHL2Episodic() && GetOwner() && GetOwner()->Classify() == CLASS_COMBINE )
 	{
 		return 0.8f;
 	}

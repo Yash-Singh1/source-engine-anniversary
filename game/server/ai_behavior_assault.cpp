@@ -79,53 +79,58 @@ int CRallyPoint::DrawDebugTextOverlays()
 //---------------------------------------------------------
 bool CRallyPoint::IsExclusive()
 {
-#ifndef HL2_EPISODIC // IF NOT EPISODIC
-	// This 'exclusivity' concept is new to EP2. We're only willing to
-	// risk causing problems in EP1, so emulate the old behavior if 
-	// we are not EPISODIC. We must do this by setting m_sExclusivity
-	// so that ent_text will properly report the state.
-	m_sExclusivity = RALLY_EXCLUSIVE_NO;
-#else
-	if( m_sExclusivity == RALLY_EXCLUSIVE_NOT_EVALUATED )
+	if ( IsHL2Episodic() )
 	{
-		// We need to evaluate! Walk the chain of assault points
-		// and if *ANY* assault points  on this assault chain
-		// are set to Never Time Out then set this rally point to 
-		// be exclusive to stop other NPC's walking down the chain
-		// and ending up clumped up at the infinite rally point.
-		CAssaultPoint *pAssaultEnt = (CAssaultPoint *)gEntList.FindEntityByName( NULL, m_AssaultPointName );
-
-		if( !pAssaultEnt )
+#ifdef HL2_EPISODIC
+		if( m_sExclusivity == RALLY_EXCLUSIVE_NOT_EVALUATED )
 		{
-			// Well, this is awkward. Leave it up to other assault code to tattle on the missing assault point.
-			// We will just assume this assault is not exclusive.
-			m_sExclusivity = RALLY_EXCLUSIVE_NO;
-			return false;
-		}
+			// We need to evaluate! Walk the chain of assault points
+			// and if *ANY* assault points  on this assault chain
+			// are set to Never Time Out then set this rally point to 
+			// be exclusive to stop other NPC's walking down the chain
+			// and ending up clumped up at the infinite rally point.
+			CAssaultPoint *pAssaultEnt = (CAssaultPoint *)gEntList.FindEntityByName( NULL, m_AssaultPointName );
 
-		// Otherwise, we start by assuming this assault chain is not exclusive.
-		m_sExclusivity = RALLY_EXCLUSIVE_NO;
-
-		if( pAssaultEnt )
-		{
-			CAssaultPoint *pFirstAssaultEnt = pAssaultEnt; //some assault chains are circularly linked
-
-			do
+			if( !pAssaultEnt )
 			{
-				if( pAssaultEnt->m_bNeverTimeout )
+				// Well, this is awkward. Leave it up to other assault code to tattle on the missing assault point.
+				// We will just assume this assault is not exclusive.
+				m_sExclusivity = RALLY_EXCLUSIVE_NO;
+				return false;
+			}
+
+			// Otherwise, we start by assuming this assault chain is not exclusive.
+			m_sExclusivity = RALLY_EXCLUSIVE_NO;
+
+			if( pAssaultEnt )
+			{
+				CAssaultPoint *pFirstAssaultEnt = pAssaultEnt; //some assault chains are circularly linked
+
+				do
 				{
-					// We found a never timeout assault point! That makes this whole chain exclusive.
-					m_sExclusivity = RALLY_EXCLUSIVE_YES;
-					break;
-				}
+					if( pAssaultEnt->m_bNeverTimeout )
+					{
+						// We found a never timeout assault point! That makes this whole chain exclusive.
+						m_sExclusivity = RALLY_EXCLUSIVE_YES;
+						break;
+					}
 
-				pAssaultEnt = (CAssaultPoint *)gEntList.FindEntityByName( NULL, pAssaultEnt->m_NextAssaultPointName );
+					pAssaultEnt = (CAssaultPoint *)gEntList.FindEntityByName( NULL, pAssaultEnt->m_NextAssaultPointName );
 				
-			} while( (pAssaultEnt != NULL) && (pAssaultEnt != pFirstAssaultEnt) );
+				} while( (pAssaultEnt != NULL) && (pAssaultEnt != pFirstAssaultEnt) );
 
+			}
 		}
+#endif
 	}
-#endif// HL2_EPISODIC 
+	else
+	{
+		// This 'exclusivity' concept is new to EP2. We're only willing to
+		// risk causing problems in EP1, so emulate the old behavior if 
+		// we are not EPISODIC. We must do this by setting m_sExclusivity
+		// so that ent_text will properly report the state.
+		m_sExclusivity = RALLY_EXCLUSIVE_NO;
+	}
 
 	return (m_sExclusivity == RALLY_EXCLUSIVE_YES);
 }
@@ -405,7 +410,7 @@ void CAI_AssaultBehavior::GatherConditions( void )
 	//		b) Is flagged to Clear On Arrival,
 	// then hit and clear the assault point (fire all entity I/O) and move on to the next one without
 	// interrupting the NPC's schedule. This provides a more fluid movement from point to point.
-	if( IsCurSchedule( SCHED_MOVE_TO_ASSAULT_POINT ) && hl2_episodic.GetBool() )
+	if( IsCurSchedule( SCHED_MOVE_TO_ASSAULT_POINT ) && IsHL2Episodic() )
 	{
 		if( m_hAssaultPoint && m_hAssaultPoint->HasSpawnFlags(SF_ASSAULTPOINT_CLEARONARRIVAL) && m_hAssaultPoint->m_NextAssaultPointName != NULL_STRING )
 		{
@@ -1205,7 +1210,7 @@ void CAI_AssaultBehavior::EndScheduleSelection()
 		if( !m_hRallyPoint->IsExclusive() )
 			m_bHitRallyPoint = false;
 
-		if( !hl2_episodic.GetBool() || !m_hRallyPoint->IsExclusive() || !GetOuter()->IsAlive() )
+		if( !IsHL2Episodic() || !m_hRallyPoint->IsExclusive() || !GetOuter()->IsAlive() )
 		{
 			// Here we unlock the rally point if it is NOT EXCLUSIVE
 			// -OR- the Outer is DEAD. (This gives us a head-start on 
@@ -1495,22 +1500,25 @@ int CAI_AssaultBehavior::SelectSchedule()
 		}
 	}
 
+	if ( IsHL2Episodic() )
+	{
 #ifdef HL2_EPISODIC
-	// This ugly patch fixes a bug where Combine Soldiers on an assault would not shoot through glass, because of the way
-	// that shooting through glass is implemented in their AI. (sjb)
-	if( HasCondition(COND_SEE_ENEMY) && HasCondition(COND_WEAPON_SIGHT_OCCLUDED) && !HasCondition(COND_LOW_PRIMARY_AMMO) )
-	{	
-		// If they are hiding behind something that we can destroy, start shooting at it.
-		CBaseEntity *pBlocker = GetOuter()->GetEnemyOccluder();
-		if ( pBlocker && pBlocker->GetHealth() > 0 )
-		{
-			if( GetOuter()->Classify() == CLASS_COMBINE && FClassnameIs(GetOuter(), "npc_combine_s") )
+		// This ugly patch fixes a bug where Combine Soldiers on an assault would not shoot through glass, because of the way
+		// that shooting through glass is implemented in their AI. (sjb)
+		if( HasCondition(COND_SEE_ENEMY) && HasCondition(COND_WEAPON_SIGHT_OCCLUDED) && !HasCondition(COND_LOW_PRIMARY_AMMO) )
+		{	
+			// If they are hiding behind something that we can destroy, start shooting at it.
+			CBaseEntity *pBlocker = GetOuter()->GetEnemyOccluder();
+			if ( pBlocker && pBlocker->GetHealth() > 0 )
 			{
-				return SCHED_SHOOT_ENEMY_COVER;
+				if( GetOuter()->Classify() == CLASS_COMBINE && FClassnameIs(GetOuter(), "npc_combine_s") )
+				{
+					return SCHED_SHOOT_ENEMY_COVER;
+				}
 			}
 		}
+#endif
 	}
-#endif//HL2_EPISODIC
 	
 	return BaseClass::SelectSchedule();
 }

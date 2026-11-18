@@ -1679,25 +1679,28 @@ void CAI_BaseActor::MaintainLookTargets( float flInterval )
 			absVel = absVel + ground->GetAbsVelocity();
 		}
 
+	if ( IsHL2Episodic() )
+	{
 #ifdef HL2_EPISODIC
-		// Translate our position if riding in a vehicle
-		if ( m_hLookTarget->MyCombatCharacterPointer() )
-		{
-			CBaseCombatCharacter *pBCC = m_hLookTarget->MyCombatCharacterPointer();
-			CBaseEntity *pVehicle = pBCC->GetVehicleEntity();
-			if ( pVehicle )
+			// Translate our position if riding in a vehicle
+			if ( m_hLookTarget->MyCombatCharacterPointer() )
 			{
-				IPhysicsObject *pObj = pVehicle->VPhysicsGetObject();
-				if ( pObj )
+				CBaseCombatCharacter *pBCC = m_hLookTarget->MyCombatCharacterPointer();
+				CBaseEntity *pVehicle = pBCC->GetVehicleEntity();
+				if ( pVehicle )
 				{
-					Vector vecVelocity;
-					pObj->GetVelocity( &vecVelocity, NULL );
+					IPhysicsObject *pObj = pVehicle->VPhysicsGetObject();
+					if ( pObj )
+					{
+						Vector vecVelocity;
+						pObj->GetVelocity( &vecVelocity, NULL );
 
-					absVel += vecVelocity;
+						absVel += vecVelocity;
+					}
 				}
 			}
-		}
-#endif //HL2_EPISODIC
+#endif
+	}
 
 		if ( !VectorCompare( absVel, vec3_origin ) )
 		{
@@ -1802,13 +1805,16 @@ void CAI_BaseActor::OnStateChange( NPC_STATE OldState, NPC_STATE NewState )
 {
 	PlayExpressionForState( NewState );
 
-#ifdef HL2_EPISODIC
-	// If we've just switched states, ensure we stop any scenes that asked to be stopped
-	if ( OldState == NPC_STATE_IDLE )
+	if ( IsHL2Episodic() )
 	{
-		RemoveActorFromScriptedScenes( this, true, true );
-	}
+#ifdef HL2_EPISODIC
+		// If we've just switched states, ensure we stop any scenes that asked to be stopped
+		if ( OldState == NPC_STATE_IDLE )
+		{
+			RemoveActorFromScriptedScenes( this, true, true );
+		}
 #endif
+	}
 
 	BaseClass::OnStateChange( OldState, NewState );
 }

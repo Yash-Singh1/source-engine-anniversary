@@ -571,17 +571,20 @@ void CHL2_Player::PreThink(void)
 		NDebugOverlay::Line( GetAbsOrigin(), predPos, 0, 255, 0, 0, 0.01f );
 	}
 
+	if ( IsHL2Episodic() )
+	{
 #ifdef HL2_EPISODIC
-	if( m_hLocatorTargetEntity != NULL )
-	{
-		// Keep track of the entity here, the client will pick up the rest of the work
-		m_HL2Local.m_vecLocatorOrigin = m_hLocatorTargetEntity->WorldSpaceCenter();
+		if( m_hLocatorTargetEntity != NULL )
+		{
+			// Keep track of the entity here, the client will pick up the rest of the work
+			m_HL2Local.m_vecLocatorOrigin = m_hLocatorTargetEntity->WorldSpaceCenter();
+		}
+		else
+		{
+			m_HL2Local.m_vecLocatorOrigin = vec3_invalid; // This tells the client we have no locator target.
+		}
+#endif
 	}
-	else
-	{
-		m_HL2Local.m_vecLocatorOrigin = vec3_invalid; // This tells the client we have no locator target.
-	}
-#endif//HL2_EPISODIC
 
 	// Riding a vehicle?
 	if ( IsInAVehicle() )	
@@ -645,9 +648,12 @@ void CHL2_Player::PreThink(void)
 
 	VPROF_SCOPE_BEGIN( "CHL2_Player::PreThink-Speed" );
 	HandleSpeedChanges();
+	if ( IsHL2Episodic() )
+	{
 #ifdef HL2_EPISODIC
-	HandleArmorReduction();
+		HandleArmorReduction();
 #endif
+	}
 
 	if( sv_stickysprint.GetBool() && m_bIsAutoSprinting )
 	{
@@ -730,9 +736,12 @@ void CHL2_Player::PreThink(void)
 		return;
 	}
 
+	if ( IsHL2Episodic() )
+	{
 #ifdef HL2_EPISODIC
-	CheckFlashlight();
-#endif	// HL2_EPISODIC
+		CheckFlashlight();
+#endif
+	}
 
 	// So the correct flags get sent to client asap.
 	//
@@ -955,27 +964,30 @@ void CHL2_Player::Activate( void )
 	BaseClass::Activate();
 	InitSprinting();
 
+	if ( IsHL2Episodic() )
+	{
 #ifdef HL2_EPISODIC
 
-	// Delay attacks by 1 second after loading a game.
-	if ( GetActiveWeapon() )
-	{
-		float flRemaining = GetActiveWeapon()->m_flNextPrimaryAttack - gpGlobals->curtime;
-
-		if ( flRemaining < HL2PLAYER_RELOADGAME_ATTACK_DELAY )
+		// Delay attacks by 1 second after loading a game.
+		if ( GetActiveWeapon() )
 		{
-			GetActiveWeapon()->m_flNextPrimaryAttack = gpGlobals->curtime + HL2PLAYER_RELOADGAME_ATTACK_DELAY;
-		}
+			float flRemaining = GetActiveWeapon()->m_flNextPrimaryAttack - gpGlobals->curtime;
 
-		flRemaining = GetActiveWeapon()->m_flNextSecondaryAttack - gpGlobals->curtime;
+			if ( flRemaining < HL2PLAYER_RELOADGAME_ATTACK_DELAY )
+			{
+				GetActiveWeapon()->m_flNextPrimaryAttack = gpGlobals->curtime + HL2PLAYER_RELOADGAME_ATTACK_DELAY;
+			}
 
-		if ( flRemaining < HL2PLAYER_RELOADGAME_ATTACK_DELAY )
-		{
-			GetActiveWeapon()->m_flNextSecondaryAttack = gpGlobals->curtime + HL2PLAYER_RELOADGAME_ATTACK_DELAY;
+			flRemaining = GetActiveWeapon()->m_flNextSecondaryAttack - gpGlobals->curtime;
+
+			if ( flRemaining < HL2PLAYER_RELOADGAME_ATTACK_DELAY )
+			{
+				GetActiveWeapon()->m_flNextSecondaryAttack = gpGlobals->curtime + HL2PLAYER_RELOADGAME_ATTACK_DELAY;
+			}
 		}
-	}
 
 #endif
+	}
 
 	GetPlayerProxy();
 }
@@ -2379,7 +2391,7 @@ int CHL2_Player::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 	}
 
 
-	if( (info.GetDamageType() & DMG_SLASH) && hl2_episodic.GetBool() )
+	if( (info.GetDamageType() & DMG_SLASH) && IsHL2Episodic() )
 	{
 		if( m_afPhysicsFlags & PFLAG_USING )
 		{
@@ -3166,16 +3178,19 @@ void CHL2_Player::ForceDropOfCarriedPhysObjects( CBaseEntity *pOnlyIfHoldingThis
 		return;
 	}
 
-#ifdef HL2_EPISODIC
-	if ( hl2_episodic.GetBool() )
+	if ( IsHL2Episodic() )
 	{
-		CBaseEntity *pHeldEntity = PhysCannonGetHeldEntity( GetActiveWeapon() );
-		if( pHeldEntity && pHeldEntity->ClassMatches( "grenade_helicopter" ) )
+#ifdef HL2_EPISODIC
+		if ( IsHL2Episodic() )
 		{
-			return;
+			CBaseEntity *pHeldEntity = PhysCannonGetHeldEntity( GetActiveWeapon() );
+			if( pHeldEntity && pHeldEntity->ClassMatches( "grenade_helicopter" ) )
+			{
+				return;
+			}
 		}
-	}
 #endif
+	}
 
 	// Drop any objects being handheld.
 	ClearUseEntity();
@@ -3244,32 +3259,35 @@ void CHL2_Player::UpdateClientData( void )
 	}
 
 	// Update Flashlight
-#ifdef HL2_EPISODIC
-	if ( Flashlight_UseLegacyVersion() == false )
+	if ( IsHL2Episodic() )
 	{
-		if ( FlashlightIsOn() && sv_infinite_aux_power.GetBool() == false )
+#ifdef HL2_EPISODIC
+		if ( Flashlight_UseLegacyVersion() == false )
 		{
-			m_HL2Local.m_flFlashBattery -= FLASH_DRAIN_TIME * gpGlobals->frametime;
-			if ( m_HL2Local.m_flFlashBattery < 0.0f )
+			if ( FlashlightIsOn() && sv_infinite_aux_power.GetBool() == false )
 			{
-				FlashlightTurnOff();
-				m_HL2Local.m_flFlashBattery = 0.0f;
+				m_HL2Local.m_flFlashBattery -= FLASH_DRAIN_TIME * gpGlobals->frametime;
+				if ( m_HL2Local.m_flFlashBattery < 0.0f )
+				{
+					FlashlightTurnOff();
+					m_HL2Local.m_flFlashBattery = 0.0f;
+				}
+			}
+			else
+			{
+				m_HL2Local.m_flFlashBattery += FLASH_CHARGE_TIME * gpGlobals->frametime;
+				if ( m_HL2Local.m_flFlashBattery > 100.0f )
+				{
+					m_HL2Local.m_flFlashBattery = 100.0f;
+				}
 			}
 		}
 		else
 		{
-			m_HL2Local.m_flFlashBattery += FLASH_CHARGE_TIME * gpGlobals->frametime;
-			if ( m_HL2Local.m_flFlashBattery > 100.0f )
-			{
-				m_HL2Local.m_flFlashBattery = 100.0f;
-			}
+			m_HL2Local.m_flFlashBattery = -1.0f;
 		}
+#endif
 	}
-	else
-	{
-		m_HL2Local.m_flFlashBattery = -1.0f;
-	}
-#endif // HL2_EPISODIC
 
 	BaseClass::UpdateClientData();
 }

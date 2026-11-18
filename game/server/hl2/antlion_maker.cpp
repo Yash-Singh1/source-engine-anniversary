@@ -286,7 +286,7 @@ void CAntlionTemplateMaker::Activate( void )
 			SetContextThink( &CAntlionTemplateMaker::PoolRegenThink, gpGlobals->curtime + m_flPoolRegenTime, s_pPoolThinkContext );
 
 			// Start our blocked effects cycle
-			if ( hl2_episodic.GetBool() == true && HasSpawnFlags( SF_ANTLIONMAKER_DO_BLOCKEDEFFECTS ) )
+			if ( IsHL2Episodic() == true && HasSpawnFlags( SF_ANTLIONMAKER_DO_BLOCKEDEFFECTS ) )
 			{
 				SetContextThink( &CAntlionTemplateMaker::FindNodesCloseToPlayer, gpGlobals->curtime + 1.0f, s_pBlockedEffectsThinkContext );
 			}
@@ -608,7 +608,7 @@ void CAntlionTemplateMaker::Enable( void )
 		SetContextThink( &CAntlionTemplateMaker::PoolRegenThink, gpGlobals->curtime + m_flPoolRegenTime, s_pPoolThinkContext );
 	}
 
-	if ( hl2_episodic.GetBool() == true && HasSpawnFlags( SF_ANTLIONMAKER_DO_BLOCKEDEFFECTS ) )
+	if ( IsHL2Episodic() == true && HasSpawnFlags( SF_ANTLIONMAKER_DO_BLOCKEDEFFECTS ) )
 	{
 		SetContextThink( &CAntlionTemplateMaker::FindNodesCloseToPlayer, gpGlobals->curtime + 1.0f, s_pBlockedEffectsThinkContext );
 	}
@@ -1083,7 +1083,7 @@ void CAntlionTemplateMaker::DoBlockedEffects( CBaseEntity *pBlocker, Vector vOri
 CBaseEntity *CAntlionTemplateMaker::AllHintsFromClusterBlocked( CAI_Hint *pNode, bool &bChosenHintBlocked )
 {
 	// Only do this for episodic content!
-	if ( hl2_episodic.GetBool() == false )
+	if ( IsHL2Episodic() == false )
 		return NULL;
 
 	CBaseEntity *pBlocker = NULL;

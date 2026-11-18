@@ -444,16 +444,19 @@ int CFastZombie::SelectSchedule ( void )
 {
 
 // ========================================================
+	if ( IsHL2Episodic() )
+	{
 #ifdef HL2_EPISODIC
 
-	// Defer all decisions to the behavior if it's running
-	if ( m_PassengerBehavior.CanSelectSchedule() )
-	{
-		DeferSchedulingToBehavior( &m_PassengerBehavior );
-		return BaseClass::SelectSchedule();
-	}
+		// Defer all decisions to the behavior if it's running
+		if ( m_PassengerBehavior.CanSelectSchedule() )
+		{
+			DeferSchedulingToBehavior( &m_PassengerBehavior );
+			return BaseClass::SelectSchedule();
+		}
 
-#endif //HL2_EPISODIC
+#endif
+	}
 // ========================================================
 
 	if ( HasCondition( COND_ZOMBIE_RELEASECRAB ) )
@@ -664,11 +667,16 @@ void CFastZombie::Spawn( void )
 		m_fIsTorso = true;
 	}
 
+	if ( IsHL2Episodic() )
+	{
 #ifdef HL2_EPISODIC
-	SetBloodColor( BLOOD_COLOR_ZOMBIE );
-#else
-	SetBloodColor( BLOOD_COLOR_YELLOW );
-#endif // HL2_EPISODIC
+		SetBloodColor( BLOOD_COLOR_ZOMBIE );
+#endif
+	}
+	else
+	{
+		SetBloodColor( BLOOD_COLOR_YELLOW );
+	}
 
 	m_iHealth			= 50;
 	m_flFieldOfView		= 0.2;
@@ -1764,9 +1772,12 @@ void CFastZombie::BuildScheduleTestBits( void )
 	if ( GetRunningBehavior() )
 		GetRunningBehavior()->BridgeBuildScheduleTestBits(); 
 
+	if ( IsHL2Episodic() )
+	{
 #ifdef HL2_EPISODIC
-	SetCustomInterruptCondition( COND_PROVOKED );
-#endif	// HL2_EPISODIC
+		SetCustomInterruptCondition( COND_PROVOKED );
+#endif
+	}
 
 	// Any schedule that makes us climb should break if we touch player
 	if ( GetActivity() == ACT_CLIMB_UP || GetActivity() == ACT_CLIMB_DOWN || GetActivity() == ACT_CLIMB_DISMOUNT)

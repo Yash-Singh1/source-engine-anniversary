@@ -700,7 +700,7 @@ void CBaseCombatWeapon::Drop( const Vector &vecVelocity )
 	SetThink( &CBaseCombatWeapon::SetPickupTouch );
 	SetTouch(NULL);
 
-	if( hl2_episodic.GetBool() )
+	if( IsHL2Episodic() )
 	{
 		RemoveSpawnFlags( SF_WEAPON_NO_PLAYER_PICKUP );
 	}

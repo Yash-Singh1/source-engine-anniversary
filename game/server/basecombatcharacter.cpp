@@ -1532,16 +1532,19 @@ bool CBaseCombatCharacter::BecomeRagdoll( const CTakeDamageInfo &info, const Vec
 	CTakeDamageInfo newinfo = info;
 	newinfo.SetDamageForce( forceVector );
 
-#ifdef HL2_EPISODIC
-	// Burning corpses are server-side in episodic, if we're in darkness mode
-	if ( IsOnFire() && HL2GameRules()->IsAlyxInDarknessMode() )
+	if ( IsHL2Episodic() )
 	{
-		CBaseEntity *pRagdoll = CreateServerRagdoll( this, m_nForceBone, newinfo, COLLISION_GROUP_DEBRIS );
-		FixupBurningServerRagdoll( pRagdoll );
-		RemoveDeferred();
-		return true;
-	}
+#ifdef HL2_EPISODIC
+		// Burning corpses are server-side in episodic, if we're in darkness mode
+		if ( IsOnFire() && HL2GameRules()->IsAlyxInDarknessMode() )
+		{
+			CBaseEntity *pRagdoll = CreateServerRagdoll( this, m_nForceBone, newinfo, COLLISION_GROUP_DEBRIS );
+			FixupBurningServerRagdoll( pRagdoll );
+			RemoveDeferred();
+			return true;
+		}
 #endif
+	}
 
 #ifdef HL2_DLL	
 
@@ -1565,7 +1568,7 @@ bool CBaseCombatCharacter::BecomeRagdoll( const CTakeDamageInfo &info, const Vec
 		return true;
 	}
 
-	if( hl2_episodic.GetBool() && Classify() == CLASS_PLAYER_ALLY_VITAL )
+	if( IsHL2Episodic() && Classify() == CLASS_PLAYER_ALLY_VITAL )
 	{
 		CreateServerRagdoll( this, m_nForceBone, newinfo, COLLISION_GROUP_INTERACTIVE_DEBRIS, true );
 		RemoveDeferred();
@@ -1732,7 +1735,7 @@ void CBaseCombatCharacter::ThrowDirForWeaponStrip( CBaseCombatWeapon *pWeapon, c
 	// This is necessary for the physgun upgrade scene.
 	if ( FClassnameIs( pWeapon, "weapon_physcannon" ) )
 	{
-		if( hl2_episodic.GetBool() )
+		if( IsHL2Episodic() )
 		{
 			// It has been discovered that it's possible to throw the physcannon out of the world this way.
 			// So try to find a direction to throw the physcannon that's legal.
@@ -2841,7 +2844,7 @@ CBaseEntity *CBaseCombatCharacter::Weapon_FindUsable( const Vector &range )
 	bool bConservative = false;
 
 #ifdef HL2_DLL
-	if( hl2_episodic.GetBool() && !GetActiveWeapon() )
+	if( IsHL2Episodic() && !GetActiveWeapon() )
 	{
 		// Unarmed citizens are conservative in their weapon finding
 		if ( Classify() != CLASS_PLAYER_ALLY_VITAL )
@@ -3045,7 +3048,7 @@ void CBaseCombatCharacter::ApplyStressDamage( IPhysicsObject *pPhysics, bool bRe
 	if( Classify() == CLASS_PLAYER_ALLY || Classify() == CLASS_PLAYER_ALLY_VITAL )
 	{
 		// Bypass stress completely for allies and vitals.
-		if( hl2_episodic.GetBool() )
+		if( IsHL2Episodic() )
 			return;
 	}
 #endif//HL2_DLL
