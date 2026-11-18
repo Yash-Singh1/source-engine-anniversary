@@ -108,7 +108,9 @@ public:
 
 	virtual bool DrawGetTextureFile(int id, char *filename, int maxlen );
 	virtual int	 DrawGetTextureId( char const *filename );
+#ifndef BYTEMATCH_RETAIL
 	int			 DrawGetTextureId( ITexture *pTexture );
+#endif
 	virtual void DrawSetTextureFile(int id, const char *filename, int hardwareFilter, bool forceReload);
 	virtual void DrawSetTexture(int id);
 	virtual void DrawGetTextureSize(int id, int &wide, int &tall);
@@ -236,7 +238,7 @@ public:
 	void BeginSkinCompositionPainting();
 	void EndSkinCompositionPainting();
 
-	virtual void DrawSetTextureRGBAEx2( int id, const unsigned char *rgba, int wide, int tall, ImageFormat imageFormat, bool bFlag1, bool bFlag2 ) OVERRIDE;
+	virtual void DrawSetTextureRGBAEx2( int id, const unsigned char *rgba, int wide, int tall, ImageFormat imageFormat, bool bNoPointSample, bool bAdditive ) OVERRIDE;
 
 	// Disable clipping during rendering
 	virtual void DisableClipping( bool bDisable ) OVERRIDE;

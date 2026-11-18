@@ -26,7 +26,9 @@ class ITextureDictionary
 public:
 	// Create, destroy textures
 	virtual int	CreateTexture( bool procedural = false ) = 0;
+#ifndef BYTEMATCH_RETAIL
 	virtual int CreateTextureByTexture( ITexture *pTexture, bool procedural = true ) = 0;
+#endif
 	virtual void DestroyTexture( int id ) = 0;
 	virtual void DestroyAllTextures() = 0;
 
@@ -56,6 +58,8 @@ public:
 	virtual void SetTextureRGBAEx( int id, const char* rgba, int wide, int tall, ImageFormat format, bool bFixupTextCoordsForDimensions ) = 0;
 
 	virtual void UpdateSubTextureRGBA( int id, int drawX, int drawY, unsigned const char *rgba, int subTextureWide, int subTextureTall, ImageFormat imageFormat ) = 0;
+
+	virtual void SetTextureRGBAEx2( int id, const char* rgba, int wide, int tall, ImageFormat format, bool bFixupTextCoordsForDimensions, bool bNoPointSample, bool bAdditive ) = 0;
 };
 
 ITextureDictionary *TextureDictionary();

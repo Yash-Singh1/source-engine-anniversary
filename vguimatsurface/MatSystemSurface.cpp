@@ -1536,16 +1536,17 @@ int CMatSystemSurface::DrawGetTextureId( char const *filename )
 // Input  : *pTexture
 // Output : int
 //-----------------------------------------------------------------------------
+#ifndef BYTEMATCH_RETAIL
 int CMatSystemSurface::DrawGetTextureId( ITexture *pTexture )
 {
 	return TextureDictionary()->CreateTextureByTexture( pTexture );
 }
+#endif
 
 
-void CMatSystemSurface::DrawSetTextureRGBAEx2( int id, const unsigned char *rgba, int wide, int tall, ImageFormat imageFormat, bool bFlag1, bool bFlag2 )
+void CMatSystemSurface::DrawSetTextureRGBAEx2( int id, const unsigned char *rgba, int wide, int tall, ImageFormat imageFormat, bool bNoPointSample, bool bAdditive )
 {
-	// UNIMPLEMENTED: retail hands both flags to an anniversary texture dictionary entry point our tree lacks.
-	DrawSetTextureRGBAEx( id, rgba, wide, tall, imageFormat );
+	TextureDictionary()->SetTextureRGBAEx2( id, (const char *)rgba, wide, tall, imageFormat, true, bNoPointSample, bAdditive );
 }
 
 //-----------------------------------------------------------------------------
