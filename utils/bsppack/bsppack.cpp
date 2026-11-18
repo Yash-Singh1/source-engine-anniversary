@@ -20,7 +20,6 @@ public:
 	void AddBufferToPack( const char *relativename, void *data, int length, bool bTextMode );
 	void SetHDRMode( bool bHDR );
 	bool SwapBSPFile( IFileSystem *pFileSystem, const char *filename, const char *swapFilename, bool bSwapOnLoad, VTFConvertFunc_t pVTFConvertFunc, VHVFixupFunc_t pVHVFixupFunc, CompressFunc_t pCompressFunc );
-	bool RepackBSP( CUtlBuffer &inputBuffer, CUtlBuffer &outputBuffer, eRepackBSPFlags repackFlags );
 	bool GetPakFileLump( IFileSystem *pFileSystem, const char *pBSPFilename, void **pPakData, int *pPakSize );
 	bool SetPakFileLump( IFileSystem *pFileSystem, const char *pBSPFilename, const char *pNewFilename, void *pPakData, int pakSize );
 	bool GetBSPDependants( IFileSystem *pFileSystem, const char *pBSPFilename, CUtlVector< CUtlString > *pList );
@@ -78,13 +77,6 @@ CompressFunc_t		pCompressFunc )
 	g_pFileSystem = g_pFullFileSystem = pFileSystem;
 
 	return ::SwapBSPFile( filename, swapFilename, bSwapOnLoad, pVTFConvertFunc, pVHVFixupFunc, pCompressFunc );
-}
-
-bool CBSPPack::RepackBSP( CUtlBuffer &inputBuffer, CUtlBuffer &outputBuffer, eRepackBSPFlags repackFlags )
-{
-	return ::RepackBSP( inputBuffer, outputBuffer,
-						  ( repackFlags & eRepackBSP_CompressLumps ) ? RepackBSPCallback_LZMA : NULL,
-						  ( repackFlags & eRepackBSP_CompressPackfile ) ? IZip::eCompressionType_LZMA : IZip::eCompressionType_None );
 }
 
 bool CBSPPack::GetPakFileLump( IFileSystem *pFileSystem, const char *pBSPFilename, void **pPakData, int *pPakSize )
