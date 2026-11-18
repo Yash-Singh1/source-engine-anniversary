@@ -120,9 +120,7 @@ protected:
 	bool WarpMouse( int &x, int &y );
 	IManipulator		*m_pCurrentManip;
 	int m_nManipStartX, m_nManipStartY;
-#ifndef BYTEMATCH_RETAIL
 	int m_nClickStartX, m_nClickStartY;
-#endif
 
 	// Re-apply the manipulators on a new model
 	void ApplyManipulation();

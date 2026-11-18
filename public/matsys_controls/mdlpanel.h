@@ -64,12 +64,7 @@ public:
 	void SetLOD( int nLOD );
 
 	// Sets the current sequence
-#ifdef BYTEMATCH_RETAIL
-	void SetSequence( int nSequence );
-	void SetSequence( int nSequence, bool bResetSequence ) { SetSequence( nSequence ); }
-#else
 	void SetSequence( int nSequence, bool bResetSequence = false );
-#endif
 
 	// Set the pose parameters
 	void SetPoseParameters( const float *pPoseParameters, int nCount );
@@ -122,9 +117,7 @@ protected:
 		CMDL		m_MDL;
 		matrix3x4_t	m_MDLToWorld;
 		bool		m_bDisabled;
-#ifndef BYTEMATCH_RETAIL
 		float		m_flCycleStartTime;
-#endif
 	};
 
 	MDLData_t				m_RootMDL;

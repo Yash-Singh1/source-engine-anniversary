@@ -154,9 +154,7 @@ void CMDLPanel::SetMDL( MDLHandle_t handle, void *pProxyData )
 	m_RootMDL.m_MDL.m_bWorldSpaceViewTarget = false;
 	m_RootMDL.m_MDL.m_vecViewTarget.Init( 100.0f, 0.0f, vecMaxs.z );
 
-#ifndef BYTEMATCH_RETAIL
 	m_RootMDL.m_flCycleStartTime = 0.f;
-#endif
 
 	// Set the pose parameters to the default for the mdl
 	SetPoseParameters( NULL, 0 );
@@ -531,12 +529,6 @@ void CMDLPanel::SetLOD( int nLOD )
 //-----------------------------------------------------------------------------
 // Sets the current sequence
 //-----------------------------------------------------------------------------
-#ifdef BYTEMATCH_RETAIL
-void CMDLPanel::SetSequence( int nSequence )
-{
-	m_RootMDL.m_MDL.m_nSequence = nSequence;
-}
-#else
 void CMDLPanel::SetSequence( int nSequence, bool bResetSequence )
 {
 	m_RootMDL.m_MDL.m_nSequence = nSequence;
@@ -546,7 +538,6 @@ void CMDLPanel::SetSequence( int nSequence, bool bResetSequence )
 		m_RootMDL.m_flCycleStartTime = GetAutoPlayTime();
 	}
 }
-#endif
 
 
 //-----------------------------------------------------------------------------
@@ -629,11 +620,7 @@ void CMDLPanel::OnTick()
 	BaseClass::OnTick();
 	if ( m_RootMDL.m_MDL.GetMDL() != MDLHANDLE_INVALID )
 	{
-#ifdef BYTEMATCH_RETAIL
-		m_RootMDL.m_MDL.m_flTime = GetAutoPlayTime();
-#else
 		m_RootMDL.m_MDL.m_flTime = ( GetAutoPlayTime() - m_RootMDL.m_flCycleStartTime );
-#endif
 	
 		DoAnimationEvents();
 	}
