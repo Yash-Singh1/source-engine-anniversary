@@ -1037,6 +1037,13 @@ CAudioSourceMemWave::~CAudioSourceMemWave()
 CAudioMixer *CAudioSourceMemWave::CreateMixer( int initialStreamPosition )
 {
 	CAudioMixer *pMixer = CreateWaveMixer( CreateWaveDataMemory(*this), m_format, m_channels, m_bits, initialStreamPosition );
+#ifdef BYTEMATCH_RETAIL
+	if ( pMixer )
+	{
+		ReferenceAdd( pMixer );
+	}
+#endif
+#line 1040
 
 	return pMixer;
 }
@@ -1628,6 +1635,10 @@ CAudioMixer *CAudioSourceStreamWave::CreateMixer( int initialStreamPosition )
 		CAudioMixer *pMixer = CreateWaveMixer( pWaveData, m_format, m_channels, m_bits, initialStreamPosition );
 		if ( pMixer )
 		{
+#ifdef BYTEMATCH_RETAIL
+			ReferenceAdd( pMixer );
+#endif
+#line 1631
 			return pMixer;
 		}
 
@@ -1826,7 +1837,12 @@ CAudioSource *Audio_CreateStreamedWave( CSfxTable *pSfx )
 #if defined( MP3_SUPPORT )
 	if ( Audio_IsMP3( pSfx->GetFileName() ) )
 	{
+#ifdef BYTEMATCH_RETAIL
+		return Audio_CreateStreamedMP3( pSfx );
+#else
 		return Audio_CreateMemoryMP3(pSfx); // TOSUCK: Dont work with streamed mp3, idk why
+#endif
+#line 1830
 	}
 #endif
 
@@ -2274,7 +2290,12 @@ void CAudioSourceCachedInfo::Rebuild( char const *filename )
 //   3: The before time
 //   4: Changed MP3 caching to ensure we store proper sample rate, removed hack to not cache vo/
 //   5: Fixed bug that could result in incorrect mp3 datasizes in the sound cache
+#ifdef BYTEMATCH_RETAIL
+#define AUDIOSOURCE_CACHE_VERSION	 3
+#else
 #define AUDIOSOURCE_CACHE_VERSION	 5
+#endif
+#line 2278
 class CAudioSourceCache : public IAudioSourceCache
 {
 public:
@@ -2708,6 +2729,9 @@ void CAudioSourceCache::BuildCache( char const *pszSearchPath )
 		return;
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	SearchPathCache *pCache = CreateCacheForSearchPath( szAbsPath );
+#else
 	// FindCacheForSearchPath expects an absolute search path, but if we're working with a VPK we'll have the path to
 	// the file, wherein the proper path to the file is /foo/bar.vpk, but the *search path* should be /foo/bar.vpk/
 	char szAsSearchPath[MAX_PATH] = { 0 };
@@ -2721,6 +2745,8 @@ void CAudioSourceCache::BuildCache( char const *pszSearchPath )
 		pCache = CreateCacheForSearchPath( szAbsPath );
 		m_vecCaches.AddToTail( pCache );
 	}
+#endif
+#line 2724
 
 	g_pFullFileSystem->AddSearchPath( szAbsPath, "game", PATH_ADD_TO_HEAD );
 	int nLenAbsPath = V_strlen( szAbsPath );
@@ -2755,12 +2781,25 @@ void CAudioSourceCache::BuildCache( char const *pszSearchPath )
 
 		CAudioSourceCachedInfo::s_bIsPrecacheSound = true;
 		CAudioSourceCachedInfo::s_CurrentType = CAudioSource::AUDIO_SOURCE_WAV;
+#ifdef BYTEMATCH_RETAIL
+		if ( V_stristr( pszFilename, ".mp3" ) )
+		{
+			CAudioSourceCachedInfo::s_CurrentType = CAudioSource::AUDIO_SOURCE_MP3;
+			CAudioSourceCachedInfo::s_bIsPrecacheSound = false;
+		}
+		else if ( V_stristr( pszFilename, "/vo/" ) )
+		{
+			CAudioSourceCachedInfo::s_bIsPrecacheSound = false;
+		}
+#else
 		char szExt[ 10 ] = { 0 };
 		V_ExtractFileExtension( pszFilename, szExt, sizeof( szExt ) );
 		if ( V_stricmp( szExt, "mp3" ) == 0 )
 		{
 			CAudioSourceCachedInfo::s_CurrentType = CAudioSource::AUDIO_SOURCE_MP3;
 		}
+#endif
+#line 2764
 		CAudioSourceCachedInfo::s_pSfx = S_DummySfx( pszName );
 
 		const CAudioSourceCachedInfo *pInfo = pCache->Get( pszRelName );
@@ -2780,6 +2819,11 @@ void CAudioSourceCache::BuildCache( char const *pszSearchPath )
 	{
 		Msg( "No changes detected; not saving %s\n", pCache->GetRepositoryFileName() );
 	}
+#ifdef BYTEMATCH_RETAIL
+
+	delete pCache;
+#endif
+#line 2783
 }
 
 void CheckCacheBuild()
