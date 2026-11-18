@@ -76,6 +76,7 @@ RETAIL_DEAD = {
 		('vgui2/src/fileimage.cpp', 'vgui2/src/ImageBorder.cpp'),
 		('vgui2/src/MemoryBitmap.cpp', 'vgui2/src/ScalableImageBorder.cpp'),
 		('vgui2/src/MessageListener.cpp', 'vgui2/src/ScalableImageBorder.cpp')],
+	'hl2mp/server': [('common/language.cpp', 'game/server/serverbenchmark_base.cpp')],
 }
 
 def options(opt):
