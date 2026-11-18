@@ -795,11 +795,19 @@ void CHLTVClientState::ReadPreserveEnt( CEntityReadInfo &u )
 	//             may be -1).  The old entity bounds check here seems like what was intended, but since nNewEntity
 	//             should not be overflowed either, I've left that check in case it was guarding against a case I am
 	//             overlooking.
+#ifdef BYTEMATCH_RETAIL
+	if ( u.m_nNewEntity >= MAX_EDICTS )
+	{
+		Host_Error( "CL_ReadPreserveEnt: u.m_nNewEntity == MAX_EDICTS" );
+	}
+#else
 	if ( u.m_nOldEntity >= MAX_EDICTS || u.m_nOldEntity < 0 || u.m_nNewEntity >= MAX_EDICTS )
 	{
 		Host_Error( "CL_ReadPreserveEnt: Entity out of bounds. Old: %i, New: %i",
 		            u.m_nOldEntity, u.m_nNewEntity );
 	}
+#endif
+#line 798
 
 	HLTV_CopyExitingEnt( u );
 
