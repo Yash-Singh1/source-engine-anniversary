@@ -581,7 +581,7 @@ at the start is lost.
 | host_cmd | 59 | 64 | 64 | `sv_use_steam_voice` "1", older `Host_VoiceRecordStop_f`, signed `CStatusLineBuilder` (status) |
 | sv_main | 68 | 70 | 71 | `SV_WriteVoiceCodec`: `SVC_VoiceInit( IsMultiplayer() ? "vaudio_speex" : "", 5 )`, no `sv_voicecodec` |
 | servermsghandler | 44 | 46 | 50 | one-argument `Voice_Init` |
-| netmessages | 400 | 400 | 403 | old `SVC_VoiceInit` (codec pointer + quality byte + private buffer); the three left differ for other reasons |
+| netmessages | n/a | 400 | 403 | old `SVC_VoiceInit` (codec pointer + quality byte + private buffer); built under common/, outside run.sh; the three left are other messages |
 | sys_getmodes | 48 | 51 | 51 | `HAVE_JPEG`; sys_getmodes uses imageutils' `jpeg_UtlBuffer_dest` |
 | host_state | 16 | 20 | 20 | no watchdog (`HostState_Init`, `State_Run`), `HostState_NewGame` strips the extension |
 | sys_dll2 | 48 | 58 | 59 | non-template 2013 `CErrorText` (8 bytes: size + heap buffer), `EditorToggle_f`/`editor_toggle`, `EatTextModeKeyPresses` + `g_TextModeLine`, dedicated `Connect` breakpad block + empty `PreMinidumpCallback`, `Run` checks only `-insecure` |
