@@ -1,0 +1,106 @@
+{
+ "interface": "IVTex",
+ "headers": [
+  "public/ivtex.h"
+ ],
+ "versions": {
+  "retail": [
+   "VTEX_003"
+  ],
+  "ours": [
+   "VTEX_003"
+  ],
+  "sdk2013": [
+   "VTEX_003"
+  ]
+ },
+ "version_macros": [
+  "IVTEX_VERSION_STRING"
+ ],
+ "registrations": [
+  {
+   "module": "bin/vtex_dll",
+   "version": "VTEX_003",
+   "class": "CVTex"
+  }
+ ],
+ "sdk2013_len": 7,
+ "sdk2013_slots": [
+  "Connect(void* (*)(char const*, int*))",
+  "Disconnect()",
+  "QueryInterface(char const*)",
+  "Init()",
+  "Shutdown()",
+  "VTex(int, char**)",
+  "VTex(void* (*)(char const*, int*), char const*, int, char**)"
+ ],
+ "retail_reference": {
+  "module": "bin/vtex_dll",
+  "class": "CVTex",
+  "offset": 0,
+  "chain": [
+   "CVTex",
+   "CTier2AppSystem<IVTex, 0>",
+   "CTier1AppSystem<IVTex, 0>",
+   "CTier0AppSystem<IVTex>",
+   "CBaseAppSystem<IVTex>",
+   "IVTex"
+  ]
+ },
+ "retail_len": 7,
+ "retail_len_basis": "override: main overrides the secondary base ILaunchableDLL",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 8
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Connect",
+   "sig": "Connect(void* (*)(char const*, int*))",
+   "symbol": "CTier2AppSystem<IVTex, 0>::Connect(void* (*)(char const*, int*))"
+  },
+  {
+   "index": 1,
+   "name": "Disconnect",
+   "sig": "Disconnect()",
+   "symbol": "CTier2AppSystem<IVTex, 0>::Disconnect()"
+  },
+  {
+   "index": 2,
+   "name": "QueryInterface",
+   "sig": "QueryInterface(char const*)",
+   "symbol": "CBaseAppSystem<IVTex>::QueryInterface(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "CTier2AppSystem<IVTex, 0>::Init()"
+  },
+  {
+   "index": 4,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CTier2AppSystem<IVTex, 0>::Shutdown()"
+  },
+  {
+   "index": 5,
+   "name": "VTex",
+   "sig": "VTex(int, char**)",
+   "symbol": "CVTex::VTex(int, char**)"
+  },
+  {
+   "index": 6,
+   "name": "VTex",
+   "sig": "VTex(void* (*)(char const*, int*), char const*, int, char**)",
+   "symbol": "CVTex::VTex(void* (*)(char const*, int*), char const*, int, char**)"
+  }
+ ],
+ "implementer_tail": [
+  "main(int, char**)"
+ ],
+ "derived": [
+  "bin/vtex_dll:CVTex"
+ ],
+ "derived_count": 1
+}

@@ -1,0 +1,190 @@
+{
+ "interface": "IReplayMovieManager",
+ "headers": [
+  "common/replay/ireplaymoviemanager.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 22,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "GetMovieCount()",
+  "GetMovieList(CUtlLinkedList<IReplayMovie*, unsigned short, false, unsigned short, CUtlMemory<UtlLinkedListElem_t<IReplayMovie*, unsigned short>, unsigned short>>&)",
+  "GetMovie(unsigned int)",
+  "CreateAndAddMovie(unsigned int)",
+  "DeleteMovie(unsigned int)",
+  "GetNumMoviesDependentOnReplay(CReplay const*)",
+  "GetCachedMovieTitleAndClear(wchar_t*, int)",
+  "SetPendingMovie(IReplayMovie*)",
+  "GetPendingMovie()",
+  "FlagMovieForFlush(IReplayMovie*, bool)",
+  "GetMoviesAsQueryableItems(CUtlLinkedList<IQueryableReplayItem*, int, false, int, CUtlMemory<UtlLinkedListElem_t<IQueryableReplayItem*, int>, int>>&)",
+  "GetRenderDir() const",
+  "GetRawExportDir() const",
+  "IsRendering() const",
+  "RenderingCancelled() const",
+  "RenderMovie(RenderMovieParams_t const&)",
+  "RenderNextMovie()",
+  "CompleteRender(bool, bool)",
+  "CancelRender()",
+  "ClearRenderCancelledFlag()"
+ ],
+ "retail_reference": {
+  "module": "bin/replay",
+  "class": "CReplayMovieManager",
+  "offset": 136,
+  "chain": [
+   "CReplayMovieManager",
+   "IReplayMovieManager"
+  ]
+ },
+ "retail_len": 22,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 22
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CReplayMovieManager",
+   "sig": "~CReplayMovieManager()",
+   "symbol": "non-virtual thunk to CReplayMovieManager::~CReplayMovieManager()"
+  },
+  {
+   "index": 1,
+   "name": "~CReplayMovieManager",
+   "sig": "~CReplayMovieManager()",
+   "symbol": "non-virtual thunk to CReplayMovieManager::~CReplayMovieManager()"
+  },
+  {
+   "index": 2,
+   "name": "GetMovieCount",
+   "sig": "GetMovieCount()",
+   "symbol": "non-virtual thunk to CReplayMovieManager::GetMovieCount()"
+  },
+  {
+   "index": 3,
+   "name": "GetMovieList",
+   "sig": "GetMovieList(CUtlLinkedList<IReplayMovie*, unsigned short, false, unsigned short, CUtlMemory<UtlLinkedListElem_t<IReplayMovie*, unsigned short>, unsigned short>>&)",
+   "symbol": "non-virtual thunk to CReplayMovieManager::GetMovieList(CUtlLinkedList<IReplayMovie*, unsigned short, false, unsigned short, CUtlMemory<UtlLinkedListElem_t<IReplayMovie*, unsigned short>, unsigned short>>&)"
+  },
+  {
+   "index": 4,
+   "name": "GetMovie",
+   "sig": "GetMovie(unsigned int)",
+   "symbol": "non-virtual thunk to CReplayMovieManager::GetMovie(unsigned int)"
+  },
+  {
+   "index": 5,
+   "name": "CreateAndAddMovie",
+   "sig": "CreateAndAddMovie(unsigned int)",
+   "symbol": "non-virtual thunk to CReplayMovieManager::CreateAndAddMovie(unsigned int)"
+  },
+  {
+   "index": 6,
+   "name": "DeleteMovie",
+   "sig": "DeleteMovie(unsigned int)",
+   "symbol": "non-virtual thunk to CReplayMovieManager::DeleteMovie(unsigned int)"
+  },
+  {
+   "index": 7,
+   "name": "GetNumMoviesDependentOnReplay",
+   "sig": "GetNumMoviesDependentOnReplay(CReplay const*)",
+   "symbol": "non-virtual thunk to CReplayMovieManager::GetNumMoviesDependentOnReplay(CReplay const*)"
+  },
+  {
+   "index": 8,
+   "name": "GetCachedMovieTitleAndClear",
+   "sig": "GetCachedMovieTitleAndClear(wchar_t*, int)",
+   "symbol": "non-virtual thunk to CReplayMovieManager::GetCachedMovieTitleAndClear(wchar_t*, int)"
+  },
+  {
+   "index": 9,
+   "name": "SetPendingMovie",
+   "sig": "SetPendingMovie(IReplayMovie*)",
+   "symbol": "non-virtual thunk to CReplayMovieManager::SetPendingMovie(IReplayMovie*)"
+  },
+  {
+   "index": 10,
+   "name": "GetPendingMovie",
+   "sig": "GetPendingMovie()",
+   "symbol": "non-virtual thunk to CReplayMovieManager::GetPendingMovie()"
+  },
+  {
+   "index": 11,
+   "name": "FlagMovieForFlush",
+   "sig": "FlagMovieForFlush(IReplayMovie*, bool)",
+   "symbol": "non-virtual thunk to CReplayMovieManager::FlagMovieForFlush(IReplayMovie*, bool)"
+  },
+  {
+   "index": 12,
+   "name": "GetMoviesAsQueryableItems",
+   "sig": "GetMoviesAsQueryableItems(CUtlLinkedList<IQueryableReplayItem*, int, false, int, CUtlMemory<UtlLinkedListElem_t<IQueryableReplayItem*, int>, int>>&)",
+   "symbol": "non-virtual thunk to CReplayMovieManager::GetMoviesAsQueryableItems(CUtlLinkedList<IQueryableReplayItem*, int, false, int, CUtlMemory<UtlLinkedListElem_t<IQueryableReplayItem*, int>, int>>&)"
+  },
+  {
+   "index": 13,
+   "name": "GetRenderDir",
+   "sig": "GetRenderDir() const",
+   "symbol": "non-virtual thunk to CReplayMovieManager::GetRenderDir() const"
+  },
+  {
+   "index": 14,
+   "name": "GetRawExportDir",
+   "sig": "GetRawExportDir() const",
+   "symbol": "non-virtual thunk to CReplayMovieManager::GetRawExportDir() const"
+  },
+  {
+   "index": 15,
+   "name": "IsRendering",
+   "sig": "IsRendering() const",
+   "symbol": "non-virtual thunk to CReplayMovieManager::IsRendering() const"
+  },
+  {
+   "index": 16,
+   "name": "RenderingCancelled",
+   "sig": "RenderingCancelled() const",
+   "symbol": "non-virtual thunk to CReplayMovieManager::RenderingCancelled() const"
+  },
+  {
+   "index": 17,
+   "name": "RenderMovie",
+   "sig": "RenderMovie(RenderMovieParams_t const&)",
+   "symbol": "non-virtual thunk to CReplayMovieManager::RenderMovie(RenderMovieParams_t const&)"
+  },
+  {
+   "index": 18,
+   "name": "RenderNextMovie",
+   "sig": "RenderNextMovie()",
+   "symbol": "non-virtual thunk to CReplayMovieManager::RenderNextMovie()"
+  },
+  {
+   "index": 19,
+   "name": "CompleteRender",
+   "sig": "CompleteRender(bool, bool)",
+   "symbol": "non-virtual thunk to CReplayMovieManager::CompleteRender(bool, bool)"
+  },
+  {
+   "index": 20,
+   "name": "CancelRender",
+   "sig": "CancelRender()",
+   "symbol": "non-virtual thunk to CReplayMovieManager::CancelRender()"
+  },
+  {
+   "index": 21,
+   "name": "ClearRenderCancelledFlag",
+   "sig": "ClearRenderCancelledFlag()",
+   "symbol": "non-virtual thunk to CReplayMovieManager::ClearRenderCancelledFlag()"
+  }
+ ],
+ "derived": [
+  "bin/replay:CReplayMovieManager"
+ ],
+ "derived_count": 1
+}

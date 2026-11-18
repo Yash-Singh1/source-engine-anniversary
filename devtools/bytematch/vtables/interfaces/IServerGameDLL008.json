@@ -1,0 +1,54 @@
+{
+ "interface": "IServerGameDLL008",
+ "headers": [],
+ "versions": {
+  "retail": [
+   "ServerGameDLL008"
+  ],
+  "ours": [
+   "ServerGameDLL003",
+   "ServerGameDLL008",
+   "ServerGameDLL009"
+  ],
+  "sdk2013": [
+   "ServerGameDLL003",
+   "ServerGameDLL008",
+   "ServerGameDLL009"
+  ]
+ },
+ "version_macros": [
+  "INTERFACEVERSION_SERVERGAMEDLL",
+  "INTERFACEVERSION_SERVERGAMEDLL_VERSION_8",
+  "INTERFACEVERSION_SERVERGAMEDLL_VERSION_9",
+  "SERVERGAMEDLL_INTERFACEVERSION_3"
+ ],
+ "registrations": [
+  {
+   "module": "episodic/server",
+   "version": "ServerGameDLL008",
+   "class": "CServerGameDLL"
+  },
+  {
+   "module": "hl2/server",
+   "version": "ServerGameDLL008",
+   "class": "CServerGameDLL"
+  },
+  {
+   "module": "hl2_complete/server",
+   "version": "ServerGameDLL008",
+   "class": "CServerGameDLL"
+  },
+  {
+   "module": "hl2mp/server",
+   "version": "ServerGameDLL008",
+   "class": "CServerGameDLL"
+  },
+  {
+   "module": "lostcoast/server",
+   "version": "ServerGameDLL008",
+   "class": "CServerGameDLL"
+  }
+ ],
+ "sdk2013_len": null,
+ "status": "no retail vtable"
+}

@@ -1,0 +1,95 @@
+{
+ "interface": "IServerDLLSharedAppSystems",
+ "headers": [
+  "public/eiface.h"
+ ],
+ "versions": {
+  "retail": [
+   "VServerDllSharedAppSystems001"
+  ],
+  "ours": [
+   "VServerDllSharedAppSystems001"
+  ],
+  "sdk2013": [
+   "VServerDllSharedAppSystems001"
+  ]
+ },
+ "version_macros": [
+  "SERVER_DLL_SHARED_APPSYSTEMS"
+ ],
+ "registrations": [
+  {
+   "module": "episodic/server",
+   "version": "VServerDllSharedAppSystems001",
+   "class": "CServerDLLSharedAppSystems"
+  },
+  {
+   "module": "hl2/server",
+   "version": "VServerDllSharedAppSystems001",
+   "class": "CServerDLLSharedAppSystems"
+  },
+  {
+   "module": "hl2_complete/server",
+   "version": "VServerDllSharedAppSystems001",
+   "class": "CServerDLLSharedAppSystems"
+  },
+  {
+   "module": "hl2mp/server",
+   "version": "VServerDllSharedAppSystems001",
+   "class": "CServerDLLSharedAppSystems"
+  },
+  {
+   "module": "lostcoast/server",
+   "version": "VServerDllSharedAppSystems001",
+   "class": "CServerDLLSharedAppSystems"
+  }
+ ],
+ "sdk2013_len": 3,
+ "sdk2013_slots": [
+  "Count()",
+  "GetDllName(int)",
+  "GetInterfaceName(int)"
+ ],
+ "retail_reference": {
+  "module": "episodic/server",
+  "class": "CServerDLLSharedAppSystems",
+  "offset": 0,
+  "chain": [
+   "CServerDLLSharedAppSystems",
+   "IServerDLLSharedAppSystems"
+  ]
+ },
+ "retail_len": 3,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 3
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Count",
+   "sig": "Count()",
+   "symbol": "CServerDLLSharedAppSystems::Count()"
+  },
+  {
+   "index": 1,
+   "name": "GetDllName",
+   "sig": "GetDllName(int)",
+   "symbol": "CServerDLLSharedAppSystems::GetDllName(int)"
+  },
+  {
+   "index": 2,
+   "name": "GetInterfaceName",
+   "sig": "GetInterfaceName(int)",
+   "symbol": "CServerDLLSharedAppSystems::GetInterfaceName(int)"
+  }
+ ],
+ "derived": [
+  "episodic/server:CServerDLLSharedAppSystems",
+  "hl2/server:CServerDLLSharedAppSystems",
+  "hl2_complete/server:CServerDLLSharedAppSystems",
+  "hl2mp/server:CServerDLLSharedAppSystems",
+  "lostcoast/server:CServerDLLSharedAppSystems"
+ ],
+ "derived_count": 5
+}

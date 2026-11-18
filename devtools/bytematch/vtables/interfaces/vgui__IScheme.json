@@ -1,0 +1,126 @@
+{
+ "interface": "vgui::IScheme",
+ "headers": [
+  "public/vgui/IScheme.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 12,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "GetResourceString(char const*)",
+  "GetBorder(char const*)",
+  "GetFont(char const*, bool)",
+  "GetFontName(unsigned long const&)",
+  "GetColor(char const*, Color)",
+  "GetBorderCount() const",
+  "GetBorderAtIndex(int)",
+  "GetFontCount() const",
+  "GetFontAtIndex(int)",
+  "GetColorData() const"
+ ],
+ "retail_reference": {
+  "module": "bin/vgui2",
+  "class": "CScheme",
+  "offset": 0,
+  "chain": [
+   "CScheme",
+   "vgui::IScheme"
+  ]
+ },
+ "retail_len": 13,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 13
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CScheme",
+   "sig": "~CScheme()",
+   "symbol": "CScheme::~CScheme()"
+  },
+  {
+   "index": 1,
+   "name": "~CScheme",
+   "sig": "~CScheme()",
+   "symbol": "CScheme::~CScheme()"
+  },
+  {
+   "index": 2,
+   "name": "GetResourceString",
+   "sig": "GetResourceString(char const*)",
+   "symbol": "CScheme::GetResourceString(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "GetBorder",
+   "sig": "GetBorder(char const*)",
+   "symbol": "CScheme::GetBorder(char const*)"
+  },
+  {
+   "index": 4,
+   "name": "GetFont",
+   "sig": "GetFont(char const*, bool)",
+   "symbol": "CScheme::GetFont(char const*, bool)"
+  },
+  {
+   "index": 5,
+   "name": "GetFontName",
+   "sig": "GetFontName(unsigned long const&)",
+   "symbol": "CScheme::GetFontName(unsigned long const&)"
+  },
+  {
+   "index": 6,
+   "name": "GetColor",
+   "sig": "GetColor(char const*, Color)",
+   "symbol": "CScheme::GetColor(char const*, Color)"
+  },
+  {
+   "index": 7,
+   "name": "GetBorderCount",
+   "sig": "GetBorderCount() const",
+   "symbol": "CScheme::GetBorderCount() const"
+  },
+  {
+   "index": 8,
+   "name": "GetBorderAtIndex",
+   "sig": "GetBorderAtIndex(int)",
+   "symbol": "CScheme::GetBorderAtIndex(int)"
+  },
+  {
+   "index": 9,
+   "name": "GetFontCount",
+   "sig": "GetFontCount() const",
+   "symbol": "CScheme::GetFontCount() const"
+  },
+  {
+   "index": 10,
+   "name": "GetFontAtIndex",
+   "sig": "GetFontAtIndex(int)",
+   "symbol": "CScheme::GetFontAtIndex(int)"
+  },
+  {
+   "index": 11,
+   "name": "GetColorData",
+   "sig": "GetColorData() const",
+   "symbol": "CScheme::GetColorData() const"
+  },
+  {
+   "index": 12,
+   "name": "GetBorder2",
+   "sig": "GetBorder2(char const*)",
+   "symbol": "CScheme::GetBorder2(char const*)"
+  }
+ ],
+ "derived": [
+  "bin/vgui2:CScheme"
+ ],
+ "derived_count": 1
+}

@@ -24,6 +24,7 @@ unrelated to dx9:
 mat_fullbright 1 doesn't work properly on alpha materials in testroom_standards
 */
 #define DISABLE_PROTECTED_THINGS
+#include "shaderapi/ishaderapistreaming.h"
 #include "shaderapidx8.h"
 #include "shaderapidx8_global.h"
 #include "shadershadowdx8.h"
@@ -960,6 +961,9 @@ public:
 	MaterialFogMode_t GetSceneFogMode( );
 	MaterialFogMode_t GetPixelFogMode( );
 	int GetPixelFogCombo( );//0 is either range fog, or no fog simulated with rigged range fog values. 1 is height fog
+	int GetPixelFogCombo1( bool bSupportsRadial );
+	void SceneFogRadial( bool bRadial );
+	bool GetSceneFogRadial();
 	bool ShouldUsePixelFogForMode( MaterialFogMode_t fogMode );
 	void SceneFogColor3ub( unsigned char r, unsigned char g, unsigned char b );
 	void GetSceneFogColor( unsigned char *rgb );
@@ -1017,10 +1021,10 @@ public:
 	void CopyTextureToRenderTargetEx( int nRenderTargetID, ShaderAPITextureHandle_t textureHandle, Rect_t *pSrcRect = NULL, Rect_t *pDstRect = NULL );
 	void CopyRenderTargetToScratchTexture( ShaderAPITextureHandle_t srcHandle, ShaderAPITextureHandle_t dstHandle, Rect_t *pSrcRect = NULL, Rect_t *pDstRect = NULL );
 
-	virtual void LockRect( void** pOutBits, int* pOutPitch, ShaderAPITextureHandle_t texHandle, int mipmap, int x, int y, int w, int h, bool bWrite, bool bRead );
-	virtual void UnlockRect( ShaderAPITextureHandle_t texHandle, int mipmap );
+	void LockRect( void** pOutBits, int* pOutPitch, ShaderAPITextureHandle_t texHandle, int mipmap, int x, int y, int w, int h, bool bWrite, bool bRead );
+	void UnlockRect( ShaderAPITextureHandle_t texHandle, int mipmap );
 
-	virtual void CopyTextureToTexture( ShaderAPITextureHandle_t srcTex, ShaderAPITextureHandle_t dstTex );
+	void CopyTextureToTexture( ShaderAPITextureHandle_t srcTex, ShaderAPITextureHandle_t dstTex );
 
 	// Returns the cull mode (for fill rate computation)
 	D3DCULL GetCullMode() const;
@@ -1695,6 +1699,7 @@ private:
 	// fog
 	unsigned char m_SceneFogColor[3];
 	MaterialFogMode_t m_SceneFogMode;
+	bool m_bSceneFogRadial;
 
 	// Tone Mapping state ( w is gamma scale )
 	Vector4D m_ToneMappingScale;
@@ -1823,6 +1828,42 @@ EXPOSE_SINGLE_INTERFACE_GLOBALVAR( CShaderAPIDx8, IDebugTextureInfo,
 				DEBUG_TEXTURE_INFO_VERSION, g_ShaderAPIDX8 )
 
 //-----------------------------------------------------------------------------
+// Texture streaming hooks; kept off CShaderAPIDx8's own vtable (see ishaderapistreaming.h)
+//-----------------------------------------------------------------------------
+class CShaderAPIDx8Streaming : public IShaderAPIStreaming
+{
+public:
+	virtual void CopyRenderTargetToScratchTexture( ShaderAPITextureHandle_t srcRt, ShaderAPITextureHandle_t dstTex, Rect_t *pSrcRect, Rect_t *pDstRect )
+	{
+		g_ShaderAPIDX8.CopyRenderTargetToScratchTexture( srcRt, dstTex, pSrcRect, pDstRect );
+	}
+	virtual void LockRect( void** pOutBits, int* pOutPitch, ShaderAPITextureHandle_t texHandle, int mipmap, int x, int y, int w, int h, bool bWrite, bool bRead )
+	{
+		g_ShaderAPIDX8.LockRect( pOutBits, pOutPitch, texHandle, mipmap, x, y, w, h, bWrite, bRead );
+	}
+	virtual void UnlockRect( ShaderAPITextureHandle_t texHandle, int mipmap )
+	{
+		g_ShaderAPIDX8.UnlockRect( texHandle, mipmap );
+	}
+	virtual void TexLodClamp( int finest )
+	{
+		g_ShaderAPIDX8.TexLodClamp( finest );
+	}
+	virtual void TexLodBias( float bias )
+	{
+		g_ShaderAPIDX8.TexLodBias( bias );
+	}
+	virtual void CopyTextureToTexture( ShaderAPITextureHandle_t srcTex, ShaderAPITextureHandle_t dstTex )
+	{
+		g_ShaderAPIDX8.CopyTextureToTexture( srcTex, dstTex );
+	}
+};
+
+static CShaderAPIDx8Streaming g_ShaderAPIDX8Streaming;
+EXPOSE_SINGLE_INTERFACE_GLOBALVAR( CShaderAPIDx8Streaming, IShaderAPIStreaming,
+				SHADERAPI_STREAMING_INTERFACE_VERSION, g_ShaderAPIDX8Streaming )
+
+//-----------------------------------------------------------------------------
 // Accessors for major interfaces
 //-----------------------------------------------------------------------------
 
@@ -1934,6 +1975,7 @@ CShaderAPIDx8::CShaderAPIDx8() :
 	m_SceneFogColor[1] = 0;
 	m_SceneFogColor[2] = 0;
 	m_SceneFogMode = MATERIAL_FOG_NONE;
+	m_bSceneFogRadial = false;
 
 	// We haven't yet detected whether we support CreateQuery or not yet.
 	memset(IntRenderingParameters,0,sizeof(IntRenderingParameters));
@@ -6021,6 +6063,35 @@ int CShaderAPIDx8::GetPixelFogCombo( void )
 		return m_SceneFogMode - 1; //PIXELFOGTYPE dynamic combos are shifted down one. MATERIAL_FOG_NONE is simulated by range fog with rigged parameters. Gets rid of a dynamic combo across the ps2x set
 	else	
 		return MATERIAL_FOG_NONE;
+}
+
+static ConVar r_radialfog_force( "r_radialfog_force", "-1", 0, "Force-on toggle for testing radial fog on/off. -1 = default. 0 = force off. 1 = force on. This is not a cheat for the joy of playing with this set on if a player wants the new behaviour on old maps." );
+
+int CShaderAPIDx8::GetPixelFogCombo1( bool bSupportsRadial )
+{
+	int nCombo = GetPixelFogCombo();
+	if ( nCombo == 0 && bSupportsRadial )
+	{
+		int nForce = r_radialfog_force.GetInt();
+		bool bRadial = ( nForce == -1 ) ? m_bSceneFogRadial : ( nForce != 0 );
+		if ( bRadial )
+			return 2;
+	}
+	return nCombo;
+}
+
+void CShaderAPIDx8::SceneFogRadial( bool bRadial )
+{
+	if ( m_bSceneFogRadial != bRadial )
+	{
+		FlushBufferedPrimitives();
+		m_bSceneFogRadial = bRadial;
+	}
+}
+
+bool CShaderAPIDx8::GetSceneFogRadial()
+{
+	return m_bSceneFogRadial;
 }
 
 

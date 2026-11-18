@@ -359,7 +359,7 @@ public:
 
 	virtual const char *GetWebkitHTMLUserAgentString();
 
-	virtual void *Deprecated_AccessChromeHTMLController() { return NULL; }
+	virtual void *AccessChromeHTMLController() { return NULL; }
 
 	virtual void SetFullscreenViewport( int x, int y, int w, int h ) OVERRIDE 
 	{

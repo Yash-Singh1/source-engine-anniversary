@@ -1,0 +1,132 @@
+{
+ "interface": "IServerGameEnts",
+ "headers": [
+  "public/eiface.h",
+  "public/eifacev21.h"
+ ],
+ "versions": {
+  "retail": [
+   "ServerGameEnts001"
+  ],
+  "ours": [
+   "ServerGameEnts001"
+  ],
+  "sdk2013": [
+   "ServerGameEnts001"
+  ]
+ },
+ "version_macros": [
+  "INTERFACEVERSION_SERVERGAMEENTS",
+  "SERVERGAMEENTS_INTERFACEVERSION_1"
+ ],
+ "registrations": [
+  {
+   "module": "episodic/server",
+   "version": "ServerGameEnts001",
+   "class": "CServerGameEnts"
+  },
+  {
+   "module": "hl2/server",
+   "version": "ServerGameEnts001",
+   "class": "CServerGameEnts"
+  },
+  {
+   "module": "hl2_complete/server",
+   "version": "ServerGameEnts001",
+   "class": "CServerGameEnts"
+  },
+  {
+   "module": "hl2mp/server",
+   "version": "ServerGameEnts001",
+   "class": "CServerGameEnts"
+  },
+  {
+   "module": "lostcoast/server",
+   "version": "ServerGameEnts001",
+   "class": "CServerGameEnts"
+  }
+ ],
+ "sdk2013_len": 8,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "SetDebugEdictBase(edict_t*)",
+  "MarkEntitiesAsTouching(edict_t*, edict_t*)",
+  "FreeContainingEntity(edict_t*)",
+  "BaseEntityToEdict(CBaseEntity*)",
+  "EdictToBaseEntity(edict_t*)",
+  "CheckTransmit(CCheckTransmitInfo*, unsigned short const*, int)"
+ ],
+ "retail_reference": {
+  "module": "episodic/server",
+  "class": "CServerGameEnts",
+  "offset": 0,
+  "chain": [
+   "CServerGameEnts",
+   "IServerGameEnts"
+  ]
+ },
+ "retail_len": 8,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 8
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CServerGameEnts",
+   "sig": "~CServerGameEnts()",
+   "symbol": "CServerGameEnts::~CServerGameEnts()"
+  },
+  {
+   "index": 1,
+   "name": "~CServerGameEnts",
+   "sig": "~CServerGameEnts()",
+   "symbol": "CServerGameEnts::~CServerGameEnts()"
+  },
+  {
+   "index": 2,
+   "name": "SetDebugEdictBase",
+   "sig": "SetDebugEdictBase(edict_t*)",
+   "symbol": "CServerGameEnts::SetDebugEdictBase(edict_t*)"
+  },
+  {
+   "index": 3,
+   "name": "MarkEntitiesAsTouching",
+   "sig": "MarkEntitiesAsTouching(edict_t*, edict_t*)",
+   "symbol": "CServerGameEnts::MarkEntitiesAsTouching(edict_t*, edict_t*)"
+  },
+  {
+   "index": 4,
+   "name": "FreeContainingEntity",
+   "sig": "FreeContainingEntity(edict_t*)",
+   "symbol": "CServerGameEnts::FreeContainingEntity(edict_t*)"
+  },
+  {
+   "index": 5,
+   "name": "BaseEntityToEdict",
+   "sig": "BaseEntityToEdict(CBaseEntity*)",
+   "symbol": "CServerGameEnts::BaseEntityToEdict(CBaseEntity*)"
+  },
+  {
+   "index": 6,
+   "name": "EdictToBaseEntity",
+   "sig": "EdictToBaseEntity(edict_t*)",
+   "symbol": "CServerGameEnts::EdictToBaseEntity(edict_t*)"
+  },
+  {
+   "index": 7,
+   "name": "CheckTransmit",
+   "sig": "CheckTransmit(CCheckTransmitInfo*, unsigned short const*, int)",
+   "symbol": "CServerGameEnts::CheckTransmit(CCheckTransmitInfo*, unsigned short const*, int)"
+  }
+ ],
+ "derived": [
+  "episodic/server:CServerGameEnts",
+  "hl2/server:CServerGameEnts",
+  "hl2_complete/server:CServerGameEnts",
+  "hl2mp/server:CServerGameEnts",
+  "lostcoast/server:CServerGameEnts"
+ ],
+ "derived_count": 5
+}

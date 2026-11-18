@@ -1,0 +1,91 @@
+{
+ "interface": "IVoiceCodec",
+ "headers": [
+  "public/engine/audio/ivoicecodec.h"
+ ],
+ "versions": {
+  "retail": [
+   "vaudio_miles",
+   "vaudio_speex"
+  ],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [
+  {
+   "module": "bin/vaudio_miles",
+   "version": "vaudio_miles",
+   "class": null
+  },
+  {
+   "module": "bin/vaudio_speex",
+   "version": "vaudio_speex",
+   "class": null
+  }
+ ],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "bin/vaudio_miles",
+  "class": "VoiceCodec_Frame",
+  "offset": 0,
+  "chain": [
+   "VoiceCodec_Frame",
+   "IVoiceCodec"
+  ]
+ },
+ "retail_len": 7,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 7
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~VoiceCodec_Frame",
+   "sig": "~VoiceCodec_Frame()",
+   "symbol": "VoiceCodec_Frame::~VoiceCodec_Frame()"
+  },
+  {
+   "index": 1,
+   "name": "~VoiceCodec_Frame",
+   "sig": "~VoiceCodec_Frame()",
+   "symbol": "VoiceCodec_Frame::~VoiceCodec_Frame()"
+  },
+  {
+   "index": 2,
+   "name": "Init",
+   "sig": "Init(int)",
+   "symbol": "VoiceCodec_Frame::Init(int)"
+  },
+  {
+   "index": 3,
+   "name": "Release",
+   "sig": "Release()",
+   "symbol": "VoiceCodec_Frame::Release()"
+  },
+  {
+   "index": 4,
+   "name": "Compress",
+   "sig": "Compress(char const*, int, char*, int, bool)",
+   "symbol": "VoiceCodec_Frame::Compress(char const*, int, char*, int, bool)"
+  },
+  {
+   "index": 5,
+   "name": "Decompress",
+   "sig": "Decompress(char const*, int, char*, int)",
+   "symbol": "VoiceCodec_Frame::Decompress(char const*, int, char*, int)"
+  },
+  {
+   "index": 6,
+   "name": "ResetState",
+   "sig": "ResetState()",
+   "symbol": "VoiceCodec_Frame::ResetState()"
+  }
+ ],
+ "derived": [
+  "bin/vaudio_miles:VoiceCodec_Frame",
+  "bin/vaudio_speex:VoiceCodec_Frame"
+ ],
+ "derived_count": 2
+}

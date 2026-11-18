@@ -1,0 +1,145 @@
+{
+ "interface": "INetworkStringTable",
+ "headers": [
+  "public/networkstringtabledefs.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 15,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "GetTableName() const",
+  "GetTableId() const",
+  "GetNumStrings() const",
+  "GetMaxStrings() const",
+  "GetEntryBits() const",
+  "SetTick(int)",
+  "ChangedSinceTick(int) const",
+  "AddString(bool, char const*, int, void const*)",
+  "GetString(int)",
+  "SetStringUserData(int, int, void const*)",
+  "GetStringUserData(int, int*)",
+  "FindStringIndex(char const*)",
+  "SetStringChangedCallback(void*, void (*)(void*, INetworkStringTable*, int, char const*, void const*))"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CNetworkStringTable",
+  "offset": 0,
+  "chain": [
+   "CNetworkStringTable",
+   "INetworkStringTable"
+  ]
+ },
+ "retail_len": 15,
+ "retail_len_basis": "override: Dump/Lock are CNetworkStringTable's own",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 17
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CNetworkStringTable",
+   "sig": "~CNetworkStringTable()",
+   "symbol": "CNetworkStringTable::~CNetworkStringTable()"
+  },
+  {
+   "index": 1,
+   "name": "~CNetworkStringTable",
+   "sig": "~CNetworkStringTable()",
+   "symbol": "CNetworkStringTable::~CNetworkStringTable()"
+  },
+  {
+   "index": 2,
+   "name": "GetTableName",
+   "sig": "GetTableName() const",
+   "symbol": "CNetworkStringTable::GetTableName() const"
+  },
+  {
+   "index": 3,
+   "name": "GetTableId",
+   "sig": "GetTableId() const",
+   "symbol": "CNetworkStringTable::GetTableId() const"
+  },
+  {
+   "index": 4,
+   "name": "GetNumStrings",
+   "sig": "GetNumStrings() const",
+   "symbol": "CNetworkStringTable::GetNumStrings() const"
+  },
+  {
+   "index": 5,
+   "name": "GetMaxStrings",
+   "sig": "GetMaxStrings() const",
+   "symbol": "CNetworkStringTable::GetMaxStrings() const"
+  },
+  {
+   "index": 6,
+   "name": "GetEntryBits",
+   "sig": "GetEntryBits() const",
+   "symbol": "CNetworkStringTable::GetEntryBits() const"
+  },
+  {
+   "index": 7,
+   "name": "SetTick",
+   "sig": "SetTick(int)",
+   "symbol": "CNetworkStringTable::SetTick(int)"
+  },
+  {
+   "index": 8,
+   "name": "ChangedSinceTick",
+   "sig": "ChangedSinceTick(int) const",
+   "symbol": "CNetworkStringTable::ChangedSinceTick(int) const"
+  },
+  {
+   "index": 9,
+   "name": "AddString",
+   "sig": "AddString(bool, char const*, int, void const*)",
+   "symbol": "CNetworkStringTable::AddString(bool, char const*, int, void const*)"
+  },
+  {
+   "index": 10,
+   "name": "GetString",
+   "sig": "GetString(int)",
+   "symbol": "CNetworkStringTable::GetString(int)"
+  },
+  {
+   "index": 11,
+   "name": "SetStringUserData",
+   "sig": "SetStringUserData(int, int, void const*)",
+   "symbol": "CNetworkStringTable::SetStringUserData(int, int, void const*)"
+  },
+  {
+   "index": 12,
+   "name": "GetStringUserData",
+   "sig": "GetStringUserData(int, int*)",
+   "symbol": "CNetworkStringTable::GetStringUserData(int, int*)"
+  },
+  {
+   "index": 13,
+   "name": "FindStringIndex",
+   "sig": "FindStringIndex(char const*)",
+   "symbol": "CNetworkStringTable::FindStringIndex(char const*)"
+  },
+  {
+   "index": 14,
+   "name": "SetStringChangedCallback",
+   "sig": "SetStringChangedCallback(void*, void (*)(void*, INetworkStringTable*, int, char const*, void const*))",
+   "symbol": "CNetworkStringTable::SetStringChangedCallback(void*, void (*)(void*, INetworkStringTable*, int, char const*, void const*))"
+  }
+ ],
+ "implementer_tail": [
+  "Dump()",
+  "Lock(bool)"
+ ],
+ "derived": [
+  "bin/engine:CNetworkStringTable"
+ ],
+ "derived_count": 1
+}

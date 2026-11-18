@@ -1,0 +1,99 @@
+{
+ "interface": "IStudioDataCache",
+ "headers": [
+  "public/istudiorender.h"
+ ],
+ "versions": {
+  "retail": [
+   "VStudioDataCache005"
+  ],
+  "ours": [
+   "VStudioDataCache005"
+  ],
+  "sdk2013": [
+   "VStudioDataCache005"
+  ]
+ },
+ "version_macros": [
+  "STUDIO_DATA_CACHE_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/datacache",
+   "version": "VStudioDataCache005",
+   "class": "CMDLCache"
+  }
+ ],
+ "sdk2013_len": 7,
+ "sdk2013_slots": [
+  "Connect(void* (*)(char const*, int*))",
+  "Disconnect()",
+  "QueryInterface(char const*)",
+  "Init()",
+  "Shutdown()",
+  "VerifyHeaders(studiohdr_t*)",
+  "CacheVertexData(studiohdr_t*)"
+ ],
+ "retail_reference": {
+  "module": "bin/datacache",
+  "class": "CMDLCache",
+  "offset": 8,
+  "chain": [
+   "CMDLCache",
+   "IStudioDataCache"
+  ]
+ },
+ "retail_len": 7,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 7
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Connect",
+   "sig": "Connect(void* (*)(char const*, int*))",
+   "symbol": "non-virtual thunk to CMDLCache::Connect(void* (*)(char const*, int*))"
+  },
+  {
+   "index": 1,
+   "name": "Disconnect",
+   "sig": "Disconnect()",
+   "symbol": "non-virtual thunk to CMDLCache::Disconnect()"
+  },
+  {
+   "index": 2,
+   "name": "QueryInterface",
+   "sig": "QueryInterface(char const*)",
+   "symbol": "non-virtual thunk to CMDLCache::QueryInterface(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "non-virtual thunk to CMDLCache::Init()"
+  },
+  {
+   "index": 4,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "non-virtual thunk to CMDLCache::Shutdown()"
+  },
+  {
+   "index": 5,
+   "name": "VerifyHeaders",
+   "sig": "VerifyHeaders(studiohdr_t*)",
+   "symbol": "non-virtual thunk to CMDLCache::VerifyHeaders(studiohdr_t*)"
+  },
+  {
+   "index": 6,
+   "name": "CacheVertexData",
+   "sig": "CacheVertexData(studiohdr_t*)",
+   "symbol": "non-virtual thunk to CMDLCache::CacheVertexData(studiohdr_t*)"
+  }
+ ],
+ "derived": [
+  "bin/datacache:CMDLCache"
+ ],
+ "derived_count": 1
+}

@@ -1,0 +1,91 @@
+{
+ "interface": "CSteamApplication",
+ "headers": [
+  "public/appframework/AppFramework.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 8,
+ "sdk2013_slots": [
+  "Create()",
+  "PreInit()",
+  "Main()",
+  "PostShutdown()",
+  "Destroy()",
+  "Startup()",
+  "Shutdown()",
+  "LoadModuleDLL(char const*)"
+ ],
+ "retail_reference": {
+  "module": "bin/launcher",
+  "class": "CSteamApplication",
+  "offset": 0,
+  "chain": [
+   "CSteamApplication"
+  ]
+ },
+ "retail_len": 8,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 8
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Create",
+   "sig": "Create()",
+   "symbol": "CSteamApplication::Create()"
+  },
+  {
+   "index": 1,
+   "name": "PreInit",
+   "sig": "PreInit()",
+   "symbol": "CSteamApplication::PreInit()"
+  },
+  {
+   "index": 2,
+   "name": "Main",
+   "sig": "Main()",
+   "symbol": "CSteamApplication::Main()"
+  },
+  {
+   "index": 3,
+   "name": "PostShutdown",
+   "sig": "PostShutdown()",
+   "symbol": "CSteamApplication::PostShutdown()"
+  },
+  {
+   "index": 4,
+   "name": "Destroy",
+   "sig": "Destroy()",
+   "symbol": "CSteamApplication::Destroy()"
+  },
+  {
+   "index": 5,
+   "name": "Startup",
+   "sig": "Startup()",
+   "symbol": "CSteamApplication::Startup()"
+  },
+  {
+   "index": 6,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CSteamApplication::Shutdown()"
+  },
+  {
+   "index": 7,
+   "name": "LoadModuleDLL",
+   "sig": "LoadModuleDLL(char const*)",
+   "symbol": "CAppSystemGroup::LoadModuleDLL(char const*)"
+  }
+ ],
+ "derived": [
+  "bin/launcher:CSteamApplication"
+ ],
+ "derived_count": 1
+}

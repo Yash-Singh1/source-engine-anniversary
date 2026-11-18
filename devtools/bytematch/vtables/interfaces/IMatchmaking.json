@@ -1,0 +1,240 @@
+{
+ "interface": "IMatchmaking",
+ "headers": [
+  "public/engine/imatchmaking.h"
+ ],
+ "versions": {
+  "retail": [
+   "VENGINE_MATCHMAKING_VERSION001"
+  ],
+  "ours": [
+   "VENGINE_MATCHMAKING_VERSION001"
+  ],
+  "sdk2013": [
+   "VENGINE_MATCHMAKING_VERSION001"
+  ]
+ },
+ "version_macros": [
+  "VENGINE_MATCHMAKING_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/engine",
+   "version": "VENGINE_MATCHMAKING_VERSION001",
+   "class": "CMatchmaking"
+  }
+ ],
+ "sdk2013_len": 22,
+ "sdk2013_slots": [
+  "SessionNotification(SESSION_NOTIFY, int)",
+  "AddSessionProperty(unsigned int, char const*, char const*, char const*)",
+  "SetSessionProperties(KeyValues*)",
+  "SelectSession(unsigned int)",
+  "ModifySession()",
+  "UpdateMuteList()",
+  "StartHost(bool)",
+  "StartClient(bool)",
+  "StartGame()",
+  "CancelStartGame()",
+  "ChangeTeam(char const*)",
+  "TellClientsToConnect()",
+  "CancelCurrentOperation()",
+  "KickPlayerFromSession(unsigned long long)",
+  "JoinInviteSession(_XSESSION_INFO*)",
+  "JoinInviteSessionByID(XNKID)",
+  "EndStatsReporting()",
+  "GetSessionProperties()",
+  "PlayerIdToXuid(int)",
+  "IsPlayerMuted(int, unsigned long long)",
+  "GetQosWithLIVE()",
+  "PreventFullServerStartup()"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CMatchmaking",
+  "offset": 0,
+  "chain": [
+   "CMatchmaking",
+   "IMatchmaking"
+  ]
+ },
+ "retail_len": 22,
+ "retail_len_basis": "first implementer destructor",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 55,
+  "first implementer destructor": 22
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "SessionNotification",
+   "sig": "SessionNotification(SESSION_NOTIFY, int)",
+   "symbol": "CMatchmaking::SessionNotification(SESSION_NOTIFY, int)"
+  },
+  {
+   "index": 1,
+   "name": "AddSessionProperty",
+   "sig": "AddSessionProperty(unsigned int, char const*, char const*, char const*)",
+   "symbol": "CMatchmaking::AddSessionProperty(unsigned int, char const*, char const*, char const*)"
+  },
+  {
+   "index": 2,
+   "name": "SetSessionProperties",
+   "sig": "SetSessionProperties(KeyValues*)",
+   "symbol": "CMatchmaking::SetSessionProperties(KeyValues*)"
+  },
+  {
+   "index": 3,
+   "name": "SelectSession",
+   "sig": "SelectSession(unsigned int)",
+   "symbol": "CMatchmaking::SelectSession(unsigned int)"
+  },
+  {
+   "index": 4,
+   "name": "ModifySession",
+   "sig": "ModifySession()",
+   "symbol": "CMatchmaking::ModifySession()"
+  },
+  {
+   "index": 5,
+   "name": "UpdateMuteList",
+   "sig": "UpdateMuteList()",
+   "symbol": "CMatchmaking::UpdateMuteList()"
+  },
+  {
+   "index": 6,
+   "name": "StartHost",
+   "sig": "StartHost(bool)",
+   "symbol": "CMatchmaking::StartHost(bool)"
+  },
+  {
+   "index": 7,
+   "name": "StartClient",
+   "sig": "StartClient(bool)",
+   "symbol": "CMatchmaking::StartClient(bool)"
+  },
+  {
+   "index": 8,
+   "name": "StartGame",
+   "sig": "StartGame()",
+   "symbol": "CMatchmaking::StartGame()"
+  },
+  {
+   "index": 9,
+   "name": "CancelStartGame",
+   "sig": "CancelStartGame()",
+   "symbol": "CMatchmaking::CancelStartGame()"
+  },
+  {
+   "index": 10,
+   "name": "ChangeTeam",
+   "sig": "ChangeTeam(char const*)",
+   "symbol": "CMatchmaking::ChangeTeam(char const*)"
+  },
+  {
+   "index": 11,
+   "name": "TellClientsToConnect",
+   "sig": "TellClientsToConnect()",
+   "symbol": "CMatchmaking::TellClientsToConnect()"
+  },
+  {
+   "index": 12,
+   "name": "CancelCurrentOperation",
+   "sig": "CancelCurrentOperation()",
+   "symbol": "CMatchmaking::CancelCurrentOperation()"
+  },
+  {
+   "index": 13,
+   "name": "KickPlayerFromSession",
+   "sig": "KickPlayerFromSession(unsigned long long)",
+   "symbol": "CMatchmaking::KickPlayerFromSession(unsigned long long)"
+  },
+  {
+   "index": 14,
+   "name": "JoinInviteSession",
+   "sig": "JoinInviteSession(_XSESSION_INFO*)",
+   "symbol": "CMatchmaking::JoinInviteSession(_XSESSION_INFO*)"
+  },
+  {
+   "index": 15,
+   "name": "JoinInviteSessionByID",
+   "sig": "JoinInviteSessionByID(XNKID)",
+   "symbol": "CMatchmaking::JoinInviteSessionByID(XNKID)"
+  },
+  {
+   "index": 16,
+   "name": "EndStatsReporting",
+   "sig": "EndStatsReporting()",
+   "symbol": "CMatchmaking::EndStatsReporting()"
+  },
+  {
+   "index": 17,
+   "name": "GetSessionProperties",
+   "sig": "GetSessionProperties()",
+   "symbol": "CMatchmaking::GetSessionProperties()"
+  },
+  {
+   "index": 18,
+   "name": "PlayerIdToXuid",
+   "sig": "PlayerIdToXuid(int)",
+   "symbol": "CMatchmaking::PlayerIdToXuid(int)"
+  },
+  {
+   "index": 19,
+   "name": "IsPlayerMuted",
+   "sig": "IsPlayerMuted(int, unsigned long long)",
+   "symbol": "CMatchmaking::IsPlayerMuted(int, unsigned long long)"
+  },
+  {
+   "index": 20,
+   "name": "GetQosWithLIVE",
+   "sig": "GetQosWithLIVE()",
+   "symbol": "CMatchmaking::GetQosWithLIVE()"
+  },
+  {
+   "index": 21,
+   "name": "PreventFullServerStartup",
+   "sig": "PreventFullServerStartup()",
+   "symbol": "CMatchmaking::PreventFullServerStartup()"
+  }
+ ],
+ "implementer_tail": [
+  "~CMatchmaking()",
+  "~CMatchmaking()",
+  "ProcessConnectionlessPacket(netpacket_s*)",
+  "ConnectionStart(INetChannel*)",
+  "PacketEnd()",
+  "ProcessTick(NET_Tick*)",
+  "ProcessSetConVar(NET_SetConVar*)",
+  "ProcessStringCmd(NET_StringCmd*)",
+  "ProcessSignonState(NET_SignonState*)",
+  "ProcessVoiceData(CLC_VoiceData*)",
+  "ProcessClientInfo(CLC_ClientInfo*)",
+  "ProcessMove(CLC_Move*)",
+  "ProcessBaselineAck(CLC_BaselineAck*)",
+  "ProcessListenEvents(CLC_ListenEvents*)",
+  "ProcessRespondCvarValue(CLC_RespondCvarValue*)",
+  "ProcessFileCRCCheck(CLC_FileCRCCheck*)",
+  "ProcessFileMD5Check(CLC_FileMD5Check*)",
+  "ProcessSaveReplay(CLC_SaveReplay*)",
+  "ProcessCmdKeyValues(CLC_CmdKeyValues*)",
+  "ProcessJoinResponse(MM_JoinResponse*)",
+  "ProcessClientInfo(MM_ClientInfo*)",
+  "ProcessRegisterResponse(MM_RegisterResponse*)",
+  "ProcessMigrate(MM_Migrate*)",
+  "ProcessMutelist(MM_Mutelist*)",
+  "ProcessCheckpoint(MM_Checkpoint*)",
+  "ProcessHeartbeat(MM_Heartbeat*)",
+  "ConnectionClosing(char const*)",
+  "ConnectionCrashed(char const*)",
+  "PacketStart(int, int)",
+  "FileRequested(char const*, unsigned int)",
+  "FileReceived(char const*, unsigned int)",
+  "FileDenied(char const*, unsigned int)",
+  "FileSent(char const*, unsigned int)"
+ ],
+ "derived": [
+  "bin/engine:CMatchmaking"
+ ],
+ "derived_count": 1
+}

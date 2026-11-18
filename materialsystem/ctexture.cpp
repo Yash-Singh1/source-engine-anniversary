@@ -19,6 +19,7 @@
 
 #include "materialsystem_global.h"
 #include "shaderapi/ishaderapi.h"
+#include "shaderapi/ishaderapistreaming.h"
 #include "itextureinternal.h"
 #include "utlsymbol.h"
 #include "time.h"
@@ -1413,7 +1414,8 @@ void CTexture::CopyToStagingTexture( ITexture* pDstTex )
 	Assert( m_nFlags & TEXTUREFLAGS_RENDERTARGET );
 	Assert( pDstTex->GetFlags() & TEXTUREFLAGS_STAGING_MEMORY );
 
-	g_pShaderAPI->CopyRenderTargetToScratchTexture( m_pTextureHandles[0], pDstTexActual->m_pTextureHandles[0] );
+	if ( g_pShaderAPIStreaming )
+		g_pShaderAPIStreaming->CopyRenderTargetToScratchTexture( m_pTextureHandles[0], pDstTexActual->m_pTextureHandles[0] );
 }
 
 void CTexture::Map( void** pOutBits, int* pOutPitch )
@@ -1429,7 +1431,8 @@ void CTexture::Map( void** pOutBits, int* pOutPitch )
 		return;
 	}
 
-	g_pShaderAPI->LockRect( pOutBits, pOutPitch, m_pTextureHandles[ 0 ], 0, 0, 0, GetActualWidth(), GetActualHeight(), false, true );
+	if ( g_pShaderAPIStreaming )
+		g_pShaderAPIStreaming->LockRect( pOutBits, pOutPitch, m_pTextureHandles[ 0 ], 0, 0, 0, GetActualWidth(), GetActualHeight(), false, true );
 }
 
 void CTexture::Unmap()
@@ -1440,7 +1443,8 @@ void CTexture::Unmap()
 		return;
 	}
 
-	g_pShaderAPI->UnlockRect( m_pTextureHandles[ 0 ], 0 );
+	if ( g_pShaderAPIStreaming )
+		g_pShaderAPIStreaming->UnlockRect( m_pTextureHandles[ 0 ], 0 );
 }
 
 bool CTexture::MakeResident( ResidencyType_t newResidence )
@@ -2057,7 +2061,8 @@ void CTexture::MigrateShaderAPITextures()
 		if ( !g_pShaderAPI->IsTexture( pTextureHandles[ i ] ) )
 			continue;
 
-		g_pShaderAPI->CopyTextureToTexture( pTextureHandles[ i ], m_pTextureHandles[ i ] );
+		if ( g_pShaderAPIStreaming )
+			g_pShaderAPIStreaming->CopyTextureToTexture( pTextureHandles[ i ], m_pTextureHandles[ i ] );
 	}
 
 	for ( int i = 0; i < m_nFrameCount; ++i )
@@ -2283,8 +2288,11 @@ void CTexture::SetFilterState()
 void CTexture::SetLodState()
 {
 	// Set the lod clamping value to ensure we don't see anything we're not supposed to.
-	g_pShaderAPI->TexLodClamp( m_lodClamp );
-	g_pShaderAPI->TexLodBias( m_lodBiasCurrent );
+	if ( g_pShaderAPIStreaming )
+	{
+		g_pShaderAPIStreaming->TexLodClamp( m_lodClamp );
+		g_pShaderAPIStreaming->TexLodBias( m_lodBiasCurrent );
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -2362,10 +2370,10 @@ bool CTexture::SaveToFile( const char *fileName )
 		// Need to allocate a temporarily renderable surface. Sadness.
 		if ( width > pTexture->GetActualWidth() || height > pTexture->GetActualHeight() )
 		{
-			materials->OverrideRenderTargetAllocation( true );
+			MaterialSystem()->OverrideRenderTargetAllocation( true );
 			// This one bumps the ref automatically for us.
 			pTexture = materials->CreateNamedRenderTargetTextureEx( "_rt_savetofile", width, height, RT_SIZE_LITERAL, IMAGE_FORMAT_BGRA8888, MATERIAL_RT_DEPTH_NONE, TEXTUREFLAGS_IMMEDIATE_CLEANUP );
-			materials->OverrideRenderTargetAllocation( false );
+			MaterialSystem()->OverrideRenderTargetAllocation( false );
 
 			if ( !pTexture || pTexture->IsError() )
 			{

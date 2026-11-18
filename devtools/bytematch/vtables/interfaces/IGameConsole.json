@@ -1,0 +1,94 @@
+{
+ "interface": "IGameConsole",
+ "headers": [
+  "common/GameUI/IGameConsole.h"
+ ],
+ "versions": {
+  "retail": [
+   "GameConsole004"
+  ],
+  "ours": [
+   "GameConsole004"
+  ],
+  "sdk2013": []
+ },
+ "version_macros": [
+  "GAMECONSOLE_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/GameUI",
+   "version": "GameConsole004",
+   "class": "CGameConsole"
+  }
+ ],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "bin/GameUI",
+  "class": "CGameConsole",
+  "offset": 0,
+  "chain": [
+   "CGameConsole",
+   "IGameConsole"
+  ]
+ },
+ "retail_len": 8,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 8
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CGameConsole",
+   "sig": "~CGameConsole()",
+   "symbol": "CGameConsole::~CGameConsole()"
+  },
+  {
+   "index": 1,
+   "name": "~CGameConsole",
+   "sig": "~CGameConsole()",
+   "symbol": "CGameConsole::~CGameConsole()"
+  },
+  {
+   "index": 2,
+   "name": "Activate",
+   "sig": "Activate()",
+   "symbol": "CGameConsole::Activate()"
+  },
+  {
+   "index": 3,
+   "name": "Initialize",
+   "sig": "Initialize()",
+   "symbol": "CGameConsole::Initialize()"
+  },
+  {
+   "index": 4,
+   "name": "Hide",
+   "sig": "Hide()",
+   "symbol": "CGameConsole::Hide()"
+  },
+  {
+   "index": 5,
+   "name": "Clear",
+   "sig": "Clear()",
+   "symbol": "CGameConsole::Clear()"
+  },
+  {
+   "index": 6,
+   "name": "IsConsoleVisible",
+   "sig": "IsConsoleVisible()",
+   "symbol": "CGameConsole::IsConsoleVisible()"
+  },
+  {
+   "index": 7,
+   "name": "SetParent",
+   "sig": "SetParent(int)",
+   "symbol": "CGameConsole::SetParent(int)"
+  }
+ ],
+ "derived": [
+  "bin/GameUI:CGameConsole"
+ ],
+ "derived_count": 1
+}

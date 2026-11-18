@@ -921,13 +921,18 @@ public:
 	// Called when we unload a file, to remove that file's info for pure server purposes.
 	virtual void			NotifyFileUnloaded( const char *pszFilename, const char *pPathId ) = 0;
 
-	// Returns true on successfully retrieve case-sensitive full path, otherwise false
-	// Prefer using the GetCaseCorrectFullPath template wrapper to calling this directly
-	virtual bool			GetCaseCorrectFullPath_Ptr( const char *pFullPath, OUT_Z_CAP( maxLenInChars ) char *pDest, int maxLenInChars ) = 0;
-	template <size_t maxLenInChars> bool GetCaseCorrectFullPath( const char *pFullPath, OUT_Z_ARRAY char( &pDest )[maxLenInChars] )
-	{
-		return GetCaseCorrectFullPath_Ptr( pFullPath, pDest, (int)maxLenInChars );
-	}
+	// Anniversary additions (retail slots 112-122)
+	virtual void			SetCurrentGameExpansionId( const char *pszExpansionId ) = 0;
+	virtual bool			GetCurrentGameExpansionId( char *pszExpansionId, int nMaxLen ) = 0;
+	virtual void			UpdateSearchPathsForCurrentGameExpansion() = 0;
+	virtual void			AddGameAndModSearchPathsFromGameInfo( const char *pszGameDir, const char *pszModDir, KeyValues *pGameInfo ) = 0;
+	virtual void			SetUseLowViolancePaths( bool bUseLowViolence ) = 0;
+	virtual void			SetUseHDMount( bool bUseHD ) = 0;
+	virtual void			SetAudioLanguageOverride( const char *pszLanguage ) = 0;
+	virtual int				GetSearchPaths2( const char *pszPathID, bool bGetPackFiles, CUtlVector< CUtlString > &searchPaths ) = 0;
+	virtual bool			GetFontTempFile( const char *pszFontFile, char *pszTempFile, int nMaxLen ) = 0;
+	virtual void			PushNoFinishAllOnSearchPaths() = 0;
+	virtual void			PopNoFinishAllOnSearchPaths() = 0;
 };
 
 //-----------------------------------------------------------------------------

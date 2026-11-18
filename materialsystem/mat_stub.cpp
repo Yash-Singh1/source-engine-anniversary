@@ -983,18 +983,6 @@ public:
 		}
 	}
 
-	virtual void				SuspendTextureStreaming( )
-	{
-		if ( m_pRealMaterialSystem )
-			m_pRealMaterialSystem->SuspendTextureStreaming();
-	}
-
-	virtual void				ResumeTextureStreaming( )
-	{
-		if ( m_pRealMaterialSystem )
-			m_pRealMaterialSystem->ResumeTextureStreaming();
-	}
-
 	// uncache all materials. .  good for forcing reload of materials.
 	virtual void				UncacheAllMaterials( )
 	{
@@ -2236,45 +2224,18 @@ public:
 		GetBackBufferDimensions( nWidth, nHeight );
 	}
 
-	virtual ITexture*			CreateTextureFromBits(int w, int h, int mips, ImageFormat fmt, int srcBufferSize, byte* srcBits)
+	virtual RenderBackend_t GetRenderBackend() const OVERRIDE
 	{
-		return NULL;	
+		return m_pRealMaterialSystem ? m_pRealMaterialSystem->GetRenderBackend() : RENDER_BACKEND_NULL;
 	}
 
-	virtual void OverrideRenderTargetAllocation( bool )
+	virtual void FogRadial( bool bRadial )
 	{
-		// anda
-	
 	}
 
-	virtual ITextureCompositor*	NewTextureCompositor( int w, int h, const char* pCompositeName, int nTeamNum, uint64 randomSeed, KeyValues* stageDesc, uint texCompositeCreateFlags ) OVERRIDE
-	{
-		return NULL;	
-	}
-
-	virtual void AsyncFindTexture( const char* pFilename, const char *pTextureGroupName, IAsyncTextureOperationReceiver* pRecipient, void* pExtraArgs, bool bComplain = true, int nAdditionalCreationFlags = 0 )
-	{
-
-	}
-
-	virtual void AsyncCreateTextureFromRenderTarget( ITexture* pSrcRt, const char* pDstName, ImageFormat dstFmt, bool bGenMips, int nAdditionalCreationFlags, IAsyncTextureOperationReceiver* pRecipient, void* pExtraArgs )
-	{
-
-	}
-	
-	virtual ITexture*			CreateNamedTextureFromBitsEx( const char* pName, const char *pTextureGroupName, int w, int h, int mips, ImageFormat fmt, int srcBufferSize, byte* srcBits, int nFlags )
-	{
-		return NULL;
-	}
-
-	virtual bool				AddTextureCompositorTemplate( const char* pName, KeyValues* pTmplDesc, int nTexCompositeTemplateFlags ) OVERRIDE
+	virtual bool GetFogRadial()
 	{
 		return false;
-	}
-
-	virtual bool VerifyTextureCompositorTemplates() OVERRIDE
-	{
-		return false;	
 	}
 
 };

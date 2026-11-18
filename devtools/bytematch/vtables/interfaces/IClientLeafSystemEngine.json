@@ -1,0 +1,113 @@
+{
+ "interface": "IClientLeafSystemEngine",
+ "headers": [
+  "public/engine/IClientLeafSystem.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 4,
+ "sdk2013_slots": [
+  "CreateRenderableHandle(IClientRenderable*, bool)",
+  "RemoveRenderable(unsigned short)",
+  "AddRenderableToLeaves(unsigned short, int, unsigned short*)",
+  "ChangeRenderableRenderGroup(unsigned short, RenderGroup_t)"
+ ],
+ "retail_reference": {
+  "module": "episodic/client",
+  "class": "CClientLeafSystem",
+  "offset": 0,
+  "chain": [
+   "CClientLeafSystem",
+   "IClientLeafSystem",
+   "IClientLeafSystemEngine"
+  ]
+ },
+ "retail_len": 4,
+ "retail_len_basis": "override: next slots belong to IClientLeafSystem",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 45,
+  "first implementer destructor": 27
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "CreateRenderableHandle",
+   "sig": "CreateRenderableHandle(IClientRenderable*, bool)",
+   "symbol": "CClientLeafSystem::CreateRenderableHandle(IClientRenderable*, bool)"
+  },
+  {
+   "index": 1,
+   "name": "RemoveRenderable",
+   "sig": "RemoveRenderable(unsigned short)",
+   "symbol": "CClientLeafSystem::RemoveRenderable(unsigned short)"
+  },
+  {
+   "index": 2,
+   "name": "AddRenderableToLeaves",
+   "sig": "AddRenderableToLeaves(unsigned short, int, unsigned short*)",
+   "symbol": "CClientLeafSystem::AddRenderableToLeaves(unsigned short, int, unsigned short*)"
+  },
+  {
+   "index": 3,
+   "name": "ChangeRenderableRenderGroup",
+   "sig": "ChangeRenderableRenderGroup(unsigned short, RenderGroup_t)",
+   "symbol": "CClientLeafSystem::ChangeRenderableRenderGroup(unsigned short, RenderGroup_t)"
+  }
+ ],
+ "implementer_tail": [
+  "AddRenderable(IClientRenderable*, RenderGroup_t)",
+  "IsRenderableInPVS(IClientRenderable*)",
+  "SetSubSystemDataInLeaf(int, int, CClientLeafSubSystemData*)",
+  "GetSubSystemDataInLeaf(int, int)",
+  "SetDetailObjectsInLeaf(int, int, int)",
+  "GetDetailObjectsInLeaf(int, int&, int&)",
+  "DrawDetailObjectsInLeaf(int, int, int&, int&)",
+  "ShouldDrawDetailObjectsInLeaf(int, int)",
+  "RenderableChanged(unsigned short)",
+  "SetRenderGroup(unsigned short, RenderGroup_t)",
+  "ComputeTranslucentRenderLeaf(int, unsigned short const*, short const*, int, int)",
+  "BuildRenderablesList(SetupRenderInfo_t const&)",
+  "CollateViewModelRenderables(CUtlVector<IClientRenderable*, CUtlMemory<IClientRenderable*, int>>&, CUtlVector<IClientRenderable*, CUtlMemory<IClientRenderable*, int>>&)",
+  "DrawStaticProps(bool)",
+  "DrawSmallEntities(bool)",
+  "AddShadow(unsigned short, unsigned short)",
+  "RemoveShadow(unsigned short)",
+  "ProjectShadow(unsigned short, int, int const*)",
+  "ProjectFlashlight(unsigned short, int, int const*)",
+  "EnumerateShadowsInLeaves(int, unsigned short*, IClientLeafShadowEnum*)",
+  "GetRenderableLeaves(unsigned short, int*)",
+  "GetRenderableLeaf(unsigned short, int*, int const*, int*)",
+  "EnableAlternateSorting(unsigned short, bool)",
+  "~CClientLeafSystem()",
+  "~CClientLeafSystem()",
+  "Name()",
+  "Init()",
+  "PostInit()",
+  "Shutdown()",
+  "IsPerFrame()",
+  "PreRender()",
+  "PostRender()",
+  "Update(float)",
+  "LevelInitPreEntity()",
+  "LevelInitPostEntity()",
+  "LevelShutdownPreEntity()",
+  "LevelShutdownPostEntity()",
+  "OnSave()",
+  "OnRestore()",
+  "SafeRemoveIfDesired()",
+  "EnumerateLeaf(int, int)"
+ ],
+ "derived": [
+  "episodic/client:CClientLeafSystem",
+  "hl2/client:CClientLeafSystem",
+  "hl2_complete/client:CClientLeafSystem",
+  "hl2mp/client:CClientLeafSystem",
+  "lostcoast/client:CClientLeafSystem"
+ ],
+ "derived_count": 5
+}

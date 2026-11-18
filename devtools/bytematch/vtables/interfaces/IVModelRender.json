@@ -1,0 +1,228 @@
+{
+ "interface": "IVModelRender",
+ "headers": [
+  "public/engine/ivmodelrender.h"
+ ],
+ "versions": {
+  "retail": [
+   "VEngineModel016"
+  ],
+  "ours": [
+   "VEngineModel016"
+  ],
+  "sdk2013": [
+   "VEngineModel016"
+  ]
+ },
+ "version_macros": [
+  "VENGINE_HUDMODEL_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/engine",
+   "version": "VEngineModel016",
+   "class": "CModelRender"
+  }
+ ],
+ "sdk2013_len": 25,
+ "sdk2013_slots": [
+  "DrawModel(int, IClientRenderable*, unsigned short, int, model_t const*, Vector const&, QAngle const&, int, int, int, matrix3x4_t const*, matrix3x4_t const*)",
+  "ForcedMaterialOverride(IMaterial*, OverrideType_t)",
+  "SetViewTarget(CStudioHdr const*, int, Vector const&)",
+  "CreateInstance(IClientRenderable*, LightCacheHandle_t__**)",
+  "DestroyInstance(unsigned short)",
+  "SetStaticLighting(unsigned short, LightCacheHandle_t__**)",
+  "GetStaticLighting(unsigned short)",
+  "ChangeInstance(unsigned short, IClientRenderable*)",
+  "AddDecal(unsigned short, Ray_t const&, Vector const&, int, int, bool, int)",
+  "RemoveAllDecals(unsigned short)",
+  "RemoveAllDecalsFromAllModels()",
+  "DrawModelShadowSetup(IClientRenderable*, int, int, DrawModelInfo_t*, matrix3x4_t*)",
+  "DrawModelShadow(IClientRenderable*, DrawModelInfo_t const&, matrix3x4_t*)",
+  "RecomputeStaticLighting(unsigned short)",
+  "ReleaseAllStaticPropColorData()",
+  "RestoreAllStaticPropColorData()",
+  "DrawModelEx(ModelRenderInfo_t&)",
+  "DrawModelExStaticProp(ModelRenderInfo_t&)",
+  "DrawModelSetup(ModelRenderInfo_t&, DrawModelState_t*, matrix3x4_t*, matrix3x4_t**)",
+  "DrawModelExecute(DrawModelState_t const&, ModelRenderInfo_t const&, matrix3x4_t*)",
+  "SetupLighting(Vector const&)",
+  "DrawStaticPropArrayFast(StaticPropRenderInfo_t*, int, bool)",
+  "SuppressEngineLighting(bool)",
+  "SetupColorMeshes(int)",
+  "AddColoredDecal(unsigned short, Ray_t const&, Vector const&, int, int, Color, bool, int)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CModelRender",
+  "offset": 0,
+  "chain": [
+   "CModelRender",
+   "IVModelRender"
+  ]
+ },
+ "retail_len": 25,
+ "retail_len_basis": "override: GetItemName overrides the secondary base IDataCacheClient",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 26
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "DrawModel",
+   "sig": "DrawModel(int, IClientRenderable*, unsigned short, int, model_t const*, Vector const&, QAngle const&, int, int, int, matrix3x4_t const*, matrix3x4_t const*)",
+   "symbol": "CModelRender::DrawModel(int, IClientRenderable*, unsigned short, int, model_t const*, Vector const&, QAngle const&, int, int, int, matrix3x4_t const*, matrix3x4_t const*)"
+  },
+  {
+   "index": 1,
+   "name": "ForcedMaterialOverride",
+   "sig": "ForcedMaterialOverride(IMaterial*, OverrideType_t)",
+   "symbol": "CModelRender::ForcedMaterialOverride(IMaterial*, OverrideType_t)"
+  },
+  {
+   "index": 2,
+   "name": "SetViewTarget",
+   "sig": "SetViewTarget(CStudioHdr const*, int, Vector const&)",
+   "symbol": "CModelRender::SetViewTarget(CStudioHdr const*, int, Vector const&)"
+  },
+  {
+   "index": 3,
+   "name": "CreateInstance",
+   "sig": "CreateInstance(IClientRenderable*, LightCacheHandle_t__**)",
+   "symbol": "CModelRender::CreateInstance(IClientRenderable*, LightCacheHandle_t__**)"
+  },
+  {
+   "index": 4,
+   "name": "DestroyInstance",
+   "sig": "DestroyInstance(unsigned short)",
+   "symbol": "CModelRender::DestroyInstance(unsigned short)"
+  },
+  {
+   "index": 5,
+   "name": "SetStaticLighting",
+   "sig": "SetStaticLighting(unsigned short, LightCacheHandle_t__**)",
+   "symbol": "CModelRender::SetStaticLighting(unsigned short, LightCacheHandle_t__**)"
+  },
+  {
+   "index": 6,
+   "name": "GetStaticLighting",
+   "sig": "GetStaticLighting(unsigned short)",
+   "symbol": "CModelRender::GetStaticLighting(unsigned short)"
+  },
+  {
+   "index": 7,
+   "name": "ChangeInstance",
+   "sig": "ChangeInstance(unsigned short, IClientRenderable*)",
+   "symbol": "CModelRender::ChangeInstance(unsigned short, IClientRenderable*)"
+  },
+  {
+   "index": 8,
+   "name": "AddDecal",
+   "sig": "AddDecal(unsigned short, Ray_t const&, Vector const&, int, int, bool, int)",
+   "symbol": "CModelRender::AddDecal(unsigned short, Ray_t const&, Vector const&, int, int, bool, int)"
+  },
+  {
+   "index": 9,
+   "name": "RemoveAllDecals",
+   "sig": "RemoveAllDecals(unsigned short)",
+   "symbol": "CModelRender::RemoveAllDecals(unsigned short)"
+  },
+  {
+   "index": 10,
+   "name": "RemoveAllDecalsFromAllModels",
+   "sig": "RemoveAllDecalsFromAllModels()",
+   "symbol": "CModelRender::RemoveAllDecalsFromAllModels()"
+  },
+  {
+   "index": 11,
+   "name": "DrawModelShadowSetup",
+   "sig": "DrawModelShadowSetup(IClientRenderable*, int, int, DrawModelInfo_t*, matrix3x4_t*)",
+   "symbol": "CModelRender::DrawModelShadowSetup(IClientRenderable*, int, int, DrawModelInfo_t*, matrix3x4_t*)"
+  },
+  {
+   "index": 12,
+   "name": "DrawModelShadow",
+   "sig": "DrawModelShadow(IClientRenderable*, DrawModelInfo_t const&, matrix3x4_t*)",
+   "symbol": "CModelRender::DrawModelShadow(IClientRenderable*, DrawModelInfo_t const&, matrix3x4_t*)"
+  },
+  {
+   "index": 13,
+   "name": "RecomputeStaticLighting",
+   "sig": "RecomputeStaticLighting(unsigned short)",
+   "symbol": "CModelRender::RecomputeStaticLighting(unsigned short)"
+  },
+  {
+   "index": 14,
+   "name": "ReleaseAllStaticPropColorData",
+   "sig": "ReleaseAllStaticPropColorData()",
+   "symbol": "CModelRender::ReleaseAllStaticPropColorData()"
+  },
+  {
+   "index": 15,
+   "name": "RestoreAllStaticPropColorData",
+   "sig": "RestoreAllStaticPropColorData()",
+   "symbol": "CModelRender::RestoreAllStaticPropColorData()"
+  },
+  {
+   "index": 16,
+   "name": "DrawModelEx",
+   "sig": "DrawModelEx(ModelRenderInfo_t&)",
+   "symbol": "CModelRender::DrawModelEx(ModelRenderInfo_t&)"
+  },
+  {
+   "index": 17,
+   "name": "DrawModelExStaticProp",
+   "sig": "DrawModelExStaticProp(ModelRenderInfo_t&)",
+   "symbol": "CModelRender::DrawModelExStaticProp(ModelRenderInfo_t&)"
+  },
+  {
+   "index": 18,
+   "name": "DrawModelSetup",
+   "sig": "DrawModelSetup(ModelRenderInfo_t&, DrawModelState_t*, matrix3x4_t*, matrix3x4_t**)",
+   "symbol": "CModelRender::DrawModelSetup(ModelRenderInfo_t&, DrawModelState_t*, matrix3x4_t*, matrix3x4_t**)"
+  },
+  {
+   "index": 19,
+   "name": "DrawModelExecute",
+   "sig": "DrawModelExecute(DrawModelState_t const&, ModelRenderInfo_t const&, matrix3x4_t*)",
+   "symbol": "CModelRender::DrawModelExecute(DrawModelState_t const&, ModelRenderInfo_t const&, matrix3x4_t*)"
+  },
+  {
+   "index": 20,
+   "name": "SetupLighting",
+   "sig": "SetupLighting(Vector const&)",
+   "symbol": "CModelRender::SetupLighting(Vector const&)"
+  },
+  {
+   "index": 21,
+   "name": "DrawStaticPropArrayFast",
+   "sig": "DrawStaticPropArrayFast(StaticPropRenderInfo_t*, int, bool)",
+   "symbol": "CModelRender::DrawStaticPropArrayFast(StaticPropRenderInfo_t*, int, bool)"
+  },
+  {
+   "index": 22,
+   "name": "SuppressEngineLighting",
+   "sig": "SuppressEngineLighting(bool)",
+   "symbol": "CModelRender::SuppressEngineLighting(bool)"
+  },
+  {
+   "index": 23,
+   "name": "SetupColorMeshes",
+   "sig": "SetupColorMeshes(int)",
+   "symbol": "CModelRender::SetupColorMeshes(int)"
+  },
+  {
+   "index": 24,
+   "name": "AddColoredDecal",
+   "sig": "AddColoredDecal(unsigned short, Ray_t const&, Vector const&, int, int, Color, bool, int)",
+   "symbol": "CModelRender::AddColoredDecal(unsigned short, Ray_t const&, Vector const&, int, int, Color, bool, int)"
+  }
+ ],
+ "implementer_tail": [
+  "GetItemName(unsigned int, void const*, char*, unsigned int)"
+ ],
+ "derived": [
+  "bin/engine:CModelRender"
+ ],
+ "derived_count": 1
+}

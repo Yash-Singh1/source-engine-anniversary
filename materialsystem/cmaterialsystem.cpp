@@ -9,6 +9,7 @@
 #define MATSYS_INTERNAL
 
 #include "cmaterialsystem.h"
+#include "shaderapi/ishaderapistreaming.h"
 
 #include "colorspace.h"
 #include "materialsystem/materialsystem_config.h"
@@ -530,6 +531,7 @@ CMaterialSystem::CMaterialSystem()
 	m_bThreadHasOwnership = false;
 	m_ThreadOwnershipID = 0;
 	m_pShaderDLL = NULL;
+	m_eRenderBackend = RENDER_BACKEND_UNKNOWN;
 	m_FullbrightLightmapTextureHandle = INVALID_SHADERAPI_TEXTURE_HANDLE;
 	m_FullbrightBumpedLightmapTextureHandle = INVALID_SHADERAPI_TEXTURE_HANDLE;
 	m_BlackTextureHandle = INVALID_SHADERAPI_TEXTURE_HANDLE;
@@ -603,12 +605,18 @@ void CMaterialSystem::DestroyShaderAPI()
 		// NOTE: By unloading the library, this will destroy m_pShaderAPI
 		Sys_UnloadModule( m_ShaderHInst );
 		g_pShaderAPI = 0;
+		g_pShaderAPIStreaming = 0;
 		g_pHWConfig = 0;
 		g_pShaderShadow = 0;
 		m_ShaderHInst = 0;
 	}
 }
 
+
+RenderBackend_t CMaterialSystem::GetRenderBackend() const
+{
+	return m_eRenderBackend;
+}
 
 //-----------------------------------------------------------------------------
 // Sets which shader we should be using. Has to be done before connect!
@@ -630,6 +638,15 @@ void CMaterialSystem::SetShaderAPI( char const *pShaderAPIDLL )
 	int len = Q_strlen( pShaderAPIDLL ) + 1;
 	m_pShaderDLL = new char[len];
 	memcpy( m_pShaderDLL, pShaderAPIDLL, len );
+
+	if ( V_stristr( pShaderAPIDLL, "shaderapiempty" ) )
+		m_eRenderBackend = RENDER_BACKEND_NULL;
+	else if ( V_stristr( pShaderAPIDLL, "shaderapivk" ) )
+		m_eRenderBackend = RENDER_BACKEND_VULKAN;
+	else if ( IsPlatformOpenGL() )
+		m_eRenderBackend = RENDER_BACKEND_TOGL;
+	else
+		m_eRenderBackend = RENDER_BACKEND_D3D9;
 
 	m_ShaderAPIFactory = CreateShaderAPI( pShaderAPIDLL );
 	if ( !m_ShaderAPIFactory )
@@ -682,6 +699,7 @@ bool CMaterialSystem::Connect( CreateInterfaceFn factory )
 	g_pShaderAPI = (IShaderAPI*)m_ShaderAPIFactory( SHADERAPI_INTERFACE_VERSION, 0 );
 	if ( !g_pShaderAPI )
 		return false;
+	g_pShaderAPIStreaming = (IShaderAPIStreaming*)m_ShaderAPIFactory( SHADERAPI_STREAMING_INTERFACE_VERSION, 0 );
 	g_pShaderDevice = (IShaderDevice*)m_ShaderAPIFactory( SHADER_DEVICE_INTERFACE_VERSION, 0 );
 	if ( !g_pShaderDevice )
 		return false;
@@ -709,6 +727,7 @@ void CMaterialSystem::Disconnect()
 		DestroyShaderAPI();
 	}
 	g_pShaderAPI = NULL;
+	g_pShaderAPIStreaming = NULL;
 	g_pHWConfig = NULL;
 	g_pShaderShadow = NULL;
 	g_pShaderDevice = NULL;
@@ -1429,6 +1448,7 @@ void CMaterialSystem::RestoreShaderObjects( CreateInterfaceFn shaderFactory, int
 	if ( shaderFactory )
 	{
 		g_pShaderAPI = (IShaderAPI*)shaderFactory( SHADERAPI_INTERFACE_VERSION, NULL );
+		g_pShaderAPIStreaming = (IShaderAPIStreaming*)shaderFactory( SHADERAPI_STREAMING_INTERFACE_VERSION, NULL );
 		g_pShaderDevice = (IShaderDevice*)shaderFactory( SHADER_DEVICE_INTERFACE_VERSION, NULL );
 		g_pShaderShadow = (IShaderShadow*)shaderFactory( SHADERSHADOW_INTERFACE_VERSION, NULL );
 	}

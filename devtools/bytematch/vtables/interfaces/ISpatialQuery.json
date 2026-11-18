@@ -1,0 +1,72 @@
+{
+ "interface": "ISpatialQuery",
+ "headers": [
+  "public/bsptreedata.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 5,
+ "sdk2013_slots": [
+  "LeafCount() const",
+  "EnumerateLeavesAtPoint(Vector const&, ISpatialLeafEnumerator*, int)",
+  "EnumerateLeavesInBox(Vector const&, Vector const&, ISpatialLeafEnumerator*, int)",
+  "EnumerateLeavesInSphere(Vector const&, float, ISpatialLeafEnumerator*, int)",
+  "EnumerateLeavesAlongRay(Ray_t const&, ISpatialLeafEnumerator*, int)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CEngineBSPTree",
+  "offset": 0,
+  "chain": [
+   "CEngineBSPTree",
+   "IEngineSpatialQuery",
+   "ISpatialQuery"
+  ]
+ },
+ "retail_len": 5,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 5
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "LeafCount",
+   "sig": "LeafCount() const",
+   "symbol": "CEngineBSPTree::LeafCount() const"
+  },
+  {
+   "index": 1,
+   "name": "EnumerateLeavesAtPoint",
+   "sig": "EnumerateLeavesAtPoint(Vector const&, ISpatialLeafEnumerator*, int)",
+   "symbol": "CEngineBSPTree::EnumerateLeavesAtPoint(Vector const&, ISpatialLeafEnumerator*, int)"
+  },
+  {
+   "index": 2,
+   "name": "EnumerateLeavesInBox",
+   "sig": "EnumerateLeavesInBox(Vector const&, Vector const&, ISpatialLeafEnumerator*, int)",
+   "symbol": "CEngineBSPTree::EnumerateLeavesInBox(Vector const&, Vector const&, ISpatialLeafEnumerator*, int)"
+  },
+  {
+   "index": 3,
+   "name": "EnumerateLeavesInSphere",
+   "sig": "EnumerateLeavesInSphere(Vector const&, float, ISpatialLeafEnumerator*, int)",
+   "symbol": "CEngineBSPTree::EnumerateLeavesInSphere(Vector const&, float, ISpatialLeafEnumerator*, int)"
+  },
+  {
+   "index": 4,
+   "name": "EnumerateLeavesAlongRay",
+   "sig": "EnumerateLeavesAlongRay(Ray_t const&, ISpatialLeafEnumerator*, int)",
+   "symbol": "CEngineBSPTree::EnumerateLeavesAlongRay(Ray_t const&, ISpatialLeafEnumerator*, int)"
+  }
+ ],
+ "derived": [
+  "bin/engine:CEngineBSPTree"
+ ],
+ "derived_count": 1
+}

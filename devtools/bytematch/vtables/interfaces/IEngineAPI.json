@@ -1,0 +1,123 @@
+{
+ "interface": "IEngineAPI",
+ "headers": [
+  "common/engine_launcher_api.h"
+ ],
+ "versions": {
+  "retail": [
+   "VENGINE_LAUNCHER_API_VERSION004"
+  ],
+  "ours": [
+   "VENGINE_LAUNCHER_API_VERSION004"
+  ],
+  "sdk2013": []
+ },
+ "version_macros": [
+  "VENGINE_LAUNCHER_API_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/engine",
+   "version": "VENGINE_LAUNCHER_API_VERSION004",
+   "class": "CEngineAPI"
+  }
+ ],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CEngineAPI",
+  "offset": 0,
+  "chain": [
+   "CEngineAPI",
+   "CTier3AppSystem<IEngineAPI, 0>",
+   "CTier2AppSystem<IEngineAPI, 0>",
+   "CTier1AppSystem<IEngineAPI, 0>",
+   "CTier0AppSystem<IEngineAPI>",
+   "CBaseAppSystem<IEngineAPI>",
+   "IEngineAPI"
+  ]
+ },
+ "retail_len": 12,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 12
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Connect",
+   "sig": "Connect(void* (*)(char const*, int*))",
+   "symbol": "CEngineAPI::Connect(void* (*)(char const*, int*))"
+  },
+  {
+   "index": 1,
+   "name": "Disconnect",
+   "sig": "Disconnect()",
+   "symbol": "CEngineAPI::Disconnect()"
+  },
+  {
+   "index": 2,
+   "name": "QueryInterface",
+   "sig": "QueryInterface(char const*)",
+   "symbol": "CEngineAPI::QueryInterface(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "CEngineAPI::Init()"
+  },
+  {
+   "index": 4,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CEngineAPI::Shutdown()"
+  },
+  {
+   "index": 5,
+   "name": "SetStartupInfo",
+   "sig": "SetStartupInfo(StartupInfo_t&)",
+   "symbol": "CEngineAPI::SetStartupInfo(StartupInfo_t&)"
+  },
+  {
+   "index": 6,
+   "name": "Run",
+   "sig": "Run()",
+   "symbol": "CEngineAPI::Run()"
+  },
+  {
+   "index": 7,
+   "name": "SetEngineWindow",
+   "sig": "SetEngineWindow(void*)",
+   "symbol": "CEngineAPI::SetEngineWindow(void*)"
+  },
+  {
+   "index": 8,
+   "name": "PostConsoleCommand",
+   "sig": "PostConsoleCommand(char const*)",
+   "symbol": "CEngineAPI::PostConsoleCommand(char const*)"
+  },
+  {
+   "index": 9,
+   "name": "IsRunningSimulation",
+   "sig": "IsRunningSimulation() const",
+   "symbol": "CEngineAPI::IsRunningSimulation() const"
+  },
+  {
+   "index": 10,
+   "name": "ActivateSimulation",
+   "sig": "ActivateSimulation(bool)",
+   "symbol": "CEngineAPI::ActivateSimulation(bool)"
+  },
+  {
+   "index": 11,
+   "name": "SetMap",
+   "sig": "SetMap(char const*)",
+   "symbol": "CEngineAPI::SetMap(char const*)"
+  }
+ ],
+ "derived": [
+  "bin/engine:CEngineAPI"
+ ],
+ "derived_count": 1
+}

@@ -1,0 +1,1063 @@
+{
+ "interface": "IVEngineClient",
+ "headers": [
+  "public/cdll_int.h"
+ ],
+ "versions": {
+  "retail": [
+   "VEngineClient014"
+  ],
+  "ours": [
+   "VEngineClient013",
+   "VEngineClient014"
+  ],
+  "sdk2013": [
+   "VEngineClient013",
+   "VEngineClient014"
+  ]
+ },
+ "version_macros": [
+  "VENGINE_CLIENT_INTERFACE_VERSION",
+  "VENGINE_CLIENT_INTERFACE_VERSION_13"
+ ],
+ "registrations": [
+  {
+   "module": "bin/engine",
+   "version": "VEngineClient014",
+   "class": "CEngineClient"
+  }
+ ],
+ "sdk2013_len": 140,
+ "sdk2013_slots": [
+  "GetIntersectingSurfaces(model_t const*, Vector const&, float, bool, SurfInfo*, int)",
+  "GetLightForPoint(Vector const&, bool)",
+  "TraceLineMaterialAndLighting(Vector const&, Vector const&, Vector&, Vector&)",
+  "ParseFile(char const*, char*, int)",
+  "CopyLocalFile(char const*, char const*)",
+  "GetScreenSize(int&, int&)",
+  "ServerCmd(char const*, bool)",
+  "ClientCmd(char const*)",
+  "GetPlayerInfo(int, player_info_s*)",
+  "GetPlayerForUserID(int)",
+  "TextMessageGet(char const*)",
+  "Con_IsVisible()",
+  "GetLocalPlayer()",
+  "LoadModel(char const*, bool)",
+  "Time()",
+  "GetLastTimeStamp()",
+  "GetSentence(CAudioSource*)",
+  "GetSentenceLength(CAudioSource*)",
+  "IsStreaming(CAudioSource*) const",
+  "GetViewAngles(QAngle&)",
+  "SetViewAngles(QAngle&)",
+  "GetMaxClients()",
+  "Key_LookupBinding(char const*)",
+  "Key_BindingForKey(ButtonCode_t)",
+  "StartKeyTrapMode()",
+  "CheckDoneKeyTrapping(ButtonCode_t&)",
+  "IsInGame()",
+  "IsConnected()",
+  "IsDrawingLoadingImage()",
+  "Con_NPrintf(int, char const*, ...)",
+  "Con_NXPrintf(con_nprint_s const*, char const*, ...)",
+  "IsBoxVisible(Vector const&, Vector const&)",
+  "IsBoxInViewCluster(Vector const&, Vector const&)",
+  "CullBox(Vector const&, Vector const&)",
+  "Sound_ExtraUpdate()",
+  "GetGameDirectory()",
+  "WorldToScreenMatrix()",
+  "WorldToViewMatrix()",
+  "GameLumpVersion(int) const",
+  "GameLumpSize(int) const",
+  "LoadGameLump(int, void*, int)",
+  "LevelLeafCount() const",
+  "GetBSPTreeQuery()",
+  "LinearToGamma(float*, float*)",
+  "LightStyleValue(int)",
+  "ComputeDynamicLighting(Vector const&, Vector const*, Vector&)",
+  "GetAmbientLightColor(Vector&)",
+  "GetDXSupportLevel()",
+  "SupportsHDR()",
+  "Mat_Stub(IMaterialSystem*)",
+  "GetChapterName(char*, int)",
+  "GetLevelName()",
+  "GetLevelVersion()",
+  "GetVoiceTweakAPI()",
+  "EngineStats_BeginFrame()",
+  "EngineStats_EndFrame()",
+  "FireEvents()",
+  "GetLeavesArea(int*, int)",
+  "DoesBoxTouchAreaFrustum(Vector const&, Vector const&, int)",
+  "SetAudioState(AudioState_t const&)",
+  "SentenceGroupPick(int, char*, int)",
+  "SentenceGroupPickSequential(int, char*, int, int, int)",
+  "SentenceIndexFromName(char const*)",
+  "SentenceNameFromIndex(int)",
+  "SentenceGroupIndexFromName(char const*)",
+  "SentenceGroupNameFromIndex(int)",
+  "SentenceLength(int)",
+  "ComputeLighting(Vector const&, Vector const*, bool, Vector&, Vector*)",
+  "ActivateOccluder(int, bool)",
+  "IsOccluded(Vector const&, Vector const&)",
+  "SaveAllocMemory(unsigned long, unsigned long)",
+  "SaveFreeMemory(void*)",
+  "GetNetChannelInfo()",
+  "DebugDrawPhysCollide(CPhysCollide const*, IMaterial*, matrix3x4_t&, color32_s const&)",
+  "CheckPoint(char const*)",
+  "DrawPortals()",
+  "IsPlayingDemo()",
+  "IsRecordingDemo()",
+  "IsPlayingTimeDemo()",
+  "GetDemoRecordingTick()",
+  "GetDemoPlaybackTick()",
+  "GetDemoPlaybackStartTick()",
+  "GetDemoPlaybackTimeScale()",
+  "GetDemoPlaybackTotalTicks()",
+  "IsPaused()",
+  "IsTakingScreenshot()",
+  "IsHLTV()",
+  "IsLevelMainMenuBackground()",
+  "GetMainMenuBackgroundName(char*, int)",
+  "GetVideoModes(int&, vmode_s*&)",
+  "SetOcclusionParameters(OcclusionParams_t const&)",
+  "GetUILanguage(char*, int)",
+  "IsSkyboxVisibleFromPoint(Vector const&)",
+  "GetMapEntitiesString()",
+  "IsInEditMode()",
+  "GetScreenAspectRatio()",
+  "REMOVED_SteamRefreshLogin(char const*, bool)",
+  "REMOVED_SteamProcessCall(bool&)",
+  "GetEngineBuildNumber()",
+  "GetProductVersionString()",
+  "GrabPreColorCorrectedFrame(int, int, int, int)",
+  "IsHammerRunning() const",
+  "ExecuteClientCmd(char const*)",
+  "MapHasHDRLighting()",
+  "GetAppID()",
+  "GetLightForPointFast(Vector const&, bool)",
+  "ClientCmd_Unrestricted(char const*)",
+  "SetRestrictServerCommands(bool)",
+  "SetRestrictClientCommands(bool)",
+  "SetOverlayBindProxy(int, void*)",
+  "CopyFrameBufferToMaterial(char const*)",
+  "ChangeTeam(char const*)",
+  "ReadConfiguration(bool)",
+  "SetAchievementMgr(IAchievementMgr*)",
+  "GetAchievementMgr()",
+  "MapLoadFailed()",
+  "SetMapLoadFailed(bool)",
+  "IsLowViolence()",
+  "GetMostRecentSaveGame()",
+  "SetMostRecentSaveGame(char const*)",
+  "StartXboxExitingProcess()",
+  "IsSaveInProgress()",
+  "OnStorageDeviceAttached()",
+  "OnStorageDeviceDetached()",
+  "ResetDemoInterpolation()",
+  "SetGamestatsData(CGamestatsData*)",
+  "GetGamestatsData()",
+  "GetMouseDelta(int&, int&, bool)",
+  "ServerCmdKeyValues(KeyValues*)",
+  "IsSkippingPlayback()",
+  "IsLoadingDemo()",
+  "IsPlayingDemoALocallyRecordedDemo()",
+  "Key_LookupBindingExact(char const*)",
+  "GetProtocolVersion()",
+  "IsWindowedMode()",
+  "FlashWindow()",
+  "GetClientVersion() const",
+  "IsActiveApp()",
+  "DisconnectInternal()",
+  "GetInstancesRunningCount()"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CEngineClient",
+  "offset": 0,
+  "chain": [
+   "CEngineClient",
+   "IVEngineClient"
+  ]
+ },
+ "retail_len": 145,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 145
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "GetIntersectingSurfaces",
+   "sig": "GetIntersectingSurfaces(model_t const*, Vector const&, float, bool, SurfInfo*, int)",
+   "symbol": "CEngineClient::GetIntersectingSurfaces(model_t const*, Vector const&, float, bool, SurfInfo*, int)"
+  },
+  {
+   "index": 1,
+   "name": "GetLightForPoint",
+   "sig": "GetLightForPoint(Vector const&, bool)",
+   "symbol": "CEngineClient::GetLightForPoint(Vector const&, bool)"
+  },
+  {
+   "index": 2,
+   "name": "TraceLineMaterialAndLighting",
+   "sig": "TraceLineMaterialAndLighting(Vector const&, Vector const&, Vector&, Vector&)",
+   "symbol": "CEngineClient::TraceLineMaterialAndLighting(Vector const&, Vector const&, Vector&, Vector&)"
+  },
+  {
+   "index": 3,
+   "name": "ParseFile",
+   "sig": "ParseFile(char const*, char*, int)",
+   "symbol": "CEngineClient::ParseFile(char const*, char*, int)"
+  },
+  {
+   "index": 4,
+   "name": "CopyLocalFile",
+   "sig": "CopyLocalFile(char const*, char const*)",
+   "symbol": "CEngineClient::CopyLocalFile(char const*, char const*)"
+  },
+  {
+   "index": 5,
+   "name": "GetScreenSize",
+   "sig": "GetScreenSize(int&, int&)",
+   "symbol": "CEngineClient::GetScreenSize(int&, int&)"
+  },
+  {
+   "index": 6,
+   "name": "ServerCmd",
+   "sig": "ServerCmd(char const*, bool)",
+   "symbol": "CEngineClient::ServerCmd(char const*, bool)"
+  },
+  {
+   "index": 7,
+   "name": "ClientCmd",
+   "sig": "ClientCmd(char const*)",
+   "symbol": "CEngineClient::ClientCmd(char const*)"
+  },
+  {
+   "index": 8,
+   "name": "GetPlayerInfo",
+   "sig": "GetPlayerInfo(int, player_info_s*)",
+   "symbol": "CEngineClient::GetPlayerInfo(int, player_info_s*)"
+  },
+  {
+   "index": 9,
+   "name": "GetPlayerForUserID",
+   "sig": "GetPlayerForUserID(int)",
+   "symbol": "CEngineClient::GetPlayerForUserID(int)"
+  },
+  {
+   "index": 10,
+   "name": "TextMessageGet",
+   "sig": "TextMessageGet(char const*)",
+   "symbol": "CEngineClient::TextMessageGet(char const*)"
+  },
+  {
+   "index": 11,
+   "name": "Con_IsVisible",
+   "sig": "Con_IsVisible()",
+   "symbol": "CEngineClient::Con_IsVisible()"
+  },
+  {
+   "index": 12,
+   "name": "GetLocalPlayer",
+   "sig": "GetLocalPlayer()",
+   "symbol": "CEngineClient::GetLocalPlayer()"
+  },
+  {
+   "index": 13,
+   "name": "LoadModel",
+   "sig": "LoadModel(char const*, bool)",
+   "symbol": "CEngineClient::LoadModel(char const*, bool)"
+  },
+  {
+   "index": 14,
+   "name": "Time",
+   "sig": "Time()",
+   "symbol": "CEngineClient::Time()"
+  },
+  {
+   "index": 15,
+   "name": "GetLastTimeStamp",
+   "sig": "GetLastTimeStamp()",
+   "symbol": "CEngineClient::GetLastTimeStamp()"
+  },
+  {
+   "index": 16,
+   "name": "GetSentence",
+   "sig": "GetSentence(CAudioSource*)",
+   "symbol": "CEngineClient::GetSentence(CAudioSource*)"
+  },
+  {
+   "index": 17,
+   "name": "GetSentenceLength",
+   "sig": "GetSentenceLength(CAudioSource*)",
+   "symbol": "CEngineClient::GetSentenceLength(CAudioSource*)"
+  },
+  {
+   "index": 18,
+   "name": "IsStreaming",
+   "sig": "IsStreaming(CAudioSource*) const",
+   "symbol": "CEngineClient::IsStreaming(CAudioSource*) const"
+  },
+  {
+   "index": 19,
+   "name": "GetViewAngles",
+   "sig": "GetViewAngles(QAngle&)",
+   "symbol": "CEngineClient::GetViewAngles(QAngle&)"
+  },
+  {
+   "index": 20,
+   "name": "SetViewAngles",
+   "sig": "SetViewAngles(QAngle&)",
+   "symbol": "CEngineClient::SetViewAngles(QAngle&)"
+  },
+  {
+   "index": 21,
+   "name": "GetMaxClients",
+   "sig": "GetMaxClients()",
+   "symbol": "CEngineClient::GetMaxClients()"
+  },
+  {
+   "index": 22,
+   "name": "Key_LookupBinding",
+   "sig": "Key_LookupBinding(char const*)",
+   "symbol": "CEngineClient::Key_LookupBinding(char const*)"
+  },
+  {
+   "index": 23,
+   "name": "Key_BindingForKey",
+   "sig": "Key_BindingForKey(ButtonCode_t)",
+   "symbol": "CEngineClient::Key_BindingForKey(ButtonCode_t)"
+  },
+  {
+   "index": 24,
+   "name": "StartKeyTrapMode",
+   "sig": "StartKeyTrapMode()",
+   "symbol": "CEngineClient::StartKeyTrapMode()"
+  },
+  {
+   "index": 25,
+   "name": "CheckDoneKeyTrapping",
+   "sig": "CheckDoneKeyTrapping(ButtonCode_t&)",
+   "symbol": "CEngineClient::CheckDoneKeyTrapping(ButtonCode_t&)"
+  },
+  {
+   "index": 26,
+   "name": "IsInGame",
+   "sig": "IsInGame()",
+   "symbol": "CEngineClient::IsInGame()"
+  },
+  {
+   "index": 27,
+   "name": "IsConnected",
+   "sig": "IsConnected()",
+   "symbol": "CEngineClient::IsConnected()"
+  },
+  {
+   "index": 28,
+   "name": "IsDrawingLoadingImage",
+   "sig": "IsDrawingLoadingImage()",
+   "symbol": "CEngineClient::IsDrawingLoadingImage()"
+  },
+  {
+   "index": 29,
+   "name": "Con_NPrintf",
+   "sig": "Con_NPrintf(int, char const*, ...)",
+   "symbol": "CEngineClient::Con_NPrintf(int, char const*, ...)"
+  },
+  {
+   "index": 30,
+   "name": "Con_NXPrintf",
+   "sig": "Con_NXPrintf(con_nprint_s const*, char const*, ...)",
+   "symbol": "CEngineClient::Con_NXPrintf(con_nprint_s const*, char const*, ...)"
+  },
+  {
+   "index": 31,
+   "name": "IsBoxVisible",
+   "sig": "IsBoxVisible(Vector const&, Vector const&)",
+   "symbol": "CEngineClient::IsBoxVisible(Vector const&, Vector const&)"
+  },
+  {
+   "index": 32,
+   "name": "IsBoxInViewCluster",
+   "sig": "IsBoxInViewCluster(Vector const&, Vector const&)",
+   "symbol": "CEngineClient::IsBoxInViewCluster(Vector const&, Vector const&)"
+  },
+  {
+   "index": 33,
+   "name": "CullBox",
+   "sig": "CullBox(Vector const&, Vector const&)",
+   "symbol": "CEngineClient::CullBox(Vector const&, Vector const&)"
+  },
+  {
+   "index": 34,
+   "name": "Sound_ExtraUpdate",
+   "sig": "Sound_ExtraUpdate()",
+   "symbol": "CEngineClient::Sound_ExtraUpdate()"
+  },
+  {
+   "index": 35,
+   "name": "GetGameDirectory",
+   "sig": "GetGameDirectory()",
+   "symbol": "CEngineClient::GetGameDirectory()"
+  },
+  {
+   "index": 36,
+   "name": "WorldToScreenMatrix",
+   "sig": "WorldToScreenMatrix()",
+   "symbol": "CEngineClient::WorldToScreenMatrix()"
+  },
+  {
+   "index": 37,
+   "name": "WorldToViewMatrix",
+   "sig": "WorldToViewMatrix()",
+   "symbol": "CEngineClient::WorldToViewMatrix()"
+  },
+  {
+   "index": 38,
+   "name": "GameLumpVersion",
+   "sig": "GameLumpVersion(int) const",
+   "symbol": "CEngineClient::GameLumpVersion(int) const"
+  },
+  {
+   "index": 39,
+   "name": "GameLumpSize",
+   "sig": "GameLumpSize(int) const",
+   "symbol": "CEngineClient::GameLumpSize(int) const"
+  },
+  {
+   "index": 40,
+   "name": "LoadGameLump",
+   "sig": "LoadGameLump(int, void*, int)",
+   "symbol": "CEngineClient::LoadGameLump(int, void*, int)"
+  },
+  {
+   "index": 41,
+   "name": "LevelLeafCount",
+   "sig": "LevelLeafCount() const",
+   "symbol": "CEngineClient::LevelLeafCount() const"
+  },
+  {
+   "index": 42,
+   "name": "GetBSPTreeQuery",
+   "sig": "GetBSPTreeQuery()",
+   "symbol": "CEngineClient::GetBSPTreeQuery()"
+  },
+  {
+   "index": 43,
+   "name": "LinearToGamma",
+   "sig": "LinearToGamma(float*, float*)",
+   "symbol": "CEngineClient::LinearToGamma(float*, float*)"
+  },
+  {
+   "index": 44,
+   "name": "LightStyleValue",
+   "sig": "LightStyleValue(int)",
+   "symbol": "CEngineClient::LightStyleValue(int)"
+  },
+  {
+   "index": 45,
+   "name": "ComputeDynamicLighting",
+   "sig": "ComputeDynamicLighting(Vector const&, Vector const*, Vector&)",
+   "symbol": "CEngineClient::ComputeDynamicLighting(Vector const&, Vector const*, Vector&)"
+  },
+  {
+   "index": 46,
+   "name": "GetAmbientLightColor",
+   "sig": "GetAmbientLightColor(Vector&)",
+   "symbol": "CEngineClient::GetAmbientLightColor(Vector&)"
+  },
+  {
+   "index": 47,
+   "name": "GetDXSupportLevel",
+   "sig": "GetDXSupportLevel()",
+   "symbol": "CEngineClient::GetDXSupportLevel()"
+  },
+  {
+   "index": 48,
+   "name": "SupportsHDR",
+   "sig": "SupportsHDR()",
+   "symbol": "CEngineClient::SupportsHDR()"
+  },
+  {
+   "index": 49,
+   "name": "Mat_Stub",
+   "sig": "Mat_Stub(IMaterialSystem*)",
+   "symbol": "CEngineClient::Mat_Stub(IMaterialSystem*)"
+  },
+  {
+   "index": 50,
+   "name": "GetChapterName",
+   "sig": "GetChapterName(char*, int)",
+   "symbol": "CEngineClient::GetChapterName(char*, int)"
+  },
+  {
+   "index": 51,
+   "name": "GetLevelName",
+   "sig": "GetLevelName()",
+   "symbol": "CEngineClient::GetLevelName()"
+  },
+  {
+   "index": 52,
+   "name": "GetLevelVersion",
+   "sig": "GetLevelVersion()",
+   "symbol": "CEngineClient::GetLevelVersion()"
+  },
+  {
+   "index": 53,
+   "name": "GetVoiceTweakAPI",
+   "sig": "GetVoiceTweakAPI()",
+   "symbol": "CEngineClient::GetVoiceTweakAPI()"
+  },
+  {
+   "index": 54,
+   "name": "EngineStats_BeginFrame",
+   "sig": "EngineStats_BeginFrame()",
+   "symbol": "CEngineClient::EngineStats_BeginFrame()"
+  },
+  {
+   "index": 55,
+   "name": "EngineStats_EndFrame",
+   "sig": "EngineStats_EndFrame()",
+   "symbol": "CEngineClient::EngineStats_EndFrame()"
+  },
+  {
+   "index": 56,
+   "name": "FireEvents",
+   "sig": "FireEvents()",
+   "symbol": "CEngineClient::FireEvents()"
+  },
+  {
+   "index": 57,
+   "name": "GetLeavesArea",
+   "sig": "GetLeavesArea(int*, int)",
+   "symbol": "CEngineClient::GetLeavesArea(int*, int)"
+  },
+  {
+   "index": 58,
+   "name": "DoesBoxTouchAreaFrustum",
+   "sig": "DoesBoxTouchAreaFrustum(Vector const&, Vector const&, int)",
+   "symbol": "CEngineClient::DoesBoxTouchAreaFrustum(Vector const&, Vector const&, int)"
+  },
+  {
+   "index": 59,
+   "name": "SetAudioState",
+   "sig": "SetAudioState(AudioState_t const&)",
+   "symbol": "CEngineClient::SetAudioState(AudioState_t const&)"
+  },
+  {
+   "index": 60,
+   "name": "SentenceGroupPick",
+   "sig": "SentenceGroupPick(int, char*, int)",
+   "symbol": "CEngineClient::SentenceGroupPick(int, char*, int)"
+  },
+  {
+   "index": 61,
+   "name": "SentenceGroupPickSequential",
+   "sig": "SentenceGroupPickSequential(int, char*, int, int, int)",
+   "symbol": "CEngineClient::SentenceGroupPickSequential(int, char*, int, int, int)"
+  },
+  {
+   "index": 62,
+   "name": "SentenceIndexFromName",
+   "sig": "SentenceIndexFromName(char const*)",
+   "symbol": "CEngineClient::SentenceIndexFromName(char const*)"
+  },
+  {
+   "index": 63,
+   "name": "SentenceNameFromIndex",
+   "sig": "SentenceNameFromIndex(int)",
+   "symbol": "CEngineClient::SentenceNameFromIndex(int)"
+  },
+  {
+   "index": 64,
+   "name": "SentenceGroupIndexFromName",
+   "sig": "SentenceGroupIndexFromName(char const*)",
+   "symbol": "CEngineClient::SentenceGroupIndexFromName(char const*)"
+  },
+  {
+   "index": 65,
+   "name": "SentenceGroupNameFromIndex",
+   "sig": "SentenceGroupNameFromIndex(int)",
+   "symbol": "CEngineClient::SentenceGroupNameFromIndex(int)"
+  },
+  {
+   "index": 66,
+   "name": "SentenceLength",
+   "sig": "SentenceLength(int)",
+   "symbol": "CEngineClient::SentenceLength(int)"
+  },
+  {
+   "index": 67,
+   "name": "ComputeLighting",
+   "sig": "ComputeLighting(Vector const&, Vector const*, bool, Vector&, Vector*)",
+   "symbol": "CEngineClient::ComputeLighting(Vector const&, Vector const*, bool, Vector&, Vector*)"
+  },
+  {
+   "index": 68,
+   "name": "ActivateOccluder",
+   "sig": "ActivateOccluder(int, bool)",
+   "symbol": "CEngineClient::ActivateOccluder(int, bool)"
+  },
+  {
+   "index": 69,
+   "name": "IsOccluded",
+   "sig": "IsOccluded(Vector const&, Vector const&)",
+   "symbol": "CEngineClient::IsOccluded(Vector const&, Vector const&)"
+  },
+  {
+   "index": 70,
+   "name": "SaveAllocMemory",
+   "sig": "SaveAllocMemory(unsigned long, unsigned long)",
+   "symbol": "CEngineClient::SaveAllocMemory(unsigned long, unsigned long)"
+  },
+  {
+   "index": 71,
+   "name": "SaveFreeMemory",
+   "sig": "SaveFreeMemory(void*)",
+   "symbol": "CEngineClient::SaveFreeMemory(void*)"
+  },
+  {
+   "index": 72,
+   "name": "GetNetChannelInfo",
+   "sig": "GetNetChannelInfo()",
+   "symbol": "CEngineClient::GetNetChannelInfo()"
+  },
+  {
+   "index": 73,
+   "name": "DebugDrawPhysCollide",
+   "sig": "DebugDrawPhysCollide(CPhysCollide const*, IMaterial*, matrix3x4_t&, color32_s const&)",
+   "symbol": "CEngineClient::DebugDrawPhysCollide(CPhysCollide const*, IMaterial*, matrix3x4_t&, color32_s const&)"
+  },
+  {
+   "index": 74,
+   "name": "CheckPoint",
+   "sig": "CheckPoint(char const*)",
+   "symbol": "CEngineClient::CheckPoint(char const*)"
+  },
+  {
+   "index": 75,
+   "name": "DrawPortals",
+   "sig": "DrawPortals()",
+   "symbol": "CEngineClient::DrawPortals()"
+  },
+  {
+   "index": 76,
+   "name": "IsPlayingDemo",
+   "sig": "IsPlayingDemo()",
+   "symbol": "CEngineClient::IsPlayingDemo()"
+  },
+  {
+   "index": 77,
+   "name": "IsRecordingDemo",
+   "sig": "IsRecordingDemo()",
+   "symbol": "CEngineClient::IsRecordingDemo()"
+  },
+  {
+   "index": 78,
+   "name": "IsPlayingTimeDemo",
+   "sig": "IsPlayingTimeDemo()",
+   "symbol": "CEngineClient::IsPlayingTimeDemo()"
+  },
+  {
+   "index": 79,
+   "name": "GetDemoRecordingTick",
+   "sig": "GetDemoRecordingTick()",
+   "symbol": "CEngineClient::GetDemoRecordingTick()"
+  },
+  {
+   "index": 80,
+   "name": "GetDemoPlaybackTick",
+   "sig": "GetDemoPlaybackTick()",
+   "symbol": "CEngineClient::GetDemoPlaybackTick()"
+  },
+  {
+   "index": 81,
+   "name": "GetDemoPlaybackStartTick",
+   "sig": "GetDemoPlaybackStartTick()",
+   "symbol": "CEngineClient::GetDemoPlaybackStartTick()"
+  },
+  {
+   "index": 82,
+   "name": "GetDemoPlaybackTimeScale",
+   "sig": "GetDemoPlaybackTimeScale()",
+   "symbol": "CEngineClient::GetDemoPlaybackTimeScale()"
+  },
+  {
+   "index": 83,
+   "name": "GetDemoPlaybackTotalTicks",
+   "sig": "GetDemoPlaybackTotalTicks()",
+   "symbol": "CEngineClient::GetDemoPlaybackTotalTicks()"
+  },
+  {
+   "index": 84,
+   "name": "IsPaused",
+   "sig": "IsPaused()",
+   "symbol": "CEngineClient::IsPaused()"
+  },
+  {
+   "index": 85,
+   "name": "IsTakingScreenshot",
+   "sig": "IsTakingScreenshot()",
+   "symbol": "CEngineClient::IsTakingScreenshot()"
+  },
+  {
+   "index": 86,
+   "name": "IsHLTV",
+   "sig": "IsHLTV()",
+   "symbol": "CEngineClient::IsHLTV()"
+  },
+  {
+   "index": 87,
+   "name": "IsLevelMainMenuBackground",
+   "sig": "IsLevelMainMenuBackground()",
+   "symbol": "CEngineClient::IsLevelMainMenuBackground()"
+  },
+  {
+   "index": 88,
+   "name": "GetMainMenuBackgroundName",
+   "sig": "GetMainMenuBackgroundName(char*, int)",
+   "symbol": "CEngineClient::GetMainMenuBackgroundName(char*, int)"
+  },
+  {
+   "index": 89,
+   "name": "GetVideoModes",
+   "sig": "GetVideoModes(int&, vmode_s*&)",
+   "symbol": "CEngineClient::GetVideoModes(int&, vmode_s*&)"
+  },
+  {
+   "index": 90,
+   "name": "SetOcclusionParameters",
+   "sig": "SetOcclusionParameters(OcclusionParams_t const&)",
+   "symbol": "CEngineClient::SetOcclusionParameters(OcclusionParams_t const&)"
+  },
+  {
+   "index": 91,
+   "name": "GetUILanguage",
+   "sig": "GetUILanguage(char*, int)",
+   "symbol": "CEngineClient::GetUILanguage(char*, int)"
+  },
+  {
+   "index": 92,
+   "name": "IsSkyboxVisibleFromPoint",
+   "sig": "IsSkyboxVisibleFromPoint(Vector const&)",
+   "symbol": "CEngineClient::IsSkyboxVisibleFromPoint(Vector const&)"
+  },
+  {
+   "index": 93,
+   "name": "GetMapEntitiesString",
+   "sig": "GetMapEntitiesString()",
+   "symbol": "CEngineClient::GetMapEntitiesString()"
+  },
+  {
+   "index": 94,
+   "name": "IsInEditMode",
+   "sig": "IsInEditMode()",
+   "symbol": "CEngineClient::IsInEditMode()"
+  },
+  {
+   "index": 95,
+   "name": "GetScreenAspectRatio",
+   "sig": "GetScreenAspectRatio()",
+   "symbol": "CEngineClient::GetScreenAspectRatio()"
+  },
+  {
+   "index": 96,
+   "name": "REMOVED_SteamRefreshLogin",
+   "sig": "REMOVED_SteamRefreshLogin(char const*, bool)",
+   "symbol": "CEngineClient::REMOVED_SteamRefreshLogin(char const*, bool)"
+  },
+  {
+   "index": 97,
+   "name": "REMOVED_SteamProcessCall",
+   "sig": "REMOVED_SteamProcessCall(bool&)",
+   "symbol": "CEngineClient::REMOVED_SteamProcessCall(bool&)"
+  },
+  {
+   "index": 98,
+   "name": "GetEngineBuildNumber",
+   "sig": "GetEngineBuildNumber()",
+   "symbol": "CEngineClient::GetEngineBuildNumber()"
+  },
+  {
+   "index": 99,
+   "name": "GetProductVersionString",
+   "sig": "GetProductVersionString()",
+   "symbol": "CEngineClient::GetProductVersionString()"
+  },
+  {
+   "index": 100,
+   "name": "GrabPreColorCorrectedFrame",
+   "sig": "GrabPreColorCorrectedFrame(int, int, int, int)",
+   "symbol": "CEngineClient::GrabPreColorCorrectedFrame(int, int, int, int)"
+  },
+  {
+   "index": 101,
+   "name": "IsHammerRunning",
+   "sig": "IsHammerRunning() const",
+   "symbol": "CEngineClient::IsHammerRunning() const"
+  },
+  {
+   "index": 102,
+   "name": "ExecuteClientCmd",
+   "sig": "ExecuteClientCmd(char const*)",
+   "symbol": "CEngineClient::ExecuteClientCmd(char const*)"
+  },
+  {
+   "index": 103,
+   "name": "MapHasHDRLighting",
+   "sig": "MapHasHDRLighting()",
+   "symbol": "CEngineClient::MapHasHDRLighting()"
+  },
+  {
+   "index": 104,
+   "name": "GetAppID",
+   "sig": "GetAppID()",
+   "symbol": "CEngineClient::GetAppID()"
+  },
+  {
+   "index": 105,
+   "name": "GetLightForPointFast",
+   "sig": "GetLightForPointFast(Vector const&, bool)",
+   "symbol": "CEngineClient::GetLightForPointFast(Vector const&, bool)"
+  },
+  {
+   "index": 106,
+   "name": "ClientCmd_Unrestricted",
+   "sig": "ClientCmd_Unrestricted(char const*)",
+   "symbol": "CEngineClient::ClientCmd_Unrestricted(char const*)"
+  },
+  {
+   "index": 107,
+   "name": "SetRestrictServerCommands",
+   "sig": "SetRestrictServerCommands(bool)",
+   "symbol": "CEngineClient::SetRestrictServerCommands(bool)"
+  },
+  {
+   "index": 108,
+   "name": "SetRestrictClientCommands",
+   "sig": "SetRestrictClientCommands(bool)",
+   "symbol": "CEngineClient::SetRestrictClientCommands(bool)"
+  },
+  {
+   "index": 109,
+   "name": "SetOverlayBindProxy",
+   "sig": "SetOverlayBindProxy(int, void*)",
+   "symbol": "CEngineClient::SetOverlayBindProxy(int, void*)"
+  },
+  {
+   "index": 110,
+   "name": "CopyFrameBufferToMaterial",
+   "sig": "CopyFrameBufferToMaterial(char const*)",
+   "symbol": "CEngineClient::CopyFrameBufferToMaterial(char const*)"
+  },
+  {
+   "index": 111,
+   "name": "ChangeTeam",
+   "sig": "ChangeTeam(char const*)",
+   "symbol": "CEngineClient::ChangeTeam(char const*)"
+  },
+  {
+   "index": 112,
+   "name": "ReadConfiguration",
+   "sig": "ReadConfiguration(bool)",
+   "symbol": "CEngineClient::ReadConfiguration(bool)"
+  },
+  {
+   "index": 113,
+   "name": "SetAchievementMgr",
+   "sig": "SetAchievementMgr(IAchievementMgr*)",
+   "symbol": "CEngineClient::SetAchievementMgr(IAchievementMgr*)"
+  },
+  {
+   "index": 114,
+   "name": "GetAchievementMgr",
+   "sig": "GetAchievementMgr()",
+   "symbol": "CEngineClient::GetAchievementMgr()"
+  },
+  {
+   "index": 115,
+   "name": "MapLoadFailed",
+   "sig": "MapLoadFailed()",
+   "symbol": "CEngineClient::MapLoadFailed()"
+  },
+  {
+   "index": 116,
+   "name": "SetMapLoadFailed",
+   "sig": "SetMapLoadFailed(bool)",
+   "symbol": "CEngineClient::SetMapLoadFailed(bool)"
+  },
+  {
+   "index": 117,
+   "name": "IsLowViolence",
+   "sig": "IsLowViolence()",
+   "symbol": "CEngineClient::IsLowViolence()"
+  },
+  {
+   "index": 118,
+   "name": "GetMostRecentSaveGame",
+   "sig": "GetMostRecentSaveGame()",
+   "symbol": "CEngineClient::GetMostRecentSaveGame()"
+  },
+  {
+   "index": 119,
+   "name": "SetMostRecentSaveGame",
+   "sig": "SetMostRecentSaveGame(char const*)",
+   "symbol": "CEngineClient::SetMostRecentSaveGame(char const*)"
+  },
+  {
+   "index": 120,
+   "name": "StartXboxExitingProcess",
+   "sig": "StartXboxExitingProcess()",
+   "symbol": "CEngineClient::StartXboxExitingProcess()"
+  },
+  {
+   "index": 121,
+   "name": "IsSaveInProgress",
+   "sig": "IsSaveInProgress()",
+   "symbol": "CEngineClient::IsSaveInProgress()"
+  },
+  {
+   "index": 122,
+   "name": "OnStorageDeviceAttached",
+   "sig": "OnStorageDeviceAttached()",
+   "symbol": "CEngineClient::OnStorageDeviceAttached()"
+  },
+  {
+   "index": 123,
+   "name": "OnStorageDeviceDetached",
+   "sig": "OnStorageDeviceDetached()",
+   "symbol": "CEngineClient::OnStorageDeviceDetached()"
+  },
+  {
+   "index": 124,
+   "name": "ResetDemoInterpolation",
+   "sig": "ResetDemoInterpolation()",
+   "symbol": "CEngineClient::ResetDemoInterpolation()"
+  },
+  {
+   "index": 125,
+   "name": "SetGamestatsData",
+   "sig": "SetGamestatsData(CGamestatsData*)",
+   "symbol": "CEngineClient::SetGamestatsData(CGamestatsData*)"
+  },
+  {
+   "index": 126,
+   "name": "GetGamestatsData",
+   "sig": "GetGamestatsData()",
+   "symbol": "CEngineClient::GetGamestatsData()"
+  },
+  {
+   "index": 127,
+   "name": "GetMouseDelta",
+   "sig": "GetMouseDelta(int&, int&, bool)",
+   "symbol": "CEngineClient::GetMouseDelta(int&, int&, bool)"
+  },
+  {
+   "index": 128,
+   "name": "ServerCmdKeyValues",
+   "sig": "ServerCmdKeyValues(KeyValues*)",
+   "symbol": "CEngineClient::ServerCmdKeyValues(KeyValues*)"
+  },
+  {
+   "index": 129,
+   "name": "IsSkippingPlayback",
+   "sig": "IsSkippingPlayback()",
+   "symbol": "CEngineClient::IsSkippingPlayback()"
+  },
+  {
+   "index": 130,
+   "name": "IsLoadingDemo",
+   "sig": "IsLoadingDemo()",
+   "symbol": "CEngineClient::IsLoadingDemo()"
+  },
+  {
+   "index": 131,
+   "name": "IsPlayingDemoALocallyRecordedDemo",
+   "sig": "IsPlayingDemoALocallyRecordedDemo()",
+   "symbol": "CEngineClient::IsPlayingDemoALocallyRecordedDemo()"
+  },
+  {
+   "index": 132,
+   "name": "Key_LookupBindingExact",
+   "sig": "Key_LookupBindingExact(char const*)",
+   "symbol": "CEngineClient::Key_LookupBindingExact(char const*)"
+  },
+  {
+   "index": 133,
+   "name": "GetProtocolVersion",
+   "sig": "GetProtocolVersion()",
+   "symbol": "CEngineClient::GetProtocolVersion()"
+  },
+  {
+   "index": 134,
+   "name": "IsWindowedMode",
+   "sig": "IsWindowedMode()",
+   "symbol": "CEngineClient::IsWindowedMode()"
+  },
+  {
+   "index": 135,
+   "name": "FlashWindow",
+   "sig": "FlashWindow()",
+   "symbol": "CEngineClient::FlashWindow()"
+  },
+  {
+   "index": 136,
+   "name": "GetClientVersion",
+   "sig": "GetClientVersion() const",
+   "symbol": "CEngineClient::GetClientVersion() const"
+  },
+  {
+   "index": 137,
+   "name": "IsActiveApp",
+   "sig": "IsActiveApp()",
+   "symbol": "CEngineClient::IsActiveApp()"
+  },
+  {
+   "index": 138,
+   "name": "DisconnectInternal",
+   "sig": "DisconnectInternal()",
+   "symbol": "CEngineClient::DisconnectInternal()"
+  },
+  {
+   "index": 139,
+   "name": "GetInstancesRunningCount",
+   "sig": "GetInstancesRunningCount()",
+   "symbol": "CEngineClient::GetInstancesRunningCount()"
+  },
+  {
+   "index": 140,
+   "name": "OnHL2ExpansionLoaded",
+   "sig": "OnHL2ExpansionLoaded()",
+   "symbol": "CEngineClient::OnHL2ExpansionLoaded()"
+  },
+  {
+   "index": 141,
+   "name": "GetEventsSubscription",
+   "sig": "GetEventsSubscription()",
+   "symbol": "CEngineClient::GetEventsSubscription()"
+  },
+  {
+   "index": 142,
+   "name": "GetMapName",
+   "sig": "GetMapName()",
+   "symbol": "CEngineClient::GetMapName()"
+  },
+  {
+   "index": 143,
+   "name": "GetPatchVersion",
+   "sig": "GetPatchVersion()",
+   "symbol": "CEngineClient::GetPatchVersion()"
+  },
+  {
+   "index": 144,
+   "name": "IsInCommentaryMode",
+   "sig": "IsInCommentaryMode()",
+   "symbol": "CEngineClient::IsInCommentaryMode()"
+  }
+ ],
+ "derived": [
+  "bin/engine:CEngineClient"
+ ],
+ "derived_count": 1
+}

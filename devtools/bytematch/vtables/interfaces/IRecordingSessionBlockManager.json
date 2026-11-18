@@ -1,0 +1,78 @@
+{
+ "interface": "IRecordingSessionBlockManager",
+ "headers": [
+  "common/replay/irecordingsessionblockmanager.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "bin/replay",
+  "class": "CBaseRecordingSessionBlockManager",
+  "offset": 136,
+  "chain": [
+   "CBaseRecordingSessionBlockManager",
+   "IRecordingSessionBlockManager"
+  ]
+ },
+ "retail_len": 7,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 7
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CBaseRecordingSessionBlockManager",
+   "sig": "~CBaseRecordingSessionBlockManager()",
+   "symbol": "non-virtual thunk to CBaseRecordingSessionBlockManager::~CBaseRecordingSessionBlockManager()"
+  },
+  {
+   "index": 1,
+   "name": "~CBaseRecordingSessionBlockManager",
+   "sig": "~CBaseRecordingSessionBlockManager()",
+   "symbol": "non-virtual thunk to CBaseRecordingSessionBlockManager::~CBaseRecordingSessionBlockManager()"
+  },
+  {
+   "index": 2,
+   "name": "GetBlock",
+   "sig": "GetBlock(unsigned int)",
+   "symbol": "non-virtual thunk to CBaseRecordingSessionBlockManager::GetBlock(unsigned int)"
+  },
+  {
+   "index": 3,
+   "name": "DeleteBlock",
+   "sig": "DeleteBlock(CBaseRecordingSessionBlock*)",
+   "symbol": "non-virtual thunk to CBaseRecordingSessionBlockManager::DeleteBlock(CBaseRecordingSessionBlock*)"
+  },
+  {
+   "index": 4,
+   "name": "UnloadBlock",
+   "sig": "UnloadBlock(CBaseRecordingSessionBlock*)",
+   "symbol": "non-virtual thunk to CBaseRecordingSessionBlockManager::UnloadBlock(CBaseRecordingSessionBlock*)"
+  },
+  {
+   "index": 5,
+   "name": "GetBlockPath",
+   "sig": "GetBlockPath() const",
+   "symbol": "non-virtual thunk to CBaseRecordingSessionBlockManager::GetBlockPath() const"
+  },
+  {
+   "index": 6,
+   "name": "LoadBlockFromFileName",
+   "sig": "LoadBlockFromFileName(char const*, IRecordingSession*)",
+   "symbol": "non-virtual thunk to CBaseRecordingSessionBlockManager::LoadBlockFromFileName(char const*, IRecordingSession*)"
+  }
+ ],
+ "derived": [
+  "bin/replay:CBaseRecordingSessionBlockManager",
+  "bin/replay:CClientRecordingSessionBlockManager",
+  "bin/replay:CServerRecordingSessionBlockManager"
+ ],
+ "derived_count": 3
+}

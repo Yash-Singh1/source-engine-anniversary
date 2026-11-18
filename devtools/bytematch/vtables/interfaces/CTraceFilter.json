@@ -1,0 +1,126 @@
+{
+ "interface": "CTraceFilter",
+ "headers": [
+  "public/engine/IEngineTrace.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 2,
+ "sdk2013_slots": [
+  "ShouldHitEntity(IHandleEntity*, int)",
+  "GetTraceType() const"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CTraceFilterHitAll",
+  "offset": 0,
+  "chain": [
+   "CTraceFilterHitAll",
+   "CTraceFilter"
+  ]
+ },
+ "retail_len": 2,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 2
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "ShouldHitEntity",
+   "sig": "ShouldHitEntity(IHandleEntity*, int)",
+   "symbol": "CTraceFilterHitAll::ShouldHitEntity(IHandleEntity*, int)"
+  },
+  {
+   "index": 1,
+   "name": "GetTraceType",
+   "sig": "GetTraceType() const",
+   "symbol": "CTraceFilter::GetTraceType() const"
+  }
+ ],
+ "derived_disagreements": [
+  {
+   "module": "episodic/server",
+   "class": "CDecal::StaticDecal()::CTraceFilterValidForDecal",
+   "index": 0,
+   "ref": "ShouldHitEntity(IHandleEntity*, int)",
+   "got": "StaticDecal()::CTraceFilterValidForDecal::ShouldHitEntity(IHandleEntity*, int)"
+  },
+  {
+   "module": "hl2/server",
+   "class": "CDecal::StaticDecal()::CTraceFilterValidForDecal",
+   "index": 0,
+   "ref": "ShouldHitEntity(IHandleEntity*, int)",
+   "got": "StaticDecal()::CTraceFilterValidForDecal::ShouldHitEntity(IHandleEntity*, int)"
+  },
+  {
+   "module": "hl2_complete/server",
+   "class": "CDecal::StaticDecal()::CTraceFilterValidForDecal",
+   "index": 0,
+   "ref": "ShouldHitEntity(IHandleEntity*, int)",
+   "got": "StaticDecal()::CTraceFilterValidForDecal::ShouldHitEntity(IHandleEntity*, int)"
+  },
+  {
+   "module": "hl2mp/server",
+   "class": "CDecal::StaticDecal()::CTraceFilterValidForDecal",
+   "index": 0,
+   "ref": "ShouldHitEntity(IHandleEntity*, int)",
+   "got": "StaticDecal()::CTraceFilterValidForDecal::ShouldHitEntity(IHandleEntity*, int)"
+  },
+  {
+   "module": "lostcoast/server",
+   "class": "CDecal::StaticDecal()::CTraceFilterValidForDecal",
+   "index": 0,
+   "ref": "ShouldHitEntity(IHandleEntity*, int)",
+   "got": "StaticDecal()::CTraceFilterValidForDecal::ShouldHitEntity(IHandleEntity*, int)"
+  }
+ ],
+ "derived": [
+  "bin/engine:CTraceFilterHitAll",
+  "episodic/client:CTraceFilterGlow",
+  "episodic/client:CTraceFilterHitAll",
+  "episodic/client:CTraceFilterNoCombatCharacters",
+  "episodic/client:CTraceFilterNoNPCsOrPlayer",
+  "episodic/client:CTraceFilterSimple",
+  "episodic/client:CTraceFilterSimpleList",
+  "episodic/client:CTraceFilterSkipNPCsAndPlayers",
+  "episodic/client:CTraceFilterSkipPlayerAndViewModel",
+  "episodic/client:CTraceFilterSkipTwoEntities",
+  "episodic/server:CBarnacleTongueFilter",
+  "episodic/server:CBulletsTraceFilter",
+  "episodic/server:CDecal::StaticDecal()::CTraceFilterValidForDecal",
+  "episodic/server:CHunterTraceFilterSkipPhysics",
+  "episodic/server:CTraceFilterChopper",
+  "episodic/server:CTraceFilterEntity",
+  "episodic/server:CTraceFilterEntityIgnoreOther",
+  "episodic/server:CTraceFilterLOS",
+  "episodic/server:CTraceFilterNav",
+  "episodic/server:CTraceFilterNoCombatCharacters",
+  "episodic/server:CTraceFilterNoNPCsOrPlayer",
+  "episodic/server:CTraceFilterNoOwnerTest",
+  "episodic/server:CTraceFilterOnlyBrushes",
+  "episodic/server:CTraceFilterOnlyNPCsAndPlayer",
+  "episodic/server:CTraceFilterPhyscannon",
+  "episodic/server:CTraceFilterPushFinal",
+  "episodic/server:CTraceFilterPushMove",
+  "episodic/server:CTraceFilterSimple",
+  "episodic/server:CTraceFilterSimpleList",
+  "episodic/server:CTraceFilterSimpleNPCExclude",
+  "episodic/server:CTraceFilterSkipNPCs",
+  "episodic/server:CTraceFilterSkipPhysics",
+  "episodic/server:CTraceFilterSkipTwoEntities",
+  "episodic/server:CTraceFilterVehicleTransition",
+  "episodic/server:CTracePassFilter",
+  "episodic/server:CWaterTraceFilter",
+  "episodic/server:CWeaponLOSFilter",
+  "hl2/client:CTraceFilterGlow",
+  "hl2/client:CTraceFilterHitAll",
+  "hl2/client:CTraceFilterNoCombatCharacters"
+ ],
+ "derived_count": 174
+}

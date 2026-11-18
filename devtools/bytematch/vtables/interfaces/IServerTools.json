@@ -1,0 +1,317 @@
+{
+ "interface": "IServerTools",
+ "headers": [
+  "public/toolframework/itoolentity.h"
+ ],
+ "versions": {
+  "retail": [
+   "VSERVERTOOLS002"
+  ],
+  "ours": [
+   "VSERVERTOOLS001",
+   "VSERVERTOOLS002",
+   "VSERVERTOOLS003"
+  ],
+  "sdk2013": [
+   "VSERVERTOOLS001",
+   "VSERVERTOOLS002"
+  ]
+ },
+ "version_macros": [
+  "VSERVERTOOLS_INTERFACE_VERSION",
+  "VSERVERTOOLS_INTERFACE_VERSION_1",
+  "VSERVERTOOLS_INTERFACE_VERSION_2"
+ ],
+ "registrations": [
+  {
+   "module": "episodic/server",
+   "version": "VSERVERTOOLS002",
+   "class": "CServerTools"
+  },
+  {
+   "module": "hl2/server",
+   "version": "VSERVERTOOLS002",
+   "class": "CServerTools"
+  },
+  {
+   "module": "hl2_complete/server",
+   "version": "VSERVERTOOLS002",
+   "class": "CServerTools"
+  },
+  {
+   "module": "hl2mp/server",
+   "version": "VSERVERTOOLS002",
+   "class": "CServerTools"
+  },
+  {
+   "module": "lostcoast/server",
+   "version": "VSERVERTOOLS002",
+   "class": "CServerTools"
+  }
+ ],
+ "sdk2013_len": 34,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "GetIServerEntity(IClientEntity*)",
+  "SnapPlayerToPosition(Vector const&, QAngle const&, IClientEntity*)",
+  "GetPlayerPosition(Vector&, QAngle&, IClientEntity*)",
+  "SetPlayerFOV(int, IClientEntity*)",
+  "GetPlayerFOV(IClientEntity*)",
+  "IsInNoClipMode(IClientEntity*)",
+  "FirstEntity()",
+  "NextEntity(CBaseEntity*)",
+  "FindEntityByHammerID(int)",
+  "GetKeyValue(CBaseEntity*, char const*, char*, int)",
+  "SetKeyValue(CBaseEntity*, char const*, char const*)",
+  "SetKeyValue(CBaseEntity*, char const*, float)",
+  "SetKeyValue(CBaseEntity*, char const*, Vector const&)",
+  "CreateEntityByName(char const*)",
+  "DispatchSpawn(CBaseEntity*)",
+  "ReloadParticleDefintions(char const*, void const*, int)",
+  "AddOriginToPVS(Vector const&)",
+  "MoveEngineViewTo(Vector const&, QAngle const&)",
+  "DestroyEntityByHammerId(int)",
+  "GetBaseEntityByEntIndex(int)",
+  "RemoveEntity(CBaseEntity*)",
+  "RemoveEntityImmediate(CBaseEntity*)",
+  "GetEntityFactoryDictionary()",
+  "SetMoveType(CBaseEntity*, int)",
+  "SetMoveType(CBaseEntity*, int, int)",
+  "ResetSequence(CBaseAnimating*, int)",
+  "ResetSequenceInfo(CBaseAnimating*)",
+  "ClearMultiDamage()",
+  "ApplyMultiDamage()",
+  "AddMultiDamage(CTakeDamageInfo const&, CBaseEntity*)",
+  "RadiusDamage(CTakeDamageInfo const&, Vector const&, float, int, CBaseEntity*)",
+  "GetTempEntsSystem()"
+ ],
+ "retail_reference": {
+  "module": "episodic/server",
+  "class": "CServerTools",
+  "offset": 0,
+  "chain": [
+   "CServerTools",
+   "IServerTools"
+  ]
+ },
+ "retail_len": 34,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 34
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CServerTools",
+   "sig": "~CServerTools()",
+   "symbol": "CServerTools::~CServerTools()"
+  },
+  {
+   "index": 1,
+   "name": "~CServerTools",
+   "sig": "~CServerTools()",
+   "symbol": "CServerTools::~CServerTools()"
+  },
+  {
+   "index": 2,
+   "name": "GetIServerEntity",
+   "sig": "GetIServerEntity(IClientEntity*)",
+   "symbol": "CServerTools::GetIServerEntity(IClientEntity*)"
+  },
+  {
+   "index": 3,
+   "name": "SnapPlayerToPosition",
+   "sig": "SnapPlayerToPosition(Vector const&, QAngle const&, IClientEntity*)",
+   "symbol": "CServerTools::SnapPlayerToPosition(Vector const&, QAngle const&, IClientEntity*)"
+  },
+  {
+   "index": 4,
+   "name": "GetPlayerPosition",
+   "sig": "GetPlayerPosition(Vector&, QAngle&, IClientEntity*)",
+   "symbol": "CServerTools::GetPlayerPosition(Vector&, QAngle&, IClientEntity*)"
+  },
+  {
+   "index": 5,
+   "name": "SetPlayerFOV",
+   "sig": "SetPlayerFOV(int, IClientEntity*)",
+   "symbol": "CServerTools::SetPlayerFOV(int, IClientEntity*)"
+  },
+  {
+   "index": 6,
+   "name": "GetPlayerFOV",
+   "sig": "GetPlayerFOV(IClientEntity*)",
+   "symbol": "CServerTools::GetPlayerFOV(IClientEntity*)"
+  },
+  {
+   "index": 7,
+   "name": "IsInNoClipMode",
+   "sig": "IsInNoClipMode(IClientEntity*)",
+   "symbol": "CServerTools::IsInNoClipMode(IClientEntity*)"
+  },
+  {
+   "index": 8,
+   "name": "FirstEntity",
+   "sig": "FirstEntity()",
+   "symbol": "CServerTools::FirstEntity()"
+  },
+  {
+   "index": 9,
+   "name": "NextEntity",
+   "sig": "NextEntity(CBaseEntity*)",
+   "symbol": "CServerTools::NextEntity(CBaseEntity*)"
+  },
+  {
+   "index": 10,
+   "name": "FindEntityByHammerID",
+   "sig": "FindEntityByHammerID(int)",
+   "symbol": "CServerTools::FindEntityByHammerID(int)"
+  },
+  {
+   "index": 11,
+   "name": "GetKeyValue",
+   "sig": "GetKeyValue(CBaseEntity*, char const*, char*, int)",
+   "symbol": "CServerTools::GetKeyValue(CBaseEntity*, char const*, char*, int)"
+  },
+  {
+   "index": 12,
+   "name": "SetKeyValue",
+   "sig": "SetKeyValue(CBaseEntity*, char const*, char const*)",
+   "symbol": "CServerTools::SetKeyValue(CBaseEntity*, char const*, char const*)"
+  },
+  {
+   "index": 13,
+   "name": "SetKeyValue",
+   "sig": "SetKeyValue(CBaseEntity*, char const*, float)",
+   "symbol": "CServerTools::SetKeyValue(CBaseEntity*, char const*, float)"
+  },
+  {
+   "index": 14,
+   "name": "SetKeyValue",
+   "sig": "SetKeyValue(CBaseEntity*, char const*, Vector const&)",
+   "symbol": "CServerTools::SetKeyValue(CBaseEntity*, char const*, Vector const&)"
+  },
+  {
+   "index": 15,
+   "name": "CreateEntityByName",
+   "sig": "CreateEntityByName(char const*)",
+   "symbol": "CServerTools::CreateEntityByName(char const*)"
+  },
+  {
+   "index": 16,
+   "name": "DispatchSpawn",
+   "sig": "DispatchSpawn(CBaseEntity*)",
+   "symbol": "CServerTools::DispatchSpawn(CBaseEntity*)"
+  },
+  {
+   "index": 17,
+   "name": "ReloadParticleDefintions",
+   "sig": "ReloadParticleDefintions(char const*, void const*, int)",
+   "symbol": "CServerTools::ReloadParticleDefintions(char const*, void const*, int)"
+  },
+  {
+   "index": 18,
+   "name": "AddOriginToPVS",
+   "sig": "AddOriginToPVS(Vector const&)",
+   "symbol": "CServerTools::AddOriginToPVS(Vector const&)"
+  },
+  {
+   "index": 19,
+   "name": "MoveEngineViewTo",
+   "sig": "MoveEngineViewTo(Vector const&, QAngle const&)",
+   "symbol": "CServerTools::MoveEngineViewTo(Vector const&, QAngle const&)"
+  },
+  {
+   "index": 20,
+   "name": "DestroyEntityByHammerId",
+   "sig": "DestroyEntityByHammerId(int)",
+   "symbol": "CServerTools::DestroyEntityByHammerId(int)"
+  },
+  {
+   "index": 21,
+   "name": "GetBaseEntityByEntIndex",
+   "sig": "GetBaseEntityByEntIndex(int)",
+   "symbol": "CServerTools::GetBaseEntityByEntIndex(int)"
+  },
+  {
+   "index": 22,
+   "name": "RemoveEntity",
+   "sig": "RemoveEntity(CBaseEntity*)",
+   "symbol": "CServerTools::RemoveEntity(CBaseEntity*)"
+  },
+  {
+   "index": 23,
+   "name": "RemoveEntityImmediate",
+   "sig": "RemoveEntityImmediate(CBaseEntity*)",
+   "symbol": "CServerTools::RemoveEntityImmediate(CBaseEntity*)"
+  },
+  {
+   "index": 24,
+   "name": "GetEntityFactoryDictionary",
+   "sig": "GetEntityFactoryDictionary()",
+   "symbol": "CServerTools::GetEntityFactoryDictionary()"
+  },
+  {
+   "index": 25,
+   "name": "SetMoveType",
+   "sig": "SetMoveType(CBaseEntity*, int)",
+   "symbol": "CServerTools::SetMoveType(CBaseEntity*, int)"
+  },
+  {
+   "index": 26,
+   "name": "SetMoveType",
+   "sig": "SetMoveType(CBaseEntity*, int, int)",
+   "symbol": "CServerTools::SetMoveType(CBaseEntity*, int, int)"
+  },
+  {
+   "index": 27,
+   "name": "ResetSequence",
+   "sig": "ResetSequence(CBaseAnimating*, int)",
+   "symbol": "CServerTools::ResetSequence(CBaseAnimating*, int)"
+  },
+  {
+   "index": 28,
+   "name": "ResetSequenceInfo",
+   "sig": "ResetSequenceInfo(CBaseAnimating*)",
+   "symbol": "CServerTools::ResetSequenceInfo(CBaseAnimating*)"
+  },
+  {
+   "index": 29,
+   "name": "ClearMultiDamage",
+   "sig": "ClearMultiDamage()",
+   "symbol": "CServerTools::ClearMultiDamage()"
+  },
+  {
+   "index": 30,
+   "name": "ApplyMultiDamage",
+   "sig": "ApplyMultiDamage()",
+   "symbol": "CServerTools::ApplyMultiDamage()"
+  },
+  {
+   "index": 31,
+   "name": "AddMultiDamage",
+   "sig": "AddMultiDamage(CTakeDamageInfo const&, CBaseEntity*)",
+   "symbol": "CServerTools::AddMultiDamage(CTakeDamageInfo const&, CBaseEntity*)"
+  },
+  {
+   "index": 32,
+   "name": "RadiusDamage",
+   "sig": "RadiusDamage(CTakeDamageInfo const&, Vector const&, float, int, CBaseEntity*)",
+   "symbol": "CServerTools::RadiusDamage(CTakeDamageInfo const&, Vector const&, float, int, CBaseEntity*)"
+  },
+  {
+   "index": 33,
+   "name": "GetTempEntsSystem",
+   "sig": "GetTempEntsSystem()",
+   "symbol": "CServerTools::GetTempEntsSystem()"
+  }
+ ],
+ "derived": [
+  "episodic/server:CServerTools",
+  "hl2/server:CServerTools",
+  "hl2_complete/server:CServerTools",
+  "hl2mp/server:CServerTools",
+  "lostcoast/server:CServerTools"
+ ],
+ "derived_count": 5
+}

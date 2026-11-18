@@ -1542,6 +1542,12 @@ int CMatSystemSurface::DrawGetTextureId( ITexture *pTexture )
 }
 
 
+void CMatSystemSurface::DrawSetTextureRGBAEx2( int id, const unsigned char *rgba, int wide, int tall, ImageFormat imageFormat, bool bFlag1, bool bFlag2 )
+{
+	// UNIMPLEMENTED: retail hands both flags to an anniversary texture dictionary entry point our tree lacks.
+	DrawSetTextureRGBAEx( id, rgba, wide, tall, imageFormat );
+}
+
 //-----------------------------------------------------------------------------
 // Associates a texture with a material file (also binds it)
 //-----------------------------------------------------------------------------

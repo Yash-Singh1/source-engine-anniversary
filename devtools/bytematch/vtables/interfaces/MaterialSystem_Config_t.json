@@ -1,0 +1,29 @@
+{
+ "interface": "MaterialSystem_Config_t",
+ "headers": [
+  "public/materialsystem/materialsystem_config.h"
+ ],
+ "versions": {
+  "retail": [
+   "VMaterialSystemConfig002"
+  ],
+  "ours": [
+   "VMaterialSystemConfig002"
+  ],
+  "sdk2013": [
+   "VMaterialSystemConfig002"
+  ]
+ },
+ "version_macros": [
+  "MATERIALSYSTEM_CONFIG_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/materialsystem",
+   "version": "VMaterialSystemConfig002",
+   "class": "MaterialSystem_Config_t"
+  }
+ ],
+ "sdk2013_len": null,
+ "status": "no retail vtable"
+}

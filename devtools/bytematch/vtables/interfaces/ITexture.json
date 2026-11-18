@@ -1,0 +1,270 @@
+{
+ "interface": "ITexture",
+ "headers": [
+  "public/materialsystem/itexture.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 30,
+ "sdk2013_slots": [
+  "GetName() const",
+  "GetMappingWidth() const",
+  "GetMappingHeight() const",
+  "GetActualWidth() const",
+  "GetActualHeight() const",
+  "GetNumAnimationFrames() const",
+  "IsTranslucent() const",
+  "IsMipmapped() const",
+  "GetLowResColorSample(float, float, float*) const",
+  "GetResourceData(unsigned int, unsigned long*) const",
+  "IncrementReferenceCount()",
+  "DecrementReferenceCount()",
+  "SetTextureRegenerator(ITextureRegenerator*)",
+  "Download(Rect_t*, int)",
+  "GetApproximateVidMemBytes() const",
+  "IsError() const",
+  "IsVolumeTexture() const",
+  "GetMappingDepth() const",
+  "GetActualDepth() const",
+  "GetImageFormat() const",
+  "GetNormalDecodeMode() const",
+  "IsRenderTarget() const",
+  "IsCubeMap() const",
+  "IsNormalMap() const",
+  "IsProcedural() const",
+  "DeleteIfUnreferenced()",
+  "SwapContents(ITexture*)",
+  "GetFlags() const",
+  "ForceLODOverride(int)",
+  "SaveToFile(char const*)"
+ ],
+ "retail_reference": {
+  "module": "bin/materialsystem",
+  "class": "CDummyTexture",
+  "offset": 0,
+  "chain": [
+   "CDummyTexture",
+   "ITexture"
+  ]
+ },
+ "retail_len": 31,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 31
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "GetName",
+   "sig": "GetName() const",
+   "symbol": "CDummyTexture::GetName() const"
+  },
+  {
+   "index": 1,
+   "name": "GetMappingWidth",
+   "sig": "GetMappingWidth() const",
+   "symbol": "CDummyTexture::GetMappingWidth() const"
+  },
+  {
+   "index": 2,
+   "name": "GetMappingHeight",
+   "sig": "GetMappingHeight() const",
+   "symbol": "CDummyTexture::GetMappingHeight() const"
+  },
+  {
+   "index": 3,
+   "name": "GetActualWidth",
+   "sig": "GetActualWidth() const",
+   "symbol": "CDummyTexture::GetActualWidth() const"
+  },
+  {
+   "index": 4,
+   "name": "GetActualHeight",
+   "sig": "GetActualHeight() const",
+   "symbol": "CDummyTexture::GetActualHeight() const"
+  },
+  {
+   "index": 5,
+   "name": "GetNumAnimationFrames",
+   "sig": "GetNumAnimationFrames() const",
+   "symbol": "CDummyTexture::GetNumAnimationFrames() const"
+  },
+  {
+   "index": 6,
+   "name": "IsTranslucent",
+   "sig": "IsTranslucent() const",
+   "symbol": "CDummyTexture::IsTranslucent() const"
+  },
+  {
+   "index": 7,
+   "name": "IsMipmapped",
+   "sig": "IsMipmapped() const",
+   "symbol": "CDummyTexture::IsMipmapped() const"
+  },
+  {
+   "index": 8,
+   "name": "GetLowResColorSample",
+   "sig": "GetLowResColorSample(float, float, float*) const",
+   "symbol": "CDummyTexture::GetLowResColorSample(float, float, float*) const"
+  },
+  {
+   "index": 9,
+   "name": "GetResourceData",
+   "sig": "GetResourceData(unsigned int, unsigned long*) const",
+   "symbol": "CDummyTexture::GetResourceData(unsigned int, unsigned long*) const"
+  },
+  {
+   "index": 10,
+   "name": "IncrementReferenceCount",
+   "sig": "IncrementReferenceCount()",
+   "symbol": "CDummyTexture::IncrementReferenceCount()"
+  },
+  {
+   "index": 11,
+   "name": "DecrementReferenceCount",
+   "sig": "DecrementReferenceCount()",
+   "symbol": "CDummyTexture::DecrementReferenceCount()"
+  },
+  {
+   "index": 12,
+   "name": "SetTextureRegenerator",
+   "sig": "SetTextureRegenerator(ITextureRegenerator*)",
+   "symbol": "CDummyTexture::SetTextureRegenerator(ITextureRegenerator*)"
+  },
+  {
+   "index": 13,
+   "name": "Download",
+   "sig": "Download(Rect_t*, int)",
+   "symbol": "CDummyTexture::Download(Rect_t*, int)"
+  },
+  {
+   "index": 14,
+   "name": "GetApproximateVidMemBytes",
+   "sig": "GetApproximateVidMemBytes() const",
+   "symbol": "CDummyTexture::GetApproximateVidMemBytes() const"
+  },
+  {
+   "index": 15,
+   "name": "IsError",
+   "sig": "IsError() const",
+   "symbol": "CDummyTexture::IsError() const"
+  },
+  {
+   "index": 16,
+   "name": "IsVolumeTexture",
+   "sig": "IsVolumeTexture() const",
+   "symbol": "CDummyTexture::IsVolumeTexture() const"
+  },
+  {
+   "index": 17,
+   "name": "GetMappingDepth",
+   "sig": "GetMappingDepth() const",
+   "symbol": "CDummyTexture::GetMappingDepth() const"
+  },
+  {
+   "index": 18,
+   "name": "GetActualDepth",
+   "sig": "GetActualDepth() const",
+   "symbol": "CDummyTexture::GetActualDepth() const"
+  },
+  {
+   "index": 19,
+   "name": "GetImageFormat",
+   "sig": "GetImageFormat() const",
+   "symbol": "CDummyTexture::GetImageFormat() const"
+  },
+  {
+   "index": 20,
+   "name": "GetNormalDecodeMode",
+   "sig": "GetNormalDecodeMode() const",
+   "symbol": "CDummyTexture::GetNormalDecodeMode() const"
+  },
+  {
+   "index": 21,
+   "name": "IsRenderTarget",
+   "sig": "IsRenderTarget() const",
+   "symbol": "CDummyTexture::IsRenderTarget() const"
+  },
+  {
+   "index": 22,
+   "name": "IsCubeMap",
+   "sig": "IsCubeMap() const",
+   "symbol": "CDummyTexture::IsCubeMap() const"
+  },
+  {
+   "index": 23,
+   "name": "IsNormalMap",
+   "sig": "IsNormalMap() const",
+   "symbol": "CDummyTexture::IsNormalMap() const"
+  },
+  {
+   "index": 24,
+   "name": "IsProcedural",
+   "sig": "IsProcedural() const",
+   "symbol": "CDummyTexture::IsProcedural() const"
+  },
+  {
+   "index": 25,
+   "name": "DeleteIfUnreferenced",
+   "sig": "DeleteIfUnreferenced()",
+   "symbol": "CDummyTexture::DeleteIfUnreferenced()"
+  },
+  {
+   "index": 26,
+   "name": "SwapContents",
+   "sig": "SwapContents(ITexture*)",
+   "symbol": "CDummyTexture::SwapContents(ITexture*)"
+  },
+  {
+   "index": 27,
+   "name": "GetFlags",
+   "sig": "GetFlags() const",
+   "symbol": "CDummyTexture::GetFlags() const"
+  },
+  {
+   "index": 28,
+   "name": "ForceLODOverride",
+   "sig": "ForceLODOverride(int)",
+   "symbol": "CDummyTexture::ForceLODOverride(int)"
+  },
+  {
+   "index": 29,
+   "name": "SaveToFile",
+   "sig": "SaveToFile(char const*)",
+   "symbol": "CDummyTexture::SaveToFile(char const*)"
+  },
+  {
+   "index": 30,
+   "name": "GetEmbeddedTexture",
+   "sig": "GetEmbeddedTexture(int)",
+   "symbol": "CDummyTexture::GetEmbeddedTexture(int)"
+  }
+ ],
+ "derived_disagreements": [
+  {
+   "module": "bin/materialsystem",
+   "class": "CReferenceToHandleTexture",
+   "index": 30,
+   "ref": "GetEmbeddedTexture(int)",
+   "got": "Bind(Sampler_t)"
+  },
+  {
+   "module": "bin/materialsystem",
+   "class": "CTexture",
+   "index": 30,
+   "ref": "GetEmbeddedTexture(int)",
+   "got": "Bind(Sampler_t)"
+  }
+ ],
+ "derived": [
+  "bin/materialsystem:CDummyTexture",
+  "bin/materialsystem:CReferenceToHandleTexture",
+  "bin/materialsystem:CTexture"
+ ],
+ "derived_count": 3
+}

@@ -1,0 +1,1883 @@
+{
+ "interface": "IShaderAPI",
+ "headers": [
+  "public/shaderapi/ishaderapi.h"
+ ],
+ "versions": {
+  "retail": [
+   "ShaderApi030"
+  ],
+  "ours": [
+   "ShaderApi030"
+  ],
+  "sdk2013": [
+   "ShaderApi030"
+  ]
+ },
+ "version_macros": [
+  "SHADERAPI_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/shaderapidx9",
+   "version": "ShaderApi030",
+   "class": "CShaderAPIDx8"
+  },
+  {
+   "module": "bin/shaderapiempty",
+   "version": "ShaderApi030",
+   "class": "CShaderAPIEmpty"
+  }
+ ],
+ "sdk2013_len": 253,
+ "sdk2013_slots": [
+  "SetViewports(int, ShaderViewport_t const*)",
+  "GetViewports(ShaderViewport_t*, int) const",
+  "CurrentTime() const",
+  "GetLightmapDimensions(int*, int*)",
+  "GetSceneFogMode()",
+  "GetSceneFogColor(unsigned char*)",
+  "MatrixMode(MaterialMatrixMode_t)",
+  "PushMatrix()",
+  "PopMatrix()",
+  "LoadMatrix(float*)",
+  "MultMatrix(float*)",
+  "MultMatrixLocal(float*)",
+  "GetMatrix(MaterialMatrixMode_t, float*)",
+  "LoadIdentity()",
+  "LoadCameraToWorld()",
+  "Ortho(double, double, double, double, double, double)",
+  "PerspectiveX(double, double, double, double)",
+  "PickMatrix(int, int, int, int)",
+  "Rotate(float, float, float, float)",
+  "Translate(float, float, float)",
+  "Scale(float, float, float)",
+  "ScaleXY(float, float)",
+  "Color3f(float, float, float)",
+  "Color3fv(float const*)",
+  "Color4f(float, float, float, float)",
+  "Color4fv(float const*)",
+  "Color3ub(unsigned char, unsigned char, unsigned char)",
+  "Color3ubv(unsigned char const*)",
+  "Color4ub(unsigned char, unsigned char, unsigned char, unsigned char)",
+  "Color4ubv(unsigned char const*)",
+  "SetVertexShaderConstant(int, float const*, int, bool)",
+  "SetPixelShaderConstant(int, float const*, int, bool)",
+  "SetDefaultState()",
+  "GetWorldSpaceCameraPosition(float*) const",
+  "GetCurrentNumBones() const",
+  "GetCurrentLightCombo() const",
+  "GetCurrentFogType() const",
+  "SetTextureTransformDimension(TextureStage_t, int, bool)",
+  "DisableTextureTransform(TextureStage_t)",
+  "SetBumpEnvMatrix(TextureStage_t, float, float, float, float)",
+  "SetVertexShaderIndex(int)",
+  "SetPixelShaderIndex(int)",
+  "GetBackBufferDimensions(int&, int&) const",
+  "GetMaxLights() const",
+  "GetLight(int) const",
+  "SetPixelShaderFogParams(int)",
+  "SetVertexShaderStateAmbientLightCube()",
+  "SetPixelShaderStateAmbientLightCube(int, bool)",
+  "CommitPixelShaderLighting(int)",
+  "GetVertexModifyBuilder()",
+  "InFlashlightMode() const",
+  "GetFlashlightState(VMatrix&) const",
+  "InEditorMode() const",
+  "GetBoundMorphFormat()",
+  "BindStandardTexture(Sampler_t, StandardTextureId_t)",
+  "GetRenderTargetEx(int)",
+  "SetToneMappingScaleLinear(Vector const&)",
+  "GetToneMappingScaleLinear() const",
+  "GetLightMapScaleFactor() const",
+  "LoadBoneMatrix(int, float const*)",
+  "PerspectiveOffCenterX(double, double, double, double, double, double, double, double)",
+  "SetFloatRenderingParameter(int, float)",
+  "SetIntRenderingParameter(int, int)",
+  "SetVectorRenderingParameter(int, Vector const&)",
+  "GetFloatRenderingParameter(int) const",
+  "GetIntRenderingParameter(int) const",
+  "GetVectorRenderingParameter(int) const",
+  "SetStencilEnable(bool)",
+  "SetStencilFailOperation(StencilOperation_t)",
+  "SetStencilZFailOperation(StencilOperation_t)",
+  "SetStencilPassOperation(StencilOperation_t)",
+  "SetStencilCompareFunction(StencilComparisonFunction_t)",
+  "SetStencilReferenceValue(int)",
+  "SetStencilTestMask(unsigned int)",
+  "SetStencilWriteMask(unsigned int)",
+  "ClearStencilBufferRectangle(int, int, int, int, int)",
+  "GetDXLevelDefaults(unsigned int&, unsigned int&)",
+  "GetFlashlightStateEx(VMatrix&, ITexture**) const",
+  "GetAmbientLightCubeLuminance()",
+  "GetDX9LightState(LightState_t*) const",
+  "GetPixelFogCombo()",
+  "BindStandardVertexTexture(VertexTextureSampler_t, StandardTextureId_t)",
+  "IsHWMorphingEnabled() const",
+  "GetStandardTextureDimensions(int*, int*, StandardTextureId_t)",
+  "SetBooleanVertexShaderConstant(int, int const*, int, bool)",
+  "SetIntegerVertexShaderConstant(int, int const*, int, bool)",
+  "SetBooleanPixelShaderConstant(int, int const*, int, bool)",
+  "SetIntegerPixelShaderConstant(int, int const*, int, bool)",
+  "ShouldWriteDepthToDestAlpha() const",
+  "PushDeformation(DeformationBase_t const*)",
+  "PopDeformation()",
+  "GetNumActiveDeformations() const",
+  "GetPackedDeformationInformation(int, float*, int, int, int*) const",
+  "MarkUnusedVertexFields(unsigned int, int, bool*)",
+  "ExecuteCommandBuffer(unsigned char*)",
+  "SetStandardTextureHandle(StandardTextureId_t, int)",
+  "GetCurrentColorCorrection(ShaderColorCorrectionInfo_t*)",
+  "SetPSNearAndFarZ(int)",
+  "SetDepthFeatheringPixelShaderConstant(int, float)",
+  "ClearBuffers(bool, bool, bool, int, int)",
+  "ClearColor3ub(unsigned char, unsigned char, unsigned char)",
+  "ClearColor4ub(unsigned char, unsigned char, unsigned char, unsigned char)",
+  "BindVertexShader(VertexShaderHandle_t__*)",
+  "BindGeometryShader(GeometryShaderHandle_t__*)",
+  "BindPixelShader(PixelShaderHandle_t__*)",
+  "SetRasterState(ShaderRasterState_t const&)",
+  "SetMode(void*, int, ShaderDeviceInfo_t const&)",
+  "ChangeVideoMode(ShaderDeviceInfo_t const&)",
+  "TakeSnapshot()",
+  "TexMinFilter(ShaderTexFilterMode_t)",
+  "TexMagFilter(ShaderTexFilterMode_t)",
+  "TexWrap(ShaderTexCoordComponent_t, ShaderTexWrapMode_t)",
+  "CopyRenderTargetToTexture(int)",
+  "Bind(IMaterial*)",
+  "FlushBufferedPrimitives()",
+  "GetDynamicMesh(IMaterial*, int, bool, IMesh*, IMesh*)",
+  "GetDynamicMeshEx(IMaterial*, unsigned long long, int, bool, IMesh*, IMesh*)",
+  "IsTranslucent(short) const",
+  "IsAlphaTested(short) const",
+  "UsesVertexAndPixelShaders(short) const",
+  "IsDepthWriteEnabled(short) const",
+  "ComputeVertexFormat(int, short*) const",
+  "ComputeVertexUsage(int, short*) const",
+  "BeginPass(short)",
+  "RenderPass(int, int)",
+  "SetNumBoneWeights(int)",
+  "SetLight(int, LightDesc_t const&)",
+  "SetLightingOrigin(Vector)",
+  "SetAmbientLight(float, float, float)",
+  "SetAmbientLightCube(Vector4D*)",
+  "ShadeMode(ShaderShadeMode_t)",
+  "CullMode(MaterialCullMode_t)",
+  "ForceDepthFuncEquals(bool)",
+  "OverrideDepthEnable(bool, bool)",
+  "SetHeightClipZ(float)",
+  "SetHeightClipMode(MaterialHeightClipMode_t)",
+  "SetClipPlane(int, float const*)",
+  "EnableClipPlane(int, bool)",
+  "SetSkinningMatrices()",
+  "GetNearestSupportedFormat(ImageFormat, bool) const",
+  "GetNearestRenderTargetFormat(ImageFormat) const",
+  "DoRenderTargetsNeedSeparateDepthBuffer() const",
+  "CreateTexture(int, int, int, ImageFormat, int, int, int, char const*, char const*)",
+  "DeleteTexture(int)",
+  "CreateDepthTexture(ImageFormat, int, int, char const*, bool)",
+  "IsTexture(int)",
+  "IsTextureResident(int)",
+  "ModifyTexture(int)",
+  "TexImage2D(int, int, ImageFormat, int, int, int, ImageFormat, bool, void*)",
+  "TexSubImage2D(int, int, int, int, int, int, int, ImageFormat, int, bool, void*)",
+  "TexImageFromVTF(IVTFTexture*, int)",
+  "TexLock(int, int, int, int, int, int, CPixelWriter&)",
+  "TexUnlock()",
+  "TexSetPriority(int)",
+  "BindTexture(Sampler_t, int)",
+  "SetRenderTarget(int, int)",
+  "ClearBuffersObeyStencil(bool, bool)",
+  "ReadPixels(int, int, int, int, unsigned char*, ImageFormat)",
+  "ReadPixels(Rect_t*, Rect_t*, unsigned char*, ImageFormat, int)",
+  "FlushHardware()",
+  "BeginFrame()",
+  "EndFrame()",
+  "SelectionMode(bool)",
+  "SelectionBuffer(unsigned int*, int)",
+  "ClearSelectionNames()",
+  "LoadSelectionName(int)",
+  "PushSelectionName(int)",
+  "PopSelectionName()",
+  "ForceHardwareSync()",
+  "ClearSnapshots()",
+  "FogStart(float)",
+  "FogEnd(float)",
+  "SetFogZ(float)",
+  "SceneFogColor3ub(unsigned char, unsigned char, unsigned char)",
+  "SceneFogMode(MaterialFogMode_t)",
+  "CanDownloadTextures() const",
+  "ResetRenderState(bool)",
+  "GetCurrentDynamicVBSize()",
+  "DestroyVertexBuffers(bool)",
+  "EvictManagedResources()",
+  "SetAnisotropicLevel(int)",
+  "SyncToken(char const*)",
+  "SetStandardVertexShaderConstants(float)",
+  "CreateOcclusionQueryObject()",
+  "DestroyOcclusionQueryObject(ShaderAPIOcclusionQuery_t__*)",
+  "BeginOcclusionQueryDrawing(ShaderAPIOcclusionQuery_t__*)",
+  "EndOcclusionQueryDrawing(ShaderAPIOcclusionQuery_t__*)",
+  "OcclusionQuery_GetNumPixelsRendered(ShaderAPIOcclusionQuery_t__*, bool)",
+  "SetFlashlightState(FlashlightState_t const&, VMatrix const&)",
+  "ClearVertexAndPixelShaderRefCounts()",
+  "PurgeUnusedVertexAndPixelShaders()",
+  "DXSupportLevelChanged()",
+  "EnableUserClipTransformOverride(bool)",
+  "UserClipTransform(VMatrix const&)",
+  "ComputeMorphFormat(int, short*) const",
+  "SetRenderTargetEx(int, int, int)",
+  "CopyRenderTargetToTextureEx(int, int, Rect_t*, Rect_t*)",
+  "CopyTextureToRenderTargetEx(int, int, Rect_t*, Rect_t*)",
+  "HandleDeviceLost()",
+  "EnableLinearColorSpaceFrameBuffer(bool)",
+  "SetFullScreenTextureHandle(int)",
+  "SetFastClipPlane(float const*)",
+  "EnableFastClip(bool)",
+  "GetMaxToRender(IMesh*, bool, int*, int*)",
+  "GetMaxVerticesToRender(IMaterial*)",
+  "GetMaxIndicesToRender()",
+  "DisableAllLocalLights()",
+  "CompareSnapshots(short, short)",
+  "GetFlexMesh()",
+  "SetFlashlightStateEx(FlashlightState_t const&, VMatrix const&, ITexture*)",
+  "SupportsMSAAMode(int)",
+  "OwnGPUResources(bool)",
+  "GetFogDistances(float*, float*, float*)",
+  "BeginPIXEvent(unsigned long, char const*)",
+  "EndPIXEvent()",
+  "SetPIXMarker(unsigned long, char const*)",
+  "EnableAlphaToCoverage()",
+  "DisableAlphaToCoverage()",
+  "ComputeVertexDescription(unsigned char*, unsigned long long, MeshDesc_t&) const",
+  "SupportsShadowDepthTextures()",
+  "SetDisallowAccess(bool)",
+  "EnableShaderShaderMutex(bool)",
+  "ShaderLock()",
+  "ShaderUnlock()",
+  "GetShadowDepthTextureFormat()",
+  "SupportsFetch4()",
+  "SetShadowDepthBiasFactors(float, float)",
+  "BindVertexBuffer(int, IVertexBuffer*, int, int, int, unsigned long long, int)",
+  "BindIndexBuffer(IIndexBuffer*, int)",
+  "Draw(MaterialPrimitiveType_t, int, int)",
+  "PerformFullScreenStencilOperation()",
+  "SetScissorRect(int, int, int, int, bool)",
+  "SupportsCSAAMode(int, int)",
+  "InvalidateDelayedShaderConstants()",
+  "GammaToLinear_HardwareSpecific(float) const",
+  "LinearToGamma_HardwareSpecific(float) const",
+  "SetLinearToGammaConversionTextures(int, int)",
+  "GetNullTextureFormat()",
+  "BindVertexTexture(VertexTextureSampler_t, int)",
+  "EnableHWMorphing(bool)",
+  "SetFlexWeights(int, int, MorphWeight_t const*)",
+  "FogMaxDensity(float)",
+  "CreateTextures(int*, int, int, int, int, ImageFormat, int, int, int, char const*, char const*)",
+  "AcquireThreadOwnership()",
+  "ReleaseThreadOwnership()",
+  "SupportsNormalMapCompression() const",
+  "EnableBuffer2FramesAhead(bool)",
+  "PrintfVA(char*, char*)",
+  "Printf(char const*, ...)",
+  "Knob(char*, float*)",
+  "OverrideAlphaWriteEnable(bool, bool)",
+  "OverrideColorWriteEnable(bool, bool)",
+  "ClearBuffersObeyStencilEx(bool, bool, bool)"
+ ],
+ "retail_reference": {
+  "module": "bin/shaderapidx9",
+  "class": "CShaderAPIDx8",
+  "offset": 556,
+  "chain": [
+   "CShaderAPIDx8",
+   "IShaderAPIDX8",
+   "CShaderAPIBase",
+   "IShaderAPI"
+  ]
+ },
+ "retail_len": 256,
+ "retail_len_basis": "first implementer destructor",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 265,
+  "first implementer destructor": 256
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "SetViewports",
+   "sig": "SetViewports(int, ShaderViewport_t const*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetViewports(int, ShaderViewport_t const*)"
+  },
+  {
+   "index": 1,
+   "name": "GetViewports",
+   "sig": "GetViewports(ShaderViewport_t*, int) const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetViewports(ShaderViewport_t*, int) const"
+  },
+  {
+   "index": 2,
+   "name": "CurrentTime",
+   "sig": "CurrentTime() const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::CurrentTime() const"
+  },
+  {
+   "index": 3,
+   "name": "GetLightmapDimensions",
+   "sig": "GetLightmapDimensions(int*, int*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetLightmapDimensions(int*, int*)"
+  },
+  {
+   "index": 4,
+   "name": "GetSceneFogMode",
+   "sig": "GetSceneFogMode()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetSceneFogMode()"
+  },
+  {
+   "index": 5,
+   "name": "GetSceneFogColor",
+   "sig": "GetSceneFogColor(unsigned char*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetSceneFogColor(unsigned char*)"
+  },
+  {
+   "index": 6,
+   "name": "MatrixMode",
+   "sig": "MatrixMode(MaterialMatrixMode_t)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::MatrixMode(MaterialMatrixMode_t)"
+  },
+  {
+   "index": 7,
+   "name": "PushMatrix",
+   "sig": "PushMatrix()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::PushMatrix()"
+  },
+  {
+   "index": 8,
+   "name": "PopMatrix",
+   "sig": "PopMatrix()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::PopMatrix()"
+  },
+  {
+   "index": 9,
+   "name": "LoadMatrix",
+   "sig": "LoadMatrix(float*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::LoadMatrix(float*)"
+  },
+  {
+   "index": 10,
+   "name": "MultMatrix",
+   "sig": "MultMatrix(float*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::MultMatrix(float*)"
+  },
+  {
+   "index": 11,
+   "name": "MultMatrixLocal",
+   "sig": "MultMatrixLocal(float*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::MultMatrixLocal(float*)"
+  },
+  {
+   "index": 12,
+   "name": "GetMatrix",
+   "sig": "GetMatrix(MaterialMatrixMode_t, float*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetMatrix(MaterialMatrixMode_t, float*)"
+  },
+  {
+   "index": 13,
+   "name": "LoadIdentity",
+   "sig": "LoadIdentity()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::LoadIdentity()"
+  },
+  {
+   "index": 14,
+   "name": "LoadCameraToWorld",
+   "sig": "LoadCameraToWorld()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::LoadCameraToWorld()"
+  },
+  {
+   "index": 15,
+   "name": "Ortho",
+   "sig": "Ortho(double, double, double, double, double, double)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::Ortho(double, double, double, double, double, double)"
+  },
+  {
+   "index": 16,
+   "name": "PerspectiveX",
+   "sig": "PerspectiveX(double, double, double, double)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::PerspectiveX(double, double, double, double)"
+  },
+  {
+   "index": 17,
+   "name": "PickMatrix",
+   "sig": "PickMatrix(int, int, int, int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::PickMatrix(int, int, int, int)"
+  },
+  {
+   "index": 18,
+   "name": "Rotate",
+   "sig": "Rotate(float, float, float, float)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::Rotate(float, float, float, float)"
+  },
+  {
+   "index": 19,
+   "name": "Translate",
+   "sig": "Translate(float, float, float)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::Translate(float, float, float)"
+  },
+  {
+   "index": 20,
+   "name": "Scale",
+   "sig": "Scale(float, float, float)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::Scale(float, float, float)"
+  },
+  {
+   "index": 21,
+   "name": "ScaleXY",
+   "sig": "ScaleXY(float, float)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::ScaleXY(float, float)"
+  },
+  {
+   "index": 22,
+   "name": "Color3f",
+   "sig": "Color3f(float, float, float)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::Color3f(float, float, float)"
+  },
+  {
+   "index": 23,
+   "name": "Color3fv",
+   "sig": "Color3fv(float const*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::Color3fv(float const*)"
+  },
+  {
+   "index": 24,
+   "name": "Color4f",
+   "sig": "Color4f(float, float, float, float)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::Color4f(float, float, float, float)"
+  },
+  {
+   "index": 25,
+   "name": "Color4fv",
+   "sig": "Color4fv(float const*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::Color4fv(float const*)"
+  },
+  {
+   "index": 26,
+   "name": "Color3ub",
+   "sig": "Color3ub(unsigned char, unsigned char, unsigned char)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::Color3ub(unsigned char, unsigned char, unsigned char)"
+  },
+  {
+   "index": 27,
+   "name": "Color3ubv",
+   "sig": "Color3ubv(unsigned char const*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::Color3ubv(unsigned char const*)"
+  },
+  {
+   "index": 28,
+   "name": "Color4ub",
+   "sig": "Color4ub(unsigned char, unsigned char, unsigned char, unsigned char)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::Color4ub(unsigned char, unsigned char, unsigned char, unsigned char)"
+  },
+  {
+   "index": 29,
+   "name": "Color4ubv",
+   "sig": "Color4ubv(unsigned char const*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::Color4ubv(unsigned char const*)"
+  },
+  {
+   "index": 30,
+   "name": "SetVertexShaderConstant",
+   "sig": "SetVertexShaderConstant(int, float const*, int, bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetVertexShaderConstant(int, float const*, int, bool)"
+  },
+  {
+   "index": 31,
+   "name": "SetPixelShaderConstant",
+   "sig": "SetPixelShaderConstant(int, float const*, int, bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetPixelShaderConstant(int, float const*, int, bool)"
+  },
+  {
+   "index": 32,
+   "name": "SetDefaultState",
+   "sig": "SetDefaultState()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetDefaultState()"
+  },
+  {
+   "index": 33,
+   "name": "GetWorldSpaceCameraPosition",
+   "sig": "GetWorldSpaceCameraPosition(float*) const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetWorldSpaceCameraPosition(float*) const"
+  },
+  {
+   "index": 34,
+   "name": "GetCurrentNumBones",
+   "sig": "GetCurrentNumBones() const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetCurrentNumBones() const"
+  },
+  {
+   "index": 35,
+   "name": "GetCurrentLightCombo",
+   "sig": "GetCurrentLightCombo() const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetCurrentLightCombo() const"
+  },
+  {
+   "index": 36,
+   "name": "GetCurrentFogType",
+   "sig": "GetCurrentFogType() const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetCurrentFogType() const"
+  },
+  {
+   "index": 37,
+   "name": "SetTextureTransformDimension",
+   "sig": "SetTextureTransformDimension(TextureStage_t, int, bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetTextureTransformDimension(TextureStage_t, int, bool)"
+  },
+  {
+   "index": 38,
+   "name": "DisableTextureTransform",
+   "sig": "DisableTextureTransform(TextureStage_t)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::DisableTextureTransform(TextureStage_t)"
+  },
+  {
+   "index": 39,
+   "name": "SetBumpEnvMatrix",
+   "sig": "SetBumpEnvMatrix(TextureStage_t, float, float, float, float)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetBumpEnvMatrix(TextureStage_t, float, float, float, float)"
+  },
+  {
+   "index": 40,
+   "name": "SetVertexShaderIndex",
+   "sig": "SetVertexShaderIndex(int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetVertexShaderIndex(int)"
+  },
+  {
+   "index": 41,
+   "name": "SetPixelShaderIndex",
+   "sig": "SetPixelShaderIndex(int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetPixelShaderIndex(int)"
+  },
+  {
+   "index": 42,
+   "name": "GetBackBufferDimensions",
+   "sig": "GetBackBufferDimensions(int&, int&) const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetBackBufferDimensions(int&, int&) const"
+  },
+  {
+   "index": 43,
+   "name": "GetMaxLights",
+   "sig": "GetMaxLights() const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetMaxLights() const"
+  },
+  {
+   "index": 44,
+   "name": "GetLight",
+   "sig": "GetLight(int) const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetLight(int) const"
+  },
+  {
+   "index": 45,
+   "name": "SetPixelShaderFogParams",
+   "sig": "SetPixelShaderFogParams(int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetPixelShaderFogParams(int)"
+  },
+  {
+   "index": 46,
+   "name": "SetVertexShaderStateAmbientLightCube",
+   "sig": "SetVertexShaderStateAmbientLightCube()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetVertexShaderStateAmbientLightCube()"
+  },
+  {
+   "index": 47,
+   "name": "SetPixelShaderStateAmbientLightCube",
+   "sig": "SetPixelShaderStateAmbientLightCube(int, bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetPixelShaderStateAmbientLightCube(int, bool)"
+  },
+  {
+   "index": 48,
+   "name": "CommitPixelShaderLighting",
+   "sig": "CommitPixelShaderLighting(int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::CommitPixelShaderLighting(int)"
+  },
+  {
+   "index": 49,
+   "name": "GetVertexModifyBuilder",
+   "sig": "GetVertexModifyBuilder()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetVertexModifyBuilder()"
+  },
+  {
+   "index": 50,
+   "name": "InFlashlightMode",
+   "sig": "InFlashlightMode() const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::InFlashlightMode() const"
+  },
+  {
+   "index": 51,
+   "name": "GetFlashlightState",
+   "sig": "GetFlashlightState(VMatrix&) const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetFlashlightState(VMatrix&) const"
+  },
+  {
+   "index": 52,
+   "name": "InEditorMode",
+   "sig": "InEditorMode() const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::InEditorMode() const"
+  },
+  {
+   "index": 53,
+   "name": "GetBoundMorphFormat",
+   "sig": "GetBoundMorphFormat()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetBoundMorphFormat()"
+  },
+  {
+   "index": 54,
+   "name": "BindStandardTexture",
+   "sig": "BindStandardTexture(Sampler_t, StandardTextureId_t)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::BindStandardTexture(Sampler_t, StandardTextureId_t)"
+  },
+  {
+   "index": 55,
+   "name": "GetRenderTargetEx",
+   "sig": "GetRenderTargetEx(int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetRenderTargetEx(int)"
+  },
+  {
+   "index": 56,
+   "name": "SetToneMappingScaleLinear",
+   "sig": "SetToneMappingScaleLinear(Vector const&)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetToneMappingScaleLinear(Vector const&)"
+  },
+  {
+   "index": 57,
+   "name": "GetToneMappingScaleLinear",
+   "sig": "GetToneMappingScaleLinear() const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetToneMappingScaleLinear() const"
+  },
+  {
+   "index": 58,
+   "name": "GetLightMapScaleFactor",
+   "sig": "GetLightMapScaleFactor() const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetLightMapScaleFactor() const"
+  },
+  {
+   "index": 59,
+   "name": "LoadBoneMatrix",
+   "sig": "LoadBoneMatrix(int, float const*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::LoadBoneMatrix(int, float const*)"
+  },
+  {
+   "index": 60,
+   "name": "PerspectiveOffCenterX",
+   "sig": "PerspectiveOffCenterX(double, double, double, double, double, double, double, double)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::PerspectiveOffCenterX(double, double, double, double, double, double, double, double)"
+  },
+  {
+   "index": 61,
+   "name": "SetFloatRenderingParameter",
+   "sig": "SetFloatRenderingParameter(int, float)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetFloatRenderingParameter(int, float)"
+  },
+  {
+   "index": 62,
+   "name": "SetIntRenderingParameter",
+   "sig": "SetIntRenderingParameter(int, int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetIntRenderingParameter(int, int)"
+  },
+  {
+   "index": 63,
+   "name": "SetVectorRenderingParameter",
+   "sig": "SetVectorRenderingParameter(int, Vector const&)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetVectorRenderingParameter(int, Vector const&)"
+  },
+  {
+   "index": 64,
+   "name": "GetFloatRenderingParameter",
+   "sig": "GetFloatRenderingParameter(int) const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetFloatRenderingParameter(int) const"
+  },
+  {
+   "index": 65,
+   "name": "GetIntRenderingParameter",
+   "sig": "GetIntRenderingParameter(int) const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetIntRenderingParameter(int) const"
+  },
+  {
+   "index": 66,
+   "name": "GetVectorRenderingParameter",
+   "sig": "GetVectorRenderingParameter(int) const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetVectorRenderingParameter(int) const"
+  },
+  {
+   "index": 67,
+   "name": "SetStencilEnable",
+   "sig": "SetStencilEnable(bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetStencilEnable(bool)"
+  },
+  {
+   "index": 68,
+   "name": "SetStencilFailOperation",
+   "sig": "SetStencilFailOperation(StencilOperation_t)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetStencilFailOperation(StencilOperation_t)"
+  },
+  {
+   "index": 69,
+   "name": "SetStencilZFailOperation",
+   "sig": "SetStencilZFailOperation(StencilOperation_t)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetStencilZFailOperation(StencilOperation_t)"
+  },
+  {
+   "index": 70,
+   "name": "SetStencilPassOperation",
+   "sig": "SetStencilPassOperation(StencilOperation_t)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetStencilPassOperation(StencilOperation_t)"
+  },
+  {
+   "index": 71,
+   "name": "SetStencilCompareFunction",
+   "sig": "SetStencilCompareFunction(StencilComparisonFunction_t)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetStencilCompareFunction(StencilComparisonFunction_t)"
+  },
+  {
+   "index": 72,
+   "name": "SetStencilReferenceValue",
+   "sig": "SetStencilReferenceValue(int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetStencilReferenceValue(int)"
+  },
+  {
+   "index": 73,
+   "name": "SetStencilTestMask",
+   "sig": "SetStencilTestMask(unsigned int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetStencilTestMask(unsigned int)"
+  },
+  {
+   "index": 74,
+   "name": "SetStencilWriteMask",
+   "sig": "SetStencilWriteMask(unsigned int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetStencilWriteMask(unsigned int)"
+  },
+  {
+   "index": 75,
+   "name": "ClearStencilBufferRectangle",
+   "sig": "ClearStencilBufferRectangle(int, int, int, int, int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::ClearStencilBufferRectangle(int, int, int, int, int)"
+  },
+  {
+   "index": 76,
+   "name": "GetDXLevelDefaults",
+   "sig": "GetDXLevelDefaults(unsigned int&, unsigned int&)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetDXLevelDefaults(unsigned int&, unsigned int&)"
+  },
+  {
+   "index": 77,
+   "name": "GetFlashlightStateEx",
+   "sig": "GetFlashlightStateEx(VMatrix&, ITexture**) const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetFlashlightStateEx(VMatrix&, ITexture**) const"
+  },
+  {
+   "index": 78,
+   "name": "GetAmbientLightCubeLuminance",
+   "sig": "GetAmbientLightCubeLuminance()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetAmbientLightCubeLuminance()"
+  },
+  {
+   "index": 79,
+   "name": "GetDX9LightState",
+   "sig": "GetDX9LightState(LightState_t*) const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetDX9LightState(LightState_t*) const"
+  },
+  {
+   "index": 80,
+   "name": "GetPixelFogCombo",
+   "sig": "GetPixelFogCombo()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetPixelFogCombo()"
+  },
+  {
+   "index": 81,
+   "name": "BindStandardVertexTexture",
+   "sig": "BindStandardVertexTexture(VertexTextureSampler_t, StandardTextureId_t)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::BindStandardVertexTexture(VertexTextureSampler_t, StandardTextureId_t)"
+  },
+  {
+   "index": 82,
+   "name": "IsHWMorphingEnabled",
+   "sig": "IsHWMorphingEnabled() const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::IsHWMorphingEnabled() const"
+  },
+  {
+   "index": 83,
+   "name": "GetStandardTextureDimensions",
+   "sig": "GetStandardTextureDimensions(int*, int*, StandardTextureId_t)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetStandardTextureDimensions(int*, int*, StandardTextureId_t)"
+  },
+  {
+   "index": 84,
+   "name": "SetBooleanVertexShaderConstant",
+   "sig": "SetBooleanVertexShaderConstant(int, int const*, int, bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetBooleanVertexShaderConstant(int, int const*, int, bool)"
+  },
+  {
+   "index": 85,
+   "name": "SetIntegerVertexShaderConstant",
+   "sig": "SetIntegerVertexShaderConstant(int, int const*, int, bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetIntegerVertexShaderConstant(int, int const*, int, bool)"
+  },
+  {
+   "index": 86,
+   "name": "SetBooleanPixelShaderConstant",
+   "sig": "SetBooleanPixelShaderConstant(int, int const*, int, bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetBooleanPixelShaderConstant(int, int const*, int, bool)"
+  },
+  {
+   "index": 87,
+   "name": "SetIntegerPixelShaderConstant",
+   "sig": "SetIntegerPixelShaderConstant(int, int const*, int, bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetIntegerPixelShaderConstant(int, int const*, int, bool)"
+  },
+  {
+   "index": 88,
+   "name": "ShouldWriteDepthToDestAlpha",
+   "sig": "ShouldWriteDepthToDestAlpha() const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::ShouldWriteDepthToDestAlpha() const"
+  },
+  {
+   "index": 89,
+   "name": "PushDeformation",
+   "sig": "PushDeformation(DeformationBase_t const*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::PushDeformation(DeformationBase_t const*)"
+  },
+  {
+   "index": 90,
+   "name": "PopDeformation",
+   "sig": "PopDeformation()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::PopDeformation()"
+  },
+  {
+   "index": 91,
+   "name": "GetNumActiveDeformations",
+   "sig": "GetNumActiveDeformations() const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetNumActiveDeformations() const"
+  },
+  {
+   "index": 92,
+   "name": "GetPackedDeformationInformation",
+   "sig": "GetPackedDeformationInformation(int, float*, int, int, int*) const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetPackedDeformationInformation(int, float*, int, int, int*) const"
+  },
+  {
+   "index": 93,
+   "name": "MarkUnusedVertexFields",
+   "sig": "MarkUnusedVertexFields(unsigned int, int, bool*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::MarkUnusedVertexFields(unsigned int, int, bool*)"
+  },
+  {
+   "index": 94,
+   "name": "ExecuteCommandBuffer",
+   "sig": "ExecuteCommandBuffer(unsigned char*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::ExecuteCommandBuffer(unsigned char*)"
+  },
+  {
+   "index": 95,
+   "name": "SetStandardTextureHandle",
+   "sig": "SetStandardTextureHandle(StandardTextureId_t, int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetStandardTextureHandle(StandardTextureId_t, int)"
+  },
+  {
+   "index": 96,
+   "name": "GetCurrentColorCorrection",
+   "sig": "GetCurrentColorCorrection(ShaderColorCorrectionInfo_t*)",
+   "symbol": "CShaderAPIBase::GetCurrentColorCorrection(ShaderColorCorrectionInfo_t*)"
+  },
+  {
+   "index": 97,
+   "name": "SetPSNearAndFarZ",
+   "sig": "SetPSNearAndFarZ(int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetPSNearAndFarZ(int)"
+  },
+  {
+   "index": 98,
+   "name": "SetDepthFeatheringPixelShaderConstant",
+   "sig": "SetDepthFeatheringPixelShaderConstant(int, float)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetDepthFeatheringPixelShaderConstant(int, float)"
+  },
+  {
+   "index": 99,
+   "name": "GetPixelFogCombo1",
+   "sig": "GetPixelFogCombo1(bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetPixelFogCombo1(bool)"
+  },
+  {
+   "index": 100,
+   "name": "ClearBuffers",
+   "sig": "ClearBuffers(bool, bool, bool, int, int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::ClearBuffers(bool, bool, bool, int, int)"
+  },
+  {
+   "index": 101,
+   "name": "ClearColor3ub",
+   "sig": "ClearColor3ub(unsigned char, unsigned char, unsigned char)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::ClearColor3ub(unsigned char, unsigned char, unsigned char)"
+  },
+  {
+   "index": 102,
+   "name": "ClearColor4ub",
+   "sig": "ClearColor4ub(unsigned char, unsigned char, unsigned char, unsigned char)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::ClearColor4ub(unsigned char, unsigned char, unsigned char, unsigned char)"
+  },
+  {
+   "index": 103,
+   "name": "BindVertexShader",
+   "sig": "BindVertexShader(VertexShaderHandle_t__*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::BindVertexShader(VertexShaderHandle_t__*)"
+  },
+  {
+   "index": 104,
+   "name": "BindGeometryShader",
+   "sig": "BindGeometryShader(GeometryShaderHandle_t__*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::BindGeometryShader(GeometryShaderHandle_t__*)"
+  },
+  {
+   "index": 105,
+   "name": "BindPixelShader",
+   "sig": "BindPixelShader(PixelShaderHandle_t__*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::BindPixelShader(PixelShaderHandle_t__*)"
+  },
+  {
+   "index": 106,
+   "name": "SetRasterState",
+   "sig": "SetRasterState(ShaderRasterState_t const&)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetRasterState(ShaderRasterState_t const&)"
+  },
+  {
+   "index": 107,
+   "name": "SetMode",
+   "sig": "SetMode(void*, int, ShaderDeviceInfo_t const&)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetMode(void*, int, ShaderDeviceInfo_t const&)"
+  },
+  {
+   "index": 108,
+   "name": "ChangeVideoMode",
+   "sig": "ChangeVideoMode(ShaderDeviceInfo_t const&)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::ChangeVideoMode(ShaderDeviceInfo_t const&)"
+  },
+  {
+   "index": 109,
+   "name": "TakeSnapshot",
+   "sig": "TakeSnapshot()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::TakeSnapshot()"
+  },
+  {
+   "index": 110,
+   "name": "TexMinFilter",
+   "sig": "TexMinFilter(ShaderTexFilterMode_t)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::TexMinFilter(ShaderTexFilterMode_t)"
+  },
+  {
+   "index": 111,
+   "name": "TexMagFilter",
+   "sig": "TexMagFilter(ShaderTexFilterMode_t)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::TexMagFilter(ShaderTexFilterMode_t)"
+  },
+  {
+   "index": 112,
+   "name": "TexWrap",
+   "sig": "TexWrap(ShaderTexCoordComponent_t, ShaderTexWrapMode_t)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::TexWrap(ShaderTexCoordComponent_t, ShaderTexWrapMode_t)"
+  },
+  {
+   "index": 113,
+   "name": "CopyRenderTargetToTexture",
+   "sig": "CopyRenderTargetToTexture(int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::CopyRenderTargetToTexture(int)"
+  },
+  {
+   "index": 114,
+   "name": "Bind",
+   "sig": "Bind(IMaterial*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::Bind(IMaterial*)"
+  },
+  {
+   "index": 115,
+   "name": "FlushBufferedPrimitives",
+   "sig": "FlushBufferedPrimitives()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::FlushBufferedPrimitives()"
+  },
+  {
+   "index": 116,
+   "name": "GetDynamicMesh",
+   "sig": "GetDynamicMesh(IMaterial*, int, bool, IMesh*, IMesh*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetDynamicMesh(IMaterial*, int, bool, IMesh*, IMesh*)"
+  },
+  {
+   "index": 117,
+   "name": "GetDynamicMeshEx",
+   "sig": "GetDynamicMeshEx(IMaterial*, unsigned long long, int, bool, IMesh*, IMesh*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetDynamicMeshEx(IMaterial*, unsigned long long, int, bool, IMesh*, IMesh*)"
+  },
+  {
+   "index": 118,
+   "name": "IsTranslucent",
+   "sig": "IsTranslucent(short) const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::IsTranslucent(short) const"
+  },
+  {
+   "index": 119,
+   "name": "IsAlphaTested",
+   "sig": "IsAlphaTested(short) const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::IsAlphaTested(short) const"
+  },
+  {
+   "index": 120,
+   "name": "UsesVertexAndPixelShaders",
+   "sig": "UsesVertexAndPixelShaders(short) const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::UsesVertexAndPixelShaders(short) const"
+  },
+  {
+   "index": 121,
+   "name": "IsDepthWriteEnabled",
+   "sig": "IsDepthWriteEnabled(short) const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::IsDepthWriteEnabled(short) const"
+  },
+  {
+   "index": 122,
+   "name": "ComputeVertexFormat",
+   "sig": "ComputeVertexFormat(int, short*) const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::ComputeVertexFormat(int, short*) const"
+  },
+  {
+   "index": 123,
+   "name": "ComputeVertexUsage",
+   "sig": "ComputeVertexUsage(int, short*) const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::ComputeVertexUsage(int, short*) const"
+  },
+  {
+   "index": 124,
+   "name": "BeginPass",
+   "sig": "BeginPass(short)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::BeginPass(short)"
+  },
+  {
+   "index": 125,
+   "name": "RenderPass",
+   "sig": "RenderPass(int, int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::RenderPass(int, int)"
+  },
+  {
+   "index": 126,
+   "name": "SetNumBoneWeights",
+   "sig": "SetNumBoneWeights(int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetNumBoneWeights(int)"
+  },
+  {
+   "index": 127,
+   "name": "SetLight",
+   "sig": "SetLight(int, LightDesc_t const&)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetLight(int, LightDesc_t const&)"
+  },
+  {
+   "index": 128,
+   "name": "SetLightingOrigin",
+   "sig": "SetLightingOrigin(Vector)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetLightingOrigin(Vector)"
+  },
+  {
+   "index": 129,
+   "name": "SetAmbientLight",
+   "sig": "SetAmbientLight(float, float, float)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetAmbientLight(float, float, float)"
+  },
+  {
+   "index": 130,
+   "name": "SetAmbientLightCube",
+   "sig": "SetAmbientLightCube(Vector4D*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetAmbientLightCube(Vector4D*)"
+  },
+  {
+   "index": 131,
+   "name": "ShadeMode",
+   "sig": "ShadeMode(ShaderShadeMode_t)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::ShadeMode(ShaderShadeMode_t)"
+  },
+  {
+   "index": 132,
+   "name": "CullMode",
+   "sig": "CullMode(MaterialCullMode_t)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::CullMode(MaterialCullMode_t)"
+  },
+  {
+   "index": 133,
+   "name": "ForceDepthFuncEquals",
+   "sig": "ForceDepthFuncEquals(bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::ForceDepthFuncEquals(bool)"
+  },
+  {
+   "index": 134,
+   "name": "OverrideDepthEnable",
+   "sig": "OverrideDepthEnable(bool, bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::OverrideDepthEnable(bool, bool)"
+  },
+  {
+   "index": 135,
+   "name": "SetHeightClipZ",
+   "sig": "SetHeightClipZ(float)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetHeightClipZ(float)"
+  },
+  {
+   "index": 136,
+   "name": "SetHeightClipMode",
+   "sig": "SetHeightClipMode(MaterialHeightClipMode_t)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetHeightClipMode(MaterialHeightClipMode_t)"
+  },
+  {
+   "index": 137,
+   "name": "SetClipPlane",
+   "sig": "SetClipPlane(int, float const*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetClipPlane(int, float const*)"
+  },
+  {
+   "index": 138,
+   "name": "EnableClipPlane",
+   "sig": "EnableClipPlane(int, bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::EnableClipPlane(int, bool)"
+  },
+  {
+   "index": 139,
+   "name": "SetSkinningMatrices",
+   "sig": "SetSkinningMatrices()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetSkinningMatrices()"
+  },
+  {
+   "index": 140,
+   "name": "GetNearestSupportedFormat",
+   "sig": "GetNearestSupportedFormat(ImageFormat, bool) const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetNearestSupportedFormat(ImageFormat, bool) const"
+  },
+  {
+   "index": 141,
+   "name": "GetNearestRenderTargetFormat",
+   "sig": "GetNearestRenderTargetFormat(ImageFormat) const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetNearestRenderTargetFormat(ImageFormat) const"
+  },
+  {
+   "index": 142,
+   "name": "DoRenderTargetsNeedSeparateDepthBuffer",
+   "sig": "DoRenderTargetsNeedSeparateDepthBuffer() const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::DoRenderTargetsNeedSeparateDepthBuffer() const"
+  },
+  {
+   "index": 143,
+   "name": "CreateTexture",
+   "sig": "CreateTexture(int, int, int, ImageFormat, int, int, int, char const*, char const*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::CreateTexture(int, int, int, ImageFormat, int, int, int, char const*, char const*)"
+  },
+  {
+   "index": 144,
+   "name": "DeleteTexture",
+   "sig": "DeleteTexture(int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::DeleteTexture(int)"
+  },
+  {
+   "index": 145,
+   "name": "CreateDepthTexture",
+   "sig": "CreateDepthTexture(ImageFormat, int, int, char const*, bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::CreateDepthTexture(ImageFormat, int, int, char const*, bool)"
+  },
+  {
+   "index": 146,
+   "name": "IsTexture",
+   "sig": "IsTexture(int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::IsTexture(int)"
+  },
+  {
+   "index": 147,
+   "name": "IsTextureResident",
+   "sig": "IsTextureResident(int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::IsTextureResident(int)"
+  },
+  {
+   "index": 148,
+   "name": "ModifyTexture",
+   "sig": "ModifyTexture(int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::ModifyTexture(int)"
+  },
+  {
+   "index": 149,
+   "name": "TexImage2D",
+   "sig": "TexImage2D(int, int, ImageFormat, int, int, int, ImageFormat, bool, void*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::TexImage2D(int, int, ImageFormat, int, int, int, ImageFormat, bool, void*)"
+  },
+  {
+   "index": 150,
+   "name": "TexSubImage2D",
+   "sig": "TexSubImage2D(int, int, int, int, int, int, int, ImageFormat, int, bool, void*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::TexSubImage2D(int, int, int, int, int, int, int, ImageFormat, int, bool, void*)"
+  },
+  {
+   "index": 151,
+   "name": "TexImageFromVTF",
+   "sig": "TexImageFromVTF(IVTFTexture*, int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::TexImageFromVTF(IVTFTexture*, int)"
+  },
+  {
+   "index": 152,
+   "name": "TexLock",
+   "sig": "TexLock(int, int, int, int, int, int, CPixelWriter&)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::TexLock(int, int, int, int, int, int, CPixelWriter&)"
+  },
+  {
+   "index": 153,
+   "name": "TexUnlock",
+   "sig": "TexUnlock()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::TexUnlock()"
+  },
+  {
+   "index": 154,
+   "name": "TexSetPriority",
+   "sig": "TexSetPriority(int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::TexSetPriority(int)"
+  },
+  {
+   "index": 155,
+   "name": "BindTexture",
+   "sig": "BindTexture(Sampler_t, int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::BindTexture(Sampler_t, int)"
+  },
+  {
+   "index": 156,
+   "name": "SetRenderTarget",
+   "sig": "SetRenderTarget(int, int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetRenderTarget(int, int)"
+  },
+  {
+   "index": 157,
+   "name": "ClearBuffersObeyStencil",
+   "sig": "ClearBuffersObeyStencil(bool, bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::ClearBuffersObeyStencil(bool, bool)"
+  },
+  {
+   "index": 158,
+   "name": "ReadPixels",
+   "sig": "ReadPixels(int, int, int, int, unsigned char*, ImageFormat)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::ReadPixels(int, int, int, int, unsigned char*, ImageFormat)"
+  },
+  {
+   "index": 159,
+   "name": "ReadPixels",
+   "sig": "ReadPixels(Rect_t*, Rect_t*, unsigned char*, ImageFormat, int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::ReadPixels(Rect_t*, Rect_t*, unsigned char*, ImageFormat, int)"
+  },
+  {
+   "index": 160,
+   "name": "FlushHardware",
+   "sig": "FlushHardware()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::FlushHardware()"
+  },
+  {
+   "index": 161,
+   "name": "BeginFrame",
+   "sig": "BeginFrame()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::BeginFrame()"
+  },
+  {
+   "index": 162,
+   "name": "EndFrame",
+   "sig": "EndFrame()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::EndFrame()"
+  },
+  {
+   "index": 163,
+   "name": "SelectionMode",
+   "sig": "SelectionMode(bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SelectionMode(bool)"
+  },
+  {
+   "index": 164,
+   "name": "SelectionBuffer",
+   "sig": "SelectionBuffer(unsigned int*, int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SelectionBuffer(unsigned int*, int)"
+  },
+  {
+   "index": 165,
+   "name": "ClearSelectionNames",
+   "sig": "ClearSelectionNames()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::ClearSelectionNames()"
+  },
+  {
+   "index": 166,
+   "name": "LoadSelectionName",
+   "sig": "LoadSelectionName(int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::LoadSelectionName(int)"
+  },
+  {
+   "index": 167,
+   "name": "PushSelectionName",
+   "sig": "PushSelectionName(int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::PushSelectionName(int)"
+  },
+  {
+   "index": 168,
+   "name": "PopSelectionName",
+   "sig": "PopSelectionName()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::PopSelectionName()"
+  },
+  {
+   "index": 169,
+   "name": "ForceHardwareSync",
+   "sig": "ForceHardwareSync()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::ForceHardwareSync()"
+  },
+  {
+   "index": 170,
+   "name": "ClearSnapshots",
+   "sig": "ClearSnapshots()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::ClearSnapshots()"
+  },
+  {
+   "index": 171,
+   "name": "FogStart",
+   "sig": "FogStart(float)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::FogStart(float)"
+  },
+  {
+   "index": 172,
+   "name": "FogEnd",
+   "sig": "FogEnd(float)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::FogEnd(float)"
+  },
+  {
+   "index": 173,
+   "name": "SetFogZ",
+   "sig": "SetFogZ(float)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetFogZ(float)"
+  },
+  {
+   "index": 174,
+   "name": "SceneFogColor3ub",
+   "sig": "SceneFogColor3ub(unsigned char, unsigned char, unsigned char)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SceneFogColor3ub(unsigned char, unsigned char, unsigned char)"
+  },
+  {
+   "index": 175,
+   "name": "SceneFogMode",
+   "sig": "SceneFogMode(MaterialFogMode_t)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SceneFogMode(MaterialFogMode_t)"
+  },
+  {
+   "index": 176,
+   "name": "CanDownloadTextures",
+   "sig": "CanDownloadTextures() const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::CanDownloadTextures() const"
+  },
+  {
+   "index": 177,
+   "name": "ResetRenderState",
+   "sig": "ResetRenderState(bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::ResetRenderState(bool)"
+  },
+  {
+   "index": 178,
+   "name": "GetCurrentDynamicVBSize",
+   "sig": "GetCurrentDynamicVBSize()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetCurrentDynamicVBSize()"
+  },
+  {
+   "index": 179,
+   "name": "DestroyVertexBuffers",
+   "sig": "DestroyVertexBuffers(bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::DestroyVertexBuffers(bool)"
+  },
+  {
+   "index": 180,
+   "name": "EvictManagedResources",
+   "sig": "EvictManagedResources()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::EvictManagedResources()"
+  },
+  {
+   "index": 181,
+   "name": "SetAnisotropicLevel",
+   "sig": "SetAnisotropicLevel(int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetAnisotropicLevel(int)"
+  },
+  {
+   "index": 182,
+   "name": "SyncToken",
+   "sig": "SyncToken(char const*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SyncToken(char const*)"
+  },
+  {
+   "index": 183,
+   "name": "SetStandardVertexShaderConstants",
+   "sig": "SetStandardVertexShaderConstants(float)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetStandardVertexShaderConstants(float)"
+  },
+  {
+   "index": 184,
+   "name": "CreateOcclusionQueryObject",
+   "sig": "CreateOcclusionQueryObject()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::CreateOcclusionQueryObject()"
+  },
+  {
+   "index": 185,
+   "name": "DestroyOcclusionQueryObject",
+   "sig": "DestroyOcclusionQueryObject(ShaderAPIOcclusionQuery_t__*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::DestroyOcclusionQueryObject(ShaderAPIOcclusionQuery_t__*)"
+  },
+  {
+   "index": 186,
+   "name": "BeginOcclusionQueryDrawing",
+   "sig": "BeginOcclusionQueryDrawing(ShaderAPIOcclusionQuery_t__*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::BeginOcclusionQueryDrawing(ShaderAPIOcclusionQuery_t__*)"
+  },
+  {
+   "index": 187,
+   "name": "EndOcclusionQueryDrawing",
+   "sig": "EndOcclusionQueryDrawing(ShaderAPIOcclusionQuery_t__*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::EndOcclusionQueryDrawing(ShaderAPIOcclusionQuery_t__*)"
+  },
+  {
+   "index": 188,
+   "name": "OcclusionQuery_GetNumPixelsRendered",
+   "sig": "OcclusionQuery_GetNumPixelsRendered(ShaderAPIOcclusionQuery_t__*, bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::OcclusionQuery_GetNumPixelsRendered(ShaderAPIOcclusionQuery_t__*, bool)"
+  },
+  {
+   "index": 189,
+   "name": "SetFlashlightState",
+   "sig": "SetFlashlightState(FlashlightState_t const&, VMatrix const&)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetFlashlightState(FlashlightState_t const&, VMatrix const&)"
+  },
+  {
+   "index": 190,
+   "name": "ClearVertexAndPixelShaderRefCounts",
+   "sig": "ClearVertexAndPixelShaderRefCounts()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::ClearVertexAndPixelShaderRefCounts()"
+  },
+  {
+   "index": 191,
+   "name": "PurgeUnusedVertexAndPixelShaders",
+   "sig": "PurgeUnusedVertexAndPixelShaders()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::PurgeUnusedVertexAndPixelShaders()"
+  },
+  {
+   "index": 192,
+   "name": "DXSupportLevelChanged",
+   "sig": "DXSupportLevelChanged()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::DXSupportLevelChanged()"
+  },
+  {
+   "index": 193,
+   "name": "EnableUserClipTransformOverride",
+   "sig": "EnableUserClipTransformOverride(bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::EnableUserClipTransformOverride(bool)"
+  },
+  {
+   "index": 194,
+   "name": "UserClipTransform",
+   "sig": "UserClipTransform(VMatrix const&)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::UserClipTransform(VMatrix const&)"
+  },
+  {
+   "index": 195,
+   "name": "ComputeMorphFormat",
+   "sig": "ComputeMorphFormat(int, short*) const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::ComputeMorphFormat(int, short*) const"
+  },
+  {
+   "index": 196,
+   "name": "SetRenderTargetEx",
+   "sig": "SetRenderTargetEx(int, int, int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetRenderTargetEx(int, int, int)"
+  },
+  {
+   "index": 197,
+   "name": "CopyRenderTargetToTextureEx",
+   "sig": "CopyRenderTargetToTextureEx(int, int, Rect_t*, Rect_t*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::CopyRenderTargetToTextureEx(int, int, Rect_t*, Rect_t*)"
+  },
+  {
+   "index": 198,
+   "name": "CopyTextureToRenderTargetEx",
+   "sig": "CopyTextureToRenderTargetEx(int, int, Rect_t*, Rect_t*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::CopyTextureToRenderTargetEx(int, int, Rect_t*, Rect_t*)"
+  },
+  {
+   "index": 199,
+   "name": "HandleDeviceLost",
+   "sig": "HandleDeviceLost()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::HandleDeviceLost()"
+  },
+  {
+   "index": 200,
+   "name": "EnableLinearColorSpaceFrameBuffer",
+   "sig": "EnableLinearColorSpaceFrameBuffer(bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::EnableLinearColorSpaceFrameBuffer(bool)"
+  },
+  {
+   "index": 201,
+   "name": "SetFullScreenTextureHandle",
+   "sig": "SetFullScreenTextureHandle(int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetFullScreenTextureHandle(int)"
+  },
+  {
+   "index": 202,
+   "name": "SetFastClipPlane",
+   "sig": "SetFastClipPlane(float const*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetFastClipPlane(float const*)"
+  },
+  {
+   "index": 203,
+   "name": "EnableFastClip",
+   "sig": "EnableFastClip(bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::EnableFastClip(bool)"
+  },
+  {
+   "index": 204,
+   "name": "GetMaxToRender",
+   "sig": "GetMaxToRender(IMesh*, bool, int*, int*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetMaxToRender(IMesh*, bool, int*, int*)"
+  },
+  {
+   "index": 205,
+   "name": "GetMaxVerticesToRender",
+   "sig": "GetMaxVerticesToRender(IMaterial*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetMaxVerticesToRender(IMaterial*)"
+  },
+  {
+   "index": 206,
+   "name": "GetMaxIndicesToRender",
+   "sig": "GetMaxIndicesToRender()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetMaxIndicesToRender()"
+  },
+  {
+   "index": 207,
+   "name": "DisableAllLocalLights",
+   "sig": "DisableAllLocalLights()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::DisableAllLocalLights()"
+  },
+  {
+   "index": 208,
+   "name": "CompareSnapshots",
+   "sig": "CompareSnapshots(short, short)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::CompareSnapshots(short, short)"
+  },
+  {
+   "index": 209,
+   "name": "GetFlexMesh",
+   "sig": "GetFlexMesh()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetFlexMesh()"
+  },
+  {
+   "index": 210,
+   "name": "SetFlashlightStateEx",
+   "sig": "SetFlashlightStateEx(FlashlightState_t const&, VMatrix const&, ITexture*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetFlashlightStateEx(FlashlightState_t const&, VMatrix const&, ITexture*)"
+  },
+  {
+   "index": 211,
+   "name": "SupportsMSAAMode",
+   "sig": "SupportsMSAAMode(int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SupportsMSAAMode(int)"
+  },
+  {
+   "index": 212,
+   "name": "OwnGPUResources",
+   "sig": "OwnGPUResources(bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::OwnGPUResources(bool)"
+  },
+  {
+   "index": 213,
+   "name": "GetFogDistances",
+   "sig": "GetFogDistances(float*, float*, float*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetFogDistances(float*, float*, float*)"
+  },
+  {
+   "index": 214,
+   "name": "BeginPIXEvent",
+   "sig": "BeginPIXEvent(unsigned long, char const*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::BeginPIXEvent(unsigned long, char const*)"
+  },
+  {
+   "index": 215,
+   "name": "EndPIXEvent",
+   "sig": "EndPIXEvent()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::EndPIXEvent()"
+  },
+  {
+   "index": 216,
+   "name": "SetPIXMarker",
+   "sig": "SetPIXMarker(unsigned long, char const*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetPIXMarker(unsigned long, char const*)"
+  },
+  {
+   "index": 217,
+   "name": "EnableAlphaToCoverage",
+   "sig": "EnableAlphaToCoverage()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::EnableAlphaToCoverage()"
+  },
+  {
+   "index": 218,
+   "name": "DisableAlphaToCoverage",
+   "sig": "DisableAlphaToCoverage()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::DisableAlphaToCoverage()"
+  },
+  {
+   "index": 219,
+   "name": "ComputeVertexDescription",
+   "sig": "ComputeVertexDescription(unsigned char*, unsigned long long, MeshDesc_t&) const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::ComputeVertexDescription(unsigned char*, unsigned long long, MeshDesc_t&) const"
+  },
+  {
+   "index": 220,
+   "name": "SupportsShadowDepthTextures",
+   "sig": "SupportsShadowDepthTextures()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SupportsShadowDepthTextures()"
+  },
+  {
+   "index": 221,
+   "name": "SetDisallowAccess",
+   "sig": "SetDisallowAccess(bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetDisallowAccess(bool)"
+  },
+  {
+   "index": 222,
+   "name": "EnableShaderShaderMutex",
+   "sig": "EnableShaderShaderMutex(bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::EnableShaderShaderMutex(bool)"
+  },
+  {
+   "index": 223,
+   "name": "ShaderLock",
+   "sig": "ShaderLock()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::ShaderLock()"
+  },
+  {
+   "index": 224,
+   "name": "ShaderUnlock",
+   "sig": "ShaderUnlock()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::ShaderUnlock()"
+  },
+  {
+   "index": 225,
+   "name": "GetShadowDepthTextureFormat",
+   "sig": "GetShadowDepthTextureFormat()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetShadowDepthTextureFormat()"
+  },
+  {
+   "index": 226,
+   "name": "SupportsFetch4",
+   "sig": "SupportsFetch4()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SupportsFetch4()"
+  },
+  {
+   "index": 227,
+   "name": "SetShadowDepthBiasFactors",
+   "sig": "SetShadowDepthBiasFactors(float, float)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetShadowDepthBiasFactors(float, float)"
+  },
+  {
+   "index": 228,
+   "name": "BindVertexBuffer",
+   "sig": "BindVertexBuffer(int, IVertexBuffer*, int, int, int, unsigned long long, int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::BindVertexBuffer(int, IVertexBuffer*, int, int, int, unsigned long long, int)"
+  },
+  {
+   "index": 229,
+   "name": "BindIndexBuffer",
+   "sig": "BindIndexBuffer(IIndexBuffer*, int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::BindIndexBuffer(IIndexBuffer*, int)"
+  },
+  {
+   "index": 230,
+   "name": "Draw",
+   "sig": "Draw(MaterialPrimitiveType_t, int, int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::Draw(MaterialPrimitiveType_t, int, int)"
+  },
+  {
+   "index": 231,
+   "name": "PerformFullScreenStencilOperation",
+   "sig": "PerformFullScreenStencilOperation()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::PerformFullScreenStencilOperation()"
+  },
+  {
+   "index": 232,
+   "name": "SetScissorRect",
+   "sig": "SetScissorRect(int, int, int, int, bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetScissorRect(int, int, int, int, bool)"
+  },
+  {
+   "index": 233,
+   "name": "SupportsCSAAMode",
+   "sig": "SupportsCSAAMode(int, int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SupportsCSAAMode(int, int)"
+  },
+  {
+   "index": 234,
+   "name": "InvalidateDelayedShaderConstants",
+   "sig": "InvalidateDelayedShaderConstants()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::InvalidateDelayedShaderConstants()"
+  },
+  {
+   "index": 235,
+   "name": "GammaToLinear_HardwareSpecific",
+   "sig": "GammaToLinear_HardwareSpecific(float) const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GammaToLinear_HardwareSpecific(float) const"
+  },
+  {
+   "index": 236,
+   "name": "LinearToGamma_HardwareSpecific",
+   "sig": "LinearToGamma_HardwareSpecific(float) const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::LinearToGamma_HardwareSpecific(float) const"
+  },
+  {
+   "index": 237,
+   "name": "SetLinearToGammaConversionTextures",
+   "sig": "SetLinearToGammaConversionTextures(int, int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetLinearToGammaConversionTextures(int, int)"
+  },
+  {
+   "index": 238,
+   "name": "GetNullTextureFormat",
+   "sig": "GetNullTextureFormat()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetNullTextureFormat()"
+  },
+  {
+   "index": 239,
+   "name": "BindVertexTexture",
+   "sig": "BindVertexTexture(VertexTextureSampler_t, int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::BindVertexTexture(VertexTextureSampler_t, int)"
+  },
+  {
+   "index": 240,
+   "name": "EnableHWMorphing",
+   "sig": "EnableHWMorphing(bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::EnableHWMorphing(bool)"
+  },
+  {
+   "index": 241,
+   "name": "SetFlexWeights",
+   "sig": "SetFlexWeights(int, int, MorphWeight_t const*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetFlexWeights(int, int, MorphWeight_t const*)"
+  },
+  {
+   "index": 242,
+   "name": "FogMaxDensity",
+   "sig": "FogMaxDensity(float)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::FogMaxDensity(float)"
+  },
+  {
+   "index": 243,
+   "name": "CreateTextures",
+   "sig": "CreateTextures(int*, int, int, int, int, ImageFormat, int, int, int, char const*, char const*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::CreateTextures(int*, int, int, int, int, ImageFormat, int, int, int, char const*, char const*)"
+  },
+  {
+   "index": 244,
+   "name": "AcquireThreadOwnership",
+   "sig": "AcquireThreadOwnership()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::AcquireThreadOwnership()"
+  },
+  {
+   "index": 245,
+   "name": "ReleaseThreadOwnership",
+   "sig": "ReleaseThreadOwnership()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::ReleaseThreadOwnership()"
+  },
+  {
+   "index": 246,
+   "name": "SupportsNormalMapCompression",
+   "sig": "SupportsNormalMapCompression() const",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SupportsNormalMapCompression() const"
+  },
+  {
+   "index": 247,
+   "name": "EnableBuffer2FramesAhead",
+   "sig": "EnableBuffer2FramesAhead(bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::EnableBuffer2FramesAhead(bool)"
+  },
+  {
+   "index": 248,
+   "name": "PrintfVA",
+   "sig": "PrintfVA(char*, char*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::PrintfVA(char*, char*)"
+  },
+  {
+   "index": 249,
+   "name": "Printf",
+   "sig": "Printf(char const*, ...)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::Printf(char const*, ...)"
+  },
+  {
+   "index": 250,
+   "name": "Knob",
+   "sig": "Knob(char*, float*)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::Knob(char*, float*)"
+  },
+  {
+   "index": 251,
+   "name": "OverrideAlphaWriteEnable",
+   "sig": "OverrideAlphaWriteEnable(bool, bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::OverrideAlphaWriteEnable(bool, bool)"
+  },
+  {
+   "index": 252,
+   "name": "OverrideColorWriteEnable",
+   "sig": "OverrideColorWriteEnable(bool, bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::OverrideColorWriteEnable(bool, bool)"
+  },
+  {
+   "index": 253,
+   "name": "ClearBuffersObeyStencilEx",
+   "sig": "ClearBuffersObeyStencilEx(bool, bool, bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::ClearBuffersObeyStencilEx(bool, bool, bool)"
+  },
+  {
+   "index": 254,
+   "name": "SceneFogRadial",
+   "sig": "SceneFogRadial(bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SceneFogRadial(bool)"
+  },
+  {
+   "index": 255,
+   "name": "GetSceneFogRadial",
+   "sig": "GetSceneFogRadial()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetSceneFogRadial()"
+  }
+ ],
+ "implementer_tail": [
+  "~CShaderAPIDx8()",
+  "~CShaderAPIDx8()",
+  "OnDeviceInit()",
+  "OnDeviceShutdown()",
+  "AdvancePIXFrame()",
+  "ReleaseShaderObjects()",
+  "RestoreShaderObjects()",
+  "GetD3DTexture(int)",
+  "QueueResetRenderState()",
+  "DrawMesh(CMeshBase*)",
+  "DrawWithVertexAndIndexBuffers()",
+  "ModifyVertexData()",
+  "GetBufferedState(BufferedState_t&)",
+  "GetCullMode() const",
+  "ComputeFillRate()",
+  "IsInSelectionMode() const",
+  "RegisterSelectionHit(float, float)",
+  "GetBoundMaterial()",
+  "ApplyZBias(ShadowState_t const&)",
+  "ApplyTextureEnable(ShadowState_t const&, int)",
+  "ApplyCullEnable(bool)",
+  "SetVertexBlendState(int)",
+  "ApplyFogMode(ShaderFogMode_t, bool, bool)",
+  "GetActualTextureStageCount() const",
+  "GetActualSamplerCount() const",
+  "IsRenderingMesh() const",
+  "FogMode(MaterialFogMode_t)",
+  "GetCurrentFrameCounter() const",
+  "SetupSelectionModeVisualizationState()",
+  "UsingSoftwareVertexProcessing() const",
+  "EnabledSRGBWrite(bool)",
+  "ApplyAlphaToCoverage(bool)"
+ ],
+ "derived": [
+  "bin/shaderapidx9:CShaderAPIBase",
+  "bin/shaderapidx9:CShaderAPIDx8",
+  "bin/shaderapiempty:CShaderAPIEmpty"
+ ],
+ "derived_count": 3
+}

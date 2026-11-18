@@ -1,0 +1,75 @@
+{
+ "interface": "CPlayerState",
+ "headers": [
+  "public/PlayerState.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 4,
+ "sdk2013_slots": [
+  "NetworkStateChanged()",
+  "NetworkStateChanged(void*)",
+  "~__bm_probe()",
+  "~__bm_probe()"
+ ],
+ "retail_reference": {
+  "module": "episodic/client",
+  "class": "CPlayerState",
+  "offset": 0,
+  "chain": [
+   "CPlayerState"
+  ]
+ },
+ "retail_len": 4,
+ "retail_len_basis": "override: GetPredDescMap comes from DECLARE_PREDICTABLE in the game class",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 4
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "NetworkStateChanged",
+   "sig": "NetworkStateChanged()",
+   "symbol": "CPlayerState::NetworkStateChanged()"
+  },
+  {
+   "index": 1,
+   "name": "NetworkStateChanged",
+   "sig": "NetworkStateChanged(void*)",
+   "symbol": "CPlayerState::NetworkStateChanged(void*)"
+  },
+  {
+   "index": 2,
+   "name": "~CPlayerState",
+   "sig": "~CPlayerState()",
+   "symbol": "CPlayerState::~CPlayerState()"
+  },
+  {
+   "index": 3,
+   "name": "~CPlayerState",
+   "sig": "~CPlayerState()",
+   "symbol": "CPlayerState::~CPlayerState()"
+  }
+ ],
+ "implementer_tail": [
+  "GetPredDescMap()"
+ ],
+ "derived": [
+  "episodic/client:CPlayerState",
+  "episodic/server:CBasePlayer::NetworkVar_pl",
+  "hl2/client:CPlayerState",
+  "hl2/server:CBasePlayer::NetworkVar_pl",
+  "hl2_complete/client:CPlayerState",
+  "hl2_complete/server:CBasePlayer::NetworkVar_pl",
+  "hl2mp/client:CPlayerState",
+  "hl2mp/server:CBasePlayer::NetworkVar_pl",
+  "lostcoast/client:CPlayerState",
+  "lostcoast/server:CBasePlayer::NetworkVar_pl"
+ ],
+ "derived_count": 10
+}

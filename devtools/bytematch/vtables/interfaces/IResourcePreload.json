@@ -1,0 +1,67 @@
+{
+ "interface": "IResourcePreload",
+ "headers": [
+  "public/filesystem/IQueuedLoader.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 4,
+ "sdk2013_slots": [
+  "CreateResource(char const*)",
+  "PurgeUnreferencedResources()",
+  "OnEndMapLoading(bool)",
+  "PurgeAll()"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CResourcePreloadModel",
+  "offset": 0,
+  "chain": [
+   "CResourcePreloadModel",
+   "CResourcePreload",
+   "IResourcePreload"
+  ]
+ },
+ "retail_len": 4,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 4
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "CreateResource",
+   "sig": "CreateResource(char const*)",
+   "symbol": "CResourcePreloadModel::CreateResource(char const*)"
+  },
+  {
+   "index": 1,
+   "name": "PurgeUnreferencedResources",
+   "sig": "PurgeUnreferencedResources()",
+   "symbol": "CResourcePreloadModel::PurgeUnreferencedResources()"
+  },
+  {
+   "index": 2,
+   "name": "OnEndMapLoading",
+   "sig": "OnEndMapLoading(bool)",
+   "symbol": "CResourcePreloadModel::OnEndMapLoading(bool)"
+  },
+  {
+   "index": 3,
+   "name": "PurgeAll",
+   "sig": "PurgeAll()",
+   "symbol": "CResourcePreloadModel::PurgeAll()"
+  }
+ ],
+ "derived": [
+  "bin/engine:CResourcePreloadModel",
+  "bin/engine:CResourcePreloadSound",
+  "bin/filesystem_stdio:CResourcePreloadAnonymous"
+ ],
+ "derived_count": 3
+}

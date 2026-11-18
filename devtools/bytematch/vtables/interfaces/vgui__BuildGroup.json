@@ -1,0 +1,225 @@
+{
+ "interface": "vgui::BuildGroup",
+ "headers": [
+  "public/vgui_controls/BuildGroup.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 26,
+ "sdk2013_slots": [
+  "SetEnabled(bool)",
+  "IsEnabled()",
+  "GetCurrentPanel()",
+  "LoadControlSettings(char const*, char const*, KeyValues*, KeyValues*)",
+  "SaveControlSettings()",
+  "ApplySettings(KeyValues*)",
+  "GetSettings(KeyValues*)",
+  "RemoveSettings()",
+  "SetContextPanel(vgui::Panel*)",
+  "GetContextPanel()",
+  "GetResourceName()",
+  "PanelAdded(vgui::Panel*)",
+  "MousePressed(ButtonCode_t, vgui::Panel*)",
+  "MouseReleased(ButtonCode_t, vgui::Panel*)",
+  "GetControlGroup()",
+  "ToggleRulerDisplay()",
+  "SetRulerLabelsVisible(bool)",
+  "HasRulersOn()",
+  "DrawRulers()",
+  "CursorMoved(int, int, vgui::Panel*)",
+  "MouseDoublePressed(ButtonCode_t, vgui::Panel*)",
+  "KeyCodeTyped(ButtonCode_t, vgui::Panel*)",
+  "KeyCodeReleased(ButtonCode_t, vgui::Panel*)",
+  "ApplySchemeSettings(vgui::IScheme*)",
+  "KeyTyped(wchar_t, vgui::Panel*)",
+  "GetCursor(vgui::Panel*)"
+ ],
+ "retail_reference": {
+  "module": "bin/GameUI",
+  "class": "vgui::BuildGroup",
+  "offset": 0,
+  "chain": [
+   "vgui::BuildGroup"
+  ]
+ },
+ "retail_len": 26,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 26
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "SetEnabled",
+   "sig": "SetEnabled(bool)",
+   "symbol": "vgui::BuildGroup::SetEnabled(bool)"
+  },
+  {
+   "index": 1,
+   "name": "IsEnabled",
+   "sig": "IsEnabled()",
+   "symbol": "vgui::BuildGroup::IsEnabled()"
+  },
+  {
+   "index": 2,
+   "name": "GetCurrentPanel",
+   "sig": "GetCurrentPanel()",
+   "symbol": "vgui::BuildGroup::GetCurrentPanel()"
+  },
+  {
+   "index": 3,
+   "name": "LoadControlSettings",
+   "sig": "LoadControlSettings(char const*, char const*, KeyValues*, KeyValues*)",
+   "symbol": "vgui::BuildGroup::LoadControlSettings(char const*, char const*, KeyValues*, KeyValues*)"
+  },
+  {
+   "index": 4,
+   "name": "SaveControlSettings",
+   "sig": "SaveControlSettings()",
+   "symbol": "vgui::BuildGroup::SaveControlSettings()"
+  },
+  {
+   "index": 5,
+   "name": "ApplySettings",
+   "sig": "ApplySettings(KeyValues*)",
+   "symbol": "vgui::BuildGroup::ApplySettings(KeyValues*)"
+  },
+  {
+   "index": 6,
+   "name": "GetSettings",
+   "sig": "GetSettings(KeyValues*)",
+   "symbol": "vgui::BuildGroup::GetSettings(KeyValues*)"
+  },
+  {
+   "index": 7,
+   "name": "RemoveSettings",
+   "sig": "RemoveSettings()",
+   "symbol": "vgui::BuildGroup::RemoveSettings()"
+  },
+  {
+   "index": 8,
+   "name": "SetContextPanel",
+   "sig": "SetContextPanel(vgui::Panel*)",
+   "symbol": "vgui::BuildGroup::SetContextPanel(vgui::Panel*)"
+  },
+  {
+   "index": 9,
+   "name": "GetContextPanel",
+   "sig": "GetContextPanel()",
+   "symbol": "vgui::BuildGroup::GetContextPanel()"
+  },
+  {
+   "index": 10,
+   "name": "GetResourceName",
+   "sig": "GetResourceName()",
+   "symbol": "vgui::BuildGroup::GetResourceName()"
+  },
+  {
+   "index": 11,
+   "name": "PanelAdded",
+   "sig": "PanelAdded(vgui::Panel*)",
+   "symbol": "vgui::BuildGroup::PanelAdded(vgui::Panel*)"
+  },
+  {
+   "index": 12,
+   "name": "MousePressed",
+   "sig": "MousePressed(ButtonCode_t, vgui::Panel*)",
+   "symbol": "vgui::BuildGroup::MousePressed(ButtonCode_t, vgui::Panel*)"
+  },
+  {
+   "index": 13,
+   "name": "MouseReleased",
+   "sig": "MouseReleased(ButtonCode_t, vgui::Panel*)",
+   "symbol": "vgui::BuildGroup::MouseReleased(ButtonCode_t, vgui::Panel*)"
+  },
+  {
+   "index": 14,
+   "name": "GetControlGroup",
+   "sig": "GetControlGroup()",
+   "symbol": "vgui::BuildGroup::GetControlGroup()"
+  },
+  {
+   "index": 15,
+   "name": "ToggleRulerDisplay",
+   "sig": "ToggleRulerDisplay()",
+   "symbol": "vgui::BuildGroup::ToggleRulerDisplay()"
+  },
+  {
+   "index": 16,
+   "name": "SetRulerLabelsVisible",
+   "sig": "SetRulerLabelsVisible(bool)",
+   "symbol": "vgui::BuildGroup::SetRulerLabelsVisible(bool)"
+  },
+  {
+   "index": 17,
+   "name": "HasRulersOn",
+   "sig": "HasRulersOn()",
+   "symbol": "vgui::BuildGroup::HasRulersOn()"
+  },
+  {
+   "index": 18,
+   "name": "DrawRulers",
+   "sig": "DrawRulers()",
+   "symbol": "vgui::BuildGroup::DrawRulers()"
+  },
+  {
+   "index": 19,
+   "name": "CursorMoved",
+   "sig": "CursorMoved(int, int, vgui::Panel*)",
+   "symbol": "vgui::BuildGroup::CursorMoved(int, int, vgui::Panel*)"
+  },
+  {
+   "index": 20,
+   "name": "MouseDoublePressed",
+   "sig": "MouseDoublePressed(ButtonCode_t, vgui::Panel*)",
+   "symbol": "vgui::BuildGroup::MouseDoublePressed(ButtonCode_t, vgui::Panel*)"
+  },
+  {
+   "index": 21,
+   "name": "KeyCodeTyped",
+   "sig": "KeyCodeTyped(ButtonCode_t, vgui::Panel*)",
+   "symbol": "vgui::BuildGroup::KeyCodeTyped(ButtonCode_t, vgui::Panel*)"
+  },
+  {
+   "index": 22,
+   "name": "KeyCodeReleased",
+   "sig": "KeyCodeReleased(ButtonCode_t, vgui::Panel*)",
+   "symbol": "vgui::BuildGroup::KeyCodeReleased(ButtonCode_t, vgui::Panel*)"
+  },
+  {
+   "index": 23,
+   "name": "ApplySchemeSettings",
+   "sig": "ApplySchemeSettings(vgui::IScheme*)",
+   "symbol": "vgui::BuildGroup::ApplySchemeSettings(vgui::IScheme*)"
+  },
+  {
+   "index": 24,
+   "name": "KeyTyped",
+   "sig": "KeyTyped(wchar_t, vgui::Panel*)",
+   "symbol": "vgui::BuildGroup::KeyTyped(wchar_t, vgui::Panel*)"
+  },
+  {
+   "index": 25,
+   "name": "GetCursor",
+   "sig": "GetCursor(vgui::Panel*)",
+   "symbol": "vgui::BuildGroup::GetCursor(vgui::Panel*)"
+  }
+ ],
+ "derived": [
+  "bin/GameUI:vgui::BuildGroup",
+  "bin/ServerBrowser:vgui::BuildGroup",
+  "bin/engine:vgui::BuildGroup",
+  "bin/vguimatsurface:vgui::BuildGroup",
+  "episodic/client:vgui::BuildGroup",
+  "hl2/client:vgui::BuildGroup",
+  "hl2_complete/client:vgui::BuildGroup",
+  "hl2mp/client:vgui::BuildGroup",
+  "lostcoast/client:vgui::BuildGroup"
+ ],
+ "derived_count": 9
+}

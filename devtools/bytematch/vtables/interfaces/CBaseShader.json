@@ -1,0 +1,214 @@
+{
+ "interface": "CBaseShader",
+ "headers": [
+  "public/shaderlib/BaseShader.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 20,
+ "sdk2013_slots": [
+  "GetName() const",
+  "GetFallbackShader(IMaterialVar**) const",
+  "GetNumParams() const",
+  "InitShaderParams(IMaterialVar**, char const*)",
+  "InitShaderInstance(IMaterialVar**, IShaderInit*, char const*, char const*)",
+  "DrawElements(IMaterialVar**, int, IShaderShadow*, IShaderDynamicAPI*, VertexCompressionType_t, CBasePerMaterialContextData**)",
+  "GetParamName(int) const",
+  "GetParamHelp(int) const",
+  "GetParamType(int) const",
+  "GetParamDefault(int) const",
+  "ComputeModulationFlags(IMaterialVar**, IShaderDynamicAPI*)",
+  "NeedsPowerOfTwoFrameBufferTexture(IMaterialVar**, bool) const",
+  "NeedsFullFrameBufferTexture(IMaterialVar**, bool) const",
+  "IsTranslucent(IMaterialVar**) const",
+  "GetParamFlags(int) const",
+  "GetFlags() const",
+  "GetSoftwareVertexShader() const",
+  "OnInitShaderParams(IMaterialVar**, char const*)",
+  "OnInitShaderInstance(IMaterialVar**, IShaderInit*, char const*)",
+  "OnDrawElements(IMaterialVar**, IShaderShadow*, IShaderDynamicAPI*, VertexCompressionType_t, CBasePerMaterialContextData**)"
+ ],
+ "retail_reference": {
+  "module": "bin/stdshader_dx9",
+  "class": "CBaseShader",
+  "offset": 0,
+  "chain": [
+   "CBaseShader"
+  ]
+ },
+ "retail_len": 20,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 20
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 1,
+   "name": "GetFallbackShader",
+   "sig": "GetFallbackShader(IMaterialVar**) const",
+   "symbol": "CBaseShader::GetFallbackShader(IMaterialVar**) const"
+  },
+  {
+   "index": 2,
+   "name": "GetNumParams",
+   "sig": "GetNumParams() const",
+   "symbol": "CBaseShader::GetNumParams() const"
+  },
+  {
+   "index": 3,
+   "name": "InitShaderParams",
+   "sig": "InitShaderParams(IMaterialVar**, char const*)",
+   "symbol": "CBaseShader::InitShaderParams(IMaterialVar**, char const*)"
+  },
+  {
+   "index": 4,
+   "name": "InitShaderInstance",
+   "sig": "InitShaderInstance(IMaterialVar**, IShaderInit*, char const*, char const*)",
+   "symbol": "CBaseShader::InitShaderInstance(IMaterialVar**, IShaderInit*, char const*, char const*)"
+  },
+  {
+   "index": 5,
+   "name": "DrawElements",
+   "sig": "DrawElements(IMaterialVar**, int, IShaderShadow*, IShaderDynamicAPI*, VertexCompressionType_t, CBasePerMaterialContextData**)",
+   "symbol": "CBaseShader::DrawElements(IMaterialVar**, int, IShaderShadow*, IShaderDynamicAPI*, VertexCompressionType_t, CBasePerMaterialContextData**)"
+  },
+  {
+   "index": 6,
+   "name": "GetParamName",
+   "sig": "GetParamName(int) const",
+   "symbol": "CBaseShader::GetParamName(int) const"
+  },
+  {
+   "index": 7,
+   "name": "GetParamHelp",
+   "sig": "GetParamHelp(int) const",
+   "symbol": "CBaseShader::GetParamHelp(int) const"
+  },
+  {
+   "index": 8,
+   "name": "GetParamType",
+   "sig": "GetParamType(int) const",
+   "symbol": "CBaseShader::GetParamType(int) const"
+  },
+  {
+   "index": 9,
+   "name": "GetParamDefault",
+   "sig": "GetParamDefault(int) const",
+   "symbol": "CBaseShader::GetParamDefault(int) const"
+  },
+  {
+   "index": 10,
+   "name": "ComputeModulationFlags",
+   "sig": "ComputeModulationFlags(IMaterialVar**, IShaderDynamicAPI*)",
+   "symbol": "CBaseShader::ComputeModulationFlags(IMaterialVar**, IShaderDynamicAPI*)"
+  },
+  {
+   "index": 11,
+   "name": "NeedsPowerOfTwoFrameBufferTexture",
+   "sig": "NeedsPowerOfTwoFrameBufferTexture(IMaterialVar**, bool) const",
+   "symbol": "CBaseShader::NeedsPowerOfTwoFrameBufferTexture(IMaterialVar**, bool) const"
+  },
+  {
+   "index": 12,
+   "name": "NeedsFullFrameBufferTexture",
+   "sig": "NeedsFullFrameBufferTexture(IMaterialVar**, bool) const",
+   "symbol": "CBaseShader::NeedsFullFrameBufferTexture(IMaterialVar**, bool) const"
+  },
+  {
+   "index": 13,
+   "name": "IsTranslucent",
+   "sig": "IsTranslucent(IMaterialVar**) const",
+   "symbol": "CBaseShader::IsTranslucent(IMaterialVar**) const"
+  },
+  {
+   "index": 14,
+   "name": "GetParamFlags",
+   "sig": "GetParamFlags(int) const",
+   "symbol": "CBaseShader::GetParamFlags(int) const"
+  },
+  {
+   "index": 15,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 16,
+   "name": "GetSoftwareVertexShader",
+   "sig": "GetSoftwareVertexShader() const",
+   "symbol": "CBaseShader::GetSoftwareVertexShader() const"
+  },
+  {
+   "index": 17,
+   "name": "OnInitShaderParams",
+   "sig": "OnInitShaderParams(IMaterialVar**, char const*)",
+   "symbol": "CBaseShader::OnInitShaderParams(IMaterialVar**, char const*)"
+  },
+  {
+   "index": 18,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 19,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  }
+ ],
+ "derived": [
+  "bin/stdshader_dx9:Aftershock::CShader",
+  "bin/stdshader_dx9:Aftershock_dx9::CShader",
+  "bin/stdshader_dx9:Bik::CShader",
+  "bin/stdshader_dx9:Bloom::CShader",
+  "bin/stdshader_dx9:BlurFilterX::CShader",
+  "bin/stdshader_dx9:BlurFilterY::CShader",
+  "bin/stdshader_dx9:BufferClearObeyStencil::CShader",
+  "bin/stdshader_dx9:BufferClearObeyStencil_DX9::CShader",
+  "bin/stdshader_dx9:CBaseShader",
+  "bin/stdshader_dx9:Cable::CShader",
+  "bin/stdshader_dx9:Cable_DX9::CShader",
+  "bin/stdshader_dx9:Cloak::CShader",
+  "bin/stdshader_dx9:Cloak_DX90::CShader",
+  "bin/stdshader_dx9:Cloud::CShader",
+  "bin/stdshader_dx9:Cloud_dx9::CShader",
+  "bin/stdshader_dx9:ColorCorrection::CShader",
+  "bin/stdshader_dx9:Core::CShader",
+  "bin/stdshader_dx9:Core_DX90::CShader",
+  "bin/stdshader_dx9:DebugMRTTexture::CShader",
+  "bin/stdshader_dx9:DebugTextureView::CShader",
+  "bin/stdshader_dx9:DebugTextureView_dx9::CShader",
+  "bin/stdshader_dx9:DecalBaseTimesLightmapAlphaBlendSelfIllum::CShader",
+  "bin/stdshader_dx9:DecalBaseTimesLightmapAlphaBlendSelfIllum_DX9::CShader",
+  "bin/stdshader_dx9:DecalModulate::CShader",
+  "bin/stdshader_dx9:DecalModulate_dx9::CShader",
+  "bin/stdshader_dx9:DepthWrite::CShader",
+  "bin/stdshader_dx9:Downsample::CShader",
+  "bin/stdshader_dx9:Downsample_nohdr::CShader",
+  "bin/stdshader_dx9:Engine_Post::CShader",
+  "bin/stdshader_dx9:Engine_Post_dx9::CShader",
+  "bin/stdshader_dx9:EyeGlint::CShader",
+  "bin/stdshader_dx9:EyeGlint_dx9::CShader",
+  "bin/stdshader_dx9:EyeRefract::CShader",
+  "bin/stdshader_dx9:EyeRefract_dx9::CShader",
+  "bin/stdshader_dx9:Eyes_dx9::CShader",
+  "bin/stdshader_dx9:FilmDust::CShader",
+  "bin/stdshader_dx9:FilmDust_dx9::CShader",
+  "bin/stdshader_dx9:FilmGrain::CShader",
+  "bin/stdshader_dx9:FilmGrain_dx9::CShader",
+  "bin/stdshader_dx9:HDRCombineTo16Bit::CShader"
+ ],
+ "derived_count": 125
+}

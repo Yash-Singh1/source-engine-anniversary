@@ -709,6 +709,15 @@ public:
 		AssertMsg( 0, "CMatNullRenderContext only provides base features, not a stub (right now)" );
 	}
 
+	void FogRadial( bool bRadial )
+	{
+	}
+
+	bool GetFogRadial()
+	{
+		return false;
+	}
+
 	virtual void AsyncMap( ITextureInternal* pTexToMap, IAsyncTextureOperationReceiver* pRecipient, void* pExtraArgs ) OVERRIDE
 	{
 	

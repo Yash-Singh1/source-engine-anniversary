@@ -1,0 +1,132 @@
+{
+ "interface": "IDedicatedServerAPI",
+ "headers": [
+  "public/engine_hlds_api.h"
+ ],
+ "versions": {
+  "retail": [
+   "VENGINE_HLDS_API_VERSION002"
+  ],
+  "ours": [
+   "VENGINE_HLDS_API_VERSION002"
+  ],
+  "sdk2013": [
+   "VENGINE_HLDS_API_VERSION002"
+  ]
+ },
+ "version_macros": [
+  "VENGINE_HLDS_API_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/engine",
+   "version": "VENGINE_HLDS_API_VERSION002",
+   "class": "CDedicatedServerAPI"
+  }
+ ],
+ "sdk2013_len": 11,
+ "sdk2013_slots": [
+  "Connect(void* (*)(char const*, int*))",
+  "Disconnect()",
+  "QueryInterface(char const*)",
+  "Init()",
+  "Shutdown()",
+  "ModInit(ModInfo_t&)",
+  "ModShutdown()",
+  "RunFrame()",
+  "AddConsoleText(char*)",
+  "UpdateStatus(float*, int*, int*, char*, int)",
+  "UpdateHostname(char*, int)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CDedicatedServerAPI",
+  "offset": 0,
+  "chain": [
+   "CDedicatedServerAPI",
+   "CTier3AppSystem<IDedicatedServerAPI, 0>",
+   "CTier2AppSystem<IDedicatedServerAPI, 0>",
+   "CTier1AppSystem<IDedicatedServerAPI, 0>",
+   "CTier0AppSystem<IDedicatedServerAPI>",
+   "CBaseAppSystem<IDedicatedServerAPI>",
+   "IDedicatedServerAPI"
+  ]
+ },
+ "retail_len": 11,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 11
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Connect",
+   "sig": "Connect(void* (*)(char const*, int*))",
+   "symbol": "CDedicatedServerAPI::Connect(void* (*)(char const*, int*))"
+  },
+  {
+   "index": 1,
+   "name": "Disconnect",
+   "sig": "Disconnect()",
+   "symbol": "CDedicatedServerAPI::Disconnect()"
+  },
+  {
+   "index": 2,
+   "name": "QueryInterface",
+   "sig": "QueryInterface(char const*)",
+   "symbol": "CDedicatedServerAPI::QueryInterface(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "CTier2AppSystem<IDedicatedServerAPI, 0>::Init()"
+  },
+  {
+   "index": 4,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CTier2AppSystem<IDedicatedServerAPI, 0>::Shutdown()"
+  },
+  {
+   "index": 5,
+   "name": "ModInit",
+   "sig": "ModInit(ModInfo_t&)",
+   "symbol": "CDedicatedServerAPI::ModInit(ModInfo_t&)"
+  },
+  {
+   "index": 6,
+   "name": "ModShutdown",
+   "sig": "ModShutdown()",
+   "symbol": "CDedicatedServerAPI::ModShutdown()"
+  },
+  {
+   "index": 7,
+   "name": "RunFrame",
+   "sig": "RunFrame()",
+   "symbol": "CDedicatedServerAPI::RunFrame()"
+  },
+  {
+   "index": 8,
+   "name": "AddConsoleText",
+   "sig": "AddConsoleText(char*)",
+   "symbol": "CDedicatedServerAPI::AddConsoleText(char*)"
+  },
+  {
+   "index": 9,
+   "name": "UpdateStatus",
+   "sig": "UpdateStatus(float*, int*, int*, char*, int)",
+   "symbol": "CDedicatedServerAPI::UpdateStatus(float*, int*, int*, char*, int)"
+  },
+  {
+   "index": 10,
+   "name": "UpdateHostname",
+   "sig": "UpdateHostname(char*, int)",
+   "symbol": "CDedicatedServerAPI::UpdateHostname(char*, int)"
+  }
+ ],
+ "derived": [
+  "bin/engine:CDedicatedServerAPI"
+ ],
+ "derived_count": 1
+}

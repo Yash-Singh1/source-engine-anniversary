@@ -1,0 +1,94 @@
+{
+ "interface": "IVGuiModuleLoader",
+ "headers": [
+  "common/IVGuiModuleLoader.h"
+ ],
+ "versions": {
+  "retail": [
+   "VGuiModuleLoader003"
+  ],
+  "ours": [
+   "VGuiModuleLoader003"
+  ],
+  "sdk2013": []
+ },
+ "version_macros": [
+  "VGUIMODULELOADER_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/GameUI",
+   "version": "VGuiModuleLoader003",
+   "class": "CVGuiSystemModuleLoader"
+  }
+ ],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "bin/GameUI",
+  "class": "CVGuiSystemModuleLoader",
+  "offset": 0,
+  "chain": [
+   "CVGuiSystemModuleLoader",
+   "IVGuiModuleLoader"
+  ]
+ },
+ "retail_len": 8,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 8
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CVGuiSystemModuleLoader",
+   "sig": "~CVGuiSystemModuleLoader()",
+   "symbol": "CVGuiSystemModuleLoader::~CVGuiSystemModuleLoader()"
+  },
+  {
+   "index": 1,
+   "name": "~CVGuiSystemModuleLoader",
+   "sig": "~CVGuiSystemModuleLoader()",
+   "symbol": "CVGuiSystemModuleLoader::~CVGuiSystemModuleLoader()"
+  },
+  {
+   "index": 2,
+   "name": "GetModuleCount",
+   "sig": "GetModuleCount()",
+   "symbol": "CVGuiSystemModuleLoader::GetModuleCount()"
+  },
+  {
+   "index": 3,
+   "name": "GetModuleLabel",
+   "sig": "GetModuleLabel(int)",
+   "symbol": "CVGuiSystemModuleLoader::GetModuleLabel(int)"
+  },
+  {
+   "index": 4,
+   "name": "GetModuleFactory",
+   "sig": "GetModuleFactory(int)",
+   "symbol": "CVGuiSystemModuleLoader::GetModuleFactory(int)"
+  },
+  {
+   "index": 5,
+   "name": "ActivateModule",
+   "sig": "ActivateModule(int)",
+   "symbol": "CVGuiSystemModuleLoader::ActivateModule(int)"
+  },
+  {
+   "index": 6,
+   "name": "ActivateModule",
+   "sig": "ActivateModule(char const*)",
+   "symbol": "CVGuiSystemModuleLoader::ActivateModule(char const*)"
+  },
+  {
+   "index": 7,
+   "name": "SetPlatformToRestart",
+   "sig": "SetPlatformToRestart()",
+   "symbol": "CVGuiSystemModuleLoader::SetPlatformToRestart()"
+  }
+ ],
+ "derived": [
+  "bin/GameUI:CVGuiSystemModuleLoader"
+ ],
+ "derived_count": 1
+}

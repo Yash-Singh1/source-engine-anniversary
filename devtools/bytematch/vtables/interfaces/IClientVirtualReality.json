@@ -1,0 +1,135 @@
+{
+ "interface": "IClientVirtualReality",
+ "headers": [
+  "public/iclientvirtualreality.h"
+ ],
+ "versions": {
+  "retail": [
+   "ClientVirtualReality001"
+  ],
+  "ours": [
+   "ClientVirtualReality001"
+  ],
+  "sdk2013": [
+   "ClientVirtualReality001"
+  ]
+ },
+ "version_macros": [
+  "CLIENTVIRTUALREALITY_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "episodic/client",
+   "version": "ClientVirtualReality001",
+   "class": "CClientVirtualReality"
+  },
+  {
+   "module": "hl2/client",
+   "version": "ClientVirtualReality001",
+   "class": "CClientVirtualReality"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "ClientVirtualReality001",
+   "class": "CClientVirtualReality"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "ClientVirtualReality001",
+   "class": "CClientVirtualReality"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "ClientVirtualReality001",
+   "class": "CClientVirtualReality"
+  }
+ ],
+ "sdk2013_len": 8,
+ "sdk2013_slots": [
+  "Connect(void* (*)(char const*, int*))",
+  "Disconnect()",
+  "QueryInterface(char const*)",
+  "Init()",
+  "Shutdown()",
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "DrawMainMenu()"
+ ],
+ "retail_reference": {
+  "module": "episodic/client",
+  "class": "CClientVirtualReality",
+  "offset": 0,
+  "chain": [
+   "CClientVirtualReality",
+   "CTier3AppSystem<IClientVirtualReality, 0>",
+   "CTier2AppSystem<IClientVirtualReality, 0>",
+   "CTier1AppSystem<IClientVirtualReality, 0>",
+   "CTier0AppSystem<IClientVirtualReality>",
+   "CBaseAppSystem<IClientVirtualReality>",
+   "IClientVirtualReality"
+  ]
+ },
+ "retail_len": 8,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 8
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Connect",
+   "sig": "Connect(void* (*)(char const*, int*))",
+   "symbol": "CClientVirtualReality::Connect(void* (*)(char const*, int*))"
+  },
+  {
+   "index": 1,
+   "name": "Disconnect",
+   "sig": "Disconnect()",
+   "symbol": "CClientVirtualReality::Disconnect()"
+  },
+  {
+   "index": 2,
+   "name": "QueryInterface",
+   "sig": "QueryInterface(char const*)",
+   "symbol": "CClientVirtualReality::QueryInterface(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "CClientVirtualReality::Init()"
+  },
+  {
+   "index": 4,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CClientVirtualReality::Shutdown()"
+  },
+  {
+   "index": 5,
+   "name": "~CClientVirtualReality",
+   "sig": "~CClientVirtualReality()",
+   "symbol": "CClientVirtualReality::~CClientVirtualReality()"
+  },
+  {
+   "index": 6,
+   "name": "~CClientVirtualReality",
+   "sig": "~CClientVirtualReality()",
+   "symbol": "CClientVirtualReality::~CClientVirtualReality()"
+  },
+  {
+   "index": 7,
+   "name": "DrawMainMenu",
+   "sig": "DrawMainMenu()",
+   "symbol": "CClientVirtualReality::DrawMainMenu()"
+  }
+ ],
+ "derived": [
+  "episodic/client:CClientVirtualReality",
+  "hl2/client:CClientVirtualReality",
+  "hl2_complete/client:CClientVirtualReality",
+  "hl2mp/client:CClientVirtualReality",
+  "lostcoast/client:CClientVirtualReality"
+ ],
+ "derived_count": 5
+}

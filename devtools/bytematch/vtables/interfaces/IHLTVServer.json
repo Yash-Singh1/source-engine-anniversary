@@ -1,0 +1,120 @@
+{
+ "interface": "IHLTVServer",
+ "headers": [
+  "public/ihltv.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 12,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "GetBaseServer()",
+  "GetDirector()",
+  "GetHLTVSlot()",
+  "GetOnlineTime()",
+  "GetLocalStats(int&, int&, int&)",
+  "GetGlobalStats(int&, int&, int&)",
+  "GetRelayAddress()",
+  "IsMasterProxy()",
+  "IsDemoPlayback()",
+  "BroadcastEvent(IGameEvent*)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CHLTVServer",
+  "offset": 480,
+  "chain": [
+   "CHLTVServer",
+   "IHLTVServer"
+  ]
+ },
+ "retail_len": 12,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 12
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CHLTVServer",
+   "sig": "~CHLTVServer()",
+   "symbol": "non-virtual thunk to CHLTVServer::~CHLTVServer()"
+  },
+  {
+   "index": 1,
+   "name": "~CHLTVServer",
+   "sig": "~CHLTVServer()",
+   "symbol": "non-virtual thunk to CHLTVServer::~CHLTVServer()"
+  },
+  {
+   "index": 2,
+   "name": "GetBaseServer",
+   "sig": "GetBaseServer()",
+   "symbol": "non-virtual thunk to CHLTVServer::GetBaseServer()"
+  },
+  {
+   "index": 3,
+   "name": "GetDirector",
+   "sig": "GetDirector()",
+   "symbol": "non-virtual thunk to CHLTVServer::GetDirector()"
+  },
+  {
+   "index": 4,
+   "name": "GetHLTVSlot",
+   "sig": "GetHLTVSlot()",
+   "symbol": "non-virtual thunk to CHLTVServer::GetHLTVSlot()"
+  },
+  {
+   "index": 5,
+   "name": "GetOnlineTime",
+   "sig": "GetOnlineTime()",
+   "symbol": "non-virtual thunk to CHLTVServer::GetOnlineTime()"
+  },
+  {
+   "index": 6,
+   "name": "GetLocalStats",
+   "sig": "GetLocalStats(int&, int&, int&)",
+   "symbol": "non-virtual thunk to CHLTVServer::GetLocalStats(int&, int&, int&)"
+  },
+  {
+   "index": 7,
+   "name": "GetGlobalStats",
+   "sig": "GetGlobalStats(int&, int&, int&)",
+   "symbol": "non-virtual thunk to CHLTVServer::GetGlobalStats(int&, int&, int&)"
+  },
+  {
+   "index": 8,
+   "name": "GetRelayAddress",
+   "sig": "GetRelayAddress()",
+   "symbol": "non-virtual thunk to CHLTVServer::GetRelayAddress()"
+  },
+  {
+   "index": 9,
+   "name": "IsMasterProxy",
+   "sig": "IsMasterProxy()",
+   "symbol": "non-virtual thunk to CHLTVServer::IsMasterProxy()"
+  },
+  {
+   "index": 10,
+   "name": "IsDemoPlayback",
+   "sig": "IsDemoPlayback()",
+   "symbol": "non-virtual thunk to CHLTVServer::IsDemoPlayback()"
+  },
+  {
+   "index": 11,
+   "name": "BroadcastEvent",
+   "sig": "BroadcastEvent(IGameEvent*)",
+   "symbol": "non-virtual thunk to CHLTVServer::BroadcastEvent(IGameEvent*)"
+  }
+ ],
+ "derived": [
+  "bin/engine:CHLTVServer"
+ ],
+ "derived_count": 1
+}

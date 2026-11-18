@@ -1,0 +1,124 @@
+{
+ "interface": "CBaseManipulator",
+ "headers": [
+  "public/matsys_controls/manipulator.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 9,
+ "sdk2013_slots": [
+  "OnBeginManipulation()",
+  "OnAcceptManipulation()",
+  "OnCancelManipulation()",
+  "OnTick()",
+  "OnCursorMoved(int, int)",
+  "OnMousePressed(ButtonCode_t, int, int)",
+  "OnMouseReleased(ButtonCode_t, int, int)",
+  "OnMouseWheeled(int)",
+  "SetViewportSize(int, int)"
+ ],
+ "retail_reference": {
+  "module": "episodic/client",
+  "class": "CPotteryWheelManip",
+  "offset": 0,
+  "chain": [
+   "CPotteryWheelManip",
+   "CTransformManipulator",
+   "CBaseManipulator"
+  ]
+ },
+ "retail_len": 9,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 9
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "OnBeginManipulation",
+   "sig": "OnBeginManipulation()",
+   "symbol": "CPotteryWheelManip::OnBeginManipulation()"
+  },
+  {
+   "index": 1,
+   "name": "OnAcceptManipulation",
+   "sig": "OnAcceptManipulation()",
+   "symbol": "CPotteryWheelManip::OnAcceptManipulation()"
+  },
+  {
+   "index": 2,
+   "name": "OnCancelManipulation",
+   "sig": "OnCancelManipulation()",
+   "symbol": "CPotteryWheelManip::OnCancelManipulation()"
+  },
+  {
+   "index": 3,
+   "name": "OnTick",
+   "sig": "OnTick()",
+   "symbol": "CPotteryWheelManip::OnTick()"
+  },
+  {
+   "index": 4,
+   "name": "OnCursorMoved",
+   "sig": "OnCursorMoved(int, int)",
+   "symbol": "CPotteryWheelManip::OnCursorMoved(int, int)"
+  },
+  {
+   "index": 5,
+   "name": "OnMousePressed",
+   "sig": "OnMousePressed(ButtonCode_t, int, int)",
+   "symbol": "CPotteryWheelManip::OnMousePressed(ButtonCode_t, int, int)"
+  },
+  {
+   "index": 6,
+   "name": "OnMouseReleased",
+   "sig": "OnMouseReleased(ButtonCode_t, int, int)",
+   "symbol": "CPotteryWheelManip::OnMouseReleased(ButtonCode_t, int, int)"
+  },
+  {
+   "index": 7,
+   "name": "OnMouseWheeled",
+   "sig": "OnMouseWheeled(int)",
+   "symbol": "CPotteryWheelManip::OnMouseWheeled(int)"
+  },
+  {
+   "index": 8,
+   "name": "SetViewportSize",
+   "sig": "SetViewportSize(int, int)",
+   "symbol": "CBaseManipulator::SetViewportSize(int, int)"
+  }
+ ],
+ "derived": [
+  "episodic/client:CPotteryWheelManip",
+  "episodic/client:CRotationManipulator",
+  "episodic/client:CTransformManipulator",
+  "episodic/client:CTranslationManipulator",
+  "episodic/client:CZoomManipulator",
+  "hl2/client:CPotteryWheelManip",
+  "hl2/client:CRotationManipulator",
+  "hl2/client:CTransformManipulator",
+  "hl2/client:CTranslationManipulator",
+  "hl2/client:CZoomManipulator",
+  "hl2_complete/client:CPotteryWheelManip",
+  "hl2_complete/client:CRotationManipulator",
+  "hl2_complete/client:CTransformManipulator",
+  "hl2_complete/client:CTranslationManipulator",
+  "hl2_complete/client:CZoomManipulator",
+  "hl2mp/client:CPotteryWheelManip",
+  "hl2mp/client:CRotationManipulator",
+  "hl2mp/client:CTransformManipulator",
+  "hl2mp/client:CTranslationManipulator",
+  "hl2mp/client:CZoomManipulator",
+  "lostcoast/client:CPotteryWheelManip",
+  "lostcoast/client:CRotationManipulator",
+  "lostcoast/client:CTransformManipulator",
+  "lostcoast/client:CTranslationManipulator",
+  "lostcoast/client:CZoomManipulator"
+ ],
+ "derived_count": 25
+}

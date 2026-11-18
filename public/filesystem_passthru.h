@@ -123,7 +123,6 @@ public:
 	virtual void			FindClose( FileFindHandle_t handle )												{ m_pFileSystemPassThru->FindClose( handle ); }
 	virtual const char		*GetLocalPath( const char *pFileName, OUT_Z_CAP(maxLenInChars) char *pDest, int maxLenInChars )	{ return m_pFileSystemPassThru->GetLocalPath( pFileName, pDest, maxLenInChars ); }
 	virtual bool			FullPathToRelativePath( const char *pFullpath, OUT_Z_CAP(maxLenInChars) char *pDest, int maxLenInChars )		{ return m_pFileSystemPassThru->FullPathToRelativePath( pFullpath, pDest, maxLenInChars ); }
-	virtual bool			GetCaseCorrectFullPath_Ptr( const char *pFullPath, OUT_Z_CAP(maxLenInChars) char *pDest, int maxLenInChars ) { return m_pFileSystemPassThru->GetCaseCorrectFullPath_Ptr( pFullPath, pDest, maxLenInChars ); }
 	virtual bool			GetCurrentDirectory( char* pDirectory, int maxlen )									{ return m_pFileSystemPassThru->GetCurrentDirectory( pDirectory, maxlen ); }
 	virtual void			PrintOpenedFiles( void )															{ m_pFileSystemPassThru->PrintOpenedFiles(); }
 	virtual void			PrintSearchPaths( void )															{ m_pFileSystemPassThru->PrintSearchPaths(); }
@@ -248,6 +247,17 @@ public:
 		{ return m_pFileSystemPassThru->CheckVPKFileHash( PackFileID, nPackFileNumber, nFileFraction, md5Value ); }
 	virtual void			NotifyFileUnloaded( const char *pszFilename, const char *pPathId ) OVERRIDE
 		{ m_pFileSystemPassThru->NotifyFileUnloaded( pszFilename, pPathId ); }
+	virtual void			SetCurrentGameExpansionId( const char *pszExpansionId ) { m_pFileSystemPassThru->SetCurrentGameExpansionId( pszExpansionId ); }
+	virtual bool			GetCurrentGameExpansionId( char *pszExpansionId, int nMaxLen ) { return m_pFileSystemPassThru->GetCurrentGameExpansionId( pszExpansionId, nMaxLen ); }
+	virtual void			UpdateSearchPathsForCurrentGameExpansion() { m_pFileSystemPassThru->UpdateSearchPathsForCurrentGameExpansion(); }
+	virtual void			AddGameAndModSearchPathsFromGameInfo( const char *pszGameDir, const char *pszModDir, KeyValues *pGameInfo ) { m_pFileSystemPassThru->AddGameAndModSearchPathsFromGameInfo( pszGameDir, pszModDir, pGameInfo ); }
+	virtual void			SetUseLowViolancePaths( bool bUseLowViolence ) { m_pFileSystemPassThru->SetUseLowViolancePaths( bUseLowViolence ); }
+	virtual void			SetUseHDMount( bool bUseHD ) { m_pFileSystemPassThru->SetUseHDMount( bUseHD ); }
+	virtual void			SetAudioLanguageOverride( const char *pszLanguage ) { m_pFileSystemPassThru->SetAudioLanguageOverride( pszLanguage ); }
+	virtual int				GetSearchPaths2( const char *pszPathID, bool bGetPackFiles, CUtlVector< CUtlString > &searchPaths ) { return m_pFileSystemPassThru->GetSearchPaths2( pszPathID, bGetPackFiles, searchPaths ); }
+	virtual bool			GetFontTempFile( const char *pszFontFile, char *pszTempFile, int nMaxLen ) { return m_pFileSystemPassThru->GetFontTempFile( pszFontFile, pszTempFile, nMaxLen ); }
+	virtual void			PushNoFinishAllOnSearchPaths() { m_pFileSystemPassThru->PushNoFinishAllOnSearchPaths(); }
+	virtual void			PopNoFinishAllOnSearchPaths() { m_pFileSystemPassThru->PopNoFinishAllOnSearchPaths(); }
 
 protected:
 	IFileSystem *m_pFileSystemPassThru;

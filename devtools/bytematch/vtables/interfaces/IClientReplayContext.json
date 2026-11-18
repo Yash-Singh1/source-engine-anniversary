@@ -1,0 +1,252 @@
+{
+ "interface": "IClientReplayContext",
+ "headers": [
+  "common/replay/iclientreplaycontext.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 30,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "Init(void* (*)(char const*, int*))",
+  "Shutdown()",
+  "Think()",
+  "IsInitialized() const",
+  "GetRelativeBaseDir() const",
+  "GetBaseDir() const",
+  "GetReplaySubDir() const",
+  "GetErrorSystem()",
+  "GetRecordingSessionManager()",
+  "GetRecordingSessionBlockManager()",
+  "GetRecordingSession(unsigned int)",
+  "GetReplay(unsigned int)",
+  "GetReplayManager()",
+  "GetMovieRenderer()",
+  "GetMovieManager()",
+  "GetScreenshotManager()",
+  "GetPerformanceManager()",
+  "GetPerformanceController()",
+  "GetRenderQueue()",
+  "SetMovieRenderer(IReplayMovieRenderer*)",
+  "OnSignonStateFull()",
+  "OnClientSideDisconnect()",
+  "PlayReplay(unsigned int, int, bool)",
+  "ReconstructReplayIfNecessary(CReplay*)",
+  "OnPlayerSpawn()",
+  "OnPlayerClassChanged()",
+  "GetPlaybackTimes(float&, float&, CReplay const*, CReplayPerformance const*)",
+  "GetServerSessionId(unsigned int)"
+ ],
+ "retail_reference": {
+  "module": "bin/replay",
+  "class": "CClientReplayContext",
+  "offset": 0,
+  "chain": [
+   "CClientReplayContext",
+   "IClientReplayContext"
+  ]
+ },
+ "retail_len": 30,
+ "retail_len_basis": "override: extra slots are CClientReplayContext's own (replay)",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 34
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CClientReplayContext",
+   "sig": "~CClientReplayContext()",
+   "symbol": "CClientReplayContext::~CClientReplayContext()"
+  },
+  {
+   "index": 1,
+   "name": "~CClientReplayContext",
+   "sig": "~CClientReplayContext()",
+   "symbol": "CClientReplayContext::~CClientReplayContext()"
+  },
+  {
+   "index": 2,
+   "name": "Init",
+   "sig": "Init(void* (*)(char const*, int*))",
+   "symbol": "CClientReplayContext::Init(void* (*)(char const*, int*))"
+  },
+  {
+   "index": 3,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CClientReplayContext::Shutdown()"
+  },
+  {
+   "index": 4,
+   "name": "Think",
+   "sig": "Think()",
+   "symbol": "CClientReplayContext::Think()"
+  },
+  {
+   "index": 5,
+   "name": "IsInitialized",
+   "sig": "IsInitialized() const",
+   "symbol": "CClientReplayContext::IsInitialized() const"
+  },
+  {
+   "index": 6,
+   "name": "GetRelativeBaseDir",
+   "sig": "GetRelativeBaseDir() const",
+   "symbol": "CClientReplayContext::GetRelativeBaseDir() const"
+  },
+  {
+   "index": 7,
+   "name": "GetBaseDir",
+   "sig": "GetBaseDir() const",
+   "symbol": "CClientReplayContext::GetBaseDir() const"
+  },
+  {
+   "index": 8,
+   "name": "GetReplaySubDir",
+   "sig": "GetReplaySubDir() const",
+   "symbol": "CClientReplayContext::GetReplaySubDir() const"
+  },
+  {
+   "index": 9,
+   "name": "GetErrorSystem",
+   "sig": "GetErrorSystem()",
+   "symbol": "CClientReplayContext::GetErrorSystem()"
+  },
+  {
+   "index": 10,
+   "name": "GetRecordingSessionManager",
+   "sig": "GetRecordingSessionManager()",
+   "symbol": "CClientReplayContext::GetRecordingSessionManager()"
+  },
+  {
+   "index": 11,
+   "name": "GetRecordingSessionBlockManager",
+   "sig": "GetRecordingSessionBlockManager()",
+   "symbol": "covariant return thunk to CClientReplayContext::GetRecordingSessionBlockManager()"
+  },
+  {
+   "index": 12,
+   "name": "GetRecordingSession",
+   "sig": "GetRecordingSession(unsigned int)",
+   "symbol": "covariant return thunk to CClientReplayContext::GetRecordingSession(unsigned int)"
+  },
+  {
+   "index": 13,
+   "name": "GetReplay",
+   "sig": "GetReplay(unsigned int)",
+   "symbol": "CClientReplayContext::GetReplay(unsigned int)"
+  },
+  {
+   "index": 14,
+   "name": "GetReplayManager",
+   "sig": "GetReplayManager()",
+   "symbol": "CClientReplayContext::GetReplayManager()"
+  },
+  {
+   "index": 15,
+   "name": "GetMovieRenderer",
+   "sig": "GetMovieRenderer()",
+   "symbol": "CClientReplayContext::GetMovieRenderer()"
+  },
+  {
+   "index": 16,
+   "name": "GetMovieManager",
+   "sig": "GetMovieManager()",
+   "symbol": "CClientReplayContext::GetMovieManager()"
+  },
+  {
+   "index": 17,
+   "name": "GetScreenshotManager",
+   "sig": "GetScreenshotManager()",
+   "symbol": "CClientReplayContext::GetScreenshotManager()"
+  },
+  {
+   "index": 18,
+   "name": "GetPerformanceManager",
+   "sig": "GetPerformanceManager()",
+   "symbol": "CClientReplayContext::GetPerformanceManager()"
+  },
+  {
+   "index": 19,
+   "name": "GetPerformanceController",
+   "sig": "GetPerformanceController()",
+   "symbol": "CClientReplayContext::GetPerformanceController()"
+  },
+  {
+   "index": 20,
+   "name": "GetRenderQueue",
+   "sig": "GetRenderQueue()",
+   "symbol": "CClientReplayContext::GetRenderQueue()"
+  },
+  {
+   "index": 21,
+   "name": "SetMovieRenderer",
+   "sig": "SetMovieRenderer(IReplayMovieRenderer*)",
+   "symbol": "CClientReplayContext::SetMovieRenderer(IReplayMovieRenderer*)"
+  },
+  {
+   "index": 22,
+   "name": "OnSignonStateFull",
+   "sig": "OnSignonStateFull()",
+   "symbol": "CClientReplayContext::OnSignonStateFull()"
+  },
+  {
+   "index": 23,
+   "name": "OnClientSideDisconnect",
+   "sig": "OnClientSideDisconnect()",
+   "symbol": "CClientReplayContext::OnClientSideDisconnect()"
+  },
+  {
+   "index": 24,
+   "name": "PlayReplay",
+   "sig": "PlayReplay(unsigned int, int, bool)",
+   "symbol": "CClientReplayContext::PlayReplay(unsigned int, int, bool)"
+  },
+  {
+   "index": 25,
+   "name": "ReconstructReplayIfNecessary",
+   "sig": "ReconstructReplayIfNecessary(CReplay*)",
+   "symbol": "CClientReplayContext::ReconstructReplayIfNecessary(CReplay*)"
+  },
+  {
+   "index": 26,
+   "name": "OnPlayerSpawn",
+   "sig": "OnPlayerSpawn()",
+   "symbol": "CClientReplayContext::OnPlayerSpawn()"
+  },
+  {
+   "index": 27,
+   "name": "OnPlayerClassChanged",
+   "sig": "OnPlayerClassChanged()",
+   "symbol": "CClientReplayContext::OnPlayerClassChanged()"
+  },
+  {
+   "index": 28,
+   "name": "GetPlaybackTimes",
+   "sig": "GetPlaybackTimes(float&, float&, CReplay const*, CReplayPerformance const*)",
+   "symbol": "CClientReplayContext::GetPlaybackTimes(float&, float&, CReplay const*, CReplayPerformance const*)"
+  },
+  {
+   "index": 29,
+   "name": "GetServerSessionId",
+   "sig": "GetServerSessionId(unsigned int)",
+   "symbol": "CClientReplayContext::GetServerSessionId(unsigned int)"
+  }
+ ],
+ "implementer_tail": [
+  "GetRecordingSession(unsigned int)",
+  "GetRecordingSessionBlockManager()",
+  "CleanupUnneededBlocks()",
+  "ReportErrorsToUser(wchar_t*)"
+ ],
+ "derived": [
+  "bin/replay:CClientReplayContext"
+ ],
+ "derived_count": 1
+}

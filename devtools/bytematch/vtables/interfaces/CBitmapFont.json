@@ -1,0 +1,123 @@
+{
+ "interface": "CBitmapFont",
+ "headers": [
+  "common/vgui_surfacelib/BitmapFont.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "bin/vguimatsurface",
+  "class": "CBitmapFont",
+  "offset": 0,
+  "chain": [
+   "CBitmapFont"
+  ]
+ },
+ "retail_len": 15,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 15
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Create",
+   "sig": "Create(char const*, int, int, int, int, int)",
+   "symbol": "COSXFont::Create(char const*, int, int, int, int, int)"
+  },
+  {
+   "index": 1,
+   "name": "GetCharRGBA",
+   "sig": "GetCharRGBA(wchar_t, int, int, unsigned char*)",
+   "symbol": "CBitmapFont::GetCharRGBA(wchar_t, int, int, unsigned char*)"
+  },
+  {
+   "index": 2,
+   "name": "IsEqualTo",
+   "sig": "IsEqualTo(char const*, int, int, int, int, int)",
+   "symbol": "COSXFont::IsEqualTo(char const*, int, int, int, int, int)"
+  },
+  {
+   "index": 3,
+   "name": "IsValid",
+   "sig": "IsValid()",
+   "symbol": "COSXFont::IsValid()"
+  },
+  {
+   "index": 4,
+   "name": "GetCharABCWidths",
+   "sig": "GetCharABCWidths(int, int&, int&, int&, int*)",
+   "symbol": "CBitmapFont::GetCharABCWidths(int, int&, int&, int&, int*)"
+  },
+  {
+   "index": 5,
+   "name": "GetHeight",
+   "sig": "GetHeight()",
+   "symbol": "COSXFont::GetHeight()"
+  },
+  {
+   "index": 6,
+   "name": "GetHeightRequested",
+   "sig": "GetHeightRequested()",
+   "symbol": "COSXFont::GetHeightRequested()"
+  },
+  {
+   "index": 7,
+   "name": "GetAscent",
+   "sig": "GetAscent()",
+   "symbol": "COSXFont::GetAscent()"
+  },
+  {
+   "index": 8,
+   "name": "GetMaxCharWidth",
+   "sig": "GetMaxCharWidth()",
+   "symbol": "COSXFont::GetMaxCharWidth()"
+  },
+  {
+   "index": 9,
+   "name": "GetFlags",
+   "sig": "GetFlags()",
+   "symbol": "COSXFont::GetFlags()"
+  },
+  {
+   "index": 10,
+   "name": "GetUnderlined",
+   "sig": "GetUnderlined()",
+   "symbol": "COSXFont::GetUnderlined()"
+  },
+  {
+   "index": 11,
+   "name": "GetWeight",
+   "sig": "GetWeight()",
+   "symbol": "COSXFont::GetWeight()"
+  },
+  {
+   "index": 12,
+   "name": "Create_Bitmap",
+   "sig": "Create_Bitmap(char const*, float, float, int)",
+   "symbol": "CBitmapFont::Create_Bitmap(char const*, float, float, int)"
+  },
+  {
+   "index": 13,
+   "name": "IsEqualTo_Bitmap",
+   "sig": "IsEqualTo_Bitmap(char const*, float, float, int)",
+   "symbol": "CBitmapFont::IsEqualTo_Bitmap(char const*, float, float, int)"
+  },
+  {
+   "index": 14,
+   "name": "GetKernedCharWidth",
+   "sig": "GetKernedCharWidth(wchar_t, wchar_t, wchar_t, float&, float&, float&)",
+   "symbol": "CBitmapFont::GetKernedCharWidth(wchar_t, wchar_t, wchar_t, float&, float&, float&)"
+  }
+ ],
+ "derived": [
+  "bin/vguimatsurface:CBitmapFont"
+ ],
+ "derived_count": 1
+}

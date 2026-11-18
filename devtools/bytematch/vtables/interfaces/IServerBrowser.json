@@ -1,0 +1,103 @@
+{
+ "interface": "IServerBrowser",
+ "headers": [
+  "common/ServerBrowser/IServerBrowser.h"
+ ],
+ "versions": {
+  "retail": [
+   "ServerBrowser005"
+  ],
+  "ours": [
+   "ServerBrowser005"
+  ],
+  "sdk2013": []
+ },
+ "version_macros": [
+  "SERVERBROWSER_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/ServerBrowser",
+   "version": "ServerBrowser005",
+   "class": "CServerBrowser"
+  }
+ ],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "bin/ServerBrowser",
+  "class": "CServerBrowser",
+  "offset": 0,
+  "chain": [
+   "CServerBrowser",
+   "IServerBrowser"
+  ]
+ },
+ "retail_len": 7,
+ "retail_len_basis": "first implementer destructor",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 19,
+  "first implementer destructor": 7
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Activate",
+   "sig": "Activate()",
+   "symbol": "CServerBrowser::Activate()"
+  },
+  {
+   "index": 1,
+   "name": "JoinGame",
+   "sig": "JoinGame(unsigned int, unsigned short, char const*)",
+   "symbol": "CServerBrowser::JoinGame(unsigned int, unsigned short, char const*)"
+  },
+  {
+   "index": 2,
+   "name": "JoinGame",
+   "sig": "JoinGame(unsigned long long, char const*)",
+   "symbol": "CServerBrowser::JoinGame(unsigned long long, char const*)"
+  },
+  {
+   "index": 3,
+   "name": "OpenGameInfoDialog",
+   "sig": "OpenGameInfoDialog(unsigned long long, char const*)",
+   "symbol": "CServerBrowser::OpenGameInfoDialog(unsigned long long, char const*)"
+  },
+  {
+   "index": 4,
+   "name": "CloseGameInfoDialog",
+   "sig": "CloseGameInfoDialog(unsigned long long)",
+   "symbol": "CServerBrowser::CloseGameInfoDialog(unsigned long long)"
+  },
+  {
+   "index": 5,
+   "name": "CloseAllGameInfoDialogs",
+   "sig": "CloseAllGameInfoDialogs()",
+   "symbol": "CServerBrowser::CloseAllGameInfoDialogs()"
+  },
+  {
+   "index": 6,
+   "name": "GetMapFriendlyNameAndGameType",
+   "sig": "GetMapFriendlyNameAndGameType(char const*, char*, int)",
+   "symbol": "CServerBrowser::GetMapFriendlyNameAndGameType(char const*, char*, int)"
+  }
+ ],
+ "implementer_tail": [
+  "~CServerBrowser()",
+  "~CServerBrowser()",
+  "Initialize(void* (**)(char const*, int*), int)",
+  "PostInitialize(void* (**)(char const*, int*), int)",
+  "GetPanel()",
+  "IsValid()",
+  "Shutdown()",
+  "Deactivate()",
+  "Reactivate()",
+  "SetParent(unsigned int)",
+  "CreateDialog()",
+  "Open()"
+ ],
+ "derived": [
+  "bin/ServerBrowser:CServerBrowser"
+ ],
+ "derived_count": 1
+}

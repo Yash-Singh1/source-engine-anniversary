@@ -1,0 +1,95 @@
+{
+ "interface": "IGameEventListener2",
+ "headers": [
+  "public/igameevents.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 3,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "FireGameEvent(IGameEvent*)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "IGameEventListener2",
+  "offset": 0,
+  "chain": [
+   "IGameEventListener2"
+  ]
+ },
+ "retail_len": 3,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 2
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~IGameEventListener2",
+   "sig": "~IGameEventListener2()",
+   "symbol": "IGameEventListener2::~IGameEventListener2()"
+  },
+  {
+   "index": 1,
+   "name": "~IGameEventListener2",
+   "sig": "~IGameEventListener2()",
+   "symbol": "IGameEventListener2::~IGameEventListener2()"
+  },
+  {
+   "index": 2,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  }
+ ],
+ "derived": [
+  "bin/engine:CBaseClient",
+  "bin/engine:CGameClient",
+  "bin/engine:CHLTVClient",
+  "bin/engine:CHLTVServer",
+  "bin/engine:CLog",
+  "bin/engine:CReplayServer",
+  "bin/engine:IGameEventListener2",
+  "bin/replay:CClientRecordingSessionManager",
+  "episodic/client:CAchievementNotificationPanel",
+  "episodic/client:CBaseHudChat",
+  "episodic/client:CBaseHudWeaponSelection",
+  "episodic/client:CBaseViewport",
+  "episodic/client:CClientScoreBoardDialog",
+  "episodic/client:CCommentaryModelPanel",
+  "episodic/client:CGameEventListener",
+  "episodic/client:CHUDAutoAim",
+  "episodic/client:CHUDQuickInfo",
+  "episodic/client:CHudAmmo",
+  "episodic/client:CHudAnimationInfo",
+  "episodic/client:CHudBattery",
+  "episodic/client:CHudChat",
+  "episodic/client:CHudCloseCaption",
+  "episodic/client:CHudCommentary",
+  "episodic/client:CHudCredits",
+  "episodic/client:CHudCrosshair",
+  "episodic/client:CHudDamageIndicator",
+  "episodic/client:CHudDeathNotice",
+  "episodic/client:CHudElement",
+  "episodic/client:CHudFilmDemo",
+  "episodic/client:CHudFlashlight",
+  "episodic/client:CHudGeiger",
+  "episodic/client:CHudHDRDemo",
+  "episodic/client:CHudHealth",
+  "episodic/client:CHudHintDisplay",
+  "episodic/client:CHudHintKeyDisplay",
+  "episodic/client:CHudHistoryResource",
+  "episodic/client:CHudLocator",
+  "episodic/client:CHudMenu",
+  "episodic/client:CHudMessage",
+  "episodic/client:CHudPoisonDamageIndicator"
+ ],
+ "derived_count": 536
+}

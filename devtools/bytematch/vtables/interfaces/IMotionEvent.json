@@ -1,0 +1,83 @@
+{
+ "interface": "IMotionEvent",
+ "headers": [
+  "public/vphysics_interface.h",
+  "public/vphysics_interfaceV30.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 1,
+ "sdk2013_slots": [
+  "Simulate(IPhysicsMotionController*, IPhysicsObject*, float, Vector&, Vector&)"
+ ],
+ "retail_reference": {
+  "module": "episodic/client",
+  "class": "C_EntityDissolve",
+  "offset": 1280,
+  "chain": [
+   "C_EntityDissolve",
+   "IMotionEvent"
+  ]
+ },
+ "retail_len": 1,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 1
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Simulate",
+   "sig": "Simulate(IPhysicsMotionController*, IPhysicsObject*, float, Vector&, Vector&)",
+   "symbol": "non-virtual thunk to C_EntityDissolve::Simulate(IPhysicsMotionController*, IPhysicsObject*, float, Vector&, Vector&)"
+  }
+ ],
+ "derived": [
+  "episodic/client:C_EntityDissolve",
+  "episodic/server:CAI_BasePhysicsFlyingBot",
+  "episodic/server:CAdvisorLevitate",
+  "episodic/server:CConstantForceController",
+  "episodic/server:CGrabController",
+  "episodic/server:CGunshipRagdollMotion",
+  "episodic/server:CKeepUpright",
+  "episodic/server:CMotorController",
+  "episodic/server:CNPCBaseInteractive<CAI_BasePhysicsFlyingBot>",
+  "episodic/server:CNPC_BaseScanner",
+  "episodic/server:CNPC_CScanner",
+  "episodic/server:CNPC_ClawScanner",
+  "episodic/server:CNPC_Manhack",
+  "episodic/server:CPhysicsNPCSolver",
+  "episodic/server:CPhysicsShake",
+  "episodic/server:CPhysicsWind",
+  "episodic/server:CRollerController",
+  "episodic/server:CThrustController",
+  "episodic/server:CTriggerVPhysicsMotion",
+  "episodic/server:CTurretTipController",
+  "hl2/client:C_EntityDissolve",
+  "hl2/server:CAI_BasePhysicsFlyingBot",
+  "hl2/server:CAdvisorLevitate",
+  "hl2/server:CConstantForceController",
+  "hl2/server:CGrabController",
+  "hl2/server:CGunshipRagdollMotion",
+  "hl2/server:CKeepUpright",
+  "hl2/server:CMotorController",
+  "hl2/server:CNPCBaseInteractive<CAI_BasePhysicsFlyingBot>",
+  "hl2/server:CNPC_BaseScanner",
+  "hl2/server:CNPC_CScanner",
+  "hl2/server:CNPC_ClawScanner",
+  "hl2/server:CNPC_Manhack",
+  "hl2/server:CPhysicsNPCSolver",
+  "hl2/server:CPhysicsShake",
+  "hl2/server:CPhysicsWind",
+  "hl2/server:CRollerController",
+  "hl2/server:CThrustController",
+  "hl2/server:CTriggerVPhysicsMotion",
+  "hl2/server:CTurretTipController"
+ ],
+ "derived_count": 99
+}

@@ -1,0 +1,317 @@
+{
+ "interface": "IServer",
+ "headers": [
+  "public/iserver.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 35,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "ProcessConnectionlessPacket(netpacket_s*)",
+  "GetNumClients() const",
+  "GetNumProxies() const",
+  "GetNumFakeClients() const",
+  "GetMaxClients() const",
+  "GetClient(int)",
+  "GetClientCount() const",
+  "GetUDPPort() const",
+  "GetTime() const",
+  "GetTick() const",
+  "GetTickInterval() const",
+  "GetName() const",
+  "GetMapName() const",
+  "GetSpawnCount() const",
+  "GetNumClasses() const",
+  "GetClassBits() const",
+  "GetNetStats(float&, float&)",
+  "GetNumPlayers()",
+  "GetPlayerInfo(int, player_info_s*)",
+  "IsActive() const",
+  "IsLoading() const",
+  "IsDedicated() const",
+  "IsPaused() const",
+  "IsMultiplayer() const",
+  "IsPausable() const",
+  "IsHLTV() const",
+  "IsReplay() const",
+  "GetPassword() const",
+  "SetPaused(bool)",
+  "SetPassword(char const*)",
+  "BroadcastMessage(INetMessage&, bool, bool)",
+  "BroadcastMessage(INetMessage&, IRecipientFilter&)",
+  "DisconnectClient(IClient*, char const*)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CBaseServer",
+  "offset": 0,
+  "chain": [
+   "CBaseServer",
+   "IServer"
+  ]
+ },
+ "retail_len": 35,
+ "retail_len_basis": "override: extra slots are CBaseServer's own",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 66
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CBaseServer",
+   "sig": "~CBaseServer()",
+   "symbol": "CBaseServer::~CBaseServer()"
+  },
+  {
+   "index": 1,
+   "name": "~CBaseServer",
+   "sig": "~CBaseServer()",
+   "symbol": "CBaseServer::~CBaseServer()"
+  },
+  {
+   "index": 2,
+   "name": "ProcessConnectionlessPacket",
+   "sig": "ProcessConnectionlessPacket(netpacket_s*)",
+   "symbol": "CBaseServer::ProcessConnectionlessPacket(netpacket_s*)"
+  },
+  {
+   "index": 3,
+   "name": "GetNumClients",
+   "sig": "GetNumClients() const",
+   "symbol": "CBaseServer::GetNumClients() const"
+  },
+  {
+   "index": 4,
+   "name": "GetNumProxies",
+   "sig": "GetNumProxies() const",
+   "symbol": "CBaseServer::GetNumProxies() const"
+  },
+  {
+   "index": 5,
+   "name": "GetNumFakeClients",
+   "sig": "GetNumFakeClients() const",
+   "symbol": "CBaseServer::GetNumFakeClients() const"
+  },
+  {
+   "index": 6,
+   "name": "GetMaxClients",
+   "sig": "GetMaxClients() const",
+   "symbol": "CBaseServer::GetMaxClients() const"
+  },
+  {
+   "index": 7,
+   "name": "GetClient",
+   "sig": "GetClient(int)",
+   "symbol": "CBaseServer::GetClient(int)"
+  },
+  {
+   "index": 8,
+   "name": "GetClientCount",
+   "sig": "GetClientCount() const",
+   "symbol": "CBaseServer::GetClientCount() const"
+  },
+  {
+   "index": 9,
+   "name": "GetUDPPort",
+   "sig": "GetUDPPort() const",
+   "symbol": "CBaseServer::GetUDPPort() const"
+  },
+  {
+   "index": 10,
+   "name": "GetTime",
+   "sig": "GetTime() const",
+   "symbol": "CBaseServer::GetTime() const"
+  },
+  {
+   "index": 11,
+   "name": "GetTick",
+   "sig": "GetTick() const",
+   "symbol": "CBaseServer::GetTick() const"
+  },
+  {
+   "index": 12,
+   "name": "GetTickInterval",
+   "sig": "GetTickInterval() const",
+   "symbol": "CBaseServer::GetTickInterval() const"
+  },
+  {
+   "index": 13,
+   "name": "GetName",
+   "sig": "GetName() const",
+   "symbol": "CBaseServer::GetName() const"
+  },
+  {
+   "index": 14,
+   "name": "GetMapName",
+   "sig": "GetMapName() const",
+   "symbol": "CBaseServer::GetMapName() const"
+  },
+  {
+   "index": 15,
+   "name": "GetSpawnCount",
+   "sig": "GetSpawnCount() const",
+   "symbol": "CBaseServer::GetSpawnCount() const"
+  },
+  {
+   "index": 16,
+   "name": "GetNumClasses",
+   "sig": "GetNumClasses() const",
+   "symbol": "CBaseServer::GetNumClasses() const"
+  },
+  {
+   "index": 17,
+   "name": "GetClassBits",
+   "sig": "GetClassBits() const",
+   "symbol": "CBaseServer::GetClassBits() const"
+  },
+  {
+   "index": 18,
+   "name": "GetNetStats",
+   "sig": "GetNetStats(float&, float&)",
+   "symbol": "CBaseServer::GetNetStats(float&, float&)"
+  },
+  {
+   "index": 19,
+   "name": "GetNumPlayers",
+   "sig": "GetNumPlayers()",
+   "symbol": "CBaseServer::GetNumPlayers()"
+  },
+  {
+   "index": 20,
+   "name": "GetPlayerInfo",
+   "sig": "GetPlayerInfo(int, player_info_s*)",
+   "symbol": "CBaseServer::GetPlayerInfo(int, player_info_s*)"
+  },
+  {
+   "index": 21,
+   "name": "IsActive",
+   "sig": "IsActive() const",
+   "symbol": "CBaseServer::IsActive() const"
+  },
+  {
+   "index": 22,
+   "name": "IsLoading",
+   "sig": "IsLoading() const",
+   "symbol": "CBaseServer::IsLoading() const"
+  },
+  {
+   "index": 23,
+   "name": "IsDedicated",
+   "sig": "IsDedicated() const",
+   "symbol": "CBaseServer::IsDedicated() const"
+  },
+  {
+   "index": 24,
+   "name": "IsPaused",
+   "sig": "IsPaused() const",
+   "symbol": "CBaseServer::IsPaused() const"
+  },
+  {
+   "index": 25,
+   "name": "IsMultiplayer",
+   "sig": "IsMultiplayer() const",
+   "symbol": "CBaseServer::IsMultiplayer() const"
+  },
+  {
+   "index": 26,
+   "name": "IsPausable",
+   "sig": "IsPausable() const",
+   "symbol": "CBaseServer::IsPausable() const"
+  },
+  {
+   "index": 27,
+   "name": "IsHLTV",
+   "sig": "IsHLTV() const",
+   "symbol": "CBaseServer::IsHLTV() const"
+  },
+  {
+   "index": 28,
+   "name": "IsReplay",
+   "sig": "IsReplay() const",
+   "symbol": "CBaseServer::IsReplay() const"
+  },
+  {
+   "index": 29,
+   "name": "GetPassword",
+   "sig": "GetPassword() const",
+   "symbol": "CBaseServer::GetPassword() const"
+  },
+  {
+   "index": 30,
+   "name": "SetPaused",
+   "sig": "SetPaused(bool)",
+   "symbol": "CBaseServer::SetPaused(bool)"
+  },
+  {
+   "index": 31,
+   "name": "SetPassword",
+   "sig": "SetPassword(char const*)",
+   "symbol": "CBaseServer::SetPassword(char const*)"
+  },
+  {
+   "index": 32,
+   "name": "BroadcastMessage",
+   "sig": "BroadcastMessage(INetMessage&, bool, bool)",
+   "symbol": "CBaseServer::BroadcastMessage(INetMessage&, bool, bool)"
+  },
+  {
+   "index": 33,
+   "name": "BroadcastMessage",
+   "sig": "BroadcastMessage(INetMessage&, IRecipientFilter&)",
+   "symbol": "CBaseServer::BroadcastMessage(INetMessage&, IRecipientFilter&)"
+  },
+  {
+   "index": 34,
+   "name": "DisconnectClient",
+   "sig": "DisconnectClient(IClient*, char const*)",
+   "symbol": "CBaseServer::DisconnectClient(IClient*, char const*)"
+  }
+ ],
+ "implementer_tail": [
+  "GetCPUUsage()",
+  "BroadcastPrintf(char const*, ...)",
+  "SetMaxClients(int)",
+  "WriteDeltaEntities(CBaseClient*, CClientFrame*, CClientFrame*, bf_write&)",
+  "WriteTempEntities(CBaseClient*, CFrameSnapshot*, CFrameSnapshot*, bf_write&, int)",
+  "Init(bool)",
+  "Clear()",
+  "Shutdown()",
+  "CreateFakeClient(char const*)",
+  "RemoveClientFromGame(CBaseClient*)",
+  "SendClientMessages(bool)",
+  "FillServerInfo(SVC_ServerInfo&)",
+  "UserInfoChanged(int)",
+  "RejectConnection(netadr_s const&, int, char const*)",
+  "CheckIPRestrictions(netadr_s const&, int)",
+  "ConnectClient(netadr_s&, int, int, int, int, char const*, char const*, char const*, int)",
+  "GetFreeClient(netadr_s&)",
+  "CreateNewClient(int)",
+  "FinishCertificateCheck(netadr_s&, int, char const*, int)",
+  "GetChallengeNr(netadr_s&)",
+  "GetChallengeType(netadr_s&)",
+  "CheckProtocol(netadr_s&, int, int)",
+  "CheckChallengeNr(netadr_s&, int)",
+  "CheckChallengeType(CBaseClient*, int, netadr_s&, int, char const*, int, int)",
+  "CheckPassword(netadr_s&, char const*, char const*)",
+  "CheckIPConnectionReuse(netadr_s&)",
+  "ReplyChallenge(netadr_s&, int)",
+  "ReplyServerChallenge(netadr_s&)",
+  "CalculateCPUUsage()",
+  "ShouldUpdateMasterServer()",
+  "UpdateMasterServerPlayers()"
+ ],
+ "derived": [
+  "bin/engine:CBaseServer",
+  "bin/engine:CGameServer",
+  "bin/engine:CHLTVServer",
+  "bin/engine:CReplayServer"
+ ],
+ "derived_count": 4
+}

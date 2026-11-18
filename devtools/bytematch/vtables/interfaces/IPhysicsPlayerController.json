@@ -1,0 +1,162 @@
+{
+ "interface": "IPhysicsPlayerController",
+ "headers": [
+  "public/vphysics/player_controller.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 18,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "Update(Vector const&, Vector const&, float, bool, IPhysicsObject*)",
+  "SetEventHandler(IPhysicsPlayerControllerEvent*)",
+  "IsInContact()",
+  "MaxSpeed(Vector const&)",
+  "SetObject(IPhysicsObject*)",
+  "GetShadowPosition(Vector*, QAngle*)",
+  "StepUp(float)",
+  "Jump()",
+  "GetShadowVelocity(Vector*)",
+  "GetObject()",
+  "GetLastImpulse(Vector*)",
+  "SetPushMassLimit(float)",
+  "SetPushSpeedLimit(float)",
+  "GetPushMassLimit()",
+  "GetPushSpeedLimit()",
+  "WasFrozen()"
+ ],
+ "retail_reference": {
+  "module": "bin/vphysics",
+  "class": "CPlayerController",
+  "offset": 4,
+  "chain": [
+   "CPlayerController",
+   "IPhysicsPlayerController"
+  ]
+ },
+ "retail_len": 18,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 18
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CPlayerController",
+   "sig": "~CPlayerController()",
+   "symbol": "non-virtual thunk to CPlayerController::~CPlayerController()"
+  },
+  {
+   "index": 1,
+   "name": "~CPlayerController",
+   "sig": "~CPlayerController()",
+   "symbol": "non-virtual thunk to CPlayerController::~CPlayerController()"
+  },
+  {
+   "index": 2,
+   "name": "Update",
+   "sig": "Update(Vector const&, Vector const&, float, bool, IPhysicsObject*)",
+   "symbol": "non-virtual thunk to CPlayerController::Update(Vector const&, Vector const&, float, bool, IPhysicsObject*)"
+  },
+  {
+   "index": 3,
+   "name": "SetEventHandler",
+   "sig": "SetEventHandler(IPhysicsPlayerControllerEvent*)",
+   "symbol": "non-virtual thunk to CPlayerController::SetEventHandler(IPhysicsPlayerControllerEvent*)"
+  },
+  {
+   "index": 4,
+   "name": "IsInContact",
+   "sig": "IsInContact()",
+   "symbol": "non-virtual thunk to CPlayerController::IsInContact()"
+  },
+  {
+   "index": 5,
+   "name": "MaxSpeed",
+   "sig": "MaxSpeed(Vector const&)",
+   "symbol": "non-virtual thunk to CPlayerController::MaxSpeed(Vector const&)"
+  },
+  {
+   "index": 6,
+   "name": "SetObject",
+   "sig": "SetObject(IPhysicsObject*)",
+   "symbol": "non-virtual thunk to CPlayerController::SetObject(IPhysicsObject*)"
+  },
+  {
+   "index": 7,
+   "name": "GetShadowPosition",
+   "sig": "GetShadowPosition(Vector*, QAngle*)",
+   "symbol": "non-virtual thunk to CPlayerController::GetShadowPosition(Vector*, QAngle*)"
+  },
+  {
+   "index": 8,
+   "name": "StepUp",
+   "sig": "StepUp(float)",
+   "symbol": "non-virtual thunk to CPlayerController::StepUp(float)"
+  },
+  {
+   "index": 9,
+   "name": "Jump",
+   "sig": "Jump()",
+   "symbol": "non-virtual thunk to CPlayerController::Jump()"
+  },
+  {
+   "index": 10,
+   "name": "GetShadowVelocity",
+   "sig": "GetShadowVelocity(Vector*)",
+   "symbol": "non-virtual thunk to CPlayerController::GetShadowVelocity(Vector*)"
+  },
+  {
+   "index": 11,
+   "name": "GetObject",
+   "sig": "GetObject()",
+   "symbol": "non-virtual thunk to CPlayerController::GetObject()"
+  },
+  {
+   "index": 12,
+   "name": "GetLastImpulse",
+   "sig": "GetLastImpulse(Vector*)",
+   "symbol": "non-virtual thunk to CPlayerController::GetLastImpulse(Vector*)"
+  },
+  {
+   "index": 13,
+   "name": "SetPushMassLimit",
+   "sig": "SetPushMassLimit(float)",
+   "symbol": "non-virtual thunk to CPlayerController::SetPushMassLimit(float)"
+  },
+  {
+   "index": 14,
+   "name": "SetPushSpeedLimit",
+   "sig": "SetPushSpeedLimit(float)",
+   "symbol": "non-virtual thunk to CPlayerController::SetPushSpeedLimit(float)"
+  },
+  {
+   "index": 15,
+   "name": "GetPushMassLimit",
+   "sig": "GetPushMassLimit()",
+   "symbol": "non-virtual thunk to CPlayerController::GetPushMassLimit()"
+  },
+  {
+   "index": 16,
+   "name": "GetPushSpeedLimit",
+   "sig": "GetPushSpeedLimit()",
+   "symbol": "non-virtual thunk to CPlayerController::GetPushSpeedLimit()"
+  },
+  {
+   "index": 17,
+   "name": "WasFrozen",
+   "sig": "WasFrozen()",
+   "symbol": "non-virtual thunk to CPlayerController::WasFrozen()"
+  }
+ ],
+ "derived": [
+  "bin/vphysics:CPlayerController"
+ ],
+ "derived_count": 1
+}

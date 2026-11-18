@@ -729,7 +729,6 @@ public:
 	void PrecacheMaterial( const char *pMaterialName );
 
 	virtual bool IsConnectedUserInfoChangeAllowed( IConVar *pCvar );
-	virtual void IN_TouchEvent( int type, int fingerId, int x, int y );
 
 private:
 	void UncacheAllMaterials( );
@@ -2637,21 +2636,3 @@ CSteamID GetSteamIDForPlayerIndex( int iPlayerIndex )
 
 #endif
 
- 
-void CHLClient::IN_TouchEvent( int type, int fingerId, int x, int y )
-{
-	if( enginevgui->IsGameUIVisible() )
-		return;
-
-	touch_event_t ev;
-
-	ev.type = type;
-	ev.fingerid = fingerId;
-	memcpy( &ev.x, &x, sizeof(ev.x) );
-	memcpy( &ev.y, &y, sizeof(ev.y) );
-
-	if( type == IE_FingerMotion )
-		inputsystem->GetTouchAccumulators( fingerId, ev.dx, ev.dy );
-
-	gTouch.ProcessEvent( &ev );
-}

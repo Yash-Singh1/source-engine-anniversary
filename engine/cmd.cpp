@@ -464,6 +464,7 @@ static char const *Cmd_TranslateFileAssociation(char const *param )
 	return retval;
 }
 
+#ifndef BYTEMATCH_RETAIL
 // The argument following command line parameter nIndex, or NULL if it is missing or is
 // itself a +/- parameter.
 static const char *ParmValueAfter( int nIndex )
@@ -477,6 +478,7 @@ static const char *ParmValueAfter( int nIndex )
 
 	return pValue;
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: Adds command line parameters as script statements
@@ -507,7 +509,11 @@ CON_COMMAND( stuffcmds, "Parses and stuffs command line + commands to command bu
 		if (szParm[0] == '-') 
 		{
 			// skip -XXX options and eat their args
+#ifdef BYTEMATCH_RETAIL
+			const char *szValue = CommandLine()->ParmValue( szParm );
+#else
 			const char *szValue = ParmValueAfter( i );
+#endif
 			if ( szValue )
 				i++;
 			continue;
@@ -515,7 +521,11 @@ CON_COMMAND( stuffcmds, "Parses and stuffs command line + commands to command bu
 		if (szParm[0] == '+')
 		{
 			// convert +XXX options and stuff them into the build buffer
+#ifdef BYTEMATCH_RETAIL
+			const char *szValue = CommandLine()->ParmValue( szParm );
+#else
 			const char *szValue = ParmValueAfter( i );
+#endif
 			if (szValue)
 			{
 				build.PutString(va("%s %s\n", szParm+1, szValue));

@@ -1,0 +1,57 @@
+{
+ "interface": "CInfoDescription",
+ "headers": [
+  "common/GameUI/scriptobject.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "bin/GameUI",
+  "class": "CInfoDescription",
+  "offset": 0,
+  "chain": [
+   "CInfoDescription"
+  ]
+ },
+ "retail_len": 4,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 4
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CInfoDescription",
+   "sig": "~CInfoDescription()",
+   "symbol": "CInfoDescription::~CInfoDescription()"
+  },
+  {
+   "index": 1,
+   "name": "~CInfoDescription",
+   "sig": "~CInfoDescription()",
+   "symbol": "CInfoDescription::~CInfoDescription()"
+  },
+  {
+   "index": 2,
+   "name": "WriteScriptHeader",
+   "sig": "WriteScriptHeader(void*)",
+   "symbol": "CInfoDescription::WriteScriptHeader(void*)"
+  },
+  {
+   "index": 3,
+   "name": "WriteFileHeader",
+   "sig": "WriteFileHeader(void*)",
+   "symbol": "CInfoDescription::WriteFileHeader(void*)"
+  }
+ ],
+ "derived": [
+  "bin/GameUI:CInfoDescription"
+ ],
+ "derived_count": 1
+}

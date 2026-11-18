@@ -1,0 +1,52 @@
+{
+ "interface": "IServerTools001",
+ "headers": [],
+ "versions": {
+  "retail": [
+   "VSERVERTOOLS001"
+  ],
+  "ours": [
+   "VSERVERTOOLS001",
+   "VSERVERTOOLS002",
+   "VSERVERTOOLS003"
+  ],
+  "sdk2013": [
+   "VSERVERTOOLS001",
+   "VSERVERTOOLS002"
+  ]
+ },
+ "version_macros": [
+  "VSERVERTOOLS_INTERFACE_VERSION",
+  "VSERVERTOOLS_INTERFACE_VERSION_1",
+  "VSERVERTOOLS_INTERFACE_VERSION_2"
+ ],
+ "registrations": [
+  {
+   "module": "episodic/server",
+   "version": "VSERVERTOOLS001",
+   "class": "CServerTools"
+  },
+  {
+   "module": "hl2/server",
+   "version": "VSERVERTOOLS001",
+   "class": "CServerTools"
+  },
+  {
+   "module": "hl2_complete/server",
+   "version": "VSERVERTOOLS001",
+   "class": "CServerTools"
+  },
+  {
+   "module": "hl2mp/server",
+   "version": "VSERVERTOOLS001",
+   "class": "CServerTools"
+  },
+  {
+   "module": "lostcoast/server",
+   "version": "VSERVERTOOLS001",
+   "class": "CServerTools"
+  }
+ ],
+ "sdk2013_len": null,
+ "status": "no retail vtable"
+}

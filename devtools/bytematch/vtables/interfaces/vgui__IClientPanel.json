@@ -1,0 +1,270 @@
+{
+ "interface": "vgui::IClientPanel",
+ "headers": [
+  "public/vgui/IClientPanel.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 28,
+ "sdk2013_slots": [
+  "GetVPanel()",
+  "Think()",
+  "PerformApplySchemeSettings()",
+  "PaintTraverse(bool, bool)",
+  "Repaint()",
+  "IsWithinTraverse(int, int, bool)",
+  "GetInset(int&, int&, int&, int&)",
+  "GetClipRect(int&, int&, int&, int&)",
+  "OnChildAdded(unsigned int)",
+  "OnSizeChanged(int, int)",
+  "InternalFocusChanged(bool)",
+  "RequestInfo(KeyValues*)",
+  "RequestFocus(int)",
+  "RequestFocusPrev(unsigned int)",
+  "RequestFocusNext(unsigned int)",
+  "OnMessage(KeyValues const*, unsigned int)",
+  "GetCurrentKeyFocus()",
+  "GetTabPosition()",
+  "GetName()",
+  "GetClassName()",
+  "GetScheme()",
+  "IsProportional()",
+  "IsAutoDeleteSet()",
+  "DeletePanel()",
+  "QueryInterface(vgui::EInterfaceID)",
+  "GetPanel()",
+  "GetModuleName()",
+  "OnTick()"
+ ],
+ "retail_reference": {
+  "module": "bin/GameUI",
+  "class": "vgui::IClientPanel",
+  "offset": 0,
+  "chain": [
+   "vgui::IClientPanel"
+  ]
+ },
+ "retail_len": 28,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 0
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 1,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 2,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 3,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 4,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 5,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 6,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 7,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 8,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 9,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 10,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 11,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 12,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 13,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 14,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 15,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 16,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 17,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 18,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 19,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 20,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 21,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 22,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 23,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 24,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 25,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 26,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 27,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  }
+ ],
+ "derived": [
+  "bin/GameUI:(anonymous namespace)::CaptionGripPanel",
+  "bin/GameUI:(anonymous namespace)::GripPanel",
+  "bin/GameUI:(anonymous namespace)::ScrollBarButton",
+  "bin/GameUI:CAchievementDialogItemPanel",
+  "bin/GameUI:CAchievementsDialog",
+  "bin/GameUI:CBackgroundMenuButton",
+  "bin/GameUI:CBaseDialog",
+  "bin/GameUI:CBasePanel",
+  "bin/GameUI:CBaseSaveGameDialog",
+  "bin/GameUI:CBenchmarkDialog",
+  "bin/GameUI:CBenchmarkResultsDialog",
+  "bin/GameUI:CBitmapImagePanel",
+  "bin/GameUI:CBonusMapPanel",
+  "bin/GameUI:CBonusMapsDialog",
+  "bin/GameUI:CBuildModeNavCombo",
+  "bin/GameUI:CCommandItem",
+  "bin/GameUI:CCommentaryDialog",
+  "bin/GameUI:CCommentaryExplanationDialog",
+  "bin/GameUI:CCommentaryItemPanel",
+  "bin/GameUI:CControllerDialog",
+  "bin/GameUI:CControllerMap",
+  "bin/GameUI:CCreateMultiplayerGameBotPage",
+  "bin/GameUI:CCreateMultiplayerGameDialog",
+  "bin/GameUI:CCreateMultiplayerGameGameplayPage",
+  "bin/GameUI:CCreateMultiplayerGameServerPage",
+  "bin/GameUI:CCvarNegateCheckButton",
+  "bin/GameUI:CCvarSlider",
+  "bin/GameUI:CCvarToggleCheckButton",
+  "bin/GameUI:CDialogMenu",
+  "bin/GameUI:CDragDropHelperPanel",
+  "bin/GameUI:CFooterPanel",
+  "bin/GameUI:CGameChapterPanel",
+  "bin/GameUI:CGameConsoleDialog",
+  "bin/GameUI:CGameMenu",
+  "bin/GameUI:CGameMenuItem",
+  "bin/GameUI:CGameSavePanel",
+  "bin/GameUI:CGammaDialog",
+  "bin/GameUI:CInlineEditPanel",
+  "bin/GameUI:CLabeledCommandComboBox",
+  "bin/GameUI:CLeaderboardDialog"
+ ],
+ "derived_count": 1186
+}

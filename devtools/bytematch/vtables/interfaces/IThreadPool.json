@@ -1,0 +1,186 @@
+{
+ "interface": "IThreadPool",
+ "headers": [
+  "public/vstdlib/jobthread.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "bin/libvstdlib",
+  "class": "CThreadPool",
+  "offset": 0,
+  "chain": [
+   "CThreadPool",
+   "CRefCounted1<IThreadPool, CRefCountServiceBase<true, CRefMT>>",
+   "IThreadPool"
+  ]
+ },
+ "retail_len": 25,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 25
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "AddRef",
+   "sig": "AddRef()",
+   "symbol": "CRefCounted1<IThreadPool, CRefCountServiceBase<true, CRefMT>>::AddRef()"
+  },
+  {
+   "index": 1,
+   "name": "Release",
+   "sig": "Release()",
+   "symbol": "CRefCounted1<IThreadPool, CRefCountServiceBase<true, CRefMT>>::Release()"
+  },
+  {
+   "index": 2,
+   "name": "~CThreadPool",
+   "sig": "~CThreadPool()",
+   "symbol": "CThreadPool::~CThreadPool()"
+  },
+  {
+   "index": 3,
+   "name": "~CThreadPool",
+   "sig": "~CThreadPool()",
+   "symbol": "CThreadPool::~CThreadPool()"
+  },
+  {
+   "index": 4,
+   "name": "Start",
+   "sig": "Start(ThreadPoolStartParams_t const&)",
+   "symbol": "CThreadPool::Start(ThreadPoolStartParams_t const&)"
+  },
+  {
+   "index": 5,
+   "name": "Stop",
+   "sig": "Stop(int)",
+   "symbol": "CThreadPool::Stop(int)"
+  },
+  {
+   "index": 6,
+   "name": "GetJobCount",
+   "sig": "GetJobCount()",
+   "symbol": "CThreadPool::GetJobCount()"
+  },
+  {
+   "index": 7,
+   "name": "NumThreads",
+   "sig": "NumThreads()",
+   "symbol": "CThreadPool::NumThreads()"
+  },
+  {
+   "index": 8,
+   "name": "NumIdleThreads",
+   "sig": "NumIdleThreads()",
+   "symbol": "CThreadPool::NumIdleThreads()"
+  },
+  {
+   "index": 9,
+   "name": "SuspendExecution",
+   "sig": "SuspendExecution()",
+   "symbol": "CThreadPool::SuspendExecution()"
+  },
+  {
+   "index": 10,
+   "name": "ResumeExecution",
+   "sig": "ResumeExecution()",
+   "symbol": "CThreadPool::ResumeExecution()"
+  },
+  {
+   "index": 11,
+   "name": "YieldWait",
+   "sig": "YieldWait(CThreadEvent**, int, bool, unsigned int)",
+   "symbol": "CThreadPool::YieldWait(CThreadEvent**, int, bool, unsigned int)"
+  },
+  {
+   "index": 12,
+   "name": "YieldWait",
+   "sig": "YieldWait(CJob**, int, bool, unsigned int)",
+   "symbol": "CThreadPool::YieldWait(CJob**, int, bool, unsigned int)"
+  },
+  {
+   "index": 13,
+   "name": "Yield",
+   "sig": "Yield(unsigned int)",
+   "symbol": "CThreadPool::Yield(unsigned int)"
+  },
+  {
+   "index": 14,
+   "name": "AddJob",
+   "sig": "AddJob(CJob*)",
+   "symbol": "CThreadPool::AddJob(CJob*)"
+  },
+  {
+   "index": 15,
+   "name": "ExecuteHighPriorityFunctor",
+   "sig": "ExecuteHighPriorityFunctor(CFunctor*)",
+   "symbol": "CThreadPool::ExecuteHighPriorityFunctor(CFunctor*)"
+  },
+  {
+   "index": 16,
+   "name": "AddFunctor",
+   "sig": "AddFunctor(CFunctor*, CJob**, char const*, unsigned int)",
+   "symbol": "IThreadPool::AddFunctor(CFunctor*, CJob**, char const*, unsigned int)"
+  },
+  {
+   "index": 17,
+   "name": "ChangePriority",
+   "sig": "ChangePriority(CJob*, JobPriority_t)",
+   "symbol": "CThreadPool::ChangePriority(CJob*, JobPriority_t)"
+  },
+  {
+   "index": 18,
+   "name": "ExecuteToPriority",
+   "sig": "ExecuteToPriority(JobPriority_t, bool (*)(CJob*))",
+   "symbol": "CThreadPool::ExecuteToPriority(JobPriority_t, bool (*)(CJob*))"
+  },
+  {
+   "index": 19,
+   "name": "AbortAll",
+   "sig": "AbortAll()",
+   "symbol": "CThreadPool::AbortAll()"
+  },
+  {
+   "index": 20,
+   "name": "Reserved1",
+   "sig": "Reserved1()",
+   "symbol": "CThreadPool::Reserved1()"
+  },
+  {
+   "index": 21,
+   "name": "AddFunctorInternal",
+   "sig": "AddFunctorInternal(CFunctor*, CJob**, char const*, unsigned int)",
+   "symbol": "CThreadPool::AddFunctorInternal(CFunctor*, CJob**, char const*, unsigned int)"
+  },
+  {
+   "index": 22,
+   "name": "GetDummyJob",
+   "sig": "GetDummyJob()",
+   "symbol": "CThreadPool::GetDummyJob()"
+  },
+  {
+   "index": 23,
+   "name": "Distribute",
+   "sig": "Distribute(bool, int*)",
+   "symbol": "CThreadPool::Distribute(bool, int*)"
+  },
+  {
+   "index": 24,
+   "name": "Start",
+   "sig": "Start(ThreadPoolStartParams_t const&, char const*)",
+   "symbol": "CThreadPool::Start(ThreadPoolStartParams_t const&, char const*)"
+  }
+ ],
+ "derived": [
+  "bin/libvstdlib:CGlobalThreadPool",
+  "bin/libvstdlib:CThreadPool"
+ ],
+ "derived_count": 2
+}

@@ -1,0 +1,109 @@
+{
+ "interface": "IParticleOperatorDefinition",
+ "headers": [
+  "public/particles/particles.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "episodic/client",
+  "class": "CChildOperatorDefinition",
+  "offset": 0,
+  "chain": [
+   "CChildOperatorDefinition",
+   "IParticleOperatorDefinition"
+  ]
+ },
+ "retail_len": 6,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 6
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "GetName",
+   "sig": "GetName() const",
+   "symbol": "CChildOperatorDefinition::GetName() const"
+  },
+  {
+   "index": 1,
+   "name": "CreateInstance",
+   "sig": "CreateInstance(UniqueId_t const&) const",
+   "symbol": "CChildOperatorDefinition::CreateInstance(UniqueId_t const&) const"
+  },
+  {
+   "index": 2,
+   "name": "GetUnpackStructure",
+   "sig": "GetUnpackStructure() const",
+   "symbol": "CChildOperatorDefinition::GetUnpackStructure() const"
+  },
+  {
+   "index": 3,
+   "name": "GetId",
+   "sig": "GetId() const",
+   "symbol": "CChildOperatorDefinition::GetId() const"
+  },
+  {
+   "index": 4,
+   "name": "IsObsolete",
+   "sig": "IsObsolete() const",
+   "symbol": "CChildOperatorDefinition::IsObsolete() const"
+  },
+  {
+   "index": 5,
+   "name": "GetClassSize",
+   "sig": "GetClassSize() const",
+   "symbol": "CChildOperatorDefinition::GetClassSize() const"
+  }
+ ],
+ "derived": [
+  "episodic/client:CChildOperatorDefinition",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_AgeNoise>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_CreateAlongPath>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_CreateFromParentParticles>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_CreateFromPlaneCache>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_CreateInHierarchy>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_CreateOnModel>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_CreateSequentialPath>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_CreateWithinBox>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_CreateWithinSphere>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_CreationNoise>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_DistanceToCPInit>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_InheritVelocity>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_InitialRepulsionVelocity>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_InitialVelocityNoise>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_LifespanFromVelocity>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_MoveBetweenPoints>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_PositionOffset>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_PositionWarp>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_RandomAlpha>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_RandomColor>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_RandomLifeTime>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_RandomRadius>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_RandomRotation>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_RandomRotationSpeed>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_RandomSecondSequence>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_RandomSequence>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_RandomTrailLength>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_RandomYaw>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_RandomYawFlip>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_RemapCPtoScalar>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_RemapCPtoVector>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_RemapScalar>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_RemapScalarToVector>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_SequenceLifeTime>",
+  "episodic/client:CParticleOperatorDefinition<C_INIT_VelocityRandom>",
+  "episodic/client:CParticleOperatorDefinition<C_OP_AttractToControlPoint>",
+  "episodic/client:CParticleOperatorDefinition<C_OP_BasicMovement>",
+  "episodic/client:CParticleOperatorDefinition<C_OP_ColorInterpolate>",
+  "episodic/client:CParticleOperatorDefinition<C_OP_ConstrainDistance>"
+ ],
+ "derived_count": 460
+}

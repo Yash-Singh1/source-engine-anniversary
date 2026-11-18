@@ -1,0 +1,126 @@
+{
+ "interface": "CJob",
+ "headers": [
+  "public/gcsdk/job.h",
+  "public/vstdlib/jobthread.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CJob",
+  "offset": 0,
+  "chain": [
+   "CJob"
+  ]
+ },
+ "retail_len": 9,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 9
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "AddRef",
+   "sig": "AddRef()",
+   "symbol": "CRefCounted1<IRefCounted, CRefCountServiceBase<true, CRefMT>>::AddRef()"
+  },
+  {
+   "index": 1,
+   "name": "Release",
+   "sig": "Release()",
+   "symbol": "CRefCounted1<IRefCounted, CRefCountServiceBase<true, CRefMT>>::Release()"
+  },
+  {
+   "index": 2,
+   "name": "~CJob",
+   "sig": "~CJob()",
+   "symbol": "CJob::~CJob()"
+  },
+  {
+   "index": 3,
+   "name": "~CJob",
+   "sig": "~CJob()",
+   "symbol": "CJob::~CJob()"
+  },
+  {
+   "index": 4,
+   "name": "Describe",
+   "sig": "Describe()",
+   "symbol": "CJob::Describe()"
+  },
+  {
+   "index": 5,
+   "name": "SetDescription",
+   "sig": "SetDescription(char const*)",
+   "symbol": "CJob::SetDescription(char const*)"
+  },
+  {
+   "index": 6,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 7,
+   "name": "DoAbort",
+   "sig": "DoAbort(bool)",
+   "symbol": "CJob::DoAbort(bool)"
+  },
+  {
+   "index": 8,
+   "name": "DoCleanup",
+   "sig": "DoCleanup()",
+   "symbol": "CJob::DoCleanup()"
+  }
+ ],
+ "derived_disagreements": [
+  {
+   "module": "bin/libvstdlib",
+   "class": "CThreadPool::GetDummyJob()::CDummyJob",
+   "index": 2,
+   "ref": "~CJob()",
+   "got": "GetDummyJob()::CDummyJob::~CDummyJob()"
+  }
+ ],
+ "derived": [
+  "bin/engine:CFunctorJob",
+  "bin/engine:CJob",
+  "bin/filesystem_stdio:CFileAsyncAppendFileJob",
+  "bin/filesystem_stdio:CFileAsyncFileSizeJob",
+  "bin/filesystem_stdio:CFileAsyncJob",
+  "bin/filesystem_stdio:CFileAsyncReadJob",
+  "bin/filesystem_stdio:CFileAsyncWriteFileJob",
+  "bin/filesystem_stdio:CFileAsyncWriteJob",
+  "bin/filesystem_stdio:CJob",
+  "bin/libvstdlib:CFunctorJob",
+  "bin/libvstdlib:CJob",
+  "bin/libvstdlib:CThreadPool::GetDummyJob()::CDummyJob",
+  "bin/libvstdlib:ThreadPoolTest::CCountJob",
+  "bin/libvstdlib:ThreadPoolTest::CExecuteTestExecuteJob",
+  "bin/libvstdlib:ThreadPoolTest::CExecuteTestJob",
+  "bin/materialsystem:CFunctorJob",
+  "bin/materialsystem:CJob",
+  "bin/materialsystem:CThreadAcquire",
+  "bin/materialsystem:CThreadRelease",
+  "bin/replay:CBaseJob",
+  "bin/replay:CBasePublishJob",
+  "bin/replay:CCompressionJob",
+  "bin/replay:CDeleteLocalFileJob",
+  "bin/replay:CFtpFileDeleterJob",
+  "bin/replay:CFtpUploadJob",
+  "bin/replay:CJob",
+  "bin/replay:CLocalFileDeleterJob",
+  "bin/replay:CLocalPublishJob",
+  "bin/replay:CMd5Job",
+  "bin/replay:CSaveJob"
+ ],
+ "derived_count": 30
+}

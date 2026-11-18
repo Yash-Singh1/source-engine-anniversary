@@ -1,0 +1,98 @@
+{
+ "interface": "IDebugTextureInfo",
+ "headers": [
+  "public/materialsystem/idebugtextureinfo.h"
+ ],
+ "versions": {
+  "retail": [
+   "DebugTextureInfo001"
+  ],
+  "ours": [
+   "DebugTextureInfo001"
+  ],
+  "sdk2013": [
+   "DebugTextureInfo001"
+  ]
+ },
+ "version_macros": [
+  "DEBUG_TEXTURE_INFO_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/shaderapidx9",
+   "version": "DebugTextureInfo001",
+   "class": "CShaderAPIDx8"
+  },
+  {
+   "module": "bin/shaderapiempty",
+   "version": "DebugTextureInfo001",
+   "class": "CShaderAPIEmpty"
+  }
+ ],
+ "sdk2013_len": 6,
+ "sdk2013_slots": [
+  "EnableDebugTextureList(bool)",
+  "EnableGetAllTextures(bool)",
+  "GetDebugTextureList()",
+  "GetTextureMemoryUsed(IDebugTextureInfo::TextureMemoryType)",
+  "IsDebugTextureListFresh(int)",
+  "SetDebugTextureRendering(bool)"
+ ],
+ "retail_reference": {
+  "module": "bin/shaderapidx9",
+  "class": "CShaderAPIDx8",
+  "offset": 560,
+  "chain": [
+   "CShaderAPIDx8",
+   "IDebugTextureInfo"
+  ]
+ },
+ "retail_len": 6,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 6
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "EnableDebugTextureList",
+   "sig": "EnableDebugTextureList(bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::EnableDebugTextureList(bool)"
+  },
+  {
+   "index": 1,
+   "name": "EnableGetAllTextures",
+   "sig": "EnableGetAllTextures(bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::EnableGetAllTextures(bool)"
+  },
+  {
+   "index": 2,
+   "name": "GetDebugTextureList",
+   "sig": "GetDebugTextureList()",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetDebugTextureList()"
+  },
+  {
+   "index": 3,
+   "name": "GetTextureMemoryUsed",
+   "sig": "GetTextureMemoryUsed(IDebugTextureInfo::TextureMemoryType)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::GetTextureMemoryUsed(IDebugTextureInfo::TextureMemoryType)"
+  },
+  {
+   "index": 4,
+   "name": "IsDebugTextureListFresh",
+   "sig": "IsDebugTextureListFresh(int)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::IsDebugTextureListFresh(int)"
+  },
+  {
+   "index": 5,
+   "name": "SetDebugTextureRendering",
+   "sig": "SetDebugTextureRendering(bool)",
+   "symbol": "non-virtual thunk to CShaderAPIDx8::SetDebugTextureRendering(bool)"
+  }
+ ],
+ "derived": [
+  "bin/shaderapidx9:CShaderAPIDx8",
+  "bin/shaderapiempty:CShaderAPIEmpty"
+ ],
+ "derived_count": 2
+}

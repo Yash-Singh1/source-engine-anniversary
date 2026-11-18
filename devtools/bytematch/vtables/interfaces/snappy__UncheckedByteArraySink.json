@@ -1,0 +1,63 @@
+{
+ "interface": "snappy::UncheckedByteArraySink",
+ "headers": [
+  "public/tier1/snappy-sinksource.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 4,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "Append(char const*, unsigned long)",
+  "GetAppendBuffer(unsigned long, char*)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "snappy::UncheckedByteArraySink",
+  "offset": 0,
+  "chain": [
+   "snappy::UncheckedByteArraySink"
+  ]
+ },
+ "retail_len": 4,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 4
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~UncheckedByteArraySink",
+   "sig": "~UncheckedByteArraySink()",
+   "symbol": "snappy::UncheckedByteArraySink::~UncheckedByteArraySink()"
+  },
+  {
+   "index": 1,
+   "name": "~UncheckedByteArraySink",
+   "sig": "~UncheckedByteArraySink()",
+   "symbol": "snappy::UncheckedByteArraySink::~UncheckedByteArraySink()"
+  },
+  {
+   "index": 2,
+   "name": "Append",
+   "sig": "Append(char const*, unsigned long)",
+   "symbol": "snappy::UncheckedByteArraySink::Append(char const*, unsigned long)"
+  },
+  {
+   "index": 3,
+   "name": "GetAppendBuffer",
+   "sig": "GetAppendBuffer(unsigned long, char*)",
+   "symbol": "snappy::UncheckedByteArraySink::GetAppendBuffer(unsigned long, char*)"
+  }
+ ],
+ "derived": [
+  "bin/engine:snappy::UncheckedByteArraySink"
+ ],
+ "derived_count": 1
+}

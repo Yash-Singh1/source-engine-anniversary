@@ -1,0 +1,302 @@
+{
+ "interface": "ILauncherMgr",
+ "headers": [
+  "public/appframework/ilaunchermgr.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 38,
+ "sdk2013_slots": [
+  "Connect(void* (*)(char const*, int*))",
+  "Disconnect()",
+  "QueryInterface(char const*)",
+  "Init()",
+  "Shutdown()",
+  "CreateGameWindow(char const*, bool, int, int)",
+  "IncWindowRefCount()",
+  "DecWindowRefCount()",
+  "GetEvents(CCocoaEvent*, int, bool)",
+  "SetCursorPosition(int, int)",
+  "SetWindowFullScreen(bool, int, int)",
+  "IsWindowFullScreen()",
+  "MoveWindow(int, int)",
+  "SizeWindow(int, int)",
+  "PumpWindowsMessageLoop()",
+  "DestroyGameWindow()",
+  "SetApplicationIcon(char const*)",
+  "GetMouseDelta(int&, int&, bool)",
+  "GetNativeDisplayInfo(int, unsigned int&, unsigned int&, unsigned int&)",
+  "RenderedSize(unsigned int&, unsigned int&, bool)",
+  "DisplayedSize(unsigned int&, unsigned int&)",
+  "GetMainContext()",
+  "GetGLContextForWindow(void*)",
+  "CreateExtraContext()",
+  "DeleteContext(void*)",
+  "MakeContextCurrent(void*)",
+  "GetDisplayDB()",
+  "GetDesiredPixelFormatAttribsAndRendererInfo(unsigned int**, unsigned int*, GLMRendererInfoFields*)",
+  "ShowPixels(CShowPixelsParams*)",
+  "GetStackCrawl(CStackCrawlParams*)",
+  "WaitUntilUserInput(int)",
+  "GetWindowRef()",
+  "SetMouseVisible(bool)",
+  "SetMouseCursor(SDL_Cursor*)",
+  "SetForbidMouseGrab(bool)",
+  "OnFrameRendered()",
+  "SetGammaRamp(unsigned short const*, unsigned short const*, unsigned short const*)",
+  "GetPrevGLSwapWindowTime()"
+ ],
+ "retail_reference": {
+  "module": "bin/launcher",
+  "class": "CSDLMgr",
+  "offset": 0,
+  "chain": [
+   "CSDLMgr",
+   "ILauncherMgr"
+  ]
+ },
+ "retail_len": 38,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 38
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Connect",
+   "sig": "Connect(void* (*)(char const*, int*))",
+   "symbol": "CSDLMgr::Connect(void* (*)(char const*, int*))"
+  },
+  {
+   "index": 1,
+   "name": "Disconnect",
+   "sig": "Disconnect()",
+   "symbol": "CSDLMgr::Disconnect()"
+  },
+  {
+   "index": 2,
+   "name": "QueryInterface",
+   "sig": "QueryInterface(char const*)",
+   "symbol": "CSDLMgr::QueryInterface(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "CSDLMgr::Init()"
+  },
+  {
+   "index": 4,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CSDLMgr::Shutdown()"
+  },
+  {
+   "index": 5,
+   "name": "CreateGameWindow",
+   "sig": "CreateGameWindow(char const*, bool, int, int)",
+   "symbol": "CSDLMgr::CreateGameWindow(char const*, bool, int, int)"
+  },
+  {
+   "index": 6,
+   "name": "IncWindowRefCount",
+   "sig": "IncWindowRefCount()",
+   "symbol": "CSDLMgr::IncWindowRefCount()"
+  },
+  {
+   "index": 7,
+   "name": "DecWindowRefCount",
+   "sig": "DecWindowRefCount()",
+   "symbol": "CSDLMgr::DecWindowRefCount()"
+  },
+  {
+   "index": 8,
+   "name": "GetEvents",
+   "sig": "GetEvents(CCocoaEvent*, int, bool)",
+   "symbol": "CSDLMgr::GetEvents(CCocoaEvent*, int, bool)"
+  },
+  {
+   "index": 9,
+   "name": "SetCursorPosition",
+   "sig": "SetCursorPosition(int, int)",
+   "symbol": "CSDLMgr::SetCursorPosition(int, int)"
+  },
+  {
+   "index": 10,
+   "name": "SetWindowFullScreen",
+   "sig": "SetWindowFullScreen(bool, int, int)",
+   "symbol": "CSDLMgr::SetWindowFullScreen(bool, int, int)"
+  },
+  {
+   "index": 11,
+   "name": "IsWindowFullScreen",
+   "sig": "IsWindowFullScreen()",
+   "symbol": "CSDLMgr::IsWindowFullScreen()"
+  },
+  {
+   "index": 12,
+   "name": "MoveWindow",
+   "sig": "MoveWindow(int, int)",
+   "symbol": "CSDLMgr::MoveWindow(int, int)"
+  },
+  {
+   "index": 13,
+   "name": "SizeWindow",
+   "sig": "SizeWindow(int, int)",
+   "symbol": "CSDLMgr::SizeWindow(int, int)"
+  },
+  {
+   "index": 14,
+   "name": "PumpWindowsMessageLoop",
+   "sig": "PumpWindowsMessageLoop()",
+   "symbol": "CSDLMgr::PumpWindowsMessageLoop()"
+  },
+  {
+   "index": 15,
+   "name": "DestroyGameWindow",
+   "sig": "DestroyGameWindow()",
+   "symbol": "CSDLMgr::DestroyGameWindow()"
+  },
+  {
+   "index": 16,
+   "name": "SetApplicationIcon",
+   "sig": "SetApplicationIcon(char const*)",
+   "symbol": "CSDLMgr::SetApplicationIcon(char const*)"
+  },
+  {
+   "index": 17,
+   "name": "GetMouseDelta",
+   "sig": "GetMouseDelta(int&, int&, bool)",
+   "symbol": "CSDLMgr::GetMouseDelta(int&, int&, bool)"
+  },
+  {
+   "index": 18,
+   "name": "GetNativeDisplayInfo",
+   "sig": "GetNativeDisplayInfo(int, unsigned int&, unsigned int&, unsigned int&)",
+   "symbol": "CSDLMgr::GetNativeDisplayInfo(int, unsigned int&, unsigned int&, unsigned int&)"
+  },
+  {
+   "index": 19,
+   "name": "RenderedSize",
+   "sig": "RenderedSize(unsigned int&, unsigned int&, bool)",
+   "symbol": "CSDLMgr::RenderedSize(unsigned int&, unsigned int&, bool)"
+  },
+  {
+   "index": 20,
+   "name": "DisplayedSize",
+   "sig": "DisplayedSize(unsigned int&, unsigned int&)",
+   "symbol": "CSDLMgr::DisplayedSize(unsigned int&, unsigned int&)"
+  },
+  {
+   "index": 21,
+   "name": "GetMainContext",
+   "sig": "GetMainContext()",
+   "symbol": "CSDLMgr::GetMainContext()"
+  },
+  {
+   "index": 22,
+   "name": "GetGLContextForWindow",
+   "sig": "GetGLContextForWindow(void*)",
+   "symbol": "CSDLMgr::GetGLContextForWindow(void*)"
+  },
+  {
+   "index": 23,
+   "name": "CreateExtraContext",
+   "sig": "CreateExtraContext()",
+   "symbol": "CSDLMgr::CreateExtraContext()"
+  },
+  {
+   "index": 24,
+   "name": "DeleteContext",
+   "sig": "DeleteContext(void*)",
+   "symbol": "CSDLMgr::DeleteContext(void*)"
+  },
+  {
+   "index": 25,
+   "name": "MakeContextCurrent",
+   "sig": "MakeContextCurrent(void*)",
+   "symbol": "CSDLMgr::MakeContextCurrent(void*)"
+  },
+  {
+   "index": 26,
+   "name": "GetDisplayDB",
+   "sig": "GetDisplayDB()",
+   "symbol": "CSDLMgr::GetDisplayDB()"
+  },
+  {
+   "index": 27,
+   "name": "GetDesiredPixelFormatAttribsAndRendererInfo",
+   "sig": "GetDesiredPixelFormatAttribsAndRendererInfo(unsigned int**, unsigned int*, GLMRendererInfoFields*)",
+   "symbol": "CSDLMgr::GetDesiredPixelFormatAttribsAndRendererInfo(unsigned int**, unsigned int*, GLMRendererInfoFields*)"
+  },
+  {
+   "index": 28,
+   "name": "ShowPixels",
+   "sig": "ShowPixels(CShowPixelsParams*)",
+   "symbol": "CSDLMgr::ShowPixels(CShowPixelsParams*)"
+  },
+  {
+   "index": 29,
+   "name": "GetStackCrawl",
+   "sig": "GetStackCrawl(CStackCrawlParams*)",
+   "symbol": "CSDLMgr::GetStackCrawl(CStackCrawlParams*)"
+  },
+  {
+   "index": 30,
+   "name": "WaitUntilUserInput",
+   "sig": "WaitUntilUserInput(int)",
+   "symbol": "CSDLMgr::WaitUntilUserInput(int)"
+  },
+  {
+   "index": 31,
+   "name": "GetWindowRef",
+   "sig": "GetWindowRef()",
+   "symbol": "CSDLMgr::GetWindowRef()"
+  },
+  {
+   "index": 32,
+   "name": "SetMouseVisible",
+   "sig": "SetMouseVisible(bool)",
+   "symbol": "CSDLMgr::SetMouseVisible(bool)"
+  },
+  {
+   "index": 33,
+   "name": "SetMouseCursor",
+   "sig": "SetMouseCursor(SDL_Cursor*)",
+   "symbol": "CSDLMgr::SetMouseCursor(SDL_Cursor*)"
+  },
+  {
+   "index": 34,
+   "name": "SetForbidMouseGrab",
+   "sig": "SetForbidMouseGrab(bool)",
+   "symbol": "CSDLMgr::SetForbidMouseGrab(bool)"
+  },
+  {
+   "index": 35,
+   "name": "OnFrameRendered",
+   "sig": "OnFrameRendered()",
+   "symbol": "CSDLMgr::OnFrameRendered()"
+  },
+  {
+   "index": 36,
+   "name": "SetGammaRamp",
+   "sig": "SetGammaRamp(unsigned short const*, unsigned short const*, unsigned short const*)",
+   "symbol": "CSDLMgr::SetGammaRamp(unsigned short const*, unsigned short const*, unsigned short const*)"
+  },
+  {
+   "index": 37,
+   "name": "GetPrevGLSwapWindowTime",
+   "sig": "GetPrevGLSwapWindowTime()",
+   "symbol": "CSDLMgr::GetPrevGLSwapWindowTime()"
+  }
+ ],
+ "derived": [
+  "bin/launcher:CSDLMgr"
+ ],
+ "derived_count": 1
+}

@@ -501,11 +501,11 @@ protected:
 	virtual void RequestTextures()
 	{
 		if ( !m_Parameters.m_pTexFilename.IsEmpty() )
-			materials->AsyncFindTexture( m_Parameters.m_pTexFilename.Get(), TEXTURE_GROUP_RUNTIME_COMPOSITE, this, ( void* ) Neutral, false, TEXTUREFLAGS_IMMEDIATE_CLEANUP );
+			MaterialSystem()->AsyncFindTexture( m_Parameters.m_pTexFilename.Get(), TEXTURE_GROUP_RUNTIME_COMPOSITE, this, ( void* ) Neutral, false, TEXTUREFLAGS_IMMEDIATE_CLEANUP );
 		if ( !m_Parameters.m_pTexRedFilename.IsEmpty() )
-			materials->AsyncFindTexture( m_Parameters.m_pTexRedFilename.Get(), TEXTURE_GROUP_RUNTIME_COMPOSITE, this, ( void* ) Red, false, TEXTUREFLAGS_IMMEDIATE_CLEANUP );
+			MaterialSystem()->AsyncFindTexture( m_Parameters.m_pTexRedFilename.Get(), TEXTURE_GROUP_RUNTIME_COMPOSITE, this, ( void* ) Red, false, TEXTUREFLAGS_IMMEDIATE_CLEANUP );
 		if ( !m_Parameters.m_pTexBlueFilename.IsEmpty() )
-			materials->AsyncFindTexture( m_Parameters.m_pTexBlueFilename.Get(), TEXTURE_GROUP_RUNTIME_COMPOSITE, this, ( void* ) Blue, false, TEXTUREFLAGS_IMMEDIATE_CLEANUP );	
+			MaterialSystem()->AsyncFindTexture( m_Parameters.m_pTexBlueFilename.Get(), TEXTURE_GROUP_RUNTIME_COMPOSITE, this, ( void* ) Blue, false, TEXTUREFLAGS_IMMEDIATE_CLEANUP );	
 	}
 
 	virtual void ResolveThis( CTextureCompositor* _comp )
@@ -866,7 +866,7 @@ public:
 protected:
 	virtual void RequestTextures() 
 	{
-		materials->AsyncFindTexture( m_Parameters.m_pTexFilename.Get(), TEXTURE_GROUP_RUNTIME_COMPOSITE, this, NULL, false, TEXTUREFLAGS_IMMEDIATE_CLEANUP );
+		MaterialSystem()->AsyncFindTexture( m_Parameters.m_pTexFilename.Get(), TEXTURE_GROUP_RUNTIME_COMPOSITE, this, NULL, false, TEXTUREFLAGS_IMMEDIATE_CLEANUP );
 	}
 
 	virtual void ResolveThis( CTextureCompositor* _comp )
@@ -1090,10 +1090,10 @@ protected:
 	virtual void RequestTextures()
 	{
 		if ( !m_Parameters.m_possibleStickers[ m_nChoice ].m_baseFilename.IsEmpty() )
-			materials->AsyncFindTexture( m_Parameters.m_possibleStickers[ m_nChoice ].m_baseFilename.Get(), TEXTURE_GROUP_RUNTIME_COMPOSITE, this, ( void* ) Albedo, false, TEXTUREFLAGS_IMMEDIATE_CLEANUP );
+			MaterialSystem()->AsyncFindTexture( m_Parameters.m_possibleStickers[ m_nChoice ].m_baseFilename.Get(), TEXTURE_GROUP_RUNTIME_COMPOSITE, this, ( void* ) Albedo, false, TEXTUREFLAGS_IMMEDIATE_CLEANUP );
 
 		if ( !m_Parameters.m_possibleStickers[ m_nChoice ].m_specFilename.IsEmpty() )
-			materials->AsyncFindTexture( m_Parameters.m_possibleStickers[ m_nChoice ].m_specFilename.Get(), TEXTURE_GROUP_RUNTIME_COMPOSITE, this, ( void* ) Specular, false, TEXTUREFLAGS_IMMEDIATE_CLEANUP );	
+			MaterialSystem()->AsyncFindTexture( m_Parameters.m_possibleStickers[ m_nChoice ].m_specFilename.Get(), TEXTURE_GROUP_RUNTIME_COMPOSITE, this, ( void* ) Specular, false, TEXTUREFLAGS_IMMEDIATE_CLEANUP );	
 	}
 
 	virtual void ResolveThis( CTextureCompositor* _comp )
@@ -1334,7 +1334,7 @@ private:
 #endif
 
 		CMatRenderContextPtr pRenderContext( materials );
-		pRenderContext->AsyncCreateTextureFromRenderTarget( GetFirstChild()->GetResult().m_pRenderTarget, buffer, fmt, bGenMipmaps, nCreateFlags, this, NULL );
+		static_cast< IMatRenderContextInternal* >( pRenderContext.operator->() )->AsyncCreateTextureFromRenderTarget( GetFirstChild()->GetResult().m_pRenderTarget, buffer, fmt, bGenMipmaps, nCreateFlags, this, NULL );
 
 		SetResolveStatus( ECRS_PendingComposites );
 		// Don't clean up here just yet, we'll get cleaned up when the composite is totally complete.
@@ -1612,10 +1612,10 @@ ITexture* CTextureCompositor::AllocateCompositorRenderTarget( )
 
 	// Lie to the material system that we are asking for this allocation way back at the beginning of time.
 	// This used to matter to GPUs for perf, but hasn't in a long time.
-	materials->OverrideRenderTargetAllocation( true );
+	MaterialSystem()->OverrideRenderTargetAllocation( true );
 	ITexture* retVal = materials->CreateNamedRenderTargetTextureEx( "", m_nWidth, m_nHeight, RT_SIZE_LITERAL_PICMIP, IMAGE_FORMAT_RGBA8888, MATERIAL_RT_DEPTH_NONE, TEXTUREFLAGS_IMMEDIATE_CLEANUP );
 	Assert( retVal );
-	materials->OverrideRenderTargetAllocation( false );
+	MaterialSystem()->OverrideRenderTargetAllocation( false );
 
 	// Used to count how many we actually allocated so we can verify we cleaned them all up at 
 	// shutdown

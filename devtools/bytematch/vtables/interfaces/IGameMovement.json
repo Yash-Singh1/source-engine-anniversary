@@ -1,0 +1,518 @@
+{
+ "interface": "IGameMovement",
+ "headers": [],
+ "versions": {
+  "retail": [
+   "GameMovement001"
+  ],
+  "ours": [
+   "GameMovement001"
+  ],
+  "sdk2013": [
+   "GameMovement001"
+  ]
+ },
+ "version_macros": [
+  "INTERFACENAME_GAMEMOVEMENT"
+ ],
+ "registrations": [
+  {
+   "module": "episodic/client",
+   "version": "GameMovement001",
+   "class": "CGameMovement"
+  },
+  {
+   "module": "episodic/server",
+   "version": "GameMovement001",
+   "class": "CGameMovement"
+  },
+  {
+   "module": "hl2/client",
+   "version": "GameMovement001",
+   "class": "CGameMovement"
+  },
+  {
+   "module": "hl2/server",
+   "version": "GameMovement001",
+   "class": "CGameMovement"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "GameMovement001",
+   "class": "CGameMovement"
+  },
+  {
+   "module": "hl2_complete/server",
+   "version": "GameMovement001",
+   "class": "CGameMovement"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "GameMovement001",
+   "class": "CGameMovement"
+  },
+  {
+   "module": "hl2mp/server",
+   "version": "GameMovement001",
+   "class": "CGameMovement"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "GameMovement001",
+   "class": "CGameMovement"
+  },
+  {
+   "module": "lostcoast/server",
+   "version": "GameMovement001",
+   "class": "CGameMovement"
+  }
+ ],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "episodic/client",
+  "class": "CGameMovement",
+  "offset": 0,
+  "chain": [
+   "CGameMovement",
+   "IGameMovement"
+  ]
+ },
+ "retail_len": 56,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 56
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CGameMovement",
+   "sig": "~CGameMovement()",
+   "symbol": "CGameMovement::~CGameMovement()"
+  },
+  {
+   "index": 1,
+   "name": "~CGameMovement",
+   "sig": "~CGameMovement()",
+   "symbol": "CGameMovement::~CGameMovement()"
+  },
+  {
+   "index": 2,
+   "name": "ProcessMovement",
+   "sig": "ProcessMovement(C_BasePlayer*, CMoveData*)",
+   "symbol": "CGameMovement::ProcessMovement(C_BasePlayer*, CMoveData*)"
+  },
+  {
+   "index": 3,
+   "name": "StartTrackPredictionErrors",
+   "sig": "StartTrackPredictionErrors(C_BasePlayer*)",
+   "symbol": "CGameMovement::StartTrackPredictionErrors(C_BasePlayer*)"
+  },
+  {
+   "index": 4,
+   "name": "FinishTrackPredictionErrors",
+   "sig": "FinishTrackPredictionErrors(C_BasePlayer*)",
+   "symbol": "CGameMovement::FinishTrackPredictionErrors(C_BasePlayer*)"
+  },
+  {
+   "index": 5,
+   "name": "DiffPrint",
+   "sig": "DiffPrint(char const*, ...)",
+   "symbol": "CGameMovement::DiffPrint(char const*, ...)"
+  },
+  {
+   "index": 6,
+   "name": "GetPlayerMins",
+   "sig": "GetPlayerMins(bool) const",
+   "symbol": "CGameMovement::GetPlayerMins(bool) const"
+  },
+  {
+   "index": 7,
+   "name": "GetPlayerMaxs",
+   "sig": "GetPlayerMaxs(bool) const",
+   "symbol": "CGameMovement::GetPlayerMaxs(bool) const"
+  },
+  {
+   "index": 8,
+   "name": "GetPlayerViewOffset",
+   "sig": "GetPlayerViewOffset(bool) const",
+   "symbol": "CGameMovement::GetPlayerViewOffset(bool) const"
+  },
+  {
+   "index": 9,
+   "name": "TracePlayerBBox",
+   "sig": "TracePlayerBBox(Vector const&, Vector const&, unsigned int, int, CGameTrace&)",
+   "symbol": "CGameMovement::TracePlayerBBox(Vector const&, Vector const&, unsigned int, int, CGameTrace&)"
+  },
+  {
+   "index": 10,
+   "name": "TryTouchGround",
+   "sig": "TryTouchGround(Vector const&, Vector const&, Vector const&, Vector const&, unsigned int, int, CGameTrace&)",
+   "symbol": "CGameMovement::TryTouchGround(Vector const&, Vector const&, Vector const&, Vector const&, unsigned int, int, CGameTrace&)"
+  },
+  {
+   "index": 11,
+   "name": "PlayerSolidMask",
+   "sig": "PlayerSolidMask(bool)",
+   "symbol": "CGameMovement::PlayerSolidMask(bool)"
+  },
+  {
+   "index": 12,
+   "name": "PlayerMove",
+   "sig": "PlayerMove()",
+   "symbol": "CGameMovement::PlayerMove()"
+  },
+  {
+   "index": 13,
+   "name": "CalcRoll",
+   "sig": "CalcRoll(QAngle const&, Vector const&, float, float)",
+   "symbol": "CGameMovement::CalcRoll(QAngle const&, Vector const&, float, float)"
+  },
+  {
+   "index": 14,
+   "name": "DecayPunchAngle",
+   "sig": "DecayPunchAngle()",
+   "symbol": "CGameMovement::DecayPunchAngle()"
+  },
+  {
+   "index": 15,
+   "name": "CheckWaterJump",
+   "sig": "CheckWaterJump()",
+   "symbol": "CGameMovement::CheckWaterJump()"
+  },
+  {
+   "index": 16,
+   "name": "WaterMove",
+   "sig": "WaterMove()",
+   "symbol": "CGameMovement::WaterMove()"
+  },
+  {
+   "index": 17,
+   "name": "AirAccelerate",
+   "sig": "AirAccelerate(Vector&, float, float)",
+   "symbol": "CGameMovement::AirAccelerate(Vector&, float, float)"
+  },
+  {
+   "index": 18,
+   "name": "AirMove",
+   "sig": "AirMove()",
+   "symbol": "CGameMovement::AirMove()"
+  },
+  {
+   "index": 19,
+   "name": "GetAirSpeedCap",
+   "sig": "GetAirSpeedCap()",
+   "symbol": "CGameMovement::GetAirSpeedCap()"
+  },
+  {
+   "index": 20,
+   "name": "CanAccelerate",
+   "sig": "CanAccelerate()",
+   "symbol": "CGameMovement::CanAccelerate()"
+  },
+  {
+   "index": 21,
+   "name": "Accelerate",
+   "sig": "Accelerate(Vector&, float, float)",
+   "symbol": "CGameMovement::Accelerate(Vector&, float, float)"
+  },
+  {
+   "index": 22,
+   "name": "WalkMove",
+   "sig": "WalkMove()",
+   "symbol": "CGameMovement::WalkMove()"
+  },
+  {
+   "index": 23,
+   "name": "FullWalkMove",
+   "sig": "FullWalkMove()",
+   "symbol": "CGameMovement::FullWalkMove()"
+  },
+  {
+   "index": 24,
+   "name": "OnJump",
+   "sig": "OnJump(float)",
+   "symbol": "CGameMovement::OnJump(float)"
+  },
+  {
+   "index": 25,
+   "name": "OnLand",
+   "sig": "OnLand(float)",
+   "symbol": "CGameMovement::OnLand(float)"
+  },
+  {
+   "index": 26,
+   "name": "OnTryPlayerMoveCollision",
+   "sig": "OnTryPlayerMoveCollision(CGameTrace&)",
+   "symbol": "CGameMovement::OnTryPlayerMoveCollision(CGameTrace&)"
+  },
+  {
+   "index": 27,
+   "name": "GetPlayerMins",
+   "sig": "GetPlayerMins() const",
+   "symbol": "CGameMovement::GetPlayerMins() const"
+  },
+  {
+   "index": 28,
+   "name": "GetPlayerMaxs",
+   "sig": "GetPlayerMaxs() const",
+   "symbol": "CGameMovement::GetPlayerMaxs() const"
+  },
+  {
+   "index": 29,
+   "name": "GetCheckInterval",
+   "sig": "GetCheckInterval(CGameMovement::IntervalType_t)",
+   "symbol": "CGameMovement::GetCheckInterval(CGameMovement::IntervalType_t)"
+  },
+  {
+   "index": 30,
+   "name": "CheckJumpButton",
+   "sig": "CheckJumpButton()",
+   "symbol": "CGameMovement::CheckJumpButton()"
+  },
+  {
+   "index": 31,
+   "name": "FullTossMove",
+   "sig": "FullTossMove()",
+   "symbol": "CGameMovement::FullTossMove()"
+  },
+  {
+   "index": 32,
+   "name": "FullLadderMove",
+   "sig": "FullLadderMove()",
+   "symbol": "CGameMovement::FullLadderMove()"
+  },
+  {
+   "index": 33,
+   "name": "TryPlayerMove",
+   "sig": "TryPlayerMove(Vector*, CGameTrace*)",
+   "symbol": "CGameMovement::TryPlayerMove(Vector*, CGameTrace*)"
+  },
+  {
+   "index": 34,
+   "name": "LadderMove",
+   "sig": "LadderMove()",
+   "symbol": "CGameMovement::LadderMove()"
+  },
+  {
+   "index": 35,
+   "name": "OnLadder",
+   "sig": "OnLadder(CGameTrace&)",
+   "symbol": "CGameMovement::OnLadder(CGameTrace&)"
+  },
+  {
+   "index": 36,
+   "name": "LadderDistance",
+   "sig": "LadderDistance() const",
+   "symbol": "CGameMovement::LadderDistance() const"
+  },
+  {
+   "index": 37,
+   "name": "LadderMask",
+   "sig": "LadderMask() const",
+   "symbol": "CGameMovement::LadderMask() const"
+  },
+  {
+   "index": 38,
+   "name": "ClimbSpeed",
+   "sig": "ClimbSpeed() const",
+   "symbol": "CGameMovement::ClimbSpeed() const"
+  },
+  {
+   "index": 39,
+   "name": "LadderLateralMultiplier",
+   "sig": "LadderLateralMultiplier() const",
+   "symbol": "CGameMovement::LadderLateralMultiplier() const"
+  },
+  {
+   "index": 40,
+   "name": "CheckStuck",
+   "sig": "CheckStuck()",
+   "symbol": "CGameMovement::CheckStuck()"
+  },
+  {
+   "index": 41,
+   "name": "CheckWater",
+   "sig": "CheckWater()",
+   "symbol": "CGameMovement::CheckWater()"
+  },
+  {
+   "index": 42,
+   "name": "CategorizePosition",
+   "sig": "CategorizePosition()",
+   "symbol": "CGameMovement::CategorizePosition()"
+  },
+  {
+   "index": 43,
+   "name": "CheckParameters",
+   "sig": "CheckParameters()",
+   "symbol": "CGameMovement::CheckParameters()"
+  },
+  {
+   "index": 44,
+   "name": "ReduceTimers",
+   "sig": "ReduceTimers()",
+   "symbol": "CGameMovement::ReduceTimers()"
+  },
+  {
+   "index": 45,
+   "name": "CheckFalling",
+   "sig": "CheckFalling()",
+   "symbol": "CGameMovement::CheckFalling()"
+  },
+  {
+   "index": 46,
+   "name": "PlayerRoughLandingEffects",
+   "sig": "PlayerRoughLandingEffects(float)",
+   "symbol": "CGameMovement::PlayerRoughLandingEffects(float)"
+  },
+  {
+   "index": 47,
+   "name": "Duck",
+   "sig": "Duck()",
+   "symbol": "CGameMovement::Duck()"
+  },
+  {
+   "index": 48,
+   "name": "HandleDuckingSpeedCrop",
+   "sig": "HandleDuckingSpeedCrop()",
+   "symbol": "CGameMovement::HandleDuckingSpeedCrop()"
+  },
+  {
+   "index": 49,
+   "name": "FinishUnDuck",
+   "sig": "FinishUnDuck()",
+   "symbol": "CGameMovement::FinishUnDuck()"
+  },
+  {
+   "index": 50,
+   "name": "FinishDuck",
+   "sig": "FinishDuck()",
+   "symbol": "CGameMovement::FinishDuck()"
+  },
+  {
+   "index": 51,
+   "name": "CanUnduck",
+   "sig": "CanUnduck()",
+   "symbol": "CGameMovement::CanUnduck()"
+  },
+  {
+   "index": 52,
+   "name": "TestPlayerPosition",
+   "sig": "TestPlayerPosition(Vector const&, int, CGameTrace&)",
+   "symbol": "CGameMovement::TestPlayerPosition(Vector const&, int, CGameTrace&)"
+  },
+  {
+   "index": 53,
+   "name": "SetGroundEntity",
+   "sig": "SetGroundEntity(CGameTrace*)",
+   "symbol": "CGameMovement::SetGroundEntity(CGameTrace*)"
+  },
+  {
+   "index": 54,
+   "name": "StepMove",
+   "sig": "StepMove(Vector&, CGameTrace&)",
+   "symbol": "CGameMovement::StepMove(Vector&, CGameTrace&)"
+  },
+  {
+   "index": 55,
+   "name": "GameHasLadders",
+   "sig": "GameHasLadders() const",
+   "symbol": "CGameMovement::GameHasLadders() const"
+  }
+ ],
+ "derived_disagreements": [
+  {
+   "module": "episodic/server",
+   "class": "CGameMovement",
+   "index": 2,
+   "ref": "ProcessMovement(C_BasePlayer*, CMoveData*)",
+   "got": "ProcessMovement(CBasePlayer*, CMoveData*)"
+  },
+  {
+   "module": "episodic/server",
+   "class": "CHL2GameMovement",
+   "index": 2,
+   "ref": "ProcessMovement(C_BasePlayer*, CMoveData*)",
+   "got": "ProcessMovement(CBasePlayer*, CMoveData*)"
+  },
+  {
+   "module": "hl2/server",
+   "class": "CGameMovement",
+   "index": 2,
+   "ref": "ProcessMovement(C_BasePlayer*, CMoveData*)",
+   "got": "ProcessMovement(CBasePlayer*, CMoveData*)"
+  },
+  {
+   "module": "hl2/server",
+   "class": "CHL2GameMovement",
+   "index": 2,
+   "ref": "ProcessMovement(C_BasePlayer*, CMoveData*)",
+   "got": "ProcessMovement(CBasePlayer*, CMoveData*)"
+  },
+  {
+   "module": "hl2_complete/server",
+   "class": "CGameMovement",
+   "index": 2,
+   "ref": "ProcessMovement(C_BasePlayer*, CMoveData*)",
+   "got": "ProcessMovement(CBasePlayer*, CMoveData*)"
+  },
+  {
+   "module": "hl2_complete/server",
+   "class": "CHL2GameMovement",
+   "index": 2,
+   "ref": "ProcessMovement(C_BasePlayer*, CMoveData*)",
+   "got": "ProcessMovement(CBasePlayer*, CMoveData*)"
+  },
+  {
+   "module": "hl2mp/server",
+   "class": "CGameMovement",
+   "index": 2,
+   "ref": "ProcessMovement(C_BasePlayer*, CMoveData*)",
+   "got": "ProcessMovement(CBasePlayer*, CMoveData*)"
+  },
+  {
+   "module": "hl2mp/server",
+   "class": "CHL2GameMovement",
+   "index": 2,
+   "ref": "ProcessMovement(C_BasePlayer*, CMoveData*)",
+   "got": "ProcessMovement(CBasePlayer*, CMoveData*)"
+  },
+  {
+   "module": "lostcoast/server",
+   "class": "CGameMovement",
+   "index": 2,
+   "ref": "ProcessMovement(C_BasePlayer*, CMoveData*)",
+   "got": "ProcessMovement(CBasePlayer*, CMoveData*)"
+  },
+  {
+   "module": "lostcoast/server",
+   "class": "CHL2GameMovement",
+   "index": 2,
+   "ref": "ProcessMovement(C_BasePlayer*, CMoveData*)",
+   "got": "ProcessMovement(CBasePlayer*, CMoveData*)"
+  }
+ ],
+ "derived": [
+  "episodic/client:CGameMovement",
+  "episodic/client:CHL2GameMovement",
+  "episodic/server:CGameMovement",
+  "episodic/server:CHL2GameMovement",
+  "hl2/client:CGameMovement",
+  "hl2/client:CHL2GameMovement",
+  "hl2/server:CGameMovement",
+  "hl2/server:CHL2GameMovement",
+  "hl2_complete/client:CGameMovement",
+  "hl2_complete/client:CHL2GameMovement",
+  "hl2_complete/server:CGameMovement",
+  "hl2_complete/server:CHL2GameMovement",
+  "hl2mp/client:CGameMovement",
+  "hl2mp/client:CHL2GameMovement",
+  "hl2mp/server:CGameMovement",
+  "hl2mp/server:CHL2GameMovement",
+  "lostcoast/client:CGameMovement",
+  "lostcoast/client:CHL2GameMovement",
+  "lostcoast/server:CGameMovement",
+  "lostcoast/server:CHL2GameMovement"
+ ],
+ "derived_count": 20
+}

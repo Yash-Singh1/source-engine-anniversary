@@ -1,0 +1,134 @@
+{
+ "interface": "IGameEvent",
+ "headers": [
+  "public/igameevents.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 14,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "GetName() const",
+  "IsReliable() const",
+  "IsLocal() const",
+  "IsEmpty(char const*)",
+  "GetBool(char const*, bool)",
+  "GetInt(char const*, int)",
+  "GetFloat(char const*, float)",
+  "GetString(char const*, char const*)",
+  "SetBool(char const*, bool)",
+  "SetInt(char const*, int)",
+  "SetFloat(char const*, float)",
+  "SetString(char const*, char const*)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CGameEvent",
+  "offset": 0,
+  "chain": [
+   "CGameEvent",
+   "IGameEvent"
+  ]
+ },
+ "retail_len": 14,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 14
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CGameEvent",
+   "sig": "~CGameEvent()",
+   "symbol": "CGameEvent::~CGameEvent()"
+  },
+  {
+   "index": 1,
+   "name": "~CGameEvent",
+   "sig": "~CGameEvent()",
+   "symbol": "CGameEvent::~CGameEvent()"
+  },
+  {
+   "index": 2,
+   "name": "GetName",
+   "sig": "GetName() const",
+   "symbol": "CGameEvent::GetName() const"
+  },
+  {
+   "index": 3,
+   "name": "IsReliable",
+   "sig": "IsReliable() const",
+   "symbol": "CGameEvent::IsReliable() const"
+  },
+  {
+   "index": 4,
+   "name": "IsLocal",
+   "sig": "IsLocal() const",
+   "symbol": "CGameEvent::IsLocal() const"
+  },
+  {
+   "index": 5,
+   "name": "IsEmpty",
+   "sig": "IsEmpty(char const*)",
+   "symbol": "CGameEvent::IsEmpty(char const*)"
+  },
+  {
+   "index": 6,
+   "name": "GetBool",
+   "sig": "GetBool(char const*, bool)",
+   "symbol": "CGameEvent::GetBool(char const*, bool)"
+  },
+  {
+   "index": 7,
+   "name": "GetInt",
+   "sig": "GetInt(char const*, int)",
+   "symbol": "CGameEvent::GetInt(char const*, int)"
+  },
+  {
+   "index": 8,
+   "name": "GetFloat",
+   "sig": "GetFloat(char const*, float)",
+   "symbol": "CGameEvent::GetFloat(char const*, float)"
+  },
+  {
+   "index": 9,
+   "name": "GetString",
+   "sig": "GetString(char const*, char const*)",
+   "symbol": "CGameEvent::GetString(char const*, char const*)"
+  },
+  {
+   "index": 10,
+   "name": "SetBool",
+   "sig": "SetBool(char const*, bool)",
+   "symbol": "CGameEvent::SetBool(char const*, bool)"
+  },
+  {
+   "index": 11,
+   "name": "SetInt",
+   "sig": "SetInt(char const*, int)",
+   "symbol": "CGameEvent::SetInt(char const*, int)"
+  },
+  {
+   "index": 12,
+   "name": "SetFloat",
+   "sig": "SetFloat(char const*, float)",
+   "symbol": "CGameEvent::SetFloat(char const*, float)"
+  },
+  {
+   "index": 13,
+   "name": "SetString",
+   "sig": "SetString(char const*, char const*)",
+   "symbol": "CGameEvent::SetString(char const*, char const*)"
+  }
+ ],
+ "derived": [
+  "bin/engine:CGameEvent"
+ ],
+ "derived_count": 1
+}

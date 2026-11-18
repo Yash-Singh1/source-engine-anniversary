@@ -1,0 +1,58 @@
+{
+ "interface": "CDllDemandLoader",
+ "headers": [
+  "public/tier1/interface.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 2,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()"
+ ],
+ "retail_reference": {
+  "module": "episodic/client",
+  "class": "CDllDemandLoader",
+  "offset": 0,
+  "chain": [
+   "CDllDemandLoader"
+  ]
+ },
+ "retail_len": 2,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 2
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CDllDemandLoader",
+   "sig": "~CDllDemandLoader()",
+   "symbol": "CDllDemandLoader::~CDllDemandLoader()"
+  },
+  {
+   "index": 1,
+   "name": "~CDllDemandLoader",
+   "sig": "~CDllDemandLoader()",
+   "symbol": "CDllDemandLoader::~CDllDemandLoader()"
+  }
+ ],
+ "derived": [
+  "episodic/client:CDllDemandLoader",
+  "episodic/server:CDllDemandLoader",
+  "hl2/client:CDllDemandLoader",
+  "hl2/server:CDllDemandLoader",
+  "hl2_complete/client:CDllDemandLoader",
+  "hl2_complete/server:CDllDemandLoader",
+  "hl2mp/client:CDllDemandLoader",
+  "hl2mp/server:CDllDemandLoader",
+  "lostcoast/client:CDllDemandLoader",
+  "lostcoast/server:CDllDemandLoader"
+ ],
+ "derived_count": 10
+}

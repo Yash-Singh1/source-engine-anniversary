@@ -1448,11 +1448,10 @@ inline void CVertexBuilder::FastVertexSSE( const ModelVertexDX8_t &vertex )
 			movntps [edi + 32], xmm2
 			movntps [edi + 48], xmm3
 	}
-#elif defined(GNUC) || defined(PLATFORM_WINDOWS_PC64)
+#elif defined(GNUC) && defined(__i386__)
 	const void *pRead = &vertex;
 	void *pCurrPos = m_pCurrPosition;
-
-/*	__asm__ __volatile__ (
+	__asm__ __volatile__ (
 						  "movaps (%0), %%xmm0\n"
 						  "movaps 16(%0), %%xmm1\n"
 						  "movaps 32(%0), %%xmm2\n"
@@ -1461,7 +1460,10 @@ inline void CVertexBuilder::FastVertexSSE( const ModelVertexDX8_t &vertex )
 						  "movntps %%xmm1, 16(%1)\n"
 						  "movntps %%xmm2, 32(%1)\n"
 						  "movntps %%xmm3, 48(%1)\n"
-						  :: "r" (pRead), "r" (pCurrPos) : "memory"); */
+						  :: "r" (pRead), "r" (pCurrPos) : "memory");
+#elif defined(GNUC) || defined(PLATFORM_WINDOWS_PC64)
+	const void *pRead = &vertex;
+	void *pCurrPos = m_pCurrPosition;
 
 	__m128 m1 = _mm_load_ps( (float *)pRead );
 	__m128 m2 = _mm_load_ps( (float *)((intp)pRead + 16) );

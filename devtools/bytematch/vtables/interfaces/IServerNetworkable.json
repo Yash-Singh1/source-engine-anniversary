@@ -1,0 +1,121 @@
+{
+ "interface": "IServerNetworkable",
+ "headers": [
+  "public/iservernetworkable.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 11,
+ "sdk2013_slots": [
+  "GetEntityHandle()",
+  "GetServerClass()",
+  "GetEdict() const",
+  "GetClassName() const",
+  "Release()",
+  "AreaNum() const",
+  "GetBaseNetworkable()",
+  "GetBaseEntity()",
+  "GetPVSInfo()",
+  "~__bm_probe()",
+  "~__bm_probe()"
+ ],
+ "retail_reference": {
+  "module": "episodic/server",
+  "class": "CServerNetworkProperty",
+  "offset": 0,
+  "chain": [
+   "CServerNetworkProperty",
+   "IServerNetworkable"
+  ]
+ },
+ "retail_len": 11,
+ "retail_len_basis": "override: GetDataDescMap/FireEvent are CServerNetworkProperty's own",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 13
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "GetEntityHandle",
+   "sig": "GetEntityHandle()",
+   "symbol": "CServerNetworkProperty::GetEntityHandle()"
+  },
+  {
+   "index": 1,
+   "name": "GetServerClass",
+   "sig": "GetServerClass()",
+   "symbol": "CServerNetworkProperty::GetServerClass()"
+  },
+  {
+   "index": 2,
+   "name": "GetEdict",
+   "sig": "GetEdict() const",
+   "symbol": "CServerNetworkProperty::GetEdict() const"
+  },
+  {
+   "index": 3,
+   "name": "GetClassName",
+   "sig": "GetClassName() const",
+   "symbol": "CServerNetworkProperty::GetClassName() const"
+  },
+  {
+   "index": 4,
+   "name": "Release",
+   "sig": "Release()",
+   "symbol": "CServerNetworkProperty::Release()"
+  },
+  {
+   "index": 5,
+   "name": "AreaNum",
+   "sig": "AreaNum() const",
+   "symbol": "CServerNetworkProperty::AreaNum() const"
+  },
+  {
+   "index": 6,
+   "name": "GetBaseNetworkable",
+   "sig": "GetBaseNetworkable()",
+   "symbol": "CServerNetworkProperty::GetBaseNetworkable()"
+  },
+  {
+   "index": 7,
+   "name": "GetBaseEntity",
+   "sig": "GetBaseEntity()",
+   "symbol": "CServerNetworkProperty::GetBaseEntity()"
+  },
+  {
+   "index": 8,
+   "name": "GetPVSInfo",
+   "sig": "GetPVSInfo()",
+   "symbol": "CServerNetworkProperty::GetPVSInfo()"
+  },
+  {
+   "index": 9,
+   "name": "~CServerNetworkProperty",
+   "sig": "~CServerNetworkProperty()",
+   "symbol": "CServerNetworkProperty::~CServerNetworkProperty()"
+  },
+  {
+   "index": 10,
+   "name": "~CServerNetworkProperty",
+   "sig": "~CServerNetworkProperty()",
+   "symbol": "CServerNetworkProperty::~CServerNetworkProperty()"
+  }
+ ],
+ "implementer_tail": [
+  "GetDataDescMap()",
+  "FireEvent()"
+ ],
+ "derived": [
+  "episodic/server:CServerNetworkProperty",
+  "hl2/server:CServerNetworkProperty",
+  "hl2_complete/server:CServerNetworkProperty",
+  "hl2mp/server:CServerNetworkProperty",
+  "lostcoast/server:CServerNetworkProperty"
+ ],
+ "derived_count": 5
+}
