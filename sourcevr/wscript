@@ -19,12 +19,17 @@ def build(bld):
 		'../common',
 	]
 
+	# Retail sourcevr.dylib targets 10.5 (LC_VERSION_MIN, and memset rather than __bzero)
+	flags = ['-mmacosx-version-min=10.5'] if bld.env.RETAIL_OSX32 else []
+
 	bld.shlib(
 		source   = ['sourcevirtualreality.cpp'],
 		target   = PROJECT_NAME,
 		name     = PROJECT_NAME,
 		features = 'c cxx',
 		includes = includes,
+		cxxflags = flags,
+		linkflags = flags,
 		use      = ['tier0', 'tier1', 'tier2', 'tier3', 'mathlib', 'vstdlib', 'steam_api', 'filesystem_stdio'],
 		install_path = bld.env.LIBDIR,
 		idx      = bld.get_taskgen_count()
