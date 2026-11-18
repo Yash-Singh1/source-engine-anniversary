@@ -28,6 +28,8 @@ using namespace vgui;
 //-----------------------------------------------------------------------------
 CLoadGameDialog::CLoadGameDialog(vgui::Panel *parent) : BaseClass(parent, "LoadGameDialog")
 {
+	m_nWorkshopItemID = 0;
+
 	SetDeleteSelfOnClose(true);
 	SetBounds(0, 0, 512, 384);
 	SetMinimumSize( 256, 300 );
@@ -65,7 +67,14 @@ void CLoadGameDialog::OnCommand( const char *command )
 			{
 				// Load the game, return to top and switch to engine
 				char sz[ 256 ];
-				Q_snprintf(sz, sizeof( sz ), "progress_enable\nload %s\n", shortName );
+				if ( m_strOverrideMod.Length() )
+				{
+					Q_snprintf( sz, sizeof( sz ), "disconnect\nlaunchmod %s\nprogress_enable\nload %s\n", m_strOverrideMod.Get(), shortName );
+				}
+				else
+				{
+					Q_snprintf( sz, sizeof( sz ), "progress_enable\nload %s\n", shortName );
+				}
 				
 				engine->ClientCmd_Unrestricted( sz );
 				

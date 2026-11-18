@@ -107,6 +107,10 @@ extern void longjmp( jmp_buf, int ) __attribute__((noreturn));
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include <tier0/memdbgon.h>
+#ifdef BYTEMATCH_RETAIL
+#define V_strcpy_safe( pDest, pSrc ) Q_strcpy( pDest, pSrc )
+#endif
+#line 110
 
 //-----------------------------------------------------------------------------
 // Purpose: 

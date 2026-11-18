@@ -58,11 +58,16 @@ public:
 
 		LoadControlSettings( "resource/SaveGamePanel.res" );
 
+		m_pSaveGameImage->SetProportional( IsProportional() );
+		m_pAutoSaveImage->SetProportional( IsProportional() );
+
 		m_FillColor = m_pSaveGameScreenshotBackground->GetFillColor();
 	}
 
-	void SetSaveGameInfo( SaveGameDescription_t &save )
+	void SetSaveGameInfo( SaveGameDescription_t &save, const char *pszOverrideMod )
 	{
+		const char *pszPathID = ( pszOverrideMod && pszOverrideMod[0] ) ? "BASE_PATH" : "MOD";
+
 		// set the bitmap to display
 		char tga[_MAX_PATH];
 		Q_strncpy( tga, save.szFileName, sizeof(tga) );
@@ -73,9 +78,9 @@ public:
 		}
 
 		// If a TGA file exists then it is a user created savegame
-		if ( g_pFullFileSystem->FileExists( tga ) )
+		if ( g_pFullFileSystem->FileExists( tga, pszPathID ) )
 		{
-			m_pSaveGameImage->SetTGA( tga );
+			m_pSaveGameImage->SetTGA( tga, pszPathID );
 		}
 		// If there is no TGA then it is either an autosave or the user TGA file has been deleted
 		else
@@ -164,7 +169,9 @@ private:
 //-----------------------------------------------------------------------------
 CBaseSaveGameDialog::CBaseSaveGameDialog( vgui::Panel *parent, const char *name ) : BaseClass( parent, name )
 {
-	CreateSavedGamesList();
+	m_pGameList = new vgui::PanelListPanel( this, "listpanel_loadgame" );
+	m_pGameList->SetFirstColumnWidth( 0 );
+
 	ScanSavedGames();
 
 	m_pLoadButton = new vgui::Button( this, "loadsave", "" );
@@ -172,12 +179,18 @@ CBaseSaveGameDialog::CBaseSaveGameDialog( vgui::Panel *parent, const char *name 
 }
 
 //-----------------------------------------------------------------------------
-// Purpose: Creates the load game display list
+// Purpose: Destructor
 //-----------------------------------------------------------------------------
-void CBaseSaveGameDialog::CreateSavedGamesList()
+CBaseSaveGameDialog::~CBaseSaveGameDialog()
 {
-	m_pGameList = new vgui::PanelListPanel( this, "listpanel_loadgame" );
-	m_pGameList->SetFirstColumnWidth( 0 );
+	for ( int i = 0; i < m_SaveGames.Count(); i++ )
+	{
+		if ( m_SaveGames[i].pAppendix )
+		{
+			m_SaveGames[i].pAppendix->deleteThis();
+			m_SaveGames[i].pAppendix = NULL;
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -201,16 +214,43 @@ int CBaseSaveGameDialog::GetSelectedItemSaveIndex()
 }
 
 //-----------------------------------------------------------------------------
+// Purpose: lists the save games of another game directory
+//-----------------------------------------------------------------------------
+void CBaseSaveGameDialog::SetOverrideMod( const char *pszOverrideMod )
+{
+	m_strOverrideMod = pszOverrideMod;
+	ScanSavedGames();
+}
+
+//-----------------------------------------------------------------------------
 // Purpose: builds save game list from directory
 //-----------------------------------------------------------------------------
 void CBaseSaveGameDialog::ScanSavedGames()
 {
 	// populate list box with all saved games on record:
 	char	szDirectory[_MAX_PATH];
-	Q_snprintf( szDirectory, sizeof( szDirectory ), "save/*.sav" );
+	const char *pszPathID;
+	if ( m_strOverrideMod.Length() )
+	{
+		Q_snprintf( szDirectory, sizeof( szDirectory ), "%s/save/*.sav", m_strOverrideMod.Get() );
+		pszPathID = "BASE_PATH";
+	}
+	else
+	{
+		Q_snprintf( szDirectory, sizeof( szDirectory ), "save/*.sav" );
+		pszPathID = "MOD";
+	}
 
 	// clear the current list
 	m_pGameList->DeleteAllItems();
+	for ( int i = 0; i < m_SaveGames.Count(); i++ )
+	{
+		if ( m_SaveGames[i].pAppendix )
+		{
+			m_SaveGames[i].pAppendix->deleteThis();
+			m_SaveGames[i].pAppendix = NULL;
+		}
+	}
 	m_SaveGames.RemoveAll();
 	
 	// iterate the saved files
@@ -225,10 +265,17 @@ void CBaseSaveGameDialog::ScanSavedGames()
 		}
 
 		char szFileName[_MAX_PATH];
-		Q_snprintf(szFileName, sizeof( szFileName ), "save/%s", pFileName);
+		if ( m_strOverrideMod.Length() )
+		{
+			Q_snprintf( szFileName, sizeof( szFileName ), "%s/save/%s", m_strOverrideMod.Get(), pFileName );
+		}
+		else
+		{
+			Q_snprintf( szFileName, sizeof( szFileName ), "save/%s", pFileName );
+		}
 
 		// Only load save games from the current mod's save dir
-		if( !g_pFullFileSystem->FileExists( szFileName, "MOD" ) )
+		if( !g_pFullFileSystem->FileExists( szFileName, pszPathID ) )
 		{
 			pFileName = g_pFullFileSystem->FindNext( handle );
 			continue;
@@ -263,6 +310,7 @@ void CBaseSaveGameDialog::ScanSavedGames()
 	{
 		vgui::Label *pNoSavesLabel = SETUP_PANEL(new Label(m_pGameList, "NoSavesLabel", "#GameUI_NoSaveGamesToDisplay"));
 		pNoSavesLabel->SetTextColorState(vgui::Label::CS_DULL);
+		pNoSavesLabel->SizeToContents();
 		m_pGameList->AddItem( NULL, pNoSavesLabel );
 	}
 
@@ -277,8 +325,29 @@ void CBaseSaveGameDialog::AddSaveGameItemToList( int saveIndex )
 {
 	// create the new panel and add to the list
 	CSaveGamePanel *saveGamePanel = new CSaveGamePanel( m_pGameList, "SaveGamePanel", saveIndex );
-	saveGamePanel->SetSaveGameInfo( m_SaveGames[saveIndex] );
+	saveGamePanel->SetSaveGameInfo( m_SaveGames[saveIndex], m_strOverrideMod.Length() ? m_strOverrideMod.Get() : NULL );
 	m_pGameList->AddItem( NULL, saveGamePanel );
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Loads the key values saved next to a save game, if any
+//-----------------------------------------------------------------------------
+KeyValues *GetSaveAppendix( const char *pszFileName, const char *pszPathID )
+{
+	char szAppendixFile[MAX_PATH];
+	V_sprintf_safe( szAppendixFile, "%s.kv", pszFileName );
+
+	KeyValues *pAppendix = new KeyValues( "SaveAppendix" );
+	if ( !pAppendix )
+		return NULL;
+
+	if ( !pAppendix->LoadFromFile( g_pFullFileSystem, szAppendixFile, pszPathID ) )
+	{
+		pAppendix->deleteThis();
+		return NULL;
+	}
+
+	return pAppendix;
 }
 
 //-----------------------------------------------------------------------------
@@ -293,18 +362,23 @@ bool CBaseSaveGameDialog::ParseSaveData( char const *pszFileName, char const *ps
 	if ( !pszFileName || !pszShortName )
 		return false;
 
+	const char *pszPathID = !m_strOverrideMod.Length() ? "MOD" : "BASE_PATH";
+
 	Q_strncpy( save.szShortName, pszShortName, sizeof(save.szShortName) );
 	Q_strncpy( save.szFileName, pszFileName, sizeof(save.szFileName) );
 
-	FileHandle_t fh = g_pFullFileSystem->Open( pszFileName, "rb", "MOD" );
+	FileHandle_t fh = g_pFullFileSystem->Open( pszFileName, "rb", pszPathID );
 	if (fh == FILESYSTEM_INVALID_HANDLE)
 		return false;
 
 	int readok = SaveReadNameAndComment( fh, szMapName, ARRAYSIZE(szMapName), szComment, ARRAYSIZE(szComment) );
 	g_pFullFileSystem->Close(fh);
 
+	KeyValues *pAppendix = GetSaveAppendix( pszFileName, pszPathID );
+
 	if ( !readok )
 	{
+		pAppendix->deleteThis();
 		return false;
 	}
 
@@ -366,7 +440,7 @@ bool CBaseSaveGameDialog::ParseSaveData( char const *pszFileName, char const *ps
 	Q_strncpy( save.szElapsedTime, szElapsedTime, sizeof(save.szElapsedTime) );
 
 	// Now get file time stamp.
-	time_t fileTime = g_pFullFileSystem->GetFileTime(pszFileName);
+	time_t fileTime = g_pFullFileSystem->GetFileTime(pszFileName, pszPathID);
 	char szFileTime[32];
 	g_pFullFileSystem->FileTimeToString(szFileTime, sizeof(szFileTime), fileTime);
 	char *newline = strstr(szFileTime, "\n");
@@ -376,12 +450,13 @@ bool CBaseSaveGameDialog::ParseSaveData( char const *pszFileName, char const *ps
 	}
 	Q_strncpy( save.szFileTime, szFileTime, sizeof(save.szFileTime) );
 	save.iTimestamp = fileTime;
+	save.pAppendix = pAppendix;
 	return true;
 }
 
 void CBaseSaveGameDialog::OnKeyCodeTyped( vgui::KeyCode code )
 {
-	if ( code == KEY_ESCAPE )
+	if ( GetBaseButtonCode( code ) == KEY_ESCAPE )
 	{
 		OnCommand( "Close" );
 		return;
@@ -392,15 +467,19 @@ void CBaseSaveGameDialog::OnKeyCodeTyped( vgui::KeyCode code )
 
 void CBaseSaveGameDialog::OnKeyCodePressed( vgui::KeyCode code )
 {
-	if ( code == KEY_XBUTTON_B )
+	ButtonCode_t nButtonCode = GetBaseButtonCode( code );
+
+	if ( nButtonCode == KEY_XBUTTON_B || nButtonCode == STEAMCONTROLLER_B )
 	{
 		OnCommand( "Close" );
 		return;
 	}
-	else if ( code == KEY_XSTICK1_DOWN || 
-			  code == KEY_XSTICK2_DOWN || 
-			  code == KEY_XBUTTON_DOWN || 
-			  code == KEY_DOWN )
+	else if ( nButtonCode == KEY_XSTICK1_DOWN || 
+			  nButtonCode == KEY_XSTICK2_DOWN || 
+			  nButtonCode == KEY_XBUTTON_DOWN || 
+			  nButtonCode == KEY_DOWN ||
+			  nButtonCode == STEAMCONTROLLER_DPAD_DOWN ||
+			  nButtonCode == STEAMCONTROLLER_LEFT_PAD_DOWN )
 	{
 		if ( m_pGameList->GetItemCount() )
 		{
@@ -434,10 +513,12 @@ void CBaseSaveGameDialog::OnKeyCodePressed( vgui::KeyCode code )
 			}
 		}
 	}
-	else if ( code == KEY_XSTICK1_UP || 
-			  code == KEY_XSTICK2_UP || 
-			  code == KEY_XBUTTON_UP || 
-			  code == KEY_UP )
+	else if ( nButtonCode == KEY_XSTICK1_UP || 
+			  nButtonCode == KEY_XSTICK2_UP || 
+			  nButtonCode == KEY_XBUTTON_UP || 
+			  nButtonCode == KEY_UP ||
+			  nButtonCode == STEAMCONTROLLER_DPAD_UP ||
+			  nButtonCode == STEAMCONTROLLER_LEFT_PAD_UP )
 	{
 		if ( m_pGameList->GetItemCount() )
 		{
@@ -472,12 +553,12 @@ void CBaseSaveGameDialog::OnKeyCodePressed( vgui::KeyCode code )
 			}
 		}
 	}
-	else if ( code == KEY_ENTER || code == KEY_XBUTTON_A || code == STEAMCONTROLLER_A )
+	else if ( nButtonCode == KEY_ENTER || nButtonCode == KEY_XBUTTON_A || nButtonCode == STEAMCONTROLLER_A )
 	{
 		Panel *pSelectedPanel = m_pGameList->GetSelectedPanel();
 		if ( pSelectedPanel )
 		{
-			if ( code == KEY_XBUTTON_A || code == STEAMCONTROLLER_A )
+			if ( nButtonCode == KEY_XBUTTON_A || nButtonCode == STEAMCONTROLLER_A )
 			{
 				ConVarRef var( "joystick" );
 				if ( var.IsValid() && !var.GetBool() )
@@ -670,8 +751,10 @@ void CBaseSaveGameDialog::DeleteSaveGame( const char *fileName )
 	if ( !fileName || !fileName[0] )
 		return;
 
+	const char *pszPathID = !m_strOverrideMod.Length() ? "MOD" : "BASE_PATH";
+
 	// delete the save game file
-	g_pFullFileSystem->RemoveFile( fileName, "MOD" );
+	g_pFullFileSystem->RemoveFile( fileName, pszPathID );
 
 	// delete the associated tga
 	char tga[_MAX_PATH];
@@ -681,7 +764,7 @@ void CBaseSaveGameDialog::DeleteSaveGame( const char *fileName )
 	{
 		strcpy( ext, ".tga" );
 	}
-	g_pFullFileSystem->RemoveFile( tga, "MOD" );
+	g_pFullFileSystem->RemoveFile( tga, pszPathID );
 }
 
 //-----------------------------------------------------------------------------

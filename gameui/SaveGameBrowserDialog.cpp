@@ -1109,6 +1109,8 @@ void CSaveGameBrowserDialog::OnThink( void )
 //-----------------------------------------------------------------------------
 void CSaveGameBrowserDialog::OnKeyCodePressed( vgui::KeyCode code )
 {
+	ButtonCode_t nButtonCode = GetBaseButtonCode( code );
+
 	// If the console has UI up, then ignore it
 	if ( BasePanel()->IsWaitingForConsoleUI() )
 		return;
@@ -1119,38 +1121,32 @@ void CSaveGameBrowserDialog::OnKeyCodePressed( vgui::KeyCode code )
 
 	m_KeyRepeat.KeyDown( code );
 
-	switch( code )
+	switch( nButtonCode )
 	{
 	case KEY_XBUTTON_A:
-	case STEAMCONTROLLER_A:
 		PerformSelectedAction();
 		break;
 
 	case KEY_XBUTTON_B:
-	case STEAMCONTROLLER_B:
 		OnClose();
 		break;
 
 	case KEY_XBUTTON_X:
-	case STEAMCONTROLLER_X:
 		PerformDeletion();
 		break;
 
 	case KEY_XBUTTON_Y:
-	case STEAMCONTROLLER_Y:
 		BasePanel()->OnChangeStorageDevice();
 		break;
 
 		// Move the selection up and down
 	case KEY_XSTICK1_LEFT:
 	case KEY_XBUTTON_LEFT:
-	case STEAMCONTROLLER_DPAD_LEFT:
 		ScrollSelectionPanels( SCROLL_RIGHT );
 		break;
 
 	case KEY_XSTICK1_RIGHT:
 	case KEY_XBUTTON_RIGHT:
-	case STEAMCONTROLLER_DPAD_RIGHT:
 		ScrollSelectionPanels( SCROLL_LEFT );
 		break;
 

@@ -22,6 +22,7 @@
 #include "KeyValues.h"
 #include "OptionsSubKeyboard.h"
 #include "OptionsSubMouse.h"
+#include "OptionsSubGamepad.h"
 #include "OptionsSubTouch.h"
 #include "OptionsSubAudio.h"
 #include "OptionsSubVideo.h"
@@ -47,19 +48,10 @@ COptionsDialog::COptionsDialog(vgui::Panel *parent) : PropertyDialog(parent, "Op
 {
 	SetDeleteSelfOnClose(true);
 
-#ifdef BYTEMATCH_RETAIL
-	SetBounds(0, 0, 512, 406);
-#else
-	int w = 512;
-	int h = 406;
-	if (IsProportional())
-	{
-		w = scheme()->GetProportionalScaledValueEx(GetScheme(), w);
-		h = scheme()->GetProportionalScaledValueEx(GetScheme(), h);
-	}
-
-	SetBounds(0, 0, w, h);
-#endif
+	int nWide = PROPORTIONAL_VALUE( 512 );
+	int nTall = PROPORTIONAL_VALUE( 406 );
+	int nTabWidth = PROPORTIONAL_VALUE( 64 );
+	SetBounds( 0, 0, nWide, nTall );
 
 	SetSizeable( false );
 
@@ -90,6 +82,7 @@ COptionsDialog::COptionsDialog(vgui::Panel *parent) : PropertyDialog(parent, "Op
 
 	AddPage(new COptionsSubKeyboard(this), "#GameUI_Keyboard");
 	AddPage(new COptionsSubMouse(this), "#GameUI_Mouse");
+	AddPage(new COptionsSubGamepad(this), "#GameUI_Gamepad");
 
 #ifdef ANDROID
 	AddPage(new COptionsSubTouch(this), "Touch");
@@ -117,7 +110,7 @@ COptionsDialog::COptionsDialog(vgui::Panel *parent) : PropertyDialog(parent, "Op
 //	Msg("COptionsDialog::COptionsDialog(): %.3fms\n", (float)(s5 - s4) * 1000.0f);
 
 	SetApplyButtonVisible(true);
-	GetPropertySheet()->SetTabWidth(84);
+	GetPropertySheet()->SetTabWidth( nTabWidth );
 }
 
 //-----------------------------------------------------------------------------
@@ -141,11 +134,17 @@ void COptionsDialog::OnKeyCodePressed( KeyCode code )
 	switch ( GetBaseButtonCode( code ) )
 	{
 	case KEY_XBUTTON_B:
+	case STEAMCONTROLLER_B:
 		OnCommand( "Cancel" );
 		return;
 	}
 
 	BaseClass::OnKeyCodePressed( code );
+}
+
+COptionsSubVideo *COptionsDialog::GetOptionsSubVideo()
+{
+	return m_pOptionsSubVideo;
 }
 
 //-----------------------------------------------------------------------------
