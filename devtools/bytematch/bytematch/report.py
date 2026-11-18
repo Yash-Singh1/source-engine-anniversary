@@ -157,7 +157,7 @@ def markdown(doc, results, top, diff_lines):
     s, ss = doc['summary'], doc['shared_summary']
     f, b = s['functions'], s['bytes']
     pretty = demangle([r.key for r in results if r.status in (DIFFERS, MISSING)])
-    L = [f'# bytematch report', '',
+    L = ['# bytematch report', '',
          f'- retail: `{doc["retail"]}`', f'- ours: `{doc["ours"]}`',
          f'- scope: {doc["scope"]}; capstone: {"yes" if doc["capstone"] else "no (byte-level fallback)"}; '
          f'generated {doc["generated"]}', '']
