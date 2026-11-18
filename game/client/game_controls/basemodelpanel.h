@@ -112,7 +112,9 @@ class CModelPanelModelInfo
 {
 public:
 	CModelPanelModelInfo()
+#ifndef BYTEMATCH_RETAIL
 		: m_mapBodygroupValues( DefLessFunc( int ) )
+#endif
 	{
 		m_pszModelName = NULL;
 		m_pszModelName_HWM = NULL;
@@ -157,7 +159,9 @@ public:
 	Vector2D	m_vecViewportOffset;
 	Vector		m_vecFramedOriginOffset;
 	bool		m_bUseSpotlight;
+#ifndef BYTEMATCH_RETAIL
 	CUtlMap< int, int > m_mapBodygroupValues;
+#endif
 
 	CUtlVector<CModelPanelModelAnimation*>		m_Animations;
 	CUtlVector<CModelPanelAttachedModelInfo*>	m_AttachedModelsInfo;
@@ -176,15 +180,19 @@ public:
 
 	virtual void Paint();
 	virtual void ApplySettings( KeyValues *inResourceData );
+#ifndef BYTEMATCH_RETAIL
 	virtual void OnCommand( const char *command ) OVERRIDE;
+#endif
 	virtual void DeleteVCDData( void );
 	virtual void DeleteModelData( void );
 
 	virtual void SetFOV( int nFOV ){ m_nFOV = nFOV; }
 	virtual void SetPanelDirty( void ){ m_bPanelDirty = true; }
 	virtual bool SetSequence( const char *pszSequence );
+#ifndef BYTEMATCH_RETAIL
 	virtual void SetSkin( int nSkin );
 	void SetBodyGroup( const char* pszBodyGroupName, int nGroup );
+#endif
 
 	MESSAGE_FUNC_PARAMS( OnAddAnimation, "AddAnimation", data );
 	MESSAGE_FUNC_PARAMS( OnSetAnimation, "SetAnimation", data );

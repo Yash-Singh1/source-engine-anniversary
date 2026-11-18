@@ -166,7 +166,11 @@ void GenerateSquareWaveEffect( RumbleWaveform_t *pWaveform, const WaveGenParams_
 
 	while( i < NUM_WAVE_SAMPLES )
 	{
+#ifdef BYTEMATCH_RETAIL
+		for( j = 0 ; j < steps ; j++ )
+#else
 		for( j = 0 ; j < steps && i < NUM_WAVE_SAMPLES; j++ )
+#endif
 		{
 			if( params.leftChannel )
 			{
@@ -177,7 +181,11 @@ void GenerateSquareWaveEffect( RumbleWaveform_t *pWaveform, const WaveGenParams_
 				pWaveform->amplitude_right[i++] = params.minAmplitude;
 			}
 		}
+#ifdef BYTEMATCH_RETAIL
+		for( j = 0 ; j < steps ; j++ )
+#else
 		for( j = 0 ; j < steps && i < NUM_WAVE_SAMPLES; j++ )
+#endif
 		{
 			if( params.leftChannel )
 			{
