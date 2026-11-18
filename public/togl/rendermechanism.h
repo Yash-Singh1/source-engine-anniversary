@@ -36,7 +36,6 @@
 
 #if defined(TOGL_OSX)
 
-// Valve's macOS build (retail OSX): the older togl/osx generation, as in Source SDK 2013.
 #include <OpenGL/gl.h>
 #include <OpenGL/glext.h>
 #include "tier0/basetypes.h"

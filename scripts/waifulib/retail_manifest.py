@@ -51,8 +51,6 @@ RETAIL_SKIP = {
 	# Our copies lost the tag filter and friends/spectator pages they need from BaseGamesPage.
 	'bin/ServerBrowser': ['serverbrowser/unused/BlacklistedServers.cpp', 'serverbrowser/unused/CustomGames.cpp',
 		'serverbrowser/unused/FriendsGames.cpp', 'serverbrowser/unused/SpectateGames.cpp'],
-	# Written against the linuxwin GLMDisplayDB; only launcher pulls it (ToGL lane).
-	'libappframework.a': ['appframework/glmrendererinfo_osx.mm'],
 }
 
 # Files retail doesn't link that our tree still needs to link the module
@@ -64,6 +62,8 @@ RETAIL_KEEP = {
 	'bin/filesystem_stdio': ['filesystem/packfile.cpp'],
 	# Our vtex.cpp loads PNG sources through ImgUtl.
 	'bin/vtex_dll': ['common/imageutils.cpp'],
+	# Texture compositor callers in our materialsystem that retail's doesn't have.
+	'bin/materialsystem': ['materialsystem/ctexturecompositor.cpp'],
 	# Callers in our engine that retail's engine doesn't have.
 	'bin/engine': ['engine/sv_uploaddata.cpp', 'common/language.cpp', 'engine/audio/MPAHeader.cpp',
 		'engine/audio/VBRHeader.cpp', 'engine/masterserver.cpp'],
@@ -176,8 +176,9 @@ def retail_select_sources(self):
 		ours = [n for n in ours if _rel(self, n).lower() not in skip]
 		out = []
 		for mem in e['members']:
-			if mem['source'] and mem['source'].lower() not in skip:
-				n = ours_by_path.get(mem['source'].lower())
+			src = mem['source'] or mem['retail_source']
+			if src and src.lower() not in skip:
+				n = resolve(src)
 				if n is not None and n not in out:
 					out.append(n)
 		self.source = out + [n for n in ours if n not in out]
