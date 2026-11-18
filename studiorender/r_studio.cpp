@@ -217,20 +217,6 @@ IMaterial* CStudioRender::R_StudioSetupSkinAndLighting( IMatRenderContext *pRend
 		}
 	}
 
-	// TODO: It's possible we don't want to use the color texels--for example because of a convar. 
-	// We should check that here in addition to whether or not we have the data available.
-	static unsigned int lightmapVarCache = 0;
-	IMaterialVar *pLightmapVar = pMaterial->FindVarFast( "$lightmap", &lightmapVarCache );
-	if ( pLightmapVar )
-	{
-		ITexture* newTex = pColorMeshes ? pColorMeshes->m_pLightmap : NULL;
-
-		if (newTex)
-			pLightmapVar->SetTextureValue(newTex);
-		else 
-			pLightmapVar->SetUndefined();
-	}
-	
 	pRenderContext->Bind( pMaterial, pClientRenderable );
 
 	if ( bCheckForConVarDrawTranslucentSubModels )
@@ -277,11 +263,6 @@ int R_StudioSetupModel( int bodypart, int entity_body, mstudiomodel_t **ppSubMod
 
 	pbodypart = pStudioHdr->pBodypart( bodypart );
 
-	if ( pbodypart->base == 0 )
-	{
-		Warning( "Model has missing body part: %s\n", pStudioHdr->pszName() );
-		Assert( 0 );
-	}
 	index = entity_body / pbodypart->base;
 	index = index % pbodypart->nummodels;
 
