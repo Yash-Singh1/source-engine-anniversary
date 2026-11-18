@@ -153,7 +153,9 @@ Percentages are matched / in-scope, by function count and by retail bytes.
 Toolchains or depots that are absent are skipped. Build outputs go to
 `tests/build/` (ignored).
 
-**Current Xcode (Apple clang 21) and i386:** `clang++ -arch i386 -c` still
+### Current Xcode and i386
+
+Current Xcode (Apple clang 21) `clang++ -arch i386 -c` still
 emits i386 Mach-O objects, even with libc++ headers, so it can exercise the
 Mach-O object parser. However, the SDK has no libstdc++ headers (retail uses
 libstdc++), `ld` cannot link i386 (the SDK `.tbd` stubs have no i386 slice), and
