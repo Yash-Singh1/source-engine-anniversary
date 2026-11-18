@@ -79,7 +79,7 @@ bool CHttpDownloader::BeginDownload( const char *pURL, const char *pGamePath, vo
 
 		// Generate the actual filename to save.  Well, it's not
 		// absolute, but this will work.
-		V_strcpy_safe( m_pThreadState->absLocalPath, g_pEngine->GetGameDir() );
+		V_strcpy( m_pThreadState->absLocalPath, g_pEngine->GetGameDir() );
 		V_AppendSlash( m_pThreadState->absLocalPath, sizeof(m_pThreadState->absLocalPath) );
 		V_strcat_safe( m_pThreadState->absLocalPath, pGamePath );
 	}

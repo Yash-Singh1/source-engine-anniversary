@@ -48,6 +48,7 @@ _cache = {}
 # Archives without a waf target in the manifest, and the target that builds them.
 ARCHIVE_TARGETS = {
 	'libreplay_common.a': 'replay_common',
+	'libcoroutine_osx.a': 'coroutine_osx',
 	'libcryptopp.a': 'CRYPTOPP',
 	'libspeex.a': 'SPEEX',
 	'libcef_dll_wrapper.a': 'CEF_DLL_WRAPPER',

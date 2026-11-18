@@ -315,3 +315,24 @@ studiobyteswap, studio, studio_virtualmodel, datacache, mdlcache, then tier1
 (convar, datamanager, generichash, interface, mempool, strtools, tier1,
 utlbuffer), tier3, tier2. Load commands: libtier0, libvstdlib, libiconv,
 libstdc++, libSystem; our wscript does not list vstdlib or iconv.
+
+## Lane smallmods (batch 3)
+
+Whole-dylib numbers from `--retail-osx32` (all retail objects in scope, tier libs
+included): 401/406 at bytematch 64c10856, 402/406 now, 404/406 with the
+`iconvar.h` and `mempool.h` changes below, 405/406 with SDK 2013 `datamap.h`.
+
+- `CMDLCache::ProcessDataIntoCache`: matches. Retail `studio.h` has
+  `STUDIO_VERSION 48` and `Studio_ConvertStudioHdrToNewVersion` writes the version
+  back (retail mode; the fork keeps 49 and no write-back).
+- mdlcache `_GLOBAL__I_a`: `NO_ASYNC` is the leak's `CUtlLinkedList` invalid index
+  (0xffff) and the `mod_test_*` convars have no flags in retail (both retail mode).
+  Still needs `DEFINE_FIXEDSIZE_ALLOCATOR_MT` without the fork's `alignof` argument
+  (`public/tier1/mempool.h`).
+- datacache `_GLOBAL__I_a`: `developer` and `datacachesize` use the CS:GO
+  `FCVAR_INTERNAL_USE`, which is 0 in retail (SDK 2013 has no such flag), plus the
+  same `mempool.h` alignment argument for `DataCacheItem_t`.
+- `CDatadescGeneratedNameHolder::~CDatadescGeneratedNameHolder` (studiobyteswap):
+  `public/datamap.h` deletes with `delete[]`, SDK 2013 with `delete`.
+- `CMDLCache::BuildAndCacheVertexData`: still differs, register allocation only.
+  The `min()` here already expands to the ternary macro; not the cause. Unresolved.

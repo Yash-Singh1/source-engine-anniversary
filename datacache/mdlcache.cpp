@@ -185,9 +185,16 @@ private:
 //-----------------------------------------------------------------------------
 static ConVar r_rootlod( "r_rootlod", "0", FCVAR_ARCHIVE );
 static ConVar mod_forcedata( "mod_forcedata", ( AsyncMdlCache() ) ? "0" : "1",	0, "Forces all model file data into cache on model load." );
+#ifdef BYTEMATCH_RETAIL
+static ConVar mod_test_not_available( "mod_test_not_available", "0", 0 );
+static ConVar mod_test_mesh_not_available( "mod_test_mesh_not_available", "0", 0 );
+static ConVar mod_test_verts_not_available( "mod_test_verts_not_available", "0", 0 );
+#else
 static ConVar mod_test_not_available( "mod_test_not_available", "0", FCVAR_CHEAT );
 static ConVar mod_test_mesh_not_available( "mod_test_mesh_not_available", "0", FCVAR_CHEAT );
 static ConVar mod_test_verts_not_available( "mod_test_verts_not_available", "0", FCVAR_CHEAT );
+#endif
+#line 191
 static ConVar mod_load_mesh_async( "mod_load_mesh_async", ( AsyncMdlCache() ) ? "1" : "0" );
 static ConVar mod_load_anims_async( "mod_load_anims_async", ( IsX360() || AsyncMdlCache() ) ? "1" : "0" );
 static ConVar mod_load_vcollide_async( "mod_load_vcollide_async",  ( AsyncMdlCache() ) ? "1" : "0" );
@@ -235,7 +242,12 @@ struct AsyncInfo_t
 	int					iAnimBlock;
 };
 
+#ifdef BYTEMATCH_RETAIL
+const int NO_ASYNC = CUtlLinkedList< AsyncInfo_t >::InvalidIndex();
+#else
 const intp NO_ASYNC = CUtlFixedLinkedList< AsyncInfo_t >::InvalidIndex();
+#endif
+#line 239
 
 //-------------------------------------
 

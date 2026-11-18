@@ -149,7 +149,7 @@ void CScreenshotManager::DoCaptureScreenshot()
 	// Setup screenshot base filename as <.dem base filename>_<N>
 	char szBaseFilename[ MAX_OSPATH ];
 	char szIdealBaseFilename[ MAX_OSPATH ];
-	V_strcpy_safe( szIdealBaseFilename, CL_GetRecordingSessionManager()->m_ServerRecordingState.m_strSessionName.Get() );
+	V_strcpy( szIdealBaseFilename, CL_GetRecordingSessionManager()->m_ServerRecordingState.m_strSessionName.Get() );
 	Replay_GetFirstAvailableFilename( szBaseFilename, sizeof( szBaseFilename ), szIdealBaseFilename, ".vtf",
 		"materials\\vgui\\replay\\thumbnails", pReplay->GetScreenshotCount() );
 

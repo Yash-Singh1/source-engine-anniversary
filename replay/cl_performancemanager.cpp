@@ -62,7 +62,7 @@ const char *CReplayPerformanceManager::GeneratePerformanceFilename( CReplay *pRe
 {
 	static char s_szBaseFilename[ MAX_OSPATH ];
 	char szIdealBaseFilename[ MAX_OSPATH ];
-	V_strcpy_safe( szIdealBaseFilename, Replay_va( "replay_%i_edit", (int)pReplay->GetHandle() ) );
+	V_strcpy( szIdealBaseFilename, Replay_va( "replay_%i_edit", (int)pReplay->GetHandle() ) );
 	Replay_GetFirstAvailableFilename( s_szBaseFilename, sizeof( s_szBaseFilename ), szIdealBaseFilename, "." GENERIC_FILE_EXTENSION,
 		CL_GetPerformanceManager()->GetRelativePath(), pReplay->GetPerformanceCount() );
 	return s_szBaseFilename;
