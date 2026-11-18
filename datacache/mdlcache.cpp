@@ -240,7 +240,6 @@ const intp NO_ASYNC = CUtlFixedLinkedList< AsyncInfo_t >::InvalidIndex();
 //-------------------------------------
 
 CUtlMap<int, intp> g_AsyncInfoMap( DefLessFunc( int ) );
-CThreadFastMutex g_AsyncInfoMapMutex;
 
 inline int MakeAsyncInfoKey( MDLHandle_t hModel, MDLCacheDataType_t type, int iAnimBlock )
 {
@@ -250,7 +249,6 @@ inline int MakeAsyncInfoKey( MDLHandle_t hModel, MDLCacheDataType_t type, int iA
 
 inline intp GetAsyncInfoIndex( MDLHandle_t hModel, MDLCacheDataType_t type, int iAnimBlock = 0 )
 {
-	AUTO_LOCK( g_AsyncInfoMapMutex );
 	int key = MakeAsyncInfoKey( hModel, type, iAnimBlock );
 	int i = g_AsyncInfoMap.Find( key );
 	if ( i == g_AsyncInfoMap.InvalidIndex() )
@@ -262,7 +260,6 @@ inline intp GetAsyncInfoIndex( MDLHandle_t hModel, MDLCacheDataType_t type, int 
 
 inline intp SetAsyncInfoIndex( MDLHandle_t hModel, MDLCacheDataType_t type, int iAnimBlock, intp index )
 {
-	AUTO_LOCK( g_AsyncInfoMapMutex );
 	Assert( index == NO_ASYNC || GetAsyncInfoIndex( hModel, type, iAnimBlock ) == NO_ASYNC );
 	int key = MakeAsyncInfoKey( hModel, type, iAnimBlock );
 	if ( index == NO_ASYNC )
@@ -612,11 +609,8 @@ bool CMDLCache::Connect( CreateInterfaceFn factory )
 		return false;
 
 	m_bConnected = true;
-	if( g_pMaterialSystem )
-	{
-		g_pMaterialSystem->AddReleaseFunc( ::ReleaseMaterialSystemObjects );
-		g_pMaterialSystem->AddRestoreFunc( ::RestoreMaterialSystemObjects );
-	}
+	g_pMaterialSystem->AddReleaseFunc( ::ReleaseMaterialSystemObjects );
+	g_pMaterialSystem->AddRestoreFunc( ::RestoreMaterialSystemObjects );
 
 	return true;
 }
@@ -909,9 +903,6 @@ void CMDLCache::MakeFilename( MDLHandle_t handle, const char *pszExtension, char
 	Q_strncpy( pszFileName, GetActualModelName( handle ), nMaxLength );
 	Q_SetExtension( pszFileName, pszExtension, nMaxLength );
 	Q_FixSlashes( pszFileName );
-#ifdef POSIX
-	Q_strlower( pszFileName );
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -1238,9 +1229,6 @@ unsigned char *CMDLCache::UnserializeAnimBlock( MDLHandle_t handle, int nBlock )
 		char pFileName[MAX_PATH];
 		Q_strncpy( pFileName, pModelName, sizeof(pFileName) );
 		Q_FixSlashes( pFileName );
-#ifdef POSIX
-		Q_strlower( pFileName );
-#endif
 		if ( IsX360() )
 		{
 			char pX360Filename[MAX_PATH];
@@ -1927,6 +1915,8 @@ bool CMDLCache::ReadFileNative( char *pFileName, const char *pPath, CUtlBuffer &
 		// Read the PC version
 		bOk = g_pFullFileSystem->ReadFile( pFileName, pPath, buf, nMaxBytes );
 
+#ifdef PLATFORM_64BITS
+		// The 64-bit studiohdr_t keeps its runtime pointers in studiohdr2_t
 		if( bOk && type == MDLCACHE_STUDIOHDR )
 		{
 			studiohdr_t* pStudioHdr = ( studiohdr_t* ) buf.PeekGet();
@@ -1952,6 +1942,7 @@ bool CMDLCache::ReadFileNative( char *pFileName, const char *pPath, CUtlBuffer &
 				pStudioHdr->length += sizeIncrease;
 			}
 		}
+#endif
 	}
 
 	return bOk;
@@ -2050,9 +2041,6 @@ bool CMDLCache::ReadMDLFile( MDLHandle_t handle, const char *pMDLFileName, CUtlB
 	char pFileName[ MAX_PATH ];
 	Q_strncpy( pFileName, pMDLFileName, sizeof( pFileName ) );
 	Q_FixSlashes( pFileName );
-#ifdef POSIX
-	Q_strlower( pFileName );
-#endif
 
 	MdlCacheMsg( "MDLCache: Load studiohdr %s\n", pFileName );
 
