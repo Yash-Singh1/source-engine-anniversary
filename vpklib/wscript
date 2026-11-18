@@ -32,6 +32,10 @@ def build(bld):
 
 	libs = []
 
+	# Retail VPKs are signed: crypto.cpp (added by the retail manifest) verifies them with Crypto++
+	if bld.env.RETAIL_OSX32:
+		libs += ['CRYPTOPP']
+
 	bld.stlib(
 		source   = source,
 		target   = PROJECT_NAME,
