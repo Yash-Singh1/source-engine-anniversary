@@ -11,7 +11,14 @@
 
 #include "mathlib/vector.h"
 #include "mathlib/mathlib.h"
+// ivp declares hk_Math::min/max, which the mathlib min/max macros would expand.
+#pragma push_macro("min")
+#pragma push_macro("max")
+#undef min
+#undef max
 #include "ivp_physics.hxx"
+#pragma pop_macro("max")
+#pragma pop_macro("min")
 struct cplane_t;
 #include "vphysics_interface.h"
 
