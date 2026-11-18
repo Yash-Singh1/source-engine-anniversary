@@ -42,7 +42,8 @@ public:
 
 	void OnKeyCodePressed( vgui::KeyCode code )
 	{
-		if ( code == KEY_XBUTTON_A || code == STEAMCONTROLLER_A )
+		ButtonCode_t nButtonCode = GetBaseButtonCode( code );
+		if ( nButtonCode == KEY_XBUTTON_A || nButtonCode == STEAMCONTROLLER_A )
 		{
 			ConVarRef var( "joystick" );
 			if ( var.IsValid() && !var.GetBool() )
@@ -89,6 +90,8 @@ public:
 	void			SetOverrideMod( const char *pszOverrideMod );
 	void			ReloadChapters();
 	int				GetUnlockedChapter();
+	inline void		UpdatePanelLockedStatus( int iUnlockedChapter, int i, CGameChapterPanel *pChapterPanel );
+	inline bool		IsCommentaryEnabled();
 
 	void			SetCommentaryMode( bool bCommentary ) { m_bCommentaryMode = bCommentary; }
 	bool			IsCommentaryMode() const { return m_bCommentaryMode; }

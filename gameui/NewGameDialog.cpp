@@ -238,6 +238,15 @@ public:
 			m_pChapterNameLabel->SetVisible( false );
 		}
 
+		m_pChapterLabel->SetAllCaps( true );
+		m_pChapterNameLabel->SetAllCaps( true );
+
+		if ( PROPORTIONAL_VALUE( 1000 ) != 1000 )
+		{
+			m_pLevelPic->SetShouldScaleImage( true );
+			m_pLevelPic->SetScaleAmount( PROPORTIONAL_VALUE( 1000 ) / 1000.0f );
+		}
+
 		m_pCommentaryIcon = dynamic_cast<ImagePanel*>( FindChildByName( "CommentaryIcon" ) );
 		if ( m_pCommentaryIcon )
 			m_pCommentaryIcon->SetVisible( m_bCommentaryMode );
@@ -326,6 +335,37 @@ const char *COM_GetModDirectory()
 	}
 
 	return modDir;
+}
+
+//-----------------------------------------------------------------------------
+// iUnlockedChapter - the value of sv_unlockedchapters, 1-based. A value of 0
+//		is treated as a 1, since at least one chapter must be unlocked.
+//
+// i - the 1-based index of the chapter we're considering.
+//-----------------------------------------------------------------------------
+inline void CNewGameDialog::UpdatePanelLockedStatus( int iUnlockedChapter, int i, CGameChapterPanel *pChapterPanel )
+{
+	if ( iUnlockedChapter <= 0 )
+	{
+		iUnlockedChapter = 1;
+	}
+
+	bool bLocked = false;
+	if ( iUnlockedChapter < i )
+	{
+		// Never lock the first chapter
+		bLocked = ( i != 0 );
+	}
+
+	pChapterPanel->SetEnabled( !bLocked );
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: the commentary check button wins over the dialog's commentary mode
+//-----------------------------------------------------------------------------
+inline bool CNewGameDialog::IsCommentaryEnabled()
+{
+	return m_pCommentaryCheckButton ? m_pCommentaryCheckButton->IsSelected() : m_bCommentaryMode;
 }
 
 //-----------------------------------------------------------------------------
@@ -443,11 +483,11 @@ void CNewGameDialog::ReloadChapters()
 	static const int MAX_CHAPTERS = 64;
 	chapter_t chapters[MAX_CHAPTERS];
 
+	char szSearchPath[MAX_PATH];
 	char szFullFileName[MAX_PATH];
 	int chapterIndex = 0;
 
 	FileFindHandle_t findHandle = FILESYSTEM_INVALID_FIND_HANDLE;
-	char szSearchPath[MAX_PATH];
 	const char *pszPathID;
 	if ( m_strOverrideMod.Length() )
 	{
@@ -507,10 +547,6 @@ void CNewGameDialog::ReloadChapters()
 
 	// Bonuses are unlocked so we need to unlock all the chapters too
 	int iUnlockedChapter = bBonusesUnlocked ? MAX_CHAPTERS : GetUnlockedChapter();
-	if ( iUnlockedChapter <= 0 )
-	{
-		iUnlockedChapter = 1;
-	}
 
 	// add chapters to combobox
 	for ( int i = 0; i < chapterIndex; i++ )
@@ -538,7 +574,8 @@ void CNewGameDialog::ReloadChapters()
 		Q_snprintf( szFullFileName, sizeof( szFullFileName ), "%s", fileName );
 		CGameChapterPanel *chapterPanel = SETUP_PANEL( new CGameChapterPanel( this, NULL, chapterName, i, chapterID, szFullFileName, m_bCommentaryMode, m_strOverrideMod.Length() ? m_strOverrideMod.Get() : NULL ) );
 		chapterPanel->SetVisible( false );
-		chapterPanel->SetEnabled( iUnlockedChapter >= i + 1 );
+
+		UpdatePanelLockedStatus( iUnlockedChapter, i + 1, chapterPanel );
 
 		if ( GameUI().IsConsoleUI() && bBonusesUnlocked )
 		{
@@ -637,10 +674,6 @@ void CNewGameDialog::OnCheckButtonChecked( vgui::Panel *panel )
 	if ( m_pCommentaryCheckButton && m_pCommentaryCheckButton == panel )
 	{
 		int iUnlockedChapter = GetUnlockedChapter();
-		if ( iUnlockedChapter <= 0 )
-		{
-			iUnlockedChapter = 1;
-		}
 
 		for ( int i = 0; i < m_ChapterPanels.Count(); i++ )
 		{
@@ -648,11 +681,11 @@ void CNewGameDialog::OnCheckButtonChecked( vgui::Panel *panel )
 			if ( !pChapterPanel )
 				continue;
 
-			pChapterPanel->SetEnabled( iUnlockedChapter >= i + 1 );
+			UpdatePanelLockedStatus( iUnlockedChapter, i + 1, pChapterPanel );
 			if ( pChapterPanel->IsEnabled() )
 			{
 				++iLastEnabledChapter;
-				pChapterPanel->SetCommentaryMode( m_pCommentaryCheckButton ? m_pCommentaryCheckButton->IsSelected() : m_bCommentaryMode );
+				pChapterPanel->SetCommentaryMode( IsCommentaryEnabled() );
 			}
 			else
 			{
@@ -687,10 +720,6 @@ void CNewGameDialog::Activate( void )
 
 	// work out which chapters are unlocked
 	int iUnlockedChapter = GetUnlockedChapter();
-	if ( iUnlockedChapter <= 0 )
-	{
-		iUnlockedChapter = 1;
-	}
 
 	for ( int i = 0; i < m_ChapterPanels.Count(); i++)
 	{
@@ -699,7 +728,8 @@ void CNewGameDialog::Activate( void )
 		if ( pChapterPanel )
 		{
 			pChapterPanel->SetCommentaryMode( m_bCommentaryMode );
-			pChapterPanel->SetEnabled( iUnlockedChapter >= i + 1 );
+
+			UpdatePanelLockedStatus( iUnlockedChapter, i + 1, pChapterPanel );
 		}
 	}
 
@@ -742,6 +772,10 @@ void CNewGameDialog::ApplySchemeSettings( vgui::IScheme *pScheme )
 	m_pCommentaryLabel = dynamic_cast<vgui::Label*>( FindChildByName( "CommentaryUnlock" ) );
 	if ( m_pCommentaryLabel )
 		m_pCommentaryLabel->SetVisible( m_bCommentaryMode );
+
+	m_pCommentaryCheckButton = dynamic_cast<vgui::CheckButton*>( FindChildByName( "Commentary" ) );
+	if ( m_pCommentaryCheckButton )
+		m_pCommentaryCheckButton->AddActionSignalTarget( this );
 
 	if ( GameUI().IsConsoleUI() )
 	{
@@ -1429,21 +1463,28 @@ void CNewGameDialog::StartGame( void )
 {
 	if ( m_ChapterPanels.IsValidIndex( m_iSelectedChapter ) )
 	{
-		char mapcommand[512];
+		char mapcommand[1024];
 		mapcommand[0] = 0;
-		Q_snprintf( mapcommand, sizeof( mapcommand ), "disconnect\ndeathmatch 0\nprogress_enable\nexec %s\n", m_ChapterPanels[m_iSelectedChapter]->GetConfigFile() );
+		if ( m_strOverrideMod.Length() )
+		{
+			Q_snprintf( mapcommand, sizeof( mapcommand ), "disconnect\ndeathmatch 0\nlaunchmod %s\nprogress_enable\nexec %s\n", m_strOverrideMod.Get(), m_ChapterPanels[m_iSelectedChapter]->GetConfigFile() );
+		}
+		else
+		{
+			Q_snprintf( mapcommand, sizeof( mapcommand ), "disconnect\ndeathmatch 0\nprogress_enable\nexec %s\n", m_ChapterPanels[m_iSelectedChapter]->GetConfigFile() );
+		}
 
 		// Set commentary
 		ConVarRef commentary( "commentary" );
-		commentary.SetValue( m_bCommentaryMode );
+		commentary.SetValue( IsCommentaryEnabled() );
 
 		ConVarRef sv_cheats( "sv_cheats" );
-		sv_cheats.SetValue( m_bCommentaryMode );
+		sv_cheats.SetValue( IsCommentaryEnabled() );
 
 		if ( IsPC() )
 		{
 			// If commentary is on, we go to the explanation dialog (but not for teaser trailers)
-			if ( m_bCommentaryMode && !m_ChapterPanels[m_iSelectedChapter]->IsTeaserChapter() )
+			if ( IsCommentaryEnabled() && !m_ChapterPanels[m_iSelectedChapter]->IsTeaserChapter() )
 			{
 				// Check our current state and disconnect us from any multiplayer server we're connected to.
 				// This fixes an exploit where players would click "start" on the commentary dialog to enable
@@ -1549,7 +1590,7 @@ void CNewGameDialog::OnCommand( const char *command )
 				m_bMapStarting = false;
 				vgui::surface()->PlaySound( "player/suit_denydevice.wav" );
 
-				if ( m_bCommentaryMode )
+				if ( IsCommentaryEnabled() )
 				{
 					BasePanel()->ShowMessageDialog( MD_COMMENTARY_CHAPTER_UNLOCK_EXPLANATION, this );
 				}
@@ -1699,13 +1740,14 @@ void CNewGameDialog::PaintBackground()
 
 void CNewGameDialog::OnKeyCodePressed( KeyCode code )
 {
-	switch ( code )
+	switch ( GetBaseButtonCode( code ) )
 	{
 	case KEY_XBUTTON_LEFT:
 	case KEY_XSTICK1_LEFT:
 	case KEY_XSTICK2_LEFT:
 	case KEY_LEFT:
 	case STEAMCONTROLLER_DPAD_LEFT:
+	case STEAMCONTROLLER_LEFT_PAD_LEFT:
 		if ( !m_bScrolling )
 		{
 			for ( int i = 0; i < m_ChapterPanels.Count(); ++i )
@@ -1735,6 +1777,7 @@ void CNewGameDialog::OnKeyCodePressed( KeyCode code )
 	case KEY_XSTICK2_RIGHT:
 	case KEY_RIGHT:
 	case STEAMCONTROLLER_DPAD_RIGHT:
+	case STEAMCONTROLLER_LEFT_PAD_RIGHT:
 		if ( !m_bScrolling )
 		{
 			for ( int i = 0; i < m_ChapterPanels.Count(); ++i )

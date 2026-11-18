@@ -1099,7 +1099,8 @@ void CBasePanel::OnThink()
 					m_pGameMenuButtons[i]->SetVisible( false );
 				}
 
-				m_pGameMenu->SetMenuCategory( m_strSwitchMod.String() );
+				const char *pszMenuCategory = m_strSwitchMod.String();
+				m_pGameMenu->SetMenuCategory( pszMenuCategory );
 				m_iSwitchModState = 2;
 
 				CFmtStr strCommand( "disconnect\n" );
