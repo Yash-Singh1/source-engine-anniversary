@@ -3041,7 +3041,6 @@ void CMatSystemSurface::InternalSolveTraverse(VPANEL panel)
 {
 	VPanel * RESTRICT vp = (VPanel *)panel;
 
-	vp->TraverseLevel( 1 );
 	tmZone( TELEMETRY_LEVEL1, TMZF_NONE, "%s - %s", __FUNCTION__, vp->GetName() );
 
 	// solve the parent
@@ -3060,7 +3059,6 @@ void CMatSystemSurface::InternalSolveTraverse(VPANEL panel)
 		}
 	}
 
-	vp->TraverseLevel( -1 );
 }
 
 //-----------------------------------------------------------------------------
@@ -3072,7 +3070,6 @@ void CMatSystemSurface::InternalThinkTraverse(VPANEL panel)
 {
 	VPanel * RESTRICT vp = (VPanel *)panel;
 
-	vp->TraverseLevel( 1 );
 	tmZone( TELEMETRY_LEVEL1, TMZF_NONE, "%s - %s", __FUNCTION__, vp->GetName() );
 
 	// think the parent
@@ -3091,7 +3088,6 @@ void CMatSystemSurface::InternalThinkTraverse(VPANEL panel)
 		}
 	}
 	
-	vp->TraverseLevel( -1 );
 }
 
 //-----------------------------------------------------------------------------
@@ -3101,7 +3097,6 @@ void CMatSystemSurface::InternalSchemeSettingsTraverse(VPANEL panel, bool forceA
 {
 	VPanel * RESTRICT vp = (VPanel *)panel;
 
-	vp->TraverseLevel( 1 );
 	tmZone( TELEMETRY_LEVEL1, TMZF_NONE, "%s - %s", __FUNCTION__, vp->GetName() );
 
 	CUtlVector< VPanel * > &children = vp->GetChildren();
@@ -3118,7 +3113,6 @@ void CMatSystemSurface::InternalSchemeSettingsTraverse(VPANEL panel, bool forceA
 	// and then the parent
 	vp->Client()->PerformApplySchemeSettings();
 
-	vp->TraverseLevel( -1 );
 }
 
 //-----------------------------------------------------------------------------
