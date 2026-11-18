@@ -688,6 +688,40 @@ PLATFORM_INTERFACE void Plat_SetWatchdogHandlerFunction( Plat_WatchDogHandlerFun
 {
 	s_pWatchDogHandlerFunction = function;
 }
+#else
+// Retail's watchdog has no SIGALRM handler and is not exported (Linux retail
+// libtier0.so keeps both functions, unexported; OS X dead-strips them).
+static int s_nWatchDogTimerTimeScale = 0;
+static bool s_bInittedWD = false;
+
+static void InitWatchDogTimer( void )
+{
+	if( !strstr( g_CmdLine, "-nowatchdog" ) )
+	{
+		s_nWatchDogTimerTimeScale = 1;
+	}
+}
+
+void Plat_BeginWatchdogTimer( int nSecs )
+{
+	if ( !s_bInittedWD )
+	{
+		s_bInittedWD = true;
+		InitWatchDogTimer();
+	}
+
+	nSecs *= s_nWatchDogTimerTimeScale;
+	nSecs = MIN( nSecs, 5 * 60 );							// no more than 5 minutes no matter what
+	if ( nSecs )
+	{
+		alarm( nSecs );
+	}
+}
+
+void Plat_EndWatchdogTimer( void )
+{
+	alarm( 0 );
+}
 #endif
 #line 684
 

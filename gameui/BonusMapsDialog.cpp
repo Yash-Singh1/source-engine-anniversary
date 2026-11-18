@@ -27,10 +27,14 @@
 
 #include "BasePanel.h"
 
+#include "gameui_proportional.h"
+
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
-
-
+#ifdef BYTEMATCH_RETAIL
+#define V_strcpy_safe( pDest, pSrc ) Q_strcpy( pDest, pSrc )
+#endif
+#line 34
 using namespace vgui;
 
 
@@ -82,8 +86,12 @@ public:
 		panel->SetZPos(2);
 
 		SetSize( 200, 140 );
+		m_pBonusMapImage->SetSize( 180, 100 );
+		m_pBonusMapTGAImage->SetSize( 180, 100 );
 
 		LoadControlSettings( "resource/BonusMapPanel.res" );
+
+		m_pBonusMapImage->GetSize( m_nImageWide, m_nImageTall );
 
 		m_FillColor = m_pBonusMapScreenshotBackground->GetFillColor();
 	}
@@ -142,14 +150,12 @@ public:
 		if ( bIsTGA )
 		{
 			m_pBonusMapTGAImage->SetTGANonMod( szImageFileName );
-			m_pBonusMapTGAImage->SetSize( 180, 100 );
 			m_pBonusMapTGAImage->SetVisible( true );
 			m_pBonusMapImage->SetVisible( false );
 		}
 		else
 		{
 			m_pBonusMapImage->SetImage( szImageFileName );
-			m_pBonusMapImage->SetSize( 180, 100 );
 			m_pBonusMapImage->SetVisible( true );
 			m_pBonusMapTGAImage->SetVisible( false );
 		}
@@ -188,6 +194,15 @@ public:
 		m_TextColor = pScheme->GetColor( "NewGame.TextColor", Color(255, 255, 255, 255) );
 		m_SelectedColor = pScheme->GetColor( "NewGame.SelectionColor", Color(255, 255, 255, 255) );
 
+		if ( PROPORTIONAL_VALUE( 1000 ) != 1000 )
+		{
+			m_pBonusMapImage->SetShouldScaleImage( true );
+
+			float flScale = PROPORTIONAL_VALUE( 1000 ) / 1000.0f;
+			m_pBonusMapImage->SetSize( m_nImageWide, m_nImageTall );
+			m_pBonusMapImage->SetScaleAmount( flScale );
+		}
+
 		BaseClass::ApplySchemeSettings( pScheme );
 	}
 
@@ -215,6 +230,10 @@ private:
 	// things to change color when the selection changes
 	ImagePanel	*m_pBonusMapScreenshotBackground;
 	Color		m_TextColor, m_FillColor, m_SelectedColor;
+
+	// size of the image as laid out by BonusMapPanel.res, before proportional scaling
+	int			m_nImageWide;
+	int			m_nImageTall;
 
 	int			m_iBonusMapListItemID;
 };
@@ -785,7 +804,7 @@ void CBonusMapsDialog::OnCommand( const char *command )
 
 void CBonusMapsDialog::OnKeyCodeTyped( vgui::KeyCode code )
 {
-	if ( code == KEY_ESCAPE )
+	if ( GetBaseButtonCode( code ) == KEY_ESCAPE )
 	{
 		OnCommand( "Close" );
 		return;
@@ -796,15 +815,19 @@ void CBonusMapsDialog::OnKeyCodeTyped( vgui::KeyCode code )
 
 void CBonusMapsDialog::OnKeyCodePressed( vgui::KeyCode code )
 {
-	if ( code == KEY_XBUTTON_B )
+	ButtonCode_t nButtonCode = GetBaseButtonCode( code );
+
+	if ( nButtonCode == KEY_XBUTTON_B || nButtonCode == STEAMCONTROLLER_B )
 	{
 		OnCommand( "Close" );
 		return;
 	}
-	else if ( code == KEY_XSTICK1_RIGHT || 
-			  code == KEY_XSTICK2_RIGHT || 
-			  code == KEY_XBUTTON_RIGHT || 
-			  code == KEY_RIGHT )
+	else if ( nButtonCode == KEY_XSTICK1_RIGHT || 
+			  nButtonCode == KEY_XSTICK2_RIGHT || 
+			  nButtonCode == KEY_XBUTTON_RIGHT || 
+			  nButtonCode == STEAMCONTROLLER_DPAD_RIGHT ||
+			  nButtonCode == STEAMCONTROLLER_LEFT_PAD_RIGHT ||
+			  nButtonCode == KEY_RIGHT )
 	{
 		if ( m_pGameList->GetItemCount() )
 		{
@@ -838,10 +861,12 @@ void CBonusMapsDialog::OnKeyCodePressed( vgui::KeyCode code )
 			}
 		}
 	}
-	else if ( code == KEY_XSTICK1_LEFT || 
-			  code == KEY_XSTICK2_LEFT || 
-			  code == KEY_XBUTTON_LEFT || 
-			  code == KEY_LEFT )
+	else if ( nButtonCode == KEY_XSTICK1_LEFT || 
+			  nButtonCode == KEY_XSTICK2_LEFT || 
+			  nButtonCode == KEY_XBUTTON_LEFT || 
+			  nButtonCode == STEAMCONTROLLER_DPAD_LEFT ||
+			  nButtonCode == STEAMCONTROLLER_LEFT_PAD_LEFT ||
+			  nButtonCode == KEY_LEFT )
 	{
 		if ( m_pGameList->GetItemCount() )
 		{
@@ -876,10 +901,12 @@ void CBonusMapsDialog::OnKeyCodePressed( vgui::KeyCode code )
 			}
 		}
 	}
-	else if ( code == KEY_XSTICK1_DOWN || 
-			  code == KEY_XSTICK2_DOWN || 
-			  code == KEY_XBUTTON_DOWN || 
-			  code == KEY_DOWN )
+	else if ( nButtonCode == KEY_XSTICK1_DOWN || 
+			  nButtonCode == KEY_XSTICK2_DOWN || 
+			  nButtonCode == KEY_XBUTTON_DOWN || 
+			  nButtonCode == STEAMCONTROLLER_DPAD_DOWN ||
+			  nButtonCode == STEAMCONTROLLER_LEFT_PAD_DOWN ||
+			  nButtonCode == KEY_DOWN )
 	{
 		int nOldActiveItem = m_pChallengeSelection->GetActiveItem();
 		int nActiveItem = min( nOldActiveItem + 1, m_pChallengeSelection->GetItemCount() - 1 );
@@ -890,10 +917,12 @@ void CBonusMapsDialog::OnKeyCodePressed( vgui::KeyCode code )
 			return;
 		}
 	}
-	else if ( code == KEY_XSTICK1_UP || 
-			  code == KEY_XSTICK2_UP || 
-			  code == KEY_XBUTTON_UP || 
-			  code == KEY_UP )
+	else if ( nButtonCode == KEY_XSTICK1_UP || 
+			  nButtonCode == KEY_XSTICK2_UP || 
+			  nButtonCode == KEY_XBUTTON_UP || 
+			  nButtonCode == STEAMCONTROLLER_DPAD_UP ||
+			  nButtonCode == STEAMCONTROLLER_LEFT_PAD_UP ||
+			  nButtonCode == KEY_UP )
 	{
 		int nOldActiveItem = m_pChallengeSelection->GetActiveItem();
 		int nActiveItem = max( nOldActiveItem - 1, 0 );
@@ -904,7 +933,7 @@ void CBonusMapsDialog::OnKeyCodePressed( vgui::KeyCode code )
 			return;
 		}
 	}
-	else if ( code == KEY_ENTER || code == KEY_XBUTTON_A || code == STEAMCONTROLLER_A )
+	else if ( nButtonCode == KEY_ENTER || nButtonCode == KEY_XBUTTON_A || nButtonCode == STEAMCONTROLLER_A )
 	{
 		Panel *pSelectedPanel = m_pGameList->GetSelectedPanel();
 		if ( pSelectedPanel )

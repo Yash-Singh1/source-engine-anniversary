@@ -25,8 +25,11 @@ typedef int32 *DWORD_PTR;
 #include "ATI_Compress.h"
 #include "bitmap/float_bm.h"
 
+#ifndef BYTEMATCH_RETAIL
 #define STB_DXT_IMPLEMENTATION
 #include "stb_dxt.h"
+#endif
+#line 30
 
 // Should be last include
 #include "tier0/memdbgon.h"
@@ -887,7 +890,12 @@ bool ConvertToATIxN(  const uint8 *src, ImageFormat srcImageFormat,
 }
 
 
+#ifdef BYTEMATCH_RETAIL
+bool ConvertToDXT(  const uint8 *src, ImageFormat srcImageFormat,
+#else
 bool ConvertToDXTLegacy(  const uint8 *src, ImageFormat srcImageFormat,
+#endif
+#line 877
  						  uint8 *dst, ImageFormat dstImageFormat, 
 					      int width, int height, int srcStride, int dstStride )
 {
@@ -1063,13 +1071,6 @@ bool ConvertToDXT( const uint8 *src, ImageFormat srcImageFormat,
 	if ( bUseNewCompressor )
 		return ConvertToDXTRuntime( src, srcImageFormat, dst, dstImageFormat, width, height, srcStride, dstStride );
 
-	return ConvertToDXTLegacy( src, srcImageFormat, dst, dstImageFormat, width, height, srcStride, dstStride );
-}
-#else
-bool ConvertToDXT( const uint8 *src, ImageFormat srcImageFormat,
- 				   uint8 *dst, ImageFormat dstImageFormat, 
-				   int width, int height, int srcStride, int dstStride )
-{
 	return ConvertToDXTLegacy( src, srcImageFormat, dst, dstImageFormat, width, height, srcStride, dstStride );
 }
 #endif

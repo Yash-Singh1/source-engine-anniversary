@@ -5,8 +5,7 @@
  "project_dir": "gameui",
  "order_rule_inversions": 0,
  "counts": {
-  "exact": 66,
-  "missing": 1
+  "exact": 67
  },
  "counts_sdk": {
   "missing": 62,
@@ -14,14 +13,7 @@
   "moved": 3
  },
  "diff": {
-  "add": [
-   {
-    "path": "gameui/OptionsSubGamepad.cpp",
-    "in_our_tree": "missing",
-    "in_sdk": "missing",
-    "alternatives": null
-   }
-  ],
+  "add": [],
   "remove": [
    {
     "path": "common/GameUI/ObjectList.cpp",
@@ -66,9 +58,9 @@
   ],
   "path_differs": [],
   "order": {
-   "common": 66,
+   "common": 67,
    "in_order_lis": 28,
-   "need_moving": 38,
+   "need_moving": 39,
    "identical": false
   },
   "libraries": {

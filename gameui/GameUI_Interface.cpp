@@ -55,7 +55,7 @@
 #include "BonusMapsDatabase.h"
 #include "BonusMapsDialog.h"
 #include "sourcevr/isourcevirtualreality.h"
-
+#include "iworkshop.h"
 // vgui2 interface
 // note that GameUI project uses ..\vgui2\include, not ..\utils\vgui\include
 #include "BasePanel.h"
@@ -95,7 +95,7 @@ IEngineSound *enginesound = NULL;
 IAchievementMgr *achievementmgr = NULL;
 IEngineClientReplay *g_pEngineClientReplay = NULL;
 ISourceVirtualReality *g_pSourceVR = NULL;
-
+IWorkshop *workshop = NULL;
 
 
 
@@ -185,6 +185,9 @@ void CGameUI::Initialize( CreateInterfaceFn factory )
 	// load localization file for kb_act.lst
 	g_pVGuiLocalize->AddFile( "Resource/valve_%language%.txt", "GAME", true );
 
+	// load localization file for the Steam Deck UI
+	g_pVGuiLocalize->AddFile( "Resource/deck_%language%.txt", "GAME", true );
+
 	enginevguifuncs = (IEngineVGui *)factory( VENGINE_VGUI_VERSION, NULL );
 	enginesurfacefuncs = (vgui::ISurface *)factory(VGUI_SURFACE_INTERFACE_VERSION, NULL);
 	gameuifuncs = (IGameUIFuncs *)factory( VENGINE_GAMEUIFUNCS_VERSION, NULL );
@@ -192,7 +195,11 @@ void CGameUI::Initialize( CreateInterfaceFn factory )
 	xboxsystem = (IXboxSystem *)factory( XBOXSYSTEM_INTERFACE_VERSION, NULL );
 	g_pEngineClientReplay = (IEngineClientReplay *)factory( ENGINE_REPLAY_CLIENT_INTERFACE_VERSION, NULL );
 
+#ifdef BYTEMATCH_RETAIL
+	if ( ModInfo().SupportsVR() )
+#else
 	if ( ModInfo().SupportsVR() && CommandLine()->CheckParm( "-vr" ) )
+#endif
 	{
 		g_pSourceVR = (ISourceVirtualReality *)factory( SOURCE_VIRTUAL_REALITY_INTERFACE_VERSION, NULL );
 	}
@@ -203,11 +210,14 @@ void CGameUI::Initialize( CreateInterfaceFn factory )
 		Error( "CGameUI::Initialize() failed to get necessary interfaces\n" );
 	}
 
-#ifndef BYTEMATCH_RETAIL
-	vgui::VPANEL rootpanel = enginevguifuncs->GetPanel( PANEL_GAMEUIDLL );
-#endif
+	MakeBasePanel();
+}
 
-	// setup base panel
+//-----------------------------------------------------------------------------
+// Purpose: creates the base panel and parents it to the engine's GameUI panel
+//-----------------------------------------------------------------------------
+void MakeBasePanel()
+{
 	staticPanel = new CBasePanel();
 	staticPanel->SetBounds(0, 0, 400, 300 );
 	staticPanel->SetPaintBorderEnabled( false );
@@ -216,9 +226,7 @@ void CGameUI::Initialize( CreateInterfaceFn factory )
 	staticPanel->SetVisible( true );
 	staticPanel->SetMouseInputEnabled( false );
 	staticPanel->SetKeyBoardInputEnabled( false );
-#ifdef BYTEMATCH_RETAIL
 	vgui::VPANEL rootpanel = enginevguifuncs->GetPanel( PANEL_GAMEUIDLL );
-#endif
 	staticPanel->SetParent(rootpanel);
 }
 
@@ -803,7 +811,7 @@ void CGameUI::OnGameUIHidden()
 //-----------------------------------------------------------------------------
 void CGameUI::RunFrame()
 {
-	if ( IsX360() && m_bOpenProgressOnStart )
+	if ( IsSteamDeck() && m_bOpenProgressOnStart )
 	{
 		StartProgressBar();
 		m_bOpenProgressOnStart = false;
@@ -915,6 +923,7 @@ void CGameUI::OnDisconnectFromServer( uint8 eSteamLoginFailure )
 	m_iGameConnectionPort = 0;
 	m_iGameQueryPort = 0;
 
+	BasePanel()->OnDisconnectFromServer( eSteamLoginFailure );
 	g_VModuleLoader.PostMessageToAllModules(new KeyValues("DisconnectedFromGame"));
 
 	if ( eSteamLoginFailure == STEAMLOGINFAILURE_NOSTEAMLOGIN )
@@ -1175,10 +1184,11 @@ void CGameUI::SetSavedThisMenuSession( bool bState )
 //-----------------------------------------------------------------------------
 void CGameUI::ShowNewGameDialog( int chapter )
 {
-	char val[32];
-	Q_snprintf( val, sizeof(val), "%d", chapter);
-	staticPanel->OnOpenNewGameDialog(val);
+	staticPanel->OnOpenNewGameDialog( chapter, NULL );
 }
+
+
+
 
 //-----------------------------------------------------------------------------
 // Purpose: Makes the loading background dialog visible, if one has been set

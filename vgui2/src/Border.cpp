@@ -178,13 +178,12 @@ void Border::Paint(VPANEL panel)
 	HScheme scheme = ((VPanel *)panel)->GetScheme();
 	if ( scheme )
 	{
-		scale = g_pScheme->GetProportionalScaledValueEx( scheme, 1 );
-		if ( scale <= 0 )
-			scale = 1;
+		scale = Max( g_pScheme->GetProportionalScaledValueEx( scheme, 1 ), 1 );
 	}
 
 	Paint2(0, 0, wide, tall, -1, 0, 0, scale);
 }
+#line 188
 
 //-----------------------------------------------------------------------------
 // Purpose: 

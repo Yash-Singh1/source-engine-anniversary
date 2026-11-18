@@ -54,6 +54,7 @@ private:
 	void		SetUseHDContent( bool bUse );
 
 	int m_nSelectedMode; // -1 if we are running in a nonstandard mode
+	int m_nSelectedHudAspect;
 
 	bool m_bDisplayedVRModeMessage;
 
@@ -61,10 +62,12 @@ private:
 	vgui::ComboBox		*m_pWindowed;
 	vgui::ComboBox		*m_pAspectRatio;
 	vgui::ComboBox		*m_pVRMode;
+	vgui::ComboBox		*m_pHudAspectRatio;
 	vgui::Button		*m_pGammaButton;
 	vgui::Button		*m_pAdvanced;
 	vgui::Button		*m_pBenchmark;
 	vgui::CheckButton	*m_pHDContent;
+	vgui::ComboBox		*m_pHDR;
 
 	vgui::DHANDLE<class COptionsSubVideoAdvancedDlg> m_hOptionsSubVideoAdvancedDlg;
 	vgui::DHANDLE<class CGammaDialog> m_hGammaDialog;
@@ -73,6 +76,9 @@ private:
    MESSAGE_FUNC( OpenThirdPartyVideoCreditsDialog, "OpenThirdPartyVideoCreditsDialog" );
    vgui::URLButton   *m_pThirdPartyCredits;
    vgui::DHANDLE<class COptionsSubVideoThirdPartyCreditsDlg> m_OptionsSubVideoThirdPartyCreditsDlg;
+
+	bool m_bHDContentAvailable;
+	bool m_bHDRAvailable;
 };
 
 

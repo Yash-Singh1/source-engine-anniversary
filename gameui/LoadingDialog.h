@@ -36,6 +36,9 @@ public:
 	void DisplayNoSteamConnectionError();
 	void DisplayLoggedInElsewhereError();
 
+	// time the first loading dialog was opened, -1 until then
+	static float flOpenTime;
+
 protected:
 	virtual void OnCommand(const char *command);
 	virtual void PerformLayout();

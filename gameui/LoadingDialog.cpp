@@ -25,11 +25,14 @@
 #include "GameUI_Interface.h"
 #include "ModInfo.h"
 #include "BasePanel.h"
+#include "gameui_proportional.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include <tier0/memdbgon.h>
 
 using namespace vgui;
+
+float CLoadingDialog::flOpenTime = -1.0f;
 
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
@@ -42,7 +45,7 @@ CLoadingDialog::CLoadingDialog( vgui::Panel *parent ) : Frame(parent, "LoadingDi
 	SetDeleteSelfOnClose(true);
 
 	// Use console style
-	m_bConsoleStyle = GameUI().IsConsoleUI();
+	m_bConsoleStyle = GameUI().IsConsoleUI() || IsSteamDeck();
 
 	if ( !m_bConsoleStyle )
 	{
@@ -93,6 +96,16 @@ CLoadingDialog::CLoadingDialog( vgui::Panel *parent ) : Frame(parent, "LoadingDi
 		SetMinimumSize( 0, 0 );
 		SetTitleBarVisible( false );
 
+		SetConsoleStylePanel( true );
+		SetMinimizeButtonVisible( false );
+		SetMaximizeButtonVisible( false );
+		SetCloseButtonVisible( false );
+		SetSizeable( false );
+		SetMoveable( false );
+		SetMinimizeToSysTrayButtonVisible( false );
+		SetMenuButtonVisible( false );
+		SetCloseButtonVisible( false );
+
 		m_flProgressFraction = 0;
 	}
 	else
@@ -135,37 +148,73 @@ void CLoadingDialog::PaintBackground()
 		return;
 	}
 
-	// draw solid progress bar with curved endcaps
-	int panelWide, panelTall;
-	GetSize( panelWide, panelTall );
-	int barWide, barTall;
-	m_pProgress->GetSize( barWide, barTall );
-	int x = ( panelWide - barWide )/2;
-	int y = panelTall - barTall;
+	vgui::HScheme hScheme = vgui::scheme()->GetScheme( "ClientScheme" );
+	vgui::IScheme *pScheme = vgui::scheme()->GetIScheme( hScheme );
 
 	if ( m_pLoadingBackground )
 	{
-		vgui::HScheme scheme = vgui::scheme()->GetScheme( "ClientScheme" );
-		Color color = GetSchemeColor( "TanDarker", Color(255, 255, 255, 255), vgui::scheme()->GetIScheme(scheme) );
+		Color color = GetSchemeColor( "TanDarker", Color(255, 255, 255, 255), pScheme );
 
 		m_pLoadingBackground->SetFgColor( color );
 		m_pLoadingBackground->SetBgColor( color );
 
 		m_pLoadingBackground->SetPaintBackgroundEnabled( true );
 	}
-	
-	if ( ModInfo().IsSinglePlayerOnly() )
+
+	// fade in the darkened edges over the first half second
+	float flTime = Plat_FloatTime();
+	float flFade = clamp( ( flTime - flOpenTime ) * 2.0f, 0.0f, 1.0f );
+
+	vgui::surface()->DrawSetColor( Color( 0, 0, 0, 255 ) );
+	vgui::surface()->DrawFilledRectFade( 0, 0, GetWide() * 0.1f, GetTall(), ( 255 * 0.667f ) * flFade, 0, true );
+	vgui::surface()->DrawFilledRectFade( GetWide() * 0.9f, 0, GetWide(), GetTall(), 0, ( 255 * 0.667f ) * flFade, true );
+	vgui::surface()->DrawFilledRectFade( 0, 0, GetWide(), GetTall() * 0.1f, ( 255 * 0.667f ) * flFade, 0, false );
+	vgui::surface()->DrawFilledRectFade( 0, GetTall() * 0.9f, GetWide(), GetTall(), 0, ( 255 * 0.667f ) * flFade, false );
+
+	Color loadingBarColor = GetSchemeColor( "SteamDeckLoadingBar", Color( 255, 134, 44, 255 ), pScheme );
+	Color spinnerColor = GetSchemeColor( "SteamDeckSpinner", Color( 255, 134, 44, flFade * 255 ), pScheme );
+
+	// progress strip along the bottom edge
+	int nBarTall = GetTall() / 24;
+	vgui::surface()->DrawSetColor( loadingBarColor );
+	vgui::surface()->DrawFilledRect( 0, GetTall() - nBarTall, GetWide() * m_flProgressFraction, GetTall() );
+
+	if ( m_iSpinnerTextureID == -1 )
 	{
-		DrawBox( x, y, barWide, barTall, Color( 0, 0, 0, 255 ), 1.0f );
+		m_iSpinnerTextureID = vgui::surface()->CreateNewTextureID();
+		if ( m_iSpinnerTextureID > 0 )
+		{
+			vgui::surface()->DrawSetTextureFile( m_iSpinnerTextureID, "gamepadui/spinner.vmt", true, false );
+		}
 	}
 
-	DrawBox( x+2, y+2, barWide-4, barTall-4, Color( 100, 100, 100, 255 ), 1.0f );
-
-	barWide = m_flProgressFraction * ( barWide - 4 );
-	if ( barWide >= 12 )
+	if ( m_iLoadingBarTextureID == -1 )
 	{
-		// cannot draw a curved box smaller than 12 without artifacts
-		DrawBox( x+2, y+2, barWide, barTall-4, Color( 200, 100, 0, 255 ), 1.0f );
+		m_iLoadingBarTextureID = vgui::surface()->CreateNewTextureID();
+		if ( m_iLoadingBarTextureID > 0 )
+		{
+			vgui::surface()->DrawSetTextureFile( m_iLoadingBarTextureID, "gamepadui/game_logo.vmt", true, false );
+		}
+	}
+
+	float flSpinnerSize = (float)GetTall() * ( 70.0 / 600.0 );
+	float flSpinnerMargin = (float)GetTall() * ( 15.0 / 600.0 );
+
+	if ( m_iSpinnerTextureID > 0 )
+	{
+		vgui::surface()->DrawSetColor( spinnerColor );
+		vgui::surface()->DrawSetTexture( m_iSpinnerTextureID );
+		vgui::surface()->DrawSetTextureFrame( m_iSpinnerTextureID, (int)( ( flTime - flOpenTime ) * 60.0f ) % 60, &m_nSpinnerFrameCache );
+		vgui::surface()->DrawTexturedRect( GetWide() - flSpinnerMargin - flSpinnerSize, flSpinnerMargin, GetWide() - flSpinnerMargin, flSpinnerSize + flSpinnerMargin );
+		vgui::surface()->DrawSetTexture( 0 );
+	}
+
+	if ( m_iLoadingBarTextureID > 0 )
+	{
+		vgui::surface()->DrawSetColor( Color( 255, 255, 255, 255 ) );
+		vgui::surface()->DrawSetTexture( m_iLoadingBarTextureID );
+		vgui::surface()->DrawTexturedRect( GetWide() - flSpinnerMargin - flSpinnerSize, flSpinnerMargin, GetWide() - flSpinnerMargin, flSpinnerSize + flSpinnerMargin );
+		vgui::surface()->DrawSetTexture( 0 );
 	}
 }
 
@@ -185,7 +234,23 @@ void CLoadingDialog::SetupControlSettings( bool bForceShowProgressText )
 
 	if ( ModInfo().IsSinglePlayerOnly() && !bForceShowProgressText )
 	{
-		LoadControlSettings("Resource/LoadingDialogNoBannerSingle.res");
+		if ( m_bConsoleStyle )
+		{
+			LoadControlSettings( "Resource/LoadingDialogDeck.res" );
+			SetConsoleStylePanel( true );
+			SetMinimizeButtonVisible( false );
+			SetMaximizeButtonVisible( false );
+			SetCloseButtonVisible( false );
+			SetSizeable( false );
+			SetMoveable( false );
+			SetMinimizeToSysTrayButtonVisible( false );
+			SetMenuButtonVisible( false );
+			SetCloseButtonVisible( false );
+		}
+		else
+		{
+			LoadControlSettings("Resource/LoadingDialogNoBannerSingle.res");
+		}
 	}
 	else if ( gameuifuncs->IsConnectedToVACSecureServer() )
 	{
@@ -203,6 +268,11 @@ void CLoadingDialog::SetupControlSettings( bool bForceShowProgressText )
 //-----------------------------------------------------------------------------
 void CLoadingDialog::Open()
 {
+	if ( flOpenTime == -1.0f )
+	{
+		flOpenTime = Plat_FloatTime();
+	}
+
 	if ( !m_bConsoleStyle )
 	{
 		SetTitle( "#GameUI_Loading", true );
@@ -337,11 +407,11 @@ void CLoadingDialog::DisplayGenericError(const char *failureReason, const char *
 	int x,y;
 	m_pInfoLabel->GetContentSize( wide, tall );
 	m_pInfoLabel->GetPos( x, y );
-	SetTall( tall + y + 50 );
+	SetTall( tall + y + PROPORTIONAL_VALUE( 50 ) );
 
 	int buttonX, buttonY;
 	m_pCancelButton->GetPos( buttonX, buttonY );
-	m_pCancelButton->SetPos( buttonX, tall + y + 6 );
+	m_pCancelButton->SetPos( buttonX, tall + y + PROPORTIONAL_VALUE( 6 ) );
 
 	m_pCancelButton->RequestFocus();
 }
@@ -463,26 +533,10 @@ void CLoadingDialog::PerformLayout()
 {
 	if ( m_bConsoleStyle )
 	{
-		// place in lower center
+		// fill the screen
 		int screenWide, screenTall;
 		surface()->GetScreenSize( screenWide, screenTall );
-		int wide,tall;
-		GetSize( wide, tall );
-		int x = 0;
-		int y = 0;
-
-		if ( ModInfo().IsSinglePlayerOnly() )
-		{
-			x = ( screenWide - wide ) * 0.50f;
-			y = ( screenTall - tall ) * 0.86f;
-		}
-		else
-		{
-			x = ( screenWide - ( wide * 1.30f ) );
-			y = ( ( screenTall * 0.875f ) );
-		}
-
-		SetPos( x, y );
+		SetBounds( 0, 0, screenWide, screenTall );
 	}
 	else if ( m_bCenter )
 	{
@@ -662,7 +716,7 @@ void CLoadingDialog::OnKeyCodePressed(KeyCode code)
 
 	ButtonCode_t nButtonCode = GetBaseButtonCode( code );
 
-	if ( nButtonCode == KEY_XBUTTON_B || nButtonCode == KEY_XBUTTON_A || nButtonCode == STEAMCONTROLLER_A || nButtonCode == STEAMCONTROLLER_B )
+	if ( nButtonCode == KEY_XBUTTON_B || nButtonCode == KEY_XBUTTON_A || nButtonCode == STEAMCONTROLLER_B )
 	{
 		OnCommand("Cancel");
 	}
