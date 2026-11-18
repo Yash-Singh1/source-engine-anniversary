@@ -2820,8 +2820,8 @@
    "public/datacache/imdlcache.h"
   ],
   "reference": "bin/datacache:CMDLCache",
-  "retail_len": 49,
-  "retail_len_basis": "shortest deriving subtable",
+  "retail_len": 45,
+  "retail_len_basis": "override: VerifyHeaders/CacheVertexData are CMDLCache's own; HandleCacheNotification/GetItemName override the secondary base IDataCacheClient",
   "sdk2013_len": 45,
   "versions": {
    "ours": [
@@ -7039,8 +7039,8 @@
    "public/vgui/ISystem.h"
   ],
   "reference": "bin/vgui2:CSystem",
-  "retail_len": 40,
-  "retail_len_basis": "shortest deriving subtable",
+  "retail_len": 36,
+  "retail_len_basis": "override: KeyCode_VGUIToVirtualKey and the folder-path getters are CSystem's own virtuals, declared in retail order",
   "sdk2013_len": 36,
   "versions": {
    "ours": [

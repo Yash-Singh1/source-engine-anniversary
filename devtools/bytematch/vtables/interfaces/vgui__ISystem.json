@@ -72,8 +72,8 @@
    "vgui::ISystem"
   ]
  },
- "retail_len": 40,
- "retail_len_basis": "shortest deriving subtable",
+ "retail_len": 36,
+ "retail_len_basis": "override: KeyCode_VGUIToVirtualKey and the folder-path getters are CSystem's own virtuals, declared in retail order",
  "retail_len_bounds": {
   "shortest deriving subtable": 40
  },
@@ -293,31 +293,13 @@
    "name": "SetClipboardImage",
    "sig": "SetClipboardImage(void*, int, int, int, int)",
    "symbol": "CSystem::SetClipboardImage(void*, int, int, int, int)"
-  },
-  {
-   "index": 36,
-   "name": "KeyCode_VGUIToVirtualKey",
-   "sig": "KeyCode_VGUIToVirtualKey(ButtonCode_t)",
-   "symbol": "CSystem::KeyCode_VGUIToVirtualKey(ButtonCode_t)"
-  },
-  {
-   "index": 37,
-   "name": "GetStartMenuFolderPath",
-   "sig": "GetStartMenuFolderPath()",
-   "symbol": "CSystem::GetStartMenuFolderPath()"
-  },
-  {
-   "index": 38,
-   "name": "GetAllUserDesktopFolderPath",
-   "sig": "GetAllUserDesktopFolderPath()",
-   "symbol": "CSystem::GetAllUserDesktopFolderPath()"
-  },
-  {
-   "index": 39,
-   "name": "GetAllUserStartMenuFolderPath",
-   "sig": "GetAllUserStartMenuFolderPath()",
-   "symbol": "CSystem::GetAllUserStartMenuFolderPath()"
   }
+ ],
+ "implementer_tail": [
+  "KeyCode_VGUIToVirtualKey(ButtonCode_t)",
+  "GetStartMenuFolderPath()",
+  "GetAllUserDesktopFolderPath()",
+  "GetAllUserStartMenuFolderPath()"
  ],
  "derived": [
   "bin/vgui2:CSystem"

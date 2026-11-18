@@ -127,6 +127,10 @@
  "ILauncherMgr": {
   "skip": "ToGL/launcher internals; needs SDL headers and retail ToGL is a different generation"
  },
+ "IMDLCache": {
+  "retail_len": 45,
+  "why": "VerifyHeaders/CacheVertexData are CMDLCache's own; HandleCacheNotification/GetItemName override the secondary base IDataCacheClient"
+ },
  "IMaterialSystem": {
   "retail_len": 127,
   "why": "IMaterialSystemInternal starts at GetCurrentMaterial"
@@ -282,6 +286,10 @@
  "vgui::IPanel": {
   "retail_len": 62,
   "why": "Client/GetModuleName are VPanelWrapper's own virtuals"
+ },
+ "vgui::ISystem": {
+  "retail_len": 36,
+  "why": "KeyCode_VGUIToVirtualKey and the folder-path getters are CSystem's own virtuals, declared in retail order"
  },
  "vgui::ListViewPanel": {
   "includes": [

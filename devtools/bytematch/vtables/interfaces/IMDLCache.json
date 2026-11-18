@@ -87,8 +87,8 @@
    "IMDLCache"
   ]
  },
- "retail_len": 49,
- "retail_len_basis": "shortest deriving subtable",
+ "retail_len": 45,
+ "retail_len_basis": "override: VerifyHeaders/CacheVertexData are CMDLCache's own; HandleCacheNotification/GetItemName override the secondary base IDataCacheClient",
  "retail_len_bounds": {
   "shortest deriving subtable": 49
  },
@@ -362,31 +362,13 @@
    "name": "MarkFrame",
    "sig": "MarkFrame()",
    "symbol": "CMDLCache::MarkFrame()"
-  },
-  {
-   "index": 45,
-   "name": "VerifyHeaders",
-   "sig": "VerifyHeaders(studiohdr_t*)",
-   "symbol": "CMDLCache::VerifyHeaders(studiohdr_t*)"
-  },
-  {
-   "index": 46,
-   "name": "CacheVertexData",
-   "sig": "CacheVertexData(studiohdr_t*)",
-   "symbol": "CMDLCache::CacheVertexData(studiohdr_t*)"
-  },
-  {
-   "index": 47,
-   "name": "HandleCacheNotification",
-   "sig": "HandleCacheNotification(DataCacheNotification_t const&)",
-   "symbol": "CMDLCache::HandleCacheNotification(DataCacheNotification_t const&)"
-  },
-  {
-   "index": 48,
-   "name": "GetItemName",
-   "sig": "GetItemName(unsigned int, void const*, char*, unsigned int)",
-   "symbol": "CMDLCache::GetItemName(unsigned int, void const*, char*, unsigned int)"
   }
+ ],
+ "implementer_tail": [
+  "VerifyHeaders(studiohdr_t*)",
+  "CacheVertexData(studiohdr_t*)",
+  "HandleCacheNotification(DataCacheNotification_t const&)",
+  "GetItemName(unsigned int, void const*, char*, unsigned int)"
  ],
  "derived": [
   "bin/datacache:CMDLCache"
