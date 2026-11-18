@@ -2174,7 +2174,9 @@ void CBasePanel::PerformLayout()
 	if ( m_pGameLogo )
 	{
 		// move the logo to sit right on top of the menu
-		m_pGameLogo->SetPos( m_iGameMenuPos.x + m_pGameLogo->GetOffsetX(), idealMenuY - m_pGameLogo->GetTall() + m_pGameLogo->GetOffsetY() );
+		int logoX = m_iGameMenuPos.x + m_pGameLogo->GetOffsetX();
+		int logoY = idealMenuY - m_pGameLogo->GetTall() + m_pGameLogo->GetOffsetY();
+		m_pGameLogo->SetPos( logoX, logoY );
 
 		if ( GameUI().IsInLevel() )
 		{
