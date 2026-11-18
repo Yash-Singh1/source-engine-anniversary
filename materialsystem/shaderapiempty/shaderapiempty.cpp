@@ -892,7 +892,7 @@ public:
 
 	virtual void AcquireThreadOwnership() {}
 	virtual void ReleaseThreadOwnership() {}
-
+	virtual bool SupportsNormalMapCompression() const { return false; }
 	virtual bool SupportsBorderColor() const { return false; }
 	virtual bool SupportsFetch4() const { return false; }
 	virtual bool CanStretchRectFromTextures( void ) const { return false; }
