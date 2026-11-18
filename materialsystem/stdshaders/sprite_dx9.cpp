@@ -388,7 +388,12 @@ BEGIN_VS_SHADER( Sprite_DX9,
 					{
 						DECLARE_DYNAMIC_PIXEL_SHADER( sprite_ps20b );
 						SET_DYNAMIC_PIXEL_SHADER_COMBO( HDRENABLED,  IsHDREnabled() );
+#ifdef BYTEMATCH_RETAIL
+						SET_DYNAMIC_PIXEL_SHADER_COMBO( PIXELFOGTYPE, pShaderAPI->GetPixelFogCombo1( true ) );
+#else
 						SET_DYNAMIC_PIXEL_SHADER_COMBO( PIXELFOGTYPE, pShaderAPI->GetPixelFogCombo() );
+#endif
+#line 392
 						SET_DYNAMIC_PIXEL_SHADER( sprite_ps20b );
 					}
 					else

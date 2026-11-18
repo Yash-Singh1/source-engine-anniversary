@@ -260,7 +260,12 @@ BEGIN_VS_SHADER( pyro_vision, "Help for pyro vision" )
 			pContextData->ResetStaticCmds();
 			CCommandBufferBuilder< CFixedCommandStorageBuffer< 5000 > > staticCmdsBuf;
 
+#ifndef BYTEMATCH_RETAIL
 			Vector4D vParms(0, 0, 0, 0);
+#else
+			Vector4D vParms;
+#endif
+#line 264
 
 			params[ STRIPE_SCALE ]->GetVecValue( &vParms.x, 3 );
 			staticCmdsBuf.SetVertexShaderConstant( VERTEX_SHADER_SHADER_SPECIFIC_CONST_0, vParms.Base() );
