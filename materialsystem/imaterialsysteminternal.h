@@ -32,9 +32,12 @@ public:
 		MEM_ALLOC_CREDIT_( "CMatCallQueue.m_Allocator" );
 #ifdef SWDS
 		m_Allocator.Init( 2*1024, 0, 0, 16 );
+#elif defined( BYTEMATCH_RETAIL )
+		m_Allocator.Init( IsX360() ? 2*1024*1024 : 8*1024*1024, 64*1024, 256*1024, 4 );
 #else
 		m_Allocator.Init( IsX360() ? 2*1024*1024 : 8*1024*1024, 64*1024, 256*1024, 16 );
 #endif
+#line 38
 		m_FunctorFactory.SetAllocator( &m_Allocator );
 		m_pHead = m_pTail = NULL;
 	}

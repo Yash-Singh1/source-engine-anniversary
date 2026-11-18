@@ -1501,12 +1501,17 @@ bool CMaterialSystem::SetMode( void* hwnd, const MaterialSystem_Config_t &config
 				// HACK!
 				// NOTE! : Overbright is 1.0 so that Hammer will work properly with the white bumped and unbumped lightmaps.
 				MathLib_Init( 2.2f, 2.2f, 0.0f, OVERBRIGHT );
+#ifdef BYTEMATCH_RETAIL
+				AllocateStandardTextures();
+#endif
+#line 1400
 			}
 
-			AllocateStandardTextures();
 #ifndef BYTEMATCH_RETAIL
+			AllocateStandardTextures();
 			TextureManager()->WarmTextureCache();
 #endif
+#line 1406
 		}
 
 		if ( IsX360() )
@@ -2285,6 +2290,10 @@ static const char *pConvarsAllowedInDXSupport[]={
 	"mat_parallaxmap",
 	"mat_picmip",
 	"mat_reducefillrate",
+#ifdef BYTEMATCH_RETAIL
+	"r_lightmap_bicubic",
+#endif
+#line 2093
 	"mat_reduceparticles",
 	"mat_slopescaledepthbias_decal",
 	"mat_slopescaledepthbias_normal",
@@ -2335,7 +2344,13 @@ static const char *pConvarsAllowedInDXSupport[]={
 	"snd_spatialize_roundrobin",
 	"snd_cull_duplicates",
 	"cl_particle_retire_cost",
+#ifdef BYTEMATCH_RETAIL
+	"mat_phong",
+	"mat_specular_scalar"
+#else
 	"mat_phong"
+#endif
+#line 2144
 };
 
 //-----------------------------------------------------------------------------
@@ -3233,8 +3248,13 @@ ITexture *CMaterialSystem::FindTexture( char const *pTextureName, const char *pT
 		{
 			const char* pPathID = "GAME";
 			char buf[MAX_PATH];
+#ifdef BYTEMATCH_RETAIL
+			V_snprintf( buf, MAX_PATH, "materials/%s.vtf", pTextureName );
+#else
 			V_snprintf( buf, MAX_PATH, "materials/%s", pTextureName );
 			V_SetExtension( buf, ".vtf", sizeof( buf ) );
+#endif
+#line 3039
 			
 			const char *pbuf = buf;
 			g_pFullFileSystem->AddFilesToFileCache( m_hAsyncLoadFileCache, &pbuf, 1, pPathID );
@@ -4802,7 +4822,12 @@ ITexture* CMaterialSystem::CreateNamedRenderTargetTextureEx(
 	bool gl_canMixTargetSizes = (HardwareConfig() && HardwareConfig()->SupportsGLMixedSizeTargets());
 	
 	// On GL, the depth buffer for a render target must be the same size (until we pick up mixed-sized attachments in 10.6.3)
+#ifdef BYTEMATCH_RETAIL
+	if ( (!gl_canMixTargetSizes && IsOpenGL()) || IsEmulatingGL() )
+#else
 	if ( (!gl_canMixTargetSizes && IsPosix()) || IsEmulatingGL() )
+#endif
+#line 4643
 	{
 		if ( depth != MATERIAL_RT_DEPTH_SEPARATE && depth != MATERIAL_RT_DEPTH_NONE )
 		{
@@ -5631,6 +5656,10 @@ void CMaterialSystem::LoadReplacementMaterials()
 
 void CMaterialSystem::ScanDirForReplacements( const char *pszPathName )
 {
+#ifdef BYTEMATCH_RETAIL
+#define V_sprintf_safe( buf, ... ) V_snprintf( buf, sizeof( buf ), __VA_ARGS__ )
+#endif
+#line 5406
 	char szBaseName[ MAX_PATH ];
 
 	V_sprintf_safe( szBaseName, "%s/replacements.vmt", pszPathName );
@@ -5667,6 +5696,8 @@ void CMaterialSystem::ScanDirForReplacements( const char *pszPathName )
 
 	g_pFullFileSystem->FindClose( FindHandle );
 
+#undef V_sprintf_safe
+#line 5442
 }
 
 void CMaterialSystem::InitReplacementsFromFile( const char *pszPathName )
@@ -5705,9 +5736,14 @@ void CMaterialSystem::PreloadReplacements( )
 	}
 	m_Replacements.Purge();
 
+#ifdef BYTEMATCH_RETAIL
+	ScanDirForReplacements( "materials" );
+#else
 	COM_TimestampedLog( "LoadReplacementMaterials(): Begin" );
 	LoadReplacementMaterials();
 	COM_TimestampedLog( "LoadReplacementMaterials(): End" );
+#endif
+#line 5483
 
 	m_bReplacementFilesValid = true;
 }
