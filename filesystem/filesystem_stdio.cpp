@@ -447,6 +447,9 @@ void CFileSystem_Stdio::FS_setbufsize( FILE *fp, unsigned nBytes )
 //-----------------------------------------------------------------------------
 void CFileSystem_Stdio::FS_fclose( FILE *fp )
 {
+	if ( m_WhitelistFileTrackingEnabled )
+		m_FileTracker2.RecordFileClose( fp );
+
 	CStdFilesystemFile *pFile = ((CStdFilesystemFile *)fp);
 
 	pFile->FS_fclose();
@@ -458,6 +461,9 @@ void CFileSystem_Stdio::FS_fclose( FILE *fp )
 //-----------------------------------------------------------------------------
 void CFileSystem_Stdio::FS_fseek( FILE *fp, int64 pos, int seekType )
 {
+	if ( m_WhitelistFileTrackingEnabled )
+		m_FileTracker2.RecordFileSeek( fp, pos, seekType );
+
 	CStdFilesystemFile *pFile = ((CStdFilesystemFile *)fp);
 
 	pFile->FS_fseek( pos, seekType );
@@ -496,6 +502,9 @@ size_t CFileSystem_Stdio::FS_fread( void *dest, size_t destSize, size_t size, FI
 	size_t nBytesRead = pFile->FS_fread( dest, destSize, size);
 
 	Trace_FRead( nBytesRead, fp );
+
+	if ( m_WhitelistFileTrackingEnabled )
+		m_FileTracker2.RecordFileRead( dest, nBytesRead, size, fp );
 
 	return nBytesRead;
 }
