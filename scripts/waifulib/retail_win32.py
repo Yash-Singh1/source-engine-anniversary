@@ -32,6 +32,10 @@ RETAIL_MODULES = ['tier0', 'vstdlib', 'scenefilecache', 'soundemittersystem', 'd
 # NO_X360_XDK because Valve's tree had the Xbox 360 XDK's win32 headers (bitmap/imagebyteswap.cpp).
 RETAIL_DEFINES = ['BYTEMATCH_RETAIL', 'NO_X360_XDK']
 
+# Valve include paths that only resolve with Valve's directory layout:
+# shim directory entry -> where this tree keeps it.
+LAYOUT_SHIMS = {'audio/public': 'public/engine/audio'}
+
 # Retail third-party DLLs whose import libraries are generated from their exports.
 DEPOT_IMPLIBS = ['steam_api', 'SDL2', 'binkw32']
 
@@ -123,7 +127,7 @@ def retail_win32_configure(conf):
 	v.RETAIL_WIN32 = True
 	v.WINRC_TGT_F = '/fo'
 	v.WINRC_SRC_F = ''
-	v.WINRCFLAGS = ['/nologo', '/l', '0x409']
+	v.WINRCFLAGS = ['/nologo', '/l', '0x409', '/i', os.path.join(tdir, 'rc-include')]
 
 	o = conf.options
 	v.RETAIL_MANIFEST_WIN32 = conf.path.find_node(MANIFEST).abspath()
@@ -170,6 +174,13 @@ def closure(m, names):
 @conf
 def retail_win32_build(bld):
 	manifest = load_manifest(bld.env.RETAIL_MANIFEST_WIN32)['modules']
+	shim = bld.bldnode.make_node('retail-win32-shim')
+	for rel, target in LAYOUT_SHIMS.items():
+		link = os.path.join(shim.abspath(), rel)
+		if not os.path.lexists(link):
+			os.makedirs(os.path.dirname(link), exist_ok=True)
+			os.symlink(bld.srcnode.make_node(target).abspath(), link)
+	bld.retail_shim = shim
 	for idx, name in enumerate(closure(manifest, bld.env.RETAIL_WIN32_MODULES)):
 		retail_win32_module(bld, name, manifest[name], idx + 1)
 
@@ -206,7 +217,7 @@ def retail_win32_module(bld, name, m, idx):
 		sources.append(node)
 		files[node.abspath()] = s
 
-	includes = [src.make_node(i) for i in m['includes']] + [bdir]
+	includes = [src.make_node(i) for i in m['includes']] + [bdir, bld.retail_shim]
 	cl = m['cl'] + ['/FS', '/Fd' + bdir.make_node('vc120.pdb').abspath()] if '/Zi' in m['cl'] else list(m['cl'])
 	cl.append('/FI' + bld.env.RETAIL_COMPAT_H)
 	use, ldflags = [], []
@@ -310,6 +321,7 @@ def retail_win32_per_file(self):
 				sw = ['/Yc' + hdr if mode == 'create' else '/Yu' + hdr, '/Fp' + pch.abspath()]
 				e.CFLAGS = list(e.CFLAGS) + sw
 				e.CXXFLAGS = list(e.CXXFLAGS) + sw
+			e.RETAIL_BATCH_KEY = repr((flags, defines, mode, hdr))
 			return e
 		t.env = derived((flags, defines, mode, hdr), make)
 		if mode == 'create':
@@ -362,9 +374,16 @@ class retail_clbatch(Task.Task):
 		cmd = list(env.CXX if cxx else env.CC) + list(env.CXXFLAGS if cxx else env.CFLAGS)
 		cmd += ['/I' + p for p in env.INCPATHS] + ['/D' + d for d in env.DEFINES]
 		cmd += ['/c', '/FC', '/Fo' + tmp.abspath() + '/'] + [n.abspath() for n in self.inputs] + list(env.CPPFLAGS)
-		ret = self.exec_command(cmd)
-		if ret:
-			return ret
+		for attempt in range(3):
+			p = Utils.subprocess.run(cmd, stdout=Utils.subprocess.PIPE, stderr=Utils.subprocess.STDOUT)
+			out = p.stdout.decode(errors='replace')
+			# C1033: mspdbsrv under wine occasionally refuses a PDB to concurrent cl runs
+			if p.returncode == 0 or 'C1033' not in out:
+				break
+		if out.strip():
+			Logs.info(out.rstrip())
+		if p.returncode:
+			return p.returncode
 		for src, out in zip(self.inputs, self.outputs):
 			os.replace(os.path.join(tmp.abspath(), os.path.splitext(src.name)[0] + '.obj'), out.abspath())
 		return 0
@@ -376,7 +395,7 @@ def retail_win32_batch(self, create):
 		if t is create or t.__class__.__name__ not in ('c', 'cxx'):
 			continue
 		lang = 'c++' if t.__class__.__name__ == 'cxx' else 'c'
-		key = (lang, id(t.env))
+		key = (lang, str(t.env.RETAIL_BATCH_KEY or ''))
 		groups.setdefault(key, []).append(t)
 	for (lang, _), ts in groups.items():
 		batches = []
@@ -387,9 +406,16 @@ def retail_win32_batch(self, create):
 				b = []
 				batches.append(b)
 			b.append(t)
-		for b in batches:
+		for k, b in enumerate(batches):
 			bt = self.create_task('retail_clbatch', [t.inputs[0] for t in b], [t.outputs[0] for t in b])
 			bt.env = b[0].env
+			flags = bt.env.CXXFLAGS if lang == 'c++' else bt.env.CFLAGS
+			if '/Zi' in flags and not any(f.startswith(('/Yu', '/Yc')) for f in flags):
+				# own PDB per batch: less mspdbsrv contention (debug info only)
+				pdb = '/Fd' + self.path.get_bld().make_node('vc120-%s-%d.pdb' % (lang.replace('+', 'p'), k)).abspath()
+				bt.env = bt.env.derive()
+				bt.env.CXXFLAGS = [pdb if f.startswith('/Fd') else f for f in bt.env.CXXFLAGS]
+				bt.env.CFLAGS = [pdb if f.startswith('/Fd') else f for f in bt.env.CFLAGS]
 			bt.lang = lang
 			for t in b:
 				self.tasks.remove(t)

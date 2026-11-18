@@ -38,7 +38,11 @@ LIB_PROJECTS = ["jpeglib", "tier1", "tier2", "tier3", "mathlib", "bitmap", "vtf"
                 "particles", "vpklib", "shaderlib", "socketlib"]
 
 # Valve include directories that live elsewhere in this tree.
-INCLUDE_ALIASES = {"thirdparty/SDL2": "thirdparty/SDL"}
+INCLUDE_ALIASES = {"thirdparty/SDL2": "thirdparty/SDL", "engine/audio/private": "engine/audio",
+                   "engine/audio/public": "public/engine/audio"}
+
+# This fork's sources a module needs because other files call into them unconditionally.
+FORK_SOURCES = {"inputsystem": ["inputsystem/touch_sdl.cpp"]}
 
 # Library file stem -> project that builds it. Retail links an older prebuilt
 # libjpeg (VS2010 SP1, see thirdparty-static.md); Valve's own project is the stand-in.
@@ -257,6 +261,8 @@ class Module:
             elif f["settings"].get(("custombuildstep", "commandline")):
                 ent["custom"] = f["settings"][("custombuildstep", "commandline")]
             out.append(ent)
+        for path in FORK_SOURCES.get(self.name, []):
+            out.append({"path": path, "lang": "c++", "fork_only": True})
         return out
 
     def locate(self, rel):

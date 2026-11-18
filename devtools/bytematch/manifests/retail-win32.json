@@ -1151,6 +1151,11 @@
     {
      "path": "inputsystem/steamcontroller.cpp",
      "lang": "c++"
+    },
+    {
+     "path": "inputsystem/touch_sdl.cpp",
+     "lang": "c++",
+     "fork_only": true
     }
    ],
    "libs": [
@@ -1261,8 +1266,7 @@
     "public/tier1",
     "engine",
     "engine/audio",
-    "engine/audio/private",
-    "engine/audio/public",
+    "public/engine/audio",
     "vgui2/include",
     "vgui2/controls",
     "dx9sdk/include"
