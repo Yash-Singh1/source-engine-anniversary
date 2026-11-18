@@ -50,14 +50,22 @@ void CBSPPack::AddFileToPack( const char *relativename, const char *fullpath )
 {
 	// Compressing at this point would work, but the usual usage is creating a BSP and using RepackBSP() to apply lump
 	// and pack compression as a final pass
+#ifndef BYTEMATCH_RETAIL
 	::AddFileToPak( GetPakFile(), relativename, fullpath, IZip::eCompressionType_None );
+#else
+	::AddFileToPak( GetPakFile(), relativename, fullpath );
+#endif
 }
 
 void CBSPPack::AddBufferToPack( const char *relativename, void *data, int length, bool bTextMode )
 {
 	// Compressing at this point would work, but the usual usage is creating a BSP and using RepackBSP() to apply lump
 	// and pack compression as a final pass
+#ifndef BYTEMATCH_RETAIL
 	::AddBufferToPak( GetPakFile(), relativename, data, length, bTextMode, IZip::eCompressionType_None );
+#else
+	::AddBufferToPak( GetPakFile(), relativename, data, length, bTextMode );
+#endif
 }
 
 void CBSPPack::SetHDRMode( bool bHDR )
@@ -82,9 +90,14 @@ CompressFunc_t		pCompressFunc )
 
 bool CBSPPack::RepackBSP( CUtlBuffer &inputBuffer, CUtlBuffer &outputBuffer, eRepackBSPFlags repackFlags )
 {
+#ifndef BYTEMATCH_RETAIL
 	return ::RepackBSP( inputBuffer, outputBuffer,
 						  ( repackFlags & eRepackBSP_CompressLumps ) ? RepackBSPCallback_LZMA : NULL,
 						  ( repackFlags & eRepackBSP_CompressPackfile ) ? IZip::eCompressionType_LZMA : IZip::eCompressionType_None );
+#else
+	// Retail bsppack is IBSPPACK003, which has no RepackBSP.
+	return false;
+#endif
 }
 
 bool CBSPPack::GetPakFileLump( IFileSystem *pFileSystem, const char *pBSPFilename, void **pPakData, int *pPakSize )

@@ -65,7 +65,6 @@ DEPOT_DYLIBS = ['libSDL2-2.0.0.dylib', 'libsteam_api.dylib', 'libMilesX86.dylib'
 # Symbols whose definition is source drift with no retail counterpart: left for
 # dynamic lookup instead of linking libraries retail doesn't link.
 UNDEFINED_OK = {
-	'bin/bsppack': ['__Z13LZMA_CompressPhjPj'],  # bsplib.cpp's RepackBSP path; retail has none
 	'bin/engine': ['_GetCPUFrequencyResults'],  # tier0 cpumonitoring, absent from retail tier0
 }
 
