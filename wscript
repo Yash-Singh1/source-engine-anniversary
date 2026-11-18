@@ -332,7 +332,7 @@ def options(opt):
 	opt.load('xcompile compiler_cxx compiler_c sdl2 clang_compilation_database strip_on_install_v2 waf_unit_test subproject')
 	if sys.platform == 'win32':
 		opt.load('msvc msdev msvs')
-	opt.load('reconfigure retail_manifest')
+	opt.load('reconfigure retail_manifest retail_osx32')
 
 def check_deps(conf):
 	if conf.env.DEST_OS != 'win32':
@@ -439,6 +439,11 @@ def check_deps(conf):
 		# conf.multicheck(*a, run_all_tests = True, mandatory = True)
 
 def configure(conf):
+	if conf.options.RETAIL_OSX32:
+		conf.load('fwgslib reconfigure subproject retail_manifest retail_osx32')
+		conf.retail_osx32_configure()
+		return
+
 	conf.load('fwgslib reconfigure compiler_optimizations')
 
 	# Force XP compability, all build targets should add
@@ -631,6 +636,11 @@ def configure(conf):
 
 def build(bld):
 	os.environ["CCACHE_DIR"] = os.path.abspath('.ccache/'+bld.env.COMPILER_CC+'/'+bld.env.DEST_OS+'/'+bld.env.DEST_CPU)
+
+	if bld.env.RETAIL_OSX32:
+		bld.load('retail_osx32')
+		bld.add_subproject(bld.env.RETAIL_PROJECTS)
+		return
 
 	if bld.env.DEST_OS in ['win32', 'android']:
 		sdl_name = 'SDL2.dll' if bld.env.DEST_OS == 'win32' else 'libSDL2.so'
