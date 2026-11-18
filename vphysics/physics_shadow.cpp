@@ -1052,7 +1052,11 @@ void CShadowController::AttachObject( void )
 
 	if ( !m_allowsRotation )
 	{
+#ifndef BYTEMATCH_RETAIL
 		IVP_U_Float_Point ri( 1e14f, 1e14f, 1e14f );
+#else
+		IVP_U_Float_Point ri( 1e15f, 1e15f, 1e15f );
+#endif
 		pCore->set_rotation_inertia( &ri );
 	}
 	if ( !m_allowsTranslation )

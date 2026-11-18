@@ -188,8 +188,9 @@ void CPhysicsMotionController::do_simulation_controller(IVP_Event_Sim *event,IVP
 				}
 				break;
 			}
-			// TODO(mastercoms): apply sv_maxvelocity?
-			//pCore->apply_velocity_limit();
+#ifdef BYTEMATCH_RETAIL
+			pCore->apply_velocity_limit();
+#endif
 		}
 	}
 }
