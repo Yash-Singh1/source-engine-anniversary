@@ -36,7 +36,7 @@
 #define GLMPRINTF(args)
 #endif
 
-#if defined( OSX ) || defined( ANDROID )
+#if defined( ANDROID )
 ConVar rawinput_set_one_time( "rawinput_set_one_time", "0", FCVAR_ARCHIVE|FCVAR_HIDDEN, "");
 #endif
 
@@ -404,8 +404,10 @@ private:
 	int m_MouseButtonDownX;
 	int m_MouseButtonDownY;
 
+#ifdef ANDROID
 	bool m_bResetVsync;
 	int m_nFramesToSkip;
+#endif
 
 	double m_flPrevGLSwapWindowTime;
 };
@@ -587,8 +589,10 @@ InitReturnVal_t CSDLMgr::Init()
 	m_nWarpDelta = 0;
 	m_bRawInput = false;
 
+#ifdef ANDROID
 	m_nFramesToSkip = 0;
 	m_bResetVsync = false;
+#endif
 
 	m_flPrevGLSwapWindowTime = 0.0f;
 
@@ -676,7 +680,11 @@ InitReturnVal_t CSDLMgr::Init()
 	//  GL entry points, but the game hasn't made a window yet. So it's time
 	//  to make a window! We make a 640x480 one here, and later, when asked
 	//  to really actually make a window, we just resize the one we built here.
+#ifdef VPC
+	if ( !CreateHiddenGameWindow( "", 640, 480 ) )
+#else
 	if ( !CreateHiddenGameWindow( "", 1280, 720 ) )
+#endif
 		Error( "CreateGameWindow failed" );
 
 	SDL_HideWindow( m_Window );
@@ -1145,8 +1153,8 @@ void CSDLMgr::OnFrameRendered()
 
 		ConVarRef rawinput( "m_rawinput" );
 
-#if defined( OSX ) || defined( ANDROID )
-		// We default raw input to on on Mac/Android and set it one time for all users since
+#if defined( ANDROID )
+		// We default raw input to on on Android and set it one time for all users since
 		// it didn't used to be the default.
 		if ( !rawinput_set_one_time.GetBool() )
 		{
@@ -1472,6 +1480,11 @@ void CSDLMgr::SetWindowFullScreen( bool bFullScreen, int nWidth, int nHeight )
 		}
 
 		mode.format = (Uint32)SDL_PIXELFORMAT_RGBX8888;
+
+#ifdef VPC
+		m_flMouseXScale = ( float )nWidth / ( float )mode.w;
+		m_flMouseYScale = ( float )nHeight / ( float )mode.h;
+#endif
 	}
 	else
 	{
@@ -1480,6 +1493,10 @@ void CSDLMgr::SetWindowFullScreen( bool bFullScreen, int nWidth, int nHeight )
 		mode.w = nWidth;
 		mode.h = nHeight;
 		mode.driverdata = 0;
+#ifdef VPC
+		m_flMouseXScale = 1.0f;
+		m_flMouseYScale = 1.0f;
+#endif
 	}
 
 	SDL_SetWindowDisplayMode( m_Window, &mode );
@@ -1527,6 +1544,7 @@ void CSDLMgr::SetWindowFullScreen( bool bFullScreen, int nWidth, int nHeight )
 		m_bFullScreen = bFullScreen;
 	}
 
+#ifndef VPC
 	if (bFullScreen)
 	{
 		int drawableW, drawableH;
@@ -1551,6 +1569,7 @@ void CSDLMgr::SetWindowFullScreen( bool bFullScreen, int nWidth, int nHeight )
 		m_flMouseXScale = 1.0f;
 		m_flMouseYScale = 1.0f;
 	}
+#endif
 }
 
 
@@ -1613,16 +1632,6 @@ void CSDLMgr::handleKeyInput( const SDL_Event &event )
 
 	Assert( ( event.type == SDL_KEYDOWN ) || ( event.type == SDL_KEYUP ) );
 
-#ifdef OSX
-	if ( event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_TAB &&
-	     SDL_GetModState()&KMOD_GUI && CommandLine()->FindParm( "-exclusivefs" ) )
-	{
-		// If we're in exclusive fullscreen mode, and they command-tab, handle
-		// that by forcing minimization of the window.
-		SDL_MinimizeWindow( m_Window );
-	}
-#endif
-
 	const bool bPressed = ( event.type == SDL_KEYDOWN );
 
 	// !!! FIXME: we should be getting text input from a different event...
@@ -1631,35 +1640,6 @@ void CSDLMgr::handleKeyInput( const SDL_Event &event )
 	theEvent.m_VirtualKeyCode = event.key.keysym.scancode;
 	theEvent.m_UnicodeKey = 0;
 	theEvent.m_UnicodeKeyUnmodified = 0;
-
-	// Testing for non-qwerty keyboards: work out the key name and use this to
-	// calculate the scancode.
-	if ( CommandLine()->FindParm( "-nonqwerty" ) )
-	{
-		const char* keyname = SDL_GetKeyName( event.key.keysym.sym );
-		if ( keyname != NULL && strlen( keyname ) == 1) {
-			const char c = *keyname;
-			if ( c >= 'A' && c <= 'Z' )
-			{
-				theEvent.m_VirtualKeyCode = SDL_SCANCODE_A + ( c - 'A' );
-			}
-			else
-			{
-				switch( c )
-				{
-					case '=': theEvent.m_VirtualKeyCode = SDL_SCANCODE_EQUALS; break;
-					case '-': theEvent.m_VirtualKeyCode = SDL_SCANCODE_MINUS; break;
-					case '[': theEvent.m_VirtualKeyCode = SDL_SCANCODE_LEFTBRACKET; break;
-					case ']': theEvent.m_VirtualKeyCode = SDL_SCANCODE_RIGHTBRACKET; break;
-					case ';': theEvent.m_VirtualKeyCode = SDL_SCANCODE_SEMICOLON; break;
-					case '\'': theEvent.m_VirtualKeyCode = SDL_SCANCODE_APOSTROPHE; break;
-					case ',': theEvent.m_VirtualKeyCode = SDL_SCANCODE_COMMA; break;
-					case '.': theEvent.m_VirtualKeyCode = SDL_SCANCODE_PERIOD; break;
-					case '/': theEvent.m_VirtualKeyCode = SDL_SCANCODE_SLASH; break;
-				}
-			}
-		}
-	}
 
 	// key modifiers aren't necessarily reliable in all the cases we'd want, so track it ourselves.
 	const uint32_t ModCAPSLOCK = (1 << 0);
@@ -1926,7 +1906,9 @@ void CSDLMgr::PumpWindowsMessageLoop()
 					}
 					case SDL_WINDOWEVENT_FOCUS_GAINED:
 					{
+#ifdef ANDROID
 						m_bResetVsync = true; m_nFramesToSkip = 3;
+#endif
 						m_bHasFocus = true;
 						SDL_ShowCursor( m_bCursorVisible ? 1 : 0 );
 						CCocoaEvent theEvent;
