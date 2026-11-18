@@ -74,8 +74,8 @@
    "IGameUI"
   ]
  },
- "retail_len": 38,
- "retail_len_basis": "override: extra slots are CGameUI's own",
+ "retail_len": 39,
+ "retail_len_basis": "override: slot 38 GetBonusMapsDatabase() is IGameUI's (appended): retail GameUI calls CloseMessageDialog, which CGameUI declares before its other own methods, at slot 39; the rest are CGameUI's own",
  "retail_len_bounds": {
   "shortest deriving subtable": 46
  },
@@ -307,10 +307,15 @@
    "name": "SendMainMenuCommand",
    "sig": "SendMainMenuCommand(char const*)",
    "symbol": "CGameUI::SendMainMenuCommand(char const*)"
+  },
+  {
+   "index": 38,
+   "name": "GetBonusMapsDatabase",
+   "sig": "GetBonusMapsDatabase()",
+   "symbol": "CGameUI::GetBonusMapsDatabase()"
   }
  ],
  "implementer_tail": [
-  "GetBonusMapsDatabase()",
   "CloseMessageDialog(unsigned int)",
   "StartProgressBar()",
   "ContinueProgressBar(float)",

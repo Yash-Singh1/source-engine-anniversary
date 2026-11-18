@@ -451,7 +451,10 @@ void IMaterialInternal::DestroyMaterial( IMaterialInternal* pMaterial )
 		CMaterial* pMatImp = static_cast<CMaterial*>(pMaterial);
 		// Deletion of the error material is deferred until after all other materials have been deleted.
 		// See CMaterialSystem::CleanUpErrorMaterial() in cmaterialsystem.cpp.
+#ifndef BYTEMATCH_RETAIL
 		if ( !pMatImp->IsErrorMaterial() )
+#endif
+#line 455
 		{
 			delete pMatImp;
 		}
@@ -492,11 +495,14 @@ CMaterial::CMaterial( char const* materialName, const char *pTextureGroupName, K
 	m_pShaderParams = NULL;
 	m_RefCount = 0;
 	m_representativeTexture = NULL;
-	m_pReplacementProxy = NULL;
 #ifdef BYTEMATCH_RETAIL
 	m_ppProxies = NULL;
+	m_pReplacementProxy = NULL;
 	m_ProxyCount = 0;
+#else
+	m_pReplacementProxy = NULL;
 #endif
+#line 500
 	m_VarCount = 0;
 	m_MappingWidth = m_MappingHeight = 0;
 	m_iEnumerationID = 0;
@@ -1232,7 +1238,12 @@ bool CMaterial::ParseMaterialFlag( KeyValues* pParseValue, IMaterialVar* pFlagVa
 }
 
 
+#ifdef BYTEMATCH_RETAIL
+ConVar mat_reduceparticles( "mat_reduceparticles",  "0" );
+#else
 ConVar mat_reduceparticles( "mat_reduceparticles",  "0", FCVAR_ALLOWED_IN_COMPETITIVE );
+#endif
+#line 1236
 
 bool CMaterial::ShouldSkipVar( KeyValues *pVar, bool *pWasConditional )
 {
@@ -1264,7 +1275,12 @@ bool CMaterial::ShouldSkipVar( KeyValues *pVar, bool *pWasConditional )
 		}
 		else if ( ! stricmp( pCond, "hdr" ) )
 		{
+#ifdef BYTEMATCH_RETAIL
+			bShouldSkip = ( HardwareConfig()->GetHDRType() == HDR_TYPE_NONE );
+#else
 			bShouldSkip = false; //( HardwareConfig()->GetHDRType() == HDR_TYPE_NONE );
+#endif
+#line 1268
 		}
 		else if ( ! stricmp( pCond, "srgb" ) )
 		{
@@ -1278,10 +1294,13 @@ bool CMaterial::ShouldSkipVar( KeyValues *pVar, bool *pWasConditional )
 		{
 			bShouldSkip = !IsX360();
 		}
+#ifndef BYTEMATCH_RETAIL
 		else if ( ! stricmp( pCond, "gameconsole" ) )
 		{
 			bShouldSkip = !IsGameConsole();
 		}
+#endif
+#line 1285
 		else
 		{
 			Warning( "unrecognized conditional test %s in %s\n", pVarName, GetName() );
@@ -1491,6 +1510,23 @@ static KeyValues *FindBuiltinFallbackBlock( char const *pShaderName, KeyValues *
 		if ( pRet )
 			return pRet;
 	}
+#ifdef BYTEMATCH_RETAIL
+	if ( HardwareConfig()->GetHDRType() != HDR_TYPE_NONE )
+	{
+		KeyValues *pRet = CheckConditionalFakeShaderName( pShaderName,"hdr_dx9", pKeyValues );
+		if ( pRet )
+			return pRet;
+		pRet = CheckConditionalFakeShaderName( pShaderName,"hdr", pKeyValues );
+		if ( pRet )
+			return pRet;
+	}
+	else
+	{
+		KeyValues *pRet = CheckConditionalFakeShaderName( pShaderName,"ldr", pKeyValues );
+		if ( pRet )
+			return pRet;
+	}
+#else
 //	if ( HardwareConfig()->GetHDRType() != HDR_TYPE_NONE )
 	{
 		KeyValues *pRet = CheckConditionalFakeShaderName( pShaderName,"hdr_dx9", pKeyValues );
@@ -1506,6 +1542,8 @@ static KeyValues *FindBuiltinFallbackBlock( char const *pShaderName, KeyValues *
 		if ( pRet )
 			return pRet;
 	}
+#endif
+#line 1509
 	if ( HardwareConfig()->UsesSRGBCorrectBlending() )
 	{
 		KeyValues *pRet = CheckConditionalFakeShaderName( pShaderName,"srgb", pKeyValues );
@@ -1673,6 +1711,16 @@ KeyValues* CMaterial::InitializeShader( KeyValues &keyValues, KeyValues &patchKe
 		const char *pFallbackMaterial = pCurrentFallback->GetString( "$fallbackmaterial" );
 		if ( pFallbackMaterial[0] )
 		{
+#ifdef BYTEMATCH_RETAIL
+			// Gotta copy it off; clearing the keyvalues will blow the string away
+			Q_strncpy( pFallbackMaterialNameBuf, pFallbackMaterial, 256 );
+			keyValues.Clear();
+			if( !LoadVMTFile( keyValues, patchKeyValues, pFallbackMaterialNameBuf, UsesUNCFileName(), NULL ) )
+			{
+				Warning( "CMaterial::PrecacheVars: error loading vmt file %s for %s\n", pFallbackMaterialNameBuf, GetName() );
+				keyValues = *(((CMaterial *)g_pErrorMaterial)->m_pVMTKeyValues);
+			}
+#else
 			// Don't fallback to ourselves
 			if ( Q_stricmp( GetName(), pFallbackMaterial ) )
 			{
@@ -1690,6 +1738,8 @@ KeyValues* CMaterial::InitializeShader( KeyValues &keyValues, KeyValues &patchKe
 				Warning( "CMaterial::PrecacheVars: fallback material for vmt file %s is itself!\n", GetName() );
 				keyValues = *(((CMaterial *)g_pErrorMaterial)->m_pVMTKeyValues);
 			}
+#endif
+#line 1693
 			pCurrentFallback = &keyValues;
 			pFallbackSection = NULL;
 
@@ -1762,9 +1812,12 @@ bool CMaterial::InitializeStateSnapshots()
 
 		if ( m_pShader && !ShaderSystem()->InitRenderState( m_pShader, m_VarCount, m_pShaderParams, &m_ShaderRenderState, GetName() ))
 		{
+#ifndef BYTEMATCH_RETAIL
 			m_Flags &= ~MATERIAL_VALID_RENDERSTATE;
+#endif
 			return false;
 		}
+#line 1768
 
 		m_Flags |= MATERIAL_VALID_RENDERSTATE;
 	}
@@ -1777,6 +1830,10 @@ void CMaterial::CleanUpStateSnapshots()
 	if (IsValidRenderState())
 	{
 		ShaderSystem()->CleanupRenderState(&m_ShaderRenderState);
+#ifdef BYTEMATCH_RETAIL
+		m_Flags &= ~MATERIAL_VALID_RENDERSTATE;
+#endif
+#line 1780
 		// -- THIS CANNOT BE HERE: m_Flags &= ~MATERIAL_VALID_RENDERSTATE;
 		// -- because it will cause a crash when main thread asks for material
 		// -- sort group it can temporarily see material in invalid render state
@@ -2076,7 +2133,12 @@ bool CMaterial::NeedsTangentSpace( void )
 
 bool CMaterial::NeedsPowerOfTwoFrameBufferTexture( bool bCheckSpecificToThisFrame )
 {
+#ifdef BYTEMATCH_RETAIL
+	Precache();
+#else
 	PrecacheVars();
+#endif
+#line 2080
 	if( !m_pShader )
 	{
 		if ( !CommandLine()->FindParm( "-hushasserts" ) )
@@ -2092,7 +2154,12 @@ bool CMaterial::NeedsPowerOfTwoFrameBufferTexture( bool bCheckSpecificToThisFram
 
 bool CMaterial::NeedsFullFrameBufferTexture( bool bCheckSpecificToThisFrame )
 {
+#ifdef BYTEMATCH_RETAIL
+	Precache();
+#else
 	PrecacheVars();
+#endif
+#line 2096
 	if( !m_pShader )
 	{
 		if ( !CommandLine()->FindParm( "-hushasserts" ) )
@@ -2426,7 +2493,10 @@ void CMaterial::Uncache( bool bPreserveVars )
 	{
 		// Clean up the state snapshots
 		CleanUpStateSnapshots();
+#ifndef BYTEMATCH_RETAIL
 		m_Flags &= ~MATERIAL_VALID_RENDERSTATE;
+#endif
+#line 2430
 		m_Flags &= ~MATERIAL_IS_PRECACHED;
 	}
 
@@ -2474,7 +2544,7 @@ void CMaterial::ReloadTextures( void )
 			if( ppVars[i]->IsTexture() )
 			{
 				ITextureInternal *pTexture = ( ITextureInternal * )ppVars[i]->GetTextureValue();
-				pTexture->Download();
+				if( !IsTextureInternalEnvCubemap( pTexture ) ) pTexture->Download();
 			}
 		}
 	}
@@ -2771,7 +2841,12 @@ PreviewImageRetVal_t CMaterial::GetPreviewImageProperties( int *width, int *heig
 	CUtlBuffer buf( pMem, nHeaderSize );
 	if( !g_pFullFileSystem->ReadFile( pFileName, NULL, buf, nHeaderSize ) )
 	{
+#ifdef BYTEMATCH_RETAIL
+		Warning( "\"%s\": cached version doesn't exist\n", pFileName );
+#else
 		Warning( "\"%s\" - \"%s\": cached version doesn't exist\n", GetName(), pFileName );
+#endif
+#line 2775
 		return MATERIAL_PREVIEW_IMAGE_BAD;
 	}
 	
@@ -2834,11 +2909,14 @@ PreviewImageRetVal_t CMaterial::GetPreviewImage( unsigned char *pData, int width
 	// Determine where in the file to start reading (frame 0, face 0, mip 0)
 	pVTFTexture->ImageFileInfo( 0, 0, 0, &nImageOffset, &nImageSize );
 
+#ifndef BYTEMATCH_RETAIL
 	if ( nImageSize == 0 )
 	{
 		Warning( "Couldn't determine offset and size of material \"%s\"\n", pFileName );
 		goto fail;
 	}
+#endif
+#line 2842
 		
 	// Prep the utlbuffer for reading
 	buf.EnsureCapacity( nImageSize );
@@ -3138,10 +3216,10 @@ IMaterial *CMaterial::CheckProxyReplacement( void *proxyData )
 
 bool CMaterial::HasProxy( )	const
 {
-	const_cast< CMaterial* >( this )->PrecacheVars();
 #ifdef BYTEMATCH_RETAIL
 	return ( m_ProxyCount > 0 );
 #else
+	const_cast< CMaterial* >( this )->PrecacheVars();
 	return m_ProxyInfo.Count() > 0;
 #endif
 }
@@ -3570,10 +3648,13 @@ bool AccumulateRecursiveVmtPatches( KeyValues &patchKeyValuesOut, KeyValues **pp
 #ifndef DEDICATED
 			Warning( "Failed to load $include VMT file (%s)\n", includeFileName.String() );
 #endif
-			if ( !CommandLine()->FindParm( "-hushasserts" ) )
+#ifndef BYTEMATCH_RETAIL
+			if ( !HushAsserts() )
 			{
 				AssertMsg( false, "Failed to load $include VMT file (%s)", includeFileName.String() );
 			}
+#endif
+#line 3577
 			return false;
 		}
 

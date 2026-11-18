@@ -35,7 +35,8 @@ enum MaterialSystem_Config_Flags_t
 	MATSYS_VIDCFG_FLAGS_DISABLE_PHONG               = ( 1 << 16 ),
 	MATSYS_VIDCFG_FLAGS_VR_MODE						= ( 1 << 17 ),
 #ifdef BYTEMATCH_RETAIL
-	MATSYS_VIDCFG_FLAGS_BICUBIC_LIGHTMAPS			= ( 1 << 19 ),
+	MATSYS_VIDCFG_FLAGS_NO_WINDOW_BORDER			= ( 1 << 18 ),
+	MATSYS_VIDCFG_FLAGS_LIGHTMAP_BICUBIC			= ( 1 << 19 ),
 #endif
 #line 37
 };
@@ -71,7 +72,8 @@ struct MaterialSystem_Config_t
 	bool UsePhong() const { return ( m_Flags & MATSYS_VIDCFG_FLAGS_DISABLE_PHONG ) == 0; }
 	bool VRMode() const { return ( m_Flags & MATSYS_VIDCFG_FLAGS_VR_MODE) != 0; }
 #ifdef BYTEMATCH_RETAIL
-	bool BicubicLightmaps() const { return ( m_Flags & MATSYS_VIDCFG_FLAGS_BICUBIC_LIGHTMAPS ) != 0; }
+	bool NoWindowBorder() const { return ( m_Flags & MATSYS_VIDCFG_FLAGS_NO_WINDOW_BORDER ) != 0; }
+	bool LightmapBicubic() const { return ( m_Flags & MATSYS_VIDCFG_FLAGS_LIGHTMAP_BICUBIC ) != 0; }
 #endif
 #line 69
 	bool ShadowDepthTexture() const { return m_bShadowDepthTexture; }

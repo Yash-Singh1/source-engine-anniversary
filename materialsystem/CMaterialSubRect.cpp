@@ -100,6 +100,9 @@ public:
 	ShaderRenderState_t *GetRenderState()								{ return m_pMaterialPage->GetRenderState(); }
 	int					GetNumAnimationFrames()							{ return m_pMaterialPage->GetNumAnimationFrames(); }
 
+#ifdef BYTEMATCH_RETAIL
+	void				GetLowResColorSample( float s, float t, float *color ) const { m_pMaterialPage->GetLowResColorSample( s, t, color ); }
+#else
 	void				GetLowResColorSample( float s, float t, float *color ) const
 	{
 		if ( m_pMaterialPage ) 
@@ -107,6 +110,8 @@ public:
 		else
 			color[ 0 ] = color[ 1 ] = color[ 2 ] = 0.0f;
 	}
+#endif
+#line 110
 
 	bool				UsesEnvCubemap( void )							{ return m_pMaterialPage->UsesEnvCubemap(); }
 	bool				NeedsSoftwareSkinning( void )					{ return m_pMaterialPage->NeedsSoftwareSkinning(); }
@@ -396,7 +401,12 @@ CMaterialSubRect::~CMaterialSubRect()
 		m_pVMTKeyValues = NULL;
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	m_aMaterialVars.Purge();
+#else
 	// m_aMaterialVars is freed, purged, and lit on fire in Uncache() above.
+#endif
+#line 400
 
 #ifdef _DEBUG
 	if ( m_pDebugName )
@@ -806,6 +816,25 @@ void CMaterialSubRect::SetEnumerationID( int id )
 //-----------------------------------------------------------------------------
 // Purpose:
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+void CMaterialSubRect::Uncache( bool bPreserveVars )
+{
+	// Don't bother if we're not cached
+	if ( IsPrecached() )
+	{
+		m_fLocal &= ~MATERIALSUBRECT_IS_PRECACHED;
+	}
+
+	if ( !bPreserveVars )
+	{
+		if ( IsPrecachedVars() )
+		{
+			m_fLocal &= ~MATERIALSUBRECT_VARS_IS_PRECACHED;
+		}
+	}
+}
+#else
+#line 809
 void CMaterialSubRect::Uncache( bool bPreserveVars )
 {
 	MaterialLock_t hMaterialLock = MaterialSystem()->Lock();
@@ -832,6 +861,8 @@ void CMaterialSubRect::Uncache( bool bPreserveVars )
 
 	MaterialSystem()->Unlock( hMaterialLock );
 }
+#endif
+#line 835
 
 //-----------------------------------------------------------------------------
 // Purpose:

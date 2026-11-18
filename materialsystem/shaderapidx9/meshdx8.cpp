@@ -1098,8 +1098,14 @@ static int NumTextureCoordinates( VertexFormat_t vertexFormat )
 //-----------------------------------------------------------------------------
 static void ResetMeshRenderState()
 {
+#ifdef BYTEMATCH_RETAIL
+	g_pLastIndex = 0;
+	g_pLastIndexBuffer = 0;
+#else
 	SafeRelease( &g_pLastIndex );
 	g_pLastIndexBuffer = 0;
+#endif
+#line 1103
 	g_pLastVertex = 0;
 	g_nLastVertOffsetInBytes = 0;
 	g_pLastColorMesh = 0;
@@ -1115,8 +1121,14 @@ static void ResetMeshRenderState()
 //-----------------------------------------------------------------------------
 static void ResetIndexBufferRenderState()
 {
+#ifdef BYTEMATCH_RETAIL
+	g_pLastIndex = 0;
+	g_pLastIndexBuffer = 0;
+#else
 	SafeRelease( &g_pLastIndex );
 	g_pLastIndexBuffer = 0;
+#endif
+#line 1120
 	g_LastVertexIdx = -1;
 }
 
@@ -1567,12 +1579,24 @@ CVertexBufferDx8::CVertexBufferDx8( ShaderBufferType_t type, VertexFormat_t fmt,
 	if ( !m_bIsDynamic )
 	{
 		char name[256];
+#ifdef BYTEMATCH_RETAIL
+		Q_strcpy( name, "TexGroup_global_" );
+		Q_strncat( name, pBudgetGroupName, sizeof(name), COPY_ALL_CHARACTERS );
+#else
 		V_strcpy_safe( name, "TexGroup_global_" );
 		V_strcat_safe( name, pBudgetGroupName, sizeof(name) );
+#endif
+#line 1572
 		m_pGlobalCounter = g_VProfCurrentProfile.FindOrCreateCounter( name, COUNTER_GROUP_TEXTURE_GLOBAL );
 
+#ifdef BYTEMATCH_RETAIL
+		Q_strcpy( name, "TexGroup_frame_" );
+		Q_strncat( name, pBudgetGroupName, sizeof(name), COPY_ALL_CHARACTERS );
+#else
 		V_strcpy_safe( name, "TexGroup_frame_" );
 		V_strcat_safe( name, pBudgetGroupName, sizeof(name) );
+#endif
+#line 1576
 		m_pFrameCounter = g_VProfCurrentProfile.FindOrCreateCounter( name, COUNTER_GROUP_TEXTURE_PER_FRAME );
 	}
 	else
@@ -2475,10 +2499,18 @@ CMeshDX8::~CMeshDX8()
 		{
 			delete m_pVertexBuffer;
 		}
+#ifdef BYTEMATCH_RETAIL
+		if (m_pIndexBuffer)
+		{
+			delete m_pIndexBuffer;
+		}
+#else
 		if (m_pIndexBuffer)
 		{
 			SafeRelease( &m_pIndexBuffer );
 		}
+#endif
+#line 2482
 	}
 }
 
@@ -2682,7 +2714,12 @@ int CMeshDX8::Lock( bool bReadOnly, int nFirstIndex, int nIndexCount, IndexDesc_
 	// Static vertex buffer case
 	if (!m_pIndexBuffer)
 	{
+#ifdef BYTEMATCH_RETAIL
+		m_pIndexBuffer = new CIndexBuffer( Dx9Device(), nIndexCount, ShaderAPI()->UsingSoftwareVertexProcessing() );
+#else
 		SafeAssign( &m_pIndexBuffer, new CIndexBuffer( Dx9Device(), nIndexCount, ShaderAPI()->UsingSoftwareVertexProcessing() ) );
+#endif
+#line 2686
 	}
 
 	int startIndex;
@@ -2862,7 +2899,12 @@ int CMeshDX8::IndexCount( ) const
 //-----------------------------------------------------------------------------
 void CMeshDX8::UseIndexBuffer( CIndexBuffer* pBuffer )
 {
+#ifdef BYTEMATCH_RETAIL
+	m_pIndexBuffer = pBuffer;
+#else
 	SafeAssign( &m_pIndexBuffer, pBuffer );
+#endif
+#line 2866
 }
 
 void CMeshDX8::UseVertexBuffer( CVertexBuffer* pBuffer )
@@ -3245,7 +3287,12 @@ void CMeshDX8::SetIndexStreamState( int firstVertexIdx )
 		m_pIndexBuffer->HandlePerFrameTextureStats( ShaderAPI()->GetCurrentFrameCounter() );
 		m_FirstIndex = firstVertexIdx;
 
+#ifdef BYTEMATCH_RETAIL
+		g_pLastIndex = m_pIndexBuffer;
+#else
 		SafeAssign( &g_pLastIndex, m_pIndexBuffer );
+#endif
+#line 3249
 		g_pLastIndexBuffer = NULL;
 		g_LastVertexIdx = firstVertexIdx;
 	}
@@ -3542,8 +3589,14 @@ void CDynamicMeshDX8::ResetVertexAndIndexCounts()
 void CDynamicMeshDX8::Reset()
 {
 	m_VertexFormat = 0;
+#ifdef BYTEMATCH_RETAIL
+	m_pVertexBuffer = 0;
+	m_pIndexBuffer = 0;
+#else
 	m_pVertexBuffer = 0;
 	SafeRelease( &m_pIndexBuffer );
+#endif
+#line 3547
 	ResetVertexAndIndexCounts();
 
 	// Force the render state to be updated next time
@@ -4960,12 +5013,26 @@ void CMeshMgr::FillVertexIDBuffer( CVertexBuffer *pVertexIDBuffer, int nCount )
 void CMeshMgr::CreateDynamicIndexBuffer()
 {
 	DestroyDynamicIndexBuffer();
+#ifdef BYTEMATCH_RETAIL
+	m_pDynamicIndexBuffer = new CIndexBuffer( Dx9Device(), INDEX_BUFFER_SIZE, ShaderAPI()->UsingSoftwareVertexProcessing(), true );
+#else
 	SafeAssign( &m_pDynamicIndexBuffer, new CIndexBuffer( Dx9Device(), INDEX_BUFFER_SIZE, ShaderAPI()->UsingSoftwareVertexProcessing(), true ) );
+#endif
+#line 4964
 }
 
 void CMeshMgr::DestroyDynamicIndexBuffer()
 {
+#ifdef BYTEMATCH_RETAIL
+	if ( m_pDynamicIndexBuffer )
+	{
+		delete m_pDynamicIndexBuffer;
+		m_pDynamicIndexBuffer = 0;
+	}
+#else
 	SafeRelease( &m_pDynamicIndexBuffer );
+#endif
+#line 4969
 }
 
 //-----------------------------------------------------------------------------
@@ -5501,8 +5568,11 @@ int CMeshMgr::GetMaxVerticesToRender( IMaterial *pMaterial )
 	int nVertexSize = VertexFormatSize( fmt );
 	if ( nVertexSize == 0 )
 	{
+#ifndef BYTEMATCH_RETAIL
 		// unable to determine vertex format information, possibly due to device loss.
 		Warning( "bad vertex size for material %s\n", pMaterial->GetName() );
+#endif
+#line 5506
 		return 0;
 	}
 
@@ -5972,8 +6042,14 @@ void CMeshMgr::SetIndexStreamState( int firstVertexIdx )
 		pIndexBuffer->HandlePerFrameTextureStats( ShaderAPI()->GetCurrentFrameCounter() );
 
 		g_pLastIndexBuffer = pDx9Buffer;
+#ifdef BYTEMATCH_RETAIL
+		g_pLastIndex = NULL;
+		g_LastVertexIdx = -1;
+#else
 		SafeRelease( &g_pLastIndex );
 		g_LastVertexIdx = -1;
+#endif
+#line 5977
 	}
 }
 

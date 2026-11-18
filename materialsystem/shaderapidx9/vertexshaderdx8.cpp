@@ -399,7 +399,12 @@ static void PatchPixelShaderForAtiMsaaHack(DWORD *pShader, DWORD dwTexCoordMask)
 } 
 
 static ConVar mat_force_ps_patch( "mat_force_ps_patch", "0" );
+#ifdef BYTEMATCH_RETAIL
+static ConVar mat_disable_ps_patch( "mat_disable_ps_patch", "0" );
+#else
 static ConVar mat_disable_ps_patch( "mat_disable_ps_patch", "0", FCVAR_ALLOWED_IN_COMPETITIVE );
+#endif
+#line 403
 
 //-----------------------------------------------------------------------------
 // The lovely low-level dx call to create a pixel shader
@@ -3311,6 +3316,15 @@ void CShaderManager::SetVertexShader( VertexShader_t shader )
 	}
 
 	ShaderLookup_t &vshLookup = m_VertexShaderDict[shader];
+#ifdef BYTEMATCH_RETAIL
+	if ( vshIndex >= vshLookup.m_ShaderStaticCombos.m_nCount )
+	{
+		SetVertexShaderState( 0 );
+		DevWarning( "***** Invalid vertex shader index (out of range) for %s (%d of %d).\n", m_ShaderSymbolTable.String( vshLookup.m_Name ), vshIndex, vshLookup.m_ShaderStaticCombos.m_nCount );
+		return;
+	}
+#endif
+#line 3314
 //	Warning( "vsh: %s static: %d dynamic: %d\n", m_ShaderSymbolTable.String( vshLookup.m_Name ),
 //		vshLookup.m_nStaticIndex, m_nVertexShaderIndex );
 
@@ -3414,6 +3428,15 @@ void CShaderManager::SetPixelShader( PixelShader_t shader )
 	int pshIndex = m_nPixelShaderIndex;
 	Assert( pshIndex >= 0 );
 	ShaderLookup_t &pshLookup = m_PixelShaderDict[shader];
+#ifdef BYTEMATCH_RETAIL
+	if ( pshIndex >= pshLookup.m_ShaderStaticCombos.m_nCount )
+	{
+		SetPixelShaderState( 0 );
+		DevWarning( "***** Invalid pixel shader index (out of range) for %s (%d of %d).\n", m_ShaderSymbolTable.String( pshLookup.m_Name ), pshIndex, pshLookup.m_ShaderStaticCombos.m_nCount );
+		return;
+	}
+#endif
+#line 3417
 //	Warning( "psh: %s static: %d dynamic: %d\n", m_ShaderSymbolTable.String( pshLookup.m_Name ),
 //		pshLookup.m_nStaticIndex, m_nPixelShaderIndex );
 
