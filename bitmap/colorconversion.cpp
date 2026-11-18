@@ -996,10 +996,13 @@ inline ImageFormat GetTrueImageFormat( ImageFormat fmt )
 {
 	switch ( fmt )
 	{
+#ifndef BYTEMATCH_RETAIL
 	case IMAGE_FORMAT_DXT1_RUNTIME:
 		return IMAGE_FORMAT_DXT1;
 	case IMAGE_FORMAT_DXT5_RUNTIME:
 		return IMAGE_FORMAT_DXT5;
+#endif
+#line 1003
 	default: /* expected */
 		break;
 	}
@@ -1321,6 +1324,11 @@ bool ConvertImageFormat( const uint8 *src, ImageFormat srcImageFormat,
 	}
 	
 	// Fast path for just copying a compressed texture
+#ifdef BYTEMATCH_RETAIL
+	if ( ( dstImageFormat == IMAGE_FORMAT_DXT1 || dstImageFormat == IMAGE_FORMAT_DXT3 ||
+		   dstImageFormat == IMAGE_FORMAT_DXT5 || dstImageFormat == IMAGE_FORMAT_ATI1N ||
+		   dstImageFormat == IMAGE_FORMAT_ATI2N ) && ( srcImageFormat == dstImageFormat ) )
+#else
 	if ( ( ( dstImageFormat == IMAGE_FORMAT_DXT1 || dstImageFormat == IMAGE_FORMAT_DXT1_RUNTIME ||
 		     dstImageFormat == IMAGE_FORMAT_DXT3 ||
 		     dstImageFormat == IMAGE_FORMAT_DXT5 || dstImageFormat == IMAGE_FORMAT_DXT5_RUNTIME ||
@@ -1330,6 +1338,8 @@ bool ConvertImageFormat( const uint8 *src, ImageFormat srcImageFormat,
 		 ( dstImageFormat == IMAGE_FORMAT_DXT1 && srcImageFormat == IMAGE_FORMAT_DXT1_RUNTIME ) ||
 		 ( dstImageFormat == IMAGE_FORMAT_DXT5_RUNTIME && srcImageFormat == IMAGE_FORMAT_DXT5 ) ||
 		 ( dstImageFormat == IMAGE_FORMAT_DXT1_RUNTIME && srcImageFormat == IMAGE_FORMAT_DXT1 ) )
+#endif
+#line 1333
 	{
 		// Fast path for compressed textures . . stride doesn't make as much sense.
 //		Assert( srcStride == 0 && dstStride == 0 );
@@ -1345,9 +1355,14 @@ bool ConvertImageFormat( const uint8 *src, ImageFormat srcImageFormat,
 			   srcImageFormat == IMAGE_FORMAT_BGRX8888 ) &&	   													// and
 			 ( dstImageFormat == IMAGE_FORMAT_DXT1  ||															//
 			   dstImageFormat == IMAGE_FORMAT_DXT3  ||	   														// DXT compressed dest
+#ifdef BYTEMATCH_RETAIL
+			   dstImageFormat == IMAGE_FORMAT_DXT5 ) )
+#else
 			   dstImageFormat == IMAGE_FORMAT_DXT5  ||
 			   dstImageFormat == IMAGE_FORMAT_DXT1_RUNTIME ||
 			   dstImageFormat == IMAGE_FORMAT_DXT5_RUNTIME ) )
+#endif
+#line 1351
 	{
 		return ConvertToDXT( src, srcImageFormat, dst, dstImageFormat, width, height, srcStride, dstStride );
 	}
