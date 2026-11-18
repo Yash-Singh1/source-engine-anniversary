@@ -52,6 +52,9 @@ public:
 	void Init( IDirect3DDevice9 *pD3D, uint16 *pIndexMemory, int count );
 #endif
 	
+#ifdef BYTEMATCH_RETAIL
+	~CIndexBuffer();
+#else
 	int AddRef() { return ++m_nReferenceCount; }
 	int Release() 
 	{
@@ -60,6 +63,8 @@ public:
 			delete this;
 		return retVal;
 	}
+#endif
+#line 63
 
 	LPDIRECT3DINDEXBUFFER GetInterface() const 
 	{ 
@@ -224,7 +229,10 @@ private :
 	int				m_Frame;
 #endif
 
+#ifndef BYTEMATCH_RETAIL
 	CInterlockedInt	m_nReferenceCount;
+#endif
+#line 228
 
 #ifdef _DEBUG
 	static int		s_BufferCount;
@@ -247,9 +255,12 @@ protected:
 	unsigned int m_LockedStartIndex;
 	unsigned int m_LockedNumIndices;
 
+#ifndef BYTEMATCH_RETAIL
 private:
 	// Must use reference counting functions above
 	~CIndexBuffer();
+#endif
+#line 253
 };
 
 #if defined( _X360 )
@@ -280,7 +291,10 @@ inline CIndexBuffer::CIndexBuffer( IDirect3DDevice9 *pD3D, int count,
 #ifdef VPROF_ENABLED
 		,m_Frame( -1 )
 #endif
+#ifndef BYTEMATCH_RETAIL
 		, m_nReferenceCount( 0 ) 
+#endif
+#line 284
 {
 	// For write-combining, ensure we always have locked memory aligned to 4-byte boundaries
 	count = ALIGN_VALUE( count, 2 );
