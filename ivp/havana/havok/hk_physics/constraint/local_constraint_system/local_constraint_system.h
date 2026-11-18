@@ -36,10 +36,10 @@ public:
 
 	void write_to_blueprint(hk_Local_Constraint_System_BP*);
 
-	void set_error_ticks(int);
-	void set_error_tolerance(float);
-	bool has_error();
-	void clear_error();
+	inline void set_error_ticks(int error_ticks) { m_minErrorTicks = error_ticks; }
+	inline void set_error_tolerance(float tolerance) { m_errorTolerance = tolerance; }
+	inline bool has_error() { return m_errorCount >= m_minErrorTicks; }
+	inline void clear_error() { m_errorCount = 0; }
 	void report_square_error(float);
 
 	void solve_penetration(IVP_Real_Object* pivp0, IVP_Real_Object* pivp1);
@@ -64,7 +64,7 @@ public:	// internal
 
 	void apply_effector_collision(hk_PSI_Info&, hk_Array<hk_Entity*>*) { ; }
 
-	hk_real get_epsilon();
+	inline hk_real get_epsilon() { return 0.2f; }
 	inline bool is_active() const { return m_is_active; }
 
 	inline void set_client_data(void* client_data) { m_client_data = client_data; }
@@ -80,21 +80,24 @@ protected:
 	//: Note: if the constraint is deactivated, than adding constraints is much faster
 
 	void recalc_storage_size();
+	void sort_constraints();
 	int							m_n_iterations;
 	int							m_size_of_all_vmq_storages;
 	hk_Array<hk_Constraint*> 	m_constraints;
 	hk_Array<hk_Rigid_Body*>	m_bodies;
-	bool						m_is_active;
 
 private:
-	void* m_client_data;
 	int m_minErrorTicks;
 	int m_errorCount;
 	int m_penetrationCount;
 	struct penetratepair_t m_penetrationPairs[4];
 	float m_errorTolerance;
+protected:
+	bool						m_is_active;
+private:
 	bool m_errorThisTick;
 	bool m_needsSort;
+	void* m_client_data;
 };
 
 //#include <hk_physics/constraint/local_constraint_system/local_constraint_system.inl>

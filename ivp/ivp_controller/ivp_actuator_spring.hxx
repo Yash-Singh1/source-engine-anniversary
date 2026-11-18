@@ -108,6 +108,7 @@ protected:
     
     IVP_Actuator_Spring(IVP_Environment *, IVP_Template_Spring *, IVP_ACTUATOR_TYPE);
  public:
+    virtual const char *get_controller_name() { return "sys:spring"; }
 
     void set_constant(IVP_DOUBLE value); // will be multiplied with factor
     IVP_FLOAT get_constant(){ return spring_constant;};
@@ -159,6 +160,7 @@ protected:
     IVP_FLOAT max_body_force;                  // You can restrict the force exerted at one of the objects
                                                // This is used to prevent the body from jumping too high on side walk borders 
 public:    
+    virtual const char *get_controller_name() { return "sys:suspension"; }
     void set_spring_damp_compression(IVP_FLOAT value); // will be multiplied with factor
     void set_max_body_force(IVP_FLOAT value);
     void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list);  

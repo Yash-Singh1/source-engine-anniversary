@@ -274,6 +274,7 @@ protected:
      ********************************************************************/
     void do_simulation_controller(IVP_Event_Sim *sim_u,IVP_U_Vector<IVP_Core> *core_list);
 public:
+    virtual const char *get_controller_name() { return "sys:buoyancy"; }
     // not for public use
 };
 

@@ -310,6 +310,7 @@ public:
     IVP_Friction_System *l_friction_system;
   
     IVP_CONTROLLER_PRIORITY get_controller_priority() { return IVP_CP_ENERGY_FRICTION; };
+    virtual const char *get_controller_name() { return "sys:friction"; }
     void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list);
 
     virtual ~IVP_Friction_Sys_Energy() { ; };
@@ -323,6 +324,7 @@ public:
     IVP_Friction_System *l_friction_system;
   
     IVP_CONTROLLER_PRIORITY get_controller_priority() { return IVP_CP_STATIC_FRICTION; };
+    virtual const char *get_controller_name() { return "sys:friction"; }
     void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list);
 
     virtual ~IVP_Friction_Sys_Static(){ ; };
@@ -364,6 +366,7 @@ class IVP_Friction_System : public IVP_Controller_Dependent {
     IVP_Friction_System *prev_friction_system;
     IVP_Contact_Point *first_friction_dist;
 public:    
+    virtual const char *get_controller_name() { return "sys:friction"; }
     IVP_U_Vector<IVP_Core> cores_of_friction_system;
     IVP_U_Vector<IVP_Core> moveable_cores_of_friction_system;
     IVP_U_Vector<IVP_Friction_Core_Pair> fr_pairs_of_objs;

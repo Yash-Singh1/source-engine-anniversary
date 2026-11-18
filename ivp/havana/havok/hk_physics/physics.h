@@ -201,7 +201,12 @@ public:
     //Controller Section
     IVP_U_Vector<IVP_Core> actuator_controlled_cores;
     IVP_U_Vector<IVP_Core> *get_associated_controlled_cores() { return &actuator_controlled_cores; };
+#ifdef BYTEMATCH_RETAIL
+    IVP_CONTROLLER_PRIORITY get_controller_priority() { return IVP_CP_CONSTRAINTS; };
+#else
     IVP_CONTROLLER_PRIORITY get_controller_priority() { return IVP_CP_CONSTRAINTS_MIN; };
+#endif
+    virtual const char *get_controller_name() { return "sys:constraint"; }
 
 	virtual void apply_effector_PSI(	class hk_PSI_Info& pi, hk_Array<hk_Entity*>* ) = 0;
 

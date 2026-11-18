@@ -122,7 +122,7 @@ public:
      ********************************************************************************/
     virtual IVP_CONTROLLER_PRIORITY get_controller_priority() = 0;
 
-    virtual const char* get_controller_name() { return "sys:unknown"; }
+    virtual const char* get_controller_name() { return "sys"; }
 
     virtual ~IVP_Controller() { ; };
 };
@@ -146,6 +146,7 @@ public:
 
     void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list);
     IVP_CONTROLLER_PRIORITY get_controller_priority() { return IVP_CP_GRAVITY; };
+    virtual const char *get_controller_name() { return "sys:gravity"; }
     virtual ~IVP_Standard_Gravity_Controller() { ; };
     void core_is_going_to_be_deleted_event(IVP_Core *) { ; }
 };

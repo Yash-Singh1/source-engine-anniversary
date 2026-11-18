@@ -92,6 +92,7 @@ protected:
     void					core_is_going_to_be_deleted_event( IVP_Core *core );
     IVP_DOUBLE				get_minimum_simulation_frequency()						{ return 30;}
     IVP_CONTROLLER_PRIORITY	get_controller_priority()								{ return IVP_CP_CONSTRAINTS; };
+    virtual const char *get_controller_name() { return "sys:vehicle"; }
 
 	// Simulation.
 	void					do_simulation_controller_rotation( IVP_Event_Sim *es, IVP_Core *core_B, const IVP_U_Matrix *m_world_f_B );

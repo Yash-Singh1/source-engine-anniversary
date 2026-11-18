@@ -269,6 +269,7 @@ public:
     IVP_U_Vector<IVP_Core> actuator_controlled_cores;
     IVP_U_Vector<IVP_Core> *get_associated_controlled_cores() { return &actuator_controlled_cores; };
     IVP_CONTROLLER_PRIORITY get_controller_priority() { return IVP_CP_ACTUATOR; };
+    virtual const char *get_controller_name() { return "sys:actuator"; }
 
     IVP_Actuator(IVP_Environment *env);
     virtual void anchor_will_be_deleted_event(IVP_Anchor *del_anchor); // when an object is deleted it sends events to its connected actuators
@@ -348,6 +349,7 @@ protected:
     // To create a new force actuator, use the method IVP_Environment->create_force
     IVP_Actuator_Force(IVP_Environment *env, IVP_Template_Force *templ);
 public:
+    virtual const char *get_controller_name() { return "sys:force_actuator"; }
     IVP_DOUBLE get_force() const { return force; }
     void set_force(IVP_DOUBLE new_force);
     virtual ~IVP_Actuator_Force();
@@ -439,6 +441,7 @@ protected:
 
     IVP_Actuator_Torque(IVP_Environment *env, IVP_Template_Torque *templ);
 public:
+    virtual const char *get_controller_name() { return "sys:torque_actuator"; }
     IVP_FLOAT rot_speed_out;		// used to export the last rotation speed
     void set_max_rotation_speed( IVP_DOUBLE );
     void set_torque(IVP_DOUBLE);
@@ -583,6 +586,7 @@ protected:
     IVP_Actuator_Stabilizer(IVP_Environment *env, IVP_Template_Stabilizer *stabi);
     void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list);
 public:
+    virtual const char *get_controller_name() { return "sys:stabilizer"; }
     void set_stabi_constant(IVP_DOUBLE);
     
     virtual ~IVP_Actuator_Stabilizer();
