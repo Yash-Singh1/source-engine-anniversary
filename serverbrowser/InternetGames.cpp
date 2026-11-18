@@ -23,7 +23,11 @@ CInternetGames::CInternetGames(vgui::Panel *parent, const char *panelName, EPage
 	m_fLastSort = 0.0f;
 	m_bDirty = false;
 	m_bRequireUpdate = true;
+#ifdef BYTEMATCH_RETAIL
+	m_bOfflineMode = !IsSteamGameServerBrowsingEnabled();
+#else
 	m_bOfflineMode = false;
+#endif
 
 	m_bAnyServersRetrievedFromMaster = false;
 	m_bNoServersListedOnMaster = false;
@@ -124,11 +128,19 @@ void CInternetGames::OnTick()
 // Purpose: Handles incoming server refresh data
 //			updates the server browser with the refreshed information from the server itself
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+void CInternetGames::ServerResponded( HServerListRequest hReq, int iServer )
+#else
 void CInternetGames::ServerResponded( newgameserver_t &server )
+#endif
 {
 	m_bDirty = true;
+#ifdef BYTEMATCH_RETAIL
+	BaseClass::ServerResponded( hReq, iServer );
+#else
 
 	BaseClass::ServerResponded( server );
+#endif
 	m_bAnyServersRespondedToQuery = true;
 	m_bAnyServersRetrievedFromMaster = true;
 }
@@ -136,16 +148,19 @@ void CInternetGames::ServerResponded( newgameserver_t &server )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-/*void CInternetGames::ServerFailedToRespond( HServerListRequest hReq, int iServer )
+#ifdef BYTEMATCH_RETAIL
+void CInternetGames::ServerFailedToRespond( HServerListRequest hReq, int iServer )
 {
 	m_bDirty = true;
 	gameserveritem_t *pServer = steamapicontext->SteamMatchmakingServers()->GetServerDetails( hReq, iServer );
 	Assert( pServer );
+#endif
 
+#ifdef BYTEMATCH_RETAIL
 	if ( pServer->m_bHadSuccessfulResponse )
 	{
 		// if it's had a successful response in the past, leave it on
-		//ServerResponded( hReq, iServer );
+		ServerResponded( hReq, iServer );
 	}
 	else
 	{
@@ -155,24 +170,37 @@ void CInternetGames::ServerResponded( newgameserver_t &server )
 		// we've never had a good response from this server, remove it from the list
 		m_iServerRefreshCount++;
 	}
-}*/
+}
+#endif
 
 
 //-----------------------------------------------------------------------------
 // Purpose: Called when server refresh has been completed
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+void CInternetGames::RefreshComplete( HServerListRequest hReq, EMatchMakingServerResponse response )
+#else
 void CInternetGames::RefreshComplete( NServerResponse response )
+#endif
 {
 	SetRefreshing(false);
 	UpdateFilterSettings();
 
+#ifdef BYTEMATCH_RETAIL
+	if ( response != eServerFailedToRespond )
+#else
 	if ( response != nServerFailedToRespond )
+#endif
 	{
 		if ( m_bAnyServersRespondedToQuery )
 		{
 			m_pGameList->SetEmptyListText( GetStringNoUnfilteredServers() );
 		}
+#ifdef BYTEMATCH_RETAIL
+		else if ( response == eNoServersListedOnMasterServer )
+#else
 		else if ( response == nNoServersListedOnMasterServer )
+#endif
 		{
 			m_pGameList->SetEmptyListText( GetStringNoUnfilteredServersOnMaster() );
 		}
@@ -196,7 +224,11 @@ void CInternetGames::RefreshComplete( NServerResponse response )
 
 	UpdateStatus();
 
+#ifdef BYTEMATCH_RETAIL
+	BaseClass::RefreshComplete( hReq, response );
+#else
 	BaseClass::RefreshComplete( response );
+#endif
 }
 
 
@@ -311,7 +343,11 @@ int CInternetGames::GetRegionCodeToFilter()
 bool CInternetGames::CheckTagFilter( gameserveritem_t &server )
 {
 	// Servers without tags go in the official games, servers with tags go in custom games
+#ifdef BYTEMATCH_RETAIL
+	bool bOfficialServer = !( server.m_szGameTags && server.m_szGameTags[0] );
+#else
 	bool bOfficialServer = !server.m_szGameTags[0];
+#endif
 	if ( !bOfficialServer )
 		return false;
 

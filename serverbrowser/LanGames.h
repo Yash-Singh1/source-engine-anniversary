@@ -49,7 +49,11 @@ public:
 	virtual void ServerFailedToRespond( HServerListRequest hReq, int iServer );
 
 	// called when the current refresh list is complete
+#ifdef BYTEMATCH_RETAIL
+	virtual void RefreshComplete( HServerListRequest hReq, EMatchMakingServerResponse response );
+#else
 	virtual void RefreshComplete( NServerResponse response );
+#endif
 
 	// Tell the game list what to put in there when there are no games found.
 	virtual void SetEmptyListText();
