@@ -341,5 +341,21 @@
   "includes": [
    "vgui/IScheme.h"
   ]
+ },
+ "IMaterialSystemStub": {
+  "retail_len": 128,
+  "why": "slots 128+ of CDummyMaterialSystem are its own IMatRenderContext-style methods (BindLocalCubemap...); the first 128 are IMaterialSystemStub's"
+ },
+ "CParticleOperatorInstance": {
+  "includes": [
+   "#define BYTEMATCH_RETAIL"
+  ],
+  "why": "retail libparticles layout is the BYTEMATCH_RETAIL branch of particles.h"
+ },
+ "CParticleRenderOperatorInstance": {
+  "includes": [
+   "#define BYTEMATCH_RETAIL"
+  ],
+  "why": "retail libparticles layout is the BYTEMATCH_RETAIL branch of particles.h"
  }
 }
