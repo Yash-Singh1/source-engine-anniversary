@@ -3968,6 +3968,10 @@
     {
      "project": "shaderlib",
      "path": "lib/public/shaderlib.lib"
+    },
+    {
+     "project": "tier2",
+     "path": "lib/public/tier2.lib"
     }
    ],
    "file_libs": [

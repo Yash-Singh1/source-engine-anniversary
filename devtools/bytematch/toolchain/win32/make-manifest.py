@@ -105,6 +105,10 @@ INCLUDE_ALIASES = {"thirdparty/SDL2": "thirdparty/SDL", "engine/audio/private": 
 # This fork's sources a module needs because other files call into them unconditionally.
 FORK_SOURCES = {"engine": ["engine/masterserver.cpp"]}
 
+# Libraries retail links beyond the 2018 VPCs: retail macOS stdshader_dx9 has
+# libtier2.a(tier2.o), which defines the g_pMaterialSystem CShaderDLL::Connect sets.
+RETAIL_LIBS = {"stdshader_dx9": [{"project": "tier2", "path": "lib/public/tier2.lib"}]}
+
 # Valve library paths ($File "...lib") that live elsewhere in this tree.
 LIB_FILE_ALIASES = {"dx9sdk/lib": "dx9sdk/lib/x86"}
 
@@ -375,7 +379,7 @@ class Module:
                 out.append({"project": stem.lower(), "path": rel, "implib": True})
             else:
                 out.append({"prebuilt": rel})
-        return out
+        return out + [l for l in RETAIL_LIBS.get(self.name, []) if l not in out]
 
     def manifest(self):
         lsw, lobjs = self.link_switches()
