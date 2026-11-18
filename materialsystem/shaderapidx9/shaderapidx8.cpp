@@ -105,6 +105,9 @@ mat_fullbright 1 doesn't work properly on alpha materials in testroom_standards
 #endif
 
 #include "winutils.h"
+#if defined( TOGL_OSX )
+#include "appframework/ilaunchermgr.h"
+#endif
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -116,6 +119,20 @@ mat_fullbright 1 doesn't work properly on alpha materials in testroom_standards
 
 #ifdef _WIN32
 #pragma warning (disable:4189)
+#endif
+
+#if defined( TOGL_OSX )
+void nativeGetClientRect( void *hWnd, RECT *destRect )
+{
+	// the only useful answer this call can offer, is the size of the canvas.
+	uint width, height;
+	g_pLauncherMgr->RenderedSize( width, height, false );	// false = get them, don't set them
+
+	destRect->left = 0;
+	destRect->top = 0;
+	destRect->right = width;
+	destRect->bottom = height;
+}
 #endif
 
 ConVar mat_texture_limit( "mat_texture_limit", "-1", FCVAR_NEVER_AS_STRING, 
@@ -3742,6 +3759,8 @@ void CShaderAPIDx8::ResetRenderState( bool bFullReset )
 	RECT windowRect;
 #if !defined( DX_TO_GL_ABSTRACTION )
 	GetClientRect( (HWND)m_hWnd, &windowRect );
+#elif defined( TOGL_OSX )
+	nativeGetClientRect( m_hWnd, &windowRect );
 #else
 	toglGetClientRect( (VD3DHWND)m_hWnd, &windowRect );
 #endif
@@ -11585,6 +11604,8 @@ void CShaderAPIDx8::SetViewports( int nCount, const ShaderViewport_t* pViewports
 			RECT viewRect;
 #if !defined( DX_TO_GL_ABSTRACTION )
 			GetClientRect( ( HWND )m_ViewHWnd, &viewRect );
+#elif defined( TOGL_OSX )
+			nativeGetClientRect( m_ViewHWnd, &viewRect );
 #else
 			toglGetClientRect( (VD3DHWND)m_ViewHWnd, &viewRect );
 #endif
