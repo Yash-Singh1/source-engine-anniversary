@@ -106,8 +106,19 @@ S_API int SteamAPI_GetHSteamUser() {
 	return 0;
 }
 
-S_API void *SteamInternal_ContextInit() {
+// Steamworks 1.4x+ accessors read the interface pointer from slot 2 of the
+// caller's context; it stays NULL here, so SteamInput() and friends return NULL.
+S_API void *SteamInternal_ContextInit( void *pContextInitData ) {
+	return (void **)pContextInitData + 2;
+}
+
+S_API void *SteamInternal_FindOrCreateUserInterface( int hSteamUser, const char *pszVersion ) {
 	return NULL;
+}
+
+// ESteamAPIInitResult: k_ESteamAPIInitResult_FailedGeneric
+S_API int SteamInternal_SteamAPI_Init( const char *pszInternalCheckInterfaceVersions, void *pOutErrMsg ) {
+	return 1;
 }
 
 S_API void *SteamInternal_CreateInterface() {
