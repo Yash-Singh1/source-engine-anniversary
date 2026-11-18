@@ -714,6 +714,9 @@ public:
 
 	CFileTracker2	m_FileTracker2;
 
+	// Push/PopNoFinishAllOnSearchPaths nesting; AsyncFinishAll does nothing while it is non-zero
+	int				m_nNoFinishAllOnSearchPaths;
+
 protected:
 	//----------------------------------------------------------------------------
 	// Purpose: Functions implementing basic file system behavior.
@@ -857,6 +860,11 @@ protected:
 	};
 
 	CompiledKeyValuesPreloaders_t	m_PreloadData[ NUM_PRELOAD_TYPES ];
+
+	CUtlString					m_sCurrentGameExpansionId;
+	bool						m_bUseLowViolencePaths;
+	bool						m_bUseHDMount;
+	CUtlString					m_sAudioLanguageOverride;
 
 	static CUtlSymbol			m_GamePathID;
 	static CUtlSymbol			m_BSPPathID;

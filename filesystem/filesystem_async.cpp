@@ -488,7 +488,11 @@ public:
 	{
 		if ( m_pData && m_bFreeMemory )
 		{
+#ifdef BYTEMATCH_RETAIL
+			free( (void*) m_pData );
+#else
 			delete[] (char*)m_pData;
+#endif
 		}
 	}
 
@@ -669,6 +673,9 @@ void CBaseFileSystem::InitAsync()
 		ThreadPoolStartParams_t params;
 		params.iThreadPriority = 0;
 		params.bIOThreads = true;
+#ifdef BYTEMATCH_RETAIL
+		params.nThreadsMax = 4; // Limit count of IO threads to a maximum of 4.
+#endif
 		if ( IsX360() )
 		{
 			// override defaults
@@ -678,11 +685,20 @@ void CBaseFileSystem::InitAsync()
 			params.bUseAffinityTable = true;
 			params.iAffinityTable[0] = XBOX_PROCESSOR_3;
 		}
+#ifdef BYTEMATCH_RETAIL
+		else if( IsPC() )
+		{
+			// override defaults
+			// maximum # of async I/O thread on PC is 2
+			params.nThreads = 1;
+		}
+#else
 		else
 		{
 			params.nThreadsMax = MIN(params.nThreads, 4); // Limit count of IO threads to a maximum of 4.
 			params.nStackSize = 256*1024;
 		}
+#endif
 
 		if ( !m_pThreadPool->Start( params, "IOJob" ) )
 		{
@@ -1011,6 +1027,9 @@ FSAsyncStatus_t CBaseFileSystem::AsyncAppendFile(const char *pAppendToFileName, 
 CThreadMutex g_AsyncFinishMutex;
 void CBaseFileSystem::AsyncFinishAll( int iToPriority )
 {
+	if ( m_nNoFinishAllOnSearchPaths )
+		return;
+
 	if ( m_pThreadPool)
 	{
 		AUTO_LOCK( g_AsyncFinishMutex );
