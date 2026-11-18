@@ -35,6 +35,8 @@ Task generator attributes for modules built from another source tree
     under, instead of the tree root;
   - retail_archives: {archive name: waf target} replacing the manifest's
     archive targets for `use` and link order.
+An archive built under another target name (retail_osx32's retail_stlib_variant)
+sets `retail_archive` to the manifest's archive name.
 '''
 
 import json, os
@@ -119,6 +121,9 @@ def lookup(tg):
 	key = getattr(tg, 'retail_module', None)
 	if key:
 		return 'module', key, m['modules'][key]
+	key = getattr(tg, 'retail_archive', None)
+	if key:
+		return 'archive', key, m['archives'][key]
 	names = [n for n in (getattr(tg, 'name', None), os.path.basename(str(tg.target))) if n]
 	for name in names:
 		for k, mod in m['modules'].items():

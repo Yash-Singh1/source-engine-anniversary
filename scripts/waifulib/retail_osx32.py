@@ -318,6 +318,26 @@ def hl2mp_configure(conf, rf):
 	conf.setenv('')
 	Logs.info('retail-osx32: hl2mp with clang %s, ld64 %s, deployment target %s' % (p['cc'], p['ld_dir'], h['min_osx']))
 
+@conf
+def retail_stlib_variant(bld, name, suffix, flags):
+	'''Copy of static library `name` built as `name + suffix` with extra compiler flags, for
+	modules whose retail build links its own build of the library (e.g. sourcevr at 10.5).
+	Returns the new target name; pass it in the module's `use` and `retail_archives`.'''
+	try:
+		tg = bld.get_tgen_by_name(name)
+	except Exception:
+		bld.fatal('retail-osx32: %s variant: %s must be configured before the module using it' % (suffix, name))
+	import retail_manifest
+	kind, key, _ = retail_manifest.lookup(tg)
+	v = tg.clone(tg.env)
+	v.name = v.target = name + suffix
+	v.idx = bld.get_taskgen_count()
+	if kind == 'archive':
+		v.retail_archive = key
+	v.cflags = tg.to_list(getattr(tg, 'cflags', [])) + flags
+	v.cxxflags = tg.to_list(getattr(tg, 'cxxflags', [])) + flags
+	return v.name
+
 def _entry(tg):
 	if not tg.env.RETAIL_MANIFEST:
 		return None, None
