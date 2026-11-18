@@ -192,7 +192,12 @@ public:
 protected:
 	virtual void OnCommand(const char *command);
 	virtual void OnKeyCodePressed(vgui::KeyCode code);
+#ifdef BYTEMATCH_RETAIL
+	virtual int GetRegionCodeToFilter() { return -1; }
+#else
 	virtual int GetRegionCodeToFilter() { return 255; }
+#endif
+#line 196
 
 	MESSAGE_FUNC( OnItemSelected, "ItemSelected" );
 

@@ -29,10 +29,9 @@ Retail loose objects: 8 (exact 8 in our tree).
 
 ## bin/GameUI (ours: `GameUI`)
 
-Retail loose objects: 67 (exact 66, missing 1 in our tree).
-- **add (missing from tree, new in retail)** 1: `gameui/OptionsSubGamepad.cpp`
+Retail loose objects: 67 (exact 67 in our tree).
 - **remove** 10: `common/GameUI/ObjectList.cpp`, `gameui/TextEntryBox.cpp`, `gameui/gameui_util.cpp`, `gameui/HapticControlBox.cpp`, `gameui/KeyToggleCheckButton.cpp`, `gameui/ContentControlDialog.cpp`, `gameui/CustomTabExplanationDialog.cpp`, `gameui/OptionsSubGame.cpp`, `gameui/OptionsSubTouch.cpp`, `public/tier0/memoverride.cpp` (no retail Mac module links a memoverride object: Valve's Mac build has no malloc override (malloc from libSystem, operator new from libstdc++))
-- **order**: 66 common files; 38 must move to match retail (longest in-order run 28)
+- **order**: 67 common files; 39 must move to match retail (longest in-order run 28)
 - **static libs** retail link order: `mathlib`, `tier3`, `vgui_controls`, `matsys_controls`, `bitmap`, `vtf`, `tier2`, `tier1`; ours: `vgui_controls`, `tier1`, `tier2`, `tier3`, `vtf`, `bitmap`, `mathlib`, `matsys_controls`
 
 ## bin/inputsystem (ours: `inputsystem`)
