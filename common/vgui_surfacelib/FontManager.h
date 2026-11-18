@@ -12,6 +12,7 @@
 #endif
 
 #include <vgui/VGUI.h>
+#include "utlsymbol.h"
 #include "vgui_surfacelib/FontAmalgam.h"
 #include "materialsystem/imaterialsystem.h"
 #include "filesystem.h"
@@ -39,6 +40,7 @@ public:
 	CFontManager();
 	~CFontManager();
 
+	void InitFreetype();
 	void SetLanguage(const char *language);
 
 	// clears the current font list, frees any resources
@@ -100,6 +102,8 @@ private:
 	FT_Library library; 
 	FontDataHelper m_pFontDataHelper;
 #endif
+	CUtlSymbolTable m_FontFileNames;
+	bool m_bFreetypeInitialized;
 	char m_szLanguage[64];
 	IFileSystem		*m_pFileSystem;
 	IMaterialSystem *m_pMaterialSystem;

@@ -15,20 +15,28 @@ class ITexture;
 //-----------------------------------------------------------------------------
 // Purpose: encapsulates a windows font
 //-----------------------------------------------------------------------------
-class CBitmapFont : public font_t
+class CBitmapFont : public font_base_t
 {
 public:
 	CBitmapFont();
+#ifdef VGUI_FONT_INTERFACE
+	~CBitmapFont();
+#else
 	virtual ~CBitmapFont();
+#endif
 
 	// creates the font.  returns false if the compiled font does not exist.
-	virtual bool Create(const char *windowsFontName, float scalex, float scaley, int flags);
+	virtual bool Create_Bitmap(const char *windowsFontName, float scalex, float scaley, int flags);
 
 	// returns true if the font is equivalent to that specified
-	virtual bool IsEqualTo(const char *windowsFontName, float scalex, float scaley, int flags);
+	virtual bool IsEqualTo_Bitmap(const char *windowsFontName, float scalex, float scaley, int flags);
 
 	// gets the abc widths for a character
+#ifdef VGUI_FONT_INTERFACE
+	virtual void GetCharABCWidths(int ch, int &a, int &b, int &c, int *pVerticalOffset = NULL);
+#else
 	virtual void GetCharABCWidths(int ch, int &a, int &b, int &c);
+#endif
 
 	// writes the char into the specified 32bpp texture. We're overloading this because
 	// we derive off font_t, and the implementation there doesn't work for bitmap fonts.
