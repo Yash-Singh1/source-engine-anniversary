@@ -37,12 +37,12 @@ RETAIL_MODULES = [
 	'ivp/ivp_compact_builder', 'ivp/ivp_physics', 'vphysics', 'materialsystem/stdshaders',
 	'utils/bzip2', 'replay/common', 'replay', 'sourcevr', 'video/video_quicktime',
 	'utils/bsppack', 'utils/bugreporter_filequeue', 'utils/bugreporter_public',
-	'vgui2/vgui_surfacelib', 'vguimatsurface',
+	'vgui2/vgui_surfacelib', 'vguimatsurface', 'gameui',
 ]
 
 # Defines our top-level wscript adds that Valve's build doesn't have.
 TREE_ONLY_DEFINES = ['PLATFORM_POSIX', 'NO_MEMOVERRIDE_NEW_DELETE', 'GIT_COMMIT_HASH',
-	'DX_TO_GL_ABSTRACTION_DISABLED']
+	'DX_TO_GL_ABSTRACTION_DISABLED', 'NO_STEAM', 'DISABLE_STEAM']
 
 BUILD_PATH_DEFINES = ['WAF_CFLAGS', 'WAF_LDFLAGS']
 
