@@ -48,7 +48,9 @@ public:
 	virtual void	OnLoadFilter(KeyValues *filter) OVERRIDE;
 	virtual void	OnSaveFilter(KeyValues *filter) OVERRIDE;
 	bool	CheckTagFilter( gameserveritem_t &server ) OVERRIDE;
+#ifndef BYTEMATCH_RETAIL
 	bool	CheckWorkshopFilter( gameserveritem_t &server ) OVERRIDE;
+#endif
 	virtual void	SetRefreshing(bool state) OVERRIDE;
 	virtual void	ServerResponded( int iServer, gameserveritem_t *pServerItem ) OVERRIDE;
 

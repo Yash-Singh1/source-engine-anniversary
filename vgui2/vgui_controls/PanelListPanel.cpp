@@ -295,8 +295,8 @@ void PanelListPanel::PerformLayout()
 	m_vbar->SetRangeWindow( tall );
 	m_vbar->SetButtonPressedScrollValue( tall / 4 ); // standard height of labels/buttons etc.
 
-	m_vbar->SetPos( wide - m_vbar->GetWide() - 2, 0 );
-	m_vbar->SetSize( m_vbar->GetWide(), tall - 2 );
+	m_vbar->SetPos( wide - m_vbar->GetWide() - QuickPropScale( 2 ), 0 );
+	m_vbar->SetSize( m_vbar->GetWide(), tall - QuickPropScale( 2 ) );
 
 	int top = m_vbar->GetValue();
 

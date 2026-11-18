@@ -364,6 +364,9 @@ public:
 	// Forwards rumble to the active Steam Input controller
 	void SetSteamInputRumble( float fLeftMotor, float fRightMotor, int userId );
 
+	// Converts SteamController keys to button codes
+	ButtonCode_t SKeyToButtonCode( int nUserId, int nXKey ) const;
+
 #if defined( PLATFORM_WINDOWS_PC )
 	void PollInputState_Windows();
 #endif

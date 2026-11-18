@@ -40,7 +40,12 @@ public:
 		// Don't register a game port, use hltv system's port as query port
 		eServerTypeTVRelay
 	};
+#ifdef BYTEMATCH_RETAIL
+	void Activate();
+#else
   	void Activate( EServerType serverType );
+#endif
+#line 44
 	void NotifyOfLevelChange();
 	void NotifyOfServerNameChange();
 	void SendUpdatedServerDetails();
@@ -85,7 +90,10 @@ private:
 	EServerMode GetCurrentServerMode();
 
 	EServerMode	m_eServerMode;
+#ifndef BYTEMATCH_RETAIL
 	EServerType	m_eServerType;
+#endif
+#line 88
 
 	bool m_bMasterServerUpdaterSharingGameSocket;
 	bool m_bLogOnFinished;

@@ -359,6 +359,8 @@ def build(bld):
 	if bld.env.RETAIL_OSX32:
 		# Valve's engine.vpc includes source_replay.vpc ($BUILD_REPLAY)
 		defines += ['REPLAY_ENABLED']
+		# engine.vpc: $PreprocessorDefinitions "$BASE;ENABLE_RPT" [$ENABLE_RPT]
+		defines += ['ENABLE_RPT']
 
 	libs = ['tier0','vgui_controls','dmxloader','tier1','tier2','tier3','bitmap','vstdlib','appframework','datamodel','vtf','mathlib','steam_api','matsys_controls','BZ2','SDL2','JPEG','ZLIB','OPENAL','CURL' ]
 

@@ -39,10 +39,7 @@ public:
 	virtual bool IsValid();
 
 	// gets the abc widths for a character
-	virtual void GetCharABCWidths(int ch, int &a, int &b, int &c);
-
-	// set the font to be the one to currently draw with in the gdi
-	ATSUStyle *SetAsActiveFont( CGContextRef cgContext );
+	virtual void GetCharABCWidths(int ch, int &a, int &b, int &c, int *pColorGlyph = NULL);
 
 	// returns the height of the font, in pixels
 	virtual int GetHeight();
@@ -69,9 +66,6 @@ public:
 	// gets the weight of the font
 	virtual int GetWeight() { return m_iWeight; }
 
-	// gets the width of ch given its position around before and after chars
-	void GetKernedCharWidth( wchar_t ch, wchar_t chBefore, wchar_t chAfter, float &wide, float &abcA );
-
 #ifdef DBGFLAG_VALIDATE
 	void Validate( CValidator &validator, char *pchName );
 #endif
@@ -97,9 +91,6 @@ protected:
 	float *m_pGaussianDistribution;
 
 private:
-	bool CreateStyle( float flFontSize, bool bBold );
-	bool CreateTextLayout();
-
 	// abc widths
 	struct abc_t
 	{
@@ -136,11 +127,12 @@ private:
 	CUtlRBTree<abc_cache_t, unsigned short> m_ExtendedABCWidthsCache;
 	CUtlRBTree<kerned_abc_cache_t, unsigned short> m_ExtendedKernedABCWidthsCache;
 
-	char *m_pContextMemory;
+	char m_Reserved[12];
 	ATSUFontID m_ATSUFont;
+	char *m_pContextMemory;
 	CGContextRef m_ContextRef;
 	ATSUStyle m_ATSUStyle;
-	ATSUTextLayout m_ATSUTextLayout;
+	ATSUStyle m_ATSUStyleNoUnderline;
 };
 
 #endif // OSXFONT_H

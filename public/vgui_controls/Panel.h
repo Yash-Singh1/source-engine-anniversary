@@ -1028,6 +1028,11 @@ inline int GetProportionalScaledValueIf( ISchemeManager *pSchemeManager, bool bP
 // IsProportional() and GetScheme() are evaluated before the value.
 #define PROPORTIONAL_VALUE( nValue ) vgui::GetProportionalScaledValueIf( vgui::scheme(), IsProportional(), GetScheme(), ( nValue ) )
 
+// Fallback for IScheme.h versions without ISchemeManager::QuickPropScaleCond.
+#ifndef QuickPropScale
+#define QuickPropScale( x ) ( ::vgui::GetProportionalScaledValueIf( ::vgui::scheme(), this->IsProportional(), this->GetScheme(), ( x ) ) )
+#endif
+
 } // namespace vgui
 
 

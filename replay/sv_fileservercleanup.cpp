@@ -7,9 +7,9 @@
 #include "sv_recordingsession.h"
 #include "spew.h"
 
-#if BUILD_CURL
+#include "replay_dbg.h"
+#include "fmtstr.h"
 #include "curl/curl.h"
-#endif
 
 #undef AddJob
 
@@ -60,6 +60,15 @@ void CFileserverCleaner::MarkFileForDelete( const char *pFilename )
 	{
 		pCleanerJobImp->AddFileForDelete( pFilename );
 	}
+}
+
+CBaseJob *SV_CreateDeleteFileJob()
+{
+	extern ConVar replay_fileserver_offload_enable;
+	if ( replay_fileserver_offload_enable.GetBool() )
+		return SV_CreateFtpFileDeleterJob( NULL );
+
+	return SV_CreateLocalFileDeleterJob();
 }
 
 void CFileserverCleaner::BlockForCompletion()
@@ -198,6 +207,106 @@ CLocalFileDeleterJob *SV_CreateLocalFileDeleterJob()
 	return new CLocalFileDeleterJob();
 }
 
+//----------------------------------------------------------------------------------------
+
+CFtpFileDeleterJob::CFtpFileDeleterJob( const char *pHostname, const char *pRemotePath, const char *pLogin,
+										const char *pPassword, int nPort, const char *pProxyHostname, int nProxyPort )
+:	m_pCommands( NULL ),
+	m_nNumDeleted( 0 ),
+	m_pFtp( NULL )
+{
+	m_pFtp = new CFtp( pHostname, pRemotePath, pLogin, pPassword, nPort, this, g_pSimpleSpewer );
+
+	if ( pProxyHostname )
+	{
+		m_pFtp->UseProxy( pProxyHostname, nProxyPort );
+	}
+}
+
+void CFtpFileDeleterJob::DoCleanup()
+{
+	delete m_pFtp;
+	m_pFtp = NULL;
+}
+
+JobStatus_t CFtpFileDeleterJob::DoExecute()
+{
+	return m_pFtp->Go() ? JOB_OK : JOB_FAILED;
+}
+
+const char *CFtpFileDeleterJob::FTP_GetFilename() const
+{
+	// The deletes are sent as pre-transfer commands, so the transfer itself needs a filename that won't exist
+	return ".dummyfilename";
+}
+
+void CFtpFileDeleterJob::AddFileForDelete( const char *pFilename )
+{
+	++m_nNumDeleted;
+
+	// The '*' prefix tells curl to ignore a failure for this command
+	CFmtStr fmtCommand( "*DELE %s", pFilename );
+	IF_REPLAY_DBG2( Warning( "Adding FTP command: %s\n", fmtCommand.Access() ) );
+	m_pCommands = curl_slist_append( m_pCommands, fmtCommand.Access() );
+}
+
+bool CFtpFileDeleterJob::FTP_SetupAdditionalCurlOperations( void *pCurl )
+{
+	return curl_easy_setopt( pCurl, CURLOPT_PREQUOTE, m_pCommands ) == CURLE_OK;
+}
+
+void CFtpFileDeleterJob::FTP_OnPreExecuteCurlOperations()
+{
+	PrintEventStartMsg( "Logging in and deleting" );
+}
+
+void CFtpFileDeleterJob::FTP_OnPostExecuteCurlOperations()
+{
+	curl_slist_free_all( m_pCommands );
+}
+
+bool CFtpFileDeleterJob::FTP_IsCurlResultOK( int nCurlResult ) const
+{
+	// Downloading the dummy file is expected to fail
+	const bool bResult = nCurlResult == CURLE_OK || nCurlResult == CURLE_REMOTE_FILE_NOT_FOUND;
+	PrintEventResult( bResult );
+	return bResult;
+}
+
+void CFtpFileDeleterJob::FTP_SetError( int nError, const char *pError )
+{
+	SetError( nError, pError );
+}
+
+//----------------------------------------------------------------------------------------
+
+CFtpFileDeleterJob *SV_CreateFtpFileDeleterJob( const char *pFilename )
+{
+	extern ConVar replay_fileserver_offload_remotepath;
+	extern ConVar replay_fileserver_offload_login;
+	extern ConVar replay_fileserver_offload_password;
+	extern ConVar replay_fileserver_offload_port;
+	extern ConVar replay_fileserver_offload_useproxy;
+	extern ConVar replay_fileserver_offload_proxy_port;
+
+	CFtpFileDeleterJob *pJob = new CFtpFileDeleterJob(
+		SV_GetFileserverIP(),
+		replay_fileserver_offload_remotepath.GetString(),
+		replay_fileserver_offload_login.GetString(),
+		replay_fileserver_offload_password.GetString(),
+		replay_fileserver_offload_port.GetInt(),
+		replay_fileserver_offload_useproxy.GetBool() ? SV_GetFileserverProxyIP() : NULL,
+		replay_fileserver_offload_proxy_port.GetInt()
+	);
+
+	if ( pFilename )
+	{
+		pJob->AddFileForDelete( pFilename );
+	}
+
+	return pJob;
+}
+
 
 //----------------------------------------------------------------------------------------
 
@@ -250,11 +359,6 @@ bool SV_DoFileserverCleanup( bool bForceCleanAll, ISpewer *pSpewer )
 	}
 
 	return true;
-}
-
-CBaseJob *SV_CreateDeleteFileJob()
-{
-	return SV_CreateLocalFileDeleterJob();
 }
 
 //----------------------------------------------------------------------------------------

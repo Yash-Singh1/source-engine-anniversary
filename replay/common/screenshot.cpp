@@ -16,7 +16,7 @@ bool CReplayScreenshot::Read( KeyValues *pIn )
 {
 	m_nWidth = pIn->GetInt( "w" );
 	m_nHeight = pIn->GetInt( "h" );
-	V_strcpy_safe( m_szBaseFilename, pIn->GetString( "file", "" ) );
+	V_strcpy( m_szBaseFilename, pIn->GetString( "file", "" ) );
 
 	return true;
 }

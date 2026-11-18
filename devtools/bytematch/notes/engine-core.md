@@ -502,3 +502,58 @@ No function matched at head is lost on the branch.
 | sv_steamauth | most `CSteam3Server` functions, `CCallback` templates, `SteamInternal_Init_*` | differs/missing | Steamworks SDK version (retail: `SteamInternal_ContextInit`, 32-byte `CSteamGameServerAPIContext`) |
 | net_chan | `ReadSubChannelData`, `CompressFragments` | differs | stack frame differences, not investigated |
 
+
+# Round 2 (engine-core2 lane)
+
+Branch `bytematch-engine-core2`, started at `bytematch` 72205168, merged with
+`bytematch-engine-render` 1c238e70 (finished, needed for the `IVideoMode` slot
+and `IModelLoader`/`CanCheat` changes) and later with `bytematch` 88902342
+(Steamworks 1.60, `MAX_MAP_NAME` 32, SDK 2013 `CClassMemoryPool::Clear`).
+Measured with `lane-engine-core2-scratch/run.sh` (engine/ objects; 8713
+functions once `rpt_engine` is compiled).
+
+Totals: 7841/8702 (77.19% bytes) at 72205168 -> 8374/8713 (88.89%) after a
+clean rebuild with the patched stub SDK (longjmp __dead2 fixes Host_Error,
+Host_EndGame, Host_AbortServer). Whole engine.dylib: 12432/12997 functions,
+88.15% of bytes. No function matched at
+the start is lost.
+
+## Per object, engine-core file set (start -> end / total)
+
+| object | start | end | total | cause |
+|---|---:|---:|---:|---|
+| host_cmd | 46 | 59 | 64 | SDK 2013 version code (gpszVersionString, ParseSteamInfFile, DetermineAppID, Host_InitAppID, Host_InitVersion, build_number), Host_Map_Helper/changelevel without FindMap |
+| host | 62 | 76 | 88 | GetPlatformMapPath, void Host_Changelevel (SDK 2013 + save_transition_music), anniversary config write/read, Host_RestoreHL2EpisodicUnlocks, Host_InitVersion |
+| host_state | 15 | 16 | 20 | State_ChangeLevelMP |
+| sv_main | 57 | 68 | 71 | SDK-era sv_pure, shutdown/hibernation, SpawnServer(char*), no edict freetime |
+| sv_client | 82 | 86 | 86 | 66/10 update rates, player_connect only |
+| sv_steamauth | 30 | 73 | 73 | Steam 1.60 (headers3) + retail Activate() without server type, relay/spectator details |
+| sv_rcon, cl_rcon | 30, 37 | 34, 44 | 36, 47 | ENABLE_RPT |
+| rpt_engine | 0 | 11 | 11 | ENABLE_RPT compiles it |
+| baseclient | 104 | 116 | 118 | no m_bInitialConVarsSet, ClientInfo without signon check, GUID memcpy |
+| networkstringtable | 96 | 99 | 99 | sv_compressstringtablebaselines (LZSS), older substring parse |
+| sys_getmodes | 25 | 48 | 51 | borderless window (m_bNoWindowBorder, 4-arg CreateGameWindow/SetMode), startup graphic |
+| sys_dll2 | 44 | 48 | 59 | Host_InitAppID in SetStartupInfo/ModInit, expansion id in CEngineAPI::ModInit, IsValveMod(pModName) |
+| matsys_interface | 31 | 40 | 41 | NO_WINDOW_BORDER/LIGHTMAP_BICUBIC flags, ScreenNoBorder, _rt_CameraHD, retail convars |
+| cvar | 31 | 34 | 35 | WriteVariables(CUtlBuffer&) writes all archived cvars |
+| matchmaking* | 101 | 168 | 169 | MAX_MAP_NAME 32 (headers3) |
+| snd_dma | 125 | 137 | 141 | CClassMemoryPool::Clear (headers3) |
+
+Render-lane objects in the diff (modelloader, cl_*, r_decal, l_studio,
+vgui_baseui_interface, replaydemoplayer, ...) moved because of the
+engine-render merge, not this lane.
+
+## Edited, still differing (cause known)
+
+| object | function | note |
+|---|---|---|
+| host | `Host_WriteConfiguration`, `Host_ReadConfiguration`, `Host_ReadPreStartupConfiguration` | logic is retail's; register/stack-slot allocation differs (`g_bConfigCfgExecuted` loads as movzx/cmp instead of xor/test) |
+| host | `Host_Init` | IThreadPool::Start(params) overload |
+| host_cmd | `status`, `Host_Status_PrintClient` | not investigated |
+| host_cmd | `Host_VoiceRecordStop_f`, `voiceconvar_file_changed_f`, `sv_use_steam_voice` | 2013 voice API (Voice_RecordStop, CL_SendVoicePacket(true)) |
+| sv_main | `SV_CreateBaseline`, `__GLOBAL__I_a` | 2013 voice init: `SVC_VoiceInit("vaudio_speex"/"", 5)`, no sv_voicecodec |
+| sv_main | `SV_ActivateServer` | not investigated |
+| voice | most | SDK 2013-era voice.cpp (Speex/Miles, Steam voice via SteamUser(), Voice_Init(const char*)) |
+| sys_getmodes | `TakeSnapshotJPEGToBuffer`, `WriteMovieFrame`, `VID_ProcessMovieFrame` | retail build has HAVE_JPEG (static libjpeg) |
+| sys_dll2 | `CErrorText` (non-template), `EditorToggle_f`, `CDedicatedServerAPI::Connect` | not done |
+| host_state | `HostState_Init`, `HostState_NewGame`, `State_Run`, `FrameUpdate` | HostState_Init tail-calls CCS_Init (no watchdog); NewGame strips the extension; not done |

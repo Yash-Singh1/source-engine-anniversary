@@ -107,6 +107,10 @@ extern void longjmp( jmp_buf, int ) __attribute__((noreturn));
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include <tier0/memdbgon.h>
+#ifdef BYTEMATCH_RETAIL
+#define V_strcpy_safe( pDest, pSrc ) Q_strcpy( pDest, pSrc )
+#endif
+#line 110
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -1862,7 +1866,12 @@ ConversionErrorType ImgUtl_WriteGenericVMT( const char *vtfPath, const char *pMa
 
 	// make a copy of the subdir and remove any trailing slash
 	char szMaterialsSubDir[ MAX_PATH*2 ];
+#ifdef BYTEMATCH_RETAIL
+	V_strcpy( szMaterialsSubDir, pMaterialsSubDir );
+#else
 	V_strcpy_safe( szMaterialsSubDir, pMaterialsSubDir );
+#endif
+#line 1866
 	V_StripTrailingSlash( szMaterialsSubDir );
 
 	// fix slashes

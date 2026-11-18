@@ -2566,7 +2566,17 @@ static void AddLumpInternal( int lumpnum, void *data, int len, int version )
 	lump->fileofs = g_pFileSystem->Tell( g_hBSPFile );
 	lump->filelen = len;
 	lump->version = version;
+#ifdef BYTEMATCH_RETAIL
+	// SDK 2013 lump_t has char fourCC[4] here; clearing it bytewise in this order gives retail's inlining and merged store.
+	struct lumpfourcc_t { int fileofs, filelen, version; char fourCC[4]; } *pLumpCC = ( lumpfourcc_t * )lump;
+	pLumpCC->fourCC[3] = ( char )0;
+	pLumpCC->fourCC[2] = ( char )0;
+	pLumpCC->fourCC[1] = ( char )0;
+	pLumpCC->fourCC[0] = ( char )0;
+#else
 	lump->uncompressedSize = 0;
+#endif
+#line 2570
 
 	SafeWrite( g_hBSPFile, data, len );
 

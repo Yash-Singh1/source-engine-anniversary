@@ -26,8 +26,12 @@ DECLARE_BUILD_FACTORY( CCvarSlider );
 //-----------------------------------------------------------------------------
 CCvarSlider::CCvarSlider( Panel *parent, const char *name ) : Slider( parent, name )
 {
+#ifndef BYTEMATCH_RETAIL
+	m_nScaleFactor = 100;
+#endif
 	SetupSlider( 0, 1, "", false );
 	m_bCreatedInCode = false;
+	m_nScaleFactor = 100;
 
 	AddActionSignalTarget( this );
 }
@@ -41,6 +45,7 @@ CCvarSlider::CCvarSlider( Panel *parent, const char *panelName, char const *capt
 {
 	AddActionSignalTarget( this );
 
+	m_nScaleFactor = 100;
 	SetupSlider( minValue, maxValue, cvarname, bAllowOutOfRange );
 
 	// For backwards compatability. Ignore .res file settings for forced setup sliders.
@@ -71,14 +76,27 @@ void CCvarSlider::SetupSlider( float minValue, float maxValue, const char *cvarn
 	m_flMinValue = minValue;
 	m_flMaxValue = maxValue;
 
-	// scale by CVARSLIDER_SCALE_FACTOR
-	SetRange( (int)( CVARSLIDER_SCALE_FACTOR * minValue ), (int)( CVARSLIDER_SCALE_FACTOR * maxValue ) );
+	// scale by m_nScaleFactor
+	SetRange( (int)( m_nScaleFactor * minValue ), (int)( m_nScaleFactor * maxValue ) );
 
 	char szMin[ 32 ];
 	char szMax[ 32 ];
 
-	Q_snprintf( szMin, sizeof( szMin ), "%.2f", minValue );
-	Q_snprintf( szMax, sizeof( szMax ), "%.2f", maxValue );
+	if ( m_nScaleFactor >= 100 )
+	{
+		Q_snprintf( szMin, sizeof( szMin ), "%.2f", minValue );
+		Q_snprintf( szMax, sizeof( szMax ), "%.2f", maxValue );
+	}
+	else if ( m_nScaleFactor >= 10 )
+	{
+		Q_snprintf( szMin, sizeof( szMin ), "%.1f", minValue );
+		Q_snprintf( szMax, sizeof( szMax ), "%.1f", maxValue );
+	}
+	else
+	{
+		Q_snprintf( szMin, sizeof( szMin ), "%.0f", minValue );
+		Q_snprintf( szMax, sizeof( szMax ), "%.0f", maxValue );
+	}
 
 	SetTickCaptions( szMin, szMax );
 
@@ -109,6 +127,7 @@ void CCvarSlider::ApplySettings( KeyValues *inResourceData )
 	{
 		float minValue = inResourceData->GetFloat( "minvalue", 0 );
 		float maxValue = inResourceData->GetFloat( "maxvalue", 1 );
+		m_nScaleFactor = inResourceData->GetFloat( "scalefactor", 100.0f );
 		const char *cvarname = inResourceData->GetString( "cvar_name", "" );
 		bool bAllowOutOfRange = inResourceData->GetInt( "allowoutofrange", 0 ) != 0;
 		SetupSlider( minValue, maxValue, cvarname, bAllowOutOfRange );
@@ -156,7 +175,7 @@ void CCvarSlider::SetCVarName( char const *cvarname )
 
 void CCvarSlider::SetMinMaxValues( float minValue, float maxValue, bool bSetTickDisplay )
 {
-	SetRange( (int)( CVARSLIDER_SCALE_FACTOR * minValue ), (int)( CVARSLIDER_SCALE_FACTOR * maxValue ) );
+	SetRange( (int)( m_nScaleFactor * minValue ), (int)( m_nScaleFactor * maxValue ) );
 
 	if ( bSetTickDisplay )
 	{
@@ -194,7 +213,7 @@ void CCvarSlider::Paint()
     // did it get changed from under us?
     if (curvalue != m_fStartValue)
     {
-        int val = (int)( CVARSLIDER_SCALE_FACTOR * curvalue );
+        int val = (int)( m_nScaleFactor * curvalue );
         m_fStartValue = curvalue;
         m_fCurrentValue = curvalue;
         
@@ -219,7 +238,7 @@ void CCvarSlider::ApplyChanges()
         }
         else
         {
-            m_fStartValue = (float) m_iStartValue / CVARSLIDER_SCALE_FACTOR;
+            m_fStartValue = (float) m_iStartValue / m_nScaleFactor;
         }
     
 		//engine->Cvar_SetValue( m_szCvarName, m_fStartValue );
@@ -241,7 +260,7 @@ float CCvarSlider::GetSliderValue()
     }
     else
     {
-        return ((float)GetValue())/ CVARSLIDER_SCALE_FACTOR;
+        return ((float)GetValue())/ m_nScaleFactor;
     }
 }
 
@@ -250,7 +269,7 @@ float CCvarSlider::GetSliderValue()
 //-----------------------------------------------------------------------------
 void CCvarSlider::SetSliderValue(float fValue)
 {
-    int nVal = (int)( CVARSLIDER_SCALE_FACTOR * fValue );
+    int nVal = (int)( m_nScaleFactor * fValue );
     SetValue( nVal, false);
 
     // remember this slider value
@@ -282,7 +301,7 @@ void CCvarSlider::Reset()
 	m_fStartValue = var.GetFloat();
     m_fCurrentValue = m_fStartValue;
 
-    int value = (int)( CVARSLIDER_SCALE_FACTOR * m_fStartValue );
+    int value = (int)( m_nScaleFactor * m_fStartValue );
 	SetValue( value, false );
 
 	m_iStartValue = GetValue();
@@ -314,7 +333,7 @@ void CCvarSlider::OnSliderMoved()
         if (m_iLastSliderValue != GetValue())
         {
             m_iLastSliderValue = GetValue();
-            m_fCurrentValue = ((float) m_iLastSliderValue)/CVARSLIDER_SCALE_FACTOR;
+            m_fCurrentValue = ((float) m_iLastSliderValue)/m_nScaleFactor;
         }
 
 		// tell parent that we've been modified

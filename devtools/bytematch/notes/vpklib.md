@@ -254,3 +254,10 @@ Generated from devtools/bytematch on the --retail-osx32 build (linked dylib vs r
 | `int CUtlSortVector<ChunkHashFraction_t, ChunkHashFractionLess_t, CUtlVector<ChunkHashFraction_t, CUtlMemory<ChunkHashFraction_t, int>>>::Find<ChunkHas` | differs | differs | same size: member offsets (CBaseFileSystem/CQueuedLoader/CPackedStore layout) |
 | `int CUtlSortVector<ChunkHashFraction_t, ChunkHashFractionLess_t, CUtlVector<ChunkHashFraction_t, CUtlMemory<ChunkHashFraction_t, int>>>::FindLessOrEqu` | differs | differs | same size: member offsets (CBaseFileSystem/CQueuedLoader/CPackedStore layout) |
 
+
+## leftovers lane
+
+| function | status | note |
+|---|---|---|
+| `CPackedStoreReadCache::BCanSatisfyFromReadCacheInternal` | edited | retail `ReadCacheLine` submits the MD5 request without the `m_pFileTracker` null check; that version is cheap enough that clang inlines it here (retail has no out-of-line `ReadCacheLine`). 65/65 packedstore vs filesystem_stdio |
+| `CryptoPP::SourceTemplate<StringStore>::Pump2/PumpMessages2/PumpAll2` | differs | Crypto++ header version (thirdparty) |

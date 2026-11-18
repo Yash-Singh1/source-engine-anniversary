@@ -41,8 +41,14 @@ static ConVar	sv_timeout( "sv_timeout", "65", 0, "After this many seconds withou
 static ConVar	sv_maxrate( "sv_maxrate", "0", FCVAR_REPLICATED, "Max bandwidth rate allowed on server, 0 == unlimited" );
 static ConVar	sv_minrate( "sv_minrate", "3500", FCVAR_REPLICATED, "Min bandwidth rate allowed on server, 0 == unlimited" );
        
+#ifdef BYTEMATCH_RETAIL
+       ConVar	sv_maxupdaterate( "sv_maxupdaterate", "66", FCVAR_REPLICATED, "Maximum updates per second that the server will allow" );
+	   ConVar	sv_minupdaterate( "sv_minupdaterate", "10", FCVAR_REPLICATED, "Minimum updates per second that the server will allow" );
+#else
        ConVar	sv_maxupdaterate( "sv_maxupdaterate", "100", FCVAR_REPLICATED, "Maximum updates per second that the server will allow" );
 	   ConVar	sv_minupdaterate( "sv_minupdaterate", "20", FCVAR_REPLICATED, "Minimum updates per second that the server will allow" );
+#endif
+#line 46
 
 	   ConVar	sv_stressbots("sv_stressbots", "0", FCVAR_DEVELOPMENTONLY, "If set to 1, the server calculates data and fills packets to bots. Used for perf testing.");
 static ConVar	sv_allowdownload ("sv_allowdownload", "1", 0, "Allow clients to download files");
@@ -123,7 +129,10 @@ bool CGameClient::ProcessClientInfo( CLC_ClientInfo *msg )
 	{
 		// Likely spoofing, or misconfiguration. Don't let Disconnect pathway believe this is a replay bot, it will
 		// asplode.
+#ifndef BYTEMATCH_RETAIL
 		m_bIsHLTV = false;
+#endif
+#line 126
 		Disconnect( "ProcessClientInfo: SourceTV can not connect to game directly.\n" );
 		return false;
 	}
@@ -133,7 +142,10 @@ bool CGameClient::ProcessClientInfo( CLC_ClientInfo *msg )
 	{
 		// Likely spoofing, or misconfiguration. Don't let Disconnect pathway believe this is an hltv bot, it will
 		// asplode.
+#ifndef BYTEMATCH_RETAIL
 		m_bIsReplay = false;
+#endif
+#line 135
 		Disconnect( "ProcessClientInfo: Replay can not connect to game directly.\n" );
 		return false;
 	}
@@ -375,9 +387,15 @@ void CGameClient::Connect( const char * szName, int nUserID, INetChannel *pNetCh
 		event->SetString("networkid", GetNetworkIDString() ); 	
 		event->SetString( "address", m_NetChannel?m_NetChannel->GetAddress():"none" );
 		event->SetInt( "bot", m_bFakePlayer?1:0 );
+#ifdef BYTEMATCH_RETAIL
+		g_GameEventManager.FireEvent( event );
+#else
 		g_GameEventManager.FireEvent( event, true );
+#endif
+#line 377
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	// the only difference here is we don't send an
 	// IP to prevent hackers from doing evil things
 	event = g_GameEventManager.CreateEvent( "player_connect_client" );
@@ -390,6 +408,8 @@ void CGameClient::Connect( const char * szName, int nUserID, INetChannel *pNetCh
 		event->SetInt( "bot", m_bFakePlayer ? 1 : 0 );
 		g_GameEventManager.FireEvent( event );
 	}
+#endif
+#line 379
 }
 
 void CGameClient::SetupPackInfo( CFrameSnapshot *pSnapshot )

@@ -73,7 +73,13 @@ void CSaveGameDialog::OnCommand( const char *command )
 			else
 			{
 				// open confirmation dialog
-				QueryBox *box = new QueryBox( "#GameUI_ConfirmOverwriteSaveGame_Title", "#GameUI_ConfirmOverwriteSaveGame_Info" );
+				vgui::Panel *pParent = GetParent();
+				while ( pParent && pParent->GetParent() )
+				{
+					pParent = pParent->GetParent();
+				}
+
+				QueryBox *box = new QueryBox( "#GameUI_ConfirmOverwriteSaveGame_Title", "#GameUI_ConfirmOverwriteSaveGame_Info", pParent );
 				box->AddActionSignalTarget(this);
 				box->SetOKButtonText("#GameUI_ConfirmOverwriteSaveGame_OK");
 				box->SetOKCommand(new KeyValues("Command", "command", "SaveOverwriteConfirmed"));

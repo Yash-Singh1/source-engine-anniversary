@@ -14,6 +14,7 @@
 #include "vgui/MouseCode.h"
 #include "KeyValues.h"
 #include "utlvector.h"
+#include "utlstring.h"
 
 
 #define SAVEGAME_MAPNAME_LEN 32
@@ -37,6 +38,7 @@ struct SaveGameDescription_t
 	char szFileTime[32];
 	unsigned int iTimestamp;
 	unsigned int iSize;
+	KeyValues *pAppendix;
 };
 
 
@@ -52,7 +54,10 @@ class CBaseSaveGameDialog : public vgui::Frame
 
 public:
 	CBaseSaveGameDialog( vgui::Panel *parent, const char *name );
+	~CBaseSaveGameDialog();
 	static int __cdecl SaveGameSortFunc( const void *lhs, const void *rhs );
+
+	void SetOverrideMod( const char *pszOverrideMod );
 
 protected:
 	CUtlVector<SaveGameDescription_t> m_SaveGames;
@@ -62,7 +67,6 @@ protected:
 
 	void DeleteSaveGame( const char *fileName );
 	void ScanSavedGames();
-	void CreateSavedGamesList();
 	int GetSelectedItemSaveIndex();
 	void AddSaveGameItemToList( int saveIndex );
 
@@ -70,6 +74,8 @@ protected:
 
 	void OnKeyCodeTyped( vgui::KeyCode code );
 	void OnKeyCodePressed( vgui::KeyCode code );
+
+	CUtlString m_strOverrideMod;
 
 private:
 	MESSAGE_FUNC( OnPanelSelected, "PanelSelected" );

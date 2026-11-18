@@ -34,7 +34,10 @@ using namespace vgui;
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
 //-----------------------------------------------------------------------------
-CLoadingDialog::CLoadingDialog( vgui::Panel *parent ) : Frame(parent, "LoadingDialog")
+CLoadingDialog::CLoadingDialog( vgui::Panel *parent ) : Frame(parent, "LoadingDialog"),
+	m_iSpinnerTextureID( -1 ),
+	m_iLoadingBarTextureID( -1 ),
+	m_nSpinnerFrameCache( 0 )
 {
 	SetDeleteSelfOnClose(true);
 
@@ -111,6 +114,16 @@ CLoadingDialog::~CLoadingDialog()
 	if ( input()->GetAppModalSurface() == GetVPanel() )
 	{
 		vgui::surface()->RestrictPaintToSinglePanel( NULL );
+	}
+
+	if ( m_iLoadingBarTextureID > 0 )
+	{
+		vgui::surface()->DestroyTextureID( m_iLoadingBarTextureID );
+	}
+
+	if ( m_iSpinnerTextureID > 0 )
+	{
+		vgui::surface()->DestroyTextureID( m_iSpinnerTextureID );
 	}
 }
 

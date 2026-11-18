@@ -1,0 +1,196 @@
+#! /usr/bin/env python
+# encoding: utf-8
+'''
+Retail hl2mp: depot 223's hl2mp/bin/client.dylib and server.dylib
+(--retail-osx32 --build-games=hl2mp only).
+
+Valve built them in May 2014 from the Source SDK 2013 multiplayer tree, which
+this directory holds (mp/src at SDK commit 53e78c50, imported unmodified;
+later commits edit it like the rest of the tree, and add 2014 forms of library
+files the SDK didn't ship at their Valve paths). Keeping it whole and separate
+from game/ lets the 2014 code build against its own 2014 headers without
+touching the singleplayer tree, and keeps it diffable against the SDK.
+
+Everything here builds in the hl2mp2014 env (clang-503, ld64-236.3, 10.5
+deployment target; retail_osx32.py). Modules: defines from the VPCs in this
+directory, sources and link order from the retail manifest resolved under this
+directory, dylibs from the SDK's 2014 link libraries. Static libraries:
+retail's members in retail order, each compiled from this directory when it
+has the file, otherwise from the main tree (see LIBS for the headers used).
+'''
+
+import os, sys
+
+top = '.'
+
+ENV = 'hl2mp2014'
+# name -> (manifest module, project directory, VPC, extra uselib)
+MODULES = {
+	'client': ('hl2mp/client', 'game/client', 'client_hl2mp.vpc', ['PROTOBUF']),
+	'server': ('hl2mp/server', 'game/server', 'server_hl2mp.vpc', []),
+}
+
+# archive -> (VPC in this directory or None, directories searched for members, headers)
+# headers: 'sdk' = this directory's, then the main tree's for files it lacks;
+# 'tree' = the main tree's only, for main-tree sources written against later
+# interfaces than the 2014 headers declare.
+LIBS = {
+	'libtier1.a': ('tier1/tier1.vpc', ['tier1'], 'sdk'),
+	'libmathlib.a': ('mathlib/mathlib.vpc', ['mathlib'], 'sdk'),
+	'libvgui_controls.a': ('vgui2/vgui_controls/vgui_controls.vpc',
+		['vgui2/vgui_controls', 'public', 'public/html', 'vgui2/src'], 'sdk'),
+	'libchoreoobjects.a': (None, ['game/shared'], 'sdk'),
+	'libtier2.a': (None, ['tier2', 'public/materialsystem', 'public'], 'sdk'),
+	'libtier3.a': (None, ['tier3'], 'sdk'),
+	'libdmxloader.a': (None, ['dmxloader'], 'sdk'),
+	'libparticles.a': (None, ['particles'], 'tree'),
+	'libbitmap.a': (None, ['bitmap'], 'tree'),
+	'libvtf.a': (None, ['vtf'], 'tree'),
+	'libmatsys_controls.a': (None, ['vgui2/matsys_controls'], 'sdk'),
+}
+
+# Objects Valve's compiler built with CodeGenPrepare::sinkAndCmp active: an
+# uninitialized flag in Xcode 5.1's clang-503 made it vary between compiles
+# (devtools/bytematch/toolchain/patches/clang-503.0.38-maskandbranch.patch).
+# Found per object against retail; client and server saverestore.o differ.
+SINK_AND_CMP = {
+	'client': ['game/client/beamdraw.cpp', 'game/client/clientshadowmgr.cpp',
+		'game/client/fx_staticline.cpp', 'game/client/prediction.cpp'],
+	'server': ['game/server/AI_ResponseSystem.cpp', 'game/server/hl2/antlion_maker.cpp',
+		'game/server/vehicle_baseserver.cpp', 'game/shared/gamemovement.cpp',
+		'game/shared/multiplay_gamerules.cpp', 'game/shared/saverestore.cpp'],
+	'libvgui_controls.a': ['vgui2/vgui_controls/SectionedListPanel.cpp'],
+}
+SINK_AND_CMP_FLAGS = ['-mllvm', '-mask-and-branch-folding']
+
+LIB_INCLUDES = ['common', 'public', 'public/tier0', 'public/tier1', 'public/tier2', 'public/tier3']
+TREE_EXTRA_INCLUDES = {'libbitmap.a': ['thirdparty/stb']}
+
+def options(opt):
+	return
+
+def configure(conf):
+	return
+
+def vpc(bld, path):
+	scripts = bld.srcnode.find_node('devtools/bytematch/manifests/scripts').abspath()
+	if scripts not in sys.path:
+		sys.path.insert(0, scripts)
+	import vpc_defines
+	r = vpc_defines.evaluate(bld.path.find_node(path).abspath(), bld.path.abspath())
+	projdir = os.path.dirname(path)
+	defines = [d for d in r['defines'] if '$' not in d]
+	includes = [os.path.normpath(os.path.join(projdir, i)) for i in r['include_dirs']]
+	return defines, includes
+
+def manifest(bld):
+	import retail_manifest
+	return retail_manifest._load(bld.env.RETAIL_MANIFEST)
+
+def lib_members(m, archive):
+	'''Member objects of `archive` in archive order, merged over the hl2mp modules.'''
+	out = []
+	for key, _, _, _ in MODULES.values():
+		prev = None
+		for a in m['modules'][key]['archives']:
+			if a['archive'] != archive:
+				continue
+			for mem in a['members']:
+				if mem not in out:
+					out.insert(out.index(prev) + 1 if prev else len(out), mem)
+				prev = mem
+	return out
+
+def find_member(bld, dirs, member):
+	stem = member[:-len('.o')].lower()
+	for root in (bld.path, bld.srcnode):
+		for d in dirs:
+			node = root.find_dir(d)
+			if not node:
+				continue
+			for name in node.listdir():
+				base, ext = os.path.splitext(name)
+				if base.lower() == stem and ext in ('.cpp', '.cc', '.c'):
+					return node.find_node(name)
+	return None
+
+def protoc(bld, env, proto, outdir):
+	'''protoc 2.3.0 run as vpc_scripts/protobuf_builder.vpc does; returns the .pb.cc node.'''
+	stem = os.path.splitext(proto)[0].split('/')[-1]
+	src = bld.path.find_node(proto)
+	out = [bld.path.find_or_declare('%s/%s.pb.%s' % (outdir, stem, ext)) for ext in ('cc', 'h')]
+	bld(
+		rule   = '${PROTOC} --proto_path=%s --proto_path=%s --cpp_out=%s ${SRC[0].abspath()}' % (
+			bld.path.find_dir('thirdparty/protobuf-2.3.0/src').abspath(), src.parent.abspath(), out[0].parent.abspath()),
+		source = src,
+		target = out,
+		env    = env,
+		before = ['c', 'cxx'],
+	)
+	return out[0]
+
+def sink_and_cmp(bld, key):
+	here = bld.path.path_from(bld.srcnode)
+	return dict((here + '/' + f, SINK_AND_CMP_FLAGS) for f in SINK_AND_CMP.get(key, []))
+
+def build(bld):
+	from waflib import Logs
+	env = bld.all_envs[ENV]
+	m = manifest(bld)
+	targets = {}
+	generated = {
+		'htmlmessages.pb.o': protoc(bld, env, 'vgui2/chromehtml/htmlmessages.proto', 'vgui2/vgui_controls/generated_proto'),
+	}
+
+	tree_includes = [bld.srcnode.find_dir(d).abspath() for d in LIB_INCLUDES]
+	for archive, (vpcfile, dirs, headers) in LIBS.items():
+		name = archive[len('lib'):-len('.a')]
+		source, missing = [], []
+		for mem in lib_members(m, archive):
+			node = generated.get(mem) or find_member(bld, dirs, mem)
+			if node:
+				source.append(node)
+			else:
+				missing.append(mem)
+		if missing:
+			Logs.warn('hl2mp: %s: no source for %s' % (archive, ', '.join(missing)))
+		if vpcfile:
+			defines, includes = vpc(bld, vpcfile)
+		else:
+			defines = m['archives'][archive]['defines']['vpc']
+			tree_dirs = [n.parent.abspath() for n in source if not n.is_child_of(bld.path)]
+			includes = sorted(set(tree_dirs), key = tree_dirs.index)
+			includes += (LIB_INCLUDES if headers == 'sdk' else []) + tree_includes
+			includes += [bld.srcnode.find_dir(d).abspath() for d in TREE_EXTRA_INCLUDES.get(archive, [])]
+		targets[archive] = name + '_hl2mp'
+		bld.stlib(
+			source   = source,
+			target   = name,
+			name     = targets[archive],
+			features = 'c cxx',
+			env      = env.derive(),
+			includes = includes,
+			retail_defines = defines,
+			retail_selected = True,
+			retail_file_cxxflags = sink_and_cmp(bld, archive),
+			idx      = bld.get_taskgen_count()
+		)
+
+	for name, (key, projdir, vpcfile, uselib) in MODULES.items():
+		defines, includes = vpc(bld, os.path.join(projdir, vpcfile))
+		bld.shlib(
+			source   = [],
+			target   = name,
+			name     = name + '_hl2mp',
+			features = 'c cxx cxxshlib',
+			env      = env.derive(),
+			includes = includes,
+			use      = uselib,
+			retail_defines = defines,
+			retail_module = key,
+			retail_root = bld.path.path_from(bld.srcnode),
+			retail_archives = targets,
+			retail_file_cxxflags = sink_and_cmp(bld, name),
+			install_path = env.PREFIX + '/hl2mp/bin',
+			idx      = bld.get_taskgen_count()
+		)

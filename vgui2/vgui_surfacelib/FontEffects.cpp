@@ -145,7 +145,7 @@ void ApplyOutlineToTexture( int rgbaWide, int rgbaTall, unsigned char *rgba, int
 namespace
 {
 
-	unsigned char CalculatePixelBlur(const unsigned char* src, int nStride, const float* distribution, int nValues)
+	float CalculatePixelBlur(const unsigned char* src, int nStride, const float* distribution, int nValues)
 	{
 		float accum = 0.0;
 		for ( int n = 0; n != nValues; ++n )
@@ -153,7 +153,12 @@ namespace
 			accum += distribution[n]*static_cast<float>(src[n*nStride]);
 		}
 
-		return static_cast<unsigned char>(accum);
+		return accum;
+	}
+
+	float ClampColor( float flColor )
+	{
+		return flColor < 255.0f ? flColor : 255.0f;
 	}
 
 }
@@ -161,7 +166,7 @@ namespace
 //-----------------------------------------------------------------------------
 // Purpose: blurs the texture
 //-----------------------------------------------------------------------------
-void ApplyGaussianBlurToTexture( int rgbaWide, int rgbaTall, unsigned char *rgba, int nBlur )
+void ApplyGaussianBlurToTexture( int rgbaWide, int rgbaTall, unsigned char *rgba, int nBlur, bool bBlurColor )
 {
 	if ( !nBlur  )
 		return;
@@ -201,11 +206,15 @@ void ApplyGaussianBlurToTexture( int rgbaWide, int rgbaTall, unsigned char *rgba
 
 		for ( int y = 0; y < rgbaTall; y++ )
 		{
-			const unsigned char* read_from = src + (y*rgbaWide + x + nOffset - nBlur)*4 + 3;
+			const unsigned char* read_from = src + (y*rgbaWide + x + nOffset - nBlur)*4;
 			unsigned char* dst = rgba + (y*rgbaWide + x)*4;
-			unsigned char alpha = CalculatePixelBlur(read_from, 4, dist, nValues);
-			dst[0] = dst[1] = dst[2] = alpha > 0 ? 255 : 0;
+			float flAlpha = CalculatePixelBlur(read_from + 3, 4, dist, nValues);
+			unsigned char alpha = static_cast<unsigned char>(flAlpha);
 			dst[3] = alpha;
+			float flDenom = flAlpha > 0 ? flAlpha : 1.0f;
+			dst[0] = bBlurColor ? ClampColor( CalculatePixelBlur(read_from + 0, 4, dist, nValues) * 255.0f / flDenom ) : ( alpha > 0 ? 255 : 0 );
+			dst[1] = bBlurColor ? ClampColor( CalculatePixelBlur(read_from + 1, 4, dist, nValues) * 255.0f / flDenom ) : ( alpha > 0 ? 255 : 0 );
+			dst[2] = bBlurColor ? ClampColor( CalculatePixelBlur(read_from + 2, 4, dist, nValues) * 255.0f / flDenom ) : ( alpha > 0 ? 255 : 0 );
 		}
 	}
 
@@ -231,11 +240,15 @@ void ApplyGaussianBlurToTexture( int rgbaWide, int rgbaTall, unsigned char *rgba
 
 		for ( int x = 0; x < rgbaWide; x++ )
 		{
-			const unsigned char* read_from = src + ((y + nOffset - nBlur)*rgbaWide + x)*4 + 3;
+			const unsigned char* read_from = src + ((y + nOffset - nBlur)*rgbaWide + x)*4;
 			unsigned char* dst = rgba + (y*rgbaWide + x)*4;
-			unsigned char alpha = CalculatePixelBlur(read_from, 4*rgbaWide, dist, nValues);
-			dst[0] = dst[1] = dst[2] = alpha > 0 ? 255 : 0;
+			float flAlpha = CalculatePixelBlur(read_from + 3, 4*rgbaWide, dist, nValues);
+			unsigned char alpha = static_cast<unsigned char>(flAlpha);
 			dst[3] = alpha;
+			float flDenom = flAlpha > 0 ? flAlpha : 1.0f;
+			dst[0] = bBlurColor ? ClampColor( CalculatePixelBlur(read_from + 0, 4*rgbaWide, dist, nValues) * 255.0f / flDenom ) : ( alpha > 0 ? 255 : 0 );
+			dst[1] = bBlurColor ? ClampColor( CalculatePixelBlur(read_from + 1, 4*rgbaWide, dist, nValues) * 255.0f / flDenom ) : ( alpha > 0 ? 255 : 0 );
+			dst[2] = bBlurColor ? ClampColor( CalculatePixelBlur(read_from + 2, 4*rgbaWide, dist, nValues) * 255.0f / flDenom ) : ( alpha > 0 ? 255 : 0 );
 		}
 	}
 }

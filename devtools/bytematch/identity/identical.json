@@ -1,0 +1,13 @@
+{
+  "comment": "Modules whose identity.py output is byte-identical to depot 223 build 19307283. `identity.py --identical` (or ci.sh) rebuilds them and fails if any output stops matching retail byte for byte. Add a module once it is identical; sha256 is the retail file's.",
+  "modules": [
+    {"target": "inputsystem", "retail": "bin/inputsystem.dylib", "size": 104228, "sha256": "8dda75a5d2562b84f54c0f38ba65b8140465c0f64cb316f494f7321e03313ba5"},
+    {"target": "video_services", "retail": "bin/video_services.dylib", "size": 64452, "sha256": "f382c8e810724ae354db18128377bc027eaad91c7951583c57ccfa70d7e2611b"},
+    {"target": "video_quicktime", "retail": "bin/video_quicktime.dylib", "size": 97256, "sha256": "8c5aae1dc1daba5484a0a63243735c4f7572974294a43845cc8cfc5ebbb89575"},
+    {"target": "soundemittersystem", "retail": "bin/soundemittersystem.dylib", "size": 136820, "sha256": "ecf2f33add176c7334e8ba82900c30f444523ed8a1f11c9632597e7aaf406281"},
+    {"target": "scenefilecache", "retail": "bin/scenefilecache.dylib", "size": 32176, "sha256": "44059c66b94272f09686d765d6bd4b15b04b3630be265bcc1ca23cd926ff010f"},
+    {"target": "bugreporter_public", "retail": "bin/bugreporter_public.dylib", "size": 90548, "sha256": "ca8ffcdceb13d66fb2b657cb3811ac596bf48cf345d26ff200bd56bad4a56999"},
+    {"target": "bugreporter_filequeue", "retail": "bin/bugreporter_filequeue.dylib", "size": 107324, "sha256": "f429f26805e6992e93fe017be30697868cf2b2ada2ce05c992658e2b1500ed31"},
+    {"target": "stdshader_dx9", "retail": "bin/stdshader_dx9.dylib", "size": 1269984, "sha256": "13ed4a7060245ba39519fe9e62f9e848a1b4315e61ce1c626c0a9f48a014bd3d"}
+  ]
+}

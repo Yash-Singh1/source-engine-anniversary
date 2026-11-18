@@ -156,8 +156,14 @@ public:
 	// This is the filesystem FileSystem_LoadSearchPaths is talking to.
 	IFileSystem		*m_pFileSystem;
 
+#ifdef BYTEMATCH_RETAIL
+	bool m_bLowViolence;
+	// Not a member in retail (HD content is detected from game_hd.txt); static so callers that still set it compile.
+	static bool m_bMountHDContent;
+#else
 	bool m_bMountHDContent;
 	bool m_bLowViolence;
+#endif
 
 // Outputs.
 public:

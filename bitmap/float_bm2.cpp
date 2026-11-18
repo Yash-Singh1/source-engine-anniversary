@@ -22,7 +22,12 @@ static float ScaleValue(float f, float overbright)
 static float IScaleValue(float f, float overbright)
 {
 	f*=(1.0/overbright);
+#ifdef BYTEMATCH_RETAIL
+	int ival=min(255,ceil(f*255.0));
+#else
 	int ival=min(255,(int)ceil(f*255.0));
+#endif
+#line 26
 	return ival;
 }
 

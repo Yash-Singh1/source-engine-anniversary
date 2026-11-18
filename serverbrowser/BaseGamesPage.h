@@ -233,7 +233,9 @@ protected:
 	virtual bool CheckPrimaryFilters( gameserveritem_t &server);
 	virtual bool CheckSecondaryFilters( gameserveritem_t &server );
 	virtual bool CheckTagFilter( gameserveritem_t &server ) { return true; }
+#ifndef BYTEMATCH_RETAIL
 	virtual bool CheckWorkshopFilter( gameserveritem_t &server ) { return true; }
+#endif
 #else
 	virtual bool CheckPrimaryFilters( newgameserver_t &server);
 	virtual bool CheckSecondaryFilters( newgameserver_t &server );
@@ -306,6 +308,7 @@ protected:
 
 	bool	TagsExclude( void );
 
+#ifndef BYTEMATCH_RETAIL
 	enum eWorkshopMode {
 		// These correspond to the dropdown indices
 		eWorkshop_None           = 0,
@@ -313,6 +316,7 @@ protected:
 		eWorkshop_SubscribedOnly = 2
 	};
 	eWorkshopMode WorkshopMode();
+#endif
 
 	void	HideReplayFilter( void );
 
@@ -344,7 +348,9 @@ private:
 	vgui::ComboBox *m_pPingFilter;
 	vgui::ComboBox *m_pSecureFilter;
 	vgui::ComboBox *m_pTagsIncludeFilter;
+#ifndef BYTEMATCH_RETAIL
 	vgui::ComboBox *m_pWorkshopFilter;
+#endif
 	vgui::CheckButton *m_pNoFullServersFilterCheck;
 	vgui::CheckButton *m_pNoEmptyServersFilterCheck;
 	vgui::CheckButton *m_pNoPasswordFilterCheck;

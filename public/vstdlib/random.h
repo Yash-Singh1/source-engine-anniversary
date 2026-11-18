@@ -24,7 +24,7 @@
 //-----------------------------------------------------------------------------
 // A generator of uniformly distributed random numbers
 //-----------------------------------------------------------------------------
-class VSTDLIB_CLASS IUniformRandomStream
+class IUniformRandomStream
 {
 public:
 	//virtual ~IUniformRandomStream() { }

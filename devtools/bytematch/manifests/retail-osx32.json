@@ -93296,28 +93296,27 @@
      "chromehtml": 8
     }
    },
-   "waf_target": null,
+   "waf_target": "chromehtml",
    "waf_games": null,
    "project_dir": "vgui2/chromehtml",
    "order_rule_inversions": 0,
    "sources": [
     "common/jpegloader.cpp",
     "common/jpegloader_common.cpp",
-    "tier1/fileio.cpp"
-   ],
-   "missing_sources": [
     "public/html/htmlprotobuf.cpp",
+    "tier1/fileio.cpp",
     "vgui2/chromehtml/chromewrapper.cpp",
     "vgui2/chromehtml/generated_proto/htmlmessages.pb.cc",
     "vgui2/chromehtml/html_chrome.cpp",
     "vgui2/chromehtml/html_mac.mm"
    ],
+   "missing_sources": [],
    "archives": [
     {
      "archive": "libcef_dll_wrapper.a",
      "path": "lib/public/osx32/libcef_dll_wrapper.a",
      "prebuilt": true,
-     "waf_target": null,
+     "waf_target": "cef_dll_wrapper",
      "members": [
       "transfer_util.o",
       "libcef_dll_wrapper.o",
@@ -93462,9 +93461,52 @@
      "PNG_NO_PEDANTIC_WARNINGS",
      "CPP11_NO_LIBCXX"
     ],
-    "vpc": null,
-    "vpc_files": null,
-    "vpc_include_dirs": null,
+    "vpc": [
+     "VPC",
+     "NDEBUG",
+     "GNUC",
+     "POSIX",
+     "COMPILER_GCC",
+     "_DLL_EXT=.dylib",
+     "_OSX",
+     "OSX",
+     "_DARWIN_UNLIMITED_SELECT",
+     "FD_SETSIZE=10240",
+     "OVERRIDE_V_DEFINES",
+     "_POSIX",
+     "DLLNAME=chromehtml",
+     "QUICKTIME_VIDEO",
+     "FORCE_QUICKTIME",
+     "GL_GLEXT_PROTOTYPES",
+     "DX_TO_GL_ABSTRACTION",
+     "USE_SDL",
+     "DEV_BUILD",
+     "FRAME_POINTER_OMISSION_DISABLED"
+    ],
+    "vpc_files": [
+     "ours:vgui2/chromehtml/chromehtml.vpc",
+     "ours:vpc_scripts/source_dll_base.vpc",
+     "ours:vpc_scripts/platform_dirs.vpc",
+     "ours:vpc_scripts/source_base.vpc",
+     "ours:vpc_scripts/source_dll_posix_base.vpc",
+     "ours:vpc_scripts/version.vpc",
+     "ours:vpc_scripts/source_posix_base.vpc",
+     "ours:vpc_scripts/version.vpc",
+     "ours:vpc_scripts/source_video_base.vpc",
+     "ours:vpc_scripts/protobuf_builder.vpc"
+    ],
+    "vpc_include_dirs": [
+     "../../common",
+     "../../public",
+     "../../public/tier0",
+     "../../public/tier1",
+     "../../thirdparty/SDL",
+     "generated_proto",
+     "../../thirdparty/protobuf-2.6.1/src",
+     "../../thirdparty",
+     "../../thirdparty/cef",
+     "../../public/jpeglib"
+    ],
     "platform_files": [
      "vgui2/chromehtml/html_mac.mm"
     ]
@@ -93494,9 +93536,9 @@
     },
     {
      "kind": "object",
-     "source": null,
+     "source": "public/html/htmlprotobuf.cpp",
      "retail_source": "public/html/htmlprotobuf.cpp",
-     "status": "missing",
+     "status": "exact",
      "archive": null,
      "member": null,
      "mtime": 1731778842,
@@ -93516,9 +93558,9 @@
     },
     {
      "kind": "object",
-     "source": null,
+     "source": "vgui2/chromehtml/chromewrapper.cpp",
      "retail_source": "vgui2/chromehtml/chromewrapper.cpp",
-     "status": "missing",
+     "status": "exact",
      "archive": null,
      "member": null,
      "mtime": 1732582891,
@@ -93527,9 +93569,9 @@
     },
     {
      "kind": "object",
-     "source": null,
+     "source": "vgui2/chromehtml/generated_proto/htmlmessages.pb.cc",
      "retail_source": "vgui2/chromehtml/generated_proto/htmlmessages.pb.cc",
-     "status": "missing",
+     "status": "exact",
      "archive": null,
      "member": null,
      "mtime": 1731519020,
@@ -93538,9 +93580,9 @@
     },
     {
      "kind": "object",
-     "source": null,
+     "source": "vgui2/chromehtml/html_chrome.cpp",
      "retail_source": "vgui2/chromehtml/html_chrome.cpp",
-     "status": "missing",
+     "status": "exact",
      "archive": null,
      "member": null,
      "mtime": 1732582891,
@@ -93549,9 +93591,9 @@
     },
     {
      "kind": "object",
-     "source": null,
+     "source": "vgui2/chromehtml/html_mac.mm",
      "retail_source": "vgui2/chromehtml/html_mac.mm",
-     "status": "missing",
+     "status": "exact",
      "archive": null,
      "member": null,
      "mtime": 1731519020,
@@ -95560,18 +95602,17 @@
      "vaudio_miles": 4
     }
    },
-   "waf_target": null,
+   "waf_target": "vaudio_miles",
    "waf_games": null,
    "project_dir": "engine/voice_codecs/miles",
    "order_rule_inversions": 0,
    "sources": [
-    "engine/voice_codecs/frame_encoder/voice_codec_frame.cpp"
-   ],
-   "missing_sources": [
+    "engine/voice_codecs/frame_encoder/voice_codec_frame.cpp",
     "engine/voice_codecs/miles/milesbase.cpp",
     "engine/voice_codecs/miles/mp3_miles.cpp",
     "engine/voice_codecs/miles/voice_codec_miles.cpp"
    ],
+   "missing_sources": [],
    "archives": [
     {
      "archive": "libtier1.a",
@@ -95630,9 +95671,49 @@
      "PNG_NO_PEDANTIC_WARNINGS",
      "CPP11_NO_LIBCXX"
     ],
-    "vpc": null,
-    "vpc_files": null,
-    "vpc_include_dirs": null,
+    "vpc": [
+     "VPC",
+     "NDEBUG",
+     "GNUC",
+     "POSIX",
+     "COMPILER_GCC",
+     "_DLL_EXT=.dylib",
+     "_OSX",
+     "OSX",
+     "_DARWIN_UNLIMITED_SELECT",
+     "FD_SETSIZE=10240",
+     "OVERRIDE_V_DEFINES",
+     "_POSIX",
+     "DLLNAME=vaudio_miles",
+     "QUICKTIME_VIDEO",
+     "FORCE_QUICKTIME",
+     "GL_GLEXT_PROTOTYPES",
+     "DX_TO_GL_ABSTRACTION",
+     "USE_SDL",
+     "DEV_BUILD",
+     "FRAME_POINTER_OMISSION_DISABLED"
+    ],
+    "vpc_files": [
+     "ours:engine/voice_codecs/miles/vaudio_miles.vpc",
+     "ours:vpc_scripts/source_dll_base.vpc",
+     "ours:vpc_scripts/platform_dirs.vpc",
+     "ours:vpc_scripts/source_base.vpc",
+     "ours:vpc_scripts/source_dll_posix_base.vpc",
+     "ours:vpc_scripts/version.vpc",
+     "ours:vpc_scripts/source_posix_base.vpc",
+     "ours:vpc_scripts/version.vpc",
+     "ours:vpc_scripts/source_video_base.vpc"
+    ],
+    "vpc_include_dirs": [
+     "../../../common",
+     "../../../public",
+     "../../../public/tier0",
+     "../../../public/tier1",
+     "../../../thirdparty/SDL",
+     "../frame_encoder",
+     "../..",
+     "../../audio/public"
+    ],
     "platform_files": []
    },
    "objects": [
@@ -95649,9 +95730,9 @@
     },
     {
      "kind": "object",
-     "source": null,
+     "source": "engine/voice_codecs/miles/milesbase.cpp",
      "retail_source": "engine/voice_codecs/miles/milesbase.cpp",
-     "status": "missing",
+     "status": "exact",
      "archive": null,
      "member": null,
      "mtime": 1731518673,
@@ -95660,9 +95741,9 @@
     },
     {
      "kind": "object",
-     "source": null,
+     "source": "engine/voice_codecs/miles/mp3_miles.cpp",
      "retail_source": "engine/voice_codecs/miles/mp3_miles.cpp",
-     "status": "missing",
+     "status": "exact",
      "archive": null,
      "member": null,
      "mtime": 1731518673,
@@ -95671,9 +95752,9 @@
     },
     {
      "kind": "object",
-     "source": null,
+     "source": "engine/voice_codecs/miles/voice_codec_miles.cpp",
      "retail_source": "engine/voice_codecs/miles/voice_codec_miles.cpp",
-     "status": "missing",
+     "status": "exact",
      "archive": null,
      "member": null,
      "mtime": 1732582572,
@@ -96988,7 +97069,7 @@
   "libcef_dll_wrapper.a": {
    "path": "lib/public/osx32/libcef_dll_wrapper.a",
    "prebuilt": true,
-   "waf_target": null,
+   "waf_target": "cef_dll_wrapper",
    "used_by": [
     "bin/chromehtml"
    ],

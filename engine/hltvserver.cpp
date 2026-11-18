@@ -1338,7 +1338,12 @@ CClientFrame *CHLTVServer::AddNewFrame( CClientFrame *clientFrame )
 
 			ConMsg("SourceTV relay active.\n" );
 
+#ifdef BYTEMATCH_RETAIL
+			Steam3Server().Activate();
+#else
 			Steam3Server().Activate( CSteam3Server::eServerTypeTVRelay );
+#endif
+#line 1342
 			Steam3Server().SendUpdatedServerDetails();
 		}
 		else
@@ -2077,7 +2082,12 @@ void CHLTVServer::ReplyInfo( const netadr_t &adr )
 	// Password?
 	buf.PutUnsignedChar( GetPassword() != NULL ? 1 : 0 );
 	buf.PutUnsignedChar( Steam3Server().BSecure() ? 1 : 0 );
+#ifdef BYTEMATCH_RETAIL
+	buf.PutString( gpszVersionString );
+#else
 	buf.PutString( GetSteamInfIDVersionInfo().szVersionString );
+#endif
+#line 2081
 
 	//
 	// NEW DATA.

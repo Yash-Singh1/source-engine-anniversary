@@ -40,7 +40,12 @@ CUtlStreamBuffer::CUtlStreamBuffer( const char *pFileName, const char *pPath, in
 
 	if ( bDelayOpen )
 	{
+#ifdef BYTEMATCH_RETAIL
+		m_pFileName = new char[ Q_strlen( pFileName ) + 1 ];
+		Q_strcpy( m_pFileName, pFileName );
+#else
 		m_pFileName = V_strdup( pFileName );
+#endif
 
 		if ( pPath )
 		{

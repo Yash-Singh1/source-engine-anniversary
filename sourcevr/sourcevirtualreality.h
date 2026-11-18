@@ -16,7 +16,7 @@
 #include "sourcevr/isourcevirtualreality.h"
 #include "materialsystem/itexture.h"
 #include "materialsystem/MaterialSystemUtil.h"
-#include "openvr/openvr.h"
+#include "steam/steamvr.h"
 
 
 // this is a callback so we can regenerate the distortion texture whenever we need to
@@ -85,6 +85,8 @@ public:
 	virtual bool ShouldForceVRMode( ) OVERRIDE;
 	virtual void SetShouldForceVRMode( ) OVERRIDE;
 
+	virtual bool IsHmdAvailable();
+
 	void RefreshDistortionTexture();
 	void AcquireNewZeroPose();
 
@@ -102,7 +104,7 @@ public:
 	// mode
 	bool UsingOffscreenRenderTarget() const { return m_bUsingOffscreenRenderTarget; }
 
-	vr::IVRSystem * GetHmd() { return m_pHmd; }
+	vr::IHmd * GetHmd() { return m_pHmd; }
 private:
 	bool m_bActive;
 	bool m_bShouldForceVRMode;
@@ -123,7 +125,7 @@ private:
 	CMaterialReference m_InWorldUIOpaqueMaterial;
 	CMaterialReference m_blackMaterial;
 
-	vr::IVRSystem				*m_pHmd;
+	vr::IHmd				*m_pHmd;
 
 	bool	  m_bHaveValidPose;
 	VMatrix   m_ZeroFromHeadPose;

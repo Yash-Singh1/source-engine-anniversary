@@ -62,7 +62,12 @@ public: // IServer implementation
 
 public: 
 	void	InitMaxClients( void );
+#ifdef BYTEMATCH_RETAIL
+	bool	SpawnServer( char *szMapName, char *szMapFile, char *startspot );
+#else
 	bool	SpawnServer( const char *szMapName, const char *szMapFile, const char *startspot );
+#endif
+#line 66
 	void	SetQueryPortFromSteamServer();
 	void	CopyPureServerWhitelistToStringTable();
 	void 	RemoveClientFromGame( CBaseClient *client );

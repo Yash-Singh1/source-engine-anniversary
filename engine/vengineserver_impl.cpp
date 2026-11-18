@@ -1700,7 +1700,12 @@ public:
 
 	virtual int GetServerVersion() const OVERRIDE
 	{
+#ifdef BYTEMATCH_RETAIL
+		return ::GetServerVersion();
+#else
 		return GetSteamInfIDVersionInfo().ServerVersion;
+#endif
+#line 1661
 	}
 
 	virtual float GetServerTime() const OVERRIDE

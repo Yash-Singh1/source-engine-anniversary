@@ -266,10 +266,13 @@ void HostState_SetSpawnPoint(Vector &position, QAngle &angle)
 }
 
 //-----------------------------------------------------------------------------
+#ifndef BYTEMATCH_RETAIL
 static void WatchDogHandler()
 {
 	Host_Error( "WatchdogHandler called - server exiting.\n" );
 }
+#endif
+#line 273
 
 //-----------------------------------------------------------------------------
 // Class implementation
@@ -293,7 +296,10 @@ void CHostState::Init()
 
 	CCS_Init();
 
+#ifndef BYTEMATCH_RETAIL
 	Plat_SetWatchdogHandlerFunction( WatchDogHandler );
+#endif
+#line 297
 }
 
 void CHostState::SetState( HOSTSTATES newState, bool clearNext )
@@ -401,6 +407,31 @@ void CHostState::State_LoadGame()
 }
 
 
+#ifdef BYTEMATCH_RETAIL
+void CHostState::State_ChangeLevelMP()
+{
+	if ( Host_ValidGame() )
+	{
+		Steam3Server().NotifyOfLevelChange();
+
+		g_pServerPluginHandler->LevelShutdown();
+#if !defined(SWDS)
+		audiosourcecache->LevelShutdown();
+#endif
+
+#ifndef SWDS
+		// start progress bar immediately for multiplayer level transitions
+		EngineVGui()->EnabledProgressBarForNextLoad();
+#endif
+		Host_Changelevel( false, m_levelName, m_landmarkName );
+		SetState( HS_RUN, true );
+		return;
+	}
+	// fail
+	ConMsg( "Unable to change level!\n" );
+	SetState( HS_RUN, true );
+}
+#else
 void CHostState::State_ChangeLevelMP()
 {
 	if ( Host_ValidGame() )
@@ -428,6 +459,8 @@ void CHostState::State_ChangeLevelMP()
 		g_GameEventManager.FireEvent( event );
 	}
 }
+#endif
+#line 427
 
 
 void CHostState::State_ChangeLevelSP()
@@ -473,7 +506,10 @@ static bool IsClientConnected()
 
 void CHostState::State_Run( float frameTime )
 {
+#ifndef BYTEMATCH_RETAIL
 	static bool s_bFirstRunFrame = true;
+#endif
+#line 477
 
 	if ( m_flShortFrameTime > 0 )
 	{
@@ -488,6 +524,7 @@ void CHostState::State_Run( float frameTime )
 		}
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	// Nice big timeout to play it safe while still ensuring that we don't get stuck in
 	// infinite loops.
 	int nTimerWaitSeconds = 60;
@@ -501,13 +538,18 @@ void CHostState::State_Run( float frameTime )
 	{
 		Plat_BeginWatchdogTimer( nTimerWaitSeconds );
 	}
+#endif
+#line 504
 
 	Host_RunFrame( frameTime );
 
+#ifndef BYTEMATCH_RETAIL
 	if ( sv.IsDedicated() )
 	{
 		Plat_EndWatchdogTimer();
 	}
+#endif
+#line 511
 
 	switch( m_nextState )
 	{

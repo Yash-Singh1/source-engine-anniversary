@@ -45,7 +45,9 @@ public:
 	virtual ~CPotteryWheelPanel();
 
 	// Overriden methods of vgui::Panel
+#ifndef BYTEMATCH_RETAIL
 	virtual void ApplySettings( KeyValues *inResourceData );
+#endif
 	virtual void Init( int x, int y, int wide, int tall );
 	virtual void Paint();
 
@@ -138,7 +140,9 @@ protected:
 private:
 	void CreateDefaultLights();
 	void DestroyLights();
+#ifndef BYTEMATCH_RETAIL
 	void ParseLightsFromKV( KeyValues *pLightsKV );
+#endif
 
 	CMaterialReference m_LightProbeBackground;
 	CMaterialReference m_LightProbeHDRBackground;

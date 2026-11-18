@@ -447,6 +447,11 @@ ButtonCode_t CInputSystem::ScanCodeToButtonCode( int lParam ) const
 	return ButtonCode_ScanCodeToButtonCode( lParam );
 }
 
+ButtonCode_t CInputSystem::SKeyToButtonCode( int nPort, int nXKey ) const
+{
+	return ButtonCode_SKeyToButtonCode( nPort, nXKey );
+}
+
 //-----------------------------------------------------------------------------
 // Post an event to the queue
 //-----------------------------------------------------------------------------

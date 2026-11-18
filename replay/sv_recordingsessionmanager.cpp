@@ -87,7 +87,8 @@ CBaseRecordingSession *CServerRecordingSessionManager::OnSessionStart( int nCurr
 	CBaseRecordingSession *pResult = BaseClass::OnSessionStart( nCurrentRecordingStartTick, pSessionName );
 
 	// Cache offload state
-	m_bOffload = false;
+	extern ConVar replay_fileserver_offload_enable;
+	m_bOffload = replay_fileserver_offload_enable.GetBool();
 
 	return pResult;
 }

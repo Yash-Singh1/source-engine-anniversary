@@ -384,6 +384,7 @@ bool FindSpewGroup( const tchar* pGroupName, int* pInd )
 	return false;
 }
 
+#ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
 // True if -hushasserts was passed on command line.
 //-----------------------------------------------------------------------------
@@ -396,6 +397,8 @@ bool HushAsserts()
 	return true;
 #endif
 }
+#endif
+#line 399
 
 //-----------------------------------------------------------------------------
 // Tests to see if a particular spew is active
@@ -467,10 +470,13 @@ void DMsg( const tchar *pGroupName, int level, const tchar *pMsgFormat, ... )
 	va_end(args);
 }
 
+#ifndef BYTEMATCH_RETAIL
 void MsgV( PRINTF_FORMAT_STRING const tchar *pMsg, va_list arglist )
 {
 	_SpewMessage( SPEW_MESSAGE, pMsg, arglist );
 }
+#endif
+#line 474
 
 
 void Warning( const tchar *pMsgFormat, ... )
@@ -492,10 +498,13 @@ void DWarning( const tchar *pGroupName, int level, const tchar *pMsgFormat, ... 
 	va_end(args);
 }
 
+#ifndef BYTEMATCH_RETAIL
 void WarningV( PRINTF_FORMAT_STRING const tchar *pMsg, va_list arglist )
 {
 	_SpewMessage( SPEW_WARNING, pMsg, arglist );
 }
+#endif
+#line 499
 
 
 void Log( const tchar *pMsgFormat, ... )
@@ -517,10 +526,13 @@ void DLog( const tchar *pGroupName, int level, const tchar *pMsgFormat, ... )
 	va_end(args);
 }
 
+#ifndef BYTEMATCH_RETAIL
 void LogV( PRINTF_FORMAT_STRING const tchar *pMsg, va_list arglist )
 {
 	_SpewMessage( SPEW_LOG, pMsg, arglist );
 }
+#endif
+#line 524
 
 
 void Error( const tchar *pMsgFormat, ... )
@@ -531,10 +543,13 @@ void Error( const tchar *pMsgFormat, ... )
 	va_end(args);
 }
 
+#ifndef BYTEMATCH_RETAIL
 void ErrorV( PRINTF_FORMAT_STRING const tchar *pMsg, va_list arglist )
 {
 	_SpewMessage( SPEW_ERROR, pMsg, arglist );
 }
+#endif
+#line 538
 
 //-----------------------------------------------------------------------------
 // A couple of super-common dynamic spew messages, here for convenience 
