@@ -1,0 +1,15 @@
+{
+ "module": "bin/chromehtml",
+ "our_target": null,
+ "our_games": null,
+ "project_dir": "vgui2/chromehtml",
+ "order_rule_inversions": 0,
+ "counts": {
+  "exact": 3,
+  "missing": 5
+ },
+ "counts_sdk": {
+  "missing": 3,
+  "exact": 5
+ }
+}

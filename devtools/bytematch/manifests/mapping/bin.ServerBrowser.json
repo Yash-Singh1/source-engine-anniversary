@@ -1,0 +1,84 @@
+{
+ "module": "bin/ServerBrowser",
+ "our_target": "serverbrowser",
+ "our_games": null,
+ "project_dir": "serverbrowser",
+ "order_rule_inversions": 0,
+ "counts": {
+  "exact": 17,
+  "moved": 4
+ },
+ "counts_sdk": {
+  "missing": 20,
+  "exact": 1
+ },
+ "diff": {
+  "add": [
+   {
+    "path": "serverbrowser/BlacklistedServers.cpp",
+    "in_our_tree": "moved",
+    "in_sdk": "missing",
+    "alternatives": [
+     "serverbrowser/unused/BlacklistedServers.cpp"
+    ]
+   },
+   {
+    "path": "serverbrowser/CustomGames.cpp",
+    "in_our_tree": "moved",
+    "in_sdk": "missing",
+    "alternatives": [
+     "serverbrowser/unused/CustomGames.cpp"
+    ]
+   },
+   {
+    "path": "serverbrowser/FriendsGames.cpp",
+    "in_our_tree": "moved",
+    "in_sdk": "missing",
+    "alternatives": [
+     "serverbrowser/unused/FriendsGames.cpp"
+    ]
+   },
+   {
+    "path": "serverbrowser/SpectateGames.cpp",
+    "in_our_tree": "moved",
+    "in_sdk": "missing",
+    "alternatives": [
+     "serverbrowser/unused/SpectateGames.cpp"
+    ]
+   }
+  ],
+  "remove": [
+   {
+    "path": "public/tier0/memoverride.cpp",
+    "note": "no retail Mac module links a memoverride object: Valve's Mac build has no malloc override (malloc from libSystem, operator new from libstdc++)"
+   }
+  ],
+  "path_differs": [],
+  "order": {
+   "common": 17,
+   "in_order_lis": 14,
+   "need_moving": 3,
+   "identical": false
+  },
+  "libraries": {
+   "retail": [
+    "tier3",
+    "vgui_controls",
+    "tier2",
+    "tier1"
+   ],
+   "ours": [
+    "vgui_controls",
+    "mathlib",
+    "tier1",
+    "tier2",
+    "tier3"
+   ],
+   "retail_only": [],
+   "ours_only": [
+    "mathlib"
+   ],
+   "same_relative_order": false
+  }
+ }
+}

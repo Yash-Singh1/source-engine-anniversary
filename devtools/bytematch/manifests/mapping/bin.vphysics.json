@@ -1,0 +1,57 @@
+{
+ "module": "bin/vphysics",
+ "our_target": "vphysics",
+ "our_games": null,
+ "project_dir": "vphysics",
+ "order_rule_inversions": 0,
+ "counts": {
+  "exact": 21
+ },
+ "counts_sdk": {
+  "exact": 1,
+  "missing": 19,
+  "moved": 1
+ },
+ "diff": {
+  "add": [],
+  "remove": [
+   {
+    "path": "public/tier0/memoverride.cpp",
+    "note": "no retail Mac module links a memoverride object: Valve's Mac build has no malloc override (malloc from libSystem, operator new from libstdc++)"
+   }
+  ],
+  "path_differs": [],
+  "order": {
+   "common": 21,
+   "in_order_lis": 20,
+   "need_moving": 1,
+   "identical": false
+  },
+  "libraries": {
+   "retail": [
+    "ivp_compactbuilder",
+    "havana_constraints",
+    "ivp_physics",
+    "tier1",
+    "hk_math",
+    "mathlib",
+    "hk_base"
+   ],
+   "ours": [
+    "havana_constraints",
+    "hk_math",
+    "hk_base",
+    "ivp_compactbuilder",
+    "ivp_physics",
+    "tier1",
+    "tier2",
+    "mathlib"
+   ],
+   "retail_only": [],
+   "ours_only": [
+    "tier2"
+   ],
+   "same_relative_order": false
+  }
+ }
+}
