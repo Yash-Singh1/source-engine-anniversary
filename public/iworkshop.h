@@ -46,7 +46,7 @@ public:
 	virtual void			Unknown15() = 0;
 	virtual void			Unknown16() = 0;
 	virtual void			Unknown17() = 0;
-	virtual void			Unknown18() = 0;
+	virtual bool			LoadCampaign( PublishedFileId_t nCampaignID, bool bStartMap ) = 0;
 	virtual void			GetCurrentCampaign( CUtlVector< PublishedFileId_t > &items, PublishedFileId_t &nCampaignID ) = 0;
 	virtual void			Unknown20() = 0;
 	virtual void			Unknown21() = 0;
