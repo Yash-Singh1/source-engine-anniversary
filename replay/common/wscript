@@ -1,0 +1,39 @@
+#! /usr/bin/env python
+# encoding: utf-8
+
+top = '.'
+PROJECT_NAME = 'replay_common'
+
+def options(opt):
+	return
+
+def configure(conf):
+	return
+
+def build(bld):
+	source = [
+		'basereplayserializeable.cpp',
+		'performance.cpp',
+		'replay.cpp',
+		'replaylib.cpp',
+		'replaytime.cpp',
+		'replayutils.cpp',
+		'screenshot.cpp',
+	]
+
+	includes = [
+		'.',
+		'../../public',
+		'../../public/tier0',
+		'../../public/tier1',
+		'../../common',
+	]
+
+	bld.stlib(
+		source   = source,
+		target   = PROJECT_NAME,
+		name     = PROJECT_NAME,
+		features = 'c cxx',
+		includes = includes,
+		idx      = bld.get_taskgen_count()
+	)
