@@ -1,0 +1,466 @@
+{
+ "module": "bin/replay",
+ "depot": "223",
+ "build": "19307283",
+ "path": "bin/replay.dylib",
+ "aliases": [],
+ "sha256": "2cf96c1541eb7a23b9ae488a86d7877edf560ca6cab50f63b635b19f6f6afc7e",
+ "size": 852508,
+ "macho": {
+  "filetype": "MH_DYLIB",
+  "flags": "0x110085",
+  "segments": [
+   {
+    "name": "__TEXT",
+    "vmaddr": "0x0",
+    "vmsize": 483328,
+    "sections": [
+     [
+      "__text",
+      "0x800",
+      374609,
+      16
+     ],
+     [
+      "__symbol_stub",
+      "0x5bf52",
+      804,
+      2
+     ],
+     [
+      "__stub_helper",
+      "0x5c278",
+      1352,
+      4
+     ],
+     [
+      "__const",
+      "0x5c7c0",
+      5708,
+      32
+     ],
+     [
+      "__cstring",
+      "0x5de0c",
+      34580,
+      4
+     ],
+     [
+      "__gcc_except_tab",
+      "0x66520",
+      10956,
+      4
+     ],
+     [
+      "__unwind_info",
+      "0x68fec",
+      6588,
+      4
+     ],
+     [
+      "__eh_frame",
+      "0x6a9a8",
+      46660,
+      8
+     ]
+    ]
+   },
+   {
+    "name": "__DATA",
+    "vmaddr": "0x76000",
+    "vmsize": 49152,
+    "sections": [
+     [
+      "__nl_symbol_ptr",
+      "0x76000",
+      300,
+      4
+     ],
+     [
+      "__la_symbol_ptr",
+      "0x7612c",
+      536,
+      4
+     ],
+     [
+      "__mod_init_func",
+      "0x76344",
+      60,
+      4
+     ],
+     [
+      "__const",
+      "0x76380",
+      6548,
+      16
+     ],
+     [
+      "__data",
+      "0x77d20",
+      8944,
+      16
+     ],
+     [
+      "__bss",
+      "0x7a010",
+      18352,
+      16
+     ],
+     [
+      "__common",
+      "0x7e7c0",
+      13236,
+      4
+     ]
+    ]
+   },
+   {
+    "name": "__LINKEDIT",
+    "vmaddr": "0x82000",
+    "vmsize": 352256,
+    "sections": []
+   }
+  ],
+  "dylibs": [
+   {
+    "path": "/usr/lib/libcurl.4.dylib",
+    "current": "5.0.0",
+    "compat": "5.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "@loader_path/libtier0.dylib",
+    "current": "1.0.0",
+    "compat": "1.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "/usr/lib/libiconv.2.dylib",
+    "current": "7.0.0",
+    "compat": "7.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "/usr/lib/libz.1.dylib",
+    "current": "1.2.5",
+    "compat": "1.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "@loader_path/libvstdlib.dylib",
+    "current": "1.0.0",
+    "compat": "1.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "/usr/lib/libstdc++.6.dylib",
+    "current": "60.0.0",
+    "compat": "7.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "/usr/lib/libSystem.B.dylib",
+    "current": "1197.1.1",
+    "compat": "1.0.0",
+    "kind": "LOAD_DYLIB"
+   }
+  ],
+  "load_commands": [
+   "SEGMENT",
+   "SEGMENT",
+   "SEGMENT",
+   "ID_DYLIB",
+   "DYLD_INFO_ONLY",
+   "SYMTAB",
+   "DYSYMTAB",
+   "UUID",
+   "VERSION_MIN_MACOSX",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "FUNCTION_STARTS",
+   "DATA_IN_CODE"
+  ],
+  "install_name": {
+   "path": "@loader_path/replay.dylib",
+   "current": "1.0.0",
+   "compat": "1.0.0"
+  },
+  "uuid": "742DAB167A17308DB4E01886A3C9A072",
+  "min_macosx": "10.6.0",
+  "sdk": "10.9.0"
+ },
+ "build_roots": {
+  "rel_singleplayer_osx": 76
+ },
+ "ccache_hosts": {
+  "hl2-osx-builder": 78
+ },
+ "xcode_targets": {
+  "replay": 50
+ },
+ "stab_counts": {
+  "0x20": 465,
+  "0x24": 2884,
+  "0x26": 297,
+  "0x2e": 1442,
+  "0x4e": 1442,
+  "0x64": 234,
+  "0x66": 78,
+  "0x84": 155
+ },
+ "n_objects": 78,
+ "n_loose_objects": 50,
+ "n_archive_members": 28,
+ "n_prebuilt_members": 0,
+ "built_mtime_range": [
+  "2024-11-13T17:24:34Z",
+  "2024-11-26T02:26:33Z"
+ ],
+ "static_libraries": [
+  {
+   "archive": "build/Release/libtier1.a",
+   "prebuilt": false,
+   "first_index": 50,
+   "members": [
+    "bitbuf.o",
+    "convar.o",
+    "ilocalize.o",
+    "interface.o",
+    "KeyValues.o",
+    "strtools.o",
+    "tier1.o",
+    "utlbuffer.o",
+    "utlstring.o"
+   ]
+  },
+  {
+   "archive": "build/Release/libreplay_common.a",
+   "prebuilt": false,
+   "first_index": 59,
+   "members": [
+    "basereplayserializeable.o",
+    "performance.o",
+    "replay.o",
+    "replaylib.o",
+    "replaytime.o",
+    "replayutils.o",
+    "screenshot.o"
+   ]
+  },
+  {
+   "archive": "build/Release/libtier2.a",
+   "prebuilt": false,
+   "first_index": 66,
+   "members": [
+    "tier2.o"
+   ]
+  },
+  {
+   "archive": "build/Release/libvtf.a",
+   "prebuilt": false,
+   "first_index": 67,
+   "members": [
+    "vtf.o"
+   ]
+  },
+  {
+   "archive": "build/Release/libbzip2.a",
+   "prebuilt": false,
+   "first_index": 68,
+   "members": [
+    "blocksort.o",
+    "bzlib.o",
+    "compress.o",
+    "crctable.o",
+    "decompress.o",
+    "huffman.o",
+    "randtable.o"
+   ]
+  },
+  {
+   "archive": "build/Release/libmathlib.a",
+   "prebuilt": false,
+   "first_index": 75,
+   "members": [
+    "mathlib_base.o",
+    "powsse.o",
+    "sse.o"
+   ]
+  }
+ ],
+ "text_order_matches_oso_order": true,
+ "headers_with_code": {
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/ctype.h": 1,
+  "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/6.0/include/xmmintrin.h": 1,
+  "common/engine/requestcontext.h": 1,
+  "common/netmessages.h": 1,
+  "common/replay/basereplayserializeable.h": 1,
+  "common/replay/ireplayperformancecontroller.h": 1,
+  "common/replay/replay.h": 1,
+  "common/replay/screenshot.h": 1,
+  "public/Color.h": 1,
+  "public/appframework/IAppSystem.h": 1,
+  "public/bitvec.h": 1,
+  "public/cmodel.h": 1,
+  "public/datamap.h": 1,
+  "public/engine/IEngineTrace.h": 1,
+  "public/filesystem.h": 1,
+  "public/gametrace.h": 1,
+  "public/materialsystem/materialsystem_config.h": 1,
+  "public/mathlib/mathlib.h": 1,
+  "public/mathlib/vector.h": 1,
+  "public/mathlib/vector2d.h": 1,
+  "public/mathlib/vector4d.h": 1,
+  "public/tier0/basetypes.h": 1,
+  "public/tier0/platform.h": 1,
+  "public/tier0/threadtools.h": 1,
+  "public/tier0/vprof.h": 1,
+  "public/tier1/KeyValues.h": 1,
+  "public/tier1/UtlSortVector.h": 1,
+  "public/tier1/bitbuf.h": 1,
+  "public/tier1/byteswap.h": 1,
+  "public/tier1/convar.h": 1,
+  "public/tier1/fmtstr.h": 1,
+  "public/tier1/ilocalize.h": 1,
+  "public/tier1/refcount.h": 1,
+  "public/tier1/strtools.h": 1,
+  "public/tier1/tier1.h": 1,
+  "public/tier1/utlbuffer.h": 1,
+  "public/tier1/utllinkedlist.h": 1,
+  "public/tier1/utlmemory.h": 1,
+  "public/tier1/utlqueue.h": 1,
+  "public/tier1/utlstring.h": 1,
+  "public/tier1/utlvector.h": 1,
+  "public/tier2/tier2.h": 1,
+  "public/video/ivideoservices.h": 1,
+  "public/vstdlib/jobthread.h": 1,
+  "replay/baserecordingsession.h": 1,
+  "replay/baserecordingsessionblock.h": 1,
+  "replay/baserecordingsessionblockmanager.h": 1,
+  "replay/baserecordingsessionmanager.h": 1,
+  "replay/cl_downloader.h": 1,
+  "replay/cl_performancecontroller.h": 1,
+  "replay/cl_recordingsession.h": 1,
+  "replay/cl_recordingsessionblock.h": 1,
+  "replay/cl_recordingsessionblockmanager.h": 1,
+  "replay/cl_recordingsessionmanager.h": 1,
+  "replay/cl_replaycontext.h": 1,
+  "replay/cl_replaymanager.h": 1,
+  "replay/cl_replaymovie.h": 1,
+  "replay/cl_replaymoviemanager.h": 1,
+  "replay/cl_screenshotmanager.h": 1,
+  "replay/cl_sessionblockdownloader.h": 1,
+  "replay/cl_sessioninfodownloader.h": 1,
+  "replay/genericpersistentmanager.h": 1,
+  "replay/replaysystem.h": 1,
+  "replay/sessioninfoheader.h": 1,
+  "replay/shared_replaycontext.h": 1,
+  "replay/spew.h": 1,
+  "replay/sv_basejob.h": 1,
+  "replay/sv_filepublish.h": 1,
+  "replay/sv_fileservercleanup.h": 1,
+  "replay/sv_ftp.h": 1,
+  "replay/sv_recordingsession.h": 1,
+  "replay/sv_recordingsessionblock.h": 1,
+  "replay/sv_recordingsessionblockmanager.h": 1,
+  "replay/sv_recordingsessionmanager.h": 1,
+  "replay/sv_replaycontext.h": 1,
+  "replay/sv_sessionblockpublisher.h": 1,
+  "replay/sv_sessionrecorder.h": 1,
+  "replay/thinkmanager.h": 1,
+  "utils/bzip2/bzlib_private.h": 1
+ },
+ "unstabbed_text": {
+  "n_symbols": 351,
+  "bytes": 105968,
+  "by_prefix": {
+   "png": 105888,
+   "ppi": 80
+  }
+ },
+ "objects": [
+  {"index": 0, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/imageutils.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "imageutils", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "imageutils.tmp.hl2-osx-builder.64692.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "common/imageutils.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 2, "n_data": 0, "text_bytes": 416, "first_addr": "0x800", "files": ["common/imageutils.cpp", "public/tier1/strtools.h"]},
+  {"index": 1, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/netmessages.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "netmessages", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "netmessage.tmp.hl2-osx-builder.64693.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "common/netmessages.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 22, "n_data": 12, "text_bytes": 1888, "first_addr": "0x9a0", "files": ["common/netmessages.cpp", "public/tier1/bitbuf.h", "public/tier0/platform.h", "public/tier0/vprof.h", "common/netmessages.h"]},
+  {"index": 2, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/baserecordingsession.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "baserecordingsession", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "baserecord.tmp.hl2-osx-builder.64694.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/baserecordingsession.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 24, "n_data": 9, "text_bytes": 3004, "first_addr": "0x1100", "files": ["replay/baserecordingsession.cpp", "public/tier1/utlmemory.h", "public/tier1/utlvector.h", "public/tier1/utlstring.h", "public/tier1/convar.h", "public/tier1/fmtstr.h", "public/tier1/UtlSortVector.h"]},
+  {"index": 3, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/baserecordingsessionblock.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "baserecordingsessionblock", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "baserecord.tmp.hl2-osx-builder.64695.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/baserecordingsessionblock.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 12, "n_data": 3, "text_bytes": 1717, "first_addr": "0x1cc0", "files": ["replay/baserecordingsessionblock.cpp", "replay/baserecordingsessionblock.h"]},
+  {"index": 4, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/baserecordingsessionblockmanager.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "baserecordingsessionblockmanager", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "baserecord.tmp.hl2-osx-builder.64696.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/baserecordingsessionblockmanager.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 52, "n_data": 18, "text_bytes": 9336, "first_addr": "0x2380", "files": ["replay/genericpersistentmanager.h", "public/tier1/utllinkedlist.h", "replay/baserecordingsessionblockmanager.cpp", "public/tier1/KeyValues.h", "replay/baserecordingsessionblockmanager.h"]},
+  {"index": 5, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/baserecordingsessionmanager.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "baserecordingsessionmanager", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "baserecord.tmp.hl2-osx-builder.64697.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/baserecordingsessionmanager.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 65, "n_data": 21, "text_bytes": 12498, "first_addr": "0x4810", "files": ["replay/baserecordingsessionmanager.cpp", "replay/baserecordingsessionmanager.h"]},
+  {"index": 6, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/basethinker.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "basethinker", "mtime": 1731519026, "mtime_utc": "2024-11-13T17:30:26Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "basethinke.tmp.hl2-osx-builder.89833.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/basethinker.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 7, "n_data": 8, "text_bytes": 377, "first_addr": "0x78f0", "files": ["replay/basethinker.cpp"]},
+  {"index": 7, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/cl_commands.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "cl_commands", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "cl_command.tmp.hl2-osx-builder.64698.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/cl_commands.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 11, "n_data": 15, "text_bytes": 4380, "first_addr": "0x7a70", "files": ["replay/cl_commands.cpp", "replay/cl_replaycontext.h", "replay/cl_recordingsession.h", "common/replay/replay.h", "public/mathlib/vector2d.h", "public/mathlib/vector4d.h"]},
+  {"index": 8, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/cl_cvars.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "cl_cvars", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "cl_cvars.tmp.hl2-osx-builder.64699.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/cl_cvars.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 2, "n_data": 23, "text_bytes": 1913, "first_addr": "0x8ba0", "files": ["replay/cl_cvars.cpp"]},
+  {"index": 9, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/cl_downloader.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "cl_downloader", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "cl_downloa.tmp.hl2-osx-builder.64732.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/cl_downloader.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 7, "n_data": 4, "text_bytes": 1397, "first_addr": "0x9320", "files": ["replay/cl_downloader.cpp", "public/tier0/threadtools.h", "common/engine/requestcontext.h"]},
+  {"index": 10, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/cl_performancecontroller.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "cl_performancecontroller", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "cl_perform.tmp.hl2-osx-builder.64734.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/cl_performancecontroller.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 93, "n_data": 47, "text_bytes": 13221, "first_addr": "0x98a0", "files": ["replay/cl_performancecontroller.cpp", "replay/cl_replaymanager.h", "public/vstdlib/jobthread.h", "public/mathlib/vector.h", "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/6.0/include/xmmintrin.h", "public/mathlib/mathlib.h", "common/replay/ireplayperformancecontroller.h", "replay/cl_performancecontroller.h", "public/tier1/refcount.h"]},
+  {"index": 11, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/cl_performancemanager.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "cl_performancemanager", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "cl_perform.tmp.hl2-osx-builder.64736.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/cl_performancemanager.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 9, "n_data": 7, "text_bytes": 847, "first_addr": "0xcc50", "files": ["replay/cl_performancemanager.cpp"]},
+  {"index": 12, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/cl_recordingsession.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "cl_recordingsession", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "cl_recordi.tmp.hl2-osx-builder.64752.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/cl_recordingsession.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 35, "n_data": 8, "text_bytes": 6016, "first_addr": "0xcfa0", "files": ["replay/cl_recordingsession.cpp", "public/Color.h", "replay/cl_sessioninfodownloader.h"]},
+  {"index": 13, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/cl_recordingsessionblock.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "cl_recordingsessionblock", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "cl_recordi.tmp.hl2-osx-builder.64759.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/cl_recordingsessionblock.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 11, "n_data": 3, "text_bytes": 1050, "first_addr": "0xe720", "files": ["replay/cl_recordingsessionblock.cpp", "replay/cl_recordingsessionblock.h"]},
+  {"index": 14, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/cl_recordingsessionblockmanager.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "cl_recordingsessionblockmanager", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "cl_recordi.tmp.hl2-osx-builder.64760.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/cl_recordingsessionblockmanager.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 10, "n_data": 5, "text_bytes": 393, "first_addr": "0xeb50", "files": ["replay/cl_recordingsessionblockmanager.cpp", "replay/cl_recordingsessionblockmanager.h"]},
+  {"index": 15, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/cl_recordingsessionmanager.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "cl_recordingsessionmanager", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "cl_recordi.tmp.hl2-osx-builder.64764.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/cl_recordingsessionmanager.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 23, "n_data": 9, "text_bytes": 3818, "first_addr": "0xece0", "files": ["replay/cl_recordingsessionmanager.cpp", "replay/cl_recordingsessionmanager.h", "replay/baserecordingsession.h"]},
+  {"index": 16, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/cl_renderqueue.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "cl_renderqueue", "mtime": 1731778856, "mtime_utc": "2024-11-16T17:40:56Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "cl_renderq.tmp.hl2-osx-builder.23505.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/cl_renderqueue.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 11, "n_data": 5, "text_bytes": 1088, "first_addr": "0xfbd0", "files": ["replay/cl_renderqueue.cpp"]},
+  {"index": 17, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/cl_replaycontext.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "cl_replaycontext", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "cl_replayc.tmp.hl2-osx-builder.64768.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/cl_replaycontext.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 41, "n_data": 11, "text_bytes": 4059, "first_addr": "0x10010", "files": ["replay/cl_replaycontext.cpp", "replay/cl_downloader.h", "replay/cl_replaymoviemanager.h"]},
+  {"index": 18, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/cl_replaymanager.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "cl_replaymanager", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "cl_replaym.tmp.hl2-osx-builder.64774.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/cl_replaymanager.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 78, "n_data": 16, "text_bytes": 13180, "first_addr": "0x11000", "files": ["replay/cl_replaymanager.cpp", "replay/cl_screenshotmanager.h"]},
+  {"index": 19, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/cl_replaymovie.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "cl_replaymovie", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "cl_replaym.tmp.hl2-osx-builder.64775.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/cl_replaymovie.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 67, "n_data": 9, "text_bytes": 4276, "first_addr": "0x14390", "files": ["replay/cl_replaymovie.cpp", "public/video/ivideoservices.h", "replay/cl_replaymovie.h"]},
+  {"index": 20, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/cl_replaymoviemanager.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "cl_replaymoviemanager", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "cl_replaym.tmp.hl2-osx-builder.64794.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/cl_replaymoviemanager.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 88, "n_data": 25, "text_bytes": 14082, "first_addr": "0x15450", "files": ["replay/cl_replaymoviemanager.cpp", "public/materialsystem/materialsystem_config.h"]},
+  {"index": 21, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/cl_screenshotmanager.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "cl_screenshotmanager", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "cl_screens.tmp.hl2-osx-builder.64798.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/cl_screenshotmanager.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 19, "n_data": 12, "text_bytes": 3614, "first_addr": "0x18b60", "files": ["replay/cl_screenshotmanager.cpp", "public/engine/IEngineTrace.h", "public/cmodel.h", "public/gametrace.h"]},
+  {"index": 22, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/cl_sessionblockdownloader.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "cl_sessionblockdownloader", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "cl_session.tmp.hl2-osx-builder.64800.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/cl_sessionblockdownloader.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 16, "n_data": 11, "text_bytes": 4090, "first_addr": "0x19980", "files": ["replay/cl_sessionblockdownloader.cpp", "replay/cl_sessionblockdownloader.h"]},
+  {"index": 23, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/cl_sessioninfodownloader.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "cl_sessioninfodownloader", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "cl_session.tmp.hl2-osx-builder.64806.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/cl_sessioninfodownloader.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 14, "n_data": 6, "text_bytes": 3751, "first_addr": "0x1a990", "files": ["replay/cl_sessioninfodownloader.cpp", "replay/sessioninfoheader.h", "public/tier1/utlbuffer.h"]},
+  {"index": 24, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/compression.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "compression", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "compressio.tmp.hl2-osx-builder.64810.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/compression.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 12, "n_data": 9, "text_bytes": 601, "first_addr": "0x1b840", "files": ["replay/compression.cpp"]},
+  {"index": 25, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/errorsystem.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "errorsystem", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "errorsyste.tmp.hl2-osx-builder.64814.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/errorsystem.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 19, "n_data": 11, "text_bytes": 3365, "first_addr": "0x1bab0", "files": ["replay/errorsystem.cpp"]},
+  {"index": 26, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/replaysystem.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "replaysystem", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "replaysyst.tmp.hl2-osx-builder.64836.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/replaysystem.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 26, "n_data": 39, "text_bytes": 3495, "first_addr": "0x1c7f0", "files": ["replay/replaysystem.cpp", "public/appframework/IAppSystem.h", "public/tier1/tier1.h", "public/tier2/tier2.h", "replay/replaysystem.h", "replay/sv_replaycontext.h", "replay/sv_recordingsession.h"]},
+  {"index": 27, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/replay_dbg.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "replay_dbg", "mtime": 1731778858, "mtime_utc": "2024-11-16T17:40:58Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "replay_dbg.tmp.hl2-osx-builder.23582.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/replay_dbg.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 1, "n_data": 3, "text_bytes": 141, "first_addr": "0x1d5b0", "files": ["replay/replay_dbg.cpp"]},
+  {"index": 28, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/replay_reconstructor.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "replay_reconstructor", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "replay_rec.tmp.hl2-osx-builder.64840.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/replay_reconstructor.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 4, "n_data": 1, "text_bytes": 2719, "first_addr": "0x1d640", "files": ["replay/replay_reconstructor.cpp"]},
+  {"index": 29, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/sessioninfoheader.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "sessioninfoheader", "mtime": 1731519027, "mtime_utc": "2024-11-13T17:30:27Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "sessioninf.tmp.hl2-osx-builder.82802.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/sessioninfoheader.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 1, "n_data": 0, "text_bytes": 55, "first_addr": "0x1e0e0", "files": ["replay/sessioninfoheader.cpp"]},
+  {"index": 30, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/shared_cvars.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "shared_cvars", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "shared_cva.tmp.hl2-osx-builder.64844.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/shared_cvars.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 3, "n_data": 9, "text_bytes": 743, "first_addr": "0x1e120", "files": ["replay/shared_cvars.cpp"]},
+  {"index": 31, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/shared_replaycontext.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "shared_replaycontext", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "shared_rep.tmp.hl2-osx-builder.64845.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/shared_replaycontext.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 14, "n_data": 4, "text_bytes": 1270, "first_addr": "0x1e410", "files": ["replay/shared_replaycontext.cpp", "replay/shared_replaycontext.h"]},
+  {"index": 32, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/spew.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "spew", "mtime": 1731519027, "mtime_utc": "2024-11-13T17:30:27Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "spew.tmp.hl2-osx-builder.82817.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/spew.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 37, "n_data": 17, "text_bytes": 1313, "first_addr": "0x1e910", "files": ["replay/spew.cpp", "replay/spew.h"]},
+  {"index": 33, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/sv_basejob.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "sv_basejob", "mtime": 1731778858, "mtime_utc": "2024-11-16T17:40:58Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "sv_basejob.tmp.hl2-osx-builder.23600.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/sv_basejob.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 8, "n_data": 13, "text_bytes": 720, "first_addr": "0x1ee40", "files": ["replay/sv_basejob.cpp", "replay/sv_basejob.h"]},
+  {"index": 34, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/sv_commands.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "sv_commands", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "sv_command.tmp.hl2-osx-builder.64850.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/sv_commands.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 7, "n_data": 10, "text_bytes": 2627, "first_addr": "0x1f110", "files": ["replay/sv_commands.cpp"]},
+  {"index": 35, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/sv_cvars.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "sv_cvars", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "sv_cvars.tmp.hl2-osx-builder.64851.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/sv_cvars.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 3, "n_data": 27, "text_bytes": 2332, "first_addr": "0x1fb60", "files": ["replay/sv_cvars.cpp"]},
+  {"index": 36, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/sv_filepublish.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "sv_filepublish", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "sv_filepub.tmp.hl2-osx-builder.64858.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/sv_filepublish.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 66, "n_data": 69, "text_bytes": 10149, "first_addr": "0x20480", "files": ["replay/sv_filepublish.cpp", "replay/sv_recordingsessionmanager.h", "replay/sv_filepublish.h", "public/tier1/utlqueue.h"]},
+  {"index": 37, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/sv_fileservercleanup.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "sv_fileservercleanup", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "sv_fileser.tmp.hl2-osx-builder.64860.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/sv_fileservercleanup.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 55, "n_data": 31, "text_bytes": 7174, "first_addr": "0x22c40", "files": ["replay/sv_fileservercleanup.cpp", "replay/sv_fileservercleanup.h"]},
+  {"index": 38, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/sv_ftp.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "sv_ftp", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "sv_ftp.tmp.hl2-osx-builder.64886.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/sv_ftp.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 37, "n_data": 21, "text_bytes": 4100, "first_addr": "0x24850", "files": ["replay/sv_ftp.cpp", "replay/sv_ftp.h"]},
+  {"index": 39, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/sv_publishtest.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "sv_publishtest", "mtime": 1732582898, "mtime_utc": "2024-11-26T01:01:38Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "sv_publish.tmp.hl2-osx-builder.64890.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/sv_publishtest.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 10, "n_data": 5, "text_bytes": 4232, "first_addr": "0x25860", "files": ["replay/sv_publishtest.cpp"]},
+  {"index": 40, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/sv_recordingsession.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "sv_recordingsession", "mtime": 1732582899, "mtime_utc": "2024-11-26T01:01:39Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "sv_recordi.tmp.hl2-osx-builder.64891.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/sv_recordingsession.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 12, "n_data": 5, "text_bytes": 1053, "first_addr": "0x268f0", "files": ["replay/sv_recordingsession.cpp"]},
+  {"index": 41, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/sv_recordingsessionblock.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "sv_recordingsessionblock", "mtime": 1732582899, "mtime_utc": "2024-11-26T01:01:39Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "sv_recordi.tmp.hl2-osx-builder.64896.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/sv_recordingsessionblock.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 6, "n_data": 3, "text_bytes": 411, "first_addr": "0x26d10", "files": ["replay/sv_recordingsessionblock.cpp", "replay/sv_recordingsessionblock.h"]},
+  {"index": 42, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/sv_recordingsessionblockmanager.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "sv_recordingsessionblockmanager", "mtime": 1732582899, "mtime_utc": "2024-11-26T01:01:39Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "sv_recordi.tmp.hl2-osx-builder.64897.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/sv_recordingsessionblockmanager.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 9, "n_data": 4, "text_bytes": 351, "first_addr": "0x26ec0", "files": ["replay/sv_recordingsessionblockmanager.cpp", "replay/sv_recordingsessionblockmanager.h"]},
+  {"index": 43, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/sv_recordingsessionmanager.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "sv_recordingsessionmanager", "mtime": 1732582899, "mtime_utc": "2024-11-26T01:01:39Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "sv_recordi.tmp.hl2-osx-builder.64902.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/sv_recordingsessionmanager.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 16, "n_data": 5, "text_bytes": 1157, "first_addr": "0x27020", "files": ["replay/sv_recordingsessionmanager.cpp"]},
+  {"index": 44, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/sv_replaycontext.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "sv_replaycontext", "mtime": 1732582899, "mtime_utc": "2024-11-26T01:01:39Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "sv_replayc.tmp.hl2-osx-builder.64924.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/sv_replaycontext.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 31, "n_data": 9, "text_bytes": 3537, "first_addr": "0x274b0", "files": ["replay/sv_replaycontext.cpp", "replay/sv_sessionrecorder.h"]},
+  {"index": 45, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/sv_sessionblockpublisher.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "sv_sessionblockpublisher", "mtime": 1732582899, "mtime_utc": "2024-11-26T01:01:39Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "sv_session.tmp.hl2-osx-builder.64926.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/sv_sessionblockpublisher.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 17, "n_data": 9, "text_bytes": 4224, "first_addr": "0x28290", "files": ["replay/sv_sessionblockpublisher.cpp", "replay/sv_sessionblockpublisher.h"]},
+  {"index": 46, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/sv_sessioninfopublisher.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "sv_sessioninfopublisher", "mtime": 1732582899, "mtime_utc": "2024-11-26T01:01:39Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "sv_session.tmp.hl2-osx-builder.64934.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/sv_sessioninfopublisher.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 12, "n_data": 3, "text_bytes": 1389, "first_addr": "0x29310", "files": ["replay/sv_sessioninfopublisher.cpp"]},
+  {"index": 47, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/sv_sessionpublishmanager.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "sv_sessionpublishmanager", "mtime": 1731778859, "mtime_utc": "2024-11-16T17:40:59Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "sv_session.tmp.hl2-osx-builder.23691.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/sv_sessionpublishmanager.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 10, "n_data": 2, "text_bytes": 948, "first_addr": "0x29880", "files": ["replay/sv_sessionpublishmanager.cpp"]},
+  {"index": 48, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/sv_sessionrecorder.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "sv_sessionrecorder", "mtime": 1732582899, "mtime_utc": "2024-11-26T01:01:39Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "sv_session.tmp.hl2-osx-builder.64936.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/sv_sessionrecorder.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 21, "n_data": 9, "text_bytes": 2769, "first_addr": "0x29c40", "files": ["replay/sv_sessionrecorder.cpp"]},
+  {"index": 49, "oso": "build/buildbot_osx.build/Release/replay.build/Objects-normal/i386/thinkmanager.o", "kind": "object", "archive": null, "member": null, "xcode_target": "replay", "stem": "thinkmanager", "mtime": 1731778859, "mtime_utc": "2024-11-16T17:40:59Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "thinkmanag.tmp.hl2-osx-builder.23703.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/thinkmanager.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 8, "n_data": 11, "text_bytes": 1492, "first_addr": "0x2a720", "files": ["replay/thinkmanager.cpp", "replay/thinkmanager.h"]},
+  {"index": 50, "oso": "build/Release/libtier1.a(bitbuf.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "bitbuf.o", "xcode_target": null, "stem": "bitbuf", "mtime": 1731778100, "mtime_utc": "2024-11-16T17:28:20Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "bitbuf.tmp.hl2-osx-builder.97987.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/bitbuf.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 11, "n_data": 6, "text_bytes": 2748, "first_addr": "0x2ad10", "files": ["tier1/bitbuf.cpp", "public/bitvec.h"]},
+  {"index": 51, "oso": "build/Release/libtier1.a(convar.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "convar.o", "xcode_target": null, "stem": "convar", "mtime": 1731778100, "mtime_utc": "2024-11-16T17:28:20Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "convar.tmp.hl2-osx-builder.97990.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/convar.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 68, "n_data": 29, "text_bytes": 6130, "first_addr": "0x2b7d0", "files": ["tier1/convar.cpp"]},
+  {"index": 52, "oso": "build/Release/libtier1.a(ilocalize.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "ilocalize.o", "xcode_target": null, "stem": "ilocalize", "mtime": 1731778100, "mtime_utc": "2024-11-16T17:28:20Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "ilocalize.tmp.hl2-osx-builder.97999.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/ilocalize.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 4, "n_data": 0, "text_bytes": 448, "first_addr": "0x2cfd0", "files": ["tier1/ilocalize.cpp"]},
+  {"index": 53, "oso": "build/Release/libtier1.a(interface.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "interface.o", "xcode_target": null, "stem": "interface", "mtime": 1731778100, "mtime_utc": "2024-11-16T17:28:20Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "interface.tmp.hl2-osx-builder.97998.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/interface.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 2, "n_data": 1, "text_bytes": 160, "first_addr": "0x2d190", "files": ["tier1/interface.cpp"]},
+  {"index": 54, "oso": "build/Release/libtier1.a(KeyValues.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "KeyValues.o", "xcode_target": null, "stem": "KeyValues", "mtime": 1732582553, "mtime_utc": "2024-11-26T00:55:53Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "KeyValues.tmp.hl2-osx-builder.41190.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/KeyValues.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 47, "n_data": 19, "text_bytes": 14912, "first_addr": "0x2d230", "files": ["tier1/KeyValues.cpp", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/ctype.h", "public/filesystem.h", "public/tier0/basetypes.h"]},
+  {"index": 55, "oso": "build/Release/libtier1.a(strtools.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "strtools.o", "xcode_target": null, "stem": "strtools", "mtime": 1732587993, "mtime_utc": "2024-11-26T02:26:33Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "strtools.tmp.hl2-osx-builder.89224.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/strtools.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 22, "n_data": 0, "text_bytes": 3184, "first_addr": "0x30c70", "files": ["tier1/strtools.cpp"]},
+  {"index": 56, "oso": "build/Release/libtier1.a(tier1.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "tier1.o", "xcode_target": null, "stem": "tier1", "mtime": 1731778101, "mtime_utc": "2024-11-16T17:28:21Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "tier1.tmp.hl2-osx-builder.98106.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/tier1.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 2, "n_data": 5, "text_bytes": 204, "first_addr": "0x318e0", "files": ["tier1/tier1.cpp"]},
+  {"index": 57, "oso": "build/Release/libtier1.a(utlbuffer.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "utlbuffer.o", "xcode_target": null, "stem": "utlbuffer", "mtime": 1731778101, "mtime_utc": "2024-11-16T17:28:21Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "utlbuffer.tmp.hl2-osx-builder.98113.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/utlbuffer.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 30, "n_data": 17, "text_bytes": 6257, "first_addr": "0x319b0", "files": ["tier1/utlbuffer.cpp", "public/tier1/byteswap.h"]},
+  {"index": 58, "oso": "build/Release/libtier1.a(utlstring.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "utlstring.o", "xcode_target": null, "stem": "utlstring", "mtime": 1731778101, "mtime_utc": "2024-11-16T17:28:21Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "utlstring.tmp.hl2-osx-builder.98122.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/utlstring.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 10, "n_data": 0, "text_bytes": 1136, "first_addr": "0x33230", "files": ["tier1/utlstring.cpp"]},
+  {"index": 59, "oso": "build/Release/libreplay_common.a(basereplayserializeable.o)", "kind": "archive_member", "archive": "build/Release/libreplay_common.a", "member": "basereplayserializeable.o", "xcode_target": null, "stem": "basereplayserializeable", "mtime": 1731778145, "mtime_utc": "2024-11-16T17:29:05Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "basereplay.tmp.hl2-osx-builder.128.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/common/basereplayserializeable.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 15, "n_data": 5, "text_bytes": 462, "first_addr": "0x336a0", "files": ["replay/common/basereplayserializeable.cpp", "common/replay/basereplayserializeable.h"]},
+  {"index": 60, "oso": "build/Release/libreplay_common.a(performance.o)", "kind": "archive_member", "archive": "build/Release/libreplay_common.a", "member": "performance.o", "xcode_target": null, "stem": "performance", "mtime": 1731778145, "mtime_utc": "2024-11-16T17:29:05Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "performanc.tmp.hl2-osx-builder.129.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/common/performance.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 7, "n_data": 1, "text_bytes": 468, "first_addr": "0x33880", "files": ["replay/common/performance.cpp"]},
+  {"index": 61, "oso": "build/Release/libreplay_common.a(replay.o)", "kind": "archive_member", "archive": "build/Release/libreplay_common.a", "member": "replay.o", "xcode_target": null, "stem": "replay", "mtime": 1732582573, "mtime_utc": "2024-11-26T00:56:13Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "replay.tmp.hl2-osx-builder.42612.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/common/replay.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 9, "n_data": 1, "text_bytes": 1136, "first_addr": "0x33a60", "files": ["replay/common/replay.cpp", "common/replay/screenshot.h"]},
+  {"index": 62, "oso": "build/Release/libreplay_common.a(replaylib.o)", "kind": "archive_member", "archive": "build/Release/libreplay_common.a", "member": "replaylib.o", "xcode_target": null, "stem": "replaylib", "mtime": 1731778145, "mtime_utc": "2024-11-16T17:29:05Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "replaylib.tmp.hl2-osx-builder.133.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/common/replaylib.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 1, "n_data": 1, "text_bytes": 46, "first_addr": "0x33ed0", "files": ["replay/common/replaylib.cpp"]},
+  {"index": 63, "oso": "build/Release/libreplay_common.a(replaytime.o)", "kind": "archive_member", "archive": "build/Release/libreplay_common.a", "member": "replaytime.o", "xcode_target": null, "stem": "replaytime", "mtime": 1731778145, "mtime_utc": "2024-11-16T17:29:05Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "replaytime.tmp.hl2-osx-builder.131.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/common/replaytime.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 8, "n_data": 4, "text_bytes": 1488, "first_addr": "0x33f00", "files": ["replay/common/replaytime.cpp"]},
+  {"index": 64, "oso": "build/Release/libreplay_common.a(replayutils.o)", "kind": "archive_member", "archive": "build/Release/libreplay_common.a", "member": "replayutils.o", "xcode_target": null, "stem": "replayutils", "mtime": 1732582573, "mtime_utc": "2024-11-26T00:56:13Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "replayutil.tmp.hl2-osx-builder.42613.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/common/replayutils.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 5, "n_data": 3, "text_bytes": 781, "first_addr": "0x344d0", "files": ["replay/common/replayutils.cpp", "public/tier1/ilocalize.h"]},
+  {"index": 65, "oso": "build/Release/libreplay_common.a(screenshot.o)", "kind": "archive_member", "archive": "build/Release/libreplay_common.a", "member": "screenshot.o", "xcode_target": null, "stem": "screenshot", "mtime": 1731778145, "mtime_utc": "2024-11-16T17:29:05Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "screenshot.tmp.hl2-osx-builder.135.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "replay/common/screenshot.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 6, "n_data": 3, "text_bytes": 368, "first_addr": "0x347e0", "files": ["replay/common/screenshot.cpp"]},
+  {"index": 66, "oso": "build/Release/libtier2.a(tier2.o)", "kind": "archive_member", "archive": "build/Release/libtier2.a", "member": "tier2.o", "xcode_target": null, "stem": "tier2", "mtime": 1732582553, "mtime_utc": "2024-11-26T00:55:53Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "tier2.tmp.hl2-osx-builder.41228.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier2/tier2.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 2, "n_data": 12, "text_bytes": 585, "first_addr": "0x34960", "files": ["tier2/tier2.cpp"]},
+  {"index": 67, "oso": "build/Release/libvtf.a(vtf.o)", "kind": "archive_member", "archive": "build/Release/libvtf.a", "member": "vtf.o", "xcode_target": null, "stem": "vtf", "mtime": 1732582558, "mtime_utc": "2024-11-26T00:55:58Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "vtf.tmp.hl2-osx-builder.41535.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "vtf/vtf.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 2, "n_data": 32, "text_bytes": 1349, "first_addr": "0x4e9a0", "files": ["public/datamap.h", "vtf/vtf.cpp"]},
+  {"index": 68, "oso": "build/Release/libbzip2.a(blocksort.o)", "kind": "archive_member", "archive": "build/Release/libbzip2.a", "member": "blocksort.o", "xcode_target": null, "stem": "blocksort", "mtime": 1731518675, "mtime_utc": "2024-11-13T17:24:35Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "blocksort.tmp.hl2-osx-builder.64561.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "utils/bzip2/blocksort.c", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 3, "n_data": 1, "text_bytes": 9946, "first_addr": "0x4eef0", "files": ["utils/bzip2/blocksort.c"]},
+  {"index": 69, "oso": "build/Release/libbzip2.a(bzlib.o)", "kind": "archive_member", "archive": "build/Release/libbzip2.a", "member": "bzlib.o", "xcode_target": null, "stem": "bzlib", "mtime": 1731518675, "mtime_utc": "2024-11-13T17:24:35Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "bzlib.tmp.hl2-osx-builder.79096.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "utils/bzip2/bzlib.c", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 9, "n_data": 0, "text_bytes": 6841, "first_addr": "0x515d0", "files": ["utils/bzip2/bzlib.c", "utils/bzip2/bzlib_private.h"]},
+  {"index": 70, "oso": "build/Release/libbzip2.a(compress.o)", "kind": "archive_member", "archive": "build/Release/libbzip2.a", "member": "compress.o", "xcode_target": null, "stem": "compress", "mtime": 1731518674, "mtime_utc": "2024-11-13T17:24:34Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "compress.tmp.hl2-osx-builder.64564.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "utils/bzip2/compress.c", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 2, "n_data": 0, "text_bytes": 20739, "first_addr": "0x53090", "files": ["utils/bzip2/compress.c"]},
+  {"index": 71, "oso": "build/Release/libbzip2.a(crctable.o)", "kind": "archive_member", "archive": "build/Release/libbzip2.a", "member": "crctable.o", "xcode_target": null, "stem": "crctable", "mtime": 1731518674, "mtime_utc": "2024-11-13T17:24:34Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "crctable.tmp.hl2-osx-builder.79098.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": null, "build_root": null, "source_resolution": "unresolved", "n_functions": 0, "n_data": 1, "text_bytes": 0, "first_addr": null, "files": []},
+  {"index": 72, "oso": "build/Release/libbzip2.a(decompress.o)", "kind": "archive_member", "archive": "build/Release/libbzip2.a", "member": "decompress.o", "xcode_target": null, "stem": "decompress", "mtime": 1731518674, "mtime_utc": "2024-11-13T17:24:34Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "decompress.tmp.hl2-osx-builder.66676.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "utils/bzip2/decompress.c", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 1, "n_data": 0, "text_bytes": 11224, "first_addr": "0x581a0", "files": ["utils/bzip2/decompress.c"]},
+  {"index": 73, "oso": "build/Release/libbzip2.a(huffman.o)", "kind": "archive_member", "archive": "build/Release/libbzip2.a", "member": "huffman.o", "xcode_target": null, "stem": "huffman", "mtime": 1731518674, "mtime_utc": "2024-11-13T17:24:34Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "huffman.tmp.hl2-osx-builder.64567.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "utils/bzip2/huffman.c", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 3, "n_data": 0, "text_bytes": 2107, "first_addr": "0x5ad80", "files": ["utils/bzip2/huffman.c"]},
+  {"index": 74, "oso": "build/Release/libbzip2.a(randtable.o)", "kind": "archive_member", "archive": "build/Release/libbzip2.a", "member": "randtable.o", "xcode_target": null, "stem": "randtable", "mtime": 1731518674, "mtime_utc": "2024-11-13T17:24:34Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "randtable.tmp.hl2-osx-builder.64568.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": null, "build_root": null, "source_resolution": "unresolved", "n_functions": 0, "n_data": 1, "text_bytes": 0, "first_addr": null, "files": []},
+  {"index": 75, "oso": "build/Release/libmathlib.a(mathlib_base.o)", "kind": "archive_member", "archive": "build/Release/libmathlib.a", "member": "mathlib_base.o", "xcode_target": null, "stem": "mathlib_base", "mtime": 1731778106, "mtime_utc": "2024-11-16T17:28:26Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "mathlib_ba.tmp.hl2-osx-builder.98373.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "mathlib/mathlib_base.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 7, "n_data": 0, "text_bytes": 2256, "first_addr": "0x5b5c0", "files": ["mathlib/mathlib_base.cpp"]},
+  {"index": 76, "oso": "build/Release/libmathlib.a(powsse.o)", "kind": "archive_member", "archive": "build/Release/libmathlib.a", "member": "powsse.o", "xcode_target": null, "stem": "powsse", "mtime": 1731778106, "mtime_utc": "2024-11-16T17:28:26Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "powsse.tmp.hl2-osx-builder.98413.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "mathlib/powsse.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 1, "n_data": 0, "text_bytes": 112, "first_addr": "0x5be90", "files": ["mathlib/powsse.cpp"]},
+  {"index": 77, "oso": "build/Release/libmathlib.a(sse.o)", "kind": "archive_member", "archive": "build/Release/libmathlib.a", "member": "sse.o", "xcode_target": null, "stem": "sse", "mtime": 1731778106, "mtime_utc": "2024-11-16T17:28:26Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "sse.tmp.hl2-osx-builder.98436.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "mathlib/sse.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 1, "n_data": 4, "text_bytes": 81, "first_addr": "0x5bf00", "files": ["mathlib/sse.cpp"]}
+ ]
+}
