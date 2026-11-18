@@ -26,7 +26,9 @@ MANIFEST = 'devtools/bytematch/manifests/retail-win32.json'
 TOOLCHAIN_DIR = 'devtools/bytematch/toolchain/win32'
 
 RETAIL_MODULES = ['tier0', 'vstdlib', 'scenefilecache', 'soundemittersystem', 'datacache',
-	'studiorender', 'inputsystem', 'engine']
+	'studiorender', 'inputsystem', 'engine', 'filesystem_stdio', 'materialsystem', 'shaderapidx9',
+	'stdshader_dx9', 'vgui2', 'vguimatsurface', 'GameUI', 'ServerBrowser', 'vphysics', 'replay',
+	'launcher', 'launcher_main', 'client_hl2', 'server_hl2', 'client_episodic', 'server_episodic']
 
 # Not Valve's. BYTEMATCH_RETAIL excludes this fork's runtime additions (as --retail-osx32);
 # NO_X360_XDK because Valve's tree had the Xbox 360 XDK's win32 headers (bitmap/imagebyteswap.cpp).
@@ -160,6 +162,13 @@ def retail_win32_configure(conf):
 		if conf.exec_command(v.AR + ['/nologo', '/MACHINE:X86', '/DEF:' + deffile.abspath(), '/OUT:' + lib.abspath()]):
 			conf.fatal('lib /DEF failed for %s' % name)
 	v.RETAIL_LIBPATH = [libdir.abspath()]
+	# Stand-ins for Valve's prebuilt cryptlib.lib and libpng.lib (build-thirdparty.py).
+	tp = os.path.join(V.ROOT, 'thirdparty')
+	if os.path.isdir(os.path.join(tp, 'lib')):
+		v.append_value('RETAIL_LIBPATH', [os.path.join(tp, 'lib')])
+		v.RETAIL_THIRDPARTY_INCLUDE = os.path.join(tp, 'include')
+	else:
+		Logs.warn('retail-win32: %s missing; run %s/build-thirdparty.py' % (tp, TOOLCHAIN_DIR))
 	for d in ('lib/public', 'lib/common'):
 		p = os.path.join(o.SDK2013, d)
 		if os.path.isdir(p):
@@ -196,8 +205,12 @@ def retail_win32_build(bld):
 		target = 'Z:' + os.path.join(V.VS, 'sdk71a', 'Include', sdkname).replace('/', '\\')
 		over.make_node(name).write('#include "%s"\n' % target)
 	bld.retail_override = over
-	for idx, name in enumerate(closure(manifest, bld.env.RETAIL_WIN32_MODULES)):
-		retail_win32_module(bld, name, manifest[name], idx + 1)
+	names = closure(manifest, bld.env.RETAIL_WIN32_MODULES)
+	outputs = [(manifest[n]['project_dir'], manifest[n]['output'].lower()) for n in names]
+	for idx, name in enumerate(names):
+		# hl2 and episodic both build game/client/client.dll: give each its own directory
+		shared = outputs.count(outputs[idx]) > 1
+		retail_win32_module(bld, name, manifest[name], idx + 1, name if shared else None)
 
 def find_lib(bld, filename):
 	for d in bld.env.RETAIL_LIBPATH:
@@ -206,7 +219,7 @@ def find_lib(bld, filename):
 			return p
 	return None
 
-def retail_win32_module(bld, name, m, idx):
+def retail_win32_module(bld, name, m, idx, subdir=None):
 	src = bld.srcnode
 	pdir = src.make_node(m['project_dir'])
 	bdir = pdir.get_bld()
@@ -235,7 +248,11 @@ def retail_win32_module(bld, name, m, idx):
 	includes = [src.make_node(i) for i in m['includes']] + [bdir, bld.retail_shim]
 	if 'dx9sdk/include' in m['includes']:
 		includes.insert(0, bld.retail_override)
-	cl = m['cl'] + ['/FS', '/Fd' + bdir.make_node('vc120.pdb').abspath()] if '/Zi' in m['cl'] else list(m['cl'])
+	if bld.env.RETAIL_THIRDPARTY_INCLUDE:
+		includes.append(bld.root.find_dir(bld.env.RETAIL_THIRDPARTY_INCLUDE))
+	pdbdir = bdir.make_node(subdir) if subdir else bdir
+	pdbdir.mkdir()
+	cl = m['cl'] + ['/FS', '/Fd' + pdbdir.make_node('vc120.pdb').abspath()] if '/Zi' in m['cl'] else list(m['cl'])
 	cl.append('/FI' + bld.env.RETAIL_COMPAT_H)
 	use, ldflags = [], []
 	for l in m['libs']:
@@ -273,7 +290,7 @@ def retail_win32_module(bld, name, m, idx):
 	tg = bld(
 		features = features + ' retail_win32',
 		source   = sources,
-		target   = m['output'],
+		target   = (subdir + '/' + m['output']) if subdir else m['output'],
 		name     = name,
 		path     = pdir,
 		includes = includes,
@@ -283,6 +300,7 @@ def retail_win32_module(bld, name, m, idx):
 		idx      = idx,
 	)
 	tg.retail_files = files
+	tg.retail_pdbdir = pdbdir
 	tg.retail_pch = m.get('pch_header')
 	tg.retail_mc = mc
 	tg.env = bld.env.derive()
@@ -314,7 +332,7 @@ def retail_win32_asm(self, node):
 def retail_win32_per_file(self):
 	'''Per-file switches and precompiled headers, as the VPC's per-file $Configuration blocks.'''
 	creators, users, envs = {}, [], {}
-	pdb = self.path.get_bld().make_node('vc120.pdb')
+	pdb = self.retail_pdbdir.make_node('vc120.pdb')
 
 	def derived(key, make):
 		# one env per distinct setting, so files that share switches can share a cl run
@@ -441,7 +459,7 @@ def retail_win32_batch(self, creators):
 			flags = bt.env.CXXFLAGS if lang == 'c++' else bt.env.CFLAGS
 			if '/Zi' in flags and not any(f.startswith(('/Yu', '/Yc')) for f in flags):
 				# own PDB per batch: less mspdbsrv contention (debug info only)
-				pdb = '/Fd' + self.path.get_bld().make_node('vc120-%s-%d.pdb' % (lang.replace('+', 'p'), k)).abspath()
+				pdb = '/Fd' + self.retail_pdbdir.make_node('vc120-%s-%d.pdb' % (lang.replace('+', 'p'), k)).abspath()
 				bt.env = bt.env.derive()
 				bt.env.CXXFLAGS = [pdb if f.startswith('/Fd') else f for f in bt.env.CXXFLAGS]
 				bt.env.CFLAGS = [pdb if f.startswith('/Fd') else f for f in bt.env.CFLAGS]

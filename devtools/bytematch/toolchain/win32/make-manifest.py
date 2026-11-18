@@ -20,22 +20,59 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", "..", "..", ".."))
 HL2SRC = os.environ.get("HL2SRC", os.path.expanduser("~/p/sco/source-engine-2018-hl2_src"))
 
-# Modules built by --retail-win32 by default, with their path in depot 222.
+# Modules built by --retail-win32 by default, with their path in depot 222
+# ("DEPOT:path" for another depot).
 DEFAULT_MODULES = {
     "tier0": "bin/tier0.dll",
     "vstdlib": "bin/vstdlib.dll",
     "scenefilecache": "bin/scenefilecache.dll",
     "soundemittersystem": "bin/soundemittersystem.dll",
     "datacache": "bin/datacache.dll",
-    "studiorender": "bin/studiorender.dll",
+    "studiorender": "bin/StudioRender.dll",
     "inputsystem": "bin/inputsystem.dll",
     "engine": "bin/engine.dll",
+    "filesystem_stdio": "bin/FileSystem_Stdio.dll",
+    "materialsystem": "bin/MaterialSystem.dll",
+    "shaderapidx9": "bin/shaderapidx9.dll",
+    "stdshader_dx9": "bin/stdshader_dx9.dll",
+    "vgui2": "bin/vgui2.dll",
+    "vguimatsurface": "bin/vguimatsurface.dll",
+    "GameUI": "bin/GameUI.dll",
+    "ServerBrowser": "bin/ServerBrowser.dll",
+    "vphysics": "bin/vphysics.dll",
+    "replay": "bin/replay.dll",
+    "launcher": "bin/launcher.dll",
+    "launcher_main": "hl2.exe",
+    "client_hl2": "hl2/bin/client.dll",
+    "server_hl2": "hl2/bin/server.dll",
+    "client_episodic": "380:episodic/bin/client.dll",
+    "server_episodic": "380:episodic/bin/server.dll",
+}
+
+# Modules whose VPC isn't the one projects.vgc names for them (game projects pick
+# theirs by game conditional; vgui2's project is called vgui_dll).
+VPC_FILES = {
+    "vgui2": "vgui2/src/vgui_dll.vpc",
+    "client_hl2": "game/client/client_hl2.vpc",
+    "server_hl2": "game/server/server_hl2.vpc",
+    "client_episodic": "game/client/client_episodic.vpc",
+    "server_episodic": "game/server/server_episodic.vpc",
+}
+
+# Library projects hl2_src lacks; their VPCs are in this tree (the ivp submodule)
+# and include Valve's vpc_scripts from hl2_src.
+TREE_VPC_FILES = {
+    "ivp_physics": "ivp/ivp_physics/ivp_physics.vpc",
+    "ivp_compactbuilder": "ivp/ivp_compact_builder/ivp_compactbuilder.vpc",
+    "havana_constraints": "ivp/havana/havana_constraints.vpc",
+    "hk_base": "ivp/havana/havok/hk_base/hk_base.vpc",
+    "hk_math": "ivp/havana/havok/hk_math/hk_math.vpc",
 }
 
 # Static-library projects whose outputs other projects name in $Lib.
 LIB_PROJECTS = ["jpeglib", "tier1", "tier2", "tier3", "mathlib", "bitmap", "vtf", "appframework", "dmxloader",
                 "matsys_controls", "vgui_controls", "bzip2", "replay_common", "choreoobjects",
-                "particles", "vpklib", "shaderlib", "socketlib"]
+                "particles", "vpklib", "shaderlib", "socketlib", "vgui_surfacelib", "lzma"] + list(TREE_VPC_FILES)
 
 # Valve include directories that live elsewhere in this tree.
 INCLUDE_ALIASES = {"thirdparty/SDL2": "thirdparty/SDL", "engine/audio/private": "engine/audio",
@@ -106,9 +143,9 @@ def dedupe(seq):
 
 
 class Module:
-    def __init__(self, name, vpc_rel, hl2src, retail=None):
+    def __init__(self, name, vpc_rel, hl2src, retail=None, include_alias=None):
         self.name, self.vpc_rel, self.hl2src, self.retail = name, vpc_rel, hl2src, retail
-        self.p = VPC.Project(hl2src, os.path.join(hl2src, vpc_rel)).parse()
+        self.p = VPC.Project(hl2src, os.path.join(hl2src, vpc_rel), include_alias=include_alias).parse()
         self.projdir = os.path.dirname(os.path.join(hl2src, vpc_rel))
 
     def tree_rel(self, win, base=None):
@@ -308,7 +345,7 @@ class Module:
             hit = next((p for p in LIB_PROJECTS if p.lower() == stem.lower()), None)
             if rel.startswith("lib/") and hit:
                 out.append({"project": hit, "path": rel})
-            elif rel.startswith("lib/public/") and stem.lower() in DEFAULT_MODULES:
+            elif rel.startswith("lib/public/") and stem.lower() in (n.lower() for n in DEFAULT_MODULES):
                 out.append({"project": stem.lower(), "path": rel, "implib": True})
             else:
                 out.append({"prebuilt": rel})
@@ -317,11 +354,12 @@ class Module:
     def manifest(self):
         lsw, lobjs = self.link_switches()
         pchhdr = self.get("compiler.create/usepchthroughfile")
+        depot, _, retail = (self.retail or "").rpartition(":")
         m = {
             "vpc": self.vpc_rel.replace("\\", "/"),
             "type": self.ctype(),
             "output": self.p.macros.get("OUTBINNAME") or self.p.macros.get("OUTLIBNAME") or self.name,
-            "retail": self.retail,
+            "retail": retail or None,
             "project_dir": os.path.relpath(self.projdir, self.hl2src).replace(os.sep, "/"),
             "defines": self.defines(),
             "includes": self.includes(),
@@ -331,6 +369,8 @@ class Module:
             "libs": self.libs(),
             "file_libs": self.file_libs(),
         }
+        if depot:
+            m["retail_depot"] = depot
         if m["type"] != "lib":
             m["link"] = lsw
             m["link_objects"] = lobjs
@@ -357,12 +397,16 @@ def main():
         name = todo.pop(0)
         if name in mods:
             continue
-        vpc_rel = projects.get(name.lower())
-        if not vpc_rel or not os.path.exists(os.path.join(a.hl2src, vpc_rel)):
-            print("warning: no VPC for %s" % name, file=sys.stderr)
-            mods[name] = None
-            continue
-        mod = Module(name, vpc_rel, a.hl2src, DEFAULT_MODULES.get(name)).manifest()
+        if name in TREE_VPC_FILES:
+            mod = Module(name, TREE_VPC_FILES[name], REPO, None,
+                         {os.path.join(REPO, "vpc_scripts"): os.path.join(a.hl2src, "vpc_scripts")}).manifest()
+        else:
+            vpc_rel = VPC_FILES.get(name) or projects.get(name.lower())
+            if not vpc_rel or not os.path.exists(os.path.join(a.hl2src, vpc_rel)):
+                print("warning: no VPC for %s" % name, file=sys.stderr)
+                mods[name] = None
+                continue
+            mod = Module(name, vpc_rel, a.hl2src, DEFAULT_MODULES.get(name)).manifest()
         mods[name] = mod
         order.append(name)
         for l in mod["libs"]:
