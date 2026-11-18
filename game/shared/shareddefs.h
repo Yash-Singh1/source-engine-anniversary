@@ -959,9 +959,11 @@ enum
 #ifdef HL2_ANNIVERSARY_NOV2024
 #define NOV2024_VIRTUAL virtual
 #define NOV2024_ONLY( ... ) __VA_ARGS__
+#define OCT2024_ONLY( ... )
 #else
 #define NOV2024_VIRTUAL
 #define NOV2024_ONLY( ... )
+#define OCT2024_ONLY( ... ) __VA_ARGS__
 #endif
 
 #endif // SHAREDDEFS_H

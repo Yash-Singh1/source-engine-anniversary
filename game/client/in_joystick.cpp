@@ -118,7 +118,7 @@ static ConVar option_duck_method_default( "option_duck_method_default", "1.0", F
 static ConVar joy_inverty_default( "joy_inverty_default", "0", FCVAR_ARCHIVE_XBOX );				// Extracted & saved from profile
 static ConVar joy_movement_stick_default( "joy_movement_stick_default", "0", FCVAR_ARCHIVE_XBOX );	// Extracted & saved from profile
 static ConVar sv_stickysprint_default( "sv_stickysprint_default", "0", FCVAR_NONE );
-static ConVar joy_lookspin_default( "joy_lookspin_default", "0.75", FCVAR_NONE, "Aggressiveness of +resetcamera and +lookspin curves. Smaller = quicker. Larger = more gradual." );
+static ConVar joy_lookspin_default( "joy_lookspin_default", NOV2024_ONLY( "0.75", FCVAR_NONE, "Aggressiveness of +resetcamera and +lookspin curves. Smaller = quicker. Larger = more gradual." ) OCT2024_ONLY( "0.35", FCVAR_NONE ) );
 
 void joy_movement_stick_Callback( IConVar *var, const char *pOldString, float flOldValue )
 {
@@ -128,7 +128,7 @@ static ConVar joy_movement_stick("joy_movement_stick", "0", FCVAR_ARCHIVE | FCVA
 
 static ConVar joy_xcontroller_cfg_loaded( "joy_xcontroller_cfg_loaded", "0", FCVAR_ARCHIVE, "If 0, the 360controller.cfg file will be executed on startup & option changes." );
 static ConVar joy_steamcontroller_cfg_loaded( "joy_steamcontroller_cfg_loaded", "0", FCVAR_NONE, "If 0, the steam controller .cfg file will be executed on startup & option changes." );
-ConVar joy_autoaim_magnetism( "joy_autoaim_magnetism", "0.03", FCVAR_ARCHIVE, "Magnetism Factor for Aim Assist" );
+NOV2024_ONLY( ConVar joy_autoaim_magnetism( "joy_autoaim_magnetism", "0.03", FCVAR_ARCHIVE, "Magnetism Factor for Aim Assist" ); )
 static ConVar joy_variable_frametime( "joy_variable_frametime", "1", FCVAR_NONE );
 
 extern ConVar lookspring;
@@ -569,22 +569,33 @@ void CInput::Joystick_Advanced(void)
 	static ConVarRef var( "joy_xcontroller_found" );
 	if ( g_pInputSystem->IsSteamControllerActive() )
 	{
+#ifdef HL2_ANNIVERSARY_NOV2024
 		InputHandle_t handles[ STEAM_INPUT_MAX_COUNT ];
 		if ( SteamInput()->GetConnectedControllers( handles ) && !joy_steamcontroller_cfg_loaded.GetBool() )
+#else
+		if ( !joy_steamcontroller_cfg_loaded.GetBool() )
+#endif
+#line 574
 		{
 			engine->ClientCmd( "exec joy_configuration_sc.cfg" );
 
 			static ConVarRef s_joy_legacy( "joy_legacy" );
 			if ( s_joy_legacy.IsValid() )
 			{
-				engine->ExecuteClientCmd( s_joy_legacy.GetInt() > 0 ? "exec joy_configuration_sc_analog.cfg" : "exec joy_configuration_sc_absolute.cfg" );
+				if ( s_joy_legacy.GetInt() > 0 )
+					engine->ExecuteClientCmd( "exec joy_configuration_sc_analog.cfg" );
+				else
+					engine->ExecuteClientCmd( "exec joy_configuration_sc_absolute.cfg" );
 			}
 			joy_steamcontroller_cfg_loaded.SetValue( 1 );
 		}
+#ifdef HL2_ANNIVERSARY_NOV2024
 		else
 		{
 			joy_steamcontroller_cfg_loaded.SetValue( 0 );
 		}
+#endif
+#line 588
 	}
 	else if ( var.IsValid() && var.GetBool() && in_joystick.GetBool() )
 	{
@@ -596,7 +607,7 @@ void CInput::Joystick_Advanced(void)
 				engine->ClientCmd_Unrestricted( "exec 360controller-linux.cfg" );
 			}
 			joy_xcontroller_cfg_loaded.SetValue( 2 );
-			joy_steamcontroller_cfg_loaded.SetValue( 0 );
+			NOV2024_ONLY( joy_steamcontroller_cfg_loaded.SetValue( 0 ); )
 		}
 	}
 	else if ( joy_xcontroller_cfg_loaded.GetInt() > 0 )
@@ -732,6 +743,7 @@ bool CInput::ControllerModeActive( void )
 	return in_joystick.GetBool() && sc_controller_mode.GetBool();
 }
 
+#ifdef HL2_ANNIVERSARY_NOV2024
 //-----------------------------------------------------------------------------
 // Purpose: +lookspin turns the view around, +resetcamera levels the pitch;
 //			both ease in over joy_lookspin_default.
@@ -773,6 +785,81 @@ void CInput::UpdateQuickTurnAndCameraReset( QAngle &viewangles, float frametime 
 		viewangles[PITCH] += vecDelta.y;
 	}
 }
+#else
+//-----------------------------------------------------------------------------
+// Purpose: +lookspin turns 180 degrees towards the last yaw input over
+//			joy_lookspin_default seconds; returns this frame's yaw
+//-----------------------------------------------------------------------------
+float CInput::UpdateAndGetQuickTurnYaw( float frametime, float flYaw )
+{
+	float flResult;
+	if ( m_flQuickTurnTime != 0.0f )
+	{
+		float flTimeLeft = m_flQuickTurnTime - frametime;
+		float flStep = frametime;
+		if ( flTimeLeft <= 0.0f )
+		{
+			flStep = m_flQuickTurnTime;
+			flTimeLeft = 0.0f;
+		}
+		m_flQuickTurnTime = flTimeLeft;
+		flResult = flStep * m_flQuickTurnRate;
+	}
+	else
+	{
+		flResult = flYaw;
+	}
+
+	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
+	if ( ( in_lookspin.state & 2 ) && m_flQuickTurnTime == 0.0f && pPlayer && pPlayer->GetObserverMode() == OBS_MODE_NONE )
+	{
+		m_flQuickTurnTime = joy_lookspin_default.GetFloat();
+		m_flQuickTurnRate = ( m_flLastYawInput < 0.0f ? -180.0f : 180.0f ) / m_flQuickTurnTime;
+	}
+
+	if ( flResult != 0.0f )
+	{
+		m_flLastYawInput = flResult;
+	}
+
+	return flResult;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: +resetcamera levels the pitch over half of joy_lookspin_default;
+//			returns this frame's pitch
+//-----------------------------------------------------------------------------
+float CInput::UpdateAndGetCameraReset( QAngle viewangles, float frametime, float flPitch )
+{
+	float flResult;
+	if ( m_flCameraResetTime != 0.0f )
+	{
+		float flTimeLeft = m_flCameraResetTime - frametime;
+		float flStep = frametime;
+		if ( flTimeLeft <= 0.0f )
+		{
+			flStep = m_flCameraResetTime;
+			flTimeLeft = 0.0f;
+		}
+		m_flCameraResetTime = flTimeLeft;
+		flResult = flStep * m_flCameraResetRate;
+	}
+	else
+	{
+		flResult = flPitch;
+	}
+
+	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
+	if ( m_flQuickTurnTime == 0.0f && ( in_resetcamera.state & 1 ) && pPlayer && pPlayer->GetObserverMode() == OBS_MODE_NONE )
+	{
+		m_flCameraResetTime = joy_lookspin_default.GetFloat() * 0.5f;
+		m_flCameraResetRate = -viewangles[PITCH] / m_flCameraResetTime;
+	}
+
+	return flResult;
+}
+#endif
+#line 776
 
 //-----------------------------------------------------------------------------
 // Purpose: Apply joystick to CUserCmd creation
@@ -1024,7 +1111,7 @@ void CInput::JoyStickMove( float frametime, CUserCmd *cmd )
 		}
 	}
 
-#ifdef HL2_CLIENT_DLL
+#if defined( HL2_CLIENT_DLL ) && defined( HL2_ANNIVERSARY_NOV2024 )
 	if ( sk_allow_autoaim.GetBool() && g_pInputSystem->IsXinputControllerActive() )
 	{
 		viewangles = DoAutoAimMagnetism( viewangles, joy_autoaim_mode.GetInt(), joy_autoaim_magnetism.GetFloat(), joy_autoaim_scale.GetFloat() );

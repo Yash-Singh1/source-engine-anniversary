@@ -470,7 +470,7 @@ void IN_MoverightDown( const CCommand &args ) {KeyDown(&in_moveright, args[1] );
 void IN_MoverightUp( const CCommand &args ) {KeyUp(&in_moveright, args[1] );}
 void IN_WalkDown( const CCommand &args ) {KeyDown(&in_walk, args[1] );}
 void IN_WalkUp( const CCommand &args ) {KeyUp(&in_walk, args[1] );}
-void IN_SpeedDown( const CCommand &args ) { engine->ClientCmd_Unrestricted( "cancel_duck_toggle 0.5" ); KeyDown(&in_speed, args[1] );}
+void IN_SpeedDown( const CCommand &args ) { NOV2024_ONLY( engine->ClientCmd_Unrestricted( "cancel_duck_toggle 0.5" ); ) KeyDown(&in_speed, args[1] );}
 void IN_SpeedUp( const CCommand &args ) {KeyUp(&in_speed, args[1] );}
 void IN_StrafeDown( const CCommand &args ) {KeyDown(&in_strafe, args[1] );}
 void IN_StrafeUp( const CCommand &args ) {KeyUp(&in_strafe, args[1] );}
@@ -480,7 +480,7 @@ void IN_UseDown ( const CCommand &args ) {KeyDown(&in_use, args[1] );}
 void IN_UseUp ( const CCommand &args ) {KeyUp(&in_use, args[1] );}
 void IN_JumpDown ( const CCommand &args ) {KeyDown(&in_jump, args[1] );}
 void IN_JumpUp ( const CCommand &args ) {KeyUp(&in_jump, args[1] );}
-void IN_DuckDown( const CCommand &args ) { engine->ClientCmd_Unrestricted( "cancel_duck_toggle" ); KeyDown(&in_duck, args[1] );}
+void IN_DuckDown( const CCommand &args ) { NOV2024_ONLY( engine->ClientCmd_Unrestricted( "cancel_duck_toggle" ); ) KeyDown(&in_duck, args[1] );}
 void IN_DuckUp( const CCommand &args ) {KeyUp(&in_duck, args[1] );}
 void IN_LookSpinDown( const CCommand &args ) {KeyDown(&in_lookspin, args[1] );}
 void IN_LookSpinUp( const CCommand &args ) {KeyUp(&in_lookspin, args[1] );}
@@ -1585,6 +1585,7 @@ void CInput::AddIKGroundContactInfo( int entindex, float minheight, float maxhei
 }
 #endif
 
+#ifdef HL2_ANNIVERSARY_NOV2024
 //-----------------------------------------------------------------------------
 // Purpose: Enhanced aim assist: pulls the view yaw towards the autoaim target,
 //			harder when moving across it and when already aiming close to it
@@ -1642,6 +1643,8 @@ QAngle CInput::DoAutoAimMagnetism( QAngle viewangles, int nAutoAimMode, float fl
 #endif
 	return viewangles;
 }
+#endif
+#line 1645
 
 
 static ConCommand startcommandermousemove("+commandermousemove", IN_CommanderMouseMoveDown);
@@ -1753,10 +1756,19 @@ void CInput::Init_All (void)
 	m_fHadJoysticks = false;
 	m_flLastForwardMove = 0.0;
 
+#ifdef HL2_ANNIVERSARY_NOV2024
 	m_vecQuickTurn = vec2_origin;
 	m_bQuickTurnFlip = false;
 	m_bQuickTurnWasDown = false;
 	m_bCameraResetWasDown = false;
+#else
+	m_flQuickTurnTime = 0.0f;
+	m_flQuickTurnRate = 0.0f;
+	m_flLastYawInput = 0.0f;
+	m_flCameraResetTime = 0.0f;
+	m_flCameraResetRate = 0.0f;
+#endif
+#line 1760
 
 	SetLastUsedInput( 0 );
 	m_flMouseMoveSinceControllerMode = 0;

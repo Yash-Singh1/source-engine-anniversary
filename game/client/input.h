@@ -228,6 +228,7 @@ private:
 	float		m_flRemainingSteamInputSampleTime;
 	float		m_flKeyboardSampleTime;
 
+#ifdef HL2_ANNIVERSARY_NOV2024
 	// Quick turn and camera reset (UpdateQuickTurnAndCameraReset)
 	Vector2D	m_vecQuickTurn;
 	bool		m_bQuickTurnFlip;
@@ -235,6 +236,17 @@ private:
 	bool		m_bQuickTurnWasDown;
 	// Last auto-aim target position (DoAutoAimMagnetism)
 	Vector		m_vecLastAutoAimTarget;
+#else
+	// Quick turn and camera reset: a fixed-rate turn over joy_lookspin_default seconds
+	float		m_flQuickTurnTime;
+	float		m_flQuickTurnRate;
+	float		m_flLastYawInput;
+	float		m_flCameraResetTime;
+	float		m_flCameraResetRate;
+	float		UpdateAndGetQuickTurnYaw( float frametime, float flYaw );
+	float		UpdateAndGetCameraReset( QAngle viewangles, float frametime, float flPitch );
+#endif
+#line 238
 
 	// Flag to restore systemparameters when exiting
 	bool		m_fRestoreSPI;
