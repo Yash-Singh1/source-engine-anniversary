@@ -1,0 +1,55 @@
+{
+ "module": "bin/libvstdlib",
+ "our_target": "vstdlib",
+ "our_games": null,
+ "project_dir": "vstdlib",
+ "order_rule_inversions": 0,
+ "counts": {
+  "exact": 5,
+  "missing": 1
+ },
+ "counts_sdk": {
+  "missing": 6
+ },
+ "diff": {
+  "add": [
+   {
+    "path": "vstdlib/osversion.cpp",
+    "in_our_tree": "missing",
+    "in_sdk": "missing",
+    "alternatives": null
+   }
+  ],
+  "remove": [
+   {
+    "path": "vstdlib/coroutine.cpp",
+    "note": "retail links coroutine.o from build/Release/libcoroutine_osx.a"
+   },
+   {
+    "path": "public/tier0/memoverride.cpp",
+    "note": "no retail Mac module links a memoverride object: Valve's Mac build has no malloc override (malloc from libSystem, operator new from libstdc++)"
+   }
+  ],
+  "path_differs": [],
+  "order": {
+   "common": 5,
+   "in_order_lis": 5,
+   "need_moving": 0,
+   "identical": true
+  },
+  "libraries": {
+   "retail": [
+    "libcoroutine_osx.a",
+    "tier1"
+   ],
+   "ours": [
+    "tier1"
+   ],
+   "retail_only": [
+    "libcoroutine_osx.a"
+   ],
+   "ours_only": [],
+   "same_relative_order": true
+  }
+ }
+}

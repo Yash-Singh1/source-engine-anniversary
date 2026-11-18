@@ -1,0 +1,576 @@
+{
+ "module": "bin/chromehtml",
+ "depot": "223",
+ "build": "19307283",
+ "path": "bin/chromehtml.dylib",
+ "aliases": [],
+ "sha256": "eb90dbb2aca7c88a368a69699e01b77d92647fdc7c2edd5806a76208946503aa",
+ "size": 2021676,
+ "macho": {
+  "filetype": "MH_DYLIB",
+  "flags": "0x110085",
+  "segments": [
+   {
+    "name": "__TEXT",
+    "vmaddr": "0x0",
+    "vmsize": 1114112,
+    "sections": [
+     [
+      "__text",
+      "0x1480",
+      823232,
+      16
+     ],
+     [
+      "__symbol_stub",
+      "0xca440",
+      1212,
+      2
+     ],
+     [
+      "__stub_helper",
+      "0xca8fc",
+      2032,
+      4
+     ],
+     [
+      "__cstring",
+      "0xcb0f0",
+      27758,
+      16
+     ],
+     [
+      "__const",
+      "0xd1d60",
+      26774,
+      32
+     ],
+     [
+      "__gcc_except_tab",
+      "0xd85f8",
+      95808,
+      4
+     ],
+     [
+      "__unwind_info",
+      "0xefc38",
+      19484,
+      4
+     ],
+     [
+      "__eh_frame",
+      "0xf4858",
+      112532,
+      8
+     ]
+    ]
+   },
+   {
+    "name": "__DATA",
+    "vmaddr": "0x110000",
+    "vmsize": 40960,
+    "sections": [
+     [
+      "__nl_symbol_ptr",
+      "0x110000",
+      504,
+      4
+     ],
+     [
+      "__la_symbol_ptr",
+      "0x1101f8",
+      808,
+      4
+     ],
+     [
+      "__mod_init_func",
+      "0x110520",
+      32,
+      4
+     ],
+     [
+      "__const",
+      "0x110540",
+      21668,
+      16
+     ],
+     [
+      "__data",
+      "0x1159f0",
+      6884,
+      16
+     ],
+     [
+      "__bss",
+      "0x1174d8",
+      2012,
+      8
+     ],
+     [
+      "__common",
+      "0x117cc0",
+      5908,
+      16
+     ]
+    ]
+   },
+   {
+    "name": "__OBJC",
+    "vmaddr": "0x11a000",
+    "vmsize": 4096,
+    "sections": [
+     [
+      "__cls_refs",
+      "0x11a000",
+      4,
+      4
+     ],
+     [
+      "__message_refs",
+      "0x11a004",
+      12,
+      4
+     ],
+     [
+      "__module_info",
+      "0x11a010",
+      16,
+      4
+     ],
+     [
+      "__image_info",
+      "0x11a020",
+      8,
+      4
+     ]
+    ]
+   },
+   {
+    "name": "__LINKEDIT",
+    "vmaddr": "0x11b000",
+    "vmsize": 872448,
+    "sections": []
+   }
+  ],
+  "dylibs": [
+   {
+    "path": "@loader_path/libvstdlib.dylib",
+    "current": "1.0.0",
+    "compat": "1.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "@executable_path/libcef.dylib",
+    "current": "1.0.0",
+    "compat": "1.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "@loader_path/libtier0.dylib",
+    "current": "1.0.0",
+    "compat": "1.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "/System/Library/Frameworks/Carbon.framework/Versions/A/Carbon",
+    "current": "157.0.0",
+    "compat": "2.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "/System/Library/Frameworks/Cocoa.framework/Versions/A/Cocoa",
+    "current": "20.0.0",
+    "compat": "1.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "/usr/lib/libz.1.dylib",
+    "current": "1.2.5",
+    "compat": "1.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation",
+    "current": "1056.16.0",
+    "compat": "300.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "/usr/lib/libobjc.A.dylib",
+    "current": "228.0.0",
+    "compat": "1.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "/usr/lib/libstdc++.6.dylib",
+    "current": "60.0.0",
+    "compat": "7.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "/usr/lib/libSystem.B.dylib",
+    "current": "1197.1.1",
+    "compat": "1.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation",
+    "current": "855.17.0",
+    "compat": "150.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "/System/Library/Frameworks/CoreServices.framework/Versions/A/CoreServices",
+    "current": "59.0.0",
+    "compat": "1.0.0",
+    "kind": "LOAD_DYLIB"
+   }
+  ],
+  "load_commands": [
+   "SEGMENT",
+   "SEGMENT",
+   "SEGMENT",
+   "SEGMENT",
+   "ID_DYLIB",
+   "DYLD_INFO_ONLY",
+   "SYMTAB",
+   "DYSYMTAB",
+   "UUID",
+   "VERSION_MIN_MACOSX",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "FUNCTION_STARTS",
+   "DATA_IN_CODE"
+  ],
+  "install_name": {
+   "path": "@loader_path/chromehtml.dylib",
+   "current": "1.0.0",
+   "compat": "1.0.0"
+  },
+  "uuid": "E5DD63F760AA3733A881C6F2C8B9FE4A",
+  "min_macosx": "10.6.0",
+  "sdk": "10.9.0"
+ },
+ "build_roots": {
+  "rel_singleplayer_osx": 12
+ },
+ "ccache_hosts": {
+  "hl2-osx-builder": 12
+ },
+ "xcode_targets": {
+  "chromehtml": 8
+ },
+ "stab_counts": {
+  "0x20": 903,
+  "0x24": 5782,
+  "0x26": 782,
+  "0x2e": 2891,
+  "0x4e": 2891,
+  "0x64": 171,
+  "0x66": 57,
+  "0x84": 145
+ },
+ "n_objects": 57,
+ "n_loose_objects": 8,
+ "n_archive_members": 4,
+ "n_prebuilt_members": 45,
+ "built_mtime_range": [
+  "2024-11-13T17:30:20Z",
+  "2024-11-26T02:26:33Z"
+ ],
+ "static_libraries": [
+  {
+   "archive": "lib/public/osx32/libcef_dll_wrapper.a",
+   "prebuilt": true,
+   "first_index": 8,
+   "members": [
+    "transfer_util.o",
+    "libcef_dll_wrapper.o",
+    "app_cpptoc.o",
+    "browser_ctocpp.o",
+    "client_cpptoc.o",
+    "content_filter_cpptoc.o",
+    "cookie_manager_ctocpp.o",
+    "cookie_visitor_cpptoc.o",
+    "domdocument_ctocpp.o",
+    "domevent_ctocpp.o",
+    "domevent_listener_cpptoc.o",
+    "domnode_ctocpp.o",
+    "domvisitor_cpptoc.o",
+    "display_handler_cpptoc.o",
+    "download_handler_cpptoc.o",
+    "drag_data_ctocpp.o",
+    "drag_handler_cpptoc.o",
+    "find_handler_cpptoc.o",
+    "focus_handler_cpptoc.o",
+    "frame_ctocpp.o",
+    "jsdialog_handler_cpptoc.o",
+    "keyboard_handler_cpptoc.o",
+    "life_span_handler_cpptoc.o",
+    "load_handler_cpptoc.o",
+    "menu_handler_cpptoc.o",
+    "permission_handler_cpptoc.o",
+    "post_data_ctocpp.o",
+    "post_data_element_ctocpp.o",
+    "print_handler_cpptoc.o",
+    "proxy_handler_cpptoc.o",
+    "render_handler_cpptoc.o",
+    "request_ctocpp.o",
+    "request_handler_cpptoc.o",
+    "resource_bundle_handler_cpptoc.o",
+    "response_ctocpp.o",
+    "scheme_handler_cpptoc.o",
+    "security_details_ctocpp.o",
+    "stream_reader_ctocpp.o",
+    "task_cpptoc.o",
+    "v8context_ctocpp.o",
+    "v8context_handler_cpptoc.o",
+    "v8exception_ctocpp.o",
+    "v8handler_cpptoc.o",
+    "v8value_ctocpp.o",
+    "zoom_handler_cpptoc.o"
+   ]
+  },
+  {
+   "archive": "build/Release/libtier1.a",
+   "prebuilt": false,
+   "first_index": 53,
+   "members": [
+    "interface.o",
+    "strtools.o",
+    "utlbuffer.o",
+    "utlstring.o"
+   ]
+  }
+ ],
+ "text_order_matches_oso_order": true,
+ "headers_with_code": {
+  "./include/cef_base.h": 1,
+  "./include/cef_browser.h": 1,
+  "./include/cef_cookie.h": 1,
+  "./include/cef_dom.h": 1,
+  "./include/cef_drag_data.h": 1,
+  "./include/cef_frame.h": 1,
+  "./include/cef_request.h": 1,
+  "./include/cef_response.h": 1,
+  "./include/cef_stream.h": 1,
+  "./include/cef_v8.h": 1,
+  "./include/internal/cef_mac.h": 1,
+  "./include/internal/cef_ptr.h": 1,
+  "./include/internal/cef_string_wrappers.h": 1,
+  "./include/internal/cef_types_wrappers.h": 1,
+  "./libcef_dll/cpptoc/app_cpptoc.h": 1,
+  "./libcef_dll/cpptoc/base_cpptoc.h": 1,
+  "./libcef_dll/cpptoc/client_cpptoc.h": 1,
+  "./libcef_dll/cpptoc/content_filter_cpptoc.h": 1,
+  "./libcef_dll/cpptoc/cookie_visitor_cpptoc.h": 1,
+  "./libcef_dll/cpptoc/cpptoc.h": 1,
+  "./libcef_dll/cpptoc/display_handler_cpptoc.h": 1,
+  "./libcef_dll/cpptoc/domevent_listener_cpptoc.h": 1,
+  "./libcef_dll/cpptoc/domvisitor_cpptoc.h": 1,
+  "./libcef_dll/cpptoc/download_handler_cpptoc.h": 1,
+  "./libcef_dll/cpptoc/drag_handler_cpptoc.h": 1,
+  "./libcef_dll/cpptoc/find_handler_cpptoc.h": 1,
+  "./libcef_dll/cpptoc/focus_handler_cpptoc.h": 1,
+  "./libcef_dll/cpptoc/jsdialog_handler_cpptoc.h": 1,
+  "./libcef_dll/cpptoc/keyboard_handler_cpptoc.h": 1,
+  "./libcef_dll/cpptoc/life_span_handler_cpptoc.h": 1,
+  "./libcef_dll/cpptoc/load_handler_cpptoc.h": 1,
+  "./libcef_dll/cpptoc/menu_handler_cpptoc.h": 1,
+  "./libcef_dll/cpptoc/permission_handler_cpptoc.h": 1,
+  "./libcef_dll/cpptoc/print_handler_cpptoc.h": 1,
+  "./libcef_dll/cpptoc/proxy_handler_cpptoc.h": 1,
+  "./libcef_dll/cpptoc/render_handler_cpptoc.h": 1,
+  "./libcef_dll/cpptoc/request_handler_cpptoc.h": 1,
+  "./libcef_dll/cpptoc/resource_bundle_handler_cpptoc.h": 1,
+  "./libcef_dll/cpptoc/task_cpptoc.h": 1,
+  "./libcef_dll/cpptoc/v8context_handler_cpptoc.h": 1,
+  "./libcef_dll/cpptoc/zoom_handler_cpptoc.h": 1,
+  "./libcef_dll/ctocpp/browser_ctocpp.h": 1,
+  "./libcef_dll/ctocpp/cookie_manager_ctocpp.h": 1,
+  "./libcef_dll/ctocpp/ctocpp.h": 1,
+  "./libcef_dll/ctocpp/domdocument_ctocpp.h": 1,
+  "./libcef_dll/ctocpp/domevent_ctocpp.h": 1,
+  "./libcef_dll/ctocpp/domnode_ctocpp.h": 1,
+  "./libcef_dll/ctocpp/drag_data_ctocpp.h": 1,
+  "./libcef_dll/ctocpp/frame_ctocpp.h": 1,
+  "./libcef_dll/ctocpp/post_data_ctocpp.h": 1,
+  "./libcef_dll/ctocpp/post_data_element_ctocpp.h": 1,
+  "./libcef_dll/ctocpp/request_ctocpp.h": 1,
+  "./libcef_dll/ctocpp/response_ctocpp.h": 1,
+  "./libcef_dll/ctocpp/security_details_ctocpp.h": 1,
+  "./libcef_dll/ctocpp/stream_reader_ctocpp.h": 1,
+  "./libcef_dll/ctocpp/v8context_ctocpp.h": 1,
+  "./libcef_dll/ctocpp/v8exception_ctocpp.h": 1,
+  "./libcef_dll/ctocpp/v8value_ctocpp.h": 1,
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/bits/stl_algobase.h": 1,
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/bits/stl_construct.h": 1,
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/bits/stl_iterator.h": 1,
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/bits/stl_map.h": 1,
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/bits/stl_tree.h": 1,
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/bits/stl_uninitialized.h": 1,
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/bits/stl_vector.h": 1,
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/bits/vector.tcc": 1,
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/ext/new_allocator.h": 1,
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/bits/basic_string.h": 1,
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/bits/char_traits.h": 1,
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/bits/stl_algobase.h": 1,
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/bits/stl_construct.h": 1,
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/bits/stl_iterator.h": 1,
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/bits/stl_multimap.h": 1,
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/bits/stl_pair.h": 1,
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/bits/stl_tree.h": 1,
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/bits/stl_uninitialized.h": 1,
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/bits/stl_vector.h": 1,
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/bits/vector.tcc": 1,
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/ext/atomicity.h": 1,
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/ext/new_allocator.h": 1,
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/ctype.h": 1,
+  "public/Color.h": 1,
+  "public/html/htmlprotobuf.h": 1,
+  "public/html/ihtmlchrome.h": 1,
+  "public/mathlib/mathlib.h": 1,
+  "public/mathlib/vector2d.h": 1,
+  "public/tier0/fasttimer.h": 1,
+  "public/tier0/memalloc.h": 1,
+  "public/tier0/platform.h": 1,
+  "public/tier0/threadtools.h": 1,
+  "public/tier0/tslist.h": 1,
+  "public/tier0/vprof.h": 1,
+  "public/tier1/byteswap.h": 1,
+  "public/tier1/strtools.h": 1,
+  "public/tier1/utlbuffer.h": 1,
+  "public/tier1/utllinkedlist.h": 1,
+  "public/tier1/utlmap.h": 1,
+  "public/tier1/utlmemory.h": 1,
+  "public/tier1/utlrbtree.h": 1,
+  "public/tier1/utlstring.h": 1,
+  "public/tier1/utlvector.h": 1,
+  "thirdparty/cef/include/cef_base.h": 1,
+  "thirdparty/cef/include/cef_client.h": 1,
+  "thirdparty/cef/include/cef_cookie.h": 1,
+  "thirdparty/cef/include/cef_display_handler.h": 1,
+  "thirdparty/cef/include/cef_dom.h": 1,
+  "thirdparty/cef/include/cef_find_handler.h": 1,
+  "thirdparty/cef/include/cef_focus_handler.h": 1,
+  "thirdparty/cef/include/cef_jsdialog_handler.h": 1,
+  "thirdparty/cef/include/cef_life_span_handler.h": 1,
+  "thirdparty/cef/include/cef_load_handler.h": 1,
+  "thirdparty/cef/include/cef_menu_handler.h": 1,
+  "thirdparty/cef/include/cef_permission_handler.h": 1,
+  "thirdparty/cef/include/cef_render_handler.h": 1,
+  "thirdparty/cef/include/cef_request_handler.h": 1,
+  "thirdparty/cef/include/cef_runnable.h": 1,
+  "thirdparty/cef/include/cef_task.h": 1,
+  "thirdparty/cef/include/internal/cef_mac.h": 1,
+  "thirdparty/cef/include/internal/cef_ptr.h": 1,
+  "thirdparty/cef/include/internal/cef_string_wrappers.h": 1,
+  "thirdparty/cef/include/internal/cef_tuple.h": 1,
+  "thirdparty/cef/include/internal/cef_types_wrappers.h": 1,
+  "thirdparty/protobuf-2.3.0/src/google/protobuf/descriptor.h": 1,
+  "thirdparty/protobuf-2.3.0/src/google/protobuf/generated_message_reflection.h": 1,
+  "thirdparty/protobuf-2.3.0/src/google/protobuf/io/coded_stream.h": 1,
+  "thirdparty/protobuf-2.3.0/src/google/protobuf/message.h": 1,
+  "thirdparty/protobuf-2.3.0/src/google/protobuf/repeated_field.h": 1,
+  "thirdparty/protobuf-2.3.0/src/google/protobuf/stubs/once.h": 1,
+  "thirdparty/protobuf-2.3.0/src/google/protobuf/unknown_field_set.h": 1,
+  "thirdparty/protobuf-2.3.0/src/google/protobuf/wire_format_lite.h": 1,
+  "thirdparty/protobuf-2.3.0/src/google/protobuf/wire_format_lite_inl.h": 1,
+  "vgui2/chromehtml/generated_proto/htmlmessages.pb.h": 1,
+  "vgui2/chromehtml/html_chrome.h": 1
+ },
+ "unstabbed_text": {
+  "n_symbols": 1452,
+  "bytes": 368000,
+  "by_prefix": {
+   "c++:google": 267718,
+   "png": 78136,
+   "c++:tr1": 7090,
+   "c++:vector": 6914,
+   "c++:_Rb_tree": 3900,
+   "g": 1053,
+   "tcf": 716,
+   "c++:_Vector_base": 418,
+   "z": 412,
+   "c++:__introsort_loop": 382,
+   "c++:__copy_backward": 265,
+   "c++:__gnu_cxx": 257,
+   "c++:__insertion_sort": 145,
+   "c++:__adjust_heap": 140,
+   "c++:__uninitialized_copy_aux": 136,
+   "c++:__uninitialized_copy_a": 133,
+   "ppi": 80,
+   "c++:less": 74,
+   "c++:__unguarded_linear_insert": 31
+  }
+ },
+ "objects": [
+  {"index": 0, "oso": "build/buildbot_osx.build/Release/chromehtml.build/Objects-normal/i386/jpegloader.o", "kind": "object", "archive": null, "member": null, "xcode_target": "chromehtml", "stem": "jpegloader", "mtime": 1731778842, "mtime_utc": "2024-11-16T17:40:42Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "jpegloader.tmp.hl2-osx-builder.22913.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "common/jpegloader.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 3, "n_data": 0, "text_bytes": 208, "first_addr": "0x1480", "files": ["common/jpegloader.cpp", "public/tier1/utlmemory.h"]},
+  {"index": 1, "oso": "build/buildbot_osx.build/Release/chromehtml.build/Objects-normal/i386/jpegloader_common.o", "kind": "object", "archive": null, "member": null, "xcode_target": "chromehtml", "stem": "jpegloader_common", "mtime": 1731778842, "mtime_utc": "2024-11-16T17:40:42Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "jpegloader.tmp.hl2-osx-builder.22914.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "common/jpegloader_common.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 3, "n_data": 2, "text_bytes": 2233, "first_addr": "0x1550", "files": ["public/tier0/vprof.h", "common/jpegloader_common.cpp", "public/tier1/strtools.h", "public/Color.h"]},
+  {"index": 2, "oso": "build/buildbot_osx.build/Release/chromehtml.build/Objects-normal/i386/htmlprotobuf.o", "kind": "object", "archive": null, "member": null, "xcode_target": "chromehtml", "stem": "htmlprotobuf", "mtime": 1731778842, "mtime_utc": "2024-11-16T17:40:42Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "htmlprotob.tmp.hl2-osx-builder.22916.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "public/html/htmlprotobuf.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 2, "n_data": 2, "text_bytes": 1154, "first_addr": "0x1e10", "files": ["public/html/htmlprotobuf.cpp", "public/tier1/utlbuffer.h", "public/tier1/byteswap.h"]},
+  {"index": 3, "oso": "build/buildbot_osx.build/Release/chromehtml.build/Objects-normal/i386/fileio.o", "kind": "object", "archive": null, "member": null, "xcode_target": "chromehtml", "stem": "fileio", "mtime": 1731778843, "mtime_utc": "2024-11-16T17:40:43Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "fileio.tmp.hl2-osx-builder.22917.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/fileio.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 4, "n_data": 0, "text_bytes": 416, "first_addr": "0x22a0", "files": ["tier1/fileio.cpp"]},
+  {"index": 4, "oso": "build/buildbot_osx.build/Release/chromehtml.build/Objects-normal/i386/chromewrapper.o", "kind": "object", "archive": null, "member": null, "xcode_target": "chromehtml", "stem": "chromewrapper", "mtime": 1732582891, "mtime_utc": "2024-11-26T01:01:31Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "chromewrap.tmp.hl2-osx-builder.22918.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "vgui2/chromehtml/chromewrapper.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 113, "n_data": 138, "text_bytes": 29619, "first_addr": "0x2440", "files": ["vgui2/chromehtml/chromewrapper.cpp", "public/tier1/utlmap.h", "public/tier1/utlrbtree.h", "public/html/htmlprotobuf.h", "vgui2/chromehtml/generated_proto/htmlmessages.pb.h", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/bits/basic_string.h", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/bits/char_traits.h", "public/tier1/utlvector.h", "public/tier0/platform.h", "vgui2/chromehtml/html_chrome.h", "public/mathlib/mathlib.h", "public/mathlib/vector2d.h"]},
+  {"index": 5, "oso": "build/buildbot_osx.build/Release/chromehtml.build/Objects-normal/i386/htmlmessages.pb.o", "kind": "object", "archive": null, "member": null, "xcode_target": "chromehtml", "stem": "htmlmessages.pb", "mtime": 1731519020, "mtime_utc": "2024-11-13T17:30:20Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "htmlmessag.tmp.hl2-osx-builder.91537.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "vgui2/chromehtml/generated_proto/htmlmessages.pb.cc", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 1494, "n_data": 1074, "text_bytes": 227781, "first_addr": "0x9810", "files": ["vgui2/chromehtml/generated_proto/htmlmessages.pb.cc", "thirdparty/protobuf-2.3.0/src/google/protobuf/descriptor.h", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/ext/atomicity.h", "thirdparty/protobuf-2.3.0/src/google/protobuf/repeated_field.h", "thirdparty/protobuf-2.3.0/src/google/protobuf/stubs/once.h", "thirdparty/protobuf-2.3.0/src/google/protobuf/unknown_field_set.h", "thirdparty/protobuf-2.3.0/src/google/protobuf/io/coded_stream.h", "thirdparty/protobuf-2.3.0/src/google/protobuf/wire_format_lite.h", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/bits/stl_vector.h", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/bits/stl_iterator.h", "thirdparty/protobuf-2.3.0/src/google/protobuf/generated_message_reflection.h", "thirdparty/protobuf-2.3.0/src/google/protobuf/wire_format_lite_inl.h", "thirdparty/protobuf-2.3.0/src/google/protobuf/message.h"]},
+  {"index": 6, "oso": "build/buildbot_osx.build/Release/chromehtml.build/Objects-normal/i386/html_chrome.o", "kind": "object", "archive": null, "member": null, "xcode_target": "chromehtml", "stem": "html_chrome", "mtime": 1732582891, "mtime_utc": "2024-11-26T01:01:31Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "html_chrom.tmp.hl2-osx-builder.22919.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "vgui2/chromehtml/html_chrome.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 461, "n_data": 370, "text_bytes": 104544, "first_addr": "0x411f0", "files": ["vgui2/chromehtml/html_chrome.cpp", "public/tier0/threadtools.h", "public/tier1/utllinkedlist.h", "public/tier0/tslist.h", "thirdparty/cef/include/internal/cef_types_wrappers.h", "thirdparty/cef/include/internal/cef_mac.h", "thirdparty/cef/include/internal/cef_ptr.h", "thirdparty/cef/include/internal/cef_string_wrappers.h", "thirdparty/cef/include/cef_task.h", "thirdparty/cef/include/cef_runnable.h", "thirdparty/cef/include/cef_base.h", "thirdparty/cef/include/cef_dom.h", "public/tier0/memalloc.h", "public/html/ihtmlchrome.h", "thirdparty/cef/include/cef_client.h", "thirdparty/cef/include/cef_render_handler.h", "thirdparty/cef/include/cef_cookie.h", "public/tier0/fasttimer.h", "public/tier1/utlstring.h", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/bits/stl_construct.h", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/ext/new_allocator.h", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/bits/stl_tree.h", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/bits/stl_multimap.h", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/bits/stl_pair.h", "thirdparty/cef/include/cef_life_span_handler.h", "thirdparty/cef/include/cef_load_handler.h", "thirdparty/cef/include/cef_request_handler.h", "thirdparty/cef/include/cef_display_handler.h", "thirdparty/cef/include/cef_jsdialog_handler.h", "thirdparty/cef/include/cef_find_handler.h", "thirdparty/cef/include/cef_menu_handler.h", "thirdparty/cef/include/cef_focus_handler.h", "thirdparty/cef/include/cef_permission_handler.h", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/bits/vector.tcc", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/bits/stl_algobase.h", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/bits/stl_uninitialized.h", "thirdparty/cef/include/internal/cef_tuple.h"]},
+  {"index": 7, "oso": "build/buildbot_osx.build/Release/chromehtml.build/Objects-normal/i386/html_mac.o", "kind": "object", "archive": null, "member": null, "xcode_target": "chromehtml", "stem": "html_mac", "mtime": 1731519020, "mtime_utc": "2024-11-13T17:30:20Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "html_mac.tmp.hl2-osx-builder.99156.mii", "ccache_host": "hl2-osx-builder", "lang": "objc++", "source": "vgui2/chromehtml/html_mac.mm", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 2, "n_data": 0, "text_bytes": 102, "first_addr": "0x5aa60", "files": ["vgui2/chromehtml/html_mac.mm"]},
+  {"index": 8, "oso": "lib/public/osx32/libcef_dll_wrapper.a(transfer_util.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "transfer_util.o", "xcode_target": null, "stem": "transfer_util", "mtime": 1374780383, "mtime_utc": "2013-07-25T19:26:23Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/", "so_name": "transfer_util.cpp", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/transfer_util.cpp", "build_root": null, "source_resolution": "n_so", "n_functions": 9, "n_data": 0, "text_bytes": 4749, "first_addr": "0x5aad0", "files": ["./include/internal/cef_string_wrappers.h", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/bits/stl_vector.h", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/ext/new_allocator.h", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/bits/stl_map.h", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/bits/stl_tree.h", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/bits/vector.tcc", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/bits/stl_algobase.h", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/bits/stl_uninitialized.h", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/bits/stl_construct.h"]},
+  {"index": 9, "oso": "lib/public/osx32/libcef_dll_wrapper.a(libcef_dll_wrapper.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "libcef_dll_wrapper.o", "xcode_target": null, "stem": "libcef_dll_wrapper", "mtime": 1374780383, "mtime_utc": "2013-07-25T19:26:23Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/wrapper/", "so_name": "libcef_dll_wrapper.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/wrapper/libcef_dll_wrapper.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 4, "n_data": 0, "text_bytes": 352, "first_addr": "0x5bd70", "files": ["./include/internal/cef_ptr.h", "./libcef_dll/cpptoc/cpptoc.h"]},
+  {"index": 10, "oso": "lib/public/osx32/libcef_dll_wrapper.a(app_cpptoc.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "app_cpptoc.o", "xcode_target": null, "stem": "app_cpptoc", "mtime": 1374780383, "mtime_utc": "2013-07-25T19:26:23Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/", "so_name": "app_cpptoc.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/app_cpptoc.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 11, "n_data": 1, "text_bytes": 849, "first_addr": "0x5bed0", "files": ["./include/cef_base.h", "./include/internal/cef_mac.h", "./libcef_dll/cpptoc/app_cpptoc.h"]},
+  {"index": 11, "oso": "lib/public/osx32/libcef_dll_wrapper.a(browser_ctocpp.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "browser_ctocpp.o", "xcode_target": null, "stem": "browser_ctocpp", "mtime": 1374780383, "mtime_utc": "2013-07-25T19:26:23Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/ctocpp/", "so_name": "browser_ctocpp.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/ctocpp/browser_ctocpp.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 81, "n_data": 3, "text_bytes": 4885, "first_addr": "0x5c230", "files": ["./libcef_dll/ctocpp/ctocpp.h", "./include/cef_browser.h", "./libcef_dll/ctocpp/browser_ctocpp.h", "./include/cef_frame.h", "./libcef_dll/ctocpp/frame_ctocpp.h"]},
+  {"index": 12, "oso": "lib/public/osx32/libcef_dll_wrapper.a(client_cpptoc.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "client_cpptoc.o", "xcode_target": null, "stem": "client_cpptoc", "mtime": 1374780383, "mtime_utc": "2013-07-25T19:26:23Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/", "so_name": "client_cpptoc.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/client_cpptoc.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 24, "n_data": 1, "text_bytes": 3969, "first_addr": "0x5d550", "files": ["./libcef_dll/cpptoc/client_cpptoc.h"]},
+  {"index": 13, "oso": "lib/public/osx32/libcef_dll_wrapper.a(content_filter_cpptoc.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "content_filter_cpptoc.o", "xcode_target": null, "stem": "content_filter_cpptoc", "mtime": 1374780383, "mtime_utc": "2013-07-25T19:26:23Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/", "so_name": "content_filter_cpptoc.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/content_filter_cpptoc.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 11, "n_data": 1, "text_bytes": 1104, "first_addr": "0x5e4e0", "files": ["./libcef_dll/cpptoc/content_filter_cpptoc.h"]},
+  {"index": 14, "oso": "lib/public/osx32/libcef_dll_wrapper.a(cookie_manager_ctocpp.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "cookie_manager_ctocpp.o", "xcode_target": null, "stem": "cookie_manager_ctocpp", "mtime": 1374780383, "mtime_utc": "2013-07-25T19:26:23Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/ctocpp/", "so_name": "cookie_manager_ctocpp.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/ctocpp/cookie_manager_ctocpp.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 17, "n_data": 3, "text_bytes": 1137, "first_addr": "0x5e930", "files": ["./include/cef_cookie.h", "./libcef_dll/ctocpp/cookie_manager_ctocpp.h"]},
+  {"index": 15, "oso": "lib/public/osx32/libcef_dll_wrapper.a(cookie_visitor_cpptoc.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "cookie_visitor_cpptoc.o", "xcode_target": null, "stem": "cookie_visitor_cpptoc", "mtime": 1374780383, "mtime_utc": "2013-07-25T19:26:23Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/", "so_name": "cookie_visitor_cpptoc.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/cookie_visitor_cpptoc.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 10, "n_data": 1, "text_bytes": 976, "first_addr": "0x5edb0", "files": ["./include/internal/cef_types_wrappers.h", "./libcef_dll/cpptoc/cookie_visitor_cpptoc.h"]},
+  {"index": 16, "oso": "lib/public/osx32/libcef_dll_wrapper.a(domdocument_ctocpp.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "domdocument_ctocpp.o", "xcode_target": null, "stem": "domdocument_ctocpp", "mtime": 1374780383, "mtime_utc": "2013-07-25T19:26:23Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/ctocpp/", "so_name": "domdocument_ctocpp.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/ctocpp/domdocument_ctocpp.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 16, "n_data": 3, "text_bytes": 2123, "first_addr": "0x5f180", "files": []},
+  {"index": 17, "oso": "lib/public/osx32/libcef_dll_wrapper.a(domevent_ctocpp.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "domevent_ctocpp.o", "xcode_target": null, "stem": "domevent_ctocpp", "mtime": 1374780383, "mtime_utc": "2013-07-25T19:26:23Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/ctocpp/", "so_name": "domevent_ctocpp.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/ctocpp/domevent_ctocpp.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 8, "n_data": 3, "text_bytes": 672, "first_addr": "0x5f9d0", "files": []},
+  {"index": 18, "oso": "lib/public/osx32/libcef_dll_wrapper.a(domevent_listener_cpptoc.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "domevent_listener_cpptoc.o", "xcode_target": null, "stem": "domevent_listener_cpptoc", "mtime": 1374780383, "mtime_utc": "2013-07-25T19:26:23Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/", "so_name": "domevent_listener_cpptoc.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/domevent_listener_cpptoc.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 20, "n_data": 1, "text_bytes": 953, "first_addr": "0x5fc70", "files": ["./include/cef_dom.h", "./libcef_dll/ctocpp/domevent_ctocpp.h", "./libcef_dll/cpptoc/domevent_listener_cpptoc.h"]},
+  {"index": 19, "oso": "lib/public/osx32/libcef_dll_wrapper.a(domnode_ctocpp.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "domnode_ctocpp.o", "xcode_target": null, "stem": "domnode_ctocpp", "mtime": 1374780384, "mtime_utc": "2013-07-25T19:26:24Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/ctocpp/", "so_name": "domnode_ctocpp.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/ctocpp/domnode_ctocpp.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 25, "n_data": 3, "text_bytes": 3430, "first_addr": "0x60030", "files": []},
+  {"index": 20, "oso": "lib/public/osx32/libcef_dll_wrapper.a(domvisitor_cpptoc.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "domvisitor_cpptoc.o", "xcode_target": null, "stem": "domvisitor_cpptoc", "mtime": 1374780383, "mtime_utc": "2013-07-25T19:26:23Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/", "so_name": "domvisitor_cpptoc.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/domvisitor_cpptoc.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 20, "n_data": 1, "text_bytes": 953, "first_addr": "0x60da0", "files": ["./libcef_dll/ctocpp/domdocument_ctocpp.h", "./libcef_dll/cpptoc/domvisitor_cpptoc.h"]},
+  {"index": 21, "oso": "lib/public/osx32/libcef_dll_wrapper.a(display_handler_cpptoc.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "display_handler_cpptoc.o", "xcode_target": null, "stem": "display_handler_cpptoc", "mtime": 1374780384, "mtime_utc": "2013-07-25T19:26:24Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/", "so_name": "display_handler_cpptoc.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/display_handler_cpptoc.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 16, "n_data": 1, "text_bytes": 2320, "first_addr": "0x61160", "files": ["./libcef_dll/cpptoc/display_handler_cpptoc.h"]},
+  {"index": 22, "oso": "lib/public/osx32/libcef_dll_wrapper.a(download_handler_cpptoc.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "download_handler_cpptoc.o", "xcode_target": null, "stem": "download_handler_cpptoc", "mtime": 1374780383, "mtime_utc": "2013-07-25T19:26:23Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/", "so_name": "download_handler_cpptoc.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/download_handler_cpptoc.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 11, "n_data": 1, "text_bytes": 609, "first_addr": "0x61a70", "files": ["./libcef_dll/cpptoc/download_handler_cpptoc.h"]},
+  {"index": 23, "oso": "lib/public/osx32/libcef_dll_wrapper.a(drag_data_ctocpp.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "drag_data_ctocpp.o", "xcode_target": null, "stem": "drag_data_ctocpp", "mtime": 1374780384, "mtime_utc": "2013-07-25T19:26:24Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/ctocpp/", "so_name": "drag_data_ctocpp.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/ctocpp/drag_data_ctocpp.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 12, "n_data": 3, "text_bytes": 2605, "first_addr": "0x61ce0", "files": []},
+  {"index": 24, "oso": "lib/public/osx32/libcef_dll_wrapper.a(drag_handler_cpptoc.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "drag_handler_cpptoc.o", "xcode_target": null, "stem": "drag_handler_cpptoc", "mtime": 1374780384, "mtime_utc": "2013-07-25T19:26:24Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/", "so_name": "drag_handler_cpptoc.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/drag_handler_cpptoc.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 21, "n_data": 1, "text_bytes": 1280, "first_addr": "0x62710", "files": ["./include/cef_drag_data.h", "./libcef_dll/ctocpp/drag_data_ctocpp.h", "./libcef_dll/cpptoc/drag_handler_cpptoc.h"]},
+  {"index": 25, "oso": "lib/public/osx32/libcef_dll_wrapper.a(find_handler_cpptoc.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "find_handler_cpptoc.o", "xcode_target": null, "stem": "find_handler_cpptoc", "mtime": 1374780384, "mtime_utc": "2013-07-25T19:26:24Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/", "so_name": "find_handler_cpptoc.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/find_handler_cpptoc.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 10, "n_data": 1, "text_bytes": 688, "first_addr": "0x62c10", "files": ["./libcef_dll/cpptoc/find_handler_cpptoc.h"]},
+  {"index": 26, "oso": "lib/public/osx32/libcef_dll_wrapper.a(focus_handler_cpptoc.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "focus_handler_cpptoc.o", "xcode_target": null, "stem": "focus_handler_cpptoc", "mtime": 1374780384, "mtime_utc": "2013-07-25T19:26:24Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/", "so_name": "focus_handler_cpptoc.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/focus_handler_cpptoc.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 22, "n_data": 1, "text_bytes": 1424, "first_addr": "0x62ec0", "files": ["./libcef_dll/ctocpp/domnode_ctocpp.h", "./libcef_dll/cpptoc/focus_handler_cpptoc.h"]},
+  {"index": 27, "oso": "lib/public/osx32/libcef_dll_wrapper.a(frame_ctocpp.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "frame_ctocpp.o", "xcode_target": null, "stem": "frame_ctocpp", "mtime": 1374780384, "mtime_utc": "2013-07-25T19:26:24Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/ctocpp/", "so_name": "frame_ctocpp.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/ctocpp/frame_ctocpp.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 35, "n_data": 3, "text_bytes": 2928, "first_addr": "0x63450", "files": ["./include/cef_v8.h", "./libcef_dll/ctocpp/v8context_ctocpp.h"]},
+  {"index": 28, "oso": "lib/public/osx32/libcef_dll_wrapper.a(jsdialog_handler_cpptoc.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "jsdialog_handler_cpptoc.o", "xcode_target": null, "stem": "jsdialog_handler_cpptoc", "mtime": 1374780384, "mtime_utc": "2013-07-25T19:26:24Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/", "so_name": "jsdialog_handler_cpptoc.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/jsdialog_handler_cpptoc.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 12, "n_data": 1, "text_bytes": 1680, "first_addr": "0x63fc0", "files": ["./libcef_dll/cpptoc/jsdialog_handler_cpptoc.h"]},
+  {"index": 29, "oso": "lib/public/osx32/libcef_dll_wrapper.a(keyboard_handler_cpptoc.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "keyboard_handler_cpptoc.o", "xcode_target": null, "stem": "keyboard_handler_cpptoc", "mtime": 1374780384, "mtime_utc": "2013-07-25T19:26:24Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/", "so_name": "keyboard_handler_cpptoc.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/keyboard_handler_cpptoc.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 10, "n_data": 1, "text_bytes": 608, "first_addr": "0x64650", "files": ["./libcef_dll/cpptoc/keyboard_handler_cpptoc.h"]},
+  {"index": 30, "oso": "lib/public/osx32/libcef_dll_wrapper.a(life_span_handler_cpptoc.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "life_span_handler_cpptoc.o", "xcode_target": null, "stem": "life_span_handler_cpptoc", "mtime": 1374780384, "mtime_utc": "2013-07-25T19:26:24Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/", "so_name": "life_span_handler_cpptoc.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/life_span_handler_cpptoc.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 20, "n_data": 2, "text_bytes": 4608, "first_addr": "0x648b0", "files": ["./libcef_dll/cpptoc/life_span_handler_cpptoc.h"]},
+  {"index": 31, "oso": "lib/public/osx32/libcef_dll_wrapper.a(load_handler_cpptoc.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "load_handler_cpptoc.o", "xcode_target": null, "stem": "load_handler_cpptoc", "mtime": 1374780384, "mtime_utc": "2013-07-25T19:26:24Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/", "so_name": "load_handler_cpptoc.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/load_handler_cpptoc.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 12, "n_data": 1, "text_bytes": 1328, "first_addr": "0x65ab0", "files": ["./libcef_dll/cpptoc/load_handler_cpptoc.h"]},
+  {"index": 32, "oso": "lib/public/osx32/libcef_dll_wrapper.a(menu_handler_cpptoc.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "menu_handler_cpptoc.o", "xcode_target": null, "stem": "menu_handler_cpptoc", "mtime": 1374780384, "mtime_utc": "2013-07-25T19:26:24Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/", "so_name": "menu_handler_cpptoc.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/menu_handler_cpptoc.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 15, "n_data": 2, "text_bytes": 1840, "first_addr": "0x65fe0", "files": ["./libcef_dll/cpptoc/menu_handler_cpptoc.h"]},
+  {"index": 33, "oso": "lib/public/osx32/libcef_dll_wrapper.a(permission_handler_cpptoc.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "permission_handler_cpptoc.o", "xcode_target": null, "stem": "permission_handler_cpptoc", "mtime": 1374780384, "mtime_utc": "2013-07-25T19:26:24Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/", "so_name": "permission_handler_cpptoc.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/permission_handler_cpptoc.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 10, "n_data": 1, "text_bytes": 720, "first_addr": "0x66710", "files": ["./libcef_dll/cpptoc/permission_handler_cpptoc.h"]},
+  {"index": 34, "oso": "lib/public/osx32/libcef_dll_wrapper.a(post_data_ctocpp.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "post_data_ctocpp.o", "xcode_target": null, "stem": "post_data_ctocpp", "mtime": 1382475718, "mtime_utc": "2013-10-22T21:01:58Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/ctocpp/", "so_name": "post_data_ctocpp.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/ctocpp/post_data_ctocpp.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 17, "n_data": 3, "text_bytes": 1967, "first_addr": "0x669e0", "files": ["./include/cef_request.h", "./libcef_dll/ctocpp/post_data_element_ctocpp.h", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/bits/stl_iterator.h"]},
+  {"index": 35, "oso": "lib/public/osx32/libcef_dll_wrapper.a(post_data_element_ctocpp.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "post_data_element_ctocpp.o", "xcode_target": null, "stem": "post_data_element_ctocpp", "mtime": 1374780384, "mtime_utc": "2013-07-25T19:26:24Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/ctocpp/", "so_name": "post_data_element_ctocpp.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/ctocpp/post_data_element_ctocpp.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 8, "n_data": 3, "text_bytes": 666, "first_addr": "0x671a0", "files": []},
+  {"index": 36, "oso": "lib/public/osx32/libcef_dll_wrapper.a(print_handler_cpptoc.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "print_handler_cpptoc.o", "xcode_target": null, "stem": "print_handler_cpptoc", "mtime": 1374780384, "mtime_utc": "2013-07-25T19:26:24Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/", "so_name": "print_handler_cpptoc.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/print_handler_cpptoc.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 15, "n_data": 3, "text_bytes": 1968, "first_addr": "0x67440", "files": ["./libcef_dll/cpptoc/print_handler_cpptoc.h"]},
+  {"index": 37, "oso": "lib/public/osx32/libcef_dll_wrapper.a(proxy_handler_cpptoc.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "proxy_handler_cpptoc.o", "xcode_target": null, "stem": "proxy_handler_cpptoc", "mtime": 1374780384, "mtime_utc": "2013-07-25T19:26:24Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/", "so_name": "proxy_handler_cpptoc.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/proxy_handler_cpptoc.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 14, "n_data": 3, "text_bytes": 1009, "first_addr": "0x67bf0", "files": ["./libcef_dll/cpptoc/proxy_handler_cpptoc.h"]},
+  {"index": 38, "oso": "lib/public/osx32/libcef_dll_wrapper.a(render_handler_cpptoc.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "render_handler_cpptoc.o", "xcode_target": null, "stem": "render_handler_cpptoc", "mtime": 1374780385, "mtime_utc": "2013-07-25T19:26:25Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/", "so_name": "render_handler_cpptoc.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/render_handler_cpptoc.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 21, "n_data": 1, "text_bytes": 4096, "first_addr": "0x67ff0", "files": ["./libcef_dll/cpptoc/render_handler_cpptoc.h"]},
+  {"index": 39, "oso": "lib/public/osx32/libcef_dll_wrapper.a(request_ctocpp.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "request_ctocpp.o", "xcode_target": null, "stem": "request_ctocpp", "mtime": 1374780384, "mtime_utc": "2013-07-25T19:26:24Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/ctocpp/", "so_name": "request_ctocpp.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/ctocpp/request_ctocpp.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 47, "n_data": 3, "text_bytes": 3540, "first_addr": "0x68ff0", "files": ["./libcef_dll/ctocpp/request_ctocpp.h", "./libcef_dll/ctocpp/post_data_ctocpp.h", "./libcef_dll/ctocpp/security_details_ctocpp.h"]},
+  {"index": 40, "oso": "lib/public/osx32/libcef_dll_wrapper.a(request_handler_cpptoc.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "request_handler_cpptoc.o", "xcode_target": null, "stem": "request_handler_cpptoc", "mtime": 1374780385, "mtime_utc": "2013-07-25T19:26:25Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/", "so_name": "request_handler_cpptoc.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/request_handler_cpptoc.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 29, "n_data": 1, "text_bytes": 4832, "first_addr": "0x69dd0", "files": ["./include/cef_stream.h", "./libcef_dll/ctocpp/stream_reader_ctocpp.h", "./libcef_dll/cpptoc/request_handler_cpptoc.h"]},
+  {"index": 41, "oso": "lib/public/osx32/libcef_dll_wrapper.a(resource_bundle_handler_cpptoc.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "resource_bundle_handler_cpptoc.o", "xcode_target": null, "stem": "resource_bundle_handler_cpptoc", "mtime": 1374780384, "mtime_utc": "2013-07-25T19:26:24Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/", "so_name": "resource_bundle_handler_cpptoc.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/resource_bundle_handler_cpptoc.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 11, "n_data": 1, "text_bytes": 752, "first_addr": "0x6b0b0", "files": ["./libcef_dll/cpptoc/resource_bundle_handler_cpptoc.h"]},
+  {"index": 42, "oso": "lib/public/osx32/libcef_dll_wrapper.a(response_ctocpp.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "response_ctocpp.o", "xcode_target": null, "stem": "response_ctocpp", "mtime": 1374780385, "mtime_utc": "2013-07-25T19:26:25Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/ctocpp/", "so_name": "response_ctocpp.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/ctocpp/response_ctocpp.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 9, "n_data": 3, "text_bytes": 1362, "first_addr": "0x6b3a0", "files": []},
+  {"index": 43, "oso": "lib/public/osx32/libcef_dll_wrapper.a(scheme_handler_cpptoc.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "scheme_handler_cpptoc.o", "xcode_target": null, "stem": "scheme_handler_cpptoc", "mtime": 1374780385, "mtime_utc": "2013-07-25T19:26:25Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/", "so_name": "scheme_handler_cpptoc.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/scheme_handler_cpptoc.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 10, "n_data": 0, "text_bytes": 416, "first_addr": "0x6b900", "files": ["./include/cef_response.h", "./libcef_dll/ctocpp/response_ctocpp.h"]},
+  {"index": 44, "oso": "lib/public/osx32/libcef_dll_wrapper.a(security_details_ctocpp.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "security_details_ctocpp.o", "xcode_target": null, "stem": "security_details_ctocpp", "mtime": 1374780385, "mtime_utc": "2013-07-25T19:26:25Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/ctocpp/", "so_name": "security_details_ctocpp.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/ctocpp/security_details_ctocpp.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 7, "n_data": 3, "text_bytes": 814, "first_addr": "0x6baa0", "files": []},
+  {"index": 45, "oso": "lib/public/osx32/libcef_dll_wrapper.a(stream_reader_ctocpp.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "stream_reader_ctocpp.o", "xcode_target": null, "stem": "stream_reader_ctocpp", "mtime": 1374780385, "mtime_utc": "2013-07-25T19:26:25Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/ctocpp/", "so_name": "stream_reader_ctocpp.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/ctocpp/stream_reader_ctocpp.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 4, "n_data": 3, "text_bytes": 230, "first_addr": "0x6bdd0", "files": []},
+  {"index": 46, "oso": "lib/public/osx32/libcef_dll_wrapper.a(task_cpptoc.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "task_cpptoc.o", "xcode_target": null, "stem": "task_cpptoc", "mtime": 1374780385, "mtime_utc": "2013-07-25T19:26:25Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/", "so_name": "task_cpptoc.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/task_cpptoc.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 10, "n_data": 1, "text_bytes": 497, "first_addr": "0x6bec0", "files": ["./libcef_dll/cpptoc/task_cpptoc.h"]},
+  {"index": 47, "oso": "lib/public/osx32/libcef_dll_wrapper.a(v8context_ctocpp.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "v8context_ctocpp.o", "xcode_target": null, "stem": "v8context_ctocpp", "mtime": 1374780385, "mtime_utc": "2013-07-25T19:26:25Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/ctocpp/", "so_name": "v8context_ctocpp.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/ctocpp/v8context_ctocpp.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 6, "n_data": 3, "text_bytes": 406, "first_addr": "0x6c0c0", "files": []},
+  {"index": 48, "oso": "lib/public/osx32/libcef_dll_wrapper.a(v8context_handler_cpptoc.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "v8context_handler_cpptoc.o", "xcode_target": null, "stem": "v8context_handler_cpptoc", "mtime": 1374780385, "mtime_utc": "2013-07-25T19:26:25Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/", "so_name": "v8context_handler_cpptoc.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/v8context_handler_cpptoc.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 11, "n_data": 1, "text_bytes": 960, "first_addr": "0x6c260", "files": ["./libcef_dll/cpptoc/v8context_handler_cpptoc.h"]},
+  {"index": 49, "oso": "lib/public/osx32/libcef_dll_wrapper.a(v8exception_ctocpp.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "v8exception_ctocpp.o", "xcode_target": null, "stem": "v8exception_ctocpp", "mtime": 1374780385, "mtime_utc": "2013-07-25T19:26:25Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/ctocpp/", "so_name": "v8exception_ctocpp.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/ctocpp/v8exception_ctocpp.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 8, "n_data": 3, "text_bytes": 1094, "first_addr": "0x6c620", "files": []},
+  {"index": 50, "oso": "lib/public/osx32/libcef_dll_wrapper.a(v8handler_cpptoc.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "v8handler_cpptoc.o", "xcode_target": null, "stem": "v8handler_cpptoc", "mtime": 1374780385, "mtime_utc": "2013-07-25T19:26:25Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/", "so_name": "v8handler_cpptoc.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/v8handler_cpptoc.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 10, "n_data": 0, "text_bytes": 416, "first_addr": "0x6ca70", "files": ["./libcef_dll/ctocpp/v8value_ctocpp.h"]},
+  {"index": 51, "oso": "lib/public/osx32/libcef_dll_wrapper.a(v8value_ctocpp.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "v8value_ctocpp.o", "xcode_target": null, "stem": "v8value_ctocpp", "mtime": 1374780385, "mtime_utc": "2013-07-25T19:26:25Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/ctocpp/", "so_name": "v8value_ctocpp.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/ctocpp/v8value_ctocpp.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 50, "n_data": 6, "text_bytes": 5408, "first_addr": "0x6cc10", "files": ["./libcef_dll/cpptoc/base_cpptoc.h", "./libcef_dll/ctocpp/v8exception_ctocpp.h"]},
+  {"index": 52, "oso": "lib/public/osx32/libcef_dll_wrapper.a(zoom_handler_cpptoc.o)", "kind": "prebuilt_member", "archive": "lib/public/osx32/libcef_dll_wrapper.a", "member": "zoom_handler_cpptoc.o", "xcode_target": null, "stem": "zoom_handler_cpptoc", "mtime": 1374780385, "mtime_utc": "2013-07-25T19:26:25Z", "so_dir": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/", "so_name": "zoom_handler_cpptoc.cc", "ccache_host": null, "lang": null, "source": "/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef/libcef_dll/cpptoc/zoom_handler_cpptoc.cc", "build_root": null, "source_resolution": "n_so", "n_functions": 11, "n_data": 1, "text_bytes": 1008, "first_addr": "0x6e130", "files": ["./libcef_dll/cpptoc/zoom_handler_cpptoc.h"]},
+  {"index": 53, "oso": "build/Release/libtier1.a(interface.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "interface.o", "xcode_target": null, "stem": "interface", "mtime": 1731778100, "mtime_utc": "2024-11-16T17:28:20Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "interface.tmp.hl2-osx-builder.97998.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/interface.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 2, "n_data": 1, "text_bytes": 160, "first_addr": "0xc82a0", "files": ["tier1/interface.cpp"]},
+  {"index": 54, "oso": "build/Release/libtier1.a(strtools.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "strtools.o", "xcode_target": null, "stem": "strtools", "mtime": 1732587993, "mtime_utc": "2024-11-26T02:26:33Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "strtools.tmp.hl2-osx-builder.89224.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/strtools.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 11, "n_data": 0, "text_bytes": 2144, "first_addr": "0xc8340", "files": ["tier1/strtools.cpp", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/ctype.h"]},
+  {"index": 55, "oso": "build/Release/libtier1.a(utlbuffer.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "utlbuffer.o", "xcode_target": null, "stem": "utlbuffer", "mtime": 1731778101, "mtime_utc": "2024-11-16T17:28:21Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "utlbuffer.tmp.hl2-osx-builder.98113.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/utlbuffer.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 26, "n_data": 16, "text_bytes": 5345, "first_addr": "0xc8ba0", "files": ["tier1/utlbuffer.cpp"]},
+  {"index": 56, "oso": "build/Release/libtier1.a(utlstring.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "utlstring.o", "xcode_target": null, "stem": "utlstring", "mtime": 1731778101, "mtime_utc": "2024-11-16T17:28:21Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "utlstring.tmp.hl2-osx-builder.98122.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/utlstring.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 10, "n_data": 0, "text_bytes": 944, "first_addr": "0xca090", "files": ["tier1/utlstring.cpp"]}
+ ]
+}

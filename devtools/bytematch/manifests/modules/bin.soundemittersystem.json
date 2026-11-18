@@ -1,0 +1,271 @@
+{
+ "module": "bin/soundemittersystem",
+ "depot": "223",
+ "build": "19307283",
+ "path": "bin/soundemittersystem.dylib",
+ "aliases": [],
+ "sha256": "ecf2f33add176c7334e8ba82900c30f444523ed8a1f11c9632597e7aaf406281",
+ "size": 136820,
+ "macho": {
+  "filetype": "MH_DYLIB",
+  "flags": "0x110085",
+  "segments": [
+   {
+    "name": "__TEXT",
+    "vmaddr": "0x0",
+    "vmsize": 73728,
+    "sections": [
+     [
+      "__text",
+      "0x960",
+      55317,
+      16
+     ],
+     [
+      "__symbol_stub",
+      "0xe176",
+      336,
+      2
+     ],
+     [
+      "__stub_helper",
+      "0xe2c8",
+      572,
+      4
+     ],
+     [
+      "__cstring",
+      "0xe504",
+      3813,
+      1
+     ],
+     [
+      "__const",
+      "0xf3f0",
+      1446,
+      16
+     ],
+     [
+      "__gcc_except_tab",
+      "0xf998",
+      1400,
+      4
+     ],
+     [
+      "__unwind_info",
+      "0xff10",
+      848,
+      4
+     ],
+     [
+      "__eh_frame",
+      "0x10260",
+      7572,
+      8
+     ]
+    ]
+   },
+   {
+    "name": "__DATA",
+    "vmaddr": "0x12000",
+    "vmsize": 16384,
+    "sections": [
+     [
+      "__nl_symbol_ptr",
+      "0x12000",
+      32,
+      4
+     ],
+     [
+      "__la_symbol_ptr",
+      "0x12020",
+      224,
+      4
+     ],
+     [
+      "__mod_init_func",
+      "0x12100",
+      16,
+      4
+     ],
+     [
+      "__const",
+      "0x12110",
+      748,
+      16
+     ],
+     [
+      "__data",
+      "0x12400",
+      680,
+      16
+     ],
+     [
+      "__common",
+      "0x126a8",
+      5144,
+      4
+     ],
+     [
+      "__bss",
+      "0x13ac0",
+      6234,
+      8
+     ]
+    ]
+   },
+   {
+    "name": "__LINKEDIT",
+    "vmaddr": "0x16000",
+    "vmsize": 61440,
+    "sections": []
+   }
+  ],
+  "dylibs": [
+   {
+    "path": "@loader_path/libtier0.dylib",
+    "current": "1.0.0",
+    "compat": "1.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "@loader_path/libvstdlib.dylib",
+    "current": "1.0.0",
+    "compat": "1.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "/usr/lib/libiconv.2.dylib",
+    "current": "7.0.0",
+    "compat": "7.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "/usr/lib/libstdc++.6.dylib",
+    "current": "60.0.0",
+    "compat": "7.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "/usr/lib/libSystem.B.dylib",
+    "current": "1197.1.1",
+    "compat": "1.0.0",
+    "kind": "LOAD_DYLIB"
+   }
+  ],
+  "load_commands": [
+   "SEGMENT",
+   "SEGMENT",
+   "SEGMENT",
+   "ID_DYLIB",
+   "DYLD_INFO_ONLY",
+   "SYMTAB",
+   "DYSYMTAB",
+   "UUID",
+   "VERSION_MIN_MACOSX",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "FUNCTION_STARTS",
+   "DATA_IN_CODE"
+  ],
+  "install_name": {
+   "path": "@loader_path/soundemittersystem.dylib",
+   "current": "1.0.0",
+   "compat": "1.0.0"
+  },
+  "uuid": "89963E5705E73FBE9C0F16178E0E60B9",
+  "min_macosx": "10.6.0",
+  "sdk": "10.9.0"
+ },
+ "build_roots": {
+  "rel_singleplayer_osx": 10
+ },
+ "ccache_hosts": {
+  "hl2-osx-builder": 11
+ },
+ "xcode_targets": {
+  "soundemittersystem": 3
+ },
+ "stab_counts": {
+  "0x20": 50,
+  "0x24": 472,
+  "0x26": 62,
+  "0x2e": 236,
+  "0x4e": 236,
+  "0x64": 33,
+  "0x66": 11,
+  "0x84": 33
+ },
+ "n_objects": 11,
+ "n_loose_objects": 3,
+ "n_archive_members": 8,
+ "n_prebuilt_members": 0,
+ "built_mtime_range": [
+  "2024-11-13T17:23:46Z",
+  "2024-11-26T02:26:37Z"
+ ],
+ "static_libraries": [
+  {
+   "archive": "build/Release/libtier1.a",
+   "prebuilt": false,
+   "first_index": 3,
+   "members": [
+    "checksum_crc.o",
+    "convar.o",
+    "interface.o",
+    "KeyValues.o",
+    "strtools.o",
+    "tier1.o",
+    "utlbuffer.o",
+    "utlsymbol.o"
+   ]
+  }
+ ],
+ "text_order_matches_oso_order": true,
+ "headers_with_code": {
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/ctype.h": 1,
+  "public/SoundEmitterSystem/isoundemittersystembase.h": 1,
+  "public/filesystem.h": 1,
+  "public/mathlib/compressed_vector.h": 1,
+  "public/mathlib/mathlib.h": 1,
+  "public/mathlib/vector2d.h": 1,
+  "public/soundchars.h": 1,
+  "public/tier0/basetypes.h": 1,
+  "public/tier0/platform.h": 1,
+  "public/tier0/threadtools.h": 1,
+  "public/tier1/KeyValues.h": 1,
+  "public/tier1/byteswap.h": 1,
+  "public/tier1/strtools.h": 1,
+  "public/tier1/utlbuffer.h": 1,
+  "public/tier1/utlcommon.h": 1,
+  "public/tier1/utlhashtable.h": 1,
+  "public/tier1/utllinkedlist.h": 1,
+  "public/tier1/utlmemory.h": 1,
+  "public/tier1/utlrbtree.h": 1,
+  "public/tier1/utlstring.h": 1,
+  "public/tier1/utlsymbol.h": 1,
+  "public/tier1/utlvector.h": 1,
+  "soundemittersystem/soundemittersystembase.h": 1
+ },
+ "unstabbed_text": {
+  "n_symbols": 0,
+  "bytes": 0,
+  "by_prefix": {}
+ },
+ "objects": [
+  {"index": 0, "oso": "build/buildbot_osx.build/Release/soundemittersystem.build/Objects-normal/i386/interval.o", "kind": "object", "archive": null, "member": null, "xcode_target": "soundemittersystem", "stem": "interval", "mtime": 1731778111, "mtime_utc": "2024-11-16T17:28:31Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "interval.tmp.hl2-osx-builder.98653.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "game/shared/interval.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 1, "n_data": 0, "text_bytes": 240, "first_addr": "0x960", "files": ["game/shared/interval.cpp"]},
+  {"index": 1, "oso": "build/buildbot_osx.build/Release/soundemittersystem.build/Objects-normal/i386/SoundParametersInternal.o", "kind": "object", "archive": null, "member": null, "xcode_target": "soundemittersystem", "stem": "SoundParametersInternal", "mtime": 1732587996, "mtime_utc": "2024-11-26T02:26:36Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "SoundParam.tmp.hl2-osx-builder.89334.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "public/SoundParametersInternal.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 15, "n_data": 11, "text_bytes": 2972, "first_addr": "0xa50", "files": ["public/SoundParametersInternal.cpp", "public/tier1/strtools.h", "public/mathlib/compressed_vector.h", "public/SoundEmitterSystem/isoundemittersystembase.h", "public/tier1/utlsymbol.h"]},
+  {"index": 2, "oso": "build/buildbot_osx.build/Release/soundemittersystem.build/Objects-normal/i386/soundemittersystembase.o", "kind": "object", "archive": null, "member": null, "xcode_target": "soundemittersystem", "stem": "soundemittersystembase", "mtime": 1732587997, "mtime_utc": "2024-11-26T02:26:37Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "soundemitt.tmp.hl2-osx-builder.89335.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "soundemittersystem/soundemittersystembase.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 83, "n_data": 39, "text_bytes": 24561, "first_addr": "0x15f0", "files": ["soundemittersystem/soundemittersystembase.cpp", "public/tier1/utlmemory.h", "public/tier1/utlhashtable.h", "public/tier1/utllinkedlist.h", "public/tier1/utlvector.h", "public/tier1/utlstring.h", "public/tier1/KeyValues.h", "public/tier1/utlcommon.h", "public/tier0/platform.h", "soundemittersystem/soundemittersystembase.h", "public/soundchars.h", "public/tier1/utlbuffer.h", "public/mathlib/mathlib.h", "public/mathlib/vector2d.h"]},
+  {"index": 3, "oso": "build/Release/libtier1.a(checksum_crc.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "checksum_crc.o", "xcode_target": null, "stem": "checksum_crc", "mtime": 1731518626, "mtime_utc": "2024-11-13T17:23:46Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "checksum_c.tmp.hl2-osx-builder.44496.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/checksum_crc.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 3, "n_data": 1, "text_bytes": 548, "first_addr": "0x7600", "files": ["tier1/checksum_crc.cpp"]},
+  {"index": 4, "oso": "build/Release/libtier1.a(convar.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "convar.o", "xcode_target": null, "stem": "convar", "mtime": 1731778100, "mtime_utc": "2024-11-16T17:28:20Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "convar.tmp.hl2-osx-builder.97990.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/convar.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 39, "n_data": 16, "text_bytes": 2978, "first_addr": "0x7830", "files": ["tier1/convar.cpp"]},
+  {"index": 5, "oso": "build/Release/libtier1.a(interface.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "interface.o", "xcode_target": null, "stem": "interface", "mtime": 1731778100, "mtime_utc": "2024-11-16T17:28:20Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "interface.tmp.hl2-osx-builder.97998.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/interface.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 5, "n_data": 1, "text_bytes": 326, "first_addr": "0x83e0", "files": ["tier1/interface.cpp"]},
+  {"index": 6, "oso": "build/Release/libtier1.a(KeyValues.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "KeyValues.o", "xcode_target": null, "stem": "KeyValues", "mtime": 1732582553, "mtime_utc": "2024-11-26T00:55:53Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "KeyValues.tmp.hl2-osx-builder.41190.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/KeyValues.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 25, "n_data": 17, "text_bytes": 8368, "first_addr": "0x8530", "files": ["tier1/KeyValues.cpp", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/ctype.h", "public/filesystem.h", "public/tier0/basetypes.h"]},
+  {"index": 7, "oso": "build/Release/libtier1.a(strtools.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "strtools.o", "xcode_target": null, "stem": "strtools", "mtime": 1732587993, "mtime_utc": "2024-11-26T02:26:33Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "strtools.tmp.hl2-osx-builder.89224.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/strtools.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 10, "n_data": 0, "text_bytes": 1536, "first_addr": "0xa5e0", "files": ["tier1/strtools.cpp"]},
+  {"index": 8, "oso": "build/Release/libtier1.a(tier1.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "tier1.o", "xcode_target": null, "stem": "tier1", "mtime": 1731778101, "mtime_utc": "2024-11-16T17:28:21Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "tier1.tmp.hl2-osx-builder.98106.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": null, "build_root": null, "source_resolution": "unresolved", "n_functions": 0, "n_data": 2, "text_bytes": 0, "first_addr": null, "files": []},
+  {"index": 9, "oso": "build/Release/libtier1.a(utlbuffer.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "utlbuffer.o", "xcode_target": null, "stem": "utlbuffer", "mtime": 1731778101, "mtime_utc": "2024-11-16T17:28:21Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "utlbuffer.tmp.hl2-osx-builder.98113.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/utlbuffer.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 32, "n_data": 17, "text_bytes": 6977, "first_addr": "0xabe0", "files": ["tier1/utlbuffer.cpp", "public/tier1/byteswap.h"]},
+  {"index": 10, "oso": "build/Release/libtier1.a(utlsymbol.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "utlsymbol.o", "xcode_target": null, "stem": "utlsymbol", "mtime": 1732582553, "mtime_utc": "2024-11-26T00:55:53Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "utlsymbol.tmp.hl2-osx-builder.41193.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/utlsymbol.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 23, "n_data": 8, "text_bytes": 6725, "first_addr": "0xc730", "files": ["tier1/utlsymbol.cpp", "public/tier0/threadtools.h", "public/tier1/utlrbtree.h"]}
+ ]
+}

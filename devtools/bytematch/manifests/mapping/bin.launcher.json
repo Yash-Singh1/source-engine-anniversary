@@ -1,0 +1,47 @@
+{
+ "module": "bin/launcher",
+ "our_target": "launcher",
+ "our_games": null,
+ "project_dir": "launcher",
+ "order_rule_inversions": 0,
+ "counts": {
+  "exact": 3
+ },
+ "counts_sdk": {
+  "exact": 1,
+  "missing": 2
+ },
+ "diff": {
+  "add": [],
+  "remove": [
+   {
+    "path": "public/tier0/memoverride.cpp",
+    "note": "no retail Mac module links a memoverride object: Valve's Mac build has no malloc override (malloc from libSystem, operator new from libstdc++)"
+   }
+  ],
+  "path_differs": [],
+  "order": {
+   "common": 3,
+   "in_order_lis": 3,
+   "need_moving": 0,
+   "identical": true
+  },
+  "libraries": {
+   "retail": [
+    "tier2",
+    "tier1",
+    "appframework",
+    "tier3"
+   ],
+   "ours": [
+    "tier1",
+    "tier2",
+    "tier3",
+    "appframework"
+   ],
+   "retail_only": [],
+   "ours_only": [],
+   "same_relative_order": false
+  }
+ }
+}

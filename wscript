@@ -332,7 +332,7 @@ def options(opt):
 	opt.load('xcompile compiler_cxx compiler_c sdl2 clang_compilation_database strip_on_install_v2 waf_unit_test subproject')
 	if sys.platform == 'win32':
 		opt.load('msvc msdev msvs')
-	opt.load('reconfigure')
+	opt.load('reconfigure retail_manifest')
 
 def check_deps(conf):
 	if conf.env.DEST_OS != 'win32':
@@ -451,7 +451,7 @@ def configure(conf):
 
 	if sys.platform == 'win32':
 		conf.load('msvc_pdb_ext msdev msvs msvcdeps')
-	conf.load('subproject xcompile compiler_c compiler_cxx gccdeps gitversion clang_compilation_database strip_on_install_v2 waf_unit_test enforce_pic')
+	conf.load('subproject xcompile compiler_c compiler_cxx gccdeps gitversion clang_compilation_database strip_on_install_v2 waf_unit_test enforce_pic retail_manifest')
 	if conf.env.DEST_OS == 'win32' and conf.env.DEST_CPU == 'amd64':
 		conf.load('masm')
 	elif conf.env.DEST_OS == 'darwin':

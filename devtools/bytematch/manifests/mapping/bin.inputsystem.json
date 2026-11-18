@@ -1,0 +1,46 @@
+{
+ "module": "bin/inputsystem",
+ "our_target": "inputsystem",
+ "our_games": null,
+ "project_dir": "inputsystem",
+ "order_rule_inversions": 0,
+ "counts": {
+  "exact": 4
+ },
+ "counts_sdk": {
+  "missing": 4
+ },
+ "diff": {
+  "add": [],
+  "remove": [
+   {
+    "path": "inputsystem/touch_sdl.cpp",
+    "note": null
+   },
+   {
+    "path": "public/tier0/memoverride.cpp",
+    "note": "no retail Mac module links a memoverride object: Valve's Mac build has no malloc override (malloc from libSystem, operator new from libstdc++)"
+   }
+  ],
+  "path_differs": [],
+  "order": {
+   "common": 4,
+   "in_order_lis": 4,
+   "need_moving": 0,
+   "identical": true
+  },
+  "libraries": {
+   "retail": [
+    "tier2",
+    "tier1"
+   ],
+   "ours": [
+    "tier1",
+    "tier2"
+   ],
+   "retail_only": [],
+   "ours_only": [],
+   "same_relative_order": false
+  }
+ }
+}

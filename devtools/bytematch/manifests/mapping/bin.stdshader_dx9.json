@@ -1,0 +1,65 @@
+{
+ "module": "bin/stdshader_dx9",
+ "our_target": "stdshader_dx9",
+ "our_games": null,
+ "project_dir": "materialsystem/stdshaders",
+ "order_rule_inversions": 0,
+ "counts": {
+  "exact": 100
+ },
+ "counts_sdk": {
+  "missing": 60,
+  "exact": 39,
+  "moved": 1
+ },
+ "diff": {
+  "add": [],
+  "remove": [
+   {
+    "path": "materialsystem/stdshaders/compositor.cpp",
+    "note": null
+   },
+   {
+    "path": "materialsystem/stdshaders/particlelitgeneric_dx9_helper.cpp",
+    "note": null
+   },
+   {
+    "path": "materialsystem/stdshaders/pbr_dx9.cpp",
+    "note": null
+   },
+   {
+    "path": "materialsystem/stdshaders/eyeball.cpp",
+    "note": null
+   },
+   {
+    "path": "public/tier0/memoverride.cpp",
+    "note": "no retail Mac module links a memoverride object: Valve's Mac build has no malloc override (malloc from libSystem, operator new from libstdc++)"
+   }
+  ],
+  "path_differs": [],
+  "order": {
+   "common": 100,
+   "in_order_lis": 91,
+   "need_moving": 9,
+   "identical": false
+  },
+  "libraries": {
+   "retail": [
+    "shaderlib",
+    "tier2",
+    "mathlib",
+    "tier1"
+   ],
+   "ours": [
+    "shaderlib",
+    "tier1",
+    "mathlib"
+   ],
+   "retail_only": [
+    "tier2"
+   ],
+   "ours_only": [],
+   "same_relative_order": false
+  }
+ }
+}
