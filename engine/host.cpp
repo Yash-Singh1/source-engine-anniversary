@@ -1208,6 +1208,69 @@ Writes key bindings and archived cvars to config.cfg
 ===============
 */
 
+#ifdef BYTEMATCH_RETAIL
+void Host_WriteConfiguration( const char *filename )
+{
+	if ( !filename )
+		filename = "config.cfg";
+
+	if ( !host_initialized )
+		return;
+
+	if ( !g_bConfigCfgExecuted )
+		return;
+
+	// If in map editing mode don't save configuration
+	if (g_bInEditMode)
+	{
+		ConMsg( "skipping %s output when in map edit mode\n", filename );
+		return;
+	}
+
+	// dedicated servers initialize the host but don't parse and set the
+	// config.cfg cvars
+	if ( sv.IsDedicated() )
+		return;
+
+	if ( IsPC() && Key_CountBindings() <= 1 )
+	{
+		ConMsg( "skipping %s output, no keys bound\n", filename );
+		return;
+	}
+
+	// force any queued convar changes to flush before reading/writing them
+	UpdateMaterialSystemConfig();
+
+	// Generate a new .cfg file.
+	char		szFileName[MAX_PATH];
+	CUtlBuffer	configBuff( 0, 0, CUtlBuffer::TEXT_BUFFER);
+
+	// The HL2 collection keeps its settings in the root mod
+	const char *pPathID;
+	if ( V_stricmp( CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) ), "hl2_complete" ) )
+	{
+		Q_snprintf( szFileName, sizeof(szFileName), "cfg/%s", filename );
+		pPathID = "MOD";
+	}
+	else
+	{
+		Q_snprintf( szFileName, sizeof(szFileName), "//ROOT_MOD/cfg/%s", filename );
+		pPathID = NULL;
+	}
+
+	g_pFileSystem->CreateDirHierarchy( "cfg", pPathID );
+	if ( g_pFileSystem->FileExists( szFileName, pPathID ) && !g_pFileSystem->IsFileWritable( szFileName, pPathID ) )
+	{
+		ConMsg( "Config file %s is read-only!!\n", szFileName );
+		return;
+	}
+
+	// Always throw away all keys that are left over.
+	configBuff.Printf( "unbindall\n" );
+
+	Key_WriteBindings( configBuff );
+	cv->WriteVariables( configBuff );
+#else
 void Host_WriteConfiguration( const char *filename, bool bAllVars )
 {
 	const bool cbIsUserRequested = ( filename != NULL );
@@ -1271,6 +1334,8 @@ void Host_WriteConfiguration( const char *filename, bool bAllVars )
 
 	Key_WriteBindings( configBuff );
 	cv->WriteVariables( configBuff, bAllVars );
+#endif
+#line 1264
 
 #if !defined( SWDS )
 		bool down;
@@ -1593,6 +1658,58 @@ void Host_ReadConfiguration_360( void )
 // Purpose: 
 // Input  : false - 
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+//-----------------------------------------------------------------------------
+// The HL2 collection carries chapter unlocks over from the standalone HL2/episode configs
+//-----------------------------------------------------------------------------
+void Host_RestoreHL2EpisodicUnlocks()
+{
+	if ( V_stricmp( CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) ), "hl2_complete" ) )
+		return;
+
+	static const char *pszExpansionsToCheck[] = { "hl2", "episodic", "ep2" };
+	for ( int i = 0; i < ARRAYSIZE( pszExpansionsToCheck ); i++ )
+	{
+		char szConfigFile[MAX_PATH] = { 0 };
+		V_snprintf( szConfigFile, sizeof( szConfigFile ), "%s/cfg/config.cfg", pszExpansionsToCheck[i] );
+
+		FileHandle_t hFile = g_pFullFileSystem->Open( szConfigFile, "rb", "BASE_PATH" );
+		if ( !hFile )
+			continue;
+
+		int nSize = g_pFileSystem->Size( hFile );
+		char *pBuffer = new char[ nSize + 1 ];
+		g_pFileSystem->Read( pBuffer, nSize, hFile );
+		pBuffer[nSize] = 0;
+		g_pFileSystem->Close( hFile );
+
+		char *pszUnlocked = V_stristr( pBuffer, "sv_unlockedchapters" );
+		if ( pszUnlocked )
+		{
+			COM_Parse( COM_Parse( pszUnlocked ) );
+			if ( V_strlen( com_token ) > 0 )
+			{
+				char szConVarName[128];
+				V_snprintf( szConVarName, sizeof( szConVarName ), "%s_%s", "sv_unlockedchapters", pszExpansionsToCheck[i] );
+				ConVar *pConVar = g_pCVar->FindVar( szConVarName );
+				if ( pConVar )
+				{
+					int nCurrent = pConVar->GetInt();
+					int nUnlocked = V_atoi( com_token );
+					if ( nUnlocked > nCurrent )
+					{
+						pConVar->SetValue( nUnlocked );
+					}
+				}
+			}
+		}
+
+		delete[] pBuffer;
+	}
+}
+#endif
+#line 1634
+
 void Host_ReadConfiguration()
 {
 	if ( sv.IsDedicated() )
@@ -1634,6 +1751,39 @@ void Host_ReadConfiguration()
 		}
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	const char *pszGameDir = CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) );
+	bool bHL2 = !V_stricmp( pszGameDir, "hl2" );
+	bool bHL2Complete = !V_stricmp( pszGameDir, "hl2_complete" );
+
+	if ( g_pFileSystem->FileExists( bHL2Complete ? "//ROOT_MOD/cfg/config.cfg" : "//mod/cfg/config.cfg" ) )
+	{
+		Cbuf_AddText( bHL2Complete ? "exec config.cfg ROOT_MOD\n" : "exec config.cfg mod\n" );
+	}
+	else
+	{
+		Cbuf_AddText( bHL2Complete ? "exec config_default.cfg ROOT_MOD\n" : "exec config_default.cfg\n" );
+		saveconfig = true;
+	}
+
+	Cbuf_Execute();
+
+	char szExpansionId[16];
+	if ( g_pFileSystem->GetCurrentGameExpansionId( szExpansionId, sizeof( szExpansionId ) ) )
+	{
+		Host_RestoreHL2EpisodicUnlocks();
+		bHL2 = !V_stricmp( szExpansionId, "hl2" );
+	}
+
+	ConVarRef hl2_episodic( "hl2_episodic" );
+	hl2_episodic.SetValue( bHL2 ? 0 : 1 );
+
+	Cbuf_AddText( "exec modsettings_default.cfg\n" );
+	if ( g_pFileSystem->FileExists( "//mod/cfg/modsettings.cfg" ) )
+	{
+		Cbuf_AddText( "exec modsettings.cfg mod\n" );
+	}
+#else
 	if ( g_pFileSystem->FileExists( "//mod/cfg/config.cfg" ) )
 	{
 		Cbuf_AddText( "exec config.cfg\n" );
@@ -1645,6 +1795,8 @@ void Host_ReadConfiguration()
 	}
 
 	Cbuf_Execute();
+#endif
+#line 1707
 
 	if ( pRemoteStorage )
 	{
@@ -1701,6 +1853,34 @@ void Host_ReadConfiguration()
 	}
 }
 
+#ifdef BYTEMATCH_RETAIL
+CON_COMMAND( host_writeconfig, "Store current settings to config.cfg (or specified .cfg file)." )
+{
+	if ( args.ArgC() > 2 )
+	{
+		ConMsg( "Usage:  writeconfig <filename.cfg>\n" );
+		return;
+	}
+
+	if ( args.ArgC() == 2 )
+	{
+		char const *filename = args[ 1 ];
+		if ( !filename || !filename[ 0 ] )
+		{
+			return;
+		}
+
+		char outfile[ MAX_QPATH ];
+		// Strip path and extension from filename
+		Q_FileBase( filename, outfile, sizeof( outfile ) );
+		Host_WriteConfiguration( va( "%s.cfg", outfile ) );
+	}
+	else
+	{
+		Host_WriteConfiguration( NULL );
+	}
+}
+#else
 CON_COMMAND( host_writeconfig, "Store current settings to config.cfg (or specified .cfg file)." )
 {
 	if ( args.ArgC() > 3 )
@@ -1733,6 +1913,8 @@ CON_COMMAND( host_writeconfig, "Store current settings to config.cfg (or specifi
 		Host_WriteConfiguration( NULL, true );
 	}
 }
+#endif
+#line 1789
 
 #endif
 
@@ -1744,6 +1926,18 @@ CON_COMMAND( host_writeconfig, "Store current settings to config.cfg (or specifi
 void Host_ReadPreStartupConfiguration()
 {
 	FileHandle_t f = NULL;
+#ifdef BYTEMATCH_RETAIL
+	bool bHL2Complete = false;
+	if ( V_stricmp( CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) ), "hl2_complete" ) )
+	{
+		f = g_pFileSystem->Open( "//mod/cfg/config.cfg", "rt" );
+	}
+	else
+	{
+		f = g_pFileSystem->Open( "//ROOT_MOD/cfg/config.cfg", "rt" );
+		bHL2Complete = true;
+	}
+#else
 	if ( IsX360() )
 	{
 		// 360 config is less restrictive and can be anywhere in the game path
@@ -1753,6 +1947,8 @@ void Host_ReadPreStartupConfiguration()
 	{
 		f = g_pFileSystem->Open( "//mod/cfg/config.cfg", "rt" );
 	}
+#endif
+#line 1810
 
 	if ( !f )
 		return;
@@ -1794,6 +1990,37 @@ void Host_ReadPreStartupConfiguration()
 		}
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	if ( bHL2Complete )
+	{
+		// the HL2 collection picks its chapter backgrounds per expansion
+		static const char *s_PreStartupHL2CompleteConVars[] =
+		{
+			"hl2_expansion",
+			"sv_unlockedchapters_hl2",
+			"sv_unlockedchapters_episodic",
+			"sv_unlockedchapters_ep2"
+		};
+
+		for (int i = 0; i < ARRAYSIZE(s_PreStartupHL2CompleteConVars); i++)
+		{
+			const char *search = Q_stristr(configBuffer, s_PreStartupHL2CompleteConVars[i]);
+			if (search)
+			{
+				search = COM_Parse(search);
+				COM_Parse(search);
+
+				ConVar *var = (ConVar *)g_pCVar->FindVar( s_PreStartupHL2CompleteConVars[i] );
+				if ( var )
+				{
+					var->SetValue( com_token );
+				}
+			}
+		}
+	}
+#endif
+#line 1878
+
 	// free
 	delete [] configBuffer;
 }
@@ -1831,7 +2058,7 @@ void Host_ShutdownServer( void )
 #ifndef BYTEMATCH_RETAIL
 	master->ShutdownConnection();
 #endif
-#line 1823
+#line 1913
 
 	Host_AllowQueuedMaterialSystem( false );
 	// clear structures
@@ -2957,7 +3184,7 @@ float Host_GetSoundDuration( const char *pSample )
 #endif
 	return 0.0f;
 #endif
-#line 2933
+#line 3023
 }
 
 CON_COMMAND( host_runofftime, "Run off some time without rendering/updating sounds\n" )
@@ -3540,7 +3767,7 @@ void _Host_RunFrame (float time)
 			modelloader->UpdateDynamicModels();
 		}
 #endif
-#line 3506
+#line 3596
 
 		//-------------------
 		// simulation
@@ -3651,7 +3878,7 @@ void Host_RunFrame( float time )
 	}
 
 #endif
-#line 3614
+#line 3704
 	if ( !host_profile.GetBool() )
 	{
 		_Host_RunFrame( time );
@@ -4108,7 +4335,7 @@ bool DLL_LOCAL Host_IsSecureServerAllowed()
 	if ( CommandLine()->FindParm( "-insecure" ) || CommandLine()->FindParm( "-textmode" ) )
 		g_bAllowSecureServers = false;
 #endif
-#line 4065
+#line 4155
 
 	return g_bAllowSecureServers;
 }
@@ -4201,7 +4428,7 @@ void Host_Init( bool bDedicated )
 	// Should have read info from steam.inf by now.
 	Assert( GetSteamInfIDVersionInfo().AppID != k_uAppIdInvalid );
 #endif
-#line 4152
+#line 4242
 
 	if ( CommandLine()->FindParm( "-nocrashdialog" ) )
 	{
@@ -4848,7 +5075,7 @@ bool Host_Changelevel( bool loadfromsavedgame, const char *mapname, const char *
 	return true;
 }
 #endif
-#line 4582
+#line 4672
 
 #ifdef BYTEMATCH_RETAIL
 void GetPlatformMapPath( const char *pMapPath, char *pPlatformMapPath, int maxLength )
@@ -4863,7 +5090,7 @@ void GetPlatformMapPath( const char *pMapPath, char *pPlatformMapPath, int maxLe
 	}
 }
 #endif
-#line 4594
+#line 4684
 
 /*
 ===============================================================================
