@@ -69,9 +69,20 @@ TREE_VPC_FILES = {
     "hk_math": "ivp/havana/havok/hk_math/hk_math.vpc",
 }
 
+# Files the 2018 VPCs list that the retail build doesn't have: no texture
+# compositor in retail MaterialSystem.dll or stdshader_dx9.dll (no strings, no
+# macOS object), and this tree drops it from the BYTEMATCH_RETAIL interfaces.
+RETAIL_EXCLUDE = {"materialsystem": ["materialsystem/ctexturecompositor.cpp"],
+                  "stdshader_dx9": ["materialsystem/stdshaders/compositor.cpp"]}
+
 # Include directories this fork's sources need beyond Valve's (the fork's
 # vector_fpu.inl includes ivu_types.hxx for intp).
 FORK_INCLUDES = {"hk_math": ["ivp/ivp_utility"]}
+
+# Searched before the VPC's include directories: Valve's 2024 shader combo headers
+# (SDK 2013 TF2 branch include/), which the 2018 fxctmp9/vshtmp9 predate; the
+# --retail-osx32 build puts the same directory first.
+RETAIL_INCLUDES_FIRST = {"stdshader_dx9": ["materialsystem/stdshaders/include"]}
 
 # Switches and defines this fork's sources need under MSVC 2013: the retail-mode
 # inertia clamp in ivp_core.cxx calls POSIX finite(); qhull calls sqrt( int ),
@@ -212,7 +223,7 @@ class Module:
             r = self.tree_rel(i)
             if r is not None:
                 out.append(INCLUDE_ALIASES.get(r, r))
-        return dedupe(out + FORK_INCLUDES.get(self.name, []))
+        return dedupe(RETAIL_INCLUDES_FIRST.get(self.name, []) + out + FORK_INCLUDES.get(self.name, []))
 
     def pch(self, f=None):
         mode = (self.get("compiler.create/useprecompiledheader", f) or "").lower()
@@ -287,6 +298,8 @@ class Module:
             if lang is None or self.p.excluded(f):
                 continue
             rel = self.p.rel(f["path"])
+            if rel in RETAIL_EXCLUDE.get(self.name, []):
+                continue
             ent = {"path": rel, "lang": lang}
             ours = self.locate(rel)
             if ours is None:

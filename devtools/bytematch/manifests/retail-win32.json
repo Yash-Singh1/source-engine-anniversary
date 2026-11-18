@@ -3095,11 +3095,6 @@
      "lang": "c++"
     },
     {
-     "path": "materialsystem/ctexturecompositor.cpp",
-     "lang": "c++",
-     "pch": "use"
-    },
-    {
      "path": "common/debug_dll_check.cpp",
      "lang": "c++"
     },
@@ -3482,6 +3477,7 @@
     "_MBCS"
    ],
    "includes": [
+    "materialsystem/stdshaders/include",
     "common",
     "public",
     "public/tier0",
@@ -3584,10 +3580,6 @@
     },
     {
      "path": "materialsystem/stdshaders/colorcorrection.cpp",
-     "lang": "c++"
-    },
-    {
-     "path": "materialsystem/stdshaders/compositor.cpp",
      "lang": "c++"
     },
     {
