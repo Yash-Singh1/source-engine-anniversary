@@ -1,0 +1,141 @@
+{
+ "interface": "IPhysicsFrictionSnapshot",
+ "headers": [
+  "public/vphysics/friction.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 15,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "IsValid()",
+  "GetObject(int)",
+  "GetMaterial(int)",
+  "GetContactPoint(Vector&)",
+  "GetSurfaceNormal(Vector&)",
+  "GetNormalForce()",
+  "GetEnergyAbsorbed()",
+  "RecomputeFriction()",
+  "ClearFrictionForce()",
+  "MarkContactForDelete()",
+  "DeleteAllMarkedContacts(bool)",
+  "NextFrictionData()",
+  "GetFrictionCoefficient()"
+ ],
+ "retail_reference": {
+  "module": "bin/vphysics",
+  "class": "CFrictionSnapshot",
+  "offset": 0,
+  "chain": [
+   "CFrictionSnapshot",
+   "IPhysicsFrictionSnapshot"
+  ]
+ },
+ "retail_len": 15,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 15
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CFrictionSnapshot",
+   "sig": "~CFrictionSnapshot()",
+   "symbol": "CFrictionSnapshot::~CFrictionSnapshot()"
+  },
+  {
+   "index": 1,
+   "name": "~CFrictionSnapshot",
+   "sig": "~CFrictionSnapshot()",
+   "symbol": "CFrictionSnapshot::~CFrictionSnapshot()"
+  },
+  {
+   "index": 2,
+   "name": "IsValid",
+   "sig": "IsValid()",
+   "symbol": "CFrictionSnapshot::IsValid()"
+  },
+  {
+   "index": 3,
+   "name": "GetObject",
+   "sig": "GetObject(int)",
+   "symbol": "CFrictionSnapshot::GetObject(int)"
+  },
+  {
+   "index": 4,
+   "name": "GetMaterial",
+   "sig": "GetMaterial(int)",
+   "symbol": "CFrictionSnapshot::GetMaterial(int)"
+  },
+  {
+   "index": 5,
+   "name": "GetContactPoint",
+   "sig": "GetContactPoint(Vector&)",
+   "symbol": "CFrictionSnapshot::GetContactPoint(Vector&)"
+  },
+  {
+   "index": 6,
+   "name": "GetSurfaceNormal",
+   "sig": "GetSurfaceNormal(Vector&)",
+   "symbol": "CFrictionSnapshot::GetSurfaceNormal(Vector&)"
+  },
+  {
+   "index": 7,
+   "name": "GetNormalForce",
+   "sig": "GetNormalForce()",
+   "symbol": "CFrictionSnapshot::GetNormalForce()"
+  },
+  {
+   "index": 8,
+   "name": "GetEnergyAbsorbed",
+   "sig": "GetEnergyAbsorbed()",
+   "symbol": "CFrictionSnapshot::GetEnergyAbsorbed()"
+  },
+  {
+   "index": 9,
+   "name": "RecomputeFriction",
+   "sig": "RecomputeFriction()",
+   "symbol": "CFrictionSnapshot::RecomputeFriction()"
+  },
+  {
+   "index": 10,
+   "name": "ClearFrictionForce",
+   "sig": "ClearFrictionForce()",
+   "symbol": "CFrictionSnapshot::ClearFrictionForce()"
+  },
+  {
+   "index": 11,
+   "name": "MarkContactForDelete",
+   "sig": "MarkContactForDelete()",
+   "symbol": "CFrictionSnapshot::MarkContactForDelete()"
+  },
+  {
+   "index": 12,
+   "name": "DeleteAllMarkedContacts",
+   "sig": "DeleteAllMarkedContacts(bool)",
+   "symbol": "CFrictionSnapshot::DeleteAllMarkedContacts(bool)"
+  },
+  {
+   "index": 13,
+   "name": "NextFrictionData",
+   "sig": "NextFrictionData()",
+   "symbol": "CFrictionSnapshot::NextFrictionData()"
+  },
+  {
+   "index": 14,
+   "name": "GetFrictionCoefficient",
+   "sig": "GetFrictionCoefficient()",
+   "symbol": "CFrictionSnapshot::GetFrictionCoefficient()"
+  }
+ ],
+ "derived": [
+  "bin/vphysics:CFrictionSnapshot"
+ ],
+ "derived_count": 1
+}

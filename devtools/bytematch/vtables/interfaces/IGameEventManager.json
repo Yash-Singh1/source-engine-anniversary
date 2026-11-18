@@ -1,0 +1,144 @@
+{
+ "interface": "IGameEventManager",
+ "headers": [
+  "public/igameevents.h"
+ ],
+ "versions": {
+  "retail": [
+   "GAMEEVENTSMANAGER001"
+  ],
+  "ours": [
+   "GAMEEVENTSMANAGER001",
+   "GAMEEVENTSMANAGER002"
+  ],
+  "sdk2013": [
+   "GAMEEVENTSMANAGER001",
+   "GAMEEVENTSMANAGER002"
+  ]
+ },
+ "version_macros": [
+  "INTERFACEVERSION_GAMEEVENTSMANAGER",
+  "INTERFACEVERSION_GAMEEVENTSMANAGER2"
+ ],
+ "registrations": [
+  {
+   "module": "bin/engine",
+   "version": "GAMEEVENTSMANAGER001",
+   "class": "CGameEventManagerOld"
+  }
+ ],
+ "sdk2013_len": 13,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "LoadEventsFromFile(char const*)",
+  "Reset()",
+  "GetEvent(char const*)",
+  "AddListener(IGameEventListener*, char const*, bool)",
+  "AddListener(IGameEventListener*, bool)",
+  "RemoveListener(IGameEventListener*)",
+  "FireEvent(KeyValues*)",
+  "FireEventServerOnly(KeyValues*)",
+  "FireEventClientOnly(KeyValues*)",
+  "SerializeKeyValues(KeyValues*, bf_write*, CGameEvent*)",
+  "UnserializeKeyValue(bf_read*)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CGameEventManagerOld",
+  "offset": 0,
+  "chain": [
+   "CGameEventManagerOld",
+   "IGameEventManager"
+  ]
+ },
+ "retail_len": 13,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 13
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CGameEventManagerOld",
+   "sig": "~CGameEventManagerOld()",
+   "symbol": "CGameEventManagerOld::~CGameEventManagerOld()"
+  },
+  {
+   "index": 1,
+   "name": "~CGameEventManagerOld",
+   "sig": "~CGameEventManagerOld()",
+   "symbol": "CGameEventManagerOld::~CGameEventManagerOld()"
+  },
+  {
+   "index": 2,
+   "name": "LoadEventsFromFile",
+   "sig": "LoadEventsFromFile(char const*)",
+   "symbol": "CGameEventManagerOld::LoadEventsFromFile(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "Reset",
+   "sig": "Reset()",
+   "symbol": "CGameEventManagerOld::Reset()"
+  },
+  {
+   "index": 4,
+   "name": "GetEvent",
+   "sig": "GetEvent(char const*)",
+   "symbol": "CGameEventManagerOld::GetEvent(char const*)"
+  },
+  {
+   "index": 5,
+   "name": "AddListener",
+   "sig": "AddListener(IGameEventListener*, char const*, bool)",
+   "symbol": "CGameEventManagerOld::AddListener(IGameEventListener*, char const*, bool)"
+  },
+  {
+   "index": 6,
+   "name": "AddListener",
+   "sig": "AddListener(IGameEventListener*, bool)",
+   "symbol": "CGameEventManagerOld::AddListener(IGameEventListener*, bool)"
+  },
+  {
+   "index": 7,
+   "name": "RemoveListener",
+   "sig": "RemoveListener(IGameEventListener*)",
+   "symbol": "CGameEventManagerOld::RemoveListener(IGameEventListener*)"
+  },
+  {
+   "index": 8,
+   "name": "FireEvent",
+   "sig": "FireEvent(KeyValues*)",
+   "symbol": "CGameEventManagerOld::FireEvent(KeyValues*)"
+  },
+  {
+   "index": 9,
+   "name": "FireEventServerOnly",
+   "sig": "FireEventServerOnly(KeyValues*)",
+   "symbol": "CGameEventManagerOld::FireEventServerOnly(KeyValues*)"
+  },
+  {
+   "index": 10,
+   "name": "FireEventClientOnly",
+   "sig": "FireEventClientOnly(KeyValues*)",
+   "symbol": "CGameEventManagerOld::FireEventClientOnly(KeyValues*)"
+  },
+  {
+   "index": 11,
+   "name": "SerializeKeyValues",
+   "sig": "SerializeKeyValues(KeyValues*, bf_write*, CGameEvent*)",
+   "symbol": "CGameEventManagerOld::SerializeKeyValues(KeyValues*, bf_write*, CGameEvent*)"
+  },
+  {
+   "index": 12,
+   "name": "UnserializeKeyValue",
+   "sig": "UnserializeKeyValue(bf_read*)",
+   "symbol": "CGameEventManagerOld::UnserializeKeyValue(bf_read*)"
+  }
+ ],
+ "derived": [
+  "bin/engine:CGameEventManagerOld"
+ ],
+ "derived_count": 1
+}

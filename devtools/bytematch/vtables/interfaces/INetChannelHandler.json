@@ -1,0 +1,119 @@
+{
+ "interface": "INetChannelHandler",
+ "headers": [
+  "public/inetmsghandler.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 11,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "ConnectionStart(INetChannel*)",
+  "ConnectionClosing(char const*)",
+  "ConnectionCrashed(char const*)",
+  "PacketStart(int, int)",
+  "PacketEnd()",
+  "FileRequested(char const*, unsigned int)",
+  "FileReceived(char const*, unsigned int)",
+  "FileDenied(char const*, unsigned int)",
+  "FileSent(char const*, unsigned int)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CMatchmaking",
+  "offset": 12,
+  "chain": [
+   "CMatchmaking",
+   "INetChannelHandler"
+  ]
+ },
+ "retail_len": 11,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 11
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CMatchmaking",
+   "sig": "~CMatchmaking()",
+   "symbol": "non-virtual thunk to CMatchmaking::~CMatchmaking()"
+  },
+  {
+   "index": 1,
+   "name": "~CMatchmaking",
+   "sig": "~CMatchmaking()",
+   "symbol": "non-virtual thunk to CMatchmaking::~CMatchmaking()"
+  },
+  {
+   "index": 2,
+   "name": "ConnectionStart",
+   "sig": "ConnectionStart(INetChannel*)",
+   "symbol": "non-virtual thunk to CMatchmaking::ConnectionStart(INetChannel*)"
+  },
+  {
+   "index": 3,
+   "name": "ConnectionClosing",
+   "sig": "ConnectionClosing(char const*)",
+   "symbol": "non-virtual thunk to CMatchmaking::ConnectionClosing(char const*)"
+  },
+  {
+   "index": 4,
+   "name": "ConnectionCrashed",
+   "sig": "ConnectionCrashed(char const*)",
+   "symbol": "non-virtual thunk to CMatchmaking::ConnectionCrashed(char const*)"
+  },
+  {
+   "index": 5,
+   "name": "PacketStart",
+   "sig": "PacketStart(int, int)",
+   "symbol": "non-virtual thunk to CMatchmaking::PacketStart(int, int)"
+  },
+  {
+   "index": 6,
+   "name": "PacketEnd",
+   "sig": "PacketEnd()",
+   "symbol": "non-virtual thunk to CMatchmaking::PacketEnd()"
+  },
+  {
+   "index": 7,
+   "name": "FileRequested",
+   "sig": "FileRequested(char const*, unsigned int)",
+   "symbol": "non-virtual thunk to CMatchmaking::FileRequested(char const*, unsigned int)"
+  },
+  {
+   "index": 8,
+   "name": "FileReceived",
+   "sig": "FileReceived(char const*, unsigned int)",
+   "symbol": "non-virtual thunk to CMatchmaking::FileReceived(char const*, unsigned int)"
+  },
+  {
+   "index": 9,
+   "name": "FileDenied",
+   "sig": "FileDenied(char const*, unsigned int)",
+   "symbol": "non-virtual thunk to CMatchmaking::FileDenied(char const*, unsigned int)"
+  },
+  {
+   "index": 10,
+   "name": "FileSent",
+   "sig": "FileSent(char const*, unsigned int)",
+   "symbol": "non-virtual thunk to CMatchmaking::FileSent(char const*, unsigned int)"
+  }
+ ],
+ "derived": [
+  "bin/engine:CBaseClient",
+  "bin/engine:CBaseClientState",
+  "bin/engine:CClientState",
+  "bin/engine:CGameClient",
+  "bin/engine:CHLTVClient",
+  "bin/engine:CHLTVClientState",
+  "bin/engine:CMatchmaking"
+ ],
+ "derived_count": 7
+}

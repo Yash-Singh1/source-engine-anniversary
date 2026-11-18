@@ -1,0 +1,232 @@
+{
+ "interface": "IEngineClientReplay",
+ "headers": [
+  "common/replay/ienginereplay.h"
+ ],
+ "versions": {
+  "retail": [
+   "EngineClientReplay001"
+  ],
+  "ours": [
+   "EngineClientReplay001"
+  ],
+  "sdk2013": [
+   "EngineClientReplay001"
+  ]
+ },
+ "version_macros": [
+  "ENGINE_REPLAY_CLIENT_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/engine",
+   "version": "EngineClientReplay001",
+   "class": "CEngineClientReplay"
+  }
+ ],
+ "sdk2013_len": 26,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "GetNetChannel()",
+  "IsConnected()",
+  "IsListenServer()",
+  "GetLastServerTickTime()",
+  "GetLevelName()",
+  "GetLevelNameShort()",
+  "GetPlayerSlot()",
+  "IsPlayingReplayDemo()",
+  "GetClientEntityList()",
+  "GetClientReplayInt()",
+  "GetClientSteamID()",
+  "Con_NPrintf(int, char const*, ...)",
+  "GetClientGlobalVars()",
+  "VGui_PlaySound(char const*)",
+  "EngineVGui_ConfirmQuit()",
+  "GetScreenWidth()",
+  "GetScreenHeight()",
+  "IsDemoPlayingBack()",
+  "IsGamePathValidAndSafeForDownload(char const*)",
+  "IsInGame()",
+  "InitSoundRecord()",
+  "Wave_CreateTmpFile(char const*)",
+  "Wave_AppendTmpFile(char const*, void*, int)",
+  "Wave_FixupTmpFile(char const*)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CEngineClientReplay",
+  "offset": 0,
+  "chain": [
+   "CEngineClientReplay",
+   "IEngineClientReplay"
+  ]
+ },
+ "retail_len": 26,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 26
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CEngineClientReplay",
+   "sig": "~CEngineClientReplay()",
+   "symbol": "CEngineClientReplay::~CEngineClientReplay()"
+  },
+  {
+   "index": 1,
+   "name": "~CEngineClientReplay",
+   "sig": "~CEngineClientReplay()",
+   "symbol": "CEngineClientReplay::~CEngineClientReplay()"
+  },
+  {
+   "index": 2,
+   "name": "GetNetChannel",
+   "sig": "GetNetChannel()",
+   "symbol": "CEngineClientReplay::GetNetChannel()"
+  },
+  {
+   "index": 3,
+   "name": "IsConnected",
+   "sig": "IsConnected()",
+   "symbol": "CEngineClientReplay::IsConnected()"
+  },
+  {
+   "index": 4,
+   "name": "IsListenServer",
+   "sig": "IsListenServer()",
+   "symbol": "CEngineClientReplay::IsListenServer()"
+  },
+  {
+   "index": 5,
+   "name": "GetLastServerTickTime",
+   "sig": "GetLastServerTickTime()",
+   "symbol": "CEngineClientReplay::GetLastServerTickTime()"
+  },
+  {
+   "index": 6,
+   "name": "GetLevelName",
+   "sig": "GetLevelName()",
+   "symbol": "CEngineClientReplay::GetLevelName()"
+  },
+  {
+   "index": 7,
+   "name": "GetLevelNameShort",
+   "sig": "GetLevelNameShort()",
+   "symbol": "CEngineClientReplay::GetLevelNameShort()"
+  },
+  {
+   "index": 8,
+   "name": "GetPlayerSlot",
+   "sig": "GetPlayerSlot()",
+   "symbol": "CEngineClientReplay::GetPlayerSlot()"
+  },
+  {
+   "index": 9,
+   "name": "IsPlayingReplayDemo",
+   "sig": "IsPlayingReplayDemo()",
+   "symbol": "CEngineClientReplay::IsPlayingReplayDemo()"
+  },
+  {
+   "index": 10,
+   "name": "GetClientEntityList",
+   "sig": "GetClientEntityList()",
+   "symbol": "CEngineClientReplay::GetClientEntityList()"
+  },
+  {
+   "index": 11,
+   "name": "GetClientReplayInt",
+   "sig": "GetClientReplayInt()",
+   "symbol": "CEngineClientReplay::GetClientReplayInt()"
+  },
+  {
+   "index": 12,
+   "name": "GetClientSteamID",
+   "sig": "GetClientSteamID()",
+   "symbol": "CEngineClientReplay::GetClientSteamID()"
+  },
+  {
+   "index": 13,
+   "name": "Con_NPrintf",
+   "sig": "Con_NPrintf(int, char const*, ...)",
+   "symbol": "CEngineClientReplay::Con_NPrintf(int, char const*, ...)"
+  },
+  {
+   "index": 14,
+   "name": "GetClientGlobalVars",
+   "sig": "GetClientGlobalVars()",
+   "symbol": "CEngineClientReplay::GetClientGlobalVars()"
+  },
+  {
+   "index": 15,
+   "name": "VGui_PlaySound",
+   "sig": "VGui_PlaySound(char const*)",
+   "symbol": "CEngineClientReplay::VGui_PlaySound(char const*)"
+  },
+  {
+   "index": 16,
+   "name": "EngineVGui_ConfirmQuit",
+   "sig": "EngineVGui_ConfirmQuit()",
+   "symbol": "CEngineClientReplay::EngineVGui_ConfirmQuit()"
+  },
+  {
+   "index": 17,
+   "name": "GetScreenWidth",
+   "sig": "GetScreenWidth()",
+   "symbol": "CEngineClientReplay::GetScreenWidth()"
+  },
+  {
+   "index": 18,
+   "name": "GetScreenHeight",
+   "sig": "GetScreenHeight()",
+   "symbol": "CEngineClientReplay::GetScreenHeight()"
+  },
+  {
+   "index": 19,
+   "name": "IsDemoPlayingBack",
+   "sig": "IsDemoPlayingBack()",
+   "symbol": "CEngineClientReplay::IsDemoPlayingBack()"
+  },
+  {
+   "index": 20,
+   "name": "IsGamePathValidAndSafeForDownload",
+   "sig": "IsGamePathValidAndSafeForDownload(char const*)",
+   "symbol": "CEngineClientReplay::IsGamePathValidAndSafeForDownload(char const*)"
+  },
+  {
+   "index": 21,
+   "name": "IsInGame",
+   "sig": "IsInGame()",
+   "symbol": "CEngineClientReplay::IsInGame()"
+  },
+  {
+   "index": 22,
+   "name": "InitSoundRecord",
+   "sig": "InitSoundRecord()",
+   "symbol": "CEngineClientReplay::InitSoundRecord()"
+  },
+  {
+   "index": 23,
+   "name": "Wave_CreateTmpFile",
+   "sig": "Wave_CreateTmpFile(char const*)",
+   "symbol": "CEngineClientReplay::Wave_CreateTmpFile(char const*)"
+  },
+  {
+   "index": 24,
+   "name": "Wave_AppendTmpFile",
+   "sig": "Wave_AppendTmpFile(char const*, void*, int)",
+   "symbol": "CEngineClientReplay::Wave_AppendTmpFile(char const*, void*, int)"
+  },
+  {
+   "index": 25,
+   "name": "Wave_FixupTmpFile",
+   "sig": "Wave_FixupTmpFile(char const*)",
+   "symbol": "CEngineClientReplay::Wave_FixupTmpFile(char const*)"
+  }
+ ],
+ "derived": [
+  "bin/engine:CEngineClientReplay"
+ ],
+ "derived_count": 1
+}

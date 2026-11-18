@@ -1,0 +1,112 @@
+{
+ "interface": "SVC_GameEvent",
+ "headers": [
+  "common/netmessages.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "SVC_GameEvent",
+  "offset": 0,
+  "chain": [
+   "SVC_GameEvent"
+  ]
+ },
+ "retail_len": 13,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 13
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~SVC_GameEvent",
+   "sig": "~SVC_GameEvent()",
+   "symbol": "SVC_GameEvent::~SVC_GameEvent()"
+  },
+  {
+   "index": 1,
+   "name": "~SVC_GameEvent",
+   "sig": "~SVC_GameEvent()",
+   "symbol": "SVC_GameEvent::~SVC_GameEvent()"
+  },
+  {
+   "index": 2,
+   "name": "SetNetChannel",
+   "sig": "SetNetChannel(INetChannel*)",
+   "symbol": "CNetMessage::SetNetChannel(INetChannel*)"
+  },
+  {
+   "index": 3,
+   "name": "SetReliable",
+   "sig": "SetReliable(bool)",
+   "symbol": "CNetMessage::SetReliable(bool)"
+  },
+  {
+   "index": 4,
+   "name": "Process",
+   "sig": "Process()",
+   "symbol": "SVC_GameEvent::Process()"
+  },
+  {
+   "index": 5,
+   "name": "ReadFromBuffer",
+   "sig": "ReadFromBuffer(bf_read&)",
+   "symbol": "SVC_GameEvent::ReadFromBuffer(bf_read&)"
+  },
+  {
+   "index": 6,
+   "name": "WriteToBuffer",
+   "sig": "WriteToBuffer(bf_write&)",
+   "symbol": "SVC_GameEvent::WriteToBuffer(bf_write&)"
+  },
+  {
+   "index": 7,
+   "name": "IsReliable",
+   "sig": "IsReliable() const",
+   "symbol": "CNetMessage::IsReliable() const"
+  },
+  {
+   "index": 8,
+   "name": "GetType",
+   "sig": "GetType() const",
+   "symbol": "SVC_GameEvent::GetType() const"
+  },
+  {
+   "index": 9,
+   "name": "GetGroup",
+   "sig": "GetGroup() const",
+   "symbol": "SVC_GameEvent::GetGroup() const"
+  },
+  {
+   "index": 10,
+   "name": "GetName",
+   "sig": "GetName() const",
+   "symbol": "SVC_GameEvent::GetName() const"
+  },
+  {
+   "index": 11,
+   "name": "GetNetChannel",
+   "sig": "GetNetChannel() const",
+   "symbol": "CNetMessage::GetNetChannel() const"
+  },
+  {
+   "index": 12,
+   "name": "ToString",
+   "sig": "ToString() const",
+   "symbol": "SVC_GameEvent::ToString() const"
+  }
+ ],
+ "derived": [
+  "bin/engine:SVC_GameEvent",
+  "bin/replay:SVC_GameEvent"
+ ],
+ "derived_count": 2
+}

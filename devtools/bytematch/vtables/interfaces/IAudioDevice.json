@@ -1,0 +1,242 @@
+{
+ "interface": "IAudioDevice",
+ "headers": [
+  "public/engine/audio/snd_device.h",
+  "public/soundsystem/snd_device.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CAudioDeviceAudioQueue",
+  "offset": 0,
+  "chain": [
+   "CAudioDeviceAudioQueue",
+   "CAudioDeviceBase",
+   "IAudioDevice"
+  ]
+ },
+ "retail_len": 34,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 34
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CAudioDeviceAudioQueue",
+   "sig": "~CAudioDeviceAudioQueue()",
+   "symbol": "CAudioDeviceAudioQueue::~CAudioDeviceAudioQueue()"
+  },
+  {
+   "index": 1,
+   "name": "~CAudioDeviceAudioQueue",
+   "sig": "~CAudioDeviceAudioQueue()",
+   "symbol": "CAudioDeviceAudioQueue::~CAudioDeviceAudioQueue()"
+  },
+  {
+   "index": 2,
+   "name": "IsActive",
+   "sig": "IsActive()",
+   "symbol": "CAudioDeviceAudioQueue::IsActive()"
+  },
+  {
+   "index": 3,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "CAudioDeviceAudioQueue::Init()"
+  },
+  {
+   "index": 4,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CAudioDeviceAudioQueue::Shutdown()"
+  },
+  {
+   "index": 5,
+   "name": "Pause",
+   "sig": "Pause()",
+   "symbol": "CAudioDeviceAudioQueue::Pause()"
+  },
+  {
+   "index": 6,
+   "name": "UnPause",
+   "sig": "UnPause()",
+   "symbol": "CAudioDeviceAudioQueue::UnPause()"
+  },
+  {
+   "index": 7,
+   "name": "MixDryVolume",
+   "sig": "MixDryVolume()",
+   "symbol": "CAudioDeviceAudioQueue::MixDryVolume()"
+  },
+  {
+   "index": 8,
+   "name": "Should3DMix",
+   "sig": "Should3DMix()",
+   "symbol": "CAudioDeviceAudioQueue::Should3DMix()"
+  },
+  {
+   "index": 9,
+   "name": "StopAllSounds",
+   "sig": "StopAllSounds()",
+   "symbol": "CAudioDeviceAudioQueue::StopAllSounds()"
+  },
+  {
+   "index": 10,
+   "name": "PaintBegin",
+   "sig": "PaintBegin(float, int, int)",
+   "symbol": "CAudioDeviceAudioQueue::PaintBegin(float, int, int)"
+  },
+  {
+   "index": 11,
+   "name": "PaintEnd",
+   "sig": "PaintEnd()",
+   "symbol": "CAudioDeviceAudioQueue::PaintEnd()"
+  },
+  {
+   "index": 12,
+   "name": "SpatializeChannel",
+   "sig": "SpatializeChannel(int*, int, Vector const&, float, float)",
+   "symbol": "CAudioDeviceAudioQueue::SpatializeChannel(int*, int, Vector const&, float, float)"
+  },
+  {
+   "index": 13,
+   "name": "ApplyDSPEffects",
+   "sig": "ApplyDSPEffects(int, portable_samplepair_t*, portable_samplepair_t*, portable_samplepair_t*, int)",
+   "symbol": "CAudioDeviceAudioQueue::ApplyDSPEffects(int, portable_samplepair_t*, portable_samplepair_t*, portable_samplepair_t*, int)"
+  },
+  {
+   "index": 14,
+   "name": "GetOutputPosition",
+   "sig": "GetOutputPosition()",
+   "symbol": "CAudioDeviceAudioQueue::GetOutputPosition()"
+  },
+  {
+   "index": 15,
+   "name": "ClearBuffer",
+   "sig": "ClearBuffer()",
+   "symbol": "CAudioDeviceAudioQueue::ClearBuffer()"
+  },
+  {
+   "index": 16,
+   "name": "UpdateListener",
+   "sig": "UpdateListener(Vector const&, Vector const&, Vector const&, Vector const&)",
+   "symbol": "CAudioDeviceAudioQueue::UpdateListener(Vector const&, Vector const&, Vector const&, Vector const&)"
+  },
+  {
+   "index": 17,
+   "name": "MixBegin",
+   "sig": "MixBegin(int)",
+   "symbol": "CAudioDeviceAudioQueue::MixBegin(int)"
+  },
+  {
+   "index": 18,
+   "name": "MixUpsample",
+   "sig": "MixUpsample(int, int)",
+   "symbol": "CAudioDeviceAudioQueue::MixUpsample(int, int)"
+  },
+  {
+   "index": 19,
+   "name": "Mix8Mono",
+   "sig": "Mix8Mono(channel_t*, char*, int, int, unsigned int, int, int)",
+   "symbol": "CAudioDeviceAudioQueue::Mix8Mono(channel_t*, char*, int, int, unsigned int, int, int)"
+  },
+  {
+   "index": 20,
+   "name": "Mix8Stereo",
+   "sig": "Mix8Stereo(channel_t*, char*, int, int, unsigned int, int, int)",
+   "symbol": "CAudioDeviceAudioQueue::Mix8Stereo(channel_t*, char*, int, int, unsigned int, int, int)"
+  },
+  {
+   "index": 21,
+   "name": "Mix16Mono",
+   "sig": "Mix16Mono(channel_t*, short*, int, int, unsigned int, int, int)",
+   "symbol": "CAudioDeviceAudioQueue::Mix16Mono(channel_t*, short*, int, int, unsigned int, int, int)"
+  },
+  {
+   "index": 22,
+   "name": "Mix16Stereo",
+   "sig": "Mix16Stereo(channel_t*, short*, int, int, unsigned int, int, int)",
+   "symbol": "CAudioDeviceAudioQueue::Mix16Stereo(channel_t*, short*, int, int, unsigned int, int, int)"
+  },
+  {
+   "index": 23,
+   "name": "ChannelReset",
+   "sig": "ChannelReset(int, int, float)",
+   "symbol": "CAudioDeviceAudioQueue::ChannelReset(int, int, float)"
+  },
+  {
+   "index": 24,
+   "name": "TransferSamples",
+   "sig": "TransferSamples(int)",
+   "symbol": "CAudioDeviceAudioQueue::TransferSamples(int)"
+  },
+  {
+   "index": 25,
+   "name": "DeviceName",
+   "sig": "DeviceName()",
+   "symbol": "CAudioDeviceAudioQueue::DeviceName()"
+  },
+  {
+   "index": 26,
+   "name": "DeviceChannels",
+   "sig": "DeviceChannels()",
+   "symbol": "CAudioDeviceAudioQueue::DeviceChannels()"
+  },
+  {
+   "index": 27,
+   "name": "DeviceSampleBits",
+   "sig": "DeviceSampleBits()",
+   "symbol": "CAudioDeviceAudioQueue::DeviceSampleBits()"
+  },
+  {
+   "index": 28,
+   "name": "DeviceSampleBytes",
+   "sig": "DeviceSampleBytes()",
+   "symbol": "CAudioDeviceAudioQueue::DeviceSampleBytes()"
+  },
+  {
+   "index": 29,
+   "name": "DeviceDmaSpeed",
+   "sig": "DeviceDmaSpeed()",
+   "symbol": "CAudioDeviceAudioQueue::DeviceDmaSpeed()"
+  },
+  {
+   "index": 30,
+   "name": "DeviceSampleCount",
+   "sig": "DeviceSampleCount()",
+   "symbol": "CAudioDeviceAudioQueue::DeviceSampleCount()"
+  },
+  {
+   "index": 31,
+   "name": "IsSurround",
+   "sig": "IsSurround()",
+   "symbol": "CAudioDeviceBase::IsSurround()"
+  },
+  {
+   "index": 32,
+   "name": "IsSurroundCenter",
+   "sig": "IsSurroundCenter()",
+   "symbol": "CAudioDeviceBase::IsSurroundCenter()"
+  },
+  {
+   "index": 33,
+   "name": "IsHeadphone",
+   "sig": "IsHeadphone()",
+   "symbol": "CAudioDeviceBase::IsHeadphone()"
+  }
+ ],
+ "derived": [
+  "bin/engine:CAudioDeviceAudioQueue",
+  "bin/engine:CAudioDeviceNull",
+  "bin/engine:CAudioDeviceOpenAL"
+ ],
+ "derived_count": 3
+}

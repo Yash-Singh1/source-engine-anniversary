@@ -1,0 +1,71 @@
+{
+ "interface": "IBrushSurface",
+ "headers": [
+  "public/ivrenderview.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 5,
+ "sdk2013_slots": [
+  "ComputeTextureCoordinate(Vector const&, Vector2D&)",
+  "ComputeLightmapCoordinate(Vector const&, Vector2D&)",
+  "GetVertexCount() const",
+  "GetVertexData(BrushVertex_t*)",
+  "GetMaterial()"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CBrushSurface",
+  "offset": 0,
+  "chain": [
+   "CBrushSurface",
+   "IBrushSurface"
+  ]
+ },
+ "retail_len": 5,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 5
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "ComputeTextureCoordinate",
+   "sig": "ComputeTextureCoordinate(Vector const&, Vector2D&)",
+   "symbol": "CBrushSurface::ComputeTextureCoordinate(Vector const&, Vector2D&)"
+  },
+  {
+   "index": 1,
+   "name": "ComputeLightmapCoordinate",
+   "sig": "ComputeLightmapCoordinate(Vector const&, Vector2D&)",
+   "symbol": "CBrushSurface::ComputeLightmapCoordinate(Vector const&, Vector2D&)"
+  },
+  {
+   "index": 2,
+   "name": "GetVertexCount",
+   "sig": "GetVertexCount() const",
+   "symbol": "CBrushSurface::GetVertexCount() const"
+  },
+  {
+   "index": 3,
+   "name": "GetVertexData",
+   "sig": "GetVertexData(BrushVertex_t*)",
+   "symbol": "CBrushSurface::GetVertexData(BrushVertex_t*)"
+  },
+  {
+   "index": 4,
+   "name": "GetMaterial",
+   "sig": "GetMaterial()",
+   "symbol": "CBrushSurface::GetMaterial()"
+  }
+ ],
+ "derived": [
+  "bin/engine:CBrushSurface"
+ ],
+ "derived_count": 1
+}

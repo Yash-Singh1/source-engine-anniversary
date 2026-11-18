@@ -1,0 +1,138 @@
+{
+ "interface": "IBotController",
+ "headers": [
+  "public/game/server/iplayerinfo.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 10,
+ "sdk2013_slots": [
+  "SetAbsOrigin(Vector&)",
+  "SetAbsAngles(QAngle&)",
+  "SetLocalOrigin(Vector const&)",
+  "GetLocalOrigin()",
+  "SetLocalAngles(QAngle const&)",
+  "GetLocalAngles()",
+  "RemoveAllItems(bool)",
+  "SetActiveWeapon(char const*)",
+  "IsEFlagSet(int)",
+  "RunPlayerMove(CBotCmd*)"
+ ],
+ "retail_reference": {
+  "module": "episodic/server",
+  "class": "CPlayerInfo",
+  "offset": 0,
+  "chain": [
+   "CPlayerInfo",
+   "IBotController"
+  ]
+ },
+ "retail_len": 10,
+ "retail_len_basis": "override: retail CPlayerInfo subtable continues with IPlayerInfo methods",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 36
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "SetAbsOrigin",
+   "sig": "SetAbsOrigin(Vector&)",
+   "symbol": "CPlayerInfo::SetAbsOrigin(Vector&)"
+  },
+  {
+   "index": 1,
+   "name": "SetAbsAngles",
+   "sig": "SetAbsAngles(QAngle&)",
+   "symbol": "CPlayerInfo::SetAbsAngles(QAngle&)"
+  },
+  {
+   "index": 2,
+   "name": "SetLocalOrigin",
+   "sig": "SetLocalOrigin(Vector const&)",
+   "symbol": "CPlayerInfo::SetLocalOrigin(Vector const&)"
+  },
+  {
+   "index": 3,
+   "name": "GetLocalOrigin",
+   "sig": "GetLocalOrigin()",
+   "symbol": "CPlayerInfo::GetLocalOrigin()"
+  },
+  {
+   "index": 4,
+   "name": "SetLocalAngles",
+   "sig": "SetLocalAngles(QAngle const&)",
+   "symbol": "CPlayerInfo::SetLocalAngles(QAngle const&)"
+  },
+  {
+   "index": 5,
+   "name": "GetLocalAngles",
+   "sig": "GetLocalAngles()",
+   "symbol": "CPlayerInfo::GetLocalAngles()"
+  },
+  {
+   "index": 6,
+   "name": "RemoveAllItems",
+   "sig": "RemoveAllItems(bool)",
+   "symbol": "CPlayerInfo::RemoveAllItems(bool)"
+  },
+  {
+   "index": 7,
+   "name": "SetActiveWeapon",
+   "sig": "SetActiveWeapon(char const*)",
+   "symbol": "CPlayerInfo::SetActiveWeapon(char const*)"
+  },
+  {
+   "index": 8,
+   "name": "IsEFlagSet",
+   "sig": "IsEFlagSet(int)",
+   "symbol": "CPlayerInfo::IsEFlagSet(int)"
+  },
+  {
+   "index": 9,
+   "name": "RunPlayerMove",
+   "sig": "RunPlayerMove(CBotCmd*)",
+   "symbol": "CPlayerInfo::RunPlayerMove(CBotCmd*)"
+  }
+ ],
+ "implementer_tail": [
+  "GetName()",
+  "GetUserID()",
+  "GetNetworkIDString()",
+  "GetTeamIndex()",
+  "ChangeTeam(int)",
+  "GetFragCount()",
+  "GetDeathCount()",
+  "IsConnected()",
+  "GetArmorValue()",
+  "IsHLTV()",
+  "IsReplay()",
+  "IsPlayer()",
+  "IsFakeClient()",
+  "IsDead()",
+  "IsInAVehicle()",
+  "IsObserver()",
+  "GetAbsOrigin()",
+  "GetAbsAngles()",
+  "GetPlayerMins()",
+  "GetPlayerMaxs()",
+  "GetWeaponName()",
+  "GetModelName()",
+  "GetHealth()",
+  "GetMaxHealth()",
+  "SetLastUserCommand(CBotCmd const&)",
+  "GetLastUserCommand()"
+ ],
+ "derived": [
+  "episodic/server:CPlayerInfo",
+  "hl2/server:CPlayerInfo",
+  "hl2_complete/server:CPlayerInfo",
+  "hl2mp/server:CPlayerInfo",
+  "lostcoast/server:CPlayerInfo"
+ ],
+ "derived_count": 5
+}

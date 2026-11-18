@@ -1,0 +1,399 @@
+{
+ "interface": "IClientRenderable",
+ "headers": [
+  "public/iclientrenderable.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 45,
+ "sdk2013_slots": [
+  "GetIClientUnknown()",
+  "GetRenderOrigin()",
+  "GetRenderAngles()",
+  "ShouldDraw()",
+  "IsTransparent()",
+  "UsesPowerOfTwoFrameBufferTexture()",
+  "UsesFullFrameBufferTexture()",
+  "GetShadowHandle() const",
+  "RenderHandle()",
+  "GetModel() const",
+  "DrawModel(int)",
+  "GetBody()",
+  "ComputeFxBlend()",
+  "GetFxBlend()",
+  "GetColorModulation(float*)",
+  "LODTest()",
+  "SetupBones(matrix3x4_t*, int, int, float)",
+  "SetupWeights(matrix3x4_t const*, int, float*, float*)",
+  "DoAnimationEvents()",
+  "GetPVSNotifyInterface()",
+  "GetRenderBounds(Vector&, Vector&)",
+  "GetRenderBoundsWorldspace(Vector&, Vector&)",
+  "GetShadowRenderBounds(Vector&, Vector&, ShadowType_t)",
+  "ShouldReceiveProjectedTextures(int)",
+  "GetShadowCastDistance(float*, ShadowType_t) const",
+  "GetShadowCastDirection(Vector*, ShadowType_t) const",
+  "IsShadowDirty()",
+  "MarkShadowDirty(bool)",
+  "GetShadowParent()",
+  "FirstShadowChild()",
+  "NextShadowPeer()",
+  "ShadowCastType()",
+  "CreateModelInstance()",
+  "GetModelInstance()",
+  "RenderableToWorldTransform()",
+  "LookupAttachment(char const*)",
+  "GetAttachment(int, Vector&, QAngle&)",
+  "GetAttachment(int, matrix3x4_t&)",
+  "GetRenderClipPlane()",
+  "GetSkin()",
+  "IsTwoPass()",
+  "OnThreadedDrawSetup()",
+  "UsesFlexDelayedWeights()",
+  "RecordToolMessage()",
+  "IgnoresZBuffer() const"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CStaticProp",
+  "offset": 4,
+  "chain": [
+   "CStaticProp",
+   "IClientRenderable"
+  ]
+ },
+ "retail_len": 45,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 45
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "GetIClientUnknown",
+   "sig": "GetIClientUnknown()",
+   "symbol": "non-virtual thunk to CStaticProp::GetIClientUnknown()"
+  },
+  {
+   "index": 1,
+   "name": "GetRenderOrigin",
+   "sig": "GetRenderOrigin()",
+   "symbol": "non-virtual thunk to CStaticProp::GetRenderOrigin()"
+  },
+  {
+   "index": 2,
+   "name": "GetRenderAngles",
+   "sig": "GetRenderAngles()",
+   "symbol": "non-virtual thunk to CStaticProp::GetRenderAngles()"
+  },
+  {
+   "index": 3,
+   "name": "ShouldDraw",
+   "sig": "ShouldDraw()",
+   "symbol": "non-virtual thunk to CStaticProp::ShouldDraw()"
+  },
+  {
+   "index": 4,
+   "name": "IsTransparent",
+   "sig": "IsTransparent()",
+   "symbol": "non-virtual thunk to CStaticProp::IsTransparent()"
+  },
+  {
+   "index": 5,
+   "name": "UsesPowerOfTwoFrameBufferTexture",
+   "sig": "UsesPowerOfTwoFrameBufferTexture()",
+   "symbol": "non-virtual thunk to CStaticProp::UsesPowerOfTwoFrameBufferTexture()"
+  },
+  {
+   "index": 6,
+   "name": "UsesFullFrameBufferTexture",
+   "sig": "UsesFullFrameBufferTexture()",
+   "symbol": "non-virtual thunk to CStaticProp::UsesFullFrameBufferTexture()"
+  },
+  {
+   "index": 7,
+   "name": "GetShadowHandle",
+   "sig": "GetShadowHandle() const",
+   "symbol": "non-virtual thunk to CStaticProp::GetShadowHandle() const"
+  },
+  {
+   "index": 8,
+   "name": "RenderHandle",
+   "sig": "RenderHandle()",
+   "symbol": "non-virtual thunk to CStaticProp::RenderHandle()"
+  },
+  {
+   "index": 9,
+   "name": "GetModel",
+   "sig": "GetModel() const",
+   "symbol": "non-virtual thunk to CStaticProp::GetModel() const"
+  },
+  {
+   "index": 10,
+   "name": "DrawModel",
+   "sig": "DrawModel(int)",
+   "symbol": "non-virtual thunk to CStaticProp::DrawModel(int)"
+  },
+  {
+   "index": 11,
+   "name": "GetBody",
+   "sig": "GetBody()",
+   "symbol": "non-virtual thunk to CStaticProp::GetBody()"
+  },
+  {
+   "index": 12,
+   "name": "ComputeFxBlend",
+   "sig": "ComputeFxBlend()",
+   "symbol": "non-virtual thunk to CStaticProp::ComputeFxBlend()"
+  },
+  {
+   "index": 13,
+   "name": "GetFxBlend",
+   "sig": "GetFxBlend()",
+   "symbol": "non-virtual thunk to CStaticProp::GetFxBlend()"
+  },
+  {
+   "index": 14,
+   "name": "GetColorModulation",
+   "sig": "GetColorModulation(float*)",
+   "symbol": "non-virtual thunk to CStaticProp::GetColorModulation(float*)"
+  },
+  {
+   "index": 15,
+   "name": "LODTest",
+   "sig": "LODTest()",
+   "symbol": "non-virtual thunk to CStaticProp::LODTest()"
+  },
+  {
+   "index": 16,
+   "name": "SetupBones",
+   "sig": "SetupBones(matrix3x4_t*, int, int, float)",
+   "symbol": "non-virtual thunk to CStaticProp::SetupBones(matrix3x4_t*, int, int, float)"
+  },
+  {
+   "index": 17,
+   "name": "SetupWeights",
+   "sig": "SetupWeights(matrix3x4_t const*, int, float*, float*)",
+   "symbol": "non-virtual thunk to CStaticProp::SetupWeights(matrix3x4_t const*, int, float*, float*)"
+  },
+  {
+   "index": 18,
+   "name": "DoAnimationEvents",
+   "sig": "DoAnimationEvents()",
+   "symbol": "non-virtual thunk to CStaticProp::DoAnimationEvents()"
+  },
+  {
+   "index": 19,
+   "name": "GetPVSNotifyInterface",
+   "sig": "GetPVSNotifyInterface()",
+   "symbol": "non-virtual thunk to CStaticProp::GetPVSNotifyInterface()"
+  },
+  {
+   "index": 20,
+   "name": "GetRenderBounds",
+   "sig": "GetRenderBounds(Vector&, Vector&)",
+   "symbol": "non-virtual thunk to CStaticProp::GetRenderBounds(Vector&, Vector&)"
+  },
+  {
+   "index": 21,
+   "name": "GetRenderBoundsWorldspace",
+   "sig": "GetRenderBoundsWorldspace(Vector&, Vector&)",
+   "symbol": "non-virtual thunk to CStaticProp::GetRenderBoundsWorldspace(Vector&, Vector&)"
+  },
+  {
+   "index": 22,
+   "name": "GetShadowRenderBounds",
+   "sig": "GetShadowRenderBounds(Vector&, Vector&, ShadowType_t)",
+   "symbol": "non-virtual thunk to CStaticProp::GetShadowRenderBounds(Vector&, Vector&, ShadowType_t)"
+  },
+  {
+   "index": 23,
+   "name": "ShouldReceiveProjectedTextures",
+   "sig": "ShouldReceiveProjectedTextures(int)",
+   "symbol": "non-virtual thunk to CStaticProp::ShouldReceiveProjectedTextures(int)"
+  },
+  {
+   "index": 24,
+   "name": "GetShadowCastDistance",
+   "sig": "GetShadowCastDistance(float*, ShadowType_t) const",
+   "symbol": "non-virtual thunk to CStaticProp::GetShadowCastDistance(float*, ShadowType_t) const"
+  },
+  {
+   "index": 25,
+   "name": "GetShadowCastDirection",
+   "sig": "GetShadowCastDirection(Vector*, ShadowType_t) const",
+   "symbol": "non-virtual thunk to CStaticProp::GetShadowCastDirection(Vector*, ShadowType_t) const"
+  },
+  {
+   "index": 26,
+   "name": "IsShadowDirty",
+   "sig": "IsShadowDirty()",
+   "symbol": "non-virtual thunk to CStaticProp::IsShadowDirty()"
+  },
+  {
+   "index": 27,
+   "name": "MarkShadowDirty",
+   "sig": "MarkShadowDirty(bool)",
+   "symbol": "non-virtual thunk to CStaticProp::MarkShadowDirty(bool)"
+  },
+  {
+   "index": 28,
+   "name": "GetShadowParent",
+   "sig": "GetShadowParent()",
+   "symbol": "non-virtual thunk to CStaticProp::GetShadowParent()"
+  },
+  {
+   "index": 29,
+   "name": "FirstShadowChild",
+   "sig": "FirstShadowChild()",
+   "symbol": "non-virtual thunk to CStaticProp::FirstShadowChild()"
+  },
+  {
+   "index": 30,
+   "name": "NextShadowPeer",
+   "sig": "NextShadowPeer()",
+   "symbol": "non-virtual thunk to CStaticProp::NextShadowPeer()"
+  },
+  {
+   "index": 31,
+   "name": "ShadowCastType",
+   "sig": "ShadowCastType()",
+   "symbol": "non-virtual thunk to CStaticProp::ShadowCastType()"
+  },
+  {
+   "index": 32,
+   "name": "CreateModelInstance",
+   "sig": "CreateModelInstance()",
+   "symbol": "non-virtual thunk to CStaticProp::CreateModelInstance()"
+  },
+  {
+   "index": 33,
+   "name": "GetModelInstance",
+   "sig": "GetModelInstance()",
+   "symbol": "non-virtual thunk to CStaticProp::GetModelInstance()"
+  },
+  {
+   "index": 34,
+   "name": "RenderableToWorldTransform",
+   "sig": "RenderableToWorldTransform()",
+   "symbol": "non-virtual thunk to CStaticProp::RenderableToWorldTransform()"
+  },
+  {
+   "index": 35,
+   "name": "LookupAttachment",
+   "sig": "LookupAttachment(char const*)",
+   "symbol": "non-virtual thunk to CStaticProp::LookupAttachment(char const*)"
+  },
+  {
+   "index": 36,
+   "name": "GetAttachment",
+   "sig": "GetAttachment(int, Vector&, QAngle&)",
+   "symbol": "non-virtual thunk to CStaticProp::GetAttachment(int, Vector&, QAngle&)"
+  },
+  {
+   "index": 37,
+   "name": "GetAttachment",
+   "sig": "GetAttachment(int, matrix3x4_t&)",
+   "symbol": "non-virtual thunk to CStaticProp::GetAttachment(int, matrix3x4_t&)"
+  },
+  {
+   "index": 38,
+   "name": "GetRenderClipPlane",
+   "sig": "GetRenderClipPlane()",
+   "symbol": "non-virtual thunk to CStaticProp::GetRenderClipPlane()"
+  },
+  {
+   "index": 39,
+   "name": "GetSkin",
+   "sig": "GetSkin()",
+   "symbol": "non-virtual thunk to CStaticProp::GetSkin()"
+  },
+  {
+   "index": 40,
+   "name": "IsTwoPass",
+   "sig": "IsTwoPass()",
+   "symbol": "non-virtual thunk to CStaticProp::IsTwoPass()"
+  },
+  {
+   "index": 41,
+   "name": "OnThreadedDrawSetup",
+   "sig": "OnThreadedDrawSetup()",
+   "symbol": "non-virtual thunk to CStaticProp::OnThreadedDrawSetup()"
+  },
+  {
+   "index": 42,
+   "name": "UsesFlexDelayedWeights",
+   "sig": "UsesFlexDelayedWeights()",
+   "symbol": "non-virtual thunk to CStaticProp::UsesFlexDelayedWeights()"
+  },
+  {
+   "index": 43,
+   "name": "RecordToolMessage",
+   "sig": "RecordToolMessage()",
+   "symbol": "non-virtual thunk to CStaticProp::RecordToolMessage()"
+  },
+  {
+   "index": 44,
+   "name": "IgnoresZBuffer",
+   "sig": "IgnoresZBuffer() const",
+   "symbol": "non-virtual thunk to CStaticProp::IgnoresZBuffer() const"
+  }
+ ],
+ "derived_disagreements": [
+  {
+   "module": "hl2mp/client",
+   "class": "C_EnvelopeFX",
+   "index": 20,
+   "ref": "GetRenderBounds(Vector&, Vector&)",
+   "got": null
+  }
+ ],
+ "derived": [
+  "bin/engine:CStaticProp",
+  "episodic/client:Beam_t",
+  "episodic/client:CClient_Precipitation",
+  "episodic/client:CDetailModel",
+  "episodic/client:CModelPanelModel",
+  "episodic/client:CNewParticleEffect",
+  "episodic/client:CParticleEffectBinding",
+  "episodic/client:CPhysBoxMultiplayer",
+  "episodic/client:CPhysicsPropMultiplayer",
+  "episodic/client:CSnowFallManager",
+  "episodic/client:CViewAngleAnimation",
+  "episodic/client:C_AI_BaseNPC",
+  "episodic/client:C_AR2Explosion",
+  "episodic/client:C_AlyxEmpEffect",
+  "episodic/client:C_AntlionGib",
+  "episodic/client:C_Barney",
+  "episodic/client:C_BaseAnimating",
+  "episodic/client:C_BaseAnimatingOverlay",
+  "episodic/client:C_BaseCombatCharacter",
+  "episodic/client:C_BaseCombatWeapon",
+  "episodic/client:C_BaseDoor",
+  "episodic/client:C_BaseEntity",
+  "episodic/client:C_BaseFlex",
+  "episodic/client:C_BaseGrenade",
+  "episodic/client:C_BaseHLBludgeonWeapon",
+  "episodic/client:C_BaseHLCombatWeapon",
+  "episodic/client:C_BaseHLPlayer",
+  "episodic/client:C_BaseHelicopter",
+  "episodic/client:C_BaseParticleEntity",
+  "episodic/client:C_BasePlayer",
+  "episodic/client:C_BaseProjectile",
+  "episodic/client:C_BasePropDoor",
+  "episodic/client:C_BaseTeamObjectiveResource",
+  "episodic/client:C_BaseViewModel",
+  "episodic/client:C_Beam",
+  "episodic/client:C_BoneFollower",
+  "episodic/client:C_BreakableProp",
+  "episodic/client:C_BreakableSurface",
+  "episodic/client:C_CitadelEnergyCore",
+  "episodic/client:C_ClientRagdoll"
+ ],
+ "derived_count": 945
+}

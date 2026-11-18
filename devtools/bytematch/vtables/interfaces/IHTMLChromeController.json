@@ -1,0 +1,149 @@
+{
+ "interface": "IHTMLChromeController",
+ "headers": [],
+ "versions": {
+  "retail": [
+   "ChromeHTML_Controller_001"
+  ],
+  "ours": [],
+  "sdk2013": [
+   "ChromeHTML_Controller_001"
+  ]
+ },
+ "version_macros": [],
+ "registrations": [
+  {
+   "module": "bin/chromehtml",
+   "version": "ChromeHTML_Controller_001",
+   "class": "CHTMLController"
+  }
+ ],
+ "sdk2013_len": 15,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "Init(char const*, char const*)",
+  "Shutdown()",
+  "RunFrame()",
+  "SetWebCookie(char const*, char const*, char const*, char const*, unsigned int)",
+  "GetWebCookiesForURL(CUtlString*, char const*, char const*)",
+  "SetClientBuildID(unsigned long long)",
+  "BHasPendingMessages()",
+  "CreateBrowser(IHTMLResponses*, bool, char const*)",
+  "RemoveBrowser(IHTMLResponses*)",
+  "WakeThread()",
+  "GetFreeCommandBuffer(EHTMLCommands, int)",
+  "PushCommand(HTMLCommandBuffer_t*)",
+  "SetCefThreadTargetFrameRate(unsigned int)"
+ ],
+ "retail_reference": {
+  "module": "bin/chromehtml",
+  "class": "CHTMLController",
+  "offset": 0,
+  "chain": [
+   "CHTMLController",
+   "IHTMLChromeController"
+  ]
+ },
+ "retail_len": 15,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 15
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CHTMLController",
+   "sig": "~CHTMLController()",
+   "symbol": "CHTMLController::~CHTMLController()"
+  },
+  {
+   "index": 1,
+   "name": "~CHTMLController",
+   "sig": "~CHTMLController()",
+   "symbol": "CHTMLController::~CHTMLController()"
+  },
+  {
+   "index": 2,
+   "name": "Init",
+   "sig": "Init(char const*, char const*)",
+   "symbol": "CHTMLController::Init(char const*, char const*)"
+  },
+  {
+   "index": 3,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CHTMLController::Shutdown()"
+  },
+  {
+   "index": 4,
+   "name": "RunFrame",
+   "sig": "RunFrame()",
+   "symbol": "CHTMLController::RunFrame()"
+  },
+  {
+   "index": 5,
+   "name": "SetWebCookie",
+   "sig": "SetWebCookie(char const*, char const*, char const*, char const*, unsigned int)",
+   "symbol": "CHTMLController::SetWebCookie(char const*, char const*, char const*, char const*, unsigned int)"
+  },
+  {
+   "index": 6,
+   "name": "GetWebCookiesForURL",
+   "sig": "GetWebCookiesForURL(CUtlString*, char const*, char const*)",
+   "symbol": "CHTMLController::GetWebCookiesForURL(CUtlString*, char const*, char const*)"
+  },
+  {
+   "index": 7,
+   "name": "SetClientBuildID",
+   "sig": "SetClientBuildID(unsigned long long)",
+   "symbol": "CHTMLController::SetClientBuildID(unsigned long long)"
+  },
+  {
+   "index": 8,
+   "name": "BHasPendingMessages",
+   "sig": "BHasPendingMessages()",
+   "symbol": "CHTMLController::BHasPendingMessages()"
+  },
+  {
+   "index": 9,
+   "name": "CreateBrowser",
+   "sig": "CreateBrowser(IHTMLResponses*, bool, char const*)",
+   "symbol": "CHTMLController::CreateBrowser(IHTMLResponses*, bool, char const*)"
+  },
+  {
+   "index": 10,
+   "name": "RemoveBrowser",
+   "sig": "RemoveBrowser(IHTMLResponses*)",
+   "symbol": "CHTMLController::RemoveBrowser(IHTMLResponses*)"
+  },
+  {
+   "index": 11,
+   "name": "WakeThread",
+   "sig": "WakeThread()",
+   "symbol": "CHTMLController::WakeThread()"
+  },
+  {
+   "index": 12,
+   "name": "GetFreeCommandBuffer",
+   "sig": "GetFreeCommandBuffer(EHTMLCommands, int)",
+   "symbol": "CHTMLController::GetFreeCommandBuffer(EHTMLCommands, int)"
+  },
+  {
+   "index": 13,
+   "name": "PushCommand",
+   "sig": "PushCommand(HTMLCommandBuffer_t*)",
+   "symbol": "CHTMLController::PushCommand(HTMLCommandBuffer_t*)"
+  },
+  {
+   "index": 14,
+   "name": "SetCefThreadTargetFrameRate",
+   "sig": "SetCefThreadTargetFrameRate(unsigned int)",
+   "symbol": "CHTMLController::SetCefThreadTargetFrameRate(unsigned int)"
+  }
+ ],
+ "derived": [
+  "bin/chromehtml:CHTMLController"
+ ],
+ "derived_count": 1
+}

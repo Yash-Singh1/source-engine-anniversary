@@ -337,6 +337,8 @@ public:
 	virtual void SetPSNearAndFarZ( int pshReg ) = 0;
 
 	virtual void SetDepthFeatheringPixelShaderConstant( int iConstant, float fDepthBlendScale ) = 0;
+
+	virtual int GetPixelFogCombo1( bool bSupportsRadial ) = 0;
 };
 // end class IShaderDynamicAPI
 

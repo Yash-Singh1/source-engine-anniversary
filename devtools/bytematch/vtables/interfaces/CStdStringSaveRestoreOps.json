@@ -1,0 +1,74 @@
+{
+ "interface": "CStdStringSaveRestoreOps",
+ "headers": [
+  "public/stdstring.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 5,
+ "sdk2013_slots": [
+  "Save(SaveRestoreFieldInfo_t const&, ISave*)",
+  "Restore(SaveRestoreFieldInfo_t const&, IRestore*)",
+  "IsEmpty(SaveRestoreFieldInfo_t const&)",
+  "MakeEmpty(SaveRestoreFieldInfo_t const&)",
+  "Parse(SaveRestoreFieldInfo_t const&, char const*)"
+ ],
+ "retail_reference": {
+  "module": "episodic/server",
+  "class": "CStdStringSaveRestoreOps",
+  "offset": 0,
+  "chain": [
+   "CStdStringSaveRestoreOps"
+  ]
+ },
+ "retail_len": 5,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 5
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Save",
+   "sig": "Save(SaveRestoreFieldInfo_t const&, ISave*)",
+   "symbol": "CStdStringSaveRestoreOps::Save(SaveRestoreFieldInfo_t const&, ISave*)"
+  },
+  {
+   "index": 1,
+   "name": "Restore",
+   "sig": "Restore(SaveRestoreFieldInfo_t const&, IRestore*)",
+   "symbol": "CStdStringSaveRestoreOps::Restore(SaveRestoreFieldInfo_t const&, IRestore*)"
+  },
+  {
+   "index": 2,
+   "name": "IsEmpty",
+   "sig": "IsEmpty(SaveRestoreFieldInfo_t const&)",
+   "symbol": "CStdStringSaveRestoreOps::IsEmpty(SaveRestoreFieldInfo_t const&)"
+  },
+  {
+   "index": 3,
+   "name": "MakeEmpty",
+   "sig": "MakeEmpty(SaveRestoreFieldInfo_t const&)",
+   "symbol": "CStdStringSaveRestoreOps::MakeEmpty(SaveRestoreFieldInfo_t const&)"
+  },
+  {
+   "index": 4,
+   "name": "Parse",
+   "sig": "Parse(SaveRestoreFieldInfo_t const&, char const*)",
+   "symbol": "CDefSaveRestoreOps::Parse(SaveRestoreFieldInfo_t const&, char const*)"
+  }
+ ],
+ "derived": [
+  "episodic/server:CStdStringSaveRestoreOps",
+  "hl2/server:CStdStringSaveRestoreOps",
+  "hl2_complete/server:CStdStringSaveRestoreOps",
+  "hl2mp/server:CStdStringSaveRestoreOps",
+  "lostcoast/server:CStdStringSaveRestoreOps"
+ ],
+ "derived_count": 5
+}

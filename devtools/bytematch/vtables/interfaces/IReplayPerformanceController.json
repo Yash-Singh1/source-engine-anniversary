@@ -1,0 +1,239 @@
+{
+ "interface": "IReplayPerformanceController",
+ "headers": [
+  "common/replay/ireplayperformancecontroller.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 29,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "SetEditor(IReplayPerformanceEditor*)",
+  "IsPlaybackDataLeft()",
+  "StartRecording(CReplay*, bool)",
+  "NotifyRewinding()",
+  "Stop()",
+  "SaveAsync()",
+  "SaveAsAsync(wchar_t const*)",
+  "IsSaving() const",
+  "SaveThink()",
+  "GetLastSaveStatus() const",
+  "IsRecording() const",
+  "IsPlaying() const",
+  "IsDirty() const",
+  "NotifyDirty()",
+  "GetPerformance()",
+  "GetSavedPerformance()",
+  "HasSavedPerformance()",
+  "NotifyPauseState(bool)",
+  "ClearRewinding()",
+  "OnSignonStateFull()",
+  "GetPlaybackTimeScale() const",
+  "AddEvent_Camera_Change_FirstPerson(float, int)",
+  "AddEvent_Camera_Change_ThirdPerson(float, int)",
+  "AddEvent_Camera_Change_Free(float)",
+  "AddEvent_Camera_ChangePlayer(float, int)",
+  "AddEvent_Camera_SetView(SetViewParams_t const&)",
+  "AddEvent_TimeScale(float, float)"
+ ],
+ "retail_reference": {
+  "module": "bin/replay",
+  "class": "CPerformanceController",
+  "offset": 8,
+  "chain": [
+   "CPerformanceController",
+   "IReplayPerformanceController"
+  ]
+ },
+ "retail_len": 29,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 29
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CPerformanceController",
+   "sig": "~CPerformanceController()",
+   "symbol": "non-virtual thunk to CPerformanceController::~CPerformanceController()"
+  },
+  {
+   "index": 1,
+   "name": "~CPerformanceController",
+   "sig": "~CPerformanceController()",
+   "symbol": "non-virtual thunk to CPerformanceController::~CPerformanceController()"
+  },
+  {
+   "index": 2,
+   "name": "SetEditor",
+   "sig": "SetEditor(IReplayPerformanceEditor*)",
+   "symbol": "non-virtual thunk to CPerformanceController::SetEditor(IReplayPerformanceEditor*)"
+  },
+  {
+   "index": 3,
+   "name": "IsPlaybackDataLeft",
+   "sig": "IsPlaybackDataLeft()",
+   "symbol": "non-virtual thunk to CPerformanceController::IsPlaybackDataLeft()"
+  },
+  {
+   "index": 4,
+   "name": "StartRecording",
+   "sig": "StartRecording(CReplay*, bool)",
+   "symbol": "non-virtual thunk to CPerformanceController::StartRecording(CReplay*, bool)"
+  },
+  {
+   "index": 5,
+   "name": "NotifyRewinding",
+   "sig": "NotifyRewinding()",
+   "symbol": "non-virtual thunk to CPerformanceController::NotifyRewinding()"
+  },
+  {
+   "index": 6,
+   "name": "Stop",
+   "sig": "Stop()",
+   "symbol": "non-virtual thunk to CPerformanceController::Stop()"
+  },
+  {
+   "index": 7,
+   "name": "SaveAsync",
+   "sig": "SaveAsync()",
+   "symbol": "non-virtual thunk to CPerformanceController::SaveAsync()"
+  },
+  {
+   "index": 8,
+   "name": "SaveAsAsync",
+   "sig": "SaveAsAsync(wchar_t const*)",
+   "symbol": "non-virtual thunk to CPerformanceController::SaveAsAsync(wchar_t const*)"
+  },
+  {
+   "index": 9,
+   "name": "IsSaving",
+   "sig": "IsSaving() const",
+   "symbol": "non-virtual thunk to CPerformanceController::IsSaving() const"
+  },
+  {
+   "index": 10,
+   "name": "SaveThink",
+   "sig": "SaveThink()",
+   "symbol": "non-virtual thunk to CPerformanceController::SaveThink()"
+  },
+  {
+   "index": 11,
+   "name": "GetLastSaveStatus",
+   "sig": "GetLastSaveStatus() const",
+   "symbol": "non-virtual thunk to CPerformanceController::GetLastSaveStatus() const"
+  },
+  {
+   "index": 12,
+   "name": "IsRecording",
+   "sig": "IsRecording() const",
+   "symbol": "non-virtual thunk to CPerformanceController::IsRecording() const"
+  },
+  {
+   "index": 13,
+   "name": "IsPlaying",
+   "sig": "IsPlaying() const",
+   "symbol": "non-virtual thunk to CPerformanceController::IsPlaying() const"
+  },
+  {
+   "index": 14,
+   "name": "IsDirty",
+   "sig": "IsDirty() const",
+   "symbol": "non-virtual thunk to CPerformanceController::IsDirty() const"
+  },
+  {
+   "index": 15,
+   "name": "NotifyDirty",
+   "sig": "NotifyDirty()",
+   "symbol": "non-virtual thunk to CPerformanceController::NotifyDirty()"
+  },
+  {
+   "index": 16,
+   "name": "GetPerformance",
+   "sig": "GetPerformance()",
+   "symbol": "non-virtual thunk to CPerformanceController::GetPerformance()"
+  },
+  {
+   "index": 17,
+   "name": "GetSavedPerformance",
+   "sig": "GetSavedPerformance()",
+   "symbol": "non-virtual thunk to CPerformanceController::GetSavedPerformance()"
+  },
+  {
+   "index": 18,
+   "name": "HasSavedPerformance",
+   "sig": "HasSavedPerformance()",
+   "symbol": "non-virtual thunk to CPerformanceController::HasSavedPerformance()"
+  },
+  {
+   "index": 19,
+   "name": "NotifyPauseState",
+   "sig": "NotifyPauseState(bool)",
+   "symbol": "non-virtual thunk to CPerformanceController::NotifyPauseState(bool)"
+  },
+  {
+   "index": 20,
+   "name": "ClearRewinding",
+   "sig": "ClearRewinding()",
+   "symbol": "non-virtual thunk to CPerformanceController::ClearRewinding()"
+  },
+  {
+   "index": 21,
+   "name": "OnSignonStateFull",
+   "sig": "OnSignonStateFull()",
+   "symbol": "non-virtual thunk to CPerformanceController::OnSignonStateFull()"
+  },
+  {
+   "index": 22,
+   "name": "GetPlaybackTimeScale",
+   "sig": "GetPlaybackTimeScale() const",
+   "symbol": "non-virtual thunk to CPerformanceController::GetPlaybackTimeScale() const"
+  },
+  {
+   "index": 23,
+   "name": "AddEvent_Camera_Change_FirstPerson",
+   "sig": "AddEvent_Camera_Change_FirstPerson(float, int)",
+   "symbol": "non-virtual thunk to CPerformanceController::AddEvent_Camera_Change_FirstPerson(float, int)"
+  },
+  {
+   "index": 24,
+   "name": "AddEvent_Camera_Change_ThirdPerson",
+   "sig": "AddEvent_Camera_Change_ThirdPerson(float, int)",
+   "symbol": "non-virtual thunk to CPerformanceController::AddEvent_Camera_Change_ThirdPerson(float, int)"
+  },
+  {
+   "index": 25,
+   "name": "AddEvent_Camera_Change_Free",
+   "sig": "AddEvent_Camera_Change_Free(float)",
+   "symbol": "non-virtual thunk to CPerformanceController::AddEvent_Camera_Change_Free(float)"
+  },
+  {
+   "index": 26,
+   "name": "AddEvent_Camera_ChangePlayer",
+   "sig": "AddEvent_Camera_ChangePlayer(float, int)",
+   "symbol": "non-virtual thunk to CPerformanceController::AddEvent_Camera_ChangePlayer(float, int)"
+  },
+  {
+   "index": 27,
+   "name": "AddEvent_Camera_SetView",
+   "sig": "AddEvent_Camera_SetView(SetViewParams_t const&)",
+   "symbol": "non-virtual thunk to CPerformanceController::AddEvent_Camera_SetView(SetViewParams_t const&)"
+  },
+  {
+   "index": 28,
+   "name": "AddEvent_TimeScale",
+   "sig": "AddEvent_TimeScale(float, float)",
+   "symbol": "non-virtual thunk to CPerformanceController::AddEvent_TimeScale(float, float)"
+  }
+ ],
+ "derived": [
+  "bin/replay:CPerformanceController"
+ ],
+ "derived_count": 1
+}

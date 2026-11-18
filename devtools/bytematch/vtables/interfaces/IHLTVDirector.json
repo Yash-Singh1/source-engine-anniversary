@@ -1,0 +1,144 @@
+{
+ "interface": "IHLTVDirector",
+ "headers": [
+  "public/ihltvdirector.h"
+ ],
+ "versions": {
+  "retail": [
+   "HLTVDirector001"
+  ],
+  "ours": [
+   "HLTVDirector001"
+  ],
+  "sdk2013": [
+   "HLTVDirector001"
+  ]
+ },
+ "version_macros": [
+  "INTERFACEVERSION_HLTVDIRECTOR"
+ ],
+ "registrations": [
+  {
+   "module": "episodic/server",
+   "version": "HLTVDirector001",
+   "class": "CHLTVDirector"
+  },
+  {
+   "module": "hl2/server",
+   "version": "HLTVDirector001",
+   "class": "CHLTVDirector"
+  },
+  {
+   "module": "hl2_complete/server",
+   "version": null,
+   "class": "CHLTVDirector"
+  },
+  {
+   "module": "hl2mp/server",
+   "version": "HLTVDirector001",
+   "class": "CHLTVDirector"
+  },
+  {
+   "module": "lostcoast/server",
+   "version": "HLTVDirector001",
+   "class": "CHLTVDirector"
+  }
+ ],
+ "sdk2013_len": 10,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "IsActive()",
+  "SetHLTVServer(IHLTVServer*)",
+  "GetHLTVServer()",
+  "GetDirectorTick()",
+  "GetPVSEntity()",
+  "GetPVSOrigin()",
+  "GetDelay()",
+  "GetModEvents()"
+ ],
+ "retail_reference": {
+  "module": "episodic/server",
+  "class": "CHLTVDirector",
+  "offset": 12,
+  "chain": [
+   "CHLTVDirector",
+   "IHLTVDirector"
+  ]
+ },
+ "retail_len": 10,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 10
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CHLTVDirector",
+   "sig": "~CHLTVDirector()",
+   "symbol": "non-virtual thunk to CHLTVDirector::~CHLTVDirector()"
+  },
+  {
+   "index": 1,
+   "name": "~CHLTVDirector",
+   "sig": "~CHLTVDirector()",
+   "symbol": "non-virtual thunk to CHLTVDirector::~CHLTVDirector()"
+  },
+  {
+   "index": 2,
+   "name": "IsActive",
+   "sig": "IsActive()",
+   "symbol": "non-virtual thunk to CHLTVDirector::IsActive()"
+  },
+  {
+   "index": 3,
+   "name": "SetHLTVServer",
+   "sig": "SetHLTVServer(IHLTVServer*)",
+   "symbol": "non-virtual thunk to CHLTVDirector::SetHLTVServer(IHLTVServer*)"
+  },
+  {
+   "index": 4,
+   "name": "GetHLTVServer",
+   "sig": "GetHLTVServer()",
+   "symbol": "non-virtual thunk to CHLTVDirector::GetHLTVServer()"
+  },
+  {
+   "index": 5,
+   "name": "GetDirectorTick",
+   "sig": "GetDirectorTick()",
+   "symbol": "non-virtual thunk to CHLTVDirector::GetDirectorTick()"
+  },
+  {
+   "index": 6,
+   "name": "GetPVSEntity",
+   "sig": "GetPVSEntity()",
+   "symbol": "non-virtual thunk to CHLTVDirector::GetPVSEntity()"
+  },
+  {
+   "index": 7,
+   "name": "GetPVSOrigin",
+   "sig": "GetPVSOrigin()",
+   "symbol": "non-virtual thunk to CHLTVDirector::GetPVSOrigin()"
+  },
+  {
+   "index": 8,
+   "name": "GetDelay",
+   "sig": "GetDelay()",
+   "symbol": "non-virtual thunk to CHLTVDirector::GetDelay()"
+  },
+  {
+   "index": 9,
+   "name": "GetModEvents",
+   "sig": "GetModEvents()",
+   "symbol": "non-virtual thunk to CHLTVDirector::GetModEvents()"
+  }
+ ],
+ "derived": [
+  "episodic/server:CHLTVDirector",
+  "hl2/server:CHLTVDirector",
+  "hl2_complete/server:CHLTVDirector",
+  "hl2mp/server:CHLTVDirector",
+  "lostcoast/server:CHLTVDirector"
+ ],
+ "derived_count": 5
+}

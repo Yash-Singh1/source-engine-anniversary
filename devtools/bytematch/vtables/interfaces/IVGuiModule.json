@@ -1,0 +1,108 @@
+{
+ "interface": "IVGuiModule",
+ "headers": [
+  "common/IVguiModule.h"
+ ],
+ "versions": {
+  "retail": [
+   "VGuiModuleServerBrowser001"
+  ],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [
+  {
+   "module": "bin/ServerBrowser",
+   "version": "VGuiModuleServerBrowser001",
+   "class": "CServerBrowser"
+  }
+ ],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "bin/ServerBrowser",
+  "class": "CServerBrowser",
+  "offset": 4,
+  "chain": [
+   "CServerBrowser",
+   "IVGuiModule"
+  ]
+ },
+ "retail_len": 11,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 11
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CServerBrowser",
+   "sig": "~CServerBrowser()",
+   "symbol": "non-virtual thunk to CServerBrowser::~CServerBrowser()"
+  },
+  {
+   "index": 1,
+   "name": "~CServerBrowser",
+   "sig": "~CServerBrowser()",
+   "symbol": "non-virtual thunk to CServerBrowser::~CServerBrowser()"
+  },
+  {
+   "index": 2,
+   "name": "Initialize",
+   "sig": "Initialize(void* (**)(char const*, int*), int)",
+   "symbol": "non-virtual thunk to CServerBrowser::Initialize(void* (**)(char const*, int*), int)"
+  },
+  {
+   "index": 3,
+   "name": "PostInitialize",
+   "sig": "PostInitialize(void* (**)(char const*, int*), int)",
+   "symbol": "non-virtual thunk to CServerBrowser::PostInitialize(void* (**)(char const*, int*), int)"
+  },
+  {
+   "index": 4,
+   "name": "Activate",
+   "sig": "Activate()",
+   "symbol": "non-virtual thunk to CServerBrowser::Activate()"
+  },
+  {
+   "index": 5,
+   "name": "IsValid",
+   "sig": "IsValid()",
+   "symbol": "non-virtual thunk to CServerBrowser::IsValid()"
+  },
+  {
+   "index": 6,
+   "name": "Deactivate",
+   "sig": "Deactivate()",
+   "symbol": "non-virtual thunk to CServerBrowser::Deactivate()"
+  },
+  {
+   "index": 7,
+   "name": "Reactivate",
+   "sig": "Reactivate()",
+   "symbol": "non-virtual thunk to CServerBrowser::Reactivate()"
+  },
+  {
+   "index": 8,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "non-virtual thunk to CServerBrowser::Shutdown()"
+  },
+  {
+   "index": 9,
+   "name": "GetPanel",
+   "sig": "GetPanel()",
+   "symbol": "non-virtual thunk to CServerBrowser::GetPanel()"
+  },
+  {
+   "index": 10,
+   "name": "SetParent",
+   "sig": "SetParent(unsigned int)",
+   "symbol": "non-virtual thunk to CServerBrowser::SetParent(unsigned int)"
+  }
+ ],
+ "derived": [
+  "bin/ServerBrowser:CServerBrowser"
+ ],
+ "derived_count": 1
+}

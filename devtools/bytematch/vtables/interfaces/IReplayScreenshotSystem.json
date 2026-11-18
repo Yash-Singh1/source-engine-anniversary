@@ -1,0 +1,68 @@
+{
+ "interface": "IReplayScreenshotSystem",
+ "headers": [
+  "common/replay/ireplayscreenshotsystem.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 4,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "WriteReplayScreenshot(WriteReplayScreenshotParams_t&)",
+  "UpdateReplayScreenshotCache()"
+ ],
+ "retail_reference": {
+  "module": "episodic/client",
+  "class": "CViewRender",
+  "offset": 4,
+  "chain": [
+   "CViewRender",
+   "IReplayScreenshotSystem"
+  ]
+ },
+ "retail_len": 4,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 4
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CViewRender",
+   "sig": "~CViewRender()",
+   "symbol": "non-virtual thunk to CViewRender::~CViewRender()"
+  },
+  {
+   "index": 1,
+   "name": "~CViewRender",
+   "sig": "~CViewRender()",
+   "symbol": "non-virtual thunk to CViewRender::~CViewRender()"
+  },
+  {
+   "index": 2,
+   "name": "WriteReplayScreenshot",
+   "sig": "WriteReplayScreenshot(WriteReplayScreenshotParams_t&)",
+   "symbol": "non-virtual thunk to CViewRender::WriteReplayScreenshot(WriteReplayScreenshotParams_t&)"
+  },
+  {
+   "index": 3,
+   "name": "UpdateReplayScreenshotCache",
+   "sig": "UpdateReplayScreenshotCache()",
+   "symbol": "non-virtual thunk to CViewRender::UpdateReplayScreenshotCache()"
+  }
+ ],
+ "derived": [
+  "episodic/client:CViewRender",
+  "hl2/client:CViewRender",
+  "hl2_complete/client:CViewRender",
+  "hl2mp/client:CViewRender",
+  "lostcoast/client:CViewRender"
+ ],
+ "derived_count": 5
+}

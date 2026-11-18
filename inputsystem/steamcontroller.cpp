@@ -93,12 +93,9 @@ static SDigitalMenuAction g_DigitalMenuActions[] = {
 	{ "menu_cancel", STEAMCONTROLLER_B, 0, { false }, { false } },
 	{ "menu_select", STEAMCONTROLLER_A, 0, { false }, { false } },
 	{ "resume_esc", STEAMCONTROLLER_START, 0, { false }, { false } },
-	{ "cl_trigger_first_notification", STEAMCONTROLLER_F1, 0, { false }, { false } },		// Command is in the in-game action set (use for hitting accept/ok on dialogs)
-	{ "cl_decline_first_notification", STEAMCONTROLLER_F2, 0, { false }, { false } },		// Command is in the in-game action set (use for hitting cancel/decline on dialogs)
 	{ "menu_toggle_function", STEAMCONTROLLER_Y, 0, { false }, { false }, },				// Command is in the in-game HUD action set
 	{ "menu_alt_function", STEAMCONTROLLER_X, 0, { false }, { false } },					// Command is in the in-game HUD action set
 	{ "cancelselect", STEAMCONTROLLER_START, 0, { false }, { false } },						// Command is in the in-game action set
-	{ "toggleready", STEAMCONTROLLER_F4, 0, { false }, { false } },							// Command is in the in-game action set
 };
 
 struct SAnalogAction
@@ -214,7 +211,7 @@ static const wchar_t* g_MapSteamControllerOriginToDescription[] = {
 
 bool CInputSystem::InitializeSteamControllerActionSets()
 {
-	auto psteamcontroller = g_pInputSystem->SteamControllerInterface();
+	auto psteamcontroller = SteamControllerInterface();
 	if ( !psteamcontroller )
 	{
 		return false;

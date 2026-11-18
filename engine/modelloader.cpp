@@ -839,15 +839,15 @@ CMapLoadHelper::CMapLoadHelper( int lumpToLoad )
 	if ( lump->uncompressedSize != 0 )
 	{
 		// Handle compressed lump -- users of the class see the uncompressed data
-		AssertMsg( CLZMA::IsCompressed( m_pData ),
+		AssertMsg( CLZMA().IsCompressed( m_pData ),
 		           "Lump claims to be compressed but is not recognized as LZMA" );
 
-		m_nLumpSize = CLZMA::GetActualSize( m_pData );
+		m_nLumpSize = CLZMA().GetActualSize( m_pData );
 		AssertMsg( lump->uncompressedSize == m_nLumpSize,
 		           "Lump header disagrees with lzma header for compressed lump" );
 
 		m_pUncompressedData = (unsigned char *)malloc( m_nLumpSize );
-		CLZMA::Uncompress( m_pData, m_pUncompressedData );
+		CLZMA().Uncompress( m_pData, m_pUncompressedData );
 
 		m_pData = m_pUncompressedData;
 	}
@@ -2821,14 +2821,14 @@ bool Mod_LoadGameLump( int lumpId, void *pOutBuffer, int size )
 
 	// We'll fall though to here through here if we're compressed
 	bool bResult = false;
-	if ( !CLZMA::IsCompressed( pData ) || CLZMA::GetActualSize( (unsigned char *)pData ) != g_GameLumpDict[i].uncompressedSize )
+	if ( !CLZMA().IsCompressed( pData ) || CLZMA().GetActualSize( (unsigned char *)pData ) != g_GameLumpDict[i].uncompressedSize )
 	{
 		Warning( "Failed loading game lump %i: lump claims to be compressed but metadata does not match\n", lumpId );
 	}
 	else
 	{
 		// uncompress directly into caller's buffer
-		int outputLength = CLZMA::Uncompress( pData, (unsigned char *)pOutBuffer );
+		int outputLength = CLZMA().Uncompress( pData, (unsigned char *)pOutBuffer );
 		bResult = ( outputLength > 0 && (unsigned int)outputLength == g_GameLumpDict[i].uncompressedSize );
 	}
 

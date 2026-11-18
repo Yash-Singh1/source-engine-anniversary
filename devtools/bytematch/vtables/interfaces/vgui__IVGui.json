@@ -1,0 +1,265 @@
+{
+ "interface": "vgui::IVGui",
+ "headers": [
+  "public/vgui/IVGui.h"
+ ],
+ "versions": {
+  "retail": [
+   "VGUI_ivgui008"
+  ],
+  "ours": [
+   "VGUI_ivgui008"
+  ],
+  "sdk2013": [
+   "VGUI_ivgui008"
+  ]
+ },
+ "version_macros": [
+  "VGUI_IVGUI_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/vgui2",
+   "version": "VGUI_ivgui008",
+   "class": "CVGui"
+  }
+ ],
+ "sdk2013_len": 30,
+ "sdk2013_slots": [
+  "Connect(void* (*)(char const*, int*))",
+  "Disconnect()",
+  "QueryInterface(char const*)",
+  "Init()",
+  "Shutdown()",
+  "Start()",
+  "Stop()",
+  "IsRunning()",
+  "RunFrame()",
+  "ShutdownMessage(unsigned int)",
+  "AllocPanel()",
+  "FreePanel(unsigned int)",
+  "DPrintf(char const*, ...)",
+  "DPrintf2(char const*, ...)",
+  "SpewAllActivePanelNames()",
+  "PanelToHandle(unsigned int)",
+  "HandleToPanel(unsigned long)",
+  "MarkPanelForDeletion(unsigned int)",
+  "AddTickSignal(unsigned int, int)",
+  "RemoveTickSignal(unsigned int)",
+  "PostMessage(unsigned int, KeyValues*, unsigned int, float)",
+  "CreateContext()",
+  "DestroyContext(int)",
+  "AssociatePanelWithContext(int, unsigned int)",
+  "ActivateContext(int)",
+  "SetSleep(bool)",
+  "GetShouldVGuiControlSleep()",
+  "SetVRMode(bool)",
+  "GetVRMode()",
+  "AddTickSignalToHead(unsigned int, int)"
+ ],
+ "retail_reference": {
+  "module": "bin/vgui2",
+  "class": "CVGui",
+  "offset": 0,
+  "chain": [
+   "CVGui",
+   "CTier3AppSystem<vgui::IVGui, 0>",
+   "CTier2AppSystem<vgui::IVGui, 0>",
+   "CTier1AppSystem<vgui::IVGui, 0>",
+   "CTier0AppSystem<vgui::IVGui>",
+   "CBaseAppSystem<vgui::IVGui>",
+   "vgui::IVGui"
+  ]
+ },
+ "retail_len": 30,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 30
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Connect",
+   "sig": "Connect(void* (*)(char const*, int*))",
+   "symbol": "CVGui::Connect(void* (*)(char const*, int*))"
+  },
+  {
+   "index": 1,
+   "name": "Disconnect",
+   "sig": "Disconnect()",
+   "symbol": "CVGui::Disconnect()"
+  },
+  {
+   "index": 2,
+   "name": "QueryInterface",
+   "sig": "QueryInterface(char const*)",
+   "symbol": "CVGui::QueryInterface(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "CVGui::Init()"
+  },
+  {
+   "index": 4,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CVGui::Shutdown()"
+  },
+  {
+   "index": 5,
+   "name": "Start",
+   "sig": "Start()",
+   "symbol": "CVGui::Start()"
+  },
+  {
+   "index": 6,
+   "name": "Stop",
+   "sig": "Stop()",
+   "symbol": "CVGui::Stop()"
+  },
+  {
+   "index": 7,
+   "name": "IsRunning",
+   "sig": "IsRunning()",
+   "symbol": "CVGui::IsRunning()"
+  },
+  {
+   "index": 8,
+   "name": "RunFrame",
+   "sig": "RunFrame()",
+   "symbol": "CVGui::RunFrame()"
+  },
+  {
+   "index": 9,
+   "name": "ShutdownMessage",
+   "sig": "ShutdownMessage(unsigned int)",
+   "symbol": "CVGui::ShutdownMessage(unsigned int)"
+  },
+  {
+   "index": 10,
+   "name": "AllocPanel",
+   "sig": "AllocPanel()",
+   "symbol": "CVGui::AllocPanel()"
+  },
+  {
+   "index": 11,
+   "name": "FreePanel",
+   "sig": "FreePanel(unsigned int)",
+   "symbol": "CVGui::FreePanel(unsigned int)"
+  },
+  {
+   "index": 12,
+   "name": "DPrintf",
+   "sig": "DPrintf(char const*, ...)",
+   "symbol": "CVGui::DPrintf(char const*, ...)"
+  },
+  {
+   "index": 13,
+   "name": "DPrintf2",
+   "sig": "DPrintf2(char const*, ...)",
+   "symbol": "CVGui::DPrintf2(char const*, ...)"
+  },
+  {
+   "index": 14,
+   "name": "SpewAllActivePanelNames",
+   "sig": "SpewAllActivePanelNames()",
+   "symbol": "CVGui::SpewAllActivePanelNames()"
+  },
+  {
+   "index": 15,
+   "name": "PanelToHandle",
+   "sig": "PanelToHandle(unsigned int)",
+   "symbol": "CVGui::PanelToHandle(unsigned int)"
+  },
+  {
+   "index": 16,
+   "name": "HandleToPanel",
+   "sig": "HandleToPanel(unsigned long)",
+   "symbol": "CVGui::HandleToPanel(unsigned long)"
+  },
+  {
+   "index": 17,
+   "name": "MarkPanelForDeletion",
+   "sig": "MarkPanelForDeletion(unsigned int)",
+   "symbol": "CVGui::MarkPanelForDeletion(unsigned int)"
+  },
+  {
+   "index": 18,
+   "name": "AddTickSignal",
+   "sig": "AddTickSignal(unsigned int, int)",
+   "symbol": "CVGui::AddTickSignal(unsigned int, int)"
+  },
+  {
+   "index": 19,
+   "name": "RemoveTickSignal",
+   "sig": "RemoveTickSignal(unsigned int)",
+   "symbol": "CVGui::RemoveTickSignal(unsigned int)"
+  },
+  {
+   "index": 20,
+   "name": "PostMessage",
+   "sig": "PostMessage(unsigned int, KeyValues*, unsigned int, float)",
+   "symbol": "CVGui::PostMessage(unsigned int, KeyValues*, unsigned int, float)"
+  },
+  {
+   "index": 21,
+   "name": "CreateContext",
+   "sig": "CreateContext()",
+   "symbol": "CVGui::CreateContext()"
+  },
+  {
+   "index": 22,
+   "name": "DestroyContext",
+   "sig": "DestroyContext(int)",
+   "symbol": "CVGui::DestroyContext(int)"
+  },
+  {
+   "index": 23,
+   "name": "AssociatePanelWithContext",
+   "sig": "AssociatePanelWithContext(int, unsigned int)",
+   "symbol": "CVGui::AssociatePanelWithContext(int, unsigned int)"
+  },
+  {
+   "index": 24,
+   "name": "ActivateContext",
+   "sig": "ActivateContext(int)",
+   "symbol": "CVGui::ActivateContext(int)"
+  },
+  {
+   "index": 25,
+   "name": "SetSleep",
+   "sig": "SetSleep(bool)",
+   "symbol": "CVGui::SetSleep(bool)"
+  },
+  {
+   "index": 26,
+   "name": "GetShouldVGuiControlSleep",
+   "sig": "GetShouldVGuiControlSleep()",
+   "symbol": "CVGui::GetShouldVGuiControlSleep()"
+  },
+  {
+   "index": 27,
+   "name": "SetVRMode",
+   "sig": "SetVRMode(bool)",
+   "symbol": "CVGui::SetVRMode(bool)"
+  },
+  {
+   "index": 28,
+   "name": "GetVRMode",
+   "sig": "GetVRMode()",
+   "symbol": "CVGui::GetVRMode()"
+  },
+  {
+   "index": 29,
+   "name": "AddTickSignalToHead",
+   "sig": "AddTickSignalToHead(unsigned int, int)",
+   "symbol": "CVGui::AddTickSignalToHead(unsigned int, int)"
+  }
+ ],
+ "derived": [
+  "bin/vgui2:CVGui"
+ ],
+ "derived_count": 1
+}

@@ -1,0 +1,1712 @@
+{
+ "interface": "IMaterialProxy",
+ "headers": [
+  "public/materialsystem/imaterialproxy.h"
+ ],
+ "versions": {
+  "retail": [
+   "Abs_IMaterialProxy003",
+   "Add_IMaterialProxy003",
+   "Alpha_IMaterialProxy003",
+   "AnimateSpecificTexture_IMaterialProxy003",
+   "AnimatedEntityTexture_IMaterialProxy003",
+   "AnimatedOffsetTexture_IMaterialProxy003",
+   "AnimatedTexture_IMaterialProxy003",
+   "BreakableSurface_IMaterialProxy003",
+   "Camo_IMaterialProxy003",
+   "Clamp_IMaterialProxy003",
+   "ConveyorScroll_IMaterialProxy003",
+   "CurrentTime_IMaterialProxy003",
+   "Divide_IMaterialProxy003",
+   "Dummy_IMaterialProxy003",
+   "Empty_IMaterialProxy003",
+   "EntityOriginAlyx_IMaterialProxy003",
+   "EntityOrigin_IMaterialProxy003",
+   "EntityRandom_IMaterialProxy003",
+   "EntitySpeed_IMaterialProxy003",
+   "Ep1IntroVortRefract_IMaterialProxy003",
+   "Equals_IMaterialProxy003",
+   "Exponential_IMaterialProxy003",
+   "FleshInterior_IMaterialProxy003",
+   "Frac_IMaterialProxy003",
+   "GaussianNoise_IMaterialProxy003",
+   "Health_IMaterialProxy003",
+   "HeliBlade_IMaterialProxy003",
+   "Int_IMaterialProxy003",
+   "IsNPC_IMaterialProxy003",
+   "LessOrEqual_IMaterialProxy003",
+   "LinearRamp_IMaterialProxy003",
+   "MaterialModifyAnimated_IMaterialProxy003",
+   "MaterialModify_IMaterialProxy003",
+   "MatrixRotate_IMaterialProxy003",
+   "MotionBlur_IMaterialProxy003",
+   "Multiply_IMaterialProxy003",
+   "ParticleSphereProxy_IMaterialProxy003",
+   "PlayerLogo_IMaterialProxy003",
+   "PlayerPosition_IMaterialProxy003",
+   "PlayerProximity_IMaterialProxy003",
+   "PlayerSpeed_IMaterialProxy003",
+   "PlayerTeamMatch_IMaterialProxy003",
+   "PlayerView_IMaterialProxy003",
+   "Pupil_IMaterialProxy003",
+   "SelectFirstIfNonZero_IMaterialProxy003",
+   "ShadowModel_IMaterialProxy003",
+   "Shadow_IMaterialProxy003",
+   "Shield_IMaterialProxy003",
+   "Sine_IMaterialProxy003",
+   "Subtract_IMaterialProxy003",
+   "TextureScroll_IMaterialProxy003",
+   "TextureTransform_IMaterialProxy003",
+   "ToggleTexture_IMaterialProxy003",
+   "UniformNoise_IMaterialProxy003",
+   "VortEmissive_IMaterialProxy003",
+   "WaterLOD_IMaterialProxy003",
+   "WorldDims_IMaterialProxy003",
+   "WrapMinMax_IMaterialProxy003",
+   "engine_post_IMaterialProxy003",
+   "lampbeam_IMaterialProxy003",
+   "lamphalo_IMaterialProxy003",
+   "replace_proxy_IMaterialProxy003"
+  ],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [
+  {
+   "module": "bin/materialsystem",
+   "version": "replace_proxy_IMaterialProxy003",
+   "class": "CReplacementProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "Alpha_IMaterialProxy003",
+   "class": "CAlphaMaterialProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "AnimatedEntityTexture_IMaterialProxy003",
+   "class": "CAnimatedEntityTextureProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "AnimatedOffsetTexture_IMaterialProxy003",
+   "class": "CAnimatedOffsetTextureProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "AnimatedTexture_IMaterialProxy003",
+   "class": "CAnimatedTextureProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "AnimateSpecificTexture_IMaterialProxy003",
+   "class": "CAnimateSpecificTexture"
+  },
+  {
+   "module": "episodic/client",
+   "version": "Camo_IMaterialProxy003",
+   "class": "CCamoMaterialProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "Shadow_IMaterialProxy003",
+   "class": "CShadowProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "ShadowModel_IMaterialProxy003",
+   "class": "CShadowModelProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "BreakableSurface_IMaterialProxy003",
+   "class": "CBreakableSurfaceProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "ConveyorScroll_IMaterialProxy003",
+   "class": "CConveyorMaterialProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "MaterialModify_IMaterialProxy003",
+   "class": "CMaterialModifyProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "MaterialModifyAnimated_IMaterialProxy003",
+   "class": "CMaterialModifyAnimatedProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "Dummy_IMaterialProxy003",
+   "class": "CDummyMaterialProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "EntityOrigin_IMaterialProxy003",
+   "class": "CEntityOriginMaterialProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "EntityOriginAlyx_IMaterialProxy003",
+   "class": "CEntityOriginAlyxMaterialProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "Ep1IntroVortRefract_IMaterialProxy003",
+   "class": "CEp1IntroVortRefractMaterialProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "VortEmissive_IMaterialProxy003",
+   "class": "CVortEmissiveProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "FleshInterior_IMaterialProxy003",
+   "class": "CFleshInteriorMaterialProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "HeliBlade_IMaterialProxy003",
+   "class": "CHeliBladeMaterialProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "Shield_IMaterialProxy003",
+   "class": "CShieldProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "IsNPC_IMaterialProxy003",
+   "class": "CProxyIsNPC"
+  },
+  {
+   "module": "episodic/client",
+   "version": "lampbeam_IMaterialProxy003",
+   "class": "CLampBeamProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "lamphalo_IMaterialProxy003",
+   "class": "CLampHaloProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "Add_IMaterialProxy003",
+   "class": "CAddProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "Subtract_IMaterialProxy003",
+   "class": "CSubtractProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "Multiply_IMaterialProxy003",
+   "class": "CMultiplyProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "Divide_IMaterialProxy003",
+   "class": "CDivideProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "Clamp_IMaterialProxy003",
+   "class": "CClampProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "Sine_IMaterialProxy003",
+   "class": "CSineProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "Equals_IMaterialProxy003",
+   "class": "CEqualsProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "Frac_IMaterialProxy003",
+   "class": "CFracProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "Int_IMaterialProxy003",
+   "class": "CIntProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "LinearRamp_IMaterialProxy003",
+   "class": "CLinearRampProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "UniformNoise_IMaterialProxy003",
+   "class": "CUniformNoiseProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "GaussianNoise_IMaterialProxy003",
+   "class": "CGaussianNoiseProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "Exponential_IMaterialProxy003",
+   "class": "CExponentialProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "Abs_IMaterialProxy003",
+   "class": "CAbsProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "Empty_IMaterialProxy003",
+   "class": "CEmptyProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "LessOrEqual_IMaterialProxy003",
+   "class": "CLessOrEqualProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "WrapMinMax_IMaterialProxy003",
+   "class": "CWrapMinMaxProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "SelectFirstIfNonZero_IMaterialProxy003",
+   "class": "CSelectFirstIfNonZeroProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "TextureTransform_IMaterialProxy003",
+   "class": "CTextureTransformProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "MatrixRotate_IMaterialProxy003",
+   "class": "CMatrixRotateProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "ParticleSphereProxy_IMaterialProxy003",
+   "class": "ParticleSphereProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "Health_IMaterialProxy003",
+   "class": "CProxyHealth"
+  },
+  {
+   "module": "episodic/client",
+   "version": "PlayerProximity_IMaterialProxy003",
+   "class": "CPlayerProximityProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "PlayerTeamMatch_IMaterialProxy003",
+   "class": "CPlayerTeamMatchProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "PlayerView_IMaterialProxy003",
+   "class": "CPlayerViewProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "PlayerSpeed_IMaterialProxy003",
+   "class": "CPlayerSpeedProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "PlayerPosition_IMaterialProxy003",
+   "class": "CPlayerPositionProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "EntitySpeed_IMaterialProxy003",
+   "class": "CEntitySpeedProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "EntityRandom_IMaterialProxy003",
+   "class": "CEntityRandomProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "PlayerLogo_IMaterialProxy003",
+   "class": "CPlayerLogoProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "Pupil_IMaterialProxy003",
+   "class": "CPupilProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "TextureScroll_IMaterialProxy003",
+   "class": "CTextureScrollMaterialProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "CurrentTime_IMaterialProxy003",
+   "class": "CTimeMaterialProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "ToggleTexture_IMaterialProxy003",
+   "class": "CBaseToggleTextureProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "engine_post_IMaterialProxy003",
+   "class": "CEnginePostMaterialProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "MotionBlur_IMaterialProxy003",
+   "class": "CMotionBlurMaterialProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "WaterLOD_IMaterialProxy003",
+   "class": "CWaterLODMaterialProxy"
+  },
+  {
+   "module": "episodic/client",
+   "version": "WorldDims_IMaterialProxy003",
+   "class": "CWorldDimsProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "Alpha_IMaterialProxy003",
+   "class": "CAlphaMaterialProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "AnimatedEntityTexture_IMaterialProxy003",
+   "class": "CAnimatedEntityTextureProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "AnimatedOffsetTexture_IMaterialProxy003",
+   "class": "CAnimatedOffsetTextureProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "AnimatedTexture_IMaterialProxy003",
+   "class": "CAnimatedTextureProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "AnimateSpecificTexture_IMaterialProxy003",
+   "class": "CAnimateSpecificTexture"
+  },
+  {
+   "module": "hl2/client",
+   "version": "Camo_IMaterialProxy003",
+   "class": "CCamoMaterialProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "Shadow_IMaterialProxy003",
+   "class": "CShadowProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "ShadowModel_IMaterialProxy003",
+   "class": "CShadowModelProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "BreakableSurface_IMaterialProxy003",
+   "class": "CBreakableSurfaceProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "ConveyorScroll_IMaterialProxy003",
+   "class": "CConveyorMaterialProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "MaterialModify_IMaterialProxy003",
+   "class": "CMaterialModifyProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "MaterialModifyAnimated_IMaterialProxy003",
+   "class": "CMaterialModifyAnimatedProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "Dummy_IMaterialProxy003",
+   "class": "CDummyMaterialProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "EntityOrigin_IMaterialProxy003",
+   "class": "CEntityOriginMaterialProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "EntityOriginAlyx_IMaterialProxy003",
+   "class": "CEntityOriginAlyxMaterialProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "Ep1IntroVortRefract_IMaterialProxy003",
+   "class": "CEp1IntroVortRefractMaterialProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "VortEmissive_IMaterialProxy003",
+   "class": "CVortEmissiveProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "FleshInterior_IMaterialProxy003",
+   "class": "CFleshInteriorMaterialProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "HeliBlade_IMaterialProxy003",
+   "class": "CHeliBladeMaterialProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "Shield_IMaterialProxy003",
+   "class": "CShieldProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "IsNPC_IMaterialProxy003",
+   "class": "CProxyIsNPC"
+  },
+  {
+   "module": "hl2/client",
+   "version": "lampbeam_IMaterialProxy003",
+   "class": "CLampBeamProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "lamphalo_IMaterialProxy003",
+   "class": "CLampHaloProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "Add_IMaterialProxy003",
+   "class": "CAddProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "Subtract_IMaterialProxy003",
+   "class": "CSubtractProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "Multiply_IMaterialProxy003",
+   "class": "CMultiplyProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "Divide_IMaterialProxy003",
+   "class": "CDivideProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "Clamp_IMaterialProxy003",
+   "class": "CClampProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "Sine_IMaterialProxy003",
+   "class": "CSineProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "Equals_IMaterialProxy003",
+   "class": "CEqualsProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "Frac_IMaterialProxy003",
+   "class": "CFracProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "Int_IMaterialProxy003",
+   "class": "CIntProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "LinearRamp_IMaterialProxy003",
+   "class": "CLinearRampProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "UniformNoise_IMaterialProxy003",
+   "class": "CUniformNoiseProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "GaussianNoise_IMaterialProxy003",
+   "class": "CGaussianNoiseProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "Exponential_IMaterialProxy003",
+   "class": "CExponentialProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "Abs_IMaterialProxy003",
+   "class": "CAbsProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "Empty_IMaterialProxy003",
+   "class": "CEmptyProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "LessOrEqual_IMaterialProxy003",
+   "class": "CLessOrEqualProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "WrapMinMax_IMaterialProxy003",
+   "class": "CWrapMinMaxProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "SelectFirstIfNonZero_IMaterialProxy003",
+   "class": "CSelectFirstIfNonZeroProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "TextureTransform_IMaterialProxy003",
+   "class": "CTextureTransformProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "MatrixRotate_IMaterialProxy003",
+   "class": "CMatrixRotateProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "ParticleSphereProxy_IMaterialProxy003",
+   "class": "ParticleSphereProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "Health_IMaterialProxy003",
+   "class": "CProxyHealth"
+  },
+  {
+   "module": "hl2/client",
+   "version": "PlayerProximity_IMaterialProxy003",
+   "class": "CPlayerProximityProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "PlayerTeamMatch_IMaterialProxy003",
+   "class": "CPlayerTeamMatchProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "PlayerView_IMaterialProxy003",
+   "class": "CPlayerViewProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "PlayerSpeed_IMaterialProxy003",
+   "class": "CPlayerSpeedProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "PlayerPosition_IMaterialProxy003",
+   "class": "CPlayerPositionProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "EntitySpeed_IMaterialProxy003",
+   "class": "CEntitySpeedProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "EntityRandom_IMaterialProxy003",
+   "class": "CEntityRandomProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "PlayerLogo_IMaterialProxy003",
+   "class": "CPlayerLogoProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "Pupil_IMaterialProxy003",
+   "class": "CPupilProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "TextureScroll_IMaterialProxy003",
+   "class": "CTextureScrollMaterialProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "CurrentTime_IMaterialProxy003",
+   "class": "CTimeMaterialProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "ToggleTexture_IMaterialProxy003",
+   "class": "CBaseToggleTextureProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "engine_post_IMaterialProxy003",
+   "class": "CEnginePostMaterialProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "MotionBlur_IMaterialProxy003",
+   "class": "CMotionBlurMaterialProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "WaterLOD_IMaterialProxy003",
+   "class": "CWaterLODMaterialProxy"
+  },
+  {
+   "module": "hl2/client",
+   "version": "WorldDims_IMaterialProxy003",
+   "class": "CWorldDimsProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "Alpha_IMaterialProxy003",
+   "class": "CAlphaMaterialProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "AnimatedEntityTexture_IMaterialProxy003",
+   "class": "CAnimatedEntityTextureProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "AnimatedOffsetTexture_IMaterialProxy003",
+   "class": "CAnimatedOffsetTextureProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "AnimatedTexture_IMaterialProxy003",
+   "class": "CAnimatedTextureProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "AnimateSpecificTexture_IMaterialProxy003",
+   "class": "CAnimateSpecificTexture"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "Camo_IMaterialProxy003",
+   "class": "CCamoMaterialProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "Shadow_IMaterialProxy003",
+   "class": "CShadowProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "ShadowModel_IMaterialProxy003",
+   "class": "CShadowModelProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "BreakableSurface_IMaterialProxy003",
+   "class": "CBreakableSurfaceProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "ConveyorScroll_IMaterialProxy003",
+   "class": "CConveyorMaterialProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "MaterialModify_IMaterialProxy003",
+   "class": "CMaterialModifyProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "MaterialModifyAnimated_IMaterialProxy003",
+   "class": "CMaterialModifyAnimatedProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "Dummy_IMaterialProxy003",
+   "class": "CDummyMaterialProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "EntityOrigin_IMaterialProxy003",
+   "class": "CEntityOriginMaterialProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "EntityOriginAlyx_IMaterialProxy003",
+   "class": "CEntityOriginAlyxMaterialProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "Ep1IntroVortRefract_IMaterialProxy003",
+   "class": "CEp1IntroVortRefractMaterialProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "VortEmissive_IMaterialProxy003",
+   "class": "CVortEmissiveProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "FleshInterior_IMaterialProxy003",
+   "class": "CFleshInteriorMaterialProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "HeliBlade_IMaterialProxy003",
+   "class": "CHeliBladeMaterialProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "Shield_IMaterialProxy003",
+   "class": "CShieldProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "IsNPC_IMaterialProxy003",
+   "class": "CProxyIsNPC"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "lampbeam_IMaterialProxy003",
+   "class": "CLampBeamProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "lamphalo_IMaterialProxy003",
+   "class": "CLampHaloProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "Add_IMaterialProxy003",
+   "class": "CAddProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "Subtract_IMaterialProxy003",
+   "class": "CSubtractProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "Multiply_IMaterialProxy003",
+   "class": "CMultiplyProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "Divide_IMaterialProxy003",
+   "class": "CDivideProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "Clamp_IMaterialProxy003",
+   "class": "CClampProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "Sine_IMaterialProxy003",
+   "class": "CSineProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "Equals_IMaterialProxy003",
+   "class": "CEqualsProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "Frac_IMaterialProxy003",
+   "class": "CFracProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "Int_IMaterialProxy003",
+   "class": "CIntProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "LinearRamp_IMaterialProxy003",
+   "class": "CLinearRampProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "UniformNoise_IMaterialProxy003",
+   "class": "CUniformNoiseProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "GaussianNoise_IMaterialProxy003",
+   "class": "CGaussianNoiseProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "Exponential_IMaterialProxy003",
+   "class": "CExponentialProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "Abs_IMaterialProxy003",
+   "class": "CAbsProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "Empty_IMaterialProxy003",
+   "class": "CEmptyProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "LessOrEqual_IMaterialProxy003",
+   "class": "CLessOrEqualProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "WrapMinMax_IMaterialProxy003",
+   "class": "CWrapMinMaxProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "SelectFirstIfNonZero_IMaterialProxy003",
+   "class": "CSelectFirstIfNonZeroProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "TextureTransform_IMaterialProxy003",
+   "class": "CTextureTransformProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "MatrixRotate_IMaterialProxy003",
+   "class": "CMatrixRotateProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "ParticleSphereProxy_IMaterialProxy003",
+   "class": "ParticleSphereProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "Health_IMaterialProxy003",
+   "class": "CProxyHealth"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "PlayerProximity_IMaterialProxy003",
+   "class": "CPlayerProximityProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "PlayerTeamMatch_IMaterialProxy003",
+   "class": "CPlayerTeamMatchProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "PlayerView_IMaterialProxy003",
+   "class": "CPlayerViewProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "PlayerSpeed_IMaterialProxy003",
+   "class": "CPlayerSpeedProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "PlayerPosition_IMaterialProxy003",
+   "class": "CPlayerPositionProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "EntitySpeed_IMaterialProxy003",
+   "class": "CEntitySpeedProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "EntityRandom_IMaterialProxy003",
+   "class": "CEntityRandomProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "PlayerLogo_IMaterialProxy003",
+   "class": "CPlayerLogoProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "Pupil_IMaterialProxy003",
+   "class": "CPupilProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "TextureScroll_IMaterialProxy003",
+   "class": "CTextureScrollMaterialProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "CurrentTime_IMaterialProxy003",
+   "class": "CTimeMaterialProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "ToggleTexture_IMaterialProxy003",
+   "class": "CBaseToggleTextureProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "engine_post_IMaterialProxy003",
+   "class": "CEnginePostMaterialProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "MotionBlur_IMaterialProxy003",
+   "class": "CMotionBlurMaterialProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "WaterLOD_IMaterialProxy003",
+   "class": "CWaterLODMaterialProxy"
+  },
+  {
+   "module": "hl2_complete/client",
+   "version": "WorldDims_IMaterialProxy003",
+   "class": "CWorldDimsProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "Alpha_IMaterialProxy003",
+   "class": "CAlphaMaterialProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "AnimatedEntityTexture_IMaterialProxy003",
+   "class": "CAnimatedEntityTextureProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "AnimatedOffsetTexture_IMaterialProxy003",
+   "class": "CAnimatedOffsetTextureProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "AnimatedTexture_IMaterialProxy003",
+   "class": "CAnimatedTextureProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "AnimateSpecificTexture_IMaterialProxy003",
+   "class": "CAnimateSpecificTexture"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "Camo_IMaterialProxy003",
+   "class": "CCamoMaterialProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "Shadow_IMaterialProxy003",
+   "class": "CShadowProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "ShadowModel_IMaterialProxy003",
+   "class": "CShadowModelProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "BreakableSurface_IMaterialProxy003",
+   "class": "CBreakableSurfaceProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "ConveyorScroll_IMaterialProxy003",
+   "class": "CConveyorMaterialProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "MaterialModify_IMaterialProxy003",
+   "class": "CMaterialModifyProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "Dummy_IMaterialProxy003",
+   "class": "CDummyMaterialProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "EntityOrigin_IMaterialProxy003",
+   "class": "CEntityOriginMaterialProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "EntityOriginAlyx_IMaterialProxy003",
+   "class": "CEntityOriginAlyxMaterialProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "Ep1IntroVortRefract_IMaterialProxy003",
+   "class": "CEp1IntroVortRefractMaterialProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "VortEmissive_IMaterialProxy003",
+   "class": "CVortEmissiveProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "HeliBlade_IMaterialProxy003",
+   "class": "CHeliBladeMaterialProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "Shield_IMaterialProxy003",
+   "class": "CShieldProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "IsNPC_IMaterialProxy003",
+   "class": "CProxyIsNPC"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "lampbeam_IMaterialProxy003",
+   "class": "CLampBeamProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "lamphalo_IMaterialProxy003",
+   "class": "CLampHaloProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "Add_IMaterialProxy003",
+   "class": "CAddProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "Subtract_IMaterialProxy003",
+   "class": "CSubtractProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "Multiply_IMaterialProxy003",
+   "class": "CMultiplyProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "Divide_IMaterialProxy003",
+   "class": "CDivideProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "Clamp_IMaterialProxy003",
+   "class": "CClampProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "Sine_IMaterialProxy003",
+   "class": "CSineProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "Equals_IMaterialProxy003",
+   "class": "CEqualsProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "Frac_IMaterialProxy003",
+   "class": "CFracProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "Int_IMaterialProxy003",
+   "class": "CIntProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "LinearRamp_IMaterialProxy003",
+   "class": "CLinearRampProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "UniformNoise_IMaterialProxy003",
+   "class": "CUniformNoiseProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "GaussianNoise_IMaterialProxy003",
+   "class": "CGaussianNoiseProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "Exponential_IMaterialProxy003",
+   "class": "CExponentialProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "Abs_IMaterialProxy003",
+   "class": "CAbsProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "Empty_IMaterialProxy003",
+   "class": "CEmptyProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "LessOrEqual_IMaterialProxy003",
+   "class": "CLessOrEqualProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "WrapMinMax_IMaterialProxy003",
+   "class": "CWrapMinMaxProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "SelectFirstIfNonZero_IMaterialProxy003",
+   "class": "CSelectFirstIfNonZeroProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "TextureTransform_IMaterialProxy003",
+   "class": "CTextureTransformProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "MatrixRotate_IMaterialProxy003",
+   "class": "CMatrixRotateProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "ParticleSphereProxy_IMaterialProxy003",
+   "class": "ParticleSphereProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "Health_IMaterialProxy003",
+   "class": "CProxyHealth"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "PlayerProximity_IMaterialProxy003",
+   "class": "CPlayerProximityProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "PlayerTeamMatch_IMaterialProxy003",
+   "class": "CPlayerTeamMatchProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "PlayerView_IMaterialProxy003",
+   "class": "CPlayerViewProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "PlayerSpeed_IMaterialProxy003",
+   "class": "CPlayerSpeedProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "PlayerPosition_IMaterialProxy003",
+   "class": "CPlayerPositionProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "EntitySpeed_IMaterialProxy003",
+   "class": "CEntitySpeedProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "EntityRandom_IMaterialProxy003",
+   "class": "CEntityRandomProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "PlayerLogo_IMaterialProxy003",
+   "class": "CPlayerLogoProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "Pupil_IMaterialProxy003",
+   "class": "CPupilProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "TextureScroll_IMaterialProxy003",
+   "class": "CTextureScrollMaterialProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "CurrentTime_IMaterialProxy003",
+   "class": "CTimeMaterialProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "ToggleTexture_IMaterialProxy003",
+   "class": "CBaseToggleTextureProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "engine_post_IMaterialProxy003",
+   "class": "CEnginePostMaterialProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "MotionBlur_IMaterialProxy003",
+   "class": "CMotionBlurMaterialProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "WaterLOD_IMaterialProxy003",
+   "class": "CWaterLODMaterialProxy"
+  },
+  {
+   "module": "hl2mp/client",
+   "version": "WorldDims_IMaterialProxy003",
+   "class": "CWorldDimsProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "Alpha_IMaterialProxy003",
+   "class": "CAlphaMaterialProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "AnimatedEntityTexture_IMaterialProxy003",
+   "class": "CAnimatedEntityTextureProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "AnimatedOffsetTexture_IMaterialProxy003",
+   "class": "CAnimatedOffsetTextureProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "AnimatedTexture_IMaterialProxy003",
+   "class": "CAnimatedTextureProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "AnimateSpecificTexture_IMaterialProxy003",
+   "class": "CAnimateSpecificTexture"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "Camo_IMaterialProxy003",
+   "class": "CCamoMaterialProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "Shadow_IMaterialProxy003",
+   "class": "CShadowProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "ShadowModel_IMaterialProxy003",
+   "class": "CShadowModelProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "BreakableSurface_IMaterialProxy003",
+   "class": "CBreakableSurfaceProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "ConveyorScroll_IMaterialProxy003",
+   "class": "CConveyorMaterialProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "MaterialModify_IMaterialProxy003",
+   "class": "CMaterialModifyProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "MaterialModifyAnimated_IMaterialProxy003",
+   "class": "CMaterialModifyAnimatedProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "Dummy_IMaterialProxy003",
+   "class": "CDummyMaterialProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "EntityOrigin_IMaterialProxy003",
+   "class": "CEntityOriginMaterialProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "EntityOriginAlyx_IMaterialProxy003",
+   "class": "CEntityOriginAlyxMaterialProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "Ep1IntroVortRefract_IMaterialProxy003",
+   "class": "CEp1IntroVortRefractMaterialProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "VortEmissive_IMaterialProxy003",
+   "class": "CVortEmissiveProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "HeliBlade_IMaterialProxy003",
+   "class": "CHeliBladeMaterialProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "Shield_IMaterialProxy003",
+   "class": "CShieldProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "IsNPC_IMaterialProxy003",
+   "class": "CProxyIsNPC"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "lampbeam_IMaterialProxy003",
+   "class": "CLampBeamProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "lamphalo_IMaterialProxy003",
+   "class": "CLampHaloProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "Add_IMaterialProxy003",
+   "class": "CAddProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "Subtract_IMaterialProxy003",
+   "class": "CSubtractProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "Multiply_IMaterialProxy003",
+   "class": "CMultiplyProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "Divide_IMaterialProxy003",
+   "class": "CDivideProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "Clamp_IMaterialProxy003",
+   "class": "CClampProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "Sine_IMaterialProxy003",
+   "class": "CSineProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "Equals_IMaterialProxy003",
+   "class": "CEqualsProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "Frac_IMaterialProxy003",
+   "class": "CFracProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "Int_IMaterialProxy003",
+   "class": "CIntProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "LinearRamp_IMaterialProxy003",
+   "class": "CLinearRampProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "UniformNoise_IMaterialProxy003",
+   "class": "CUniformNoiseProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "GaussianNoise_IMaterialProxy003",
+   "class": "CGaussianNoiseProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "Exponential_IMaterialProxy003",
+   "class": "CExponentialProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "Abs_IMaterialProxy003",
+   "class": "CAbsProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "Empty_IMaterialProxy003",
+   "class": "CEmptyProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "LessOrEqual_IMaterialProxy003",
+   "class": "CLessOrEqualProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "WrapMinMax_IMaterialProxy003",
+   "class": "CWrapMinMaxProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "SelectFirstIfNonZero_IMaterialProxy003",
+   "class": "CSelectFirstIfNonZeroProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "TextureTransform_IMaterialProxy003",
+   "class": "CTextureTransformProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "MatrixRotate_IMaterialProxy003",
+   "class": "CMatrixRotateProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "ParticleSphereProxy_IMaterialProxy003",
+   "class": "ParticleSphereProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "Health_IMaterialProxy003",
+   "class": "CProxyHealth"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "PlayerProximity_IMaterialProxy003",
+   "class": "CPlayerProximityProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "PlayerTeamMatch_IMaterialProxy003",
+   "class": "CPlayerTeamMatchProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "PlayerView_IMaterialProxy003",
+   "class": "CPlayerViewProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "PlayerSpeed_IMaterialProxy003",
+   "class": "CPlayerSpeedProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "PlayerPosition_IMaterialProxy003",
+   "class": "CPlayerPositionProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "EntitySpeed_IMaterialProxy003",
+   "class": "CEntitySpeedProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "EntityRandom_IMaterialProxy003",
+   "class": "CEntityRandomProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "PlayerLogo_IMaterialProxy003",
+   "class": "CPlayerLogoProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "Pupil_IMaterialProxy003",
+   "class": "CPupilProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "TextureScroll_IMaterialProxy003",
+   "class": "CTextureScrollMaterialProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "CurrentTime_IMaterialProxy003",
+   "class": "CTimeMaterialProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "ToggleTexture_IMaterialProxy003",
+   "class": "CBaseToggleTextureProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "engine_post_IMaterialProxy003",
+   "class": "CEnginePostMaterialProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "MotionBlur_IMaterialProxy003",
+   "class": "CMotionBlurMaterialProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "WaterLOD_IMaterialProxy003",
+   "class": "CWaterLODMaterialProxy"
+  },
+  {
+   "module": "lostcoast/client",
+   "version": "WorldDims_IMaterialProxy003",
+   "class": "CWorldDimsProxy"
+  }
+ ],
+ "sdk2013_len": 6,
+ "sdk2013_slots": [
+  "Init(IMaterial*, KeyValues*)",
+  "OnBind(void*)",
+  "Release()",
+  "GetMaterial()",
+  "~__bm_probe()",
+  "~__bm_probe()"
+ ],
+ "retail_reference": {
+  "module": "bin/materialsystem",
+  "class": "CReplacementProxy",
+  "offset": 0,
+  "chain": [
+   "CReplacementProxy",
+   "IMaterialProxy"
+  ]
+ },
+ "retail_len": 6,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 6
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Init",
+   "sig": "Init(IMaterial*, KeyValues*)",
+   "symbol": "CReplacementProxy::Init(IMaterial*, KeyValues*)"
+  },
+  {
+   "index": 1,
+   "name": "OnBind",
+   "sig": "OnBind(void*)",
+   "symbol": "CReplacementProxy::OnBind(void*)"
+  },
+  {
+   "index": 2,
+   "name": "Release",
+   "sig": "Release()",
+   "symbol": "CReplacementProxy::Release()"
+  },
+  {
+   "index": 3,
+   "name": "GetMaterial",
+   "sig": "GetMaterial()",
+   "symbol": "CReplacementProxy::GetMaterial()"
+  },
+  {
+   "index": 4,
+   "name": "~CReplacementProxy",
+   "sig": "~CReplacementProxy()",
+   "symbol": "CReplacementProxy::~CReplacementProxy()"
+  },
+  {
+   "index": 5,
+   "name": "~CReplacementProxy",
+   "sig": "~CReplacementProxy()",
+   "symbol": "CReplacementProxy::~CReplacementProxy()"
+  }
+ ],
+ "derived_disagreements": [
+  {
+   "module": "hl2mp/client",
+   "class": "CFunctionProxy",
+   "index": 1,
+   "ref": "OnBind(void*)",
+   "got": null
+  },
+  {
+   "module": "hl2mp/client",
+   "class": "CResultProxy",
+   "index": 1,
+   "ref": "OnBind(void*)",
+   "got": null
+  }
+ ],
+ "derived": [
+  "bin/materialsystem:CReplacementProxy",
+  "episodic/client:CAbsProxy",
+  "episodic/client:CAddProxy",
+  "episodic/client:CAlphaMaterialProxy",
+  "episodic/client:CAnimateSpecificTexture",
+  "episodic/client:CAnimatedEntityTextureProxy",
+  "episodic/client:CAnimatedOffsetTextureProxy",
+  "episodic/client:CAnimatedTextureProxy",
+  "episodic/client:CBaseAnimatedTextureProxy",
+  "episodic/client:CBaseToggleTextureProxy",
+  "episodic/client:CBreakableSurfaceProxy",
+  "episodic/client:CCamoMaterialProxy",
+  "episodic/client:CClampProxy",
+  "episodic/client:CConveyorMaterialProxy",
+  "episodic/client:CDivideProxy",
+  "episodic/client:CDummyMaterialProxy",
+  "episodic/client:CEmptyProxy",
+  "episodic/client:CEnginePostMaterialProxy",
+  "episodic/client:CEntityOriginAlyxMaterialProxy",
+  "episodic/client:CEntityOriginMaterialProxy",
+  "episodic/client:CEntityRandomProxy",
+  "episodic/client:CEntitySpeedProxy",
+  "episodic/client:CEp1IntroVortRefractMaterialProxy",
+  "episodic/client:CEqualsProxy",
+  "episodic/client:CExponentialProxy",
+  "episodic/client:CFleshInteriorMaterialProxy",
+  "episodic/client:CFracProxy",
+  "episodic/client:CFunctionProxy",
+  "episodic/client:CGaussianNoiseProxy",
+  "episodic/client:CHeliBladeMaterialProxy",
+  "episodic/client:CIntProxy",
+  "episodic/client:CLampBeamProxy",
+  "episodic/client:CLampHaloProxy",
+  "episodic/client:CLessOrEqualProxy",
+  "episodic/client:CLinearRampProxy",
+  "episodic/client:CMaterialModifyAnimatedProxy",
+  "episodic/client:CMaterialModifyProxy",
+  "episodic/client:CMatrixRotateProxy",
+  "episodic/client:CMotionBlurMaterialProxy",
+  "episodic/client:CMultiplyProxy"
+ ],
+ "derived_count": 319
+}

@@ -1,0 +1,175 @@
+{
+ "interface": "vgui::IImage",
+ "headers": [
+  "public/vgui/IImage.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 13,
+ "sdk2013_slots": [
+  "Paint()",
+  "SetPos(int, int)",
+  "GetContentSize(int&, int&)",
+  "GetSize(int&, int&)",
+  "SetSize(int, int)",
+  "SetColor(Color)",
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "Evict()",
+  "GetNumFrames()",
+  "SetFrame(int)",
+  "GetID()",
+  "SetRotation(int)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "BlankImage",
+  "offset": 0,
+  "chain": [
+   "BlankImage",
+   "vgui::IImage"
+  ]
+ },
+ "retail_len": 13,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 13
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Paint",
+   "sig": "Paint()",
+   "symbol": "BlankImage::Paint()"
+  },
+  {
+   "index": 1,
+   "name": "SetPos",
+   "sig": "SetPos(int, int)",
+   "symbol": "BlankImage::SetPos(int, int)"
+  },
+  {
+   "index": 2,
+   "name": "GetContentSize",
+   "sig": "GetContentSize(int&, int&)",
+   "symbol": "BlankImage::GetContentSize(int&, int&)"
+  },
+  {
+   "index": 3,
+   "name": "GetSize",
+   "sig": "GetSize(int&, int&)",
+   "symbol": "BlankImage::GetSize(int&, int&)"
+  },
+  {
+   "index": 4,
+   "name": "SetSize",
+   "sig": "SetSize(int, int)",
+   "symbol": "BlankImage::SetSize(int, int)"
+  },
+  {
+   "index": 5,
+   "name": "SetColor",
+   "sig": "SetColor(Color)",
+   "symbol": "BlankImage::SetColor(Color)"
+  },
+  {
+   "index": 6,
+   "name": "~BlankImage",
+   "sig": "~BlankImage()",
+   "symbol": "BlankImage::~BlankImage()"
+  },
+  {
+   "index": 7,
+   "name": "~BlankImage",
+   "sig": "~BlankImage()",
+   "symbol": "BlankImage::~BlankImage()"
+  },
+  {
+   "index": 8,
+   "name": "Evict",
+   "sig": "Evict()",
+   "symbol": "BlankImage::Evict()"
+  },
+  {
+   "index": 9,
+   "name": "GetNumFrames",
+   "sig": "GetNumFrames()",
+   "symbol": "BlankImage::GetNumFrames()"
+  },
+  {
+   "index": 10,
+   "name": "SetFrame",
+   "sig": "SetFrame(int)",
+   "symbol": "BlankImage::SetFrame(int)"
+  },
+  {
+   "index": 11,
+   "name": "GetID",
+   "sig": "GetID()",
+   "symbol": "BlankImage::GetID()"
+  },
+  {
+   "index": 12,
+   "name": "SetRotation",
+   "sig": "SetRotation(int)",
+   "symbol": "BlankImage::SetRotation(int)"
+  }
+ ],
+ "derived_disagreements": [
+  {
+   "module": "hl2mp/client",
+   "class": "vgui::Image",
+   "index": 0,
+   "ref": "Paint()",
+   "got": null
+  }
+ ],
+ "derived": [
+  "bin/GameUI:BlankImage",
+  "bin/GameUI:MenuItemCheckImage",
+  "bin/GameUI:vgui::CheckImage",
+  "bin/GameUI:vgui::Image",
+  "bin/GameUI:vgui::RadioImage",
+  "bin/GameUI:vgui::TextImage",
+  "bin/ServerBrowser:BlankImage",
+  "bin/ServerBrowser:MenuItemCheckImage",
+  "bin/ServerBrowser:vgui::CheckImage",
+  "bin/ServerBrowser:vgui::Image",
+  "bin/ServerBrowser:vgui::RadioImage",
+  "bin/ServerBrowser:vgui::TextImage",
+  "bin/engine:BlankImage",
+  "bin/engine:MenuItemCheckImage",
+  "bin/engine:vgui::CheckImage",
+  "bin/engine:vgui::Image",
+  "bin/engine:vgui::RadioImage",
+  "bin/engine:vgui::TextImage",
+  "bin/vgui2:vgui::Bitmap",
+  "bin/vguimatsurface:MenuItemCheckImage",
+  "bin/vguimatsurface:vgui::CheckImage",
+  "bin/vguimatsurface:vgui::Image",
+  "bin/vguimatsurface:vgui::RadioImage",
+  "bin/vguimatsurface:vgui::TextImage",
+  "episodic/client:BitmapImage",
+  "episodic/client:BlankImage",
+  "episodic/client:CAvatarImage",
+  "episodic/client:MenuItemCheckImage",
+  "episodic/client:vgui::CheckImage",
+  "episodic/client:vgui::Image",
+  "episodic/client:vgui::RadioImage",
+  "episodic/client:vgui::TextImage",
+  "hl2/client:BitmapImage",
+  "hl2/client:BlankImage",
+  "hl2/client:CAvatarImage",
+  "hl2/client:MenuItemCheckImage",
+  "hl2/client:vgui::CheckImage",
+  "hl2/client:vgui::Image",
+  "hl2/client:vgui::RadioImage",
+  "hl2/client:vgui::TextImage"
+ ],
+ "derived_count": 64
+}

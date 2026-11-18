@@ -1,0 +1,132 @@
+{
+ "interface": "ICommandLine",
+ "headers": [
+  "public/tier0/icommandline.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 13,
+ "sdk2013_slots": [
+  "CreateCmdLine(char const*)",
+  "CreateCmdLine(int, char**)",
+  "GetCmdLine() const",
+  "CheckParm(char const*, char const**) const",
+  "RemoveParm(char const*)",
+  "AppendParm(char const*, char const*)",
+  "ParmValue(char const*, char const*) const",
+  "ParmValue(char const*, int) const",
+  "ParmValue(char const*, float) const",
+  "ParmCount() const",
+  "FindParm(char const*) const",
+  "GetParm(int) const",
+  "SetParm(int, char const*)"
+ ],
+ "retail_reference": {
+  "module": "bin/libtier0",
+  "class": "CCommandLine",
+  "offset": 0,
+  "chain": [
+   "CCommandLine",
+   "ICommandLine"
+  ]
+ },
+ "retail_len": 13,
+ "retail_len_basis": "first implementer destructor",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 15,
+  "first implementer destructor": 13
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "CreateCmdLine",
+   "sig": "CreateCmdLine(char const*)",
+   "symbol": "CCommandLine::CreateCmdLine(char const*)"
+  },
+  {
+   "index": 1,
+   "name": "CreateCmdLine",
+   "sig": "CreateCmdLine(int, char**)",
+   "symbol": "CCommandLine::CreateCmdLine(int, char**)"
+  },
+  {
+   "index": 2,
+   "name": "GetCmdLine",
+   "sig": "GetCmdLine() const",
+   "symbol": "CCommandLine::GetCmdLine() const"
+  },
+  {
+   "index": 3,
+   "name": "CheckParm",
+   "sig": "CheckParm(char const*, char const**) const",
+   "symbol": "CCommandLine::CheckParm(char const*, char const**) const"
+  },
+  {
+   "index": 4,
+   "name": "RemoveParm",
+   "sig": "RemoveParm(char const*)",
+   "symbol": "CCommandLine::RemoveParm(char const*)"
+  },
+  {
+   "index": 5,
+   "name": "AppendParm",
+   "sig": "AppendParm(char const*, char const*)",
+   "symbol": "CCommandLine::AppendParm(char const*, char const*)"
+  },
+  {
+   "index": 6,
+   "name": "ParmValue",
+   "sig": "ParmValue(char const*, char const*) const",
+   "symbol": "CCommandLine::ParmValue(char const*, char const*) const"
+  },
+  {
+   "index": 7,
+   "name": "ParmValue",
+   "sig": "ParmValue(char const*, int) const",
+   "symbol": "CCommandLine::ParmValue(char const*, int) const"
+  },
+  {
+   "index": 8,
+   "name": "ParmValue",
+   "sig": "ParmValue(char const*, float) const",
+   "symbol": "CCommandLine::ParmValue(char const*, float) const"
+  },
+  {
+   "index": 9,
+   "name": "ParmCount",
+   "sig": "ParmCount() const",
+   "symbol": "CCommandLine::ParmCount() const"
+  },
+  {
+   "index": 10,
+   "name": "FindParm",
+   "sig": "FindParm(char const*) const",
+   "symbol": "CCommandLine::FindParm(char const*) const"
+  },
+  {
+   "index": 11,
+   "name": "GetParm",
+   "sig": "GetParm(int) const",
+   "symbol": "CCommandLine::GetParm(int) const"
+  },
+  {
+   "index": 12,
+   "name": "SetParm",
+   "sig": "SetParm(int, char const*)",
+   "symbol": "CCommandLine::SetParm(int, char const*)"
+  }
+ ],
+ "implementer_tail": [
+  "~CCommandLine()",
+  "~CCommandLine()"
+ ],
+ "derived": [
+  "bin/libtier0:CCommandLine"
+ ],
+ "derived_count": 1
+}

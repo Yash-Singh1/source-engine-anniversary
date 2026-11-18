@@ -1,0 +1,59 @@
+{
+ "interface": "CDescription",
+ "headers": [
+  "common/GameUI/scriptobject.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "bin/GameUI",
+  "class": "CDescription",
+  "offset": 0,
+  "chain": [
+   "CDescription"
+  ]
+ },
+ "retail_len": 4,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 4
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CDescription",
+   "sig": "~CDescription()",
+   "symbol": "CDescription::~CDescription()"
+  },
+  {
+   "index": 1,
+   "name": "~CDescription",
+   "sig": "~CDescription()",
+   "symbol": "CDescription::~CDescription()"
+  },
+  {
+   "index": 2,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 3,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  }
+ ],
+ "derived": [
+  "bin/GameUI:CDescription",
+  "bin/GameUI:CInfoDescription",
+  "bin/GameUI:CServerDescription"
+ ],
+ "derived_count": 3
+}

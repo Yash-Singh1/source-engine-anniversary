@@ -1,0 +1,1430 @@
+{
+ "interface": "IMatRenderContext",
+ "headers": [
+  "public/materialsystem/imaterialsystem.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 196,
+ "sdk2013_slots": [
+  "AddRef()",
+  "Release()",
+  "BeginRender()",
+  "EndRender()",
+  "Flush(bool)",
+  "BindLocalCubemap(ITexture*)",
+  "SetRenderTarget(ITexture*)",
+  "GetRenderTarget()",
+  "GetRenderTargetDimensions(int&, int&) const",
+  "Bind(IMaterial*, void*)",
+  "BindLightmapPage(int)",
+  "DepthRange(float, float)",
+  "ClearBuffers(bool, bool, bool)",
+  "ReadPixels(int, int, int, int, unsigned char*, ImageFormat)",
+  "SetAmbientLight(float, float, float)",
+  "SetLight(int, LightDesc_t const&)",
+  "SetAmbientLightCube(Vector4D*)",
+  "CopyRenderTargetToTexture(ITexture*)",
+  "SetFrameBufferCopyTexture(ITexture*, int)",
+  "GetFrameBufferCopyTexture(int)",
+  "MatrixMode(MaterialMatrixMode_t)",
+  "PushMatrix()",
+  "PopMatrix()",
+  "LoadMatrix(VMatrix const&)",
+  "LoadMatrix(matrix3x4_t const&)",
+  "MultMatrix(VMatrix const&)",
+  "MultMatrix(matrix3x4_t const&)",
+  "MultMatrixLocal(VMatrix const&)",
+  "MultMatrixLocal(matrix3x4_t const&)",
+  "GetMatrix(MaterialMatrixMode_t, VMatrix*)",
+  "GetMatrix(MaterialMatrixMode_t, matrix3x4_t*)",
+  "LoadIdentity()",
+  "Ortho(double, double, double, double, double, double)",
+  "PerspectiveX(double, double, double, double)",
+  "PickMatrix(int, int, int, int)",
+  "Rotate(float, float, float, float)",
+  "Translate(float, float, float)",
+  "Scale(float, float, float)",
+  "Viewport(int, int, int, int)",
+  "GetViewport(int&, int&, int&, int&) const",
+  "CullMode(MaterialCullMode_t)",
+  "SetHeightClipMode(MaterialHeightClipMode_t)",
+  "SetHeightClipZ(float)",
+  "FogMode(MaterialFogMode_t)",
+  "FogStart(float)",
+  "FogEnd(float)",
+  "SetFogZ(float)",
+  "GetFogMode()",
+  "FogColor3f(float, float, float)",
+  "FogColor3fv(float const*)",
+  "FogColor3ub(unsigned char, unsigned char, unsigned char)",
+  "FogColor3ubv(unsigned char const*)",
+  "GetFogColor(unsigned char*)",
+  "SetNumBoneWeights(int)",
+  "CreateStaticMesh(unsigned long long, char const*, IMaterial*)",
+  "DestroyStaticMesh(IMesh*)",
+  "GetDynamicMesh(bool, IMesh*, IMesh*, IMaterial*)",
+  "CreateStaticVertexBuffer(unsigned long long, int, char const*)",
+  "CreateStaticIndexBuffer(MaterialIndexFormat_t, int, char const*)",
+  "DestroyVertexBuffer(IVertexBuffer*)",
+  "DestroyIndexBuffer(IIndexBuffer*)",
+  "GetDynamicVertexBuffer(int, unsigned long long, bool)",
+  "GetDynamicIndexBuffer(MaterialIndexFormat_t, bool)",
+  "BindVertexBuffer(int, IVertexBuffer*, int, int, int, unsigned long long, int)",
+  "BindIndexBuffer(IIndexBuffer*, int)",
+  "Draw(MaterialPrimitiveType_t, int, int)",
+  "SelectionMode(bool)",
+  "SelectionBuffer(unsigned int*, int)",
+  "ClearSelectionNames()",
+  "LoadSelectionName(int)",
+  "PushSelectionName(int)",
+  "PopSelectionName()",
+  "ClearColor3ub(unsigned char, unsigned char, unsigned char)",
+  "ClearColor4ub(unsigned char, unsigned char, unsigned char, unsigned char)",
+  "OverrideDepthEnable(bool, bool)",
+  "DrawScreenSpaceQuad(IMaterial*)",
+  "SyncToken(char const*)",
+  "ComputePixelWidthOfSphere(Vector const&, float)",
+  "CreateOcclusionQueryObject()",
+  "DestroyOcclusionQueryObject(OcclusionQueryObjectHandle_t__*)",
+  "BeginOcclusionQueryDrawing(OcclusionQueryObjectHandle_t__*)",
+  "EndOcclusionQueryDrawing(OcclusionQueryObjectHandle_t__*)",
+  "OcclusionQuery_GetNumPixelsRendered(OcclusionQueryObjectHandle_t__*)",
+  "SetFlashlightMode(bool)",
+  "SetFlashlightState(FlashlightState_t const&, VMatrix const&)",
+  "GetHeightClipMode()",
+  "ComputePixelDiameterOfSphere(Vector const&, float)",
+  "EnableUserClipTransformOverride(bool)",
+  "UserClipTransform(VMatrix const&)",
+  "GetFlashlightMode() const",
+  "ResetOcclusionQueryObject(OcclusionQueryObjectHandle_t__*)",
+  "Unused3()",
+  "CreateMorph(unsigned int, char const*)",
+  "DestroyMorph(IMorph*)",
+  "BindMorph(IMorph*)",
+  "SetFlexWeights(int, int, MorphWeight_t const*)",
+  "Unused4()",
+  "Unused5()",
+  "Unused6()",
+  "Unused7()",
+  "Unused8()",
+  "ReadPixelsAndStretch(Rect_t*, Rect_t*, unsigned char*, ImageFormat, int)",
+  "GetWindowSize(int&, int&) const",
+  "DrawScreenSpaceRectangle(IMaterial*, int, int, int, int, float, float, float, float, int, int, void*, int, int)",
+  "LoadBoneMatrix(int, matrix3x4_t const&)",
+  "PushRenderTargetAndViewport()",
+  "PushRenderTargetAndViewport(ITexture*)",
+  "PushRenderTargetAndViewport(ITexture*, int, int, int, int)",
+  "PushRenderTargetAndViewport(ITexture*, ITexture*, int, int, int, int)",
+  "PopRenderTargetAndViewport()",
+  "BindLightmapTexture(ITexture*)",
+  "CopyRenderTargetToTextureEx(ITexture*, int, Rect_t*, Rect_t*)",
+  "CopyTextureToRenderTargetEx(int, ITexture*, Rect_t*, Rect_t*)",
+  "PerspectiveOffCenterX(double, double, double, double, double, double, double, double)",
+  "SetFloatRenderingParameter(int, float)",
+  "SetIntRenderingParameter(int, int)",
+  "SetVectorRenderingParameter(int, Vector const&)",
+  "SetStencilEnable(bool)",
+  "SetStencilFailOperation(StencilOperation_t)",
+  "SetStencilZFailOperation(StencilOperation_t)",
+  "SetStencilPassOperation(StencilOperation_t)",
+  "SetStencilCompareFunction(StencilComparisonFunction_t)",
+  "SetStencilReferenceValue(int)",
+  "SetStencilTestMask(unsigned int)",
+  "SetStencilWriteMask(unsigned int)",
+  "ClearStencilBufferRectangle(int, int, int, int, int)",
+  "SetRenderTargetEx(int, ITexture*)",
+  "PushCustomClipPlane(float const*)",
+  "PopCustomClipPlane()",
+  "GetMaxToRender(IMesh*, bool, int*, int*)",
+  "GetMaxVerticesToRender(IMaterial*)",
+  "GetMaxIndicesToRender()",
+  "DisableAllLocalLights()",
+  "CompareMaterialCombos(IMaterial*, IMaterial*, int, int)",
+  "GetFlexMesh()",
+  "SetFlashlightStateEx(FlashlightState_t const&, VMatrix const&, ITexture*)",
+  "GetLocalCubemap()",
+  "ClearBuffersObeyStencil(bool, bool)",
+  "EnableClipping(bool)",
+  "GetFogDistances(float*, float*, float*)",
+  "BeginPIXEvent(unsigned long, char const*)",
+  "EndPIXEvent()",
+  "SetPIXMarker(unsigned long, char const*)",
+  "BeginBatch(IMesh*)",
+  "BindBatch(IMesh*, IMaterial*)",
+  "DrawBatch(int, int)",
+  "EndBatch()",
+  "GetCallQueue()",
+  "GetWorldSpaceCameraPosition(Vector*)",
+  "GetWorldSpaceCameraVectors(Vector*, Vector*, Vector*)",
+  "ResetToneMappingScale(float)",
+  "SetGoalToneMappingScale(float)",
+  "TurnOnToneMapping()",
+  "SetToneMappingScaleLinear(Vector const&)",
+  "GetToneMappingScaleLinear()",
+  "SetShadowDepthBiasFactors(float, float)",
+  "PerformFullScreenStencilOperation()",
+  "SetLightingOrigin(Vector)",
+  "SetScissorRect(int, int, int, int, bool)",
+  "BeginMorphAccumulation()",
+  "EndMorphAccumulation()",
+  "AccumulateMorph(IMorph*, int, MorphWeight_t const*)",
+  "PushDeformation(DeformationBase_t const*)",
+  "PopDeformation()",
+  "GetNumActiveDeformations() const",
+  "GetMorphAccumulatorTexCoord(Vector2D*, IMorph*, int)",
+  "GetDynamicMeshEx(unsigned long long, bool, IMesh*, IMesh*, IMaterial*)",
+  "FogMaxDensity(float)",
+  "GetCurrentMaterial()",
+  "GetCurrentNumBones() const",
+  "GetCurrentProxy()",
+  "EnableColorCorrection(bool)",
+  "AddLookup(char const*)",
+  "RemoveLookup(unsigned int)",
+  "LockLookup(unsigned int)",
+  "LoadLookup(unsigned int, char const*)",
+  "UnlockLookup(unsigned int)",
+  "SetLookupWeight(unsigned int, float)",
+  "ResetLookupWeights()",
+  "SetResetable(unsigned int, bool)",
+  "SetFullScreenDepthTextureValidityFlag(bool)",
+  "SetNonInteractivePacifierTexture(ITexture*, float, float, float)",
+  "SetNonInteractiveTempFullscreenBuffer(ITexture*, MaterialNonInteractiveMode_t)",
+  "EnableNonInteractiveMode(MaterialNonInteractiveMode_t)",
+  "RefreshFrontBufferNonInteractive()",
+  "LockRenderData(int)",
+  "UnlockRenderData(void*)",
+  "AddRefRenderData()",
+  "ReleaseRenderData()",
+  "IsRenderData(void const*) const",
+  "PrintfVA(char*, char*)",
+  "Printf(char const*, ...)",
+  "Knob(char*, float*)",
+  "OverrideAlphaWriteEnable(bool, bool)",
+  "OverrideColorWriteEnable(bool, bool)",
+  "ClearBuffersObeyStencilEx(bool, bool, bool)"
+ ],
+ "retail_reference": {
+  "module": "bin/materialsystem",
+  "class": "CDummyMaterialSystem",
+  "offset": 4,
+  "chain": [
+   "CDummyMaterialSystem",
+   "CRefCounted1<IMatRenderContext, CRefCountServiceNull>",
+   "IMatRenderContext"
+  ]
+ },
+ "retail_len": 198,
+ "retail_len_basis": "first implementer destructor",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 200,
+  "first implementer destructor": 198
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "AddRef",
+   "sig": "AddRef()",
+   "symbol": "CRefCounted1<IMatRenderContext, CRefCountServiceNull>::AddRef()"
+  },
+  {
+   "index": 1,
+   "name": "Release",
+   "sig": "Release()",
+   "symbol": "CRefCounted1<IMatRenderContext, CRefCountServiceNull>::Release()"
+  },
+  {
+   "index": 2,
+   "name": "BeginRender",
+   "sig": "BeginRender()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::BeginRender()"
+  },
+  {
+   "index": 3,
+   "name": "EndRender",
+   "sig": "EndRender()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::EndRender()"
+  },
+  {
+   "index": 4,
+   "name": "Flush",
+   "sig": "Flush(bool)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::Flush(bool)"
+  },
+  {
+   "index": 5,
+   "name": "BindLocalCubemap",
+   "sig": "BindLocalCubemap(ITexture*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::BindLocalCubemap(ITexture*)"
+  },
+  {
+   "index": 6,
+   "name": "SetRenderTarget",
+   "sig": "SetRenderTarget(ITexture*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetRenderTarget(ITexture*)"
+  },
+  {
+   "index": 7,
+   "name": "GetRenderTarget",
+   "sig": "GetRenderTarget()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::GetRenderTarget()"
+  },
+  {
+   "index": 8,
+   "name": "GetRenderTargetDimensions",
+   "sig": "GetRenderTargetDimensions(int&, int&) const",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::GetRenderTargetDimensions(int&, int&) const"
+  },
+  {
+   "index": 9,
+   "name": "Bind",
+   "sig": "Bind(IMaterial*, void*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::Bind(IMaterial*, void*)"
+  },
+  {
+   "index": 10,
+   "name": "BindLightmapPage",
+   "sig": "BindLightmapPage(int)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::BindLightmapPage(int)"
+  },
+  {
+   "index": 11,
+   "name": "DepthRange",
+   "sig": "DepthRange(float, float)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::DepthRange(float, float)"
+  },
+  {
+   "index": 12,
+   "name": "ClearBuffers",
+   "sig": "ClearBuffers(bool, bool, bool)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::ClearBuffers(bool, bool, bool)"
+  },
+  {
+   "index": 13,
+   "name": "ReadPixels",
+   "sig": "ReadPixels(int, int, int, int, unsigned char*, ImageFormat)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::ReadPixels(int, int, int, int, unsigned char*, ImageFormat)"
+  },
+  {
+   "index": 14,
+   "name": "SetAmbientLight",
+   "sig": "SetAmbientLight(float, float, float)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetAmbientLight(float, float, float)"
+  },
+  {
+   "index": 15,
+   "name": "SetLight",
+   "sig": "SetLight(int, LightDesc_t const&)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetLight(int, LightDesc_t const&)"
+  },
+  {
+   "index": 16,
+   "name": "SetAmbientLightCube",
+   "sig": "SetAmbientLightCube(Vector4D*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetAmbientLightCube(Vector4D*)"
+  },
+  {
+   "index": 17,
+   "name": "CopyRenderTargetToTexture",
+   "sig": "CopyRenderTargetToTexture(ITexture*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::CopyRenderTargetToTexture(ITexture*)"
+  },
+  {
+   "index": 18,
+   "name": "SetFrameBufferCopyTexture",
+   "sig": "SetFrameBufferCopyTexture(ITexture*, int)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetFrameBufferCopyTexture(ITexture*, int)"
+  },
+  {
+   "index": 19,
+   "name": "GetFrameBufferCopyTexture",
+   "sig": "GetFrameBufferCopyTexture(int)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::GetFrameBufferCopyTexture(int)"
+  },
+  {
+   "index": 20,
+   "name": "MatrixMode",
+   "sig": "MatrixMode(MaterialMatrixMode_t)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::MatrixMode(MaterialMatrixMode_t)"
+  },
+  {
+   "index": 21,
+   "name": "PushMatrix",
+   "sig": "PushMatrix()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::PushMatrix()"
+  },
+  {
+   "index": 22,
+   "name": "PopMatrix",
+   "sig": "PopMatrix()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::PopMatrix()"
+  },
+  {
+   "index": 23,
+   "name": "LoadMatrix",
+   "sig": "LoadMatrix(VMatrix const&)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::LoadMatrix(VMatrix const&)"
+  },
+  {
+   "index": 24,
+   "name": "LoadMatrix",
+   "sig": "LoadMatrix(matrix3x4_t const&)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::LoadMatrix(matrix3x4_t const&)"
+  },
+  {
+   "index": 25,
+   "name": "MultMatrix",
+   "sig": "MultMatrix(VMatrix const&)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::MultMatrix(VMatrix const&)"
+  },
+  {
+   "index": 26,
+   "name": "MultMatrix",
+   "sig": "MultMatrix(matrix3x4_t const&)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::MultMatrix(matrix3x4_t const&)"
+  },
+  {
+   "index": 27,
+   "name": "MultMatrixLocal",
+   "sig": "MultMatrixLocal(VMatrix const&)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::MultMatrixLocal(VMatrix const&)"
+  },
+  {
+   "index": 28,
+   "name": "MultMatrixLocal",
+   "sig": "MultMatrixLocal(matrix3x4_t const&)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::MultMatrixLocal(matrix3x4_t const&)"
+  },
+  {
+   "index": 29,
+   "name": "GetMatrix",
+   "sig": "GetMatrix(MaterialMatrixMode_t, VMatrix*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::GetMatrix(MaterialMatrixMode_t, VMatrix*)"
+  },
+  {
+   "index": 30,
+   "name": "GetMatrix",
+   "sig": "GetMatrix(MaterialMatrixMode_t, matrix3x4_t*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::GetMatrix(MaterialMatrixMode_t, matrix3x4_t*)"
+  },
+  {
+   "index": 31,
+   "name": "LoadIdentity",
+   "sig": "LoadIdentity()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::LoadIdentity()"
+  },
+  {
+   "index": 32,
+   "name": "Ortho",
+   "sig": "Ortho(double, double, double, double, double, double)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::Ortho(double, double, double, double, double, double)"
+  },
+  {
+   "index": 33,
+   "name": "PerspectiveX",
+   "sig": "PerspectiveX(double, double, double, double)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::PerspectiveX(double, double, double, double)"
+  },
+  {
+   "index": 34,
+   "name": "PickMatrix",
+   "sig": "PickMatrix(int, int, int, int)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::PickMatrix(int, int, int, int)"
+  },
+  {
+   "index": 35,
+   "name": "Rotate",
+   "sig": "Rotate(float, float, float, float)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::Rotate(float, float, float, float)"
+  },
+  {
+   "index": 36,
+   "name": "Translate",
+   "sig": "Translate(float, float, float)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::Translate(float, float, float)"
+  },
+  {
+   "index": 37,
+   "name": "Scale",
+   "sig": "Scale(float, float, float)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::Scale(float, float, float)"
+  },
+  {
+   "index": 38,
+   "name": "Viewport",
+   "sig": "Viewport(int, int, int, int)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::Viewport(int, int, int, int)"
+  },
+  {
+   "index": 39,
+   "name": "GetViewport",
+   "sig": "GetViewport(int&, int&, int&, int&) const",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::GetViewport(int&, int&, int&, int&) const"
+  },
+  {
+   "index": 40,
+   "name": "CullMode",
+   "sig": "CullMode(MaterialCullMode_t)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::CullMode(MaterialCullMode_t)"
+  },
+  {
+   "index": 41,
+   "name": "SetHeightClipMode",
+   "sig": "SetHeightClipMode(MaterialHeightClipMode_t)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetHeightClipMode(MaterialHeightClipMode_t)"
+  },
+  {
+   "index": 42,
+   "name": "SetHeightClipZ",
+   "sig": "SetHeightClipZ(float)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetHeightClipZ(float)"
+  },
+  {
+   "index": 43,
+   "name": "FogMode",
+   "sig": "FogMode(MaterialFogMode_t)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::FogMode(MaterialFogMode_t)"
+  },
+  {
+   "index": 44,
+   "name": "FogStart",
+   "sig": "FogStart(float)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::FogStart(float)"
+  },
+  {
+   "index": 45,
+   "name": "FogEnd",
+   "sig": "FogEnd(float)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::FogEnd(float)"
+  },
+  {
+   "index": 46,
+   "name": "SetFogZ",
+   "sig": "SetFogZ(float)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetFogZ(float)"
+  },
+  {
+   "index": 47,
+   "name": "GetFogMode",
+   "sig": "GetFogMode()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::GetFogMode()"
+  },
+  {
+   "index": 48,
+   "name": "FogColor3f",
+   "sig": "FogColor3f(float, float, float)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::FogColor3f(float, float, float)"
+  },
+  {
+   "index": 49,
+   "name": "FogColor3fv",
+   "sig": "FogColor3fv(float const*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::FogColor3fv(float const*)"
+  },
+  {
+   "index": 50,
+   "name": "FogColor3ub",
+   "sig": "FogColor3ub(unsigned char, unsigned char, unsigned char)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::FogColor3ub(unsigned char, unsigned char, unsigned char)"
+  },
+  {
+   "index": 51,
+   "name": "FogColor3ubv",
+   "sig": "FogColor3ubv(unsigned char const*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::FogColor3ubv(unsigned char const*)"
+  },
+  {
+   "index": 52,
+   "name": "GetFogColor",
+   "sig": "GetFogColor(unsigned char*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::GetFogColor(unsigned char*)"
+  },
+  {
+   "index": 53,
+   "name": "SetNumBoneWeights",
+   "sig": "SetNumBoneWeights(int)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetNumBoneWeights(int)"
+  },
+  {
+   "index": 54,
+   "name": "CreateStaticMesh",
+   "sig": "CreateStaticMesh(unsigned long long, char const*, IMaterial*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::CreateStaticMesh(unsigned long long, char const*, IMaterial*)"
+  },
+  {
+   "index": 55,
+   "name": "DestroyStaticMesh",
+   "sig": "DestroyStaticMesh(IMesh*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::DestroyStaticMesh(IMesh*)"
+  },
+  {
+   "index": 56,
+   "name": "GetDynamicMesh",
+   "sig": "GetDynamicMesh(bool, IMesh*, IMesh*, IMaterial*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::GetDynamicMesh(bool, IMesh*, IMesh*, IMaterial*)"
+  },
+  {
+   "index": 57,
+   "name": "CreateStaticVertexBuffer",
+   "sig": "CreateStaticVertexBuffer(unsigned long long, int, char const*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::CreateStaticVertexBuffer(unsigned long long, int, char const*)"
+  },
+  {
+   "index": 58,
+   "name": "CreateStaticIndexBuffer",
+   "sig": "CreateStaticIndexBuffer(MaterialIndexFormat_t, int, char const*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::CreateStaticIndexBuffer(MaterialIndexFormat_t, int, char const*)"
+  },
+  {
+   "index": 59,
+   "name": "DestroyVertexBuffer",
+   "sig": "DestroyVertexBuffer(IVertexBuffer*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::DestroyVertexBuffer(IVertexBuffer*)"
+  },
+  {
+   "index": 60,
+   "name": "DestroyIndexBuffer",
+   "sig": "DestroyIndexBuffer(IIndexBuffer*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::DestroyIndexBuffer(IIndexBuffer*)"
+  },
+  {
+   "index": 61,
+   "name": "GetDynamicVertexBuffer",
+   "sig": "GetDynamicVertexBuffer(int, unsigned long long, bool)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::GetDynamicVertexBuffer(int, unsigned long long, bool)"
+  },
+  {
+   "index": 62,
+   "name": "GetDynamicIndexBuffer",
+   "sig": "GetDynamicIndexBuffer(MaterialIndexFormat_t, bool)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::GetDynamicIndexBuffer(MaterialIndexFormat_t, bool)"
+  },
+  {
+   "index": 63,
+   "name": "BindVertexBuffer",
+   "sig": "BindVertexBuffer(int, IVertexBuffer*, int, int, int, unsigned long long, int)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::BindVertexBuffer(int, IVertexBuffer*, int, int, int, unsigned long long, int)"
+  },
+  {
+   "index": 64,
+   "name": "BindIndexBuffer",
+   "sig": "BindIndexBuffer(IIndexBuffer*, int)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::BindIndexBuffer(IIndexBuffer*, int)"
+  },
+  {
+   "index": 65,
+   "name": "Draw",
+   "sig": "Draw(MaterialPrimitiveType_t, int, int)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::Draw(MaterialPrimitiveType_t, int, int)"
+  },
+  {
+   "index": 66,
+   "name": "SelectionMode",
+   "sig": "SelectionMode(bool)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SelectionMode(bool)"
+  },
+  {
+   "index": 67,
+   "name": "SelectionBuffer",
+   "sig": "SelectionBuffer(unsigned int*, int)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SelectionBuffer(unsigned int*, int)"
+  },
+  {
+   "index": 68,
+   "name": "ClearSelectionNames",
+   "sig": "ClearSelectionNames()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::ClearSelectionNames()"
+  },
+  {
+   "index": 69,
+   "name": "LoadSelectionName",
+   "sig": "LoadSelectionName(int)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::LoadSelectionName(int)"
+  },
+  {
+   "index": 70,
+   "name": "PushSelectionName",
+   "sig": "PushSelectionName(int)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::PushSelectionName(int)"
+  },
+  {
+   "index": 71,
+   "name": "PopSelectionName",
+   "sig": "PopSelectionName()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::PopSelectionName()"
+  },
+  {
+   "index": 72,
+   "name": "ClearColor3ub",
+   "sig": "ClearColor3ub(unsigned char, unsigned char, unsigned char)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::ClearColor3ub(unsigned char, unsigned char, unsigned char)"
+  },
+  {
+   "index": 73,
+   "name": "ClearColor4ub",
+   "sig": "ClearColor4ub(unsigned char, unsigned char, unsigned char, unsigned char)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::ClearColor4ub(unsigned char, unsigned char, unsigned char, unsigned char)"
+  },
+  {
+   "index": 74,
+   "name": "OverrideDepthEnable",
+   "sig": "OverrideDepthEnable(bool, bool)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::OverrideDepthEnable(bool, bool)"
+  },
+  {
+   "index": 75,
+   "name": "DrawScreenSpaceQuad",
+   "sig": "DrawScreenSpaceQuad(IMaterial*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::DrawScreenSpaceQuad(IMaterial*)"
+  },
+  {
+   "index": 76,
+   "name": "SyncToken",
+   "sig": "SyncToken(char const*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SyncToken(char const*)"
+  },
+  {
+   "index": 77,
+   "name": "ComputePixelWidthOfSphere",
+   "sig": "ComputePixelWidthOfSphere(Vector const&, float)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::ComputePixelWidthOfSphere(Vector const&, float)"
+  },
+  {
+   "index": 78,
+   "name": "CreateOcclusionQueryObject",
+   "sig": "CreateOcclusionQueryObject()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::CreateOcclusionQueryObject()"
+  },
+  {
+   "index": 79,
+   "name": "DestroyOcclusionQueryObject",
+   "sig": "DestroyOcclusionQueryObject(OcclusionQueryObjectHandle_t__*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::DestroyOcclusionQueryObject(OcclusionQueryObjectHandle_t__*)"
+  },
+  {
+   "index": 80,
+   "name": "BeginOcclusionQueryDrawing",
+   "sig": "BeginOcclusionQueryDrawing(OcclusionQueryObjectHandle_t__*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::BeginOcclusionQueryDrawing(OcclusionQueryObjectHandle_t__*)"
+  },
+  {
+   "index": 81,
+   "name": "EndOcclusionQueryDrawing",
+   "sig": "EndOcclusionQueryDrawing(OcclusionQueryObjectHandle_t__*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::EndOcclusionQueryDrawing(OcclusionQueryObjectHandle_t__*)"
+  },
+  {
+   "index": 82,
+   "name": "OcclusionQuery_GetNumPixelsRendered",
+   "sig": "OcclusionQuery_GetNumPixelsRendered(OcclusionQueryObjectHandle_t__*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::OcclusionQuery_GetNumPixelsRendered(OcclusionQueryObjectHandle_t__*)"
+  },
+  {
+   "index": 83,
+   "name": "SetFlashlightMode",
+   "sig": "SetFlashlightMode(bool)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetFlashlightMode(bool)"
+  },
+  {
+   "index": 84,
+   "name": "SetFlashlightState",
+   "sig": "SetFlashlightState(FlashlightState_t const&, VMatrix const&)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetFlashlightState(FlashlightState_t const&, VMatrix const&)"
+  },
+  {
+   "index": 85,
+   "name": "GetHeightClipMode",
+   "sig": "GetHeightClipMode()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::GetHeightClipMode()"
+  },
+  {
+   "index": 86,
+   "name": "ComputePixelDiameterOfSphere",
+   "sig": "ComputePixelDiameterOfSphere(Vector const&, float)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::ComputePixelDiameterOfSphere(Vector const&, float)"
+  },
+  {
+   "index": 87,
+   "name": "EnableUserClipTransformOverride",
+   "sig": "EnableUserClipTransformOverride(bool)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::EnableUserClipTransformOverride(bool)"
+  },
+  {
+   "index": 88,
+   "name": "UserClipTransform",
+   "sig": "UserClipTransform(VMatrix const&)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::UserClipTransform(VMatrix const&)"
+  },
+  {
+   "index": 89,
+   "name": "GetFlashlightMode",
+   "sig": "GetFlashlightMode() const",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::GetFlashlightMode() const"
+  },
+  {
+   "index": 90,
+   "name": "ResetOcclusionQueryObject",
+   "sig": "ResetOcclusionQueryObject(OcclusionQueryObjectHandle_t__*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::ResetOcclusionQueryObject(OcclusionQueryObjectHandle_t__*)"
+  },
+  {
+   "index": 91,
+   "name": "Unused3",
+   "sig": "Unused3()",
+   "symbol": "IMatRenderContext::Unused3()"
+  },
+  {
+   "index": 92,
+   "name": "CreateMorph",
+   "sig": "CreateMorph(unsigned int, char const*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::CreateMorph(unsigned int, char const*)"
+  },
+  {
+   "index": 93,
+   "name": "DestroyMorph",
+   "sig": "DestroyMorph(IMorph*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::DestroyMorph(IMorph*)"
+  },
+  {
+   "index": 94,
+   "name": "BindMorph",
+   "sig": "BindMorph(IMorph*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::BindMorph(IMorph*)"
+  },
+  {
+   "index": 95,
+   "name": "SetFlexWeights",
+   "sig": "SetFlexWeights(int, int, MorphWeight_t const*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetFlexWeights(int, int, MorphWeight_t const*)"
+  },
+  {
+   "index": 96,
+   "name": "Unused4",
+   "sig": "Unused4()",
+   "symbol": "IMatRenderContext::Unused4()"
+  },
+  {
+   "index": 97,
+   "name": "Unused5",
+   "sig": "Unused5()",
+   "symbol": "IMatRenderContext::Unused5()"
+  },
+  {
+   "index": 98,
+   "name": "Unused6",
+   "sig": "Unused6()",
+   "symbol": "IMatRenderContext::Unused6()"
+  },
+  {
+   "index": 99,
+   "name": "Unused7",
+   "sig": "Unused7()",
+   "symbol": "IMatRenderContext::Unused7()"
+  },
+  {
+   "index": 100,
+   "name": "Unused8",
+   "sig": "Unused8()",
+   "symbol": "IMatRenderContext::Unused8()"
+  },
+  {
+   "index": 101,
+   "name": "ReadPixelsAndStretch",
+   "sig": "ReadPixelsAndStretch(Rect_t*, Rect_t*, unsigned char*, ImageFormat, int)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::ReadPixelsAndStretch(Rect_t*, Rect_t*, unsigned char*, ImageFormat, int)"
+  },
+  {
+   "index": 102,
+   "name": "GetWindowSize",
+   "sig": "GetWindowSize(int&, int&) const",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::GetWindowSize(int&, int&) const"
+  },
+  {
+   "index": 103,
+   "name": "DrawScreenSpaceRectangle",
+   "sig": "DrawScreenSpaceRectangle(IMaterial*, int, int, int, int, float, float, float, float, int, int, void*, int, int)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::DrawScreenSpaceRectangle(IMaterial*, int, int, int, int, float, float, float, float, int, int, void*, int, int)"
+  },
+  {
+   "index": 104,
+   "name": "LoadBoneMatrix",
+   "sig": "LoadBoneMatrix(int, matrix3x4_t const&)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::LoadBoneMatrix(int, matrix3x4_t const&)"
+  },
+  {
+   "index": 105,
+   "name": "PushRenderTargetAndViewport",
+   "sig": "PushRenderTargetAndViewport()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::PushRenderTargetAndViewport()"
+  },
+  {
+   "index": 106,
+   "name": "PushRenderTargetAndViewport",
+   "sig": "PushRenderTargetAndViewport(ITexture*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::PushRenderTargetAndViewport(ITexture*)"
+  },
+  {
+   "index": 107,
+   "name": "PushRenderTargetAndViewport",
+   "sig": "PushRenderTargetAndViewport(ITexture*, int, int, int, int)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::PushRenderTargetAndViewport(ITexture*, int, int, int, int)"
+  },
+  {
+   "index": 108,
+   "name": "PushRenderTargetAndViewport",
+   "sig": "PushRenderTargetAndViewport(ITexture*, ITexture*, int, int, int, int)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::PushRenderTargetAndViewport(ITexture*, ITexture*, int, int, int, int)"
+  },
+  {
+   "index": 109,
+   "name": "PopRenderTargetAndViewport",
+   "sig": "PopRenderTargetAndViewport()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::PopRenderTargetAndViewport()"
+  },
+  {
+   "index": 110,
+   "name": "BindLightmapTexture",
+   "sig": "BindLightmapTexture(ITexture*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::BindLightmapTexture(ITexture*)"
+  },
+  {
+   "index": 111,
+   "name": "CopyRenderTargetToTextureEx",
+   "sig": "CopyRenderTargetToTextureEx(ITexture*, int, Rect_t*, Rect_t*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::CopyRenderTargetToTextureEx(ITexture*, int, Rect_t*, Rect_t*)"
+  },
+  {
+   "index": 112,
+   "name": "CopyTextureToRenderTargetEx",
+   "sig": "CopyTextureToRenderTargetEx(int, ITexture*, Rect_t*, Rect_t*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::CopyTextureToRenderTargetEx(int, ITexture*, Rect_t*, Rect_t*)"
+  },
+  {
+   "index": 113,
+   "name": "PerspectiveOffCenterX",
+   "sig": "PerspectiveOffCenterX(double, double, double, double, double, double, double, double)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::PerspectiveOffCenterX(double, double, double, double, double, double, double, double)"
+  },
+  {
+   "index": 114,
+   "name": "SetFloatRenderingParameter",
+   "sig": "SetFloatRenderingParameter(int, float)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetFloatRenderingParameter(int, float)"
+  },
+  {
+   "index": 115,
+   "name": "SetIntRenderingParameter",
+   "sig": "SetIntRenderingParameter(int, int)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetIntRenderingParameter(int, int)"
+  },
+  {
+   "index": 116,
+   "name": "SetVectorRenderingParameter",
+   "sig": "SetVectorRenderingParameter(int, Vector const&)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetVectorRenderingParameter(int, Vector const&)"
+  },
+  {
+   "index": 117,
+   "name": "SetStencilEnable",
+   "sig": "SetStencilEnable(bool)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetStencilEnable(bool)"
+  },
+  {
+   "index": 118,
+   "name": "SetStencilFailOperation",
+   "sig": "SetStencilFailOperation(StencilOperation_t)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetStencilFailOperation(StencilOperation_t)"
+  },
+  {
+   "index": 119,
+   "name": "SetStencilZFailOperation",
+   "sig": "SetStencilZFailOperation(StencilOperation_t)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetStencilZFailOperation(StencilOperation_t)"
+  },
+  {
+   "index": 120,
+   "name": "SetStencilPassOperation",
+   "sig": "SetStencilPassOperation(StencilOperation_t)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetStencilPassOperation(StencilOperation_t)"
+  },
+  {
+   "index": 121,
+   "name": "SetStencilCompareFunction",
+   "sig": "SetStencilCompareFunction(StencilComparisonFunction_t)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetStencilCompareFunction(StencilComparisonFunction_t)"
+  },
+  {
+   "index": 122,
+   "name": "SetStencilReferenceValue",
+   "sig": "SetStencilReferenceValue(int)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetStencilReferenceValue(int)"
+  },
+  {
+   "index": 123,
+   "name": "SetStencilTestMask",
+   "sig": "SetStencilTestMask(unsigned int)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetStencilTestMask(unsigned int)"
+  },
+  {
+   "index": 124,
+   "name": "SetStencilWriteMask",
+   "sig": "SetStencilWriteMask(unsigned int)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetStencilWriteMask(unsigned int)"
+  },
+  {
+   "index": 125,
+   "name": "ClearStencilBufferRectangle",
+   "sig": "ClearStencilBufferRectangle(int, int, int, int, int)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::ClearStencilBufferRectangle(int, int, int, int, int)"
+  },
+  {
+   "index": 126,
+   "name": "SetRenderTargetEx",
+   "sig": "SetRenderTargetEx(int, ITexture*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetRenderTargetEx(int, ITexture*)"
+  },
+  {
+   "index": 127,
+   "name": "PushCustomClipPlane",
+   "sig": "PushCustomClipPlane(float const*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::PushCustomClipPlane(float const*)"
+  },
+  {
+   "index": 128,
+   "name": "PopCustomClipPlane",
+   "sig": "PopCustomClipPlane()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::PopCustomClipPlane()"
+  },
+  {
+   "index": 129,
+   "name": "GetMaxToRender",
+   "sig": "GetMaxToRender(IMesh*, bool, int*, int*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::GetMaxToRender(IMesh*, bool, int*, int*)"
+  },
+  {
+   "index": 130,
+   "name": "GetMaxVerticesToRender",
+   "sig": "GetMaxVerticesToRender(IMaterial*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::GetMaxVerticesToRender(IMaterial*)"
+  },
+  {
+   "index": 131,
+   "name": "GetMaxIndicesToRender",
+   "sig": "GetMaxIndicesToRender()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::GetMaxIndicesToRender()"
+  },
+  {
+   "index": 132,
+   "name": "DisableAllLocalLights",
+   "sig": "DisableAllLocalLights()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::DisableAllLocalLights()"
+  },
+  {
+   "index": 133,
+   "name": "CompareMaterialCombos",
+   "sig": "CompareMaterialCombos(IMaterial*, IMaterial*, int, int)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::CompareMaterialCombos(IMaterial*, IMaterial*, int, int)"
+  },
+  {
+   "index": 134,
+   "name": "GetFlexMesh",
+   "sig": "GetFlexMesh()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::GetFlexMesh()"
+  },
+  {
+   "index": 135,
+   "name": "SetFlashlightStateEx",
+   "sig": "SetFlashlightStateEx(FlashlightState_t const&, VMatrix const&, ITexture*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetFlashlightStateEx(FlashlightState_t const&, VMatrix const&, ITexture*)"
+  },
+  {
+   "index": 136,
+   "name": "GetLocalCubemap",
+   "sig": "GetLocalCubemap()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::GetLocalCubemap()"
+  },
+  {
+   "index": 137,
+   "name": "ClearBuffersObeyStencil",
+   "sig": "ClearBuffersObeyStencil(bool, bool)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::ClearBuffersObeyStencil(bool, bool)"
+  },
+  {
+   "index": 138,
+   "name": "EnableClipping",
+   "sig": "EnableClipping(bool)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::EnableClipping(bool)"
+  },
+  {
+   "index": 139,
+   "name": "GetFogDistances",
+   "sig": "GetFogDistances(float*, float*, float*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::GetFogDistances(float*, float*, float*)"
+  },
+  {
+   "index": 140,
+   "name": "BeginPIXEvent",
+   "sig": "BeginPIXEvent(unsigned long, char const*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::BeginPIXEvent(unsigned long, char const*)"
+  },
+  {
+   "index": 141,
+   "name": "EndPIXEvent",
+   "sig": "EndPIXEvent()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::EndPIXEvent()"
+  },
+  {
+   "index": 142,
+   "name": "SetPIXMarker",
+   "sig": "SetPIXMarker(unsigned long, char const*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetPIXMarker(unsigned long, char const*)"
+  },
+  {
+   "index": 143,
+   "name": "BeginBatch",
+   "sig": "BeginBatch(IMesh*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::BeginBatch(IMesh*)"
+  },
+  {
+   "index": 144,
+   "name": "BindBatch",
+   "sig": "BindBatch(IMesh*, IMaterial*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::BindBatch(IMesh*, IMaterial*)"
+  },
+  {
+   "index": 145,
+   "name": "DrawBatch",
+   "sig": "DrawBatch(int, int)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::DrawBatch(int, int)"
+  },
+  {
+   "index": 146,
+   "name": "EndBatch",
+   "sig": "EndBatch()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::EndBatch()"
+  },
+  {
+   "index": 147,
+   "name": "GetCallQueue",
+   "sig": "GetCallQueue()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::GetCallQueue()"
+  },
+  {
+   "index": 148,
+   "name": "GetWorldSpaceCameraPosition",
+   "sig": "GetWorldSpaceCameraPosition(Vector*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::GetWorldSpaceCameraPosition(Vector*)"
+  },
+  {
+   "index": 149,
+   "name": "GetWorldSpaceCameraVectors",
+   "sig": "GetWorldSpaceCameraVectors(Vector*, Vector*, Vector*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::GetWorldSpaceCameraVectors(Vector*, Vector*, Vector*)"
+  },
+  {
+   "index": 150,
+   "name": "ResetToneMappingScale",
+   "sig": "ResetToneMappingScale(float)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::ResetToneMappingScale(float)"
+  },
+  {
+   "index": 151,
+   "name": "SetGoalToneMappingScale",
+   "sig": "SetGoalToneMappingScale(float)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetGoalToneMappingScale(float)"
+  },
+  {
+   "index": 152,
+   "name": "TurnOnToneMapping",
+   "sig": "TurnOnToneMapping()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::TurnOnToneMapping()"
+  },
+  {
+   "index": 153,
+   "name": "SetToneMappingScaleLinear",
+   "sig": "SetToneMappingScaleLinear(Vector const&)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetToneMappingScaleLinear(Vector const&)"
+  },
+  {
+   "index": 154,
+   "name": "GetToneMappingScaleLinear",
+   "sig": "GetToneMappingScaleLinear()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::GetToneMappingScaleLinear()"
+  },
+  {
+   "index": 155,
+   "name": "SetShadowDepthBiasFactors",
+   "sig": "SetShadowDepthBiasFactors(float, float)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetShadowDepthBiasFactors(float, float)"
+  },
+  {
+   "index": 156,
+   "name": "PerformFullScreenStencilOperation",
+   "sig": "PerformFullScreenStencilOperation()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::PerformFullScreenStencilOperation()"
+  },
+  {
+   "index": 157,
+   "name": "SetLightingOrigin",
+   "sig": "SetLightingOrigin(Vector)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetLightingOrigin(Vector)"
+  },
+  {
+   "index": 158,
+   "name": "SetScissorRect",
+   "sig": "SetScissorRect(int, int, int, int, bool)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetScissorRect(int, int, int, int, bool)"
+  },
+  {
+   "index": 159,
+   "name": "BeginMorphAccumulation",
+   "sig": "BeginMorphAccumulation()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::BeginMorphAccumulation()"
+  },
+  {
+   "index": 160,
+   "name": "EndMorphAccumulation",
+   "sig": "EndMorphAccumulation()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::EndMorphAccumulation()"
+  },
+  {
+   "index": 161,
+   "name": "AccumulateMorph",
+   "sig": "AccumulateMorph(IMorph*, int, MorphWeight_t const*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::AccumulateMorph(IMorph*, int, MorphWeight_t const*)"
+  },
+  {
+   "index": 162,
+   "name": "PushDeformation",
+   "sig": "PushDeformation(DeformationBase_t const*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::PushDeformation(DeformationBase_t const*)"
+  },
+  {
+   "index": 163,
+   "name": "PopDeformation",
+   "sig": "PopDeformation()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::PopDeformation()"
+  },
+  {
+   "index": 164,
+   "name": "GetNumActiveDeformations",
+   "sig": "GetNumActiveDeformations() const",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::GetNumActiveDeformations() const"
+  },
+  {
+   "index": 165,
+   "name": "GetMorphAccumulatorTexCoord",
+   "sig": "GetMorphAccumulatorTexCoord(Vector2D*, IMorph*, int)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::GetMorphAccumulatorTexCoord(Vector2D*, IMorph*, int)"
+  },
+  {
+   "index": 166,
+   "name": "GetDynamicMeshEx",
+   "sig": "GetDynamicMeshEx(unsigned long long, bool, IMesh*, IMesh*, IMaterial*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::GetDynamicMeshEx(unsigned long long, bool, IMesh*, IMesh*, IMaterial*)"
+  },
+  {
+   "index": 167,
+   "name": "FogMaxDensity",
+   "sig": "FogMaxDensity(float)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::FogMaxDensity(float)"
+  },
+  {
+   "index": 168,
+   "name": "GetCurrentMaterial",
+   "sig": "GetCurrentMaterial()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::GetCurrentMaterial()"
+  },
+  {
+   "index": 169,
+   "name": "GetCurrentNumBones",
+   "sig": "GetCurrentNumBones() const",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::GetCurrentNumBones() const"
+  },
+  {
+   "index": 170,
+   "name": "GetCurrentProxy",
+   "sig": "GetCurrentProxy()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::GetCurrentProxy()"
+  },
+  {
+   "index": 171,
+   "name": "EnableColorCorrection",
+   "sig": "EnableColorCorrection(bool)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::EnableColorCorrection(bool)"
+  },
+  {
+   "index": 172,
+   "name": "AddLookup",
+   "sig": "AddLookup(char const*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::AddLookup(char const*)"
+  },
+  {
+   "index": 173,
+   "name": "RemoveLookup",
+   "sig": "RemoveLookup(unsigned int)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::RemoveLookup(unsigned int)"
+  },
+  {
+   "index": 174,
+   "name": "LockLookup",
+   "sig": "LockLookup(unsigned int)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::LockLookup(unsigned int)"
+  },
+  {
+   "index": 175,
+   "name": "LoadLookup",
+   "sig": "LoadLookup(unsigned int, char const*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::LoadLookup(unsigned int, char const*)"
+  },
+  {
+   "index": 176,
+   "name": "UnlockLookup",
+   "sig": "UnlockLookup(unsigned int)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::UnlockLookup(unsigned int)"
+  },
+  {
+   "index": 177,
+   "name": "SetLookupWeight",
+   "sig": "SetLookupWeight(unsigned int, float)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetLookupWeight(unsigned int, float)"
+  },
+  {
+   "index": 178,
+   "name": "ResetLookupWeights",
+   "sig": "ResetLookupWeights()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::ResetLookupWeights()"
+  },
+  {
+   "index": 179,
+   "name": "SetResetable",
+   "sig": "SetResetable(unsigned int, bool)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetResetable(unsigned int, bool)"
+  },
+  {
+   "index": 180,
+   "name": "SetFullScreenDepthTextureValidityFlag",
+   "sig": "SetFullScreenDepthTextureValidityFlag(bool)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetFullScreenDepthTextureValidityFlag(bool)"
+  },
+  {
+   "index": 181,
+   "name": "SetNonInteractivePacifierTexture",
+   "sig": "SetNonInteractivePacifierTexture(ITexture*, float, float, float)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetNonInteractivePacifierTexture(ITexture*, float, float, float)"
+  },
+  {
+   "index": 182,
+   "name": "SetNonInteractiveTempFullscreenBuffer",
+   "sig": "SetNonInteractiveTempFullscreenBuffer(ITexture*, MaterialNonInteractiveMode_t)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::SetNonInteractiveTempFullscreenBuffer(ITexture*, MaterialNonInteractiveMode_t)"
+  },
+  {
+   "index": 183,
+   "name": "EnableNonInteractiveMode",
+   "sig": "EnableNonInteractiveMode(MaterialNonInteractiveMode_t)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::EnableNonInteractiveMode(MaterialNonInteractiveMode_t)"
+  },
+  {
+   "index": 184,
+   "name": "RefreshFrontBufferNonInteractive",
+   "sig": "RefreshFrontBufferNonInteractive()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::RefreshFrontBufferNonInteractive()"
+  },
+  {
+   "index": 185,
+   "name": "LockRenderData",
+   "sig": "LockRenderData(int)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::LockRenderData(int)"
+  },
+  {
+   "index": 186,
+   "name": "UnlockRenderData",
+   "sig": "UnlockRenderData(void*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::UnlockRenderData(void*)"
+  },
+  {
+   "index": 187,
+   "name": "AddRefRenderData",
+   "sig": "AddRefRenderData()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::AddRefRenderData()"
+  },
+  {
+   "index": 188,
+   "name": "ReleaseRenderData",
+   "sig": "ReleaseRenderData()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::ReleaseRenderData()"
+  },
+  {
+   "index": 189,
+   "name": "IsRenderData",
+   "sig": "IsRenderData(void const*) const",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::IsRenderData(void const*) const"
+  },
+  {
+   "index": 190,
+   "name": "PrintfVA",
+   "sig": "PrintfVA(char*, char*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::PrintfVA(char*, char*)"
+  },
+  {
+   "index": 191,
+   "name": "Printf",
+   "sig": "Printf(char const*, ...)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::Printf(char const*, ...)"
+  },
+  {
+   "index": 192,
+   "name": "Knob",
+   "sig": "Knob(char*, float*)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::Knob(char*, float*)"
+  },
+  {
+   "index": 193,
+   "name": "OverrideAlphaWriteEnable",
+   "sig": "OverrideAlphaWriteEnable(bool, bool)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::OverrideAlphaWriteEnable(bool, bool)"
+  },
+  {
+   "index": 194,
+   "name": "OverrideColorWriteEnable",
+   "sig": "OverrideColorWriteEnable(bool, bool)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::OverrideColorWriteEnable(bool, bool)"
+  },
+  {
+   "index": 195,
+   "name": "ClearBuffersObeyStencilEx",
+   "sig": "ClearBuffersObeyStencilEx(bool, bool, bool)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::ClearBuffersObeyStencilEx(bool, bool, bool)"
+  },
+  {
+   "index": 196,
+   "name": "FogRadial",
+   "sig": "FogRadial(bool)",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::FogRadial(bool)"
+  },
+  {
+   "index": 197,
+   "name": "GetFogRadial",
+   "sig": "GetFogRadial()",
+   "symbol": "non-virtual thunk to CDummyMaterialSystem::GetFogRadial()"
+  }
+ ],
+ "implementer_tail": [
+  "~CDummyMaterialSystem()",
+  "~CDummyMaterialSystem()"
+ ],
+ "derived": [
+  "bin/materialsystem:CDummyMaterialSystem",
+  "bin/materialsystem:CMatNullRenderContext",
+  "bin/materialsystem:CMatQueuedRenderContext",
+  "bin/materialsystem:CMatRenderContext",
+  "bin/materialsystem:CMatRenderContextBase"
+ ],
+ "derived_count": 5
+}

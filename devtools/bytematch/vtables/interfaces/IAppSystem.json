@@ -1,0 +1,125 @@
+{
+ "interface": "IAppSystem",
+ "headers": [
+  "public/appframework/IAppSystem.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 5,
+ "sdk2013_slots": [
+  "Connect(void* (*)(char const*, int*))",
+  "Disconnect()",
+  "QueryInterface(char const*)",
+  "Init()",
+  "Shutdown()"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CCvarQuery",
+  "offset": 0,
+  "chain": [
+   "CCvarQuery",
+   "CBaseAppSystem<ICvarQuery>",
+   "ICvarQuery",
+   "IAppSystem"
+  ]
+ },
+ "retail_len": 5,
+ "retail_len_basis": "first own method of ICvarQuery",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 6,
+  "first own method of ICvarQuery": 5
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Connect",
+   "sig": "Connect(void* (*)(char const*, int*))",
+   "symbol": "CCvarQuery::Connect(void* (*)(char const*, int*))"
+  },
+  {
+   "index": 1,
+   "name": "Disconnect",
+   "sig": "Disconnect()",
+   "symbol": "CBaseAppSystem<ICvarQuery>::Disconnect()"
+  },
+  {
+   "index": 2,
+   "name": "QueryInterface",
+   "sig": "QueryInterface(char const*)",
+   "symbol": "CCvarQuery::QueryInterface(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "CCvarQuery::Init()"
+  },
+  {
+   "index": 4,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CCvarQuery::Shutdown()"
+  }
+ ],
+ "implementer_tail": [
+  "AreConVarsLinkable(ConVar const*, ConVar const*)"
+ ],
+ "derived_disagreements": [
+  {
+   "module": "bin/vgui2",
+   "class": "CInputSystem",
+   "index": 0,
+   "ref": "Connect(void* (*)(char const*, int*))",
+   "got": "~CInputSystem()"
+  }
+ ],
+ "derived": [
+  "bin/datacache:CDataCache",
+  "bin/datacache:CMDLCache",
+  "bin/engine:CCvarQuery",
+  "bin/engine:CDedicatedServerAPI",
+  "bin/engine:CEngineAPI",
+  "bin/engine:CToolFrameworkInternal",
+  "bin/filesystem_stdio:CBaseFileSystem",
+  "bin/filesystem_stdio:CFileSystem_Stdio",
+  "bin/filesystem_stdio:CQueuedLoader",
+  "bin/inputsystem:CInputSystem",
+  "bin/launcher:CSDLMgr",
+  "bin/libvstdlib:CCvar",
+  "bin/libvstdlib:CDefaultCvarQuery",
+  "bin/materialsystem:CDummyMaterialSystem",
+  "bin/materialsystem:CMaterialSystem",
+  "bin/replay:CReplaySystem",
+  "bin/scenefilecache:CSceneFileCache",
+  "bin/shaderapidx9:CShaderDeviceMgrBase",
+  "bin/shaderapidx9:CShaderDeviceMgrDx8",
+  "bin/shaderapiempty:CShaderDeviceMgrEmpty",
+  "bin/soundemittersystem:CSoundEmitterSystemBase",
+  "bin/studiorender:CStudioRenderContext",
+  "bin/vgui2:CInputSystem",
+  "bin/vgui2:CVGui",
+  "bin/vguimatsurface:CMatSystemSurface",
+  "bin/video_quicktime:CQuickTimeVideoSubSystem",
+  "bin/video_services:CValveVideoServices",
+  "bin/vphysics:CPhysicsInterface",
+  "bin/vtex_dll:CVTex",
+  "episodic/client:CClientVirtualReality",
+  "episodic/client:CDefaultParticleSystemQuery",
+  "episodic/client:CParticleSystemQuery",
+  "episodic/server:CDefaultParticleSystemQuery",
+  "episodic/server:CParticleSystemQuery",
+  "hl2/client:CClientVirtualReality",
+  "hl2/client:CDefaultParticleSystemQuery",
+  "hl2/client:CParticleSystemQuery",
+  "hl2/server:CDefaultParticleSystemQuery",
+  "hl2/server:CParticleSystemQuery",
+  "hl2_complete/client:CClientVirtualReality"
+ ],
+ "derived_count": 54
+}

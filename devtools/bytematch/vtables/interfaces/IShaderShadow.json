@@ -1,0 +1,426 @@
+{
+ "interface": "IShaderShadow",
+ "headers": [
+  "public/shaderapi/ishadershadow.h"
+ ],
+ "versions": {
+  "retail": [
+   "ShaderShadow010"
+  ],
+  "ours": [
+   "ShaderShadow010"
+  ],
+  "sdk2013": [
+   "ShaderShadow010"
+  ]
+ },
+ "version_macros": [
+  "SHADERSHADOW_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/shaderapidx9",
+   "version": "ShaderShadow010",
+   "class": "CShaderShadowDX8"
+  },
+  {
+   "module": "bin/shaderapiempty",
+   "version": "ShaderShadow010",
+   "class": "CShaderShadowEmpty"
+  }
+ ],
+ "sdk2013_len": 52,
+ "sdk2013_slots": [
+  "SetDefaultState()",
+  "DepthFunc(ShaderDepthFunc_t)",
+  "EnableDepthWrites(bool)",
+  "EnableDepthTest(bool)",
+  "EnablePolyOffset(PolygonOffsetMode_t)",
+  "EnableStencil(bool)",
+  "StencilFunc(ShaderStencilFunc_t)",
+  "StencilPassOp(ShaderStencilOp_t)",
+  "StencilFailOp(ShaderStencilOp_t)",
+  "StencilDepthFailOp(ShaderStencilOp_t)",
+  "StencilReference(int)",
+  "StencilMask(int)",
+  "StencilWriteMask(int)",
+  "EnableColorWrites(bool)",
+  "EnableAlphaWrites(bool)",
+  "EnableBlending(bool)",
+  "BlendFunc(ShaderBlendFactor_t, ShaderBlendFactor_t)",
+  "EnableAlphaTest(bool)",
+  "AlphaFunc(ShaderAlphaFunc_t, float)",
+  "PolyMode(ShaderPolyModeFace_t, ShaderPolyMode_t)",
+  "EnableCulling(bool)",
+  "EnableConstantColor(bool)",
+  "VertexShaderVertexFormat(unsigned int, int, int*, int)",
+  "SetVertexShader(char const*, int)",
+  "SetPixelShader(char const*, int)",
+  "EnableLighting(bool)",
+  "EnableSpecular(bool)",
+  "EnableSRGBWrite(bool)",
+  "EnableSRGBRead(Sampler_t, bool)",
+  "EnableVertexBlend(bool)",
+  "OverbrightValue(TextureStage_t, float)",
+  "EnableTexture(Sampler_t, bool)",
+  "EnableTexGen(TextureStage_t, bool)",
+  "TexGen(TextureStage_t, ShaderTexGenParam_t)",
+  "EnableCustomPixelPipe(bool)",
+  "CustomTextureStages(int)",
+  "CustomTextureOperation(TextureStage_t, ShaderTexChannel_t, ShaderTexOp_t, ShaderTexArg_t, ShaderTexArg_t)",
+  "DrawFlags(unsigned int)",
+  "EnableAlphaPipe(bool)",
+  "EnableConstantAlpha(bool)",
+  "EnableVertexAlpha(bool)",
+  "EnableTextureAlpha(TextureStage_t, bool)",
+  "EnableBlendingSeparateAlpha(bool)",
+  "BlendFuncSeparateAlpha(ShaderBlendFactor_t, ShaderBlendFactor_t)",
+  "FogMode(ShaderFogMode_t)",
+  "SetDiffuseMaterialSource(ShaderMaterialSource_t)",
+  "SetMorphFormat(unsigned int)",
+  "DisableFogGammaCorrection(bool)",
+  "EnableAlphaToCoverage(bool)",
+  "SetShadowDepthFiltering(Sampler_t)",
+  "BlendOp(ShaderBlendOp_t)",
+  "BlendOpSeparateAlpha(ShaderBlendOp_t)"
+ ],
+ "retail_reference": {
+  "module": "bin/shaderapiempty",
+  "class": "CShaderShadowEmpty",
+  "offset": 0,
+  "chain": [
+   "CShaderShadowEmpty",
+   "IShaderShadow"
+  ]
+ },
+ "retail_len": 52,
+ "retail_len_basis": "first implementer destructor",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 55,
+  "first implementer destructor": 52
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "SetDefaultState",
+   "sig": "SetDefaultState()",
+   "symbol": "CShaderShadowEmpty::SetDefaultState()"
+  },
+  {
+   "index": 1,
+   "name": "DepthFunc",
+   "sig": "DepthFunc(ShaderDepthFunc_t)",
+   "symbol": "CShaderShadowEmpty::DepthFunc(ShaderDepthFunc_t)"
+  },
+  {
+   "index": 2,
+   "name": "EnableDepthWrites",
+   "sig": "EnableDepthWrites(bool)",
+   "symbol": "CShaderShadowEmpty::EnableDepthWrites(bool)"
+  },
+  {
+   "index": 3,
+   "name": "EnableDepthTest",
+   "sig": "EnableDepthTest(bool)",
+   "symbol": "CShaderShadowEmpty::EnableDepthTest(bool)"
+  },
+  {
+   "index": 4,
+   "name": "EnablePolyOffset",
+   "sig": "EnablePolyOffset(PolygonOffsetMode_t)",
+   "symbol": "CShaderShadowEmpty::EnablePolyOffset(PolygonOffsetMode_t)"
+  },
+  {
+   "index": 5,
+   "name": "EnableStencil",
+   "sig": "EnableStencil(bool)",
+   "symbol": "CShaderShadowEmpty::EnableStencil(bool)"
+  },
+  {
+   "index": 6,
+   "name": "StencilFunc",
+   "sig": "StencilFunc(ShaderStencilFunc_t)",
+   "symbol": "CShaderShadowEmpty::StencilFunc(ShaderStencilFunc_t)"
+  },
+  {
+   "index": 7,
+   "name": "StencilPassOp",
+   "sig": "StencilPassOp(ShaderStencilOp_t)",
+   "symbol": "CShaderShadowEmpty::StencilPassOp(ShaderStencilOp_t)"
+  },
+  {
+   "index": 8,
+   "name": "StencilFailOp",
+   "sig": "StencilFailOp(ShaderStencilOp_t)",
+   "symbol": "CShaderShadowEmpty::StencilFailOp(ShaderStencilOp_t)"
+  },
+  {
+   "index": 9,
+   "name": "StencilDepthFailOp",
+   "sig": "StencilDepthFailOp(ShaderStencilOp_t)",
+   "symbol": "CShaderShadowEmpty::StencilDepthFailOp(ShaderStencilOp_t)"
+  },
+  {
+   "index": 10,
+   "name": "StencilReference",
+   "sig": "StencilReference(int)",
+   "symbol": "CShaderShadowEmpty::StencilReference(int)"
+  },
+  {
+   "index": 11,
+   "name": "StencilMask",
+   "sig": "StencilMask(int)",
+   "symbol": "CShaderShadowEmpty::StencilMask(int)"
+  },
+  {
+   "index": 12,
+   "name": "StencilWriteMask",
+   "sig": "StencilWriteMask(int)",
+   "symbol": "CShaderShadowEmpty::StencilWriteMask(int)"
+  },
+  {
+   "index": 13,
+   "name": "EnableColorWrites",
+   "sig": "EnableColorWrites(bool)",
+   "symbol": "CShaderShadowEmpty::EnableColorWrites(bool)"
+  },
+  {
+   "index": 14,
+   "name": "EnableAlphaWrites",
+   "sig": "EnableAlphaWrites(bool)",
+   "symbol": "CShaderShadowEmpty::EnableAlphaWrites(bool)"
+  },
+  {
+   "index": 15,
+   "name": "EnableBlending",
+   "sig": "EnableBlending(bool)",
+   "symbol": "CShaderShadowEmpty::EnableBlending(bool)"
+  },
+  {
+   "index": 16,
+   "name": "BlendFunc",
+   "sig": "BlendFunc(ShaderBlendFactor_t, ShaderBlendFactor_t)",
+   "symbol": "CShaderShadowEmpty::BlendFunc(ShaderBlendFactor_t, ShaderBlendFactor_t)"
+  },
+  {
+   "index": 17,
+   "name": "EnableAlphaTest",
+   "sig": "EnableAlphaTest(bool)",
+   "symbol": "CShaderShadowEmpty::EnableAlphaTest(bool)"
+  },
+  {
+   "index": 18,
+   "name": "AlphaFunc",
+   "sig": "AlphaFunc(ShaderAlphaFunc_t, float)",
+   "symbol": "CShaderShadowEmpty::AlphaFunc(ShaderAlphaFunc_t, float)"
+  },
+  {
+   "index": 19,
+   "name": "PolyMode",
+   "sig": "PolyMode(ShaderPolyModeFace_t, ShaderPolyMode_t)",
+   "symbol": "CShaderShadowEmpty::PolyMode(ShaderPolyModeFace_t, ShaderPolyMode_t)"
+  },
+  {
+   "index": 20,
+   "name": "EnableCulling",
+   "sig": "EnableCulling(bool)",
+   "symbol": "CShaderShadowEmpty::EnableCulling(bool)"
+  },
+  {
+   "index": 21,
+   "name": "EnableConstantColor",
+   "sig": "EnableConstantColor(bool)",
+   "symbol": "CShaderShadowEmpty::EnableConstantColor(bool)"
+  },
+  {
+   "index": 22,
+   "name": "VertexShaderVertexFormat",
+   "sig": "VertexShaderVertexFormat(unsigned int, int, int*, int)",
+   "symbol": "CShaderShadowEmpty::VertexShaderVertexFormat(unsigned int, int, int*, int)"
+  },
+  {
+   "index": 23,
+   "name": "SetVertexShader",
+   "sig": "SetVertexShader(char const*, int)",
+   "symbol": "CShaderShadowEmpty::SetVertexShader(char const*, int)"
+  },
+  {
+   "index": 24,
+   "name": "SetPixelShader",
+   "sig": "SetPixelShader(char const*, int)",
+   "symbol": "CShaderShadowEmpty::SetPixelShader(char const*, int)"
+  },
+  {
+   "index": 25,
+   "name": "EnableLighting",
+   "sig": "EnableLighting(bool)",
+   "symbol": "CShaderShadowEmpty::EnableLighting(bool)"
+  },
+  {
+   "index": 26,
+   "name": "EnableSpecular",
+   "sig": "EnableSpecular(bool)",
+   "symbol": "CShaderShadowEmpty::EnableSpecular(bool)"
+  },
+  {
+   "index": 27,
+   "name": "EnableSRGBWrite",
+   "sig": "EnableSRGBWrite(bool)",
+   "symbol": "CShaderShadowEmpty::EnableSRGBWrite(bool)"
+  },
+  {
+   "index": 28,
+   "name": "EnableSRGBRead",
+   "sig": "EnableSRGBRead(Sampler_t, bool)",
+   "symbol": "CShaderShadowEmpty::EnableSRGBRead(Sampler_t, bool)"
+  },
+  {
+   "index": 29,
+   "name": "EnableVertexBlend",
+   "sig": "EnableVertexBlend(bool)",
+   "symbol": "CShaderShadowEmpty::EnableVertexBlend(bool)"
+  },
+  {
+   "index": 30,
+   "name": "OverbrightValue",
+   "sig": "OverbrightValue(TextureStage_t, float)",
+   "symbol": "CShaderShadowEmpty::OverbrightValue(TextureStage_t, float)"
+  },
+  {
+   "index": 31,
+   "name": "EnableTexture",
+   "sig": "EnableTexture(Sampler_t, bool)",
+   "symbol": "CShaderShadowEmpty::EnableTexture(Sampler_t, bool)"
+  },
+  {
+   "index": 32,
+   "name": "EnableTexGen",
+   "sig": "EnableTexGen(TextureStage_t, bool)",
+   "symbol": "CShaderShadowEmpty::EnableTexGen(TextureStage_t, bool)"
+  },
+  {
+   "index": 33,
+   "name": "TexGen",
+   "sig": "TexGen(TextureStage_t, ShaderTexGenParam_t)",
+   "symbol": "CShaderShadowEmpty::TexGen(TextureStage_t, ShaderTexGenParam_t)"
+  },
+  {
+   "index": 34,
+   "name": "EnableCustomPixelPipe",
+   "sig": "EnableCustomPixelPipe(bool)",
+   "symbol": "CShaderShadowEmpty::EnableCustomPixelPipe(bool)"
+  },
+  {
+   "index": 35,
+   "name": "CustomTextureStages",
+   "sig": "CustomTextureStages(int)",
+   "symbol": "CShaderShadowEmpty::CustomTextureStages(int)"
+  },
+  {
+   "index": 36,
+   "name": "CustomTextureOperation",
+   "sig": "CustomTextureOperation(TextureStage_t, ShaderTexChannel_t, ShaderTexOp_t, ShaderTexArg_t, ShaderTexArg_t)",
+   "symbol": "CShaderShadowEmpty::CustomTextureOperation(TextureStage_t, ShaderTexChannel_t, ShaderTexOp_t, ShaderTexArg_t, ShaderTexArg_t)"
+  },
+  {
+   "index": 37,
+   "name": "DrawFlags",
+   "sig": "DrawFlags(unsigned int)",
+   "symbol": "CShaderShadowEmpty::DrawFlags(unsigned int)"
+  },
+  {
+   "index": 38,
+   "name": "EnableAlphaPipe",
+   "sig": "EnableAlphaPipe(bool)",
+   "symbol": "CShaderShadowEmpty::EnableAlphaPipe(bool)"
+  },
+  {
+   "index": 39,
+   "name": "EnableConstantAlpha",
+   "sig": "EnableConstantAlpha(bool)",
+   "symbol": "CShaderShadowEmpty::EnableConstantAlpha(bool)"
+  },
+  {
+   "index": 40,
+   "name": "EnableVertexAlpha",
+   "sig": "EnableVertexAlpha(bool)",
+   "symbol": "CShaderShadowEmpty::EnableVertexAlpha(bool)"
+  },
+  {
+   "index": 41,
+   "name": "EnableTextureAlpha",
+   "sig": "EnableTextureAlpha(TextureStage_t, bool)",
+   "symbol": "CShaderShadowEmpty::EnableTextureAlpha(TextureStage_t, bool)"
+  },
+  {
+   "index": 42,
+   "name": "EnableBlendingSeparateAlpha",
+   "sig": "EnableBlendingSeparateAlpha(bool)",
+   "symbol": "CShaderShadowEmpty::EnableBlendingSeparateAlpha(bool)"
+  },
+  {
+   "index": 43,
+   "name": "BlendFuncSeparateAlpha",
+   "sig": "BlendFuncSeparateAlpha(ShaderBlendFactor_t, ShaderBlendFactor_t)",
+   "symbol": "CShaderShadowEmpty::BlendFuncSeparateAlpha(ShaderBlendFactor_t, ShaderBlendFactor_t)"
+  },
+  {
+   "index": 44,
+   "name": "FogMode",
+   "sig": "FogMode(ShaderFogMode_t)",
+   "symbol": "CShaderShadowEmpty::FogMode(ShaderFogMode_t)"
+  },
+  {
+   "index": 45,
+   "name": "SetDiffuseMaterialSource",
+   "sig": "SetDiffuseMaterialSource(ShaderMaterialSource_t)",
+   "symbol": "CShaderShadowEmpty::SetDiffuseMaterialSource(ShaderMaterialSource_t)"
+  },
+  {
+   "index": 46,
+   "name": "SetMorphFormat",
+   "sig": "SetMorphFormat(unsigned int)",
+   "symbol": "CShaderShadowEmpty::SetMorphFormat(unsigned int)"
+  },
+  {
+   "index": 47,
+   "name": "DisableFogGammaCorrection",
+   "sig": "DisableFogGammaCorrection(bool)",
+   "symbol": "CShaderShadowEmpty::DisableFogGammaCorrection(bool)"
+  },
+  {
+   "index": 48,
+   "name": "EnableAlphaToCoverage",
+   "sig": "EnableAlphaToCoverage(bool)",
+   "symbol": "CShaderShadowEmpty::EnableAlphaToCoverage(bool)"
+  },
+  {
+   "index": 49,
+   "name": "SetShadowDepthFiltering",
+   "sig": "SetShadowDepthFiltering(Sampler_t)",
+   "symbol": "CShaderShadowEmpty::SetShadowDepthFiltering(Sampler_t)"
+  },
+  {
+   "index": 50,
+   "name": "BlendOp",
+   "sig": "BlendOp(ShaderBlendOp_t)",
+   "symbol": "CShaderShadowEmpty::BlendOp(ShaderBlendOp_t)"
+  },
+  {
+   "index": 51,
+   "name": "BlendOpSeparateAlpha",
+   "sig": "BlendOpSeparateAlpha(ShaderBlendOp_t)",
+   "symbol": "CShaderShadowEmpty::BlendOpSeparateAlpha(ShaderBlendOp_t)"
+  }
+ ],
+ "implementer_tail": [
+  "~CShaderShadowEmpty()",
+  "~CShaderShadowEmpty()",
+  "ExecuteCommandBuffer(unsigned char*)"
+ ],
+ "derived": [
+  "bin/shaderapidx9:CShaderShadowDX8",
+  "bin/shaderapiempty:CShaderShadowEmpty"
+ ],
+ "derived_count": 2
+}

@@ -1,0 +1,60 @@
+{
+ "interface": "IPhysicsObjectEvent",
+ "headers": [
+  "public/vphysics_interface.h",
+  "public/vphysics_interfaceV30.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 2,
+ "sdk2013_slots": [
+  "ObjectWake(IPhysicsObject*)",
+  "ObjectSleep(IPhysicsObject*)"
+ ],
+ "retail_reference": {
+  "module": "episodic/client",
+  "class": "CCollisionEvent",
+  "offset": 8,
+  "chain": [
+   "CCollisionEvent",
+   "IPhysicsObjectEvent"
+  ]
+ },
+ "retail_len": 2,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 2
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "ObjectWake",
+   "sig": "ObjectWake(IPhysicsObject*)",
+   "symbol": "non-virtual thunk to CCollisionEvent::ObjectWake(IPhysicsObject*)"
+  },
+  {
+   "index": 1,
+   "name": "ObjectSleep",
+   "sig": "ObjectSleep(IPhysicsObject*)",
+   "symbol": "non-virtual thunk to CCollisionEvent::ObjectSleep(IPhysicsObject*)"
+  }
+ ],
+ "derived": [
+  "episodic/client:CCollisionEvent",
+  "episodic/server:CCollisionEvent",
+  "hl2/client:CCollisionEvent",
+  "hl2/server:CCollisionEvent",
+  "hl2_complete/client:CCollisionEvent",
+  "hl2_complete/server:CCollisionEvent",
+  "hl2mp/client:CCollisionEvent",
+  "hl2mp/server:CCollisionEvent",
+  "lostcoast/client:CCollisionEvent",
+  "lostcoast/server:CCollisionEvent"
+ ],
+ "derived_count": 10
+}

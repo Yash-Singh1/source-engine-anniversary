@@ -1,0 +1,134 @@
+{
+ "interface": "IReplayDemoPlayer",
+ "headers": [
+  "common/replay/ireplaydemoplayer.h"
+ ],
+ "versions": {
+  "retail": [
+   "ReplayDemoPlayer001"
+  ],
+  "ours": [
+   "ReplayDemoPlayer001"
+  ],
+  "sdk2013": [
+   "ReplayDemoPlayer001"
+  ]
+ },
+ "version_macros": [
+  "INTERFACEVERSION_REPLAYDEMOPLAYER"
+ ],
+ "registrations": [
+  {
+   "module": "bin/engine",
+   "version": "ReplayDemoPlayer001",
+   "class": "CReplayDemoPlayer"
+  }
+ ],
+ "sdk2013_len": 12,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "PlayReplay(unsigned int, int)",
+  "PlayNextReplay()",
+  "ClearReplayList()",
+  "AddReplayToList(unsigned int, int)",
+  "GetCurrentReplay()",
+  "GetCurrentPerformance()",
+  "PauseReplay()",
+  "IsReplayPaused()",
+  "ResumeReplay()",
+  "OnSignonStateFull()"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CReplayDemoPlayer",
+  "offset": 1828,
+  "chain": [
+   "CReplayDemoPlayer",
+   "IReplayDemoPlayer"
+  ]
+ },
+ "retail_len": 12,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 12
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CReplayDemoPlayer",
+   "sig": "~CReplayDemoPlayer()",
+   "symbol": "non-virtual thunk to CReplayDemoPlayer::~CReplayDemoPlayer()"
+  },
+  {
+   "index": 1,
+   "name": "~CReplayDemoPlayer",
+   "sig": "~CReplayDemoPlayer()",
+   "symbol": "non-virtual thunk to CReplayDemoPlayer::~CReplayDemoPlayer()"
+  },
+  {
+   "index": 2,
+   "name": "PlayReplay",
+   "sig": "PlayReplay(unsigned int, int)",
+   "symbol": "non-virtual thunk to CReplayDemoPlayer::PlayReplay(unsigned int, int)"
+  },
+  {
+   "index": 3,
+   "name": "PlayNextReplay",
+   "sig": "PlayNextReplay()",
+   "symbol": "non-virtual thunk to CReplayDemoPlayer::PlayNextReplay()"
+  },
+  {
+   "index": 4,
+   "name": "ClearReplayList",
+   "sig": "ClearReplayList()",
+   "symbol": "non-virtual thunk to CReplayDemoPlayer::ClearReplayList()"
+  },
+  {
+   "index": 5,
+   "name": "AddReplayToList",
+   "sig": "AddReplayToList(unsigned int, int)",
+   "symbol": "non-virtual thunk to CReplayDemoPlayer::AddReplayToList(unsigned int, int)"
+  },
+  {
+   "index": 6,
+   "name": "GetCurrentReplay",
+   "sig": "GetCurrentReplay()",
+   "symbol": "non-virtual thunk to CReplayDemoPlayer::GetCurrentReplay()"
+  },
+  {
+   "index": 7,
+   "name": "GetCurrentPerformance",
+   "sig": "GetCurrentPerformance()",
+   "symbol": "non-virtual thunk to CReplayDemoPlayer::GetCurrentPerformance()"
+  },
+  {
+   "index": 8,
+   "name": "PauseReplay",
+   "sig": "PauseReplay()",
+   "symbol": "non-virtual thunk to CReplayDemoPlayer::PauseReplay()"
+  },
+  {
+   "index": 9,
+   "name": "IsReplayPaused",
+   "sig": "IsReplayPaused()",
+   "symbol": "non-virtual thunk to CReplayDemoPlayer::IsReplayPaused()"
+  },
+  {
+   "index": 10,
+   "name": "ResumeReplay",
+   "sig": "ResumeReplay()",
+   "symbol": "non-virtual thunk to CReplayDemoPlayer::ResumeReplay()"
+  },
+  {
+   "index": 11,
+   "name": "OnSignonStateFull",
+   "sig": "OnSignonStateFull()",
+   "symbol": "non-virtual thunk to CReplayDemoPlayer::OnSignonStateFull()"
+  }
+ ],
+ "derived": [
+  "bin/engine:CReplayDemoPlayer"
+ ],
+ "derived_count": 1
+}

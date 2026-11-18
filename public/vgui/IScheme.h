@@ -63,6 +63,8 @@ public:
 
 	// Get color data
 	virtual const KeyValues *GetColorData() const = 0;
+
+	virtual IBorder *GetBorder2( const char *borderName ) = 0;
 };
 
 
@@ -116,6 +118,8 @@ public:
 
 	// Returns true if image evicted, false otherwise
 	virtual bool DeleteImage( const char *pImageName ) = 0;
+
+	virtual void UpdateBorders() = 0;
 };
 
 #define VGUI_SCHEME_INTERFACE_VERSION "VGUI_Scheme010"

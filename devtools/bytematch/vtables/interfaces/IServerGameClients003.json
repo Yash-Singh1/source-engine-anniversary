@@ -1,0 +1,51 @@
+{
+ "interface": "IServerGameClients003",
+ "headers": [],
+ "versions": {
+  "retail": [
+   "ServerGameClients003"
+  ],
+  "ours": [
+   "ServerGameClients003",
+   "ServerGameClients004"
+  ],
+  "sdk2013": [
+   "ServerGameClients003",
+   "ServerGameClients004"
+  ]
+ },
+ "version_macros": [
+  "INTERFACEVERSION_SERVERGAMECLIENTS",
+  "INTERFACEVERSION_SERVERGAMECLIENTS_VERSION_3",
+  "SERVERGAMECLIENTS_INTERFACEVERSION_3"
+ ],
+ "registrations": [
+  {
+   "module": "episodic/server",
+   "version": "ServerGameClients003",
+   "class": "CServerGameClients"
+  },
+  {
+   "module": "hl2/server",
+   "version": "ServerGameClients003",
+   "class": "CServerGameClients"
+  },
+  {
+   "module": "hl2_complete/server",
+   "version": "ServerGameClients003",
+   "class": "CServerGameClients"
+  },
+  {
+   "module": "hl2mp/server",
+   "version": "ServerGameClients003",
+   "class": "CServerGameClients"
+  },
+  {
+   "module": "lostcoast/server",
+   "version": "ServerGameClients003",
+   "class": "CServerGameClients"
+  }
+ ],
+ "sdk2013_len": null,
+ "status": "no retail vtable"
+}

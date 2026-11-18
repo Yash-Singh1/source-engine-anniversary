@@ -1,0 +1,109 @@
+{
+ "interface": "CDataManagerBase",
+ "headers": [
+  "public/tier1/datamanager.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 7,
+ "sdk2013_slots": [
+  "Lock()",
+  "TryLock()",
+  "Unlock()",
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "DestroyResourceStorage(void*)",
+  "GetRealSize(void*)"
+ ],
+ "retail_reference": {
+  "module": "bin/datacache",
+  "class": "CDataManagerBase",
+  "offset": 0,
+  "chain": [
+   "CDataManagerBase"
+  ]
+ },
+ "retail_len": 7,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 5
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Lock",
+   "sig": "Lock()",
+   "symbol": "CDataManagerBase::Lock()"
+  },
+  {
+   "index": 1,
+   "name": "TryLock",
+   "sig": "TryLock()",
+   "symbol": "CDataManagerBase::TryLock()"
+  },
+  {
+   "index": 2,
+   "name": "Unlock",
+   "sig": "Unlock()",
+   "symbol": "CDataManagerBase::Unlock()"
+  },
+  {
+   "index": 3,
+   "name": "~CDataManagerBase",
+   "sig": "~CDataManagerBase()",
+   "symbol": "CDataManagerBase::~CDataManagerBase()"
+  },
+  {
+   "index": 4,
+   "name": "~CDataManagerBase",
+   "sig": "~CDataManagerBase()",
+   "symbol": "CDataManagerBase::~CDataManagerBase()"
+  },
+  {
+   "index": 5,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 6,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  }
+ ],
+ "derived": [
+  "bin/datacache:CDataManager<DataCacheItem_t, DataCacheItemData_t, DataCacheItem_t*, CThreadFastMutex>",
+  "bin/datacache:CDataManagerBase",
+  "bin/engine:CDataManager<CDispCollTree, CDispCollTree*, bool, CThreadFastMutex>",
+  "bin/engine:CDataManagerBase",
+  "bin/vphysics:CDataManager<CMeshInstance, virtualmeshlist_t, CMeshInstance*, CThreadFastMutex>",
+  "bin/vphysics:CDataManagerBase",
+  "episodic/client:CDataManager<CBoneCache, bonecacheparams_t, CBoneCache*, CThreadFastMutex>",
+  "episodic/client:CDataManagerBase",
+  "episodic/server:CDataManager<CBoneCache, bonecacheparams_t, CBoneCache*, CThreadFastMutex>",
+  "episodic/server:CDataManagerBase",
+  "hl2/client:CDataManager<CBoneCache, bonecacheparams_t, CBoneCache*, CThreadFastMutex>",
+  "hl2/client:CDataManagerBase",
+  "hl2/server:CDataManager<CBoneCache, bonecacheparams_t, CBoneCache*, CThreadFastMutex>",
+  "hl2/server:CDataManagerBase",
+  "hl2_complete/client:CDataManager<CBoneCache, bonecacheparams_t, CBoneCache*, CThreadFastMutex>",
+  "hl2_complete/client:CDataManagerBase",
+  "hl2_complete/server:CDataManager<CBoneCache, bonecacheparams_t, CBoneCache*, CThreadFastMutex>",
+  "hl2_complete/server:CDataManagerBase",
+  "hl2mp/client:CDataManager<CBoneCache, bonecacheparams_t, CBoneCache*, CThreadFastMutex>",
+  "hl2mp/client:CDataManagerBase",
+  "hl2mp/server:CDataManager<CBoneCache, bonecacheparams_t, CBoneCache*, CThreadFastMutex>",
+  "hl2mp/server:CDataManagerBase",
+  "lostcoast/client:CDataManager<CBoneCache, bonecacheparams_t, CBoneCache*, CThreadFastMutex>",
+  "lostcoast/client:CDataManagerBase",
+  "lostcoast/server:CDataManager<CBoneCache, bonecacheparams_t, CBoneCache*, CThreadFastMutex>",
+  "lostcoast/server:CDataManagerBase"
+ ],
+ "derived_count": 26
+}

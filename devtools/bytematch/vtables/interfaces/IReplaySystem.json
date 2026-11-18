@@ -1,0 +1,194 @@
+{
+ "interface": "IReplaySystem",
+ "headers": [
+  "common/replay/ireplaysystem.h"
+ ],
+ "versions": {
+  "retail": [
+   "ReplaySystem001"
+  ],
+  "ours": [
+   "ReplaySystem001"
+  ],
+  "sdk2013": [
+   "ReplaySystem001"
+  ]
+ },
+ "version_macros": [
+  "REPLAY_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/replay",
+   "version": "ReplaySystem001",
+   "class": "CReplaySystem"
+  }
+ ],
+ "sdk2013_len": 20,
+ "sdk2013_slots": [
+  "Connect(void* (*)(char const*, int*))",
+  "Disconnect()",
+  "QueryInterface(char const*)",
+  "Init()",
+  "Shutdown()",
+  "Think()",
+  "IsReplayEnabled()",
+  "IsRecording()",
+  "CL_Init(void* (*)(char const*, int*))",
+  "CL_Shutdown()",
+  "CL_Render()",
+  "CL_GetContext()",
+  "SV_Init(void* (*)(char const*, int*))",
+  "SV_Shutdown()",
+  "SV_EndRecordingSession(bool)",
+  "SV_SendReplayEvent(char const*, int)",
+  "SV_SendReplayEvent(IGameEvent*, int)",
+  "SV_ShouldBeginRecording(bool)",
+  "SV_NotifyReplayRequested()",
+  "SV_GetContext()"
+ ],
+ "retail_reference": {
+  "module": "bin/replay",
+  "class": "CReplaySystem",
+  "offset": 0,
+  "chain": [
+   "CReplaySystem",
+   "CTier2AppSystem<IReplaySystem, 0>",
+   "CTier1AppSystem<IReplaySystem, 0>",
+   "CTier0AppSystem<IReplaySystem>",
+   "CBaseAppSystem<IReplaySystem>",
+   "IReplaySystem"
+  ]
+ },
+ "retail_len": 20,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 20
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Connect",
+   "sig": "Connect(void* (*)(char const*, int*))",
+   "symbol": "CReplaySystem::Connect(void* (*)(char const*, int*))"
+  },
+  {
+   "index": 1,
+   "name": "Disconnect",
+   "sig": "Disconnect()",
+   "symbol": "CReplaySystem::Disconnect()"
+  },
+  {
+   "index": 2,
+   "name": "QueryInterface",
+   "sig": "QueryInterface(char const*)",
+   "symbol": "CBaseAppSystem<IReplaySystem>::QueryInterface(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "CReplaySystem::Init()"
+  },
+  {
+   "index": 4,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CReplaySystem::Shutdown()"
+  },
+  {
+   "index": 5,
+   "name": "Think",
+   "sig": "Think()",
+   "symbol": "CReplaySystem::Think()"
+  },
+  {
+   "index": 6,
+   "name": "IsReplayEnabled",
+   "sig": "IsReplayEnabled()",
+   "symbol": "CReplaySystem::IsReplayEnabled()"
+  },
+  {
+   "index": 7,
+   "name": "IsRecording",
+   "sig": "IsRecording()",
+   "symbol": "CReplaySystem::IsRecording()"
+  },
+  {
+   "index": 8,
+   "name": "CL_Init",
+   "sig": "CL_Init(void* (*)(char const*, int*))",
+   "symbol": "CReplaySystem::CL_Init(void* (*)(char const*, int*))"
+  },
+  {
+   "index": 9,
+   "name": "CL_Shutdown",
+   "sig": "CL_Shutdown()",
+   "symbol": "CReplaySystem::CL_Shutdown()"
+  },
+  {
+   "index": 10,
+   "name": "CL_Render",
+   "sig": "CL_Render()",
+   "symbol": "CReplaySystem::CL_Render()"
+  },
+  {
+   "index": 11,
+   "name": "CL_GetContext",
+   "sig": "CL_GetContext()",
+   "symbol": "CReplaySystem::CL_GetContext()"
+  },
+  {
+   "index": 12,
+   "name": "SV_Init",
+   "sig": "SV_Init(void* (*)(char const*, int*))",
+   "symbol": "CReplaySystem::SV_Init(void* (*)(char const*, int*))"
+  },
+  {
+   "index": 13,
+   "name": "SV_Shutdown",
+   "sig": "SV_Shutdown()",
+   "symbol": "CReplaySystem::SV_Shutdown()"
+  },
+  {
+   "index": 14,
+   "name": "SV_EndRecordingSession",
+   "sig": "SV_EndRecordingSession(bool)",
+   "symbol": "CReplaySystem::SV_EndRecordingSession(bool)"
+  },
+  {
+   "index": 15,
+   "name": "SV_SendReplayEvent",
+   "sig": "SV_SendReplayEvent(char const*, int)",
+   "symbol": "CReplaySystem::SV_SendReplayEvent(char const*, int)"
+  },
+  {
+   "index": 16,
+   "name": "SV_SendReplayEvent",
+   "sig": "SV_SendReplayEvent(IGameEvent*, int)",
+   "symbol": "CReplaySystem::SV_SendReplayEvent(IGameEvent*, int)"
+  },
+  {
+   "index": 17,
+   "name": "SV_ShouldBeginRecording",
+   "sig": "SV_ShouldBeginRecording(bool)",
+   "symbol": "CReplaySystem::SV_ShouldBeginRecording(bool)"
+  },
+  {
+   "index": 18,
+   "name": "SV_NotifyReplayRequested",
+   "sig": "SV_NotifyReplayRequested()",
+   "symbol": "CReplaySystem::SV_NotifyReplayRequested()"
+  },
+  {
+   "index": 19,
+   "name": "SV_GetContext",
+   "sig": "SV_GetContext()",
+   "symbol": "CReplaySystem::SV_GetContext()"
+  }
+ ],
+ "derived": [
+  "bin/replay:CReplaySystem"
+ ],
+ "derived_count": 1
+}

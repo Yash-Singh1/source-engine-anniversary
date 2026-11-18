@@ -1,0 +1,219 @@
+{
+ "interface": "ConVar_ServerBounded",
+ "headers": [
+  "public/tier1/convar_serverbounded.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 23,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "IsCommand() const",
+  "IsFlagSet(int) const",
+  "AddFlags(int)",
+  "GetName() const",
+  "GetHelpText() const",
+  "IsRegistered() const",
+  "GetDLLIdentifier() const",
+  "Create(char const*, char const*, int)",
+  "Init()",
+  "SetValue(char const*)",
+  "SetValue(float)",
+  "SetValue(int)",
+  "InternalSetValue(char const*)",
+  "InternalSetFloatValue(float)",
+  "InternalSetIntValue(int)",
+  "ClampValue(float&)",
+  "ChangeStringValue(char const*, float)",
+  "Create(char const*, char const*, int, char const*, bool, float, bool, float, void (*)(IConVar*, char const*, float))",
+  "GetFloat() const",
+  "GetInt() const",
+  "GetBool() const"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CBoundedCvar_CmdRate",
+  "offset": 0,
+  "chain": [
+   "CBoundedCvar_CmdRate",
+   "ConVar_ServerBounded"
+  ]
+ },
+ "retail_len": 23,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 23
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CBoundedCvar_CmdRate",
+   "sig": "~CBoundedCvar_CmdRate()",
+   "symbol": "CBoundedCvar_CmdRate::~CBoundedCvar_CmdRate()"
+  },
+  {
+   "index": 1,
+   "name": "~CBoundedCvar_CmdRate",
+   "sig": "~CBoundedCvar_CmdRate()",
+   "symbol": "CBoundedCvar_CmdRate::~CBoundedCvar_CmdRate()"
+  },
+  {
+   "index": 2,
+   "name": "IsCommand",
+   "sig": "IsCommand() const",
+   "symbol": "ConVar::IsCommand() const"
+  },
+  {
+   "index": 3,
+   "name": "IsFlagSet",
+   "sig": "IsFlagSet(int) const",
+   "symbol": "ConVar::IsFlagSet(int) const"
+  },
+  {
+   "index": 4,
+   "name": "AddFlags",
+   "sig": "AddFlags(int)",
+   "symbol": "ConVar::AddFlags(int)"
+  },
+  {
+   "index": 5,
+   "name": "GetName",
+   "sig": "GetName() const",
+   "symbol": "ConVar::GetName() const"
+  },
+  {
+   "index": 6,
+   "name": "GetHelpText",
+   "sig": "GetHelpText() const",
+   "symbol": "ConVar::GetHelpText() const"
+  },
+  {
+   "index": 7,
+   "name": "IsRegistered",
+   "sig": "IsRegistered() const",
+   "symbol": "ConVar::IsRegistered() const"
+  },
+  {
+   "index": 8,
+   "name": "GetDLLIdentifier",
+   "sig": "GetDLLIdentifier() const",
+   "symbol": "ConCommandBase::GetDLLIdentifier() const"
+  },
+  {
+   "index": 9,
+   "name": "Create",
+   "sig": "Create(char const*, char const*, int)",
+   "symbol": "ConCommandBase::Create(char const*, char const*, int)"
+  },
+  {
+   "index": 10,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "ConVar::Init()"
+  },
+  {
+   "index": 11,
+   "name": "SetValue",
+   "sig": "SetValue(char const*)",
+   "symbol": "ConVar::SetValue(char const*)"
+  },
+  {
+   "index": 12,
+   "name": "SetValue",
+   "sig": "SetValue(float)",
+   "symbol": "ConVar::SetValue(float)"
+  },
+  {
+   "index": 13,
+   "name": "SetValue",
+   "sig": "SetValue(int)",
+   "symbol": "ConVar::SetValue(int)"
+  },
+  {
+   "index": 14,
+   "name": "InternalSetValue",
+   "sig": "InternalSetValue(char const*)",
+   "symbol": "ConVar::InternalSetValue(char const*)"
+  },
+  {
+   "index": 15,
+   "name": "InternalSetFloatValue",
+   "sig": "InternalSetFloatValue(float)",
+   "symbol": "ConVar::InternalSetFloatValue(float)"
+  },
+  {
+   "index": 16,
+   "name": "InternalSetIntValue",
+   "sig": "InternalSetIntValue(int)",
+   "symbol": "ConVar::InternalSetIntValue(int)"
+  },
+  {
+   "index": 17,
+   "name": "ClampValue",
+   "sig": "ClampValue(float&)",
+   "symbol": "ConVar::ClampValue(float&)"
+  },
+  {
+   "index": 18,
+   "name": "ChangeStringValue",
+   "sig": "ChangeStringValue(char const*, float)",
+   "symbol": "ConVar::ChangeStringValue(char const*, float)"
+  },
+  {
+   "index": 19,
+   "name": "Create",
+   "sig": "Create(char const*, char const*, int, char const*, bool, float, bool, float, void (*)(IConVar*, char const*, float))",
+   "symbol": "ConVar::Create(char const*, char const*, int, char const*, bool, float, bool, float, void (*)(IConVar*, char const*, float))"
+  },
+  {
+   "index": 20,
+   "name": "GetFloat",
+   "sig": "GetFloat() const",
+   "symbol": "CBoundedCvar_CmdRate::GetFloat() const"
+  },
+  {
+   "index": 21,
+   "name": "GetInt",
+   "sig": "GetInt() const",
+   "symbol": "ConVar_ServerBounded::GetInt() const"
+  },
+  {
+   "index": 22,
+   "name": "GetBool",
+   "sig": "GetBool() const",
+   "symbol": "ConVar_ServerBounded::GetBool() const"
+  }
+ ],
+ "derived": [
+  "bin/engine:CBoundedCvar_CmdRate",
+  "bin/engine:CBoundedCvar_Rate",
+  "bin/engine:CBoundedCvar_UpdateRate",
+  "episodic/client:CBoundedCvar_Interp",
+  "episodic/client:CBoundedCvar_InterpRatio",
+  "episodic/client:CBoundedCvar_Predict",
+  "episodic/client:ConVar_m_pitch",
+  "hl2/client:CBoundedCvar_Interp",
+  "hl2/client:CBoundedCvar_InterpRatio",
+  "hl2/client:CBoundedCvar_Predict",
+  "hl2/client:ConVar_m_pitch",
+  "hl2_complete/client:CBoundedCvar_Interp",
+  "hl2_complete/client:CBoundedCvar_InterpRatio",
+  "hl2_complete/client:CBoundedCvar_Predict",
+  "hl2_complete/client:ConVar_m_pitch",
+  "hl2mp/client:CBoundedCvar_Interp",
+  "hl2mp/client:CBoundedCvar_InterpRatio",
+  "hl2mp/client:CBoundedCvar_Predict",
+  "hl2mp/client:ConVar_m_pitch",
+  "lostcoast/client:CBoundedCvar_Interp",
+  "lostcoast/client:CBoundedCvar_InterpRatio",
+  "lostcoast/client:CBoundedCvar_Predict",
+  "lostcoast/client:ConVar_m_pitch"
+ ],
+ "derived_count": 23
+}

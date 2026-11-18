@@ -1,0 +1,50 @@
+{
+ "interface": "IFileList",
+ "headers": [
+  "public/ifilelist.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 2,
+ "sdk2013_slots": [
+  "IsFileInList(char const*)",
+  "Release()"
+ ],
+ "retail_reference": {
+  "module": "bin/filesystem_stdio",
+  "class": "FileListToUnloadForWhitelistChange",
+  "offset": 0,
+  "chain": [
+   "FileListToUnloadForWhitelistChange",
+   "IFileList"
+  ]
+ },
+ "retail_len": 2,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 2
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "IsFileInList",
+   "sig": "IsFileInList(char const*)",
+   "symbol": "FileListToUnloadForWhitelistChange::IsFileInList(char const*)"
+  },
+  {
+   "index": 1,
+   "name": "Release",
+   "sig": "Release()",
+   "symbol": "FileListToUnloadForWhitelistChange::Release()"
+  }
+ ],
+ "derived": [
+  "bin/filesystem_stdio:FileListToUnloadForWhitelistChange"
+ ],
+ "derived_count": 1
+}

@@ -4486,19 +4486,19 @@ bool CompressGameLump( dheader_t *pInBSPHeader, dheader_t *pOutBSPHeader, CUtlBu
 			if ( pInGameLump[i].flags & GAMELUMPFLAG_COMPRESSED )
 			{
 				byte *pCompressedLump = ((byte *)pInBSPHeader) + pInGameLump[i].fileofs;
-				if ( CLZMA::IsCompressed( pCompressedLump ) )
+				if ( CLZMA().IsCompressed( pCompressedLump ) )
 				{
-					inputBuffer.EnsureCapacity( CLZMA::GetActualSize( pCompressedLump ) );
-					unsigned int outSize = CLZMA::Uncompress( pCompressedLump, (unsigned char *)inputBuffer.Base() );
+					inputBuffer.EnsureCapacity( CLZMA().GetActualSize( pCompressedLump ) );
+					unsigned int outSize = CLZMA().Uncompress( pCompressedLump, (unsigned char *)inputBuffer.Base() );
 					inputBuffer.SeekPut( CUtlBuffer::SEEK_CURRENT, outSize );
-					if ( outSize != CLZMA::GetActualSize( pCompressedLump ) )
+					if ( outSize != CLZMA().GetActualSize( pCompressedLump ) )
 					{
 						Warning( "Decompressed size differs from header, BSP may be corrupt\n" );
 					}
 				}
 				else
 				{
-					Assert( CLZMA::IsCompressed( pCompressedLump ) );
+					Assert( CLZMA().IsCompressed( pCompressedLump ) );
 					Warning( "Unsupported BSP: Unrecognized compressed game lump\n" );
 				}
 
@@ -4640,10 +4640,10 @@ bool RepackBSP( CUtlBuffer &inputBuffer, CUtlBuffer &outputBuffer, CompressFunc_
 			if ( pSortedLump->pLump->uncompressedSize )
 			{
 				byte *pCompressedLump = ((byte *)pInBSPHeader) + pSortedLump->pLump->fileofs;
-				if ( CLZMA::IsCompressed( pCompressedLump ) && pSortedLump->pLump->uncompressedSize == CLZMA::GetActualSize( pCompressedLump ) )
+				if ( CLZMA().IsCompressed( pCompressedLump ) && pSortedLump->pLump->uncompressedSize == CLZMA().GetActualSize( pCompressedLump ) )
 				{
-					inputBuffer.EnsureCapacity( CLZMA::GetActualSize( pCompressedLump ) );
-					unsigned int outSize = CLZMA::Uncompress( pCompressedLump, (unsigned char *)inputBuffer.Base() );
+					inputBuffer.EnsureCapacity( CLZMA().GetActualSize( pCompressedLump ) );
+					unsigned int outSize = CLZMA().Uncompress( pCompressedLump, (unsigned char *)inputBuffer.Base() );
 					inputBuffer.SeekPut( CUtlBuffer::SEEK_CURRENT, outSize );
 					if ( outSize != pSortedLump->pLump->uncompressedSize )
 					{
@@ -4652,8 +4652,8 @@ bool RepackBSP( CUtlBuffer &inputBuffer, CUtlBuffer &outputBuffer, CompressFunc_
 				}
 				else
 				{
-					Assert( CLZMA::IsCompressed( pCompressedLump ) &&
-					        pSortedLump->pLump->uncompressedSize == CLZMA::GetActualSize( pCompressedLump ) );
+					Assert( CLZMA().IsCompressed( pCompressedLump ) &&
+					        pSortedLump->pLump->uncompressedSize == CLZMA().GetActualSize( pCompressedLump ) );
 					Warning( "Unsupported BSP: Unrecognized compressed lump\n" );
 				}
 			}

@@ -1,0 +1,106 @@
+{
+ "interface": "IStaticPropMgrServer",
+ "headers": [
+  "public/engine/IStaticPropMgr.h"
+ ],
+ "versions": {
+  "retail": [
+   "StaticPropMgrServer002"
+  ],
+  "ours": [
+   "StaticPropMgrServer002"
+  ],
+  "sdk2013": [
+   "StaticPropMgrServer002"
+  ]
+ },
+ "version_macros": [
+  "INTERFACEVERSION_STATICPROPMGR_SERVER"
+ ],
+ "registrations": [
+  {
+   "module": "bin/engine",
+   "version": "StaticPropMgrServer002",
+   "class": "CStaticPropMgr"
+  }
+ ],
+ "sdk2013_len": 8,
+ "sdk2013_slots": [
+  "CreateVPhysicsRepresentations(IPhysicsEnvironment*, IVPhysicsKeyHandler*, void*)",
+  "TraceRayAgainstStaticProp(Ray_t const&, int, CGameTrace&)",
+  "IsStaticProp(IHandleEntity*) const",
+  "IsStaticProp(CBaseHandle) const",
+  "GetStaticPropByIndex(int)",
+  "GetAllStaticProps(CUtlVector<ICollideable*, CUtlMemory<ICollideable*, int>>*)",
+  "GetAllStaticPropsInAABB(Vector const&, Vector const&, CUtlVector<ICollideable*, CUtlMemory<ICollideable*, int>>*)",
+  "GetAllStaticPropsInOBB(Vector const&, Vector const&, Vector const&, Vector const&, CUtlVector<ICollideable*, CUtlMemory<ICollideable*, int>>*)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CStaticPropMgr",
+  "offset": 8,
+  "chain": [
+   "CStaticPropMgr",
+   "IStaticPropMgrServer"
+  ]
+ },
+ "retail_len": 8,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 8
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "CreateVPhysicsRepresentations",
+   "sig": "CreateVPhysicsRepresentations(IPhysicsEnvironment*, IVPhysicsKeyHandler*, void*)",
+   "symbol": "non-virtual thunk to CStaticPropMgr::CreateVPhysicsRepresentations(IPhysicsEnvironment*, IVPhysicsKeyHandler*, void*)"
+  },
+  {
+   "index": 1,
+   "name": "TraceRayAgainstStaticProp",
+   "sig": "TraceRayAgainstStaticProp(Ray_t const&, int, CGameTrace&)",
+   "symbol": "non-virtual thunk to CStaticPropMgr::TraceRayAgainstStaticProp(Ray_t const&, int, CGameTrace&)"
+  },
+  {
+   "index": 2,
+   "name": "IsStaticProp",
+   "sig": "IsStaticProp(IHandleEntity*) const",
+   "symbol": "non-virtual thunk to CStaticPropMgr::IsStaticProp(IHandleEntity*) const"
+  },
+  {
+   "index": 3,
+   "name": "IsStaticProp",
+   "sig": "IsStaticProp(CBaseHandle) const",
+   "symbol": "non-virtual thunk to CStaticPropMgr::IsStaticProp(CBaseHandle) const"
+  },
+  {
+   "index": 4,
+   "name": "GetStaticPropByIndex",
+   "sig": "GetStaticPropByIndex(int)",
+   "symbol": "non-virtual thunk to CStaticPropMgr::GetStaticPropByIndex(int)"
+  },
+  {
+   "index": 5,
+   "name": "GetAllStaticProps",
+   "sig": "GetAllStaticProps(CUtlVector<ICollideable*, CUtlMemory<ICollideable*, int>>*)",
+   "symbol": "non-virtual thunk to CStaticPropMgr::GetAllStaticProps(CUtlVector<ICollideable*, CUtlMemory<ICollideable*, int>>*)"
+  },
+  {
+   "index": 6,
+   "name": "GetAllStaticPropsInAABB",
+   "sig": "GetAllStaticPropsInAABB(Vector const&, Vector const&, CUtlVector<ICollideable*, CUtlMemory<ICollideable*, int>>*)",
+   "symbol": "non-virtual thunk to CStaticPropMgr::GetAllStaticPropsInAABB(Vector const&, Vector const&, CUtlVector<ICollideable*, CUtlMemory<ICollideable*, int>>*)"
+  },
+  {
+   "index": 7,
+   "name": "GetAllStaticPropsInOBB",
+   "sig": "GetAllStaticPropsInOBB(Vector const&, Vector const&, Vector const&, Vector const&, CUtlVector<ICollideable*, CUtlMemory<ICollideable*, int>>*)",
+   "symbol": "non-virtual thunk to CStaticPropMgr::GetAllStaticPropsInOBB(Vector const&, Vector const&, Vector const&, Vector const&, CUtlVector<ICollideable*, CUtlMemory<ICollideable*, int>>*)"
+  }
+ ],
+ "derived": [
+  "bin/engine:CStaticPropMgr"
+ ],
+ "derived_count": 1
+}

@@ -1,0 +1,201 @@
+{
+ "interface": "IEngineToolFramework",
+ "headers": [
+  "public/toolframework/ienginetool.h"
+ ],
+ "versions": {
+  "retail": [
+   "VENGINETOOLFRAMEWORK003"
+  ],
+  "ours": [
+   "VENGINETOOLFRAMEWORK003"
+  ],
+  "sdk2013": [
+   "VENGINETOOLFRAMEWORK003"
+  ]
+ },
+ "version_macros": [
+  "VENGINETOOLFRAMEWORK_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/engine",
+   "version": "VENGINETOOLFRAMEWORK003",
+   "class": "CEngineTool"
+  }
+ ],
+ "sdk2013_len": 10,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "GetToolCount() const",
+  "GetToolName(int) const",
+  "SwitchToTool(int)",
+  "IsTopmostTool(IToolSystem const*) const",
+  "GetToolSystem(int) const",
+  "GetTopmostTool()",
+  "ShowCursor(bool)",
+  "IsCursorVisible() const"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CEngineTool",
+  "offset": 0,
+  "chain": [
+   "CEngineTool",
+   "IEngineToolInternal",
+   "IEngineTool",
+   "IEngineToolFramework"
+  ]
+ },
+ "retail_len": 10,
+ "retail_len_basis": "first own method of IEngineTool",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 86,
+  "first own method of IEngineTool": 10
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CEngineTool",
+   "sig": "~CEngineTool()",
+   "symbol": "CEngineTool::~CEngineTool()"
+  },
+  {
+   "index": 1,
+   "name": "~CEngineTool",
+   "sig": "~CEngineTool()",
+   "symbol": "CEngineTool::~CEngineTool()"
+  },
+  {
+   "index": 2,
+   "name": "GetToolCount",
+   "sig": "GetToolCount() const",
+   "symbol": "CEngineTool::GetToolCount() const"
+  },
+  {
+   "index": 3,
+   "name": "GetToolName",
+   "sig": "GetToolName(int) const",
+   "symbol": "CEngineTool::GetToolName(int) const"
+  },
+  {
+   "index": 4,
+   "name": "SwitchToTool",
+   "sig": "SwitchToTool(int)",
+   "symbol": "CEngineTool::SwitchToTool(int)"
+  },
+  {
+   "index": 5,
+   "name": "IsTopmostTool",
+   "sig": "IsTopmostTool(IToolSystem const*) const",
+   "symbol": "CEngineTool::IsTopmostTool(IToolSystem const*) const"
+  },
+  {
+   "index": 6,
+   "name": "GetToolSystem",
+   "sig": "GetToolSystem(int) const",
+   "symbol": "CEngineTool::GetToolSystem(int) const"
+  },
+  {
+   "index": 7,
+   "name": "GetTopmostTool",
+   "sig": "GetTopmostTool()",
+   "symbol": "CEngineTool::GetTopmostTool()"
+  },
+  {
+   "index": 8,
+   "name": "ShowCursor",
+   "sig": "ShowCursor(bool)",
+   "symbol": "CEngineTool::ShowCursor(bool)"
+  },
+  {
+   "index": 9,
+   "name": "IsCursorVisible",
+   "sig": "IsCursorVisible() const",
+   "symbol": "CEngineTool::IsCursorVisible() const"
+  }
+ ],
+ "implementer_tail": [
+  "GetServerFactory(void* (*&)(char const*, int*))",
+  "GetClientFactory(void* (*&)(char const*, int*))",
+  "GetSoundDuration(char const*)",
+  "IsSoundStillPlaying(int)",
+  "StartSound(int, bool, int, int, char const*, float, soundlevel_t, Vector const&, Vector const&, int, int, bool, float, int)",
+  "StopSoundByGuid(int)",
+  "GetSoundDuration(int)",
+  "IsLoopingSound(int)",
+  "ReloadSound(char const*)",
+  "StopAllSounds()",
+  "GetMono16Samples(char const*, CUtlVector<short, CUtlMemory<short, int>>&)",
+  "SetAudioState(AudioState_t const&)",
+  "Command(char const*)",
+  "Execute()",
+  "GetCurrentMap()",
+  "ChangeToMap(char const*)",
+  "IsMapValid(char const*)",
+  "RenderView(CViewSetup&, int, int)",
+  "IsInGame()",
+  "IsConnected()",
+  "GetMaxClients()",
+  "IsGamePaused()",
+  "SetGamePaused(bool)",
+  "GetTimescale()",
+  "SetTimescale(float)",
+  "GetRealTime()",
+  "GetRealFrameTime()",
+  "Time()",
+  "HostFrameTime()",
+  "HostTime()",
+  "HostTick()",
+  "HostFrameCount()",
+  "ServerTime()",
+  "ServerFrameTime()",
+  "ServerTick()",
+  "ServerTickInterval()",
+  "ClientTime()",
+  "ClientFrameTime()",
+  "ClientTick()",
+  "SetClientFrameTime(float)",
+  "ForceUpdateDuringPause()",
+  "GetModel(unsigned int)",
+  "GetStudioModel(unsigned int)",
+  "Con_NPrintf(int, char const*, ...)",
+  "Con_NXPrintf(con_nprint_s const*, char const*, ...)",
+  "GetGameDir(char*, int)",
+  "GetScreenSize(int&, int&)",
+  "SetMainView(Vector const&, QAngle const&)",
+  "GetPlayerView(CViewSetup&, int, int, int, int)",
+  "CreatePickingRay(CViewSetup const&, int, int, Vector&, Vector&)",
+  "PrecacheSound(char const*, bool)",
+  "PrecacheModel(char const*, bool)",
+  "InstallQuitHandler(void*, bool (*)(void*))",
+  "TakeTGAScreenShot(char const*, int, int)",
+  "ForceSend()",
+  "IsRecordingMovie()",
+  "StartMovieRecording(KeyValues*)",
+  "EndMovieRecording()",
+  "CancelMovieRecording()",
+  "GetActiveVideoRecorder()",
+  "StartRecordingVoiceToFile(char const*, char const*)",
+  "StopRecordingVoiceToFile()",
+  "IsVoiceRecording()",
+  "TraceRay(Ray_t const&, unsigned int, ITraceFilter*, CBaseTrace*)",
+  "TraceRayServer(Ray_t const&, unsigned int, ITraceFilter*, CBaseTrace*)",
+  "IsConsoleVisible()",
+  "GetPointContents(Vector const&)",
+  "GetActiveDLights(dlight_t**)",
+  "GetLightingConditions(Vector const&, Vector*, int, LightDesc_t*)",
+  "GetWorldToScreenMatrixForView(CViewSetup const&, VMatrix*)",
+  "CreatePartitionHandle(IHandleEntity*, int, Vector const&, Vector const&)",
+  "DestroyPartitionHandle(unsigned short)",
+  "InstallPartitionQueryCallback(IPartitionQueryCallback*)",
+  "RemovePartitionQueryCallback(IPartitionQueryCallback*)",
+  "ElementMoved(unsigned short, Vector const&, Vector const&)",
+  "SetIsInGame(bool)"
+ ],
+ "derived": [
+  "bin/engine:CEngineTool"
+ ],
+ "derived_count": 1
+}

@@ -44,7 +44,6 @@
 #include <xmmintrin.h>
 #endif
 #include "staticpropmgr.h"
-#include "materialsystem/hardwaretexels.h"
 #include "materialsystem/hardwareverts.h"
 #include "tier1/callqueue.h"
 #include "filesystem/IQueuedLoader.h"
@@ -71,7 +70,6 @@ void r_lod_f( IConVar *var, const char *pOldValue, float flOldValue );
 void FlushLOD_f();
 
 class CColorMeshData;
-static void CreateLightmapsFromData(CColorMeshData* _colorMeshData);
 
 
 //-----------------------------------------------------------------------------
@@ -655,9 +653,6 @@ public:
 		g_pFileSystem->AsyncFinish( m_hAsyncControlVertex, true );
 		g_pFileSystem->AsyncRelease( m_hAsyncControlVertex );
 
-		g_pFileSystem->AsyncFinish( m_hAsyncControlTexel, true );
-		g_pFileSystem->AsyncRelease( m_hAsyncControlTexel );
-
 		// release the array of meshes
 		CMatRenderContextPtr pRenderContext( materials );
 
@@ -672,18 +667,6 @@ public:
 			{
 				// Free this standalone mesh
 				pRenderContext->DestroyStaticMesh( m_pMeshInfos[i].m_pMesh );
-			}
-
-			if (m_pMeshInfos[i].m_pLightmap)
-			{
-				m_pMeshInfos[i].m_pLightmap->Release();
-				m_pMeshInfos[i].m_pLightmap = NULL;
-			}
-
-			if (m_pMeshInfos[i].m_pLightmapData)
-			{
-				delete [] m_pMeshInfos[i].m_pLightmapData->m_pTexelData;
-				delete m_pMeshInfos[i].m_pLightmapData;
 			}
 		}
 
@@ -712,11 +695,8 @@ public:
 
 		data->m_bHasInvalidVB = false;
 		data->m_bColorMeshValid = false;
-		data->m_bColorTextureValid = false;
-		data->m_bColorTextureCreated = false;
 		data->m_bNeedsRetry = false;
 		data->m_hAsyncControlVertex = NULL;
-		data->m_hAsyncControlTexel = NULL;
 		data->m_fnHandle = params.m_fnHandle;
 		
 		data->m_nTotalSize = params.m_nMeshes * sizeof( IMesh* ) + params.m_nTotalVertexes * 4;
@@ -736,8 +716,6 @@ public:
 			data->m_pMeshInfos[i].m_pPooledVBAllocator	= params.m_pPooledVBAllocator;
 			data->m_pMeshInfos[i].m_nVertOffsetInBytes	= 0;
 			data->m_pMeshInfos[i].m_nNumVerts			= params.m_nVertexes[i];
-			data->m_pMeshInfos[i].m_pLightmapData		= NULL;
-			data->m_pMeshInfos[i].m_pLightmap		= NULL;
 
 			if ( params.m_pPooledVBAllocator != NULL )
 			{
@@ -792,11 +770,8 @@ public:
 	unsigned char		**m_ppTargets;
 	unsigned int		m_nTotalSize;
 	FSAsyncControl_t	m_hAsyncControlVertex;
-	FSAsyncControl_t	m_hAsyncControlTexel;
 	unsigned int		m_bHasInvalidVB : 1;
 	unsigned int		m_bColorMeshValid : 1;
-	unsigned int		m_bColorTextureValid : 1;		// Whether the texture data is valid, but not necessarily created
-	unsigned int		m_bColorTextureCreated : 1;	// Whether the texture data has actually been created.
 	unsigned int		m_bNeedsRetry : 1;
 
 	FileNameHandle_t	m_fnHandle;
@@ -839,8 +814,6 @@ public:
 		const Vector& decalUp, int decalIndex, int body, bool noPokethru = false, int maxLODToDecal = ADDDECAL_TO_ALL_LODS );
 	virtual void AddColoredDecal( ModelInstanceHandle_t handle, Ray_t const& ray, 
 		const Vector& decalUp, int decalIndex, int body, Color cColor, bool noPokethru = false, int maxLODToDecal = ADDDECAL_TO_ALL_LODS );
-	
-	virtual void GetMaterialOverride( IMaterial** ppOutForcedMaterial, OverrideType_t* pOutOverrideType );
 
 	// Removes all the decals on a model instance
 	virtual void RemoveAllDecals( ModelInstanceHandle_t handle );
@@ -886,12 +859,10 @@ public:
 		int					m_nMeshes;
 		unsigned int		m_nRootLOD;
 		char				m_szFilenameVertex[MAX_PATH];
-		char				m_szFilenameTexel[MAX_PATH];
 	};
 
 
 	void StaticPropColorMeshCallback( void *pContext, const void *pData, int numReadBytes, FSAsyncStatus_t asyncStatus );
-	void StaticPropColorTexelCallback(void *pContext, const void *pData, int numReadBytes, FSAsyncStatus_t asyncStatus);
 
 
 	// 360 holds onto static prop color meshes during same map transitions
@@ -2155,13 +2126,9 @@ void CModelRender::DrawModelExecute( const DrawModelState_t &state, const ModelR
 			}
 		}
 
-		if ( pColorMeshData && ( pColorMeshData->m_bColorMeshValid || pColorMeshData->m_bColorTextureValid ) )
+		if ( pColorMeshData && pColorMeshData->m_bColorMeshValid )
 		{
 			pColorMeshes = pColorMeshData->m_pMeshInfos;
-			if (pColorMeshData->m_bColorTextureValid && !pColorMeshData->m_bColorTextureCreated)
-			{
-				CreateLightmapsFromData(pColorMeshData);
-			}
 		}
 		else
 		{
@@ -2625,13 +2592,9 @@ int	CModelRender::DrawModelExStaticProp( ModelRenderInfo_t &pInfo )
 			}
 		}
 
-		if ( pColorMeshData && ( pColorMeshData->m_bColorMeshValid || pColorMeshData->m_bColorTextureValid ) )
+		if ( pColorMeshData && pColorMeshData->m_bColorMeshValid )
 		{
 			pColorMeshes = pColorMeshData->m_pMeshInfos;
-			if (pColorMeshData->m_bColorTextureValid && !pColorMeshData->m_bColorTextureCreated)
-			{
-				CreateLightmapsFromData(pColorMeshData);
-			}
 		}
 		else
 		{
@@ -2952,13 +2915,9 @@ int CModelRender::DrawStaticPropArrayFast( StaticPropRenderInfo_t *pProps, int c
 					}
 				}
 
-				if ( pColorMeshData && ( pColorMeshData->m_bColorMeshValid || pColorMeshData->m_bColorTextureValid ) )
+				if ( pColorMeshData && pColorMeshData->m_bColorMeshValid )
 				{
 					obj.pColorMeshes = pColorMeshData->m_pMeshInfos;
-					if (pColorMeshData->m_bColorTextureValid && !pColorMeshData->m_bColorTextureCreated)
-					{
-						CreateLightmapsFromData(pColorMeshData);
-					}
 
 					if ( pCallQueue )
 					{
@@ -3708,15 +3667,15 @@ void CModelRender::StaticPropColorMeshCallback( void *pContext, const void *pDat
 		// only the 360 has compressed VHV data
 		// the compressed data is after the header
 		byte *pCompressedData = (byte *)pData + sizeof( HardwareVerts::FileHeader_t );
-		if ( CLZMA::IsCompressed( pCompressedData ) )
+		if ( CLZMA().IsCompressed( pCompressedData ) )
 		{
 			// create a buffer that matches the original
-			int actualSize = CLZMA::GetActualSize( pCompressedData );
+			int actualSize = CLZMA().GetActualSize( pCompressedData );
 			pOriginalData = (byte *)malloc( sizeof( HardwareVerts::FileHeader_t ) + actualSize );
 
 			// place the header, then uncompress directly after it
 			V_memcpy( pOriginalData, pData, sizeof( HardwareVerts::FileHeader_t ) );
-			int outputLength = CLZMA::Uncompress( pCompressedData, pOriginalData + sizeof( HardwareVerts::FileHeader_t ) );
+			int outputLength = CLZMA().Uncompress( pCompressedData, pOriginalData + sizeof( HardwareVerts::FileHeader_t ) );
 			if ( outputLength != actualSize )
 			{
 				goto cleanUp;
@@ -3803,71 +3762,6 @@ cleanUp:
 	}
 }
 
-//-----------------------------------------------------------------------------
-// Async loader callback
-// Called from async i/o thread - must spend minimal cycles in this context
-//-----------------------------------------------------------------------------
-void CModelRender::StaticPropColorTexelCallback(void *pContext, const void *pData, int numReadBytes, FSAsyncStatus_t asyncStatus)
-{
-	// get our preserved data
-	Assert(pContext);
-	staticPropAsyncContext_t *pStaticPropContext = (staticPropAsyncContext_t *)pContext;
-
-	HardwareTexels::FileHeader_t *pVhtHdr;
-
-	// This needs to be above the goto or clang complains "goto into protected scope."
-	bool anyTextures = false;
-
-	if (asyncStatus != FSASYNC_OK)
-	{
-		// any i/o error
-		goto cleanUp;
-	}
-
-	pVhtHdr = (HardwareTexels::FileHeader_t *)pData;
-
-	int startMesh;
-	for (startMesh = 0; startMesh < pVhtHdr->m_nMeshes; startMesh++)
-	{
-		// skip past higher detail lod meshes that must be ignored
-		// find first mesh that matches desired lod
-		if (pVhtHdr->pMesh(startMesh)->m_nLod == pStaticPropContext->m_nRootLOD)
-		{
-			break;
-		}
-	}
-
-
-
-	int meshID;
-	for ( meshID = startMesh; meshID < pVhtHdr->m_nMeshes; meshID++ )
-	{
-		const HardwareTexels::MeshHeader_t* pMeshData = pVhtHdr->pMesh( meshID );
-
-		// We can't create the real texture here because that's just how the material system works.
-		// So instead, squirrel away what we need for later.
-		ColorTexelsInfo_t* newCTI = new ColorTexelsInfo_t;
-		newCTI->m_nWidth = pMeshData->m_nWidth;
-		newCTI->m_nHeight = pMeshData->m_nHeight;
-		newCTI->m_nMipmapCount = ImageLoader::GetNumMipMapLevels( newCTI->m_nWidth, newCTI->m_nHeight );
-		newCTI->m_ImageFormat = ( ImageFormat ) pVhtHdr->m_nTexelFormat;
-		newCTI->m_nByteCount = pVhtHdr->pMesh( meshID )->m_nBytes;
-		newCTI->m_pTexelData = new byte[ newCTI->m_nByteCount ];
-		Q_memcpy( newCTI->m_pTexelData, pVhtHdr->pTexelBase( meshID ), newCTI->m_nByteCount );
-
-		pStaticPropContext->m_pColorMeshData->m_pMeshInfos[ meshID - startMesh ].m_pLightmapData = newCTI;
-		Assert( pStaticPropContext->m_pColorMeshData->m_pMeshInfos[ meshID - startMesh ].m_pLightmap == NULL );
-		anyTextures = true;
-	}
-
-	// This only gets set if we actually have texel data. Otherwise, it remains false.
-	pStaticPropContext->m_pColorMeshData->m_bColorTextureValid = anyTextures;
-
-cleanUp:
-	// mark as completed in single atomic operation
-	CacheUnlock( pStaticPropContext->m_ColorMeshHandle );
-	delete pStaticPropContext;
-}
 
 //-----------------------------------------------------------------------------
 // Async loader callback
@@ -3876,15 +3770,6 @@ cleanUp:
 static void StaticPropColorMeshCallback( const FileAsyncRequest_t &request, int numReadBytes, FSAsyncStatus_t asyncStatus )
 {
 	s_ModelRender.StaticPropColorMeshCallback( request.pContext, request.pData, numReadBytes, asyncStatus );
-}
-
-//-----------------------------------------------------------------------------
-// Async loader callback
-// Called from async i/o thread - must spend minimal cycles in this context
-//-----------------------------------------------------------------------------
-static void StaticPropColorTexelCallback( const FileAsyncRequest_t &request, int numReadBytes, FSAsyncStatus_t asyncStatus )
-{
-	s_ModelRender.StaticPropColorTexelCallback( request.pContext, request.pData, numReadBytes, asyncStatus );
 }
 
 
@@ -3920,7 +3805,7 @@ bool CModelRender::LoadStaticPropColorData( IHandleEntity *pProp, DataCacheHandl
 		return false;
 	}
 
-	if ( pColorMeshData->m_hAsyncControlVertex || pColorMeshData->m_hAsyncControlTexel )
+	if ( pColorMeshData->m_hAsyncControlVertex )
 	{
 		// load in progress, ignore additional request 
 		// or already loaded, ignore until discarded from cache
@@ -3942,8 +3827,6 @@ bool CModelRender::LoadStaticPropColorData( IHandleEntity *pProp, DataCacheHandl
 	// mark as invalid, async callback will set upon completion
 	// prevents rendering during async transfer into locked mesh, otherwise d3drip
 	pColorMeshData->m_bColorMeshValid = false;
-	pColorMeshData->m_bColorTextureValid = false;
-	pColorMeshData->m_bColorTextureCreated = false;
 
 
 	// async load high quality lighting from file
@@ -3985,31 +3868,10 @@ bool CModelRender::LoadStaticPropColorData( IHandleEntity *pProp, DataCacheHandl
 	fileRequest.priority = -1;
 	fileRequest.pszPathID = "GAME";
 
-	// This must be done before sending pContextVertex down
-	staticPropAsyncContext_t* pContextTexel = new staticPropAsyncContext_t( *pContextVertex );
-	
 	// queue vertex data for async load
 	{
 		MEM_ALLOC_CREDIT();
 		g_pFileSystem->AsyncRead( fileRequest, &pColorMeshData->m_hAsyncControlVertex );
-	}
-
-	Q_snprintf( fileName, sizeof( fileName ), "texelslighting_%d.ppl", StaticPropMgr()->GetStaticPropIndex( pProp ) );
-	V_strncpy( pContextTexel->m_szFilenameTexel, fileName, sizeof( pContextTexel->m_szFilenameTexel ) );
-
-	
-	// We are already locked, but we will unlock twice--so lock once more for the texel processing. 
-	CacheLock( colorMeshHandle );
-
-	// queue texel data for async load
-	fileRequest.pContext = pContextTexel;
-	fileRequest.pfnCallback = ::StaticPropColorTexelCallback;
-	fileRequest.pData = NULL;
-	fileRequest.pszFilename = fileName; // This doesn't need to happen, but included for clarity.
-
-	{
-		MEM_ALLOC_CREDIT();
-		g_pFileSystem->AsyncRead( fileRequest, &pColorMeshData->m_hAsyncControlTexel );
 	}
 
 	return true;
@@ -4114,8 +3976,6 @@ bool CModelRender::UpdateStaticPropColorData( IHandleEntity *pProp, ModelInstanc
 	// lighting calculation path
 	// calculation may abort due to lack of async requested data, caller should retry 
 	pColorMeshData->m_bColorMeshValid = false;
-	pColorMeshData->m_bColorTextureValid = false;
-	pColorMeshData->m_bColorTextureCreated = false;
 	pColorMeshData->m_bNeedsRetry = true;
 
 	if ( !bDebugColor )
@@ -4665,11 +4525,6 @@ void CModelRender::AddColoredDecal( ModelInstanceHandle_t handle, Ray_t const& r
 	AddDecalInternal( handle, ray, decalUp, decalIndex, body, true, cColor, noPokeThru, maxLODToDecal );
 }
 
-//-----------------------------------------------------------------------------
-void CModelRender::GetMaterialOverride( IMaterial** ppOutForcedMaterial, OverrideType_t* pOutOverrideType )
-{
-	g_pStudioRender->GetMaterialOverride( ppOutForcedMaterial, pOutOverrideType );
-}
 
 //-----------------------------------------------------------------------------
 void CModelRender::AddDecalInternal( ModelInstanceHandle_t handle, Ray_t const& ray, 
@@ -5017,40 +4872,3 @@ void CPooledVBAllocator_ColorMesh::Deallocate( int offset, int numVerts )
 	}
 }
 
-//-----------------------------------------------------------------------------
-// CreateLightmapsFromData
-//  - Creates Lightmap Textures from data that was squirreled away during ASYNC load.
-//  This is necessary because the material system doesn't like us creating things from ASYNC loaders.
-//-----------------------------------------------------------------------------
-static void CreateLightmapsFromData(CColorMeshData* _colorMeshData)
-{
-	Assert(_colorMeshData->m_bColorTextureValid);
-	Assert(!_colorMeshData->m_bColorTextureCreated);
-
-	for (int mesh = 0; mesh < _colorMeshData->m_nMeshes; ++mesh)
-	{
-		ColorMeshInfo_t* meshInfo = &_colorMeshData->m_pMeshInfos[mesh];
-
-		// Ensure that we haven't somehow already messed with these.
-		Assert(meshInfo->m_pLightmapData);
-		Assert(!meshInfo->m_pLightmap);
-
-		ColorTexelsInfo_t* cti = meshInfo->m_pLightmapData;
-
-		Assert(cti->m_pTexelData);
-		
-		meshInfo->m_pLightmap = g_pMaterialSystem->CreateTextureFromBits(cti->m_nWidth, cti->m_nHeight, cti->m_nMipmapCount, cti->m_ImageFormat, cti->m_nByteCount, cti->m_pTexelData);
-
-		// If this triggers, we need to figure out if it's reasonable to fail. If it is, then we should figure out how to signal back
-		// that we shouldn't try to create this again (probably by clearing _colorMeshData->m_bColoTextureValid)
-		Assert(meshInfo->m_pLightmap);
-
-		// Cleanup after ourselves.
-		delete [] cti->m_pTexelData;
-		delete cti;
-
-		meshInfo->m_pLightmapData = NULL;
-	}
-
-	_colorMeshData->m_bColorTextureCreated = true;
-}

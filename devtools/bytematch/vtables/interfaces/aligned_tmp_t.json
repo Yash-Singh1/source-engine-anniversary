@@ -1,0 +1,90 @@
+{
+ "interface": "aligned_tmp_t",
+ "headers": [
+  "public/tier0/memalloc.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "bin/vphysics",
+  "class": "IVP_Standard_Gravity_Controller",
+  "offset": 0,
+  "chain": [
+   "IVP_Standard_Gravity_Controller",
+   "CAlignedNewDelete<16, aligned_tmp_t>",
+   "aligned_tmp_t"
+  ]
+ },
+ "retail_len": 9,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 9
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "core_is_going_to_be_deleted_event",
+   "sig": "core_is_going_to_be_deleted_event(IVP_Core*)",
+   "symbol": "IVP_Standard_Gravity_Controller::core_is_going_to_be_deleted_event(IVP_Core*)"
+  },
+  {
+   "index": 1,
+   "name": "get_minimum_simulation_frequency",
+   "sig": "get_minimum_simulation_frequency()",
+   "symbol": "IVP_Controller::get_minimum_simulation_frequency()"
+  },
+  {
+   "index": 2,
+   "name": "get_associated_controlled_cores",
+   "sig": "get_associated_controlled_cores()",
+   "symbol": "IVP_Controller_Independent::get_associated_controlled_cores()"
+  },
+  {
+   "index": 3,
+   "name": "reset_time",
+   "sig": "reset_time(IVP_Time)",
+   "symbol": "IVP_Controller::reset_time(IVP_Time)"
+  },
+  {
+   "index": 4,
+   "name": "do_simulation_controller",
+   "sig": "do_simulation_controller(IVP_Event_Sim*, IVP_U_Vector<IVP_Core>*)",
+   "symbol": "IVP_Standard_Gravity_Controller::do_simulation_controller(IVP_Event_Sim*, IVP_U_Vector<IVP_Core>*)"
+  },
+  {
+   "index": 5,
+   "name": "get_controller_priority",
+   "sig": "get_controller_priority()",
+   "symbol": "IVP_Standard_Gravity_Controller::get_controller_priority()"
+  },
+  {
+   "index": 6,
+   "name": "get_controller_name",
+   "sig": "get_controller_name()",
+   "symbol": "IVP_Standard_Gravity_Controller::get_controller_name()"
+  },
+  {
+   "index": 7,
+   "name": "~IVP_Standard_Gravity_Controller",
+   "sig": "~IVP_Standard_Gravity_Controller()",
+   "symbol": "IVP_Standard_Gravity_Controller::~IVP_Standard_Gravity_Controller()"
+  },
+  {
+   "index": 8,
+   "name": "~IVP_Standard_Gravity_Controller",
+   "sig": "~IVP_Standard_Gravity_Controller()",
+   "symbol": "IVP_Standard_Gravity_Controller::~IVP_Standard_Gravity_Controller()"
+  }
+ ],
+ "derived": [
+  "bin/vphysics:CShadowController",
+  "bin/vphysics:IVP_Standard_Gravity_Controller"
+ ],
+ "derived_count": 2
+}

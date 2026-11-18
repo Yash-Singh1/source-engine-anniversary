@@ -1,0 +1,71 @@
+{
+ "interface": "IReplayScreenshotManager",
+ "headers": [
+  "common/replay/ireplayscreenshotmanager.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 5,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "CaptureScreenshot(CaptureScreenshotParams_t&)",
+  "GetUnpaddedScreenshotSize(int&, int&)",
+  "DeleteScreenshotsForReplay(CReplay*)"
+ ],
+ "retail_reference": {
+  "module": "bin/replay",
+  "class": "CScreenshotManager",
+  "offset": 8,
+  "chain": [
+   "CScreenshotManager",
+   "IReplayScreenshotManager"
+  ]
+ },
+ "retail_len": 5,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 5
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CScreenshotManager",
+   "sig": "~CScreenshotManager()",
+   "symbol": "non-virtual thunk to CScreenshotManager::~CScreenshotManager()"
+  },
+  {
+   "index": 1,
+   "name": "~CScreenshotManager",
+   "sig": "~CScreenshotManager()",
+   "symbol": "non-virtual thunk to CScreenshotManager::~CScreenshotManager()"
+  },
+  {
+   "index": 2,
+   "name": "CaptureScreenshot",
+   "sig": "CaptureScreenshot(CaptureScreenshotParams_t&)",
+   "symbol": "non-virtual thunk to CScreenshotManager::CaptureScreenshot(CaptureScreenshotParams_t&)"
+  },
+  {
+   "index": 3,
+   "name": "GetUnpaddedScreenshotSize",
+   "sig": "GetUnpaddedScreenshotSize(int&, int&)",
+   "symbol": "non-virtual thunk to CScreenshotManager::GetUnpaddedScreenshotSize(int&, int&)"
+  },
+  {
+   "index": 4,
+   "name": "DeleteScreenshotsForReplay",
+   "sig": "DeleteScreenshotsForReplay(CReplay*)",
+   "symbol": "non-virtual thunk to CScreenshotManager::DeleteScreenshotsForReplay(CReplay*)"
+  }
+ ],
+ "derived": [
+  "bin/replay:CScreenshotManager"
+ ],
+ "derived_count": 1
+}

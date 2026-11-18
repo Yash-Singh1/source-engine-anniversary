@@ -1,0 +1,71 @@
+{
+ "interface": "IReplaySessionRecorder",
+ "headers": [
+  "common/replay/ireplaysessionrecorder.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 5,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "StartRecording()",
+  "StopRecording(bool)",
+  "SetCurrentRecordingStartTick(int)"
+ ],
+ "retail_reference": {
+  "module": "bin/replay",
+  "class": "CSessionRecorder",
+  "offset": 8,
+  "chain": [
+   "CSessionRecorder",
+   "IReplaySessionRecorder"
+  ]
+ },
+ "retail_len": 5,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 5
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CSessionRecorder",
+   "sig": "~CSessionRecorder()",
+   "symbol": "non-virtual thunk to CSessionRecorder::~CSessionRecorder()"
+  },
+  {
+   "index": 1,
+   "name": "~CSessionRecorder",
+   "sig": "~CSessionRecorder()",
+   "symbol": "non-virtual thunk to CSessionRecorder::~CSessionRecorder()"
+  },
+  {
+   "index": 2,
+   "name": "StartRecording",
+   "sig": "StartRecording()",
+   "symbol": "non-virtual thunk to CSessionRecorder::StartRecording()"
+  },
+  {
+   "index": 3,
+   "name": "StopRecording",
+   "sig": "StopRecording(bool)",
+   "symbol": "non-virtual thunk to CSessionRecorder::StopRecording(bool)"
+  },
+  {
+   "index": 4,
+   "name": "SetCurrentRecordingStartTick",
+   "sig": "SetCurrentRecordingStartTick(int)",
+   "symbol": "non-virtual thunk to CSessionRecorder::SetCurrentRecordingStartTick(int)"
+  }
+ ],
+ "derived": [
+  "bin/replay:CSessionRecorder"
+ ],
+ "derived_count": 1
+}

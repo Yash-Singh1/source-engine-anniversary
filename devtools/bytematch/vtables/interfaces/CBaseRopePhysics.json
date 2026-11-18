@@ -1,0 +1,78 @@
+{
+ "interface": "CBaseRopePhysics",
+ "headers": [
+  "public/rope_physics.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 2,
+ "sdk2013_slots": [
+  "GetNodeForces(CSimplePhysics::CNode*, int, Vector*)",
+  "ApplyConstraints(CSimplePhysics::CNode*, int)"
+ ],
+ "retail_reference": {
+  "module": "episodic/client",
+  "class": "CBaseRopePhysics",
+  "offset": 0,
+  "chain": [
+   "CBaseRopePhysics"
+  ]
+ },
+ "retail_len": 2,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 2
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "GetNodeForces",
+   "sig": "GetNodeForces(CSimplePhysics::CNode*, int, Vector*)",
+   "symbol": "CBaseRopePhysics::GetNodeForces(CSimplePhysics::CNode*, int, Vector*)"
+  },
+  {
+   "index": 1,
+   "name": "ApplyConstraints",
+   "sig": "ApplyConstraints(CSimplePhysics::CNode*, int)",
+   "symbol": "CBaseRopePhysics::ApplyConstraints(CSimplePhysics::CNode*, int)"
+  }
+ ],
+ "derived": [
+  "episodic/client:CBaseRopePhysics",
+  "episodic/client:CRopePhysics<10>",
+  "episodic/client:CRopePhysics<7>",
+  "episodic/server:CBaseRopePhysics",
+  "episodic/server:CHangRope",
+  "episodic/server:CRopePhysics<512>",
+  "hl2/client:CBaseRopePhysics",
+  "hl2/client:CRopePhysics<10>",
+  "hl2/client:CRopePhysics<7>",
+  "hl2/server:CBaseRopePhysics",
+  "hl2/server:CHangRope",
+  "hl2/server:CRopePhysics<512>",
+  "hl2_complete/client:CBaseRopePhysics",
+  "hl2_complete/client:CRopePhysics<10>",
+  "hl2_complete/client:CRopePhysics<7>",
+  "hl2_complete/server:CBaseRopePhysics",
+  "hl2_complete/server:CHangRope",
+  "hl2_complete/server:CRopePhysics<512>",
+  "hl2mp/client:CBaseRopePhysics",
+  "hl2mp/client:CRopePhysics<10>",
+  "hl2mp/client:CRopePhysics<7>",
+  "hl2mp/server:CBaseRopePhysics",
+  "hl2mp/server:CHangRope",
+  "hl2mp/server:CRopePhysics<512>",
+  "lostcoast/client:CBaseRopePhysics",
+  "lostcoast/client:CRopePhysics<10>",
+  "lostcoast/client:CRopePhysics<7>",
+  "lostcoast/server:CBaseRopePhysics",
+  "lostcoast/server:CHangRope",
+  "lostcoast/server:CRopePhysics<512>"
+ ],
+ "derived_count": 30
+}

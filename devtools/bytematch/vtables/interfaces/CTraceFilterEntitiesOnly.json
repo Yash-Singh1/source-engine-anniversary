@@ -1,0 +1,84 @@
+{
+ "interface": "CTraceFilterEntitiesOnly",
+ "headers": [
+  "public/engine/IEngineTrace.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 2,
+ "sdk2013_slots": [
+  "ShouldHitEntity(IHandleEntity*, int)",
+  "GetTraceType() const"
+ ],
+ "retail_reference": {
+  "module": "episodic/server",
+  "class": "CTraceFilterAntlion",
+  "offset": 0,
+  "chain": [
+   "CTraceFilterAntlion",
+   "CTraceFilterEntitiesOnly"
+  ]
+ },
+ "retail_len": 2,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 2
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "ShouldHitEntity",
+   "sig": "ShouldHitEntity(IHandleEntity*, int)",
+   "symbol": "CTraceFilterAntlion::ShouldHitEntity(IHandleEntity*, int)"
+  },
+  {
+   "index": 1,
+   "name": "GetTraceType",
+   "sig": "GetTraceType() const",
+   "symbol": "CTraceFilterEntitiesOnly::GetTraceType() const"
+  }
+ ],
+ "derived": [
+  "episodic/server:CTraceFilterAntlion",
+  "episodic/server:CTraceFilterCharge",
+  "episodic/server:CTraceFilterCollisionGroupDelta",
+  "episodic/server:CTraceFilterDoor",
+  "episodic/server:CTraceFilterMelee",
+  "episodic/server:CTraceFilterMetroPolice",
+  "episodic/server:CUsePushFilter",
+  "hl2/server:CTraceFilterAntlion",
+  "hl2/server:CTraceFilterCharge",
+  "hl2/server:CTraceFilterCollisionGroupDelta",
+  "hl2/server:CTraceFilterDoor",
+  "hl2/server:CTraceFilterMelee",
+  "hl2/server:CTraceFilterMetroPolice",
+  "hl2/server:CUsePushFilter",
+  "hl2_complete/server:CTraceFilterAntlion",
+  "hl2_complete/server:CTraceFilterCharge",
+  "hl2_complete/server:CTraceFilterCollisionGroupDelta",
+  "hl2_complete/server:CTraceFilterDoor",
+  "hl2_complete/server:CTraceFilterMelee",
+  "hl2_complete/server:CTraceFilterMetroPolice",
+  "hl2_complete/server:CUsePushFilter",
+  "hl2mp/server:CTraceFilterAntlion",
+  "hl2mp/server:CTraceFilterCharge",
+  "hl2mp/server:CTraceFilterCollisionGroupDelta",
+  "hl2mp/server:CTraceFilterDoor",
+  "hl2mp/server:CTraceFilterMelee",
+  "hl2mp/server:CTraceFilterMetroPolice",
+  "hl2mp/server:CUsePushFilter",
+  "lostcoast/server:CTraceFilterAntlion",
+  "lostcoast/server:CTraceFilterCharge",
+  "lostcoast/server:CTraceFilterCollisionGroupDelta",
+  "lostcoast/server:CTraceFilterDoor",
+  "lostcoast/server:CTraceFilterMelee",
+  "lostcoast/server:CTraceFilterMetroPolice",
+  "lostcoast/server:CUsePushFilter"
+ ],
+ "derived_count": 35
+}

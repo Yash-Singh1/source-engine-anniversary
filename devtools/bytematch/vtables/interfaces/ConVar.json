@@ -1,0 +1,214 @@
+{
+ "interface": "ConVar",
+ "headers": [
+  "public/tier1/convar.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 20,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "IsCommand() const",
+  "IsFlagSet(int) const",
+  "AddFlags(int)",
+  "GetName() const",
+  "GetHelpText() const",
+  "IsRegistered() const",
+  "GetDLLIdentifier() const",
+  "Create(char const*, char const*, int)",
+  "Init()",
+  "SetValue(char const*)",
+  "SetValue(float)",
+  "SetValue(int)",
+  "InternalSetValue(char const*)",
+  "InternalSetFloatValue(float)",
+  "InternalSetIntValue(int)",
+  "ClampValue(float&)",
+  "ChangeStringValue(char const*, float)",
+  "Create(char const*, char const*, int, char const*, bool, float, bool, float, void (*)(IConVar*, char const*, float))"
+ ],
+ "retail_reference": {
+  "module": "bin/GameUI",
+  "class": "ConVar",
+  "offset": 0,
+  "chain": [
+   "ConVar"
+  ]
+ },
+ "retail_len": 20,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 20
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~ConVar",
+   "sig": "~ConVar()",
+   "symbol": "ConVar::~ConVar()"
+  },
+  {
+   "index": 1,
+   "name": "~ConVar",
+   "sig": "~ConVar()",
+   "symbol": "ConVar::~ConVar()"
+  },
+  {
+   "index": 2,
+   "name": "IsCommand",
+   "sig": "IsCommand() const",
+   "symbol": "ConVar::IsCommand() const"
+  },
+  {
+   "index": 3,
+   "name": "IsFlagSet",
+   "sig": "IsFlagSet(int) const",
+   "symbol": "ConVar::IsFlagSet(int) const"
+  },
+  {
+   "index": 4,
+   "name": "AddFlags",
+   "sig": "AddFlags(int)",
+   "symbol": "ConVar::AddFlags(int)"
+  },
+  {
+   "index": 5,
+   "name": "GetName",
+   "sig": "GetName() const",
+   "symbol": "ConVar::GetName() const"
+  },
+  {
+   "index": 6,
+   "name": "GetHelpText",
+   "sig": "GetHelpText() const",
+   "symbol": "ConVar::GetHelpText() const"
+  },
+  {
+   "index": 7,
+   "name": "IsRegistered",
+   "sig": "IsRegistered() const",
+   "symbol": "ConVar::IsRegistered() const"
+  },
+  {
+   "index": 8,
+   "name": "GetDLLIdentifier",
+   "sig": "GetDLLIdentifier() const",
+   "symbol": "ConCommandBase::GetDLLIdentifier() const"
+  },
+  {
+   "index": 9,
+   "name": "Create",
+   "sig": "Create(char const*, char const*, int)",
+   "symbol": "ConCommandBase::Create(char const*, char const*, int)"
+  },
+  {
+   "index": 10,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "ConVar::Init()"
+  },
+  {
+   "index": 11,
+   "name": "SetValue",
+   "sig": "SetValue(char const*)",
+   "symbol": "ConVar::SetValue(char const*)"
+  },
+  {
+   "index": 12,
+   "name": "SetValue",
+   "sig": "SetValue(float)",
+   "symbol": "ConVar::SetValue(float)"
+  },
+  {
+   "index": 13,
+   "name": "SetValue",
+   "sig": "SetValue(int)",
+   "symbol": "ConVar::SetValue(int)"
+  },
+  {
+   "index": 14,
+   "name": "InternalSetValue",
+   "sig": "InternalSetValue(char const*)",
+   "symbol": "ConVar::InternalSetValue(char const*)"
+  },
+  {
+   "index": 15,
+   "name": "InternalSetFloatValue",
+   "sig": "InternalSetFloatValue(float)",
+   "symbol": "ConVar::InternalSetFloatValue(float)"
+  },
+  {
+   "index": 16,
+   "name": "InternalSetIntValue",
+   "sig": "InternalSetIntValue(int)",
+   "symbol": "ConVar::InternalSetIntValue(int)"
+  },
+  {
+   "index": 17,
+   "name": "ClampValue",
+   "sig": "ClampValue(float&)",
+   "symbol": "ConVar::ClampValue(float&)"
+  },
+  {
+   "index": 18,
+   "name": "ChangeStringValue",
+   "sig": "ChangeStringValue(char const*, float)",
+   "symbol": "ConVar::ChangeStringValue(char const*, float)"
+  },
+  {
+   "index": 19,
+   "name": "Create",
+   "sig": "Create(char const*, char const*, int, char const*, bool, float, bool, float, void (*)(IConVar*, char const*, float))",
+   "symbol": "ConVar::Create(char const*, char const*, int, char const*, bool, float, bool, float, void (*)(IConVar*, char const*, float))"
+  }
+ ],
+ "derived": [
+  "bin/GameUI:CEmptyConVar",
+  "bin/GameUI:ConVar",
+  "bin/ServerBrowser:CEmptyConVar",
+  "bin/ServerBrowser:ConVar",
+  "bin/bsppack:CEmptyConVar",
+  "bin/bsppack:ConVar",
+  "bin/bugreporter_filequeue:CEmptyConVar",
+  "bin/bugreporter_filequeue:ConVar",
+  "bin/datacache:CEmptyConVar",
+  "bin/datacache:ConVar",
+  "bin/engine:CBoundedCvar_CmdRate",
+  "bin/engine:CBoundedCvar_Rate",
+  "bin/engine:CBoundedCvar_UpdateRate",
+  "bin/engine:CEmptyConVar",
+  "bin/engine:ConVar",
+  "bin/filesystem_stdio:CEmptyConVar",
+  "bin/filesystem_stdio:ConVar",
+  "bin/inputsystem:CEmptyConVar",
+  "bin/inputsystem:ConVar",
+  "bin/launcher:CEmptyConVar",
+  "bin/launcher:ConVar",
+  "bin/libtogl:CEmptyConVar",
+  "bin/libtogl:ConVar",
+  "bin/libvstdlib:CEmptyConVar",
+  "bin/libvstdlib:ConVar",
+  "bin/materialsystem:CEmptyConVar",
+  "bin/materialsystem:ConVar",
+  "bin/replay:CEmptyConVar",
+  "bin/replay:ConVar",
+  "bin/shaderapidx9:CEmptyConVar",
+  "bin/shaderapidx9:ConVar",
+  "bin/soundemittersystem:CEmptyConVar",
+  "bin/soundemittersystem:ConVar",
+  "bin/sourcevr:CEmptyConVar",
+  "bin/sourcevr:ConVar",
+  "bin/stdshader_dx9:CEmptyConVar",
+  "bin/stdshader_dx9:ConVar",
+  "bin/studiorender:CEmptyConVar",
+  "bin/studiorender:ConVar",
+  "bin/vgui2:CEmptyConVar"
+ ],
+ "derived_count": 91
+}

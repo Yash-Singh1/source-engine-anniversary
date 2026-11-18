@@ -1,0 +1,29 @@
+{
+ "interface": "IInputInternal",
+ "headers": [
+  "public/vgui/IInputInternal.h"
+ ],
+ "versions": {
+  "retail": [
+   "VGUI_InputInternal001"
+  ],
+  "ours": [
+   "VGUI_InputInternal001"
+  ],
+  "sdk2013": [
+   "VGUI_InputInternal001"
+  ]
+ },
+ "version_macros": [
+  "VGUI_INPUTINTERNAL_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/vgui2",
+   "version": "VGUI_InputInternal001",
+   "class": "CInputSystem"
+  }
+ ],
+ "sdk2013_len": null,
+ "status": "no retail vtable"
+}

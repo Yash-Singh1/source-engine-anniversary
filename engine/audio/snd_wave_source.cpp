@@ -618,13 +618,13 @@ bool CAudioSourceWave::GetXboxAudioStartupData()
 				m_bNoSentence = false;
 
 				// vdat is precompiled into minimal binary format and possibly compressed
-				if ( CLZMA::IsCompressed( pData ) )
+				if ( CLZMA().IsCompressed( pData ) )
 				{
 					// uncompress binary vdat and restore
 					CUtlBuffer targetBuffer;
-					int originalSize = CLZMA::GetActualSize( pData );
+					int originalSize = CLZMA().GetActualSize( pData );
 					targetBuffer.EnsureCapacity( originalSize );
-					CLZMA::Uncompress( pData, (unsigned char *)targetBuffer.Base() );
+					CLZMA().Uncompress( pData, (unsigned char *)targetBuffer.Base() );
 					targetBuffer.SeekPut( CUtlBuffer::SEEK_HEAD, originalSize );
 					m_pTempSentence->CacheRestoreFromBuffer( targetBuffer );
 				}

@@ -12,17 +12,6 @@
 #pragma once
 #endif
 
-// How many bytes compressed filehandles should hold for seeking backwards. Seeks beyond this limit will require
-// rewinding and restarting the compression, at significant performance penalty. (Warnings emitted when this occurs)
-#define PACKFILE_COMPRESSED_FILEHANDLE_SEEK_BUFFER 4096
-
-// How many bytes compressed filehandles should attempt to read (and cache) at a time from the underlying compressed data.
-#define PACKFILE_COMPRESSED_FILEHANDLE_READ_BUFFER 4096
-
-// Emit warnings in debug builds if we hold more than this many compressed file handles alive to alert to the poor
-// memory characteristics.
-#define PACKFILE_COMPRESSED_FILE_HANDLES_WARNING 20
-
 #include "basefilesystem.h"
 #include "tier1/refcount.h"
 #include "tier1/utlbuffer.h"
@@ -69,44 +58,6 @@ protected:
 	CZipPackFile* m_pOwner;       // Pack file that owns this handle
 	unsigned int  m_nLength;      // Length of this file.
 	unsigned int  m_nIndex;       // Index into the pack's directory table
-};
-
-class CLZMAZipPackFileHandle : public CZipPackFileHandle
-{
-public:
-	CLZMAZipPackFileHandle( CZipPackFile* pOwner, int64 nBase, unsigned int nOriginalSize, unsigned int nCompressedSize,
-	                        unsigned int nIndex = -1, unsigned int nFilePointer = 0 );
-	~CLZMAZipPackFileHandle();
-
-	virtual int Read( void* pBuffer, int nDestSize, int nBytes ) OVERRIDE;
-	virtual int Seek( int nOffset, int nWhence )                 OVERRIDE;
-
-	virtual int Tell() OVERRIDE;
-	virtual int Size() OVERRIDE;
-
-private:
-	// Ensure there are bytes in the read buffer, assuming we're not at the end of the underlying data
-	int FillReadBuffer();
-
-	// Reset buffers and underlying seek position to 0
-	void Reset();
-
-	// Contains the last PACKFILE_COMPRESSED_FILEHANDLE_SEEK_BUFFER decompressed bytes. The Put and Get locations mimic our
-	// filehandle -- TellPut() == TelGet() when we are not back seeking.
-	CUtlBuffer    m_BackSeekBuffer;
-
-	// The read buffer from the underlying compressed stream. We read PACKFILE_COMPRESSED_FILEHANDLE_READ_BUFFER bytes
-	// into this buffer, then consume it via the buffer get position.
-	CUtlBuffer    m_ReadBuffer;
-
-	// The decompress stream we feed our base filehandle into
-	CLZMAStream   *m_pLZMAStream;
-
-	// Current seek position in uncompressed data
-	int  m_nSeekPosition;
-
-	// Size of the decompressed data
-	unsigned int m_nOriginalSize;
 };
 
 //-----------------------------------------------------------------------------

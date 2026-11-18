@@ -1,0 +1,129 @@
+{
+ "interface": "CWorkerThread",
+ "headers": [
+  "public/tier0/threadtools.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 8,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "Start(unsigned int)",
+  "Init()",
+  "Run()",
+  "OnExit()",
+  "GetThreadProc()",
+  "IsThreadRunning()"
+ ],
+ "retail_reference": {
+  "module": "bin/libtier0",
+  "class": "CWorkerThread",
+  "offset": 0,
+  "chain": [
+   "CWorkerThread"
+  ]
+ },
+ "retail_len": 8,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 2
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CWorkerThread",
+   "sig": "~CWorkerThread()",
+   "symbol": "CWorkerThread::~CWorkerThread()"
+  },
+  {
+   "index": 1,
+   "name": "~CWorkerThread",
+   "sig": "~CWorkerThread()",
+   "symbol": "CWorkerThread::~CWorkerThread()"
+  },
+  {
+   "index": 2,
+   "name": "Start",
+   "sig": "Start(unsigned int)",
+   "symbol": "CThread::Start(unsigned int)"
+  },
+  {
+   "index": 3,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "CThread::Init()"
+  },
+  {
+   "index": 4,
+   "name": "__cxa_pure_virtual",
+   "sig": "__cxa_pure_virtual",
+   "symbol": "__cxa_pure_virtual"
+  },
+  {
+   "index": 5,
+   "name": "OnExit",
+   "sig": "OnExit()",
+   "symbol": "CThread::OnExit()"
+  },
+  {
+   "index": 6,
+   "name": "GetThreadProc",
+   "sig": "GetThreadProc()",
+   "symbol": "CThread::GetThreadProc()"
+  },
+  {
+   "index": 7,
+   "name": "IsThreadRunning",
+   "sig": "IsThreadRunning()",
+   "symbol": "CThread::IsThreadRunning()"
+  }
+ ],
+ "derived_disagreements": [
+  {
+   "module": "hl2mp/client",
+   "class": "CAchievementSaveThread",
+   "index": 2,
+   "ref": "Start(unsigned int)",
+   "got": null
+  },
+  {
+   "module": "hl2mp/server",
+   "class": "CAchievementSaveThread",
+   "index": 2,
+   "ref": "Start(unsigned int)",
+   "got": null
+  }
+ ],
+ "derived": [
+  "bin/libtier0:CWorkerThread",
+  "bin/libvstdlib:CJobThread",
+  "bin/libvstdlib:CWorkerThread",
+  "episodic/client:CAchievementSaveThread",
+  "episodic/client:CWorkerThread",
+  "episodic/server:CAchievementSaveThread",
+  "episodic/server:CWorkerThread",
+  "hl2/client:CAchievementSaveThread",
+  "hl2/client:CWorkerThread",
+  "hl2/server:CAchievementSaveThread",
+  "hl2/server:CWorkerThread",
+  "hl2_complete/client:CAchievementSaveThread",
+  "hl2_complete/client:CWorkerThread",
+  "hl2_complete/server:CAchievementSaveThread",
+  "hl2_complete/server:CWorkerThread",
+  "hl2mp/client:CAchievementSaveThread",
+  "hl2mp/client:CWorkerThread",
+  "hl2mp/server:CAchievementSaveThread",
+  "hl2mp/server:CWorkerThread",
+  "lostcoast/client:CAchievementSaveThread",
+  "lostcoast/client:CWorkerThread",
+  "lostcoast/server:CAchievementSaveThread",
+  "lostcoast/server:CWorkerThread"
+ ],
+ "derived_count": 23
+}

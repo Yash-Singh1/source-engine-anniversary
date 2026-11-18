@@ -1,0 +1,144 @@
+{
+ "interface": "IIndexBuffer",
+ "headers": [
+  "public/materialsystem/imesh.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 14,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "IndexCount() const",
+  "IndexFormat() const",
+  "IsDynamic() const",
+  "BeginCastBuffer(MaterialIndexFormat_t)",
+  "EndCastBuffer()",
+  "GetRoomRemaining() const",
+  "Lock(int, bool, IndexDesc_t&)",
+  "Unlock(int, IndexDesc_t&)",
+  "ModifyBegin(bool, int, int, IndexDesc_t&)",
+  "ModifyEnd(IndexDesc_t&)",
+  "Spew(int, IndexDesc_t const&)",
+  "ValidateData(int, IndexDesc_t const&)"
+ ],
+ "retail_reference": {
+  "module": "bin/materialsystem",
+  "class": "CDummyMesh",
+  "offset": 4,
+  "chain": [
+   "CDummyMesh",
+   "IMesh",
+   "IIndexBuffer"
+  ]
+ },
+ "retail_len": 14,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 14
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CDummyMesh",
+   "sig": "~CDummyMesh()",
+   "symbol": "non-virtual thunk to CDummyMesh::~CDummyMesh()"
+  },
+  {
+   "index": 1,
+   "name": "~CDummyMesh",
+   "sig": "~CDummyMesh()",
+   "symbol": "non-virtual thunk to CDummyMesh::~CDummyMesh()"
+  },
+  {
+   "index": 2,
+   "name": "IndexCount",
+   "sig": "IndexCount() const",
+   "symbol": "non-virtual thunk to CDummyMesh::IndexCount() const"
+  },
+  {
+   "index": 3,
+   "name": "IndexFormat",
+   "sig": "IndexFormat() const",
+   "symbol": "non-virtual thunk to CDummyMesh::IndexFormat() const"
+  },
+  {
+   "index": 4,
+   "name": "IsDynamic",
+   "sig": "IsDynamic() const",
+   "symbol": "non-virtual thunk to CDummyMesh::IsDynamic() const"
+  },
+  {
+   "index": 5,
+   "name": "BeginCastBuffer",
+   "sig": "BeginCastBuffer(MaterialIndexFormat_t)",
+   "symbol": "non-virtual thunk to CDummyMesh::BeginCastBuffer(MaterialIndexFormat_t)"
+  },
+  {
+   "index": 6,
+   "name": "EndCastBuffer",
+   "sig": "EndCastBuffer()",
+   "symbol": "non-virtual thunk to CDummyMesh::EndCastBuffer()"
+  },
+  {
+   "index": 7,
+   "name": "GetRoomRemaining",
+   "sig": "GetRoomRemaining() const",
+   "symbol": "non-virtual thunk to CDummyMesh::GetRoomRemaining() const"
+  },
+  {
+   "index": 8,
+   "name": "Lock",
+   "sig": "Lock(int, bool, IndexDesc_t&)",
+   "symbol": "non-virtual thunk to CDummyMesh::Lock(int, bool, IndexDesc_t&)"
+  },
+  {
+   "index": 9,
+   "name": "Unlock",
+   "sig": "Unlock(int, IndexDesc_t&)",
+   "symbol": "non-virtual thunk to CDummyMesh::Unlock(int, IndexDesc_t&)"
+  },
+  {
+   "index": 10,
+   "name": "ModifyBegin",
+   "sig": "ModifyBegin(bool, int, int, IndexDesc_t&)",
+   "symbol": "non-virtual thunk to CDummyMesh::ModifyBegin(bool, int, int, IndexDesc_t&)"
+  },
+  {
+   "index": 11,
+   "name": "ModifyEnd",
+   "sig": "ModifyEnd(IndexDesc_t&)",
+   "symbol": "non-virtual thunk to CDummyMesh::ModifyEnd(IndexDesc_t&)"
+  },
+  {
+   "index": 12,
+   "name": "Spew",
+   "sig": "Spew(int, IndexDesc_t const&)",
+   "symbol": "non-virtual thunk to CDummyMesh::Spew(int, IndexDesc_t const&)"
+  },
+  {
+   "index": 13,
+   "name": "ValidateData",
+   "sig": "ValidateData(int, IndexDesc_t const&)",
+   "symbol": "non-virtual thunk to CDummyMesh::ValidateData(int, IndexDesc_t const&)"
+  }
+ ],
+ "derived": [
+  "bin/materialsystem:CDummyMesh",
+  "bin/materialsystem:CMatQueuedMesh",
+  "bin/shaderapidx9:CBufferedMeshDX8",
+  "bin/shaderapidx9:CDynamicMeshDX8",
+  "bin/shaderapidx9:CIndexBufferBase",
+  "bin/shaderapidx9:CIndexBufferDx8",
+  "bin/shaderapidx9:CMeshBase",
+  "bin/shaderapidx9:CMeshDX8",
+  "bin/shaderapidx9:CTempMeshDX8",
+  "bin/shaderapiempty:CEmptyMesh"
+ ],
+ "derived_count": 10
+}

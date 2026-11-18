@@ -1,0 +1,89 @@
+{
+ "interface": "CFunctorJob",
+ "headers": [
+  "public/vstdlib/jobthread.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CFunctorJob",
+  "offset": 0,
+  "chain": [
+   "CFunctorJob"
+  ]
+ },
+ "retail_len": 9,
+ "retail_len_basis": "own vtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 9
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "AddRef",
+   "sig": "AddRef()",
+   "symbol": "CRefCounted1<IRefCounted, CRefCountServiceBase<true, CRefMT>>::AddRef()"
+  },
+  {
+   "index": 1,
+   "name": "Release",
+   "sig": "Release()",
+   "symbol": "CRefCounted1<IRefCounted, CRefCountServiceBase<true, CRefMT>>::Release()"
+  },
+  {
+   "index": 2,
+   "name": "~CFunctorJob",
+   "sig": "~CFunctorJob()",
+   "symbol": "CFunctorJob::~CFunctorJob()"
+  },
+  {
+   "index": 3,
+   "name": "~CFunctorJob",
+   "sig": "~CFunctorJob()",
+   "symbol": "CFunctorJob::~CFunctorJob()"
+  },
+  {
+   "index": 4,
+   "name": "Describe",
+   "sig": "Describe()",
+   "symbol": "CFunctorJob::Describe()"
+  },
+  {
+   "index": 5,
+   "name": "SetDescription",
+   "sig": "SetDescription(char const*)",
+   "symbol": "CJob::SetDescription(char const*)"
+  },
+  {
+   "index": 6,
+   "name": "DoExecute",
+   "sig": "DoExecute()",
+   "symbol": "CFunctorJob::DoExecute()"
+  },
+  {
+   "index": 7,
+   "name": "DoAbort",
+   "sig": "DoAbort(bool)",
+   "symbol": "CJob::DoAbort(bool)"
+  },
+  {
+   "index": 8,
+   "name": "DoCleanup",
+   "sig": "DoCleanup()",
+   "symbol": "CJob::DoCleanup()"
+  }
+ ],
+ "derived": [
+  "bin/engine:CFunctorJob",
+  "bin/libvstdlib:CFunctorJob",
+  "bin/materialsystem:CFunctorJob"
+ ],
+ "derived_count": 3
+}

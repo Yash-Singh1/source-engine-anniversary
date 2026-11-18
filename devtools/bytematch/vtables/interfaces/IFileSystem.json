@@ -1,0 +1,944 @@
+{
+ "interface": "IFileSystem",
+ "headers": [
+  "public/filesystem.h"
+ ],
+ "versions": {
+  "retail": [
+   "VFileSystem022"
+  ],
+  "ours": [
+   "VFileSystem022"
+  ],
+  "sdk2013": [
+   "VFileSystem022"
+  ]
+ },
+ "version_macros": [
+  "FILESYSTEM_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/filesystem_stdio",
+   "version": "VFileSystem022",
+   "class": "CFileSystem_Stdio"
+  }
+ ],
+ "sdk2013_len": 112,
+ "sdk2013_slots": [
+  "Connect(void* (*)(char const*, int*))",
+  "Disconnect()",
+  "QueryInterface(char const*)",
+  "Init()",
+  "Shutdown()",
+  "IsSteam() const",
+  "MountSteamContent(int)",
+  "AddSearchPath(char const*, char const*, SearchPathAdd_t)",
+  "RemoveSearchPath(char const*, char const*)",
+  "RemoveAllSearchPaths()",
+  "RemoveSearchPaths(char const*)",
+  "MarkPathIDByRequestOnly(char const*, bool)",
+  "RelativePathToFullPath(char const*, char const*, char*, int, PathTypeFilter_t, unsigned int*)",
+  "GetSearchPath(char const*, bool, char*, int)",
+  "AddPackFile(char const*, char const*)",
+  "RemoveFile(char const*, char const*)",
+  "RenameFile(char const*, char const*, char const*)",
+  "CreateDirHierarchy(char const*, char const*)",
+  "IsDirectory(char const*, char const*)",
+  "FileTimeToString(char*, int, long)",
+  "SetBufferSize(void*, unsigned int)",
+  "IsOk(void*)",
+  "EndOfFile(void*)",
+  "ReadLine(char*, int, void*)",
+  "FPrintf(void*, char const*, ...)",
+  "LoadModule(char const*, char const*, bool)",
+  "UnloadModule(CSysModule*)",
+  "FindFirst(char const*, int*)",
+  "FindNext(int)",
+  "FindIsDirectory(int)",
+  "FindClose(int)",
+  "FindFirstEx(char const*, char const*, int*)",
+  "GetLocalPath(char const*, char*, int)",
+  "FullPathToRelativePath(char const*, char*, int)",
+  "GetCurrentDirectory(char*, int)",
+  "FindOrAddFileName(char const*)",
+  "String(void* const&, char*, int)",
+  "AsyncReadMultiple(FileAsyncRequest_t const*, int, FSAsyncControl_t__**)",
+  "AsyncAppend(char const*, void const*, int, bool, FSAsyncControl_t__**)",
+  "AsyncAppendFile(char const*, char const*, FSAsyncControl_t__**)",
+  "AsyncFinishAll(int)",
+  "AsyncFinishAllWrites()",
+  "AsyncFlush()",
+  "AsyncSuspend()",
+  "AsyncResume()",
+  "AsyncAddFetcher(IAsyncFileFetch*)",
+  "AsyncRemoveFetcher(IAsyncFileFetch*)",
+  "AsyncBeginRead(char const*, FSAsyncFile_t__**)",
+  "AsyncEndRead(FSAsyncFile_t__*)",
+  "AsyncFinish(FSAsyncControl_t__*, bool)",
+  "AsyncGetResult(FSAsyncControl_t__*, void**, int*)",
+  "AsyncAbort(FSAsyncControl_t__*)",
+  "AsyncStatus(FSAsyncControl_t__*)",
+  "AsyncSetPriority(FSAsyncControl_t__*, int)",
+  "AsyncAddRef(FSAsyncControl_t__*)",
+  "AsyncRelease(FSAsyncControl_t__*)",
+  "WaitForResources(char const*)",
+  "GetWaitForResourcesProgress(int, float*, bool*)",
+  "CancelWaitForResources(int)",
+  "HintResourceNeed(char const*, int)",
+  "IsFileImmediatelyAvailable(char const*)",
+  "GetLocalCopy(char const*)",
+  "PrintOpenedFiles()",
+  "PrintSearchPaths()",
+  "SetWarningFunc(void (*)(char const*, ...))",
+  "SetWarningLevel(FileWarningLevel_t)",
+  "AddLoggingFunc(void (*)(char const*, char const*))",
+  "RemoveLoggingFunc(void (*)(char const*, char const*))",
+  "GetFilesystemStatistics()",
+  "OpenEx(char const*, char const*, unsigned int, char const*, char**)",
+  "ReadEx(void*, int, int, void*)",
+  "ReadFileEx(char const*, char const*, void**, bool, bool, int, int, void* (*)(char const*, unsigned int))",
+  "FindFileName(char const*)",
+  "SetupPreloadData()",
+  "DiscardPreloadData()",
+  "LoadCompiledKeyValues(IFileSystem::KeyValuesPreloadType_t, char const*)",
+  "LoadKeyValues(IFileSystem::KeyValuesPreloadType_t, char const*, char const*)",
+  "LoadKeyValues(KeyValues&, IFileSystem::KeyValuesPreloadType_t, char const*, char const*)",
+  "ExtractRootKeyName(IFileSystem::KeyValuesPreloadType_t, char*, unsigned long, char const*, char const*)",
+  "AsyncWrite(char const*, void const*, int, bool, bool, FSAsyncControl_t__**)",
+  "AsyncWriteFile(char const*, CUtlBuffer const*, int, bool, bool, FSAsyncControl_t__**)",
+  "AsyncReadMultipleCreditAlloc(FileAsyncRequest_t const*, int, char const*, int, FSAsyncControl_t__**)",
+  "GetFileTypeForFullPath(char const*, wchar_t*, unsigned long)",
+  "ReadToBuffer(void*, CUtlBuffer&, int, void* (*)(char const*, unsigned int))",
+  "GetOptimalIOConstraints(void*, unsigned int*, unsigned int*, unsigned int*)",
+  "AllocOptimalReadBuffer(void*, unsigned int, unsigned int)",
+  "FreeOptimalReadBuffer(void*)",
+  "BeginMapAccess()",
+  "EndMapAccess()",
+  "FullPathToRelativePathEx(char const*, char const*, char*, int)",
+  "GetPathIndex(void* const&)",
+  "GetPathTime(char const*, char const*)",
+  "GetDVDMode()",
+  "EnableWhitelistFileTracking(bool, bool, bool)",
+  "RegisterFileWhitelist(IPureServerWhitelist*, IFileList**)",
+  "MarkAllCRCsUnverified()",
+  "CacheFileCRCs(char const*, ECacheCRCType, IFileList*)",
+  "CheckCachedFileHash(char const*, char const*, int, FileHash_t*)",
+  "GetUnverifiedFileHashes(CUnverifiedFileHash*, int)",
+  "GetWhitelistSpewFlags()",
+  "SetWhitelistSpewFlags(int)",
+  "InstallDirtyDiskReportFunc(void (*)())",
+  "CreateFileCache()",
+  "AddFilesToFileCache(void*, char const**, int, char const*)",
+  "IsFileCacheFileLoaded(void*, char const*)",
+  "IsFileCacheLoaded(void*)",
+  "DestroyFileCache(void*)",
+  "RegisterMemoryFile(CMemoryFileBacking*, CMemoryFileBacking**)",
+  "UnregisterMemoryFile(CMemoryFileBacking*)",
+  "CacheAllVPKFileHashes(bool, bool)",
+  "CheckVPKFileHash(int, int, int, MD5Value_t&)",
+  "NotifyFileUnloaded(char const*, char const*)"
+ ],
+ "retail_reference": {
+  "module": "bin/filesystem_stdio",
+  "class": "CFileSystem_Stdio",
+  "offset": 0,
+  "chain": [
+   "CFileSystem_Stdio",
+   "CBaseFileSystem",
+   "CTier1AppSystem<IFileSystem, 0>",
+   "CTier0AppSystem<IFileSystem>",
+   "CBaseAppSystem<IFileSystem>",
+   "IFileSystem"
+  ]
+ },
+ "retail_len": 123,
+ "retail_len_basis": "override: slots 123+ are CBaseFileSystem overrides of the secondary base IBaseFileSystem",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 160
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Connect",
+   "sig": "Connect(void* (*)(char const*, int*))",
+   "symbol": "CTier1AppSystem<IFileSystem, 0>::Connect(void* (*)(char const*, int*))"
+  },
+  {
+   "index": 1,
+   "name": "Disconnect",
+   "sig": "Disconnect()",
+   "symbol": "CTier1AppSystem<IFileSystem, 0>::Disconnect()"
+  },
+  {
+   "index": 2,
+   "name": "QueryInterface",
+   "sig": "QueryInterface(char const*)",
+   "symbol": "CFileSystem_Stdio::QueryInterface(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "CBaseFileSystem::Init()"
+  },
+  {
+   "index": 4,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CBaseFileSystem::Shutdown()"
+  },
+  {
+   "index": 5,
+   "name": "IsSteam",
+   "sig": "IsSteam() const",
+   "symbol": "CFileSystem_Stdio::IsSteam() const"
+  },
+  {
+   "index": 6,
+   "name": "MountSteamContent",
+   "sig": "MountSteamContent(int)",
+   "symbol": "CFileSystem_Stdio::MountSteamContent(int)"
+  },
+  {
+   "index": 7,
+   "name": "AddSearchPath",
+   "sig": "AddSearchPath(char const*, char const*, SearchPathAdd_t)",
+   "symbol": "CBaseFileSystem::AddSearchPath(char const*, char const*, SearchPathAdd_t)"
+  },
+  {
+   "index": 8,
+   "name": "RemoveSearchPath",
+   "sig": "RemoveSearchPath(char const*, char const*)",
+   "symbol": "CBaseFileSystem::RemoveSearchPath(char const*, char const*)"
+  },
+  {
+   "index": 9,
+   "name": "RemoveAllSearchPaths",
+   "sig": "RemoveAllSearchPaths()",
+   "symbol": "CBaseFileSystem::RemoveAllSearchPaths()"
+  },
+  {
+   "index": 10,
+   "name": "RemoveSearchPaths",
+   "sig": "RemoveSearchPaths(char const*)",
+   "symbol": "CBaseFileSystem::RemoveSearchPaths(char const*)"
+  },
+  {
+   "index": 11,
+   "name": "MarkPathIDByRequestOnly",
+   "sig": "MarkPathIDByRequestOnly(char const*, bool)",
+   "symbol": "CBaseFileSystem::MarkPathIDByRequestOnly(char const*, bool)"
+  },
+  {
+   "index": 12,
+   "name": "RelativePathToFullPath",
+   "sig": "RelativePathToFullPath(char const*, char const*, char*, int, PathTypeFilter_t, unsigned int*)",
+   "symbol": "CBaseFileSystem::RelativePathToFullPath(char const*, char const*, char*, int, PathTypeFilter_t, unsigned int*)"
+  },
+  {
+   "index": 13,
+   "name": "GetSearchPath",
+   "sig": "GetSearchPath(char const*, bool, char*, int)",
+   "symbol": "CBaseFileSystem::GetSearchPath(char const*, bool, char*, int)"
+  },
+  {
+   "index": 14,
+   "name": "AddPackFile",
+   "sig": "AddPackFile(char const*, char const*)",
+   "symbol": "CBaseFileSystem::AddPackFile(char const*, char const*)"
+  },
+  {
+   "index": 15,
+   "name": "RemoveFile",
+   "sig": "RemoveFile(char const*, char const*)",
+   "symbol": "CBaseFileSystem::RemoveFile(char const*, char const*)"
+  },
+  {
+   "index": 16,
+   "name": "RenameFile",
+   "sig": "RenameFile(char const*, char const*, char const*)",
+   "symbol": "CBaseFileSystem::RenameFile(char const*, char const*, char const*)"
+  },
+  {
+   "index": 17,
+   "name": "CreateDirHierarchy",
+   "sig": "CreateDirHierarchy(char const*, char const*)",
+   "symbol": "CBaseFileSystem::CreateDirHierarchy(char const*, char const*)"
+  },
+  {
+   "index": 18,
+   "name": "IsDirectory",
+   "sig": "IsDirectory(char const*, char const*)",
+   "symbol": "CBaseFileSystem::IsDirectory(char const*, char const*)"
+  },
+  {
+   "index": 19,
+   "name": "FileTimeToString",
+   "sig": "FileTimeToString(char*, int, long)",
+   "symbol": "CBaseFileSystem::FileTimeToString(char*, int, long)"
+  },
+  {
+   "index": 20,
+   "name": "SetBufferSize",
+   "sig": "SetBufferSize(void*, unsigned int)",
+   "symbol": "CBaseFileSystem::SetBufferSize(void*, unsigned int)"
+  },
+  {
+   "index": 21,
+   "name": "IsOk",
+   "sig": "IsOk(void*)",
+   "symbol": "CBaseFileSystem::IsOk(void*)"
+  },
+  {
+   "index": 22,
+   "name": "EndOfFile",
+   "sig": "EndOfFile(void*)",
+   "symbol": "CBaseFileSystem::EndOfFile(void*)"
+  },
+  {
+   "index": 23,
+   "name": "ReadLine",
+   "sig": "ReadLine(char*, int, void*)",
+   "symbol": "CBaseFileSystem::ReadLine(char*, int, void*)"
+  },
+  {
+   "index": 24,
+   "name": "FPrintf",
+   "sig": "FPrintf(void*, char const*, ...)",
+   "symbol": "CBaseFileSystem::FPrintf(void*, char const*, ...)"
+  },
+  {
+   "index": 25,
+   "name": "LoadModule",
+   "sig": "LoadModule(char const*, char const*, bool)",
+   "symbol": "CBaseFileSystem::LoadModule(char const*, char const*, bool)"
+  },
+  {
+   "index": 26,
+   "name": "UnloadModule",
+   "sig": "UnloadModule(CSysModule*)",
+   "symbol": "CBaseFileSystem::UnloadModule(CSysModule*)"
+  },
+  {
+   "index": 27,
+   "name": "FindFirst",
+   "sig": "FindFirst(char const*, int*)",
+   "symbol": "CBaseFileSystem::FindFirst(char const*, int*)"
+  },
+  {
+   "index": 28,
+   "name": "FindNext",
+   "sig": "FindNext(int)",
+   "symbol": "CBaseFileSystem::FindNext(int)"
+  },
+  {
+   "index": 29,
+   "name": "FindIsDirectory",
+   "sig": "FindIsDirectory(int)",
+   "symbol": "CBaseFileSystem::FindIsDirectory(int)"
+  },
+  {
+   "index": 30,
+   "name": "FindClose",
+   "sig": "FindClose(int)",
+   "symbol": "CBaseFileSystem::FindClose(int)"
+  },
+  {
+   "index": 31,
+   "name": "FindFirstEx",
+   "sig": "FindFirstEx(char const*, char const*, int*)",
+   "symbol": "CBaseFileSystem::FindFirstEx(char const*, char const*, int*)"
+  },
+  {
+   "index": 32,
+   "name": "GetLocalPath",
+   "sig": "GetLocalPath(char const*, char*, int)",
+   "symbol": "CBaseFileSystem::GetLocalPath(char const*, char*, int)"
+  },
+  {
+   "index": 33,
+   "name": "FullPathToRelativePath",
+   "sig": "FullPathToRelativePath(char const*, char*, int)",
+   "symbol": "CBaseFileSystem::FullPathToRelativePath(char const*, char*, int)"
+  },
+  {
+   "index": 34,
+   "name": "GetCurrentDirectory",
+   "sig": "GetCurrentDirectory(char*, int)",
+   "symbol": "CBaseFileSystem::GetCurrentDirectory(char*, int)"
+  },
+  {
+   "index": 35,
+   "name": "FindOrAddFileName",
+   "sig": "FindOrAddFileName(char const*)",
+   "symbol": "CBaseFileSystem::FindOrAddFileName(char const*)"
+  },
+  {
+   "index": 36,
+   "name": "String",
+   "sig": "String(void* const&, char*, int)",
+   "symbol": "CBaseFileSystem::String(void* const&, char*, int)"
+  },
+  {
+   "index": 37,
+   "name": "AsyncReadMultiple",
+   "sig": "AsyncReadMultiple(FileAsyncRequest_t const*, int, FSAsyncControl_t__**)",
+   "symbol": "CBaseFileSystem::AsyncReadMultiple(FileAsyncRequest_t const*, int, FSAsyncControl_t__**)"
+  },
+  {
+   "index": 38,
+   "name": "AsyncAppend",
+   "sig": "AsyncAppend(char const*, void const*, int, bool, FSAsyncControl_t__**)",
+   "symbol": "CBaseFileSystem::AsyncAppend(char const*, void const*, int, bool, FSAsyncControl_t__**)"
+  },
+  {
+   "index": 39,
+   "name": "AsyncAppendFile",
+   "sig": "AsyncAppendFile(char const*, char const*, FSAsyncControl_t__**)",
+   "symbol": "CBaseFileSystem::AsyncAppendFile(char const*, char const*, FSAsyncControl_t__**)"
+  },
+  {
+   "index": 40,
+   "name": "AsyncFinishAll",
+   "sig": "AsyncFinishAll(int)",
+   "symbol": "CBaseFileSystem::AsyncFinishAll(int)"
+  },
+  {
+   "index": 41,
+   "name": "AsyncFinishAllWrites",
+   "sig": "AsyncFinishAllWrites()",
+   "symbol": "CBaseFileSystem::AsyncFinishAllWrites()"
+  },
+  {
+   "index": 42,
+   "name": "AsyncFlush",
+   "sig": "AsyncFlush()",
+   "symbol": "CBaseFileSystem::AsyncFlush()"
+  },
+  {
+   "index": 43,
+   "name": "AsyncSuspend",
+   "sig": "AsyncSuspend()",
+   "symbol": "CBaseFileSystem::AsyncSuspend()"
+  },
+  {
+   "index": 44,
+   "name": "AsyncResume",
+   "sig": "AsyncResume()",
+   "symbol": "CBaseFileSystem::AsyncResume()"
+  },
+  {
+   "index": 45,
+   "name": "AsyncAddFetcher",
+   "sig": "AsyncAddFetcher(IAsyncFileFetch*)",
+   "symbol": "CBaseFileSystem::AsyncAddFetcher(IAsyncFileFetch*)"
+  },
+  {
+   "index": 46,
+   "name": "AsyncRemoveFetcher",
+   "sig": "AsyncRemoveFetcher(IAsyncFileFetch*)",
+   "symbol": "CBaseFileSystem::AsyncRemoveFetcher(IAsyncFileFetch*)"
+  },
+  {
+   "index": 47,
+   "name": "AsyncBeginRead",
+   "sig": "AsyncBeginRead(char const*, FSAsyncFile_t__**)",
+   "symbol": "CBaseFileSystem::AsyncBeginRead(char const*, FSAsyncFile_t__**)"
+  },
+  {
+   "index": 48,
+   "name": "AsyncEndRead",
+   "sig": "AsyncEndRead(FSAsyncFile_t__*)",
+   "symbol": "CBaseFileSystem::AsyncEndRead(FSAsyncFile_t__*)"
+  },
+  {
+   "index": 49,
+   "name": "AsyncFinish",
+   "sig": "AsyncFinish(FSAsyncControl_t__*, bool)",
+   "symbol": "CBaseFileSystem::AsyncFinish(FSAsyncControl_t__*, bool)"
+  },
+  {
+   "index": 50,
+   "name": "AsyncGetResult",
+   "sig": "AsyncGetResult(FSAsyncControl_t__*, void**, int*)",
+   "symbol": "CBaseFileSystem::AsyncGetResult(FSAsyncControl_t__*, void**, int*)"
+  },
+  {
+   "index": 51,
+   "name": "AsyncAbort",
+   "sig": "AsyncAbort(FSAsyncControl_t__*)",
+   "symbol": "CBaseFileSystem::AsyncAbort(FSAsyncControl_t__*)"
+  },
+  {
+   "index": 52,
+   "name": "AsyncStatus",
+   "sig": "AsyncStatus(FSAsyncControl_t__*)",
+   "symbol": "CBaseFileSystem::AsyncStatus(FSAsyncControl_t__*)"
+  },
+  {
+   "index": 53,
+   "name": "AsyncSetPriority",
+   "sig": "AsyncSetPriority(FSAsyncControl_t__*, int)",
+   "symbol": "CBaseFileSystem::AsyncSetPriority(FSAsyncControl_t__*, int)"
+  },
+  {
+   "index": 54,
+   "name": "AsyncAddRef",
+   "sig": "AsyncAddRef(FSAsyncControl_t__*)",
+   "symbol": "CBaseFileSystem::AsyncAddRef(FSAsyncControl_t__*)"
+  },
+  {
+   "index": 55,
+   "name": "AsyncRelease",
+   "sig": "AsyncRelease(FSAsyncControl_t__*)",
+   "symbol": "CBaseFileSystem::AsyncRelease(FSAsyncControl_t__*)"
+  },
+  {
+   "index": 56,
+   "name": "WaitForResources",
+   "sig": "WaitForResources(char const*)",
+   "symbol": "CFileSystem_Stdio::WaitForResources(char const*)"
+  },
+  {
+   "index": 57,
+   "name": "GetWaitForResourcesProgress",
+   "sig": "GetWaitForResourcesProgress(int, float*, bool*)",
+   "symbol": "CFileSystem_Stdio::GetWaitForResourcesProgress(int, float*, bool*)"
+  },
+  {
+   "index": 58,
+   "name": "CancelWaitForResources",
+   "sig": "CancelWaitForResources(int)",
+   "symbol": "CFileSystem_Stdio::CancelWaitForResources(int)"
+  },
+  {
+   "index": 59,
+   "name": "HintResourceNeed",
+   "sig": "HintResourceNeed(char const*, int)",
+   "symbol": "CFileSystem_Stdio::HintResourceNeed(char const*, int)"
+  },
+  {
+   "index": 60,
+   "name": "IsFileImmediatelyAvailable",
+   "sig": "IsFileImmediatelyAvailable(char const*)",
+   "symbol": "CFileSystem_Stdio::IsFileImmediatelyAvailable(char const*)"
+  },
+  {
+   "index": 61,
+   "name": "GetLocalCopy",
+   "sig": "GetLocalCopy(char const*)",
+   "symbol": "CFileSystem_Stdio::GetLocalCopy(char const*)"
+  },
+  {
+   "index": 62,
+   "name": "PrintOpenedFiles",
+   "sig": "PrintOpenedFiles()",
+   "symbol": "CBaseFileSystem::PrintOpenedFiles()"
+  },
+  {
+   "index": 63,
+   "name": "PrintSearchPaths",
+   "sig": "PrintSearchPaths()",
+   "symbol": "CBaseFileSystem::PrintSearchPaths()"
+  },
+  {
+   "index": 64,
+   "name": "SetWarningFunc",
+   "sig": "SetWarningFunc(void (*)(char const*, ...))",
+   "symbol": "CBaseFileSystem::SetWarningFunc(void (*)(char const*, ...))"
+  },
+  {
+   "index": 65,
+   "name": "SetWarningLevel",
+   "sig": "SetWarningLevel(FileWarningLevel_t)",
+   "symbol": "CBaseFileSystem::SetWarningLevel(FileWarningLevel_t)"
+  },
+  {
+   "index": 66,
+   "name": "AddLoggingFunc",
+   "sig": "AddLoggingFunc(void (*)(char const*, char const*))",
+   "symbol": "CBaseFileSystem::AddLoggingFunc(void (*)(char const*, char const*))"
+  },
+  {
+   "index": 67,
+   "name": "RemoveLoggingFunc",
+   "sig": "RemoveLoggingFunc(void (*)(char const*, char const*))",
+   "symbol": "CBaseFileSystem::RemoveLoggingFunc(void (*)(char const*, char const*))"
+  },
+  {
+   "index": 68,
+   "name": "GetFilesystemStatistics",
+   "sig": "GetFilesystemStatistics()",
+   "symbol": "CBaseFileSystem::GetFilesystemStatistics()"
+  },
+  {
+   "index": 69,
+   "name": "OpenEx",
+   "sig": "OpenEx(char const*, char const*, unsigned int, char const*, char**)",
+   "symbol": "CBaseFileSystem::OpenEx(char const*, char const*, unsigned int, char const*, char**)"
+  },
+  {
+   "index": 70,
+   "name": "ReadEx",
+   "sig": "ReadEx(void*, int, int, void*)",
+   "symbol": "CBaseFileSystem::ReadEx(void*, int, int, void*)"
+  },
+  {
+   "index": 71,
+   "name": "ReadFileEx",
+   "sig": "ReadFileEx(char const*, char const*, void**, bool, bool, int, int, void* (*)(char const*, unsigned int))",
+   "symbol": "CBaseFileSystem::ReadFileEx(char const*, char const*, void**, bool, bool, int, int, void* (*)(char const*, unsigned int))"
+  },
+  {
+   "index": 72,
+   "name": "FindFileName",
+   "sig": "FindFileName(char const*)",
+   "symbol": "CBaseFileSystem::FindFileName(char const*)"
+  },
+  {
+   "index": 73,
+   "name": "SetupPreloadData",
+   "sig": "SetupPreloadData()",
+   "symbol": "CBaseFileSystem::SetupPreloadData()"
+  },
+  {
+   "index": 74,
+   "name": "DiscardPreloadData",
+   "sig": "DiscardPreloadData()",
+   "symbol": "CBaseFileSystem::DiscardPreloadData()"
+  },
+  {
+   "index": 75,
+   "name": "LoadCompiledKeyValues",
+   "sig": "LoadCompiledKeyValues(IFileSystem::KeyValuesPreloadType_t, char const*)",
+   "symbol": "CBaseFileSystem::LoadCompiledKeyValues(IFileSystem::KeyValuesPreloadType_t, char const*)"
+  },
+  {
+   "index": 76,
+   "name": "LoadKeyValues",
+   "sig": "LoadKeyValues(IFileSystem::KeyValuesPreloadType_t, char const*, char const*)",
+   "symbol": "CBaseFileSystem::LoadKeyValues(IFileSystem::KeyValuesPreloadType_t, char const*, char const*)"
+  },
+  {
+   "index": 77,
+   "name": "LoadKeyValues",
+   "sig": "LoadKeyValues(KeyValues&, IFileSystem::KeyValuesPreloadType_t, char const*, char const*)",
+   "symbol": "CBaseFileSystem::LoadKeyValues(KeyValues&, IFileSystem::KeyValuesPreloadType_t, char const*, char const*)"
+  },
+  {
+   "index": 78,
+   "name": "ExtractRootKeyName",
+   "sig": "ExtractRootKeyName(IFileSystem::KeyValuesPreloadType_t, char*, unsigned long, char const*, char const*)",
+   "symbol": "CBaseFileSystem::ExtractRootKeyName(IFileSystem::KeyValuesPreloadType_t, char*, unsigned long, char const*, char const*)"
+  },
+  {
+   "index": 79,
+   "name": "AsyncWrite",
+   "sig": "AsyncWrite(char const*, void const*, int, bool, bool, FSAsyncControl_t__**)",
+   "symbol": "CBaseFileSystem::AsyncWrite(char const*, void const*, int, bool, bool, FSAsyncControl_t__**)"
+  },
+  {
+   "index": 80,
+   "name": "AsyncWriteFile",
+   "sig": "AsyncWriteFile(char const*, CUtlBuffer const*, int, bool, bool, FSAsyncControl_t__**)",
+   "symbol": "CBaseFileSystem::AsyncWriteFile(char const*, CUtlBuffer const*, int, bool, bool, FSAsyncControl_t__**)"
+  },
+  {
+   "index": 81,
+   "name": "AsyncReadMultipleCreditAlloc",
+   "sig": "AsyncReadMultipleCreditAlloc(FileAsyncRequest_t const*, int, char const*, int, FSAsyncControl_t__**)",
+   "symbol": "CBaseFileSystem::AsyncReadMultipleCreditAlloc(FileAsyncRequest_t const*, int, char const*, int, FSAsyncControl_t__**)"
+  },
+  {
+   "index": 82,
+   "name": "GetFileTypeForFullPath",
+   "sig": "GetFileTypeForFullPath(char const*, wchar_t*, unsigned long)",
+   "symbol": "CBaseFileSystem::GetFileTypeForFullPath(char const*, wchar_t*, unsigned long)"
+  },
+  {
+   "index": 83,
+   "name": "ReadToBuffer",
+   "sig": "ReadToBuffer(void*, CUtlBuffer&, int, void* (*)(char const*, unsigned int))",
+   "symbol": "CBaseFileSystem::ReadToBuffer(void*, CUtlBuffer&, int, void* (*)(char const*, unsigned int))"
+  },
+  {
+   "index": 84,
+   "name": "GetOptimalIOConstraints",
+   "sig": "GetOptimalIOConstraints(void*, unsigned int*, unsigned int*, unsigned int*)",
+   "symbol": "CFileSystem_Stdio::GetOptimalIOConstraints(void*, unsigned int*, unsigned int*, unsigned int*)"
+  },
+  {
+   "index": 85,
+   "name": "AllocOptimalReadBuffer",
+   "sig": "AllocOptimalReadBuffer(void*, unsigned int, unsigned int)",
+   "symbol": "CFileSystem_Stdio::AllocOptimalReadBuffer(void*, unsigned int, unsigned int)"
+  },
+  {
+   "index": 86,
+   "name": "FreeOptimalReadBuffer",
+   "sig": "FreeOptimalReadBuffer(void*)",
+   "symbol": "CFileSystem_Stdio::FreeOptimalReadBuffer(void*)"
+  },
+  {
+   "index": 87,
+   "name": "BeginMapAccess",
+   "sig": "BeginMapAccess()",
+   "symbol": "CBaseFileSystem::BeginMapAccess()"
+  },
+  {
+   "index": 88,
+   "name": "EndMapAccess",
+   "sig": "EndMapAccess()",
+   "symbol": "CBaseFileSystem::EndMapAccess()"
+  },
+  {
+   "index": 89,
+   "name": "FullPathToRelativePathEx",
+   "sig": "FullPathToRelativePathEx(char const*, char const*, char*, int)",
+   "symbol": "CBaseFileSystem::FullPathToRelativePathEx(char const*, char const*, char*, int)"
+  },
+  {
+   "index": 90,
+   "name": "GetPathIndex",
+   "sig": "GetPathIndex(void* const&)",
+   "symbol": "CBaseFileSystem::GetPathIndex(void* const&)"
+  },
+  {
+   "index": 91,
+   "name": "GetPathTime",
+   "sig": "GetPathTime(char const*, char const*)",
+   "symbol": "CBaseFileSystem::GetPathTime(char const*, char const*)"
+  },
+  {
+   "index": 92,
+   "name": "GetDVDMode",
+   "sig": "GetDVDMode()",
+   "symbol": "CBaseFileSystem::GetDVDMode()"
+  },
+  {
+   "index": 93,
+   "name": "EnableWhitelistFileTracking",
+   "sig": "EnableWhitelistFileTracking(bool, bool, bool)",
+   "symbol": "CBaseFileSystem::EnableWhitelistFileTracking(bool, bool, bool)"
+  },
+  {
+   "index": 94,
+   "name": "RegisterFileWhitelist",
+   "sig": "RegisterFileWhitelist(IPureServerWhitelist*, IFileList**)",
+   "symbol": "CBaseFileSystem::RegisterFileWhitelist(IPureServerWhitelist*, IFileList**)"
+  },
+  {
+   "index": 95,
+   "name": "MarkAllCRCsUnverified",
+   "sig": "MarkAllCRCsUnverified()",
+   "symbol": "CBaseFileSystem::MarkAllCRCsUnverified()"
+  },
+  {
+   "index": 96,
+   "name": "CacheFileCRCs",
+   "sig": "CacheFileCRCs(char const*, ECacheCRCType, IFileList*)",
+   "symbol": "CBaseFileSystem::CacheFileCRCs(char const*, ECacheCRCType, IFileList*)"
+  },
+  {
+   "index": 97,
+   "name": "CheckCachedFileHash",
+   "sig": "CheckCachedFileHash(char const*, char const*, int, FileHash_t*)",
+   "symbol": "CBaseFileSystem::CheckCachedFileHash(char const*, char const*, int, FileHash_t*)"
+  },
+  {
+   "index": 98,
+   "name": "GetUnverifiedFileHashes",
+   "sig": "GetUnverifiedFileHashes(CUnverifiedFileHash*, int)",
+   "symbol": "CBaseFileSystem::GetUnverifiedFileHashes(CUnverifiedFileHash*, int)"
+  },
+  {
+   "index": 99,
+   "name": "GetWhitelistSpewFlags",
+   "sig": "GetWhitelistSpewFlags()",
+   "symbol": "CBaseFileSystem::GetWhitelistSpewFlags()"
+  },
+  {
+   "index": 100,
+   "name": "SetWhitelistSpewFlags",
+   "sig": "SetWhitelistSpewFlags(int)",
+   "symbol": "CBaseFileSystem::SetWhitelistSpewFlags(int)"
+  },
+  {
+   "index": 101,
+   "name": "InstallDirtyDiskReportFunc",
+   "sig": "InstallDirtyDiskReportFunc(void (*)())",
+   "symbol": "CBaseFileSystem::InstallDirtyDiskReportFunc(void (*)())"
+  },
+  {
+   "index": 102,
+   "name": "CreateFileCache",
+   "sig": "CreateFileCache()",
+   "symbol": "CBaseFileSystem::CreateFileCache()"
+  },
+  {
+   "index": 103,
+   "name": "AddFilesToFileCache",
+   "sig": "AddFilesToFileCache(void*, char const**, int, char const*)",
+   "symbol": "CBaseFileSystem::AddFilesToFileCache(void*, char const**, int, char const*)"
+  },
+  {
+   "index": 104,
+   "name": "IsFileCacheFileLoaded",
+   "sig": "IsFileCacheFileLoaded(void*, char const*)",
+   "symbol": "CBaseFileSystem::IsFileCacheFileLoaded(void*, char const*)"
+  },
+  {
+   "index": 105,
+   "name": "IsFileCacheLoaded",
+   "sig": "IsFileCacheLoaded(void*)",
+   "symbol": "CBaseFileSystem::IsFileCacheLoaded(void*)"
+  },
+  {
+   "index": 106,
+   "name": "DestroyFileCache",
+   "sig": "DestroyFileCache(void*)",
+   "symbol": "CBaseFileSystem::DestroyFileCache(void*)"
+  },
+  {
+   "index": 107,
+   "name": "RegisterMemoryFile",
+   "sig": "RegisterMemoryFile(CMemoryFileBacking*, CMemoryFileBacking**)",
+   "symbol": "CBaseFileSystem::RegisterMemoryFile(CMemoryFileBacking*, CMemoryFileBacking**)"
+  },
+  {
+   "index": 108,
+   "name": "UnregisterMemoryFile",
+   "sig": "UnregisterMemoryFile(CMemoryFileBacking*)",
+   "symbol": "CBaseFileSystem::UnregisterMemoryFile(CMemoryFileBacking*)"
+  },
+  {
+   "index": 109,
+   "name": "CacheAllVPKFileHashes",
+   "sig": "CacheAllVPKFileHashes(bool, bool)",
+   "symbol": "CBaseFileSystem::CacheAllVPKFileHashes(bool, bool)"
+  },
+  {
+   "index": 110,
+   "name": "CheckVPKFileHash",
+   "sig": "CheckVPKFileHash(int, int, int, MD5Value_t&)",
+   "symbol": "CBaseFileSystem::CheckVPKFileHash(int, int, int, MD5Value_t&)"
+  },
+  {
+   "index": 111,
+   "name": "NotifyFileUnloaded",
+   "sig": "NotifyFileUnloaded(char const*, char const*)",
+   "symbol": "CBaseFileSystem::NotifyFileUnloaded(char const*, char const*)"
+  },
+  {
+   "index": 112,
+   "name": "SetCurrentGameExpansionId",
+   "sig": "SetCurrentGameExpansionId(char const*)",
+   "symbol": "CBaseFileSystem::SetCurrentGameExpansionId(char const*)"
+  },
+  {
+   "index": 113,
+   "name": "GetCurrentGameExpansionId",
+   "sig": "GetCurrentGameExpansionId(char*, int)",
+   "symbol": "CBaseFileSystem::GetCurrentGameExpansionId(char*, int)"
+  },
+  {
+   "index": 114,
+   "name": "UpdateSearchPathsForCurrentGameExpansion",
+   "sig": "UpdateSearchPathsForCurrentGameExpansion()",
+   "symbol": "CBaseFileSystem::UpdateSearchPathsForCurrentGameExpansion()"
+  },
+  {
+   "index": 115,
+   "name": "AddGameAndModSearchPathsFromGameInfo",
+   "sig": "AddGameAndModSearchPathsFromGameInfo(char const*, char const*, KeyValues*)",
+   "symbol": "CBaseFileSystem::AddGameAndModSearchPathsFromGameInfo(char const*, char const*, KeyValues*)"
+  },
+  {
+   "index": 116,
+   "name": "SetUseLowViolancePaths",
+   "sig": "SetUseLowViolancePaths(bool)",
+   "symbol": "CBaseFileSystem::SetUseLowViolancePaths(bool)"
+  },
+  {
+   "index": 117,
+   "name": "SetUseHDMount",
+   "sig": "SetUseHDMount(bool)",
+   "symbol": "CBaseFileSystem::SetUseHDMount(bool)"
+  },
+  {
+   "index": 118,
+   "name": "SetAudioLanguageOverride",
+   "sig": "SetAudioLanguageOverride(char const*)",
+   "symbol": "CBaseFileSystem::SetAudioLanguageOverride(char const*)"
+  },
+  {
+   "index": 119,
+   "name": "GetSearchPaths2",
+   "sig": "GetSearchPaths2(char const*, bool, CUtlVector<CUtlString, CUtlMemory<CUtlString, int>>&)",
+   "symbol": "CBaseFileSystem::GetSearchPaths2(char const*, bool, CUtlVector<CUtlString, CUtlMemory<CUtlString, int>>&)"
+  },
+  {
+   "index": 120,
+   "name": "GetFontTempFile",
+   "sig": "GetFontTempFile(char const*, char*, int)",
+   "symbol": "CBaseFileSystem::GetFontTempFile(char const*, char*, int)"
+  },
+  {
+   "index": 121,
+   "name": "PushNoFinishAllOnSearchPaths",
+   "sig": "PushNoFinishAllOnSearchPaths()",
+   "symbol": "CBaseFileSystem::PushNoFinishAllOnSearchPaths()"
+  },
+  {
+   "index": 122,
+   "name": "PopNoFinishAllOnSearchPaths",
+   "sig": "PopNoFinishAllOnSearchPaths()",
+   "symbol": "CBaseFileSystem::PopNoFinishAllOnSearchPaths()"
+  }
+ ],
+ "implementer_tail": [
+  "Open(char const*, char const*, char const*)",
+  "Close(void*)",
+  "Seek(void*, int, FileSystemSeek_t)",
+  "Tell(void*)",
+  "Size(void*)",
+  "Size(char const*, char const*)",
+  "Flush(void*)",
+  "Precache(char const*, char const*)",
+  "Read(void*, int, void*)",
+  "Write(void const*, int, void*)",
+  "ReadFile(char const*, char const*, CUtlBuffer&, int, int, void* (*)(char const*, unsigned int))",
+  "WriteFile(char const*, char const*, CUtlBuffer&)",
+  "UnzipFile(char const*, char const*, char const*)",
+  "FileExists(char const*, char const*)",
+  "GetFileTime(char const*, char const*)",
+  "IsFileWritable(char const*, char const*)",
+  "SetFileWritable(char const*, bool, char const*)",
+  "FixUpPath(char const*, char*, int)",
+  "FS_fopen(char const*, char const*, unsigned int, long long*)",
+  "FS_setbufsize(__sFILE*, unsigned int)",
+  "FS_fclose(__sFILE*)",
+  "FS_fseek(__sFILE*, long long, int)",
+  "FS_ftell(__sFILE*)",
+  "FS_feof(__sFILE*)",
+  "FS_fread(void*, unsigned long, unsigned long, __sFILE*)",
+  "FS_fwrite(void const*, unsigned long, __sFILE*)",
+  "FS_setmode(__sFILE*, FileMode_t)",
+  "FS_vfprintf(__sFILE*, char const*, char*)",
+  "FS_ferror(__sFILE*)",
+  "FS_fflush(__sFILE*)",
+  "FS_fgets(char*, int, __sFILE*)",
+  "FS_stat(char const*, stat*, bool*)",
+  "FS_chmod(char const*, int)",
+  "FS_FindFirstFile(char const*, FIND_DATA*)",
+  "FS_FindNextFile(void*, FIND_DATA*)",
+  "FS_FindClose(void*)",
+  "FS_GetSectorSize(__sFILE*)"
+ ],
+ "derived": [
+  "bin/filesystem_stdio:CBaseFileSystem",
+  "bin/filesystem_stdio:CFileSystem_Stdio"
+ ],
+ "derived_count": 2
+}

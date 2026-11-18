@@ -1,0 +1,30 @@
+{
+ "interface": "IVModelInfo003",
+ "headers": [],
+ "versions": {
+  "retail": [
+   "VModelInfoServer003"
+  ],
+  "ours": [
+   "VModelInfoServer003",
+   "VModelInfoServer004"
+  ],
+  "sdk2013": [
+   "VModelInfoServer003",
+   "VModelInfoServer004"
+  ]
+ },
+ "version_macros": [
+  "VMODELINFO_SERVER_INTERFACE_VERSION",
+  "VMODELINFO_SERVER_INTERFACE_VERSION_3"
+ ],
+ "registrations": [
+  {
+   "module": "bin/engine",
+   "version": "VModelInfoServer003",
+   "class": "CModelInfoServer"
+  }
+ ],
+ "sdk2013_len": null,
+ "status": "no retail vtable"
+}

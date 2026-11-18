@@ -1,0 +1,142 @@
+{
+ "interface": "IRunGameEngine",
+ "headers": [
+  "common/IRunGameEngine.h"
+ ],
+ "versions": {
+  "retail": [
+   "RunGameEngine005"
+  ],
+  "ours": [
+   "RunGameEngine005"
+  ],
+  "sdk2013": []
+ },
+ "version_macros": [
+  "RUNGAMEENGINE_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/GameUI",
+   "version": "RunGameEngine005",
+   "class": "CRunGameEngine"
+  }
+ ],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "bin/GameUI",
+  "class": "CRunGameEngine",
+  "offset": 0,
+  "chain": [
+   "CRunGameEngine",
+   "IRunGameEngine"
+  ]
+ },
+ "retail_len": 16,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 16
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CRunGameEngine",
+   "sig": "~CRunGameEngine()",
+   "symbol": "CRunGameEngine::~CRunGameEngine()"
+  },
+  {
+   "index": 1,
+   "name": "~CRunGameEngine",
+   "sig": "~CRunGameEngine()",
+   "symbol": "CRunGameEngine::~CRunGameEngine()"
+  },
+  {
+   "index": 2,
+   "name": "IsRunning",
+   "sig": "IsRunning()",
+   "symbol": "CRunGameEngine::IsRunning()"
+  },
+  {
+   "index": 3,
+   "name": "AddTextCommand",
+   "sig": "AddTextCommand(char const*)",
+   "symbol": "CRunGameEngine::AddTextCommand(char const*)"
+  },
+  {
+   "index": 4,
+   "name": "RunEngine",
+   "sig": "RunEngine(char const*, char const*)",
+   "symbol": "CRunGameEngine::RunEngine(char const*, char const*)"
+  },
+  {
+   "index": 5,
+   "name": "IsInGame",
+   "sig": "IsInGame()",
+   "symbol": "CRunGameEngine::IsInGame()"
+  },
+  {
+   "index": 6,
+   "name": "GetGameInfo",
+   "sig": "GetGameInfo(char*, int)",
+   "symbol": "CRunGameEngine::GetGameInfo(char*, int)"
+  },
+  {
+   "index": 7,
+   "name": "SetTrackerUserID",
+   "sig": "SetTrackerUserID(int, char const*)",
+   "symbol": "CRunGameEngine::SetTrackerUserID(int, char const*)"
+  },
+  {
+   "index": 8,
+   "name": "GetPlayerCount",
+   "sig": "GetPlayerCount()",
+   "symbol": "CRunGameEngine::GetPlayerCount()"
+  },
+  {
+   "index": 9,
+   "name": "GetPlayerFriendsID",
+   "sig": "GetPlayerFriendsID(int)",
+   "symbol": "CRunGameEngine::GetPlayerFriendsID(int)"
+  },
+  {
+   "index": 10,
+   "name": "GetPlayerName",
+   "sig": "GetPlayerName(int, char*, int)",
+   "symbol": "CRunGameEngine::GetPlayerName(int, char*, int)"
+  },
+  {
+   "index": 11,
+   "name": "GetPlayerFriendsName",
+   "sig": "GetPlayerFriendsName(int, char*, int)",
+   "symbol": "CRunGameEngine::GetPlayerFriendsName(int, char*, int)"
+  },
+  {
+   "index": 12,
+   "name": "GetEngineBuildNumber",
+   "sig": "GetEngineBuildNumber()",
+   "symbol": "CRunGameEngine::GetEngineBuildNumber()"
+  },
+  {
+   "index": 13,
+   "name": "GetProductVersionString",
+   "sig": "GetProductVersionString()",
+   "symbol": "CRunGameEngine::GetProductVersionString()"
+  },
+  {
+   "index": 14,
+   "name": "RunEngine2",
+   "sig": "RunEngine2(char const*, char const*, bool)",
+   "symbol": "CRunGameEngine::RunEngine2(char const*, char const*, bool)"
+  },
+  {
+   "index": 15,
+   "name": "RunEngine",
+   "sig": "RunEngine(int, char const*, char const*)",
+   "symbol": "CRunGameEngine::RunEngine(int, char const*, char const*)"
+  }
+ ],
+ "derived": [
+  "bin/GameUI:CRunGameEngine"
+ ],
+ "derived_count": 1
+}

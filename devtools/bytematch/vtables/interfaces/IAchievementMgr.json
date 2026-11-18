@@ -1,0 +1,116 @@
+{
+ "interface": "IAchievementMgr",
+ "headers": [
+  "public/iachievementmgr.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 11,
+ "sdk2013_slots": [
+  "GetAchievementByIndex(int)",
+  "GetAchievementByID(int)",
+  "GetAchievementCount()",
+  "InitializeAchievements()",
+  "AwardAchievement(int)",
+  "OnMapEvent(char const*)",
+  "DownloadUserData()",
+  "EnsureGlobalStateLoaded()",
+  "SaveGlobalStateIfDirty(bool)",
+  "HasAchieved(char const*)",
+  "WereCheatsEverOn()"
+ ],
+ "retail_reference": {
+  "module": "hl2_complete/server",
+  "class": "CAchievementMgr",
+  "offset": 20,
+  "chain": [
+   "CAchievementMgr",
+   "IAchievementMgr"
+  ]
+ },
+ "retail_len": 11,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 11
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "GetAchievementByIndex",
+   "sig": "GetAchievementByIndex(int)",
+   "symbol": "non-virtual thunk to CAchievementMgr::GetAchievementByIndex(int)"
+  },
+  {
+   "index": 1,
+   "name": "GetAchievementByID",
+   "sig": "GetAchievementByID(int)",
+   "symbol": "non-virtual thunk to CAchievementMgr::GetAchievementByID(int)"
+  },
+  {
+   "index": 2,
+   "name": "GetAchievementCount",
+   "sig": "GetAchievementCount()",
+   "symbol": "non-virtual thunk to CAchievementMgr::GetAchievementCount()"
+  },
+  {
+   "index": 3,
+   "name": "InitializeAchievements",
+   "sig": "InitializeAchievements()",
+   "symbol": "non-virtual thunk to CAchievementMgr::InitializeAchievements()"
+  },
+  {
+   "index": 4,
+   "name": "AwardAchievement",
+   "sig": "AwardAchievement(int)",
+   "symbol": "non-virtual thunk to CAchievementMgr::AwardAchievement(int)"
+  },
+  {
+   "index": 5,
+   "name": "OnMapEvent",
+   "sig": "OnMapEvent(char const*)",
+   "symbol": "non-virtual thunk to CAchievementMgr::OnMapEvent(char const*)"
+  },
+  {
+   "index": 6,
+   "name": "DownloadUserData",
+   "sig": "DownloadUserData()",
+   "symbol": "non-virtual thunk to CAchievementMgr::DownloadUserData()"
+  },
+  {
+   "index": 7,
+   "name": "EnsureGlobalStateLoaded",
+   "sig": "EnsureGlobalStateLoaded()",
+   "symbol": "non-virtual thunk to CAchievementMgr::EnsureGlobalStateLoaded()"
+  },
+  {
+   "index": 8,
+   "name": "SaveGlobalStateIfDirty",
+   "sig": "SaveGlobalStateIfDirty(bool)",
+   "symbol": "non-virtual thunk to CAchievementMgr::SaveGlobalStateIfDirty(bool)"
+  },
+  {
+   "index": 9,
+   "name": "HasAchieved",
+   "sig": "HasAchieved(char const*)",
+   "symbol": "non-virtual thunk to CAchievementMgr::HasAchieved(char const*)"
+  },
+  {
+   "index": 10,
+   "name": "WereCheatsEverOn",
+   "sig": "WereCheatsEverOn()",
+   "symbol": "non-virtual thunk to CAchievementMgr::WereCheatsEverOn()"
+  }
+ ],
+ "derived": [
+  "episodic/server:CAchievementMgr",
+  "hl2/server:CAchievementMgr",
+  "hl2_complete/server:CAchievementMgr",
+  "lostcoast/server:CAchievementMgr"
+ ],
+ "derived_count": 4
+}

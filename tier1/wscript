@@ -16,7 +16,6 @@ def configure(conf):
 
 def build(bld):
 	source = [
-		'../utils/lzma/C/LzmaDec.c',
 		'bitbuf.cpp',
 		'byteswap.cpp',
 		'characterset.cpp',
@@ -31,7 +30,6 @@ def build(bld):
 		'ilocalize.cpp',
 		'interface.cpp',
 		'KeyValues.cpp',
-		'keyvaluesjson.cpp',
 		'kvpacker.cpp',
 		'lzmaDecoder.cpp',
 		'lzss.cpp', # [!$SOURCESDK]
@@ -52,7 +50,6 @@ def build(bld):
 		'tier1.cpp',
 		'tokenreader.cpp',
 		'uniqueid.cpp',
-		'utlbinaryblock.cpp',
 		'utlbuffer.cpp',
 		'utlbufferutil.cpp',
 		'utlstring.cpp',

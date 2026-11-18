@@ -13,6 +13,7 @@
 #include "common.h"
 #include "quakedef.h"
 #include "vengineserver_impl.h"
+#include "modelloader.h"
 #include "tier1/strtools.h"
 #include "tier0/icommandline.h"
 #include <ctype.h>
@@ -162,7 +163,7 @@ bool BuildGeneralMapList( CUtlVector<maplist_map_t> *aMaps, bool bUseMapListFile
 			// ensure validity
 			char szMapFile[64] = { 0 };
 			V_snprintf( szMapFile, sizeof( szMapFile ), "maps/%s.bsp", pMapName );
-			if (g_pVEngineServer->IsMapValid( szMapFile ))
+			if (modelloader->Map_IsValid( szMapFile ))
 			{
 				// add to list
 				maplist_map_t newMap;
@@ -202,7 +203,7 @@ bool BuildGeneralMapList( CUtlVector<maplist_map_t> *aMaps, bool bUseMapListFile
 				// ensure validity
 				char szMapFile[64] = { 0 };
 				V_snprintf( szMapFile, sizeof( szMapFile ), "maps/%s.bsp", sz );
-				if (!g_pVEngineServer->IsMapValid( szMapFile ))
+				if (!modelloader->Map_IsValid( szMapFile ))
 					continue;
 
 				// add to list
@@ -247,7 +248,7 @@ bool BuildGeneralMapList( CUtlVector<maplist_map_t> *aMaps, bool bUseMapListFile
 							// ensure validity
 							char szMapFile[64] = { 0 };
 							V_snprintf( szMapFile, sizeof( szMapFile ), "maps/%s.bsp", szMap );
-							if (!g_pVEngineServer->IsMapValid( szMapFile ))
+							if (!modelloader->Map_IsValid( szMapFile ))
 								continue;
 
 							// Any more tokens on this line?

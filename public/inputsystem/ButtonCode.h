@@ -279,18 +279,6 @@ enum ButtonCode_t
 	STEAMCONTROLLER_START,
 	STEAMCONTROLLER_STEAM,
 	STEAMCONTROLLER_INACTIVE_START,
-	STEAMCONTROLLER_F1,
-	STEAMCONTROLLER_F2,
-	STEAMCONTROLLER_F3,
-	STEAMCONTROLLER_F4,
-	STEAMCONTROLLER_F5,
-	STEAMCONTROLLER_F6,
-	STEAMCONTROLLER_F7,
-	STEAMCONTROLLER_F8,
-	STEAMCONTROLLER_F9,
-	STEAMCONTROLLER_F10,
-	STEAMCONTROLLER_F11,
-	STEAMCONTROLLER_F12,
 };
 
 inline bool IsAlpha( ButtonCode_t code )
@@ -348,7 +336,7 @@ inline bool IsNovintButtonCode( ButtonCode_t code )
 
 inline bool IsJoystickCode( ButtonCode_t code )
 {
-	return ( (( code >= JOYSTICK_FIRST ) && ( code <= JOYSTICK_LAST )) || ((code >= STEAMCONTROLLER_FIRST_BUTTON) && (code <= STEAMCONTROLLER_LAST_BUTTON)) );
+	return ( (( code >= JOYSTICK_FIRST ) && ( code <= JOYSTICK_LAST )) || ((code >= STEAMCONTROLLER_FIRST) && (code <= STEAMCONTROLLER_LAST)) || IsNovintCode( code ) );
 }
 
 inline bool IsJoystickButtonCode( ButtonCode_t code )

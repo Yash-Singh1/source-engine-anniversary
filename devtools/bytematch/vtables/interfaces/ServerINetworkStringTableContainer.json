@@ -1,0 +1,27 @@
+{
+ "interface": "ServerINetworkStringTableContainer",
+ "headers": [],
+ "versions": {
+  "retail": [
+   "VEngineServerStringTable001"
+  ],
+  "ours": [
+   "VEngineServerStringTable001"
+  ],
+  "sdk2013": [
+   "VEngineServerStringTable001"
+  ]
+ },
+ "version_macros": [
+  "INTERFACENAME_NETWORKSTRINGTABLESERVER"
+ ],
+ "registrations": [
+  {
+   "module": "bin/engine",
+   "version": "VEngineServerStringTable001",
+   "class": "CNetworkStringTableContainer"
+  }
+ ],
+ "sdk2013_len": null,
+ "status": "no retail vtable"
+}

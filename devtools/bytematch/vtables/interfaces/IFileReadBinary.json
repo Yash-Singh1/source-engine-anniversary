@@ -1,0 +1,78 @@
+{
+ "interface": "IFileReadBinary",
+ "headers": [
+  "public/tier2/riff.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 6,
+ "sdk2013_slots": [
+  "open(char const*)",
+  "read(void*, int, int)",
+  "close(int)",
+  "seek(int, int)",
+  "tell(int)",
+  "size(int)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "COM_IOReadBinary",
+  "offset": 0,
+  "chain": [
+   "COM_IOReadBinary",
+   "IFileReadBinary"
+  ]
+ },
+ "retail_len": 6,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 6
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "open",
+   "sig": "open(char const*)",
+   "symbol": "COM_IOReadBinary::open(char const*)"
+  },
+  {
+   "index": 1,
+   "name": "read",
+   "sig": "read(void*, int, int)",
+   "symbol": "COM_IOReadBinary::read(void*, int, int)"
+  },
+  {
+   "index": 2,
+   "name": "close",
+   "sig": "close(int)",
+   "symbol": "COM_IOReadBinary::close(int)"
+  },
+  {
+   "index": 3,
+   "name": "seek",
+   "sig": "seek(int, int)",
+   "symbol": "COM_IOReadBinary::seek(int, int)"
+  },
+  {
+   "index": 4,
+   "name": "tell",
+   "sig": "tell(int)",
+   "symbol": "COM_IOReadBinary::tell(int)"
+  },
+  {
+   "index": 5,
+   "name": "size",
+   "sig": "size(int)",
+   "symbol": "COM_IOReadBinary::size(int)"
+  }
+ ],
+ "derived": [
+  "bin/engine:COM_IOReadBinary"
+ ],
+ "derived_count": 1
+}

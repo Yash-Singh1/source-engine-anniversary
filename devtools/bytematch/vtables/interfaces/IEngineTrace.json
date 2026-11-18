@@ -1,0 +1,194 @@
+{
+ "interface": "IEngineTrace",
+ "headers": [
+  "public/engine/IEngineTrace.h"
+ ],
+ "versions": {
+  "retail": [
+   "EngineTraceClient003",
+   "EngineTraceServer003"
+  ],
+  "ours": [
+   "EngineTraceClient003",
+   "EngineTraceServer003"
+  ],
+  "sdk2013": [
+   "EngineTraceClient003",
+   "EngineTraceServer003"
+  ]
+ },
+ "version_macros": [
+  "INTERFACEVERSION_ENGINETRACE_CLIENT",
+  "INTERFACEVERSION_ENGINETRACE_SERVER"
+ ],
+ "registrations": [
+  {
+   "module": "bin/engine",
+   "version": "EngineTraceServer003",
+   "class": "CEngineTraceServer"
+  },
+  {
+   "module": "bin/engine",
+   "version": "EngineTraceClient003",
+   "class": "CEngineTraceClient"
+  }
+ ],
+ "sdk2013_len": 18,
+ "sdk2013_slots": [
+  "GetPointContents(Vector const&, IHandleEntity**)",
+  "GetPointContents_Collideable(ICollideable*, Vector const&)",
+  "ClipRayToEntity(Ray_t const&, unsigned int, IHandleEntity*, CGameTrace*)",
+  "ClipRayToCollideable(Ray_t const&, unsigned int, ICollideable*, CGameTrace*)",
+  "TraceRay(Ray_t const&, unsigned int, ITraceFilter*, CGameTrace*)",
+  "SetupLeafAndEntityListRay(Ray_t const&, CTraceListData&)",
+  "SetupLeafAndEntityListBox(Vector const&, Vector const&, CTraceListData&)",
+  "TraceRayAgainstLeafAndEntityList(Ray_t const&, CTraceListData&, unsigned int, ITraceFilter*, CGameTrace*)",
+  "SweepCollideable(ICollideable*, Vector const&, Vector const&, QAngle const&, unsigned int, ITraceFilter*, CGameTrace*)",
+  "EnumerateEntities(Ray_t const&, bool, IEntityEnumerator*)",
+  "EnumerateEntities(Vector const&, Vector const&, IEntityEnumerator*)",
+  "GetCollideable(IHandleEntity*)",
+  "GetStatByIndex(int, bool)",
+  "GetBrushesInAABB(Vector const&, Vector const&, CUtlVector<int, CUtlMemory<int, int>>*, int)",
+  "GetCollidableFromDisplacementsInAABB(Vector const&, Vector const&)",
+  "GetBrushInfo(int, CUtlVector<Vector4D, CUtlMemory<Vector4D, int>>*, int*)",
+  "PointOutsideWorld(Vector const&)",
+  "GetLeafContainingPoint(Vector const&)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CEngineTraceClient",
+  "offset": 0,
+  "chain": [
+   "CEngineTraceClient",
+   "CEngineTrace",
+   "IEngineTrace"
+  ]
+ },
+ "retail_len": 18,
+ "retail_len_basis": "override: extra slots are CEngineTrace's own",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 23
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "GetPointContents",
+   "sig": "GetPointContents(Vector const&, IHandleEntity**)",
+   "symbol": "CEngineTrace::GetPointContents(Vector const&, IHandleEntity**)"
+  },
+  {
+   "index": 1,
+   "name": "GetPointContents_Collideable",
+   "sig": "GetPointContents_Collideable(ICollideable*, Vector const&)",
+   "symbol": "CEngineTrace::GetPointContents_Collideable(ICollideable*, Vector const&)"
+  },
+  {
+   "index": 2,
+   "name": "ClipRayToEntity",
+   "sig": "ClipRayToEntity(Ray_t const&, unsigned int, IHandleEntity*, CGameTrace*)",
+   "symbol": "CEngineTrace::ClipRayToEntity(Ray_t const&, unsigned int, IHandleEntity*, CGameTrace*)"
+  },
+  {
+   "index": 3,
+   "name": "ClipRayToCollideable",
+   "sig": "ClipRayToCollideable(Ray_t const&, unsigned int, ICollideable*, CGameTrace*)",
+   "symbol": "CEngineTrace::ClipRayToCollideable(Ray_t const&, unsigned int, ICollideable*, CGameTrace*)"
+  },
+  {
+   "index": 4,
+   "name": "TraceRay",
+   "sig": "TraceRay(Ray_t const&, unsigned int, ITraceFilter*, CGameTrace*)",
+   "symbol": "CEngineTrace::TraceRay(Ray_t const&, unsigned int, ITraceFilter*, CGameTrace*)"
+  },
+  {
+   "index": 5,
+   "name": "SetupLeafAndEntityListRay",
+   "sig": "SetupLeafAndEntityListRay(Ray_t const&, CTraceListData&)",
+   "symbol": "CEngineTrace::SetupLeafAndEntityListRay(Ray_t const&, CTraceListData&)"
+  },
+  {
+   "index": 6,
+   "name": "SetupLeafAndEntityListBox",
+   "sig": "SetupLeafAndEntityListBox(Vector const&, Vector const&, CTraceListData&)",
+   "symbol": "CEngineTrace::SetupLeafAndEntityListBox(Vector const&, Vector const&, CTraceListData&)"
+  },
+  {
+   "index": 7,
+   "name": "TraceRayAgainstLeafAndEntityList",
+   "sig": "TraceRayAgainstLeafAndEntityList(Ray_t const&, CTraceListData&, unsigned int, ITraceFilter*, CGameTrace*)",
+   "symbol": "CEngineTrace::TraceRayAgainstLeafAndEntityList(Ray_t const&, CTraceListData&, unsigned int, ITraceFilter*, CGameTrace*)"
+  },
+  {
+   "index": 8,
+   "name": "SweepCollideable",
+   "sig": "SweepCollideable(ICollideable*, Vector const&, Vector const&, QAngle const&, unsigned int, ITraceFilter*, CGameTrace*)",
+   "symbol": "CEngineTrace::SweepCollideable(ICollideable*, Vector const&, Vector const&, QAngle const&, unsigned int, ITraceFilter*, CGameTrace*)"
+  },
+  {
+   "index": 9,
+   "name": "EnumerateEntities",
+   "sig": "EnumerateEntities(Ray_t const&, bool, IEntityEnumerator*)",
+   "symbol": "CEngineTrace::EnumerateEntities(Ray_t const&, bool, IEntityEnumerator*)"
+  },
+  {
+   "index": 10,
+   "name": "EnumerateEntities",
+   "sig": "EnumerateEntities(Vector const&, Vector const&, IEntityEnumerator*)",
+   "symbol": "CEngineTrace::EnumerateEntities(Vector const&, Vector const&, IEntityEnumerator*)"
+  },
+  {
+   "index": 11,
+   "name": "GetCollideable",
+   "sig": "GetCollideable(IHandleEntity*)",
+   "symbol": "CEngineTraceClient::GetCollideable(IHandleEntity*)"
+  },
+  {
+   "index": 12,
+   "name": "GetStatByIndex",
+   "sig": "GetStatByIndex(int, bool)",
+   "symbol": "CEngineTrace::GetStatByIndex(int, bool)"
+  },
+  {
+   "index": 13,
+   "name": "GetBrushesInAABB",
+   "sig": "GetBrushesInAABB(Vector const&, Vector const&, CUtlVector<int, CUtlMemory<int, int>>*, int)",
+   "symbol": "CEngineTrace::GetBrushesInAABB(Vector const&, Vector const&, CUtlVector<int, CUtlMemory<int, int>>*, int)"
+  },
+  {
+   "index": 14,
+   "name": "GetCollidableFromDisplacementsInAABB",
+   "sig": "GetCollidableFromDisplacementsInAABB(Vector const&, Vector const&)",
+   "symbol": "CEngineTrace::GetCollidableFromDisplacementsInAABB(Vector const&, Vector const&)"
+  },
+  {
+   "index": 15,
+   "name": "GetBrushInfo",
+   "sig": "GetBrushInfo(int, CUtlVector<Vector4D, CUtlMemory<Vector4D, int>>*, int*)",
+   "symbol": "CEngineTrace::GetBrushInfo(int, CUtlVector<Vector4D, CUtlMemory<Vector4D, int>>*, int*)"
+  },
+  {
+   "index": 16,
+   "name": "PointOutsideWorld",
+   "sig": "PointOutsideWorld(Vector const&)",
+   "symbol": "CEngineTrace::PointOutsideWorld(Vector const&)"
+  },
+  {
+   "index": 17,
+   "name": "GetLeafContainingPoint",
+   "sig": "GetLeafContainingPoint(Vector const&)",
+   "symbol": "CEngineTrace::GetLeafContainingPoint(Vector const&)"
+  }
+ ],
+ "implementer_tail": [
+  "HandleEntityToCollideable(IHandleEntity*, ICollideable**, char const**)",
+  "GetWorldCollideable()",
+  "SetTraceEntity(ICollideable*, CGameTrace*)",
+  "SpatialPartitionMask() const",
+  "SpatialPartitionTriggerMask() const"
+ ],
+ "derived": [
+  "bin/engine:CEngineTraceClient",
+  "bin/engine:CEngineTraceServer"
+ ],
+ "derived_count": 2
+}

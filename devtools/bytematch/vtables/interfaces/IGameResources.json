@@ -1,0 +1,152 @@
+{
+ "interface": "IGameResources",
+ "headers": [
+  "public/igameresources.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 16,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "GetTeamName(int)",
+  "GetTeamScore(int)",
+  "GetTeamColor(int)",
+  "IsConnected(int)",
+  "IsAlive(int)",
+  "IsFakePlayer(int)",
+  "IsLocalPlayer(int)",
+  "GetPlayerName(int)",
+  "GetPlayerScore(int)",
+  "GetPing(int)",
+  "GetDeaths(int)",
+  "GetFrags(int)",
+  "GetTeam(int)",
+  "GetHealth(int)"
+ ],
+ "retail_reference": {
+  "module": "episodic/client",
+  "class": "C_PlayerResource",
+  "offset": 1280,
+  "chain": [
+   "C_PlayerResource",
+   "IGameResources"
+  ]
+ },
+ "retail_len": 16,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 16
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~C_PlayerResource",
+   "sig": "~C_PlayerResource()",
+   "symbol": "non-virtual thunk to C_PlayerResource::~C_PlayerResource()"
+  },
+  {
+   "index": 1,
+   "name": "~C_PlayerResource",
+   "sig": "~C_PlayerResource()",
+   "symbol": "non-virtual thunk to C_PlayerResource::~C_PlayerResource()"
+  },
+  {
+   "index": 2,
+   "name": "GetTeamName",
+   "sig": "GetTeamName(int)",
+   "symbol": "non-virtual thunk to C_PlayerResource::GetTeamName(int)"
+  },
+  {
+   "index": 3,
+   "name": "GetTeamScore",
+   "sig": "GetTeamScore(int)",
+   "symbol": "non-virtual thunk to C_PlayerResource::GetTeamScore(int)"
+  },
+  {
+   "index": 4,
+   "name": "GetTeamColor",
+   "sig": "GetTeamColor(int)",
+   "symbol": "non-virtual thunk to C_PlayerResource::GetTeamColor(int)"
+  },
+  {
+   "index": 5,
+   "name": "IsConnected",
+   "sig": "IsConnected(int)",
+   "symbol": "non-virtual thunk to C_PlayerResource::IsConnected(int)"
+  },
+  {
+   "index": 6,
+   "name": "IsAlive",
+   "sig": "IsAlive(int)",
+   "symbol": "non-virtual thunk to C_PlayerResource::IsAlive(int)"
+  },
+  {
+   "index": 7,
+   "name": "IsFakePlayer",
+   "sig": "IsFakePlayer(int)",
+   "symbol": "non-virtual thunk to C_PlayerResource::IsFakePlayer(int)"
+  },
+  {
+   "index": 8,
+   "name": "IsLocalPlayer",
+   "sig": "IsLocalPlayer(int)",
+   "symbol": "non-virtual thunk to C_PlayerResource::IsLocalPlayer(int)"
+  },
+  {
+   "index": 9,
+   "name": "GetPlayerName",
+   "sig": "GetPlayerName(int)",
+   "symbol": "non-virtual thunk to C_PlayerResource::GetPlayerName(int)"
+  },
+  {
+   "index": 10,
+   "name": "GetPlayerScore",
+   "sig": "GetPlayerScore(int)",
+   "symbol": "non-virtual thunk to C_PlayerResource::GetPlayerScore(int)"
+  },
+  {
+   "index": 11,
+   "name": "GetPing",
+   "sig": "GetPing(int)",
+   "symbol": "non-virtual thunk to C_PlayerResource::GetPing(int)"
+  },
+  {
+   "index": 12,
+   "name": "GetDeaths",
+   "sig": "GetDeaths(int)",
+   "symbol": "non-virtual thunk to C_PlayerResource::GetDeaths(int)"
+  },
+  {
+   "index": 13,
+   "name": "GetFrags",
+   "sig": "GetFrags(int)",
+   "symbol": "non-virtual thunk to C_PlayerResource::GetFrags(int)"
+  },
+  {
+   "index": 14,
+   "name": "GetTeam",
+   "sig": "GetTeam(int)",
+   "symbol": "non-virtual thunk to C_PlayerResource::GetTeam(int)"
+  },
+  {
+   "index": 15,
+   "name": "GetHealth",
+   "sig": "GetHealth(int)",
+   "symbol": "non-virtual thunk to C_PlayerResource::GetHealth(int)"
+  }
+ ],
+ "derived": [
+  "episodic/client:C_PlayerResource",
+  "hl2/client:C_PlayerResource",
+  "hl2_complete/client:C_PlayerResource",
+  "hl2mp/client:C_PlayerResource",
+  "lostcoast/client:C_PlayerResource"
+ ],
+ "derived_count": 5
+}

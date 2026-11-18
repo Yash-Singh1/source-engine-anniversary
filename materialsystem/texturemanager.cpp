@@ -2670,7 +2670,7 @@ void CTextureManager::CompleteAsyncRead( AsyncReadJob_t* pJob )
 	;
 
 	// Create the texture
-	ITexture* pFinalTex = materials->CreateNamedTextureFromBitsEx( pJob->m_pDstName, TEXTURE_GROUP_RUNTIME_COMPOSITE, w, h, mips, pJob->m_dstFmt, pJob->m_finalTexelData.Count(), pJob->m_finalTexelData.Base(), nFlags );
+	ITexture* pFinalTex = MaterialSystem()->CreateNamedTextureFromBitsEx( pJob->m_pDstName, TEXTURE_GROUP_RUNTIME_COMPOSITE, w, h, mips, pJob->m_dstFmt, pJob->m_finalTexelData.Count(), pJob->m_finalTexelData.Base(), nFlags );
 	Assert( pFinalTex );
 
 	// Make the callback!

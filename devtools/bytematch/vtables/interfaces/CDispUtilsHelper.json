@@ -1,0 +1,65 @@
+{
+ "interface": "CDispUtilsHelper",
+ "headers": [
+  "public/disp_common.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 4,
+ "sdk2013_slots": [
+  "GetPowerInfo() const",
+  "GetEdgeNeighbor(int)",
+  "GetCornerNeighbors(int)",
+  "GetDispUtilsByIndex(int)"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CCoreDispInfo",
+  "offset": 0,
+  "chain": [
+   "CCoreDispInfo",
+   "CDispUtilsHelper"
+  ]
+ },
+ "retail_len": 4,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 4
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "GetPowerInfo",
+   "sig": "GetPowerInfo() const",
+   "symbol": "CCoreDispInfo::GetPowerInfo() const"
+  },
+  {
+   "index": 1,
+   "name": "GetEdgeNeighbor",
+   "sig": "GetEdgeNeighbor(int)",
+   "symbol": "CCoreDispInfo::GetEdgeNeighbor(int)"
+  },
+  {
+   "index": 2,
+   "name": "GetCornerNeighbors",
+   "sig": "GetCornerNeighbors(int)",
+   "symbol": "CCoreDispInfo::GetCornerNeighbors(int)"
+  },
+  {
+   "index": 3,
+   "name": "GetDispUtilsByIndex",
+   "sig": "GetDispUtilsByIndex(int)",
+   "symbol": "CCoreDispInfo::GetDispUtilsByIndex(int)"
+  }
+ ],
+ "derived": [
+  "bin/engine:CCoreDispInfo",
+  "bin/engine:CDispInfo"
+ ],
+ "derived_count": 2
+}

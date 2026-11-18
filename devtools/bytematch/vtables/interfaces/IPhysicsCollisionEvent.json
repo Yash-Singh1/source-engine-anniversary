@@ -1,0 +1,117 @@
+{
+ "interface": "IPhysicsCollisionEvent",
+ "headers": [
+  "public/vphysics_interface.h",
+  "public/vphysics_interfaceV30.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 10,
+ "sdk2013_slots": [
+  "PreCollision(vcollisionevent_t*)",
+  "PostCollision(vcollisionevent_t*)",
+  "Friction(IPhysicsObject*, float, int, int, IPhysicsCollisionData*)",
+  "StartTouch(IPhysicsObject*, IPhysicsObject*, IPhysicsCollisionData*)",
+  "EndTouch(IPhysicsObject*, IPhysicsObject*, IPhysicsCollisionData*)",
+  "FluidStartTouch(IPhysicsObject*, IPhysicsFluidController*)",
+  "FluidEndTouch(IPhysicsObject*, IPhysicsFluidController*)",
+  "PostSimulationFrame()",
+  "ObjectEnterTrigger(IPhysicsObject*, IPhysicsObject*)",
+  "ObjectLeaveTrigger(IPhysicsObject*, IPhysicsObject*)"
+ ],
+ "retail_reference": {
+  "module": "bin/vphysics",
+  "class": "CEmptyCollisionListener",
+  "offset": 0,
+  "chain": [
+   "CEmptyCollisionListener",
+   "IPhysicsCollisionEvent"
+  ]
+ },
+ "retail_len": 10,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 10
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "PreCollision",
+   "sig": "PreCollision(vcollisionevent_t*)",
+   "symbol": "CEmptyCollisionListener::PreCollision(vcollisionevent_t*)"
+  },
+  {
+   "index": 1,
+   "name": "PostCollision",
+   "sig": "PostCollision(vcollisionevent_t*)",
+   "symbol": "CEmptyCollisionListener::PostCollision(vcollisionevent_t*)"
+  },
+  {
+   "index": 2,
+   "name": "Friction",
+   "sig": "Friction(IPhysicsObject*, float, int, int, IPhysicsCollisionData*)",
+   "symbol": "CEmptyCollisionListener::Friction(IPhysicsObject*, float, int, int, IPhysicsCollisionData*)"
+  },
+  {
+   "index": 3,
+   "name": "StartTouch",
+   "sig": "StartTouch(IPhysicsObject*, IPhysicsObject*, IPhysicsCollisionData*)",
+   "symbol": "CEmptyCollisionListener::StartTouch(IPhysicsObject*, IPhysicsObject*, IPhysicsCollisionData*)"
+  },
+  {
+   "index": 4,
+   "name": "EndTouch",
+   "sig": "EndTouch(IPhysicsObject*, IPhysicsObject*, IPhysicsCollisionData*)",
+   "symbol": "CEmptyCollisionListener::EndTouch(IPhysicsObject*, IPhysicsObject*, IPhysicsCollisionData*)"
+  },
+  {
+   "index": 5,
+   "name": "FluidStartTouch",
+   "sig": "FluidStartTouch(IPhysicsObject*, IPhysicsFluidController*)",
+   "symbol": "CEmptyCollisionListener::FluidStartTouch(IPhysicsObject*, IPhysicsFluidController*)"
+  },
+  {
+   "index": 6,
+   "name": "FluidEndTouch",
+   "sig": "FluidEndTouch(IPhysicsObject*, IPhysicsFluidController*)",
+   "symbol": "CEmptyCollisionListener::FluidEndTouch(IPhysicsObject*, IPhysicsFluidController*)"
+  },
+  {
+   "index": 7,
+   "name": "PostSimulationFrame",
+   "sig": "PostSimulationFrame()",
+   "symbol": "CEmptyCollisionListener::PostSimulationFrame()"
+  },
+  {
+   "index": 8,
+   "name": "ObjectEnterTrigger",
+   "sig": "ObjectEnterTrigger(IPhysicsObject*, IPhysicsObject*)",
+   "symbol": "CEmptyCollisionListener::ObjectEnterTrigger(IPhysicsObject*, IPhysicsObject*)"
+  },
+  {
+   "index": 9,
+   "name": "ObjectLeaveTrigger",
+   "sig": "ObjectLeaveTrigger(IPhysicsObject*, IPhysicsObject*)",
+   "symbol": "CEmptyCollisionListener::ObjectLeaveTrigger(IPhysicsObject*, IPhysicsObject*)"
+  }
+ ],
+ "derived": [
+  "bin/vphysics:CEmptyCollisionListener",
+  "episodic/client:CCollisionEvent",
+  "episodic/server:CCollisionEvent",
+  "hl2/client:CCollisionEvent",
+  "hl2/server:CCollisionEvent",
+  "hl2_complete/client:CCollisionEvent",
+  "hl2_complete/server:CCollisionEvent",
+  "hl2mp/client:CCollisionEvent",
+  "hl2mp/server:CCollisionEvent",
+  "lostcoast/client:CCollisionEvent",
+  "lostcoast/server:CCollisionEvent"
+ ],
+ "derived_count": 11
+}

@@ -1,0 +1,270 @@
+{
+ "interface": "CAudioSource",
+ "headers": [
+  "public/engine/audio/snd_audio_source.h",
+  "public/soundsystem/snd_audio_source.h"
+ ],
+ "versions": {
+  "retail": [],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [],
+ "sdk2013_len": 13,
+ "sdk2013_slots": [
+  "~__bm_probe()",
+  "~__bm_probe()",
+  "CreateMixer()",
+  "GetOutputData(void**, int, int, bool)",
+  "SampleRate()",
+  "SampleSize()",
+  "SampleCount()",
+  "TrueSampleSize()",
+  "IsLooped()",
+  "IsStreaming()",
+  "GetRunningLength()",
+  "GetNumChannels()",
+  "GetSentence()"
+ ],
+ "retail_reference": {
+  "module": "bin/engine",
+  "class": "CAudioSourceMP3Cache",
+  "offset": 0,
+  "chain": [
+   "CAudioSourceMP3Cache",
+   "CAudioSourceMP3",
+   "CAudioSource"
+  ]
+ },
+ "retail_len": 35,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 35
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "~CAudioSourceMP3Cache",
+   "sig": "~CAudioSourceMP3Cache()",
+   "symbol": "CAudioSourceMP3Cache::~CAudioSourceMP3Cache()"
+  },
+  {
+   "index": 1,
+   "name": "~CAudioSourceMP3Cache",
+   "sig": "~CAudioSourceMP3Cache()",
+   "symbol": "CAudioSourceMP3Cache::~CAudioSourceMP3Cache()"
+  },
+  {
+   "index": 2,
+   "name": "CreateMixer",
+   "sig": "CreateMixer(int)",
+   "symbol": "CAudioSourceMP3Cache::CreateMixer(int)"
+  },
+  {
+   "index": 3,
+   "name": "GetType",
+   "sig": "GetType()",
+   "symbol": "CAudioSourceMP3::GetType()"
+  },
+  {
+   "index": 4,
+   "name": "GetCacheData",
+   "sig": "GetCacheData(CAudioSourceCachedInfo*)",
+   "symbol": "CAudioSourceMP3::GetCacheData(CAudioSourceCachedInfo*)"
+  },
+  {
+   "index": 5,
+   "name": "GetOutputData",
+   "sig": "GetOutputData(void**, int, int, char*)",
+   "symbol": "CAudioSourceMP3Cache::GetOutputData(void**, int, int, char*)"
+  },
+  {
+   "index": 6,
+   "name": "SampleRate",
+   "sig": "SampleRate()",
+   "symbol": "CAudioSourceMP3::SampleRate()"
+  },
+  {
+   "index": 7,
+   "name": "IsVoiceSource",
+   "sig": "IsVoiceSource()",
+   "symbol": "CAudioSourceMP3::IsVoiceSource()"
+  },
+  {
+   "index": 8,
+   "name": "IsCommentarySource",
+   "sig": "IsCommentarySource()",
+   "symbol": "CAudioSourceMP3::IsCommentarySource()"
+  },
+  {
+   "index": 9,
+   "name": "SampleSize",
+   "sig": "SampleSize()",
+   "symbol": "CAudioSourceMP3::SampleSize()"
+  },
+  {
+   "index": 10,
+   "name": "SampleCount",
+   "sig": "SampleCount()",
+   "symbol": "CAudioSourceMP3::SampleCount()"
+  },
+  {
+   "index": 11,
+   "name": "Format",
+   "sig": "Format()",
+   "symbol": "CAudioSourceMP3::Format()"
+  },
+  {
+   "index": 12,
+   "name": "DataSize",
+   "sig": "DataSize()",
+   "symbol": "CAudioSourceMP3::DataSize()"
+  },
+  {
+   "index": 13,
+   "name": "IsLooped",
+   "sig": "IsLooped()",
+   "symbol": "CAudioSourceMP3::IsLooped()"
+  },
+  {
+   "index": 14,
+   "name": "IsStereoWav",
+   "sig": "IsStereoWav()",
+   "symbol": "CAudioSourceMP3::IsStereoWav()"
+  },
+  {
+   "index": 15,
+   "name": "IsStreaming",
+   "sig": "IsStreaming()",
+   "symbol": "CAudioSourceMP3::IsStreaming()"
+  },
+  {
+   "index": 16,
+   "name": "GetCacheStatus",
+   "sig": "GetCacheStatus()",
+   "symbol": "CAudioSourceMP3Cache::GetCacheStatus()"
+  },
+  {
+   "index": 17,
+   "name": "CacheLoad",
+   "sig": "CacheLoad()",
+   "symbol": "CAudioSourceMP3Cache::CacheLoad()"
+  },
+  {
+   "index": 18,
+   "name": "CacheUnload",
+   "sig": "CacheUnload()",
+   "symbol": "CAudioSourceMP3Cache::CacheUnload()"
+  },
+  {
+   "index": 19,
+   "name": "GetSentence",
+   "sig": "GetSentence()",
+   "symbol": "CAudioSourceMP3::GetSentence()"
+  },
+  {
+   "index": 20,
+   "name": "ZeroCrossingBefore",
+   "sig": "ZeroCrossingBefore(int)",
+   "symbol": "CAudioSourceMP3::ZeroCrossingBefore(int)"
+  },
+  {
+   "index": 21,
+   "name": "ZeroCrossingAfter",
+   "sig": "ZeroCrossingAfter(int)",
+   "symbol": "CAudioSourceMP3::ZeroCrossingAfter(int)"
+  },
+  {
+   "index": 22,
+   "name": "ReferenceAdd",
+   "sig": "ReferenceAdd(CAudioMixer*)",
+   "symbol": "CAudioSourceMP3::ReferenceAdd(CAudioMixer*)"
+  },
+  {
+   "index": 23,
+   "name": "ReferenceRemove",
+   "sig": "ReferenceRemove(CAudioMixer*)",
+   "symbol": "CAudioSourceMP3::ReferenceRemove(CAudioMixer*)"
+  },
+  {
+   "index": 24,
+   "name": "CanDelete",
+   "sig": "CanDelete()",
+   "symbol": "CAudioSourceMP3::CanDelete()"
+  },
+  {
+   "index": 25,
+   "name": "Prefetch",
+   "sig": "Prefetch()",
+   "symbol": "CAudioSourceMP3Cache::Prefetch()"
+  },
+  {
+   "index": 26,
+   "name": "IsAsyncLoad",
+   "sig": "IsAsyncLoad()",
+   "symbol": "CAudioSourceMP3::IsAsyncLoad()"
+  },
+  {
+   "index": 27,
+   "name": "CheckAudioSourceCache",
+   "sig": "CheckAudioSourceCache()",
+   "symbol": "CAudioSourceMP3::CheckAudioSourceCache()"
+  },
+  {
+   "index": 28,
+   "name": "GetFileName",
+   "sig": "GetFileName()",
+   "symbol": "CAudioSourceMP3::GetFileName()"
+  },
+  {
+   "index": 29,
+   "name": "SetPlayOnce",
+   "sig": "SetPlayOnce(bool)",
+   "symbol": "CAudioSourceMP3::SetPlayOnce(bool)"
+  },
+  {
+   "index": 30,
+   "name": "IsPlayOnce",
+   "sig": "IsPlayOnce()",
+   "symbol": "CAudioSourceMP3::IsPlayOnce()"
+  },
+  {
+   "index": 31,
+   "name": "SetSentenceWord",
+   "sig": "SetSentenceWord(bool)",
+   "symbol": "CAudioSourceMP3::SetSentenceWord(bool)"
+  },
+  {
+   "index": 32,
+   "name": "IsSentenceWord",
+   "sig": "IsSentenceWord()",
+   "symbol": "CAudioSourceMP3::IsSentenceWord()"
+  },
+  {
+   "index": 33,
+   "name": "SampleToStreamPosition",
+   "sig": "SampleToStreamPosition(int)",
+   "symbol": "CAudioSourceMP3::SampleToStreamPosition(int)"
+  },
+  {
+   "index": 34,
+   "name": "StreamToSamplePosition",
+   "sig": "StreamToSamplePosition(int)",
+   "symbol": "CAudioSourceMP3::StreamToSamplePosition(int)"
+  }
+ ],
+ "implementer_tail": [
+  "GetDataPointer()"
+ ],
+ "derived": [
+  "bin/engine:CAudioSourceMP3",
+  "bin/engine:CAudioSourceMP3Cache",
+  "bin/engine:CAudioSourceMemWave",
+  "bin/engine:CAudioSourceStreamMP3",
+  "bin/engine:CAudioSourceStreamWave",
+  "bin/engine:CAudioSourceVoice",
+  "bin/engine:CAudioSourceWave"
+ ],
+ "derived_count": 7
+}

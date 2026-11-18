@@ -1,0 +1,295 @@
+{
+ "interface": "ICvar",
+ "headers": [
+  "public/icvar.h"
+ ],
+ "versions": {
+  "retail": [
+   "VEngineCvar004"
+  ],
+  "ours": [
+   "VEngineCvar004"
+  ],
+  "sdk2013": [
+   "VEngineCvar004"
+  ]
+ },
+ "version_macros": [
+  "CVAR_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/libvstdlib",
+   "version": "VEngineCvar004",
+   "class": "CCvar"
+  }
+ ],
+ "sdk2013_len": 35,
+ "sdk2013_slots": [
+  "Connect(void* (*)(char const*, int*))",
+  "Disconnect()",
+  "QueryInterface(char const*)",
+  "Init()",
+  "Shutdown()",
+  "AllocateDLLIdentifier()",
+  "RegisterConCommand(ConCommandBase*)",
+  "UnregisterConCommand(ConCommandBase*)",
+  "UnregisterConCommands(int)",
+  "GetCommandLineValue(char const*)",
+  "FindCommandBase(char const*)",
+  "FindCommandBase(char const*) const",
+  "FindVar(char const*)",
+  "FindVar(char const*) const",
+  "FindCommand(char const*)",
+  "FindCommand(char const*) const",
+  "GetCommands()",
+  "GetCommands() const",
+  "InstallGlobalChangeCallback(void (*)(IConVar*, char const*, float))",
+  "RemoveGlobalChangeCallback(void (*)(IConVar*, char const*, float))",
+  "CallGlobalChangeCallbacks(ConVar*, char const*, float)",
+  "InstallConsoleDisplayFunc(IConsoleDisplayFunc*)",
+  "RemoveConsoleDisplayFunc(IConsoleDisplayFunc*)",
+  "ConsoleColorPrintf(Color const&, char const*, ...) const",
+  "ConsolePrintf(char const*, ...) const",
+  "ConsoleDPrintf(char const*, ...) const",
+  "RevertFlaggedConVars(int)",
+  "InstallCVarQuery(ICvarQuery*)",
+  "IsMaterialThreadSetAllowed() const",
+  "QueueMaterialThreadSetValue(ConVar*, char const*)",
+  "QueueMaterialThreadSetValue(ConVar*, int)",
+  "QueueMaterialThreadSetValue(ConVar*, float)",
+  "HasQueuedMaterialThreadConVarSets() const",
+  "ProcessQueuedMaterialThreadConVarSets()",
+  "FactoryInternalIterator()"
+ ],
+ "retail_reference": {
+  "module": "bin/libvstdlib",
+  "class": "CCvar",
+  "offset": 0,
+  "chain": [
+   "CCvar",
+   "ICvar"
+  ]
+ },
+ "retail_len": 35,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 35
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Connect",
+   "sig": "Connect(void* (*)(char const*, int*))",
+   "symbol": "CCvar::Connect(void* (*)(char const*, int*))"
+  },
+  {
+   "index": 1,
+   "name": "Disconnect",
+   "sig": "Disconnect()",
+   "symbol": "CCvar::Disconnect()"
+  },
+  {
+   "index": 2,
+   "name": "QueryInterface",
+   "sig": "QueryInterface(char const*)",
+   "symbol": "CCvar::QueryInterface(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "CCvar::Init()"
+  },
+  {
+   "index": 4,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CCvar::Shutdown()"
+  },
+  {
+   "index": 5,
+   "name": "AllocateDLLIdentifier",
+   "sig": "AllocateDLLIdentifier()",
+   "symbol": "CCvar::AllocateDLLIdentifier()"
+  },
+  {
+   "index": 6,
+   "name": "RegisterConCommand",
+   "sig": "RegisterConCommand(ConCommandBase*)",
+   "symbol": "CCvar::RegisterConCommand(ConCommandBase*)"
+  },
+  {
+   "index": 7,
+   "name": "UnregisterConCommand",
+   "sig": "UnregisterConCommand(ConCommandBase*)",
+   "symbol": "CCvar::UnregisterConCommand(ConCommandBase*)"
+  },
+  {
+   "index": 8,
+   "name": "UnregisterConCommands",
+   "sig": "UnregisterConCommands(int)",
+   "symbol": "CCvar::UnregisterConCommands(int)"
+  },
+  {
+   "index": 9,
+   "name": "GetCommandLineValue",
+   "sig": "GetCommandLineValue(char const*)",
+   "symbol": "CCvar::GetCommandLineValue(char const*)"
+  },
+  {
+   "index": 10,
+   "name": "FindCommandBase",
+   "sig": "FindCommandBase(char const*)",
+   "symbol": "CCvar::FindCommandBase(char const*)"
+  },
+  {
+   "index": 11,
+   "name": "FindCommandBase",
+   "sig": "FindCommandBase(char const*) const",
+   "symbol": "CCvar::FindCommandBase(char const*) const"
+  },
+  {
+   "index": 12,
+   "name": "FindVar",
+   "sig": "FindVar(char const*)",
+   "symbol": "CCvar::FindVar(char const*)"
+  },
+  {
+   "index": 13,
+   "name": "FindVar",
+   "sig": "FindVar(char const*) const",
+   "symbol": "CCvar::FindVar(char const*) const"
+  },
+  {
+   "index": 14,
+   "name": "FindCommand",
+   "sig": "FindCommand(char const*)",
+   "symbol": "CCvar::FindCommand(char const*)"
+  },
+  {
+   "index": 15,
+   "name": "FindCommand",
+   "sig": "FindCommand(char const*) const",
+   "symbol": "CCvar::FindCommand(char const*) const"
+  },
+  {
+   "index": 16,
+   "name": "GetCommands",
+   "sig": "GetCommands()",
+   "symbol": "CCvar::GetCommands()"
+  },
+  {
+   "index": 17,
+   "name": "GetCommands",
+   "sig": "GetCommands() const",
+   "symbol": "CCvar::GetCommands() const"
+  },
+  {
+   "index": 18,
+   "name": "InstallGlobalChangeCallback",
+   "sig": "InstallGlobalChangeCallback(void (*)(IConVar*, char const*, float))",
+   "symbol": "CCvar::InstallGlobalChangeCallback(void (*)(IConVar*, char const*, float))"
+  },
+  {
+   "index": 19,
+   "name": "RemoveGlobalChangeCallback",
+   "sig": "RemoveGlobalChangeCallback(void (*)(IConVar*, char const*, float))",
+   "symbol": "CCvar::RemoveGlobalChangeCallback(void (*)(IConVar*, char const*, float))"
+  },
+  {
+   "index": 20,
+   "name": "CallGlobalChangeCallbacks",
+   "sig": "CallGlobalChangeCallbacks(ConVar*, char const*, float)",
+   "symbol": "CCvar::CallGlobalChangeCallbacks(ConVar*, char const*, float)"
+  },
+  {
+   "index": 21,
+   "name": "InstallConsoleDisplayFunc",
+   "sig": "InstallConsoleDisplayFunc(IConsoleDisplayFunc*)",
+   "symbol": "CCvar::InstallConsoleDisplayFunc(IConsoleDisplayFunc*)"
+  },
+  {
+   "index": 22,
+   "name": "RemoveConsoleDisplayFunc",
+   "sig": "RemoveConsoleDisplayFunc(IConsoleDisplayFunc*)",
+   "symbol": "CCvar::RemoveConsoleDisplayFunc(IConsoleDisplayFunc*)"
+  },
+  {
+   "index": 23,
+   "name": "ConsoleColorPrintf",
+   "sig": "ConsoleColorPrintf(Color const&, char const*, ...) const",
+   "symbol": "CCvar::ConsoleColorPrintf(Color const&, char const*, ...) const"
+  },
+  {
+   "index": 24,
+   "name": "ConsolePrintf",
+   "sig": "ConsolePrintf(char const*, ...) const",
+   "symbol": "CCvar::ConsolePrintf(char const*, ...) const"
+  },
+  {
+   "index": 25,
+   "name": "ConsoleDPrintf",
+   "sig": "ConsoleDPrintf(char const*, ...) const",
+   "symbol": "CCvar::ConsoleDPrintf(char const*, ...) const"
+  },
+  {
+   "index": 26,
+   "name": "RevertFlaggedConVars",
+   "sig": "RevertFlaggedConVars(int)",
+   "symbol": "CCvar::RevertFlaggedConVars(int)"
+  },
+  {
+   "index": 27,
+   "name": "InstallCVarQuery",
+   "sig": "InstallCVarQuery(ICvarQuery*)",
+   "symbol": "CCvar::InstallCVarQuery(ICvarQuery*)"
+  },
+  {
+   "index": 28,
+   "name": "IsMaterialThreadSetAllowed",
+   "sig": "IsMaterialThreadSetAllowed() const",
+   "symbol": "CCvar::IsMaterialThreadSetAllowed() const"
+  },
+  {
+   "index": 29,
+   "name": "QueueMaterialThreadSetValue",
+   "sig": "QueueMaterialThreadSetValue(ConVar*, char const*)",
+   "symbol": "CCvar::QueueMaterialThreadSetValue(ConVar*, char const*)"
+  },
+  {
+   "index": 30,
+   "name": "QueueMaterialThreadSetValue",
+   "sig": "QueueMaterialThreadSetValue(ConVar*, int)",
+   "symbol": "CCvar::QueueMaterialThreadSetValue(ConVar*, int)"
+  },
+  {
+   "index": 31,
+   "name": "QueueMaterialThreadSetValue",
+   "sig": "QueueMaterialThreadSetValue(ConVar*, float)",
+   "symbol": "CCvar::QueueMaterialThreadSetValue(ConVar*, float)"
+  },
+  {
+   "index": 32,
+   "name": "HasQueuedMaterialThreadConVarSets",
+   "sig": "HasQueuedMaterialThreadConVarSets() const",
+   "symbol": "CCvar::HasQueuedMaterialThreadConVarSets() const"
+  },
+  {
+   "index": 33,
+   "name": "ProcessQueuedMaterialThreadConVarSets",
+   "sig": "ProcessQueuedMaterialThreadConVarSets()",
+   "symbol": "CCvar::ProcessQueuedMaterialThreadConVarSets()"
+  },
+  {
+   "index": 34,
+   "name": "FactoryInternalIterator",
+   "sig": "FactoryInternalIterator()",
+   "symbol": "CCvar::FactoryInternalIterator()"
+  }
+ ],
+ "derived": [
+  "bin/libvstdlib:CCvar"
+ ],
+ "derived_count": 1
+}

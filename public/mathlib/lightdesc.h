@@ -60,7 +60,6 @@ public:
 
 	LightDesc_t(void)
 	{
-		m_Type = MATERIAL_LIGHT_DISABLE;
 	}
 
 	// constructors for various useful subtypes

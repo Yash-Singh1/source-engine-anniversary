@@ -1,0 +1,176 @@
+{
+ "interface": "IVideoSubSystem",
+ "headers": [],
+ "versions": {
+  "retail": [
+   "IVideoSubSystem002"
+  ],
+  "ours": [],
+  "sdk2013": []
+ },
+ "version_macros": [],
+ "registrations": [
+  {
+   "module": "bin/video_quicktime",
+   "version": "IVideoSubSystem002",
+   "class": "CQuickTimeVideoSubSystem"
+  }
+ ],
+ "sdk2013_len": null,
+ "retail_reference": {
+  "module": "bin/video_quicktime",
+  "class": "CQuickTimeVideoSubSystem",
+  "offset": 0,
+  "chain": [
+   "CQuickTimeVideoSubSystem",
+   "CTier2AppSystem<IVideoSubSystem, 0>",
+   "CTier1AppSystem<IVideoSubSystem, 0>",
+   "CTier0AppSystem<IVideoSubSystem>",
+   "CBaseAppSystem<IVideoSubSystem>",
+   "IVideoSubSystem"
+  ]
+ },
+ "retail_len": 22,
+ "retail_len_basis": "shortest deriving subtable",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 22
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Connect",
+   "sig": "Connect(void* (*)(char const*, int*))",
+   "symbol": "CQuickTimeVideoSubSystem::Connect(void* (*)(char const*, int*))"
+  },
+  {
+   "index": 1,
+   "name": "Disconnect",
+   "sig": "Disconnect()",
+   "symbol": "CQuickTimeVideoSubSystem::Disconnect()"
+  },
+  {
+   "index": 2,
+   "name": "QueryInterface",
+   "sig": "QueryInterface(char const*)",
+   "symbol": "CQuickTimeVideoSubSystem::QueryInterface(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "CQuickTimeVideoSubSystem::Init()"
+  },
+  {
+   "index": 4,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CQuickTimeVideoSubSystem::Shutdown()"
+  },
+  {
+   "index": 5,
+   "name": "GetSystemID",
+   "sig": "GetSystemID()",
+   "symbol": "CQuickTimeVideoSubSystem::GetSystemID()"
+  },
+  {
+   "index": 6,
+   "name": "GetSystemStatus",
+   "sig": "GetSystemStatus()",
+   "symbol": "CQuickTimeVideoSubSystem::GetSystemStatus()"
+  },
+  {
+   "index": 7,
+   "name": "GetSupportedFeatures",
+   "sig": "GetSupportedFeatures()",
+   "symbol": "CQuickTimeVideoSubSystem::GetSupportedFeatures()"
+  },
+  {
+   "index": 8,
+   "name": "GetVideoSystemName",
+   "sig": "GetVideoSystemName()",
+   "symbol": "CQuickTimeVideoSubSystem::GetVideoSystemName()"
+  },
+  {
+   "index": 9,
+   "name": "InitializeVideoSystem",
+   "sig": "InitializeVideoSystem(IVideoCommonServices*)",
+   "symbol": "CQuickTimeVideoSubSystem::InitializeVideoSystem(IVideoCommonServices*)"
+  },
+  {
+   "index": 10,
+   "name": "ShutdownVideoSystem",
+   "sig": "ShutdownVideoSystem()",
+   "symbol": "CQuickTimeVideoSubSystem::ShutdownVideoSystem()"
+  },
+  {
+   "index": 11,
+   "name": "VideoSoundDeviceCMD",
+   "sig": "VideoSoundDeviceCMD(VideoSoundDeviceOperation::EVideoSoundDeviceOperation_t, void*, void*)",
+   "symbol": "CQuickTimeVideoSubSystem::VideoSoundDeviceCMD(VideoSoundDeviceOperation::EVideoSoundDeviceOperation_t, void*, void*)"
+  },
+  {
+   "index": 12,
+   "name": "GetSupportedFileExtensionCount",
+   "sig": "GetSupportedFileExtensionCount()",
+   "symbol": "CQuickTimeVideoSubSystem::GetSupportedFileExtensionCount()"
+  },
+  {
+   "index": 13,
+   "name": "GetSupportedFileExtension",
+   "sig": "GetSupportedFileExtension(int)",
+   "symbol": "CQuickTimeVideoSubSystem::GetSupportedFileExtension(int)"
+  },
+  {
+   "index": 14,
+   "name": "GetSupportedFileExtensionFeatures",
+   "sig": "GetSupportedFileExtensionFeatures(int)",
+   "symbol": "CQuickTimeVideoSubSystem::GetSupportedFileExtensionFeatures(int)"
+  },
+  {
+   "index": 15,
+   "name": "PlayVideoFileFullScreen",
+   "sig": "PlayVideoFileFullScreen(char const*, void*, int, int, int, int, bool, float, VideoPlaybackFlags::EVideoPlaybackFlags_t)",
+   "symbol": "CQuickTimeVideoSubSystem::PlayVideoFileFullScreen(char const*, void*, int, int, int, int, bool, float, VideoPlaybackFlags::EVideoPlaybackFlags_t)"
+  },
+  {
+   "index": 16,
+   "name": "CreateVideoMaterial",
+   "sig": "CreateVideoMaterial(char const*, char const*, VideoPlaybackFlags::EVideoPlaybackFlags_t)",
+   "symbol": "CQuickTimeVideoSubSystem::CreateVideoMaterial(char const*, char const*, VideoPlaybackFlags::EVideoPlaybackFlags_t)"
+  },
+  {
+   "index": 17,
+   "name": "DestroyVideoMaterial",
+   "sig": "DestroyVideoMaterial(IVideoMaterial*)",
+   "symbol": "CQuickTimeVideoSubSystem::DestroyVideoMaterial(IVideoMaterial*)"
+  },
+  {
+   "index": 18,
+   "name": "CreateVideoRecorder",
+   "sig": "CreateVideoRecorder()",
+   "symbol": "CQuickTimeVideoSubSystem::CreateVideoRecorder()"
+  },
+  {
+   "index": 19,
+   "name": "DestroyVideoRecorder",
+   "sig": "DestroyVideoRecorder(IVideoRecorder*)",
+   "symbol": "CQuickTimeVideoSubSystem::DestroyVideoRecorder(IVideoRecorder*)"
+  },
+  {
+   "index": 20,
+   "name": "CheckCodecAvailability",
+   "sig": "CheckCodecAvailability(VideoEncodeCodec::EVideoEncodeCodec_t)",
+   "symbol": "CQuickTimeVideoSubSystem::CheckCodecAvailability(VideoEncodeCodec::EVideoEncodeCodec_t)"
+  },
+  {
+   "index": 21,
+   "name": "GetLastResult",
+   "sig": "GetLastResult()",
+   "symbol": "CQuickTimeVideoSubSystem::GetLastResult()"
+  }
+ ],
+ "derived": [
+  "bin/video_quicktime:CQuickTimeVideoSubSystem"
+ ],
+ "derived_count": 1
+}

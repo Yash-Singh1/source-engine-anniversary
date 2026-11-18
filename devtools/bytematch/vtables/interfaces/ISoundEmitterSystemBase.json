@@ -1,0 +1,363 @@
+{
+ "interface": "ISoundEmitterSystemBase",
+ "headers": [
+  "public/SoundEmitterSystem/isoundemittersystembase.h"
+ ],
+ "versions": {
+  "retail": [
+   "VSoundEmitter002"
+  ],
+  "ours": [
+   "VSoundEmitter002"
+  ],
+  "sdk2013": [
+   "VSoundEmitter002"
+  ]
+ },
+ "version_macros": [
+  "SOUNDEMITTERSYSTEM_INTERFACE_VERSION"
+ ],
+ "registrations": [
+  {
+   "module": "bin/soundemittersystem",
+   "version": "VSoundEmitter002",
+   "class": "CSoundEmitterSystemBase"
+  }
+ ],
+ "sdk2013_len": 44,
+ "sdk2013_slots": [
+  "Connect(void* (*)(char const*, int*))",
+  "Disconnect()",
+  "QueryInterface(char const*)",
+  "Init()",
+  "Shutdown()",
+  "ModInit()",
+  "ModShutdown()",
+  "GetSoundIndex(char const*) const",
+  "IsValidIndex(int)",
+  "GetSoundCount()",
+  "GetSoundName(int)",
+  "GetParametersForSound(char const*, CSoundParameters&, gender_t, bool)",
+  "GetWaveName(CUtlSymbol&)",
+  "AddWaveName(char const*)",
+  "LookupSoundLevel(char const*)",
+  "GetWavFileForSound(char const*, char const*)",
+  "GetWavFileForSound(char const*, gender_t)",
+  "CheckForMissingWavFiles(bool)",
+  "GetSourceFileForSound(int) const",
+  "First() const",
+  "Next(int) const",
+  "InvalidIndex() const",
+  "InternalGetParametersForSound(int)",
+  "AddSound(char const*, char const*, CSoundParametersInternal const&)",
+  "RemoveSound(char const*)",
+  "MoveSound(char const*, char const*)",
+  "RenameSound(char const*, char const*)",
+  "UpdateSoundParameters(char const*, CSoundParametersInternal const&)",
+  "GetNumSoundScripts() const",
+  "GetSoundScriptName(int) const",
+  "IsSoundScriptDirty(int) const",
+  "FindSoundScript(char const*) const",
+  "SaveChangesToSoundScript(int)",
+  "ExpandSoundNameMacros(CSoundParametersInternal&, char const*)",
+  "GetActorGender(char const*)",
+  "GenderExpandString(char const*, char const*, char*, int)",
+  "GenderExpandString(gender_t, char const*, char*, int)",
+  "IsUsingGenderToken(char const*)",
+  "GetManifestFileTimeChecksum()",
+  "AddSoundOverrides(char const*, bool)",
+  "ClearSoundOverrides()",
+  "GetParametersForSoundEx(char const*, short&, CSoundParameters&, gender_t, bool)",
+  "LookupSoundLevelByHandle(char const*, short&)",
+  "ReloadSoundEntriesInList(IFileList*)"
+ ],
+ "retail_reference": {
+  "module": "bin/soundemittersystem",
+  "class": "CSoundEmitterSystemBase",
+  "offset": 0,
+  "chain": [
+   "CSoundEmitterSystemBase",
+   "ISoundEmitterSystemBase"
+  ]
+ },
+ "retail_len": 44,
+ "retail_len_basis": "first implementer destructor",
+ "retail_len_bounds": {
+  "shortest deriving subtable": 46,
+  "first implementer destructor": 44
+ },
+ "slots": [
+  {
+   "index": 0,
+   "name": "Connect",
+   "sig": "Connect(void* (*)(char const*, int*))",
+   "symbol": "CSoundEmitterSystemBase::Connect(void* (*)(char const*, int*))"
+  },
+  {
+   "index": 1,
+   "name": "Disconnect",
+   "sig": "Disconnect()",
+   "symbol": "CSoundEmitterSystemBase::Disconnect()"
+  },
+  {
+   "index": 2,
+   "name": "QueryInterface",
+   "sig": "QueryInterface(char const*)",
+   "symbol": "CSoundEmitterSystemBase::QueryInterface(char const*)"
+  },
+  {
+   "index": 3,
+   "name": "Init",
+   "sig": "Init()",
+   "symbol": "CSoundEmitterSystemBase::Init()"
+  },
+  {
+   "index": 4,
+   "name": "Shutdown",
+   "sig": "Shutdown()",
+   "symbol": "CSoundEmitterSystemBase::Shutdown()"
+  },
+  {
+   "index": 5,
+   "name": "ModInit",
+   "sig": "ModInit()",
+   "symbol": "CSoundEmitterSystemBase::ModInit()"
+  },
+  {
+   "index": 6,
+   "name": "ModShutdown",
+   "sig": "ModShutdown()",
+   "symbol": "CSoundEmitterSystemBase::ModShutdown()"
+  },
+  {
+   "index": 7,
+   "name": "GetSoundIndex",
+   "sig": "GetSoundIndex(char const*) const",
+   "symbol": "CSoundEmitterSystemBase::GetSoundIndex(char const*) const"
+  },
+  {
+   "index": 8,
+   "name": "IsValidIndex",
+   "sig": "IsValidIndex(int)",
+   "symbol": "CSoundEmitterSystemBase::IsValidIndex(int)"
+  },
+  {
+   "index": 9,
+   "name": "GetSoundCount",
+   "sig": "GetSoundCount()",
+   "symbol": "CSoundEmitterSystemBase::GetSoundCount()"
+  },
+  {
+   "index": 10,
+   "name": "GetSoundName",
+   "sig": "GetSoundName(int)",
+   "symbol": "CSoundEmitterSystemBase::GetSoundName(int)"
+  },
+  {
+   "index": 11,
+   "name": "GetParametersForSound",
+   "sig": "GetParametersForSound(char const*, CSoundParameters&, gender_t, bool)",
+   "symbol": "CSoundEmitterSystemBase::GetParametersForSound(char const*, CSoundParameters&, gender_t, bool)"
+  },
+  {
+   "index": 12,
+   "name": "GetWaveName",
+   "sig": "GetWaveName(CUtlSymbol&)",
+   "symbol": "CSoundEmitterSystemBase::GetWaveName(CUtlSymbol&)"
+  },
+  {
+   "index": 13,
+   "name": "AddWaveName",
+   "sig": "AddWaveName(char const*)",
+   "symbol": "CSoundEmitterSystemBase::AddWaveName(char const*)"
+  },
+  {
+   "index": 14,
+   "name": "LookupSoundLevel",
+   "sig": "LookupSoundLevel(char const*)",
+   "symbol": "CSoundEmitterSystemBase::LookupSoundLevel(char const*)"
+  },
+  {
+   "index": 15,
+   "name": "GetWavFileForSound",
+   "sig": "GetWavFileForSound(char const*, char const*)",
+   "symbol": "CSoundEmitterSystemBase::GetWavFileForSound(char const*, char const*)"
+  },
+  {
+   "index": 16,
+   "name": "GetWavFileForSound",
+   "sig": "GetWavFileForSound(char const*, gender_t)",
+   "symbol": "CSoundEmitterSystemBase::GetWavFileForSound(char const*, gender_t)"
+  },
+  {
+   "index": 17,
+   "name": "CheckForMissingWavFiles",
+   "sig": "CheckForMissingWavFiles(bool)",
+   "symbol": "CSoundEmitterSystemBase::CheckForMissingWavFiles(bool)"
+  },
+  {
+   "index": 18,
+   "name": "GetSourceFileForSound",
+   "sig": "GetSourceFileForSound(int) const",
+   "symbol": "CSoundEmitterSystemBase::GetSourceFileForSound(int) const"
+  },
+  {
+   "index": 19,
+   "name": "First",
+   "sig": "First() const",
+   "symbol": "CSoundEmitterSystemBase::First() const"
+  },
+  {
+   "index": 20,
+   "name": "Next",
+   "sig": "Next(int) const",
+   "symbol": "CSoundEmitterSystemBase::Next(int) const"
+  },
+  {
+   "index": 21,
+   "name": "InvalidIndex",
+   "sig": "InvalidIndex() const",
+   "symbol": "CSoundEmitterSystemBase::InvalidIndex() const"
+  },
+  {
+   "index": 22,
+   "name": "InternalGetParametersForSound",
+   "sig": "InternalGetParametersForSound(int)",
+   "symbol": "CSoundEmitterSystemBase::InternalGetParametersForSound(int)"
+  },
+  {
+   "index": 23,
+   "name": "AddSound",
+   "sig": "AddSound(char const*, char const*, CSoundParametersInternal const&)",
+   "symbol": "CSoundEmitterSystemBase::AddSound(char const*, char const*, CSoundParametersInternal const&)"
+  },
+  {
+   "index": 24,
+   "name": "RemoveSound",
+   "sig": "RemoveSound(char const*)",
+   "symbol": "CSoundEmitterSystemBase::RemoveSound(char const*)"
+  },
+  {
+   "index": 25,
+   "name": "MoveSound",
+   "sig": "MoveSound(char const*, char const*)",
+   "symbol": "CSoundEmitterSystemBase::MoveSound(char const*, char const*)"
+  },
+  {
+   "index": 26,
+   "name": "RenameSound",
+   "sig": "RenameSound(char const*, char const*)",
+   "symbol": "CSoundEmitterSystemBase::RenameSound(char const*, char const*)"
+  },
+  {
+   "index": 27,
+   "name": "UpdateSoundParameters",
+   "sig": "UpdateSoundParameters(char const*, CSoundParametersInternal const&)",
+   "symbol": "CSoundEmitterSystemBase::UpdateSoundParameters(char const*, CSoundParametersInternal const&)"
+  },
+  {
+   "index": 28,
+   "name": "GetNumSoundScripts",
+   "sig": "GetNumSoundScripts() const",
+   "symbol": "CSoundEmitterSystemBase::GetNumSoundScripts() const"
+  },
+  {
+   "index": 29,
+   "name": "GetSoundScriptName",
+   "sig": "GetSoundScriptName(int) const",
+   "symbol": "CSoundEmitterSystemBase::GetSoundScriptName(int) const"
+  },
+  {
+   "index": 30,
+   "name": "IsSoundScriptDirty",
+   "sig": "IsSoundScriptDirty(int) const",
+   "symbol": "CSoundEmitterSystemBase::IsSoundScriptDirty(int) const"
+  },
+  {
+   "index": 31,
+   "name": "FindSoundScript",
+   "sig": "FindSoundScript(char const*) const",
+   "symbol": "CSoundEmitterSystemBase::FindSoundScript(char const*) const"
+  },
+  {
+   "index": 32,
+   "name": "SaveChangesToSoundScript",
+   "sig": "SaveChangesToSoundScript(int)",
+   "symbol": "CSoundEmitterSystemBase::SaveChangesToSoundScript(int)"
+  },
+  {
+   "index": 33,
+   "name": "ExpandSoundNameMacros",
+   "sig": "ExpandSoundNameMacros(CSoundParametersInternal&, char const*)",
+   "symbol": "CSoundEmitterSystemBase::ExpandSoundNameMacros(CSoundParametersInternal&, char const*)"
+  },
+  {
+   "index": 34,
+   "name": "GetActorGender",
+   "sig": "GetActorGender(char const*)",
+   "symbol": "CSoundEmitterSystemBase::GetActorGender(char const*)"
+  },
+  {
+   "index": 35,
+   "name": "GenderExpandString",
+   "sig": "GenderExpandString(char const*, char const*, char*, int)",
+   "symbol": "CSoundEmitterSystemBase::GenderExpandString(char const*, char const*, char*, int)"
+  },
+  {
+   "index": 36,
+   "name": "GenderExpandString",
+   "sig": "GenderExpandString(gender_t, char const*, char*, int)",
+   "symbol": "CSoundEmitterSystemBase::GenderExpandString(gender_t, char const*, char*, int)"
+  },
+  {
+   "index": 37,
+   "name": "IsUsingGenderToken",
+   "sig": "IsUsingGenderToken(char const*)",
+   "symbol": "CSoundEmitterSystemBase::IsUsingGenderToken(char const*)"
+  },
+  {
+   "index": 38,
+   "name": "GetManifestFileTimeChecksum",
+   "sig": "GetManifestFileTimeChecksum()",
+   "symbol": "CSoundEmitterSystemBase::GetManifestFileTimeChecksum()"
+  },
+  {
+   "index": 39,
+   "name": "AddSoundOverrides",
+   "sig": "AddSoundOverrides(char const*, bool)",
+   "symbol": "CSoundEmitterSystemBase::AddSoundOverrides(char const*, bool)"
+  },
+  {
+   "index": 40,
+   "name": "ClearSoundOverrides",
+   "sig": "ClearSoundOverrides()",
+   "symbol": "CSoundEmitterSystemBase::ClearSoundOverrides()"
+  },
+  {
+   "index": 41,
+   "name": "GetParametersForSoundEx",
+   "sig": "GetParametersForSoundEx(char const*, short&, CSoundParameters&, gender_t, bool)",
+   "symbol": "CSoundEmitterSystemBase::GetParametersForSoundEx(char const*, short&, CSoundParameters&, gender_t, bool)"
+  },
+  {
+   "index": 42,
+   "name": "LookupSoundLevelByHandle",
+   "sig": "LookupSoundLevelByHandle(char const*, short&)",
+   "symbol": "CSoundEmitterSystemBase::LookupSoundLevelByHandle(char const*, short&)"
+  },
+  {
+   "index": 43,
+   "name": "ReloadSoundEntriesInList",
+   "sig": "ReloadSoundEntriesInList(IFileList*)",
+   "symbol": "CSoundEmitterSystemBase::ReloadSoundEntriesInList(IFileList*)"
+  }
+ ],
+ "implementer_tail": [
+  "~CSoundEmitterSystemBase()",
+  "~CSoundEmitterSystemBase()"
+ ],
+ "derived": [
+  "bin/soundemittersystem:CSoundEmitterSystemBase"
+ ],
+ "derived_count": 1
+}
