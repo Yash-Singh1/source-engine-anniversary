@@ -46,6 +46,8 @@ public:
 
 	virtual bool PaintFirst( void ) { return false; }
 
+	virtual void Paint2(int x0, int y0, int x1, int y1, int breakSide, int breakStart, int breakStop, int scale);
+
 protected:
 	int _inset[4];
 
