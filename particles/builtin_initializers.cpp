@@ -171,7 +171,11 @@ void C_INIT_CreateOnModel::InitNewParticlesScalar(
 		Vector vecPnts[100];								// minimize stack usage
 		Vector vecUVW[100];
 		int nHitBoxIndex[100];
+#ifdef BYTEMATCH_RETAIL
+		int nToDo = min( ARRAYSIZE( vecPnts ), nParticleCount );
+#else
 		int nToDo = min( (int)ARRAYSIZE( vecPnts ), nParticleCount );
+#endif
 
 		Assert( m_nControlPointNumber <= pParticles->GetHighestControlPoint() );
 
@@ -2979,7 +2983,11 @@ void C_INIT_CreateInHierarchy::InitNewParticlesScalar(
 		if ( ( pParticles->m_flCurTime <= m_flGrowthTime ) && ( nRealEndPoint > 0 ) )
 		{
 			float flCurrentEndCP = RemapValClamped( *ct, 0.0f, m_flGrowthTime, min( m_nDesiredStartPoint + 1, nRealEndPoint ), nRealEndPoint );
+#ifdef BYTEMATCH_RETAIL
+			nEndCP =  pParticles->RandomInt( min( m_nDesiredStartPoint + 1, flCurrentEndCP ), flCurrentEndCP );
+#else
 			nEndCP =  pParticles->RandomInt( min( m_nDesiredStartPoint + 1, (int)flCurrentEndCP ), flCurrentEndCP );
+#endif
 
 			// clamp growth to the appropriate values...
 			float flEndTime = flCurrentEndCP / float(nRealEndPoint) ;

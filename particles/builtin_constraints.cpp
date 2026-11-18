@@ -192,7 +192,11 @@ bool C_OP_ConstrainDistanceToPath::EnforceConstraint( int nStartBlock,
 									 &StartPnt, &MidP, &EndPnt );
 
 	fltx4 CurTime = ReplicateX4( pParticles->m_flCurTime );
+#ifdef BYTEMATCH_RETAIL
+	fltx4 TimeScale= ReplicateX4( 1.0/(max(0.001,  m_flTravelTime ) ) );
+#else
 	fltx4 TimeScale= ReplicateX4( 1.0/(max(0.001f,  m_flTravelTime ) ) );
+#endif
 
 	// calculate radius spline
 	bool bConstantRadius = true;
