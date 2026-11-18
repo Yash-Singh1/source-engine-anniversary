@@ -69,7 +69,12 @@ private:
 	class CCommand
 	{
 	public:
+#ifdef BYTEMATCH_RETAIL
+		CCommand();
+#else
 		CCommand() = default;
+#endif
+#line 73
 		~CCommand();
 
 		EPureServerFileClass m_eFileClass;
