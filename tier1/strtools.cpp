@@ -385,15 +385,8 @@ int64 V_atoi64( const char *str )
 		sign = -1;
 		str++;
 	}
-	else if (*str == '+')
-	{
-		sign = 1;
-		str++;
-	}
 	else
-	{
 		sign = 1;
-	}
 		
 	val = 0;
 
@@ -1205,7 +1198,6 @@ bool Q_IsMeanSpaceW( wchar_t wch )
 	case L'\x200B':   // ZERO-WIDTH SPACE
 	case L'\x200C':   // ZERO-WIDTH NON-JOINER
 	case L'\x200D':   // ZERO WIDTH JOINER
-	case L'\x200E':	  // LEFT-TO-RIGHT MARK
 	case L'\x2028':   // LINE SEPARATOR
 	case L'\x2029':   // PARAGRAPH SEPARATOR
 	case L'\x202F':   // NARROW NO-BREAK SPACE
@@ -1266,7 +1258,7 @@ bool Q_RemoveAllEvilCharacters( char *pch )
 	int cch = Q_strlen( pch );
 	int cubDest = (cch + 1 ) * sizeof( wchar_t );
 	wchar_t *pwch = (wchar_t *)stackalloc( cubDest );
-	int cwch = Q_UTF8ToUnicode( pch, pwch, cubDest ) / sizeof( wchar_t );
+	int cwch = Q_UTF8ToUnicode( pch, pwch, cubDest );
 
 	bool bStrippedWhitespace = false;
 
@@ -1304,13 +1296,8 @@ bool Q_RemoveAllEvilCharacters( char *pch )
 //-----------------------------------------------------------------------------
 bool Q_StripPrecedingAndTrailingWhitespaceW( wchar_t *pwch )
 {
-	int cch = Q_wcslen( pwch );
-
-	// Early out and don't convert if we don't have any chars or leading/trailing ws.
-	if ( ( cch < 1 ) || ( !iswspace( pwch[ 0 ] ) && !iswspace( pwch[ cch - 1 ] ) ) )
-		return false;
-
 	// duplicate on stack
+	int cch = Q_wcslen( pwch );
 	int cubDest = ( cch + 1 ) * sizeof( wchar_t );
 	wchar_t *pwchT = (wchar_t *)stackalloc( cubDest );
 	Q_wcsncpy( pwchT, pwch, cubDest );
@@ -1360,16 +1347,11 @@ bool Q_AggressiveStripPrecedingAndTrailingWhitespaceW( wchar_t *pwch )
 //-----------------------------------------------------------------------------
 bool Q_StripPrecedingAndTrailingWhitespace( char *pch )
 {
-	int cch = Q_strlen( pch );
-
-	// Early out and don't convert if we don't have any chars or leading/trailing ws.
-	if ( ( cch < 1 ) || ( !isspace( (unsigned char)pch[ 0 ] ) && !isspace( (unsigned char)pch[ cch - 1 ] ) ) )
-		return false;
-
 	// convert to unicode
+	int cch = Q_strlen( pch );
 	int cubDest = (cch + 1 ) * sizeof( wchar_t );
 	wchar_t *pwch = (wchar_t *)stackalloc( cubDest );
-	int cwch = Q_UTF8ToUnicode( pch, pwch, cubDest ) / sizeof( wchar_t );
+	int cwch = Q_UTF8ToUnicode( pch, pwch, cubDest );
 
 	bool bStrippedWhitespace = false;
 	pwch = StripWhitespaceWorker( cwch-1, pwch, &bStrippedWhitespace, false /* not aggressive */ );
@@ -1392,7 +1374,7 @@ bool Q_AggressiveStripPrecedingAndTrailingWhitespace( char *pch )
 	int cch = Q_strlen( pch );
 	int cubDest = (cch + 1 ) * sizeof( wchar_t );
 	wchar_t *pwch = (wchar_t *)stackalloc( cubDest );
-	int cwch = Q_UTF8ToUnicode( pch, pwch, cubDest ) / sizeof( wchar_t );
+	int cwch = Q_UTF8ToUnicode( pch, pwch, cubDest );
 
 	bool bStrippedWhitespace = false;
 	pwch = StripWhitespaceWorker( cwch-1, pwch, &bStrippedWhitespace, true /* is aggressive */ );
@@ -1405,6 +1387,67 @@ bool Q_AggressiveStripPrecedingAndTrailingWhitespace( char *pch )
 
 	return bStrippedWhitespace;
 }
+
+//-----------------------------------------------------------------------------
+// Purpose: Converts a UTF8 string into a unicode string
+//-----------------------------------------------------------------------------
+int V_UTF8ToUnicode( const char *pUTF8, wchar_t *pwchDest, int cubDestSizeInBytes )
+{
+	// pwchDest can be null to allow for getting the length of the string
+	if ( cubDestSizeInBytes > 0 )
+	{
+		AssertValidWritePtr(pwchDest);
+		pwchDest[0] = 0;
+	}
+
+	if ( !pUTF8 )
+		return 0;
+
+	AssertValidStringPtr(pUTF8);
+
+#ifdef _WIN32
+	int cchResult = MultiByteToWideChar( CP_UTF8, 0, pUTF8, -1, pwchDest, cubDestSizeInBytes / sizeof(wchar_t) );
+#elif POSIX
+	int cchResult = mbstowcs( pwchDest, pUTF8, cubDestSizeInBytes / sizeof(wchar_t) ) + 1;
+#endif
+
+	if ( cubDestSizeInBytes > 0 )
+	{
+		pwchDest[(cubDestSizeInBytes / sizeof(wchar_t)) - 1] = 0;
+	}
+
+	return cchResult;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Converts a unicode string into a UTF8 (standard) string
+//-----------------------------------------------------------------------------
+int V_UnicodeToUTF8( const wchar_t *pUnicode, char *pUTF8, int cubDestSizeInBytes )
+{
+	//AssertValidStringPtr(pUTF8, cubDestSizeInBytes); // no, we are sometimes pasing in NULL to fetch the length of the buffer needed.
+	AssertValidReadPtr(pUnicode);
+
+	if ( cubDestSizeInBytes > 0 )
+	{
+		pUTF8[0] = 0;
+	}
+
+#ifdef _WIN32
+	int cchResult = WideCharToMultiByte( CP_UTF8, 0, pUnicode, -1, pUTF8, cubDestSizeInBytes, NULL, NULL );
+#elif POSIX
+	int cchResult = 0;
+	if ( pUnicode && pUTF8 )
+		cchResult = wcstombs( pUTF8, pUnicode, cubDestSizeInBytes ) + 1;
+#endif
+
+	if ( cubDestSizeInBytes > 0 )
+	{
+		pUTF8[cubDestSizeInBytes - 1] = 0;
+	}
+
+	return cchResult;
+}
+
 
 //-----------------------------------------------------------------------------
 // Purpose: Converts a ucs2 string to a unicode (wchar_t) one, no-op on win32
@@ -2019,9 +2062,6 @@ bool V_StripLastDir( char *dirName, int maxlen )
 //-----------------------------------------------------------------------------
 const char * V_UnqualifiedFileName( const char * in )
 {
-	if( !in || !in[0] )
-		return in;
-
 	// back up until the character after the first path separator we find,
 	// or the beginning of the string
 	const char * out = in + strlen( in ) - 1;

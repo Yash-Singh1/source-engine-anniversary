@@ -461,9 +461,8 @@ int Q_UTF16ToUChar32( const uchar16 *pUTF16, uchar32 &uValueOut, bool &bErrorOut
 #define Q_WStringToUTF32 Q_UTF32ToUTF32
 #endif
 
-// These are legacy names which don't make a lot of sense but are used everywhere. Prefer the WString convention wherever possible
-#define V_UTF8ToUnicode Q_UTF8ToWString
-#define V_UnicodeToUTF8 Q_WStringToUTF8
+int V_UTF8ToUnicode( const char *pUTF8, OUT_Z_BYTECAP(cubDestSizeInBytes) wchar_t *pwchDest, int cubDestSizeInBytes );
+int V_UnicodeToUTF8( const wchar_t *pUnicode, OUT_Z_BYTECAP(cubDestSizeInBytes) char *pUTF8, int cubDestSizeInBytes );
 
 
 #ifdef WIN32
