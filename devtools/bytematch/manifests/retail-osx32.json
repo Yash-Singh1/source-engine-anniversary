@@ -5993,6 +5993,7 @@
     "gameui/OptionsDialog_Xbox.cpp",
     "gameui/OptionsSubAudio.cpp",
     "gameui/OptionsSubDifficulty.cpp",
+    "gameui/OptionsSubGamepad.cpp",
     "gameui/OptionsSubKeyboard.cpp",
     "gameui/OptionsSubMouse.cpp",
     "gameui/OptionsSubMultiplayer.cpp",
@@ -6011,9 +6012,7 @@
     "gameui/vcontrolslistpanel.cpp",
     "gameui/VGuiSystemModuleLoader.cpp"
    ],
-   "missing_sources": [
-    "gameui/OptionsSubGamepad.cpp"
-   ],
+   "missing_sources": [],
    "archives": [
     {
      "archive": "libmathlib.a",
@@ -6812,9 +6811,9 @@
     },
     {
      "kind": "object",
-     "source": null,
+     "source": "gameui/OptionsSubGamepad.cpp",
      "retail_source": "gameui/OptionsSubGamepad.cpp",
-     "status": "missing",
+     "status": "exact",
      "archive": null,
      "member": null,
      "mtime": 1739904930,
