@@ -817,7 +817,7 @@ void CBonusMapsDialog::OnKeyCodePressed( vgui::KeyCode code )
 {
 	ButtonCode_t nButtonCode = GetBaseButtonCode( code );
 
-	if ( nButtonCode == KEY_XBUTTON_B || nButtonCode == STEAMCONTROLLER_B )
+	if ( nButtonCode == KEY_XBUTTON_B )
 	{
 		OnCommand( "Close" );
 		return;

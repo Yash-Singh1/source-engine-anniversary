@@ -163,7 +163,7 @@ void CLoadingDialog::PaintBackground()
 
 	// fade in the darkened edges over the first half second
 	float flTime = Plat_FloatTime();
-	float flFade = clamp( ( flTime - flOpenTime ) * 2.0f, 0.0f, 1.0f );
+	float flFade = clamp<float>( ( flTime - flOpenTime ) * 2.0f, 0.0f, 1.0f );
 
 	vgui::surface()->DrawSetColor( Color( 0, 0, 0, 255 ) );
 	vgui::surface()->DrawFilledRectFade( 0, 0, GetWide() * 0.1f, GetTall(), ( 255 * 0.667f ) * flFade, 0, true );

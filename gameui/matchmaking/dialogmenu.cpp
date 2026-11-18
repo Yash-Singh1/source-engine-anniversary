@@ -1473,23 +1473,26 @@ void CDialogMenu::OnCommand( const char *pCommand )
 //--------------------------------------------------------------------------------------
 bool CDialogMenu::HandleKeyCode( vgui::KeyCode code )
 {
-	switch( code )
+	switch( GetBaseButtonCode( code ) )
 	{
 	case KEY_XBUTTON_DOWN:
 	case KEY_XSTICK1_DOWN:
 	case STEAMCONTROLLER_DPAD_DOWN:
+	case STEAMCONTROLLER_LEFT_PAD_DOWN:
 		SetFocusNext();
 		break;
 
 	case KEY_XBUTTON_UP:
 	case KEY_XSTICK1_UP:
 	case STEAMCONTROLLER_DPAD_UP:
+	case STEAMCONTROLLER_LEFT_PAD_UP:
 		SetFocusPrev();
 		break;
 
 	case KEY_XBUTTON_LEFT:
 	case KEY_XSTICK1_LEFT:
 	case STEAMCONTROLLER_DPAD_LEFT:
+	case STEAMCONTROLLER_LEFT_PAD_LEFT:
 		SetOptionFocusPrev();
 		SetColumnFocusPrev();
 		break;
@@ -1497,6 +1500,7 @@ bool CDialogMenu::HandleKeyCode( vgui::KeyCode code )
 	case KEY_XBUTTON_RIGHT:
 	case KEY_XSTICK1_RIGHT:
 	case STEAMCONTROLLER_DPAD_RIGHT:
+	case STEAMCONTROLLER_LEFT_PAD_RIGHT:
 		SetOptionFocusNext();
 		SetColumnFocusNext();
 		break;
