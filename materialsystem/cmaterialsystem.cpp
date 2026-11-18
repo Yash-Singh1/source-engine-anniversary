@@ -5251,7 +5251,12 @@ void CMaterialSystem::ThreadRelease( )
 	}
 
 	double flStartTime, flEndThreadRelease, flEndTime;
+#ifdef BYTEMATCH_RETAIL
+#define do_report mat_queue_report.GetInt()
+#else
 	int do_report = mat_queue_report.GetInt();
+#endif
+#line 5087
 
 	if ( do_report )
 	{
@@ -5287,6 +5292,8 @@ void CMaterialSystem::ThreadRelease( )
 		}
 	}
 }
+#undef do_report
+#line 5122
 
 
 void CMaterialSystem::ThreadAcquire( bool bForce )
@@ -5297,7 +5304,12 @@ void CMaterialSystem::ThreadAcquire( bool bForce )
 	}
 
 	double flStartTime, flEndTime;
+#ifdef BYTEMATCH_RETAIL
+#define do_report mat_queue_report.GetInt()
+#else
 	int do_report = mat_queue_report.GetInt();
+#endif
+#line 5133
 
 	if ( do_report )
 	{
@@ -5329,6 +5341,8 @@ void CMaterialSystem::ThreadAcquire( bool bForce )
 		}
 	}
 }
+#undef do_report
+#line 5164
 
 
 //-----------------------------------------------------------------------------------------------------
@@ -5336,8 +5350,18 @@ void CMaterialSystem::ThreadAcquire( bool bForce )
 //-----------------------------------------------------------------------------------------------------
 MaterialLock_t CMaterialSystem::Lock()
 {
+#ifdef BYTEMATCH_RETAIL
+	double flStartTime = 0.0;
+#else
 	double flStartTime;
+#endif
+#line 5172
+#ifdef BYTEMATCH_RETAIL
+#define do_report mat_queue_report.GetInt()
+#else
 	int do_report = mat_queue_report.GetInt();
+#endif
+#line 5173
 
 	if ( do_report )
 	{
@@ -5391,14 +5415,26 @@ MaterialLock_t CMaterialSystem::Lock()
 
 	return hMaterialLock;
 }
+#undef do_report
+#line 5226
 
 //-----------------------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------------------
 void CMaterialSystem::Unlock( MaterialLock_t hMaterialLock )
 {
+#ifdef BYTEMATCH_RETAIL
+	double flStartTime = 0.0;
+#else
 	double flStartTime;
+#endif
+#line 5233
+#ifdef BYTEMATCH_RETAIL
+#define do_report mat_queue_report.GetInt()
+#else
 	int do_report = mat_queue_report.GetInt();
+#endif
+#line 5234
 
 	if ( do_report )
 	{
@@ -5437,13 +5473,20 @@ void CMaterialSystem::Unlock( MaterialLock_t hMaterialLock )
 		double flEndTime = Plat_FloatTime();
 		double flResult = ( flEndTime - flStartTime ) * 1000.0;
 
+#ifdef BYTEMATCH_RETAIL
+		if ( do_report == -1 || flResult > mat_queue_report.GetFloat() )
+#else
 		if ( do_report || flResult > mat_queue_report.GetFloat() )
+#endif
+#line 5273
 		{
 			Color red(  200,  20,  20, 255 );
 			ConColorMsg( red, "*CMaterialSystem::Unlock: %0.2fms\n", flResult );
 		}
 	}
 }
+#undef do_report
+#line 5279
 
 //-----------------------------------------------------------------------------------------------------
 //
