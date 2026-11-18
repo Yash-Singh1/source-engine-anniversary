@@ -3609,21 +3609,27 @@ int TextEntry::GetValueAsInt()
 // Input:	offset - index to Start reading from 
 //			bufLenInBytes - length of string
 //-----------------------------------------------------------------------------
-void TextEntry::GetText(OUT_Z_BYTECAP(bufLenInBytes) char *buf, int bufLenInBytes)
+int TextEntry::GetText(OUT_Z_BYTECAP(bufLenInBytes) char *buf, int bufLenInBytes)
 {
 	Assert(bufLenInBytes >= sizeof(buf[0]));
+	int nLength = 0;
 	if (m_TextStream.Count())
 	{
 		// temporarily null terminate the text stream so we can use the conversion function
 		int nullTerminatorIndex = m_TextStream.AddToTail((wchar_t)0);
-		g_pVGuiLocalize->ConvertUnicodeToANSI(m_TextStream.Base(), buf, bufLenInBytes);
+		nLength = g_pVGuiLocalize->ConvertUnicodeToANSI(m_TextStream.Base(), buf, bufLenInBytes);
 		m_TextStream.FastRemove(nullTerminatorIndex);
+
+		// don't count the terminator
+		if ( nLength )
+			nLength--;
 	}
 	else
 	{
 		// no characters in the stream
 		buf[0] = 0;
 	}
+	return nLength;
 }
 
 //-----------------------------------------------------------------------------
