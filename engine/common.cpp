@@ -97,19 +97,22 @@ COM_ExplainDisconnection
 */
 void COM_ExplainDisconnection( bool bPrint, const char *fmt, ... )
 {
-#ifdef _X360
-	g_pMatchmaking->SessionNotification( SESSION_NOTIFY_LOST_SERVER );
-#else
-	va_list		argptr;
-	char		string[1024];
+	if ( IsX360() )
+	{
+		g_pMatchmaking->SessionNotification( SESSION_NOTIFY_LOST_SERVER );
+	}
+	else
+	{
+		va_list		argptr;
+		char		string[1024];
 
-	va_start (argptr, fmt);
-	Q_vsnprintf(string, sizeof( string ), fmt,argptr);
-	va_end (argptr);
+		va_start (argptr, fmt);
+		Q_vsnprintf(string, sizeof( string ), fmt,argptr);
+		va_end (argptr);
 
-	Q_strncpy( gszDisconnectReason, string, 256 );
-	gfExtendedError = true;
-#endif
+		Q_strncpy( gszDisconnectReason, string, 256 );
+		gfExtendedError = true;
+	}
 
 	if ( bPrint )
 	{
@@ -143,18 +146,21 @@ COM_ExtendedExplainDisconnection
 */
 void COM_ExtendedExplainDisconnection( bool bPrint, const char *fmt, ... )
 {
-#ifdef _X360
-	g_pMatchmaking->SessionNotification( SESSION_NOTIFY_LOST_SERVER );
-#else
-	va_list		argptr;
-	char		string[1024];
+	if ( IsX360() )
+	{
+		g_pMatchmaking->SessionNotification( SESSION_NOTIFY_LOST_SERVER );
+	}
+	else
+	{
+		va_list		argptr;
+		char		string[1024];
+		
+		va_start (argptr, fmt);
+		Q_vsnprintf(string, sizeof( string ), fmt,argptr);
+		va_end (argptr);
 
-	va_start (argptr, fmt);
-	Q_vsnprintf(string, sizeof( string ), fmt,argptr);
-	va_end (argptr);
-
-	Q_strncpy( gszExtendedDisconnectReason, string, 256 );
-#endif
+		Q_strncpy( gszExtendedDisconnectReason, string, 256 );
+	}
 
 	if ( bPrint )
 	{
@@ -894,13 +900,16 @@ void COM_InitFilesystem( const char *pFullModPath )
 		}
 		else
 		{
+#ifndef BYTEMATCH_RETAIL
 			char *szLang = getenv("LANG");
+#endif
 
 			// still allow command line override even when not running steam
 			if (CommandLine()->CheckParm("-audiolanguage"))
 			{
 				Q_strncpy(language, CommandLine()->ParmValue("-audiolanguage", "english"), sizeof( language ) - 1);
 			}
+#ifndef BYTEMATCH_RETAIL
 			else if( szLang )
 			{
 				ELanguage lang = PchLanguageICUCodeToELanguage(szLang, k_Lang_English);
@@ -908,6 +917,7 @@ void COM_InitFilesystem( const char *pFullModPath )
 				if( Q_strncmp(szShortLang, "none", 4) != 0 )
 					Q_strncpy(language, szShortLang, sizeof( language ) - 1);
 			}
+#endif
 		}
 
 		if ( ( Q_strlen(language) > 0 ) && ( Q_stricmp(language, "english") ) )
@@ -1379,7 +1389,11 @@ bool COM_BufferToBufferDecompress( void *dest, unsigned int *destLen, const void
 		if ( pHeader->id == LZSS_ID )
 		{
 			CLZSS s;
+#ifdef BYTEMATCH_RETAIL
+			int nActualDecompressedSize = s.SafeUncompress( (byte *)source, (byte *)dest, *destLen );
+#else
 			int nActualDecompressedSize = s.SafeUncompress( (byte *)source, sourceLen, (byte *)dest, *destLen );
+#endif
 			if ( nActualDecompressedSize != nDecompressedSize )
 			{
 				Warning( "NET_BufferToBufferDecompress: header said %d bytes would be decompressed, but we LZSS decompressed %d\n", nDecompressedSize, nActualDecompressedSize );

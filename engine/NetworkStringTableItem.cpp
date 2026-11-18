@@ -199,7 +199,11 @@ bool CNetworkStringTableItem::SetUserData( int tick, int length, const void *use
 
 	if ( length > 0 )
 	{
+#ifdef BYTEMATCH_RETAIL
+		m_pUserData = new unsigned char[ length ];
+#else
 		m_pUserData = new unsigned char[ALIGN_VALUE( length, 4 )];
+#endif
 		Q_memcpy( m_pUserData, userData, length );
 	}
 	else
