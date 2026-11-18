@@ -249,13 +249,18 @@ public:  // Read only public !!!!
   IVP_FLOAT           sum_extra_radius;   // sum of extra radius around each object
 
   // calculated by IVP_Mindist::recalc_mindist
+#ifndef BYTEMATCH_RETAIL
   IVP_FLOAT       len_numerator; 
+#endif
 #ifdef IVP_HALFSPACE_OPTIMIZATION_ENABLED
     IVP_FLOAT             contact_dot_diff_center; // contact plane * ( core0->pos - core1->pos),
     IVP_DOUBLE            sum_angular_hull_time; // sum of center hull time, needs IVP_DOUBLE 
 #endif    
 
   IVP_U_Float_Point contact_plane;  //  needed for halfspace optimization, normized surface normal, only valid if recalc_result == IVP_MDRR_OK  
+#ifdef BYTEMATCH_RETAIL
+  IVP_FLOAT       len_numerator; 
+#endif
 
         IVP_Synapse *get_mindist_synapse(int i)     { return &synapse[i]; };
   const IVP_Synapse *get_mindist_synapse(int i)const{ return &synapse[i]; };

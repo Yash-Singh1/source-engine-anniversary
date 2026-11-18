@@ -8,6 +8,9 @@
 #ifndef IVP_SET_INCLUDED
 #	include <ivu_set.hxx>
 #endif
+#if defined(BYTEMATCH_RETAIL) && !defined(_IVP_LISTENER_OBJECT_INCLUDED)
+#	include <ivp_listener_object.hxx>
+#endif
 
 class IVP_Mindist_Base;
 
@@ -44,6 +47,10 @@ public:
    *********************************************************************/
   IVP_BOOL dont_check_for_unmoveables;
   
+#ifdef BYTEMATCH_RETAIL
+  IVP_BOOL manage_sleeping_cores;
+#endif
+
   /*********************************************************************
    *	Name:	    	exit_policy_extra_radius  	
    *	Default:	0.5f[m]
@@ -64,7 +71,9 @@ public:
    *********************************************************************/
   IVP_FLOAT exit_policy_extra_time;   // def 0.5f[s]
   
+#ifndef BYTEMATCH_RETAIL
   IVP_BOOL manage_sleeping_cores;
+#endif
 
   IVP_Template_Phantom();
 };
@@ -91,7 +100,11 @@ public:
  *	Note:		To access the IVP_Controller_Phantom call
  *			IVP_Real_Object::get_controller_phantom()
  *********************************************************************/
+#ifdef BYTEMATCH_RETAIL
+class IVP_Controller_Phantom : public IVP_Listener_Object {
+#else
 class IVP_Controller_Phantom {
+#endif
   friend class IVP_Mindist_Manager;
 protected:
   IVP_Real_Object *object;
@@ -102,6 +115,9 @@ protected:
     IVP_VHash_Store *mindist_object_counter;
     IVP_VHash_Store *mindist_core_counter;
   IVP_U_Set_Active<IVP_Core> *set_of_cores;   // optional set of objects
+#ifdef BYTEMATCH_RETAIL
+  IVP_U_Set<IVP_Core> *sleeping_cores;   // intruding cores that went to sleep, see manage_sleeping_cores
+#endif
   IVP_Time time_of_last_set_transformation;
 
   friend class IVP_Real_Object;
@@ -116,6 +132,14 @@ public:
   IVP_U_Set_Active<IVP_Core> *get_intruding_cores() const { return set_of_cores ; };  // returns NULL if manage_set was IVP_FALSE 
   IVP_U_Set_Active<IVP_Mindist_Base> *get_intruding_mindists(){ return &set_of_mindists ; };             // returns mindist
   IVP_Real_Object *get_object() const { return object; };
+#ifdef BYTEMATCH_RETAIL
+  void wake_all_sleeping_objects();
+
+  virtual void event_object_deleted( IVP_Event_Object *);
+  virtual void event_object_created( IVP_Event_Object *);
+  virtual void event_object_revived( IVP_Event_Object *);
+  virtual void event_object_frozen ( IVP_Event_Object *);
+#else
   void wake_all_sleeping_objects()
   {
       if (object)
@@ -124,6 +148,7 @@ public:
       }
       // TODO(mastercoms): what is all?
   }
+#endif
   
   void add_listener_phantom( IVP_Listener_Phantom *listener);
   void remove_listener_phantom( IVP_Listener_Phantom *listener);

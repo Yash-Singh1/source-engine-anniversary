@@ -27,6 +27,33 @@ void IVP_Controller_Phantom::remove_listener_phantom( IVP_Listener_Phantom *list
 }
 
 IVP_Controller_Phantom::~IVP_Controller_Phantom(){
+#ifdef BYTEMATCH_RETAIL
+	if (set_of_cores)
+	{
+		IVP_U_Set_Enumerator<IVP_Core> enumerator(set_of_cores);
+		IVP_Core *core;
+		while ( (core = enumerator.get_next_element(set_of_cores)) != NULL )
+		{
+			for (int i = listeners.len()-1;i>=0;i--)
+			{
+				IVP_Listener_Phantom *l = listeners.element_at(i);
+				l->core_left_volume(this,core);
+			}
+		}
+	}
+	if (sleeping_cores)
+	{
+		IVP_U_Set_Enumerator<IVP_Core> enumerator(sleeping_cores);
+		while ( IVP_Core *core = enumerator.get_next_element(sleeping_cores) )
+		{
+			for (int i = listeners.len()-1;i>=0;i--)
+			{
+				IVP_Listener_Phantom *l = listeners.element_at(i);
+				l->core_left_volume(this,core);
+			}
+		}
+	}
+#endif
 	for (int i = listeners.len()-1;i>=0;i--){
 		IVP_Listener_Phantom *l = listeners.element_at(i);
 		l->phantom_is_going_to_be_deleted_event(this);
@@ -36,8 +63,76 @@ IVP_Controller_Phantom::~IVP_Controller_Phantom(){
 	P_DELETE(mindist_object_counter);
 	
 	P_DELETE(set_of_objects);
+#ifdef BYTEMATCH_RETAIL
+	if (sleeping_cores)
+	{
+		IVP_U_Set_Enumerator<IVP_Core> enumerator(sleeping_cores);
+		while ( IVP_Core *core = enumerator.get_next_element(sleeping_cores) )
+		{
+			core->objects.element_at(0)->remove_listener_object(this);
+		}
+	}
+	P_DELETE(sleeping_cores);
+#endif
 	P_DELETE(set_of_cores);
 }
+
+#ifdef BYTEMATCH_RETAIL
+void IVP_Controller_Phantom::wake_all_sleeping_objects()
+{
+	if (sleeping_cores)
+	{
+		IVP_U_Set_Enumerator<IVP_Core> enumerator(sleeping_cores);
+		while ( IVP_Core *core = enumerator.get_next_element(sleeping_cores) )
+		{
+			core->objects.element_at(0)->ensure_in_simulation();
+		}
+	}
+	if (set_of_cores)
+	{
+		IVP_U_Set_Enumerator<IVP_Core> enumerator(set_of_cores);
+		while ( IVP_Core *core = enumerator.get_next_element(set_of_cores) )
+		{
+			core->objects.element_at(0)->ensure_in_simulation();
+		}
+	}
+}
+
+void IVP_Controller_Phantom::event_object_revived( IVP_Event_Object *event )
+{
+	if ( !sleeping_cores->find_element( event->real_object->get_core() ) )
+		return;
+
+	IVP_Real_Object *object_revived = event->real_object;
+	object_revived->remove_listener_object( this );
+	sleeping_cores->remove_element( object_revived->get_core() );
+	if ( set_of_cores )
+	{
+		IVP_Core *core = event->real_object->get_core();
+		if ( !mindist_core_counter->find_elem( core ) )
+		{
+			for (int i = listeners.len()-1;i>=0;i--)
+			{
+				IVP_Listener_Phantom *l = listeners.element_at(i);
+				l->core_left_volume(this,core);
+			}
+		}
+	}
+}
+
+void IVP_Controller_Phantom::event_object_deleted( IVP_Event_Object *event )
+{
+	event_object_revived( event );
+}
+
+void IVP_Controller_Phantom::event_object_created( IVP_Event_Object * )
+{
+}
+
+void IVP_Controller_Phantom::event_object_frozen( IVP_Event_Object * )
+{
+}
+#endif
 
 void IVP_Controller_Phantom::mindist_entered_volume(class IVP_Mindist *mindist)
 {
@@ -86,6 +181,14 @@ void IVP_Controller_Phantom::mindist_entered_volume(class IVP_Mindist *mindist)
 		{
 			mindist_core_counter->add_elem( other_core, (void *)1);
 			set_of_cores->add_element(other_core);
+#ifdef BYTEMATCH_RETAIL
+			if ( sleeping_cores->find_element( other_core ) )
+			{
+				other_object->remove_listener_object( this );
+				sleeping_cores->remove_element( other_object->get_core() );
+			}
+			else
+#endif
 			for (int i = listeners.len()-1;i>=0;i--)
 			{
 				IVP_Listener_Phantom *l = listeners.element_at(i);
@@ -147,6 +250,14 @@ void IVP_Controller_Phantom:: mindist_left_volume(class IVP_Mindist *mindist)
 		{
 			mindist_core_counter->remove_elem( other_core);
 			set_of_cores->remove_element(other_core);
+#ifdef BYTEMATCH_RETAIL
+			if ( other_object->get_movement_state() == IVP_MT_NOT_SIM )
+			{
+				other_object->add_listener_object( this );
+				sleeping_cores->add_element( other_object->get_core() );
+			}
+			else
+#endif
 			for (int i = listeners.len()-1;i>=0;i--)
 			{
 				IVP_Listener_Phantom *l = listeners.element_at(i);
@@ -181,10 +292,19 @@ set_of_mindists(16)
 	{
 		set_of_cores = new IVP_U_Set_Active<IVP_Core>(16);
 		mindist_core_counter = new IVP_VHash_Store(16);
+#ifdef BYTEMATCH_RETAIL
+		if (templat->manage_sleeping_cores)
+		{
+			sleeping_cores = new IVP_U_Set<IVP_Core>(16);
+		}
+#endif
 	} 
 	else 
 	{
 		set_of_cores = NULL;
+#ifdef BYTEMATCH_RETAIL
+		sleeping_cores = NULL;
+#endif
 		mindist_core_counter = NULL;
 	}
 	
