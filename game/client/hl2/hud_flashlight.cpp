@@ -29,6 +29,7 @@ class CHudFlashlight : public CHudElement, public vgui::Panel
 public:
 	CHudFlashlight( const char *pElementName );
 	virtual void ApplySchemeSettings( vgui::IScheme *pScheme );
+	virtual bool ShouldDraw( void );
 
 protected:
 	virtual void Paint();
@@ -83,6 +84,17 @@ void CHudFlashlight::ApplySchemeSettings( vgui::IScheme *pScheme )
 void CHudFlashlight::Reset( void )
 {
 	g_pClientMode->GetViewportAnimationController()->StartAnimationSequence( "SuitFlashlightOn" ); 
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: only the episodes show the flashlight meter
+//-----------------------------------------------------------------------------
+bool CHudFlashlight::ShouldDraw( void )
+{
+	if ( !HL2_EPISODIC_ACTIVE() )
+		return false;
+
+	return CHudElement::ShouldDraw();
 }
 
 //-----------------------------------------------------------------------------
