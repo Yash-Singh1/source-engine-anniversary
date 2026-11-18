@@ -512,8 +512,10 @@ and `IModelLoader`/`CanCheat` changes) and later with `bytematch` 88902342
 Measured with `lane-engine-core2-scratch/run.sh` (engine/ objects; 8713
 functions once `rpt_engine` is compiled).
 
-Totals: 7841/8702 (77.19% bytes) at 72205168 -> 8371/8713 (88.87%). Whole
-engine.dylib: 12429/12997 functions, 88.13% of bytes. No function matched at
+Totals: 7841/8702 (77.19% bytes) at 72205168 -> 8374/8713 (88.89%) after a
+clean rebuild with the patched stub SDK (longjmp __dead2 fixes Host_Error,
+Host_EndGame, Host_AbortServer). Whole engine.dylib: 12432/12997 functions,
+88.15% of bytes. No function matched at
 the start is lost.
 
 ## Per object, engine-core file set (start -> end / total)
@@ -547,7 +549,6 @@ engine-render merge, not this lane.
 |---|---|---|
 | host | `Host_WriteConfiguration`, `Host_ReadConfiguration`, `Host_ReadPreStartupConfiguration` | logic is retail's; register/stack-slot allocation differs (`g_bConfigCfgExecuted` loads as movzx/cmp instead of xor/test) |
 | host | `Host_Init` | IThreadPool::Start(params) overload |
-| host | `Host_Error`, `Host_EndGame`, `Host_AbortServer` | 10.9 stub SDK `longjmp` without `__dead2` |
 | host_cmd | `status`, `Host_Status_PrintClient` | not investigated |
 | host_cmd | `Host_VoiceRecordStop_f`, `voiceconvar_file_changed_f`, `sv_use_steam_voice` | 2013 voice API (Voice_RecordStop, CL_SendVoicePacket(true)) |
 | sv_main | `SV_CreateBaseline`, `__GLOBAL__I_a` | 2013 voice init: `SVC_VoiceInit("vaudio_speex"/"", 5)`, no sv_voicecodec |
