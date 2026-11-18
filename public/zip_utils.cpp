@@ -28,6 +28,9 @@
 // Not every user of zip utils wants to link LZMA encoder
 #ifdef ZIP_SUPPORT_LZMA_ENCODE
 #include "lzma/lzma.h"
+#include "../utils/lzma/C/7zVersion.h"
+#define LZMA_SDK_VERSION_MAJOR MY_VER_MAJOR
+#define LZMA_SDK_VERSION_MINOR MY_VER_MINOR
 #endif
 
 #include "tier0/memdbgon.h"
