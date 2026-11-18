@@ -7,6 +7,7 @@ Retail: depot 223 `bin/sourcevr.dylib`, LC_VERSION_MIN 10.5, links
 |---|---:|
 | lane start | 130 / 141 |
 | this lane | 138 / 141 (`sourcevirtualreality.o` 100%) |
+| + 10.5 tier1/mathlib for sourcevr, `SinCos` header condition | 141 / 141 |
 
 Retail is the SteamVR build (`steam/steamvr.h`, `vr::IHmd` / `IHmd_005`, `VR_Init`
 from steam_api), not the leak's OpenVR port. The source is the same apart from the
