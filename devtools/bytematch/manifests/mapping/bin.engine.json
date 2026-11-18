@@ -1,0 +1,295 @@
+{
+ "module": "bin/engine",
+ "our_target": "engine",
+ "our_games": null,
+ "project_dir": "engine",
+ "order_rule_inversions": 0,
+ "counts": {
+  "exact": 225,
+  "moved": 25,
+  "missing": 2
+ },
+ "counts_sdk": {
+  "missing": 227,
+  "exact": 18,
+  "moved": 7
+ },
+ "diff": {
+  "add": [
+   {
+    "path": "common/imageutils.cpp",
+    "in_our_tree": "exact",
+    "in_sdk": "missing",
+    "alternatives": null
+   },
+   {
+    "path": "dedicated/console/textconsole.cpp",
+    "in_our_tree": "exact",
+    "in_sdk": "missing",
+    "alternatives": null
+   },
+   {
+    "path": "dedicated/console/TextConsoleUnix.cpp",
+    "in_our_tree": "exact",
+    "in_sdk": "missing",
+    "alternatives": null
+   },
+   {
+    "path": "engine/mm_events.cpp",
+    "in_our_tree": "missing",
+    "in_sdk": "missing",
+    "alternatives": null
+   },
+   {
+    "path": "engine/workshop.cpp",
+    "in_our_tree": "missing",
+    "in_sdk": "missing",
+    "alternatives": null
+   }
+  ],
+  "remove": [
+   {
+    "path": "engine/render_pch.cpp",
+    "note": null
+   },
+   {
+    "path": "engine/server_pch.cpp",
+    "note": null
+   },
+   {
+    "path": "engine/sv_uploaddata.cpp",
+    "note": null
+   },
+   {
+    "path": "public/crtmemdebug.cpp",
+    "note": null
+   },
+   {
+    "path": "engine/dt_test.cpp",
+    "note": null
+   },
+   {
+    "path": "public/dt_utlvector_common.cpp",
+    "note": null
+   },
+   {
+    "path": "public/dt_utlvector_recv.cpp",
+    "note": null
+   },
+   {
+    "path": "public/dt_utlvector_send.cpp",
+    "note": null
+   },
+   {
+    "path": "engine/filetransfermgr.cpp",
+    "note": null
+   },
+   {
+    "path": "common/language.cpp",
+    "note": null
+   },
+   {
+    "path": "engine/net_synctags.cpp",
+    "note": null
+   },
+   {
+    "path": "public/networkvar.cpp",
+    "note": null
+   },
+   {
+    "path": "engine/quakedef.cpp",
+    "note": null
+   },
+   {
+    "path": "common/randoverride.cpp",
+    "note": null
+   },
+   {
+    "path": "public/vallocator.cpp",
+    "note": null
+   },
+   {
+    "path": "public/editor_sendcommand.cpp",
+    "note": null
+   },
+   {
+    "path": "public/scratchpad3d.cpp",
+    "note": null
+   },
+   {
+    "path": "engine/masterserver.cpp",
+    "note": null
+   },
+   {
+    "path": "engine/audio/voice_record_sdl.cpp",
+    "note": null
+   },
+   {
+    "path": "engine/audio/snd_posix.cpp",
+    "note": null
+   },
+   {
+    "path": "engine/sys_stubwind.cpp",
+    "note": null
+   },
+   {
+    "path": "engine/client_pch.cpp",
+    "note": null
+   },
+   {
+    "path": "engine/LoadScreenUpdate.cpp",
+    "note": null
+   },
+   {
+    "path": "engine/audio/MPAHeader.cpp",
+    "note": null
+   },
+   {
+    "path": "engine/audio/VBRHeader.cpp",
+    "note": null
+   }
+  ],
+  "path_differs": [
+   {
+    "retail": "engine/audio/private/circularbuffer.cpp",
+    "ours": "engine/audio/circularbuffer.cpp"
+   },
+   {
+    "retail": "engine/audio/private/MPAFile.cpp",
+    "ours": "engine/audio/MPAFile.cpp"
+   },
+   {
+    "retail": "engine/audio/private/snd_dev_common.cpp",
+    "ours": "engine/audio/snd_dev_common.cpp"
+   },
+   {
+    "retail": "engine/audio/private/snd_dev_mac_audioqueue.cpp",
+    "ours": "engine/audio/snd_dev_mac_audioqueue.cpp"
+   },
+   {
+    "retail": "engine/audio/private/snd_dev_openal.cpp",
+    "ours": "engine/audio/snd_dev_openal.cpp"
+   },
+   {
+    "retail": "engine/audio/private/snd_dma.cpp",
+    "ours": "engine/audio/snd_dma.cpp"
+   },
+   {
+    "retail": "engine/audio/private/snd_dsp.cpp",
+    "ours": "engine/audio/snd_dsp.cpp"
+   },
+   {
+    "retail": "engine/audio/private/snd_mix.cpp",
+    "ours": "engine/audio/snd_mix.cpp"
+   },
+   {
+    "retail": "engine/audio/private/snd_mp3_source.cpp",
+    "ours": "engine/audio/snd_mp3_source.cpp"
+   },
+   {
+    "retail": "engine/audio/private/snd_sentence_mixer.cpp",
+    "ours": "engine/audio/snd_sentence_mixer.cpp"
+   },
+   {
+    "retail": "engine/audio/private/snd_wave_data.cpp",
+    "ours": "engine/audio/snd_wave_data.cpp"
+   },
+   {
+    "retail": "engine/audio/private/snd_wave_mixer.cpp",
+    "ours": "engine/audio/snd_wave_mixer.cpp"
+   },
+   {
+    "retail": "engine/audio/private/snd_wave_mixer_adpcm.cpp",
+    "ours": "engine/audio/snd_wave_mixer_adpcm.cpp"
+   },
+   {
+    "retail": "engine/audio/private/snd_wave_mixer_mp3.cpp",
+    "ours": "engine/audio/snd_wave_mixer_mp3.cpp"
+   },
+   {
+    "retail": "engine/audio/private/snd_wave_source.cpp",
+    "ours": "engine/audio/snd_wave_source.cpp"
+   },
+   {
+    "retail": "engine/audio/private/snd_wave_temp.cpp",
+    "ours": "engine/audio/snd_wave_temp.cpp"
+   },
+   {
+    "retail": "engine/audio/private/snd_win.cpp",
+    "ours": "engine/audio/snd_win.cpp"
+   },
+   {
+    "retail": "engine/audio/private/voice.cpp",
+    "ours": "engine/audio/voice.cpp"
+   },
+   {
+    "retail": "engine/audio/private/voice_gain.cpp",
+    "ours": "engine/audio/voice_gain.cpp"
+   },
+   {
+    "retail": "engine/audio/private/voice_mixer_controls_openal.cpp",
+    "ours": "engine/audio/voice_mixer_controls_openal.cpp"
+   },
+   {
+    "retail": "engine/audio/private/voice_record_mac_audioqueue.cpp",
+    "ours": "engine/audio/voice_record_mac_audioqueue.cpp"
+   },
+   {
+    "retail": "engine/audio/private/voice_record_openal.cpp",
+    "ours": "engine/audio/voice_record_openal.cpp"
+   },
+   {
+    "retail": "engine/audio/private/voice_sound_engine_interface.cpp",
+    "ours": "engine/audio/voice_sound_engine_interface.cpp"
+   },
+   {
+    "retail": "engine/audio/private/voice_wavefile.cpp",
+    "ours": "engine/audio/voice_wavefile.cpp"
+   },
+   {
+    "retail": "engine/audio/private/vox.cpp",
+    "ours": "engine/audio/vox.cpp"
+   }
+  ],
+  "order": {
+   "common": 247,
+   "in_order_lis": 77,
+   "need_moving": 170,
+   "identical": false
+  },
+  "libraries": {
+   "retail": [
+    "bzip2",
+    "dmxloader",
+    "tier1",
+    "libreplay_common.a",
+    "tier2",
+    "vgui_controls",
+    "matsys_controls",
+    "bitmap",
+    "vtf",
+    "appframework",
+    "mathlib",
+    "tier3"
+   ],
+   "ours": [
+    "vgui_controls",
+    "dmxloader",
+    "tier1",
+    "tier2",
+    "tier3",
+    "bitmap",
+    "appframework",
+    "vtf",
+    "mathlib",
+    "matsys_controls"
+   ],
+   "retail_only": [
+    "bzip2",
+    "libreplay_common.a"
+   ],
+   "ours_only": [],
+   "same_relative_order": false
+  }
+ }
+}

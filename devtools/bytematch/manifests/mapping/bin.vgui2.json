@@ -1,0 +1,62 @@
+{
+ "module": "bin/vgui2",
+ "our_target": "vgui2",
+ "our_games": null,
+ "project_dir": "vgui2/src",
+ "order_rule_inversions": 0,
+ "counts": {
+  "exact": 16
+ },
+ "counts_sdk": {
+  "exact": 3,
+  "missing": 12,
+  "moved": 1
+ },
+ "diff": {
+  "add": [],
+  "remove": [
+   {
+    "path": "vgui2/src/fileimage.cpp",
+    "note": null
+   },
+   {
+    "path": "public/filesystem_helpers.cpp",
+    "note": null
+   },
+   {
+    "path": "vgui2/src/MemoryBitmap.cpp",
+    "note": null
+   },
+   {
+    "path": "vgui2/src/MessageListener.cpp",
+    "note": null
+   },
+   {
+    "path": "public/tier0/memoverride.cpp",
+    "note": "no retail Mac module links a memoverride object: Valve's Mac build has no malloc override (malloc from libSystem, operator new from libstdc++)"
+   }
+  ],
+  "path_differs": [],
+  "order": {
+   "common": 16,
+   "in_order_lis": 11,
+   "need_moving": 5,
+   "identical": false
+  },
+  "libraries": {
+   "retail": [
+    "tier1",
+    "tier2",
+    "tier3"
+   ],
+   "ours": [
+    "tier1",
+    "tier2",
+    "tier3"
+   ],
+   "retail_only": [],
+   "ours_only": [],
+   "same_relative_order": true
+  }
+ }
+}

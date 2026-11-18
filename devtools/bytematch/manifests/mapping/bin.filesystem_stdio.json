@@ -1,0 +1,52 @@
+{
+ "module": "bin/filesystem_stdio",
+ "our_target": "filesystem_stdio",
+ "our_games": null,
+ "project_dir": "filesystem",
+ "order_rule_inversions": 0,
+ "counts": {
+  "exact": 8
+ },
+ "counts_sdk": {
+  "exact": 2,
+  "missing": 6
+ },
+ "diff": {
+  "add": [],
+  "remove": [
+   {
+    "path": "filesystem/packfile.cpp",
+    "note": null
+   },
+   {
+    "path": "public/tier0/memoverride.cpp",
+    "note": "no retail Mac module links a memoverride object: Valve's Mac build has no malloc override (malloc from libSystem, operator new from libstdc++)"
+   }
+  ],
+  "path_differs": [],
+  "order": {
+   "common": 8,
+   "in_order_lis": 4,
+   "need_moving": 4,
+   "identical": false
+  },
+  "libraries": {
+   "retail": [
+    "libcryptopp.a",
+    "vpklib",
+    "tier2",
+    "tier1"
+   ],
+   "ours": [
+    "vpklib",
+    "tier1",
+    "tier2"
+   ],
+   "retail_only": [
+    "libcryptopp.a"
+   ],
+   "ours_only": [],
+   "same_relative_order": false
+  }
+ }
+}

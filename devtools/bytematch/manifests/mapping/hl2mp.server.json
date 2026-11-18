@@ -1,0 +1,136 @@
+{
+ "module": "hl2mp/server",
+ "our_target": "server",
+ "our_games": "hl2mp",
+ "project_dir": "game/server",
+ "order_rule_inversions": 2,
+ "counts": {
+  "exact": 541
+ },
+ "counts_sdk": {
+  "exact": 541
+ },
+ "diff": {
+  "add": [],
+  "remove": [
+   {
+    "path": "game/server/gamedll_replay.cpp",
+    "note": null
+   },
+   {
+    "path": "game/server/ai_basenpc_flyer_new.cpp",
+    "note": null
+   },
+   {
+    "path": "game/server/base_transmit_proxy.cpp",
+    "note": null
+   },
+   {
+    "path": "game/server/bitstring.cpp",
+    "note": null
+   },
+   {
+    "path": "game/shared/ehandle.cpp",
+    "note": null
+   },
+   {
+    "path": "game/shared/SceneCache.cpp",
+    "note": null
+   },
+   {
+    "path": "game/server/scratchpad_gamedll_helpers.cpp",
+    "note": null
+   },
+   {
+    "path": "game/server/tempmonster.cpp",
+    "note": null
+   },
+   {
+    "path": "public/filesystem_helpers.cpp",
+    "note": null
+   },
+   {
+    "path": "game/server/gamehandle.cpp",
+    "note": null
+   },
+   {
+    "path": "game/server/h_export.cpp",
+    "note": null
+   },
+   {
+    "path": "common/language.cpp",
+    "note": null
+   },
+   {
+    "path": "public/networkvar.cpp",
+    "note": null
+   },
+   {
+    "path": "public/registry.cpp",
+    "note": null
+   },
+   {
+    "path": "public/scratchpad3d.cpp",
+    "note": null
+   },
+   {
+    "path": "public/ScratchPadUtils.cpp",
+    "note": null
+   },
+   {
+    "path": "game/shared/sheetsimulator.cpp",
+    "note": null
+   },
+   {
+    "path": "game/server/stdafx.cpp",
+    "note": null
+   },
+   {
+    "path": "game/server/grenadethrown.cpp",
+    "note": null
+   },
+   {
+    "path": "game/shared/hl2/survival_gamerules.cpp",
+    "note": null
+   },
+   {
+    "path": "game/server/hl2mp/hl2mp_bot_temp.cpp",
+    "note": null
+   },
+   {
+    "path": "public/tier0/memoverride.cpp",
+    "note": "no retail Mac module links a memoverride object: Valve's Mac build has no malloc override (malloc from libSystem, operator new from libstdc++)"
+   }
+  ],
+  "path_differs": [],
+  "order": {
+   "common": 541,
+   "in_order_lis": 248,
+   "need_moving": 293,
+   "identical": false
+  },
+  "libraries": {
+   "retail": [
+    "choreoobjects",
+    "tier1",
+    "particles",
+    "dmxloader",
+    "mathlib",
+    "tier3",
+    "tier2"
+   ],
+   "ours": [
+    "particles",
+    "dmxloader",
+    "tier1",
+    "tier2",
+    "tier3",
+    "mathlib",
+    "choreoobjects"
+   ],
+   "retail_only": [],
+   "ours_only": [],
+   "same_relative_order": false
+  }
+ }
+}

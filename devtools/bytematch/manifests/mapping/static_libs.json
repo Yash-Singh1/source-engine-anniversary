@@ -1,0 +1,2458 @@
+{
+ "libappframework.a": {
+  "our_target": "appframework",
+  "retail_members": {
+   "AppSystemGroup": [
+    "bin/engine",
+    "bin/launcher"
+   ],
+   "glmrendererinfo_osx": [
+    "bin/launcher"
+   ],
+   "posixapp": [
+    "bin/launcher"
+   ],
+   "sdlmgr": [
+    "bin/launcher",
+    "bin/shaderapidx9"
+   ]
+  },
+  "retail_members_not_in_ours": [],
+  "ours_never_pulled_by_retail": [
+   "public/filesystem_init.cpp"
+  ]
+ },
+ "libbitmap.a": {
+  "our_target": "bitmap",
+  "retail_members": {
+   "bitmap": [
+    "bin/vtex_dll",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "lostcoast/client"
+   ],
+   "colorconversion": [
+    "bin/GameUI",
+    "bin/engine",
+    "bin/materialsystem",
+    "bin/vguimatsurface",
+    "bin/vtex_dll",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "float_bm": [
+    "bin/GameUI",
+    "bin/engine",
+    "bin/materialsystem",
+    "bin/vguimatsurface",
+    "bin/vtex_dll",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "float_bm2": [
+    "bin/GameUI",
+    "bin/engine",
+    "bin/materialsystem",
+    "bin/vguimatsurface",
+    "bin/vtex_dll",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "float_cube": [
+    "bin/engine"
+   ],
+   "imageformat": [
+    "bin/GameUI",
+    "bin/engine",
+    "bin/materialsystem",
+    "bin/shaderapidx9",
+    "bin/vguimatsurface",
+    "bin/vtex_dll",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "psd": [
+    "bin/vtex_dll"
+   ],
+   "resample": [
+    "bin/engine",
+    "bin/materialsystem",
+    "bin/vtex_dll",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "tgaloader": [
+    "bin/GameUI",
+    "bin/vtex_dll"
+   ],
+   "tgawriter": [
+    "bin/GameUI",
+    "bin/engine",
+    "bin/materialsystem",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ]
+  },
+  "retail_members_not_in_ours": [],
+  "ours_never_pulled_by_retail": [
+   "bitmap/ImageByteSwap.cpp",
+   "bitmap/float_bm3.cpp",
+   "bitmap/float_bm_bilateral_filter.cpp"
+  ]
+ },
+ "libbzip2.a": {
+  "our_target": "bzip2",
+  "retail_members": {
+   "blocksort": [
+    "bin/engine",
+    "bin/replay"
+   ],
+   "bzlib": [
+    "bin/engine",
+    "bin/replay"
+   ],
+   "compress": [
+    "bin/engine",
+    "bin/replay"
+   ],
+   "crctable": [
+    "bin/engine",
+    "bin/replay"
+   ],
+   "decompress": [
+    "bin/engine",
+    "bin/replay"
+   ],
+   "huffman": [
+    "bin/engine",
+    "bin/replay"
+   ],
+   "randtable": [
+    "bin/engine",
+    "bin/replay"
+   ]
+  },
+  "retail_members_not_in_ours": [],
+  "ours_never_pulled_by_retail": [
+   "utils/bzip2/bzip2.c"
+  ]
+ },
+ "libchoreoobjects.a": {
+  "our_target": "choreoobjects",
+  "retail_members": {
+   "choreoactor": [
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ],
+   "choreochannel": [
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ],
+   "choreoevent": [
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ],
+   "choreoscene": [
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ]
+  },
+  "retail_members_not_in_ours": [],
+  "ours_never_pulled_by_retail": [
+   "game/shared/sceneimage.cpp"
+  ]
+ },
+ "libcoroutine_osx.a": {
+  "our_target": null,
+  "retail_members": {
+   "coroutine": [
+    "bin/libvstdlib"
+   ]
+  },
+  "retail_members_not_in_ours": [],
+  "ours_never_pulled_by_retail": []
+ },
+ "libdmxloader.a": {
+  "our_target": "dmxloader",
+  "retail_members": {
+   "dmxattribute": [
+    "bin/engine",
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ],
+   "dmxelement": [
+    "bin/engine",
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ],
+   "dmxloader": [
+    "bin/engine",
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ],
+   "dmxloadertext": [
+    "bin/engine",
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ],
+   "dmxserializationdictionary": [
+    "bin/engine"
+   ]
+  },
+  "retail_members_not_in_ours": [],
+  "ours_never_pulled_by_retail": []
+ },
+ "libhavana_constraints.a": {
+  "our_target": "havana_constraints",
+  "retail_members": {
+   "ball_socket_constraint": [
+    "bin/vphysics"
+   ],
+   "breakable_constraint": [
+    "bin/vphysics"
+   ],
+   "constraint": [
+    "bin/vphysics"
+   ],
+   "fixed_constraint": [
+    "bin/vphysics"
+   ],
+   "hinge_bp_builder": [
+    "bin/vphysics"
+   ],
+   "hinge_constraint": [
+    "bin/vphysics"
+   ],
+   "local_constraint_system": [
+    "bin/vphysics"
+   ],
+   "prismatic_constraint": [
+    "bin/vphysics"
+   ],
+   "pulley_constraint": [
+    "bin/vphysics"
+   ],
+   "ragdoll_constraint": [
+    "bin/vphysics"
+   ],
+   "ragdoll_constraint_bp_builder": [
+    "bin/vphysics"
+   ],
+   "rigid_body_binary_effector": [
+    "bin/vphysics"
+   ],
+   "rigid_body_core": [
+    "bin/vphysics"
+   ],
+   "stiff_spring_constraint": [
+    "bin/vphysics"
+   ]
+  },
+  "retail_members_not_in_ours": [],
+  "ours_never_pulled_by_retail": [
+   "ivp/havana/havok/hk_physics/constraint/limited_ball_socket/limited_ball_socket_constraint.cpp"
+  ]
+ },
+ "libhk_base.a": {
+  "our_target": "hk_base",
+  "retail_members": {
+   "array": [
+    "bin/vphysics"
+   ],
+   "memory": [
+    "bin/vphysics"
+   ]
+  },
+  "retail_members_not_in_ours": [],
+  "ours_never_pulled_by_retail": [
+   "ivp/havana/havok/hk_base/base_types.cpp",
+   "ivp/havana/havok/hk_base/console.cpp",
+   "ivp/havana/havok/hk_base/hash/hash.cpp",
+   "ivp/havana/havok/hk_base/id_server/id_server.cpp",
+   "ivp/havana/havok/hk_base/memory/memory_util.cpp",
+   "ivp/havana/havok/hk_base/stopwatch/stopwatch.cpp",
+   "ivp/havana/havok/hk_base/string/string.cpp"
+  ]
+ },
+ "libhk_math.a": {
+  "our_target": "hk_math",
+  "retail_members": {
+   "densematrix_util": [
+    "bin/vphysics"
+   ],
+   "math": [
+    "bin/vphysics"
+   ],
+   "matrix3": [
+    "bin/vphysics"
+   ],
+   "quaternion": [
+    "bin/vphysics"
+   ],
+   "rotation": [
+    "bin/vphysics"
+   ],
+   "transform": [
+    "bin/vphysics"
+   ],
+   "vector3": [
+    "bin/vphysics"
+   ],
+   "vector3_util": [
+    "bin/vphysics"
+   ]
+  },
+  "retail_members_not_in_ours": [],
+  "ours_never_pulled_by_retail": [
+   "ivp/havana/havok/hk_math/densematrix.cpp",
+   "ivp/havana/havok/hk_math/eulerangles.cpp",
+   "ivp/havana/havok/hk_math/gauss_elimination/gauss_elimination.cpp",
+   "ivp/havana/havok/hk_math/incr_lu/incr_lu.cpp",
+   "ivp/havana/havok/hk_math/lcp/lcp_solver.cpp",
+   "ivp/havana/havok/hk_math/odesolve.cpp",
+   "ivp/havana/havok/hk_math/plane.cpp",
+   "ivp/havana/havok/hk_math/quaternion/quaternion_util.cpp",
+   "ivp/havana/havok/hk_math/spatial_matrix.cpp",
+   "ivp/havana/havok/hk_math/spatial_vector.cpp"
+  ]
+ },
+ "libivp_compactbuilder.a": {
+  "our_target": "ivp_compactbuilder",
+  "retail_members": {
+   "ivp_compact_ledge_gen": [
+    "bin/vphysics"
+   ],
+   "ivp_compact_recursive": [
+    "bin/vphysics"
+   ],
+   "ivp_halfspacesoup": [
+    "bin/vphysics"
+   ],
+   "ivp_i_fpoint_vhash": [
+    "bin/vphysics"
+   ],
+   "ivp_i_point_vhash": [
+    "bin/vphysics"
+   ],
+   "ivp_object_polygon_tetra": [
+    "bin/vphysics"
+   ],
+   "ivp_rot_inertia_solver": [
+    "bin/vphysics"
+   ],
+   "ivp_surbuild_halfspacesoup": [
+    "bin/vphysics"
+   ],
+   "ivp_surbuild_ledge_soup": [
+    "bin/vphysics"
+   ],
+   "ivp_surbuild_pointsoup": [
+    "bin/vphysics"
+   ],
+   "ivp_surbuild_polygon_convex": [
+    "bin/vphysics"
+   ],
+   "ivp_templates_intern": [
+    "bin/vphysics"
+   ],
+   "qhull": [
+    "bin/vphysics"
+   ],
+   "qhull_geom": [
+    "bin/vphysics"
+   ],
+   "qhull_geom2": [
+    "bin/vphysics"
+   ],
+   "qhull_global": [
+    "bin/vphysics"
+   ],
+   "qhull_io": [
+    "bin/vphysics"
+   ],
+   "qhull_mem": [
+    "bin/vphysics"
+   ],
+   "qhull_merge": [
+    "bin/vphysics"
+   ],
+   "qhull_poly": [
+    "bin/vphysics"
+   ],
+   "qhull_poly2": [
+    "bin/vphysics"
+   ],
+   "qhull_qset": [
+    "bin/vphysics"
+   ],
+   "qhull_stat": [
+    "bin/vphysics"
+   ],
+   "qhull_user": [
+    "bin/vphysics"
+   ]
+  },
+  "retail_members_not_in_ours": [],
+  "ours_never_pulled_by_retail": [
+   "ivp/ivp_compact_builder/3dsimport_co.cxx",
+   "ivp/ivp_compact_builder/geompack_cutfac.cxx",
+   "ivp/ivp_compact_builder/geompack_cvdec3.cxx",
+   "ivp/ivp_compact_builder/geompack_drdec3.cxx",
+   "ivp/ivp_compact_builder/geompack_dsphdc.cxx",
+   "ivp/ivp_compact_builder/geompack_edght.cxx",
+   "ivp/ivp_compact_builder/geompack_initcb.cxx",
+   "ivp/ivp_compact_builder/geompack_insed3.cxx",
+   "ivp/ivp_compact_builder/geompack_insfac.cxx",
+   "ivp/ivp_compact_builder/geompack_insvr3.cxx",
+   "ivp/ivp_compact_builder/geompack_prime.cxx",
+   "ivp/ivp_compact_builder/geompack_ptpolg.cxx",
+   "ivp/ivp_compact_builder/geompack_resedg.cxx",
+   "ivp/ivp_compact_builder/ivp_compact_modify.cxx",
+   "ivp/ivp_compact_builder/ivp_convex_decompositor.cxx",
+   "ivp/ivp_compact_builder/ivp_surbuild_polyhdrn_cncv.cxx",
+   "ivp/ivp_compact_builder/ivp_surbuild_q12.cxx",
+   "ivp/ivp_compact_builder/ivp_tetra_intrude.cxx",
+   "ivp/ivp_compact_builder/ivv_cluster_min_hash.cxx"
+  ]
+ },
+ "libivp_physics.a": {
+  "our_target": "ivp_physics",
+  "retail_members": {
+   "ivp_3d_solver": [
+    "bin/vphysics"
+   ],
+   "ivp_actuator": [
+    "bin/vphysics"
+   ],
+   "ivp_actuator_spring": [
+    "bin/vphysics"
+   ],
+   "ivp_anomaly_manager": [
+    "bin/vphysics"
+   ],
+   "ivp_ball": [
+    "bin/vphysics"
+   ],
+   "ivp_betterdebugmanager": [
+    "bin/vphysics"
+   ],
+   "ivp_betterstatisticsmanager": [
+    "bin/vphysics"
+   ],
+   "ivp_buoyancy_solver": [
+    "bin/vphysics"
+   ],
+   "ivp_cache_object": [
+    "bin/vphysics"
+   ],
+   "ivp_calc_next_psi_solver": [
+    "bin/vphysics"
+   ],
+   "ivp_car_system": [
+    "bin/vphysics"
+   ],
+   "ivp_clustering_longrange": [
+    "bin/vphysics"
+   ],
+   "ivp_clustering_lrange_hash": [
+    "bin/vphysics"
+   ],
+   "ivp_coll_del_root_mindist": [
+    "bin/vphysics"
+   ],
+   "ivp_collision_filter": [
+    "bin/vphysics"
+   ],
+   "ivp_compact_ledge": [
+    "bin/vphysics"
+   ],
+   "ivp_compact_ledge_solver": [
+    "bin/vphysics"
+   ],
+   "ivp_compact_surface": [
+    "bin/vphysics"
+   ],
+   "ivp_constraint": [
+    "bin/vphysics"
+   ],
+   "ivp_constraint_car": [
+    "bin/vphysics"
+   ],
+   "ivp_constraint_local": [
+    "bin/vphysics"
+   ],
+   "ivp_controller_buoyancy": [
+    "bin/vphysics"
+   ],
+   "ivp_controller_phantom": [
+    "bin/vphysics"
+   ],
+   "ivp_controller_raycast_car": [
+    "bin/vphysics"
+   ],
+   "ivp_core": [
+    "bin/vphysics"
+   ],
+   "ivp_environment": [
+    "bin/vphysics"
+   ],
+   "ivp_friction": [
+    "bin/vphysics"
+   ],
+   "ivp_friction_gaps": [
+    "bin/vphysics"
+   ],
+   "ivp_great_matrix": [
+    "bin/vphysics"
+   ],
+   "ivp_hull_manager": [
+    "bin/vphysics"
+   ],
+   "ivp_i_collision_vhash": [
+    "bin/vphysics"
+   ],
+   "ivp_i_friction_hash": [
+    "bin/vphysics"
+   ],
+   "ivp_i_object_vhash": [
+    "bin/vphysics"
+   ],
+   "ivp_impact": [
+    "bin/vphysics"
+   ],
+   "ivp_material": [
+    "bin/vphysics"
+   ],
+   "ivp_mindist": [
+    "bin/vphysics"
+   ],
+   "ivp_mindist_event": [
+    "bin/vphysics"
+   ],
+   "ivp_mindist_friction": [
+    "bin/vphysics"
+   ],
+   "ivp_mindist_mcases": [
+    "bin/vphysics"
+   ],
+   "ivp_mindist_minimize": [
+    "bin/vphysics"
+   ],
+   "ivp_mindist_recursive": [
+    "bin/vphysics"
+   ],
+   "ivp_object": [
+    "bin/vphysics"
+   ],
+   "ivp_oo_watcher": [
+    "bin/vphysics"
+   ],
+   "ivp_performancecounter": [
+    "bin/vphysics"
+   ],
+   "ivp_physic": [
+    "bin/vphysics"
+   ],
+   "ivp_physic_private": [
+    "bin/vphysics"
+   ],
+   "ivp_polygon": [
+    "bin/vphysics"
+   ],
+   "ivp_range_manager": [
+    "bin/vphysics"
+   ],
+   "ivp_ray_solver": [
+    "bin/vphysics"
+   ],
+   "ivp_sim_unit": [
+    "bin/vphysics"
+   ],
+   "ivp_solver_core_reaction": [
+    "bin/vphysics"
+   ],
+   "ivp_surface_manager": [
+    "bin/vphysics"
+   ],
+   "ivp_surman_polygon": [
+    "bin/vphysics"
+   ],
+   "ivp_template_constraint": [
+    "bin/vphysics"
+   ],
+   "ivp_templates": [
+    "bin/vphysics"
+   ],
+   "ivp_time": [
+    "bin/vphysics"
+   ],
+   "ivu_active_value": [
+    "bin/vphysics"
+   ],
+   "ivu_bigvector": [
+    "bin/vphysics"
+   ],
+   "ivu_geometry": [
+    "bin/vphysics"
+   ],
+   "ivu_hash": [
+    "bin/vphysics"
+   ],
+   "ivu_linear": [
+    "bin/vphysics"
+   ],
+   "ivu_memory": [
+    "bin/vphysics"
+   ],
+   "ivu_min_hash": [
+    "bin/vphysics"
+   ],
+   "ivu_min_list": [
+    "bin/vphysics"
+   ],
+   "ivu_os_dep": [
+    "bin/vphysics"
+   ],
+   "ivu_quat": [
+    "bin/vphysics"
+   ],
+   "ivu_string": [
+    "bin/vphysics"
+   ],
+   "ivu_vector": [
+    "bin/vphysics"
+   ],
+   "ivu_vhash": [
+    "bin/vphysics"
+   ]
+  },
+  "retail_members_not_in_ours": [],
+  "ours_never_pulled_by_retail": [
+   "ivp/ivp_collision/ivp_clustering_visual_hash.cxx",
+   "ivp/ivp_collision/ivp_clustering_visualizer.cxx",
+   "ivp/ivp_collision/ivp_mindist_debug.cxx",
+   "ivp/ivp_controller/ivp_constraint_fixed_keyed.cxx",
+   "ivp/ivp_controller/ivp_controller_airboat.cpp",
+   "ivp/ivp_controller/ivp_controller_floating.cxx",
+   "ivp/ivp_controller/ivp_controller_motion.cxx",
+   "ivp/ivp_controller/ivp_controller_stiff_spring.cxx",
+   "ivp/ivp_controller/ivp_controller_world_frict.cxx",
+   "ivp/ivp_controller/ivp_forcefield.cxx",
+   "ivp/ivp_controller/ivp_multidimensional_interp.cxx",
+   "ivp/ivp_intern/ivp_merge_core.cxx",
+   "ivp/ivp_intern/ivp_object_attach.cxx",
+   "ivp/ivp_physics/ivp_liquid_surface_descript.cxx",
+   "ivp/ivp_physics/ivp_stat_manager_cback_con.cxx",
+   "ivp/ivp_surface_manager/ivp_gridbuild_array.cxx",
+   "ivp/ivp_surface_manager/ivp_surman_grid.cxx",
+   "ivp/ivp_utility/ivu_types.cxx"
+  ]
+ },
+ "libmathlib.a": {
+  "our_target": "mathlib",
+  "retail_members": {
+   "anorms": [
+    "bin/engine"
+   ],
+   "bumpvects": [
+    "bin/engine"
+   ],
+   "color_conversion": [
+    "bin/bsppack",
+    "bin/engine",
+    "bin/libtogl",
+    "bin/materialsystem",
+    "bin/shaderapidx9",
+    "bin/sourcevr",
+    "bin/stdshader_dx9",
+    "bin/studiorender",
+    "bin/vphysics",
+    "bin/vpk_osx32",
+    "bin/vtex_dll",
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ],
+   "IceKey": [
+    "bin/bugreporter_public",
+    "bin/engine",
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ],
+   "lightdesc": [
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "mathlib_base": [
+    "bin/bsppack",
+    "bin/engine",
+    "bin/libtogl",
+    "bin/materialsystem",
+    "bin/replay",
+    "bin/shaderapidx9",
+    "bin/sourcevr",
+    "bin/stdshader_dx9",
+    "bin/studiorender",
+    "bin/vphysics",
+    "bin/vpk_osx32",
+    "bin/vtex_dll",
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ],
+   "polyhedron": [
+    "bin/vphysics"
+   ],
+   "powsse": [
+    "bin/materialsystem",
+    "bin/replay",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "randsse": [
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ],
+   "sse": [
+    "bin/GameUI",
+    "bin/bsppack",
+    "bin/engine",
+    "bin/libtogl",
+    "bin/materialsystem",
+    "bin/replay",
+    "bin/shaderapidx9",
+    "bin/sourcevr",
+    "bin/stdshader_dx9",
+    "bin/studiorender",
+    "bin/vguimatsurface",
+    "bin/vphysics",
+    "bin/vpk_osx32",
+    "bin/vtex_dll",
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ],
+   "sseconst": [
+    "bin/engine",
+    "bin/studiorender",
+    "bin/vphysics",
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ],
+   "ssenoise": [
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "vmatrix": [
+    "bin/engine",
+    "bin/libtogl",
+    "bin/materialsystem",
+    "bin/shaderapidx9",
+    "bin/sourcevr",
+    "bin/stdshader_dx9",
+    "bin/studiorender",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ]
+  },
+  "retail_members_not_in_ours": [],
+  "ours_never_pulled_by_retail": [
+   "mathlib/3dnow.cpp",
+   "mathlib/almostequal.cpp",
+   "mathlib/halton.cpp",
+   "mathlib/imagequant.cpp",
+   "mathlib/quantize.cpp",
+   "mathlib/simdvectormatrix.cpp",
+   "mathlib/sparse_convolution_noise.cpp",
+   "mathlib/spherical.cpp",
+   "mathlib/vector.cpp"
+  ]
+ },
+ "libmatsys_controls.a": {
+  "our_target": "matsys_controls",
+  "retail_members": {
+   "curveeditorpanel": [
+    "bin/engine"
+   ],
+   "manipulator": [
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "matsyscontrols": [
+    "bin/GameUI",
+    "bin/engine",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "mdlpanel": [
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "potterywheelpanel": [
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "proceduraltexturepanel": [
+    "bin/engine"
+   ]
+  },
+  "retail_members_not_in_ours": [],
+  "ours_never_pulled_by_retail": [
+   "vgui2/matsys_controls/QCGenerator.cpp",
+   "vgui2/matsys_controls/assetpicker.cpp",
+   "vgui2/matsys_controls/baseassetpicker.cpp",
+   "vgui2/matsys_controls/colorpickerpanel.cpp",
+   "vgui2/matsys_controls/gamefiletreeview.cpp",
+   "vgui2/matsys_controls/mdlpicker.cpp",
+   "vgui2/matsys_controls/mdlsequencepicker.cpp",
+   "vgui2/matsys_controls/picker.cpp",
+   "vgui2/matsys_controls/sequencepicker.cpp",
+   "vgui2/matsys_controls/tgapreviewpanel.cpp",
+   "vgui2/matsys_controls/vmtpanel.cpp",
+   "vgui2/matsys_controls/vmtpicker.cpp",
+   "vgui2/matsys_controls/vmtpreviewpanel.cpp",
+   "vgui2/matsys_controls/vtfpicker.cpp",
+   "vgui2/matsys_controls/vtfpreviewpanel.cpp"
+  ]
+ },
+ "libparticles.a": {
+  "our_target": "particles",
+  "retail_members": {
+   "addbuiltin_ops": [
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "builtin_constraints": [
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "builtin_initializers": [
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "builtin_particle_emitters": [
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "builtin_particle_forces": [
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "builtin_particle_ops": [
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "builtin_particle_render_ops": [
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "particle_sort": [
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "particles": [
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ],
+   "psheet": [
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ]
+  },
+  "retail_members_not_in_ours": [],
+  "ours_never_pulled_by_retail": []
+ },
+ "libreplay_common.a": {
+  "our_target": null,
+  "retail_members": {
+   "basereplayserializeable": [
+    "bin/replay"
+   ],
+   "performance": [
+    "bin/replay"
+   ],
+   "replay": [
+    "bin/engine",
+    "bin/replay"
+   ],
+   "replaylib": [
+    "bin/engine",
+    "bin/replay"
+   ],
+   "replaytime": [
+    "bin/replay"
+   ],
+   "replayutils": [
+    "bin/engine",
+    "bin/replay"
+   ],
+   "screenshot": [
+    "bin/replay"
+   ]
+  },
+  "retail_members_not_in_ours": [],
+  "ours_never_pulled_by_retail": []
+ },
+ "libshaderlib.a": {
+  "our_target": "shaderlib",
+  "retail_members": {
+   "BaseShader": [
+    "bin/stdshader_dx9"
+   ],
+   "ShaderDLL": [
+    "bin/materialsystem",
+    "bin/stdshader_dx9"
+   ],
+   "shaderlib_cvar": [
+    "bin/materialsystem",
+    "bin/stdshader_dx9"
+   ]
+  },
+  "retail_members_not_in_ours": [],
+  "ours_never_pulled_by_retail": []
+ },
+ "libtier1.a": {
+  "our_target": "tier1",
+  "retail_members": {
+   "bitbuf": [
+    "bin/engine",
+    "bin/libvstdlib",
+    "bin/replay",
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ],
+   "byteswap": [
+    "bin/bsppack",
+    "bin/engine",
+    "bin/filesystem_stdio",
+    "bin/vphysics"
+   ],
+   "characterset": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/launcher",
+    "bin/vphysics",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "checksum_crc": [
+    "bin/bsppack",
+    "bin/engine",
+    "bin/filesystem_stdio",
+    "bin/launcher",
+    "bin/scenefilecache",
+    "bin/shaderapidx9",
+    "bin/soundemittersystem",
+    "bin/vguimatsurface",
+    "bin/vpk_osx32",
+    "bin/vtex_dll",
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ],
+   "checksum_md5": [
+    "bin/engine",
+    "bin/filesystem_stdio",
+    "bin/vpk_osx32",
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ],
+   "commandbuffer": [
+    "bin/engine"
+   ],
+   "convar": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/bsppack",
+    "bin/bugreporter_filequeue",
+    "bin/datacache",
+    "bin/engine",
+    "bin/filesystem_stdio",
+    "bin/inputsystem",
+    "bin/launcher",
+    "bin/libtogl",
+    "bin/libvstdlib",
+    "bin/materialsystem",
+    "bin/replay",
+    "bin/shaderapidx9",
+    "bin/soundemittersystem",
+    "bin/sourcevr",
+    "bin/stdshader_dx9",
+    "bin/studiorender",
+    "bin/vgui2",
+    "bin/vguimatsurface",
+    "bin/video_quicktime",
+    "bin/video_services",
+    "bin/vphysics",
+    "bin/vpk_osx32",
+    "bin/vtex_dll",
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ],
+   "datamanager": [
+    "bin/datacache",
+    "bin/engine",
+    "bin/vphysics",
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ],
+   "diff": [
+    "bin/shaderapidx9"
+   ],
+   "generichash": [
+    "bin/datacache",
+    "bin/engine",
+    "bin/filesystem_stdio",
+    "bin/libvstdlib",
+    "bin/vpk_osx32",
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ],
+   "ilocalize": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/replay",
+    "bin/vgui2",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "interface": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/bsppack",
+    "bin/bugreporter_filequeue",
+    "bin/bugreporter_public",
+    "bin/chromehtml",
+    "bin/datacache",
+    "bin/engine",
+    "bin/filesystem_stdio",
+    "bin/inputsystem",
+    "bin/launcher",
+    "bin/libvstdlib",
+    "bin/materialsystem",
+    "bin/replay",
+    "bin/scenefilecache",
+    "bin/shaderapidx9",
+    "bin/shaderapiempty",
+    "bin/soundemittersystem",
+    "bin/sourcevr",
+    "bin/stdshader_dx9",
+    "bin/studiorender",
+    "bin/vaudio_miles",
+    "bin/vgui2",
+    "bin/vguimatsurface",
+    "bin/video_quicktime",
+    "bin/video_services",
+    "bin/vphysics",
+    "bin/vpk_osx32",
+    "bin/vtex_dll",
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ],
+   "KeyValues": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/bugreporter_filequeue",
+    "bin/engine",
+    "bin/filesystem_stdio",
+    "bin/inputsystem",
+    "bin/launcher",
+    "bin/libtogl",
+    "bin/materialsystem",
+    "bin/replay",
+    "bin/shaderapidx9",
+    "bin/soundemittersystem",
+    "bin/studiorender",
+    "bin/vgui2",
+    "bin/vguimatsurface",
+    "bin/video_quicktime",
+    "bin/vpk_osx32",
+    "bin/vtex_dll",
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ],
+   "lzmaDecoder": [
+    "bin/filesystem_stdio",
+    "bin/scenefilecache",
+    "bin/shaderapidx9"
+   ],
+   "lzss": [
+    "bin/engine"
+   ],
+   "mempool": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/datacache",
+    "bin/engine",
+    "bin/libvstdlib",
+    "bin/materialsystem",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ],
+   "memstack": [
+    "bin/engine",
+    "bin/libvstdlib",
+    "bin/materialsystem",
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ],
+   "NetAdr": [
+    "bin/ServerBrowser",
+    "bin/bugreporter_public",
+    "bin/engine"
+   ],
+   "rangecheckedvar": [
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "snappy": [
+    "bin/engine"
+   ],
+   "snappy-sinksource": [
+    "bin/engine"
+   ],
+   "stringpool": [
+    "episodic/server",
+    "hl2/server",
+    "hl2_complete/server",
+    "hl2mp/server",
+    "lostcoast/server"
+   ],
+   "strtools": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/bsppack",
+    "bin/bugreporter_filequeue",
+    "bin/bugreporter_public",
+    "bin/chromehtml",
+    "bin/datacache",
+    "bin/engine",
+    "bin/filesystem_stdio",
+    "bin/inputsystem",
+    "bin/launcher",
+    "bin/libtogl",
+    "bin/libvstdlib",
+    "bin/materialsystem",
+    "bin/replay",
+    "bin/scenefilecache",
+    "bin/shaderapidx9",
+    "bin/shaderapiempty",
+    "bin/soundemittersystem",
+    "bin/sourcevr",
+    "bin/stdshader_dx9",
+    "bin/studiorender",
+    "bin/vgui2",
+    "bin/vguimatsurface",
+    "bin/video_quicktime",
+    "bin/video_services",
+    "bin/vphysics",
+    "bin/vpk_osx32",
+    "bin/vtex_dll",
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ],
+   "tier1": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/bsppack",
+    "bin/bugreporter_filequeue",
+    "bin/datacache",
+    "bin/engine",
+    "bin/filesystem_stdio",
+    "bin/inputsystem",
+    "bin/launcher",
+    "bin/libtogl",
+    "bin/libvstdlib",
+    "bin/materialsystem",
+    "bin/replay",
+    "bin/shaderapidx9",
+    "bin/soundemittersystem",
+    "bin/sourcevr",
+    "bin/stdshader_dx9",
+    "bin/studiorender",
+    "bin/vgui2",
+    "bin/vguimatsurface",
+    "bin/video_quicktime",
+    "bin/video_services",
+    "bin/vphysics",
+    "bin/vpk_osx32",
+    "bin/vtex_dll",
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ],
+   "uniqueid": [
+    "bin/engine",
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ],
+   "utlbuffer": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/bsppack",
+    "bin/bugreporter_filequeue",
+    "bin/bugreporter_public",
+    "bin/chromehtml",
+    "bin/datacache",
+    "bin/engine",
+    "bin/filesystem_stdio",
+    "bin/inputsystem",
+    "bin/launcher",
+    "bin/libtogl",
+    "bin/libvstdlib",
+    "bin/materialsystem",
+    "bin/replay",
+    "bin/scenefilecache",
+    "bin/shaderapidx9",
+    "bin/soundemittersystem",
+    "bin/sourcevr",
+    "bin/stdshader_dx9",
+    "bin/studiorender",
+    "bin/vgui2",
+    "bin/vguimatsurface",
+    "bin/video_quicktime",
+    "bin/video_services",
+    "bin/vphysics",
+    "bin/vpk_osx32",
+    "bin/vtex_dll",
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ],
+   "utlbufferutil": [
+    "bin/engine",
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ],
+   "utlstring": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/bsppack",
+    "bin/chromehtml",
+    "bin/engine",
+    "bin/filesystem_stdio",
+    "bin/inputsystem",
+    "bin/launcher",
+    "bin/libtogl",
+    "bin/libvstdlib",
+    "bin/materialsystem",
+    "bin/replay",
+    "bin/shaderapidx9",
+    "bin/sourcevr",
+    "bin/vgui2",
+    "bin/vguimatsurface",
+    "bin/vpk_osx32",
+    "bin/vtex_dll",
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ],
+   "utlsymbol": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/bsppack",
+    "bin/bugreporter_filequeue",
+    "bin/bugreporter_public",
+    "bin/engine",
+    "bin/filesystem_stdio",
+    "bin/libvstdlib",
+    "bin/materialsystem",
+    "bin/shaderapidx9",
+    "bin/soundemittersystem",
+    "bin/vgui2",
+    "bin/vguimatsurface",
+    "bin/vphysics",
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ]
+  },
+  "retail_members_not_in_ours": [],
+  "ours_never_pulled_by_retail": [
+   "tier1/checksum_sha1.cpp",
+   "tier1/keyvaluesjson.cpp",
+   "tier1/kvpacker.cpp",
+   "tier1/newbitbuf.cpp",
+   "tier1/processor_detect_linux.cpp",
+   "tier1/qsort_s.cpp",
+   "tier1/reliabletimer.cpp",
+   "tier1/snappy-stubs-internal.cpp",
+   "tier1/sparsematrix.cpp",
+   "tier1/splitstring.cpp",
+   "tier1/strtools_unicode.cpp",
+   "tier1/tokenreader.cpp",
+   "tier1/utlbinaryblock.cpp",
+   "utils/lzma/C/LzmaDec.c"
+  ]
+ },
+ "libtier2.a": {
+  "our_target": "tier2",
+  "retail_members": {
+   "beamsegdraw": [
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "camerautils": [
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "defaultfilesystem": [
+    "bin/vpk_osx32"
+   ],
+   "fileutils": [
+    "bin/engine",
+    "bin/vpk_osx32"
+   ],
+   "MaterialSystemUtil": [
+    "bin/engine",
+    "bin/materialsystem",
+    "bin/sourcevr",
+    "bin/vguimatsurface",
+    "bin/video_quicktime",
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ],
+   "meshutils": [
+    "bin/engine",
+    "bin/materialsystem",
+    "bin/shaderapidx9",
+    "bin/studiorender",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "p4helpers": [
+    "bin/engine",
+    "bin/vtex_dll"
+   ],
+   "renderutils": [
+    "bin/engine",
+    "bin/materialsystem",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "riff": [
+    "bin/engine"
+   ],
+   "tier2": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/bsppack",
+    "bin/datacache",
+    "bin/engine",
+    "bin/filesystem_stdio",
+    "bin/inputsystem",
+    "bin/launcher",
+    "bin/libtogl",
+    "bin/materialsystem",
+    "bin/replay",
+    "bin/shaderapidx9",
+    "bin/sourcevr",
+    "bin/stdshader_dx9",
+    "bin/studiorender",
+    "bin/vgui2",
+    "bin/vguimatsurface",
+    "bin/video_quicktime",
+    "bin/video_services",
+    "bin/vpk_osx32",
+    "bin/vtex_dll",
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ],
+   "util_init": [
+    "bin/vpk_osx32"
+   ],
+   "utlstreambuffer": [
+    "bin/engine"
+   ]
+  },
+  "retail_members_not_in_ours": [],
+  "ours_never_pulled_by_retail": [
+   "public/map_utils.cpp",
+   "tier2/dmconnect.cpp",
+   "tier2/keybindings.cpp",
+   "tier2/keyvaluesmacros.cpp",
+   "tier2/soundutils.cpp",
+   "tier2/vconfig.cpp"
+  ]
+ },
+ "libtier3.a": {
+  "our_target": "tier3",
+  "retail_members": {
+   "mdlutils": [
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "tier3": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/datacache",
+    "bin/engine",
+    "bin/launcher",
+    "bin/sourcevr",
+    "bin/studiorender",
+    "bin/vgui2",
+    "bin/vguimatsurface",
+    "bin/video_services",
+    "episodic/client",
+    "episodic/server",
+    "hl2/client",
+    "hl2/server",
+    "hl2_complete/client",
+    "hl2_complete/server",
+    "hl2mp/client",
+    "hl2mp/server",
+    "lostcoast/client",
+    "lostcoast/server"
+   ]
+  },
+  "retail_members_not_in_ours": [],
+  "ours_never_pulled_by_retail": [
+   "tier3/choreoutils.cpp",
+   "tier3/scenetokenprocessor.cpp",
+   "tier3/studiohdrstub.cpp"
+  ]
+ },
+ "libvgui_controls.a": {
+  "our_target": "vgui_controls",
+  "retail_members": {
+   "AnalogBar": [
+    "bin/GameUI"
+   ],
+   "AnimatingImagePanel": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "AnimationController": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "BitmapImagePanel": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "BuildFactoryHelper": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "BuildGroup": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "BuildModeDialog": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "Button": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "CheckButton": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "CircularProgressBar": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "ComboBox": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "consoledialog": [
+    "bin/GameUI"
+   ],
+   "ControllerMap": [
+    "bin/GameUI"
+   ],
+   "controls": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "CvarToggleCheckButton": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "DirectorySelectDialog": [
+    "bin/engine"
+   ],
+   "Divider": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "EditablePanel": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "ExpandButton": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "FileOpenDialog": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "filesystem_helpers": [
+    "bin/GameUI",
+    "bin/ServerBrowser"
+   ],
+   "FocusNavGroup": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "Frame": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "GraphPanel": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "HTML": [
+    "hl2mp/client"
+   ],
+   "htmlmessages.pb": [
+    "hl2mp/client"
+   ],
+   "htmlprotobuf": [
+    "hl2mp/client"
+   ],
+   "Image": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "ImageList": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "ImagePanel": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "InputDialog": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "hl2mp/client"
+   ],
+   "KeyRepeat": [
+    "bin/GameUI"
+   ],
+   "Label": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "ListPanel": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "ListViewPanel": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "Menu": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "MenuBar": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "MenuButton": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "MenuItem": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "MessageBox": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "MessageDialog": [
+    "bin/GameUI"
+   ],
+   "Panel": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "PanelListPanel": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "ProgressBar": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "PropertyDialog": [
+    "bin/GameUI",
+    "bin/engine"
+   ],
+   "PropertyPage": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine"
+   ],
+   "PropertySheet": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine"
+   ],
+   "QueryBox": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "hl2mp/client"
+   ],
+   "RadioButton": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "RichText": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "ScalableImagePanel": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "ScrollBar": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "ScrollBarSlider": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "SectionedListPanel": [
+    "bin/GameUI",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "Slider": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "TextEntry": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "TextImage": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "ToggleButton": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "Tooltip": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "ToolWindow": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine"
+   ],
+   "TreeView": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "TreeViewListControl": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "URLLabel": [
+    "bin/GameUI",
+    "bin/ServerBrowser",
+    "bin/engine",
+    "bin/vguimatsurface",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ],
+   "vgui_key_translation": [
+    "hl2mp/client"
+   ]
+  },
+  "retail_members_not_in_ours": [
+   "htmlmessages.pb",
+   "htmlprotobuf"
+  ],
+  "ours_never_pulled_by_retail": [
+   "vgui2/vgui_controls/CheckButtonList.cpp",
+   "vgui2/vgui_controls/FileOpenStateMachine.cpp",
+   "vgui2/vgui_controls/KeyBindingHelpDialog.cpp",
+   "vgui2/vgui_controls/KeyBoardEditorDialog.cpp",
+   "vgui2/vgui_controls/PerforceFileExplorer.cpp",
+   "vgui2/vgui_controls/PerforceFileList.cpp",
+   "vgui2/vgui_controls/ProgressBox.cpp",
+   "vgui2/vgui_controls/RotatingProgressBar.cpp",
+   "vgui2/vgui_controls/ScrollableEditablePanel.cpp",
+   "vgui2/vgui_controls/Splitter.cpp",
+   "vgui2/vgui_controls/WizardPanel.cpp",
+   "vgui2/vgui_controls/WizardSubPanel.cpp",
+   "vgui2/vgui_controls/perforcefilelistframe.cpp",
+   "vgui2/vgui_controls/savedocumentquery.cpp",
+   "vgui2/vgui_controls/subrectimage.cpp"
+  ]
+ },
+ "libvgui_surfacelib.a": {
+  "our_target": "vgui_surfacelib",
+  "retail_members": {
+   "BitmapFont": [
+    "bin/vguimatsurface"
+   ],
+   "FontAmalgam": [
+    "bin/vguimatsurface"
+   ],
+   "FontEffects": [
+    "bin/vguimatsurface"
+   ],
+   "FontManager": [
+    "bin/vguimatsurface"
+   ],
+   "osxfont": [
+    "bin/vguimatsurface"
+   ]
+  },
+  "retail_members_not_in_ours": [
+   "osxfont"
+  ],
+  "ours_never_pulled_by_retail": [
+   "vgui2/vgui_surfacelib/linuxfont.cpp"
+  ]
+ },
+ "libvpklib.a": {
+  "our_target": "vpklib",
+  "retail_members": {
+   "crypto": [
+    "bin/filesystem_stdio",
+    "bin/vpk_osx32"
+   ],
+   "packedstore": [
+    "bin/filesystem_stdio",
+    "bin/vpk_osx32"
+   ]
+  },
+  "retail_members_not_in_ours": [
+   "crypto"
+  ],
+  "ours_never_pulled_by_retail": [
+   "common/simplebitstring.cpp"
+  ]
+ },
+ "libvtf.a": {
+  "our_target": "vtf",
+  "retail_members": {
+   "vtf": [
+    "bin/GameUI",
+    "bin/engine",
+    "bin/materialsystem",
+    "bin/replay",
+    "bin/vtex_dll",
+    "episodic/client",
+    "hl2/client",
+    "hl2_complete/client",
+    "hl2mp/client",
+    "lostcoast/client"
+   ]
+  },
+  "retail_members_not_in_ours": [],
+  "ours_never_pulled_by_retail": [
+   "vtf/convert_x360.cpp"
+  ]
+ }
+}

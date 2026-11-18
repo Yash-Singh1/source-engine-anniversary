@@ -179,8 +179,15 @@ static void AccumulateFileNameAndTimestampIntoChecksum( CRC32_t *crc, char const
 // Purpose: 
 // Output : Returns true on success, false on failure.
 //-----------------------------------------------------------------------------
-bool CSoundEmitterSystemBase::InternalModInit()
+bool CSoundEmitterSystemBase::ModInit()
 {
+	++m_nInitCount;
+
+	if ( m_nInitCount > 1 )
+	{
+		return true;
+	}
+
 	/*
 	if ( m_SoundKeyValues.Count() > 0 )
 	{
@@ -218,11 +225,6 @@ bool CSoundEmitterSystemBase::InternalModInit()
 				AddSoundsFromFile( sub->GetString(), true );
 				continue;
 			}
-			else if ( !Q_stricmp( sub->GetName(), "faceposer_file" ) )
-			{
-				// do nothing for these files; they're only used for faceposer
-				continue;
-			}
 
 			Warning( "CSoundEmitterSystemBase::BaseInit:  Manifest '%s' with bogus file type '%s', expecting 'declare_file' or 'precache_file'\n", 
 				MANIFEST_FILE, sub->GetName() );
@@ -249,26 +251,12 @@ bool CSoundEmitterSystemBase::InternalModInit()
 
 //-----------------------------------------------------------------------------
 // Purpose: 
-// Output : Returns true on success, false on failure.
 //-----------------------------------------------------------------------------
-bool CSoundEmitterSystemBase::ModInit()
+void CSoundEmitterSystemBase::ModShutdown()
 {
-	++m_nInitCount;
+	if ( --m_nInitCount > 0 )
+		return;
 
-	if ( m_nInitCount > 1 )
-	{
-		return true;
-	}
-
-	return InternalModInit();
-}
-
-
-//-----------------------------------------------------------------------------
-// Purpose: 
-//-----------------------------------------------------------------------------
-void CSoundEmitterSystemBase::InternalModShutdown()
-{
 	int i;
 	m_SoundKeyValues.RemoveAll();
 
@@ -286,18 +274,6 @@ void CSoundEmitterSystemBase::InternalModShutdown()
 	m_SavedOverrides.Purge();
 	m_Waves.RemoveAll();
 	m_ActorGenders.Purge();
-}
-
-
-//-----------------------------------------------------------------------------
-// Purpose: 
-//-----------------------------------------------------------------------------
-void CSoundEmitterSystemBase::ModShutdown()
-{
-	if ( --m_nInitCount > 0 )
-		return;
-
-	InternalModShutdown();
 }
 
 //-----------------------------------------------------------------------------
@@ -770,7 +746,7 @@ bool CSoundEmitterSystemBase::InitSoundInternalParameters( const char *soundname
 		else if ( !Q_strcasecmp( pKey->GetName(), "delay_msec" ) )
 		{
 			// Don't allow negative delay
-			params.SetDelayMsec( max( 0, pKey->GetInt() ) );
+			params.SetDelayMsec( MAX( 0, pKey->GetInt() ) );
 
 		}
 
@@ -984,8 +960,11 @@ void CSoundEmitterSystemBase::ReloadSoundEntriesInList( IFileList *pFilesToReloa
 //-----------------------------------------------------------------------------
 void CSoundEmitterSystemBase::Flush()
 {
-	InternalModShutdown();
-	InternalModInit();
+	int nInitCount = m_nInitCount;
+	m_nInitCount = 1;
+	ModShutdown();
+	ModInit();
+	m_nInitCount = nInitCount;
 }
 
 

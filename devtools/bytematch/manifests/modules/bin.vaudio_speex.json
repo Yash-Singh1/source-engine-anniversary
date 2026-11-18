@@ -1,0 +1,283 @@
+{
+ "module": "bin/vaudio_speex",
+ "depot": "223",
+ "build": "19307283",
+ "path": "bin/vaudio_speex.dylib",
+ "aliases": [],
+ "sha256": "31c3277a7d60b40433c5a1dd48acff889067ff9cced1422d90d679f41cb6377b",
+ "size": 109308,
+ "macho": {
+  "filetype": "MH_DYLIB",
+  "flags": "0x110085",
+  "segments": [
+   {
+    "name": "__TEXT",
+    "vmaddr": "0x0",
+    "vmsize": 69632,
+    "sections": [
+     [
+      "__text",
+      "0xfb0",
+      62234,
+      16
+     ],
+     [
+      "__symbol_stub",
+      "0x102ca",
+      168,
+      2
+     ],
+     [
+      "__stub_helper",
+      "0x10374",
+      292,
+      4
+     ],
+     [
+      "__gcc_except_tab",
+      "0x10498",
+      96,
+      4
+     ],
+     [
+      "__const",
+      "0x10500",
+      1112,
+      16
+     ],
+     [
+      "__cstring",
+      "0x10958",
+      745,
+      4
+     ],
+     [
+      "__unwind_info",
+      "0x10c44",
+      204,
+      4
+     ],
+     [
+      "__eh_frame",
+      "0x10d10",
+      744,
+      8
+     ]
+    ]
+   },
+   {
+    "name": "__DATA",
+    "vmaddr": "0x11000",
+    "vmsize": 12288,
+    "sections": [
+     [
+      "__nl_symbol_ptr",
+      "0x11000",
+      68,
+      4
+     ],
+     [
+      "__la_symbol_ptr",
+      "0x11044",
+      112,
+      4
+     ],
+     [
+      "__mod_init_func",
+      "0x110b4",
+      4,
+      4
+     ],
+     [
+      "__const",
+      "0x110c0",
+      52,
+      16
+     ],
+     [
+      "__data",
+      "0x11100",
+      11680,
+      32
+     ],
+     [
+      "__common",
+      "0x13ea0",
+      4,
+      4
+     ],
+     [
+      "__bss",
+      "0x13ec0",
+      112,
+      32
+     ]
+    ]
+   },
+   {
+    "name": "__LINKEDIT",
+    "vmaddr": "0x14000",
+    "vmsize": 28672,
+    "sections": []
+   }
+  ],
+  "dylibs": [
+   {
+    "path": "@loader_path/libtier0.dylib",
+    "current": "1.0.0",
+    "compat": "1.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "@loader_path/libvstdlib.dylib",
+    "current": "1.0.0",
+    "compat": "1.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "/usr/lib/libiconv.2.dylib",
+    "current": "7.0.0",
+    "compat": "7.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "/usr/lib/libstdc++.6.dylib",
+    "current": "60.0.0",
+    "compat": "7.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "/usr/lib/libSystem.B.dylib",
+    "current": "1197.1.1",
+    "compat": "1.0.0",
+    "kind": "LOAD_DYLIB"
+   }
+  ],
+  "load_commands": [
+   "SEGMENT",
+   "SEGMENT",
+   "SEGMENT",
+   "ID_DYLIB",
+   "DYLD_INFO_ONLY",
+   "SYMTAB",
+   "DYSYMTAB",
+   "UUID",
+   "VERSION_MIN_MACOSX",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "FUNCTION_STARTS",
+   "DATA_IN_CODE"
+  ],
+  "install_name": {
+   "path": "@loader_path/vaudio_speex.dylib",
+   "current": "1.0.0",
+   "compat": "1.0.0"
+  },
+  "uuid": "E0EACDF86BF13A8193E5B4F3753DC130",
+  "min_macosx": "10.6.0",
+  "sdk": "10.9.0"
+ },
+ "build_roots": {
+  "rel_singleplayer_osx": 3
+ },
+ "ccache_hosts": {
+  "hl2-osx-builder": 3
+ },
+ "xcode_targets": {
+  "vaudio_speex": 3
+ },
+ "stab_counts": {
+  "0x20": 37,
+  "0x24": 262,
+  "0x26": 36,
+  "0x2e": 131,
+  "0x4e": 131,
+  "0x64": 87,
+  "0x66": 29,
+  "0x84": 3
+ },
+ "n_objects": 29,
+ "n_loose_objects": 3,
+ "n_archive_members": 0,
+ "n_prebuilt_members": 26,
+ "built_mtime_range": [
+  "2024-11-13T17:24:34Z",
+  "2024-11-16T17:29:04Z"
+ ],
+ "static_libraries": [
+  {
+   "archive": "lib/common/osx32/libspeex.a",
+   "prebuilt": true,
+   "first_index": 3,
+   "members": [
+    "nb_celp.o",
+    "sb_celp.o",
+    "lpc.o",
+    "ltp.o",
+    "lsp.o",
+    "quant_lsp.o",
+    "lsp_tables_nb.o",
+    "gain_table.o",
+    "gain_table_lbr.o",
+    "cb_search.o",
+    "filters.o",
+    "bits.o",
+    "modes.o",
+    "vq.o",
+    "high_lsp_tables.o",
+    "vbr.o",
+    "hexc_table.o",
+    "exc_5_256_table.o",
+    "exc_5_64_table.o",
+    "exc_8_128_table.o",
+    "exc_10_32_table.o",
+    "exc_10_16_table.o",
+    "exc_20_32_table.o",
+    "hexc_10_32_table.o",
+    "misc.o",
+    "speex_callbacks.o"
+   ]
+  }
+ ],
+ "text_order_matches_oso_order": true,
+ "headers_with_code": {},
+ "unstabbed_text": {
+  "n_symbols": 0,
+  "bytes": 0,
+  "by_prefix": {}
+ },
+ "objects": [
+  {"index": 0, "oso": "build/buildbot_osx.build/Release/vaudio_speex.build/Objects-normal/i386/interface.o", "kind": "object", "archive": null, "member": null, "xcode_target": "vaudio_speex", "stem": "interface", "mtime": 1731778144, "mtime_utc": "2024-11-16T17:29:04Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "interface.tmp.hl2-osx-builder.97998.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/interface.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 3, "n_data": 1, "text_bytes": 182, "first_addr": "0xfb0", "files": ["tier1/interface.cpp"]},
+  {"index": 1, "oso": "build/buildbot_osx.build/Release/vaudio_speex.build/Objects-normal/i386/voice_codec_frame.o", "kind": "object", "archive": null, "member": null, "xcode_target": "vaudio_speex", "stem": "voice_codec_frame", "mtime": 1731518674, "mtime_utc": "2024-11-13T17:24:34Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "voice_code.tmp.hl2-osx-builder.47462.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "engine/voice_codecs/frame_encoder/voice_codec_frame.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 8, "n_data": 7, "text_bytes": 1178, "first_addr": "0x1070", "files": ["engine/voice_codecs/frame_encoder/voice_codec_frame.cpp"]},
+  {"index": 2, "oso": "build/buildbot_osx.build/Release/vaudio_speex.build/Objects-normal/i386/VoiceEncoder_Speex.o", "kind": "object", "archive": null, "member": null, "xcode_target": "vaudio_speex", "stem": "VoiceEncoder_Speex", "mtime": 1731518674, "mtime_utc": "2024-11-13T17:24:34Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "VoiceEncod.tmp.hl2-osx-builder.47506.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "engine/voice_codecs/speex/VoiceEncoder_Speex.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 9, "n_data": 9, "text_bytes": 1278, "first_addr": "0x1510", "files": ["engine/voice_codecs/speex/VoiceEncoder_Speex.cpp"]},
+  {"index": 3, "oso": "lib/common/osx32/libspeex.a(nb_celp.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libspeex.a", "member": "nb_celp.o", "xcode_target": null, "stem": "nb_celp", "mtime": 1217281262, "mtime_utc": "2008-07-28T21:41:02Z", "so_dir": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/", "so_name": "nb_celp.c", "ccache_host": null, "lang": null, "source": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/nb_celp.c", "build_root": null, "source_resolution": "n_so", "n_functions": 8, "n_data": 2, "text_bytes": 19768, "first_addr": "0x1a20", "files": []},
+  {"index": 4, "oso": "lib/common/osx32/libspeex.a(sb_celp.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libspeex.a", "member": "sb_celp.o", "xcode_target": null, "stem": "sb_celp", "mtime": 1217281276, "mtime_utc": "2008-07-28T21:41:16Z", "so_dir": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/", "so_name": "sb_celp.c", "ccache_host": null, "lang": null, "source": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/sb_celp.c", "build_root": null, "source_resolution": "n_so", "n_functions": 9, "n_data": 2, "text_bytes": 15333, "first_addr": "0x6760", "files": []},
+  {"index": 5, "oso": "lib/common/osx32/libspeex.a(lpc.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libspeex.a", "member": "lpc.o", "xcode_target": null, "stem": "lpc", "mtime": 1217281276, "mtime_utc": "2008-07-28T21:41:16Z", "so_dir": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/", "so_name": "lpc.c", "ccache_host": null, "lang": null, "source": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/lpc.c", "build_root": null, "source_resolution": "n_so", "n_functions": 2, "n_data": 0, "text_bytes": 429, "first_addr": "0xa350", "files": []},
+  {"index": 6, "oso": "lib/common/osx32/libspeex.a(ltp.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libspeex.a", "member": "ltp.o", "xcode_target": null, "stem": "ltp", "mtime": 1217281277, "mtime_utc": "2008-07-28T21:41:17Z", "so_dir": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/", "so_name": "ltp.c", "ccache_host": null, "lang": null, "source": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/ltp.c", "build_root": null, "source_resolution": "n_so", "n_functions": 7, "n_data": 0, "text_bytes": 4380, "first_addr": "0xa500", "files": []},
+  {"index": 7, "oso": "lib/common/osx32/libspeex.a(lsp.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libspeex.a", "member": "lsp.o", "xcode_target": null, "stem": "lsp", "mtime": 1217281277, "mtime_utc": "2008-07-28T21:41:17Z", "so_dir": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/", "so_name": "lsp.c", "ccache_host": null, "lang": null, "source": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/lsp.c", "build_root": null, "source_resolution": "n_so", "n_functions": 4, "n_data": 0, "text_bytes": 1368, "first_addr": "0xb620", "files": []},
+  {"index": 8, "oso": "lib/common/osx32/libspeex.a(quant_lsp.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libspeex.a", "member": "quant_lsp.o", "xcode_target": null, "stem": "quant_lsp", "mtime": 1217281277, "mtime_utc": "2008-07-28T21:41:17Z", "so_dir": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/", "so_name": "quant_lsp.c", "ccache_host": null, "lang": null, "source": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/quant_lsp.c", "build_root": null, "source_resolution": "n_so", "n_functions": 8, "n_data": 1, "text_bytes": 3904, "first_addr": "0xbb80", "files": []},
+  {"index": 9, "oso": "lib/common/osx32/libspeex.a(lsp_tables_nb.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libspeex.a", "member": "lsp_tables_nb.o", "xcode_target": null, "stem": "lsp_tables_nb", "mtime": 1217281278, "mtime_utc": "2008-07-28T21:41:18Z", "so_dir": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/", "so_name": "lsp_tables_nb.c", "ccache_host": null, "lang": null, "source": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/lsp_tables_nb.c", "build_root": null, "source_resolution": "n_so", "n_functions": 0, "n_data": 5, "text_bytes": 0, "first_addr": null, "files": []},
+  {"index": 10, "oso": "lib/common/osx32/libspeex.a(gain_table.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libspeex.a", "member": "gain_table.o", "xcode_target": null, "stem": "gain_table", "mtime": 1217281278, "mtime_utc": "2008-07-28T21:41:18Z", "so_dir": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/", "so_name": "gain_table.c", "ccache_host": null, "lang": null, "source": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/gain_table.c", "build_root": null, "source_resolution": "n_so", "n_functions": 0, "n_data": 1, "text_bytes": 0, "first_addr": null, "files": []},
+  {"index": 11, "oso": "lib/common/osx32/libspeex.a(gain_table_lbr.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libspeex.a", "member": "gain_table_lbr.o", "xcode_target": null, "stem": "gain_table_lbr", "mtime": 1217281278, "mtime_utc": "2008-07-28T21:41:18Z", "so_dir": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/", "so_name": "gain_table_lbr.c", "ccache_host": null, "lang": null, "source": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/gain_table_lbr.c", "build_root": null, "source_resolution": "n_so", "n_functions": 0, "n_data": 1, "text_bytes": 0, "first_addr": null, "files": []},
+  {"index": 12, "oso": "lib/common/osx32/libspeex.a(cb_search.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libspeex.a", "member": "cb_search.o", "xcode_target": null, "stem": "cb_search", "mtime": 1217281279, "mtime_utc": "2008-07-28T21:41:19Z", "so_dir": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/", "so_name": "cb_search.c", "ccache_host": null, "lang": null, "source": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/cb_search.c", "build_root": null, "source_resolution": "n_so", "n_functions": 4, "n_data": 0, "text_bytes": 4104, "first_addr": "0xcac0", "files": []},
+  {"index": 13, "oso": "lib/common/osx32/libspeex.a(filters.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libspeex.a", "member": "filters.o", "xcode_target": null, "stem": "filters", "mtime": 1217281279, "mtime_utc": "2008-07-28T21:41:19Z", "so_dir": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/", "so_name": "filters.c", "ccache_host": null, "lang": null, "source": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/filters.c", "build_root": null, "source_resolution": "n_so", "n_functions": 10, "n_data": 0, "text_bytes": 2849, "first_addr": "0xdad0", "files": []},
+  {"index": 14, "oso": "lib/common/osx32/libspeex.a(bits.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libspeex.a", "member": "bits.o", "xcode_target": null, "stem": "bits", "mtime": 1217281279, "mtime_utc": "2008-07-28T21:41:19Z", "so_dir": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/", "so_name": "bits.c", "ccache_host": null, "lang": null, "source": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/bits.c", "build_root": null, "source_resolution": "n_so", "n_functions": 18, "n_data": 0, "text_bytes": 2133, "first_addr": "0xe600", "files": []},
+  {"index": 15, "oso": "lib/common/osx32/libspeex.a(modes.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libspeex.a", "member": "modes.o", "xcode_target": null, "stem": "modes", "mtime": 1217281280, "mtime_utc": "2008-07-28T21:41:20Z", "so_dir": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/", "so_name": "modes.c", "ccache_host": null, "lang": null, "source": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/modes.c", "build_root": null, "source_resolution": "n_so", "n_functions": 11, "n_data": 31, "text_bytes": 508, "first_addr": "0xee60", "files": []},
+  {"index": 16, "oso": "lib/common/osx32/libspeex.a(vq.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libspeex.a", "member": "vq.o", "xcode_target": null, "stem": "vq", "mtime": 1217281280, "mtime_utc": "2008-07-28T21:41:20Z", "so_dir": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/", "so_name": "vq.c", "ccache_host": null, "lang": null, "source": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/vq.c", "build_root": null, "source_resolution": "n_so", "n_functions": 3, "n_data": 0, "text_bytes": 829, "first_addr": "0xf060", "files": []},
+  {"index": 17, "oso": "lib/common/osx32/libspeex.a(high_lsp_tables.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libspeex.a", "member": "high_lsp_tables.o", "xcode_target": null, "stem": "high_lsp_tables", "mtime": 1217281280, "mtime_utc": "2008-07-28T21:41:20Z", "so_dir": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/", "so_name": "high_lsp_tables.c", "ccache_host": null, "lang": null, "source": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/high_lsp_tables.c", "build_root": null, "source_resolution": "n_so", "n_functions": 0, "n_data": 2, "text_bytes": 0, "first_addr": null, "files": []},
+  {"index": 18, "oso": "lib/common/osx32/libspeex.a(vbr.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libspeex.a", "member": "vbr.o", "xcode_target": null, "stem": "vbr", "mtime": 1217281280, "mtime_utc": "2008-07-28T21:41:20Z", "so_dir": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/", "so_name": "vbr.c", "ccache_host": null, "lang": null, "source": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/vbr.c", "build_root": null, "source_resolution": "n_so", "n_functions": 3, "n_data": 3, "text_bytes": 2455, "first_addr": "0xf3a0", "files": []},
+  {"index": 19, "oso": "lib/common/osx32/libspeex.a(hexc_table.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libspeex.a", "member": "hexc_table.o", "xcode_target": null, "stem": "hexc_table", "mtime": 1217281281, "mtime_utc": "2008-07-28T21:41:21Z", "so_dir": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/", "so_name": "hexc_table.c", "ccache_host": null, "lang": null, "source": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/hexc_table.c", "build_root": null, "source_resolution": "n_so", "n_functions": 0, "n_data": 1, "text_bytes": 0, "first_addr": null, "files": []},
+  {"index": 20, "oso": "lib/common/osx32/libspeex.a(exc_5_256_table.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libspeex.a", "member": "exc_5_256_table.o", "xcode_target": null, "stem": "exc_5_256_table", "mtime": 1217281281, "mtime_utc": "2008-07-28T21:41:21Z", "so_dir": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/", "so_name": "exc_5_256_table.c", "ccache_host": null, "lang": null, "source": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/exc_5_256_table.c", "build_root": null, "source_resolution": "n_so", "n_functions": 0, "n_data": 1, "text_bytes": 0, "first_addr": null, "files": []},
+  {"index": 21, "oso": "lib/common/osx32/libspeex.a(exc_5_64_table.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libspeex.a", "member": "exc_5_64_table.o", "xcode_target": null, "stem": "exc_5_64_table", "mtime": 1217281281, "mtime_utc": "2008-07-28T21:41:21Z", "so_dir": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/", "so_name": "exc_5_64_table.c", "ccache_host": null, "lang": null, "source": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/exc_5_64_table.c", "build_root": null, "source_resolution": "n_so", "n_functions": 0, "n_data": 1, "text_bytes": 0, "first_addr": null, "files": []},
+  {"index": 22, "oso": "lib/common/osx32/libspeex.a(exc_8_128_table.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libspeex.a", "member": "exc_8_128_table.o", "xcode_target": null, "stem": "exc_8_128_table", "mtime": 1217281281, "mtime_utc": "2008-07-28T21:41:21Z", "so_dir": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/", "so_name": "exc_8_128_table.c", "ccache_host": null, "lang": null, "source": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/exc_8_128_table.c", "build_root": null, "source_resolution": "n_so", "n_functions": 0, "n_data": 1, "text_bytes": 0, "first_addr": null, "files": []},
+  {"index": 23, "oso": "lib/common/osx32/libspeex.a(exc_10_32_table.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libspeex.a", "member": "exc_10_32_table.o", "xcode_target": null, "stem": "exc_10_32_table", "mtime": 1217281281, "mtime_utc": "2008-07-28T21:41:21Z", "so_dir": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/", "so_name": "exc_10_32_table.c", "ccache_host": null, "lang": null, "source": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/exc_10_32_table.c", "build_root": null, "source_resolution": "n_so", "n_functions": 0, "n_data": 1, "text_bytes": 0, "first_addr": null, "files": []},
+  {"index": 24, "oso": "lib/common/osx32/libspeex.a(exc_10_16_table.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libspeex.a", "member": "exc_10_16_table.o", "xcode_target": null, "stem": "exc_10_16_table", "mtime": 1217281282, "mtime_utc": "2008-07-28T21:41:22Z", "so_dir": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/", "so_name": "exc_10_16_table.c", "ccache_host": null, "lang": null, "source": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/exc_10_16_table.c", "build_root": null, "source_resolution": "n_so", "n_functions": 0, "n_data": 1, "text_bytes": 0, "first_addr": null, "files": []},
+  {"index": 25, "oso": "lib/common/osx32/libspeex.a(exc_20_32_table.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libspeex.a", "member": "exc_20_32_table.o", "xcode_target": null, "stem": "exc_20_32_table", "mtime": 1217281282, "mtime_utc": "2008-07-28T21:41:22Z", "so_dir": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/", "so_name": "exc_20_32_table.c", "ccache_host": null, "lang": null, "source": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/exc_20_32_table.c", "build_root": null, "source_resolution": "n_so", "n_functions": 0, "n_data": 1, "text_bytes": 0, "first_addr": null, "files": []},
+  {"index": 26, "oso": "lib/common/osx32/libspeex.a(hexc_10_32_table.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libspeex.a", "member": "hexc_10_32_table.o", "xcode_target": null, "stem": "hexc_10_32_table", "mtime": 1217281282, "mtime_utc": "2008-07-28T21:41:22Z", "so_dir": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/", "so_name": "hexc_10_32_table.c", "ccache_host": null, "lang": null, "source": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/hexc_10_32_table.c", "build_root": null, "source_resolution": "n_so", "n_functions": 0, "n_data": 1, "text_bytes": 0, "first_addr": null, "files": []},
+  {"index": 27, "oso": "lib/common/osx32/libspeex.a(misc.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libspeex.a", "member": "misc.o", "xcode_target": null, "stem": "misc", "mtime": 1217281282, "mtime_utc": "2008-07-28T21:41:22Z", "so_dir": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/", "so_name": "misc.c", "ccache_host": null, "lang": null, "source": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/misc.c", "build_root": null, "source_resolution": "n_so", "n_functions": 15, "n_data": 0, "text_bytes": 757, "first_addr": "0xfd40", "files": []},
+  {"index": 28, "oso": "lib/common/osx32/libspeex.a(speex_callbacks.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libspeex.a", "member": "speex_callbacks.o", "xcode_target": null, "stem": "speex_callbacks", "mtime": 1217281283, "mtime_utc": "2008-07-28T21:41:23Z", "so_dir": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/", "so_name": "speex_callbacks.c", "ccache_host": null, "lang": null, "source": "/Volumes/Users/alfred/valve/steam3_piston_main/src/voice_codecs/speex/source/libspeex/speex_callbacks.c", "build_root": null, "source_resolution": "n_so", "n_functions": 9, "n_data": 0, "text_bytes": 650, "first_addr": "0x10040", "files": []}
+ ]
+}

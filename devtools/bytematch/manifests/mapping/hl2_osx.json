@@ -1,0 +1,31 @@
+{
+ "module": "hl2_osx",
+ "our_target": "hl2_launcher",
+ "our_games": null,
+ "project_dir": "launcher_main",
+ "order_rule_inversions": 0,
+ "counts": {
+  "exact": 1
+ },
+ "counts_sdk": {
+  "missing": 1
+ },
+ "diff": {
+  "add": [],
+  "remove": [],
+  "path_differs": [],
+  "order": {
+   "common": 1,
+   "in_order_lis": 1,
+   "need_moving": 0,
+   "identical": true
+  },
+  "libraries": {
+   "retail": [],
+   "ours": [],
+   "retail_only": [],
+   "ours_only": [],
+   "same_relative_order": true
+  }
+ }
+}

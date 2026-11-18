@@ -1,0 +1,640 @@
+{
+ "modules": {
+  "bin/GameUI": {
+   "mac": "bin/GameUI.dylib",
+   "win": "222/19307283/bin/GameUI.dll",
+   "linux": "224/19307283/bin/GameUI.so",
+   "win_src_paths": 1,
+   "win_also_in_mac_objects": 1,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 2,
+   "linux_also_in_mac_objects": 2,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 146
+  },
+  "bin/ServerBrowser": {
+   "mac": "bin/ServerBrowser.dylib",
+   "win": "222/19307283/bin/ServerBrowser.dll",
+   "linux": "224/19307283/bin/ServerBrowser.so",
+   "win_src_paths": 1,
+   "win_also_in_mac_objects": 1,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 2,
+   "linux_also_in_mac_objects": 2,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 87
+  },
+  "bin/bsppack": {
+   "mac": "bin/bsppack.dylib",
+   "win": "222/19307283/bin/bsppack.dll",
+   "linux": "224/19307283/bin/bsppack.so",
+   "win_src_paths": 0,
+   "win_also_in_mac_objects": 0,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 0,
+   "linux_also_in_mac_objects": 0,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 16
+  },
+  "bin/bugreporter_filequeue": {
+   "mac": "bin/bugreporter_filequeue.dylib",
+   "win": "222/19307283/bin/bugreporter_filequeue.dll",
+   "linux": "224/19307283/bin/bugreporter_filequeue.so",
+   "win_src_paths": 0,
+   "win_also_in_mac_objects": 0,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 0,
+   "linux_also_in_mac_objects": 0,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 7
+  },
+  "bin/bugreporter_public": {
+   "mac": "bin/bugreporter_public.dylib",
+   "win": "222/19307283/bin/bugreporter_public.dll",
+   "linux": "224/19307283/bin/bugreporter_public.so",
+   "win_src_paths": 0,
+   "win_also_in_mac_objects": 0,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 0,
+   "linux_also_in_mac_objects": 0,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 9
+  },
+  "bin/chromehtml": {
+   "mac": "bin/chromehtml.dylib",
+   "win": "222/19307283/bin/chromehtml.dll",
+   "linux": "224/19307283/bin/chromehtml.so",
+   "win_src_paths": 5,
+   "win_also_in_mac_objects": 5,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 6,
+   "linux_also_in_mac_objects": 6,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 12
+  },
+  "bin/datacache": {
+   "mac": "bin/datacache.dylib",
+   "win": "222/19307283/bin/datacache.dll",
+   "linux": "224/19307283/bin/datacache.so",
+   "win_src_paths": 1,
+   "win_also_in_mac_objects": 1,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 3,
+   "linux_also_in_mac_objects": 3,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 15
+  },
+  "bin/engine": {
+   "mac": "bin/engine.dylib",
+   "win": "222/19307283/bin/engine.dll",
+   "linux": "224/19307283/bin/engine.so",
+   "win_src_paths": 43,
+   "win_also_in_mac_objects": 43,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 69,
+   "linux_also_in_mac_objects": 68,
+   "linux_not_in_mac_objects": [
+    "engine/audio/private/snd_dev_sdl.cpp"
+   ],
+   "mac_src_paths": 366
+  },
+  "bin/filesystem_stdio": {
+   "mac": "bin/filesystem_stdio.dylib",
+   "win": "222/19307283/bin/FileSystem_Stdio.dll",
+   "linux": "224/19307283/bin/filesystem_stdio.so",
+   "win_src_paths": 3,
+   "win_also_in_mac_objects": 3,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 3,
+   "linux_also_in_mac_objects": 3,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 24
+  },
+  "bin/inputsystem": {
+   "mac": "bin/inputsystem.dylib",
+   "win": "222/19307283/bin/inputsystem.dll",
+   "linux": "224/19307283/bin/inputsystem.so",
+   "win_src_paths": 0,
+   "win_also_in_mac_objects": 0,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 0,
+   "linux_also_in_mac_objects": 0,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 12
+  },
+  "bin/launcher": {
+   "mac": "bin/launcher.dylib",
+   "win": "222/19307283/bin/launcher.dll",
+   "linux": "224/19307283/bin/launcher.so",
+   "win_src_paths": 0,
+   "win_also_in_mac_objects": 0,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 1,
+   "linux_also_in_mac_objects": 1,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 18
+  },
+  "bin/libtier0": {
+   "mac": "bin/libtier0.dylib",
+   "win": "222/19307283/bin/tier0.dll",
+   "linux": "224/19307283/bin/libtier0.so",
+   "win_src_paths": 1,
+   "win_also_in_mac_objects": 1,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 0,
+   "linux_also_in_mac_objects": 0,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 21
+  },
+  "bin/libtogl": {
+   "mac": "bin/libtogl.dylib",
+   "win": null,
+   "linux": "224/19307283/bin/libtogl.so",
+   "linux_src_paths": 4,
+   "linux_also_in_mac_objects": 0,
+   "linux_not_in_mac_objects": [
+    "togl/linuxwin/cglmbuffer.cpp",
+    "togl/linuxwin/dxabstract.cpp",
+    "togl/linuxwin/glmgr.cpp",
+    "togl/linuxwin/glmgrbasics.cpp"
+   ],
+   "mac_src_paths": 22
+  },
+  "bin/libvstdlib": {
+   "mac": "bin/libvstdlib.dylib",
+   "win": "222/19307283/bin/vstdlib.dll",
+   "linux": "224/19307283/bin/libvstdlib.so",
+   "win_src_paths": 2,
+   "win_also_in_mac_objects": 2,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 3,
+   "linux_also_in_mac_objects": 3,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 18
+  },
+  "bin/materialsystem": {
+   "mac": "bin/materialsystem.dylib",
+   "win": "222/19307283/bin/MaterialSystem.dll",
+   "linux": "224/19307283/bin/materialsystem.so",
+   "win_src_paths": 6,
+   "win_also_in_mac_objects": 6,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 8,
+   "linux_also_in_mac_objects": 8,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 47
+  },
+  "bin/replay": {
+   "mac": "bin/replay.dylib",
+   "win": "222/19307283/bin/replay.dll",
+   "linux": "224/19307283/bin/replay.so",
+   "win_src_paths": 12,
+   "win_also_in_mac_objects": 12,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 13,
+   "linux_also_in_mac_objects": 13,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 76
+  },
+  "bin/scenefilecache": {
+   "mac": "bin/scenefilecache.dylib",
+   "win": "222/19307283/bin/scenefilecache.dll",
+   "linux": "224/19307283/bin/scenefilecache.so",
+   "win_src_paths": 0,
+   "win_also_in_mac_objects": 0,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 0,
+   "linux_also_in_mac_objects": 0,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 6
+  },
+  "bin/shaderapidx9": {
+   "mac": "bin/shaderapidx9.dylib",
+   "win": "222/19307283/bin/shaderapidx9.dll",
+   "linux": "224/19307283/bin/shaderapidx9.so",
+   "win_src_paths": 4,
+   "win_also_in_mac_objects": 4,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 6,
+   "linux_also_in_mac_objects": 6,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 34
+  },
+  "bin/shaderapiempty": {
+   "mac": "bin/shaderapiempty.dylib",
+   "win": "222/19307283/bin/shaderapiempty.dll",
+   "linux": "224/19307283/bin/shaderapiempty.so",
+   "win_src_paths": 0,
+   "win_also_in_mac_objects": 0,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 0,
+   "linux_also_in_mac_objects": 0,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 3
+  },
+  "bin/soundemittersystem": {
+   "mac": "bin/soundemittersystem.dylib",
+   "win": "222/19307283/bin/SoundEmitterSystem.dll",
+   "linux": "224/19307283/bin/soundemittersystem.so",
+   "win_src_paths": 0,
+   "win_also_in_mac_objects": 0,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 0,
+   "linux_also_in_mac_objects": 0,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 10
+  },
+  "bin/sourcevr": {
+   "mac": "bin/sourcevr.dylib",
+   "win": null,
+   "linux": "224/19307283/bin/sourcevr.so",
+   "linux_src_paths": 0,
+   "linux_also_in_mac_objects": 0,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 14
+  },
+  "bin/stdshader_dx9": {
+   "mac": "bin/stdshader_dx9.dylib",
+   "win": "222/19307283/bin/stdshader_dx9.dll",
+   "linux": "224/19307283/bin/stdshader_dx9.so",
+   "win_src_paths": 0,
+   "win_also_in_mac_objects": 0,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 1,
+   "linux_also_in_mac_objects": 1,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 112
+  },
+  "bin/studiorender": {
+   "mac": "bin/studiorender.dylib",
+   "win": "222/19307283/bin/StudioRender.dll",
+   "linux": "224/19307283/bin/studiorender.so",
+   "win_src_paths": 3,
+   "win_also_in_mac_objects": 3,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 7,
+   "linux_also_in_mac_objects": 7,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 23
+  },
+  "bin/vaudio_miles": {
+   "mac": "bin/vaudio_miles.dylib",
+   "win": "222/19307283/bin/vaudio_miles.dll",
+   "linux": "224/19307283/bin/vaudio_miles.so",
+   "win_src_paths": 0,
+   "win_also_in_mac_objects": 0,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 0,
+   "linux_also_in_mac_objects": 0,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 5
+  },
+  "bin/vaudio_speex": {
+   "mac": "bin/vaudio_speex.dylib",
+   "win": "222/19307283/bin/vaudio_speex.dll",
+   "linux": "224/19307283/bin/vaudio_speex.so",
+   "win_src_paths": 0,
+   "win_also_in_mac_objects": 0,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 0,
+   "linux_also_in_mac_objects": 0,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 3
+  },
+  "bin/vgui2": {
+   "mac": "bin/vgui2.dylib",
+   "win": "222/19307283/bin/vgui2.dll",
+   "linux": "224/19307283/bin/vgui2.so",
+   "win_src_paths": 0,
+   "win_also_in_mac_objects": 0,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 1,
+   "linux_also_in_mac_objects": 1,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 26
+  },
+  "bin/vguimatsurface": {
+   "mac": "bin/vguimatsurface.dylib",
+   "win": "222/19307283/bin/vguimatsurface.dll",
+   "linux": "224/19307283/bin/vguimatsurface.so",
+   "win_src_paths": 1,
+   "win_also_in_mac_objects": 1,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 3,
+   "linux_also_in_mac_objects": 3,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 78
+  },
+  "bin/video_quicktime": {
+   "mac": "bin/video_quicktime.dylib",
+   "win": "222/19307283/bin/video_quicktime.dll",
+   "linux": null,
+   "win_src_paths": 0,
+   "win_also_in_mac_objects": 0,
+   "win_not_in_mac_objects": [],
+   "mac_src_paths": 11
+  },
+  "bin/video_services": {
+   "mac": "bin/video_services.dylib",
+   "win": "222/19307283/bin/video_services.dll",
+   "linux": "224/19307283/bin/video_services.so",
+   "win_src_paths": 0,
+   "win_also_in_mac_objects": 0,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 0,
+   "linux_also_in_mac_objects": 0,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 8
+  },
+  "bin/vphysics": {
+   "mac": "bin/vphysics.dylib",
+   "win": "222/19307283/bin/vphysics.dll",
+   "linux": "224/19307283/bin/vphysics.so",
+   "win_src_paths": 15,
+   "win_also_in_mac_objects": 15,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 18,
+   "linux_also_in_mac_objects": 17,
+   "linux_not_in_mac_objects": [
+    "ivp/ivp_compact_builder/ivp_tetra_intrude.cxx"
+   ],
+   "mac_src_paths": 152
+  },
+  "bin/vpk_osx32": {
+   "mac": "bin/vpk_osx32",
+   "win": null,
+   "linux": null,
+   "mac_src_paths": 18
+  },
+  "bin/vtex_dll": {
+   "mac": "bin/vtex_dll.dylib",
+   "win": "222/19307283/bin/vtex_dll.dll",
+   "linux": "224/19307283/bin/vtex_dll.so",
+   "win_src_paths": 0,
+   "win_also_in_mac_objects": 0,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 0,
+   "linux_also_in_mac_objects": 0,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 26
+  },
+  "episodic/client": {
+   "mac": "episodic/bin/client.dylib",
+   "win": "380/19307283/episodic/bin/client.dll",
+   "linux": "380/19307283/episodic/bin/client.so",
+   "win_src_paths": 44,
+   "win_also_in_mac_objects": 44,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 90,
+   "linux_also_in_mac_objects": 90,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 578
+  },
+  "episodic/server": {
+   "mac": "episodic/bin/server.dylib",
+   "win": "380/19307283/episodic/bin/server.dll",
+   "linux": "380/19307283/episodic/bin/server.so",
+   "win_src_paths": 12,
+   "win_also_in_mac_objects": 12,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 40,
+   "linux_also_in_mac_objects": 40,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 587
+  },
+  "hl2/client": {
+   "mac": "hl2/bin/client.dylib",
+   "win": "222/19307283/hl2/bin/client.dll",
+   "linux": "224/19307283/hl2/bin/client.so",
+   "win_src_paths": 44,
+   "win_also_in_mac_objects": 44,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 90,
+   "linux_also_in_mac_objects": 90,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 578
+  },
+  "hl2/server": {
+   "mac": "hl2/bin/server.dylib",
+   "win": "222/19307283/hl2/bin/server.dll",
+   "linux": "224/19307283/hl2/bin/server.so",
+   "win_src_paths": 12,
+   "win_also_in_mac_objects": 12,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 40,
+   "linux_also_in_mac_objects": 40,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 587
+  },
+  "hl2_complete/client": {
+   "mac": "hl2_complete/bin/client.dylib",
+   "win": "222/19307283/hl2_complete/bin/client.dll",
+   "linux": "224/19307283/hl2_complete/bin/client.so",
+   "win_src_paths": 44,
+   "win_also_in_mac_objects": 44,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 90,
+   "linux_also_in_mac_objects": 90,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 579
+  },
+  "hl2_complete/server": {
+   "mac": "hl2_complete/bin/server.dylib",
+   "win": "222/19307283/hl2_complete/bin/server.dll",
+   "linux": "224/19307283/hl2_complete/bin/server.so",
+   "win_src_paths": 12,
+   "win_also_in_mac_objects": 12,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 40,
+   "linux_also_in_mac_objects": 40,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 586
+  },
+  "hl2_osx": {
+   "mac": "hl2_osx",
+   "win": "222/19307283/hl2.exe",
+   "linux": "224/19307283/hl2_linux",
+   "win_src_paths": 0,
+   "win_also_in_mac_objects": 0,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 0,
+   "linux_also_in_mac_objects": 0,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 1
+  },
+  "hl2mp/client": {
+   "mac": "hl2mp/bin/client.dylib",
+   "win": "222/19307283/hl2mp/bin/client.dll",
+   "linux": "224/19307283/hl2mp/bin/client.so",
+   "win_src_paths": 44,
+   "win_also_in_mac_objects": 44,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 90,
+   "linux_also_in_mac_objects": 90,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 596
+  },
+  "hl2mp/server": {
+   "mac": "hl2mp/bin/server.dylib",
+   "win": "222/19307283/hl2mp/bin/server.dll",
+   "linux": "224/19307283/hl2mp/bin/server.so",
+   "win_src_paths": 11,
+   "win_also_in_mac_objects": 11,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 40,
+   "linux_also_in_mac_objects": 40,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 574
+  },
+  "lostcoast/client": {
+   "mac": "lostcoast/bin/client.dylib",
+   "win": "340/19307283/lostcoast/bin/client.dll",
+   "linux": "340/19307283/lostcoast/bin/client.so",
+   "win_src_paths": 44,
+   "win_also_in_mac_objects": 44,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 90,
+   "linux_also_in_mac_objects": 90,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 569
+  },
+  "lostcoast/server": {
+   "mac": "lostcoast/bin/server.dylib",
+   "win": "340/19307283/lostcoast/bin/server.dll",
+   "linux": "340/19307283/lostcoast/bin/server.so",
+   "win_src_paths": 12,
+   "win_also_in_mac_objects": 12,
+   "win_not_in_mac_objects": [],
+   "linux_src_paths": 40,
+   "linux_also_in_mac_objects": 40,
+   "linux_not_in_mac_objects": [],
+   "mac_src_paths": 567
+  }
+ },
+ "inventory": {
+  "bin": {
+   "win_only": [
+    "adminserver",
+    "bspzip",
+    "bugreporter",
+    "captioncompiler",
+    "datamodel",
+    "demoinfo",
+    "dmserializers",
+    "dmxconvert",
+    "dmxedit",
+    "elementviewer",
+    "filesystemopendialog",
+    "glview",
+    "hammer",
+    "hammer_dll",
+    "haptics",
+    "height2normal",
+    "height2ssbump",
+    "hlfaceposer",
+    "hlmv",
+    "itemtest",
+    "mdllib",
+    "mksheet",
+    "motionmapper",
+    "mysql_wrapper",
+    "normal2ssbump",
+    "parsifal",
+    "pfm2tgas",
+    "qc_eyes",
+    "serverplugin_empty",
+    "shadercompile",
+    "shadercompile_dll",
+    "soundsystem",
+    "splitskybox",
+    "stdshader_dbg",
+    "stdshader_dx6",
+    "stdshader_dx7",
+    "stdshader_dx8",
+    "studiomdl",
+    "texturecompile_dll",
+    "unicode",
+    "unitlib",
+    "valvedeviceapi",
+    "vbsp",
+    "vbspinfo",
+    "vpk",
+    "vrad",
+    "vrad_dll",
+    "vtex",
+    "vtf2tga",
+    "vvis",
+    "vvis_dll"
+   ],
+   "linux_only": [
+    "video_webm"
+   ],
+   "win_and_linux_not_mac": [
+    "shaderapivk",
+    "video_bink"
+   ],
+   "mac_only": [],
+   "mac_and_linux_not_win": [
+    "libtogl",
+    "sourcevr"
+   ]
+  },
+  "hl2/bin": {
+   "win_only": [],
+   "linux_only": [],
+   "win_and_linux_not_mac": [
+    "gamepadui"
+   ],
+   "mac_only": [],
+   "mac_and_linux_not_win": []
+  },
+  "hl2_complete/bin": {
+   "win_only": [],
+   "linux_only": [],
+   "win_and_linux_not_mac": [
+    "gamepadui"
+   ],
+   "mac_only": [],
+   "mac_and_linux_not_win": []
+  },
+  "hl2mp/bin": {
+   "win_only": [],
+   "linux_only": [],
+   "win_and_linux_not_mac": [],
+   "mac_only": [],
+   "mac_and_linux_not_win": []
+  },
+  "340:lostcoast/bin": {
+   "client": [
+    ".dll",
+    ".dylib",
+    ".so"
+   ],
+   "gamepadui": [
+    ".dll",
+    ".so"
+   ],
+   "server": [
+    ".dll",
+    ".dylib",
+    ".so"
+   ]
+  },
+  "380:episodic/bin": {
+   "client": [
+    ".dll",
+    ".dylib",
+    ".so"
+   ],
+   "gamepadui": [
+    ".dll",
+    ".so"
+   ],
+   "server": [
+    ".dll",
+    ".dylib",
+    ".so"
+   ]
+  }
+ }
+}

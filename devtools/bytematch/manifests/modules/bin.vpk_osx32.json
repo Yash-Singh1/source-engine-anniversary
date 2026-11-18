@@ -1,0 +1,478 @@
+{
+ "module": "bin/vpk_osx32",
+ "depot": "223",
+ "build": "19307283",
+ "path": "bin/vpk_osx32",
+ "aliases": [],
+ "sha256": "02cf527d8ea89ca6db7f13b95e3e3aa44517267b9ba93abf2ee4b8fbfbc351fd",
+ "size": 1243752,
+ "macho": {
+  "filetype": "MH_EXECUTE",
+  "flags": "0x1018085",
+  "segments": [
+   {
+    "name": "__PAGEZERO",
+    "vmaddr": "0x0",
+    "vmsize": 4096,
+    "sections": []
+   },
+   {
+    "name": "__TEXT",
+    "vmaddr": "0x1000",
+    "vmsize": 667648,
+    "sections": [
+     [
+      "__text",
+      "0x2490",
+      499153,
+      16
+     ],
+     [
+      "__symbol_stub",
+      "0x7c262",
+      858,
+      2
+     ],
+     [
+      "__stub_helper",
+      "0x7c5bc",
+      1442,
+      4
+     ],
+     [
+      "__gcc_except_tab",
+      "0x7cb60",
+      50616,
+      4
+     ],
+     [
+      "__cstring",
+      "0x89120",
+      21875,
+      16
+     ],
+     [
+      "__const",
+      "0x8e6a0",
+      14880,
+      32
+     ],
+     [
+      "__unwind_info",
+      "0x920c0",
+      10648,
+      4
+     ],
+     [
+      "__eh_frame",
+      "0x94a58",
+      62860,
+      8
+     ]
+    ]
+   },
+   {
+    "name": "__DATA",
+    "vmaddr": "0xa4000",
+    "vmsize": 81920,
+    "sections": [
+     [
+      "__program_vars",
+      "0xa4000",
+      20,
+      4
+     ],
+     [
+      "__nl_symbol_ptr",
+      "0xa4014",
+      356,
+      4
+     ],
+     [
+      "__la_symbol_ptr",
+      "0xa4178",
+      572,
+      4
+     ],
+     [
+      "__mod_init_func",
+      "0xa43b4",
+      36,
+      4
+     ],
+     [
+      "__const",
+      "0xa43e0",
+      25932,
+      32
+     ],
+     [
+      "__data",
+      "0xaa930",
+      2820,
+      16
+     ],
+     [
+      "__bss",
+      "0xab440",
+      22416,
+      32
+     ],
+     [
+      "__common",
+      "0xb0bd0",
+      26468,
+      8
+     ]
+    ]
+   },
+   {
+    "name": "__LINKEDIT",
+    "vmaddr": "0xb8000",
+    "vmsize": 544768,
+    "sections": []
+   }
+  ],
+  "dylibs": [
+   {
+    "path": "@loader_path/libtier0.dylib",
+    "current": "1.0.0",
+    "compat": "1.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "/System/Library/Frameworks/Carbon.framework/Versions/A/Carbon",
+    "current": "157.0.0",
+    "compat": "2.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "/usr/lib/libiconv.2.dylib",
+    "current": "7.0.0",
+    "compat": "7.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "@loader_path/libvstdlib.dylib",
+    "current": "1.0.0",
+    "compat": "1.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "/usr/lib/libstdc++.6.dylib",
+    "current": "60.0.0",
+    "compat": "7.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "/usr/lib/libSystem.B.dylib",
+    "current": "1197.1.1",
+    "compat": "1.0.0",
+    "kind": "LOAD_DYLIB"
+   }
+  ],
+  "load_commands": [
+   "SEGMENT",
+   "SEGMENT",
+   "SEGMENT",
+   "SEGMENT",
+   "DYLD_INFO_ONLY",
+   "SYMTAB",
+   "DYSYMTAB",
+   "LOAD_DYLINKER",
+   "UUID",
+   "VERSION_MIN_MACOSX",
+   "UNIXTHREAD",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "FUNCTION_STARTS",
+   "DATA_IN_CODE"
+  ],
+  "uuid": "5C7BAB3D34B23A0F9D6264A702D17E25",
+  "min_macosx": "10.6.0",
+  "sdk": "10.9.0"
+ },
+ "build_roots": {
+  "rel_singleplayer_osx": 18
+ },
+ "ccache_hosts": {
+  "hl2-osx-builder": 20
+ },
+ "xcode_targets": {
+  "vpk": 1
+ },
+ "stab_counts": {
+  "0x20": 626,
+  "0x24": 3766,
+  "0x26": 576,
+  "0x2e": 1883,
+  "0x4e": 1883,
+  "0x64": 147,
+  "0x66": 49,
+  "0x84": 125
+ },
+ "n_objects": 49,
+ "n_loose_objects": 1,
+ "n_archive_members": 19,
+ "n_prebuilt_members": 29,
+ "built_mtime_range": [
+  "2024-11-13T17:23:46Z",
+  "2024-11-26T02:36:53Z"
+ ],
+ "static_libraries": [
+  {
+   "archive": "lib/common/osx32/libcryptopp.a",
+   "prebuilt": true,
+   "first_index": 1,
+   "members": [
+    "algparam.o",
+    "asn.o",
+    "basecode.o",
+    "cpu.o",
+    "cryptlib.o",
+    "dll.o",
+    "ecp.o",
+    "filters.o",
+    "fips140.o",
+    "gf2n.o",
+    "gzip.o",
+    "hex.o",
+    "integer.o",
+    "iterhash.o",
+    "misc.o",
+    "mqueue.o",
+    "nbtheory.o",
+    "oaep.o",
+    "osrng.o",
+    "pkcspad.o",
+    "pubkey.o",
+    "queue.o",
+    "randpool.o",
+    "rdtables.o",
+    "rijndael.o",
+    "rng.o",
+    "rsa.o",
+    "sha.o",
+    "zdeflate.o"
+   ]
+  },
+  {
+   "archive": "build/Release/libvpklib.a",
+   "prebuilt": false,
+   "first_index": 30,
+   "members": [
+    "crypto.o",
+    "packedstore.o"
+   ]
+  },
+  {
+   "archive": "build/Release/libtier2.a",
+   "prebuilt": false,
+   "first_index": 32,
+   "members": [
+    "defaultfilesystem.o",
+    "fileutils.o",
+    "tier2.o",
+    "util_init.o"
+   ]
+  },
+  {
+   "archive": "build/Release/libtier1.a",
+   "prebuilt": false,
+   "first_index": 36,
+   "members": [
+    "checksum_crc.o",
+    "checksum_md5.o",
+    "convar.o",
+    "generichash.o",
+    "interface.o",
+    "KeyValues.o",
+    "strtools.o",
+    "tier1.o",
+    "utlbuffer.o",
+    "utlstring.o"
+   ]
+  },
+  {
+   "archive": "build/Release/libmathlib.a",
+   "prebuilt": false,
+   "first_index": 46,
+   "members": [
+    "color_conversion.o",
+    "mathlib_base.o",
+    "sse.o"
+   ]
+  }
+ ],
+ "text_order_matches_oso_order": true,
+ "headers_with_code": {
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/bits/basic_string.h": 1,
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/bits/basic_string.tcc": 1,
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/bits/char_traits.h": 1,
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/ext/atomicity.h": 1,
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/iostream": 1,
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/typeinfo": 1,
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/ctype.h": 1,
+  "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/bits/basic_string.h": 1,
+  "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/bits/basic_string.tcc": 1,
+  "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/bits/char_traits.h": 1,
+  "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/bits/deque.tcc": 1,
+  "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/bits/stl_algo.h": 1,
+  "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/bits/stl_algobase.h": 1,
+  "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/bits/stl_bvector.h": 1,
+  "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/bits/stl_construct.h": 1,
+  "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/bits/stl_deque.h": 1,
+  "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/bits/stl_function.h": 1,
+  "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/bits/stl_iterator.h": 1,
+  "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/bits/stl_iterator_base_funcs.h": 1,
+  "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/bits/stl_uninitialized.h": 1,
+  "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/bits/stl_vector.h": 1,
+  "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/bits/vector.tcc": 1,
+  "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/ext/new_allocator.h": 1,
+  "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/iostream": 1,
+  "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/memory": 1,
+  "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/new": 1,
+  "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/typeinfo": 1,
+  "/Developer/SDKs/MacOSX10.5.sdk/usr/include/ctype.h": 1,
+  "algebra.h": 1,
+  "algparam.h": 1,
+  "asn.h": 1,
+  "basecode.h": 1,
+  "cpu.h": 1,
+  "cryptlib.h": 1,
+  "external/crypto++-5.61/algparam.h": 1,
+  "external/crypto++-5.61/asn.h": 1,
+  "external/crypto++-5.61/basecode.h": 1,
+  "external/crypto++-5.61/cryptlib.h": 1,
+  "external/crypto++-5.61/filters.h": 1,
+  "external/crypto++-5.61/hex.h": 1,
+  "external/crypto++-5.61/integer.h": 1,
+  "external/crypto++-5.61/iterhash.h": 1,
+  "external/crypto++-5.61/misc.h": 1,
+  "external/crypto++-5.61/oaep.h": 1,
+  "external/crypto++-5.61/osrng.h": 1,
+  "external/crypto++-5.61/pkcspad.h": 1,
+  "external/crypto++-5.61/pubkey.h": 1,
+  "external/crypto++-5.61/rijndael.h": 1,
+  "external/crypto++-5.61/rsa.h": 1,
+  "external/crypto++-5.61/secblock.h": 1,
+  "external/crypto++-5.61/seckey.h": 1,
+  "external/crypto++-5.61/sha.h": 1,
+  "external/crypto++-5.61/simple.h": 1,
+  "external/crypto++-5.61/smartptr.h": 1,
+  "filters.h": 1,
+  "fips140.h": 1,
+  "hex.h": 1,
+  "integer.h": 1,
+  "iterhash.h": 1,
+  "misc.h": 1,
+  "modarith.h": 1,
+  "mqueue.h": 1,
+  "nbtheory.h": 1,
+  "oaep.h": 1,
+  "oids.h": 1,
+  "osrng.h": 1,
+  "pkcspad.h": 1,
+  "pubkey.h": 1,
+  "public/filesystem.h": 1,
+  "public/mathlib/mathlib.h": 1,
+  "public/mathlib/vector2d.h": 1,
+  "public/tier0/basetypes.h": 1,
+  "public/tier0/memalloc.h": 1,
+  "public/tier0/platform.h": 1,
+  "public/tier0/threadtools.h": 1,
+  "public/tier0/tslist.h": 1,
+  "public/tier0/vprof.h": 1,
+  "public/tier1/KeyValues.h": 1,
+  "public/tier1/UtlSortVector.h": 1,
+  "public/tier1/byteswap.h": 1,
+  "public/tier1/checksum_crc.h": 1,
+  "public/tier1/checksum_md5.h": 1,
+  "public/tier1/strtools.h": 1,
+  "public/tier1/utlblockmemory.h": 1,
+  "public/tier1/utlbuffer.h": 1,
+  "public/tier1/utldict.h": 1,
+  "public/tier1/utlintrusivelist.h": 1,
+  "public/tier1/utllinkedlist.h": 1,
+  "public/tier1/utlmap.h": 1,
+  "public/tier1/utlmemory.h": 1,
+  "public/tier1/utlrbtree.h": 1,
+  "public/tier1/utlstring.h": 1,
+  "public/tier1/utlvector.h": 1,
+  "public/tier2/fileutils.h": 1,
+  "public/vpklib/packedstore.h": 1,
+  "queue.h": 1,
+  "rijndael.h": 1,
+  "rng.h": 1,
+  "rsa.h": 1,
+  "secblock.h": 1,
+  "seckey.h": 1,
+  "sha.h": 1,
+  "simple.h": 1,
+  "smartptr.h": 1,
+  "vpklib/packedstore_internal.h": 1,
+  "words.h": 1
+ },
+ "unstabbed_text": {
+  "n_symbols": 1,
+  "bytes": 64,
+  "by_prefix": {
+   "start": 64
+  }
+ },
+ "objects": [
+  {"index": 0, "oso": "build/buildbot_osx.build/Release/vpk.build/Objects-normal/i386/packtest.o", "kind": "object", "archive": null, "member": null, "xcode_target": "vpk", "stem": "packtest", "mtime": 1732588613, "mtime_utc": "2024-11-26T02:36:53Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "packtest.tmp.hl2-osx-builder.9925.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "utils/vpk/packtest.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 128, "n_data": 39, "text_bytes": 72593, "first_addr": "0x24d0", "files": ["utils/vpk/packtest.cpp", "public/filesystem.h", "public/tier0/basetypes.h", "public/tier1/utlmemory.h", "public/tier1/utlvector.h", "public/tier1/utllinkedlist.h", "public/vpklib/packedstore.h", "public/tier1/strtools.h", "public/tier1/utldict.h", "public/tier1/utlrbtree.h", "public/tier1/utlstring.h", "public/tier2/fileutils.h", "public/tier1/utlmap.h", "public/tier0/platform.h", "public/tier1/utlbuffer.h", "public/tier1/checksum_crc.h", "public/tier1/checksum_md5.h", "public/tier1/KeyValues.h", "public/mathlib/mathlib.h", "public/mathlib/vector2d.h"]},
+  {"index": 1, "oso": "lib/common/osx32/libcryptopp.a(algparam.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libcryptopp.a", "member": "algparam.o", "xcode_target": null, "stem": "algparam", "mtime": 1326224572, "mtime_utc": "2012-01-10T19:42:52Z", "so_dir": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/", "so_name": "algparam.cpp", "ccache_host": null, "lang": null, "source": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/algparam.cpp", "build_root": null, "source_resolution": "n_so", "n_functions": 11, "n_data": 8, "text_bytes": 1348, "first_addr": "0x14070", "files": ["smartptr.h", "cryptlib.h", "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/typeinfo", "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/bits/char_traits.h", "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/bits/basic_string.h", "algparam.h"]},
+  {"index": 2, "oso": "lib/common/osx32/libcryptopp.a(asn.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libcryptopp.a", "member": "asn.o", "xcode_target": null, "stem": "asn", "mtime": 1326224578, "mtime_utc": "2012-01-10T19:42:58Z", "so_dir": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/", "so_name": "asn.cpp", "ccache_host": null, "lang": null, "source": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/asn.cpp", "build_root": null, "source_resolution": "n_so", "n_functions": 50, "n_data": 40, "text_bytes": 12058, "first_addr": "0x145c0", "files": ["misc.h", "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/bits/stl_vector.h", "asn.h", "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/ext/new_allocator.h", "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/bits/stl_iterator.h", "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/bits/stl_algobase.h", "simple.h", "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/bits/stl_uninitialized.h", "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/bits/vector.tcc"]},
+  {"index": 3, "oso": "lib/common/osx32/libcryptopp.a(basecode.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libcryptopp.a", "member": "basecode.o", "xcode_target": null, "stem": "basecode", "mtime": 1326224575, "mtime_utc": "2012-01-10T19:42:55Z", "so_dir": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/", "so_name": "basecode.cpp", "ccache_host": null, "lang": null, "source": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/basecode.cpp", "build_root": null, "source_resolution": "n_so", "n_functions": 21, "n_data": 22, "text_bytes": 12172, "first_addr": "0x174e0", "files": ["/Developer/SDKs/MacOSX10.5.sdk/usr/include/ctype.h", "secblock.h", "basecode.h", "filters.h"]},
+  {"index": 4, "oso": "lib/common/osx32/libcryptopp.a(cpu.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libcryptopp.a", "member": "cpu.o", "xcode_target": null, "stem": "cpu", "mtime": 1326224574, "mtime_utc": "2012-01-10T19:42:54Z", "so_dir": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/", "so_name": "cpu.cpp", "ccache_host": null, "lang": null, "source": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/cpu.cpp", "build_root": null, "source_resolution": "n_so", "n_functions": 5, "n_data": 11, "text_bytes": 899, "first_addr": "0x1a470", "files": []},
+  {"index": 5, "oso": "lib/common/osx32/libcryptopp.a(cryptlib.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libcryptopp.a", "member": "cryptlib.o", "xcode_target": null, "stem": "cryptlib", "mtime": 1326224583, "mtime_utc": "2012-01-10T19:43:03Z", "so_dir": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/", "so_name": "cryptlib.cpp", "ccache_host": null, "lang": null, "source": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/cryptlib.cpp", "build_root": null, "source_resolution": "n_so", "n_functions": 133, "n_data": 111, "text_bytes": 24734, "first_addr": "0x1a800", "files": ["/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/memory", "fips140.h", "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/bits/basic_string.tcc"]},
+  {"index": 6, "oso": "lib/common/osx32/libcryptopp.a(dll.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libcryptopp.a", "member": "dll.o", "xcode_target": null, "stem": "dll", "mtime": 1326224625, "mtime_utc": "2012-01-10T19:43:45Z", "so_dir": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/", "so_name": "dll.cpp", "ccache_host": null, "lang": null, "source": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/dll.cpp", "build_root": null, "source_resolution": "n_so", "n_functions": 196, "n_data": 157, "text_bytes": 22701, "first_addr": "0x208b0", "files": ["algebra.h", "algebra.cpp", "osrng.h", "oaep.h", "pubkey.h", "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/iostream", "integer.h", "seckey.h", "rijndael.h", "iterhash.h", "sha.h", "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/bits/stl_construct.h", "queue.h"]},
+  {"index": 7, "oso": "lib/common/osx32/libcryptopp.a(ecp.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libcryptopp.a", "member": "ecp.o", "xcode_target": null, "stem": "ecp", "mtime": 1326224586, "mtime_utc": "2012-01-10T19:43:06Z", "so_dir": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/", "so_name": "ecp.cpp", "ccache_host": null, "lang": null, "source": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/ecp.cpp", "build_root": null, "source_resolution": "n_so", "n_functions": 0, "n_data": 1, "text_bytes": 0, "first_addr": null, "files": []},
+  {"index": 8, "oso": "lib/common/osx32/libcryptopp.a(filters.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libcryptopp.a", "member": "filters.o", "xcode_target": null, "stem": "filters", "mtime": 1326224589, "mtime_utc": "2012-01-10T19:43:09Z", "so_dir": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/", "so_name": "filters.cpp", "ccache_host": null, "lang": null, "source": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/filters.cpp", "build_root": null, "source_resolution": "n_so", "n_functions": 147, "n_data": 92, "text_bytes": 17408, "first_addr": "0x26170", "files": ["/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/bits/stl_algo.h"]},
+  {"index": 9, "oso": "lib/common/osx32/libcryptopp.a(fips140.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libcryptopp.a", "member": "fips140.o", "xcode_target": null, "stem": "fips140", "mtime": 1326224578, "mtime_utc": "2012-01-10T19:42:58Z", "so_dir": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/", "so_name": "fips140.cpp", "ccache_host": null, "lang": null, "source": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/fips140.cpp", "build_root": null, "source_resolution": "n_so", "n_functions": 5, "n_data": 1, "text_bytes": 85, "first_addr": "0x2a570", "files": []},
+  {"index": 10, "oso": "lib/common/osx32/libcryptopp.a(gf2n.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libcryptopp.a", "member": "gf2n.o", "xcode_target": null, "stem": "gf2n", "mtime": 1326224587, "mtime_utc": "2012-01-10T19:43:07Z", "so_dir": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/", "so_name": "gf2n.cpp", "ccache_host": null, "lang": null, "source": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/gf2n.cpp", "build_root": null, "source_resolution": "n_so", "n_functions": 3, "n_data": 4, "text_bytes": 147, "first_addr": "0x2a5d0", "files": []},
+  {"index": 11, "oso": "lib/common/osx32/libcryptopp.a(gzip.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libcryptopp.a", "member": "gzip.o", "xcode_target": null, "stem": "gzip", "mtime": 1326224583, "mtime_utc": "2012-01-10T19:43:03Z", "so_dir": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/", "so_name": "gzip.cpp", "ccache_host": null, "lang": null, "source": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/gzip.cpp", "build_root": null, "source_resolution": "n_so", "n_functions": 0, "n_data": 1, "text_bytes": 0, "first_addr": null, "files": []},
+  {"index": 12, "oso": "lib/common/osx32/libcryptopp.a(hex.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libcryptopp.a", "member": "hex.o", "xcode_target": null, "stem": "hex", "mtime": 1326224583, "mtime_utc": "2012-01-10T19:43:03Z", "so_dir": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/", "so_name": "hex.cpp", "ccache_host": null, "lang": null, "source": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/hex.cpp", "build_root": null, "source_resolution": "n_so", "n_functions": 37, "n_data": 25, "text_bytes": 4574, "first_addr": "0x2a670", "files": ["hex.h"]},
+  {"index": 13, "oso": "lib/common/osx32/libcryptopp.a(integer.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libcryptopp.a", "member": "integer.o", "xcode_target": null, "stem": "integer", "mtime": 1326224601, "mtime_utc": "2012-01-10T19:43:21Z", "so_dir": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/", "so_name": "integer.cpp", "ccache_host": null, "lang": null, "source": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/integer.cpp", "build_root": null, "source_resolution": "n_so", "n_functions": 178, "n_data": 103, "text_bytes": 106707, "first_addr": "0x2b860", "files": ["words.h", "modarith.h"]},
+  {"index": 14, "oso": "lib/common/osx32/libcryptopp.a(iterhash.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libcryptopp.a", "member": "iterhash.o", "xcode_target": null, "stem": "iterhash", "mtime": 1326224585, "mtime_utc": "2012-01-10T19:43:05Z", "so_dir": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/", "so_name": "iterhash.cpp", "ccache_host": null, "lang": null, "source": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/iterhash.cpp", "build_root": null, "source_resolution": "n_so", "n_functions": 11, "n_data": 9, "text_bytes": 2163, "first_addr": "0x45940", "files": []},
+  {"index": 15, "oso": "lib/common/osx32/libcryptopp.a(misc.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libcryptopp.a", "member": "misc.o", "xcode_target": null, "stem": "misc", "mtime": 1326224585, "mtime_utc": "2012-01-10T19:43:05Z", "so_dir": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/", "so_name": "misc.cpp", "ccache_host": null, "lang": null, "source": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/misc.cpp", "build_root": null, "source_resolution": "n_so", "n_functions": 8, "n_data": 0, "text_bytes": 625, "first_addr": "0x461c0", "files": ["/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/new"]},
+  {"index": 16, "oso": "lib/common/osx32/libcryptopp.a(mqueue.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libcryptopp.a", "member": "mqueue.o", "xcode_target": null, "stem": "mqueue", "mtime": 1326224593, "mtime_utc": "2012-01-10T19:43:13Z", "so_dir": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/", "so_name": "mqueue.cpp", "ccache_host": null, "lang": null, "source": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/mqueue.cpp", "build_root": null, "source_resolution": "n_so", "n_functions": 64, "n_data": 19, "text_bytes": 20245, "first_addr": "0x46440", "files": ["/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/bits/stl_deque.h", "mqueue.h", "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/bits/deque.tcc"]},
+  {"index": 17, "oso": "lib/common/osx32/libcryptopp.a(nbtheory.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libcryptopp.a", "member": "nbtheory.o", "xcode_target": null, "stem": "nbtheory", "mtime": 1326224595, "mtime_utc": "2012-01-10T19:43:15Z", "so_dir": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/", "so_name": "nbtheory.cpp", "ccache_host": null, "lang": null, "source": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/nbtheory.cpp", "build_root": null, "source_resolution": "n_so", "n_functions": 37, "n_data": 23, "text_bytes": 22219, "first_addr": "0x4b360", "files": ["nbtheory.h", "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/bits/stl_bvector.h", "/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/bits/stl_iterator_base_funcs.h"]},
+  {"index": 18, "oso": "lib/common/osx32/libcryptopp.a(oaep.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libcryptopp.a", "member": "oaep.o", "xcode_target": null, "stem": "oaep", "mtime": 1326224588, "mtime_utc": "2012-01-10T19:43:08Z", "so_dir": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/", "so_name": "oaep.cpp", "ccache_host": null, "lang": null, "source": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/oaep.cpp", "build_root": null, "source_resolution": "n_so", "n_functions": 6, "n_data": 4, "text_bytes": 1677, "first_addr": "0x50a30", "files": ["/Developer/SDKs/MacOSX10.5.sdk/usr/include/c++/4.2.1/bits/stl_function.h"]},
+  {"index": 19, "oso": "lib/common/osx32/libcryptopp.a(osrng.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libcryptopp.a", "member": "osrng.o", "xcode_target": null, "stem": "osrng", "mtime": 1326224589, "mtime_utc": "2012-01-10T19:43:09Z", "so_dir": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/", "so_name": "osrng.cpp", "ccache_host": null, "lang": null, "source": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/osrng.cpp", "build_root": null, "source_resolution": "n_so", "n_functions": 17, "n_data": 19, "text_bytes": 3168, "first_addr": "0x510c0", "files": []},
+  {"index": 20, "oso": "lib/common/osx32/libcryptopp.a(pkcspad.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libcryptopp.a", "member": "pkcspad.o", "xcode_target": null, "stem": "pkcspad", "mtime": 1326224590, "mtime_utc": "2012-01-10T19:43:10Z", "so_dir": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/", "so_name": "pkcspad.cpp", "ccache_host": null, "lang": null, "source": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/pkcspad.cpp", "build_root": null, "source_resolution": "n_so", "n_functions": 4, "n_data": 2, "text_bytes": 288, "first_addr": "0x51d20", "files": ["pkcspad.h"]},
+  {"index": 21, "oso": "lib/common/osx32/libcryptopp.a(pubkey.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libcryptopp.a", "member": "pubkey.o", "xcode_target": null, "stem": "pubkey", "mtime": 1326224595, "mtime_utc": "2012-01-10T19:43:15Z", "so_dir": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/", "so_name": "pubkey.cpp", "ccache_host": null, "lang": null, "source": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/pubkey.cpp", "build_root": null, "source_resolution": "n_so", "n_functions": 15, "n_data": 25, "text_bytes": 11672, "first_addr": "0x51e40", "files": []},
+  {"index": 22, "oso": "lib/common/osx32/libcryptopp.a(queue.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libcryptopp.a", "member": "queue.o", "xcode_target": null, "stem": "queue", "mtime": 1326224593, "mtime_utc": "2012-01-10T19:43:13Z", "so_dir": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/", "so_name": "queue.cpp", "ccache_host": null, "lang": null, "source": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/queue.cpp", "build_root": null, "source_resolution": "n_so", "n_functions": 41, "n_data": 22, "text_bytes": 7040, "first_addr": "0x54be0", "files": []},
+  {"index": 23, "oso": "lib/common/osx32/libcryptopp.a(randpool.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libcryptopp.a", "member": "randpool.o", "xcode_target": null, "stem": "randpool", "mtime": 1326224593, "mtime_utc": "2012-01-10T19:43:13Z", "so_dir": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/", "so_name": "randpool.cpp", "ccache_host": null, "lang": null, "source": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/randpool.cpp", "build_root": null, "source_resolution": "n_so", "n_functions": 0, "n_data": 1, "text_bytes": 0, "first_addr": null, "files": []},
+  {"index": 24, "oso": "lib/common/osx32/libcryptopp.a(rdtables.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libcryptopp.a", "member": "rdtables.o", "xcode_target": null, "stem": "rdtables", "mtime": 1326224592, "mtime_utc": "2012-01-10T19:43:12Z", "so_dir": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/", "so_name": "rdtables.cpp", "ccache_host": null, "lang": null, "source": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/rdtables.cpp", "build_root": null, "source_resolution": "n_so", "n_functions": 0, "n_data": 3, "text_bytes": 0, "first_addr": null, "files": []},
+  {"index": 25, "oso": "lib/common/osx32/libcryptopp.a(rijndael.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libcryptopp.a", "member": "rijndael.o", "xcode_target": null, "stem": "rijndael", "mtime": 1326224596, "mtime_utc": "2012-01-10T19:43:16Z", "so_dir": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/", "so_name": "rijndael.cpp", "ccache_host": null, "lang": null, "source": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/rijndael.cpp", "build_root": null, "source_resolution": "n_so", "n_functions": 11, "n_data": 10, "text_bytes": 5506, "first_addr": "0x56760", "files": ["cpu.h"]},
+  {"index": 26, "oso": "lib/common/osx32/libcryptopp.a(rng.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libcryptopp.a", "member": "rng.o", "xcode_target": null, "stem": "rng", "mtime": 1326224595, "mtime_utc": "2012-01-10T19:43:15Z", "so_dir": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/", "so_name": "rng.cpp", "ccache_host": null, "lang": null, "source": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/rng.cpp", "build_root": null, "source_resolution": "n_so", "n_functions": 7, "n_data": 8, "text_bytes": 2288, "first_addr": "0x57cf0", "files": ["rng.h"]},
+  {"index": 27, "oso": "lib/common/osx32/libcryptopp.a(rsa.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libcryptopp.a", "member": "rsa.o", "xcode_target": null, "stem": "rsa", "mtime": 1326224606, "mtime_utc": "2012-01-10T19:43:26Z", "so_dir": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/", "so_name": "rsa.cpp", "ccache_host": null, "lang": null, "source": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/rsa.cpp", "build_root": null, "source_resolution": "n_so", "n_functions": 147, "n_data": 122, "text_bytes": 26423, "first_addr": "0x585e0", "files": ["rsa.h", "oids.h"]},
+  {"index": 28, "oso": "lib/common/osx32/libcryptopp.a(sha.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libcryptopp.a", "member": "sha.o", "xcode_target": null, "stem": "sha", "mtime": 1326224598, "mtime_utc": "2012-01-10T19:43:18Z", "so_dir": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/", "so_name": "sha.cpp", "ccache_host": null, "lang": null, "source": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/sha.cpp", "build_root": null, "source_resolution": "n_so", "n_functions": 4, "n_data": 2, "text_bytes": 9405, "first_addr": "0x5ed30", "files": []},
+  {"index": 29, "oso": "lib/common/osx32/libcryptopp.a(zdeflate.o)", "kind": "prebuilt_member", "archive": "lib/common/osx32/libcryptopp.a", "member": "zdeflate.o", "xcode_target": null, "stem": "zdeflate", "mtime": 1326224606, "mtime_utc": "2012-01-10T19:43:26Z", "so_dir": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/", "so_name": "zdeflate.cpp", "ccache_host": null, "lang": null, "source": "/Users/alfred/valve/steam3_main/src/external/crypto++-5.61/zdeflate.cpp", "build_root": null, "source_resolution": "n_so", "n_functions": 0, "n_data": 1, "text_bytes": 0, "first_addr": null, "files": []},
+  {"index": 30, "oso": "build/Release/libvpklib.a(crypto.o)", "kind": "archive_member", "archive": "build/Release/libvpklib.a", "member": "crypto.o", "xcode_target": null, "stem": "crypto", "mtime": 1731778183, "mtime_utc": "2024-11-16T17:29:43Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "crypto.tmp.hl2-osx-builder.1906.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "common/crypto.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 368, "n_data": 218, "text_bytes": 44191, "first_addr": "0x611f0", "files": ["common/crypto.cpp", "public/tier0/vprof.h", "external/crypto++-5.61/filters.h", "external/crypto++-5.61/cryptlib.h", "external/crypto++-5.61/pubkey.h", "external/crypto++-5.61/asn.h", "external/crypto++-5.61/rsa.h", "external/crypto++-5.61/integer.h", "external/crypto++-5.61/secblock.h", "external/crypto++-5.61/misc.h", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/bits/basic_string.h", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/ext/atomicity.h", "external/crypto++-5.61/smartptr.h", "external/crypto++-5.61/hex.h", "external/crypto++-5.61/basecode.h", "public/tier0/tslist.h", "external/crypto++-5.61/seckey.h", "external/crypto++-5.61/rijndael.h", "public/tier0/threadtools.h", "external/crypto++-5.61/sha.h", "external/crypto++-5.61/iterhash.h", "external/crypto++-5.61/algparam.h", "external/crypto++-5.61/pkcspad.h", "external/crypto++-5.61/simple.h", "external/crypto++-5.61/oaep.h", "external/crypto++-5.61/osrng.h", "public/tier0/memalloc.h", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/typeinfo", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/bits/char_traits.h", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/bits/basic_string.tcc", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/c++/4.2.1/iostream"]},
+  {"index": 31, "oso": "build/Release/libvpklib.a(packedstore.o)", "kind": "archive_member", "archive": "build/Release/libvpklib.a", "member": "packedstore.o", "xcode_target": null, "stem": "packedstore", "mtime": 1732588030, "mtime_utc": "2024-11-26T02:27:10Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "packedstor.tmp.hl2-osx-builder.90352.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "vpklib/packedstore.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 65, "n_data": 17, "text_bytes": 35660, "first_addr": "0x6bea0", "files": ["vpklib/packedstore.cpp", "public/tier1/utlintrusivelist.h", "vpklib/packedstore_internal.h", "public/tier1/utlblockmemory.h", "public/tier1/UtlSortVector.h"]},
+  {"index": 32, "oso": "build/Release/libtier2.a(defaultfilesystem.o)", "kind": "archive_member", "archive": "build/Release/libtier2.a", "member": "defaultfilesystem.o", "xcode_target": null, "stem": "defaultfilesystem", "mtime": 1732582553, "mtime_utc": "2024-11-26T00:55:53Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "defaultfil.tmp.hl2-osx-builder.41223.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier2/defaultfilesystem.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 2, "n_data": 1, "text_bytes": 240, "first_addr": "0x749f0", "files": ["tier2/defaultfilesystem.cpp"]},
+  {"index": 33, "oso": "build/Release/libtier2.a(fileutils.o)", "kind": "archive_member", "archive": "build/Release/libtier2.a", "member": "fileutils.o", "xcode_target": null, "stem": "fileutils", "mtime": 1732582553, "mtime_utc": "2024-11-26T00:55:53Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "fileutils.tmp.hl2-osx-builder.41225.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier2/fileutils.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 1, "n_data": 0, "text_bytes": 176, "first_addr": "0x74ae0", "files": ["tier2/fileutils.cpp"]},
+  {"index": 34, "oso": "build/Release/libtier2.a(tier2.o)", "kind": "archive_member", "archive": "build/Release/libtier2.a", "member": "tier2.o", "xcode_target": null, "stem": "tier2", "mtime": 1732582553, "mtime_utc": "2024-11-26T00:55:53Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "tier2.tmp.hl2-osx-builder.41228.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": null, "build_root": null, "source_resolution": "unresolved", "n_functions": 0, "n_data": 1, "text_bytes": 0, "first_addr": null, "files": []},
+  {"index": 35, "oso": "build/Release/libtier2.a(util_init.o)", "kind": "archive_member", "archive": "build/Release/libtier2.a", "member": "util_init.o", "xcode_target": null, "stem": "util_init", "mtime": 1731778102, "mtime_utc": "2024-11-16T17:28:22Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "util_init.tmp.hl2-osx-builder.98215.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier2/util_init.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 2, "n_data": 2, "text_bytes": 340, "first_addr": "0x74b90", "files": ["tier2/util_init.cpp"]},
+  {"index": 36, "oso": "build/Release/libtier1.a(checksum_crc.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "checksum_crc.o", "xcode_target": null, "stem": "checksum_crc", "mtime": 1731518626, "mtime_utc": "2024-11-13T17:23:46Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "checksum_c.tmp.hl2-osx-builder.44496.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/checksum_crc.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 3, "n_data": 1, "text_bytes": 548, "first_addr": "0x74cf0", "files": ["tier1/checksum_crc.cpp"]},
+  {"index": 37, "oso": "build/Release/libtier1.a(checksum_md5.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "checksum_md5.o", "xcode_target": null, "stem": "checksum_md5", "mtime": 1731518626, "mtime_utc": "2024-11-13T17:23:46Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "checksum_m.tmp.hl2-osx-builder.44498.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/checksum_md5.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 8, "n_data": 0, "text_bytes": 2882, "first_addr": "0x74f20", "files": ["tier1/checksum_md5.cpp"]},
+  {"index": 38, "oso": "build/Release/libtier1.a(convar.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "convar.o", "xcode_target": null, "stem": "convar", "mtime": 1731778100, "mtime_utc": "2024-11-16T17:28:20Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "convar.tmp.hl2-osx-builder.97990.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/convar.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 39, "n_data": 16, "text_bytes": 2978, "first_addr": "0x75a70", "files": ["tier1/convar.cpp"]},
+  {"index": 39, "oso": "build/Release/libtier1.a(generichash.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "generichash.o", "xcode_target": null, "stem": "generichash", "mtime": 1731518626, "mtime_utc": "2024-11-13T17:23:46Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "generichas.tmp.hl2-osx-builder.44546.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/generichash.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 1, "n_data": 1, "text_bytes": 96, "first_addr": "0x76620", "files": ["tier1/generichash.cpp"]},
+  {"index": 40, "oso": "build/Release/libtier1.a(interface.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "interface.o", "xcode_target": null, "stem": "interface", "mtime": 1731778100, "mtime_utc": "2024-11-16T17:28:20Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "interface.tmp.hl2-osx-builder.97998.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/interface.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 3, "n_data": 1, "text_bytes": 912, "first_addr": "0x76680", "files": ["tier1/interface.cpp"]},
+  {"index": 41, "oso": "build/Release/libtier1.a(KeyValues.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "KeyValues.o", "xcode_target": null, "stem": "KeyValues", "mtime": 1732582553, "mtime_utc": "2024-11-26T00:55:53Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "KeyValues.tmp.hl2-osx-builder.41190.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/KeyValues.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 26, "n_data": 17, "text_bytes": 8528, "first_addr": "0x76a10", "files": ["tier1/KeyValues.cpp", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/ctype.h"]},
+  {"index": 42, "oso": "build/Release/libtier1.a(strtools.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "strtools.o", "xcode_target": null, "stem": "strtools", "mtime": 1732587993, "mtime_utc": "2024-11-26T02:26:33Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "strtools.tmp.hl2-osx-builder.89224.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/strtools.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 27, "n_data": 0, "text_bytes": 4432, "first_addr": "0x78b60", "files": ["tier1/strtools.cpp"]},
+  {"index": 43, "oso": "build/Release/libtier1.a(tier1.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "tier1.o", "xcode_target": null, "stem": "tier1", "mtime": 1731778101, "mtime_utc": "2024-11-16T17:28:21Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "tier1.tmp.hl2-osx-builder.98106.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": null, "build_root": null, "source_resolution": "unresolved", "n_functions": 0, "n_data": 1, "text_bytes": 0, "first_addr": null, "files": []},
+  {"index": 44, "oso": "build/Release/libtier1.a(utlbuffer.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "utlbuffer.o", "xcode_target": null, "stem": "utlbuffer", "mtime": 1731778101, "mtime_utc": "2024-11-16T17:28:21Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "utlbuffer.tmp.hl2-osx-builder.98113.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/utlbuffer.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 28, "n_data": 17, "text_bytes": 6017, "first_addr": "0x79cb0", "files": ["tier1/utlbuffer.cpp", "public/tier1/byteswap.h"]},
+  {"index": 45, "oso": "build/Release/libtier1.a(utlstring.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "utlstring.o", "xcode_target": null, "stem": "utlstring", "mtime": 1731778101, "mtime_utc": "2024-11-16T17:28:21Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "utlstring.tmp.hl2-osx-builder.98122.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/utlstring.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 10, "n_data": 0, "text_bytes": 1248, "first_addr": "0x7b440", "files": ["tier1/utlstring.cpp"]},
+  {"index": 46, "oso": "build/Release/libmathlib.a(color_conversion.o)", "kind": "archive_member", "archive": "build/Release/libmathlib.a", "member": "color_conversion.o", "xcode_target": null, "stem": "color_conversion", "mtime": 1731778105, "mtime_utc": "2024-11-16T17:28:25Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "color_conv.tmp.hl2-osx-builder.98370.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "mathlib/color_conversion.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 1, "n_data": 7, "text_bytes": 1056, "first_addr": "0x7b920", "files": ["mathlib/color_conversion.cpp"]},
+  {"index": 47, "oso": "build/Release/libmathlib.a(mathlib_base.o)", "kind": "archive_member", "archive": "build/Release/libmathlib.a", "member": "mathlib_base.o", "xcode_target": null, "stem": "mathlib_base", "mtime": 1731778106, "mtime_utc": "2024-11-16T17:28:26Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "mathlib_ba.tmp.hl2-osx-builder.98373.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "mathlib/mathlib_base.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 7, "n_data": 13, "text_bytes": 864, "first_addr": "0x7bd40", "files": ["mathlib/mathlib_base.cpp"]},
+  {"index": 48, "oso": "build/Release/libmathlib.a(sse.o)", "kind": "archive_member", "archive": "build/Release/libmathlib.a", "member": "sse.o", "xcode_target": null, "stem": "sse", "mtime": 1731778106, "mtime_utc": "2024-11-16T17:28:26Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "sse.tmp.hl2-osx-builder.98436.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "mathlib/sse.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 6, "n_data": 4, "text_bytes": 449, "first_addr": "0x7c0a0", "files": ["mathlib/sse.cpp"]}
+ ]
+}

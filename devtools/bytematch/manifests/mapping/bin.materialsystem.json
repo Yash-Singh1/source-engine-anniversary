@@ -1,0 +1,63 @@
+{
+ "module": "bin/materialsystem",
+ "our_target": "materialsystem",
+ "our_games": null,
+ "project_dir": "materialsystem",
+ "order_rule_inversions": 0,
+ "counts": {
+  "exact": 20
+ },
+ "counts_sdk": {
+  "missing": 19,
+  "moved": 1
+ },
+ "diff": {
+  "add": [],
+  "remove": [
+   {
+    "path": "public/filesystem_helpers.cpp",
+    "note": null
+   },
+   {
+    "path": "materialsystem/pch_materialsystem.cpp",
+    "note": null
+   },
+   {
+    "path": "materialsystem/ctexturecompositor.cpp",
+    "note": null
+   },
+   {
+    "path": "public/tier0/memoverride.cpp",
+    "note": "no retail Mac module links a memoverride object: Valve's Mac build has no malloc override (malloc from libSystem, operator new from libstdc++)"
+   }
+  ],
+  "path_differs": [],
+  "order": {
+   "common": 20,
+   "in_order_lis": 13,
+   "need_moving": 7,
+   "identical": false
+  },
+  "libraries": {
+   "retail": [
+    "vtf",
+    "tier2",
+    "mathlib",
+    "shaderlib",
+    "tier1",
+    "bitmap"
+   ],
+   "ours": [
+    "tier1",
+    "tier2",
+    "mathlib",
+    "bitmap",
+    "shaderlib",
+    "vtf"
+   ],
+   "retail_only": [],
+   "ours_only": [],
+   "same_relative_order": false
+  }
+ }
+}

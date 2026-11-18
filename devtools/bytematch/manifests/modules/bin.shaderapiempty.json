@@ -1,0 +1,239 @@
+{
+ "module": "bin/shaderapiempty",
+ "depot": "223",
+ "build": "19307283",
+ "path": "bin/shaderapiempty.dylib",
+ "aliases": [],
+ "sha256": "5631f4854eda050739cd473747225acaa2884d43544330e929f8a065c7b85155",
+ "size": 143668,
+ "macho": {
+  "filetype": "MH_DYLIB",
+  "flags": "0x110085",
+  "segments": [
+   {
+    "name": "__TEXT",
+    "vmaddr": "0x0",
+    "vmsize": 36864,
+    "sections": [
+     [
+      "__text",
+      "0x1310",
+      14256,
+      16
+     ],
+     [
+      "__symbol_stub",
+      "0x4ac0",
+      72,
+      2
+     ],
+     [
+      "__stub_helper",
+      "0x4b08",
+      132,
+      4
+     ],
+     [
+      "__const",
+      "0x4b90",
+      404,
+      16
+     ],
+     [
+      "__gcc_except_tab",
+      "0x4d24",
+      44,
+      4
+     ],
+     [
+      "__cstring",
+      "0x4d50",
+      154,
+      1
+     ],
+     [
+      "__unwind_info",
+      "0x4dec",
+      280,
+      4
+     ],
+     [
+      "__eh_frame",
+      "0x4f08",
+      16624,
+      8
+     ]
+    ]
+   },
+   {
+    "name": "__DATA",
+    "vmaddr": "0x9000",
+    "vmsize": 4096,
+    "sections": [
+     [
+      "__nl_symbol_ptr",
+      "0x9000",
+      16,
+      4
+     ],
+     [
+      "__la_symbol_ptr",
+      "0x9010",
+      48,
+      4
+     ],
+     [
+      "__mod_init_func",
+      "0x9040",
+      4,
+      4
+     ],
+     [
+      "__const",
+      "0x9050",
+      2516,
+      16
+     ],
+     [
+      "__data",
+      "0x9a30",
+      472,
+      16
+     ],
+     [
+      "__common",
+      "0x9c08",
+      8,
+      4
+     ],
+     [
+      "__bss",
+      "0x9c10",
+      296,
+      16
+     ]
+    ]
+   },
+   {
+    "name": "__LINKEDIT",
+    "vmaddr": "0xa000",
+    "vmsize": 106496,
+    "sections": []
+   }
+  ],
+  "dylibs": [
+   {
+    "path": "@loader_path/libtier0.dylib",
+    "current": "1.0.0",
+    "compat": "1.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "@loader_path/libvstdlib.dylib",
+    "current": "1.0.0",
+    "compat": "1.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "/usr/lib/libiconv.2.dylib",
+    "current": "7.0.0",
+    "compat": "7.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "/usr/lib/libstdc++.6.dylib",
+    "current": "60.0.0",
+    "compat": "7.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "/usr/lib/libSystem.B.dylib",
+    "current": "1197.1.1",
+    "compat": "1.0.0",
+    "kind": "LOAD_DYLIB"
+   }
+  ],
+  "load_commands": [
+   "SEGMENT",
+   "SEGMENT",
+   "SEGMENT",
+   "ID_DYLIB",
+   "DYLD_INFO_ONLY",
+   "SYMTAB",
+   "DYSYMTAB",
+   "UUID",
+   "VERSION_MIN_MACOSX",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "FUNCTION_STARTS",
+   "DATA_IN_CODE"
+  ],
+  "install_name": {
+   "path": "@loader_path/shaderapiempty.dylib",
+   "current": "1.0.0",
+   "compat": "1.0.0"
+  },
+  "uuid": "A510208E754835FAA86406A45B67755D",
+  "min_macosx": "10.6.0",
+  "sdk": "10.9.0"
+ },
+ "build_roots": {
+  "rel_singleplayer_osx": 3
+ },
+ "ccache_hosts": {
+  "hl2-osx-builder": 3
+ },
+ "xcode_targets": {
+  "shaderapiempty": 1
+ },
+ "stab_counts": {
+  "0x20": 47,
+  "0x24": 1176,
+  "0x26": 18,
+  "0x2e": 588,
+  "0x4e": 588,
+  "0x64": 9,
+  "0x66": 3,
+  "0x84": 8
+ },
+ "n_objects": 3,
+ "n_loose_objects": 1,
+ "n_archive_members": 2,
+ "n_prebuilt_members": 0,
+ "built_mtime_range": [
+  "2024-11-16T17:28:20Z",
+  "2024-11-26T02:26:33Z"
+ ],
+ "static_libraries": [
+  {
+   "archive": "build/Release/libtier1.a",
+   "prebuilt": false,
+   "first_index": 1,
+   "members": [
+    "interface.o",
+    "strtools.o"
+   ]
+  }
+ ],
+ "text_order_matches_oso_order": true,
+ "headers_with_code": {
+  "materialsystem/materialsystem_global.h": 1,
+  "public/materialsystem/imaterialsystem.h": 1,
+  "public/mathlib/vector.h": 1,
+  "public/mathlib/vector2d.h": 1,
+  "public/mathlib/vector4d.h": 1
+ },
+ "unstabbed_text": {
+  "n_symbols": 0,
+  "bytes": 0,
+  "by_prefix": {}
+ },
+ "objects": [
+  {"index": 0, "oso": "build/buildbot_osx.build/Release/shaderapiempty.build/Objects-normal/i386/shaderapiempty.o", "kind": "object", "archive": null, "member": null, "xcode_target": "shaderapiempty", "stem": "shaderapiempty", "mtime": 1732582564, "mtime_utc": "2024-11-26T00:56:04Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "shaderapie.tmp.hl2-osx-builder.41818.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "materialsystem/shaderapiempty/shaderapiempty.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 585, "n_data": 64, "text_bytes": 13884, "first_addr": "0x1310", "files": ["materialsystem/shaderapiempty/shaderapiempty.cpp", "materialsystem/materialsystem_global.h", "public/materialsystem/imaterialsystem.h", "public/mathlib/vector.h", "public/mathlib/vector2d.h", "public/mathlib/vector4d.h"]},
+  {"index": 1, "oso": "build/Release/libtier1.a(interface.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "interface.o", "xcode_target": null, "stem": "interface", "mtime": 1731778100, "mtime_utc": "2024-11-16T17:28:20Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "interface.tmp.hl2-osx-builder.97998.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/interface.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 2, "n_data": 1, "text_bytes": 160, "first_addr": "0x4970", "files": ["tier1/interface.cpp"]},
+  {"index": 2, "oso": "build/Release/libtier1.a(strtools.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "strtools.o", "xcode_target": null, "stem": "strtools", "mtime": 1732587993, "mtime_utc": "2024-11-26T02:26:33Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "strtools.tmp.hl2-osx-builder.89224.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/strtools.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 1, "n_data": 0, "text_bytes": 176, "first_addr": "0x4a10", "files": ["tier1/strtools.cpp"]}
+ ]
+}
