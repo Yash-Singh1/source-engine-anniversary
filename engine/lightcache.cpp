@@ -37,6 +37,10 @@
 #include "gl_matsysiface.h"
 #include "materialsystem/materialsystem_config.h"
 #include "tier2/tier2.h"
+#ifdef BYTEMATCH_RETAIL
+#include "modelloader.h"
+#endif
+#line 40
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -2990,6 +2994,42 @@ void MarkDLightsOnStaticProps( void )
 
 float g_flMinLightingValue = 1.0f;
 
+#ifdef BYTEMATCH_RETAIL
+// Anniversary LUMP_MAP_FLAGS bits choosing the light level treated as black
+#define LVLFLAGS_MINLIGHT_LEGACY	0x00000100	// HL2's 20/256
+#define LVLFLAGS_MINLIGHT_LOW		0x00000200	// 5/256
+
+void InitDLightGlobals( int nMapVersion )
+{
+	if ( g_pMaterialSystemHardwareConfig->GetHDRType() != HDR_TYPE_NONE )
+	{
+		g_flMinLightingValue = 1.0f / 256.0f;
+	}
+	else if ( nMapVersion < 20 )
+	{
+		// HL2's broken value, kept for old bsp files
+		g_flMinLightingValue = 20.0f / 256.0f;
+	}
+	else if ( CMapLoadHelper::LumpSize( LUMP_MAP_FLAGS ) > 0 )
+	{
+		CMapLoadHelper lh( LUMP_MAP_FLAGS );
+		dflagslump_t flags_lump = *( (dflagslump_t *)( lh.LumpBase() ) );
+
+		if ( flags_lump.m_LevelFlags & LVLFLAGS_MINLIGHT_LEGACY )
+		{
+			g_flMinLightingValue = 20.0f / 256.0f;
+		}
+		else if ( flags_lump.m_LevelFlags & LVLFLAGS_MINLIGHT_LOW )
+		{
+			g_flMinLightingValue = 5.0f / 256.0f;
+		}
+		else
+		{
+			g_flMinLightingValue = 1.0f / 256.0f;
+		}
+	}
+}
+#else
 void InitDLightGlobals( int nMapVersion )
 {
 	if( nMapVersion >= 20 )
@@ -3007,3 +3047,5 @@ void InitDLightGlobals( int nMapVersion )
 		g_flMinLightingValue = 20.0f / 256.0f;
 	}
 }
+#endif
+#line 3010

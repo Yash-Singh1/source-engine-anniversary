@@ -268,6 +268,37 @@ EGameStatsUploadStatus Win32UploadGameStatsBlocking
 	const TGameStatsParameters & rGameStatsParameters	// Input
 );
 
+#ifdef BYTEMATCH_RETAIL
+// Retail no longer uploads to the CSER; the interface is kept as a stub.
+class CUploadGameStats : public IUploadGameStats
+{
+public:
+	CUploadGameStats() {}
+
+	virtual bool UploadGameStats( char const *mapname,
+		unsigned int blobversion, unsigned int blobsize, const void *pvBlobData )
+	{
+		return true;
+	}
+
+	virtual void InitConnection( void ) {}
+	virtual void UpdateConnection( void ) {}
+
+	virtual bool IsGameStatsLoggingEnabled() { return false; }
+
+	virtual void GetPseudoUniqueId( char *buf, size_t bufsize )
+	{
+		Q_memset( buf, 0, bufsize );
+	}
+
+	virtual bool IsCyberCafeUser( void ) { return false; }
+
+	virtual bool IsHDREnabled( void )
+	{
+		return g_pMaterialSystemHardwareConfig ? g_pMaterialSystemHardwareConfig->GetHDREnabled() : false;
+	}
+};
+#else
 class CUploadGameStats : public IUploadGameStats
 {
 public:
@@ -518,11 +549,14 @@ private:
 	float		m_flNextConnectAttempt;
 	bool		m_bConnected;
 };
+#endif
+#line 521
 
 static CUploadGameStats g_UploadGameStats;
 IUploadGameStats *g_pUploadGameStats = &g_UploadGameStats;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR( CUploadGameStats, IUploadGameStats, INTERFACEVERSION_UPLOADGAMESTATS, g_UploadGameStats );
 
+#ifndef BYTEMATCH_RETAIL
 void UpdateProgress( const TGameStatsParameters & params, char const *fmt, ... )
 {
 	if ( !params.m_pOptionalProgressFunc )
@@ -1255,3 +1289,4 @@ void AsyncUpload_Shutdown()
 		g_pAsyncUploader = NULL;
 	}
 }
+#endif // !BYTEMATCH_RETAIL
