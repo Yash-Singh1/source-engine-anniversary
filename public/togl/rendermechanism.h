@@ -34,6 +34,31 @@
 
 #undef PROTECTED_THINGS_ENABLE
 
+#if defined(TOGL_OSX)
+
+// Valve's macOS build (retail OSX): the older togl/osx generation, as in Source SDK 2013.
+#include <OpenGL/gl.h>
+#include <OpenGL/glext.h>
+#include "tier0/basetypes.h"
+#include "tier0/platform.h"
+
+#include "togl/osx/glmdebug.h"
+#include "togl/osx/glentrypoints.h"
+#include "togl/osx/glmdisplay.h"
+#include "togl/osx/glmdisplaydb.h"
+#include "togl/osx/glmgrbasics.h"
+#include "togl/osx/glmgrext.h"
+#include "togl/osx/cglmbuffer.h"
+#include "togl/osx/cglmtex.h"
+#include "togl/osx/cglmfbo.h"
+#include "togl/osx/cglmprogram.h"
+#include "togl/osx/cglmquery.h"
+#include "togl/osx/glmgr.h"
+#include "togl/osx/dxabstract_types.h"
+#include "togl/osx/dxabstract.h"
+
+#else
+
 #include "SDL_opengl.h"
 #include "tier0/basetypes.h"
 #include "tier0/platform.h"
@@ -53,6 +78,8 @@
 #include "togl/linuxwin/glmgr.h"
 #include "togl/linuxwin/dxabstract_types.h"
 #include "togl/linuxwin/dxabstract.h"
+
+#endif // TOGL_OSX
 
 #else
 	//USE_ACTUAL_DX

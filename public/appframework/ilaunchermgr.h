@@ -17,8 +17,13 @@
 
 #if defined( DX_TO_GL_ABSTRACTION )
 
+#if defined( TOGL_OSX )
+#include "togl/osx/glmgrbasics.h"
+#include "togl/osx/glmdisplay.h"
+#else
 #include "togl/linuxwin/glmgrbasics.h"
 #include "togl/linuxwin/glmdisplay.h"
+#endif
 
 class GLMDisplayDB;
 class CShowPixelsParams;
