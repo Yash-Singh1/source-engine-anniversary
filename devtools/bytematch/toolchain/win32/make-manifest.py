@@ -33,12 +33,16 @@ DEFAULT_MODULES = {
 }
 
 # Static-library projects whose outputs other projects name in $Lib.
-LIB_PROJECTS = ["tier1", "tier2", "tier3", "mathlib", "bitmap", "vtf", "appframework", "dmxloader",
+LIB_PROJECTS = ["jpeglib", "tier1", "tier2", "tier3", "mathlib", "bitmap", "vtf", "appframework", "dmxloader",
                 "matsys_controls", "vgui_controls", "bzip2", "replay_common", "choreoobjects",
                 "particles", "vpklib", "shaderlib", "socketlib"]
 
 # Valve include directories that live elsewhere in this tree.
 INCLUDE_ALIASES = {"thirdparty/SDL2": "thirdparty/SDL"}
+
+# Library file stem -> project that builds it. Retail links an older prebuilt
+# libjpeg (VS2010 SP1, see thirdparty-static.md); Valve's own project is the stand-in.
+LIB_ALIASES = {"libjpeg": "jpeglib"}
 
 # Switches that only affect diagnostics, the IDE or build bookkeeping.
 DROP_SWITCHES = {"/WX", "/errorReport:prompt", "/ERRORREPORT:PROMPT", "/MP", "/Gm", "/FR", "/Fr",
@@ -139,6 +143,8 @@ class Module:
         d = split_list(self.get("compiler.preprocessordefinitions", f), ";")
         if "dll" in (self.get("general.configurationtype") or "").lower():
             d.append("_WINDLL")
+        if (self.get("general.platformtoolset") or "").endswith("_xp"):
+            d.append("_USING_V110_SDK71_")  # added by the v1x0_xp toolset props
         cs = (self.get("general.characterset") or "").lower()
         if "multi-byte" in cs:
             d.append("_MBCS")
@@ -257,6 +263,7 @@ class Module:
                 continue
             rel = self.p.rel(l["path"])
             stem = os.path.splitext(os.path.basename(rel))[0]
+            stem = LIB_ALIASES.get(stem.lower(), stem)
             hit = next((p for p in LIB_PROJECTS if p.lower() == stem.lower()), None)
             if rel.startswith("lib/") and hit:
                 out.append({"project": hit, "path": rel})

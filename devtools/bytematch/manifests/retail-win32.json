@@ -32,6 +32,7 @@
     "FRAME_POINTER_OMISSION_DISABLED",
     "TIER0_DLL_EXPORT",
     "_WINDLL",
+    "_USING_V110_SDK71_",
     "_MBCS"
    ],
    "includes": [
@@ -303,6 +304,7 @@
     "FRAME_POINTER_OMISSION_DISABLED",
     "VSTDLIB_DLL_EXPORT",
     "_WINDLL",
+    "_USING_V110_SDK71_",
     "_MBCS"
    ],
    "includes": [
@@ -459,6 +461,7 @@
     "FRAME_POINTER_OMISSION_DISABLED",
     "PROTECTED_THINGS_ENABLE",
     "_WINDLL",
+    "_USING_V110_SDK71_",
     "_MBCS"
    ],
    "includes": [
@@ -593,6 +596,7 @@
     "PROTECTED_THINGS_ENABLE",
     "fopen=dont_use_fopen",
     "_WINDLL",
+    "_USING_V110_SDK71_",
     "_MBCS"
    ],
    "includes": [
@@ -733,6 +737,7 @@
     "FRAME_POINTER_OMISSION_DISABLED",
     "MDLCACHE_DLL_EXPORT",
     "_WINDLL",
+    "_USING_V110_SDK71_",
     "_MBCS"
    ],
    "includes": [
@@ -889,6 +894,7 @@
     "PROTECTED_THINGS_ENABLE",
     "fopen=dont_use_fopen",
     "_WINDLL",
+    "_USING_V110_SDK71_",
     "_MBCS"
    ],
    "includes": [
@@ -1075,6 +1081,7 @@
     "FRAME_POINTER_OMISSION_DISABLED",
     "VERSION_SAFE_STEAM_API_INTERFACES",
     "_WINDLL",
+    "_USING_V110_SDK71_",
     "_MBCS"
    ],
    "includes": [
@@ -1244,6 +1251,7 @@
     "VERSION_SAFE_STEAM_API_INTERFACES",
     "USE_BREAKPAD_HANDLER",
     "_WINDLL",
+    "_USING_V110_SDK71_",
     "_MBCS"
    ],
    "includes": [
@@ -2669,7 +2677,8 @@
      "path": "lib/common/bzip2.lib"
     },
     {
-     "prebuilt": "lib/common/libjpeg.lib"
+     "project": "jpeglib",
+     "path": "lib/common/libjpeg.lib"
     },
     {
      "project": "dmxloader",
@@ -2774,6 +2783,7 @@
     "DEV_BUILD",
     "FRAME_POINTER_OMISSION_DISABLED",
     "TIER1_STATIC_LIB",
+    "_USING_V110_SDK71_",
     "_MBCS"
    ],
    "includes": [
@@ -3036,6 +3046,7 @@
     "WMV_VIDEO",
     "DEV_BUILD",
     "FRAME_POINTER_OMISSION_DISABLED",
+    "_USING_V110_SDK71_",
     "_MBCS"
    ],
    "includes": [
@@ -3177,6 +3188,7 @@
     "WMV_VIDEO",
     "DEV_BUILD",
     "FRAME_POINTER_OMISSION_DISABLED",
+    "_USING_V110_SDK71_",
     "_MBCS"
    ],
    "includes": [
@@ -3265,6 +3277,7 @@
     "WMV_VIDEO",
     "DEV_BUILD",
     "FRAME_POINTER_OMISSION_DISABLED",
+    "_USING_V110_SDK71_",
     "_MBCS"
    ],
    "includes": [
@@ -3400,6 +3413,7 @@
     "DEV_BUILD",
     "FRAME_POINTER_OMISSION_DISABLED",
     "MATHLIB_LIB",
+    "_USING_V110_SDK71_",
     "_MBCS"
    ],
    "includes": [
@@ -3557,6 +3571,7 @@
     "WMV_VIDEO",
     "DEV_BUILD",
     "FRAME_POINTER_OMISSION_DISABLED",
+    "_USING_V110_SDK71_",
     "_MBCS"
    ],
    "includes": [
@@ -3655,6 +3670,7 @@
     "WMV_VIDEO",
     "DEV_BUILD",
     "FRAME_POINTER_OMISSION_DISABLED",
+    "_USING_V110_SDK71_",
     "_MBCS"
    ],
    "includes": [
@@ -3739,6 +3755,7 @@
     "WMV_VIDEO",
     "DEV_BUILD",
     "FRAME_POINTER_OMISSION_DISABLED",
+    "_USING_V110_SDK71_",
     "_MBCS"
    ],
    "includes": [
@@ -3813,6 +3830,262 @@
    ],
    "libs": []
   },
+  "jpeglib": {
+   "vpc": "utils/jpeglib/jpeglib.vpc",
+   "type": "lib",
+   "output": "jpeglib",
+   "retail": null,
+   "project_dir": "utils/jpeglib",
+   "defines": [
+    "VPC",
+    "WIN32",
+    "_WIN32",
+    "NDEBUG",
+    "_LIB",
+    "_CRT_SECURE_NO_DEPRECATE",
+    "_CRT_NONSTDC_NO_DEPRECATE",
+    "_ALLOW_RUNTIME_LIBRARY_MISMATCH",
+    "_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH",
+    "_ALLOW_MSC_VER_MISMATCH",
+    "COMPILER_MSVC32",
+    "COMPILER_MSVC",
+    "_DLL_EXT=.dll",
+    "LIBNAME=jpeglib",
+    "BINK_VIDEO",
+    "AVI_VIDEO",
+    "WMV_VIDEO",
+    "DEV_BUILD",
+    "FRAME_POINTER_OMISSION_DISABLED",
+    "STRICT",
+    "_USING_V110_SDK71_",
+    "_MBCS"
+   ],
+   "includes": [
+    "common",
+    "public",
+    "public/tier0",
+    "public/tier1",
+    "public/jpeglib",
+    "utils/jpeglib"
+   ],
+   "cl": [
+    "/O2",
+    "/Ob2",
+    "/Oi",
+    "/Ot",
+    "/GF",
+    "/MT",
+    "/Gy",
+    "/arch:SSE",
+    "/fp:fast",
+    "/Zc:forScope",
+    "/GR",
+    "/Gd",
+    "/TC",
+    "/FC",
+    "/Z7",
+    "/W2",
+    "/Zc:wchar_t",
+    "/GS-",
+    "/wd4316",
+    "/Zo",
+    "/Oy-",
+    "/Gw",
+    "/Zc:inline"
+   ],
+   "pch_header": null,
+   "sources": [
+    {
+     "path": "common/debug_lib_check.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "utils/jpeglib/jaricom.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jcapimin.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jcapistd.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jcarith.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jccoefct.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jccolor.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jcdctmgr.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jchuff.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jcinit.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jcmainct.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jcmarker.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jcmaster.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jcomapi.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jcparam.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jcprepct.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jcsample.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jctrans.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jdapimin.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jdapistd.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jdarith.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jdatadst.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jdatasrc.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jdcoefct.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jdcolor.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jddctmgr.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jdhuff.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jdinput.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jdmainct.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jdmarker.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jdmaster.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jdmerge.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jdpostct.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jdsample.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jdtrans.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jerror.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jfdctflt.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jfdctfst.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jfdctint.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jidctflt.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jidctfst.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jidctint.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jmemmgr.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jmemnobs.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jquant1.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jquant2.c",
+     "lang": "c"
+    },
+    {
+     "path": "utils/jpeglib/jutils.c",
+     "lang": "c"
+    }
+   ],
+   "libs": []
+  },
   "dmxloader": {
    "vpc": "dmxloader/dmxloader.vpc",
    "type": "lib",
@@ -3840,6 +4113,7 @@
     "DEV_BUILD",
     "FRAME_POINTER_OMISSION_DISABLED",
     "DMXLOADER_LIB",
+    "_USING_V110_SDK71_",
     "_MBCS"
    ],
    "includes": [
@@ -3928,6 +4202,7 @@
     "WMV_VIDEO",
     "DEV_BUILD",
     "FRAME_POINTER_OMISSION_DISABLED",
+    "_USING_V110_SDK71_",
     "_MBCS"
    ],
    "includes": [
@@ -4086,6 +4361,7 @@
     "DEV_BUILD",
     "FRAME_POINTER_OMISSION_DISABLED",
     "fopen=dont_use_fopen",
+    "_USING_V110_SDK71_",
     "_MBCS"
    ],
    "includes": [
@@ -4167,6 +4443,7 @@
     "WMV_VIDEO",
     "DEV_BUILD",
     "FRAME_POINTER_OMISSION_DISABLED",
+    "_USING_V110_SDK71_",
     "_MBCS"
    ],
    "includes": [
