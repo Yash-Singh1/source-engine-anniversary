@@ -1409,7 +1409,7 @@ PLATFORM_INTERFACE void* Plat_SimpleLog( const tchar* file, int line );
 // Returns true if debugger attached, false otherwise
 //-----------------------------------------------------------------------------
 #if defined(_WIN32) || defined(LINUX) || defined(OSX) || defined(PLATFORM_BSD)
-PLATFORM_INTERFACE bool Plat_IsInDebugSession();
+PLATFORM_INTERFACE bool Plat_IsInDebugSession( bool bForceRecheck = false );
 PLATFORM_INTERFACE void Plat_DebugString( const char * );
 #else
 #warning "Plat_IsInDebugSession isn't working properly"

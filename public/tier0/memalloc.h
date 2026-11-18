@@ -466,6 +466,45 @@ struct MemAllocFileLine_t
 
 //-----------------------------------------------------------------------------
 
+#elif defined( POSIX ) && defined( OSX )
+
+#if defined( OSX )
+// Mac always aligns allocs, don't need to call posix_memalign which doesn't exist in 10.5.8 which TF2 still needs to run on
+//inline void *memalign(size_t alignment, size_t size) {void *pTmp=NULL; posix_memalign(&pTmp, alignment, size); return pTmp;}
+inline void *memalign(size_t alignment, size_t size) {void *pTmp=NULL; pTmp = malloc(size); return pTmp;}
+#endif
+
+inline void *_aligned_malloc( size_t nSize, size_t align )															{ return memalign( align, nSize ); }
+inline void _aligned_free( void *ptr )																				{ free( ptr ); }
+
+inline void *MemAlloc_Alloc( size_t nSize, const char *pFileName = NULL, int nLine = 0 )							{ return malloc( nSize ); }
+inline void MemAlloc_Free( void *ptr, const char *pFileName = NULL, int nLine = 0 )									{ free( ptr ); }
+
+inline void *MemAlloc_AllocAligned( size_t size, size_t align, const char *pszFile = NULL, int nLine = 0  )	        { return memalign( align, size ); }
+inline void *MemAlloc_AllocAlignedFileLine( size_t size, size_t align, const char *pszFile = NULL, int nLine = 0 )	{ return memalign( align, size ); }
+inline void MemAlloc_FreeAligned( void *pMemBlock, const char *pszFile = NULL, int nLine = 0 ) 						{ free( pMemBlock ); }
+
+#if defined( OSX )
+inline size_t _msize( void *ptr )																					{ return malloc_size( ptr ); }
+#else
+inline size_t _msize( void *ptr )																					{ return malloc_usable_size( ptr ); }
+#endif
+
+inline void *MemAlloc_ReallocAligned( void *ptr, size_t size, size_t align )
+{
+	void *ptr_new_aligned = memalign( align, size );
+
+	if( ptr_new_aligned )
+	{
+		size_t old_size = _msize( ptr );
+		size_t copy_size = ( size < old_size ) ? size : old_size;
+
+		memcpy( ptr_new_aligned, ptr, copy_size );
+		free( ptr );
+	}
+
+	return ptr_new_aligned;
+}
 #elif defined( POSIX )
 
 inline void MemAlloc_CheckAlloc( void *ptr, size_t nSize )
@@ -474,16 +513,6 @@ inline void MemAlloc_CheckAlloc( void *ptr, size_t nSize )
 		MemAllocOOMError( nSize );
 }
 
-#if defined( OSX )
-inline void *memalign(size_t alignment, size_t size) {
-    // MoeMod : 64bit fix
-    if(alignment < sizeof(void *))
-        alignment = sizeof(void *);
-    void *pTmp = nullptr;
-    posix_memalign(&pTmp, alignment, size);
-    return pTmp;
-}
-#endif
 
 inline void *_aligned_malloc( size_t nSize, size_t align )															{ void *ptr = memalign( align, nSize ); MemAlloc_CheckAlloc( ptr, nSize ); return ptr;  }
 inline void _aligned_free( void *ptr )																				{ free( ptr ); }
