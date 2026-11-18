@@ -15,7 +15,7 @@
 class C_BaseCombatWeapon;
 class C_BasePlayer;
 
-extern ConVar hud_fastswitch;
+extern ConVar hud_fastswitch; extern ConVar hud_fastswitch_net;
 int GetFastSwitchType();
 
 // weapon switch types for Convar hud_fastswitch

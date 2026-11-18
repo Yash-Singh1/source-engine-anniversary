@@ -966,4 +966,11 @@ enum
 #define OCT2024_ONLY( ... ) __VA_ARGS__
 #endif
 
+// Former #ifdef HL2_EPISODIC additions that fit on the line they extend.
+#ifdef HL2_EPISODIC
+#define HL2_EPISODIC_ONLY( ... ) __VA_ARGS__
+#else
+#define HL2_EPISODIC_ONLY( ... )
+#endif
+
 #endif // SHAREDDEFS_H

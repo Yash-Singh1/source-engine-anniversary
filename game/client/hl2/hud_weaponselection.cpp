@@ -215,7 +215,7 @@ void CHudWeaponSelection::OnThink( void )
 {
 	float flSelectionTimeout = SELECTION_TIMEOUT_THRESHOLD;
 	float flSelectionFadeoutTime = SELECTION_FADEOUT_TIME;
-	if ( hud_fastswitch.GetBool() )
+	if ( NOV2024_ONLY( hud_fastswitch_net ) OCT2024_ONLY( hud_fastswitch ).GetBool() )
 	{
 		flSelectionTimeout = FASTSWITCH_DISPLAY_TIMEOUT;
 		flSelectionFadeoutTime = FASTSWITCH_FADEOUT_TIME;
@@ -264,7 +264,7 @@ bool CHudWeaponSelection::ShouldDraw()
 		return false;
 
 	// draw weapon selection a little longer if in fastswitch so we can see what we've selected
-	if ( hud_fastswitch.GetBool() && ( gpGlobals->curtime - m_flSelectionTime ) < (FASTSWITCH_DISPLAY_TIMEOUT + FASTSWITCH_FADEOUT_TIME) )
+	if ( NOV2024_ONLY( hud_fastswitch_net ) OCT2024_ONLY( hud_fastswitch ).GetBool() && ( gpGlobals->curtime - m_flSelectionTime ) < (FASTSWITCH_DISPLAY_TIMEOUT + FASTSWITCH_FADEOUT_TIME) )
 		return true;
 
 	return ( m_bSelectionVisible ) ? true : false;

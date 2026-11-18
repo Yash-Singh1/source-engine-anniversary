@@ -83,7 +83,7 @@ void MigrateEpisodicDataCmd( const CCommand &args )
 	}
 }
 
-ConCommand _migrate_episodic_data( "_migrate_episodic_data", MigrateEpisodicDataCmd );
+ConCommand migrate_episodic_data( "_migrate_episodic_data", MigrateEpisodicDataCmd );
 #endif
 
 

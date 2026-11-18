@@ -697,7 +697,7 @@ void CAI_AssaultBehavior::RunTask( const Task_t *pTask )
 				NDebugOverlay::Line( WorldSpaceCenter(), GetNavigator()->GetGoalPos(), 255,0,0, true,0.1);
 				NDebugOverlay::Box( GetNavigator()->GetGoalPos(), -Vector(10,10,10), Vector(10,10,10), 255,0,0, 8, 0.1 );
 			}
-			else if ( IsCurSchedule( SCHED_MOVE_TO_RALLY_POINT ) )
+			else if ( IsCurSchedule( SCHED_MOVE_TO_RALLY_POINT ) HL2_EPISODIC_ONLY( || IsCurSchedule( SCHED_MOVE_TO_RALLY_POINT_EPISODIC ) ) )
 			{
 				NDebugOverlay::Line( WorldSpaceCenter(), GetNavigator()->GetGoalPos(), 0,255,0, true,0.1);
 				NDebugOverlay::Box( GetNavigator()->GetGoalPos(), -Vector(10,10,10), Vector(10,10,10), 0,255,0, 8, 0.1 );
@@ -1261,8 +1261,8 @@ int CAI_AssaultBehavior::TranslateSchedule( int scheduleType )
 		}
 		break;
 
-	case SCHED_HOLD_RALLY_POINT:
-		if( HasCondition(COND_NO_PRIMARY_AMMO) || HasCondition(COND_LOW_PRIMARY_AMMO) )
+	case SCHED_HOLD_RALLY_POINT: HL2_EPISODIC_ONLY( case SCHED_HOLD_RALLY_POINT_EPISODIC: )
+		if( HasCondition(COND_NO_PRIMARY_AMMO) | HasCondition(COND_LOW_PRIMARY_AMMO) )
 		{
 			return SCHED_RELOAD;
 		}
@@ -1338,9 +1338,16 @@ void CAI_AssaultBehavior::BuildScheduleTestBits()
 	// If we're allowed to divert, add the appropriate interrupts to our movement schedules
 	if ( IsAllowedToDivert() )
 	{
+#ifdef HL2_EPISODIC
+		if ( IsCurSchedule( SCHED_MOVE_TO_ASSAULT_POINT ) ||
+			IsCurSchedule( SCHED_MOVE_TO_RALLY_POINT ) || IsCurSchedule( SCHED_MOVE_TO_RALLY_POINT_EPISODIC ) ||
+			IsCurSchedule( SCHED_HOLD_RALLY_POINT ) || IsCurSchedule( SCHED_HOLD_RALLY_POINT_EPISODIC ) )
+#else
 		if ( IsCurSchedule( SCHED_MOVE_TO_ASSAULT_POINT ) ||
 			IsCurSchedule( SCHED_MOVE_TO_RALLY_POINT ) || 
 			IsCurSchedule( SCHED_HOLD_RALLY_POINT ) )
+#endif
+#line 1344
 		{
 			GetOuter()->SetCustomInterruptCondition( COND_NEW_ENEMY );
 			GetOuter()->SetCustomInterruptCondition( COND_SEE_ENEMY );
@@ -1400,7 +1407,7 @@ int CAI_AssaultBehavior::SelectSchedule()
 		{
 			// Someone moved me away. Get back to rally point.
 			m_bHitRallyPoint = false;
-			return SCHED_MOVE_TO_RALLY_POINT;
+			return HL2_EPISODIC_ONLY( IsHL2Episodic() ? SCHED_MOVE_TO_RALLY_POINT_EPISODIC : ) SCHED_MOVE_TO_RALLY_POINT;
 		}
 	}
 	else if( m_bHitAssaultPoint )
@@ -1421,7 +1428,7 @@ int CAI_AssaultBehavior::SelectSchedule()
 	if( !m_bHitRallyPoint && !AssaultHasBegun() )
 	{
 		GetOuter()->SpeakSentence( ASSAULT_SENTENCE_SQUAD_ADVANCE_TO_RALLY );
-		return SCHED_MOVE_TO_RALLY_POINT;
+		return HL2_EPISODIC_ONLY( IsHL2Episodic() ? SCHED_MOVE_TO_RALLY_POINT_EPISODIC : ) SCHED_MOVE_TO_RALLY_POINT;
 	}
 
 	if( !m_bHitAssaultPoint )
@@ -1465,7 +1472,7 @@ int CAI_AssaultBehavior::SelectSchedule()
 		else
 		{
 			UpdateForceCrouch();
-			return SCHED_HOLD_RALLY_POINT;
+			return HL2_EPISODIC_ONLY( IsHL2Episodic() ? SCHED_HOLD_RALLY_POINT_EPISODIC : ) SCHED_HOLD_RALLY_POINT;
 		}
 	}
 
@@ -1634,6 +1641,29 @@ AI_BEGIN_CUSTOM_SCHEDULE_PROVIDER(CAI_AssaultBehavior)
 	DECLARE_TASK(TASK_HIT_RALLY_POINT)
 	DECLARE_TASK(TASK_ASSAULT_DEFER_SCHEDULE_SELECTION)
 	
+#ifdef HL2_EPISODIC
+	DEFINE_SCHEDULE 
+	(
+		SCHED_MOVE_TO_RALLY_POINT_EPISODIC,
+
+		"	Tasks"
+		"		TASK_SET_FAIL_SCHEDULE					SCHEDULE:SCHED_ASSAULT_FAILED_TO_MOVE"
+		"		TASK_GET_PATH_TO_RALLY_POINT			0"
+		"		TASK_RUN_PATH							0"
+		"		TASK_WAIT_FOR_MOVEMENT					0"
+		"		TASK_STOP_MOVING						0"
+		"		TASK_FACE_RALLY_POINT					0"
+		"		TASK_HIT_RALLY_POINT					0"
+		"		TASK_SET_SCHEDULE						SCHEDULE:SCHED_HOLD_RALLY_POINT_EPISODIC"
+		"	"
+		"	Interrupts"
+		"		COND_HEAR_DANGER"
+		"		COND_PROVOKED"
+		"		COND_NO_PRIMARY_AMMO"
+		"		COND_PLAYER_PUSHING"
+	)
+#endif
+#line 1637
 	//=========================================================
 	//=========================================================
 	DEFINE_SCHEDULE 
@@ -1690,7 +1720,7 @@ AI_BEGIN_CUSTOM_SCHEDULE_PROVIDER(CAI_AssaultBehavior)
 	//=========================================================
 	DEFINE_SCHEDULE 
 	(
-		SCHED_HOLD_RALLY_POINT,
+		SCHED_HOLD_RALLY_POINT_EPISODIC,
 
 		"	Tasks"
 		"		TASK_FACE_RALLY_POINT					0"
@@ -1708,7 +1738,7 @@ AI_BEGIN_CUSTOM_SCHEDULE_PROVIDER(CAI_AssaultBehavior)
 		"		COND_HEAR_BULLET_IMPACT"
 		"		COND_NO_PRIMARY_AMMO"
 	)
-#else
+#endif
 	//=========================================================
 	//=========================================================
 	DEFINE_SCHEDULE 
@@ -1732,7 +1762,7 @@ AI_BEGIN_CUSTOM_SCHEDULE_PROVIDER(CAI_AssaultBehavior)
 	"		COND_NO_PRIMARY_AMMO"
 	"		COND_TOO_CLOSE_TO_ATTACK"
 	)
-#endif//HL2_EPISODIC
+
 
 	//=========================================================
 	//=========================================================

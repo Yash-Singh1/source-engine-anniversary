@@ -46,7 +46,7 @@ C_HL2PlayerLocalData::C_HL2PlayerLocalData()
 	m_hLadder = NULL;
 #ifdef HL2_EPISODIC
 	m_flFlashBattery = 0.0f;
-	m_vecLocatorOrigin = vec3_origin;
+	m_vecLocatorOrigin = NOV2024_ONLY( vec3_invalid ) OCT2024_ONLY( vec3_origin );
 #endif
 }
 

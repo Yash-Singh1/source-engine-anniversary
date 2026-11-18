@@ -252,7 +252,7 @@ void CHudLocator::Paint()
 	if ( !pPlayer )
 		return;
 
-	if( pPlayer->m_HL2Local.m_vecLocatorOrigin == vec3_origin )
+	if( pPlayer->m_HL2Local.m_vecLocatorOrigin == NOV2024_ONLY( vec3_invalid ) OCT2024_ONLY( vec3_origin ) )
 		return;
 
 	int element_tall = GetTall();		// Height of the VGUI element
