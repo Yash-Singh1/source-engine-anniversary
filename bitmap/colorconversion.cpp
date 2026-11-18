@@ -272,6 +272,18 @@ static inline void GetColorBlockColorsBGRA8888( DXTColBlock *pBlock, BGRA8888_t 
 	WORD color0 = LittleShort( pBlock->col0 );
 	WORD color1 = LittleShort( pBlock->col1 );
 
+#ifdef BYTEMATCH_RETAIL
+	// shift to full precision
+	col_0->a = 0xff;
+	col_0->r = ((BGR565_t*)&color0)->r << 3;
+	col_0->g = ((BGR565_t*)&color0)->g << 2;
+	col_0->b = ((BGR565_t*)&color0)->b << 3;
+
+	col_1->a = 0xff;
+	col_1->r = ((BGR565_t*)&color1)->r << 3;
+	col_1->g = ((BGR565_t*)&color1)->g << 2;
+	col_1->b = ((BGR565_t*)&color1)->b << 3;
+#else
 	// convert to full precision correctly.
 	// If this was a perf problem, we could optimize it. But this isn't used in any hotpaths 
 	// (now) so let's just do the correct but slow fp math.
@@ -284,6 +296,8 @@ static inline void GetColorBlockColorsBGRA8888( DXTColBlock *pBlock, BGRA8888_t 
 	col_1->r = ( uint8 ) round( ( ( BGR565_t* ) &color1 )->r * 255.0f / 31.0f );
 	col_1->g = ( uint8 ) round( ( ( BGR565_t* ) &color1 )->g * 255.0f / 63.0f );
 	col_1->b = ( uint8 ) round( ( ( BGR565_t* ) &color1 )->b * 255.0f / 31.0f );
+#endif
+#line 287
 
 	if ( color0 > color1 )
 	{
@@ -951,6 +965,7 @@ bool ConvertToDXTLegacy(  const uint8 *src, ImageFormat srcImageFormat,
 #endif
 }
 
+#ifndef BYTEMATCH_RETAIL
 template < typename SrcPixel_t >
 void CompressSTB( uint8 *pDstBytes, ImageFormat dstFmt, const uint8 *pSrcBytes, int nWidth, int nHeight )
 {
@@ -1047,6 +1062,15 @@ bool ConvertToDXT( const uint8 *src, ImageFormat srcImageFormat,
 
 	return ConvertToDXTLegacy( src, srcImageFormat, dst, dstImageFormat, width, height, srcStride, dstStride );
 }
+#else
+bool ConvertToDXT( const uint8 *src, ImageFormat srcImageFormat,
+ 				   uint8 *dst, ImageFormat dstImageFormat, 
+				   int width, int height, int srcStride, int dstStride )
+{
+	return ConvertToDXTLegacy( src, srcImageFormat, dst, dstImageFormat, width, height, srcStride, dstStride );
+}
+#endif
+#line 1064
 
 // HDRFIXME: This assumes that the 16-bit integer values are 4.12 fixed-point.
 void ConvertImageFormat_RGBA16161616_To_RGB323232F( unsigned short *pSrcImage, float *pDstImage, int width, int height )
@@ -1321,6 +1345,13 @@ bool ConvertImageFormat( const uint8 *src, ImageFormat srcImageFormat,
 	}
 	
 	// Fast path for just copying a compressed texture
+#ifdef BYTEMATCH_RETAIL
+	if ( ( dstImageFormat == IMAGE_FORMAT_DXT1 ||
+		   dstImageFormat == IMAGE_FORMAT_DXT3 ||
+		   dstImageFormat == IMAGE_FORMAT_DXT5 ||
+		   dstImageFormat == IMAGE_FORMAT_ATI1N ||
+		   dstImageFormat == IMAGE_FORMAT_ATI2N ) && ( srcImageFormat == dstImageFormat ) )
+#else
 	if ( ( ( dstImageFormat == IMAGE_FORMAT_DXT1 || dstImageFormat == IMAGE_FORMAT_DXT1_RUNTIME ||
 		     dstImageFormat == IMAGE_FORMAT_DXT3 ||
 		     dstImageFormat == IMAGE_FORMAT_DXT5 || dstImageFormat == IMAGE_FORMAT_DXT5_RUNTIME ||
@@ -1330,6 +1361,8 @@ bool ConvertImageFormat( const uint8 *src, ImageFormat srcImageFormat,
 		 ( dstImageFormat == IMAGE_FORMAT_DXT1 && srcImageFormat == IMAGE_FORMAT_DXT1_RUNTIME ) ||
 		 ( dstImageFormat == IMAGE_FORMAT_DXT5_RUNTIME && srcImageFormat == IMAGE_FORMAT_DXT5 ) ||
 		 ( dstImageFormat == IMAGE_FORMAT_DXT1_RUNTIME && srcImageFormat == IMAGE_FORMAT_DXT1 ) )
+#endif
+#line 1347
 	{
 		// Fast path for compressed textures . . stride doesn't make as much sense.
 //		Assert( srcStride == 0 && dstStride == 0 );
@@ -1345,9 +1378,14 @@ bool ConvertImageFormat( const uint8 *src, ImageFormat srcImageFormat,
 			   srcImageFormat == IMAGE_FORMAT_BGRX8888 ) &&	   													// and
 			 ( dstImageFormat == IMAGE_FORMAT_DXT1  ||															//
 			   dstImageFormat == IMAGE_FORMAT_DXT3  ||	   														// DXT compressed dest
+#ifdef BYTEMATCH_RETAIL
+			   dstImageFormat == IMAGE_FORMAT_DXT5 ) )
+#else
 			   dstImageFormat == IMAGE_FORMAT_DXT5  ||
 			   dstImageFormat == IMAGE_FORMAT_DXT1_RUNTIME ||
 			   dstImageFormat == IMAGE_FORMAT_DXT5_RUNTIME ) )
+#endif
+#line 1374
 	{
 		return ConvertToDXT( src, srcImageFormat, dst, dstImageFormat, width, height, srcStride, dstStride );
 	}
