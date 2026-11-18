@@ -136,7 +136,12 @@ BEGIN_VS_SHADER( DecalBaseTimesLightmapAlphaBlendSelfIllum_DX9, "" )
 			if( g_pHardwareConfig->SupportsPixelShaders_2_b() )
 			{
 				DECLARE_DYNAMIC_PIXEL_SHADER( lightmappedgeneric_decal_ps20b );
+#ifdef BYTEMATCH_RETAIL
+				SET_DYNAMIC_PIXEL_SHADER_COMBO( PIXELFOGTYPE, pShaderAPI->GetPixelFogCombo1( true ) );
+#else
 				SET_DYNAMIC_PIXEL_SHADER_COMBO( PIXELFOGTYPE, pShaderAPI->GetPixelFogCombo() );
+#endif
+#line 140
 				SET_DYNAMIC_PIXEL_SHADER( lightmappedgeneric_decal_ps20b );
 			}
 			else
