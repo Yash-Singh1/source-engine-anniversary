@@ -124,7 +124,8 @@ static void GetResolutionName( vmode_t *mode, wchar_t *sz, int sizeofsz, int des
 {
 	if ( ( mode->width == desktopWidth ) && ( mode->height == desktopHeight ) )
 	{
-		V_snwprintf( sz, sizeofsz, L"%i x %i (%ls)", mode->width, mode->height, g_pVGuiLocalize->Find( "#GameUI_Native" ) );
+		const wchar_t *pszNative = g_pVGuiLocalize->Find( "#GameUI_Native" );
+		V_snwprintf( sz, sizeofsz, L"%i x %i (%ls)", mode->width, mode->height, pszNative );
 	}
 	else
 	{
@@ -552,14 +553,14 @@ public:
 			if ( pFOV )
 			{
 				pFOV->SetNumTicks( 7 );
+			}
 
-				Label *pFOVValue = (Label *)FindChildByName( "FOVValueLabel" );
-				if ( pFOVValue )
-				{
-					wchar_t szValue[16];
-					V_snwprintf( szValue, ARRAYSIZE( szValue ), L"%.0f", pFOV->GetSliderValue() );
-					pFOVValue->SetText( szValue );
-				}
+			Label *pFOVValue = (Label *)FindChildByName( "FOVValueLabel" );
+			if ( pFOVValue )
+			{
+				wchar_t szValue[16];
+				V_snwprintf( szValue, ARRAYSIZE( szValue ), L"%.0f", pFOV->GetSliderValue() );
+				pFOVValue->SetText( szValue );
 			}
 		}
 		else
@@ -686,7 +687,7 @@ public:
 		}
 
 		// Reset HDR too
-		if ( m_pHDR->IsEnabled() )
+		if ( m_pHDR->IsEnabled() && m_bHDRVisible )
 		{
 			ConVarRef mat_hdr_level("mat_hdr_level");
 			Assert( mat_hdr_level.IsValid() );
@@ -1025,7 +1026,14 @@ public:
 			m_pShadowDetail->ActivateItem( 0 );
 		}
 
-		m_pShaderDetail->ActivateItem( r_lightmap_bicubic.GetBool() ? 2 : ( mat_reducefillrate.GetBool() ? 0 : 1 ) );
+		if ( r_lightmap_bicubic.GetBool() )
+		{
+			m_pShaderDetail->ActivateItem( 2 );
+		}
+		else
+		{
+			m_pShaderDetail->ActivateItem( mat_reducefillrate.GetBool() ? 0 : 1 );
+		}
 
 		if ( m_bHDRVisible )
 		{
@@ -1039,7 +1047,8 @@ public:
 
 		if ( m_bClassicEffectsVisible )
 		{
-			m_pClassicEffects->ActivateItem( r_classic_fire.GetInt() > 0 );
+			bool bClassicEffects = r_classic_fire.GetInt() > 0;
+			m_pClassicEffects->ActivateItem( bClassicEffects );
 		}
 
 		switch (mat_forceaniso.GetInt())
@@ -1185,7 +1194,7 @@ public:
 			}
 
 			// HDR changed?
-			if ( m_pHDR->IsEnabled() )
+			if ( m_pHDR->IsEnabled() && m_bHDRVisible )
 			{
 				ConVarRef mat_hdr_level("mat_hdr_level");
 				Assert( mat_hdr_level.IsValid() );
@@ -1328,21 +1337,24 @@ COptionsSubVideo::COptionsSubVideo(vgui::Panel *parent) : PropertyPage(parent, N
 	int iHud16x9ItemID = m_pHudAspectRatio->AddItem( pszHudAspectName[2], NULL );
 	int iHud16x10ItemID = m_pHudAspectRatio->AddItem( pszHudAspectName[3], NULL );
 
-	if ( flHudAspect <= 0.0f )
+	if ( flHudAspect > 0.0f )
 	{
-		m_nSelectedHudAspect = iHudFitItemID;
-	}
-	else if ( flHudAspect < 1.4f )
-	{
-		m_nSelectedHudAspect = iHud4x3ItemID;
-	}
-	else if ( flHudAspect < 1.7f )
-	{
-		m_nSelectedHudAspect = iHud16x10ItemID;
+		if ( flHudAspect < 1.4f )
+		{
+			m_nSelectedHudAspect = iHud4x3ItemID;
+		}
+		else if ( flHudAspect < 1.7f )
+		{
+			m_nSelectedHudAspect = iHud16x10ItemID;
+		}
+		else
+		{
+			m_nSelectedHudAspect = iHud16x9ItemID;
+		}
 	}
 	else
 	{
-		m_nSelectedHudAspect = iHud16x9ItemID;
+		m_nSelectedHudAspect = iHudFitItemID;
 	}
 	m_pHudAspectRatio->ActivateItem( m_nSelectedHudAspect );
 
@@ -1597,8 +1609,9 @@ void COptionsSubVideo::PrepareResolutionList()
 		}
 #endif
 
-		Q_snprintf( sz, ARRAYSIZE( sz ), "%d x %d", Width, Height );
-		m_pMode->SetText( sz );
+		char szResolution[256];
+		Q_snprintf( szResolution, ARRAYSIZE( szResolution ), "%d x %d", Width, Height );
+		m_pMode->SetText( szResolution );
 	}
 }
 
@@ -1675,7 +1688,8 @@ void COptionsSubVideo::OnResetData()
 	if ( m_pHDR->IsEnabled() && m_bHDRAvailable )
 	{
 		ConVarRef mat_hdr_level( "mat_hdr_level" );
-		m_pHDR->ActivateItem( clamp( mat_hdr_level.GetInt(), 0, m_pHDR->GetItemCount() ) );
+		int nHDRLevel = mat_hdr_level.GetInt();
+		m_pHDR->ActivateItem( clamp( nHDRLevel, 0, m_pHDR->GetItemCount() ) );
 	}
 }
 
@@ -1879,7 +1893,8 @@ void COptionsSubVideo::OnApplyChanges()
 	if ( m_pHDR->IsEnabled() && m_bHDRAvailable )
 	{
 		ConVarRef mat_hdr_level( "mat_hdr_level" );
-		if ( m_pHDR->GetActiveItem() != mat_hdr_level.GetInt() )
+		int iHDRItem = m_pHDR->GetActiveItem();
+		if ( mat_hdr_level.GetInt() != iHDRItem )
 		{
 			char szCmd[ 256 ];
 			Q_snprintf( szCmd, sizeof( szCmd ), "mat_hdr_level %d\n", m_pHDR->GetActiveItem() );
