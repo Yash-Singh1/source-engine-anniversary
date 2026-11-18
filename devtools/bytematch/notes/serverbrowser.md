@@ -1,6 +1,6 @@
 # ServerBrowser (bin/ServerBrowser) per-function status
 
-Measured like `gameui.md`. Own objects: 589 / 667 matched, up from 519 / 667.
+Measured like `gameui.md`. Own objects: 659 / 667 after merging `bytematch` 26995eb0 (589 before), up from 519 / 667. The table below is from the pre-merge run.
 
 ## Edited
 

@@ -3,7 +3,7 @@
 Measured with `--retail-osx32` (clang-600.0.57) and `devtools/bytematch` against depot 223
 build 19307283, own objects only (`gameui.build/*.o`). Lane `bytematch-gameui`.
 
-Own objects: 1582 / 1825 functions matched (exact or after masking), up from 1367 / 1809.
+Own objects: 1638 / 1825 after merging `bytematch` 26995eb0 (1582 before the merge), up from 1367 / 1809. The table below is from the pre-merge run.
 The denominator grew by retail's `OptionsSubGamepad.o` (16 functions), which this lane wrote.
 
 ## Edited or written to the retail form (all now match unless listed below)
