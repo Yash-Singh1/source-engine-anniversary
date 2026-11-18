@@ -483,10 +483,12 @@ static int64 CalculateClockSpeed()
 	return CalculateCPUFreq() * 1000000.0f;
 #elif defined(POSIX)
 	int64 freq =(int64)CalculateCPUFreq();
-	/*if ( freq == 0 ) // couldn't calculate clock speed
+#if !defined(__arm__) && !defined(__aarch64__)
+	if ( freq == 0 ) // couldn't calculate clock speed
 	{
-		Warning( "Unable to determine CPU Frequency\n" );
-	}*/
+		Error( "Unable to determine CPU Frequency\n" );
+	}
+#endif
 	return freq;
 #endif
 }
@@ -498,6 +500,9 @@ const CPUInformation* GetCPUInformation()
 	// Has the structure already been initialized and filled out?
 	if ( pi.m_Size == sizeof(pi) )
 		return &pi;
+
+	// Redundant, but just in case the user somehow messes with the size.
+	memset(&pi, 0x0, sizeof(pi));
 
 	// Fill out the structure, and return it:
 	pi.m_Size = sizeof(pi);
@@ -610,17 +615,6 @@ const CPUInformation* GetCPUInformation()
 	pi.m_b3DNow        = Check3DNowTechnology();
 	pi.m_szProcessorID = (tchar*)GetProcessorVendorId();
 	pi.m_bHT		   = HTSupported();
-
-	uint32 eax, ebx, edx, ecx;
-	if (cpuid(1, eax, ebx, ecx, edx))
-	{
-		pi.m_nModel = eax; // full CPU model info
-		pi.m_nFeatures[0] = edx; // x87+ features
-		pi.m_nFeatures[1] = ecx; // sse3+ features
-		pi.m_nFeatures[2] = ebx; // some additional features
-	}
-
-
 
 	return &pi;
 }

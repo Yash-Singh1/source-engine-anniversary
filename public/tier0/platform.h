@@ -1308,10 +1308,7 @@ struct CPUInformation
 
 	tchar* m_szProcessorID;				// Processor vendor Identification.
 
-	uint32 m_nModel;
-	uint32 m_nFeatures[3];
-
-	CPUInformation() = default;
+	CPUInformation(): m_Size(0){}
 };
 
 // Have to return a pointer, not a reference, because references are not compatible with the
