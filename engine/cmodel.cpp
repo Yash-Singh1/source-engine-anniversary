@@ -56,7 +56,9 @@ CTSPool<TraceInfo_t> g_TraceInfoPool;
 class CTraceInfoPool : public CTSList<TraceInfo_t *>
 {
 public:
-	CTraceInfoPool() = default;
+	CTraceInfoPool()
+	{
+	}
 };
 
 CTraceInfoPool g_TraceInfoPool;
@@ -537,62 +539,64 @@ struct leafnums_t
 	CCollisionBSPData *pBSPData;
 };
 
+
+
 int CM_BoxLeafnums( leafnums_t &context, const Vector &center, const Vector &extents, int nodenum )
 {
-        int leafCount = 0;
-        const int NODELIST_MAX = 1024;
-        int nodeList[NODELIST_MAX];
-        int nodeReadIndex = 0;
-        int nodeWriteIndex = 0;
-        cplane_t        *plane;
-        cnode_t         *node;
-        int prev_topnode = -1;
+	int leafCount = 0;
+	const int NODELIST_MAX = 1024;
+	int nodeList[NODELIST_MAX];
+	int nodeReadIndex = 0;
+	int nodeWriteIndex = 0;
+	cplane_t	*plane;
+	cnode_t		*node;
+	int prev_topnode = -1;
 
-        while (1)
-        {
-                if (nodenum < 0)
-                {
-                        // This handles the case when the box lies completely
-                        // within a single node. In that case, the top node should be
-                        // the parent of the leaf
-                        if (context.leafTopNode == -1)
-                                context.leafTopNode = prev_topnode;
+	while (1)
+	{
+		if (nodenum < 0)
+		{
+			// This handles the case when the box lies completely
+			// within a single node. In that case, the top node should be
+			// the parent of the leaf
+			if (context.leafTopNode == -1)
+				context.leafTopNode = prev_topnode;
 
-                        if (leafCount < context.leafMaxCount)
-                        {
-                                context.pLeafList[leafCount] = -1 - nodenum;
-                                leafCount++;
-                        }
-                        if ( nodeReadIndex == nodeWriteIndex )
-                                return leafCount;
-                        nodenum = nodeList[nodeReadIndex];
-                        nodeReadIndex = (nodeReadIndex+1) & (NODELIST_MAX-1);
-                }
-                else
-                {
-                        node = &context.pBSPData->map_rootnode[nodenum];
-                        plane = node->plane;
-                        //              s = BoxOnPlaneSide (leaf_mins, leaf_maxs, plane);
-                        //              s = BOX_ON_PLANE_SIDE(*leaf_mins, *leaf_maxs, plane);
-                        float d0 = DotProduct( plane->normal, center ) - plane->dist;
-                        float d1 = DotProductAbs( plane->normal, extents );
-                        prev_topnode = nodenum;
-                        if (d0 >= d1)
-                                nodenum = node->children[0];
-                        else if (d0 < -d1)
-                                nodenum = node->children[1];
-                        else
-                        {       // go down both
-                                if (context.leafTopNode == -1)
-                                        context.leafTopNode = nodenum;
-                                nodeList[nodeWriteIndex] = node->children[0];
-                                nodeWriteIndex = (nodeWriteIndex+1) & (NODELIST_MAX-1);
-                                // check for overflow of the ring buffer
-                                Assert(nodeWriteIndex != nodeReadIndex);
-                                nodenum = node->children[1];
-                        }
-                }
-        }
+			if (leafCount < context.leafMaxCount)
+			{
+				context.pLeafList[leafCount] = -1 - nodenum;
+				leafCount++;
+			}
+			if ( nodeReadIndex == nodeWriteIndex )
+				return leafCount;
+			nodenum = nodeList[nodeReadIndex];
+			nodeReadIndex = (nodeReadIndex+1) & (NODELIST_MAX-1);
+		}
+		else
+		{
+			node = &context.pBSPData->map_rootnode[nodenum];
+			plane = node->plane;
+			//		s = BoxOnPlaneSide (leaf_mins, leaf_maxs, plane);
+			//		s = BOX_ON_PLANE_SIDE(*leaf_mins, *leaf_maxs, plane);
+			float d0 = DotProduct( plane->normal, center ) - plane->dist;
+			float d1 = DotProductAbs( plane->normal, extents );
+			prev_topnode = nodenum;
+			if (d0 >= d1)
+				nodenum = node->children[0];
+			else if (d0 < -d1)
+				nodenum = node->children[1];
+			else
+			{	// go down both
+				if (context.leafTopNode == -1)
+					context.leafTopNode = nodenum;
+				nodeList[nodeWriteIndex] = node->children[0];
+				nodeWriteIndex = (nodeWriteIndex+1) & (NODELIST_MAX-1);
+				// check for overflow of the ring buffer
+				Assert(nodeWriteIndex != nodeReadIndex);
+				nodenum = node->children[1];
+			}
+		}
+	}
 }
 
 int	CM_BoxLeafnums ( const Vector& mins, const Vector& maxs, int *list, int listsize, int *topnode)
@@ -873,9 +877,9 @@ bool IntersectRayWithBoxBrush( TraceInfo_t *pTraceInfo, const cbrush_t *pBrush, 
 	FPExceptionDisabler hideExceptions;
 
 	// Load the unaligned ray/box parameters into SIMD registers
-	fltx4 start = LoadAlignedSIMD(pTraceInfo->m_start.Base());
-	fltx4 extents = LoadAlignedSIMD(pTraceInfo->m_extents.Base());
-	fltx4 delta = LoadAlignedSIMD(pTraceInfo->m_delta.Base());
+	fltx4 start = LoadUnaligned3SIMD(pTraceInfo->m_start.Base());
+	fltx4 extents = LoadUnaligned3SIMD(pTraceInfo->m_extents.Base());
+	fltx4 delta = LoadUnaligned3SIMD(pTraceInfo->m_delta.Base());
 	fltx4 boxMins = LoadAlignedSIMD( pBox->mins.Base() );
 	fltx4 boxMaxs = LoadAlignedSIMD( pBox->maxs.Base() );
 
@@ -899,7 +903,7 @@ bool IntersectRayWithBoxBrush( TraceInfo_t *pTraceInfo, const cbrush_t *pBrush, 
 
 	fltx4 crossPlane = OrSIMD(XorSIMD(startOutMins,endOutMins), XorSIMD(startOutMaxs,endOutMaxs));
 	// now build the per-axis interval of t for intersections
-	fltx4 invDelta = LoadAlignedSIMD(pTraceInfo->m_invDelta.Base());
+	fltx4 invDelta = LoadUnaligned3SIMD(pTraceInfo->m_invDelta.Base());
 	fltx4 tmins = MulSIMD( offsetMinsExpanded, invDelta );
 	fltx4 tmaxs = MulSIMD( offsetMaxsExpanded, invDelta );
 	// now sort the interval per axis
@@ -1037,9 +1041,9 @@ bool IntersectRayWithBox( const Ray_t &ray, const VectorAligned &inInvDelta, con
 	pTrace->fraction = 1.0f;
 
 	// Load the unaligned ray/box parameters into SIMD registers
-	fltx4 start = LoadAlignedSIMD(ray.m_Start.Base());
-	fltx4 extents = LoadAlignedSIMD(ray.m_Extents.Base());
-	fltx4 delta = LoadAlignedSIMD(ray.m_Delta.Base());
+	fltx4 start = LoadUnaligned3SIMD(ray.m_Start.Base());
+	fltx4 extents = LoadUnaligned3SIMD(ray.m_Extents.Base());
+	fltx4 delta = LoadUnaligned3SIMD(ray.m_Delta.Base());
 	fltx4 boxMins = LoadAlignedSIMD( inBoxMins.Base() );
 	fltx4 boxMaxs = LoadAlignedSIMD( inBoxMaxs.Base() );
 
@@ -1372,9 +1376,9 @@ void FASTCALL CM_ClipBoxToBrush( TraceInfo_t * RESTRICT pTraceInfo, const cbrush
 
 inline bool IsTraceBoxIntersectingBoxBrush( TraceInfo_t *pTraceInfo, cboxbrush_t *pBox )
 {
-	fltx4 start = LoadAlignedSIMD(pTraceInfo->m_start.Base());
-	fltx4 mins = LoadAlignedSIMD(pTraceInfo->m_mins.Base());
-	fltx4 maxs = LoadAlignedSIMD(pTraceInfo->m_maxs.Base());
+	fltx4 start = LoadUnaligned3SIMD(pTraceInfo->m_start.Base());
+	fltx4 mins = LoadUnaligned3SIMD(pTraceInfo->m_mins.Base());
+	fltx4 maxs = LoadUnaligned3SIMD(pTraceInfo->m_maxs.Base());
 
 	fltx4 boxMins = LoadAlignedSIMD( pBox->mins.Base() );
 	fltx4 boxMaxs = LoadAlignedSIMD( pBox->maxs.Base() );
@@ -1569,15 +1573,15 @@ void FASTCALL CM_TraceToLeaf( TraceInfo_t * RESTRICT pTraceInfo, int ndxLeaf, fl
 		if (IsX360())
 		{
 			// set up some relatively constant variables we'll use in the loop below
-			fltx4 traceStart = LoadAlignedSIMD(pTraceInfo->m_start.Base());
-			fltx4 traceDelta = LoadAlignedSIMD(pTraceInfo->m_delta.Base());
-			fltx4 traceInvDelta = LoadAlignedSIMD(pTraceInfo->m_invDelta.Base());
+			fltx4 traceStart = LoadUnaligned3SIMD(pTraceInfo->m_start.Base());
+			fltx4 traceDelta = LoadUnaligned3SIMD(pTraceInfo->m_delta.Base());
+			fltx4 traceInvDelta = LoadUnaligned3SIMD(pTraceInfo->m_invDelta.Base());
 			static const fltx4 vecEpsilon = {DISPCOLL_DIST_EPSILON,DISPCOLL_DIST_EPSILON,DISPCOLL_DIST_EPSILON,DISPCOLL_DIST_EPSILON};
 			// only used in !IS_POINT version:
 			fltx4 extents;
 			if (!IS_POINT)
 			{
-				extents = LoadAlignedSIMD(pTraceInfo->m_extents.Base());
+				extents = LoadUnaligned3SIMD(pTraceInfo->m_extents.Base());
 			}
 
 			// TODO: this loop probably ought to be unrolled so that we can make a more efficient
@@ -2662,34 +2666,45 @@ bool CM_HeadnodeVisible (int nodenum, const byte *visbits, int vissize )
 //			*visbits - pvs or pas of some cluster
 // Output : true if visible, false if not
 //-----------------------------------------------------------------------------
-#define MAX_BOX_LEAVES  256
-int     CM_BoxVisible( const Vector& mins, const Vector& maxs, const byte *visbits, int vissize )
+#define MAX_BOX_LEAVES	256
+int	CM_BoxVisible( const Vector& mins, const Vector& maxs, const byte *visbits, int vissize )
 {
-        int leafList[MAX_BOX_LEAVES];
-        int topnode;
+	int leafList[MAX_BOX_LEAVES];
+	int topnode;
 
-        // FIXME: Could save a loop here by traversing the tree in this routine like the code above
-        int count = CM_BoxLeafnums( mins, maxs, leafList, MAX_BOX_LEAVES, &topnode );
-        for ( int i = 0; i < count; i++ )
-        {
-                int cluster = CM_LeafCluster( leafList[i] );
-                int offset = cluster>>3;
+	// FIXME: Could save a loop here by traversing the tree in this routine like the code above
+	int count = CM_BoxLeafnums( mins, maxs, leafList, MAX_BOX_LEAVES, &topnode );
+	for ( int i = 0; i < count; i++ )
+	{
+		int cluster = CM_LeafCluster( leafList[i] );
+		int offset = cluster>>3;
 
-		if( offset == -1 )
+#ifdef BYTEMATCH_RETAIL
+		if ( offset == -1 )
+		{
+			return false;
+		}
+
+		if ( offset > vissize || offset < 0 )
+#else
+		if ( offset == -1 )
 			return true;
 
-                if ( offset > vissize )
-                {
-                        Sys_Error( "CM_BoxVisible:  cluster %i, offset %i out of bounds %i\n", cluster, offset, vissize );
-                }
+		if ( offset > vissize )
+#endif
+#line 2688
+		{
+			Sys_Error( "CM_BoxVisible:  cluster %i, offset %i out of bounds %i\n", cluster, offset, vissize );
+		}
 
-                if (visbits[cluster>>3] & (1<<(cluster&7)))
-                {
-                        return true;
-                }
-        }
-        return false;
+		if (visbits[cluster>>3] & (1<<(cluster&7)))
+		{
+			return true;
+		}
+	}
+	return false;
 }
+
 
 //-----------------------------------------------------------------------------
 // Returns the world-space center of an entity

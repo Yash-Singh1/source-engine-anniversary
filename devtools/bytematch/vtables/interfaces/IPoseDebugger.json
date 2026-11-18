@@ -10,7 +10,11 @@
  },
  "version_macros": [],
  "registrations": [],
- "sdk2013_len": null,
+ "sdk2013_len": 2,
+ "sdk2013_slots": [
+  "StartBlending(IClientNetworkable*, CStudioHdr const*)",
+  "AccumulatePose(CStudioHdr const*, CIKContext*, Vector*, Quaternion*, int, float, float const*, int, float, float)"
+ ],
  "retail_reference": {
   "module": "episodic/client",
   "class": "CPoseDebuggerImpl",

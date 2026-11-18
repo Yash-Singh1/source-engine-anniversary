@@ -72,7 +72,12 @@ public:
 	// Otherwise, this is the hitbox index.
 	int			hitbox;					// box hit by trace in studio
 
+#ifdef BYTEMATCH_RETAIL
+	CGameTrace() {}
+#else
 	CGameTrace() = default;
+#endif
+#line 76
 
 private:
 	// No copy constructors allowed

@@ -226,10 +226,6 @@ public:
 
 	// Save texture to a file.
 	virtual bool SaveToFile( const char *fileName ) { return false; }
-
-	void CopyToStagingTexture( ITexture* pDstTex ) {}
-
-	virtual void SetErrorTexture( bool bIsErrorTexture ) { }
 };
 
 extern CDummyTexture g_DummyTexture;

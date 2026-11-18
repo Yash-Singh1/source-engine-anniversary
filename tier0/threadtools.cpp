@@ -302,9 +302,9 @@ int ThreadGetPriority( ThreadHandle_t hThread )
 	return thread_param.sched_priority;
 #endif
 }
-
-//-----------------------------------------------------------------------------
-
+#if defined(POSIX) && defined(PLATFORM_64BITS) // callers pass Windows THREAD_PRIORITY_* values (-2..2), which macOS SCHED_OTHER (15..47, default 31) treats as near-idle
+bool ThreadSetPriority( ThreadHandle_t hThread, int priority ) { return true; }
+#else
 bool ThreadSetPriority( ThreadHandle_t hThread, int priority )
 {
 	if ( !hThread )
@@ -321,7 +321,7 @@ bool ThreadSetPriority( ThreadHandle_t hThread, int priority )
 	return true;
 #endif
 }
-
+#endif
 //-----------------------------------------------------------------------------
 
 void ThreadSetAffinity( ThreadHandle_t hThread, int nAffinityMask )

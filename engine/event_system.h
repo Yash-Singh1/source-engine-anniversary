@@ -52,7 +52,12 @@ public:
 	{
 		if ( pData )
 		{
+#ifdef BYTEMATCH_RETAIL
+			delete pData;
+#else
 			delete[] pData;
+#endif
+#line 56
 		}
 	}
 

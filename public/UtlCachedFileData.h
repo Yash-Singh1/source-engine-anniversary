@@ -155,7 +155,12 @@ public:
 
 	void	ForceRecheckDiskInfo();
 	// Iterates all entries and gets filesystem info and optionally causes rebuild on any existing items which are out of date
+#ifdef BYTEMATCH_RETAIL
+	void	CheckDiskInfo( bool force_rebuild, long cacheFileTime = 0L );
+#else
 	void	CheckDiskInfo( bool force_rebuild, time_t cacheFileTime = 0L );
+#endif
+#line 159
 
 	void	SaveManifest();
 	bool	ManifestExists();
@@ -229,8 +234,14 @@ private:
 		}
 
 		FileNameHandle_t	handle;
+#ifdef BYTEMATCH_RETAIL
+		long				fileinfo;
+		long				diskfileinfo;
+#else
 		long long			fileinfo;
 		long long			diskfileinfo;
+#endif
+#line 234
 		int					dataIndex;
 	};
 
@@ -636,7 +647,12 @@ bool CUtlCachedFileData<T>::Init()
 		SetDirty( true );
 		return true;
 	}
+#ifdef BYTEMATCH_RETAIL
+	long fileTime = g_pFullFileSystem->GetFileTime( m_sRepositoryFileName, "MOD" );
+#else
 	time_t fileTime = g_pFullFileSystem->GetFileTime( m_sRepositoryFileName, "MOD" );
+#endif
+#line 640
 	int size = g_pFullFileSystem->Size( fh );
 
 	bool deletefile = false;
@@ -908,7 +924,12 @@ public:
 
 // Iterates all entries and causes rebuild on any existing items which are out of date
 template <class T>
+#ifdef BYTEMATCH_RETAIL
+void	CUtlCachedFileData<T>::CheckDiskInfo( bool forcerebuild, long cacheFileTime )
+#else
 void	CUtlCachedFileData<T>::CheckDiskInfo( bool forcerebuild, time_t cacheFileTime )
+#endif
+#line 912
 {
 	char fn[ 512 ];
 	int i;
@@ -958,7 +979,12 @@ void	CUtlCachedFileData<T>::CheckDiskInfo( bool forcerebuild, time_t cacheFileTi
 		}
 		else 
 		{
+#ifdef BYTEMATCH_RETAIL
+			long pathTime = g_pFullFileSystem->GetPathTime( fn, "GAME" );
+#else
 			time_t pathTime = g_pFullFileSystem->GetPathTime( fn, "GAME" );
+#endif
+#line 962
 			bCheck = (pathTime > cacheFileTime) ? true : false;
 		}
 

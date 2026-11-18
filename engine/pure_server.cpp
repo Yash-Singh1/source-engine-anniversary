@@ -26,6 +26,13 @@ extern ConVar sv_pure_consensus;
 extern ConVar sv_pure_retiretime;
 extern ConVar sv_pure_trace;
 
+#ifdef BYTEMATCH_RETAIL
+CPureServerWhitelist::CCommand::CCommand()
+{
+}
+
+#endif
+#line 33
 CPureServerWhitelist::CCommand::~CCommand()
 {
 }
@@ -226,7 +233,12 @@ bool CPureServerWhitelist::LoadCommandsFromKeyValues( KeyValues *kv )
 			else
 				Warning( "Unknown modifier in whitelist file: %s.\n", mods[i] );
 		}
+#ifdef BYTEMATCH_RETAIL
+		mods.PurgeAndDeleteElements();
+#else
 		mods.PurgeAndDeleteElementsArray();
+#endif
+#line 234
 		if (
 			( bFromTrustedSource && ( bAllowFromDisk || bCheckCRC || bAny ) )
 			|| ( bAny && bCheckCRC ) )

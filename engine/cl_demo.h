@@ -123,7 +123,12 @@ class CDemoRecorder : public IDemoRecorder
 {
 public:
 	~CDemoRecorder();
+#ifdef BYTEMATCH_RETAIL
+	CDemoRecorder();
+#else
 	CDemoRecorder() = default;
+#endif
+#line 127
 
 	CDemoFile *GetDemoFile( void );
 	int		GetRecordingTick( void );

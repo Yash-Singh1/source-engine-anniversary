@@ -59,9 +59,9 @@ public:
 	// Enable filtering of workshop maps, requires the game/tool loading us to feed subscription data. This is a
 	// slightly ugly workaround to TF2 not yet having native workshop UI in quickplay, once that is in place this should
 	// either be stripped back out or expanded to be directly aware of the steam workshop without being managed.
-	virtual void SetWorkshopEnabled( bool bManaged ) OVERRIDE;
-	virtual void AddWorkshopSubscribedMap( const char *pszMapName ) OVERRIDE;
-	virtual void RemoveWorkshopSubscribedMap( const char *pszMapName ) OVERRIDE;
+	void SetWorkshopEnabled( bool bManaged );
+	void AddWorkshopSubscribedMap( const char *pszMapName );
+	void RemoveWorkshopSubscribedMap( const char *pszMapName );
 
 	bool IsWorkshopEnabled();
 	bool IsWorkshopSubscribedMap( const char *pszMapName );
