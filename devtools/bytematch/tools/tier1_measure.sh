@@ -26,7 +26,7 @@ for f in ${*:-$ALL}; do
   mkdir -p "$OUT/${m//\//_}"
   [ -f "$SRC/$f.cpp" ] || { echo "MISSING $f"; continue; }
   BM_SRC=$SRC "$BM/macos-cc.sh" -o "$OUT/${m//\//_}/$n.o" "$SRC/$f.cpp" -- \
-    -Wno-c++11-narrowing -I"$SDK/usr/include/malloc" > /dev/null 2> "$OUT/$n.err" \
+    -DBYTEMATCH_RETAIL -Wno-c++11-narrowing -I"$SDK/usr/include/malloc" > /dev/null 2> "$OUT/$n.err" \
     || echo "COMPILE FAIL $f: $(grep -m1 error: "$OUT/$n.err")"
 done
 for d in "$OUT"/*/; do

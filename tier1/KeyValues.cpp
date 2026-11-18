@@ -2137,11 +2137,20 @@ bool EvaluateConditional( const char *str )
 	if ( Q_stristr( str, "$WINDOWS" ) )
 		return IsWindows() ^ bNot;
 	
+#ifdef BYTEMATCH_RETAIL
 	if ( Q_stristr( str, "$OSX" ) )
 		return IsOSX() ^ bNot;
 	
 	if ( Q_stristr( str, "$LINUX" ) )
 		return IsLinux() ^ bNot;
+#else
+	// This port uses the Linux resource variants on macOS and the BSDs.
+	if ( Q_stristr( str, "$OSX" ) )
+		return bNot;
+
+	if ( Q_stristr( str, "$LINUX" ) )
+		return ( IsLinux() || IsBSD() || IsOSX() ) ^ bNot;
+#endif
 
 	if ( Q_stristr( str, "$POSIX" ) )
 		return IsPosix() ^ bNot;
