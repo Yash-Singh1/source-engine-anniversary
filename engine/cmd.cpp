@@ -493,7 +493,7 @@ CON_COMMAND( stuffcmds, "Parses and stuffs command line + commands to command bu
 		if (szParm[0] == '-') 
 		{
 			// skip -XXX options and eat their args
-			const char *szValue = CommandLine()->ParmValueByIndex( i );
+			const char *szValue = CommandLine()->ParmValue( szParm );
 			if ( szValue )
 				i++;
 			continue;
@@ -501,7 +501,7 @@ CON_COMMAND( stuffcmds, "Parses and stuffs command line + commands to command bu
 		if (szParm[0] == '+')
 		{
 			// convert +XXX options and stuff them into the build buffer
-			const char *szValue = CommandLine()->ParmValueByIndex( i );
+			const char *szValue = CommandLine()->ParmValue( szParm );
 			if (szValue)
 			{
 				build.PutString(va("%s %s\n", szParm+1, szValue));
