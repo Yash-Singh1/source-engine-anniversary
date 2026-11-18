@@ -580,6 +580,7 @@ CBasePlayer::CBasePlayer( )
 
 	m_iHealth = 0;
 	Weapon_SetLast( NULL );
+	Weapon_SetLastPending( NULL );
 	m_bitsDamageType = 0;
 
 	m_bForceOrigin = false;
@@ -1549,6 +1550,7 @@ void CBasePlayer::RemoveAllItems( bool removeSuit )
 	}
 
 	Weapon_SetLast( NULL );
+	Weapon_SetLastPending( NULL );
 	RemoveAllWeapons();
  	RemoveAllAmmo();
 
@@ -6674,6 +6676,11 @@ bool CBasePlayer::RemovePlayerItem( CBaseCombatWeapon *pItem )
 	if ( m_hLastWeapon.Get() == pItem )
 	{
 		Weapon_SetLast( NULL );
+	}
+
+	if ( m_hLastWeaponPending.Get() == pItem )
+	{
+		Weapon_SetLastPending( NULL );
 	}
 
 	return Weapon_Detach( pItem );

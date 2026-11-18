@@ -31,6 +31,8 @@ struct fogparams_t
 	CNetworkVector( dirPrimary );
 	CNetworkColor32( colorPrimary );
 	CNetworkColor32( colorSecondary );
+	CNetworkColor32( colorPrimaryHDR );
+	CNetworkColor32( colorSecondaryHDR );
 	CNetworkColor32( colorPrimaryLerpTo );
 	CNetworkColor32( colorSecondaryLerpTo );
 	CNetworkVar( float, start );
@@ -44,6 +46,7 @@ struct fogparams_t
 	CNetworkVar( float, duration );
 	CNetworkVar( bool, enable );
 	CNetworkVar( bool, blend );
+	CNetworkVar( bool, radial );
 };
 
 // Crappy. Needs to be here because it wants to use 

@@ -255,6 +255,7 @@ public:
 
 	virtual void				SelectLastItem(void);
 	virtual void				Weapon_SetLast( C_BaseCombatWeapon *pWeapon );
+	virtual void				Weapon_SetLastPending( C_BaseCombatWeapon *pWeapon );
 	virtual bool				Weapon_ShouldSetLast( C_BaseCombatWeapon *pOldWeapon, C_BaseCombatWeapon *pNewWeapon ) { return true; }
 	virtual bool				Weapon_ShouldSelectItem( C_BaseCombatWeapon *pWeapon );
 	virtual	bool				Weapon_Switch( C_BaseCombatWeapon *pWeapon, int viewmodelindex = 0 );		// Switch to given weapon if has ammo (false if failed)
@@ -531,6 +532,7 @@ private:
 
 	typedef CHandle<C_BaseCombatWeapon> CBaseCombatWeaponHandle;
 	CNetworkVar( CBaseCombatWeaponHandle, m_hLastWeapon );
+	CNetworkVar( CBaseCombatWeaponHandle, m_hLastWeaponPending );
 
 #if !defined( NO_ENTITY_PREDICTION )
 	CUtlVector< CHandle< C_BaseEntity > > m_SimulatedByThisPlayer;

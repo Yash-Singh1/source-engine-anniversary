@@ -459,6 +459,22 @@ int CBaseCombatWeapon::GetPosition( void ) const
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+int CBaseCombatWeapon::GetSlotConsole( void ) const
+{
+	return GetWpnData().iSlotConsole;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+int CBaseCombatWeapon::GetPositionConsole( void ) const
+{
+	return GetWpnData().iPositionConsole;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
 const char *CBaseCombatWeapon::GetName( void ) const
 {
 	return GetWpnData().szClassName;

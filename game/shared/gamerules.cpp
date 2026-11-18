@@ -870,6 +870,12 @@ void CGameRules::ClientSettingsChanged( CBasePlayer *pPlayer )
 		int iHH = atoi( pszHH );
 		pPlayer->SetHaptics( iHH != 0 );
 	}
+
+	const char *pszFastSwitch = engine->GetClientConVarValue( pPlayer->entindex(), "hud_fastswitch_net" );
+	if ( pszFastSwitch )
+	{
+		pPlayer->m_iHudFastSwitch = atoi( pszFastSwitch );
+	}
 }
 
 CTacticalMissionManager *CGameRules::TacticalMissionManagerFactory( void )

@@ -19,9 +19,12 @@ BEGIN_NETWORK_TABLE_NOBASE( CFogController, DT_FogController )
 	// fog data
 	RecvPropInt( RECVINFO( m_fog.enable ) ),
 	RecvPropInt( RECVINFO( m_fog.blend ) ),
+	RecvPropInt( RECVINFO( m_fog.radial ) ),
 	RecvPropVector( RECVINFO( m_fog.dirPrimary ) ),
 	RecvPropInt( RECVINFO( m_fog.colorPrimary ) ),
 	RecvPropInt( RECVINFO( m_fog.colorSecondary ) ),
+	RecvPropInt( RECVINFO( m_fog.colorPrimaryHDR ) ),
+	RecvPropInt( RECVINFO( m_fog.colorSecondaryHDR ) ),
 	RecvPropFloat( RECVINFO( m_fog.start ) ),
 	RecvPropFloat( RECVINFO( m_fog.end ) ),
 	RecvPropFloat( RECVINFO( m_fog.farz ) ),
