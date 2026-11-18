@@ -903,10 +903,15 @@ bool CPackedStoreReadCache::ReadCacheLine( FileHandleTracker_t &fHandle, CachedV
 	m_pFileSystem->Seek( fHandle.m_hFileHandle, fHandle.m_nCurOfs, FILESYSTEM_SEEK_HEAD );
 #endif
 	Assert( cachedVPKRead.m_hMD5RequestHandle == 0 );
+#ifdef BYTEMATCH_RETAIL
+	cachedVPKRead.m_hMD5RequestHandle = m_pFileTracker->SubmitThreadedMD5Request( cachedVPKRead.m_pubBuffer, cachedVPKRead.m_cubBuffer, m_pPackedStore->m_PackFileID, cachedVPKRead.m_nPackFileNumber, cachedVPKRead.m_nFileFraction );
+#else
 	if ( m_pFileTracker ) // file tracker doesn't exist in the VPK command line tool
 	{
 		cachedVPKRead.m_hMD5RequestHandle = m_pFileTracker->SubmitThreadedMD5Request( cachedVPKRead.m_pubBuffer, cachedVPKRead.m_cubBuffer, m_pPackedStore->m_PackFileID, cachedVPKRead.m_nPackFileNumber, cachedVPKRead.m_nFileFraction );
 	}
+#endif
+#line 910
 	return cachedVPKRead.m_cubBuffer > 0;
 }
 

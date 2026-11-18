@@ -351,7 +351,12 @@ bool CDmxSerializer::UnserializeAttributes( CUtlBuffer &buf, CDmxElement *pEleme
 		}
 		else
 		{
+#ifdef BYTEMATCH_RETAIL
+			buf.GetString( nameBuf, sizeof( nameBuf ) );
+#else
 			buf.GetString( nameBuf );
+#endif
+#line 355
 			pName = nameBuf;
 		}
 		DmAttributeType_t nAttributeType = (DmAttributeType_t)buf.GetChar();
@@ -431,6 +436,14 @@ bool CDmxSerializer::Unserialize( CUtlBuffer &buf, int nEncodingVersion, CDmxEle
 	if ( bReadStringTable )
 	{
 		nStrings = buf.GetShort();
+#ifdef BYTEMATCH_RETAIL
+		offsetTable = ( int* )stackalloc( nStrings * sizeof( int ) );
+
+		// this causes entire string table to be mapped in memory at once
+		int nStringMemoryUsage = GetStringOffsetTable( buf, offsetTable, nStrings );
+		stringTable = ( char* )stackalloc( nStringMemoryUsage * sizeof( char ) );
+		buf.Get( stringTable, nStringMemoryUsage );
+#else
 		if ( nStrings > 0 )
 		{
 			offsetTable = ( int* )stackalloc( nStrings * sizeof( int ) );
@@ -440,6 +453,8 @@ bool CDmxSerializer::Unserialize( CUtlBuffer &buf, int nEncodingVersion, CDmxEle
 			stringTable = ( char* )stackalloc( nStringMemoryUsage * sizeof( char ) );
 			buf.Get( stringTable, nStringMemoryUsage );
 		}
+#endif
+#line 443
 	}
 
 	// Read in the element count.
@@ -450,11 +465,14 @@ bool CDmxSerializer::Unserialize( CUtlBuffer &buf, int nEncodingVersion, CDmxEle
 		return true;
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	if ( nElementCount < 0 || ( bReadStringTable && !stringTable ) )
 	{
 		// Invalid file. Non-empty files with a string table need at least one to associate with elements.
 		return false;
 	}
+#endif
+#line 458
 
 	char pTypeBuf[256];
 	char pName[2048];
@@ -465,7 +483,12 @@ bool CDmxSerializer::Unserialize( CUtlBuffer &buf, int nEncodingVersion, CDmxEle
 	for ( int i = 0; i < nElementCount; ++i )
 	{
 		const char *pType = NULL;
+#ifdef BYTEMATCH_RETAIL
+		if ( bReadStringTable )
+#else
 		if ( stringTable )
+#endif
+#line 469
 		{
 			int si = buf.GetShort();
 			if ( si >= nStrings )
@@ -474,10 +497,20 @@ bool CDmxSerializer::Unserialize( CUtlBuffer &buf, int nEncodingVersion, CDmxEle
 		}
 		else
 		{
+#ifdef BYTEMATCH_RETAIL
+			buf.GetString( pTypeBuf, sizeof( pTypeBuf ) );
+#else
 			buf.GetString( pTypeBuf );
+#endif
+#line 478
 			pType = pTypeBuf;
 		}
+#ifdef BYTEMATCH_RETAIL
+		buf.GetString( pName, sizeof( pName ) );
+#else
 		buf.GetString( pName );
+#endif
+#line 481
 		buf.Get( &id, sizeof(DmObjectId_t) );
 
 		CDmxElement *pElement = new CDmxElement( pType );
@@ -562,12 +595,19 @@ bool ReadDMXHeader( CUtlBuffer &buf, char *pEncodingName, int nEncodingNameLen, 
 	bool bBufHasCRLF = buf.ContainsCRLF();
 	buf.SetBufferType( true, !bBufIsText || bBufHasCRLF );
 
+#ifdef BYTEMATCH_RETAIL
+	char header[ DMX_MAX_HEADER_LENGTH ];
+#else
 	char header[ DMX_MAX_HEADER_LENGTH ] = { 0 };
+#endif
+#line 566
 	bool bOk = buf.ParseToken( DMX_VERSION_STARTING_TOKEN, DMX_VERSION_ENDING_TOKEN, header, sizeof( header ) );
 	if ( bOk )
 	{
 #ifdef _WIN32
 		int nAssigned = sscanf_s( header, "encoding %s %d format %s %d\n", pEncodingName, nEncodingNameLen, &nEncodingVersion, pFormatName, nFormatNameLen, &nFormatVersion );
+#elif defined( BYTEMATCH_RETAIL )
+		int nAssigned = sscanf( header, "encoding %s %d format %s %d\n", pEncodingName, &nEncodingVersion, pFormatName, &nFormatVersion );
 #else
 		// sscanf considered harmful. We don't have POSIX 2008 support on OS X and "C11 Annex K" is optional... (optional specs considered useful)
 		char pTmpEncodingName[ sizeof( header ) ] = { 0 };
@@ -577,6 +617,7 @@ bool ReadDMXHeader( CUtlBuffer &buf, char *pEncodingName, int nEncodingNameLen, 
 		V_strncpy( pEncodingName, pTmpEncodingName, nEncodingNameLen );
 		V_strncpy( pFormatName, pTmpFormatName, nFormatNameLen );
 #endif
+#line 580
 		bOk = bOk && ( nAssigned == 4 );
 		if ( bOk )
 		{

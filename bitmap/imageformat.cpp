@@ -123,7 +123,13 @@ int GetMemRequired( int width, int height, int depth, ImageFormat imageFormat, b
 	{
 		// Block compressed formats
 		
+#ifdef BYTEMATCH_RETAIL
+		if ( imageFormat == IMAGE_FORMAT_DXT1 || imageFormat == IMAGE_FORMAT_DXT3 || imageFormat == IMAGE_FORMAT_DXT5 ||
+			 imageFormat == IMAGE_FORMAT_ATI1N || imageFormat == IMAGE_FORMAT_ATI2N )
+#else
 		if ( IsCompressed( imageFormat ) )
+#endif
+#line 124
 		{
 /*
 			DDSURFACEDESC desc;
@@ -437,10 +443,13 @@ D3DFORMAT ImageFormatToD3DFormat( ImageFormat format )
 #endif
 	case IMAGE_FORMAT_BGRA8888:
 		return D3DFMT_A8R8G8B8;
+#ifndef BYTEMATCH_RETAIL
 	case IMAGE_FORMAT_RGB888:
 		return D3DFMT_R8G8B8;
 	case IMAGE_FORMAT_RGBA8888:
 		return D3DFMT_A8R8G8B8;
+#endif
+#line 435
 	case IMAGE_FORMAT_BGRX8888:
 		return D3DFMT_X8R8G8B8;
 	case IMAGE_FORMAT_BGR565:

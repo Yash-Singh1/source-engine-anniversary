@@ -31,3 +31,18 @@ measurement setup (pilot override order); the waf build is unaffected.
 | GLMDisplayDB::GetDisplayCount/GetDisplayInfo/GetModeCount/GetModeInfo/GetRendererInfo/Dump/PopulateRenderers, GLMRendererInfo::GLMRendererInfo, GLMDetectScaledResolveMode | differs | retail `GLMRendererInfo` holds one `GLMDisplayInfo *m_display` (offset 248) instead of a display vector; needs public/togl changes |
 | CheesyRendererDecode, _DisplayInfoSortFunction, GLMDisplayInfo::PopulateModes (Mac variant) | ours-only | belong to the Mac multi-display variant retail doesn't use |
 | AppSystemGroup.o, posixapp.o | identical | AppSystemGroup needs the tier1 layer (CUtlString/CUtlRBTree) |
+
+## filesystem_init (public/filesystem_init.cpp)
+
+Retail engine compiles its own `filesystem_init.o` (engine.build, `ENGINE_DLL`),
+as do launcher and vtex_dll. After the leftovers lane: engine 8/8, vtex_dll
+25/25, launcher 20/20. The `libappframework.a (vs engine)` report row pairs
+appframework's non-engine copy with engine's object, so it keeps showing
+`LoadExpansionInfo` missing and `FileSystem_LoadSearchPaths` different.
+
+| function | status | note |
+|---|---|---|
+| FileSystem_LoadSearchPaths | written new (retail mode) | anniversary form: `-game`/`-defaultgamedir` (default `hl2`), `game_hd.txt` probe (inlined static helper), then `SetUseLowViolancePaths`, `SetUseHDMount`, `SetAudioLanguageOverride`, `AddGameAndModSearchPathsFromGameInfo` on the filesystem; `hl2_complete` picks the expansion from `LoadExpansionInfo` (engine only) or `hl2`; adds `exp` and `root_mod` paths; marks by-request IDs; `PrintSearchPaths`; `UpdateSearchPathsForCurrentGameExpansion`. The leak/fork body stays under `#ifndef BYTEMATCH_RETAIL` |
+| LoadExpansionInfo | written new (`ENGINE_DLL`) | reads `<mod>/cfg/config.cfg`, finds `hl2_expansion`, takes the second `COM_Parse` token into the output (passing `com_token` as the format string, as retail does). Leaks the read buffer and, on an empty file, the FILE, as retail does |
+| CFSSearchPathsInit::CFSSearchPathsInit | edited | retail struct has one bool (`m_bLowViolence`) at +0xc and `m_ModPath` at +0xd. `m_bMountHDContent` is a static dummy in retail mode so engine/common.cpp still compiles; the engine lane should drop that assignment |
+| FileSystem_Init_Normal (utils/common/filesystem_tools.cpp) | edited | calls `FileSystem_SetupSteamInstallPath()` after `FileSystem_GetFileSystemDLLName` (SDK 2013), which also brings that function back into vtex_dll |
