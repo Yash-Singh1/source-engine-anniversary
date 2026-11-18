@@ -1934,6 +1934,50 @@ void CShaderSystem::BindTexture( Sampler_t sampler1, Sampler_t sampler2, ITextur
 //-----------------------------------------------------------------------------
 // Loads a texture
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+void CShaderSystem::LoadTexture( IMaterialVar *pTextureVar, const char *pTextureGroupName, int nAdditionalCreationFlags /* = 0 */ )
+{
+	if (pTextureVar->GetType() != MATERIAL_VAR_TYPE_STRING)
+	{
+		// This here will cause 'UNDEFINED' material vars
+		if (pTextureVar->GetType() != MATERIAL_VAR_TYPE_TEXTURE)
+		{
+			pTextureVar->SetTextureValue( TextureManager()->ErrorTexture() );
+		}
+		return;
+	}
+
+	// In this case, we have to convert the string into a texture value
+	const char *pName = pTextureVar->GetStringValue();
+	
+	// Fix cases where people stupidly put a slash at the front of the vtf filename in a vmt. Causes trouble elsewhere.
+	if ( pName[0] == CORRECT_PATH_SEPARATOR || pName[1] == CORRECT_PATH_SEPARATOR ) 
+		++pName;
+
+	ITextureInternal *pTexture;
+
+	// Force local cubemaps when using the editor
+	if ( MaterialSystem()->CanUseEditorMaterials() && ( stricmp( pName, "env_cubemap" ) == 0 ) )
+	{
+		pTexture = (ITextureInternal*)-1;
+	}
+	else
+	{
+		pTexture = static_cast< ITextureInternal * >( MaterialSystem()->FindTexture( pName, pTextureGroupName, false, nAdditionalCreationFlags ) );
+	}
+
+	if( !pTexture )
+	{
+		if( !g_pShaderDevice->IsUsingGraphics() && ( stricmp( pName, "env_cubemap" ) != 0 ) )
+		{
+			Warning( "Shader_t::LoadTexture: texture \"%s.vtf\" doesn't exist\n", pName );
+		}
+		pTexture = TextureManager()->ErrorTexture();
+	}
+
+	pTextureVar->SetTextureValue( pTexture );
+}
+#else
 void CShaderSystem::LoadTexture( IMaterialVar *pTextureVar, const char *pTextureGroupName, int nAdditionalCreationFlags /* = 0 */ )
 {
 	if (pTextureVar->GetType() != MATERIAL_VAR_TYPE_STRING)
@@ -1976,6 +2020,7 @@ void CShaderSystem::LoadTexture( IMaterialVar *pTextureVar, const char *pTexture
 
 	pTextureVar->SetTextureValue( pTexture );
 }
+#endif
 
 
 //-----------------------------------------------------------------------------
@@ -2012,6 +2057,53 @@ void CShaderSystem::LoadBumpMap( IMaterialVar *pTextureVar, const char *pTexture
 //-----------------------------------------------------------------------------
 // Loads a cubemap
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+void CShaderSystem::LoadCubeMap( IMaterialVar **ppParams, IMaterialVar *pTextureVar, int nAdditionalCreationFlags /* = 0 */ )
+{
+	if ( !HardwareConfig()->SupportsCubeMaps() )
+		return;
+	
+	if ( pTextureVar->GetType() != MATERIAL_VAR_TYPE_STRING )
+	{
+		// This here will cause 'UNDEFINED' material vars
+		if (pTextureVar->GetType() != MATERIAL_VAR_TYPE_TEXTURE)
+		{
+			pTextureVar->SetTextureValue( TextureManager()->ErrorTexture() );
+		}
+		return;
+	}
+
+	if ( stricmp( pTextureVar->GetStringValue(), "env_cubemap" ) == 0 )
+	{
+		// garymcthack 
+		// don't have to load anything here. . just set the texture value to something
+		// special that says to use the cubemap entity.
+		pTextureVar->SetTextureValue( ( ITexture * )-1 );
+		SetFlags2( ppParams, MATERIAL_VAR2_USES_ENV_CUBEMAP );
+	}
+	else
+	{
+		ITexture *pTexture;
+		char textureName[MAX_PATH];
+		Q_strncpy( textureName, pTextureVar->GetStringValue(), MAX_PATH );
+		if ( HardwareConfig()->GetHDRType() != HDR_TYPE_NONE )
+		{
+			// Overload the texture name to ".hdr.vtf" (instead of .vtf) if we are running with 
+			// HDR enabled.
+			Q_strncat( textureName, ".hdr", MAX_PATH, COPY_ALL_CHARACTERS );
+		}
+		pTexture = MaterialSystem()->FindTexture( textureName, TEXTURE_GROUP_CUBE_MAP, false, nAdditionalCreationFlags );
+
+		// FIXME: Make a cubemap error texture
+		if ( !pTexture )
+		{
+			pTexture = TextureManager()->ErrorTexture();
+		}
+
+		pTextureVar->SetTextureValue( pTexture );
+	}
+}
+#else
 void CShaderSystem::LoadCubeMap( IMaterialVar **ppParams, IMaterialVar *pTextureVar, int nAdditionalCreationFlags /* = 0 */ )
 {
 	if ( !HardwareConfig()->SupportsCubeMaps() )
@@ -2056,6 +2148,7 @@ void CShaderSystem::LoadCubeMap( IMaterialVar **ppParams, IMaterialVar *pTexture
 		pTextureVar->SetTextureValue( pTexture );
 	}
 }
+#endif
 
 
 

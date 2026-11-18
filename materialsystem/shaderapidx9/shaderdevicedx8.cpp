@@ -1353,6 +1353,46 @@ void CShaderDeviceMgrDx8::GetModeInfo( ShaderDisplayMode_t* pInfo, int nAdapter,
 //-----------------------------------------------------------------------------
 // Returns the current mode information for an adapter
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+void CShaderDeviceMgrDx8::GetCurrentModeInfo( ShaderDisplayMode_t* pInfo, int nAdapter ) const
+{
+	Assert( pInfo->m_nVersion == SHADER_DISPLAY_MODE_VERSION );
+
+	LOCK_SHADERAPI();
+	Assert( D3D() );
+
+	HRESULT hr;
+	D3DDISPLAYMODE mode;
+#if defined( _PS3 )
+	PS3_GetVideoOutResolution( ( int *)&mode.Width, ( int *)&mode.Height, &pInfo->m_flAspectRatio );
+ 	mode.Format = D3DFMT_X8R8G8B8;
+ 	mode.RefreshRate = 60;	
+#elif defined( _X360 )
+	if ( !m_pD3DDevice )
+	{
+		// the console has no prior display or mode until its created
+		mode.Width  = GetSystemMetrics( SM_CXSCREEN );
+		mode.Height = GetSystemMetrics( SM_CYSCREEN );
+		mode.RefreshRate = 60;
+		mode.Format = D3DFMT_X8R8G8B8;
+	}
+	else
+	{
+		hr = m_pD3DDevice->GetDisplayMode( 0, &mode );
+		Assert( !FAILED(hr) );
+	}
+#else
+	hr = D3D()->GetAdapterDisplayMode( nAdapter, &mode );
+	Assert( !FAILED(hr) );	
+#endif
+
+	pInfo->m_nWidth = mode.Width;
+	pInfo->m_nHeight = mode.Height;
+	pInfo->m_Format = ImageLoader::D3DFormatToImageFormat( mode.Format );
+	pInfo->m_nRefreshRateNumerator = mode.RefreshRate;
+	pInfo->m_nRefreshRateDenominator = 1;
+}
+#else
 void CShaderDeviceMgrDx8::GetCurrentModeInfo( ShaderDisplayMode_t* pInfo, int nAdapter ) const
 {
 	Assert( pInfo->m_nVersion == SHADER_DISPLAY_MODE_VERSION );
@@ -1387,6 +1427,7 @@ void CShaderDeviceMgrDx8::GetCurrentModeInfo( ShaderDisplayMode_t* pInfo, int nA
 	pInfo->m_nRefreshRateNumerator = mode.RefreshRate;
 	pInfo->m_nRefreshRateDenominator = 1;
 }
+#endif
 
 
 //-----------------------------------------------------------------------------
