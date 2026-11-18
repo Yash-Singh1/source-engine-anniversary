@@ -35,6 +35,7 @@ public:
 	CBaseParticleEntity();
 	virtual ~CBaseParticleEntity();
 
+#ifndef BYTEMATCH_RETAIL
 	virtual int ObjectCaps()
 	{
 		if( m_bShouldDeletedOnChangelevel )
@@ -44,6 +45,7 @@ public:
 	}
 
 	void SetShouldDeletedOnChangelevel( bool bDel ) { m_bShouldDeletedOnChangelevel = bDel; }
+#endif
 
 	// CBaseEntity overrides.
 public:
@@ -86,7 +88,9 @@ public:
 	void			SetLifetime(float lifetime);
 
 private:
+#ifndef BYTEMATCH_RETAIL
 	bool			m_bShouldDeletedOnChangelevel;
+#endif
 
 	CBaseParticleEntity( const CBaseParticleEntity & ); // not defined, not accessible
 };

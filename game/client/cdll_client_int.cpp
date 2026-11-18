@@ -147,7 +147,9 @@
 #include "fbxsystem/fbxsystem.h"
 #endif
 
+#ifndef BYTEMATCH_RETAIL
 #include "touch.h"
+#endif
 
 extern vgui::IInputInternal *g_InputInternal;
 
@@ -729,7 +731,9 @@ public:
 	void PrecacheMaterial( const char *pMaterialName );
 
 	virtual bool IsConnectedUserInfoChangeAllowed( IConVar *pCvar );
+#ifndef BYTEMATCH_RETAIL
 	virtual void IN_TouchEvent( int type, int fingerId, int x, int y );
+#endif
 
 private:
 	void UncacheAllMaterials( );
@@ -1034,7 +1038,9 @@ int CHLClient::Init( CreateInterfaceFn appSystemFactory, CreateInterfaceFn physi
 	g_pClientMode->InitViewport();
 
 	gHUD.Init();
+#ifndef BYTEMATCH_RETAIL
 	gTouch.Init();
+#endif
 
 	g_pClientMode->Init();
 
@@ -1199,7 +1205,9 @@ void CHLClient::Shutdown( void )
 	
 	gHUD.Shutdown();
 	VGui_Shutdown();
+#ifndef BYTEMATCH_RETAIL
 	gTouch.Shutdown();
+#endif
 
 	ParticleMgr()->Term();
 	
@@ -1631,7 +1639,9 @@ void CHLClient::LevelInitPreEntity( char const* pMapName )
 	g_RagdollLVManager.SetLowViolence( pMapName );
 
 	gHUD.LevelInit();
+#ifndef BYTEMATCH_RETAIL
 	gTouch.LevelInit();
+#endif
 
 #if defined( REPLAY_ENABLED )
 	// Initialize replay ragdoll recorder
@@ -2638,6 +2648,7 @@ CSteamID GetSteamIDForPlayerIndex( int iPlayerIndex )
 #endif
 
  
+#ifndef BYTEMATCH_RETAIL
 void CHLClient::IN_TouchEvent( int type, int fingerId, int x, int y )
 {
 	if( enginevgui->IsGameUIVisible() )
@@ -2655,3 +2666,4 @@ void CHLClient::IN_TouchEvent( int type, int fingerId, int x, int y )
 
 	gTouch.ProcessEvent( &ev );
 }
+#endif

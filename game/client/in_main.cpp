@@ -18,7 +18,9 @@
 #include "prediction.h"
 #include "bitbuf.h"
 #include "checksum_md5.h"
+#ifndef BYTEMATCH_RETAIL
 #include "touch.h"
+#endif
 #include "hltvcamera.h"
 #if defined( REPLAY_ENABLED )
 #include "replay/replaycamera.h"
@@ -948,7 +950,9 @@ void CInput::ControllerMove( float frametime, CUserCmd *cmd )
 
 	JoyStickMove( frametime, cmd);
 
+#ifndef BYTEMATCH_RETAIL
 	TouchMove( cmd );
+#endif
 
 	// NVNT if we have a haptic device..
 	if(haptics && haptics->HasDevice())
@@ -1194,7 +1198,13 @@ void CInput::CreateMove ( int sequence_number, float input_sample_frametime, boo
 #endif
 
 	// Using joystick?
+#ifdef BYTEMATCH_RETAIL
 #ifdef SIXENSE
+	if ( in_joystick.GetInt() || g_pSixenseInput->IsEnabled() )
+#else
+	if ( in_joystick.GetInt() )
+#endif
+#elif defined( SIXENSE )
 	if ( in_joystick.GetInt() || g_pSixenseInput->IsEnabled() || touch_enable.GetInt() )
 #else
 	if ( in_joystick.GetInt() || touch_enable.GetInt() )
