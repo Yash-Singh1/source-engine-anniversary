@@ -1,0 +1,47 @@
+//-----------------------------------------------------------------------------
+//	VAUDIO_MILES.VPC
+//
+//	Project Script
+//-----------------------------------------------------------------------------
+
+$Macro SRCDIR		"..\..\.."
+$Macro OUTBINDIR	"$SRCDIR\..\game\bin"
+
+$Include "$SRCDIR\vpc_scripts\source_dll_base.vpc"
+
+$Configuration
+{
+	$Compiler
+	{
+		$AdditionalIncludeDirectories		"$BASE,..\frame_encoder,..\..\..\public,..\..\..\public\tier1,..\..,..\..\..\common,..\..\audio\public"
+	}
+	$Linker
+	{
+		$SystemLibraries					"iconv" [$OSXALL]
+	}
+}
+
+$Project "vaudio_miles"
+{
+	$Folder	"Source Files"
+	{
+		$File "..\frame_encoder\voice_codec_frame.cpp"
+		$File "milesbase.cpp"
+		$File "mp3_miles.cpp"
+		$File "voice_codec_miles.cpp"
+	}
+
+	$Folder	"Header Files"
+	{
+		$File	"..\frame_encoder\iframeencoder.h"
+		$File	"milesbase.h"
+		$File	"$SRCDIR\common\miles\mss.h"
+		$File	"$SRCDIR\public\vaudio\ivaudio.h"
+	}
+
+	$Folder	"Link Libraries"
+	{
+		$Lib	"$LIBCOMMON\mss32" [$WIN32]
+		$ImpLib	"$SRCDIR\..\game\bin\libMilesX86" [$OSXALL]
+	}
+}

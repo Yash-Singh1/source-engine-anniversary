@@ -95560,18 +95560,17 @@
      "vaudio_miles": 4
     }
    },
-   "waf_target": null,
+   "waf_target": "vaudio_miles",
    "waf_games": null,
    "project_dir": "engine/voice_codecs/miles",
    "order_rule_inversions": 0,
    "sources": [
-    "engine/voice_codecs/frame_encoder/voice_codec_frame.cpp"
-   ],
-   "missing_sources": [
+    "engine/voice_codecs/frame_encoder/voice_codec_frame.cpp",
     "engine/voice_codecs/miles/milesbase.cpp",
     "engine/voice_codecs/miles/mp3_miles.cpp",
     "engine/voice_codecs/miles/voice_codec_miles.cpp"
    ],
+   "missing_sources": [],
    "archives": [
     {
      "archive": "libtier1.a",
@@ -95630,9 +95629,49 @@
      "PNG_NO_PEDANTIC_WARNINGS",
      "CPP11_NO_LIBCXX"
     ],
-    "vpc": null,
-    "vpc_files": null,
-    "vpc_include_dirs": null,
+    "vpc": [
+     "VPC",
+     "NDEBUG",
+     "GNUC",
+     "POSIX",
+     "COMPILER_GCC",
+     "_DLL_EXT=.dylib",
+     "_OSX",
+     "OSX",
+     "_DARWIN_UNLIMITED_SELECT",
+     "FD_SETSIZE=10240",
+     "OVERRIDE_V_DEFINES",
+     "_POSIX",
+     "DLLNAME=vaudio_miles",
+     "QUICKTIME_VIDEO",
+     "FORCE_QUICKTIME",
+     "GL_GLEXT_PROTOTYPES",
+     "DX_TO_GL_ABSTRACTION",
+     "USE_SDL",
+     "DEV_BUILD",
+     "FRAME_POINTER_OMISSION_DISABLED"
+    ],
+    "vpc_files": [
+     "ours:engine/voice_codecs/miles/vaudio_miles.vpc",
+     "ours:vpc_scripts/source_dll_base.vpc",
+     "ours:vpc_scripts/platform_dirs.vpc",
+     "ours:vpc_scripts/source_base.vpc",
+     "ours:vpc_scripts/source_dll_posix_base.vpc",
+     "ours:vpc_scripts/version.vpc",
+     "ours:vpc_scripts/source_posix_base.vpc",
+     "ours:vpc_scripts/version.vpc",
+     "ours:vpc_scripts/source_video_base.vpc"
+    ],
+    "vpc_include_dirs": [
+     "../../../common",
+     "../../../public",
+     "../../../public/tier0",
+     "../../../public/tier1",
+     "../../../thirdparty/SDL",
+     "../frame_encoder",
+     "../..",
+     "../../audio/public"
+    ],
     "platform_files": []
    },
    "objects": [
@@ -95649,9 +95688,9 @@
     },
     {
      "kind": "object",
-     "source": null,
+     "source": "engine/voice_codecs/miles/milesbase.cpp",
      "retail_source": "engine/voice_codecs/miles/milesbase.cpp",
-     "status": "missing",
+     "status": "exact",
      "archive": null,
      "member": null,
      "mtime": 1731518673,
@@ -95660,9 +95699,9 @@
     },
     {
      "kind": "object",
-     "source": null,
+     "source": "engine/voice_codecs/miles/mp3_miles.cpp",
      "retail_source": "engine/voice_codecs/miles/mp3_miles.cpp",
-     "status": "missing",
+     "status": "exact",
      "archive": null,
      "member": null,
      "mtime": 1731518673,
@@ -95671,9 +95710,9 @@
     },
     {
      "kind": "object",
-     "source": null,
+     "source": "engine/voice_codecs/miles/voice_codec_miles.cpp",
      "retail_source": "engine/voice_codecs/miles/voice_codec_miles.cpp",
-     "status": "missing",
+     "status": "exact",
      "archive": null,
      "member": null,
      "mtime": 1732582572,
