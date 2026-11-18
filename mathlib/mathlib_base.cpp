@@ -1480,7 +1480,7 @@ float SmoothCurve( float x )
 	// http://www.wolframalpha.com/input/?i=plot%5B+0.5+*+%281+-+cos%5B2+*+pi+*+x%5D%29+for+x+%3D+%280%2C+1%29+%5D
 	return 0.5f * (1 - cos( 2.0f * M_PI * x ) );
 #endif
-#line 1472
+#line 1479
 }
 
 
