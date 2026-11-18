@@ -6,7 +6,8 @@ plus tier1 members (checksum_crc, convar, interface, KeyValues, strtools, tier1,
 utlbuffer, utlsymbol), which the tier1 lane owns.
 
 Verification: clang-600.0.57, TARGET.md Release flags, per N_OSO object,
-"strict" = every byte equal except relocated fields. "hdrfix" means compiled
+"strict" = every byte equal except relocated fields, which must resolve to the
+same symbol / string / literal. "hdrfix" means compiled
 against an overlay of `public/` carrying header changes owned by other lanes:
 - `tier1/utlmemory.h`: SDK 2013 `UtlMemory_CalcNewAllocationCount` (no
   "exact size if larger" clamp) and `IsIdxValid` as one unsigned compare;

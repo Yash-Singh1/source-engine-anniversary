@@ -6,8 +6,9 @@ interface, strtools, tier1, utlbuffer), which other lanes own.
 
 Built with `USE_SDL` (retail references `SDLMgrInterface001`).
 
-Verification: clang-600.0.57, TARGET.md Release flags, per N_OSO object.
-"hdrfix" means compiled with lane-local copies of headers owned by other lanes:
+Verification: clang-600.0.57, TARGET.md Release flags, per N_OSO object;
+"byte" = strict (all bytes equal except relocated fields, which must resolve to
+the same symbol / string / literal). "hdrfix" means compiled with lane-local copies of headers owned by other lanes:
 - `tier1/utlmemory.h` without the TF2-branch "exact size if larger" clamp in
   `UtlMemory_CalcNewAllocationCount` (SDK 2013 behaviour);
 - `mathlib/vector4d.h` without the fork's `alignas(16)` on `Vector4D`;

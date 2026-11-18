@@ -5,12 +5,14 @@ tier1 members (checksum_crc, interface, lzmaDecoder, strtools, utlbuffer; owned
 by the tier1 lane).
 
 Verification: clang-600.0.57 with the TARGET.md Release flags, compared per
-N_OSO object (symdiff normalization, bytecheck rule). "hdrfix" means compiled
-with SDK 2013 `public/tier1/lzmaDecoder.h` (non-static `CLZMA` API), which the
-tier1 lane owns.
+N_OSO object. "byte" = strict: every byte equal except relocated fields, and
+every relocated field / call resolves to the same symbol, string or literal.
+Tooling: /Volumes/Storage/sco/byte-match-survey/lane-mod-small-scratch/.
+"hdrfix" means compiled with SDK 2013 `public/tier1/lzmaDecoder.h` (non-static
+`CLZMA` API), which the tier1 lane owns.
 
-Before: 14/16 byte-identical. After: 14/16 with the current tier1 header,
-16/16 with hdrfix.
+Before: 14/16. After: 14/16 with the current tier1 header (the original source
+does not compile against the retail header), 16/16 with hdrfix.
 
 | function | status | note |
 |---|---|---|
