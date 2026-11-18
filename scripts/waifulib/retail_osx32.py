@@ -32,6 +32,9 @@ RETAIL_MODULES = [
 	'materialsystem/shaderlib', 'vgui2/vgui_controls', 'vgui2/matsys_controls',
 	'scenefilecache', 'soundemittersystem', 'datacache', 'video', 'inputsystem',
 	'filesystem', 'vgui2/src', 'studiorender', 'serverbrowser', 'utils/vtex',
+	'materialsystem/shaderapiempty', 'engine/voice_codecs/speex', 'launcher_main',
+	'ivp/havana', 'ivp/havana/havok/hk_base', 'ivp/havana/havok/hk_math',
+	'ivp/ivp_compact_builder', 'ivp/ivp_physics', 'vphysics', 'materialsystem/stdshaders',
 ]
 
 # Defines our top-level wscript adds that Valve's build doesn't have.
@@ -39,6 +42,11 @@ TREE_ONLY_DEFINES = ['PLATFORM_POSIX', 'NO_MEMOVERRIDE_NEW_DELETE', 'GIT_COMMIT_
 	'DX_TO_GL_ABSTRACTION_DISABLED']
 
 BUILD_PATH_DEFINES = ['WAF_CFLAGS', 'WAF_LDFLAGS']
+
+# Extra compiler flags per task generator name. ivp includes <malloc/malloc.h> when
+# OSX is defined, which doesn't declare alloca on the 10.6 headers.
+EXTRA_CXXFLAGS = dict((t, ['-include', 'alloca.h']) for t in
+	('ivp_physics', 'ivp_compactbuilder', 'havana_constraints', 'hk_base', 'hk_math'))
 
 # Retail third-party dylibs, linked from the depot (user-provided, never rebuilt).
 DEPOT_DYLIBS = ['libSDL2-2.0.0.dylib', 'libsteam_api.dylib', 'libMilesX86.dylib', 'libcef.dylib']
@@ -213,8 +221,22 @@ def retail_osx32_defines(self):
 		if d not in defs:
 			defs.append(d)
 	self.env.DEFINES = defs
+	extra = EXTRA_CXXFLAGS.get(getattr(self, 'name', None), [])
+	if extra:
+		self.env.append_value('CXXFLAGS', extra)
 	for t in getattr(self, 'compiled_tasks', []):
 		t.env.DEFINES = defs
+		if extra:
+			t.env.CXXFLAGS = self.env.CXXFLAGS
+
+@feature('cprogram', 'cxxprogram')
+@before_method('apply_link')
+def retail_osx32_exe_name(self):
+	if not self.env.RETAIL_OSX32:
+		return
+	kind, e = _entry(self)
+	if kind == 'module':
+		self.target = os.path.join(os.path.dirname(self.target), os.path.basename(e[1]['retail']['path']))
 
 @feature('cshlib', 'cxxshlib')
 @before_method('apply_link')
