@@ -1033,6 +1033,7 @@ void CNetChan::RemoveHeadInWaitingList( int nList )
 }
 
 
+#line 989
 bool CNetChan::CreateFragmentsFromBuffer( bf_write *buffer, int stream )
 {
 	VPROF_BUDGET( "CNetChan::CreateFragmentsFromBuffer", VPROF_BUDGETGROUP_OTHER_NETWORKING );
@@ -1410,14 +1411,14 @@ bool CNetChan::ReadSubChannelData( bf_read &buf, int stream  )
 			data->buffer = NULL;
 			ConDMsg( "Fragment transmission aborted at %i/%i from %s.\n", data->ackedFragments, data->numFragments, GetAddress() );
 #endif
-#line 1372
+#line 1362
 		}
 
 		data->bits = data->bytes * 8;
 #ifdef BYTEMATCH_RETAIL
 		data->buffer = new char[PAD_NUMBER(data->bytes, 4)];
 #endif
-#line 1375
+#line 1365
 		data->asTCP = false;
 		data->numFragments = BYTES2FRAGMENTS(data->bytes);
 		data->ackedFragments = 0;
@@ -1440,7 +1441,7 @@ bool CNetChan::ReadSubChannelData( bf_read &buf, int stream  )
 
 		data->buffer = new char[PAD_NUMBER(data->bytes, 4)];
 #endif
-#line 1395
+#line 1385
 	}
 	else
 	{
@@ -1471,7 +1472,7 @@ bool CNetChan::ReadSubChannelData( bf_read &buf, int stream  )
 		return false;
 	}
 #endif
-#line 1423
+#line 1413
 
 	Assert ( (offset + length) <= data->bytes );
 	if ( length == 0 || ( offset + length > data->bytes ) )
@@ -2018,7 +2019,7 @@ bool CNetChan::ProcessMessages( bf_read &buf  )
 				return false;
 			}
 #endif
-#line 1961
+#line 1951
 
 			if ( !bRet )
 			{
@@ -2226,7 +2227,7 @@ bool CNetChan::HandleUpload( dataFragments_t *data, INetChannelHandler *MessageH
 	return true;
 }
 #endif
-#line 2096
+#line 2086
 
 #ifdef BYTEMATCH_RETAIL
 bool CNetChan::CheckReceivingList(int nList)
@@ -2389,7 +2390,7 @@ bool CNetChan::CheckReceivingList(int nList)
 
 }
 #endif
-#line 2205
+#line 2195
 
 int CNetChan::ProcessPacketHeader( netpacket_t * packet )
 {
@@ -3458,5 +3459,5 @@ bool CNetChan::IsValidFileForTransfer( const char *pszFilename )
 	return true;
 }
 #endif
-#line 3171
+#line 3161
 

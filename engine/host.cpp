@@ -1231,6 +1231,7 @@ Writes key bindings and archived cvars to config.cfg
 */
 
 #ifdef BYTEMATCH_RETAIL
+#line 1280
 void Host_WriteConfiguration( const char *filename )
 {
 	if ( !filename )
@@ -1357,7 +1358,7 @@ void Host_WriteConfiguration( const char *filename, bool bAllVars )
 	Key_WriteBindings( configBuff );
 	cv->WriteVariables( configBuff, bAllVars );
 #endif
-#line 1264
+#line 1340
 
 #if !defined( SWDS )
 		bool down;
@@ -1730,7 +1731,7 @@ void Host_RestoreHL2EpisodicUnlocks()
 	}
 }
 #endif
-#line 1634
+#line 1710
 
 void Host_ReadConfiguration()
 {
@@ -1818,7 +1819,7 @@ void Host_ReadConfiguration()
 
 	Cbuf_Execute();
 #endif
-#line 1707
+#line 1783
 
 	if ( pRemoteStorage )
 	{
@@ -1936,7 +1937,7 @@ CON_COMMAND( host_writeconfig, "Store current settings to config.cfg (or specifi
 	}
 }
 #endif
-#line 1789
+#line 1865
 
 #endif
 
@@ -1970,7 +1971,7 @@ void Host_ReadPreStartupConfiguration()
 		f = g_pFileSystem->Open( "//mod/cfg/config.cfg", "rt" );
 	}
 #endif
-#line 1810
+#line 1886
 
 	if ( !f )
 		return;
@@ -2041,7 +2042,7 @@ void Host_ReadPreStartupConfiguration()
 		}
 	}
 #endif
-#line 1878
+#line 1954
 
 	// free
 	delete [] configBuffer;
@@ -2080,7 +2081,7 @@ void Host_ShutdownServer( void )
 #ifndef BYTEMATCH_RETAIL
 	master->ShutdownConnection();
 #endif
-#line 1913
+#line 1989
 
 	Host_AllowQueuedMaterialSystem( false );
 	// clear structures
@@ -3019,13 +3020,14 @@ void CheckSpecialCheatVars()
 	}
 
 #endif
-#line 2844
+#line 2920
 	CheckVarRange_r_rootlod();
 	CheckVarRange_r_lod();
 	HandleServerAllowColorCorrection();
 }
 
 
+#line 2929
 void _Host_RunFrame_Render()
 {
 #ifndef SWDS
@@ -3214,7 +3216,7 @@ float Host_GetSoundDuration( const char *pSample )
 #endif
 	return 0.0f;
 #endif
-#line 3023
+#line 3102
 }
 
 CON_COMMAND( host_runofftime, "Run off some time without rendering/updating sounds\n" )
@@ -3797,7 +3799,7 @@ void _Host_RunFrame (float time)
 			modelloader->UpdateDynamicModels();
 		}
 #endif
-#line 3596
+#line 3675
 
 		//-------------------
 		// simulation
@@ -3908,7 +3910,7 @@ void Host_RunFrame( float time )
 	}
 
 #endif
-#line 3704
+#line 3783
 	if ( !host_profile.GetBool() )
 	{
 		_Host_RunFrame( time );
@@ -4365,7 +4367,7 @@ bool DLL_LOCAL Host_IsSecureServerAllowed()
 	if ( CommandLine()->FindParm( "-insecure" ) || CommandLine()->FindParm( "-textmode" ) )
 		g_bAllowSecureServers = false;
 #endif
-#line 4155
+#line 4234
 
 	return g_bAllowSecureServers;
 }
@@ -4413,7 +4415,7 @@ void Host_Init( bool bDedicated )
 #else
 		g_pThreadPool->Start( startParams, "CmpJob" );
 #endif
-#line 4198
+#line 4277
 
 	// From const.h, the loaded game .dll will give us the correct value which is transmitted to the client
 	host_state.interval_per_tick = DEFAULT_TICK_INTERVAL;
@@ -4463,7 +4465,7 @@ void Host_Init( bool bDedicated )
 	// Should have read info from steam.inf by now.
 	Assert( GetSteamInfIDVersionInfo().AppID != k_uAppIdInvalid );
 #endif
-#line 4242
+#line 4321
 
 	if ( CommandLine()->FindParm( "-nocrashdialog" ) )
 	{
@@ -4567,7 +4569,7 @@ void Host_Init( bool bDedicated )
 		Cbuf_AddText( "exec modsettings.cfg mod\n" );
 	}
 #endif
-#line 4343
+#line 4422
 
 	// Mark DLL as active
 	//	eng->SetNextState( InEditMode() ? IEngine::DLL_PAUSED : IEngine::DLL_ACTIVE );
@@ -5113,7 +5115,7 @@ bool Host_Changelevel( bool loadfromsavedgame, const char *mapname, const char *
 	return true;
 }
 #endif
-#line 4672
+#line 4751
 
 #ifdef BYTEMATCH_RETAIL
 void GetPlatformMapPath( const char *pMapPath, char *pPlatformMapPath, int maxLength )
@@ -5128,7 +5130,7 @@ void GetPlatformMapPath( const char *pMapPath, char *pPlatformMapPath, int maxLe
 	}
 }
 #endif
-#line 4684
+#line 4763
 
 /*
 ===============================================================================
@@ -5220,7 +5222,7 @@ bool Host_NewGame( char *mapName, bool loadGame, bool bBackgroundLevel, const ch
 
 	CheckForFlushMemory( previousMapName, szMapName );
 #endif
-#line 4727
+#line 4806
 
 	if (MapReslistGenerator().IsEnabled())
 	{
