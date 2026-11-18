@@ -515,6 +515,29 @@ public:
 //       szVoiceCodec to "steam".  See ::ReadFromBuffer for shim to fallback to the convar for old streams.
 //     - We no longer pass "svc_voiceinit NULL" as szVoiceCodec if it is not selected, just the empty string.  Nothing
 //       used this that I could find.
+#ifdef BYTEMATCH_RETAIL
+class SVC_VoiceInit : public CNetMessage
+{
+	DECLARE_SVC_MESSAGE( VoiceInit );
+
+	int	GetGroup() const { return INetChannelInfo::SIGNON; }
+
+	SVC_VoiceInit() {}
+
+	SVC_VoiceInit( const char * codec, int quality )
+	{
+		m_szVoiceCodec = codec;
+		m_nQuality = quality;
+	}
+
+public:
+	const char	*m_szVoiceCodec;	// used voice codec .DLL
+	int			m_nQuality;		// custom quality setting
+
+private:
+	char		m_szVoiceCodecBuffer[MAX_OSPATH];
+};
+#else
 class SVC_VoiceInit : public CNetMessage
 {
 	DECLARE_SVC_MESSAGE( VoiceInit );
@@ -554,6 +577,8 @@ public:
 	// The sample rate we are using
 	int			m_nSampleRate;
 };
+#endif
+#line 557
 
 class SVC_VoiceData : public CNetMessage
 {

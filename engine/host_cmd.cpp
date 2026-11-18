@@ -126,6 +126,10 @@ static void voiceconvar_file_changed_f( IConVar *pConVar, const char *pOldValue,
 ConVar voice_recordtofile("voice_recordtofile", "0", 0, "Record mic data and decompressed voice data into 'voice_micdata.wav' and 'voice_decompressed.wav'");
 ConVar voice_inputfromfile("voice_inputfromfile", "0", 0, "Get voice input from 'voice_input.wav' rather than from the microphone.", &voiceconvar_file_changed_f );
 ConVar sv_allow_voice_from_file( "sv_allow_voice_from_file", "1", FCVAR_REPLICATED, "Allow or disallow clients from using voice_inputfromfile on this server.", &voiceconvar_file_changed_f );
+#ifdef BYTEMATCH_RETAIL
+ConVar sv_use_steam_voice( "sv_use_steam_voice", "1", FCVAR_REPLICATED, "Enable/disable using Steam Voice instead of the old voice codec (if enabled, voice_inputfromfile will no longer function)." );
+#endif
+#line 129
 
 class CStatusLineBuilder
 {
@@ -2245,8 +2249,14 @@ void Host_VoiceRecordStop_f(void)
 #if !defined( NO_VOICE )
 		if (Voice_IsRecording())
 		{
+#ifdef BYTEMATCH_RETAIL
+			CL_SendVoicePacket( true );
+			Voice_RecordStop();
+#else
 			CL_SendVoicePacket( g_bUsingSteamVoice ? false : true );
 			Voice_UserDesiresStop();
+#endif
+#line 2081
 		}
 #endif
 	}

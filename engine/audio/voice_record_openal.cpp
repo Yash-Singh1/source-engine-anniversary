@@ -113,11 +113,17 @@ bool VoiceRecord_OpenAL::RecordStart()
 	if ( !m_Device )
 		return false;
 
+#ifdef BYTEMATCH_RETAIL
+	alcCaptureStart(m_Device);
+
+	const ALenum error = alGetError();
+#else
 	alcGetError(m_Device);
 	
 	alcCaptureStart(m_Device);
 
 	const ALenum error = alcGetError(m_Device);
+#endif
 	return error == AL_NO_ERROR;
 }
 
@@ -138,9 +144,13 @@ void VoiceRecord_OpenAL::RecordStop()
 bool VoiceRecord_OpenAL::InitalizeInterfaces()
 {	
 	m_Device = alcCaptureOpenDevice( NULL, m_nSampleRate, AL_FORMAT_MONO16, m_nSampleRate * 10 * 2);
+#ifdef BYTEMATCH_RETAIL
+	return m_Device != NULL && alGetError() == AL_NO_ERROR;
+#else
 	const ALenum error = alcGetError(m_Device);
 	const bool result = error == AL_NO_ERROR;
 	return m_Device != NULL && result;
+#endif
 }
 
 bool VoiceRecord_OpenAL::Init(int sampleRate)
@@ -179,7 +189,11 @@ int VoiceRecord_OpenAL::GetRecordedData(short *pOut, int nSamples )
 	{
 		frameCount = min( nSamples, frameCount );
 		alcCaptureSamples( m_Device, pOut, frameCount );
+#ifdef BYTEMATCH_RETAIL
+		if ( alGetError() != AL_NO_ERROR )
+#else
 		if ( alcGetError(m_Device) != ALC_NO_ERROR )
+#endif
 		{
 			return 0;
 		}
@@ -190,7 +204,11 @@ int VoiceRecord_OpenAL::GetRecordedData(short *pOut, int nSamples )
 
 
 
+#ifdef BYTEMATCH_RETAIL
+IVoiceRecord* CreateVoiceRecord_DSound(int sampleRate)
+#else
 IVoiceRecord* CreateVoiceRecord_OpenAL(int sampleRate)
+#endif
 {
 	VoiceRecord_OpenAL *pRecord = new VoiceRecord_OpenAL;
 	if ( pRecord && pRecord->Init(sampleRate) )
