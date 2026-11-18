@@ -24,7 +24,9 @@ unrelated to dx9:
 mat_fullbright 1 doesn't work properly on alpha materials in testroom_standards
 */
 #define DISABLE_PROTECTED_THINGS
+#ifndef BYTEMATCH_RETAIL
 #include "shaderapi/ishaderapistreaming.h"
+#endif
 #include "shaderapidx8.h"
 #include "shaderapidx8_global.h"
 #include "shadershadowdx8.h"
@@ -193,8 +195,10 @@ struct SamplerState_t
 	D3DTEXTUREFILTERTYPE		m_MagFilter;
 	D3DTEXTUREFILTERTYPE		m_MinFilter;
 	D3DTEXTUREFILTERTYPE		m_MipFilter;
+#ifndef BYTEMATCH_RETAIL
 	int							m_FinestMipmapLevel;
 	float						m_LodBias;
+#endif
 	int							m_nAnisotropicLevel;
 	bool						m_TextureEnable;
 	bool						m_SRGBReadEnable;
@@ -284,6 +288,7 @@ struct DynamicState_t
 	float			m_FogEnd;
 	float			m_FogZ;
 	float			m_FogMaxDensity;
+	bool			m_bFogRadial;
 
 	float			m_HeightClipZ;
 	MaterialHeightClipMode_t m_HeightClipMode;	
@@ -343,7 +348,7 @@ struct DynamicState_t
 	bool	m_bBuffer2Frames;
 #endif
 	
-	DynamicState_t() = default;
+	DynamicState_t() {}
 
 private:
 	DynamicState_t( DynamicState_t const& );
@@ -450,8 +455,10 @@ struct Texture_t
 		m_ImageFormat = IMAGE_FORMAT_RGBA8888;
 		m_pTextureGroupCounterGlobal = NULL;
 		m_pTextureGroupCounterFrame = NULL;
+#ifndef BYTEMATCH_RETAIL
 		m_FinestMipmapLevel = 0;
 		m_LodBias = 0.0f;
+#endif
 	}
 
 	// FIXME: Compress this info
@@ -461,8 +468,10 @@ struct Texture_t
 	D3DTEXTUREFILTERTYPE	m_MagFilter;
 	D3DTEXTUREFILTERTYPE	m_MinFilter;
 	D3DTEXTUREFILTERTYPE	m_MipFilter;
+#ifndef BYTEMATCH_RETAIL
 	int						m_FinestMipmapLevel;
 	float					m_LodBias;
+#endif
 
 	unsigned char			m_NumLevels;
 	unsigned char			m_SwitchNeeded;	// Do we need to advance the current copy?
@@ -570,10 +579,12 @@ struct Texture_t
 		return ( int )m_Depth;
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	int GetLodClamp() const
 	{
 		return m_FinestMipmapLevel;
 	}
+#endif
 
 	void SetImageFormat( ImageFormat format )
 	{
@@ -857,8 +868,10 @@ public:
 	void TexMagFilter( ShaderTexFilterMode_t texFilterMode );
 	void TexWrap( ShaderTexCoordComponent_t coord, ShaderTexWrapMode_t wrapMode );
 	void TexSetPriority( int priority );
+#ifndef BYTEMATCH_RETAIL
 	void TexLodClamp( int finest );
 	void TexLodBias( float bias );
+#endif
 
 	ShaderAPITextureHandle_t CreateTextureHandle( void );
 	void CreateTextureHandles( ShaderAPITextureHandle_t *handles, int count );
@@ -1036,12 +1049,14 @@ public:
 	void CopyRenderTargetToTexture( ShaderAPITextureHandle_t textureHandle );
 	void CopyRenderTargetToTextureEx( ShaderAPITextureHandle_t textureHandle, int nRenderTargetID, Rect_t *pSrcRect = NULL, Rect_t *pDstRect = NULL );
 	void CopyTextureToRenderTargetEx( int nRenderTargetID, ShaderAPITextureHandle_t textureHandle, Rect_t *pSrcRect = NULL, Rect_t *pDstRect = NULL );
+#ifndef BYTEMATCH_RETAIL
 	void CopyRenderTargetToScratchTexture( ShaderAPITextureHandle_t srcHandle, ShaderAPITextureHandle_t dstHandle, Rect_t *pSrcRect = NULL, Rect_t *pDstRect = NULL );
 
 	void LockRect( void** pOutBits, int* pOutPitch, ShaderAPITextureHandle_t texHandle, int mipmap, int x, int y, int w, int h, bool bWrite, bool bRead );
 	void UnlockRect( ShaderAPITextureHandle_t texHandle, int mipmap );
 
 	void CopyTextureToTexture( ShaderAPITextureHandle_t srcTex, ShaderAPITextureHandle_t dstTex );
+#endif
 
 	// Returns the cull mode (for fill rate computation)
 	D3DCULL GetCullMode() const;
@@ -1716,7 +1731,6 @@ private:
 	// fog
 	unsigned char m_SceneFogColor[3];
 	MaterialFogMode_t m_SceneFogMode;
-	bool m_bSceneFogRadial;
 
 	// Tone Mapping state ( w is gamma scale )
 	Vector4D m_ToneMappingScale;
@@ -1844,6 +1858,7 @@ EXPOSE_SINGLE_INTERFACE_GLOBALVAR( CShaderAPIDx8, IShaderDevice,
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR( CShaderAPIDx8, IDebugTextureInfo, 
 				DEBUG_TEXTURE_INFO_VERSION, g_ShaderAPIDX8 )
 
+#ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
 // Texture streaming hooks; kept off CShaderAPIDx8's own vtable (see ishaderapistreaming.h)
 //-----------------------------------------------------------------------------
@@ -1879,6 +1894,7 @@ public:
 static CShaderAPIDx8Streaming g_ShaderAPIDX8Streaming;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR( CShaderAPIDx8Streaming, IShaderAPIStreaming,
 				SHADERAPI_STREAMING_INTERFACE_VERSION, g_ShaderAPIDX8Streaming )
+#endif
 
 //-----------------------------------------------------------------------------
 // Accessors for major interfaces
@@ -1992,7 +2008,6 @@ CShaderAPIDx8::CShaderAPIDx8() :
 	m_SceneFogColor[1] = 0;
 	m_SceneFogColor[2] = 0;
 	m_SceneFogMode = MATERIAL_FOG_NONE;
-	m_bSceneFogRadial = false;
 
 	// We haven't yet detected whether we support CreateQuery or not yet.
 	memset(IntRenderingParameters,0,sizeof(IntRenderingParameters));
@@ -3611,8 +3626,10 @@ void CShaderAPIDx8::ResetRenderState( bool bFullReset )
 		SamplerState(i).m_MagFilter = D3DTEXF_POINT;
 		SamplerState(i).m_MinFilter = D3DTEXF_POINT;
 		SamplerState(i).m_MipFilter = D3DTEXF_NONE;
+#ifndef BYTEMATCH_RETAIL
 		SamplerState(i).m_FinestMipmapLevel = 0;
 		SamplerState(i).m_LodBias = 0.0f;
+#endif
 		SamplerState(i).m_TextureEnable = false;
 		SamplerState(i).m_SRGBReadEnable = false;
 
@@ -3625,8 +3642,10 @@ void CShaderAPIDx8::ResetRenderState( bool bFullReset )
 		SetSamplerState( i, D3DSAMP_MINFILTER, SamplerState(i).m_MinFilter );
 		SetSamplerState( i, D3DSAMP_MAGFILTER, SamplerState(i).m_MagFilter );
 		SetSamplerState( i, D3DSAMP_MIPFILTER, SamplerState(i).m_MipFilter );
+#ifndef BYTEMATCH_RETAIL
 		SetSamplerState( i, D3DSAMP_MAXMIPLEVEL, SamplerState(i).m_FinestMipmapLevel );
 		SetSamplerState( i, D3DSAMP_MIPMAPLODBIAS, SamplerState(i).m_LodBias );
+#endif
 
 		SetSamplerState( i, D3DSAMP_BORDERCOLOR, RGB( 0,0,0 ) );
 	}
@@ -6092,7 +6111,7 @@ int CShaderAPIDx8::GetPixelFogCombo1( bool bSupportsRadial )
 	if ( nCombo == 0 && bSupportsRadial )
 	{
 		int nForce = r_radialfog_force.GetInt();
-		bool bRadial = ( nForce == -1 ) ? m_bSceneFogRadial : ( nForce != 0 );
+		bool bRadial = ( nForce == -1 ) ? m_DynamicState.m_bFogRadial : ( nForce != 0 );
 		if ( bRadial )
 			return 2;
 	}
@@ -6101,16 +6120,16 @@ int CShaderAPIDx8::GetPixelFogCombo1( bool bSupportsRadial )
 
 void CShaderAPIDx8::SceneFogRadial( bool bRadial )
 {
-	if ( m_bSceneFogRadial != bRadial )
+	if ( m_DynamicState.m_bFogRadial != bRadial )
 	{
 		FlushBufferedPrimitives();
-		m_bSceneFogRadial = bRadial;
+		m_DynamicState.m_bFogRadial = bRadial;
 	}
 }
 
 bool CShaderAPIDx8::GetSceneFogRadial()
 {
-	return m_bSceneFogRadial;
+	return m_DynamicState.m_bFogRadial;
 }
 
 
@@ -6946,8 +6965,10 @@ void CShaderAPIDx8::SetTextureState( Sampler_t sampler, ShaderAPITextureHandle_t
 	D3DTEXTUREFILTERTYPE minFilter = tex.m_MinFilter;
 	D3DTEXTUREFILTERTYPE magFilter = tex.m_MagFilter;
 	D3DTEXTUREFILTERTYPE mipFilter = tex.m_MipFilter;
+#ifndef BYTEMATCH_RETAIL
 	int finestMipmapLevel		   = tex.m_FinestMipmapLevel;
 	float lodBias				   = tex.m_LodBias;
+#endif
 
 	if ( materialSystemConfig.bMipMapTextures == 0 )
 	{
@@ -6989,8 +7010,10 @@ void CShaderAPIDx8::SetTextureState( Sampler_t sampler, ShaderAPITextureHandle_t
 	SETSAMPLESTATEANDMIRROR( sampler, samplerState, D3DSAMP_MINFILTER, m_MinFilter, minFilter );
 	SETSAMPLESTATEANDMIRROR( sampler, samplerState, D3DSAMP_MAGFILTER, m_MagFilter, magFilter );
 	SETSAMPLESTATEANDMIRROR( sampler, samplerState, D3DSAMP_MIPFILTER, m_MipFilter, mipFilter );
+#ifndef BYTEMATCH_RETAIL
 	SETSAMPLESTATEANDMIRROR( sampler, samplerState, D3DSAMP_MAXMIPLEVEL, m_FinestMipmapLevel, finestMipmapLevel );
 	SETSAMPLESTATEANDMIRROR_FLOAT( sampler, samplerState, D3DSAMP_MIPMAPLODBIAS, m_LodBias, lodBias );
+#endif
 	
 #endif
 }
@@ -8537,6 +8560,7 @@ void CShaderAPIDx8::TexSetPriority( int priority )
 #endif
 }
 
+#ifndef BYTEMATCH_RETAIL
 void CShaderAPIDx8::TexLodClamp( int finest )
 {
 	LOCK_SHADERAPI();
@@ -8560,6 +8584,7 @@ void CShaderAPIDx8::TexLodBias( float bias )
 	Texture_t& tex = GetTexture( hModifyTexture );
 	tex.m_LodBias = bias;
 }
+#endif
 
 
 
@@ -9175,6 +9200,7 @@ void CShaderAPIDx8::CopyRenderTargetToTextureEx( ShaderAPITextureHandle_t textur
 #endif
 }
 
+#ifndef BYTEMATCH_RETAIL
 void CShaderAPIDx8::CopyRenderTargetToScratchTexture( ShaderAPITextureHandle_t srcRt, ShaderAPITextureHandle_t dstTex, Rect_t *pSrcRect, Rect_t *pDstRect )
 {
 	LOCK_SHADERAPI();
@@ -9429,6 +9455,7 @@ void CShaderAPIDx8::CopyTextureToTexture( ShaderAPITextureHandle_t srcTex, Shade
 		pDstSurf->Release();
 	}
 }
+#endif
 
 
 
@@ -9930,8 +9957,10 @@ void CShaderAPIDx8::SpewBoardState()
 		sprintf(buf,"	Mag Filter: %d Min Filter: %d Mip Filter: %d\n",
 			SamplerState(i).m_MagFilter, SamplerState(i).m_MinFilter,
 			SamplerState(i).m_MipFilter );
+#ifndef BYTEMATCH_RETAIL
 		sprintf(buf,"   MaxMipLevel: %d\n", SamplerState(i).m_FinestMipmapLevel );
 		Plat_DebugString(buf);
+#endif
 	}
 #else
 	Plat_DebugString("::SpewBoardState() Not Implemented Yet");
