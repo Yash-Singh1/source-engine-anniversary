@@ -79,7 +79,12 @@ static ConVar mod_offline_hdr_switch( "mod_offline_hdr_switch", CONVAR_DEFAULT_M
 #line 65
 static ConVar mod_touchalldata( "mod_touchalldata", "1", 0, "Touch model data during level startup" );
 static ConVar mod_forcetouchdata( "mod_forcetouchdata", "1", 0, "Forces all model file data into cache on model load." );
+#ifdef BYTEMATCH_RETAIL
+ConVar mat_excludetextures( "mat_excludetextures", "0", 0 );
+#else
 ConVar mat_excludetextures( "mat_excludetextures", "0", FCVAR_CHEAT );
+#endif
+#line 68
 
 ConVar r_unloadlightmaps( "r_unloadlightmaps", "0", FCVAR_CHEAT );
 ConVar r_hunkalloclightmaps( "r_hunkalloclightmaps", "1" );

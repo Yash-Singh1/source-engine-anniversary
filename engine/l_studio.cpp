@@ -89,10 +89,16 @@ ConVar r_rootlod( "r_rootlod", "0", FCVAR_MATERIAL_SYSTEM_THREAD | FCVAR_ARCHIVE
 static ConVar r_decalstaticprops( "r_decalstaticprops", "1", 0, "Decal static props test" );
 static ConCommand r_flushlod( "r_flushlod", FlushLOD_f, "Flush and reload LODs." );
 ConVar r_debugrandomstaticlighting( "r_debugrandomstaticlighting", "0", FCVAR_CHEAT, "Set to 1 to randomize static lighting for debugging.  Must restart for change to take affect." );
+#ifdef BYTEMATCH_RETAIL
+ConVar r_proplightingfromdisk( "r_proplightingfromdisk", "1", 0, "0=Off, 1=On, 2=Show Errors" );
+#else
 ConVar r_proplightingfromdisk( "r_proplightingfromdisk", "1", FCVAR_CHEAT, "0=Off, 1=On, 2=Show Errors" );
+#endif
+#line 93
 static ConVar r_itemblinkmax( "r_itemblinkmax", ".3", FCVAR_CHEAT );
 static ConVar r_itemblinkrate( "r_itemblinkrate", "4.5", FCVAR_CHEAT );
 static ConVar r_proplightingpooling( "r_proplightingpooling", "-1.0", FCVAR_CHEAT, "0 - off, 1 - static prop color meshes are allocated from a single shared vertex buffer (on hardware that supports stream offset)" );
+static ConVar mat_specular_scalar( "mat_specular_scalar", "-1.0", 0 );
 
 //-----------------------------------------------------------------------------
 // StudioRender config 
@@ -3601,7 +3607,7 @@ void CModelRender::ValidateStaticPropColorData( ModelInstanceHandle_t handle )
 #else
 	if ( !g_pMaterialSystemHardwareConfig->GetHDREnabled() || g_bBakedPropLightingNoSeparateHDR )
 #endif
-#line 3600
+#line 3601
 	{
 		Q_snprintf( fileName, sizeof( fileName ), "sp_%d%s.vhv", StaticPropMgr()->GetStaticPropIndex( pProp ), GetPlatformExt() );
 	}
@@ -3825,7 +3831,7 @@ bool CModelRender::LoadStaticPropColorData( IHandleEntity *pProp, DataCacheHandl
 #else
 	if ( !g_pMaterialSystemHardwareConfig->GetHDREnabled() || g_bBakedPropLightingNoSeparateHDR )
 #endif
-#line 3819
+#line 3820
 	{
 	        Q_snprintf( fileName, sizeof( fileName ), "sp_%d%s.vhv", StaticPropMgr()->GetStaticPropIndex( pProp ), GetPlatformExt() );
 	}
@@ -4248,7 +4254,7 @@ ModelInstanceHandle_t CModelRender::CreateInstance( IClientRenderable *pRenderab
 		}
 #endif
 #endif
-#line 4228
+#line 4229
 	}
 
 	return handle;
@@ -4685,7 +4691,7 @@ void SetRootLOD_f( IConVar *pConVar, const char *pOldString, float flOldValue )
 	ConVarRef r_lod_ref( "r_lod" );
 	r_lod_ref.SetValue( nLod );
 #endif
-#line 4662
+#line 4663
 	UpdateStudioRenderConfig();
 	if ( !g_LostVideoMemory && Q_strcmp( var.GetString(), pOldString ) )
 	{
