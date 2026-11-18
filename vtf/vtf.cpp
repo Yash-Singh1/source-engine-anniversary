@@ -1187,6 +1187,10 @@ bool CVTFTexture::ReadHeader( CUtlBuffer &buf, VTFFileHeader_t &header )
 //-----------------------------------------------------------------------------
 // Unserialization
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+bool CVTFTexture::Unserialize( CUtlBuffer &buf, bool bHeaderOnly, int nSkipMipLevels )
+{
+#else
 bool CVTFTexture::Unserialize( CUtlBuffer &buf, bool bHeaderOnly, int nSkipMipLevels )
 {
 	return UnserializeEx( buf, bHeaderOnly, 0, nSkipMipLevels );
@@ -1195,6 +1199,8 @@ bool CVTFTexture::Unserialize( CUtlBuffer &buf, bool bHeaderOnly, int nSkipMipLe
 bool CVTFTexture::UnserializeEx( CUtlBuffer &buf, bool bHeaderOnly, int nForceFlags, int nSkipMipLevels )
 {
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s (header only: %d, nForceFlags: %d, skipMips: %d)", __FUNCTION__, bHeaderOnly ? 1 : 0, nForceFlags, nSkipMipLevels );
+#endif
+#line 1198
 
 	// When unserializing, we can skip a certain number of mip levels,
 	// and we also can just load everything but the image data
@@ -1203,8 +1209,11 @@ bool CVTFTexture::UnserializeEx( CUtlBuffer &buf, bool bHeaderOnly, int nForceFl
 	if ( !ReadHeader( buf, header ) )
 		return false;
 
+#ifndef BYTEMATCH_RETAIL
 	// Pretend these flags are also set.
 	header.flags |= nForceFlags;
+#endif
+#line 1208
 
 	if ( (header.flags & TEXTUREFLAGS_ENVMAP) && (header.width != header.height) )
 	{
@@ -1227,6 +1236,7 @@ bool CVTFTexture::UnserializeEx( CUtlBuffer &buf, bool bHeaderOnly, int nForceFl
 		return false;
 	}
 	
+#ifndef BYTEMATCH_RETAIL
 	// If the header says we should be doing a texture allocation of more than 32M, just tell the caller we failed.
 	const int cMaxImageSizeLog2 = Q_log2( 32 * 1024 * 1024 );
 	if ( ( Q_log2( header.width ) + Q_log2( header.height ) + Q_log2( header.depth ) + Q_log2( header.numFrames ) > cMaxImageSizeLog2 ) || ( header.numResources > MAX_RSRC_DICTIONARY_ENTRIES ) )
@@ -1234,6 +1244,8 @@ bool CVTFTexture::UnserializeEx( CUtlBuffer &buf, bool bHeaderOnly, int nForceFl
 		STAGING_ONLY_EXEC( DevWarning( "Asked for a large texture to be created (%d h x %d w x %d d x %d f). Nope.\n", header.width, header.height, header.depth, header.numFrames ) );
 		return false;
 	}
+#endif
+#line 1237
 
 	m_nWidth = header.width;
 	m_nHeight = header.height;
@@ -1374,23 +1386,17 @@ bool CVTFTexture::UnserializeEx( CUtlBuffer &buf, bool bHeaderOnly, int nForceFl
 	return true;
 }
 
+#ifndef BYTEMATCH_RETAIL
 void CVTFTexture::GetMipmapRange( int* pOutFinest, int* pOutCoarsest )
 {
-#ifndef BYTEMATCH_RETAIL
 	if ( pOutFinest )
 		*pOutFinest = m_nFinestMipmapLevel;
 
 	if ( pOutCoarsest )
 		*pOutCoarsest = m_nCoarsestMipmapLevel;
-#else
-	// Retail CVTFTexture has no streaming clamps; every loaded mip is available.
-	if ( pOutFinest )
-		*pOutFinest = 0;
-
-	if ( pOutCoarsest )
-		*pOutCoarsest = m_nMipCount - 1;
-#endif
 }
+#endif
+#line 1394
 
 bool CVTFTexture::LoadNewResources( CUtlBuffer &buf )
 {
