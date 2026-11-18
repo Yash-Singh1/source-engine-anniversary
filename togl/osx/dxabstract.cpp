@@ -904,7 +904,7 @@ HRESULT IDirect3D9::GetDeviceCaps(UINT Adapter,D3DDEVTYPE DeviceType,D3DCAPS9* p
 
     pCaps->MaxTextureAspectRatio		=	0;		// imply no limit on AR
 
-    pCaps->MaxAnisotropy				=	glmRendererInfo.m_maxAniso;
+    pCaps->MaxAnisotropy				=	8;		//guess
     
     pCaps->TextureOpCaps				=	D3DTEXOPCAPS_ADD | D3DTEXOPCAPS_MODULATE2X;	//guess
     DWORD   MaxTextureBlendStages;
@@ -2703,33 +2703,47 @@ static uint32 CentroidMaskFromName( bool bPixelShader, const char *pName )
 	
 	if ( bPixelShader )
 	{
-		if ( V_stristr( pName, "lightmappedpaint_ps" ) || V_stristr( pName, "lightmappedgeneric_ps" ) || V_stristr( pName, "flashlight_ps" ) )
+		if ( V_stristr( pName, "lightmappedgeneric_ps" ) || V_strstr( pName, "worldtwotextureblend_ps" ) )
 		{
-			return (0x01 << 1); // iterator 1
+			return (0x01 << 2) | (0x01 << 3); // iterators 2 and 3
+		}
+		else if ( V_stristr( pName, "lightmappedreflective_ps" ) || V_stristr( pName, "water_ps" ) )
+		{
+			return (0x01 << 6) | (0x01 << 7); // iterators 6 and 7
 		}
 		else if ( V_stristr( pName, "shadow_ps" ) )
 		{
-			return (0x01 << 1) | (0x01 << 2) | (0x01 << 3); // iterators 1, 2 and 3
+			return (0x01 << 0) | (0x01 << 1) | (0x01 << 3) | (0x01 << 4); // iterators 0, 1, 3 and 4
 		}
-		else if ( V_stristr( pName, "water_ps" ) )
+		else if ( V_stristr( pName, "shatteredglass_ps" ) )
 		{
-			return (0x01 << 5) | (0x01 << 6) | (0x01 << 7); // iterators 5, 6 and 7
+			return (0x01 << 2); // iterator 2
+		}
+		else if ( V_stristr( pName, "WorldVertexAlpha_ps" ) || V_stristr( pName, "WorldVertexTransition_ps" ) )
+		{
+			// These pixel shaders want centroid but shouldn't be used
+			Assert(0);
+			return 0;
 		}
 	}
 	else // vertex shader
 	{
 		// Vertex shaders also
-		if ( V_stristr( pName, "lightmappedgeneric_vs" ) || V_stristr( pName, "flashlight_vs" ) )
+		if ( V_stristr( pName, "lightmappedgeneric_vs" ) )
 		{
-			return (0x01 << 1); // iterator 1
+			return (0x01 << 2) | (0x01 << 3); // iterators 2 and 3
+		}
+		else if ( V_stristr( pName, "lightmappedreflective_vs" ) || V_stristr( pName, "water_vs" ) )
+		{
+			return (0x01 << 6) | (0x01 << 7); // iterators 6 and 7
 		}
 		else if ( V_stristr( pName, "shadow_vs" ) )
 		{
-			return (0x01 << 1) | (0x01 << 2) | (0x01 << 3); // iterators 1, 2 and 3
+			return (0x01 << 0) | (0x01 << 1) | (0x01 << 3) | (0x01 << 4); // iterators 0, 1, 3 and 4
 		}
-		else if ( V_stristr( pName, "water_vs" ) )
+		else if ( V_stristr( pName, "shatteredglass_vs" ) )
 		{
-			return (0x01 << 5) | (0x01 << 6) | (0x01 << 7); // iterators 5, 6 and 7
+			return (0x01 << 2); // iterator 2
 		}
 	}
 	
@@ -2749,7 +2763,10 @@ static int ShadowDepthSamplerFromName( const char *pName )
 	{
 		return 7;
 	}
-
+	else if ( V_stristr( pName, "infected_ps" ) )
+	{
+		return 1;
+	}
 	else if ( V_stristr( pName, "phong_ps" ) )
 	{
 		return 4;
@@ -2777,6 +2794,10 @@ static int ShadowDepthSamplerFromName( const char *pName )
 	else if ( V_stristr( pName, "teeth_flashlight_ps" ) ) 
 	{
 		return 2;
+	}
+	else if ( V_stristr( pName, "skin_ps" ) )
+	{
+		return 4;
 	}
 	else if ( V_stristr( pName, "flashlight_ps" ) ) // substring of above, make sure this comes last!!
 	{
