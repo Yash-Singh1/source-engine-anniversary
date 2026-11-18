@@ -149,6 +149,7 @@ char *Plat_ctime( const time_t *timep, char *buf, size_t bufsize )
 		return buf;
 }
 
+#ifndef BYTEMATCH_RETAIL
 void Plat_GetModuleFilename( char *pOut, int nMaxBytes )
 {
 #ifdef PLATFORM_WINDOWS_PC
@@ -211,6 +212,8 @@ void Plat_SetExitProcessWithErrorCB( ExitProcessWithErrorCBFn pfnCB )
 {
 	g_pfnExitProcessWithErrorCB = pfnCB;	
 }
+#endif
+#line 214
 
 // Wraps the thread-safe versions of gmtime
 struct tm *Plat_gmtime( const time_t *timep, struct tm *result )
