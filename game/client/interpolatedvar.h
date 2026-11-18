@@ -273,7 +273,11 @@ private:
 template<typename Type>
 struct CInterpolatedVarEntryBase<Type, false>
 {
+#ifdef BYTEMATCH_RETAIL
+	CInterpolatedVarEntryBase() {}
+#else
 	CInterpolatedVarEntryBase() = default;
+#endif
 	~CInterpolatedVarEntryBase() {}
 
 	const Type *GetValue() const { return &value; }

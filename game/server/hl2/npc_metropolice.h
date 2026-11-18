@@ -34,7 +34,11 @@ class CNPC_MetroPolice : public CAI_BaseActor
 	DECLARE_DATADESC();
 
 public:
+#ifdef BYTEMATCH_RETAIL
+	CNPC_MetroPolice();
+#else
 	CNPC_MetroPolice() = default;
+#endif
 
 	virtual bool CreateComponents();
 	bool CreateBehaviors();

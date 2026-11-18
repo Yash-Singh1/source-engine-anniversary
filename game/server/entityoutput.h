@@ -83,7 +83,11 @@ protected:
 	CEventAction *m_ActionList;
 	DECLARE_SIMPLE_DATADESC();
 
+#ifdef BYTEMATCH_RETAIL
+	CBaseEntityOutput() {} // this class cannot be created, only it's children
+#else
 	CBaseEntityOutput() = default; // this class cannot be created, only it's children
+#endif
 
 private:
 	CBaseEntityOutput( CBaseEntityOutput& ); // protect from accidental copying

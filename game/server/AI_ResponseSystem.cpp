@@ -44,6 +44,9 @@ inline static char *CopyString( const char *in )
 	return out;
 }
 
+#ifdef BYTEMATCH_RETAIL
+#pragma pack(1)
+#endif
 class Matcher
 {
 public:
@@ -541,6 +544,9 @@ struct Rule
 	bool				m_bMatchOnce : 1;
 	bool				m_bEnabled : 1;
 };
+#ifdef BYTEMATCH_RETAIL
+#pragma pack()
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 

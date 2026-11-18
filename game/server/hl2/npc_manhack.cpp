@@ -3007,7 +3007,9 @@ void CNPC_Manhack::OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t r
 	}
 	else
 	{
+#ifndef BYTEMATCH_RETAIL
 		m_pPrevOwner.Set( GetOwnerEntity() );
+#endif
 
 		// Suppress collisions between the manhack and the player; we're currently bumping
 		// almost certainly because it's not purely a physics object.
@@ -3024,10 +3026,15 @@ void CNPC_Manhack::OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t r
 //-----------------------------------------------------------------------------
 void CNPC_Manhack::OnPhysGunDrop( CBasePlayer *pPhysGunUser, PhysGunDrop_t Reason )
 {
+#ifdef BYTEMATCH_RETAIL
+	// Stop suppressing collisions between the manhack and the player
+	SetOwnerEntity( NULL );
+#else
 	SetOwnerEntity( m_pPrevOwner.Get() );
 
 	// Stop suppressing collisions between the manhack and the player
 	m_pPrevOwner.Set( NULL );
+#endif
 
 	m_bHeld = false;
 

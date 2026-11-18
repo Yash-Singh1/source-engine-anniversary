@@ -221,7 +221,11 @@ struct breakmodel_t
 
 struct breakablepropparams_t
 {
+#ifdef BYTEMATCH_RETAIL
+	breakablepropparams_t( const Vector &_origin, const QAngle &_angles, const Vector &_velocity, const AngularImpulse &_angularVelocity )
+#else
 	breakablepropparams_t( const Vector _origin, const QAngle _angles, const Vector _velocity, const AngularImpulse _angularVelocity )
+#endif
 		: origin(_origin), angles(_angles), velocity(_velocity), angularVelocity(_angularVelocity)
 	{
 		impactEnergyScale = 0;
@@ -230,10 +234,17 @@ struct breakablepropparams_t
 		nDefaultSkin = 0;
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	const Vector &origin;
+	const QAngle &angles;
+	const Vector &velocity;
+	const AngularImpulse &angularVelocity;
+#else
 	const Vector origin;
 	const QAngle angles;
 	const Vector velocity;
 	const AngularImpulse angularVelocity;
+#endif
 	float impactEnergyScale;
 	float defBurstScale;
 	int defCollisionGroup;

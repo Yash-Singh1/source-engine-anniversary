@@ -21,6 +21,13 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
+// The fork keeps these matrices static; retail (SDK 2013) has them on the stack.
+#ifdef BYTEMATCH_RETAIL
+#define PROPS_MATRIX_STORAGE
+#else
+#define PROPS_MATRIX_STORAGE static
+#endif
+
 ConVar sv_pushaway_clientside_size( "sv_pushaway_clientside_size", "15", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY, "Minimum size of pushback objects" );
 ConVar props_break_max_pieces( "props_break_max_pieces", "-1", 0, "Maximum prop breakable piece count (-1 = model default)" );
 ConVar props_break_max_pieces_perframe( "props_break_max_pieces_perframe", "-1", FCVAR_REPLICATED, "Maximum prop breakable piece count per frame (-1 = model default)" );
@@ -951,7 +958,7 @@ void PropBreakableCreateAll( int modelindex, IPhysicsObject *pPhysics, const bre
 			nSkin = pOwnerAnim->m_nSkin;
 		}
 	}
-	static matrix3x4_t localToWorld;
+	PROPS_MATRIX_STORAGE matrix3x4_t localToWorld;
 
 	CStudioHdr studioHdr;
 	const model_t *model = modelinfo->GetModel( modelindex );
@@ -1009,7 +1016,7 @@ void PropBreakableCreateAll( int modelindex, IPhysicsObject *pPhysics, const bre
 			if ( ( iPrecomputedBreakableCount != -1 ) && ( i >= iPrecomputedBreakableCount ) )
 				break;
 
-			static matrix3x4_t matrix;
+			PROPS_MATRIX_STORAGE matrix3x4_t matrix;
 			AngleMatrix( params.angles, params.origin, matrix );
 
 			CStudioHdr studioHdr;
@@ -1188,7 +1195,7 @@ void PropBreakableCreateAll( int modelindex, IPhysicsObject *pPhysics, const bre
 					Vector vecBreakableObbSize = pBreakable->CollisionProp()->OBBSize();
 
 					// Try to align the gibs along the original axis 
-					static matrix3x4_t matrix;
+					PROPS_MATRIX_STORAGE matrix3x4_t matrix;
 					AngleMatrix( vecAngles, matrix );
 					AlignBoxes( &matrix, vecObbSize, vecBreakableObbSize );
 					MatrixAngles( matrix, vecAngles );
@@ -1397,7 +1404,7 @@ CBaseEntity *CreateGibsFromList( CUtlVector<breakmodel_t> &list, int modelindex,
 			if ( ( iPrecomputedBreakableCount != -1 ) && ( i >= iPrecomputedBreakableCount ) )
 				break;
 
-			static matrix3x4_t matrix;
+			PROPS_MATRIX_STORAGE matrix3x4_t matrix;
 			AngleMatrix( params.angles, params.origin, matrix );
 
 			CStudioHdr studioHdr;
@@ -1596,7 +1603,7 @@ CBaseEntity *CreateGibsFromList( CUtlVector<breakmodel_t> &list, int modelindex,
 					Vector vecBreakableObbSize = pBreakable->CollisionProp()->OBBSize();
 
 					// Try to align the gibs along the original axis 
-					static matrix3x4_t matrix;
+					PROPS_MATRIX_STORAGE matrix3x4_t matrix;
 					AngleMatrix( vecAngles, matrix );
 					AlignBoxes( &matrix, vecObbSize, vecBreakableObbSize );
 					MatrixAngles( matrix, vecAngles );

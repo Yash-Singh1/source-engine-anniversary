@@ -254,7 +254,9 @@ private:
 	CSprite			*m_pLightGlow;
 	
 	CHandle<SmokeTrail>	m_hSmokeTrail;
+#ifndef BYTEMATCH_RETAIL
 	CHandle<CBaseEntity>	m_pPrevOwner;
+#endif
 
 	int				m_iPanel1;
 	int				m_iPanel2;

@@ -25,7 +25,11 @@ class CAI_HolsterBehavior : public CAI_SimpleBehavior
 	DECLARE_CLASS( CAI_HolsterBehavior, CAI_SimpleBehavior );
 
 public:
+#ifdef BYTEMATCH_RETAIL
+	CAI_HolsterBehavior();
+#else
 	CAI_HolsterBehavior() = default;
+#endif
 
 	virtual const char *GetName() {	return "Holster"; }
 
