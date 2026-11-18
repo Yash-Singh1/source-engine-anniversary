@@ -280,6 +280,7 @@ def build(bld):
 			'matchmakingclient.cpp',
 			'matchmakingshared.cpp',
 			'matchmakingmigrate.cpp',
+			'mm_events.cpp',
 			'replaydemoplayer.cpp',
 			'Session.cpp',
 			'sys_mainwind.cpp',
