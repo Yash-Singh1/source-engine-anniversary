@@ -136,6 +136,8 @@ public:
 protected:
 	// Respond to mouse presses
 	virtual void OnMousePressed(MouseCode code);
+	// Track whether the last input came from the keyboard/mouse or a Steam Controller
+	virtual void OnKeyCodePressed(KeyCode code);
 	// Respond to Key typing
 	virtual void OnKeyCodeTyped(KeyCode code);
 	virtual void OnKeyTyped(wchar_t unichar);
