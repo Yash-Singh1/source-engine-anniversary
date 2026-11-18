@@ -20,7 +20,8 @@ inputs the way Valve's buildbot produced them:
 3. The waf link command (build-retail/link_commands.json, from
    `waf retail_linkdb`) is re-run with Valve's object and archive paths. The
    buildhost.dylib shim maps /Users/buildbot/ onto the scratch root for the
-   clang driver and ld64, so ld64 records Valve's paths verbatim.
+   clang driver and ld64, so ld64 records Valve's paths verbatim, and gives
+   ld64 the OS X 10.9/10.10 qsort (section order ties).
 4. The result is compared with the retail file (machocmp.py).
 
 No post-link patching is done. LC_UUID follows by itself: ld64 hashes the file
@@ -28,7 +29,9 @@ without the stab nlists and stab strings (see lduuid.py).
 
   identity.py inputsystem                  rebuild and compare one module
   identity.py --all                        every dylib in link_commands.json
-  identity.py inputsystem --keep           keep the scratch tree for inspection
+
+The scratch tree (<build-dir>/identity/roots/<module>) is kept for inspection;
+compiled objects are cached in <build-dir>/identity/cache.
 """
 import argparse
 import concurrent.futures
@@ -38,7 +41,6 @@ import os
 import re
 import shlex
 import shutil
-import struct
 import subprocess
 import sys
 
