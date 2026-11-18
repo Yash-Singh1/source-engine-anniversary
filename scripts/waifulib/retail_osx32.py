@@ -11,21 +11,24 @@ LC_LOAD_DYLIB order from devtools/bytematch/manifests/retail-osx32.json and
 implies --retail-manifest. Third-party dylibs (SDL2, steam_api, Miles, CEF)
 are linked from the retail depot, thinned to i386.
 
-Only the modules in RETAIL_MODULES (or --retail-modules) are configured.
-Passing --build-games (hl2, episodic or lostcoast) adds game/client and
-game/server. The default build is untouched when the option is off.
+Only the modules in RETAIL_MODULES (or --retail-modules; an empty value
+builds none) are configured. Passing --build-games (hl2, episodic or
+lostcoast) adds game/client and game/server. --build-games=hl2mp adds
+sdk2013mp instead: depot 223's hl2mp modules are a May 2014 build of Source
+SDK 2013's mp tree, built here from that tree in its own env (HL2MP_ENV) with
+the 2014 toolchain (see sdk2013mp/wscript). The default build is untouched
+when the option is off.
 '''
 
 import json, os, shutil, subprocess, sys
-from waflib import Logs, Utils
+from waflib import Build, Logs, Utils
 from waflib.Configure import conf
 from waflib.TaskGen import feature, before_method, after_method
 
 MANIFEST = 'devtools/bytematch/manifests/retail-osx32.json'
 TOOLCHAIN_DIR = 'devtools/bytematch/toolchain'
 
-# Modules that compile and link in this mode (game modules are in GAME_MODULES). Not here:
-# chromehtml and vaudio_miles (sources missing from this tree).
+# Modules that compile and link in this mode (game modules are in GAME_MODULES).
 RETAIL_MODULES = [
 	'tier0', 'tier1', 'mathlib', 'tier2', 'tier3', 'vstdlib',
 	'appframework', 'bitmap', 'vtf', 'choreoobjects', 'dmxloader', 'particles', 'vpklib',
@@ -39,9 +42,17 @@ RETAIL_MODULES = [
 	'utils/bsppack', 'utils/bugreporter_filequeue', 'utils/bugreporter_public', 'utils/vpk',
 	'vgui2/vgui_surfacelib', 'vguimatsurface', 'gameui', 'engine',
 	'togl', 'materialsystem', 'launcher', 'materialsystem/shaderapidx9',
+	'engine/voice_codecs/miles', 'vgui2/chromehtml',
 ]
 
 GAME_MODULES = ['game/client', 'game/server']
+
+# hl2mp: env name, subproject, and the libraries it links, taken from Source
+# SDK 2013's lib/public/osx32 at the 2014 revision: Valve's link dylibs and its
+# prebuilt protobuf 2.3.0 (retail client has its code, without stabs).
+HL2MP_ENV = 'hl2mp2014'
+HL2MP_PROJECTS = ['sdk2013mp']
+SDK2013_LIBS = ['libtier0.dylib', 'libvstdlib.dylib', 'libsteam_api.dylib', 'libprotobuf.a']
 
 # Defines our top-level wscript adds that Valve's build doesn't have.
 TREE_ONLY_DEFINES = ['PLATFORM_POSIX', 'NO_MEMOVERRIDE_NEW_DELETE', 'GIT_COMMIT_HASH',
@@ -55,6 +66,10 @@ BUILD_PATH_DEFINES = ['WAF_CFLAGS', 'WAF_LDFLAGS']
 EXTRA_CXXFLAGS = dict((t, ['-include', 'alloca.h']) for t in
 	('ivp_physics', 'ivp_compactbuilder', 'havana_constraints', 'hk_base', 'hk_math'))
 EXTRA_CXXFLAGS['vgui_surfacelib'] = ['-Wno-c++11-narrowing']
+
+# Extra compiler flags per source file. Valve builds coroutine.cpp into libcoroutine_osx.a
+# (vstdlib/coroutine_osx.vpc) without the stack protector, since it switches stacks.
+EXTRA_FILE_CXXFLAGS = {'vstdlib/coroutine.cpp': ['-fno-stack-protector']}
 
 # Modules whose VPC the manifest couldn't evaluate: take a sibling's base defines.
 DEFINES_FROM = {'bin/video_quicktime': 'bin/video_services'}
@@ -196,6 +211,9 @@ def retail_osx32_configure(conf):
 	if os.path.exists(pb):
 		v.STLIB_PROTOBUF = ['protobuf']
 		v.STLIBPATH_PROTOBUF = [os.path.dirname(pb)]
+		# Valve's include paths: thirdparty (for "protobuf-2.3.0/src/...") and the protobuf src dir.
+		tp_sdk = os.path.join(sdk2013, 'thirdparty')
+		v.INCLUDES_PROTOBUF = [tp_sdk, os.path.join(tp_sdk, 'protobuf-2.3.0', 'src')]
 	tp = os.path.join(os.path.dirname(os.path.dirname(p['sdk'])), 'thirdparty-osx32')
 	for name, lib in (('JPEG', 'jpeg'), ('PNG', 'png'), ('CRYPTOPP', 'cryptopp'), ('SPEEX', 'speex')):
 		if os.path.exists(os.path.join(tp, 'lib', 'lib%s.a' % lib)):
@@ -231,11 +249,71 @@ def retail_osx32_configure(conf):
 	v.RETAIL_SELECT = True
 	v.LIBDIR = v.PREFIX + '/bin/'
 	v.BINDIR = v.PREFIX
-	v.RETAIL_PROJECTS = (o.RETAIL_MODULES.split(',') if o.RETAIL_MODULES else list(RETAIL_MODULES))
+	if o.RETAIL_MODULES is None:
+		v.RETAIL_PROJECTS = list(RETAIL_MODULES)
+	else:
+		v.RETAIL_PROJECTS = [m for m in o.RETAIL_MODULES.split(',') if m]
 	if any(a == '--build-games' or a.startswith('--build-games=') for a in sys.argv):
-		v.RETAIL_PROJECTS += [g for g in GAME_MODULES if g not in v.RETAIL_PROJECTS]
+		if o.GAMES == 'hl2mp':
+			hl2mp_configure(conf, rf)
+			games = HL2MP_PROJECTS
+		else:
+			games = GAME_MODULES
+		v.RETAIL_PROJECTS += [g for g in games if g not in v.RETAIL_PROJECTS]
 	Logs.info('retail-osx32: clang %s, ld64 %s, sdk %s' % (p['cc'], p['ld_dir'], sdk))
 	conf.add_subproject(v.RETAIL_PROJECTS)
+
+def hl2mp_configure(conf, rf):
+	'''The HL2MP_ENV env: the retail env with the 2014 toolchain, deployment target and link dylibs.'''
+	h = rf.HL2MP_2014
+	p = rf.paths(conf.options.RETAIL_TOOLCHAIN, h['clang'], h['ld64'])
+	if not os.path.exists(p['cc']) or not os.path.exists(os.path.join(p['ld_dir'], 'ld')):
+		conf.fatal('hl2mp needs clang-%s and ld64-%s; build them with %s/build-clang.sh %s and build-ld64.sh %s'
+			% (h['clang'], h['ld64'], TOOLCHAIN_DIR, h['clang'], h['ld64']))
+	patches = conf.path.find_node(TOOLCHAIN_DIR).ant_glob('patches/clang-%s-*.patch' % h['clang'])
+	stamp = os.path.join(os.path.dirname(os.path.dirname(p['cc'])), 'PATCHES')
+	have = open(stamp).read().split() if os.path.exists(stamp) else []
+	for n in patches:
+		if n.name not in have:
+			conf.fatal('%s lacks %s; rebuild it with %s/build-clang.sh %s' % (p['cc'], n.name, TOOLCHAIN_DIR, h['clang']))
+	protoc = os.path.join(os.path.dirname(os.path.dirname(p['sdk'])), 'protoc-2.3.0', 'bin', 'protoc')
+	if not os.path.exists(protoc):
+		conf.fatal('hl2mp needs %s; build it with %s/build-protoc.sh' % (protoc, TOOLCHAIN_DIR))
+
+	libdir = conf.bldnode.make_node(HL2MP_ENV + '-libs')
+	libdir.mkdir()
+	for name in SDK2013_LIBS:
+		spec = '%s:mp/src/lib/public/osx32/%s' % (rf.SDK2013_COMMIT, name)
+		try:
+			data = subprocess.check_output(['git', '-C', rf.SDK2013, 'show', spec], stderr = subprocess.DEVNULL)
+		except (OSError, subprocess.CalledProcessError):
+			conf.fatal('hl2mp: cannot read %s from the Source SDK 2013 checkout %s (set SOURCE_SDK_2013)' % (spec, rf.SDK2013))
+		tmp = os.path.join(libdir.abspath(), name + '.fat')
+		with open(tmp, 'wb') as f:
+			f.write(data)
+		if not thin_copy(tmp, os.path.join(libdir.abspath(), name)):
+			conf.fatal('hl2mp: %s has no i386 slice' % spec)
+		os.remove(tmp)
+
+	conf.setenv(HL2MP_ENV, conf.env)
+	v = conf.env
+	v.CC = v.LINK_CC = [p['cc']]
+	v.CXX = v.LINK_CXX = [p['cxx']]
+	# Keep what configure added after the retail flags (gccdeps' -MMD).
+	v.CFLAGS = rf.cflags(p['sdk'], h['min_osx']) + [f for f in v.CFLAGS if f not in rf.cflags(p['sdk'])]
+	v.CXXFLAGS = rf.cxxflags(p['sdk'], h['min_osx']) + [f for f in v.CXXFLAGS if f not in rf.cxxflags(p['sdk'])]
+	v.LINKFLAGS = rf.linkflags(p, h['min_osx'])
+	v.DEFINES = list(rf.DEFINES)
+	# The 2014 tree has its own common/; ours must not shadow missing headers.
+	common = conf.path.find_node('common').abspath()
+	v.INCLUDES = [i for i in v.INCLUDES if i != common]
+	v.RETAIL_LIBDIR = libdir.abspath()
+	v.RETAIL_PREBUILT_DYLIBS = True
+	v.STLIB_PROTOBUF = ['protobuf']
+	v.STLIBPATH_PROTOBUF = [libdir.abspath()]
+	v.PROTOC = protoc
+	conf.setenv('')
+	Logs.info('retail-osx32: hl2mp with clang %s, ld64 %s, deployment target %s' % (p['cc'], p['ld_dir'], h['min_osx']))
 
 def _entry(tg):
 	if not tg.env.RETAIL_MANIFEST:
@@ -274,7 +352,9 @@ def retail_osx32_defines(self):
 	# tier0's log banner embeds the configure flags, i.e. local toolchain paths.
 	ours = [_name(d) + '=""' if _name(d) in BUILD_PATH_DEFINES else d for d in ours]
 	valve = []
-	if e and e.get('defines'):
+	if getattr(self, 'retail_defines', None) is not None:
+		valve = [d for d in self.retail_defines if _name(d) not in undef]
+	elif e and e.get('defines'):
 		valve = [d for d in (e['defines']['xcconfig'] or []) + (e['defines']['vpc'] or []) if _name(d) not in undef]
 	names = set(_name(d) for d in valve)
 	defs = []
@@ -286,6 +366,8 @@ def retail_osx32_defines(self):
 	if extra:
 		self.env.append_value('CXXFLAGS', extra)
 	as_cxx = getattr(self, 'name', None) in COMPILE_C_AS_CXX
+	# retail_file_cxxflags: {tree-relative source: [flags]} for single objects.
+	per_file = getattr(self, 'retail_file_cxxflags', None) or {}
 	for t in getattr(self, 'compiled_tasks', []):
 		t.env.DEFINES = defs
 		if extra:
@@ -293,6 +375,11 @@ def retail_osx32_defines(self):
 		if as_cxx and t.__class__.__name__ == 'c':
 			t.env.CC = self.env.CXX
 			t.env.CFLAGS = list(self.env.CXXFLAGS) + ['-x', 'c++']
+		src = t.inputs[0].path_from(self.bld.srcnode).replace(os.sep, '/')
+		flags = EXTRA_FILE_CXXFLAGS.get(src, []) + per_file.get(src, [])
+		if flags:
+			t.env = t.env.derive()
+			t.env.CXXFLAGS = list(t.env.CXXFLAGS) + flags
 
 @feature('cprogram', 'cxxprogram')
 @before_method('apply_link')
@@ -340,7 +427,7 @@ def retail_osx32_link_order(self):
 		if 'libSystem' in path:
 			break  # later entries were linked implicitly via re-exports (e.g. Carbon -> ApplicationServices)
 		if path.startswith('@'):
-			target = by_install.get(path)
+			target = None if self.env.RETAIL_PREBUILT_DYLIBS else by_install.get(path)
 			tg = None
 			if target:
 				try:
@@ -383,3 +470,57 @@ def retail_osx32_link_order(self):
 		flags.append('-Wl,-U,' + sym)
 	env.LINKFLAGS = flags
 	env.LDFLAGS = args
+
+LINK_TASK_CLASSES = ('cshlib', 'cxxshlib', 'cprogram', 'cxxprogram', 'cstlib', 'cxxstlib')
+
+class RetailLinkDb(Build.BuildContext):
+	'''writes link_commands.json: the link and archive commands of the configured modules (for devtools/bytematch/identity)'''
+	cmd = 'retail_linkdb'
+
+	def execute(self):
+		self.restore()
+		if not self.all_envs:
+			self.load_envs()
+		self.recurse([self.run_dir])
+		self.pre_build()
+
+		def exec_command(*k, **kw):
+			return 0
+		entries = []
+		for g in self.groups:
+			for tg in g:
+				if hasattr(tg, 'post'):
+					tg.post()
+				for tsk in getattr(tg, 'tasks', []):
+					kind = tsk.__class__.__name__
+					if kind not in LINK_TASK_CLASSES:
+						continue
+					if kind.endswith('stlib'):
+						# stlink_task.run deletes its output first, so spell the ar command out
+						cwd = tsk.get_cwd()
+						env = tsk.env
+						tgt_f, src_f = (''.join(Utils.to_list(env[k])) for k in ('AR_TGT_F', 'AR_SRC_F'))
+						cmd = (Utils.to_list(env.AR) + Utils.to_list(env.ARFLAGS) + [tgt_f + tsk.outputs[0].path_from(cwd)] +
+							[src_f + n.path_from(cwd) for n in tsk.inputs])
+					else:
+						tsk.keep_last_cmd = True
+						old = tsk.exec_command
+						tsk.exec_command = exec_command
+						try:
+							tsk.run()
+						finally:
+							tsk.exec_command = old
+						cmd = getattr(tsk, 'last_cmd', None)
+					if not cmd:
+						continue
+					entries.append({
+						'target': getattr(tg, 'name', None),
+						'kind': tsk.__class__.__name__,
+						'directory': tsk.get_cwd().abspath(),
+						'arguments': cmd if isinstance(cmd, list) else Utils.split_quoted(cmd),
+						'output': tsk.outputs[0].abspath(),
+						'inputs': [n.abspath() for n in tsk.inputs],
+					})
+		node = self.bldnode.make_node('link_commands.json')
+		node.write_json(entries)
+		Logs.info('Link commands stored in %s', node.path_from(self.path))

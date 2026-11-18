@@ -431,7 +431,6 @@ GLMTexLayout *CGLMTexLayoutTable::NewLayoutRef( GLMTexLayoutKey *key )
 	// if not, generate a completed layout based on the key, add to map, set refcount to 1, return that
 	
 	const GLMTexFormatDesc	*formatDesc = GetFormatDesc( key->m_texFormat );
-	bool					compression = (formatDesc->m_chunkSize > 1);
 	if (!formatDesc)
 	{
 		GLMStop();	// bad news
@@ -582,7 +581,7 @@ GLMTexLayout *CGLMTexLayoutTable::NewLayoutRef( GLMTexLayoutKey *key )
 		// "target, format, +/- mips, base size"
 		char scratch[1024];
 
-		char	*targetname;
+		char	*targetname = "?";
 		switch( key->m_texGLTarget )
 		{
 			case GL_TEXTURE_2D:			targetname = "2D  ";		break;
@@ -590,7 +589,7 @@ GLMTexLayout *CGLMTexLayoutTable::NewLayoutRef( GLMTexLayoutKey *key )
 			case GL_TEXTURE_CUBE_MAP:	targetname = "CUBE";		break;
 		}
 		
-		sprintf( scratch, "[%s %s %dx%dx%d mips=%d slices=%d flags=%02X%s]",
+		sprintf( scratch, "[%s %s %dx%dx%d mips=%d slices=%d flags=%02lX%s]",
 					targetname,
 					formatDesc->m_formatSummary,
 					layout->m_key.m_xSize, layout->m_key.m_ySize, layout->m_key.m_zSize,
@@ -681,7 +680,8 @@ CGLMTex::CGLMTex( GLMContext *ctx, GLMTexLayout *layout, GLMTexSamplingParams *s
 	gGL->glGenTextures( 1, &m_texName );
 	
 	//sense whether to try and apply client storage upon teximage/subimage
-	m_texClientStorage = gl_texclientstorage.GetInt() != 0;
+	//(client storage is only trusted on 10.6.3 and later)
+	m_texClientStorage = ( m_ctx->m_caps.m_osComboVersion >= 0x000A0603 ) && ( gl_texclientstorage.GetInt() != 0 );
 	
 	// flag that we have not yet been explicitly kicked into VRAM..
 	m_texPreloaded = false;
@@ -718,7 +718,7 @@ CGLMTex::CGLMTex( GLMContext *ctx, GLMTexLayout *layout, GLMTexSamplingParams *s
 
 		if (gl_texmsaalog.GetInt())
 		{
-			printf( "\n == MSAA Tex %8x %s : MSAA RBO is intformat %s (%x)", this, m_debugLabel?m_debugLabel:"", GLMDecode( eGL_ENUM, msaaFormat ), msaaFormat );
+			printf( "\n == MSAA Tex %p %s : MSAA RBO is intformat %s (%x)", this, m_debugLabel?m_debugLabel:"", GLMDecode( eGL_ENUM, msaaFormat ), msaaFormat );
 		}
 
 		gGL->glBindRenderbufferEXT( GL_RENDERBUFFER_EXT, 0 );
@@ -735,6 +735,7 @@ CGLMTex::CGLMTex( GLMContext *ctx, GLMTexLayout *layout, GLMTexSamplingParams *s
 	// we know this name has bever seen duty before, so we're going to hard-bind it to TMU 0, displacing any other tex that might have been bound there.
 	// any previously bound tex will be unbound and appropriately marked as a result.
 	// the active TMU will be set as a side effect.
+	CGLMTex *pPrevTex = ctx->m_samplers[0].m_boundTex;
 	ctx->BindTexToTMU( this, 0 );
 	
 	// OK, our texture now exists and is bound on the active TMU.  Not drawable yet though.
@@ -811,7 +812,10 @@ CGLMTex::CGLMTex( GLMContext *ctx, GLMTexLayout *layout, GLMTexSamplingParams *s
 		{
 			printf("\n minimizing storage for tex '%s' [%s] ", m_debugLabel?m_debugLabel:"-", m_layout->m_layoutSummary );
 		}
-		gGL->glTexParameteri( m_layout->m_key.m_texGLTarget, GL_TEXTURE_MINIMIZE_STORAGE_APPLE, 1 );
+		if ( gGL->m_bHave_GL_APPLE_texture_range )
+		{
+			gGL->glTexParameteri( m_layout->m_key.m_texGLTarget, GL_TEXTURE_MINIMIZE_STORAGE_APPLE, 1 );
+		}
 	}
 	
 	// after a lot of pain with texture completeness...
@@ -873,6 +877,8 @@ CGLMTex::CGLMTex( GLMContext *ctx, GLMTexLayout *layout, GLMTexSamplingParams *s
 			}
 		}
 	}
+	ctx->BindTexToTMU( pPrevTex, 0 );
+
 	GLMPRINTF(("-A- -**TEXNEW '%-60s' name=%06d  size=%09d  storage=%08x label=%s ", m_layout->m_layoutSummary, m_texName, m_layout->m_storageTotalSize, m_backing, m_debugLabel ? m_debugLabel : "-" ));
 }
 
@@ -1076,8 +1082,8 @@ void CGLMTex::ApplySamplingParams( GLMTexSamplingParams *params, bool noCheck )
 
 	if (DIFF(m_maxAniso))
 	{
-		m_sampling.m_maxAniso = MIN( m_ctx->m_caps.m_maxAniso, params->m_maxAniso );
-		gGL->glTexParameteri( target, GL_TEXTURE_MAX_ANISOTROPY_EXT, m_sampling.m_maxAniso );
+		m_sampling.m_maxAniso = params->m_maxAniso;
+		gGL->glTexParameteri( target, GL_TEXTURE_MAX_ANISOTROPY_EXT, params->m_maxAniso );
 		GLMCheckError();
 	}
 	
@@ -1119,6 +1125,7 @@ void CGLMTex::ReadTexels( GLMTexLockDesc *desc, bool readWholeSlice )
 		readBox = desc->m_req.m_region;
 	}
 
+	CGLMTex *pPrevTex = m_ctx->m_samplers[0].m_boundTex;
 	m_ctx->BindTexToTMU( this, 0, false );		// SelectTMU(n) is a side effect
 
 	if (readWholeSlice)
@@ -1176,11 +1183,13 @@ void CGLMTex::ReadTexels( GLMTexLockDesc *desc, bool readWholeSlice )
 	{
 		GLMStop();
 	}
+
+	m_ctx->BindTexToTMU( pPrevTex, 0, false );
 }
 
 // defaulting the subimage support off, since it's breaking Ep2 at startup on some NV 9400 and friends
 // defaulting it back to "1" for L4D2 and see if it flies
-ConVar	gl_enabletexsubimage( "gl_enabletexsubimage", "1" );
+ConVar	gl_enabletexsubimage( "gl_enabletexsubimage", "0" );
 
 void CGLMTex::WriteTexels( GLMTexLockDesc *desc, bool writeWholeSlice, bool noDataWrite )
 {
@@ -1219,6 +1228,7 @@ void CGLMTex::WriteTexels( GLMTexLockDesc *desc, bool writeWholeSlice, bool noDa
 	// to get this running we will just always slam TMU 0 and let the draw time code fix it back
 	// a later optimization would be to hoist the bind call to the caller, do it exactly once
 	
+	CGLMTex *pPrevTex = m_ctx->m_samplers[0].m_boundTex;
 	m_ctx->BindTexToTMU( this, 0, false );		// SelectTMU(n) is a side effect
 
 	GLMTexFormatDesc *format = m_layout->m_format;
@@ -1234,7 +1244,7 @@ void CGLMTex::WriteTexels( GLMTexLockDesc *desc, bool writeWholeSlice, bool noDa
 	bool mayUseSubImage = false;
 	if ( (target==GL_TEXTURE_2D) && (m_sliceFlags[ desc->m_sliceIndex ] & kSliceValid) )
 	{
-		mayUseSubImage = gl_enabletexsubimage.GetInt();
+		mayUseSubImage = gl_enabletexsubimage.GetInt() != 0;
 	}
 	
 	// check flavor, 2D, 3D, or cube map
@@ -1317,8 +1327,11 @@ void CGLMTex::WriteTexels( GLMTexLockDesc *desc, bool writeWholeSlice, bool noDa
 	}
 
 	// set up the client storage now, one way or another
-	gGL->glPixelStorei( GL_UNPACK_CLIENT_STORAGE_APPLE, m_texClientStorage );
-	GLMCheckError();
+	if ( gGL->m_bHave_GL_APPLE_client_storage )
+	{
+		gGL->glPixelStorei( GL_UNPACK_CLIENT_STORAGE_APPLE, m_texClientStorage );
+		GLMCheckError();
+	}
 	
 	switch( target )
 	{
@@ -1423,7 +1436,7 @@ void CGLMTex::WriteTexels( GLMTexLockDesc *desc, bool writeWholeSlice, bool noDa
 					{
 						if (gl_texmsaalog.GetInt())
 						{
-							printf( "\n == MSAA Tex %8x %s : glTexImage2D for flat tex using intformat %s (%x)", this, m_debugLabel?m_debugLabel:"", GLMDecode( eGL_ENUM, intformat ), intformat );
+							printf( "\n == MSAA Tex %p %s : glTexImage2D for flat tex using intformat %s (%x)", this, m_debugLabel?m_debugLabel:"", GLMDecode( eGL_ENUM, intformat ), intformat );
 							printf( "\n" );			
 						}
 					}
@@ -1473,13 +1486,18 @@ void CGLMTex::WriteTexels( GLMTexLockDesc *desc, bool writeWholeSlice, bool noDa
 		break;
 	}
 
-	gGL->glPixelStorei( GL_UNPACK_CLIENT_STORAGE_APPLE, GL_FALSE );
-	GLMCheckError();
+	if ( gGL->m_bHave_GL_APPLE_client_storage )
+	{
+		gGL->glPixelStorei( GL_UNPACK_CLIENT_STORAGE_APPLE, GL_FALSE );
+		GLMCheckError();
+	}
 
 	if ( expandTemp )
 	{
 		free( expandTemp );
 	}
+
+	m_ctx->BindTexToTMU( pPrevTex, 0, false );
 }
 	
 

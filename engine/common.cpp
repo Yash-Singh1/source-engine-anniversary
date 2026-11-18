@@ -893,10 +893,10 @@ void COM_InitFilesystem( const char *pFullModPath )
 		// -audiolanguage <language>
 		// User must have the .vpk files for the language installed though in order to use the command line switch
 		
-		if ( Steam3Client().SteamApps() )
+		if ( SteamApps() )
 		{
 			// use -audiolanguage command line to override audio language, otherwise take language from steam
-			Q_strncpy(language, CommandLine()->ParmValue("-audiolanguage", Steam3Client().SteamApps()->GetCurrentGameLanguage()), sizeof( language ) - 1);
+			Q_strncpy(language, CommandLine()->ParmValue("-audiolanguage", SteamApps()->GetCurrentGameLanguage()), sizeof( language ) - 1);
 		}
 		else
 		{

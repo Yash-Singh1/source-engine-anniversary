@@ -57,9 +57,11 @@
 static ConVar cl_timeout( "cl_timeout", "30", FCVAR_ARCHIVE, "After this many seconds without receiving a packet from the server, the client will disconnect itself" );
 	   ConVar cl_logofile( "cl_logofile", "materials/decals/spraylogo.vtf", FCVAR_ARCHIVE, "Spraypoint logo decal." ); // TODO must be more generic
 static ConVar cl_soundfile( "cl_soundfile", "sound/player/jingle.wav", FCVAR_ARCHIVE, "Jingle sound file." );
+static ConVar cl_forcepreload( "cl_forcepreload", "0", FCVAR_ARCHIVE, "Whether we should force preloading." );
 static ConVar cl_allowdownload ( "cl_allowdownload", "1", FCVAR_ARCHIVE, "Client downloads customization files" );
 static ConVar cl_downloadfilter( "cl_downloadfilter", "all", FCVAR_ARCHIVE, "Determines which files can be downloaded from the server (all, none, nosounds, mapsonly)" );
 
+#ifndef BYTEMATCH_RETAIL
 #ifdef OSX
 	// OS X is barely making it due to virtual memory pressure on 32bit, our behavior of load new models -> unload
 	// unused is far too abusive for its estimated margin of maybe two or three bytes before crashing.
@@ -69,6 +71,8 @@ static ConVar cl_downloadfilter( "cl_downloadfilter", "all", FCVAR_ARCHIVE, "Det
 #endif
 static ConVar cl_always_flush_models( "cl_always_flush_models", CONVAR_DEFAULT_ALWAYS_FLUSH_MODELS, FCVAR_INTERNAL_USE,
                                       "If set, always flush models between map loads.  Useful on systems under memory pressure." );
+#endif
+#line 64
 
 extern ConVar sv_downloadurl;
 
@@ -92,10 +96,16 @@ CClientState::CClientState()
 	m_pAreaBits = NULL;
 	m_hWaitForResourcesHandle = NULL;
 	m_bUpdateSteamResources = false;
+#ifndef BYTEMATCH_RETAIL
 	m_bPrepareClientDLL = false;
+#endif
+#line 87
 	m_bShownSteamResourceUpdateProgress = false;
 	m_pPureServerWhitelist = NULL;
+#ifndef BYTEMATCH_RETAIL
 	m_pPendingPureFileReloads = NULL;
+#endif
+#line 89
 	m_bCheckCRCsWithServer = false;
 	m_flLastCRCBatchTime = 0;
 	m_nFriendsID = 0;
@@ -185,7 +195,7 @@ void CClientState::SendClientInfo( void )
 	info.m_bIsReplay = false;
 #endif
 #if !defined( NO_STEAM )
-	info.m_nFriendsID = Steam3Client().SteamUser() ? Steam3Client().SteamUser()->GetSteamID().GetAccountID() : 0;
+	info.m_nFriendsID = SteamUser() ? SteamUser()->GetSteamID().GetAccountID() : 0;
 #else
 	info.m_nFriendsID = 0;
 #endif
@@ -673,7 +683,10 @@ void CClientState::Clear( void )
 	m_bUpdateSteamResources = false;
 	m_bShownSteamResourceUpdateProgress = false;
 	m_bDownloadResources = false;
+#ifndef BYTEMATCH_RETAIL
 	m_bPrepareClientDLL = false;
+#endif
+#line 666
 
 	DeleteClientFrames( -1 ); // clear all
 		
@@ -775,6 +788,7 @@ model_t *CClientState::GetModel( int index )
 		return m;
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	// The world model has special handling and should not be lazy loaded here
 	if ( index == 1 )
 	{
@@ -782,6 +796,8 @@ model_t *CClientState::GetModel( int index )
 		Warning( "Attempting to get world model before it was loaded\n" );
 		return NULL;
 	}
+#endif
+#line 767
 
 	char const *name = m_pModelPrecacheTable->GetString( index );
 
@@ -833,7 +849,7 @@ void CClientState::SetModel( int tableIndex )
 	}
 
 	// Bogus index
-	if ( tableIndex < 0 || tableIndex >= m_pModelPrecacheTable->GetNumStrings() )
+	if ( tableIndex < 0 || tableIndex >= MAX_MODELS || tableIndex >= m_pModelPrecacheTable->GetNumStrings() )
 	{
 		return;
 	}
@@ -855,7 +871,7 @@ void CClientState::SetModel( int tableIndex )
 	{
 		bLoadNow = false;
 	}
-	else if ( CommandLine()->FindParm( "-preload" ) )
+	else if ( cl_forcepreload.GetBool() || CommandLine()->FindParm( "-preload" ) )
 	{
 		bLoadNow = true;
 	}
@@ -1035,7 +1051,7 @@ void CClientState::SetSound( int tableIndex )
 	{
 		bLoadNow = false;
 	}
-	else if ( CommandLine()->FindParm( "-preload" ) )
+	else if ( cl_forcepreload.GetBool() || CommandLine()->FindParm( "-preload" ) )
 	{
 		bLoadNow = true;
 	}
@@ -1384,6 +1400,12 @@ void CClientState::ReadPreserveEnt( CEntityReadInfo &u )
 
 	// copy one of the old entities over to the new packet unchanged
 
+#ifdef BYTEMATCH_RETAIL
+	if ( u.m_nNewEntity >= MAX_EDICTS )
+	{
+		Host_Error( "CL_ReadPreserveEnt: u.m_nNewEntity == MAX_EDICTS" );
+	}
+#else
 	// XXX(JohnS): This was historically checking for NewEntity overflow, though this path does not care (and new entity
 	//             may be -1).  The old entity bounds check here seems like what was intended, but since nNewEntity
 	//             should not be overflowed either, I've left that check in case it was guarding against a case I am
@@ -1393,6 +1415,8 @@ void CClientState::ReadPreserveEnt( CEntityReadInfo &u )
 		Host_Error( "CL_ReadPreserveEnt: Entity out of bounds. Old: %i, New: %i",
 		            u.m_nOldEntity, u.m_nNewEntity );
 	}
+#endif
+#line 1373
 
 	u.m_pTo->last_entity = u.m_nOldEntity;
 	u.m_pTo->transmit_entity.Set( u.m_nOldEntity );
@@ -1401,7 +1425,10 @@ void CClientState::ReadPreserveEnt( CEntityReadInfo &u )
 	if ( cl_entityreport.GetBool() )
 		CL_RecordEntityBits( u.m_nOldEntity, 0 );
 
+#ifndef BYTEMATCH_RETAIL
 	CL_PreserveExistingEntity( u.m_nOldEntity );
+#endif
+#line 1381
 
 	u.NextOldEntity();
 }
@@ -1423,10 +1450,17 @@ void CClientState::StartUpdatingSteamResources()
 
 	// make sure we have all the necessary resources locally before continuing
 	m_hWaitForResourcesHandle = g_pFileSystem->WaitForResources(m_szLevelBaseName);
+#ifdef BYTEMATCH_RETAIL
+	m_bUpdateSteamResources = true;
+	m_bShownSteamResourceUpdateProgress = false;
+	m_bDownloadResources = false;
+#else
 	m_bUpdateSteamResources = false;
 	m_bShownSteamResourceUpdateProgress = false;
 	m_bDownloadResources = false;
 	m_bPrepareClientDLL = true;
+#endif
+#line 1405
 }
 
 //-----------------------------------------------------------------------------
@@ -1441,11 +1475,14 @@ void CClientState::CheckUpdatingSteamResources()
 
 	VPROF_BUDGET( "CheckUpdatingSteamResources", VPROF_BUDGETGROUP_STEAM );
 
+#ifndef BYTEMATCH_RETAIL
 	if ( m_bPrepareClientDLL )
 	{
 		m_bPrepareClientDLL = false;
 		m_bUpdateSteamResources = true;
 	}
+#endif
+#line 1419
 
 	if (m_bUpdateSteamResources)
 	{
@@ -1763,6 +1800,16 @@ void CClientState::FinishSignonState_New()
 	}
 
 
+#ifdef BYTEMATCH_RETAIL
+	// Before we do anything with the whitelist, make sure we have the proper map pack mounted
+	// this will load the .bsp by setting the world model the string list at the hardcoded index 1.
+	cl.SetModel( 1 );
+
+	// Check for a new whitelist. It's good to do it early in the connection process here because if we wait until later,
+	// the client may have loaded some files w/o the proper whitelist restrictions and we'd have to reload them.
+	m_bCheckCRCsWithServer = false;	// Don't check CRCs yet.. wait until we got a whitelist and cleaned out our files based on it to send CRCs.
+	CL_CheckForPureServerWhitelist();
+#else
 	// Only do this if our server is shut down and we're acting as a client. Otherwise the server handles this when it
 	// starts the load.
 	if ( sv.m_State < ss_loading )
@@ -1802,6 +1849,8 @@ void CClientState::FinishSignonState_New()
 	// CL_FullyConnected. This fixes reloading materials that are unused, and trying to reload materials that are no
 	// longer pure, but would be unloaded in fully connected anyway.
 	CL_CheckForPureServerWhitelist( m_pPendingPureFileReloads );
+#endif
+#line 1744
 
 	CL_InstallAndInvokeClientStringTableCallbacks();
 

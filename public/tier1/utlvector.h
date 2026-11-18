@@ -121,10 +121,10 @@ public:
 
 	// Adds multiple elements, uses default constructor
 	int AddMultipleToHead( int num );
-	int AddMultipleToTail( int num );	   
-	int AddMultipleToTail( int num, const T *pToCopy );	   
-	int InsertMultipleBefore( int elem, int num );
-	int InsertMultipleBefore( int elem, int num, const T *pToCopy );
+	int AddMultipleToTail( int num, const T *pToCopy=NULL );	   
+	int InsertMultipleBefore( int elem, int num, const T *pToCopy=NULL );	// If pToCopy is set, then it's an array of length 'num' and
+
+
 	int InsertMultipleAfter( int elem, int num );
 
 	// Calls RemoveAll() then AddMultipleToTail.
@@ -1109,11 +1109,11 @@ inline int CUtlVector<T, A>::AddMultipleToHead( int num )
 	return InsertMultipleBefore( 0, num );
 }
 
-template< typename T, class A >
-inline int CUtlVector<T, A>::AddMultipleToTail( int num )
-{
-	return InsertMultipleBefore( m_Size, num );
-}
+
+
+
+
+
 
 template< typename T, class A >
 inline int CUtlVector<T, A>::AddMultipleToTail( int num, const T *pToCopy )
@@ -1197,7 +1197,7 @@ int CUtlVector<T, A>::AddVectorToTail( CUtlVector const &src )
 }
 
 template< typename T, class A >
-inline int CUtlVector<T, A>::InsertMultipleBefore( int elem, int num )
+inline int CUtlVector<T, A>::InsertMultipleBefore( int elem, int num, const T *pToInsert )
 {
 	if( num == 0 )
 		return elem;
@@ -1210,43 +1210,43 @@ inline int CUtlVector<T, A>::InsertMultipleBefore( int elem, int num )
 
 	// Invoke default constructors
 	for (int i = 0; i < num; ++i )
-	{
 		Construct( &Element( elem+i ) );
-	}
 
-	return elem;
-}
-
-template< typename T, class A >
-inline int CUtlVector<T, A>::InsertMultipleBefore( int elem, int num, const T *pToInsert )
-{
-	if( num == 0 )
-		return elem;
-	
-	// Can insert at the end
-	Assert( (elem == Count()) || IsValidIndex(elem) );
-
-	GrowVector(num);
-	ShiftElementsRight( elem, num );
-
-	// Invoke default constructors
-	if ( !pToInsert )
-	{
-		for (int i = 0; i < num; ++i )
-		{
-			Construct( &Element( elem+i ) );
-		}
-	}
-	else
+	// Copy stuff in?
+	if ( pToInsert )
 	{
 		for ( int i=0; i < num; i++ )
 		{
-			CopyConstruct( &Element( elem+i ), pToInsert[i] );
+			Element( elem+i ) = pToInsert[i];
 		}
 	}
 
 	return elem;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //-----------------------------------------------------------------------------

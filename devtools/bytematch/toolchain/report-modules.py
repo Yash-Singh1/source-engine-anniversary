@@ -11,7 +11,13 @@ them), scoped per object by the retail debug map. Prints a markdown table;
 The total covers linked modules only: static libraries are linked into them,
 so their rows would count the same functions twice.
 
+Game modules come from one --retail-osx32 --build-games=GAME build each.
+--game GAME=DIR (repeatable) compares DIR/server.dylib and DIR/client.dylib
+with the manifest's GAME/server and GAME/client; they get their own rows and
+a second total that includes them.
+
 Usage: report-modules.py [--build build-retail] [--bytematch PATH] [--out DIR] [--save PREFIX]
+                         [--game GAME=DIR ...] [--diff-lines N]
 """
 import argparse
 import glob
@@ -72,12 +78,28 @@ def jobs_for(build, manifest):
     return jobs
 
 
+def game_jobs(games, manifest):
+    jobs = []
+    for spec in games:
+        game, _, d = spec.partition("=")
+        for part in ("server", "client"):
+            key = f"{game}/{part}"
+            ours = os.path.join(d, f"{part}.dylib")
+            if key not in manifest["modules"] or not os.path.exists(ours):
+                sys.exit(f"--game {spec}: no manifest module {key} or no {ours}")
+            jobs.append(("game", key, f"{key}.dylib", retail_file(manifest["modules"][key]), ours))
+    return jobs
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--build", default=os.path.join(TREE, "build-retail"))
     ap.add_argument("--bytematch", default=os.path.join(TREE, "devtools", "bytematch", "bin", "bytematch"))
     ap.add_argument("--out", default="/tmp/bytematch-retail-report", help="per-module matcher reports")
     ap.add_argument("--save", help="write PREFIX.json and PREFIX.md")
+    ap.add_argument("--game", action="append", default=[], metavar="GAME=DIR",
+                    help="game build output holding server.dylib and client.dylib (repeatable)")
+    ap.add_argument("--diff-lines", type=int, help="passed to bytematch report (per-module output only)")
     a = ap.parse_args()
     if not os.path.exists(a.bytematch):
         sys.exit(f"matcher not found at {a.bytematch}; pass --bytematch")
@@ -85,13 +107,15 @@ def main():
     manifest = json.load(open(MANIFEST))
 
     rows = []
-    for job in jobs_for(a.build, manifest):
+    for job in jobs_for(a.build, manifest) + game_jobs(a.game, manifest):
         kind, key, name, retail, ours = job[:5]
-        out = os.path.join(a.out, name)
-        r = subprocess.run([a.bytematch, "report", "--retail", retail, "--ours", ours, "--out", out],
-                           capture_output=True, text=True)
+        out = os.path.join(a.out, name.replace("/", "-"))
+        cmd = [a.bytematch, "report", "--retail", retail, "--ours", ours, "--out", out]
+        if a.diff_lines:
+            cmd += ["--diff-lines", str(a.diff_lines)]
+        r = subprocess.run(cmd, capture_output=True, text=True)
         row = {"kind": kind, "module": key, "name": name, "retail": os.path.relpath(retail, DEPOTS),
-               "ours": os.path.relpath(ours, a.build)}
+               "ours": os.path.relpath(ours, a.build) if kind != "game" else ours}
         if kind == "archive":
             row["compared_with"] = job[5]
         if r.returncode or not os.path.exists(out + ".json"):
@@ -100,13 +124,18 @@ def main():
             row["summary"] = json.load(open(out + ".json"))["summary"]
         rows.append(row)
 
-    total = {"functions": {}, "bytes": {}}
-    for part in total:
-        for field in ("total", "exact", "matches_after_masking", "differs", "missing", "matched"):
-            total[part][field] = sum(r["summary"][part][field] for r in rows
-                                     if r["kind"] == "module" and "summary" in r)
-        t = total[part]
-        t["pct"] = round(100.0 * t["matched"] / t["total"], 2) if t["total"] else 0.0
+    def sum_rows(kinds):
+        tot = {"functions": {}, "bytes": {}}
+        for part in tot:
+            for field in ("total", "exact", "matches_after_masking", "differs", "missing", "matched"):
+                tot[part][field] = sum(r["summary"][part][field] for r in rows
+                                       if r["kind"] in kinds and "summary" in r)
+            t = tot[part]
+            t["pct"] = round(100.0 * t["matched"] / t["total"], 2) if t["total"] else 0.0
+        return tot
+
+    total = sum_rows(("module",))
+    total_games = sum_rows(("module", "game")) if a.game else None
 
     lines = ["| module | functions matched | % functions | bytes matched | % bytes | exact | masked | differs | missing |",
              "|---|---:|---:|---:|---:|---:|---:|---:|---:|"]
@@ -116,15 +145,20 @@ def main():
         return (f"| {name} | {f['matched']}/{f['total']} | {f['pct']}% | {b['matched']}/{b['total']} | "
                 f"{b['pct']}% | {f['exact']} | {f['matches_after_masking']} | {f['differs']} | {f['missing']} |")
 
-    for kind, title in (("module", None), ("archive", "static libraries (members pulled by the named retail module)")):
+    sections = [("module", None), ("archive", "static libraries (members pulled by the named retail module)")]
+    if a.game:
+        sections.insert(1, ("game", "game modules (one --build-games build each)"))
+    for kind, title in sections:
         if title:
             lines.append(f"| **{title}** | | | | | | | | |")
         for r in sorted((r for r in rows if r["kind"] == kind),
                         key=lambda r: -r.get("summary", {}).get("functions", {}).get("pct", -1)):
-            name = r["name"] if kind == "module" else f"{r['name']} (vs {r['compared_with'].split('/')[-1]})"
+            name = r["name"] if kind != "archive" else f"{r['name']} (vs {r['compared_with'].split('/')[-1]})"
             lines.append(f"| {name} | error: {r['error']} | | | | | | | |" if "error" in r else fmt(name, r["summary"]))
         if kind == "module":
             lines.append(fmt("**total, linked modules**", total))
+        if kind == "game":
+            lines.append(fmt("**total, linked modules and games**", total_games))
     table = "\n".join(lines)
     print(table)
 
@@ -134,14 +168,19 @@ def main():
                 "depot_build": os.path.basename(rf.RETAIL_DEPOT),
                 "clang": rf.CLANG_VERSION, "ld64": rf.LD64_VERSION}
         with open(a.save + ".json", "w") as f:
-            json.dump({"meta": meta, "total": total, "rows": rows}, f, indent=1)
+            doc = {"meta": meta, "total": total, "rows": rows}
+            if total_games:
+                doc["total_with_games"] = total_games
+            json.dump(doc, f, indent=1)
             f.write("\n")
         with open(a.save + ".md", "w") as f:
             f.write(f"# --retail-osx32 match report ({meta['generated']})\n\n")
             f.write(f"clang-{meta['clang']}, ld64-{meta['ld64']}, retail build {meta['depot_build']}. "
                     "Matched = exact + matches-after-masking (bytematch). Percentages are of the "
                     "retail functions in scope (debug-map objects); bytes are retail bytes. "
-                    "The total counts linked modules only, since static libraries are linked into them.\n\n")
+                    "The totals count linked modules only, since static libraries are linked into them. "
+                    "Game modules (server/client per game, against depots 380, 340 and 223) have their "
+                    "own rows and a second total.\n\n")
             f.write(table + "\n")
 
 

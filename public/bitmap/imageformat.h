@@ -106,14 +106,9 @@ enum ImageFormat
 	IMAGE_FORMAT_DXT1_RUNTIME,
 	IMAGE_FORMAT_DXT5_RUNTIME,
 #endif
+#line 107
 
 	NUM_IMAGE_FORMATS
-#ifdef BYTEMATCH_RETAIL
-	,
-	// Retail has no runtime-compressed formats; out of range so fork code still compiles.
-	IMAGE_FORMAT_DXT1_RUNTIME,
-	IMAGE_FORMAT_DXT5_RUNTIME,
-#endif
 };
 
 #if defined( TOGL_OSX )
@@ -631,10 +626,13 @@ namespace ImageLoader
 		return ( info.m_NumRedBits > 8 || info.m_NumGreeBits > 8 || info.m_NumBlueBits > 8 || info.m_NumAlphaBits > 8 );
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	inline bool IsRuntimeCompressed( ImageFormat fmt )
 	{
 		return ( fmt == IMAGE_FORMAT_DXT1_RUNTIME ) || ( fmt == IMAGE_FORMAT_DXT5_RUNTIME );
 	}
+#endif
+#line 630
 
 } // end namespace ImageLoader
 

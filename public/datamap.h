@@ -64,9 +64,9 @@ typedef enum _fieldtypes
 	FIELD_MATERIALINDEX,	// a material index (using the material precache string table)
 
 	FIELD_VECTOR2D,			// 2 floats
-	FIELD_INTEGER64,        // 64bit integer
-	FIELD_POINTER,
-
+#ifndef BYTEMATCH_RETAIL
+	FIELD_INTEGER64, FIELD_POINTER,        // 64bit integer, pointer
+#endif
 	FIELD_TYPECOUNT,		// MUST BE LAST
 } fieldtype_t;
 
@@ -105,7 +105,10 @@ DECLARE_FIELD_SIZE( FIELD_SHORT,		sizeof(short))
 DECLARE_FIELD_SIZE( FIELD_CHARACTER,	sizeof(char))
 DECLARE_FIELD_SIZE( FIELD_COLOR32,		sizeof(int))
 DECLARE_FIELD_SIZE( FIELD_STRING,		sizeof(void*))
+#ifndef BYTEMATCH_RETAIL
 DECLARE_FIELD_SIZE( FIELD_POINTER,		sizeof(void*))
+#endif
+#line 109
 DECLARE_FIELD_SIZE( FIELD_MODELNAME,	sizeof(void*))
 DECLARE_FIELD_SIZE( FIELD_SOUNDNAME,	sizeof(void*))
 DECLARE_FIELD_SIZE( FIELD_EHANDLE,		sizeof(void*))
@@ -440,7 +443,7 @@ public:
 #else
 			delete[] m_Names[i];
 #endif
-#line 439
+#line 442
 		}
 	}
 	

@@ -700,7 +700,7 @@ void CBaseFileSystem::InitAsync()
 		}
 #endif
 
-		if ( !m_pThreadPool->Start( params, "IOJob" ) )
+		if ( !m_pThreadPool->Start( params ) )
 		{
 			SafeRelease( m_pThreadPool );
 		}

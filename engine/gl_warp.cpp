@@ -176,6 +176,15 @@ void R_LoadSkys( void )
 		return;
 	}
 
+	// Without HDR, an _hdr sky falls back to its LDR version
+	if ( g_pMaterialSystemHardwareConfig->GetHDRType() == HDR_TYPE_NONE && V_stristr( requestedsky, "_hdr" ) )
+	{
+		char ldrsky[ 256 ];
+		V_StrLeft( requestedsky, strlen( requestedsky ) - 4, ldrsky, sizeof( ldrsky ) );
+		if ( R_LoadNamedSkys( ldrsky ) )
+			return;
+	}
+
 	// See if user's sky will work
 	if ( !R_LoadNamedSkys( requestedsky ) )
 	{

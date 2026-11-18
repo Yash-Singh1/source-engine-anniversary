@@ -21,7 +21,12 @@
 // Flow control bytes per second limits
 #define MAX_RATE		(1024*1024)				
 #define MIN_RATE		1000
+#ifdef BYTEMATCH_RETAIL
+#define DEFAULT_RATE	30000
+#else
 #define DEFAULT_RATE	80000
+#endif
+#line 25
 
 #define SIGNON_TIME_OUT				300.0f  // signon disconnect timeout
 

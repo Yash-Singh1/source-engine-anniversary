@@ -121,6 +121,15 @@ S_API int SteamInternal_SteamAPI_Init( const char *pszInternalCheckInterfaceVers
 	return 1;
 }
 
+S_API void *SteamInternal_FindOrCreateGameServerInterface( int hSteamUser, const char *pszVersion ) {
+	return NULL;
+}
+
+// ESteamAPIInitResult: k_ESteamAPIInitResult_FailedGeneric
+S_API int SteamInternal_GameServer_Init_V2( unsigned int unIP, unsigned short usGamePort, unsigned short usQueryPort, int eServerMode, const char *pchVersionString, const char *pszInternalCheckInterfaceVersions, void *pOutErrMsg ) {
+	return 1;
+}
+
 S_API void *SteamInternal_CreateInterface() {
 	return NULL;
 }

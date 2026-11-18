@@ -1412,6 +1412,22 @@ void CBaseClient::UpdateSendState( void )
 	}
 }
 
+#ifdef BYTEMATCH_RETAIL
+void CBaseClient::UpdateUserSettings()
+{
+	// set server to client network rate
+	SetRate( m_ConVars->GetInt( "rate", DEFAULT_RATE ), false );
+
+	// set server to client update rate
+	SetUpdateRate( m_ConVars->GetInt( "cl_updaterate", 20), false );
+
+	SetMaxRoutablePayloadSize( m_ConVars->GetInt( "net_maxroutable", MAX_ROUTABLE_PAYLOAD ) );
+
+	m_Server->UserInfoChanged( m_nClientSlot );
+
+	m_bConVarsChanged = false;
+}
+#else
 void CBaseClient::UpdateUserSettings()
 {
 	int rate = m_ConVars->GetInt( "rate", DEFAULT_RATE );
@@ -1444,6 +1460,8 @@ void CBaseClient::UpdateUserSettings()
 
 	m_bConVarsChanged = false;
 }
+#endif
+#line 1425
 
 #ifdef BYTEMATCH_RETAIL
 void CBaseClient::ClientRequestNameChange( const char *pszNewName )
@@ -1550,7 +1568,7 @@ bool CBaseClient::IsNameChangeOnCooldown( bool bShowStatusMessage /*= false*/ )
 	return false;
 }
 #endif
-#line 1483
+#line 1465
 
 void CBaseClient::OnRequestFullUpdate()
 {

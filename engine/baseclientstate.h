@@ -197,8 +197,8 @@ public:
 
 	int			m_nPlayerSlot;		// own player entity index-1. skips world. Add 1 to get cl_entitites index;
 
-	char		m_szLevelFileName[ 128 ];	// for display on solo scoreboard
-	char		m_szLevelBaseName[ 128 ]; // removes maps/ and .bsp extension
+	char		m_szLevelFileName[ MAX_PATH ];	// for display on solo scoreboard
+	char		m_szLevelBaseName[ MAX_PATH ]; // removes maps/ and .bsp extension
 
 	int			m_nMaxClients;		// max clients on server
 

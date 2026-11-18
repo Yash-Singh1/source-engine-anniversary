@@ -2388,7 +2388,7 @@ void C_CSPlayer::CalcObserverView( Vector& eyeOrigin, QAngle& eyeAngles, float& 
 // [tj] checks if this player has another given player on their Steam friends list.
 bool C_CSPlayer::HasPlayerAsFriend(C_CSPlayer* player)
 {
-    if (!steamapicontext || !steamapicontext->SteamFriends() || !steamapicontext->SteamUtils() || !player)
+    if (!SteamFriends() || !SteamUtils() || !player)
     {
         return false;
     }
@@ -2405,8 +2405,8 @@ bool C_CSPlayer::HasPlayerAsFriend(C_CSPlayer* player)
     }
 
     // check and see if they're on the local player's friends list
-    CSteamID steamID( pi.friendsID, 1, steamapicontext->SteamUtils()->GetConnectedUniverse(), k_EAccountTypeIndividual );
-    return steamapicontext->SteamFriends()->HasFriend( steamID, k_EFriendFlagImmediate);
+    CSteamID steamID( pi.friendsID, 1, SteamUtils()->GetConnectedUniverse(), k_EAccountTypeIndividual );
+    return SteamFriends()->HasFriend( steamID, k_EFriendFlagImmediate);
 }
 
 // [menglish] Returns whether this player is dominating or is being dominated by the specified player

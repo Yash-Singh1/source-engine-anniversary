@@ -41,7 +41,12 @@ public:
 	// Returns true if the source is a voice source.
 	// This affects the voice_overdrive behavior (all sounds get quieter when
 	// someone is speaking).
+#ifdef BYTEMATCH_RETAIL
+	virtual bool				IsVoiceSource() { return m_bIsVoiceSource; }
+#else
 	virtual bool				IsVoiceSource() { return false; }
+#endif
+#line 45
 	virtual bool				IsCommentarySource() { return m_bIsCommentary; }
 	virtual int					SampleSize( void ) { return 1; }
 
@@ -84,7 +89,10 @@ public:
 	virtual int					SampleToStreamPosition( int samplePosition ) { return 0; }
 	virtual int					StreamToSamplePosition( int streamPosition ) { return 0; }
 
+#ifndef BYTEMATCH_RETAIL
 	virtual void				SetSentence( CSentence *pSentence );
+#endif
+#line 87
 
 protected:
 
@@ -117,7 +125,12 @@ protected:
 	int				m_refCount;
 	bool			m_bIsPlayOnce : 1;
 	bool			m_bIsSentenceWord : 1;
+#ifdef BYTEMATCH_RETAIL
+	bool			m_bIsVoiceSource : 1;
+#else
 	bool			m_bCheckedForPendingSentence : 1;
+#endif
+#line 120
 	bool			m_bIsCommentary : 1;
 };
 
@@ -167,7 +180,10 @@ public:
 	// NOTE: "samples" are bytes for MP3
 	int						GetOutputData( void **pData, int samplePosition, int sampleCount, char copyBuf[AUDIOSOURCE_COPYBUF_SIZE] ) OVERRIDE;
 	CAudioMixer				*CreateMixer( int initialStreamPosition = 0 ) OVERRIDE;
+#ifndef BYTEMATCH_RETAIL
 	CSentence				*GetSentence( void ) OVERRIDE;
+#endif
+#line 169
 
 	void					Prefetch() OVERRIDE {}
 
@@ -178,7 +194,10 @@ protected:
 private:
 	CAudioSourceMP3Cache( const CAudioSourceMP3Cache & );
 
+#ifndef BYTEMATCH_RETAIL
 	unsigned int	m_bNoSentence : 1;
+#endif
+#line 179
 };
 
 bool Audio_IsMP3( const char *pName );

@@ -458,9 +458,9 @@ void CServerBrowserDialog::AddServerToFavorites(newgameserver_t &server)
 #endif
 {
 #ifdef BYTEMATCH_RETAIL
-	if ( steamapicontext->SteamMatchmaking() )
+	if ( SteamMatchmaking() )
 	{
-		steamapicontext->SteamMatchmaking()->AddFavoriteGame( 
+		SteamMatchmaking()->AddFavoriteGame( 
 			server.m_nAppID, 
 			server.m_NetAdr.GetIP(), 
 			server.m_NetAdr.GetConnectionPort(),		
@@ -723,9 +723,9 @@ void CServerBrowserDialog::OnConnectToGame( KeyValues *pMessageValues )
 	m_CurrentConnection.m_NetAdr.SetQueryPort( queryPort );
 	m_CurrentConnection.m_NetAdr.SetConnectionPort( (unsigned short)connectionPort );
 
-	if (m_pHistory && steamapicontext->SteamMatchmaking() )
+	if (m_pHistory && SteamMatchmaking() )
 	{
-		steamapicontext->SteamMatchmaking()->AddFavoriteGame( 0, unIP, connectionPort, queryPort, k_unFavoriteFlagHistory, time( NULL ) );
+		SteamMatchmaking()->AddFavoriteGame( 0, unIP, connectionPort, queryPort, k_unFavoriteFlagHistory, time( NULL ) );
 		m_pHistory->SetRefreshOnReload();
 	}
 

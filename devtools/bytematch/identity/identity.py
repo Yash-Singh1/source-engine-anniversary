@@ -1,0 +1,478 @@
+#!/usr/bin/env python3
+"""Rebuild a --retail-osx32 module so the whole file can match retail.
+
+The --retail-osx32 build already reproduces code and data. What is left is the
+debug map ld64 writes into the symbol table: N_SO (the compiled file and its
+directory), N_SOL (headers with code, from the DWARF line tables), N_OSO (the
+object or archive member path and its mtime). This tool reproduces those
+inputs the way Valve's buildbot produced them:
+
+1. ccache-style compile. Each source is preprocessed with our flags (absolute,
+   normalized include paths), our tree / SDK / clang resource paths in the .ii
+   are rewritten to Valve's (/Users/buildbot/.../src, Xcode's MacOSX10.9.sdk,
+   Xcode's lib/clang/6.0), and the .ii is compiled under its retail ccache temp
+   name (e.g. inputsyste.tmp.hl2-osx-builder.2104.ii) with Valve's compilation
+   directory (/Users/buildbot/buildslave/../.ccache/tmp).
+2. Objects are written under a scratch root at Valve's Xcode paths
+   (<root>/Users/buildbot/.../Objects-normal/i386/inputsystem.o) with the
+   retail N_OSO mtimes. Static libraries are re-archived with retail member
+   names (convar.o) and member dates, in our archive order.
+3. The waf link command (build-retail/link_commands.json, from
+   `waf retail_linkdb`) is re-run with Valve's object and archive paths. The
+   buildhost.dylib shim maps /Users/buildbot/ onto the scratch root for the
+   clang driver and ld64, so ld64 records Valve's paths verbatim, and gives
+   ld64 the OS X 10.9/10.10 qsort (section order ties).
+4. The result is compared with the retail file (machocmp.py).
+
+No post-link patching is done. LC_UUID follows by itself: ld64 hashes the file
+without the stab nlists and stab strings (see lduuid.py).
+
+  identity.py inputsystem                  rebuild and compare one module
+  identity.py --all                        every dylib in link_commands.json
+
+The scratch tree (<build-dir>/identity/roots/<module>) is kept for inspection;
+compiled objects are cached in <build-dir>/identity/cache.
+"""
+import argparse
+import concurrent.futures
+import hashlib
+import json
+import os
+import re
+import shlex
+import shutil
+import subprocess
+import sys
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+TREE = os.path.normpath(os.path.join(HERE, '..', '..', '..'))
+sys.path.insert(0, HERE)
+sys.path.insert(0, os.path.join(HERE, '..', 'toolchain'))
+import machocmp  # noqa: E402
+
+MANIFEST = os.path.join(TREE, 'devtools', 'bytematch', 'manifests', 'retail-osx32.json')
+MODULE_DIR = os.path.join(TREE, 'devtools', 'bytematch', 'manifests', 'modules')
+ALIASES = os.path.join(HERE, 'aliases.json')
+
+XCODE = '/Applications/Xcode.app/Contents/Developer/'
+VALVE_SDK = XCODE + 'Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/'
+VALVE_RESOURCE = XCODE + 'Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/6.0/'
+VALVE_TOP = '/Users/buildbot/'
+DEFAULT_CCACHE_DIR = '/Users/buildbot/buildslave/../.ccache/tmp/'
+
+N_SO, N_OSO = 0x64, 0x66
+PREPROCESSOR_ONLY = ('-I', '-D', '-U', '-isystem', '-iquote', '-include', '-imacros')
+DEP_FLAGS = ('-MMD', '-MD', '-MP')
+LANG_EXT = {'c': '.i', 'c++': '.ii', 'objective-c++': '.mii', 'objective-c': '.mi'}
+
+
+def log(msg):
+    print(msg, flush=True)
+
+
+# ---------------------------------------------------------------- retail side
+
+def retail_debug_map(path):
+    """[(so_dir, so_name, oso, mtime)] in link order, from the stabs."""
+    img = machocmp.Image(path)
+    out, so = [], []
+    for _, _, ntype, sect, desc, value, name in img.symbols():
+        if ntype == N_SO:
+            if name:
+                so.append(name)
+            else:
+                so = []
+        elif ntype == N_OSO:
+            d, n = (so[0], so[1]) if len(so) >= 2 else ('', so[0] if so else '')
+            out.append({'so_dir': d, 'so_name': n, 'oso': name, 'mtime': value})
+    return out
+
+
+def split_member(oso):
+    m = re.match(r'^(.*\.a)\((.*)\)$', oso)
+    return (m.group(1), m.group(2)) if m else (None, None)
+
+
+# ---------------------------------------------------------------- our build
+
+class Build:
+    def __init__(self, bld):
+        self.bld = os.path.abspath(bld)
+        with open(os.path.join(self.bld, 'compile_commands.json')) as f:
+            cc = json.load(f)
+        self.compile = {}
+        for e in cc:
+            args = e['arguments']
+            out = next((a[2:] if a != '-o' else args[i + 1]) for i, a in enumerate(args)
+                       if a.startswith('-o'))
+            self.compile[os.path.normpath(os.path.join(e['directory'], out))] = e
+        path = os.path.join(self.bld, 'link_commands.json')
+        if not os.path.exists(path):
+            raise SystemExit('%s missing: run `python3 waf retail_linkdb` first' % path)
+        with open(path) as f:
+            self.links = json.load(f)
+        self.by_target = dict((e['target'], e) for e in self.links)
+        self.by_output = dict((os.path.normpath(e['output']), e) for e in self.links)
+
+    def source_of(self, obj):
+        e = self.compile.get(os.path.normpath(obj))
+        if not e:
+            return None, None
+        return os.path.normpath(os.path.join(e['directory'], e['file'])), e
+
+
+def load_manifest():
+    with open(MANIFEST) as f:
+        m = json.load(f)
+    return m
+
+
+def module_key(m, target):
+    for key, mod in m['modules'].items():
+        if mod.get('waf_target') == target and mod['retail'].get('filetype') == 'MH_DYLIB':
+            return key
+    for key in (target, 'bin/' + target):
+        if key in m['modules']:
+            return key
+    return None
+
+
+# ---------------------------------------------------------------- compile
+
+class Compiler:
+    def __init__(self, scratch, tree, aliases, jobs):
+        self.scratch = scratch
+        self.tree = tree.rstrip('/') + '/'
+        self.aliases = aliases
+        self.jobs = jobs
+        self.cache = os.path.join(scratch, 'cache')
+        os.makedirs(self.cache, exist_ok=True)
+
+    def rewrite_map(self, cc_args, valve_src):
+        cc = cc_args[0]
+        resource = os.path.join(os.path.dirname(cc), '..', 'lib', 'clang')
+        rmap = []
+        if os.path.isdir(resource):
+            for v in os.listdir(resource):
+                rmap.append((os.path.join(os.path.dirname(cc), '..', 'lib', 'clang', v) + '/', VALVE_RESOURCE))
+        sdk = next((cc_args[i + 1] for i, a in enumerate(cc_args) if a == '-isysroot'), None)
+        if sdk:
+            rmap.append((sdk.rstrip('/') + '/', VALVE_SDK))
+        for ours, valve in self.aliases:
+            rmap.append((self.tree + ours, valve_src + valve))
+        rmap.append((self.tree, valve_src))
+        rmap.sort(key=lambda p: -len(p[0]))
+        return rmap
+
+    def compile(self, src, entry, valve_src, so_dir, so_name, out):
+        """Preprocess, rewrite paths, compile the .ii as ccache would. Returns cache path."""
+        d = entry['directory']
+        args = list(entry['arguments'])
+        pre, comp, i = [], [], 0
+        while i < len(args):
+            a = args[i]
+            nxt = args[i + 1] if i + 1 < len(args) else None
+            if a == '-o':
+                i += 2
+                continue
+            if a.startswith('-o') or a == '-c' or a in DEP_FLAGS:
+                i += 1
+                continue
+            if a in ('-MF', '-MT', '-MQ'):
+                i += 2
+                continue
+            if os.path.normpath(os.path.join(d, a)) == src:
+                pre.append(src)
+                i += 1
+                continue
+            hit = next((p for p in PREPROCESSOR_ONLY if a == p or a.startswith(p)), None)
+            if hit:
+                val = a[len(hit):] if a != hit else nxt
+                if hit in ('-I', '-isystem', '-iquote', '-include', '-imacros') and val and not os.path.isabs(val):
+                    val = os.path.normpath(os.path.join(d, val))
+                elif hit in ('-I', '-isystem', '-iquote') and val:
+                    val = os.path.normpath(val)
+                if hit in ('-I', '-D', '-U'):
+                    pre.append(hit + val)
+                else:
+                    pre += [hit, val]
+                i += 1 if a != hit else 2
+                continue
+            pre.append(a)
+            comp.append(a)
+            i += 1
+        rmap = self.rewrite_map(args, valve_src)
+        raw = subprocess.run(pre + ['-E', '-o', '-'], cwd=d, stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
+        if raw.returncode:
+            raise RuntimeError('preprocess %s failed:\n%s' % (src, raw.stderr.decode(errors='replace')))
+        text = raw.stdout
+        for ours, valve in rmap:
+            text = text.replace(ours.encode(), valve.encode())
+        comp_dir = so_dir.rstrip('/') or '/'
+        key = hashlib.sha1(text + repr((comp, so_dir, so_name)).encode()).hexdigest()
+        cached = os.path.join(self.cache, key + '.o')
+        if not os.path.exists(cached):
+            tmpdir = os.path.join(self.scratch, 'ccache-tmp', key[:8])
+            os.makedirs(tmpdir, exist_ok=True)
+            ii = os.path.join(tmpdir, so_name)
+            with open(ii, 'wb') as f:
+                f.write(text)
+            cmd = comp + [so_name, '-c', '-Xclang', '-fdebug-compilation-dir', '-Xclang', comp_dir,
+                          '-o', cached + '.tmp']
+            r = subprocess.run(cmd, cwd=tmpdir, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            if r.returncode:
+                raise RuntimeError('compile %s failed:\n%s' % (ii, r.stdout.decode(errors='replace')))
+            os.rename(cached + '.tmp', cached)
+            shutil.rmtree(tmpdir, ignore_errors=True)
+        return cached
+
+
+# ---------------------------------------------------------------- module
+
+def place(cached, dest, mtime):
+    os.makedirs(os.path.dirname(dest), exist_ok=True)
+    shutil.copyfile(cached, dest)
+    os.utime(dest, (mtime, mtime))
+
+
+def lang_of(src):
+    ext = os.path.splitext(src)[1].lower()
+    return {'.c': 'c', '.mm': 'objective-c++', '.m': 'objective-c'}.get(ext, 'c++')
+
+
+def default_so_name(src, lang):
+    """ccache 3 temp name: first 10 characters of the stem, host, pid."""
+    return os.path.splitext(os.path.basename(src))[0][:10] + '.tmp.identity.0' + LANG_EXT[lang]
+
+
+class Module:
+    def __init__(self, target, build, manifest, comp, depot, scratch, out_dir):
+        self.target = target
+        self.build = build
+        self.comp = comp
+        self.key = module_key(manifest, target)
+        if not self.key:
+            raise SystemExit('%s: not in %s' % (target, MANIFEST))
+        self.mod = manifest['modules'][self.key]
+        self.link = build.by_target.get(target)
+        if not self.link:
+            raise SystemExit('%s: no link command in link_commands.json' % target)
+        self.retail = os.path.join(depot, self.mod['retail']['path'])
+        self.root = os.path.join(scratch, 'roots', self.key.replace('/', '_'))
+        self.out = os.path.join(out_dir, os.path.basename(self.link['output']))
+        with open(os.path.join(MODULE_DIR, self.key.replace('/', '.') + '.json')) as f:
+            self.objects = json.load(f)['objects']
+        ours = self.mod.get('objects', [])
+        self.dmap = retail_debug_map(self.retail)
+        if not (len(self.dmap) == len(self.objects) == len(ours)):
+            raise SystemExit('%s: debug map has %d objects, manifest %d/%d' % (target, len(self.dmap), len(self.objects), len(ours)))
+        for o, our, d in zip(self.objects, ours, self.dmap):
+            rel = o['oso']
+            o.update(d)
+            o['source'] = our.get('source')  # path in our tree (retail's may differ, see aliases.json)
+            o['valve_src'] = d['oso'][:-len(rel)] if d['oso'].endswith(rel) and d['oso'] != rel else None
+        self.valve_src = next((o['valve_src'] for o in self.objects if o['valve_src'] and o['kind'] == 'object'),
+                              next((o['valve_src'] for o in self.objects if o['valve_src']), None))
+        self.notes = []
+
+    def vpath(self, p):
+        return os.path.join(self.root, p.lstrip('/')) if p.startswith(VALVE_TOP) else None
+
+    def plan(self):
+        """Work list: (our object, source, compile entry, retail object or None, Valve path)."""
+        d = self.link['directory']
+        args = self.link['arguments']
+        loose = [o for o in self.objects if o['kind'] == 'object']
+        by_src = dict((o.get('source'), o) for o in loose if o.get('source'))
+        obj_dir = os.path.dirname(loose[0]['oso']) if loose else None
+        jobs, arg_map = [], {}
+        for a in args:
+            if not a.endswith('.o') or a.startswith('-'):
+                continue
+            path = os.path.normpath(os.path.join(d, a))
+            src, entry = self.build.source_of(path)
+            if not src:
+                self.notes.append('no compile command for %s' % a)
+                continue
+            rel = os.path.relpath(src, self.comp.tree)
+            r = by_src.get(rel)
+            if r:
+                vp = r['oso']
+            else:
+                vp = os.path.join(obj_dir or (self.valve_src + 'build'), os.path.splitext(os.path.basename(src))[0] + '.o')
+                self.notes.append('%s: not in the retail debug map' % rel)
+            jobs.append(('obj', path, src, entry, r, vp))
+            arg_map[a] = vp
+        return jobs, arg_map
+
+    def archive_plan(self):
+        """For each -l that names one of our static libraries: (lib arg, archive entry, members)."""
+        d = self.link['directory']
+        args = self.link['arguments']
+        libdirs = [os.path.normpath(os.path.join(d, a[2:])) for a in args if a.startswith('-L')]
+        members = [o for o in self.objects if o['kind'] == 'archive_member']
+        out = []
+        for a in args:
+            if not a.startswith('-l'):
+                continue
+            name = 'lib%s.a' % a[2:]
+            ar = next((os.path.join(ld, name) for ld in libdirs if os.path.exists(os.path.join(ld, name))), None)
+            if not ar or os.path.normpath(ar) not in self.build.by_output:
+                continue
+            entry = self.build.by_output[os.path.normpath(ar)]
+            rmem = [o for o in members if o['oso'].split('(')[0].endswith('/' + name)]
+            if rmem:
+                varchive = split_member(rmem[0]['oso'])[0]
+            else:
+                varchive = self.valve_src + 'build/Release/' + name
+            by_src = dict((o.get('source'), o) for o in rmem if o.get('source'))
+            mems = []
+            for inp in entry['inputs']:
+                src, cent = self.build.source_of(inp)
+                if not src:
+                    self.notes.append('no compile command for %s' % inp)
+                    continue
+                rel = os.path.relpath(src, self.comp.tree)
+                r = by_src.get(rel)
+                mname = split_member(r['oso'])[1] if r else os.path.splitext(os.path.basename(src))[0] + '.o'
+                mems.append((inp, src, cent, r, mname))
+            out.append((a, varchive, mems))
+        return out
+
+    def run(self, shim):
+        if os.path.isdir(self.root):
+            shutil.rmtree(self.root)
+        jobs, arg_map = self.plan()
+        archives = self.archive_plan()
+        work = []
+        for kind, path, src, entry, r, vp in jobs:
+            work.append((src, entry, r, ('obj', vp)))
+        for lib, varchive, mems in archives:
+            for inp, src, cent, r, mname in mems:
+                work.append((src, cent, r, ('mem', varchive, mname)))
+
+        def do(item):
+            src, entry, r, dest = item
+            lang = lang_of(src)
+            so_dir = r['so_dir'] if r and r.get('so_dir') else DEFAULT_CCACHE_DIR
+            so_name = r['so_name'] if r and r.get('so_name') else default_so_name(src, lang)
+            vsrc = (r or {}).get('valve_src') or self.valve_src
+            return item, self.comp.compile(src, entry, vsrc, so_dir, so_name, None)
+
+        with concurrent.futures.ThreadPoolExecutor(self.comp.jobs) as ex:
+            for item, cached in ex.map(do, work):
+                src, entry, r, dest = item
+                mtime = r['mtime'] if r else 0
+                if dest[0] == 'obj':
+                    place(cached, self.vpath(dest[1]), mtime)
+                else:
+                    stage = os.path.join(self.root, '.ar', os.path.basename(dest[1]))
+                    place(cached, os.path.join(stage, dest[2]), mtime)
+        lib_map = {}
+        for lib, varchive, mems in archives:
+            stage = os.path.join(self.root, '.ar', os.path.basename(varchive))
+            dest = self.vpath(varchive)
+            os.makedirs(os.path.dirname(dest), exist_ok=True)
+            if os.path.exists(dest):
+                os.unlink(dest)
+            names = []
+            for m in mems:
+                if m[4] not in names:
+                    names.append(m[4])
+            subprocess.check_call(['/usr/bin/ar', 'rcs', dest] + names, cwd=stage,
+                                  stderr=subprocess.DEVNULL)
+            lib_map[lib] = varchive
+        # link
+        cmd = []
+        for a in self.link['arguments']:
+            if a in arg_map:
+                cmd.append(arg_map[a])
+            elif a in lib_map:
+                cmd.append(lib_map[a])
+            elif a.startswith('-o') and len(a) > 2:
+                cmd.append('-o' + self.out)
+            else:
+                cmd.append(a)
+        if '-o' in cmd:
+            cmd[cmd.index('-o') + 1] = self.out
+        os.makedirs(os.path.dirname(self.out), exist_ok=True)
+        env = dict(os.environ)
+        env['DYLD_INSERT_LIBRARIES'] = shim
+        env['BM_PATHMAP'] = '%s=%s/' % (VALVE_TOP, os.path.join(self.root, VALVE_TOP[1:].rstrip('/')))
+        r = subprocess.run(cmd, cwd=self.link['directory'], env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        if r.returncode:
+            raise RuntimeError('link failed:\n%s\n%s' % (' '.join(shlex.quote(c) for c in cmd), r.stdout.decode(errors='replace')))
+        with open(os.path.join(os.path.dirname(self.out), os.path.basename(self.out) + '.link.txt'), 'w') as f:
+            f.write(' '.join(shlex.quote(c) for c in cmd) + '\n')
+        return self.out
+
+
+def build_shim(scratch):
+    srcs = [os.path.join(HERE, f) for f in ('buildhost.c', 'qsort109.c')]
+    out = os.path.join(scratch, 'buildhost.dylib')
+    if not os.path.exists(out) or os.path.getmtime(out) < max(os.path.getmtime(s) for s in srcs):
+        subprocess.check_call(['xcrun', 'clang', '-O2', '-dynamiclib', '-o', out] + srcs)
+    return out
+
+
+def load_aliases():
+    if not os.path.exists(ALIASES):
+        return []
+    with open(ALIASES) as f:
+        data = json.load(f)
+    return [(a['ours'], a['valve']) for a in data['aliases']]
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument('targets', nargs='*', help='waf target names (inputsystem, tier0, vgui2, ...)')
+    ap.add_argument('--all', action='store_true', help='every dylib in link_commands.json')
+    ap.add_argument('--build-dir', default=os.path.join(TREE, 'build-retail'))
+    ap.add_argument('--scratch', default=None, help='scratch tree [default: <build-dir>/identity]')
+    ap.add_argument('--depot', default=None, help='retail depot 223 build root')
+    ap.add_argument('--no-aliases', action='store_true', help='ignore aliases.json')
+    ap.add_argument('-j', '--jobs', type=int, default=os.cpu_count() or 4)
+    ap.add_argument('-s', '--symbols', action='store_true', help='show the symbol-table diff')
+    args = ap.parse_args()
+
+    import retailflags
+    depot = args.depot or retailflags.RETAIL_DEPOT
+    build = Build(args.build_dir)
+    scratch = os.path.abspath(args.scratch or os.path.join(build.bld, 'identity'))
+    os.makedirs(scratch, exist_ok=True)
+    manifest = load_manifest()
+    targets = args.targets
+    if args.all:
+        targets = [e['target'] for e in build.links if e['kind'].endswith('shlib') or e['kind'].endswith('program')]
+    if not targets:
+        ap.error('no targets')
+    shim = build_shim(scratch)
+    comp = Compiler(scratch, TREE, [] if args.no_aliases else load_aliases(), args.jobs)
+    rc = 0
+    summary = []
+    for t in targets:
+        try:
+            m = Module(t, build, manifest, comp, depot, scratch, os.path.join(scratch, 'out'))
+            out = m.run(shim)
+        except (RuntimeError, SystemExit) as e:
+            log('%s: FAILED: %s' % (t, e))
+            summary.append((t, 'failed', str(e).splitlines()[0]))
+            rc = 1
+            continue
+        for n in m.notes:
+            log('%s: note: %s' % (t, n))
+        a, b = machocmp.Image(out), machocmp.Image(m.retail)
+        cargs = argparse.Namespace(symbols=args.symbols, verbose=False, max=60)
+        status, lines = machocmp.compare(a, b, cargs)
+        log('\n'.join(lines))
+        summary.append((t, 'IDENTICAL' if status == 0 else 'differs', out))
+        rc |= status
+    log('')
+    for t, s, info in summary:
+        log('%-24s %-10s %s' % (t, s, info))
+    return rc
+
+
+if __name__ == '__main__':
+    sys.exit(main())

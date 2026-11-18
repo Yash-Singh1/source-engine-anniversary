@@ -26,15 +26,16 @@
   "SetParent(unsigned int)"
  ],
  "retail_reference": {
-  "module": "hl2mp/client",
-  "class": "IViewPortPanel",
-  "offset": 0,
+  "module": "hl2/client",
+  "class": "CTextWindow",
+  "offset": 572,
   "chain": [
+   "CTextWindow",
    "IViewPortPanel"
   ]
  },
- "retail_len": 2,
- "retail_len_basis": "own vtable",
+ "retail_len": 12,
+ "retail_len_basis": "IViewPortPanel subobject of hl2/client CTextWindow (non-virtual thunks); IViewPortPanel own vtable has only the destructors",
  "retail_len_bounds": {
   "shortest deriving subtable": 2
  },
@@ -43,13 +44,73 @@
    "index": 0,
    "name": "~IViewPortPanel",
    "sig": "~IViewPortPanel()",
-   "symbol": "IViewPortPanel::~IViewPortPanel()"
+   "symbol": "CTextWindow::~CTextWindow()"
   },
   {
    "index": 1,
    "name": "~IViewPortPanel",
    "sig": "~IViewPortPanel()",
-   "symbol": "IViewPortPanel::~IViewPortPanel()"
+   "symbol": "CTextWindow::~CTextWindow()"
+  },
+  {
+   "index": 2,
+   "name": "GetName",
+   "sig": "GetName()",
+   "symbol": "CTextWindow::GetName()"
+  },
+  {
+   "index": 3,
+   "name": "SetData",
+   "sig": "SetData(KeyValues*)",
+   "symbol": "CTextWindow::SetData(KeyValues*)"
+  },
+  {
+   "index": 4,
+   "name": "Reset",
+   "sig": "Reset()",
+   "symbol": "CTextWindow::Reset()"
+  },
+  {
+   "index": 5,
+   "name": "Update",
+   "sig": "Update()",
+   "symbol": "CTextWindow::Update()"
+  },
+  {
+   "index": 6,
+   "name": "NeedsUpdate",
+   "sig": "NeedsUpdate()",
+   "symbol": "CTextWindow::NeedsUpdate()"
+  },
+  {
+   "index": 7,
+   "name": "HasInputElements",
+   "sig": "HasInputElements()",
+   "symbol": "CTextWindow::HasInputElements()"
+  },
+  {
+   "index": 8,
+   "name": "ShowPanel",
+   "sig": "ShowPanel(bool)",
+   "symbol": "CTextWindow::ShowPanel(bool)"
+  },
+  {
+   "index": 9,
+   "name": "GetVPanel",
+   "sig": "GetVPanel()",
+   "symbol": "CTextWindow::GetVPanel()"
+  },
+  {
+   "index": 10,
+   "name": "IsVisible",
+   "sig": "IsVisible()",
+   "symbol": "CTextWindow::IsVisible()"
+  },
+  {
+   "index": 11,
+   "name": "SetParent",
+   "sig": "SetParent(unsigned int)",
+   "symbol": "CTextWindow::SetParent(unsigned int)"
   }
  ],
  "derived": [

@@ -244,7 +244,10 @@ private:
 
 	INetMessage *FindMessage(int type);
 
+#ifndef BYTEMATCH_RETAIL
 	static bool HandleUpload( dataFragments_t *data, INetChannelHandler *MessageHandler );
+#endif
+#line 247
 
 #ifdef STAGING_ONLY
 public:
@@ -254,7 +257,10 @@ public:
 public:
 
 	bool		m_bProcessingMessages;
+#ifndef BYTEMATCH_RETAIL
 	bool		m_bClearedDuringProcessing;
+#endif
+#line 256
 	bool		m_bShouldDelete;
 
 	// last send outgoing sequence number

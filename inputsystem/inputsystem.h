@@ -44,12 +44,6 @@
 
 #include "steam/steam_api.h"
 
-// Anniversary GameActionSet_t values (the action set names in the HL2 Steam Input manifest).
-// Drop these once public/inputsystem/InputEnums.h carries them.
-#define GAME_ACTION_SET_GAMECONTROLS	( (GameActionSet_t)0 )
-#define GAME_ACTION_SET_VEHICLECONTROLS	( (GameActionSet_t)1 )
-#define GAME_ACTION_SET_MENUCONTROLS	( (GameActionSet_t)2 )
-
 #ifndef BYTEMATCH_RETAIL
 #define TOUCH_FINGER_MAX_COUNT 10
 #endif
@@ -364,6 +358,9 @@ public:
 
 	// Forwards rumble to the active Steam Input controller
 	void SetSteamInputRumble( float fLeftMotor, float fRightMotor, int userId );
+
+	// Converts SteamController keys to button codes
+	ButtonCode_t SKeyToButtonCode( int nUserId, int nXKey ) const;
 
 #if defined( PLATFORM_WINDOWS_PC )
 	void PollInputState_Windows();

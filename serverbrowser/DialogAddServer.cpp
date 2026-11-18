@@ -110,8 +110,8 @@ CDialogAddServer::~CDialogAddServer()
 {
 	FOR_EACH_VEC( m_Queries, i )
 	{
-		if ( steamapicontext->SteamMatchmakingServers() )
-			steamapicontext->SteamMatchmakingServers()->CancelServerQuery( m_Queries[ i ] );
+		if ( SteamMatchmakingServers() )
+			SteamMatchmakingServers()->CancelServerQuery( m_Queries[ i ] );
 	}
 }
 
@@ -217,7 +217,7 @@ void CDialogAddServer::OnOK()
 //-----------------------------------------------------------------------------
 void CDialogAddServer::TestServers()
 {
-	if ( !steamapicontext->SteamMatchmakingServers() )
+	if ( !SteamMatchmakingServers() )
 		return;
 
 	m_pDiscoveredGames->SetEmptyListText( "" );
@@ -272,7 +272,7 @@ void CDialogAddServer::TestServers()
 #ifdef BYTEMATCH_RETAIL
 	FOR_EACH_VEC( vecAdress, iAddress )
 	{
-		m_Queries.AddToTail( steamapicontext->SteamMatchmakingServers()->PingServer( vecAdress[ iAddress ].GetIPHostByteOrder(), vecAdress[ iAddress ].GetPort(), this ) );
+		m_Queries.AddToTail( SteamMatchmakingServers()->PingServer( vecAdress[ iAddress ].GetIPHostByteOrder(), vecAdress[ iAddress ].GetPort(), this ) );
 	}
 #endif
 }

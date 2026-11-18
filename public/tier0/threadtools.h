@@ -672,19 +672,16 @@ namespace ThreadIndexInternal
 	struct CThreadIndex
 	{
 		int m_nIndex;
-		CThreadIndex() : m_nIndex( -1 ) {}
-		~CThreadIndex() { if ( m_nIndex >= 0 ) Slots()[m_nIndex] = 0; }
+#if !( defined( _MSC_VER ) && _MSC_VER < 1900 )	// MSVC 2013: no thread_local; the static TLS below needs a POD, so slots are never released
+		CThreadIndex() : m_nIndex( -1 ) {} ~CThreadIndex() { if ( m_nIndex >= 0 ) Slots()[m_nIndex] = 0; }
+#endif
 		int Get()
 		{
 			if ( m_nIndex < 0 )
 			{
 				for ( int i = 0; i < MAX_THREADS_SUPPORTED; i++ )
 				{
-					if ( Slots()[i].AssignIf( 0, 1 ) )
-					{
-						m_nIndex = i;
-						break;
-					}
+					if ( Slots()[i].AssignIf( 0, 1 ) ) { m_nIndex = i; break; }
 				}
 				if ( m_nIndex < 0 )
 					Error( "More than %d threads need a thread index\n", MAX_THREADS_SUPPORTED );
@@ -692,10 +689,13 @@ namespace ThreadIndexInternal
 			return m_nIndex;
 		}
 	};
-
 	inline int Current()
 	{
+#if defined( _MSC_VER ) && _MSC_VER < 1900
+		static __declspec( thread ) CThreadIndex s_Index = { -1 };
+#else
 		static thread_local CThreadIndex s_Index;
+#endif
 		return s_Index.Get();
 	}
 }
@@ -1208,7 +1208,7 @@ inline int ThreadWaitForEvents( int nEvents, CThreadEvent * const *pEvents, bool
 	return WAIT_TIMEOUT;
 #else
 	HANDLE handles[64];
-	for ( unsigned int i = 0; i < min( nEvents, ARRAYSIZE(handles) ); i++ )
+	for ( int i = 0; i < min( nEvents, (int)ARRAYSIZE(handles) ); i++ )
 		handles[i] = pEvents[i]->GetHandle();
 	return ThreadWaitForObjects( nEvents, handles, bWaitAll, timeout );
 #endif

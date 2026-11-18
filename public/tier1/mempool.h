@@ -394,7 +394,12 @@ inline void CClassMemoryPool<T>::Free(T *pMem)
 template< class T >
 inline void CClassMemoryPool<T>::Clear()
 {
+#ifdef BYTEMATCH_RETAIL
+	CUtlRBTree<void *> freeBlocks;
+#else
 	CUtlRBTree<void *, int> freeBlocks;
+#endif
+#line 398
 	SetDefLessFunc( freeBlocks );
 
 	void *pCurFree = m_pHeadOfFreeList;
@@ -406,9 +411,15 @@ inline void CClassMemoryPool<T>::Clear()
 
 	for( CBlob *pCur=m_BlobHead.m_pNext; pCur != &m_BlobHead; pCur=pCur->m_pNext )
 	{
+#ifdef BYTEMATCH_RETAIL
+		T *p = (T *)pCur->m_Data;
+		T *pLimit = (T *)(pCur->m_Data + pCur->m_NumBytes);
+#else
 		int nElements = pCur->m_NumBytes / this->m_BlockSize;
 		T *p = ( T * ) AlignValue( pCur->m_Data, this->m_nAlignment );
 		T *pLimit = p + nElements;
+#endif
+#line 412
 		while ( p < pLimit )
 		{
 			if ( freeBlocks.Find( p ) == freeBlocks.InvalidIndex() )

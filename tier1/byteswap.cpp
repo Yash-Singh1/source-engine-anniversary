@@ -34,9 +34,9 @@ void CByteswap::SwapFieldToTargetEndian( void* pOutputBuffer, void *pData, typed
 		SwapBufferToTargetEndian<int>( (int*)pOutputBuffer, (int*)pData, pField->fieldSize );
 		break;
 
-    case FIELD_INTEGER64:
-        SwapBufferToTargetEndian<uint64>( (uint64*)pOutputBuffer, (uint64*)pData, pField->fieldSize );
-        break;
+#ifndef BYTEMATCH_RETAIL
+    case FIELD_INTEGER64: SwapBufferToTargetEndian<uint64>( (uint64*)pOutputBuffer, (uint64*)pData, pField->fieldSize ); break;
+#endif
 
 	case FIELD_VECTOR:
 		SwapBufferToTargetEndian<uint>( (uint*)pOutputBuffer, (uint*)pData, pField->fieldSize * 3 );

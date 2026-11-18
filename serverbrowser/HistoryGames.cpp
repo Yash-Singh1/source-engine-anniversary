@@ -127,7 +127,7 @@ void CHistoryGames::OnOpenContextMenu(int itemID)
 //-----------------------------------------------------------------------------
 void CHistoryGames::OnRemoveFromHistory()
 {
-	if ( !steamapicontext->SteamMatchmakingServers() || !steamapicontext->SteamMatchmaking() )
+	if ( !SteamMatchmakingServers() || !SteamMatchmaking() )
 		return;
 
 	// iterate the selection
@@ -136,9 +136,9 @@ void CHistoryGames::OnRemoveFromHistory()
 		int itemID = m_pGameList->GetSelectedItem( i );
 		int serverID = m_pGameList->GetItemData(itemID)->userData;
 		
-		gameserveritem_t *pServer = steamapicontext->SteamMatchmakingServers()->GetServerDetails( m_hRequest, serverID );
+		gameserveritem_t *pServer = SteamMatchmakingServers()->GetServerDetails( m_hRequest, serverID );
 		if ( pServer )
-			steamapicontext->SteamMatchmaking()->RemoveFavoriteGame( pServer->m_nAppID, pServer->m_NetAdr.GetIP(), pServer->m_NetAdr.GetConnectionPort(), pServer->m_NetAdr.GetQueryPort(), k_unFavoriteFlagHistory );
+			SteamMatchmaking()->RemoveFavoriteGame( pServer->m_nAppID, pServer->m_NetAdr.GetIP(), pServer->m_NetAdr.GetConnectionPort(), pServer->m_NetAdr.GetQueryPort(), k_unFavoriteFlagHistory );
 	}
 
 	UpdateStatus();	
