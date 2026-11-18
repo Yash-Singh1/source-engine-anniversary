@@ -2258,12 +2258,12 @@ bool EnableLongTickWatcher()
 		g_bQuitLongTickWatcherThread = false;
 		g_bLongTickWatcherThreadEnabled = true;
 
-		DWORD nThreadID;
+		ThreadId_t nThreadID;
 		VCRHook_CreateThread(NULL, 0,
 #ifdef POSIX
 			(void*)
 #endif
-			LongTickWatcherThread, NULL, 0, (uintp *)&nThreadID );
+			LongTickWatcherThread, NULL, 0, &nThreadID );
 
 		bRet = true;
 	}

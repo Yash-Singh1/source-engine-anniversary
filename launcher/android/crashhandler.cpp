@@ -41,7 +41,7 @@ struct backtrace_t
 	uintptr_t frames[MAX_FRAMES];
 };
 
-#define Log(msg) __android_log_print(ANDROID_LOG_DEBUG, "SRCENG", "%s", msg); DebugLogger()->Write(msg);
+#define Log(msg) __android_log_print(ANDROID_LOG_DEBUG, "SRCENG", "%s", msg);
 
 void printPC(void *pc)
 {

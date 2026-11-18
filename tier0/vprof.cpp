@@ -447,7 +447,7 @@ void CVProfNode::Validate( CValidator &validator, tchar *pchName )
 struct TimeSums_t
 {
 	const tchar *pszProfileScope;
-	int			calls;
+	unsigned	calls;
 	double 		time;
 	double 		timeLessChildren;
 	double		peak;
@@ -528,7 +528,7 @@ void CVProfile::SumTimes( CVProfNode *pNode, int budgetGroupID )
 			iter = g_TimeSumsMap.find( pNode->GetName() ); // intenionally using address of string rather than string compare (toml 01-27-03)
 			if ( iter == g_TimeSumsMap.end() )
 			{
-				TimeSums_t timeSums = { pNode->GetName(), pNode->GetTotalCalls(), pNode->GetTotalTime(), timeLessChildren, pNode->GetPeakTime() };
+				TimeSums_t timeSums = { pNode->GetName(), (unsigned)pNode->GetTotalCalls(), pNode->GetTotalTime(), timeLessChildren, pNode->GetPeakTime() };
 				g_TimeSumsMap.insert( make_pair( pNode->GetName(), g_TimeSums.size() ) );
 				g_TimeSums.push_back( timeSums );
 			}
@@ -1516,7 +1516,7 @@ void CVProfile::Term()
 	{
 		delete [] m_pBudgetGroups[i].m_pName;
 	}
-	delete[] m_pBudgetGroups;
+	delete m_pBudgetGroups;
 	m_nBudgetGroupNames = m_nBudgetGroupNamesAllocated = 0;
 	m_pBudgetGroups = NULL;
 

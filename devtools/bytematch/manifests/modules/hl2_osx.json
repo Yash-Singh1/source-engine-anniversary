@@ -1,0 +1,173 @@
+{
+ "module": "hl2_osx",
+ "depot": "223",
+ "build": "19307283",
+ "path": "hl2_osx",
+ "aliases": [],
+ "sha256": "678159be877650c347b1f4c24c8de63ce1a38f536ffa4acc45eec6b90e51984a",
+ "size": 9164,
+ "macho": {
+  "filetype": "MH_EXECUTE",
+  "flags": "0x1000085",
+  "segments": [
+   {
+    "name": "__PAGEZERO",
+    "vmaddr": "0x0",
+    "vmsize": 4096,
+    "sections": []
+   },
+   {
+    "name": "__TEXT",
+    "vmaddr": "0x1000",
+    "vmsize": 4096,
+    "sections": [
+     [
+      "__text",
+      "0x1de0",
+      221,
+      16
+     ],
+     [
+      "__symbol_stub",
+      "0x1ebe",
+      24,
+      2
+     ],
+     [
+      "__stub_helper",
+      "0x1ed8",
+      52,
+      4
+     ],
+     [
+      "__cstring",
+      "0x1f0c",
+      101,
+      1
+     ],
+     [
+      "__unwind_info",
+      "0x1f74",
+      80,
+      4
+     ],
+     [
+      "__eh_frame",
+      "0x1fc8",
+      52,
+      8
+     ]
+    ]
+   },
+   {
+    "name": "__DATA",
+    "vmaddr": "0x2000",
+    "vmsize": 4096,
+    "sections": [
+     [
+      "__program_vars",
+      "0x2000",
+      20,
+      4
+     ],
+     [
+      "__nl_symbol_ptr",
+      "0x2014",
+      12,
+      4
+     ],
+     [
+      "__la_symbol_ptr",
+      "0x2020",
+      16,
+      4
+     ],
+     [
+      "__common",
+      "0x2030",
+      16,
+      4
+     ]
+    ]
+   },
+   {
+    "name": "__LINKEDIT",
+    "vmaddr": "0x3000",
+    "vmsize": 4096,
+    "sections": []
+   }
+  ],
+  "dylibs": [
+   {
+    "path": "/usr/lib/libstdc++.6.dylib",
+    "current": "60.0.0",
+    "compat": "7.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "/usr/lib/libSystem.B.dylib",
+    "current": "1197.1.1",
+    "compat": "1.0.0",
+    "kind": "LOAD_DYLIB"
+   }
+  ],
+  "load_commands": [
+   "SEGMENT",
+   "SEGMENT",
+   "SEGMENT",
+   "SEGMENT",
+   "DYLD_INFO_ONLY",
+   "SYMTAB",
+   "DYSYMTAB",
+   "LOAD_DYLINKER",
+   "UUID",
+   "VERSION_MIN_MACOSX",
+   "UNIXTHREAD",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "FUNCTION_STARTS",
+   "DATA_IN_CODE"
+  ],
+  "uuid": "D9B2A47D40603499BA41D981683F598F",
+  "min_macosx": "10.6.0",
+  "sdk": "10.9.0"
+ },
+ "build_roots": {
+  "rel_singleplayer_osx": 1
+ },
+ "ccache_hosts": {
+  "hl2-osx-builder": 1
+ },
+ "xcode_targets": {
+  "launcher_main": 1
+ },
+ "stab_counts": {
+  "0x24": 2,
+  "0x2e": 1,
+  "0x4e": 1,
+  "0x64": 3,
+  "0x66": 1,
+  "0x84": 1
+ },
+ "n_objects": 1,
+ "n_loose_objects": 1,
+ "n_archive_members": 0,
+ "n_prebuilt_members": 0,
+ "built_mtime_range": [
+  "2024-11-13T17:24:54Z",
+  "2024-11-13T17:24:54Z"
+ ],
+ "static_libraries": [],
+ "text_order_matches_oso_order": true,
+ "headers_with_code": {},
+ "unstabbed_text": {
+  "n_symbols": 1,
+  "bytes": 64,
+  "by_prefix": {
+   "start": 64
+  }
+ },
+ "objects": [
+  {"index": 0, "oso": "build/buildbot_osx.build/Release/launcher_main.build/Objects-normal/i386/main.o", "kind": "object", "archive": null, "member": null, "xcode_target": "launcher_main", "stem": "main", "mtime": 1731518694, "mtime_utc": "2024-11-13T17:24:54Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "main.tmp.hl2-osx-builder.49238.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "launcher_main/main.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 1, "n_data": 0, "text_bytes": 157, "first_addr": "0x1e20", "files": ["launcher_main/main.cpp"]}
+ ]
+}

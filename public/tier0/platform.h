@@ -1308,10 +1308,7 @@ struct CPUInformation
 
 	tchar* m_szProcessorID;				// Processor vendor Identification.
 
-	uint32 m_nModel;
-	uint32 m_nFeatures[3];
-
-	CPUInformation() = default;
+	CPUInformation(): m_Size(0){}
 };
 
 // Have to return a pointer, not a reference, because references are not compatible with the
@@ -1409,7 +1406,7 @@ PLATFORM_INTERFACE void* Plat_SimpleLog( const tchar* file, int line );
 // Returns true if debugger attached, false otherwise
 //-----------------------------------------------------------------------------
 #if defined(_WIN32) || defined(LINUX) || defined(OSX) || defined(PLATFORM_BSD)
-PLATFORM_INTERFACE bool Plat_IsInDebugSession();
+PLATFORM_INTERFACE bool Plat_IsInDebugSession( bool bForceRecheck = false );
 PLATFORM_INTERFACE void Plat_DebugString( const char * );
 #else
 #warning "Plat_IsInDebugSession isn't working properly"

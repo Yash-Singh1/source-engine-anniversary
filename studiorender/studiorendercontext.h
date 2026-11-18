@@ -31,8 +31,6 @@ class CStudioRender;
 extern IStudioDataCache *g_pStudioDataCache;
 extern CStudioRender *g_pStudioRenderImp;
 
-IMaterial* GetModelSpecificDecalMaterial( IMaterial* pDecalMaterial );
-
 //-----------------------------------------------------------------------------
 // Internal config structure
 //-----------------------------------------------------------------------------

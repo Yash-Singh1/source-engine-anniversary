@@ -1,0 +1,53 @@
+{
+ "module": "bin/studiorender",
+ "our_target": "studiorender",
+ "our_games": null,
+ "project_dir": "studiorender",
+ "order_rule_inversions": 0,
+ "counts": {
+  "exact": 10
+ },
+ "counts_sdk": {
+  "missing": 10
+ },
+ "diff": {
+  "add": [],
+  "remove": [
+   {
+    "path": "studiorender/r_studiodraw_computeflexedvertex.cpp",
+    "note": null
+   },
+   {
+    "path": "public/tier0/memoverride.cpp",
+    "note": "no retail Mac module links a memoverride object: Valve's Mac build has no malloc override (malloc from libSystem, operator new from libstdc++)"
+   }
+  ],
+  "path_differs": [],
+  "order": {
+   "common": 10,
+   "in_order_lis": 8,
+   "need_moving": 2,
+   "identical": false
+  },
+  "libraries": {
+   "retail": [
+    "tier3",
+    "mathlib",
+    "tier2",
+    "tier1"
+   ],
+   "ours": [
+    "tier1",
+    "tier2",
+    "tier3",
+    "mathlib",
+    "bitmap"
+   ],
+   "retail_only": [],
+   "ours_only": [
+    "bitmap"
+   ],
+   "same_relative_order": false
+  }
+ }
+}

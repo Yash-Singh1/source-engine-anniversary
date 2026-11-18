@@ -1,0 +1,41 @@
+{
+ "module": "bin/soundemittersystem",
+ "our_target": "soundemittersystem",
+ "our_games": null,
+ "project_dir": "soundemittersystem",
+ "order_rule_inversions": 0,
+ "counts": {
+  "exact": 3
+ },
+ "counts_sdk": {
+  "exact": 2,
+  "missing": 1
+ },
+ "diff": {
+  "add": [],
+  "remove": [
+   {
+    "path": "public/tier0/memoverride.cpp",
+    "note": "no retail Mac module links a memoverride object: Valve's Mac build has no malloc override (malloc from libSystem, operator new from libstdc++)"
+   }
+  ],
+  "path_differs": [],
+  "order": {
+   "common": 3,
+   "in_order_lis": 2,
+   "need_moving": 1,
+   "identical": false
+  },
+  "libraries": {
+   "retail": [
+    "tier1"
+   ],
+   "ours": [
+    "tier1"
+   ],
+   "retail_only": [],
+   "ours_only": [],
+   "same_relative_order": true
+  }
+ }
+}

@@ -1,0 +1,14 @@
+{
+ "module": "bin/bsppack",
+ "our_target": null,
+ "our_games": null,
+ "project_dir": "utils/bsppack",
+ "order_rule_inversions": 0,
+ "counts": {
+  "exact": 7
+ },
+ "counts_sdk": {
+  "exact": 6,
+  "missing": 1
+ }
+}

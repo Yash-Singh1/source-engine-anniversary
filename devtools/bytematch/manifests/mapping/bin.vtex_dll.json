@@ -1,0 +1,53 @@
+{
+ "module": "bin/vtex_dll",
+ "our_target": "vtex_dll",
+ "our_games": null,
+ "project_dir": "utils/vtex",
+ "order_rule_inversions": 0,
+ "counts": {
+  "exact": 4
+ },
+ "counts_sdk": {
+  "exact": 3,
+  "missing": 1
+ },
+ "diff": {
+  "add": [],
+  "remove": [
+   {
+    "path": "public/filesystem_helpers.cpp",
+    "note": null
+   },
+   {
+    "path": "common/imageutils.cpp",
+    "note": null
+   }
+  ],
+  "path_differs": [],
+  "order": {
+   "common": 4,
+   "in_order_lis": 3,
+   "need_moving": 1,
+   "identical": false
+  },
+  "libraries": {
+   "retail": [
+    "bitmap",
+    "vtf",
+    "mathlib",
+    "tier2",
+    "tier1"
+   ],
+   "ours": [
+    "tier1",
+    "bitmap",
+    "tier2",
+    "mathlib",
+    "vtf"
+   ],
+   "retail_only": [],
+   "ours_only": [],
+   "same_relative_order": false
+  }
+ }
+}

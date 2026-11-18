@@ -36,6 +36,8 @@ def build(bld):
 	if bld.env.DEST_OS == 'android':
 		libs += ['ANDROID_SUPPORT']
 
+	source, libs = bld.retail_manifest('bin/scenefilecache', source, libs)
+
 	install_path = bld.env.LIBDIR
 
 	bld.shlib(

@@ -1,0 +1,89 @@
+{
+ "module": "bin/libtogl",
+ "our_target": "togl",
+ "our_games": null,
+ "project_dir": "togl/osx",
+ "order_rule_inversions": 0,
+ "counts": {
+  "moved": 11
+ },
+ "counts_sdk": {
+  "missing": 11
+ },
+ "diff": {
+  "add": [],
+  "remove": [
+   {
+    "path": "togl/linuxwin/asanstubs.cpp",
+    "note": null
+   }
+  ],
+  "path_differs": [
+   {
+    "retail": "togl/osx/cglmbuffer.cpp",
+    "ours": "togl/linuxwin/cglmbuffer.cpp"
+   },
+   {
+    "retail": "togl/osx/cglmfbo.cpp",
+    "ours": "togl/linuxwin/cglmfbo.cpp"
+   },
+   {
+    "retail": "togl/osx/cglmprogram.cpp",
+    "ours": "togl/linuxwin/cglmprogram.cpp"
+   },
+   {
+    "retail": "togl/osx/cglmquery.cpp",
+    "ours": "togl/linuxwin/cglmquery.cpp"
+   },
+   {
+    "retail": "togl/osx/cglmtex.cpp",
+    "ours": "togl/linuxwin/cglmtex.cpp"
+   },
+   {
+    "retail": "togl/osx/dx9asmtogl2.cpp",
+    "ours": "togl/linuxwin/dx9asmtogl2.cpp"
+   },
+   {
+    "retail": "togl/osx/dxabstract.cpp",
+    "ours": "togl/linuxwin/dxabstract.cpp"
+   },
+   {
+    "retail": "togl/osx/glentrypoints.cpp",
+    "ours": "togl/linuxwin/glentrypoints.cpp"
+   },
+   {
+    "retail": "togl/osx/glmgr.cpp",
+    "ours": "togl/linuxwin/glmgr.cpp"
+   },
+   {
+    "retail": "togl/osx/glmgrbasics.cpp",
+    "ours": "togl/linuxwin/glmgrbasics.cpp"
+   },
+   {
+    "retail": "togl/osx/glmgrcocoa.mm",
+    "ours": "togl/linuxwin/glmgrcocoa.mm"
+   }
+  ],
+  "order": {
+   "common": 11,
+   "in_order_lis": 6,
+   "need_moving": 5,
+   "identical": false
+  },
+  "libraries": {
+   "retail": [
+    "mathlib",
+    "tier2",
+    "tier1"
+   ],
+   "ours": [
+    "tier1",
+    "tier2",
+    "mathlib"
+   ],
+   "retail_only": [],
+   "ours_only": [],
+   "same_relative_order": false
+  }
+ }
+}

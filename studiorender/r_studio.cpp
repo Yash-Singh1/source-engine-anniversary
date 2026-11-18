@@ -263,11 +263,6 @@ int R_StudioSetupModel( int bodypart, int entity_body, mstudiomodel_t **ppSubMod
 
 	pbodypart = pStudioHdr->pBodypart( bodypart );
 
-	if ( pbodypart->base == 0 )
-	{
-		Warning( "Model has missing body part: %s\n", pStudioHdr->pszName() );
-		Assert( 0 );
-	}
 	index = entity_body / pbodypart->base;
 	index = index % pbodypart->nummodels;
 

@@ -1,0 +1,28 @@
+MacOSX10.9.sdk declares scandir/alphasort with the POSIX.1-2008 const
+signatures (Apple Libc 825+, OS X 10.8); the 10.6 headers the stub SDK
+reuses still have the old ones. Applied by make-sdk109.py.
+
+--- a/usr/include/dirent.h
++++ b/usr/include/dirent.h
+@@ -101,7 +101,7 @@
+ 
+ __BEGIN_DECLS
+ #if !defined(_POSIX_C_SOURCE) || defined(_DARWIN_C_SOURCE)
+-int alphasort(const void *, const void *) __DARWIN_INODE64(alphasort);
++int alphasort(const struct dirent **, const struct dirent **) __DARWIN_INODE64(alphasort);
+ #endif /* not POSIX */
+ int closedir(DIR *) __DARWIN_ALIAS(closedir);
+ #if !defined(_POSIX_C_SOURCE) || defined(_DARWIN_C_SOURCE)
+@@ -126,10 +126,10 @@
+ void rewinddir(DIR *) __DARWIN_ALIAS_I(rewinddir);
+ #if !defined(_POSIX_C_SOURCE) || defined(_DARWIN_C_SOURCE)
+ int scandir(const char *, struct dirent ***,
+-    int (*)(struct dirent *), int (*)(const void *, const void *)) __DARWIN_INODE64(scandir);
++    int (*)(const struct dirent *), int (*)(const struct dirent **, const struct dirent **)) __DARWIN_INODE64(scandir);
+ #ifdef __BLOCKS__
+ int scandir_b(const char *, struct dirent ***,
+-    int (^)(struct dirent *), int (^)(const void *, const void *)) __DARWIN_INODE64(scandir_b);
++    int (^)(const struct dirent *), int (^)(const struct dirent **, const struct dirent **)) __DARWIN_INODE64(scandir_b);
+ #endif /* __BLOCKS__ */
+ #endif /* not POSIX */
+ void seekdir(DIR *, long) __DARWIN_ALIAS_I(seekdir);

@@ -1,0 +1,321 @@
+{
+ "module": "episodic/client",
+ "our_target": "client",
+ "our_games": "episodic",
+ "project_dir": "game/client",
+ "order_rule_inversions": 2,
+ "counts": {
+  "exact": 467,
+  "missing": 2
+ },
+ "counts_sdk": {
+  "exact": 466,
+  "missing": 3
+ },
+ "diff": {
+  "add": [
+   {
+    "path": "common/imageutils.cpp",
+    "in_our_tree": "exact",
+    "in_sdk": "missing",
+    "alternatives": null
+   },
+   {
+    "path": "game/client/in_steamcontroller.cpp",
+    "in_our_tree": "missing",
+    "in_sdk": "missing",
+    "alternatives": null
+   },
+   {
+    "path": "game/client/steamshare.cpp",
+    "in_our_tree": "missing",
+    "in_sdk": "missing",
+    "alternatives": null
+   }
+  ],
+  "remove": [
+   {
+    "path": "game/client/in_touch.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/replay/replaycamera.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/replay/cdll_replay.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/replay/vgui/replaybrowserbasepage.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/replay/vgui/replaybrowserbasepanel.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/replay/vgui/replayconfirmquitdlg.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/replay/vgui/replaybrowserdetailspanel.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/replay/vgui/replaybrowseritemmanager.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/replay/vgui/replaybrowserlistitempanel.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/replay/vgui/replaybrowserlistpanel.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/replay/vgui/replaybrowsermainpanel.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/replay/vgui/replaybrowsermovieplayerpanel.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/replay/vgui/replaybrowserpreviewpanel.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/replay/vgui/replaybrowserrenderdialog.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/replay/vgui/replayinputpanel.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/replay/vgui/replaymessagepanel.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/replay/vgui/replayperformanceeditor.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/replay/vgui/replayperformancesavedlg.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/replay/vgui/replayrenderoverlay.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/replay/vgui/replayreminderpanel.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/game_controls/slideshowpanel.cpp",
+    "note": null
+   },
+   {
+    "path": "common/movieobjects/timeutils.cpp",
+    "note": null
+   },
+   {
+    "path": "game/shared/achievement_saverestore.cpp",
+    "note": null
+   },
+   {
+    "path": "game/shared/achievements_hlx.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/baseclientrendertargets.cpp",
+    "note": null
+   },
+   {
+    "path": "public/bone_accessor.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/c_ai_basehumanoid.cpp",
+    "note": null
+   },
+   {
+    "path": "game/shared/debugoverlay_shared.cpp",
+    "note": null
+   },
+   {
+    "path": "game/shared/ehandle.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/fx_cube.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/glow_outline_effect.cpp",
+    "note": null
+   },
+   {
+    "path": "game/shared/hintmessage.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/hud_basetimer.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/hud_bitmapnumericdisplay.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/playerspawncache.cpp",
+    "note": null
+   },
+   {
+    "path": "game/shared/rope_helpers.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/splinepatch.cpp",
+    "note": null
+   },
+   {
+    "path": "game/shared/teamplay_gamerules.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/vgui_basepanel.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/vgui_consolepanel.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/vgui_grid.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/ViewConeImage.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/vgui_video_player.cpp",
+    "note": null
+   },
+   {
+    "path": "game/shared/mp_shareddefs.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/touch.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/sixense/in_sixense.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/sixense/in_sixense_gesture_bindings.cpp",
+    "note": null
+   },
+   {
+    "path": "game/shared/sixense/sixense_convars.cpp",
+    "note": null
+   },
+   {
+    "path": "common/language.cpp",
+    "note": null
+   },
+   {
+    "path": "public/networkvar.cpp",
+    "note": null
+   },
+   {
+    "path": "public/scratchpad3d.cpp",
+    "note": null
+   },
+   {
+    "path": "public/ScratchPadUtils.cpp",
+    "note": null
+   },
+   {
+    "path": "game/shared/sheetsimulator.cpp",
+    "note": null
+   },
+   {
+    "path": "public/vallocator.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/stdafx.cpp",
+    "note": null
+   },
+   {
+    "path": "game/shared/episodic/achievements_ep1.cpp",
+    "note": null
+   },
+   {
+    "path": "game/shared/episodic/achievements_ep2.cpp",
+    "note": null
+   },
+   {
+    "path": "game/shared/episodic/achievements_epx.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/episodic/c_npc_advisor.cpp",
+    "note": null
+   },
+   {
+    "path": "game/client/hl2/fx_bugbait.cpp",
+    "note": null
+   },
+   {
+    "path": "public/tier0/memoverride.cpp",
+    "note": "no retail Mac module links a memoverride object: Valve's Mac build has no malloc override (malloc from libSystem, operator new from libstdc++)"
+   }
+  ],
+  "path_differs": [],
+  "order": {
+   "common": 466,
+   "in_order_lis": 208,
+   "need_moving": 258,
+   "identical": false
+  },
+  "libraries": {
+   "retail": [
+    "tier3",
+    "matsys_controls",
+    "choreoobjects",
+    "tier2",
+    "tier1",
+    "vgui_controls",
+    "bitmap",
+    "vtf",
+    "particles",
+    "dmxloader",
+    "mathlib"
+   ],
+   "ours": [
+    "particles",
+    "dmxloader",
+    "vgui_controls",
+    "matsys_controls",
+    "tier1",
+    "tier2",
+    "tier3",
+    "mathlib",
+    "choreoobjects",
+    "bitmap",
+    "vtf"
+   ],
+   "retail_only": [],
+   "ours_only": [],
+   "same_relative_order": false
+  }
+ }
+}
