@@ -150,8 +150,6 @@ public: // IConnectionlessPacketHandler implementation
 
 	void	SetReportNewFakeClients( bool bReportNewFakeClients ) { m_bReportNewFakeClients = bReportNewFakeClients; }
 
-	void	SetPausedForced( bool bPaused, float flDuration = -1.f );
-
 protected:
 
 	virtual IClient *ConnectClient ( netadr_t &adr, int protocol, int challenge, int clientChallenge, int authProtocol, 
@@ -259,7 +257,6 @@ protected:
 	int			m_nNumConnections;		//Number of successful client connections.
 
 	bool		m_bReportNewFakeClients; // Whether or not newly created fake clients should be included in server browser totals
-	float		m_flPausedTimeEnd;
 };
 
 extern CThreadFastMutex g_svInstanceBaselineMutex;
