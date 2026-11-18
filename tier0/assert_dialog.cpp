@@ -104,9 +104,7 @@ BOOL WINAPI DllMain(
 
 static bool IsDebugBreakEnabled()
 {
-	static bool bResult = ( _tcsstr( Plat_GetCommandLine(), _T("-debugbreak") )    != NULL ) || \
-	                      ( _tcsstr( Plat_GetCommandLine(), _T("-raiseonassert") ) != NULL ) || \
-	                      getenv( "RAISE_ON_ASSERT" );
+	static bool bResult = ( _tcsstr( Plat_GetCommandLine(), _T("-debugbreak") ) != NULL );
 	return bResult;
 }
 
@@ -386,38 +384,17 @@ DBG_INTERFACE bool ShouldUseNewAssertDialog()
 #endif // DBGFLAG_ASSERTDLG
 }
 
-#if defined( POSIX ) && PLATFORM_GLIBC
-
-static void SpewBacktrace()
-{
-	void *buffer[ 16 ];
-	int nptrs = backtrace( buffer, ARRAYSIZE( buffer ) );
-	if ( nptrs )
-	{
-		char **strings = backtrace_symbols(buffer, nptrs);
-		if ( strings )
-		{
-			for ( int i = 0; i < nptrs; i++)
-			{
-				const char *module = strrchr( strings[ i ], '/' );
-				module = module ? ( module + 1 ) : strings[ i ];
-
-				printf("  %s\n", module );
-			}
-
-			free( strings );
-		}
-	}
-}
-
-#endif
-
 DBG_INTERFACE bool DoNewAssertDialog( const tchar *pFilename, int line, const tchar *pExpression )
 {
 	LOCAL_THREAD_LOCK();
 
 	if ( AreAssertsDisabled() )
 		return false;
+
+	// If they have the old mode enabled (always break immediately), then just break right into
+	// the debugger like we used to do.
+	if ( IsDebugBreakEnabled() )
+		return true;
 
 	// Have ALL Asserts been disabled?
 	if ( !g_bAssertsEnabled )
@@ -426,34 +403,6 @@ DBG_INTERFACE bool DoNewAssertDialog( const tchar *pFilename, int line, const tc
 	// Has this specific Assert been disabled?
 	if ( !AreAssertsEnabledInFileLine( pFilename, line ) )
 		return false;
-
-	// Assert not suppressed. Spew it, and optionally a backtrace.
-#if defined( POSIX )
-	if( isatty( STDERR_FILENO ) )
-	{
-		#define COLOR_YELLOW 	"\033[1;33m"
-		#define COLOR_GREEN 	"\033[1;32m"
-		#define COLOR_RED 		"\033[1;31m"
-		#define COLOR_END		"\033[0m"
-		fprintf(stderr, COLOR_YELLOW "ASSERT:" COLOR_END " " COLOR_RED "%s" COLOR_GREEN ":%i:" COLOR_END " " COLOR_RED "%s" COLOR_END "\n",
-		        pFilename, line, pExpression);
-		if ( getenv( "POSIX_ASSERT_BACKTRACE" ) )
-		{
-#if PLATFORM_GLIBC
-			SpewBacktrace();
-#endif
-		}
-	}
-	else
-#endif
-	{
-		fprintf(stderr, "ASSERT: %s:%i: %s\n", pFilename, line, pExpression);
-	}
-
-	// If they have the old mode enabled (always break immediately), then just break right into
-	// the debugger like we used to do.
-	if ( IsDebugBreakEnabled() )
-		return true;
 
 	// Now create the dialog. Just return true for old-style debug break upon failure.
 	g_Info.m_pFilename = pFilename;
@@ -535,16 +484,24 @@ DBG_INTERFACE bool DoNewAssertDialog( const tchar *pFilename, int line, const tc
 	}
 
 #elif defined( POSIX ) && defined ( USE_SDL )
+	if ( Plat_IsInDebugSession( true ) )
+	{
+		fprintf( stderr, "%s %i %s\n", pFilename, line, pExpression );
+	}
+	else
+	{
+		fprintf( stderr, "\033[1;33mASSERT: \033[1;31m%s\033[1;32m:%i:\033[1;31m%s\033[0m\n", pFilename, line, pExpression );
+	}
+
 	static FUNC_SDL_ShowMessageBox *pfnSDLShowMessageBox = NULL;
-	if( !pfnSDLShowMessageBox )
+	if ( getenv( "GAME_ASSERT_DIALOG" ) && !pfnSDLShowMessageBox )
 	{
 #ifdef OSX
 		void *ret = dlopen( "libSDL2-2.0.0.dylib", RTLD_LAZY );
 #else
 		void *ret = dlopen( "libSDL2-2.0.so.0", RTLD_LAZY );
 #endif
-		if ( ret )
-			{ pfnSDLShowMessageBox = ( FUNC_SDL_ShowMessageBox * )dlsym( ret, "SDL_ShowMessageBox" ); }
+		pfnSDLShowMessageBox = ( FUNC_SDL_ShowMessageBox * )dlsym( ret, "SDL_ShowMessageBox" );
 	}
 
 	if( pfnSDLShowMessageBox )
@@ -600,9 +557,8 @@ DBG_INTERFACE bool DoNewAssertDialog( const tchar *pFilename, int line, const tc
 			break;
 		}
 	}
-	else
+	else if ( getenv( "RAISE_ON_ASSERT" ) )
 	{
-		// Couldn't SDL it up
 		g_bBreak = true;
 	}
 

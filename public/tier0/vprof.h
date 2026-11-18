@@ -15,6 +15,9 @@
 #include "tier0/vprof_telemetry.h"
 
 // VProf is enabled by default in all configurations -except- X360 Retail.
+#if !( defined( _X360 ) && defined( _CERT ) )
+#define VPROF_ENABLED
+#endif
 
 #if defined(_X360) && defined(VPROF_ENABLED)
 #include "tier0/pmc360.h"
@@ -132,13 +135,11 @@
 #define VPROF_BUDGETGROUP_JOBS_COROUTINES			_T("Jobs/Coroutines")
 #define VPROF_BUDGETGROUP_SLEEPING					_T("Sleeping")
 #define VPROF_BUDGETGROUP_THREADINGMAIN				_T("ThreadingMain")
-#define VPROF_BUDGETGROUP_HTMLSURFACE				_T("HTMLSurface")
-#define VPROF_BUDGETGROUP_VGUI						VPROF_BUDGETGROUP_HTMLSURFACE
-#define VPROF_BUDGETGROUP_TENFOOT					VPROF_BUDGETGROUP_HTMLSURFACE
-#define VPROF_BUDGETGROUP_STEAMUI					VPROF_BUDGETGROUP_HTMLSURFACE
+#define VPROF_BUDGETGROUP_CHROMEHTML				_T("Chromehtml")
+#define VPROF_BUDGETGROUP_VGUI						VPROF_BUDGETGROUP_CHROMEHTML
+#define VPROF_BUDGETGROUP_TENFOOT					VPROF_BUDGETGROUP_CHROMEHTML
+#define VPROF_BUDGETGROUP_STEAMUI					VPROF_BUDGETGROUP_CHROMEHTML
 #define VPROF_BUDGETGROUP_ATTRIBUTES				_T("Attributes")
-#define VPROF_BUDGETGROUP_FINDATTRIBUTE				_T("FindAttribute")
-#define VPROF_BUDGETGROUP_FINDATTRIBUTEUNSAFE		_T("FindAttributeUnsafe")
 	
 #ifdef _X360
 // update flags
@@ -160,28 +161,28 @@
 #define VPROF_VAR_NAME_INTERNAL( a, b )		VPROF_VAR_NAME_INTERNAL_CAT( a, b )
 #define VPROF_VAR_NAME( a )					VPROF_VAR_NAME_INTERNAL( a, __LINE__ )
 
-#define	VPROF_0(name,group,assertAccounted,budgetFlags)	tmZone( TELEMETRY_LEVEL2, TMZF_NONE, "(%s)%s", group, name ); CVProfScope VPROF_VAR_NAME( VProf_ )(name, 0, group, assertAccounted, budgetFlags);
+#define	VPROF_0(name,group,assertAccounted,budgetFlags)	TM_ZONE( TELEMETRY_LEVEL2, TMZF_NONE, "(%s)%s", group, name ); CVProfScope VPROF_VAR_NAME( VProf_ )(name, 0, group, assertAccounted, budgetFlags);
 
 #if VPROF_LEVEL > 0 
-#define	VPROF_1(name,group,assertAccounted,budgetFlags)	tmZone( TELEMETRY_LEVEL3, TMZF_NONE, "(%s)%s", group, name ); CVProfScope VPROF_VAR_NAME( VProf_ )(name, 1, group, assertAccounted, budgetFlags);
+#define	VPROF_1(name,group,assertAccounted,budgetFlags)	TM_ZONE( TELEMETRY_LEVEL3, TMZF_NONE, "(%s)%s", group, name ); CVProfScope VPROF_VAR_NAME( VProf_ )(name, 1, group, assertAccounted, budgetFlags);
 #else
 #define	VPROF_1(name,group,assertAccounted,budgetFlags)	((void)0)
 #endif
 
 #if VPROF_LEVEL > 1 
-#define	VPROF_2(name,group,assertAccounted,budgetFlags)	CVProfScope VPROF_VAR_NAME( VProf_ )(name, 2, group, assertAccounted, budgetFlags);
+#define	VPROF_2(name,group,assertAccounted,budgetFlags)	TM_ZONE( TELEMETRY_LEVEL4, TMZF_NONE, "(%s)%s", group, name ); CVProfScope VPROF_VAR_NAME( VProf_ )(name, 2, group, assertAccounted, budgetFlags);
 #else
 #define	VPROF_2(name,group,assertAccounted,budgetFlags)	((void)0)
 #endif
 
 #if VPROF_LEVEL > 2 
-#define	VPROF_3(name,group,assertAccounted,budgetFlags)	CVProfScope VPROF_VAR_NAME( VProf_ )(name, 3, group, assertAccounted, budgetFlags);
+#define	VPROF_3(name,group,assertAccounted,budgetFlags)	TM_ZONE( TELEMETRY_LEVEL5, TMZF_NONE, "(%s)%s", group, name ); CVProfScope VPROF_VAR_NAME( VProf_ )(name, 3, group, assertAccounted, budgetFlags);
 #else
 #define	VPROF_3(name,group,assertAccounted,budgetFlags)	((void)0)
 #endif
 
 #if VPROF_LEVEL > 3 
-#define	VPROF_4(name,group,assertAccounted,budgetFlags)	CVProfScope VPROF_VAR_NAME( VProf_ )(name, 4, group, assertAccounted, budgetFlags);
+#define	VPROF_4(name,group,assertAccounted,budgetFlags)	TM_ZONE( TELEMETRY_LEVEL6, TMZF_NONE, "(%s)%s", group, name ); CVProfScope VPROF_VAR_NAME( VProf_ )(name, 4, group, assertAccounted, budgetFlags);
 #else
 #define	VPROF_4(name,group,assertAccounted,budgetFlags)	((void)0)
 #endif
@@ -379,13 +380,12 @@ private:
 	
 #endif
 
-	unsigned	m_nCurFrameCalls;
-	unsigned	m_nPrevFrameCalls;
-
 	int			m_nRecursions;
 	
+	unsigned	m_nCurFrameCalls;
 	CCycleCount	m_CurFrameTime;
 	
+	unsigned	m_nPrevFrameCalls;
 	CCycleCount	m_PrevFrameTime;
 
 	unsigned	m_nTotalCalls;
@@ -629,14 +629,13 @@ protected:
 	int			m_GroupIDStack[MAX_GROUP_STACK_DEPTH];
 	int			m_GroupIDStackDepth;
 #endif
-	CVProfNode	m_Root;
-	CVProfNode *m_pCurNode;
-
-	int			m_nFrames;
 	int 		m_enabled;
-	int			m_pausedEnabledDepth;
 	bool		m_fAtRoot; // tracked for efficiency of the "not profiling" case
+	CVProfNode *m_pCurNode;
+	CVProfNode	m_Root;
+	int			m_nFrames;
 	int			m_ProfileDetailLevel;
+	int			m_pausedEnabledDepth;
 
 	class CBudgetGroup
 	{

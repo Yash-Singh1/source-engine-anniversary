@@ -767,11 +767,6 @@ bool CSourceAppSystemGroup::Create()
 
 bool CSourceAppSystemGroup::PreInit()
 {
-	if ( !CommandLine()->FindParm( "-nolog" ) )
-		DebugLogger()->Init("engine.log");
-	else
-		DebugLogger()->Disable();
-
 	CreateInterfaceFn factory = GetFactory();
 	ConnectTier1Libraries( &factory, 1 );
 	ConVar_Register( );

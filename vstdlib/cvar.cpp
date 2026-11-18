@@ -724,7 +724,7 @@ void CCvar::DisplayQueuedMessages( )
 		}
 		nStringLength = m_TempConsoleBuffer.PeekStringLength();
 		char* pTemp = (char*)stackalloc( nStringLength + 1 );
-		m_TempConsoleBuffer.GetStringManualCharCount( pTemp, nStringLength + 1 );
+		m_TempConsoleBuffer.GetString( pTemp, nStringLength + 1 );
 
 		switch( nType )
 		{

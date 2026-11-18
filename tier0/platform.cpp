@@ -272,7 +272,7 @@ bool vtune( bool resume )
 	return false;
 }
 
-bool Plat_IsInDebugSession()
+bool Plat_IsInDebugSession( bool bForceRecheck )
 {
 #if defined( _WIN32 ) && !defined( _X360 )
 	return (IsDebuggerPresent() != 0);

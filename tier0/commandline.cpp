@@ -44,7 +44,7 @@ public:
 	virtual const char	*GetCmdLine( void ) const;
 	virtual	const char	*CheckParm( const char *psz, const char **ppszValue = 0 ) const;
 	// A bool return of whether param exists, useful for just checking if param that is just a flag is set
-	virtual bool		HasParm( const char *psz ) const;
+	bool				HasParm( const char *psz ) const;
 
 	virtual void		RemoveParm( const char *parm );
 	virtual void		AppendParm( const char *pszParm, const char *pszValues );
@@ -56,7 +56,7 @@ public:
 	virtual const char	*ParmValue( const char *psz, const char *pDefaultVal = NULL ) const OVERRIDE;
 	virtual int			ParmValue( const char *psz, int nDefaultVal ) const OVERRIDE;
 	virtual float		ParmValue( const char *psz, float flDefaultVal ) const OVERRIDE;
-	virtual const char *ParmValueByIndex( int nIndex, const char *pDefaultVal = 0 ) const OVERRIDE;
+	const char			*ParmValueByIndex( int nIndex, const char *pDefaultVal = 0 ) const;
 
 	virtual void        SetParm( int nIndex, char const *pParm );
 
@@ -193,26 +193,14 @@ void CCommandLine::CreateCmdLine( int argc, char **argv )
 {
 	char cmdline[ 2048 ];
 	cmdline[ 0 ] = 0;
-
-	char *dest = cmdline;
-	size_t size = sizeof( cmdline );
-	const char *space = "";
+	cmdline[ sizeof( cmdline ) - 1 ] = 0;
 
 	for ( int i = 0; i < argc; ++i )
 	{
-		// We need room for: space, arg, 2 quotes, and a nil.
-		Assert( strlen( space ) + strlen( argv[ i ] ) + 2 + 1 <= size );
-
-		if ( size )
-		{
-			_snprintf( dest, size, "%s\"%s\"", space, argv[ i ] );
-			dest[ size - 1 ] = 0;
-		}
-
-		size_t len = strlen( dest );
-		size -= len;
-		dest += len;
-		space = " ";
+		strncat( cmdline, "\"", sizeof( cmdline ) - 1 );
+		strncat( cmdline, argv[ i ], sizeof( cmdline ) - 1 );
+		strncat( cmdline, "\"", sizeof( cmdline ) - 1 );
+		strncat( cmdline, " ", sizeof( cmdline ) - 1 );
 	}
 
 	CreateCmdLine( cmdline );
@@ -502,13 +490,13 @@ const char *CCommandLine::CheckParm( const char *psz, const char **ppszValue ) c
 //-----------------------------------------------------------------------------
 void CCommandLine::AddArgument( const char *pFirst, const char *pLast )
 {
-	if ( pLast <= pFirst )
+	if ( pLast == pFirst )
 		return;
 
 	if ( m_nParmCount >= MAX_PARAMETERS )
 		Error( "CCommandLine::AddArgument: exceeded %d parameters", MAX_PARAMETERS );
 
-	size_t nLen = pLast - pFirst + 1;
+	int nLen = pLast - pFirst + 1;
 	m_ppParms[m_nParmCount] = new char[nLen];
 	memcpy( m_ppParms[m_nParmCount], pFirst, nLen - 1 );
 	m_ppParms[m_nParmCount][nLen - 1] = 0;

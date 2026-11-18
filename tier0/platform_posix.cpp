@@ -106,10 +106,10 @@ From http://man7.org/linux/man-pages/man5/proc.5.html:
 	FILE *pFile = fopen( "/proc/self/statm", "r" );
 	if ( pFile )
 	{
-		size_t nSize, nResident, nShare, nText, nLib_Unused, nDataPlusStack, nDt_Unused;
-		if ( fscanf( pFile, "%zu %zu %zu %zu %zu %zu %zu", &nSize, &nResident, &nShare, &nText, &nLib_Unused, &nDataPlusStack, &nDt_Unused ) >= 2 )
+		int nSize, nResident, nShare, nText, nLib_Unused, nDataPlusStack, nDt_Unused;
+		if ( fscanf( pFile, "%d %d %d %d %d %d %d", &nSize, &nResident, &nShare, &nText, &nLib_Unused, &nDataPlusStack, &nDt_Unused ) )
 		{
-			nRet = 4096 * nResident;
+			nRet = 4096 * nSize;
 		}
 		fclose( pFile );
 	}
@@ -444,33 +444,49 @@ PLATFORM_INTERFACE void Plat_SetAllocErrorFn( Plat_AllocErrorFn fn )
 #if defined( OSX ) || defined(PLATFORM_BSD)
 
 // From the Apple tech note: http://developer.apple.com/library/mac/#qa/qa1361/_index.html
-bool Plat_IsInDebugSession()
+bool Plat_IsInDebugSession( bool bForceRecheck )
 {
-	static int s_IsInDebugSession;
 	int                 junk;
+	int                 mib[4];
 	struct kinfo_proc   info;
 	size_t              size;
-	int mib[4] = {CTL_KERN, KERN_PROC, KERN_PROC_PID, getpid()};
+	static int s_IsInDebugSession = -1;
+
+	if ( s_IsInDebugSession == -1 || bForceRecheck )
+	{
+		// Initialize the flags so that, if sysctl fails for some bizarre 
+		// reason, we get a predictable result.
 #ifndef PLATFORM_BSD
-	info.kp_proc.p_flag = 0;
+		info.kp_proc.p_flag = 0;
 #endif
 
-	size = sizeof(info);
-	junk = sysctl(mib, sizeof(mib) / sizeof(*mib), &info, &size, NULL, 0);
+		// Initialize mib, which tells sysctl the info we want, in this case
+		// we're looking for information about a specific process ID.
 
-	// We're being debugged if the P_TRACED flag is set.
+		mib[0] = CTL_KERN;
+		mib[1] = KERN_PROC;
+		mib[2] = KERN_PROC_PID;
+		mib[3] = getpid();
+
+		// Call sysctl.
+
+		size = sizeof(info);
+		junk = sysctl(mib, sizeof(mib) / sizeof(*mib), &info, &size, NULL, 0);
+
+		// We're being debugged if the P_TRACED flag is set.
 #ifdef PLATFORM_BSD
-	s_IsInDebugSession = info.ki_flag & P_TRACED;
+		s_IsInDebugSession = ( ( info.ki_flag & P_TRACED ) != 0 );
 #else
-	s_IsInDebugSession = info.kp_proc.p_flag & P_TRACED;
+		s_IsInDebugSession = ( ( info.kp_proc.p_flag & P_TRACED ) != 0 );
 #endif
+	}
 
 	return !!s_IsInDebugSession;
 }
 
 #elif defined( LINUX )
 
-bool Plat_IsInDebugSession()
+bool Plat_IsInDebugSession( bool bForceRecheck )
 {
 	// For linux: http://stackoverflow.com/questions/3596781/detect-if-gdb-is-running
 	// Don't use "if (ptrace(PTRACE_TRACEME, 0, NULL, 0) == -1)" as it means debuggers can't attach.
