@@ -181,9 +181,11 @@ IVP_Environment::IVP_Environment(IVP_Environment_Manager *manager,IVP_Applicatio
     IVP_Mindist_Minimize_Solver::init_mms_function_table();
     IVP_Mindist_Event_Solver::init_mim_function_table();
 
+#ifndef BYTEMATCH_RETAIL
     this->auth_costumer_name = p_strdup(company_name);
     this->auth_costumer_code = auth_code;
     this->pw_count = 10;
+#endif
    
     { // create a static ball
 	IVP_Template_Ball b;
@@ -269,7 +271,9 @@ IVP_Environment::~IVP_Environment(){
     P_DELETE(short_term_mem);
     P_DELETE(sim_unit_mem);
     P_DELETE(cache_object_manager);
+#ifndef BYTEMATCH_RETAIL
     P_FREE(auth_costumer_name);
+#endif
 
     environment_manager->environments.remove(this);
     this->delete_draw_vector_debug();

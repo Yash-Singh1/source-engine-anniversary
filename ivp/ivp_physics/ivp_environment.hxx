@@ -204,9 +204,11 @@ class IVP_Environment {		// the environment
     IVP_U_Vector<IVP_Listener_Constraint> 	constraint_listeners;
     
     
+#ifndef BYTEMATCH_RETAIL
     char *auth_costumer_name;
     unsigned int auth_costumer_code;
     int pw_count;
+#endif
     
     IVP_Environment(IVP_Environment_Manager *manager,IVP_Application_Environment *appl_env,const char *costumer_name,unsigned int auth_code);
     IVP_Environment_Manager *environment_manager;
