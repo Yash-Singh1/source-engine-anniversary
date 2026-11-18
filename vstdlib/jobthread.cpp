@@ -316,7 +316,7 @@ public:
 			// Cap the GlobPool threads at 4.
 			startParams.nThreadsMax = 4;
 		}
-		return CThreadPool::Start( startParams, "Glob" );
+		return CThreadPool::Start( startParams );
 	}
 
 	virtual bool OnFinalRelease()
