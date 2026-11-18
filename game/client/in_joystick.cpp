@@ -445,7 +445,7 @@ static float ResponseCurveLookAccelerated( float x, int axis, float otherAxis, f
 
 //-----------------------------------------------
 //-----------------------------------------------
-static float ResponseCurveLook( int curve, float x, int axis, float otherAxis, float dist, float frametime )
+float ResponseCurveLook( int curve, float x, int axis, float otherAxis, float dist, float frametime )
 {
 	switch( curve )
 	{
