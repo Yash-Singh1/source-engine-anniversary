@@ -104,7 +104,9 @@ static IEngineAPI *g_pEngineAPI;
 static IHammer *g_pHammer;
 
 bool g_bTextMode = false;
+#ifndef VPC
 bool g_MultiRun = false;
+#endif
 
 static char g_szBasedir[MAX_PATH];
 static char g_szGamedir[MAX_PATH];
@@ -721,12 +723,12 @@ bool CSourceAppSystemGroup::Create()
 		{
 			return false;
 		}
-#endif // STAGING_ONLY
 
 		AppModule_t vstdlibModule = LoadModule( "vstdlib" DLL_EXT_STRING );
 		IProcessUtils *processUtils = ( IProcessUtils* )AddSystem( vstdlibModule, PROCESS_UTILS_INTERFACE_VERSION );
 		if ( !processUtils )
 			return false;
+#endif // STAGING_ONLY
 	}
 
 	// Connect to iterfaces loaded in AddSystems that we need locally
@@ -751,13 +753,8 @@ bool CSourceAppSystemGroup::Create()
 
 	// Load up the appropriate shader DLL
 	// This has to be done before connection.
-	char const* pDLLName = "shaderapidx9" DLL_EXT_STRING;
-	if ( CommandLine()->FindParm( "-noshaderapi" ) )
-	{
-		pDLLName = "shaderapiempty" DLL_EXT_STRING;
-	}
-
-	pMaterialSystem->SetShaderAPI( pDLLName );
+	// NULL lets the material system pick (shaderapiempty under -noshaderapi).
+	pMaterialSystem->SetShaderAPI( NULL );
 
 	double elapsed = Plat_FloatTime() - st;
 	COM_TimestampedLog( "LoadAppSystems:  Took %.4f secs to load libraries and get factories.", (float)elapsed );
@@ -918,8 +915,10 @@ char g_lockFilename[MAX_PATH];
 #endif
 bool GrabSourceMutex()
 {
+#ifndef VPC
 	if( g_MultiRun )
 		return true;
+#endif
 
 #ifdef WIN32
 	if ( IsPC() )
@@ -988,7 +987,7 @@ bool GrabSourceMutex()
 	/*
 	 * OSX
  	 */
-	V_snprintf( g_lockFilename, sizeof(g_lockFilename), "/tmp/source_engine_%u.lock", gameCRC );
+	V_snprintf( g_lockFilename, sizeof(g_lockFilename), "/tmp/source_engine_%lu.lock", gameCRC );
 
 	g_lockfd = open( g_lockFilename, O_CREAT | O_WRONLY | O_EXLOCK | O_NONBLOCK | O_TRUNC, 0777 );
 	if (g_lockfd >= 0)
@@ -1015,8 +1014,10 @@ bool GrabSourceMutex()
 
 void ReleaseSourceMutex()
 {
+#ifndef VPC
 	if( g_MultiRun )
 		return;
+#endif
 
 #ifdef WIN32
 	if ( IsPC() && g_hMutex )
@@ -1221,7 +1222,7 @@ DLL_EXPORT int LauncherMain( int argc, char **argv )
 
 #endif // LINUX
 
-#ifdef USE_SDL
+#if defined( USE_SDL ) && !defined( VPC )
 	SDL_version ver;
 	SDL_GetVersion( &ver );
 	Msg("SDL version: %d.%d.%d rev: %s\n", (int)ver.major, (int)ver.minor, (int)ver.patch, SDL_GetRevision());
@@ -1269,20 +1270,14 @@ DLL_EXPORT int LauncherMain( int argc, char **argv )
 	CommandLine()->RemoveParm( "+mat_dxlevel" );
 #endif
 
-	// If we're using -default command line parameters, get rid of DX8 settings. 
-	if ( CommandLine()->CheckParm( "-default" ) )
-	{
-		CommandLine()->RemoveParm( "-dxlevel" );
-		CommandLine()->RemoveParm( "-maxdxlevel" );
-		CommandLine()->RemoveParm( "+mat_dxlevel" );
-	}
-	
 	// Figure out the directory the executable is running from
 	UTIL_ComputeBaseDir();
 
+#ifndef VPC
 	// Allow the user to explicitly say they want to be able to run multiple instances of the source mutex.
 	// Useful for side-by-side comparisons of different renderers.
 	g_MultiRun = CommandLine()->CheckParm( "-multirun" ) != NULL;
+#endif
 
 #if defined( _X360 )
 	bool bSpewDllInfo = CommandLine()->CheckParm( "-dllinfo" );
@@ -1395,6 +1390,10 @@ DLL_EXPORT int LauncherMain( int argc, char **argv )
 		// Can only run one windowed source app at a time
 		if ( !GrabSourceMutex() )
 		{
+			// Allow the user to explicitly say they want to be able to run multiple instances of the source mutex.
+			// Useful for side-by-side comparisons of different renderers.
+			bool multiRun = CommandLine()->CheckParm( "-multirun" ) != NULL;
+
 			// We're going to hijack the existing session and load a new savegame into it. This will mainly occur when users click on links in Bugzilla that will automatically copy saves and load them
 			// directly from the web browser. The -hijack command prevents the launcher from objecting that there is already an instance of the game.
 			if (CommandLine()->CheckParm( "-hijack" ))
@@ -1432,12 +1431,12 @@ DLL_EXPORT int LauncherMain( int argc, char **argv )
 			}
 			else
 			{
-				if (!g_MultiRun) {
+				if (!multiRun) {
 					::MessageBox(NULL, "Only one instance of the game can be running at one time.", "Source - Warning", MB_ICONINFORMATION | MB_OK);
 				}
 			}
 
-			if (!g_MultiRun) {
+			if (!multiRun) {
 				return retval;
 			}
 		}
@@ -1445,7 +1444,7 @@ DLL_EXPORT int LauncherMain( int argc, char **argv )
 #elif defined( POSIX )
 	else
 	{
-		if ( !GrabSourceMutex() && !g_MultiRun )
+		if ( !GrabSourceMutex() )
 		{
 			::MessageBox(NULL, "Only one instance of the game can be running at one time.", "Source - Warning", 0 );
 			return -1;

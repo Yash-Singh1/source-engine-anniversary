@@ -305,7 +305,7 @@ bool CLocalizedStringTable::AddFile( const char *szFileName, const char *pPathID
 	// for "GAME" when running -game episodic, it'll show:
 	// "basedir/episodic/;basedir/hl2"
 	// We do this manually instead of just asking for the first match to support bIncludeFallbackSearchPaths
-	char searchPaths[ MAX_PATH*50 ] = { 0 }; // allow for 50 search paths
+	char searchPaths[ MAX_PATH*50 ]; // allow for 50 search paths
 
 	Verify( g_pFullFileSystem->GetSearchPath( pPathID, true, searchPaths, sizeof( searchPaths ) ) < sizeof(searchPaths) );
 
@@ -338,17 +338,7 @@ bool CLocalizedStringTable::AddFile( const char *szFileName, const char *pPathID
 			//Q_strlower( fullpath ); // NO! This screws up Linux
 
 			CUtlSymbol sym = pathStrings.AddString( fullpath );
-			// With bIncludeFallbackSearchPaths we iterate overriding as we go, so push them in reverse order so the
-			// highest precendence search paths have the highest precendence. Otherwise push them in order, as we'll
-			// only process the first one.
-			if ( !bIncludeFallbackSearchPaths )
-			{
-				searchList.AddToTail( sym );
-			}
-			else
-			{
-				searchList.AddToHead( sym );
-			}
+			searchList.AddToHead( sym );
 		}
 	}
 

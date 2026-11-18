@@ -86,9 +86,6 @@ VPanel::VPanel()
 	_pinsibling = NULL;
 	_pinsibling_my_corner = PIN_TOPLEFT;
 	_pinsibling_their_corner = PIN_TOPLEFT;
-
-	m_nThinkTraverseLevel = 0;
-	_clientPanelHandle = vgui::INVALID_PANEL;
 }
 
 //-----------------------------------------------------------------------------
@@ -96,59 +93,6 @@ VPanel::VPanel()
 //-----------------------------------------------------------------------------
 VPanel::~VPanel()
 {
-	// Someone just deleted their parent Panel while it was being used in InternalSolveTraverse().
-	// This will cause a difficult to debug crash, so we spew out the panel name here in hopes
-	//  it will help track down the offender.
-	if ( m_nThinkTraverseLevel != 0 )
-	{
-		Warning( "Deleting in-use vpanel: %s/%s %p.\n", GetName(), GetClassName(), this );
-#ifdef STAGING_ONLY
-		DebuggerBreak();
-#endif
-	}
-}
-
-//-----------------------------------------------------------------------------
-// Purpose: 
-//-----------------------------------------------------------------------------
-void VPanel::TraverseLevel( int val )
-{
-	// Bump up our traverse level.
-	m_nThinkTraverseLevel += m_nThinkTraverseLevel;
-
-	// Bump up our client panel traverse level.
-	if ( Client() )
-	{
-		VPANEL vp = g_pVGui->HandleToPanel( _clientPanelHandle );
-		if ( vp == vgui::INVALID_PANEL )
-		{
-			// This is really bad - we have a Client() pointer that is invalid.
-			Warning( "Panel '%s/%s' has invalid client: %p.\n", GetName(), GetClassName(), Client() );
-#ifdef STAGING_ONLY
-			DebuggerBreak();
-#endif
-		}
-
-		if ( Client()->GetVPanel() )
-		{
-			VPanel *vpanel = (VPanel *)Client()->GetVPanel();
-			vpanel->m_nThinkTraverseLevel += vpanel->m_nThinkTraverseLevel;
-		}
-	}
-
-	// This doesn't work. It appears we add all kinds of children to various panels in the
-	//  InternalThinkTraverse functions, and that means the refcount is 0 when added, and
-	//  then drops to -1 when we decrement the traverse level.
-#if 0
-	// Bump up our children traverse levels.
-	CUtlVector< VPanel * > &children = GetChildren();
-	for ( int i = 0; i < children.Count(); ++i )
-	{
-		VPanel *child = children[ i ];
-		if ( child )
-			child->m_nThinkTraverseLevel = Max( child->m_nThinkTraverseLevel + val, 0 );
-	}
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -157,7 +101,6 @@ void VPanel::TraverseLevel( int val )
 void VPanel::Init(IClientPanel *attachedClientPanel)
 {
 	_clientPanel = attachedClientPanel;
-	_clientPanelHandle = g_pVGui->PanelToHandle( attachedClientPanel ? attachedClientPanel->GetVPanel() : 0 );
 }
 
 //-----------------------------------------------------------------------------
@@ -165,7 +108,7 @@ void VPanel::Init(IClientPanel *attachedClientPanel)
 //-----------------------------------------------------------------------------
 void VPanel::Solve()
 {
-	short basePos[2];
+	int basePos[2];
 	basePos[0] = _pos[0];
 	basePos[1] = _pos[1];
 
@@ -187,8 +130,6 @@ void VPanel::Solve()
 
 	if ( _pinsibling )
 	{
-		_pinsibling->Solve();
-
 		int sibPos[2];
 		int sibSize[2];
 		_pinsibling->GetInternalAbsPos( sibPos[0], sibPos[1] );
@@ -234,18 +175,17 @@ void VPanel::Solve()
 		absX += pabs[0] + pinset[0];
 		absY += pabs[1] + pinset[1];
 
-		_absPos[0] = clamp( absX, -32767, 32767 );
-		_absPos[1] = clamp( absY, -32767, 32767 );
+		_absPos[0] = absX;
+		_absPos[1] = absY;
 	}
 
 	// set initial bounds
 	_clipRect[0] = _absPos[0];
 	_clipRect[1] = _absPos[1];
-
 	int absX2 = absX + baseSize[0];
 	int absY2 = absY + baseSize[1];
-	_clipRect[2] = clamp( absX2, -32767, 32767 );
-	_clipRect[3] = clamp( absY2, -32767, 32767 );
+	_clipRect[2] = absX2;
+	_clipRect[3] = absY2;
 
 	// clip to parent, if we're not a popup
 	if ( parent && !IsPopup() )
