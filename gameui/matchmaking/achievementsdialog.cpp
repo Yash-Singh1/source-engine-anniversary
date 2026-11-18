@@ -37,25 +37,34 @@ KeyValues *g_pPreloadedAchievementItemLayout = NULL;
 //-----------------------------------------------------------------------------
 // Purpose: Sets the parameter pIconPanel to display the specified achievement's icon file.
 //-----------------------------------------------------------------------------
-bool LoadAchievementIcon( vgui::ImagePanel* pIconPanel, IAchievement *pAchievement, const char *pszExt /*= NULL*/ )
+bool LoadAchievementIcon( vgui::ImagePanel* pIconPanel, IAchievement *pAchievement, const char *pszMod /*= NULL*/ )
 {
-	char imagePath[_MAX_PATH];
-	Q_strncpy( imagePath, "achievements\\", sizeof(imagePath) );
-	Q_strncat( imagePath, pAchievement->GetName(), sizeof(imagePath), COPY_ALL_CHARACTERS );
-	if ( pszExt )
-	{
-		Q_strncat( imagePath, pszExt, sizeof(imagePath), COPY_ALL_CHARACTERS );
-	}
-	Q_strncat( imagePath, ".vtf", sizeof(imagePath), COPY_ALL_CHARACTERS );
+	char checkFile[MAX_PATH] = { 0 };
+	char imagePath[MAX_PATH] = { 0 };
 
-	char checkFile[_MAX_PATH];
-	Q_snprintf( checkFile, sizeof(checkFile), "materials\\vgui\\%s", imagePath );
+	// an override mod can ship its own achievement icons
+	if ( pszMod && V_strlen( pszMod ) > 0 )
+	{
+		V_sprintf_safe( imagePath, "vgui/%s/achievements/%s%s", pszMod, pAchievement->GetName(), pAchievement->IsAchieved() ? "" : "_bw" );
+		V_sprintf_safe( checkFile, "materials/%s.vmt", imagePath );
+		if ( !g_pFullFileSystem->FileExists( checkFile ) )
+		{
+			checkFile[0] = 0;
+		}
+	}
+
+	if ( !checkFile[0] )
+	{
+		V_sprintf_safe( imagePath, "vgui/achievements/%s%s", pAchievement->GetName(), pAchievement->IsAchieved() ? "" : "_bw" );
+		V_sprintf_safe( checkFile, "materials/%s.vmt", imagePath );
+	}
+
 	if ( !g_pFullFileSystem->FileExists( checkFile ) )
 	{
-		Q_snprintf( imagePath, sizeof(imagePath), "hud\\icon_locked.vtf" );
+		V_strncpy( checkFile, "vgui/hud/icon_locked.vmt", sizeof( checkFile ) );
+		V_strncpy( imagePath, "vgui/hud/icon_locked", sizeof( imagePath ) );
 	}
 
-	pIconPanel->SetShouldScaleImage( true );
 	pIconPanel->SetImage( imagePath );
 	pIconPanel->SetVisible( true );
 	
@@ -364,26 +373,15 @@ void CAchievementsDialog_XBox::OnClose()
 //-----------------------------------------------------------------------------
 // Purpose: creates child panels, passes down name to pick up any settings from res files.
 //-----------------------------------------------------------------------------
-CAchievementsDialog::CAchievementsDialog(vgui::Panel *parent) : BaseClass(parent, "AchievementsDialog")
+CAchievementsDialog::CAchievementsDialog(vgui::Panel *parent) : BaseClass(parent, "AchievementsDialog"), m_nHideAchievedLayoutFrames( 0 )
 {
 	SetDeleteSelfOnClose(true);
-#ifdef BYTEMATCH_RETAIL
-	SetBounds(0, 0, 512, 384);
-#else
-	if( IsProportional() )
-		SetBounds(0, 0, scheme()->GetProportionalScaledValue(512), scheme()->GetProportionalScaledValue(384));
-	else
-		SetBounds(0, 0, 512, 384);
-#endif
-
-	SetMinimumSize( 256, 300 );
+	SetBounds( 0, 0, PROPORTIONAL_VALUE( 512 ), PROPORTIONAL_VALUE( 384 ) );
+	SetMinimumSize( PROPORTIONAL_VALUE( 256 ), PROPORTIONAL_VALUE( 300 ) );
 	SetSizeable( true );
 
 	m_nOldScrollItem = -1;
 	m_nScrollItem = -1;
-
-	m_nUnlocked = 0;
-	m_nTotalAchievements = 0;
 
 	m_pAchievementsList = new vgui::PanelListPanel( this, "listpanel_achievements" );
 	m_pAchievementsList->SetFirstColumnWidth( 0 );
@@ -400,79 +398,14 @@ CAchievementsDialog::CAchievementsDialog(vgui::Panel *parent) : BaseClass(parent
 	m_pAchievementPackCombo = new ComboBox(this, "achievement_pack_combo", NUM_COMBO_BOX_LINES_DEFAULT, false);
 	m_pHideAchievedCheck = new vgui::CheckButton( this, "HideAchieved", "" );
 
-	// int that holds the highest number achievement id we've found
-	int iHighestAchievementIDSeen = -1;
-	int iNextGroupBoundary = 1000;
-
-	Q_memset( m_AchievementGroups, 0, sizeof(m_AchievementGroups) );
-	m_iNumAchievementGroups = 0;
-
-	// Base groups
-//	CreateNewAchievementGroup( 0, 16000 );
-	CreateNewAchievementGroup( 0, 999 );
-
-	Assert ( achievementmgr );
-	if ( achievementmgr )
-	{
-		int iCount = achievementmgr->GetAchievementCount();
-		for ( int i = 0; i < iCount; ++i )
-		{		
-			IAchievement* pCur = achievementmgr->GetAchievementByIndex( i );
-
-			if ( !pCur )
-				continue;
-
-			int iAchievementID = pCur->GetAchievementID();
-
-			if ( iAchievementID > iHighestAchievementIDSeen )
-			{
-				// if its crossed the next group boundary, create a new group
-				if ( iAchievementID >= iNextGroupBoundary )
-				{
-					int iNewGroupBoundary = 100 * ( (int)( (float)iAchievementID / 100 ) );
-					CreateNewAchievementGroup( iNewGroupBoundary, iNewGroupBoundary+99 );
-
-					iNextGroupBoundary = iNewGroupBoundary + 100;
-				}
-
-				iHighestAchievementIDSeen = iAchievementID;
-			}
-
-			// don't show hidden achievements if not achieved
-			if ( pCur->ShouldHideUntilAchieved() && !pCur->IsAchieved() )
-				continue;
-
-			m_nTotalAchievements++;
-			
-			if ( m_pHideAchievedCheck->IsSelected() && pCur->IsAchieved() )
-				continue;
-
-			bool bAchieved = pCur->IsAchieved();
-
-			if ( bAchieved )
-			{
-				++m_nUnlocked;
-			}
-
-			for ( int j=0;j<m_iNumAchievementGroups;j++ )
-			{
-				if ( iAchievementID >= m_AchievementGroups[j].m_iMinRange &&
-					iAchievementID <= m_AchievementGroups[j].m_iMaxRange )
-				{
-					if ( bAchieved )
-					{
-						m_AchievementGroups[j].m_iNumUnlocked++;
-					}
-
-					m_AchievementGroups[j].m_iNumAchievements++;
-				}
-			}
-		}
-	}
+	UpdateAchievementList();
 
 	CreateOrUpdateComboItems( true );
 
 	m_pAchievementPackCombo->ActivateItemByRow( 0 );
+
+	m_pHideAchievedCheck->InvalidateLayout( true, true );
+	m_pHideAchievedCheck->InvalidateLayout( true, true );
 }
 
 CAchievementsDialog::~CAchievementsDialog()
@@ -570,6 +503,29 @@ public:
 	}
 };
 
+#ifdef BYTEMATCH_RETAIL
+//----------------------------------------------------------
+// Anniversary IAchievementMgr slots 11 and 12. The game DLLs of this tree
+// do not implement them yet, so only the retail build calls them.
+//----------------------------------------------------------
+abstract_class IAchievementMgrAnniversary : public IAchievementMgr
+{
+public:
+	virtual bool IsAchievementInCurrentGame( int iAchievementID ) = 0;
+	virtual bool IsAchievementInGame( int iAchievementID, const char *pszGame ) = 0;
+};
+#endif
+
+static inline bool IsAchievementInGame( int iAchievementID, CUtlString &strOverrideMod )
+{
+#ifdef BYTEMATCH_RETAIL
+	return strOverrideMod.Length() ? static_cast< IAchievementMgrAnniversary * >( achievementmgr )->IsAchievementInGame( iAchievementID, strOverrideMod.Get() )
+								   : static_cast< IAchievementMgrAnniversary * >( achievementmgr )->IsAchievementInCurrentGame( iAchievementID );
+#else
+	return true;
+#endif
+}
+
 //----------------------------------------------------------
 // Show the achievements of another game directory
 //----------------------------------------------------------
@@ -584,6 +540,15 @@ void CAchievementsDialog::SetOverrideMod( const char *pszOverrideMod )
 //----------------------------------------------------------
 void CAchievementsDialog::UpdateAchievementList()
 {	
+	m_nUnlocked = 0;
+	m_nTotalAchievements = 0;
+
+	Q_memset( m_AchievementGroups, 0, sizeof(m_AchievementGroups) );
+	m_iNumAchievementGroups = 0;
+
+	// Base groups
+	CreateNewAchievementGroup( 0, 999 );
+
 	m_pAchievementsList->DeleteAllItems();
 
 	KeyValues *pData = m_pAchievementPackCombo->GetActiveItemUserData();
@@ -597,6 +562,10 @@ void CAchievementsDialog::UpdateAchievementList()
 		{
 			CUtlSortVector<IAchievement*, CAchievementsLess> achievements;
 
+			// int that holds the highest number achievement id we've found
+			int iHighestAchievementIDSeen = -1;
+			int iNextGroupBoundary = 1000;
+
 			int iCount = achievementmgr->GetAchievementCount();
 			for ( int i = 0; i < iCount; ++i )
 			{		
@@ -607,26 +576,67 @@ void CAchievementsDialog::UpdateAchievementList()
 
 				int iAchievementID = pCur->GetAchievementID();
 
+				// only list the achievements of the current game, or of the override mod
+				if ( !IsAchievementInGame( iAchievementID, m_strOverrideMod ) )
+					continue;
+
+				if ( iAchievementID > iHighestAchievementIDSeen )
+				{
+					// if its crossed the next group boundary, create a new group
+					if ( iAchievementID >= iNextGroupBoundary )
+					{
+						int iNewGroupBoundary = 100 * ( (int)( (float)iAchievementID / 100 ) );
+						CreateNewAchievementGroup( iNewGroupBoundary, iNewGroupBoundary+99 );
+
+						iNextGroupBoundary = iNewGroupBoundary + 100;
+					}
+
+					iHighestAchievementIDSeen = iAchievementID;
+				}
+
 				if ( iAchievementID < iMinRange || iAchievementID > iMaxRange )
 					continue;
 
+				bool bAchieved = pCur->IsAchieved();
+
 				// don't show hidden achievements if not achieved
-				if ( pCur->ShouldHideUntilAchieved() && !pCur->IsAchieved() )
+				if ( pCur->ShouldHideUntilAchieved() && !bAchieved )
 					continue;
 
-				if ( m_pHideAchievedCheck->IsSelected() && pCur->IsAchieved() )
+				if ( m_pHideAchievedCheck->IsSelected() && bAchieved )
 					continue;
+
+				m_nTotalAchievements++;
 
 				// if we don't have a localized name, don't add it to the list
 				if ( pCur->GetName() == NULL || ACHIEVEMENT_LOCALIZED_NAME_FROM_STR( pCur->GetName() ) == NULL )
 					continue;
+
+				if ( bAchieved )
+				{
+					++m_nUnlocked;
+				}
+
+				for ( int j=0;j<m_iNumAchievementGroups;j++ )
+				{
+					if ( iAchievementID >= m_AchievementGroups[j].m_iMinRange &&
+						iAchievementID <= m_AchievementGroups[j].m_iMaxRange )
+					{
+						if ( bAchieved )
+						{
+							m_AchievementGroups[j].m_iNumUnlocked++;
+						}
+
+						m_AchievementGroups[j].m_iNumAchievements++;
+					}
+				}
 
 				achievements.Insert( pCur );
 			}
 
 			for ( int i=0; i<achievements.Count(); i++ )
 			{
-				CAchievementDialogItemPanel *achievementItemPanel = new CAchievementDialogItemPanel( m_pAchievementsList, "AchievementDialogItemPanel", i );
+				CAchievementDialogItemPanel *achievementItemPanel = new CAchievementDialogItemPanel( m_pAchievementsList, "AchievementDialogItemPanel", i, m_strOverrideMod.Get() );
 				achievementItemPanel->SetAchievementInfo( achievements[i] );
 				m_pAchievementsList->AddItem( NULL, achievementItemPanel );
 			}
@@ -639,6 +649,22 @@ void CAchievementsDialog::UpdateAchievementList()
 		m_nScrollItem = -1;
 		m_pSelectionHighlight->SetVisible( false );
 		m_pAchievementsList->ScrollToItem( 0 );
+	}
+
+	InvalidateLayout();
+}
+
+//----------------------------------------------------------
+// Keep laying out the hide-achieved check button for a few frames after creation
+//----------------------------------------------------------
+void CAchievementsDialog::OnThink()
+{
+	BaseClass::OnThink();
+
+	if ( m_pHideAchievedCheck && m_nHideAchievedLayoutFrames < 10 )
+	{
+		m_pHideAchievedCheck->InvalidateLayout( true, true );
+		++m_nHideAchievedLayoutFrames;
 	}
 }
 
@@ -656,6 +682,10 @@ void CAchievementsDialog::ApplySchemeSettings( IScheme *pScheme )
 		AssertOnce( 0 && "No achievement manager interface in GameUI.dll" );
 		return;
 	}
+
+	// nothing to show until the list has been built
+	if ( !m_nTotalAchievements )
+		return;
 
 	// Set up total completion percentage bar
 	float flCompletion = 0.0f;
@@ -774,6 +804,7 @@ void CAchievementsDialog::OnKeyCodePressed( vgui::KeyCode code )
 			  nButtonCode == KEY_XSTICK1_UP ||
 			  nButtonCode == KEY_XSTICK2_UP ||
 			  nButtonCode == STEAMCONTROLLER_DPAD_UP ||
+			  nButtonCode == STEAMCONTROLLER_LEFT_PAD_UP ||
 			  nButtonCode == KEY_UP )
 	{
 		ScrollToItem( -1 );
@@ -782,6 +813,7 @@ void CAchievementsDialog::OnKeyCodePressed( vgui::KeyCode code )
 			  nButtonCode == KEY_XSTICK1_DOWN ||
 			  nButtonCode == KEY_XSTICK2_DOWN || 
 			  nButtonCode == STEAMCONTROLLER_DPAD_DOWN ||
+			  nButtonCode == STEAMCONTROLLER_LEFT_PAD_DOWN ||
 			  nButtonCode == KEY_DOWN )
 	{
 		ScrollToItem( 1 );
@@ -790,6 +822,7 @@ void CAchievementsDialog::OnKeyCodePressed( vgui::KeyCode code )
 			  nButtonCode == KEY_XSTICK1_LEFT ||
 			  nButtonCode == KEY_XSTICK2_LEFT || 
 			  nButtonCode == STEAMCONTROLLER_DPAD_LEFT ||
+			  nButtonCode == STEAMCONTROLLER_LEFT_PAD_LEFT ||
 			  nButtonCode == KEY_LEFT )
 	{
 		m_pAchievementPackCombo->ActivateItemByRow( m_pAchievementPackCombo->GetActiveItem() - 1 );
@@ -798,6 +831,7 @@ void CAchievementsDialog::OnKeyCodePressed( vgui::KeyCode code )
 			  nButtonCode == KEY_XSTICK1_RIGHT ||
 			  nButtonCode == KEY_XSTICK2_RIGHT || 
 			  nButtonCode == STEAMCONTROLLER_DPAD_RIGHT ||
+			  nButtonCode == STEAMCONTROLLER_LEFT_PAD_RIGHT ||
 			  nButtonCode == KEY_RIGHT )
 	{
 		m_pAchievementPackCombo->ActivateItemByRow( m_pAchievementPackCombo->GetActiveItem() + 1 );
@@ -848,6 +882,9 @@ void CAchievementsDialog::UpdateAchievementDialogInfo( void )
 				continue;
 			
 			int iAchievementID = pCurAchievement->GetAchievementID();
+
+			if ( !IsAchievementInGame( iAchievementID, m_strOverrideMod ) )
+				continue;
 
 			for ( int j=0;j<m_iNumAchievementGroups;j++ )
 			{
@@ -936,11 +973,12 @@ void CAchievementsDialog::OnCommand( const char *command )
 //-----------------------------------------------------------------------------
 // Purpose: creates child panels, passes down name to pick up any settings from res files.
 //-----------------------------------------------------------------------------
-CAchievementDialogItemPanel::CAchievementDialogItemPanel( vgui::PanelListPanel *parent, const char* name, int iListItemID ) : BaseClass( parent, name )
+CAchievementDialogItemPanel::CAchievementDialogItemPanel( vgui::PanelListPanel *parent, const char* name, int iListItemID, const char *pszOverrideMod ) : BaseClass( parent, name )
 {
 	m_iListItemID = iListItemID;
 	m_pParent = parent;
 	m_pSchemeSettings = NULL;
+	m_strOverrideMod = pszOverrideMod;
 
 	SetMouseInputEnabled( true );
 	parent->SetMouseInputEnabled( true );
@@ -979,10 +1017,10 @@ void CAchievementDialogItemPanel::UpdateAchievementInfo( IScheme* pScheme )
 		// Set up total completion percentage bar. Goal > 1 means its a progress achievement.
 		UpdateProgressBar( this, m_pSourceAchievement, m_clrProgressBar );
 
+		LoadAchievementIcon( m_pAchievementIcon, m_pSourceAchievement, m_strOverrideMod.Get() );
+
 		if ( m_pSourceAchievement->IsAchieved() )
 		{
-			LoadAchievementIcon( m_pAchievementIcon, m_pSourceAchievement );
-
 			SetBgColor( pScheme->GetColor( "AchievementsLightGrey", Color(255, 0, 0, 255) ) );
 
 			m_pAchievementNameLabel->SetFgColor( pScheme->GetColor( "SteamLightGreen", Color(255, 255, 255, 255) ) );
@@ -995,8 +1033,6 @@ void CAchievementDialogItemPanel::UpdateAchievementInfo( IScheme* pScheme )
 		}
 		else
 		{
-			LoadAchievementIcon( m_pAchievementIcon, m_pSourceAchievement, "_bw" );
-
 			SetBgColor( pScheme->GetColor( "AchievementsDarkGrey", Color(255, 0, 0, 255) ) );
 
 			Color fgColor = pScheme->GetColor( "AchievementsInactiveFG", Color(255, 255, 255, 255) );

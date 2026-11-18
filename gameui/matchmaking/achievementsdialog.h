@@ -26,7 +26,7 @@ class IAchievement;
 #define LOCK_ICON_PATH "hud/icon_locked.vtf"
 
 // Loads an achievement's icon into a specified image panel, or turns the panel off if no achievement icon was found.
-bool LoadAchievementIcon( vgui::ImagePanel* pIconPanel, IAchievement *pAchievement, const char *pszExt = NULL );
+bool LoadAchievementIcon( vgui::ImagePanel* pIconPanel, IAchievement *pAchievement, const char *pszMod = NULL );
 
 // Updates a listed achievement item's progress bar. 
 void UpdateProgressBar( vgui::EditablePanel* pPanel, IAchievement *pAchievement, Color clrProgressBar );
@@ -94,6 +94,7 @@ public:
 
 	virtual void ApplySettings( KeyValues *pResourceData );
 	virtual void OnSizeChanged( int newWide, int newTall );
+	virtual void OnThink();
 
 	MESSAGE_FUNC_PTR( OnCheckButtonChecked, "CheckButtonChecked", panel );
 	MESSAGE_FUNC_PARAMS( OnTextChanged, "TextChanged", data );
@@ -113,6 +114,7 @@ public:
 
 	vgui::ComboBox			*m_pAchievementPackCombo;
 	vgui::CheckButton		*m_pHideAchievedCheck;
+	int						m_nHideAchievedLayoutFrames;	// frames the check button is laid out again after creation
 
 	int m_nUnlocked;
 	int m_nTotalAchievements;
@@ -145,7 +147,7 @@ class CAchievementDialogItemPanel : public vgui::EditablePanel
 	DECLARE_CLASS_SIMPLE( CAchievementDialogItemPanel, vgui::EditablePanel );
 
 public:
-	CAchievementDialogItemPanel( vgui::PanelListPanel *parent, const char* name, int iListItemID );
+	CAchievementDialogItemPanel( vgui::PanelListPanel *parent, const char* name, int iListItemID, const char *pszOverrideMod );
 	~CAchievementDialogItemPanel();
 
 	void SetAchievementInfo ( IAchievement* pAchievement );
@@ -181,6 +183,7 @@ private:
 	CPanelAnimationVar( Color, m_clrProgressBar, "ProgressBarColor", "140 140 140 255" );
 
 	int m_iListItemID;
+	CUtlString m_strOverrideMod;
 };
 
 #endif // ACHIEVEMENTSDIALOG_H
