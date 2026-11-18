@@ -104,7 +104,7 @@ void RecvProxy_ScaleTime( const CRecvProxyData *pData, void *pStruct, void *pOut
 //Receive datatable
 IMPLEMENT_CLIENTCLASS_DT( C_FireSmoke, DT_FireSmoke, CFireSmoke )
 	RecvPropFloat( RECVINFO( m_flStartScale )),
-	RecvPropFloat( RECVINFO( m_flOriginalStartScale )),
+	NOV2024_ONLY( RecvPropFloat( RECVINFO( m_flOriginalStartScale )), )
 	RecvPropFloat( RECVINFO( m_flScale ), 0, RecvProxy_Scale ),
 	RecvPropFloat( RECVINFO( m_flScaleTime ), 0, RecvProxy_ScaleTime ),
 	RecvPropInt( RECVINFO( m_nFlags ) ),
@@ -241,6 +241,7 @@ void C_FireSmoke::Simulate( void )
 			AddFlames();
 		}
 	}
+#ifdef HL2_ANNIVERSARY_NOV2024
 	else
 	{
 		float flScaleTimeEnd = m_flScaleTimeEnd;
@@ -254,6 +255,8 @@ void C_FireSmoke::Simulate( void )
 			m_hEffect = NULL;
 		}
 	}
+#endif
+#line 257
 }
 
 //-----------------------------------------------------------------------------

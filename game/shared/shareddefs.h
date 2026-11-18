@@ -955,11 +955,13 @@ enum
 #define HL2_ANNIVERSARY_NOV2024
 #endif
 
-// For methods the November build made virtual, so declarations keep their line.
+// Single-line forms, so gated declarations and table entries keep their line.
 #ifdef HL2_ANNIVERSARY_NOV2024
 #define NOV2024_VIRTUAL virtual
+#define NOV2024_ONLY( ... ) __VA_ARGS__
 #else
 #define NOV2024_VIRTUAL
+#define NOV2024_ONLY( ... )
 #endif
 
 #endif // SHAREDDEFS_H

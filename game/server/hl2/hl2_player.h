@@ -56,16 +56,17 @@ struct commandgoal_t
 class CSuitPowerDevice
 {
 public:
-	CSuitPowerDevice( int bitsID, float flDrainRate, float flDrainRateEpisodic ) { m_bitsDeviceID = bitsID; m_flDrainRate = flDrainRate; m_flDrainRateEpisodic = flDrainRateEpisodic; }
+	CSuitPowerDevice( int bitsID, float flDrainRate, float flDrainRateEpisodic ) { m_bitsDeviceID = bitsID; m_flDrainRate = flDrainRate; NOV2024_ONLY( m_flDrainRateEpisodic = flDrainRateEpisodic; ) }
 private:
 	int		m_bitsDeviceID;	// tells what the device is. DEVICE_SPRINT, DEVICE_FLASHLIGHT, etc. BITMASK!!!!!
 	float	m_flDrainRate;	// how quickly does this device deplete suit power? ( percent per second )
-	float	m_flDrainRateEpisodic;	// drain rate in the episodes; negative uses m_flDrainRate
+	NOV2024_ONLY( float	m_flDrainRateEpisodic; )	// drain rate in the episodes; negative uses m_flDrainRate
 
 public:
 	int		GetDeviceID( void ) const { return m_bitsDeviceID; }
 	float	GetDeviceDrainRate( void ) const
 	{	
+#ifdef HL2_ANNIVERSARY_NOV2024
 		float flDrainRate = IsHL2Episodic() ? m_flDrainRateEpisodic : m_flDrainRate;
 		if ( flDrainRate < 0.0f )
 			flDrainRate = m_flDrainRate;
@@ -74,6 +75,13 @@ public:
 			flDrainRate *= 0.5f;
 
 		return flDrainRate;
+#else
+		if( g_pGameRules->GetSkillLevel() == SKILL_EASY && IsHL2Episodic() && !(GetDeviceID()&bits_SUIT_DEVICE_SPRINT) )
+			return m_flDrainRate * 0.5f;
+		else
+			return m_flDrainRate; 
+#endif
+#line 77
 	}
 };
 
@@ -341,7 +349,7 @@ private:
 
 	float				m_flNextFlashlightCheckTime;
 	float				m_flFlashlightPowerDrainScale;
-	float				m_flLastCombatCheckTime;
+	NOV2024_ONLY( float				m_flLastCombatCheckTime; )
 
 	// Aiming heuristics code
 	float				m_flIdleTime;		//Amount of time we've been motionless

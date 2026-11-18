@@ -163,6 +163,7 @@ bool Flashlight_UseLegacyVersion( void )
 	// If this is the first run through, cache off what the answer should be (cannot change during a session)
 	if ( g_bCacheLegacyFlashlightStatus )
 	{
+#ifdef HL2_ANNIVERSARY_NOV2024
 		ConVarRef hl2_expansion( "hl2_expansion" );
 
 		char modDir[MAX_PATH];
@@ -173,6 +174,12 @@ bool Flashlight_UseLegacyVersion( void )
 		{
 			V_snprintf( modDir, sizeof( modDir ), "%s", hl2_expansion.GetString() );
 		}
+#else
+		char modDir[MAX_PATH];
+		if ( UTIL_GetModDir( modDir, sizeof(modDir) ) == false )
+			return false;
+#endif
+#line 176
 
 		g_bUseLegacyFlashlight = ( !Q_strcmp( modDir, "hl2" ) ||
 					   !Q_strcmp( modDir, "episodic" ) ||
@@ -296,8 +303,14 @@ void CC_ToggleDuck( void )
 	pPlayer->ToggleDuck();
 }
 
+#ifdef HL2_ANNIVERSARY_NOV2024
 static ConCommand toggle_duck("toggle_duck", CC_ToggleDuck, "Toggles duck." );
+#else
+static ConCommand toggle_duck("toggle_duck", CC_ToggleDuck, "Toggles duck" );
+#endif
+#line 300
 
+#ifdef HL2_ANNIVERSARY_NOV2024
 void CC_CancelDuckToggle( const CCommand &args )
 {
 	CBasePlayer *pBasePlayer = UTIL_GetCommandClient();
@@ -317,6 +330,8 @@ void CC_CancelDuckToggle( const CCommand &args )
 }
 
 static ConCommand cancel_duck_toggle( "cancel_duck_toggle", CC_CancelDuckToggle, "Forces the duck toggle off. Add a value for the minimum lateral player wish speed required to also cancel (i.e. stick deflection)." );
+#endif
+#line 320
 
 #ifndef HL2MP
 #ifndef PORTAL
@@ -382,7 +397,7 @@ BEGIN_DATADESC( CHL2_Player )
 	DEFINE_FIELD( m_flAdmireGlovesAnimTime, FIELD_TIME ),
 	DEFINE_FIELD( m_flNextFlashlightCheckTime, FIELD_TIME ),
 	DEFINE_FIELD( m_flFlashlightPowerDrainScale, FIELD_FLOAT ),
-	DEFINE_FIELD( m_flLastCombatCheckTime, FIELD_TIME ),
+	NOV2024_ONLY( DEFINE_FIELD( m_flLastCombatCheckTime, FIELD_TIME ), )
 	DEFINE_FIELD( m_bFlashlightDisabled, FIELD_BOOLEAN ),
 
 	DEFINE_FIELD( m_bUseCappedPhysicsDamageTable, FIELD_BOOLEAN ),
@@ -510,6 +525,7 @@ void CHL2_Player::HandleSpeedChanges( void )
 	bool bIsSprinting = IsSprinting();
 	bool bWantSprint = ( bCanSprint && IsSuitEquipped() && (m_nButtons & IN_SPEED) );
 
+#ifdef HL2_ANNIVERSARY_NOV2024
 	// Releasing duck while holding sprint goes back to sprinting
 	bool bUnduckToSprint = bWantSprint && ( buttonsChanged & IN_DUCK ) && ( m_afButtonReleased & IN_DUCK );
 
@@ -533,6 +549,25 @@ void CHL2_Player::HandleSpeedChanges( void )
 				}
 			}
 		}
+#else
+	if ( bIsSprinting != bWantSprint && (buttonsChanged & IN_SPEED) )
+	{
+		// If someone wants to sprint, make sure they've pressed the button to do so. We want to prevent the
+		// case where a player can hold down the sprint key and burn tiny bursts of sprint as the suit recharges
+		// We want a full debounce of the key to resume sprinting after the suit is completely drained
+		if ( bWantSprint )
+		{
+			if ( sv_stickysprint.GetBool() )
+			{
+				StartAutoSprint();
+			}
+			else
+			{
+				StartSprinting();
+			}
+		}
+#endif
+#line 536
 		else
 		{
 			if ( !sv_stickysprint.GetBool() )
@@ -944,6 +979,7 @@ void CHL2_Player::PostThink( void )
 		 HandleAdmireGlovesAnimation();
 	}
 
+#ifdef HL2_ANNIVERSARY_NOV2024
 	// Tell the client once a second whether any NPC is fighting us
 	if ( gpGlobals->curtime - m_flLastCombatCheckTime > 1.0f )
 	{
@@ -968,6 +1004,8 @@ void CHL2_Player::PostThink( void )
 			gameeventmanager->FireEvent( event );
 		}
 	}
+#endif
+#line 971
 }
 
 void CHL2_Player::StartAdmireGlovesAnimation( void )
@@ -1233,6 +1271,7 @@ void CHL2_Player::InitSprinting( void )
 //-----------------------------------------------------------------------------
 // Purpose: Returns whether or not we are allowed to sprint now.
 //-----------------------------------------------------------------------------
+#ifdef HL2_ANNIVERSARY_NOV2024
 //-----------------------------------------------------------------------------
 // Purpose: Is there room for the standing hull where we are?
 //-----------------------------------------------------------------------------
@@ -1246,11 +1285,19 @@ bool CHL2_Player::BCanStand()
 	UTIL_TraceHull( vecOrigin, vecOrigin, vecMins, vecMaxs, MASK_PLAYERSOLID, this, COLLISION_GROUP_PLAYER_MOVEMENT, &tr );
 	return !tr.startsolid && !tr.allsolid;
 }
+#endif
+#line 1249
 
 bool CHL2_Player::CanSprint()
 {
 	return ( m_bSprintEnabled &&										// Only if sprint is enabled 
+#ifdef HL2_ANNIVERSARY_NOV2024
 			!IsWalking() &&												// Not if we're walking
+#else
+			!IsWalking() &&												// Not if we're walking
+			!( m_Local.m_bDucked && !m_Local.m_bDucking ) &&			// Nor if we're ducking
+#endif
+#line 1254
 			(GetWaterLevel() != 3) &&									// Certainly not underwater
 			(GlobalEntity_GetState("suit_no_sprint") != GLOBAL_ON) );	// Out of the question without the sprint module
 }
@@ -1784,13 +1831,31 @@ void CHL2_Player::CommanderMode()
 //-----------------------------------------------------------------------------
 void CHL2_Player::CheatImpulseCommands( int iImpulse )
 {
+#ifdef HL2_ANNIVERSARY_NOV2024
+	// The squad command works without cheats
+	if ( iImpulse == 50 )
+	{
+		CommanderMode();
+		return;
+	}
+
+	if ( !sv_cheats->GetBool() )
+		return;
+#else
+	if ( !sv_cheats->GetBool() )
+		return;
+#endif
+#line 1787
 	switch( iImpulse )
 	{
+#ifndef HL2_ANNIVERSARY_NOV2024
 	case 50:
 	{
 		CommanderMode();
 		break;
 	}
+#endif
+#line 1794
 
 	case 51:
 	{
@@ -2730,13 +2795,14 @@ int CHL2_Player::GiveAmmo( int nCount, int nAmmoIndex, bool bSuppressSound)
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-ConVar stunstick_pickupable( "stunstick_pickupable", "0", FCVAR_CHEAT );
+NOV2024_ONLY( ConVar stunstick_pickupable( "stunstick_pickupable", "0", FCVAR_CHEAT ); )
 
 bool CHL2_Player::Weapon_CanUse( CBaseCombatWeapon *pWeapon )
 {
 #ifndef HL2MP	
 	if ( pWeapon->ClassMatches( "weapon_stunstick" ) )
 	{
+#ifdef HL2_ANNIVERSARY_NOV2024
 		if ( stunstick_pickupable.GetBool() )
 		{
 			// Give the player their own stunstick the first time they touch one
@@ -2757,6 +2823,8 @@ bool CHL2_Player::Weapon_CanUse( CBaseCombatWeapon *pWeapon )
 				return false;
 			}
 		}
+#endif
+#line 2760
 
 		if ( ApplyBattery( 0.5 ) )
 			UTIL_Remove( pWeapon );
