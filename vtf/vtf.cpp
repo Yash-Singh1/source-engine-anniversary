@@ -378,8 +378,13 @@ int CVTFTexture::ComputeMipCount() const
 
 static bool GenericAllocateReusableData( unsigned char **ppData, int *pNumAllocated, int numRequested )
 {
+#ifdef BYTEMATCH_RETAIL
+	if ( *pNumAllocated < numRequested )
+#else
 	// If we're asking for memory and we have way more than we expect, free some.
 	if ( *pNumAllocated < numRequested || ( numRequested > 0 && *pNumAllocated > 16 * numRequested ) )
+#endif
+#line 383
 	{
 		delete [] *ppData;
 		*ppData = new unsigned char[ numRequested ];
@@ -642,6 +647,7 @@ void CVTFTexture::ImageFileInfo( int nFrame, int nFace, int nMipLevel, int *pSta
 
 	ResourceEntryInfo const *pImageDataInfo = FindResourceEntryInfo( VTF_LEGACY_RSRC_IMAGE );
 
+#ifndef BYTEMATCH_RETAIL
 	if ( pImageDataInfo == NULL )
 	{
 		// This should never happen for real, but can happen if someone intentionally fed us a bad VTF.
@@ -650,6 +656,8 @@ void CVTFTexture::ImageFileInfo( int nFrame, int nFace, int nMipLevel, int *pSta
 		( *pSizeInBytes ) = 0;
 		return;
 	}
+#endif
+#line 658
 
 	// The image data start offset
 	int nOffset = pImageDataInfo->resData;
@@ -699,6 +707,7 @@ int CVTFTexture::FileSize( int nMipSkipCount ) const
 {
 	ResourceEntryInfo const *pImageDataInfo = FindResourceEntryInfo( VTF_LEGACY_RSRC_IMAGE );
 
+#ifndef BYTEMATCH_RETAIL
 	// Can be null when someone gives us an intentionally malformed VTF.
 	if ( pImageDataInfo == NULL )
 	{
@@ -706,6 +715,8 @@ int CVTFTexture::FileSize( int nMipSkipCount ) const
 		Assert( pImageDataInfo != NULL );
 		return 0;
 	}
+#endif
+#line 709
 
 	int nOffset = pImageDataInfo->resData;
 
