@@ -112,13 +112,13 @@ CDialogGameInfo::CDialogGameInfo( vgui::Panel *parent, int serverIP, int queryPo
 //-----------------------------------------------------------------------------
 CDialogGameInfo::~CDialogGameInfo()
 {
-	if ( !steamapicontext->SteamMatchmakingServers() )
+	if ( !SteamMatchmakingServers() )
 		return;
 
 	if ( m_hPingQuery != HSERVERQUERY_INVALID )
-		steamapicontext->SteamMatchmakingServers()->CancelServerQuery( m_hPingQuery );
+		SteamMatchmakingServers()->CancelServerQuery( m_hPingQuery );
 	if ( m_hPlayersQuery != HSERVERQUERY_INVALID )
-		steamapicontext->SteamMatchmakingServers()->CancelServerQuery( m_hPlayersQuery );
+		SteamMatchmakingServers()->CancelServerQuery( m_hPlayersQuery );
 }
 
 //-----------------------------------------------------------------------------
@@ -126,12 +126,12 @@ CDialogGameInfo::~CDialogGameInfo()
 //-----------------------------------------------------------------------------
 void CDialogGameInfo::SendPlayerQuery( uint32 unIP, uint16 usQueryPort )
 {
-	if ( !steamapicontext->SteamMatchmakingServers() )
+	if ( !SteamMatchmakingServers() )
 		return;
 
 	if ( m_hPlayersQuery != HSERVERQUERY_INVALID )
-		steamapicontext->SteamMatchmakingServers()->CancelServerQuery( m_hPlayersQuery );
-	m_hPlayersQuery = steamapicontext->SteamMatchmakingServers()->PlayerDetails( unIP, usQueryPort, this );
+		SteamMatchmakingServers()->CancelServerQuery( m_hPlayersQuery );
+	m_hPlayersQuery = SteamMatchmakingServers()->PlayerDetails( unIP, usQueryPort, this );
 	m_bPlayerListUpdatePending = true;
 }
 
@@ -230,17 +230,17 @@ void CDialogGameInfo::SetFriend( uint64 ulSteamIDFriend )
 {
 	// set the title to include the friends name
 	SetTitle( "#ServerBrowser_GameInfoWithNameTitle", true );
-	SetDialogVariable( "game", steamapicontext->SteamFriends()->GetFriendPersonaName( ulSteamIDFriend ) );
-	SetDialogVariable( "friend", steamapicontext->SteamFriends()->GetFriendPersonaName( ulSteamIDFriend ) );
+	SetDialogVariable( "game", SteamFriends()->GetFriendPersonaName( ulSteamIDFriend ) );
+	SetDialogVariable( "friend", SteamFriends()->GetFriendPersonaName( ulSteamIDFriend ) );
 
 	// store the friend we're associated with
 	m_SteamIDFriend = ulSteamIDFriend;
 
 	FriendGameInfo_t friendGameInfo;
-	if ( steamapicontext->SteamFriends()->GetFriendGamePlayed( ulSteamIDFriend, &friendGameInfo ) )
+	if ( SteamFriends()->GetFriendGamePlayed( ulSteamIDFriend, &friendGameInfo ) )
 	{
 		uint16 usConnPort = friendGameInfo.m_usGamePort;
-		if ( friendGameInfo.m_usQueryPort < QUERY_PORT_ERROR )
+		if ( friendGameInfo.m_usQueryPort < k_usFriendGameInfoQueryPort_Error )
 			usConnPort = friendGameInfo.m_usQueryPort;
 		ChangeGame( friendGameInfo.m_unGameIP, usConnPort, friendGameInfo.m_usGamePort );
 	}
@@ -497,7 +497,7 @@ void CDialogGameInfo::ShowAutoRetryOptions(bool state)
 //-----------------------------------------------------------------------------
 void CDialogGameInfo::RequestInfo()
 {
-	if ( !steamapicontext->SteamMatchmakingServers() )
+	if ( !SteamMatchmakingServers() )
 		return;
 
 	if ( m_iRequestRetry == 0 )
@@ -505,8 +505,8 @@ void CDialogGameInfo::RequestInfo()
 		// reset the time at which we auto-refresh
 		m_iRequestRetry = system()->GetTimeMillis() + RETRY_TIME;
 		if ( m_hPingQuery != HSERVERQUERY_INVALID )
-			steamapicontext->SteamMatchmakingServers()->CancelServerQuery( m_hPingQuery );
-		m_hPingQuery = steamapicontext->SteamMatchmakingServers()->PingServer( m_Server.m_NetAdr.GetIP(), m_Server.m_NetAdr.GetQueryPort(), this );
+			SteamMatchmakingServers()->CancelServerQuery( m_hPingQuery );
+		m_hPingQuery = SteamMatchmakingServers()->PingServer( m_Server.m_NetAdr.GetIP(), m_Server.m_NetAdr.GetQueryPort(), this );
 	}
 }
 

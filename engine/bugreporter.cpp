@@ -939,9 +939,9 @@ bool CBugUIPanel::Init()
 		m_pIncludedFiles->SetVisible( false );
 		m_pSubmitter->SetVisible( false );
 
-		if ( Steam3Client().SteamUser() )
+		if ( SteamUser() )
 		{
-			m_pSubmitterLabel->SetText( Steam3Client().SteamUser()->GetSteamID().Render() );
+			m_pSubmitterLabel->SetText( SteamUser()->GetSteamID().Render() );
 		}
 		else
 		{
@@ -2851,19 +2851,19 @@ bool CBugUIPanel::AutoFillToken( char const *token, bool partial )
 
 void CBugUIPanel::CheckContinueQueryingSteamForCSERList()
 {
-	if ( !m_bQueryingSteamForCSER || !Steam3Client().SteamUtils() )
-	{
-		return;
-	}
-	
-	uint32 unIP;
-	uint16 usPort;
-	Steam3Client().SteamUtils()->GetCSERIPPort( &unIP, &usPort );
-	if ( unIP )
-	{
-		m_cserIP.SetIPAndPort( unIP, usPort );
-		m_bQueryingSteamForCSER = false;
-	}
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 static CBugUIPanel *g_pBugUI = NULL;

@@ -29,8 +29,8 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-static CSteamAPIContext g_SteamAPIContext;
-static CSteamAPIContext *steamapicontext = NULL;
+
+
 
 void Voice_EndChannel( int iChannel );
 void VoiceTweak_EndVoiceTweakMode();
@@ -205,9 +205,9 @@ static bool VoiceRecord_Start()
 {
 	if ( g_bUsingSteamVoice )
 	{
-		if ( steamapicontext && steamapicontext->SteamUser() )
+		if ( SteamUser() )
 		{
-			steamapicontext->SteamUser()->StartVoiceRecording();
+			SteamUser()->StartVoiceRecording();
 			return true;
 		}
 	}
@@ -222,9 +222,9 @@ static void VoiceRecord_Stop()
 {
 	if ( g_bUsingSteamVoice )
 	{
-		if ( steamapicontext && steamapicontext->SteamUser() )
+		if ( SteamUser() )
 		{
-			steamapicontext->SteamUser()->StopVoiceRecording();
+			SteamUser()->StopVoiceRecording();
 		}
 	}
 	else if ( g_pVoiceRecord )
@@ -606,15 +606,15 @@ bool Voice_Init( const char *pCodecName, int nSampleRate )
 
 	g_bUsingSteamVoice = bSteam;
 
-	if ( !steamapicontext )
-	{
-		steamapicontext = &g_SteamAPIContext;
-		steamapicontext->Init();
-	}
+
+
+
+
+
 
 	if ( g_bUsingSteamVoice )
 	{
-		if ( !steamapicontext->SteamFriends() || !steamapicontext->SteamUser() )
+		if ( !SteamFriends() || !SteamUser() )
 		{
 			Msg( "Voice_Init: Requested Steam voice, but cannot access API.  Voice will not function\n" );
 			return false;
@@ -625,7 +625,7 @@ bool Voice_Init( const char *pCodecName, int nSampleRate )
 	if ( bSteam && nSampleRate == 0 )
 	{
 		Msg( "Voice_Init: Using Steam voice optimal sample rate %d\n",
-		     steamapicontext->SteamUser()->GetVoiceOptimalSampleRate() );
+		     SteamUser()->GetVoiceOptimalSampleRate() );
 		// Steam's sample rate may change and not be supported by our rather unflexible sound engine. However, steam
 		// will resample as necessary in DecompressVoice, so we can pretend we're outputting at native rates.
 		//
@@ -1006,10 +1006,10 @@ bool Voice_RecordStart(
 		g_bVoiceRecording = VoiceRecord_Start();
 		if ( g_bVoiceRecording )
 		{
-			if ( steamapicontext && steamapicontext->SteamFriends() && steamapicontext->SteamUser() )
+			if ( SteamFriends() && SteamUser() )
 			{
 				// Tell Friends' Voice chat that the local user has started speaking
-				steamapicontext->SteamFriends()->SetInGameVoiceSpeaking( steamapicontext->SteamUser()->GetSteamID(), true );
+				SteamFriends()->SetInGameVoiceSpeaking( SteamUser()->GetSteamID(), true );
 			}
 
 			g_pSoundServices->OnChangeVoiceStatus( -1, true );		// Tell the client DLL.
@@ -1032,7 +1032,7 @@ void Voice_UserDesiresStop()
 	// received all the data.
 	if ( g_bUsingSteamVoice )
 	{
-		steamapicontext->SteamUser()->StopVoiceRecording();
+		SteamUser()->StopVoiceRecording();
 	}
 	else
 	{
@@ -1070,10 +1070,10 @@ bool Voice_RecordStop()
 
 	if ( g_bVoiceRecording )
 	{
-		if ( steamapicontext->SteamFriends() && steamapicontext->SteamUser() )
+		if ( SteamFriends() && SteamUser() )
 		{
 			// Tell Friends' Voice chat that the local user has stopped speaking
-			steamapicontext->SteamFriends()->SetInGameVoiceSpeaking( steamapicontext->SteamUser()->GetSteamID(), false );
+			SteamFriends()->SetInGameVoiceSpeaking( SteamUser()->GetSteamID(), false );
 		}
 	}
 
@@ -1096,11 +1096,11 @@ int Voice_GetCompressedData(char *pchDest, int nCount, bool bFinal)
 		// We're going to always request steam give us the encoded stream at the optimal rate, unless our final output
 		// rate is lower than it.  We'll pass our output rate when we actually extract the data, which Steam will
 		// happily upsample from its optimal rate for us.
-		int nEncodeRate = min( (int)steamapicontext->SteamUser()->GetVoiceOptimalSampleRate(), Voice_SamplesPerSec() );
-		EVoiceResult result = steamapicontext->SteamUser()->GetAvailableVoice( &cbCompressed, &cbUncompressed, nEncodeRate );
+		int nEncodeRate = min( (int)SteamUser()->GetVoiceOptimalSampleRate(), Voice_SamplesPerSec() );
+		EVoiceResult result = SteamUser()->GetAvailableVoice( &cbCompressed, &cbUncompressed, nEncodeRate );
 		if ( result == k_EVoiceResultOK )
 		{
-			result = steamapicontext->SteamUser()->GetVoice( true, pchDest, nCount, &cbCompressedWritten, 
+			result = SteamUser()->GetVoice( true, pchDest, nCount, &cbCompressedWritten, 
 			                                                 g_pUncompressedFileData != NULL, g_pUncompressedFileData,
 			                                                 MAX_WAVEFILEDATA_LEN - g_nUncompressedDataBytes,
 			                                                 &cbUncompressedWritten, nEncodeRate );
@@ -1345,7 +1345,7 @@ int Voice_AddIncomingData(int nChannel, const char *pchData, int nCount, int iSe
 	if ( g_bUsingSteamVoice )
 	{
 		uint32 nBytesWritten = 0;
-		EVoiceResult result = steamapicontext->SteamUser()->DecompressVoice( pchData, nCount,
+		EVoiceResult result = SteamUser()->DecompressVoice( pchData, nCount,
 		                                                                     decompressed, sizeof( decompressed ),
 		                                                                     &nBytesWritten, Voice_SamplesPerSec() );
 		if ( result == k_EVoiceResultOK )

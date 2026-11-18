@@ -1775,8 +1775,8 @@ bool ClientDLL_Load()
 	else
 	{	
 		// tell Steam to do a quick verify of the install. Sys_Error doesn't return, so do this first.
-		if( Steam3Client().SteamApps() )
-			Steam3Client().SteamApps()->MarkContentCorrupt( true );
+		if( SteamApps() )
+			SteamApps()->MarkContentCorrupt( true );
 
 		// library failed to load
 		Sys_Error( "Could not load library client. Try restarting. If that doesn't work, verify the cache." );

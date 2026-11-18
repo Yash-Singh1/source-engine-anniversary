@@ -244,7 +244,7 @@ void CMultiplayerAdvancedDialog::CreateControls()
 
 	// Build out the clan dropdown
 	CScriptObject *pClanObj = m_pDescription->FindObject( "cl_clanid" );
-	ISteamFriends *pFriends = steamapicontext->SteamFriends();
+	ISteamFriends *pFriends = SteamFriends();
 	if ( pFriends && pClanObj )
 	{
 		pClanObj->RemoveAndDeleteAllItems();

@@ -70,8 +70,6 @@ public:
 	virtual Color GetBlackBarColor( void ) { return BLACK_BAR_COLOR; }
 
 	virtual const char *GetResFile( void ) { return "Resource/UI/Spectator.res"; }
-
-	virtual GameActionSet_t GetPreferredActionSet() { return GAME_ACTION_SET_SPECTATOR; }
 	
 protected:
 
@@ -128,8 +126,6 @@ public:
 	virtual bool IsVisible() { return BaseClass::IsVisible(); }
 	vgui::VPANEL GetVPanel( void ) { return BaseClass::GetVPanel(); }
 	virtual void SetParent(vgui::VPANEL parent) { BaseClass::SetParent(parent); }
-
-	virtual GameActionSet_t GetPreferredActionSet() { return GAME_ACTION_SET_SPECTATOR; }
 
 private:
 	// VGUI2 overrides

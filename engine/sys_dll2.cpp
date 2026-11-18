@@ -1179,9 +1179,9 @@ void CEngineAPI::SetStartupInfo( StartupInfo_t &info )
 				// the window and how big to make it
 				if ( InitVR() )
 				{
-					if ( Steam3Client().SteamUtils() )
+					if ( SteamUtils() )
 					{
-						if ( Steam3Client().SteamUtils()->IsSteamRunningInVR() && g_pSourceVR->IsHmdConnected() )
+						if ( SteamUtils()->IsSteamRunningInVR() && g_pSourceVR->IsHmdConnected() )
 						{
 							int nForceVRAdapterIndex = g_pSourceVR->GetVRModeAdapter();
 							materials->SetAdapter( nForceVRAdapterIndex, 0 );

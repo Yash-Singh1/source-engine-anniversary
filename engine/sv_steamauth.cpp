@@ -234,9 +234,9 @@ void CSteam3Server::Activate( EServerType serverType )
 	}
 
 	SteamAPI_SetTryCatchCallbacks( false ); // We don't use exceptions, so tell steam not to use try/catch in callback handlers
-	if ( CommandLine()->FindParm("-hushsteam") || !SteamGameServer_InitSafe(
+	if ( CommandLine()->FindParm("-hushsteam") || !SteamGameServer_Init(
 			m_unIP,
-			m_usPort+1,	// Steam lives on -steamport + 1, master server updater lives on -steamport.
+
 			usGamePort,
 			usMasterServerUpdaterPort,
 			m_eServerMode,
@@ -420,7 +420,7 @@ void CSteam3Server::OnLogonSuccess( SteamServersConnected_t *pLogonSuccess )
 		MsgAndLog( "Connection to Steam servers successful.\n" );
 		if ( SteamGameServer() )
 		{
-			uint32 ip = SteamGameServer()->GetPublicIP();
+			SteamIPAddress_t addr = SteamGameServer()->GetPublicIP(); uint32 ip = addr.m_eType == k_ESteamIPTypeIPv4 ? addr.m_unIPv4 : 0;
 			MsgAndLog( "   Public IP is %d.%d.%d.%d.\n", (ip >> 24) & 255, (ip >> 16) & 255, (ip >> 8) & 255, ip & 255 );
 		}
 	}
@@ -802,7 +802,7 @@ void CSteam3Server::NotifyClientDisconnect( CBaseClient *client )
 	// directly to the SourceTV port.
 	if ( client->m_SteamID.GetEAccountType() == k_EAccountTypeAnonGameServer )
 	{
-		SteamGameServer()->SendUserDisconnect( client->m_SteamID );
+		SteamGameServer()->SendUserDisconnect_DEPRECATED( client->m_SteamID );
 
 		// Clear the steam ID, as it was a dummy one that should not be used again
 		client->m_SteamID = CSteamID();
@@ -917,7 +917,7 @@ void CSteam3Server::SendUpdatedServerDetails()
 			if ( cl->m_SteamID.IsValid() )
 			{
 				Assert( cl->m_SteamID.BAnonGameServerAccount() );
-				SteamGameServer()->SendUserDisconnect( cl->m_SteamID );
+				SteamGameServer()->SendUserDisconnect_DEPRECATED( cl->m_SteamID );
 				cl->m_SteamID = CSteamID();
 			}
 		}
@@ -1001,7 +1001,7 @@ void Heartbeat_f()
 
 	if( Steam3Server().SteamGameServer() )
 	{
-		Steam3Server().SteamGameServer()->ForceHeartbeat();
+		SteamGameServer_ForceHeartbeat( Steam3Server().SteamGameServer() );
 	}
 }
 

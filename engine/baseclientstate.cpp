@@ -54,10 +54,10 @@ void CL_NotifyRPTOfDisconnect( );
 void UpdateNameFromSteamID( IConVar *pConVar, CSteamID *pSteamID )
 {
 #ifndef SWDS
-	if ( !pConVar || !pSteamID || !Steam3Client().SteamFriends() )
+	if ( !pConVar || !pSteamID || !SteamFriends() )
 		return;
 
-	const char *pszName = Steam3Client().SteamFriends()->GetFriendPersonaName( *pSteamID );
+	const char *pszName = SteamFriends()->GetFriendPersonaName( *pSteamID );
 	pConVar->SetValue( pszName );
 #endif // SWDS
 }
@@ -65,9 +65,9 @@ void UpdateNameFromSteamID( IConVar *pConVar, CSteamID *pSteamID )
 void SetNameToSteamIDName( IConVar *pConVar )
 {
 #ifndef SWDS
-	if ( Steam3Client().SteamUtils() && Steam3Client().SteamFriends() && Steam3Client().SteamUser() )
+	if ( SteamUtils() && SteamFriends() && SteamUser() )
 	{
-		CSteamID steamID = Steam3Client().SteamUser()->GetSteamID();
+		CSteamID steamID = SteamUser()->GetSteamID();
 		UpdateNameFromSteamID( pConVar, &steamID );
 	}
 #endif // SWDS
@@ -149,7 +149,7 @@ void CL_ClanIdChanged( IConVar *pConVar, const char *pOldString, float flOldValu
 
 #if !defined( NO_STEAM )
 	// Make sure this player is actually part of the desired clan
-	ISteamFriends *pFriends = Steam3Client().SteamFriends();
+	ISteamFriends *pFriends = SteamFriends();
 	if ( pFriends )
 	{
 		int iGroupCount = pFriends->GetClanCount();
@@ -159,7 +159,7 @@ void CL_ClanIdChanged( IConVar *pConVar, const char *pOldString, float flOldValu
 			if ( clanID.GetAccountID() == newId )
 			{
 				// valid clan, accept the change
-				CSteamID clanIDNew( newId, Steam3Client().SteamUtils()->GetConnectedUniverse(), k_EAccountTypeClan );
+				CSteamID clanIDNew( newId, SteamUtils()->GetConnectedUniverse(), k_EAccountTypeClan );
 				SendClanTag( pFriends->GetClanTag( clanIDNew ) );
 				return;
 			}
@@ -574,7 +574,7 @@ bool CBaseClientState::PrepareSteamConnectResponse( uint64 unGSSteamID, bool bGS
 	}
 
 #if 0 //!defined( NO_STEAM ) && !defined( SWDS  ) 
-	if ( !Steam3Client().SteamUser() )
+	if ( !SteamUser() )
 	{
 		COM_ExplainDisconnection( true, "#GameUI_ServerRequireSteam" );
 		Disconnect( "#GameUI_ServerRequireSteam", true );

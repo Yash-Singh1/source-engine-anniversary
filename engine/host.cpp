@@ -1294,7 +1294,7 @@ void Host_WriteConfiguration( const char *filename, bool bAllVars )
 
 		if ( pRemoteStorage )
 		{
-			int32 availableBytes, totalBytes = 0;
+			uint64 availableBytes, totalBytes = 0; pRemoteStorage->BeginFileWriteBatch();
 			if ( pRemoteStorage->GetQuota( &totalBytes, &availableBytes ) )
 			{
 				if ( totalBytes > 0 )
@@ -1368,7 +1368,7 @@ void Host_WriteConfiguration( const char *filename, bool bAllVars )
 					}
 				}
 			}
-
+			pRemoteStorage->EndFileWriteBatch();
 			// even if SteamCloud worked we still safe the same file locally
 		}
 #endif
@@ -3687,10 +3687,10 @@ void Host_RunFrame( float time )
 bool IsLowViolence_Secure()
 {
 #ifndef DEDICATED
-	if ( !IsX360() && Steam3Client().SteamApps() )
+	if ( !IsX360() && SteamApps() )
 	{
 		// let Steam determine current violence settings 		
-		return Steam3Client().SteamApps()->BIsLowViolence();
+		return SteamApps()->BIsLowViolence();
 	}
 	else if ( IsX360() )
 	{
@@ -3995,11 +3995,11 @@ bool DLL_LOCAL Host_IsValidSignature( const char *pFilename, bool bAllowUnknown 
 	}
 	else
 	{
-		if ( Steam3Client().SteamUtils() )
+		if ( SteamUtils() )
 		{
-			SteamAPICall_t hAPICall = Steam3Client().SteamUtils()->CheckFileSignature( pFilename );
+			SteamAPICall_t hAPICall = SteamUtils()->CheckFileSignature( pFilename );
 			bool bAPICallFailed = true;
-			while ( !Steam3Client().SteamUtils()->IsAPICallCompleted(hAPICall, &bAPICallFailed) )
+			while ( !SteamUtils()->IsAPICallCompleted(hAPICall, &bAPICallFailed) )
 			{
 				SteamAPI_RunCallbacks();
 				ThreadSleep( 1 );
@@ -4012,7 +4012,7 @@ bool DLL_LOCAL Host_IsValidSignature( const char *pFilename, bool bAllowUnknown 
 			else
 			{
 				CheckFileSignature_t result;
-				Steam3Client().SteamUtils()->GetAPICallResult( hAPICall, &result, sizeof(result), result.k_iCallback, &bAPICallFailed );
+				SteamUtils()->GetAPICallResult( hAPICall, &result, sizeof(result), result.k_iCallback, &bAPICallFailed );
 				if( bAPICallFailed )
 				{
 					Warning( "CheckFileSignature API call on %s failed\n", pFilename );
@@ -4057,7 +4057,7 @@ bool DLL_LOCAL Host_AllowLoadModule( const char *pFilename, const char *pPathID,
 		// Do we need to do the signature checking? If secure servers are disabled, just skip it.
 		if ( Host_IsSecureServerAllowed() )
 		{
-			if ( Steam3Client().SteamUtils() )
+			if ( SteamUtils() )
 			{
 				char szDllname[512];
 
