@@ -33,7 +33,8 @@ public:
 	DECLARE_INTERPOLATION();
 
 	C_PropJeep();
-	~C_PropJeep();
+
+	virtual void UpdateOnRemove( void );
 
 public:
 
@@ -42,6 +43,8 @@ public:
 
 	void OnEnteredVehicle( C_BasePlayer *pPlayer );
 	void Simulate( void );
+
+	virtual void UpdateViewSmoothingFOV();
 
 private:
 

@@ -36,6 +36,7 @@ public:
 
 	void OnEnteredVehicle( C_BasePlayer *pPlayer );
 	void Simulate( void );
+	virtual void UpdateViewSmoothingFOV();
 
 public:
 	int		m_iNumRadarContacts;
@@ -105,6 +106,17 @@ C_PropJeepEpisodic::C_PropJeepEpisodic()
 	}
 
 	g_pJalopy = this;
+
+	UpdateViewSmoothingFOV();
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: The jalopy has its own view FOV
+//-----------------------------------------------------------------------------
+void C_PropJeepEpisodic::UpdateViewSmoothingFOV()
+{
+	static ConVarRef r_JalopyFOV( "r_JalopyFOV" );
+	m_ViewSmoothingData.flFOV = r_JalopyFOV.GetFloat();
 }
 
 //-----------------------------------------------------------------------------

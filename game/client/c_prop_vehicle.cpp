@@ -26,6 +26,7 @@
 #include "tier0/memdbgon.h"
 
 int ScreenTransform( const Vector& point, Vector& screen );
+float Helper_GetFrameTime();
 
 extern ConVar default_fov;
 extern ConVar joy_response_move_vehicle;
@@ -54,6 +55,7 @@ BEGIN_DATADESC( C_PropVehicleDriveable )
 END_DATADESC()
 
 ConVar r_VehicleViewClamp( "r_VehicleViewClamp", "1", FCVAR_CHEAT );
+ConVar r_VehicleHudReticleSmoothing( "r_VehicleHudReticleSmoothing", "0.8", 0 );
 
 #define ROLL_CURVE_ZERO		20		// roll less than this is clamped to zero
 #define ROLL_CURVE_LINEAR	90		// roll greater than this is copied out
@@ -83,7 +85,10 @@ C_PropVehicleDriveable::C_PropVehicleDriveable() :
 	m_ViewSmoothingData.flRollCurveZero = ROLL_CURVE_ZERO;
 	m_ViewSmoothingData.flRollCurveLinear = ROLL_CURVE_LINEAR;
 
-	m_ViewSmoothingData.flFOV = m_flFOV = default_fov.GetFloat();
+#ifndef BYTEMATCH_RETAIL
+	m_flFOV = default_fov.GetFloat();
+#endif
+	UpdateViewSmoothingFOV();
 
 	AddVar( &m_vecGunCrosshair, &m_iv_vecGunCrosshair, LATCH_SIMULATION_VAR );
 }
@@ -203,6 +208,8 @@ void C_PropVehicleDriveable::DampenEyePosition( Vector &vecVehicleEyePos, QAngle
 //-----------------------------------------------------------------------------
 void C_PropVehicleDriveable::GetVehicleViewPosition( int nRole, Vector *pAbsOrigin, QAngle *pAbsAngles, float *pFOV /*=NULL*/ )
 {
+	UpdateViewSmoothingFOV();
+
 	SharedVehicleViewSmoothing( m_hPlayer,
 								pAbsOrigin, pAbsAngles,
 								m_bEnterAnimOn, m_bExitAnimOn,
@@ -218,7 +225,15 @@ void C_PropVehicleDriveable::GetVehicleViewPosition( int nRole, Vector *pAbsOrig
 void C_PropVehicleDriveable::GetVehicleClipPlanes( float &flZNear, float &flZFar ) const
 {
 	// FIXME: Need something a better long-term, this fixes the buggy.
-	flZNear = 6;
+	// Wide views would clip the vehicle model at 6.
+	if ( default_fov.GetFloat() > 90.0f || engine->GetScreenAspectRatio() > ( 16.0f / 9.0f ) )
+	{
+		flZNear = 3;
+	}
+	else
+	{
+		flZNear = 6;
+	}
 }
 
 	
@@ -280,13 +295,24 @@ void C_PropVehicleDriveable::DrawHudElements( )
 			{
 				Vector screen;
 
-				x = ScreenWidth()/2;
-				y = ScreenHeight()/2;
+				int vx, vy, vw, vh;
+				vgui::surface()->GetFullscreenViewport( vx, vy, vw, vh );
+
+				float screenWidth = vw;
+				float screenHeight = vh;
+
+				x = screenWidth / 2;
+				y = screenHeight / 2;
 
 #if TRIANGULATED_CROSSHAIR
-				ScreenTransform( m_vecGunCrosshair, screen );
-				x += 0.5 * screen[0] * ScreenWidth() + 0.5;
-				y -= 0.5 * screen[1] * ScreenHeight() + 0.5;
+				// Smooth the reticle toward the networked crosshair; less smoothing at low frame rates
+				float flSmoothing = RemapValClamped( Helper_GetFrameTime(), 0.033333f, 0.016666f, 0.0f, 1.0f ) * r_VehicleHudReticleSmoothing.GetFloat();
+				Vector vecCrosshair;
+				VectorLerp( m_vecGunCrosshair, m_vecSmoothedGunCrosshair, flSmoothing, vecCrosshair );
+				m_vecSmoothedGunCrosshair = vecCrosshair;
+				ScreenTransform( vecCrosshair, screen );
+				x += 0.5 * screen[0] * screenWidth + 0.5;
+				y -= 0.5 * screen[1] * screenHeight + 0.5;
 #endif
 			}
 
@@ -386,6 +412,14 @@ void C_PropVehicleDriveable::RestrictView( float *pYawBounds, float *pPitchBound
 		flAngleDiff = clamp( flAngleDiff, pRollBounds[0], pRollBounds[1] );
 		vecViewAngles.z = vehicleEyeAngles.z + flAngleDiff;
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: The view smoothing FOV follows the player's FOV setting
+//-----------------------------------------------------------------------------
+void C_PropVehicleDriveable::UpdateViewSmoothingFOV()
+{
+	m_ViewSmoothingData.flFOV = default_fov.GetFloat();
 }
 
 //-----------------------------------------------------------------------------

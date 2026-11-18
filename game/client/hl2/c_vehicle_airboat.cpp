@@ -292,7 +292,7 @@ void C_PropAirboat::UpdateViewAngles( C_BasePlayer *pLocalPlayer, CUserCmd *pCmd
 		//
 		bool bResetViewAngleTime = false;
 
-		if ( ( pCmd->mousedx != 0 || pCmd->mousedy != 0 ) || ( fabsf( m_flThrottle ) < 0.01f ) )
+		if ( ( pCmd->mousedx != 0 || pCmd->mousedy != 0 ) || ( fabsf( m_flThrottle ) < 0.01f ) || pLocalPlayer->m_fOnTarget )
 		{
 			if ( IsX360() )
 			{

@@ -88,7 +88,10 @@ private:
 	bool					m_bEnterAnimOn;
 	bool					m_bExitAnimOn;
 	Vector					m_vecEyeExitEndpoint;
+#ifndef BYTEMATCH_RETAIL
 	float					m_flFOV;				// The current FOV (changes during entry/exit anims).
+#endif
+#line 92
 
 	ViewSmoothingData_t		m_ViewSmoothingData;
 
@@ -129,7 +132,10 @@ C_PropVehicleChoreoGeneric::C_PropVehicleChoreoGeneric( void )
 	m_ViewSmoothingData.flPitchCurveLinear = PITCH_CURVE_LINEAR;
 	m_ViewSmoothingData.flRollCurveZero = ROLL_CURVE_ZERO;
 	m_ViewSmoothingData.flRollCurveLinear = ROLL_CURVE_LINEAR;
+#ifndef BYTEMATCH_RETAIL
 	m_flFOV = 0;
+#endif
+#line 133
 }
 
 //-----------------------------------------------------------------------------

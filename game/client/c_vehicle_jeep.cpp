@@ -39,19 +39,21 @@ C_PropJeep::C_PropJeep()
 	m_flViewAngleDeltaTime = 0.0f;
 	m_pHeadlight = NULL;
 	
-	ConVarRef r_JeepFOV( "r_JeepFOV" );
-	m_ViewSmoothingData.flFOV = r_JeepFOV.GetFloat();
+	UpdateViewSmoothingFOV();
 }
 
 //-----------------------------------------------------------------------------
-// Purpose: Deconstructor
+// Purpose: The headlight goes away with the entity
 //-----------------------------------------------------------------------------
-C_PropJeep::~C_PropJeep()
+void C_PropJeep::UpdateOnRemove( void )
 {
 	if ( m_pHeadlight )
 	{
 		delete m_pHeadlight;
+		m_pHeadlight = NULL;
 	}
+
+	BaseClass::UpdateOnRemove();
 }
 
 void C_PropJeep::Simulate( void )
@@ -102,7 +104,7 @@ void C_PropJeep::UpdateViewAngles( C_BasePlayer *pLocalPlayer, CUserCmd *pCmd )
 	if ( r_JeepViewBlendTo.GetInt() )
 	{
 		// Check to see if the mouse has been touched in a bit or that we are not throttling.
-		if ( ( pCmd->mousedx != 0 || pCmd->mousedy != 0 ) || ( fabsf( m_flThrottle ) < 0.01f ) )
+		if ( ( pCmd->mousedx != 0 || pCmd->mousedy != 0 ) || ( fabsf( m_flThrottle ) < 0.01f ) || pLocalPlayer->m_fOnTarget )
 		{
 			m_flViewAngleDeltaTime = 0.0f;
 		}
@@ -241,6 +243,15 @@ void C_PropJeep::DampenForwardMotion( Vector &vecVehicleEyePos, QAngle &vecVehic
 		Vector vecForwardOffset = vecForward * ( vecForward.Dot( vecDeltaPos ) );
 		vecVehicleEyePos -= vecForwardOffset;
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: The jeep has its own view FOV
+//-----------------------------------------------------------------------------
+void C_PropJeep::UpdateViewSmoothingFOV()
+{
+	static ConVarRef r_JeepFOV( "r_JeepFOV" );
+	m_ViewSmoothingData.flFOV = r_JeepFOV.GetFloat();
 }
 
 //-----------------------------------------------------------------------------

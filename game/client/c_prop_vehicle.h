@@ -90,7 +90,10 @@ protected:
 	virtual void OnExitedVehicle( C_BaseCombatCharacter *pPassenger );
 
 	virtual void RestrictView( float *pYawBounds, float *pPitchBounds, float *pRollBounds, QAngle &vecViewAngles );
+#ifndef BYTEMATCH_RETAIL
 	virtual void SetVehicleFOV( float flFOV ) { m_flFOV = flFOV; }
+#endif
+	virtual void UpdateViewSmoothingFOV();
 
 protected:
 
@@ -119,9 +122,12 @@ protected:
 	float						m_flSequenceChangeTime;
 	bool						m_bEnterAnimOn;
 	bool						m_bExitAnimOn;
+#ifndef BYTEMATCH_RETAIL
 	float						m_flFOV;
+#endif
 
 	Vector						m_vecGunCrosshair;
+	Vector						m_vecSmoothedGunCrosshair;
 	CInterpolatedVar<Vector>	m_iv_vecGunCrosshair;
 	Vector						m_vecEyeExitEndpoint;
 	bool						m_bHasGun;
