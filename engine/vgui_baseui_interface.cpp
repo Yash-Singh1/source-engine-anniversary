@@ -638,7 +638,7 @@ void CEngineVGui::Init()
 	staticSizingPanel->SetPaintBackgroundEnabled( false );
 	staticSizingPanel->SetKeyBoardInputEnabled( false );
 	staticSizingPanel->SetPaintEnabled( false );
-	staticSizingPanel->SetVisible( true );
+	staticSizingPanel->SetCursor( vgui::dc_none );
 	staticSizingPanel->SetZPos( 150 );
 
 	// load scheme
@@ -650,7 +650,8 @@ void CEngineVGui::Init()
 	}
 
 	// and once more laid out against the scaled UI size
-	if ( !vgui::scheme()->LoadSchemeFromFileEx( IsSteamDeck() ? NULL : GetPanel( PANEL_STATIC_SIZING ), pStr, "Tracker" ) )
+	vgui::HScheme hSizedScheme = vgui::scheme()->LoadSchemeFromFileEx( IsSteamDeck() ? NULL : GetPanel( PANEL_STATIC_SIZING ), pStr, "Tracker" );
+	if ( !hSizedScheme )
 	{
 		Sys_Error( "Error loading file %s\n", pStr );
 		return;
@@ -664,7 +665,7 @@ void CEngineVGui::Init()
 		return;
 	}
 #endif
-#line 642
+#line 643
 
 	if ( IsX360() || IsSteamDeck() )
 	{
@@ -750,8 +751,11 @@ void CEngineVGui::Init()
 
 	staticGameUIPanel = new CEnginePanel( staticPanel, "GameUI Panel" );
 
+#ifndef BYTEMATCH_RETAIL
 	if(NeedProportional())
 		staticGameUIPanel->SetProportional(true);
+#endif
+#line 728
 
 	staticGameUIPanel->SetBounds( 0, 0, videomode->GetModeUIWidth(), videomode->GetModeUIHeight() );
 	staticGameUIPanel->SetPaintBorderEnabled(false);
@@ -760,6 +764,11 @@ void CEngineVGui::Init()
 	staticGameUIPanel->SetVisible( true );
 	staticGameUIPanel->SetCursor( vgui::dc_none );
 	staticGameUIPanel->SetZPos( 100 );
+#ifdef BYTEMATCH_RETAIL
+	staticGameUIPanel->SetScheme( hSizedScheme );
+	staticGameUIPanel->SetProportional( true );
+#endif
+#line 738
 
 	staticGameDLLPanel = new CEnginePanel( staticPanel, "staticGameDLLPanel" );
 	staticGameDLLPanel->SetBounds( 0, 0, videomode->GetModeUIWidth(), videomode->GetModeUIHeight() );
@@ -839,6 +848,10 @@ void CEngineVGui::Init()
 
 	// load the base localization file
 	g_pVGuiLocalize->AddFile( "Resource/valve_%language%.txt" );
+#ifdef BYTEMATCH_RETAIL
+	g_pVGuiLocalize->AddFile( "Resource/deck_%language%.txt" );
+#endif
+#line 818
 
 	COM_TimestampedLog( "staticGameUIFuncs->Initialize" );
 
@@ -847,6 +860,23 @@ void CEngineVGui::Init()
 	COM_TimestampedLog( "staticGameUIFuncs->Start" );
 	staticGameUIFuncs->Start();
 
+#ifdef BYTEMATCH_RETAIL
+	// the combined game carries every episode's strings
+	if ( !V_stricmp( CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) ), "hl2_complete" ) )
+	{
+		g_pVGuiLocalize->AddFile( "hl2/resource/hl2_%language%.txt", "BASE_PATH" );
+		g_pVGuiLocalize->AddFile( "episodic/resource/episodic_%language%.txt", "BASE_PATH" );
+		g_pVGuiLocalize->AddFile( "ep2/resource/ep2_%language%.txt", "BASE_PATH" );
+		g_pVGuiLocalize->AddFile( "lostcoast/resource/lostcoast_%language%.txt", "BASE_PATH" );
+	}
+	else
+	{
+		char szFileName[MAX_PATH];
+		Q_snprintf( szFileName, sizeof( szFileName ) - 1, "resource/%s_%%language%%.txt", GetCurrentMod() );
+		szFileName[ sizeof( szFileName ) - 1 ] = '\0';
+		g_pVGuiLocalize->AddFile( szFileName );
+	}
+#else
 	// don't need to load the "valve" localization file twice
 	// Each mod acn have its own language.txt in addition to the valve_%%langauge%%.txt file under defaultgamedir.
 	// load mod-specific localization file for kb_act.lst, user.scr, settings.scr, etc.
@@ -854,6 +884,8 @@ void CEngineVGui::Init()
 	Q_snprintf( szFileName, sizeof( szFileName ) - 1, "resource/%s_%%language%%.txt", GetCurrentMod() );
 	szFileName[ sizeof( szFileName ) - 1 ] = '\0';
 	g_pVGuiLocalize->AddFile( szFileName );
+#endif
+#line 841
 
 	// setup console
 	if ( staticGameConsole )
@@ -875,6 +907,10 @@ void CEngineVGui::Init()
 	if ( staticGameConsole && 
 		!CommandLine()->CheckParm( "-forcestartupmenu" ) && 
 		!CommandLine()->CheckParm( "-hideconsole" ) &&
+#ifdef BYTEMATCH_RETAIL
+		!IsSteamDeck() &&
+#endif
+#line 863
 		( CommandLine()->FindParm( "-toconsole" ) || CommandLine()->FindParm( "-console" ) || CommandLine()->FindParm( "-rpt" ) || CommandLine()->FindParm( "-allowdebug" ) ) )
 	{
 		// activate the console
@@ -1049,7 +1085,7 @@ inline vgui::Panel *CEngineVGui::GetRootPanel( VGuiPanel_t type )
 	case PANEL_STATIC_SIZING:
 		return staticSizingPanel;
 #endif
-#line 1024
+#line 1035
 	}
 }
 
@@ -1123,7 +1159,7 @@ void CEngineVGui::UpdateStaticSizingPanelSize( int nWidth, int nHeight )
 	engineClient->ExecuteClientCmd( "refresh_gameui_dialogs_modeset\n" );
 }
 #endif
-#line 1095
+#line 1106
 
 vgui::VPANEL CEngineVGui::GetPanel( VGuiPanel_t type )
 {
@@ -1186,7 +1222,7 @@ void CEngineVGui::ActivateGameUI()
 		g_pInputSystem->ActivateSteamControllerActionSet( GAME_ACTION_SET_MENUCONTROLS );
 	}
 #endif
-#line 1155
+#line 1166
 
 	// clear any keys that might be stuck down
 	ClearIOStates();
@@ -1213,7 +1249,7 @@ void CEngineVGui::ActivateGameUI()
 		g_GameEventManager.FireEventClientSide( event );
 	}
 #endif
-#line 1179
+#line 1190
 }
 
 //-----------------------------------------------------------------------------
@@ -1264,7 +1300,7 @@ bool CEngineVGui::HideGameUI()
 		g_GameEventManager.FireEventClientSide( event );
 	}
 #endif
-#line 1227
+#line 1238
 
 	return true;
 }
@@ -1471,7 +1507,7 @@ void CEngineVGui::OnLevelLoadingStarted()
 		g_GameEventManager.FireEventClientSide( event );
 	}
 #endif
-#line 1431
+#line 1442
 }
 
 //-----------------------------------------------------------------------------
@@ -1558,7 +1594,7 @@ void CEngineVGui::OnLevelLoadingFinished()
 		g_GameEventManager.FireEventClientSide( event );
 	}
 #endif
-#line 1515
+#line 1526
 }
 
 
@@ -1896,7 +1932,7 @@ void CEngineVGui::Paint( PaintMode_t mode )
 #ifdef BYTEMATCH_RETAIL
 		UpdateStaticSizingPanelSize( w, h );
 #endif
-#line 1850
+#line 1861
 	}
 
 	panel->Repaint();
