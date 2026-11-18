@@ -168,6 +168,10 @@ int host_tickcount = 0;
 int host_currentframetick = 0;
 
 static const char g_pModuleExtension[] = DLL_EXT_STRING;
+#ifdef BYTEMATCH_RETAIL
+ConVar save_transition_music( "save_transition_music", "0", FCVAR_ARCHIVE );
+#endif
+#line 171
 
 // Engine player info, no game related infos here
 BEGIN_BYTESWAP_DATADESC( player_info_s )
@@ -264,9 +268,6 @@ static CFrameTimer g_HostTimes;
 
 float host_time = 0.0;
 
-#ifdef BYTEMATCH_RETAIL
-ConVar save_transition_music( "save_transition_music", "0", FCVAR_ARCHIVE );
-#endif
 #line 268
 static ConVar	violence_hblood( "violence_hblood","1", 0, "Draw human blood" );
 static ConVar	violence_hgibs( "violence_hgibs","1", 0, "Show human gib entities" );
@@ -1109,6 +1110,10 @@ void SetupNewBindings()
 			if ( !::Key_BindingForKey( bcCurButton ) )
 			{
 				// Yes - use it.
+#ifdef BYTEMATCH_RETAIL
+				char szBindCmd[ 256 ];
+#endif
+#line 1087
 				V_snprintf( szBindCmd, sizeof( szBindCmd ), "bind \"%s\" \"%s\"", g_pInputSystem->ButtonCodeToString( bcCurButton ), pBinding );
 				Cbuf_AddText( szBindCmd );
 				bFound = true;
@@ -3007,6 +3012,14 @@ void CheckSpecialCheatVars()
 	if ( !mat_picmip )
 		mat_picmip = g_pCVar->FindVar( "mat_picmip" );
 
+#ifdef BYTEMATCH_RETAIL
+	if ( mat_picmip )
+	{
+		CheckVarRange_Generic( mat_picmip, -1, 2 );
+	}
+
+#endif
+#line 2844
 	CheckVarRange_r_rootlod();
 	CheckVarRange_r_lod();
 	HandleServerAllowColorCorrection();
@@ -4395,7 +4408,12 @@ void Host_Init( bool bDedicated )
 		ThreadSetAffinity( NULL, 1 );
 	}
 	if ( g_pThreadPool )
+#ifdef BYTEMATCH_RETAIL
+		g_pThreadPool->Start( startParams );
+#else
 		g_pThreadPool->Start( startParams, "CmpJob" );
+#endif
+#line 4198
 
 	// From const.h, the loaded game .dll will give us the correct value which is transmitted to the client
 	host_state.interval_per_tick = DEFAULT_TICK_INTERVAL;
@@ -4540,6 +4558,7 @@ void Host_Init( bool bDedicated )
 	}
 #endif
 
+#ifndef BYTEMATCH_RETAIL
 	// Execute mod-specfic settings, without falling back based on search path.
 	// This lets us set overrides for games while letting mods of those games
 	// use the default settings.
@@ -4547,6 +4566,8 @@ void Host_Init( bool bDedicated )
 	{
 		Cbuf_AddText( "exec modsettings.cfg mod\n" );
 	}
+#endif
+#line 4343
 
 	// Mark DLL as active
 	//	eng->SetNextState( InEditMode() ? IEngine::DLL_PAUSED : IEngine::DLL_ACTIVE );
@@ -5121,6 +5142,53 @@ bool Host_NewGame( char *mapName, bool loadGame, bool bBackgroundLevel, const ch
 	VPROF( "Host_NewGame" );
 	COM_TimestampedLog( "Host_NewGame" );
 
+#ifdef BYTEMATCH_RETAIL
+	char previousMapName[MAX_PATH];
+	Q_strncpy( previousMapName, host_map.GetString(), sizeof( previousMapName ) );
+
+#ifndef SWDS
+	SCR_BeginLoadingPlaque();
+#endif
+
+	// The qualified name of the map, excluding path/extension
+	char szMapName[MAX_PATH] = { 0 };
+	// The file to load the map from.
+	char szMapFile[MAX_PATH] = { 0 };
+	Q_strncpy( szMapName, mapName, sizeof( szMapName ) );
+	Q_snprintf( szMapFile, sizeof( szMapFile ), "maps/%s.bsp", szMapName );
+
+	if ( !modelloader->Map_IsValid( szMapFile ) )
+	{
+#ifndef SWDS
+		SCR_EndLoadingPlaque();
+#endif
+		return false;
+	}
+
+	IGameEvent *event = g_GameEventManager.CreateEvent( "server_shutdown" );
+	if ( event )
+	{
+		event->SetString( "reason", "restart" );
+		g_GameEventManager.FireEvent( event );
+	}
+
+	event = g_GameEventManager.CreateEvent( "new_level" );
+	if ( event )
+	{
+		event->SetString( "map_name", szMapName );
+		event->SetString( "previous_map_name", previousMapName );
+		event->SetBool( "is_main_menu", bBackgroundLevel );
+		g_GameEventManager.FireEventClientSide( event );
+	}
+
+	if ( bBackgroundLevel && SteamFriends() )
+	{
+		SteamFriends()->SetRichPresence( "steam_display", "#Status_MainMenu" );
+	}
+
+	DevMsg( "---- Host_NewGame ----\n" );
+	host_map.SetValue( szMapName );
+#else
 	char previousMapName[MAX_PATH] = { 0 };
 	Q_strncpy( previousMapName, host_map.GetString(), sizeof( previousMapName ) );
 
@@ -5151,6 +5219,8 @@ bool Host_NewGame( char *mapName, bool loadGame, bool bBackgroundLevel, const ch
 	host_map.SetValue( szMapName );
 
 	CheckForFlushMemory( previousMapName, szMapName );
+#endif
+#line 4727
 
 	if (MapReslistGenerator().IsEnabled())
 	{
