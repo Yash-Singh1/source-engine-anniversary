@@ -431,6 +431,7 @@ void CL_CopyNewEntity(
 	}
 }
 
+#ifndef BYTEMATCH_RETAIL
 void CL_PreserveExistingEntity( int nOldEntity )
 {
 	IClientNetworkable *pEnt = entitylist->GetClientNetworkable( nOldEntity );
@@ -453,6 +454,8 @@ void CL_PreserveExistingEntity( int nOldEntity )
 
 //	pEnt->OnDataUnchangedInPVS();
 }
+#endif
+#line 434
 
 void CL_CopyExistingEntity( CEntityReadInfo &u )
 {

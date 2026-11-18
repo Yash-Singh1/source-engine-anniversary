@@ -180,9 +180,15 @@ bool CL_IsHL2Demo();
 bool CL_IsPortalDemo();
 void CL_SetSteamCrashComment();
 
+#ifdef BYTEMATCH_RETAIL
+void CL_CheckForPureServerWhitelist();
+void CL_HandlePureServerWhitelist( CPureServerWhitelist *pWhitelist );
+#else
 void CL_CheckForPureServerWhitelist( /* out */ IFileList *&pFilesToReload );
 void CL_ReloadFilesInList( IFileList *pFilesToReload );
 void CL_HandlePureServerWhitelist( CPureServerWhitelist *pWhitelist, /* out */ IFileList *&pFilesToReload );
+#endif
+#line 185
 
 // Special mode where the client uses a console window and has no graphics. Useful for stress-testing a server
 // without having to round up 32 people.

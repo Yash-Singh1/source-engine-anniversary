@@ -167,6 +167,47 @@ struct ResourceLocker
 	MaterialLock_t	m_MatLock;
 };
 
+#ifdef BYTEMATCH_RETAIL
+void CL_HandlePureServerWhitelist( CPureServerWhitelist *pWhitelist )
+{
+	// Free the old whitelist and get the new one.
+	if ( cl.m_pPureServerWhitelist )
+		cl.m_pPureServerWhitelist->Release();
+
+	cl.m_pPureServerWhitelist = pWhitelist;
+	if ( cl.m_pPureServerWhitelist )
+		cl.m_pPureServerWhitelist->AddRef();
+
+	IFileList *pFilesToReload = NULL;
+	g_pFileSystem->RegisterFileWhitelist( pWhitelist, &pFilesToReload );
+	if ( pFilesToReload )
+	{
+		ResourceLocker crashPreventer;
+
+		// Handle materials..
+		materials->ReloadFilesInList( pFilesToReload );
+
+		// Handle models.. NOTE: this MUST come after materials->ReloadFilesInList because the
+		// models need to know which materials got flushed.
+		modelloader->ReloadFilesInList( pFilesToReload );
+
+		S_ReloadFilesInList( pFilesToReload );
+
+		// Let the client at it (for particles)
+		if ( g_ClientDLL )
+		{
+			g_ClientDLL->ReloadFilesInList( pFilesToReload );
+		}
+
+		pFilesToReload->Release();
+	}
+
+	// Now that we've flushed any files that shouldn't have been on disk, we should have a CRC
+	// set that we can check with the server.
+	cl.m_bCheckCRCsWithServer = true;
+}
+
+#else
 // Reloads a list of files if they are still loaded
 void CL_ReloadFilesInList( IFileList *pFilesToReload )
 {
@@ -210,6 +251,8 @@ void CL_HandlePureServerWhitelist( CPureServerWhitelist *pWhitelist, /* out */ I
 	cl.m_bCheckCRCsWithServer = true;
 }
 
+#endif
+#line 205
 void PrintSvPureWhitelistClassification( const CPureServerWhitelist *pWhiteList )
 {
 	if ( pWhiteList == NULL )
@@ -584,9 +627,14 @@ void CL_ReadPackets ( bool bFinalTick )
 void CL_ClearState ( void )
 {
 	// clear out the current whitelist
+#ifdef BYTEMATCH_RETAIL
+	CL_HandlePureServerWhitelist( NULL );
+#else
 	IFileList *pFilesToReload = NULL;
 	CL_HandlePureServerWhitelist( NULL, pFilesToReload );
 	CL_ReloadFilesInList( pFilesToReload );
+#endif
+#line 580
 
 	CL_ResetEntityBits();
 
@@ -901,7 +949,7 @@ CON_COMMAND_F( connect, "Connect to specified server.", FCVAR_DONTRECORD )
 #else
 	vecArgs.PurgeAndDeleteElementsArray();
 #endif
-#line 896
+#line 890
 }
 
 CON_COMMAND_F( redirect, "Redirect client to specified server.", FCVAR_DONTRECORD | FCVAR_SERVER_CAN_EXECUTE )
@@ -972,6 +1020,33 @@ CPureServerWhitelist* CL_LoadWhitelist( INetworkStringTable *pTable, const char 
 }
 
 
+#ifdef BYTEMATCH_RETAIL
+void CL_CheckForPureServerWhitelist()
+{
+#ifdef DISABLE_PURE_SERVER_STUFF
+	return;
+#endif
+
+	// Don't do sv_pure stuff in SP games or HLTV/replay
+	if ( cl.m_nMaxClients <= 1 || cl.ishltv
+#ifdef REPLAY_ENABLED
+		|| cl.isreplay
+#endif // ifdef REPLAY_ENABLED
+		)
+		return;
+	
+	CPureServerWhitelist *pWhitelist = NULL;
+	if ( cl.m_pServerStartupTable )
+		pWhitelist = CL_LoadWhitelist( cl.m_pServerStartupTable, "PureServerWhitelist" );
+		
+	PrintSvPureWhitelistClassification( pWhitelist );
+	CL_HandlePureServerWhitelist( pWhitelist );
+	if ( pWhitelist )
+	{
+		pWhitelist->Release();
+	}
+}
+#else
 void CL_CheckForPureServerWhitelist( /* out */ IFileList *&pFilesToReload )
 {
 #ifdef DISABLE_PURE_SERVER_STUFF
@@ -997,6 +1072,8 @@ void CL_CheckForPureServerWhitelist( /* out */ IFileList *&pFilesToReload )
 		pWhitelist->Release();
 	}
 }
+#endif
+#line 985
 
 int CL_GetServerQueryPort()
 {
@@ -1070,12 +1147,15 @@ void CL_FullyConnected( void )
 
 	// We initialize this list before the load, but don't perform reloads until after flushes have happened to avoid
 	// unnecessary reloads of items that wont be used on this map.
+#ifndef BYTEMATCH_RETAIL
 	if ( cl.m_pPendingPureFileReloads )
 	{
 		CL_ReloadFilesInList( cl.m_pPendingPureFileReloads );
 		cl.m_pPendingPureFileReloads->Release();
 		cl.m_pPendingPureFileReloads = NULL;
 	}
+#endif
+#line 1058
 
 	// ***************************************************************
 	// NO MORE PRELOAD DATA AVAILABLE PAST THIS POINT!!!
@@ -2379,7 +2459,7 @@ bool CL_ShouldLoadBackgroundLevel( const CCommand &args )
 #ifndef BYTEMATCH_RETAIL
 		|| CommandLine()->CheckParm("-nobackgroundlevel")
 #endif
-#line 2370
+#line 2358
 		)
 		return false;
 
@@ -2754,7 +2834,7 @@ void CL_InitLanguageCvar()
 #ifndef BYTEMATCH_RETAIL
 	Msg("CL_InitLanguageCvar\n");
 #endif
-#line 2741
+#line 2729
 	if ( Steam3Client().SteamApps() )
 	{
 		cl_language.SetValue( Steam3Client().SteamApps()->GetCurrentGameLanguage() );
@@ -2780,7 +2860,7 @@ void CL_InitLanguageCvar()
 			}
 		}
 #endif
-#line 2747
+#line 2735
 
 		cl_language.SetValue( "english" );
 	}
