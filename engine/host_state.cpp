@@ -135,7 +135,14 @@ void HostState_RunGameInit()
 //-----------------------------------------------------------------------------
 void HostState_NewGame( char const *pMapName, bool remember_location, bool background )
 {
+#ifdef BYTEMATCH_RETAIL
+	char szMapName[_MAX_PATH];
+	V_StripExtension( pMapName, szMapName, sizeof( szMapName ) );
+	Q_strncpy( g_HostState.m_levelName, szMapName, sizeof( g_HostState.m_levelName ) );
+#else
 	Q_strncpy( g_HostState.m_levelName, pMapName, sizeof( g_HostState.m_levelName ) );
+#endif
+#line 139
 
 	g_HostState.m_landmarkName[0] = 0;
 	g_HostState.m_bRememberLocation = remember_location;

@@ -223,6 +223,10 @@ def retail_osx32_configure(conf):
 			v['STLIB_' + name] = [lib]
 			v['STLIBPATH_' + name] = [os.path.join(tp, 'lib')]
 			v['INCLUDES_' + name] = [os.path.join(tp, 'include')]
+			# Every retail module that links libjpeg/libpng was built with HAVE_JPEG/HAVE_PNG
+			# (e.g. engine's TakeSnapshotJPEGToBuffer and imageutils' jpeg_UtlBuffer_dest).
+			if name in ('JPEG', 'PNG'):
+				v['DEFINES_' + name] = ['HAVE_' + name]
 
 	# User-provided retail dylibs, thinned so the native ld64 can map them.
 	depot = o.RETAIL_DEPOT or rf.RETAIL_DEPOT

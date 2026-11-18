@@ -282,6 +282,16 @@ void Snd_Restart_f()
 #ifndef SWDS
 	extern bool snd_firsttime;
 
+#ifdef BYTEMATCH_RETAIL
+	extern char g_szVoiceCodec[_MAX_PATH];
+
+	char szVoiceCodec[_MAX_PATH];
+	szVoiceCodec[0] = 0;
+	if ( g_szVoiceCodec[0] )
+	{
+		V_strncpy( szVoiceCodec, g_szVoiceCodec, sizeof( szVoiceCodec ) );
+	}
+#else
 	char szVoiceCodec[_MAX_PATH] = { 0 };
 	int nVoiceSampleRate = Voice_ConfiguredSampleRate();
 
@@ -293,6 +303,8 @@ void Snd_Restart_f()
 			V_strncpy( szVoiceCodec, pPreviousCodec, sizeof( szVoiceCodec ) );
 		}
 	}
+#endif
+#line 293
 
 	S_Shutdown();
 	snd_firsttime = true;
@@ -301,7 +313,12 @@ void Snd_Restart_f()
 
 	// Restart voice if it was running
 	if ( szVoiceCodec[0] )
+#ifdef BYTEMATCH_RETAIL
+		Voice_Init( szVoiceCodec );
+#else
 		Voice_Init( szVoiceCodec, nVoiceSampleRate );
+#endif
+#line 302
 
 	// Do this or else it won't have anything in the cache.
 	if ( audiosourcecache && sv.GetMapName()[0] )

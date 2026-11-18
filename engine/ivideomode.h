@@ -131,5 +131,4 @@ extern IVideoMode *videomode;
 void VideoMode_Create();
 void VideoMode_Destroy();
 
-
 #endif // IVIDEOMODE_H

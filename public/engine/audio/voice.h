@@ -29,8 +29,16 @@ Defines the engine's interface to the voice code.
 #define VOICE_CHANNEL_IN_TWEAK_MODE	-2	// Returned by AssignChannel if currently in tweak mode (not an error).
 
 
+#ifdef BYTEMATCH_RETAIL
+#define VOICE_OUTPUT_SAMPLE_RATE			11025	// Sample rate that we feed to the mixer.
+
+//! Initialize the voice code.
+bool Voice_Init( const char *pCodec );
+#else
 //! Initialize the voice code.
 bool Voice_Init( const char *pCodec, int nSampleRate );
+#endif
+#line 34
 
 //! Inits voice with defaults if it is not initialized normally, e.g. for local mixer use.
 void Voice_ForceInit();

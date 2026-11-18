@@ -2134,6 +2134,10 @@ void CVideoMode_Common::WriteMovieFrame( const MovieInfo_t& info )
 }
 
 #if HAVE_JPEG
+#ifdef BYTEMATCH_RETAIL
+// retail links only common/imageutils.cpp's copy
+void jpeg_UtlBuffer_dest( j_compress_ptr cinfo, CUtlBuffer *pBuffer );
+#else
 //-----------------------------------------------------------------------------
 // Purpose: Expanded data destination object for CUtlBuffer output
 //-----------------------------------------------------------------------------
@@ -2232,6 +2236,8 @@ GLOBAL(void) jpeg_UtlBuffer_dest (j_compress_ptr cinfo, CUtlBuffer *pBuffer )
     dest->pub.term_destination      = term_destination;
     dest->pBuffer                   = pBuffer;
 }
+#endif
+#line 2235
 #endif
 
 bool CVideoMode_Common::TakeSnapshotJPEGToBuffer( CUtlBuffer& buf, int quality )

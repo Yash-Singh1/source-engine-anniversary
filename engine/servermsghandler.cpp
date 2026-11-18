@@ -464,7 +464,12 @@ bool CClientState::ProcessVoiceInit( SVC_VoiceInit *msg )
 	}
 	else
 	{
+#ifdef BYTEMATCH_RETAIL
+		Voice_Init( msg->m_szVoiceCodec );
+#else
 		Voice_Init( msg->m_szVoiceCodec, msg->m_nSampleRate );
+#endif
+#line 468
 	}
 #endif
 	return true;

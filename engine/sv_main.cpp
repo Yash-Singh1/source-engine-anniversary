@@ -304,13 +304,6 @@ static ConVar sv_consistency( "sv_consistency", "1", FCVAR_REPLICATED, "Legacy v
 /// XXX(JohnS): When steam voice gets ugpraded to Opus we will probably default back to steam.  At that time we should
 ///             note that Steam voice is the highest quality codec below.
 #ifdef BYTEMATCH_RETAIL
-static ConVar sv_voicecodec( "sv_voicecodec", "vaudio_celt", 0,
-                             "Specifies which voice codec to use. Valid options are:\n"
-                             "vaudio_speex - Legacy Speex codec (lowest quality)\n"
-                             "vaudio_celt - Newer CELT codec\n"
-                             "steam - Use Steam voice API" );
-
-
 ConVar  sv_mincmdrate( "sv_mincmdrate", "10", FCVAR_REPLICATED, "This sets the minimum value for cl_cmdrate. 0 == unlimited." );
 ConVar  sv_maxcmdrate( "sv_maxcmdrate", "66", FCVAR_REPLICATED, "(If sv_mincmdrate is > 0), this sets the maximum value for cl_cmdrate." );
 #else
@@ -2208,9 +2201,15 @@ void SV_WriteVoiceCodec(bf_write &pBuf)
 {
 	// Only send in multiplayer. Otherwise, we don't want voice.
 
+#ifdef BYTEMATCH_RETAIL
+	const char *pCodec = sv.IsMultiplayer() ? "vaudio_speex" : "";
+	SVC_VoiceInit voiceinit( pCodec, 5 );
+#else
 	const char *pCodec = sv.IsMultiplayer() ? sv_voicecodec.GetString() : NULL;
 	int nSampleRate = pCodec ? Voice_GetDefaultSampleRate( pCodec ) : 0;
 	SVC_VoiceInit voiceinit( pCodec, nSampleRate );
+#endif
+#line 1879
 	voiceinit.WriteToBuffer( pBuf );
 }
 
