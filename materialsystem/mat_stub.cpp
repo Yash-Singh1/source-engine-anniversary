@@ -344,6 +344,10 @@ public:
 	virtual bool HasSetDeviceGammaRamp() const		{ return false; }
 	virtual bool SupportsCompressedTextures() const	{ return false; }
 	virtual VertexCompressionType_t SupportsCompressedVertices() const { return VERTEX_COMPRESSION_NONE; }
+#ifdef BYTEMATCH_RETAIL
+	virtual bool SupportsNormalMapCompression() const { return false; }
+#endif
+#line 347
 	virtual bool SupportsVertexAndPixelShaders() const	{ return false; }
 	virtual bool SupportsPixelShaders_1_4() const	{ return false; }
 	virtual bool SupportsPixelShaders_2_0() const	{ return false; }
@@ -2152,6 +2156,10 @@ public:
 
 	virtual void SetFlexWeights( int nFirstWeight, int nCount, const MorphWeight_t* pWeights ) {}
 
+#ifdef BYTEMATCH_RETAIL
+	virtual bool SupportsNormalMapCompression() { return false; }
+#endif
+#line 2155
 	virtual bool SupportsBorderColor() { return false; }
 
 	virtual IMaterial *GetCurrentMaterial() { return NULL; }
@@ -2225,7 +2233,12 @@ public:
 
 	virtual RenderBackend_t GetRenderBackend() const OVERRIDE
 	{
+#ifdef BYTEMATCH_RETAIL
+		return RENDER_BACKEND_NULL;
+#else
 		return m_pRealMaterialSystem ? m_pRealMaterialSystem->GetRenderBackend() : RENDER_BACKEND_NULL;
+#endif
+#line 2229
 	}
 
 	virtual void FogRadial( bool bRadial )

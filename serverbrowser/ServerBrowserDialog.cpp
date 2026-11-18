@@ -870,6 +870,26 @@ void CServerBrowserDialog::OnKeyCodePressed( vgui::KeyCode code )
 	// Handle close here, CBasePanel parent doesn't support "DialogClosing" command
 	ButtonCode_t nButtonCode = GetBaseButtonCode( code );
 
+#ifdef BYTEMATCH_RETAIL
+	if ( nButtonCode == KEY_XBUTTON_B )
+	{
+		OnCommand( "Close" );
+		return;
+	}
+	else if ( nButtonCode == KEY_XBUTTON_A )
+	{
+		//OnOK( false );
+		//return;
+	}
+	else if ( nButtonCode == KEY_XBUTTON_UP || 
+			  nButtonCode == KEY_XSTICK1_UP ||
+			  nButtonCode == KEY_XSTICK2_UP || 
+			  nButtonCode == KEY_UP ||
+			  nButtonCode == KEY_XBUTTON_DOWN || 
+			  nButtonCode == KEY_XSTICK1_DOWN ||
+			  nButtonCode == KEY_XSTICK2_DOWN || 
+			  nButtonCode == KEY_DOWN )
+#else
 	if ( nButtonCode == KEY_XBUTTON_B || nButtonCode == STEAMCONTROLLER_B )
 	{
 		OnCommand( "Close" );
@@ -890,6 +910,7 @@ void CServerBrowserDialog::OnKeyCodePressed( vgui::KeyCode code )
 			  nButtonCode == KEY_XSTICK2_DOWN || 
 			  nButtonCode == STEAMCONTROLLER_DPAD_DOWN ||
 			  nButtonCode == KEY_DOWN )
+#endif
 	{
 		CBaseGamesPage *pGamesPage = dynamic_cast< CBaseGamesPage* >( m_pTabPanel->GetActivePage() );
 		if ( pGamesPage )

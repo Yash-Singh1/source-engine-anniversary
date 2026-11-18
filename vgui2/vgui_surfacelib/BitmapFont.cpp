@@ -66,7 +66,7 @@ CBitmapFont::~CBitmapFont()
 //-----------------------------------------------------------------------------
 // Purpose: creates the font.  returns false if the font cannot be mounted.
 //-----------------------------------------------------------------------------
-bool CBitmapFont::Create( const char *pFontFilename, float scalex, float scaley, int flags )
+bool CBitmapFont::Create_Bitmap( const char *pFontFilename, float scalex, float scaley, int flags )
 {
 	MEM_ALLOC_CREDIT();
 
@@ -211,7 +211,7 @@ bool CBitmapFont::Create( const char *pFontFilename, float scalex, float scaley,
 //-----------------------------------------------------------------------------
 // Purpose: returns true if the font is equivalent to that specified
 //-----------------------------------------------------------------------------
-bool CBitmapFont::IsEqualTo( const char *windowsFontName, float scalex, float scaley, int flags )
+bool CBitmapFont::IsEqualTo_Bitmap( const char *windowsFontName, float scalex, float scaley, int flags )
 {
 	char fontname[MAX_PATH];
 	Q_FileBase( windowsFontName, fontname, MAX_PATH );
@@ -243,7 +243,11 @@ void CBitmapFont::SetScale( float sx, float sy )
 //-----------------------------------------------------------------------------
 // Purpose: gets the abc widths for a character
 //-----------------------------------------------------------------------------
+#ifdef VGUI_FONT_INTERFACE
+void CBitmapFont::GetCharABCWidths( int ch, int &a, int &b, int &c, int *pColorGlyph )
+#else
 void CBitmapFont::GetCharABCWidths( int ch, int &a, int &b, int &c )
+#endif
 {
 	Assert( IsValid() && ch >= 0 && ch <= 255 );
 

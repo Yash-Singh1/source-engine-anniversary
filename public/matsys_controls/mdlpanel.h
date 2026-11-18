@@ -101,7 +101,11 @@ public:
 	// Events
 	void DoAnimationEvents();
 	void DoAnimationEvents( CStudioHdr *pStudioHdr, int nSeqNum, float flTime, bool bNoLoop, MDLAnimEventState_t *pEventState );
+#ifdef BYTEMATCH_RETAIL
+	virtual void FireEvent( const char *pszEventName, const char *pszEventOptions ) { }
+#else
 	virtual void FireEvent( const char *pszEventName, const char *pszEventOptions );
+#endif
 	void ResetAnimationEventState( MDLAnimEventState_t *pEventState );
 
 protected:

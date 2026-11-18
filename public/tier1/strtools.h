@@ -917,7 +917,9 @@ public:
 		m_pwch = NULL;
 #if !defined( WIN32 ) && !defined(_WIN32)
 		m_pucs2 = NULL;
+#ifndef BYTEMATCH_RETAIL
 		m_bCreatedUCS2 = false;
+#endif
 #endif
 		m_bCreatedUTF16 = false;
 	}
@@ -929,7 +931,9 @@ public:
 		m_pwch = pwch;
 #if !defined( WIN32 ) && !defined(_WIN32)
 		m_pucs2 = NULL;
+#ifndef BYTEMATCH_RETAIL
 		m_bCreatedUCS2 = false;
+#endif
 #endif
 		m_bCreatedUTF16 = true;
 	}
@@ -940,8 +944,12 @@ public:
 		m_pch = NULL;
 		m_pwch = NULL;
 		m_pucs2 = pwch;
+#ifdef BYTEMATCH_RETAIL
+		m_bCreatedUTF16 = true;
+#else
 		m_bCreatedUCS2 = true;
 		m_bCreatedUTF16 = false;
+#endif
 	}
 #endif
 
@@ -999,7 +1007,7 @@ public:
 		{
 			delete [] m_pwch;
 		}
-#if !defined( WIN32 ) && !defined(_WIN32)
+#if !defined( WIN32 ) && !defined(_WIN32) && !defined( BYTEMATCH_RETAIL )
 		if ( !m_bCreatedUCS2 && m_pucs2 )
 			delete [] m_pucs2;
 #endif
@@ -1081,8 +1089,10 @@ private:
 	// so we perform a second allocation that's just the size we need.
 	void PopulateUCS2()
 	{
+#ifndef BYTEMATCH_RETAIL
 		if ( m_bCreatedUCS2 )
 			return;
+#endif
 		if ( m_pch == NULL )
 			return;					// no UTF-8 string to convert
 		if ( m_pucs2 != NULL )
@@ -1113,12 +1123,15 @@ private:
 	const wchar_t *m_pwch;
 #if !defined( WIN32 ) && !defined(_WIN32)
 	const ucs2 *m_pucs2;
+#ifndef BYTEMATCH_RETAIL
 	bool m_bCreatedUCS2;
+#endif
 #endif
 	// "created as UTF-16", means our owned string is the UTF-8 string not the UTF-16 one.
 	bool m_bCreatedUTF16;
 
 };
+#line 1122
 
 // Encodes a string (or binary data) in URL encoding format, see rfc1738 section 2.2.
 // Dest buffer should be 3 times the size of source buffer to guarantee it has room to encode.

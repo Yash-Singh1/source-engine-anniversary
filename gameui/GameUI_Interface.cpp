@@ -686,6 +686,7 @@ void CGameUI::Shutdown()
 
 	ModInfo().FreeModInfo();
 	
+#ifndef BYTEMATCH_RETAIL
 	// release platform mutex
 	// close the mutex
 	if (g_hMutex)
@@ -696,6 +697,7 @@ void CGameUI::Shutdown()
 	{
 		Sys_ReleaseMutex(g_hWaitMutex);
 	}
+#endif
 	
 	BonusMapsDatabase()->WriteSaveData();
 
@@ -1287,4 +1289,9 @@ void CGameUI::SendMainMenuCommand( const char *pszCommand )
 	{
 		pBasePanel->RunMenuCommand( pszCommand );
 	}
+}
+
+CBonusMapsDatabase *CGameUI::GetBonusMapsDatabase( void )
+{
+	return BonusMapsDatabase();
 }

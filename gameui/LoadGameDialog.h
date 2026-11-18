@@ -29,6 +29,9 @@ public:
 	~CLoadGameDialog();
 
 	virtual void OnCommand( const char *command );
+
+private:
+	uint64 m_nWorkshopItemID;
 };
 
 //

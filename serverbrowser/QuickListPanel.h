@@ -60,7 +60,11 @@ public:
 
 private:
 
+#ifdef BYTEMATCH_RETAIL
+	char m_szMapName[64];
+#else
 	char m_szMapName[128];
+#endif
 
 	vgui::ImagePanel *m_pLatencyImage;
 	vgui::Label	*m_pLatencyLabel;

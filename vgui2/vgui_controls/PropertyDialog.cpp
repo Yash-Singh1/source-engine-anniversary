@@ -105,7 +105,7 @@ void PropertyDialog::PerformLayout()
 {
 	BaseClass::PerformLayout();
 
-	int iBottom = PROPORTIONAL_VALUE( m_iSheetInsetBottom );
+	int iBottom = QuickPropScale( m_iSheetInsetBottom );
 
 	int x, y, wide, tall;
 	GetClientArea(x, y, wide, tall);
@@ -113,22 +113,22 @@ void PropertyDialog::PerformLayout()
 
 
 	// move the buttons to the bottom-right corner
-	int xpos = x + wide - PROPORTIONAL_VALUE( 80 );
-	int ypos = tall + y - PROPORTIONAL_VALUE( 28 );
+	int xpos = x + wide - QuickPropScale( 80 );
+	int ypos = tall + y - QuickPropScale( 28 );
 
 	if (_applyButton->IsVisible())
 	{
-		_applyButton->SetBounds(xpos, ypos, PROPORTIONAL_VALUE( 72 ), PROPORTIONAL_VALUE( 24 ));
-		xpos -= PROPORTIONAL_VALUE( 80 );
+		_applyButton->SetBounds(xpos, ypos, QuickPropScale( 72 ), QuickPropScale( 24 ));
+		xpos -= QuickPropScale( 80 );
 	}
 
 	if (_cancelButton->IsVisible())
 	{
-		_cancelButton->SetBounds(xpos, ypos, PROPORTIONAL_VALUE( 72 ), PROPORTIONAL_VALUE( 24 ));
-		xpos -= PROPORTIONAL_VALUE( 80 );
+		_cancelButton->SetBounds(xpos, ypos, QuickPropScale( 72 ), QuickPropScale( 24 ));
+		xpos -= QuickPropScale( 80 );
 	}
 
-	_okButton->SetBounds(xpos, ypos, PROPORTIONAL_VALUE( 72 ), PROPORTIONAL_VALUE( 24 ));
+	_okButton->SetBounds(xpos, ypos, QuickPropScale( 72 ), QuickPropScale( 24 ));
 
 	_propertySheet->InvalidateLayout(); // tell the propertysheet to redraw!
 	Repaint();

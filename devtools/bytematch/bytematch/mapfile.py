@@ -4,10 +4,13 @@ Accepted formats (auto-detected):
   * text:  one `ADDR NAME [SIZE]` per line, '#' comments; hex with or without 0x
   * JSON:  {"name": addr, ...}, [{"name":..., "addr":..., "size":...}, ...] or {"functions": [...]}
   * MSVC linker /MAP files (the "Publics by Value" table)
+  * byte-match-survey symbol-port maps (symbols/out/<module>.win.json): MSVC and
+    macOS names, signature aliases and the macOS object stem (see winmap.py)
 Addresses below the image base are treated as RVAs; string addresses are hex."""
 import json
 import re
 
+from . import winmap
 from .build import rebuild
 from .model import canonical
 
@@ -44,7 +47,26 @@ def read_map(path):
     return out
 
 
-def apply_map(mod, path):
+# Symbol-port names below this confidence still scope functions but don't name relocation
+# targets: 0.7 CRT object matches can't tell identical routines apart (memcpy/memmove), and
+# 0.4 call-site groups are identical-function-folding guesses.
+TARGET_MIN_CONF = 0.9
+
+
+def apply_map(mod, path, min_conf=0.0):
+    if path.endswith('.json'):
+        doc = winmap.load(path)
+        if winmap.is_symbol_port(doc):
+            norm = []
+            for addr, names, size, stem, conf in winmap.read_rows(doc, min_conf):
+                if mod.image_base and addr < mod.image_base:
+                    addr += mod.image_base
+                if conf >= TARGET_MIN_CONF:
+                    for n in names:
+                        mod.add_name(addr, canonical(mod.fmt, n))
+                norm.append((addr, names, size, stem))
+            rebuild(mod, norm)
+            return len(norm)
     norm = []
     for addr, name, size in read_map(path):
         if mod.image_base and addr < mod.image_base:

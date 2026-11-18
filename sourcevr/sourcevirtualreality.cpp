@@ -13,7 +13,7 @@
 #include "materialsystem/imesh.h"
 #include "materialsystem/imaterialvar.h"
 #include "renderparm.h"
-#include "openvr/openvr.h"
+#include "steam/steamvr.h"
 
 using namespace vr;
 
@@ -264,8 +264,21 @@ bool CSourceVirtualReality::ShouldRunInVR()
 // --------------------------------------------------------------------
 bool CSourceVirtualReality::IsHmdConnected()
 {
-	// we really just care if OpenVR init was successful
+	// we really just care if SteamVR init was successful
 	return EnsureOpenVRInited();
+}
+
+
+// --------------------------------------------------------------------
+// Purpose: Returns true if an HMD is plugged in, without starting
+//			SteamVR if it isn't running yet.
+// --------------------------------------------------------------------
+bool CSourceVirtualReality::IsHmdAvailable()
+{
+	if( m_pHmd )
+		return true;
+
+	return vr::VR_IsHmdPresent();
 }
 
 
@@ -494,7 +507,7 @@ VMatrix CSourceVirtualReality::GetMidEyeFromEye( VREye eEye )
 {
 	if( m_pHmd )
 	{
-		vr::HmdMatrix34_t matMidEyeFromEye = m_pHmd->GetEyeToHeadTransform( SourceEyeToHmdEye( eEye ) );
+		vr::HmdMatrix34_t matMidEyeFromEye = m_pHmd->GetHeadFromEyePose( SourceEyeToHmdEye( eEye ) );
 		return OpenVRToSourceCoordinateSystem( VMatrixFrom34( matMidEyeFromEye.m ) );
 	}
 	else
@@ -522,7 +535,7 @@ int CSourceVirtualReality::GetVRModeAdapter()
 bool CSourceVirtualReality::WillDriftInYaw()
 {
 	if( m_pHmd )
-		return m_pHmd->GetBoolTrackedDeviceProperty( vr::k_unTrackedDeviceIndex_Hmd, Prop_WillDriftInYaw_Bool );
+		return m_pHmd->WillDriftInYaw();
 	else
 		return false;
 }
@@ -531,7 +544,7 @@ void CSourceVirtualReality::AcquireNewZeroPose()
 {
 	// just let the next tracker update re-zero us
 	if( m_pHmd )
-		m_pHmd->ResetSeatedZeroPose();
+		m_pHmd->ZeroTracker();
 }
 
 bool CSourceVirtualReality::SampleTrackingState ( float PlayerGameFov, float fPredictionSeconds )
@@ -542,33 +555,13 @@ bool CSourceVirtualReality::SampleTrackingState ( float PlayerGameFov, float fPr
 	// If tracker can't return a pose (it's possibly recalibrating itself)
 	// then we will freeze tracking at its current state, rather than
 	// snapping it back to the zero position
-	vr::TrackedDevicePose_t pose;
-
-	if ( m_pHmd->IsTrackedDeviceConnected( k_unTrackedDeviceIndex_Hmd ) )
-	{
-		float fSecondsSinceLastVsync;
-		m_pHmd->GetTimeSinceLastVsync( &fSecondsSinceLastVsync, NULL );
-
-		float fFrameDuration = 1.f / m_pHmd->GetFloatTrackedDeviceProperty( vr::k_unTrackedDeviceIndex_Hmd,
-		                                                                    vr::Prop_DisplayFrequency_Float );
-		float fPredictedSecondsFromNow = fFrameDuration - fSecondsSinceLastVsync \
-		                                 + m_pHmd->GetFloatTrackedDeviceProperty( vr::k_unTrackedDeviceIndex_Hmd,
-		                                                                          vr::Prop_SecondsFromVsyncToPhotons_Float );
-
-		// Use Seated here because everything using this interface or older is expecting a seated experience
-		m_pHmd->GetDeviceToAbsoluteTrackingPose( vr::TrackingUniverseSeated, fPredictedSecondsFromNow, &pose, 1 );
-
-		m_bHaveValidPose = pose.bPoseIsValid;
-	}
-	else
-	{
-		m_bHaveValidPose = false;
-	}
-
+	vr::HmdMatrix34_t matPose;
+	vr::HmdTrackingResult result;
+	m_bHaveValidPose = m_pHmd->GetTrackerFromHeadPose( 0.f, &matPose, &result );
 	if( !m_bHaveValidPose )
 		return false;
 
-	m_ZeroFromHeadPose = OpenVRToSourceCoordinateSystem( VMatrixFrom34( pose.mDeviceToAbsoluteTracking.m ) );
+	m_ZeroFromHeadPose = OpenVRToSourceCoordinateSystem( VMatrixFrom34( matPose.m ) );
 
 	return true;
 }
@@ -713,7 +706,7 @@ bool CSourceVirtualReality::StartTracker()
 		return false;
 	}
 
-	m_pHmd->ResetSeatedZeroPose();
+	m_pHmd->ZeroTracker();
 
 	m_bHaveValidPose = false;
 	m_ZeroFromHeadPose.Identity();

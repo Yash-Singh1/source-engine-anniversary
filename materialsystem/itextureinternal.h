@@ -98,8 +98,12 @@ public:
 		int					h,
 		int					d,
 		ImageFormat			fmt, 
+#ifdef BYTEMATCH_RETAIL
+		int					nFlags );
+#else
 		int					nFlags,
 		ITextureRegenerator *generator = NULL);
+#endif
 
 	static ITextureInternal *CreateRenderTarget( 
 		const char *pRTName, // NULL for an auto-generated name.
@@ -126,7 +130,11 @@ public:
 		const char *pTextureGroupName,
 		ShaderAPITextureHandle_t hTexture );
 
+#ifdef BYTEMATCH_RETAIL
+	static void Destroy( ITextureInternal *pTexture );
+#else
 	static void Destroy( ITextureInternal *pTexture, bool bSkipTexMgrCheck = false );
+#endif
 
 	// Set this as the render target, return false for failure
 	virtual bool SetRenderTarget( int nRenderTargetID, ITexture* pDepthTexture ) = 0;

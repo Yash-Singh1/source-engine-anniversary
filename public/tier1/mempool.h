@@ -450,9 +450,14 @@ inline void CClassMemoryPool<T>::Clear()
 		inline void  operator delete( void* p, int nBlockUse, const char *pFileName, int nLine ) { s_Allocator.Free(p); }   \
 	private:																		\
 		static   CUtlMemoryPool   s_Allocator
-    
+#ifdef BYTEMATCH_RETAIL
+#define FIXEDSIZE_ALLOCATOR_ALIGNMENT( _class )
+#else
+#define FIXEDSIZE_ALLOCATOR_ALIGNMENT( _class )	, alignof(_class)
+#endif
+#line 454
 #define DEFINE_FIXEDSIZE_ALLOCATOR( _class, _initsize, _grow )					\
-	CUtlMemoryPool   _class::s_Allocator(sizeof(_class), _initsize, _grow, #_class " pool", alignof(_class))
+	CUtlMemoryPool   _class::s_Allocator(sizeof(_class), _initsize, _grow, #_class " pool" FIXEDSIZE_ALLOCATOR_ALIGNMENT( _class ))
 
 #define DEFINE_FIXEDSIZE_ALLOCATOR_ALIGNED( _class, _initsize, _grow, _alignment )		\
 	CUtlMemoryPool   _class::s_Allocator(sizeof(_class), _initsize, _grow, #_class " pool", _alignment )
@@ -467,7 +472,7 @@ inline void CClassMemoryPool<T>::Clear()
 		static   CMemoryPoolMT   s_Allocator
 
 #define DEFINE_FIXEDSIZE_ALLOCATOR_MT( _class, _initsize, _grow )					\
-	CMemoryPoolMT   _class::s_Allocator(sizeof(_class), _initsize, _grow, #_class " pool", alignof(_class))
+	CMemoryPoolMT   _class::s_Allocator(sizeof(_class), _initsize, _grow, #_class " pool" FIXEDSIZE_ALLOCATOR_ALIGNMENT( _class ))
 
 //-----------------------------------------------------------------------------
 // Macros that make it simple to make a class use a fixed-size allocator

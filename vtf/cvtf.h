@@ -154,10 +154,16 @@ public:
 	// When unserializing, we can skip a certain number of mip levels,
 	// and we also can just load everything but the image data
 	virtual bool Unserialize( CUtlBuffer &buf, bool bBufferHeaderOnly = false, int nSkipMipLevels = 0 );
+#ifndef BYTEMATCH_RETAIL
 	virtual bool UnserializeEx( CUtlBuffer &buf, bool bHeaderOnly = false, int nForceFlags = 0, int nSkipMipLevels = 0 );
+#endif
+#line 158
 	virtual bool Serialize( CUtlBuffer &buf );
 
+#ifndef BYTEMATCH_RETAIL
 	virtual void GetMipmapRange( int* pOutFinest, int* pOutCoarsest );
+#endif
+#line 161
 
 	// Attributes...
 	virtual int Width() const;

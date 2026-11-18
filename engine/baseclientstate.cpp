@@ -523,7 +523,12 @@ void CBaseClientState::SendConnectPacket (int challengeNr, int authProtocol, uin
 	msg.WriteLong( m_retryChallenge );
 	msg.WriteString( GetClientName() );	// Name
 	msg.WriteString( password.GetString() );		// password
+#ifdef BYTEMATCH_RETAIL
+	msg.WriteString( gpszVersionString );	// product version
+#else
 	msg.WriteString( GetSteamInfIDVersionInfo().szVersionString );	// product version
+#endif
+#line 527
 //	msg.WriteByte( ( g_pServerPluginHandler->GetNumLoadedPlugins() > 0 ) ? 1 : 0 ); // have any client-side server plug-ins been loaded?
 
 	switch ( authProtocol )

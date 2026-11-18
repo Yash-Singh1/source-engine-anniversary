@@ -138,6 +138,7 @@ void CCustomGames::UpdateDerivedLayouts( void )
 	const char *pPathID = "PLATFORM";
 
 	KeyValues *pConditions = NULL;
+#ifndef BYTEMATCH_RETAIL
 	if ( ServerBrowser().IsWorkshopEnabled() )
 	{
 		pConditions = new KeyValues( "conditions" );
@@ -150,6 +151,7 @@ void CCustomGames::UpdateDerivedLayouts( void )
 			}
 		}
 	}
+#endif
 
 	if ( m_pFilter->IsSelected() )
 	{
@@ -224,6 +226,7 @@ bool CCustomGames::CheckTagFilter( gameserveritem_t &server )
 	return bRetVal;
 }
 
+#ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
 // Purpose: Checks the workshop filtering setting, taking into account workshop filtering might be disabled
 //-----------------------------------------------------------------------------
@@ -243,6 +246,7 @@ bool CCustomGames::CheckWorkshopFilter( gameserveritem_t &server )
 	Assert( workshopMode == eWorkshop_None );
 	return true;
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: gets filter settings from controls

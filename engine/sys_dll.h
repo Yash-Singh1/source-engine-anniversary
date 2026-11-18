@@ -105,6 +105,18 @@ struct SteamInfVersionInfo_t
 };
 const SteamInfVersionInfo_t& GetSteamInfIDVersionInfo();
 
+#ifdef BYTEMATCH_RETAIL
+// host_cmd.cpp: steam.inf version info (PatchVersion, ProductName, ServerVersion)
+extern char gpszVersionString[32];
+extern char gpszProductString[32];
+int GetClientVersion();
+int GetServerVersion();
+void Host_InitVersion();
+void Host_InitAppID( const char *pchGameDir, const char *pchBaseDir );
+void Sys_SetSteamAppID( unsigned int unAppID );
+#endif
+#line 116
+
 extern CreateInterfaceFn g_ServerFactory;
 
 #endif

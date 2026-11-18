@@ -55,6 +55,22 @@ def build(bld):
 	elif bld.env.DEST_OS == 'darwin':
 		linkflags += ['-framework', 'CoreServices']
 
+	if bld.env.RETAIL_OSX32:
+		# Retail links coroutine from libcoroutine_osx.a, built without the stack protector;
+		# the retail manifest moves coroutine.cpp out of vstdlib and links this archive instead
+		bld.stlib(
+			source   = ['coroutine.cpp'],
+			target   = 'coroutine_osx',
+			name     = 'coroutine_osx',
+			features = 'cxx',
+			includes = includes,
+			cxxflags = ['-fno-stack-protector'],
+			use      = ['tier0', 'tier1'],
+			idx      = bld.get_taskgen_count()
+		)
+		# vstdlib.vpc: $GCC_ExtraLinkerFlags "-all_load" [$OSXALL], which pulls in the coroutine API
+		linkflags += ['-all_load']
+
 	source, libs = bld.retail_manifest('bin/libvstdlib', source, libs)
 
 	install_path = None if bld.env.BUILD_SDK else bld.env.LIBDIR

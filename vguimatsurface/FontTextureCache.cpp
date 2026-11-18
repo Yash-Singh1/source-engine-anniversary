@@ -36,8 +36,13 @@
 extern CMatSystemSurface g_MatSystemSurface;
 static int g_FontRenderBoundingBoxes = -1;
 
+#ifdef BYTEMATCH_RETAIL
+#define TEXTURE_PAGE_WIDTH	1024
+#define TEXTURE_PAGE_HEIGHT	1024
+#else
 #define TEXTURE_PAGE_WIDTH	256
 #define TEXTURE_PAGE_HEIGHT	256
+#endif
 
 // row size
 int CFontTextureCache::s_pFontPageSize[FONT_PAGE_SIZE_COUNT] = 
@@ -47,8 +52,12 @@ int CFontTextureCache::s_pFontPageSize[FONT_PAGE_SIZE_COUNT] =
 	64,
 	128,
 	256,
+#ifdef BYTEMATCH_RETAIL
+	512,
+#endif
 };
 
+#ifndef BYTEMATCH_RETAIL
 static bool g_mat_texture_outline_fonts = false;
 CON_COMMAND( mat_texture_outline_fonts, "Outline fonts textures." )
 {
@@ -56,6 +65,7 @@ CON_COMMAND( mat_texture_outline_fonts, "Outline fonts textures." )
 	Msg( "mat_texture_outline_fonts: %d\n", g_mat_texture_outline_fonts );
 	g_MatSystemSurface.ResetFontCaches();
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
@@ -113,16 +123,16 @@ bool CFontTextureCache::CacheEntryLessFunc(CacheEntry_t const &lhs, CacheEntry_t
 //-----------------------------------------------------------------------------
 // Purpose: returns the texture info for the given char & font
 //-----------------------------------------------------------------------------
-bool CFontTextureCache::GetTextureForChar( vgui::HFont font, vgui::FontDrawType_t type, wchar_t wch, int *textureID, float **texCoords )
+bool CFontTextureCache::GetTextureForChar( vgui::HFont font, vgui::FontDrawType_t type, wchar_t wch, int *textureID, float **texCoords, int *pColorGlyph )
 {
 	// Ask for just one character
-	return GetTextureForChars( font, type, &wch, textureID, texCoords, 1 );
+	return GetTextureForChars( font, type, &wch, textureID, texCoords, 1, pColorGlyph );
 }
 
 //-----------------------------------------------------------------------------
 // Purpose: returns the texture info for the given chars & font
 //-----------------------------------------------------------------------------
-bool CFontTextureCache::GetTextureForChars( vgui::HFont font, vgui::FontDrawType_t type, const wchar_t *wch, int *textureID, float **texCoords, int numChars )
+bool CFontTextureCache::GetTextureForChars( vgui::HFont font, vgui::FontDrawType_t type, const wchar_t *wch, int *textureID, float **texCoords, int numChars, int *pColorGlyph )
 {
 	Assert( wch && textureID && texCoords );
 	Assert( numChars >= 1 );
@@ -134,6 +144,11 @@ bool CFontTextureCache::GetTextureForChars( vgui::HFont font, vgui::FontDrawType
 
 	int typePage = (int)type - 1;
 	typePage = clamp( typePage, 0, (int)vgui::FONT_DRAW_TYPE_COUNT - 1 );
+
+	if ( pColorGlyph )
+	{
+		*pColorGlyph = 0;
+	}
 
 	if ( FontManager().IsBitmapFont( font ) )
 	{
@@ -211,6 +226,7 @@ bool CFontTextureCache::GetTextureForChars( vgui::HFont font, vgui::FontDrawType
 			CacheEntry_t cacheItem;
 			cacheItem.font = font;
 			cacheItem.wch = wch[i];
+			cacheItem.colorGlyph = 0;
 			HCacheEntry cacheHandle = m_CharCache.Find( cacheItem );
 			if ( ! m_CharCache.IsValidIndex( cacheHandle ) )
 			{
@@ -220,9 +236,20 @@ bool CFontTextureCache::GetTextureForChars( vgui::HFont font, vgui::FontDrawType
 
 				// get the char details
 				int a, b, c;
+#ifdef VGUI_FONT_INTERFACE
+				int colorGlyph = 0;
+				winFont->GetCharABCWidths( wch[i], a, b, c, &colorGlyph );
+#else
 				winFont->GetCharABCWidths( wch[i], a, b, c );
+#endif
+#ifdef BYTEMATCH_RETAIL
+				// leave a texel of padding around each glyph
+				int fontWide = max( b, 1 ) + 2;
+				int fontTall = max( winFont->GetHeight(), 1 ) + 2;
+#else
 				int fontWide = max( b, 1 );
 				int fontTall = max( winFont->GetHeight(), 1 );
+#endif
 				if ( winFont->GetUnderlined() )
 				{
 					fontWide += ( a + c );
@@ -255,6 +282,9 @@ bool CFontTextureCache::GetTextureForChars( vgui::HFont font, vgui::FontDrawType
 				cacheItem.texCoords[1] = (float)( (double)drawY / ((double)ttall + adjust) );
 				cacheItem.texCoords[2] = (float)( (double)(drawX + fontWide) / (double)twide );
 				cacheItem.texCoords[3] = (float)( (double)(drawY + fontTall) / (double)ttall );
+#ifdef VGUI_FONT_INTERFACE
+				cacheItem.colorGlyph = colorGlyph;
+#endif
 
 				m_CharCache.Insert(cacheItem);
 				cacheHandle = m_CharCache.Find( cacheItem );
@@ -264,6 +294,10 @@ bool CFontTextureCache::GetTextureForChars( vgui::HFont font, vgui::FontDrawType
 			int page = m_CharCache[cacheHandle].page;
 			textureID[i] = m_PageList[page].textureID[typePage];
 			texCoords[i] = m_CharCache[cacheHandle].texCoords;
+			if ( pColorGlyph )
+			{
+				*pColorGlyph = m_CharCache[cacheHandle].colorGlyph;
+			}
 		}
 
 		// Generate texture data for all newly-encountered characters
@@ -299,7 +333,7 @@ bool CFontTextureCache::GetTextureForChars( vgui::HFont font, vgui::FontDrawType
 			{
 				// create a buffer for new characters to be rendered into
 				int nByteCount = maxNewCharTexels * 4;
-				unsigned char *pRGBA = (unsigned char *)_alloca( nByteCount );
+				unsigned char *pRGBA = (unsigned char *)malloc( nByteCount );
 
 				// Generate characters individually
 				for ( int i = 0; i < numNewChars; i++ )
@@ -310,8 +344,37 @@ bool CFontTextureCache::GetTextureForChars( vgui::HFont font, vgui::FontDrawType
 					// render the character into the buffer
 					Q_memset( pRGBA, 0, nByteCount );
 
+					if ( g_FontRenderBoundingBoxes == -1 )
+					{
+						g_FontRenderBoundingBoxes = CommandLine()->FindParm( "-enable_font_bounding_boxes" ) != 0;
+					}
+
+					if ( g_FontRenderBoundingBoxes == 1 )
+					{
+						int width = newChar.fontWide;
+						int height = newChar.fontTall;
+
+						CPixelWriter pixelWriter;
+						pixelWriter.SetPixelMemory( IMAGE_FORMAT_RGBA8888, pRGBA, width * sizeof( BGRA8888_t ) );
+						for( int x = 0; x < width; x++ )
+						{
+							pixelWriter.Seek( x, 0 );
+							pixelWriter.WritePixel( 255, 0, 0, 255 );
+							pixelWriter.Seek( x, height - 1 );
+							pixelWriter.WritePixel( 255, 0, 0, 255 );
+						}
+						for( int y = 0; y < height; y++ )
+						{
+							pixelWriter.Seek( 0, y );
+							pixelWriter.WritePixel( 255, 0, 0, 255 );
+							pixelWriter.Seek( width - 1, y );
+							pixelWriter.WritePixel( 255, 0, 0, 255 );
+						}
+					}
+
 					winFont->GetCharRGBA( newChar.wch, newChar.fontWide, newChar.fontTall, pRGBA );
 
+#ifndef BYTEMATCH_RETAIL
 					if ( g_mat_texture_outline_fonts )
 					{
 						int width = newChar.fontWide;
@@ -337,12 +400,15 @@ bool CFontTextureCache::GetTextureForChars( vgui::HFont font, vgui::FontDrawType
 							}
 						}
 					}
+#endif
 
 					// upload the new sub texture 
 					// NOTE: both textureIDs reference the same ITexture, so we're ok)
 					g_MatSystemSurface.DrawSetTexture( m_PageList[newEntry.page].textureID[typePage] );
 					g_MatSystemSurface.DrawSetSubTextureRGBA( m_PageList[newEntry.page].textureID[typePage], newEntry.drawX, newEntry.drawY, pRGBA, newChar.fontWide, newChar.fontTall );
 				}
+
+				free( pRGBA );
 			}
 		}
 	}
@@ -441,7 +507,7 @@ bool CFontTextureCache::AllocatePageForChar(int charWide, int charTall, int &pag
 			page.nextY += page.tallestCharOnLine;
 			page.tallestCharOnLine = charTall;
 		}
-		page.tallestCharOnLine = max( page.tallestCharOnLine, (short)charTall );
+		page.tallestCharOnLine = max( page.tallestCharOnLine, charTall );
 
 		bNeedsNewPage = ((page.nextY + page.tallestCharOnLine) > page.tall);
 	}
@@ -491,11 +557,12 @@ bool CFontTextureCache::AllocatePageForChar(int charWide, int charTall, int &pag
 			// clear the texture from the inital checkerboard to black
 			// allocate for 32bpp format
 			int nByteCount = TEXTURE_PAGE_WIDTH * TEXTURE_PAGE_HEIGHT * 4;
-			unsigned char *pRGBA = (unsigned char *)_alloca( nByteCount );
+			unsigned char *pRGBA = (unsigned char *)malloc( nByteCount );
 			Q_memset( pRGBA, 0, nByteCount );
 
 			int typePageNonAdditive = (int)(vgui::FONT_DRAW_NONADDITIVE)-1;
 			g_MatSystemSurface.DrawSetTextureRGBA( newPage.textureID[typePageNonAdditive], pRGBA, newPage.wide, newPage.tall, false, false );
+			free( pRGBA );
 		}
 	}
 

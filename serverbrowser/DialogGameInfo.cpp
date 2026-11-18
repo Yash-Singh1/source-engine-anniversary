@@ -375,7 +375,11 @@ void CDialogGameInfo::PerformLayout()
 
 void CDialogGameInfo::OnKeyCodePressed( vgui::KeyCode code )
 {
+#ifdef BYTEMATCH_RETAIL
+	if ( code == KEY_XBUTTON_B || code == KEY_XBUTTON_A )
+#else
 	if ( code == KEY_XBUTTON_B || code == KEY_XBUTTON_A || code == STEAMCONTROLLER_A || code == STEAMCONTROLLER_B )
+#endif
 	{
 		m_pCloseButton->DoClick();
 	}

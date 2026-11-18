@@ -37,7 +37,12 @@
 extern IServerGameDLL	*serverGameDLL;
 extern ConVar tv_enable;
 
+#ifdef BYTEMATCH_RETAIL
+ConVar sv_namechange_cooldown_seconds( "sv_namechange_cooldown_seconds", "20.0", FCVAR_NONE, "When a client name change is received, wait N seconds allowing another name change" );
+#else
 ConVar sv_namechange_cooldown_seconds( "sv_namechange_cooldown_seconds", "30.0", FCVAR_NONE, "When a client name change is received, wait N seconds before allowing another name change" );
+#endif
+#line 41
 ConVar sv_netspike_on_reliable_snapshot_overflow( "sv_netspike_on_reliable_snapshot_overflow", "0", FCVAR_NONE, "If nonzero, the server will dump a netspike trace if a client is dropped due to reliable snapshot overflow" );
 ConVar sv_netspike_sendtime_ms( "sv_netspike_sendtime_ms", "0", FCVAR_NONE, "If nonzero, the server will dump a netspike trace if it takes more than N ms to prepare a snapshot to a single client.  This feature does take some CPU cycles, so it should be left off when not in use." );
 ConVar sv_netspike_output( "sv_netspike_output", "1", FCVAR_NONE, "Where the netspike data be written?  Sum of the following values: 1=netspike.txt, 2=ordinary server log" );
@@ -58,7 +63,10 @@ CBaseClient::CBaseClient()
 	m_bIsReplay = false;
 #endif
 	m_bConVarsChanged = false;
+#ifndef BYTEMATCH_RETAIL
 	m_bInitialConVarsSet = false;
+#endif
+#line 61
 	m_bSendServerInfo = false;
 	m_bFullyAuthenticated = false;
 	m_fTimeLastNameChange = 0.0;
@@ -68,7 +76,7 @@ CBaseClient::CBaseClient()
 #ifndef BYTEMATCH_RETAIL
 	m_bPlayerNameLocked = false;
 #endif
-#line 68
+#line 67
 }
 
 CBaseClient::~CBaseClient()
@@ -102,7 +110,12 @@ bool CBaseClient::FillUserInfo( player_info_s &userInfo )
 		return false; // inactive user, no more data available
 
 	Q_strncpy( userInfo.name, GetClientName(), MAX_PLAYER_NAME_LENGTH );
+#ifdef BYTEMATCH_RETAIL
+	Q_memcpy( userInfo.guid, GetNetworkIDString(), SIGNED_GUID_LEN + 1 );
+#else
 	V_strcpy_safe( userInfo.guid, GetNetworkIDString() );
+#endif
+#line 101
 	userInfo.friendsID = m_nFriendsID;
 	Q_strncpy( userInfo.friendsName, m_FriendsName, sizeof(m_FriendsName) );
 	userInfo.userID = GetUserID();
@@ -571,7 +584,10 @@ void CBaseClient::Connect( const char * szName, int nUserID, INetChannel *pNetCh
 	Clear();
 
 	m_ConVars = new KeyValues("userinfo");
+#ifndef BYTEMATCH_RETAIL
 	m_bInitialConVarsSet = false;
+#endif
+#line 569
 
 	m_UserID = nUserID;
 
@@ -614,6 +630,7 @@ void CBaseClient::Disconnect( const char *fmt, ... )
 
 #if !defined( SWDS ) && defined( ENABLE_RPT )
 	SV_NotifyRPTOfDisconnect( m_nClientSlot );
+#line 610
 #endif
 
 #ifndef _XBOX
@@ -836,6 +853,7 @@ bool CBaseClient::ProcessSetConVar( NET_SetConVar *msg )
 			continue;
 		}
 
+#ifndef BYTEMATCH_RETAIL
 		// The initial set of convars must contain all client convars that are flagged userinfo. This is a simple fix to
 		// exploits that send bogus data later, and catches bugs (why are new userinfo convars appearing later?)
 		if ( m_bInitialConVarsSet && !m_ConVars->FindKey( name ) )
@@ -854,6 +872,8 @@ bool CBaseClient::ProcessSetConVar( NET_SetConVar *msg )
 			}
 			continue;
 		}
+#endif
+#line 834
 
 		m_ConVars->SetString( name, value );
 
@@ -861,7 +881,10 @@ bool CBaseClient::ProcessSetConVar( NET_SetConVar *msg )
 	}
 
 	m_bConVarsChanged = true;
+#ifndef BYTEMATCH_RETAIL
 	m_bInitialConVarsSet = true;
+#endif
+#line 841
 
 	return true;
 }
@@ -894,11 +917,14 @@ bool CBaseClient::ProcessSignonState( NET_SignonState *msg)
 
 bool CBaseClient::ProcessClientInfo( CLC_ClientInfo *msg )
 {
+#ifndef BYTEMATCH_RETAIL
 	if ( m_nSignonState != SIGNONSTATE_NEW )
 	{
 		Warning( "Dropping ClientInfo packet from client not in appropriate state\n" );
 		return false;
 	}
+#endif
+#line 873
 
 	m_nSendtableCRC = msg->m_nSendTableCRC;
 
@@ -1461,7 +1487,7 @@ void CBaseClient::UpdateUserSettings()
 	m_bConVarsChanged = false;
 }
 #endif
-#line 1425
+#line 1400
 
 #ifdef BYTEMATCH_RETAIL
 void CBaseClient::ClientRequestNameChange( const char *pszNewName )
@@ -1568,7 +1594,7 @@ bool CBaseClient::IsNameChangeOnCooldown( bool bShowStatusMessage /*= false*/ )
 	return false;
 }
 #endif
-#line 1465
+#line 1440
 
 void CBaseClient::OnRequestFullUpdate()
 {

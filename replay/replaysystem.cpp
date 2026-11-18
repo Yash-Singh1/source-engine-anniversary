@@ -431,7 +431,7 @@ const char *Replay_GetDownloadURLPath()
 	static char s_szDownloadURLPath[MAX_OSPATH];
 	extern ConVar replay_fileserver_path;	// NOTE: replicated
 
-	V_strcpy_safe( s_szDownloadURLPath, replay_fileserver_path.GetString() );
+	V_strcpy( s_szDownloadURLPath, replay_fileserver_path.GetString() );
 	V_StripTrailingSlash( s_szDownloadURLPath );
 	V_FixSlashes( s_szDownloadURLPath, '/' );
 

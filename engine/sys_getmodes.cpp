@@ -106,13 +106,22 @@ public:
     virtual vmode_t     *GetMode( int num );
     virtual int         GetModeCount( void );
     virtual bool        IsWindowedMode( void ) const;
+#ifdef BYTEMATCH_RETAIL
+    virtual bool        NoWindowBorder( void ) const;
+#endif
+#line 110
     virtual void        UpdateWindowPosition( void );
     virtual void        RestoreVideo( void );
     virtual void        ReleaseVideo( void );
     virtual void        DrawNullBackground( void *hdc, int w, int h );
     virtual void        InvalidateWindow();
     virtual void        DrawStartupGraphic();
+#ifdef BYTEMATCH_RETAIL
+    virtual bool        CreateGameWindow( int nWidth, int nHeight, bool bWindowed, bool bNoWindowBorder );
+#else
     virtual bool        CreateGameWindow( int nWidth, int nHeight, bool bWindowed );
+#endif
+#line 117
     virtual int         GetModeWidth( void ) const;
     virtual int         GetModeHeight( void ) const;
 	virtual int			GetModeStereoWidth() const;
@@ -130,8 +139,14 @@ public:
 protected:
     bool                GetInitialized( ) const;
     void                SetInitialized( bool init );
+#ifdef BYTEMATCH_RETAIL
+    void                AdjustWindow( int nWidth, int nHeight, int nBPP, bool bWindowed, bool bNoWindowBorder );
+    void                ResetCurrentModeForNewResolution( int width, int height, bool bWindowed, bool bNoWindowBorder );
+#else
     void                AdjustWindow( int nWidth, int nHeight, int nBPP, bool bWindowed );
     void                ResetCurrentModeForNewResolution( int width, int height, bool bWindowed );
+#endif
+#line 136
     int                 GetModeBPP( ) const { return 32; }
     void                DrawStartupVideo();
     void                ComputeStartupGraphicName( char *pBuf, int nBufLen );
@@ -211,6 +226,10 @@ protected:
 	int					m_nRenderHeight;
 #endif
     bool                m_bWindowed;
+#ifdef BYTEMATCH_RETAIL
+    bool                m_bNoWindowBorder;
+#endif
+#line 216
     bool                m_bSetModeOnce;
 	bool				m_bVROverride;
 
@@ -298,6 +317,14 @@ bool CVideoMode_Common::IsWindowedMode( void ) const
 {
     return m_bWindowed;
 }
+
+#ifdef BYTEMATCH_RETAIL
+bool CVideoMode_Common::NoWindowBorder( void ) const
+{
+    return m_bNoWindowBorder;
+}
+#endif
+#line 308
 
 
 //-----------------------------------------------------------------------------
@@ -514,7 +541,12 @@ int CVideoMode_Common::FindVideoMode( int nDesiredWidth, int nDesiredHeight, boo
 //-----------------------------------------------------------------------------
 // Choose the actual video mode based on the available modes
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+void CVideoMode_Common::ResetCurrentModeForNewResolution( int nWidth, int nHeight, bool bWindowed, bool bNoWindowBorder )
+#else
 void CVideoMode_Common::ResetCurrentModeForNewResolution( int nWidth, int nHeight, bool bWindowed )
+#endif
+#line 525
 {
     // Fill in vid structure for the mode
     int nGameMode = FindVideoMode( nWidth, nHeight, bWindowed );
@@ -522,6 +554,10 @@ void CVideoMode_Common::ResetCurrentModeForNewResolution( int nWidth, int nHeigh
 
 	// default to non-VR values
 	m_bWindowed = bWindowed;
+#ifdef BYTEMATCH_RETAIL
+	m_bNoWindowBorder = bNoWindowBorder;
+#endif
+#line 533
 	m_nModeWidth = pMode->width;
 	m_nModeHeight = pMode->height;
 	m_nUIWidth = pMode->width;
@@ -582,7 +618,12 @@ void CVideoMode_Common::ResetCurrentModeForNewResolution( int nWidth, int nHeigh
 //-----------------------------------------------------------------------------
 // Creates the game window, plays the startup movie
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+bool CVideoMode_Common::CreateGameWindow( int nWidth, int nHeight, bool bWindowed, bool bNoWindowBorder )
+#else
 bool CVideoMode_Common::CreateGameWindow( int nWidth, int nHeight, bool bWindowed )
+#endif
+#line 594
 {
     COM_TimestampedLog( "CVideoMode_Common::Init  CreateGameWindow" );
 
@@ -624,7 +665,12 @@ bool CVideoMode_Common::CreateGameWindow( int nWidth, int nHeight, bool bWindowe
     {
         // Fill in vid structure for the mode.
         // Note: ModeWidth/Height may *not* match requested nWidth/nHeight
+#ifdef BYTEMATCH_RETAIL
+        ResetCurrentModeForNewResolution( nWidth, nHeight, bWindowed, bNoWindowBorder );
+#else
         ResetCurrentModeForNewResolution( nWidth, nHeight, bWindowed );
+#endif
+#line 636
 
 		COM_TimestampedLog( "CreateGameWindow - Start" );
         // When running in stand-alone mode, create your own window 
@@ -633,11 +679,21 @@ bool CVideoMode_Common::CreateGameWindow( int nWidth, int nHeight, bool bWindowe
 		COM_TimestampedLog( "CreateGameWindow - Finish" );
 
         // Re-size and re-center the window
+#ifdef BYTEMATCH_RETAIL
+        AdjustWindow( GetModeWidth(), GetModeHeight(), GetModeBPP(), IsWindowedMode(), NoWindowBorder() );
+#else
         AdjustWindow( GetModeWidth(), GetModeHeight(), GetModeBPP(), IsWindowedMode() );
+#endif
+#line 645
 
 		COM_TimestampedLog( "SetMode - Start" );
         // Set the mode and let the materialsystem take over
+#ifdef BYTEMATCH_RETAIL
+        if ( !SetMode( GetModeWidth(), GetModeHeight(), IsWindowedMode(), NoWindowBorder() ) )
+#else
         if ( !SetMode( GetModeWidth(), GetModeHeight(), IsWindowedMode() ) )
+#endif
+#line 649
             return false;
 
 #if defined( USE_SDL ) && 0
@@ -690,10 +746,28 @@ IVTFTexture *CVideoMode_Common::LoadVTF( CUtlBuffer &temp, const char *szFileNam
 //-----------------------------------------------------------------------------
 void CVideoMode_Common::ComputeStartupGraphicName( char *pBuf, int nBufLen )
 {
+#ifdef BYTEMATCH_RETAIL
+    char szBackgroundName[MAX_PATH];
+#else
     char szBackgroundName[_MAX_PATH];
+#endif
+#line 702
     CL_GetBackgroundLevelName( szBackgroundName, sizeof(szBackgroundName), false );
 
     float aspectRatio = (float)GetModeStereoWidth() / GetModeStereoHeight();
+#ifdef BYTEMATCH_RETAIL
+    char szStartupGraphic[MAX_PATH];
+    if ( aspectRatio >= 1.6f )
+    {
+        // use the widescreen version
+        Q_snprintf( szStartupGraphic, sizeof( szStartupGraphic ), "materials/console/%s_widescreen.vtf", szBackgroundName );
+    }
+    else
+    {
+        Q_snprintf( szStartupGraphic, sizeof( szStartupGraphic ), "materials/console/%s.vtf", szBackgroundName );
+    }
+    Q_snprintf( pBuf, nBufLen, "%s", szStartupGraphic );
+#else
     if ( aspectRatio >= 1.6f )
     {
         // use the widescreen version
@@ -703,6 +777,8 @@ void CVideoMode_Common::ComputeStartupGraphicName( char *pBuf, int nBufLen )
     {
         Q_snprintf( pBuf, nBufLen, "materials/console/%s.vtf", szBackgroundName );
     }
+#endif
+#line 716
 
     if ( !g_pFileSystem->FileExists( pBuf, "GAME" ) )
     {
@@ -818,10 +894,16 @@ void CVideoMode_Common::SetupStartupGraphic()
     }
 
     // loading.vtf
+#ifdef BYTEMATCH_RETAIL
+    const char* loading = IsSteamDeck() ? "materials/gamepadui/game_logo.vtf" : "materials/console/startup_loading.vtf";
+	buf.Clear();	// added this Clear() because we saw cases where LoadVTF was not emptying the buf fully in the above section
+#else
 	buf.Clear();	// added this Clear() because we saw cases where LoadVTF was not emptying the buf fully in the above section
     const char* loading = "materials/console/startup_loading.vtf";
     if ( IsSteamDeck() )
         loading = "materials/gamepadui/game_logo.vtf";
+#endif
+#line 833
     m_pLoadingTexture = LoadVTF( buf, loading );
     if ( !m_pLoadingTexture )
     {
@@ -878,8 +960,16 @@ void CVideoMode_Common::DrawStartupGraphic()
 	}
 	
     // Allocate a white material
+#ifdef BYTEMATCH_RETAIL
+    // skip "materials/"
+    const char *pszBaseTexture = ( Q_strlen( pStartupGraphicName ) > 10 ) ? pStartupGraphicName + 10 : pStartupGraphicName;
+    KeyValues *pVMTKeyValues = new KeyValues( "UnlitGeneric" );
+    pVMTKeyValues->SetString( "$basetexture", pszBaseTexture );
+#else
     KeyValues *pVMTKeyValues = new KeyValues( "UnlitGeneric" );
     pVMTKeyValues->SetString( "$basetexture", pStartupGraphicName + 10 );
+#endif
+#line 893
     pVMTKeyValues->SetInt( "$ignorez", 1 );
     pVMTKeyValues->SetInt( "$nofog", 1 );
     pVMTKeyValues->SetInt( "$no_fullbright", 1 );
@@ -929,11 +1019,16 @@ void CVideoMode_Common::DrawStartupGraphic()
 				slide = 0;
 				
 				DrawScreenSpaceRectangle( pMaterial, 0, 0+slide, w, h-50, 0, 0, tw-1, th-1, tw, th, NULL,1,1,depth );
+#ifdef BYTEMATCH_RETAIL
+                DrawScreenSpaceRectangle( pLoadingMaterial, w-lw, h-lh+slide/2, lw, lh, 0, 0, lw-1, lh-1, lw, lh, NULL,1,1,depth-0.1 );
+#else
                 if ( !IsSteamDeck() )
                     DrawScreenSpaceRectangle( pLoadingMaterial, w-lw, h-lh+slide/2, lw, lh, 0, 0, lw-1, lh-1, lw, lh, NULL,1,1,depth-0.1 );
                 else
                     // TODO: Steam Deck
                     DrawScreenSpaceRectangle( pLoadingMaterial, w-lw, h-lh+slide/2, lw, lh, 0, 0, lw-1, lh-1, lw, lh, NULL,1,1,depth-0.1 );
+#endif
+#line 943
 			}
 
 			if(0)
@@ -970,6 +1065,12 @@ void CVideoMode_Common::DrawStartupGraphic()
 		pRenderContext->DepthRange( 0, 1 );
 		pRenderContext->SetToneMappingScaleLinear( Vector(1,1,1) );
 		
+#ifdef BYTEMATCH_RETAIL
+		// Steam Deck: game logo in the top right corner, scaled with the screen height
+		float flLogoSize = (float)videomode->GetModeStereoHeight() * 0.11666666666666667;
+		float flLogoMargin = (float)videomode->GetModeStereoHeight() * 0.025;
+#endif
+#line 982
 		float depth = 0.5f;
 
 		// Make sure we clear both front & back buffer.
@@ -978,7 +1079,15 @@ void CVideoMode_Common::DrawStartupGraphic()
 			pRenderContext->ClearColor3ub( 0, 0, 0 );
 			pRenderContext->ClearBuffers( true, true, true );
 			DrawScreenSpaceRectangle( pMaterial, 0, 0, w, h, 0, 0, tw-1, th-1, tw, th, NULL,1,1,depth );
+#ifdef BYTEMATCH_RETAIL
+			if ( IsSteamDeck() )
+				DrawScreenSpaceRectangle( pLoadingMaterial, w - flLogoMargin - flLogoSize, flLogoMargin, flLogoSize, flLogoSize, 0, 0, lw-1, lh-1, lw, lh, NULL,1,1,depth );
+			else
+				DrawScreenSpaceRectangle( pLoadingMaterial, w-lw, h-lh, lw, lh, 0, 0, lw-1, lh-1, lw, lh, NULL,1,1,depth );
+#else
 			DrawScreenSpaceRectangle( pLoadingMaterial, w-lw, h-lh, lw, lh, 0, 0, lw-1, lh-1, lw, lh, NULL,1,1,depth );
+#endif
+#line 994
 			g_pMaterialSystem->SwapBuffers();
 		}
 	}
@@ -1361,7 +1470,12 @@ int CVideoMode_Common::GetRefreshRateForMode( const vmode_t *pMode )
 // Input  : *mode - 
 // Output : Returns true on success, false on failure.
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+void CVideoMode_Common::AdjustWindow( int nWidth, int nHeight, int nBPP, bool bWindowed, bool bNoWindowBorder )
+#else
 void CVideoMode_Common::AdjustWindow( int nWidth, int nHeight, int nBPP, bool bWindowed )
+#endif
+#line 1377
 {
 	if ( g_bTextMode )
 		return;
@@ -1455,7 +1569,12 @@ void CVideoMode_Common::AdjustWindow( int nWidth, int nHeight, int nBPP, bool bW
 	if( bWindowed )
 	{
 		SDL_Window* win = (SDL_Window*)g_pLauncherMgr->GetWindowRef();
+#ifdef BYTEMATCH_RETAIL
+		if ( m_bVROverride || CommandLine()->FindParm( "-noborder" ) || bNoWindowBorder )
+#else
 		if ( m_bVROverride || CommandLine()->FindParm( "-noborder" ) )
+#endif
+#line 1471
 			SDL_SetWindowBordered( win, SDL_FALSE );
 		else
 			SDL_SetWindowBordered( win, SDL_TRUE );
@@ -2015,6 +2134,10 @@ void CVideoMode_Common::WriteMovieFrame( const MovieInfo_t& info )
 }
 
 #if HAVE_JPEG
+#ifdef BYTEMATCH_RETAIL
+// retail links only common/imageutils.cpp's copy
+void jpeg_UtlBuffer_dest( j_compress_ptr cinfo, CUtlBuffer *pBuffer );
+#else
 //-----------------------------------------------------------------------------
 // Purpose: Expanded data destination object for CUtlBuffer output
 //-----------------------------------------------------------------------------
@@ -2113,6 +2236,8 @@ GLOBAL(void) jpeg_UtlBuffer_dest (j_compress_ptr cinfo, CUtlBuffer *pBuffer )
     dest->pub.term_destination      = term_destination;
     dest->pBuffer                   = pBuffer;
 }
+#endif
+#line 2235
 #endif
 
 bool CVideoMode_Common::TakeSnapshotJPEGToBuffer( CUtlBuffer& buf, int quality )
@@ -2251,7 +2376,12 @@ public:
     virtual bool        Init( );
     virtual void        Shutdown( void );
     virtual void        SetGameWindow( void *hWnd );
+#ifdef BYTEMATCH_RETAIL
+    virtual bool        SetMode( int nWidth, int nHeight, bool bWindowed, bool bNoWindowBorder );
+#else
     virtual bool        SetMode( int nWidth, int nHeight, bool bWindowed );
+#endif
+#line 2267
     virtual void        ReleaseVideo( void );
     virtual void        RestoreVideo( void );
     virtual void        AdjustForModeChange( void );
@@ -2392,7 +2522,12 @@ void CVideoMode_MaterialSystem::Shutdown()
 //-----------------------------------------------------------------------------
 // Sets the video mode
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+bool CVideoMode_MaterialSystem::SetMode( int nWidth, int nHeight, bool bWindowed, bool bNoWindowBorder )
+#else
 bool CVideoMode_MaterialSystem::SetMode( int nWidth, int nHeight, bool bWindowed )
+#endif
+#line 2408
 {
     // Necessary for mode selection to work
     int nFoundMode = FindVideoMode( nWidth, nHeight, bWindowed );
@@ -2418,6 +2553,10 @@ bool CVideoMode_MaterialSystem::SetMode( int nWidth, int nHeight, bool bWindowed
 #endif
     
     config.SetFlag( MATSYS_VIDCFG_FLAGS_WINDOWED, bWindowed );
+#ifdef BYTEMATCH_RETAIL
+    config.SetFlag( MATSYS_VIDCFG_FLAGS_NO_WINDOW_BORDER, bNoWindowBorder );
+#endif
+#line 2434
 
 #if defined( _X360 )
     XVIDEO_MODE videoMode;
@@ -2474,12 +2613,22 @@ void CVideoMode_MaterialSystem::AdjustForModeChange( void )
     int nNewWidth = g_pMaterialSystemConfig->m_VideoMode.m_Width;
     int nNewHeight = g_pMaterialSystemConfig->m_VideoMode.m_Height;
     bool bWindowed = g_pMaterialSystemConfig->Windowed();
+#ifdef BYTEMATCH_RETAIL
+    bool bNoWindowBorder = ( g_pMaterialSystemConfig->m_Flags & MATSYS_VIDCFG_FLAGS_NO_WINDOW_BORDER ) != 0;
+#endif
+#line 2491
 
     // reset the window size
     CMatRenderContextPtr pRenderContext( materials );
 
+#ifdef BYTEMATCH_RETAIL
+    ResetCurrentModeForNewResolution( nNewWidth, nNewHeight, bWindowed, bNoWindowBorder );
+    AdjustWindow( GetModeWidth(), GetModeHeight(), GetModeBPP(), IsWindowedMode(), NoWindowBorder() );
+#else
     ResetCurrentModeForNewResolution( nNewWidth, nNewHeight, bWindowed );
     AdjustWindow( GetModeWidth(), GetModeHeight(), GetModeBPP(), IsWindowedMode() );
+#endif
+#line 2497
     MarkClientViewRectDirty();
     pRenderContext->Viewport( 0, 0, GetModeStereoWidth(), GetModeStereoHeight() );
 
@@ -2513,6 +2662,10 @@ void CVideoMode_MaterialSystem::SetGameWindow( void *hWnd )
     m_bWindowed = true;
     m_nModeWidth = mode.m_Width;
     m_nModeHeight = mode.m_Height;
+#ifdef BYTEMATCH_RETAIL
+    m_bNoWindowBorder = false;
+#endif
+#line 2531
 
     materials->SetView( game->GetMainDeviceWindow() );
 }
@@ -2549,7 +2702,12 @@ void CVideoMode_MaterialSystem::RestoreVideo( void )
 #else
 	ShowWindow( (HWND)game->GetMainWindow(), SW_SHOWNORMAL );
 #endif
+#ifdef BYTEMATCH_RETAIL
+    AdjustWindow( GetModeWidth(), GetModeHeight(), GetModeBPP(), IsWindowedMode(), NoWindowBorder() );
+#else
     AdjustWindow( GetModeWidth(), GetModeHeight(), GetModeBPP(), IsWindowedMode() );
+#endif
+#line 2568
 }
 
 

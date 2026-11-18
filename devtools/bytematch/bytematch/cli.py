@@ -6,7 +6,7 @@ import os
 import re
 import sys
 
-from . import compare, loader, mapfile, report, x86
+from . import compare, loader, mapfile, report, winmap, x86
 from .model import object_stem
 
 
@@ -26,6 +26,8 @@ def _load_ours(args):
     funcs = [f for m in mods for f in m.functions]
     if not funcs:
         raise SystemExit(f'error: no functions found in {args.ours}')
+    if any(m.fmt == 'coff' for m in mods):
+        winmap.add_sig_aliases([f for f in funcs if f.module.fmt == 'coff'])
     return mods, funcs
 
 
@@ -111,6 +113,8 @@ def cmd_diff(args):
     if data['shared']:
         ss = report.summarize(data['shared'])['functions']
         print(f'out-of-scope copies (attributed to other retail objects): {ss["matched"]}/{ss["total"]} matched')
+    if s['line_constants_only']['functions']:
+        print(f'differing only in __LINE__-like immediates: {s["line_constants_only"]["functions"]} functions')
     print(f'only in ours: {len(data["extra"])}')
     return 0
 

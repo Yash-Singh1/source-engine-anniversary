@@ -45,7 +45,9 @@ private:
 	MESSAGE_FUNC( OnSliderMoved, "SliderMoved" );
 	MESSAGE_FUNC( OnApplyChanges, "ApplyChanges" );
 
+#ifndef BYTEMATCH_RETAIL
 	CPanelAnimationVar( bool, m_bUseConVarMinMax, "use_convar_minmax", "0" );
+#endif
 
     bool        m_bAllowOutOfRange;
     bool        m_bModifiedOnce;
@@ -58,6 +60,7 @@ private:
 	bool		m_bCreatedInCode;
 	float		m_flMinValue;
 	float		m_flMaxValue;
+	int			m_nScaleFactor;
 };
 
 #endif // CVARSLIDER_H

@@ -119,7 +119,7 @@ public:
 		int curCompressedByte = 0;
 		while((compressedBytes - curCompressedByte)  >= m_nEncodedBytes && (maxUncompressedBytes - nDecompressedBytes) >= m_nRawBytes)
 		{
-			m_pFrameEncoder->DecodeFrame( pCompressed ? &pCompressed[curCompressedByte] : NULL, &pUncompressed[nDecompressedBytes]);
+			m_pFrameEncoder->DecodeFrame( &pCompressed[curCompressedByte], &pUncompressed[nDecompressedBytes]);
 			curCompressedByte += m_nEncodedBytes;
 			nDecompressedBytes += m_nRawBytes;
 		}

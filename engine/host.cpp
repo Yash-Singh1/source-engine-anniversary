@@ -264,6 +264,10 @@ static CFrameTimer g_HostTimes;
 
 float host_time = 0.0;
 
+#ifdef BYTEMATCH_RETAIL
+ConVar save_transition_music( "save_transition_music", "0", FCVAR_ARCHIVE );
+#endif
+#line 268
 static ConVar	violence_hblood( "violence_hblood","1", 0, "Draw human blood" );
 static ConVar	violence_hgibs( "violence_hgibs","1", 0, "Show human gib entities" );
 static ConVar	violence_ablood( "violence_ablood","1", 0, "Draw alien blood" );
@@ -278,6 +282,16 @@ void Snd_Restart_f()
 #ifndef SWDS
 	extern bool snd_firsttime;
 
+#ifdef BYTEMATCH_RETAIL
+	extern char g_szVoiceCodec[_MAX_PATH];
+
+	char szVoiceCodec[_MAX_PATH];
+	szVoiceCodec[0] = 0;
+	if ( g_szVoiceCodec[0] )
+	{
+		V_strncpy( szVoiceCodec, g_szVoiceCodec, sizeof( szVoiceCodec ) );
+	}
+#else
 	char szVoiceCodec[_MAX_PATH] = { 0 };
 	int nVoiceSampleRate = Voice_ConfiguredSampleRate();
 
@@ -289,6 +303,8 @@ void Snd_Restart_f()
 			V_strncpy( szVoiceCodec, pPreviousCodec, sizeof( szVoiceCodec ) );
 		}
 	}
+#endif
+#line 293
 
 	S_Shutdown();
 	snd_firsttime = true;
@@ -297,7 +313,12 @@ void Snd_Restart_f()
 
 	// Restart voice if it was running
 	if ( szVoiceCodec[0] )
+#ifdef BYTEMATCH_RETAIL
+		Voice_Init( szVoiceCodec );
+#else
 		Voice_Init( szVoiceCodec, nVoiceSampleRate );
+#endif
+#line 302
 
 	// Do this or else it won't have anything in the cache.
 	if ( audiosourcecache && sv.GetMapName()[0] )
@@ -624,7 +645,12 @@ CON_COMMAND( host_timer_report, "Spew CPU timer jitter for the last 128 frames i
 // Do this when merging the game DLLs so FCVAR_CHEAT can be set on them at the same time.
 ConVar  developer( "developer", "0", FCVAR_CHEAT, "Set developer message level");
 #else
+#ifdef BYTEMATCH_RETAIL
+ConVar  developer( "developer", "0", 0, "Set developer message level." );
+#else
 ConVar  developer( "developer", "0", 0, "Set developer message level");
+#endif
+#line 629
 #endif
 
 ConVar	skill( "skill","1", FCVAR_ARCHIVE | FCVAR_ARCHIVE_XBOX, "Game skill level (1-3).", true, 1, true, 3 );			// 1 - 3
@@ -1199,6 +1225,69 @@ Writes key bindings and archived cvars to config.cfg
 ===============
 */
 
+#ifdef BYTEMATCH_RETAIL
+void Host_WriteConfiguration( const char *filename )
+{
+	if ( !filename )
+		filename = "config.cfg";
+
+	if ( !host_initialized )
+		return;
+
+	if ( !g_bConfigCfgExecuted )
+		return;
+
+	// If in map editing mode don't save configuration
+	if (g_bInEditMode)
+	{
+		ConMsg( "skipping %s output when in map edit mode\n", filename );
+		return;
+	}
+
+	// dedicated servers initialize the host but don't parse and set the
+	// config.cfg cvars
+	if ( sv.IsDedicated() )
+		return;
+
+	if ( IsPC() && Key_CountBindings() <= 1 )
+	{
+		ConMsg( "skipping %s output, no keys bound\n", filename );
+		return;
+	}
+
+	// force any queued convar changes to flush before reading/writing them
+	UpdateMaterialSystemConfig();
+
+	// Generate a new .cfg file.
+	char		szFileName[MAX_PATH];
+	CUtlBuffer	configBuff( 0, 0, CUtlBuffer::TEXT_BUFFER);
+
+	// The HL2 collection keeps its settings in the root mod
+	const char *pPathID;
+	if ( V_stricmp( CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) ), "hl2_complete" ) )
+	{
+		Q_snprintf( szFileName, sizeof(szFileName), "cfg/%s", filename );
+		pPathID = "MOD";
+	}
+	else
+	{
+		Q_snprintf( szFileName, sizeof(szFileName), "//ROOT_MOD/cfg/%s", filename );
+		pPathID = NULL;
+	}
+
+	g_pFileSystem->CreateDirHierarchy( "cfg", pPathID );
+	if ( g_pFileSystem->FileExists( szFileName, pPathID ) && !g_pFileSystem->IsFileWritable( szFileName, pPathID ) )
+	{
+		ConMsg( "Config file %s is read-only!!\n", szFileName );
+		return;
+	}
+
+	// Always throw away all keys that are left over.
+	configBuff.Printf( "unbindall\n" );
+
+	Key_WriteBindings( configBuff );
+	cv->WriteVariables( configBuff );
+#else
 void Host_WriteConfiguration( const char *filename, bool bAllVars )
 {
 	const bool cbIsUserRequested = ( filename != NULL );
@@ -1262,6 +1351,8 @@ void Host_WriteConfiguration( const char *filename, bool bAllVars )
 
 	Key_WriteBindings( configBuff );
 	cv->WriteVariables( configBuff, bAllVars );
+#endif
+#line 1264
 
 #if !defined( SWDS )
 		bool down;
@@ -1584,6 +1675,58 @@ void Host_ReadConfiguration_360( void )
 // Purpose: 
 // Input  : false - 
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+//-----------------------------------------------------------------------------
+// The HL2 collection carries chapter unlocks over from the standalone HL2/episode configs
+//-----------------------------------------------------------------------------
+void Host_RestoreHL2EpisodicUnlocks()
+{
+	if ( V_stricmp( CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) ), "hl2_complete" ) )
+		return;
+
+	static const char *pszExpansionsToCheck[] = { "hl2", "episodic", "ep2" };
+	for ( int i = 0; i < ARRAYSIZE( pszExpansionsToCheck ); i++ )
+	{
+		char szConfigFile[MAX_PATH] = { 0 };
+		V_snprintf( szConfigFile, sizeof( szConfigFile ), "%s/cfg/config.cfg", pszExpansionsToCheck[i] );
+
+		FileHandle_t hFile = g_pFullFileSystem->Open( szConfigFile, "rb", "BASE_PATH" );
+		if ( !hFile )
+			continue;
+
+		int nSize = g_pFileSystem->Size( hFile );
+		char *pBuffer = new char[ nSize + 1 ];
+		g_pFileSystem->Read( pBuffer, nSize, hFile );
+		pBuffer[nSize] = 0;
+		g_pFileSystem->Close( hFile );
+
+		char *pszUnlocked = V_stristr( pBuffer, "sv_unlockedchapters" );
+		if ( pszUnlocked )
+		{
+			COM_Parse( COM_Parse( pszUnlocked ) );
+			if ( V_strlen( com_token ) > 0 )
+			{
+				char szConVarName[128];
+				V_snprintf( szConVarName, sizeof( szConVarName ), "%s_%s", "sv_unlockedchapters", pszExpansionsToCheck[i] );
+				ConVar *pConVar = g_pCVar->FindVar( szConVarName );
+				if ( pConVar )
+				{
+					int nCurrent = pConVar->GetInt();
+					int nUnlocked = V_atoi( com_token );
+					if ( nUnlocked > nCurrent )
+					{
+						pConVar->SetValue( nUnlocked );
+					}
+				}
+			}
+		}
+
+		delete[] pBuffer;
+	}
+}
+#endif
+#line 1634
+
 void Host_ReadConfiguration()
 {
 	if ( sv.IsDedicated() )
@@ -1625,6 +1768,39 @@ void Host_ReadConfiguration()
 		}
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	const char *pszGameDir = CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) );
+	bool bHL2 = !V_stricmp( pszGameDir, "hl2" );
+	bool bHL2Complete = !V_stricmp( pszGameDir, "hl2_complete" );
+
+	if ( g_pFileSystem->FileExists( bHL2Complete ? "//ROOT_MOD/cfg/config.cfg" : "//mod/cfg/config.cfg" ) )
+	{
+		Cbuf_AddText( bHL2Complete ? "exec config.cfg ROOT_MOD\n" : "exec config.cfg mod\n" );
+	}
+	else
+	{
+		Cbuf_AddText( bHL2Complete ? "exec config_default.cfg ROOT_MOD\n" : "exec config_default.cfg\n" );
+		saveconfig = true;
+	}
+
+	Cbuf_Execute();
+
+	char szExpansionId[16];
+	if ( g_pFileSystem->GetCurrentGameExpansionId( szExpansionId, sizeof( szExpansionId ) ) )
+	{
+		Host_RestoreHL2EpisodicUnlocks();
+		bHL2 = !V_stricmp( szExpansionId, "hl2" );
+	}
+
+	ConVarRef hl2_episodic( "hl2_episodic" );
+	hl2_episodic.SetValue( bHL2 ? 0 : 1 );
+
+	Cbuf_AddText( "exec modsettings_default.cfg\n" );
+	if ( g_pFileSystem->FileExists( "//mod/cfg/modsettings.cfg" ) )
+	{
+		Cbuf_AddText( "exec modsettings.cfg mod\n" );
+	}
+#else
 	if ( g_pFileSystem->FileExists( "//mod/cfg/config.cfg" ) )
 	{
 		Cbuf_AddText( "exec config.cfg\n" );
@@ -1636,6 +1812,8 @@ void Host_ReadConfiguration()
 	}
 
 	Cbuf_Execute();
+#endif
+#line 1707
 
 	if ( pRemoteStorage )
 	{
@@ -1692,6 +1870,34 @@ void Host_ReadConfiguration()
 	}
 }
 
+#ifdef BYTEMATCH_RETAIL
+CON_COMMAND( host_writeconfig, "Store current settings to config.cfg (or specified .cfg file)." )
+{
+	if ( args.ArgC() > 2 )
+	{
+		ConMsg( "Usage:  writeconfig <filename.cfg>\n" );
+		return;
+	}
+
+	if ( args.ArgC() == 2 )
+	{
+		char const *filename = args[ 1 ];
+		if ( !filename || !filename[ 0 ] )
+		{
+			return;
+		}
+
+		char outfile[ MAX_QPATH ];
+		// Strip path and extension from filename
+		Q_FileBase( filename, outfile, sizeof( outfile ) );
+		Host_WriteConfiguration( va( "%s.cfg", outfile ) );
+	}
+	else
+	{
+		Host_WriteConfiguration( NULL );
+	}
+}
+#else
 CON_COMMAND( host_writeconfig, "Store current settings to config.cfg (or specified .cfg file)." )
 {
 	if ( args.ArgC() > 3 )
@@ -1724,6 +1930,8 @@ CON_COMMAND( host_writeconfig, "Store current settings to config.cfg (or specifi
 		Host_WriteConfiguration( NULL, true );
 	}
 }
+#endif
+#line 1789
 
 #endif
 
@@ -1735,6 +1943,18 @@ CON_COMMAND( host_writeconfig, "Store current settings to config.cfg (or specifi
 void Host_ReadPreStartupConfiguration()
 {
 	FileHandle_t f = NULL;
+#ifdef BYTEMATCH_RETAIL
+	bool bHL2Complete = false;
+	if ( V_stricmp( CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) ), "hl2_complete" ) )
+	{
+		f = g_pFileSystem->Open( "//mod/cfg/config.cfg", "rt" );
+	}
+	else
+	{
+		f = g_pFileSystem->Open( "//ROOT_MOD/cfg/config.cfg", "rt" );
+		bHL2Complete = true;
+	}
+#else
 	if ( IsX360() )
 	{
 		// 360 config is less restrictive and can be anywhere in the game path
@@ -1744,6 +1964,8 @@ void Host_ReadPreStartupConfiguration()
 	{
 		f = g_pFileSystem->Open( "//mod/cfg/config.cfg", "rt" );
 	}
+#endif
+#line 1810
 
 	if ( !f )
 		return;
@@ -1785,6 +2007,37 @@ void Host_ReadPreStartupConfiguration()
 		}
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	if ( bHL2Complete )
+	{
+		// the HL2 collection picks its chapter backgrounds per expansion
+		static const char *s_PreStartupHL2CompleteConVars[] =
+		{
+			"hl2_expansion",
+			"sv_unlockedchapters_hl2",
+			"sv_unlockedchapters_episodic",
+			"sv_unlockedchapters_ep2"
+		};
+
+		for (int i = 0; i < ARRAYSIZE(s_PreStartupHL2CompleteConVars); i++)
+		{
+			const char *search = Q_stristr(configBuffer, s_PreStartupHL2CompleteConVars[i]);
+			if (search)
+			{
+				search = COM_Parse(search);
+				COM_Parse(search);
+
+				ConVar *var = (ConVar *)g_pCVar->FindVar( s_PreStartupHL2CompleteConVars[i] );
+				if ( var )
+				{
+					var->SetValue( com_token );
+				}
+			}
+		}
+	}
+#endif
+#line 1878
+
 	// free
 	delete [] configBuffer;
 }
@@ -1822,7 +2075,7 @@ void Host_ShutdownServer( void )
 #ifndef BYTEMATCH_RETAIL
 	master->ShutdownConnection();
 #endif
-#line 1822
+#line 1913
 
 	Host_AllowQueuedMaterialSystem( false );
 	// clear structures
@@ -2948,7 +3201,7 @@ float Host_GetSoundDuration( const char *pSample )
 #endif
 	return 0.0f;
 #endif
-#line 2932
+#line 3023
 }
 
 CON_COMMAND( host_runofftime, "Run off some time without rendering/updating sounds\n" )
@@ -3531,7 +3784,7 @@ void _Host_RunFrame (float time)
 			modelloader->UpdateDynamicModels();
 		}
 #endif
-#line 3505
+#line 3596
 
 		//-------------------
 		// simulation
@@ -3642,7 +3895,7 @@ void Host_RunFrame( float time )
 	}
 
 #endif
-#line 3613
+#line 3704
 	if ( !host_profile.GetBool() )
 	{
 		_Host_RunFrame( time );
@@ -4099,7 +4352,7 @@ bool DLL_LOCAL Host_IsSecureServerAllowed()
 	if ( CommandLine()->FindParm( "-insecure" ) || CommandLine()->FindParm( "-textmode" ) )
 		g_bAllowSecureServers = false;
 #endif
-#line 4064
+#line 4155
 
 	return g_bAllowSecureServers;
 }
@@ -4186,8 +4439,13 @@ void Host_Init( bool bDedicated )
 	developer.SetValue( 1 );
 #endif
 
+#ifdef BYTEMATCH_RETAIL
+	Host_InitVersion();
+#else
 	// Should have read info from steam.inf by now.
 	Assert( GetSteamInfIDVersionInfo().AppID != k_uAppIdInvalid );
+#endif
+#line 4242
 
 	if ( CommandLine()->FindParm( "-nocrashdialog" ) )
 	{
@@ -4439,6 +4697,187 @@ void AddTransitionResources( CSaveRestoreData *pSaveData, const char *pLevelName
 	}
 }
 
+#ifdef BYTEMATCH_RETAIL
+void Host_Changelevel( bool loadfromsavedgame, const char *mapname, const char *start )
+{
+	char			_startspot[MAX_QPATH];
+	char			*startspot;
+	char			oldlevel[MAX_QPATH];
+#if !defined(SWDS)
+	CSaveRestoreData *pSaveData = NULL;
+#endif
+
+	if ( !sv.IsActive() )
+	{
+		ConMsg("Only the server may changelevel\n");
+		return;
+	}
+
+	// The qualified name of the map, excluding path/extension
+	char szMapName[MAX_PATH] = { 0 };
+	// The file to load the map from.
+	char szMapFile[MAX_PATH] = { 0 };
+	Q_strncpy( szMapName, mapname, sizeof( szMapName ) );
+	Host_DefaultMapFileName( szMapName, szMapFile, sizeof( szMapFile ) );
+
+	if ( !modelloader->Map_IsValid( szMapFile ) )
+	{
+		ConMsg( "Map %s was not valid\n", szMapFile );
+		return;
+	}
+
+	// If changing from the same map to the same map, optimize by not closing and reopening
+	// the packfile which is embedded in the .bsp; we do this by incrementing the packfile's
+	// refcount via BeginMapAccess()/EndMapAccess() through the base filesystem API.
+	struct LocalMapAccessScope
+	{
+		LocalMapAccessScope() : bEnabled( false ) { }
+		~LocalMapAccessScope() { if ( bEnabled ) g_pFileSystem->EndMapAccess(); }
+		bool bEnabled;
+	};
+
+	LocalMapAccessScope mapscope;
+	if ( V_strcmp( sv.GetMapName(), szMapName ) == 0 )
+	{
+		g_pFileSystem->BeginMapAccess();
+		mapscope.bEnabled = true;
+	}
+
+#ifndef SWDS
+	// FIXME:  Even needed?
+	if ( demoplayer->IsPlayingBack() )
+	{
+		ConMsg("Changelevel invalid during demo playback\n");
+		return;
+	}
+#endif
+
+	g_pFileSystem->AsyncFinishAll();
+
+	if ( !start )
+		startspot = NULL;
+	else
+	{
+		Q_strncpy (_startspot, start, sizeof( _startspot ) );
+		startspot = _startspot;
+	}
+
+	Warning( "---- Host_Changelevel ----\n" );
+	CheckForFlushMemory( sv.GetMapName(), szMapName );
+
+#if !defined( SWDS )
+	// Always save as an xsave if we're on the X360
+	saverestore->SetIsXSave( IsX360() );
+
+	// Add on time passed since the last time we kept track till this transition
+	int iAdditionalSeconds = g_ServerGlobalVariables.curtime - saverestore->GetMostRecentElapsedTimeSet();
+	int iElapsedSeconds = saverestore->GetMostRecentElapsedSeconds() + iAdditionalSeconds;
+	int iElapsedMinutes = saverestore->GetMostRecentElapsedMinutes() + ( iElapsedSeconds / 60 );
+	saverestore->SetMostRecentElapsedMinutes( iElapsedMinutes );
+	saverestore->SetMostRecentElapsedSeconds( ( iElapsedSeconds % 60 ) );
+#endif
+
+	Q_strncpy( oldlevel, sv.GetMapName(), sizeof( oldlevel ) );
+
+#if !defined(SWDS)
+	if ( loadfromsavedgame )
+	{
+		// HL2 keeps its music playing across level transitions
+		bool bStopSounds = !save_transition_music.GetBool();
+		char szExpansionId[16];
+		if ( g_pFullFileSystem->GetCurrentGameExpansionId( szExpansionId, sizeof( szExpansionId ) ) && !V_stricmp( szExpansionId, "hl2" ) )
+		{
+			bStopSounds = false;
+		}
+		if ( bStopSounds )
+		{
+			S_StopAllSounds( true );
+		}
+
+		// save the current level's state
+		saverestore->SaveGameState( true, &pSaveData );
+
+		if ( !pSaveData )
+		{
+			Warning( "Failed to save data for transition\n" );
+			SCR_EndLoadingPlaque();
+			return;
+		}
+	}
+
+	SCR_BeginLoadingPlaque();
+
+	// stop sounds (especially looping!)
+	S_StopAllSounds(true);
+#endif
+	g_pServerPluginHandler->LevelShutdown();
+
+#if !defined(SWDS)
+	audiosourcecache->LevelShutdown();
+#endif
+
+	// Prepare new level
+	sv.InactivateClients();
+
+#if !defined(SWDS)
+	saverestore->FinishAsyncSave();
+#endif
+
+	if ( sv.RestartOnLevelChange() )
+	{
+		Cbuf_Clear();
+		Cbuf_AddText( "quit\n" );
+		return;
+	}
+
+	DownloadListGenerator().OnLevelLoadStart( szMapName );
+
+	if ( !sv.SpawnServer( szMapName, szMapFile, startspot ) )
+	{
+		return;
+	}
+
+#ifndef SWDS
+	if ( loadfromsavedgame )
+	{
+		// Finish saving gamestate
+		saverestore->Finish( pSaveData );
+
+		g_ServerGlobalVariables.curtime = sv.GetTime();
+
+		audiosourcecache->LevelInit( szMapName );
+		g_pServerPluginHandler->LevelInit( szMapName, CM_EntityString(), oldlevel, startspot, true, false );
+
+		sv.SetPaused( true ); // pause until client connects
+		sv.m_bLoadgame = true;
+	}
+	else
+#endif
+	{
+		g_ServerGlobalVariables.curtime = sv.GetTime();
+#if !defined(SWDS)
+		audiosourcecache->LevelInit( szMapName );
+#endif
+		g_pServerPluginHandler->LevelInit( szMapName, CM_EntityString(), NULL, NULL, false, false );
+	}
+
+	SV_ActivateServer();
+
+#if !defined(SWDS)
+	// Offset stored elapsed time by the current elapsed time for this new map
+	int maptime = sv.GetTime();
+	int minutes = (int)( maptime / 60.0f );
+	int seconds = (int)fmod( maptime, 60.0f );
+	saverestore->SetMostRecentElapsedMinutes( saverestore->GetMostRecentElapsedMinutes() - minutes );
+	saverestore->SetMostRecentElapsedSeconds( saverestore->GetMostRecentElapsedSeconds() - seconds );
+#endif
+
+	NotifyDedicatedServerUI("UpdateMap");
+
+	DownloadListGenerator().OnLevelLoadEnd();
+
+}
+#else
 bool Host_Changelevel( bool loadfromsavedgame, const char *mapname, const char *start )
 {
 	char			_startspot[MAX_QPATH];
@@ -4652,6 +5091,23 @@ bool Host_Changelevel( bool loadfromsavedgame, const char *mapname, const char *
 
 	return true;
 }
+#endif
+#line 4672
+
+#ifdef BYTEMATCH_RETAIL
+void GetPlatformMapPath( const char *pMapPath, char *pPlatformMapPath, int maxLength )
+{
+	Q_strncpy( pPlatformMapPath, pMapPath, maxLength );
+
+	// Once the material system is up, map names always resolve to their .bsp
+	if ( g_pMaterialSystemHardwareConfig )
+	{
+		Q_StripExtension( pMapPath, pPlatformMapPath, maxLength );
+		Q_strncat( pPlatformMapPath, ".bsp", maxLength );
+	}
+}
+#endif
+#line 4684
 
 /*
 ===============================================================================

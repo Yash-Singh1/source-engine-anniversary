@@ -238,7 +238,7 @@ HMODULE Sys_LoadLibrary( const char *pLibraryName, Sys_Flags flags )
 	unsigned int nTimeout = 0;
 	while( ThreadWaitForObject( h, true, nTimeout ) == TW_TIMEOUT )
 	{
-		nTimeout = threadFunc(0);
+		nTimeout = threadFunc();
 	}
 
 	ReleaseThreadHandle( h );

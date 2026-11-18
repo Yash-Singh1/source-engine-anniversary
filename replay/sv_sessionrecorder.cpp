@@ -86,8 +86,9 @@ void CSessionRecorder::StartRecording()
 	}
 
 	// We only care about local fileserver path in the case that we aren't offloading files to an external sfileserver
+	extern ConVar replay_fileserver_offload_enable;
 	const char *pWritePath = g_pServerReplayContext->GetLocalFileServerPath();
-	if ( ( !pWritePath || !pWritePath[0] ) )
+	if ( !replay_fileserver_offload_enable.GetBool() && ( !pWritePath || !pWritePath[0] ) )
 	{
 		ConMsg( "\n*\n* ERROR: Failed to begin record: make sure \"replay_local_fileserver_path\" refers to a valid path!\n** replay_local_fileserver_path is currently set to: \"%s\"\n*\n\n", pWritePath );
 		return;

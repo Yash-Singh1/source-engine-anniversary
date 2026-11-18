@@ -2573,8 +2573,8 @@
    "common/GameUI/IGameUI.h"
   ],
   "reference": "bin/GameUI:CGameUI",
-  "retail_len": 38,
-  "retail_len_basis": "override: extra slots are CGameUI's own",
+  "retail_len": 39,
+  "retail_len_basis": "override: slot 38 GetBonusMapsDatabase() is IGameUI's (appended): retail GameUI calls CloseMessageDialog, which CGameUI declares before its other own methods, at slot 39; the rest are CGameUI's own",
   "sdk2013_len": 38,
   "versions": {
    "ours": [

@@ -3,6 +3,7 @@ import difflib
 from dataclasses import dataclass, field
 
 from . import x86
+from .winmap import EQUIV
 
 EXACT = 'exact'
 MASKED = 'matches-after-masking'
@@ -23,6 +24,7 @@ class Result:
     first_diff: int = None
     masked_bytes: int = 0
     target_mismatches: list = field(default_factory=list)
+    line_constants: list = None      # [(offset, retail, ours)] when only __LINE__-like immediates differ
 
     @property
     def name(self):
@@ -128,7 +130,7 @@ def check_targets(r, o, rdata, odata):
         else:
             continue
         names = rmod.resolve(va)
-        if names and rel.target not in names:
+        if names and rel.target not in names and EQUIV.get(rel.target) not in names:
             out.append((k, rel.target, names[0]))
     if o.module.linked:
         # linked vs linked: compare branch targets symbolically on both sides
@@ -177,6 +179,14 @@ def compare(r, o, target_check=True):
         return res
     res.status = DIFFERS
     res.first_diff = first if first is not None else n
+    if len(rdata) == len(odata) and not tail_note:
+        rz = bytes(0 if i in mask else c for i, c in enumerate(rdata))
+        oz = bytes(0 if i in mask else c for i, c in enumerate(odata))
+        lc = x86.line_constant_diffs(rz, oz)
+        if lc:
+            res.line_constants = lc
+            res.reason = 'line constants only: ' + ', '.join(f'{a}->{b}' for _, a, b in lc[:6])
+            return res
     if len(rdata) != len(odata):
         res.reason = f'size retail {len(rdata)} vs ours {len(odata)}'
     elif tail_note:

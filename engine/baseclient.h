@@ -213,7 +213,10 @@ public:
 
 	KeyValues		*m_ConVars;			// stores all client side convars
 	bool			m_bConVarsChanged;	// true if convars updated and not changes process yet
+#ifndef BYTEMATCH_RETAIL
 	bool			m_bInitialConVarsSet; // Has the client sent their initial set of convars
+#endif
+#line 207
 	bool			m_bSendServerInfo;	// true if we need to send server info packet to start connect
 	CBaseServer		*m_Server;			// pointer to server object
 	bool			m_bIsHLTV;			// if this a HLTV proxy ?
@@ -266,7 +269,7 @@ public:
 #ifndef BYTEMATCH_RETAIL
 	bool			m_bPlayerNameLocked;
 #endif
-#line 257
+#line 256
 
 	// Does this client have a name change that is pending?
 	// (Their 'name' convar differs from our value for their client name.)

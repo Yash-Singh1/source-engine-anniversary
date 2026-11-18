@@ -141,7 +141,12 @@ bool CMixerControls::GetValue_Float(Control iControl, float &value)
 		case MicVolume:
 		{
 			OSStatus theError = noErr;
+#ifdef BYTEMATCH_RETAIL
+			for ( int iChannel = 0; iChannel < 3; iChannel++ )
+#else
 			for ( uint iChannel = 0; iChannel < 3; iChannel++ )
+#endif
+#line 145
 			{
 				// scan the channel list until you find a channel set to non-zero, then use that
 				Float32 theVolume = 0;

@@ -126,10 +126,71 @@ const SteamInfVersionInfo_t& GetSteamInfIDVersionInfo()
 	return g_SteamInfIDVersionInfo;
 }
 
+#ifdef BYTEMATCH_RETAIL
+//-----------------------------------------------------------------------------
+// Purpose: Disables the simulation and returns focus to the editor
+//-----------------------------------------------------------------------------
+void EditorToggle_f()
+{
+	if ( IsPC() )
+	{
+		IEngine::EngineState_t eOldState = eng->GetState();
+		bool bActive = ( eOldState == IEngine::DLL_PAUSED );
+
+		if ( ( eng->GetState() != IEngine::DLL_ACTIVE ) && ( eng->GetState() != IEngine::DLL_PAUSED ) )
+			return;
+
+		bool bCurrentlyActive = ( eng->GetState() != IEngine::DLL_PAUSED );
+		if ( bCurrentlyActive == bActive )
+			return;
+
+		if ( !bActive )
+		{
+			eng->SetNextState( IEngine::DLL_PAUSED );
+
+			// Detach input from the previous editor window
+			game->InputDetachFromGameWindow();
+		}
+		else
+		{
+			eng->SetNextState( IEngine::DLL_ACTIVE );
+
+			// Start accepting input from the new window
+			game->InputAttachToGameWindow();
+		}
+	}
+}
+
+static ConCommand editor_toggle( "editor_toggle", EditorToggle_f, "Disables the simulation and returns focus to the editor", FCVAR_CHEAT );
+
+static void MoveConsoleWindowToFront();
+
+CUtlVector<char> g_TextModeLine;
+
+void EatTextModeKeyPresses()
+{
+	if ( !g_bTextMode )
+		return;
+
+	static bool bFirstRun = true;
+	if ( bFirstRun )
+	{
+		bFirstRun = false;
+		MoveConsoleWindowToFront();
+	}
+}
+
+void Sys_SetSteamAppID( unsigned int unAppID )
+{
+	SteamAPI_SetBreakpadAppID( unAppID );
+}
+#else
 int build_number( void )
 {
 	return GetSteamInfIDVersionInfo().ServerVersion;
 }
+#endif
+#line 133
 
 //-----------------------------------------------------------------------------
 // Forward declarations
@@ -329,6 +390,169 @@ static bool IsSourceModLoaded()
 	return false;
 }
 
+#ifdef BYTEMATCH_RETAIL
+static PAGED_POOL_INFO_t g_final;
+static char g_ppi[ 512 ];
+
+class CErrorText
+{
+public:
+	CErrorText() : m_nSize( 95000 ), m_errorText( new char[ m_nSize ] )
+	{
+		Q_memset( m_errorText, 0, m_nSize );
+	}
+	~CErrorText()
+	{
+		delete[] m_errorText;
+	}
+
+	void BuildComment( char const *pchSysErrorText, bool bRealCrash )
+	{
+		try
+		{
+			int nCommentLength = m_nSize;
+			bool bExtendedSpew = sys_minidumpexpandedspew.GetBool();
+			if ( !bExtendedSpew )
+			{
+				// Keep the comment small unless extended spew is wanted
+				nCommentLength = MIN( m_nSize, 3500 );
+			}
+
+			Q_memset( m_errorText, 0x00, nCommentLength );
+
+			if ( pchSysErrorText )
+			{
+				// Trim trailing \n.
+				int len = V_strlen( pchSysErrorText );
+				if ( pchSysErrorText[ len - 1 ] == '\n' )
+					const_cast< char * >( pchSysErrorText )[ len - 1 ] = 0;
+
+				Q_snprintf( m_errorText, nCommentLength, "Sys_Error( %s )\nUptime( %f )\n", pchSysErrorText, Plat_FloatTime() );
+			}
+			else
+			{
+				Q_snprintf( m_errorText, nCommentLength, "Crash\nUptime( %f )\n", Plat_FloatTime() );
+			}
+
+			V_strncat( m_errorText, g_minidumpinfo, nCommentLength, COPY_ALL_CHARACTERS );
+
+			// Latch in case extended stuff below crashes
+			SteamAPI_SetMiniDumpComment( m_errorText );
+
+			// Spew out paged pool stuff, etc.
+			Plat_GetPagedPoolInfo( &g_final );
+
+			Q_snprintf( g_ppi, sizeof( g_ppi ), "\nPaged Pool\nprev PP PAGES: used: %lu, free %lu\nfinal PP PAGES: used: %lu, free %lu\nmemallocfail? = %u\nActive: %s SpawnCount %d MapLoad Count %d\nError count %d, end demo %d, abort count %d\n",
+				g_pagedpoolinfo.numPagesUsed, g_pagedpoolinfo.numPagesFree,
+				g_final.numPagesUsed, g_final.numPagesFree,
+				MemAlloc_MemoryAllocFailed(),
+				( game && game->IsActiveApp() ) ? "active" : "inactive",
+				gHostSpawnCount,
+				g_nMapLoadCount,
+				g_HostErrorCount,
+				g_HostEndDemo,
+				g_HostServerAbortCount );
+
+			V_strncat( m_errorText, g_ppi, nCommentLength, COPY_ALL_CHARACTERS );
+
+			// Latch in case extended stuff below crashes
+			SteamAPI_SetMiniDumpComment( m_errorText );
+
+			if ( bExtendedSpew )
+			{
+				BuildCommentExtended( nCommentLength );
+				SteamAPI_SetMiniDumpComment( m_errorText );
+			}
+		}
+		catch ( ... )
+		{
+			// Oh oh
+		}
+	}
+
+	void BuildCommentExtended( int nCommentLength )
+	{
+		try
+		{
+			V_strncat( m_errorText, "\nConVars (non-default)\n\n", nCommentLength, COPY_ALL_CHARACTERS );
+
+			char buf[ 128 ];
+			Q_snprintf( buf, sizeof( buf ), "%s\t%s\t%s\n", "var", "value", "default" );
+			V_strncat( m_errorText, buf, nCommentLength, COPY_ALL_CHARACTERS );
+
+			int len = V_strlen( m_errorText );
+			if ( len < nCommentLength )
+			{
+				int nRemaining = nCommentLength - len;
+				char *pDest = m_errorText + len;
+
+				for ( const ConCommandBase *var = g_pCVar->GetCommands() ; var ; var = var->GetNext())
+				{
+					if ( var->IsCommand() )
+						continue;
+
+					ConVar *pCvar = ( ConVar * )var;
+					if ( pCvar->IsFlagSet( FCVAR_SERVER_CANNOT_QUERY | FCVAR_PROTECTED ) )
+						continue;
+
+					if ( pCvar->IsFlagSet( FCVAR_NEVER_AS_STRING ) )
+					{
+						if ( pCvar->GetFloat() == Q_atof( pCvar->GetDefault() ) )
+							continue;
+					}
+					else
+					{
+						char var1[ MAX_OSPATH ];
+						char var2[ MAX_OSPATH ];
+
+						Q_strncpy( var1, Host_CleanupConVarStringValue( pCvar->GetString() ), sizeof( var1 ) );
+						Q_strncpy( var2, Host_CleanupConVarStringValue( pCvar->GetDefault() ), sizeof( var2 ) );
+
+						if ( !Q_stricmp( var1, var2 ) )
+							continue;
+					}
+
+					char line[ MAX_OSPATH ];
+					int nLen;
+					if ( pCvar->IsFlagSet( FCVAR_NEVER_AS_STRING ) )
+						nLen = Q_snprintf( line, sizeof( line ), "%s\n\t'%f' '%f'\n", pCvar->GetName(), pCvar->GetFloat(), Q_atof( pCvar->GetDefault() ) );
+					else
+						nLen = Q_snprintf( line, sizeof( line ), "%s\n\t'%s' '%s'\n", pCvar->GetName(), Host_CleanupConVarStringValue( pCvar->GetString() ), pCvar->GetDefault() );
+
+					nLen = MIN( nLen, nRemaining );
+					if ( nLen <= 0 )
+						break;
+
+					memcpy( pDest, line, nLen );
+					pDest += nLen;
+					nRemaining -= nLen;
+					if ( nRemaining <= 0 )
+						break;
+				}
+				*pDest = 0;
+			}
+
+			V_strncat( m_errorText, "\nConsole History (reversed)\n\n", nCommentLength, COPY_ALL_CHARACTERS );
+
+			// Get console
+			len = V_strlen( m_errorText );
+			if ( len < nCommentLength )
+			{
+				GetSpew( m_errorText + len, nCommentLength - len );
+			}
+		}
+		catch ( ... )
+		{
+			V_strncat( m_errorText, "exception thrown building console/convar history!!!\n", nCommentLength, COPY_ALL_CHARACTERS );
+		}
+	}
+
+	int m_nSize;
+	char *m_errorText;
+};
+
+static CErrorText errorText;
+#else
 template< int _SIZE >
 class CErrorText
 {
@@ -442,6 +666,7 @@ public:
 			// Latch in case extended stuff below crashes
 			Steam_SetMiniDumpComment();
 
+#ifndef BYTEMATCH_RETAIL
 			// Add user comment strings. 4096 is just a large sanity number we should
 			//  never ever reach (currently our minidump supports 32 of these.)
 			for( int i = 0; i < 4096; i++ )
@@ -453,6 +678,8 @@ public:
 				if ( pUserStreamInfo[ 0 ] )
 					CommentPrintf( "%s", pUserStreamInfo );
 			}
+#endif
+#line 456
 
 			bool bExtendedSpew = sys_minidumpexpandedspew.GetBool();
 			if ( bExtendedSpew )
@@ -668,6 +895,8 @@ static CErrorText<3500> errorText;
 #else
 static CErrorText<95000> errorText;
 #endif
+#endif
+#line 671
 
 void BuildMinidumpComment( char const *pchSysErrorText, bool bRealCrash )
 {
@@ -899,12 +1128,18 @@ static eSteamInfoInit Sys_TryInitSteamInfo( void *pvAPI, SteamInfVersionInfo_t& 
 		SteamAPI_SetBreakpadAppID( BreakpadAppId );
 		SteamAPI_UseBreakpadCrashHandler( pchVersion, __DATE__, __TIME__, bFullMemoryDump, pvMiniDumpContext, pfnPreMinidumpCallback );
 
+#ifndef BYTEMATCH_RETAIL
 		// Tell errorText class if this is dedicated server.
 		errorText.m_bIsDedicatedServer = bDedicated;
+#endif
+#line 904
 	}
 #endif // NO_STEAM
 
+#ifndef BYTEMATCH_RETAIL
 	MinidumpUserStreamInfoSetHeader( "%sLaunching \"%s\"\n", ( bDedicated ? "DedicatedServerAPI " : "" ), CommandLine()->GetCmdLine() );
+#endif
+#line 908
 
 
 	return initState;
@@ -1083,6 +1318,25 @@ void *CEngineAPI::QueryInterface( const char *pInterfaceName )
 //-----------------------------------------------------------------------------
 void CEngineAPI::SetStartupInfo( StartupInfo_t &info )
 {
+#ifdef BYTEMATCH_RETAIL
+#ifndef NO_STEAM
+	if ( !CommandLine()->FindParm( "-nobreakpad" ) )
+	{
+		SteamAPI_UseBreakpadCrashHandler( va( "%d%s", build_number(), "" ), __DATE__, __TIME__, false, NULL, NULL );
+	}
+#endif
+
+	g_bTextMode = info.m_bTextMode;
+
+	// Set up the engineparms_t which contains global information about the mod
+	host_parms.basedir = const_cast<char*>( info.m_pBaseDirectory );
+
+	// Copy off all the startup info
+	m_StartupInfo = info;
+
+	// Setup and write out steam_appid.txt before we launch
+	Host_InitAppID( m_StartupInfo.m_pInitialMod, info.m_pBaseDirectory );
+#else
 	// Setup and write out steam_appid.txt before we launch
 	bool bDedicated = false; // Dedicated comes through CDedicatedServerAPI
 	eSteamInfoInit steamInfo = Sys_TryInitSteamInfo( this, g_SteamInfIDVersionInfo, info.m_pInitialMod, info.m_pBaseDirectory, bDedicated );
@@ -1094,6 +1348,8 @@ void CEngineAPI::SetStartupInfo( StartupInfo_t &info )
 
 	// Copy off all the startup info
 	m_StartupInfo = info;
+#endif
+#line 1103
 
 #if !defined( SWDS )
 	// turn on the Steam3 API early so we can query app data up front
@@ -1103,6 +1359,7 @@ void CEngineAPI::SetStartupInfo( StartupInfo_t &info )
 	// Needs to be done prior to init material system config
 	TRACEINIT( COM_InitFilesystem( m_StartupInfo.m_pInitialMod ), COM_ShutdownFileSystem() );
 
+#ifndef BYTEMATCH_RETAIL
 	if ( steamInfo != eSteamInfo_Initialized )
 	{
 		// Try again with filesystem available. This is commonly needed for SDK mods which need the filesystem to find
@@ -1114,6 +1371,8 @@ void CEngineAPI::SetStartupInfo( StartupInfo_t &info )
 			Warning( "Failed to find steam.inf or equivalent steam info. May not have proper information to connect to Steam.\n" );
 		}
 	}
+#endif
+#line 1112
 
 	m_bSupportsVR = false;
 	if ( IsPC() )
@@ -1135,7 +1394,12 @@ void CEngineAPI::SetStartupInfo( StartupInfo_t &info )
 				g_pFileSystem->EnableWhitelistFileTracking( true, false, false );
 			}
 
+#ifdef BYTEMATCH_RETAIL
+			m_bSupportsVR = modinfo->GetInt( "supportsvr" ) > 0;
+#else
 			m_bSupportsVR = modinfo->GetInt( "supportsvr" ) > 0 && CommandLine()->CheckParm( "-vr" );
+#endif
+#line 1134
 			if ( m_bSupportsVR )
 			{
 				// This also has to happen before CreateGameWindow to know where to put
@@ -1351,6 +1615,9 @@ void CEngineAPI::PumpMessages()
 
 	game->DispatchAllStoredGameMessages();
 
+#ifdef BYTEMATCH_RETAIL
+	EatTextModeKeyPresses();
+#else
 	if ( IsPC() )
 	{
 		static bool s_bFirstRun = true;
@@ -1360,6 +1627,8 @@ void CEngineAPI::PumpMessages()
 			MoveConsoleWindowToFront();
 		}
 	}
+#endif
+#line 1358
 }
 
 //-----------------------------------------------------------------------------
@@ -1694,12 +1963,22 @@ void CEngineAPI::OnShutdown()
 static bool IsValveMod( const char *pModName )
 {
 	// Figure out if we're running a Valve mod or not.
+#ifdef BYTEMATCH_RETAIL
+	return ( Q_stricmp( pModName, "cstrike" ) == 0 ||
+		Q_stricmp( pModName, "dod" ) == 0 ||
+		Q_stricmp( pModName, "hl1mp" ) == 0 ||
+		Q_stricmp( pModName, "tf" ) == 0 || 
+		Q_stricmp( pModName, "tf_beta" ) == 0 ||
+		Q_stricmp( pModName, "hl2mp" ) == 0 );
+#else
 	return ( Q_stricmp( GetCurrentMod(), "cstrike" ) == 0 ||
 		Q_stricmp( GetCurrentMod(), "dod" ) == 0 ||
 		Q_stricmp( GetCurrentMod(), "hl1mp" ) == 0 ||
 		Q_stricmp( GetCurrentMod(), "tf" ) == 0 || 
 		Q_stricmp( GetCurrentMod(), "tf_beta" ) == 0 ||
 		Q_stricmp( GetCurrentMod(), "hl2mp" ) == 0 );
+#endif
+#line 1698
 }
 
 //-----------------------------------------------------------------------------
@@ -1708,7 +1987,14 @@ static bool IsValveMod( const char *pModName )
 bool CEngineAPI::ModInit( const char *pModName, const char *pGameDir )
 {
 	// Set up the engineparms_t which contains global information about the mod
+#ifdef BYTEMATCH_RETAIL
+	char szExpansionId[16];
+	bool bExpansion = g_pFileSystem->GetCurrentGameExpansionId( szExpansionId, sizeof( szExpansionId ) );
+	host_parms.mod = COM_StringCopy( bExpansion ? GetModDirFromPath( szExpansionId ) : GetModDirFromPath( pModName ) );
+#else
 	host_parms.mod = COM_StringCopy( GetModDirFromPath( pModName ) );
+#endif
+#line 1709
 	host_parms.game = COM_StringCopy( pGameDir );
 
 	// By default, restrict server commands in Valve games and don't restrict them in mods.
@@ -1734,9 +2020,16 @@ bool CEngineAPI::ModInit( const char *pModName, const char *pGameDir )
 		bWindowed = true;
 	}
 
+#line 1735
+
 	// Create the game window now that we have a search path
 	// FIXME: Deal with initial window width + height better
+#ifdef BYTEMATCH_RETAIL
+	if ( !videomode || !videomode->CreateGameWindow( g_pMaterialSystemConfig->m_VideoMode.m_Width, g_pMaterialSystemConfig->m_VideoMode.m_Height, bWindowed, ( g_pMaterialSystemConfig->m_Flags & MATSYS_VIDCFG_FLAGS_NO_WINDOW_BORDER ) != 0 ) )
+#else
 	if ( !videomode || !videomode->CreateGameWindow( g_pMaterialSystemConfig->m_VideoMode.m_Width, g_pMaterialSystemConfig->m_VideoMode.m_Height, bWindowed ) )
+#endif
+#line 1739
 	{
 		return false;
 	}
@@ -1876,7 +2169,12 @@ extern "C" void __cdecl WriteSteamMiniDumpWithComment( unsigned int uStructuredE
 //-----------------------------------------------------------------------------
 int CEngineAPI::Run()
 {
+#ifdef BYTEMATCH_RETAIL
+	if ( CommandLine()->FindParm( "-insecure" ) )
+#else
 	if ( CommandLine()->FindParm( "-insecure" ) || CommandLine()->FindParm( "-textmode" ) )
+#endif
+#line 1879
 	{
 		Host_DisallowSecureServers();
 	}
@@ -2167,6 +2465,12 @@ public:
 	virtual void UpdateHostname(char *pszHostname, int maxlen);
 
 	CModAppSystemGroup *m_pDedicatedServer;
+
+#ifdef BYTEMATCH_RETAIL
+private:
+	static void PreMinidumpCallback( void *context );
+#endif
+#line 2169
 };
 
 //-----------------------------------------------------------------------------
@@ -2282,8 +2586,26 @@ bool EnableLongTickWatcher()
 //-----------------------------------------------------------------------------
 // Dedicated server entrypoint
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+void CDedicatedServerAPI::PreMinidumpCallback( void *context )
+{
+}
+
+#endif
+#line 2284
 bool CDedicatedServerAPI::Connect( CreateInterfaceFn factory ) 
 { 
+#ifdef BYTEMATCH_RETAIL
+#ifndef NO_STEAM
+	if ( !CommandLine()->FindParm( "-nobreakpad" ) )
+	{
+		Msg( "Using breakpad minidump system\n" );
+		SteamAPI_UseBreakpadCrashHandler( CFmtStr( "%d", build_number() ), __DATE__, __TIME__, false, this, PreMinidumpCallback );
+	}
+#endif
+
+#endif
+#line 2286
 	if ( CommandLine()->FindParm( "-sv_benchmark" ) != 0 )
 	{
 		Plat_SetBenchmarkMode( true );
@@ -2368,9 +2690,12 @@ void *CDedicatedServerAPI::QueryInterface( const char *pInterfaceName )
 //-----------------------------------------------------------------------------
 bool CDedicatedServerAPI::ModInit( ModInfo_t &info )
 {
+#ifndef BYTEMATCH_RETAIL
 	// Setup and write out steam_appid.txt before we launch
 	bool bDedicated = true;
 	eSteamInfoInit steamInfo = Sys_TryInitSteamInfo( this, g_SteamInfIDVersionInfo, info.m_pInitialMod, info.m_pBaseDirectory, bDedicated );
+#endif
+#line 2370
 
 	eng->SetQuitting( IEngine::QUIT_NOTQUITTING );
 
@@ -2381,8 +2706,15 @@ bool CDedicatedServerAPI::ModInit( ModInfo_t &info )
 
 	g_bTextMode = info.m_bTextMode;
 
+#ifdef BYTEMATCH_RETAIL
+	// Setup and write out steam_appid.txt before we launch
+	Host_InitAppID( info.m_pInitialMod, info.m_pBaseDirectory );
+#endif
+#line 2382
+
 	TRACEINIT( COM_InitFilesystem( info.m_pInitialMod ), COM_ShutdownFileSystem() );
 
+#ifndef BYTEMATCH_RETAIL
 	if ( steamInfo != eSteamInfo_Initialized )
 	{
 		// Try again with filesystem available. This is commonly needed for SDK mods which need the filesystem to find
@@ -2394,6 +2726,8 @@ bool CDedicatedServerAPI::ModInit( ModInfo_t &info )
 			Warning( "Failed to find steam.inf or equivalent steam info. May not have proper information to connect to Steam.\n" );
 		}
 	}
+#endif
+#line 2385
 
 	// set this up as early as possible, if the server isn't going to run pure, stop CRCing bits as we load them
 	// this happens even before the ConCommand's are processed, but we need to be sure to either CRC every file

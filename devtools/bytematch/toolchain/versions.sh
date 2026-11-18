@@ -19,7 +19,7 @@ clang_sha256() {
 }
 
 # ld64 from tpoechtrager/cctools-port, pinned to branch-head commits.
-# 236.3 = Xcode 6.0, 241.9 = Xcode 6.1, 242 = Xcode 6.2.
+# 236.3 = Xcode 5.1 (2014 hl2mp modules), 241.9 = Xcode 6.1, 242 = Xcode 6.2.
 CCTOOLS_REPO=https://github.com/tpoechtrager/cctools-port.git
 ld64_branch() {
 	case $1 in

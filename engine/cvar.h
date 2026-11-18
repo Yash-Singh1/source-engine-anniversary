@@ -32,7 +32,12 @@ public:
 
 	// Writes lines containing "set variable value" for all variables
 	// with the archive flag set to true.
+#ifdef BYTEMATCH_RETAIL
+	void WriteVariables( CUtlBuffer &buff );
+#else
 	void WriteVariables( CUtlBuffer &buff, bool bAllVars );
+#endif
+#line 36
 
 	// Returns the # of cvars with the server flag set.
 	int	CountVariablesWithFlags( int flags );

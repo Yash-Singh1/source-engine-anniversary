@@ -39,13 +39,23 @@
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
+#ifdef BYTEMATCH_RETAIL
+// retail predates the bounded copies
+#define V_strcpy_safe( dest, src )	Q_strcpy( dest, src )
+#endif
+#line 42
 
 using namespace vgui;
 
 const int g_nPreviewImageWidth  = 128;
 const int g_nPreviewImageHeight =  96;
 
+#ifdef BYTEMATCH_RETAIL
+ConVar mat_colorcorrection( "mat_colorcorrection", "0" );
+#else
 ConVar mat_colorcorrection( "mat_colorcorrection", "0", FCVAR_ARCHIVE );
+#endif
+#line 49
 ConVar mat_colcorrection_disableentities( "mat_colcorrection_disableentities", "0" );
 
 //-----------------------------------------------------------------------------

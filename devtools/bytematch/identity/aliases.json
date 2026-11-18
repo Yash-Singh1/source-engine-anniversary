@@ -1,0 +1,15 @@
+{
+  "comment": "Source-layout differences between our tree and Valve's that only show in debug-map paths. Each 'ours' prefix (relative to our tree) is rewritten to 'valve' (relative to Valve's src root) in the preprocessed source before the path rewrite of the tree root. Delete an entry once the owning lane moves the files.",
+  "aliases": [
+    {
+      "ours": "video/video_quicktime/",
+      "valve": "video/",
+      "why": "retail compiled video_quicktime from src/video/quicktime_*.cpp (debug map); our tree keeps those files in video/video_quicktime/"
+    },
+    {
+      "ours": "external/cef/",
+      "valve": "thirdparty/cef/",
+      "why": "retail chromehtml includes CEF from src/thirdparty/cef (debug map N_SOL); thirdparty is a submodule here, so the CEF headers and wrapper live in external/cef"
+    }
+  ]
+}

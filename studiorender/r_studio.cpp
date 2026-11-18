@@ -108,6 +108,26 @@ IMaterial* CStudioRender::R_StudioSetupSkinAndLighting( IMatRenderContext *pRend
 				IMaterialVar* pOriginalMaterialVar = pMaterial->FindVarFast( "$translucent_material", &translucentCache );
 				Assert( pOriginalMaterialVar );
 				IMaterial *pOriginalMaterial = ppMaterials[index];
+#ifdef BYTEMATCH_RETAIL
+				if ( pOriginalMaterial )
+				{
+					// Disable any alpha modulation on the original material that was left over from when it was last rendered
+					pOriginalMaterial->AlphaModulate( 1.0f );
+					pRenderContext->Bind( pOriginalMaterial, pClientRenderable );
+					if ( pOriginalMaterial->IsTranslucent() || pOriginalMaterial->IsAlphaTested() )
+					{
+						pOriginalMaterialVar->SetMaterialValue( pOriginalMaterial );
+					}
+					else
+					{
+						pOriginalMaterialVar->SetMaterialValue( NULL );
+					}
+				}
+				else
+				{
+					pOriginalMaterialVar->SetMaterialValue( NULL );
+				}
+#else
 				if ( pOriginalMaterial )
 				{
 					// Disable any alpha modulation on the original material that was left over from when it was last rendered
@@ -129,6 +149,8 @@ IMaterial* CStudioRender::R_StudioSetupSkinAndLighting( IMatRenderContext *pRend
 					if ( pOriginalMaterialVar )
 						pOriginalMaterialVar->SetMaterialValue( NULL );
 				}
+#endif
+#line 132
 			}
 			else if ( m_pRC->m_nForcedMaterialType == OVERRIDE_DEPTH_WRITE || m_pRC->m_nForcedMaterialType == OVERRIDE_SSAO_DEPTH_WRITE )
 			{

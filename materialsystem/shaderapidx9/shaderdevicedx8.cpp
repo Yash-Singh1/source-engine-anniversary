@@ -25,8 +25,12 @@
 #include "recording.h"
 #include "winutils.h"
 #include "tier0/vprof_telemetry.h"
+#if defined( BYTEMATCH_RETAIL ) && defined( USE_SDL )
+#include "appframework/ilaunchermgr.h"
+#endif
+#line 28
 
-#if defined ( DX_TO_GL_ABSTRACTION )
+#if defined ( DX_TO_GL_ABSTRACTION ) && !defined( BYTEMATCH_RETAIL )
 // Placed here so inlines placed in dxabstract.h can access gGL
 COpenGLEntryPoints *gGL = NULL;
 #endif
@@ -145,7 +149,11 @@ bool CShaderDeviceMgrDx8::Connect( CreateInterfaceFn factory )
 
 #if defined ( DX_TO_GL_ABSTRACTION )
 	gGL = ToGLConnectLibraries( factory );
+#if defined( BYTEMATCH_RETAIL ) && defined( USE_SDL )
+	g_pLauncherMgr = (ILauncherMgr *)factory( "SDLMgrInterface001", NULL );
 #endif
+#endif
+#line 149
 
 #if defined(IS_WINDOWS_PC) && defined(SHADERAPIDX9) && !defined(RECORDING) && !defined( DX_TO_GL_ABSTRACTION )
 	m_pD3D = NULL;
@@ -1935,6 +1943,12 @@ char *CShaderDeviceDx8::GetDisplayDeviceName()
 		// On Win10, this function is getting called with m_nAdapter still initialized to -1.
 		// It's failing, and m_sDisplayDeviceName has garbage, and tf2 fails to launch.
 		// To repro this, run "hl2.exe -dev -fullscreen -game tf" on Win10.
+#ifdef BYTEMATCH_RETAIL
+		D3D()->GetAdapterIdentifier( m_nAdapter, 0, &ident );
+		m_sDisplayDeviceName = ident.DeviceName;
+	}
+	return const_cast< char * >( m_sDisplayDeviceName.Get() );
+#else
 		HRESULT hr = D3D()->GetAdapterIdentifier( Max( m_nAdapter, 0 ), 0, &ident );
 		if ( FAILED(hr) )
 		{
@@ -1944,6 +1958,8 @@ char *CShaderDeviceDx8::GetDisplayDeviceName()
 		m_sDisplayDeviceName = ident.DeviceName;
 	}
 	return m_sDisplayDeviceName.GetForModify();
+#endif
+#line 1947
 }
 
 

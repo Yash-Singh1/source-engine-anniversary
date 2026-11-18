@@ -12911,8 +12911,7 @@ void CShaderAPIDx8::GetDX9LightState( LightState_t *state ) const
 #endif	
 	
 	state->m_nNumLights = m_DynamicState.m_NumLights;
-	state->m_bStaticLightVertex = m_pRenderMesh->HasColorMesh();
-	state->m_bStaticLightTexel = false; // For now
+	state->m_bStaticLight = m_pRenderMesh->HasColorMesh();
 }
 
 MaterialFogMode_t CShaderAPIDx8::GetCurrentFogType( void ) const

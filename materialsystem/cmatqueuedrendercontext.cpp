@@ -455,14 +455,31 @@ public:
 			}
 			else
 			{
+#ifdef BYTEMATCH_RETAIL
+				ALIGN16 uint16 tempIndices[16];
+
+				int i = 0;
+				if ( (size_t)desc.m_pIndices % 4 == 2 )
+				{
+					desc.m_pIndices[i] = pIndexData[i] + desc.m_nFirstVertex;
+					i++;
+				}
+#else
 				static ALIGN16 uint16 tempIndices[256];
 
 				// original method
 				int i = 0;
 
+#endif
+#line 463
 				while ( i < nIndices )
 				{
+#ifdef BYTEMATCH_RETAIL
+					int nToCopy = ( ARRAYSIZE(tempIndices) < (size_t)( nIndices - i ) ) ? ARRAYSIZE(tempIndices) : nIndices - i;
+#else
 					int nToCopy = min( (int)ARRAYSIZE(tempIndices), nIndices - i );
+#endif
+#line 466
 					for ( int j = 0; j < nToCopy; j++ )
 					{
 						tempIndices[j] = pIndexData[i+j] + desc.m_nFirstVertex;
@@ -890,7 +907,12 @@ void CMatQueuedRenderContext::CallQueued( bool bTermAfterCall )
 {
 	if ( mat_report_queue_status.GetBool() )
 	{
+#ifdef BYTEMATCH_RETAIL
+		Msg( "%d calls queued for %d bytes in parameters and overhead, %d bytes verts, %d bytes indices, %d bytes other\n", m_queue.Count(), (int)(m_queue.GetMemoryUsed()), m_Vertices.GetUsed(), m_Indices.GetUsed(), RenderDataSizeUsed() );
+#else
 		Msg( "%d calls queued for %llu bytes in parameters and overhead, %d bytes verts, %d bytes indices, %d bytes other\n", m_queue.Count(), (uint64)(m_queue.GetMemoryUsed()), m_Vertices.GetUsed(), m_Indices.GetUsed(), RenderDataSizeUsed() );
+#endif
+#line 894
 	}
 
 	m_queue.CallQueued();

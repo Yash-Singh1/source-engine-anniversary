@@ -222,7 +222,8 @@ void CSessionBlockPublisher::PublishBlock( CServerRecordingSessionBlock *pBlock 
 	params.m_nCompressorType = COMPRESSORTYPE_BZ2;
 	params.m_bHash = true;
 	params.m_bFreeSrcData = true;
-	params.m_bDeleteFile = false;
+	extern ConVar replay_fileserver_offload_enable;
+	params.m_bDeleteFile = replay_fileserver_offload_enable.GetBool();
 	params.m_pUserData = pBlock;
 	pBlock->m_pPublisher = SV_PublishFile( params );
 }

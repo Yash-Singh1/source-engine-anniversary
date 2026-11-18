@@ -190,8 +190,11 @@ CON_COMMAND_F( bench_end, "Ends gathering of info.", FCVAR_CHEAT )
 	GetBenchResultsMgr()->StopBenchmark();
 }
 
+#ifndef BYTEMATCH_RETAIL
 CON_COMMAND_F( bench_upload, "Uploads most recent benchmark stats to the Valve servers.", FCVAR_CHEAT )
 {
 	GetBenchResultsMgr()->Upload();
 }
+#endif
+#line 197
 

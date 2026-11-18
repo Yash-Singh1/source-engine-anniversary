@@ -502,3 +502,105 @@ No function matched at head is lost on the branch.
 | sv_steamauth | most `CSteam3Server` functions, `CCallback` templates, `SteamInternal_Init_*` | differs/missing | Steamworks SDK version (retail: `SteamInternal_ContextInit`, 32-byte `CSteamGameServerAPIContext`) |
 | net_chan | `ReadSubChannelData`, `CompressFragments` | differs | stack frame differences, not investigated |
 
+
+# Round 2 (engine-core2 lane)
+
+Branch `bytematch-engine-core2`, started at `bytematch` 72205168, merged with
+`bytematch-engine-render` 1c238e70 (finished, needed for the `IVideoMode` slot
+and `IModelLoader`/`CanCheat` changes) and later with `bytematch` 88902342
+(Steamworks 1.60, `MAX_MAP_NAME` 32, SDK 2013 `CClassMemoryPool::Clear`).
+Measured with `lane-engine-core2-scratch/run.sh` (engine/ objects; 8713
+functions once `rpt_engine` is compiled).
+
+Totals: 7841/8702 (77.19% bytes) at 72205168 -> 8374/8713 (88.89%) after a
+clean rebuild with the patched stub SDK (longjmp __dead2 fixes Host_Error,
+Host_EndGame, Host_AbortServer). Whole engine.dylib: 12432/12997 functions,
+88.15% of bytes. No function matched at
+the start is lost.
+
+## Per object, engine-core file set (start -> end / total)
+
+| object | start | end | total | cause |
+|---|---:|---:|---:|---|
+| host_cmd | 46 | 59 | 64 | SDK 2013 version code (gpszVersionString, ParseSteamInfFile, DetermineAppID, Host_InitAppID, Host_InitVersion, build_number), Host_Map_Helper/changelevel without FindMap |
+| host | 62 | 76 | 88 | GetPlatformMapPath, void Host_Changelevel (SDK 2013 + save_transition_music), anniversary config write/read, Host_RestoreHL2EpisodicUnlocks, Host_InitVersion |
+| host_state | 15 | 16 | 20 | State_ChangeLevelMP |
+| sv_main | 57 | 68 | 71 | SDK-era sv_pure, shutdown/hibernation, SpawnServer(char*), no edict freetime |
+| sv_client | 82 | 86 | 86 | 66/10 update rates, player_connect only |
+| sv_steamauth | 30 | 73 | 73 | Steam 1.60 (headers3) + retail Activate() without server type, relay/spectator details |
+| sv_rcon, cl_rcon | 30, 37 | 34, 44 | 36, 47 | ENABLE_RPT |
+| rpt_engine | 0 | 11 | 11 | ENABLE_RPT compiles it |
+| baseclient | 104 | 116 | 118 | no m_bInitialConVarsSet, ClientInfo without signon check, GUID memcpy |
+| networkstringtable | 96 | 99 | 99 | sv_compressstringtablebaselines (LZSS), older substring parse |
+| sys_getmodes | 25 | 48 | 51 | borderless window (m_bNoWindowBorder, 4-arg CreateGameWindow/SetMode), startup graphic |
+| sys_dll2 | 44 | 48 | 59 | Host_InitAppID in SetStartupInfo/ModInit, expansion id in CEngineAPI::ModInit, IsValveMod(pModName) |
+| matsys_interface | 31 | 40 | 41 | NO_WINDOW_BORDER/LIGHTMAP_BICUBIC flags, ScreenNoBorder, _rt_CameraHD, retail convars |
+| cvar | 31 | 34 | 35 | WriteVariables(CUtlBuffer&) writes all archived cvars |
+| matchmaking* | 101 | 168 | 169 | MAX_MAP_NAME 32 (headers3) |
+| snd_dma | 125 | 137 | 141 | CClassMemoryPool::Clear (headers3) |
+
+Render-lane objects in the diff (modelloader, cl_*, r_decal, l_studio,
+vgui_baseui_interface, replaydemoplayer, ...) moved because of the
+engine-render merge, not this lane.
+
+## Edited, still differing (cause known)
+
+| object | function | note |
+|---|---|---|
+| host | `Host_WriteConfiguration`, `Host_ReadConfiguration`, `Host_ReadPreStartupConfiguration` | logic is retail's; register/stack-slot allocation differs (`g_bConfigCfgExecuted` loads as movzx/cmp instead of xor/test) |
+| host | `Host_Init` | IThreadPool::Start(params) overload |
+| host_cmd | `status`, `Host_Status_PrintClient` | not investigated |
+| host_cmd | `Host_VoiceRecordStop_f`, `voiceconvar_file_changed_f`, `sv_use_steam_voice` | 2013 voice API (Voice_RecordStop, CL_SendVoicePacket(true)) |
+| sv_main | `SV_CreateBaseline`, `__GLOBAL__I_a` | 2013 voice init: `SVC_VoiceInit("vaudio_speex"/"", 5)`, no sv_voicecodec |
+| sv_main | `SV_ActivateServer` | not investigated |
+| voice | most | SDK 2013-era voice.cpp (Speex/Miles, Steam voice via SteamUser(), Voice_Init(const char*)) |
+| sys_getmodes | `TakeSnapshotJPEGToBuffer`, `WriteMovieFrame`, `VID_ProcessMovieFrame` | retail build has HAVE_JPEG (static libjpeg) |
+| sys_dll2 | `CErrorText` (non-template), `EditorToggle_f`, `CDedicatedServerAPI::Connect` | not done |
+| host_state | `HostState_Init`, `HostState_NewGame`, `State_Run`, `FrameUpdate` | HostState_Init tail-calls CCS_Init (no watchdog); NewGame strips the extension; not done |
+
+
+# Round 3 (engine-core3 lane)
+
+Branch `bytematch-engine-core3`, started at `bytematch` 4734826f, merged with
+`bytematch` a6ea7674 near the end. Measured with
+`lane-engine-core3-scratch/run.sh` (engine/ objects; 8715 functions once
+`engine/workshop.cpp` exists).
+
+Totals: 8377/8713 (88.93% bytes) at 4734826f -> 8475/8715 (91.12%) at the head.
+Whole engine.dylib: 12712/12999 functions, 93.37% of bytes. No function matched
+at the start is lost.
+
+## Per object (start -> end / total)
+
+| object | start | end | total | cause |
+|---|---:|---:|---:|---|
+| voice | 30 | 46 | 46 | SDK 2013 voice: 11025 Hz only, `Voice_Init(const char*)`, Steam voice via `SteamUser()` and `sv_use_steam_voice` (ConVarRef in `Voice_Idle`), no `Voice_UserDesiresStop`/configured-codec accessors, `TIME_PADDING` 0.2 |
+| voice_record_openal | 6 | 9 | 9 | `alGetError()`, factory named `CreateVoiceRecord_DSound` on POSIX |
+| voice_sound_engine_interface | 39 | 42 | 42 | fixed 11025 rate, `ReferenceAdd` in `CreateMixer` |
+| voice_mixer_controls_openal | 9 | 10 | 10 | signed channel loop |
+| host_cmd | 59 | 64 | 64 | `sv_use_steam_voice` "1", older `Host_VoiceRecordStop_f`, signed `CStatusLineBuilder` (status) |
+| sv_main | 68 | 70 | 71 | `SV_WriteVoiceCodec`: `SVC_VoiceInit( IsMultiplayer() ? "vaudio_speex" : "", 5 )`, no `sv_voicecodec` |
+| servermsghandler | 44 | 46 | 50 | one-argument `Voice_Init` |
+| netmessages | n/a | 400 | 403 | old `SVC_VoiceInit` (codec pointer + quality byte + private buffer); built under common/, outside run.sh; the three left are other messages |
+| sys_getmodes | 48 | 51 | 51 | `HAVE_JPEG`; sys_getmodes uses imageutils' `jpeg_UtlBuffer_dest` |
+| host_state | 16 | 20 | 20 | no watchdog (`HostState_Init`, `State_Run`), `HostState_NewGame` strips the extension |
+| sys_dll2 | 48 | 58 | 59 | non-template 2013 `CErrorText` (8 bytes: size + heap buffer), `EditorToggle_f`/`editor_toggle`, `EatTextModeKeyPresses` + `g_TextModeLine`, dedicated `Connect` breakpad block + empty `PreMinidumpCallback`, `Run` checks only `-insecure` |
+| sys_dll | 32 | 33 | 34 | 2013 `Sys_SpewFunc` (`%`-escaped temp used as format, unconditional `Plat_DebugString`), no `spew_consolelog_to_debugstring` |
+| console | 9 | 23 | 30 | no notify mutex, plain `CUtlVector` notify list, variadic `CConPanel::DrawText` |
+| colorcorrectionpanel | 319 | 333 | 334 | `V_strcpy_safe` -> `Q_strcpy`, `mat_colorcorrection` unarchived |
+| snd_wave_data | 77 | 81 | 82 | single `snd_async_spew_blocking` ("0"; >=2 also spews successes), `DevMsg` for blocking spew |
+| pure_server | 71 | 81 | 84 | `CPureFileTracker::DoesFileMatch` has the body the leak commented out |
+| workshop | - | 2 | 2 | new `engine/workshop.cpp`: `workshop_open_manager` |
+| sv_rcon, cmd, cbenchmark, baseclient, sys_engine | | | | convars: no `sv_rcon_whitelist_address`, `PerfMark`, `bench_upload`; namechange cooldown "20.0"; `fps_max` flags 0 |
+
+## Still differing (cause known)
+
+| object | function | note |
+|---|---|---|
+| sv_ents_write | `CBaseServer::WriteDeltaEntities` | needs SDK 2013 `FindNextSetBit` loop in public/bitvec.h (measured: +11 engine functions, +18.5 KB) |
+| colorcorrectionpanel | `CColorOperationList::Apply` | inlined `Color24ToVector` copies its by-value argument differently (mathlib header) |
+| sys_dll2 | `CEngineAPI::SetStartupInfo` | scheduling around a reused string literal |
+| snd_wave_data | `CAsyncWavDataCache::GetDataPointer` | not investigated |
+| host_saverestore | `SaveGameSlot`, `GetSaveAppendix` (missing), `LoadGame`, `SaveReadHeader`, `AutoSaveDangerousIsSafe` | anniversary save appendix (`SaveAppendix` KeyValues with `Expansion`), Steam remote storage call, `malloc` save buffer; not written |
+| console | `Con_ColorPrintf`, `Con_DebugLog`, `ConsoleLogFileCallback`, `GetConsoleLogFileData`, `Con_Init`, `ProcessNotifyLines` | console log manager differences, not investigated |
+| sys_dll, sv_rcon, snd_dma, snd_dsp, snd_mix, net_ws, host | static init | `FCVAR_INTERNAL_USE`/`FCVAR_ALLOWED_IN_COMPETITIVE` = 0 (bytematch-headers4 4876c7d2) |

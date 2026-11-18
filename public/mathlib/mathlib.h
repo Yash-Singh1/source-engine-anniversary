@@ -447,6 +447,11 @@ void inline SinCos( float radians, float *sine, float *cosine )
 		fstp DWORD PTR [edx]
 		fstp DWORD PTR [eax]
 	}
+#elif defined( OSX ) && !defined( PLATFORM_64BITS ) && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1060
+	double __cosr, __sinr;
+	__asm ("fsincos" : "=t" (__cosr), "=u" (__sinr) : "0" (radians));
+	*sine = __sinr;
+	*cosine = __cosr;
 #elif defined( PLATFORM_WINDOWS_PC64 ) || ( defined( OSX ) && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1090 )
 	*sine = sin( radians );
 	*cosine = cos( radians );
@@ -455,6 +460,7 @@ void inline SinCos( float radians, float *sine, float *cosine )
 #elif defined( POSIX )
 	sincosf(radians, sine, cosine);
 #endif
+#line 458
 }
 
 #define SIN_TABLE_SIZE	256
@@ -559,12 +565,12 @@ bool MatricesAreEqual( const matrix3x4_t &src1, const matrix3x4_t &src2, float f
 
 void MatrixGetColumn( const matrix3x4_t &in, int column, Vector &out );
 
-inline void MatrixSetColumn( const Vector &in, int column, matrix3x4_t& out )
-{
-	out[0][column] = in.x;
-	out[1][column] = in.y;
-	out[2][column] = in.z;
-}
+void MatrixSetColumn( const Vector &in, int column, matrix3x4_t &out );
+
+
+
+
+
 
 inline void MatrixGetTranslation( const matrix3x4_t &in, Vector &out )
 {

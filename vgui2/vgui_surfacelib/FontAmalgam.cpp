@@ -77,6 +77,11 @@ void CFontAmalgam::RemoveAll()
 //-----------------------------------------------------------------------------
 font_t *CFontAmalgam::GetFontForChar(int ch)
 {
+#ifdef BYTEMATCH_RETAIL
+	if ( !m_Fonts.Count() )
+		return NULL;
+#endif
+
 	for (int i = 0; i < m_Fonts.Count(); i++)
 	{
 #if defined(LINUX)
@@ -90,7 +95,12 @@ font_t *CFontAmalgam::GetFontForChar(int ch)
 		}
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	// no font claims this range, use the primary one
+	return m_Fonts[0].font;
+#else
 	return NULL;
+#endif
 }
 
 //-----------------------------------------------------------------------------

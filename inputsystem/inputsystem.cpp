@@ -128,9 +128,6 @@ InitReturnVal_t CInputSystem::Init()
 		return nRetVal;
 
 	m_StartupTimeTick = Plat_MSTime();
-	m_hConfigurationDevice = 0;
-	m_unConfigurationMajorRevision = 0;
-	m_unConfigurationMinorRevision = 0;
 
 #if !defined( POSIX )
 	if ( IsPC() )
@@ -142,6 +139,9 @@ InitReturnVal_t CInputSystem::Init()
 	if ( !m_hEvent )
 		return INIT_FAILED;
 #endif
+	m_hConfigurationDevice = 0;
+	m_unConfigurationMajorRevision = 0;
+	m_unConfigurationMinorRevision = 0;
 
 	ButtonCode_InitKeyTranslationTable();
 	ButtonCode_UpdateScanCodeLayout();
@@ -156,7 +156,7 @@ InitReturnVal_t CInputSystem::Init()
 		InitializeJoysticks();
 		if ( m_bXController )
 			joy_xcontroller_found.SetValue( 1 );
-
+		m_bSteamController = InitializeSteamControllers();
 
 #if defined( PLATFORM_WINDOWS_PC )
 		// NVNT try and load and initialize through the haptic dll, but only if the drivers are installed
@@ -173,7 +173,6 @@ InitReturnVal_t CInputSystem::Init()
 		}
 #endif
 
-		m_bSteamController = InitializeSteamControllers();
 		m_flNextDeviceCheckTime = Plat_FloatTime() + 5.0f;
 	}
 
@@ -446,6 +445,11 @@ ButtonCode_t CInputSystem::XKeyToButtonCode( int nPort, int nXKey ) const
 ButtonCode_t CInputSystem::ScanCodeToButtonCode( int lParam ) const
 {
 	return ButtonCode_ScanCodeToButtonCode( lParam );
+}
+
+ButtonCode_t CInputSystem::SKeyToButtonCode( int nPort, int nXKey ) const
+{
+	return ButtonCode_SKeyToButtonCode( nPort, nXKey );
 }
 
 //-----------------------------------------------------------------------------

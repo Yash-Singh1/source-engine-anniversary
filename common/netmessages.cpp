@@ -20,9 +20,12 @@
 
 // XXX(JohnS): This is no longer used, but we're keeping it so we can check if old network streams set it to work around
 //             missing information in the older SVC_VoiceInit packet. See SVC_VoiceInit::ReadFromBuffer
+#ifndef BYTEMATCH_RETAIL
 ConVar sv_use_steam_voice( "sv_use_steam_voice", "0", FCVAR_HIDDEN | FCVAR_REPLICATED,
                            "Deprecated - placeholder convar for handling old network streams that "
                            "had an incomplete SVC_VoiceInit packet.  Use \"sv_voicecodec steam\"" );
+#endif
+#line 26
 
 static char s_text[1024];
 
@@ -935,6 +938,31 @@ const char *SVC_CrosshairAngle::ToString(void) const
 	return s_text;
 }
 
+#ifdef BYTEMATCH_RETAIL
+bool SVC_VoiceInit::WriteToBuffer( bf_write &buffer )
+{
+	buffer.WriteUBitLong( GetType(), NETMSG_TYPE_BITS );
+	buffer.WriteString( m_szVoiceCodec ? m_szVoiceCodec : "svc_voiceinit NULL" );
+	buffer.WriteByte( m_nQuality );
+	return !buffer.IsOverflowed();
+}
+
+bool SVC_VoiceInit::ReadFromBuffer( bf_read &buffer )
+{
+	VPROF( "SVC_VoiceInit::ReadFromBuffer" );
+
+	m_szVoiceCodec = m_szVoiceCodecBuffer;
+	buffer.ReadString( m_szVoiceCodecBuffer, sizeof(m_szVoiceCodecBuffer) );
+	m_nQuality = buffer.ReadByte();
+	return !buffer.IsOverflowed();
+}
+
+const char *SVC_VoiceInit::ToString(void) const
+{
+	Q_snprintf( s_text, sizeof(s_text), "%s: codec \"%s\", qualitty %i", GetName(), m_szVoiceCodec, m_nQuality );
+	return s_text;
+}
+#else
 bool SVC_VoiceInit::WriteToBuffer( bf_write &buffer )
 {
 	buffer.WriteUBitLong( GetType(), NETMSG_TYPE_BITS );
@@ -989,6 +1017,8 @@ const char *SVC_VoiceInit::ToString(void) const
 	Q_snprintf( s_text, sizeof(s_text), "%s: codec \"%s\", sample rate %i", GetName(), m_szVoiceCodec, m_nSampleRate );
 	return s_text;
 }
+#endif
+#line 992
 
 bool SVC_VoiceData::WriteToBuffer( bf_write &buffer )
 {

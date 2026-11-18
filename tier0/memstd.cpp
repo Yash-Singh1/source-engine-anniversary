@@ -1802,7 +1802,10 @@ void CStdMemAlloc::SetCRTAllocFailed( size_t nSize )
 {
 	m_sMemoryAllocFailed = nSize;
 
+#ifndef BYTEMATCH_RETAIL
 	MemAllocOOMError( nSize );
+#endif
+#line 1806
 }
 
 size_t CStdMemAlloc::MemoryAllocFailed()

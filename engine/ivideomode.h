@@ -35,13 +35,23 @@ public:
 	virtual void			DrawStartupGraphic() = 0;
 
 	// Creates the game window, plays the startup movie, starts up the material system
+#ifdef BYTEMATCH_RETAIL
+	virtual bool			CreateGameWindow( int nWidth, int nHeight, bool bWindowed, bool bNoWindowBorder ) = 0;
+#else
 	virtual bool			CreateGameWindow( int nWidth, int nHeight, bool bWindowed ) = 0;
+#endif
+#line 39
 
 	// Sets the game window in editor mode
 	virtual void			SetGameWindow( void *hWnd ) = 0;
 
 	// Sets the video mode, and re-sizes the window
+#ifdef BYTEMATCH_RETAIL
+	virtual bool			SetMode( int nWidth, int nHeight, bool bWindowed, bool bNoWindowBorder ) = 0;
+#else
 	virtual bool			SetMode( int nWidth, int nHeight, bool bWindowed ) = 0;
+#endif
+#line 45
 
 	// Returns the fullscreen modes for the adapter the game was started on
 	virtual int				GetModeCount( void ) = 0;
@@ -64,6 +74,10 @@ public:
 	virtual int				GetModeWidth() const = 0;
 	virtual int				GetModeHeight() const = 0;
 	virtual	bool			IsWindowedMode() const = 0;
+#ifdef BYTEMATCH_RETAIL
+	virtual bool			NoWindowBorder() const = 0;
+#endif
+#line 67
 
 	// Returns the video mode width + height for a single stereo display.
 	// if the game isn't running in side by side stereo, this is the same
@@ -116,6 +130,5 @@ extern IVideoMode *videomode;
 //-----------------------------------------------------------------------------
 void VideoMode_Create();
 void VideoMode_Destroy();
-
 
 #endif // IVIDEOMODE_H

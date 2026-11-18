@@ -119,8 +119,8 @@
   ]
  },
  "IGameUI": {
-  "retail_len": 38,
-  "why": "extra slots are CGameUI's own"
+  "retail_len": 39,
+  "why": "slot 38 GetBonusMapsDatabase() is IGameUI's (appended): retail GameUI calls CloseMessageDialog, which CGameUI declares before its other own methods, at slot 39; the rest are CGameUI's own"
  },
  "IHandleEntity": {
   "retail_len": 4,
@@ -305,6 +305,7 @@
   "why": "EnumerateLeaf overrides the secondary base ISpatialLeafEnumerator"
  },
  "IVTFTexture": {
+  "includes": ["#define BYTEMATCH_RETAIL"],
   "retail_len": 55,
   "why": "NormalizeTopMipLevel is CVTFTexture's own virtual (SDK 2013 IVTFTexture has 55 slots)"
  },

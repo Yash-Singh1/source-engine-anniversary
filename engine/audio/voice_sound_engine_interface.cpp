@@ -186,6 +186,10 @@ CAudioMixer *CAudioSourceVoice::CreateMixer( int initialStreamPosition )
 		return NULL;
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	ReferenceAdd( pMixer );
+#endif
+#line 189
 	return pMixer;
 }
 
@@ -211,7 +215,12 @@ int CAudioSourceVoice::GetOutputData( void **pData, int samplePosition, int samp
 
 int CAudioSourceVoice::SampleRate()
 {
+#ifdef BYTEMATCH_RETAIL
+	return VOICE_OUTPUT_SAMPLE_RATE;
+#else
 	return Voice_SamplesPerSec();
+#endif
+#line 215
 }
 
 int CAudioSourceVoice::SampleSize()
@@ -221,7 +230,12 @@ int CAudioSourceVoice::SampleSize()
 
 int CAudioSourceVoice::SampleCount()
 {
+#ifdef BYTEMATCH_RETAIL
+	return VOICE_OUTPUT_SAMPLE_RATE;
+#else
 	return Voice_SamplesPerSec();
+#endif
+#line 225
 }
 
 void CAudioSourceVoice::ReferenceAdd(CAudioMixer *pMixer)

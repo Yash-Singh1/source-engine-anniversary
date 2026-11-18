@@ -31,6 +31,7 @@ public:
 	void OnKeyCodePressed( vgui::KeyCode code );
 
 	vgui::PropertyPage* GetOptionsSubMultiplayer( void ) { return m_pOptionsSubMultiplayer; }
+	class COptionsSubVideo *GetOptionsSubVideo();
 
 	MESSAGE_FUNC( OnGameUIHidden, "GameUIHidden" );	// called when the GameUI is hidden
 

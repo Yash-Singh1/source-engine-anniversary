@@ -426,7 +426,7 @@ bool NET_StringToAdr ( const char *s, netadr_t *a)
 
 CNetChan *NET_FindNetChannel(int socket, netadr_t &adr)
 {
-	AUTO_LOCK( s_NetChannels );
+	AUTO_LOCK_FM( s_NetChannels );
 
 	int numChannels = s_NetChannels.Count();
 
@@ -807,7 +807,7 @@ INetChannel *NET_CreateNetChannel(int socket, netadr_t *adr, const char * name, 
 		// create new channel
 		chan = new CNetChan();
 
-		AUTO_LOCK( s_NetChannels );
+		AUTO_LOCK_FM( s_NetChannels );
 		s_NetChannels.AddToTail( chan );
 	}
 
@@ -826,7 +826,7 @@ void NET_RemoveNetChannel(INetChannel *netchan, bool bDeleteNetChan)
 		return;
 	}
 
-	AUTO_LOCK( s_NetChannels );
+	AUTO_LOCK_FM( s_NetChannels );
 	if ( s_NetChannels.Find( static_cast<CNetChan*>(netchan) ) == s_NetChannels.InvalidIndex() )
 	{
 		DevMsg(1, "NET_CloseNetChannel: unknown channel.\n");
@@ -1696,7 +1696,7 @@ netpacket_t *NET_GetPacket (int sock, byte *scratch )
 
 void NET_ProcessPending( void )
 {
-	AUTO_LOCK( s_PendingSockets );
+	AUTO_LOCK_FM( s_PendingSockets );
 	for ( int i=0; i<s_PendingSockets.Count();i++ )
 	{
 		pendingsocket_t * psock = &s_PendingSockets[i];
@@ -1731,7 +1731,7 @@ void NET_ProcessPending( void )
 
 		if ( cmd == STREAM_CMD_ACKN )
 		{
-			AUTO_LOCK( s_NetChannels );
+			AUTO_LOCK_FM( s_NetChannels );
 			for ( int j = 0; j < s_NetChannels.Count(); j++ )
 			{
 				CNetChan * chan = s_NetChannels[j];
@@ -1811,7 +1811,7 @@ void NET_ProcessListen(int sock)
 	psock.addr.SetFromSockadr( &sa );
 	psock.time = net_time;
 
-	AUTO_LOCK( s_PendingSockets );
+	AUTO_LOCK_FM( s_PendingSockets );
 	s_PendingSockets.AddToTail( psock );
 
 	// tell client to send challenge number to identify
@@ -1842,7 +1842,7 @@ void NET_ProcessSocket( int sock, IConnectionlessPacketHandler *handler )
 
 	// Scope for the auto_lock
 	{
-		AUTO_LOCK( s_NetChannels );
+		AUTO_LOCK_FM( s_NetChannels );
 
 		// get streaming data from channel sockets
 		int numChannels = s_NetChannels.Count();
@@ -2577,7 +2577,7 @@ void NET_CloseAllSockets (void)
 	}
 
 	// shut down all pending sockets
-	AUTO_LOCK( s_PendingSockets );
+	AUTO_LOCK_FM( s_PendingSockets );
 	for(int j=0; j<s_PendingSockets.Count();j++ )
 	{
 		NET_CloseSocket( s_PendingSockets[j].newsock );
@@ -2860,7 +2860,7 @@ void NET_LogServerStatus( void )
 		return;
 	}
 
-	AUTO_LOCK( s_NetChannels );
+	AUTO_LOCK_FM( s_NetChannels );
 	int numChannels = s_NetChannels.Count();
 
 	if ( numChannels == 0 )
@@ -3418,7 +3418,7 @@ CON_COMMAND( net_channels, "Shows net channel info" )
 		return;
 	}
 
-	AUTO_LOCK( s_NetChannels );
+	AUTO_LOCK_FM( s_NetChannels );
 	for ( int i = 0; i < numChannels; i++ )
 	{
 		NET_PrintChannelStatus( s_NetChannels[i] );
@@ -3433,7 +3433,7 @@ CON_COMMAND( net_start, "Inits multiplayer network sockets" )
 
 CON_COMMAND( net_status, "Shows current network status" )
 {
-	AUTO_LOCK( s_NetChannels );
+	AUTO_LOCK_FM( s_NetChannels );
 	int numChannels = s_NetChannels.Count();
 
 	ConMsg("Net status for host %s:\n", 

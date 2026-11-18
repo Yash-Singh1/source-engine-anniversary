@@ -420,6 +420,13 @@ void MatrixGetColumn( const matrix3x4_t& in, int column, Vector &out )
 	out.z = in[2][column];
 }
 
+void MatrixSetColumn( const Vector &in, int column, matrix3x4_t& out )
+{
+	out[0][column] = in.x;
+	out[1][column] = in.y;
+	out[2][column] = in.z;
+}
+
 void MatrixScaleBy ( const float flScale, matrix3x4_t &out )
 {
 	out[0][0] *= flScale;

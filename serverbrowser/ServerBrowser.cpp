@@ -150,6 +150,7 @@ bool CServerBrowser::IsVACBannedFromGame( int nAppID )
 	return false;
 }
 
+#ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
 // Purpose: Marks that the tool/game loading us intends to feed us workshop information
 //-----------------------------------------------------------------------------
@@ -193,6 +194,7 @@ bool CServerBrowser::IsWorkshopSubscribedMap( const char *pszMapName )
 {
 	return m_vecWorkshopSubscribedMaps.HasElement( CUtlString( pszMapName ) );
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 

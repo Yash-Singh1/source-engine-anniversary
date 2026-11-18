@@ -768,8 +768,8 @@ SectionedListPanel::SectionedListPanel(vgui::Panel *parent, const char *name) : 
 	m_iEditModeColumn = 0;
 	m_bSortNeeded = false;
 	m_bVerticalScrollbarEnabled = true;
-	m_iLineSpacing = DEFAULT_LINE_SPACING;
-	m_iSectionGap = DEFAULT_SECTION_GAP;
+	m_iLineSpacing = QuickPropScale( DEFAULT_LINE_SPACING );
+	m_iSectionGap = QuickPropScale( DEFAULT_SECTION_GAP );
 
 	m_pImageList = NULL;
 	m_bDeleteImageListWhenDone = false;
@@ -1671,6 +1671,8 @@ void SectionedListPanel::OnKeyCodePressed( KeyCode code )
 	if ( nButtonCode == KEY_XBUTTON_DOWN || 
 		 nButtonCode == KEY_XSTICK1_DOWN ||
 		 nButtonCode == KEY_XSTICK2_DOWN ||
+		 nButtonCode == STEAMCONTROLLER_DPAD_DOWN ||
+		 nButtonCode == STEAMCONTROLLER_LEFT_PAD_DOWN ||
 		 code == KEY_DOWN )
 	{
 		int itemID = GetSelectedItem();
@@ -1684,6 +1686,8 @@ void SectionedListPanel::OnKeyCodePressed( KeyCode code )
 	else if ( nButtonCode == KEY_XBUTTON_UP || 
 			  nButtonCode == KEY_XSTICK1_UP ||
 			  nButtonCode == KEY_XSTICK2_UP ||
+			  nButtonCode == STEAMCONTROLLER_DPAD_UP ||
+			  nButtonCode == STEAMCONTROLLER_LEFT_PAD_UP ||
 			  code == KEY_UP)
 	{
 		int itemID = GetSelectedItem();
@@ -1771,7 +1775,7 @@ void SectionedListPanel::OnKeyCodePressed( KeyCode code )
         ScrollToItem(itemID);
 		return;
     }
-	else if ( code == KEY_ENTER || nButtonCode == KEY_XBUTTON_A )
+	else if ( code == KEY_ENTER || nButtonCode == KEY_XBUTTON_A || nButtonCode == STEAMCONTROLLER_A )
 	{
 		Panel *pSelectedItem = m_hSelectedItem;
 		if ( pSelectedItem )

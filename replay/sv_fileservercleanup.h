@@ -13,6 +13,7 @@
 #include "basethinker.h"
 #include "spew.h"
 #include "sv_basejob.h"
+#include "sv_ftp.h"
 
 //----------------------------------------------------------------------------------------
 
@@ -85,6 +86,41 @@ private:
 };
 
 CLocalFileDeleterJob *SV_CreateLocalFileDeleterJob();
+
+//----------------------------------------------------------------------------------------
+
+class CFtpFileDeleterJob : public CBaseJob,
+						   public IFileserverCleanerJob,
+						   public IFtp
+{
+public:
+	CFtpFileDeleterJob( const char *pHostname, const char *pRemotePath, const char *pLogin,
+						const char *pPassword, int nPort, const char *pProxyHostname, int nProxyPort );
+
+	virtual void		AddFileForDelete( const char *pFilename );
+	virtual int			GetNumFilesDeleted() const	{ return m_nNumDeleted; }
+
+private:
+	virtual void		DoCleanup();
+	virtual JobStatus_t	DoExecute();
+
+	//
+	// IFtp
+	//
+	virtual const char	*FTP_GetFilename() const;
+	virtual bool		FTP_SetupAdditionalCurlOperations( void *pCurl );
+	virtual void		FTP_OnPreExecuteCurlOperations();
+	virtual void		FTP_OnPostExecuteCurlOperations();
+	virtual bool		FTP_IsCurlResultOK( int nCurlResult ) const;
+	virtual void		FTP_SetError( int nError, const char *pError );
+
+	char				m_szUnused[2][MAX_OSPATH];	// Never read or written, but part of the retail layout
+	struct curl_slist	*m_pCommands;
+	int					m_nNumDeleted;
+	CFtp				*m_pFtp;
+};
+
+CFtpFileDeleterJob *SV_CreateFtpFileDeleterJob( const char *pFilename );
 
 //----------------------------------------------------------------------------------------
 

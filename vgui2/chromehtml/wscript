@@ -1,0 +1,138 @@
+#! /usr/bin/env python
+# encoding: utf-8
+
+from waflib import Utils
+import os
+
+top = '.'
+PROJECT_NAME = 'chromehtml'
+
+# CEF's C++ wrapper (lib/public/osx32/libcef_dll_wrapper.a in Valve's tree), in
+# cef_paths2.gypi order; libcef_dll_wrapper2.cc needs Chromium's NPAPI headers.
+CEF_WRAPPER_SOURCES = ['../../external/cef/libcef_dll/' + s for s in [
+	'transfer_util.cpp',
+	'wrapper/cef_byte_read_handler.cc',
+	'wrapper/cef_xml_object.cc',
+	'wrapper/cef_zip_archive.cc',
+	'wrapper/libcef_dll_wrapper.cc',
+	'cpptoc/app_cpptoc.cc',
+	'ctocpp/browser_ctocpp.cc',
+	'cpptoc/client_cpptoc.cc',
+	'ctocpp/command_line_ctocpp.cc',
+	'cpptoc/content_filter_cpptoc.cc',
+	'ctocpp/cookie_manager_ctocpp.cc',
+	'cpptoc/cookie_visitor_cpptoc.cc',
+	'ctocpp/domdocument_ctocpp.cc',
+	'ctocpp/domevent_ctocpp.cc',
+	'cpptoc/domevent_listener_cpptoc.cc',
+	'ctocpp/domnode_ctocpp.cc',
+	'cpptoc/domvisitor_cpptoc.cc',
+	'cpptoc/display_handler_cpptoc.cc',
+	'cpptoc/download_handler_cpptoc.cc',
+	'ctocpp/drag_data_ctocpp.cc',
+	'cpptoc/drag_handler_cpptoc.cc',
+	'cpptoc/find_handler_cpptoc.cc',
+	'cpptoc/focus_handler_cpptoc.cc',
+	'ctocpp/frame_ctocpp.cc',
+	'cpptoc/jsdialog_handler_cpptoc.cc',
+	'cpptoc/keyboard_handler_cpptoc.cc',
+	'cpptoc/life_span_handler_cpptoc.cc',
+	'cpptoc/load_handler_cpptoc.cc',
+	'cpptoc/menu_handler_cpptoc.cc',
+	'cpptoc/permission_handler_cpptoc.cc',
+	'ctocpp/post_data_ctocpp.cc',
+	'ctocpp/post_data_element_ctocpp.cc',
+	'cpptoc/print_handler_cpptoc.cc',
+	'cpptoc/proxy_handler_cpptoc.cc',
+	'cpptoc/read_handler_cpptoc.cc',
+	'cpptoc/render_handler_cpptoc.cc',
+	'ctocpp/request_ctocpp.cc',
+	'cpptoc/request_handler_cpptoc.cc',
+	'cpptoc/resource_bundle_handler_cpptoc.cc',
+	'ctocpp/response_ctocpp.cc',
+	'cpptoc/scheme_handler_cpptoc.cc',
+	'ctocpp/scheme_handler_callback_ctocpp.cc',
+	'cpptoc/scheme_handler_factory_cpptoc.cc',
+	'ctocpp/security_details_ctocpp.cc',
+	'cpptoc/storage_visitor_cpptoc.cc',
+	'ctocpp/stream_reader_ctocpp.cc',
+	'ctocpp/stream_writer_ctocpp.cc',
+	'cpptoc/task_cpptoc.cc',
+	'cpptoc/v8accessor_cpptoc.cc',
+	'ctocpp/v8context_ctocpp.cc',
+	'cpptoc/v8context_handler_cpptoc.cc',
+	'ctocpp/v8exception_ctocpp.cc',
+	'cpptoc/v8handler_cpptoc.cc',
+	'ctocpp/v8value_ctocpp.cc',
+	'ctocpp/web_plugin_info_ctocpp.cc',
+	'ctocpp/web_urlrequest_ctocpp.cc',
+	'cpptoc/web_urlrequest_client_cpptoc.cc',
+	'cpptoc/write_handler_cpptoc.cc',
+	'ctocpp/xml_reader_ctocpp.cc',
+	'ctocpp/zip_reader_ctocpp.cc',
+	'cpptoc/zoom_handler_cpptoc.cc',
+]]
+
+def options(opt):
+	# stub
+	return
+
+def configure(conf):
+	return
+
+def build(bld):
+	# Built like Chromium's own targets: no RTTI or exceptions (the retail
+	# wrapper's vtables have no typeinfo).
+	bld.stlib(
+		source   = CEF_WRAPPER_SOURCES,
+		target   = 'cef_dll_wrapper',
+		name     = 'cef_dll_wrapper',
+		features = 'cxx',
+		includes = ['../../external/cef'],
+		defines  = ['USING_CEF_SHARED'],
+		cxxflags = ['-fno-rtti', '-fno-exceptions'],
+		idx      = bld.get_taskgen_count()
+	)
+
+	# generated_proto/htmlmessages.pb.* come from htmlmessages.proto with protoc 2.3.0:
+	#   protoc --proto_path=. --cpp_out=generated_proto htmlmessages.proto
+	source = [
+		'../../common/jpegloader.cpp',
+		'../../common/jpegloader_common.cpp',
+		'../../public/html/htmlprotobuf.cpp',
+		'../../tier1/fileio.cpp',
+		'chromewrapper.cpp',
+		'generated_proto/htmlmessages.pb.cc',
+		'html_chrome.cpp',
+		'html_mac.mm',
+	]
+
+	includes = [
+		'.',
+		'generated_proto',
+		'../../public',
+		'../../public/tier0',
+		'../../public/tier1',
+		'../../common',
+		'../../public/jpeglib',
+		'../../external',
+		'../../external/cef',
+	]
+
+	defines = []
+
+	libs = ['tier0','tier1','vstdlib','JPEG','PNG','PROTOBUF','ZLIB','cef_dll_wrapper']
+
+	install_path = bld.env.LIBDIR
+
+	bld.shlib(
+		source   = source,
+		target   = PROJECT_NAME,
+		name     = PROJECT_NAME,
+		features = 'c cxx',
+		includes = includes,
+		defines  = defines,
+		use      = libs,
+		install_path = install_path,
+		idx      = bld.get_taskgen_count()
+	)

@@ -182,7 +182,7 @@ void CRotationManipulator::OnCursorMoved( int x, int y )
 	{
 		m_azimuth  += 0.002f * ( m_lastx - x );
 		m_altitude -= 0.002f * ( m_lasty - y );
-		m_altitude = max( (float)-M_PI/2, min( (float)M_PI/2, m_altitude ) );
+		m_altitude = MAX( -M_PI/2, MIN( M_PI/2, m_altitude ) );
 	}
 
 	m_lastx = x;
@@ -264,6 +264,7 @@ CPotteryWheelPanel::CPotteryWheelPanel( vgui::Panel *pParent, const char *pName 
 	UpdateCameraTransform();
 }
 
+#ifndef BYTEMATCH_RETAIL
 void CPotteryWheelPanel::ApplySettings( KeyValues *inResourceData )
 {
 	BaseClass::ApplySettings( inResourceData );
@@ -274,6 +275,7 @@ void CPotteryWheelPanel::ApplySettings( KeyValues *inResourceData )
 		ParseLightsFromKV( pLights );
 	}
 }
+#endif
 
 void CPotteryWheelPanel::Init( int x, int y, int wide, int tall )
 {
@@ -389,6 +391,7 @@ void StringToVector( float *pVector, const char *pString )
 //-----------------------------------------------------------------------------
 // Sets initialize lights from KeyValues
 //-----------------------------------------------------------------------------
+#ifndef BYTEMATCH_RETAIL
 void CPotteryWheelPanel::ParseLightsFromKV( KeyValues *pLightsKV )
 {
 	int nLightCount = 0;
@@ -458,6 +461,7 @@ void CPotteryWheelPanel::ParseLightsFromKV( KeyValues *pLightsKV )
 
 	m_nLightCount = nLightCount;
 }
+#endif
 
 
 //-----------------------------------------------------------------------------

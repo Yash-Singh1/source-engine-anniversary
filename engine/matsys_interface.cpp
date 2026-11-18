@@ -78,6 +78,11 @@ void RestoreMaterialSystemObjects( int nChangeFlags );
 extern ConVar mat_colorcorrection;
 extern ConVar sv_allow_color_correction;
 
+#ifdef BYTEMATCH_RETAIL
+ConVar mat_shadowstate( "mat_shadowstate", "1" );
+ConVar mat_maxframelatency( "mat_maxframelatency", "1" );
+#endif
+#line 83
 ConVar mat_debugalttab( "mat_debugalttab", "0", FCVAR_CHEAT );
 
 // Static pointers to renderable textures
@@ -85,6 +90,10 @@ static CTextureReference g_PowerOfTwoFBTexture;
 static CTextureReference g_WaterReflectionTexture;
 static CTextureReference g_WaterRefractionTexture;
 static CTextureReference g_CameraTexture;
+#ifdef BYTEMATCH_RETAIL
+static CTextureReference g_CameraTextureHD;
+#endif
+#line 91
 static CTextureReference g_BuildCubemaps16BitTexture;
 static CTextureReference g_QuarterSizedFBTexture0;
 static CTextureReference g_QuarterSizedFBTexture1;
@@ -137,6 +146,10 @@ ConVar r_flashlightdepthtexture( "r_flashlightdepthtexture", "1" );
 ConVar r_waterforceexpensive( "r_waterforceexpensive", "0", FCVAR_ARCHIVE );
 #endif
 ConVar r_waterforcereflectentities( "r_waterforcereflectentities", "0" );
+#ifdef BYTEMATCH_RETAIL
+ConVar mat_motion_blur_enabled( "mat_motion_blur_enabled", "1" );
+#endif
+#line 144
 
 // Note: this is only here so we can ship an update without changing materialsystem.dll.
 // Once we ship materialsystem.dll again, we can get rid of this and make the only one exist in materialsystem.dll.
@@ -231,6 +244,10 @@ static const char *s_pRegistryConVars[] =
 	"mat_forcehardwaresync",
 	"mat_parallaxmap",
 	"mat_reducefillrate",
+#ifdef BYTEMATCH_RETAIL
+	"r_lightmap_bicubic",
+#endif
+#line 239
 	"r_shadowrendertotexture",
 	"r_rootlod",
 #ifndef _X360
@@ -417,7 +434,13 @@ static void ReadMaterialSystemConfigFromRegistry( MaterialSystem_Config_t &confi
 
 	ReadVideoConfigInt( "ScreenWidth", &config.m_VideoMode.m_Width );
 	ReadVideoConfigInt( "ScreenHeight", &config.m_VideoMode.m_Height );
+#ifdef BYTEMATCH_RETAIL
+	config.SetFlag( MATSYS_VIDCFG_FLAGS_WINDOWED, ReadVideoConfigInt( "ScreenWindowed", 1 ) != 0 );
+	config.SetFlag( MATSYS_VIDCFG_FLAGS_NO_WINDOW_BORDER, ReadVideoConfigInt( "ScreenNoBorder", 1 ) != 0 );
+#else
 	config.SetFlag( MATSYS_VIDCFG_FLAGS_WINDOWED, ReadVideoConfigInt( "ScreenWindowed", 0 ) != 0 );
+#endif
+#line 427
 #if defined( USE_SDL ) && !defined( SWDS )
 	// Read the ScreenDisplayIndex and set sdl_displayindex if it's there.
 	ConVarRef conVar( "sdl_displayindex" );
@@ -548,6 +571,10 @@ static void WriteMaterialSystemConfigToRegistry( const MaterialSystem_Config_t &
 	WriteVideoConfigInt( "ScreenWidth", config.m_VideoMode.m_Width );
 	WriteVideoConfigInt( "ScreenHeight", config.m_VideoMode.m_Height );
 	WriteVideoConfigInt( "ScreenWindowed", config.Windowed() );
+#ifdef BYTEMATCH_RETAIL
+	WriteVideoConfigInt( "ScreenNoBorder", ( config.m_Flags & MATSYS_VIDCFG_FLAGS_NO_WINDOW_BORDER ) != 0 );
+#endif
+#line 558
 	WriteVideoConfigInt( "ScreenMSAA", config.m_nAASamples );
 	WriteVideoConfigInt( "ScreenMSAAQuality", config.m_nAAQuality );
 	WriteVideoConfigInt( "MotionBlur", config.m_bMotionBlur ? 1 : 0 );
@@ -607,6 +634,14 @@ static void OverrideMaterialSystemConfigFromCommandLine( MaterialSystem_Config_t
 	{
 		config.SetFlag( MATSYS_VIDCFG_FLAGS_WINDOWED, false );
 	}
+
+#ifdef BYTEMATCH_RETAIL
+	if ( CommandLine()->FindParm( "-noborder" ) )
+	{
+		config.SetFlag( MATSYS_VIDCFG_FLAGS_NO_WINDOW_BORDER, true );
+	}
+#endif
+#line 622
 
 	// Get width and height
 	if ( CommandLine()->FindParm( "-width" ) || CommandLine()->FindParm( "-w" ) )
@@ -869,6 +904,10 @@ void GetMaterialSystemConfigForBenchmarkUpload(KeyValues *dataToUpload)
 	dataToUpload->SetInt( "ShadowDepthTexture", g_pMaterialSystemConfig->ShadowDepthTexture() );
 	dataToUpload->SetInt( "MotionBlur", g_pMaterialSystemConfig->MotionBlur() );
 	dataToUpload->SetInt( "Windowed", (g_pMaterialSystemConfig->m_Flags & MATSYS_VIDCFG_FLAGS_WINDOWED) ? 1 : 0 );
+#ifdef BYTEMATCH_RETAIL
+	dataToUpload->SetInt( "NoBorder", (g_pMaterialSystemConfig->m_Flags & MATSYS_VIDCFG_FLAGS_NO_WINDOW_BORDER) ? 1 : 0 );
+#endif
+#line 885
 	dataToUpload->SetInt( "Trilinear", (g_pMaterialSystemConfig->m_Flags & MATSYS_VIDCFG_FLAGS_FORCE_TRILINEAR) ? 1 : 0 );
 	dataToUpload->SetInt( "ForceHWSync", (g_pMaterialSystemConfig->m_Flags & MATSYS_VIDCFG_FLAGS_FORCE_HWSYNC) ? 1 : 0 );
 	dataToUpload->SetInt( "NoWaitForVSync", (g_pMaterialSystemConfig->m_Flags & MATSYS_VIDCFG_FLAGS_NO_WAIT_FOR_VSYNC) ? 1 : 0 );
@@ -877,6 +916,10 @@ void GetMaterialSystemConfigForBenchmarkUpload(KeyValues *dataToUpload)
 	dataToUpload->SetInt( "EnableParallaxMapping", (g_pMaterialSystemConfig->m_Flags & MATSYS_VIDCFG_FLAGS_ENABLE_PARALLAX_MAPPING) ? 1 : 0 );
 	dataToUpload->SetInt( "ZPrefill", (g_pMaterialSystemConfig->m_Flags & MATSYS_VIDCFG_FLAGS_USE_Z_PREFILL) ? 1 : 0 );
 	dataToUpload->SetInt( "ReduceFillRate", (g_pMaterialSystemConfig->m_Flags & MATSYS_VIDCFG_FLAGS_REDUCE_FILLRATE) ? 1 : 0 );
+#ifdef BYTEMATCH_RETAIL
+	dataToUpload->SetInt( "LightmapBicubic", (g_pMaterialSystemConfig->m_Flags & MATSYS_VIDCFG_FLAGS_LIGHTMAP_BICUBIC) ? 1 : 0 );
+#endif
+#line 894
 	dataToUpload->SetInt( "RenderToTextureShadows", r_shadowrendertotexture.GetInt() ? 1 : 0 );
 	dataToUpload->SetInt( "FlashlightDepthTexture", r_flashlightdepthtexture.GetInt() ? 1 : 0 );
 #ifndef _X360
@@ -901,12 +944,20 @@ void PrintMaterialSystemConfig( const MaterialSystem_Config_t &config )
 	Warning( "dxSupportLevel: %d\n", config.dxSupportLevel );
 	Warning( "monitorGamma: %f\n", config.m_fMonitorGamma );
 	Warning( "MATSYS_VIDCFG_FLAGS_WINDOWED: %s\n", ( config.m_Flags & MATSYS_VIDCFG_FLAGS_WINDOWED ) ? "true" : "false" );
+#ifdef BYTEMATCH_RETAIL
+	Warning( "MATSYS_VIDCFG_FLAGS_NO_WINDOW_BORDER: %s\n", ( config.m_Flags & MATSYS_VIDCFG_FLAGS_NO_WINDOW_BORDER ) ? "true" : "false" );
+#endif
+#line 919
 	Warning( "MATSYS_VIDCFG_FLAGS_FORCE_TRILINEAR: %s\n", ( config.m_Flags & MATSYS_VIDCFG_FLAGS_FORCE_TRILINEAR ) ? "true" : "false" );
 	Warning( "MATSYS_VIDCFG_FLAGS_FORCE_HWSYNC: %s\n", ( config.m_Flags & MATSYS_VIDCFG_FLAGS_FORCE_HWSYNC ) ? "true" : "false" );
 	Warning( "MATSYS_VIDCFG_FLAGS_DISABLE_SPECULAR: %s\n", ( config.m_Flags & MATSYS_VIDCFG_FLAGS_DISABLE_SPECULAR ) ? "true" : "false" );
 	Warning( "MATSYS_VIDCFG_FLAGS_ENABLE_PARALLAX_MAPPING: %s\n", ( config.m_Flags & MATSYS_VIDCFG_FLAGS_ENABLE_PARALLAX_MAPPING ) ? "true" : "false" );
 	Warning( "MATSYS_VIDCFG_FLAGS_USE_Z_PREFILL: %s\n", ( config.m_Flags & MATSYS_VIDCFG_FLAGS_USE_Z_PREFILL ) ? "true" : "false" );
 	Warning( "MATSYS_VIDCFG_FLAGS_REDUCE_FILLRATE: %s\n", ( config.m_Flags & MATSYS_VIDCFG_FLAGS_REDUCE_FILLRATE ) ? "true" : "false" );
+#ifdef BYTEMATCH_RETAIL
+	Warning( "MATSYS_VIDCFG_FLAGS_LIGHTMAP_BICUBIC: %s\n", ( config.m_Flags & MATSYS_VIDCFG_FLAGS_LIGHTMAP_BICUBIC ) ? "true" : "false" );
+#endif
+#line 926
 	Warning( "r_shadowrendertotexture: %s\n", r_shadowrendertotexture.GetInt() ? "true" : "false" );
 	Warning( "motionblur: %s\n", config.m_bMotionBlur ? "true" : "false" );
 	Warning( "shadowdepthtexture: %s\n", config.m_bShadowDepthTexture ? "true" : "false" );
@@ -925,14 +976,31 @@ CON_COMMAND( mat_configcurrent, "show the current video control panel config for
 #if !defined(SWDS) && !defined( _X360 )
 CON_COMMAND( mat_setvideomode, "sets the width, height, windowed state of the material system" )
 {
+#ifdef BYTEMATCH_RETAIL
+	if ( args.ArgC() < 4 )
+		return;
+#else
 	if ( args.ArgC() != 4 )
 		return;
+#endif
+#line 946
 
 	int nWidth = Q_atoi( args[1] );
 	int nHeight = Q_atoi( args[2] );
 	bool bWindowed = Q_atoi( args[3] ) > 0 ? true : false;
 
+#ifdef BYTEMATCH_RETAIL
+	bool bNoWindowBorder = videomode->NoWindowBorder();
+	if ( args.ArgC() >= 5 )
+	{
+		bNoWindowBorder = Q_atoi( args[4] ) > 0 ? true : false;
+	}
+
+	videomode->SetMode( nWidth, nHeight, bWindowed, bNoWindowBorder );
+#else
 	videomode->SetMode( nWidth, nHeight, bWindowed );
+#endif
+#line 958
 }
 #endif
 
@@ -1058,6 +1126,20 @@ static ITexture *CreateCameraTexture( void )
 		CREATERENDERTARGETFLAGS_HDR );
 }
 
+#ifdef BYTEMATCH_RETAIL
+static ITexture *CreateCameraTextureHD( void )
+{
+	return materials->CreateNamedRenderTargetTextureEx2(
+		"_rt_CameraHD",
+		1024, 1024, RT_SIZE_DEFAULT,
+		materials->GetBackBufferFormat(),
+		MATERIAL_RT_DEPTH_SHARED, 
+		0,
+		CREATERENDERTARGETFLAGS_HDR );
+}
+#endif
+#line 1093
+
 static ITexture *CreateBuildCubemaps16BitTexture( void )
 {
 	return materials->CreateNamedRenderTargetTextureEx2(
@@ -1107,7 +1189,12 @@ static ITexture *CreateFullFrameFBTexture( int textureIndex, int iExtraFlags = 0
 	}
 	else
 	{
+#ifdef BYTEMATCH_RETAIL
+		Q_strcpy( textureName, "_rt_FullFrameFB" );
+#else
 		V_strcpy_safe( textureName, "_rt_FullFrameFB" );
+#endif
+#line 1144
 	}
 
 	int rtFlags = iExtraFlags | CREATERENDERTARGETFLAGS_HDR;
@@ -1248,6 +1335,10 @@ void InitWellKnownRenderTargets( void )
 		g_WaterReflectionTexture.Init( CreateWaterReflectionTexture() );
 		g_WaterRefractionTexture.Init( CreateWaterRefractionTexture() );
 		g_CameraTexture.Init( CreateCameraTexture() );
+#ifdef BYTEMATCH_RETAIL
+		g_CameraTextureHD.Init( CreateCameraTextureHD() );
+#endif
+#line 1285
 	}
 
 	// End block in which all render targets should be allocated (kicking off an Alt-Tab type behavior)
@@ -2311,7 +2402,13 @@ void SurfSetupSurfaceContext( SurfaceCtx_t& ctx, SurfaceHandle_t surfID )
 
 	if ( ctx.m_LightmapPageSize[0] != 0.0f )
 	{
+#ifdef BYTEMATCH_RETAIL
+		// bumped lightmaps sit next to each other with a one texel border on each side
+		ctx.m_BumpSTexCoordOffset = ( float )( ctx.m_LightmapSize[0] + 2 ) / ( float )ctx.m_LightmapPageSize[0];
+#else
 		ctx.m_BumpSTexCoordOffset = ( float )ctx.m_LightmapSize[0] / ( float )ctx.m_LightmapPageSize[0];
+#endif
+#line 2316
 	}
 	else
 	{
