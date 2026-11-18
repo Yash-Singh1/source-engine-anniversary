@@ -165,7 +165,9 @@ public:
 	// Overridden methods of vgui::Panel
 	virtual void ApplySettings( KeyValues *inResourceData );
 	virtual void PerformLayout();
+#ifndef BYTEMATCH_RETAIL
 	virtual void OnTick() OVERRIDE;
+#endif
 
 	// Animation.
 	int FindDefaultAnim( void );
@@ -184,13 +186,17 @@ public:
 	void SetBody( unsigned int nBody ) { m_RootMDL.m_MDL.m_nBody = nBody; }
 
 	void		RotateYaw( float flDelta );
+#ifndef BYTEMATCH_RETAIL
 	void		RotatePitch( float flDelta );
+#endif
 
 	Vector		GetPlayerPos() const;
 	QAngle		GetPlayerAngles() const;
 
+#ifndef BYTEMATCH_RETAIL
 	void PlaySequence( const char *pszSequenceName );
 
+#endif
 	void LookAtBounds( const Vector &vecBoundsMin, const Vector &vecBoundsMax );
 
 	// Set to true if external code has set a specific camera position that shouldn't be clobbered by layout
@@ -217,17 +223,22 @@ protected:
 	bool			m_bForcePos;
 	bool			m_bMousePressed;
 	bool			m_bAllowRotation;
+#ifndef BYTEMATCH_RETAIL
 	bool			m_bAllowPitch;
+#endif
 	bool			m_bAllowFullManipulation;
 	bool			m_bApplyManipulators;
 	bool			m_bForcedCameraPosition;
 
+#ifndef BYTEMATCH_RETAIL
 	int m_nActiveSequence;
 	float m_flActiveSequenceDuration;
 
+#endif
 	// VGUI script accessible variables.
 	CPanelAnimationVar( bool, m_bStartFramed, "start_framed", "0" );
 	CPanelAnimationVar( bool, m_bDisableManipulation, "disable_manipulation", "0" );
+#ifndef BYTEMATCH_RETAIL
 	CPanelAnimationVar( bool, m_bUseParticle, "use_particle", "0" );
 	CPanelAnimationVar( float, m_flMaxPitch, "max_pitch", "90" );
 
@@ -249,6 +260,7 @@ protected:
 
 	virtual void PrePaint3D( IMatRenderContext *pRenderContext ) OVERRIDE;
 	virtual void PostPaint3D( IMatRenderContext *pRenderContext ) OVERRIDE;
+#endif
 };
 
 #endif // BASEMODEL_PANEL_H

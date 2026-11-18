@@ -10,24 +10,34 @@
 #include "animation.h"
 #include "vgui/IInput.h"
 #include "matsys_controls/manipulator.h"
+#ifndef BYTEMATCH_RETAIL
 #include "bone_setup.h"
+#endif
 
 using namespace vgui;
+#ifndef BYTEMATCH_RETAIL
 extern float GetAutoPlayTime( void );
+#endif
 DECLARE_BUILD_FACTORY( CBaseModelPanel );
 
 //-----------------------------------------------------------------------------
 // Purpose:
 //-----------------------------------------------------------------------------
+#ifndef BYTEMATCH_RETAIL
 CBaseModelPanel::CBaseModelPanel( vgui::Panel *pParent, const char *pName )
 	: BaseClass( pParent, pName )
 	, m_nActiveSequence( ACT_INVALID )
 	, m_flActiveSequenceDuration( 0.f )
+#else
+CBaseModelPanel::CBaseModelPanel( vgui::Panel *pParent, const char *pName ): BaseClass( pParent, pName )
+#endif
 {
 	m_bForcePos = false;
 	m_bMousePressed = false;
 	m_bAllowRotation = false;
+#ifndef BYTEMATCH_RETAIL
 	m_bAllowPitch = false;
+#endif
 	m_bAllowFullManipulation = false;
 	m_bApplyManipulators = false;
 	m_bForcedCameraPosition = false;
@@ -49,7 +59,9 @@ void CBaseModelPanel::ApplySettings( KeyValues *inResourceData )
 
 	// Set whether we render to texture
 	m_bRenderToTexture = inResourceData->GetBool( "render_texture", true );
+#ifndef BYTEMATCH_RETAIL
 	m_bUseParticle = inResourceData->GetBool( "use_particle", false );
+#endif
 
 	// Grab and set the camera FOV.
 	float flFOV = GetCameraFOV();
@@ -58,7 +70,9 @@ void CBaseModelPanel::ApplySettings( KeyValues *inResourceData )
 
 	// Do we allow rotation on these panels.
 	m_bAllowRotation = inResourceData->GetBool( "allow_rot", false );
+#ifndef BYTEMATCH_RETAIL
 	m_bAllowPitch = inResourceData->GetBool( "allow_pitch", false );
+#endif
 
 	// Do we allow full manipulation on these panels.
 	m_bAllowFullManipulation = inResourceData->GetBool( "allow_manip", false );
@@ -72,7 +86,11 @@ void CBaseModelPanel::ApplySettings( KeyValues *inResourceData )
  		}
  	}
 
+#ifndef BYTEMATCH_RETAIL
 	SetMouseInputEnabled( m_bAllowFullManipulation || m_bAllowRotation || m_bAllowPitch );
+#else
+	SetMouseInputEnabled( m_bAllowFullManipulation || m_bAllowRotation );
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -105,8 +123,10 @@ void CBaseModelPanel::ParseModelResInfo( KeyValues *inResourceData )
 			ParseModelAttachInfo( pData );
 		}
 	}
+#ifndef BYTEMATCH_RETAIL
 
 	SetupModelDefaults();
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -124,7 +144,11 @@ void CBaseModelPanel::ParseModelAnimInfo( KeyValues *inResourceData )
 	m_BMPResData.m_aAnimations[iAnim].m_pszName = ReadAndAllocStringValue( inResourceData, "name" );
 	m_BMPResData.m_aAnimations[iAnim].m_pszSequence = ReadAndAllocStringValue( inResourceData, "sequence" );
 	m_BMPResData.m_aAnimations[iAnim].m_pszActivity = ReadAndAllocStringValue( inResourceData, "activity" );
+#ifndef BYTEMATCH_RETAIL
 	m_BMPResData.m_aAnimations[iAnim].m_bDefault = inResourceData->GetBool( "default" );
+#else
+	m_BMPResData.m_aAnimations[iAnim].m_bDefault = ( inResourceData->GetInt( "default", 0 ) == 1 );
+#endif
 
 	for ( KeyValues *pAnimData = inResourceData->GetFirstSubKey(); pAnimData != NULL; pAnimData = pAnimData->GetNextKey() )
 	{
@@ -267,7 +291,11 @@ void CBaseModelPanel::SetModelAnim( int iAnim )
 
 	if ( iSequence != ACT_INVALID )
 	{
+#ifndef BYTEMATCH_RETAIL
 		SetSequence( iSequence, true );
+#else
+		SetSequence( iSequence );
+#endif
 	}
 }
 
@@ -392,6 +420,7 @@ void CBaseModelPanel::PerformLayout()
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
+#ifndef BYTEMATCH_RETAIL
 void CBaseModelPanel::OnTick()
 {
 	// Cycle stuff gets handled in mdlpanel::OnTick, so we want to fix up
@@ -416,6 +445,7 @@ void CBaseModelPanel::OnTick()
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
+#endif
 void CBaseModelPanel::OnKeyCodePressed ( vgui::KeyCode code )
 {
 	if ( m_bAllowFullManipulation )
@@ -446,16 +476,22 @@ void CBaseModelPanel::OnMousePressed ( vgui::MouseCode code )
 		return;
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	if ( !m_bAllowRotation && !m_bAllowPitch )
+#else
+	if ( !m_bAllowRotation )
+#endif
 		return;
 
 	RequestFocus();
 
 	EnableMouseCapture( true, code );
 
+#ifndef BYTEMATCH_RETAIL
 	// Save where they clicked
 	input()->GetCursorPosition( m_nClickStartX, m_nClickStartY );
 
+#endif
 	// Warp the mouse to the center of the screen
 	int width, height;
 	GetSize( width, height );
@@ -483,14 +519,20 @@ void CBaseModelPanel::OnMouseReleased( vgui::MouseCode code )
 		return;
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	if ( !m_bAllowRotation && !m_bAllowPitch )
+#else
+	if ( !m_bAllowRotation )
+#endif
 		return;
 
 	EnableMouseCapture( false );
 	m_bMousePressed = false;
+#ifndef BYTEMATCH_RETAIL
 
 	// Restore the cursor to where the clicked
 	input()->SetCursorPos( m_nClickStartX, m_nClickStartY );
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -507,7 +549,11 @@ void CBaseModelPanel::OnCursorMoved( int x, int y )
 		return;
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	if ( !m_bAllowRotation && !m_bAllowPitch )
+#else
+	if ( !m_bAllowRotation )
+#endif
 		return;
 
 	if ( m_bMousePressed )
@@ -516,6 +562,7 @@ void CBaseModelPanel::OnCursorMoved( int x, int y )
 		int xpos, ypos;
 		input()->GetCursorPos( xpos, ypos );
 
+#ifndef BYTEMATCH_RETAIL
 		if ( m_bAllowRotation )
 		{
 			// Only want the x delta.
@@ -535,6 +582,13 @@ void CBaseModelPanel::OnCursorMoved( int x, int y )
 			// Apply the delta and rotate the player.
 			RotatePitch( flDelta );
 		}
+#else
+		// Only want the x delta.
+		float flDelta = xpos - m_nManipStartX;
+
+		// Apply the delta and rotate the player.
+		RotateYaw( flDelta );
+#endif
 	}
 }
 
@@ -557,6 +611,7 @@ void CBaseModelPanel::RotateYaw( float flDelta )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
+#ifndef BYTEMATCH_RETAIL
 void CBaseModelPanel::RotatePitch( float flDelta )
 {
 	m_angPlayer.x += flDelta;
@@ -574,6 +629,7 @@ void CBaseModelPanel::RotatePitch( float flDelta )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
+#endif
 Vector CBaseModelPanel::GetPlayerPos() const
 {
 	return m_vecPlayerPos;
@@ -588,6 +644,7 @@ QAngle CBaseModelPanel::GetPlayerAngles() const
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
+#ifndef BYTEMATCH_RETAIL
 void CBaseModelPanel::PlaySequence( const char *pszSequenceName )
 {
 	CStudioHdr studioHDR( GetStudioHdr(), g_pMDLCache );
@@ -602,6 +659,7 @@ void CBaseModelPanel::PlaySequence( const char *pszSequenceName )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
+#endif
 void CBaseModelPanel::OnMouseWheeled( int delta )
 {
 	if ( m_bAllowFullManipulation )
@@ -728,13 +786,19 @@ void CBaseModelPanel::LookAtBounds( const Vector &vecBoundsMin, const Vector &ve
 
 	// Clear the camera pivot and set position matrix.
 	ResetCameraPivot();
+#ifndef BYTEMATCH_RETAIL
 	if (m_bAllowRotation || m_bAllowPitch )
+#else
+	if (m_bAllowRotation )
+#endif
 	{
 		vecCameraOffset.x = 0.0f;
 	}
 	SetCameraOffset( Vector( 0.0f, -vecCameraOffset.x, -vecCameraOffset.y ) );
 	UpdateCameraTransform();
 }
+
+#ifndef BYTEMATCH_RETAIL
 
 
 //-----------------------------------------------------------------------------
@@ -886,4 +950,5 @@ void CBaseModelPanel::PostPaint3D( IMatRenderContext *pRenderContext )
 	pRenderContext->MatrixMode( MATERIAL_MODEL );
 	pRenderContext->PopMatrix();
 }
+#endif
 
