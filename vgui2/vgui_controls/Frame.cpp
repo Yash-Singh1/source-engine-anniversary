@@ -29,6 +29,7 @@
 #include "vgui_controls/TextImage.h"
 
 #include "KeyValues.h"
+#include "tier1/convar.h"
 
 #include <stdio.h>
 
@@ -2245,6 +2246,30 @@ void Frame::LoadControlSettings( const char *dialogResourceName, const char *pat
 	if (defaultFocus)
 	{
 		defaultFocus->RequestFocus();
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Records the kind of controller that produced the last input
+//-----------------------------------------------------------------------------
+void Frame::OnKeyCodePressed(KeyCode code)
+{
+	code = GetBaseButtonCode( code );
+
+	ConVarRef sc_controller_mode( "sc_controller_mode" );
+	ConVarRef sc_last_used_input( "sc_last_used_input" );
+	if ( sc_controller_mode.IsValid() && sc_last_used_input.IsValid() )
+	{
+		if ( IsMouseCode( code ) || IsKeyCode( code ) )
+		{
+			sc_controller_mode.SetValue( 0 );
+			sc_last_used_input.SetValue( 0 );
+		}
+		else if ( IsJoystickCode( code ) && IsSteamControllerCode( code ) )
+		{
+			sc_controller_mode.SetValue( 0 );
+			sc_last_used_input.SetValue( 2 );
+		}
 	}
 }
 
