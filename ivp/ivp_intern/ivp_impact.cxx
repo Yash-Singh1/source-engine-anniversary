@@ -1162,7 +1162,11 @@ void IVP_Contact_Point::get_material_info(IVP_Material *mtl[2]) {
 	    mtl[k] = get_synapse(k)->get_object()->l_default_material;
 	}else{
 	    IVP_Environment *env = get_synapse(0)->get_object()->get_environment();
+#ifdef BYTEMATCH_RETAIL
+	  mtl[k] = env->get_material_manager()->get_material_by_index(get_synapse(k)->get_object(), 0,mat_index);  // @@@@@
+#else
 	  mtl[k] = env->get_material_manager()->get_material_by_index(0,mat_index);  // @@@@@
+#endif
 	}
 	IVP_ASSERT(mtl[k]);
     }

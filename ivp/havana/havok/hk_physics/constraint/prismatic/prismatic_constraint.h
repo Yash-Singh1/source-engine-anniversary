@@ -41,6 +41,7 @@ class hk_Prismatic_Constraint : public hk_Constraint
 	protected:
 
 		void init_prismatic_constraint(const hk_Prismatic_BP*, hk_Local_Constraint_System *sys);
+		void reset_linear_limit();
 		
 		hk_real m_strength;
 		hk_real m_tau;

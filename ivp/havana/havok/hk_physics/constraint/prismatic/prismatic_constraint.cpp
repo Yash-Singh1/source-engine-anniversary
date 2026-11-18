@@ -56,7 +56,11 @@ void hk_Prismatic_Constraint::init_prismatic_constraint(const hk_Prismatic_BP* b
 
 	m_perp_axis_Ros = hk_Vector3_Util::perp_vec(	m_axis_Ros );
 
+#ifdef BYTEMATCH_RETAIL
+	const hk_real factor = 1.0f;
+#else
 	const hk_real factor = (sys) ? sys->get_epsilon() : 1.0f;
+#endif
 	m_limits[0].init_limit( bp->m_limit , factor );
 
 	hk_real mass_0 = get_rigid_body(0)->get_mass();
@@ -70,6 +74,11 @@ void hk_Prismatic_Constraint::init_prismatic_constraint(const hk_Prismatic_BP* b
 		m_pos_interpolation_value =  mass_1 / ( mass_0 + mass_1 );
 	}
 
+	reset_linear_limit();
+}
+
+void hk_Prismatic_Constraint::reset_linear_limit()
+{
 
 	const hk_Transform &t_ws_f_Ros = get_rigid_body(0)->get_cached_transform();
 	const hk_Transform &t_ws_f_Aos = get_rigid_body(1)->get_cached_transform();

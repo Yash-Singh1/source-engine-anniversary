@@ -42,17 +42,29 @@ class IVP_Material
 {
     // base class that may be implemented in different ways (e.g. IVP_Material_Simple);
 public:
+#ifdef BYTEMATCH_RETAIL
+    P_MATERIAL_TYPE material_type; // indicates way of implementation
+#else
     P_MATERIAL_TYPE material_type = P_MATERIAL_TYPE_UNINITIALIZED; // indicates way of implementation
+#endif
     IVP_BOOL        second_friction_x_enabled; // when we want two different friction values (e.g. for Skis) 
   
+#ifdef BYTEMATCH_RETAIL
+    virtual ~IVP_Material();
+#endif
     virtual IVP_DOUBLE get_friction_factor()=0;
     virtual IVP_DOUBLE get_second_friction_factor()=0; // second friction factor when two friction values is enabled
     virtual IVP_DOUBLE get_elasticity()=0;
+#ifdef BYTEMATCH_RETAIL
+    virtual IVP_DOUBLE get_damping()=0;
+#endif
     // INTERN_START
     virtual IVP_DOUBLE get_adhesion()=0;  // for future releases
     // INTERN_END
     virtual const char *get_name() = 0;		// helps debugging
+#ifndef BYTEMATCH_RETAIL
     virtual ~IVP_Material();
+#endif
     IVP_Material() { second_friction_x_enabled = IVP_FALSE; }
 };
 
@@ -68,6 +80,9 @@ public:
     IVP_DOUBLE friction_value;
     IVP_DOUBLE second_friction_x;
     IVP_DOUBLE elasticity;
+#ifdef BYTEMATCH_RETAIL
+    IVP_DOUBLE damping;
+#endif
     // INTERN_START
     IVP_DOUBLE adhesion;
     virtual IVP_DOUBLE get_adhesion();
@@ -76,6 +91,9 @@ public:
     virtual IVP_DOUBLE get_friction_factor();
     virtual IVP_DOUBLE get_second_friction_factor() { return second_friction_x; };
     virtual IVP_DOUBLE get_elasticity();
+#ifdef BYTEMATCH_RETAIL
+    virtual IVP_DOUBLE get_damping();
+#endif
     virtual const char *get_name();		// helps debugging
     IVP_Material_Simple(IVP_DOUBLE friction, IVP_DOUBLE elasticity);
     virtual ~IVP_Material_Simple();
@@ -100,14 +118,24 @@ class IVP_Material_Manager
 {
     IVP_BOOL delete_on_env_delete; // see deconstructor
 public:
+#ifdef BYTEMATCH_RETAIL
+    virtual ~IVP_Material_Manager(){;};
+    virtual IVP_Material *get_material_by_index(IVP_Real_Object *object, const IVP_U_Point *world_position, int index); // returns the material, if material index in compact_triangle != 0
+#else
   virtual IVP_Material *get_material_by_index(const IVP_U_Point *world_position, int index); // returns the material, if material index in compact_triangle != 0
+#endif
     virtual IVP_DOUBLE get_friction_factor(IVP_Contact_Situation *situation);	// returns values >0, value of 1.0f means object stands on a 45 degres hill
     virtual IVP_DOUBLE get_elasticity(IVP_Contact_Situation *situation);		// range [0, 1.0f[, the relative speed after a collision compared to the speed before
+#ifdef BYTEMATCH_RETAIL
+    virtual IVP_DOUBLE get_damping(IVP_Contact_Situation *situation);
+#endif
     // INTERN_START
     virtual IVP_DOUBLE get_adhesion(IVP_Contact_Situation *situation);		//
     // INTERN_END
     IVP_Material_Manager(IVP_BOOL delete_on_env_delete);
+#ifndef BYTEMATCH_RETAIL
     virtual ~IVP_Material_Manager(){;};
+#endif
     
     virtual void environment_will_be_deleted(IVP_Environment *){
 	if (delete_on_env_delete){

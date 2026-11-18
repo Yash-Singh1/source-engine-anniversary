@@ -82,7 +82,11 @@ void hk_Ragdoll_Constraint::init_ragdoll_constraint(const hk_Ragdoll_Constraint_
 	m_axisMap[1] = bp->m_axisMap[1];
 	m_axisMap[2] = bp->m_axisMap[2];
 
+#ifdef BYTEMATCH_RETAIL
+	const hk_real factor = 1.0f;
+#else
 	const hk_real factor = (sys) ? sys->get_epsilon() : 1.0f;
+#endif
 	for(int i=0; i<3; i++)
 	{
 		m_limits[i].init_angular_limit(bp->m_limits[i], factor);

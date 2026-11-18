@@ -276,7 +276,11 @@ extern void ivp_memory_check(void *a);
 
 #define P_FLOAT_EPS 1e-10f	// used for division checking
 #define P_FLOAT_RES 1e-6f	// float resolution for numbers < 1.0
+#ifdef BYTEMATCH_RETAIL
+#define P_FLOAT_MAX 1e20f
+#else
 #define P_FLOAT_MAX 1e16f
+#endif
 
 #ifdef IVP_NO_DOUBLE
 #	define IVP_PI        3.14159265358979323846f	/* pi */
@@ -289,10 +293,18 @@ extern void ivp_memory_check(void *a);
 #else
 #	define IVP_PI        3.14159265358979323846	/* pi */
 #	define IVP_PI_2      1.57079632679489661923	/* pi/2 */
+#ifdef BYTEMATCH_RETAIL
+#	define P_DOUBLE_MAX 10e100
+#else
 #	define P_DOUBLE_MAX 1e20
+#endif
 #	define P_DOUBLE_RES 1E-12	// double resolution for numbers < 1.0
 #	define IVP_3D_SOLVER_NULLSTELLE_EPS 1e-8
+#ifdef BYTEMATCH_RETAIL
+#	define P_DOUBLE_EPS 10e-20	// used for division checking
+#else
 #	define P_DOUBLE_EPS 1e-10	// used for division checking
+#endif
 #	define P_MAX_WORLD_DOUBLE 10000 // max world koords
 #endif
 

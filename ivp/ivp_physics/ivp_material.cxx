@@ -22,6 +22,14 @@ IVP_DOUBLE IVP_Material_Manager::get_elasticity(IVP_Contact_Situation *sit)
 	   sit->materials[1]->get_elasticity();
 }
 
+#ifdef BYTEMATCH_RETAIL
+IVP_DOUBLE IVP_Material_Manager::get_damping(IVP_Contact_Situation *sit)
+{
+    return sit->materials[0]->get_damping() +
+	   sit->materials[1]->get_damping();
+}
+
+#endif
 IVP_DOUBLE IVP_Material_Manager::get_adhesion(IVP_Contact_Situation *sit)
 {
     return sit->materials[0]->get_adhesion() +
@@ -36,7 +44,11 @@ IVP_Material::~IVP_Material(){
 
 }
 
-IVP_Material *IVP_Material_Manager::get_material_by_index(const IVP_U_Point * /*world_position*/, int /*index*/){ // returns the material, if material index in compact_triangle != 0
+#ifdef BYTEMATCH_RETAIL
+IVP_Material *IVP_Material_Manager::get_material_by_index(IVP_Real_Object * /*object*/, const IVP_U_Point * /*world_position*/, int /*index*/){
+#else
+IVP_Material *IVP_Material_Manager::get_material_by_index(const IVP_U_Point * /*world_position*/, int /*index*/){
+#endif // returns the material, if material index in compact_triangle != 0
   static IVP_Material_Simple *simple = new IVP_Material_Simple(0.5f,0.5f);
   return simple;
 }
@@ -51,6 +63,13 @@ IVP_DOUBLE IVP_Material_Simple::get_elasticity()
     return elasticity;
 }
 
+#ifdef BYTEMATCH_RETAIL
+IVP_DOUBLE IVP_Material_Simple::get_damping()
+{
+    return damping;
+}
+#endif
+
 // INTERN_START
 IVP_DOUBLE IVP_Material_Simple::get_adhesion()
 {
@@ -62,6 +81,9 @@ IVP_Material_Simple::IVP_Material_Simple(IVP_DOUBLE friction, IVP_DOUBLE elas){
     friction_value = friction;
     elasticity = elas;
     adhesion = 0.0f;
+#ifdef BYTEMATCH_RETAIL
+    damping = 0.0f;
+#endif
 }
 
 IVP_Material_Simple::~IVP_Material_Simple(){
@@ -72,6 +94,9 @@ IVP_Material_Simple::IVP_Material_Simple(){
     friction_value = 0.0f;
     elasticity = 0.5f;
     adhesion = 0.0f;
+#ifdef BYTEMATCH_RETAIL
+    damping = 0.0f;
+#endif
 
 }
 const char *IVP_Material_Simple::get_name(){
