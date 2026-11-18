@@ -18,6 +18,18 @@ CHistoryGames::CHistoryGames(vgui::Panel *parent) :
 	m_pGameList->AddColumnHeader(10, "LastPlayed", "#ServerBrowser_LastPlayed", 100);
 	m_pGameList->SetSortFunc(10, LastPlayedCompare);
 	m_pGameList->SetSortColumn(10);
+#ifdef BYTEMATCH_RETAIL
+
+	if ( !IsSteamGameServerBrowsingEnabled() )
+	{
+		m_pGameList->SetEmptyListText("#ServerBrowser_OfflineMode");
+		m_pConnect->SetEnabled( false );
+		m_pRefreshAll->SetEnabled( false );
+		m_pRefreshQuick->SetEnabled( false );
+		m_pAddServer->SetEnabled( false );
+		m_pFilter->SetEnabled( false );
+	}
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -32,6 +44,14 @@ CHistoryGames::~CHistoryGames()
 //-----------------------------------------------------------------------------
 void CHistoryGames::LoadHistoryList()
 {
+#ifdef BYTEMATCH_RETAIL
+	if ( IsSteamGameServerBrowsingEnabled() )
+	{
+		// set empty message
+		m_pGameList->SetEmptyListText("#ServerBrowser_NoServersPlayed");
+	}
+
+#endif
 	if ( m_bRefreshOnListReload )
 	{
 		m_bRefreshOnListReload = false;
@@ -61,13 +81,21 @@ bool CHistoryGames::SupportsItem(InterfaceItem_e item)
 //-----------------------------------------------------------------------------
 // Purpose: called when the current refresh list is complete
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+void CHistoryGames::RefreshComplete( HServerListRequest hReq, EMatchMakingServerResponse response )
+#else
 void CHistoryGames::RefreshComplete( NServerResponse response )
+#endif
 {
 	SetRefreshing(false);
 	m_pGameList->SetEmptyListText("#ServerBrowser_NoServersPlayed");
 	m_pGameList->SortList();
 
+#ifdef BYTEMATCH_RETAIL
+	BaseClass::RefreshComplete( hReq, response );
+#else
 	BaseClass::RefreshComplete( response );
+#endif
 }
 
 //-----------------------------------------------------------------------------

@@ -177,13 +177,27 @@ void CDialogAddServer::OnOK()
 
 	if ( AllowInvalidIPs() || netaddr.IsValid() )
 	{
+#ifdef BYTEMATCH_RETAIL
+		gameserveritem_t server;
+#else
 		newgameserver_t server;
+#endif
 		memset(&server, 0, sizeof(server));
+#ifdef BYTEMATCH_RETAIL
+		server.SetName( address );
+#else
 		strncpy( server.m_szServerName, address, sizeof(server.m_szServerName) );
+#endif
 
 		// We assume here that the query and connection ports are the same. This is why it's much
 		// better if they click "Servers" and choose a server in there.
+#ifdef BYTEMATCH_RETAIL
+		server.m_NetAdr.Init( netaddr.GetIPHostByteOrder(), netaddr.GetPort(), netaddr.GetPort() );
+
+		server.m_nAppID = 0;
+#else
 		server.m_NetAdr = netaddr;
+#endif
 		FinishAddServer( server );
 	}
 	else
@@ -255,21 +269,31 @@ void CDialogAddServer::TestServers()
 	m_pTabPanel->AddPage( m_pDiscoveredGames, str );
 	m_pTabPanel->InvalidateLayout();
 	
-/*	FOR_EACH_VEC( vecAdress, iAddress )
+#ifdef BYTEMATCH_RETAIL
+	FOR_EACH_VEC( vecAdress, iAddress )
 	{
 		m_Queries.AddToTail( steamapicontext->SteamMatchmakingServers()->PingServer( vecAdress[ iAddress ].GetIPHostByteOrder(), vecAdress[ iAddress ].GetPort(), this ) );
-	}*/
+	}
+#endif
 }
 
 
 //-----------------------------------------------------------------------------
 // Purpose: A server answered our ping
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+void CDialogAddServer::ServerResponded( gameserveritem_t &server )
+#else
 void CDialogAddServer::ServerResponded( newgameserver_t &server )
+#endif
 {
 	KeyValues *kv = new KeyValues( "Server" );
 
+#ifdef BYTEMATCH_RETAIL
+	kv->SetString( "name", server.GetName() );
+#else
 	kv->SetString( "name", server.m_szServerName );
+#endif
 	kv->SetString( "map", server.m_szMap );
 	kv->SetString( "GameDir", server.m_szGameDir );
 	kv->SetString( "GameDesc", server.m_szGameDescription );
@@ -277,9 +301,29 @@ void CDialogAddServer::ServerResponded( newgameserver_t &server )
 	kv->SetInt( "password", server.m_bPassword ? 1 : 0);
 	kv->SetInt( "bots", server.m_nBotPlayers ? 2 : 0);
 	kv->SetInt( "Replay", IsReplayServer( server ) ? 5 : 0 );
-	kv->SetInt("secure", 0);
+#ifdef BYTEMATCH_RETAIL
 
+	if ( server.m_bSecure )
+	{
+		// show the denied icon if banned from secure servers, the secure icon otherwise
+		kv->SetInt("secure", ServerBrowser().IsVACBannedFromGame( server.m_nAppID ) ?  4 : 3);
+	}
+	else
+	{
+#endif
+	kv->SetInt("secure", 0);
+#ifdef BYTEMATCH_RETAIL
+	}
+#endif
+
+#ifdef BYTEMATCH_RETAIL
+	netadr_t reportedIPAddr;
+	reportedIPAddr.SetIP( server.m_NetAdr.GetIP() );
+	reportedIPAddr.SetPort( server.m_NetAdr.GetConnectionPort() );
+	kv->SetString("IPAddr", reportedIPAddr.ToString() );
+#else
 	kv->SetString("IPAddr", server.m_NetAdr.ToString() );
+#endif
 
 	char buf[32];
 	Q_snprintf(buf, sizeof(buf), "%d / %d", server.m_nPlayers, server.m_nMaxPlayers);
@@ -352,7 +396,33 @@ void CDialogAddServer::OnItemSelected()
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+void CDialogAddServer::FinishAddServer( gameserveritem_t &pServer )
+#else
 void CDialogAddServer::FinishAddServer( newgameserver_t &pServer )
+#endif
 {
 	ServerBrowserDialog().AddServerToFavorites( pServer );
 }
+#ifdef BYTEMATCH_RETAIL
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CDialogAddBlacklistedServer::FinishAddServer( gameserveritem_t &pServer )
+{
+	ServerBrowserDialog().AddServerToBlacklist( pServer );
+	ServerBrowserDialog().BlacklistsChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CDialogAddBlacklistedServer::ApplySchemeSettings( vgui::IScheme *pScheme )
+{
+	BaseClass::ApplySchemeSettings( pScheme );
+
+	m_pAddServerButton->SetText( "#ServerBrowser_AddAddressToBlacklist" );
+	m_pAddSelectedServerButton->SetText( "#ServerBrowser_AddSelectedToBlacklist" );
+}
+#endif

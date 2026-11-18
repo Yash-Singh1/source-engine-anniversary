@@ -449,11 +449,13 @@ public:
 				pFOV->SetVisible( false );
 			}
 
+#ifndef BYTEMATCH_RETAIL
 			pFOV = FindChildByName( "FovValueLabel" );
 			if ( pFOV )
 			{
 				pFOV->SetVisible( false );
 			}
+#endif
 		}
 		
 		MarkDefaultSettingsAsRecommended();
@@ -508,7 +510,11 @@ public:
 		if ( panel == m_pDXLevel && RequiresRestart() )
 		{
 			// notify the user that this will require a disconnect
+#ifdef BYTEMATCH_RETAIL
+			QueryBox *box = new QueryBox("#GameUI_SettingRequiresDisconnect_Title", "#GameUI_SettingRequiresDisconnect_Info");
+#else
 			QueryBox *box = new QueryBox("#GameUI_SettingRequiresDisconnect_Title", "#GameUI_SettingRequiresDisconnect_Info", this);
+#endif
 			box->AddActionSignalTarget( this );
 			box->SetCancelCommand(new KeyValues("ResetDXLevelCombo"));
 			box->DoModal();
@@ -1036,8 +1042,12 @@ COptionsSubVideo::COptionsSubVideo(vgui::Panel *parent) : PropertyPage(parent, N
 	m_pBenchmark = new Button( this, "BenchmarkButton", "#GameUI_LaunchBenchmark" );
 	m_pBenchmark->SetCommand(new KeyValues("LaunchBenchmark"));
 	m_pThirdPartyCredits = new URLButton(this, "ThirdPartyVideoCredits", "#GameUI_ThirdPartyTechCredits");
+#ifdef BYTEMATCH_RETAIL
+	m_pThirdPartyCredits->SetCommand(new KeyValues("OpenThirdPartyVideoCreditsDialog"));
+#else
 //	m_pThirdPartyCredits->SetCommand(new KeyValues("OpenThirdPartyVideoCreditsDialog"));
 	m_pThirdPartyCredits->SetVisible(false);
+#endif
 	m_pHDContent = new CheckButton( this, "HDContentButton", "#GameUI_HDContent" );
 
 	char pszAspectName[3][64];
@@ -1763,6 +1773,10 @@ public:
 	COptionsSubVideoThirdPartyCreditsDlg(vgui::VPANEL hParent) : BaseClass(NULL, NULL)
 	{
 		// parent is ignored, since we want look like we're steal focus from the parent (we'll become modal below)
+#ifdef BYTEMATCH_RETAIL
+		SetTitle("#GameUI_ThirdPartyVideo_Title", true);
+		SetSize(500, 200);
+#else
 		int w = 500;
 		int h = 200;
 		if (ipanel()->IsProportional(hParent))
@@ -1774,6 +1788,7 @@ public:
 
 		SetTitle("#GameUI_ThirdPartyVideo_Title", true);
 		SetSize(w, h);
+#endif
 		LoadControlSettings("resource/OptionsSubVideoThirdPartyDlg.res");
 		MoveToCenterOfScreen();
 		SetSizeable(false);

@@ -293,13 +293,13 @@ void CDialogGameInfo::PerformLayout()
 	}
 	SetControlString("PlayersText", buf);
 
+#ifdef BYTEMATCH_RETAIL
+	if ( m_Server.m_NetAdr.GetIP() && m_Server.m_NetAdr.GetQueryPort() )
+	{
+#endif
 	SetControlString("ServerIPText", m_Server.m_NetAdr.GetConnectionAddressString() );
 	m_pConnectButton->SetEnabled(true);
-
-/*	if ( m_Server.m_NetAdr.GetIP() && m_Server.m_NetAdr.GetQueryPort() )
-	{
-		SetControlString("ServerIPText", m_Server.m_NetAdr.GetConnectionAddressString() );
-		m_pConnectButton->SetEnabled(true);
+#ifdef BYTEMATCH_RETAIL
 		if ( m_pAutoRetry->IsSelected() )
 		{
 			m_pAutoRetryAlert->SetVisible(true);
@@ -315,7 +315,8 @@ void CDialogGameInfo::PerformLayout()
 	{
 		SetControlString("ServerIPText", "");
 		m_pConnectButton->SetEnabled(false);
-	}*/
+	}
+#endif
 
 	if ( m_Server.m_bHadSuccessfulResponse )
 	{
@@ -408,11 +409,15 @@ void CDialogGameInfo::OnConnect()
 
 	// need to refresh server before attempting to connect, to make sure there is enough room on the server
 	m_iRequestRetry = 0;
+#ifdef BYTEMATCH_RETAIL
+	RequestInfo();
+#else
 
 	ConnectToServer();
 
 	//TODO(nillerusr): restore this later
 	//RequestInfo();
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -640,6 +645,19 @@ void CDialogGameInfo::ConnectToServer()
 {
 	m_bConnecting = false;
 
+#ifdef BYTEMATCH_RETAIL
+	// check VAC status
+	if ( m_Server.m_bSecure && ServerBrowser().IsVACBannedFromGame( m_Server.m_nAppID ) )
+	{
+		// refuse the user
+		CVACBannedConnRefusedDialog *pDlg = new CVACBannedConnRefusedDialog( GetVParent(), "VACBannedConnRefusedDialog" );
+		pDlg->Activate();
+		Close();
+		return;
+	}
+
+
+#endif
 	// check to see if we need a password
 	if ( m_Server.m_bPassword && !m_szPassword[0] )
 	{
@@ -650,9 +668,8 @@ void CDialogGameInfo::ConnectToServer()
 	}
 
 	// check the player count
-
-	// nillerusr
-	/*if ( m_Server.m_nPlayers >= m_Server.m_nMaxPlayers )
+#ifdef BYTEMATCH_RETAIL
+	if ( m_Server.m_nPlayers >= m_Server.m_nMaxPlayers )
 	{
 		// mark why we cannot connect
 		m_bServerFull = true;
@@ -660,7 +677,12 @@ void CDialogGameInfo::ConnectToServer()
 		m_bShowAutoRetryToggle = true;
 		InvalidateLayout();
 		return;
-	}*/
+	}
+#else
+
+	// nillerusr
+	
+#endif
 
 	// tell the engine to connect
 	const char *gameDir = m_Server.m_szGameDir;

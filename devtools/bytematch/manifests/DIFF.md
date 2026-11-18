@@ -88,8 +88,7 @@ Retail loose objects: 1 (exact 1 in our tree).
 
 ## bin/ServerBrowser (ours: `serverbrowser`)
 
-Retail loose objects: 21 (exact 17, moved 4 in our tree).
-- **add (same name elsewhere in tree)** 4: `serverbrowser/BlacklistedServers.cpp` → `serverbrowser/unused/BlacklistedServers.cpp`, `serverbrowser/CustomGames.cpp` → `serverbrowser/unused/CustomGames.cpp`, `serverbrowser/FriendsGames.cpp` → `serverbrowser/unused/FriendsGames.cpp`, `serverbrowser/SpectateGames.cpp` → `serverbrowser/unused/SpectateGames.cpp`
+Retail loose objects: 21 (exact 21; the four pages the fork moved to `serverbrowser/unused/` are back in place, built in retail mode only).
 - **remove** 1: `public/tier0/memoverride.cpp` (no retail Mac module links a memoverride object: Valve's Mac build has no malloc override (malloc from libSystem, operator new from libstdc++))
 - **order**: 17 common files; 3 must move to match retail (longest in-order run 14)
 - **static libs** retail link order: `tier3`, `vgui_controls`, `tier2`, `tier1`; ours: `vgui_controls`, `mathlib`, `tier1`, `tier2`, `tier3`; ours-only: `mathlib`

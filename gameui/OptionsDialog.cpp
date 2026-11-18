@@ -47,6 +47,9 @@ COptionsDialog::COptionsDialog(vgui::Panel *parent) : PropertyDialog(parent, "Op
 {
 	SetDeleteSelfOnClose(true);
 
+#ifdef BYTEMATCH_RETAIL
+	SetBounds(0, 0, 512, 406);
+#else
 	int w = 512;
 	int h = 406;
 	if (IsProportional())
@@ -56,6 +59,7 @@ COptionsDialog::COptionsDialog(vgui::Panel *parent) : PropertyDialog(parent, "Op
 	}
 
 	SetBounds(0, 0, w, h);
+#endif
 
 	SetSizeable( false );
 
