@@ -35,13 +35,23 @@ public:
 	virtual void			DrawStartupGraphic() = 0;
 
 	// Creates the game window, plays the startup movie, starts up the material system
+#ifdef BYTEMATCH_RETAIL
+	virtual bool			CreateGameWindow( int nWidth, int nHeight, bool bWindowed, bool bNoWindowBorder ) = 0;
+#else
 	virtual bool			CreateGameWindow( int nWidth, int nHeight, bool bWindowed ) = 0;
+#endif
+#line 39
 
 	// Sets the game window in editor mode
 	virtual void			SetGameWindow( void *hWnd ) = 0;
 
 	// Sets the video mode, and re-sizes the window
+#ifdef BYTEMATCH_RETAIL
+	virtual bool			SetMode( int nWidth, int nHeight, bool bWindowed, bool bNoWindowBorder ) = 0;
+#else
 	virtual bool			SetMode( int nWidth, int nHeight, bool bWindowed ) = 0;
+#endif
+#line 45
 
 	// Returns the fullscreen modes for the adapter the game was started on
 	virtual int				GetModeCount( void ) = 0;
@@ -65,7 +75,7 @@ public:
 	virtual int				GetModeHeight() const = 0;
 	virtual	bool			IsWindowedMode() const = 0;
 #ifdef BYTEMATCH_RETAIL
-	virtual bool			NoWindowBorder() const { return false; }
+	virtual bool			NoWindowBorder() const = 0;
 #endif
 #line 68
 
@@ -121,5 +131,10 @@ extern IVideoMode *videomode;
 void VideoMode_Create();
 void VideoMode_Destroy();
 
+#ifdef BYTEMATCH_RETAIL
+// Retail's MaterialSystem_Config_t flag for a borderless window; materialsystem_config.h lacks it.
+#define MATSYS_VIDCFG_FLAGS_NO_WINDOW_BORDER	( 1 << 18 )
+#endif
+#line 123
 
 #endif // IVIDEOMODE_H

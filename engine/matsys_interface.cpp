@@ -925,14 +925,31 @@ CON_COMMAND( mat_configcurrent, "show the current video control panel config for
 #if !defined(SWDS) && !defined( _X360 )
 CON_COMMAND( mat_setvideomode, "sets the width, height, windowed state of the material system" )
 {
+#ifdef BYTEMATCH_RETAIL
+	if ( args.ArgC() < 4 )
+		return;
+#else
 	if ( args.ArgC() != 4 )
 		return;
+#endif
+#line 930
 
 	int nWidth = Q_atoi( args[1] );
 	int nHeight = Q_atoi( args[2] );
 	bool bWindowed = Q_atoi( args[3] ) > 0 ? true : false;
 
+#ifdef BYTEMATCH_RETAIL
+	bool bNoWindowBorder = videomode->NoWindowBorder();
+	if ( args.ArgC() >= 5 )
+	{
+		bNoWindowBorder = Q_atoi( args[4] ) > 0 ? true : false;
+	}
+
+	videomode->SetMode( nWidth, nHeight, bWindowed, bNoWindowBorder );
+#else
 	videomode->SetMode( nWidth, nHeight, bWindowed );
+#endif
+#line 942
 }
 #endif
 

@@ -158,6 +158,7 @@ static void SV_Pure_f( const CCommand &args )
 		if ( GetSvPureCommandLine() <= 0 && pure_mode > 0 )
 		{
 			Msg( "sv_pure must be specified on the command line to function properly. sv_pure mode not changed\n" );
+			return;
 		}
 		else if ( pure_mode == GetSvPureMode() )
 		{
@@ -277,7 +278,7 @@ static void SV_Pure_f( const CCommand &args )
     Msg( "--------------------------------------------------------\n" );
 }
 #endif
-#line 196
+#line 197
 
 static ConCommand sv_pure( "sv_pure", SV_Pure_f, "Show user data." );
 
@@ -324,7 +325,7 @@ static ConVar sv_voicecodec( "sv_voicecodec", "vaudio_opus", 0,
 ConVar  sv_mincmdrate( "sv_mincmdrate", "20", FCVAR_REPLICATED, "This sets the minimum value for cl_cmdrate. 0 == unlimited." );
 ConVar  sv_maxcmdrate( "sv_maxcmdrate", "100", FCVAR_REPLICATED, "(If sv_mincmdrate is > 0), this sets the maximum value for cl_cmdrate." );
 #endif
-#line 229
+#line 230
 ConVar  sv_client_cmdrate_difference( "sv_client_cmdrate_difference", "20", FCVAR_REPLICATED, 
 	"cl_cmdrate is moved to within sv_client_cmdrate_difference units of cl_updaterate before it "
 	"is clamped between sv_mincmdrate and sv_maxcmdrate." );
@@ -496,7 +497,7 @@ void CGameServer::Clear( void )
 #ifndef BYTEMATCH_RETAIL
 	free_edicts = 0;
 #endif
-#line 397
+#line 398
 	edicts = NULL;
 	
 	// Clear the instance baseline indices in the ServerClasses.
@@ -1340,7 +1341,7 @@ void SV_DetermineMulticastRecipients( bool usepas, const Vector& origin, CBitVec
 #else
 		if ( iBitNumber < 0 || !(pMask[iBitNumber>>3] & (1<<(iBitNumber&7)) ) )
 #endif
-#line 1236
+#line 1237
 			continue;
 
 		playerbits.Set( i );
@@ -1517,7 +1518,7 @@ bool CGameServer::FinishCertificateCheck( netadr_t &adr, int nAuthProtocol, cons
 			return false;
 		}
 #endif
-#line 1410
+#line 1411
 
 		int nHashCount = 0;
 
@@ -1665,7 +1666,7 @@ static void OnHibernateWhenEmptyChanged( IConVar *var, const char *pOldValue, fl
 	sv.UpdateHibernationState( );
 }
 #endif
-#line 1548
+#line 1549
 
 static bool s_bExitWhenEmpty = false;
 #ifdef BYTEMATCH_RETAIL
@@ -1990,7 +1991,7 @@ void CGameServer::UpdateHibernationState()
 	SetHibernating( sv_hibernate_when_empty.GetBool() && hibernateFromGCServer && !bHaveAnyClients );
 }
 #endif
-#line 1664
+#line 1665
 
 void CGameServer::FinishRestore()
 {
@@ -2068,7 +2069,7 @@ static ConVar sv_parallel_sendsnapshot( "sv_parallel_sendsnapshot", "1" );
 #else
 static ConVar sv_parallel_sendsnapshot( "sv_parallel_sendsnapshot", "0" );
 #endif
-#line 1737
+#line 1738
 
 static void SV_ParallelSendSnapshot( CGameClient *& pClient )
 {
@@ -2563,7 +2564,10 @@ static void SV_AllocateEdicts()
 	{
 		new( &sv.edicts[i] ) edict_t;
 		sv.edicts[i].m_EdictIndex = i;
+#ifndef BYTEMATCH_RETAIL
 		sv.edicts[i].freetime = 0;
+#endif
+#line 2232
 	}
 #ifndef BYTEMATCH_RETAIL
 	ED_ClearFreeEdictList();
@@ -2650,7 +2654,12 @@ SV_SpawnServer
 This is called at the start of each level
 ================
 */
+#ifdef BYTEMATCH_RETAIL
+bool CGameServer::SpawnServer( char *szMapName, char *szMapFile, char *startspot )
+#else
 bool CGameServer::SpawnServer( const char *szMapName, const char *szMapFile, const char *startspot )
+#endif
+#line 2303
 {
 	int		i;
 

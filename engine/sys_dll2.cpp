@@ -1167,7 +1167,12 @@ void CEngineAPI::SetStartupInfo( StartupInfo_t &info )
 				g_pFileSystem->EnableWhitelistFileTracking( true, false, false );
 			}
 
+#ifdef BYTEMATCH_RETAIL
+			m_bSupportsVR = modinfo->GetInt( "supportsvr" ) > 0;
+#else
 			m_bSupportsVR = modinfo->GetInt( "supportsvr" ) > 0 && CommandLine()->CheckParm( "-vr" );
+#endif
+#line 1134
 			if ( m_bSupportsVR )
 			{
 				// This also has to happen before CreateGameWindow to know where to put
@@ -1726,12 +1731,22 @@ void CEngineAPI::OnShutdown()
 static bool IsValveMod( const char *pModName )
 {
 	// Figure out if we're running a Valve mod or not.
+#ifdef BYTEMATCH_RETAIL
+	return ( Q_stricmp( pModName, "cstrike" ) == 0 ||
+		Q_stricmp( pModName, "dod" ) == 0 ||
+		Q_stricmp( pModName, "hl1mp" ) == 0 ||
+		Q_stricmp( pModName, "tf" ) == 0 || 
+		Q_stricmp( pModName, "tf_beta" ) == 0 ||
+		Q_stricmp( pModName, "hl2mp" ) == 0 );
+#else
 	return ( Q_stricmp( GetCurrentMod(), "cstrike" ) == 0 ||
 		Q_stricmp( GetCurrentMod(), "dod" ) == 0 ||
 		Q_stricmp( GetCurrentMod(), "hl1mp" ) == 0 ||
 		Q_stricmp( GetCurrentMod(), "tf" ) == 0 || 
 		Q_stricmp( GetCurrentMod(), "tf_beta" ) == 0 ||
 		Q_stricmp( GetCurrentMod(), "hl2mp" ) == 0 );
+#endif
+#line 1698
 }
 
 //-----------------------------------------------------------------------------
@@ -1740,7 +1755,14 @@ static bool IsValveMod( const char *pModName )
 bool CEngineAPI::ModInit( const char *pModName, const char *pGameDir )
 {
 	// Set up the engineparms_t which contains global information about the mod
+#ifdef BYTEMATCH_RETAIL
+	char szExpansionId[16];
+	bool bExpansion = g_pFileSystem->GetCurrentGameExpansionId( szExpansionId, sizeof( szExpansionId ) );
+	host_parms.mod = COM_StringCopy( bExpansion ? GetModDirFromPath( szExpansionId ) : GetModDirFromPath( pModName ) );
+#else
 	host_parms.mod = COM_StringCopy( GetModDirFromPath( pModName ) );
+#endif
+#line 1709
 	host_parms.game = COM_StringCopy( pGameDir );
 
 	// By default, restrict server commands in Valve games and don't restrict them in mods.
@@ -1766,9 +1788,16 @@ bool CEngineAPI::ModInit( const char *pModName, const char *pGameDir )
 		bWindowed = true;
 	}
 
+#line 1735
+
 	// Create the game window now that we have a search path
 	// FIXME: Deal with initial window width + height better
+#ifdef BYTEMATCH_RETAIL
+	if ( !videomode || !videomode->CreateGameWindow( g_pMaterialSystemConfig->m_VideoMode.m_Width, g_pMaterialSystemConfig->m_VideoMode.m_Height, bWindowed, ( g_pMaterialSystemConfig->m_Flags & MATSYS_VIDCFG_FLAGS_NO_WINDOW_BORDER ) != 0 ) )
+#else
 	if ( !videomode || !videomode->CreateGameWindow( g_pMaterialSystemConfig->m_VideoMode.m_Width, g_pMaterialSystemConfig->m_VideoMode.m_Height, bWindowed ) )
+#endif
+#line 1739
 	{
 		return false;
 	}
@@ -2405,7 +2434,7 @@ bool CDedicatedServerAPI::ModInit( ModInfo_t &info )
 	bool bDedicated = true;
 	eSteamInfoInit steamInfo = Sys_TryInitSteamInfo( this, g_SteamInfIDVersionInfo, info.m_pInitialMod, info.m_pBaseDirectory, bDedicated );
 #endif
-#line 2366
+#line 2370
 
 	eng->SetQuitting( IEngine::QUIT_NOTQUITTING );
 
@@ -2420,7 +2449,7 @@ bool CDedicatedServerAPI::ModInit( ModInfo_t &info )
 	// Setup and write out steam_appid.txt before we launch
 	Host_InitAppID( info.m_pInitialMod, info.m_pBaseDirectory );
 #endif
-#line 2378
+#line 2382
 
 	TRACEINIT( COM_InitFilesystem( info.m_pInitialMod ), COM_ShutdownFileSystem() );
 
@@ -2437,7 +2466,7 @@ bool CDedicatedServerAPI::ModInit( ModInfo_t &info )
 		}
 	}
 #endif
-#line 2381
+#line 2385
 
 	// set this up as early as possible, if the server isn't going to run pure, stop CRCing bits as we load them
 	// this happens even before the ConCommand's are processed, but we need to be sure to either CRC every file
