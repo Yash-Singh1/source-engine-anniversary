@@ -216,8 +216,8 @@ private:
 	bool		m_fJoystickAdvancedInit;
 	// Used to support hotplugging by reinitializing the advanced joystick system when we toggle between some/none joysticks.
 	bool		m_fHadJoysticks;
-	// Init_All zeroes this; nothing in the client reads it.
-	int			m_nUnused;
+	// Mouse movement while in controller mode; enough of it leaves controller mode
+	float		m_flMouseMoveSinceControllerMode;
 
 	// Accumulated mouse deltas
 	float		m_flAccumulatedMouseXMovement;

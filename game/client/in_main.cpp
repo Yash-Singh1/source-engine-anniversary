@@ -1755,7 +1755,7 @@ void CInput::Init_All (void)
 	m_bCameraResetWasDown = false;
 
 	SetControllerModeActive( false );
-	m_nUnused = 0;
+	m_flMouseMoveSinceControllerMode = 0;
 
 	// Initialize inputs
 	if ( IsPC() )
