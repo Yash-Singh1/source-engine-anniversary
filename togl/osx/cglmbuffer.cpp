@@ -220,8 +220,8 @@ void	CGLMBuffer::Lock( GLMBuffLockParams *params, char **addressOut )
 		if (gGL->m_bHave_GL_ARB_map_buffer_range)
 		{
 			// translate options into glMapBufferRange access bits
-			GLbitfield access = (m_enableAsyncMap ? GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT : GL_MAP_WRITE_BIT) | (params->m_discard ? GL_MAP_INVALIDATE_BUFFER_BIT : 0) | (m_enableExplicitFlush ? GL_MAP_FLUSH_EXPLICIT_BIT : 0);
-			mapPtr = (char*)gGL->glMapBufferRange( m_buffGLTarget, params->m_offset, params->m_size, access );
+			mapPtr = (char*)gGL->glMapBufferRange( m_buffGLTarget, params->m_offset, params->m_size,
+				(m_enableAsyncMap ? GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT : GL_MAP_WRITE_BIT) | (params->m_discard ? GL_MAP_INVALIDATE_BUFFER_BIT : 0) | (m_enableExplicitFlush ? GL_MAP_FLUSH_EXPLICIT_BIT : 0) );
 		}
 		else
 		{

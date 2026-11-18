@@ -472,7 +472,6 @@ void	DefaultSamplingParams( GLMTexSamplingParams *samp, GLMTexLayoutKey *key )
 CGLMTex	*GLMContext::NewTex( GLMTexLayoutKey *key, char *debugLabel )
 {
 	//hushed GLM_FUNC;
-	MakeCurrent();
 	
 	// get a layout based on the key
 	GLMTexLayout *layout = m_texLayoutTable->NewLayoutRef( key );
@@ -488,7 +487,6 @@ CGLMTex	*GLMContext::NewTex( GLMTexLayoutKey *key, char *debugLabel )
 void	GLMContext::DelTex( CGLMTex	*tex )
 {
 	//hushed GLM_FUNC;
-	MakeCurrent();
 
 	for( int i=0; i<GLM_SAMPLER_COUNT; i++)
 	{
@@ -598,14 +596,14 @@ void	glAttachTex2DtoFBO	( GLenum target, eBlitFormatClass formatClass, uint texN
 	}
 }
 
-ConVar	gl_can_resolve_flipped("gl_can_resolve_flipped", "0" );
-ConVar	gl_cannot_resolve_flipped("gl_cannot_resolve_flipped", "0" );
+ConVar	gl_can_resolve_flipped("gl_can_resolve_flipped", 0 );
+ConVar	gl_cannot_resolve_flipped("gl_cannot_resolve_flipped", 0 );
 
 
 // these are only consulted if the m_cant_resolve_scaled cap bool is false.
 
-ConVar	gl_minify_resolve_mode("gl_minify_resolve_mode", "1" );		// if scaled resolve available, for downscaled resolve blits only (i.e. internal blits)
-ConVar	gl_magnify_resolve_mode("gl_magnify_resolve_mode", "2" );	// if scaled resolve available, for upscaled resolve blits only
+ConVar	gl_minify_resolve_mode("gl_minify_resolve_mode", 0 );		// if scaled resolve available, for downscaled resolve blits only (i.e. internal blits)
+ConVar	gl_magnify_resolve_mode("gl_magnify_resolve_mode", 0 );	// if scaled resolve available, for upscaled resolve blits only
 
 	// 0 == old style, two steps
 	// 1 == faster, one step blit aka XGL_SCALED_RESOLVE_FASTEST_EXT - if available.
@@ -1492,7 +1490,7 @@ void	GLMContext::PreloadTex( CGLMTex *tex, bool force )
 	gGL->glVertexAttribPointer( 0, 3, GL_FLOAT, 0, 0, posns );
 	GLMCheckError();
 
-	gGL->glDrawRangeElements( GL_TRIANGLES, 0, 2, 3, GL_UNSIGNED_INT, indices);
+	gGL->glDrawRangeElements( GL_TRIANGLES, 0, 3, 3, GL_UNSIGNED_INT, indices);
 	GLMCheckError();
 
 	gGL->glDisableVertexAttribArray( 0 );
@@ -1527,7 +1525,6 @@ void	GLMContext::SetSamplerParams( int sampler, GLMTexSamplingParams *params )
 CGLMFBO	*GLMContext::NewFBO( void )
 {
 	GLM_FUNC;
-	MakeCurrent();
 
 	CGLMFBO *fbo = new CGLMFBO( this );
 
@@ -1578,7 +1575,6 @@ CGLMProgram	*GLMContext::NewProgram( EGLMProgramType type, char *progString )
 {
 	//hushed GLM_FUNC;
 
-	MakeCurrent();
 
 	CGLMProgram *prog = new CGLMProgram( this, type );
 	
@@ -1797,7 +1793,6 @@ CGLMBuffer	*GLMContext::NewBuffer( EGLMBufferType type, uint size, uint options 
 {
 	//hushed GLM_FUNC;
 
-	MakeCurrent();
 	
 	CGLMBuffer *prog = new CGLMBuffer( this, type, size, options );
 
@@ -1808,7 +1803,6 @@ void	GLMContext::DelBuffer( CGLMBuffer *buff )
 {
 	GLM_FUNC;
 
-	this->MakeCurrent();
 
 	for( int index=0; index < kGLMVertexAttributeIndexMax; index++ )
 	{
@@ -2030,8 +2024,6 @@ static	ConVar gl_texlayoutstats ("gl_texlayoutstats", "0" );
 void	GLMContext::BeginFrame( void )
 {
 	GLM_FUNC;
-
-	MakeCurrent();
 
 	m_debugFrameIndex++;
 	m_debugBatchIndex = -1;
@@ -2285,6 +2277,8 @@ ConVar gl_can_query_fast("gl_can_query_fast", "0");
 
 GLMContext::GLMContext( GLMDisplayParams *params )
 {
+	m_nCurOwnerThreadId = ThreadGetCurrentId();
+
 	// flag our copy of display params as blank
 	m_displayParamsValid = false;
 
@@ -2651,6 +2645,8 @@ int		GLMContext::BindTexToTMU( CGLMTex *tex, int tmu, bool noCheck )
 		}
 		m_samplers[tmu].m_boundTex = NULL;	
 	}
+
+	return 1;
 }
 
 void	GLMContext::BindFBOToCtx( CGLMFBO *fbo, GLenum bindPoint )
@@ -4938,6 +4934,8 @@ void	GLMContext::GenDebugFontTex( void )
 		lockreq.m_region.xmax = slice->m_xSize;
 		lockreq.m_region.ymax = slice->m_ySize;
 		lockreq.m_region.zmax = slice->m_zSize;
+
+		lockreq.m_readback = false;
 		
 		char	*lockAddress;
 		int		yStride;
@@ -4975,6 +4973,8 @@ void	GLMContext::GenDebugFontTex( void )
 		// region need not matter for unlocks
 		unlockreq.m_region.xmin = unlockreq.m_region.ymin = unlockreq.m_region.zmin = 0;
 		unlockreq.m_region.xmax = unlockreq.m_region.ymax = unlockreq.m_region.zmax = 0;
+
+		unlockreq.m_readback = false;
 
 		m_debugFontTex->Unlock( &unlockreq );
 		GLMCheckError();
