@@ -26,6 +26,7 @@ public:
 
 	~CTGAImagePanel();
 
+	void SetTGA( const char *filename, const char *pathID );
 	void SetTGA( const char *filename );
 	void SetTGANonMod( const char *filename );
 

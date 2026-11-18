@@ -22,6 +22,10 @@
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
+#ifdef BYTEMATCH_RETAIL
+#define V_strcpy_safe( pDest, pSrc ) Q_strcpy( pDest, pSrc )
+#endif
+#line 25
 
 
 #define MOD_DIR ( IsXbox() ? "DEFAULT_WRITE_PATH" : "MOD" )

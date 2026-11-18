@@ -91,42 +91,42 @@ public:
 	CBonusMapsDatabase( void );
 	~CBonusMapsDatabase();
 
-	bool ReadBonusMapSaveData( void );
-	bool WriteSaveData( void );
+	virtual bool ReadBonusMapSaveData( void );
+	virtual bool WriteSaveData( void );
 
-	const char * GetPath( void ) { return m_szCurrentPath; }
-	void RootPath( void );
-	void AppendPath( const char *pchAppend );
-	void BackPath( void );
-	void SetPath( const char *pchPath, int iDirDepth );
+	virtual const char * GetPath( void ) { return m_szCurrentPath; }
+	virtual void RootPath( void );
+	virtual void AppendPath( const char *pchAppend );
+	virtual void BackPath( void );
+	virtual void SetPath( const char *pchPath, int iDirDepth );
 
-	void ClearBonusMapsList( void );
-	void ScanBonusMaps( void );
-	void RefreshMapData( void );
+	virtual void ClearBonusMapsList( void );
+	virtual void ScanBonusMaps( void );
+	virtual void RefreshMapData( void );
 
-	int BonusCount( void );
+	virtual int BonusCount( void );
 	BonusMapDescription_t * GetBonusData( int iIndex ) { return &(m_BonusMaps[ iIndex ]); }
 	int InvalidIndex( void ) { return m_BonusMaps.InvalidIndex(); }
 	bool IsValidIndex( int iIndex ) { return m_BonusMaps.IsValidIndex( iIndex ); }
 
-	bool GetBlink( void );
-	void SetBlink( bool bState );
+	virtual bool GetBlink( void );
+	virtual void SetBlink( bool bState );
 
-	bool BonusesUnlocked( void );
+	virtual bool BonusesUnlocked( void );
 
-	void SetCurrentChallengeNames( const char *pchFileName, const char *pchMapName, const char *pchChallengeName );
-	void GetCurrentChallengeNames( char *pchFileName, char *pchMapName, char *pchChallengeName );
-	void SetCurrentChallengeObjectives( int iBronze, int iSilver, int iGold );
-	void GetCurrentChallengeObjectives( int &iBronze, int &iSilver, int &iGold );
+	virtual void SetCurrentChallengeNames( const char *pchFileName, const char *pchMapName, const char *pchChallengeName );
+	virtual void GetCurrentChallengeNames( char *pchFileName, char *pchMapName, char *pchChallengeName );
+	virtual void SetCurrentChallengeObjectives( int iBronze, int iSilver, int iGold );
+	virtual void GetCurrentChallengeObjectives( int &iBronze, int &iSilver, int &iGold );
 
-	bool SetBooleanStatus( const char *pchName, const char *pchFileName, const char *pchMapName, bool bValue );
-	bool SetBooleanStatus( const char *pchName, int iIndex, bool bValue );
-	bool UpdateChallengeBest( const char *pchFileName, const char *pchMapName, const char *pchChallengeName, int iBest );
+	virtual bool SetBooleanStatus( const char *pchName, const char *pchFileName, const char *pchMapName, bool bValue );
+	virtual bool SetBooleanStatus( const char *pchName, int iIndex, bool bValue );
+	virtual bool UpdateChallengeBest( const char *pchFileName, const char *pchMapName, const char *pchChallengeName, int iBest );
 
-	float GetCompletionPercentage( void );
+	virtual float GetCompletionPercentage( void );
 
-	int NumAdvancedComplete( void );
-	void NumMedals( int piNumMedals[ 3 ] );
+	virtual int NumAdvancedComplete( void );
+	virtual void NumMedals( int piNumMedals[ 3 ] );
 
 private:
 

@@ -153,6 +153,9 @@ public:
 
 private:
 	bool		m_bRightAligned;
+
+public:
+	CUtlString	m_strMenuCategory;
 };
 
 //-----------------------------------------------------------------------------
@@ -349,13 +352,20 @@ private:
 	void UpdateRichPresenceInfo();
 
 	// menu logo
-	CMainMenuGameLogo *m_pGameLogo;
+	vgui::DHANDLE< CMainMenuGameLogo > m_pGameLogo;
 	
 	// menu buttons
 	CUtlVector< CBackgroundMenuButton * >m_pGameMenuButtons;
+	vgui::HFont m_hGameTitleFont;
+	vgui::HFont m_hGameTitleFont2;
+	vgui::HFont m_hWorkshopTitleFont;
 	CGameMenu *m_pGameMenu;
 	bool m_bPlatformMenuInitialized;
 	int m_iGameMenuInset;
+
+	// expansion switching
+	int m_iSwitchModState;
+	CUtlString m_strSwitchMod;
 	
 	vgui::VPANEL	m_hMainMenuOverridePanel;
 
@@ -376,7 +386,7 @@ private:
 	vgui::DHANDLE<vgui::PropertyDialog> m_hOptionsDialog;
 	vgui::DHANDLE<vgui::Frame> m_hOptionsDialog_Xbox;
 	vgui::DHANDLE<vgui::Frame> m_hCreateMultiplayerGameDialog;
-	//vgui::DHANDLE<vgui::Frame> m_hDemoPlayerDialog;
+	vgui::DHANDLE<vgui::Frame> m_hDemoPlayerDialog;
 	vgui::DHANDLE<vgui::Frame> m_hChangeGameDialog;
 	vgui::DHANDLE<vgui::Frame> m_hPlayerListDialog;
 	vgui::DHANDLE<vgui::Frame> m_hBenchmarkDialog;
@@ -404,6 +414,7 @@ private:
 	bool						m_bEverActivated;
 	bool						m_bCopyFrameBuffer;
 	bool						m_bUseRenderTargetImage;
+	bool						m_bDrawingBackgroundImage;
 	int							m_ExitingFrameCount;
 	bool						m_bXUIVisible;
 	bool						m_bUseMatchmaking;
@@ -416,6 +427,8 @@ private:
 	bool						m_bWaitingForUserSignIn;
 	bool						m_bStorageBladeShown;
 	CUtlString					m_strPostPromptCommand;
+	CUtlString					m_strCurrentGame;
+	CUtlString					m_strStartupGame;
 
 	// Storage device changing vars
 	bool			m_bWaitingForStorageDeviceHandle;
@@ -444,6 +457,7 @@ private:
 	float m_flFrameFadeInTime;
 	Color m_BackdropColor;
 	CPanelAnimationVar( float, m_flBackgroundFillAlpha, "m_flBackgroundFillAlpha", "0" );
+	CPanelAnimationVar( float, m_flSwitchModTransition, "m_flSwitchModTransition", "0" );
 
 	// fading to game
 	MESSAGE_FUNC_CHARPTR( RunEngineCommand, "RunEngineCommand", command );

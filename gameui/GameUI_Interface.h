@@ -99,6 +99,8 @@ public:
 	// Client DLL is telling us that a main menu command was issued, probably from its custom main menu panel
 	virtual void SendMainMenuCommand( const char *pszCommand );
 
+	virtual CBonusMapsDatabase *GetBonusMapsDatabase( void );
+
 	// state
 	bool IsInLevel();
 	bool IsInBackgroundLevel();

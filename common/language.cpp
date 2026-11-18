@@ -57,6 +57,9 @@ static const Language_t s_LanguageNames[] =
 	{	"Bulgarian",			"bulgarian",	"#GameUI_Language_Bulgarian",			"bg_BG",	k_Lang_Bulgarian,	1026 } ,
 	{	"Greek",				"greek",		"#GameUI_Language_Greek",				"el_GR",	k_Lang_Greek,		1032 },
 	{	"Ukrainian",			"ukrainian",	"#GameUI_Language_Ukrainian",			"uk_UA",	k_Lang_Ukrainian,	1058 },
+	{	"Latam_Spanish",		"latam",		"#GameUI_Language_Latam_Spanish",		"es_419",	k_Lang_Latam_Spanish,	1034 },
+	{	"Vietnamese",			"vietnamese",	"#GameUI_Language_Vietnamese",			"vi_VN",	k_Lang_Vietnamese,	1066 },
+	{	"Indonesian",			"indonesian",	"#GameUI_Language_Indonesian",			"id_ID",	k_Lang_Indonesian,	1057 },
 };	
 
 //-----------------------------------------------------------------------------
