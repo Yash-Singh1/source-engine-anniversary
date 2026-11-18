@@ -195,6 +195,16 @@ static inline bool IsHmdAvailable()
 	return static_cast< ISourceVirtualRealityAnniversary * >( g_pSourceVR )->IsHmdAvailable();
 }
 
+// borderless windows need the anniversary video config and mat_setvideomode
+static inline bool ConfigNoWindowBorder( const MaterialSystem_Config_t &config )
+{
+#ifdef BYTEMATCH_RETAIL
+	return config.NoWindowBorder();
+#else
+	return false;
+#endif
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: Gamma-adjust dialog
 //-----------------------------------------------------------------------------
@@ -1644,7 +1654,7 @@ void COptionsSubVideo::OnResetData()
 	{
 		// The last two items in the combobox are Windowed and borderless Windowed.
 		ItemIndex = ( m_pWindowed->GetItemCount() - 2 );
-		if ( config.NoWindowBorder() )
+		if ( ConfigNoWindowBorder( config ) )
 		{
 			ItemIndex = ( m_pWindowed->GetItemCount() - 1 );
 		}
@@ -1832,7 +1842,7 @@ void COptionsSubVideo::OnApplyChanges()
 	if ( config.m_VideoMode.m_Width != width
 		|| config.m_VideoMode.m_Height != height
 		|| config.Windowed() != windowed
-		|| config.NoWindowBorder() != bNoWindowBorder )
+		|| ConfigNoWindowBorder( config ) != bNoWindowBorder )
 	{
 		bConfigChanged = true;
 	}
@@ -1874,7 +1884,11 @@ void COptionsSubVideo::OnApplyChanges()
 	{
 		// set mode
 		char szCmd[ 256 ];
+#ifdef BYTEMATCH_RETAIL
 		Q_snprintf( szCmd, sizeof( szCmd ), "mat_setvideomode %i %i %i %i\n", width, height, windowed ? 1 : 0, bNoWindowBorder ? 1 : 0 );
+#else
+		Q_snprintf( szCmd, sizeof( szCmd ), "mat_setvideomode %i %i %i\n", width, height, windowed ? 1 : 0 );
+#endif
 		engine->ClientCmd_Unrestricted( szCmd );
 	}
 
