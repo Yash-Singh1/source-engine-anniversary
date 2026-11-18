@@ -7,6 +7,12 @@
 #undef PROTECTED_THINGS_ENABLE
 #include "SDL.h"
 #include "SDL_syswm.h"
+#ifdef BYTEMATCH_RETAIL
+// Retail was compiled against SDL 2.0.14 headers (SDL_VERSION in SDL_SysWMinfo)
+#undef SDL_PATCHLEVEL
+#define SDL_PATCHLEVEL 14
+#endif
+#line 10
 
 #if defined( OSX )
 #define DONT_DEFINE_BOOL
@@ -913,6 +919,20 @@ bool CGame::CreateGameWindow( void )
 		Q_strncpy( windowName, "HALF-LIFE 2", sizeof(windowName) );
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	V_strcat( windowName, " - ", sizeof( windowName ) );
+
+	const char *pszRenderBackend;
+	switch ( g_pMaterialSystem->GetRenderBackend() )
+	{
+	case RENDER_BACKEND_D3D9:	pszRenderBackend = "Direct3D 9"; break;
+	case RENDER_BACKEND_TOGL:	pszRenderBackend = "OpenGL"; break;
+	case RENDER_BACKEND_VULKAN:	pszRenderBackend = "Vulkan"; break;
+	case RENDER_BACKEND_NULL:	pszRenderBackend = "Null"; break;
+	default:					pszRenderBackend = "Unknown"; break;
+	}
+	V_strcat( windowName, pszRenderBackend, sizeof( windowName ) );
+#else
 	if ( IsOpenGL() )
 	{
 #ifdef TOGLES
@@ -921,6 +941,8 @@ bool CGame::CreateGameWindow( void )
 		V_strcat( windowName, " - OpenGL", sizeof( windowName ) );
 #endif
 	}
+#endif
+#line 924
 
 #if PIX_ENABLE || defined( PIX_INSTRUMENTATION )
 	// PIX_ENABLE/PIX_INSTRUMENTATION is a big slowdown (that should never be checked in, but sometimes is by accident), so add this to the Window title too.
@@ -1085,6 +1107,10 @@ void CGame::DestroyGameWindow()
 {
 #if defined( USE_SDL )
 	g_pLauncherMgr->DestroyGameWindow();
+#ifdef BYTEMATCH_RETAIL
+	m_pSDLWindow = NULL;
+#endif
+#line 1088
 #else
 #ifndef DEDICATED
 	// Destroy all things created when the window was created
