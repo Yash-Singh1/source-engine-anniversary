@@ -1869,6 +1869,7 @@ HRESULT	IDirect3DDevice9::Create( IDirect3DDevice9Params *params )
 	m_defaultDepthStencilSurface = NULL;
 	
 	memset( m_streams, 0, sizeof(m_streams) );
+	m_indices.m_idxBuffer = NULL;
 	memset( m_textures, 0, sizeof(m_textures) );
 	memset( m_samplers, 0, sizeof(m_samplers) );
 	
@@ -4712,15 +4713,11 @@ HRESULT IDirect3DDevice9::FlushSamplers( uint mask )
 			glsamp->m_maxMipLevel = texMipCount-1;				// d3d has no value for constraining how small we can sample.
 																// however we may need to set this more intelligently if textures are not being fully submitted.
 
-			// On OpenGL, GL_TEXTURE_MAX_ANISOTROPY_EXT needs to be 1 if we don't want aniso
-			glsamp->m_maxAniso = (dxsamp->m_minFilter != D3DTEXF_ANISOTROPIC) ? 1 : dxsamp->m_maxAniso;
+			glsamp->m_maxAniso = dxsamp->m_maxAniso;
 
 			// SRGB
 			glsamp->m_srgb = dxsamp->m_srgb != 0;
 
-			// Shadow compare mode
-			glsamp->m_compareMode = dxsamp->m_shadowFilter ? GL_COMPARE_R_TO_TEXTURE_ARB : GL_NONE;
-			
 			// write that sampler.
 			m_ctx->SetSamplerParams( index, glsamp );
 			samplerHitMask ^= nCurrentSamplerMask;	//turn bit off
@@ -4755,31 +4752,25 @@ HRESULT IDirect3DDevice9::FlushSamplers( uint mask )
 										
 						m_textures[index]->m_srgbFlipCount++;
 						
-						static bool bCheckedCommandline = false;
-						static bool bPrintAllflips = false;
-						static bool bPrintFirstflips = false;
-						static bool bPrintFreqflips = false;
-						static bool bPrintCrawls = false;
-						static bool bPrintMaxCrawls = false;
-						if ( !bCheckedCommandline )
+						bool bPrintAllflips		= CommandLine()->FindParm( "-glmspewallsrgbflips" );
+						bool bPrintFirstflips	= CommandLine()->FindParm( "-glmspewfirstsrgbflips" );
+						bool bPrintFreqflips	= CommandLine()->FindParm( "-glmspewfreqsrgbflips" );
+						bool bPrintCrawls		= CommandLine()->FindParm( "-glmspewsrgbcrawls" );
+						bool bPrintMaxCrawls	= CommandLine()->FindParm( "-glmspewsrgbmaxcrawls" );
+						
+						bool bPrintIt = false;
+						
+						if ( bPrintAllflips )
 						{
-							bPrintAllflips		= CommandLine()->FindParm( "-glmspewallsrgbflips" );
-							bPrintFirstflips	= CommandLine()->FindParm( "-glmspewfirstsrgbflips" );
-							bPrintFreqflips		= CommandLine()->FindParm( "-glmspewfreqsrgbflips" );
-							bPrintCrawls		= CommandLine()->FindParm( "-glmspewsrgbcrawls" );
-							bPrintMaxCrawls		= CommandLine()->FindParm( "-glmspewsrgbmaxcrawls" );
-							bCheckedCommandline = true;
+							bPrintIt = true;
 						}
-						
-						bool bPrintIt = bPrintAllflips;
-						
 						if ( bPrintFirstflips )		// report on first flip
 						{
-							bPrintIt = bPrintIt || m_textures[index]->m_srgbFlipCount==1;
+							bPrintIt |= m_textures[index]->m_srgbFlipCount==1;
 						}
 						if ( bPrintFreqflips )	// report on 50th flip
 						{
-							bPrintIt = bPrintIt || m_textures[index]->m_srgbFlipCount==50;
+							bPrintIt |= m_textures[index]->m_srgbFlipCount==50;
 						}
 						
 						if ( bPrintIt )
@@ -4850,6 +4841,8 @@ HRESULT IDirect3DDevice9::FlushSamplers( uint mask )
 					}
 				}
 			}
+
+			glsamp->m_compareMode = dxsamp->m_shadowFilter ? GL_COMPARE_R_TO_TEXTURE_ARB : GL_NONE;
 		}		
 	}
 	return S_OK;
