@@ -108,7 +108,7 @@ static ConVar m_mouseaccel2( "m_mouseaccel2", "0", FCVAR_ARCHIVE, "Windows mouse
 
 static ConVar m_rawinput( "m_rawinput", "0", FCVAR_ARCHIVE, "Use Raw Input for mouse input.");
 
-#if defined( HL2_CLIENT_DLL )
+#if defined( HL2_CLIENT_DLL ) && defined( HL2_ANNIVERSARY_NOV2024 )
 ConVar m_autoaimdampen( "m_autoaimdampen", "0.5", FCVAR_ARCHIVE, "Dampening Factor for Aim Assist" );
 ConVar m_autoaimdampenrange( "m_autoaimdampenrange", "50", FCVAR_ARCHIVE, "Speed Factor for Applying Aim Assist Dampening" );
 ConVar m_autoaim_magnetism( "m_autoaim_magnetism", "0.03", FCVAR_ARCHIVE, "Magnetism Factor for Aim Assist" );
@@ -569,7 +569,7 @@ void CInput::ApplyMouse( QAngle& viewangles, CUserCmd *cmd, float mouse_x, float
 				viewangles[PITCH] += m_pitch->GetFloat() * mouse_y;
 			}
 
-#if defined( HL2_CLIENT_DLL )
+#if defined( HL2_CLIENT_DLL ) && defined( HL2_ANNIVERSARY_NOV2024 )
 			if ( sk_allow_autoaim.GetBool() && g_pInputSystem->IsMouseKeyboardActive() )
 			{
 				viewangles = DoAutoAimMagnetism( viewangles, m_autoaim_mode.GetInt(), m_autoaim_magnetism.GetFloat(), m_autoaim_scale.GetFloat() );
@@ -738,7 +738,7 @@ void CInput::MouseMove( CUserCmd *cmd )
 		// Apply scaling factor
 		ScaleMouse( &mouse_x, &mouse_y );
 
-#if defined( HL2_CLIENT_DLL )
+#if defined( HL2_CLIENT_DLL ) && defined( HL2_ANNIVERSARY_NOV2024 )
 		mouse_x *= GetMouseAutoAimDampening( mouse_x );
 		mouse_y *= GetMouseAutoAimDampening( mouse_y );
 #endif
