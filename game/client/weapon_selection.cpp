@@ -196,7 +196,7 @@ void CBaseHudWeaponSelection::ProcessInput()
 		// If so, close weapon selection when they press fire
 		if ( gHUD.m_iKeyBits & IN_ATTACK )
 		{
-			if ( HUDTYPE_PLUS != hud_fastswitch.GetInt() )
+			if ( HUDTYPE_PLUS != GetFastSwitchType() )
 			{
 				// Swallow the button
 				gHUD.m_iKeyBits &= ~IN_ATTACK;
@@ -214,7 +214,7 @@ void CBaseHudWeaponSelection::ProcessInput()
 		if ( IsWeaponSelectable() )
 		{
 #ifndef TF_CLIENT_DLL
-			if ( HUDTYPE_PLUS != hud_fastswitch.GetInt() )
+			if ( HUDTYPE_PLUS != GetFastSwitchType() )
 #endif
 			{
 				// Swallow the button
@@ -259,7 +259,7 @@ void CBaseHudWeaponSelection::HideSelection( void )
 bool CBaseHudWeaponSelection::CanBeSelectedInHUD( C_BaseCombatWeapon *pWeapon )
 {
 	// Xbox: In plus type, weapons without ammo can still be selected in the HUD
-	if( HUDTYPE_PLUS == hud_fastswitch.GetInt() )
+	if( HUDTYPE_PLUS == GetFastSwitchType() )
 	{
 		return pWeapon->VisibleInWeaponSelection();
 	}
@@ -315,7 +315,7 @@ void CBaseHudWeaponSelection::OnWeaponPickup( C_BaseCombatWeapon *pWeapon )
 //------------------------------------------------------------------------
 void CBaseHudWeaponSelection::UserCmd_Slot1(void)
 {
-	if( HUDTYPE_CAROUSEL == hud_fastswitch.GetInt() )
+	if( HUDTYPE_CAROUSEL == GetFastSwitchType() )
 	{
 		UserCmd_LastWeapon();
 	}
@@ -327,7 +327,7 @@ void CBaseHudWeaponSelection::UserCmd_Slot1(void)
 
 void CBaseHudWeaponSelection::UserCmd_Slot2(void)
 {
-	if( HUDTYPE_CAROUSEL == hud_fastswitch.GetInt() )
+	if( HUDTYPE_CAROUSEL == GetFastSwitchType() )
 	{
 		UserCmd_NextWeapon();
 	}
@@ -339,7 +339,7 @@ void CBaseHudWeaponSelection::UserCmd_Slot2(void)
 
 void CBaseHudWeaponSelection::UserCmd_Slot3(void)
 {
-	if( HUDTYPE_CAROUSEL == hud_fastswitch.GetInt() )
+	if( HUDTYPE_CAROUSEL == GetFastSwitchType() )
 	{
 		engine->ClientCmd( "phys_swap" );
 	}
@@ -351,7 +351,7 @@ void CBaseHudWeaponSelection::UserCmd_Slot3(void)
 
 void CBaseHudWeaponSelection::UserCmd_Slot4(void)
 {
-	if( HUDTYPE_CAROUSEL == hud_fastswitch.GetInt() )
+	if( HUDTYPE_CAROUSEL == GetFastSwitchType() )
 	{
 		UserCmd_PrevWeapon();
 	}
@@ -472,7 +472,7 @@ void CBaseHudWeaponSelection::UserCmd_NextWeapon(void)
 		return;
 
 	CycleToNextWeapon();
-	if( hud_fastswitch.GetInt() > 0 )
+	if( GetFastSwitchType() > 0 )
 	{
 		SelectWeapon();
 	}
@@ -490,7 +490,7 @@ void CBaseHudWeaponSelection::UserCmd_PrevWeapon(void)
 
 	CycleToPrevWeapon();
 
-	if( hud_fastswitch.GetInt() > 0 )
+	if( GetFastSwitchType() > 0 )
 	{
 		SelectWeapon();
 	}

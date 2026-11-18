@@ -56,7 +56,7 @@ public:
 	virtual void CycleToNextWeapon( void );
 	virtual void CycleToPrevWeapon( void );
 
-	virtual C_BaseCombatWeapon *GetWeaponInSlot( int iSlot, int iSlotPos );
+	virtual C_BaseCombatWeapon *GetWeaponInSlot( int iSlot, int iSlotPos, bool bConsole = false );
 	virtual void SelectWeaponSlot( int iSlot );
 
 	virtual C_BaseCombatWeapon	*GetSelectedWeapon( void )
@@ -86,7 +86,7 @@ protected:
 	{
 		CBaseHudWeaponSelection::SetWeaponSelected();
 
-		switch( hud_fastswitch.GetInt() )
+		switch( GetFastSwitchType() )
 		{
 		case HUDTYPE_FASTSWITCH:
 		case HUDTYPE_CAROUSEL:
@@ -438,7 +438,7 @@ void CHudWeaponSelection::Paint()
 
 	// find and display our current selection
 	C_BaseCombatWeapon *pSelectedWeapon = NULL;
-	switch ( hud_fastswitch.GetInt() )
+	switch ( GetFastSwitchType() )
 	{
 	case HUDTYPE_FASTSWITCH:
 	case HUDTYPE_CAROUSEL:
@@ -452,7 +452,7 @@ void CHudWeaponSelection::Paint()
 		return;
 
 	bool bPushedViewport = false;
-	if( hud_fastswitch.GetInt() == HUDTYPE_FASTSWITCH  || hud_fastswitch.GetInt() == HUDTYPE_PLUS )
+	if( GetFastSwitchType() == HUDTYPE_FASTSWITCH  || GetFastSwitchType() == HUDTYPE_PLUS )
 	{
 		CMatRenderContextPtr pRenderContext( materials );
 		if( pRenderContext->GetRenderTarget() )
@@ -473,7 +473,7 @@ void CHudWeaponSelection::Paint()
 		selectedColor[i] = m_BoxColor[i] + ((m_SelectedBoxColor[i] - m_BoxColor[i]) * percentageDone);
 	}
 
-	switch ( hud_fastswitch.GetInt() )
+	switch ( GetFastSwitchType() )
 	{
 	case HUDTYPE_CAROUSEL:
 		{
@@ -618,7 +618,7 @@ void CHudWeaponSelection::Paint()
 				int lastSlotPos = -1;
 				for ( int slotPos = 0; slotPos < MAX_WEAPON_POSITIONS; ++slotPos )
 				{
-					C_BaseCombatWeapon *pWeapon = GetWeaponInSlot( i, slotPos );
+					C_BaseCombatWeapon *pWeapon = GetWeaponInSlot( i, slotPos, true );
 					if ( pWeapon )
 					{
 						lastSlotPos = slotPos;
@@ -637,7 +637,7 @@ void CHudWeaponSelection::Paint()
 					int x = xPos;
 					int y = yPos;
 
-					C_BaseCombatWeapon *pWeapon = GetWeaponInSlot( i, slotPos );
+					C_BaseCombatWeapon *pWeapon = GetWeaponInSlot( i, slotPos, true );
 					bool selectedWeapon = false;
 					if ( i == m_iSelectedSlot && slotPos == m_iSelectedBoxPosition )
 					{
@@ -753,7 +753,7 @@ void CHudWeaponSelection::DrawLargeWeaponBox( C_BaseCombatWeapon *pWeapon, bool 
 {
 	Color col = bSelected ? m_SelectedFgColor : GetFgColor();
 	
-	switch ( hud_fastswitch.GetInt() )
+	switch ( GetFastSwitchType() )
 	{
 	case HUDTYPE_BUCKETS:
 		{
@@ -771,7 +771,7 @@ void CHudWeaponSelection::DrawLargeWeaponBox( C_BaseCombatWeapon *pWeapon, bool 
 				int x_offs = (boxWide - iconWidth) / 2;
 
 				int y_offs;
-				if ( bSelected && hud_fastswitch.GetInt() != 0 )
+				if ( bSelected && GetFastSwitchType() != 0 )
 				{
 					// place the icon aligned with the non-selected version
 					y_offs = (boxTall / 1.5f - iconHeight) / 2;
@@ -835,7 +835,7 @@ void CHudWeaponSelection::DrawLargeWeaponBox( C_BaseCombatWeapon *pWeapon, bool 
 				iconHeight = pWeapon->GetSpriteInactive()->Height();
 
 				x_offs = (boxWide - iconWidth) / 2;
-				if ( bSelected && HUDTYPE_CAROUSEL == hud_fastswitch.GetInt() )
+				if ( bSelected && HUDTYPE_CAROUSEL == GetFastSwitchType() )
 				{
 					// place the icon aligned with the non-selected version
 					y_offs = (boxTall/1.5f - iconHeight) / 2;
@@ -862,7 +862,7 @@ void CHudWeaponSelection::DrawLargeWeaponBox( C_BaseCombatWeapon *pWeapon, bool 
 				iconHeight = pWeapon->GetSpriteActive()->Height();
 
 				x_offs = (boxWide - iconWidth) / 2;
-				if ( HUDTYPE_CAROUSEL == hud_fastswitch.GetInt() )
+				if ( HUDTYPE_CAROUSEL == GetFastSwitchType() )
 				{
 					// place the icon aligned with the non-selected version
 					y_offs = (boxTall/1.5f - iconHeight) / 2;
@@ -897,7 +897,7 @@ void CHudWeaponSelection::DrawLargeWeaponBox( C_BaseCombatWeapon *pWeapon, bool 
 		break;
 	}
 
-	if ( HUDTYPE_PLUS == hud_fastswitch.GetInt() )
+	if ( HUDTYPE_PLUS == GetFastSwitchType() )
 	{
 		// No text in plus bucket method
 		return;
@@ -1031,7 +1031,7 @@ void CHudWeaponSelection::ApplySchemeSettings(vgui::IScheme *pScheme)
 	GetPos(x, y);
 	GetHudSize(screenWide, screenTall);
 
-	if ( hud_fastswitch.GetInt() == HUDTYPE_CAROUSEL )
+	if ( GetFastSwitchType() == HUDTYPE_CAROUSEL )
 	{
 		// need bounds to be exact width for proper clipping during scroll 
 		int width = MAX_CAROUSEL_SLOTS*m_flLargeBoxWide + (MAX_CAROUSEL_SLOTS-1)*m_flBoxGap;
@@ -1283,7 +1283,7 @@ int CHudWeaponSelection::GetLastPosInSlot( int iSlot ) const
 //-----------------------------------------------------------------------------
 // Purpose: returns the weapon in the specified slot
 //-----------------------------------------------------------------------------
-C_BaseCombatWeapon *CHudWeaponSelection::GetWeaponInSlot( int iSlot, int iSlotPos )
+C_BaseCombatWeapon *CHudWeaponSelection::GetWeaponInSlot( int iSlot, int iSlotPos, bool bConsole )
 {
 	C_BasePlayer *player = C_BasePlayer::GetLocalPlayer();
 	if ( !player )
@@ -1296,8 +1296,15 @@ C_BaseCombatWeapon *CHudWeaponSelection::GetWeaponInSlot( int iSlot, int iSlotPo
 		if ( pWeapon == NULL )
 			continue;
 
-		if ( pWeapon->GetSlot() == iSlot && pWeapon->GetPosition() == iSlotPos )
+		if ( bConsole )
+		{
+			if ( pWeapon->GetSlotConsole() == iSlot && pWeapon->GetPositionConsole() == iSlotPos )
+				return pWeapon;
+		}
+		else if ( pWeapon->GetSlot() == iSlot && pWeapon->GetPosition() == iSlotPos )
+		{
 			return pWeapon;
+		}
 	}
 
 	return NULL;
@@ -1347,7 +1354,7 @@ void CHudWeaponSelection::FastWeaponSwitch( int iWeaponSlot )
 		pPlayer->EmitSound( "Player.DenyWeaponSelection" );
 	}
 
-	if ( HUDTYPE_CAROUSEL != hud_fastswitch.GetInt() )
+	if ( HUDTYPE_CAROUSEL != GetFastSwitchType() )
 	{
 		// kill any fastswitch display
 		m_flSelectionTime = 0.0f;
@@ -1396,7 +1403,7 @@ void CHudWeaponSelection::PlusTypeFastWeaponSwitch( int iWeaponSlot )
 		int lastSlotPos = -1;
 		for ( int slotPos = 0; slotPos < MAX_WEAPON_POSITIONS; ++slotPos )
 		{
-			C_BaseCombatWeapon *pWeapon = GetWeaponInSlot( newSlot, slotPos );
+			C_BaseCombatWeapon *pWeapon = GetWeaponInSlot( newSlot, slotPos, true );
 			if ( pWeapon )
 			{
 				lastSlotPos = slotPos;
@@ -1420,7 +1427,7 @@ void CHudWeaponSelection::PlusTypeFastWeaponSwitch( int iWeaponSlot )
 	// Select the weapon in this position
 	bool bWeaponSelected = false;
 	C_BaseCombatWeapon *pActiveWeapon = pPlayer->GetActiveWeapon();
-	C_BaseCombatWeapon *pWeapon = GetWeaponInSlot( m_iSelectedSlot, m_iSelectedBoxPosition );
+	C_BaseCombatWeapon *pWeapon = GetWeaponInSlot( m_iSelectedSlot, m_iSelectedBoxPosition, true );
 	if ( pWeapon )
 	{
 		if ( pWeapon != pActiveWeapon )
@@ -1460,7 +1467,7 @@ void CHudWeaponSelection::SelectWeaponSlot( int iSlot )
 	if ( pPlayer->IsAllowedToSwitchWeapons() == false )
 		return;
 
-	switch( hud_fastswitch.GetInt() )
+	switch( GetFastSwitchType() )
 	{
 	case HUDTYPE_FASTSWITCH:
 	case HUDTYPE_CAROUSEL:
