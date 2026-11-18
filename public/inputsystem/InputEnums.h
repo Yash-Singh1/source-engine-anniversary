@@ -161,13 +161,14 @@ enum
 	LASTINPUT_STEAMCONTROLLER = 2
 };
 
+// Anniversary Steam Input action sets, in the order of the action_manifest_hl2.vdf
+// set names retail inputsystem looks up (GameControls, VehicleControls, MenuControls).
 enum GameActionSet_t
 {
 	GAME_ACTION_SET_NONE = -1,
-	GAME_ACTION_SET_MENUCONTROLS = 0,
-	GAME_ACTION_SET_FPSCONTROLS,
-	GAME_ACTION_SET_IN_GAME_HUD,
-	GAME_ACTION_SET_SPECTATOR,
+	GAME_ACTION_SET_GAMECONTROLS = 0,
+	GAME_ACTION_SET_VEHICLECONTROLS,
+	GAME_ACTION_SET_MENUCONTROLS,
 };
 
 enum GameActionSetFlags_t
