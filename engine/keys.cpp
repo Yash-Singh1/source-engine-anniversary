@@ -189,8 +189,11 @@ Key_Bind_f
 
 void BindKey( const char *pchBind, bool bShow, const char *pchCmd )
 {		
+#ifndef BYTEMATCH_RETAIL
 	if ( !g_pInputSystem )
 		return;
+#endif
+#line 194
 
 	ButtonCode_t b = g_pInputSystem->StringToButtonCode( pchBind );
 	if ( b == BUTTON_CODE_INVALID )
@@ -424,6 +427,14 @@ CON_COMMAND( key_listboundkeys, "List bound keys with bindings." )
 		if ( !pBinding || !pBinding[0] )
 			continue;
 
+#ifdef BYTEMATCH_RETAIL
+		if ( IsJoystickCode( (ButtonCode_t)i ) )
+		{
+			ConMsg( "[%d:%d]\"%s\" = \"%s\"\n", i, GetJoystickForCode( (ButtonCode_t)i ), g_pInputSystem->ButtonCodeToString( (ButtonCode_t)i ), pBinding );
+			continue;
+		}
+#endif
+#line 427
 		ConMsg( "\"%s\" = \"%s\"\n", g_pInputSystem->ButtonCodeToString( (ButtonCode_t)i ), pBinding );
 	}
 }
@@ -600,7 +611,12 @@ static bool HandleEngineKey( const InputEvent_t &event )
 	// Warn about unbound keys 
 	if ( IsPC() && bDown )
 	{
+#ifdef BYTEMATCH_RETAIL
+		if ( IsJoystickCode( code ) && !IsJoystickAxisCode( code ) && !s_pKeyInfo[code].m_pKeyBinding )
+#else
 		if ( IsJoystickCode( code ) && !IsJoystickAxisCode( code ) && !IsSteamControllerCode( code ) && !s_pKeyInfo[code].m_pKeyBinding )
+#endif
+#line 604
 		{
 			ConDMsg( "%s is unbound.\n", g_pInputSystem->ButtonCodeToString( code ) );
 		}
