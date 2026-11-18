@@ -251,7 +251,12 @@ public:
 		}
 
 		m_nCount = nCount;
+#ifdef BYTEMATCH_RETAIL
+		Q_strcpy( m_pFilename, pFilename );
+#else
 		V_strcpy_safe( m_pFilename, pFilename );
+#endif
+#line 255
 		m_nOffset = nOffset;
 
 		// can preload as required
