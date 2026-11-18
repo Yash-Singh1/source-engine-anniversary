@@ -60,7 +60,10 @@ ConVar r_staticpropinfo( "r_staticpropinfo", "0" );
 ConVar  r_drawmodeldecals( "r_drawmodeldecals", "1" );
 extern ConVar mat_fullbright;
 static bool g_MakingDevShots = false;
+#ifndef BYTEMATCH_RETAIL
 extern int s_MapVersion;
+#endif
+#line 63
 //-----------------------------------------------------------------------------
 // Index into the fade list
 //-----------------------------------------------------------------------------
@@ -1295,6 +1298,7 @@ void CStaticPropMgr::UnserializeLeafList( CUtlBuffer& buf )
 	}
 }
 
+#ifndef BYTEMATCH_RETAIL
 template <typename SerializedLumpType>
 void UnserializeLump( StaticPropLump_t* _output, CUtlBuffer& buf )
 {
@@ -1314,6 +1318,8 @@ void UnserializeLump<StaticPropLump_t>(StaticPropLump_t* _output, CUtlBuffer& bu
 
 	buf.Get(_output, sizeof(StaticPropLump_t));
 }
+#endif
+#line 1297
 
 void CStaticPropMgr::UnserializeModels( CUtlBuffer& buf )
 {
@@ -1333,6 +1339,25 @@ void CStaticPropMgr::UnserializeModels( CUtlBuffer& buf )
 	for ( int i = 0; i < count; ++i )
 	{
 		StaticPropLump_t lump;
+#ifdef BYTEMATCH_RETAIL
+		switch ( nLumpVersion )
+		{
+		case 4:
+			buf.Get( &lump, sizeof(StaticPropLumpV4_t) );
+			lump.m_flForcedFadeScale = 1.0f;
+			lump.m_nMinDXLevel = lump.m_nMaxDXLevel = 0;
+			break;
+
+		case 5:
+			buf.Get( &lump, sizeof(StaticPropLumpV5_t) );
+			lump.m_nMinDXLevel = lump.m_nMaxDXLevel = 0;
+			break;
+
+		case 6:
+			buf.Get( &lump, sizeof( StaticPropLump_t ) );
+			break;
+		}
+#else
 		switch ( nLumpVersion )
 		{
 			case 4: UnserializeLump<StaticPropLumpV4_t>(&lump, buf); break;
@@ -1352,6 +1377,8 @@ void CStaticPropMgr::UnserializeModels( CUtlBuffer& buf )
 			default:
 				Assert("Unexpected version while deserializing lumps.");
 		}
+#endif
+#line 1333
 
 		m_StaticProps[i].Init( i, lump, m_StaticPropDict[lump.m_PropType].m_pModel );
 

@@ -98,7 +98,10 @@ public:
 	int				m_nEndTick; // if nonzero, stop playback once we reach this tick
 	bool			m_bLoading; // true if demo is loading
 
+#ifndef BYTEMATCH_RETAIL
 	unsigned		m_nSkipPacketsPlayed; // Track consecutive skip packets returned to avoid excess
+#endif
+#line 101
 
 	// view origin/angle interpolation:
 	CUtlVector< DemoCommandQueue >	m_DestCmdInfo;
@@ -128,7 +131,7 @@ public:
 #else
 	CDemoRecorder() = default;
 #endif
-#line 127
+#line 126
 
 	CDemoFile *GetDemoFile( void );
 	int		GetRecordingTick( void );
