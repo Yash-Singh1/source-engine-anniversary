@@ -1008,6 +1008,7 @@ Vector CMatRenderContextBase::GetToneMappingScaleLinear( void )
 		return m_LastSetToneMapScale;
 }
 
+#ifndef BYTEMATCH_RETAIL
 void CMatRenderContextBase::OnAsyncCreateTextureFromRenderTarget( ITexture* pSrcRt, const char** ppDstName, IAsyncTextureOperationReceiver* pRecipient )
 {
 	Assert( pSrcRt != NULL );
@@ -1023,8 +1024,10 @@ void CMatRenderContextBase::OnAsyncCreateTextureFromRenderTarget( ITexture* pSrc
 	V_strcpy( pDstNameCopy, *ppDstName );
 	( *ppDstName ) = pDstNameCopy;
 }
+#endif
 
 // Map and unmap a texture. The pRecipient->OnAsyncMapComplete is called when complete. 
+#ifndef BYTEMATCH_RETAIL
 void CMatRenderContextBase::OnAsyncMap( ITextureInternal* pTexToMap, IAsyncTextureOperationReceiver* pRecipient, void* pExtraArgs )
 {
 	Assert( pTexToMap != NULL );
@@ -1033,14 +1036,18 @@ void CMatRenderContextBase::OnAsyncMap( ITextureInternal* pTexToMap, IAsyncTextu
 	pTexToMap->AddRef();
 	pRecipient->AddRef();
 }
+#endif
 
+#ifndef BYTEMATCH_RETAIL
 void CMatRenderContextBase::OnAsyncUnmap( ITextureInternal* pTexToUnmap ) 
 {
 	Assert( pTexToUnmap != NULL );
 
 	pTexToUnmap->AddRef();
 }
+#endif
 
+#ifndef BYTEMATCH_RETAIL
 void CMatRenderContextBase::OnAsyncCopyRenderTargetToStagingTexture( ITexture* pDst, ITexture* pSrc, IAsyncTextureOperationReceiver* pRecipient )
 {
 	Assert( pDst != NULL );
@@ -1051,6 +1058,7 @@ void CMatRenderContextBase::OnAsyncCopyRenderTargetToStagingTexture( ITexture* p
 	pSrc->AddRef();
 	pRecipient->AddRef();
 }
+#endif
 
 #undef g_pShaderAPI 
 
@@ -1114,10 +1122,12 @@ void CMatRenderContext::DoStartupShaderPreloading( void )
 }
 #endif
 
+#ifndef BYTEMATCH_RETAIL
 void CMatRenderContext::TextureManagerUpdate()
 {
 	TextureManager()->Update();
 }
+#endif
 
 
 inline IMaterialInternal *CMatRenderContext::GetMaterialInternal( MaterialHandle_t h ) const
@@ -2791,9 +2801,11 @@ void CMatRenderContext::BindStandardTexture( Sampler_t sampler, StandardTextureI
 			g_pShaderAPI->BindTexture( sampler, GetMaxDepthTextureHandle() );
 		return;
 
+#ifndef BYTEMATCH_RETAIL
 	case TEXTURE_DEBUG_LUXELS:
 		TextureManager()->DebugLuxels2D()->Bind( sampler );
 		return;
+#endif
 
 	default:
 		Assert(0);
@@ -2880,9 +2892,11 @@ void CMatRenderContext::GetStandardTextureDimensions( int *pWidth, int *pHeight,
 		pTexture = g_pMorphMgr->MorphWeights();
 		break;
 
+#ifndef BYTEMATCH_RETAIL
 	case TEXTURE_DEBUG_LUXELS:
 		pTexture = TextureManager()->DebugLuxels2D();
 		break;
+#endif
 	}
 
 	if ( pTexture )
@@ -3021,6 +3035,7 @@ bool CMatRenderContext::OnDrawMesh( IMesh *pMesh, CPrimList *pLists, int nLists 
 	return true;
 }
 
+#ifndef BYTEMATCH_RETAIL
 void CMatRenderContext::AsyncCreateTextureFromRenderTarget( ITexture* pSrcRt, const char* pDstName, ImageFormat dstFmt, bool bGenMips, int nAdditionalCreationFlags, IAsyncTextureOperationReceiver* pRecipient, void* pExtraArgs )
 {
 	if ( g_pMaterialSystem->GetThreadMode() == MATERIAL_SINGLE_THREADED ) 
@@ -3030,7 +3045,9 @@ void CMatRenderContext::AsyncCreateTextureFromRenderTarget( ITexture* pSrcRt, co
 
 	TextureManager()->AsyncCreateTextureFromRenderTarget( pSrcRt, pDstName, dstFmt, bGenMips, nAdditionalCreationFlags, pRecipient, pExtraArgs );
 }
+#endif
 
+#ifndef BYTEMATCH_RETAIL
 void CMatRenderContext::AsyncMap( ITextureInternal* pTexToMap, IAsyncTextureOperationReceiver* pRecipient, void* pExtraArgs )
 {
 	if ( g_pMaterialSystem->GetThreadMode() == MATERIAL_SINGLE_THREADED )
@@ -3049,7 +3066,9 @@ void CMatRenderContext::AsyncMap( ITextureInternal* pTexToMap, IAsyncTextureOper
 	SafeRelease( &pRecipient );
 	SafeRelease( &pTexToMap );
 }
+#endif
 
+#ifndef BYTEMATCH_RETAIL
 void CMatRenderContext::AsyncUnmap( ITextureInternal* pTexToUnmap )
 {
 	if ( g_pMaterialSystem->GetThreadMode() == MATERIAL_SINGLE_THREADED )
@@ -3060,7 +3079,9 @@ void CMatRenderContext::AsyncUnmap( ITextureInternal* pTexToUnmap )
 	pTexToUnmap->Unmap();
 	SafeRelease( &pTexToUnmap ); // Matches AddRef from OnAsyncUnmap
 }
+#endif
 
+#ifndef BYTEMATCH_RETAIL
 void CMatRenderContext::AsyncCopyRenderTargetToStagingTexture( ITexture* pDst, ITexture* pSrc, IAsyncTextureOperationReceiver* pRecipient, void* pExtraArgs )
 {
 	if ( g_pMaterialSystem->GetThreadMode() == MATERIAL_SINGLE_THREADED )
@@ -3075,6 +3096,7 @@ void CMatRenderContext::AsyncCopyRenderTargetToStagingTexture( ITexture* pDst, I
 	SafeRelease( &pSrc );
 	SafeRelease( &pRecipient );
 }
+#endif
 
 
 //-----------------------------------------------------------------------------

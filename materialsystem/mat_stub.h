@@ -28,14 +28,18 @@ public:
 	virtual bool SetRenderTarget( int nRenderTargetID ) { return false; };
 
 	// Releases the texture's hw memory
-	virtual void ReleaseMemory() {};
+	virtual void Release() {};
 
 	// Called before Download() on restore. Gives render targets a change to change whether or
 	// not they force themselves to have a separate depth buffer due to AA.
 	virtual void OnRestore() {};
 
 	// Resets the texture's filtering and clamping mode
+#ifdef BYTEMATCH_RETAIL
+	virtual void SetFilteringAndClampingMode() {};
+#else
 	virtual void SetFilteringAndClampingMode( bool bOnlyLodValues = false ) {};
+#endif
 
 	// Used by tools.... loads up the non-fallback information about the texture 
 	virtual void Precache() {};
@@ -66,6 +70,7 @@ public:
 	// Reload any files the texture is responsible for.
 	virtual void ReloadFilesInList( IFileList *pFilesToReload ) { };
 
+#ifndef BYTEMATCH_RETAIL
 	virtual bool AsyncReadTextureFromFile( IVTFTexture* pVTFTexture, unsigned int nAdditionalCreationFlags ) { return false; };
 	virtual void AsyncCancelReadTexture() {};
 
@@ -78,6 +83,7 @@ public:
 	virtual ResidencyType_t GetTargetResidence() const { return RESIDENT_NONE; };
 	virtual bool MakeResident( ResidencyType_t newResidence ) { return false; };
 	virtual void UpdateLodBias() {};
+#endif
 
 	// Various texture polling methods
 	virtual const char *GetName( void ) const { return m_szTextureName; }

@@ -102,11 +102,11 @@ public:
 		m_WidthBackBuffer( 0 ), 
 		m_HeightBackBuffer( 0 ),
 		m_FogMode( MATERIAL_FOG_NONE ),
-		m_bFogRadial( false ),
 		m_flFogStart( 0 ),
 		m_flFogEnd( 0 ),
 		m_flFogZ( 0 ),
-		m_flFogMaxDensity( 1.0 )
+		m_flFogMaxDensity( 1.0 ),
+		m_bFogRadial( false )
 	{
 		memset( &m_FogColor, 0, sizeof(m_FogColor) );
 	}
@@ -403,12 +403,15 @@ public:
 	DEFINE_QUEUED_CALL_3(					ClearBuffersObeyStencilEx, bool, bool, bool, IMatRenderContext, m_pHardwareContext );
 	DEFINE_QUEUED_CALL_0(					PerformFullScreenStencilOperation, IMatRenderContext, m_pHardwareContext );
 
+#ifndef BYTEMATCH_RETAIL
 	virtual void AsyncCreateTextureFromRenderTarget( ITexture* pSrcRt, const char* pDstName, ImageFormat dstFmt, bool bGenMips, int nAdditionalCreationFlags, IAsyncTextureOperationReceiver* pRecipient, void* pExtraArgs ) OVERRIDE
 	{
 		OnAsyncCreateTextureFromRenderTarget( pSrcRt, &pDstName, pRecipient );
 
 		m_queue.QueueCall( m_pHardwareContext, &IMatRenderContextInternal::AsyncCreateTextureFromRenderTarget, pSrcRt, pDstName, dstFmt, bGenMips, nAdditionalCreationFlags, pRecipient, pExtraArgs );
 	}
+
+#endif
 
 	virtual void							FogRadial( bool bRadial ) OVERRIDE
 	{
@@ -421,6 +424,7 @@ public:
 		return m_bFogRadial;
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	virtual void							AsyncMap( ITextureInternal* pTexToMap, IAsyncTextureOperationReceiver* pRecipient, void* pExtraArgs ) OVERRIDE
 	{
 		OnAsyncMap( pTexToMap, pRecipient, pExtraArgs );
@@ -443,6 +447,7 @@ public:
 	}
 
 	DEFINE_QUEUED_CALL_0(					TextureManagerUpdate, IMatRenderContextInternal, m_pHardwareContext );
+#endif
 	
 	bool GetUserClipTransform( VMatrix &worldToView )
 	{
@@ -625,11 +630,11 @@ private:
 	int m_WidthBackBuffer, m_HeightBackBuffer;
 	int m_nBoneCount;
 	MaterialFogMode_t m_FogMode;
-	bool m_bFogRadial;
 	float m_flFogStart;
 	float m_flFogEnd;
 	float m_flFogZ;
 	float m_flFogMaxDensity;
+	bool m_bFogRadial;
 	color24 m_FogColor;
 
 	CMemoryStack m_Vertices;

@@ -57,14 +57,18 @@ public:
 	virtual bool SetRenderTarget( int nRenderTargetID ) = 0;
 
 	// Releases the texture's hw memory
-	virtual void ReleaseMemory() = 0;
+	virtual void Release() = 0;
 
 	// Called before Download() on restore. Gives render targets a change to change whether or
 	// not they force themselves to have a separate depth buffer due to AA.
 	virtual void OnRestore() = 0;
 
 	// Resets the texture's filtering and clamping mode
+#ifdef BYTEMATCH_RETAIL
+	virtual void SetFilteringAndClampingMode() = 0;
+#else
 	virtual void SetFilteringAndClampingMode( bool bOnlyLodValues = false ) = 0;
+#endif
 
 	// Used by tools.... loads up the non-fallback information about the texture 
 	virtual void Precache() = 0;
@@ -141,6 +145,7 @@ public:
 	// Reload any files the texture is responsible for.
 	virtual void ReloadFilesInList( IFileList *pFilesToReload ) = 0;
 
+#ifndef BYTEMATCH_RETAIL
 	virtual bool AsyncReadTextureFromFile( IVTFTexture* pVTFTexture, unsigned int nAdditionalCreationFlags ) = 0;
 	virtual void AsyncCancelReadTexture() = 0;
 
@@ -153,6 +158,7 @@ public:
 	virtual ResidencyType_t GetTargetResidence() const = 0;
 	virtual bool MakeResident( ResidencyType_t newResidence ) = 0;
 	virtual void UpdateLodBias() = 0;
+#endif
 };
 
 inline bool IsTextureInternalEnvCubemap( const ITextureInternal *pTexture )

@@ -932,6 +932,7 @@ void CMaterialVar::SetTextureValue( ITexture *texture )
 		s_bInitTextureRefList = true;
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	// Avoid the garymcthack in CShaderSystem::LoadCubeMap by ensuring we're not using 
 	// the internal env cubemap.
 	if ( ThreadInMainThread() )
@@ -939,6 +940,7 @@ void CMaterialVar::SetTextureValue( ITexture *texture )
 		ITextureInternal* pTexInternal = assert_cast<ITextureInternal *>( texture );
 		TextureManager()->RequestAllMipmaps( pTexInternal );
 	}
+#endif
 
 	ASSERT_NOT_DUMMY_VAR();
 	CMatCallQueue *pCallQueue = MaterialSystem()->GetRenderCallQueue();
