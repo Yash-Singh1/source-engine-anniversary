@@ -280,6 +280,9 @@ class Module:
             rel = o['oso']
             o.update(d)
             o['source'] = our.get('source')  # path in our tree (retail's may differ, see aliases.json)
+            rs = our.get('retail_source')
+            if not o['source'] and rs and os.path.exists(os.path.join(TREE, rs)):
+                o['source'] = rs  # restored since the manifest was generated
             o['valve_src'] = d['oso'][:-len(rel)] if d['oso'].endswith(rel) and d['oso'] != rel else None
         self.valve_src = next((o['valve_src'] for o in self.objects if o['valve_src'] and o['kind'] == 'object'),
                               next((o['valve_src'] for o in self.objects if o['valve_src']), None))
@@ -289,13 +292,20 @@ class Module:
         return os.path.join(self.root, p.lstrip('/')) if p.startswith(VALVE_TOP) else None
 
     def plan(self):
-        """Work list: (our object, source, compile entry, retail object or None, Valve path)."""
+        """Work list: (our object, source, compile entry, retail object or None, Valve path).
+
+        A loose object that retail links as a member of an archive we don't build
+        (vstdlib's coroutine.o from libcoroutine_osx.a) goes into that archive instead,
+        returned as {Valve archive path: [(object, source, entry, retail member, member name)]}."""
         d = self.link['directory']
         args = self.link['arguments']
         loose = [o for o in self.objects if o['kind'] == 'object']
         by_src = dict((o.get('source'), o) for o in loose if o.get('source'))
+        ours_ar = set('lib%s.a' % a[2:] for a in args if a.startswith('-l'))
+        mem_src = dict((o.get('source'), o) for o in self.objects if o['kind'] == 'archive_member'
+                       and o.get('source') and os.path.basename(o['archive']) not in ours_ar)
         obj_dir = os.path.dirname(loose[0]['oso']) if loose else None
-        jobs, arg_map = [], {}
+        jobs, arg_map, extra = [], {}, {}
         for a in args:
             if not a.endswith('.o') or a.startswith('-'):
                 continue
@@ -306,6 +316,12 @@ class Module:
                 continue
             rel = os.path.relpath(src, self.comp.tree)
             r = by_src.get(rel)
+            if not r and rel in mem_src:
+                r = mem_src[rel]
+                varchive, mname = split_member(r['oso'])
+                extra.setdefault(varchive, []).append((path, src, entry, r, mname))
+                arg_map[a] = None
+                continue
             if r:
                 vp = r['oso']
             else:
@@ -313,7 +329,7 @@ class Module:
                 self.notes.append('%s: not in the retail debug map' % rel)
             jobs.append(('obj', path, src, entry, r, vp))
             arg_map[a] = vp
-        return jobs, arg_map
+        return jobs, arg_map, extra
 
     def archive_plan(self):
         """For each -l that names one of our static libraries: (lib arg, archive entry, members)."""
@@ -352,8 +368,10 @@ class Module:
     def run(self, shim):
         if os.path.isdir(self.root):
             shutil.rmtree(self.root)
-        jobs, arg_map = self.plan()
+        jobs, arg_map, extra = self.plan()
         archives = self.archive_plan()
+        for varchive, mems in extra.items():
+            archives.append((varchive, varchive, mems))
         work = []
         for kind, path, src, entry, r, vp in jobs:
             work.append((src, entry, r, ('obj', vp)))
@@ -392,11 +410,16 @@ class Module:
             subprocess.check_call(['/usr/bin/ar', 'rcs', dest] + names, cwd=stage,
                                   stderr=subprocess.DEVNULL)
             lib_map[lib] = varchive
-        # link
+        # link; archives of formerly loose objects follow the last object, ahead of the libraries
         cmd = []
-        for a in self.link['arguments']:
+        args = self.link['arguments']
+        last_obj = max([i for i, a in enumerate(args) if a in arg_map] or [-1])
+        for i, a in enumerate(args):
             if a in arg_map:
-                cmd.append(arg_map[a])
+                if arg_map[a]:
+                    cmd.append(arg_map[a])
+                if i == last_obj:
+                    cmd += [lib_map[v] for v in extra]
             elif a in lib_map:
                 cmd.append(lib_map[a])
             elif a.startswith('-o') and len(a) > 2:
