@@ -1,0 +1,244 @@
+{
+ "module": "bin/vaudio_miles",
+ "depot": "223",
+ "build": "19307283",
+ "path": "bin/vaudio_miles.dylib",
+ "aliases": [],
+ "sha256": "51e6b5c1b81b66306fe3ad2e8a2f8f12f6fadd9d68252cecbc3ca2fc7dcf5806",
+ "size": 28900,
+ "macho": {
+  "filetype": "MH_DYLIB",
+  "flags": "0x110085",
+  "segments": [
+   {
+    "name": "__TEXT",
+    "vmaddr": "0x0",
+    "vmsize": 12288,
+    "sections": [
+     [
+      "__text",
+      "0x8a0",
+      6640,
+      16
+     ],
+     [
+      "__symbol_stub",
+      "0x2290",
+      108,
+      2
+     ],
+     [
+      "__stub_helper",
+      "0x22fc",
+      192,
+      4
+     ],
+     [
+      "__gcc_except_tab",
+      "0x23bc",
+      380,
+      4
+     ],
+     [
+      "__const",
+      "0x2540",
+      149,
+      16
+     ],
+     [
+      "__cstring",
+      "0x25d5",
+      431,
+      1
+     ],
+     [
+      "__unwind_info",
+      "0x2784",
+      356,
+      4
+     ],
+     [
+      "__eh_frame",
+      "0x28e8",
+      1808,
+      8
+     ]
+    ]
+   },
+   {
+    "name": "__DATA",
+    "vmaddr": "0x3000",
+    "vmsize": 4096,
+    "sections": [
+     [
+      "__nl_symbol_ptr",
+      "0x3000",
+      24,
+      4
+     ],
+     [
+      "__la_symbol_ptr",
+      "0x3018",
+      72,
+      4
+     ],
+     [
+      "__mod_init_func",
+      "0x3060",
+      8,
+      4
+     ],
+     [
+      "__const",
+      "0x3070",
+      116,
+      16
+     ],
+     [
+      "__data",
+      "0x30f0",
+      136,
+      16
+     ],
+     [
+      "__bss",
+      "0x3180",
+      92,
+      16
+     ],
+     [
+      "__common",
+      "0x31dc",
+      8,
+      4
+     ]
+    ]
+   },
+   {
+    "name": "__LINKEDIT",
+    "vmaddr": "0x4000",
+    "vmsize": 16384,
+    "sections": []
+   }
+  ],
+  "dylibs": [
+   {
+    "path": "@executable_path/libMilesX86.dylib",
+    "current": "0.0.0",
+    "compat": "0.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "@loader_path/libtier0.dylib",
+    "current": "1.0.0",
+    "compat": "1.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "@loader_path/libvstdlib.dylib",
+    "current": "1.0.0",
+    "compat": "1.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "/usr/lib/libiconv.2.dylib",
+    "current": "7.0.0",
+    "compat": "7.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "/usr/lib/libstdc++.6.dylib",
+    "current": "60.0.0",
+    "compat": "7.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "/usr/lib/libSystem.B.dylib",
+    "current": "1197.1.1",
+    "compat": "1.0.0",
+    "kind": "LOAD_DYLIB"
+   }
+  ],
+  "load_commands": [
+   "SEGMENT",
+   "SEGMENT",
+   "SEGMENT",
+   "ID_DYLIB",
+   "DYLD_INFO_ONLY",
+   "SYMTAB",
+   "DYSYMTAB",
+   "UUID",
+   "VERSION_MIN_MACOSX",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "FUNCTION_STARTS",
+   "DATA_IN_CODE"
+  ],
+  "install_name": {
+   "path": "@loader_path/vaudio_miles.dylib",
+   "current": "1.0.0",
+   "compat": "1.0.0"
+  },
+  "uuid": "1C07C01B625E363580260222A8C06C5A",
+  "min_macosx": "10.6.0",
+  "sdk": "10.9.0"
+ },
+ "build_roots": {
+  "rel_singleplayer_osx": 5
+ },
+ "ccache_hosts": {
+  "hl2-osx-builder": 5
+ },
+ "xcode_targets": {
+  "vaudio_miles": 4
+ },
+ "stab_counts": {
+  "0x20": 22,
+  "0x24": 102,
+  "0x26": 21,
+  "0x2e": 51,
+  "0x4e": 51,
+  "0x64": 15,
+  "0x66": 5,
+  "0x84": 7
+ },
+ "n_objects": 5,
+ "n_loose_objects": 4,
+ "n_archive_members": 1,
+ "n_prebuilt_members": 0,
+ "built_mtime_range": [
+  "2024-11-13T17:24:33Z",
+  "2024-11-26T00:56:12Z"
+ ],
+ "static_libraries": [
+  {
+   "archive": "build/Release/libtier1.a",
+   "prebuilt": false,
+   "first_index": 4,
+   "members": [
+    "interface.o"
+   ]
+  }
+ ],
+ "text_order_matches_oso_order": true,
+ "headers_with_code": {
+  "public/mathlib/vector2d.h": 1,
+  "public/mathlib/vector4d.h": 1
+ },
+ "unstabbed_text": {
+  "n_symbols": 0,
+  "bytes": 0,
+  "by_prefix": {}
+ },
+ "objects": [
+  {"index": 0, "oso": "build/buildbot_osx.build/Release/vaudio_miles.build/Objects-normal/i386/voice_codec_frame.o", "kind": "object", "archive": null, "member": null, "xcode_target": "vaudio_miles", "stem": "voice_codec_frame", "mtime": 1731518673, "mtime_utc": "2024-11-13T17:24:33Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "voice_code.tmp.hl2-osx-builder.47462.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "engine/voice_codecs/frame_encoder/voice_codec_frame.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 9, "n_data": 7, "text_bytes": 1200, "first_addr": "0x8a0", "files": ["engine/voice_codecs/frame_encoder/voice_codec_frame.cpp"]},
+  {"index": 1, "oso": "build/buildbot_osx.build/Release/vaudio_miles.build/Objects-normal/i386/milesbase.o", "kind": "object", "archive": null, "member": null, "xcode_target": "vaudio_miles", "stem": "milesbase", "mtime": 1731518673, "mtime_utc": "2024-11-13T17:24:33Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "milesbase.tmp.hl2-osx-builder.47463.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "engine/voice_codecs/miles/milesbase.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 11, "n_data": 6, "text_bytes": 1935, "first_addr": "0xd60", "files": ["engine/voice_codecs/miles/milesbase.cpp"]},
+  {"index": 2, "oso": "build/buildbot_osx.build/Release/vaudio_miles.build/Objects-normal/i386/mp3_miles.o", "kind": "object", "archive": null, "member": null, "xcode_target": "vaudio_miles", "stem": "mp3_miles", "mtime": 1731518673, "mtime_utc": "2024-11-13T17:24:33Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "mp3_miles.tmp.hl2-osx-builder.47464.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "engine/voice_codecs/miles/mp3_miles.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 15, "n_data": 17, "text_bytes": 833, "first_addr": "0x14f0", "files": ["engine/voice_codecs/miles/mp3_miles.cpp"]},
+  {"index": 3, "oso": "build/buildbot_osx.build/Release/vaudio_miles.build/Objects-normal/i386/voice_codec_miles.o", "kind": "object", "archive": null, "member": null, "xcode_target": "vaudio_miles", "stem": "voice_codec_miles", "mtime": 1732582572, "mtime_utc": "2024-11-26T00:56:12Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "voice_code.tmp.hl2-osx-builder.42570.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "engine/voice_codecs/miles/voice_codec_miles.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 14, "n_data": 12, "text_bytes": 2444, "first_addr": "0x1850", "files": ["engine/voice_codecs/miles/voice_codec_miles.cpp", "public/mathlib/vector2d.h", "public/mathlib/vector4d.h"]},
+  {"index": 4, "oso": "build/Release/libtier1.a(interface.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "interface.o", "xcode_target": null, "stem": "interface", "mtime": 1731778100, "mtime_utc": "2024-11-16T17:28:20Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "interface.tmp.hl2-osx-builder.97998.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/interface.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 2, "n_data": 1, "text_bytes": 160, "first_addr": "0x21f0", "files": ["tier1/interface.cpp"]}
+ ]
+}

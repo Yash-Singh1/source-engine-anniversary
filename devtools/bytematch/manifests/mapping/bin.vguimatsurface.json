@@ -1,0 +1,65 @@
+{
+ "module": "bin/vguimatsurface",
+ "our_target": "vguimatsurface",
+ "our_games": null,
+ "project_dir": "vguimatsurface",
+ "order_rule_inversions": 0,
+ "counts": {
+  "exact": 7
+ },
+ "counts_sdk": {
+  "exact": 1,
+  "missing": 6
+ },
+ "diff": {
+  "add": [],
+  "remove": [
+   {
+    "path": "public/filesystem_helpers.cpp",
+    "note": null
+   },
+   {
+    "path": "vguimatsurface/asanstubs.cpp",
+    "note": null
+   },
+   {
+    "path": "vgui2/src/vgui_key_translation.cpp",
+    "note": null
+   },
+   {
+    "path": "public/tier0/memoverride.cpp",
+    "note": "no retail Mac module links a memoverride object: Valve's Mac build has no malloc override (malloc from libSystem, operator new from libstdc++)"
+   }
+  ],
+  "path_differs": [],
+  "order": {
+   "common": 7,
+   "in_order_lis": 6,
+   "need_moving": 1,
+   "identical": false
+  },
+  "libraries": {
+   "retail": [
+    "vgui_controls",
+    "tier1",
+    "bitmap",
+    "tier2",
+    "mathlib",
+    "vgui_surfacelib",
+    "tier3"
+   ],
+   "ours": [
+    "bitmap",
+    "mathlib",
+    "vgui_controls",
+    "tier1",
+    "tier2",
+    "tier3",
+    "vgui_surfacelib"
+   ],
+   "retail_only": [],
+   "ours_only": [],
+   "same_relative_order": false
+  }
+ }
+}

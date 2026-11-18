@@ -1,0 +1,13 @@
+{
+ "module": "bin/vpk_osx32",
+ "our_target": null,
+ "our_games": null,
+ "project_dir": "utils/vpk",
+ "order_rule_inversions": 0,
+ "counts": {
+  "exact": 1
+ },
+ "counts_sdk": {
+  "missing": 1
+ }
+}

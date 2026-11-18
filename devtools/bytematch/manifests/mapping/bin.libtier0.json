@@ -1,0 +1,65 @@
+{
+ "module": "bin/libtier0",
+ "our_target": "tier0",
+ "our_games": null,
+ "project_dir": "tier0",
+ "order_rule_inversions": 0,
+ "counts": {
+  "exact": 21
+ },
+ "counts_sdk": {
+  "missing": 20,
+  "moved": 1
+ },
+ "diff": {
+  "add": [],
+  "remove": [
+   {
+    "path": "tier0/cpumonitoring.cpp",
+    "note": null
+   },
+   {
+    "path": "tier0/mem_helpers.cpp",
+    "note": null
+   },
+   {
+    "path": "tier0/memdbg.cpp",
+    "note": null
+   },
+   {
+    "path": "tier0/memstd.cpp",
+    "note": null
+   },
+   {
+    "path": "tier0/memvalidate.cpp",
+    "note": null
+   },
+   {
+    "path": "tier0/pch_tier0.cpp",
+    "note": null
+   },
+   {
+    "path": "tier0/PMELib.cpp",
+    "note": null
+   },
+   {
+    "path": "tier0/stacktools.cpp",
+    "note": null
+   }
+  ],
+  "path_differs": [],
+  "order": {
+   "common": 21,
+   "in_order_lis": 17,
+   "need_moving": 4,
+   "identical": false
+  },
+  "libraries": {
+   "retail": [],
+   "ours": [],
+   "retail_only": [],
+   "ours_only": [],
+   "same_relative_order": true
+  }
+ }
+}

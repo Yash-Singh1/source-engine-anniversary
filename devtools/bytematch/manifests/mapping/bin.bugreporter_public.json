@@ -1,0 +1,14 @@
+{
+ "module": "bin/bugreporter_public",
+ "our_target": null,
+ "our_games": null,
+ "project_dir": "utils/bugreporter_public",
+ "order_rule_inversions": 0,
+ "counts": {
+  "exact": 3
+ },
+ "counts_sdk": {
+  "exact": 1,
+  "missing": 2
+ }
+}

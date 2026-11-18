@@ -1,0 +1,45 @@
+{
+ "module": "bin/vaudio_speex",
+ "our_target": "vaudio_speex",
+ "our_games": null,
+ "project_dir": "engine/voice_codecs/speex",
+ "order_rule_inversions": 0,
+ "counts": {
+  "exact": 3
+ },
+ "counts_sdk": {
+  "exact": 1,
+  "missing": 2
+ },
+ "diff": {
+  "add": [],
+  "remove": [
+   {
+    "path": "public/tier0/memoverride.cpp",
+    "note": "no retail Mac module links a memoverride object: Valve's Mac build has no malloc override (malloc from libSystem, operator new from libstdc++)"
+   }
+  ],
+  "path_differs": [],
+  "order": {
+   "common": 3,
+   "in_order_lis": 1,
+   "need_moving": 2,
+   "identical": false
+  },
+  "libraries": {
+   "retail": [
+    "libspeex.a"
+   ],
+   "ours": [
+    "tier1"
+   ],
+   "retail_only": [
+    "libspeex.a"
+   ],
+   "ours_only": [
+    "tier1"
+   ],
+   "same_relative_order": true
+  }
+ }
+}

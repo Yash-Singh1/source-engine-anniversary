@@ -1,0 +1,100 @@
+{
+ "module": "bin/GameUI",
+ "our_target": "GameUI",
+ "our_games": null,
+ "project_dir": "gameui",
+ "order_rule_inversions": 0,
+ "counts": {
+  "exact": 66,
+  "missing": 1
+ },
+ "counts_sdk": {
+  "missing": 62,
+  "exact": 2,
+  "moved": 3
+ },
+ "diff": {
+  "add": [
+   {
+    "path": "gameui/OptionsSubGamepad.cpp",
+    "in_our_tree": "missing",
+    "in_sdk": "missing",
+    "alternatives": null
+   }
+  ],
+  "remove": [
+   {
+    "path": "common/GameUI/ObjectList.cpp",
+    "note": null
+   },
+   {
+    "path": "gameui/TextEntryBox.cpp",
+    "note": null
+   },
+   {
+    "path": "gameui/gameui_util.cpp",
+    "note": null
+   },
+   {
+    "path": "gameui/HapticControlBox.cpp",
+    "note": null
+   },
+   {
+    "path": "gameui/KeyToggleCheckButton.cpp",
+    "note": null
+   },
+   {
+    "path": "gameui/ContentControlDialog.cpp",
+    "note": null
+   },
+   {
+    "path": "gameui/CustomTabExplanationDialog.cpp",
+    "note": null
+   },
+   {
+    "path": "gameui/OptionsSubGame.cpp",
+    "note": null
+   },
+   {
+    "path": "gameui/OptionsSubTouch.cpp",
+    "note": null
+   },
+   {
+    "path": "public/tier0/memoverride.cpp",
+    "note": "no retail Mac module links a memoverride object: Valve's Mac build has no malloc override (malloc from libSystem, operator new from libstdc++)"
+   }
+  ],
+  "path_differs": [],
+  "order": {
+   "common": 66,
+   "in_order_lis": 28,
+   "need_moving": 38,
+   "identical": false
+  },
+  "libraries": {
+   "retail": [
+    "mathlib",
+    "tier3",
+    "vgui_controls",
+    "matsys_controls",
+    "bitmap",
+    "vtf",
+    "tier2",
+    "tier1"
+   ],
+   "ours": [
+    "vgui_controls",
+    "tier1",
+    "tier2",
+    "tier3",
+    "vtf",
+    "bitmap",
+    "mathlib",
+    "matsys_controls"
+   ],
+   "retail_only": [],
+   "ours_only": [],
+   "same_relative_order": false
+  }
+ }
+}

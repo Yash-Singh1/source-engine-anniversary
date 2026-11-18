@@ -1,0 +1,53 @@
+{
+ "module": "bin/shaderapidx9",
+ "our_target": "shaderapidx9",
+ "our_games": null,
+ "project_dir": "materialsystem/shaderapidx9",
+ "order_rule_inversions": 0,
+ "counts": {
+  "exact": 15
+ },
+ "counts_sdk": {
+  "missing": 15
+ },
+ "diff": {
+  "add": [],
+  "remove": [
+   {
+    "path": "public/filesystem_helpers.cpp",
+    "note": null
+   },
+   {
+    "path": "public/tier0/memoverride.cpp",
+    "note": "no retail Mac module links a memoverride object: Valve's Mac build has no malloc override (malloc from libSystem, operator new from libstdc++)"
+   }
+  ],
+  "path_differs": [],
+  "order": {
+   "common": 15,
+   "in_order_lis": 13,
+   "need_moving": 2,
+   "identical": false
+  },
+  "libraries": {
+   "retail": [
+    "bitmap",
+    "mathlib",
+    "appframework",
+    "tier2",
+    "tier1"
+   ],
+   "ours": [
+    "tier1",
+    "tier2",
+    "bitmap",
+    "mathlib"
+   ],
+   "retail_only": [
+    "appframework"
+   ],
+   "ours_only": [],
+   "same_relative_order": false
+  }
+ }
+}

@@ -1,0 +1,297 @@
+{
+ "module": "bin/bsppack",
+ "depot": "223",
+ "build": "19307283",
+ "path": "bin/bsppack.dylib",
+ "aliases": [],
+ "sha256": "150f87ebdcdfbfa4d57bbf735dff5e7bfc070da06750f4a1f0247dd15b2f8f0b",
+ "size": 336184,
+ "macho": {
+  "filetype": "MH_DYLIB",
+  "flags": "0x110085",
+  "segments": [
+   {
+    "name": "__TEXT",
+    "vmaddr": "0x0",
+    "vmsize": 184320,
+    "sections": [
+     [
+      "__text",
+      "0x12c0",
+      156049,
+      16
+     ],
+     [
+      "__symbol_stub",
+      "0x27452",
+      450,
+      2
+     ],
+     [
+      "__stub_helper",
+      "0x27614",
+      762,
+      4
+     ],
+     [
+      "__cstring",
+      "0x2790e",
+      6354,
+      1
+     ],
+     [
+      "__gcc_except_tab",
+      "0x291e0",
+      1984,
+      4
+     ],
+     [
+      "__const",
+      "0x299a0",
+      1528,
+      16
+     ],
+     [
+      "__unwind_info",
+      "0x29f98",
+      868,
+      4
+     ],
+     [
+      "__eh_frame",
+      "0x2a300",
+      11516,
+      8
+     ]
+    ]
+   },
+   {
+    "name": "__DATA",
+    "vmaddr": "0x2d000",
+    "vmsize": 65458176,
+    "sections": [
+     [
+      "__nl_symbol_ptr",
+      "0x2d000",
+      60,
+      4
+     ],
+     [
+      "__la_symbol_ptr",
+      "0x2d03c",
+      300,
+      4
+     ],
+     [
+      "__mod_init_func",
+      "0x2d168",
+      36,
+      4
+     ],
+     [
+      "__const",
+      "0x2d190",
+      636,
+      16
+     ],
+     [
+      "__data",
+      "0x2d410",
+      25272,
+      16
+     ],
+     [
+      "__common",
+      "0x336c8",
+      65415540,
+      4
+     ],
+     [
+      "__bss",
+      "0x3e96040",
+      14208,
+      16
+     ]
+    ]
+   },
+   {
+    "name": "__LINKEDIT",
+    "vmaddr": "0x3e9a000",
+    "vmsize": 126976,
+    "sections": []
+   }
+  ],
+  "dylibs": [
+   {
+    "path": "@loader_path/libtier0.dylib",
+    "current": "1.0.0",
+    "compat": "1.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "@loader_path/libvstdlib.dylib",
+    "current": "1.0.0",
+    "compat": "1.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "/usr/lib/libiconv.2.dylib",
+    "current": "7.0.0",
+    "compat": "7.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "/usr/lib/libstdc++.6.dylib",
+    "current": "60.0.0",
+    "compat": "7.0.0",
+    "kind": "LOAD_DYLIB"
+   },
+   {
+    "path": "/usr/lib/libSystem.B.dylib",
+    "current": "1197.1.1",
+    "compat": "1.0.0",
+    "kind": "LOAD_DYLIB"
+   }
+  ],
+  "load_commands": [
+   "SEGMENT",
+   "SEGMENT",
+   "SEGMENT",
+   "ID_DYLIB",
+   "DYLD_INFO_ONLY",
+   "SYMTAB",
+   "DYSYMTAB",
+   "UUID",
+   "VERSION_MIN_MACOSX",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "LOAD_DYLIB",
+   "FUNCTION_STARTS",
+   "DATA_IN_CODE"
+  ],
+  "install_name": {
+   "path": "@loader_path/bsppack.dylib",
+   "current": "1.0.0",
+   "compat": "1.0.0"
+  },
+  "uuid": "0A91967917923108A3B213DCE5BAB505",
+  "min_macosx": "10.6.0",
+  "sdk": "10.9.0"
+ },
+ "build_roots": {
+  "rel_singleplayer_osx": 16
+ },
+ "ccache_hosts": {
+  "hl2-osx-builder": 20
+ },
+ "xcode_targets": {
+  "bsppack": 7
+ },
+ "stab_counts": {
+  "0x20": 483,
+  "0x24": 736,
+  "0x26": 69,
+  "0x2e": 368,
+  "0x4e": 368,
+  "0x64": 60,
+  "0x66": 20,
+  "0x84": 37
+ },
+ "n_objects": 20,
+ "n_loose_objects": 7,
+ "n_archive_members": 13,
+ "n_prebuilt_members": 0,
+ "built_mtime_range": [
+  "2024-11-13T17:23:46Z",
+  "2024-11-26T02:27:14Z"
+ ],
+ "static_libraries": [
+  {
+   "archive": "build/Release/libtier1.a",
+   "prebuilt": false,
+   "first_index": 7,
+   "members": [
+    "byteswap.o",
+    "checksum_crc.o",
+    "convar.o",
+    "interface.o",
+    "strtools.o",
+    "tier1.o",
+    "utlbuffer.o",
+    "utlstring.o",
+    "utlsymbol.o"
+   ]
+  },
+  {
+   "archive": "build/Release/libmathlib.a",
+   "prebuilt": false,
+   "first_index": 16,
+   "members": [
+    "color_conversion.o",
+    "mathlib_base.o",
+    "sse.o"
+   ]
+  },
+  {
+   "archive": "build/Release/libtier2.a",
+   "prebuilt": false,
+   "first_index": 19,
+   "members": [
+    "tier2.o"
+   ]
+  }
+ ],
+ "text_order_matches_oso_order": true,
+ "headers_with_code": {
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/ctype.h": 1,
+  "public/bspfile.h": 1,
+  "public/datamap.h": 1,
+  "public/mathlib/mathlib.h": 1,
+  "public/mathlib/vector.h": 1,
+  "public/mathlib/vector2d.h": 1,
+  "public/mathlib/vector4d.h": 1,
+  "public/tier0/basetypes.h": 1,
+  "public/tier0/commonmacros.h": 1,
+  "public/tier0/platform.h": 1,
+  "public/tier0/threadtools.h": 1,
+  "public/tier1/byteswap.h": 1,
+  "public/tier1/strtools.h": 1,
+  "public/tier1/utlbuffer.h": 1,
+  "public/tier1/utllinkedlist.h": 1,
+  "public/tier1/utlmemory.h": 1,
+  "public/tier1/utlrbtree.h": 1,
+  "public/tier1/utlstring.h": 1,
+  "public/tier1/utlsymbol.h": 1,
+  "public/tier1/utlvector.h": 1,
+  "utils/common/bsplib.h": 1
+ },
+ "unstabbed_text": {
+  "n_symbols": 0,
+  "bytes": 0,
+  "by_prefix": {}
+ },
+ "objects": [
+  {"index": 0, "oso": "build/buildbot_osx.build/Release/bsppack.build/Objects-normal/i386/filesystem_init.o", "kind": "object", "archive": null, "member": null, "xcode_target": "bsppack", "stem": "filesystem_init", "mtime": 1732588034, "mtime_utc": "2024-11-26T02:27:14Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "filesystem.tmp.hl2-osx-builder.89294.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": null, "build_root": null, "source_resolution": "unresolved", "n_functions": 2, "n_data": 0, "text_bytes": 192, "first_addr": "0x12c0", "files": ["public/tier1/utlmemory.h"]},
+  {"index": 1, "oso": "build/buildbot_osx.build/Release/bsppack.build/Objects-normal/i386/zip_utils.o", "kind": "object", "archive": null, "member": null, "xcode_target": "bsppack", "stem": "zip_utils", "mtime": 1732582591, "mtime_utc": "2024-11-26T00:56:31Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "zip_utils.tmp.hl2-osx-builder.44089.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "public/zip_utils.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 64, "n_data": 57, "text_bytes": 29223, "first_addr": "0x1380", "files": ["public/zip_utils.cpp", "public/tier1/byteswap.h", "public/tier1/utlrbtree.h", "public/tier1/utlstring.h", "public/tier1/utlbuffer.h", "public/tier1/strtools.h", "public/tier0/commonmacros.h", "public/tier1/utlsymbol.h", "public/tier0/basetypes.h", "public/tier1/utllinkedlist.h", "public/tier0/platform.h", "public/datamap.h", "public/tier1/utlvector.h", "public/mathlib/vector2d.h"]},
+  {"index": 2, "oso": "build/buildbot_osx.build/Release/bsppack.build/Objects-normal/i386/bsplib.o", "kind": "object", "archive": null, "member": null, "xcode_target": "bsppack", "stem": "bsplib", "mtime": 1732582592, "mtime_utc": "2024-11-26T00:56:32Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "bsplib.tmp.hl2-osx-builder.44152.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "utils/common/bsplib.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 148, "n_data": 403, "text_bytes": 101508, "first_addr": "0x85d0", "files": ["utils/common/bsplib.cpp", "public/bspfile.h", "public/mathlib/vector.h", "utils/common/bsplib.h", "public/mathlib/vector4d.h"]},
+  {"index": 3, "oso": "build/buildbot_osx.build/Release/bsppack.build/Objects-normal/i386/cmdlib.o", "kind": "object", "archive": null, "member": null, "xcode_target": "bsppack", "stem": "cmdlib", "mtime": 1732582591, "mtime_utc": "2024-11-26T00:56:31Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "cmdlib.tmp.hl2-osx-builder.44153.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "utils/common/cmdlib.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 8, "n_data": 6, "text_bytes": 1655, "first_addr": "0x21270", "files": ["utils/common/cmdlib.cpp"]},
+  {"index": 4, "oso": "build/buildbot_osx.build/Release/bsppack.build/Objects-normal/i386/filesystem_tools.o", "kind": "object", "archive": null, "member": null, "xcode_target": "bsppack", "stem": "filesystem_tools", "mtime": 1732582591, "mtime_utc": "2024-11-26T00:56:31Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "filesystem.tmp.hl2-osx-builder.44154.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": null, "build_root": null, "source_resolution": "unresolved", "n_functions": 0, "n_data": 1, "text_bytes": 0, "first_addr": null, "files": []},
+  {"index": 5, "oso": "build/buildbot_osx.build/Release/bsppack.build/Objects-normal/i386/scriplib.o", "kind": "object", "archive": null, "member": null, "xcode_target": "bsppack", "stem": "scriplib", "mtime": 1732582591, "mtime_utc": "2024-11-26T00:56:31Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "scriplib.tmp.hl2-osx-builder.44155.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "utils/common/scriplib.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 3, "n_data": 4, "text_bytes": 327, "first_addr": "0x218f0", "files": ["utils/common/scriplib.cpp"]},
+  {"index": 6, "oso": "build/buildbot_osx.build/Release/bsppack.build/Objects-normal/i386/bsppack.o", "kind": "object", "archive": null, "member": null, "xcode_target": "bsppack", "stem": "bsppack", "mtime": 1732582592, "mtime_utc": "2024-11-26T00:56:32Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "bsppack.tmp.hl2-osx-builder.44178.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "utils/bsppack/bsppack.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 12, "n_data": 9, "text_bytes": 828, "first_addr": "0x21a40", "files": ["utils/bsppack/bsppack.cpp"]},
+  {"index": 7, "oso": "build/Release/libtier1.a(byteswap.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "byteswap.o", "xcode_target": null, "stem": "byteswap", "mtime": 1731778100, "mtime_utc": "2024-11-16T17:28:20Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "byteswap.tmp.hl2-osx-builder.97988.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/byteswap.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 2, "n_data": 0, "text_bytes": 1140, "first_addr": "0x21d90", "files": ["tier1/byteswap.cpp"]},
+  {"index": 8, "oso": "build/Release/libtier1.a(checksum_crc.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "checksum_crc.o", "xcode_target": null, "stem": "checksum_crc", "mtime": 1731518626, "mtime_utc": "2024-11-13T17:23:46Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "checksum_c.tmp.hl2-osx-builder.44496.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/checksum_crc.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 3, "n_data": 1, "text_bytes": 548, "first_addr": "0x22210", "files": ["tier1/checksum_crc.cpp"]},
+  {"index": 9, "oso": "build/Release/libtier1.a(convar.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "convar.o", "xcode_target": null, "stem": "convar", "mtime": 1731778100, "mtime_utc": "2024-11-16T17:28:20Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "convar.tmp.hl2-osx-builder.97990.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/convar.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 39, "n_data": 16, "text_bytes": 2978, "first_addr": "0x22440", "files": ["tier1/convar.cpp"]},
+  {"index": 10, "oso": "build/Release/libtier1.a(interface.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "interface.o", "xcode_target": null, "stem": "interface", "mtime": 1731778100, "mtime_utc": "2024-11-16T17:28:20Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "interface.tmp.hl2-osx-builder.97998.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/interface.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 3, "n_data": 1, "text_bytes": 208, "first_addr": "0x22ff0", "files": ["tier1/interface.cpp"]},
+  {"index": 11, "oso": "build/Release/libtier1.a(strtools.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "strtools.o", "xcode_target": null, "stem": "strtools", "mtime": 1732587993, "mtime_utc": "2024-11-26T02:26:33Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "strtools.tmp.hl2-osx-builder.89224.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/strtools.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 14, "n_data": 0, "text_bytes": 2192, "first_addr": "0x230c0", "files": ["tier1/strtools.cpp", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include/ctype.h"]},
+  {"index": 12, "oso": "build/Release/libtier1.a(tier1.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "tier1.o", "xcode_target": null, "stem": "tier1", "mtime": 1731778101, "mtime_utc": "2024-11-16T17:28:21Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "tier1.tmp.hl2-osx-builder.98106.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": null, "build_root": null, "source_resolution": "unresolved", "n_functions": 0, "n_data": 2, "text_bytes": 0, "first_addr": null, "files": []},
+  {"index": 13, "oso": "build/Release/libtier1.a(utlbuffer.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "utlbuffer.o", "xcode_target": null, "stem": "utlbuffer", "mtime": 1731778101, "mtime_utc": "2024-11-16T17:28:21Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "utlbuffer.tmp.hl2-osx-builder.98113.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/utlbuffer.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 28, "n_data": 17, "text_bytes": 5105, "first_addr": "0x23950", "files": ["tier1/utlbuffer.cpp"]},
+  {"index": 14, "oso": "build/Release/libtier1.a(utlstring.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "utlstring.o", "xcode_target": null, "stem": "utlstring", "mtime": 1731778101, "mtime_utc": "2024-11-16T17:28:21Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "utlstring.tmp.hl2-osx-builder.98122.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/utlstring.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 6, "n_data": 0, "text_bytes": 640, "first_addr": "0x24d50", "files": ["tier1/utlstring.cpp"]},
+  {"index": 15, "oso": "build/Release/libtier1.a(utlsymbol.o)", "kind": "archive_member", "archive": "build/Release/libtier1.a", "member": "utlsymbol.o", "xcode_target": null, "stem": "utlsymbol", "mtime": 1732582553, "mtime_utc": "2024-11-26T00:55:53Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "utlsymbol.tmp.hl2-osx-builder.41193.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "tier1/utlsymbol.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 22, "n_data": 10, "text_bytes": 6965, "first_addr": "0x24fd0", "files": ["tier1/utlsymbol.cpp", "public/tier0/threadtools.h"]},
+  {"index": 16, "oso": "build/Release/libmathlib.a(color_conversion.o)", "kind": "archive_member", "archive": "build/Release/libmathlib.a", "member": "color_conversion.o", "xcode_target": null, "stem": "color_conversion", "mtime": 1731778105, "mtime_utc": "2024-11-16T17:28:25Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "color_conv.tmp.hl2-osx-builder.98370.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "mathlib/color_conversion.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 1, "n_data": 7, "text_bytes": 1056, "first_addr": "0x26b10", "files": ["mathlib/color_conversion.cpp", "public/mathlib/mathlib.h"]},
+  {"index": 17, "oso": "build/Release/libmathlib.a(mathlib_base.o)", "kind": "archive_member", "archive": "build/Release/libmathlib.a", "member": "mathlib_base.o", "xcode_target": null, "stem": "mathlib_base", "mtime": 1731778106, "mtime_utc": "2024-11-16T17:28:26Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "mathlib_ba.tmp.hl2-osx-builder.98373.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "mathlib/mathlib_base.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 7, "n_data": 13, "text_bytes": 864, "first_addr": "0x26f30", "files": ["mathlib/mathlib_base.cpp"]},
+  {"index": 18, "oso": "build/Release/libmathlib.a(sse.o)", "kind": "archive_member", "archive": "build/Release/libmathlib.a", "member": "sse.o", "xcode_target": null, "stem": "sse", "mtime": 1731778106, "mtime_utc": "2024-11-16T17:28:26Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "sse.tmp.hl2-osx-builder.98436.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": "mathlib/sse.cpp", "build_root": "rel_singleplayer_osx", "source_resolution": "sol:ccache_prefix+stem", "n_functions": 6, "n_data": 4, "text_bytes": 449, "first_addr": "0x27290", "files": ["mathlib/sse.cpp"]},
+  {"index": 19, "oso": "build/Release/libtier2.a(tier2.o)", "kind": "archive_member", "archive": "build/Release/libtier2.a", "member": "tier2.o", "xcode_target": null, "stem": "tier2", "mtime": 1732582553, "mtime_utc": "2024-11-26T00:55:53Z", "so_dir": "/Users/buildbot/buildslave/../.ccache/tmp/", "so_name": "tier2.tmp.hl2-osx-builder.41228.ii", "ccache_host": "hl2-osx-builder", "lang": "c++", "source": null, "build_root": null, "source_resolution": "unresolved", "n_functions": 0, "n_data": 1, "text_bytes": 0, "first_addr": null, "files": []}
+ ]
+}
