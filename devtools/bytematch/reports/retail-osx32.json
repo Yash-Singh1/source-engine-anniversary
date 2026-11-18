@@ -1,28 +1,28 @@
 {
  "meta": {
-  "generated": "2026-11-18T07:34:53Z",
+  "generated": "2026-11-18T08:06:14Z",
   "depot_build": "19307283",
   "clang": "600.0.57",
   "ld64": "242"
  },
  "total": {
   "functions": {
-   "total": 36690,
-   "exact": 6482,
-   "matches_after_masking": 14138,
-   "differs": 14571,
-   "missing": 1499,
-   "matched": 20620,
-   "pct": 56.2
+   "total": 36723,
+   "exact": 8384,
+   "matches_after_masking": 17711,
+   "differs": 9525,
+   "missing": 1103,
+   "matched": 26095,
+   "pct": 71.06
   },
   "bytes": {
-   "total": 9896630,
-   "exact": 274665,
-   "matches_after_masking": 2764262,
-   "differs": 6476159,
-   "missing": 381544,
-   "matched": 3038927,
-   "pct": 30.71
+   "total": 9911678,
+   "exact": 618756,
+   "matches_after_masking": 4803702,
+   "differs": 4200099,
+   "missing": 289121,
+   "matched": 5422458,
+   "pct": 54.71
   }
  },
  "rows": [
@@ -35,21 +35,21 @@
    "summary": {
     "functions": {
      "total": 406,
-     "exact": 76,
-     "matches_after_masking": 164,
-     "differs": 155,
-     "missing": 11,
-     "matched": 240,
-     "pct": 59.11
+     "exact": 127,
+     "matches_after_masking": 272,
+     "differs": 7,
+     "missing": 0,
+     "matched": 399,
+     "pct": 98.28
     },
     "bytes": {
      "total": 138135,
-     "exact": 4257,
-     "matches_after_masking": 36942,
-     "differs": 94326,
-     "missing": 2610,
-     "matched": 41199,
-     "pct": 29.83
+     "exact": 12257,
+     "matches_after_masking": 117155,
+     "differs": 8723,
+     "missing": 0,
+     "matched": 129412,
+     "pct": 93.69
     }
    }
   },
@@ -61,22 +61,22 @@
    "ours": "engine/engine.dylib",
    "summary": {
     "functions": {
-     "total": 12767,
-     "exact": 2214,
-     "matches_after_masking": 4972,
-     "differs": 5121,
-     "missing": 460,
-     "matched": 7186,
-     "pct": 56.29
+     "total": 12787,
+     "exact": 2518,
+     "matches_after_masking": 6744,
+     "differs": 3134,
+     "missing": 391,
+     "matched": 9262,
+     "pct": 72.43
     },
     "bytes": {
-     "total": 3778257,
-     "exact": 104045,
-     "matches_after_masking": 1023355,
-     "differs": 2540103,
-     "missing": 110754,
-     "matched": 1127400,
-     "pct": 29.84
+     "total": 3787995,
+     "exact": 142905,
+     "matches_after_masking": 1998569,
+     "differs": 1548756,
+     "missing": 97765,
+     "matched": 2141474,
+     "pct": 56.53
     }
    }
   },
@@ -116,21 +116,21 @@
    "summary": {
     "functions": {
      "total": 1021,
-     "exact": 166,
-     "matches_after_masking": 276,
-     "differs": 434,
-     "missing": 145,
-     "matched": 442,
-     "pct": 43.29
+     "exact": 191,
+     "matches_after_masking": 513,
+     "differs": 207,
+     "missing": 110,
+     "matched": 704,
+     "pct": 68.95
     },
     "bytes": {
      "total": 345776,
-     "exact": 7106,
-     "matches_after_masking": 48471,
-     "differs": 229783,
-     "missing": 60416,
-     "matched": 55577,
-     "pct": 16.07
+     "exact": 9979,
+     "matches_after_masking": 154510,
+     "differs": 137021,
+     "missing": 44266,
+     "matched": 164489,
+     "pct": 47.57
     }
    }
   },
@@ -143,21 +143,21 @@
    "summary": {
     "functions": {
      "total": 4888,
-     "exact": 326,
-     "matches_after_masking": 1649,
-     "differs": 2756,
-     "missing": 157,
-     "matched": 1975,
-     "pct": 40.41
+     "exact": 408,
+     "matches_after_masking": 2024,
+     "differs": 2336,
+     "missing": 120,
+     "matched": 2432,
+     "pct": 49.75
     },
     "bytes": {
      "total": 1159816,
-     "exact": 6774,
-     "matches_after_masking": 169311,
-     "differs": 945357,
-     "missing": 38374,
-     "matched": 176085,
-     "pct": 15.18
+     "exact": 11938,
+     "matches_after_masking": 305005,
+     "differs": 811547,
+     "missing": 31326,
+     "matched": 316943,
+     "pct": 27.33
     }
    }
   },
@@ -170,21 +170,21 @@
    "summary": {
     "functions": {
      "total": 192,
-     "exact": 38,
-     "matches_after_masking": 55,
-     "differs": 68,
-     "missing": 31,
-     "matched": 93,
-     "pct": 48.44
+     "exact": 43,
+     "matches_after_masking": 70,
+     "differs": 61,
+     "missing": 18,
+     "matched": 113,
+     "pct": 58.85
     },
     "bytes": {
      "total": 28914,
-     "exact": 637,
-     "matches_after_masking": 5588,
-     "differs": 18015,
-     "missing": 4674,
-     "matched": 6225,
-     "pct": 21.53
+     "exact": 795,
+     "matches_after_masking": 9137,
+     "differs": 16632,
+     "missing": 2350,
+     "matched": 9932,
+     "pct": 34.35
     }
    }
   },
@@ -197,21 +197,21 @@
    "summary": {
     "functions": {
      "total": 588,
-     "exact": 521,
-     "matches_after_masking": 58,
-     "differs": 4,
-     "missing": 5,
-     "matched": 579,
-     "pct": 98.47
+     "exact": 524,
+     "matches_after_masking": 61,
+     "differs": 1,
+     "missing": 2,
+     "matched": 585,
+     "pct": 99.49
     },
     "bytes": {
      "total": 8569,
-     "exact": 4093,
-     "matches_after_masking": 3655,
-     "differs": 788,
-     "missing": 33,
-     "matched": 7748,
-     "pct": 90.42
+     "exact": 4112,
+     "matches_after_masking": 4423,
+     "differs": 20,
+     "missing": 14,
+     "matched": 8535,
+     "pct": 99.6
     }
    }
   },
@@ -223,22 +223,22 @@
    "ours": "materialsystem/stdshaders/stdshader_dx9.dylib",
    "summary": {
     "functions": {
-     "total": 1956,
-     "exact": 296,
-     "matches_after_masking": 1369,
-     "differs": 282,
-     "missing": 9,
-     "matched": 1665,
-     "pct": 85.12
+     "total": 1963,
+     "exact": 307,
+     "matches_after_masking": 1604,
+     "differs": 47,
+     "missing": 5,
+     "matched": 1911,
+     "pct": 97.35
     },
     "bytes": {
-     "total": 533175,
-     "exact": 5001,
-     "matches_after_masking": 126478,
-     "differs": 399907,
-     "missing": 1789,
-     "matched": 131479,
-     "pct": 24.66
+     "total": 535678,
+     "exact": 7653,
+     "matches_after_masking": 367160,
+     "differs": 159999,
+     "missing": 866,
+     "matched": 374813,
+     "pct": 69.97
     }
    }
   },
@@ -251,21 +251,21 @@
    "summary": {
     "functions": {
      "total": 1405,
-     "exact": 371,
-     "matches_after_masking": 610,
-     "differs": 345,
-     "missing": 79,
-     "matched": 981,
-     "pct": 69.82
+     "exact": 483,
+     "matches_after_masking": 828,
+     "differs": 43,
+     "missing": 51,
+     "matched": 1311,
+     "pct": 93.31
     },
     "bytes": {
      "total": 254041,
-     "exact": 11130,
-     "matches_after_masking": 130134,
-     "differs": 102591,
-     "missing": 10186,
-     "matched": 141264,
-     "pct": 55.61
+     "exact": 18413,
+     "matches_after_masking": 213224,
+     "differs": 17363,
+     "missing": 5041,
+     "matched": 231637,
+     "pct": 91.18
     }
    }
   },
@@ -278,21 +278,21 @@
    "summary": {
     "functions": {
      "total": 40,
-     "exact": 12,
-     "matches_after_masking": 18,
-     "differs": 8,
-     "missing": 2,
-     "matched": 30,
-     "pct": 75.0
+     "exact": 33,
+     "matches_after_masking": 7,
+     "differs": 0,
+     "missing": 0,
+     "matched": 40,
+     "pct": 100.0
     },
     "bytes": {
      "total": 7785,
-     "exact": 383,
-     "matches_after_masking": 2740,
-     "differs": 1454,
-     "missing": 3208,
-     "matched": 3123,
-     "pct": 40.12
+     "exact": 6917,
+     "matches_after_masking": 868,
+     "differs": 0,
+     "missing": 0,
+     "matched": 7785,
+     "pct": 100.0
     }
    }
   },
@@ -305,21 +305,21 @@
    "summary": {
     "functions": {
      "total": 3117,
-     "exact": 279,
-     "matches_after_masking": 830,
-     "differs": 1729,
-     "missing": 279,
-     "matched": 1109,
-     "pct": 35.58
+     "exact": 351,
+     "matches_after_masking": 1107,
+     "differs": 1416,
+     "missing": 243,
+     "matched": 1458,
+     "pct": 46.78
     },
     "bytes": {
      "total": 731116,
-     "exact": 5428,
-     "matches_after_masking": 87966,
-     "differs": 558446,
-     "missing": 79276,
-     "matched": 93394,
-     "pct": 12.77
+     "exact": 10403,
+     "matches_after_masking": 194604,
+     "differs": 453775,
+     "missing": 72334,
+     "matched": 205007,
+     "pct": 28.04
     }
    }
   },
@@ -332,21 +332,21 @@
    "summary": {
     "functions": {
      "total": 236,
-     "exact": 52,
-     "matches_after_masking": 107,
-     "differs": 66,
-     "missing": 11,
-     "matched": 159,
-     "pct": 67.37
+     "exact": 236,
+     "matches_after_masking": 0,
+     "differs": 0,
+     "missing": 0,
+     "matched": 236,
+     "pct": 100.0
     },
     "bytes": {
      "total": 53556,
-     "exact": 3351,
-     "matches_after_masking": 23678,
-     "differs": 23841,
-     "missing": 2686,
-     "matched": 27029,
-     "pct": 50.47
+     "exact": 53556,
+     "matches_after_masking": 0,
+     "differs": 0,
+     "missing": 0,
+     "matched": 53556,
+     "pct": 100.0
     }
    }
   },
@@ -358,22 +358,22 @@
    "ours": "sourcevr/sourcevr.dylib",
    "summary": {
     "functions": {
-     "total": 139,
-     "exact": 44,
-     "matches_after_masking": 56,
-     "differs": 30,
-     "missing": 9,
-     "matched": 100,
-     "pct": 71.94
+     "total": 141,
+     "exact": 54,
+     "matches_after_masking": 76,
+     "differs": 10,
+     "missing": 1,
+     "matched": 130,
+     "pct": 92.2
     },
     "bytes": {
-     "total": 18512,
-     "exact": 937,
-     "matches_after_masking": 7232,
-     "differs": 8564,
-     "missing": 1779,
-     "matched": 8169,
-     "pct": 44.13
+     "total": 18800,
+     "exact": 1598,
+     "matches_after_masking": 15304,
+     "differs": 1868,
+     "missing": 30,
+     "matched": 16902,
+     "pct": 89.9
     }
    }
   },
@@ -385,22 +385,22 @@
    "ours": "studiorender/studiorender.dylib",
    "summary": {
     "functions": {
-     "total": 987,
-     "exact": 190,
-     "matches_after_masking": 573,
-     "differs": 218,
-     "missing": 6,
-     "matched": 763,
-     "pct": 77.3
+     "total": 988,
+     "exact": 254,
+     "matches_after_masking": 723,
+     "differs": 11,
+     "missing": 0,
+     "matched": 977,
+     "pct": 98.89
     },
     "bytes": {
-     "total": 506588,
-     "exact": 37298,
-     "matches_after_masking": 308737,
-     "differs": 159214,
-     "missing": 1339,
-     "matched": 346035,
-     "pct": 68.31
+     "total": 507743,
+     "exact": 44193,
+     "matches_after_masking": 435200,
+     "differs": 28350,
+     "missing": 0,
+     "matched": 479393,
+     "pct": 94.42
     }
    }
   },
@@ -413,21 +413,21 @@
    "summary": {
     "functions": {
      "total": 367,
-     "exact": 124,
-     "matches_after_masking": 238,
-     "differs": 5,
+     "exact": 126,
+     "matches_after_masking": 241,
+     "differs": 0,
      "missing": 0,
-     "matched": 362,
-     "pct": 98.64
+     "matched": 367,
+     "pct": 100.0
     },
     "bytes": {
      "total": 58505,
-     "exact": 8174,
-     "matches_after_masking": 49694,
-     "differs": 637,
+     "exact": 8330,
+     "matches_after_masking": 50175,
+     "differs": 0,
      "missing": 0,
-     "matched": 57868,
-     "pct": 98.91
+     "matched": 58505,
+     "pct": 100.0
     }
    }
   },
@@ -440,21 +440,21 @@
    "summary": {
     "functions": {
      "total": 368,
-     "exact": 45,
-     "matches_after_masking": 165,
-     "differs": 125,
-     "missing": 33,
-     "matched": 210,
-     "pct": 57.07
+     "exact": 56,
+     "matches_after_masking": 242,
+     "differs": 53,
+     "missing": 17,
+     "matched": 298,
+     "pct": 80.98
     },
     "bytes": {
      "total": 153265,
-     "exact": 1387,
-     "matches_after_masking": 49287,
-     "differs": 92202,
-     "missing": 10389,
-     "matched": 50674,
-     "pct": 33.06
+     "exact": 2397,
+     "matches_after_masking": 73177,
+     "differs": 71095,
+     "missing": 6596,
+     "matched": 75574,
+     "pct": 49.31
     }
    }
   },
@@ -467,21 +467,21 @@
    "summary": {
     "functions": {
      "total": 212,
-     "exact": 41,
-     "matches_after_masking": 46,
-     "differs": 114,
-     "missing": 11,
-     "matched": 87,
-     "pct": 41.04
+     "exact": 208,
+     "matches_after_masking": 4,
+     "differs": 0,
+     "missing": 0,
+     "matched": 212,
+     "pct": 100.0
     },
     "bytes": {
      "total": 41424,
-     "exact": 1007,
-     "matches_after_masking": 5901,
-     "differs": 31830,
-     "missing": 2686,
-     "matched": 6908,
-     "pct": 16.68
+     "exact": 40398,
+     "matches_after_masking": 1026,
+     "differs": 0,
+     "missing": 0,
+     "matched": 41424,
+     "pct": 100.0
     }
    }
   },
@@ -494,21 +494,21 @@
    "summary": {
     "functions": {
      "total": 163,
-     "exact": 39,
-     "matches_after_masking": 45,
-     "differs": 71,
-     "missing": 8,
-     "matched": 84,
-     "pct": 51.53
+     "exact": 163,
+     "matches_after_masking": 0,
+     "differs": 0,
+     "missing": 0,
+     "matched": 163,
+     "pct": 100.0
     },
     "bytes": {
      "total": 34863,
-     "exact": 1288,
-     "matches_after_masking": 8385,
-     "differs": 22742,
-     "missing": 2448,
-     "matched": 9673,
-     "pct": 27.75
+     "exact": 34863,
+     "matches_after_masking": 0,
+     "differs": 0,
+     "missing": 0,
+     "matched": 34863,
+     "pct": 100.0
     }
    }
   },
@@ -521,21 +521,21 @@
    "summary": {
     "functions": {
      "total": 426,
-     "exact": 108,
-     "matches_after_masking": 174,
-     "differs": 124,
-     "missing": 20,
-     "matched": 282,
-     "pct": 66.2
+     "exact": 124,
+     "matches_after_masking": 229,
+     "differs": 62,
+     "missing": 11,
+     "matched": 353,
+     "pct": 82.86
     },
     "bytes": {
      "total": 149120,
-     "exact": 7664,
-     "matches_after_masking": 47579,
-     "differs": 89384,
-     "missing": 4493,
-     "matched": 55243,
-     "pct": 37.05
+     "exact": 11969,
+     "matches_after_masking": 72168,
+     "differs": 63137,
+     "missing": 1846,
+     "matched": 84137,
+     "pct": 56.42
     }
    }
   },
@@ -548,21 +548,21 @@
    "summary": {
     "functions": {
      "total": 684,
-     "exact": 237,
-     "matches_after_masking": 215,
-     "differs": 211,
-     "missing": 21,
-     "matched": 452,
-     "pct": 66.08
+     "exact": 578,
+     "matches_after_masking": 106,
+     "differs": 0,
+     "missing": 0,
+     "matched": 684,
+     "pct": 100.0
     },
     "bytes": {
      "total": 133227,
-     "exact": 6752,
-     "matches_after_masking": 39089,
-     "differs": 82990,
-     "missing": 4396,
-     "matched": 45841,
-     "pct": 34.41
+     "exact": 87520,
+     "matches_after_masking": 45707,
+     "differs": 0,
+     "missing": 0,
+     "matched": 133227,
+     "pct": 100.0
     }
    }
   },
@@ -574,22 +574,22 @@
    "ours": "vguimatsurface/vguimatsurface.dylib",
    "summary": {
     "functions": {
-     "total": 2984,
-     "exact": 340,
-     "matches_after_masking": 838,
-     "differs": 1718,
-     "missing": 88,
-     "matched": 1178,
-     "pct": 39.48
+     "total": 2987,
+     "exact": 423,
+     "matches_after_masking": 1152,
+     "differs": 1366,
+     "missing": 46,
+     "matched": 1575,
+     "pct": 52.73
     },
     "bytes": {
-     "total": 707940,
-     "exact": 10144,
-     "matches_after_masking": 98119,
-     "differs": 574752,
-     "missing": 24925,
-     "matched": 108263,
-     "pct": 15.29
+     "total": 709304,
+     "exact": 16733,
+     "matches_after_masking": 220552,
+     "differs": 454771,
+     "missing": 17248,
+     "matched": 237285,
+     "pct": 33.45
     }
    }
   },
@@ -602,21 +602,21 @@
    "summary": {
     "functions": {
      "total": 181,
-     "exact": 67,
-     "matches_after_masking": 92,
-     "differs": 17,
-     "missing": 5,
-     "matched": 159,
-     "pct": 87.85
+     "exact": 181,
+     "matches_after_masking": 0,
+     "differs": 0,
+     "missing": 0,
+     "matched": 181,
+     "pct": 100.0
     },
     "bytes": {
      "total": 29196,
-     "exact": 2337,
-     "matches_after_masking": 20681,
-     "differs": 4944,
-     "missing": 1234,
-     "matched": 23018,
-     "pct": 78.84
+     "exact": 29196,
+     "matches_after_masking": 0,
+     "differs": 0,
+     "missing": 0,
+     "matched": 29196,
+     "pct": 100.0
     }
    }
   },
@@ -629,21 +629,21 @@
    "summary": {
     "functions": {
      "total": 113,
-     "exact": 44,
-     "matches_after_masking": 53,
-     "differs": 12,
-     "missing": 4,
-     "matched": 97,
-     "pct": 85.84
+     "exact": 113,
+     "matches_after_masking": 0,
+     "differs": 0,
+     "missing": 0,
+     "matched": 113,
+     "pct": 100.0
     },
     "bytes": {
      "total": 16116,
-     "exact": 1815,
-     "matches_after_masking": 10504,
-     "differs": 2874,
-     "missing": 923,
-     "matched": 12319,
-     "pct": 76.44
+     "exact": 16116,
+     "matches_after_masking": 0,
+     "differs": 0,
+     "missing": 0,
+     "matched": 16116,
+     "pct": 100.0
     }
    }
   },
@@ -656,21 +656,21 @@
    "summary": {
     "functions": {
      "total": 2963,
-     "exact": 753,
-     "matches_after_masking": 1327,
-     "differs": 814,
-     "missing": 69,
-     "matched": 2080,
-     "pct": 70.2
+     "exact": 774,
+     "matches_after_masking": 1451,
+     "differs": 675,
+     "missing": 63,
+     "matched": 2225,
+     "pct": 75.09
     },
     "bytes": {
      "total": 891892,
-     "exact": 41052,
-     "matches_after_masking": 426833,
-     "differs": 415691,
-     "missing": 8316,
-     "matched": 467885,
-     "pct": 52.46
+     "exact": 43455,
+     "matches_after_masking": 476910,
+     "differs": 364259,
+     "missing": 7268,
+     "matched": 520365,
+     "pct": 58.34
     }
    }
   },
@@ -683,21 +683,21 @@
    "summary": {
     "functions": {
      "total": 355,
-     "exact": 95,
-     "matches_after_masking": 193,
-     "differs": 56,
-     "missing": 11,
-     "matched": 288,
-     "pct": 81.13
+     "exact": 105,
+     "matches_after_masking": 242,
+     "differs": 8,
+     "missing": 0,
+     "matched": 347,
+     "pct": 97.75
     },
     "bytes": {
      "total": 55390,
-     "exact": 2406,
-     "matches_after_masking": 31737,
-     "differs": 18808,
-     "missing": 2439,
-     "matched": 34143,
-     "pct": 61.64
+     "exact": 2861,
+     "matches_after_masking": 46662,
+     "differs": 5867,
+     "missing": 0,
+     "matched": 49523,
+     "pct": 89.41
     }
    }
   },
@@ -739,20 +739,20 @@
     "functions": {
      "total": 34,
      "exact": 1,
-     "matches_after_masking": 10,
-     "differs": 22,
+     "matches_after_masking": 30,
+     "differs": 2,
      "missing": 1,
-     "matched": 11,
-     "pct": 32.35
+     "matched": 31,
+     "pct": 91.18
     },
     "bytes": {
      "total": 10412,
      "exact": 9,
-     "matches_after_masking": 1601,
-     "differs": 8410,
+     "matches_after_masking": 8627,
+     "differs": 1384,
      "missing": 392,
-     "matched": 1610,
-     "pct": 15.46
+     "matched": 8636,
+     "pct": 82.94
     }
    }
   },
@@ -766,21 +766,21 @@
    "summary": {
     "functions": {
      "total": 102,
-     "exact": 37,
-     "matches_after_masking": 33,
-     "differs": 32,
+     "exact": 44,
+     "matches_after_masking": 39,
+     "differs": 19,
      "missing": 0,
-     "matched": 70,
-     "pct": 68.63
+     "matched": 83,
+     "pct": 81.37
     },
     "bytes": {
      "total": 53332,
-     "exact": 3211,
-     "matches_after_masking": 15318,
-     "differs": 34803,
+     "exact": 6568,
+     "matches_after_masking": 21511,
+     "differs": 25253,
      "missing": 0,
-     "matched": 18529,
-     "pct": 34.74
+     "matched": 28079,
+     "pct": 52.65
     }
    }
   },
@@ -794,21 +794,21 @@
    "summary": {
     "functions": {
      "total": 245,
-     "exact": 41,
-     "matches_after_masking": 44,
-     "differs": 158,
-     "missing": 2,
-     "matched": 85,
-     "pct": 34.69
+     "exact": 95,
+     "matches_after_masking": 150,
+     "differs": 0,
+     "missing": 0,
+     "matched": 245,
+     "pct": 100.0
     },
     "bytes": {
      "total": 71361,
-     "exact": 975,
-     "matches_after_masking": 12643,
-     "differs": 57357,
-     "missing": 386,
-     "matched": 13618,
-     "pct": 19.08
+     "exact": 2486,
+     "matches_after_masking": 68875,
+     "differs": 0,
+     "missing": 0,
+     "matched": 71361,
+     "pct": 100.0
     }
    }
   },
@@ -822,21 +822,21 @@
    "summary": {
     "functions": {
      "total": 99,
-     "exact": 8,
-     "matches_after_masking": 24,
-     "differs": 66,
-     "missing": 1,
-     "matched": 32,
-     "pct": 32.32
+     "exact": 13,
+     "matches_after_masking": 85,
+     "differs": 1,
+     "missing": 0,
+     "matched": 98,
+     "pct": 98.99
     },
     "bytes": {
      "total": 37092,
-     "exact": 278,
-     "matches_after_masking": 3321,
-     "differs": 33240,
-     "missing": 253,
-     "matched": 3599,
-     "pct": 9.7
+     "exact": 463,
+     "matches_after_masking": 36320,
+     "differs": 309,
+     "missing": 0,
+     "matched": 36783,
+     "pct": 99.17
     }
    }
   },
@@ -991,20 +991,20 @@
     "functions": {
      "total": 13,
      "exact": 4,
-     "matches_after_masking": 6,
-     "differs": 3,
+     "matches_after_masking": 8,
+     "differs": 1,
      "missing": 0,
-     "matched": 10,
-     "pct": 76.92
+     "matched": 12,
+     "pct": 92.31
     },
     "bytes": {
      "total": 1314,
      "exact": 108,
-     "matches_after_masking": 690,
-     "differs": 516,
+     "matches_after_masking": 995,
+     "differs": 211,
      "missing": 0,
-     "matched": 798,
-     "pct": 60.73
+     "matched": 1103,
+     "pct": 83.94
     }
    }
   },
@@ -1017,22 +1017,22 @@
    "compared_with": "bin/engine",
    "summary": {
     "functions": {
-     "total": 75,
-     "exact": 22,
-     "matches_after_masking": 49,
-     "differs": 3,
-     "missing": 1,
-     "matched": 71,
-     "pct": 94.67
+     "total": 95,
+     "exact": 31,
+     "matches_after_masking": 64,
+     "differs": 0,
+     "missing": 0,
+     "matched": 95,
+     "pct": 100.0
     },
     "bytes": {
-     "total": 20017,
-     "exact": 2518,
-     "matches_after_masking": 15355,
-     "differs": 1734,
-     "missing": 410,
-     "matched": 17873,
-     "pct": 89.29
+     "total": 29755,
+     "exact": 4979,
+     "matches_after_masking": 24776,
+     "differs": 0,
+     "missing": 0,
+     "matched": 29755,
+     "pct": 100.0
     }
    }
   },
@@ -1046,21 +1046,21 @@
    "summary": {
     "functions": {
      "total": 1463,
-     "exact": 788,
-     "matches_after_masking": 433,
-     "differs": 232,
+     "exact": 813,
+     "matches_after_masking": 512,
+     "differs": 128,
      "missing": 10,
-     "matched": 1221,
-     "pct": 83.46
+     "matched": 1325,
+     "pct": 90.57
     },
     "bytes": {
      "total": 285508,
-     "exact": 11831,
-     "matches_after_masking": 109242,
-     "differs": 149842,
+     "exact": 12939,
+     "matches_after_masking": 169463,
+     "differs": 88513,
      "missing": 14593,
-     "matched": 121073,
-     "pct": 42.41
+     "matched": 182402,
+     "pct": 63.89
     }
    }
   },
@@ -1074,21 +1074,21 @@
    "summary": {
     "functions": {
      "total": 6,
-     "exact": 0,
+     "exact": 2,
      "matches_after_masking": 4,
-     "differs": 2,
+     "differs": 0,
      "missing": 0,
-     "matched": 4,
-     "pct": 66.67
+     "matched": 6,
+     "pct": 100.0
     },
     "bytes": {
      "total": 657,
-     "exact": 0,
+     "exact": 114,
      "matches_after_masking": 543,
-     "differs": 114,
+     "differs": 0,
      "missing": 0,
-     "matched": 543,
-     "pct": 82.65
+     "matched": 657,
+     "pct": 100.0
     }
    }
   },
@@ -1102,21 +1102,21 @@
    "summary": {
     "functions": {
      "total": 485,
-     "exact": 136,
-     "matches_after_masking": 177,
-     "differs": 152,
-     "missing": 20,
-     "matched": 313,
-     "pct": 64.54
+     "exact": 167,
+     "matches_after_masking": 317,
+     "differs": 1,
+     "missing": 0,
+     "matched": 484,
+     "pct": 99.79
     },
     "bytes": {
      "total": 98806,
-     "exact": 9474,
-     "matches_after_masking": 28532,
-     "differs": 57872,
-     "missing": 2928,
-     "matched": 38006,
-     "pct": 38.47
+     "exact": 14045,
+     "matches_after_masking": 83737,
+     "differs": 1024,
+     "missing": 0,
+     "matched": 97782,
+     "pct": 98.96
     }
    }
   },
@@ -1131,20 +1131,20 @@
     "functions": {
      "total": 65,
      "exact": 19,
-     "matches_after_masking": 28,
-     "differs": 18,
+     "matches_after_masking": 43,
+     "differs": 3,
      "missing": 0,
-     "matched": 47,
-     "pct": 72.31
+     "matched": 62,
+     "pct": 95.38
     },
     "bytes": {
      "total": 36813,
      "exact": 6072,
-     "matches_after_masking": 4264,
-     "differs": 26477,
+     "matches_after_masking": 24351,
+     "differs": 6390,
      "missing": 0,
-     "matched": 10336,
-     "pct": 28.08
+     "matched": 30423,
+     "pct": 82.64
     }
    }
   },
@@ -1242,21 +1242,21 @@
    "summary": {
     "functions": {
      "total": 2508,
-     "exact": 207,
-     "matches_after_masking": 669,
-     "differs": 1600,
-     "missing": 32,
-     "matched": 876,
-     "pct": 34.93
+     "exact": 252,
+     "matches_after_masking": 868,
+     "differs": 1370,
+     "missing": 18,
+     "matched": 1120,
+     "pct": 44.66
     },
     "bytes": {
      "total": 595734,
-     "exact": 3454,
-     "matches_after_masking": 66474,
-     "differs": 519274,
-     "missing": 6532,
-     "matched": 69928,
-     "pct": 11.74
+     "exact": 6027,
+     "matches_after_masking": 138084,
+     "differs": 447804,
+     "missing": 3819,
+     "matched": 144111,
+     "pct": 24.19
     }
    }
   },
@@ -1270,21 +1270,21 @@
    "summary": {
     "functions": {
      "total": 92,
-     "exact": 8,
-     "matches_after_masking": 19,
-     "differs": 57,
+     "exact": 15,
+     "matches_after_masking": 38,
+     "differs": 31,
      "missing": 8,
-     "matched": 27,
-     "pct": 29.35
+     "matched": 53,
+     "pct": 57.61
     },
     "bytes": {
      "total": 22043,
-     "exact": 716,
-     "matches_after_masking": 1041,
-     "differs": 15400,
+     "exact": 794,
+     "matches_after_masking": 7583,
+     "differs": 8780,
      "missing": 4886,
-     "matched": 1757,
-     "pct": 7.97
+     "matched": 8377,
+     "pct": 38.0
     }
    }
   },
@@ -1298,21 +1298,21 @@
    "summary": {
     "functions": {
      "total": 65,
-     "exact": 4,
-     "matches_after_masking": 9,
-     "differs": 51,
+     "exact": 5,
+     "matches_after_masking": 35,
+     "differs": 24,
      "missing": 1,
-     "matched": 13,
-     "pct": 20.0
+     "matched": 40,
+     "pct": 61.54
     },
     "bytes": {
      "total": 37127,
-     "exact": 190,
-     "matches_after_masking": 2861,
-     "differs": 33560,
+     "exact": 517,
+     "matches_after_masking": 14676,
+     "differs": 21418,
      "missing": 516,
-     "matched": 3051,
-     "pct": 8.22
+     "matched": 15193,
+     "pct": 40.92
     }
    }
   },
@@ -1327,20 +1327,20 @@
     "functions": {
      "total": 82,
      "exact": 26,
-     "matches_after_masking": 27,
-     "differs": 27,
+     "matches_after_masking": 30,
+     "differs": 24,
      "missing": 2,
-     "matched": 53,
-     "pct": 64.63
+     "matched": 56,
+     "pct": 68.29
     },
     "bytes": {
      "total": 25047,
      "exact": 1852,
-     "matches_after_masking": 9722,
-     "differs": 12487,
+     "matches_after_masking": 10205,
+     "differs": 12004,
      "missing": 986,
-     "matched": 11574,
-     "pct": 46.21
+     "matched": 12057,
+     "pct": 48.14
     }
    }
   }
