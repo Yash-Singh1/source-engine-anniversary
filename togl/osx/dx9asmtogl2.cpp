@@ -943,7 +943,7 @@ void D3DToGL::PrintParameterToString ( uint32 dwToken, uint32 dwSourceOrDest, ch
 	uint32 dwSrcModifier = D3DSPSM_NONE;
 
 	// Clear string to zero length
-	V_snprintf( pRegisterName, nBufLen, "" );
+	V_strncpy( pRegisterName, "", nBufLen );
 
 	dwRegType = GetRegTypeFromToken( dwToken );
 
@@ -1107,7 +1107,7 @@ void D3DToGL::PrintParameterToString ( uint32 dwToken, uint32 dwSourceOrDest, ch
 				{
 					Assert( dwRegNum == 0 );
 
-					V_snprintf( buff, sizeof( buff ), "va_r", dwRegNum );
+					V_snprintf( buff, sizeof( buff ), "va_r" );
 				}
 				else
 				{
@@ -1177,11 +1177,11 @@ void D3DToGL::PrintParameterToString ( uint32 dwToken, uint32 dwSourceOrDest, ch
 			{
 				if ( dwRegNum == 0 )
 				{
-					V_snprintf( buff, sizeof( buff ), "gl_FrontColor", dwRegNum );
+					V_snprintf( buff, sizeof( buff ), "gl_FrontColor" );
 				}
 				else if ( dwRegNum == 1 )
 				{
-					V_snprintf( buff, sizeof( buff ), "gl_FrontSecondaryColor", dwRegNum );
+					V_snprintf( buff, sizeof( buff ), "gl_FrontSecondaryColor" );
 				}
 				else
 				{
@@ -2297,7 +2297,7 @@ void D3DToGL::Handle_CMP()
 		V_strncpy( pSrc1Reg, FixGLSLSwizzle( pDestReg, pSrc1Reg ), sizeof( pSrc1Reg ) );
 		V_strncpy( pSrc2Reg, FixGLSLSwizzle( pDestReg, pSrc2Reg ), sizeof( pSrc2Reg ) );
 
-		if ( DoParamNamesMatch( pDestReg, pSrc0Reg ) && GetNumSwizzleComponents( pDestReg ) > 1  )
+		if ( DoParamNamesMatch( pDestReg, pSrc0Reg ) )
 		{
 			// So the dest register is the same as the comperand. We're in danger of screwing up our results.
 			//
@@ -2736,7 +2736,14 @@ int D3DToGL::TranslateShader( uint32* code, CUtlBuffer *pBufDisassembledCode, bo
 	if ( ( dwToken & 0xFFFF0000 ) == 0xFFFF0000 )
 	{
 		// must explicitly enable extensions if emitting GLSL
-		V_snprintf( (char *)m_pBufHeaderCode->Base(), m_pBufHeaderCode->Size(), m_bGLSL ? "#version 120\n%s" : "!!ARBfp1.0\n", glslBindableUniformExtText );
+		if ( m_bGLSL )
+		{
+			V_snprintf( (char *)m_pBufHeaderCode->Base(), m_pBufHeaderCode->Size(), "#version 120\n%s", glslBindableUniformExtText );
+		}
+		else
+		{
+			V_snprintf( (char *)m_pBufHeaderCode->Base(), m_pBufHeaderCode->Size(), "!!ARBfp1.0\n" );
+		}
 		m_bVertexShader = false;
 	}
 	else // vertex shader
