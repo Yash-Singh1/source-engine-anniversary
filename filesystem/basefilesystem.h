@@ -670,8 +670,8 @@ public:
 
 		CUtlDict<int,int>	m_VisitedFiles;			// We go through the search paths in priority order, and we use this to make sure
 													// that we don't return the same file more than once.
-		CUtlStringList		m_fileMatchesFromVPKOrPak;
-		CUtlStringList		m_dirMatchesFromVPKOrPak;
+		CUtlStringList		m_fileMatchesFromVPK;
+		CUtlStringList		m_dirMatchesFromVPK;
 	};
 
 	friend class CSearchPath;
@@ -804,14 +804,19 @@ protected:
 	// Note: if pFoundStoreID is passed in, then it will set that to the CSearchPath::m_storeId value of the search path it found the file in.
 	const char*					FindFirstHelper( const char *pWildCard, const char *pPathID, FileFindHandle_t *pHandle, int *pFoundStoreID );
 	bool						FindNextFileHelper( FindData_t *pFindData, int *pFoundStoreID );
-	bool						FindNextFileInVPKOrPakHelper( FindData_t *pFindData );
+	bool						FindNextFileInVPKHelper( FindData_t *pFindData );
 
 	void						RemoveAllMapSearchPaths( void );
 	void						AddMapPackFile( const char *pPath, const char *pPathID, SearchPathAdd_t addType );
 	void						AddPackFiles( const char *pPath, const CUtlSymbol &pathID, SearchPathAdd_t addType );
 	bool						PreparePackFile( CPackFile &packfile, int offsetofpackinmetafile, int64 filelen );
+#if defined( SUPPORT_PACKED_STORE )
+	CPackedStoreFileHandle		FindFileInVPKs( const char *pFileName, const char *pPathID = NULL );
+#endif
 	void						AddVPKFile( const char *pPath, const char *pPathID, SearchPathAdd_t addType );
+#ifndef BYTEMATCH_RETAIL
 	bool						RemoveVPKFile( const char *pPath, const char *pPathID );
+#endif
 
 	void						HandleOpenRegularFile( CFileOpenInfo &openInfo, bool bIsAbsolutePath );
 
@@ -868,6 +873,8 @@ protected:
 
 	static CUtlSymbol			m_GamePathID;
 	static CUtlSymbol			m_BSPPathID;
+	static CUtlSymbol			m_WorkshopAssetPathID;
+	static CUtlSymbol			m_WorkshopCampaignPathID;
 
 	static DVDMode_t			m_DVDMode;
 
@@ -962,6 +969,10 @@ inline bool CBaseFileSystem::FilterByPathID( const CSearchPath *pSearchPath, con
 		}
 		else
 		{
+			// "GAME" also searches the workshop content paths
+			bool bIsWorkshopPath = ( pSearchPath->GetPathID() == m_WorkshopAssetPathID || pSearchPath->GetPathID() == m_WorkshopCampaignPathID );
+			if ( bIsWorkshopPath && pathID == m_GamePathID )
+				return false;
 			return (pSearchPath->GetPathID() != pathID);
 		}
 	}

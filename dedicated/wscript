@@ -28,7 +28,6 @@ def build(bld):
 		'console/textconsole.cpp',
 		'../filesystem/filetracker.cpp',
 		'../filesystem/basefilesystem.cpp',
-		'../filesystem/packfile.cpp',
 		'../filesystem/filesystem_async.cpp',
 		'../filesystem/filesystem_stdio.cpp',
 		'../filesystem/QueuedLoader.cpp',

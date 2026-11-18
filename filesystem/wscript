@@ -21,7 +21,6 @@ def configure(conf):
 def build(bld):
 	source = [
 		'basefilesystem.cpp',
-		'packfile.cpp',
 		'filetracker.cpp',
 		'filesystem_async.cpp',
 		'filesystem_stdio.cpp',

@@ -27,7 +27,6 @@ $Project "FileSystem_Steam"
 	$Folder	"Source Files"
 	{
 		$File	"basefilesystem.cpp"
-		$File	"packfile.cpp"
 		$File	"filetracker.cpp"
 		$File	"filesystem_async.cpp"
 		$File	"filesystem_steam.cpp"

@@ -57,7 +57,6 @@ $Project "FileSystem_Stdio"
 	$Folder	"Source Files"
 	{
 		$File	"basefilesystem.cpp"
-		$File	"packfile.cpp"
 		$File	"filetracker.cpp"
 		$File	"filesystem_async.cpp"
 		$File	"filesystem_stdio.cpp"
