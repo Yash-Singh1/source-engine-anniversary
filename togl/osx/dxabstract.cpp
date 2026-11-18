@@ -4250,6 +4250,14 @@ HRESULT IDirect3DDevice9::SetRenderState( D3DRENDERSTATETYPE State, DWORD Value 
 						ignored = 1;
 					break;
 					
+					// Alpha to coverage
+					case D3DRS_ADAPTIVETESS_Y:
+					{
+						gl.m_AlphaToCoverageEnable.enable = Value;
+						gl.m_stateDirtyMask |= (1<<kGLAlphaToCoverageEnable);
+					}
+					break;
+
 					case	D3DRS_CLIPPLANEENABLE:		// kGLClipPlaneEnable
 						// d3d packs all the enables into one word.
 						// we break that out so we don't do N glEnable calls to sync - 
@@ -4355,6 +4363,9 @@ HRESULT IDirect3DDevice9::FlushStates( uint mask )
 
 	if ( stateHitMask & (1<<kGLAlphaTestFunc) )
 		m_ctx->WriteAlphaTestFunc( &gl.m_AlphaTestFunc );
+
+	if ( stateHitMask & (1<<kGLAlphaToCoverageEnable) )
+		m_ctx->WriteAlphaToCoverageEnable( &gl.m_AlphaToCoverageEnable );
 
 	if ( stateHitMask & (1<<kGLCullFaceEnable) )
 		m_ctx->WriteCullFaceEnable( &gl.m_CullFaceEnable );
