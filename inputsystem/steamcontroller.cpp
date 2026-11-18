@@ -171,7 +171,7 @@ void CInputSystem::PollSteamControllers( void )
 		}
 	}
 
-	if ( m_unNumConnected == 0 || !g_bInitialized )
+	if ( m_unNumConnected <= 0 || !g_bInitialized )
 	{
 		return;
 	}
