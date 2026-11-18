@@ -16,6 +16,12 @@
 
 extern IFileSystem *g_pFullFileSystem;
 
+#ifdef BYTEMATCH_RETAIL
+// retail measures durations with minimp3's frame iterator; the CMPAFile parser is gone
+#define MINIMP3_NO_STDIO
+#define MINIMP3_IMPLEMENTATION
+#include "../../thirdparty/minimp3/minimp3_ex.h"
+#else
 
 // exception class
 CMPAException::CMPAException(ErrorIDs ErrorID, const char *szFile, const char *szFunction, bool bGetLastError ) :
@@ -360,6 +366,8 @@ void CMPAFile::FillBuffer( uint32 dwOffsetToRead )
     // no more bytes in buffer than read out from file
     m_dwBufferSize += dwBytesRead;
 }
+#endif
+#line 363
 
 // Uses mp3 code from:  http://www.codeproject.com/audio/MPEGAudioInfo.asp
 
@@ -375,6 +383,28 @@ struct MP3Duration_t
 };
 
 CUtlRBTree< MP3Duration_t, int >    g_MP3Durations( 0, 0, MP3Duration_t::LessFunc );
+
+#ifdef BYTEMATCH_RETAIL
+struct MP3FrameScan_t
+{
+	FileHandle_t	hFile;
+	int				nChannels;
+	int				nRate;
+	int				nLayer;
+	int				nSamples;
+};
+
+int FrameIterFunc( void *user_data, const uint8_t *frame, int frame_size, int free_format_bytes, size_t buf_size, uint64_t offset, mp3dec_frame_info_t *info )
+{
+	MP3FrameScan_t *pScan = (MP3FrameScan_t *)user_data;
+	pScan->nChannels = info->channels;
+	pScan->nRate = info->hz;
+	pScan->nLayer = info->layer;
+	pScan->nSamples += hdr_frame_samples( frame );
+	return 0;
+}
+#endif
+#line 378
 
 float GetMP3Duration_Helper( char const *filename )
 {
@@ -395,6 +425,29 @@ float GetMP3Duration_Helper( char const *filename )
 		return g_MP3Durations[ idx ].duration;
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	MP3FrameScan_t scan = {};
+	scan.hFile = g_pFullFileSystem->Open( fn, "rb" );
+
+	mp3dec_io_t io;
+	io.read = []( void *buf, size_t size, void *user_data ) -> size_t
+	{
+		return g_pFullFileSystem->Read( buf, size, (FileHandle_t)user_data );
+	};
+	io.read_data = scan.hFile;
+	io.seek = []( uint64_t position, void *user_data ) -> int
+	{
+		g_pFullFileSystem->Seek( (FileHandle_t)user_data, position, FILESYSTEM_SEEK_HEAD );
+		return 0;
+	};
+	io.seek_data = scan.hFile;
+
+	uint8_t buf[ MINIMP3_BUF_SIZE ];
+	mp3dec_iterate_cb( &io, buf, sizeof( buf ), FrameIterFunc, &scan );
+	g_pFullFileSystem->Close( scan.hFile );
+
+	duration = (double)scan.nSamples / ( MAX( scan.nChannels, 1 ) * MAX( scan.nRate, 1 ) );
+#else
 	try
 	{
 		CMPAFile MPAFile( fn, 0 );
@@ -406,6 +459,8 @@ float GetMP3Duration_Helper( char const *filename )
 	catch ( ... )
 	{
 	}
+#endif
+#line 409
 
 	search.duration = duration;
 	g_MP3Durations.Insert( search );
