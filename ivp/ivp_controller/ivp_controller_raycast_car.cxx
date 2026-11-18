@@ -675,6 +675,7 @@ void IVP_Controller_Raycast_Car::get_skid_info( IVP_Wheel_Skid_Info *array_of_sk
 	}
 }
 
+#ifndef BYTEMATCH_RETAIL
 void IVP_Controller_Raycast_Car::set_powerslide(IVP_FLOAT front_accel, IVP_FLOAT rear_accel)
 {
 }
@@ -683,6 +684,7 @@ IVP_FLOAT IVP_Controller_Raycast_Car::get_booster_time_to_go()
 {
 	return booster_seconds_to_go;
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: (Ipion) Create a raycast car controller.

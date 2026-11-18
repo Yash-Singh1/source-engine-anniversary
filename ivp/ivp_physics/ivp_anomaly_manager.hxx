@@ -56,6 +56,10 @@ public:
     virtual void max_angular_velocity_exceeded( IVP_Anomaly_Limits *, IVP_Core *, IVP_U_Float_Point *angular_velocity_in_out);
     virtual void inter_penetration( IVP_Mindist *mindist,IVP_Real_Object *, IVP_Real_Object *, IVP_DOUBLE);
     virtual IVP_BOOL max_collisions_exceeded_check_freezing(IVP_Anomaly_Limits *, IVP_Core *); // return true if object should be temp. freezed
+#ifdef BYTEMATCH_RETAIL
+    virtual int max_collision_checks_exceeded( int total_checks ); // returns the number of additional checks to do this psi
+    virtual IVP_BOOL max_contacts_exceeded_check_freezing( IVP_Core **core_list, int core_count ); // return true if the cores should be temp. freezed
+#endif
 
     virtual void environment_will_be_deleted(IVP_Environment *);
 

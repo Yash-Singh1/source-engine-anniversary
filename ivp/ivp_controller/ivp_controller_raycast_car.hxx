@@ -187,7 +187,11 @@ public:
     IVP_DOUBLE get_orig_front_wheel_distance();
     IVP_DOUBLE get_orig_axles_distance();
 	void get_skid_info( IVP_Wheel_Skid_Info *array_of_skid_info_out);
+#ifdef BYTEMATCH_RETAIL
+    virtual void set_powerslide(IVP_FLOAT front_accel, IVP_FLOAT rear_accel) {}
+#else
     virtual void set_powerslide(IVP_FLOAT front_accel, IVP_FLOAT rear_accel);
+#endif
     void get_wheel_position(IVP_U_Point *position_ws_out, IVP_U_Quat *direction_ws_out);
   
     /**** Methods: 2nd Level, based on primitives ****/
@@ -198,7 +202,11 @@ public:
     virtual void activate_booster(IVP_FLOAT thrust, IVP_FLOAT duration, IVP_FLOAT delay);
     virtual void update_booster(IVP_FLOAT /*delta_time*/){;};    
 	virtual IVP_FLOAT get_booster_delay();
+#ifdef BYTEMATCH_RETAIL
+    virtual IVP_FLOAT get_booster_time_to_go() { return booster_seconds_to_go; }
+#else
     virtual IVP_FLOAT get_booster_time_to_go();
+#endif
     IVP_Controller_Raycast_Car(IVP_Environment *environment, const IVP_Template_Car_System *);
     virtual ~IVP_Controller_Raycast_Car();
 

@@ -201,3 +201,13 @@ IVP_FLOAT IVP_Anomaly_Manager::get_push_speed_penetration( IVP_Real_Object *obj0
 IVP_BOOL IVP_Anomaly_Manager::max_collisions_exceeded_check_freezing(IVP_Anomaly_Limits *, IVP_Core *core){
     return IVP_TRUE;
 }
+
+#ifdef BYTEMATCH_RETAIL
+IVP_BOOL IVP_Anomaly_Manager::max_contacts_exceeded_check_freezing( IVP_Core **, int ){
+    return IVP_TRUE;
+}
+
+int IVP_Anomaly_Manager::max_collision_checks_exceeded( int ){
+    return 0;
+}
+#endif

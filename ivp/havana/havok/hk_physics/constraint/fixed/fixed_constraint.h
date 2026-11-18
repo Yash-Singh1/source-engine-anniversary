@@ -40,6 +40,11 @@ class hk_Fixed_Constraint : public hk_Constraint
 			return "fixed";
 		}
 
+		virtual int get_constraint_dof()
+		{
+			return 0;
+		}
+
 		inline hk_Transform get_transform(int x) const
 		{
 			// todo(crack): this is probably wrong... fix me
