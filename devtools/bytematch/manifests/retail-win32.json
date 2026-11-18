@@ -1330,11 +1330,6 @@
      "valve_path": "engine/audio/private/MPAFile.cpp"
     },
     {
-     "path": "engine/audio/MPAHeader.cpp",
-     "lang": "c++",
-     "valve_path": "engine/audio/private/MPAHeader.cpp"
-    },
-    {
      "path": "engine/audio/snd_dev_common.cpp",
      "lang": "c++",
      "valve_path": "engine/audio/private/snd_dev_common.cpp",
@@ -1440,13 +1435,6 @@
      "path": "engine/audio/snd_win.cpp",
      "lang": "c++",
      "valve_path": "engine/audio/private/snd_win.cpp",
-     "pch": "use",
-     "pch_header": "audio_pch.h"
-    },
-    {
-     "path": "engine/audio/VBRHeader.cpp",
-     "lang": "c++",
-     "valve_path": "engine/audio/private/VBRHeader.cpp",
      "pch": "use",
      "pch_header": "audio_pch.h"
     },

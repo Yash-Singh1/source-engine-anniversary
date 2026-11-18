@@ -73,10 +73,12 @@ TREE_VPC_FILES = {
 # compositor in retail MaterialSystem.dll or stdshader_dx9.dll (no strings, no
 # macOS object), and this tree drops it from the BYTEMATCH_RETAIL interfaces.
 # Retail tier0.dll has no stack tools or CPU frequency monitor either (none of
-# their exports or strings, no macOS object).
+# their exports or strings, no macOS object). The retail engine measures MP3s with
+# minimp3; the CMPAFile parser's MPAHeader/VBRHeader have no macOS object.
 RETAIL_EXCLUDE = {"materialsystem": ["materialsystem/ctexturecompositor.cpp"],
                   "stdshader_dx9": ["materialsystem/stdshaders/compositor.cpp"],
-                  "tier0": ["tier0/stacktools.cpp", "tier0/cpumonitoring.cpp"]}
+                  "tier0": ["tier0/stacktools.cpp", "tier0/cpumonitoring.cpp"],
+                  "engine": ["engine/audio/private/MPAHeader.cpp", "engine/audio/private/VBRHeader.cpp"]}
 
 # Include directories this fork's sources need beyond Valve's (the fork's
 # vector_fpu.inl includes ivu_types.hxx for intp).
