@@ -2469,12 +2469,15 @@ void CNPC_AttackHelicopter::ShootAtFacingDirection( const Vector &vBasePos, cons
 		}
 	}
 
-#ifdef HL2_EPISODIC 
-	if( GetEnemy() != NULL )
+	if ( HL2_EPISODIC_ACTIVE() )
 	{
-		CSoundEnt::InsertSound( SOUND_DANGER, GetEnemy()->WorldSpaceCenter(), 180.0f, 0.5f, this, SOUNDENT_CHANNEL_REPEATED_DANGER );
+#ifdef HL2_EPISODIC
+		if( GetEnemy() != NULL )
+		{
+			CSoundEnt::InsertSound( SOUND_DANGER, GetEnemy()->WorldSpaceCenter(), 180.0f, 0.5f, this, SOUNDENT_CHANNEL_REPEATED_DANGER );
+		}
+#endif
 	}
-#endif//HL2_EPISODIC
 
 	DoMuzzleFlash();
 
