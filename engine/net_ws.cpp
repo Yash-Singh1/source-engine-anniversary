@@ -154,7 +154,12 @@ typedef struct
 
 // For metering out splitpackets, don't do them too fast as remote UDP socket will drop some payloads causing them to always fail to be reconstituted
 // This problem is largely solved by increasing the buffer sizes for UDP sockets on Windows
+#ifdef BYTEMATCH_RETAIL
+#define SPLITPACKET_MAX_DATA_BYTES_PER_SECOND "15000"
+#else
 #define SPLITPACKET_MAX_DATA_BYTES_PER_SECOND V_STRINGIFY(DEFAULT_RATE)
+#endif
+#line 154
 
 static ConVar sv_maxroutable
 	( 

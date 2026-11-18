@@ -118,11 +118,14 @@ void CNetChan::Clear()
 		}
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	if ( m_bProcessingMessages )
 	{
 		// ProcessMessages() needs to know we just nuked the receive list from under it or bad things ensue.
 		m_bClearedDuringProcessing = true;
 	}
+#endif
+#line 121
 
 	Reset();
 }
@@ -418,7 +421,10 @@ CNetChan::CNetChan()
 	m_nMaxRoutablePayloadSize = MAX_ROUTABLE_PAYLOAD;
 	m_bProcessingMessages = false;
 	m_bShouldDelete = false;
+#ifndef BYTEMATCH_RETAIL
 	m_bClearedDuringProcessing = false;
+#endif
+#line 416
 	m_bStreamContainsChallenge = false;
 	m_Socket = -1; // invalid
 	remote_address.Clear();
@@ -434,7 +440,12 @@ CNetChan::CNetChan()
 	m_StreamUnreliable.SetDebugName( "netchan_t::unreliabledata" );
 	m_StreamReliable.SetDebugName( "netchan_t::reliabledata" );
 
+#ifdef BYTEMATCH_RETAIL
+	m_Rate		= 10000;
+#else
 	m_Rate		= DEFAULT_RATE;
+#endif
+#line 432
 	m_Timeout	= SIGNON_TIME_OUT;
 
 	// Prevent the first message from getting dropped after connection is set up.
@@ -521,7 +532,12 @@ void CNetChan::Setup(int sock, netadr_t *adr, const char * name, INetChannelHand
 
 	SetMaxBufferSize( true, NET_MAX_PAYLOAD );
 
+#ifdef BYTEMATCH_RETAIL
+	m_Rate		= 10000;
+#else
 	m_Rate		= DEFAULT_RATE;
+#endif
+#line 519
 	m_Timeout	= SIGNON_TIME_OUT;
 
 	// Prevent the first message from getting dropped after connection is set up.
@@ -791,9 +807,14 @@ void CNetChan::FlowNewPacket(int flow, int seqnr, int acknr, int nChoked, int nD
 		// a malformed client packet pushing "seqnr" by 1,000,000 can cause this
 		// loop to watchdog.
 		//
+#ifdef BYTEMATCH_RETAIL
+		for ( int i = pflow->currentindex + 1; i <= seqnr; i++ )
+#else
 		for ( int i = pflow->currentindex + 1, numPacketFramesOverflow = 0;
 			( i <= seqnr ) && ( numPacketFramesOverflow < NET_FRAMES_BACKUP );
 			++ i, ++ numPacketFramesOverflow )
+#endif
+#line 789
 		{
 			int nBackTrack = seqnr - i;
 
@@ -1966,12 +1987,15 @@ bool CNetChan::ProcessMessages( bf_read &buf  )
 				return false;
 			}
 
+#ifndef BYTEMATCH_RETAIL
 			if ( m_bClearedDuringProcessing )
 			{
 				// Clear() was called during processing, our buffer is no longer valid
 				m_bClearedDuringProcessing = false;
 				return false;
 			}
+#endif
+#line 1961
 
 			if ( !bRet )
 			{
@@ -2107,6 +2131,7 @@ bool CNetChan::TestUpload( const char *filename )
 
 #endif // STAGING_ONLY
 
+#ifndef BYTEMATCH_RETAIL
 bool CNetChan::HandleUpload( dataFragments_t *data, INetChannelHandler *MessageHandler )
 {
 	const char *szErrorStr = NULL;
@@ -2177,7 +2202,119 @@ bool CNetChan::HandleUpload( dataFragments_t *data, INetChannelHandler *MessageH
 
 	return true;
 }
+#endif
+#line 2096
 
+#ifdef BYTEMATCH_RETAIL
+bool CNetChan::CheckReceivingList(int nList)
+{
+	dataFragments_t * data = &m_ReceiveList[nList]; // get list
+	
+	if ( data->buffer == NULL )
+		return true;
+
+	if ( data->ackedFragments < data->numFragments )
+		return true;
+
+	if ( data->ackedFragments > data->numFragments )
+	{
+		ConMsg( "Receiving failed: too many fragments %i/%i\n", data->ackedFragments, data->numFragments );
+		return false;
+	}
+
+	// Got all fragments.
+
+	if ( net_showfragments.GetBool() )
+		ConMsg("Receiving complete: %i fragments, %i bytes\n", data->numFragments, data->bytes );
+
+	if ( data->isCompressed )
+	{
+		UncompressFragments( data );
+	}
+
+	if ( !data->filename[0] )
+	{
+		bf_read buffer( data->buffer, data->bytes );
+
+		if ( !ProcessMessages( buffer ) ) // parse net message
+		{
+			return false; // stop reading any further
+		}
+	}
+	else
+	{
+		static ConVar *s_pAllowUpload = NULL;
+
+		if ( !s_pAllowUpload )
+		{
+			s_pAllowUpload = g_pCVar->FindVar( "sv_allowupload" );
+		}
+
+		if ( s_pAllowUpload && s_pAllowUpload->GetBool() )
+		{
+			// Make sure that this file is not being written to a location above the current directory, isn't in 
+			// writing to any locations we don't want, isn't an unsupported 
+			if ( CNetChan::IsValidFileForTransfer( data->filename ) )
+			{
+				// There's a special write path for this stuff
+				const char *pszPathID = "download";
+
+				// we received a file, write it to disk and notify host
+				if ( !g_pFileSystem->FileExists( data->filename, pszPathID ) )
+				{
+					// Make sure path exists
+					char szParentDir[ MAX_PATH ];
+					if ( !V_ExtractFilePath( data->filename, szParentDir, sizeof( szParentDir ) ) )
+						szParentDir[0] = '\0';
+
+					g_pFileSystem->CreateDirHierarchy( szParentDir, pszPathID );
+
+					// Open new file for write binary.
+					data->file = g_pFileSystem->Open( data->filename, "wb", pszPathID );
+
+					if ( FILESYSTEM_INVALID_HANDLE != data->file )
+					{
+						g_pFileSystem->Write( data->buffer, data->bytes, data->file );
+						g_pFileSystem->Close( data->file );
+
+						if ( net_showfragments.GetInt() == 2 )
+						{
+							DevMsg( "FileReceived: %s, %i bytes (ID %i)\n", data->filename, data->bytes, data->transferID );
+						}
+
+						m_MessageHandler->FileReceived( data->filename, data->transferID );
+					}
+					else
+					{
+						ConMsg( "Failed to write received file '%s'!\n", data->filename );
+					}
+				}
+				else
+				{
+					ConMsg( "Download file '%s' already exists!\n", data->filename );
+				}
+			}
+			else
+			{
+				ConMsg( "Download file '%s' has invalid path or extension!\n", data->filename );
+			}
+		}
+		else
+		{
+			ConMsg( "Download file '%s' ignored. File uploads are disabled!\n", data->filename );
+		}
+	}
+
+	// clear receiveList
+	if ( data->buffer )
+	{
+		delete [] data->buffer; 
+		data->buffer = NULL;
+	}
+
+	return true;
+}
+#else
 bool CNetChan::CheckReceivingList(int nList)
 {
 	dataFragments_t * data = &m_ReceiveList[nList]; // get list
@@ -2228,6 +2365,8 @@ bool CNetChan::CheckReceivingList(int nList)
 	return true;
 
 }
+#endif
+#line 2205
 
 int CNetChan::ProcessPacketHeader( netpacket_t * packet )
 {
@@ -3127,6 +3266,75 @@ int CNetChan::IncrementSplitPacketSequence()
 	return ++m_nSplitPacketSequence;
 }
 
+#ifdef BYTEMATCH_RETAIL
+bool CNetChan::IsValidFileForTransfer( const char *pszFilename )
+{
+	if ( !pszFilename || !pszFilename[ 0 ] )
+		return false;
+
+	// No absolute paths or weaseling up the tree with ".." allowed.
+	if ( !COM_IsValidPath( pszFilename ) || V_IsAbsolutePath( pszFilename ) )
+		return false;
+
+	size_t len = strlen( pszFilename );
+	if ( len >= MAX_PATH )
+		return false;
+
+	char szTemp[ MAX_PATH ];
+	V_strcpy_safe( szTemp, pszFilename );
+
+	// Convert so we've got all forward slashes in the path.
+	V_FixSlashes( szTemp, '/' );
+	if ( szTemp[ len - 1 ] == '/' )
+		return false;
+
+	if ( V_stristr( pszFilename, "lua/" ) ||
+	     V_stristr( pszFilename, "gamemodes/" ) ||
+	     V_stristr( pszFilename, "addons/" ) ||
+	     V_stristr( pszFilename, "~/" ) )
+	{
+		return false;
+	}
+
+	const char *extension = strrchr( pszFilename, '.' );
+	if ( !extension )
+		return false;
+
+	int baseLen = V_strlen( extension );
+	if ( baseLen > 4 || baseLen < 3 )
+		return false;
+
+	// are there any spaces in the extension? (windows exploit)
+	const char *pChar = extension;
+	while ( *pChar )
+	{
+		if ( isspace( *pChar ) )
+			return false;
+
+		++pChar;
+	}
+
+	if ( !Q_strcasecmp( extension, ".cfg" ) ||
+	     !Q_strcasecmp( extension, ".lst" ) ||
+	     !Q_strcasecmp( extension, ".exe" ) ||
+	     !Q_strcasecmp( extension, ".vbs" ) ||
+	     !Q_strcasecmp( extension, ".com" ) ||
+	     !Q_strcasecmp( extension, ".bat" ) ||
+	     !Q_strcasecmp( extension, ".dll" ) ||
+	     !Q_strcasecmp( extension, ".ini" ) ||
+	     !Q_strcasecmp( extension, ".log" ) ||
+	     !Q_strcasecmp( extension, ".lua" ) ||
+	     !Q_strcasecmp( extension, ".vdf" ) ||
+	     !Q_strcasecmp( extension, ".smx" ) ||
+	     !Q_strcasecmp( extension, ".gcf" ) ||
+	     !Q_strcasecmp( extension, ".sys" ) )
+	{
+		return false;
+	}
+
+	return true;
+}
+#else
 bool CNetChan::IsValidFileForTransfer( const char *pszFilename )
 {
 	if ( !pszFilename || !pszFilename[ 0 ] )
@@ -3226,4 +3434,6 @@ bool CNetChan::IsValidFileForTransfer( const char *pszFilename )
 
 	return true;
 }
+#endif
+#line 3171
 
