@@ -344,34 +344,6 @@ struct TOGL_CLASS IDirect3DVertexShader9 : public IDirect3DResource9	//was IUnkn
 
 };
 
-struct TOGL_CLASS ID3DXMatrixStack : public IUnknown
-{
-//public:
-	CUtlVector<D3DMATRIX>	m_stack;
-	int						m_stackTop;	// top of stack is at the highest index, this is that index.  push increases, pop decreases.
-	
-	HRESULT	Create( void );
-	
-    D3DXMATRIX* GetTop();
-	void Push();
-	void Pop();
-	void LoadIdentity();
-	void LoadMatrix( const D3DXMATRIX *pMat );
-	void MultMatrix( const D3DXMATRIX *pMat );
-	void MultMatrixLocal( const D3DXMATRIX *pMat );
-    HRESULT ScaleLocal(FLOAT x, FLOAT y, FLOAT z);
-
-	// Left multiply the current matrix with the computed rotation
-    // matrix, counterclockwise about the given axis with the given angle.
-    // (rotation is about the local origin of the object)
-    HRESULT RotateAxisLocal(CONST D3DXVECTOR3* pV, FLOAT Angle);
-
-	// Left multiply the current matrix with the computed translation
-    // matrix. (transformation is about the local origin of the object)
-    HRESULT TranslateLocal(FLOAT x, FLOAT y, FLOAT z);
-};
-typedef ID3DXMatrixStack* LPD3DXMATRIXSTACK;
-
 struct TOGL_CLASS IDirect3DDevice9 : public IUnknown
 {
 public:
@@ -616,79 +588,9 @@ typedef ID3DXConstantTable* LPD3DXCONSTANTTABLE;
 // D3DX stuff.
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
-TOGL_INTERFACE const char* D3DXGetPixelShaderProfile( IDirect3DDevice9 *pDevice );
-
-
-TOGL_INTERFACE D3DXMATRIX* D3DXMatrixMultiply( D3DXMATRIX *pOut, CONST D3DXMATRIX *pM1, CONST D3DXMATRIX *pM2 );
-TOGL_INTERFACE D3DXVECTOR3* D3DXVec3TransformCoord( D3DXVECTOR3 *pOut, CONST D3DXVECTOR3 *pV, CONST D3DXMATRIX *pM );
-
-TOGL_INTERFACE  HRESULT D3DXCreateMatrixStack( DWORD Flags, LPD3DXMATRIXSTACK* ppStack);
-TOGL_INTERFACE void D3DXMatrixIdentity( D3DXMATRIX * );
-
-TOGL_INTERFACE D3DXINLINE D3DXVECTOR3* D3DXVec3Subtract( D3DXVECTOR3 *pOut, CONST D3DXVECTOR3 *pV1, CONST D3DXVECTOR3 *pV2 )
-{
-    pOut->x = pV1->x - pV2->x;
-    pOut->y = pV1->y - pV2->y;
-    pOut->z = pV1->z - pV2->z;
-    return pOut;
-}
-
-TOGL_INTERFACE D3DXINLINE D3DXVECTOR3* D3DXVec3Cross( D3DXVECTOR3 *pOut, CONST D3DXVECTOR3 *pV1, CONST D3DXVECTOR3 *pV2 )
-{
-    D3DXVECTOR3 v;
-
-    v.x = pV1->y * pV2->z - pV1->z * pV2->y;
-    v.y = pV1->z * pV2->x - pV1->x * pV2->z;
-    v.z = pV1->x * pV2->y - pV1->y * pV2->x;
-
-    *pOut = v;
-    return pOut;
-}
-
-TOGL_INTERFACE D3DXINLINE FLOAT D3DXVec3Dot( CONST D3DXVECTOR3 *pV1, CONST D3DXVECTOR3 *pV2 )
-{
-    return pV1->x * pV2->x + pV1->y * pV2->y + pV1->z * pV2->z;
-}
-
-TOGL_INTERFACE D3DXMATRIX* D3DXMatrixInverse( D3DXMATRIX *pOut, FLOAT *pDeterminant, CONST D3DXMATRIX *pM );
-
-TOGL_INTERFACE D3DXMATRIX* D3DXMatrixTranspose( D3DXMATRIX *pOut, CONST D3DXMATRIX *pM );
-
-TOGL_INTERFACE D3DXPLANE* D3DXPlaneNormalize( D3DXPLANE *pOut, CONST D3DXPLANE *pP);
-
-TOGL_INTERFACE D3DXVECTOR4* D3DXVec4Transform( D3DXVECTOR4 *pOut, CONST D3DXVECTOR4 *pV, CONST D3DXMATRIX *pM );
-
-
-TOGL_INTERFACE D3DXVECTOR4* D3DXVec4Normalize( D3DXVECTOR4 *pOut, CONST D3DXVECTOR4 *pV );
-
-TOGL_INTERFACE D3DXMATRIX* D3DXMatrixTranslation( D3DXMATRIX *pOut, FLOAT x, FLOAT y, FLOAT z );
-
-// Build an ortho projection matrix. (right-handed)
-TOGL_INTERFACE D3DXMATRIX* D3DXMatrixOrthoOffCenterRH( D3DXMATRIX *pOut, FLOAT l, FLOAT r, FLOAT b, FLOAT t, FLOAT zn,FLOAT zf );
-
-TOGL_INTERFACE D3DXMATRIX* D3DXMatrixPerspectiveRH( D3DXMATRIX *pOut, FLOAT w, FLOAT h, FLOAT zn, FLOAT zf );
-
-TOGL_INTERFACE D3DXMATRIX* D3DXMatrixPerspectiveOffCenterRH( D3DXMATRIX *pOut, FLOAT l, FLOAT r, FLOAT b, FLOAT t, FLOAT zn, FLOAT zf );
-
-// Transform a plane by a matrix.  The vector (a,b,c) must be normal.
-// M should be the inverse transpose of the transformation desired.
-TOGL_INTERFACE D3DXPLANE* D3DXPlaneTransform( D3DXPLANE *pOut, CONST D3DXPLANE *pP, CONST D3DXMATRIX *pM );
-
 TOGL_INTERFACE IDirect3D9 *Direct3DCreate9(UINT SDKVersion);
 
 TOGL_INTERFACE void D3DPERF_SetOptions( DWORD dwOptions );
-
-TOGL_INTERFACE HRESULT D3DXCompileShader(
-        LPCSTR                          pSrcData,
-        UINT                            SrcDataLen,
-        CONST D3DXMACRO*                pDefines,
-        LPD3DXINCLUDE                   pInclude,
-        LPCSTR                          pFunctionName,
-        LPCSTR                          pProfile,
-        DWORD                           Flags,
-        LPD3DXBUFFER*                   ppShader,
-        LPD3DXBUFFER*                   ppErrorMsgs,
-        LPD3DXCONSTANTTABLE*            ppConstantTable);
 
 
 #endif // USE_ACTUAL_DX

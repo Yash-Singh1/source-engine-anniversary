@@ -630,7 +630,11 @@ public:
 
 	virtual void CacheExternalStandardRenderTargets();
 
+#ifdef BYTEMATCH_RETAIL
+	virtual ITextureInternal *CreateProceduralTexture( const char *pTextureName, const char *pTextureGroupName, int w, int h, int d, ImageFormat fmt, int nFlags );
+#else
 	virtual ITextureInternal *CreateProceduralTexture( const char *pTextureName, const char *pTextureGroupName, int w, int h, int d, ImageFormat fmt, int nFlags, ITextureRegenerator* generator = NULL );
+#endif
 	virtual ITextureInternal *FindOrLoadTexture( const char *textureName, const char *pTextureGroupName, int nAdditionalCreationFlags = 0 );
  	virtual bool IsTextureLoaded( const char *pTextureName );
 
@@ -648,9 +652,11 @@ public:
 	void RestoreNonRenderTargetTextures( void );
 	void RestoreRenderTargets( void );
 
+#ifndef BYTEMATCH_RETAIL
 	// Suspend or resume texture streaming requests
 	void SuspendTextureStreaming( void );
 	void ResumeTextureStreaming( void );
+#endif
 
 	// delete any texture that has a refcount <= 0
 	void RemoveUnusedTextures( void );
@@ -667,7 +673,9 @@ public:
 	virtual ITextureInternal *IdentityLightWarp();
 	virtual ITextureInternal *ColorCorrectionTexture( int i );
 	virtual ITextureInternal *FullFrameDepthTexture();
+#ifndef BYTEMATCH_RETAIL
 	virtual ITextureInternal *DebugLuxels2D();
+#endif
 
 
 	// Generates an error texture pattern
@@ -688,8 +696,10 @@ public:
 		unsigned int textureFlags, 
 		unsigned int renderTargetFlags );
 
+#ifndef BYTEMATCH_RETAIL
 	virtual bool HasPendingTextureDestroys() const;
 	virtual void MarkUnreferencedTextureForCleanup( ITextureInternal *pTexture );
+#endif
 	virtual void RemoveTexture( ITextureInternal *pTexture );
 	virtual void ReloadFilesInList( IFileList *pFilesToReload );
 
@@ -698,6 +708,7 @@ public:
 
 	virtual void ReleaseTempRenderTargetBits( void );
 
+#ifndef BYTEMATCH_RETAIL
 	// Called once per frame by material system "somewhere."
 	virtual void Update();
 
@@ -727,29 +738,39 @@ public:
 	virtual bool VerifyTextureCompositorTemplates() OVERRIDE;
 
 	virtual CTextureCompositorTemplate* FindTextureCompositorTemplate( const char* pName ) OVERRIDE;
+#endif
 
 protected:
 	ITextureInternal *FindTexture( const char *textureName );
+#ifdef BYTEMATCH_RETAIL
+	ITextureInternal *LoadTexture( const char *textureName, const char *pTextureGroupName, int nAdditionalCreationFlags = 0 );
+#else
 	ITextureInternal *LoadTexture( const char *textureName, const char *pTextureGroupName, int nAdditionalCreationFlags = 0, bool bDownload = true );
 
 	void AsyncLoad( const AsyncLoadJob_t& job );
 	void AsyncReadTexture( AsyncReadJob_t* job );
+#endif
 
 	// Restores a single texture
 	void RestoreTexture( ITextureInternal* pTex );
 
+#ifndef BYTEMATCH_RETAIL
 	void CleanupPossiblyUnreferencedTextures();
+#endif
 
 #ifdef STAGING_ONLY
 	void DumpTextureList( );
 #endif
 
+#ifndef BYTEMATCH_RETAIL
 	void FindFilesToLoad( CUtlDict< int >* pOutFilesToLoad, const char* pFilename );
 	void ReadFilesToLoad( CUtlDict< int >* pOutFilesToLoad, const char* pFilename );
+#endif
 
 	CUtlDict< ITextureInternal *, unsigned short > m_TextureList;
 	CUtlDict< const char *, unsigned short > m_TextureAliases;
 	CUtlDict< int, unsigned short > m_TextureExcludes;	
+#ifndef BYTEMATCH_RETAIL
 	CUtlDict< CCopyableUtlVector<AsyncLoadJob_t> > m_PendingAsyncLoads;
 	CUtlVector< ITextureInternal* > m_ReadbackTextures;
 	CUtlVector< ITextureInternal* >			m_preloadedTextures;
@@ -758,6 +779,7 @@ protected:
 	CTSQueue< ITextureInternal * >			m_PossiblyUnreferencedTextures;
 
 	CUtlDict< CTextureCompositorTemplate *, unsigned short > m_TexCompTemplates;
+#endif
 
 
 	int m_iNextTexID;
@@ -775,11 +797,14 @@ protected:
 	ITextureInternal *m_pIdentityLightWarp;
 	ITextureInternal *m_pColorCorrectionTextures[ COLOR_CORRECTION_MAX_TEXTURES ];
 	ITextureInternal *m_pFullScreenDepthTexture;
+#ifndef BYTEMATCH_RETAIL
 	ITextureInternal *m_pDebugLuxels2D;
+#endif
 
 	// Used to generate various error texture patterns when necessary
 	CCheckerboardTexture *m_pErrorRegen;
 
+#ifndef BYTEMATCH_RETAIL
 	friend class AsyncLoader;
 	AsyncLoader* m_pAsyncLoader;
 
@@ -790,6 +815,7 @@ protected:
     ThreadId_t m_nAsyncReadThread;
 
 	int m_iSuspendTextureStreaming;
+#endif
 };
 
 
@@ -799,6 +825,7 @@ protected:
 static CTextureManager s_TextureManager;
 ITextureManager *g_pTextureManager = &s_TextureManager;
 
+#ifndef BYTEMATCH_RETAIL
 struct AsyncLoadJob_t 
 {
 	CUtlString m_TextureName;
@@ -1452,6 +1479,7 @@ private:
 	CTSQueue< AsyncReadJob_t* > m_pendingJobs;
 	CTSQueue< AsyncReadJob_t* > m_completedJobs;
 };
+#endif
 
 //-----------------------------------------------------------------------------
 // Texture manager
@@ -1460,10 +1488,12 @@ CTextureManager::CTextureManager( void )
 : m_TextureList( true )
 , m_TextureAliases( true )
 , m_TextureExcludes( true )
+#ifndef BYTEMATCH_RETAIL
 , m_PendingAsyncLoads( true ) 
 , m_textureStreamingRequests( DefLessFunc( ITextureInternal* ) )
 , m_nAsyncLoadThread( 0xFFFFFFFF )
 , m_nAsyncReadThread( 0xFFFFFFFF )
+#endif
 {
 	m_pErrorTexture = NULL;
 	m_pBlackTexture = NULL;
@@ -1477,10 +1507,12 @@ CTextureManager::CTextureManager( void )
 	m_pShadowNoise2D = NULL;
 	m_pIdentityLightWarp = NULL;
 	m_pFullScreenDepthTexture = NULL;
+#ifndef BYTEMATCH_RETAIL
 	m_pDebugLuxels2D = NULL;
 	m_pAsyncLoader = new AsyncLoader;
 	m_pAsyncReader = new AsyncReader;
 	m_iSuspendTextureStreaming = 0;
+#endif
 }
 
 
@@ -1502,7 +1534,9 @@ void CTextureManager::Init( int nFlags )
 	m_pErrorTexture = CreateProceduralTexture( "error", TEXTURE_GROUP_OTHER,
 		ERROR_TEXTURE_SIZE, ERROR_TEXTURE_SIZE, 1, IMAGE_FORMAT_BGRA8888, TEXTUREFLAGS_NOMIP | TEXTUREFLAGS_SINGLECOPY );
 	CreateCheckerboardTexture( m_pErrorTexture, 4, color, color2 );
+#ifndef BYTEMATCH_RETAIL
 	m_pErrorTexture->SetErrorTexture( true );
+#endif
 
 	// Create a white texture
 	m_pWhiteTexture = CreateProceduralTexture( "white", TEXTURE_GROUP_OTHER,
@@ -1534,7 +1568,11 @@ void CTextureManager::Init( int nFlags )
 
 	if ( HardwareConfig()->GetMaxDXSupportLevel() >= 80 )
 	{
+#ifdef BYTEMATCH_RETAIL
+		ImageFormat fmt = IMAGE_FORMAT_BGRX8888;
+#else
 		ImageFormat fmt = IsOpenGL() ? IMAGE_FORMAT_RGBA16161616F : IMAGE_FORMAT_BGRX8888;
+#endif
 
 		// Create a normalization cubemap
 		m_pNormalizationCubemap = CreateProceduralTexture( "normalize", TEXTURE_GROUP_CUBE_MAP,
@@ -1571,12 +1609,15 @@ void CTextureManager::Init( int nFlags )
 		m_pShadowNoise2D->IncrementReferenceCount();
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	m_pDebugLuxels2D = FindOrLoadTexture( "debug/debugluxelsnoalpha", TEXTURE_GROUP_OTHER );
 	m_pDebugLuxels2D->IncrementReferenceCount();
+#endif
 }
 
 void CTextureManager::Shutdown()
 {
+#ifndef BYTEMATCH_RETAIL
 	// Clean up any textures we have hanging around that are waiting to go.
 	CleanupPossiblyUnreferencedTextures();
 
@@ -1596,9 +1637,11 @@ void CTextureManager::Shutdown()
 		delete m_pAsyncReader;
 		m_pAsyncReader = NULL;
 	}
+#endif
 
 	FreeStandardRenderTargets();
 
+#ifndef BYTEMATCH_RETAIL
 	FOR_EACH_VEC( m_ReadbackTextures, i )
 	{
 		m_ReadbackTextures[ i ]->Release();
@@ -1609,6 +1652,7 @@ void CTextureManager::Shutdown()
 		m_pDebugLuxels2D->DecrementReferenceCount();
 		m_pDebugLuxels2D = NULL;
 	}
+#endif
 
 	// These checks added because it's possible for shutdown to be called before the material system is 
 	// fully initialized.
@@ -1676,7 +1720,11 @@ void CTextureManager::Shutdown()
 
 	for ( int i = m_TextureList.First(); i != m_TextureList.InvalidIndex(); i = m_TextureList.Next( i ) )
 	{
+#ifdef BYTEMATCH_RETAIL
+		ITextureInternal::Destroy( m_TextureList[i] );
+#else
 		ITextureInternal::Destroy( m_TextureList[i], true );
+#endif
 	}
 	m_TextureList.RemoveAll();
 
@@ -1783,7 +1831,7 @@ void CTextureManager::ReleaseTextures( void )
 	for ( int i = m_TextureList.First(); i != m_TextureList.InvalidIndex(); i = m_TextureList.Next( i ) )
 	{
 		// Release the texture...
-		m_TextureList[i]->ReleaseMemory();
+		m_TextureList[i]->Release();
 	}
 }
 
@@ -1817,6 +1865,7 @@ void CTextureManager::RestoreTexture( ITextureInternal* pTexture )
 //-----------------------------------------------------------------------------
 // Purges our complete list of textures that might currently be unreferenced
 //-----------------------------------------------------------------------------
+#ifndef BYTEMATCH_RETAIL
 void CTextureManager::CleanupPossiblyUnreferencedTextures()
 {
 	if ( !ThreadInMainThread() || MaterialSystem()->GetRenderThreadId() != (uintp)-1 )
@@ -1846,6 +1895,7 @@ void CTextureManager::CleanupPossiblyUnreferencedTextures()
 		RemoveTexture( texturesToDelete[ i ] );
 	}
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Restore all textures (cause we've got video memory again)
@@ -1999,10 +2049,12 @@ ITextureInternal *CTextureManager::FullFrameDepthTexture()
 	return m_pFullScreenDepthTexture;
 }
 
+#ifndef BYTEMATCH_RETAIL
 ITextureInternal *CTextureManager::DebugLuxels2D()
 {
 	return m_pDebugLuxels2D;
 }
+#endif
 
 
 
@@ -2016,10 +2068,17 @@ ITextureInternal *CTextureManager::CreateProceduralTexture(
 	int					h, 
 	int					d, 
 	ImageFormat			fmt, 
-	int					nFlags,
-	ITextureRegenerator *generator )
+	int					nFlags
+#ifndef BYTEMATCH_RETAIL
+	, ITextureRegenerator *generator
+#endif
+	)
 {
+#ifdef BYTEMATCH_RETAIL
+	ITextureInternal *pNewTexture = ITextureInternal::CreateProceduralTexture( pTextureName, pTextureGroupName, w, h, d, fmt, nFlags );
+#else
 	ITextureInternal *pNewTexture = ITextureInternal::CreateProceduralTexture( pTextureName, pTextureGroupName, w, h, d, fmt, nFlags, generator );
+#endif
 	if ( !pNewTexture )
 		return NULL;
 
@@ -2037,7 +2096,11 @@ ITextureInternal *CTextureManager::CreateProceduralTexture(
 // the texture dictionary here. Is it only for files, for example?
 // Texture dictionary...
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+ITextureInternal *CTextureManager::LoadTexture( const char *pTextureName, const char *pTextureGroupName, int nAdditionalCreationFlags /* = 0 */ )
+#else
 ITextureInternal *CTextureManager::LoadTexture( const char *pTextureName, const char *pTextureGroupName, int nAdditionalCreationFlags /* = 0 */, bool bDownload /* = true */  )
+#endif
 {
 	ITextureInternal *pNewTexture = ITextureInternal::CreateFileTexture( pTextureName, pTextureGroupName );
 	if ( pNewTexture )
@@ -2051,7 +2114,9 @@ ITextureInternal *CTextureManager::LoadTexture( const char *pTextureName, const 
 		}
 
 		// Stick the texture onto the board
+#ifndef BYTEMATCH_RETAIL
 		if ( bDownload )
+#endif
 			pNewTexture->Download( NULL, nAdditionalCreationFlags );
 
 		// FIXME: If there's been an error loading, we don't also want this error...
@@ -2318,11 +2383,14 @@ void CTextureManager::ResetTextureFilteringState( )
 	}
 }
 
+#ifndef BYTEMATCH_RETAIL
 void CTextureManager::SuspendTextureStreaming( void )
 {
 	m_iSuspendTextureStreaming++;
 }
+#endif
 
+#ifndef BYTEMATCH_RETAIL
 void CTextureManager::ResumeTextureStreaming( void )
 {
 	AssertMsg( m_iSuspendTextureStreaming, "Mismatched Suspend/Resume texture streaming calls" );
@@ -2331,11 +2399,14 @@ void CTextureManager::ResumeTextureStreaming( void )
 		m_iSuspendTextureStreaming--;
 	}
 }
+#endif
 
 void CTextureManager::RemoveUnusedTextures( void )
 {
+#ifndef BYTEMATCH_RETAIL
 	// First, need to flush all of our textures that are pending cleanup.
 	CleanupPossiblyUnreferencedTextures();
+#endif
 
 	int iNext;
 	for ( int i = m_TextureList.First(); i != m_TextureList.InvalidIndex(); i = iNext )
@@ -2356,14 +2427,17 @@ void CTextureManager::RemoveUnusedTextures( void )
 	}
 }
 
+#ifndef BYTEMATCH_RETAIL
 void CTextureManager::MarkUnreferencedTextureForCleanup( ITextureInternal *pTexture )
 {
 	Assert( pTexture->GetReferenceCount() == 0 );
 	m_PossiblyUnreferencedTextures.PushItem( pTexture );
 }
+#endif
 
 void CTextureManager::RemoveTexture( ITextureInternal *pTexture )
 {
+#ifndef BYTEMATCH_RETAIL
 	TM_ZONE_DEFAULT( TELEMETRY_LEVEL0 );
 
 	Assert( pTexture->GetReferenceCount() <= 0 );
@@ -2408,14 +2482,20 @@ void CTextureManager::RemoveTexture( ITextureInternal *pTexture )
 		return;
 	}
 
+#endif
+
 	for ( int i = m_TextureList.First(); i != m_TextureList.InvalidIndex(); i = m_TextureList.Next( i ) )
 	{
 		// search by object
 		if ( m_TextureList[i] == pTexture )
 		{
+#ifdef BYTEMATCH_RETAIL
+			ITextureInternal::Destroy( m_TextureList[i] );
+#else
 			// This code is always sure that the texture we're tryign to clean up is no longer in the the possibly unreferenced list,
 			// So let Destroy work without checking.
 			ITextureInternal::Destroy( m_TextureList[i], true );
+#endif
 			m_TextureList.RemoveAt( i );
 			break;
 		}
@@ -2446,7 +2526,7 @@ void CTextureManager::ReleaseTempRenderTargetBits( void )
 
 			if ( m_TextureList[i]->IsTempRenderTarget() )
 			{
-				m_TextureList[i]->ReleaseMemory();
+				m_TextureList[i]->Release();
 			}
 		}
 	}
@@ -2507,6 +2587,7 @@ int CTextureManager::FindNext( int iIndex, ITextureInternal **pTexInternal )
 	return iIndex;
 }
 
+#ifndef BYTEMATCH_RETAIL
 void CTextureManager::Update()
 {
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__ );
@@ -3135,3 +3216,4 @@ static ImageFormat GetImageFormatRawReadback( ImageFormat fmt )
 	return fmt;
 }
 
+#endif

@@ -24,7 +24,9 @@ unrelated to dx9:
 mat_fullbright 1 doesn't work properly on alpha materials in testroom_standards
 */
 #define DISABLE_PROTECTED_THINGS
+#ifndef BYTEMATCH_RETAIL
 #include "shaderapi/ishaderapistreaming.h"
+#endif
 #include "shaderapidx8.h"
 #include "shaderapidx8_global.h"
 #include "shadershadowdx8.h"
@@ -105,6 +107,9 @@ mat_fullbright 1 doesn't work properly on alpha materials in testroom_standards
 #endif
 
 #include "winutils.h"
+#if defined( TOGL_OSX )
+#include "appframework/ilaunchermgr.h"
+#endif
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -116,6 +121,20 @@ mat_fullbright 1 doesn't work properly on alpha materials in testroom_standards
 
 #ifdef _WIN32
 #pragma warning (disable:4189)
+#endif
+
+#if defined( TOGL_OSX )
+void nativeGetClientRect( void *hWnd, RECT *destRect )
+{
+	// the only useful answer this call can offer, is the size of the canvas.
+	uint width, height;
+	g_pLauncherMgr->RenderedSize( width, height, false );	// false = get them, don't set them
+
+	destRect->left = 0;
+	destRect->top = 0;
+	destRect->right = width;
+	destRect->bottom = height;
+}
 #endif
 
 ConVar mat_texture_limit( "mat_texture_limit", "-1", FCVAR_NEVER_AS_STRING, 
@@ -176,8 +195,10 @@ struct SamplerState_t
 	D3DTEXTUREFILTERTYPE		m_MagFilter;
 	D3DTEXTUREFILTERTYPE		m_MinFilter;
 	D3DTEXTUREFILTERTYPE		m_MipFilter;
+#ifndef BYTEMATCH_RETAIL
 	int							m_FinestMipmapLevel;
 	float						m_LodBias;
+#endif
 	int							m_nAnisotropicLevel;
 	bool						m_TextureEnable;
 	bool						m_SRGBReadEnable;
@@ -267,6 +288,7 @@ struct DynamicState_t
 	float			m_FogEnd;
 	float			m_FogZ;
 	float			m_FogMaxDensity;
+	bool			m_bFogRadial;
 
 	float			m_HeightClipZ;
 	MaterialHeightClipMode_t m_HeightClipMode;	
@@ -326,7 +348,7 @@ struct DynamicState_t
 	bool	m_bBuffer2Frames;
 #endif
 	
-	DynamicState_t() = default;
+	DynamicState_t() {}
 
 private:
 	DynamicState_t( DynamicState_t const& );
@@ -433,8 +455,10 @@ struct Texture_t
 		m_ImageFormat = IMAGE_FORMAT_RGBA8888;
 		m_pTextureGroupCounterGlobal = NULL;
 		m_pTextureGroupCounterFrame = NULL;
+#ifndef BYTEMATCH_RETAIL
 		m_FinestMipmapLevel = 0;
 		m_LodBias = 0.0f;
+#endif
 	}
 
 	// FIXME: Compress this info
@@ -444,8 +468,10 @@ struct Texture_t
 	D3DTEXTUREFILTERTYPE	m_MagFilter;
 	D3DTEXTUREFILTERTYPE	m_MinFilter;
 	D3DTEXTUREFILTERTYPE	m_MipFilter;
+#ifndef BYTEMATCH_RETAIL
 	int						m_FinestMipmapLevel;
 	float					m_LodBias;
+#endif
 
 	unsigned char			m_NumLevels;
 	unsigned char			m_SwitchNeeded;	// Do we need to advance the current copy?
@@ -553,10 +579,12 @@ struct Texture_t
 		return ( int )m_Depth;
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	int GetLodClamp() const
 	{
 		return m_FinestMipmapLevel;
 	}
+#endif
 
 	void SetImageFormat( ImageFormat format )
 	{
@@ -840,8 +868,10 @@ public:
 	void TexMagFilter( ShaderTexFilterMode_t texFilterMode );
 	void TexWrap( ShaderTexCoordComponent_t coord, ShaderTexWrapMode_t wrapMode );
 	void TexSetPriority( int priority );
+#ifndef BYTEMATCH_RETAIL
 	void TexLodClamp( int finest );
 	void TexLodBias( float bias );
+#endif
 
 	ShaderAPITextureHandle_t CreateTextureHandle( void );
 	void CreateTextureHandles( ShaderAPITextureHandle_t *handles, int count );
@@ -954,6 +984,8 @@ public:
 	void FogStart( float fStart );
 	void FogEnd( float fEnd );
 	void FogMaxDensity( float flMaxDensity );
+	void SceneFogRadial( bool bRadial );
+	bool GetSceneFogRadial();
 	void SetFogZ( float fogZ );
 	void GetFogDistances( float *fStart, float *fEnd, float *fFogZ );
 
@@ -962,8 +994,6 @@ public:
 	MaterialFogMode_t GetPixelFogMode( );
 	int GetPixelFogCombo( );//0 is either range fog, or no fog simulated with rigged range fog values. 1 is height fog
 	int GetPixelFogCombo1( bool bSupportsRadial );
-	void SceneFogRadial( bool bRadial );
-	bool GetSceneFogRadial();
 	bool ShouldUsePixelFogForMode( MaterialFogMode_t fogMode );
 	void SceneFogColor3ub( unsigned char r, unsigned char g, unsigned char b );
 	void GetSceneFogColor( unsigned char *rgb );
@@ -1019,12 +1049,14 @@ public:
 	void CopyRenderTargetToTexture( ShaderAPITextureHandle_t textureHandle );
 	void CopyRenderTargetToTextureEx( ShaderAPITextureHandle_t textureHandle, int nRenderTargetID, Rect_t *pSrcRect = NULL, Rect_t *pDstRect = NULL );
 	void CopyTextureToRenderTargetEx( int nRenderTargetID, ShaderAPITextureHandle_t textureHandle, Rect_t *pSrcRect = NULL, Rect_t *pDstRect = NULL );
+#ifndef BYTEMATCH_RETAIL
 	void CopyRenderTargetToScratchTexture( ShaderAPITextureHandle_t srcHandle, ShaderAPITextureHandle_t dstHandle, Rect_t *pSrcRect = NULL, Rect_t *pDstRect = NULL );
 
 	void LockRect( void** pOutBits, int* pOutPitch, ShaderAPITextureHandle_t texHandle, int mipmap, int x, int y, int w, int h, bool bWrite, bool bRead );
 	void UnlockRect( ShaderAPITextureHandle_t texHandle, int mipmap );
 
 	void CopyTextureToTexture( ShaderAPITextureHandle_t srcTex, ShaderAPITextureHandle_t dstTex );
+#endif
 
 	// Returns the cull mode (for fill rate computation)
 	D3DCULL GetCullMode() const;
@@ -1699,7 +1731,6 @@ private:
 	// fog
 	unsigned char m_SceneFogColor[3];
 	MaterialFogMode_t m_SceneFogMode;
-	bool m_bSceneFogRadial;
 
 	// Tone Mapping state ( w is gamma scale )
 	Vector4D m_ToneMappingScale;
@@ -1741,7 +1772,7 @@ private:
 	// Vendor-dependent depth stencil texture format
 	ImageFormat GetShadowDepthTextureFormat( void );
 
-	bool SupportsBorderColor( void ) const;
+	bool SupportsNormalMapCompression( void ) const;
 	bool SupportsFetch4( void ) const;
 	
 	void EnableBuffer2FramesAhead( bool bEnable );
@@ -1827,6 +1858,7 @@ EXPOSE_SINGLE_INTERFACE_GLOBALVAR( CShaderAPIDx8, IShaderDevice,
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR( CShaderAPIDx8, IDebugTextureInfo, 
 				DEBUG_TEXTURE_INFO_VERSION, g_ShaderAPIDX8 )
 
+#ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
 // Texture streaming hooks; kept off CShaderAPIDx8's own vtable (see ishaderapistreaming.h)
 //-----------------------------------------------------------------------------
@@ -1862,6 +1894,7 @@ public:
 static CShaderAPIDx8Streaming g_ShaderAPIDX8Streaming;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR( CShaderAPIDx8Streaming, IShaderAPIStreaming,
 				SHADERAPI_STREAMING_INTERFACE_VERSION, g_ShaderAPIDX8Streaming )
+#endif
 
 //-----------------------------------------------------------------------------
 // Accessors for major interfaces
@@ -1975,7 +2008,6 @@ CShaderAPIDx8::CShaderAPIDx8() :
 	m_SceneFogColor[1] = 0;
 	m_SceneFogColor[2] = 0;
 	m_SceneFogMode = MATERIAL_FOG_NONE;
-	m_bSceneFogRadial = false;
 
 	// We haven't yet detected whether we support CreateQuery or not yet.
 	memset(IntRenderingParameters,0,sizeof(IntRenderingParameters));
@@ -3445,11 +3477,13 @@ void CShaderAPIDx8::ResetRenderState( bool bFullReset )
 	LOCK_SHADERAPI();
 	RECORD_DEBUG_STRING( "BEGIN ResetRenderState" );
 
+#ifndef BYTEMATCH_RETAIL
 	if ( !CanDownloadTextures() )
 	{
 		QueueResetRenderState();
 		return;
 	}
+#endif
 
 	m_bResettingRenderState = true;
 
@@ -3519,6 +3553,7 @@ void CShaderAPIDx8::ResetRenderState( bool bFullReset )
 	m_DynamicState.m_FogStart = -1;
 	m_DynamicState.m_FogEnd = -1;
 	m_DynamicState.m_FogMaxDensity = -1.0f;
+	m_DynamicState.m_bFogRadial = false;
 	m_DynamicState.m_FogZ = 0.0f;
 
 	SetSupportedRenderState( D3DRS_FOGCOLOR, m_DynamicState.m_FogColor );
@@ -3530,6 +3565,7 @@ void CShaderAPIDx8::ResetRenderState( bool bFullReset )
 	FogStart( 0 );
 	FogEnd( 0 );
 	FogMaxDensity( 1.0f );
+	SceneFogRadial( false );
 
 	m_DynamicState.m_bSRGBWritesEnabled = false;
 
@@ -3540,8 +3576,7 @@ void CShaderAPIDx8::ResetRenderState( bool bFullReset )
 	SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW );
 
 	// No shade mode yet
-	const D3DSHADEMODE D3DSHADE_NONE = (D3DSHADEMODE)0;
-	m_DynamicState.m_ShadeMode = D3DSHADE_NONE;
+	m_DynamicState.m_ShadeMode = (D3DSHADEMODE)-1;
 	ShadeMode( SHADER_SMOOTH );
 
 	m_DynamicState.m_bHWMorphingEnabled = false;
@@ -3594,8 +3629,10 @@ void CShaderAPIDx8::ResetRenderState( bool bFullReset )
 		SamplerState(i).m_MagFilter = D3DTEXF_POINT;
 		SamplerState(i).m_MinFilter = D3DTEXF_POINT;
 		SamplerState(i).m_MipFilter = D3DTEXF_NONE;
+#ifndef BYTEMATCH_RETAIL
 		SamplerState(i).m_FinestMipmapLevel = 0;
 		SamplerState(i).m_LodBias = 0.0f;
+#endif
 		SamplerState(i).m_TextureEnable = false;
 		SamplerState(i).m_SRGBReadEnable = false;
 
@@ -3608,8 +3645,10 @@ void CShaderAPIDx8::ResetRenderState( bool bFullReset )
 		SetSamplerState( i, D3DSAMP_MINFILTER, SamplerState(i).m_MinFilter );
 		SetSamplerState( i, D3DSAMP_MAGFILTER, SamplerState(i).m_MagFilter );
 		SetSamplerState( i, D3DSAMP_MIPFILTER, SamplerState(i).m_MipFilter );
+#ifndef BYTEMATCH_RETAIL
 		SetSamplerState( i, D3DSAMP_MAXMIPLEVEL, SamplerState(i).m_FinestMipmapLevel );
 		SetSamplerState( i, D3DSAMP_MIPMAPLODBIAS, SamplerState(i).m_LodBias );
+#endif
 
 		SetSamplerState( i, D3DSAMP_BORDERCOLOR, RGB( 0,0,0 ) );
 	}
@@ -3742,6 +3781,8 @@ void CShaderAPIDx8::ResetRenderState( bool bFullReset )
 	RECT windowRect;
 #if !defined( DX_TO_GL_ABSTRACTION )
 	GetClientRect( (HWND)m_hWnd, &windowRect );
+#elif defined( TOGL_OSX )
+	nativeGetClientRect( m_hWnd, &windowRect );
 #else
 	toglGetClientRect( (VD3DHWND)m_hWnd, &windowRect );
 #endif
@@ -6073,7 +6114,7 @@ int CShaderAPIDx8::GetPixelFogCombo1( bool bSupportsRadial )
 	if ( nCombo == 0 && bSupportsRadial )
 	{
 		int nForce = r_radialfog_force.GetInt();
-		bool bRadial = ( nForce == -1 ) ? m_bSceneFogRadial : ( nForce != 0 );
+		bool bRadial = ( nForce == -1 ) ? m_DynamicState.m_bFogRadial : ( nForce != 0 );
 		if ( bRadial )
 			return 2;
 	}
@@ -6082,16 +6123,16 @@ int CShaderAPIDx8::GetPixelFogCombo1( bool bSupportsRadial )
 
 void CShaderAPIDx8::SceneFogRadial( bool bRadial )
 {
-	if ( m_bSceneFogRadial != bRadial )
+	if ( bRadial != m_DynamicState.m_bFogRadial )
 	{
 		FlushBufferedPrimitives();
-		m_bSceneFogRadial = bRadial;
+		m_DynamicState.m_bFogRadial = bRadial;
 	}
 }
 
 bool CShaderAPIDx8::GetSceneFogRadial()
 {
-	return m_bSceneFogRadial;
+	return m_DynamicState.m_bFogRadial;
 }
 
 
@@ -6372,16 +6413,27 @@ int CShaderAPIDx8::GetCurrentDynamicVBSize( void )
 
 FORCEINLINE void CShaderAPIDx8::SetVertexShaderConstantInternal( int var, float const* pVec, int numVecs, bool bForce )
 {
-	Assert( numVecs > 0 );
 	Assert( pVec );
 
-	if ( IsPC() || IsPS3() )
+	// DX8 asm shaders use a constant mapping which has transforms and vertex shader
+	// specific constants shifted down by 10 constants (two 5-constant light structures)
+	if ( IsPC() )
 	{
+		if ( (g_pHardwareConfig->Caps().m_nDXSupportLevel < 90) && (var >= VERTEX_SHADER_MODULATION_COLOR) )
+		{
+			var -= 10;
+		}
 		Assert( var + numVecs <= g_pHardwareConfig->NumVertexShaderConstants() );
 
-		if ( !bForce && memcmp( pVec, &m_DynamicState.m_pVectorVertexShaderConstant[var], numVecs * 4 * sizeof( float ) ) == 0 )
-			return;
-
+		if ( !bForce )
+		{
+			int skip = 0;
+			numVecs = AdjustUpdateRange( pVec, &m_DesiredState.m_pVectorVertexShaderConstant[var], numVecs, &skip );
+			if ( !numVecs )
+				return;
+			var += skip;
+			pVec += skip * 4;
+		}
 		Dx9Device()->SetVertexShaderConstantF( var, pVec, numVecs );
 		memcpy( &m_DynamicState.m_pVectorVertexShaderConstant[var], pVec, numVecs * 4 * sizeof(float) );
 	}
@@ -6390,10 +6442,12 @@ FORCEINLINE void CShaderAPIDx8::SetVertexShaderConstantInternal( int var, float 
 		Assert( var + numVecs <= g_pHardwareConfig->NumVertexShaderConstants() );
 	}
 
-	if ( IsX360() && var + numVecs > m_MaxVectorVertexShaderConstant )
-			m_MaxVectorVertexShaderConstant = var + numVecs;
-
 	memcpy( &m_DesiredState.m_pVectorVertexShaderConstant[var], pVec, numVecs * 4 * sizeof(float) );	
+
+	if ( IsX360() )
+	{
+		m_MaxVectorVertexShaderConstant = max( m_MaxVectorVertexShaderConstant, var + numVecs );
+	}	
 }
 
 
@@ -6475,40 +6529,29 @@ FORCEINLINE void CShaderAPIDx8::SetPixelShaderConstantInternal( int nStartConst,
 {
 	Assert( nStartConst + nNumConsts <= g_pHardwareConfig->NumPixelShaderConstants() );
 
-	if ( IsPC() || IsPS3() )
+	if ( IsPC() )
 	{
-		if ( !bForce )
+		if ( ! bForce )
 		{
-			DWORD* pSrc = (DWORD*)pValues;
-			DWORD* pDst = (DWORD*)&m_DesiredState.m_pVectorPixelShaderConstant[nStartConst];
-			while( nNumConsts && ( pSrc[0] == pDst[0] ) && ( pSrc[1] == pDst[1] ) && ( pSrc[2] == pDst[2] ) && ( pSrc[3] == pDst[3] ) )
-			{
-				pSrc += 4;
-				pDst += 4;
-				nNumConsts--;
-				nStartConst++;
-			}
+			int skip = 0;
+			nNumConsts = AdjustUpdateRange( pValues, &m_DesiredState.m_pVectorPixelShaderConstant[nStartConst], nNumConsts, &skip );
 			if ( !nNumConsts )
 				return;
-			pValues = reinterpret_cast< float const * >( pSrc );
+			nStartConst += skip;
+			pValues += skip * 4;
 		}
 					
 		Dx9Device()->SetPixelShaderConstantF( nStartConst, pValues, nNumConsts );
 		memcpy( &m_DynamicState.m_pVectorPixelShaderConstant[nStartConst], pValues, nNumConsts * 4 * sizeof(float) );
 	}
 
-	if ( IsX360() && nStartConst + nNumConsts > m_MaxVectorPixelShaderConstant )
-	{
-		m_MaxVectorPixelShaderConstant = nStartConst + nNumConsts;
-		Assert( m_MaxVectorPixelShaderConstant <= 32 );
-		if ( m_MaxVectorPixelShaderConstant > 32 )
-		{
-			// NOTE!  There really are 224 pixel shader constants on the 360, but we do an optimization that only blasts the first 32 always.
-			Error( "Don't use more then the first 32 pixel shader constants on the 360!" );
-		}
-	}
-
 	memcpy( &m_DesiredState.m_pVectorPixelShaderConstant[nStartConst], pValues, nNumConsts * 4 * sizeof(float) );
+					
+	if ( IsX360() )
+	{
+		m_MaxVectorPixelShaderConstant = max( m_MaxVectorPixelShaderConstant, nStartConst + nNumConsts );
+		Assert( m_MaxVectorPixelShaderConstant <= 32 );
+	}
 }
 
 void CShaderAPIDx8::SetPixelShaderConstant( int var, float const* pVec, int numVecs, bool bForce )
@@ -6927,8 +6970,10 @@ void CShaderAPIDx8::SetTextureState( Sampler_t sampler, ShaderAPITextureHandle_t
 	D3DTEXTUREFILTERTYPE minFilter = tex.m_MinFilter;
 	D3DTEXTUREFILTERTYPE magFilter = tex.m_MagFilter;
 	D3DTEXTUREFILTERTYPE mipFilter = tex.m_MipFilter;
+#ifndef BYTEMATCH_RETAIL
 	int finestMipmapLevel		   = tex.m_FinestMipmapLevel;
 	float lodBias				   = tex.m_LodBias;
+#endif
 
 	if ( materialSystemConfig.bMipMapTextures == 0 )
 	{
@@ -6970,8 +7015,10 @@ void CShaderAPIDx8::SetTextureState( Sampler_t sampler, ShaderAPITextureHandle_t
 	SETSAMPLESTATEANDMIRROR( sampler, samplerState, D3DSAMP_MINFILTER, m_MinFilter, minFilter );
 	SETSAMPLESTATEANDMIRROR( sampler, samplerState, D3DSAMP_MAGFILTER, m_MagFilter, magFilter );
 	SETSAMPLESTATEANDMIRROR( sampler, samplerState, D3DSAMP_MIPFILTER, m_MipFilter, mipFilter );
+#ifndef BYTEMATCH_RETAIL
 	SETSAMPLESTATEANDMIRROR( sampler, samplerState, D3DSAMP_MAXMIPLEVEL, m_FinestMipmapLevel, finestMipmapLevel );
 	SETSAMPLESTATEANDMIRROR_FLOAT( sampler, samplerState, D3DSAMP_MIPMAPLODBIAS, m_LodBias, lodBias );
+#endif
 	
 #endif
 }
@@ -8518,6 +8565,7 @@ void CShaderAPIDx8::TexSetPriority( int priority )
 #endif
 }
 
+#ifndef BYTEMATCH_RETAIL
 void CShaderAPIDx8::TexLodClamp( int finest )
 {
 	LOCK_SHADERAPI();
@@ -8541,6 +8589,7 @@ void CShaderAPIDx8::TexLodBias( float bias )
 	Texture_t& tex = GetTexture( hModifyTexture );
 	tex.m_LodBias = bias;
 }
+#endif
 
 
 
@@ -9156,6 +9205,7 @@ void CShaderAPIDx8::CopyRenderTargetToTextureEx( ShaderAPITextureHandle_t textur
 #endif
 }
 
+#ifndef BYTEMATCH_RETAIL
 void CShaderAPIDx8::CopyRenderTargetToScratchTexture( ShaderAPITextureHandle_t srcRt, ShaderAPITextureHandle_t dstTex, Rect_t *pSrcRect, Rect_t *pDstRect )
 {
 	LOCK_SHADERAPI();
@@ -9410,6 +9460,7 @@ void CShaderAPIDx8::CopyTextureToTexture( ShaderAPITextureHandle_t srcTex, Shade
 		pDstSurf->Release();
 	}
 }
+#endif
 
 
 
@@ -9911,8 +9962,10 @@ void CShaderAPIDx8::SpewBoardState()
 		sprintf(buf,"	Mag Filter: %d Min Filter: %d Mip Filter: %d\n",
 			SamplerState(i).m_MagFilter, SamplerState(i).m_MinFilter,
 			SamplerState(i).m_MipFilter );
+#ifndef BYTEMATCH_RETAIL
 		sprintf(buf,"   MaxMipLevel: %d\n", SamplerState(i).m_FinestMipmapLevel );
 		Plat_DebugString(buf);
+#endif
 	}
 #else
 	Plat_DebugString("::SpewBoardState() Not Implemented Yet");
@@ -11585,6 +11638,8 @@ void CShaderAPIDx8::SetViewports( int nCount, const ShaderViewport_t* pViewports
 			RECT viewRect;
 #if !defined( DX_TO_GL_ABSTRACTION )
 			GetClientRect( ( HWND )m_ViewHWnd, &viewRect );
+#elif defined( TOGL_OSX )
+			nativeGetClientRect( m_ViewHWnd, &viewRect );
 #else
 			toglGetClientRect( (VD3DHWND)m_ViewHWnd, &viewRect );
 #endif
@@ -13146,9 +13201,9 @@ bool CShaderAPIDx8::SupportsShadowDepthTextures( void )
 	return g_pHardwareConfig->Caps().m_bSupportsShadowDepthTextures;
 }
 
-bool CShaderAPIDx8::SupportsBorderColor( void ) const
+bool CShaderAPIDx8::SupportsNormalMapCompression( void ) const
 {
-	return g_pHardwareConfig->Caps().m_bSupportsBorderColor;
+	return g_pHardwareConfig->Caps().m_bSupportsNormalMapCompression;
 }
 
 bool CShaderAPIDx8::SupportsFetch4( void )

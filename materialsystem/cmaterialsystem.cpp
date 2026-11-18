@@ -431,6 +431,7 @@ void CMaterialSystem::CreateDebugMaterials()
 	}
 }
 
+#ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
 // Creates compositor materials
 //-----------------------------------------------------------------------------
@@ -471,6 +472,7 @@ void CMaterialSystem::CleanUpCompositorMaterials()
 
 	m_pCompositorMaterials.RemoveAll();
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Creates the debugging materials
@@ -660,6 +662,59 @@ void CMaterialSystem::SetShaderAPI( char const *pShaderAPIDLL )
 // Connect/disconnect
 //-----------------------------------------------------------------------------
 
+#ifdef BYTEMATCH_RETAIL
+bool CMaterialSystem::Connect( CreateInterfaceFn factory )
+{
+//	__stop__();
+	
+	if ( !factory )
+		return false;
+
+	if ( !BaseClass::Connect( factory ) )
+		return false;
+
+	if ( !g_pFullFileSystem )
+	{
+		Warning( "The material system requires the filesystem to run!\n" );
+		return false;
+	}
+
+	// Get at the interfaces exported by the shader DLL
+	g_pShaderDeviceMgr = (IShaderDeviceMgr*)m_ShaderAPIFactory( SHADER_DEVICE_MGR_INTERFACE_VERSION, 0 );
+	if ( !g_pShaderDeviceMgr )
+		return false;
+	g_pHWConfig = (IHardwareConfigInternal*)m_ShaderAPIFactory( MATERIALSYSTEM_HARDWARECONFIG_INTERFACE_VERSION, 0 );
+	if ( !g_pHWConfig )
+		return false;
+	
+#if !defined(DEDICATED)
+#if defined( USE_SDL )
+	g_pLauncherMgr = (ILauncherMgr *)factory( "SDLMgrInterface001" /*SDL_MGR_INTERFACE_VERSION*/, NULL );		
+	if ( !g_pLauncherMgr )
+	{
+		return false;
+	}
+#endif // USE_SDL
+#endif // !DEDICATED
+
+
+	// FIXME: ShaderAPI, ShaderDevice, and ShaderShadow should only come in after setting mode
+	g_pShaderAPI = (IShaderAPI*)m_ShaderAPIFactory( SHADERAPI_INTERFACE_VERSION, 0 );
+	if ( !g_pShaderAPI )
+		return false;
+	g_pShaderDevice = (IShaderDevice*)m_ShaderAPIFactory( SHADER_DEVICE_INTERFACE_VERSION, 0 );
+	if ( !g_pShaderDevice )
+		return false;
+	g_pShaderShadow = (IShaderShadow*)m_ShaderAPIFactory( SHADERSHADOW_INTERFACE_VERSION, 0 );
+	if ( !g_pShaderShadow )
+		return false;
+
+	// Remember the factory for connect
+	g_fnMatSystemConnectCreateInterface = factory;
+
+	return g_pShaderDeviceMgr->Connect( ShaderFactory );	
+}
+#else
 bool CMaterialSystem::Connect( CreateInterfaceFn factory )
 {
 //	__stop__();
@@ -712,6 +767,7 @@ bool CMaterialSystem::Connect( CreateInterfaceFn factory )
 
 	return g_pShaderDeviceMgr->Connect( ShaderFactory );	
 }
+#endif
 
 void CMaterialSystem::Disconnect()
 {
@@ -844,8 +900,10 @@ InitReturnVal_t CMaterialSystem::Init()
 	// Set up debug materials...
 	CreateDebugMaterials();	
 
+#ifndef BYTEMATCH_RETAIL
 #if !defined(DEDICATED)
 	CreateCompositorMaterials();
+#endif
 #endif
 
 	if ( IsX360() )
@@ -943,7 +1001,9 @@ void CMaterialSystem::Shutdown( )
 	// Clean up standard textures
 	ReleaseStandardTextures();
 
+#ifndef BYTEMATCH_RETAIL
 	CleanUpCompositorMaterials();
+#endif
 
 	// Clean up the debug materials
 	CleanUpDebugMaterials();
@@ -1340,7 +1400,9 @@ bool CMaterialSystem::SetMode( void* hwnd, const MaterialSystem_Config_t &config
 			}
 
 			AllocateStandardTextures();
+#ifndef BYTEMATCH_RETAIL
 			TextureManager()->WarmTextureCache();
+#endif
 		}
 
 		if ( IsX360() )
@@ -1443,6 +1505,46 @@ void CMaterialSystem::ReleaseShaderObjects()
 	}
 }
 
+#ifdef BYTEMATCH_RETAIL
+void CMaterialSystem::RestoreShaderObjects( CreateInterfaceFn shaderFactory, int nChangeFlags )
+{
+	if ( shaderFactory )
+	{
+		g_pShaderAPI = (IShaderAPI*)shaderFactory( SHADERAPI_INTERFACE_VERSION, NULL );
+		g_pShaderDevice = (IShaderDevice*)shaderFactory( SHADER_DEVICE_INTERFACE_VERSION, NULL );
+		g_pShaderShadow = (IShaderShadow*)shaderFactory( SHADERSHADOW_INTERFACE_VERSION, NULL );
+	}
+
+	for( MaterialHandle_t i = m_MaterialDict.FirstMaterial(); i != m_MaterialDict.InvalidMaterial(); i = m_MaterialDict.NextMaterial( i ) )
+	{
+		IMaterialInternal *pMat = m_MaterialDict.GetMaterialInternal( i );
+		if ( pMat )
+			pMat->ReportVarChanged( NULL );
+	}
+
+
+	if ( mat_debugalttab.GetBool() )
+	{
+		Warning( "mat_debugalttab: CMaterialSystem::RestoreShaderObjects\n" );
+	}
+	// Shader API sets this to the max value the card supports when it resets
+	// the state, so restore this value.
+	g_pShaderAPI->SetAnisotropicLevel( GetCurrentConfigForVideoCard().m_nForceAnisotropicLevel );
+
+	// NOTE: render targets must be restored first, then vb/ibs, then managed textures
+	// FIXME: Gotta restore lightmap pages + standard textures before restore funcs are called
+	// because they use them both.
+	TextureManager()->RestoreRenderTargets();
+	AllocateStandardTextures();
+	GetLightmaps()->RestoreLightmapPages();
+	g_pOcclusionQueryMgr->AllocOcclusionQueryObjects();
+	for (int i = 0; i < m_RestoreFunc.Count(); ++i)
+	{
+		m_RestoreFunc[i]( nChangeFlags );
+	}
+	TextureManager()->RestoreNonRenderTargetTextures( );
+}
+#else
 void CMaterialSystem::RestoreShaderObjects( CreateInterfaceFn shaderFactory, int nChangeFlags )
 {
 	if ( shaderFactory )
@@ -1482,6 +1584,7 @@ void CMaterialSystem::RestoreShaderObjects( CreateInterfaceFn shaderFactory, int
 	}
 	TextureManager()->RestoreNonRenderTargetTextures( );
 }
+#endif
 
 
 //-----------------------------------------------------------------------------
@@ -3007,6 +3110,7 @@ void CMaterialSystem::RecomputeAllStateSnapshots()
 	g_pShaderAPI->ResetRenderState();
 }
 
+#ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
 // Suspend texture streaming operations, for abormal periods such as loading
 //-----------------------------------------------------------------------------
@@ -3022,6 +3126,7 @@ void CMaterialSystem::ResumeTextureStreaming()
 {
 	TextureManager()->ResumeTextureStreaming();
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Uncache all materials
@@ -3616,8 +3721,11 @@ void CMaterialSystem::EndFrame( void )
 
 	GetRenderContextInternal()->EndFrame();
 	   
+#ifndef BYTEMATCH_RETAIL
 	TextureManager()->Update();
+#endif
 
+#ifndef BYTEMATCH_RETAIL
 	while ( !m_scheduledComposites.IsEmpty() )
 	{
 		// We hold a ref, so if there's only one count left, it's us. Let it go and move on.
@@ -3663,6 +3771,7 @@ void CMaterialSystem::EndFrame( void )
 			break;
 		}
 	}
+#endif
 
 	//-------------------------------------------------------------
 
@@ -4515,6 +4624,7 @@ ITexture *CMaterialSystem::CreateNamedRenderTargetTextureEx2(
 	return pTexture;
 }
 
+#ifndef BYTEMATCH_RETAIL
 class CTextureBitsRegenerator : public ITextureRegenerator
 {
 public:
@@ -4664,6 +4774,7 @@ bool CMaterialSystem::VerifyTextureCompositorTemplates()
 {
 	return TextureManager()->VerifyTextureCompositorTemplates();
 }
+#endif
 
 
 void CMaterialSystem::BeginRenderTargetAllocation( void )
@@ -5453,7 +5564,9 @@ void CMaterialSystem::OnRenderingAsyncComplete()
 	// while the async job is not running.
 	bool bThreadHadOwnership = m_bThreadHasOwnership;
 
+#ifndef BYTEMATCH_RETAIL
 	TextureManager()->UpdatePostAsync();
+#endif
 
 	if ( bThreadHadOwnership && !m_bThreadHasOwnership )
 		ThreadAcquire( true );

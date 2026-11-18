@@ -144,6 +144,7 @@ CON_COMMAND_F( ccs_create_convars_from_hwconfig, "Create convars from the curren
 	HWCFG( m_bSoftwareVertexProcessing );
 	HWCFG( m_bScissorSupported );
 	HWCFG( m_bSupportsFloat32RenderTargets );
+	HWCFG( m_bSupportsNormalMapCompression );
 	HWCFG( m_bSupportsBorderColor );
 	HWCFG( m_bDX10Card );							
 	HWCFG( m_bDX10Blending );						
@@ -151,7 +152,9 @@ CON_COMMAND_F( ccs_create_convars_from_hwconfig, "Create convars from the curren
 	HWCFG( m_FakeSRGBWrite );						
 	HWCFG( m_CanDoSRGBReadFromRTs );				
 	HWCFG( m_bSupportsGLMixedSizeTargets );			
+#ifndef BYTEMATCH_RETAIL
 	HWCFG( m_bCanStretchRectFromTextures );
+#endif
 
 	HWCFG( m_MaxHDRType );
 #undef HWCFG
@@ -770,6 +773,11 @@ VertexCompressionType_t CHardwareConfig::SupportsCompressedVertices() const
 	return m_Caps.m_SupportsCompressedVertices;
 }
 
+bool CHardwareConfig::SupportsNormalMapCompression() const
+{
+	return m_Caps.m_bSupportsNormalMapCompression;
+}
+
 bool CHardwareConfig::SupportsBorderColor() const
 {
 	return m_Caps.m_bSupportsBorderColor;
@@ -1240,7 +1248,11 @@ int CHardwareConfig::GetMaxVertexTextureDimension() const
 
 HDRType_t CHardwareConfig::GetHDRType() const
 {
+#ifdef BYTEMATCH_RETAIL
+	bool enabled = m_bHDREnabled;
+#else
 	bool enabled = (mat_hdr_level.GetInt() >= 2) && GetHDREnabled();
+#endif
 	int dxlev = GetDXSupportLevel();
 	int dxsupp = dxlev >= 90;
 	HDRType_t caps_hdr = m_Caps.m_HDRType;
