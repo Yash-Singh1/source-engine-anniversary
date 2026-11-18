@@ -143,10 +143,7 @@ IMPLEMENT_SERVERCLASS_ST( CPropJeep, DT_PropJeep )
 	SendPropBool( SENDINFO( m_bHeadlightIsOn ) ),
 END_SEND_TABLE();
 
-// This is overriden for the episodic jeep
-#ifndef HL2_EPISODIC
 LINK_ENTITY_TO_CLASS( prop_vehicle_jeep, CPropJeep );
-#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -1379,8 +1376,30 @@ void CPropJeep::ProcessMovement( CBasePlayer *pPlayer, CMoveData *pMoveData )
 {
 	BaseClass::ProcessMovement( pPlayer, pMoveData );
 
+	// Update the steering angles based on speed.
+	UpdateSteeringAngle();
+
 	// Create dangers sounds in front of the vehicle.
 	CreateDangerSounds();
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CPropJeep::UpdateSteeringAngle( void )
+{
+	float flMaxSpeed = m_VehiclePhysics.GetMaxSpeed();
+	float flSpeed = m_VehiclePhysics.GetSpeed();
+
+	float flRatio = 1.0f - ( flSpeed / flMaxSpeed );
+	float flSteeringDegrees = JEEP_STEERING_FAST_ANGLE + ( ( JEEP_STEERING_SLOW_ANGLE - JEEP_STEERING_FAST_ANGLE ) * flRatio );
+	flSteeringDegrees = clamp( flSteeringDegrees, JEEP_STEERING_FAST_ANGLE, JEEP_STEERING_SLOW_ANGLE );
+	m_VehiclePhysics.SetSteeringDegrees( flSteeringDegrees );
+}
+
+bool CPropJeep::IsJalopy( void )
+{
+	return false;
 }
 
 //-----------------------------------------------------------------------------

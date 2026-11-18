@@ -1028,7 +1028,7 @@ bool CHL2_Player::HandleInteraction(int interactionType, void *data, CBaseCombat
 	else if (interactionType ==	g_interactionBarnacleVictimGrab)
 	{
 #ifdef HL2_EPISODIC
-		CNPC_Alyx *pAlyx = CNPC_Alyx::GetAlyx();
+		CNPC_Alyx_Episodic *pAlyx = CNPC_Alyx_Episodic::GetAlyx();
 		if ( pAlyx )
 		{
 			// Make Alyx totally hate this barnacle so that she saves the player.
@@ -2428,7 +2428,7 @@ bool CHL2_Player::ShouldShootMissTarget( CBaseCombatCharacter *pAttacker )
 void CHL2_Player::CombineBallSocketed( CPropCombineBall *pCombineBall )
 {
 #ifdef HL2_EPISODIC
-	CNPC_Alyx *pAlyx = CNPC_Alyx::GetAlyx();
+	CNPC_Alyx_Episodic *pAlyx = CNPC_Alyx_Episodic::GetAlyx();
 	if ( pAlyx )
 	{
 		pAlyx->CombineBallSocketed( pCombineBall->NumBounces() );

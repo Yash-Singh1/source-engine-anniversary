@@ -2318,7 +2318,7 @@ bool CSceneEntity::CheckActors()
 					// HACK: Alyx cannot play scenes when she's in the middle of transitioning					
 					if ( pActor->IsInAVehicle() )
 					{
-						CNPC_Alyx *pAlyx = dynamic_cast<CNPC_Alyx *>(pActor);
+						CNPC_Alyx_Episodic *pAlyx = dynamic_cast<CNPC_Alyx_Episodic *>(pActor);
 						if ( pAlyx != NULL && ( pAlyx->GetPassengerState() == PASSENGER_STATE_ENTERING || pAlyx->GetPassengerState() == PASSENGER_STATE_EXITING ) )
 						{
 							bShouldWait = true;

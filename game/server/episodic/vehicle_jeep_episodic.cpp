@@ -314,7 +314,7 @@ LINK_ENTITY_TO_CLASS( info_target_vehicle_transition, CInfoTargetVehicleTransiti
 //	CPropJeepEpisodic
 //
 
-LINK_ENTITY_TO_CLASS( prop_vehicle_jeep, CPropJeepEpisodic );
+LINK_ENTITY_TO_CLASS( prop_vehicle_jalopy, CPropJeepEpisodic );
 
 BEGIN_DATADESC( CPropJeepEpisodic )
 
@@ -376,6 +376,8 @@ IMPLEMENT_SERVERCLASS_ST(CPropJeepEpisodic, DT_CPropJeepEpisodic)
 	//CNetworkArray( int, m_iRadarContactType, RADAR_MAX_CONTACTS );
 	SendPropArray( SendPropInt(SENDINFO_ARRAY(m_iRadarContactType), RADAR_CONTACT_TYPE_BITS ), m_iRadarContactType ),
 END_SEND_TABLE()
+
+ConVar r_JalopyFOV( "r_JalopyFOV", "82", FCVAR_CHEAT | FCVAR_REPLICATED );
 
 
 //=============================================================================
@@ -451,6 +453,9 @@ void CPropJeepEpisodic::EnterVehicle( CBaseCombatCharacter *pPassenger )
 //-----------------------------------------------------------------------------
 void CPropJeepEpisodic::Spawn( void )
 {
+	// Created as prop_vehicle_jalopy by CreateEntityByName's episodic remap; maps and scripts see prop_vehicle_jeep.
+	SetClassname( "prop_vehicle_jeep" );
+
 	BaseClass::Spawn();
 
 	SetBlocksLOS( false );
@@ -637,7 +642,7 @@ bool CPropJeepEpisodic::PassengerInTransition( void )
 {
 	// FIXME: Big hack - we need a way to bridge this data better
 	// TODO: Get a list of passengers we can traverse instead
-	CNPC_Alyx *pAlyx = CNPC_Alyx::GetAlyx();
+	CNPC_Alyx_Episodic *pAlyx = CNPC_Alyx_Episodic::GetAlyx();
 	if ( pAlyx )
 	{
 		if ( pAlyx->GetPassengerState() == PASSENGER_STATE_ENTERING ||
@@ -938,7 +943,7 @@ void CPropJeepEpisodic::UpdateRadar( bool forceUpdate )
 		}
 
 		//Notify Alyx so she can talk about the radar contact
-		CNPC_Alyx *pAlyx = CNPC_Alyx::GetAlyx();
+		CNPC_Alyx_Episodic *pAlyx = CNPC_Alyx_Episodic::GetAlyx();
 
 		if( !bDetectedDog && pAlyx != NULL && pAlyx->GetVehicle() )
 		{
@@ -1060,7 +1065,7 @@ void CPropJeepEpisodic::Think( void )
 	BaseClass::Think();
 
 	// If our passenger is transitioning, then don't let the player drive off
-	CNPC_Alyx *pAlyx = CNPC_Alyx::GetAlyx();
+	CNPC_Alyx_Episodic *pAlyx = CNPC_Alyx_Episodic::GetAlyx();
 	if ( pAlyx && pAlyx->GetPassengerState() == PASSENGER_STATE_EXITING )
 	{
 		m_throttleDisableTime = gpGlobals->curtime + 0.25f;		

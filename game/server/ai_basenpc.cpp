@@ -646,7 +646,7 @@ void CAI_BaseNPC::Ignite( float flFlameLifetime, bool bNPCOnly, float flSize, bo
 	CBasePlayer *pPlayer = AI_GetSinglePlayer();
 	if ( pPlayer->IRelationType( this ) != D_LI )
 	{
-		CNPC_Alyx *alyx = CNPC_Alyx::GetAlyx();
+		CNPC_Alyx_Episodic *alyx = CNPC_Alyx_Episodic::GetAlyx();
 
 		if ( alyx )
 		{

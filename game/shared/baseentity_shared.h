@@ -13,6 +13,7 @@
 
 
 extern ConVar hl2_episodic;
+bool IsHL2Episodic();
 
 // Simple shared header file for common base entities
 
