@@ -363,6 +363,9 @@ def build(bld):
 		defines += ['ENABLE_RPT']
 
 	libs = ['tier0','vgui_controls','dmxloader','tier1','tier2','tier3','bitmap','vstdlib','appframework','datamodel','vtf','mathlib','steam_api','matsys_controls','BZ2','SDL2','JPEG','ZLIB','OPENAL','CURL' ]
+	if bld.env.RETAIL_OSX32:
+		# retail engine.dylib embeds libpng 1.5.2 (thirdparty-static.md)
+		libs += ['PNG']
 
 	if bld.env.DEST_OS == 'android':
 		libs += ['SSL', 'CRYPTO'] # android curl was built with openssl
