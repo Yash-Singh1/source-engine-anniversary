@@ -57,8 +57,6 @@ ARCHIVE_TARGETS = {
 # Retail links objects for these, but our copy can't be compiled for this target;
 # the module keeps building without them. module or archive -> files (tree-relative).
 RETAIL_SKIP = {
-	# Members of the 2014 hl2mp client's copy (HTML.o); no anniversary module links them.
-	'libvgui_controls.a': ['public/html/htmlprotobuf.cpp', 'vgui2/vgui_controls/generated_proto/htmlmessages.pb.cc'],
 }
 
 # Files retail doesn't link that our tree still needs to link the module
