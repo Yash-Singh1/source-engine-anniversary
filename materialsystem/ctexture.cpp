@@ -4,6 +4,11 @@
 //
 //=====================================================================================//
 
+#ifdef BYTEMATCH_RETAIL
+#include "ctexture_retail.inl"
+#else
+#line 6
+
 #ifdef PROTECTED_THINGS_ENABLE
 	#undef PROTECTED_THINGS_ENABLE
 #endif
@@ -5023,3 +5028,5 @@ usage:
 		);
 }
 #endif
+
+#endif // BYTEMATCH_RETAIL
