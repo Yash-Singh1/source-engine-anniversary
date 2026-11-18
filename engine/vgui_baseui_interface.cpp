@@ -105,6 +105,7 @@
 #ifdef BYTEMATCH_RETAIL
 #include "GameEventManager.h"
 #include "inputsystem/iinputsystem.h"
+#undef CreateEvent
 #endif
 #line 107
 #include "tier0/memdbgon.h"

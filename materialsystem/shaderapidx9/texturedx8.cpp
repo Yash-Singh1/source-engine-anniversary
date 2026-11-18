@@ -1366,6 +1366,7 @@ void LoadTextureFromVTF( TextureLoadInfo_t &info, IVTFTexture* pVTF, int iVTFFra
 #endif
 
 #ifdef BYTEMATCH_RETAIL
+	const int finest = 0, coarsest = iMipCount - 1;
 	for ( int iMip = 0; iMip < iMipCount; ++iMip )
 	{
 		int w, h, d;
