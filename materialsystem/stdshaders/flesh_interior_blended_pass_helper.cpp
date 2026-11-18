@@ -254,7 +254,12 @@ void DrawFleshInteriorBlendedPass( CBaseVSShader *pShader, IMaterialVar** params
 		// Debug force flesh on
 		vVsConst0[3] = IS_PARAM_DEFINED( info.m_nflDebugForceFleshOn ) ? params[info.m_nflDebugForceFleshOn]->GetFloatValue() : kDefaultDebugForceFleshOn;
 
+#ifndef BYTEMATCH_RETAIL
 		pShaderAPI->SetVertexShaderConstant( VERTEX_SHADER_SHADER_SPECIFIC_CONST_0, vVsConst0 );
+#else
+		pShaderAPI->SetVertexShaderConstant( VERTEX_SHADER_SHADER_SPECIFIC_CONST_0, vVsConst0, 1 );
+#endif
+#line 258
 
 		// Flesh effect centers and radii
 		float vVsConst1[4] = { kDefaultEffectCenterRadius[0], kDefaultEffectCenterRadius[1], kDefaultEffectCenterRadius[2], kDefaultEffectCenterRadius[3] };
@@ -265,7 +270,12 @@ void DrawFleshInteriorBlendedPass( CBaseVSShader *pShader, IMaterialVar** params
 				vVsConst1[3] = 0.001f;
 			vVsConst1[3] = 1.0f / vVsConst1[3]; // Pass 1.0/radius so we do a mul instead of a divide in the shader
 		}
+#ifndef BYTEMATCH_RETAIL
 		pShaderAPI->SetVertexShaderConstant( VERTEX_SHADER_SHADER_SPECIFIC_CONST_1, vVsConst1 );
+#else
+		pShaderAPI->SetVertexShaderConstant( VERTEX_SHADER_SHADER_SPECIFIC_CONST_1, vVsConst1, 1 );
+#endif
+#line 269
 
 		float vVsConst2[4] = { kDefaultEffectCenterRadius[0], kDefaultEffectCenterRadius[1], kDefaultEffectCenterRadius[2], kDefaultEffectCenterRadius[3] };
 		if ( IS_PARAM_DEFINED( info.m_nvEffectCenterRadius2 ) )
@@ -275,7 +285,12 @@ void DrawFleshInteriorBlendedPass( CBaseVSShader *pShader, IMaterialVar** params
 				vVsConst2[3] = 0.001f;
 			vVsConst2[3] = 1.0f / vVsConst2[3]; // Pass 1.0/radius so we do a mul instead of a divide in the shader
 		}
+#ifndef BYTEMATCH_RETAIL
 		pShaderAPI->SetVertexShaderConstant( VERTEX_SHADER_SHADER_SPECIFIC_CONST_2, vVsConst2 );
+#else
+		pShaderAPI->SetVertexShaderConstant( VERTEX_SHADER_SHADER_SPECIFIC_CONST_2, vVsConst2, 2 );
+#endif
+#line 279
 
 		float vVsConst3[4] = { kDefaultEffectCenterRadius[0], kDefaultEffectCenterRadius[1], kDefaultEffectCenterRadius[2], kDefaultEffectCenterRadius[3] };
 		if ( IS_PARAM_DEFINED( info.m_nvEffectCenterRadius3 ) )
@@ -285,7 +300,12 @@ void DrawFleshInteriorBlendedPass( CBaseVSShader *pShader, IMaterialVar** params
 				vVsConst3[3] = 0.001f;
 			vVsConst3[3] = 1.0f / vVsConst3[3]; // Pass 1.0/radius so we do a mul instead of a divide in the shader
 		}
+#ifndef BYTEMATCH_RETAIL
 		pShaderAPI->SetVertexShaderConstant( VERTEX_SHADER_SHADER_SPECIFIC_CONST_3, vVsConst3 );
+#else
+		pShaderAPI->SetVertexShaderConstant( VERTEX_SHADER_SHADER_SPECIFIC_CONST_3, vVsConst3, 3 );
+#endif
+#line 289
 
 		float vVsConst4[4] = { kDefaultEffectCenterRadius[0], kDefaultEffectCenterRadius[1], kDefaultEffectCenterRadius[2], kDefaultEffectCenterRadius[3] };
 		if ( IS_PARAM_DEFINED( info.m_nvEffectCenterRadius4 ) )
@@ -295,7 +315,12 @@ void DrawFleshInteriorBlendedPass( CBaseVSShader *pShader, IMaterialVar** params
 				vVsConst4[3] = 0.001f;
 			vVsConst4[3] = 1.0f / vVsConst4[3]; // Pass 1.0/radius so we do a mul instead of a divide in the shader
 		}
+#ifndef BYTEMATCH_RETAIL
 		pShaderAPI->SetVertexShaderConstant( VERTEX_SHADER_SHADER_SPECIFIC_CONST_4, vVsConst4 );
+#else
+		pShaderAPI->SetVertexShaderConstant( VERTEX_SHADER_SHADER_SPECIFIC_CONST_4, vVsConst4, 4 );
+#endif
+#line 299
 
 		// Set Pixel Shader Combos
 		if( g_pHardwareConfig->SupportsPixelShaders_2_b() )
