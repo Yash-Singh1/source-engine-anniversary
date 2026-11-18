@@ -3708,15 +3708,15 @@ void CModelRender::StaticPropColorMeshCallback( void *pContext, const void *pDat
 		// only the 360 has compressed VHV data
 		// the compressed data is after the header
 		byte *pCompressedData = (byte *)pData + sizeof( HardwareVerts::FileHeader_t );
-		if ( CLZMA::IsCompressed( pCompressedData ) )
+		if ( CLZMA().IsCompressed( pCompressedData ) )
 		{
 			// create a buffer that matches the original
-			int actualSize = CLZMA::GetActualSize( pCompressedData );
+			int actualSize = CLZMA().GetActualSize( pCompressedData );
 			pOriginalData = (byte *)malloc( sizeof( HardwareVerts::FileHeader_t ) + actualSize );
 
 			// place the header, then uncompress directly after it
 			V_memcpy( pOriginalData, pData, sizeof( HardwareVerts::FileHeader_t ) );
-			int outputLength = CLZMA::Uncompress( pCompressedData, pOriginalData + sizeof( HardwareVerts::FileHeader_t ) );
+			int outputLength = CLZMA().Uncompress( pCompressedData, pOriginalData + sizeof( HardwareVerts::FileHeader_t ) );
 			if ( outputLength != actualSize )
 			{
 				goto cleanUp;

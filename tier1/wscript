@@ -16,7 +16,6 @@ def configure(conf):
 
 def build(bld):
 	source = [
-		'../utils/lzma/C/LzmaDec.c',
 		'bitbuf.cpp',
 		'byteswap.cpp',
 		'characterset.cpp',
