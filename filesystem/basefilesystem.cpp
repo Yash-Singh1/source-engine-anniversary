@@ -227,7 +227,7 @@ CUtlVector< FileNameHandle_t > CBaseFileSystem::m_ExcludePaths;
 class CStoreIDEntry
 {
 public:
-	CStoreIDEntry() = default;
+	CStoreIDEntry() {}
 	CStoreIDEntry( const char *pPathIDStr, int storeID )
 	{
 		m_PathIDString = pPathIDStr;
@@ -3370,7 +3370,7 @@ time_t CBaseFileSystem::GetFileTime( const char *pFileName, const char *pPathID 
 
 time_t CBaseFileSystem::GetPathTime( const char *pFileName, const char *pPathID )
 {
-	VPROF_BUDGET( "CBaseFileSystem::GetPathTime", VPROF_BUDGETGROUP_OTHER_FILESYSTEM );
+	VPROF_BUDGET( "CBaseFileSystem::GetFileTime", VPROF_BUDGETGROUP_OTHER_FILESYSTEM );
 
 	CSearchPathsIterator iter( this, &pFileName, pPathID );
 
@@ -3671,9 +3671,10 @@ void CBaseFileSystem::NotifyFileUnloaded( const char *pszFilename, const char *p
 
 void CBaseFileSystem::SetSearchPathIsTrustedSource( CSearchPath *pSearchPath )
 {
-#if 1
+#ifndef BYTEMATCH_RETAIL
+	// VPK signatures are not checked in this build
 	pSearchPath->m_bIsTrustedForPureServer = true;
-#else // Broken, I am lazy to fix this
+#else
 	// Most paths are not considered trusted
 	pSearchPath->m_bIsTrustedForPureServer = false;
 
@@ -4253,7 +4254,11 @@ bool CBaseFileSystem::FindNextFileInVPKOrPakHelper( FindData_t *pFindData )
 	{
 		V_strncpy( pFindData->findData.cFileName, V_UnqualifiedFileName( pFindData->m_fileMatchesFromVPKOrPak[0] ), sizeof( pFindData->findData.cFileName ) );
 		pFindData->findData.dwFileAttributes = 0;
+#ifdef BYTEMATCH_RETAIL
+		delete pFindData->m_fileMatchesFromVPKOrPak.Head();
+#else
 		delete[] pFindData->m_fileMatchesFromVPKOrPak.Head();
+#endif
 		pFindData->m_fileMatchesFromVPKOrPak.RemoveMultipleFromHead( 1 );
 
 		return true;
@@ -5082,7 +5087,6 @@ void CBaseFileSystem::CSearchPathsIterator::CopySearchPaths( const CUtlVector<CS
 CSysModule *CBaseFileSystem::LoadModule( const char *pFileName, const char *pPathID, bool bValidatedDllOnly )
 {
 	CHECK_DOUBLE_SLASHES( pFileName );
-	CSysModule *pModule = NULL;
 
 	LogFileAccess( pFileName );
 	if ( !pPathID )
@@ -5092,7 +5096,7 @@ CSysModule *CBaseFileSystem::LoadModule( const char *pFileName, const char *pPat
 
 	char tempPathID[ MAX_PATH ];
 	ParsePathID( pFileName, pPathID, tempPathID );
-
+	
 	CUtlSymbol lookup = g_PathIDTable.AddString( pPathID );
 
 	// a pathID has been specified, find the first match in the path list
@@ -5108,14 +5112,14 @@ CSysModule *CBaseFileSystem::LoadModule( const char *pFileName, const char *pPat
 			continue;
 
 		Q_snprintf( tempPathID, sizeof(tempPathID), "%s%s", m_SearchPaths[i].GetPathString(), pFileName ); // append the path to this dir.
-		pModule = Sys_LoadModule( tempPathID );
+		CSysModule *pModule = Sys_LoadModule( tempPathID );
 		if ( pModule ) 
 		{
 			// we found the binary in one of our search paths
 			return pModule;
 		}
 
-#ifdef POSIX
+#if defined( POSIX ) && !defined( BYTEMATCH_RETAIL )
 		Q_snprintf( tempPathID, sizeof(tempPathID), "%slib%s", m_SearchPaths[i].GetPathString(), pFileName ); // append the path to this dir.
 		pModule = Sys_LoadModule( tempPathID );
 		if ( pModule )
@@ -5124,10 +5128,8 @@ CSysModule *CBaseFileSystem::LoadModule( const char *pFileName, const char *pPat
 	}
 #endif
 
-	if( !pModule )
-		pModule = Sys_LoadModule( pFileName );
-
-	return pModule;
+	// couldn't load it from any of the search paths, let LoadLibrary try
+	return Sys_LoadModule( pFileName );
 }
 
 //-----------------------------------------------------------------------------
