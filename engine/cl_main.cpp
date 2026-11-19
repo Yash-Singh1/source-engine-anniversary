@@ -1519,7 +1519,13 @@ ConCommand screenshot_internal_command( "__screenshot_internal", screenshot_inte
 
 void CL_TakeSnapshotAndSwap()
 {
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 1325
+#else
+#line 1343
+#endif
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__ );
+#line 1345
 
 	bool bReadPixelsFromFrontBuffer = g_pMaterialSystemHardwareConfig->ReadPixelsFromFrontBuffer();
 	if ( bReadPixelsFromFrontBuffer )
