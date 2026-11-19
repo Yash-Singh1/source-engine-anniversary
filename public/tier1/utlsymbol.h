@@ -172,7 +172,7 @@ protected:
 	CTree m_Lookup;
 
 	bool m_bInsensitive;
-#ifdef HL2_LOSTCOAST
+#if defined( HL2_LOSTCOAST ) || defined( BYTEMATCH_HL2MP2014 )
 	mutable const char* m_pUserSearchString;
 #endif
 #line 175
