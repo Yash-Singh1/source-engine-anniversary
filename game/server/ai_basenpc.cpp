@@ -2965,6 +2965,7 @@ bool CAI_BaseNPC::PreThink( void )
 
 //-----------------------------------------------------------------------------
 
+#line 2961
 void CAI_BaseNPC::RunAnimation( void )
 {
 	VPROF_BUDGET( "CAI_BaseNPC_RunAnimation", VPROF_BUDGETGROUP_SERVER_ANIM );
@@ -3017,6 +3018,7 @@ void CAI_BaseNPC::RunAnimation( void )
 
 	DispatchAnimEvents( this );
 }
+#line 3020
 
 //-----------------------------------------------------------------------------
 

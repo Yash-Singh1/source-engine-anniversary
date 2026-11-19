@@ -3194,6 +3194,7 @@ void CBasePlayer::RunNullCommand( void )
 //-----------------------------------------------------------------------------
 // Purpose: Note, don't chain to BaseClass::PhysicsSimulate
 //-----------------------------------------------------------------------------
+#line 3183
 void CBasePlayer::PhysicsSimulate( void )
 {
 	VPROF_BUDGET( "CBasePlayer::PhysicsSimulate", VPROF_BUDGETGROUP_PLAYER );
@@ -3407,6 +3408,7 @@ void CBasePlayer::PhysicsSimulate( void )
 // 		}
 // 	}
 }
+#line 3410
 
 unsigned int CBasePlayer::PhysicsSolidMaskForEntity() const
 {

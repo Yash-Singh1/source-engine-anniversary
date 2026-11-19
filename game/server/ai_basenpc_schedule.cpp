@@ -3193,6 +3193,7 @@ void CAI_BaseNPC::RunAttackTask( int task )
 //=========================================================
 // RunTask 
 //=========================================================
+#line 3194
 void CAI_BaseNPC::RunTask( const Task_t *pTask )
 {
 	VPROF_BUDGET( "CAI_BaseNPC::RunTask", VPROF_BUDGETGROUP_NPCS );
@@ -4152,6 +4153,7 @@ void CAI_BaseNPC::RunTask( const Task_t *pTask )
 		break;
 	}
 }
+#line 4155
 
 void CAI_BaseNPC::RunTaskOverlay()
 {
