@@ -3,6 +3,10 @@
 // IVP_EXPORT_PUBLIC
 #ifndef _IVP_CORE_INCLUDED
 #define _IVP_CORE_INCLUDED
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#pragma pack(push, 4)	// retail Windows: doubles and base-class tails aligned to 4, as on OS X i386
+#endif
+#line 6
 
 /********************************************************************************
  *	Name:	       	ivp_core.hxx
@@ -89,6 +93,16 @@ public:
      *			So use the corresponding functions to read/set them.
      ********************************************************************************/
 #ifdef BYTEMATCH_RETAIL
+#if defined( _MSC_VER )	// retail Windows keeps the 16 flag bits and the short in 4 bytes: 16-bit storage units
+    unsigned short 		fast_piling_allowed_flag:1;
+    unsigned short		physical_unmoveable:1;	// never any movement
+    unsigned short            is_in_wakeup_vec:1;
+    unsigned short		rot_inertias_are_equal:1;
+	unsigned short		pinned:1;
+    unsigned short            temporarily_unmovable:3;
+    unsigned short	movement_state:8;		// Movement state
+    short               impacts_since_last_PSI;
+#else
     IVP_BOOL 		fast_piling_allowed_flag:1;
     IVP_BOOL		physical_unmoveable:1;	// never any movement
     IVP_BOOL            is_in_wakeup_vec:1;
@@ -97,6 +111,8 @@ public:
     IVP_BOOL            temporarily_unmovable:3;
     IVP_Movement_Type	movement_state:8;		// Movement state
     short               impacts_since_last_PSI;
+#endif
+#line 100
 #else
     IVP_BOOL 		fast_piling_allowed_flag:2;
     IVP_BOOL		physical_unmoveable:2;	// never any movement
@@ -571,6 +587,9 @@ public:
 };
 
 
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#pragma pack(pop)
+#endif
 #endif /* _IVP_CORE_INCLUDED */
 
 
