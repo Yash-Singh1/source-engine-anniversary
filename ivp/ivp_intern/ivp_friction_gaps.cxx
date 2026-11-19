@@ -1186,7 +1186,11 @@ void IVP_Friction_System::do_friction_system(const IVP_Event_Sim *es_in)
     this->do_pushes_distance_keepers(es_in);  // do local constraint pushes
 #endif
 
-    if((this->friction_dist_number - this->complex_not_necessary_number) > IVP_MAX_FRICTION_MATRIX) {
+    if((this->friction_dist_number - this->complex_not_necessary_number) > IVP_MAX_FRICTION_MATRIX
+#ifdef BYTEMATCH_RETAIL
+       && l_environment->get_anomaly_manager()->max_contacts_exceeded_check_freezing( (IVP_Core **)cores_of_friction_system.elems, cores_of_friction_system.len() )
+#endif
+       ) {
 	this->static_fr_oversized_matrix_panic();
 	my_mem->end_memory_transaction();
 	return;    

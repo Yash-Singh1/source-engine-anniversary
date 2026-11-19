@@ -838,7 +838,11 @@ void IVP_Real_Object::init_object_core(IVP_Environment *i_environment, const IVP
     IVP_Core *core = get_core();
     // radius
 
+#ifdef BYTEMATCH_RETAIL
+    IVP_FLOAT rad = 0.0f, rad_dev = 0.0f;
+#else
     IVP_FLOAT rad, rad_dev;
+#endif
     switch (type){
     case IVP_POLYGON:
 	surface_manager->get_radius_and_radius_dev_to_given_center(&center, &rad, &rad_dev);
