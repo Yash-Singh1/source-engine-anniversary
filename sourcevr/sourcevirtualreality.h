@@ -85,7 +85,7 @@ public:
 	virtual bool ShouldForceVRMode( ) OVERRIDE;
 	virtual void SetShouldForceVRMode( ) OVERRIDE;
 
-	virtual bool IsHmdAvailable();
+	virtual bool IsHmdAvailable() OVERRIDE;
 
 	void RefreshDistortionTexture();
 	void AcquireNewZeroPose();

@@ -180,21 +180,7 @@ void SetUseHDContent( bool bUse )
 	}
 }
 
-//-----------------------------------------------------------------------------
-// Anniversary ISourceVirtualReality ends with IsHmdAvailable() (slot 27); sourcevr
-// implements it after the interface methods.
-//-----------------------------------------------------------------------------
-abstract_class ISourceVirtualRealityAnniversary : public ISourceVirtualReality
-{
-public:
-	virtual bool IsHmdAvailable() = 0;
-};
-
-static inline bool IsHmdAvailable()
-{
-	return static_cast< ISourceVirtualRealityAnniversary * >( g_pSourceVR )->IsHmdAvailable();
-}
-
+#line 198
 // borderless windows need the anniversary video config and mat_setvideomode
 static inline bool ConfigNoWindowBorder( const MaterialSystem_Config_t &config )
 {
@@ -1471,7 +1457,7 @@ COptionsSubVideo::COptionsSubVideo(vgui::Panel *parent) : PropertyPage(parent, N
 		if( label )
 			label->SetVisible( false );
 	}
-	else if( !IsHmdAvailable() )
+	else if( !g_pSourceVR->IsHmdAvailable() )
 	{
 		m_pVRMode->ActivateItem( 0 );
 		m_pVRMode->SetEnabled( false );
@@ -1987,7 +1973,7 @@ void COptionsSubVideo::OnTextChanged(Panel *pPanel, const char *pszText)
 //-----------------------------------------------------------------------------
 void		COptionsSubVideo::EnableOrDisableWindowedForVR()
 {
-	bool bCanBeEnabled = g_pSourceVR && IsHmdAvailable();
+	bool bCanBeEnabled = g_pSourceVR && g_pSourceVR->IsHmdAvailable();
 	bool bVRNowEnabled = m_pVRMode->GetActiveItem() == 1;
 	bool bVRWasEnabled = materials->GetCurrentConfigForVideoCard().m_nVRModeAdapter != -1;
 	if( bCanBeEnabled && ( bVRNowEnabled || bVRWasEnabled ) && g_pSourceVR->IsHmdConnected() )
