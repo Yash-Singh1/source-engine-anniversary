@@ -458,7 +458,11 @@ void ThreadSetDebugName( ThreadId_t id, const char *pszName )
 #elif defined( _LINUX )
 	// As of glibc v2.12, we can use pthread_setname_np.
 	typedef int (pthread_setname_np_func)(pthread_t, const char *);
+#ifdef BYTEMATCH_RETAIL_LINUX
+	static pthread_setname_np_func *const s_pthread_setname_np_func = pthread_setname_np;
+#else
 	static pthread_setname_np_func *s_pthread_setname_np_func = (pthread_setname_np_func *)dlsym(RTLD_DEFAULT, "pthread_setname_np");
+#endif
 
 	if ( s_pthread_setname_np_func )
 	{
@@ -481,6 +485,7 @@ void ThreadSetDebugName( ThreadId_t id, const char *pszName )
 		(*s_pthread_setname_np_func)( id, szThreadName );
 	}
 #endif
+#line 484
 }
 
 
@@ -714,7 +719,7 @@ bool CThreadEvent::Check()
 #ifdef THREADS_DEBUG
    AssertUseable();
 #endif
-#ifdef _WIN32
+#if defined( _WIN32 ) || defined( BYTEMATCH_RETAIL_LINUX )
 	return Wait( 0 );
 #elif defined(POSIX)
 	pthread_mutex_lock( &m_Mutex );

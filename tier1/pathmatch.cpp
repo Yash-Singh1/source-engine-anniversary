@@ -68,7 +68,7 @@
 static bool s_bShowDiag;
 #define DEBUG_MSG( ... ) if ( s_bShowDiag ) fprintf( stderr, ##__VA_ARGS__ )
 
-#ifdef POSIX
+#if defined( POSIX ) && !defined( BYTEMATCH_RETAIL_LINUX )
 #include <signal.h>
 #define DEBUG_BREAK() raise(SIGINT)
 #elif !defined (__arm__)

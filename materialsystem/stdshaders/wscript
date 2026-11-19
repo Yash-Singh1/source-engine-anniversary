@@ -150,7 +150,7 @@ def build(bld):
 
 	# Valve's 2024 combo headers (Source SDK 2013 TF2 branch layout); the native
 	# build keeps fxctmp9/vshtmp9, which match the fork's compiled shaders.
-	if bld.env.RETAIL_OSX32:
+	if bld.env.RETAIL_OSX32 or bld.env.RETAIL_LINUX32:
 		includes.insert(1, 'include')
 
 	defines = []

@@ -2752,7 +2752,7 @@ void NET_OpenSockets (void)
 		OpenSocketInternal( NS_SYSTEMLINK, systemlinkport.GetInt(), PORT_SYSTEMLINK, "systemlink", IPPROTO_UDP, false );
 	}
 
-#ifdef LINUX
+#if defined( LINUX ) && !defined( BYTEMATCH_RETAIL )
 	// On Linux, if you bind to a specific address then you will NOT receive broadcast messages.
 	// This means that if you do a +ip X.X.X.X, your game will not show up on the LAN server browser page.
 	// To workaround this, if the user has specified sv_lan and an IP address, we open an INADDR_ANY port.

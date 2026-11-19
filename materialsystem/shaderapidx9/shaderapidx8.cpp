@@ -7010,7 +7010,7 @@ void CShaderAPIDx8::SetTextureState( Sampler_t sampler, ShaderAPITextureHandle_t
 
 	// For now do this the old way on OSX since the dxabstract layer doesn't support SetSamplerStates
 	// ###OSX### punting on OSX for now
-#if DX_TO_GL_ABSTRACTION && !OSX
+#if DX_TO_GL_ABSTRACTION && !OSX && !defined( BYTEMATCH_RETAIL )
 	if ( ( samplerState.m_MinFilter != minFilter ) || ( samplerState.m_MagFilter != magFilter ) || ( samplerState.m_MipFilter != mipFilter ) ||
 		( samplerState.m_UTexWrap != uTexWrap ) || ( samplerState.m_VTexWrap != vTexWrap ) || ( samplerState.m_WTexWrap != wTexWrap ) || 
 		( samplerState.m_FinestMipmapLevel != finestMipmapLevel ) || ( samplerState.m_LodBias != lodBias ) )

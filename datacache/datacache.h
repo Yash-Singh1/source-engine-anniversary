@@ -183,7 +183,7 @@ private:
 	};
 
 	CDataCacheLRU &		m_LRU;
-	CTHREADLOCAL(FrameLock_t*)	m_ThreadFrameLock;
+	CThreadLocal<FrameLock_t*>	m_ThreadFrameLock;
 	DataCacheStatus_t	m_status;
 	DataCacheLimits_t	m_limits;
 	IDataCacheClient *	m_pClient;

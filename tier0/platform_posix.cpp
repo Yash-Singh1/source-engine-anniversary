@@ -487,6 +487,36 @@ bool Plat_IsInDebugSession( bool bForceRecheck )
 	return !!IsInDebugSession;
 }
 
+#elif defined( LINUX ) && defined( BYTEMATCH_RETAIL_LINUX )
+
+bool Plat_IsInDebugSession( bool bForceRecheck )
+{
+	static int s_nIsInDebugSession = -1;
+
+	if ( bForceRecheck || s_nIsInDebugSession == -1 )
+	{
+		s_nIsInDebugSession = 0;
+		FILE *fp = fopen( "/proc/self/status", "r" );
+		if ( fp )
+		{
+			char buf[ 512 ];
+			while ( fgets( buf, sizeof( buf ), fp ) )
+			{
+				buf[ sizeof( buf ) - 1 ] = 0;
+				if ( !strncmp( buf, "TracerPid:", 10 ) )
+				{
+					char *pEnd = NULL;
+					s_nIsInDebugSession = ( strtol( buf + 10, &pEnd, 10 ) != 0 );
+					break;
+				}
+			}
+			fclose( fp );
+		}
+	}
+
+	return s_nIsInDebugSession != 0;
+}
+
 #elif defined( LINUX )
 
 bool Plat_IsInDebugSession( bool bForceRecheck )
@@ -522,6 +552,7 @@ bool Plat_IsInDebugSession( bool bForceRecheck )
 }
 
 #endif // defined( LINUX )
+#line 522
 
 void Plat_DebugString( const char * psz )
 {
