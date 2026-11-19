@@ -817,10 +817,18 @@ void CResponseSystem::PopScript(void)
 //-----------------------------------------------------------------------------
 void CResponseSystem::Clear()
 {
+#ifdef HL2_ANNIVERSARY_NOV2024
+	m_Responses.Purge();
+	m_Criteria.Purge();
+	m_Rules.Purge();
+	m_Enumerations.Purge();
+#else
 	m_Responses.RemoveAll();
 	m_Criteria.RemoveAll();
 	m_Rules.RemoveAll();
 	m_Enumerations.RemoveAll();
+#endif
+#line 824
 }
 
 //-----------------------------------------------------------------------------
@@ -1304,8 +1312,13 @@ void CResponseSystem::DebugPrint( int depth, const char *fmt, ... )
 void CResponseSystem::ResetResponseGroups()
 {
 	int i;
+#ifdef HL2_ANNIVERSARY_NOV2024
+	for ( i = m_Responses.First(); i != m_Responses.InvalidIndex(); i = m_Responses.Next( i ) )
+#else
 	int c = m_Responses.Count();
 	for ( i = 0; i < c; i++ )
+#endif
+#line 1309
 	{
 		m_Responses[ i ].Reset();
 	}
@@ -1691,9 +1704,15 @@ int CResponseSystem::FindBestMatchingRule( const AI_CriteriaSet& set, bool verbo
 	CUtlVector< int >	bestrules;
 	float bestscore = 0.001f;
 
+#ifdef HL2_ANNIVERSARY_NOV2024
+	int i;
+	for ( i = m_Rules.First(); i != m_Rules.InvalidIndex(); i = m_Rules.Next( i ) )
+#else
 	int c = m_Rules.Count();
 	int i;
 	for ( i = 0; i < c; i++ )
+#endif
+#line 1697
 	{
 		float score = ScoreCriteriaAgainstRule( set, i, verbose );
 		// Check equals so that we keep track of all matching rules
@@ -1807,7 +1826,12 @@ bool CResponseSystem::FindBestResponse( const AI_CriteriaSet& set, AI_Response& 
 //-----------------------------------------------------------------------------
 void CResponseSystem::GetAllResponses( CUtlVector<AI_Response *> *pResponses )
 {
+#ifdef HL2_ANNIVERSARY_NOV2024
+	for ( int i = m_Responses.First(); i != m_Responses.InvalidIndex(); i = m_Responses.Next( i ) )
+#else
 	for ( int i = 0; i < (int)m_Responses.Count(); i++ )
+#endif
+#line 1811
 	{
 		ResponseGroup &group = m_Responses[i];
 
@@ -1837,7 +1861,12 @@ void CResponseSystem::Precache()
 	bool bTouchFiles = CommandLine()->FindParm( "-makereslists" ) != 0;
 
 	// enumerate and mark all the scripts so we know they're referenced
+#ifdef HL2_ANNIVERSARY_NOV2024
+	for ( int i = m_Responses.First(); i != m_Responses.InvalidIndex(); i = m_Responses.Next( i ) )
+#else
 	for ( int i = 0; i < (int)m_Responses.Count(); i++ )
+#endif
+#line 1841
 	{
 		ResponseGroup &group = m_Responses[i];
 
@@ -2951,8 +2980,13 @@ public:
 		Clear();
 		Init();
 
+#ifdef HL2_ANNIVERSARY_NOV2024
+		for ( int i = m_InstancedSystems.First(); i != m_InstancedSystems.InvalidIndex(); i = m_InstancedSystems.Next( i ) )
+#else
 		int c = m_InstancedSystems.Count();
 		for ( int i = c - 1 ; i >= 0; i-- )
+#endif
+#line 2956
 		{
 			CInstancedResponseSystem *sys = m_InstancedSystems[ i ];
 			if ( !IsCustomManagable() )
@@ -2973,8 +3007,13 @@ private:
 
 	void ClearInstanced()
 	{
+#ifdef HL2_ANNIVERSARY_NOV2024
+		for ( int i = m_InstancedSystems.First(); i != m_InstancedSystems.InvalidIndex(); i = m_InstancedSystems.Next( i ) )
+#else
 		int c = m_InstancedSystems.Count();
 		for ( int i = c - 1 ; i >= 0; i-- )
+#endif
+#line 2978
 		{
 			CInstancedResponseSystem *sys = m_InstancedSystems[ i ];
 			sys->Release();
@@ -3054,6 +3093,8 @@ CON_COMMAND( rr_reloadresponsesystems, "Reload all response system scripts." )
 	}
 #endif
 }
+NOV2024_ONLY( void ForceReloadResponseRules() { defaultresponsesytem.ReloadAllResponseSystems(); } )
+#line 3057
 
 static short RESPONSESYSTEM_SAVE_RESTORE_VERSION = 1;
 
@@ -3086,7 +3127,12 @@ public:
 
 		int count = rs.m_Responses.Count();
 		pSave->WriteInt( &count );
+#ifdef HL2_ANNIVERSARY_NOV2024
+		for ( int i = rs.m_Responses.First(); i != rs.m_Responses.InvalidIndex(); i = rs.m_Responses.Next( i ) )
+#else
 		for ( int i = 0; i < count; ++i )
+#endif
+#line 3090
 		{
 			pSave->StartBlock( "ResponseGroup" );
 
@@ -3204,7 +3250,12 @@ public:
 		
 		int count = pRS->m_Responses.Count();
 		pSave->WriteInt( &count );
+#ifdef HL2_ANNIVERSARY_NOV2024
+		for ( int i = pRS->m_Responses.First(); i != pRS->m_Responses.InvalidIndex(); i = pRS->m_Responses.Next( i ) )
+#else
 		for ( int i = 0; i < count; ++i )
+#endif
+#line 3208
 		{
 			pSave->StartBlock( "ResponseGroup" );
 
@@ -3359,10 +3410,17 @@ void DestroyCustomResponseSystems()
 //-----------------------------------------------------------------------------
 void CResponseSystem::DumpRules()
 {
+#ifdef HL2_ANNIVERSARY_NOV2024
+	int i;
+
+	for ( i = m_Rules.First(); i != m_Rules.InvalidIndex(); i = m_Rules.Next( i ) )
+#else
 	int c = m_Rules.Count();
 	int i;
 
 	for ( i = 0; i < c; i++ )
+#endif
+#line 3366
 	{
 		Msg("%s\n", m_Rules.GetElementName( i ) );
 	}

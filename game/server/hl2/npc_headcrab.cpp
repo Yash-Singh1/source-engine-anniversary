@@ -2067,7 +2067,7 @@ void CBaseHeadcrab::Ignite( float flFlameLifetime, bool bNPCOnly, float flSize, 
 
 	if( !bWasOnFire )
 	{
-	if ( HL2_EPISODIC_ACTIVE() )
+
 	{
 #ifdef HL2_EPISODIC
 			if ( HL2GameRules()->IsAlyxInDarknessMode() == true )
@@ -3371,7 +3371,7 @@ void CBlackHeadcrab::Panic( float flDuration )
 #define CRAB_360_VIEW_DIST_SQR	(12 * 12 * 24 * 24)
 bool CBlackHeadcrab::FInViewCone( CBaseEntity *pEntity )
 {
-	if(  IsCurSchedule( SCHED_HEADCRAB_AMBUSH ) &&
+	if(  IsHL2Episodic() && IsCurSchedule( SCHED_HEADCRAB_AMBUSH ) &&
 		 (( pEntity->IsNPC() || pEntity->IsPlayer() ) && pEntity->GetAbsOrigin().DistToSqr(GetAbsOrigin()) <= CRAB_360_VIEW_DIST_SQR ) )
 	{
 		// Only see players and NPC's with 360 cone

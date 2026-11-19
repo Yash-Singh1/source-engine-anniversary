@@ -3850,6 +3850,11 @@ void CMaterialSystem::BeginFrame( float frameTime )
 	
 	Assert( m_bGeneratedConfig );
 
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 3345
+#else
+#line 3600
+#endif
 	VPROF_BUDGET( "CMaterialSystem::BeginFrame", VPROF_BUDGETGROUP_SWAP_BUFFERS );
 	tmZoneFiltered( TELEMETRY_LEVEL0, 50, TMZF_NONE, "%s", __FUNCTION__ );
 
@@ -3857,6 +3862,7 @@ void CMaterialSystem::BeginFrame( float frameTime )
 	if ( g_config.ForceHWSync() && (IsPC() || m_ThreadMode != MATERIAL_QUEUED_THREADED) )
 	{
 		tmZoneFiltered( TELEMETRY_LEVEL0, 50, TMZF_NONE, "ForceHardwareSync" );
+#line 3608
 		pRenderContext->ForceHardwareSync();
 	}
 
@@ -4632,7 +4638,13 @@ void	CMaterialSystem::DoStartupShaderPreloading( void )
 
 void CMaterialSystem::SwapBuffers( void )
 {
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 4010
+#else
+#line 4178
+#endif
 	VPROF_BUDGET( "CMaterialSystem::SwapBuffers", VPROF_BUDGETGROUP_SWAP_BUFFERS );
+#line 4180
 	GetRenderContextInternal()->SwapBuffers();
 	g_FrameNum++;
 }
@@ -5425,10 +5437,16 @@ MaterialLock_t CMaterialSystem::Lock()
 	{
 		TelemetrySetLockName( TELEMETRY_LEVEL0, (char const *)&g_MatSysMutex, "MatSysMutex" );
 
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 4620
+#else
+#line 4937
+#endif
 		tmTryLock( TELEMETRY_LEVEL0, (char const *)&g_MatSysMutex, "CMaterialSystem" );
 		g_MatSysMutex.Lock();
 		tmEndTryLock( TELEMETRY_LEVEL0, (char const *)&g_MatSysMutex, TMLR_SUCCESS );
 		tmSetLockState( TELEMETRY_LEVEL0, (char const *)&g_MatSysMutex, TMLS_LOCKED, "CMaterialSystem" );
+#line 4942
 	}
 #endif
 
@@ -5509,7 +5527,13 @@ void CMaterialSystem::Unlock( MaterialLock_t hMaterialLock )
 	if ( m_ThreadMode != MATERIAL_SINGLE_THREADED )
 	{
 		g_MatSysMutex.Unlock();
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 4691
+#else
+#line 5009
+#endif
 		tmSetLockState( TELEMETRY_LEVEL0, (char const *)&g_MatSysMutex, TMLS_RELEASED, "CMaterialSystem" );
+#line 5011
 	}
 #endif
 
@@ -5664,6 +5688,7 @@ static const char *pszReplacementForceCopy[] =
 	NULL
 };
 
+#ifndef BYTEMATCH_RETAIL
 void CMaterialSystem::LoadReplacementMaterials()
 {
 	const char* cLocation = "materials";
@@ -5673,6 +5698,8 @@ void CMaterialSystem::LoadReplacementMaterials()
 		InitReplacementsFromFile( cLocation );
 	}
 }
+#endif
+#line 5150
 
 void CMaterialSystem::ScanDirForReplacements( const char *pszPathName )
 {
@@ -5720,6 +5747,7 @@ void CMaterialSystem::ScanDirForReplacements( const char *pszPathName )
 #line 5189
 }
 
+#ifndef BYTEMATCH_RETAIL
 void CMaterialSystem::InitReplacementsFromFile( const char *pszPathName )
 {
 	CUtlVector<char*> replacementFiles;
@@ -5744,6 +5772,8 @@ void CMaterialSystem::InitReplacementsFromFile( const char *pszPathName )
 
 	replacementFiles.PurgeAndDeleteElements();
 }
+#endif
+#line 5215
 
 void CMaterialSystem::PreloadReplacements( )
 {
@@ -5788,7 +5818,12 @@ IMaterialProxy *CMaterialSystem::DetermineProxyReplacements( IMaterial *pMateria
 	char szCheckPath[ MAX_PATH ], szCheckName[ MAX_PATH ], szLastPath[ MAX_PATH ];
 	const char *pszShadername = pFallbackKeyValues->GetName();
 
+#ifdef BYTEMATCH_RETAIL
+	strcpy( szLastPath, pszMaterialName );
+#else
 	V_strcpy_safe( szLastPath, pszMaterialName );
+#endif
+#line 5255
 	int	nLength = strlen( szLastPath ) - strlen( REPLACEMENT_NAME );
 	if ( nLength > 0 && strcmpi( &szLastPath[ nLength ], REPLACEMENT_NAME  ) == 0 )
 	{
@@ -5806,7 +5841,12 @@ IMaterialProxy *CMaterialSystem::DetermineProxyReplacements( IMaterial *pMateria
 			pszRemoveSlashes++;
 		}
 
+#ifdef BYTEMATCH_RETAIL
+		sprintf( szCheckName, "materials/%s", pszRemoveSlashes );
+#else
 		V_sprintf_safe( szCheckName, "materials/%s", pszRemoveSlashes );
+#endif
+#line 5273
 		int nIndex = m_Replacements.Find( szCheckName );
 
 		if ( m_Replacements.IsValidIndex( nIndex ) )
@@ -6034,6 +6074,7 @@ CON_COMMAND( mat_hdr_enabled, "Report if HDR is enabled for debugging" )
 }
 
 
+#ifndef BYTEMATCH_RETAIL
 static int ReadListFromFile(CUtlVector<char*>* outReplacementMaterials, const char *pszPathName)
 {
 	Assert(outReplacementMaterials != NULL);
@@ -6049,3 +6090,5 @@ static int ReadListFromFile(CUtlVector<char*>* outReplacementMaterials, const ch
 
 	return outReplacementMaterials->Size();
 }
+#endif
+#line 5512

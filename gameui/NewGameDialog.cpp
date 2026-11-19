@@ -545,8 +545,8 @@ void CNewGameDialog::ReloadChapters()
 	// sort the chapters
 	qsort( chapters, chapterIndex, sizeof( chapter_t ), &ChapterSortFunc );
 
-	// Bonuses are unlocked so we need to unlock all the chapters too
-	int iUnlockedChapter = bBonusesUnlocked ? MAX_CHAPTERS : GetUnlockedChapter();
+	int iUnlockedChapter = GetUnlockedChapter();
+	if ( bBonusesUnlocked ) iUnlockedChapter = MAX_CHAPTERS;	// Bonuses are unlocked so we need to unlock all the chapters too
 
 	// add chapters to combobox
 	for ( int i = 0; i < chapterIndex; i++ )

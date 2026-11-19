@@ -57,6 +57,8 @@ class Module:
         self.build_inputs = []
         self.debug_map = []           # Mach-O N_OSO: [(object path, mtime)] in link order
         self.obj_paths = {}           # function addr -> object path from the debug map
+        self.literals = {}            # COFF objects: MSVC string literal symbol (??_C@...) -> its bytes
+        self.regions = []             # PE images: [(vaddr, bytes)] of every section, for reading data
         self._names = {}              # addr -> [keys] for relocation-target resolution
         self._starts = None
 
@@ -79,6 +81,12 @@ class Module:
 
     def read(self, addr, size):
         for va, data, _ in self.code:
+            if va <= addr < va + len(data):
+                return data[addr - va:addr - va + size]
+        return b''
+
+    def read_data(self, addr, size):
+        for va, data in self.regions:
             if va <= addr < va + len(data):
                 return data[addr - va:addr - va + size]
         return b''

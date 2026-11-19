@@ -1152,7 +1152,7 @@ void CBaseAnimating::HandleAnimEvent( animevent_t *pEvent )
 			return;
 		}
 #ifdef HL2_EPISODIC
-		else if ( pEvent->event == AE_SV_DUSTTRAIL )
+		else if ( IsHL2Episodic() && pEvent->event == AE_SV_DUSTTRAIL )
 		{
 			char szAttachment[128];
 			float flDuration;

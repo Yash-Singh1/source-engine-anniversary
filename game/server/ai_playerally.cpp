@@ -922,7 +922,7 @@ int CAI_PlayerAlly::SelectNonCombatSpeech( AISpeechSelection_t *pSelection )
 
 	#ifdef HL2_EPISODIC
 	// See if we can Q&A first
-	if ( GetState() == NPC_STATE_IDLE || GetState() == NPC_STATE_ALERT )
+	if ( IsHL2Episodic() && ( GetState() == NPC_STATE_IDLE || GetState() == NPC_STATE_ALERT ) )
 	{
 		bResult = SelectQuestionAndAnswerSpeech( pSelection );
 	}

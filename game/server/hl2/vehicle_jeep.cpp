@@ -789,7 +789,7 @@ void CPropJeep::Think( void )
 			}
 		}
 		
-		if ( IsHL2Episodic() )
+		if ( NOV2024_ONLY( IsJalopy() ) OCT2024_ONLY( IsHL2Episodic() ) )
 		{
 			// Set its running animation idle
 			if ( m_bEnterAnimOn )
@@ -807,7 +807,7 @@ void CPropJeep::Think( void )
 		}
 
 		// If we're exiting and have had the tau cannon removed, we don't want to reset the animation
-		if ( IsHL2Episodic() )
+		if ( NOV2024_ONLY( IsJalopy() ) OCT2024_ONLY( IsHL2Episodic() ) )
 		{
 			// Reset on exit anim
 			GetServerVehicle()->HandleEntryExitFinish( m_bExitAnimOn, m_bExitAnimOn );

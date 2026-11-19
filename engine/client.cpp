@@ -1473,7 +1473,13 @@ void CClientState::CheckUpdatingSteamResources()
 		return;
 	}
 
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 1390
+#else
+#line 1416
+#endif
 	VPROF_BUDGET( "CheckUpdatingSteamResources", VPROF_BUDGETGROUP_STEAM );
+#line 1418
 
 #ifndef BYTEMATCH_RETAIL
 	if ( m_bPrepareClientDLL )

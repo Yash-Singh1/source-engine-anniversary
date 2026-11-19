@@ -1870,7 +1870,13 @@ void CEngineVGui::Simulate()
 
 	if ( staticPanel )
 	{
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 1726
+#else
+#line 1763
+#endif
 		VPROF_BUDGET( "CEngineVGui::Simulate", VPROF_BUDGETGROUP_OTHER_VGUI );
+#line 1765
 
 		// update vgui animations
 		//!! currently this has to be done once per dll, because the anim controller object is in a lib;
@@ -1941,7 +1947,13 @@ void CEngineVGui::BackwardCompatibility_Paint()
 //-----------------------------------------------------------------------------
 void CEngineVGui::Paint( PaintMode_t mode )
 {
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 1890
+#else
+#line 1826
+#endif
 	VPROF_BUDGET( "CEngineVGui::Paint", VPROF_BUDGETGROUP_OTHER_VGUI );
+#line 1828
 
 	if ( !staticPanel )
 		return;

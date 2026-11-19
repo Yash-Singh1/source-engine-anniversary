@@ -64,7 +64,7 @@ public:
 		return retVal;
 	}
 #endif
-#line 63
+#line 56
 
 	LPDIRECT3DINDEXBUFFER GetInterface() const 
 	{ 
@@ -232,7 +232,7 @@ private :
 #ifndef BYTEMATCH_RETAIL
 	CInterlockedInt	m_nReferenceCount;
 #endif
-#line 228
+#line 219
 
 #ifdef _DEBUG
 	static int		s_BufferCount;
@@ -260,7 +260,7 @@ private:
 	// Must use reference counting functions above
 	~CIndexBuffer();
 #endif
-#line 253
+#line 241
 };
 
 #if defined( _X360 )
@@ -294,7 +294,7 @@ inline CIndexBuffer::CIndexBuffer( IDirect3DDevice9 *pD3D, int count,
 #ifndef BYTEMATCH_RETAIL
 		, m_nReferenceCount( 0 ) 
 #endif
-#line 284
+#line 271
 {
 	// For write-combining, ensure we always have locked memory aligned to 4-byte boundaries
 	count = ALIGN_VALUE( count, 2 );
@@ -886,6 +886,11 @@ inline unsigned short* CIndexBuffer::Lock( bool bReadOnly, int numIndices, int& 
 	switch ( hr )
 	{
 		case D3DERR_INVALIDCALL:
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 859
+#else
+#line 874
+#endif
 			Msg( "D3DERR_INVALIDCALL - Index Buffer Lock Failed in %s on line %d(offset %d, size %d, flags 0x%x)\n", V_UnqualifiedFileName(__FILE__), __LINE__, position * IndexSize(), numIndices * IndexSize(), dwFlags );
 			break;
 		case D3DERR_DRIVERINTERNALERROR:
@@ -893,6 +898,7 @@ inline unsigned short* CIndexBuffer::Lock( bool bReadOnly, int numIndices, int& 
 			break;
 		case D3DERR_OUTOFVIDEOMEMORY:
 			Msg( "D3DERR_OUTOFVIDEOMEMORY - Index Buffer Lock Failed in %s on line %d (offset %d, size %d, flags 0x%x)\n", V_UnqualifiedFileName(__FILE__), __LINE__, position * IndexSize(), numIndices * IndexSize(), dwFlags );
+#line 882
 			break;
 	}
 
