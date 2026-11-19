@@ -85,7 +85,7 @@ void CAchievementNotificationPanel::PerformLayout( void )
 	SetBgColor( Color( 0, 0, 0, 0 ) );
 	m_pLabelHeading->SetBgColor( Color( 0, 0, 0, 0 ) );
 	m_pLabelTitle->SetBgColor( Color( 0, 0, 0, 0 ) );
-	m_pPanelBackground->SetBgColor( Color( 128, 128, 128, 128 ) );
+	m_pPanelBackground->SetBgColor( Color( 62,70,55, 200 ) );
 }
 
 //-----------------------------------------------------------------------------
@@ -255,7 +255,7 @@ void CAchievementNotificationPanel::SetXAndWide( Panel *pPanel, int x, int wide 
 	pPanel->SetWide( wide );
 }
 
-CON_COMMAND( achievement_notification_test, "Test the hud notification UI" )
+CON_COMMAND_F( achievement_notification_test, "Test the hud notification UI", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY )
 {
 	static int iCount=0;
 

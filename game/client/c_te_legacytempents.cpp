@@ -1813,7 +1813,7 @@ void CTempEnts::MuzzleFlash( const Vector& pos1, const QAngle& angles, int type,
 
 	switch ( type )
 	{
-#ifdef HL2_EPISODIC
+#ifdef HL2_ANNIVERSARY_NOV2024
 	case MUZZLEFLASH_AR2:
 		if ( firstPerson )
 		{
@@ -1885,7 +1885,7 @@ void CTempEnts::MuzzleFlash( const Vector& pos1, const QAngle& angles, int type,
 
 }
 
-#ifdef HL2_EPISODIC
+#ifdef HL2_ANNIVERSARY_NOV2024
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------

@@ -239,7 +239,7 @@ enum CastVote
 #ifdef _WIN32
 #define MAX_FOV						120
 #else
-#define MAX_FOV						110
+#define MAX_FOV						120
 #endif
 #line 240
 

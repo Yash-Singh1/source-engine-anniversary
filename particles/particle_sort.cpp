@@ -90,7 +90,11 @@ template<EParticleSortKeyType eSortKeyMode> void s_GenerateData( Vector CameraPo
 								  AddSIMD( MulSIMD( Ydiff, Ydiff ),
 										   MulSIMD( Zdiff, Zdiff ) ) );
 		}
+#ifdef BYTEMATCH_RETAIL
+		else if ( eSortKeyMode == SORT_KEY_CREATION_TIME )
+#else
 		else 
+#endif
 		{
 			Assert ( eSortKeyMode == SORT_KEY_CREATION_TIME || eSortKeyMode == SORT_KEY_NONE );
 			fl4SortKey = *pCreationTimeStamp;

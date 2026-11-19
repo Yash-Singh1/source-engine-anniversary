@@ -14,6 +14,7 @@
 #include <vgui/ISurface.h>
 #include "iclientvehicle.h"
 #include "c_prop_vehicle.h"
+#include "vgui_int.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -25,8 +26,7 @@ DECLARE_HUDELEMENT( CHudVehicle );
 CHudVehicle::CHudVehicle( const char *pElementName ) :
   CHudElement( pElementName ), BaseClass( NULL, "HudVehicle" )
 {
-	vgui::Panel *pParent = g_pClientMode->GetViewport();
-	SetParent( pParent );
+	SetParent( VGui_GetClientDLLRootPanel() );
 
 	SetHiddenBits( HIDEHUD_PLAYERDEAD | HIDEHUD_VEHICLE_CROSSHAIR );
 }
@@ -37,6 +37,7 @@ void CHudVehicle::ApplySchemeSettings( IScheme *scheme )
 
 	SetPaintBackgroundEnabled( false );
 	SetForceStereoRenderToFrameBuffer( true );
+	int vx, vy, vw, vh; vgui::surface()->GetFullscreenViewport( vx, vy, vw, vh ); SetSize( vw, vh );
 }
 
 //-----------------------------------------------------------------------------

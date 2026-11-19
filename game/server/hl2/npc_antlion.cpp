@@ -153,7 +153,7 @@ int ACT_ANTLION_WORKER_EXPLODE;
 // CNPC_Antlion
 //==================================================
 
-CNPC_Antlion::CNPC_Antlion( void )
+CNPC_Antlion::CNPC_Antlion( void ) NOV2024_ONLY( : m_bHasDoneAirAttack( false ) )
 {
 	m_flIdleDelay	= 0.0f;
 	m_flBurrowTime	= 0.0f;
@@ -913,7 +913,7 @@ bool CNPC_Antlion::InnateWeaponLOSCondition( const Vector &ownerPos, const Vecto
 		return false;
 
 	// If we can see the enemy, or we've seen them in the last few seconds just try to lob in there
-	if ( SeenEnemyWithinTime( 3.0f ) )
+	if ( NOV2024_ONLY( IsWorker() && ) SeenEnemyWithinTime( 3.0f ) )
 	{
 		Vector vSpitPos;
 		GetAttachment( "mouth", vSpitPos );
@@ -1016,7 +1016,7 @@ bool CNPC_Antlion::GetSpitVector( const Vector &vecStartPos, const Vector &vecTa
 	// antlion workers exist only in episodic.
 #if HL2_EPISODIC
 	// Try the most direct route
-	Vector vecToss = VecCheckThrowTolerance( this, vecStartPos, vecTarget, sk_antlion_worker_spit_speed.GetFloat(), (10.0f*12.0f) );
+	NOV2024_ONLY( if ( !IsWorker() ) return false; ) Vector vecToss = VecCheckThrowTolerance( this, vecStartPos, vecTarget, sk_antlion_worker_spit_speed.GetFloat(), (10.0f*12.0f) );
 
 	// If this failed then try a little faster (flattens the arc)
 	if ( vecToss == vec3_origin )
@@ -4034,7 +4034,11 @@ bool CNPC_Antlion::CorpseGib( const CTakeDamageInfo &info )
 
 	Vector velocity = vec3_origin;
 	AngularImpulse angVelocity = RandomAngularImpulse( -150, 150 );
+#ifdef BYTEMATCH_RETAIL
+	breakablepropparams_t params( EyePosition(), GetAbsAngles(), velocity, angVelocity );
+#else
 	static breakablepropparams_t params( EyePosition(), GetAbsAngles(), velocity, angVelocity );
+#endif
 	params.impactEnergyScale = 1.0f;
 	params.defBurstScale = 150.0f;
 	params.defCollisionGroup = COLLISION_GROUP_DEBRIS;
