@@ -95,6 +95,11 @@ def run(retail, ours_funcs, objects=None, all_retail=False, target_check=True, i
             notes.append(f'{n} functions match a retail function of the same name with other template '
                          f'arguments (the instantiations are folded in retail, and the map named the copy '
                          f'after another one); counted as matching')
+        n = accept_misnamed(results + shared, retail, only_ours, ours_funcs)
+        if n:
+            notes.append(f'{n} functions match exactly one retail function or one of ours that the name map '
+                         f'paired with something else (the map swapped names between look-alike functions); '
+                         f'counted as matching')
     if data_check:
         apply_data_check(results + shared, *data_check)
     return dict(results=results, shared=shared, extra=only_ours, mode=mode, notes=notes)
@@ -131,6 +136,116 @@ def accept_folded_instantiations(results, retail):
                 res.matched_at = r.addr
                 moved += 1
                 break
+    return moved
+
+
+MISNAMED_MIN_SIZE = 8
+
+
+def _head(f):
+    """Leading bytes no relocation of f covers (up to 4): the bucket key for a quick pre-filter."""
+    return f.data[:min([rel.offset for rel in f.relocs] + [4])]
+
+
+def _unique_match(cands, key, accept, tiebreak):
+    hits = [c for c in cands.get(key, ()) if accept(c)]
+    if len(hits) > 1:
+        hits = [c for c in hits if tiebreak(c)]
+    return hits[0] if len(hits) == 1 else None
+
+
+def _targets_agree(r, o, oby):
+    """False when one of o's relocations names a function of ours whose code differs from the
+    retail code the same field points at (vcall thunks for member pointers, callees)."""
+    rmod = r.module
+    if not rmod.linked or rmod.pic:
+        return True
+    for rel in o.relocs:
+        of = oby.get(rel.target)
+        if of is None or of is o or rel.size != 4 or rel.offset + 4 > len(r.data):
+            continue
+        k = rel.offset
+        if rel.kind == 'pcrel':
+            if not (k >= 1 and r.data[k - 1] in (0xe8, 0xe9)):
+                continue
+            va = (r.addr + k + 4 + x86.s32(r.data, k)) & 0xffffffff
+        elif rel.kind == 'abs':
+            va = (x86.u32(r.data, k) - rel.addend) & 0xffffffff
+        else:
+            continue
+        if not of.relocs:
+            if rmod.read(va, len(of.data)) != of.data:
+                return False
+            continue
+        rf = rmod.function_at(va)
+        if rf is not None and rf.addr == va and compare.compare(rf, of, False).status not in MATCHED:
+            return False
+    return True
+
+
+def accept_misnamed(results, retail, spare, ours_funcs):
+    """Pair functions the name map gave the wrong name.
+
+    Maps ported by call-graph and byte similarity can rotate names among look-alike functions
+    (the Create_<Panel> build factories differ only in the allocation size; every
+    PanelMessageFunc_<name>::InitVar has the same shape). A differing function passes when it
+    matches exactly one retail function no result matches; a missing retail function passes
+    when it matches exactly one of our unpaired functions (`spare`, removed from the list when
+    used). The target check applies to both; look-alikes that differ only in what a relocation
+    points at are told apart by comparing the code there. Functions under MISNAMED_MIN_SIZE
+    bytes stay as they are."""
+    claimed = {res.retail.addr for res in results if res.status in MATCHED and res.retail}
+    rpool = collections.defaultdict(list)
+    for f in retail.functions:
+        if f.addr not in claimed and len(f.data) >= MISNAMED_MIN_SIZE:
+            for n in (1, 2, 3, 4):
+                rpool[f.data[:n]].append(f)
+    opool = collections.defaultdict(list)
+    for e in spare:
+        o = e.ours
+        if len(o.data) >= MISNAMED_MIN_SIZE:
+            for n in (1, 2, 3, 4):
+                opool[o.data[:n]].append(o)
+    oby = {}
+    for f in ours_funcs:
+        for n in [f.name] + list(f.aliases):
+            oby.setdefault(n, f)
+    used, moved = set(), 0
+
+    def fits(r, o):
+        return len(r.data) == len(o.data) if r.size_known else len(r.data) >= len(o.data)
+
+    def same(r, o):
+        return compare.compare(r, o, True).status in MATCHED
+
+    for res in results:
+        if res.status == compare.DIFFERS and res.ours and res.retail:
+            o = res.ours
+            if len(o.data) < MISNAMED_MIN_SIZE or not _head(o):
+                continue
+            r = _unique_match(rpool, _head(o), lambda r: r is not res.retail and r.addr not in claimed
+                              and fits(r, o) and same(r, o), lambda r: _targets_agree(r, o, oby))
+            if r is None:
+                continue
+        elif res.status == compare.MISSING and res.retail:
+            r = res.retail
+            if len(r.data) < MISNAMED_MIN_SIZE or not _head(r):
+                continue
+            o = _unique_match(opool, _head(r), lambda o: id(o) not in used and fits(r, o) and same(r, o),
+                              lambda o: _targets_agree(r, o, oby))
+            if o is None:
+                continue
+            used.add(id(o))
+            res.ours = o
+        else:
+            continue
+        res.status, res.reason, res.first_diff = compare.compare(r, o, True).status, '', None
+        res.line_constants, res.target_mismatches = None, []
+        if r is not res.retail:
+            res.matched_at = r.addr
+        claimed.add(r.addr)
+        moved += 1
+    spare[:] = [e for e in spare if id(e.ours) not in used]
     return moved
 
 
