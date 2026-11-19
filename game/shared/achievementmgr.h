@@ -65,8 +65,8 @@ public:
 
 	void UploadUserData();
 	void DownloadUserData();
-	virtual bool CanEarnForCurrentExpansion( int iAchievementID );
-	virtual bool CanEarnForExpansion( int iAchievementID, const char *pszModName );
+	NOV2024_VIRTUAL bool CanEarnForCurrentExpansion( int iAchievementID );
+	NOV2024_VIRTUAL bool CanEarnForExpansion( int iAchievementID, const char *pszModName );
 #ifdef GAME_DLL
 	void MigrateEpisodeData( uint32 nAppID, const char *pszModName );
 	void SyncEpisodeAchievements();

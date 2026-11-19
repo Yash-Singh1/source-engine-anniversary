@@ -1288,9 +1288,9 @@
   "headers": [
    "public/iachievementmgr.h"
   ],
-  "reference": "hl2_complete/server:CAchievementMgr",
-  "retail_len": 11,
-  "retail_len_basis": "shortest deriving subtable",
+  "reference": "episodic/server:CAchievementMgr",
+  "retail_len": 13,
+  "retail_len_basis": "override: November 2024 servers (episodic, hl2) end with CanEarnForCurrentExpansion/CanEarnForExpansion (their non-virtual thunks at slots 11 and 12); the 11-slot shortest table is Lost Coast's October build, where HL2_LOSTCOAST drops both",
   "sdk2013_len": 11,
   "versions": {
    "ours": [],

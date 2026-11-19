@@ -76,8 +76,10 @@
 #define MAX_MAP_TEXDATA					2048
 #endif
 #line 69
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && defined( HL2_LOSTCOAST )
 #define MAX_MAP_DISPINFO				2048
+#elif defined( BYTEMATCH_RETAIL )
+#define MAX_MAP_DISPINFO				8096
 #else
 #define MAX_MAP_DISPINFO				4096
 #endif
@@ -401,7 +403,12 @@ struct lump_t
 	int		version;		// default to zero
 	// this field was char fourCC[4] previously, but was unused, favoring the LUMP IDs above instead. It has been
 	// repurposed for compression.  0 implies the lump is not compressed.
+#ifdef BYTEMATCH_RETAIL
+	char	fourCC[4];		// default to ( char )0, ( char )0, ( char )0, ( char )0
+#else
 	int		uncompressedSize; // default to zero
+#endif
+#line 382
 };
 
 
@@ -686,7 +693,12 @@ public:
 	CDispCornerNeighbors	m_CornerNeighbors[4];	// Indexed by CORNER_ defines.
 
 	enum unnamed { ALLOWEDVERTS_SIZE = PAD_NUMBER( MAX_DISPVERTS, 32 ) / 32 };
+#ifdef BYTEMATCH_RETAIL
+	unsigned long	m_AllowedVerts[ALLOWEDVERTS_SIZE];	// This is built based on the layout and sizes of our neighbors
+#else
 	unsigned int	m_AllowedVerts[ALLOWEDVERTS_SIZE];	// This is built based on the layout and sizes of our neighbors
+#endif
+#line 667
 														// and tells us which vertices are allowed to be active.
 };
 
