@@ -503,7 +503,9 @@ void BloodImpactCallback( const CEffectData & data )
 {
 	bool bFoundBlood = false;
 	int nClassicBlood = r_classic_blood.GetInt();
-	if ( nClassicBlood != 1 && ( nClassicBlood != 2 || IsHL2Episodic() ) ) // Find which sort of blood we are
+	bool bClassicBlood = ( nClassicBlood == 2 ) ? !IsHL2Episodic() : ( nClassicBlood == 1 );
+	if ( !bClassicBlood ) // Find which sort of blood we are
+#line 507
 	for ( int i = 0; i < ARRAYSIZE( bloodCallbacks ); i++ )
 	{
 		if ( bloodCallbacks[i].nColor == data.m_nColor )
