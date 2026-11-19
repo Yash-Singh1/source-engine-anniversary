@@ -6,7 +6,7 @@
 
 
 #include "cbase.h"
-
+#include <time.h>
 #ifdef GAME_DLL
 
 #include "achievementmgr.h"
