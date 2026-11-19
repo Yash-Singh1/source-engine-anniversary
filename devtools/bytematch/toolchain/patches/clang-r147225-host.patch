@@ -1,4 +1,4 @@
-Host-compiler fixes for llvm/clang svn r148911 (January 2012) built with a
+Host-compiler fixes for llvm/clang svn r147225 (December 2011) built with a
 current Apple clang and libc++. None of them change what the built clang
 generates:
 - llvm-build is Python 2; converted with lib2to3 (python3.12 -m lib2to3).
@@ -81,14 +81,14 @@ a current host compiler crashes (jump threading) on the CEF wrapper.
        this->setEnd(this->end()+1);
 --- a/src/tools/clang/lib/AST/ExprConstant.cpp
 +++ b/src/tools/clang/lib/AST/ExprConstant.cpp
-@@ -3765,7 +3765,7 @@
- /// character of a string literal.
- template<typename LValue>
- static bool EvaluateBuiltinConstantPForLValue(const LValue &LV) {
--  const Expr *E = LV.getLValueBase().dyn_cast<const Expr*>();
-+  const Expr *E = LV.getLValueBase().template dyn_cast<const Expr*>();
-   return E && isa<StringLiteral>(E) && LV.getLValueOffset().isZero();
- }
+@@ -3642,7 +3642,7 @@
+       if ((Arg->isGLValue() ? EvaluateLValue(Arg, LV, SubInfo)
+                             : EvaluatePointer(Arg, LV, SubInfo)) &&
+           !Status.HasSideEffects)
+-        if (const Expr *E = LV.getLValueBase().dyn_cast<const Expr*>())
++        if (const Expr *E = LV.getLValueBase().template dyn_cast<const Expr*>())
+           IsConstant = isa<StringLiteral>(E) && LV.getLValueOffset().isZero();
+     }
  
 --- a/src/tools/clang/lib/AST/VTableBuilder.cpp
 +++ b/src/tools/clang/lib/AST/VTableBuilder.cpp

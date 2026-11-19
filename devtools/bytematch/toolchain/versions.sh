@@ -14,19 +14,19 @@ clang_sha256() {
 	600.0.51) echo 3a161eff905526d0732960930bd66a04ff7f5e57a50d703039832ce034ca9d34 ;;
 	600.0.54) echo 59e74469353a727b0f034606f44af0b5c7da2b0704ac2ad3ffdc75612640ca48 ;;
 	600.0.57) echo fdd6a0efa0122f88d22c76aaa7d8dab007ff00d525cf6fbeda05d5e703b08bce ;;
-	r148911) echo 847e918cf34b0ea9b8ef792246a2afac75efe586ac72ae85e440add0d963af4f ;;
+	r147225) echo 2ed6d240d1941b8a17b832234d9d06813acbb6d459781c7f2e5cf7196edbd3ef ;;
 	*) return 1 ;;
 	esac
 }
 
 # Upstream clang at an llvm.org svn revision: llvm/llvm-project archive of the
 # monorepo commit carrying that llvm-svn number (llvm/ and clang/ are used).
-# r148911 = Chromium 18.0.1025's tools/clang/scripts/update.sh CLANG_REVISION,
-# the compiler of chromehtml's prebuilt libcef_dll_wrapper.a.
+# r147225 = Chromium trunk's tools/clang/scripts/update.sh CLANG_REVISION from
+# 2011-12-24 to 2012-01-02, the compiler of chromehtml's prebuilt libcef_dll_wrapper.a.
 LLVM_PROJECT_URL_BASE=https://github.com/llvm/llvm-project/archive
 llvm_svn_commit() {
 	case $1 in
-	r148911) echo 9431f01f65cb7aeab38e91453f477e6c7d12189c ;;
+	r147225) echo d3bdadf616298fa91baebabfeebd491b6b9c40ce ;;
 	*) return 1 ;;
 	esac
 }

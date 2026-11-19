@@ -30,12 +30,14 @@ SDK2013_COMMIT = "53e78c50"
 
 # chromehtml links Valve's prebuilt lib/public/osx32/libcef_dll_wrapper.a (2013-07-25),
 # built by Steam's CEF build (buildslave_steam/cef_osx) from CEF1 branch 1025's
-# gyp-generated Xcode project inside a Chromium 18.0.1025 checkout. Chromium's
-# Xcode settings set CC to the checkout's own clang, llvm.org svn r148911
-# (tools/clang/scripts/update.sh), and build/common.gypi's Release flags apply:
-# -O3 (mac_release_optimization), no strict aliasing or thread-safe statics,
-# no exceptions or RTTI, deployment target 10.5.
-CEF_WRAPPER_CLANG = "r148911"
+# gyp-generated Xcode project inside a Chromium checkout. Chromium's Xcode
+# settings set CC to the checkout's own clang (third_party/llvm-build), and
+# build/common.gypi's Release flags apply: -O3 (mac_release_optimization), no
+# strict aliasing or thread-safe statics, no exceptions or RTTI, deployment
+# target 10.5. The clang is llvm.org svn r147225, Chromium trunk's
+# tools/clang/scripts/update.sh pin of 2011-12-24..2012-01-02 (the 18.0.1025
+# release pins r148911, which differs in 3 wrapper functions).
+CEF_WRAPPER_CLANG = "r147225"
 
 
 def paths(toolchain=None, clang=None, ld64=None):

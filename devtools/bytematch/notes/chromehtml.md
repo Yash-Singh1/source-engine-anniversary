@@ -13,11 +13,17 @@ the wrapper built from `external/cef` (target `cef_dll_wrapper`).
 | object | functions | matched | source |
 |---|---:|---:|---|
 | htmlmessages.pb | 1494 | 1494 | generated, see below |
-| html_chrome | 461 | 450 | SDK 2013; 461 with the `CStrAutoEncode` change below |
+| html_chrome | 461 | 461 | SDK 2013 (with SDK 2013's `CStrAutoEncode`, below) |
 | chromewrapper | 113 | 113 | SDK 2013 |
 | jpegloader, jpegloader_common, fileio, htmlprotobuf, html_mac | 14 | 14 | existing / SDK 2013 / disassembly |
 | libtier1 members | 49 | 49 | tier1 |
-| libcef_dll_wrapper (45 members) | 760 | 281 | CEF 1025 + Valve changes; different compiler |
+| libcef_dll_wrapper (45 members) | 760 | 760 | CEF 1025 + Valve changes; Chromium's clang r147225 |
+
+With `--data-check`, the 186 htmlmessages.pb functions that pass `__FILE__`
+to protobuf's `GOOGLE_CHECK` differ only by Valve's absolute build path; the
+identity flow (`devtools/bytematch/identity`) compiles with Valve's paths.
+Under `--all-retail`, protobuf 2.3.0 (SDK 2013's osx32 `libprotobuf.a`, the
+2014 archive unchanged) matches entirely and libpng 271/275.
 
 ## Valve sources: Source SDK 2013
 
@@ -29,12 +35,11 @@ version is what retail compiled: every html_chrome function matches once
 also has the chromehtml-based `vgui_controls/HTML.cpp`, the consumer of the
 same messages.
 
-The 11 html_chrome differences (`CStrAutoEncode::PopulateUTF8/UTF16`,
-`CClientHandler::AddHeader` and the 8 functions that inline them) come from
-`public/tier1/strtools.h`: retail has SDK 2013's `CStrAutoEncode` without the
-pristine leak's `m_bCreatedUCS2` member (`m_bCreatedUTF16` at +0xc, the
-destructor doesn't free `m_pucs2`). That header belongs to the shared-headers
-lane; the change is in `byte-match-survey/chromehtml2-strtools-cstrautoencode.patch`.
+`public/tier1/strtools.h` has SDK 2013's `CStrAutoEncode` in retail mode
+(no `m_bCreatedUCS2`, `m_bCreatedUTF16` at +0xc, the destructor doesn't free
+`m_pucs2`); with the pristine leak's version 11 html_chrome functions differ
+(`CStrAutoEncode::PopulateUTF8/UTF16`, `CClientHandler::AddHeader` and the 8
+functions that inline them).
 
 ## htmlmessages.proto
 
@@ -88,18 +93,57 @@ kept as upstream shipped them. A layout check over 503 wrapper functions
 (struct-size tests and CppToC size stores) agrees with retail everywhere
 except memset lengths that retail's compiler merged with `attached_to_`.
 
-The retail wrapper was built by Steam's CEF build (`buildslave_steam/cef_osx`)
-with Chromium's flags (`-fno-rtti`, no typeinfo in its vtables) and a clang
-between LLVM 3.3 and 3.4 (Chromium's bundled clang of mid-2013; e.g. a
-duplicated `xor cl, cl` in every bool getter). With the retail toolchain
-(clang-600) 281/760 functions match; LLVM 3.3 release gets 348/760. Matching
-it needs that clang revision.
+Valve's request-side wrapper code differs from what the translator writes;
+retail has: `load_handler_on_load_end` verifies `request` (not an optional
+param), `SetSecurityDetails` unwraps into a local before the call,
+`BIsSecureRequest` returns `_retval > 0`, and `SecurityDetails` returns NULL
+without calling `Wrap` when the struct is NULL.
+
+### Compiler
+
+The wrapper archive (2013-07-25) came from Steam's CEF build
+(`/Users/buildbot/buildslave_steam/cef_osx/build/dev/src/cef`; N_SOL paths are
+`./include/...`, i.e. CEF's gyp-generated `cef.xcodeproj` run from `src/cef`).
+Chromium's `build/common.gypi` points Xcode's `CC` at the checkout's own clang
+(`third_party/llvm-build`, fetched by `tools/clang/scripts/update.sh`). That
+clang is llvm.org svn **r147225**, the `CLANG_REVISION` Chromium trunk pinned
+from 2011-12-24 to 2012-01-02. With common.gypi's Release flags (`-O3`,
+`-fno-strict-aliasing`, `-fno-threadsafe-statics`, `-fvisibility=hidden
+-fvisibility-inlines-hidden`, no exceptions or RTTI,
+`-mmacosx-version-min=10.5`) all 760 functions match, 100% of bytes. The
+18.0.1025 release CEF 1025 names pins r148911 (757); presumably Steam's
+checkout kept an older `llvm-build`. `retailflags.CEF_WRAPPER_CLANG`/`cef_wrapper_cxxflags`
+hold these; `build-clang.sh r147225` builds the compiler.
+
+Per-revision scores (archive members against retail; "Valve flags" are the
+module's -O2 retail flags, scores before the request_ctocpp/load_handler
+source fixes add 4):
+
+| compiler | flags | matched |
+|---|---|---:|
+| clang-600.0.57 (retail toolchain) | Valve | 281 |
+| Apple clang-425.0.24 (Xcode 4.6, LLVM 3.2) | Valve | 348 |
+| Apple clang-500.2.76 (Xcode 5.0, LLVM 3.3) | Valve | 348 |
+| r179138, r182481 (Chromium, Apr/May 2013), LLVM 3.3 release | Valve | 348 |
+| r184830, r186332 (Chromium, Jul 2013) | Valve | 346 |
+| r148911 (18.0.1025 release pin) | Valve / Chromium | 743 / 753 |
+| r148911, r148039, r149886, after the source fixes | Chromium | 757 |
+| r148911, 10.6 deployment target (after the fixes) | Chromium | 752 |
+| r148911, -O2 / -Os (before the fixes) | Chromium | 746 / 636 |
+| r145842 (Chromium, Dec 2011), r146361 | Chromium | 728 |
+| r146628, **r147225** | Chromium | **760** |
+| r147434 (Chromium, Jan 2012) | Chromium | 759 |
+
+Fingerprint: retail's bool getters zero the result with an 8-bit `xor cl, cl`
+in each predecessor block; 3.2-3.3 emit one `xor al, al`, and r182928
+(2013-05-30) switched to 32-bit `xor eax, eax`. A clang built with the host at
+`-O0` gives byte-identical objects to the `-O3` host build.
 
 ## Link
 
-The LC_LOAD_DYLIB list and object order equal retail's. `__text` is 749 KB
-against retail's 823 KB: retail exports libpng 1.5.2 (78 KB; all retail
-modules that link libpng export it, so dead_strip keeps it), while our shared
-`libpng.a` is built with `-fvisibility=hidden` and nothing is pulled. The
-rest of the gap is the wrapper's codegen; protobuf and the Valve code have
-retail's sizes.
+The LC_LOAD_DYLIB list and object order equal retail's. Retail links a
+`pngloader.o` whose code is all dead-stripped (ccache compile slot 22915,
+between jpegloader_common and htmlprotobuf): it pulls libpng's read side, which
+retail exports. `RETAIL_DEAD` links `common/pngloader.cpp` there, and our
+dylib exports retail's 267 `png_*` symbols. `__text` is 823261 bytes against
+retail's 823232 with r148911 (the 3 functions it misses).

@@ -3,7 +3,7 @@
 # llvm.org svn revision, as a native host (arm64 or x86_64 macOS) compiler
 # that targets i386-apple-darwin.
 #
-# Usage: build-clang.sh [options] <version>     (600.0.57, 600.0.54, 600.0.51, 503.0.38, r148911)
+# Usage: build-clang.sh [options] <version>     (600.0.57, 600.0.54, 600.0.51, 503.0.38, r147225)
 #   --prefix DIR        toolchain root (default $BYTEMATCH_TOOLCHAIN)
 #   --work DIR          download/build scratch (default <prefix>/work)
 #   --tarball FILE      use a local copy of the release tarball (still hash-checked)
