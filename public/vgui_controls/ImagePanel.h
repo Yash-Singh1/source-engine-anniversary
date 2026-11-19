@@ -78,7 +78,7 @@ private:
 	bool m_bPositionImage;
 	bool m_bCenterImage;
 	bool m_bScaleImage;
-	int m_nScaleProportional = 0;
+	VGUI_NOV2024_ONLY( int m_nScaleProportional = 0; )
 	bool m_bTileImage;
 	bool m_bTileHorizontally;
 	bool m_bTileVertically;

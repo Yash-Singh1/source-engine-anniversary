@@ -84,8 +84,8 @@ MenuItem::MenuItem(Menu *parent, const char *panelName, const char *text, Menu *
 	SetButtonActivationType(ACTIVATE_ONRELEASED);
 	m_pUserData = NULL;
 	m_pCurrentKeyBinding = NULL;
-	m_nOffsetFromMainMenu = 0;
-	m_nPaddingY = 0;
+	VGUI_NOV2024_ONLY( m_nOffsetFromMainMenu = 0; )
+	VGUI_NOV2024_ONLY( m_nPaddingY = 0; )
 
 	// only one arg should be passed in.
 	Assert (!(cascadeMenu && checkable));
@@ -108,8 +108,8 @@ MenuItem::MenuItem(Menu *parent, const char *panelName, const wchar_t *wszText, 
 	SetButtonActivationType(ACTIVATE_ONRELEASED);
 	m_pUserData = NULL;
 	m_pCurrentKeyBinding = NULL;
-	m_nOffsetFromMainMenu = 0;
-	m_nPaddingY = 0;
+	VGUI_NOV2024_ONLY( m_nOffsetFromMainMenu = 0; )
+	VGUI_NOV2024_ONLY( m_nPaddingY = 0; )
 
 	// only one arg should be passed in.
 	Assert (!(cascadeMenu && checkable));
@@ -648,7 +648,7 @@ void MenuItem::Paint()
 void MenuItem::GetContentSize( int& cw, int &ch )
 {
 	BaseClass::GetContentSize( cw, ch );
-	if ( m_nOffsetFromMainMenu > 0 )
+	if ( GetOffsetFromMainMenu() > 0 )
 	{
 		cw += QuickPropScale( GetOffsetFromMainMenu() );
 	}

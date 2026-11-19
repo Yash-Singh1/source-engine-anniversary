@@ -12,7 +12,7 @@ def options(opt):
 	return
 
 def configure(conf):
-	return
+	conf.env.GAMES = conf.options.GAMES
 
 def build(bld):
 	source = [
@@ -114,6 +114,9 @@ def build(bld):
 	# retail's libvgui_controls.a has public/html/htmlprotobuf.cpp (added by the manifest)
 	if bld.env.RETAIL_OSX32:
 		libs += ['PROTOBUF']
+		# Lost Coast's retail client links an October 2024 libvgui_controls (VGUI_CONTROLS_OCT2024)
+		if bld.env.GAMES == 'lostcoast':
+			defines += ['HL2_LOSTCOAST']
 
 	bld.stlib(
 		source   = source,

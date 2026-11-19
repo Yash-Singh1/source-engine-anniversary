@@ -855,9 +855,9 @@ void Menu::PerformLayout()
 
 		int nChildHeight = m_iMenuItemHeight + nPaddingY;
 
-		child->SetTall( nChildHeight ); // Width is set in a second pass
-		menuTall += nChildHeight;
-		totalTall += nChildHeight;
+		child->SetTall( VGUI_NOV2024_ONLY( nChildHeight ) VGUI_OCT2024_ONLY( m_iMenuItemHeight ) ); // Width is set in a second pass
+		menuTall += VGUI_NOV2024_ONLY( nChildHeight ) VGUI_OCT2024_ONLY( m_iMenuItemHeight );
+		totalTall += VGUI_NOV2024_ONLY( nChildHeight ) VGUI_OCT2024_ONLY( m_iMenuItemHeight );
 
 		// this will make all the menuitems line up in a column with space for the checks to the left.
 		if ( ( !child->IsCheckable() ) && ( m_iCheckImageWidth > 0 ) )
@@ -2204,6 +2204,7 @@ void Menu::SetItemEnabled(int itemID, bool state)
 	m_MenuItems[itemID]->SetEnabled(state);
 }
 
+#if !defined( VGUI_CONTROLS_OCT2024 )
 //-----------------------------------------------------------------------------
 // Purpose: Shows the item's text in upper case
 //-----------------------------------------------------------------------------
@@ -2214,6 +2215,8 @@ void Menu::SetItemUppercase( int itemID, bool state )
 
 	m_MenuItems[itemID]->SetAllCaps( state );
 }
+#endif
+#line 2217
 
 //-----------------------------------------------------------------------------
 // Purpose: shows/hides choices in the list

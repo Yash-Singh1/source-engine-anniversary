@@ -1041,6 +1041,21 @@ inline int GetProportionalScaledValueIf( ISchemeManager *pSchemeManager, bool bP
 #define QuickPropScale( x ) ( ::vgui::GetProportionalScaledValueIf( ::vgui::scheme(), this->IsProportional(), this->GetScheme(), ( x ) ) )
 #endif
 
+// Retail Lost Coast's client links an October 2024 libvgui_controls (HL2_LOSTCOAST in retail
+// mode): no anniversary proportional scaling and the older Label/Button/Menu vtables.
+#if defined( BYTEMATCH_RETAIL ) && defined( HL2_LOSTCOAST )
+#define VGUI_CONTROLS_OCT2024
+#undef PROPORTIONAL_VALUE
+#define PROPORTIONAL_VALUE( nValue ) ( nValue )
+#undef QuickPropScale
+#define QuickPropScale( x ) ( x )
+#define VGUI_NOV2024_ONLY( ... )
+#define VGUI_OCT2024_ONLY( ... ) __VA_ARGS__
+#else
+#define VGUI_NOV2024_ONLY( ... ) __VA_ARGS__
+#define VGUI_OCT2024_ONLY( ... )
+#endif
+
 } // namespace vgui
 
 
