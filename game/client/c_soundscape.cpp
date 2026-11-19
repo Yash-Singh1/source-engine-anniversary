@@ -341,6 +341,18 @@ bool C_SoundscapeSystem::Init()
 	}
 
 	manifest->deleteThis();
+#ifdef HL2_ANNIVERSARY_NOV2024
+	// soundscapes from workshop addons
+	FileFindHandle_t hFind;
+	for ( const char *pszFile = g_pFullFileSystem->FindFirstEx( "scripts\\soundscapes_*.txt", "WORKSHOP_ASSET_TRACKING", &hFind ); pszFile; pszFile = g_pFullFileSystem->FindNext( hFind ) )
+	{
+		char szFile[1024];
+		V_sprintf_safe( szFile, "scripts/%s", pszFile );
+		AddSoundScapeFile( szFile );
+	}
+	g_pFullFileSystem->FindClose( hFind );
+#endif
+#line 344
 
 	return true;
 }
