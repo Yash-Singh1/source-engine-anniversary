@@ -1365,8 +1365,20 @@ int CBaseEntity::TakeHealth( float flHealth, int bitsDamageType )
 	if (m_iHealth > iMax)
 		m_iHealth = iMax;
 
+	if ( m_iHealth > oldHealth && IsPlayer() )
+	{
+		IGameEvent *event = gameeventmanager->CreateEvent( "take_health" );
+		if ( event )
+		{
+			event->SetInt( "amount", m_iHealth - oldHealth );
+			event->SetInt( "total", m_iHealth );
+			gameeventmanager->FireEvent( event );
+		}
+	}
+
 	return m_iHealth - oldHealth;
 }
+#line 1370
 
 // inflict damage on this entity.  bitsDamageType indicates type of damage inflicted, ie: DMG_CRUSH
 
@@ -1636,10 +1648,20 @@ void CBaseEntity::SendOnKilledGameEvent( const CTakeDamageInfo &info )
 		{
 			event->SetInt( "entindex_inflictor", info.GetInflictor()->entindex() );
 		}		
+#ifdef HL2_ANNIVERSARY_NOV2024
+		event->SetString( "ent_class", GetClassname() );
+		event->SetInt( "ent_last_position_x", GetAbsOrigin().x );
+		event->SetInt( "ent_last_position_y", GetAbsOrigin().y );
+		event->SetInt( "ent_last_position_z", GetAbsOrigin().z );
+#endif
 		event->SetInt( "damagebits", info.GetDamageType() );
 		gameeventmanager->FireEvent( event );
+#ifdef HL2_ANNIVERSARY_NOV2024
+		Msg( "Sending game message that %s died to %s\n", GetClassname(), info.GetAttacker() ? info.GetAttacker()->GetClassname() : "None" );
+#endif
 	}
 }
+#line 1655
 
 
 bool CBaseEntity::HasTarget( string_t targetname )

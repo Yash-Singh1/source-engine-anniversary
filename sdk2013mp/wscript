@@ -158,6 +158,9 @@ def build(bld):
 			defines, includes = vpc(bld, vpcfile)
 		else:
 			defines = m['archives'][archive]['defines']['vpc']
+			if headers == 'tree':
+				# main-tree headers keep 2014 layouts the anniversary dropped (CUtlSymbolTable)
+				defines = defines + ['BYTEMATCH_HL2MP2014']
 			tree_dirs = [n.parent.abspath() for n in source if not n.is_child_of(bld.path)]
 			includes = sorted(set(tree_dirs), key = tree_dirs.index)
 			includes += (LIB_INCLUDES if headers == 'sdk' else []) + tree_includes

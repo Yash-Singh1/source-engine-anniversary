@@ -93,6 +93,23 @@ void ParseParticleEffects( bool bLoadSheets, bool bPrecache )
 	CUtlVector<CUtlString> files;
 	GetParticleManifest( files );
 
+#ifdef HL2_ANNIVERSARY_NOV2024
+	// Loose particle files from workshop addons
+	FileFindHandle_t hFind;
+	for ( const char *pszFile = g_pFullFileSystem->FindFirstEx( "particles/*.pcf", "WORKSHOP_ASSET_TRACKING", &hFind ); pszFile; pszFile = g_pFullFileSystem->FindNext( hFind ) )
+	{
+		char szFile[1024];
+		V_sprintf_safe( szFile, "particles/%s", pszFile );
+		char szPrecacheFile[1024];
+		V_sprintf_safe( szPrecacheFile, "particles/%s", pszFile );
+		if ( files.Find( szFile ) < 0 && files.Find( szPrecacheFile ) < 0 )
+		{
+			files.AddToTail( szFile );
+		}
+	}
+	g_pFullFileSystem->FindClose( hFind );
+#endif
+
 	int nCount = files.Count();
 	for ( int i = 0; i < nCount; ++i )
 	{
@@ -101,6 +118,7 @@ void ParseParticleEffects( bool bLoadSheets, bool bPrecache )
 
 	g_pParticleSystemMgr->DecommitTempMemory();
 }
+#line 104
 
 #ifdef CLIENT_DLL
 //-----------------------------------------------------------------------------

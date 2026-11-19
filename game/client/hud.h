@@ -203,5 +203,6 @@ void LoadHudTextures( CUtlDict< CHudTexture *, int >& list, const char *szFilena
 
 void GetHudSize( int& w, int &h );
 void GetRatioedHudSize( int &x, int &y, int &w, int &h );
+void GetRealScreenSize( int &w, int &h );
 
 #endif // HUD_H
