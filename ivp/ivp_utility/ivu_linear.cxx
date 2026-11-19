@@ -30,6 +30,7 @@ IVP_DOUBLE get_float(){
 }
 
 
+#ifndef BYTEMATCH_RETAIL
 IVP_FLOAT IVP_Inline_Math::isqrt_float(IVP_FLOAT quad){
     return IVP_Fast_Math::isqrt(quad,2);
 
@@ -38,6 +39,7 @@ IVP_FLOAT IVP_Inline_Math::isqrt_float(IVP_FLOAT quad){
 IVP_DOUBLE IVP_Inline_Math::isqrt_double(IVP_DOUBLE quad){
     return IVP_Fast_Math::isqrt(quad,3);
 }
+#endif
 
 #if !defined(IVP_NO_DOUBLE)
 void IVP_U_Point::set_interpolate(const IVP_U_Point *p0,const IVP_U_Point *p1, IVP_DOUBLE s)

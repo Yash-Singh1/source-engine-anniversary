@@ -299,8 +299,14 @@ public:
     static inline IVP_FLOAT fast_approx_asin(IVP_FLOAT angle);   //   "
     static inline IVP_FLOAT fast_anywhere_asin(IVP_FLOAT angle); //   "
 
+#ifdef BYTEMATCH_RETAIL
+    static inline IVP_FLOAT isqrt_float(IVP_FLOAT quad){ return 1.0f / ::sqrtf(quad); }
+    static inline IVP_DOUBLE isqrt_double(IVP_DOUBLE quad){ return 1.0 / ::sqrt(quad); }
+#else
     static IVP_FLOAT isqrt_float(IVP_FLOAT quad); //   "
     static IVP_DOUBLE isqrt_double(IVP_DOUBLE quad); //   "
+#endif
+#line 304
 
     static inline int int_div_2(int a); //workaround for compiler bug in CodeWarrior1.6
 
