@@ -635,6 +635,11 @@ void CShaderDeviceMgrBase::LoadHardwareCaps( KeyValues *pGroup, HardwareCaps_t &
 	}
 
 	caps.m_bNeedsATICentroidHack = ReadBool( pGroup, "CentroidHack", caps.m_bNeedsATICentroidHack );
+#ifdef BYTEMATCH_RETAIL
+	if ( g_pMaterialSystem->GetRenderBackend() == RENDER_BACKEND_VULKAN )
+		caps.m_bNeedsATICentroidHack = false;
+#endif
+#line 633
 	caps.m_bDisableShaderOptimizations = ReadBool( pGroup, "DisableShaderOptimizations", caps.m_bDisableShaderOptimizations );
 }
 
