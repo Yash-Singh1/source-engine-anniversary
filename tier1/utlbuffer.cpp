@@ -238,7 +238,7 @@ CUtlBuffer::CUtlBuffer( const void *pBuffer, int nSize, int nFlags ) :
 	SetOverflowFuncs( &CUtlBuffer::GetOverflow, &CUtlBuffer::PutOverflow );
 }
 
-#if !defined( BYTEMATCH_RETAIL_LINUX )
+#ifndef BYTEMATCH_RETAIL
 CUtlBuffer::CUtlBuffer( const CUtlBuffer& copyFrom )
 : m_Get( copyFrom.m_Get )
 , m_Put( copyFrom.m_Put )
@@ -380,7 +380,7 @@ void CUtlBuffer::AssumeMemory( void *pMemory, int nSize, int nInitialPut, int nF
 	m_nMaxPut = -1;
 	AddNullTermination();
 }
-#if !defined( BYTEMATCH_RETAIL_LINUX )
+#ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
 // Allows the caller to control memory
 //-----------------------------------------------------------------------------

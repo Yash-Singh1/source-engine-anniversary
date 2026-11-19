@@ -103,7 +103,7 @@ void CUtlMemoryPool::Clear()
 	}
 	Init();
 }
-#if !defined( BYTEMATCH_RETAIL_LINUX )
+#ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
 // Is an allocation within the pool? 
 //-----------------------------------------------------------------------------

@@ -1794,7 +1794,7 @@ void V_StripTrailingSlash( char *ppath )
 		}
 	}
 }
-#if !defined( BYTEMATCH_RETAIL_LINUX )
+#ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : *ppline - 
@@ -3134,7 +3134,7 @@ inline int V_iswspace( int c ) { return ( c <= 0xFFFF ) ? iswspace( (wint_t)c ) 
 #define V_iswspace(x) iswspace(x)
 #endif
 
-#if !defined( BYTEMATCH_RETAIL_LINUX )
+#ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
 // Purpose: Slightly modified strtok. Does not modify the input string. Does
 //			not skip over more than one separator at a time. This allows parsing
@@ -3395,7 +3395,7 @@ const Tier1FullHTMLEntity_t g_Tier1_FullHTMLEntities[] =
 #pragma warning( pop )
 #endif
 
-#if !defined( BYTEMATCH_RETAIL_LINUX )
+#ifndef BYTEMATCH_RETAIL
 bool V_BasicHtmlEntityEncode( char *pDest, const int nDestSize, char const *pIn, const int nInSize, bool bPreserveWhitespace /*= false*/ )
 {
 	Assert( nDestSize == 0 || pDest != NULL );
@@ -3553,7 +3553,7 @@ bool V_HtmlEntityDecodeToUTF8( char *pDest, const int nDestSize, char const *pIn
 }
 #endif
 #line 3547
-#if !defined( BYTEMATCH_RETAIL_LINUX )
+#ifndef BYTEMATCH_RETAIL
 static const char *g_pszSimpleBBCodeReplacements[] = {
 	"[b]", "<b>",
 	"[/b]", "</b>",

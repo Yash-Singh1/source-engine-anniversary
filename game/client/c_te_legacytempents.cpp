@@ -2391,13 +2391,7 @@ int CTempEnts::AddVisibleTempEntity( C_LocalTempEntity *pEntity )
 //-----------------------------------------------------------------------------
 void CTempEnts::Update(void)
 {
-#ifdef BYTEMATCH_RETAIL_LINUX
-#line 2332
-#else
-#line 2393
-#endif
 	VPROF_("CTempEnts::Update", 1, VPROF_BUDGETGROUP_CLIENT_SIM, false, BUDGETFLAG_CLIENT);
-#line 2395
 	static int gTempEntFrame = 0;
 	float		frametime;
 

@@ -133,7 +133,7 @@ CUtlString::CUtlString( const char *pString )
 {
 	Set( pString );
 }
-#if !defined( BYTEMATCH_RETAIL_LINUX )
+#ifndef BYTEMATCH_RETAIL
 CUtlString::CUtlString( const char *pString, int length )
 {
 	SetDirect( pString, length );
@@ -552,7 +552,7 @@ void CUtlString::Append( const char *pchAddition )
 {
 	*this += pchAddition;
 }
-#if !defined( BYTEMATCH_RETAIL_LINUX )
+#ifndef BYTEMATCH_RETAIL
 void CUtlString::Append( const char *pchAddition, int nChars )
 {
 	Assert( !m_Storage.IsReadOnly() );
@@ -606,7 +606,7 @@ void CUtlString::FixSlashes( char cSeparator/*=CORRECT_PATH_SEPARATOR*/ )
 		V_FixSlashes( Get(), cSeparator );
 	}
 }
-#if !defined( BYTEMATCH_RETAIL_LINUX )
+#ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
 // Trim functions
 //-----------------------------------------------------------------------------

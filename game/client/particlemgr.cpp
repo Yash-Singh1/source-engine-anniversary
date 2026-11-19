@@ -1424,13 +1424,7 @@ void CParticleMgr::RemoveAllEffects()
 
 void CParticleMgr::IncrementFrameCode()
 {
-#ifdef BYTEMATCH_RETAIL_LINUX
-#line 1425
-#else
-#line 1426
-#endif
 	VPROF( "CParticleMgr::IncrementFrameCode()" );
-#line 1428
 
 	++m_FrameCode;
 	if ( m_FrameCode == 0 )
@@ -1480,13 +1474,7 @@ int GetParticlePerformance()
 
 void CParticleMgr::PostRender()
 {
-#ifdef BYTEMATCH_RETAIL_LINUX
-#line 1475
-#else
-#line 1476
-#endif
 	VPROF("CParticleMgr::SimulateUndrawnEffects");
-#line 1478
 
 	// Simulate all effects that weren't drawn (if they have their 'always simulate' flag set).
 	FOR_EACH_LL( m_Effects, i )
