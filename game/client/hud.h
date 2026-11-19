@@ -202,5 +202,7 @@ extern vgui::HFont g_hFontTrebuchet24;
 void LoadHudTextures( CUtlDict< CHudTexture *, int >& list, const char *szFilenameWithoutExtension, const unsigned char *pICEKey );
 
 void GetHudSize( int& w, int &h );
+void GetRatioedHudSize( int &x, int &y, int &w, int &h );
+void GetRealScreenSize( int &w, int &h );
 
 #endif // HUD_H
