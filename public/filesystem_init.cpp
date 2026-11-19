@@ -767,7 +767,7 @@ bool LoadExpansionInfo( const char *pDirectoryName, char *pszExpansion, unsigned
 	char szConfigFile[MAX_PATH];
 	V_strncpy( szConfigFile, pDirectoryName, sizeof( szConfigFile ) );
 	V_strncat( szConfigFile, "/cfg/config.cfg", sizeof( szConfigFile ), COPY_ALL_CHARACTERS );
-	V_FixSlashes( szConfigFile, '/' );
+	V_FixSlashes( szConfigFile );
 
 	FILE *fp = fopen( szConfigFile, "rb" );
 	if ( !fp )
