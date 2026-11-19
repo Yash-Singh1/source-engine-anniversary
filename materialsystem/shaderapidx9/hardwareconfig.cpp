@@ -647,11 +647,14 @@ void CHardwareConfig::SetupHardwareCaps( int nDXLevel, const HardwareCaps_t &act
 	memcpy( &m_UnOverriddenCaps, &actualCaps, sizeof(HardwareCaps_t) );
 
 	// Don't bother with fallbacks for DX10 or consoles
-#ifdef DX_TO_GL_ABSTRACTION
+#if defined( DX_TO_GL_ABSTRACTION ) && defined( BYTEMATCH_RETAIL )
+	if ( ( IsOpenGL() && ( nDXLevel >= 100 ) ) || g_pMaterialSystem->GetRenderBackend() == RENDER_BACKEND_VULKAN || ( nDXLevel >= 100 ) )
+#elif defined( DX_TO_GL_ABSTRACTION )
 	if ( nDXLevel >= 100 )
 #else
 	if ( !( IsPC() || IsPosix() ) || ( nDXLevel >= 100 ) )
 #endif
+#line 655
 		return;
 
 	// Slam the support level to what we were requested
