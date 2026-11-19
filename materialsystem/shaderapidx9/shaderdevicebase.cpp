@@ -710,7 +710,12 @@ static unsigned long GetRam()
 	GlobalMemoryStatus( &stat );
 	
 	char buf[256];
+#ifdef BYTEMATCH_RETAIL
+	V_snprintf( buf, sizeof( buf ), "GlobalMemoryStatus: %u\n", stat.dwTotalPhys );
+#else
 	V_snprintf( buf, sizeof( buf ), "GlobalMemoryStatus: %llu\n", (uint64)(stat.dwTotalPhys) );
+#endif
+#line 704
 	Plat_DebugString( buf );
 
 	return (stat.dwTotalPhys / (1024 * 1024));
@@ -806,6 +811,13 @@ bool CShaderDeviceMgrBase::GetRecommendedConfigurationInfo( int nAdapter, int nD
 
 	// Hack to slam the mat_dxlevel ConVar to match the requested dxlevel
 	pConfiguration->SetInt( "ConVar.mat_dxlevel", nDXLevel );
+#ifdef BYTEMATCH_RETAIL
+	if ( nDXLevel >= 95 )
+		pConfiguration->SetInt( "ConVar.r_lightmap_bicubic", 1 );
+	else
+		pConfiguration->SetInt( "ConVar.r_lightmap_bicubic", 0 );
+#endif
+#line 799
 
 	if ( CommandLine()->FindParm( "-debugdxsupport" ) )
 	{
