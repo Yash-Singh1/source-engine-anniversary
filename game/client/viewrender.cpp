@@ -3222,9 +3222,10 @@ void CViewRender::DrawMonitors( const CViewSetup &cameraView )
 #if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
 #line 3229
 #else
-#line 3201
+#line 3202
 #endif
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__ );
+#line 3204
 #line 3203
 
 #ifdef _DEBUG
