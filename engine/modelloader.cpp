@@ -424,7 +424,7 @@ static char				s_szLoadName[128];
 static char				s_szMapName[128];
 #endif
 #line 362
-static char				s_szDiskName[64];
+static char				s_szMapNameOnDisk[64];
 static worldbrushdata_t	*s_pMap = NULL;
 static int				s_nMapLoadRecursion = 0;
 static CUtlBuffer		s_MapBuffer;
@@ -1013,8 +1013,8 @@ char *CMapLoadHelper::GetLoadName( void )
 //-----------------------------------------------------------------------------
 char *CMapLoadHelper::GetDiskName( void )
 {
-	GetMapPathNameOnDisk( s_szDiskName, GetLoadName(), sizeof( s_szDiskName ) );
-	return s_szDiskName;
+	GetMapPathNameOnDisk( s_szMapNameOnDisk, GetLoadName(), sizeof( s_szMapNameOnDisk ) );
+	return s_szMapNameOnDisk;
 }
 
 //-----------------------------------------------------------------------------
