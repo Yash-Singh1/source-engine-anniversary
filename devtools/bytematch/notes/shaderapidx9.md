@@ -114,12 +114,18 @@ lines 862-868). ToGL headers: `D3DXMATRIX::operator!=` compares `sizeof(this)` b
 linuxwin's dxabstract.cpp), inline in d3dx_impl.h; `ID3DXMatrixStack::Create` is
 `FORCEINLINE` so `CreateMatrixStacks` inlines into `OnDeviceInit` with its loop kept.
 
-Identity flow: only `shaderdevicedx8.o`'s except-table labels differ (25/51/54
-where retail has 26/52/55; 3 text bytes, 6 string-table bytes). Retail creates one
-more function before the `CShaderDeviceDx8` constructor. Our functions 0-24 are the
-`CShaderDeviceMgrDx8` methods; four of them (`CheckBorderColorSupport`, the two
-vendor checks, `ComputeDXSupportLevel`) are emitted but dead in retail. So the extra
-function is most likely a coalesced helper that one of them called out of line in
-retail, or one replaced by an earlier object's copy. Clang's -O0 creation order
-lists the candidates. The Linux shaderapidx9.so doesn't help: gcc 9 splits
-functions into `.part` clones there. Name not recovered.
+## Identity lane round 6: byte-identical (`identical.json`)
+
+- `shaderdevicedx8.o`'s except-table labels were 25/51/54 where retail has 26/52/55:
+  retail emits one more function before the `CShaderDeviceDx8` constructor, dead in
+  the dylib like `CheckBorderColorSupport`, the vendor checks and
+  `ComputeDXSupportLevel`. Retail mode now has
+  `CShaderDeviceMgrDx8::CheckNormalCompressionSupport`, the Orange Box-era
+  normal-map (ATI2N) check, reduced to the `m_bSupportsNormalMapCompression = false`
+  store that residuals3 found after `CheckBorderColorSupport`. It is inlined into
+  `ComputeCapsFromD3D` with unchanged code and dead out of line. Any dead extern
+  member in that range gives the same file; the name is a reconstruction.
+- `dynamicib.h`: the win32-5 merge put the non-MSVC `CIndexBuffer::Lock` `Msg`
+  lines back at 875-881 (its `#line 874`/`#line 882` predate residuals3's
+  renumbering). Retail has 862/865/868: now `#line 861` and `#line 869`. Only
+  Asserts follow, so the MSVC build's later lines don't matter.

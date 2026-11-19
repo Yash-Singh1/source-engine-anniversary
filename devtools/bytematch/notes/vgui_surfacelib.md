@@ -75,10 +75,13 @@ Status column: matched = exact or matches-after-masking; "fixed" = differed or w
   `SetAsActiveFont` right after the two less-funcs (which clang creates
   earlier, at the constructor's reference), and it is back in `osxfont.h`
   and `osxfont.cpp`.
-- `FontManager.o` is what's left in `identity.py vguimatsurface` (6 string-table
-  bytes). Except-table labels 3/6/17 are 4/7/18 in retail, so retail creates
-  one more function before the `CFontManager` base constructor. It isn't in
-  `__text` between `FontManager()` and the constructor: `FontManager()`'s atom
-  ends at the constructor. It is a dead coalesced function created early (the
-  first weak atom leaves no trace) or a coalesced copy that an earlier object's
-  copy replaced. Its name is not recovered.
+- `FontManager.o` (identity round 6; vguimatsurface is now byte-identical):
+  except-table labels 3/6/17 were 4/7/18 in retail, one more function before
+  the `CFontManager` base constructor. A dead `__text` function there leaves no
+  other trace, since every function is 16-aligned. The Nov 2024 Windows DLL has
+  FreeType support behind `-freetype` and `resource/FontInfo.kv`; the OSX dylib
+  has none of those strings. In the Linux `vguimatsurface.so` a 54-byte
+  `return CommandLine()->CheckParm( "-freetype" ) != NULL;` sits right before
+  `FontManager()`, called only from `CreateOrFindWin32Font`'s FreeType path.
+  `UseFreetypeFonts()` (name not recovered) is that function: extern, emitted on
+  OSX before the constructor and dead-stripped with its string.
