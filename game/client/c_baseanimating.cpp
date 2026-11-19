@@ -1923,6 +1923,7 @@ void C_BaseAnimating::ChildLayerBlend( Vector pos[], Quaternion q[], float curre
 //-----------------------------------------------------------------------------
 // Purpose: Do the default sequence blending rules as done in HL1
 //-----------------------------------------------------------------------------
+#line 1914
 void C_BaseAnimating::StandardBlendingRules( CStudioHdr *hdr, Vector pos[], Quaternion q[], float currentTime, int boneMask )
 {
 	VPROF( "C_BaseAnimating::StandardBlendingRules" );
@@ -4244,6 +4245,7 @@ void C_BaseAnimating::ResetLatched( void )
 // Output : Returns true on success, false on failure.
 //-----------------------------------------------------------------------------
 
+#line 4236
 bool C_BaseAnimating::Interpolate( float flCurrentTime )
 {
 	// ragdolls don't need interpolation

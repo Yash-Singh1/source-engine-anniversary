@@ -3641,6 +3641,7 @@ void CGameMovement::SetGroundEntity( trace_t *pm )
 // move the player down to the new floor and get stuck on a leaning wall that
 // the original trace hit first.
 //-----------------------------------------------------------------------------
+#line 3641
 void TracePlayerBBoxForGround( const Vector& start, const Vector& end, const Vector& minsSrc,
 							  const Vector& maxsSrc, IHandleEntity *player, unsigned int fMask,
 							  int collisionGroup, trace_t& pm )
@@ -4554,6 +4555,7 @@ static ConVar sv_optimizedmovement( "sv_optimizedmovement", "1", FCVAR_REPLICATE
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+#line 4550
 void CGameMovement::PlayerMove( void )
 {
 	VPROF( "CGameMovement::PlayerMove" );

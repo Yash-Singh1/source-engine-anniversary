@@ -916,6 +916,7 @@ bool CFire::GetFireDimensions( Vector *pFireMins, Vector *pFireMaxs )
 //-----------------------------------------------------------------------------
 // Purpose: Update the fire and its children
 //-----------------------------------------------------------------------------
+#line 921
 void CFire::Update( float simTime )
 {
 	VPROF_FIRE( "CFire::Update" );

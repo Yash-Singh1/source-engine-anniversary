@@ -34,9 +34,9 @@ def configure(conf):
 	game = conf.options.GAMES
 	conf.env.GAMES = game
 
-	if conf.env.RETAIL_OSX32:
+	if conf.env.RETAIL_OSX32 or conf.env.RETAIL_LINUX32:
 		if game not in retail_games:
-			conf.fatal("--retail-osx32 builds only %s" % ', '.join(retail_games))
+			conf.fatal("retail modes build only %s" % ', '.join(retail_games))
 		return
 
 	conf.env.append_unique('DEFINES', ['DISABLE_STEAM=1'])
@@ -45,7 +45,7 @@ def configure(conf):
 		conf.fatal("Couldn't find game: ", game)
 
 def build(bld):
-	retail = bld.env.RETAIL_OSX32
+	retail = bld.env.RETAIL_OSX32 or bld.env.RETAIL_LINUX32
 	game = vpc_parser.parse_vpcs( bld.env, (retail_games if retail else games)[bld.env.GAMES], '../..' )
 
 	includes = [

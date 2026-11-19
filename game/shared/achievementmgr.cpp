@@ -648,6 +648,7 @@ CBaseAchievement *CAchievementMgr::GetAchievementByID( int iAchievementID )
 //			all achievements to find the name, intended for debugging purposes.
 //			Use GetAchievementByID for fast lookup.
 //-----------------------------------------------------------------------------
+#line 643
 CBaseAchievement *CAchievementMgr::GetAchievementByName( const char *pchName )
 {
 	VPROF("GetAchievementByName");

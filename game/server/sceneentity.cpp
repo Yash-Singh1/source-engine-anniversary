@@ -4492,6 +4492,7 @@ END_DATADESC()
 // Input  :
 // Output :
 //-----------------------------------------------------------------------------
+#line 4492
 float InstancedScriptedScene( CBaseFlex *pActor, const char *pszScene, EHANDLE *phSceneEnt,
 							 float flPostDelay, bool bIsBackground, AI_Response *response,
 							 bool bMultiplayer, IRecipientFilter *filter /* = NULL */ )

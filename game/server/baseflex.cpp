@@ -897,6 +897,7 @@ bool CBaseFlex::CheckSceneEventCompletion( CSceneEventInfo *info, float currentt
 //-----------------------------------------------------------------------------
 // Purpose: Default implementation
 //-----------------------------------------------------------------------------
+#line 898
 void CBaseFlex::ProcessSceneEvents( void )
 {
 	VPROF( "CBaseFlex::ProcessSceneEvents" );
@@ -1542,6 +1543,7 @@ bool CBaseFlex::ProcessLookAtSceneEvent( CSceneEventInfo *info, CChoreoScene *sc
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+#line 1552
 bool CBaseFlex::ProcessSceneEvent( CSceneEventInfo *info, CChoreoScene *scene, CChoreoEvent *event )
 {
 	VPROF( "CBaseFlex::ProcessSceneEvent" );
