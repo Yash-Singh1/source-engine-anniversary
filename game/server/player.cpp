@@ -949,7 +949,7 @@ void CBasePlayer::TraceAttack( const CTakeDamageInfo &inputInfo, const Vector &v
 #ifdef HL2_EPISODIC
 		// If this damage type makes us bleed, then do so
 		bool bShouldBleed = !g_pGameRules->Damage_ShouldNotBleed( info.GetDamageType() );
-		if ( bShouldBleed )
+		if ( !IsHL2Episodic() || bShouldBleed )
 #endif
 		{
 			SpawnBlood(ptr->endpos, vecDir, BloodColor(), info.GetDamage());// a little surface blood.
