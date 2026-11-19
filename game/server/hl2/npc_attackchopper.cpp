@@ -213,7 +213,7 @@ class CGrenadeHelicopter : public CBaseGrenade
 
 public:
 	DECLARE_CLASS( CGrenadeHelicopter, CBaseGrenade );
-
+	HL2_EPISODIC_ONLY( CGrenadeHelicopter() : m_flLifetime( 0 ), m_bPickedUp( false ), m_flBlinkFastTime( 0 ) {} )
 	virtual void Precache( );
 	virtual void Spawn( );
 	virtual void UpdateOnRemove();
@@ -233,12 +233,12 @@ public:
 #ifdef HL2_EPISODIC
 	virtual void OnPhysGunPickup(CBasePlayer *pPhysGunUser, PhysGunPickup_t reason );
 	virtual void OnPhysGunDrop( CBasePlayer *pPhysGunUser, PhysGunDrop_t reason );
-	virtual Class_T Classify( void ) {	return CLASS_MISSILE; }
+	virtual Class_T Classify( void ) { if ( IsHL2Episodic() ) return CLASS_MISSILE; return BaseClass::Classify(); }
 	void SetCollisionObject( CBaseEntity *pEntity ) { m_hCollisionObject = pEntity; }
 	void SendMissEvent();	
 	bool IsThrownByPlayer();
 
-	virtual bool	ShouldPuntUseLaunchForces( PhysGunForce_t reason ) { return ( reason == PHYSGUN_FORCE_LAUNCHED ); }
+	virtual bool	ShouldPuntUseLaunchForces( PhysGunForce_t reason ) { return ( IsHL2Episodic() && reason == PHYSGUN_FORCE_LAUNCHED ); }
 	virtual Vector  PhysGunLaunchVelocity( const Vector &forward, float flMass );
 
 	void InputExplodeIn( inputdata_t &inputdata );
@@ -1119,7 +1119,7 @@ void CNPC_AttackHelicopter::Spawn( void )
 //-----------------------------------------------------------------------------
 bool CNPC_AttackHelicopter::CreateVPhysics( void )
 {
-	InitBoneFollowers();
+	if ( IsHL2Episodic() ) InitBoneFollowers();
 	return BaseClass::CreateVPhysics();
 }
 #endif // HL2_EPISODIC
@@ -3632,8 +3632,8 @@ void Chopper_BecomeChunks( CBaseEntity *pChopper )
 	pChopper->GetVectors( &vecForward, NULL, &vecUp );
 
 #ifdef HL2_EPISODIC
-	CNPC_AttackHelicopter *pAttackHelicopter;
-	pAttackHelicopter = dynamic_cast<CNPC_AttackHelicopter*>(pChopper);
+	CNPC_AttackHelicopter *pAttackHelicopter = NULL;
+	if ( IsHL2Episodic() ) pAttackHelicopter = dynamic_cast<CNPC_AttackHelicopter*>(pChopper);
 	if( pAttackHelicopter != NULL )
 	{
 		// New for EP2, we may be tailspinning, (crashing) and playing an animation that is spinning
@@ -3750,7 +3750,7 @@ void CNPC_AttackHelicopter::Event_Killed( const CTakeDamageInfo &info )
 			return;
 		}
 	}
-
+	SendOnKilledGameEvent( info );
 	Chopper_BecomeChunks( this );
 	StopLoopingSounds();
 
@@ -4828,7 +4828,7 @@ void	CNPC_AttackHelicopter::PopulatePoseParameters( void )
 void CNPC_AttackHelicopter::InitBoneFollowers( void )
 {
 	// Don't do this if we're already loaded
-	if ( m_BoneFollowerManager.GetNumBoneFollowers() != 0 )
+	if ( !IsHL2Episodic() || m_BoneFollowerManager.GetNumBoneFollowers() != 0 )
 		return;
 
 	// Init our followers
@@ -5040,7 +5040,7 @@ void CGrenadeHelicopter::Spawn( void )
 	// use a lower gravity for grenades to make them easier to see
 	SetGravity( UTIL_ScaleForGravity( 400 ) );
 
-	if ( HL2_EPISODIC_ACTIVE() )
+
 	{
 #ifdef HL2_EPISODIC
 		m_bPickedUp = false;
@@ -5351,7 +5351,7 @@ void CGrenadeHelicopter::VPhysicsCollision( int index, gamevcollisionevent_t *pE
 Vector CGrenadeHelicopter::PhysGunLaunchVelocity( const Vector &forward, float flMass )
 {
 	// return ( striderbuster_shot_velocity.GetFloat() * forward );
-
+	if ( !IsHL2Episodic() ) return BaseClass::PhysGunLaunchVelocity( forward, flMass );
 	return BaseClass::PhysGunLaunchVelocity(forward,flMass) * sk_helicopter_grenaderadius.GetFloat();
 }
 #endif
@@ -5362,10 +5362,10 @@ Vector CGrenadeHelicopter::PhysGunLaunchVelocity( const Vector &forward, float f
 float CGrenadeHelicopter::GetBombLifetime()
 {
 #if HL2_EPISODIC
-	return m_flLifetime;
-#else
-	return BOMB_LIFETIME;
+	if ( IsHL2Episodic() ) return m_flLifetime;
 #endif
+	return BOMB_LIFETIME;
+
 }
 
 
@@ -5519,7 +5519,7 @@ void CGrenadeHelicopter::ExplodeConcussion( CBaseEntity *pOther )
 //-----------------------------------------------------------------------------
 void CGrenadeHelicopter::OnPhysGunPickup(CBasePlayer *pPhysGunUser, PhysGunPickup_t reason )
 {
-	if ( reason == PICKED_UP_BY_CANNON )
+	if ( IsHL2Episodic() && reason == PICKED_UP_BY_CANNON )
 	{
 		if ( !m_bPickedUp )
 		{
@@ -5575,7 +5575,7 @@ void CGrenadeHelicopter::OnPhysGunPickup(CBasePlayer *pPhysGunUser, PhysGunPicku
 //-----------------------------------------------------------------------------
 void CGrenadeHelicopter::OnPhysGunDrop( CBasePlayer *pPhysGunUser, PhysGunDrop_t reason )
 {
-	if ( reason == LAUNCHED_BY_CANNON )
+	if ( IsHL2Episodic() && reason == LAUNCHED_BY_CANNON )
 	{
 		// Enable world touches.
 		unsigned int flags = VPhysicsGetObject()->GetCallbackFlags();
