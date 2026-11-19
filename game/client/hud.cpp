@@ -522,8 +522,13 @@ void CHud::LevelInit( void )
 	}
 
 	// Unhide all render groups
+#ifdef HL2_ANNIVERSARY_NOV2024
+	for ( int i = m_RenderGroups.FirstInorder(); m_RenderGroups.IsValidIndex( i ); i = m_RenderGroups.NextInorder( i ) )
+#else
 	int iCount = m_RenderGroups.Count();
 	for ( int i = 0; i < iCount; i++ )
+#endif
+#line 527
 	{
 		CHudRenderGroup *group = m_RenderGroups[ i ];
 		group->bHidden = false;
@@ -548,6 +553,20 @@ void CHud::LevelShutdown( void )
 //-----------------------------------------------------------------------------
 CHud::~CHud()
 {
+#ifdef HL2_ANNIVERSARY_NOV2024
+	for ( int i = m_Icons.First(); m_Icons.IsValidIndex( i ); i = m_Icons.Next( i ) )
+	{
+		CHudTexture *tex = m_Icons[ i ];
+		g_HudTextureMemoryPool.Free( tex );
+	}
+	m_Icons.Purge();
+
+	for ( int i = m_RenderGroups.FirstInorder(); m_RenderGroups.IsValidIndex( i ); i = m_RenderGroups.NextInorder( i ) )
+	{
+		delete m_RenderGroups[ i ];
+	}
+	m_RenderGroups.Purge();
+#else
 	int c = m_Icons.Count();
 	for ( int i = c - 1; i >= 0; i-- )
 	{
@@ -563,6 +582,8 @@ CHud::~CHud()
 		m_RenderGroups.RemoveAt(i);
 		delete group;
 	}
+#endif
+#line 566
 }
 
 void CHudTexture::Precache( void )
