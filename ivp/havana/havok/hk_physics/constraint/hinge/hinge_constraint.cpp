@@ -57,6 +57,32 @@ void hk_Hinge_Constraint::init_hinge_constraint(const hk_Hinge_BP* bp)
 	 * of body[0,1] in object space - its stored to avoid a normalize
 	 * and an 'if' which is needed to compute it on the fly */
 
+#ifdef BYTEMATCH_RETAIL
+	hk_Rigid_Body* b0 = get_rigid_body(0);
+	hk_Rigid_Body* b1 = get_rigid_body(1);
+
+	const hk_Transform &t0 = b0->get_cached_transform();
+	const hk_Transform &t1 = b1->get_cached_transform();
+
+	for(int i=0; i<2; ++i)
+	{
+		if( bp->m_axis_perp_os[i].length() != 0.0f)
+		{
+			m_axis_perp_os[i] = bp->m_axis_perp_os[i];
+			m_axis_perp_os[i].normalize();
+		}
+		else if ( i == 0 )
+		{
+			m_axis_perp_os[i] = hk_Vector3_Util::perp_vec( m_axis_os[i].get_direction() );
+		}
+		else
+		{
+			hk_Vector3 perp_ws;
+			perp_ws.set_rotated_dir( t0, m_axis_perp_os[0] );
+			m_axis_perp_os[i].set_rotated_inv_dir( t1, perp_ws );
+		}
+	}
+#else
 	for(int i=0; i<2; ++i)
 	{
 		if( bp->m_axis_perp_os[i].length() != 0.0f)
@@ -75,6 +101,7 @@ void hk_Hinge_Constraint::init_hinge_constraint(const hk_Hinge_BP* bp)
 
 	const hk_Transform &t0 = b0->get_cached_transform();
 	const hk_Transform &t1 = b1->get_cached_transform();
+#endif
 
 	hk_Vector3 line_ws[2];
 	line_ws[0].set_rotated_dir( t0, m_axis_os[0].get_direction());

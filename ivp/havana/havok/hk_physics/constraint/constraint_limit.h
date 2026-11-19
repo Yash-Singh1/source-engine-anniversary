@@ -22,7 +22,18 @@ class hk_Constraint_Limit_BP
 
 		void set_limits(hk_real lower, hk_real upper)
 		{
+#ifdef BYTEMATCH_RETAIL
+			if ( hk_Math::fabs( lower + HK_PI ) > 1e-4f || hk_Math::fabs( upper - HK_PI ) > 1e-4f )
+			{
+				m_limit_is_enabled = HK_TRUE;
+			}
+			else
+			{
+				m_limit_is_enabled = HK_FALSE;
+			}
+#else
 			m_limit_is_enabled = HK_TRUE;
+#endif
 			m_limit_min = lower;
 			m_limit_max = upper;
 		}
@@ -30,14 +41,22 @@ class hk_Constraint_Limit_BP
 		void set_friction( hk_real friction)
 		{
 			m_friction_is_enabled = (friction!=0.0f)?HK_TRUE: HK_FALSE;
+#ifdef BYTEMATCH_RETAIL
+			m_joint_friction = hk_Math::fabs( friction );
+#else
 			m_joint_friction = friction;
+#endif
 			m_desired_velocity = 0.0f;
 		}
 
 		void set_motor( hk_real desired_vel, hk_real max_force)
 		{
 			m_friction_is_enabled = (max_force!=0.0f)?HK_TRUE: HK_FALSE;
+#ifdef BYTEMATCH_RETAIL
+			m_joint_friction = hk_Math::fabs( max_force );
+#else
 			m_joint_friction = max_force;
+#endif
 			m_desired_velocity = desired_vel;
 		}
 
@@ -70,7 +89,11 @@ class hk_Constraint_Limit: public hk_Constraint_Limit_BP
 			m_limit_min = bp.m_limit_min;		
 			m_limit_max = bp.m_limit_max;		
 			m_limit_tau = bp.m_limit_tau;		
+#ifdef BYTEMATCH_RETAIL
+			m_joint_friction = hk_Math::fabs( bp.m_joint_friction ) * eps;
+#else
 			m_joint_friction = bp.m_joint_friction * eps;		
+#endif
 			m_desired_velocity = bp.m_desired_velocity * eps;		
 		}
 
@@ -83,9 +106,17 @@ class hk_Constraint_Limit: public hk_Constraint_Limit_BP
 			m_limit_min = bp.m_limit_min;		
 			m_limit_max = bp.m_limit_max;		
 			m_limit_tau = bp.m_limit_tau;		
+#ifdef BYTEMATCH_RETAIL
+			m_joint_friction = hk_Math::fabs( bp.m_joint_friction ) * eps;
+#else
 			m_joint_friction = bp.m_joint_friction * eps;		
+#endif
 			m_desired_velocity = bp.m_desired_velocity * eps;		
+#ifdef BYTEMATCH_RETAIL
+			if ( m_limit_max - m_limit_min >= HK_PI * 2.0f){
+#else
 			if ( m_limit_max - m_limit_min > HK_PI * 2.0f){
+#endif
 				m_limit_is_enabled = HK_FALSE;
 			}
 		}
