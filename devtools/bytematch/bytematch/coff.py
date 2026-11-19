@@ -51,6 +51,12 @@ def literal_size(name):
     return n if i < len(name) and name[i] == '@' and n else None
 
 
+def _export_symbol(name):
+    """An export/import table name as the COFF symbol it came from: cdecl C names are exported
+    without their '_', so tier0's _SpewInfo must not lose its own underscore in canonical()."""
+    return '_' + name if name.startswith('_') and '@' not in name else name
+
+
 def _read_symbols(data, symptr, nsym, symsz, big):
     """[(index, name, value, secno, type, class, naux, aux_bytes)]"""
     strtab = data[symptr + nsym * symsz:]
@@ -224,7 +230,7 @@ def load_pe(path, data, member=None):
             ords = struct.unpack('<%dH' % nnames, rva_bytes(aords, 2 * nnames))
             named = {}
             for n, o in zip(names, ords):
-                named.setdefault(o, []).append(cstr(n))
+                named.setdefault(o, []).append(_export_symbol(cstr(n)))
             for i, rva in enumerate(funcs):
                 if not rva or erva <= rva < erva + esz:
                     continue
@@ -244,7 +250,7 @@ def load_pe(path, data, member=None):
             v, = struct.unpack('<I', ent)
             if not v:
                 break
-            name = f'{dll}#{v & 0xffff}' if v & 0x80000000 else cstr(v + 2)
+            name = f'{dll}#{v & 0xffff}' if v & 0x80000000 else _export_symbol(cstr(v + 2))
             mod.add_name(image_base + iat_rva + 4 * k, canonical('pe', name))
             k += 1
 

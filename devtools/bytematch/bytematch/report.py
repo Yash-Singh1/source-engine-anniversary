@@ -194,9 +194,26 @@ def _literals_agree(r, o):
         lit = lits.get(rel.target)
         if lit is None or rel.kind != 'abs' or rel.size != 4 or rel.offset + 4 > len(r.data):
             continue
-        if rmod.read_data((x86.u32(r.data, rel.offset) - rel.addend) & 0xffffffff, len(lit)) != lit:
+        va = (x86.u32(r.data, rel.offset) - rel.addend) & 0xffffffff
+        if _DRIVE_PATH.match(lit):
+            # __FILE__: Valve's build root (c:\buildslave\...\src\) isn't ours; compare file names
+            rb = rmod.read_data(va, 512).split(b'\0', 1)[0]
+            if not _DRIVE_PATH.match(rb) or rb.lower().rsplit(b'\\', 1)[-1] != lit.rstrip(b'\0').lower().rsplit(b'\\', 1)[-1]:
+                return False
+        elif rmod.read_data(va, len(lit)) != lit:
             return False
     return True
+
+
+_DRIVE_PATH = re.compile(rb'^[A-Za-z]:\\')
+
+
+def _sig_name(key):
+    """'scope::name' of a 'sig:' key; None for other keys and for thunks/deleting destructors."""
+    if not key or not key.startswith('sig:') or '#' in key:
+        return None
+    p = key.find('(')
+    return key[4:p] if p > 4 and '<' not in key[4:p] else None
 
 
 def accept_misnamed(results, retail, spare, ours_funcs):
@@ -210,7 +227,10 @@ def accept_misnamed(results, retail, spare, ours_funcs):
     used). The target check applies to both; look-alikes that differ only in what a relocation
     points at are told apart by comparing the code there, and on PE by comparing the string
     literals they reference (the port names every MSVC dynamic initializer __GLOBAL__I_a).
-    Functions under MISNAMED_MIN_SIZE bytes stay as they are."""
+    A missing retail function whose qualified name is unique on both sides may also pair with
+    our function of that name whose parameter types are spelled differently (platform
+    typedefs); names don't count then, so its targets are checked by their code. Functions
+    under MISNAMED_MIN_SIZE bytes stay as they are."""
     claimed = {res.retail.addr for res in results if res.status in MATCHED and res.retail}
     rpool = collections.defaultdict(list)
     for f in retail.functions:
@@ -227,42 +247,75 @@ def accept_misnamed(results, retail, spare, ours_funcs):
     for f in ours_funcs:
         for n in [f.name] + list(f.aliases):
             oby.setdefault(n, f)
+    # qualified function name -> functions, for names spelled with other parameter types
+    # (SOCKET is unsigned int on Windows and int on macOS, uint32 unsigned long on macOS)
+    rnames = collections.Counter(n for f in retail.functions for n in {_sig_name(k) for k in [f.key] + list(f.aliases)} if n)
+    onames = collections.defaultdict(list)
+    for e in spare:
+        for n in {_sig_name(k) for k in [e.ours.key] + list(e.ours.aliases)} - {None}:
+            onames[n].append(e.ours)
     used, moved = set(), 0
 
     def fits(r, o):
         return len(r.data) == len(o.data) if r.size_known else len(r.data) >= len(o.data)
 
-    def same(r, o):
-        return compare.compare(r, o, True).status in MATCHED and _literals_agree(r, o)
+    def same(r, o, target_check=True):
+        return compare.compare(r, o, target_check).status in MATCHED and _literals_agree(r, o)
 
-    for res in results:
-        if res.status == compare.DIFFERS and res.ours and res.retail:
-            o = res.ours
-            if len(o.data) < MISNAMED_MIN_SIZE or not _head(o):
+    def same_name(r):
+        n = _sig_name(r.key)
+        cands = onames.get(n, ()) if n and rnames[n] == 1 else ()
+        if len(cands) == 1 and id(cands[0]) not in used and fits(r, cands[0]) \
+                and same(r, cands[0], False) and _targets_agree(r, cands[0], oby):
+            return cands[0]
+        return None
+
+    def spare_for(r):
+        if len(r.data) < MISNAMED_MIN_SIZE or not _head(r):
+            return None
+        return _unique_match(opool, _head(r), lambda o: id(o) not in used and fits(r, o) and same(r, o),
+                             lambda o: _targets_agree(r, o, oby))
+
+    # second pass, on what the first leaves: a differing retail function that is one of our
+    # unpaired functions (an atexit stub ??__F the map named after the destructor it calls),
+    # and missing ones known by name only
+    for second in (False, True):
+        for res in results:
+            target_check = True
+            if res.status == compare.DIFFERS and res.ours and res.retail:
+                if not second:
+                    o = res.ours
+                    if len(o.data) < MISNAMED_MIN_SIZE or not _head(o):
+                        continue
+                    r = _unique_match(rpool, _head(o), lambda r: r is not res.retail and r.addr not in claimed
+                                      and fits(r, o) and same(r, o), lambda r: _targets_agree(r, o, oby))
+                    if r is None:
+                        continue
+                else:
+                    r = res.retail
+                    o = spare_for(r) if r.addr not in claimed else None
+                    if o is None:
+                        continue
+                    used.add(id(o))
+                    res.ours = o
+                    res.matched_as = o.name
+            elif res.status == compare.MISSING and res.retail:
+                r = res.retail
+                o = same_name(r) if second else spare_for(r)
+                if o is None:
+                    continue
+                target_check = not second
+                used.add(id(o))
+                res.ours = o
+                res.matched_as = o.name
+            else:
                 continue
-            r = _unique_match(rpool, _head(o), lambda r: r is not res.retail and r.addr not in claimed
-                              and fits(r, o) and same(r, o), lambda r: _targets_agree(r, o, oby))
-            if r is None:
-                continue
-        elif res.status == compare.MISSING and res.retail:
-            r = res.retail
-            if len(r.data) < MISNAMED_MIN_SIZE or not _head(r):
-                continue
-            o = _unique_match(opool, _head(r), lambda o: id(o) not in used and fits(r, o) and same(r, o),
-                              lambda o: _targets_agree(r, o, oby))
-            if o is None:
-                continue
-            used.add(id(o))
-            res.ours = o
-            res.matched_as = o.name
-        else:
-            continue
-        res.status, res.reason, res.first_diff = compare.compare(r, o, True).status, '', None
-        res.line_constants, res.target_mismatches = None, []
-        if r is not res.retail:
-            res.matched_at = r.addr
-        claimed.add(r.addr)
-        moved += 1
+            res.status, res.reason, res.first_diff = compare.compare(r, o, target_check).status, '', None
+            res.line_constants, res.target_mismatches = None, []
+            if r is not res.retail:
+                res.matched_at = r.addr
+            claimed.add(r.addr)
+            moved += 1
     spare[:] = [e for e in spare if id(e.ours) not in used]
     return moved
 
