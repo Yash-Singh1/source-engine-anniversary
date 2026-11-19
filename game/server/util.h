@@ -615,7 +615,12 @@ bool UTIL_IsFacingWithinTolerance( CBaseEntity *pViewer, CBaseEntity *pTarget, f
 void UTIL_GetDebugColorForRelationship( int nRelationship, int &r, int &g, int &b );
 
 struct datamap_t;
+#ifdef BYTEMATCH_RETAIL
+extern const char	*UTIL_FunctionToName( datamap_t *pMap, inputfunc_t *function );
+#else
 extern const char	*UTIL_FunctionToName( datamap_t *pMap, inputfunc_t function );
+#endif
+#line 619
 
 int UTIL_GetCommandClientIndex( void );
 CBasePlayer *UTIL_GetCommandClient( void );
