@@ -85,6 +85,7 @@ RETAIL_DEAD = {
 # the debug map doesn't place them; their literals and code show where. module ->
 # [(library, the retail-listed archive it is linked before)].
 RETAIL_STLIB_BEFORE = {
+	'bin/chromehtml': [('png', 'tier1'), ('protobuf', 'tier1')],
 	'bin/replay': [('png', 'vtf')],
 }
 
