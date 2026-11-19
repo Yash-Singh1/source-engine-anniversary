@@ -936,7 +936,10 @@ CSfxTable *S_FindName( const char *szName, int *pfInCache )
 double g_flAccumulatedSoundLoadTime = 0.0f;
 CAudioSource *S_LoadSound( CSfxTable *pSfx, channel_t *ch )
 {
+#ifndef BYTEMATCH_RETAIL
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__ );
+#endif
+#line 923
 
 	VPROF("S_LoadSound");
 	if ( !pSfx->pSource )
@@ -1092,7 +1095,10 @@ CAudioSource *S_LoadSound( CSfxTable *pSfx, channel_t *ch )
 //-----------------------------------------------------------------------------
 CSfxTable *S_PrecacheSound( const char *name )
 {
+#ifndef BYTEMATCH_RETAIL
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__ );
+#endif
+#line 1079
 
 	if ( !g_AudioDevice )
 		return NULL;

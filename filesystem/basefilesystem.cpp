@@ -3311,9 +3311,18 @@ FileHandle_t CBaseFileSystem::Open( const char *pFileName, const char *pOptions,
 //-----------------------------------------------------------------------------
 FileHandle_t CBaseFileSystem::OpenEx( const char *pFileName, const char *pOptions, unsigned flags, const char *pathID, char **ppszResolvedFilename )
 {
+#ifndef BYTEMATCH_RETAIL
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s(%s, %s, %u %s )", __FUNCTION__, tmDynamicString( TELEMETRY_LEVEL0, pFileName ), tmDynamicString( TELEMETRY_LEVEL0, pOptions ), flags, tmDynamicString( TELEMETRY_LEVEL0, pathID ) );
+#endif
+#line 3315
 
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 3668
+#else
+#line 3315
+#endif
 	VPROF_BUDGET( "CBaseFileSystem::Open", VPROF_BUDGETGROUP_OTHER_FILESYSTEM );
+#line 3317
 
 	if ( !pFileName )
 		return (FileHandle_t)0;
@@ -3366,9 +3375,18 @@ void CBaseFileSystem::Close( FileHandle_t file )
 //-----------------------------------------------------------------------------
 void CBaseFileSystem::Seek( FileHandle_t file, int pos, FileSystemSeek_t whence )
 {
+#ifndef BYTEMATCH_RETAIL
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s (pos=%d, whence=%d)", __FUNCTION__, pos, whence );
+#endif
+#line 3720
 
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 3716
+#else
+#line 3720
+#endif
 	VPROF_BUDGET( "CBaseFileSystem::Seek", VPROF_BUDGETGROUP_OTHER_FILESYSTEM );
+#line 3722
 	CFileHandle *fh = ( CFileHandle *)file;
 	if ( !fh )
 	{
@@ -3407,9 +3425,18 @@ unsigned int CBaseFileSystem::Tell( FileHandle_t file )
 //-----------------------------------------------------------------------------
 unsigned int CBaseFileSystem::Size( FileHandle_t file )
 {
+#ifndef BYTEMATCH_RETAIL
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__ );
+#endif
+#line 3758
 
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 3754
+#else
+#line 3758
+#endif
 	VPROF_BUDGET( "CBaseFileSystem::Size", VPROF_BUDGETGROUP_OTHER_FILESYSTEM );
+#line 3760
 	if ( !file )
 	{
 		Warning( FILESYSTEM_WARNING, "FS:  Tried to Size NULL file handle!\n" );
@@ -3540,9 +3567,18 @@ int CBaseFileSystem::Read( void *pOutput, int size, FileHandle_t file )
 //-----------------------------------------------------------------------------
 int CBaseFileSystem::ReadEx( void *pOutput, int destSize, int size, FileHandle_t file )
 {
+#ifndef BYTEMATCH_RETAIL
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s (%d bytes)", __FUNCTION__, size );
+#endif
+#line 3889
 
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 3885
+#else
+#line 3889
+#endif
 	VPROF_BUDGET( "CBaseFileSystem::Read", VPROF_BUDGETGROUP_OTHER_FILESYSTEM );
+#line 3891
 	if ( !file )
 	{
 		Warning( FILESYSTEM_WARNING, "FS:  Tried to Read NULL file handle!\n" );
@@ -3984,7 +4020,7 @@ char *CBaseFileSystem::ReadLine( char *pOutput, int maxChars, FileHandle_t file 
 // Input  : *pFileName - 
 // Output : long
 //-----------------------------------------------------------------------------
-time_t CBaseFileSystem::GetFileTime( const char *pFileName, const char *pPathID )
+long CBaseFileSystem::GetFileTime( const char *pFileName, const char *pPathID )
 {
 	VPROF_BUDGET( "CBaseFileSystem::GetFileTime", VPROF_BUDGETGROUP_OTHER_FILESYSTEM );
 
@@ -4027,7 +4063,7 @@ time_t CBaseFileSystem::GetFileTime( const char *pFileName, const char *pPathID 
 	return (time_t)0L;
 }
 
-time_t CBaseFileSystem::GetPathTime( const char *pFileName, const char *pPathID )
+long CBaseFileSystem::GetPathTime( const char *pFileName, const char *pPathID )
 {
 	VPROF_BUDGET( "CBaseFileSystem::GetFileTime", VPROF_BUDGETGROUP_OTHER_FILESYSTEM );
 
@@ -4040,7 +4076,7 @@ time_t CBaseFileSystem::GetPathTime( const char *pFileName, const char *pPathID 
 	Q_strlower( tempFileName );
 #endif
 
-	time_t pathTime = 0L;
+	long pathTime = 0L;
 	for ( CSearchPath *pSearchPath = iter.GetFirst(); pSearchPath != NULL; pSearchPath = iter.GetNext() )
 	{
 		time_t ft = FastFileTime( pSearchPath, tempFileName );
@@ -4816,7 +4852,7 @@ void CBaseFileSystem::SetWhitelistSpewFlags( int flags )
 //			maxCharsIncludingTerminator - 
 //			fileTime - 
 //-----------------------------------------------------------------------------
-void CBaseFileSystem::FileTimeToString( char *pString, int maxCharsIncludingTerminator, time_t fileTime )
+void CBaseFileSystem::FileTimeToString( char *pString, int maxCharsIncludingTerminator, long fileTime )
 {
 	if ( IsX360() )
 	{

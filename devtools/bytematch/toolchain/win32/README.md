@@ -126,7 +126,7 @@ Not Valve's, and why:
 | `/FI msvc2013_compat.h` | maps `alignas`/`alignof`, which this tree uses, to MSVC 2013 spellings; no code |
 | `/FS`, per-target `/Fd` | parallel `cl` runs share a PDB; debug info only |
 | no `lib/public/ftol3.obj` | Valve's object isn't public (retail Rich headers show it: one MASM 12.00.21210 object) |
-| RAD Telemetry headers from hl2_src (`--hl2src`, default `~/p/sco/source-engine-2018-hl2_src`) | Telemetry is proprietary and not in this tree. Retail Windows modules carry its zones at every `VPROF`/`tmZone` site, so the build resolves `vprof_telemetry.h`'s `../../thirdparty/telemetry/include/telemetry.h` through `build-win32/retail-win32-telemetry`, a link to hl2_src's copy. Without hl2_src it defines Valve's `RAD_TELEMETRY_DISABLED` |
+| RAD Telemetry declarations in `telemetry/include/telemetry.h` | RAD's header is proprietary and not in this tree. Retail Windows modules carry Telemetry zones at every `VPROF`/`tmZone` site, so the build resolves `vprof_telemetry.h`'s `../../thirdparty/telemetry/include/telemetry.h` through `build-win32/retail-win32-telemetry`, a link to `telemetry/`. The declarations were inferred from the retail binaries: tier0 loads Telemetry 1.1 build 25, the context's function table has the 2.0 offsets, and `tmCoreMessage` (no thread id), `tmCorePlot*` (no timestamp) and `tmCoreSendCallStack` (no frame skip) have the older argument lists |
 | `nvtc.lib` from `nvtc_stub.cpp` | NVIDIA's S3TC encoder library (bitmap, vguimatsurface) isn't available; the stub encodes nothing |
 | `telemetry32.lib` from `telemetry_stub.c` instead of `telemetry32.link` | RAD's loader library isn't available; the stub's `tmStartup` etc. report failure, so tier0 never opens a context. Only tier0 links it |
 | `jpeglib` built here | retail links an older VS2010 SP1 libjpeg prebuilt |
@@ -149,12 +149,15 @@ system wine and `$WINEPREFIX`.
 - `fetch-msvc2013.py`, `setup-wine.py`, `msvc.py`: toolchain and runner
 - `vpc.py`, `make-manifest.py`: VPC evaluation and the module manifest
 - `msvc2013_compat.h`: force-included C++11 spellings
+- `telemetry/include/telemetry.h`: the Telemetry 1.1 API as retail calls it
 - `telemetry_stub.c`: stand-ins for RAD Telemetry's loader functions (tier0)
 - `nvtc_stub.cpp`: stand-ins for NVIDIA's S3TC encoder (bitmap)
 - `build-thirdparty.py`: stand-in Crypto++ and libpng archives
 - `win32-cc.py`: compile one file with its module's switches and diff it against retail
 - `winline.py FILE OURS:RETAIL,...`: give lines retail Windows' `__LINE__` numbers (telemetry
   zones) in MSVC retail builds only, without moving any other line on either platform
+- `gateline.py FILE LINE,...`: leave lines out of retail builds (`#ifndef BYTEMATCH_RETAIL`), or give MSVC retail
+  builds other text at a retail line number (`--retail-line N --retail-text TEXT`), without moving any other line
 - `report-modules.py`, `link-order.py`: match summary with macOS cross-check, link order check.
   Symbol-port maps for the 16 modules beyond the survey's eight are in
   /Volumes/Storage/sco/byte-match-survey/win32-maps (the survey's `symbols/` pipeline run with

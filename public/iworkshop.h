@@ -39,7 +39,7 @@ public:
 	virtual void			Unknown08() = 0;
 	virtual WorkshopItem_t	*GetItem( PublishedFileId_t nItemID ) = 0;
 	virtual void			Unknown10() = 0;
-	virtual void			Unknown11() = 0;
+	virtual bool			Unknown11( bool bArg ) = 0;
 	virtual void			Unknown12() = 0;
 	virtual void			Unknown13() = 0;
 	virtual void			Unknown14() = 0;

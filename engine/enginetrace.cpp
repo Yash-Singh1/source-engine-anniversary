@@ -1675,7 +1675,10 @@ void CEngineTrace::TraceRay( const Ray_t &ray, unsigned int fMask, ITraceFilter 
 	}
 #endif
 
+#ifndef BYTEMATCH_RETAIL
 	tmZone( TELEMETRY_LEVEL1, TMZF_NONE, "%s:%d", __FUNCTION__, __LINE__ );
+#endif
+#line 1679
 	VPROF_INCREMENT_COUNTER( "TraceRay", 1 );
 	m_traceStatCounters[TRACE_STAT_COUNTER_TRACERAY]++;
 //	VPROF_BUDGET( "CEngineTrace::TraceRay", "Ray/Hull Trace" );

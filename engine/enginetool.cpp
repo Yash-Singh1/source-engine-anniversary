@@ -828,7 +828,10 @@ void CEngineTool::InstallQuitHandler( void *pvUserData, FnQuitHandler func )
 // precache methods
 bool CEngineTool::PrecacheSound( const char *pName, bool bPreload )
 {
+#ifndef BYTEMATCH_RETAIL
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s(%s, %s)", __FUNCTION__, tmDynamicString( TELEMETRY_LEVEL0, pName ), bPreload ? "true" : "false" );
+#endif
+#line 832
 
 	if ( pName && TestSoundChar( pName, CHAR_SENTENCE ) )
 		return true;

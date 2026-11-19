@@ -500,7 +500,13 @@ int CFileSystem_Stdio::FS_feof( FILE *fp )
 //-----------------------------------------------------------------------------
 size_t CFileSystem_Stdio::FS_fread( void *dest, size_t destSize, size_t size, FILE *fp )
 {
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 479
+#else
+#line 502
+#endif
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__ );
+#line 504
 	if( ThreadInMainThread() )
 	{
 		tmPlotI32( TELEMETRY_LEVEL0, TMPT_MEMORY, 0, size, "FileBytesRead" );
@@ -522,7 +528,13 @@ size_t CFileSystem_Stdio::FS_fread( void *dest, size_t destSize, size_t size, FI
 //-----------------------------------------------------------------------------
 size_t CFileSystem_Stdio::FS_fwrite( const void *src, size_t size, FILE *fp )
 {
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 501
+#else
+#line 524
+#endif
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s %t", __FUNCTION__, tmSendCallStack( TELEMETRY_LEVEL0, 0 ) );
+#line 526
 	if( ThreadInMainThread() )
 	{
 		tmPlotI32( TELEMETRY_LEVEL0, TMPT_MEMORY, 0, size, "FileBytesWrite" );
@@ -1099,7 +1111,13 @@ int CStdioFile::FS_feof()
 //-----------------------------------------------------------------------------
 size_t CStdioFile::FS_fread( void *dest, size_t destSize, size_t size )
 {
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 911
+#else
+#line 1101
+#endif
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s %t", __FUNCTION__, tmSendCallStack( TELEMETRY_LEVEL0, 0 ) );
+#line 1103
 	if( ThreadInMainThread() )
 	{
 		tmPlotI32( TELEMETRY_LEVEL0, TMPT_MEMORY, 0, size, "FileBytesRead" );
@@ -1120,7 +1138,13 @@ size_t CStdioFile::FS_fread( void *dest, size_t destSize, size_t size )
 //-----------------------------------------------------------------------------
 size_t CStdioFile::FS_fwrite( const void *src, size_t size )
 {
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 932
+#else
+#line 1122
+#endif
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s %t", __FUNCTION__, tmSendCallStack( TELEMETRY_LEVEL0, 0 ) );
+#line 1124
 	if( ThreadInMainThread() )
 	{
 		tmPlotI32( TELEMETRY_LEVEL0, TMPT_MEMORY, 0, size, "FileBytesWrite" );
