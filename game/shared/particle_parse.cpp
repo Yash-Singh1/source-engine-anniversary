@@ -96,7 +96,7 @@ void ParseParticleEffects( bool bLoadSheets, bool bPrecache )
 #ifdef HL2_ANNIVERSARY_NOV2024
 	// Loose particle files from workshop addons
 	FileFindHandle_t hFind;
-	for ( const char *pszFile = g_pFullFileSystem->FindFirstEx( "particles/*.pcf", "WORKSHOP_ASSET_TRACKING", &hFind ); pszFile; pszFile = g_pFullFileSystem->FindNext( hFind ) )
+	for ( const char *pszFile = g_pFullFileSystem->FindFirstEx( "particles" CORRECT_PATH_SEPARATOR_S "*.pcf", "WORKSHOP_ASSET_TRACKING", &hFind ); pszFile; pszFile = g_pFullFileSystem->FindNext( hFind ) )
 	{
 		char szFile[1024];
 		V_sprintf_safe( szFile, "particles/%s", pszFile );
