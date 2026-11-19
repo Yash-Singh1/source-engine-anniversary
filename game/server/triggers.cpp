@@ -2517,7 +2517,10 @@ LINK_ENTITY_TO_CLASS( trigger_autosave, CTriggerSave );
 //-----------------------------------------------------------------------------
 void CTriggerSave::Spawn( void )
 {
+#ifndef BYTEMATCH_RETAIL
 	m_minHitPoints = 1;
+#endif
+#line 2521
 
 	if ( g_pGameRules->IsDeathmatch() )
 	{
@@ -2536,7 +2539,12 @@ void CTriggerSave::Spawn( void )
 void CTriggerSave::Touch( CBaseEntity *pOther )
 {
 	// Only save on clients
+#ifdef BYTEMATCH_RETAIL
+	if ( !pOther->IsPlayer() )
+#else
 	if ( !pOther->IsPlayer() || !pOther->IsAlive() )
+#endif
+#line 2540
 		return;
 
 	if ( m_fDangerousTimer != 0.0f )
@@ -2775,6 +2783,9 @@ class CTriggerCamera : public CBaseEntity
 public:
 	DECLARE_CLASS( CTriggerCamera, CBaseEntity );
 
+#if HL2_EPISODIC
+	CTriggerCamera() : m_bInterpolatePosition( false ), m_vStartPos( vec3_origin ), m_vEndPos( vec3_origin ), m_flInterpStartTime( 0.0f ) {}
+#endif
 	void Spawn( void );
 	bool KeyValue( const char *szKeyName, const char *szValue );
 	void Enable( void );

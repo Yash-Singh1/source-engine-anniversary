@@ -643,7 +643,13 @@ class CEnvShooter : public CGibShooter
 public:
 	DECLARE_CLASS( CEnvShooter, CGibShooter );
 
-	CEnvShooter() { m_flGibGravityScale = 1.0f; }
+	CEnvShooter()
+	{
+		m_flGibGravityScale = 1.0f;
+#if HL2_EPISODIC
+		m_flMassOverride = 0.0f;
+#endif
+	}
 	void		Precache( void );
 	bool		KeyValue( const char *szKeyName, const char *szValue );
 
