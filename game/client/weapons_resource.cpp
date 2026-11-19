@@ -216,30 +216,27 @@ void WeaponsResource::LoadWeaponSprites( WEAPON_FILE_INFO_HANDLE hWeaponFileInfo
 //-----------------------------------------------------------------------------
 // Purpose: Frees the hud elements LoadWeaponSprites created for a weapon
 //-----------------------------------------------------------------------------
+static void RemoveHudIcon( CHudTexture *&pIcon )
+{
+	gHUD.RemoveIcon( pIcon );
+	pIcon = NULL;
+}
+
 void WeaponsResource::UnloadWeaponSprites( WEAPON_FILE_INFO_HANDLE hWeaponFileInfo )
 {
 	FileWeaponInfo_t *pWeaponInfo = GetFileWeaponInfoFromHandle( hWeaponFileInfo );
 	if ( !pWeaponInfo || !pWeaponInfo->bLoadedHudElements )
 		return;
 
-	gHUD.RemoveIcon( pWeaponInfo->iconCrosshair );
-	pWeaponInfo->iconCrosshair = NULL;
-	gHUD.RemoveIcon( pWeaponInfo->iconAutoaim );
-	pWeaponInfo->iconAutoaim = NULL;
-	gHUD.RemoveIcon( pWeaponInfo->iconZoomedCrosshair );
-	pWeaponInfo->iconZoomedCrosshair = NULL;
-	gHUD.RemoveIcon( pWeaponInfo->iconZoomedAutoaim );
-	pWeaponInfo->iconZoomedAutoaim = NULL;
-	gHUD.RemoveIcon( pWeaponInfo->iconInactive );
-	pWeaponInfo->iconInactive = NULL;
-	gHUD.RemoveIcon( pWeaponInfo->iconActive );
-	pWeaponInfo->iconActive = NULL;
-	gHUD.RemoveIcon( pWeaponInfo->iconSmall );
-	pWeaponInfo->iconSmall = NULL;
-	gHUD.RemoveIcon( pWeaponInfo->iconAmmo );
-	pWeaponInfo->iconAmmo = NULL;
-	gHUD.RemoveIcon( pWeaponInfo->iconAmmo2 );
-	pWeaponInfo->iconAmmo2 = NULL;
+	RemoveHudIcon( pWeaponInfo->iconCrosshair );
+	RemoveHudIcon( pWeaponInfo->iconAutoaim );
+	RemoveHudIcon( pWeaponInfo->iconZoomedCrosshair );
+	RemoveHudIcon( pWeaponInfo->iconZoomedAutoaim );
+	RemoveHudIcon( pWeaponInfo->iconInactive );
+	RemoveHudIcon( pWeaponInfo->iconActive );
+	RemoveHudIcon( pWeaponInfo->iconSmall );
+	RemoveHudIcon( pWeaponInfo->iconAmmo );
+	RemoveHudIcon( pWeaponInfo->iconAmmo2 );
 
 	pWeaponInfo->bLoadedHudElements = false;
 }

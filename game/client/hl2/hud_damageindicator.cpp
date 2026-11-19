@@ -179,12 +179,11 @@ void CHudDamageIndicator::DrawDamageIndicator(int side)
 	int x1 = m_flDmgX;
 	int x2 = m_flDmgX + m_flDmgWide;
 
-	// keep the indicators inside the hud_aspect area
 	int hudX, hudY, hudWide, hudTall;
 	GetRatioedHudSize( hudX, hudY, hudWide, hudTall );
 	x1 += hudX;
 	x2 += hudX;
-
+#line 181
 	int y[4] = { (int)m_flDmgY, (int)(m_flDmgY + insetY), (int)(m_flDmgY + m_flDmgTall1 - insetY), (int)(m_flDmgY + m_flDmgTall1) };
 	int alpha[4] = { 0, 1, 1, 0 };
 
@@ -277,7 +276,6 @@ void CHudDamageIndicator::DrawDamageIndicator(int side)
 	meshBuilder.End();
 	pMesh->Draw();
 }
-#line 273
 
 //-----------------------------------------------------------------------------
 // Purpose: Draws full screen damage fade

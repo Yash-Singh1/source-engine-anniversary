@@ -77,8 +77,22 @@ bool C_PointCamera::IsFogEnabled()
 	return m_bFogEnable;
 }
 
+#ifdef HL2_ANNIVERSARY_NOV2024
+bool Fog_HDREnabled();
+#endif
+#line 74
 void C_PointCamera::GetFogColor( unsigned char &r, unsigned char &g, unsigned char &b )
 {
+#ifdef HL2_ANNIVERSARY_NOV2024
+	if ( Fog_HDREnabled() && ( m_FogColor_HDR.r || m_FogColor_HDR.g || m_FogColor_HDR.b ) )
+	{
+		r = m_FogColor_HDR.r;
+		g = m_FogColor_HDR.g;
+		b = m_FogColor_HDR.b;
+		return;
+	}
+#endif
+#line 76
 	r = m_FogColor.r;
 	g = m_FogColor.g;
 	b = m_FogColor.b;

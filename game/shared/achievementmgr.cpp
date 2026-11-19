@@ -72,7 +72,8 @@ const char *COM_GetModDirectory();
 #ifdef HL2_ANNIVERSARY_NOV2024
 static bool IsHL2Complete()
 {
-	return !V_stricmp( CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) ), "hl2_complete" );
+	const char *pGameDir = CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) );
+	return !V_stricmp( pGameDir, "hl2_complete" );
 }
 #endif
 #line 76
@@ -125,13 +126,13 @@ static void WriteAchievementGlobalState( KeyValues *pKV, bool bPersistToSteamClo
 		Q_snprintf( szFilename, sizeof( szFilename ), "GameState.txt" );
 	}
 
-	NOV2024_ONLY( bool bHL2Complete = IsHL2Complete(); )
+	NOV2024_ONLY( const char *pPathID = IsHL2Complete() ? "ROOT_MOD" : "MOD"; )
 
 	// Never call pKV->SaveToFile!!!!
 	// Save to a buffer instead.
 	CUtlBuffer buf( 0, 0, CUtlBuffer::TEXT_BUFFER );
 	pKV->RecursiveSaveToFile( buf, 0 );
-	NOV2024_ONLY( const char *pPathID = bHL2Complete ? "ROOT_MOD" : "MOD"; )
+
 	filesystem->WriteFile( szFilename, NOV2024_ONLY( pPathID ) OCT2024_ONLY( NULL ), buf );
 	pKV->deleteThis();
 
@@ -392,7 +393,7 @@ void CAchievementMgr::PostInit()
 		// applies to, or truly cross-game) or, if it does have a game filter, the filter matches current game.
 		// (e.g. EP 1/2/... achievements are in shared binary but are game specific, they have a game filter for runtime check.)
 		const char *pGameDirFilter = pAchievement->m_pGameDirFilter;
-		if ( !pGameDirFilter || NOV2024_ONLY( m_bIsHL2Complete || ) ( 0 == Q_strcmp( pGameDir, pGameDirFilter ) ) )
+		if ( NOV2024_ONLY( m_bIsHL2Complete || ) !pGameDirFilter || ( 0 == Q_strcmp( pGameDir, pGameDirFilter ) ) )
 		{
 			m_mapAchievement.Insert( pAchievement->GetAchievementID(), pAchievement );
 			if ( pAchievement->IsMetaAchievement() )
@@ -849,25 +850,25 @@ void CAchievementMgr::MigrateEpisodeData( uint32 nAppID, const char *pszModName 
 		}
 	}
 #else
+	const char *pPathID = NULL;
 	uint32 nHL2AppID = GetHL2AppSteamAppId( k_App_HL2 );
 
 	char szFilename[MAX_PATH];
-	const char *pPathID;
 
 	ConVarRef developer( "developer" );
 	if ( developer.IsValid() && developer.GetBool() )
 	{
-		V_snprintf( szFilename, sizeof( szFilename ), "%s\\GameState.txt", pszModName );
 		pPathID = "BASE_PATH";
+		V_snprintf( szFilename, sizeof( szFilename ), "%s\\GameState.txt", pszModName );
 	}
 	else
 	{
 		char szInstallDir[512];
-		pPathID = NULL;
+
 		if ( SteamApps()->GetAppInstallDir( nAppID, szInstallDir, sizeof( szInstallDir ) ) )
 		{
-			V_snprintf( szFilename, sizeof( szFilename ), "%s\\%s\\GameState.txt", szInstallDir, pszModName );
 			pPathID = "ABS";
+			V_snprintf( szFilename, sizeof( szFilename ), "%s\\%s\\GameState.txt", szInstallDir, pszModName );
 		}
 	}
 
@@ -890,7 +891,7 @@ void CAchievementMgr::MigrateEpisodeData( uint32 nAppID, const char *pszModName 
 			pAchievement->ApplySettings( pNode );
 
 			// Achievements earned in an episode still have to be awarded through Steam here
-			if ( nHL2AppID != nAppID && pAchievement->IsAchieved() )
+			if ( nAppID != nHL2AppID && pAchievement->IsAchieved() )
 			{
 				pAchievement->SetAchieved( false );
 				AwardAchievement( iAchievementID );

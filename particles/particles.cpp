@@ -1761,7 +1761,13 @@ void CParticleCollection::UpdatePrevControlPoints( float dt )
 
 void CParticleCollection::InitializeNewParticles( int nFirstParticle, int nParticleCount, uint32 nInittedMask )
 {
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 1696
+#else
+#line 1763
+#endif
 	VPROF_BUDGET( "CParticleCollection::InitializeNewParticles", VPROF_BUDGETGROUP_PARTICLE_SIMULATION );
+#line 1765
 
 #ifdef _DEBUG
 	m_bIsRunningInitializers = true;
@@ -1934,7 +1940,13 @@ void CParticleCollection::Simulate( float dt )
 void CParticleCollection::Simulate( float dt, bool updateBboxOnly )
 #endif
 {
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 1862
+#else
+#line 1936
+#endif
 	VPROF_BUDGET( "CParticleCollection::Simulate", VPROF_BUDGETGROUP_PARTICLE_SIMULATION );
+#line 1938
 	if ( dt < 0.0f )
 		return;
 
@@ -3794,7 +3806,13 @@ void CParticleSystemMgr::DrawRenderCache( bool bShadowDepth )
 	if ( nRenderCacheCount == 0 )
 		return;
 
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 3649
+#else
+#line 3796
+#endif
 	VPROF_BUDGET( "CParticleSystemMgr::DrawRenderCache", VPROF_BUDGETGROUP_PARTICLE_RENDERING );
+#line 3798
 
 	CMatRenderContextPtr pRenderContext( g_pMaterialSystem );
 	pRenderContext->MatrixMode( MATERIAL_MODEL );

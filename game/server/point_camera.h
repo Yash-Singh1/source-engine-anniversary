@@ -58,8 +58,8 @@ private:
 #ifdef HL2_ANNIVERSARY_NOV2024
 	CNetworkVar( bool, m_bUseHDCamera );
 #endif
-#line 56
 	CNetworkVar( bool, m_bUseScreenAspectRatio );
+#line 57
 
 	// Allows the mapmaker to control whether a camera is active or not
 	bool	m_bIsOn;
