@@ -537,7 +537,12 @@ void MIX_MixChannelsToPaintbuffer( CChannelList &list, int endtime, int flags, i
 		//  for the "soundsource" but we still need the lipsync to pause if the game is paused.  Therefore
 		//  I changed SND_IsMouth to look for any .wav on any channels which has sentence data
 		bool bIsMouth = SND_IsMouth(ch);
+#ifdef BYTEMATCH_RETAIL
+		bool bShouldPause = !ch->sfx->m_bIsUISound;
+#else
 		bool bShouldPause = IsX360() ? !ch->sfx->m_bIsUISound : bIsMouth; 
+#endif
+#line 541
 
 		// Tracker 14637:  Pausing the game pauses voice sounds, but not other sounds...
 		if ( bShouldPause && g_pSoundServices->IsGamePaused() )
