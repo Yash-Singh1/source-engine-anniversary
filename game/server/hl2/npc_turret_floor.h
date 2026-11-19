@@ -70,7 +70,7 @@ public:
 
 #ifdef HL2_EPISODIC
 	// We don't want to be NPCSOLID because we'll collide with NPC clips
-	virtual unsigned int PhysicsSolidMaskForEntity( void ) const { return MASK_SOLID; } 
+	virtual unsigned int PhysicsSolidMaskForEntity( void ) const { if ( IsHL2Episodic() ) return MASK_SOLID; return BaseClass::PhysicsSolidMaskForEntity(); } 
 #endif	// HL2_EPISODIC
 
 	// Player pickup
