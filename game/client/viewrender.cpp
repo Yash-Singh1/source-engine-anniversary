@@ -221,6 +221,17 @@ CON_COMMAND( r_cheapwaterend,  "" )
 	}
 }
 
+#ifdef HL2_ANNIVERSARY_NOV2024
+bool Fog_HDREnabled()
+{
+	if ( !g_pMaterialSystemHardwareConfig )
+		return false;
+
+	return g_pMaterialSystemHardwareConfig->GetHDRType() != HDR_TYPE_NONE;
+}
+#endif
+#line 223
+
 
 
 //-----------------------------------------------------------------------------
