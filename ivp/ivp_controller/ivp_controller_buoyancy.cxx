@@ -395,6 +395,12 @@ void IVP_Controller_Buoyancy::provide_new_input_solution_combination(Attacher_In
 void IVP_Controller_Buoyancy::do_simulation_controller(IVP_Event_Sim *es,IVP_U_Vector<IVP_Core> *) {
 
     IVP_Environment *environment = es->environment;
+#ifdef BYTEMATCH_RETAIL
+    IVP_Template_Buoyancy *temp_buoyancy = attacher_buoyancy->get_parameters_per_core( core);
+    if ( temp_buoyancy->medium_density == 0.0f ) {
+	return;	// nothing to float in
+    }
+#endif
     IVP_U_Float_Hesse surface_hesse_ws;
     IVP_U_Float_Point abs_speed_of_current_ws;
 
@@ -422,7 +428,9 @@ void IVP_Controller_Buoyancy::do_simulation_controller(IVP_Event_Sim *es,IVP_U_V
     IVP_U_Float_Point rel_speed_of_current_ws;
     rel_speed_of_current_ws.subtract(&resulting_speed_of_current_ws, &core->speed);
 
+#ifndef BYTEMATCH_RETAIL
     IVP_Template_Buoyancy *temp_buoyancy = attacher_buoyancy->get_parameters_per_core( core);
+#endif
     
     /*** calc buoyancy and dampening for every object in the core ***/
 
