@@ -22,4 +22,12 @@ public:
   void add_compact_surface( const IVP_Compact_Surface *surface);
 
   IVP_Compact_Ledge *compile();
+#ifdef BYTEMATCH_RETAIL
+  // like compile(), but with a given convex hull instead of building one
+  IVP_Compact_Ledge *compile_with_hull( IVP_Compact_Ledge *given_hull ){
+    hull = given_hull;
+    set_rekursive_convex_hull();
+    return hull;
+  }
+#endif
 };

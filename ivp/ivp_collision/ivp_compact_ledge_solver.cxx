@@ -7,6 +7,10 @@
 
 #include <ivp_physics.hxx>
 #include <ivu_float.hxx>
+#ifdef BYTEMATCH_RETAIL
+#include <float.h>
+#endif
+#line 10
 #include <ivu_hash.hxx>
 
 #include <ivp_compact_ledge.hxx>
@@ -283,8 +287,14 @@ void IVP_Compact_Ledge_Solver::calc_unscaled_s_val_K_space(const IVP_Compact_Led
     IVP_U_Point d1; d1.subtract( p1, p_object );
     IVP_DOUBLE a = -d.dot_product( &d0 );
     IVP_DOUBLE b = d.dot_product( &d1 );
+#ifdef BYTEMATCH_RETAIL
+    result->checks[0] = a + FLT_MIN;
+    result->checks[1] = b + FLT_MIN;
+#else
     result->checks[0] = a;
     result->checks[1] = b;
+#endif
+#line 288
 }
 
 

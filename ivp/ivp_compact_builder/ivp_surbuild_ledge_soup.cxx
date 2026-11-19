@@ -209,7 +209,16 @@ void IVP_SurfaceBuilder_Ledge_Soup::build_root_convex_hull(){
     // return something_1;
 
 
+#ifdef BYTEMATCH_RETAIL
+    IVP_Compact_Ledge *hull;
+    if ( this->parameters->force_convex_hull ) {
+	hull = cr.compile_with_hull( this->parameters->force_convex_hull );
+    } else {
+	hull = cr.compile();
+    }
+#else
     IVP_Compact_Ledge *hull = cr.compile(); 
+#endif
     c_ledge_vec.add(hull);
     node->compact_ledge = hull;
     rec_spheres.add(node);
