@@ -34,7 +34,11 @@ IVP_Active_Value_Hash::~IVP_Active_Value_Hash()
 int IVP_Active_Value_Hash::object_to_index(IVP_U_Active_Value *av)
 {
     const char *name = av->get_name();
+#ifdef BYTEMATCH_RETAIL
+    return hash_index( name, p_strlen( name) );
+#else
     return hash_index( name, strlen( name) );
+#endif
 }
 
 IVP_BOOL IVP_Active_Value_Hash::compare(void *elem0, void *elem1) const

@@ -1745,11 +1745,19 @@ void qh_option (const char *option, int *i, realT *r) {
   int len, maxlen;
 
   sprintf (buf, "  %s", option);
+#ifdef BYTEMATCH_RETAIL
+  if (i)
+    sprintf (buf+p_strlen(buf), " %d", *i);
+  if (r)
+    sprintf (buf+p_strlen(buf), " %2.2g", *r);
+  len= p_strlen(buf);
+#else
   if (i)
     sprintf (buf+strlen(buf), " %d", *i);
   if (r)
     sprintf (buf+strlen(buf), " %2.2g", *r);
   len= strlen(buf);
+#endif
   qh qhull_optionlen += len;
   maxlen= sizeof (qh qhull_options) - len -1;
   maximize_(maxlen, 0);

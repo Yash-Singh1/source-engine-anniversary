@@ -105,6 +105,10 @@ inline    static IVP_DOUBLE sqrt(IVP_DOUBLE x)
   // 2 -> 1e-14
   // 3 -> 1e-16
     static double isqrt(double square, int resolution_steps){
+#ifdef BYTEMATCH_RETAIL
+	if (resolution_steps < 3) return 1.0f / ::sqrtf((IVP_FLOAT)square);
+	return 1.0 / ::sqrt(square);
+#else
 	p_double_ieee *ie = (p_double_ieee *)&square;
 	IVP_ASSERT(IVP_Inline_Math::fabsd(square) > 0.0f);
 	p_double_ieee h; h.val = 1.0f;
@@ -120,6 +124,7 @@ inline    static IVP_DOUBLE sqrt(IVP_DOUBLE x)
 
 	IVP_ASSERT( IVP_Inline_Math::fabsd( 1.0f - inv_sqrt * inv_sqrt * square) < 0.001f );
 	return inv_sqrt;
+#endif
     }
     static IVP_DOUBLE sqrt(IVP_DOUBLE x) {
 	return ::sqrt(x);
