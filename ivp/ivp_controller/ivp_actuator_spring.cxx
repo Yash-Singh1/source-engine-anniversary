@@ -230,11 +230,19 @@ void IVP_Actuator_Spring::do_simulation_controller(IVP_Event_Sim *es,IVP_U_Vecto
 			force_vector_ws.add_multiple(&relative_world_speed,manhattan_factor); //manhattan damping
 		}
 
+#ifdef BYTEMATCH_RETAIL
+		if (!pc1->pinned && pc1->movement_state<IVP_MT_NOT_SIM)
+#else
 		if (pc1->movement_state<IVP_MT_NOT_SIM && !pc1->pinned)
+#endif
 		{
 			pc1->async_push_core_ws(&pos1_ws,&force_vector_ws);
 		}
+#ifdef BYTEMATCH_RETAIL
+		if (!pc0->pinned && pc0->movement_state<IVP_MT_NOT_SIM)
+#else
 		if (pc0->movement_state<IVP_MT_NOT_SIM && !pc0->pinned)
+#endif
 		{ 
 			force_vector_ws.mult(-1);
 			pc0->async_push_core_ws(&pos0_ws,&force_vector_ws);

@@ -924,6 +924,25 @@ void IVP_Real_Object::init_object_core(IVP_Environment *i_environment, const IVP
 
 void IVP_Real_Object::unlink_contact_points_for_object( IVP_Real_Object *other_object ){
     // then delete static friction datas @@@OS, loop only once + flag 
+#ifdef BYTEMATCH_RETAIL
+    IVP_Synapse_Friction *fr_synapse = get_first_friction_synapse();
+    while ( fr_synapse ) {
+        IVP_Contact_Point *fr_mindist=fr_synapse->get_contact_point();
+        fr_synapse = fr_synapse->get_next();
+
+        IVP_Friction_System *fr_sys=fr_mindist->l_friction_system;
+
+        if( fr_mindist->get_synapse(0)->l_obj == other_object ||
+            fr_mindist->get_synapse(1)->l_obj == other_object )
+            fr_sys->delete_friction_distance(fr_mindist);
+
+        if( !fr_sys->friction_dist_number )
+        {
+            P_DELETE(fr_sys);
+            return;
+        }
+    }
+#else
     IVP_Synapse_Friction *fr_synapse = get_first_friction_synapse();
     if( !fr_synapse ) return;
 
@@ -943,6 +962,7 @@ void IVP_Real_Object::unlink_contact_points_for_object( IVP_Real_Object *other_o
             return;
         }
     } while ( fr_synapse != NULL );
+#endif
 }
 
 

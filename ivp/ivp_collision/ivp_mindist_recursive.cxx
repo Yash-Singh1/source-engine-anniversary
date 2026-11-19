@@ -155,8 +155,13 @@ void IVP_Mindist_Recursive::exact_mindist_went_invalid(IVP_Mindist_Manager *mm){
 	const IVP_Compact_Ledgetree_Node *n0 = l0->get_ledgetree_node();
 	const IVP_Compact_Ledgetree_Node *n1 = l1->get_ledgetree_node();
 
+#ifdef BYTEMATCH_RETAIL
+	IVP_FLOAT rad0 = n0 ? n0->radius : P_FLOAT_MAX;
+	IVP_FLOAT rad1 = n1 ? n1->radius : P_FLOAT_MAX;
+#else
 	IVP_DOUBLE rad0 = n0 ? n0->radius : P_FLOAT_MAX;
 	IVP_DOUBLE rad1 = n1 ? n1->radius : P_FLOAT_MAX;
+#endif
 
 	if ( rad0 > rad1 ){
 	    recursive_status = IVP_MR_FIRST_SYNAPSE_RECURSIVE;
