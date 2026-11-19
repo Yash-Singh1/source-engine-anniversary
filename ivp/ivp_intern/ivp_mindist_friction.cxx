@@ -245,12 +245,18 @@ void IVP_Contact_Point::p_calc_friction_ss_KK(const IVP_Compact_Edge *K, const I
     IVP_DOUBLE a,b,x;
     a = K_area.dot_product( &Lp );
     b = K_area.dot_product( &Lp_next );
+#ifdef BYTEMATCH_RETAIL
+    if ( IVP_Inline_Math::fabsd(a-b) < P_DOUBLE_EPS ) goto edges_parallel;
+#endif
     IVP_DOUBLE inv_a_b = 1.0f / (a-b);
     x = K_area.dot_product( &Kp );
     sl = (a-x) * inv_a_b;
 
     a = L_area.dot_product( &Kp );
     b = L_area.dot_product( &Kp_next );
+#ifdef BYTEMATCH_RETAIL
+    if ( IVP_Inline_Math::fabsd(a-b) < P_DOUBLE_EPS ) goto edges_parallel;
+#endif
     inv_a_b = 1.0f / (a-b);
     x = L_area.dot_product( &Lp );
     sk = (a-x) * inv_a_b;
@@ -297,6 +303,9 @@ void IVP_Contact_Point::p_calc_friction_ss_KK(const IVP_Compact_Edge *K, const I
 #endif  
 
   } else {
+#ifdef BYTEMATCH_RETAIL
+edges_parallel:
+#endif
       info->friction_is_broken = IVP_TRUE;
       diff_contact_vec->set_to_zero();
       last_gap_len = ivp_mindist_settings.keeper_dist;
