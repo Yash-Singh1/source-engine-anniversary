@@ -385,7 +385,12 @@ void Templates_RemoveAll(void)
 		free(pTemplate->pszMapData);
 		if ( pTemplate->pszFixedMapData )
 		{
+#ifdef BYTEMATCH_RETAIL
+			free(pTemplate->pszFixedMapData);
+#else
 			delete[] pTemplate->pszFixedMapData;
+#endif
+#line 389
 		}
 
 		free(pTemplate);

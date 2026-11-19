@@ -49,4 +49,10 @@ C_FogController::C_FogController()
 	// Make sure that old maps without fog fields don't get wacked out fog values.
 	m_fog.enable = false;
 	m_fog.maxdensity = 1.0f;
+#ifdef HL2_ANNIVERSARY_NOV2024
+	color32 clrPrimaryHDR = { 0, 0, 0, 0 };
+	m_fog.colorPrimaryHDR = clrPrimaryHDR;
+	color32 clrSecondaryHDR = { 0, 0, 0, 0 };
+	m_fog.colorSecondaryHDR = clrSecondaryHDR;
+#endif
 }

@@ -91,7 +91,12 @@ struct FS_LocalToGlobal_t
 
 	const flexsettinghdr_t	*m_Key;
 	int						m_nCount;
+#ifdef BYTEMATCH_RETAIL
+	int						*m_Mapping;
+#else
 	int						*m_Mapping = NULL;
+#endif
+#line 95
 };
 
 bool FlexSettingLessFunc( const FS_LocalToGlobal_t& lhs, const FS_LocalToGlobal_t& rhs );
