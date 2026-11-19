@@ -48,6 +48,10 @@ void IVP_Real_Object::change_nocoll_group_ident(const char *new_string ) {
 void IVP_Real_Object::set_pinned(IVP_BOOL is_pinned)
 {
     IVP_Core* core = this->get_core();
+#ifdef BYTEMATCH_RETAIL
+    if ( core->physical_unmoveable ) return;
+#endif
+#line 51
 
     /**
      * Set the core pinned flag and zero the velocities
