@@ -2204,20 +2204,6 @@ void Menu::SetItemEnabled(int itemID, bool state)
 	m_MenuItems[itemID]->SetEnabled(state);
 }
 
-#if !defined( VGUI_CONTROLS_OCT2024 )
-//-----------------------------------------------------------------------------
-// Purpose: Shows the item's text in upper case
-//-----------------------------------------------------------------------------
-void Menu::SetItemUppercase( int itemID, bool state )
-{
-	if ( !m_MenuItems.IsValidIndex( itemID ) )
-		return;
-
-	m_MenuItems[itemID]->SetAllCaps( state );
-}
-#endif
-#line 2217
-
 //-----------------------------------------------------------------------------
 // Purpose: shows/hides choices in the list
 //-----------------------------------------------------------------------------
@@ -2232,6 +2218,20 @@ void Menu::SetItemVisible(const char *itemName, bool state)
 		}
 	}
 }
+
+#if !defined( VGUI_CONTROLS_OCT2024 )
+//-----------------------------------------------------------------------------
+// Purpose: Shows the item's text in upper case
+//-----------------------------------------------------------------------------
+void Menu::SetItemUppercase( int itemID, bool state )
+{
+	if ( !m_MenuItems.IsValidIndex( itemID ) )
+		return;
+
+	m_MenuItems[itemID]->SetAllCaps( state );
+}
+#endif
+#line 2232
 
 //-----------------------------------------------------------------------------
 // Purpose: shows/hides choices in the list
@@ -2774,6 +2774,7 @@ void Menu::Validate( CValidator &validator, char *pchName )
 #endif // DBGFLAG_VALIDATE
 
 
+#ifndef BYTEMATCH_RETAIL
 MenuBuilder::MenuBuilder( Menu *pMenu, Panel *pActionTarget )
 	: m_pMenu( pMenu )
 	, m_pActionTarget( pActionTarget )
@@ -2808,3 +2809,4 @@ void MenuBuilder::AddSepratorIfNeeded( const char *pszCategoryName )
 
 	m_pszLastCategory = pszCategoryName;
 }
+#endif

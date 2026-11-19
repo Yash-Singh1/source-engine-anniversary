@@ -895,7 +895,10 @@ public:
 	virtual bool SupportsNormalMapCompression() const { return false; }
 	virtual bool SupportsBorderColor() const { return false; }
 	virtual bool SupportsFetch4() const { return false; }
+#ifndef BYTEMATCH_RETAIL
 	virtual bool CanStretchRectFromTextures( void ) const { return false; }
+#endif
+#line 899
 	virtual void EnableBuffer2FramesAhead( bool bEnable ) {}
 
 	virtual void SetPSNearAndFarZ( int pshReg ) { }

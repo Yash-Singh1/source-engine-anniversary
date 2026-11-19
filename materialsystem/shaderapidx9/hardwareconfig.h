@@ -189,7 +189,10 @@ public:
 	virtual bool SupportsNormalMapCompression() const;
 	virtual bool SupportsBorderColor() const;
 	virtual bool SupportsFetch4() const;
+#ifndef BYTEMATCH_RETAIL
 	virtual bool CanStretchRectFromTextures() const;
+#endif
+#line 193
 	virtual bool SupportsVertexAndPixelShaders() const;
 	virtual bool SupportsPixelShaders_1_4() const;
 	virtual bool SupportsPixelShaders_2_0() const;

@@ -71,12 +71,21 @@ RETAIL_KEEP = {
 # object lands where the first loaded copy is. module -> [(file, the retail-listed
 # file it is linked before)], in Xcode's link order (tree-relative paths).
 RETAIL_DEAD = {
+	'bin/bsppack': [('filesystem/linux_support.cpp', 'public/filesystem_init.cpp')],
 	'bin/chromehtml': [('common/pngloader.cpp', 'public/html/htmlprotobuf.cpp')],
 	'bin/vgui2': [('public/filesystem_helpers.cpp', 'public/filesystem_init.cpp'),
 		('vgui2/src/fileimage.cpp', 'vgui2/src/ImageBorder.cpp'),
 		('vgui2/src/MemoryBitmap.cpp', 'vgui2/src/ScalableImageBorder.cpp'),
 		('vgui2/src/MessageListener.cpp', 'vgui2/src/ScalableImageBorder.cpp')],
+	'bin/vguimatsurface': [('vgui2/src/vgui_key_translation.cpp', 'vguimatsurface/Clip2D.cpp')],
 	'hl2mp/server': [('common/language.cpp', 'game/server/serverbenchmark_base.cpp')],
+}
+
+# Static libraries retail links without debug info (period third-party archives), so
+# the debug map doesn't place them; their literals and code show where. module ->
+# [(library, the retail-listed archive it is linked before)].
+RETAIL_STLIB_BEFORE = {
+	'bin/replay': [('png', 'vtf')],
 }
 
 def options(opt):
@@ -270,6 +279,9 @@ def retail_stlib_order(self):
 				order.append(os.path.basename(str(tg.target)))
 			except Exception:
 				pass
+	for lib, before in RETAIL_STLIB_BEFORE.get(key, []):
+		if before in order and lib not in order:
+			order.insert(order.index(before), lib)
 	env = self.link_task.env
 	libs = list(env.STLIB)
 	rank = lambda l: order.index(l) if l in order else len(order)
