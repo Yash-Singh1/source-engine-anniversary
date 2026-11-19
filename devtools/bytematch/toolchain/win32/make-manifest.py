@@ -111,7 +111,7 @@ FORK_SOURCES = {"engine": ["engine/masterserver.cpp"]}
 # generator order with the settings of the file before them.
 RETAIL_SOURCES = {"GameUI": ["gameui/OptionsSubGamepad.cpp"],
                   # retail replay.dll and engine.dll have their strings too
-                  "replay": ["replay/sv_ftp.cpp"], "engine": ["engine/workshop.cpp"]}
+                  "replay": ["replay/sv_ftp.cpp"], "engine": ["engine/workshop.cpp", "engine/mm_events.cpp"]}
 
 # Libraries retail links beyond the 2018 VPCs: retail macOS stdshader_dx9 has
 # libtier2.a(tier2.o), which defines the g_pMaterialSystem CShaderDLL::Connect sets.
