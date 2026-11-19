@@ -115,7 +115,7 @@ def main():
                     help="game build output holding server.dylib and client.dylib (repeatable)")
     ap.add_argument("--diff-lines", type=int, help="passed to bytematch report (per-module output only)")
     ap.add_argument("--data-check", action="store_true",
-                    help="passed to bytematch report: data references of matched functions must match too")
+                    help="passed to bytematch report: masked data references must resolve to the same data")
     ap.add_argument("-j", "--jobs", type=int, default=1, help="modules compared in parallel")
     a = ap.parse_args()
     if not os.path.exists(a.bytematch):
