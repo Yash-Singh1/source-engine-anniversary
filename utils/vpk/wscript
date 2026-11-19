@@ -20,6 +20,11 @@ def build(bld):
 		'../../common',
 	]
 
+	# Retail's packtest (asserts on) inlines the Source SDK 2013 versions of these
+	# tier1 containers: their Assert line numbers and SetSize/copy code.
+	if bld.env.RETAIL_OSX32:
+		includes = ['sdk2013', 'sdk2013/tier1'] + includes
+
 	bld(
 		source   = ['packtest.cpp'],
 		target   = PROJECT_NAME,

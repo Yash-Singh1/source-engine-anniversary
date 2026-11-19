@@ -1,0 +1,10 @@
+--- a/cryptlib.cpp
++++ b/cryptlib.cpp
+@@ -34,7 +34,6 @@
+ class NullNameValuePairs : public NameValuePairs
+ {
+ public:
+-    NullNameValuePairs() {}
+ 	bool GetVoidValue(const char *name, const std::type_info &valueType, void *pValue) const {return false;}
+ };
+ 
