@@ -1955,8 +1955,25 @@ bool RestorePhysicsObject( const physrestoreparams_t &params, CPhysicsObject **p
 	vphysics_save_cphysicsobject_t objectTemplate;
 	memset( &objectTemplate, 0, sizeof(objectTemplate) );
 	params.pRestore->ReadAll( &objectTemplate );
+#ifdef BYTEMATCH_RETAIL
+	// a non-finite position is moved to the world's edge and put to sleep; non-finite angles are cleared
+	for ( int i = 0; i < 3; i++ )
+	{
+		if ( !IsFinite( objectTemplate.origin[i] ) )
+		{
+			objectTemplate.origin[i] = ( FloatBits( objectTemplate.origin[i] ) & 0x80000000 ) ? -16384.0f : 16384.0f;
+			objectTemplate.isAsleep = true;
+		}
+		if ( !IsFinite( objectTemplate.angles[i] ) )
+		{
+			objectTemplate.angles[i] = 0;
+		}
+	}
+#else
 	Assert(objectTemplate.origin.IsValid());
 	Assert(objectTemplate.angles.IsValid());
+#endif
+#line 1960
 	objectTemplate.pCollide = params.pCollisionModel;
 	objectTemplate.pName = params.pName;
 	*ppObject = new CPhysicsObject();

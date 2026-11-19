@@ -4,25 +4,25 @@ Retail: depot 223 `bin/vphysics.dylib`, compared per debug-map object with
 `bytematch --data-check` (clang-600.0.57 `--retail-osx32` build). The ivp code
 lives in the `ivp` submodule; everything fork-only stays the native default and
 the retail forms are under `BYTEMATCH_RETAIL`. Lane reports:
-/Volumes/Storage/sco/byte-match-survey/lane-mod-ivp.md (round 1) and
-/Volumes/Storage/sco/byte-match-survey/lane-ivp2.md (round 2). Scratch tools:
-/Volumes/Storage/sco/byte-match-survey/lane-ivp2-scratch/.
+/Volumes/Storage/sco/byte-match-survey/lane-mod-ivp.md (round 1),
+/Volumes/Storage/sco/byte-match-survey/lane-ivp2.md (round 2) and
+/Volumes/Storage/sco/byte-match-survey/lane-ivp3.md (round 3). Scratch tools:
+/Volumes/Storage/sco/byte-match-survey/lane-ivp3-scratch/.
 
-Totals with `--data-check` (matched / 2963 in-scope retail functions): round 2
-started at 2729 (79.36% of bytes) and ends at 2855 (86.13%). Another 27
-functions differ only in `__FILE__` strings (Valve's absolute build path), which
-the identity flow rewrites. Status column, relative to the round-2 start:
-identical = matched before and after; edited = matched only after round 2's
-source changes; new = absent before, now present and matched; differs/missing =
-still not matched (the note is the matcher's first reason).
+Totals with `--data-check` (matched / 2963 in-scope retail functions): round 3
+started at 2884 (88.15% of bytes) and ends at 2943 (95.53%). Status column,
+relative to the round-3 start: identical = matched before and after; edited =
+matched only after round 3's source changes; new = absent before, now present
+and matched; differs/missing = still not matched (the note is the matcher's
+first reason).
 
-Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited': 113, 'new': 13}.
+Counts in this table: {'differs': 20, 'identical': 2884, 'edited': 56, 'new': 3}.
 
 | object | function | status | note |
 |---|---|---|---|
 | array | `hk_Array_Base::grow_mem(int)` | identical |  |
 | ball_socket_constraint | `hk_Ball_Socket_Constraint::get_constraint_type()` | identical |  |
-| ball_socket_constraint | `hk_Ball_Socket_Constraint::setup_and_step_constraint(hk_PSI_Info&, void*, float, float)` | edited |  |
+| ball_socket_constraint | `hk_Ball_Socket_Constraint::setup_and_step_constraint(hk_PSI_Info&, void*, float, float)` | identical |  |
 | ball_socket_constraint | `hk_Ball_Socket_Constraint::hk_Ball_Socket_Constraint(hk_Environment*, hk_Ball_Socket_BP const*, hk_Rigid_Body*, hk_Rigid_Body*)` | identical |  |
 | ball_socket_constraint | `hk_Ball_Socket_Constraint::hk_Ball_Socket_Constraint(hk_Local_Constraint_System*, hk_Ball_Socket_BP const*, hk_Rigid_Body*, hk_Rigid_Body*)` | identical |  |
 | ball_socket_constraint | `hk_Ball_Socket_Constraint::~hk_Ball_Socket_Constraint()` | identical |  |
@@ -32,9 +32,9 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ball_socket_constraint | `hk_Ball_Socket_Constraint::get_constraint_dof()` | identical |  |
 | ball_socket_constraint | `hk_Ball_Socket_Constraint::write_to_blueprint(hk_Ball_Socket_BP*)` | identical |  |
 | ball_socket_constraint | `hk_Ball_Socket_Constraint::get_vmq_storage_size()` | identical |  |
-| breakable_constraint | `hk_Breakable_Constraint::step_constraint(hk_PSI_Info&, void*, float, float)` | differs | size retail 1227 vs ours 798 |
-| breakable_constraint | `hk_Breakable_Constraint::setup_and_step_constraint(hk_PSI_Info&, void*, float, float)` | differs | size retail 1237 vs ours 799 |
-| breakable_constraint | `BreakableConstraintHelper::BreakableConstraintHelper(hk_Rigid_Body*, float)` | missing |  |
+| breakable_constraint | `BreakableConstraintHelper::BreakableConstraintHelper(hk_Rigid_Body*, float)` | differs | size retail 305 vs ours 325 |
+| breakable_constraint | `hk_Breakable_Constraint::step_constraint(hk_PSI_Info&, void*, float, float)` | edited |  |
+| breakable_constraint | `hk_Breakable_Constraint::setup_and_step_constraint(hk_PSI_Info&, void*, float, float)` | edited |  |
 | breakable_constraint | `hk_Breakable_Constraint::hk_Breakable_Constraint(hk_Local_Constraint_System*, hk_Breakable_Constraint_BP const*)` | identical |  |
 | breakable_constraint | `hk_Breakable_Constraint::~hk_Breakable_Constraint()` | identical |  |
 | breakable_constraint | `hk_Breakable_Constraint::~hk_Breakable_Constraint()` | identical |  |
@@ -43,7 +43,7 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | breakable_constraint | `hk_Breakable_Constraint::write_to_blueprint(hk_Breakable_Constraint_BP*)` | identical |  |
 | breakable_constraint | `hk_Breakable_Constraint::get_constraint_type()` | identical |  |
 | breakable_constraint | `hk_Breakable_Constraint::get_vmq_storage_size()` | identical |  |
-| byteswap | `CByteswap::SwapFieldToTargetEndian(void*, void*, typedescription_t*)` | differs | size retail 1024 vs ours 848 |
+| byteswap | `CByteswap::SwapFieldToTargetEndian(void*, void*, typedescription_t*)` | identical |  |
 | byteswap | `CByteswap::SwapFieldsToTargetEndian(void*, void*, datamap_t*)` | identical |  |
 | characterset | `CharacterSetBuild(characterset_t*, char const*)` | identical |  |
 | color_conversion | `BuildGammaTable(float, float, float, int)` | identical |  |
@@ -99,16 +99,13 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | convert | `ConvertMatrixToIVP(matrix3x4_t const&, IVP_U_Matrix&)` | identical |  |
 | convert | `ConvertRotationToHL(IVP_U_Quat const&, QAngle&)` | identical |  |
 | convert | `ConvertRotationToHL(IVP_U_Matrix3 const&, QAngle&)` | identical |  |
-| convert | `TransformIVPToLocal(IVP_U_Point const&, IVP_U_Point&, IVP_Real_Object*, bool)` | edited |  |
-| convert | `TransformLocalToIVP(IVP_U_Float_Point const&, IVP_U_Point&, IVP_Real_Object*, bool)` | edited |  |
+| convert | `TransformIVPToLocal(IVP_U_Point const&, IVP_U_Point&, IVP_Real_Object*, bool)` | identical |  |
+| convert | `TransformLocalToIVP(IVP_U_Float_Point const&, IVP_U_Point&, IVP_Real_Object*, bool)` | identical |  |
 | convert | `ConvertRotationToIVP(QAngle const&, IVP_U_Quat&)` | identical |  |
 | convert | `ConvertRotationToIVP(QAngle const&, IVP_U_Matrix3&)` | identical |  |
 | convert | `ConvertCoordinateAxisToIVP(int)` | identical |  |
 | convert | `TransformLocalToIVP(IVP_U_Float_Point const&, IVP_U_Float_Point&, IVP_Real_Object*, bool)` | identical |  |
-| datamanager | `CUtlMemory<UtlLinkedListElem_t<CUtlMultiList<CDataManagerBase::resource_lru_element_t, unsigned short>::List_t, unsigned short>, unsigned short>::Grow` | identical |  |
-| datamanager | `CUtlMemory<CUtlMultiList<CDataManagerBase::resource_lru_element_t, unsigned short>::ListElem_t, int>::Grow(int)` | identical |  |
 | datamanager | `CUtlMultiList<CDataManagerBase::resource_lru_element_t, unsigned short>::Alloc()` | identical |  |
-| datamanager | `CUtlMultiList<CDataManagerBase::resource_lru_element_t, unsigned short>::~CUtlMultiList()` | identical |  |
 | datamanager | `CUtlLinkedList<CUtlMultiList<CDataManagerBase::resource_lru_element_t, unsigned short>::List_t, unsigned short, false, unsigned short, CUtlMemory<UtlL` | identical |  |
 | datamanager | `CDataManagerBase::CreateHandle(bool)` | identical |  |
 | datamanager | `CDataManagerBase::LockResource(memhandle_t__*)` | identical |  |
@@ -121,7 +118,10 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | datamanager | `CDataManagerBase::~CDataManagerBase()` | identical |  |
 | datamanager | `CDataManagerBase::~CDataManagerBase()` | identical |  |
 | datamanager | `CDataManagerBase::~CDataManagerBase()` | identical |  |
+| datamanager | `CUtlMemory<UtlLinkedListElem_t<CUtlMultiList<CDataManagerBase::resource_lru_element_t, unsigned short>::List_t, unsigned short>, unsigned short>::Grow` | identical |  |
+| datamanager | `CUtlMemory<CUtlMultiList<CDataManagerBase::resource_lru_element_t, unsigned short>::ListElem_t, int>::Grow(int)` | identical |  |
 | datamanager | `CUtlMultiList<CDataManagerBase::resource_lru_element_t, unsigned short>::LinkBefore(unsigned short, unsigned short, unsigned short)` | identical |  |
+| datamanager | `CUtlMultiList<CDataManagerBase::resource_lru_element_t, unsigned short>::~CUtlMultiList()` | identical |  |
 | datamanager | `CUtlLinkedList<CUtlMultiList<CDataManagerBase::resource_lru_element_t, unsigned short>::List_t, unsigned short, false, unsigned short, CUtlMemory<UtlL` | identical |  |
 | datamanager | `CDataManagerBase::EnsureCapacity(unsigned int)` | identical |  |
 | datamanager | `CDataManagerBase::DestroyResource(memhandle_t__*)` | identical |  |
@@ -147,15 +147,15 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | fixed_constraint | `hk_Fixed_Constraint::~hk_Fixed_Constraint()` | identical |  |
 | hinge_bp_builder | `hk_Hinge_BP_Builder::set_axis_ws(hk_Rigid_Body*, hk_Rigid_Body*, hk_Vector3 const&)` | identical |  |
 | hinge_bp_builder | `hk_Hinge_BP_Builder::set_axis_perp_os(int, hk_Vector3 const&)` | identical |  |
-| hinge_bp_builder | `hk_Hinge_BP_Builder::set_angular_motor(float, float)` | edited |  |
-| hinge_bp_builder | `hk_Hinge_BP_Builder::set_angular_limits(float, float)` | edited |  |
+| hinge_bp_builder | `hk_Hinge_BP_Builder::set_angular_motor(float, float)` | identical |  |
+| hinge_bp_builder | `hk_Hinge_BP_Builder::set_angular_limits(float, float)` | identical |  |
 | hinge_bp_builder | `hk_Hinge_BP_Builder::set_position_os(int, hk_Vector3 const&)` | identical |  |
 | hinge_bp_builder | `hk_Hinge_BP_Builder::set_tau(float)` | identical |  |
 | hinge_constraint | `hk_Hinge_Constraint::step_constraint(hk_PSI_Info&, void*, float, float)` | identical |  |
 | hinge_constraint | `hk_Hinge_Constraint::get_constraint_type()` | identical |  |
-| hinge_constraint | `hk_Hinge_Constraint::init_hinge_constraint(hk_Hinge_BP const*)` | edited |  |
+| hinge_constraint | `hk_Hinge_Constraint::init_hinge_constraint(hk_Hinge_BP const*)` | identical |  |
 | hinge_constraint | `hk_Hinge_Constraint::setup_and_step_constraint(hk_PSI_Info&, void*, float, float)` | identical |  |
-| hinge_constraint | `hk_Hinge_Constraint::set_motor(float, float)` | edited |  |
+| hinge_constraint | `hk_Hinge_Constraint::set_motor(float, float)` | identical |  |
 | hinge_constraint | `hk_Hinge_Constraint::hk_Hinge_Constraint(hk_Environment*, hk_Hinge_BP const*, hk_Rigid_Body*, hk_Rigid_Body*)` | identical |  |
 | hinge_constraint | `hk_Hinge_Constraint::hk_Hinge_Constraint(hk_Local_Constraint_System*, hk_Hinge_BP const*, hk_Rigid_Body*, hk_Rigid_Body*)` | identical |  |
 | hinge_constraint | `hk_Hinge_Constraint::~hk_Hinge_Constraint()` | identical |  |
@@ -172,7 +172,6 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_3d_solver | `IVP_3D_Solver::calc_nullstelle(IVP_Time, IVP_Time, double, double, double, IVP_Real_Object*, IVP_Real_Object*)` | identical |  |
 | ivp_3d_solver | `IVP_3D_Solver::find_first_t_for_value_coll(double, double, IVP_Time, IVP_Time, IVP_U_Matrix_Cache*, IVP_U_Matrix_Cache*, double*, IVP_Time*)` | identical |  |
 | ivp_3d_solver | `IVP_3D_Solver::find_first_t_for_value_max_dev(double, IVP_Time, IVP_Time, int, IVP_U_Matrix_Cache*, IVP_U_Matrix_Cache*, double*, IVP_Time*)` | identical |  |
-| ivp_actuator | `IVP_Actuator_Torque::IVP_Actuator_Torque(IVP_Environment*, IVP_Template_Torque*)` | differs | data ref at +0x71 (string): retail "/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/iv...", ours "../ivp/ivp_c |
 | ivp_actuator | `IVP_Anchor::init_anchor(IVP_Actuator*, IVP_Template_Anchor*)` | identical |  |
 | ivp_actuator | `IVP_Actuator::get_controller_name()` | identical |  |
 | ivp_actuator | `IVP_Actuator::~IVP_Actuator()` | identical |  |
@@ -186,13 +185,14 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_actuator | `IVP_Actuator_Torque::set_torque(double)` | identical |  |
 | ivp_actuator | `IVP_Actuator_Torque::get_controller_name()` | identical |  |
 | ivp_actuator | `IVP_Actuator_Torque::do_simulation_controller(IVP_Event_Sim*, IVP_U_Vector<IVP_Core>*)` | identical |  |
+| ivp_actuator | `IVP_Actuator_Torque::IVP_Actuator_Torque(IVP_Environment*, IVP_Template_Torque*)` | identical |  |
 | ivp_actuator | `IVP_Actuator_Torque::~IVP_Actuator_Torque()` | identical |  |
 | ivp_actuator | `IVP_Actuator_Torque::~IVP_Actuator_Torque()` | identical |  |
 | ivp_actuator | `IVP_Template_Anchor::set_anchor_position_cs(IVP_Real_Object*, IVP_U_Float_Point const*)` | identical |  |
 | ivp_actuator | `IVP_Template_Anchor::set_anchor_position_os(IVP_Real_Object*, IVP_U_Float_Point const*)` | identical |  |
 | ivp_actuator | `IVP_Template_Anchor::set_anchor_position_os(IVP_Real_Object*, double, double, double)` | identical |  |
 | ivp_actuator | `IVP_Actuator_Two_Point::ensure_actuator_in_simulation()` | identical |  |
-| ivp_actuator | `IVP_Actuator_Two_Point::IVP_Actuator_Two_Point(IVP_Environment*, IVP_Template_Two_Point*, IVP_ACTUATOR_TYPE)` | edited |  |
+| ivp_actuator | `IVP_Actuator_Two_Point::IVP_Actuator_Two_Point(IVP_Environment*, IVP_Template_Two_Point*, IVP_ACTUATOR_TYPE)` | identical |  |
 | ivp_actuator | `IVP_Actuator_Two_Point::~IVP_Actuator_Two_Point()` | identical |  |
 | ivp_actuator | `IVP_Actuator_Two_Point::~IVP_Actuator_Two_Point()` | identical |  |
 | ivp_actuator | `IVP_Actuator_Four_Point::IVP_Actuator_Four_Point(IVP_Environment*, IVP_Template_Four_Point*, IVP_ACTUATOR_TYPE)` | identical |  |
@@ -227,17 +227,17 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_actuator | `IVP_Actuator_Force_Active::IVP_Actuator_Force_Active(IVP_Environment*, IVP_Template_Force*)` | identical |  |
 | ivp_actuator | `IVP_Actuator_Torque_Active::IVP_Actuator_Torque_Active(IVP_Environment*, IVP_Template_Torque*)` | identical |  |
 | ivp_actuator | `IVP_Actuator_Torque_Active::~IVP_Actuator_Torque_Active()` | identical |  |
-| ivp_actuator_spring | `IVP_Actuator_Suspension::do_simulation_controller(IVP_Event_Sim*, IVP_U_Vector<IVP_Core>*)` | differs | size retail 701 vs ours 665 |
-| ivp_actuator_spring | `IVP_Actuator_Spring_Active::active_float_changed(IVP_U_Active_Float*)` | differs | data ref at +0x34 (string): retail "/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/iv...", ours "../ivp/ivp_c |
 | ivp_actuator_spring | `IVP_Actuator_Spring::get_controller_name()` | identical |  |
-| ivp_actuator_spring | `IVP_Actuator_Spring::do_simulation_controller(IVP_Event_Sim*, IVP_U_Vector<IVP_Core>*)` | edited |  |
+| ivp_actuator_spring | `IVP_Actuator_Spring::do_simulation_controller(IVP_Event_Sim*, IVP_U_Vector<IVP_Core>*)` | identical |  |
 | ivp_actuator_spring | `IVP_Actuator_Spring::IVP_Actuator_Spring(IVP_Environment*, IVP_Template_Spring*, IVP_ACTUATOR_TYPE)` | identical |  |
 | ivp_actuator_spring | `IVP_Actuator_Spring::~IVP_Actuator_Spring()` | identical |  |
 | ivp_actuator_spring | `IVP_Actuator_Spring::~IVP_Actuator_Spring()` | identical |  |
 | ivp_actuator_spring | `IVP_Actuator_Suspension::get_controller_name()` | identical |  |
+| ivp_actuator_spring | `IVP_Actuator_Suspension::do_simulation_controller(IVP_Event_Sim*, IVP_U_Vector<IVP_Core>*)` | edited |  |
 | ivp_actuator_spring | `IVP_Actuator_Suspension::IVP_Actuator_Suspension(IVP_Environment*, IVP_Template_Suspension*)` | identical |  |
 | ivp_actuator_spring | `IVP_Actuator_Suspension::~IVP_Actuator_Suspension()` | identical |  |
 | ivp_actuator_spring | `IVP_Actuator_Suspension::~IVP_Actuator_Suspension()` | identical |  |
+| ivp_actuator_spring | `IVP_Actuator_Spring_Active::active_float_changed(IVP_U_Active_Float*)` | identical |  |
 | ivp_actuator_spring | `IVP_Actuator_Spring_Active::IVP_Actuator_Spring_Active(IVP_Environment*, IVP_Template_Spring*)` | identical |  |
 | ivp_actuator_spring | `IVP_Actuator_Spring_Active::~IVP_Actuator_Spring_Active()` | identical |  |
 | ivp_actuator_spring | `IVP_Actuator_Spring_Active::~IVP_Actuator_Spring_Active()` | identical |  |
@@ -256,15 +256,14 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_actuator_spring | `non-virtual thunk to IVP_Actuator_Spring_Active::active_float_changed(IVP_U_Active_Float*)` | identical |  |
 | ivp_anomaly_manager | `IVP_Anomaly_Manager::inter_penetration(IVP_Mindist*, IVP_Real_Object*, IVP_Real_Object*, double)` | differs | bytes |
 | ivp_anomaly_manager | `IVP_Anomaly_Limits::IVP_Anomaly_Limits(IVP_BOOL)` | identical |  |
-| ivp_anomaly_manager | `IVP_Anomaly_Limits::~IVP_Anomaly_Limits()` | identical |  |
 | ivp_anomaly_manager | `IVP_Anomaly_Manager::max_velocity_exceeded(IVP_Anomaly_Limits*, IVP_Core*, IVP_U_Float_Point*)` | identical |  |
-| ivp_anomaly_manager | `IVP_Anomaly_Manager::get_push_speed_penetration(IVP_Real_Object*, IVP_Real_Object*)` | edited |  |
+| ivp_anomaly_manager | `IVP_Anomaly_Manager::get_push_speed_penetration(IVP_Real_Object*, IVP_Real_Object*)` | identical |  |
 | ivp_anomaly_manager | `IVP_Anomaly_Manager::max_angular_velocity_exceeded(IVP_Anomaly_Limits*, IVP_Core*, IVP_U_Float_Point*)` | identical |  |
-| ivp_anomaly_manager | `IVP_Anomaly_Manager::solve_inter_penetration_simple(IVP_Real_Object*, IVP_Real_Object*, double)` | new |  |
+| ivp_anomaly_manager | `IVP_Anomaly_Manager::solve_inter_penetration_simple(IVP_Real_Object*, IVP_Real_Object*, double)` | identical |  |
 | ivp_anomaly_manager | `IVP_Anomaly_Manager::IVP_Anomaly_Manager(IVP_BOOL)` | identical |  |
 | ivp_anomaly_manager | `IVP_Anomaly_Manager::IVP_Anomaly_Manager(IVP_BOOL)` | identical |  |
-| ivp_anomaly_manager | `IVP_Anomaly_Manager::~IVP_Anomaly_Manager()` | identical |  |
 | ivp_anomaly_manager | `IVP_Anomaly_Limits::environment_will_be_deleted(IVP_Environment*)` | identical |  |
+| ivp_anomaly_manager | `IVP_Anomaly_Limits::~IVP_Anomaly_Limits()` | identical |  |
 | ivp_anomaly_manager | `IVP_Anomaly_Limits::~IVP_Anomaly_Limits()` | identical |  |
 | ivp_anomaly_manager | `IVP_Anomaly_Manager::environment_will_be_deleted(IVP_Environment*)` | identical |  |
 | ivp_anomaly_manager | `IVP_Anomaly_Manager::max_collision_checks_exceeded(int)` | identical |  |
@@ -272,17 +271,18 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_anomaly_manager | `IVP_Anomaly_Manager::max_collisions_exceeded_check_freezing(IVP_Anomaly_Limits*, IVP_Core*)` | identical |  |
 | ivp_anomaly_manager | `IVP_Anomaly_Manager::~IVP_Anomaly_Manager()` | identical |  |
 | ivp_anomaly_manager | `IVP_Anomaly_Manager::~IVP_Anomaly_Manager()` | identical |  |
-| ivp_ball | `IVP_SurfaceManager_Ball::get_all_terminal_ledges(IVP_U_BigVector<IVP_Compact_Ledge>*)` | differs | data ref at +0x16 (string): retail "/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/iv...", ours "../ivp/ivp_i |
-| ivp_ball | `IVP_SurfaceManager_Ball::insert_all_ledges_hitting_ray(IVP_Ray_Solver*, IVP_Real_Object*)` | differs | data ref at +0xe (string): retail "/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/iv...", ours "../ivp/ivp_in |
-| ivp_ball | `IVP_SurfaceManager_Ball::get_rotation_inertia(IVP_U_Float_Point*) const` | differs | data ref at +0xe (string): retail "/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/iv...", ours "../ivp/ivp_in |
-| ivp_ball | `IVP_SurfaceManager_Ball::get_radius_and_radius_dev_to_given_center(IVP_U_Float_Point const*, float*, float*) const` | differs | data ref at +0xe (string): retail "/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/iv...", ours "../ivp/ivp_in |
+| ivp_anomaly_manager | `IVP_Anomaly_Manager::~IVP_Anomaly_Manager()` | identical |  |
 | ivp_ball | `_GLOBAL__I_a` | identical |  |
+| ivp_ball | `IVP_SurfaceManager_Ball::get_all_terminal_ledges(IVP_U_BigVector<IVP_Compact_Ledge>*)` | identical |  |
 | ivp_ball | `IVP_SurfaceManager_Ball::get_all_ledges_within_radius(IVP_U_Point const*, double, IVP_Compact_Ledge const*, IVP_Real_Object*, IVP_Compact_Ledge const*` | identical |  |
+| ivp_ball | `IVP_SurfaceManager_Ball::insert_all_ledges_hitting_ray(IVP_Ray_Solver*, IVP_Real_Object*)` | identical |  |
 | ivp_ball | `IVP_SurfaceManager_Ball::~IVP_SurfaceManager_Ball()` | identical |  |
 | ivp_ball | `IVP_SurfaceManager_Ball::~IVP_SurfaceManager_Ball()` | identical |  |
 | ivp_ball | `IVP_Ball::IVP_Ball(IVP_Cluster*, IVP_Template_Ball const*, IVP_Template_Real_Object const*, IVP_U_Quat const*, IVP_U_Point const*)` | identical |  |
 | ivp_ball | `IVP_Ball::~IVP_Ball()` | identical |  |
 | ivp_ball | `IVP_Ball::~IVP_Ball()` | identical |  |
+| ivp_ball | `IVP_SurfaceManager_Ball::get_rotation_inertia(IVP_U_Float_Point*) const` | identical |  |
+| ivp_ball | `IVP_SurfaceManager_Ball::get_radius_and_radius_dev_to_given_center(IVP_U_Float_Point const*, float*, float*) const` | identical |  |
 | ivp_ball | `IVP_SurfaceManager_Ball::get_type()` | identical |  |
 | ivp_ball | `IVP_Ball::IVP_Ball(IVP_Cluster*, IVP_Template_Ball const*, IVP_Template_Real_Object const*, IVP_U_Quat const*, IVP_U_Point const*)` | identical |  |
 | ivp_ball | `IVP_SurfaceManager_Ball::get_mass_center(IVP_U_Float_Point*) const` | identical |  |
@@ -291,8 +291,8 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_betterdebugmanager | `IVP_BetterDebugmanager::output_function(IVP_DEBUG_CLASS, char const*)` | identical |  |
 | ivp_betterdebugmanager | `IVP_BetterDebugmanager::dprint(IVP_DEBUG_CLASS, char const*, ...)` | identical |  |
 | ivp_betterdebugmanager | `IVP_BetterDebugmanager::~IVP_BetterDebugmanager()` | identical |  |
-| ivp_betterdebugmanager | `IVP_BetterDebugmanager::~IVP_BetterDebugmanager()` | identical |  |
 | ivp_betterdebugmanager | `IVP_BetterDebugmanager::is_debug_enabled(IVP_DEBUG_CLASS)` | identical |  |
+| ivp_betterdebugmanager | `IVP_BetterDebugmanager::~IVP_BetterDebugmanager()` | identical |  |
 | ivp_betterstatisticsmanager | `IVP_BetterStatisticsmanager::~IVP_BetterStatisticsmanager()` | identical |  |
 | ivp_betterstatisticsmanager | `IVP_BetterStatisticsmanager::IVP_BetterStatisticsmanager()` | identical |  |
 | ivp_betterstatisticsmanager | `IVP_BetterStatisticsmanager::~IVP_BetterStatisticsmanager()` | identical |  |
@@ -307,11 +307,11 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_buoyancy_solver | `IVP_Buoyancy_Solver::compute_volumes_and_centers_for_one_pyramid(IVP_Real_Object*, IVP_U_Float_Point const**, float const*, int const&, int const&, in` | identical |  |
 | ivp_buoyancy_solver | `IVP_Buoyancy_Solver::compute_rotation_and_translation_values_for_one_triangle(IVP_Real_Object*, IVP_Compact_Triangle const*, IVP_U_Float_Point const**` | identical |  |
 | ivp_buoyancy_solver | `IVP_Buoyancy_Solver::IVP_Buoyancy_Solver(IVP_Core*, IVP_Controller_Buoyancy*, IVP_Template_Buoyancy const*, IVP_U_Float_Point const*)` | identical |  |
+| ivp_cache_object | `IVP_Cache_Object_Manager::~IVP_Cache_Object_Manager()` | identical |  |
 | ivp_cache_object | `IVP_Cache_Object::update_cache_object()` | identical |  |
-| ivp_cache_object | `IVP_Cache_Object_Manager::IVP_Cache_Object_Manager(int)` | edited |  |
-| ivp_cache_object | `IVP_Cache_Object_Manager::~IVP_Cache_Object_Manager()` | edited |  |
 | ivp_cache_object | `IVP_Cache_Object_Manager::get_cache_object(IVP_Real_Object*)` | identical |  |
 | ivp_cache_object | `IVP_Cache_Object_Manager::invalid_cache_object(IVP_Real_Object*)` | identical |  |
+| ivp_cache_object | `IVP_Cache_Object_Manager::IVP_Cache_Object_Manager(int)` | identical |  |
 | ivp_cache_object | `IVP_Cache_Object::transform_vector_to_world_coords(IVP_U_Point const*, IVP_U_Point*) const` | identical |  |
 | ivp_cache_object | `IVP_Cache_Object::transform_vector_to_world_coords(IVP_U_Float_Point const*, IVP_U_Float_Point*) const` | identical |  |
 | ivp_cache_object | `IVP_Cache_Object::transform_vector_to_object_coords(IVP_U_Point const*, IVP_U_Point*) const` | identical |  |
@@ -320,7 +320,7 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_cache_object | `IVP_Cache_Object::transform_position_to_object_coords(IVP_U_Point const*, IVP_U_Point*) const` | identical |  |
 | ivp_calc_next_psi_solver | `IVP_Calc_Next_PSI_Solver::set_transformation(IVP_U_Quat const*, IVP_U_Point const*, IVP_BOOL)` | differs | size retail 1534 vs ours 1518 |
 | ivp_calc_next_psi_solver | `IVP_Calc_Next_PSI_Solver::commit_all_hull_managers(IVP_Environment*, IVP_U_Vector<IVP_Hull_Manager_Base>*)` | differs | size retail 640 vs ours 642 |
-| ivp_calc_next_psi_solver | `IVP_Calc_Next_PSI_Solver::calc_next_PSI_matrix(IVP_Event_Sim*, IVP_U_Vector<IVP_Hull_Manager_Base>*)` | edited |  |
+| ivp_calc_next_psi_solver | `IVP_Calc_Next_PSI_Solver::calc_next_PSI_matrix(IVP_Event_Sim*, IVP_U_Vector<IVP_Hull_Manager_Base>*)` | identical |  |
 | ivp_calc_next_psi_solver | `IVP_Calc_Next_PSI_Solver::calc_rotation_matrix(float, IVP_U_Quat*)` | identical |  |
 | ivp_calc_next_psi_solver | `IVP_Calc_Next_PSI_Solver::commit_all_calc_next_PSI_matrix(IVP_Environment*, IVP_U_Vector<IVP_Core>*, IVP_U_Vector<IVP_Hull_Manager_Base>*)` | identical |  |
 | ivp_car_system | `IVP_Car_System_Real_Wheels::IVP_Car_System_Real_Wheels(IVP_Environment*, IVP_Template_Car_System*)` | differs | bytes |
@@ -329,40 +329,39 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_car_system | `IVP_Car_System::~IVP_Car_System()` | identical |  |
 | ivp_car_system | `IVP_Car_System::~IVP_Car_System()` | identical |  |
 | ivp_car_system | `IVP_Car_System_Real_Wheels::do_steering(float, bool)` | identical |  |
-| ivp_car_system | `IVP_Car_System_Real_Wheels::set_powerslide(float, float)` | edited |  |
-| ivp_car_system | `IVP_Car_System_Real_Wheels::activate_booster(float, float, float)` | edited |  |
+| ivp_car_system | `IVP_Car_System_Real_Wheels::set_powerslide(float, float)` | identical |  |
+| ivp_car_system | `IVP_Car_System_Real_Wheels::activate_booster(float, float, float)` | identical |  |
 | ivp_car_system | `IVP_Car_System_Real_Wheels::do_steering_wheel(IVP_POS_WHEEL, float)` | identical |  |
-| ivp_car_system | `IVP_Car_System_Real_Wheels::change_wheel_torque(IVP_POS_WHEEL, float)` | identical |  |
-| ivp_car_system | `IVP_Car_System_Real_Wheels::change_spring_length(IVP_POS_WHEEL, float)` | identical |  |
 | ivp_car_system | `IVP_Car_System_Real_Wheels::GetCarSystemDebugData(IVP_CarSystemDebugData_t&)` | identical |  |
-| ivp_car_system | `IVP_Car_System_Real_Wheels::change_body_downforce(float)` | identical |  |
-| ivp_car_system | `IVP_Car_System_Real_Wheels::change_max_body_force(IVP_POS_WHEEL, float)` | identical |  |
-| ivp_car_system | `IVP_Car_System_Real_Wheels::change_spring_constant(IVP_POS_WHEEL, float)` | identical |  |
-| ivp_car_system | `IVP_Car_System_Real_Wheels::change_spring_dampening(IVP_POS_WHEEL, float)` | identical |  |
 | ivp_car_system | `IVP_Car_System_Real_Wheels::get_orig_axles_distance()` | identical |  |
 | ivp_car_system | `IVP_Car_System_Real_Wheels::set_booster_acceleration(float)` | identical |  |
 | ivp_car_system | `IVP_Car_System_Real_Wheels::change_spring_pre_tension(IVP_POS_WHEEL, float)` | identical |  |
-| ivp_car_system | `IVP_Car_System_Real_Wheels::update_body_countertorque()` | identical |  |
-| ivp_car_system | `IVP_Car_System_Real_Wheels::change_stabilizer_constant(IVP_POS_AXIS, float)` | identical |  |
-| ivp_car_system | `IVP_Car_System_Real_Wheels::change_spring_dampening_compression(IVP_POS_WHEEL, float)` | identical |  |
 | ivp_car_system | `IVP_Car_System_Real_Wheels::fix_wheel(IVP_POS_WHEEL, IVP_BOOL)` | identical |  |
 | ivp_car_system | `IVP_Car_System_Real_Wheels::~IVP_Car_System_Real_Wheels()` | identical |  |
 | ivp_car_system | `IVP_Car_System_Real_Wheels::~IVP_Car_System_Real_Wheels()` | identical |  |
 | ivp_car_system | `IVP_Car_System_Real_Wheels::get_skid_info(IVP_Wheel_Skid_Info*)` | identical |  |
-| ivp_car_system | `IVP_Car_System_Real_Wheels::get_body_speed(IVP_COORDINATE_INDEX)` | edited |  |
+| ivp_car_system | `IVP_Car_System_Real_Wheels::get_body_speed(IVP_COORDINATE_INDEX)` | identical |  |
 | ivp_car_system | `IVP_Car_System_Real_Wheels::update_booster(float)` | identical |  |
 | ivp_car_system | `IVP_Car_System_Real_Wheels::update_throttle(float)` | identical |  |
 | ivp_car_system | `IVP_Car_System_Real_Wheels::get_wheel_torque(IVP_POS_WHEEL)` | identical |  |
 | ivp_car_system | `IVP_Car_System_Real_Wheels::get_booster_delay()` | identical |  |
+| ivp_car_system | `IVP_Car_System_Real_Wheels::change_wheel_torque(IVP_POS_WHEEL, float)` | identical |  |
+| ivp_car_system | `IVP_Car_System_Real_Wheels::change_spring_length(IVP_POS_WHEEL, float)` | identical |  |
 | ivp_car_system | `IVP_Car_System_Real_Wheels::SetCarSystemDebugData(IVP_CarSystemDebugData_t const&)` | identical |  |
+| ivp_car_system | `IVP_Car_System_Real_Wheels::change_body_downforce(float)` | identical |  |
+| ivp_car_system | `IVP_Car_System_Real_Wheels::change_max_body_force(IVP_POS_WHEEL, float)` | identical |  |
+| ivp_car_system | `IVP_Car_System_Real_Wheels::change_spring_constant(IVP_POS_WHEEL, float)` | identical |  |
 | ivp_car_system | `IVP_Car_System_Real_Wheels::get_booster_time_to_go()` | identical |  |
 | ivp_car_system | `IVP_Car_System_Real_Wheels::update_wheel_positions()` | identical |  |
 | ivp_car_system | `IVP_Car_System_Real_Wheels::change_fast_turn_factor(float)` | identical |  |
+| ivp_car_system | `IVP_Car_System_Real_Wheels::change_spring_dampening(IVP_POS_WHEEL, float)` | identical |  |
+| ivp_car_system | `IVP_Car_System_Real_Wheels::update_body_countertorque()` | identical |  |
+| ivp_car_system | `IVP_Car_System_Real_Wheels::change_stabilizer_constant(IVP_POS_AXIS, float)` | identical |  |
 | ivp_car_system | `IVP_Car_System_Real_Wheels::get_wheel_angular_velocity(IVP_POS_WHEEL)` | identical |  |
 | ivp_car_system | `IVP_Car_System_Real_Wheels::environment_will_be_deleted(IVP_Environment*)` | identical |  |
 | ivp_car_system | `IVP_Car_System_Real_Wheels::get_orig_front_wheel_distance()` | identical |  |
+| ivp_car_system | `IVP_Car_System_Real_Wheels::change_spring_dampening_compression(IVP_POS_WHEEL, float)` | identical |  |
 | ivp_car_system | `IVP_Car_System_Real_Wheels::IVP_Car_System_Real_Wheels(IVP_Environment*, IVP_Template_Car_System*)` | identical |  |
-| ivp_clustering_longrange | `IVP_OV_Tree_Manager::calc_optimal_box(IVP_OV_Element const*, double, double)` | differs | size retail 898 vs ours 867 |
 | ivp_clustering_longrange | `IVP_OV_Node::~IVP_OV_Node()` | identical |  |
 | ivp_clustering_longrange | `IVP_OV_Element::add_oo_collision(IVP_Collision*)` | identical |  |
 | ivp_clustering_longrange | `IVP_OV_Element::add_to_hull_manager(IVP_Hull_Manager*, double)` | identical |  |
@@ -370,20 +369,21 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_clustering_longrange | `IVP_OV_Element::IVP_OV_Element(IVP_Real_Object*)` | identical |  |
 | ivp_clustering_longrange | `IVP_OV_Element::~IVP_OV_Element()` | identical |  |
 | ivp_clustering_longrange | `IVP_OV_Element::~IVP_OV_Element()` | identical |  |
-| ivp_clustering_longrange | `IVP_OV_Tree_Manager::expand_tree(IVP_OV_Node const*)` | edited |  |
-| ivp_clustering_longrange | `IVP_OV_Tree_Manager::connect_boxes(IVP_OV_Node*, IVP_OV_Node*)` | edited |  |
-| ivp_clustering_longrange | `IVP_OV_Tree_Manager::insert_ov_element(IVP_OV_Element*, double, double, IVP_U_Vector<IVP_OV_Element>*)` | edited |  |
-| ivp_clustering_longrange | `IVP_OV_Tree_Manager::remove_ov_element(IVP_OV_Element*)` | edited |  |
-| ivp_clustering_longrange | `IVP_OV_Tree_Manager::get_luf_coordinates_ws(IVP_OV_Node const*, IVP_U_Float_Point*, float*)` | edited |  |
-| ivp_clustering_longrange | `IVP_OV_Tree_Manager::collect_collision_partners(IVP_OV_Element const*, IVP_OV_Node const*, IVP_OV_Node const*)` | edited |  |
-| ivp_clustering_longrange | `IVP_OV_Tree_Manager::collect_subbox_collision_partners(IVP_OV_Element const*, IVP_OV_Node const*)` | edited |  |
-| ivp_clustering_longrange | `IVP_OV_Tree_Manager::IVP_OV_Tree_Manager()` | edited |  |
+| ivp_clustering_longrange | `IVP_OV_Tree_Manager::expand_tree(IVP_OV_Node const*)` | identical |  |
+| ivp_clustering_longrange | `IVP_OV_Tree_Manager::connect_boxes(IVP_OV_Node*, IVP_OV_Node*)` | identical |  |
+| ivp_clustering_longrange | `IVP_OV_Tree_Manager::calc_optimal_box(IVP_OV_Element const*, double, double)` | identical |  |
+| ivp_clustering_longrange | `IVP_OV_Tree_Manager::insert_ov_element(IVP_OV_Element*, double, double, IVP_U_Vector<IVP_OV_Element>*)` | identical |  |
+| ivp_clustering_longrange | `IVP_OV_Tree_Manager::remove_ov_element(IVP_OV_Element*)` | identical |  |
+| ivp_clustering_longrange | `IVP_OV_Tree_Manager::get_luf_coordinates_ws(IVP_OV_Node const*, IVP_U_Float_Point*, float*)` | identical |  |
+| ivp_clustering_longrange | `IVP_OV_Tree_Manager::collect_collision_partners(IVP_OV_Element const*, IVP_OV_Node const*, IVP_OV_Node const*)` | identical |  |
+| ivp_clustering_longrange | `IVP_OV_Tree_Manager::collect_subbox_collision_partners(IVP_OV_Element const*, IVP_OV_Node const*)` | identical |  |
+| ivp_clustering_longrange | `IVP_OV_Tree_Manager::IVP_OV_Tree_Manager()` | identical |  |
 | ivp_clustering_longrange | `IVP_OV_Element::remove_oo_collision(IVP_Collision*)` | identical |  |
 | ivp_clustering_longrange | `IVP_OV_Element::hull_manager_is_going_to_be_deleted_event(IVP_Hull_Manager*)` | identical |  |
 | ivp_clustering_longrange | `IVP_OV_Element::get_type()` | identical |  |
 | ivp_clustering_longrange | `IVP_OV_Element::~IVP_OV_Element()` | identical |  |
 | ivp_clustering_longrange | `IVP_OV_Tree_Manager::IVP_OV_Tree_Manager()` | identical |  |
-| ivp_clustering_longrange | `IVP_OV_Tree_Manager::~IVP_OV_Tree_Manager()` | edited |  |
+| ivp_clustering_longrange | `IVP_OV_Tree_Manager::~IVP_OV_Tree_Manager()` | identical |  |
 | ivp_clustering_lrange_hash | `IVP_ov_tree_hash::node_to_index(IVP_OV_Node*)` | identical |  |
 | ivp_clustering_lrange_hash | `IVP_ov_tree_hash::~IVP_ov_tree_hash()` | identical |  |
 | ivp_clustering_lrange_hash | `IVP_ov_tree_hash::~IVP_ov_tree_hash()` | identical |  |
@@ -401,15 +401,15 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_coll_del_root_mindist | `IVP_Collision_Delegator_Root_Mindist::object_is_removed_from_collision_detection(IVP_Real_Object*)` | identical |  |
 | ivp_collision_filter | `IVP_CFEP_Hash::~IVP_CFEP_Hash()` | identical |  |
 | ivp_collision_filter | `IVP_CFEP_Hash::~IVP_CFEP_Hash()` | identical |  |
-| ivp_collision_filter | `IVP_Collision_Filter::~IVP_Collision_Filter()` | edited |  |
+| ivp_collision_filter | `IVP_Collision_Filter::~IVP_Collision_Filter()` | identical |  |
 | ivp_collision_filter | `IVP_Collision_Filter_Exclusive_Pair::enable_collision_between_objects(IVP_Real_Object*, IVP_Real_Object*)` | identical |  |
-| ivp_collision_filter | `IVP_Collision_Filter_Exclusive_Pair::disable_collision_between_objects(IVP_Real_Object*, IVP_Real_Object*)` | edited |  |
+| ivp_collision_filter | `IVP_Collision_Filter_Exclusive_Pair::disable_collision_between_objects(IVP_Real_Object*, IVP_Real_Object*)` | identical |  |
 | ivp_collision_filter | `IVP_Collision_Filter_Exclusive_Pair::check_objects_for_collision_detection(IVP_Real_Object*, IVP_Real_Object*)` | identical |  |
-| ivp_collision_filter | `IVP_Collision_Filter_Exclusive_Pair::IVP_Collision_Filter_Exclusive_Pair()` | edited |  |
-| ivp_collision_filter | `IVP_Collision_Filter_Exclusive_Pair::~IVP_Collision_Filter_Exclusive_Pair()` | edited |  |
-| ivp_collision_filter | `IVP_Collision_Filter_Exclusive_Pair::~IVP_Collision_Filter_Exclusive_Pair()` | edited |  |
+| ivp_collision_filter | `IVP_Collision_Filter_Exclusive_Pair::IVP_Collision_Filter_Exclusive_Pair()` | identical |  |
 | ivp_collision_filter | `IVP_Collision_Filter_Exclusive_Pair::~IVP_Collision_Filter_Exclusive_Pair()` | identical |  |
-| ivp_collision_filter | `IVP_Collision_Filter::~IVP_Collision_Filter()` | edited |  |
+| ivp_collision_filter | `IVP_Collision_Filter_Exclusive_Pair::~IVP_Collision_Filter_Exclusive_Pair()` | identical |  |
+| ivp_collision_filter | `IVP_Collision_Filter_Exclusive_Pair::~IVP_Collision_Filter_Exclusive_Pair()` | identical |  |
+| ivp_collision_filter | `IVP_Collision_Filter::~IVP_Collision_Filter()` | identical |  |
 | ivp_collision_filter | `IVP_Collision_Filter::~IVP_Collision_Filter()` | identical |  |
 | ivp_collision_filter | `IVP_Collision_Filter_Exclusive_Pair::environment_will_be_deleted(IVP_Environment*)` | identical |  |
 | ivp_collision_filter | `IVP_CFEP_Hash::compare(void*, void*) const` | identical |  |
@@ -417,28 +417,28 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_compact_ledge | `IVP_Compact_Triangle::IVP_Compact_Triangle()` | identical |  |
 | ivp_compact_ledge | `IVP_Compact_Ledgetree_Node::byte_swap_all(IVP_U_BigVector<IVP_Compact_Poly_Point>*)` | identical |  |
 | ivp_compact_ledge_gen | `IVP_Compact_Ledge_Generator::prepare_compact_ledge(IVP_U_Vector<IVP_Triangle>*)` | identical |  |
-| ivp_compact_ledge_gen | `IVP_Compact_Ledge_Generator::generate_compact_ledge(unsigned char*)` | identical |  |
 | ivp_compact_ledge_gen | `IVP_Compact_Ledge_Generator::~IVP_Compact_Ledge_Generator()` | identical |  |
+| ivp_compact_ledge_gen | `IVP_Compact_Ledge_Generator::generate_compact_ledge(unsigned char*)` | identical |  |
 | ivp_compact_ledge_gen | `IVP_Compact_Ledge_Generator::IVP_Compact_Ledge_Generator()` | identical |  |
 | ivp_compact_ledge_gen | `IVP_Compact_Ledge_Generator::~IVP_Compact_Ledge_Generator()` | identical |  |
-| ivp_compact_ledge_solver | `IVP_KK_Input::IVP_KK_Input(IVP_Compact_Edge const*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*, IVP_Cache_Ledge_Point*)` | differs | size retail 1071 vs ours 1160 |
-| ivp_compact_ledge_solver | `IVP_Compact_Ledge_Solver::calc_qlen_KK(IVP_Compact_Edge const*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*, IVP_Cache_Ledge_Point*)` | differs | data ref at +0xd9 (string): retail "/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/iv...", ours "../ivp/ivp_c |
-| ivp_compact_ledge_solver | `IVP_Compact_Ledge_Solver::calc_qlen_PF_F_space(IVP_Compact_Ledge const*, IVP_Compact_Triangle const*, IVP_U_Point const*)` | differs | size retail 1227 vs ours 1203 |
-| ivp_compact_ledge_solver | `IVP_Compact_Ledge_Solver::calc_qlen_PK_K_space(IVP_U_Point const*, IVP_Compact_Ledge const*, IVP_Compact_Edge const*)` | differs | size retail 692 vs ours 685 |
-| ivp_compact_ledge_solver | `IVP_Compact_Ledge_Solver::calc_unscaled_KK_vals(IVP_KK_Input const&, IVP_Unscaled_KK_Result*)` | differs | size retail 2821 vs ours 2669 |
-| ivp_compact_ledge_solver | `IVP_Compact_Ledge_Solver::calc_unscaled_s_val_K_space(IVP_Compact_Ledge const*, IVP_Compact_Edge const*, IVP_U_Point const*, IVP_Unscaled_S_Result*)` | differs | size retail 234 vs ours 213 |
-| ivp_compact_ledge_solver | `IVP_Compact_Ledge_Solver::calc_unscaled_qr_vals_F_space(IVP_Compact_Ledge const*, IVP_Compact_Edge const*, IVP_U_Point const*, IVP_Unscaled_QR_Result*` | differs | size retail 514 vs ours 488 |
-| ivp_compact_ledge_solver | `IVP_Compact_Ledge_Solver::quad_dist_edge_to_point_K_space(IVP_Compact_Ledge const*, IVP_Compact_Edge const*, IVP_U_Point const*)` | differs | size retail 341 vs ours 333 |
 | ivp_compact_ledge_solver | `IVP_KK_Input::calc_quad_distance_edge_edge()` | identical |  |
-| ivp_compact_ledge_solver | `IVP_KK_Input::IVP_KK_Input(IVP_Compact_Edge const*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*, IVP_Cache_Ledge_Point*)` | identical |  |
+| ivp_compact_ledge_solver | `IVP_KK_Input::IVP_KK_Input(IVP_Compact_Edge const*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*, IVP_Cache_Ledge_Point*)` | edited |  |
+| ivp_compact_ledge_solver | `IVP_Compact_Ledge_Solver::calc_qlen_KK(IVP_Compact_Edge const*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*, IVP_Cache_Ledge_Point*)` | identical |  |
 | ivp_compact_ledge_solver | `IVP_Compact_Ledge_Solver::get_all_ledges(IVP_Compact_Ledgetree_Node const*, IVP_U_BigVector<IVP_Compact_Ledge>*)` | identical |  |
 | ivp_compact_ledge_solver | `IVP_Compact_Ledge_Solver::calc_bounding_box(IVP_Compact_Ledge const*, IVP_U_Point*, IVP_U_Point*)` | identical |  |
 | ivp_compact_ledge_solver | `IVP_Compact_Ledge_Solver::calc_hesse_object(IVP_Compact_Edge const*, IVP_Compact_Ledge const*, IVP_U_Hesse*)` | identical |  |
+| ivp_compact_ledge_solver | `IVP_Compact_Ledge_Solver::calc_qlen_PF_F_space(IVP_Compact_Ledge const*, IVP_Compact_Triangle const*, IVP_U_Point const*)` | edited |  |
+| ivp_compact_ledge_solver | `IVP_Compact_Ledge_Solver::calc_qlen_PK_K_space(IVP_U_Point const*, IVP_Compact_Ledge const*, IVP_Compact_Edge const*)` | edited |  |
 | ivp_compact_ledge_solver | `IVP_Compact_Ledge_Solver::give_world_coords_AT(IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*, IVP_U_Point*)` | identical |  |
+| ivp_compact_ledge_solver | `IVP_Compact_Ledge_Solver::calc_unscaled_KK_vals(IVP_KK_Input const&, IVP_Unscaled_KK_Result*)` | edited |  |
 | ivp_compact_ledge_solver | `IVP_Compact_Ledge_Solver::calc_radius_to_given_center(IVP_Compact_Ledge const*, IVP_U_Point const*, double*, double*)` | identical |  |
 | ivp_compact_ledge_solver | `IVP_Compact_Ledge_Solver::calc_radius_to_given_center(IVP_Compact_Surface const*, IVP_U_Point const*, double*, double*)` | identical |  |
+| ivp_compact_ledge_solver | `IVP_Compact_Ledge_Solver::calc_unscaled_s_val_K_space(IVP_Compact_Ledge const*, IVP_Compact_Edge const*, IVP_U_Point const*, IVP_Unscaled_S_Result*)` | edited |  |
+| ivp_compact_ledge_solver | `IVP_Compact_Ledge_Solver::calc_unscaled_qr_vals_F_space(IVP_Compact_Ledge const*, IVP_Compact_Edge const*, IVP_U_Point const*, IVP_Unscaled_QR_Result*` | edited |  |
+| ivp_compact_ledge_solver | `IVP_Compact_Ledge_Solver::quad_dist_edge_to_point_K_space(IVP_Compact_Ledge const*, IVP_Compact_Edge const*, IVP_U_Point const*)` | edited |  |
 | ivp_compact_ledge_solver | `IVP_Compact_Ledge_Solver::calc_hesse_vec_object_not_normized(IVP_Compact_Edge const*, IVP_Compact_Ledge const*, IVP_U_Point*)` | identical |  |
 | ivp_compact_ledge_solver | `IVP_Compact_Ledge_Solver::calc_hesse_vec_object_not_normized(IVP_Compact_Edge const*, IVP_Compact_Ledge const*, IVP_U_Float_Point*)` | identical |  |
+| ivp_compact_ledge_solver | `IVP_KK_Input::IVP_KK_Input(IVP_Compact_Edge const*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*, IVP_Cache_Ledge_Point*)` | identical |  |
 | ivp_compact_ledge_solver | `IVP_Compact_Ledge_Solver::get_all_ledges(IVP_Compact_Surface const*, IVP_U_BigVector<IVP_Compact_Ledge>*)` | identical |  |
 | ivp_compact_ledge_solver | `IVP_Compact_Ledge_Solver::calc_pos_other_space(IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*, IVP_Cache_Ledge_Point*, IVP_U_Point*)` | identical |  |
 | ivp_compact_ledge_solver | `IVP_Compact_Ledge_Solver::transform_pos_other_space(IVP_U_Float_Point const*, IVP_Cache_Ledge_Point*, IVP_Cache_Ledge_Point*, IVP_U_Point*)` | identical |  |
@@ -448,7 +448,7 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_compact_recursive | `IVP_Compact_Recursive::IVP_Compact_Recursive()` | identical |  |
 | ivp_compact_recursive | `IVP_Compact_Recursive::~IVP_Compact_Recursive()` | identical |  |
 | ivp_compact_recursive | `IVP_Compact_Recursive::compile()` | identical |  |
-| ivp_compact_surface | `IVP_Compact_Surface::byte_swap_all(IVP_BOOL, int)` | differs | size retail 206 vs ours 265 |
+| ivp_compact_surface | `IVP_Compact_Surface::byte_swap_all(IVP_BOOL, int)` | edited |  |
 | ivp_constraint | `IVP_Constraint::deactivate()` | identical |  |
 | ivp_constraint | `IVP_Constraint::fix_rotation_axis(IVP_COORDINATE_INDEX)` | identical |  |
 | ivp_constraint | `IVP_Constraint::free_rotation_axis(IVP_COORDINATE_INDEX)` | identical |  |
@@ -474,22 +474,22 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_constraint | `IVP_Constraint::get_minimum_simulation_frequency()` | identical |  |
 | ivp_constraint | `IVP_Constraint::core_is_going_to_be_deleted_event(IVP_Core*)` | identical |  |
 | ivp_constraint | `IVP_Constraint::~IVP_Constraint()` | identical |  |
-| ivp_constraint_car | `IVP_Constraint_Solver_Car::do_simulation_controller(IVP_Event_Sim*, IVP_U_Vector<IVP_Core>*)` | differs | size retail 1645 vs ours 1751 |
-| ivp_constraint_car | `IVP_Constraint_Car_Object::IVP_Constraint_Car_Object(IVP_Constraint_Solver_Car*, IVP_Real_Object*, IVP_Real_Object*, IVP_U_Float_Point*)` | edited |  |
+| ivp_constraint_car | `IVP_Constraint_Car_Object::IVP_Constraint_Car_Object(IVP_Constraint_Solver_Car*, IVP_Real_Object*, IVP_Real_Object*, IVP_U_Float_Point*)` | identical |  |
 | ivp_constraint_car | `IVP_Constraint_Solver_Car::get_controller_name()` | identical |  |
-| ivp_constraint_car | `IVP_Constraint_Solver_Car::init_constraint_system(IVP_Environment*, IVP_Real_Object*, IVP_U_Vector<IVP_Real_Object>&, IVP_U_Vector<IVP_U_Float_Point>&` | edited |  |
+| ivp_constraint_car | `IVP_Constraint_Solver_Car::init_constraint_system(IVP_Environment*, IVP_Real_Object*, IVP_U_Vector<IVP_Real_Object>&, IVP_U_Vector<IVP_U_Float_Point>&` | identical |  |
+| ivp_constraint_car | `IVP_Constraint_Solver_Car::do_simulation_controller(IVP_Event_Sim*, IVP_U_Vector<IVP_Core>*)` | edited |  |
 | ivp_constraint_car | `IVP_Constraint_Solver_Car::get_minimum_simulation_frequency()` | identical |  |
 | ivp_constraint_car | `IVP_Constraint_Solver_Car::do_simulation_controller_rotation(IVP_Event_Sim*, IVP_Core*, IVP_U_Matrix const*)` | identical |  |
 | ivp_constraint_car | `IVP_Constraint_Solver_Car::IVP_Constraint_Solver_Car(IVP_COORDINATE_INDEX, IVP_COORDINATE_INDEX, IVP_COORDINATE_INDEX, IVP_BOOL)` | identical |  |
-| ivp_constraint_car | `IVP_Constraint_Solver_Car::~IVP_Constraint_Solver_Car()` | edited |  |
+| ivp_constraint_car | `IVP_Constraint_Solver_Car::~IVP_Constraint_Solver_Car()` | identical |  |
 | ivp_constraint_car | `IVP_Constraint_Solver_Car::~IVP_Constraint_Solver_Car()` | identical |  |
 | ivp_constraint_car | `IVP_Constraint_Solver_Car_Builder::calc_pushing_behavior(int, int)` | identical |  |
 | ivp_constraint_car | `IVP_Constraint_Solver_Car_Builder::calc_constraint_matrix()` | identical |  |
 | ivp_constraint_car | `IVP_Constraint_Solver_Car::get_controller_priority()` | identical |  |
 | ivp_constraint_car | `IVP_Constraint_Solver_Car::get_associated_controlled_cores()` | identical |  |
-| ivp_constraint_car | `IVP_Constraint_Solver_Car::core_is_going_to_be_deleted_event(IVP_Core*)` | edited |  |
+| ivp_constraint_car | `IVP_Constraint_Solver_Car::core_is_going_to_be_deleted_event(IVP_Core*)` | identical |  |
 | ivp_constraint_car | `IVP_Constraint_Solver_Car::~IVP_Constraint_Solver_Car()` | identical |  |
-| ivp_constraint_local | `IVP_Constraint_Local::do_simulation_controller(IVP_Event_Sim*, IVP_U_Vector<IVP_Core>*)` | differs | size retail 8014 vs ours 8049 |
+| ivp_constraint_local | `IVP_Constraint_Local::do_simulation_controller(IVP_Event_Sim*, IVP_U_Vector<IVP_Core>*)` | differs | size retail 8014 vs ours 7982 |
 | ivp_constraint_local | `IVP_Constraint_Local::fix_rotation_axis(IVP_COORDINATE_INDEX)` | identical |  |
 | ivp_constraint_local | `IVP_Constraint_Local::free_rotation_axis(IVP_COORDINATE_INDEX)` | identical |  |
 | ivp_constraint_local | `IVP_Constraint_Local::limit_rotation_axis(IVP_COORDINATE_INDEX, float, float)` | identical |  |
@@ -515,11 +515,11 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_constraint_local | `IVP_Constraint_Local::sort_rotation_mapping()` | identical |  |
 | ivp_constraint_local | `IVP_Constraint_Local::sort_translation_mapping()` | identical |  |
 | ivp_constraint_local | `IVP_Constraint_Local::core_is_going_to_be_deleted_event(IVP_Core*)` | identical |  |
-| ivp_controller_buoyancy | `IVP_Controller_Buoyancy::do_simulation_controller(IVP_Event_Sim*, IVP_U_Vector<IVP_Core>*)` | differs | size retail 1441 vs ours 1457 |
 | ivp_controller_buoyancy | `IVP_Controller_Buoyancy::apply_dampening(IVP_Real_Object*, float, double, IVP_U_Float_Point*, IVP_U_Float_Point*, IVP_U_Float_Point*)` | identical |  |
 | ivp_controller_buoyancy | `IVP_Controller_Buoyancy::get_controller_name()` | identical |  |
 | ivp_controller_buoyancy | `IVP_Controller_Buoyancy::use_buoyancy_solver(IVP_Buoyancy_Input const*, IVP_Template_Buoyancy const*, IVP_Buoyancy_Output*, IVP_U_Float_Point const*, ` | identical |  |
 | ivp_controller_buoyancy | `IVP_Controller_Buoyancy::apply_buoyancy_impulse(IVP_Real_Object*, IVP_Template_Buoyancy*, double, float, IVP_U_Float_Point*)` | identical |  |
+| ivp_controller_buoyancy | `IVP_Controller_Buoyancy::do_simulation_controller(IVP_Event_Sim*, IVP_U_Vector<IVP_Core>*)` | edited |  |
 | ivp_controller_buoyancy | `IVP_Controller_Buoyancy::IVP_Controller_Buoyancy(IVP_Attacher_To_Cores<IVP_Controller_Buoyancy>*, IVP_Core*)` | identical |  |
 | ivp_controller_buoyancy | `IVP_Controller_Buoyancy::~IVP_Controller_Buoyancy()` | identical |  |
 | ivp_controller_buoyancy | `IVP_Controller_Buoyancy::~IVP_Controller_Buoyancy()` | identical |  |
@@ -535,7 +535,6 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_controller_phantom | `IVP_Controller_Phantom::add_listener_phantom(IVP_Listener_Phantom*)` | identical |  |
 | ivp_controller_phantom | `IVP_Controller_Phantom::event_object_revived(IVP_Event_Object*)` | identical |  |
 | ivp_controller_phantom | `IVP_Controller_Phantom::mindist_entered_volume(IVP_Mindist*)` | identical |  |
-| ivp_controller_phantom | `IVP_Controller_Phantom::wake_all_sleeping_objects()` | identical |  |
 | ivp_controller_phantom | `IVP_Controller_Phantom::IVP_Controller_Phantom(IVP_Real_Object*, IVP_Template_Phantom const*)` | identical |  |
 | ivp_controller_phantom | `IVP_Controller_Phantom::~IVP_Controller_Phantom()` | identical |  |
 | ivp_controller_phantom | `IVP_Controller_Phantom::~IVP_Controller_Phantom()` | identical |  |
@@ -544,6 +543,7 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_controller_phantom | `IVP_Controller_Phantom::event_object_created(IVP_Event_Object*)` | identical |  |
 | ivp_controller_phantom | `IVP_Controller_Phantom::event_object_deleted(IVP_Event_Object*)` | identical |  |
 | ivp_controller_phantom | `IVP_Controller_Phantom::remove_listener_phantom(IVP_Listener_Phantom*)` | identical |  |
+| ivp_controller_phantom | `IVP_Controller_Phantom::wake_all_sleeping_objects()` | identical |  |
 | ivp_controller_phantom | `IVP_Controller_Phantom::IVP_Controller_Phantom(IVP_Real_Object*, IVP_Template_Phantom const*)` | identical |  |
 | ivp_controller_raycast_car | `IVP_Controller_Raycast_Car::do_steering(float, bool)` | identical |  |
 | ivp_controller_raycast_car | `IVP_Controller_Raycast_Car::do_steering_wheel(IVP_POS_WHEEL, float)` | identical |  |
@@ -586,28 +586,21 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_controller_raycast_car | `non-virtual thunk to IVP_Controller_Raycast_Car::get_controller_priority()` | identical |  |
 | ivp_controller_raycast_car | `non-virtual thunk to IVP_Controller_Raycast_Car::do_simulation_controller(IVP_Event_Sim*, IVP_U_Vector<IVP_Core>*)` | identical |  |
 | ivp_controller_raycast_car | `non-virtual thunk to IVP_Controller_Raycast_Car::~IVP_Controller_Raycast_Car()` | identical |  |
-| ivp_core | `IVP_Core::calc_movement_state(IVP_Time)` | differs | size retail 1029 vs ours 731 |
-| ivp_core | `IVP_Core::revive_adjacent_to_unmoveable()` | differs | size retail 367 vs ours 335 |
-| ivp_core | `IVP_Core::values_changed_recalc_redundants()` | differs | size retail 824 vs ours 778 |
 | ivp_core | `IVP_Core::reset_time(IVP_Time)` | identical |  |
 | ivp_core | `IVP_Core::damp_object(double, IVP_U_Float_Point const*, double)` | identical |  |
 | ivp_core | `IVP_Core::push_core_ws(IVP_U_Point const*, IVP_U_Float_Point const*)` | identical |  |
 | ivp_core | `IVP_Core::global_damp_core(double)` | identical |  |
-| ivp_core | `IVP_Core::add_friction_info(IVP_Friction_Info_For_Core*)` | identical |  |
-| ivp_core | `IVP_Core::get_friction_info(IVP_Friction_System*)` | identical |  |
 | ivp_core | `IVP_Core::async_push_core_ws(IVP_U_Point const*, IVP_U_Float_Point const*)` | identical |  |
 | ivp_core | `IVP_Core::get_energy_on_test(IVP_U_Float_Point const*, IVP_U_Float_Point const*)` | identical |  |
-| ivp_core | `IVP_Core::apply_velocity_limit()` | edited |  |
+| ivp_core | `IVP_Core::calc_movement_state(IVP_Time)` | edited |  |
+| ivp_core | `IVP_Core::apply_velocity_limit()` | identical |  |
 | ivp_core | `IVP_Core::delete_friction_info(IVP_Friction_Info_For_Core*)` | identical |  |
-| ivp_core | `IVP_Core::get_surface_speed_ws(IVP_U_Point const*, IVP_U_Float_Point*)` | identical |  |
 | ivp_core | `IVP_Core::set_rotation_inertia(IVP_U_Float_Point const*)` | identical |  |
-| ivp_core | `IVP_Core::unlink_friction_info(IVP_Friction_Info_For_Core*)` | identical |  |
 | ivp_core | `IVP_Core::stop_physical_movement()` | identical |  |
 | ivp_core | `IVP_Core::synchronize_with_rot_z()` | identical |  |
 | ivp_core | `IVP_Core::init_core_for_simulation()` | identical |  |
 | ivp_core | `IVP_Core::transform_PSI_matrizes_core(IVP_U_Matrix const*)` | identical |  |
 | ivp_core | `IVP_Core::async_rot_push_core_multiple_ws(IVP_U_Float_Point const*, double)` | identical |  |
-| ivp_core | `IVP_Core::ensure_core_to_be_in_simulation()` | identical |  |
 | ivp_core | `IVP_Core::update_exact_mindist_events_of_core()` | identical |  |
 | ivp_core | `IVP_Core::unlink_obj_from_core_and_maybe_destroy(IVP_Real_Object*)` | identical |  |
 | ivp_core | `IVP_Core::init(IVP_Real_Object*, bool)` | identical |  |
@@ -623,16 +616,23 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_core | `IVP_Core::async_push_core(IVP_U_Float_Point const*, IVP_U_Float_Point const*, IVP_U_Float_Point const*)` | identical |  |
 | ivp_core | `IVP_Core::get_rot_speed_cs(IVP_U_Float_Point const*)` | identical |  |
 | ivp_core | `IVP_Core::rot_push_core_cs(IVP_U_Float_Point const*)` | identical |  |
+| ivp_core | `IVP_Core::add_friction_info(IVP_Friction_Info_For_Core*)` | identical |  |
+| ivp_core | `IVP_Core::get_friction_info(IVP_Friction_System*)` | identical |  |
+| ivp_core | `IVP_Core::get_surface_speed_ws(IVP_U_Point const*, IVP_U_Float_Point*)` | identical |  |
+| ivp_core | `IVP_Core::unlink_friction_info(IVP_Friction_Info_For_Core*)` | identical |  |
 | ivp_core | `IVP_Core::abort_all_async_pushes()` | identical |  |
 | ivp_core | `IVP_Core::undo_synchronize_rot_z()` | identical |  |
 | ivp_core | `IVP_Core::commit_all_async_pushes()` | identical |  |
 | ivp_core | `IVP_Core::reset_freeze_check_values()` | identical |  |
 | ivp_core | `IVP_Core::rot_push_core_multiple_cs(IVP_U_Float_Point const*, double)` | identical |  |
 | ivp_core | `IVP_Core::center_push_core_multiple_ws(IVP_U_Float_Point const*, double)` | identical |  |
+| ivp_core | `IVP_Core::revive_adjacent_to_unmoveable()` | edited |  |
 | ivp_core | `IVP_Core::test_rot_push_core_multiple_cs(IVP_U_Float_Point const*, double, IVP_U_Float_Point*)` | identical |  |
 | ivp_core | `IVP_Core::async_rot_push_core_multiple_cs(IVP_U_Float_Point const*, double)` | identical |  |
 | ivp_core | `IVP_Core::calc_next_PSI_matrix_zero_speed(IVP_Event_Sim*)` | identical |  |
+| ivp_core | `IVP_Core::ensure_core_to_be_in_simulation()` | identical |  |
 | ivp_core | `IVP_Core::moveable_core_has_friction_info()` | identical |  |
+| ivp_core | `IVP_Core::values_changed_recalc_redundants()` | edited |  |
 | ivp_core | `IVP_Core::get_diff_surface_speed_of_two_cores(IVP_Core const*, IVP_Core const*, IVP_U_Float_Point const*, IVP_U_Float_Point const*, IVP_U_Float_Point*` | identical |  |
 | ivp_core | `IVP_Core::get_diff_surface_speed_of_two_cores_on_test(IVP_Core const*, IVP_Core const*, IVP_U_Float_Point const*, IVP_U_Float_Point const*, IVP_U_Floa` | identical |  |
 | ivp_core | `IVP_Core::push_core(IVP_U_Float_Point const*, IVP_U_Float_Point const*, IVP_U_Float_Point const*)` | identical |  |
@@ -641,35 +641,22 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_core | `IVP_Core::get_surface_speed(IVP_U_Float_Point const*, IVP_U_Float_Point*) const` | identical |  |
 | ivp_core | `IVP_Core::get_surface_speed_on_test(IVP_U_Float_Point const*, IVP_U_Float_Point const*, IVP_U_Float_Point const*, IVP_U_Float_Point*) const` | identical |  |
 | ivp_environment | `_GLOBAL__I_a` | identical |  |
-| ivp_environment | `IVP_Environment::reset_time()` | identical |  |
 | ivp_environment | `IVP_Environment::create_ball(IVP_Template_Ball const*, IVP_Template_Real_Object const*, IVP_U_Quat const*, IVP_U_Point const*)` | identical |  |
-| ivp_environment | `IVP_Environment::set_gravity(IVP_U_Point*)` | identical |  |
 | ivp_environment | `IVP_Environment::create_force(IVP_Template_Force*)` | identical |  |
 | ivp_environment | `IVP_Environment::simulate_psi(IVP_Time)` | identical |  |
 | ivp_environment | `IVP_Environment::create_spring(IVP_Template_Spring*)` | identical |  |
 | ivp_environment | `IVP_Environment::create_torque(IVP_Template_Torque*)` | identical |  |
-| ivp_environment | `IVP_Environment::create_polygon(IVP_SurfaceManager*, IVP_Template_Real_Object const*, IVP_U_Quat const*, IVP_U_Point const*)` | identical |  |
-| ivp_environment | `IVP_Environment::simulate_dtime(double)` | identical |  |
 | ivp_environment | `IVP_Environment::create_stabilizer(IVP_Template_Stabilizer*)` | identical |  |
 | ivp_environment | `IVP_Environment::create_suspension(IVP_Template_Suspension*)` | identical |  |
-| ivp_environment | `IVP_Environment::set_delta_PSI_time(double)` | edited |  |
-| ivp_environment | `IVP_Environment::simulate_time_step(float)` | identical |  |
-| ivp_environment | `IVP_Environment::add_listener_object_global(IVP_Listener_Object*)` | identical |  |
-| ivp_environment | `IVP_Environment::force_psi_on_next_simulation()` | edited |  |
-| ivp_environment | `IVP_Environment::add_listener_collision_global(IVP_Listener_Collision*)` | identical |  |
-| ivp_environment | `IVP_Environment::add_listener_constraint_global(IVP_Listener_Constraint*)` | identical |  |
+| ivp_environment | `IVP_Environment::set_delta_PSI_time(double)` | identical |  |
 | ivp_environment | `IVP_Environment::get_global_collision_tolerance()` | identical |  |
 | ivp_environment | `IVP_Environment::set_global_collision_tolerance(double, double)` | identical |  |
-| ivp_environment | `IVP_Environment::IVP_Environment(IVP_Environment_Manager*, IVP_Application_Environment*, char const*, unsigned int)` | edited |  |
+| ivp_environment | `IVP_Environment::IVP_Environment(IVP_Environment_Manager*, IVP_Application_Environment*, char const*, unsigned int)` | identical |  |
 | ivp_environment | `IVP_Environment::~IVP_Environment()` | identical |  |
 | ivp_environment | `IVP_U_Set_Active<IVP_Real_Object>::~IVP_U_Set_Active()` | identical |  |
-| ivp_environment | `IVP_U_Set_Active<IVP_Real_Object>::~IVP_U_Set_Active()` | identical |  |
 | ivp_environment | `IVP_U_Set_Active<IVP_Mindist_Base>::~IVP_U_Set_Active()` | identical |  |
-| ivp_environment | `IVP_U_Set_Active<IVP_Mindist_Base>::~IVP_U_Set_Active()` | identical |  |
-| ivp_environment | `IVP_U_Set_Active<IVP_Core>::~IVP_U_Set_Active()` | identical |  |
 | ivp_environment | `IVP_U_Set_Active<IVP_Core>::~IVP_U_Set_Active()` | identical |  |
 | ivp_environment | `IVP_Attacher_To_Cores<IVP_Controller_Buoyancy>::IVP_Attacher_To_Cores(IVP_U_Set_Active<IVP_Core>*)` | identical |  |
-| ivp_environment | `IVP_Environment_Manager::create_environment(IVP_Application_Environment*, char const*, unsigned int)` | identical |  |
 | ivp_environment | `IVP_Environment_Manager::get_environment_manager()` | identical |  |
 | ivp_environment | `IVP_Environment_Manager::~IVP_Environment_Manager()` | identical |  |
 | ivp_environment | `IVP_U_Set<IVP_Real_Object>::~IVP_U_Set()` | identical |  |
@@ -678,18 +665,27 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_environment | `IVP_U_Set<IVP_Mindist_Base>::~IVP_U_Set()` | identical |  |
 | ivp_environment | `IVP_U_Set<IVP_Core>::~IVP_U_Set()` | identical |  |
 | ivp_environment | `IVP_U_Set<IVP_Core>::~IVP_U_Set()` | identical |  |
+| ivp_environment | `IVP_Environment::reset_time()` | identical |  |
+| ivp_environment | `IVP_Environment::set_gravity(IVP_U_Point*)` | identical |  |
+| ivp_environment | `IVP_Environment::create_polygon(IVP_SurfaceManager*, IVP_Template_Real_Object const*, IVP_U_Quat const*, IVP_U_Point const*)` | identical |  |
+| ivp_environment | `IVP_Environment::simulate_dtime(double)` | identical |  |
 | ivp_environment | `IVP_Environment::set_current_time(IVP_Time)` | identical |  |
+| ivp_environment | `IVP_Environment::simulate_time_step(float)` | identical |  |
 | ivp_environment | `IVP_Environment::fire_event_object_frozen(IVP_Event_Object*)` | identical |  |
 | ivp_environment | `IVP_Environment::fire_event_pre_collision(IVP_Event_Collision*)` | identical |  |
 | ivp_environment | `IVP_Environment::fire_event_object_created(IVP_Event_Object*)` | identical |  |
 | ivp_environment | `IVP_Environment::fire_event_object_deleted(IVP_Event_Object*)` | identical |  |
 | ivp_environment | `IVP_Environment::fire_event_object_revived(IVP_Event_Object*)` | identical |  |
 | ivp_environment | `IVP_Environment::fire_event_post_collision(IVP_Event_Collision*)` | identical |  |
+| ivp_environment | `IVP_Environment::add_listener_object_global(IVP_Listener_Object*)` | identical |  |
 | ivp_environment | `IVP_Environment::fire_event_friction_created(IVP_Event_Friction*)` | identical |  |
 | ivp_environment | `IVP_Environment::fire_event_friction_deleted(IVP_Event_Friction*)` | identical |  |
 | ivp_environment | `IVP_Environment::fire_event_constraint_broken(IVP_Constraint*)` | identical |  |
 | ivp_environment | `IVP_Environment::fire_event_constraint_broken(hk_Breakable_Constraint*)` | identical |  |
+| ivp_environment | `IVP_Environment::force_psi_on_next_simulation()` | identical |  |
+| ivp_environment | `IVP_Environment::add_listener_collision_global(IVP_Listener_Collision*)` | identical |  |
 | ivp_environment | `IVP_Environment::remove_listener_object_global(IVP_Listener_Object*)` | identical |  |
+| ivp_environment | `IVP_Environment::add_listener_constraint_global(IVP_Listener_Constraint*)` | identical |  |
 | ivp_environment | `IVP_Environment::fire_event_friction_pair_created(IVP_Friction_Core_Pair*)` | identical |  |
 | ivp_environment | `IVP_Environment::fire_event_friction_pair_deleted(IVP_Friction_Core_Pair*)` | identical |  |
 | ivp_environment | `IVP_Environment::remove_listener_collision_global(IVP_Listener_Collision*)` | identical |  |
@@ -697,82 +693,86 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_environment | `IVP_Environment::fire_object_is_removed_from_collision_detection(IVP_Real_Object*)` | identical |  |
 | ivp_environment | `IVP_Environment::~IVP_Environment()` | identical |  |
 | ivp_environment | `IVP_U_Set_Active<IVP_Real_Object>::~IVP_U_Set_Active()` | identical |  |
+| ivp_environment | `IVP_U_Set_Active<IVP_Real_Object>::~IVP_U_Set_Active()` | identical |  |
+| ivp_environment | `IVP_U_Set_Active<IVP_Mindist_Base>::~IVP_U_Set_Active()` | identical |  |
 | ivp_environment | `IVP_U_Set_Active<IVP_Mindist_Base>::~IVP_U_Set_Active()` | identical |  |
 | ivp_environment | `IVP_U_Set_Active<IVP_Core>::~IVP_U_Set_Active()` | identical |  |
+| ivp_environment | `IVP_U_Set_Active<IVP_Core>::~IVP_U_Set_Active()` | identical |  |
+| ivp_environment | `IVP_Environment_Manager::create_environment(IVP_Application_Environment*, char const*, unsigned int)` | identical |  |
 | ivp_environment | `IVP_U_Set<IVP_Real_Object>::compare(void*, void*) const` | identical |  |
 | ivp_environment | `IVP_U_Set<IVP_Mindist_Base>::compare(void*, void*) const` | identical |  |
 | ivp_environment | `IVP_U_Set<IVP_Core>::compare(void*, void*) const` | identical |  |
 | ivp_friction | `IVP_Contact_Point::friction_force_local_constraint_1d(IVP_Event_Sim const*)` | differs | bytes |
-| ivp_friction | `IVP_Contact_Point::friction_force_local_constraint_2d(IVP_Event_Sim const*)` | differs | size retail 706 vs ours 730 |
-| ivp_friction | `IVP_Contact_Point::friction_force_local_constraint_2d_wheel(IVP_Core*, IVP_Impact_Solver_Long_Term*, IVP_Event_Sim const*, float&)` | differs | size retail 2409 vs ours 2302 |
-| ivp_friction | `IVP_Contact_Point::IVP_Contact_Point(IVP_Mindist*)` | differs | size retail 538 vs ours 430 |
-| ivp_friction | `IVP_Friction_System::calc_friction_forces(IVP_Event_Sim const*)` | differs | size retail 539 vs ours 523 |
-| ivp_friction | `IVP_Friction_System::split_friction_system(IVP_Core*)` | differs | data ref at +0x1a (string): retail "/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/iv...", ours "../ivp/ivp_i |
-| ivp_friction | `IVP_Friction_System::do_simulation_controller(IVP_Event_Sim*, IVP_U_Vector<IVP_Core>*)` | differs | size retail 389 vs ours 405 |
-| ivp_friction | `IVP_Synapse_Friction::is_same_as(IVP_Synapse_Real const*) const` | differs | data ref at +0x31 (string): retail "/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/iv...", ours "../ivp/ivp_i |
 | ivp_friction | `IVP_Contact_Point::two_values_friction(IVP_U_Float_Point*)` | identical |  |
 | ivp_friction | `IVP_Contact_Point::static_friction_single(IVP_Event_Sim const*, float, float)` | identical |  |
 | ivp_friction | `IVP_Contact_Point::calc_virtual_mass_of_mindist()` | identical |  |
-| ivp_friction | `IVP_Contact_Point::get_and_set_real_friction_len(IVP_U_Float_Point*)` | identical |  |
-| ivp_friction | `IVP_Contact_Point::IVP_Contact_Point(IVP_Mindist*)` | identical |  |
+| ivp_friction | `IVP_Contact_Point::friction_force_local_constraint_2d(IVP_Event_Sim const*)` | edited |  |
+| ivp_friction | `IVP_Contact_Point::friction_force_local_constraint_2d_wheel(IVP_Core*, IVP_Impact_Solver_Long_Term*, IVP_Event_Sim const*, float&)` | edited |  |
+| ivp_friction | `IVP_Contact_Point::IVP_Contact_Point(IVP_Mindist*)` | edited |  |
 | ivp_friction | `IVP_Contact_Point::~IVP_Contact_Point()` | identical |  |
 | ivp_friction | `IVP_Friction_Solver::ease_two_mindists(IVP_Contact_Point*, IVP_Contact_Point*, IVP_U_Float_Point*, IVP_U_Float_Point*, double)` | identical |  |
 | ivp_friction | `IVP_Friction_Solver::ease_friction_pair(IVP_Friction_Core_Pair*, IVP_U_Memory*)` | identical |  |
 | ivp_friction | `IVP_Friction_Solver::IVP_Friction_Solver(IVP_Friction_System*, IVP_Event_Sim const*)` | identical |  |
-| ivp_friction | `IVP_Friction_System::reset_time(IVP_Time)` | identical |  |
-| ivp_friction | `IVP_Friction_System::add_fr_pair(IVP_Friction_Core_Pair*)` | identical |  |
-| ivp_friction | `IVP_Friction_System::del_fr_pair(IVP_Friction_Core_Pair*)` | identical |  |
-| ivp_friction | `IVP_Friction_System::fusion_friction_systems(IVP_Friction_System*)` | identical |  |
+| ivp_friction | `IVP_Friction_System::calc_friction_forces(IVP_Event_Sim const*)` | edited |  |
+| ivp_friction | `IVP_Friction_System::split_friction_system(IVP_Core*)` | identical |  |
 | ivp_friction | `IVP_Friction_System::delete_friction_distance(IVP_Contact_Point*)` | identical |  |
+| ivp_friction | `IVP_Friction_System::do_simulation_controller(IVP_Event_Sim*, IVP_U_Vector<IVP_Core>*)` | edited |  |
 | ivp_friction | `IVP_Mutual_Energizer::init_mutual_energizer(IVP_Core*, IVP_Core*)` | identical |  |
 | ivp_friction | `IVP_Mutual_Energizer::destroy_percent_energy(double)` | identical |  |
-| ivp_friction | `IVP_Contact_Point_API::get_surface_normal_ws(IVP_Contact_Point*, IVP_U_Float_Point*)` | identical |  |
-| ivp_friction | `IVP_Friction_Core_Pair::add_fr_dist_obj_pairs(IVP_Contact_Point*)` | identical |  |
-| ivp_friction | `IVP_Friction_Core_Pair::destroy_mutual_energy(double)` | new |  |
-| ivp_friction | `IVP_Friction_Core_Pair::check_all_fr_mindists_to_be_valid(IVP_Friction_System*)` | identical |  |
+| ivp_friction | `IVP_Friction_Core_Pair::destroy_mutual_energy(double)` | identical |  |
 | ivp_friction | `IVP_Friction_Core_Pair::~IVP_Friction_Core_Pair()` | identical |  |
 | ivp_friction | `IVP_Friction_Sys_Energy::get_controller_name()` | identical |  |
-| ivp_friction | `IVP_Friction_Sys_Energy::do_simulation_controller(IVP_Event_Sim*, IVP_U_Vector<IVP_Core>*)` | edited |  |
-| ivp_friction | `IVP_Friction_Sys_Energy::~IVP_Friction_Sys_Energy()` | identical |  |
 | ivp_friction | `IVP_Friction_Sys_Energy::~IVP_Friction_Sys_Energy()` | identical |  |
 | ivp_friction | `IVP_Friction_Sys_Static::get_controller_name()` | identical |  |
 | ivp_friction | `IVP_Friction_Sys_Static::do_simulation_controller(IVP_Event_Sim*, IVP_U_Vector<IVP_Core>*)` | identical |  |
-| ivp_friction | `IVP_Friction_Sys_Static::core_is_going_to_be_deleted_event(IVP_Core*)` | identical |  |
 | ivp_friction | `IVP_Friction_Sys_Static::~IVP_Friction_Sys_Static()` | identical |  |
-| ivp_friction | `IVP_Friction_Sys_Static::~IVP_Friction_Sys_Static()` | identical |  |
-| ivp_friction | `IVP_Friction_Info_For_Core::friction_info_insert_friction_dist(IVP_Contact_Point*)` | identical |  |
 | ivp_friction | `IVP_Core::grow_friction_system()` | identical |  |
+| ivp_friction | `IVP_Synapse_Friction::is_same_as(IVP_Synapse_Real const*) const` | identical |  |
 | ivp_friction | `IVP_Contact_Point::set_friction_to_neutral()` | identical |  |
+| ivp_friction | `IVP_Contact_Point::get_and_set_real_friction_len(IVP_U_Float_Point*)` | identical |  |
+| ivp_friction | `IVP_Contact_Point::IVP_Contact_Point(IVP_Mindist*)` | identical |  |
 | ivp_friction | `IVP_Contact_Point::~IVP_Contact_Point()` | identical |  |
 | ivp_friction | `IVP_Friction_Solver::IVP_Friction_Solver(IVP_Friction_System*, IVP_Event_Sim const*)` | identical |  |
+| ivp_friction | `IVP_Friction_System::reset_time(IVP_Time)` | identical |  |
+| ivp_friction | `IVP_Friction_System::add_fr_pair(IVP_Friction_Core_Pair*)` | identical |  |
+| ivp_friction | `IVP_Friction_System::del_fr_pair(IVP_Friction_Core_Pair*)` | identical |  |
 | ivp_friction | `IVP_Friction_System::union_find_fr_sys()` | identical |  |
 | ivp_friction | `IVP_Friction_System::find_pair_of_cores(IVP_Core*, IVP_Core*)` | identical |  |
 | ivp_friction | `IVP_Friction_System::get_pair_info_for_objs(IVP_Core*, IVP_Core*)` | identical |  |
+| ivp_friction | `IVP_Friction_System::fusion_friction_systems(IVP_Friction_System*)` | identical |  |
 | ivp_friction | `IVP_Friction_System::get_associated_controlled_cores()` | identical |  |
 | ivp_friction | `IVP_Friction_System::get_minimum_simulation_frequency()` | identical |  |
 | ivp_friction | `IVP_Friction_System::core_is_going_to_be_deleted_event(IVP_Core*)` | identical |  |
-| ivp_friction | `IVP_Friction_System::remove_energy_gained_by_real_friction()` | new |  |
+| ivp_friction | `IVP_Friction_System::remove_energy_gained_by_real_friction()` | identical |  |
 | ivp_friction | `IVP_Contact_Point_API::get_vert_force(IVP_Contact_Point*)` | identical |  |
 | ivp_friction | `IVP_Contact_Point_API::get_eliminated_energy(IVP_Contact_Point*)` | identical |  |
+| ivp_friction | `IVP_Contact_Point_API::get_surface_normal_ws(IVP_Contact_Point*, IVP_U_Float_Point*)` | identical |  |
 | ivp_friction | `IVP_Contact_Point_API::reset_eliminated_energy(IVP_Contact_Point*)` | identical |  |
 | ivp_friction | `IVP_Friction_Core_Pair::number_of_pair_dists()` | identical |  |
+| ivp_friction | `IVP_Friction_Core_Pair::add_fr_dist_obj_pairs(IVP_Contact_Point*)` | identical |  |
 | ivp_friction | `IVP_Friction_Core_Pair::del_fr_dist_obj_pairs(IVP_Contact_Point*)` | identical |  |
+| ivp_friction | `IVP_Friction_Core_Pair::check_all_fr_mindists_to_be_valid(IVP_Friction_System*)` | identical |  |
 | ivp_friction | `IVP_Friction_Core_Pair::IVP_Friction_Core_Pair()` | identical |  |
 | ivp_friction | `IVP_Friction_Sys_Energy::get_controller_priority()` | identical |  |
+| ivp_friction | `IVP_Friction_Sys_Energy::do_simulation_controller(IVP_Event_Sim*, IVP_U_Vector<IVP_Core>*)` | identical |  |
 | ivp_friction | `IVP_Friction_Sys_Energy::core_is_going_to_be_deleted_event(IVP_Core*)` | identical |  |
+| ivp_friction | `IVP_Friction_Sys_Energy::~IVP_Friction_Sys_Energy()` | identical |  |
 | ivp_friction | `IVP_Friction_Sys_Static::get_controller_priority()` | identical |  |
 | ivp_friction | `IVP_Friction_Sys_Static::get_minimum_simulation_frequency()` | identical |  |
+| ivp_friction | `IVP_Friction_Sys_Static::core_is_going_to_be_deleted_event(IVP_Core*)` | identical |  |
+| ivp_friction | `IVP_Friction_Sys_Static::~IVP_Friction_Sys_Static()` | identical |  |
+| ivp_friction | `IVP_Friction_Info_For_Core::friction_info_insert_friction_dist(IVP_Contact_Point*)` | identical |  |
 | ivp_friction | `IVP_Core::union_find_get_father()` | identical |  |
-| ivp_friction | `IVP_Contact_Point::is_same_as(IVP_Mindist const*) const` | edited |  |
+| ivp_friction | `IVP_Contact_Point::is_same_as(IVP_Mindist const*) const` | identical |  |
 | ivp_friction | `IVP_Synapse_Friction::get_material_index() const` | identical |  |
-| ivp_friction_gaps | `IVP_Friction_Solver::calc_solver_PSI(IVP_Friction_System*, int*)` | differs | data ref at +0x512 (string): retail "/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/iv...", ours "../ivp/ivp_ |
-| ivp_friction_gaps | `IVP_Friction_Solver::solve_linear_equation_and_push(IVP_Friction_System*, int*, int, IVP_U_Memory*)` | differs | size retail 783 vs ours 767 |
-| ivp_friction_gaps | `IVP_Friction_Solver::async_apply_impulse(IVP_Impact_Solver_Long_Term const*, double)` | new |  |
-| ivp_friction_gaps | `IVP_Friction_Solver::do_resulting_pushes(IVP_Friction_System*)` | edited |  |
+| ivp_friction_gaps | `IVP_Friction_Solver::solve_linear_equation_and_push(IVP_Friction_System*, int*, int, IVP_U_Memory*)` | differs | bytes |
+| ivp_friction_gaps | `IVP_Friction_Solver::calc_solver_PSI(IVP_Friction_System*, int*)` | identical |  |
+| ivp_friction_gaps | `IVP_Friction_Solver::async_apply_impulse(IVP_Impact_Solver_Long_Term const*, double)` | identical |  |
+| ivp_friction_gaps | `IVP_Friction_Solver::do_resulting_pushes(IVP_Friction_System*)` | identical |  |
 | ivp_friction_gaps | `IVP_Friction_Solver::setup_coords_mindists(IVP_Friction_System*)` | identical |  |
 | ivp_friction_gaps | `IVP_Friction_Solver::normize_constraint_equ()` | identical |  |
 | ivp_friction_gaps | `IVP_Friction_Solver::test_gauss_solution_suggestion(double*, int*, int, IVP_U_Memory*)` | identical |  |
-| ivp_friction_gaps | `IVP_Friction_System::do_friction_system(IVP_Event_Sim const*)` | edited |  |
+| ivp_friction_gaps | `IVP_Friction_System::do_friction_system(IVP_Event_Sim const*)` | identical |  |
 | ivp_friction_gaps | `IVP_Friction_System::kinetic_energy_of_hole_frs()` | identical |  |
 | ivp_friction_gaps | `IVP_Friction_System::reorder_mindists_for_complex()` | identical |  |
 | ivp_friction_gaps | `IVP_Friction_System::bubble_sort_dists_importance()` | identical |  |
@@ -788,9 +788,6 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_great_matrix | `IVP_Great_Matrix_Many_Zero::invert(IVP_Great_Matrix_Many_Zero*)` | identical |  |
 | ivp_great_matrix | `IVP_Great_Matrix_Many_Zero::lu_crout(int*, double*)` | identical |  |
 | ivp_great_matrix | `IVP_Great_Matrix_Many_Zero::lu_solve(int*)` | identical |  |
-| ivp_great_matrix | `IVP_Linear_Constraint_Solver::full_setup()` | identical |  |
-| ivp_great_matrix | `IVP_Linear_Constraint_Solver::alloc_memory(IVP_U_Memory*)` | identical |  |
-| ivp_great_matrix | `IVP_Linear_Constraint_Solver::startup_setup(int)` | identical |  |
 | ivp_great_matrix | `IVP_Linear_Constraint_Solver::get_fdirection()` | identical |  |
 | ivp_great_matrix | `IVP_Linear_Constraint_Solver::init_and_solve_lc(double*, double*, double*, int, int, IVP_U_Memory*)` | identical |  |
 | ivp_great_matrix | `IVP_Linear_Constraint_Solver::full_setup_test_ranges()` | identical |  |
@@ -802,6 +799,9 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_great_matrix | `IVP_Great_Matrix_Many_Zero::mult()` | identical |  |
 | ivp_great_matrix | `IVP_Great_Matrix_Many_Zero::set_value(double, int, int)` | identical |  |
 | ivp_great_matrix | `IVP_Great_Matrix_Many_Zero::IVP_Great_Matrix_Many_Zero()` | identical |  |
+| ivp_great_matrix | `IVP_Linear_Constraint_Solver::full_setup()` | identical |  |
+| ivp_great_matrix | `IVP_Linear_Constraint_Solver::alloc_memory(IVP_U_Memory*)` | identical |  |
+| ivp_great_matrix | `IVP_Linear_Constraint_Solver::startup_setup(int)` | identical |  |
 | ivp_great_matrix | `IVP_Linear_Constraint_Solver::update_step_vars(double)` | identical |  |
 | ivp_great_matrix | `IVP_Linear_Constraint_Solver::increment_sub_solver()` | identical |  |
 | ivp_great_matrix | `IVP_Linear_Constraint_Solver::get_values_when_setup()` | identical |  |
@@ -810,16 +810,16 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_great_matrix | `IVP_Linear_Constraint_Solver::move_not_necessary_actives_to_inactives()` | identical |  |
 | ivp_halfspacesoup | `IVP_Halfspacesoup::add_halfspace(IVP_U_Hesse const*)` | identical |  |
 | ivp_halfspacesoup | `IVP_Halfspacesoup::~IVP_Halfspacesoup()` | identical |  |
-| ivp_halfspacesoup | `IVP_Halfspacesoup::IVP_Halfspacesoup()` | new |  |
+| ivp_halfspacesoup | `IVP_Halfspacesoup::IVP_Halfspacesoup()` | identical |  |
 | ivp_halfspacesoup | `IVP_Halfspacesoup::~IVP_Halfspacesoup()` | identical |  |
-| ivp_hull_manager | `IVP_Hull_Manager::reset_times()` | edited |  |
-| ivp_hull_manager | `IVP_Hull_Manager_Base::IVP_Hull_Manager_Base()` | identical |  |
-| ivp_hull_manager | `IVP_Hull_Manager_Base::~IVP_Hull_Manager_Base()` | identical |  |
+| ivp_hull_manager | `IVP_Hull_Manager::reset_times()` | identical |  |
 | ivp_hull_manager | `IVP_Hull_Manager::reset_time(IVP_Time)` | identical |  |
 | ivp_hull_manager | `IVP_Hull_Manager::delete_hull_manager()` | identical |  |
-| ivp_hull_manager | `IVP_Hull_Manager::get_synapse_check_count(IVP_Environment*)` | new |  |
-| ivp_hull_manager | `IVP_Hull_Manager::too_many_synapses_checked_error_get_additional(IVP_Environment*, int)` | new |  |
+| ivp_hull_manager | `IVP_Hull_Manager::get_synapse_check_count(IVP_Environment*)` | identical |  |
+| ivp_hull_manager | `IVP_Hull_Manager::too_many_synapses_checked_error_get_additional(IVP_Environment*, int)` | identical |  |
 | ivp_hull_manager | `IVP_Listener_Hull::hull_manager_is_reset(float, float)` | identical |  |
+| ivp_hull_manager | `IVP_Hull_Manager_Base::IVP_Hull_Manager_Base()` | identical |  |
+| ivp_hull_manager | `IVP_Hull_Manager_Base::~IVP_Hull_Manager_Base()` | identical |  |
 | ivp_i_collision_vhash | `IVP_Collision_Callback_Table_Hash::object_to_index(IVP_Real_Object*)` | identical |  |
 | ivp_i_collision_vhash | `IVP_Collision_Callback_Table_Hash::~IVP_Collision_Callback_Table_Hash()` | identical |  |
 | ivp_i_collision_vhash | `IVP_Collision_Callback_Table_Hash::~IVP_Collision_Callback_Table_Hash()` | identical |  |
@@ -841,34 +841,33 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_i_point_vhash | `IVP_I_Point_VHash::~IVP_I_Point_VHash()` | identical |  |
 | ivp_i_point_vhash | `IVP_point_hash::compare(void*, void*) const` | identical |  |
 | ivp_i_point_vhash | `IVP_I_Point_VHash::compare(void*, void*) const` | identical |  |
-| ivp_impact | `IVP_Mindist::try_to_generate_managed_friction(IVP_Friction_System**, IVP_BOOL*, IVP_Simulation_Unit*, IVP_BOOL)` | differs | size retail 1017 vs ours 1005 |
-| ivp_impact | `IVP_Impact_Solver::delay_decision(IVP_Core**)` | differs | size retail 1259 vs ours 1270 |
 | ivp_impact | `IVP_Impact_Solver::do_rescue_push(IVP_U_Float_Point*, IVP_BOOL)` | differs | bytes |
-| ivp_impact | `IVP_Impact_System::test_loop_all_pairs()` | differs | size retail 771 vs ours 739 |
-| ivp_impact | `IVP_Impact_System::recalc_all_affected_cores()` | differs | bytes |
-| ivp_impact | `IVP_Impact_Solver_Long_Term::do_impact_of_two_objects(IVP_Mindist*, IVP_Real_Object*, IVP_Real_Object*)` | differs | size retail 1043 vs ours 1112 |
 | ivp_impact | `IVP_Mindist::do_impact()` | identical |  |
-| ivp_impact | `IVP_Contact_Point::get_material_info(IVP_Material**)` | identical |  |
 | ivp_impact | `IVP_Contact_Point::calc_coll_distance()` | identical |  |
-| ivp_impact | `IVP_Contact_Point::get_rot_speed_uncertainty()` | edited |  |
-| ivp_impact | `IVP_Contact_Point::read_materials_for_contact_situation(IVP_Impact_Solver_Long_Term*)` | identical |  |
+| ivp_impact | `IVP_Contact_Point::get_rot_speed_uncertainty()` | identical |  |
+| ivp_impact | `IVP_Impact_Solver::delay_decision(IVP_Core**)` | edited |  |
 | ivp_impact | `IVP_Impact_Solver::get_world_push_direction()` | identical |  |
 | ivp_impact | `IVP_Impact_Solver::calc_virt_masses_impact_solver(IVP_U_Float_Point const*)` | identical |  |
 | ivp_impact | `IVP_Impact_Solver::get_world_direction_second_friction(IVP_Contact_Point*)` | identical |  |
 | ivp_impact | `IVP_Impact_Solver::get_world_push_direction_two_friction(double)` | identical |  |
 | ivp_impact | `IVP_Impact_Solver::do_push(double)` | identical |  |
 | ivp_impact | `IVP_Impact_Solver::do_impact(IVP_Core**, IVP_BOOL, int, float)` | identical |  |
+| ivp_impact | `IVP_Impact_System::test_loop_all_pairs()` | edited |  |
+| ivp_impact | `IVP_Impact_System::recalc_all_affected_cores()` | edited |  |
+| ivp_impact | `IVP_Impact_Solver_Long_Term::do_impact_long_term(IVP_Core**, float, IVP_Contact_Point*)` | identical |  |
+| ivp_impact | `IVP_Impact_Solver_Long_Term::do_impact_of_two_objects(IVP_Mindist*, IVP_Real_Object*, IVP_Real_Object*)` | edited |  |
+| ivp_impact | `IVP_Mindist::try_to_generate_managed_friction(IVP_Friction_System**, IVP_BOOL*, IVP_Simulation_Unit*, IVP_BOOL)` | edited |  |
+| ivp_impact | `IVP_Contact_Point::get_material_info(IVP_Material**)` | identical |  |
+| ivp_impact | `IVP_Contact_Point::read_materials_for_contact_situation(IVP_Impact_Solver_Long_Term*)` | identical |  |
+| ivp_impact | `IVP_Impact_Solver::undo_push()` | identical |  |
 | ivp_impact | `IVP_Impact_System::init_and_solve_impact_system(IVP_Mindist*, IVP_Friction_System*, IVP_Friction_Core_Pair*, IVP_Contact_Point*)` | identical |  |
 | ivp_impact | `IVP_Impact_System::add_pushed_core_with_pairs_except(IVP_Core*, IVP_Friction_Core_Pair*)` | identical |  |
-| ivp_impact | `IVP_Impact_Solver_Long_Term::do_impact_long_term(IVP_Core**, float, IVP_Contact_Point*)` | identical |  |
-| ivp_impact | `IVP_Impact_Solver::undo_push()` | identical |  |
 | ivp_material | `IVP_Material::~IVP_Material()` | identical |  |
 | ivp_material | `IVP_Material_Simple::get_name()` | identical |  |
 | ivp_material | `IVP_Material_Simple::~IVP_Material_Simple()` | identical |  |
 | ivp_material | `IVP_Material_Manager::get_material_by_index(IVP_Real_Object*, IVP_U_Point const*, int)` | identical |  |
 | ivp_material | `IVP_Material_Manager::IVP_Material_Manager(IVP_BOOL)` | identical |  |
 | ivp_material | `IVP_Material_Manager::IVP_Material_Manager(IVP_BOOL)` | identical |  |
-| ivp_material | `IVP_Material_Manager::~IVP_Material_Manager()` | identical |  |
 | ivp_material | `IVP_Material_Manager::~IVP_Material_Manager()` | identical |  |
 | ivp_material | `IVP_Material::~IVP_Material()` | identical |  |
 | ivp_material | `IVP_Material::~IVP_Material()` | identical |  |
@@ -882,13 +881,13 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_material | `IVP_Material_Manager::get_adhesion(IVP_Contact_Situation*)` | identical |  |
 | ivp_material | `IVP_Material_Manager::get_elasticity(IVP_Contact_Situation*)` | identical |  |
 | ivp_material | `IVP_Material_Manager::get_friction_factor(IVP_Contact_Situation*)` | identical |  |
+| ivp_material | `IVP_Material_Manager::~IVP_Material_Manager()` | identical |  |
 | ivp_mindist | `IVP_Mindist::init_mindist(IVP_Real_Object*, IVP_Real_Object*, IVP_Compact_Edge const*, IVP_Compact_Edge const*)` | differs | size retail 496 vs ours 506 |
-| ivp_mindist | `IVP_Time_Event::simulate_time_event(IVP_Environment*)` | differs | data ref at +0xe (string): retail "/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/iv...", ours "../ivp/ivp_ph |
 | ivp_mindist | `_GLOBAL__I_a` | identical |  |
 | ivp_mindist | `IVP_Mindist::simulate_time_event(IVP_Environment*)` | identical |  |
 | ivp_mindist | `IVP_Mindist::exact_mindist_went_invalid(IVP_Mindist_Manager*)` | identical |  |
 | ivp_mindist | `IVP_Mindist::update_exact_mindist_events(IVP_BOOL, IVP_MINDIST_EVENT_HINT)` | identical |  |
-| ivp_mindist | `IVP_Mindist::create_cp_in_advance_pretension(IVP_Real_Object*, float)` | edited |  |
+| ivp_mindist | `IVP_Mindist::create_cp_in_advance_pretension(IVP_Real_Object*, float)` | identical |  |
 | ivp_mindist | `IVP_Mindist::mindist_hull_limit_exceeded_event(float)` | identical |  |
 | ivp_mindist | `IVP_Mindist::IVP_Mindist(IVP_Environment*, IVP_Collision_Delegator*)` | identical |  |
 | ivp_mindist | `IVP_Mindist::IVP_Mindist(IVP_Environment*, IVP_Collision_Delegator*)` | identical |  |
@@ -899,13 +898,13 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_mindist | `IVP_Collision::~IVP_Collision()` | identical |  |
 | ivp_mindist | `IVP_Collision::~IVP_Collision()` | identical |  |
 | ivp_mindist | `IVP_Diff_Hash<IVP_MM_CMP, IVP_U_FVector<IVP_Collision>, IVP_Collision, IVP_MM_CMP_Key>::check_element(IVP_MM_CMP_Key*, IVP_MM_CMP_Key*)` | identical |  |
-| ivp_mindist | `IVP_Diff_Hash<IVP_MM_CMP, IVP_U_FVector<IVP_Collision>, IVP_Collision, IVP_MM_CMP_Key>::IVP_Diff_Hash(IVP_U_FVector<IVP_Collision>*, short*, int, IVP_` | edited |  |
+| ivp_mindist | `IVP_Diff_Hash<IVP_MM_CMP, IVP_U_FVector<IVP_Collision>, IVP_Collision, IVP_MM_CMP_Key>::IVP_Diff_Hash(IVP_U_FVector<IVP_Collision>*, short*, int, IVP_` | identical |  |
 | ivp_mindist | `IVP_Diff_Hash<IVP_OO_CMP, IVP_U_FVector<IVP_Collision>, IVP_Collision, IVP_Real_Object>::check_element(IVP_Real_Object*, IVP_Real_Object*)` | identical |  |
-| ivp_mindist | `IVP_Diff_Hash<IVP_OO_CMP, IVP_U_FVector<IVP_Collision>, IVP_Collision, IVP_Real_Object>::IVP_Diff_Hash(IVP_U_FVector<IVP_Collision>*, short*, int, IVP` | edited |  |
+| ivp_mindist | `IVP_Diff_Hash<IVP_OO_CMP, IVP_U_FVector<IVP_Collision>, IVP_Collision, IVP_Real_Object>::IVP_Diff_Hash(IVP_U_FVector<IVP_Collision>*, short*, int, IVP` | identical |  |
+| ivp_mindist | `IVP_Time_Event::simulate_time_event(IVP_Environment*)` | identical |  |
 | ivp_mindist | `IVP_Mindist_Manager::recheck_ov_element(IVP_Real_Object*)` | identical |  |
 | ivp_mindist | `IVP_Mindist_Manager::insert_hull_mindist(IVP_Mindist*, float)` | identical |  |
 | ivp_mindist | `IVP_Mindist_Manager::remove_hull_mindist(IVP_Mindist*)` | identical |  |
-| ivp_mindist | `IVP_Mindist_Manager::insert_exact_mindist(IVP_Mindist*)` | identical |  |
 | ivp_mindist | `IVP_Mindist_Manager::recalc_exact_mindist(IVP_Mindist*)` | identical |  |
 | ivp_mindist | `IVP_Mindist_Manager::remove_exact_mindist(IVP_Mindist*)` | identical |  |
 | ivp_mindist | `IVP_Mindist_Manager::create_exact_mindists(IVP_Real_Object*, IVP_Real_Object*, double, IVP_U_FVector<IVP_Collision>*, IVP_Compact_Ledge const*, IVP_Co` | identical |  |
@@ -924,77 +923,78 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_mindist | `IVP_Synapse::get_type()` | identical |  |
 | ivp_mindist | `IVP_Mindist_Base::get_ledges(IVP_Compact_Ledge const**)` | identical |  |
 | ivp_mindist | `IVP_Mindist_Base::get_objects(IVP_Real_Object**)` | identical |  |
+| ivp_mindist | `IVP_Mindist_Manager::insert_exact_mindist(IVP_Mindist*)` | identical |  |
 | ivp_mindist | `IVP_Mindist_Manager::insert_invalid_mindist(IVP_Mindist*)` | identical |  |
 | ivp_mindist | `IVP_Mindist_Manager::remove_invalid_mindist(IVP_Mindist*)` | identical |  |
 | ivp_mindist | `IVP_Mindist_Manager::recalc_all_exact_mindists()` | identical |  |
 | ivp_mindist | `IVP_Mindist_Manager::recalc_all_exact_mindists_events()` | identical |  |
 | ivp_mindist | `IVP_Mindist_Manager::IVP_Mindist_Manager(IVP_Environment*)` | identical |  |
 | ivp_mindist | `IVP_Synapse::get_ledge() const` | identical |  |
-| ivp_mindist_event | `IVP_3D_Solver_KK_COLL::get_value(IVP_U_Matrix*, IVP_U_Matrix*)` | differs | size retail 348 vs ours 346 |
-| ivp_mindist_event | `IVP_Mindist_Event_Solver::next_event_B_POLY(IVP_Mindist_Event_Solver*)` | differs | data ref at +0x18a (string): retail "/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/iv...", ours "../ivp/ivp_ |
-| ivp_mindist_event | `IVP_Mindist_Event_Solver::calc_next_event_BP(IVP_Ball*, IVP_Compact_Edge const*, IVP_Cache_Object*, IVP_Cache_Ledge_Point*)` | differs | size retail 1986 vs ours 1992 |
-| ivp_mindist_event | `IVP_Mindist_Event_Solver::calc_next_event_PF(IVP_Compact_Edge const*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*, IVP_Cache_Ledge_Point*)` | differs | size retail 1960 vs ours 1981 |
-| ivp_mindist_event | `IVP_Mindist_Event_Solver::calc_next_event_PP(IVP_Compact_Edge const*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*, IVP_Cache_Ledge_Point*)` | differs | size retail 2251 vs ours 2238 |
-| ivp_mindist_event | `IVP_Mindist_Event_Solver::next_event_illegal(IVP_Mindist_Event_Solver*)` | differs | data ref at +0xe (string): retail "/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/iv...", ours "../ivp/ivp_co |
-| ivp_mindist_event | `IVP_Mindist_Event_Solver::next_event_default_poly_poly(IVP_Mindist_Event_Solver*)` | differs | data ref at +0x1f9 (string): retail "/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/iv...", ours "../ivp/ivp_ |
 | ivp_mindist_event | `IVP_3D_Solver_PK_KK::get_value(IVP_U_Matrix*, IVP_U_Matrix*)` | identical |  |
 | ivp_mindist_event | `IVP_3D_Solver_PF_NPF::get_value(IVP_U_Matrix*, IVP_U_Matrix*)` | identical |  |
 | ivp_mindist_event | `IVP_3D_Solver_S_VALS::get_value(IVP_U_Matrix*, IVP_U_Matrix*)` | identical |  |
+| ivp_mindist_event | `IVP_3D_Solver_KK_COLL::get_value(IVP_U_Matrix*, IVP_U_Matrix*)` | edited |  |
 | ivp_mindist_event | `IVP_3D_Solver_PF_COLL::get_value(IVP_U_Matrix*, IVP_U_Matrix*)` | identical |  |
 | ivp_mindist_event | `IVP_3D_Solver_PK_COLL::get_value(IVP_U_Matrix*, IVP_U_Matrix*)` | identical |  |
 | ivp_mindist_event | `IVP_Mindist_Event_Solver::next_event_BB(IVP_Mindist_Event_Solver*)` | identical |  |
+| ivp_mindist_event | `IVP_Mindist_Event_Solver::next_event_B_POLY(IVP_Mindist_Event_Solver*)` | identical |  |
 | ivp_mindist_event | `IVP_Mindist_Event_Solver::calc_next_event_BB(IVP_Cache_Object*, IVP_Cache_Object*)` | identical |  |
 | ivp_mindist_event | `IVP_Mindist_Event_Solver::calc_next_event_BF(IVP_Compact_Edge const*, IVP_Cache_Object*, IVP_Cache_Ledge_Point*)` | identical |  |
 | ivp_mindist_event | `IVP_Mindist_Event_Solver::calc_next_event_BK(IVP_Ball*, IVP_Compact_Edge const*, IVP_Cache_Object*, IVP_Cache_Ledge_Point*)` | identical |  |
+| ivp_mindist_event | `IVP_Mindist_Event_Solver::calc_next_event_BP(IVP_Ball*, IVP_Compact_Edge const*, IVP_Cache_Object*, IVP_Cache_Ledge_Point*)` | edited |  |
 | ivp_mindist_event | `IVP_Mindist_Event_Solver::calc_next_event_KK(IVP_Compact_Edge const*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*, IVP_Cache_Ledge_Point*)` | identical |  |
+| ivp_mindist_event | `IVP_Mindist_Event_Solver::calc_next_event_PF(IVP_Compact_Edge const*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*, IVP_Cache_Ledge_Point*)` | edited |  |
 | ivp_mindist_event | `IVP_Mindist_Event_Solver::calc_next_event_PK(IVP_Compact_Edge const*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*, IVP_Cache_Ledge_Point*)` | identical |  |
+| ivp_mindist_event | `IVP_Mindist_Event_Solver::calc_next_event_PP(IVP_Compact_Edge const*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*, IVP_Cache_Ledge_Point*)` | edited |  |
+| ivp_mindist_event | `IVP_Mindist_Event_Solver::next_event_illegal(IVP_Mindist_Event_Solver*)` | identical |  |
 | ivp_mindist_event | `IVP_Mindist_Event_Solver::init_mim_function_table()` | identical |  |
+| ivp_mindist_event | `IVP_Mindist_Event_Solver::next_event_default_poly_poly(IVP_Mindist_Event_Solver*)` | identical |  |
 | ivp_mindist_event | `IVP_3D_Solver_KK_PARALLEL::get_value(IVP_U_Matrix*, IVP_U_Matrix*)` | identical |  |
 | ivp_mindist_event | `IVP_3D_Solver_VEC_PARALLEL_AREA::get_value(IVP_U_Matrix*, IVP_U_Matrix*)` | identical |  |
 | ivp_mindist_event | `IVP_3D_Solver_DISTANCE_OF_TWO_POINTS::get_value(IVP_U_Matrix*, IVP_U_Matrix*)` | identical |  |
-| ivp_mindist_friction | `IVP_Contact_Point::p_calc_friction_s_PK(IVP_U_Point const*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*, IVP_Impact_Solver_Long_Term*, IVP_U_Float` | differs | size retail 811 vs ours 852 |
-| ivp_mindist_friction | `IVP_Contact_Point::p_calc_friction_ss_KK(IVP_Compact_Edge const*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*, IVP_Cache_Ledge_Point*, IVP_Impact_` | differs | size retail 1659 vs ours 1481 |
-| ivp_mindist_friction | `IVP_Contact_Point::recalc_friction_s_vals()` | differs | data ref at +0x2ba (string): retail "/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/iv...", ours "../ivp/ivp_ |
-| ivp_mindist_friction | `IVP_Contact_Point::recompute_friction()` | new |  |
+| ivp_mindist_friction | `IVP_Contact_Point::p_calc_friction_s_PK(IVP_U_Point const*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*, IVP_Impact_Solver_Long_Term*, IVP_U_Float` | edited |  |
 | ivp_mindist_friction | `IVP_Contact_Point::p_calc_friction_qr_PF(IVP_U_Point const*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*, IVP_Impact_Solver_Long_Term*, IVP_U_Floa` | identical |  |
-| ivp_mindist_friction | `IVP_Friction_Manager::generate_contact_point(IVP_Mindist*, IVP_BOOL*)` | identical |  |
+| ivp_mindist_friction | `IVP_Contact_Point::p_calc_friction_ss_KK(IVP_Compact_Edge const*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*, IVP_Cache_Ledge_Point*, IVP_Impact_` | edited |  |
+| ivp_mindist_friction | `IVP_Contact_Point::recalc_friction_s_vals()` | identical |  |
 | ivp_mindist_friction | `IVP_Contact_Point::reset_time(IVP_Time)` | identical |  |
 | ivp_mindist_friction | `IVP_Contact_Point::get_contact_normal(IVP_U_Float_Point*)` | identical |  |
-| ivp_mindist_mcases | `IVP_Mindist_Minimize_Solver::p_minimize_BP(IVP_Cache_Ball*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*)` | differs | size retail 944 vs ours 997 |
-| ivp_mindist_mcases | `IVP_Mindist_Minimize_Solver::p_minimize_PP(IVP_Compact_Edge const*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*, IVP_Cache_Ledge_Point*)` | differs | size retail 1466 vs ours 1474 |
-| ivp_mindist_mcases | `IVP_Mindist_Minimize_Solver::p_minimize_Leave_BK(IVP_Cache_Ball*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*)` | differs | size retail 1323 vs ours 1355 |
-| ivp_mindist_mcases | `IVP_Mindist_Minimize_Solver::p_minimize_Leave_KK(IVP_Compact_Edge const*, IVP_Compact_Edge const*, IVP_KK_Input const&, IVP_Unscaled_KK_Result const*,` | differs | size retail 2810 vs ours 2845 |
-| ivp_mindist_mcases | `IVP_Mindist_Minimize_Solver::p_minimize_Leave_PF(IVP_Compact_Edge const*, IVP_U_Point const*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*, IVP_Cac` | differs | size retail 1670 vs ours 1630 |
-| ivp_mindist_mcases | `IVP_Mindist_Minimize_Solver::p_minimize_Leave_PK(IVP_Compact_Edge const*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*, IVP_Cache_Ledge_Point*)` | differs | size retail 2117 vs ours 2140 |
+| ivp_mindist_friction | `IVP_Contact_Point::recompute_friction()` | identical |  |
+| ivp_mindist_friction | `IVP_Friction_Manager::generate_contact_point(IVP_Mindist*, IVP_BOOL*)` | identical |  |
 | ivp_mindist_mcases | `IVP_Mindist_Minimize_Solver::p_minimize_BF(IVP_Cache_Ball*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*)` | identical |  |
 | ivp_mindist_mcases | `IVP_Mindist_Minimize_Solver::p_minimize_BK(IVP_Cache_Ball*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*)` | identical |  |
+| ivp_mindist_mcases | `IVP_Mindist_Minimize_Solver::p_minimize_BP(IVP_Cache_Ball*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*)` | edited |  |
 | ivp_mindist_mcases | `IVP_Mindist_Minimize_Solver::p_minimize_KK(IVP_Compact_Edge const*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*, IVP_Cache_Ledge_Point*)` | identical |  |
 | ivp_mindist_mcases | `IVP_Mindist_Minimize_Solver::p_minimize_PF(IVP_Compact_Edge const*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*, IVP_Cache_Ledge_Point*)` | identical |  |
 | ivp_mindist_mcases | `IVP_Mindist_Minimize_Solver::p_minimize_PK(IVP_Compact_Edge const*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*, IVP_Cache_Ledge_Point*)` | identical |  |
+| ivp_mindist_mcases | `IVP_Mindist_Minimize_Solver::p_minimize_PP(IVP_Compact_Edge const*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*, IVP_Cache_Ledge_Point*)` | edited |  |
+| ivp_mindist_mcases | `IVP_Mindist_Minimize_Solver::p_minimize_Leave_BK(IVP_Cache_Ball*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*)` | edited |  |
+| ivp_mindist_mcases | `IVP_Mindist_Minimize_Solver::p_minimize_Leave_KK(IVP_Compact_Edge const*, IVP_Compact_Edge const*, IVP_KK_Input const&, IVP_Unscaled_KK_Result const*,` | edited |  |
+| ivp_mindist_mcases | `IVP_Mindist_Minimize_Solver::p_minimize_Leave_PF(IVP_Compact_Edge const*, IVP_U_Point const*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*, IVP_Cac` | edited |  |
+| ivp_mindist_mcases | `IVP_Mindist_Minimize_Solver::p_minimize_Leave_PK(IVP_Compact_Edge const*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*, IVP_Cache_Ledge_Point*)` | edited |  |
 | ivp_mindist_minimize | `IVP_Mindist::recalc_mindist()` | differs | bytes |
-| ivp_mindist_minimize | `IVP_Mindist::recalc_invalid_mindist()` | differs | data ref at +0x50 (string): retail "/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/iv...", ours "../ivp/ivp_c |
-| ivp_mindist_minimize | `IVP_Mindist_Minimize_Solver::minimize_FB(IVP_Mindist_Minimize_Solver*)` | differs | data ref at +0x12 (string): retail "/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/iv...", ours "../ivp/ivp_c |
-| ivp_mindist_minimize | `IVP_Mindist_Minimize_Solver::minimize_KB(IVP_Mindist_Minimize_Solver*)` | differs | data ref at +0x12 (string): retail "/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/iv...", ours "../ivp/ivp_c |
-| ivp_mindist_minimize | `IVP_Mindist_Minimize_Solver::minimize_PB(IVP_Mindist_Minimize_Solver*)` | differs | data ref at +0x12 (string): retail "/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/iv...", ours "../ivp/ivp_c |
-| ivp_mindist_minimize | `IVP_Mindist_Minimize_Solver::p_minimize_FF(IVP_Compact_Edge const*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*, IVP_Cache_Ledge_Point*)` | differs | size retail 4856 vs ours 3152 |
-| ivp_mindist_minimize | `IVP_Mindist_Minimize_Solver::minimize_B_POLY(IVP_Mindist_Minimize_Solver*)` | differs | data ref at +0x17f (string): retail "/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/iv...", ours "../ivp/ivp_ |
-| ivp_mindist_minimize | `IVP_Mindist_Minimize_Solver::minimize_illegal(IVP_Mindist_Minimize_Solver*)` | differs | data ref at +0xe (string): retail "/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/iv...", ours "../ivp/ivp_co |
-| ivp_mindist_minimize | `CFmtStrN<256, false>::InitQuietTruncation()` | missing |  |
-| ivp_mindist_minimize | `CFmtStrN<256, false>::sprintf(char const*, ...)` | missing |  |
+| ivp_mindist_minimize | `IVP_Mindist_Minimize_Solver::p_minimize_FF(IVP_Compact_Edge const*, IVP_Compact_Edge const*, IVP_Cache_Ledge_Point*, IVP_Cache_Ledge_Point*)` | differs | bytes |
+| ivp_mindist_minimize | `IVP_Mindist::recalc_invalid_mindist()` | identical |  |
 | ivp_mindist_minimize | `IVP_Compact_Ledge_Solver::minimize_on_other_side(IVP_Compact_Edge const*, IVP_U_Point const*)` | identical |  |
-| ivp_mindist_minimize | `IVP_Mindist_Minimize_Solver::minimize_BB(IVP_Mindist_Minimize_Solver*)` | edited |  |
+| ivp_mindist_minimize | `IVP_Mindist_Minimize_Solver::minimize_BB(IVP_Mindist_Minimize_Solver*)` | identical |  |
+| ivp_mindist_minimize | `IVP_Mindist_Minimize_Solver::minimize_FB(IVP_Mindist_Minimize_Solver*)` | identical |  |
+| ivp_mindist_minimize | `IVP_Mindist_Minimize_Solver::minimize_KB(IVP_Mindist_Minimize_Solver*)` | identical |  |
+| ivp_mindist_minimize | `IVP_Mindist_Minimize_Solver::minimize_PB(IVP_Mindist_Minimize_Solver*)` | identical |  |
+| ivp_mindist_minimize | `IVP_Mindist_Minimize_Solver::minimize_B_POLY(IVP_Mindist_Minimize_Solver*)` | identical |  |
+| ivp_mindist_minimize | `IVP_Mindist_Minimize_Solver::minimize_illegal(IVP_Mindist_Minimize_Solver*)` | identical |  |
 | ivp_mindist_minimize | `IVP_Mindist_Minimize_Solver::init_mms_function_table()` | identical |  |
 | ivp_mindist_minimize | `IVP_Mindist_Minimize_Solver::minimize_default_poly_poly(IVP_Mindist_Minimize_Solver*)` | identical |  |
+| ivp_mindist_minimize | `CFmtStrN<256, false>::sprintf(char const*, ...)` | new |  |
 | ivp_mindist_minimize | `IVP_Mindist::is_recursive()` | identical |  |
-| ivp_mindist_minimize | `IVP_Mindist::mindist_rescue_push()` | edited |  |
+| ivp_mindist_minimize | `IVP_Mindist::mindist_rescue_push()` | identical |  |
 | ivp_mindist_minimize | `IVP_Collision::delegator_is_going_to_be_deleted_event(IVP_Collision_Delegator*)` | identical |  |
-| ivp_mindist_minimize | `IVP_Mindist_Minimize_Solver::check_loop_hash(IVP_SYNAPSE_POLYGON_STATUS, IVP_Compact_Edge const*, IVP_SYNAPSE_POLYGON_STATUS, IVP_Compact_Edge const*)` | edited |  |
+| ivp_mindist_minimize | `IVP_Mindist_Minimize_Solver::check_loop_hash(IVP_SYNAPSE_POLYGON_STATUS, IVP_Compact_Edge const*, IVP_SYNAPSE_POLYGON_STATUS, IVP_Compact_Edge const*)` | identical |  |
 | ivp_mindist_minimize | `IVP_Mindist_Minimize_Solver::minimize_swapped_poly_poly(IVP_Mindist_Minimize_Solver*)` | identical |  |
-| ivp_mindist_recursive | `IVP_Mindist_Recursive::exact_mindist_went_invalid(IVP_Mindist_Manager*)` | differs | data ref at +0x93 (constant): retail bytes a95f6358, ours bytes ec78ad60 |
-| ivp_mindist_recursive | `IVP_Mindist_Recursive::do_impact()` | differs | data ref at +0x3d (string): retail "/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/iv...", ours "../ivp/ivp_c |
+| ivp_mindist_minimize | `CFmtStrN<256, false>::InitQuietTruncation()` | new |  |
 | ivp_mindist_recursive | `IVP_Mindist_Recursive::recheck_recursive_childs(double)` | identical |  |
+| ivp_mindist_recursive | `IVP_Mindist_Recursive::exact_mindist_went_invalid(IVP_Mindist_Manager*)` | edited |  |
 | ivp_mindist_recursive | `IVP_Mindist_Recursive::invalid_mindist_went_exact()` | identical |  |
 | ivp_mindist_recursive | `IVP_Mindist_Recursive::rec_hull_limit_exceeded_event()` | identical |  |
+| ivp_mindist_recursive | `IVP_Mindist_Recursive::do_impact()` | identical |  |
 | ivp_mindist_recursive | `IVP_Mindist_Recursive::IVP_Mindist_Recursive(IVP_Environment*, IVP_Collision_Delegator*)` | identical |  |
 | ivp_mindist_recursive | `IVP_Mindist_Recursive::~IVP_Mindist_Recursive()` | identical |  |
 | ivp_mindist_recursive | `IVP_Mindist_Recursive::~IVP_Mindist_Recursive()` | identical |  |
@@ -1009,16 +1009,15 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_mindist_recursive | `non-virtual thunk to IVP_Mindist_Recursive::change_spawned_mindist_count(int)` | identical |  |
 | ivp_mindist_recursive | `non-virtual thunk to IVP_Mindist_Recursive::collision_is_going_to_be_deleted_event(IVP_Collision*)` | identical |  |
 | ivp_mindist_recursive | `non-virtual thunk to IVP_Mindist_Recursive::~IVP_Mindist_Recursive()` | identical |  |
-| ivp_object | `IVP_Real_Object::set_pinned(IVP_BOOL)` | differs | size retail 379 vs ours 377 |
-| ivp_object | `IVP_Real_Object::init_object_core(IVP_Environment*, IVP_Template_Real_Object const*)` | differs | data ref at +0x136 (string): retail "/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/iv...", ours "../ivp/ivp_ |
-| ivp_object | `IVP_Real_Object::clear_internal_references()` | differs | data ref at +0x1d (string): retail "/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/iv...", ours "../ivp/ivp_i |
 | ivp_object | `IVP_Object::~IVP_Object()` | identical |  |
 | ivp_object | `IVP_Object::~IVP_Object()` | identical |  |
 | ivp_object | `IVP_Cluster::IVP_Cluster(IVP_Environment*)` | identical |  |
 | ivp_object | `IVP_Cluster::~IVP_Cluster()` | identical |  |
 | ivp_object | `IVP_Cluster::~IVP_Cluster()` | identical |  |
 | ivp_object | `IVP_Real_Object::reset_time(IVP_Time)` | identical |  |
+| ivp_object | `IVP_Real_Object::set_pinned(IVP_BOOL)` | edited |  |
 | ivp_object | `IVP_Real_Object::change_mass(float)` | identical |  |
+| ivp_object | `IVP_Real_Object::init_object_core(IVP_Environment*, IVP_Template_Real_Object const*)` | identical |  |
 | ivp_object | `IVP_Real_Object::convert_to_phantom(IVP_Template_Phantom const*)` | identical |  |
 | ivp_object | `IVP_Real_Object::disable_simulation()` | identical |  |
 | ivp_object | `IVP_Real_Object::add_listener_object(IVP_Listener_Object*)` | identical |  |
@@ -1027,21 +1026,20 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_object | `IVP_Real_Object::ensure_in_simulation()` | identical |  |
 | ivp_object | `IVP_Real_Object::get_all_near_mindists()` | identical |  |
 | ivp_object | `IVP_Real_Object::remove_listener_object(IVP_Listener_Object*)` | identical |  |
-| ivp_object | `IVP_Real_Object::set_new_m_object_f_core(IVP_U_Matrix const*)` | edited |  |
-| ivp_object | `IVP_Real_Object::ensure_in_simulation_now()` | new |  |
+| ivp_object | `IVP_Real_Object::set_new_m_object_f_core(IVP_U_Matrix const*)` | identical |  |
+| ivp_object | `IVP_Real_Object::ensure_in_simulation_now()` | identical |  |
 | ivp_object | `IVP_Real_Object::recheck_collision_filter()` | identical |  |
 | ivp_object | `IVP_Real_Object::async_add_speed_object_ws(IVP_U_Float_Point const*)` | identical |  |
+| ivp_object | `IVP_Real_Object::clear_internal_references()` | identical |  |
 | ivp_object | `IVP_Real_Object::delete_and_check_vicinity()` | identical |  |
-| ivp_object | `IVP_Real_Object::enable_collision_detection(IVP_BOOL)` | identical |  |
 | ivp_object | `IVP_Real_Object::force_grow_friction_system()` | identical |  |
-| ivp_object | `IVP_Real_Object::recompile_material_changed()` | identical |  |
 | ivp_object | `IVP_Real_Object::set_new_quat_object_f_core(IVP_U_Quat const*, IVP_U_Point const*)` | identical |  |
 | ivp_object | `IVP_Real_Object::beam_object_to_new_position(IVP_U_Quat const*, IVP_U_Point const*, IVP_BOOL)` | identical |  |
 | ivp_object | `IVP_Real_Object::revive_object_for_simulation()` | identical |  |
 | ivp_object | `IVP_Real_Object::async_add_rot_speed_object_cs(IVP_U_Float_Point const*)` | identical |  |
 | ivp_object | `IVP_Real_Object::revive_nearest_objects_grow_fs()` | identical |  |
 | ivp_object | `IVP_Real_Object::recalc_exact_mindists_of_object()` | identical |  |
-| ivp_object | `IVP_Real_Object::unlink_contact_points_for_object(IVP_Real_Object*)` | edited |  |
+| ivp_object | `IVP_Real_Object::unlink_contact_points_for_object(IVP_Real_Object*)` | identical |  |
 | ivp_object | `IVP_Real_Object::recalc_invalid_mindists_of_object()` | identical |  |
 | ivp_object | `IVP_Real_Object::update_exact_mindist_events_of_object()` | identical |  |
 | ivp_object | `IVP_Real_Object::IVP_Real_Object(IVP_Cluster*, IVP_SurfaceManager*, IVP_Template_Real_Object const*, IVP_U_Quat const*, IVP_U_Point const*)` | identical |  |
@@ -1056,21 +1054,23 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_object | `IVP_Real_Object::insert_anchor(IVP_Anchor*)` | identical |  |
 | ivp_object | `IVP_Real_Object::remove_anchor(IVP_Anchor*)` | identical |  |
 | ivp_object | `IVP_Real_Object::delete_silently()` | identical |  |
+| ivp_object | `IVP_Real_Object::enable_collision_detection(IVP_BOOL)` | identical |  |
+| ivp_object | `IVP_Real_Object::recompile_material_changed()` | identical |  |
 | ivp_object | `IVP_Real_Object::get_collision_check_reference_count()` | identical |  |
 | ivp_object | `IVP_Real_Object::~IVP_Real_Object()` | identical |  |
 | ivp_object | `IVP_Real_Object::get_m_world_f_object_AT(IVP_U_Matrix*) const` | identical |  |
 | ivp_object | `IVP_Real_Object::get_quat_world_f_object_AT(IVP_U_Quat*, IVP_U_Point*) const` | identical |  |
-| ivp_object_polygon_tetra | `IVP_Object_Polygon_Tetra::make_triangles()` | differs | size retail 2305 vs ours 2337 |
-| ivp_object_polygon_tetra | `IVP_Object_Polygon_Tetra::generate_double_triangle(IVP_Poly_Point*, IVP_Poly_Point*, IVP_Poly_Point*)` | differs | size retail 1184 vs ours 1188 |
-| ivp_object_polygon_tetra | `P_Sur_2D::calc_triangle_representation()` | differs | data ref at +0x67 (string): retail "/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/iv...", ours "../ivp/ivp_c |
 | ivp_object_polygon_tetra | `IVP_Triangle::calc_hesse()` | identical |  |
 | ivp_object_polygon_tetra | `IVP_Triangle::~IVP_Triangle()` | identical |  |
 | ivp_object_polygon_tetra | `P_Sur_2D_Line::is_crossing_line(P_Sur_2D_Line*)` | identical |  |
 | ivp_object_polygon_tetra | `P_Sur_2D_Line::overlaps_with_line(P_Sur_2D_Line*)` | identical |  |
+| ivp_object_polygon_tetra | `IVP_Object_Polygon_Tetra::make_triangles()` | edited |  |
 | ivp_object_polygon_tetra | `IVP_Object_Polygon_Tetra::insert_pierce_info()` | identical |  |
+| ivp_object_polygon_tetra | `IVP_Object_Polygon_Tetra::generate_double_triangle(IVP_Poly_Point*, IVP_Poly_Point*, IVP_Poly_Point*)` | edited |  |
 | ivp_object_polygon_tetra | `IVP_Object_Polygon_Tetra::IVP_Object_Polygon_Tetra(IVP_Template_Polygon*)` | identical |  |
 | ivp_object_polygon_tetra | `IVP_Object_Polygon_Tetra::~IVP_Object_Polygon_Tetra()` | identical |  |
 | ivp_object_polygon_tetra | `P_Sur_2D::calc_line_representation()` | identical |  |
+| ivp_object_polygon_tetra | `P_Sur_2D::calc_triangle_representation()` | identical |  |
 | ivp_object_polygon_tetra | `P_Sur_2D::~P_Sur_2D()` | identical |  |
 | ivp_object_polygon_tetra | `IVP_Triangle::~IVP_Triangle()` | identical |  |
 | ivp_object_polygon_tetra | `IVP_Object_Polygon_Tetra::IVP_Object_Polygon_Tetra(IVP_Template_Polygon*)` | identical |  |
@@ -1093,38 +1093,24 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_oo_watcher | `non-virtual thunk to IVP_OO_Watcher::collision_is_going_to_be_deleted_event(IVP_Collision*)` | identical |  |
 | ivp_oo_watcher | `non-virtual thunk to IVP_OO_Watcher::~IVP_OO_Watcher()` | identical |  |
 | ivp_performancecounter | `IVP_PerformanceCounter::~IVP_PerformanceCounter()` | identical |  |
-| ivp_performancecounter | `IVP_PerformanceCounter::~IVP_PerformanceCounter()` | identical |  |
 | ivp_performancecounter | `IVP_PerformanceCounter_Simple::reset_and_print_performance_counters(IVP_Time)` | identical |  |
 | ivp_performancecounter | `IVP_PerformanceCounter_Simple::IVP_PerformanceCounter_Simple()` | identical |  |
 | ivp_performancecounter | `IVP_PerformanceCounter_Simple::~IVP_PerformanceCounter_Simple()` | identical |  |
-| ivp_performancecounter | `IVP_PerformanceCounter_Simple::~IVP_PerformanceCounter_Simple()` | identical |  |
+| ivp_performancecounter | `IVP_PerformanceCounter::~IVP_PerformanceCounter()` | identical |  |
 | ivp_performancecounter | `IVP_PerformanceCounter_Simple::stop_pcount()` | identical |  |
 | ivp_performancecounter | `IVP_PerformanceCounter_Simple::start_pcount()` | identical |  |
 | ivp_performancecounter | `IVP_PerformanceCounter_Simple::environment_is_going_to_be_deleted(IVP_Environment*)` | identical |  |
 | ivp_performancecounter | `IVP_PerformanceCounter_Simple::pcount(IVP_PERFORMANCE_ELEMENT)` | identical |  |
+| ivp_performancecounter | `IVP_PerformanceCounter_Simple::~IVP_PerformanceCounter_Simple()` | identical |  |
 | ivp_physic | `IVP_Statistic_Manager::clear_statistic()` | identical |  |
 | ivp_physic | `IVP_Statistic_Manager::IVP_Statistic_Manager()` | identical |  |
 | ivp_physic | `IVP_Application_Environment::IVP_Application_Environment()` | identical |  |
-| ivp_physic_private | `IVP_Friction_System::dist_removed_update_pair_info(IVP_Contact_Point*)` | differs | data ref at +0x3f (string): retail "/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/iv...", ours "../ivp/ivp_i |
-| ivp_physic_private | `IVP_Core::revive_simulation_core()` | differs | size retail 466 vs ours 338 |
-| ivp_physic_private | `IVP_Environment::add_revive_core(IVP_Core*)` | identical |  |
-| ivp_physic_private | `IVP_Environment::revive_cores_PSI()` | identical |  |
 | ivp_physic_private | `IVP_Cluster_Manager::remove_object(IVP_Real_Object*)` | identical |  |
-| ivp_physic_private | `IVP_Cluster_Manager::add_listener_object(IVP_Real_Object*, IVP_Listener_Object*)` | identical |  |
 | ivp_physic_private | `IVP_Cluster_Manager::remove_listener_object(IVP_Real_Object*, IVP_Listener_Object*)` | identical |  |
-| ivp_physic_private | `IVP_Cluster_Manager::fire_event_pre_collision(IVP_Real_Object*, IVP_Event_Collision*)` | identical |  |
-| ivp_physic_private | `IVP_Cluster_Manager::fire_event_object_deleted(IVP_Event_Object*)` | identical |  |
-| ivp_physic_private | `IVP_Cluster_Manager::fire_event_post_collision(IVP_Real_Object*, IVP_Event_Collision*)` | identical |  |
-| ivp_physic_private | `IVP_Cluster_Manager::fire_event_friction_created(IVP_Real_Object*, IVP_Event_Friction*)` | identical |  |
-| ivp_physic_private | `IVP_Cluster_Manager::fire_event_friction_deleted(IVP_Real_Object*, IVP_Event_Friction*)` | identical |  |
-| ivp_physic_private | `IVP_Cluster_Manager::fire_event_collision_object_deleted(IVP_Real_Object*)` | identical |  |
 | ivp_physic_private | `IVP_Cluster_Manager::IVP_Cluster_Manager(IVP_Environment*)` | identical |  |
-| ivp_physic_private | `IVP_Friction_System::add_core_to_system(IVP_Core*)` | identical |  |
 | ivp_physic_private | `IVP_Friction_System::get_controller_name()` | identical |  |
-| ivp_physic_private | `IVP_Friction_System::dist_added_update_pair_info(IVP_Contact_Point*)` | identical |  |
-| ivp_physic_private | `IVP_Friction_System::fs_recalc_all_contact_points()` | identical |  |
+| ivp_physic_private | `IVP_Friction_System::dist_removed_update_pair_info(IVP_Contact_Point*)` | identical |  |
 | ivp_physic_private | `IVP_Friction_System::IVP_Friction_System(IVP_Environment*)` | identical |  |
-| ivp_physic_private | `IVP_Friction_System::~IVP_Friction_System()` | identical |  |
 | ivp_physic_private | `IVP_Friction_System::~IVP_Friction_System()` | identical |  |
 | ivp_physic_private | `IVP_Object_Callback_Table::~IVP_Object_Callback_Table()` | identical |  |
 | ivp_physic_private | `IVP_Collision_Callback_Table::~IVP_Collision_Callback_Table()` | identical |  |
@@ -1133,18 +1119,32 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_physic_private | `IVP_Collision_Callback_Table_Hash::find_table(IVP_Real_Object*)` | identical |  |
 | ivp_physic_private | `IVP_Collision_Callback_Table_Hash::remove_table(IVP_Real_Object*)` | identical |  |
 | ivp_physic_private | `IVP_Core::freeze_simulation_core()` | identical |  |
-| ivp_physic_private | `IVP_Core::fire_event_object_frozen()` | identical |  |
+| ivp_physic_private | `IVP_Core::revive_simulation_core()` | edited |  |
+| ivp_physic_private | `IVP_Environment::add_revive_core(IVP_Core*)` | identical |  |
+| ivp_physic_private | `IVP_Environment::revive_cores_PSI()` | identical |  |
 | ivp_physic_private | `IVP_Environment::remove_revive_core(IVP_Core*)` | identical |  |
 | ivp_physic_private | `IVP_Cluster_Manager::add_object(IVP_Real_Object*)` | identical |  |
 | ivp_physic_private | `IVP_Cluster_Manager::get_root_cluster()` | identical |  |
+| ivp_physic_private | `IVP_Cluster_Manager::add_listener_object(IVP_Real_Object*, IVP_Listener_Object*)` | identical |  |
 | ivp_physic_private | `IVP_Cluster_Manager::check_for_unused_objects(IVP_Universe_Manager*)` | identical |  |
+| ivp_physic_private | `IVP_Cluster_Manager::fire_event_pre_collision(IVP_Real_Object*, IVP_Event_Collision*)` | identical |  |
+| ivp_physic_private | `IVP_Cluster_Manager::fire_event_object_deleted(IVP_Event_Object*)` | identical |  |
+| ivp_physic_private | `IVP_Cluster_Manager::fire_event_post_collision(IVP_Real_Object*, IVP_Event_Collision*)` | identical |  |
+| ivp_physic_private | `IVP_Cluster_Manager::fire_event_friction_created(IVP_Real_Object*, IVP_Event_Friction*)` | identical |  |
+| ivp_physic_private | `IVP_Cluster_Manager::fire_event_friction_deleted(IVP_Real_Object*, IVP_Event_Friction*)` | identical |  |
+| ivp_physic_private | `IVP_Cluster_Manager::fire_event_collision_object_deleted(IVP_Real_Object*)` | identical |  |
 | ivp_physic_private | `IVP_Cluster_Manager::IVP_Cluster_Manager(IVP_Environment*)` | identical |  |
 | ivp_physic_private | `IVP_Cluster_Manager::~IVP_Cluster_Manager()` | identical |  |
+| ivp_physic_private | `IVP_Friction_System::add_core_to_system(IVP_Core*)` | identical |  |
 | ivp_physic_private | `IVP_Friction_System::add_dist_to_system(IVP_Contact_Point*)` | identical |  |
 | ivp_physic_private | `IVP_Friction_System::get_controller_priority()` | identical |  |
 | ivp_physic_private | `IVP_Friction_System::remove_core_from_system(IVP_Core*)` | identical |  |
 | ivp_physic_private | `IVP_Friction_System::remove_dist_from_system(IVP_Contact_Point*)` | identical |  |
+| ivp_physic_private | `IVP_Friction_System::dist_added_update_pair_info(IVP_Contact_Point*)` | identical |  |
+| ivp_physic_private | `IVP_Friction_System::fs_recalc_all_contact_points()` | identical |  |
 | ivp_physic_private | `IVP_Friction_System::~IVP_Friction_System()` | identical |  |
+| ivp_physic_private | `IVP_Friction_System::~IVP_Friction_System()` | identical |  |
+| ivp_physic_private | `IVP_Core::fire_event_object_frozen()` | identical |  |
 | ivp_polygon | `IVP_Polygon::IVP_Polygon(IVP_Cluster*, IVP_SurfaceManager*, IVP_Template_Real_Object const*, IVP_U_Quat const*, IVP_U_Point const*)` | identical |  |
 | ivp_polygon | `IVP_Polygon::~IVP_Polygon()` | identical |  |
 | ivp_polygon | `IVP_Polygon::~IVP_Polygon()` | identical |  |
@@ -1158,7 +1158,7 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_ray_solver | `IVP_Ray_Solver::~IVP_Ray_Solver()` | identical |  |
 | ivp_ray_solver | `IVP_Ray_Solver_Os::check_ray_against_compact_ledge_os(IVP_Compact_Ledge const*)` | identical |  |
 | ivp_ray_solver | `IVP_Ray_Solver_Os::check_ray_against_ledge_tree_node_os(IVP_Compact_Ledgetree_Node const*)` | identical |  |
-| ivp_ray_solver | `IVP_Ray_Solver_Os::IVP_Ray_Solver_Os(IVP_Ray_Solver*, IVP_Real_Object*)` | edited |  |
+| ivp_ray_solver | `IVP_Ray_Solver_Os::IVP_Ray_Solver_Os(IVP_Ray_Solver*, IVP_Real_Object*)` | identical |  |
 | ivp_ray_solver | `IVP_Ray_Solver_Min::~IVP_Ray_Solver_Min()` | identical |  |
 | ivp_ray_solver | `IVP_Ray_Solver_Min::~IVP_Ray_Solver_Min()` | identical |  |
 | ivp_ray_solver | `IVP_Ray_Solver_Group::check_ray_group_against_node(IVP_OV_Node*, IVP_OV_Tree_Manager*)` | identical |  |
@@ -1167,81 +1167,81 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_ray_solver | `IVP_Ray_Solver_Os::IVP_Ray_Solver_Os(IVP_Ray_Solver*, IVP_Real_Object*)` | identical |  |
 | ivp_ray_solver | `IVP_Ray_Solver_Min::add_hit_object(IVP_Real_Object*, IVP_Compact_Ledge const*, IVP_Compact_Triangle const*, double, IVP_U_Point*)` | identical |  |
 | ivp_ray_solver | `IVP_Ray_Solver_Group::check_ray_group_against_object(IVP_Real_Object*)` | identical |  |
-| ivp_ray_solver | `IVP_Ray_Solver_Group::check_ray_group_against_all_objects_in_sim(IVP_Environment const*)` | edited |  |
+| ivp_ray_solver | `IVP_Ray_Solver_Group::check_ray_group_against_all_objects_in_sim(IVP_Environment const*)` | identical |  |
 | ivp_ray_solver | `IVP_Ray_Solver_Group::IVP_Ray_Solver_Group(int, IVP_Ray_Solver**)` | identical |  |
-| ivp_rot_inertia_solver | `IVP_Rot_Inertia_Solver::calc_mass_center_and_rotation_inertia(IVP_Compact_Surface const*, IVP_U_Point*, IVP_U_Point*)` | differs | size retail 1653 vs ours 179 |
+| ivp_rot_inertia_solver | `IVP_Rot_Inertia_Solver::calc_mass_center_and_rotation_inertia(IVP_Compact_Surface const*, IVP_U_Point*, IVP_U_Point*)` | edited |  |
 | ivp_rot_inertia_solver | `IVP_Compact_Ledge_Find_Mass_Center::integrate_triangle(IVP_Compact_Ledge const*, IVP_Compact_Triangle const*)` | identical |  |
 | ivp_rot_inertia_solver | `IVP_Compact_Ledge_Mass_Center_Solver::integrate_triangle(IVP_Compact_Ledge const*, IVP_Compact_Triangle const*, int, int, int)` | identical |  |
 | ivp_sim_unit | `_GLOBAL__I_a` | identical |  |
 | ivp_sim_unit | `IVP_U_Vector<IVP_Core>::~IVP_U_Vector()` | identical |  |
 | ivp_sim_unit | `IVP_Simulation_Unit::clean_sim_unit()` | identical |  |
-| ivp_sim_unit | `IVP_Simulation_Unit::split_sim_unit(IVP_Core*)` | identical |  |
-| ivp_sim_unit | `IVP_Simulation_Unit::add_sim_unit_core(IVP_Core*)` | identical |  |
-| ivp_sim_unit | `IVP_Simulation_Unit::sim_unit_remove_core(IVP_Core*)` | identical |  |
-| ivp_sim_unit | `IVP_Simulation_Unit::add_controller_of_core(IVP_Core*, IVP_Controller*)` | identical |  |
 | ivp_sim_unit | `IVP_Simulation_Unit::rem_sim_unit_controller(IVP_Controller*)` | identical |  |
-| ivp_sim_unit | `IVP_Simulation_Unit::sim_unit_calc_redundants()` | identical |  |
-| ivp_sim_unit | `IVP_Simulation_Unit::sim_unit_union_find_test()` | identical |  |
-| ivp_sim_unit | `IVP_Simulation_Unit::fusion_simulation_unities(IVP_Simulation_Unit*)` | identical |  |
 | ivp_sim_unit | `IVP_Simulation_Unit::remove_controller_of_core(IVP_Core*, IVP_Controller*)` | identical |  |
 | ivp_sim_unit | `IVP_Simulation_Unit::sim_unit_calc_movement_state(IVP_Environment*)` | identical |  |
 | ivp_sim_unit | `IVP_Simulation_Unit::simulate_single_sim_unit_psi(IVP_Event_Sim*, IVP_U_Vector<IVP_Core>*)` | identical |  |
 | ivp_sim_unit | `IVP_Simulation_Unit::sim_unit_ensure_cores_movement()` | identical |  |
-| ivp_sim_unit | `IVP_Simulation_Unit::sim_unit_revive_for_simulation(IVP_Environment*)` | identical |  |
 | ivp_sim_unit | `IVP_Simulation_Unit::~IVP_Simulation_Unit()` | identical |  |
 | ivp_sim_unit | `IVP_Sim_Units_Manager::reset_time(IVP_Time)` | identical |  |
-| ivp_sim_unit | `IVP_Controller_Manager::add_controller_to_core(IVP_Controller_Independent*, IVP_Core*)` | identical |  |
 | ivp_sim_unit | `IVP_Controller_Manager::ensure_controller_in_simulation(IVP_Controller_Dependent*)` | identical |  |
-| ivp_sim_unit | `IVP_Controller_Manager::announce_controller_to_environment(IVP_Controller_Dependent*)` | identical |  |
 | ivp_sim_unit | `IVP_Controller_Manager::remove_controller_from_environment(IVP_Controller_Dependent*, IVP_BOOL)` | identical |  |
 | ivp_sim_unit | `IVP_Standard_Gravity_Controller::get_controller_name()` | identical |  |
 | ivp_sim_unit | `IVP_Standard_Gravity_Controller::do_simulation_controller(IVP_Event_Sim*, IVP_U_Vector<IVP_Core>*)` | identical |  |
-| ivp_sim_unit | `IVP_Standard_Gravity_Controller::~IVP_Standard_Gravity_Controller()` | edited |  |
 | ivp_sim_unit | `IVP_Standard_Gravity_Controller::~IVP_Standard_Gravity_Controller()` | identical |  |
-| ivp_sim_unit | `IVP_Core::add_core_controller(IVP_Controller*)` | identical |  |
+| ivp_sim_unit | `IVP_Standard_Gravity_Controller::~IVP_Standard_Gravity_Controller()` | identical |  |
+| ivp_sim_unit | `IVP_Simulation_Unit::split_sim_unit(IVP_Core*)` | identical |  |
+| ivp_sim_unit | `IVP_Simulation_Unit::add_sim_unit_core(IVP_Core*)` | identical |  |
+| ivp_sim_unit | `IVP_Simulation_Unit::sim_unit_remove_core(IVP_Core*)` | identical |  |
+| ivp_sim_unit | `IVP_Simulation_Unit::add_controller_of_core(IVP_Core*, IVP_Controller*)` | identical |  |
 | ivp_sim_unit | `IVP_Simulation_Unit::do_sim_unit_union_find()` | identical |  |
+| ivp_sim_unit | `IVP_Simulation_Unit::sim_unit_calc_redundants()` | identical |  |
+| ivp_sim_unit | `IVP_Simulation_Unit::sim_unit_union_find_test()` | identical |  |
+| ivp_sim_unit | `IVP_Simulation_Unit::fusion_simulation_unities(IVP_Simulation_Unit*)` | identical |  |
 | ivp_sim_unit | `IVP_Simulation_Unit::sim_unit_sort_controllers()` | identical |  |
+| ivp_sim_unit | `IVP_Simulation_Unit::sim_unit_revive_for_simulation(IVP_Environment*)` | identical |  |
 | ivp_sim_unit | `IVP_Simulation_Unit::IVP_Simulation_Unit()` | identical |  |
 | ivp_sim_unit | `IVP_Simulation_Unit::~IVP_Simulation_Unit()` | identical |  |
 | ivp_sim_unit | `IVP_Sim_Units_Manager::simulate_sim_units_psi(IVP_Environment*, IVP_U_Vector<IVP_Core>*)` | identical |  |
 | ivp_sim_unit | `IVP_Sim_Units_Manager::add_sim_unit_to_manager(IVP_Simulation_Unit*)` | identical |  |
 | ivp_sim_unit | `IVP_Sim_Units_Manager::IVP_Sim_Units_Manager(IVP_Environment*)` | identical |  |
+| ivp_sim_unit | `IVP_Controller_Manager::add_controller_to_core(IVP_Controller_Independent*, IVP_Core*)` | identical |  |
 | ivp_sim_unit | `IVP_Controller_Manager::ensure_core_in_simulation(IVP_Core*)` | identical |  |
 | ivp_sim_unit | `IVP_Controller_Manager::remove_controller_from_core(IVP_Controller_Independent*, IVP_Core*)` | identical |  |
+| ivp_sim_unit | `IVP_Controller_Manager::announce_controller_to_environment(IVP_Controller_Dependent*)` | identical |  |
 | ivp_sim_unit | `IVP_Standard_Gravity_Controller::set_standard_gravity(IVP_U_Point*)` | identical |  |
 | ivp_sim_unit | `IVP_Standard_Gravity_Controller::get_controller_priority()` | identical |  |
 | ivp_sim_unit | `IVP_Standard_Gravity_Controller::core_is_going_to_be_deleted_event(IVP_Core*)` | identical |  |
+| ivp_sim_unit | `IVP_Core::add_core_controller(IVP_Controller*)` | identical |  |
 | ivp_sim_unit | `IVP_Core::rem_core_controller(IVP_Controller*)` | identical |  |
-| ivp_solver_core_reaction | `IVP_Solver_Core_Reaction::init_rot_ws(IVP_Core*, IVP_U_Point_4*, IVP_U_Point_4*, float)` | identical |  |
 | ivp_solver_core_reaction | `IVP_Solver_Core_Reaction::exert_impulse_dim2(IVP_Core*, IVP_Core*, IVP_U_Float_Point&)` | identical |  |
 | ivp_solver_core_reaction | `IVP_Solver_Core_Reaction::exert_angular_impulse_dim2(IVP_Core*, IVP_Core*, IVP_U_Float_Point&)` | identical |  |
+| ivp_solver_core_reaction | `IVP_Solver_Core_Reaction::init_rot_ws(IVP_Core*, IVP_U_Point_4*, IVP_U_Point_4*, float)` | identical |  |
 | ivp_solver_core_reaction | `IVP_Solver_Core_Reaction::init_trans_ws(IVP_U_Point const*, IVP_Core*, IVP_U_Point_4*, IVP_U_Point_4*, float)` | identical |  |
 | ivp_solver_core_reaction | `IVP_Solver_Core_Reaction::init_reaction_solver_rotation_ws(IVP_Core*, IVP_Core*, IVP_U_Float_Point*, IVP_U_Float_Point*, IVP_U_Float_Point*)` | identical |  |
 | ivp_solver_core_reaction | `IVP_Solver_Core_Reaction::init_reaction_solver_translation_ws(IVP_Core*, IVP_Core*, IVP_U_Point&, IVP_U_Float_Point*, IVP_U_Float_Point*, IVP_U_Float_` | identical |  |
 | ivp_surbuild_halfspacesoup | `IVP_SurfaceBuilder_Halfspacesoup::insert_point_into_list(IVP_U_Point*, IVP_U_Vector<IVP_U_Point>*, double)` | identical |  |
 | ivp_surbuild_halfspacesoup | `IVP_SurfaceBuilder_Halfspacesoup::convert_halfspacesoup_to_points(IVP_Halfspacesoup*, double, IVP_U_Vector<IVP_U_Point>*)` | identical |  |
 | ivp_surbuild_halfspacesoup | `IVP_SurfaceBuilder_Halfspacesoup::convert_halfspacesoup_to_compact_ledge(IVP_Halfspacesoup*, double)` | identical |  |
-| ivp_surbuild_ledge_soup | `IVP_SurfaceBuilder_Ledge_Soup::build_root_convex_hull()` | differs | size retail 220 vs ours 192 |
-| ivp_surbuild_ledge_soup | `IVP_SurfaceBuilder_Ledge_Soup::compile(IVP_Template_Surbuild_LedgeSoup*)` | differs | size retail 440 vs ours 433 |
 | ivp_surbuild_ledge_soup | `IVP_SurfaceBuilder_Ledge_Soup::insert_ledge(IVP_Compact_Ledge*)` | identical |  |
 | ivp_surbuild_ledge_soup | `IVP_SurfaceBuilder_Ledge_Soup::calculate_boundingbox(IVP_U_Vector<IVV_Sphere>*, IVP_U_Float_Point*, IVP_U_Float_Point*)` | identical |  |
 | ivp_surbuild_ledge_soup | `IVP_SurfaceBuilder_Ledge_Soup::insert_compact_ledges()` | identical |  |
+| ivp_surbuild_ledge_soup | `IVP_SurfaceBuilder_Ledge_Soup::build_root_convex_hull()` | edited |  |
 | ivp_surbuild_ledge_soup | `IVP_SurfaceBuilder_Ledge_Soup::allocate_compact_surface()` | identical |  |
 | ivp_surbuild_ledge_soup | `IVP_SurfaceBuilder_Ledge_Soup::ledges_to_boxes_and_spheres()` | identical |  |
-| ivp_surbuild_ledge_soup | `IVP_SurfaceBuilder_Ledge_Soup::add_ledge_tree_to_convex_hull(IVP_Compact_Recursive&, IVV_Sphere*)` | identical |  |
 | ivp_surbuild_ledge_soup | `IVP_SurfaceBuilder_Ledge_Soup::cluster_spheres_topdown_mediancut(double)` | identical |  |
 | ivp_surbuild_ledge_soup | `IVP_SurfaceBuilder_Ledge_Soup::recompile_point_indizes_of_compact_ledge(IVP_Compact_Ledge*, char*)` | identical |  |
 | ivp_surbuild_ledge_soup | `IVP_SurfaceBuilder_Ledge_Soup::cluster_spheres_topdown_mediancut_recursively(IVP_U_Vector<IVV_Sphere>*)` | identical |  |
 | ivp_surbuild_ledge_soup | `IVP_SurfaceBuilder_Ledge_Soup::cleanup()` | identical |  |
+| ivp_surbuild_ledge_soup | `IVP_SurfaceBuilder_Ledge_Soup::compile(IVP_Template_Surbuild_LedgeSoup*)` | edited |  |
 | ivp_surbuild_ledge_soup | `IVP_SurfaceBuilder_Ledge_Soup::IVP_SurfaceBuilder_Ledge_Soup()` | identical |  |
 | ivp_surbuild_ledge_soup | `IVP_SurfaceBuilder_Ledge_Soup::~IVP_SurfaceBuilder_Ledge_Soup()` | identical |  |
 | ivp_surbuild_ledge_soup | `IVP_SurfaceBuilder_Ledge_Soup::build_ledgetree(IVV_Sphere*)` | identical |  |
+| ivp_surbuild_ledge_soup | `IVP_SurfaceBuilder_Ledge_Soup::add_ledge_tree_to_convex_hull(IVP_Compact_Recursive&, IVV_Sphere*)` | identical |  |
 | ivp_surbuild_ledge_soup | `IVP_SurfaceBuilder_Ledge_Soup::~IVP_SurfaceBuilder_Ledge_Soup()` | identical |  |
 | ivp_surbuild_pointsoup | `IVP_SurfaceBuilder_Pointsoup::convert_pointsoup_to_compact_ledge_internal(IVP_U_Vector<IVP_U_Point>*)` | differs | bytes |
-| ivp_surbuild_pointsoup | `IVP_SurfaceBuilder_Pointsoup::try_to_build_convex_ledge_from_qhull_result(IVP_U_Vector<IVP_U_Point>*, IVP_BOOL*, char*, char*)` | differs | size retail 1482 vs ours 1418 |
 | ivp_surbuild_pointsoup | `IVP_SurMan_PS_Plane::get_area_size()` | identical |  |
 | ivp_surbuild_pointsoup | `IVP_SurfaceBuilder_Pointsoup::planes_to_template(IVP_U_Vector<IVP_U_Point>*, IVP_U_Vector<IVP_SurMan_PS_Plane>*)` | identical |  |
 | ivp_surbuild_pointsoup | `IVP_SurfaceBuilder_Pointsoup::convert_triangle_to_compace_ledge(IVP_U_Point*, IVP_U_Point*, IVP_U_Point*)` | identical |  |
+| ivp_surbuild_pointsoup | `IVP_SurfaceBuilder_Pointsoup::try_to_build_convex_ledge_from_qhull_result(IVP_U_Vector<IVP_U_Point>*, IVP_BOOL*, char*, char*)` | edited |  |
 | ivp_surbuild_pointsoup | `IVP_SurfaceBuilder_Pointsoup::convert_pointsoup_to_compact_ledge(IVP_U_Vector<IVP_U_Point>*)` | identical |  |
 | ivp_surbuild_polygon_convex | `IVP_SurfaceBuilder_Polygon_Convex::convert_template_to_ledge(IVP_Template_Polygon*)` | identical |  |
 | ivp_surbuild_polygon_convex | `IVP_SurfaceBuilder_Polygon_Convex::init_surface_manager_polygon()` | identical |  |
@@ -1253,19 +1253,19 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_surface_manager | `IVP_SurfaceManager::remove_reference_to_ledge(IVP_Compact_Ledge const*)` | identical |  |
 | ivp_surman_polygon | `IVP_SurfaceManager_Polygon::get_all_terminal_ledges(IVP_U_BigVector<IVP_Compact_Ledge>*)` | identical |  |
 | ivp_surman_polygon | `IVP_SurfaceManager_Polygon::insert_all_ledges_hitting_ray(IVP_Ray_Solver*, IVP_Real_Object*)` | identical |  |
-| ivp_surman_polygon | `IVP_SurfaceManager_Polygon::~IVP_SurfaceManager_Polygon()` | identical |  |
-| ivp_surman_polygon | `IVP_SurfaceManager_Polygon::~IVP_SurfaceManager_Polygon()` | identical |  |
 | ivp_surman_polygon | `IVP_SurfaceManager_Polygon_Solver::traverse_cluster(IVP_Compact_Ledgetree_Node const*, IVP_U_Point const*, double, IVP_U_BigVector<IVP_Compact_Ledge>*` | identical |  |
 | ivp_surman_polygon | `IVP_SurfaceManager_Polygon::get_radius_and_radius_dev_to_given_center(IVP_U_Float_Point const*, float*, float*) const` | identical |  |
 | ivp_surman_polygon | `IVP_SurfaceManager_Polygon::add_reference_to_ledge(IVP_Compact_Ledge const*)` | identical |  |
 | ivp_surman_polygon | `IVP_SurfaceManager_Polygon::remove_reference_to_ledge(IVP_Compact_Ledge const*)` | identical |  |
 | ivp_surman_polygon | `IVP_SurfaceManager_Polygon::get_all_ledges_within_radius(IVP_U_Point const*, double, IVP_Compact_Ledge const*, IVP_Real_Object*, IVP_Compact_Ledge con` | identical |  |
 | ivp_surman_polygon | `IVP_SurfaceManager_Polygon::get_type()` | identical |  |
+| ivp_surman_polygon | `IVP_SurfaceManager_Polygon::~IVP_SurfaceManager_Polygon()` | identical |  |
+| ivp_surman_polygon | `IVP_SurfaceManager_Polygon::~IVP_SurfaceManager_Polygon()` | identical |  |
 | ivp_surman_polygon | `IVP_SurfaceManager_Polygon::get_mass_center(IVP_U_Float_Point*) const` | identical |  |
 | ivp_surman_polygon | `IVP_SurfaceManager_Polygon::get_single_convex() const` | identical |  |
 | ivp_surman_polygon | `IVP_SurfaceManager_Polygon::get_rotation_inertia(IVP_U_Float_Point*) const` | identical |  |
 | ivp_template_constraint | `IVP_Environment::create_constraint(IVP_Template_Constraint const*)` | identical |  |
-| ivp_template_constraint | `IVP_Template_Constraint::IVP_Template_Constraint()` | edited |  |
+| ivp_template_constraint | `IVP_Template_Constraint::IVP_Template_Constraint()` | identical |  |
 | ivp_template_constraint | `IVP_Template_Constraint::fix_rotation_axis(IVP_COORDINATE_INDEX)` | identical |  |
 | ivp_template_constraint | `IVP_Template_Constraint::free_rotation_axis(IVP_COORDINATE_INDEX)` | identical |  |
 | ivp_template_constraint | `IVP_Template_Constraint::set_attached_object(IVP_Real_Object*)` | identical |  |
@@ -1284,24 +1284,21 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivp_templates_intern | `IVP_Template_Polygon::~IVP_Template_Polygon()` | identical |  |
 | ivp_templates_intern | `IVP_Template_Surface::get_surface_index()` | identical |  |
 | ivp_templates_intern | `IVP_Template_Surface::IVP_Template_Surface()` | identical |  |
-| ivp_time | `IVP_Time_Manager::remove_event(IVP_Time_Event*)` | identical |  |
-| ivp_time | `IVP_Time_Manager::update_event(IVP_Time_Event*, IVP_Time)` | new |  |
-| ivp_time | `IVP_Time_Manager::env_set_current_time(IVP_Environment*, IVP_Time)` | identical |  |
-| ivp_time | `IVP_Time_Manager::IVP_Time_Manager()` | edited |  |
-| ivp_time | `IVP_Time_Manager::~IVP_Time_Manager()` | identical |  |
-| ivp_time | `IVP_Event_Manager::simulate_variable_time_step(IVP_Time_Manager*, IVP_Environment*, IVP_Time_Event_PSI*, float)` | identical |  |
-| ivp_time | `IVP_Time_Event_PSI::simulate_time_event(IVP_Environment*)` | edited |  |
-| ivp_time | `IVP_Event_Manager_Standard::simulate_time_events(IVP_Time_Manager*, IVP_Environment*, IVP_Time)` | identical |  |
-| ivp_time | `IVP_Event_Manager_Standard::~IVP_Event_Manager_Standard()` | identical |  |
-| ivp_time | `IVP_Time_Manager::event_loop(IVP_Environment*, IVP_Time)` | identical |  |
-| ivp_time | `IVP_Time_Manager::reset_time(IVP_Time)` | edited |  |
 | ivp_time | `IVP_Time_Manager::IVP_Time_Manager()` | identical |  |
 | ivp_time | `IVP_Time_Manager::~IVP_Time_Manager()` | identical |  |
+| ivp_time | `IVP_Time_Manager::event_loop(IVP_Environment*, IVP_Time)` | identical |  |
+| ivp_time | `IVP_Time_Manager::reset_time(IVP_Time)` | identical |  |
+| ivp_time | `IVP_Time_Manager::remove_event(IVP_Time_Event*)` | identical |  |
+| ivp_time | `IVP_Time_Manager::update_event(IVP_Time_Event*, IVP_Time)` | identical |  |
+| ivp_time | `IVP_Time_Manager::env_set_current_time(IVP_Environment*, IVP_Time)` | identical |  |
+| ivp_time | `IVP_Time_Manager::IVP_Time_Manager()` | identical |  |
+| ivp_time | `IVP_Time_Manager::~IVP_Time_Manager()` | identical |  |
+| ivp_time | `IVP_Event_Manager::simulate_variable_time_step(IVP_Time_Manager*, IVP_Environment*, IVP_Time_Event_PSI*, float)` | identical |  |
+| ivp_time | `IVP_Time_Event_PSI::simulate_time_event(IVP_Environment*)` | identical |  |
+| ivp_time | `IVP_Event_Manager_Standard::simulate_time_events(IVP_Time_Manager*, IVP_Environment*, IVP_Time)` | identical |  |
+| ivp_time | `IVP_Event_Manager_Standard::~IVP_Event_Manager_Standard()` | identical |  |
 | ivp_time | `IVP_Event_Manager_Standard::~IVP_Event_Manager_Standard()` | identical |  |
 | ivu_active_value | `IVP_U_Active_Int::~IVP_U_Active_Int()` | identical |  |
-| ivu_active_value | `IVP_U_Active_Int::~IVP_U_Active_Int()` | identical |  |
-| ivu_active_value | `IVP_U_Active_Float::add_dependency(IVP_U_Active_Float_Listener*)` | identical |  |
-| ivu_active_value | `IVP_U_Active_Float::~IVP_U_Active_Float()` | identical |  |
 | ivu_active_value | `IVP_U_Active_Float::~IVP_U_Active_Float()` | identical |  |
 | ivu_active_value | `IVP_U_Active_Value::~IVP_U_Active_Value()` | identical |  |
 | ivu_active_value | `IVP_U_Active_Value::~IVP_U_Active_Value()` | identical |  |
@@ -1309,69 +1306,72 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivu_active_value | `IVP_Active_Value_Hash::~IVP_Active_Value_Hash()` | identical |  |
 | ivu_active_value | `IVP_U_Active_Terminal_Int::print()` | identical |  |
 | ivu_active_value | `IVP_U_Active_Terminal_Int::set_int(int, IVP_BOOL)` | identical |  |
+| ivu_active_value | `IVP_U_Active_Value_Manager::create_active_int(char const*, int)` | identical |  |
+| ivu_active_value | `IVP_U_Active_Value_Manager::insert_active_int(IVP_U_Active_Int*)` | identical |  |
+| ivu_active_value | `IVP_U_Active_Value_Manager::remove_active_int(IVP_U_Active_Int*)` | identical |  |
+| ivu_active_value | `IVP_U_Active_Value_Manager::install_active_int(char const*, int)` | identical |  |
+| ivu_active_value | `IVP_U_Active_Value_Manager::create_active_float(char const*, double)` | identical |  |
+| ivu_active_value | `IVP_U_Active_Value_Manager::insert_active_float(IVP_U_Active_Float*)` | identical |  |
+| ivu_active_value | `IVP_U_Active_Value_Manager::remove_active_float(IVP_U_Active_Float*)` | identical |  |
+| ivu_active_value | `IVP_U_Active_Value_Manager::install_active_float(char const*, double)` | identical |  |
+| ivu_active_value | `IVP_U_Active_Value_Manager::init_active_values_generic()` | identical |  |
+| ivu_active_value | `IVP_U_Active_Value_Manager::IVP_U_Active_Value_Manager(IVP_BOOL)` | identical |  |
+| ivu_active_value | `IVP_U_Active_Value_Manager::~IVP_U_Active_Value_Manager()` | identical |  |
+| ivu_active_value | `IVP_U_Active_Terminal_Double::set_double(double, IVP_BOOL)` | identical |  |
+| ivu_active_value | `IVP_U_Active_Terminal_Double::print()` | identical |  |
+| ivu_active_value | `IVP_U_Active_Int::~IVP_U_Active_Int()` | identical |  |
+| ivu_active_value | `IVP_U_Active_Int::~IVP_U_Active_Int()` | identical |  |
+| ivu_active_value | `IVP_U_Active_Float::add_dependency(IVP_U_Active_Float_Listener*)` | identical |  |
+| ivu_active_value | `IVP_U_Active_Float::remove_dependency(IVP_U_Active_Float_Listener*)` | identical |  |
+| ivu_active_value | `IVP_U_Active_Float::~IVP_U_Active_Float()` | identical |  |
+| ivu_active_value | `IVP_U_Active_Float::~IVP_U_Active_Float()` | identical |  |
+| ivu_active_value | `IVP_U_Active_Terminal_Int::update_int()` | identical |  |
+| ivu_active_value | `IVP_U_Active_Terminal_Int::~IVP_U_Active_Terminal_Int()` | identical |  |
 | ivu_active_value | `IVP_U_Active_Terminal_Int::~IVP_U_Active_Terminal_Int()` | identical |  |
 | ivu_active_value | `IVP_U_Active_Value_Manager::delay_active_int(IVP_U_Active_Int_Delayed*)` | identical |  |
-| ivu_active_value | `IVP_U_Active_Value_Manager::create_active_int(char const*, int)` | edited |  |
-| ivu_active_value | `IVP_U_Active_Value_Manager::insert_active_int(IVP_U_Active_Int*)` | edited |  |
-| ivu_active_value | `IVP_U_Active_Value_Manager::remove_active_int(IVP_U_Active_Int*)` | edited |  |
 | ivu_active_value | `IVP_U_Active_Value_Manager::delay_active_float(IVP_U_Active_Float_Delayed*)` | identical |  |
-| ivu_active_value | `IVP_U_Active_Value_Manager::install_active_int(char const*, int)` | edited |  |
-| ivu_active_value | `IVP_U_Active_Value_Manager::create_active_float(char const*, double)` | edited |  |
-| ivu_active_value | `IVP_U_Active_Value_Manager::insert_active_float(IVP_U_Active_Float*)` | edited |  |
-| ivu_active_value | `IVP_U_Active_Value_Manager::remove_active_float(IVP_U_Active_Float*)` | edited |  |
-| ivu_active_value | `IVP_U_Active_Value_Manager::install_active_float(char const*, double)` | edited |  |
-| ivu_active_value | `IVP_U_Active_Value_Manager::init_active_values_generic()` | identical |  |
+| ivu_active_value | `IVP_U_Active_Value_Manager::refresh_psi_active_values(IVP_Environment*)` | identical |  |
+| ivu_active_value | `IVP_U_Active_Value_Manager::environment_will_be_deleted(IVP_Environment*)` | identical |  |
 | ivu_active_value | `IVP_U_Active_Value_Manager::update_delayed_active_values()` | identical |  |
 | ivu_active_value | `IVP_U_Active_Value_Manager::IVP_U_Active_Value_Manager(IVP_BOOL)` | identical |  |
 | ivu_active_value | `IVP_U_Active_Value_Manager::~IVP_U_Active_Value_Manager()` | identical |  |
 | ivu_active_value | `IVP_U_Active_Value_Manager::~IVP_U_Active_Value_Manager()` | identical |  |
-| ivu_active_value | `IVP_U_Active_Terminal_Double::set_double(double, IVP_BOOL)` | identical |  |
-| ivu_active_value | `IVP_U_Active_Terminal_Double::print()` | identical |  |
-| ivu_active_value | `IVP_U_Active_Terminal_Double::~IVP_U_Active_Terminal_Double()` | identical |  |
-| ivu_active_value | `IVP_Active_Value_Hash::compare(void*, void*) const` | identical |  |
-| ivu_active_value | `IVP_U_Active_Int::~IVP_U_Active_Int()` | identical |  |
-| ivu_active_value | `IVP_U_Active_Float::remove_dependency(IVP_U_Active_Float_Listener*)` | identical |  |
-| ivu_active_value | `IVP_U_Active_Float::~IVP_U_Active_Float()` | identical |  |
-| ivu_active_value | `IVP_U_Active_Terminal_Int::update_int()` | identical |  |
-| ivu_active_value | `IVP_U_Active_Terminal_Int::~IVP_U_Active_Terminal_Int()` | identical |  |
-| ivu_active_value | `IVP_U_Active_Value_Manager::refresh_psi_active_values(IVP_Environment*)` | identical |  |
-| ivu_active_value | `IVP_U_Active_Value_Manager::environment_will_be_deleted(IVP_Environment*)` | identical |  |
-| ivu_active_value | `IVP_U_Active_Value_Manager::IVP_U_Active_Value_Manager(IVP_BOOL)` | identical |  |
-| ivu_active_value | `IVP_U_Active_Value_Manager::~IVP_U_Active_Value_Manager()` | identical |  |
 | ivu_active_value | `IVP_U_Active_Terminal_Double::update_float()` | identical |  |
 | ivu_active_value | `IVP_U_Active_Terminal_Double::~IVP_U_Active_Terminal_Double()` | identical |  |
+| ivu_active_value | `IVP_U_Active_Terminal_Double::~IVP_U_Active_Terminal_Double()` | identical |  |
+| ivu_active_value | `IVP_Active_Value_Hash::compare(void*, void*) const` | identical |  |
 | ivu_active_value | `non-virtual thunk to IVP_U_Active_Terminal_Int::update_int()` | identical |  |
 | ivu_active_value | `non-virtual thunk to IVP_U_Active_Terminal_Double::update_float()` | identical |  |
 | ivu_bigvector | `IVP_U_BigVector_Base::increment_mem()` | identical |  |
-| ivu_geometry | `IVP_U_Plain::IVP_U_Plain(IVP_U_Hesse const*)` | edited |  |
 | ivu_geometry | `IVP_U_Plain::calc_intersect_with(IVP_U_Hesse const*, IVP_U_Straight*) const` | identical |  |
+| ivu_geometry | `IVP_U_Plain::IVP_U_Plain(IVP_U_Hesse const*)` | identical |  |
 | ivu_hash | `IVP_Hash::add(char const*, void*)` | identical |  |
-| ivu_hash | `IVP_Hash::IVP_Hash(int, int, void*)` | identical |  |
 | ivu_hash | `IVP_Hash::~IVP_Hash()` | identical |  |
 | ivu_hash | `IVP_Hash::find(char const*) const` | identical |  |
+| ivu_hash | `IVP_Hash::IVP_Hash(int, int, void*)` | identical |  |
 | ivu_linear | `IVP_U_Hesse::calc_hesse(IVP_U_Point const*, IVP_U_Point const*, IVP_U_Point const*)` | identical |  |
 | ivu_linear | `IVP_U_Hesse::calc_hesse(IVP_U_Float_Point const*, IVP_U_Float_Point const*, IVP_U_Float_Point const*)` | identical |  |
 | ivu_linear | `IVP_U_Hesse::normize()` | identical |  |
-| ivu_linear | `IVP_U_Point::fast_normize()` | edited |  |
+| ivu_linear | `IVP_U_Point::fast_normize()` | identical |  |
 | ivu_linear | `IVP_U_Point::set_crossing(IVP_U_Hesse*, IVP_U_Hesse*, IVP_U_Hesse*)` | identical |  |
 | ivu_linear | `IVP_U_Point::set_interpolate(IVP_U_Float_Point const*, IVP_U_Float_Point const*, double)` | identical |  |
 | ivu_linear | `IVP_U_Point::set_interpolate(IVP_U_Point const*, IVP_U_Point const*, double)` | identical |  |
 | ivu_linear | `IVP_U_Point::calc_an_orthogonal(IVP_U_Point const*)` | identical |  |
-| ivu_linear | `IVP_U_Point::real_length_plus_normize()` | edited |  |
+| ivu_linear | `IVP_U_Point::real_length_plus_normize()` | identical |  |
 | ivu_linear | `IVP_U_Point::solve_quadratic_equation_accurate(IVP_U_Point const*)` | identical |  |
 | ivu_linear | `IVP_U_Point::rotate(IVP_COORDINATE_INDEX, float)` | identical |  |
-| ivu_linear | `IVP_U_Point::normize()` | edited |  |
+| ivu_linear | `IVP_U_Point::normize()` | identical |  |
 | ivu_linear | `IVP_U_Matrix::real_invert(double)` | identical |  |
 | ivu_linear | `IVP_U_Matrix::set_transpose(IVP_U_Matrix const*)` | identical |  |
 | ivu_linear | `IVP_U_Matrix::init_rot_multiple(IVP_U_Point const*, double)` | identical |  |
-| ivu_linear | `IVP_U_Matrix3::init_normized3_col(IVP_U_Point const*, IVP_COORDINATE_INDEX)` | edited |  |
-| ivu_linear | `IVP_U_Matrix3::init_normized3_col(IVP_U_Point const*, IVP_COORDINATE_INDEX, IVP_U_Point const*)` | edited |  |
+| ivu_linear | `IVP_U_Matrix3::init_normized3_col(IVP_U_Point const*, IVP_COORDINATE_INDEX)` | identical |  |
+| ivu_linear | `IVP_U_Matrix3::init_normized3_col(IVP_U_Point const*, IVP_COORDINATE_INDEX, IVP_U_Point const*)` | identical |  |
 | ivu_linear | `IVP_U_Float_Hesse::calc_hesse_val(IVP_U_Float_Point const*)` | identical |  |
 | ivu_linear | `IVP_U_Float_Hesse::normize()` | identical |  |
-| ivu_linear | `IVP_U_Float_Point::fast_normize()` | edited |  |
-| ivu_linear | `IVP_U_Float_Point::real_length_plus_normize()` | edited |  |
+| ivu_linear | `IVP_U_Float_Point::fast_normize()` | identical |  |
+| ivu_linear | `IVP_U_Float_Point::real_length_plus_normize()` | identical |  |
 | ivu_linear | `IVP_U_Float_Point::rotate(IVP_COORDINATE_INDEX, float)` | identical |  |
-| ivu_linear | `IVP_U_Float_Point::normize()` | edited |  |
+| ivu_linear | `IVP_U_Float_Point::normize()` | identical |  |
 | ivu_linear | `IVP_U_Hesse::proj_on_plane(IVP_U_Point const*, IVP_U_Point*) const` | identical |  |
 | ivu_linear | `IVP_U_Point::is_parallel(IVP_U_Point const*, double) const` | identical |  |
 | ivu_linear | `IVP_U_Float_Hesse::proj_on_plane(IVP_U_Float_Point const*, IVP_U_Float_Point*) const` | identical |  |
@@ -1412,13 +1412,13 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivu_memory | `IVP_U_Memory::neuer_sp_block(unsigned int)` | identical |  |
 | ivu_memory | `IVP_U_Memory::free_mem_transaction()` | identical |  |
 | ivu_memory | `IVP_U_Memory::init_mem_transaction_usage(char*, int)` | identical |  |
-| ivu_memory | `IVP_U_Memory::~IVP_U_Memory()` | identical |  |
 | ivu_memory | `IVP_U_Memory::IVP_U_Memory()` | identical |  |
+| ivu_memory | `IVP_U_Memory::~IVP_U_Memory()` | identical |  |
 | ivu_min_hash | `IVP_U_Min_Hash::add(void*, double)` | identical |  |
-| ivu_min_hash | `IVP_U_Min_Hash::remove(void*)` | identical |  |
 | ivu_min_hash | `IVP_U_Min_Hash::~IVP_U_Min_Hash()` | identical |  |
 | ivu_min_hash | `IVP_U_Min_Hash::remove_min()` | identical |  |
 | ivu_min_hash | `IVP_U_Min_Hash::min_removed_at_index(IVP_U_Min_Hash_Elem*, int)` | identical |  |
+| ivu_min_hash | `IVP_U_Min_Hash::remove(void*)` | identical |  |
 | ivu_min_hash | `IVP_U_Min_Hash::IVP_U_Min_Hash(int)` | identical |  |
 | ivu_min_hash | `IVP_U_Min_Hash::~IVP_U_Min_Hash()` | identical |  |
 | ivu_min_list | `IVP_U_Min_List::~IVP_U_Min_List()` | identical |  |
@@ -1438,18 +1438,18 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ivu_quat | `IVP_U_Quat::set_fast_multiple_with_clip(IVP_U_Float_Point const*, double)` | identical |  |
 | ivu_quat | `IVP_U_Quat::set_matrix(IVP_U_Matrix3*) const` | identical |  |
 | ivu_quat | `IVP_U_Quat::set_mult_quat(IVP_U_Quat const*, IVP_U_Quat const*)` | identical |  |
-| ivu_string | `ivp_message(char const*, ...)` | edited |  |
-| ivu_string | `p_strcmp(char const*, char const*)` | identical |  |
-| ivu_string | `p_strdup(char const*)` | edited |  |
+| ivu_string | `ivp_message(char const*, ...)` | identical |  |
+| ivu_string | `p_strdup(char const*)` | identical |  |
 | ivu_string | `p_strlen(char const*)` | identical |  |
+| ivu_string | `p_strcmp(char const*, char const*)` | identical |  |
 | ivu_vector | `IVP_U_Vector_Base::increment_mem()` | identical |  |
-| ivu_vhash | `IVP_VHash::remove_elem(void const*, unsigned int)` | differs | data ref at +0x17 (string): retail "/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/iv...", ours "../ivp/ivp_u |
 | ivu_vhash | `IVP_VHash_Store::change_elem(void*, void*)` | identical |  |
 | ivu_vhash | `IVP_VHash_Store::remove_elem(void*)` | identical |  |
 | ivu_vhash | `IVP_VHash_Store::add_elem(void*, void*)` | identical |  |
 | ivu_vhash | `IVP_VHash_Store::find_elem(void*)` | identical |  |
 | ivu_vhash | `IVP_VHash_Store::~IVP_VHash_Store()` | identical |  |
 | ivu_vhash | `IVP_VHash_Store::~IVP_VHash_Store()` | identical |  |
+| ivu_vhash | `IVP_VHash::remove_elem(void const*, unsigned int)` | identical |  |
 | ivu_vhash | `IVP_VHash::IVP_VHash(int)` | identical |  |
 | ivu_vhash | `IVP_VHash::~IVP_VHash()` | identical |  |
 | ivu_vhash | `IVP_VHash::~IVP_VHash()` | identical |  |
@@ -1527,7 +1527,6 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | mathlib_base | `_VectorNormalize(Vector&)` | identical |  |
 | mathlib_base | `QuaternionAxisAngle(Quaternion const&, Vector&, float&)` | identical |  |
 | mathlib_base | `_VectorNormalizeFast(Vector&)` | identical |  |
-| mathlib_base | `SinCos(float, float*, float*)` | identical |  |
 | mathlib_base | `_rsqrtf(float)` | identical |  |
 | mathlib_base | `ClearBounds(Vector&, Vector&)` | identical |  |
 | mathlib_base | `VectorRotate(float const*, matrix3x4_t const&, float*)` | identical |  |
@@ -1537,11 +1536,12 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | mathlib_base | `AddPointToBounds(Vector const&, Vector&, Vector&)` | identical |  |
 | mathlib_base | `VectorITransform(float const*, matrix3x4_t const&, float*)` | identical |  |
 | mathlib_base | `SetIdentityMatrix(matrix3x4_t&)` | identical |  |
+| mathlib_base | `SinCos(float, float*, float*)` | identical |  |
 | mathlib_base | `_sqrtf(float)` | identical |  |
 | matrix3 | `hk_Matrix3::rotate(int, float)` | identical |  |
 | matrix3 | `hk_Matrix3::set_mul3_inv(hk_Rotation const&, hk_Matrix3 const&)` | identical |  |
 | matrix3 | `hk_Matrix3::set_mul3(hk_Matrix3 const&, hk_Matrix3 const&)` | identical |  |
-| memory | `hk_Memory::get_instance()` | differs | size retail 620 vs ours 571 |
+| memory | `hk_Memory::get_instance()` | edited |  |
 | memory | `hk_Memory::deallocate(void*, int, hk_MEMORY_CLASS)` | identical |  |
 | memory | `hk_Memory::allocate_real(int)` | identical |  |
 | memory | `hk_Memory::allocate(int, hk_MEMORY_CLASS)` | identical |  |
@@ -1567,7 +1567,7 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | physics_airboat | `CPhysics_Airboat::DoSimulationKeepUprightRoll(IVP_Raycast_Airboat_Impact*, IVP_Event_Sim*)` | identical |  |
 | physics_airboat | `CPhysics_Airboat::DoSimulationKeepUprightPitch(IVP_Raycast_Airboat_Impact*, IVP_Event_Sim*)` | identical |  |
 | physics_airboat | `CPhysics_Airboat::get_orig_front_wheel_distance()` | identical |  |
-| physics_airboat | `CPhysics_Airboat::CPhysics_Airboat(IVP_Environment*, IVP_Template_Car_System const*, IPhysicsGameTrace*)` | edited |  |
+| physics_airboat | `CPhysics_Airboat::CPhysics_Airboat(IVP_Environment*, IVP_Template_Car_System const*, IPhysicsGameTrace*)` | identical |  |
 | physics_airboat | `CPhysics_Airboat::~CPhysics_Airboat()` | identical |  |
 | physics_airboat | `CPhysics_Airboat::~CPhysics_Airboat()` | identical |  |
 | physics_airboat | `non-virtual thunk to CPhysics_Airboat::get_controller_name()` | identical |  |
@@ -1639,7 +1639,7 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | physics_collide | `CPhysicsCollision::FastBboxCollide(CPhysCollideCompactSurface const*, Vector const&, Vector const&)` | identical |  |
 | physics_collide | `CPhysicsCollision::PolysoupDestroy(CPhysPolysoup*)` | identical |  |
 | physics_collide | `CPhysicsCollision::CollideGetExtent(CPhysCollide const*, Vector const&, QAngle const&, Vector const&)` | identical |  |
-| physics_collide | `CPhysicsCollision::ConvexFromPlanes(float*, int, float)` | edited |  |
+| physics_collide | `CPhysicsCollision::ConvexFromPlanes(float*, int, float)` | identical |  |
 | physics_collide | `CPhysicsCollision::CreateQueryModel(CPhysCollide*)` | identical |  |
 | physics_collide | `CPhysicsCollision::DestroyDebugMesh(int, Vector*)` | identical |  |
 | physics_collide | `CPhysicsCollision::ConvexSurfaceArea(CPhysConvex*)` | identical |  |
@@ -1649,7 +1649,7 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | physics_collide | `CPhysicsCollision::PolysoupAddTriangle(CPhysPolysoup*, Vector const&, Vector const&, Vector const&, int)` | identical |  |
 | physics_collide | `CPhysicsCollision::PolyhedronFromConvex(CPhysConvex*, bool)` | identical |  |
 | physics_collide | `CPhysicsCollision::IsBoxIntersectingCone(Vector const&, Vector const&, truncatedcone_t const&)` | identical |  |
-| physics_collide | `CPhysicsCollision::RebuildConvexFromPlanes(CPhysConvex*, float)` | edited |  |
+| physics_collide | `CPhysicsCollision::RebuildConvexFromPlanes(CPhysConvex*, float)` | identical |  |
 | physics_collide | `CPhysicsCollision::VPhysicsKeyParserCreate(char const*)` | identical |  |
 | physics_collide | `CPhysicsCollision::ConvertPolysoupToCollide(CPhysPolysoup*, bool)` | identical |  |
 | physics_collide | `CPhysicsCollision::VPhysicsKeyParserDestroy(IVPhysicsKeyParser*)` | identical |  |
@@ -1709,8 +1709,6 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | physics_collide | `CPhysCollideCompactSurface::GetCompactSurface() const` | identical |  |
 | physics_collide | `CPhysCollideCompactSurface::GetOrthographicAreas() const` | identical |  |
 | physics_collide | `CPhysCollideCompactSurface::GetSerializationSize() const` | identical |  |
-| physics_constraint | `CPhysicsConstraint::WriteLength(constraint_lengthparams_t&) const` | differs | size retail 598 vs ours 591 |
-| physics_constraint | `CPhysicsConstraint::WriteRagdoll(constraint_ragdollparams_t&) const` | differs | bytes |
 | physics_constraint | `CPhysicsConstraint::GetConstraintTransform(matrix3x4_t*, matrix3x4_t*) const` | differs | size retail 1185 vs ours 1533 |
 | physics_constraint | `_GLOBAL__I_a` | identical |  |
 | physics_constraint | `SeedRandomGenerators()` | identical |  |
@@ -1723,41 +1721,42 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | physics_constraint | `CreateSlidingConstraint(IVP_Environment*, CPhysicsObject*, CPhysicsObject*, IPhysicsConstraintGroup*, constraint_slidingparams_t const&)` | identical |  |
 | physics_constraint | `RestorePhysicsConstraint(physrestoreparams_t const&, CPhysicsConstraint**)` | identical |  |
 | physics_constraint | `CreateBallsocketConstraint(IVP_Environment*, CPhysicsObject*, CPhysicsObject*, IPhysicsConstraintGroup*, constraint_ballsocketparams_t const&)` | identical |  |
-| physics_constraint | `SavePhysicsConstraintGroup(physsaveparams_t const&, CPhysicsConstraintGroup*)` | edited |  |
-| physics_constraint | `CreatePhysicsConstraintGroup(IVP_Environment*, constraint_groupparams_t const&)` | edited |  |
+| physics_constraint | `SavePhysicsConstraintGroup(physsaveparams_t const&, CPhysicsConstraintGroup*)` | identical |  |
+| physics_constraint | `CreatePhysicsConstraintGroup(IVP_Environment*, constraint_groupparams_t const&)` | identical |  |
 | physics_constraint | `RestorePhysicsConstraintGroup(physrestoreparams_t const&, CPhysicsConstraintGroup**)` | identical |  |
 | physics_constraint | `PostRestorePhysicsConstraintGroup()` | identical |  |
 | physics_constraint | `CUtlMemory<CPhysicsConstraintGroup*, int>::Grow(int)` | identical |  |
 | physics_constraint | `CUtlVector<CPhysicsConstraintGroup*, CUtlMemory<CPhysicsConstraintGroup*, int>>::~CUtlVector()` | identical |  |
 | physics_constraint | `CPhysicsConstraint::Deactivate()` | identical |  |
-| physics_constraint | `CPhysicsConstraint::InitLength(IVP_Environment*, CPhysicsConstraintGroup*, constraint_lengthparams_t const&)` | edited |  |
-| physics_constraint | `CPhysicsConstraint::InitPulley(IVP_Environment*, CPhysicsConstraintGroup*, constraint_pulleyparams_t const&)` | edited |  |
-| physics_constraint | `CPhysicsConstraint::InitRagdoll(IVP_Environment*, CPhysicsConstraintGroup*, constraint_ragdollparams_t const&)` | edited |  |
-| physics_constraint | `CPhysicsConstraint::InitSliding(IVP_Environment*, CPhysicsConstraintGroup*, constraint_slidingparams_t const&)` | edited |  |
-| physics_constraint | `CPhysicsConstraint::InitBallsocket(IVP_Environment*, CPhysicsConstraintGroup*, constraint_ballsocketparams_t const&)` | edited |  |
-| physics_constraint | `CPhysicsConstraint::SetLinearMotor(float, float)` | edited |  |
+| physics_constraint | `CPhysicsConstraint::InitLength(IVP_Environment*, CPhysicsConstraintGroup*, constraint_lengthparams_t const&)` | identical |  |
+| physics_constraint | `CPhysicsConstraint::InitPulley(IVP_Environment*, CPhysicsConstraintGroup*, constraint_pulleyparams_t const&)` | identical |  |
+| physics_constraint | `CPhysicsConstraint::InitRagdoll(IVP_Environment*, CPhysicsConstraintGroup*, constraint_ragdollparams_t const&)` | identical |  |
+| physics_constraint | `CPhysicsConstraint::InitSliding(IVP_Environment*, CPhysicsConstraintGroup*, constraint_slidingparams_t const&)` | identical |  |
+| physics_constraint | `CPhysicsConstraint::InitBallsocket(IVP_Environment*, CPhysicsConstraintGroup*, constraint_ballsocketparams_t const&)` | identical |  |
+| physics_constraint | `CPhysicsConstraint::SetLinearMotor(float, float)` | identical |  |
 | physics_constraint | `CPhysicsConstraint::OutputDebugInfo()` | identical |  |
-| physics_constraint | `CPhysicsConstraint::SetAngularMotor(float, float)` | edited |  |
+| physics_constraint | `CPhysicsConstraint::SetAngularMotor(float, float)` | identical |  |
 | physics_constraint | `CPhysicsConstraint::event_object_deleted(IVP_Event_Object*)` | identical |  |
-| physics_constraint | `CPhysicsConstraint::UpdateRagdollTransforms(matrix3x4_t const&, matrix3x4_t const&)` | edited |  |
-| physics_constraint | `CPhysicsConstraint::CreateBreakableConstraint(hk_Constraint*, hk_Local_Constraint_System*, constraint_breakableparams_t const&)` | new |  |
+| physics_constraint | `CPhysicsConstraint::UpdateRagdollTransforms(matrix3x4_t const&, matrix3x4_t const&)` | identical |  |
+| physics_constraint | `CPhysicsConstraint::CreateBreakableConstraint(hk_Constraint*, hk_Local_Constraint_System*, constraint_breakableparams_t const&)` | identical |  |
 | physics_constraint | `CPhysicsConstraint::Activate()` | identical |  |
-| physics_constraint | `CPhysicsConstraint::InitFixed(IVP_Environment*, CPhysicsConstraintGroup*, constraint_fixedparams_t const&)` | edited |  |
-| physics_constraint | `CPhysicsConstraint::InitHinge(IVP_Environment*, CPhysicsConstraintGroup*, constraint_limitedhingeparams_t const&)` | edited |  |
+| physics_constraint | `CPhysicsConstraint::InitFixed(IVP_Environment*, CPhysicsConstraintGroup*, constraint_fixedparams_t const&)` | identical |  |
+| physics_constraint | `CPhysicsConstraint::InitHinge(IVP_Environment*, CPhysicsConstraintGroup*, constraint_limitedhingeparams_t const&)` | identical |  |
 | physics_constraint | `CPhysicsConstraint::~CPhysicsConstraint()` | identical |  |
 | physics_constraint | `CPhysicsConstraint::~CPhysicsConstraint()` | identical |  |
-| physics_constraint | `CPhysicsConstraintGroup::GetErrorParams(constraint_groupparams_t*)` | edited |  |
+| physics_constraint | `CPhysicsConstraintGroup::GetErrorParams(constraint_groupparams_t*)` | identical |  |
 | physics_constraint | `CPhysicsConstraintGroup::SetErrorParams(constraint_groupparams_t const&)` | identical |  |
 | physics_constraint | `CPhysicsConstraintGroup::SolvePenetration(IPhysicsObject*, IPhysicsObject*)` | identical |  |
 | physics_constraint | `CPhysicsConstraintGroup::Activate()` | identical |  |
 | physics_constraint | `CPhysicsConstraintGroup::~CPhysicsConstraintGroup()` | identical |  |
 | physics_constraint | `CPhysicsConstraintGroup::~CPhysicsConstraintGroup()` | identical |  |
-| physics_constraint | `CPhysicsConstraint::WriteFixed(constraint_fixedparams_t&) const` | edited |  |
-| physics_constraint | `CPhysicsConstraint::WriteHinge(constraint_hingeparams_t&) const` | edited |  |
-| physics_constraint | `CPhysicsConstraint::WritePulley(constraint_pulleyparams_t&) const` | edited |  |
-| physics_constraint | `CPhysicsConstraint::WriteSliding(constraint_slidingparams_t&) const` | edited |  |
-| physics_constraint | `CPhysicsConstraint::WriteBallsocket(constraint_ballsocketparams_t&) const` | edited |  |
-| physics_constraint | `CPhysicsConstraint::WriteToTemplate(vphysics_save_cphysicsconstraint_t&, vphysics_save_constraint_t&) const` | identical |  |
+| physics_constraint | `CPhysicsConstraint::WriteFixed(constraint_fixedparams_t&) const` | identical |  |
+| physics_constraint | `CPhysicsConstraint::WriteHinge(constraint_hingeparams_t&) const` | identical |  |
+| physics_constraint | `CPhysicsConstraint::WriteLength(constraint_lengthparams_t&) const` | edited |  |
+| physics_constraint | `CPhysicsConstraint::WritePulley(constraint_pulleyparams_t&) const` | identical |  |
+| physics_constraint | `CPhysicsConstraint::WriteRagdoll(constraint_ragdollparams_t&) const` | edited |  |
+| physics_constraint | `CPhysicsConstraint::WriteSliding(constraint_slidingparams_t&) const` | identical |  |
+| physics_constraint | `CPhysicsConstraint::WriteBallsocket(constraint_ballsocketparams_t&) const` | identical |  |
 | physics_constraint | `CPhysicsConstraint::GetConstraintParams(constraint_breakableparams_t*) const` | identical |  |
 | physics_constraint | `non-virtual thunk to CPhysicsConstraint::~CPhysicsConstraint()` | identical |  |
 | physics_constraint | `IsExternalConstraint(IVP_Controller*, void*)` | identical |  |
@@ -1770,6 +1769,7 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | physics_constraint | `CPhysicsConstraintGroup::IsInErrorState()` | identical |  |
 | physics_constraint | `CPhysicsConstraintGroup::ClearErrorState()` | identical |  |
 | physics_constraint | `CPhysicsConstraint::GetGameData() const` | identical |  |
+| physics_constraint | `CPhysicsConstraint::WriteToTemplate(vphysics_save_cphysicsconstraint_t&, vphysics_save_constraint_t&) const` | identical |  |
 | physics_constraint | `CPhysicsConstraint::GetAttachedObject() const` | identical |  |
 | physics_constraint | `CPhysicsConstraint::GetReferenceObject() const` | identical |  |
 | physics_constraint | `non-virtual thunk to CPhysicsConstraint::event_object_frozen(IVP_Event_Object*)` | identical |  |
@@ -1799,7 +1799,6 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | physics_controller_raycast_vehicle | `CPhysics_Car_System_Raycast_Wheels::GetWheel(int)` | identical |  |
 | physics_controller_raycast_vehicle | `non-virtual thunk to IVP_Controller_Raycast_Car::get_associated_controlled_cores()` | identical |  |
 | physics_controller_raycast_vehicle | `non-virtual thunk to IVP_Controller_Raycast_Car::core_is_going_to_be_deleted_event(IVP_Core*)` | identical |  |
-| physics_environment | `CPhysicsEnvironment::CPhysicsEnvironment()` | differs | bytes |
 | physics_environment | `CreateObjectPairHash()` | identical |  |
 | physics_environment | `CreatePhysicsEnvironment()` | identical |  |
 | physics_environment | `CUtlMemory<UtlRBTreeNode_t<CPhysicsListenerCollision::corepair_t, unsigned short>, unsigned short>::Grow(int)` | identical |  |
@@ -1855,7 +1854,6 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | physics_environment | `CPhysicsEnvironment::ClearStats()` | identical |  |
 | physics_environment | `CPhysicsEnvironment::PhantomAdd(CPhysicsObject*)` | identical |  |
 | physics_environment | `CPhysicsEnvironment::SetGravity(Vector const&)` | identical |  |
-| physics_environment | `CPhysicsEnvironment::CreateSpring(IPhysicsObject*, IPhysicsObject*, springparams_t*)` | identical |  |
 | physics_environment | `CPhysicsEnvironment::DestroyObject(IPhysicsObject*)` | identical |  |
 | physics_environment | `CPhysicsEnvironment::TransferObject(IPhysicsObject*, IPhysicsEnvironment*)` | identical |  |
 | physics_environment | `CPhysicsEnvironment::SetDebugOverlay(void* (*)(char const*, int*))` | identical |  |
@@ -1869,14 +1867,13 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | physics_environment | `CPhysicsEnvironment::SetSimulationTimestep(float)` | identical |  |
 | physics_environment | `CPhysicsEnvironment::CreatePlayerController(IPhysicsObject*)` | identical |  |
 | physics_environment | `CPhysicsEnvironment::CreatePolyObjectStatic(CPhysCollide const*, int, Vector const&, QAngle const&, objectparams_t*)` | identical |  |
-| physics_environment | `CPhysicsEnvironment::CreateShadowController(IPhysicsObject*, bool, bool)` | identical |  |
 | physics_environment | `CPhysicsEnvironment::DestroyFluidController(IPhysicsFluidController*)` | identical |  |
 | physics_environment | `CPhysicsEnvironment::SetPerformanceSettings(physics_performanceparams_t const*)` | identical |  |
-| physics_environment | `CPhysicsEnvironment::CreateVehicleController(IPhysicsObject*, vehicleparams_t const&, unsigned int, IPhysicsGameTrace*)` | identical |  |
 | physics_environment | `CPhysicsEnvironment::DestroyPlayerController(IPhysicsPlayerController*)` | identical |  |
 | physics_environment | `CPhysicsEnvironment::UnserializeObjectFromBuffer(void*, unsigned char*, unsigned int, bool)` | identical |  |
 | physics_environment | `CPhysicsEnvironment::Simulate(float)` | identical |  |
 | physics_environment | `CPhysicsEnvironment::ReadStats(physics_stats_t*)` | identical |  |
+| physics_environment | `CPhysicsEnvironment::CPhysicsEnvironment()` | edited |  |
 | physics_environment | `CPhysicsEnvironment::~CPhysicsEnvironment()` | identical |  |
 | physics_environment | `CPhysicsEnvironment::~CPhysicsEnvironment()` | identical |  |
 | physics_environment | `CPhysicsFrictionData::GetContactPoint(Vector&)` | identical |  |
@@ -1921,6 +1918,7 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | physics_environment | `CCollisionSolver::max_collision_checks_exceeded(int)` | identical |  |
 | physics_environment | `CCollisionSolver::check_objects_for_collision_detection(IVP_Real_Object*, IVP_Real_Object*)` | identical |  |
 | physics_environment | `CCollisionSolver::max_collisions_exceeded_check_freezing(IVP_Anomaly_Limits*, IVP_Core*)` | identical |  |
+| physics_environment | `CPhysicsEnvironment::CreateSpring(IPhysicsObject*, IPhysicsObject*, springparams_t*)` | identical |  |
 | physics_environment | `CPhysicsEnvironment::DestroySpring(IPhysicsSpring*)` | identical |  |
 | physics_environment | `CPhysicsEnvironment::SetAirDensity(float)` | identical |  |
 | physics_environment | `CPhysicsEnvironment::SetQuickDelete(bool)` | identical |  |
@@ -1936,10 +1934,12 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | physics_environment | `CPhysicsEnvironment::CreateLengthConstraint(IPhysicsObject*, IPhysicsObject*, IPhysicsConstraintGroup*, constraint_lengthparams_t const&)` | identical |  |
 | physics_environment | `CPhysicsEnvironment::CreateMotionController(IMotionEvent*)` | identical |  |
 | physics_environment | `CPhysicsEnvironment::CreatePulleyConstraint(IPhysicsObject*, IPhysicsObject*, IPhysicsConstraintGroup*, constraint_pulleyparams_t const&)` | identical |  |
+| physics_environment | `CPhysicsEnvironment::CreateShadowController(IPhysicsObject*, bool, bool)` | identical |  |
 | physics_environment | `CPhysicsEnvironment::DestroyConstraintGroup(IPhysicsConstraintGroup*)` | identical |  |
 | physics_environment | `CPhysicsEnvironment::EnableConstraintNotify(bool)` | identical |  |
 | physics_environment | `CPhysicsEnvironment::CreateRagdollConstraint(IPhysicsObject*, IPhysicsObject*, IPhysicsConstraintGroup*, constraint_ragdollparams_t const&)` | identical |  |
 | physics_environment | `CPhysicsEnvironment::CreateSlidingConstraint(IPhysicsObject*, IPhysicsObject*, IPhysicsConstraintGroup*, constraint_slidingparams_t const&)` | identical |  |
+| physics_environment | `CPhysicsEnvironment::CreateVehicleController(IPhysicsObject*, vehicleparams_t const&, unsigned int, IPhysicsGameTrace*)` | identical |  |
 | physics_environment | `CPhysicsEnvironment::DestroyMotionController(IPhysicsMotionController*)` | identical |  |
 | physics_environment | `CPhysicsEnvironment::DestroyShadowController(IPhysicsShadowController*)` | identical |  |
 | physics_environment | `CPhysicsEnvironment::SerializeObjectToBuffer(IPhysicsObject*, unsigned char*, unsigned int)` | identical |  |
@@ -2002,7 +2002,7 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | physics_environment | `non-virtual thunk to CPhysicsListenerCollision::mindist_left_volume(IVP_Controller_Phantom*, IVP_Mindist_Base*)` | identical |  |
 | physics_environment | `non-virtual thunk to CPhysicsListenerCollision::mindist_entered_volume(IVP_Controller_Phantom*, IVP_Mindist_Base*)` | identical |  |
 | physics_environment | `non-virtual thunk to CPhysicsListenerCollision::phantom_is_going_to_be_deleted_event(IVP_Controller_Phantom*)` | identical |  |
-| physics_fluid | `CreateFluidController(IVP_Environment*, CPhysicsObject*, fluidparams_t*)` | edited |  |
+| physics_fluid | `CreateFluidController(IVP_Environment*, CPhysicsObject*, fluidparams_t*)` | identical |  |
 | physics_fluid | `CBuoyancyAttacher::~CBuoyancyAttacher()` | identical |  |
 | physics_fluid | `CBuoyancyAttacher::~CBuoyancyAttacher()` | identical |  |
 | physics_fluid | `IVP_Attacher_To_Cores<IVP_Controller_Buoyancy>::element_added(IVP_U_Set_Active<IVP_Core>*, IVP_Core*)` | identical |  |
@@ -2010,17 +2010,17 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | physics_fluid | `IVP_Attacher_To_Cores<IVP_Controller_Buoyancy>::~IVP_Attacher_To_Cores()` | identical |  |
 | physics_fluid | `IVP_Attacher_To_Cores<IVP_Controller_Buoyancy>::~IVP_Attacher_To_Cores()` | identical |  |
 | physics_fluid | `CPhysicsFluidController::WakeAllSleepingObjects()` | identical |  |
-| physics_fluid | `CPhysicsFluidController::~CPhysicsFluidController()` | edited |  |
-| physics_fluid | `CPhysicsFluidController::~CPhysicsFluidController()` | edited |  |
+| physics_fluid | `CPhysicsFluidController::~CPhysicsFluidController()` | identical |  |
+| physics_fluid | `CPhysicsFluidController::~CPhysicsFluidController()` | identical |  |
 | physics_fluid | `CLiquidSurfaceDescriptor::calc_liquid_surface(IVP_Environment*, IVP_Core*, IVP_U_Float_Hesse*, IVP_U_Float_Point*)` | identical |  |
-| physics_fluid | `CLiquidSurfaceDescriptor::~CLiquidSurfaceDescriptor()` | new |  |
-| physics_fluid | `CPhysicsFluidController::GetSurfacePlane(Vector*, float*) const` | edited |  |
+| physics_fluid | `CLiquidSurfaceDescriptor::~CLiquidSurfaceDescriptor()` | identical |  |
+| physics_fluid | `CPhysicsFluidController::GetSurfacePlane(Vector*, float*) const` | identical |  |
 | physics_fluid | `SavePhysicsFluidController(physsaveparams_t const&, CPhysicsFluidController*)` | identical |  |
 | physics_fluid | `RestorePhysicsFluidController(physrestoreparams_t const&, CPhysicsFluidController**)` | identical |  |
 | physics_fluid | `CBuoyancyAttacher::get_parameters_per_core(IVP_Core*)` | identical |  |
 | physics_fluid | `IVP_Attacher_To_Cores<IVP_Controller_Buoyancy>::pset_is_going_to_be_deleted(IVP_U_Set_Active<IVP_Core>*)` | identical |  |
 | physics_fluid | `CPhysicsFluidController::SetGameData(void*)` | identical |  |
-| physics_fluid | `CLiquidSurfaceDescriptor::~CLiquidSurfaceDescriptor()` | new |  |
+| physics_fluid | `CLiquidSurfaceDescriptor::~CLiquidSurfaceDescriptor()` | identical |  |
 | physics_fluid | `IVP_Attacher_To_Cores_Buoyancy::get_buoyancy_surface(IVP_Real_Object*)` | identical |  |
 | physics_fluid | `CPhysicsFluidController::GetDensity() const` | identical |  |
 | physics_fluid | `CPhysicsFluidController::GetContents() const` | identical |  |
@@ -2114,12 +2114,12 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | physics_motioncontroller | `non-virtual thunk to CPhysicsMotionController::CountObjects()` | identical |  |
 | physics_motioncontroller | `non-virtual thunk to CPhysicsMotionController::SetEventHandler(IMotionEvent*)` | identical |  |
 | physics_motioncontroller | `non-virtual thunk to CPhysicsMotionController::~CPhysicsMotionController()` | identical |  |
-| physics_object | `RestorePhysicsObject(physrestoreparams_t const&, CPhysicsObject**)` | differs | size retail 891 vs ours 695 |
 | physics_object | `_GLOBAL__I_a` | identical |  |
 | physics_object | `SavePhysicsObject(physsaveparams_t const&, CPhysicsObject*)` | identical |  |
 | physics_object | `CreatePhysicsObject(CPhysicsEnvironment*, CPhysCollide const*, int, Vector const&, QAngle const&, objectparams_t*, bool)` | identical |  |
 | physics_object | `CreatePhysicsSphere(CPhysicsEnvironment*, float, int, Vector const&, QAngle const&, objectparams_t*, bool)` | identical |  |
 | physics_object | `MaterialIndexDataOps()` | identical |  |
+| physics_object | `RestorePhysicsObject(physrestoreparams_t const&, CPhysicsObject**)` | edited |  |
 | physics_object | `CreateObjectFromBuffer(CPhysicsEnvironment*, void*, unsigned char*, unsigned int, bool)` | identical |  |
 | physics_object | `PostRestorePhysicsObject()` | identical |  |
 | physics_object | `CreateObjectFromBuffer_UseExistingMemory(CPhysicsEnvironment*, void*, unsigned char*, unsigned int, CPhysicsObject*)` | identical |  |
@@ -2145,7 +2145,6 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | physics_object | `CPhysicsObject::ApplyTorqueCenter(Vector const&)` | identical |  |
 | physics_object | `CPhysicsObject::SetPositionMatrix(matrix3x4_t const&, bool)` | identical |  |
 | physics_object | `CPhysicsObject::RecomputeDragBases()` | identical |  |
-| physics_object | `CPhysicsObject::ComputeShadowControl(hlshadowcontrol_params_t const&, float, float)` | identical |  |
 | physics_object | `CPhysicsObject::RecheckCollisionFilter()` | identical |  |
 | physics_object | `CPhysicsObject::SetVelocityInstantaneous(Vector const*, Vector const*)` | identical |  |
 | physics_object | `CPhysicsObject::Init(CPhysCollide const*, IVP_Real_Object*, int, float, float, float)` | identical |  |
@@ -2191,6 +2190,7 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | physics_object | `CPhysicsObject::SetBuoyancyRatio(float)` | identical |  |
 | physics_object | `CPhysicsObject::SetCallbackFlags(unsigned short)` | identical |  |
 | physics_object | `CPhysicsObject::SetDragCoefficient(float*, float*)` | identical |  |
+| physics_object | `CPhysicsObject::ComputeShadowControl(hlshadowcontrol_params_t const&, float, float)` | identical |  |
 | physics_object | `CPhysicsObject::RecheckContactPoints()` | identical |  |
 | physics_object | `CPhysicsObject::CreateFrictionSnapshot()` | identical |  |
 | physics_object | `CPhysicsObject::GetVPhysicsEnvironment()` | identical |  |
@@ -2238,7 +2238,6 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | physics_shadow | `ControlPhysicsPlayerControllerAttachment_Silent(IPhysicsPlayerController*, IVP_Real_Object*, bool)` | identical |  |
 | physics_shadow | `ControlPhysicsShadowControllerAttachment_Silent(IPhysicsShadowController*, IVP_Real_Object*, bool)` | identical |  |
 | physics_shadow | `CNormalList::ClampVector(Vector const&, float)` | identical |  |
-| physics_shadow | `CPlayerController::IsInContact()` | identical |  |
 | physics_shadow | `CPlayerController::GetLastImpulse(Vector*)` | identical |  |
 | physics_shadow | `CPlayerController::GetShadowPosition(Vector*, QAngle*)` | identical |  |
 | physics_shadow | `CPlayerController::GetShadowVelocity(Vector*)` | identical |  |
@@ -2265,7 +2264,6 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | physics_shadow | `CShadowController::Update(Vector const&, QAngle const&, float)` | identical |  |
 | physics_shadow | `CShadowController::~CShadowController()` | identical |  |
 | physics_shadow | `CShadowController::~CShadowController()` | identical |  |
-| physics_shadow | `non-virtual thunk to CPlayerController::IsInContact()` | identical |  |
 | physics_shadow | `non-virtual thunk to CPlayerController::GetLastImpulse(Vector*)` | identical |  |
 | physics_shadow | `non-virtual thunk to CPlayerController::GetShadowPosition(Vector*, QAngle*)` | identical |  |
 | physics_shadow | `non-virtual thunk to CPlayerController::GetShadowVelocity(Vector*)` | identical |  |
@@ -2283,6 +2281,7 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | physics_shadow | `SavePhysicsPlayerController(physsaveparams_t const&, CPlayerController*)` | identical |  |
 | physics_shadow | `RestorePhysicsPlayerController(physrestoreparams_t const&, CPlayerController**)` | identical |  |
 | physics_shadow | `RestorePhysicsShadowController(physrestoreparams_t const&, IPhysicsShadowController**)` | identical |  |
+| physics_shadow | `CPlayerController::IsInContact()` | identical |  |
 | physics_shadow | `CPlayerController::SetEventHandler(IPhysicsPlayerControllerEvent*)` | identical |  |
 | physics_shadow | `CPlayerController::GetPushMassLimit()` | identical |  |
 | physics_shadow | `CPlayerController::SetPushMassLimit(float)` | identical |  |
@@ -2306,6 +2305,7 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | physics_shadow | `CShadowController::SetPhysicallyControlled(bool)` | identical |  |
 | physics_shadow | `CShadowController::get_controller_priority()` | identical |  |
 | physics_shadow | `CShadowController::MaxSpeed(float, float)` | identical |  |
+| physics_shadow | `non-virtual thunk to CPlayerController::IsInContact()` | identical |  |
 | physics_shadow | `non-virtual thunk to CPlayerController::SetEventHandler(IPhysicsPlayerControllerEvent*)` | identical |  |
 | physics_shadow | `non-virtual thunk to CPlayerController::GetPushMassLimit()` | identical |  |
 | physics_shadow | `non-virtual thunk to CPlayerController::SetPushMassLimit(float)` | identical |  |
@@ -2407,7 +2407,6 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | physics_vehicle | `non-virtual thunk to CVehicleController::event_object_created(IVP_Event_Object*)` | identical |  |
 | physics_vehicle | `non-virtual thunk to CVehicleController::event_object_deleted(IVP_Event_Object*)` | identical |  |
 | physics_vehicle | `non-virtual thunk to CVehicleController::event_object_revived(IVP_Event_Object*)` | identical |  |
-| physics_virtualmesh | `CPhysCollideVirtualMesh::CreateBoundingSurfaceFromRange(virtualmeshlist_t const&, int, int)` | differs | size retail 810 vs ours 800 |
 | physics_virtualmesh | `_GLOBAL__I_a` | identical |  |
 | physics_virtualmesh | `CreateVirtualMesh(virtualmeshparams_t const&)` | identical |  |
 | physics_virtualmesh | `FlushFrameLocks()` | identical |  |
@@ -2424,10 +2423,10 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | physics_virtualmesh | `CPhysCollideVirtualMesh::FrameRelease()` | identical |  |
 | physics_virtualmesh | `CPhysCollideVirtualMesh::CreateMeshBoundingHull(virtualmeshlist_t const&)` | identical |  |
 | physics_virtualmesh | `CPhysCollideVirtualMesh::GetAllLedgesWithinRadius(IVP_U_Point const*, double, IVP_U_BigVector<IVP_Compact_Ledge>*, IVP_Compact_Ledge const*)` | identical |  |
+| physics_virtualmesh | `CPhysCollideVirtualMesh::CreateBoundingSurfaceFromRange(virtualmeshlist_t const&, int, int)` | edited |  |
 | physics_virtualmesh | `CPhysCollideVirtualMesh::AddRef()` | identical |  |
 | physics_virtualmesh | `CPhysCollideVirtualMesh::~CPhysCollideVirtualMesh()` | identical |  |
 | physics_virtualmesh | `CPhysCollideVirtualMesh::~CPhysCollideVirtualMesh()` | identical |  |
-| physics_virtualmesh | `IVP_SurfaceManager_VirtualMesh::add_reference_to_ledge(IVP_Compact_Ledge const*)` | identical |  |
 | physics_virtualmesh | `IVP_SurfaceManager_VirtualMesh::remove_reference_to_ledge(IVP_Compact_Ledge const*)` | identical |  |
 | physics_virtualmesh | `IVP_SurfaceManager_VirtualMesh::get_all_ledges_within_radius(IVP_U_Point const*, double, IVP_Compact_Ledge const*, IVP_Real_Object*, IVP_Compact_Ledge` | identical |  |
 | physics_virtualmesh | `IVP_SurfaceManager_VirtualMesh::insert_all_ledges_hitting_ray(IVP_Ray_Solver*, IVP_Real_Object*)` | identical |  |
@@ -2443,13 +2442,13 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | physics_virtualmesh | `CPhysCollideVirtualMesh::CreateSurfaceManager(short&) const` | identical |  |
 | physics_virtualmesh | `CPhysCollideVirtualMesh::GetSerializationSize() const` | identical |  |
 | physics_virtualmesh | `IVP_SurfaceManager_VirtualMesh::get_mass_center(IVP_U_Float_Point*) const` | identical |  |
-| physics_virtualmesh | `IVP_SurfaceManager_VirtualMesh::get_single_convex() const` | identical |  |
 | physics_virtualmesh | `IVP_SurfaceManager_VirtualMesh::get_radius_and_radius_dev_to_given_center(IVP_U_Float_Point const*, float*, float*) const` | identical |  |
 | physics_virtualmesh | `VirtualMeshPSI()` | identical |  |
 | physics_virtualmesh | `CDataManager<CMeshInstance, virtualmeshlist_t, CMeshInstance*, CThreadFastMutex>::GetRealSize(void*)` | identical |  |
 | physics_virtualmesh | `CPhysCollide::SetOrthographicAreas(Vector const&)` | identical |  |
 | physics_virtualmesh | `CPhysCollide::ComputeOrthographicAreas(float)` | identical |  |
 | physics_virtualmesh | `CPhysCollideVirtualMesh::SetMassCenter(Vector const&)` | identical |  |
+| physics_virtualmesh | `IVP_SurfaceManager_VirtualMesh::add_reference_to_ledge(IVP_Compact_Ledge const*)` | identical |  |
 | physics_virtualmesh | `IVP_SurfaceManager_VirtualMesh::get_all_terminal_ledges(IVP_U_BigVector<IVP_Compact_Ledge>*)` | identical |  |
 | physics_virtualmesh | `IVP_SurfaceManager_VirtualMesh::get_type()` | identical |  |
 | physics_virtualmesh | `CTSPool<CUtlVector<CPhysCollideVirtualMesh*, CUtlMemory<CPhysCollideVirtualMesh*, int>>>::~CTSPool()` | identical |  |
@@ -2457,24 +2456,25 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | physics_virtualmesh | `CPhysCollide::GetCompactSurface() const` | identical |  |
 | physics_virtualmesh | `CPhysCollideVirtualMesh::GetVCollideIndex() const` | identical |  |
 | physics_virtualmesh | `CPhysCollideVirtualMesh::GetOrthographicAreas() const` | identical |  |
+| physics_virtualmesh | `IVP_SurfaceManager_VirtualMesh::get_single_convex() const` | identical |  |
 | physics_virtualmesh | `IVP_SurfaceManager_VirtualMesh::get_rotation_inertia(IVP_U_Float_Point*) const` | identical |  |
 | polyhedron | `_GLOBAL__I_a` | identical |  |
 | polyhedron | `GetTempPolyhedron(unsigned short, unsigned short, unsigned short, unsigned short)` | identical |  |
+| polyhedron | `CPolyhedron_AllocByNew::Allocate(unsigned short, unsigned short, unsigned short, unsigned short)` | identical |  |
 | polyhedron | `CUtlMemory<unsigned char, int>::Grow(int)` | identical |  |
 | polyhedron | `CUtlVector<unsigned char, CUtlMemory<unsigned char, int>>::~CUtlVector()` | identical |  |
-| polyhedron | `CPolyhedron_AllocByNew::Allocate(unsigned short, unsigned short, unsigned short, unsigned short)` | identical |  |
-| polyhedron | `CPolyhedron_AllocByNew::~CPolyhedron_AllocByNew()` | identical |  |
-| polyhedron | `CPolyhedron_TempMemory::~CPolyhedron_TempMemory()` | identical |  |
 | polyhedron | `CPolyhedron_AllocByNew::Release()` | identical |  |
 | polyhedron | `CPolyhedron_AllocByNew::~CPolyhedron_AllocByNew()` | identical |  |
+| polyhedron | `CPolyhedron_AllocByNew::~CPolyhedron_AllocByNew()` | identical |  |
 | polyhedron | `CPolyhedron_TempMemory::Release()` | identical |  |
+| polyhedron | `CPolyhedron_TempMemory::~CPolyhedron_TempMemory()` | identical |  |
 | polyhedron | `CPolyhedron_TempMemory::~CPolyhedron_TempMemory()` | identical |  |
 | prismatic_constraint | `hk_Prismatic_Constraint::step_constraint(hk_PSI_Info&, void*, float, float)` | identical |  |
 | prismatic_constraint | `hk_Prismatic_Constraint::reset_linear_limit()` | identical |  |
 | prismatic_constraint | `hk_Prismatic_Constraint::get_constraint_type()` | identical |  |
-| prismatic_constraint | `hk_Prismatic_Constraint::init_prismatic_constraint(hk_Prismatic_BP const*, hk_Local_Constraint_System*)` | edited |  |
+| prismatic_constraint | `hk_Prismatic_Constraint::init_prismatic_constraint(hk_Prismatic_BP const*, hk_Local_Constraint_System*)` | identical |  |
 | prismatic_constraint | `hk_Prismatic_Constraint::setup_and_step_constraint(hk_PSI_Info&, void*, float, float)` | identical |  |
-| prismatic_constraint | `hk_Prismatic_Constraint::set_motor(float, float)` | edited |  |
+| prismatic_constraint | `hk_Prismatic_Constraint::set_motor(float, float)` | identical |  |
 | prismatic_constraint | `hk_Prismatic_Constraint::hk_Prismatic_Constraint(hk_Environment*, hk_Prismatic_BP const*, hk_Rigid_Body*, hk_Rigid_Body*)` | identical |  |
 | prismatic_constraint | `hk_Prismatic_Constraint::hk_Prismatic_Constraint(hk_Local_Constraint_System*, hk_Prismatic_BP const*, hk_Rigid_Body*, hk_Rigid_Body*)` | identical |  |
 | prismatic_constraint | `hk_Prismatic_Constraint::~hk_Prismatic_Constraint()` | identical |  |
@@ -2484,9 +2484,9 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | prismatic_constraint | `hk_Prismatic_Constraint::write_to_blueprint(hk_Prismatic_BP*)` | identical |  |
 | prismatic_constraint | `hk_Prismatic_Constraint::get_vmq_storage_size()` | identical |  |
 | prismatic_constraint | `hk_Prismatic_Constraint::~hk_Prismatic_Constraint()` | identical |  |
-| pulley_constraint | `hk_Pulley_Constraint::step_constraint(hk_PSI_Info&, void*, float, float)` | differs | size retail 476 vs ours 478 |
-| pulley_constraint | `hk_Pulley_Constraint::setup_and_step_constraint(hk_PSI_Info&, void*, float, float)` | differs | size retail 4627 vs ours 2885 |
+| pulley_constraint | `hk_Pulley_Constraint::step_constraint(hk_PSI_Info&, void*, float, float)` | edited |  |
 | pulley_constraint | `hk_Pulley_Constraint::get_constraint_type()` | identical |  |
+| pulley_constraint | `hk_Pulley_Constraint::setup_and_step_constraint(hk_PSI_Info&, void*, float, float)` | edited |  |
 | pulley_constraint | `hk_Pulley_Constraint::hk_Pulley_Constraint(hk_Environment*, hk_Pulley_BP const*, hk_Rigid_Body*, hk_Rigid_Body*)` | identical |  |
 | pulley_constraint | `hk_Pulley_Constraint::hk_Pulley_Constraint(hk_Local_Constraint_System*, hk_Pulley_BP const*, hk_Rigid_Body*, hk_Rigid_Body*)` | identical |  |
 | pulley_constraint | `hk_Pulley_Constraint::~hk_Pulley_Constraint()` | identical |  |
@@ -2506,7 +2506,7 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | qhull | `qh_printsummary(__sFILE*)` | identical |  |
 | qhull | `qh_partitionpoint(double*, facetT*)` | identical |  |
 | qhull | `qh_partitionvisible(unsigned int, int*)` | identical |  |
-| qhull | `qh_build_withrestart()` | edited |  |
+| qhull | `qh_build_withrestart()` | identical |  |
 | qhull | `qh_partitioncoplanar(double*, facetT*, double*)` | identical |  |
 | qhull | `qh_qhull()` | identical |  |
 | qhull_geom | `qh_findbest(double*, facetT*, unsigned int, unsigned int, unsigned int, double*, unsigned int*, int*)` | identical |  |
@@ -2524,7 +2524,6 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | qhull_geom | `qh_sethyperplane_det(int, double**, double*, unsigned int, double*, double*, unsigned int*)` | identical |  |
 | qhull_geom | `qh_sethyperplane_gauss(int, double**, double*, unsigned int, double*, double*, unsigned int*)` | identical |  |
 | qhull_geom | `qh_normalize(double*, int, unsigned int)` | identical |  |
-| qhull_geom2 | `qh_voronoi_center(int, setT*)` | differs | size retail 1929 vs ours 1913 |
 | qhull_geom2 | `qh_divzero(double, double, double, unsigned int*)` | identical |  |
 | qhull_geom2 | `qh_getarea(facetT*)` | identical |  |
 | qhull_geom2 | `qh_detjoggle(double*, int, int)` | identical |  |
@@ -2555,6 +2554,7 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | qhull_geom2 | `qh_findbestsharp(double*, facetT**, double*, int*)` | identical |  |
 | qhull_geom2 | `qh_orientoutside(facetT*)` | identical |  |
 | qhull_geom2 | `qh_projectpoints(signed char*, int, double*, int, int, double*, int)` | identical |  |
+| qhull_geom2 | `qh_voronoi_center(int, setT*)` | edited |  |
 | qhull_geom2 | `qh_sethalfspace_all(int, int, double*, double*)` | identical |  |
 | qhull_geom2 | `qh_facetarea_simplex(int, double*, setT*, vertexT*, unsigned int, double*, double*)` | identical |  |
 | qhull_geom2 | `qh_rand()` | identical |  |
@@ -2573,7 +2573,7 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | qhull_global | `qh_initqhull_buffers()` | identical |  |
 | qhull_global | `qh_initqhull_globals(double*, int, int, unsigned int)` | identical |  |
 | qhull_global | `qh_init_B(double*, int, int, unsigned int)` | identical |  |
-| qhull_global | `qh_option(char const*, int*, double*)` | edited |  |
+| qhull_global | `qh_option(char const*, int*, double*)` | identical |  |
 | qhull_global | `qh_strtod(char const*, char**)` | identical |  |
 | qhull_io | `qh_detvnorm(vertexT*, vertexT*, setT*, double*)` | identical |  |
 | qhull_io | `qh_markkeep(facetT*)` | identical |  |
@@ -2806,10 +2806,10 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | quaternion | `hk_Quaternion::set(hk_Rotation const&)` | identical |  |
 | ragdoll_constraint | `hk_Ragdoll_Constraint::setup_and_step_constraint(hk_PSI_Info&, void*, float, float)` | differs | size retail 5888 vs ours 5844 |
 | ragdoll_constraint | `hk_Ragdoll_Constraint::step_constraint(hk_PSI_Info&, void*, float, float)` | identical |  |
-| ragdoll_constraint | `hk_Ragdoll_Constraint::update_friction(float)` | edited |  |
-| ragdoll_constraint | `hk_Ragdoll_Constraint::write_to_blueprint(hk_Ragdoll_Constraint_BP*)` | edited |  |
+| ragdoll_constraint | `hk_Ragdoll_Constraint::update_friction(float)` | identical |  |
+| ragdoll_constraint | `hk_Ragdoll_Constraint::write_to_blueprint(hk_Ragdoll_Constraint_BP*)` | identical |  |
 | ragdoll_constraint | `hk_Ragdoll_Constraint::get_constraint_type()` | identical |  |
-| ragdoll_constraint | `hk_Ragdoll_Constraint::init_ragdoll_constraint(hk_Ragdoll_Constraint_BP const*, hk_Local_Constraint_System*)` | edited |  |
+| ragdoll_constraint | `hk_Ragdoll_Constraint::init_ragdoll_constraint(hk_Ragdoll_Constraint_BP const*, hk_Local_Constraint_System*)` | identical |  |
 | ragdoll_constraint | `hk_Ragdoll_Constraint::hk_Ragdoll_Constraint(hk_Environment*, hk_Ragdoll_Constraint_BP const*, hk_Rigid_Body*, hk_Rigid_Body*)` | identical |  |
 | ragdoll_constraint | `hk_Ragdoll_Constraint::hk_Ragdoll_Constraint(hk_Local_Constraint_System*, hk_Ragdoll_Constraint_BP const*, hk_Rigid_Body*, hk_Rigid_Body*)` | identical |  |
 | ragdoll_constraint | `hk_Ragdoll_Constraint::~hk_Ragdoll_Constraint()` | identical |  |
@@ -2821,7 +2821,7 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | ragdoll_constraint | `hk_Ragdoll_Constraint::get_vmq_storage_size()` | identical |  |
 | ragdoll_constraint | `hk_Ragdoll_Constraint::hk_Ragdoll_Constraint(hk_Environment*, hk_Ragdoll_Constraint_BP const*, hk_Rigid_Body*, hk_Rigid_Body*)` | identical |  |
 | ragdoll_constraint | `hk_Ragdoll_Constraint::hk_Ragdoll_Constraint(hk_Local_Constraint_System*, hk_Ragdoll_Constraint_BP const*, hk_Rigid_Body*, hk_Rigid_Body*)` | identical |  |
-| ragdoll_constraint_bp_builder | `hk_Ragdoll_Constraint_BP_Builder::initialize_from_limited_ball_socket_bp(hk_Limited_Ball_Socket_BP const*, hk_Rigid_Body*, hk_Rigid_Body*)` | edited |  |
+| ragdoll_constraint_bp_builder | `hk_Ragdoll_Constraint_BP_Builder::initialize_from_limited_ball_socket_bp(hk_Limited_Ball_Socket_BP const*, hk_Rigid_Body*, hk_Rigid_Body*)` | identical |  |
 | rigid_body_binary_effector | `hk_Rigid_Body_Binary_EF::hk_Rigid_Body_Binary_EF(hk_Environment*, hk_Rigid_Body*, hk_Rigid_Body*, IVP_CONTROLLER_PRIORITY)` | identical |  |
 | rigid_body_core | `hk_Rigid_Body_Core::apply_impulses(hk_Core_VMQ_Input&, float const*)` | differs | size retail 252 vs ours 251 |
 | rigid_body_core | `hk_Rigid_Body_Core::add_to_mass_matrix_inv(hk_Core_VMQ_Input&, hk_Dense_Matrix&, float*)` | identical |  |
@@ -2835,7 +2835,7 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | sseconst | `FourVectors::RotateManyBy(FourVectors*, unsigned int, matrix3x4_t const&)` | identical |  |
 | stiff_spring_constraint | `hk_Stiff_Spring_Constraint::step_constraint(hk_PSI_Info&, void*, float, float)` | identical |  |
 | stiff_spring_constraint | `hk_Stiff_Spring_Constraint::get_constraint_type()` | identical |  |
-| stiff_spring_constraint | `hk_Stiff_Spring_Constraint::setup_and_step_constraint(hk_PSI_Info&, void*, float, float)` | edited |  |
+| stiff_spring_constraint | `hk_Stiff_Spring_Constraint::setup_and_step_constraint(hk_PSI_Info&, void*, float, float)` | identical |  |
 | stiff_spring_constraint | `hk_Stiff_Spring_Constraint::hk_Stiff_Spring_Constraint(hk_Environment*, hk_Stiff_Spring_BP const*, hk_Rigid_Body*, hk_Rigid_Body*)` | identical |  |
 | stiff_spring_constraint | `hk_Stiff_Spring_Constraint::hk_Stiff_Spring_Constraint(hk_Local_Constraint_System*, hk_Stiff_Spring_BP const*, hk_Rigid_Body*, hk_Rigid_Body*)` | identical |  |
 | stiff_spring_constraint | `hk_Stiff_Spring_Constraint::~hk_Stiff_Spring_Constraint()` | identical |  |
@@ -2844,9 +2844,9 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | stiff_spring_constraint | `hk_Stiff_Spring_Constraint::get_constraint_dof()` | identical |  |
 | stiff_spring_constraint | `hk_Stiff_Spring_Constraint::write_to_blueprint(hk_Stiff_Spring_BP*)` | identical |  |
 | stiff_spring_constraint | `hk_Stiff_Spring_Constraint::get_vmq_storage_size()` | identical |  |
-| strtools | `V_vsnprintfRet(char*, int, char const*, char*, bool*)` | missing |  |
 | strtools | `V_snprintf(char*, int, char const*, ...)` | identical |  |
 | strtools | `V_strlower(char*)` | identical |  |
+| strtools | `V_vsnprintfRet(char*, int, char const*, char*, bool*)` | new |  |
 | strtools | `V_stricmp(char const*, char const*)` | identical |  |
 | strtools | `V_strncpy(char*, char const*, int)` | identical |  |
 | tier1 | `ConnectTier1Libraries(void* (**)(char const*, int*), int)` | identical |  |
@@ -2898,31 +2898,24 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | trace | `CTraceIVP::Radius() const` | identical |  |
 | transform | `hk_Transform::set_identity_transform()` | identical |  |
 | utlbuffer | `_GLOBAL__I_a` | identical |  |
-| utlbuffer | `CUtlBuffer::PutOverflow(int)` | identical |  |
-| utlbuffer | `CUtlBuffer::SetExternalBuffer(void*, int, int, int)` | identical |  |
-| utlbuffer | `CUtlBuffer::Put(void const*, int)` | identical |  |
-| utlbuffer | `CUtlBuffer::CUtlBuffer(int, int, int)` | identical |  |
-| utlbuffer | `CUtlCharConversion::FindConversion(char const*, int*)` | identical |  |
 | utlbuffer | `CUtlCStringConversion::CUtlCStringConversion(char, char const*, int, CUtlCharConversion::ConversionArray_t*)` | identical |  |
 | utlbuffer | `CUtlBuffer::GetOverflow(int)` | identical |  |
+| utlbuffer | `CUtlBuffer::PutOverflow(int)` | identical |  |
+| utlbuffer | `CUtlBuffer::SetExternalBuffer(void*, int, int, int)` | identical |  |
 | utlbuffer | `CUtlBuffer::AddNullTermination()` | identical |  |
+| utlbuffer | `CUtlBuffer::Put(void const*, int)` | identical |  |
 | utlbuffer | `CUtlBuffer::CUtlBuffer(int, int, int)` | identical |  |
+| utlbuffer | `CUtlBuffer::CUtlBuffer(int, int, int)` | identical |  |
+| utlbuffer | `CUtlCharConversion::FindConversion(char const*, int*)` | identical |  |
 | utlbuffer | `CUtlNoEscConversion::FindConversion(char const*, int*)` | identical |  |
 | utlbuffer | `CUtlCStringConversion::FindConversion(char const*, int*)` | identical |  |
 | utlsymbol | `_GLOBAL__I_a` | identical |  |
-| utlsymbol | `CUtlMemory<UtlRBTreeNode_t<CUtlSymbolTable::CStringPoolIndex, unsigned short>, unsigned short>::Grow(int)` | identical |  |
-| utlsymbol | `CUtlMemory<CUtlSymbolTable::StringPool_t*, int>::Grow(int)` | identical |  |
 | utlsymbol | `CUtlRBTree<CUtlSymbolTable::CStringPoolIndex, unsigned short, CUtlSymbolTable::CLess, CUtlMemory<UtlRBTreeNode_t<CUtlSymbolTable::CStringPoolIndex, un` | identical |  |
 | utlsymbol | `CUtlRBTree<CUtlSymbolTable::CStringPoolIndex, unsigned short, CUtlSymbolTable::CLess, CUtlMemory<UtlRBTreeNode_t<CUtlSymbolTable::CStringPoolIndex, un` | identical |  |
 | utlsymbol | `CUtlRBTree<CUtlSymbolTable::CStringPoolIndex, unsigned short, CUtlSymbolTable::CLess, CUtlMemory<UtlRBTreeNode_t<CUtlSymbolTable::CStringPoolIndex, un` | identical |  |
 | utlsymbol | `CUtlRBTree<CUtlSymbolTable::CStringPoolIndex, unsigned short, CUtlSymbolTable::CLess, CUtlMemory<UtlRBTreeNode_t<CUtlSymbolTable::CStringPoolIndex, un` | identical |  |
 | utlsymbol | `CUtlRBTree<CUtlSymbolTable::CStringPoolIndex, unsigned short, CUtlSymbolTable::CLess, CUtlMemory<UtlRBTreeNode_t<CUtlSymbolTable::CStringPoolIndex, un` | identical |  |
-| utlsymbol | `CUtlRBTree<CUtlSymbolTable::CStringPoolIndex, unsigned short, CUtlSymbolTable::CLess, CUtlMemory<UtlRBTreeNode_t<CUtlSymbolTable::CStringPoolIndex, un` | identical |  |
-| utlsymbol | `CThreadLocalPtr<char>::~CThreadLocalPtr()` | identical |  |
 | utlsymbol | `CUtlSymbolTable::AddString(char const*)` | identical |  |
-| utlsymbol | `CUtlSymbolTable::RemoveAll()` | identical |  |
-| utlsymbol | `CUtlSymbolTable::CUtlSymbolTable(int, int, bool)` | identical |  |
-| utlsymbol | `CUtlSymbolTable::~CUtlSymbolTable()` | identical |  |
 | utlsymbol | `CCleanupUtlSymbolTable::~CCleanupUtlSymbolTable()` | identical |  |
 | utlsymbol | `CUtlRBTree<CUtlSymbolTable::CStringPoolIndex, unsigned short, CUtlSymbolTable::CLess, CUtlMemory<UtlRBTreeNode_t<CUtlSymbolTable::CStringPoolIndex, un` | identical |  |
 | utlsymbol | `CUtlRBTree<CUtlSymbolTable::CStringPoolIndex, unsigned short, CUtlSymbolTable::CLess, CUtlMemory<UtlRBTreeNode_t<CUtlSymbolTable::CStringPoolIndex, un` | identical |  |
@@ -2930,7 +2923,14 @@ Counts in this table: {'differs': 104, 'missing': 4, 'identical': 2729, 'edited'
 | utlsymbol | `CUtlSymbolTable::Find(char const*) const` | identical |  |
 | utlsymbol | `CUtlSymbolTable::CLess::operator()(CUtlSymbolTable::CStringPoolIndex const&, CUtlSymbolTable::CStringPoolIndex const&) const` | identical |  |
 | utlsymbol | `CUtlSymbolTable::String(CUtlSymbol) const` | identical |  |
+| utlsymbol | `CUtlMemory<UtlRBTreeNode_t<CUtlSymbolTable::CStringPoolIndex, unsigned short>, unsigned short>::Grow(int)` | identical |  |
+| utlsymbol | `CUtlMemory<CUtlSymbolTable::StringPool_t*, int>::Grow(int)` | identical |  |
 | utlsymbol | `CUtlRBTree<CUtlSymbolTable::CStringPoolIndex, unsigned short, CUtlSymbolTable::CLess, CUtlMemory<UtlRBTreeNode_t<CUtlSymbolTable::CStringPoolIndex, un` | identical |  |
+| utlsymbol | `CUtlRBTree<CUtlSymbolTable::CStringPoolIndex, unsigned short, CUtlSymbolTable::CLess, CUtlMemory<UtlRBTreeNode_t<CUtlSymbolTable::CStringPoolIndex, un` | identical |  |
+| utlsymbol | `CThreadLocalPtr<char>::~CThreadLocalPtr()` | identical |  |
+| utlsymbol | `CUtlSymbolTable::RemoveAll()` | identical |  |
+| utlsymbol | `CUtlSymbolTable::CUtlSymbolTable(int, int, bool)` | identical |  |
+| utlsymbol | `CUtlSymbolTable::~CUtlSymbolTable()` | identical |  |
 | vcollide_parse | `ParseKeyvalue(char const*, char (&) [1024], char (&) [1024])` | identical |  |
 | vcollide_parse | `CreateVPhysicsKeyParser(char const*)` | identical |  |
 | vcollide_parse | `CVPhysicsParse::ParseFluid(fluid_t*, IVPhysicsKeyHandler*)` | identical |  |
