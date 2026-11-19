@@ -95,12 +95,10 @@ RETAIL_INCLUDES_FIRST = {"stdshader_dx9": ["materialsystem/stdshaders/include"]}
 # which needs <cmath>'s integral overloads (Valve linked prebuilt ivp libraries).
 FORK_CL = {"ivp_compactbuilder": ["/FIcmath"]}
 
-# Switches of this tree's VPCs that Valve's retail build didn't use: the ivp submodule's
-# VPCs ask for /Ob1, but retail vphysics.dll inlines ivp's plain member functions
-# (ivp_physics sample: 198 to 258 of 315 functions with /Ob2).
-_IVP_OB2 = {"/Ob1": "/Ob2"}
-RETAIL_CL_REPLACE = dict((m, _IVP_OB2) for m in ("ivp_physics", "ivp_compactbuilder", "havana_constraints",
-                                                 "hk_base", "hk_math"))
+# Switches of this tree's VPCs that Valve's retail build didn't use: ivp_physics.vpc asks
+# for /Ob1, but retail vphysics.dll inlines ivp_physics' plain member functions (ivp_physics
+# 557 to 674 of 811 functions with /Ob2; ivp_compactbuilder does match /Ob1: 362 vs 306).
+RETAIL_CL_REPLACE = {"ivp_physics": {"/Ob1": "/Ob2"}}
 
 # Valve's Windows ivp was built with IVP_PIII (Pentium III paths in ivu_linear and
 # _mm_prefetch hints: retail vphysics.dll has 66 prefetcht1); the ivp submodule's VPCs lack it.
