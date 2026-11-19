@@ -82,6 +82,23 @@ def trim_padding(code):
     return n
 
 
+def skip_padding(code):
+    """Length of the alignment padding at the start of `code`."""
+    n = 0
+    while n < len(code):
+        if cs:
+            ins = next(_lite.disasm_lite(code[n:n + 16], 0), None)
+            if ins is None or not _is_pad_insn(ins[2], ins[3]):
+                return n
+            n += ins[1]
+            continue
+        p = next((p for p in _PAD_SEQS if code[n:n + len(p)] == p), None)
+        if p is None:
+            return n
+        n += len(p)
+    return n
+
+
 _PREFIXES = {0x2e, 0x3e, 0xf2, 0xf3, 0x66, 0x26, 0x36, 0x64, 0x65}
 
 

@@ -110,14 +110,15 @@ def build_samples(t, rebuild):
     # Steam Runtime scout gcc-9 (retail Linux compiler) in Docker
     docker = shutil.which('docker')
     if docker and sh([docker, 'image', 'inspect', SCOUT]).returncode == 0:
-        (eo, so), ok = fresh('se.o', 'libse.so')
+        (eo, so, sos), ok = fresh('se.o', 'libse.so', 'libse_s.so')
         if not ok:
             r = sh([docker, 'run', '--rm', '--platform', 'linux/amd64', '-v', f'{TESTS}:/w', '-w', '/w', SCOUT, 'sh', '-c',
-                    'g++-9 -m32 -O2 -fPIC -c sample.cpp -o build/se.o && g++-9 -m32 -shared build/se.o -o build/libse.so'])
+                    'g++-9 -m32 -O2 -fPIC -c sample.cpp -o build/se.o && g++-9 -m32 -shared build/se.o -o build/libse.so'
+                    ' && strip -s build/libse.so -o build/libse_s.so'])
             if r.returncode:
                 t.note('scout build failed: ' + r.stderr.strip()[-200:])
         if os.path.exists(eo):
-            out['scout'] = (eo, so)
+            out['scout'] = (eo, so, sos)
     else:
         t.skip('scout gcc-9 sample build', 'docker or image missing')
     return out
@@ -232,9 +233,22 @@ def test_samples(t, b):
         t.check('locate + --retail-map names more of the stripped DLL', g['total'] > f['total'] and g['differs'] == 0,
                 f'{g["matched"]}/{g["total"]} (exports only: {f["total"]})')
     if 'scout' in b:
-        eo, so = b['scout']
+        eo, so, sos = b['scout']
         f, _, _ = run_compare(so, eo)
         t.check('ELF scout gcc-9 object vs .so', f['total'] >= 10 and f['differs'] == 0, f'{f["matched"]}/{f["total"]}')
+        if os.path.exists(sos):
+            from . import elfmatch
+            R = loader.load_one(sos)
+            funcs = loader.load_one(eo).functions
+            was = elfmatch.stripped(R)
+            # functions without an FDE inside FDE-less CRT code (glibc's crti.o get_pc_thunk.bx) can't be told apart
+            starts = {fn.addr for fn in R.functions}
+            unstripped = compare.Index(loader.load_one(so).functions)
+            want = sum(1 for o in funcs if unstripped.find(o) and unstripped.find(o).addr in starts)
+            elfmatch.name_retail(R, funcs)
+            g = report.summarize(report.run(R, funcs)['results'])['functions']
+            t.check('ELF object vs stripped .so (.eh_frame extents, located by search)',
+                    was and g['matched'] == want >= 10 and g['differs'] == 0, f'{g["matched"]}/{want}')
 
 
 def test_workflow(t, depots):
