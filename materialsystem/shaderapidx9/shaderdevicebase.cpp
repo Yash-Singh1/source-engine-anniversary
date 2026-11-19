@@ -606,6 +606,11 @@ void CShaderDeviceMgrBase::ReadDXSupportLevels( HardwareCaps_t &caps )
 			caps.m_nDXSupportLevel = caps.m_nMaxDXSupportLevel;
 		}
 	}
+#ifdef BYTEMATCH_RETAIL
+	if ( g_pMaterialSystem->GetRenderBackend() == RENDER_BACKEND_VULKAN )
+		caps.m_nMaxDXSupportLevel = 95;
+#endif
+#line 609
 }
 
 
