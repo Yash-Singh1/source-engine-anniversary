@@ -41,6 +41,9 @@ public:
 	// gets the abc widths for a character
 	virtual void GetCharABCWidths(int ch, int &a, int &b, int &c, int *pColorGlyph = NULL);
 
+	// set the font to be the one to currently draw with in the gdi
+	ATSUStyle *SetAsActiveFont( CGContextRef cgContext );
+
 	// returns the height of the font, in pixels
 	virtual int GetHeight();
 
