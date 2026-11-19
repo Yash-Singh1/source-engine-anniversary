@@ -492,7 +492,14 @@ public:
 	//-----------------------------------------------------
 	// Thread event support (safe for NULL this to simplify code )
 	//-----------------------------------------------------
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 495
+	bool WaitForFinish( uint32 dwTimeout = TT_INFINITE ) { if (!this) return true; return ( !IsFinished() ) ? g_pThreadPool->YieldWait( this, dwTimeout ) : true; }
+#else
+#line 495
 	bool WaitForFinish( uint32 dwTimeout = TT_INFINITE, IThreadPool *pool = g_pThreadPool ) { if (!this) return true; return ( !IsFinished() ) ? pool->YieldWait( this, dwTimeout ) : true; }
+#endif
+#line 496
 	bool WaitForFinishAndRelease( uint32 dwTimeout = TT_INFINITE ) { if (!this) return true; bool bResult = WaitForFinish( dwTimeout); Release(); return bResult; }
 	CThreadEvent *AccessEvent()						{ return &m_CompleteEvent; }
 

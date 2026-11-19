@@ -5726,12 +5726,18 @@ int S_StartSound( StartSoundParams_t& params )
 
 	if ( params.staticsound )
 	{
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 5682
+#else
+#line 5711
+#endif
 		VPROF_( "StartStaticSound", 0, VPROF_BUDGETGROUP_OTHER_SOUND, false, BUDGETFLAG_OTHER );	
 		return S_StartStaticSound( params );
 	}
 	else
 	{
 		VPROF_( "StartDynamicSound", 0, VPROF_BUDGETGROUP_OTHER_SOUND, false, BUDGETFLAG_OTHER );
+#line 5718
 		return S_StartDynamicSound( params );
 	}
 }
@@ -6588,7 +6594,13 @@ extern void DEBUG_StopSoundMeasure(int type, int samplecount );
 void S_Update_Guts( float mixAheadTime )
 {
 	VPROF( "S_Update_Guts" );
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 6563
+#else
+#line 6561
+#endif
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__ );
+#line 6563
 
 	DEBUG_StartSoundMeasure(4, 0);
 

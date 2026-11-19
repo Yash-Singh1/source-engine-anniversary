@@ -81,6 +81,11 @@ RETAIL_EXCLUDE = {"materialsystem": ["materialsystem/ctexturecompositor.cpp"],
                   "tier0": ["tier0/stacktools.cpp", "tier0/cpumonitoring.cpp"],
                   "engine": ["engine/audio/private/MPAHeader.cpp", "engine/audio/private/VBRHeader.cpp"]}
 
+# VPC conditionals Valve's buildbot set beyond the platform ones (no 2018 script sets them):
+# retail engine.dll has the remote perf test commands (rpt_start, CRPTClient, ...), which
+# engine.vpc compiles with $ENABLE_RPT. The --retail-osx32 engine defines it too.
+RETAIL_CONDITIONALS = {"engine": ("ENABLE_RPT",)}
+
 # Include directories this fork's sources need beyond Valve's (the fork's
 # vector_fpu.inl includes ivu_types.hxx for intp).
 FORK_INCLUDES = {"hk_math": ["ivp/ivp_utility"], "replay": ["thirdparty/curl/include"]}
@@ -204,7 +209,8 @@ def dedupe(seq):
 class Module:
     def __init__(self, name, vpc_rel, hl2src, retail=None, include_alias=None):
         self.name, self.vpc_rel, self.hl2src, self.retail = name, vpc_rel, hl2src, retail
-        self.p = VPC.Project(hl2src, os.path.join(hl2src, vpc_rel), include_alias=include_alias).parse()
+        self.p = VPC.Project(hl2src, os.path.join(hl2src, vpc_rel), VPC.WIN32_RETAIL + RETAIL_CONDITIONALS.get(name, ()),
+                             include_alias=include_alias).parse()
         self.projdir = os.path.dirname(os.path.join(hl2src, vpc_rel))
 
     def tree_rel(self, win, base=None):

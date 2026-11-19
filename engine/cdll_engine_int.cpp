@@ -973,7 +973,13 @@ void CEngineClient::Sound_ExtraUpdate( void )
 	if ( IsX360() )
 		return;
 
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 932
+#else
+#line 952
+#endif
 	VPROF_BUDGET( "CEngineClient::Sound_ExtraUpdate()", VPROF_BUDGETGROUP_OTHER_SOUND );
+#line 954
 
 	S_ExtraUpdate();
 }

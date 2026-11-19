@@ -886,6 +886,11 @@ inline unsigned short* CIndexBuffer::Lock( bool bReadOnly, int numIndices, int& 
 	switch ( hr )
 	{
 		case D3DERR_INVALIDCALL:
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 859
+#else
+#line 874
+#endif
 			Msg( "D3DERR_INVALIDCALL - Index Buffer Lock Failed in %s on line %d(offset %d, size %d, flags 0x%x)\n", V_UnqualifiedFileName(__FILE__), __LINE__, position * IndexSize(), numIndices * IndexSize(), dwFlags );
 			break;
 		case D3DERR_DRIVERINTERNALERROR:
@@ -893,6 +898,7 @@ inline unsigned short* CIndexBuffer::Lock( bool bReadOnly, int numIndices, int& 
 			break;
 		case D3DERR_OUTOFVIDEOMEMORY:
 			Msg( "D3DERR_OUTOFVIDEOMEMORY - Index Buffer Lock Failed in %s on line %d (offset %d, size %d, flags 0x%x)\n", V_UnqualifiedFileName(__FILE__), __LINE__, position * IndexSize(), numIndices * IndexSize(), dwFlags );
+#line 882
 			break;
 	}
 
