@@ -1210,10 +1210,10 @@ void CViewRender::PerformScreenOverlay( int x, int y, int w, int h )
 #if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
 #line 1206
 #else
-#line 1207
+#line 1208
 #endif
 		tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__ );
-#line 1209
+#line 1210
 
 		if ( m_ScreenOverlayMaterial->NeedsFullFrameBufferTexture() )
 		{
@@ -1251,10 +1251,10 @@ void CViewRender::DrawUnderwaterOverlay( void )
 #if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
 #line 1241
 #else
-#line 1242
+#line 1243
 #endif
 		tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__ );
-#line 1244
+#line 1245
 
 		CMatRenderContextPtr pRenderContext( materials );
 
@@ -3225,10 +3225,10 @@ void CViewRender::DrawMonitors( const CViewSetup &cameraView )
 #if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
 #line 3229
 #else
-#line 3202
+#line 3231
 #endif
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__ );
-#line 3204
+#line 3233
 #line 3203
 
 #ifdef _DEBUG
