@@ -131,7 +131,10 @@ void CBaseCombatWeapon::Activate( void )
 
 #ifndef CLIENT_DLL
 	if ( GetOwnerEntity() )
+	{
+		NOV2024_ONLY( OnInventoryChanged(); )
 		return;
+	}
 
 	if ( g_pGameRules->IsAllowedToSpawn( this ) == false )
 	{
@@ -141,6 +144,25 @@ void CBaseCombatWeapon::Activate( void )
 #endif
 
 }
+
+#if !defined( CLIENT_DLL ) && defined( HL2_ANNIVERSARY_NOV2024 )
+//-----------------------------------------------------------------------------
+// Purpose: Tell the owning player's HUD that their weapons changed
+//-----------------------------------------------------------------------------
+void CBaseCombatWeapon::OnInventoryChanged( void )
+{
+	CBaseCombatCharacter *pOwner = GetOwner();
+	if ( pOwner && pOwner->IsPlayer() )
+	{
+		IGameEvent *event = gameeventmanager->CreateEvent( "weapon_inventory_updated" );
+		if ( event )
+		{
+			event->SetInt( "owner", pOwner->entindex() );
+			gameeventmanager->FireEvent( event );
+		}
+	}
+}
+#endif
 void CBaseCombatWeapon::GiveDefaultAmmo( void )
 {
 	// If I use clips, set my clips to the default
@@ -773,6 +795,8 @@ void CBaseCombatWeapon::OnPickedUp( CBaseCombatCharacter *pNewOwner )
 	{
 		m_OnNPCPickup.FireOutput(pNewOwner, this);
 	}
+
+	NOV2024_ONLY( OnInventoryChanged(); )
 
 #ifdef HL2MP
 	HL2MPRules()->RemoveLevelDesignerPlacedObject( this );
