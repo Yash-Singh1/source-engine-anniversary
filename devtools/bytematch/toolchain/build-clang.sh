@@ -2,7 +2,7 @@
 # Fetch, patch and build an Apple open-source clang as a native host
 # (arm64 or x86_64 macOS) compiler that targets i386-apple-darwin.
 #
-# Usage: build-clang.sh [options] <version>     (600.0.57, 600.0.54, 600.0.51, 503.0.38)
+# Usage: build-clang.sh [options] <version>     (600.0.57, 600.0.54, 600.0.51, 503.0.38, 318.0.45)
 #   --prefix DIR        toolchain root (default $BYTEMATCH_TOOLCHAIN)
 #   --work DIR          download/build scratch (default <prefix>/work)
 #   --tarball FILE      use a local copy of the release tarball (still hash-checked)
@@ -33,8 +33,12 @@ WORK=${WORK:-$PREFIX/work}
 DEST=$PREFIX/clang-$V
 mkdir -p "$WORK" "$PREFIX"
 VERSION_PATCHES=$(ls "$HERE/patches/clang-$V-"*.patch 2>/dev/null || true)
-# Every version: a host-compiler fix, and -fmacro-prefix-map (waf's retail mode needs it).
-COMMON_PATCHES="$HERE/patches/clang-intrusiverefcntptr-friend.patch $HERE/patches/clang-macro-prefix-map.patch"
+# Every version: a host-compiler fix. The versions waf's retail mode compiles with also
+# get -fmacro-prefix-map.
+COMMON_PATCHES="$HERE/patches/clang-intrusiverefcntptr-friend.patch"
+case $V in
+503.*|600.*) COMMON_PATCHES="$COMMON_PATCHES $HERE/patches/clang-macro-prefix-map.patch" ;;
+esac
 
 # Staged and renamed into place, so builds running with the old install never
 # find it missing.
@@ -84,7 +88,15 @@ done
 # Host-compiler compatibility knobs only; none affect generated i386 code:
 #  -D_XLOCALE__REGEX_H_  avoids the SDK's xlocale regex header clashing with llvm's regex
 #  HAVE_SANITIZER_MSAN_INTERFACE_H=OFF  the SDK ships the header but old llvm misuses it
-#  libcxx/compiler-rt are not needed (we target libstdc++ from the SDK)
+#  libcxx/compiler-rt are not needed (we target libstdc++ from the SDK); the 2012
+#  tree's CMake builds them unconditionally, so they are removed, and it is C++98 code
+CXXSTD=-std=c++11
+case $V in
+318.*)
+	CXXSTD=-std=gnu++98
+	rm -rf "$SRC/src/projects/libcxx" "$SRC/src/projects/compiler-rt"
+	;;
+esac
 BLD=$WORK/build-clang-$V
 rm -rf "$BLD"
 mkdir -p "$BLD"
@@ -93,7 +105,7 @@ cmake -S "$SRC/src" -B "$BLD" -G Ninja \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
 	-DCMAKE_C_FLAGS="-w" \
-	-DCMAKE_CXX_FLAGS="-std=c++11 -w -Wno-error -D_XLOCALE__REGEX_H_" \
+	-DCMAKE_CXX_FLAGS="$CXXSTD -w -Wno-error -D_XLOCALE__REGEX_H_" \
 	-DLLVM_TARGETS_TO_BUILD=X86 \
 	-DLLVM_DEFAULT_TARGET_TRIPLE=i386-apple-darwin13 \
 	-DLLVM_INCLUDE_TESTS=OFF -DLLVM_INCLUDE_EXAMPLES=OFF -DLLVM_INCLUDE_DOCS=OFF \
@@ -101,5 +113,5 @@ cmake -S "$SRC/src" -B "$BLD" -G Ninja \
 	-DLLVM_EXTERNAL_LIBCXX_BUILD=OFF -DLLVM_EXTERNAL_LIBCXXABI_BUILD=OFF \
 	-DLLVM_EXTERNAL_COMPILER_RT_BUILD=OFF \
 	-DHAVE_SANITIZER_MSAN_INTERFACE_H=OFF
-ninja -C "$BLD" -j "$BYTEMATCH_JOBS" clang
+ninja -C "$BLD" -j "$BYTEMATCH_JOBS" clang clang-headers
 install_from "$BLD"

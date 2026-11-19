@@ -7,9 +7,11 @@
 # Apple clang from apple-oss-distributions/clang release tags.
 # Xcode 6.0.1 = 600.0.51, Xcode 6.1 = 600.0.54, Xcode 6.2 = 600.0.57,
 # Xcode 5.1 = 503.0.38 (2014 hl2mp modules).
+# Xcode 4.3 = 318.0.45 (libjpeg in build-thirdparty.py).
 CLANG_URL_BASE=https://github.com/apple-oss-distributions/clang/archive/refs/tags
 clang_sha256() {
 	case $1 in
+	318.0.45) echo a9698a034b8eaa4a531658b4a9246df7d210cd67bb604654c24e0502c2d0bb37 ;;
 	503.0.38) echo 64c0c3d2b3511937f1d7b4b5b8d3352ef84b2f4198848614c65a09c706681746 ;;
 	600.0.51) echo 3a161eff905526d0732960930bd66a04ff7f5e57a50d703039832ce034ca9d34 ;;
 	600.0.54) echo 59e74469353a727b0f034606f44af0b5c7da2b0704ac2ad3ffdc75612640ca48 ;;
