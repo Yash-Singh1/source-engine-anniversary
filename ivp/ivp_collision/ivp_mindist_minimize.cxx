@@ -99,8 +99,13 @@ IVP_BOOL IVP_Mindist_Minimize_Solver::check_loop_hash(IVP_SYNAPSE_POLYGON_STATUS
 	int h = x0; x0 = x1; x1 = h;
     }
 
+#ifdef BYTEMATCH_RETAIL
+    IVP_MM_Loop_Hash_Struct *s = & loop_hash[loop_hash_size-1];
+    for(int i = loop_hash_size-1; i>=0; i--){
+#else
     IVP_MM_Loop_Hash_Struct *s = & loop_hash[loop_hash_size];
     for(int i = loop_hash_size; i>=0; i--){
+#endif
 	if ( s->a == x0 && s->b == x1){
 	    return IVP_TRUE;
 	}

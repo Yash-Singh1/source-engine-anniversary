@@ -801,6 +801,9 @@ IVP_ERROR_STRING P_Sur_2D::calc_triangle_representation()
 	    if(skip_this_point){
 		if(!ab_min_hash.find_min_elem()){
 		    printf("Couldn't find a matching point to baseline!\n");
+#ifdef BYTEMATCH_RETAIL
+#line 802
+#endif
 		    CORE;
 		}
 #ifdef SUR_DEBUG
@@ -828,6 +831,9 @@ IVP_ERROR_STRING P_Sur_2D::calc_triangle_representation()
 	    if(skip_this_point){
 		if(!td_point_line->next){
 		    printf("Couldn't find a matching point to baseline!\n");
+#ifdef BYTEMATCH_RETAIL
+#line 829
+#endif
 		    CORE;
 		}
 #ifdef SUR_DEBUG

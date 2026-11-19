@@ -105,7 +105,11 @@ public:
   IVP_Real_Object  *l_obj;				// back link to object
 protected:
   short contact_point_offset;               // back link to my controlling mindist
+#ifdef BYTEMATCH_RETAIL
+  short status;
+#else
   short status:8;			    // type IVP_SYNAPSE_POLYGON_STATUS  point, edge, tri, ball ....
+#endif
 public:
     
   const IVP_Compact_Edge 	*edge;		// Note: all balls share one dummy edge

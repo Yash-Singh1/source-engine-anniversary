@@ -316,6 +316,9 @@ void IVP_Contact_Point::recalc_friction_s_vals(){
     IVP_Environment *env = get_synapse(0)->get_object()->get_environment();
     
     IVP_Impact_Solver_Long_Term *info = (IVP_Impact_Solver_Long_Term*)env->get_sim_unit_mem()->get_mem_transaction(sizeof(IVP_Impact_Solver_Long_Term));
+#ifdef BYTEMATCH_RETAIL
+    info->surf_normal.set_to_zero();
+#endif
     info->init_tmp_contact_info();
     this->tmp_contact_info = info;
     	    
@@ -378,6 +381,9 @@ void IVP_Contact_Point::recalc_friction_s_vals(){
 		break;
 	    }
 	    default:
+#ifdef BYTEMATCH_RETAIL
+#line 440
+#endif
 		CORE;
 	    }
 	    break;
@@ -388,6 +394,9 @@ void IVP_Contact_Point::recalc_friction_s_vals(){
 	    break;
 	};
 	default:
+#ifdef BYTEMATCH_RETAIL
+#line 450
+#endif
 	    CORE;
 	}
 	{  // reduce len of friction contact by extra radius
@@ -457,7 +466,11 @@ void IVP_Contact_Point::recalc_friction_s_vals(){
 	    delta_velocity_ws.subtract(&dh);
 
 	    IVP_U_Float_Point hp; hp.set_pairwise_mult( &info->contact_cross_nomal_cs[1], core1->get_inv_rot_inertia());
+#ifdef BYTEMATCH_RETAIL
+	    info->inv_virtual_mass += IVP_FLOAT(info->contact_cross_nomal_cs[1].dot_product( & hp)) + core1->get_inv_mass();
+#else
 	    info->inv_virtual_mass += info->contact_cross_nomal_cs[1].dot_product( & hp) + core1->get_inv_mass();
+#endif
 	}else{
 	    info->contact_point_cs[1].set_to_zero();
 	    info->contact_cross_nomal_cs[1].set_to_zero();

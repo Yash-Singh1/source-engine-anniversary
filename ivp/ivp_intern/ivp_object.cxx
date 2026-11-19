@@ -848,6 +848,9 @@ void IVP_Real_Object::init_object_core(IVP_Environment *i_environment, const IVP
 	rad_dev = 0.0f;
 	break;
     default:
+#ifdef BYTEMATCH_RETAIL
+#line 891
+#endif
 	CORE;
     }
     rad += this->get_extra_radius();
@@ -873,6 +876,9 @@ void IVP_Real_Object::init_object_core(IVP_Environment *i_environment, const IVP
 	    break;
 	}
 	default:
+#ifdef BYTEMATCH_RETAIL
+#line 916
+#endif
 	    CORE;
 	}
 	    

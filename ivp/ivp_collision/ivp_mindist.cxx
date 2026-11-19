@@ -270,6 +270,9 @@ void IVP_Mindist::init_mindist(IVP_Real_Object *pop0, IVP_Real_Object *pop1,cons
     syn1->init_synapse(this, pop1,  e1,IVP_ST_BALL);
     break;
   default:
+#ifdef BYTEMATCH_RETAIL
+#line 261
+#endif
     CORE;
   }
   switch (pop0->get_type()){
@@ -281,6 +284,9 @@ void IVP_Mindist::init_mindist(IVP_Real_Object *pop0, IVP_Real_Object *pop1,cons
     syn0->init_synapse(this, pop0,  e0, IVP_ST_BALL);
     break;
   default:
+#ifdef BYTEMATCH_RETAIL
+#line 272
+#endif
     CORE;
   }
 
