@@ -209,7 +209,6 @@ inline void SCR_ShowVCRPlaybackAmount()
 // Purpose: This is called every frame, and can also be called explicitly to flush
 //  text to the screen.
 //-----------------------------------------------------------------------------
-#line 201
 void SCR_UpdateScreen( void )
 {
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__ );
@@ -309,7 +308,7 @@ void SCR_UpdateScreen( void )
 		modelloader->UpdateDynamicModels();
 	}
 #endif
-#line 298
+#line 309
 
 	{
 		tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "materials_EndFrame" );
