@@ -1139,6 +1139,10 @@ bool CShaderDeviceMgrDx8::ComputeCapsFromD3D( HardwareCaps_t *pCaps, int nAdapte
 	}
 
 	CheckBorderColorSupport( pCaps, nAdapter );
+#ifdef BYTEMATCH_RETAIL
+	pCaps->m_bSupportsNormalMapCompression = false;
+#endif
+#line 1134
 
 	// This may get more complex if we start using multiple flavors of compressed vertex - for now it's "on or off"
 	pCaps->m_SupportsCompressedVertices = ( pCaps->m_nDXSupportLevel >= 90 ) && ( pCaps->m_CanDoSRGBReadFromRTs ) ? VERTEX_COMPRESSION_ON : VERTEX_COMPRESSION_NONE;
