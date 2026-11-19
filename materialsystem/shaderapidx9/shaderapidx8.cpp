@@ -6111,10 +6111,10 @@ static ConVar r_radialfog_force( "r_radialfog_force", "-1", 0, "Force-on toggle 
 int CShaderAPIDx8::GetPixelFogCombo1( bool bSupportsRadial )
 {
 	int nCombo = GetPixelFogCombo();
-	if ( nCombo == 0 && bSupportsRadial )
+	if ( bSupportsRadial && nCombo == 0 )
 	{
-		int nForce = r_radialfog_force.GetInt();
-		bool bRadial = ( nForce == -1 ) ? m_DynamicState.m_bFogRadial : ( nForce != 0 );
+		bool bRadial = m_DynamicState.m_bFogRadial;
+		int nForce = r_radialfog_force.GetInt(); if ( nForce != -1 ) bRadial = ( nForce != 0 );
 		if ( bRadial )
 			return 2;
 	}
