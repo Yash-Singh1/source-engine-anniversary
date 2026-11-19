@@ -1,5 +1,6 @@
 """Scoping, summaries and JSON/markdown report output."""
 import collections
+import re
 import datetime
 import json
 import shutil
@@ -89,9 +90,48 @@ def run(retail, ours_funcs, objects=None, all_retail=False, target_check=True, i
         if n:
             notes.append(f'{n} functions differed only in call targets whose code is identical on both '
                          f'sides (identical-code folding named them differently); counted as matching')
+        n = accept_folded_instantiations(results + shared, retail)
+        if n:
+            notes.append(f'{n} functions match a retail function of the same name with other template '
+                         f'arguments (the instantiations are folded in retail, and the map named the copy '
+                         f'after another one); counted as matching')
     if data_check:
         apply_data_check(results + shared, *data_check)
     return dict(results=results, shared=shared, extra=only_ours, mode=mode, notes=notes)
+
+
+def _untemplated(name):
+    prev = None
+    while prev != name:
+        prev, name = name, re.sub(r'<[^<>]*>', '', name)
+    return name
+
+
+def accept_folded_instantiations(results, retail):
+    """Pass a template function that matches another retail instantiation of the same name.
+
+    Identical-code folding keeps one copy of instantiations that compile to the same code,
+    and the name map can only call it after one of them."""
+    by = {}
+    for f in retail.functions:
+        for n in [f.name] + list(f.aliases):
+            if '<' in n:
+                by.setdefault(_untemplated(n), set()).add(f)
+    moved = 0
+    for res in results:
+        if res.status != compare.DIFFERS or not res.ours or not res.retail or '<' not in res.key:
+            continue
+        for r in by.get(_untemplated(res.key), ()):
+            if r is res.retail or not r.data:
+                continue
+            c = compare.compare(r, res.ours, True)
+            if c.status in (compare.EXACT, compare.MASKED):
+                res.status, res.reason, res.first_diff = c.status, '', None
+                res.line_constants, res.target_mismatches = None, []
+                res.matched_at = r.addr
+                moved += 1
+                break
+    return moved
 
 
 def accept_equivalent_targets(results, retail, ours_funcs):
@@ -191,6 +231,8 @@ def result_json(r, diff_lines=0):
                                 for k, a, b in r.data_mismatches]
     if r.target_mismatches:
         d['target_mismatches'] = [dict(offset=k, ours=t, retail=rt) for k, t, rt in r.target_mismatches]
+    if getattr(r, 'matched_at', None):
+        d['matched_at'] = hex(r.matched_at)
     if getattr(r, 'equivalent_targets', None):
         d['equivalent_targets'] = [dict(offset=k, ours=t, retail=rt) for k, t, rt in r.equivalent_targets]
     if diff_lines and r.status == DIFFERS and r.retail and r.ours:
