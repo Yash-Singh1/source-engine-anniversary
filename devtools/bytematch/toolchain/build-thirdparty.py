@@ -17,7 +17,7 @@ from the retail code and the archives' own debug info (lane-thirdparty2.md):
   speex     Valve's copy is upstream 1.0.1. Apple gcc 4.2.1 build 5564, except
             nb_celp.c, which Valve compiled with gcc 4.0.1 build 5484; MacOSX10.5.sdk
   libpng    Apple gcc 4.2.1 -O2, MacOSX10.6.sdk
-  libjpeg   an old Apple clang at -O0; clang-600 -O0 is the closest we have
+  libjpeg   Apple clang 3.1 (clang-318.0.45, Xcode 4.3, build-clang.sh) -O0, no debug info
 
 --compiler clang builds everything with clang-600 and the retail flags (the
 previous behaviour; no period compilers or 10.5 SDK needed). Sources are
@@ -81,6 +81,8 @@ SPEEX_LIB = ("nb_celp sb_celp lpc ltp lsp quant_lsp lsp_tables_nb gain_table gai
              "exc_5_64_table exc_8_128_table exc_10_32_table exc_10_16_table exc_20_32_table "
              "hexc_10_32_table misc speex_header speex_callbacks math_approx stereo").split()
 
+# libjpeg's compiler (build-clang.sh): Xcode 4.3's clang.
+JPEG_CLANG = "318.0.45"
 # Period compilers (build-gcc.sh): version, gcc target, gcc base version.
 GCC = {"5666.3": ("i686-apple-darwin10", "4.2.1"), "5564": ("i686-apple-darwin9", "4.2.1"),
        "5484": ("i686-apple-darwin9", "4.0.1")}
@@ -150,7 +152,7 @@ def compile_all(jobs, env=None):
         r = subprocess.run(cmd, capture_output=True, text=True, env=env)
         return cmd[-1], r.returncode, r.stderr
     failed = []
-    with concurrent.futures.ThreadPoolExecutor(os.cpu_count()) as ex:
+    with concurrent.futures.ThreadPoolExecutor(int(os.environ.get("BYTEMATCH_JOBS", os.cpu_count()))) as ex:
         for out, rc, err in ex.map(one, jobs):
             if rc:
                 errs = [l for l in err.splitlines() if "error:" in l] or err.strip().splitlines()
@@ -177,9 +179,14 @@ def period_flags(name, src, p, prefix):
     """Valve's compiler and flags for each archive, as identified from retail.
     Returns (default command, {source stem: command}) without -c/-o."""
     if name == "jpeg":
-        # Retail's libjpeg is unoptimized clang output (smaller than clang-600's -O0).
-        flags = [("-O0" if f == "-O2" else f) for f in rf.cxxflags(p["sdk"])]
-        return [p["cxx"], "-x", "c++"] + flags, {}
+        # Retail's libjpeg is Apple clang 3.1 -O0 output without debug info. Its fast-isel
+        # still drops a branch to the fall-through block when the branch is alone in its
+        # block; LLVM keeps it from April 2012 (Xcode 4.4) on.
+        cxx = os.path.join(prefix, "clang-" + JPEG_CLANG, "bin", "clang++")
+        if not os.path.exists(cxx):
+            raise SystemExit(f"{cxx} missing; run {HERE}/build-clang.sh {JPEG_CLANG}")
+        return [cxx, "-x", "c++", "-arch", "i386", "-mmacosx-version-min=" + rf.MIN_OSX,
+                "-isysroot", p["sdk"], "-O0", "-fvisibility=hidden", "-w"], {}
     if name == "png":
         # Retail modules export libpng (lane-chromehtml2.md), so default visibility.
         return gcc_driver(prefix, "5666.3") + [

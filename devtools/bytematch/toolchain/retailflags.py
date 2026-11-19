@@ -16,7 +16,8 @@ SDK_NAME = "MacOSX10.9.sdk"
 # the archives change, so builds running against the old ones keep working.
 # -2: libpng with default visibility.
 # -3: period compilers (Apple gcc 4.0/4.2), Valve's Crypto++ and speex 1.0.1 sources.
-THIRDPARTY_DIR = "thirdparty-osx32-3"
+# -4: libjpeg with clang-318.0.45.
+THIRDPARTY_DIR = "thirdparty-osx32-4"
 MIN_OSX = "10.6"
 RETAIL_DEPOT = "/Volumes/Expansion/mac-ports/hl2-anniversary-depot/depots/223/19307283"
 
@@ -25,6 +26,14 @@ RETAIL_DEPOT = "/Volumes/Expansion/mac-ports/hl2-anniversary-depot/depots/223/19
 # (__unwind_info 2^0), MACOSX_DEPLOYMENT_TARGET 10.5 (LC_VERSION_MIN 10.5,
 # libgcc_s.1 linked). Same xcconfig flags otherwise.
 HL2MP_2014 = {"clang": "503.0.38", "ld64": "236.3", "min_osx": "10.5"}
+
+# Source roots of Valve's buildbot checkouts (N_OSO and __FILE__ paths): every
+# depot 223/340/380/420 module but hl2mp was built in rel_singleplayer_osx,
+# hl2mp in rel_hl2_osx.
+VALVE_SRC = "/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/"
+HL2MP_VALVE_SRC = "/Users/buildbot/buildslave/rel_hl2_osx/build/src/"
+# The build-clang.sh patch that adds -fmacro-prefix-map (macro_prefix_map()).
+MACRO_PREFIX_MAP_PATCH = "clang-macro-prefix-map.patch"
 SDK2013 = os.environ.get("SOURCE_SDK_2013", "/Volumes/Storage/sco/source-sdk-2013")
 SDK2013_COMMIT = "53e78c50"
 
@@ -99,6 +108,11 @@ def cef_wrapper_cxxflags(sdk):
             "-fmessage-length=0", "-Wno-trigraphs", "-O3", "-fno-strict-aliasing",
             "-fno-threadsafe-statics", "-fvisibility=hidden", "-fvisibility-inlines-hidden",
             "-fno-exceptions", "-fno-rtti", "-gdwarf-2", "-w"]
+
+
+def macro_prefix_map(pairs):
+    """-fmacro-prefix-map flags for [(our prefix, Valve's)]; the last match wins."""
+    return ["-fmacro-prefix-map=%s=%s" % (ours, valve) for ours, valve in pairs]
 
 
 def objcflags():
