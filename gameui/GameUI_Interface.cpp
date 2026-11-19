@@ -154,7 +154,13 @@ CGameUI::~CGameUI()
 	g_pGameUI = NULL;
 }
 
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 157
+class IWorkshop; IWorkshop *g_pWorkshop = NULL;
+#else
 
+#endif
+#line 158
 //-----------------------------------------------------------------------------
 // Purpose: Initialization
 //-----------------------------------------------------------------------------
@@ -167,7 +173,13 @@ void CGameUI::Initialize( CreateInterfaceFn factory )
 
 	enginesound = (IEngineSound *)factory(IENGINESOUND_CLIENT_INTERFACE_VERSION, NULL);
 	engine = (IVEngineClient *)factory( VENGINE_CLIENT_INTERFACE_VERSION, NULL );
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 170
+	g_pWorkshop = (IWorkshop *)factory( "VWorkshop001", NULL );
+#else
 
+#endif
+#line 171
 
 
 	ConVarRef var( "gameui_xbox" );

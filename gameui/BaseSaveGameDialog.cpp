@@ -66,7 +66,7 @@ public:
 
 	void SetSaveGameInfo( SaveGameDescription_t &save, const char *pszOverrideMod )
 	{
-		const char *pszPathID = ( pszOverrideMod && pszOverrideMod[0] ) ? "BASE_PATH" : "MOD";
+		const char *pszPathID = ( pszOverrideMod && Q_strlen( pszOverrideMod ) ) ? "BASE_PATH" : "MOD";
 
 		// set the bitmap to display
 		char tga[_MAX_PATH];
