@@ -4676,7 +4676,7 @@ int CBaseFileSystem::GetSearchPaths2( const char *pathID, bool bGetPackFiles, CU
 		CUtlString sName;
 		if ( pSearchPath->GetPackFile() )
 		{
-			sName += pSearchPath->GetPackFile()->m_ZipName.Get();
+			sName += pSearchPath->GetPackFile()->m_ZipName.String();
 			sName += CORRECT_PATH_SEPARATOR_S;
 		}
 		#ifdef SUPPORT_PACKED_STORE
@@ -4690,8 +4690,8 @@ int CBaseFileSystem::GetSearchPaths2( const char *pathID, bool bGetPackFiles, CU
 			sName = pSearchPath->GetPathString();
 		}
 
-		searchPaths.AddToTail( sName );
 		++nCount;
+		searchPaths.AddToTail( sName );
 	}
 
 	return nCount;
@@ -5097,7 +5097,7 @@ void CBaseFileSystem::CreateDirHierarchy( const char *pRelativePathT, const char
 	Q_FixSlashes( szScratchFileName );
 #endif
 
-	int len = strlen( szScratchFileName ) + 1;
+	int len = (int)strlen( szScratchFileName ) + 1;
 	char *end = szScratchFileName + len;
 	char *s = szScratchFileName;
 	while( s < end )
