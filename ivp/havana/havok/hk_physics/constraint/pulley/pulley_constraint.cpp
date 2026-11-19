@@ -28,6 +28,9 @@ class hk_Pulley_Work
 
 		hk_VM_Query_Builder< hk_VMQ_Storage<1> > query_engine;
 		hk_real current_length;
+#ifdef BYTEMATCH_RETAIL
+		hk_bool skip_step;	// slack rope that is still slack at the next PSI
+#endif
 };
 
 void hk_Pulley_Constraint::init_constraint( const void* vbp )
@@ -121,6 +124,30 @@ int hk_Pulley_Constraint::setup_and_step_constraint( hk_PSI_Info& pi, void *mem,
 	dir[1]*=m_gearing;
 
 	work.current_length = dir[0].normalize_with_length() + dir[1].normalize_with_length() - m_length;
+#ifdef BYTEMATCH_RETAIL
+	if ( m_is_rigid || work.current_length >= 0 )
+	{
+		work.skip_step = false;
+	}
+	else
+	{
+		hk_Vector3 next_translation_ws_ks[2];
+		next_translation_ws_ks[0]._set_transformed_pos( b0->get_transform_next_PSI( pi.get_delta_time() ), m_translation_os_ks[0] );
+		next_translation_ws_ks[1]._set_transformed_pos( b1->get_transform_next_PSI( pi.get_delta_time() ), m_translation_os_ks[1] );
+
+		hk_Vector3 next_dir[2];
+		next_dir[0].set_sub( m_worldspace_point[0], next_translation_ws_ks[0] );
+		next_dir[1].set_sub( m_worldspace_point[1], next_translation_ws_ks[1] );
+		next_dir[1] *= m_gearing;
+
+		hk_real next_length = next_dir[0].length() + next_dir[1].length() - m_length;
+		work.skip_step = next_length < m_length * 0.01f;
+		if ( work.skip_step )
+		{
+			return HK_NEXT_MULTIPLE_OF(16, sizeof(hk_Pulley_Work));
+		}
+	}
+#endif
 
 	query_engine.begin(1);
 
@@ -139,7 +166,9 @@ int hk_Pulley_Constraint::setup_and_step_constraint( hk_PSI_Info& pi, void *mem,
 	mass_matrix(0,0) = 1.0f / mass_matrix(0,0); // invert in place
 
 	{ // step
+#ifndef BYTEMATCH_RETAIL
 		if ( m_is_rigid || work.current_length >= 0 )
+#endif
 		{
 			hk_real *approaching_velocity = query_engine.get_vmq_storage().get_velocities();
 			hk_real delta_dist = tau_factor * m_tau * pi.get_inv_delta_time() * work.current_length - damp_factor * m_strength * approaching_velocity[0];
@@ -158,6 +187,12 @@ void hk_Pulley_Constraint::step_constraint( hk_PSI_Info& pi, void *mem, hk_real 
 {
 	hk_Pulley_Work &work = *(hk_Pulley_Work *)mem;
 	hk_VM_Query_Builder< hk_VMQ_Storage<1> > &query_engine = work.query_engine;
+#ifdef BYTEMATCH_RETAIL
+	if ( work.skip_step )
+	{
+		return;
+	}
+#endif
 
 	hk_real *approaching_velocity = query_engine.get_vmq_storage().get_velocities();
 	approaching_velocity[0] = 0.0f;
@@ -167,7 +202,9 @@ void hk_Pulley_Constraint::step_constraint( hk_PSI_Info& pi, void *mem, hk_real 
 
 	query_engine.update_velocities(HK_BODY_A, b0);
 	query_engine.update_velocities(HK_BODY_B, b1);
+#ifndef BYTEMATCH_RETAIL
 	if ( m_is_rigid || work.current_length >= 0 )
+#endif
 	{
 		hk_real delta_dist = tau_factor * m_tau * pi.get_inv_delta_time() * work.current_length - damp_factor * m_strength * approaching_velocity[0];
 
