@@ -58,7 +58,10 @@ void CEF_CALLBACK load_handler_on_load_end(struct _cef_load_handler_t* self,
   DCHECK(frame);
   if (!frame)
     return;
-  // Unverified params: request
+  // Verify param: request; type: refptr_diff
+  DCHECK(request);
+  if (!request)
+    return;
 
   // Execute
   CefLoadHandlerCppToC::Get(self)->OnLoadEnd(

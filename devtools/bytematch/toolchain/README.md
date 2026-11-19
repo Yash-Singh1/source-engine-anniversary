@@ -11,6 +11,7 @@ the `--retail-osx32` waf mode. Everything installs under
 | linker | ld64-242 (Xcode 6.2) via cctools-port | 236.3 writes `__unwind_info` with 2^0 alignment, retail has 2^2; 241.9 and 242 give byte-identical dylibs |
 | SDK | stub MacOSX10.9.sdk | 10.6 headers plus i386 stub libraries carrying retail's install names, versions and exports |
 | period third-party archives | Apple gcc 4.2.1 (gcc-5666.3, gcc_42-5564), gcc 4.0.1 (gcc-5484), cctools-port `as` | Crypto++, speex and libpng came into retail as old prebuilt archives built with Apple gcc (the speex archive's DWARF names gcc builds 5564 and 5484); `build-gcc.sh` builds them as x86_64 hosts (Rosetta on arm64), `build-thirdparty.py` uses them by default |
+| chromehtml's CEF wrapper | upstream clang, llvm.org svn r147225 | Valve linked a prebuilt `libcef_dll_wrapper.a` from Steam's CEF build (CEF1 branch 1025's Xcode project in a Chromium checkout), compiled by the checkout's own clang. r147225, Chromium trunk's `tools/clang/scripts/update.sh` pin of 2011-12-24..2012-01-02, with Chromium's Release flags matches all 760 functions; the 18.0.1025 release's pin r148911 gets 757, LLVM 3.2-3.3, clang-425/500 and Chromium's 2013 pins 348. `--retail-osx32` compiles `cef_dll_wrapper` with it (`cefwrapper` env in `scripts/waifulib/retail_osx32.py`) when it is installed |
 | hl2mp (2014) | clang-503.0.38, ld64-236.3 (Xcode 5.1), protoc 2.3.0 | depot 223's hl2mp modules are a May 2014 Source SDK 2013 build: `LC_VERSION_MIN` 10.5, `__unwind_info` 2^0; `--build-games=hl2mp` (see `sdk2013mp/wscript`). clang-503 carries `patches/clang-503.0.38-maskandbranch.patch` (an uninitialized x86 flag made Xcode 5.1's codegen vary per compile) |
 
 ## Setup
@@ -21,6 +22,7 @@ install image (`Mac_OS_X_10.6_Snow_Leopard_Retail.iso`) for the 10.6 SDK.
 ```sh
 T=devtools/bytematch/toolchain
 $T/build-clang.sh 600.0.57          # optional: 600.0.54 600.0.51 503.0.38
+$T/build-clang.sh r147225           # chromehtml's CEF wrapper (llvm-project archive, patches/clang-r147225-host.patch)
 $T/build-ld64.sh 242                # optional: 241.9 236.3
 $T/extract-sdk106.sh /path/to/Mac_OS_X_10.6_Snow_Leopard_Retail.iso
 $T/make-sdk109.py                   # reads retail imports from depot 223/340/380/420

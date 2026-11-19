@@ -51,6 +51,8 @@ GAME_MODULES = ['game/client', 'game/server']
 # SDK 2013's lib/public/osx32 at the 2014 revision: Valve's link dylibs and its
 # prebuilt protobuf 2.3.0 (retail client has its code, without stabs).
 HL2MP_ENV = 'hl2mp2014'
+# chromehtml's prebuilt CEF wrapper: Chromium 18's clang and Release flags (retailflags.CEF_WRAPPER_CLANG).
+CEF_WRAPPER_ENV = 'cefwrapper'
 HL2MP_PROJECTS = ['sdk2013mp']
 SDK2013_LIBS = ['libtier0.dylib', 'libvstdlib.dylib', 'libsteam_api.dylib', 'libprotobuf.a']
 
@@ -270,7 +272,27 @@ def retail_osx32_configure(conf):
 			games = GAME_MODULES
 		v.RETAIL_PROJECTS += [g for g in games if g not in v.RETAIL_PROJECTS]
 	Logs.info('retail-osx32: clang %s, ld64 %s, sdk %s' % (p['cc'], p['ld_dir'], sdk))
+	if 'vgui2/chromehtml' in v.RETAIL_PROJECTS:
+		cef_wrapper_configure(conf, rf)
 	conf.add_subproject(v.RETAIL_PROJECTS)
+
+def cef_wrapper_configure(conf, rf):
+	'''CEF_WRAPPER_ENV: the retail env with libcef_dll_wrapper.a's compiler and flags.'''
+	p = rf.paths(conf.options.RETAIL_TOOLCHAIN, rf.CEF_WRAPPER_CLANG)
+	if not os.path.exists(p['cxx']):
+		Logs.warn('retail-osx32: %s missing, cef_dll_wrapper is built with the module compiler; build it with %s/build-clang.sh %s'
+			% (p['cxx'], TOOLCHAIN_DIR, rf.CEF_WRAPPER_CLANG))
+		return
+	conf.setenv(CEF_WRAPPER_ENV, conf.env)
+	v = conf.env
+	v.CXX = [p['cxx']]
+	# Keep what configure added after the retail flags (gccdeps' -MMD); Valve's defines and -U don't apply.
+	v.CXXFLAGS = rf.cef_wrapper_cxxflags(p['sdk']) + [f for f in v.CXXFLAGS if f not in rf.cxxflags(p['sdk'])]
+	v.CPPFLAGS = []
+	v.DEFINES = []
+	v.INCLUDES = []
+	conf.setenv('')
+	Logs.info('retail-osx32: cef_dll_wrapper with clang %s' % p['cxx'])
 
 def hl2mp_configure(conf, rf):
 	'''The HL2MP_ENV env: the retail env with the 2014 toolchain, deployment target and link dylibs.'''
