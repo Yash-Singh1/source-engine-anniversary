@@ -711,7 +711,7 @@ void CGameUI::Shutdown()
 
 	ModInfo().FreeModInfo();
 	
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( _MSC_VER )
 	// release platform mutex
 	// close the mutex
 	if (g_hMutex)
