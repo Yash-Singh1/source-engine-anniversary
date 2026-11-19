@@ -1029,7 +1029,7 @@ int VguiPanelNavigateSortedChildButtonList( void *pSortedPanels, int nDir );
 
 inline int GetProportionalScaledValueIf( ISchemeManager *pSchemeManager, bool bProportional, HScheme hScheme, int nValue )
 {
-	return bProportional ? pSchemeManager->GetProportionalScaledValueEx( hScheme, nValue ) : nValue;
+	if ( !bProportional ) return nValue; return pSchemeManager->GetProportionalScaledValueEx( hScheme, nValue );
 }
 
 // Scales a layout constant when the panel is proportional. The scheme manager,
