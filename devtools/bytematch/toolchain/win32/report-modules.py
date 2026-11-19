@@ -94,10 +94,10 @@ def build_index(man):
     return dict((n, i + 1) for i, n in enumerate(order))
 
 
-def module_objects(build, name, man, index, out):
+def module_objects(build, name, man, index, out, own=False):
     """A directory of links to the objects a DLL is made of (a linked DLL has no symbols to scope
     by): its own and those of the static libraries it links, which the retail macOS build often
-    compiles into the module itself (GameUI's PanelListPanel)."""
+    compiles into the module itself (GameUI's PanelListPanel). `own`: the module's own only."""
     d = out + ".objs"
     if os.path.isdir(d):
         for f in os.listdir(d):
@@ -109,6 +109,8 @@ def module_objects(build, name, man, index, out):
         if n in mods or n not in man:
             continue
         mods.append(n)
+        if own:
+            break
         todo += [l["project"] for l in man[n]["libs"] if l.get("project") and not l.get("implib")]
     for n in mods:
         for s in man[n]["sources"]:
@@ -141,6 +143,8 @@ def main():
     ap.add_argument("--mac-game-build", action="append", default=[], help="GAME=DIR: --build-games=GAME build")
     ap.add_argument("--modules", help="comma-separated manifest modules (default: every one built)")
     ap.add_argument("--top", type=int, default=15)
+    ap.add_argument("--own-objects", action="store_true",
+                    help="scope a DLL by its own objects only, without its static libraries (round 3's scope)")
     a = ap.parse_args()
     maps = a.maps or MAPS
     games = dict(g.split("=", 1) for g in a.mac_game_build)
@@ -190,7 +194,7 @@ def main():
         elif m.get("retail"):
             retail = os.path.join(a.depots, m.get("retail_depot", "222"), BUILD, m["retail"])
             link = os.path.splitext(ours)[0] + ".map"
-            objs = module_objects(a.build, name, man, index, os.path.join(a.out, name))
+            objs = module_objects(a.build, name, man, index, os.path.join(a.out, name), a.own_objects)
             jobs.append((name, name, name, retail, objs, map_for(map_key(name, m)), link))
 
     rows, cross = [], []
