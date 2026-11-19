@@ -348,7 +348,11 @@ void hk_Vector3::normalize()
 hk_real hk_Vector3::normalize_with_length()
 {
 	hk_real len = this->length();
+#ifdef BYTEMATCH_RETAIL
+	*this *= (1.0f)/(len + 1e-18f);
+#else
 	*this *= (1.0f)/len;
+#endif
 	return len;
 }
 
