@@ -120,11 +120,11 @@ RETAIL_SOURCES = {"GameUI": ["gameui/OptionsSubGamepad.cpp"],
 
 # Libraries retail links beyond the 2018 VPCs: retail macOS stdshader_dx9 has
 # libtier2.a(tier2.o), which defines the g_pMaterialSystem CShaderDLL::Connect sets.
-# Retail client.dll also links libjpeg and libpng (imageutils) and imports rpcrt4 (tier1 uniqueid).
+# Retail client.dll also links libjpeg and libpng (imageutils); client and server import rpcrt4 (tier1 uniqueid).
 _CLIENT_IMAGE_LIBS = [{"project": "jpeglib", "path": "lib/common/libjpeg.lib"}, {"prebuilt": "lib/public/libpng.lib"}]
 RETAIL_LIBS = {"stdshader_dx9": [{"project": "tier2", "path": "lib/public/tier2.lib"}],
                "client_hl2": _CLIENT_IMAGE_LIBS, "client_episodic": _CLIENT_IMAGE_LIBS}
-RETAIL_SYSTEM_LIBS = {"client_hl2": ["rpcrt4.lib"], "client_episodic": ["rpcrt4.lib"]}
+RETAIL_SYSTEM_LIBS = dict((m, ["rpcrt4.lib"]) for m in ("client_hl2", "client_episodic", "server_hl2", "server_episodic"))
 
 # Valve library paths ($File "...lib") that live elsewhere in this tree.
 LIB_FILE_ALIASES = {"dx9sdk/lib": "dx9sdk/lib/x86"}
