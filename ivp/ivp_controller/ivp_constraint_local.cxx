@@ -731,6 +731,9 @@ void IVP_Constraint_Local::do_simulation_controller(IVP_Event_Sim *es,IVP_U_Vect
 	    }
 	    break;
 	case IVP_NORM_MAXIMUM:
+#ifdef BYTEMATCH_RETAIL
+	default:
+#endif
 	    in_range = IVP_Inline_Math::fabsd(impulseR_fs.k[0]) < maxforce->halfimpulse[0]
 		&& IVP_Inline_Math::fabsd(impulseR_fs.k[1]) < maxforce->halfimpulse[1]
 		&& IVP_Inline_Math::fabsd(impulseR_fs.k[2]) < maxforce->halfimpulse[2]
@@ -760,6 +763,9 @@ void IVP_Constraint_Local::do_simulation_controller(IVP_Event_Sim *es,IVP_U_Vect
 		    simplenorm_transdir = IVP_Inline_Math::fabsd(impulseR_fs.k[map[i]]) + IVP_Inline_Math::fabsd(impulseR_fs.k[map[i + 1]]) * (1.0f / 2.41f) + IVP_Inline_Math::fabsd(impulseR_fs.k[map[i + 2]]) * (1.0f/ 2.41f);
 		    break;
 		case IVP_NORM_MAXIMUM:
+#ifdef BYTEMATCH_RETAIL
+		default:
+#endif
 		    simplenorm_transdir = IVP_Inline_Math::fabsd(impulseR_fs.k[i]);
 		    simplenorm_rotdir = IVP_Inline_Math::fabsd(impulserotR_rs.k[i]);
 		    break;
