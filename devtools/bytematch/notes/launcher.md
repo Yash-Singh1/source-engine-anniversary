@@ -48,3 +48,8 @@ Link composition: retail links no `memoverride.o`; our wscript adds
 appframework, tier3 (ours tier1, tier2, tier3, appframework). Retail load
 commands include SDL2, steam_api, tier0, togl, Carbon, AppKit, OpenGL and
 IOKit; our wscript also lists `UNWIND`.
+
+## Lane residuals3
+
+361/361, and byte-identical through the identity flow (identity/identical.json). See
+appframework.md for sdlmgr/glmrendererinfo_osx.
