@@ -1030,6 +1030,16 @@ IVP_Movement_Type IVP_Core::calc_movement_state(IVP_Time psi_time) {
 
 	// don't check long term for slow objects
 	if (psi_time - time_of_calm_reference[0] > environment->get_freeze_manager()->freeze_check_dtime){
+#ifdef BYTEMATCH_RETAIL
+	    // a spinning object only calms down if it did not turn since the last PSI
+	    IVP_FLOAT max_rot_speed = IVP_PI * 0.75f / environment->get_freeze_manager()->freeze_check_dtime;
+	    if ( rot_speed.quad_length() > max_rot_speed * max_rot_speed ) {
+		IVP_U_Float_Quat q_last_psi;
+		q_last_psi.set( &q_world_f_core_last_psi );
+		IVP_DOUBLE qrot = q_world_f_core_next_psi.inline_estimate_q_diff_to( &q_last_psi );
+		if (qrot * upper_limit_radius * upper_limit_radius > IVP_MINIMAL_ROT_SPEED_PER_PSI_SHORT * IVP_MINIMAL_ROT_SPEED_PER_PSI_SHORT) break;
+	    }
+#endif
 	    return  IVP_MT_CALM;
 	}
 	return  IVP_MT_SLOW;
