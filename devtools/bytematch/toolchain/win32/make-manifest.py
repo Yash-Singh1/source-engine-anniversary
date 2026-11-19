@@ -93,7 +93,11 @@ RETAIL_INCLUDES_FIRST = {"stdshader_dx9": ["materialsystem/stdshaders/include"]}
 # inertia clamp in ivp_core.cxx calls POSIX finite(); qhull calls sqrt( int ),
 # which needs <cmath>'s integral overloads (Valve linked prebuilt ivp libraries).
 FORK_CL = {"ivp_compactbuilder": ["/FIcmath"]}
-FORK_DEFINES = {"ivp_physics": ["finite=_finite"]}
+FORK_DEFINES = {"ivp_physics": ["finite=_finite"],
+                # this tree gates its JPEG/PNG code on these (the --retail-osx32 build defines them
+                # for every module that links libjpeg/libpng; retail engine.dll and client.dll have both)
+                "engine": ["HAVE_JPEG"], "client_hl2": ["HAVE_JPEG", "HAVE_PNG"],
+                "client_episodic": ["HAVE_JPEG", "HAVE_PNG"]}
 
 # Static-library projects whose outputs other projects name in $Lib.
 LIB_PROJECTS = ["jpeglib", "tier1", "tier2", "tier3", "mathlib", "bitmap", "vtf", "appframework", "dmxloader",
@@ -111,11 +115,16 @@ FORK_SOURCES = {"engine": ["engine/masterserver.cpp"]}
 # generator order with the settings of the file before them.
 RETAIL_SOURCES = {"GameUI": ["gameui/OptionsSubGamepad.cpp"],
                   # retail replay.dll and engine.dll have their strings too
-                  "replay": ["replay/sv_ftp.cpp"], "engine": ["engine/workshop.cpp", "engine/mm_events.cpp"]}
+                  "replay": ["replay/sv_ftp.cpp"], "engine": ["engine/workshop.cpp", "engine/mm_events.cpp"],
+                  "client_hl2": ["common/imageutils.cpp"], "client_episodic": ["common/imageutils.cpp"]}
 
 # Libraries retail links beyond the 2018 VPCs: retail macOS stdshader_dx9 has
 # libtier2.a(tier2.o), which defines the g_pMaterialSystem CShaderDLL::Connect sets.
-RETAIL_LIBS = {"stdshader_dx9": [{"project": "tier2", "path": "lib/public/tier2.lib"}]}
+# Retail client.dll also links libjpeg and libpng (imageutils) and imports rpcrt4 (tier1 uniqueid).
+_CLIENT_IMAGE_LIBS = [{"project": "jpeglib", "path": "lib/common/libjpeg.lib"}, {"prebuilt": "lib/public/libpng.lib"}]
+RETAIL_LIBS = {"stdshader_dx9": [{"project": "tier2", "path": "lib/public/tier2.lib"}],
+               "client_hl2": _CLIENT_IMAGE_LIBS, "client_episodic": _CLIENT_IMAGE_LIBS}
+RETAIL_SYSTEM_LIBS = {"client_hl2": ["rpcrt4.lib"], "client_episodic": ["rpcrt4.lib"]}
 
 # Valve library paths ($File "...lib") that live elsewhere in this tree.
 LIB_FILE_ALIASES = {"dx9sdk/lib": "dx9sdk/lib/x86"}
@@ -431,6 +440,7 @@ class Module:
                 d = next((v for k, v in LIB_FILE_ALIASES.items() if d.lower() == k.lower()), d)
                 ours = self.locate(os.path.join(d, base))
                 m["file_libs"].append({"path": ours, "valve_path": rel} if ours else {"path": rel, "missing": True})
+            m["system_libs"] += [l for l in RETAIL_SYSTEM_LIBS.get(self.name, []) if l not in m["system_libs"]]
         return m
 
 

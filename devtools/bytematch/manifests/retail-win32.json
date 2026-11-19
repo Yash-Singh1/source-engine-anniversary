@@ -1258,7 +1258,8 @@
     "USE_BREAKPAD_HANDLER",
     "_WINDLL",
     "_USING_V110_SDK71_",
-    "_MBCS"
+    "_MBCS",
+    "HAVE_JPEG"
    ],
    "includes": [
     "common",
@@ -6161,7 +6162,9 @@
     "HL2_CLIENT_DLL",
     "_WINDLL",
     "_USING_V110_SDK71_",
-    "_MBCS"
+    "_MBCS",
+    "HAVE_JPEG",
+    "HAVE_PNG"
    ],
    "includes": [
     "game/client/hl2",
@@ -6866,6 +6869,10 @@
     {
      "path": "common/debug_dll_check.cpp",
      "lang": "c++"
+    },
+    {
+     "lang": "c++",
+     "path": "common/imageutils.cpp"
     },
     {
      "path": "game/shared/debugoverlay_shared.cpp",
@@ -8740,6 +8747,13 @@
     },
     {
      "prebuilt": "thirdparty/protobuf-2.6.1/bin/win32/2013/staticcrt/release/libprotobuf.lib"
+    },
+    {
+     "project": "jpeglib",
+     "path": "lib/common/libjpeg.lib"
+    },
+    {
+     "prebuilt": "lib/public/libpng.lib"
     }
    ],
    "file_libs": [],
@@ -8772,7 +8786,8 @@
     "gdi32.lib",
     "comdlg32.lib",
     "ole32.lib",
-    "winmm.lib"
+    "winmm.lib",
+    "rpcrt4.lib"
    ]
   },
   "server_hl2": {
@@ -11738,7 +11753,9 @@
     "HL2_EPISODIC",
     "_WINDLL",
     "_USING_V110_SDK71_",
-    "_MBCS"
+    "_MBCS",
+    "HAVE_JPEG",
+    "HAVE_PNG"
    ],
    "includes": [
     "game/client/hl2",
@@ -12444,6 +12461,10 @@
     {
      "path": "common/debug_dll_check.cpp",
      "lang": "c++"
+    },
+    {
+     "lang": "c++",
+     "path": "common/imageutils.cpp"
     },
     {
      "path": "game/shared/debugoverlay_shared.cpp",
@@ -14375,6 +14396,13 @@
     },
     {
      "prebuilt": "lib/public/libz.lib"
+    },
+    {
+     "project": "jpeglib",
+     "path": "lib/common/libjpeg.lib"
+    },
+    {
+     "prebuilt": "lib/public/libpng.lib"
     }
    ],
    "file_libs": [],
@@ -14408,7 +14436,8 @@
     "gdi32.lib",
     "comdlg32.lib",
     "ole32.lib",
-    "winmm.lib"
+    "winmm.lib",
+    "rpcrt4.lib"
    ]
   },
   "server_episodic": {
