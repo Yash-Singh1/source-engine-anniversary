@@ -2703,6 +2703,7 @@ void C_BaseAnimating::ThreadedBoneSetup()
 	g_PreviousBoneSetups.RemoveAll();
 }
 
+#line 2716
 bool C_BaseAnimating::SetupBones( matrix3x4_t *pBoneToWorldOut, int nMaxBones, int boneMask, float currentTime )
 {
 	VPROF_BUDGET( "C_BaseAnimating::SetupBones", VPROF_BUDGETGROUP_CLIENT_ANIMATION );
@@ -6081,6 +6082,7 @@ void C_BaseAnimating::RemoveFromClientSideAnimationList()
 
 
 // static method
+#line 6096
 void C_BaseAnimating::UpdateClientSideAnimations()
 {
 	VPROF_BUDGET( "UpdateClientSideAnimations", VPROF_BUDGETGROUP_CLIENT_ANIMATION );

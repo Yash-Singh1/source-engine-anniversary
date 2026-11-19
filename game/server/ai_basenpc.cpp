@@ -3898,6 +3898,7 @@ bool CAI_BaseNPC::CheckPVSCondition()
 // npc's specific animation events
 //
 
+#line 3894
 void CAI_BaseNPC::NPCThink( void )
 {
 	if ( m_bCheckContacts )

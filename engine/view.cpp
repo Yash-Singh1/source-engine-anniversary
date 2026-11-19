@@ -221,6 +221,7 @@ void FullViewColorAdjustment( )
 //-----------------------------------------------------------------------------
 // Purpose: Render the world
 //-----------------------------------------------------------------------------
+#line 212
 void V_RenderView( void )
 {
 	VPROF( "V_RenderView" );

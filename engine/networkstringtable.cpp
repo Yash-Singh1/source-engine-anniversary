@@ -1626,6 +1626,7 @@ void CNetworkStringTableContainer::WriteUpdateMessage( CBaseClient *client, int 
 // Input  : *cl - 
 //			*msg - 
 //-----------------------------------------------------------------------------
+#line 1544
 void CNetworkStringTableContainer::DirectUpdate( int tick_ack )
 {
 	VPROF_BUDGET( "CNetworkStringTableContainer::DirectUpdate", VPROF_BUDGETGROUP_OTHER_NETWORKING );

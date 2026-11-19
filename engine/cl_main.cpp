@@ -2237,6 +2237,7 @@ void CL_SendMove( void )
 	}
 }
 
+#line 2053
 void CL_Move(float accumulated_extra_samples, bool bFinalTick )
 {
 	if ( !cl.IsConnected() )
@@ -2582,7 +2583,7 @@ bool CL_ShouldLoadBackgroundLevel( const CCommand &args )
 
 	return true;
 #endif
-#line 2345
+#line 2324
 }
 
 #define DEFAULT_BACKGROUND_NAME	"background01"
@@ -2647,7 +2648,7 @@ int CL_GetBackgroundLevelIndex( int nNumChapters )
 	return iChapterIndex;
 }
 #endif
-#line 2384
+#line 2363
 
 //-----------------------------------------------------------------------------
 // Purpose: returns the name of the background level to load
@@ -3021,7 +3022,7 @@ void CL_InitLanguageCvar()
 	}
 }
 #endif
-#line 2720
+#line 2699
 
 void CL_ChangeCloudSettingsCvar( IConVar *var, const char *pOldValue, float flOldValue );
 ConVar cl_cloud_settings( "cl_cloud_settings", "1", FCVAR_HIDDEN, "Cloud enabled from (from HKCU\\Software\\Valve\\Steam\\Apps\\appid\\Cloud)", CL_ChangeCloudSettingsCvar );
@@ -3195,7 +3196,7 @@ CON_COMMAND_F( setinfo, "Adds a new user info value", FCVAR_CLIENTCMD_CAN_EXECUT
 #else
 		char *pszString = V_strdup( name );
 #endif
-#line 2888
+#line 2867
 
 		pCommand = new ConVar( pszString, "", FCVAR_USERINFO, "Custom user info value" );
 	}

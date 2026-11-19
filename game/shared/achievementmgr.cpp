@@ -974,6 +974,7 @@ void CAchievementMgr::LoadGlobalState()
 // Purpose: saves global state to file
 //-----------------------------------------------------------------------------
 
+#line 1022
 void CAchievementMgr::SaveGlobalState( bool bAsync )
 {
 	VPROF_BUDGET( "CAchievementMgr::SaveGlobalState", "Achievements" );

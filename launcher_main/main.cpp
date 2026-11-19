@@ -39,7 +39,7 @@ typedef int (*LauncherMain_t)( int argc, char **argv );
 #error
 #endif
 
-#ifdef WIN32
+#if defined( WIN32 ) && !defined( BYTEMATCH_RETAIL )
 // hinting the nvidia driver to use the dedicated graphics card in an optimus configuration
 // for more info, see: http://developer.download.nvidia.com/devzone/devcenter/gamegraphics/files/OptimusRenderingPolicies.pdf
 extern "C" { _declspec( dllexport ) DWORD NvOptimusEnablement = 0x00000001; }

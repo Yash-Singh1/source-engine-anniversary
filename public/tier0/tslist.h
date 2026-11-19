@@ -42,7 +42,7 @@
 #ifndef TSLIST_NO_SANITIZE_ADDRESS
 #define TSLIST_NO_SANITIZE_ADDRESS
 #endif
-
+#line 37
 #if defined( PLATFORM_64BITS )
 
 #define TSLIST_HEAD_ALIGNMENT 16

@@ -3305,6 +3305,7 @@ TODO: do we even need to do the far plane?
 //---------------------------------------------------------------------------------------
 // Set masking stencil bits for all flashlights
 //---------------------------------------------------------------------------------------
+#line 3286
 void CShadowMgr::SetFlashlightStencilMasks( bool bDoMasking )
 {
 	VPROF_BUDGET( "CShadowMgr::RenderFlashlights", VPROF_BUDGETGROUP_SHADOW_RENDERING );

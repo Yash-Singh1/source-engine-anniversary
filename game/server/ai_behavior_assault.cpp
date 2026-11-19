@@ -932,6 +932,7 @@ void CAI_AssaultBehavior::SetParameters( CBaseEntity *pRallyEnt, AssaultCue_t as
 // Input  : rallypointname - 
 //			assaultcue - 
 //-----------------------------------------------------------------------------
+#line 933
 void CAI_AssaultBehavior::SetParameters( string_t rallypointname, AssaultCue_t assaultcue, int rallySelectMethod )
 {
 	VPROF_BUDGET( "CAI_AssaultBehavior::SetParameters", VPROF_BUDGETGROUP_NPCS );
@@ -1347,7 +1348,7 @@ void CAI_AssaultBehavior::BuildScheduleTestBits()
 			IsCurSchedule( SCHED_MOVE_TO_RALLY_POINT ) || 
 			IsCurSchedule( SCHED_HOLD_RALLY_POINT ) )
 #endif
-#line 1344
+#line 1342
 		{
 			GetOuter()->SetCustomInterruptCondition( COND_NEW_ENEMY );
 			GetOuter()->SetCustomInterruptCondition( COND_SEE_ENEMY );
@@ -1663,7 +1664,7 @@ AI_BEGIN_CUSTOM_SCHEDULE_PROVIDER(CAI_AssaultBehavior)
 		"		COND_PLAYER_PUSHING"
 	)
 #endif
-#line 1637
+#line 1635
 	//=========================================================
 	//=========================================================
 	DEFINE_SCHEDULE 

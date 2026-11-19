@@ -389,6 +389,7 @@ static void Cbuf_ExecuteCommand( const CCommand &args, cmd_source_t source )
 //-----------------------------------------------------------------------------
 // Executes commands in the buffer
 //-----------------------------------------------------------------------------
+#line 349
 void Cbuf_Execute()
 {
 	VPROF("Cbuf_Execute");
@@ -482,7 +483,7 @@ static const char *ParmValueAfter( int nIndex )
 	return pValue;
 }
 #endif
-#line 482
+#line 442
 
 //-----------------------------------------------------------------------------
 // Purpose: Adds command line parameters as script statements
@@ -518,7 +519,7 @@ CON_COMMAND( stuffcmds, "Parses and stuffs command line + commands to command bu
 #else
 			const char *szValue = ParmValueAfter( i );
 #endif
-#line 517
+#line 477
 			if ( szValue )
 				i++;
 			continue;
@@ -531,7 +532,7 @@ CON_COMMAND( stuffcmds, "Parses and stuffs command line + commands to command bu
 #else
 			const char *szValue = ParmValueAfter( i );
 #endif
-#line 529
+#line 489
 			if (szValue)
 			{
 				build.PutString(va("%s %s\n", szParm+1, szValue));
@@ -861,7 +862,7 @@ void Cmd_Exec_f( const CCommand &args )
 	UpdateMaterialSystemConfig();
 }
 #endif
-#line 718
+#line 678
 
 
 /*
@@ -1227,7 +1228,7 @@ const ConCommandBase *Cmd_ExecuteCommand( const CCommand &command, cmd_source_t 
 		return NULL;
 	}
 #endif
-#line 1081
+#line 1041
 
 	// check cvars
 	if ( cv->IsCommand( command ) )

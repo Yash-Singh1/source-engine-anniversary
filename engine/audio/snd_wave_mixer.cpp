@@ -600,6 +600,7 @@ int CAudioMixerWave::MixDataToDevice( IAudioDevice *pDevice, channel_t *pChannel
 // NOTE:	DO NOT MODIFY THIS ROUTINE (KELLYB)
 
 //-----------------------------------------------------------------------------
+#line 592
 int CAudioMixerWave::MixDataToDevice_( IAudioDevice *pDevice, channel_t *pChannel, int sampleCount, int outputRate, int outputOffset, bool bSkipAllMixing )
 {
 	// shouldn't be playing this if finished, but return if we are

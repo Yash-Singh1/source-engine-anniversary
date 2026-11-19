@@ -2280,6 +2280,7 @@ extern ConVar dsp_vol_2ch;
 extern void MXR_SetCurrentSoundMixer( const char *szsoundmixer );
 extern ConVar snd_soundmixer;
 
+#line 2268
 void MIX_PaintChannels( int endtime, bool bIsUnderwater )
 {
 	VPROF("MIX_PaintChannels");
@@ -2598,7 +2599,7 @@ bool MIX_ScaleChannelVolume( paintbuffer_t *ppaint, channel_t *pChannel, int vol
 			if( !pSource->IsVoiceSource() )
 			{
 #endif
-#line 2567
+#line 2570
 				// Apply voice overdrive..
 				for (i = 0; i < CCHANVOLUMES; i++)
 					volume[i] = (volume[i] * duckScale) >> 8;

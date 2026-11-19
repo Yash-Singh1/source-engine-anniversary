@@ -819,6 +819,7 @@ void CRender::UpdateBrushModelLightmap( model_t *model, IClientRenderable *pRend
 	}
 }
 
+#line 816
 void CRender::EndUpdateLightmaps( void )
 {
 	Assert( m_iLightmapUpdateDepth > 0 );
@@ -1198,6 +1199,7 @@ void R_DrawLightmaps( IWorldRenderList *pList, int pageId )
 #endif
 }
 
+#line 1196
 void R_CheckForLightingConfigChanges()
 {
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__ );

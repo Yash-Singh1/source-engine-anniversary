@@ -3348,6 +3348,7 @@ FileHandle_t CBaseFileSystem::OpenEx( const char *pFileName, const char *pOption
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+#line 3702
 void CBaseFileSystem::Close( FileHandle_t file )
 {
 	VPROF_BUDGET( "CBaseFileSystem::Close", VPROF_BUDGETGROUP_OTHER_FILESYSTEM );
@@ -3383,6 +3384,7 @@ void CBaseFileSystem::Seek( FileHandle_t file, int pos, FileSystemSeek_t whence 
 // Input  : file - 
 // Output : unsigned int
 //-----------------------------------------------------------------------------
+#line 3735
 unsigned int CBaseFileSystem::Tell( FileHandle_t file )
 {
 	VPROF_BUDGET( "CBaseFileSystem::Tell", VPROF_BUDGETGROUP_OTHER_FILESYSTEM );
@@ -3424,6 +3426,7 @@ unsigned int CBaseFileSystem::Size( FileHandle_t file )
 // Input  : file - 
 // Output : unsigned int
 //-----------------------------------------------------------------------------
+#line 3775
 unsigned int CBaseFileSystem::Size( const char* pFileName, const char *pPathID )
 {
 	VPROF_BUDGET( "CBaseFileSystem::Size", VPROF_BUDGETGROUP_OTHER_FILESYSTEM );
@@ -3797,6 +3800,7 @@ void CBaseFileSystem::DiscardPreloadData()
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+#line 4146
 int CBaseFileSystem::Write( void const* pInput, int size, FileHandle_t file )
 {
 	VPROF_BUDGET( "CBaseFileSystem::Write", VPROF_BUDGETGROUP_OTHER_FILESYSTEM );
@@ -4848,6 +4852,7 @@ void CBaseFileSystem::FileTimeToString( char *pString, int maxCharsIncludingTerm
 // Input  : *pFileName - 
 // Output : Returns true on success, false on failure.
 //-----------------------------------------------------------------------------
+#line 4964
 bool CBaseFileSystem::FileExists( const char *pFileName, const char *pPathID )
 {
 	VPROF_BUDGET( "CBaseFileSystem::FileExists", VPROF_BUDGETGROUP_OTHER_FILESYSTEM );
@@ -5096,6 +5101,7 @@ const char *CBaseFileSystem::FindFirstEx( const char *pWildCard, const char *pPa
 }
 
 
+#line 5199
 const char *CBaseFileSystem::FindFirstHelper( const char *pWildCardT, const char *pPathID, FileFindHandle_t *pHandle, int *pFoundStoreID )
 {
 	VPROF_BUDGET( "CBaseFileSystem::FindFirst", VPROF_BUDGETGROUP_OTHER_FILESYSTEM );
@@ -5310,6 +5316,7 @@ bool CBaseFileSystem::FindNextFileInVPKHelper( FindData_t *pFindData )
 // Input  : handle - 
 // Output : const char
 //-----------------------------------------------------------------------------
+#line 5411
 const char *CBaseFileSystem::FindNext( FileFindHandle_t handle )
 {
 	VPROF_BUDGET( "CBaseFileSystem::FindNext", VPROF_BUDGETGROUP_OTHER_FILESYSTEM );

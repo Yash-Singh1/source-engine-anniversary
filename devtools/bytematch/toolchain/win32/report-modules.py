@@ -73,6 +73,46 @@ def keyed(doc, demangle):
     return out
 
 
+def build_index(man):
+    """Module -> the index scripts/waifulib/retail_win32.py gives it (objects are <source>.<index>.o)."""
+    import ast
+    tree = ast.parse(open(os.path.join(TREE, "scripts", "waifulib", "retail_win32.py")).read())
+    mods = next(ast.literal_eval(n.value) for n in tree.body if isinstance(n, ast.Assign)
+                and getattr(n.targets[0], "id", "") == "RETAIL_MODULES")
+    order = []
+
+    def visit(n):
+        if n in order or n not in man:
+            return
+        for l in man[n]["libs"]:
+            if l.get("project"):
+                visit(l["project"])
+        order.append(n)
+    for n in mods:
+        visit(n)
+    return dict((n, i + 1) for i, n in enumerate(order))
+
+
+def module_objects(build, name, m, idx, out):
+    """A directory of links to the module's own objects (a linked DLL has no symbols to scope by)."""
+    d = out + ".objs"
+    if os.path.isdir(d):
+        for f in os.listdir(d):
+            os.remove(os.path.join(d, f))
+    os.makedirs(d, exist_ok=True)
+    for s in m["sources"]:
+        if s.get("missing") or s["lang"] not in ("c", "c++", "asm"):
+            continue
+        base = os.path.join(os.path.abspath(build), s["path"])
+        for cand in (base + ".%d.o" % idx, os.path.splitext(base)[0] + ".%d.obj" % idx):
+            if os.path.exists(cand):
+                link = os.path.join(d, os.path.basename(cand))
+                if not os.path.lexists(link):
+                    os.symlink(cand, link)
+                break
+    return d
+
+
 def find_one(root, name):
     hits = glob.glob(os.path.join(root, "**", name), recursive=True)
     return sorted(hits, key=len)[0] if hits else None
@@ -96,6 +136,8 @@ def main():
     os.makedirs(a.out, exist_ok=True)
     man = json.load(open(os.path.join(TREE, "devtools", "bytematch", "manifests", "retail-win32.json")))["modules"]
     want = a.modules.split(",") if a.modules else list(man)
+    a.modules_explicit = set(a.modules.split(",")) if a.modules else set()
+    index = build_index(man)
 
     def ours_path(name, m):
         ext = {"dll": ".dll", "exe": ".exe", "lib": ".lib"}[m["type"]]
@@ -121,6 +163,9 @@ def main():
         if not m:
             continue
         ours = ours_path(name, m)
+        if not ours and m["type"] != "lib" and name in a.modules_explicit:
+            # objects without a (successful) link: measured anyway, without folding information
+            ours = os.path.join(a.build, m["project_dir"], m["output"] + ".dll")
         if not ours:
             continue
         if m["type"] == "lib":
@@ -134,7 +179,8 @@ def main():
         elif m.get("retail"):
             retail = os.path.join(a.depots, m.get("retail_depot", "222"), BUILD, m["retail"])
             link = os.path.splitext(ours)[0] + ".map"
-            jobs.append((name, name, name, retail, ours, map_for(map_key(name, m)), link))
+            objs = module_objects(a.build, name, m, index[name], os.path.join(a.out, name))
+            jobs.append((name, name, name, retail, objs, map_for(map_key(name, m)), link))
 
     rows, cross = [], []
     for label, name, against, retail, ours, mp, link in jobs:

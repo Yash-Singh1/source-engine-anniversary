@@ -2024,6 +2024,7 @@ void ClientDLL_HudVidInit( void )
 // Purpose: Allow client .dll to modify input data
 //-----------------------------------------------------------------------------
 
+#line 2015
 void ClientDLL_ProcessInput( void )
 {
 	if ( !g_ClientDLL )
@@ -2037,6 +2038,7 @@ void ClientDLL_ProcessInput( void )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+#line 2026
 void ClientDLL_FrameStageNotify( ClientFrameStage_t frameStage )
 {
 	if ( !g_ClientDLL )
@@ -2137,7 +2139,7 @@ void CEngineClient::OnHL2ExpansionLoaded()
 IMatchEventsSubscription *CEngineClient::GetEventsSubscription()
 {
 	return g_pMatchEventsSubscription;
-#line 2105
+#line 2127
 }
 
 const char *CEngineClient::GetMapName()
@@ -2154,7 +2156,7 @@ const char *CEngineClient::GetMapName()
 	// UNIMPLEMENTED: retail also has a fixed-name case; this returns the current level's base name.
 	return cl.m_szLevelBaseName;
 #endif
-#line 2111
+#line 2133
 }
 
 const char *CEngineClient::GetPatchVersion()
@@ -2165,7 +2167,7 @@ const char *CEngineClient::GetPatchVersion()
 	// UNIMPLEMENTED: retail returns its own version buffer; this uses the steam.inf version string.
 	return GetSteamInfIDVersionInfo().szVersionString;
 #endif
-#line 2117
+#line 2139
 }
 
 //-----------------------------------------------------------------------------

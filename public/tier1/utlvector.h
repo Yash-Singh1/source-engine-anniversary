@@ -14,9 +14,9 @@
 #ifdef _WIN32
 #pragma once
 #endif
-
+#if !defined( _MSC_VER ) || !defined( BYTEMATCH_RETAIL ) // MSVC's <algorithm> includes crtdbg.h, which turns memdbgon.h off
 #include <algorithm>
-
+#endif
 #include <string.h>
 #include "tier0/platform.h"
 #include "tier0/dbg.h"
