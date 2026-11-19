@@ -24,8 +24,6 @@
 #include "tier0/icommandline.h"
 #include "filesystem.h"
 
-extern IFileSystem *g_pFileSystem;
-
 #define CONSOLE_LOG_FILE "console.log"
 
 bool CTextConsoleUnix::Init()
@@ -81,7 +79,7 @@ bool CTextConsoleUnix::Init()
 	m_bConDebug = CommandLine()->FindParm( "-condebug" ) != 0;
 	if ( m_bConDebug && CommandLine()->FindParm( "-conclearlog" ) )
 	{
-		g_pFileSystem->RemoveFile( CONSOLE_LOG_FILE, "GAME" );
+		g_pFullFileSystem->RemoveFile( CONSOLE_LOG_FILE, "GAME" );
 	}
 
 	return CTextConsole::Init();
@@ -272,11 +270,11 @@ void CTextConsoleUnix::PrintRaw( const char * pszMsg, int nChars )
 
 	if ( m_bConDebug )
 	{
-		FileHandle_t fh = g_pFileSystem->Open( CONSOLE_LOG_FILE, "a" );
+		FileHandle_t fh = g_pFullFileSystem->Open( CONSOLE_LOG_FILE, "a" );
 		if ( fh != FILESYSTEM_INVALID_HANDLE )
 		{
-			g_pFileSystem->Write( pszMsg, nChars, fh );
-			g_pFileSystem->Close( fh );
+			g_pFullFileSystem->Write( pszMsg, nChars, fh );
+			g_pFullFileSystem->Close( fh );
 		}
 	}
 
