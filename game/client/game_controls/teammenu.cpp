@@ -115,7 +115,12 @@ void CTeamMenu::ApplySchemeSettings(IScheme *pScheme)
 
 	if ( *m_szMapName )
 	{
+#ifdef BYTEMATCH_RETAIL
+		LoadMapPage( m_szMapName ); // reload the map description to pick up the color
+#else
 		LoadMapPage( NULL ); // reload the map description to pick up the color
+#endif
+#line 119
 	}
 }
 
@@ -185,23 +190,41 @@ void CTeamMenu::Update()
 void CTeamMenu::LoadMapPage( const char *mapName )
 {
 	// Save off the map name so we can re-load the page in ApplySchemeSettings().
+#ifdef BYTEMATCH_RETAIL
+	Q_strncpy( m_szMapName, mapName, strlen( mapName ) + 1 );
+#else
 	if( mapName )
 		Q_strncpy( m_szMapName, mapName, strlen( mapName ) + 1 );
 
+#endif
+#line 191
 	char mapRES[ MAX_PATH ];
 
 	char uilanguage[ 64 ];
+#ifndef BYTEMATCH_RETAIL
 	uilanguage[0] = 0;
+#endif
+#line 195
 	engine->GetUILanguage( uilanguage, sizeof( uilanguage ) );
 
+#ifdef BYTEMATCH_RETAIL
+	Q_snprintf( mapRES, sizeof( mapRES ), "resource/maphtml/%s_%s.html", mapName, uilanguage );
+#else
 	Q_snprintf( mapRES, sizeof( mapRES ), "resource/maphtml/%s_%s.html", m_szMapName, uilanguage );
+#endif
+#line 198
 
 	bool bFoundHTML = false;
 
 	if ( !g_pFullFileSystem->FileExists( mapRES ) )
 	{
 		// try english
+#ifdef BYTEMATCH_RETAIL
+		Q_snprintf( mapRES, sizeof( mapRES ), "resource/maphtml/%s_english.html", mapName );
+#else
 		Q_snprintf( mapRES, sizeof( mapRES ), "resource/maphtml/%s_english.html", m_szMapName );
+#endif
+#line 205
 	}
 	else
 	{
@@ -241,7 +264,12 @@ void CTeamMenu::LoadMapPage( const char *mapName )
 #endif
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	Q_snprintf( mapRES, sizeof( mapRES ), "maps/%s.txt", mapName);
+#else
 	Q_snprintf( mapRES, sizeof( mapRES ), "maps/%s.txt", m_szMapName);
+#endif
+#line 245
 
 	// if no map specific description exists, load default text
 	if( !g_pFullFileSystem->FileExists( mapRES ) )
@@ -408,7 +436,10 @@ void CTeamMenu::OnKeyCodePressed(KeyCode code)
 	case KEY_XSTICK1_LEFT:
 	case KEY_XSTICK2_LEFT:
 	case KEY_LEFT:
+#ifndef BYTEMATCH_RETAIL
 	case STEAMCONTROLLER_DPAD_LEFT:
+#endif
+#line 412
 		nDir = -1;
 		break;
 
@@ -420,7 +451,10 @@ void CTeamMenu::OnKeyCodePressed(KeyCode code)
 	case KEY_XSTICK1_RIGHT:
 	case KEY_XSTICK2_RIGHT:
 	case KEY_RIGHT:
+#ifndef BYTEMATCH_RETAIL
 	case STEAMCONTROLLER_DPAD_RIGHT:
+#endif
+#line 424
 		nDir = 1;
 		break;
 	}

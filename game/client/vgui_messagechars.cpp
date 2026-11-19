@@ -252,7 +252,12 @@ int CMessageCharsPanel::AddText(
 		msg->hCustomFont = m_hFont;
 
 	// Return new cursor position
+#ifdef BYTEMATCH_RETAIL
+	return x + g_pMatSystemSurface->DrawTextLen( msg->hCustomFont, data );
+#else
 	return x + g_pMatSystemSurface->DrawTextLen( msg->hCustomFont, "%s", data );
+#endif
+#line 256
 }
 
 //-----------------------------------------------------------------------------
@@ -272,7 +277,12 @@ void CMessageCharsPanel::GetTextExtents( vgui::HFont hCustomFont, int *wide, int
 
 	Assert( hCustomFont );
 
+#ifdef BYTEMATCH_RETAIL
+	*wide = g_pMatSystemSurface->DrawTextLen( hCustomFont, (char *)string );
+#else
 	*wide = g_pMatSystemSurface->DrawTextLen( hCustomFont, "%s", (char *)string );
+#endif
+#line 276
 	*tall = vgui::surface()->GetFontTall( hCustomFont );
 }
 
@@ -310,7 +320,12 @@ void CMessageCharsPanel::Paint()
 	CMessageCharsPanel::message_t *msg = m_pActive;
 	while ( msg )
 	{
+#ifdef BYTEMATCH_RETAIL
+		g_pMatSystemSurface->DrawColoredText( msg->hCustomFont, msg->x, msg->y, msg->r, msg->g, msg->b, msg->a, msg->text );
+#else
 		g_pMatSystemSurface->DrawColoredText( msg->hCustomFont, msg->x, msg->y, msg->r, msg->g, msg->b, msg->a, "%s", msg->text );
+#endif
+#line 314
 		msg = msg->next;
 	}
 
