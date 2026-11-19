@@ -89,6 +89,16 @@ def run(retail, ours_funcs, objects=None, all_retail=False, target_check=True, i
     return dict(results=results, shared=shared, extra=only_ours, mode=mode, notes=notes)
 
 
+def same_build_path(a, b):
+    """__FILE__ literals that differ only by build location (Valve's absolute
+    /Users/buildbot/... path, our relative one); the identity flow reproduces Valve's."""
+    from . import audit
+    if not (a and b and a[0] == b[0] == 'str' and a[1] is not None and b[1] is not None):
+        return False
+    p = audit.norm_path_literal(a[1])
+    return p is not None and p == audit.norm_path_literal(b[1])
+
+
 def apply_data_check(results, rimg, oimgs):
     from . import data
     for r in results:
@@ -97,7 +107,8 @@ def apply_data_check(results, rimg, oimgs):
         oimg = oimgs.get(r.ours.module.path)
         if oimg is None:
             continue
-        mism = [m for m in data.check_function(rimg, oimg, r.retail, r.ours) if not data.same_modulo_linkage(m[1], m[2])]
+        mism = [m for m in data.check_function(rimg, oimg, r.retail, r.ours)
+                if not data.same_modulo_linkage(m[1], m[2]) and not same_build_path(m[1], m[2])]
         if mism:
             k, ri, oi = mism[0]
             r.status, r.first_diff, r.data_mismatches = DIFFERS, k, mism

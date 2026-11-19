@@ -181,6 +181,10 @@ different string, global or constant at the same offset still matches.
 - Static/extern linkage alone (`_ZL5s_foo` vs `s_foo`, `_ZL3fooi` vs
   `_Z3fooi`) and the counters of compiler-generated names
   (`__cxx_global_array_dtorN`, `.memset_patternN`) are not differences.
+- Neither is a `__FILE__` literal that differs only by build location
+  (Valve's `/Users/buildbot/buildslave/.../src/tier1/mempool.cpp`, our
+  `../tier1/mempool.cpp`): a normal build can't reproduce Valve's paths, the
+  identity flow does.
 
 `diff`/`report --data-check` mark such functions `differs` (reason
 `data ref at +0x..`, JSON `data_mismatches`). It is off by default, so
