@@ -86,6 +86,11 @@ RETAIL_EXCLUDE = {"materialsystem": ["materialsystem/ctexturecompositor.cpp"],
 # engine.vpc compiles with $ENABLE_RPT. The --retail-osx32 engine defines it too.
 RETAIL_CONDITIONALS = {"engine": ("ENABLE_RPT",)}
 
+# Per-file switches the 2018 scripts set that the November 2024 build no longer used:
+# engine.vpc compiles sys_dll2.cpp with /EHa, but no retail function of that file sets up an
+# EH frame (CEngineAPI::RunListenServer's CModAppSystemGroup local, ModInit's new, ...).
+RETAIL_FILE_CL_DROP = {"engine/sys_dll2.cpp": ("/EHa",)}
+
 # Include directories this fork's sources need beyond Valve's (the fork's
 # vector_fpu.inl includes ivu_types.hxx for intp).
 FORK_INCLUDES = {"hk_math": ["ivp/ivp_utility"], "replay": ["thirdparty/curl/include"]}
@@ -353,7 +358,7 @@ class Module:
                 ent["path"], ent["valve_path"] = ours, rel
             if lang in ("c++", "c"):
                 base = self.cl_switches()
-                mine = self.cl_switches(f)
+                mine = [c for c in self.cl_switches(f) if c not in RETAIL_FILE_CL_DROP.get(rel, ())]
                 if mine != base:
                     ent["cl"] = mine
                 if self.defines(f) != self.defines():
