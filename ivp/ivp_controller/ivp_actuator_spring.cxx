@@ -345,11 +345,20 @@ void IVP_Actuator_Suspension::do_simulation_controller(IVP_Event_Sim *es,IVP_U_V
 	//	printf("force: %g\n", force); 
 	IVP_DOUBLE impulse = force *  es->delta_time;
 	IVP_DOUBLE impulse_clipped = force_clipped *  es->delta_time;
+#ifdef BYTEMATCH_RETAIL
+	IVP_Synapse_Friction *wheel_contact = pc1->objects.element_at(0)->get_first_friction_synapse();
+#endif
 
 	IVP_U_Float_Point impulse_vector_ws;
 	impulse_vector_ws.set_multiple(&dir_ws, impulse );
 	pc1->async_push_core_ws(&pos1_ws, &impulse_vector_ws);
 	
+#ifdef BYTEMATCH_RETAIL
+	// a wheel that touches nothing pushes the body only a little
+	if ( !wheel_contact ) {
+	    impulse_clipped *= 0.1f;
+	}
+#endif
 	impulse_vector_ws.set_multiple(&dir_ws, impulse_clipped );
 	pc0->async_push_core_ws(&pos0_ws, &impulse_vector_ws);
 }
