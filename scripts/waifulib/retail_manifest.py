@@ -81,6 +81,13 @@ RETAIL_DEAD = {
 	'hl2mp/server': [('common/language.cpp', 'game/server/serverbenchmark_base.cpp')],
 }
 
+# Static libraries retail links without debug info (period third-party archives), so
+# the debug map doesn't place them; their literals and code show where. module ->
+# [(library, the retail-listed archive it is linked before)].
+RETAIL_STLIB_BEFORE = {
+	'bin/replay': [('png', 'vtf')],
+}
+
 def options(opt):
 	grp = opt.add_option_group('Byte-match options')
 	grp.add_option('--retail-manifest', action = 'store_true', dest = 'RETAIL_MANIFEST', default = False,
@@ -272,6 +279,9 @@ def retail_stlib_order(self):
 				order.append(os.path.basename(str(tg.target)))
 			except Exception:
 				pass
+	for lib, before in RETAIL_STLIB_BEFORE.get(key, []):
+		if before in order and lib not in order:
+			order.insert(order.index(before), lib)
 	env = self.link_task.env
 	libs = list(env.STLIB)
 	rank = lambda l: order.index(l) if l in order else len(order)

@@ -62,15 +62,7 @@ void CFileserverCleaner::MarkFileForDelete( const char *pFilename )
 	}
 }
 
-CBaseJob *SV_CreateDeleteFileJob()
-{
-	extern ConVar replay_fileserver_offload_enable;
-	if ( replay_fileserver_offload_enable.GetBool() )
-		return SV_CreateFtpFileDeleterJob( NULL );
-
-	return SV_CreateLocalFileDeleterJob();
-}
-
+#line 74
 void CFileserverCleaner::BlockForCompletion()
 {
 	if ( !m_bRunning )
@@ -306,6 +298,16 @@ CFtpFileDeleterJob *SV_CreateFtpFileDeleterJob( const char *pFilename )
 
 	return pJob;
 }
+
+CBaseJob *SV_CreateDeleteFileJob()
+{
+	extern ConVar replay_fileserver_offload_enable;
+	if ( replay_fileserver_offload_enable.GetBool() )
+		return SV_CreateFtpFileDeleterJob( NULL );
+
+	return SV_CreateLocalFileDeleterJob();
+}
+#line 309
 
 
 //----------------------------------------------------------------------------------------
