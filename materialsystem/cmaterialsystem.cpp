@@ -3379,7 +3379,10 @@ void CMaterialSystem::UncacheAllMaterials()
 //-----------------------------------------------------------------------------
 void CMaterialSystem::UncacheUnusedMaterials( bool bRecomputeStateSnapshots )
 {
+#ifndef BYTEMATCH_RETAIL
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__ );
+#endif
+#line 3157
 
 	MaterialLock_t hLock = Lock();
 	Flush( true );

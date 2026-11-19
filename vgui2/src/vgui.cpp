@@ -469,7 +469,10 @@ void CVGui::RunFrame()
 		//  until next frame
 		int time = g_pSystem->GetTimeMillis();
 
+#ifndef BYTEMATCH_RETAIL
 		tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s - Ticks", __FUNCTION__ );
+#endif
+#line 473
 		// directly invoke tick all who asked to be ticked
 		int count = m_TickSignalVec.Count();
 		for (int i = count - 1; i >= 0; i-- )
@@ -484,7 +487,10 @@ void CVGui::RunFrame()
 			}
 			
 			t->panel->Client()->OnTick();
+#ifndef BYTEMATCH_RETAIL
 			tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s - Ticks: %s", __FUNCTION__, t->panel->Client()->GetName() );
+#endif
+#line 488
 		}
 
 	}
