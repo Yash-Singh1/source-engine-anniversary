@@ -2076,6 +2076,31 @@ void KeyValues::RecursiveMergeKeyValues( KeyValues *baseKV )
 // Purpose: Steam Deck / GamepadUI detection, cached after the first call.
 //			-nogamepadui and -gamepadui override the environment.
 //-----------------------------------------------------------------------------
+#ifdef HL2_LOSTCOAST
+bool IsSteamDeck()
+{
+	static int s_nSteamDeckCached = -1;
+	if ( s_nSteamDeckCached == -1 )
+	{
+		if ( CommandLine()->CheckParm( "-nogamepadui" ) )
+		{
+			s_nSteamDeckCached = 0;
+		}
+		else if ( CommandLine()->CheckParm( "-gamepadui" ) )
+		{
+			s_nSteamDeckCached = 1;
+		}
+		else
+		{
+			const char *pszSteamDeck = getenv( "SteamDeck" );
+			s_nSteamDeckCached = pszSteamDeck && *pszSteamDeck && atoi( pszSteamDeck ) != 0;
+		}
+	}
+
+	return s_nSteamDeckCached != 0;
+}
+#else
+#line 2076
 bool IsSteamDeck( bool bSteamDeckOnly )
 {
 	static int s_nSteamDeckCached = -1;
@@ -2111,6 +2136,8 @@ bool IsSteamDeck( bool bSteamDeckOnly )
 
 	return s_nGamepadUICached == 1 || s_nSteamDeckCached == 1;
 }
+#endif
+#line 2111
 
 //-----------------------------------------------------------------------------
 // Returns whether a keyvalues conditional evaluates to true or false

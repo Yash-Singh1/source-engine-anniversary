@@ -264,7 +264,7 @@ class CUtlVectorMT : public BASE_UTLVECTOR, public MUTEX_TYPE
 {
 	typedef BASE_UTLVECTOR BaseClass;
 public:
-	// MUTEX_TYPE Mutex_t;
+	MUTEX_TYPE Mutex_t;
 
 	// constructor, destructor
 	explicit CUtlVectorMT( int growSize = 0, int initSize = 0 ) : BaseClass( growSize, initSize ) {}
@@ -603,10 +603,10 @@ COMPILE_TIME_ASSERT( sizeof(CUtlVectorUltraConservative<int>) == sizeof(void*) )
 //  WARNING - this class lets you copy construct which can be an expensive operation if you don't carefully control when it happens
 // Only use this when nesting a CUtlVector() inside of another one of our container classes (i.e a CUtlMap)
 //-----------------------------------------------------------------------------
-template< class T >
-class CCopyableUtlVector : public CUtlVector< T, CUtlMemory<T> >
+template< typename T, typename A = CUtlMemory<T> >
+class CCopyableUtlVector : public CUtlVector< T, A >
 {
-	typedef CUtlVector< T, CUtlMemory<T> > BaseClass;
+	typedef CUtlVector< T, A > BaseClass;
 public:
 	explicit CCopyableUtlVector( int growSize = 0, int initSize = 0 ) : BaseClass( growSize, initSize ) {}
 	CCopyableUtlVector( T* pMemory, int numElements ) : BaseClass( pMemory, numElements ) {}

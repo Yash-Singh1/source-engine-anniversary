@@ -31,6 +31,10 @@
  "GLMDisplayDB": {
   "skip": "ToGL internals; retail ToGL is a different generation (libtogl lane)"
  },
+ "IAchievementMgr": {
+  "retail_len": 13,
+  "why": "November 2024 servers (episodic, hl2) end with CanEarnForCurrentExpansion/CanEarnForExpansion (their non-virtual thunks at slots 11 and 12); the 11-slot shortest table is Lost Coast's October build, where HL2_LOSTCOAST drops both"
+ },
  "IAsyncWavDataCache": {
   "retail_len": 21,
   "why": "GetItemName overrides the secondary base IDataCacheClient"

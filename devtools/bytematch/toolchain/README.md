@@ -10,6 +10,7 @@ the `--retail-osx32` waf mode. Everything installs under
 | compiler | Apple clang-600.0.57 (Xcode 6.2) | static-init naming and the pilot match rate pin clang-600; .54 gives identical code on every object we build, .51 differs in one object retail doesn't link |
 | linker | ld64-242 (Xcode 6.2) via cctools-port | 236.3 writes `__unwind_info` with 2^0 alignment, retail has 2^2; 241.9 and 242 give byte-identical dylibs |
 | SDK | stub MacOSX10.9.sdk | 10.6 headers plus i386 stub libraries carrying retail's install names, versions and exports |
+| period third-party archives | Apple gcc 4.2.1 (gcc-5666.3, gcc_42-5564), gcc 4.0.1 (gcc-5484), cctools-port `as` | Crypto++, speex and libpng came into retail as old prebuilt archives built with Apple gcc (the speex archive's DWARF names gcc builds 5564 and 5484); `build-gcc.sh` builds them as x86_64 hosts (Rosetta on arm64), `build-thirdparty.py` uses them by default |
 | hl2mp (2014) | clang-503.0.38, ld64-236.3 (Xcode 5.1), protoc 2.3.0 | depot 223's hl2mp modules are a May 2014 Source SDK 2013 build: `LC_VERSION_MIN` 10.5, `__unwind_info` 2^0; `--build-games=hl2mp` (see `sdk2013mp/wscript`). clang-503 carries `patches/clang-503.0.38-maskandbranch.patch` (an uninitialized x86 flag made Xcode 5.1's codegen vary per compile) |
 
 ## Setup
@@ -23,7 +24,8 @@ $T/build-clang.sh 600.0.57          # optional: 600.0.54 600.0.51 503.0.38
 $T/build-ld64.sh 242                # optional: 241.9 236.3
 $T/extract-sdk106.sh /path/to/Mac_OS_X_10.6_Snow_Leopard_Retail.iso
 $T/make-sdk109.py                   # reads retail imports from depot 223/340/380/420
-$T/build-thirdparty.py              # optional: libjpeg 8b, libpng 1.5.2, Crypto++ 5.6.1, speex 1.0.4
+$T/build-gcc.sh 5666.3              # and 5564, 5484: period compilers for build-thirdparty.py
+$T/build-thirdparty.py              # libjpeg 8b, libpng 1.5.2, Crypto++ 5.6.1, speex 1.0.1 (--compiler clang: clang-600 only)
 $T/build-protoc.sh                  # hl2mp only, with clang 503.0.38 and ld64 236.3
 git submodule update --init thirdparty
 
@@ -51,7 +53,8 @@ to i386 first (`thin-i386.py`, and the waf mode's `retail-depot-libs/`).
 - `make-sdk109.py`, `macho.py`: stub 10.9 SDK generator
 - `retailflags.py`: compiler and linker flags from Valve's xcconfig/VPC, shared by everything here and by `scripts/waifulib/retail_osx32.py`
 - `ld64-pin.py`: links scenefilecache with each ld64 and compares structure with retail
-- `build-thirdparty.py`: period third-party archives (known non-matching inputs), installed in `<prefix>/thirdparty-osx32-N` (`retailflags.THIRDPARTY_DIR`; the suffix is bumped whenever the archives change, so builds using the previous set keep working). libpng has default visibility, as retail modules export it
+- `build-gcc.sh`: Apple gcc from apple-oss-distributions (cc1, cc1plus, driver, own headers) plus cctools-port's i386 `as`. Host builds differ from Apple's own binaries in a few register and stack-slot choices (one function in Crypto++'s dll.o versus Snow Leopard's gcc-4.2 5646, none that retail links)
+- `build-thirdparty.py`: period third-party archives, installed in `<prefix>/thirdparty-osx32-N` (`retailflags.THIRDPARTY_DIR`; the suffix is bumped whenever the archives change, so builds using the previous set keep working). libpng has default visibility, as retail modules export it
 - `build-protoc.sh`: host protoc 2.3.0 from `sdk2013mp/thirdparty/protobuf-2.3.0`, for hl2mp's `htmlmessages.pb.cc`
 - `report-modules.py`: match summary for a `--retail-osx32` build directory
 

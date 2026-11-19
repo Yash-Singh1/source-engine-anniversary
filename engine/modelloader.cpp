@@ -164,8 +164,7 @@ BEGIN_BYTESWAP_DATADESC( lump_t )
 	DEFINE_FIELD( filelen, FIELD_INTEGER ),
 	DEFINE_FIELD( version, FIELD_INTEGER ),
 #ifdef BYTEMATCH_RETAIL
-	// SDK 2013 lump_t has char fourCC[4] where ours has uncompressedSize (same offset and size)
-	{ FIELD_CHARACTER, "fourCC", { _offsetof( classNameTypedef, uncompressedSize ), 0 }, 4, FTYPEDESC_SAVE, NULL, NULL, NULL, NULL, sizeof( ((classNameTypedef *)0)->uncompressedSize ), NULL, 0, 0 },
+	DEFINE_ARRAY( fourCC, FIELD_CHARACTER, 4 ),
 #else
 	DEFINE_FIELD( uncompressedSize, FIELD_INTEGER ),
 #endif

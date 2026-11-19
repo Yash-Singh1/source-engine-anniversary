@@ -15,7 +15,8 @@ SDK_NAME = "MacOSX10.9.sdk"
 # build-thirdparty.py's install dir under the toolchain prefix. Bump the suffix when
 # the archives change, so builds running against the old ones keep working.
 # -2: libpng with default visibility.
-THIRDPARTY_DIR = "thirdparty-osx32-2"
+# -3: period compilers (Apple gcc 4.0/4.2), Valve's Crypto++ and speex 1.0.1 sources.
+THIRDPARTY_DIR = "thirdparty-osx32-3"
 MIN_OSX = "10.6"
 RETAIL_DEPOT = "/Volumes/Expansion/mac-ports/hl2-anniversary-depot/depots/223/19307283"
 

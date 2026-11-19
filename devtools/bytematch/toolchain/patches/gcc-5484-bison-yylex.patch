@@ -1,0 +1,14 @@
+--- a/gcc/c-parse.in
++++ b/gcc/c-parse.in
+@@ -55,6 +55,11 @@
+ 
+ #define YYERROR1 { yyerror ("syntax error"); YYERROR; }
+ 
++/* bison 1.875 defined this; later skeletons do not.  */
++#ifndef YYLEX
++#define YYLEX yylex ()
++#endif
++
+ /* Like the default stack expander, except (1) use realloc when possible,
+    (2) impose no hard maxiumum on stack size, (3) REALLY do not use alloca.
+ 

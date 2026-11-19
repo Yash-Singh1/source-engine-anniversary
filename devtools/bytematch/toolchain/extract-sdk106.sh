@@ -7,6 +7,8 @@
 # Produces:
 #   <prefix>/sdk/MacOSX10.6.sdk        pristine (fat i386/x86_64/ppc)
 #   <prefix>/sdk/MacOSX10.6-i386.sdk   Mach-O files thinned to i386
+#   <prefix>/sdk/MacOSX10.5.sdk        from the same image (Xcode 3.2's copy), compile
+#                                      only: build-thirdparty.py's period gcc archives
 # The thinned copy exists because a native arm64 ld64 mmaps whole files with
 # 16 KB pages and fails (EINVAL) on fat slices at 4 KB-aligned offsets.
 set -euo pipefail
@@ -55,3 +57,17 @@ cp -R "$OUT/MacOSX10.6.sdk" "$OUT/MacOSX10.6-i386.sdk"
 python3 "$HERE/thin-i386.py" "$OUT/MacOSX10.6-i386.sdk"
 echo "SDK: $OUT/MacOSX10.6.sdk"
 echo "SDK (i386): $OUT/MacOSX10.6-i386.sdk"
+
+PKG5=
+[ -n "$MNT" ] && PKG5=$(find "$MNT"/Optional* -maxdepth 3 -name MacOSX10.5.pkg -print -quit 2>/dev/null || true)
+if [ -n "$PKG5" ]; then
+	rm -rf "$TMP/pkg" "$TMP/root"
+	mkdir -p "$TMP/pkg" "$TMP/root"
+	(cd "$TMP/pkg" && xar -xf "$PKG5")
+	(cd "$TMP/root" && { gzip -dc ../pkg/Payload 2>/dev/null || bzip2 -dc ../pkg/Payload; } | cpio -id --quiet 2>/dev/null) || true
+	if [ -f "$TMP/root/SDKs/MacOSX10.5.sdk/usr/include/stdio.h" ]; then
+		rm -rf "$OUT/MacOSX10.5.sdk"
+		mv "$TMP/root/SDKs/MacOSX10.5.sdk" "$OUT/MacOSX10.5.sdk"
+		echo "SDK: $OUT/MacOSX10.5.sdk"
+	fi
+fi
