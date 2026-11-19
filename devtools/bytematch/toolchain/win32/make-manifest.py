@@ -94,6 +94,14 @@ RETAIL_INCLUDES_FIRST = {"stdshader_dx9": ["materialsystem/stdshaders/include"]}
 # inertia clamp in ivp_core.cxx calls POSIX finite(); qhull calls sqrt( int ),
 # which needs <cmath>'s integral overloads (Valve linked prebuilt ivp libraries).
 FORK_CL = {"ivp_compactbuilder": ["/FIcmath"]}
+
+# Switches of this tree's VPCs that Valve's retail build didn't use: the ivp submodule's
+# VPCs ask for /Ob1, but retail vphysics.dll inlines ivp's plain member functions
+# (ivp_physics sample: 198 to 258 of 315 functions with /Ob2).
+_IVP_OB2 = {"/Ob1": "/Ob2"}
+RETAIL_CL_REPLACE = dict((m, _IVP_OB2) for m in ("ivp_physics", "ivp_compactbuilder", "havana_constraints",
+                                                 "hk_base", "hk_math"))
+
 # Valve's Windows ivp was built with IVP_PIII (Pentium III paths in ivu_linear and
 # _mm_prefetch hints: retail vphysics.dll has 66 prefetcht1); the ivp submodule's VPCs lack it.
 _IVP_PIII = ["IVP_PIII"]
@@ -234,7 +242,8 @@ class Module:
         for fi in split_list(self.get("compiler.forceincludes", f), ";"):
             sw.append("/FI" + fi)
         sw += (self.get("compiler.additionaloptions", f) or "").split()
-        return dedupe([s for s in sw if s not in DROP_SWITCHES] + FORK_CL.get(self.name, []))
+        rep = RETAIL_CL_REPLACE.get(self.name, {})
+        return dedupe([rep.get(s, s) for s in sw if s not in DROP_SWITCHES] + FORK_CL.get(self.name, []))
 
     def defines(self, f=None):
         d = split_list(self.get("compiler.preprocessordefinitions", f), ";")
