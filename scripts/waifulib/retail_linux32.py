@@ -20,7 +20,7 @@ linked from the retail depot (user-provided, never rebuilt).
 '''
 
 import json, os, shutil, subprocess, sys
-from waflib import Logs
+from waflib import Logs, Task
 from waflib.Configure import conf
 from waflib.TaskGen import feature, before_method, after_method
 
@@ -97,6 +97,8 @@ def retail_linux32_configure(conf):
 	conf.environ['AR'] = ' '.join(scout + ['ar'])
 	conf.load('gcc gxx')
 	v = conf.env
+	# makefile_base_posix.mak links with $(CC) and names libstdc++ itself (retail_linux32_link)
+	v.LINK_CXX = scout + ['gcc-9']
 	v.RETAIL_LINUX32 = True
 	v.RETAIL_SCOUT = scout
 	v.COMPILER_CC = 'gcc'
@@ -250,11 +252,32 @@ def retail_linux32_defines(self):
 @feature('cshlib', 'cxxshlib')
 @after_method('propagate_uselib_vars')
 def retail_linux32_link(self):
-	'''makefile LIB_END_SHLIB: system libraries and the version script. The g++-9 driver
-	links gcc-9's libstdc++, which is static only (--disable-shared).'''
+	'''makefile LIB_END_SHLIB: system libraries, libstdc++ and the version script, linked by
+	gcc-9 as $(LINK). gcc-9's libstdc++ is static only (--disable-shared); the makefile's
+	-print-file-name=libstdc++.so names nothing, so it's named directly.'''
 	if not self.env.RETAIL_LINUX32 or not getattr(self, 'link_task', None):
 		return
 	env = self.link_task.env
 	vs = self.bld.srcnode.find_node('devtools/version_script.linux.txt')
 	env.LDFLAGS = list(env.LDFLAGS) + SYSTEM_LIBS.get(os.path.basename(str(self.target)), []) + \
-		['-lm', '-ldl', '-lpthread', '-l:ld-linux.so.2', '-Wl,--version-script=' + vs.abspath()]
+		['-lm', '-ldl', '-l:libstdc++.a', '-lpthread', '-l:ld-linux.so.2', '-Wl,--version-script=' + vs.abspath()]
+	# makefile GEN_SYM (devtools/gendbg.sh) then `strip -x -S`, with the image's own binutils
+	# 2.22 (outside the g++-9 wrapper's PATH): stripped/NAME.so plus NAME.so.dbg
+	out = self.link_task.outputs[0]
+	stripped = out.parent.make_node('stripped').make_node(out.name)
+	self.create_task('retail_linux32_strip', out, [stripped, stripped.parent.make_node(out.name + '.dbg')])
+
+class retail_linux32_strip(Task.Task):
+	color = 'BLUE'
+	def run(self):
+		so, dbg = self.outputs[0].abspath(), self.outputs[1].abspath()
+		os.makedirs(os.path.dirname(so), exist_ok=True)
+		shutil.copy2(self.inputs[0].abspath(), so)
+		scout = self.env.RETAIL_SCOUT
+		cwd = os.path.dirname(so)
+		so, dbg = os.path.basename(so), os.path.basename(dbg)
+		for cmd in (['/usr/bin/objcopy', so, dbg], ['/usr/bin/objcopy', '--add-gnu-debuglink=' + dbg, so],
+				['/usr/bin/strip', '-x', '-S', so]):
+			if self.exec_command(scout + cmd, cwd=cwd):
+				return 1
+		return 0
