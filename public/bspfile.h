@@ -76,7 +76,9 @@
 #define MAX_MAP_TEXDATA					2048
 #endif
 #line 69
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && defined( HL2_LOSTCOAST )
+#define MAX_MAP_DISPINFO				2048
+#elif defined( BYTEMATCH_RETAIL )
 #define MAX_MAP_DISPINFO				8096
 #else
 #define MAX_MAP_DISPINFO				4096
