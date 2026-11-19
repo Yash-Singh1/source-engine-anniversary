@@ -385,12 +385,7 @@ void CPoseDebuggerImpl::ShowModel( int iEntNum, bool bShow )
 bool CPoseDebuggerImpl::IsModelShown( int iEntNum ) const
 {
 	Assert( iEntNum >= 0 && iEntNum < MAX_EDICTS );
-#ifdef BYTEMATCH_RETAIL
-	if ( iEntNum < MAX_EDICTS )
-#else
 	if ( iEntNum >= 0 && iEntNum < MAX_EDICTS )
-#endif
-#line 384
 		return m_uiMaskShowModels.IsBitSet( iEntNum );
 	else
 		return false;
