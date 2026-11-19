@@ -44,7 +44,7 @@ inline const float& D3DXMATRIX::operator()( int row, int column ) const
 {
 	return m[row][column];
 }
-
+inline bool D3DXMATRIX::operator != ( CONST D3DXMATRIX& src ) const { return V_memcmp( (void*)this, (void*)&src, sizeof(this) ) != 0; }
 // ------------------------------------------------------------------------------------------------------------------------------ //
 // D3DXPLANE operators
 // ------------------------------------------------------------------------------------------------------------------------------ //
