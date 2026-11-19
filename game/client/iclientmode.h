@@ -31,6 +31,12 @@ enum
 	MM_SAY_TEAM,
 };
 
+// Anniversary IClientMode::Layout( bool ) and hud_aspect. MSVC groups the overload with
+// Layout(), which moves every later slot; retail macOS has them too (appended slot 48).
+#if defined( _WIN32 )
+#define CLIENTMODE_LAYOUT_FORCE
+#endif
+
 abstract_class IClientMode
 {
 // Misc.
@@ -148,6 +154,9 @@ public:
 	virtual bool	IsInfoPanelAllowed() = 0;
 	virtual void	InfoPanelDisplayed() = 0;
 	virtual bool	IsHTMLInfoPanelAllowed() = 0;
+#ifdef CLIENTMODE_LAYOUT_FORCE
+	virtual void	Layout( bool bForce ) = 0;
+#endif
 };	
 
 extern IClientMode *g_pClientMode;
