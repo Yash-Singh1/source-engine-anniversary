@@ -46,11 +46,10 @@ def effective(lines):
         m = LINE.match(s)
         out.append(None if m else tuple(cur))
         if m:
+            # a #line in the branch a build skips is an ordinary line for that build
             n = int(m.group(1))
-            if branch in (None, 'msvc'):
-                cur[0] = n
-            if branch in (None, 'other'):
-                cur[1] = n
+            cur[0] = n if branch in (None, 'msvc') else cur[0] + 1
+            cur[1] = n if branch in (None, 'other') else cur[1] + 1
         else:
             cur = [cur[0] + 1, cur[1] + 1]
     return out

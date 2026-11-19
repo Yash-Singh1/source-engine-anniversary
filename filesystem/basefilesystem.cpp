@@ -3316,7 +3316,13 @@ FileHandle_t CBaseFileSystem::OpenEx( const char *pFileName, const char *pOption
 #endif
 #line 3315
 
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 3668
+#else
+#line 3315
+#endif
 	VPROF_BUDGET( "CBaseFileSystem::Open", VPROF_BUDGETGROUP_OTHER_FILESYSTEM );
+#line 3317
 
 	if ( !pFileName )
 		return (FileHandle_t)0;
@@ -3374,7 +3380,13 @@ void CBaseFileSystem::Seek( FileHandle_t file, int pos, FileSystemSeek_t whence 
 #endif
 #line 3720
 
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 3716
+#else
+#line 3720
+#endif
 	VPROF_BUDGET( "CBaseFileSystem::Seek", VPROF_BUDGETGROUP_OTHER_FILESYSTEM );
+#line 3722
 	CFileHandle *fh = ( CFileHandle *)file;
 	if ( !fh )
 	{
@@ -3418,7 +3430,13 @@ unsigned int CBaseFileSystem::Size( FileHandle_t file )
 #endif
 #line 3758
 
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 3754
+#else
+#line 3758
+#endif
 	VPROF_BUDGET( "CBaseFileSystem::Size", VPROF_BUDGETGROUP_OTHER_FILESYSTEM );
+#line 3760
 	if ( !file )
 	{
 		Warning( FILESYSTEM_WARNING, "FS:  Tried to Size NULL file handle!\n" );
@@ -3554,7 +3572,13 @@ int CBaseFileSystem::ReadEx( void *pOutput, int destSize, int size, FileHandle_t
 #endif
 #line 3889
 
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 3885
+#else
+#line 3889
+#endif
 	VPROF_BUDGET( "CBaseFileSystem::Read", VPROF_BUDGETGROUP_OTHER_FILESYSTEM );
+#line 3891
 	if ( !file )
 	{
 		Warning( FILESYSTEM_WARNING, "FS:  Tried to Read NULL file handle!\n" );
