@@ -64,7 +64,9 @@ def apply_map(mod, path, min_conf=0.0):
                 if conf >= TARGET_MIN_CONF:
                     for n in names:
                         mod.add_name(addr, canonical(mod.fmt, n))
-                norm.append((addr, names, size, stem))
+                # extents run to the next start the port discovered, past padding and any
+                # functions it missed: upper bounds, not sizes
+                norm.append((addr, names, size, stem, False))
             rebuild(mod, norm)
             return len(norm)
     norm = []
