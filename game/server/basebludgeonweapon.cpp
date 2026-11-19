@@ -174,8 +174,8 @@ void CBaseHLBludgeonWeapon::Hit( trace_t &traceHit, Activity nHitActivity, bool 
 		{
 			gamestats->Event_WeaponHit( pPlayer, !bIsSecondary, GetClassname(), info );
 		}
+		NOV2024_ONLY( OnWeaponHit(); )
 	}
-
 	// Apply an impact effect
 	ImpactEffect( traceHit );
 }
@@ -353,7 +353,7 @@ void CBaseHLBludgeonWeapon::Swing( int bIsSecondary )
 	}
 
 	gamestats->Event_WeaponFired( pOwner, !bIsSecondary, GetClassname() );
-
+	NOV2024_ONLY( WeaponSound( SINGLE ); )
 	// -------------------------
 	//	Miss
 	// -------------------------
@@ -380,5 +380,5 @@ void CBaseHLBludgeonWeapon::Swing( int bIsSecondary )
 	m_flNextSecondaryAttack = gpGlobals->curtime + SequenceDuration();
 
 	//Play swing sound
-	WeaponSound( SINGLE );
+	OCT2024_ONLY( WeaponSound( SINGLE ); )
 }
