@@ -9,6 +9,9 @@ class hk_Stiff_Spring_BP  //: public hk_Constraint_BP
 			m_tau = 0.3f;
 			m_strength = 0.5f;
 			m_length = 1.0f;
+#ifdef BYTEMATCH_RETAIL
+			m_min_length = 1.0f;
+#endif
 			m_translation_os_ks[0].set(0,0,0);
 			m_translation_os_ks[1].set(0,0,0);
 		}
