@@ -17,7 +17,8 @@ SDK_NAME = "MacOSX10.9.sdk"
 # -2: libpng with default visibility.
 # -3: period compilers (Apple gcc 4.0/4.2), Valve's Crypto++ and speex 1.0.1 sources.
 # -4: libjpeg with clang-318.0.45.
-THIRDPARTY_DIR = "thirdparty-osx32-4"
+# -5: libpng against the zlib 1.2.5 release headers.
+THIRDPARTY_DIR = "thirdparty-osx32-5"
 MIN_OSX = "10.6"
 RETAIL_DEPOT = "/Volumes/Expansion/mac-ports/hl2-anniversary-depot/depots/223/19307283"
 

@@ -89,10 +89,10 @@ private:
 	//
 	// IFtp
 	//
-	virtual bool		FTP_SetupAdditionalCurlOperations( void *pCurl );
-	virtual void		FTP_OnPreExecuteCurlOperations();
 	virtual const char	*FTP_GetFilename() const;
 	virtual bool		FTP_IsCurlResultOK( int nCurlResult ) const;
+	virtual bool		FTP_SetupAdditionalCurlOperations( void *pCurl );
+	virtual void		FTP_OnPreExecuteCurlOperations();
 	virtual void		FTP_OnPostExecuteCurlOperations();
 	virtual void		FTP_SetError( int nError, const char *pError );
 

@@ -569,6 +569,12 @@ bool COSXFont::ExtendedKernedABCWidthsCacheLessFunc(const kerned_abc_cache_t &lh
 }
 
 
+ATSUStyle *COSXFont::SetAsActiveFont( CGContextRef cgContext )
+{
+	CGContextSelectFont ( cgContext, m_szName.String(), m_iHeight, kCGEncodingMacRoman );
+	return &m_ATSUStyle;
+}
+
 #ifdef DBGFLAG_VALIDATE
 
 //-----------------------------------------------------------------------------
