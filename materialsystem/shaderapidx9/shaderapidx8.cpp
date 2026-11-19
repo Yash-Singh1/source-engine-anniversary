@@ -6325,6 +6325,10 @@ void CShaderAPIDx8::GetSceneFogColor( unsigned char *r, unsigned char *g, unsign
 }
 
 
+#ifdef BYTEMATCH_RETAIL
+ConVar r_fog_force_gamma( "r_fog_force_gamma_override", "0", FCVAR_CHEAT, "Is your fog issue caused by a mismatch between the game and driver expecting different sRGB-ness for the fog color? Find out today! Needs map restart. 0 = default 1 = force sRGB fog color 2 = force linear space fog color" );
+#endif
+#line 6328
 //-----------------------------------------------------------------------------
 // Gamma correction of fog color, or not...
 //-----------------------------------------------------------------------------
@@ -6340,6 +6344,14 @@ D3DCOLOR CShaderAPIDx8::ComputeGammaCorrectedFogColor( unsigned char r, unsigned
 						( bSRGBWritesEnabled && ( g_pHardwareConfig->Caps().m_bFogColorSpecifiedInLinearSpace || g_pHardwareConfig->GetHDRType() == HDR_TYPE_FLOAT ) );
 
 	bool bScaleFogByToneMappingScale = g_pHardwareConfig->GetHDRType() == HDR_TYPE_INTEGER;
+#ifdef BYTEMATCH_RETAIL
+	int nForceGamma = r_fog_force_gamma.GetInt();
+	if ( nForceGamma == 1 )
+		bLinearSpace = false;
+	else if ( nForceGamma == 2 )
+		bLinearSpace = true;
+#endif
+#line 6343
 
 	float fr = ( r / 255.0f );
 	float fg = ( g / 255.0f );
