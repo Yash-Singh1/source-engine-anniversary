@@ -251,7 +251,7 @@ IVP_RETURN_TYPE IVP_Rot_Inertia_Solver::calc_mass_center_and_rotation_inertia(
 	return localCalcMassCenterAndRotInertia(&all_ledges, mass_center_out, rotation_inertia_out);
 }
 
-#ifdef HAVOK_MOPP
+#if defined(HAVOK_MOPP) && !defined(BYTEMATCH_RETAIL)
 IVP_RETURN_TYPE IVP_Rot_Inertia_Solver::calc_mass_center_and_rotation_inertia(
 	const IVP_Compact_Mopp* c_mopp_in,
 	IVP_U_Point* mass_center_out,

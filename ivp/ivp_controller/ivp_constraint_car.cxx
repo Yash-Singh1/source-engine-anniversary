@@ -276,9 +276,17 @@ void IVP_Constraint_Solver_Car::do_simulation_controller( IVP_Event_Sim *es,
     IVP_DOUBLE *input_vec_ptr = this->co_matrix.desired_vector;
     IVP_ASSERT( this->co_matrix.columns == wheel_objects.len() * 2 );
 
+#ifdef BYTEMATCH_RETAIL
+    IVP_FLOAT delta_time = es->delta_time;
+    IVP_DOUBLE max_quad_delta_speed = this->max_delta_speed * this->max_delta_speed;
+    if ( core_B->get_mass() >= 10000.0f ) {
+	max_quad_delta_speed *= 2.75f;	// heavy bodies may move their wheels faster
+    }
+#else
     int init_local_translation = 0;					// flag
     int invalid_count= 0;							// for plan B removal
     IVP_FLOAT delta_time = es->delta_time;
+#endif
     
     // for all appendices
     for(int app_cnt=0; app_cnt < wheel_objects.len(); app_cnt++){
@@ -319,6 +327,26 @@ void IVP_Constraint_Solver_Car::do_simulation_controller( IVP_Event_Sim *es,
 	    // difference too high?
 	    {
 		IVP_DOUBLE quad_speed = delta_speed_vec.quad_length();
+#ifdef BYTEMATCH_RETAIL
+		if( quad_speed > max_quad_delta_speed ){
+		    // the wheel is stuck: pull it back slowly, or put it back if the body stands still
+		    IVP_U_Point next_pos_B_ws;
+		    m_world_f_B->vmult4(&next_pos_B_in_B, &next_pos_B_ws);
+		    delta_speed_vec.subtract(&cur_pos_A_in_B, &next_pos_B_in_B);
+		    delta_speed_vec.mult(inv_dtime * 1.0f);
+		    delta_speed_vec.normize();
+		    delta_speed_vec.mult(this->max_delta_speed * 0.25f);
+		    core_A->speed.set_to_zero();
+		    core_A->speed_change.set_to_zero();
+		    if ( core_B->current_speed + core_B->max_surface_rot_speed < 1e-4f ) {
+			IVP_U_Point pos_A_ws;
+			IVP_U_Quat q_world_f_A;
+			app->real_object->get_quat_world_f_object_AT(&q_world_f_A, &pos_A_ws);
+			m_world_f_B->vmult4(&next_pos_B_in_B, &pos_A_ws);
+			app->real_object->beam_object_to_new_position(&q_world_f_A, &pos_A_ws, IVP_TRUE);
+		    }
+		}
+#else
 		if( quad_speed > (this->max_delta_speed*this->max_delta_speed)){
 		  invalid_count ++;
 		  // IVP_DOUBLE factor = this->max_delta_speed / delta_speed_vec.fast_real_length();
@@ -330,6 +358,7 @@ void IVP_Constraint_Solver_Car::do_simulation_controller( IVP_Event_Sim *es,
 		    break;
 		  }
 		}
+#endif
 	    }
 	}
 
@@ -343,7 +372,11 @@ void IVP_Constraint_Solver_Car::do_simulation_controller( IVP_Event_Sim *es,
 	(*input_vec_ptr++) = delta_speed_vec.k[z_idx];	
     }
 
+#ifdef BYTEMATCH_RETAIL
+    if(this->local_translation_in_use==IVP_TRUE){
+#else
     if(invalid_count == 0 && (this->local_translation_in_use==IVP_TRUE)){
+#endif
       // switch back to regular translation
 	psis_left_for_plan_B--;
 	if (psis_left_for_plan_B <0){
@@ -359,6 +392,7 @@ void IVP_Constraint_Solver_Car::do_simulation_controller( IVP_Event_Sim *es,
 	}
     }
     
+#ifndef BYTEMATCH_RETAIL
     if(init_local_translation==IVP_TRUE){
 	IVP_IF(1){
 	    printf("plan B activated.\n");
@@ -395,6 +429,7 @@ void IVP_Constraint_Solver_Car::do_simulation_controller( IVP_Event_Sim *es,
 	this->local_translation_in_use = IVP_TRUE;
 #endif
     }
+#endif
 
 
 #if 0
