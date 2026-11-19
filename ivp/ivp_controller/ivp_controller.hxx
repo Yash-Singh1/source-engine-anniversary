@@ -8,6 +8,9 @@
 #ifndef _IVP_ENVIRONMENT_INCLUDED
 #   include <ivp_environment.hxx>
 #endif
+#ifdef BYTEMATCH_RETAIL
+#include <stdlib.h>
+#endif
 
 /**********************************************************************************************
  *	Name:	  	IVP_CONTROLLER_PRIORITY   	
@@ -139,7 +142,12 @@ class IVP_Controller_Dependent: public IVP_Controller {
 
 class IVP_Standard_Gravity_Controller : public IVP_Controller_Independent {
 public:
+#ifdef BYTEMATCH_RETAIL
+    void *operator new(size_t size) { return malloc(size); }
+    void operator delete(void *p) { if (p) free(p); }
+#else
     IVP_Standard_Gravity_Controller() { ; };
+#endif
     IVP_U_Float_Point grav_vec;
 
     void set_standard_gravity(IVP_U_Point *new_gravity);

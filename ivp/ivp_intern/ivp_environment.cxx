@@ -176,7 +176,9 @@ IVP_Environment::IVP_Environment(IVP_Environment_Manager *manager,IVP_Applicatio
 	this->delete_debug_information = IVP_TRUE;
     }
 
+#ifndef BYTEMATCH_RETAIL
     integrated_energy_damp = IVP_Inline_Math::ivp_expf ( IVP_FLOAT(log(0.9f)) * get_delta_PSI_time() );
+#endif
 
     IVP_Mindist_Minimize_Solver::init_mms_function_table();
     IVP_Mindist_Event_Solver::init_mim_function_table();
@@ -210,6 +212,9 @@ void IVP_Environment::set_delta_PSI_time(IVP_DOUBLE psi_time){
     IVP_ASSERT(psi_time <= IVP_MAX_DELTA_PSI_TIME);
     delta_PSI_time = psi_time;
     inv_delta_PSI_time = 1.0f / delta_PSI_time;
+#ifdef BYTEMATCH_RETAIL
+    integrated_energy_damp = IVP_Inline_Math::ivp_expf ( IVP_FLOAT(log(0.9f)) * psi_time );
+#endif
 }
 
 IVP_Environment::~IVP_Environment(){

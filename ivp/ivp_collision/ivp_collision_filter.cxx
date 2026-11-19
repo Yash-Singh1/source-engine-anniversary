@@ -11,7 +11,9 @@
 #include <ivp_collision_filter.hxx>
 
 IVP_Collision_Filter::~IVP_Collision_Filter() {
+#ifndef BYTEMATCH_RETAIL
     return;
+#endif
 }
 
 // ***************************************************************************
@@ -153,9 +155,18 @@ void IVP_Collision_Filter_Exclusive_Pair::disable_collision_between_objects(IVP_
 
     generate_hash_entry(obj0, obj1, new_pair);
 
+#ifdef BYTEMATCH_RETAIL
+    if ( this->hash_table->find(new_pair) ) { // pair already stored?
+	delete new_pair;
+    }
+    else {
+	this->hash_table->add(new_pair);       // no, then store now...
+    }
+#else
     if ( !this->hash_table->find(new_pair) ) { // pair already stored?
 	this->hash_table->add(new_pair);       // no, then store now...
     }
+#endif
 
     return;
 }

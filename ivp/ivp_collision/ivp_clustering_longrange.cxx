@@ -113,6 +113,10 @@ IVP_OV_Node::~IVP_OV_Node()
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
+#ifdef BYTEMATCH_RETAIL
+IVP_DOUBLE IVP_OV_Tree_Manager::powerlist[81];
+
+#endif
 IVP_OV_Tree_Manager::IVP_OV_Tree_Manager()
 {
     

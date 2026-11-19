@@ -74,7 +74,11 @@ class IVP_OV_Tree_Manager
   friend class IVP_Ray_Solver_Group;
   friend class IVP_Sphere_Solver;
 
+#ifdef BYTEMATCH_RETAIL
+    static IVP_DOUBLE powerlist[81]; // 2 power -40   to  2 power 40
+#else
     IVP_DOUBLE powerlist[81]; // 2 power -40   to  2 power 40
+#endif
     
     IVP_OV_Node                   search_node;
     IVP_U_Vector<IVP_OV_Element> *collision_partners;
