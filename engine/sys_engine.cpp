@@ -35,7 +35,7 @@
 #include "vgui_baseui_interface.h"
 #endif
 #include "tier0/etwprof.h"
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && defined( POSIX )
 #include "../dedicated/console/TextConsoleUnix.h"
 #endif
 #line 38
@@ -167,7 +167,7 @@ private:
 	float			m_flMinFrameTime; // Expected duration of a frame, or zero if it is unlimited.
 	float			m_flLastRemainder; // 'Unused' time on the last render loop.
 	bool			m_bCatchupTime;
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && defined( POSIX )
 	CTextConsoleUnix m_TextConsole;
 #endif
 #line 161
@@ -214,7 +214,7 @@ void CEngine::Unload( void )
 
 	m_nDLLState			= DLL_INACTIVE;
 	m_nNextDLLState		= DLL_INACTIVE;
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && defined( POSIX )
 	m_TextConsole.ShutDown();
 #endif
 #line 204
@@ -242,7 +242,7 @@ bool CEngine::Load( bool bDedicated, const char *rootdir )
 
 		UpdateMaterialSystemConfig();
 	}
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && defined( POSIX )
 	m_TextConsole.Init();
 #endif
 #line 228
@@ -397,7 +397,14 @@ void CEngine::Frame( void )
 				// the other logical hyperthread core if the CPU supports it)
 				for (int i = 2000; i >= 0; --i)
 				{
+#ifdef POSIX
+#line 371
 					__asm( "pause" ); __asm( "pause" ); __asm( "pause" ); __asm( "pause" );
+#else
+#line 371
+					_asm { pause }; _asm { pause }; _asm { pause }; _asm { pause };
+#endif
+#line 372
 				}
 			}
 #else
@@ -509,7 +516,7 @@ void CEngine::Frame( void )
 
 	// Remember old time
 	m_flPreviousTime = m_flCurrentTime;
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && defined( POSIX )
 
 	// Process console input typed into the terminal we were launched from
 	char *pLine;
