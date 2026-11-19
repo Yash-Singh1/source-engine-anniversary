@@ -9,6 +9,7 @@ import sys
 
 from . import compare, x86
 from .compare import DIFFERS, EXACT, EXTRA, MASKED, MISSING
+from .winmap import EQUIV, FOLDED
 
 MATCHED = (EXACT, MASKED)
 
@@ -147,10 +148,14 @@ def _head(f):
     return f.data[:min([rel.offset for rel in f.relocs] + [4])]
 
 
-def _unique_match(cands, key, accept, tiebreak):
+def _unique_match(cands, key, accept, tiebreak, obj=None):
+    """The one candidate accept() takes; ties go to tiebreak(), then to the candidates from
+    object `obj` (the name map's object attribution)."""
     hits = [c for c in cands.get(key, ()) if accept(c)]
     if len(hits) > 1:
         hits = [c for c in hits if tiebreak(c)]
+    if len(hits) > 1 and obj:
+        hits = [c for c in hits if c.obj == obj]
     return hits[0] if len(hits) == 1 else None
 
 
@@ -190,6 +195,28 @@ def _target_code_agrees(r, o, k, of):
     va = (r.addr + k + 4 + x86.s32(r.data, k)) & 0xffffffff
     rf = r.module.function_at(va)
     return rf is not None and rf.addr == va and compare.compare(rf, of, False).status in MATCHED
+
+
+def _targets_verified(r, o, oby):
+    """Every call/jump of o leaving it is shown to enter the same function in retail: the
+    retail name at the target is ours (or folded with it), or the target is a function of
+    ours that matches the retail function there. Look-alikes paired without trusting names
+    (atexit stubs differ only in their targets) must not rest on unverifiable targets."""
+    rmod = r.module
+    for rel in o.relocs:
+        if rel.kind != 'pcrel' or rel.size != 4 or not rel.target or rel.offset + 4 > len(r.data):
+            continue
+        k = rel.offset
+        if not (k >= 1 and r.data[k - 1] in (0xe8, 0xe9)):
+            continue
+        va = (r.addr + k + 4 + x86.s32(r.data, k)) & 0xffffffff
+        names = set(rmod.resolve(va))
+        mine = {rel.target, EQUIV.get(rel.target)} | FOLDED.get(rel.target, set())
+        if names & mine:
+            continue
+        if not _target_code_agrees(r, o, k, oby.get(rel.target)):
+            return False
+    return True
 
 
 def _literals_agree(r, o):
@@ -288,19 +315,29 @@ def accept_misnamed(results, retail, spare, ours_funcs):
             return cands[0]
         return None
 
-    def spare_for(r, by_code=False):
-        """`by_code`: targets are checked by the code they point at, not by name."""
+    def spare_for(r, by_code=False, second=False):
+        """`by_code`: targets are checked by the code they point at, not by name. `second`:
+        a tie still open after that goes to our functions from the map's object, but only
+        among candidates whose every target is verified (look-alike atexit stubs differ in
+        nothing else)."""
         if len(r.data) < MISNAMED_MIN_SIZE or not _head(r):
             return None
+        free = lambda o: id(o) not in used and fits(r, o)
         if by_code:
-            return _unique_match(opool, _head(r), lambda o: id(o) not in used and fits(r, o)
-                                 and same_by_code(r, o), lambda o: False)
-        return _unique_match(opool, _head(r), lambda o: id(o) not in used and fits(r, o) and same(r, o),
-                             lambda o: _targets_agree(r, o, oby))
+            o = _unique_match(opool, _head(r), lambda o: free(o) and same_by_code(r, o), lambda o: _targets_agree(r, o, oby))
+            if o is None and second:
+                o = _unique_match(opool, _head(r), lambda o: free(o) and same_by_code(r, o)
+                                  and _targets_verified(r, o, oby), lambda o: True, r.obj)
+            return o
+        o = _unique_match(opool, _head(r), lambda o: free(o) and same(r, o), lambda o: _targets_agree(r, o, oby))
+        if o is None and second:
+            o = _unique_match(opool, _head(r), lambda o: free(o) and same(r, o) and _targets_verified(r, o, oby),
+                              lambda o: True, r.obj)
+        return o
 
     # second pass, on what the first leaves: a differing retail function that is one of our
     # unpaired functions (an atexit stub ??__F the map named after the destructor it calls),
-    # and missing ones known by name only
+    # and missing ones known by name only; ties go to the map's object
     for second in (False, True):
         for res in results:
             target_check = True
@@ -315,7 +352,7 @@ def accept_misnamed(results, retail, spare, ours_funcs):
                         continue
                 else:
                     r = res.retail
-                    o = spare_for(r, True) if r.addr not in claimed else None
+                    o = spare_for(r, True, True) if r.addr not in claimed else None
                     if o is None:
                         continue
                     target_check = False
@@ -324,10 +361,12 @@ def accept_misnamed(results, retail, spare, ours_funcs):
                     res.matched_as = o.name
             elif res.status == compare.MISSING and res.retail:
                 r = res.retail
-                o = same_name(r) if second else spare_for(r)
+                o = spare_for(r, False, second)
+                if o is None and second:
+                    target_check = False
+                    o = same_name(r) or spare_for(r, True, True)
                 if o is None:
                     continue
-                target_check = not second
                 used.add(id(o))
                 res.ours = o
                 res.matched_as = o.name
