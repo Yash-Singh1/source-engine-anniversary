@@ -209,7 +209,7 @@ void CBaseEntity::SetEffects( int nEffects )
 #if !defined( CLIENT_DLL )
 #ifdef HL2_EPISODIC
 		// Hack for now, to avoid player emitting radius with his flashlight
-		if ( !IsPlayer() )
+		if ( IsHL2Episodic() && !IsPlayer() )
 		{
 			if ( (nEffects & (EF_BRIGHTLIGHT|EF_DIMLIGHT)) && !(m_fEffects & (EF_BRIGHTLIGHT|EF_DIMLIGHT)) )
 			{
@@ -237,7 +237,7 @@ void CBaseEntity::AddEffects( int nEffects )
 { 
 #if !defined( CLIENT_DLL )
 #ifdef HL2_EPISODIC
-	if ( (nEffects & (EF_BRIGHTLIGHT|EF_DIMLIGHT)) && !(m_fEffects & (EF_BRIGHTLIGHT|EF_DIMLIGHT)) )
+	if ( IsHL2Episodic() && (nEffects & (EF_BRIGHTLIGHT|EF_DIMLIGHT)) && !(m_fEffects & (EF_BRIGHTLIGHT|EF_DIMLIGHT)) )
 	{
 		// Hack for now, to avoid player emitting radius with his flashlight
 		if ( !IsPlayer() )
@@ -1682,7 +1682,7 @@ void CBaseEntity::FireBullets( const FireBulletsInfo_t &info )
 #if defined( HL2_EPISODIC ) && defined( GAME_DLL )
 	// FIXME: We need to emulate this same behavior on the client as well -- jdw
 	// Also ignore a vehicle we're a passenger in
-	if ( MyCombatCharacterPointer() != NULL && MyCombatCharacterPointer()->IsInAVehicle() )
+	if ( IsHL2Episodic() && MyCombatCharacterPointer() != NULL && MyCombatCharacterPointer()->IsInAVehicle() )
 	{
 		traceFilter.AddEntityToIgnore( MyCombatCharacterPointer()->GetVehicleEntity() );
 	}

@@ -9,6 +9,7 @@
 #include "c_rumble.h"
 #include "rumble_shared.h"
 #include "inputsystem/iinputsystem.h"
+#include "iinput.h"
 
 ConVar cl_rumblescale( "cl_rumblescale", "1.0", FCVAR_ARCHIVE | FCVAR_ARCHIVE_XBOX, "Scale sensitivity of rumble effects (0 to 1.0)" ); 
 ConVar cl_debugrumble( "cl_debugrumble", "0", FCVAR_ARCHIVE, "Turn on rumble debugging spew" );
@@ -545,6 +546,13 @@ void CRumbleEffects::StartEffect( unsigned char effectIndex, unsigned char rumbl
 		return;
 	}
 
+	static ConVarRef joy_vibration( "joy_vibration" );
+	if ( !input->ControllerModeActive() )
+		return;
+
+	if ( joy_vibration.IsValid() && !joy_vibration.GetBool() )
+		return;
+
 	int priority = 1;
 	RumbleChannel_t *pChannel = NULL;
 
@@ -773,7 +781,8 @@ void CRumbleEffects::UpdateEffects( float curtime )
 	fLeftMotor *= cl_rumblescale.GetFloat();
 	fRightMotor *= cl_rumblescale.GetFloat();
 
-	if( engine->IsPaused() )
+	static ConVarRef joy_vibration( "joy_vibration" );
+	if( engine->IsPaused() || !input->ControllerModeActive() || ( joy_vibration.IsValid() && !joy_vibration.GetBool() ) )
 	{
 		// Send nothing when paused.
 		fLeftMotor = 0.0f;

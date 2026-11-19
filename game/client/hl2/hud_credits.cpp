@@ -141,7 +141,7 @@ void CHudCredits::PrepareCredits( const char *pKeyName )
 	Clear();
 
 	KeyValues *pKV= new KeyValues( "CreditsFile" );
-	if ( !pKV->LoadFromFile( filesystem, CREDITS_FILE, "MOD" ) )
+	if ( !pKV->LoadFromFile( filesystem, CREDITS_FILE, "MOD" ) NOV2024_ONLY( && !pKV->LoadFromFile( filesystem, CREDITS_FILE, "GAME" ) ) )
 	{
 		pKV->deleteThis();
 
@@ -528,7 +528,8 @@ void CHudCredits::DrawIntroCreditsName( void )
 		wchar_t unicode[256];
 		g_pVGuiLocalize->ConvertANSIToUnicode( pCredit->szCreditName, unicode, sizeof( unicode ) );
 
-		surface()->DrawSetTextPos( XRES( pCredit->flXPos ), YRES( pCredit->flYPos ) );
+		int iY = YRES( pCredit->flYPos ) + ( i % 3 ) * ( surface()->GetFontTall( m_hTFont ) + YRES( m_flSeparation ) );
+		surface()->DrawSetTextPos( XRES( pCredit->flXPos ), iY );
 		surface()->DrawUnicodeString( unicode );
 		
 		if ( m_flLogoTime > gpGlobals->curtime )
@@ -682,7 +683,7 @@ void CHudCredits::PrepareIntroCredits( void )
 		vgui::HScheme scheme = vgui::scheme()->GetScheme( "ClientScheme" );
 		vgui::HFont m_hTFont = vgui::scheme()->GetIScheme(scheme)->GetFont( pCredit->szFontName, true );
 
-		pCredit->flYPos = m_flY + ( iSlot * surface()->GetFontTall ( m_hTFont ) );
+		pCredit->flYPos = m_flY;
 		pCredit->flXPos = m_flX;
 				
 		if ( i < 3 )

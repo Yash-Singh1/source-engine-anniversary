@@ -220,6 +220,8 @@ void C_BaseCombatWeapon::Redraw()
 	// ammo drawing has been moved into hud_ammo.cpp
 }
 
+ConVar hud_invert_zoom_unzoomed_crosshair_colors( "hud_invert_zoom_unzoomed_crosshair_colors", "0", FCVAR_ARCHIVE, "There was a bug where the wrong crosshair (the zoomed crosshairs) was chosen when playing at FOVs != 90. If you prefer the look of this, this convar is for you." );
+
 //-----------------------------------------------------------------------------
 // Purpose: Draw the weapon's crosshair
 //-----------------------------------------------------------------------------
@@ -265,7 +267,7 @@ void C_BaseCombatWeapon::DrawCrosshair()
 	// Find out if this weapon's auto-aimed onto a target
 	bool bOnTarget = ( m_iState == WEAPON_IS_ONTARGET );
 	
-	if ( player->GetFOV() >= 90 )
+	if ( ( player->GetFOV() >= player->GetDefaultFOV() ) != hud_invert_zoom_unzoomed_crosshair_colors.GetBool() )
 	{ 
 		// normal crosshairs
 		if ( bOnTarget && GetWpnData().iconAutoaim )

@@ -653,7 +653,10 @@ CBaseHudChat::CBaseHudChat( const char *pElementName )
 	}
 
 	m_pChatHistory = new CHudChatHistory( this, "HudChatHistory" );
+#ifndef BYTEMATCH_RETAIL
 	m_pFilterPanel = NULL;
+#endif
+#line 657
 
 	CreateChatLines();
 	CreateChatInputLine();
@@ -1082,7 +1085,12 @@ void CBaseHudChat::OnTick( void )
 	if ( line )
 	{
 		vgui::HFont font = line->GetFont();
+#ifdef BYTEMATCH_RETAIL
+		m_iFontHeight = vgui::surface()->GetFontTall( font ) + 2;
+#else
 		m_iFontHeight = vgui::scheme()->GetProportionalScaledValue(vgui::surface()->GetFontTall( font )) + 2;
+#endif
+#line 1086
 
 		// Put input area at bottom
 

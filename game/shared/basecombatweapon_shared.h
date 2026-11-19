@@ -315,7 +315,7 @@ public:
 
 	CBaseCombatCharacter	*GetOwner() const;
 	void					SetOwner( CBaseCombatCharacter *owner );
-	virtual void			OnPickedUp( CBaseCombatCharacter *pNewOwner );
+	virtual void			OnPickedUp( CBaseCombatCharacter *pNewOwner ); NOV2024_ONLY( void OnInventoryChanged( void ); )
 
 	virtual void			AddViewmodelBob( CBaseViewModel *viewmodel, Vector &origin, QAngle &angles ) {};
 	virtual float			CalcViewmodelBob( void ) { return 0.0f; };

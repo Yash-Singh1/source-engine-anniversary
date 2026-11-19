@@ -528,7 +528,12 @@ void CAI_NetworkManager::LoadNetworkGraph( void )
 	
 
 
+#ifdef BYTEMATCH_RETAIL
+	if ( !bHaveAIN && !filesystem->ReadFile( szNrpFilename, "GAME", buf ) )
+#else
 	if ( !bHaveAIN && !filesystem->ReadFile( szNrpFilename, "game", buf ) )
+#endif
+#line 532
 	{
 		DevWarning( 2, "Couldn't read %s!\n", szNrpFilename );
 		return;
@@ -574,7 +579,7 @@ void CAI_NetworkManager::LoadNetworkGraph( void )
 		// hack for shipped ep1 and hl2 maps
 		// they were rebuilt a week after they were actually shipped so allow the slightly
 		// older node graphs to load for these maps
-		if ( !V_stricmp( szLoweredGameDir, "hl2" ) || !V_stricmp( szLoweredGameDir, "episodic" ) )
+		if ( NOV2024_ONLY( !V_stricmp( szLoweredGameDir, "hl2" ) || !V_stricmp( szLoweredGameDir, "episodic" ) || !V_stricmp( szLoweredGameDir, "hl2_complete" ) || !V_stricmp( szLoweredGameDir, "lostcoast" ) ) OCT2024_ONLY( false ) )
 		{
 			bOK = true;
 		}
@@ -983,7 +988,7 @@ bool CAI_NetworkManager::IsAIFileCurrent ( const char *szMapName )
 		Q_strncpy( szLoweredGameDir, pGameDir, sizeof( szLoweredGameDir ) );
 		Q_strlower( szLoweredGameDir );
 		
-		if ( !V_stricmp( szLoweredGameDir, "hl2" ) || !V_stricmp( szLoweredGameDir, "episodic" ) || !V_stricmp( szLoweredGameDir, "ep2" ) || !V_stricmp( szLoweredGameDir, "portal" ) || !V_stricmp( szLoweredGameDir, "lostcoast" )  || !V_stricmp( szLoweredGameDir, "hl1" ) )
+		if ( !V_stricmp( szLoweredGameDir, "hl2_complete" ) || !V_stricmp( szLoweredGameDir, "hl2" ) || !V_stricmp( szLoweredGameDir, "episodic" ) || !V_stricmp( szLoweredGameDir, "ep2" ) || !V_stricmp( szLoweredGameDir, "portal" ) || !V_stricmp( szLoweredGameDir, "lostcoast" )  || !V_stricmp( szLoweredGameDir, "hl1" ) )
 		{
 			// we shipped good node graphs for our games
 			return true;
@@ -1115,7 +1120,7 @@ void CAI_NetworkManager::DelayedInit( void )
 			g_pAINetworkManager->SetNextThink( gpGlobals->curtime + 1 );
 			return;
 		}	
-
+		if ( CommandLine()->FindParm( "-buildnodegraph_scripted" ) ) engine->ServerCommand( "quit\n" );
 	}
 
 	// --------------------------------------------
