@@ -79,7 +79,11 @@ IVP_Contact_Point *IVP_Mindist::try_to_generate_managed_friction(IVP_Friction_Sy
 	if(gen_success!=IVP_TRUE) {
 	    *associated_fs=fr_info0->l_friction_system;
 	    *having_new=IVP_FALSE;
+#ifdef BYTEMATCH_RETAIL
+	    if(call_recalc_svals && friction_dist) {
+#else
 	    if(call_recalc_svals) {
+#endif
 		friction_dist->recalc_friction_s_vals();
 		friction_dist->read_materials_for_contact_situation(friction_dist->tmp_contact_info);		
 	    }

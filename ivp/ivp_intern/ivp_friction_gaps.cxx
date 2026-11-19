@@ -1258,10 +1258,22 @@ void IVP_Friction_System::undo_complex_pushes() {
 
 IVP_DOUBLE IVP_Friction_System::get_max_energy_gain() {
     IVP_DOUBLE sum_gain=0.0f;
+#ifdef BYTEMATCH_RETAIL
+    IVP_FLOAT gravity = l_environment->gravity_scalar;
+    IVP_FLOAT min_mass = l_environment->get_anomaly_limits()->min_friction_mass;
+#endif
     for (int k = cores_of_friction_system.len()-1; k>=0; k--){
 	IVP_Core *my_core = cores_of_friction_system.element_at(k);
 	if(my_core->physical_unmoveable==IVP_FALSE) {
+#ifdef BYTEMATCH_RETAIL
+	    // retail clamps the mass with min_friction_mass as both bounds
+	    IVP_FLOAT mass = my_core->get_mass();
+	    mass = ( mass < min_mass ) ? min_mass : mass;
+	    mass = ( mass < min_mass ) ? mass : min_mass;
+	    IVP_DOUBLE force_gravity = mass * gravity;
+#else
 	    IVP_DOUBLE force_gravity=my_core->get_mass()*9.81f; //@@TL #+# oh oh 
+#endif
 	    // allow lift of 10cm
 	    sum_gain+=force_gravity*0.1f;
 	}
