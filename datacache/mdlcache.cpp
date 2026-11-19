@@ -3266,7 +3266,12 @@ bool CMDLCache::SetAsyncLoad( MDLCacheDataType_t type, bool bAsync )
 //-----------------------------------------------------------------------------
 vertexFileHeader_t *CMDLCache::BuildAndCacheVertexData( studiohdr_t *pStudioHdr, vertexFileHeader_t *pRawVvdHdr  )
 {
+#ifdef BYTEMATCH_RETAIL
+	MDLHandle_t	handle = (MDLHandle_t)(int)pStudioHdr->VirtualModel()&0xffff;
+#else
 	MDLHandle_t	handle = VoidPtrToMDLHandle( pStudioHdr->VirtualModel() );
+#endif
+#line 3258
 	vertexFileHeader_t *pVvdHdr;
 
 	MdlCacheMsg( "MDLCache: Load VVD for %s\n", pStudioHdr->pszName() );

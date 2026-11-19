@@ -660,6 +660,130 @@ unsigned char *ImgUtl_ReadJPEGAsRGBA( const char *jpegPath, int &width, int &hei
 #endif
 }
 
+#if HAVE_JPEG
+class CJpegSourceMgr : public jpeg_source_mgr
+{
+public:
+	CJpegSourceMgr( CUtlBuffer &srcBuffer )
+	{
+		this->init_source = &CJpegSourceMgr::imp_init_source;
+		this->fill_input_buffer = &CJpegSourceMgr::imp_fill_input_buffer;
+		this->skip_input_data = &CJpegSourceMgr::imp_skip_input_data;
+		this->resync_to_restart = &CJpegSourceMgr::imp_resync_to_restart;
+		this->term_source = &CJpegSourceMgr::imp_term_source;
+
+		this->next_input_byte = (const JOCTET *)srcBuffer.Base();
+		this->bytes_in_buffer = srcBuffer.Size();
+	}
+
+	static void imp_init_source( j_decompress_ptr cinfo )
+	{
+	}
+
+	static boolean imp_fill_input_buffer( j_decompress_ptr cinfo )
+	{
+		Assert( false ); // They should never need to call these functions since we give them all the data up front.
+		return 0;
+	}
+
+	static void imp_skip_input_data( j_decompress_ptr cinfo, long num_bytes )
+	{
+		AssertOnce( false ); // They should never need to call these functions since we give them all the data up front.
+	}
+
+	static boolean imp_resync_to_restart( j_decompress_ptr cinfo, int desired )
+	{
+		Assert( false ); // They should never need to call these functions since we give them all the data up front.
+		return false;
+	}
+
+	static void imp_term_source( j_decompress_ptr cinfo )
+	{
+	}
+};
+
+ConversionErrorType ImgUtl_ReadJPEGAsRGBAFromBuffer( CUtlBuffer &srcBuffer, CUtlBuffer &dstBuffer, int &width, int &height )
+{
+	CJpegSourceMgr src( srcBuffer );
+	struct jpeg_decompress_struct jpegInfo;
+	struct ValveJpegErrorHandler_t jerr;
+	JSAMPROW row_pointer[1];
+	int cur_row = 0;
+
+	memset( &jpegInfo, 0, sizeof( jpegInfo ) );
+	jpegInfo.err = jpeg_std_error( &jerr.m_Base );
+	jpegInfo.err->error_exit = &ValveJpegErrorHandler;
+	jpeg_create_decompress( &jpegInfo );
+
+	if ( setjmp( jerr.m_ErrorContext ) )
+	{
+		jpeg_destroy_decompress( &jpegInfo );
+		return CE_ERROR_PARSING_SOURCE;
+	}
+
+	jpegInfo.src = &src;
+	if ( jpeg_read_header( &jpegInfo, TRUE ) != JPEG_HEADER_OK )
+		return CE_ERROR_PARSING_SOURCE;
+
+	if ( !jpeg_start_decompress( &jpegInfo ) )
+	{
+		jpeg_destroy_decompress( &jpegInfo );
+		return CE_ERROR_PARSING_SOURCE;
+	}
+
+	// We only support 24-bit JPEG's
+	if ( jpegInfo.out_color_space != JCS_RGB || jpegInfo.output_components != 3 )
+	{
+		jpeg_destroy_decompress( &jpegInfo );
+		return CE_SOURCE_FILE_SIZE_NOT_SUPPORTED;
+	}
+
+	int row_stride = jpegInfo.output_width * 4;
+	int image_height = jpegInfo.image_height;
+	int image_width = jpegInfo.image_width;
+	int mem_required = image_height * row_stride;
+
+	dstBuffer.EnsureCapacity( mem_required );
+	unsigned char *buf = (unsigned char *)dstBuffer.PeekPut();
+
+	bool working = true;
+	while ( working && ( jpegInfo.output_scanline < jpegInfo.output_height ) )
+	{
+		unsigned char *pRow = &( buf[cur_row * row_stride] );
+		row_pointer[0] = pRow;
+		if ( !jpeg_read_scanlines( &jpegInfo, row_pointer, 1 ) )
+		{
+			working = false;
+		}
+
+		// Expand the row RGB -> RGBA
+		for ( int x = image_width-1 ; x >= 0 ; --x )
+		{
+			pRow[x*4+3] = 0xff;
+			pRow[x*4+2] = pRow[x*3+2];
+			pRow[x*4+1] = pRow[x*3+1];
+			pRow[x*4] = pRow[x*3];
+		}
+
+		++cur_row;
+	}
+
+	jpeg_destroy_decompress( &jpegInfo );
+
+	if ( !working )
+	{
+		dstBuffer.Purge();
+		return CE_ERROR_PARSING_SOURCE;
+	}
+
+	dstBuffer.SeekPut( CUtlBuffer::SEEK_CURRENT, mem_required );
+	width = image_width;
+	height = image_height;
+	return CE_SUCCESS;
+}
+#endif
+#line 658
+
 #if HAVE_PNG
 static void ReadPNGData( png_structp png_ptr, png_bytep outBytes, png_size_t byteCountToRead )
 {

@@ -761,3 +761,19 @@ header changes listed in lane-mod-filesystem2.md applied (needed.patch in that f
 | `CUtlSortVector<void*, CQueuedLoader::CResourceNameLessFunc, CUtlVector<void*, CUtlMemory<void*, int>>>::CompareHelper(void* const*, void* const*)` | masked | masked | IQueuedLoader/CQueuedLoader layout (headers lane) |
 | `CTSList<FileJob_t*>::~CTSList()` | masked | masked |  |
 | `__GLOBAL__I_a` | masked | masked |  |
+
+## Identity lane round 6
+
+- `CBaseFileSystem::CreateDirHierarchy`: `int len = (int)strlen( ... ) + 1;`. With the
+  signed add clang folds the loop guard to `strlen() >= 0` (`js`), as retail does.
+- `CBaseFileSystem::GetSearchPaths2` (not in the 2018 leak): `++nCount` before
+  `AddToTail`, and the pack name through `m_ZipName.String()`; retail calls
+  `CUtlString::Get() const` there.
+- `AddMapPackFile`: retail opens the .bsp only when no VPK handle was found, then
+  tests `fp` / `fhandle` / else warns (the handle's address escapes, so the second
+  `fhandle` test survives after a failed open), and names the pack `fp ? fullpath :
+  pPath` (a bool phi in retail). Now the same size as retail; one `xor esi, esi` is
+  scheduled after `CPackedStore::ReadData` where retail has it before. The `__text`
+  section now has retail's size.
+- Still differing: `TrackedFile_t::ProcessFileRead` (register allocation on the
+  `int64` positions).

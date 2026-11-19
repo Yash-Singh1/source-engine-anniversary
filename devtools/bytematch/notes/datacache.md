@@ -334,5 +334,15 @@ included): 401/406 at bytematch 64c10856, 402/406 now, 404/406 with the
   same `mempool.h` alignment argument for `DataCacheItem_t`.
 - `CDatadescGeneratedNameHolder::~CDatadescGeneratedNameHolder` (studiobyteswap):
   `public/datamap.h` deletes with `delete[]`, SDK 2013 with `delete`.
-- `CMDLCache::BuildAndCacheVertexData`: still differs, register allocation only.
-  The `min()` here already expands to the ternary macro; not the cause. Unresolved.
+- `CMDLCache::BuildAndCacheVertexData`: register allocation came from the handle.
+  Retail computes it as the leak does, `(MDLHandle_t)(int)ptr & 0xffff`, not through
+  `VoidPtrToMDLHandle` (gated: the `int` cast doesn't compile on 64-bit).
+
+Identity round 6: datacache is byte-identical. The rest was function order in
+`studio_virtualmodel.o`: retail creates `CUtlMemory<unsigned short>::Grow` right after
+`CUtlMemory<virtualgeneric_t>::Grow`, ours last. Our `public/tier1/stringpool.h` (the
+CS:GO templated `CCountedStringPoolBase<T>`) defines its `<unsigned short>` and
+`<unsigned int>` `SaveToBuffer`/`RestoreFromBuffer` specializations inline. Being
+ordinary functions, they ODR-use `CUtlVector<unsigned short>::SetCount` early in every
+file that includes `utlsymbol.h`, and clang-600 emits early-queued instantiations
+last. SDK 2013 has no such functions and nothing calls them; retail mode leaves them out.

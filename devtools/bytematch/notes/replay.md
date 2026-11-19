@@ -59,16 +59,22 @@ replay is only built by `--retail-osx32`, so these edits are not gated.
 
 ## Whole-file identity
 
-`identity.py replay` leaves 10 bytes of `__text` and 2 bytes of the symbol
-table, both from one cause. Retail's `imageutils.o` had another coalesced
-function after `___clang_call_terminate`, so that atom is 0x20 bytes ending
-in a 10-byte nop (N_FUN size 0x20), where ours is the section's last atom
-(0x16, ld64's 0x90 fill). Engine and the clients show the same 0x20 atom.
-The function is dead in every retail module. Clang creates
-`___clang_call_terminate` while emitting the deferred `~Bitmap_t` body, so the
-missing function came from a deferred inline body after that. Our candidates
-are all inlined at -O2; the likeliest is `~CUtlBuffer`, whose only dead-everywhere
-caller is `ImgUtl_WriteRGBToJPEG`.
+replay is byte-identical since round 6 of the identity lane (`identical.json`).
+
+The last difference was in `imageutils.o`: retail's `___clang_call_terminate`
+atom is 0x20 bytes ending in a 10-byte nop, so a coalesced function followed
+it, and in the clients and GameUI the except-table labels after
+`ImgUtl_ReadVTFAsRGBA` are one higher (3/8/33 against 3/7/32). Both come from
+`ImgUtl_ReadJPEGAsRGBAFromBuffer` (name not recovered). The Linux `replay.so`
+(gcc, no section GC) keeps it right after `ImgUtl_ReadJPEGAsRGBA`, with no
+caller: it decodes a JPEG held in one `CUtlBuffer` into RGBA in another, through
+a `jpeg_source_mgr` whose five callbacks are COMDAT inline functions (empty,
+return 0, empty, return 0, empty: `FileSystemOpenDlg.cpp`'s `CJpegSourceMgr`
+with its Asserts compiled out). On OSX the extern function is emitted in
+`__text` between `ReadJPEGAsRGBA` and `ReadPNGAsRGBA` and dead-stripped. The
+callbacks are static members installed by an inline constructor, so clang
+creates them in the deferred-emission pass after `~Bitmap_t` has created
+`___clang_call_terminate`; they land after it in `__textcoal_nt`, dead too.
 
 Fixed in round 5 of the identity lane:
 - libpng against zlib 1.2.5's headers (`build-thirdparty.py`).

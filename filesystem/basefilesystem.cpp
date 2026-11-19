@@ -1788,26 +1788,26 @@ void CBaseFileSystem::AddMapPackFile( const char *pPath, const char *pPathID, Se
 		int nBytesRead;
 
 #if defined( SUPPORT_PACKED_STORE )
-		if ( fhandle )
+		if ( !fhandle )
+#endif
+			fp = Trace_FOpen( fullpath, "rb", 0, NULL );
+		if ( fp )
 		{
-			// Get the .bsp file header
+			memset( &header, 0, sizeof(dheader_t) );
+			nBytesRead = FS_fread( &header, sizeof( header ), fp );
+		}
+#if defined( SUPPORT_PACKED_STORE )
+		else if ( fhandle )
+		{
 			memset( &header, 0, sizeof(dheader_t) );
 			nBytesRead = fhandle.Read( &header, sizeof( header ) );
 		}
-		else
 #endif
+		else
 		{
-			fp = Trace_FOpen( fullpath, "rb", 0, NULL );
-			if ( !fp )
-			{
-				// Couldn't open it
-				Warning( FILESYSTEM_WARNING, "Couldn't open .bsp %s for embedded pack file check\n", fullpath );
-				return;
-			}
-
-			// Get the .bsp file header
-			memset( &header, 0, sizeof(dheader_t) );
-			nBytesRead = FS_fread( &header, sizeof( header ), fp );
+			// Couldn't open it
+			Warning( FILESYSTEM_WARNING, "Couldn't open .bsp %s for embedded pack file check\n", fullpath );
+			return;
 		}
 		m_Stats.nBytesRead += nBytesRead;
 		m_Stats.nReads++;
@@ -1849,7 +1849,7 @@ void CBaseFileSystem::AddMapPackFile( const char *pPath, const char *pPathID, Se
 
 		MEM_ALLOC_CREDIT();
 #if defined( SUPPORT_PACKED_STORE )
-		pf->m_ZipName = fhandle ? pPath : fullpath;
+		pf->m_ZipName = fp ? fullpath : pPath;
 #else
 		pf->m_ZipName = fullpath;
 #endif
@@ -4676,7 +4676,7 @@ int CBaseFileSystem::GetSearchPaths2( const char *pathID, bool bGetPackFiles, CU
 		CUtlString sName;
 		if ( pSearchPath->GetPackFile() )
 		{
-			sName += pSearchPath->GetPackFile()->m_ZipName.Get();
+			sName += pSearchPath->GetPackFile()->m_ZipName.String();
 			sName += CORRECT_PATH_SEPARATOR_S;
 		}
 		#ifdef SUPPORT_PACKED_STORE
@@ -4690,8 +4690,8 @@ int CBaseFileSystem::GetSearchPaths2( const char *pathID, bool bGetPackFiles, CU
 			sName = pSearchPath->GetPathString();
 		}
 
-		searchPaths.AddToTail( sName );
 		++nCount;
+		searchPaths.AddToTail( sName );
 	}
 
 	return nCount;
@@ -5097,7 +5097,7 @@ void CBaseFileSystem::CreateDirHierarchy( const char *pRelativePathT, const char
 	Q_FixSlashes( szScratchFileName );
 #endif
 
-	int len = strlen( szScratchFileName ) + 1;
+	int len = (int)strlen( szScratchFileName ) + 1;
 	char *end = szScratchFileName + len;
 	char *s = szScratchFileName;
 	while( s < end )
