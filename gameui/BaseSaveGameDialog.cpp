@@ -477,9 +477,9 @@ void CBaseSaveGameDialog::OnKeyCodePressed( vgui::KeyCode code )
 	else if ( nButtonCode == KEY_XSTICK1_DOWN || 
 			  nButtonCode == KEY_XSTICK2_DOWN || 
 			  nButtonCode == KEY_XBUTTON_DOWN || 
-			  nButtonCode == KEY_DOWN ||
 			  nButtonCode == STEAMCONTROLLER_DPAD_DOWN ||
-			  nButtonCode == STEAMCONTROLLER_LEFT_PAD_DOWN )
+			  nButtonCode == STEAMCONTROLLER_LEFT_PAD_DOWN ||
+			  nButtonCode == KEY_DOWN )
 	{
 		if ( m_pGameList->GetItemCount() )
 		{
@@ -516,9 +516,9 @@ void CBaseSaveGameDialog::OnKeyCodePressed( vgui::KeyCode code )
 	else if ( nButtonCode == KEY_XSTICK1_UP || 
 			  nButtonCode == KEY_XSTICK2_UP || 
 			  nButtonCode == KEY_XBUTTON_UP || 
-			  nButtonCode == KEY_UP ||
 			  nButtonCode == STEAMCONTROLLER_DPAD_UP ||
-			  nButtonCode == STEAMCONTROLLER_LEFT_PAD_UP )
+			  nButtonCode == STEAMCONTROLLER_LEFT_PAD_UP ||
+			  nButtonCode == KEY_UP )
 	{
 		if ( m_pGameList->GetItemCount() )
 		{

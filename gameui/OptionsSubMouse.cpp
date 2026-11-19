@@ -182,8 +182,8 @@ void COptionsSubMouse::OnResetData()
 
 	if ( m_bAutoaimVisible )
 	{
-		ConVarRef m_autoaim_mode( "m_autoaim_mode" );
-		int nAutoaimMode = m_autoaim_mode.IsValid() ? m_autoaim_mode.GetInt() : 0;
+		int nAutoaimMode = 0; ConVarRef m_autoaim_mode( "m_autoaim_mode" );
+		if ( m_autoaim_mode.IsValid() ) nAutoaimMode = m_autoaim_mode.GetInt();
 		m_pAutoaimCombo->ActivateItem( nAutoaimMode );
 		if ( nAutoaimMode > 0 )
 		{
