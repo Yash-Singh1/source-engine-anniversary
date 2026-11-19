@@ -3996,7 +3996,7 @@ char *CBaseFileSystem::ReadLine( char *pOutput, int maxChars, FileHandle_t file 
 // Input  : *pFileName - 
 // Output : long
 //-----------------------------------------------------------------------------
-time_t CBaseFileSystem::GetFileTime( const char *pFileName, const char *pPathID )
+long CBaseFileSystem::GetFileTime( const char *pFileName, const char *pPathID )
 {
 	VPROF_BUDGET( "CBaseFileSystem::GetFileTime", VPROF_BUDGETGROUP_OTHER_FILESYSTEM );
 
@@ -4039,7 +4039,7 @@ time_t CBaseFileSystem::GetFileTime( const char *pFileName, const char *pPathID 
 	return (time_t)0L;
 }
 
-time_t CBaseFileSystem::GetPathTime( const char *pFileName, const char *pPathID )
+long CBaseFileSystem::GetPathTime( const char *pFileName, const char *pPathID )
 {
 	VPROF_BUDGET( "CBaseFileSystem::GetFileTime", VPROF_BUDGETGROUP_OTHER_FILESYSTEM );
 
@@ -4052,7 +4052,7 @@ time_t CBaseFileSystem::GetPathTime( const char *pFileName, const char *pPathID 
 	Q_strlower( tempFileName );
 #endif
 
-	time_t pathTime = 0L;
+	long pathTime = 0L;
 	for ( CSearchPath *pSearchPath = iter.GetFirst(); pSearchPath != NULL; pSearchPath = iter.GetNext() )
 	{
 		time_t ft = FastFileTime( pSearchPath, tempFileName );
@@ -4828,7 +4828,7 @@ void CBaseFileSystem::SetWhitelistSpewFlags( int flags )
 //			maxCharsIncludingTerminator - 
 //			fileTime - 
 //-----------------------------------------------------------------------------
-void CBaseFileSystem::FileTimeToString( char *pString, int maxCharsIncludingTerminator, time_t fileTime )
+void CBaseFileSystem::FileTimeToString( char *pString, int maxCharsIncludingTerminator, long fileTime )
 {
 	if ( IsX360() )
 	{

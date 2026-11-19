@@ -158,7 +158,7 @@ public:
 #ifdef BYTEMATCH_RETAIL
 	void	CheckDiskInfo( bool force_rebuild, long cacheFileTime = 0L );
 #else
-	void	CheckDiskInfo( bool force_rebuild, time_t cacheFileTime = 0L );
+	void	CheckDiskInfo( bool force_rebuild, long cacheFileTime = 0L );
 #endif
 #line 159
 
@@ -650,7 +650,7 @@ bool CUtlCachedFileData<T>::Init()
 #ifdef BYTEMATCH_RETAIL
 	long fileTime = g_pFullFileSystem->GetFileTime( m_sRepositoryFileName, "MOD" );
 #else
-	time_t fileTime = g_pFullFileSystem->GetFileTime( m_sRepositoryFileName, "MOD" );
+	long fileTime = g_pFullFileSystem->GetFileTime( m_sRepositoryFileName, "MOD" );
 #endif
 #line 640
 	int size = g_pFullFileSystem->Size( fh );
@@ -932,7 +932,7 @@ template <class T>
 #ifdef BYTEMATCH_RETAIL
 void	CUtlCachedFileData<T>::CheckDiskInfo( bool forcerebuild, long cacheFileTime )
 #else
-void	CUtlCachedFileData<T>::CheckDiskInfo( bool forcerebuild, time_t cacheFileTime )
+void	CUtlCachedFileData<T>::CheckDiskInfo( bool forcerebuild, long cacheFileTime )
 #endif
 #line 912
 {
@@ -987,7 +987,7 @@ void	CUtlCachedFileData<T>::CheckDiskInfo( bool forcerebuild, time_t cacheFileTi
 #ifdef BYTEMATCH_RETAIL
 			long pathTime = g_pFullFileSystem->GetPathTime( fn, "GAME" );
 #else
-			time_t pathTime = g_pFullFileSystem->GetPathTime( fn, "GAME" );
+			long pathTime = g_pFullFileSystem->GetPathTime( fn, "GAME" );
 #endif
 #line 962
 			bCheck = (pathTime > cacheFileTime) ? true : false;

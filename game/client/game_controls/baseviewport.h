@@ -88,10 +88,10 @@ public:
 public: // IGameEventListener:
 	virtual void FireGameEvent( IGameEvent * event);
 
-
+	bool LoadHudAnimations( void );
 protected:
 
-	bool LoadHudAnimations( void );
+
 
 #ifndef _XBOX
 	class CBackGroundPanel : public vgui::Frame

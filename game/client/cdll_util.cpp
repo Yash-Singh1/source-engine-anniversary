@@ -33,6 +33,13 @@
 #include "physics_shared.h"
 #endif
 #include "tier0/icommandline.h"
+#ifdef _WIN32
+#include "iworkshop.h"
+#include "iclientmode.h"
+#include "game_controls/baseviewport.h"
+#include "particles/particles.h"
+#endif
+#line 36
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -78,6 +85,10 @@ void FlushClientContent( const CCommand &args )
 {
 	g_pFullFileSystem->PushNoFinishAllOnSearchPaths();
 	g_pFullFileSystem->UpdateSearchPathsForCurrentGameExpansion();
+#ifdef _WIN32
+	workshop->Unknown11( true );
+#endif
+#line 81
 	g_pMaterialSystem->UncacheAllMaterials();
 	g_pVGuiSurface->ResetFontCaches();
 	physprops->PurgeAllSurfaceData();
@@ -98,6 +109,23 @@ void FlushClientContent( const CCommand &args )
 	szExpansion[sizeof( szExpansion ) - 1] = 0;
 
 	const char *pszGameDir = CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) );
+#ifdef _WIN32
+	if ( !V_stricmp( pszGameDir, "hl2_complete" ) )
+	{
+		g_pVGuiLocalize->AddFile( "hl2/resource/hl2_%language%.txt", "BASE_PATH" );
+		g_pVGuiLocalize->AddFile( "episodic/resource/episodic_%language%.txt", "BASE_PATH" );
+		g_pVGuiLocalize->AddFile( "ep2/resource/ep2_%language%.txt", "BASE_PATH" );
+		g_pVGuiLocalize->AddFile( "lostcoast/resource/lostcoast_%language%.txt", "BASE_PATH" );
+	}
+	else
+	{
+		char szFile[MAX_PATH];
+		V_snprintf( szFile, sizeof( szFile ) - 1, "resource/%s_%%language%%.txt", szExpansion );
+		szFile[sizeof( szFile ) - 1] = 0;
+		g_pVGuiLocalize->AddFile( szFile );
+	}
+#else
+#line 101
 	if ( V_stricmp( pszGameDir, "hl2_complete" ) )
 	{
 		char szFile[MAX_PATH];
@@ -112,8 +140,33 @@ void FlushClientContent( const CCommand &args )
 		g_pVGuiLocalize->AddFile( "ep2/resource/ep2_%language%.txt", "BASE_PATH" );
 		g_pVGuiLocalize->AddFile( "lostcoast/resource/lostcoast_%language%.txt", "BASE_PATH" );
 	}
+#endif
+#line 115
 
+#ifdef _WIN32
+	CUtlVector< PublishedFileId_t > items;
+	PublishedFileId_t nCampaignID = 0;
+	workshop->GetCurrentCampaign( items, nCampaignID );
+	bool bHasWorkshopContent = items.Count() != 0 || nCampaignID != 0;
+	if ( bHasWorkshopContent || s_bHadWorkshopContent )
+	{
+		vgui::scheme()->ReloadSchemes();
+		vgui::scheme()->UpdateBorders();
+		g_pParticleSystemMgr->UncacheAllParticleSystems();
+		gHUD.Shutdown();
+		g_pClientMode->InitViewport();
+		gHUD.Init();
+		g_pClientMode->Shutdown();
+		g_pClientMode->Init();
+		static_cast< CBaseViewport * >( gViewPortInterface )->LoadHudAnimations();
+		gHUD.RefreshHudTextures();
+		engine->ExecuteClientCmd( "hud_reloadscheme\n" );
+	}
+	s_bHadWorkshopContent = bHasWorkshopContent;
+#else
 	s_bHadWorkshopContent = false;
+#endif
+#line 117
 	ReloadParticleEffects();
 }
 
