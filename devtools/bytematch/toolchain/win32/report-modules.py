@@ -27,7 +27,8 @@ sys.path.insert(0, os.path.join(TREE, "devtools", "bytematch"))
 from bytematch import winmap  # noqa: E402
 
 DEPOTS = "/Volumes/Expansion/mac-ports/hl2-anniversary-depot/depots"
-MAPS = "/Volumes/Storage/sco/byte-match-survey/symbols/out"
+# symbol-port maps: the 16 modules beyond the survey's eight, then the survey's
+MAPS = ["/Volumes/Storage/sco/byte-match-survey/win32-maps", "/Volumes/Storage/sco/byte-match-survey/symbols/out"]
 MATCHED = ("exact", "matches-after-masking")
 BUILD = "19307283"
 # manifest module -> (macOS depot, path in it, file name in a --retail-osx32 build)
@@ -131,7 +132,7 @@ def main():
     ap.add_argument("--modules", help="comma-separated manifest modules (default: every one built)")
     ap.add_argument("--top", type=int, default=15)
     a = ap.parse_args()
-    maps = a.maps or [MAPS]
+    maps = a.maps or MAPS
     games = dict(g.split("=", 1) for g in a.mac_game_build)
     os.makedirs(a.out, exist_ok=True)
     man = json.load(open(os.path.join(TREE, "devtools", "bytematch", "manifests", "retail-win32.json")))["modules"]
