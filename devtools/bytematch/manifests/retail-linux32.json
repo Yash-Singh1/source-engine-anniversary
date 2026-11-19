@@ -1122,8 +1122,6 @@
     "_POSIX",
     "DLLNAME=engine",
     "BINK_VIDEO",
-    "GL_GLEXT_PROTOTYPES",
-    "DX_TO_GL_ABSTRACTION",
     "USE_SDL",
     "DEV_BUILD",
     "FRAME_POINTER_OMISSION_DISABLED",
@@ -1152,7 +1150,16 @@
     "NO_HOOK_MALLOC",
     "NO_MALLOC_OVERRIDE"
    ],
-   "gl": true,
+   "file_defines": {
+    "engine/sys_getmodes.cpp": [
+     "GL_GLEXT_PROTOTYPES",
+     "DX_TO_GL_ABSTRACTION"
+    ],
+    "engine/sys_mainwind.cpp": [
+     "GL_GLEXT_PROTOTYPES",
+     "DX_TO_GL_ABSTRACTION"
+    ]
+   },
    "missing": [
     "engine/audio/audio_pch.cpp",
     "engine/sys_linuxwind.cpp"

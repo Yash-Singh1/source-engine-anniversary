@@ -41,6 +41,9 @@ ENGINE_MODULES = ['tier0', 'vstdlib', 'appframework', 'vpklib', 'utils/bzip2', '
 	'engine/voice_codecs/speex', 'launcher_main', 'vphysics', 'materialsystem/stdshaders', 'replay',
 	'utils/bsppack', 'utils/bugreporter_filequeue', 'utils/bugreporter_public', 'vguimatsurface',
 	'gameui', 'engine', 'togl', 'materialsystem', 'launcher', 'materialsystem/shaderapidx9']
+# Valve's projects that compile their C sources as C++ (bzip2.vpc; retail's BZ2_compressBlock
+# matches only as g++ output, as on macOS).
+COMPILE_C_AS_CXX = ['bzip2']
 # Retail Linux file names where they aren't the macOS manifest key's basename + .so.
 RETAIL_NAMES = {'hl2_osx': 'hl2_linux'}
 # makefile_base_posix.mak's PATHWRAP, in LIB_START_SHLIB/LIB_START_EXE: file APIs go through
@@ -315,10 +318,18 @@ def retail_linux32_defines(self):
 	tag = ['--bm-proj=' + proj]
 	self.env.append_value('CFLAGS', tag)
 	self.env.append_value('CXXFLAGS', tag)
+	per_file = e.get('file_defines', {}) if e else {}
+	as_cxx = getattr(self, 'name', None) in COMPILE_C_AS_CXX
 	for t in getattr(self, 'compiled_tasks', []):
-		t.env.DEFINES = defs
+		extra = per_file.get(t.inputs[0].path_from(self.bld.srcnode).replace(os.sep, '/'))
+		if extra:
+			t.env = t.env.derive()
+		t.env.DEFINES = defs + [d for d in (extra or []) if d not in defs]
 		t.env.CFLAGS = self.env.CFLAGS
 		t.env.CXXFLAGS = self.env.CXXFLAGS
+		if as_cxx and t.__class__.__name__ == 'c':
+			t.env.CC = self.env.CXX
+			t.env.CFLAGS = list(self.env.CXXFLAGS) + ['-xc++']
 
 @feature('cshlib', 'cxxshlib', 'cprogram', 'cxxprogram')
 @before_method('apply_link')

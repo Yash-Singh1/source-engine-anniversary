@@ -2117,12 +2117,7 @@ bool V_ExtractFilePath (const char *path, char *dest, int destSize )
 		src--;
 	}
 
-#ifdef BYTEMATCH_RETAIL_LINUX
-	int copysize = min( src - path, destSize - 1 );
-#else
-	int copysize = min( (int)((ptrdiff_t)src - (ptrdiff_t)path), destSize - 1 );
-#endif
-#line 2118
+	int copysize = min( (int)( src - path ), destSize - 1 );
 	memcpy( dest, path, copysize );
 	dest[copysize] = 0;
 

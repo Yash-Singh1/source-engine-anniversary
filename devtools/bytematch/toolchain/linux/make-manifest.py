@@ -48,10 +48,15 @@ ENGINE_MODULES = ['bin/libtier0', 'bin/libvstdlib', 'bin/engine', 'bin/filesyste
                   'bin/video_services', 'bin/vaudio_speex', 'bin/vtex_dll', 'bin/bsppack',
                   'bin/bugreporter_filequeue', 'bin/bugreporter_public']
 
-# Modules built with $GL on Linux: libtogl and those linking it (retail NEEDED), and the engine,
-# whose SDL window and video-mode code compiles on Linux only with DX_TO_GL_ABSTRACTION in this
-# tree. The others have no DX_TO_GL_ABSTRACTION (see NOT_LINUX).
-GL_MODULES = {'bin/libtogl', 'bin/shaderapidx9', 'bin/launcher', 'bin/engine'}
+# Modules built with $GL on Linux: libtogl and those linking it (retail NEEDED). The others go
+# through DXVK and have no DX_TO_GL_ABSTRACTION (see NOT_LINUX): without it the engine's decal
+# and overlay code (vertex colors, imesh.h's OPENGL_SWAP_COLORS) matches retail.
+GL_MODULES = {'bin/libtogl', 'bin/shaderapidx9', 'bin/launcher'}
+# Files of non-GL modules that this tree compiles on Linux only with the GL defines (their SDL
+# window and video-mode code is under DX_TO_GL_ABSTRACTION; Valve's 2025 code has some other
+# condition there).
+GL_FILES = {'bin/engine': ['engine/sys_getmodes.cpp', 'engine/sys_mainwind.cpp']}
+GL_DEFINES = ['GL_GLEXT_PROTOTYPES', 'DX_TO_GL_ABSTRACTION']
 
 # Archive members to leave out on Linux, beyond the VPC differences. mathlib/vector.cpp isn't
 # among retail's libmathlib.a members (retail-osx32.json) and defines vec3_origin again (and a
@@ -179,6 +184,8 @@ def main():
         mods[key] = entry(m['defines']['vpc_files'][0].split(':', 1)[1], args.hl2src, key in GL_MODULES)
         if key in ENGINE_MODULES:
             engine_files(key, m, mods[key], args.hl2src, alias)
+        if key in GL_FILES:
+            mods[key]['file_defines'] = dict((f, GL_DEFINES) for f in GL_FILES[key])
         for a in m['archives']:
             name = a['path'].split('/')[-1]
             if name in archives:
