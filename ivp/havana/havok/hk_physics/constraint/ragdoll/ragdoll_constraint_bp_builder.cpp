@@ -30,8 +30,13 @@ hk_result hk_Ragdoll_Constraint_BP_Builder::initialize_from_limited_ball_socket_
 	{ // set all limits to 0
 		for (int i = 0; i<3; i++)
 		{
+#ifdef BYTEMATCH_RETAIL
+			r.m_axisMap[i] = i;
+			r.m_limits[i].set_limits( 0.0f, 0.0f);
+#else
 			r.m_limits[i].set_limits( 0.0f, 0.0f);
 			r.m_axisMap[i] = i;
+#endif
 		}
 	}
 
@@ -164,7 +169,11 @@ hk_result hk_Ragdoll_Constraint_BP_Builder::initialize_from_limited_ball_socket_
 				r.m_transform_os_ks[0].get_column(2) = m0.get_column( u_axis );
 				r.m_transform_os_ks[1].get_column(2) = m1.get_column( u_axis );
 
+#ifdef BYTEMATCH_RETAIL
+				r.m_limits[ HK_LIMIT_TWIST ].set_limits( -bp->m_angular_limits[axis_of_min_inertia].m_max, -bp->m_angular_limits[axis_of_min_inertia].m_min );
+#else
 				r.m_limits[ HK_LIMIT_TWIST ].set_limits( bp->m_angular_limits[axis_of_min_inertia].m_min, bp->m_angular_limits[axis_of_min_inertia].m_max );
+#endif
 				r.m_limits[ HK_LIMIT_CONE ]. set_limits( - limit_diff[u_axis] * 0.5f, limit_diff[u_axis] * 0.5f);
 				r.m_limits[ HK_LIMIT_PLANES].set_limits( bp->m_angular_limits[l_axis].m_min, bp->m_angular_limits[l_axis].m_max );
 
