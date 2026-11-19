@@ -1059,8 +1059,8 @@ public:
 	operator FLOAT* ();
 	float& operator()( int row, int column );
 	const float& operator()( int row, int column ) const;
+	bool operator != ( CONST D3DXMATRIX& src ) const;
 };
-
 typedef DWORD D3DCOLOR;
 
 typedef enum _D3DSAMPLERSTATETYPE

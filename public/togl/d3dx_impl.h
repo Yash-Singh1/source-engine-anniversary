@@ -44,7 +44,7 @@ inline const float& D3DXMATRIX::operator()( int row, int column ) const
 {
 	return m[row][column];
 }
-
+inline bool D3DXMATRIX::operator != ( CONST D3DXMATRIX& src ) const { return V_memcmp( (void*)this, (void*)&src, sizeof(this) ) != 0; }
 // ------------------------------------------------------------------------------------------------------------------------------ //
 // D3DXPLANE operators
 // ------------------------------------------------------------------------------------------------------------------------------ //
@@ -166,7 +166,7 @@ struct ID3DXMatrixStack
 		return m_refcount[0];
 	}
 
-	HRESULT	Create( void )
+	FORCEINLINE HRESULT	Create( void )
 	{
 		m_stack.EnsureCapacity( 16 );	// 1KB ish
 		m_stack.AddToTail();

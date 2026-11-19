@@ -568,7 +568,10 @@ void ReleaseAllVertexDecl()
 	int i = s_VertexDeclDict.FirstInorder();
 	while ( i != s_VertexDeclDict.InvalidIndex() )
 	{
+#ifndef BYTEMATCH_RETAIL
 		if ( s_VertexDeclDict[i].m_pDecl )
+#endif
+#line 572
 			s_VertexDeclDict[i].m_pDecl->Release();
 		i = s_VertexDeclDict.NextInorder( i );
 	}

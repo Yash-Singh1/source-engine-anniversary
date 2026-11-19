@@ -190,7 +190,7 @@ public:
 				return;
 		
 			// Otherwise copy the inputBuffer to the outputBuffer:
-			memcpy( outputBuffer, inputBuffer, count * sizeof( T ) );
+			if ( outputBuffer != inputBuffer ) memcpy( outputBuffer, inputBuffer, count * sizeof( T ) );
 			return;
 
 		}

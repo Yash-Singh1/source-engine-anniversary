@@ -5664,6 +5664,7 @@ static const char *pszReplacementForceCopy[] =
 	NULL
 };
 
+#ifndef BYTEMATCH_RETAIL
 void CMaterialSystem::LoadReplacementMaterials()
 {
 	const char* cLocation = "materials";
@@ -5673,6 +5674,8 @@ void CMaterialSystem::LoadReplacementMaterials()
 		InitReplacementsFromFile( cLocation );
 	}
 }
+#endif
+#line 5150
 
 void CMaterialSystem::ScanDirForReplacements( const char *pszPathName )
 {
@@ -5720,6 +5723,7 @@ void CMaterialSystem::ScanDirForReplacements( const char *pszPathName )
 #line 5189
 }
 
+#ifndef BYTEMATCH_RETAIL
 void CMaterialSystem::InitReplacementsFromFile( const char *pszPathName )
 {
 	CUtlVector<char*> replacementFiles;
@@ -5744,6 +5748,8 @@ void CMaterialSystem::InitReplacementsFromFile( const char *pszPathName )
 
 	replacementFiles.PurgeAndDeleteElements();
 }
+#endif
+#line 5215
 
 void CMaterialSystem::PreloadReplacements( )
 {
@@ -5788,7 +5794,12 @@ IMaterialProxy *CMaterialSystem::DetermineProxyReplacements( IMaterial *pMateria
 	char szCheckPath[ MAX_PATH ], szCheckName[ MAX_PATH ], szLastPath[ MAX_PATH ];
 	const char *pszShadername = pFallbackKeyValues->GetName();
 
+#ifdef BYTEMATCH_RETAIL
+	strcpy( szLastPath, pszMaterialName );
+#else
 	V_strcpy_safe( szLastPath, pszMaterialName );
+#endif
+#line 5255
 	int	nLength = strlen( szLastPath ) - strlen( REPLACEMENT_NAME );
 	if ( nLength > 0 && strcmpi( &szLastPath[ nLength ], REPLACEMENT_NAME  ) == 0 )
 	{
@@ -5806,7 +5817,12 @@ IMaterialProxy *CMaterialSystem::DetermineProxyReplacements( IMaterial *pMateria
 			pszRemoveSlashes++;
 		}
 
+#ifdef BYTEMATCH_RETAIL
+		sprintf( szCheckName, "materials/%s", pszRemoveSlashes );
+#else
 		V_sprintf_safe( szCheckName, "materials/%s", pszRemoveSlashes );
+#endif
+#line 5273
 		int nIndex = m_Replacements.Find( szCheckName );
 
 		if ( m_Replacements.IsValidIndex( nIndex ) )
@@ -6034,6 +6050,7 @@ CON_COMMAND( mat_hdr_enabled, "Report if HDR is enabled for debugging" )
 }
 
 
+#ifndef BYTEMATCH_RETAIL
 static int ReadListFromFile(CUtlVector<char*>* outReplacementMaterials, const char *pszPathName)
 {
 	Assert(outReplacementMaterials != NULL);
@@ -6049,3 +6066,5 @@ static int ReadListFromFile(CUtlVector<char*>* outReplacementMaterials, const ch
 
 	return outReplacementMaterials->Size();
 }
+#endif
+#line 5512

@@ -318,12 +318,24 @@ inline CVertexBuffer::CVertexBuffer(IDirect3DDevice9 * pD3D, VertexFormat_t fmt,
 	if ( !m_bDynamic )
 	{
 		char name[256];
+#ifdef BYTEMATCH_RETAIL
+		V_strcpy( name, "TexGroup_global_" );
+		V_strcat( name, pTextureBudgetName, sizeof(name) );
+#else
 		V_strcpy_safe( name, "TexGroup_global_" );
 		V_strcat_safe( name, pTextureBudgetName, sizeof(name) );
+#endif
+#line 323
 		m_pGlobalCounter = g_VProfCurrentProfile.FindOrCreateCounter( name, COUNTER_GROUP_TEXTURE_GLOBAL );
 
+#ifdef BYTEMATCH_RETAIL
+		V_strcpy( name, "TexGroup_frame_" );
+		V_strcat( name, pTextureBudgetName, sizeof(name) );
+#else
 		V_strcpy_safe( name, "TexGroup_frame_" );
 		V_strcat_safe( name, pTextureBudgetName, sizeof(name) );
+#endif
+#line 327
 		m_pFrameCounter = g_VProfCurrentProfile.FindOrCreateCounter( name, COUNTER_GROUP_TEXTURE_PER_FRAME );
 	}
 	else

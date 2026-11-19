@@ -450,8 +450,11 @@ struct Texture_t
 		m_CountIndex = 0;
 		m_nTimesBoundMax = 0;
 		m_nTimesBoundThisFrame = 0;
+#ifndef BYTEMATCH_RETAIL
 		m_pTexture = NULL;
 		m_ppTexture = NULL;
+#endif
+#line 455
 		m_ImageFormat = IMAGE_FORMAT_RGBA8888;
 		m_pTextureGroupCounterGlobal = NULL;
 		m_pTextureGroupCounterFrame = NULL;
@@ -6111,10 +6114,10 @@ static ConVar r_radialfog_force( "r_radialfog_force", "-1", 0, "Force-on toggle 
 int CShaderAPIDx8::GetPixelFogCombo1( bool bSupportsRadial )
 {
 	int nCombo = GetPixelFogCombo();
-	if ( nCombo == 0 && bSupportsRadial )
+	if ( bSupportsRadial && nCombo == 0 )
 	{
-		int nForce = r_radialfog_force.GetInt();
-		bool bRadial = ( nForce == -1 ) ? m_DynamicState.m_bFogRadial : ( nForce != 0 );
+		bool bRadial = m_DynamicState.m_bFogRadial;
+		int nForce = r_radialfog_force.GetInt(); if ( nForce != -1 ) bRadial = ( nForce != 0 );
 		if ( bRadial )
 			return 2;
 	}
@@ -6325,6 +6328,10 @@ void CShaderAPIDx8::GetSceneFogColor( unsigned char *r, unsigned char *g, unsign
 }
 
 
+#ifdef BYTEMATCH_RETAIL
+ConVar r_fog_force_gamma( "r_fog_force_gamma_override", "0", FCVAR_CHEAT, "Is your fog issue caused by a mismatch between the game and driver expecting different sRGB-ness for the fog color? Find out today! Needs map restart. 0 = default 1 = force sRGB fog color 2 = force linear space fog color" );
+#endif
+#line 6328
 //-----------------------------------------------------------------------------
 // Gamma correction of fog color, or not...
 //-----------------------------------------------------------------------------
@@ -6340,6 +6347,14 @@ D3DCOLOR CShaderAPIDx8::ComputeGammaCorrectedFogColor( unsigned char r, unsigned
 						( bSRGBWritesEnabled && ( g_pHardwareConfig->Caps().m_bFogColorSpecifiedInLinearSpace || g_pHardwareConfig->GetHDRType() == HDR_TYPE_FLOAT ) );
 
 	bool bScaleFogByToneMappingScale = g_pHardwareConfig->GetHDRType() == HDR_TYPE_INTEGER;
+#ifdef BYTEMATCH_RETAIL
+	int nForceGamma = r_fog_force_gamma.GetInt();
+	if ( nForceGamma == 1 )
+		bLinearSpace = false;
+	else if ( nForceGamma == 2 )
+		bLinearSpace = true;
+#endif
+#line 6343
 
 	float fr = ( r / 255.0f );
 	float fg = ( g / 255.0f );
@@ -7380,7 +7395,12 @@ void CShaderAPIDx8::CreateTextures(
 	Texture_t **arrTxp = ( Texture_t ** ) stackalloc( count * sizeof( Texture_t * ) );
 
 	unsigned short usSetFlags = 0;
+#ifdef BYTEMATCH_RETAIL
+	usSetFlags |= ( IsOpenGL() || ( creationFlags & (TEXTURE_CREATE_DYNAMIC | TEXTURE_CREATE_MANAGED) ) ) ? Texture_t::IS_LOCKABLE : 0;
+#else
 	usSetFlags |= ( IsPosix() || ( creationFlags & (TEXTURE_CREATE_DYNAMIC | TEXTURE_CREATE_MANAGED) ) ) ? Texture_t::IS_LOCKABLE : 0;
+#endif
+#line 7384
 	usSetFlags |= ( creationFlags & TEXTURE_CREATE_VERTEXTEXTURE) ? Texture_t::IS_VERTEX_TEXTURE : 0;
 #if defined( _X360 )
 	usSetFlags |= ( creationFlags & TEXTURE_CREATE_RENDERTARGET ) ? Texture_t::IS_RENDER_TARGET : 0;

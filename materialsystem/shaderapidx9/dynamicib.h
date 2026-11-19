@@ -64,7 +64,7 @@ public:
 		return retVal;
 	}
 #endif
-#line 63
+#line 56
 
 	LPDIRECT3DINDEXBUFFER GetInterface() const 
 	{ 
@@ -232,7 +232,7 @@ private :
 #ifndef BYTEMATCH_RETAIL
 	CInterlockedInt	m_nReferenceCount;
 #endif
-#line 228
+#line 219
 
 #ifdef _DEBUG
 	static int		s_BufferCount;
@@ -260,7 +260,7 @@ private:
 	// Must use reference counting functions above
 	~CIndexBuffer();
 #endif
-#line 253
+#line 241
 };
 
 #if defined( _X360 )
@@ -294,7 +294,7 @@ inline CIndexBuffer::CIndexBuffer( IDirect3DDevice9 *pD3D, int count,
 #ifndef BYTEMATCH_RETAIL
 		, m_nReferenceCount( 0 ) 
 #endif
-#line 284
+#line 271
 {
 	// For write-combining, ensure we always have locked memory aligned to 4-byte boundaries
 	count = ALIGN_VALUE( count, 2 );

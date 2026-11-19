@@ -13,7 +13,7 @@
 #include "inputsystem/ButtonCode.h"
 
 #include "togl/rendermechanism.h"
-
+#include "materialsystem/imaterialsystem.h"
 #include "tier0/vprof_telemetry.h"
 #include "tier0/icommandline.h"
 
@@ -343,7 +343,7 @@ private:
 #endif
 
 #if defined( OSX )
-	// bool					m_leopard;					// true if <10.6.3 and we have to do extra work for fullscreen handling
+	bool					m_leopard;					// true if <10.6.3 and we have to do extra work for fullscreen handling
 	bool					m_force_vsync;				// true if 10.6.4 + bad NV driver
 #endif
 
@@ -521,6 +521,10 @@ InitReturnVal_t CSDLMgr::Init()
 			Error( "SDL_Init(SDL_INIT_VIDEO) failed: %s", SDL_GetError() );
 
 #if defined( DX_TO_GL_ABSTRACTION )
+#ifdef BYTEMATCH_RETAIL
+		if ( GetCommandLineRenderBackend() == RENDER_BACKEND_TOGL )
+#endif
+		{
 		if ( CommandLine()->FindParm( "-gl_debug" ) )
 		{
 			SDL_GL_SetAttribute( SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG );
@@ -532,7 +536,9 @@ InitReturnVal_t CSDLMgr::Init()
 		if (SDL_GL_LoadLibrary(NULL) == -1)
 #endif
 			Error( "SDL_GL_LoadLibrary(NULL) failed: %s", SDL_GetError() );
+		}
 #endif
+#line 536
 	}
 
 	fprintf(stderr, "SDL video target is '%s'\n", SDL_GetCurrentVideoDriver());
@@ -717,6 +723,7 @@ void CSDLMgr::Shutdown()
 {
 	SDLAPP_FUNC;
 
+#ifndef BYTEMATCH_RETAIL
 	if (gGL && m_readFBO)
 #ifdef TOGLES
 		gGL->glDeleteFramebuffers(1, &m_readFBO);
@@ -724,6 +731,8 @@ void CSDLMgr::Shutdown()
 		gGL->glDeleteFramebuffersEXT(1, &m_readFBO);
 #endif
 	m_readFBO = 0;
+#endif
+#line 727
 
 	if ( m_Window )
 	{
@@ -814,10 +823,16 @@ bool CSDLMgr::CreateHiddenGameWindow( const char *pTitle, int width, int height 
 
 #if defined( DX_TO_GL_ABSTRACTION )
 	// Set up GL context...
+#ifdef BYTEMATCH_RETAIL
+	if ( GetCommandLineRenderBackend() == RENDER_BACKEND_TOGL )
+#endif
+	{
 	const int *attrib = m_pixelFormatAttribs;
 	for (int i = 0; i < m_pixelFormatAttribCount; i++, attrib += 2)
 		SDL_GL_SetAttribute((SDL_GLattr) attrib[0], attrib[1]);
+	}
 #endif
+#line 821
 
 	// no window yet? Create one now!
 	m_nWindowRefCount = 1;
@@ -826,8 +841,16 @@ bool CSDLMgr::CreateHiddenGameWindow( const char *pTitle, int width, int height 
 	int y = SDL_WINDOWPOS_CENTERED;
 	int flags = SDL_WINDOW_HIDDEN;
 #if defined( DX_TO_GL_ABSTRACTION )
+#ifdef BYTEMATCH_RETAIL
+	if ( GetCommandLineRenderBackend() == RENDER_BACKEND_TOGL )
+		flags |= SDL_WINDOW_OPENGL;
+	else if ( GetCommandLineRenderBackend() == RENDER_BACKEND_VULKAN )
+		flags |= SDL_WINDOW_VULKAN;
+#else
 	flags |= SDL_WINDOW_OPENGL;
 #endif
+#endif
+#line 831
 	m_Window = SDL_CreateWindow( pTitle, x, y, width, height, flags );
 
 	if (m_Window == NULL)
@@ -842,13 +865,21 @@ bool CSDLMgr::CreateHiddenGameWindow( const char *pTitle, int width, int height 
 	//- enforce minimum system requirements for multiplayer branch (CSS / DOD / TF2) : no GMA950, X3100, or NV G7x.
 	if (!CommandLine()->FindParm("-glmnosystemcheck"))	// escape hatch
 	{
+#ifndef BYTEMATCH_RETAIL
 		if ( rendererInfo.m_osComboVersion < 0x0A0607 )
 		{
 			Error( "This game requires OS X version 10.6.7 or higher" );
 			exit(1);
 		}
+#endif
+#line 850
 		// forbidden chipsets
+#ifdef BYTEMATCH_RETAIL
+		if ( rendererInfo.m_intel95x || rendererInfo.m_intel3100 || rendererInfo.m_nvG7x )
+#else
 		if ( rendererInfo.m_atiR5xx || rendererInfo.m_intel95x || rendererInfo.m_intel3100 || rendererInfo.m_nvG7x )
+#endif
+#line 852
 		{
 			Error( "This game does not support this type of graphics processor" );
 			exit(1);
@@ -857,6 +888,11 @@ bool CSDLMgr::CreateHiddenGameWindow( const char *pTitle, int width, int height 
 #endif
 
 #if defined( DX_TO_GL_ABSTRACTION )
+#ifdef BYTEMATCH_RETAIL
+	if ( GetCommandLineRenderBackend() == RENDER_BACKEND_TOGL )
+	{
+#endif
+#line 860
 	m_GLContext = SDL_GL_CreateContext(m_Window);
 	if (m_GLContext == NULL)
 		Error( "Failed to create GL context: %s", SDL_GetError() );
@@ -879,11 +915,18 @@ bool CSDLMgr::CreateHiddenGameWindow( const char *pTitle, int width, int height 
 	static CDynamicFunctionOpenGL< true, const GLubyte *( APIENTRY *)(GLenum name), const GLubyte * > glGetString("glGetString");
 	static CDynamicFunctionOpenGL< true, GLvoid ( APIENTRY *)(GLenum pname, GLint *params), GLvoid > glGetIntegerv("glGetIntegerv");
 
-#ifdef DBGFLAG_ASSERT
+#if defined( DBGFLAG_ASSERT ) || defined( BYTEMATCH_RETAIL )
 	const char *pszString = ( const char * )glGetString(GL_VENDOR);
 	pszString = ( const char * )glGetString(GL_RENDERER);
 	pszString = ( const char * )glGetString(GL_VERSION);
 	pszString = ( const char * )glGetString(GL_EXTENSIONS);
+#ifdef BYTEMATCH_RETAIL
+	GLint nCurrentProfile = 0;
+	glGetIntegerv( GL_CONTEXT_PROFILE_MASK, &nCurrentProfile );
+	if ( !( nCurrentProfile & GL_CONTEXT_COMPATIBILITY_PROFILE_BIT ) )
+		Warning( "SDL failed to create GL compatibility profile (whichProfile=%x!\n", nCurrentProfile );
+#endif
+#line 887
 
 	// If we specified -gl_debug, make sure the extension string is present now.
 	if ( CommandLine()->FindParm( "-gl_debug" ) )
@@ -933,6 +976,10 @@ bool CSDLMgr::CreateHiddenGameWindow( const char *pTitle, int width, int height 
 	SDL_GL_SwapWindow(m_Window);
 	gGL->glClear(GL_COLOR_BUFFER_BIT);
 	SDL_GL_SwapWindow(m_Window);
+#ifdef BYTEMATCH_RETAIL
+	}
+#endif
+#line 936
 #endif // DX_TO_GL_ABSTRACTION
 
 	m_WindowWidth = width;
@@ -1606,9 +1653,15 @@ void CSDLMgr::SizeWindow( int width, int tall )
 	SDL_SetWindowSize( m_Window, width, tall );
 
 #if defined( DX_TO_GL_ABSTRACTION )
+#ifdef BYTEMATCH_RETAIL
+	if ( IsOpenGL() )
+#endif
+	{
 	gGL->glViewport(0, 0, (GLsizei) width, (GLsizei) tall);
 	gGL->glScissor( 0,0, (GLsizei) width, (GLsizei) tall );
+	}
 #endif
+#line 1612
 
 	// If the Window hasn't been shown yet, show it now.
 	if ( !m_WindowShownAndRaised )
@@ -2222,6 +2275,10 @@ void GLMDisplayMode::Dump( int which )
 			   which, m_info.m_modePixelWidth, m_info.m_modePixelHeight, m_info.m_modeRefreshHz ));
 }
 
+#if defined( BYTEMATCH_RETAIL ) && ( !defined( OSX ) || defined( TOGL_OSX ) )
+#include "glmdisplaydb_linuxwin.inl"
+#endif
+#line 2225
 GLMDisplayDB *CSDLMgr::GetDisplayDB( void )
 {
 	SDLAPP_FUNC;
@@ -2236,7 +2293,7 @@ GLMDisplayDB *CSDLMgr::GetDisplayDB( void )
 			GLMRendererInfoFields	info;
 			m_displayDB->GetRendererInfo( 0, &info );
 
-			// m_leopard = (info.m_osComboVersion < 0x000A0600);
+			m_leopard = (info.m_osComboVersion < 0x000A0600);
 
 			m_force_vsync = info.m_badDriver1064NV;		// just force it if it's the bum NV driver
 		}
@@ -2245,7 +2302,7 @@ GLMDisplayDB *CSDLMgr::GetDisplayDB( void )
 	return m_displayDB;
 }
 
-#if !defined( OSX ) || defined( TOGL_OSX )
+#if ( !defined( OSX ) || defined( TOGL_OSX ) ) && !defined( BYTEMATCH_RETAIL )
 #include "glmdisplaydb_linuxwin.inl"
 #endif
 

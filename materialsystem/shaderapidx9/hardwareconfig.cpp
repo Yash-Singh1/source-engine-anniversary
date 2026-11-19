@@ -266,6 +266,10 @@ void CHardwareConfig::ForceCapsToDXLevel( HardwareCaps_t *pCaps, int nDxLevel, c
 		pCaps->m_bSupportsShadowDepthTextures = false;
 		pCaps->m_bSupportsFetch4 = false;
 		pCaps->m_bSupportsBorderColor = false;
+#ifdef BYTEMATCH_RETAIL
+		pCaps->m_bSupportsNormalMapCompression = false;
+#endif
+#line 269
 		// m_bSoftwareVertexProcessing
 		pCaps->m_nVertexTextureCount = 0;
 		pCaps->m_nMaxVertexTextureDimension = 0;
@@ -283,7 +287,10 @@ void CHardwareConfig::ForceCapsToDXLevel( HardwareCaps_t *pCaps, int nDxLevel, c
 		// m_nGammaControlPointCount
 		pCaps->m_MaxVertexShader30InstructionSlots = 0;
 		pCaps->m_MaxPixelShader30InstructionSlots = 0;
+#ifndef BYTEMATCH_RETAIL
 		pCaps->m_bCanStretchRectFromTextures = false;
+#endif
+#line 287
 		break;
 
 	case 70:
@@ -348,6 +355,10 @@ void CHardwareConfig::ForceCapsToDXLevel( HardwareCaps_t *pCaps, int nDxLevel, c
 		pCaps->m_bSupportsShadowDepthTextures = false;
 		pCaps->m_bSupportsFetch4 = false;
 		pCaps->m_bSupportsBorderColor = false;
+#ifdef BYTEMATCH_RETAIL
+		pCaps->m_bSupportsNormalMapCompression = false;
+#endif
+#line 351
 		// m_bSoftwareVertexProcessing
 		pCaps->m_nVertexTextureCount = 0;
 		pCaps->m_nMaxVertexTextureDimension = 0;
@@ -357,7 +368,10 @@ void CHardwareConfig::ForceCapsToDXLevel( HardwareCaps_t *pCaps, int nDxLevel, c
 		pCaps->m_bSupportsFloat32RenderTargets = false;
 		pCaps->m_bDX10Card = false;
 		pCaps->m_bDX10Blending = false;
+#ifndef BYTEMATCH_RETAIL
 		pCaps->m_bCanStretchRectFromTextures = false;
+#endif
+#line 361
 		break;
 
 	case 80:
@@ -431,6 +445,10 @@ void CHardwareConfig::ForceCapsToDXLevel( HardwareCaps_t *pCaps, int nDxLevel, c
 		pCaps->m_bSupportsGLMixedSizeTargets = false;
 		pCaps->m_bSupportsFetch4 = false;
 		pCaps->m_bSupportsBorderColor = false;
+#ifdef BYTEMATCH_RETAIL
+		pCaps->m_bSupportsNormalMapCompression = false;
+#endif
+#line 434
 		pCaps->m_bSupportsFloat32RenderTargets = false;
 		// ImageFormat m_ShadowDepthTextureFormat;
 		// ImageFormat m_NullTextureFormat;
@@ -444,7 +462,10 @@ void CHardwareConfig::ForceCapsToDXLevel( HardwareCaps_t *pCaps, int nDxLevel, c
 		pCaps->m_MaxPixelShader30InstructionSlots = 0;
 		pCaps->m_bDX10Card = false;
 		pCaps->m_bDX10Blending = false;
+#ifndef BYTEMATCH_RETAIL
 		pCaps->m_bCanStretchRectFromTextures = false;
+#endif
+#line 448
 		break;
 
 	case 81:
@@ -509,6 +530,10 @@ void CHardwareConfig::ForceCapsToDXLevel( HardwareCaps_t *pCaps, int nDxLevel, c
 		pCaps->m_bSupportsShadowDepthTextures = false;
 		pCaps->m_bSupportsFetch4 = false;
 		pCaps->m_bSupportsBorderColor = false;
+#ifdef BYTEMATCH_RETAIL
+		pCaps->m_bSupportsNormalMapCompression = false;
+#endif
+#line 512
 		// m_bSoftwareVertexProcessing
 		pCaps->m_nVertexTextureCount = 0;
 		pCaps->m_nMaxVertexTextureDimension = 0;
@@ -528,7 +553,10 @@ void CHardwareConfig::ForceCapsToDXLevel( HardwareCaps_t *pCaps, int nDxLevel, c
 		pCaps->m_MaxPixelShader30InstructionSlots = 0;
 		pCaps->m_bDX10Card = false;
 		pCaps->m_bDX10Blending = false;
+#ifndef BYTEMATCH_RETAIL
 		pCaps->m_bCanStretchRectFromTextures = false;
+#endif
+#line 532
 		break;
 
 	case 90:
@@ -569,12 +597,19 @@ void CHardwareConfig::ForceCapsToDXLevel( HardwareCaps_t *pCaps, int nDxLevel, c
 		}
 
 		pCaps->m_bSupportsBorderColor = false;
+#ifdef BYTEMATCH_RETAIL
+		pCaps->m_bSupportsNormalMapCompression = false;
+#endif
+#line 572
 		pCaps->m_nMaxViewports = 1;
 		pCaps->m_NumPixelShaderConstants = 32;
 		pCaps->m_nMaxVertexTextureDimension = 0;
 		pCaps->m_MaxVertexShader30InstructionSlots = 0;
 		pCaps->m_MaxPixelShader30InstructionSlots  = 0;
+#ifndef BYTEMATCH_RETAIL
 		pCaps->m_bCanStretchRectFromTextures = false;
+#endif
+#line 578
 		break;
 
 	case 92:
@@ -582,6 +617,10 @@ void CHardwareConfig::ForceCapsToDXLevel( HardwareCaps_t *pCaps, int nDxLevel, c
 		pCaps->m_nMaxVertexTextureDimension = 0;
 		pCaps->m_bSupportsVertexTextures = false;
 		pCaps->m_bSupportsBorderColor = false;
+#ifdef BYTEMATCH_RETAIL
+		pCaps->m_bSupportsNormalMapCompression = false;
+#endif
+#line 585
 
 		// 2b gets four lights, 2.0 gets two...
 		pCaps->m_SupportsShaderModel_3_0 = false;
@@ -612,7 +651,10 @@ void CHardwareConfig::ForceCapsToDXLevel( HardwareCaps_t *pCaps, int nDxLevel, c
 		pCaps->m_bDX10Blending = false;
 		pCaps->m_MaxVertexShader30InstructionSlots = 0;
 		pCaps->m_MaxPixelShader30InstructionSlots  = 0;
+#ifndef BYTEMATCH_RETAIL
 		pCaps->m_bCanStretchRectFromTextures = false;
+#endif
+#line 616
 		break;
 
 	case 95:
@@ -623,7 +665,10 @@ void CHardwareConfig::ForceCapsToDXLevel( HardwareCaps_t *pCaps, int nDxLevel, c
 		pCaps->m_MaxNumLights = MAX_NUM_LIGHTS;
 		pCaps->m_nMaxViewports = 1;
 		pCaps->m_bSupportsBorderColor = false;
+#ifndef BYTEMATCH_RETAIL
 		pCaps->m_bCanStretchRectFromTextures = false;
+#endif
+#line 627
 		break;
 
 	case 100:
@@ -647,11 +692,14 @@ void CHardwareConfig::SetupHardwareCaps( int nDXLevel, const HardwareCaps_t &act
 	memcpy( &m_UnOverriddenCaps, &actualCaps, sizeof(HardwareCaps_t) );
 
 	// Don't bother with fallbacks for DX10 or consoles
-#ifdef DX_TO_GL_ABSTRACTION
+#if defined( DX_TO_GL_ABSTRACTION ) && defined( BYTEMATCH_RETAIL )
+	if ( ( IsOpenGL() && ( nDXLevel >= 100 ) ) || g_pMaterialSystem->GetRenderBackend() == RENDER_BACKEND_VULKAN || ( nDXLevel >= 100 ) )
+#elif defined( DX_TO_GL_ABSTRACTION )
 	if ( nDXLevel >= 100 )
 #else
 	if ( !( IsPC() || IsPosix() ) || ( nDXLevel >= 100 ) )
 #endif
+#line 655
 		return;
 
 	// Slam the support level to what we were requested
