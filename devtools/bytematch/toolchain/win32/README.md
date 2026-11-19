@@ -154,9 +154,10 @@ system wine and `$WINEPREFIX`.
 - `build-thirdparty.py`: stand-in Crypto++ and libpng archives
 - `win32-cc.py`: compile one file with its module's switches and diff it against retail
 - `report-modules.py`, `link-order.py`: match summary with macOS cross-check, link order check.
-  Symbol-port maps beyond the survey's eight modules (`--maps DIR`, repeatable) come from
-  the survey's `symbols/` pipeline run with the new modules and this build's objects as
-  exact-byte anchors.
+  Symbol-port maps for the 16 modules beyond the survey's eight are in
+  /Volumes/Storage/sco/byte-match-survey/win32-maps (the survey's `symbols/` pipeline run with
+  the new modules and this build's objects as exact-byte anchors); both tools search it before
+  the survey's `symbols/out` (`--maps DIR`, repeatable, or `BM_WIN32_MAPS` overrides).
 - `docker/`: Linux image
 
 ## Licenses

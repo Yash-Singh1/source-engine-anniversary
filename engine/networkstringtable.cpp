@@ -1586,6 +1586,7 @@ bool CNetworkStringTableContainer::ReadStringTables( bf_read& buf )
 // Input  : *cl - 
 //			*msg - 
 //-----------------------------------------------------------------------------
+#line 1504
 void CNetworkStringTableContainer::WriteUpdateMessage( CBaseClient *client, int tick_ack, bf_write &buf )
 {
 	VPROF_BUDGET( "CNetworkStringTableContainer::WriteUpdateMessage", VPROF_BUDGETGROUP_OTHER_NETWORKING );

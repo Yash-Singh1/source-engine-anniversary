@@ -436,6 +436,9 @@ class retail_clbatch(Task.Task):
 	'''Several sources with identical switches in one cl.exe run, like MSBuild's
 	ClCompile. Each wine process pays Rosetta's translation of c1xx/c2 once.'''
 	color = 'GREEN'
+	# switches, defines and include paths are part of the signature: a manifest change
+	# recompiles the batch (waf only hashes the variables a task names)
+	vars = ['CC', 'CXX', 'CFLAGS', 'CXXFLAGS', 'DEFINES', 'INCPATHS', 'CPPFLAGS']
 
 	def __str__(self):
 		return '%d sources: %s' % (len(self.inputs), ' '.join(n.name for n in self.inputs[:4]) + (' ...' if len(self.inputs) > 4 else ''))
