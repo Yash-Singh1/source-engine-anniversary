@@ -484,6 +484,26 @@ void CPropCrane::SetupMove( CBasePlayer *player, CUserCmd *ucmd, IMoveHelper *pH
 	// If the player's entering/exiting the vehicle, prevent movement
 	if ( !m_bEnterAnimOn && !m_bExitAnimOn )
 	{
+#ifdef HL2_ANNIVERSARY_NOV2024
+		int buttons = ucmd->buttons & ~(IN_MOVELEFT|IN_MOVERIGHT|IN_FORWARD|IN_BACK);
+		if ( ucmd->sidemove < -100 )
+		{
+			buttons |= IN_MOVELEFT;
+		}
+		else if ( ucmd->sidemove > 100 )
+		{
+			buttons |= IN_MOVERIGHT;
+		}
+
+		if ( ucmd->forwardmove < -250 )
+		{
+			buttons |= IN_BACK;
+		}
+		else if ( ucmd->forwardmove > 250 )
+		{
+			buttons |= IN_FORWARD;
+		}
+#else
 		int buttons = ucmd->buttons;
 		if ( !(buttons & (IN_MOVELEFT|IN_MOVERIGHT)) )
 		{
@@ -496,6 +516,7 @@ void CPropCrane::SetupMove( CBasePlayer *player, CUserCmd *ucmd, IMoveHelper *pH
 				buttons |= IN_MOVERIGHT;
 			}
 		}
+#endif
 		DriveCrane( buttons, player->m_afButtonPressed );
 	}
 
