@@ -651,7 +651,7 @@ ClientRenderHandle_t& CDetailModel::RenderHandle()
 //-----------------------------------------------------------------------------
 bool CDetailModel::SetupBones( matrix3x4_t *pBoneToWorldOut, int nMaxBones, int boneMask, float currentTime )
 {
-	if (!m_pModel)
+	if (!m_pModel NOV2024_ONLY( || !pBoneToWorldOut ))
 		return false;
 
 	// Setup our transform.
@@ -1491,7 +1491,12 @@ void CDetailObjectSystem::LevelInitPreEntity()
 	}
 
 	int detailPropLightingLump;
+#ifdef BYTEMATCH_RETAIL
+	if( g_pMaterialSystemHardwareConfig->GetHDRType() != HDR_TYPE_NONE )
+#else
 	if( g_pMaterialSystemHardwareConfig->GetHDREnabled() )
+#endif
+#line 1495
 	{
 		detailPropLightingLump = GAMELUMP_DETAIL_PROP_LIGHTING_HDR;
 	}
