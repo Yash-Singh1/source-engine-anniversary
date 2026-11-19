@@ -124,7 +124,10 @@
 #include "sourcevr/isourcevirtualreality.h"
 #include "client_virtualreality.h"
 #include "mumble.h"
-
+#ifdef BYTEMATCH_RETAIL
+#include "steamshare.h"
+#endif
+#line 128
 // NVNT includes
 #include "hud_macros.h"
 #include "haptics/ihaptics.h"
@@ -1017,7 +1020,10 @@ int CHLClient::Init( CreateInterfaceFn appSystemFactory, CreateInterfaceFn physi
 	IGameSystem::Add( ClientSoundscapeSystem() );
 	IGameSystem::Add( PerfVisualBenchmark() );
 	IGameSystem::Add( MumbleSystem() );
-	
+#ifdef BYTEMATCH_RETAIL
+	IGameSystem::Add( SteamShareSystem() );
+#endif
+#line 1021
 	#if defined( TF_CLIENT_DLL )
 	IGameSystem::Add( CustomTextureToolCacheGameSystem() );
 	IGameSystem::Add( TFSharedContentManager() );
