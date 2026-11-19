@@ -67,6 +67,9 @@ N_SO, N_OSO = 0x64, 0x66
 PREPROCESSOR_ONLY = ('-I', '-D', '-U', '-isystem', '-iquote', '-include', '-imacros')
 DEP_FLAGS = ('-MMD', '-MD', '-MP')
 LANG_EXT = {'c': '.i', 'c++': '.ii', 'objective-c++': '.mii', 'objective-c': '.mi'}
+# Per-module archive variants (retail_stlib_variant: sourcevr's 10.5 libtier1_105.a) that
+# retail links under the plain name (build/Release/libtier1.a).
+ARCHIVE_VARIANT = r'_105\.a$'
 
 
 def log(msg):
@@ -346,7 +349,8 @@ class Module:
             if not ar or os.path.normpath(ar) not in self.build.by_output:
                 continue
             entry = self.build.by_output[os.path.normpath(ar)]
-            rmem = [o for o in members if o['oso'].split('(')[0].endswith('/' + name)]
+            rname = re.sub(ARCHIVE_VARIANT, '.a', name)
+            rmem = [o for o in members if o['oso'].split('(')[0].endswith('/' + rname)]
             if rmem:
                 varchive = split_member(rmem[0]['oso'])[0]
             else:
