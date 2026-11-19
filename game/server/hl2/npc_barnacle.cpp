@@ -495,7 +495,7 @@ void CNPC_Barnacle::BarnacleThink ( void )
 			{
 				// Finished digesting
 #if HL2_EPISODIC
-				// have to save this off because LostPrey() resets it (and if we take damage before hitting that,
+				if ( IsHL2Episodic() ) { // have to save this off because LostPrey() resets it (and if we take damage before hitting that,
 				// then the dead thing will go flying)
 				bool poisoned = m_bSwallowingPoison;
 
@@ -505,11 +505,11 @@ void CNPC_Barnacle::BarnacleThink ( void )
 				if ( poisoned )
 				{	// hurt me
 					TakeDamage( CTakeDamageInfo( this, this, m_iHealth, DMG_ACID ) );
-				}
-#else
+				} } else {
+#endif
 				LostPrey( true ); // Remove all evidence
 				m_flDigestFinish = 0;
-#endif
+				HL2_EPISODIC_ONLY( } )
 			}
 		}
 	}
