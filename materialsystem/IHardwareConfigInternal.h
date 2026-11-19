@@ -25,7 +25,9 @@ public:
 	// Gets at the HW specific shader DLL name
 	virtual const char *GetHWSpecificShaderDLLName() const = 0;
 
+#ifndef BYTEMATCH_RETAIL
 	virtual bool CanStretchRectFromTextures() const = 0;
+#endif
 };
 
 
