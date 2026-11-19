@@ -1802,6 +1802,7 @@ void CModelRender::SetupLighting( const Vector &vecCenter )
 //-----------------------------------------------------------------------------
 // Uses this material instead of the one the model was compiled with
 //-----------------------------------------------------------------------------
+#line 1786
 void CModelRender::ForcedMaterialOverride( IMaterial *newMaterial, OverrideType_t nOverrideType )
 {
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__ );
@@ -3607,7 +3608,7 @@ void CModelRender::ValidateStaticPropColorData( ModelInstanceHandle_t handle )
 #else
 	if ( !g_pMaterialSystemHardwareConfig->GetHDREnabled() || g_bBakedPropLightingNoSeparateHDR )
 #endif
-#line 3601
+#line 3587
 	{
 		Q_snprintf( fileName, sizeof( fileName ), "sp_%d%s.vhv", StaticPropMgr()->GetStaticPropIndex( pProp ), GetPlatformExt() );
 	}
@@ -3831,7 +3832,7 @@ bool CModelRender::LoadStaticPropColorData( IHandleEntity *pProp, DataCacheHandl
 #else
 	if ( !g_pMaterialSystemHardwareConfig->GetHDREnabled() || g_bBakedPropLightingNoSeparateHDR )
 #endif
-#line 3820
+#line 3806
 	{
 	        Q_snprintf( fileName, sizeof( fileName ), "sp_%d%s.vhv", StaticPropMgr()->GetStaticPropIndex( pProp ), GetPlatformExt() );
 	}
@@ -4254,7 +4255,7 @@ ModelInstanceHandle_t CModelRender::CreateInstance( IClientRenderable *pRenderab
 		}
 #endif
 #endif
-#line 4229
+#line 4215
 	}
 
 	return handle;
@@ -4691,7 +4692,7 @@ void SetRootLOD_f( IConVar *pConVar, const char *pOldString, float flOldValue )
 	ConVarRef r_lod_ref( "r_lod" );
 	r_lod_ref.SetValue( nLod );
 #endif
-#line 4663
+#line 4649
 	UpdateStudioRenderConfig();
 	if ( !g_LostVideoMemory && Q_strcmp( var.GetString(), pOldString ) )
 	{

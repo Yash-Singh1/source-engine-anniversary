@@ -1453,6 +1453,7 @@ bool NET_GetLoopPacket ( netpacket_t * packet )
 	return ( NET_LagPacket( true, packet ) );	
 }
 
+#line 1388
 bool NET_ReceiveDatagram ( const int sock, netpacket_t * packet )
 {
 	VPROF_BUDGET( "NET_ReceiveDatagram", VPROF_BUDGETGROUP_OTHER_NETWORKING );
@@ -1703,7 +1704,7 @@ netpacket_t *NET_GetPacket (int sock, byte *scratch )
 #else
 		if ( !NET_IsMultiplayer() && sock != NS_CLIENT )
 #endif
-#line 1648
+#line 1634
 		{
 			return NULL;
 		}
@@ -2395,6 +2396,7 @@ int NET_SendLong( INetChannel *chan, int sock, SOCKET s, const char FAR * buf, i
 // Output : void NET_SendPacket
 //-----------------------------------------------------------------------------
 
+#line 2322
 int NET_SendPacket ( INetChannel *chan, int sock,  const netadr_t &to, const unsigned char *data, int length, bf_write *pVoicePayload /* = NULL */, bool bUseCompression /*=false*/ )
 {
 	VPROF_BUDGET( "NET_SendPacket", VPROF_BUDGETGROUP_OTHER_NETWORKING );
@@ -2415,7 +2417,7 @@ int NET_SendPacket ( INetChannel *chan, int sock,  const netadr_t &to, const uns
 #else
 	if ( (!NET_IsMultiplayer() && sock != NS_CLIENT) || to.type == NA_LOOPBACK || ( to.IsLocalhost() && !net_usesocketsforloopback.GetBool() ) )
 #endif
-#line 2355
+#line 2338
 	{
 		Assert( !pVoicePayload );
 
@@ -2665,7 +2667,7 @@ static bool OpenSocketInternal( int nModule, int nSetPort, int nDefaultPort, con
 static bool OpenSocketInternal( int nModule, int nSetPort, int nDefaultPort, const char *pName, int nProtocol, bool bTryAny,
 								int flags = ( OSOCKET_FLAG_USE_IPNAME | OSOCKET_FLAG_FAIL ) )
 #endif
-#line 2600
+#line 2583
 {
 	int port = nSetPort ? nSetPort : nDefaultPort;
 	int *handle = NULL;
@@ -2703,14 +2705,14 @@ static bool OpenSocketInternal( int nModule, int nSetPort, int nDefaultPort, con
 			*handle = NET_OpenSocket ( netinterface, port, nProtocol );
 		}
 #endif
-#line 2628
+#line 2611
 
 		if ( !*handle )
 		{
 #ifndef BYTEMATCH_RETAIL
 			if ( flags & OSOCKET_FLAG_FAIL )
 #endif
-#line 2632
+#line 2615
 				Sys_Exit( "Couldn't allocate any %s IP port", pName );
 			return false;
 		}
@@ -3073,7 +3075,7 @@ void NET_RunFrame( double flRealtime )
 #ifndef BYTEMATCH_RETAIL
 	master->RunFrame();
 #endif
-#line 2991
+#line 2974
 
 #ifdef _X360
 	if ( net_logserver.GetInt() )
@@ -3202,7 +3204,7 @@ void NET_ListenSocket( int sock, bool bListen )
 #else
 	if ( (!NET_IsMultiplayer() && sock != NS_CLIENT) || net_notcp )
 #endif
-#line 3115
+#line 3098
 		return;
 
 	if ( bListen )
@@ -3394,7 +3396,7 @@ void NET_Init( bool bIsDedicated )
 	// open client socket for masterserver
 	OpenSocketInternal( NS_CLIENT, clientport.GetInt(), PORT_SERVER, "client", nProtocol, true );
 #endif
-#line 3300
+#line 3283
 
 	if ( bIsDedicated )
 	{
@@ -3523,7 +3525,7 @@ CON_COMMAND( net_status, "Shows current network status" )
 		net_sockets[NS_SYSTEMLINK].nPort,
 		lan_str.Get() );
 #endif
-#line 3419
+#line 3402
 
 	if ( numChannels <= 0 )
 	{

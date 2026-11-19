@@ -814,6 +814,7 @@ void CReplayServer::EntityPVSCheck( CClientFrame *pFrame )
 	}
 }
 
+#line 818
 CClientFrame *CReplayServer::AddNewFrame( CClientFrame *clientFrame )
 {
 	VPROF_BUDGET( "CReplayServer::AddNewFrame", "Replay" );
