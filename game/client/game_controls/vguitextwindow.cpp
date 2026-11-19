@@ -455,7 +455,6 @@ void CTextWindow::ShowPanel( bool bShow )
 	}
 }
 
-#ifndef BYTEMATCH_RETAIL
 bool CTextWindow::CMOTDHTML::OnStartRequest( const char *url, const char *target, const char *pchPostData, bool bIsRedirect )
 {
 	if ( Q_strstr( url, "steam://" ) )
@@ -463,4 +462,3 @@ bool CTextWindow::CMOTDHTML::OnStartRequest( const char *url, const char *target
 
 	return BaseClass::OnStartRequest( url, target, pchPostData, bIsRedirect );
 }
-#endif
