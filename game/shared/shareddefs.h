@@ -236,7 +236,12 @@ enum CastVote
 
 #define MAX_PLACE_NAME_LENGTH		18
 
+#ifdef _WIN32
+#define MAX_FOV						120
+#else
 #define MAX_FOV						110
+#endif
+#line 240
 
 //===================================================================================================================
 // Team Defines

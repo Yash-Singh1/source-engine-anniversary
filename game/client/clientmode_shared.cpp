@@ -887,7 +887,7 @@ void ClientModeShared::Disable()
 	m_pViewport->SetVisible( false );
 }
 
-
+#ifndef CLIENTMODE_LAYOUT_FORCE
 void ClientModeShared::Layout()
 {
 	vgui::VPANEL pRoot = VGui_GetClientDLLRootPanel();
@@ -909,6 +909,51 @@ void ClientModeShared::Layout()
 		}
 	}
 }
+#else
+static void HudAspectRatioChanged( IConVar *var, const char *pOldValue, float flOldValue )
+{
+	g_pClientMode->Layout( true );
+}
+
+ConVar hud_aspect( "hud_aspect", "0", FCVAR_ARCHIVE, "Force the aspect ratio of the hud. 0 to disable.", HudAspectRatioChanged );
+
+void ClientModeShared::Layout( bool bForce )
+{
+	vgui::VPANEL pRoot = VGui_GetClientDLLRootPanel();
+	int wide, tall;
+
+	// Make the viewport fill the root panel.
+	if( pRoot != 0 )
+	{
+		vgui::ipanel()->GetSize(pRoot, wide, tall);
+
+		bool changed = bForce || wide != m_nRootSize[ 0 ] || tall != m_nRootSize[ 1 ];
+		m_nRootSize[ 0 ] = wide;
+		m_nRootSize[ 1 ] = tall;
+
+		int x = 0;
+		float flAspect = hud_aspect.GetFloat();
+		if ( flAspect != 0.0f && (float)wide / (float)tall > flAspect )
+		{
+			int newWide = (int)( tall * flAspect );
+			x = ( wide - newWide ) / 2;
+			wide = newWide;
+		}
+
+		m_pViewport->SetBounds( x, 0, wide, tall );
+		if ( changed )
+		{
+			ReloadScheme();
+		}
+	}
+}
+
+void ClientModeShared::Layout()
+{
+	Layout( false );
+}
+#endif
+#line 912
 
 float ClientModeShared::GetViewModelFOV( void )
 {

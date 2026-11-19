@@ -1059,6 +1059,7 @@ void CViewRender::SetUpOverView()
 // Purpose: Render current view into specified rectangle
 // Input  : *rect - is computed by CVideoMode_Common::GetClientViewRect()
 //-----------------------------------------------------------------------------
+#line 1055
 void CViewRender::Render( vrect_t *rect )
 {
 	Assert(s_DbgSetupOrigin == m_View.origin);
@@ -1315,6 +1316,7 @@ void CViewRender::Render( vrect_t *rect )
 
 
 }
+#line 1318
 
 
 

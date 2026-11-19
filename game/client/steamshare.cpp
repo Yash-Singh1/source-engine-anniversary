@@ -160,7 +160,7 @@ public:
 		{
 			if ( !V_stricmp( pszScene, npcMeets[i].m_pszScene ) )
 			{
-				char szTitle[1024] = {};
+				char szTitle[1024] = { 0 };
 				V_strncpy( szTitle, g_pVGuiLocalize->FindAsUTF8( npcMeets[i].m_pszTitle ), sizeof( szTitle ) );
 
 				// skip any leading caption tags
@@ -180,7 +180,7 @@ public:
 
 		if ( !V_stricmp( pszScene, "scenes/citadel/br_freemanatlast.vcd" ) )
 		{
-			char szTitle[1024] = {};
+			char szTitle[1024] = { 0 };
 			V_strncpy( szTitle, g_pVGuiLocalize->FindAsUTF8( "#GameUI_SteamShare_NPCMeet_DrBreen" ), sizeof( szTitle ) );
 			SteamTimeline()->AddInstantaneousTimelineEvent( szTitle, g_pVGuiLocalize->FindAsUTF8( "#GameUI_SteamShare_NPCMeet_DrBreen_Desc" ), "npc_breen", 40, 5.0f, k_ETimelineEventClipPriority_Standard );
 		}
@@ -269,17 +269,17 @@ public:
 		int nCurVal = event->GetInt( "cur_val" );
 		int nMaxVal = event->GetInt( "max_val" );
 
-		char szLocalizedName[256] = {};
+		char szLocalizedName[256] = { 0 };
 		const char *pszLocalizedName = g_pVGuiLocalize->FindAsUTF8( CFmtStr( "#%s_NAME", pszAchievementName ) );
 		if ( V_isempty( pszLocalizedName ) )
 			return;
 
 		V_strncpy( szLocalizedName, pszLocalizedName, sizeof( szLocalizedName ) );
 
-		char szFmt[128] = {};
-		char szProgress[512] = {};
-		char szCurVal[16] = {};
-		char szMaxVal[16] = {};
+		char szFmt[128] = { 0 };
+		char szProgress[512] = { 0 };
+		char szCurVal[16] = { 0 };
+		char szMaxVal[16] = { 0 };
 		V_snprintf( szCurVal, sizeof( szCurVal ), "%i", nCurVal );
 		V_snprintf( szMaxVal, sizeof( szMaxVal ), "%i", nMaxVal );
 
@@ -355,10 +355,10 @@ public:
 		if ( !pszWeaponName )
 			pszWeaponName = "weapon";
 
-		char szWeaponName[1024] = {};
+		char szWeaponName[1024] = { 0 };
 		V_strncpy( szWeaponName, pszWeaponName, sizeof( szWeaponName ) );
 
-		char szTitle[1024] = {};
+		char szTitle[1024] = { 0 };
 		g_pVGuiLocalize->ConstructString( szTitle, sizeof( szTitle ), g_pVGuiLocalize->FindAsUTF8( "#GameUI_SteamShare_WeaponPickup" ), 1, szWeaponName );
 
 		SteamTimeline()->AddInstantaneousTimelineEvent( szTitle, NULL, GetWeaponTimelineIcon( pWeapon ), 30, 0.0f, k_ETimelineEventClipPriority_None );
@@ -438,7 +438,7 @@ class CSteamTimelineEvent_CommentaryEvent : public CSteamTimelineEventBase_t
 public:
 	virtual void HandleEvent( CSteamShareSystem *pSystem, IGameEvent *event )
 	{
-		char szTitle[1024] = {};
+		char szTitle[1024] = { 0 };
 		g_pVGuiLocalize->ConstructString( szTitle, sizeof( szTitle ), g_pVGuiLocalize->FindAsUTF8( "#GameUI_SteamShare_CommentaryTitle" ), 1, event->GetString( "speaker_name" ) );
 		SteamTimeline()->AddRangeTimelineEvent( szTitle, pSystem->m_strChapterName.String(), "steam_chat", 200, 0.0f, event->GetFloat( "duration" ), k_ETimelineEventClipPriority_Featured );
 	}
@@ -532,7 +532,7 @@ static const char *FormatChapterTimeString( float flSeconds )
 
 void CSteamShareSystem::UpdateChapterDetails()
 {
-	char szPlaytime[1024] = {};
+	char szPlaytime[1024] = { 0 };
 	g_pVGuiLocalize->ConstructString( szPlaytime, sizeof( szPlaytime ), g_pVGuiLocalize->FindAsUTF8( "#GameUI_SteamShare_ChapterPlaytime" ), 1, FormatChapterTimeString( gpGlobals->curtime - m_flChapterStartTime ) );
 
 	SteamTimeline()->SetGamePhaseAttribute( g_pVGuiLocalize->FindAsUTF8( "#GameUI_SteamShare_Tooltip_ChapterTitle" ), CFmtStr( "%s", m_strChapterName.String() ), 0 );
@@ -540,7 +540,7 @@ void CSteamShareSystem::UpdateChapterDetails()
 
 	char szDeathCount[4];
 	V_snprintf( szDeathCount, sizeof( szDeathCount ), "%d", m_nChapterDeaths );
-	char szDeaths[1024] = {};
+	char szDeaths[1024] = { 0 };
 	g_pVGuiLocalize->ConstructString( szDeaths, sizeof( szDeaths ), g_pVGuiLocalize->FindAsUTF8( "#GameUI_SteamShare_ChapterDeaths" ), 1, szDeathCount );
 	SteamTimeline()->SetGamePhaseAttribute( g_pVGuiLocalize->FindAsUTF8( "#GameUI_SteamShare_Tooltip_ChapterDeaths" ), szDeaths, 0 );
 
