@@ -166,7 +166,7 @@ struct ID3DXMatrixStack
 		return m_refcount[0];
 	}
 
-	HRESULT	Create( void )
+	FORCEINLINE HRESULT	Create( void )
 	{
 		m_stack.EnsureCapacity( 16 );	// 1KB ish
 		m_stack.AddToTail();
