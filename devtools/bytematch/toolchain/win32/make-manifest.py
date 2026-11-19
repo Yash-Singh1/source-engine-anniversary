@@ -96,7 +96,7 @@ FORK_CL = {"ivp_compactbuilder": ["/FIcmath"]}
 FORK_DEFINES = {"ivp_physics": ["finite=_finite"],
                 # this tree gates its JPEG/PNG code on these (the --retail-osx32 build defines them
                 # for every module that links libjpeg/libpng; retail engine.dll and client.dll have both)
-                "engine": ["HAVE_JPEG"], "client_hl2": ["HAVE_JPEG", "HAVE_PNG"],
+                "engine": ["HAVE_JPEG", "HAVE_PNG"], "client_hl2": ["HAVE_JPEG", "HAVE_PNG"],
                 "client_episodic": ["HAVE_JPEG", "HAVE_PNG"]}
 
 # Static-library projects whose outputs other projects name in $Lib.
@@ -115,15 +115,16 @@ FORK_SOURCES = {"engine": ["engine/masterserver.cpp"]}
 # generator order with the settings of the file before them.
 RETAIL_SOURCES = {"GameUI": ["gameui/OptionsSubGamepad.cpp"],
                   # retail replay.dll and engine.dll have their strings too
-                  "replay": ["replay/sv_ftp.cpp"], "engine": ["engine/workshop.cpp", "engine/mm_events.cpp"],
+                  "replay": ["replay/sv_ftp.cpp"], "engine": ["engine/workshop.cpp", "engine/mm_events.cpp", "common/imageutils.cpp"],
                   "client_hl2": ["common/imageutils.cpp"], "client_episodic": ["common/imageutils.cpp"]}
 
 # Libraries retail links beyond the 2018 VPCs: retail macOS stdshader_dx9 has
 # libtier2.a(tier2.o), which defines the g_pMaterialSystem CShaderDLL::Connect sets.
-# Retail client.dll also links libjpeg and libpng (imageutils); client and server import rpcrt4 (tier1 uniqueid).
+# Retail client.dll and engine.dll also link libjpeg and libpng (imageutils); client and server import rpcrt4 (tier1 uniqueid).
 _CLIENT_IMAGE_LIBS = [{"project": "jpeglib", "path": "lib/common/libjpeg.lib"}, {"prebuilt": "lib/public/libpng.lib"}]
 RETAIL_LIBS = {"stdshader_dx9": [{"project": "tier2", "path": "lib/public/tier2.lib"}],
-               "client_hl2": _CLIENT_IMAGE_LIBS, "client_episodic": _CLIENT_IMAGE_LIBS}
+               "client_hl2": _CLIENT_IMAGE_LIBS, "client_episodic": _CLIENT_IMAGE_LIBS,
+               "engine": [{"prebuilt": "lib/public/libpng.lib"}]}
 RETAIL_SYSTEM_LIBS = dict((m, ["rpcrt4.lib"]) for m in ("client_hl2", "client_episodic", "server_hl2", "server_episodic"))
 
 # Valve library paths ($File "...lib") that live elsewhere in this tree.

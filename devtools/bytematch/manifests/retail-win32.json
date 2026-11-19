@@ -1259,7 +1259,8 @@
     "_WINDLL",
     "_USING_V110_SDK71_",
     "_MBCS",
-    "HAVE_JPEG"
+    "HAVE_JPEG",
+    "HAVE_PNG"
    ],
    "includes": [
     "common",
@@ -2051,6 +2052,10 @@
      "lang": "c++"
     },
     {
+     "lang": "c++",
+     "path": "common/imageutils.cpp"
+    },
+    {
      "path": "public/disp_common.cpp",
      "lang": "c++"
     },
@@ -2723,6 +2728,9 @@
     },
     {
      "prebuilt": "lib/common/binkw32.lib"
+    },
+    {
+     "prebuilt": "lib/public/libpng.lib"
     }
    ],
    "file_libs": [
