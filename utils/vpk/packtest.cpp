@@ -26,6 +26,10 @@ static bool s_bUseSteamPipeFriendlyBuilder = false;
 static int s_iMultichunkSize = k_nVPKDefaultChunkSize / ( 1024 * 1024 );
 const int k_nVPKDefaultChunkAlign = 1;
 static int s_iChunkAlign = k_nVPKDefaultChunkAlign;
+#ifdef BYTEMATCH_RETAIL
+static CUtlString s_OutputDirOverride;
+#endif
+#line 30
 static CUtlString s_sPrivateKeyFile;
 static CUtlString s_sPublicKeyFile;
 
@@ -89,6 +93,10 @@ static void PrintArgSummaryAndExit( int iReturnCode = 1 )
 		"Options:\n"
 		"  -v     Verbose.\n"
 		"  -M     Produce a multi-chunk pack file\n"
+#ifdef BYTEMATCH_RETAIL
+		"  -o     Set the output VPK file path\n"
+#endif
+#line 94
 		"  -P     Use SteamPipe-friendly incremental build algorithm.\n"
 		"         Use with 'k' command.\n"
 		"         For optimal incremental build performance, the control file used\n"
