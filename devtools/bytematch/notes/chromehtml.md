@@ -145,5 +145,6 @@ The LC_LOAD_DYLIB list and object order equal retail's. Retail links a
 `pngloader.o` whose code is all dead-stripped (ccache compile slot 22915,
 between jpegloader_common and htmlprotobuf): it pulls libpng's read side, which
 retail exports. `RETAIL_DEAD` links `common/pngloader.cpp` there, and our
-dylib exports retail's 267 `png_*` symbols. `__text` is 823261 bytes against
-retail's 823232 with r148911 (the 3 functions it misses).
+dylib exports retail's 267 `png_*` symbols. `__text` is 823229 bytes against
+retail's 823232; per object all 2891 functions match, and under
+`--all-retail` only 4 libpng functions differ (third-party archive).
