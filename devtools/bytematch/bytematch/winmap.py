@@ -207,6 +207,20 @@ def itanium_key(mangled, demangled):
     return k
 
 
+_FREE_SIG = re.compile(r'^sig:([A-Za-z_]\w*)\(')
+
+
+def add_c_aliases(funcs):
+    """Give free functions keyed by signature their C name as an alias.
+
+    The macOS build compiles some C sources as C++ (bzip2), so the port names them by
+    Itanium signature while the Windows objects have plain C symbols."""
+    for f in funcs:
+        m = _FREE_SIG.match(f.key)
+        if m and '_' + m.group(1) not in f.aliases:
+            f.aliases.append('_' + m.group(1))
+
+
 def read_rows(doc, min_conf=0.0):
     """symbol-port rows -> [(addr, [names], size, obj_stem, confidence)] for named functions."""
     rows = [r for r in doc if r.get('name') and float(r.get('confidence') or 0) >= min_conf]
