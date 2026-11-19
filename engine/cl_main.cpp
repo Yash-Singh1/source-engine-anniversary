@@ -567,11 +567,7 @@ Updates the local time and reads/handles messages on client net connection.
 
 void CL_ReadPackets ( bool bFinalTick )
 {
-#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
-#line 498
-#else
-#line 508
-#endif
+#line 501
 	VPROF_BUDGET( "CL_ReadPackets", VPROF_BUDGETGROUP_OTHER_NETWORKING );
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__ );
 #line 511
@@ -599,11 +595,7 @@ void CL_ReadPackets ( bool bFinalTick )
 	// read packets, if any in queue
 	if ( demoplayer->IsPlayingBack() && cl.m_NetChannel )
 	{
-#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
-#line 524
-#else
-#line 534
-#endif
+#line 527
 		tmZoneFiltered( TELEMETRY_LEVEL0, 50, TMZF_NONE, "ReadPacket" );
 
 		// process data from demo file
@@ -1519,11 +1511,7 @@ ConCommand screenshot_internal_command( "__screenshot_internal", screenshot_inte
 
 void CL_TakeSnapshotAndSwap()
 {
-#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
-#line 1325
-#else
-#line 1343
-#endif
+#line 1328
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__ );
 #line 1345
 

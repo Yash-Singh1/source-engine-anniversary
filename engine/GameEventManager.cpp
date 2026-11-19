@@ -407,13 +407,7 @@ bool CGameEventManager::FireEventIntern( IGameEvent *event, bool bServerOnly, bo
 		return false;
 	}
 
-#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
-#line 410
 	tmZoneFiltered( TELEMETRY_LEVEL0, 50, TMZF_NONE, "%s %d", __FUNCTION__, descriptor->listeners.Count() );
-#else
-	tmZoneFiltered( TELEMETRY_LEVEL0, 50, TMZF_NONE, "%s (name: %s listeners: %d)", __FUNCTION__, tmDynamicString( TELEMETRY_LEVEL0, event->GetName() ), descriptor->listeners.Count() );
-#endif
-#line 411
 
 	// show game events in console
 	if ( net_showevents.GetInt() > 0 )

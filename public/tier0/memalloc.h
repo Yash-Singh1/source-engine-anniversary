@@ -466,7 +466,7 @@ struct MemAllocFileLine_t
 
 //-----------------------------------------------------------------------------
 
-#elif defined( POSIX ) && ( defined( OSX ) || defined( BYTEMATCH_RETAIL_LINUX ) )
+#elif defined( POSIX ) && ( defined( OSX ) || defined( BYTEMATCH_RETAIL ) )
 
 #if defined( OSX )
 // Mac always aligns allocs, don't need to call posix_memalign which doesn't exist in 10.5.8 which TF2 still needs to run on

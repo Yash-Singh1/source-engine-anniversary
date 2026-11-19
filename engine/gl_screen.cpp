@@ -308,11 +308,7 @@ void SCR_UpdateScreen( void )
 		modelloader->UpdateDynamicModels();
 	}
 #endif
-#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
-#line 295
-#else
-#line 308
-#endif
+#line 298
 
 	{
 		tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "materials_EndFrame" );

@@ -10,10 +10,11 @@ line's __LINE__. Each line becomes
     #endif
     #line M
 
-where M is the next line's current number. Second form: MSVC retail builds compile TEXT as
-line N instead of the given line (Windows retail evidence, e.g. a telemetry zone's format):
+where M is the next line's current number. Second form: retail builds (every platform) compile
+TEXT as line N instead of the given line, which native builds keep (retail evidence, e.g. a
+telemetry zone's format):
 
-    #if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+    #ifdef BYTEMATCH_RETAIL
     #line N
     TEXT
     #else
@@ -21,8 +22,8 @@ line N instead of the given line (Windows retail evidence, e.g. a telemetry zone
     #endif
     #line M
 
-Inside a winline.py run, where MSVC retail builds number lines differently, the restoring
-#line is itself split on _MSC_VER && BYTEMATCH_RETAIL."""
+Files may still hold older winline.py runs that number lines differently in MSVC retail builds
+only; there the restoring #line is split on _MSC_VER && BYTEMATCH_RETAIL to keep both numberings."""
 import re, sys
 
 LINE = re.compile(r'^\s*#\s*line\s+(\d+)')
@@ -78,7 +79,7 @@ def main():
         else:
             restore = [MSVC_IF, '#line %d' % nxt[0], '#else', '#line %d' % nxt[1], '#endif']
         if rline:
-            new = [MSVC_IF, '#line %s' % rline, rtext, '#else', lines[i].rstrip('\r'), '#endif']
+            new = ['#ifdef BYTEMATCH_RETAIL', '#line %s' % rline, rtext, '#else', lines[i].rstrip('\r'), '#endif']
         else:
             new = ['#ifndef BYTEMATCH_RETAIL', lines[i].rstrip('\r'), '#endif']
         lines[i:i + 1] = [s + cr for s in new + restore]

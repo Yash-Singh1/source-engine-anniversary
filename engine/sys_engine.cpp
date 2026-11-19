@@ -466,11 +466,7 @@ void CEngine::Frame( void )
 
 	{ // profile scope
 
-#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
-#line 428
-#else
-#line 414
-#endif
+#line 431
 	VPROF_BUDGET( "CEngine::Frame", VPROF_BUDGETGROUP_OTHER_UNACCOUNTED );
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__ );
 #line 417

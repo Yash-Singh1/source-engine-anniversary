@@ -154,11 +154,11 @@ system wine and `$WINEPREFIX`.
 - `nvtc_stub.cpp`: stand-ins for NVIDIA's S3TC encoder (bitmap)
 - `build-thirdparty.py`: stand-in Crypto++ and libpng archives
 - `win32-cc.py`: compile one file with its module's switches and diff it against retail
-- `winline.py FILE OURS:RETAIL,...`: give lines retail Windows' `__LINE__` numbers (telemetry
-  zones) in MSVC retail builds only, without moving any other line on either platform.
-  Its non-MSVC and trailing `#line`s are absolute and go stale when lines above them move
-  (a merge); `winline.py --check` verifies every block in the tree, and `identity/ci.sh` runs it
-- `gateline.py FILE LINE,...`: leave lines out of retail builds (`#ifndef BYTEMATCH_RETAIL`), or give MSVC retail
+- `winline.py FILE OURS:RETAIL,...`: give lines retail's `__LINE__` numbers (Telemetry zones, where
+  Windows and Linux retail agree; macOS compiles Telemetry out) on every platform, without moving
+  any other line. Its trailing `#line`s are absolute and go stale when lines above them move
+  (a merge); `winline.py --check` verifies every run in the tree, and `identity/ci.sh` runs it
+- `gateline.py FILE LINE,...`: leave lines out of retail builds (`#ifndef BYTEMATCH_RETAIL`), or give retail
   builds other text at a retail line number (`--retail-line N --retail-text TEXT`), without moving any other line
 - `report-modules.py`, `link-order.py`: match summary with macOS cross-check, link order check.
   Symbol-port maps for the 16 modules beyond the survey's eight are in

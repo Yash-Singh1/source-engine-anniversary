@@ -492,7 +492,7 @@ public:
 	//-----------------------------------------------------
 	// Thread event support (safe for NULL this to simplify code )
 	//-----------------------------------------------------
-#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#ifdef BYTEMATCH_RETAIL
 #line 495
 	bool WaitForFinish( uint32 dwTimeout = TT_INFINITE ) { if (!this) return true; return ( !IsFinished() ) ? g_pThreadPool->YieldWait( this, dwTimeout ) : true; }
 #else

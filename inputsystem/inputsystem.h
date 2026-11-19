@@ -353,13 +353,9 @@ public:
 	// Update and sample steam controllers
 	void PollSteamControllers( void );
 
-	// Loads steam_input/action_manifest_hl2.vdf from the game directory, if present.
-	// Retail Windows calls it as a member, retail macOS as a static.
-#ifdef _WIN32
+	// Loads steam_input/action_manifest_hl2.vdf from the game directory, if present
 	bool BLoadOnDiscManifest();
-#else
-	static bool BLoadOnDiscManifest();
-#endif
+#line 363
 
 	// Forwards rumble to the active Steam Input controller
 	void SetSteamInputRumble( float fLeftMotor, float fRightMotor, int userId );

@@ -143,11 +143,7 @@ void CNetChan::CompressFragments()
 	if ( VCRGetMode() != VCR_Disabled )
 		return;
 
-#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
-#line 137
-#else
-#line 137
-#endif
+#line 140
 	VPROF_BUDGET( "CNetChan::CompressFragments", VPROF_BUDGETGROUP_OTHER_NETWORKING );
 #line 139
 
