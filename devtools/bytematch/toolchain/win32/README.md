@@ -153,6 +153,8 @@ system wine and `$WINEPREFIX`.
 - `nvtc_stub.cpp`: stand-ins for NVIDIA's S3TC encoder (bitmap)
 - `build-thirdparty.py`: stand-in Crypto++ and libpng archives
 - `win32-cc.py`: compile one file with its module's switches and diff it against retail
+- `winline.py FILE OURS:RETAIL,...`: give lines retail Windows' `__LINE__` numbers (telemetry
+  zones) in MSVC retail builds only, without moving any other line on either platform
 - `report-modules.py`, `link-order.py`: match summary with macOS cross-check, link order check.
   Symbol-port maps for the 16 modules beyond the survey's eight are in
   /Volumes/Storage/sco/byte-match-survey/win32-maps (the survey's `symbols/` pipeline run with
