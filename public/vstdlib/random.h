@@ -98,7 +98,7 @@ VSTDLIB_INTERFACE float	RandomFloat( float flMinVal = 0.0f, float flMaxVal = 1.0
 VSTDLIB_INTERFACE float	RandomFloatExp( float flMinVal = 0.0f, float flMaxVal = 1.0f, float flExponent = 1.0f );
 VSTDLIB_INTERFACE int	RandomInt( int iMinVal, int iMaxVal );
 VSTDLIB_INTERFACE float	RandomGaussianFloat( float flMean = 0.0f, float flStdDev = 1.0f );
-
+#if !defined( BYTEMATCH_RETAIL_LINUX ) // retail lacks it; gcc speculatively devirtualizes random-> calls to it
 //-----------------------------------------------------------------------------
 // IUniformRandomStream interface for free functions
 //-----------------------------------------------------------------------------
@@ -110,7 +110,7 @@ public:
 	virtual int		RandomInt( int iMinVal, int iMaxVal ) OVERRIDE								{ return ::RandomInt( iMinVal, iMaxVal ); }
 	virtual float	RandomFloatExp( float flMinVal, float flMaxVal, float flExponent ) OVERRIDE	{ return ::RandomFloatExp( flMinVal, flMaxVal, flExponent ); }
 };
-
+#endif
 //-----------------------------------------------------------------------------
 // Installs a global random number generator, which will affect the Random functions above
 //-----------------------------------------------------------------------------

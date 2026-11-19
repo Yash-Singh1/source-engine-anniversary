@@ -208,12 +208,20 @@ def name_retail(retail, ours):
         r.aliases = list(o.aliases)
         r.obj_path = o.obj_path
         r.located = how
-    # Call targets resolve to every name whose code is identical at that address: ld
-    # keeps both CUtlVector<int>::GrowVector and an identical CUtlVector<T*> copy, and
-    # which of them a call lands on can't be told from the bytes.
+    for r, o in taken.items():
+        for k in [o.key] + [canonical(o.module.fmt, a) for a in o.aliases]:
+            retail.add_name(r.addr, k)
+    # A call target only disagrees when the retail callee was identified by a unique search
+    # hit under another name and isn't one of our callee's identical-code hits: ld keeps
+    # CUtlVector<int>::GrowVector and an identical CUtlVector<T*> copy, and hundreds of
+    # vtable-setting destructors look alike once relocations are masked.
+    hit_addrs = {}
     for o, hs in hits.items():
-        keys = [o.key] + [canonical(o.module.fmt, a) for a in o.aliases]
-        for r in (list(hs) if len(hs) <= 16 else []) + ([found[o][0]] if o in found else []):
-            for k in keys:
-                retail.add_name(r.addr, k)
+        for k in [o.key] + [canonical(o.module.fmt, a) for a in o.aliases]:
+            hit_addrs.setdefault(k, set()).update(r.addr for r in hs)
+    sure = {r.addr for r in taken if getattr(r, 'located', None) == SEARCH and len(hits.get(taken[r], ())) == 1}
+
+    def target_ok(key, va):
+        return va in hit_addrs.get(key, ()) or va not in sure
+    retail.target_ok = target_ok
     return collections.Counter(how for o, (r, how) in found.items() if taken.get(r) is o)

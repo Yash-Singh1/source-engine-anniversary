@@ -131,8 +131,10 @@ def check_targets(r, o, rdata, odata):
         else:
             continue
         names = rmod.resolve(va)
+        ok = getattr(rmod, 'target_ok', None)
         if names and rel.target not in names and EQUIV.get(rel.target) not in names \
-                and not FOLDED.get(rel.target, FOLDED.get(EQUIV.get(rel.target), set())) & set(names):
+                and not FOLDED.get(rel.target, FOLDED.get(EQUIV.get(rel.target), set())) & set(names) \
+                and not (ok and ok(rel.target, va)):
             out.append((k, rel.target, names[0]))
     if o.module.linked:
         # linked vs linked: compare branch targets symbolically on both sides

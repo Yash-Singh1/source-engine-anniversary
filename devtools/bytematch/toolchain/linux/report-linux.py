@@ -28,13 +28,16 @@ MATCHED = ('exact', 'matches-after-masking')
 
 
 def compile_entries(build):
+    # retail_compile_commands.json (`waf retail_linkdb`) has one entry per object;
+    # compile_commands.json one per source, so files both client and server compile collapse
+    db = os.path.join(build, 'retail_compile_commands.json')
+    if not os.path.exists(db):
+        sys.exit('%s missing: run `waf retail_linkdb` after the build' % db)
     out = []
-    for e in json.load(open(os.path.join(build, 'compile_commands.json'))):
+    for e in json.load(open(db)):
         args = e['arguments']
         proj = next((a.split('=', 1)[1] for a in args if a.startswith('--bm-proj=')), None)
-        obj = next((a[2:] for a in args if a.startswith('-o') and len(a) > 2), None)
-        if obj is None and '-o' in args:
-            obj = args[args.index('-o') + 1]
+        obj = e.get('output') or next((a[2:] for a in args if a.startswith('-o') and len(a) > 2), None)
         if obj and not os.path.isabs(obj):
             obj = os.path.join(e['directory'], obj)
         out.append(dict(file=os.path.relpath(e['file'], REPO), proj=proj, obj=obj,
@@ -70,17 +73,18 @@ def objects_for(game, module, entries):
             for src in a.get('add', []):
                 e = by_proj_file.get((a['project_dir'], src.lower()))
                 if e and e not in groups[name]:
+                    e = dict(e, linux_only=True)
                     groups[name].append(e)
     return groups
 
 
-def run(game, module, build, out):
+def run(game, module, build, out, extra=()):
     from bytematch import cli
     entries = compile_entries(build)
     groups = objects_for(game, module, entries)
     tmp = os.path.join(out, 'objs-%s-%s' % (game, module))
     shutil.rmtree(tmp, ignore_errors=True)
-    group_of = {}
+    group_of, linux_only = {}, set()
     for g, es in groups.items():
         for e in es:
             if not e['obj'] or not os.path.exists(e['obj']):
@@ -90,25 +94,35 @@ def run(game, module, build, out):
             if not os.path.lexists(dst):
                 os.symlink(e['obj'], dst)
             group_of[os.path.realpath(dst)] = g
+            if e.get('linux_only'):
+                linux_only.add(os.path.realpath(dst))
     prefix = os.path.join(out, '%s-%s' % (game, module))
-    cli.main(['report', '--retail', RETAIL[game] % module, '--ours', tmp, '--out', prefix])
+    cli.main(['report', '--retail', RETAIL[game] % module, '--ours', tmp, '--out', prefix] + list(extra))
     doc = json.load(open(prefix + '.json'))
+    per_obj = collections.defaultdict(collections.Counter)
+    for f in doc['functions']:
+        c = per_obj[os.path.realpath(f['ours_object'])]
+        c['f'] += 1
+        c['b'] += f['ours_size']
+        c['loc'] += 1
+        if f['status'] in MATCHED:
+            c['mf'] += 1
+            c['mb'] += f['ours_size']
+    for e in doc['extra']:
+        c = per_obj[os.path.realpath(e['ours_object'])]
+        c['f'] += 1
+        c['b'] += e['size']
+    # Linux-only library files nothing in the module pulls (pathmatch.cpp is reached only through
+    # -Wl,--wrap, which game modules don't use): retail has none of their functions
+    dropped = sorted(os.path.basename(p) for p in linux_only if not per_obj[p]['loc'])
     rows = collections.OrderedDict((g, collections.Counter()) for g in groups)
     rows['total'] = collections.Counter()
-
-    def add(path, matched, size, located):
-        g = group_of.get(os.path.realpath(path), 'module')
-        for k in (g, 'total'):
-            rows[k]['f'] += 1
-            rows[k]['b'] += size
-            rows[k]['loc'] += located
-            if matched:
-                rows[k]['mf'] += 1
-                rows[k]['mb'] += size
-    for f in doc['functions']:
-        add(f['ours_object'], f['status'] in MATCHED, f['ours_size'], 1)
-    for e in doc['extra']:
-        add(e['ours_object'], False, e['size'], 0)
+    for p, c in per_obj.items():
+        if os.path.basename(p) in dropped:
+            continue
+        for k in (group_of.get(p, 'module'), 'total'):
+            rows[k].update(c)
+    doc['linux_only_not_linked'] = dropped
     return doc, rows
 
 
@@ -118,6 +132,7 @@ def main():
     ap.add_argument('--game', default='episodic', choices=sorted(RETAIL))
     ap.add_argument('--module', action='append', choices=['server', 'client'])
     ap.add_argument('--out', default=None)
+    ap.add_argument('--no-target-check', action='store_true', help='as the survey pilot: no call-target check')
     args = ap.parse_args()
     out = args.out or os.path.join(args.build, 'report')
     os.makedirs(out, exist_ok=True)
@@ -126,7 +141,7 @@ def main():
              'retail function\'s once relocated fields are masked (bytematch, stripped-ELF pairing). '
              'Static libraries: the members the retail macOS module of the same build pulls.', '']
     for module in args.module or ['server', 'client']:
-        doc, rows = run(args.game, module, args.build, out)
+        doc, rows = run(args.game, module, args.build, out, ['--no-target-check'] if args.no_target_check else [])
         s = doc['summary']['functions']
         lines += ['## %s.so' % module, '', '| objects | functions | matched | % | bytes | matched | % | located |',
                   '|---|---:|---:|---:|---:|---:|---:|---:|']
@@ -137,7 +152,10 @@ def main():
                 '**total**' if g == 'total' else g, c['f'], c['mf'], 100.0 * c['mf'] / c['f'], c['b'], c['mb'],
                 100.0 * c['mb'] / c['b'] if c['b'] else 0, c['loc']))
         lines += ['', 'Paired with a retail function: %d (exact %d, after masking %d, differs %d); report: `%s-%s.md`.' % (
-            s['total'], s['exact'], s['matches_after_masking'], s['differs'], args.game, module), '']
+            s['total'], s['exact'], s['matches_after_masking'], s['differs'], args.game, module)]
+        if doc['linux_only_not_linked']:
+            lines.append('Linux-only library files with no function in retail (not counted): %s.' % ', '.join(doc['linux_only_not_linked']))
+        lines.append('')
     path = os.path.join(out, 'retail-linux32-%s.md' % args.game)
     open(path, 'w').write('\n'.join(lines))
     print(path)

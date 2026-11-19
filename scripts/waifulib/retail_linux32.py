@@ -46,9 +46,7 @@ CXX_ONLY = ['-std=gnu++0x', '-fpermissive']
 
 # Not Valve's. BYTEMATCH_RETAIL: this fork's runtime additions stay out (shared with
 # the macOS and Windows modes); BYTEMATCH_RETAIL_LINUX: Linux-retail-only source.
-# Retail Linux game modules import no Telemetry symbols, though SDK 2013's
-# vprof_telemetry.h enables it for _LINUX: Valve's 2015 linux VPCs define this.
-RETAIL_DEFINES = ['BYTEMATCH_RETAIL', 'BYTEMATCH_RETAIL_LINUX', 'RAD_TELEMETRY_DISABLED']
+RETAIL_DEFINES = ['BYTEMATCH_RETAIL', 'BYTEMATCH_RETAIL_LINUX']
 
 # Defines from this tree's wscripts and global env that Valve's build doesn't have.
 TREE_ONLY_DEFINES = ['PLATFORM_POSIX', 'NO_MEMOVERRIDE_NEW_DELETE', 'GIT_COMMIT_HASH',
@@ -70,6 +68,9 @@ def options(opt):
 	grp.add_option('--retail-depot224', action = 'store', dest = 'RETAIL_DEPOT224',
 		default = '/Volumes/Expansion/mac-ports/hl2-anniversary-depot/depots/224/19307283',
 		help = 'retail depot 224 build root, for libtier0/libvstdlib/libsteam_api [default: %default]')
+	grp.add_option('--retail-linux32-hl2src', action = 'store', dest = 'RETAIL_LINUX32_HL2SRC',
+		default = os.environ.get('HL2SRC', os.path.expanduser('~/p/sco/source-engine-2018-hl2_src')),
+		help = '2018 hl2_src tree, for RAD Telemetry\'s headers (thirdparty/telemetry/include) [default: %default]')
 	grp.add_option('--retail-linux32-modules', action = 'store', dest = 'RETAIL_LINUX32_MODULES', default = None,
 		help = 'comma-separated subprojects [default: the game modules\' static libraries, plus game/client and game/server with --build-games]')
 
@@ -113,6 +114,7 @@ def retail_linux32_configure(conf):
 	v.CFLAGS_cshlib = v.CXXFLAGS_cxxshlib = []
 	v.LINKFLAGS = ['-m32', '-Wl,--build-id', '-static-libgcc']
 	v.LINKFLAGS_cshlib = v.LINKFLAGS_cxxshlib = ['-shared']
+	v.cshlib_PATTERN = v.cxxshlib_PATTERN = '%s.so'
 	v.DEFINES = []
 	v.INCLUDES = [conf.path.find_node('common').abspath()]
 	# objects first, then the static libraries in one group, as LIB_START_SHLIB/LIB_END_SHLIB
@@ -150,6 +152,22 @@ def retail_linux32_configure(conf):
 	sdl = conf.path.find_node('thirdparty/SDL')
 	if sdl:
 		v.append_value('INCLUDES', [sdl.abspath()])
+	# Retail Linux modules have a Telemetry zone at every VPROF (they import g_Telemetry), as
+	# vprof_telemetry.h enables for _LINUX. Its "../../thirdparty/telemetry/include/telemetry.h"
+	# resolves through an include directory two levels below a copy of hl2_src's headers
+	# (inside the build dir, which the container can see).
+	tm = os.path.join(o.RETAIL_LINUX32_HL2SRC, 'thirdparty', 'telemetry', 'include')
+	if os.path.isfile(os.path.join(tm, 'telemetry.h')):
+		root = conf.bldnode.make_node('retail-linux32-telemetry')
+		dst = os.path.join(root.abspath(), 'thirdparty', 'telemetry', 'include')
+		shutil.rmtree(dst, ignore_errors=True)
+		shutil.copytree(tm, dst)
+		inc = root.make_node('include/tier0')
+		inc.mkdir()
+		v.append_value('INCLUDES', [inc.abspath()])
+	else:
+		Logs.warn('retail-linux32: %s not found; Telemetry zones compiled out (RAD_TELEMETRY_DISABLED)' % tm)
+		v.DEFINES = ['RAD_TELEMETRY_DISABLED']
 	v.LIBDIR = v.PREFIX + '/bin/'
 	v.BINDIR = v.PREFIX
 
