@@ -231,11 +231,14 @@ GLMRendererInfo::GLMRendererInfo( GLMRendererInfoFields *info )
 	  gl_ext_string = "";
 
 	// effectively blacklist the renderer if it doesn't actually work; sort it to back of list
+#ifndef BYTEMATCH_RETAIL
 	if ( !nsglCtx )
 	{
 		m_info.m_vidMemory = 1;
 		m_info.m_texMemory = 1;
 	}
+#endif
+#line 227
 	
 	//-------------------------------------------------------------------
 	// booleans
@@ -895,11 +898,14 @@ void	GLMDisplayDB::PopulateRenderers( void )
 					cgl_err = CGLDescribeRenderer( cgl_rend, j,   kCGLRPSampleAlpha, &fields.m_sampleAlpha );		problems += (cgl_err != 0);
 					cgl_err = CGLDescribeRenderer( cgl_rend, j,   kCGLRPVideoMemory, &fields.m_vidMemory );			problems += (cgl_err != 0);
 					cgl_err = CGLDescribeRenderer( cgl_rend, j,   kCGLRPTextureMemory, &fields.m_texMemory );		problems += (cgl_err != 0);
+#ifndef BYTEMATCH_RETAIL
 
 					// Make sure the renderer is attached to a display.
 					GLint online;
 					cgl_err = CGLDescribeRenderer( cgl_rend, j,   kCGLRPOnline, &online );					problems += (cgl_err != 0);
 					problems += ( online == 0 );
+#endif
+#line 891
 
 					// decide if this renderer goes in the table.
 
@@ -1157,6 +1163,10 @@ void	GLMDisplayDB::PopulateRenderers( void )
 								{
 									case	0x27A6:	fields.m_intel95x = true;		break;	// GMA 950
 									case	0x2A02:	fields.m_intel3100 = true;		break;	// X3100
+#ifdef BYTEMATCH_RETAIL
+									default:		if ( fields.m_pciDeviceID > 0x2A02 ) fields.m_intelNewer = true;	break;
+#endif
+#line 1148
 #ifndef TOGL_OSX
 									case	0x0166: fields.m_intelHD4000 = true;	break;	// HD4000
 #endif
