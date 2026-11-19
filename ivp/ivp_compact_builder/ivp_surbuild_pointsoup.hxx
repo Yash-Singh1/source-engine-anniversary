@@ -59,14 +59,15 @@ class IVP_Compact_Surface;
 
 class IVP_SurMan_PS_Plane : public IVP_U_Point {
 public:
-#ifdef BYTEMATCH_RETAIL
-    IVP_SurMan_PS_Plane() { };
-#else
+#ifndef BYTEMATCH_RETAIL	// the original has no constructor, so new IVP_SurMan_PS_Plane() zeroes it
     IVP_SurMan_PS_Plane() = default;
 #endif
     IVP_U_Vector<IVP_U_Point> points;
     IVP_DOUBLE get_area_size();
     IVP_DOUBLE get_qlen_of_all_edges();
+#ifdef BYTEMATCH_RETAIL
+    IVP_DOUBLE get_len_of_all_edges();
+#endif
 };
 
 

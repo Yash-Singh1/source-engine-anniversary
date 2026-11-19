@@ -279,6 +279,19 @@ IVP_DOUBLE IVP_SurMan_PS_Plane::get_qlen_of_all_edges(){
   return sum;
 }
 
+#ifdef BYTEMATCH_RETAIL
+IVP_DOUBLE IVP_SurMan_PS_Plane::get_len_of_all_edges(){
+  IVP_DOUBLE sum = 0.0;
+  for (int i = 0; i< points.len(); i++){
+    int in = (i+1) % points.len();
+    IVP_U_Point *a = points.element_at(i);
+    IVP_U_Point *b = points.element_at(in);
+    sum += IVP_Inline_Math::sqrtd( a->quad_distance_to(b) );
+  }
+  return sum;
+}
+#endif
+
 
 void IVP_SurfaceBuilder_Pointsoup::error_output(IVP_Template_Polygon *templ)
 {
@@ -340,7 +353,11 @@ IVP_Compact_Ledge *IVP_SurfaceBuilder_Pointsoup::try_to_build_convex_ledge_from_
 	    }
 	    // check area size of facet
 	    IVP_DOUBLE area_sum = plane->get_area_size();
+#ifdef BYTEMATCH_RETAIL
+	    IVP_DOUBLE min_area = 0.5 * P_MIN_EDGE_LEN * plane->get_len_of_all_edges();
+#else
 	    IVP_DOUBLE qedge_sum = plane->get_qlen_of_all_edges();
+#endif
 
 	    // swap area
 	    if (area_sum < 0){
@@ -350,7 +367,11 @@ IVP_Compact_Ledge *IVP_SurfaceBuilder_Pointsoup::try_to_build_convex_ledge_from_
 		//point_indizes.reverse();
 	    }
 	    
+#ifdef BYTEMATCH_RETAIL
+	    if ( area_sum  <  min_area ){
+#else
 	    if ( area_sum  <  0.5 * P_MIN_EDGE_LEN * IVP_Inline_Math::ivp_sqrtf(qedge_sum)){
+#endif
 	      // degenarete area -> find and delete interior point
 	      // search point which is farest from point 0
 	      IVP_DOUBLE max_dist = -1.0;
@@ -360,7 +381,11 @@ IVP_Compact_Ledge *IVP_SurfaceBuilder_Pointsoup::try_to_build_convex_ledge_from_
         intp in = intp(point_indizes.element_at(i0));
 		if (skip_list[in]) goto no_point_skipped;
 		IVP_U_Point *p2 = plane->points.element_at( i0 );
+#ifdef BYTEMATCH_RETAIL
+		IVP_DOUBLE dist = IVP_Inline_Math::sqrtd( plane->points.element_at( 0 )->quad_distance_to(p2) );
+#else
 		IVP_DOUBLE dist = plane->points.element_at( 0 )->quad_distance_to(p2);
+#endif
 		if (dist > max_dist){
 		  max_index = i0;
 		  max_dist = dist;
@@ -372,7 +397,11 @@ IVP_Compact_Ledge *IVP_SurfaceBuilder_Pointsoup::try_to_build_convex_ledge_from_
 		  for (int i1 = 0; i1 < point_indizes.len(); i1++){
 		    *skip_point = IVP_TRUE;
 		    IVP_U_Point *p2 = plane->points.element_at( i1 );
+#ifdef BYTEMATCH_RETAIL
+		    IVP_DOUBLE dist = IVP_Inline_Math::sqrtd( plane->points.element_at( max_index )->quad_distance_to(p2) );
+#else
 		    IVP_DOUBLE dist = plane->points.element_at( max_index )->quad_distance_to(p2);
+#endif
 		    if (dist > max_dist){
 		      max_index2 = i1;
 		      max_dist = dist;
