@@ -232,7 +232,11 @@ IVP_DOUBLE IVP_Car_System_Real_Wheels::get_body_speed(IVP_COORDINATE_INDEX idx_z
 {
     // return (IVP_FLOAT)car_body->get_geom_center_speed();
     IVP_U_Float_Point *vec_ws;
+#ifdef BYTEMATCH_RETAIL
+    vec_ws = &car_body->get_core()->delta_world_f_core_psis;
+#else
     vec_ws = &car_body->get_core()->speed;
+#endif
     // works well as we do not use merged cores
     const IVP_U_Matrix *mat_ws = car_body->get_core()->get_m_world_f_core_PSI();
     IVP_U_Point orientation;
@@ -561,6 +565,10 @@ void IVP_Car_System_Real_Wheels::get_skid_info( IVP_Wheel_Skid_Info *array_of_sk
 
 void IVP_Car_System_Real_Wheels::set_powerslide(IVP_FLOAT front_accel, IVP_FLOAT rear_accel)
 {
+#ifdef BYTEMATCH_RETAIL
+	car_act_powerslide_back->set_force( car_body->physical_core->get_mass() * front_accel );
+	car_act_powerslide_front->set_force( car_body->physical_core->get_mass() * rear_accel );
+#else
 	IVP_FLOAT front_force = car_body->physical_core->get_mass() * front_accel;
 	if (front_force != car_act_powerslide_back->get_force())
 	{
@@ -588,6 +596,7 @@ void IVP_Car_System_Real_Wheels::set_powerslide(IVP_FLOAT front_accel, IVP_FLOAT
 			sim->sim_unit_ensure_in_simulation();
 		}
 	}
+#endif
 }
 
 // stop wheel completely (e.g. handbrake )
@@ -636,6 +645,34 @@ void IVP_Car_System_Real_Wheels::fix_wheel( IVP_POS_WHEEL wheel_nr, IVP_BOOL sto
  ********************************************************************************/
 void IVP_Car_System_Real_Wheels::activate_booster( IVP_FLOAT thrust, IVP_FLOAT duration, IVP_FLOAT delay ) 
 {
+#ifdef BYTEMATCH_RETAIL
+	// Do we have an booster?
+    if( booster_actuator[0] && thrust != 0.0f ) 
+		return;
+
+	// Booster not ready yet.
+    if( booster_seconds_until_ready > 0.0f )
+		return; 
+
+    // Ignite booster by adding an actuator force to the car body 
+    float gravity = environment->get_gravity()->real_length();
+    if ( thrust != 0.0f )
+		set_booster_acceleration( thrust * gravity );
+#else
+#ifdef BYTEMATCH_RETAIL
+	// Do we have an booster?
+    if( booster_actuator[0] && thrust != 0.0f ) 
+		return;
+
+	// Booster not ready yet.
+    if( booster_seconds_until_ready > 0.0f )
+		return; 
+
+    // Ignite booster by adding an actuator force to the car body 
+    float gravity = environment->get_gravity()->real_length();
+    if ( thrust != 0.0f )
+		set_booster_acceleration( thrust * gravity );
+#else
 	// Do we have an booster?
     if( booster_actuator[0] ) 
 		return;
@@ -647,6 +684,8 @@ void IVP_Car_System_Real_Wheels::activate_booster( IVP_FLOAT thrust, IVP_FLOAT d
     // Ignite booster by adding an actuator force to the car body 
     float gravity = environment->get_gravity()->real_length();
     set_booster_acceleration( thrust * gravity );
+#endif
+#endif
 
 	// seconds
     booster_seconds_to_go = duration; 

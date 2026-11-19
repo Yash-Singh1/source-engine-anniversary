@@ -336,7 +336,7 @@ void ivp_message(const char *templat, ...)
     p += strlen(p);
     
     va_start(parg,templat);	
-#ifdef LINUX
+#if defined(LINUX) || defined(BYTEMATCH_RETAIL)
     vsnprintf(buffer,MAX_MAKE_STRING_LEN,templat,parg);
 #else
     vsprintf(buffer, templat,parg);
