@@ -2035,8 +2035,15 @@ bool CVoxelTree::EnumerateElementsAlongRay_Ray( SpatialPartitionListMask_t listM
 				return false;
 		}
 
+#ifdef BYTEMATCH_RETAIL
+		// a NaN tMax would never reach 1 and walk forever
+		if ( ( tMax[0] >= 1.0f && tMax[1] >= 1.0f && tMax[2] >= 1.0f ) || isnan( tMax[0] ) || isnan( tMax[1] ) || isnan( tMax[2] ) )
+			break;
+#else
 		if ( tMax[0] >= 1.0f && tMax[1] >= 1.0f && tMax[2] >= 1.0f )
 			break;
+#endif
+#line 2040
 
 		if ( tMax[0] < tMax[1] )
 		{

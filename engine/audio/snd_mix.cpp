@@ -537,7 +537,12 @@ void MIX_MixChannelsToPaintbuffer( CChannelList &list, int endtime, int flags, i
 		//  for the "soundsource" but we still need the lipsync to pause if the game is paused.  Therefore
 		//  I changed SND_IsMouth to look for any .wav on any channels which has sentence data
 		bool bIsMouth = SND_IsMouth(ch);
+#ifdef BYTEMATCH_RETAIL
+		bool bShouldPause = !ch->sfx->m_bIsUISound;
+#else
 		bool bShouldPause = IsX360() ? !ch->sfx->m_bIsUISound : bIsMouth; 
+#endif
+#line 541
 
 		// Tracker 14637:  Pausing the game pauses voice sounds, but not other sounds...
 		if ( bShouldPause && g_pSoundServices->IsGamePaused() )
@@ -2067,7 +2072,10 @@ void MIX_BuildChannelList( CChannelList &list )
 	bool bPaused = g_pSoundServices->IsGamePaused();
 #ifdef POSIX
 	bool bActive = g_pSoundServices->IsGameActive();
+#ifndef BYTEMATCH_RETAIL
 	bool bStopOnFocusLoss = !bActive && snd_mute_losefocus.GetBool();
+#endif
+#line 2071
 #endif
 
 	CChannelCullList cullList;
@@ -2118,12 +2126,22 @@ void MIX_BuildChannelList( CChannelList &list )
 #ifdef POSIX
 			// If we aren't the active app and the option for background audio isn't on, mute the audio
 			// Windows has it's own system for background muting
+#ifdef BYTEMATCH_RETAIL
+			if ( !bRemove && !bActive && snd_mute_losefocus.GetBool() )
+#else
 			if ( !bRemove && bStopOnFocusLoss )
+#endif
+#line 2122
 			{
 				bRemove = true;
 
 				// Free up the sound channels otherwise they start filling up
+#ifdef BYTEMATCH_RETAIL
+				if ( pSource && !pSource->IsLooped() )
+#else
 				if ( pSource && ( !pSource->IsLooped() && !pSource->IsStreaming() ) )
+#endif
+#line 2127
 				{
 					S_FreeChannel( ch );
 				}

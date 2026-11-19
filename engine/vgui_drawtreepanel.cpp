@@ -291,6 +291,7 @@ public:
 		// you will sometimes end up on a different panel or on garbage.
 	}
 
+#ifndef BYTEMATCH_RETAIL // retail inherits vgui::Frame::OnThink
 	virtual void OnThink() OVERRIDE
 	{
 		BaseClass::OnThink();
@@ -308,6 +309,8 @@ public:
 			OnRequestFocus(focus, NULL);
 		}
 	}
+#endif
+#line 306
 
 public:
 	CVGuiTree *m_pTree;	

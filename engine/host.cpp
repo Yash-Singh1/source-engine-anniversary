@@ -387,7 +387,7 @@ static ConVar mem_test_each_frame( "mem_test_each_frame", "0", 0, "Run heap chec
 static ConVar mem_test_every_n_seconds( "mem_test_every_n_seconds", "0", 0, "Run heap check at a specified interval\n" );
 
 static ConVar	singlestep( "singlestep", "0", FCVAR_CHEAT, "Run engine in single step mode ( set next to 1 to advance a frame )" );
-static ConVar	cvarNext( "next", "0", FCVAR_CHEAT, "Set to 1 to advance to next frame ( when singlestep == 1 )" );
+static ConVar	next( "next", "0", FCVAR_CHEAT, "Set to 1 to advance to next frame ( when singlestep == 1 )" );
 // Print a debug message when the client or server cache is missed
 ConVar host_showcachemiss( "host_showcachemiss", "0", 0, "Print a debug message when the client or server cache is missed." );
 static ConVar mem_dumpstats( "mem_dumpstats", "0", 0, "Dump current and max heap usage info to console at end of frame ( set to 2 for continuous output )\n" );
@@ -1994,7 +1994,7 @@ void Host_ReadPreStartupConfiguration()
 	// loop through looking for all the cvars to apply
 	for (int i = 0; i < ARRAYSIZE(s_PreStartupConfigConVars); i++)
 	{
-		const char *search = Q_stristr(configBuffer, s_PreStartupConfigConVars[i]);
+		const char *search = Q_stristr((const char *)configBuffer, s_PreStartupConfigConVars[i]);
 		if (search)
 		{
 			// read over the token
@@ -2026,7 +2026,7 @@ void Host_ReadPreStartupConfiguration()
 
 		for (int i = 0; i < ARRAYSIZE(s_PreStartupHL2CompleteConVars); i++)
 		{
-			const char *search = Q_stristr(configBuffer, s_PreStartupHL2CompleteConVars[i]);
+			const char *search = Q_stristr((const char *)configBuffer, s_PreStartupHL2CompleteConVars[i]);
 			if (search)
 			{
 				search = COM_Parse(search);
@@ -2045,6 +2045,12 @@ void Host_ReadPreStartupConfiguration()
 
 	// free
 	delete [] configBuffer;
+#ifdef BYTEMATCH_RETAIL
+
+	if ( bHL2Complete )
+		Host_RestoreHL2EpisodicUnlocks();
+#endif
+#line 1881
 }
 
 void Host_RecomputeSpeed_f( void )
@@ -2748,14 +2754,14 @@ bool Host_ShouldRun( void )
 	}
 
 	// Did user set "next" to 1?
-	if ( cvarNext.GetInt() )
+	if ( next.GetInt() )
 	{
 		// Did we finally finish this frame ( Host_ShouldRun is called in 3 spots to pause
 		//  three different things ).
 		if ( current_tick != (host_tickcount-1) )
 		{
 			// Okay, time to reset to halt execution again
-			cvarNext.SetValue( 0 );
+			next.SetValue( 0 );
 			return false;
 		}
 
