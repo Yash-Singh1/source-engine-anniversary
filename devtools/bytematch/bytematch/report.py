@@ -333,7 +333,7 @@ def accept_misnamed(results, retail, spare, ours_funcs):
                 opool[o.data[:n]].append(o)
     oby = {}
     for f in ours_funcs:
-        for n in [f.name] + list(f.aliases):
+        for n in [f.name] + list(f.aliases) + [f.key]:
             oby.setdefault(n, f)
     # qualified function name -> functions, for names spelled with other parameter types
     # (SOCKET is unsigned int on Windows and int on macOS, uint32 unsigned long on macOS)
@@ -482,7 +482,7 @@ def accept_equivalent_targets(results, retail, ours_funcs):
         for n in [f.name] + list(f.aliases):
             rby.setdefault(n, f)
     for f in ours_funcs:
-        for n in [f.name] + list(f.aliases):
+        for n in [f.name] + list(f.aliases) + [f.key]:
             oby.setdefault(n, f)
     same, moved = {}, 0
     for res in results:
