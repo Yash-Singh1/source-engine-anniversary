@@ -450,8 +450,11 @@ struct Texture_t
 		m_CountIndex = 0;
 		m_nTimesBoundMax = 0;
 		m_nTimesBoundThisFrame = 0;
+#ifndef BYTEMATCH_RETAIL
 		m_pTexture = NULL;
 		m_ppTexture = NULL;
+#endif
+#line 455
 		m_ImageFormat = IMAGE_FORMAT_RGBA8888;
 		m_pTextureGroupCounterGlobal = NULL;
 		m_pTextureGroupCounterFrame = NULL;
