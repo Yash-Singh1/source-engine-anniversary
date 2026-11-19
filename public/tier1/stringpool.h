@@ -353,6 +353,7 @@ inline void CCountedStringPoolBase<T>::SpewStrings()
 #define STRING_POOL_VERSION		MAKEID( 'C', 'S', 'P', '1' )
 #define MAX_STRING_SAVE			1024
 
+#ifndef BYTEMATCH_RETAIL
 template<>
 inline bool CCountedStringPoolBase<unsigned short>::SaveToBuffer( CUtlBuffer &buffer )
 {
@@ -508,4 +509,5 @@ inline bool CCountedStringPoolBase<unsigned int>::RestoreFromBuffer( CUtlBuffer 
 
 	return buffer.IsValid();
 }
+#endif
 #endif // STRINGPOOL_H
