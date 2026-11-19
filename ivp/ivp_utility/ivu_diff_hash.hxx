@@ -44,9 +44,15 @@ public:
 	}
 	n_found_objects = 0;
 	base_vector = base;
+#ifdef BYTEMATCH_RETAIL
+	for (int i = 0; i <= buffersize_minus_one; i++){
+	    hash_to_vector_index[i] = -1;
+	}
+#else
 	for (int i = buffersize_minus_one>>1; i>=0; i--){
 	    ((int *)hash_to_vector_index)[i] = 0xffffffff;
 	}
+#endif
 
 	{
 	    // insert all existing elements

@@ -48,6 +48,9 @@ void IVP_Hull_Manager::reset_times(){
     while ( IVP_U_Min_List_Element *el = mle.get_next_element_header()){
 	IVP_Listener_Hull *lh = (IVP_Listener_Hull *)el->element;
 	el->value += mt;
+#ifdef BYTEMATCH_RETAIL
+	if ( !lh ) break;
+#endif
 	lh->hull_manager_is_reset(mt,mc);
 	
     }

@@ -109,6 +109,9 @@ public:
 	IVP_U_Min_List_Element *el; 
 	if (loop_elem != IVP_U_MINLIST_UNUSED) {
 	    el = &min_list->elems[loop_elem];
+#ifdef BYTEMATCH_RETAIL
+	    if ( loop_elem == el->next ) return (IVP_U_Min_List_Element *)NULL;
+#endif
 	    loop_elem = el->next;
 	}else{
 	    el = (IVP_U_Min_List_Element *)NULL;
