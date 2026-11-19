@@ -2087,7 +2087,13 @@ static void SV_ParallelSendSnapshot( CGameClient *& pClient )
 
 void CGameServer::SendClientMessages ( bool bSendSnapshots )
 {
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 1789
+#else
+#line 1761
+#endif
 	VPROF_BUDGET( "SendClientMessages", VPROF_BUDGETGROUP_OTHER_NETWORKING );
+#line 1763
 	
 	// build individual updates
 	int receivingClientCount = 0;
