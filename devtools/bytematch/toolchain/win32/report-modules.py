@@ -68,7 +68,7 @@ def keyed(doc, demangle):
     out = {}
     for f in doc["functions"]:
         n = f["name"]
-        k = n if n.startswith("sig:") else winmap.sig(dem[n]) if n in dem else None
+        k = n if n.startswith("sig:") else (winmap.itanium_key(n, dem[n]) if demangle is winmap.cxxfilt else winmap.sig(dem[n])) if n in dem else None
         out[k or "c:" + n.lstrip("_")] = (f["status"], f.get("retail_size") or f.get("ours_size") or 0,
                                          bool(f.get("line_constants")))
     return out

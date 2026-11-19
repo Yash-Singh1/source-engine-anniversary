@@ -84,9 +84,46 @@ def run(retail, ours_funcs, objects=None, all_retail=False, target_check=True, i
                 only_ours.append(e)
     else:
         only_ours = extra
+    if target_check:
+        n = accept_equivalent_targets(results + shared, retail, ours_funcs)
+        if n:
+            notes.append(f'{n} functions differed only in call targets whose code is identical on both '
+                         f'sides (identical-code folding named them differently); counted as matching')
     if data_check:
         apply_data_check(results + shared, *data_check)
     return dict(results=results, shared=shared, extra=only_ours, mode=mode, notes=notes)
+
+
+def accept_equivalent_targets(results, retail, ours_funcs):
+    """Pass functions whose only differences are call targets that are the same code.
+
+    Identical-code folding (/OPT:ICF, ld64's coalescing) leaves one copy of identical
+    functions under one name, and the retail name map can only give that address one name
+    (e.g. FreeCircularBuffer for the folded operator delete). A target is equivalent when our
+    target function and the retail function at the target address match each other."""
+    rby, oby = {}, {}
+    for f in retail.functions:
+        for n in [f.name] + list(f.aliases):
+            rby.setdefault(n, f)
+    for f in ours_funcs:
+        for n in [f.name] + list(f.aliases):
+            oby.setdefault(n, f)
+    same, moved = {}, 0
+    for res in results:
+        if res.status != compare.DIFFERS or not res.target_mismatches or res.line_constants:
+            continue
+        ok = True
+        for _, ot, rt in res.target_mismatches:
+            if (ot, rt) not in same:
+                o, r = oby.get(ot), rby.get(rt)
+                same[(ot, rt)] = bool(o and r and o.data and r.data and
+                                      compare.compare(r, o, False).status in (compare.EXACT, compare.MASKED))
+            ok = ok and same[(ot, rt)]
+        if ok:
+            res.equivalent_targets, res.target_mismatches = res.target_mismatches, []
+            res.status, res.reason, res.first_diff = compare.MASKED, '', None
+            moved += 1
+    return moved
 
 
 def apply_data_check(results, rimg, oimgs):
@@ -154,6 +191,8 @@ def result_json(r, diff_lines=0):
                                 for k, a, b in r.data_mismatches]
     if r.target_mismatches:
         d['target_mismatches'] = [dict(offset=k, ours=t, retail=rt) for k, t, rt in r.target_mismatches]
+    if getattr(r, 'equivalent_targets', None):
+        d['equivalent_targets'] = [dict(offset=k, ours=t, retail=rt) for k, t, rt in r.equivalent_targets]
     if diff_lines and r.status == DIFFERS and r.retail and r.ours:
         d['diff'] = compare.instruction_diff(r, context=1, limit=diff_lines)
     return d
