@@ -132,7 +132,9 @@ def load(path, data, member=None):
         # stripped images keep only exported symbols; every gcc function has an FDE
         eh = next((s for s in secs if s['name'] == '.eh_frame'), None)
         if eh:
+            mod.fde_starts = set()
             for start, size in fde_ranges(sdata(eh), eh['addr']):
+                mod.fde_starts.add(start)
                 for s in code_secs:
                     if s['addr'] <= start < s['addr'] + s['size'] and size:
                         entries[s['index']].append(Entry(start, [], size, exact=True))

@@ -1740,6 +1740,7 @@ bool C_BaseFlex::ProcessFlexAnimationSceneEvent( CSceneEventInfo *info, CChoreoS
 	return true;
 }
 
+#line 1742
 bool C_BaseFlex::ProcessFlexSettingSceneEvent( CSceneEventInfo *info, CChoreoScene *scene, CChoreoEvent *event )
 {
 	// Flexanimations have to have an end time!!!

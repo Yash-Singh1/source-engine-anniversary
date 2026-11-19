@@ -1151,6 +1151,7 @@ static bool IsTakingAFreezecamScreenshot()
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+#line 1149
 void CNetGraphPanel::Paint() 
 {
 	VPROF( "CNetGraphPanel::Paint" );

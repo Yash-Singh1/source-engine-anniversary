@@ -99,7 +99,64 @@ def locate(retail, ours):
             continue
         free = [r for r in hs if r not in claimed]
         take(o, (free or hs)[0], AMBIGUOUS)
+    _by_callees(out, hits, claimed)
     return out, hits
+
+
+def _call_targets(o, r):
+    """(our target key, retail target VA) for each call/jump relocation of ours."""
+    for rel in o.relocs:
+        k = rel.offset
+        if rel.kind != 'pcrel' or not rel.target or rel.size != 4 or k + 4 > len(r.data):
+            continue
+        if (k >= 1 and r.data[k - 1] in (0xe8, 0xe9)) or (k >= 2 and r.data[k - 2] == 0x0f and 0x80 <= r.data[k - 1] <= 0x8f):
+            yield rel.target, (r.addr + k + 4 + int.from_bytes(r.data[k:k + 4], 'little', signed=True)) & 0xffffffff
+
+
+def _by_callees(out, hits, claimed):
+    """Re-pick among identical-code candidates by what they call: "store the vtable, call
+    the base destructor" masks alike for every class, but the callee tells them apart."""
+    from .model import canonical
+    addrs, sure = {}, {}
+    for o, hs in hits.items():
+        keys = [o.key] + [canonical(o.module.fmt, a) for a in o.aliases]
+        for k in keys:
+            addrs.setdefault(k, set()).update(r.addr for r in hs)
+        if len(hs) == 1:
+            sure[hs[0].addr] = set(keys)
+
+    def score(o, r):
+        good = bad = 0
+        for t, va in _call_targets(o, r):
+            if va in addrs.get(t, ()):
+                good += 1
+            elif va in sure:
+                bad += 1
+        return (bad == 0, good)
+
+    # functions sharing one candidate set are assigned together, best-agreeing pairs first
+    groups = collections.defaultdict(list)
+    for o, hs in hits.items():
+        if len(hs) >= 2 and o in out and out[o][1] != POSITION and len(hs) <= 400:
+            groups[tuple(id(r) for r in hs)].append(o)
+    for os_ in groups.values():
+        cands = hits[os_[0]]
+        if not any(o.relocs for o in os_):
+            continue
+        for o in os_:
+            claimed.discard(out[o][0])
+        free = [r for r in cands if r not in claimed]
+        pairs = sorted(((score(o, r), -i, -j, o, r) for i, o in enumerate(os_) for j, r in enumerate(free)),
+                       key=lambda p: p[:3], reverse=True)
+        done, used = set(), set()
+        for s, _, _, o, r in pairs:
+            if o in done or r in used:
+                continue
+            out[o] = (r, out[o][1])
+            done.add(o)
+            used.add(r)
+        for o in os_:
+            claimed.add(out[o][0])
 
 
 def _lis(pairs):
@@ -156,8 +213,11 @@ def _place_run(run, hits, out, claimed, order, index, take):
             hi = lo
             while hi < len(order) and order[hi] not in claimed:
                 hi += 1
-        rest = [o for o in gap if o not in out]
-        free = [r for r in order[lo:hi] if r not in claimed]
+        # identical code found elsewhere isn't this slot's function; gap code without an FDE
+        # (ud2 after noreturn calls, CRT code) isn't a compiled function
+        rest = [o for o in gap if o not in out and not hits.get(o)]
+        fde = getattr(order[0].module, 'fde_starts', None) if order else None
+        free = [r for r in order[lo:hi] if r not in claimed and (fde is None or r.addr in fde)]
         if not rest or not free:
             continue
         if len(rest) == len(free) and not edge:

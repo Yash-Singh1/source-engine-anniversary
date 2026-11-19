@@ -1173,6 +1173,7 @@ void CServerGameDLL::GameServerSteamAPIShutdown( void )
 //-----------------------------------------------------------------------------
 ConVar  trace_report( "trace_report", "0" );
 
+#line 1192
 void CServerGameDLL::GameFrame( bool simulating )
 {
 	VPROF( "CServerGameDLL::GameFrame" );

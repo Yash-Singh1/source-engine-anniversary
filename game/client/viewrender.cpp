@@ -1153,6 +1153,7 @@ bool CViewRender::ShouldDrawBrushModels( void )
 //-----------------------------------------------------------------------------
 // Purpose: Performs screen space effects, if any
 //-----------------------------------------------------------------------------
+#line 1169
 void CViewRender::PerformScreenSpaceEffects( int x, int y, int w, int h )
 {
 	VPROF("CViewRender::PerformScreenSpaceEffects()");
@@ -1765,6 +1766,7 @@ static float GetSkyboxFogMaxDensity()
 }
 
 
+#line 1864
 void CViewRender::DisableFog( void )
 {
 	VPROF("CViewRander::DisableFog()");
@@ -2830,6 +2832,7 @@ void CViewRender::GetWaterLODParams( float &flCheapWaterStartDistance, float &fl
 // Input  : &view - 
 //			&introData - 
 //-----------------------------------------------------------------------------
+#line 2957
 void CViewRender::ViewDrawScene_Intro( const CViewSetup &view, int nClearFlags, const IntroData_t &introData )
 {
 	VPROF( "CViewRender::ViewDrawScene" );
@@ -3261,6 +3264,7 @@ void CRendering3dView::ReleaseLists()
 //-----------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
+#line 3403
 void CRendering3dView::SetupRenderablesList( int viewID )
 {
 	VPROF( "CViewRender::SetupRenderablesList" );

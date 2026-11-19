@@ -1759,6 +1759,7 @@ void CParticleCollection::UpdatePrevControlPoints( float dt )
 #define END_OP
 #endif
 
+#line 1697
 void CParticleCollection::InitializeNewParticles( int nFirstParticle, int nParticleCount, uint32 nInittedMask )
 {
 	VPROF_BUDGET( "CParticleCollection::InitializeNewParticles", VPROF_BUDGETGROUP_PARTICLE_SIMULATION );
@@ -1933,6 +1934,7 @@ void CParticleCollection::Simulate( float dt )
 #else
 void CParticleCollection::Simulate( float dt, bool updateBboxOnly )
 #endif
+#line 1864
 {
 	VPROF_BUDGET( "CParticleCollection::Simulate", VPROF_BUDGETGROUP_PARTICLE_SIMULATION );
 	if ( dt < 0.0f )
@@ -3788,6 +3790,7 @@ void CParticleSystemMgr::CommitProfileInformation( bool bCommit )
 #endif
 }
 
+#line 3646
 void CParticleSystemMgr::DrawRenderCache( bool bShadowDepth )
 {
 	int nRenderCacheCount = m_RenderCache.Count();

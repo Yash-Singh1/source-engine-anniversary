@@ -133,6 +133,7 @@ void Hack_FixEscapeChars( char *str )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+#line 149
 class CSoundEmitterSystem : public CBaseGameSystem
 {
 public:
