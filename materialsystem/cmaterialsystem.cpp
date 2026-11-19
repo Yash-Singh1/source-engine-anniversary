@@ -5794,7 +5794,12 @@ IMaterialProxy *CMaterialSystem::DetermineProxyReplacements( IMaterial *pMateria
 	char szCheckPath[ MAX_PATH ], szCheckName[ MAX_PATH ], szLastPath[ MAX_PATH ];
 	const char *pszShadername = pFallbackKeyValues->GetName();
 
+#ifdef BYTEMATCH_RETAIL
+	strcpy( szLastPath, pszMaterialName );
+#else
 	V_strcpy_safe( szLastPath, pszMaterialName );
+#endif
+#line 5255
 	int	nLength = strlen( szLastPath ) - strlen( REPLACEMENT_NAME );
 	if ( nLength > 0 && strcmpi( &szLastPath[ nLength ], REPLACEMENT_NAME  ) == 0 )
 	{
@@ -5812,7 +5817,12 @@ IMaterialProxy *CMaterialSystem::DetermineProxyReplacements( IMaterial *pMateria
 			pszRemoveSlashes++;
 		}
 
+#ifdef BYTEMATCH_RETAIL
+		sprintf( szCheckName, "materials/%s", pszRemoveSlashes );
+#else
 		V_sprintf_safe( szCheckName, "materials/%s", pszRemoveSlashes );
+#endif
+#line 5273
 		int nIndex = m_Replacements.Find( szCheckName );
 
 		if ( m_Replacements.IsValidIndex( nIndex ) )
