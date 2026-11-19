@@ -27,6 +27,7 @@
 #ifdef BYTEMATCH_RETAIL
 #define VPK_ENABLE_SIGNING
 #endif
+#line 28
 
 const int k_nVPKDefaultChunkSize = 200 * 1024 * 1024;
 
