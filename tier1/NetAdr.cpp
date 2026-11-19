@@ -132,6 +132,7 @@ const char * netadr_t::ToString(bool baseOnly) const
 	return s;
 }
 
+#ifndef BYTEMATCH_RETAIL
 void netadr_t::ToString( char *pchBuffer, uint32 unBufferSize, bool onlyBase ) const
 {
 
@@ -159,6 +160,8 @@ void netadr_t::ToString( char *pchBuffer, uint32 unBufferSize, bool onlyBase ) c
 		V_strncpy( pchBuffer, "unknown", unBufferSize );
 	}
 }
+#endif
+#line 162
 
 bool netadr_t::IsLocalhost() const
 {
@@ -263,11 +266,14 @@ bool netadr_t::IsValid() const
 			 ( ip[0] != 0 || ip[1] != 0 || ip[2] != 0 || ip[3] != 0 ) );
 }
 
+#ifndef BYTEMATCH_RETAIL
 bool netadr_t::IsBaseAdrValid() const
 {
 	return ( (type != NA_NULL) &&
 		( ip[0] != 0 || ip[1] != 0 || ip[2] != 0 || ip[3] != 0 ) );
 }
+#endif
+#line 271
 
 #ifdef _WIN32
 #undef SetPort	// get around stupid WINSPOOL.H macro

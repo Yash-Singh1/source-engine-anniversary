@@ -1786,7 +1786,7 @@ static bool g_TelemetryLoaded = false;
 static unsigned int g_TelemetryFrameCount = 0;
 static bool g_fTelemetryLevelChanged = false;
 
-static const TmU32 TELEMETRY_ARENA_SIZE = 8 * 1024 * 1024; // How much memory we want Telemetry to use.
+static const TmU32 TELEMETRY_ARENA_SIZE = 32 * 1024 * 1024; // How much memory we want Telemetry to use.
 
 struct ThreadNameInfo_t
 {
@@ -1798,7 +1798,7 @@ static CTSSimpleList< ThreadNameInfo_t > g_ThreadNamesList;
 
 static bool g_bThreadNameArrayChanged = false;
 static int g_ThreadNameArrayCount = 0;
-static ThreadNameInfo_t *g_ThreadNameArray[64];
+static ThreadNameInfo_t g_ThreadNameArray[32];
 
 void TelemetryThreadSetDebugName( ThreadId_t id, const char *pszName )
 {
@@ -1815,37 +1815,6 @@ void TelemetryThreadSetDebugName( ThreadId_t id, const char *pszName )
 	g_ThreadNamesList.Push( pThreadNameInfo );
 
 	g_bThreadNameArrayChanged = true;
-}
-
-static void UpdateTelemetryThreadNames()
-{
-	if( g_bThreadNameArrayChanged )
-	{
-		// Go through and add any new thread names we got in our thread safe list to our thread names array.
-		for( ThreadNameInfo_t *pThreadNameInfo = g_ThreadNamesList.Pop();
-			  pThreadNameInfo;
-			  pThreadNameInfo = g_ThreadNamesList.Pop() )
-		{
-			if( g_ThreadNameArrayCount < ARRAYSIZE( g_ThreadNameArray ) )
-			{
-				g_ThreadNameArray[ g_ThreadNameArrayCount ] = pThreadNameInfo;
-				g_ThreadNameArrayCount++;
-			}
-			else
-			{
-				delete pThreadNameInfo;
-			}
-		}
-
-		tmThreadName( g_tmContext, ThreadGetCurrentId(), "MainThrd" );
-
-		for( int i = 0; i < g_ThreadNameArrayCount; i++ )
-		{
-			tmThreadName( g_tmContext, g_ThreadNameArray[i]->ThreadID, g_ThreadNameArray[i]->szName );
-		}
-
-		g_bThreadNameArrayChanged = false;
-	}
 }
 
 static bool TelemetryInitialize()
@@ -1934,10 +1903,39 @@ static bool TelemetryInitialize()
 	}
 
 	Msg( "Telemetry initialized at level %u.\n", g_Telemetry.Level );
+#ifdef POSIX
+	printf( "Telemetry initialized at level %u.\n", g_Telemetry.Level );
+#endif
 
-    // Make sure we set all the thread names.
-	g_bThreadNameArrayChanged = true;
-	UpdateTelemetryThreadNames();
+	// Name the threads we know about.
+	if( g_bThreadNameArrayChanged )
+	{
+		// Go through and add any new thread names we got in our thread safe list to our thread names array.
+		for( ThreadNameInfo_t *pThreadNameInfo = g_ThreadNamesList.Pop();
+			  pThreadNameInfo;
+			  pThreadNameInfo = g_ThreadNamesList.Pop() )
+		{
+			if( g_ThreadNameArrayCount < ARRAYSIZE( g_ThreadNameArray ) )
+			{
+				g_ThreadNameArray[ g_ThreadNameArrayCount ] = *pThreadNameInfo;
+				g_ThreadNameArrayCount++;
+			}
+
+			delete pThreadNameInfo;
+		}
+
+		for( int i = 0; i < g_ThreadNameArrayCount; i++ )
+		{
+			tmThreadName( g_tmContext, g_ThreadNameArray[i].ThreadID, g_ThreadNameArray[i].szName );
+		}
+
+		g_bThreadNameArrayChanged = false;
+	}
+
+	if( !g_Telemetry.ZoneFilterVal )
+	{
+		g_Telemetry.ZoneFilterVal = 500;
+	}
 
 	return true;
 }
@@ -1977,10 +1975,10 @@ public:
 
 PLATFORM_INTERFACE void TelemetrySetLevel( unsigned int Level )
 {
+	DevMsg( "TelemetrySetLevel changed from 0x%x to 0x%x (ZoneFilterVal:%d)\n", g_Telemetry.Level, Level, g_Telemetry.ZoneFilterVal );
+
 	if( Level != g_Telemetry.Level )
 	{
-		DevMsg( "TelemetrySetLevel changed from 0x%x to 0x%x\n", g_Telemetry.Level, Level );
-
 		g_Telemetry.Level = Level;
 		g_TelemetryFrameCount = g_Telemetry.FrameCount;
 		g_fTelemetryLevelChanged = true;
@@ -1993,6 +1991,12 @@ static void TelemetryPlots()
 	{
 		tmPlotU32( TELEMETRY_LEVEL1, TMPT_INTEGER, 0, g_Telemetry.playbacktick, "game/PlaybackTick" );
 		g_Telemetry.playbacktick = 0;
+	}
+
+	if( g_Telemetry.dotatime )
+	{
+		tmPlot( TELEMETRY_LEVEL1, TMPT_NONE, 0, g_Telemetry.dotatime, "game/DotaTime" );
+		g_Telemetry.dotatime = 0;
 	}
 
 	for( int i = 0; i < g_VProfCurrentProfile.GetNumCounters(); i++ )
@@ -2011,9 +2015,6 @@ static void TelemetryPlots()
 
 PLATFORM_INTERFACE void TelemetryTick()
 {
-	static double s_d0 = Plat_FloatTime();
-	static TmU64 s_t0 = tmFastTime();
-
 	if( !g_Telemetry.Level && g_Telemetry.DemoTickStart && ( (uint32)g_Telemetry.playbacktick > g_Telemetry.DemoTickStart ) )
 	{
 		TelemetrySetLevel( 2 );
@@ -2028,16 +2029,24 @@ PLATFORM_INTERFACE void TelemetryTick()
 	// People can NIL out contexts in the TelemetryData structure to control
 	//	the level and what sections to log. We always need to do ticks though,
 	//	so use master context for this.
+	if( g_tmContext && g_Telemetry.Level > 0 )
+		TelemetryPlots();
+
+	static double s_d0 = Plat_FloatTime();
+	static TmU64 s_t0 = tmFastTime();
+
+	// Do a Telemetry Tick.
+	tmTick( g_tmContext );
+
 	if( g_tmContext )
 	{
-		// Update any new thread names.
-		UpdateTelemetryThreadNames();
-
-		if ( g_Telemetry.Level > 0 )
-			TelemetryPlots();
-
-		// Do a Telemetry Tick.
-		tmTick( g_tmContext );
+		// A new zone filter value takes effect through a level change.
+		static uint32 s_ZoneFilterVal = 0;
+		if( s_ZoneFilterVal != g_Telemetry.ZoneFilterVal )
+		{
+			g_fTelemetryLevelChanged = true;
+			s_ZoneFilterVal = g_Telemetry.ZoneFilterVal;
+		}
 
 		// Update flRDTSCToMilliSeconds.
 		TmU64 s_t1 = tmFastTime();
@@ -2062,7 +2071,13 @@ PLATFORM_INTERFACE void TelemetryTick()
 		g_fTelemetryLevelChanged = false;
 		memset( g_Telemetry.tmContext, 0, sizeof( g_Telemetry.tmContext ) );
 
-		if( g_Telemetry.Level == 0 )
+		// The high bit makes the level a mask of contexts.
+		if( g_Telemetry.Level == 0x80000000 )
+			g_Telemetry.Level = 1;
+		bool bLevelIsMask = !!( g_Telemetry.Level & 0x80000000 );
+		uint32 Level = g_Telemetry.Level & ~0x80000000;
+
+		if( Level == 0 )
 		{
 			// Calling shutdown here invalidates all the telemetry context handles.
 			// Background threads in the middle of Tm__Zone'd calls may crash...
@@ -2078,10 +2093,21 @@ PLATFORM_INTERFACE void TelemetryTick()
 			{
 				tmPause( g_tmContext, 0 );
 
-				uint32 Level = MIN( g_Telemetry.Level, ARRAYSIZE( g_Telemetry.tmContext ) );
-				for( uint32 i = 0; i < Level; i++ )
+				if( bLevelIsMask )
 				{
-					g_Telemetry.tmContext[i] = g_tmContext;
+					for( uint32 i = 0; i < ARRAYSIZE( g_Telemetry.tmContext ); i++ )
+					{
+						if( Level & ( 1 << i ) )
+							g_Telemetry.tmContext[i] = g_tmContext;
+					}
+				}
+				else
+				{
+					Level = MIN( Level, ARRAYSIZE( g_Telemetry.tmContext ) );
+					for( uint32 i = 0; i < Level; i++ )
+					{
+						g_Telemetry.tmContext[i] = g_tmContext;
+					}
 				}
 			}
 		}

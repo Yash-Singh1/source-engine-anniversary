@@ -465,6 +465,33 @@ void CUtlString::StripTrailingSlash()
 
 CUtlString CUtlString::Slice( int32 nStart, int32 nEnd ) const
 {
+#ifdef BYTEMATCH_RETAIL
+	if ( nStart < 0 )
+		nStart = Length() - (-nStart % Length());
+	else if ( nStart >= Length() )
+		nStart = Length();
+
+	if ( nEnd == 0x7FFFFFFF )
+		nEnd = Length();
+	else if ( nEnd < 0 )
+		nEnd = Length() - (-nEnd % Length());
+	else if ( nEnd >= Length() )
+		nEnd = Length();
+	
+	if ( nStart >= nEnd )
+		return CUtlString( "" );
+
+	const char *pIn = String();
+
+	CUtlString ret;
+	ret.m_Storage.SetLength( nEnd - nStart + 1 );
+	char *pOut = (char*)ret.m_Storage.Get();
+
+	memcpy( ret.m_Storage.Get(), &pIn[nStart], nEnd - nStart );
+	pOut[nEnd - nStart] = 0;
+
+	return ret;
+#else
 	int length = Length();
 	if ( length == 0 )
 	{
@@ -491,6 +518,8 @@ CUtlString CUtlString::Slice( int32 nStart, int32 nEnd ) const
 	CUtlString ret;
 	ret.SetDirect( pIn + nStart, nEnd - nStart );
 	return ret;
+#endif
+#line 494
 }
 
 // Grab a substring starting from the left or the right side.
