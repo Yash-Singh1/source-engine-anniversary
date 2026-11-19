@@ -840,6 +840,7 @@ CUtlString CUtlString::operator+( int rhs ) const
 	return ret;
 }
 
+#ifndef BYTEMATCH_RETAIL
 // Shared static empty string.
 const CUtlString &CUtlString::GetEmptyString()
 {
@@ -847,3 +848,4 @@ const CUtlString &CUtlString::GetEmptyString()
 
 	return s_emptyString;
 }
+#endif

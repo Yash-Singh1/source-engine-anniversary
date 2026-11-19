@@ -65,7 +65,10 @@ public:
 	virtual void	Enable();
 	virtual void	Disable();
 	virtual void	Layout();
-
+#ifdef CLIENTMODE_LAYOUT_FORCE
+	virtual void	Layout( bool bForce );
+#endif
+#line 69
 	virtual void	ReloadScheme( void );
 	virtual void	OverrideView( CViewSetup *pSetup );
 	virtual bool	ShouldDrawDetailObjects( );

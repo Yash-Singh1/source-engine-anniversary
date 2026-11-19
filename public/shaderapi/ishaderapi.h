@@ -593,7 +593,12 @@ public:
 	virtual void AcquireThreadOwnership() = 0;
 	virtual void ReleaseThreadOwnership() = 0;
 
+#ifdef BYTEMATCH_RETAIL
+	virtual bool SupportsNormalMapCompression() const = 0;
+#else
 	virtual bool SupportsNormalMapCompression() const { Assert( !"This has all been removed." ); return false; }
+#endif
+#line 597
 
 	// Only does anything on XBox360. This is useful to eliminate stalls
 	virtual void EnableBuffer2FramesAhead( bool bEnable ) = 0;

@@ -13,6 +13,11 @@
     {"target": "vaudio_miles", "retail": "bin/vaudio_miles.dylib", "size": 28900, "sha256": "51e6b5c1b81b66306fe3ad2e8a2f8f12f6fadd9d68252cecbc3ca2fc7dcf5806"},
     {"target": "vtex_dll", "retail": "bin/vtex_dll.dylib", "size": 298736, "sha256": "c14816e9d29865e32f20d0d9cbd5b25b885b7bc8d7560bb61cfc9f5b846985bb"},
     {"target": "tier0", "retail": "bin/libtier0.dylib", "size": 169572, "sha256": "1e526baa4ee1973f1a31d3ececa6ae2d4fea0d5f474ada91937205569aed38cd"},
-    {"target": "launcher", "retail": "bin/launcher.dylib", "size": 222960, "sha256": "03d9788abe3fdd7bcda42f41d7ca2f1a0800b125da0dc58c667bd624c3621416"}
+    {"target": "launcher", "retail": "bin/launcher.dylib", "size": 222960, "sha256": "03d9788abe3fdd7bcda42f41d7ca2f1a0800b125da0dc58c667bd624c3621416"},
+    {"target": "sourcevr", "retail": "bin/sourcevr.dylib", "size": 75032, "sha256": "b4f0fbafa43c1035995751701392bf4c02bb649a52fb87c83f5e7177afd902af"},
+    {"target": "bsppack", "retail": "bin/bsppack.dylib", "size": 336184, "sha256": "150f87ebdcdfbfa4d57bbf735dff5e7bfc070da06750f4a1f0247dd15b2f8f0b"},
+    {"target": "vgui2", "retail": "bin/vgui2.dylib", "size": 331636, "sha256": "e84260d840972b4f7629aee899fa365fc1b71c9c821030efd212dceace09caf5"},
+    {"target": "ServerBrowser", "retail": "bin/ServerBrowser.dylib", "size": 2142380, "sha256": "7b71cc2112f034d64a3078262739c02fe5e441bba88284c7c892595fedcdf77b"},
+    {"target": "shaderapiempty", "retail": "bin/shaderapiempty.dylib", "size": 143668, "sha256": "5631f4854eda050739cd473747225acaa2884d43544330e929f8a065c7b85155"}
   ]
 }

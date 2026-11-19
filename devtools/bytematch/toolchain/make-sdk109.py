@@ -20,6 +20,7 @@ import glob
 import json
 import os
 import shutil
+import struct
 import subprocess
 import sys
 import tempfile
@@ -190,6 +191,83 @@ def write_stub_asm(path, exports):
             f.write(f".globl {q}\n{q} = 0\n")
 
 
+def add_local_symbol(path, name, sectname, offset):
+    """Insert a local N_SECT symbol `name` at `offset` in section `sectname` of a 32-bit
+    MH_OBJECT, in place (atomic rename). No-op if the object already defines it."""
+    with open(path, "rb") as f:
+        d = bytearray(f.read())
+    magic, _, _, filetype, ncmds, _, _ = struct.unpack_from("<7I", d)
+    if magic != 0xFEEDFACE or filetype != 1:
+        raise ValueError(f"{path}: not a 32-bit MH_OBJECT")
+    off, sects, symtab, dysym = 28, [], None, None
+    for _ in range(ncmds):
+        cmd, size = struct.unpack_from("<2I", d, off)
+        if cmd == 0x1:
+            for s in range(struct.unpack_from("<I", d, off + 48)[0]):
+                so = off + 56 + 68 * s
+                sects.append((d[so:so + 16].rstrip(b"\0").decode(), so))
+        elif cmd == 0x2:
+            symtab = off
+        elif cmd == 0xB:
+            dysym = off
+        off += size
+    symoff, nsyms, stroff, strsize = struct.unpack_from("<4I", d, symtab + 8)
+    if stroff != symoff + 12 * nsyms or stroff + strsize != len(d):
+        raise ValueError(f"{path}: symbol and string tables are not the last two blobs")
+    strtab = bytes(d[stroff:])
+    for i in range(nsyms):
+        strx = struct.unpack_from("<I", d, symoff + 12 * i)[0]
+        if strtab[strx:strtab.index(b"\0", strx)] == name.encode():
+            return False
+    nsect = next(i + 1 for i, (n, _) in enumerate(sects) if n == sectname)
+    addr = struct.unpack_from("<I", d, sects[nsect - 1][1] + 32)[0]
+    dy = list(struct.unpack_from("<18I", d, dysym + 8)) if dysym else [0] * 18
+    at = dy[0] + dy[1]  # end of the locals
+    # extern relocations and indirect symbols that index past the insertion point
+    for _, so in sects:
+        reloff, nreloc = struct.unpack_from("<2I", d, so + 48)
+        for r in range(nreloc):
+            ro = reloff + 8 * r
+            info = struct.unpack_from("<I", d, ro + 4)[0]
+            if struct.unpack_from("<I", d, ro)[0] & 0x80000000 or not info & (1 << 27):
+                continue
+            num = info & 0xFFFFFF
+            if num >= at:
+                struct.pack_into("<I", d, ro + 4, (info & ~0xFFFFFF) | (num + 1))
+    for k in range(dy[13]):
+        io = dy[12] + 4 * k
+        v = struct.unpack_from("<I", d, io)[0]
+        if v < 0x40000000 and v >= at:
+            struct.pack_into("<I", d, io, v + 1)
+    if dysym:
+        dy[1] += 1
+        for i in (2, 4):  # iextdefsym, iundefsym
+            if dy[i] >= at:
+                dy[i] += 1
+        struct.pack_into("<18I", d, dysym + 8, *dy)
+    strx = strsize
+    new_str = name.encode() + b"\0"
+    new_str += b"\0" * (-(strsize + len(new_str)) % 4)
+    entry = struct.pack("<IBBHI", strx, 0x0E, nsect, 0, addr + offset)
+    out = d[:symoff + 12 * at] + entry + d[symoff + 12 * at:] + new_str
+    struct.pack_into("<4I", out, symtab + 8, symoff, nsyms + 1, stroff + 12, strsize + len(new_str))
+    tmp = path + ".tmp"
+    with open(tmp, "wb") as f:
+        f.write(out)
+    os.chmod(tmp, os.stat(path).st_mode & 0o7777)
+    os.rename(tmp, path)
+    return True
+
+
+def label_crt(sdk):
+    """Apple's 10.9 SDK dylib1.10.5.o names its __data word (the image's mach header,
+    pushed by dyld_stub_binding_helper) `dyld__mach_header`; the 10.6 SDK's leaves it
+    unnamed. Retail's 10.5-target modules (sourcevr, hl2mp client and server) carry
+    the local symbol."""
+    return add_local_symbol(os.path.join(sdk, "usr", "lib", "dylib1.10.5.o"),
+                            "dyld__mach_header", "__data", 0)
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--prefix", default=DEFAULT_PREFIX)
@@ -222,6 +300,7 @@ def main():
         with open(patch) as f:
             subprocess.run(["patch", "-p1", "--forward", "-s"], cwd=out, stdin=f, check=True)
         print(f"applied {os.path.basename(patch)}")
+    label_crt(out)
 
     plan = {}
     for name, e in libs.items():

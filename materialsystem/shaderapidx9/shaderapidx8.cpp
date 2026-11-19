@@ -6124,19 +6124,7 @@ int CShaderAPIDx8::GetPixelFogCombo1( bool bSupportsRadial )
 	return nCombo;
 }
 
-void CShaderAPIDx8::SceneFogRadial( bool bRadial )
-{
-	if ( bRadial != m_DynamicState.m_bFogRadial )
-	{
-		FlushBufferedPrimitives();
-		m_DynamicState.m_bFogRadial = bRadial;
-	}
-}
-
-bool CShaderAPIDx8::GetSceneFogRadial()
-{
-	return m_DynamicState.m_bFogRadial;
-}
+#line 6140
 
 
 static ConVar r_pixelfog( "r_pixelfog", "1" );
@@ -6282,6 +6270,20 @@ void CShaderAPIDx8::FogMaxDensity( float flMaxDensity )
 	}
 }
 
+void CShaderAPIDx8::SceneFogRadial( bool bRadial )
+{
+	if ( bRadial != m_DynamicState.m_bFogRadial )
+	{
+		FlushBufferedPrimitives();
+		m_DynamicState.m_bFogRadial = bRadial;
+	}
+}
+
+bool CShaderAPIDx8::GetSceneFogRadial()
+{
+	return m_DynamicState.m_bFogRadial;
+}
+#line 6285
 void CShaderAPIDx8::GetFogDistances( float *fStart, float *fEnd, float *fFogZ )
 {
 	LOCK_SHADERAPI();

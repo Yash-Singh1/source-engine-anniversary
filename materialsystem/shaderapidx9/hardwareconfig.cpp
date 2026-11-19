@@ -836,10 +836,13 @@ bool CHardwareConfig::SupportsFetch4() const
 	return m_Caps.m_bSupportsFetch4;
 }
 
+#ifndef BYTEMATCH_RETAIL
 bool CHardwareConfig::CanStretchRectFromTextures() const
 {
 	return m_Caps.m_bCanStretchRectFromTextures;
 }
+#endif
+#line 843
 
 bool CHardwareConfig::SupportsVertexAndPixelShaders() const
 {

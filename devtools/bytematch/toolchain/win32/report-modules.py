@@ -19,7 +19,7 @@ define differences rather than codegen.
 usage: report-modules.py [--build DIR] [--maps DIR ...] [--mac-build DIR] [--mac-game-build hl2=DIR ...]
                          [--out DIR] [--json FILE] [--top N] [--modules a,b,...]
 """
-import argparse, glob, json, os, subprocess, sys
+import argparse, collections, glob, json, os, subprocess, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TREE = os.path.abspath(os.path.join(HERE, "..", "..", "..", ".."))
@@ -94,6 +94,17 @@ def build_index(man):
     return dict((n, i + 1) for i, n in enumerate(order))
 
 
+def built_index(build, m, idx):
+    """The index a module's objects carry: a build configured with --retail-win32-modules numbers
+    its modules differently, so take the one most of the module's sources were compiled with."""
+    bases = [os.path.join(os.path.abspath(build), s["path"]) for s in m["sources"]
+             if not s.get("missing") and s["lang"] in ("c", "c++", "asm")]
+    if any(os.path.exists(b + ".%d.o" % idx) for b in bases):
+        return idx
+    seen = collections.Counter(p.rsplit(".", 2)[-2] for b in bases for p in glob.glob(b + ".*.o"))
+    return int(seen.most_common(1)[0][0]) if seen else idx
+
+
 def module_objects(build, name, man, index, out, own=False):
     """A directory of links to the objects a DLL is made of (a linked DLL has no symbols to scope
     by): its own and those of the static libraries it links, which the retail macOS build often
@@ -113,11 +124,12 @@ def module_objects(build, name, man, index, out, own=False):
             break
         todo += [l["project"] for l in man[n]["libs"] if l.get("project") and not l.get("implib")]
     for n in mods:
+        idx = built_index(build, man[n], index[n])
         for s in man[n]["sources"]:
             if s.get("missing") or s["lang"] not in ("c", "c++", "asm"):
                 continue
             base = os.path.join(os.path.abspath(build), s["path"])
-            for cand in (base + ".%d.o" % index[n], os.path.splitext(base)[0] + ".%d.obj" % index[n]):
+            for cand in (base + ".%d.o" % idx, os.path.splitext(base)[0] + ".%d.obj" % idx):
                 if os.path.exists(cand):
                     link = os.path.join(d, os.path.basename(cand))
                     if not os.path.lexists(link):
