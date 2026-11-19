@@ -1151,6 +1151,7 @@ static ConCommand Command_Playgamesound( "playgamesound", Playgamesound_f, "Play
 // Purpose:  Non-static override for doing the general case of CPASAttenuationFilter( this ), and EmitSound( filter, entindex(), etc. );
 // Input  : *soundname - 
 //-----------------------------------------------------------------------------
+#line 1167
 void CBaseEntity::EmitSound( const char *soundname, float soundtime /*= 0.0f*/, float *duration /*=NULL*/ )
 {
 	//VPROF( "CBaseEntity::EmitSound" );

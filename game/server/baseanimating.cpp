@@ -1771,6 +1771,7 @@ inline bool CBaseAnimating::CanSkipAnimation( void )
 }
 
 
+#line 1772
 void CBaseAnimating::SetupBones( matrix3x4_t *pBoneToWorld, int boneMask )
 {
 	AUTO_LOCK( m_BoneSetupMutex );
