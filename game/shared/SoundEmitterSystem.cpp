@@ -324,7 +324,7 @@ public:
 		}
 		g_pFullFileSystem->FindClose( hFind );
 #endif
-#line 315
+#line 328
 
 #if !defined( CLIENT_DLL )
 		for ( int i=soundemitterbase->First(); i != soundemitterbase->InvalidIndex(); i=soundemitterbase->Next( i ) )

@@ -103,7 +103,7 @@ void CUtlMemoryPool::Clear()
 	}
 	Init();
 }
-
+#ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
 // Is an allocation within the pool? 
 //-----------------------------------------------------------------------------
@@ -124,7 +124,7 @@ bool CUtlMemoryPool::IsAllocationWithinPool( void *pMem ) const
 
 	return false;
 }
-
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: Reports memory leaks 

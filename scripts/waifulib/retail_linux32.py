@@ -249,13 +249,13 @@ def retail_linux32_configure(conf):
 		v.RETAIL_PROJECTS = list(LIB_MODULES)
 		if o.RETAIL_LINUX32_ENGINE:
 			v.RETAIL_PROJECTS += ENGINE_MODULES
+		if any(a == '--build-games' or a.startswith('--build-games=') for a in sys.argv):
+			v.RETAIL_PROJECTS += GAME_MODULES
 	if o.RETAIL_LINUX32_ENGINE:
 		# The May 2025 build has the define makefile_base_posix.mak (2018) left commented out and
 		# the 2025 SDK's source_posix_ninja.vpc sets: retail libtier0/libvstdlib import readdir64
 		# and no readdir, and Plat_IsInDebugSession calls fopen64's wrapper.
 		v.RETAIL_LINUX32_DEFINES = ['_FILE_OFFSET_BITS=64']
-		if any(a == '--build-games' or a.startswith('--build-games=') for a in sys.argv):
-			v.RETAIL_PROJECTS += GAME_MODULES
 	Logs.info('retail-linux32: container %s, projects %s' % (subprocess.check_output(scout + ['--name']).decode().strip(),
 		','.join(v.RETAIL_PROJECTS)))
 	conf.add_subproject(v.RETAIL_PROJECTS)

@@ -1794,7 +1794,7 @@ void V_StripTrailingSlash( char *ppath )
 		}
 	}
 }
-
+#ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : *ppline - 
@@ -1849,7 +1849,7 @@ void V_StripSurroundingQuotes( char *ppline )
 		ppline[len] = 0;
 	}
 }
-
+#endif
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : *in - 
@@ -3134,7 +3134,7 @@ inline int V_iswspace( int c ) { return ( c <= 0xFFFF ) ? iswspace( (wint_t)c ) 
 #define V_iswspace(x) iswspace(x)
 #endif
 
-
+#ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
 // Purpose: Slightly modified strtok. Does not modify the input string. Does
 //			not skip over more than one separator at a time. This allows parsing
@@ -3247,7 +3247,7 @@ uint64 V_strtoui64( const char *nptr, char **endptr, int base )
 	return strtoull( nptr, endptr, base );
 }
 #endif
-
+#endif
 
 struct HtmlEntity_t
 {
@@ -3395,7 +3395,7 @@ const Tier1FullHTMLEntity_t g_Tier1_FullHTMLEntities[] =
 #pragma warning( pop )
 #endif
 
-
+#ifndef BYTEMATCH_RETAIL
 bool V_BasicHtmlEntityEncode( char *pDest, const int nDestSize, char const *pIn, const int nInSize, bool bPreserveWhitespace /*= false*/ )
 {
 	Assert( nDestSize == 0 || pDest != NULL );
@@ -3452,7 +3452,7 @@ bool V_BasicHtmlEntityEncode( char *pDest, const int nDestSize, char const *pIn,
 	pDest[ iOutput ] = 0;
 	return true;
 }
-
+#endif
 
 #ifndef BYTEMATCH_RETAIL
 bool V_HtmlEntityDecodeToUTF8( char *pDest, const int nDestSize, char const *pIn, const int nInSize )
@@ -3553,7 +3553,7 @@ bool V_HtmlEntityDecodeToUTF8( char *pDest, const int nDestSize, char const *pIn
 }
 #endif
 #line 3547
-
+#ifndef BYTEMATCH_RETAIL
 static const char *g_pszSimpleBBCodeReplacements[] = {
 	"[b]", "<b>",
 	"[/b]", "</b>",
@@ -3821,7 +3821,7 @@ bool V_IsDeprecatedW( wchar_t wch )
 
 	return bIsDeprecated;
 }
-
+#endif
 
 #ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------

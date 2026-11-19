@@ -458,7 +458,8 @@ void inline SinCos( float radians, float *sine, float *cosine )
 #elif defined( OSX )
     __sincosf(radians, sine, cosine);
 #elif defined( POSIX )
-	sincosf(radians, sine, cosine);
+	*sine = sinf( radians );
+	*cosine = cosf( radians );
 #endif
 #line 458
 }

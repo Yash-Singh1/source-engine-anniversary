@@ -238,7 +238,7 @@ CUtlBuffer::CUtlBuffer( const void *pBuffer, int nSize, int nFlags ) :
 	SetOverflowFuncs( &CUtlBuffer::GetOverflow, &CUtlBuffer::PutOverflow );
 }
 
-
+#ifndef BYTEMATCH_RETAIL
 CUtlBuffer::CUtlBuffer( const CUtlBuffer& copyFrom )
 : m_Get( copyFrom.m_Get )
 , m_Put( copyFrom.m_Put )
@@ -295,7 +295,7 @@ CUtlBuffer& CUtlBuffer::operator=( const CUtlBuffer& copyFrom )
 
 	return *this;
 }
-
+#endif
 //-----------------------------------------------------------------------------
 // Modifies the buffer to be binary or text; Blows away the buffer and the CONTAINS_CRLF value. 
 //-----------------------------------------------------------------------------
@@ -380,7 +380,7 @@ void CUtlBuffer::AssumeMemory( void *pMemory, int nSize, int nInitialPut, int nF
 	m_nMaxPut = -1;
 	AddNullTermination();
 }
-
+#ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
 // Allows the caller to control memory
 //-----------------------------------------------------------------------------
@@ -394,7 +394,7 @@ void* CUtlBuffer::DetachMemory()
 	m_nOffset = 0;
 	return m_Memory.DetachMemory( );
 }
-
+#endif
 
 //-----------------------------------------------------------------------------
 // Makes sure we've got at least this much memory

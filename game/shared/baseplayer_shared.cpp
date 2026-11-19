@@ -53,6 +53,7 @@
 #ifdef SIXENSE
 #include "sixense/in_sixense.h"
 #endif
+#line 53
 
 // NVNT haptic utils
 #include "haptics/haptic_utils.h"

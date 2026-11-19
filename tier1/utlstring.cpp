@@ -133,12 +133,12 @@ CUtlString::CUtlString( const char *pString )
 {
 	Set( pString );
 }
-
+#ifndef BYTEMATCH_RETAIL
 CUtlString::CUtlString( const char *pString, int length )
 {
 	SetDirect( pString, length );
 }
-
+#endif
 CUtlString::CUtlString( const CUtlString& string )
 {
 	Set( string.Get() );
@@ -552,7 +552,7 @@ void CUtlString::Append( const char *pchAddition )
 {
 	*this += pchAddition;
 }
-
+#ifndef BYTEMATCH_RETAIL
 void CUtlString::Append( const char *pchAddition, int nChars )
 {
 	Assert( !m_Storage.IsReadOnly() );
@@ -598,7 +598,7 @@ bool CUtlString::IsEqual_CaseInsensitive( const char *src ) const
 	}
 	return ( V_stricmp( Get(), src ) == 0 );
 }
-
+#endif
 void CUtlString::FixSlashes( char cSeparator/*=CORRECT_PATH_SEPARATOR*/ )
 {
 	if ( !IsEmpty() )
@@ -606,7 +606,7 @@ void CUtlString::FixSlashes( char cSeparator/*=CORRECT_PATH_SEPARATOR*/ )
 		V_FixSlashes( Get(), cSeparator );
 	}
 }
-
+#ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
 // Trim functions
 //-----------------------------------------------------------------------------
@@ -839,7 +839,7 @@ CUtlString CUtlString::operator+( int rhs ) const
 	ret += rhs;
 	return ret;
 }
-
+#endif
 #ifndef BYTEMATCH_RETAIL
 // Shared static empty string.
 const CUtlString &CUtlString::GetEmptyString()
