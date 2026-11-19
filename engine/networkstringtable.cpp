@@ -1408,12 +1408,24 @@ int CNetworkStringTableContainer::GetNumTables( void ) const
 #ifdef BYTEMATCH_RETAIL
 void CNetworkStringTableContainer::WriteBaselines( bf_write &buf )
 {
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 1393
 	VPROF_BUDGET( "CNetworkStringTableContainer::WriteBaselines", VPROF_BUDGETGROUP_OTHER_NETWORKING );
+#else
+	VPROF_BUDGET( "CNetworkStringTableContainer::WriteBaselines", VPROF_BUDGETGROUP_OTHER_NETWORKING );
+#endif
+#line 1395
 
 	SVC_CreateStringTable msg;
 
 	size_t msg_buffer_size = 2 * NET_MAX_PAYLOAD;
 	char *msg_buffer = new char[ msg_buffer_size ];
+#ifdef _MSC_VER
+	if ( !msg_buffer )
+	{
+		Host_Error( "Failed to allocate %d bytes of memory in CNetworkStringTableContainer::WriteBaselines\n", msg_buffer_size );
+	}
+#endif
 
 	for ( int i = 0 ; i < m_Tables.Count() ; i++ )
 	{
