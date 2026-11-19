@@ -380,18 +380,26 @@ void CalcBoneQuaternion( int frame, float s,
 {
 	if ( panim->flags & STUDIO_ANIM_RAWROT )
 	{
+#ifdef BYTEMATCH_RETAIL
+		q = *(panim->pQuat48());
+#else
 		Quaternion48 tmp;
 		V_memcpy( &tmp, panim->pQuat48(), sizeof(Quaternion48) );
 		q = tmp;
+#endif
 		Assert( q.IsValid() );
 		return;
 	}
 
 	if ( panim->flags & STUDIO_ANIM_RAWROT2 )
 	{
+#ifdef BYTEMATCH_RETAIL
+		q = *(panim->pQuat64());
+#else
 		Quaternion64 tmp;
 		V_memcpy( &tmp, panim->pQuat64(), sizeof(Quaternion64) );
 		q = tmp;
+#endif
 		Assert( q.IsValid() );
 		return;
 	}
@@ -1694,12 +1702,14 @@ void ScaleBones(
 //-----------------------------------------------------------------------------
 void Studio_LocalPoseParameter( const CStudioHdr *pStudioHdr, const float poseParameter[], mstudioseqdesc_t &seqdesc, int iSequence, int iLocalIndex, float &flSetting, int &index )
 {
+#ifndef BYTEMATCH_RETAIL
 	if (!pStudioHdr)
 	{
 		flSetting = 0;
 		index = 0;
 		return;
 	}
+#endif
 
 	int iPose = pStudioHdr->GetSharedPoseParameter( iSequence, seqdesc.paramindex[iLocalIndex] );
 
@@ -3296,7 +3306,11 @@ void CIKContext::AddDependencies( mstudioseqdesc_t &seqdesc, int iSequence, floa
 		}
 		else
 		{
+#ifdef BYTEMATCH_RETAIL
+			flCycle = max( 0.0, min( flCycle, 0.9999 ) );
+#else
 			flCycle = max( 0.f, min( flCycle, 0.9999f ) );
+#endif
 		}
 	}
 
@@ -5123,6 +5137,10 @@ float Studio_SetPoseParameter( const CStudioHdr *pStudioHdr, int iParameter, flo
 	const mstudioposeparamdesc_t &PoseParam = ((CStudioHdr *)pStudioHdr)->pPoseParameter( iParameter );
 
 	Assert( IsFinite( flValue ) );
+#ifdef BYTEMATCH_RETAIL
+	if ( !IsFinite( flValue ) )
+		flValue = 0.0f;
+#endif
 
 	if (PoseParam.loop)
 	{
@@ -5612,9 +5630,13 @@ bool Studio_AnimPosition( mstudioanimdesc_t *panim, float flCycle, Vector &vecPo
 
 	for (int i = 0; i < panim->nummovements; i++)
 	{
+#ifdef BYTEMATCH_RETAIL
+		mstudiomovement_t &pmove = *panim->pMovement( i );
+#else
 		mstudiomovement_t pmove;
 		// TODO(nillerusr): fix alignment on model loading
 		V_memcpy(&pmove, panim->pMovement( i ), sizeof(mstudiomovement_t));
+#endif
 
 		if (pmove.endframe >= flFrame)
 		{
@@ -5909,7 +5931,9 @@ int Studio_FindRandomAttachment( const CStudioHdr *pStudioHdr, const char *pAtta
 
 int Studio_BoneIndexByName( const CStudioHdr *pStudioHdr, const char *pName )
 {
+#ifndef BYTEMATCH_RETAIL
 	if ( pStudioHdr )
+#endif
 	{
 		// binary search for the bone matching pName
 		int start = 0, end = pStudioHdr->numbones()-1;
@@ -5945,7 +5969,9 @@ const char *Studio_GetDefaultSurfaceProps( CStudioHdr *pstudiohdr )
 
 float Studio_GetMass( CStudioHdr *pstudiohdr )
 {
+#ifndef BYTEMATCH_RETAIL
 	if( pstudiohdr == NULL ) return 0.f;
+#endif
 
 	return pstudiohdr->mass();
 }

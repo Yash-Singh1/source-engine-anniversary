@@ -3338,10 +3338,10 @@ bool CNPC_Strider::ShouldExplodeFromDamage( const CTakeDamageInfo &info )
 }
 
 //---------------------------------------------------------
-//---------------------------------------------------------
+static ConVarRef mat_dxlevel( "mat_dxlevel" );
 bool CNPC_Strider::BecomeRagdoll( const CTakeDamageInfo &info, const Vector &forceVector ) 
 { 
-	static ConVarRef mat_dxlevel( "mat_dxlevel" );
+
 	// Combine balls make us explode
 	if ( m_bExploding )
 	{
