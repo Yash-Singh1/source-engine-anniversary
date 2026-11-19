@@ -112,7 +112,7 @@ def build(bld):
 		libs += ['PROTOBUF']
 
 	# retail's libvgui_controls.a has public/html/htmlprotobuf.cpp (added by the manifest)
-	if bld.env.RETAIL_OSX32:
+	if bld.env.RETAIL_OSX32 or bld.env.RETAIL_LINUX32:
 		libs += ['PROTOBUF']
 		# Lost Coast's client links an October 2024 build (VGUI_CONTROLS_OCT2024): the
 		# vgui_controls_lc variant from game/client, so the engine modules keep this one

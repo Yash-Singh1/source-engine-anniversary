@@ -34,6 +34,15 @@ def _load_ours(args):
     return mods, funcs
 
 
+def _name_stripped(retail, ours):
+    """Stripped ELF retail (Linux .so): name its .eh_frame functions after ours by masked search."""
+    from . import elfmatch
+    if not elfmatch.stripped(retail):
+        return
+    counts = elfmatch.name_retail(retail, [f for f in ours if not f.module.linked])
+    print('located in stripped retail: ' + ', '.join(f'{k} {v}' for k, v in sorted(counts.items())), file=sys.stderr)
+
+
 def _data_check(args, retail, mods):
     if not getattr(args, 'data_check', False):
         return None
@@ -67,6 +76,7 @@ def _find_symbol(funcs, sym):
 def cmd_diff(args):
     retail = _load_retail(args)
     mods, ours = _load_ours(args)
+    _name_stripped(retail, ours)
     if args.symbol:
         cands = _find_symbol(ours, args.symbol)
         if not cands:
@@ -146,6 +156,7 @@ def cmd_diff(args):
 def cmd_report(args):
     retail = _load_retail(args)
     mods, ours = _load_ours(args)
+    _name_stripped(retail, ours)
     data = report.run(retail, ours, args.retail_object, args.all_retail, not args.no_target_check, _include(args),
                       _data_check(args, retail, mods))
     out = args.out or os.path.join(os.getcwd(), 'bytematch-report')
@@ -154,6 +165,9 @@ def cmd_report(args):
     f, b = doc['summary']['functions'], doc['summary']['bytes']
     print(f'{out}.json\n{out}.md')
     print(f'scope={doc["scope"]} functions {f["matched"]}/{f["total"]} ({f["pct"]}%)  bytes {b["matched"]}/{b["total"]} ({b["pct"]}%)')
+    if 'ours_summary' in doc:
+        f, b = doc['ours_summary']['functions'], doc['ours_summary']['bytes']
+        print(f'ours: functions {f["matched"]}/{f["total"]} ({f["pct"]}%)  bytes {b["matched"]}/{b["total"]} ({b["pct"]}%)')
     return 0
 
 

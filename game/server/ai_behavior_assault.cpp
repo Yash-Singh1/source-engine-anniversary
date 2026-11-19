@@ -734,6 +734,7 @@ void CAI_AssaultBehavior::RunTask( const Task_t *pTask )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
+#line 735
 CRallyPoint *CAI_AssaultBehavior::FindBestRallyPointInRadius( const Vector &vecCenter, float flRadius )
 {
 	VPROF_BUDGET( "CAI_AssaultBehavior::FindBestRallyPointInRadius", VPROF_BUDGETGROUP_NPCS );

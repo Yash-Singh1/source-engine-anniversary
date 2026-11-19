@@ -129,10 +129,101 @@ def load(path, data, member=None):
                         fields[cs['index']].append((r_off, 4, 'abs', None, 0))
     if linked:
         _plt_names(mod, secs, symtabs, sdata)
+        # stripped images keep only exported symbols; every gcc function has an FDE
+        eh = next((s for s in secs if s['name'] == '.eh_frame'), None)
+        if eh:
+            mod.fde_starts = set()
+            for start, size in fde_ranges(sdata(eh), eh['addr']):
+                mod.fde_starts.add(start)
+                for s in code_secs:
+                    if s['addr'] <= start < s['addr'] + s['size'] and size:
+                        entries[s['index']].append(Entry(start, [], size, exact=True))
+            for s in code_secs:
+                entries[s['index']] += _gaps(sdata(s), s['addr'], entries[s['index']])
 
     for s in code_secs:
         build_functions(mod, s['name'], s['addr'] if linked else _obj_va(s), sdata(s), entries[s['index']], fields[s['index']])
     return mod
+
+
+def _gaps(data, va, entries):
+    """Entries for code between known extents that isn't padding (code without an FDE,
+    such as glibc's crti.o __x86.get_pc_thunk.bx)."""
+    from .x86 import skip_padding
+    spans = sorted((e.addr, e.addr + (e.size or 0)) for e in entries)
+    out, pos = [], va
+    for a, b in spans + [(va + len(data), va + len(data))]:
+        if a > pos:
+            chunk = data[pos - va:a - va]
+            lead = skip_padding(chunk)
+            if lead < len(chunk) and chunk[lead:].strip(b'\0'):
+                out.append(Entry(pos + lead, [], None))
+        pos = max(pos, b)
+    return out
+
+
+def _uleb(d, i):
+    v = shift = 0
+    while True:
+        b = d[i]
+        i += 1
+        v |= (b & 0x7f) << shift
+        shift += 7
+        if b < 0x80:
+            return v, i
+
+
+def _encoded(d, i, enc, va):
+    """Read a DW_EH_PE-encoded pointer at d[i] (section VA va); returns (value, next index)."""
+    if enc == 0xff:
+        return None, i
+    fmt = enc & 0x0f
+    size, signed = {0x00: (4, False), 0x02: (2, False), 0x03: (4, False), 0x0a: (2, True), 0x0b: (4, True)}.get(fmt, (4, False))
+    v = int.from_bytes(d[i:i + size], 'little', signed=signed)
+    if enc & 0x70 == 0x10:
+        v += va + i
+    return v & 0xffffffff, i + size
+
+
+def fde_ranges(d, va):
+    """(start, size) of every FDE in a linked .eh_frame section at VA va."""
+    cies, out, off = {}, [], 0
+    while off + 8 <= len(d):
+        length, = struct.unpack_from('<I', d, off)
+        if length == 0 or length == 0xffffffff:
+            break
+        cid, = struct.unpack_from('<I', d, off + 4)
+        end = off + 4 + length
+        if cid == 0:
+            i = off + 9
+            aug = d[i:d.index(b'\0', i)]
+            i += len(aug) + 1
+            enc = 0
+            if b'eh' in aug:
+                i += 4
+            _, i = _uleb(d, i)
+            _, i = _uleb(d, i)
+            i = i + 1 if d[off + 8] == 1 else _uleb(d, i)[1]
+            if aug.startswith(b'z'):
+                _, i = _uleb(d, i)
+                for c in aug[1:].decode('latin-1'):
+                    if c == 'R':
+                        enc = d[i]
+                        i += 1
+                    elif c == 'L':
+                        i += 1
+                    elif c == 'P':
+                        penc = d[i]
+                        _, i = _encoded(d, i + 1, penc & 0x7f, va)
+            cies[off] = enc
+        else:
+            enc = cies.get(off + 4 - cid)
+            if enc is not None:
+                start, i = _encoded(d, off + 8, enc, va)
+                size, _ = _encoded(d, i, enc & 0x0f, va)
+                out.append((start, size))
+        off = end
+    return out
 
 
 def _obj_va(s):
