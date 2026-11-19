@@ -2109,10 +2109,11 @@ bool IsSteamDeck( bool bSteamDeckOnly )
 	if ( s_nGamepadUICached == -1 || s_nSteamDeckCached == -1 )
 	{
 		bool bSteamDeck = false;
-		bool bGamepadUI = false;
+		bool bGamepadUI;
 
 		if ( CommandLine()->CheckParm( "-nogamepadui" ) )
 		{
+			bGamepadUI = false;
 		}
 		else if ( CommandLine()->CheckParm( "-gamepadui" ) )
 		{
@@ -2127,8 +2128,8 @@ bool IsSteamDeck( bool bSteamDeckOnly )
 			bGamepadUI = pszTenFoot && *pszTenFoot && atoi( pszTenFoot ) != 0;
 		}
 
-		s_nSteamDeckCached = bSteamDeck;
-		s_nGamepadUICached = bGamepadUI;
+		s_nSteamDeckCached = bSteamDeck ? 1 : 0;
+		s_nGamepadUICached = bGamepadUI ? 1 : 0;
 	}
 
 	if ( bSteamDeckOnly )
