@@ -110,6 +110,12 @@ private:
 
 	// Code to detect support for texture border mode (not a simple caps check)
 	void CheckBorderColorSupport( HardwareCaps_t *pCaps, int nAdapter );
+#ifdef BYTEMATCH_RETAIL
+
+	// Code to detect support for normal map compression
+	void CheckNormalCompressionSupport( HardwareCaps_t *pCaps, int nAdapter );
+#endif
+#line 113
 
 	// Vendor-dependent code to detect support for various flavors of shadow mapping
 	void CheckVendorDependentShadowMappingSupport( HardwareCaps_t *pCaps, int nAdapter );

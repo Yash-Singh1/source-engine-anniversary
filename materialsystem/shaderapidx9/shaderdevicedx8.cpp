@@ -375,6 +375,17 @@ void CShaderDeviceMgrDx8::CheckBorderColorSupport( HardwareCaps_t *pCaps, int nA
 		pCaps->m_bSupportsBorderColor = false;
 	}
 }
+#ifdef BYTEMATCH_RETAIL
+
+//--------------------------------------------------------------------------------
+// Code to detect support for normal map compression
+//--------------------------------------------------------------------------------
+void CShaderDeviceMgrDx8::CheckNormalCompressionSupport( HardwareCaps_t *pCaps, int nAdapter )
+{
+	pCaps->m_bSupportsNormalMapCompression = false;
+}
+#endif
+#line 370
 
 //--------------------------------------------------------------------------------
 // Vendor-dependent code to detect support for various flavors of shadow mapping
@@ -1140,7 +1151,7 @@ bool CShaderDeviceMgrDx8::ComputeCapsFromD3D( HardwareCaps_t *pCaps, int nAdapte
 
 	CheckBorderColorSupport( pCaps, nAdapter );
 #ifdef BYTEMATCH_RETAIL
-	pCaps->m_bSupportsNormalMapCompression = false;
+	CheckNormalCompressionSupport( pCaps, nAdapter );
 #endif
 #line 1134
 
