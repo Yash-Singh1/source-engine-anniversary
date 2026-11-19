@@ -59,6 +59,9 @@ void IVP_Compact_Surface::byte_swap_all(IVP_BOOL swap_points, int point_estimate
 			// IVP_U_BigVector is a pointer array
 			IVP_U_BigVector<IVP_Compact_Poly_Point> swapped_points(point_estimate);
 
+#ifdef BYTEMATCH_RETAIL
+			const_cast<IVP_Compact_Ledgetree_Node*>(ltn)->byte_swap_all(&swapped_points);
+#else
 			const IVP_Compact_Ledge* ledge = ltn->get_compact_hull(); //returns const only?!
 
 			if(ledge != NULL)
@@ -74,6 +77,7 @@ void IVP_Compact_Surface::byte_swap_all(IVP_BOOL swap_points, int point_estimate
 			//
 			const_cast<IVP_Compact_Ledgetree_Node*>(ltn)->byte_swap_all(&swapped_points);
 			printf("Found %d unique points\n", swapped_points.len());
+#endif
 		}
 		else
 			const_cast<IVP_Compact_Ledgetree_Node*>(ltn)->byte_swap_all(NULL);

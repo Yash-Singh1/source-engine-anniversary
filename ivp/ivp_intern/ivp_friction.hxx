@@ -86,7 +86,11 @@ public:
   // *******************    
     void init_tmp_contact_info() { impacts_while_system=0; coll_time_is_valid=IVP_FALSE; friction_is_broken = IVP_FALSE; };
   
+#ifdef BYTEMATCH_RETAIL
+    IVP_Impact_Solver_Long_Term() { surf_normal.set_to_zero(); init_tmp_contact_info(); };
+#else
     IVP_Impact_Solver_Long_Term() { init_tmp_contact_info(); };
+#endif
 
     inline IVP_DOUBLE get_closing_speed() const ;  // based on current core speed
     
