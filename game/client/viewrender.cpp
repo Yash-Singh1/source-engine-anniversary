@@ -221,6 +221,17 @@ CON_COMMAND( r_cheapwaterend,  "" )
 	}
 }
 
+#ifdef HL2_ANNIVERSARY_NOV2024
+bool Fog_HDREnabled()
+{
+	if ( !g_pMaterialSystemHardwareConfig )
+		return false;
+
+	return g_pMaterialSystemHardwareConfig->GetHDRType() != HDR_TYPE_NONE;
+}
+#endif
+#line 223
+
 
 
 //-----------------------------------------------------------------------------
@@ -3104,7 +3115,13 @@ void CViewRender::DrawMonitors( const CViewSetup &cameraView )
 	if ( !pCameraEnt )
 		return;
 
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 3229
+#else
+#line 3201
+#endif
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__ );
+#line 3203
 
 #ifdef _DEBUG
 	g_bRenderingCameraView = true;
@@ -3115,6 +3132,12 @@ void CViewRender::DrawMonitors( const CViewSetup &cameraView )
 	ITexture *pCameraTarget = GetCameraTexture();
 	int width = pCameraTarget->GetActualWidth();
 	int height = pCameraTarget->GetActualHeight();
+#ifdef HL2_ANNIVERSARY_NOV2024
+	ITexture *pCameraTargetHD = GetCameraTextureHD();
+	int widthHD = pCameraTargetHD->GetActualWidth();
+	int heightHD = pCameraTargetHD->GetActualHeight();
+#endif
+#line 3213
 
 	C_BasePlayer *player = C_BasePlayer::GetLocalPlayer();
 	
@@ -3124,8 +3147,17 @@ void CViewRender::DrawMonitors( const CViewSetup &cameraView )
 		if ( !pCameraEnt->IsActive() || pCameraEnt->IsDormant() )
 			continue;
 
+#ifdef HL2_ANNIVERSARY_NOV2024
+		if ( pCameraEnt->UseHDCamera() )
+		{
+			if ( !DrawOneMonitor( pCameraTargetHD, cameraNum, pCameraEnt, cameraView, player, 0, 0, widthHD, heightHD ) )
+				continue;
+		}
+		else
+#endif
 		if ( !DrawOneMonitor( pCameraTarget, cameraNum, pCameraEnt, cameraView, player, 0, 0, width, height ) )
 			continue;
+#line 3224
 
 		++cameraNum;
 	}

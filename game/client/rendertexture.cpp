@@ -80,6 +80,22 @@ ITexture *GetCameraTexture( void )
 	return s_pCameraTexture;
 }
 
+#if defined( HL2_EPISODIC ) || !defined( BYTEMATCH_RETAIL )	// HL2_ANNIVERSARY_NOV2024 (shareddefs.h isn't included here)
+static CTextureReference s_pCameraTextureHD;
+ITexture *GetCameraTextureHD( void )
+{
+	if ( !s_pCameraTextureHD )
+	{
+		s_pCameraTextureHD.Init( materials->FindTexture( "_rt_CameraHD", TEXTURE_GROUP_RENDER_TARGET ) );
+		Assert( !IsErrorTexture( s_pCameraTextureHD ) );
+		AddReleaseFunc();
+	}
+
+	return s_pCameraTextureHD;
+}
+#endif
+#line 82
+
 //=============================================================================
 // Full Frame Depth Texture
 //=============================================================================

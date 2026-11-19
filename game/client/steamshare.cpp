@@ -317,12 +317,12 @@ public:
 	{
 		int nOwner = event->GetInt( "owner" );
 		IClientEntity *pOwnerEntity = cl_entitylist->GetBaseEntity( nOwner );
-		if ( !pOwnerEntity )
-			return;
 
 		C_BasePlayer *pPlayer = dynamic_cast< C_BasePlayer * >( pOwnerEntity );
 		if ( !pPlayer )
 			return;
+
+
 
 		for ( int i = 0; i < MAX_WEAPONS; i++ )
 		{
@@ -330,9 +330,9 @@ public:
 			if ( !pWeapon )
 				continue;
 
-			const char *pszWeaponName = g_pVGuiLocalize->FindAsUTF8( pWeapon->GetPrintName() );
-			if ( !pszWeaponName )
-				pszWeaponName = "weapon";
+			const char *pszWeaponName = "weapon";
+			if ( const char *pszLocalizedName = g_pVGuiLocalize->FindAsUTF8( pWeapon->GetPrintName() ) )
+				pszWeaponName = pszLocalizedName;
 
 			SteamTimeline()->AddGamePhaseTag( pszWeaponName, GetWeaponTimelineIcon( pWeapon ), g_pVGuiLocalize->FindAsUTF8( "#GameUI_SteamShare_Tooltip_ChapterInventory" ), 0 );
 		}
@@ -351,9 +351,9 @@ public:
 			return;
 
 		C_BaseCombatWeapon *pWeapon = dynamic_cast< C_BaseCombatWeapon * >( pWeaponEntity );
-		const char *pszWeaponName = pWeapon ? g_pVGuiLocalize->FindAsUTF8( pWeapon->GetPrintName() ) : NULL;
-		if ( !pszWeaponName )
-			pszWeaponName = "weapon";
+		const char *pszWeaponName = "weapon";
+		if ( const char *pszLocalizedName = pWeapon ? g_pVGuiLocalize->FindAsUTF8( pWeapon->GetPrintName() ) : NULL )
+			pszWeaponName = pszLocalizedName;
 
 		char szWeaponName[1024] = { 0 };
 		V_strncpy( szWeaponName, pszWeaponName, sizeof( szWeaponName ) );
@@ -372,13 +372,14 @@ public:
 	virtual void HandleEvent( CSteamShareSystem *pSystem, IGameEvent *event )
 	{
 		const char *pszClassName = event->GetString( "ent_class" );
-		int x = event->GetInt( "ent_last_position_x" );
-		int y = event->GetInt( "ent_last_position_y" );
-		int z = event->GetInt( "ent_last_position_z" );
+		Vector vecPosition;
+		vecPosition.x = event->GetInt( "ent_last_position_x" );
+		vecPosition.y = event->GetInt( "ent_last_position_y" );
+		vecPosition.z = event->GetInt( "ent_last_position_z" );
 		if ( !pszClassName )
 			return;
 
-		Vector vecPosition( x, y, z );
+
 
 		if ( !V_stricmp( "class C_BaseHelicopter", pszClassName ) )
 		{
@@ -414,16 +415,16 @@ public:
 			if ( m_pLastExplosionInflictor && pInflictor != m_pLastExplosionInflictor )
 			{
 				m_nExplosionKills = 1;
-				m_pLastExplosionInflictor = pInflictor;
 			}
 			else
 			{
 				m_nExplosionKills++;
-				m_pLastExplosionInflictor = pInflictor;
-				if ( m_nExplosionKills == 2 )
-				{
-					SteamTimeline()->AddInstantaneousTimelineEvent( g_pVGuiLocalize->FindAsUTF8( "GameUI_SteamShare_ExplosionKill" ), NULL, "explosion_kill", 50, 0.0f, k_ETimelineEventClipPriority_Standard );
-				}
+			}
+			m_pLastExplosionInflictor = pInflictor;
+
+			if ( m_nExplosionKills == 2 )
+			{
+				SteamTimeline()->AddInstantaneousTimelineEvent( g_pVGuiLocalize->FindAsUTF8( "GameUI_SteamShare_ExplosionKill" ), NULL, "explosion_kill", 50, 0.0f, k_ETimelineEventClipPriority_Standard );
 			}
 		}
 	}
@@ -479,14 +480,14 @@ public:
 
 			int nPlayer = event->GetInt( "player" );
 			IClientEntity *pPlayerEntity = cl_entitylist->GetBaseEntity( nPlayer );
-			if ( pPlayerEntity )
+
+			C_BasePlayer *pPlayer = dynamic_cast< C_BasePlayer * >( pPlayerEntity );
+			if ( pPlayer && pPlayer->GetHealth() <= 10 )
 			{
-				C_BasePlayer *pPlayer = dynamic_cast< C_BasePlayer * >( pPlayerEntity );
-				if ( pPlayer && pPlayer->GetHealth() <= 10 )
-				{
-					SteamTimeline()->AddInstantaneousTimelineEvent( g_pVGuiLocalize->FindAsUTF8( "GameUI_SteamShare_SurvivedCombatLowHealth" ), NULL, "steam_heart", 50, 0.0f, k_ETimelineEventClipPriority_Standard );
-				}
+				SteamTimeline()->AddInstantaneousTimelineEvent( g_pVGuiLocalize->FindAsUTF8( "GameUI_SteamShare_SurvivedCombatLowHealth" ), NULL, "steam_heart", 50, 0.0f, k_ETimelineEventClipPriority_Standard );
 			}
+
+
 		}
 
 		m_bInCombat = bInCombat;
@@ -550,7 +551,7 @@ void CSteamShareSystem::UpdateChapterDetails()
 
 void CSteamShareSystem::UpdateSteamTimelineGameMode()
 {
-	ETimelineGameMode eGameMode = m_GameModeStack.Count() ? m_GameModeStack.Tail() : m_eGameMode;
+	ETimelineGameMode eGameMode = m_GameModeStack.IsEmpty() ? m_eGameMode : m_GameModeStack.Tail();
 	SteamTimeline()->SetTimelineGameMode( eGameMode );
 
 	switch ( eGameMode )

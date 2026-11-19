@@ -9,6 +9,7 @@ import sys
 
 from . import compare, x86
 from .compare import DIFFERS, EXACT, EXTRA, MASKED, MISSING
+from .model import Function
 from .winmap import EQUIV, FOLDED
 
 MATCHED = (EXACT, MASKED)
@@ -144,19 +145,64 @@ MISNAMED_MIN_SIZE = 8
 
 
 def _head(f):
-    """Leading bytes no relocation of f covers (up to 4): the bucket key for a quick pre-filter."""
-    return f.data[:min([rel.offset for rel in f.relocs] + [4])]
+    """Bucket keys for a quick pre-filter: the leading bytes no relocation of f covers (up to 4),
+    then the same cut after the first call/jmp rel32 opcode byte. A linked PE has no relocation
+    for that displacement (MSVC dynamic initializers start with `call EntityFactoryDictionary`)."""
+    n = min([rel.offset for rel in f.relocs] + [4])
+    keys = [f.data[:n]]
+    for i, b in enumerate(f.data[:n]):
+        if b in (0xe8, 0xe9):
+            keys.append(f.data[:i + 1])
+            break
+    return [k for k in dict.fromkeys(keys) if k]
 
 
-def _unique_match(cands, key, accept, tiebreak, obj=None):
-    """The one candidate accept() takes; ties go to tiebreak(), then to the candidates from
-    object `obj` (the name map's object attribution)."""
-    hits = [c for c in cands.get(key, ()) if accept(c)]
+def _unique_match(cands, keys, accept, tiebreak, obj=None, data_ok=None):
+    """The one candidate accept() takes in the first bucket of `keys` with any; ties go to
+    tiebreak(), then to the candidates from object `obj` (the name map's object attribution),
+    then to the ones data_ok() takes."""
+    hits = []
+    for key in keys:
+        hits = [c for c in cands.get(key, ()) if accept(c)]
+        if hits:
+            break
     if len(hits) > 1:
         hits = [c for c in hits if tiebreak(c)]
     if len(hits) > 1 and obj:
         hits = [c for c in hits if c.obj == obj]
+    if len(hits) > 1 and data_ok:
+        hits = [c for c in hits if data_ok(c)]
     return hits[0] if len(hits) == 1 else None
+
+
+def _data_addresses(results, retail):
+    """Our data symbol -> its retail address, from the absolute references of matched pairs
+    (symbols seen at more than one retail address are left out)."""
+    if not retail.linked or retail.pic:
+        return {}
+    seen = collections.defaultdict(set)
+    for res in results:
+        if res.status not in MATCHED or not res.ours or not res.retail:
+            continue
+        at = getattr(res, 'matched_at', None)
+        r = retail.function_at(at) if at else res.retail
+        if r is None:
+            continue
+        for rel in res.ours.relocs:
+            if rel.kind == 'abs' and rel.size == 4 and rel.target and rel.offset + 4 <= len(r.data):
+                seen[rel.target].add((x86.u32(r.data, rel.offset) - rel.addend) & 0xffffffff)
+    return {t: next(iter(v)) for t, v in seen.items() if len(v) == 1}
+
+
+def _data_agree(r, o, dmap):
+    """False when an absolute reference of o to a symbol whose retail address is known
+    points elsewhere in r (look-alike atexit stubs of ConVars and ConCommands)."""
+    for rel in o.relocs:
+        va = dmap.get(rel.target) if rel.kind == 'abs' and rel.size == 4 else None
+        if va is not None and rel.offset + 4 <= len(r.data) \
+                and (x86.u32(r.data, rel.offset) - rel.addend) & 0xffffffff != va:
+            return False
+    return True
 
 
 def _targets_agree(r, o, oby):
@@ -188,16 +234,22 @@ def _targets_agree(r, o, oby):
     return True
 
 
-def _target_code_agrees(r, o, k, of):
-    """The retail call/jump at offset k enters a function that matches our function `of`."""
+def _target_code_agrees(r, o, k, of, unnamed=False):
+    """The retail call/jump at offset k enters a function that matches our function `of`.
+    `unnamed`: a target the name map has no function for (a small destructor) passes when
+    the retail bytes there, up to padding, match `of`."""
     if of is None or of is o or k < 1 or k + 4 > len(r.data) or r.data[k - 1] not in (0xe8, 0xe9):
         return False
     va = (r.addr + k + 4 + x86.s32(r.data, k)) & 0xffffffff
     rf = r.module.function_at(va)
+    if unnamed and (rf is None or rf.addr != va) and of.data:
+        body = r.module.read(va, len(of.data) + 1)
+        if len(body) == len(of.data) + 1 and body[-1] in (0xcc, 0x90):
+            rf = Function(name=f'sub_{va:x}', key=f'sub_{va:x}', addr=va, data=body[:-1], module=r.module)
     return rf is not None and rf.addr == va and compare.compare(rf, of, False).status in MATCHED
 
 
-def _targets_verified(r, o, oby):
+def _targets_verified(r, o, oby, unnamed=False):
     """Every call/jump of o leaving it is shown to enter the same function in retail: the
     retail name at the target is ours (or folded with it), or the target is a function of
     ours that matches the retail function there. Look-alikes paired without trusting names
@@ -214,7 +266,7 @@ def _targets_verified(r, o, oby):
         mine = {rel.target, EQUIV.get(rel.target)} | FOLDED.get(rel.target, set())
         if names & mine:
             continue
-        if not _target_code_agrees(r, o, k, oby.get(rel.target)):
+        if not _target_code_agrees(r, o, k, oby.get(rel.target), unnamed):
             return False
     return True
 
@@ -319,26 +371,27 @@ def accept_misnamed(results, retail, spare, ours_funcs):
         """`by_code`: targets are checked by the code they point at, not by name. `second`:
         a tie still open after that goes to our functions from the map's object, but only
         among candidates whose every target is verified (look-alike atexit stubs differ in
-        nothing else)."""
+        nothing else), and failing that, verified by the retail bytes at targets the map
+        doesn't name."""
         if len(r.data) < MISNAMED_MIN_SIZE or not _head(r):
             return None
         free = lambda o: id(o) not in used and fits(r, o)
-        if by_code:
-            o = _unique_match(opool, _head(r), lambda o: free(o) and same_by_code(r, o), lambda o: _targets_agree(r, o, oby))
+        match = (lambda o: same_by_code(r, o)) if by_code else (lambda o: same(r, o))
+        data_ok = lambda o: _data_agree(r, o, dmap)
+        o = _unique_match(opool, _head(r), lambda o: free(o) and match(o), lambda o: _targets_agree(r, o, oby),
+                          data_ok=data_ok)
+        for unnamed in (False, True):
             if o is None and second:
-                o = _unique_match(opool, _head(r), lambda o: free(o) and same_by_code(r, o)
-                                  and _targets_verified(r, o, oby), lambda o: True, r.obj)
-            return o
-        o = _unique_match(opool, _head(r), lambda o: free(o) and same(r, o), lambda o: _targets_agree(r, o, oby))
-        if o is None and second:
-            o = _unique_match(opool, _head(r), lambda o: free(o) and same(r, o) and _targets_verified(r, o, oby),
-                              lambda o: True, r.obj)
+                o = _unique_match(opool, _head(r), lambda o: free(o) and match(o) and _targets_verified(r, o, oby, unnamed),
+                                  lambda o: True, r.obj, data_ok)
         return o
 
     # second pass, on what the first leaves: a differing retail function that is one of our
     # unpaired functions (an atexit stub ??__F the map named after the destructor it calls),
-    # and missing ones known by name only; ties go to the map's object
+    # and missing ones known by name only; ties go to the map's object, and then to where the
+    # pairs made so far put the data they reference
     for second in (False, True):
+        dmap = _data_addresses(results, retail)
         for res in results:
             target_check = True
             if res.status == compare.DIFFERS and res.ours and res.retail:
@@ -347,7 +400,8 @@ def accept_misnamed(results, retail, spare, ours_funcs):
                     if len(o.data) < MISNAMED_MIN_SIZE or not _head(o):
                         continue
                     r = _unique_match(rpool, _head(o), lambda r: r is not res.retail and r.addr not in claimed
-                                      and fits(r, o) and same(r, o), lambda r: _targets_agree(r, o, oby))
+                                      and fits(r, o) and same(r, o), lambda r: _targets_agree(r, o, oby),
+                                      data_ok=lambda r: _data_agree(r, o, dmap))
                     if r is None:
                         continue
                 else:

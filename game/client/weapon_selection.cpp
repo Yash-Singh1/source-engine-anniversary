@@ -40,21 +40,21 @@ int GetFastSwitchType()
 		nType = HUDTYPE_PLUS;
 	}
 #else
-	if ( g_pInputSystem->IsMouseKeyboardActive() )
+	if ( !g_pInputSystem->IsMouseKeyboardActive() )
+	{
+		nType = hud_weaponui_gamepad.GetInt();
+	}
+	else
 	{
 		if ( hud_fastswitch_reset.GetBool() )
 		{
 			hud_fastswitch_reset.SetValue( 0 );
-			if ( nType >= 2 )
+			if ( nType > 1 )
 			{
-				hud_fastswitch.SetValue( 0 );
 				nType = 0;
+				hud_fastswitch.SetValue( nType );
 			}
 		}
-	}
-	else
-	{
-		nType = hud_weaponui_gamepad.GetInt();
 	}
 #endif
 #line 53

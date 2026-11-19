@@ -826,9 +826,10 @@ void CHud::RemoveIcon( CHudTexture *icon )
 
 	for ( int i = m_Icons.First(); m_Icons.IsValidIndex( i ); i = m_Icons.Next( i ) )
 	{
-		if ( m_Icons[ i ] == icon )
+		CHudTexture *pTexture = m_Icons[ i ];
+		if ( pTexture == icon )
 		{
-			g_HudTextureMemoryPool.Free( icon );
+			g_HudTextureMemoryPool.Free( pTexture );
 			m_Icons.RemoveAt( i );
 			return;
 		}

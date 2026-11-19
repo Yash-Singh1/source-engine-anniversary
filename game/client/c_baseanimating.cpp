@@ -66,6 +66,11 @@
 static ConVar cl_SetupAllBones( "cl_SetupAllBones", "0" );
 ConVar r_sequence_debug( "r_sequence_debug", "" );
 
+CLIENTEFFECT_REGISTER_BEGIN( PrecacheBaseAnimating )
+CLIENTEFFECT_MATERIAL( "sprites/fire" )
+CLIENTEFFECT_REGISTER_END()
+#line 68
+
 // If an NPC is moving faster than this, he should play the running footstep sound
 const float RUN_SPEED_ESTIMATE_SQR = 150.0f * 150.0f;
 
