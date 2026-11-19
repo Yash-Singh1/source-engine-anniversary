@@ -1244,17 +1244,17 @@ void CBasePanel::PaintBackground()
 	if ( !GameUI().IsInLevel() || g_hLoadingDialog.Get() || m_ExitingFrameCount )
 	{
 		// not in the game or loading dialog active or exiting, draw the ui background
-		DrawBackgroundImage();
 		bDrawingBackgroundImage = true;
+		DrawBackgroundImage();
 	}
 	else
 	{
+		bDrawingBackgroundImage = false;
 		if ( IsSteamDeck() )
 		{
 			// only valid during loading from level to level
 			m_bUseRenderTargetImage = false;
 		}
-		bDrawingBackgroundImage = false;
 	}
 
 	if ( m_bDrawingBackgroundImage != bDrawingBackgroundImage )
@@ -3477,7 +3477,7 @@ public:
 		ButtonCode_t nButtonCode = GetBaseButtonCode( code );
 
 		// ESC cancels
-		if ( nButtonCode == KEY_ESCAPE || nButtonCode == KEY_XBUTTON_B || nButtonCode == STEAMCONTROLLER_B || nButtonCode == STEAMCONTROLLER_START )
+		if ( nButtonCode == KEY_XBUTTON_B || nButtonCode == KEY_ESCAPE || nButtonCode == STEAMCONTROLLER_B || nButtonCode == STEAMCONTROLLER_START )
 		{
 			Close();
 		}
@@ -5601,10 +5601,10 @@ static bool UtlStringLessFunc( const CUtlString &lhs, const CUtlString &rhs )
 void CGameMenu::SetMenuCategory( const char *pszMenuCategory )
 {
 	m_strMenuCategory.Set( pszMenuCategory );
-
 	for ( int i = 0; i < GetChildCount(); i++ )
 	{
-		CGameMenuItem *pMenuItem = dynamic_cast<CGameMenuItem *>( GetChild( i ) );
+		Panel *pChild = GetChild( i );
+		CGameMenuItem *pMenuItem = dynamic_cast<CGameMenuItem *>( pChild );
 		if ( !pMenuItem )
 			continue;
 

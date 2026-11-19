@@ -130,36 +130,8 @@ const SteamInfVersionInfo_t& GetSteamInfIDVersionInfo()
 //-----------------------------------------------------------------------------
 // Purpose: Disables the simulation and returns focus to the editor
 //-----------------------------------------------------------------------------
-void EditorToggle_f()
-{
-	if ( IsPC() )
-	{
-		IEngine::EngineState_t eOldState = eng->GetState();
-		bool bActive = ( eOldState == IEngine::DLL_PAUSED );
-
-		if ( ( eng->GetState() != IEngine::DLL_ACTIVE ) && ( eng->GetState() != IEngine::DLL_PAUSED ) )
-			return;
-
-		bool bCurrentlyActive = ( eng->GetState() != IEngine::DLL_PAUSED );
-		if ( bCurrentlyActive == bActive )
-			return;
-
-		if ( !bActive )
-		{
-			eng->SetNextState( IEngine::DLL_PAUSED );
-
-			// Detach input from the previous editor window
-			game->InputDetachFromGameWindow();
-		}
-		else
-		{
-			eng->SetNextState( IEngine::DLL_ACTIVE );
-
-			// Start accepting input from the new window
-			game->InputAttachToGameWindow();
-		}
-	}
-}
+void EditorToggle_f();
+#line 163
 
 static ConCommand editor_toggle( "editor_toggle", EditorToggle_f, "Disables the simulation and returns focus to the editor", FCVAR_CHEAT );
 
@@ -1556,6 +1528,19 @@ void CEngineAPI::ActivateSimulation( bool bActive )
 		game->InputAttachToGameWindow();
 	}
 }
+
+//-----------------------------------------------------------------------------
+// Purpose: Disables the simulation and returns focus to the editor
+//-----------------------------------------------------------------------------
+void EditorToggle_f()
+{
+	if ( IsPC() )
+	{
+		bool bActive = ( eng->GetState() != IEngine::DLL_PAUSED );
+		s_EngineAPI.ActivateSimulation( !bActive );
+	}
+}
+#line 1290
 
 static void MoveConsoleWindowToFront()
 {

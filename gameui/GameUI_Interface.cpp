@@ -154,7 +154,11 @@ CGameUI::~CGameUI()
 	g_pGameUI = NULL;
 }
 
-
+#ifndef OSX
+#line 157
+class IWorkshop; IWorkshop *g_pWorkshop = NULL;
+#endif
+#line 158
 //-----------------------------------------------------------------------------
 // Purpose: Initialization
 //-----------------------------------------------------------------------------
@@ -167,7 +171,11 @@ void CGameUI::Initialize( CreateInterfaceFn factory )
 
 	enginesound = (IEngineSound *)factory(IENGINESOUND_CLIENT_INTERFACE_VERSION, NULL);
 	engine = (IVEngineClient *)factory( VENGINE_CLIENT_INTERFACE_VERSION, NULL );
-
+#ifndef OSX
+#line 170
+	g_pWorkshop = (IWorkshop *)factory( "VWorkshop001", NULL );
+#endif
+#line 171
 
 
 	ConVarRef var( "gameui_xbox" );
@@ -699,18 +707,18 @@ void CGameUI::Shutdown()
 
 	ModInfo().FreeModInfo();
 	
-#ifndef BYTEMATCH_RETAIL
-	// release platform mutex
-	// close the mutex
-	if (g_hMutex)
-	{
-		Sys_ReleaseMutex(g_hMutex);
+	if ( !IsPosix() ) {
+		// release platform mutex
+		// close the mutex
+		if (g_hMutex)
+		{
+			Sys_ReleaseMutex(g_hMutex);
+		}
+		if (g_hWaitMutex)
+		{
+			Sys_ReleaseMutex(g_hWaitMutex);
+		}
 	}
-	if (g_hWaitMutex)
-	{
-		Sys_ReleaseMutex(g_hWaitMutex);
-	}
-#endif
 	
 	BonusMapsDatabase()->WriteSaveData();
 

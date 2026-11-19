@@ -2467,34 +2467,7 @@
     },
     {
      "path": "engine/sys_dll2.cpp",
-     "lang": "c++",
-     "cl": [
-      "/O2",
-      "/Ob2",
-      "/Oi",
-      "/Ot",
-      "/GF",
-      "/MT",
-      "/Gy",
-      "/arch:SSE",
-      "/fp:fast",
-      "/Zc:forScope",
-      "/GR",
-      "/Gd",
-      "/TP",
-      "/FC",
-      "/Zi",
-      "/W4",
-      "/Zc:wchar_t",
-      "/GS-",
-      "/EHa",
-      "/wd4316",
-      "/Zm200",
-      "/Zo",
-      "/Oy-",
-      "/Gw",
-      "/Zc:inline"
-     ]
+     "lang": "c++"
     },
     {
      "path": "engine/sys_engine.cpp",

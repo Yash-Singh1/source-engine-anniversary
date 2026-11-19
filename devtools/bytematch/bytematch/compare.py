@@ -1,6 +1,6 @@
 """Pair functions across modules and classify each pair."""
 import difflib
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 
 from . import x86
 from .winmap import EQUIV, FOLDED
@@ -148,7 +148,47 @@ def check_targets(r, o, rdata, odata):
     return out
 
 
+_NPAD = (b'', b'\x90', b'\x8b\xff', b'\x8d\x49\x00', b'\x90\x90', b'\x90\x90\x90')
+
+
+def _ends_at(r, n):
+    """Evidence that a retail function whose guessed extent runs on (stripped PE) ends after n
+    bytes: the symbol-port found an unnamed function there, an MSVC frame prologue starts on the
+    next 16-byte boundary, or the bytes there are a switch jump table pointing back into the
+    first n bytes (our COFF functions end before their tables, see coff.py)."""
+    end = r.addr + n
+    if end in r.module.port_starts:
+        return True
+    tail = r.data[n:n + 16]
+    if end % 16 == 0 and tail[:3] == b'\x55\x8b\xec':
+        return True
+    for pad in _NPAD:
+        k = n + len(pad)
+        if tail.startswith(pad) and (r.addr + k) % 4 == 0:
+            t = r.data[k:k + 8]
+            if len(t) == 8 and all(r.addr <= x86.u32(t, i) < end for i in (0, 4)):
+                return True
+    return False
+
+
+def _late_start(r, o):
+    """Offset of the real start when a stripped PE function's guessed start lies on what
+    precedes it (the previous function's jump table, a jmp stub) followed by int3/nop padding
+    up to a 16-byte boundary where retail continues with ours' first bytes."""
+    if r.size_known or not r.module.linked or not o.data or r.data[:1] == o.data[:1]:
+        return 0
+    for j in range(1, min(64, len(r.data) - len(o.data)) + 1):
+        if (r.addr + j) % 16 == 0 and r.data[j - 1] in _PAD and r.data[j:j + 3] == o.data[:3]:
+            return j
+    return 0
+
+
 def compare(r, o, target_check=True):
+    j = _late_start(r, o)
+    if j:
+        res = compare(replace(r, addr=r.addr + j, data=r.data[j:], raw_size=max(r.raw_size - j, 0)), o, target_check)
+        res.retail = r
+        return res
     odata = o.data
     rdata = r.data
     tail_note = ''
@@ -156,7 +196,7 @@ def compare(r, o, target_check=True):
         # retail extent unknown (stripped PE): compare ours' length, then require padding or a known start
         nxt = r.data[len(odata):len(odata) + 1]
         boundary = r.module.function_at(r.addr + len(odata))
-        if nxt and nxt[0] not in _PAD and (boundary is None or boundary is r):
+        if nxt and nxt[0] not in _PAD and (boundary is None or boundary is r) and not _ends_at(r, len(odata)):
             tail_note = 'retail continues past ours'
         rdata = rdata[:len(odata)]
     elif not r.size_known and len(rdata) < len(odata) and r.module.linked:

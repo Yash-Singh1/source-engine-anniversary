@@ -635,7 +635,7 @@ static int MapList_CountMaps( const char *pszSubString, bool listobsolete, int& 
 // Input  : *pszSubString - 
 //-----------------------------------------------------------------------------
 #ifdef BYTEMATCH_RETAIL
-static void MapList_ListMaps( const char *pszSubString, bool listobsolete, bool verbose, int maxcount, int maxitemlength, char maplist[][ 64 ] )
+static int MapList_ListMaps( const char *pszSubString, bool listobsolete, bool verbose, int maxcount, int maxitemlength, char maplist[][ 64 ] )
 {
 #else
 int MapList_ListMaps( const char *pszSubString, bool listobsolete, bool verbose, int maxcount, int maxitemlength, char maplist[][ 64 ] )
@@ -699,11 +699,8 @@ int MapList_ListMaps( const char *pszSubString, bool listobsolete, bool verbose,
 			}
 		}
 	}
-#ifndef BYTEMATCH_RETAIL
 
 	return count;
-#endif
-#line 582
 }
 
 //-----------------------------------------------------------------------------

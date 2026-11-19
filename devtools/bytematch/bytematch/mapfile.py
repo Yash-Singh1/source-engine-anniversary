@@ -57,6 +57,11 @@ def apply_map(mod, path, min_conf=0.0):
     if path.endswith('.json'):
         doc = winmap.load(path)
         if winmap.is_symbol_port(doc):
+            # every start the port found, named or not (compare's evidence of a function boundary)
+            base = mod.image_base or 0
+            mod.port_starts = {a + base if base and a < base else a
+                               for a in (int(r['address'], 16) for r in doc
+                                         if r.get('address') and r.get('discovered_by') != 'gap')}
             norm = []
             for addr, names, size, stem, conf in winmap.read_rows(doc, min_conf):
                 if mod.image_base and addr < mod.image_base:

@@ -295,7 +295,7 @@ public:
 
 	virtual bool IsHDREnabled( void )
 	{
-		return g_pMaterialSystemHardwareConfig ? g_pMaterialSystemHardwareConfig->GetHDREnabled() : false;
+		return g_pMaterialSystemHardwareConfig && g_pMaterialSystemHardwareConfig->GetHDREnabled();
 	}
 };
 #else

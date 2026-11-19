@@ -211,11 +211,11 @@ void CSteam3Server::Activate( EServerType serverType )
 
 #ifdef BYTEMATCH_RETAIL
 	// Figure out the game port. If we're doing a SrcTV relay, then ignore the NS_SERVER port and don't tell Steam that we have a game server.
-	uint16 usGamePort = 0;
-	if ( !( hltv && hltv->IsActive() && hltv->IsTVRelay() ) )
-	{
+	uint16 usGamePort;
+	if ( hltv && hltv->IsActive() && hltv->IsTVRelay() )
+		usGamePort = 0;
+	else
 		usGamePort = NET_GetUDPPort( NS_SERVER );
-	}
 
 	uint16 usSpectatorPort = 0;
 	if ( hltv && hltv->IsActive() )
