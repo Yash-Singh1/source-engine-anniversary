@@ -319,6 +319,39 @@ IVP_DOUBLE IVP_Core::calc_correct_virt_mass(const IVP_U_Float_Point *core_point,
 }
 
 void IVP_Core::apply_velocity_limit() {
+#ifdef BYTEMATCH_RETAIL
+    IVP_Environment *env = environment;
+    IVP_Anomaly_Limits* al = env->get_anomaly_limits();
+    if (al->get_max_velocity() > 0.0f)
+    {
+        IVP_FLOAT trans_len = speed.real_length();
+        if (trans_len > al->get_max_velocity())
+        {
+            speed.mult( al->get_max_velocity() / trans_len );
+        }
+
+        IVP_FLOAT change_len = speed_change.real_length();
+        if (change_len > al->get_max_velocity())
+        {
+            speed_change.mult( al->get_max_velocity() / change_len );
+        }
+    }
+    if (al->get_max_angular_velocity_per_psi() > 0.0f)
+    {
+        IVP_FLOAT rot_len = rot_speed.real_length();
+        IVP_FLOAT max_rot_speed = IVP_FLOAT(env->get_inv_delta_PSI_time()) * al->get_max_angular_velocity_per_psi();
+        if (rot_len > max_rot_speed)
+        {
+            rot_speed.mult( max_rot_speed / rot_len );
+        }
+
+        IVP_FLOAT rot_change_len = speed_change.real_length();
+        if (rot_change_len > max_rot_speed)
+        {
+            rot_speed_change.mult( max_rot_speed / rot_change_len );
+        }
+    }
+#else
     float unk;
 
     IVP_Anomaly_Limits* al = environment->get_anomaly_limits();
@@ -357,6 +390,7 @@ void IVP_Core::apply_velocity_limit() {
             rot_speed_change.mult(unk);
         }
     }
+#endif
 }
 
 void p_calc_2d_distances_to_axis(const IVP_U_Float_Point *point,const IVP_U_Float_Point *direction, IVP_U_Float_Point *distances){
