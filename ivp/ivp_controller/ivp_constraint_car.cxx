@@ -106,11 +106,13 @@ IVP_Constraint_Solver_Car::~IVP_Constraint_Solver_Car()
 	//delete silently
     IVP_Controller_Manager::remove_controller_from_environment( this, IVP_TRUE ); 
 
+#ifndef BYTEMATCH_RETAIL
     P_DELETE( body_object );
     for ( int app_nr = 0; app_nr < wheel_objects.len(); app_nr++ )
 	{
 		delete wheel_objects.element_at( app_nr );
     }
+#endif
     
     for ( int k = 0; k < wheel_objects.len(); k++ )
 	{
@@ -459,6 +461,12 @@ void IVP_Constraint_Solver_Car::do_simulation_controller( IVP_Event_Sim *es,
 //-----------------------------------------------------------------------------
 void IVP_Constraint_Solver_Car::core_is_going_to_be_deleted_event(IVP_Core *) 
 {
+#ifdef BYTEMATCH_RETAIL
+    for ( int k = 0; k < wheel_objects.len(); k++ )
+	{
+		this->c_local_ballsocket[k] = NULL;
+    }
+#endif
     P_DELETE_THIS( this );
 }
 

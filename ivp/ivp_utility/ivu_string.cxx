@@ -245,7 +245,12 @@ char *p_strdup(const char *s)
 {
     // kann auch NULLen
     if(s){
+#ifdef BYTEMATCH_RETAIL
+	int len = 1;
+	if ( s[0] ) len = strlen((char *)s)+1;
+#else
 	int len = strlen((char *)s)+1;
+#endif
 	char *s2 = (char *)p_malloc(len);
 	memcpy(s2,(char *)s,len); 
 	return s2;

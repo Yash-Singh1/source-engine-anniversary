@@ -132,8 +132,13 @@ void IVP_Mindist::mindist_rescue_push(){
     
     IVP_Real_Object *obj0 = get_synapse(0)->get_object();
     IVP_Real_Object *obj1 = get_synapse(1)->get_object();
+#ifdef BYTEMATCH_RETAIL
+    IVP_Anomaly_Manager *am = obj0->get_environment()->get_anomaly_manager();
+    am->inter_penetration( this, obj0, obj1, am->get_push_speed_penetration( obj0, obj1 ) );
+#else
 	// todo(crack); should a delta speed be calculated here?
     obj0->get_environment()->get_anomaly_manager()->inter_penetration( this, obj0, obj1 , 0);
+#endif
 }
 
 

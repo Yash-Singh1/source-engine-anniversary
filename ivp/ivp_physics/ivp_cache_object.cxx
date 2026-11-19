@@ -70,7 +70,12 @@ IVP_Cache_Object_Manager::IVP_Cache_Object_Manager(int number_of_cache_elements)
     this->n_cache_objects = number_of_cache_elements;
 	unsigned int size = sizeof(IVP_Cache_Object);
 	size = ( size + 0xf) & ~0xf;	// align 16
+#ifdef BYTEMATCH_RETAIL
+    this->cache_objects_buffer = (char *)ivp_malloc_aligned(size * number_of_cache_elements, 16);
+    memset(this->cache_objects_buffer, 0, size * number_of_cache_elements);
+#else
     this->cache_objects_buffer = (char *)p_calloc(size, number_of_cache_elements);
+#endif
     this->reuse_loop_index = 0;
 }
 
@@ -83,7 +88,12 @@ IVP_Cache_Object_Manager::~IVP_Cache_Object_Manager()
 	    this->invalid_cache_object(co->object);
 	}
     }
+#ifdef BYTEMATCH_RETAIL
+    ivp_free_aligned(this->cache_objects_buffer);
+    this->cache_objects_buffer = NULL;
+#else
     P_FREE(this->cache_objects_buffer);
+#endif
 }
 
 void IVP_Cache_Object::update_cache_object(){

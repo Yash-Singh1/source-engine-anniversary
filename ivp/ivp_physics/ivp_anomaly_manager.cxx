@@ -235,7 +235,11 @@ void IVP_Anomaly_Manager::inter_penetration(IVP_Mindist *mindist, IVP_Real_Objec
 IVP_FLOAT IVP_Anomaly_Manager::get_push_speed_penetration( IVP_Real_Object *obj0, IVP_Real_Object *obj1) {
 	IVP_DOUBLE d_time=obj0->get_environment()->get_delta_PSI_time();
     IVP_DOUBLE grav = obj0->get_environment()->get_gravity()->real_length();
+#ifdef BYTEMATCH_RETAIL
+    IVP_DOUBLE speed_change = (grav*4.0f) * d_time;
+#else
     IVP_DOUBLE speed_change = (grav*2.0f) * d_time;
+#endif
 	return speed_change;
 }
 
