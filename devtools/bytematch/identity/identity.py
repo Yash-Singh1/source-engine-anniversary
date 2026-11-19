@@ -8,9 +8,10 @@ object or archive member path and its mtime). This tool reproduces those
 inputs the way Valve's buildbot produced them:
 
 1. ccache-style compile. Each source is preprocessed with our flags (absolute,
-   normalized include paths), our tree / SDK / clang resource paths in the .ii
-   are rewritten to Valve's (/Users/buildbot/.../src, Xcode's MacOSX10.9.sdk,
-   Xcode's lib/clang/6.0), and the .ii is compiled under its retail ccache temp
+   normalized include paths), our tree / SDK / clang resource paths in the .ii's
+   line markers are rewritten to Valve's (/Users/buildbot/.../src, Xcode's
+   MacOSX10.9.sdk, Xcode's lib/clang/6.0; __FILE__ already is Valve's through
+   the retail flags' -fmacro-prefix-map), and the .ii is compiled under its retail ccache temp
    name (e.g. inputsyste.tmp.hl2-osx-builder.2104.ii) with Valve's compilation
    directory (/Users/buildbot/buildslave/../.ccache/tmp).
 2. Objects are written under a scratch root at Valve's Xcode paths
@@ -70,6 +71,7 @@ LANG_EXT = {'c': '.i', 'c++': '.ii', 'objective-c++': '.mii', 'objective-c': '.m
 # Per-module archive variants (retail_stlib_variant: sourcevr's 10.5 libtier1_105.a) that
 # retail links under the plain name (build/Release/libtier1.a).
 ARCHIVE_VARIANT = r'_105\.a$'
+LINE_MARKER = re.compile(rb'^(# \d+ ")([^"\n]*)(")', re.M)
 
 
 def log(msg):
@@ -201,7 +203,10 @@ class Compiler:
             if hit:
                 val = a[len(hit):] if a != hit else nxt
                 if hit in ('-I', '-isystem', '-iquote', '-include', '-imacros') and val and not os.path.isabs(val):
-                    val = os.path.normpath(os.path.join(d, val))
+                    p = os.path.normpath(os.path.join(d, val))
+                    # -include alloca.h (vphysics) names a header on the search path
+                    if hit in ('-I', '-isystem', '-iquote') or os.path.exists(p):
+                        val = p
                 elif hit in ('-I', '-isystem', '-iquote') and val:
                     val = os.path.normpath(val)
                 if hit in ('-I', '-D', '-U'):
@@ -218,9 +223,19 @@ class Compiler:
                              stderr=subprocess.PIPE)
         if raw.returncode:
             raise RuntimeError('preprocess %s failed:\n%s' % (src, raw.stderr.decode(errors='replace')))
-        text = raw.stdout
-        for ours, valve in rmap:
-            text = text.replace(ours.encode(), valve.encode())
+        bmap = [(o.encode(), v.encode()) for o, v in rmap]
+
+        def marker(m):
+            path = m.group(2)
+            for ours, valve in bmap:
+                if path.startswith(ours):
+                    return m.group(1) + valve + path[len(ours):] + m.group(3)
+            return m.group(0)
+        text = LINE_MARKER.sub(marker, raw.stdout)
+        leftover = next((o for o, _ in bmap if o in text), None)
+        if leftover:
+            raise RuntimeError('preprocess %s: %s outside line markers (__FILE__ without -fmacro-prefix-map?)'
+                               % (src, leftover.decode()))
         comp_dir = so_dir.rstrip('/') or '/'
         key = hashlib.sha1(text + repr((comp, so_dir, so_name)).encode()).hexdigest()
         cached = os.path.join(self.cache, key + '.o')
