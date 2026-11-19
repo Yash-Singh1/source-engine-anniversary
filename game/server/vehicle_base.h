@@ -60,7 +60,7 @@ public:
 
 public:
 	virtual void	SetVehicle( CBaseEntity *pVehicle );
-	void	InitViewSmoothing( const Vector &vecStartOrigin, const QAngle &vecStartAngles );
+	NOV2024_VIRTUAL void	InitViewSmoothing( const Vector &vecStartOrigin, const QAngle &vecStartAngles );
 	bool	IsPassengerEntering( void );
 	bool	IsPassengerExiting( void );
 
