@@ -256,7 +256,7 @@ def pair_all(retail_funcs, ours_funcs, target_check=True, include=None):
         used.add(o)
         results.append(compare(r, o, target_check))
     extra = []
-    seen = set()
+    seen = {o.pair_key for o in used}      # another copy of a paired COMDAT function isn't extra
     for o in ours_funcs:
         if o in used or (include and not include(o)) or o.pair_key in seen:
             continue

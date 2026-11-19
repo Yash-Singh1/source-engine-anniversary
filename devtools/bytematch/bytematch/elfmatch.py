@@ -144,13 +144,23 @@ def _place_run(run, hits, out, claimed, order, index, take):
             if inside:
                 take(o, inside[0], SEARCH)
                 lo = index[inside[0]] + 1 if lo is not None else lo
-        if lo is None or hi is None:
+        edge = lo is None or hi is None
+        if lo is None and hi is None:
             continue
+        # before the first anchor or after the last: up to the nearest function another object claimed
+        if lo is None:
+            lo = hi
+            while lo > 0 and order[lo - 1] not in claimed:
+                lo -= 1
+        if hi is None:
+            hi = lo
+            while hi < len(order) and order[hi] not in claimed:
+                hi += 1
         rest = [o for o in gap if o not in out]
         free = [r for r in order[lo:hi] if r not in claimed]
         if not rest or not free:
             continue
-        if len(rest) == len(free):
+        if len(rest) == len(free) and not edge:
             for o, r in zip(rest, free):
                 take(o, r, POSITION)
         else:
@@ -211,6 +221,12 @@ def name_retail(retail, ours):
     for r, o in taken.items():
         for k in [o.key] + [canonical(o.module.fmt, a) for a in o.aliases]:
             retail.add_name(r.addr, k)
+    # Identical code in more of ours than retail has copies (template instantiations alike
+    # once relocations are masked): every copy is taken, but the code is retail's.
+    paired = set(taken.values())
+    for o, hs in hits.items():
+        if hs and o not in paired:
+            o.identical_in_retail = True
     # A call target only disagrees when the retail callee was identified by a unique search
     # hit under another name and isn't one of our callee's identical-code hits: ld keeps
     # CUtlVector<int>::GrowVector and an identical CUtlVector<T*> copy, and hundreds of

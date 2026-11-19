@@ -112,6 +112,10 @@ def run(game, module, build, out, extra=()):
         c = per_obj[os.path.realpath(e['ours_object'])]
         c['f'] += 1
         c['b'] += e['size']
+        if e.get('identical_in_retail'):
+            c['mf'] += 1
+            c['mb'] += e['size']
+            c['loc'] += 1
     # Linux-only library files nothing in the module pulls (pathmatch.cpp is reached only through
     # -Wl,--wrap, which game modules don't use): retail has none of their functions
     dropped = sorted(os.path.basename(p) for p in linux_only if not per_obj[p]['loc'])
