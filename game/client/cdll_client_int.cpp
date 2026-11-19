@@ -1229,7 +1229,7 @@ void CHLClient::PostInit()
 		if ( !r_lightmap_bicubic_set.GetBool() )
 		{
 			ConVarRef r_lightmap_bicubic( "r_lightmap_bicubic" );
-			r_lightmap_bicubic.SetValue( bHighEnd || ( nDXLevel >= 90 && IsLinux() ) );
+			r_lightmap_bicubic.SetValue( IsLinux() ? ( bHighEnd || nDXLevel >= 90 ) : bHighEnd );
 			r_lightmap_bicubic_set.SetValue( true );
 		}
 
