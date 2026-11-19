@@ -82,6 +82,8 @@ BEGIN_DATADESC( CNPC_Crow )
 END_DATADESC()
 
 static ConVar birds_debug( "birds_debug", "0" );
+static ConVar birds_debug_avoidance( "birds_debug_avoidance", "0" );
+static ConVar birds_debug_collision( "birds_debug_collision", "0" );
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -576,28 +578,17 @@ void CNPC_Crow::MoveCrowFly( float flInterval )
 			m_bReachedMoveGoal = true;
 	}
 
-	if ( GetHintNode() )
-	{
-		AIMoveTrace_t moveTrace;
-		GetMoveProbe()->MoveLimit( NAV_FLY, GetAbsOrigin(), GetNavigator()->GetCurWaypointPos(), MASK_NPCSOLID, GetNavTargetEntity(), &moveTrace );
-
-		//See if it succeeded
-		if ( IsMoveBlocked( moveTrace.fStatus ) )
-		{
-			Vector vNodePos = vecMoveGoal;
-			GetHintNode()->GetPosition(this, &vNodePos);
-			
-			GetNavigator()->SetGoal( vNodePos );
-		}
-	}
-
 	//
 	// Look to see if we are going to hit anything.
 	//
 	VectorNormalize( vForward );
-	Vector vecDeflect;
-	if ( Probe( vForward, CROW_AIRSPEED * flInterval, vecDeflect ) )
+	int nProbes = NOV2024_ONLY( RandomInt( 2, 5 ) ) OCT2024_ONLY( 3 );
+	for ( int i = 0; i < nProbes; i++ )
 	{
+		Vector vecDeflect;
+		if ( !Probe( vForward, CROW_AIRSPEED, vecDeflect ) )
+			break;
+
 		vForward = vecDeflect;
 		VectorNormalize( vForward );
 	}
@@ -607,6 +598,27 @@ void CNPC_Crow::MoveCrowFly( float flInterval )
 	if ( GetAbsVelocity().Length() > 0 && GetNavigator()->CurWaypointIsGoal() && flDistance < CROW_AIRSPEED )
 	{
 		SetIdealActivity( (Activity)ACT_CROW_LAND );
+	}
+
+	if ( GetHintNode() )
+	{
+		AIMoveTrace_t moveTrace;
+		GetMoveProbe()->MoveLimit( NAV_FLY, GetAbsOrigin(), GetAbsOrigin() + vForward * CROW_AIRSPEED * flInterval, MASK_NPCSOLID, GetNavTargetEntity(), &moveTrace );
+
+		//See if it succeeded
+		if ( IsMoveBlocked( moveTrace.fStatus ) )
+		{
+			if ( birds_debug_collision.GetBool() )
+			{
+				Msg( "Cannot avoid collision, discarding goal!\n" );
+				NDebugOverlay::Sphere( moveTrace.vEndPosition, 5.0f, 255, 0, 0, true, 5.0f );
+			}
+
+			Vector vNodePos = vecMoveGoal;
+			GetHintNode()->GetPosition(this, &vNodePos);
+			
+			GetNavigator()->SetGoal( vNodePos );
+		}
 	}
 
 
@@ -641,7 +653,7 @@ bool CNPC_Crow::Probe( const Vector &vecMoveDir, float flSpeed, Vector &vecDefle
 	// Look 1/2 second ahead.
 	//
 	trace_t tr;
-	AI_TraceHull( GetAbsOrigin(), GetAbsOrigin() + vecMoveDir * flSpeed, GetHullMins(), GetHullMaxs(), MASK_NPCSOLID, this, HL2COLLISION_GROUP_CROW, &tr );
+	AI_TraceHull( GetAbsOrigin(), GetAbsOrigin() + vecMoveDir * flSpeed * 0.33f, GetHullMins(), GetHullMaxs(), MASK_NPCSOLID, this, HL2COLLISION_GROUP_CROW, &tr );
 	if ( tr.fraction < 1.0f )
 	{
 		//
@@ -650,7 +662,20 @@ bool CNPC_Crow::Probe( const Vector &vecMoveDir, float flSpeed, Vector &vecDefle
 		Vector vecUp;
 		CrossProduct( vecMoveDir, tr.plane.normal, vecUp );
 		CrossProduct( tr.plane.normal, vecUp, vecDeflect );
+#ifdef HL2_ANNIVERSARY_NOV2024
+		Vector vecJitter;
+		vecJitter.Random( -0.05f, 0.05f );
+		vecDeflect += vecJitter;
+#endif
 		VectorNormalize( vecDeflect );
+
+		if ( birds_debug_avoidance.GetBool() )
+		{
+			Msg( "Bird will collide in %f sec, recommending avoidance path\n", tr.fraction * 0.5f );
+			NDebugOverlay::Line( GetAbsOrigin(), GetAbsOrigin() + vecMoveDir * flSpeed * 0.5f, 255, 255, 0, true, 5.0f );
+			NDebugOverlay::Sphere( tr.endpos, 2.0f, 0, 255, 0, true, 5.0f );
+			NDebugOverlay::Line( GetAbsOrigin(), GetAbsOrigin() + vecDeflect * flSpeed * 0.5f, 0, 255, 255, true, 5.0f );
+		}
 		return true;
 	}
 
@@ -889,6 +914,12 @@ void CNPC_Crow::StartTask( const Task_t *pTask )
 				m_NPCState = state;
 				if ( !bFoundPath )
 				{
+					if ( birds_debug.GetBool() )
+					{
+						Msg( "Bird failed to find path! Temporarily disabling blocked target node.\n" );
+						NDebugOverlay::Line( GetAbsOrigin(), vHintPos, 255, 0, 0, true, 1.0f );
+						NDebugOverlay::Sphere( vHintPos, 5.0f, 255, 255, 255, true, 5.0f );
+					}
 					GetHintNode()->DisableForSeconds( .3 );
 					SetHintNode(NULL);
 				}
