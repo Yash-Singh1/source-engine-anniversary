@@ -491,37 +491,34 @@ bool Plat_IsInDebugSession( bool bForceRecheck )
 
 bool Plat_IsInDebugSession( bool bForceRecheck )
 {
-	// For linux: http://stackoverflow.com/questions/3596781/detect-if-gdb-is-running
-	// Don't use "if (ptrace(PTRACE_TRACEME, 0, NULL, 0) == -1)" as it means debuggers can't attach.
-	// 	Other solutions they mention involve forking. Ugh.
-	//
-	// Good solution from Pierre-Loup: Check TracerPid in /proc/self/status.
-	// from "man proc"
-	//     TracerPid: PID of process tracing this process (0 if not being traced).
-	int tracerpid = -1;
+	static int s_nIsInDebugSession = -1;
 
-	int fd = open( "/proc/self/status", O_RDONLY, S_IRUSR );
-	if( fd >= 0 )
+	if ( bForceRecheck || s_nIsInDebugSession == -1 )
 	{
-		char buf[ 1024 ];
-		static const char s_TracerPid[] = "TracerPid:";
-
-		int len = read( fd, buf, sizeof( buf ) - 1 );
-		if ( len > 0 )
+		s_nIsInDebugSession = 0;
+		FILE *fp = fopen( "/proc/self/status", "r" );
+		if ( fp )
 		{
-			buf[ len ] = 0;
-
-			const char *str = strstr( buf, s_TracerPid );
-			tracerpid = str ? atoi( str + sizeof( s_TracerPid ) ) : -1;
+			char buf[ 512 ];
+			while ( fgets( buf, sizeof( buf ), fp ) )
+			{
+				buf[ sizeof( buf ) - 1 ] = 0;
+				if ( !strncmp( buf, "TracerPid:", 10 ) )
+				{
+					char *pEnd = NULL;
+					s_nIsInDebugSession = ( strtol( buf + 10, &pEnd, 10 ) != 0 );
+					break;
+				}
+			}
+			fclose( fp );
 		}
-
-		close( fd );
 	}
 
-	return ( tracerpid > 0 );
+	return s_nIsInDebugSession != 0;
 }
 
 #endif // defined( LINUX )
+#line 522
 
 void Plat_DebugString( const char * psz )
 {

@@ -68,13 +68,11 @@
 static bool s_bShowDiag;
 #define DEBUG_MSG( ... ) if ( s_bShowDiag ) fprintf( stderr, ##__VA_ARGS__ )
 
-#ifdef POSIX
-#include <signal.h>
-#define DEBUG_BREAK() raise(SIGINT)
-#elif !defined (__arm__)
+#if defined( __i386__ ) || defined( __x86_64__ )
 #define DEBUG_BREAK() __asm__ __volatile__ ( "int $3" )
 #else
-#define DEBUG_BREAK() 
+#include <signal.h>
+#define DEBUG_BREAK() raise(SIGINT)
 #endif
 
 #define _COMPILE_TIME_ASSERT(pred) switch(0){case 0:case pred:;}

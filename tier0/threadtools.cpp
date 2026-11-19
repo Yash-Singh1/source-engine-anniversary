@@ -458,7 +458,7 @@ void ThreadSetDebugName( ThreadId_t id, const char *pszName )
 #elif defined( _LINUX )
 	// As of glibc v2.12, we can use pthread_setname_np.
 	typedef int (pthread_setname_np_func)(pthread_t, const char *);
-	static pthread_setname_np_func *s_pthread_setname_np_func = (pthread_setname_np_func *)dlsym(RTLD_DEFAULT, "pthread_setname_np");
+	static pthread_setname_np_func *const s_pthread_setname_np_func = pthread_setname_np;
 
 	if ( s_pthread_setname_np_func )
 	{
