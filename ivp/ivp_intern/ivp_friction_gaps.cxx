@@ -11,6 +11,9 @@
 
 #include <ivp_mindist_intern.hxx> // because of Mindist
 #include <ivp_friction.hxx>
+#ifdef BYTEMATCH_RETAIL
+#define IVP_FRICTION_SOLVER_DEFINE_ASYNC_APPLY_IMPULSE
+#endif
 #include <ivp_friction_solver.hxx>
 #include <ivp_debug_manager.hxx> // bvecause of debug psi_synchrone
 

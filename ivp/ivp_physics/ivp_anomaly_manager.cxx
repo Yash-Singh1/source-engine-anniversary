@@ -63,7 +63,11 @@ void IVP_Anomaly_Manager::max_angular_velocity_exceeded(IVP_Anomaly_Limits *al, 
     angular_velocity_in_out->mult(0.9f * max_rot_speed / IVP_Inline_Math::ivp_sqrtf(square_rot_speed));
 }
 
+#ifdef BYTEMATCH_RETAIL
+void IVP_Anomaly_Manager::solve_inter_penetration_simple( IVP_Real_Object *obj0, IVP_Real_Object *obj1, IVP_DOUBLE speed_change){
+#else
 void IVP_Anomaly_Manager::solve_inter_penetration_simple( IVP_Real_Object *obj0, IVP_Real_Object *obj1){
+#endif
         IVP_Environment *env = obj0->get_environment();
     IVP_DOUBLE d_time = env->get_delta_PSI_time();
     IVP_Core *core0 = obj0->get_core();
@@ -81,11 +85,19 @@ void IVP_Anomaly_Manager::solve_inter_penetration_simple( IVP_Real_Object *obj0,
 		vec01.set( 1, 0, 0 );
 	}
 
+#ifndef BYTEMATCH_RETAIL
     IVP_DOUBLE speed_change = get_push_speed_penetration( obj0, obj1);
+#endif
 
     if(IVP_MTIS_SIMULATED(core0->movement_state) && !core0->pinned){
 	IVP_U_Float_Point p0;
+#ifdef BYTEMATCH_RETAIL
+	IVP_FLOAT mass = core0->get_mass();
+	if ( !core1->pinned && core1->get_mass() < mass ) mass = core1->get_mass();
+	p0.set_multiple(&vec01, -speed_change * mass);
+#else
 	p0.set_multiple(&vec01, -speed_change * core0->get_mass());
+#endif
 	obj0->async_push_object_ws(&m_world_f_core0->vv, &p0);
 	IVP_U_Float_Point rot_speed_object(-d_time,0,0);
 	obj0->async_add_rot_speed_object_cs( &rot_speed_object);
@@ -93,7 +105,13 @@ void IVP_Anomaly_Manager::solve_inter_penetration_simple( IVP_Real_Object *obj0,
 		
     if(IVP_MTIS_SIMULATED(core1->movement_state) && !core1->pinned){
 	IVP_U_Float_Point p1;
+#ifdef BYTEMATCH_RETAIL
+	IVP_FLOAT mass = core1->get_mass();
+	if ( !core0->pinned && core0->get_mass() < mass ) mass = core0->get_mass();
+	p1.set_multiple(&vec01, speed_change * mass);
+#else
 	p1.set_multiple(&vec01, speed_change * core1->get_mass());
+#endif
 	obj1->async_push_object_ws(&m_world_f_core0->vv, &p1);
 	IVP_U_Float_Point rot_speed_object(d_time,0,0);
 	obj1->async_add_rot_speed_object_cs( &rot_speed_object);
@@ -123,22 +141,35 @@ void IVP_Anomaly_Manager::inter_penetration(IVP_Mindist *mindist, IVP_Real_Objec
 		swapped=1;
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	if( !my_objects[swapped]->get_core()->physical_unmoveable || mindist->synapse[swapped].get_status() > IVP_ST_TRIANGLE ) {
+		solve_inter_penetration_simple( obj0,obj1,speedChange );
+		return;
+	}
+#else
 	if( !my_objects[swapped]->get_core()->physical_unmoveable ) {
 		solve_inter_penetration_simple( obj0,obj1 );
 		return;
 	}
+#endif
  
 	//solve_inter_penetration_simple( obj0, obj1 );
 	//return;
 
 #if 1
+#ifndef BYTEMATCH_RETAIL
 	if( mindist->synapse[swapped].get_status() > IVP_ST_TRIANGLE ) {
 	    solve_inter_penetration_simple( obj0, obj1 );
 		return;
 	}
+#endif
 
 	// now my_objects[swapped] is unmoveable and has a polygonal ledge
 	IVP_Real_Object *moving_obj=my_objects[1-swapped];
+#ifdef BYTEMATCH_RETAIL
+	IVP_Core *moving_core=moving_obj->get_core();
+	if ( !IVP_MTIS_SIMULATED(moving_core->movement_state) ) return;
+#endif
 	IVP_U_Point world_pos_moving;
 	const IVP_U_Matrix *world_mat;
 	world_mat=moving_obj->get_core()->get_m_world_f_core_PSI();
@@ -180,6 +211,15 @@ void IVP_Anomaly_Manager::inter_penetration(IVP_Mindist *mindist, IVP_Real_Objec
     IVP_U_Float_Point world_push_vec;
 	world_push_vec.set(&world_push_dir);
 
+#ifdef BYTEMATCH_RETAIL
+	IVP_U_Float_Point current_speed;
+	current_speed.set( &moving_core->speed_change );
+	current_speed.add( &moving_core->delta_world_f_core_psis );
+	if ( current_speed.dot_product( &world_push_vec ) < speedChange * 0.1f ) {
+		world_push_vec.mult( speedChange );
+		moving_obj->async_add_speed_object_ws( &world_push_vec );
+	}
+#else
     IVP_DOUBLE speed_change = get_push_speed_penetration( obj0, obj1);
 
 	IVP_Core *moving_core=moving_obj->get_core();
@@ -187,6 +227,7 @@ void IVP_Anomaly_Manager::inter_penetration(IVP_Mindist *mindist, IVP_Real_Objec
 		world_push_vec.mult( speed_change );
 		moving_obj->async_add_speed_object_ws( &world_push_vec );
     }
+#endif
 
 #endif
 }

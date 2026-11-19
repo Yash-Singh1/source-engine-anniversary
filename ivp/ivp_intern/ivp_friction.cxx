@@ -1711,7 +1711,11 @@ IVP_DOUBLE IVP_Mutual_Energizer::calc_energy_potential(IVP_DOUBLE speed_pot,IVP_
 		tmp = 0;
 	}
 
+#ifdef BYTEMATCH_RETAIL
+    return 0.5f*tmp;
+#else
     return 0.5f*(energy_now-E0-E1);
+#endif
 }
 
 // rot moment in a direction

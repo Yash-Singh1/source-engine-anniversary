@@ -30,7 +30,11 @@ public:
     static inline IVP_DOUBLE get_closing_speed_core_i(const IVP_Impact_Solver_Long_Term *,int core_index, const IVP_U_Float_Point *rot_sped_cs, IVP_U_Float_Point *speed_ws);  // based on current core speed
     static inline IVP_DOUBLE get_inv_virtual_mass(const IVP_Impact_Solver_Long_Term *i){return i->inv_virtual_mass;};  // based on core
     static inline void apply_impulse( const IVP_Impact_Solver_Long_Term *, IVP_DOUBLE impulse);
+#ifdef BYTEMATCH_RETAIL
+    static void async_apply_impulse( const IVP_Impact_Solver_Long_Term *, IVP_DOUBLE impulse);
+#else
     static inline void async_apply_impulse( const IVP_Impact_Solver_Long_Term *, IVP_DOUBLE impulse);
+#endif
     static inline void test_push_core_i( const IVP_Impact_Solver_Long_Term *, int core_index, IVP_U_Float_Point *rot_change, IVP_U_Float_Point *speed_change, IVP_FLOAT factor);
 
 
@@ -97,12 +101,16 @@ void IVP_Friction_Solver::apply_impulse( const IVP_Impact_Solver_Long_Term *info
     }
 }
 
+#if !defined(BYTEMATCH_RETAIL) || defined(IVP_FRICTION_SOLVER_DEFINE_ASYNC_APPLY_IMPULSE)
 void IVP_Friction_Solver::async_apply_impulse( const IVP_Impact_Solver_Long_Term *info, IVP_DOUBLE impulse){
     IVP_Core *c0;
     if ( (c0 = info->contact_core[0])){
 	IVP_U_Float_Point hp; hp.set_pairwise_mult( &info->contact_cross_nomal_cs[0], c0->get_inv_rot_inertia());
 	c0->rot_speed_change.add_multiple( &hp, -impulse);
 	c0->speed_change.add_multiple( &info->surf_normal, -impulse * c0->get_inv_mass());
+#ifdef BYTEMATCH_RETAIL
+	c0->apply_velocity_limit();
+#endif
     }
 
     IVP_Core *c1;
@@ -110,8 +118,12 @@ void IVP_Friction_Solver::async_apply_impulse( const IVP_Impact_Solver_Long_Term
 	IVP_U_Float_Point hp; hp.set_pairwise_mult( &info->contact_cross_nomal_cs[1], c1->get_inv_rot_inertia());
 	c1->rot_speed_change.add_multiple( &hp, impulse);
 	c1->speed_change.add_multiple( &info->surf_normal, impulse * c1->get_inv_mass());
+#ifdef BYTEMATCH_RETAIL
+	c1->apply_velocity_limit();
+#endif
     }
 }
+#endif
 
 void IVP_Friction_Solver::test_push_core_i( const IVP_Impact_Solver_Long_Term *info, int core_index,
 					    IVP_U_Float_Point *rot_change, IVP_U_Float_Point *speed_change, IVP_FLOAT factor){

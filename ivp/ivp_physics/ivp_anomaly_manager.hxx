@@ -68,7 +68,11 @@ public:
 	//  -> derive from IVP_Anomaly_Manager and have different implementation
     virtual IVP_FLOAT get_push_speed_penetration( IVP_Real_Object *, IVP_Real_Object *);
 
+#ifdef BYTEMATCH_RETAIL
+	void solve_inter_penetration_simple( IVP_Real_Object *, IVP_Real_Object *, IVP_DOUBLE speed_change); //push mass centers in opposite directions
+#else
 	void solve_inter_penetration_simple( IVP_Real_Object *, IVP_Real_Object *); //push mass centers in opposite directions
+#endif
 
     IVP_Anomaly_Manager(IVP_BOOL delete_this_if_env_is_deleted = IVP_TRUE);
     virtual ~IVP_Anomaly_Manager();
