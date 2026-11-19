@@ -211,6 +211,11 @@ ISceneFileCache *scenefilecache = NULL;
 IXboxSystem *xboxsystem = NULL;	// Xbox 360 only
 IMatchmaking *matchmaking = NULL;
 IUploadGameStats *gamestatsuploader = NULL;
+#ifdef _WIN32
+#include "iworkshop.h"
+IWorkshop *workshop = NULL;
+#endif
+#line 214
 IClientReplayContext *g_pClientReplayContext = NULL;
 #if defined( REPLAY_ENABLED )
 IReplayManager *g_pReplayManager = NULL;
@@ -947,6 +952,11 @@ int CHLClient::Init( CreateInterfaceFn appSystemFactory, CreateInterfaceFn physi
 	if ( IsPC() && (g_pEngineClientReplay = (IEngineClientReplay *)appSystemFactory( ENGINE_REPLAY_CLIENT_INTERFACE_VERSION, NULL )) == NULL )
 		return false;
 #endif
+#ifdef _WIN32
+	if ( (workshop = (IWorkshop *)appSystemFactory( VWORKSHOP_INTERFACE_VERSION, NULL )) == NULL )
+		return false;
+#endif
+#line 950
 
 	if (!g_pMatSystemSurface)
 		return false;
