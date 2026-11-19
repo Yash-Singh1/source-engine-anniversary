@@ -24,6 +24,9 @@
 #include <ivp_cache_object.hxx>
 #include <ivp_cache_ledge_point.hxx>
 #include <ivp_compact_ledge_solver.hxx>
+#ifdef BYTEMATCH_RETAIL
+#include "tier1/fmtstr.h"
+#endif
 
 
 // for english speakers:
@@ -317,6 +320,9 @@ IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::p_minimize_FF( const IVP_Compact_Edge 
     // Case: Surface - Surface
     
     IVP_DOUBLE min_qdist = P_DOUBLE_MAX;
+#ifdef BYTEMATCH_RETAIL
+    int min_type = -1;
+#endif
 
     // check all 9 point point combinations first:
     {
@@ -331,6 +337,9 @@ IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::p_minimize_FF( const IVP_Compact_Edge 
 		if (qdist < min_qdist){
 		    m_cache_A->tmp.synapse->update_synapse(pA, IVP_ST_POINT);
 		    m_cache_B->tmp.synapse->update_synapse(pB, IVP_ST_POINT);
+#ifdef BYTEMATCH_RETAIL
+		    min_type = 0;
+#endif
 		    min_qdist = qdist;
 		}
 	    }
@@ -360,6 +369,9 @@ IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::p_minimize_FF( const IVP_Compact_Edge 
 		if ( qdist * (1+P_DOUBLE_RES) < min_qdist){
 		  cc_A[i]->tmp.synapse->update_synapse(pA, IVP_ST_POINT);
 		  cc_B[i]->tmp.synapse->update_synapse(pB, IVP_ST_TRIANGLE);
+#ifdef BYTEMATCH_RETAIL
+		  min_type = 1;
+#endif
 		  min_qdist = qdist;
 		}
 	      }
@@ -385,6 +397,9 @@ IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::p_minimize_FF( const IVP_Compact_Edge 
 		if ( qdist * (1+P_DOUBLE_RES) < min_qdist){
 		  cc_A[i]->tmp.synapse->update_synapse(pA, IVP_ST_EDGE);
 		  cc_B[i]->tmp.synapse->update_synapse(pB, IVP_ST_POINT);
+#ifdef BYTEMATCH_RETAIL
+		  min_type = 2;
+#endif
 		  min_qdist = qdist;
 		}
 	      }
@@ -407,6 +422,9 @@ IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::p_minimize_FF( const IVP_Compact_Edge 
 		if (qdist * (1+P_DOUBLE_RES) < min_qdist){
 		    m_cache_A->tmp.synapse->update_synapse(pA, IVP_ST_EDGE);
 		    m_cache_B->tmp.synapse->update_synapse(pB, IVP_ST_EDGE);
+#ifdef BYTEMATCH_RETAIL
+		    min_type = 3;
+#endif
 		    min_qdist = qdist;
 		}
 	    }
@@ -442,6 +460,68 @@ IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::p_minimize_FF( const IVP_Compact_Edge 
 
     IVP_MRC_TYPE ret_val = IVP_MRC_UNINITIALIZED; // (un)initialize
 
+#ifdef BYTEMATCH_RETAIL
+#define IVP_FF_DESCRIBE_SYNAPSE( str, syn ) \
+    str.sprintf( "%s (%d) at %.1f %.1f %.1f", syn->get_object()->get_name(), syn->get_status(), \
+	(float)syn->get_object()->get_core()->m_world_f_core_last_psi.vv.k[0], \
+	(float)syn->get_object()->get_core()->m_world_f_core_last_psi.vv.k[1], \
+	(float)syn->get_object()->get_core()->m_world_f_core_last_psi.vv.k[2] )
+#define IVP_FF_CRASH() { \
+	CFmtStr str0, str1; \
+	IVP_FF_DESCRIBE_SYNAPSE( str0, syn0 ); \
+	IVP_FF_DESCRIBE_SYNAPSE( str1, syn1 ); \
+	Error( "%s in contact with %s, crash. dist = %d, minq = %lf\n", str0.Access(), str1.Access(), min_type, min_qdist ); }
+    switch(syn0->get_status()){
+      case IVP_ST_POINT:{
+	  switch(syn1->get_status()){
+	    case IVP_ST_POINT:{
+		ret_val = p_minimize_PP(e0, e1, m_cache_0, m_cache_1);
+		break;
+	    }
+	    case IVP_ST_EDGE:{
+		ret_val =  p_minimize_PK(e0, e1, m_cache_0, m_cache_1);
+		break;
+	    }
+	    case IVP_ST_TRIANGLE:{
+	      ret_val = p_minimize_PF(e0, e1, m_cache_0, m_cache_1);
+	      break;
+	    }
+	    default:
+#line 464
+		CORE;
+	  }
+	  break;
+      };
+      case IVP_ST_EDGE:{
+	  switch(syn1->get_status()){
+	    case IVP_ST_EDGE:{
+		ret_val = p_minimize_KK(e0, e1, m_cache_0, m_cache_1);
+		break;
+	    }
+	  default:
+	      IVP_FF_CRASH();
+#line 481
+	      CORE;
+	      break;
+	  }
+	  break;
+      }
+      case IVP_ST_TRIANGLE:
+	  IVP_FF_CRASH();
+#line 494
+	  CORE;
+	  break;
+      case IVP_ST_BALL:
+	  IVP_FF_CRASH();
+#line 504
+	  CORE;
+	  break;
+      default:
+	  IVP_FF_CRASH();
+#line 514
+	  CORE;
+    }
+#else
     switch(syn0->get_status()){
       case IVP_ST_POINT:{
 	  switch(syn1->get_status()){  
@@ -477,6 +557,7 @@ IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::p_minimize_FF( const IVP_Compact_Edge 
       default:
           printf("IVP_Mindist_Minimize_Solver::p_minimize_FF failed(%s:%d)\n", __FILE__, __LINE__);
     }
+#endif
     
     return ret_val;
 }

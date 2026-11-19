@@ -119,7 +119,10 @@ def build(bld):
 		'../ivp_collision',
 		'../ivp_surface_manager',
 		'../ivp_intern',
-		'../havana/havok'
+		'../havana/havok',
+		'../../public',
+		'../../public/tier0',
+		'../../public/tier1'
 	]
 
 	defines = []
