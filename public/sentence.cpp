@@ -505,6 +505,7 @@ void CSentence::ParseWords( CUtlBuffer& buf )
 			int code;
 			char phonemename[ 256 ];
 			float volume;
+			float start, end;
 
 			code = atoi( token );
 
