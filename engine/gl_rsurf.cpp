@@ -1518,6 +1518,7 @@ void AddProjectedTextureDecalsToList( CWorldRenderList *pRenderList, int nSortGr
 //-----------------------------------------------------------------------------
 // Draws all of the opaque non-displacement surfaces queued up previously
 //-----------------------------------------------------------------------------
+#line 1517
 void Shader_DrawChains( const CWorldRenderList *pRenderList, int nSortGroup, bool bShadowDepth )
 {
 	tmZoneFiltered( TELEMETRY_LEVEL0, 50, TMZF_NONE, "%s", __FUNCTION__ );
@@ -4107,7 +4108,7 @@ CBrushBatchRender::brushrender_t *CBrushBatchRender::FindOrCreateRenderBatch( mo
 #ifndef BYTEMATCH_RETAIL
 	if( planeList.Base() )
 #endif
-#line 4102
+#line 4103
 		memcpy( renderT.pPlanes, planeList.Base(), sizeof(cplane_t *)*planeList.Count() );
 	renderT.pSurfaces = new brushrendersurface_t[surfaceList.Count()];
 	renderT.surfaceCount = surfaceList.Count();

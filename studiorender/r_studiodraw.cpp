@@ -1862,6 +1862,7 @@ void CCachedRenderData::ComputeFlexedVertex_StreamOffset<mstudiovertanim_t>( stu
 
 
 
+#line 1861
 void CStudioRender::R_StudioProcessFlexedMesh_StreamOffset( mstudiomesh_t* pmesh, int lod )
 {
 	VPROF_BUDGET( "ProcessFlexedMesh_SO", _T("HW Morphing") );

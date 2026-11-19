@@ -625,13 +625,13 @@ bool Voice_Init( const char *pCodecName )
 
 	if(!VoiceSE_Init())
 		return false;
-
+#ifdef OSX
 	// Get the voice input device.
 	g_pVoiceRecord = CreateVoiceRecord_AudioQueue( Voice_SamplesPerSec() );
 	if ( !g_pVoiceRecord )
-	{
+#endif
 		g_pVoiceRecord = CreateVoiceRecord_DSound( Voice_SamplesPerSec() );
-	}
+
 
 	if( !g_pVoiceRecord )
 	{

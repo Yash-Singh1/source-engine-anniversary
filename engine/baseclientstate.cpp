@@ -793,6 +793,7 @@ void CBaseClientState::Disconnect( const char *pszReason, bool bShowMainMenu )
 	}
 }
 
+#line 738
 void CBaseClientState::RunFrame (void)
 {
 	VPROF("CBaseClientState::RunFrame");
@@ -904,7 +905,7 @@ bool CBaseClientState::ProcessConnectionlessPacket( netpacket_t *packet )
 #ifndef BYTEMATCH_RETAIL
 	master->ProcessConnectionlessPacket( packet );
 #endif
-#line 877
+#line 847
 
 	bf_read &msg = packet->message;	// handy shortcut 
 
@@ -996,7 +997,7 @@ bool CBaseClientState::ProcessConnectionlessPacket( netpacket_t *packet )
 									}
 								}
 #endif
-#line 968
+#line 938
 								SendConnectPacket( challenge, authprotocol, unGSSteamID, bGSSecure );
 							}
 							break;
@@ -1017,7 +1018,7 @@ bool CBaseClientState::ProcessConnectionlessPacket( netpacket_t *packet )
 #else
 								COM_ExplainDisconnection( true, "%s", string );
 #endif
-#line 984
+#line 954
 								Disconnect( string, true );
 								// Host_Disconnect();
 							}
@@ -1075,7 +1076,7 @@ bool CBaseClientState::ProcessStringCmd( NET_StringCmd *msg )
 bool CBaseClientState::InternalProcessStringCmd( NET_StringCmd *msg, bool bIsHLTV )
 {
 #endif
-#line 1034
+#line 1004
 	// Don't restrict commands from the server in single player or if cl_restrict_stuffed_commands is 0.
 	if ( !m_bRestrictServerCommands || sv.IsActive() )
 	{
@@ -1096,7 +1097,7 @@ bool CBaseClientState::InternalProcessStringCmd( NET_StringCmd *msg, bool bIsHLT
 		return true;
 	}
 #endif
-#line 1040
+#line 1010
 
 	// Check that we can add the two execution markers
 	if ( !Cbuf_HasRoomForExecutionMarkers( 2 ) )
@@ -1471,7 +1472,7 @@ bool CBaseClientState::ProcessCreateStringTable( SVC_CreateStringTable *msg )
 			Warning("Malformed message in CBaseClientState::ProcessCreateStringTable\n");
 		}
 #endif
-#line 1394
+#line 1364
 	}
 	else
 	{

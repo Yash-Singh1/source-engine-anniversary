@@ -2610,6 +2610,7 @@ lightcache_t *FindNearestCache( int x, int y, int z, int leafIndex )
 }
 
 
+#line 2610
 ITexture *LightcacheGetDynamic( const Vector& origin, LightingState_t& lightingState, 
 							   LightcacheGetDynamic_Stats &stats, unsigned int flags, bool bDebugModel )
 {
@@ -3048,4 +3049,4 @@ void InitDLightGlobals( int nMapVersion )
 	}
 }
 #endif
-#line 3010
+#line 3011

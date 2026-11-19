@@ -2016,6 +2016,7 @@ void CClientState::ConsistencyCheck(bool bChanged )
 	}
 }
 
+#line 1881
 void CClientState::UpdateAreaBits_BackwardsCompatible()
 {
 	if ( m_pAreaBits )
@@ -2089,7 +2090,7 @@ void CClientState::RunFrame()
 #else
 		Msg( "Info: OS Paged Pool Memory restored - currently %lu pages free (%lu Kb) of total %lu pages (%lu Kb total).\n",
 #endif
-#line 1978
+#line 1950
 			ppi.numPagesFree, ppi.numPagesFree * Plat_GetMemPageSize(),
 			( ppi.numPagesFree + ppi.numPagesUsed ), ( ppi.numPagesFree + ppi.numPagesUsed ) * Plat_GetMemPageSize() );
 	}

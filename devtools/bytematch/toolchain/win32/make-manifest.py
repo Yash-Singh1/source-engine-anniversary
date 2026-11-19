@@ -53,8 +53,9 @@ DEFAULT_MODULES = {
 # theirs by game conditional; vgui2's project is called vgui_dll).
 VPC_FILES = {
     "vgui2": "vgui2/src/vgui_dll.vpc",
-    "client_hl2": "game/client/client_hl2.vpc",
-    "server_hl2": "game/server/server_hl2.vpc",
+    # retail hl2 is the episodic build (same objects and code; --retail-osx32 builds it so too)
+    "client_hl2": "game/client/client_episodic.vpc",
+    "server_hl2": "game/server/server_episodic.vpc",
     "client_episodic": "game/client/client_episodic.vpc",
     "server_episodic": "game/server/server_episodic.vpc",
 }
@@ -72,12 +73,17 @@ TREE_VPC_FILES = {
 # Files the 2018 VPCs list that the retail build doesn't have: no texture
 # compositor in retail MaterialSystem.dll or stdshader_dx9.dll (no strings, no
 # macOS object), and this tree drops it from the BYTEMATCH_RETAIL interfaces.
+# Retail tier0.dll has no stack tools or CPU frequency monitor either (none of
+# their exports or strings, no macOS object). The retail engine measures MP3s with
+# minimp3; the CMPAFile parser's MPAHeader/VBRHeader have no macOS object.
 RETAIL_EXCLUDE = {"materialsystem": ["materialsystem/ctexturecompositor.cpp"],
-                  "stdshader_dx9": ["materialsystem/stdshaders/compositor.cpp"]}
+                  "stdshader_dx9": ["materialsystem/stdshaders/compositor.cpp"],
+                  "tier0": ["tier0/stacktools.cpp", "tier0/cpumonitoring.cpp"],
+                  "engine": ["engine/audio/private/MPAHeader.cpp", "engine/audio/private/VBRHeader.cpp"]}
 
 # Include directories this fork's sources need beyond Valve's (the fork's
 # vector_fpu.inl includes ivu_types.hxx for intp).
-FORK_INCLUDES = {"hk_math": ["ivp/ivp_utility"]}
+FORK_INCLUDES = {"hk_math": ["ivp/ivp_utility"], "replay": ["thirdparty/curl/include"]}
 
 # Searched before the VPC's include directories: Valve's 2024 shader combo headers
 # (SDK 2013 TF2 branch include/), which the 2018 fxctmp9/vshtmp9 predate; the
@@ -88,7 +94,11 @@ RETAIL_INCLUDES_FIRST = {"stdshader_dx9": ["materialsystem/stdshaders/include"]}
 # inertia clamp in ivp_core.cxx calls POSIX finite(); qhull calls sqrt( int ),
 # which needs <cmath>'s integral overloads (Valve linked prebuilt ivp libraries).
 FORK_CL = {"ivp_compactbuilder": ["/FIcmath"]}
-FORK_DEFINES = {"ivp_physics": ["finite=_finite"]}
+FORK_DEFINES = {"ivp_physics": ["finite=_finite"],
+                # this tree gates its JPEG/PNG code on these (the --retail-osx32 build defines them
+                # for every module that links libjpeg/libpng; retail engine.dll and client.dll have both)
+                "engine": ["HAVE_JPEG", "HAVE_PNG"], "client_hl2": ["HAVE_JPEG", "HAVE_PNG"],
+                "client_episodic": ["HAVE_JPEG", "HAVE_PNG"]}
 
 # Static-library projects whose outputs other projects name in $Lib.
 LIB_PROJECTS = ["jpeglib", "tier1", "tier2", "tier3", "mathlib", "bitmap", "vtf", "appframework", "dmxloader",
@@ -101,6 +111,23 @@ INCLUDE_ALIASES = {"thirdparty/SDL2": "thirdparty/SDL", "engine/audio/private": 
 
 # This fork's sources a module needs because other files call into them unconditionally.
 FORK_SOURCES = {"engine": ["engine/masterserver.cpp"]}
+
+# Valve sources retail has that the 2018 VPCs lack (retail macOS objects), placed in
+# generator order with the settings of the file before them.
+RETAIL_SOURCES = {"GameUI": ["gameui/OptionsSubGamepad.cpp"],
+                  # retail replay.dll and engine.dll have their strings too
+                  "replay": ["replay/sv_ftp.cpp"], "engine": ["engine/workshop.cpp", "engine/mm_events.cpp", "common/imageutils.cpp"],
+                  "client_hl2": ["common/imageutils.cpp", "game/client/steamshare.cpp"],
+                  "client_episodic": ["common/imageutils.cpp", "game/client/steamshare.cpp"]}
+
+# Libraries retail links beyond the 2018 VPCs: retail macOS stdshader_dx9 has
+# libtier2.a(tier2.o), which defines the g_pMaterialSystem CShaderDLL::Connect sets.
+# Retail client.dll and engine.dll also link libjpeg and libpng (imageutils); client and server import rpcrt4 (tier1 uniqueid).
+_CLIENT_IMAGE_LIBS = [{"project": "jpeglib", "path": "lib/common/libjpeg.lib"}, {"prebuilt": "lib/public/libpng.lib"}]
+RETAIL_LIBS = {"stdshader_dx9": [{"project": "tier2", "path": "lib/public/tier2.lib"}],
+               "client_hl2": _CLIENT_IMAGE_LIBS, "client_episodic": _CLIENT_IMAGE_LIBS,
+               "engine": [{"prebuilt": "lib/public/libpng.lib"}]}
+RETAIL_SYSTEM_LIBS = dict((m, ["rpcrt4.lib"]) for m in ("client_hl2", "client_episodic", "server_hl2", "server_episodic"))
 
 # Valve library paths ($File "...lib") that live elsewhere in this tree.
 LIB_FILE_ALIASES = {"dx9sdk/lib": "dx9sdk/lib/x86"}
@@ -324,6 +351,16 @@ class Module:
             elif f["settings"].get(("custombuildstep", "commandline")):
                 ent["custom"] = f["settings"][("custombuildstep", "commandline")]
             out.append(ent)
+        for path in RETAIL_SOURCES.get(self.name, []):
+            d, n = os.path.split(path)
+            prev = [(os.path.basename(e["path"]).lower(), k) for k, e in enumerate(out)
+                    if os.path.dirname(e["path"]) == d and os.path.basename(e["path"]).lower() < n.lower()]
+            i = max(prev)[1] if prev else len(out) - 1
+            ent = dict((k, v) for k, v in out[i].items() if k not in ("path", "valve_path", "missing"))
+            if ent.get("pch") == "create":
+                ent["pch"] = "use"
+            ent["path"] = path
+            out.insert(i + 1, ent)
         for path in FORK_SOURCES.get(self.name, []):
             out.append({"path": path, "lang": "c++", "fork_only": True})
         return out
@@ -372,7 +409,7 @@ class Module:
                 out.append({"project": stem.lower(), "path": rel, "implib": True})
             else:
                 out.append({"prebuilt": rel})
-        return out
+        return out + [l for l in RETAIL_LIBS.get(self.name, []) if l not in out]
 
     def manifest(self):
         lsw, lobjs = self.link_switches()
@@ -397,7 +434,18 @@ class Module:
         if m["type"] != "lib":
             m["link"] = lsw
             m["link_objects"] = lobjs
-            m["system_libs"] = split_list(self.get("linker.additionaldependencies"), " ")
+            m["system_libs"] = []
+            for lib in split_list(self.get("linker.additionaldependencies"), " "):
+                if "\\" not in lib and "/" not in lib:
+                    m["system_libs"].append(lib)
+                    continue
+                # a path relative to the project (launcher: ..\dx9sdk\lib\dinput8.lib)
+                rel = os.path.normpath(os.path.join(os.path.relpath(self.projdir, self.hl2src), lib.replace("\\", "/")))
+                d, base = os.path.split(rel)
+                d = next((v for k, v in LIB_FILE_ALIASES.items() if d.lower() == k.lower()), d)
+                ours = self.locate(os.path.join(d, base))
+                m["file_libs"].append({"path": ours, "valve_path": rel} if ours else {"path": rel, "missing": True})
+            m["system_libs"] += [l for l in RETAIL_SYSTEM_LIBS.get(self.name, []) if l not in m["system_libs"]]
         return m
 
 

@@ -421,6 +421,7 @@ void CHLTVClient::UpdateUserSettings()
 	CBaseClient::UpdateUserSettings();
 }
 
+#line 422
 void CHLTVClient::SendSnapshot( CClientFrame * pFrame )
 {
 	VPROF_BUDGET( "CHLTVClient::SendSnapshot", "HLTV" );

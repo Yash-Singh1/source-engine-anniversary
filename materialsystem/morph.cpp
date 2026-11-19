@@ -2145,6 +2145,7 @@ bool CMorphMgr::GetMorphAccumulatorTexCoord( IMorphMgrRenderContext *pRenderCont
 //-----------------------------------------------------------------------------
 // Starts, ends morph accumulation.
 //-----------------------------------------------------------------------------
+#line 2139
 void CMorphMgr::BeginMorphAccumulation( IMorphMgrRenderContext *pIRenderContext )
 {
 	VPROF_BUDGET( "CMorph::BeginMorphAccumulation", _T("HW Morphing") );

@@ -221,6 +221,7 @@ void CSteam3Client::CancelAuthTicket()
 //-----------------------------------------------------------------------------
 // Purpose: Process any callbacks we may have
 //-----------------------------------------------------------------------------
+#line 222
 void CSteam3Client::RunFrame()
 {
 #if !defined( NO_STEAM )

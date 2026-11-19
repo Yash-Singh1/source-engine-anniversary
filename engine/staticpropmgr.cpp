@@ -2018,6 +2018,7 @@ void CStaticPropMgr::DrawStaticProps_FastPipeline( IClientRenderable **pProps, i
 
 // NOTE: Set this to zero to revert to the previous static prop lighting behavior
 ConVar pipeline_static_props("pipeline_static_props", "1");
+#line 1971
 void CStaticPropMgr::DrawStaticProps( IClientRenderable **pProps, int count, bool bShadowDepth, bool drawVCollideWireframe )
 {
 	VPROF_BUDGET( "CStaticPropMgr::DrawStaticProps", VPROF_BUDGETGROUP_STATICPROP_RENDERING );

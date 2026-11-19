@@ -857,6 +857,7 @@ bool IsCurrentViewAccessAllowed()
 	return s_bCanAccessCurrentView;
 }
 
+#line 873
 void SetupCurrentView( const Vector &vecOrigin, const QAngle &angles, view_id_t viewID )
 {
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__ );
@@ -1309,6 +1310,7 @@ bool CViewRender::UpdateShadowDepthTexture( ITexture *pRenderTarget, ITexture *p
 //-----------------------------------------------------------------------------
 // Purpose: Renders world and all entities, etc.
 //-----------------------------------------------------------------------------
+#line 1326
 void CViewRender::ViewDrawScene( bool bDrew3dSkybox, SkyboxVisibility_t nSkyboxVisible, const CViewSetup &view, 
 								int nClearFlags, view_id_t viewID, bool bDrawViewModel, int baseDrawFlags, ViewCustomVisibility_t *pCustomVisibility )
 {
@@ -1774,6 +1776,7 @@ void CViewRender::DisableFog( void )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+#line 1875
 void CViewRender::SetupVis( const CViewSetup& view, unsigned int &visFlags, ViewCustomVisibility_t *pCustomVisibility )
 {
 	VPROF( "CViewRender::SetupVis" );
@@ -3325,6 +3328,7 @@ void CRendering3dView::UpdateRenderablesOpacity()
 //
 //-----------------------------------------------------------------------------
 // Kinda awkward...three optional parameters at the end...
+#line 3470
 void CRendering3dView::BuildWorldRenderLists( bool bDrawEntities, int iForceViewLeaf /* = -1 */, 
 	bool bUseCacheIfEnabled /* = true */, bool bShadowDepth /* = false */, float *pReflectionWaterHeight /*= NULL*/ )
 {
@@ -4825,6 +4829,7 @@ bool CSkyboxView::Setup( const CViewSetup &view, int *pClearFlags, SkyboxVisibil
 //-----------------------------------------------------------------------------
 // 
 //-----------------------------------------------------------------------------
+#line 4966
 void CSkyboxView::Draw()
 {
 	VPROF_BUDGET( "CViewRender::Draw3dSkyboxworld", "3D Skybox" );

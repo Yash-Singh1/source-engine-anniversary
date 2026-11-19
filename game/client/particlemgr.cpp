@@ -1796,6 +1796,7 @@ static int CountParticleSystemActiveParticles( CParticleCollection *p )
 }
 
 
+#line 1800
 void CParticleMgr::UpdateNewEffects( float flTimeDelta )
 {
 // #ifdef TF_CLIENT_DLL

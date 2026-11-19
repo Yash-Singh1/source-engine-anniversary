@@ -371,6 +371,7 @@ bool CPhysicsHook::FindOrAddVehicleScript( const char *pScriptName, vehicleparam
 }
 
 // called after entities think
+#line 372
 void CPhysicsHook::FrameUpdatePostEntityThink( ) 
 {
 	VPROF_BUDGET( "CPhysicsHook::FrameUpdatePostEntityThink", VPROF_BUDGETGROUP_PHYSICS );

@@ -1275,6 +1275,7 @@ for a few seconds to make sure any final reliable message gets resent
 if necessary
 ==================
 */
+#line 1300
 void CBaseServer::CheckTimeouts (void)
 {
 	VPROF_BUDGET( "CBaseServer::CheckTimeouts", VPROF_BUDGETGROUP_OTHER_NETWORKING );
@@ -1444,7 +1445,7 @@ bool CBaseServer::CheckProtocol( netadr_t &adr, int nProtocol, int clientChallen
 #else
 			RejectConnection( adr, clientChallenge, "#GameUI_ServerRejectOldVersion" );
 #endif
-#line 1407
+#line 1465
 		}
 		else
 		// Server is newer than client
@@ -1454,7 +1455,7 @@ bool CBaseServer::CheckProtocol( netadr_t &adr, int nProtocol, int clientChallen
 #else
 			RejectConnection( adr, clientChallenge, "#GameUI_ServerRejectNewVersion" );
 #endif
-#line 1412
+#line 1470
 		}
 		return false;
 	}
@@ -1489,7 +1490,7 @@ bool CBaseServer::CheckChallengeType( CBaseClient * client, int nNewUserID, neta
 		return false;
 	}
 #endif
-#line 1446
+#line 1504
 
 	Assert( !IsReplay() );
 
@@ -1528,7 +1529,7 @@ bool CBaseServer::CheckChallengeType( CBaseClient * client, int nNewUserID, neta
 			return false;
 		}
 #endif
-#line 1482
+#line 1540
 		netadr_t checkAdr = adr;
 		if ( adr.GetType() == NA_LOOPBACK || adr.IsLocalhost() )
 		{
@@ -1542,7 +1543,7 @@ bool CBaseServer::CheckChallengeType( CBaseClient * client, int nNewUserID, neta
 			return false;
 		}
 #endif
-#line 1495
+#line 1553
 
 		//
 		// Any rejections below this must call SendUserDisconnect
@@ -1854,6 +1855,7 @@ void CBaseServer::CheckMasterServerRequestRestart()
 }
 
 
+#line 1861
 void CBaseServer::UpdateMasterServer()
 {
 	VPROF_BUDGET( "CBaseServer::UpdateMasterServer", VPROF_BUDGETGROUP_OTHER_NETWORKING );
@@ -2070,6 +2072,7 @@ CBaseClient * CBaseServer::GetFreeClient( netadr_t &adr )
 	return freeclient;
 }
 
+#line 2072
 void CBaseServer::SendClientMessages ( bool bSendSnapshots )
 {
 	VPROF_BUDGET( "SendClientMessages", VPROF_BUDGETGROUP_OTHER_NETWORKING );

@@ -54,6 +54,11 @@ def main():
              os.path.join(V.ROOT, "thirdparty", "include")]
     if "dx9sdk/include" in m["includes"]:
         incs.insert(0, os.path.join(a.build, "retail-win32-override"))
+    telemetry = os.path.join(a.build, "retail-win32-telemetry", "include", "tier0")  # see retail_win32.py
+    if os.path.isdir(telemetry):
+        incs.append(telemetry)
+    else:
+        defines.append("RAD_TELEMETRY_DISABLED")
     out = os.path.realpath(a.out or os.path.join(tempfile.gettempdir(),
                                                 os.path.splitext(os.path.basename(rel))[0] + ".obj"))
     os.makedirs(os.path.dirname(out), exist_ok=True)

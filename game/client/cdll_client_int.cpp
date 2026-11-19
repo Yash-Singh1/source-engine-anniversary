@@ -2183,6 +2183,7 @@ void UpdatePVSNotifiers()
 }
 
 
+#line 2209
 void OnRenderStart()
 {
 	VPROF( "OnRenderStart" );

@@ -1314,6 +1314,7 @@ void CHLTVServer::SignonComplete()
 		Msg("SourceTV signon complete.\n" );
 }
 
+#line 1311
 CClientFrame *CHLTVServer::AddNewFrame( CClientFrame *clientFrame )
 {
 	VPROF_BUDGET( "CHLTVServer::AddNewFrame", "HLTV" );
@@ -1348,7 +1349,7 @@ CClientFrame *CHLTVServer::AddNewFrame( CClientFrame *clientFrame )
 #else
 			Steam3Server().Activate( CSteam3Server::eServerTypeTVRelay );
 #endif
-#line 1342
+#line 1341
 			Steam3Server().SendUpdatedServerDetails();
 		}
 		else
@@ -1966,7 +1967,7 @@ void CHLTVServer::ReadCompeleteDemoFile()
 					Warning( "ReadCompleteDemoFile failed to read string tables. Trying to read string tables that's bigger than max string table size\n" );
 				}
 #endif
-#line 1948
+#line 1947
 
 				free( data );
 			}
@@ -2104,7 +2105,7 @@ void CHLTVServer::ReplyInfo( const netadr_t &adr )
 #else
 	buf.PutString( GetSteamInfIDVersionInfo().szVersionString );
 #endif
-#line 2081
+#line 2080
 
 	//
 	// NEW DATA.
