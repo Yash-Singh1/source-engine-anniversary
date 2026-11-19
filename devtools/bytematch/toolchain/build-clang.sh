@@ -33,17 +33,28 @@ WORK=${WORK:-$PREFIX/work}
 DEST=$PREFIX/clang-$V
 mkdir -p "$WORK" "$PREFIX"
 VERSION_PATCHES=$(ls "$HERE/patches/clang-$V-"*.patch 2>/dev/null || true)
+# Every version: a host-compiler fix, and -fmacro-prefix-map (waf's retail mode needs it).
+COMMON_PATCHES="$HERE/patches/clang-intrusiverefcntptr-friend.patch $HERE/patches/clang-macro-prefix-map.patch"
 
+# Staged and renamed into place, so builds running with the old install never
+# find it missing.
 install_from() {
-	local b=$1
+	local b=$1 new=$DEST.new.$$
 	[ -x "$b/bin/clang" ] || { echo "no clang in $b/bin" >&2; exit 1; }
-	rm -rf "$DEST"
-	mkdir -p "$DEST/bin" "$DEST/lib"
-	cp "$b/bin/clang" "$DEST/bin/clang"
-	ln -sf clang "$DEST/bin/clang++"
-	cp -R "$b/lib/clang" "$DEST/lib/"
-	echo "$V" > "$DEST/VERSION"
-	for p in $VERSION_PATCHES; do basename "$p"; done > "$DEST/PATCHES"
+	rm -rf "$new"
+	mkdir -p "$new/bin" "$new/lib"
+	cp "$b/bin/clang" "$new/bin/clang"
+	ln -sf clang "$new/bin/clang++"
+	cp -R "$b/lib/clang" "$new/lib/"
+	echo "$V" > "$new/VERSION"
+	for p in $COMMON_PATCHES $VERSION_PATCHES; do basename "$p"; done > "$new/PATCHES"
+	if [ -e "$DEST" ]; then
+		mv "$DEST" "$DEST.old.$$"
+		mv "$new" "$DEST"
+		rm -rf "$DEST.old.$$"
+	else
+		mv "$new" "$DEST"
+	fi
 	"$DEST/bin/clang" --version | head -1
 	echo "installed $DEST"
 }
@@ -66,8 +77,7 @@ SRC=$WORK/clang-$V
 rm -rf "$SRC"
 mkdir -p "$SRC"
 tar -xzf "$TB" -C "$SRC" --strip-components=1
-(cd "$SRC" && patch -p1 --forward < "$HERE/patches/clang-intrusiverefcntptr-friend.patch")
-for p in $VERSION_PATCHES; do
+for p in $COMMON_PATCHES $VERSION_PATCHES; do
 	(cd "$SRC" && patch -p1 --forward < "$p")
 done
 
