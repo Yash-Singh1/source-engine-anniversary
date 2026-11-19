@@ -267,8 +267,8 @@ void ScrollBar::PerformLayout()
 			else
 			{
 				_slider->SetBounds(0, wide, wide, tall-(wide*2)+ nRepeats );
-				_button[0]->SetBounds(0, nRepeatsMinusOne, wide - nRepeats, wide);
-				_button[1]->SetBounds(0,tall-wide - nRepeatsMinusOne, wide - nRepeats, wide);
+				_button[0]->SetBounds(0, VGUI_NOV2024_ONLY( nRepeatsMinusOne, wide - nRepeats ) VGUI_OCT2024_ONLY( 0, wide ), wide);
+				_button[1]->SetBounds(0, VGUI_NOV2024_ONLY( tall-wide - nRepeatsMinusOne, wide - nRepeats ) VGUI_OCT2024_ONLY( tall-wide, wide ), wide);
 			}
 		}
 		else

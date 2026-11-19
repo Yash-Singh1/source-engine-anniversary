@@ -88,7 +88,7 @@ void Label::Init()
 	_fontOverrideName = NULL;
 	m_bWrap = false;
 	m_bCenterWrap = false;
-	m_bAllCaps = false;
+	VGUI_NOV2024_ONLY( m_bAllCaps = false; )
 	m_bAutoWideToContents = false;
 	m_bUseProportionalInsets = false;
 	m_bAutoWideDirty = false;
@@ -146,6 +146,7 @@ void Label::GetContentSize(int &wide, int &tall)
 	tall = max((ty1 - ty0) + _textInset[1], iTall);
 }
 
+#if !defined( VGUI_CONTROLS_OCT2024 )
 //-----------------------------------------------------------------------------
 // Purpose: Return the size of the text image
 //-----------------------------------------------------------------------------
@@ -153,6 +154,8 @@ void Label::GetTextImageSize( int &wide, int &tall )
 {
 	_textImage->GetSize( wide, tall );
 }
+#endif
+#line 156
 
 //-----------------------------------------------------------------------------
 // Purpose: Calculate the keyboard key that is a hotkey 
@@ -1252,7 +1255,7 @@ void Label::ApplySettings( KeyValues *inResourceData )
 
 	int inset_x = inResourceData->GetInt("textinsetx", _textInset[0]);
 	int inset_y = inResourceData->GetInt("textinsety", _textInset[1]);
-	float flInsetY = inResourceData->GetFloat("textinsety", (float)_textInset[1]);
+	VGUI_NOV2024_ONLY( float flInsetY = inResourceData->GetFloat("textinsety", (float)_textInset[1]); )
 	// Had to play it safe and add a new key for backwards compatibility
 	m_bUseProportionalInsets = inResourceData->GetInt("use_proportional_insets", 0) > 0;
 	if ( m_bUseProportionalInsets )
@@ -1260,11 +1263,14 @@ void Label::ApplySettings( KeyValues *inResourceData )
 		inset_x = scheme()->GetProportionalScaledValueEx( GetScheme(), inset_x );
 	}
 
+#if !defined( VGUI_CONTROLS_OCT2024 )
 	if ( m_bUseProportionalInsets && !inResourceData->IsEmpty( "textinsety" ) )
 	{
 		int nScale = scheme()->GetProportionalScaledValueEx( GetScheme(), 1000 );
 		inset_y = int( ceilf( ( flInsetY * nScale ) / 1000.0f ) );
 	}
+#endif
+#line 1268
 
 	SetTextInset( inset_x, inset_y );
 

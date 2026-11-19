@@ -314,6 +314,7 @@ void TextTooltip::ShowTooltip(Panel *currentPanel)
 		s_TooltipWindow->SetText( m_Text.Base() );
 		s_TooltipWindow->SetParent(currentPanel);
 
+#if !defined( VGUI_CONTROLS_OCT2024 )
 		// Apply proportional scaling to the tooltip if the parent has scaling enabled.
 		//	This requires us to re-apply the font to see the changes.
 		if ( IScheme* pScheme = scheme()->GetIScheme( s_TooltipWindow->GetScheme() ) )
@@ -321,6 +322,8 @@ void TextTooltip::ShowTooltip(Panel *currentPanel)
 			s_TooltipWindow->SetProportional( currentPanel && currentPanel->IsProportional() );
 			s_TooltipWindow->SetFont( pScheme->GetFont( "DefaultSmall", s_TooltipWindow->IsProportional() ) );
 		}
+#endif
+#line 324
 	}
 	BaseTooltip::ShowTooltip( currentPanel );
 }

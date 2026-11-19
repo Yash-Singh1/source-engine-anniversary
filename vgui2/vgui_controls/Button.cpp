@@ -843,7 +843,7 @@ void Button::GetSettings( KeyValues *outResourceData )
 //-----------------------------------------------------------------------------
 void Button::ApplySettings( KeyValues *inResourceData )
 {
-	SetTextInset( QuickPropScale( 6 ), 0 );
+	VGUI_NOV2024_ONLY( SetTextInset( QuickPropScale( 6 ), 0 ); )
 
 	BaseClass::ApplySettings(inResourceData);
 
@@ -889,7 +889,7 @@ void Button::ApplySettings( KeyValues *inResourceData )
 
 #ifdef BYTEMATCH_RETAIL
 	_activationType = (ActivationType_t)inResourceData->GetInt( "button_activation_type",
-		this->IsToggleButton() ? ACTIVATE_ONRELEASED : ACTIVATE_ONPRESSEDANDRELEASED
+		VGUI_NOV2024_ONLY( this->IsToggleButton() ? ACTIVATE_ONRELEASED : ACTIVATE_ONPRESSEDANDRELEASED ) VGUI_OCT2024_ONLY( ACTIVATE_ONRELEASED )
 	);
 #else
 	int iButtonActivationType = inResourceData->GetInt( "button_activation_type", -1 );

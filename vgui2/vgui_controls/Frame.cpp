@@ -1027,7 +1027,7 @@ void Frame::LayoutProportional( FrameButton *bt )
 
 	if ( IsProportional() )
 	{	
-		scale = scheme()->GetProportionalScaledValueEx( GetScheme(), 65535 ) / 65535.f;
+		VGUI_NOV2024_ONLY( scale = scheme()->GetProportionalScaledValueEx( GetScheme(), 65535 ) / 65535.f; ) VGUI_OCT2024_ONLY( int screenW, screenH; surface()->GetScreenSize( screenW, screenH ); int proW, proH; surface()->GetProportionalBase( proW, proH ); scale = ( (float)( screenH ) / (float)( proH ) ); )
 	}
 
 	bt->SetSize( (int)( FrameButton::GetButtonSide( this ) * scale ), (int)( FrameButton::GetButtonSide( this ) * scale ) );
@@ -1259,7 +1259,7 @@ void Frame::PerformLayout()
 	float scale = 1;
 	if (IsProportional())
 	{
-		scale = scheme()->GetProportionalScaledValueEx( GetScheme(), 65535 ) / 65535.f;
+		VGUI_NOV2024_ONLY( scale = scheme()->GetProportionalScaledValueEx( GetScheme(), 65535 ) / 65535.f; ) VGUI_OCT2024_ONLY( int screenW, screenH; surface()->GetScreenSize( screenW, screenH ); int proW, proH; surface()->GetProportionalBase( proW, proH ); scale = ( (float)( screenH ) / (float)( proH ) ); )
 	}
 	
 #if !defined( _X360 )
