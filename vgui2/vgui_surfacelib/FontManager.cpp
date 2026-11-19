@@ -9,6 +9,8 @@
 #include "vgui_surfacelib/FontManager.h"
 #include <vgui/ISurface.h>
 #include <tier0/dbg.h>
+#include <tier0/icommandline.h>
+#line 12
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include <tier0/memdbgon.h>
@@ -24,6 +26,15 @@ extern bool s_bSupportsUnicode;
 #else
 #define MAX_INITIAL_FONTS	1
 #endif
+
+//-----------------------------------------------------------------------------
+// Purpose: -freetype forces FreeType for system fonts
+//-----------------------------------------------------------------------------
+bool UseFreetypeFonts()
+{
+	return CommandLine()->CheckParm( "-freetype" ) != NULL;
+}
+#line 27
 
 //-----------------------------------------------------------------------------
 // Purpose: singleton accessor
