@@ -94,7 +94,12 @@ RETAIL_INCLUDES_FIRST = {"stdshader_dx9": ["materialsystem/stdshaders/include"]}
 # inertia clamp in ivp_core.cxx calls POSIX finite(); qhull calls sqrt( int ),
 # which needs <cmath>'s integral overloads (Valve linked prebuilt ivp libraries).
 FORK_CL = {"ivp_compactbuilder": ["/FIcmath"]}
-FORK_DEFINES = {"ivp_physics": ["finite=_finite"],
+# Valve's Windows ivp was built with IVP_PIII (Pentium III paths in ivu_linear and
+# _mm_prefetch hints: retail vphysics.dll has 66 prefetcht1); the ivp submodule's VPCs lack it.
+_IVP_PIII = ["IVP_PIII"]
+FORK_DEFINES = {"ivp_physics": ["finite=_finite"] + _IVP_PIII, "ivp_compactbuilder": _IVP_PIII,
+                "havana_constraints": _IVP_PIII, "hk_base": _IVP_PIII, "hk_math": _IVP_PIII,
+                "vphysics": _IVP_PIII,
                 # this tree gates its JPEG/PNG code on these (the --retail-osx32 build defines them
                 # for every module that links libjpeg/libpng; retail engine.dll and client.dll have both)
                 "engine": ["HAVE_JPEG", "HAVE_PNG"], "client_hl2": ["HAVE_JPEG", "HAVE_PNG"],

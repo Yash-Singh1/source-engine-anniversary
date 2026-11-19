@@ -5230,7 +5230,8 @@
     "HAVOK_MOPP",
     "_WINDLL",
     "_USING_V110_SDK71_",
-    "_MBCS"
+    "_MBCS",
+    "IVP_PIII"
    ],
    "includes": [
     "common",
@@ -19969,7 +19970,8 @@
     "HAVOK_MOPP",
     "IVP_VERSION_SDK",
     "_USING_V110_SDK71_",
-    "_MBCS"
+    "_MBCS",
+    "IVP_PIII"
    ],
    "includes": [
     "common",
@@ -20111,7 +20113,8 @@
     "HAVANA_CONSTRAINTS",
     "HAVOK_MOPP",
     "_USING_V110_SDK71_",
-    "_MBCS"
+    "_MBCS",
+    "IVP_PIII"
    ],
    "includes": [
     "common",
@@ -20231,7 +20234,8 @@
     "HAVANA_CONSTRAINTS",
     "HAVOK_MOPP",
     "_USING_V110_SDK71_",
-    "_MBCS"
+    "_MBCS",
+    "IVP_PIII"
    ],
    "includes": [
     "common",
@@ -20396,7 +20400,8 @@
     "IVP_VERSION_SDK",
     "HAVOK_MOPP",
     "_USING_V110_SDK71_",
-    "_MBCS"
+    "_MBCS",
+    "IVP_PIII"
    ],
    "includes": [
     "common",
@@ -20696,7 +20701,8 @@
     "HAVOK_MOPP",
     "_USING_V110_SDK71_",
     "_MBCS",
-    "finite=_finite"
+    "finite=_finite",
+    "IVP_PIII"
    ],
    "includes": [
     "common",
