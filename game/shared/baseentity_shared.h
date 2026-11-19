@@ -231,7 +231,7 @@ inline void CBaseEntity::ClearEffects( void )
 { 
 #if !defined( CLIENT_DLL )
 #ifdef HL2_EPISODIC
-	if ( m_fEffects & (EF_BRIGHTLIGHT|EF_DIMLIGHT) )
+	if ( IsHL2Episodic() && ( m_fEffects & (EF_BRIGHTLIGHT|EF_DIMLIGHT) ) )
 	{
 		// Hack for now, to avoid player emitting radius with his flashlight
 		if ( !IsPlayer() )

@@ -435,8 +435,8 @@ void CBreakable::Precache( void )
 
 #if HL2_EPISODIC 
 	case matNone:
-		pGibName = "";
-		break;
+		if ( IsHL2Episodic() ) { pGibName = ""; break; }
+
 #endif
 
 	default:
