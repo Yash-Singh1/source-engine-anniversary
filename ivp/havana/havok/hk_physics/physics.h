@@ -134,6 +134,12 @@ public:
 	hk_Diagonal_Matrix &_get_body_inertia(){
 		return *(hk_Diagonal_Matrix *)get_rot_inertia();
 	}
+#ifdef BYTEMATCH_RETAIL
+	// rotation inertia with the mass as 4th value, and its inverse
+	IVP_U_Float_Hesse &_get_inertia_and_mass(){ return rot_inertia; }
+	IVP_U_Float_Hesse &_get_inv_inertia_and_mass(){ return *(IVP_U_Float_Hesse *)get_inv_rot_inertia(); }
+	IVP_BOOL _is_fixed(){ return (IVP_BOOL)( physical_unmoveable || pinned ); }
+#endif
 
 	void add_to_mass_matrix_inv(	hk_Core_VMQ_Input &input,	hk_Dense_Matrix& matrix_out,	hk_real velocities_out[]);
 

@@ -80,6 +80,90 @@ int hk_Breakable_Constraint::get_vmq_storage_size()
 }
 
 
+#ifdef BYTEMATCH_RETAIL
+// the constraint runs with each body's mass (and inertia) scaled by its mass scale; the destructor restores them
+struct BreakableConstraintHelper
+{
+	BreakableConstraintHelper( hk_Rigid_Body* b, hk_real massScale );
+
+	~BreakableConstraintHelper()
+	{
+		if ( m_massScale != 1.0f && m_massScale > 0 )
+		{
+			hk_Rigid_Body_Core *core = m_body->get_rigid_body_core();
+			core->_get_inertia_and_mass().set4( &m_saved_inertia );
+			core->_get_inv_inertia_and_mass().set4( &m_saved_inv_inertia );
+		}
+	}
+
+	bool breaks( hk_real linear_limit, hk_real angular_limit )
+	{
+		// reverse engineer the impulses and check their strength
+		hk_Vector3 linear = m_core->_get_linear_velocity() - m_old_lin_vel;
+
+		if( m_core->get_mass()*linear.length_squared() < linear_limit*linear_limit )
+		{
+			hk_Vector3 angular = m_core->_get_spin() - m_old_ang_vel;
+
+			hk_Vector3 spin;
+			spin.set_mul3( m_core->_get_body_inertia(), angular );
+
+			if( spin.length_squared() < angular_limit*angular_limit )
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	void UnapplyConstraint()
+	{
+		// restore old values on break
+		if ( !m_core->_is_fixed() )
+		{
+			m_core->_get_linear_velocity() = m_old_lin_vel;
+			m_core->_get_spin() = m_old_ang_vel;
+		}
+	}
+
+	hk_Rigid_Body_Core* m_core;
+	hk_Vector3 m_old_lin_vel;
+	hk_Vector3 m_old_ang_vel;
+	hk_real m_massScale;
+	hk_Rigid_Body *m_body;
+	IVP_U_Float_Hesse m_saved_inertia;
+	IVP_U_Float_Hesse m_saved_inv_inertia;
+};
+
+BreakableConstraintHelper::BreakableConstraintHelper( hk_Rigid_Body* b, hk_real massScale )
+	:	m_core(b->get_rigid_body_core()),
+		m_old_lin_vel(m_core->_get_linear_velocity()),
+		m_old_ang_vel(m_core->_get_spin()),
+		m_body(b)
+{
+	m_massScale = massScale;
+	if ( massScale == 1.0f || !(massScale > 0) || m_core->_is_fixed() )
+	{
+		m_massScale = 1.0f;
+		return;
+	}
+	hk_Rigid_Body_Core *core = b->get_rigid_body_core();
+	m_saved_inertia.set4( &core->_get_inertia_and_mass() );
+	m_saved_inv_inertia.set4( &core->_get_inv_inertia_and_mass() );
+
+	hk_real mass = m_core->get_mass();
+	if ( mass * massScale > 10000.0f )
+	{
+		massScale = 10000.0f / mass;
+	}
+	hk_real invScale = 1.0f / massScale;
+	core->_get_inertia_and_mass().mult( massScale );
+	core->_get_inertia_and_mass().hesse_val *= massScale;
+	core->_get_inv_inertia_and_mass().mult( invScale );
+	core->_get_inv_inertia_and_mass().hesse_val *= invScale;
+}
+#else
 struct BreakableConstraintHelper
 {
 	BreakableConstraintHelper( hk_Rigid_Body* b )
@@ -121,6 +205,13 @@ struct BreakableConstraintHelper
 	hk_Vector3 m_old_lin_vel;
 	hk_Vector3 m_old_ang_vel;
 };
+#endif
+
+#ifdef BYTEMATCH_RETAIL
+#define BREAKABLE_HELPER( name, i ) BreakableConstraintHelper name( get_rigid_body(i), m_bodyMassScale[i] )
+#else
+#define BREAKABLE_HELPER( name, i ) BreakableConstraintHelper name( get_rigid_body(i) )
+#endif
 
 
 void hk_Breakable_Constraint::FireEventIfBroken()
@@ -146,8 +237,8 @@ int	hk_Breakable_Constraint::setup_and_step_constraint( hk_PSI_Info& pi, void *m
 	 */
 	//HK_ASSERT(0 && "Incomplete implementation");
 	m_is_broken = false;
-	BreakableConstraintHelper ss0( get_rigid_body(0) );
-	BreakableConstraintHelper ss1( get_rigid_body(1) );
+	BREAKABLE_HELPER( ss0, 0 );
+	BREAKABLE_HELPER( ss1, 1 );
 	
 	m_real_constraint->setup_and_step_constraint(pi, mem, tau_factor, damp_factor);
 
@@ -172,8 +263,8 @@ void hk_Breakable_Constraint::step_constraint( hk_PSI_Info& pi, void *mem, hk_re
 	//HK_ASSERT(0 && "Incomplete implementation");
 	//if( m_is_broken == false )
 	{
-		BreakableConstraintHelper ss0( get_rigid_body(0) );
-		BreakableConstraintHelper ss1( get_rigid_body(1) );
+		BREAKABLE_HELPER( ss0, 0 );
+		BREAKABLE_HELPER( ss1, 1 );
 
 		m_real_constraint->step_constraint(pi,mem,tau_factor,damp_factor);
 
