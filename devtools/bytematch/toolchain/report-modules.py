@@ -38,6 +38,10 @@ DEPOTS = os.path.dirname(os.path.dirname(rf.RETAIL_DEPOT))
 # Per-module static-library variants (retail_osx32.py's retail_stlib_variant):
 # archive name suffix -> the module that links them.
 ARCHIVE_VARIANTS = {"_105": "bin/sourcevr"}
+# Archives compared with another user than engine: engine pulls only AppSystemGroup.o from
+# libappframework.a, launcher all four retail members (our archive's extra filesystem_init.o
+# would otherwise pair with engine's own ENGINE_DLL copy).
+ARCHIVE_USER = {"libappframework.a": "bin/launcher"}
 
 
 def retail_file(mod):
@@ -82,7 +86,7 @@ def jobs_for(build, manifest):
         name = os.path.basename(lib)
         variant = [m for s, m in ARCHIVE_VARIANTS.items() if name.endswith(s + ".a")]
         users = variant or manifest["archives"].get(name, {}).get("used_by", [])
-        user = "bin/engine" if "bin/engine" in users or not users else users[0]
+        user = ARCHIVE_USER.get(name) or ("bin/engine" if "bin/engine" in users or not users else users[0])
         mod = manifest["modules"].get(user, engine)
         jobs.append(("archive", name, name, retail_file(mod), lib, user))
     return jobs
