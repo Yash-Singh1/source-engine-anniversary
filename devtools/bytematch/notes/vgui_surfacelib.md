@@ -67,3 +67,18 @@ Status column: matched = exact or matches-after-masking; "fixed" = differed or w
 | osxfont | `COSXFont::GetCharABCWidths(int, int&, int&, int&, int*)` | matched | fixed (was missing) |
 | osxfont | `COSXFont::GetCharRGBA(wchar_t, int, int, unsigned char*)` | matched | fixed (was differs) |
 | osxfont | `COSXFont::~COSXFont()` | matched | fixed (was differs) |
+
+## Whole-file identity (vguimatsurface)
+
+- `osxfont.o`: retail's `COSXFont::GetFlags` atom is 0x10 bytes ending in a
+  5-byte nop, so a dead `__text` function followed it. The 2018 leak defines
+  `SetAsActiveFont` right after the two less-funcs (which clang creates
+  earlier, at the constructor's reference), and it is back in `osxfont.h`
+  and `osxfont.cpp`.
+- `FontManager.o` is what's left in `identity.py vguimatsurface` (6 string-table
+  bytes). Except-table labels 3/6/17 are 4/7/18 in retail, so retail creates
+  one more function before the `CFontManager` base constructor. It isn't in
+  `__text` between `FontManager()` and the constructor: `FontManager()`'s atom
+  ends at the constructor. It is a dead coalesced function created early (the
+  first weak atom leaves no trace) or a coalesced copy that an earlier object's
+  copy replaced. Its name is not recovered.

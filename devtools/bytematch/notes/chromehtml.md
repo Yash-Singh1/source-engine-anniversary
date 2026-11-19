@@ -145,6 +145,24 @@ The LC_LOAD_DYLIB list and object order equal retail's. Retail links a
 `pngloader.o` whose code is all dead-stripped (ccache compile slot 22915,
 between jpegloader_common and htmlprotobuf): it pulls libpng's read side, which
 retail exports. `RETAIL_DEAD` links `common/pngloader.cpp` there, and our
-dylib exports retail's 267 `png_*` symbols. `__text` is 823229 bytes against
-retail's 823232; per object all 2891 functions match, and under
-`--all-retail` only 4 libpng functions differ (third-party archive).
+dylib exports retail's 267 `png_*` symbols. Per object all 2891 functions
+match.
+
+## Whole-file identity
+
+`identity.py chromehtml` output is byte-identical to retail (in
+`identical.json`). Three things were needed:
+
+- libpng built against zlib 1.2.5's headers (`build-thirdparty.py`). This
+  fixed the last libpng functions and the `__cstring` contents.
+- Link order. Retail links libpng and protobuf before tier1
+  (`RETAIL_STLIB_BEFORE`). Neither has stabs, so the debug map doesn't show
+  it; the code order does: wrapper, libpng, protobuf, tier1.
+- Debug map. `identity.py` matches the wrapper's members by name, since the
+  manifest has no source for these prebuilt members. It gives them Steam's CEF
+  build paths: the retail archive path, N_SO of the source file, `./include/...`
+  and `./libcef_dll/...` headers, and Xcode's 10.6 SDK. The ccache-style
+  default names had cut `post_data_ctocpp` and `post_data_element_ctocpp` (and
+  the two `v8context_*` files) to the same 10 characters, so ld64 merged their
+  stab groups. protobuf's headers from the SDK 2013 checkout map to Valve's
+  `src/thirdparty`.
