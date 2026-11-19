@@ -1814,17 +1814,14 @@ void CTempEnts::MuzzleFlash( const Vector& pos1, const QAngle& angles, int type,
 	switch ( type )
 	{
 #ifdef HL2_ANNIVERSARY_NOV2024
-	//
-	// AR2
-	//
 	case MUZZLEFLASH_AR2:
 		if ( firstPerson )
 		{
 			MuzzleFlash_AR2_Player( pos1, angles, hEntity );
 		}
 		break;
-
 #endif
+
 	//
 	// Shotgun
 	//
@@ -1891,23 +1888,18 @@ void CTempEnts::MuzzleFlash( const Vector& pos1, const QAngle& angles, int type,
 #ifdef HL2_ANNIVERSARY_NOV2024
 //-----------------------------------------------------------------------------
 // Purpose: 
-// Input  : &origin - 
-//			&angles - 
-//			hEntity - 
 //-----------------------------------------------------------------------------
 void CTempEnts::MuzzleFlash_AR2_Player( const Vector &origin, const QAngle &angles, ClientEntityHandle_t hEntity )
 {
-	Vector forward;
+	Vector	forward, offset;
 	AngleVectors( angles, &forward );
 
-	float flScale = random->RandomFloat( 1.25f, 1.5f );
+	C_LocalTempEntity	*pTemp;
+	float				flScale = random->RandomFloat( 1.25f, 1.5f );
+
 	if ( flScale < 0.5f )
 		flScale = 0.5f;
 
-	C_LocalTempEntity *pTemp;
-	Vector offset;
-
-	// Flash
 	for ( int i = 1; i < 9; i++ )
 	{
 		offset = origin + (forward * (i*8.0f*flScale));
@@ -1932,7 +1924,6 @@ void CTempEnts::MuzzleFlash_AR2_Player( const Vector &origin, const QAngle &angl
 		pTemp->AddToLeafSystem();
 	}
 
-	// Glow
 	pTemp = TempEntAlloc( origin, m_pSpriteMuzzleFlash[0] );
 	if ( !pTemp )
 		return;
@@ -2595,6 +2586,7 @@ inline void CTempEnts::CacheMuzzleFlashes( void )
 	}
 }
 
+static Vector GetFOVScale_Combine();
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : entityIndex - 
@@ -2614,27 +2606,13 @@ void CTempEnts::MuzzleFlash_Combine_Player( ClientEntityHandle_t hEntity, int at
 
 	pSimple->SetDrawBeforeViewModel( true );
 
-	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
-	float flFOV = pPlayer ? pPlayer->GetFOV() : 75.0f;
-	float flFOVOffset, flFOVScale, flFOVSpacing;
-	if ( flFOV > 90.0f )
-	{
-		flFOVOffset = RemapVal( flFOV, 90.0f, 120.0f, 20.0f, 60.0f );
-		flFOVScale = RemapVal( flFOV, 90.0f, 120.0f, 1.5f, 4.0f );
-		flFOVSpacing = RemapVal( flFOV, 90.0f, 120.0f, 1.2f, 1.8f );
-	}
-	else
-	{
-		flFOVOffset = RemapVal( flFOV, 75.0f, 90.0f, 1.0f, 20.0f );
-		flFOVScale = RemapVal( flFOV, 75.0f, 90.0f, 1.0f, 1.3f );
-		flFOVSpacing = RemapVal( flFOV, 75.0f, 90.0f, 1.0f, 1.2f );
-	}
-
+	Vector vecFOVScale = Vector( GetFOVScale_Combine() );
 	// Flash
 	for ( int i = 1; i < 6; i++ )
 	{
-		offset = (forward * (i*8.0f*flScale*flFOVSpacing));
-		offset.x += flFOVOffset;
+		offset = (forward * (i*8.0f*flScale));
+		offset *= vecFOVScale.z;
+		offset += forward * vecFOVScale.x;
 
 		pParticle = (SimpleParticle *) pSimple->AddParticle( sizeof( SimpleParticle ), m_Material_Combine_MuzzleFlash_Player[random->RandomInt(0,1)], offset );
 			
@@ -2653,7 +2631,7 @@ void CTempEnts::MuzzleFlash_Combine_Player( ClientEntityHandle_t hEntity, int at
 		pParticle->m_uchStartAlpha	= 255;
 		pParticle->m_uchEndAlpha	= 255;
 
-		pParticle->m_uchStartSize	= ( (random->RandomFloat( 6.0f, 8.0f ) * (12-(i))/12) * flScale * flFOVScale );
+		pParticle->m_uchStartSize	= ( (random->RandomFloat( 6.0f, 8.0f ) * (12-(i))/12) * flScale ) * vecFOVScale.y;
 		pParticle->m_uchEndSize		= pParticle->m_uchStartSize;
 		pParticle->m_flRoll			= random->RandomInt( 0, 360 );
 		pParticle->m_flRollDelta	= 0.0f;
@@ -2677,13 +2655,12 @@ void CTempEnts::MuzzleFlash_Combine_Player( ClientEntityHandle_t hEntity, int at
 	pParticle->m_uchStartAlpha	= random->RandomInt( 64, 128 );
 	pParticle->m_uchEndAlpha	= 32;
 
-	pParticle->m_uchStartSize	= flFOVScale * random->RandomFloat( 10.0f, 16.0f );
+	pParticle->m_uchStartSize	= random->RandomFloat( 10.0f, 16.0f ) * vecFOVScale.y;
 	pParticle->m_uchEndSize		= pParticle->m_uchStartSize;
 	
 	pParticle->m_flRoll			= random->RandomInt( 0, 360 );
 	pParticle->m_flRollDelta	= 0.0f;
 }
-#line 2591
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -2915,6 +2892,110 @@ void CTempEnts::MuzzleFlash_SMG1_NPC( ClientEntityHandle_t hEntity, int attachme
 }
 
 //-----------------------------------------------------------------------------
+// Purpose: Scale of the 357 and shotgun muzzle flashes (y: particle size)
+//-----------------------------------------------------------------------------
+static Vector GetFOVScale_357()
+{
+	float flFOV = 75.0f;
+
+	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
+	if ( pPlayer )
+	{
+		flFOV = pPlayer->GetFOV();
+	}
+
+	Vector vecScale;
+	vecScale.x = 1.0f;
+	if ( flFOV > 90.0f )
+	{
+		vecScale.y = RemapVal( flFOV, 90.0f, 120.0f, 1.5f, 2.2f );
+	}
+	else
+	{
+		vecScale.y = RemapVal( flFOV, 75.0f, 90.0f, 1.0f, 1.5f );
+	}
+	vecScale.z = 0.0f;
+
+	return vecScale;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Scale of the combine muzzle flash (x: offset, y: particle size,
+//			z: particle spacing)
+//-----------------------------------------------------------------------------
+static Vector GetFOVScale_Combine()
+{
+	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
+	float flFOV = pPlayer ? pPlayer->GetFOV() : 75.0f;
+	float flFOVOffset, flFOVScale, flFOVSpacing;
+	if ( flFOV > 90.0f )
+	{
+		flFOVOffset = RemapVal( flFOV, 90.0f, 120.0f, 20.0f, 60.0f );
+		flFOVScale = RemapVal( flFOV, 90.0f, 120.0f, 1.5f, 4.0f );
+		flFOVSpacing = RemapVal( flFOV, 90.0f, 120.0f, 1.2f, 1.8f );
+	}
+	else
+	{
+		flFOVOffset = RemapVal( flFOV, 75.0f, 90.0f, 1.0f, 20.0f );
+		flFOVScale = RemapVal( flFOV, 75.0f, 90.0f, 1.0f, 1.3f );
+		flFOVSpacing = RemapVal( flFOV, 75.0f, 90.0f, 1.0f, 1.2f );
+	}
+
+	return Vector( flFOVOffset, flFOVScale, flFOVSpacing );
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Scale of the pistol muzzle flash (y: particle size)
+//-----------------------------------------------------------------------------
+static Vector GetFOVScale_Pistol()
+{
+	float flFOV = 75.0f;
+
+	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
+	if ( pPlayer )
+	{
+		flFOV = pPlayer->GetFOV();
+	}
+
+	Vector vecScale;
+	vecScale.x = 1.0f;
+	if ( flFOV > 90.0f )
+	{
+		vecScale.y = RemapVal( flFOV, 90.0f, 120.0f, 1.3f, 1.8f );
+	}
+	else
+	{
+		vecScale.y = RemapVal( flFOV, 75.0f, 90.0f, 1.0f, 1.3f );
+	}
+	vecScale.z = 0.0f;
+
+	return vecScale;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Scale of the SMG1 muzzle flash (x: offset, y: particle size)
+//-----------------------------------------------------------------------------
+static Vector GetFOVScale_SMG1()
+{
+	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
+	float flFOV = pPlayer ? pPlayer->GetFOV() : 75.0f;
+	float flFOVOffset, flFOVScale;
+	if ( flFOV > 90.0f )
+	{
+		flFOVOffset = RemapVal( flFOV, 90.0f, 120.0f, 20.0f, 60.0f );
+		flFOVScale = RemapVal( flFOV, 90.0f, 120.0f, 1.5f, 5.0f );
+	}
+	else
+	{
+		flFOVOffset = RemapVal( flFOV, 75.0f, 90.0f, 1.0f, 20.0f );
+		flFOVScale = RemapVal( flFOV, 75.0f, 90.0f, 1.0f, 1.5f );
+	}
+
+	return Vector( flFOVOffset, flFOVScale, 0.0f );
+}
+
+#line 3041
+//-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
 void CTempEnts::MuzzleFlash_SMG1_Player( ClientEntityHandle_t hEntity, int attachmentIndex )
@@ -2931,25 +3012,12 @@ void CTempEnts::MuzzleFlash_SMG1_Player( ClientEntityHandle_t hEntity, int attac
 
 	pSimple->SetDrawBeforeViewModel( true );
 
-	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
-	float flFOV = pPlayer ? pPlayer->GetFOV() : 75.0f;
-	float flFOVOffset, flFOVScale;
-	if ( flFOV > 90.0f )
-	{
-		flFOVOffset = RemapVal( flFOV, 90.0f, 120.0f, 20.0f, 60.0f );
-		flFOVScale = RemapVal( flFOV, 90.0f, 120.0f, 1.5f, 5.0f );
-	}
-	else
-	{
-		flFOVOffset = RemapVal( flFOV, 75.0f, 90.0f, 1.0f, 20.0f );
-		flFOVScale = RemapVal( flFOV, 75.0f, 90.0f, 1.0f, 1.5f );
-	}
-
+	Vector vecFOVScale = Vector( GetFOVScale_SMG1() );
 	// Flash
 	for ( int i = 1; i < 6; i++ )
 	{
-		offset = (forward * (i*(8.0f*flScale)));
-		offset.x += flFOVOffset;
+		offset = forward * (flScale*8.0f*i);
+		offset += forward * vecFOVScale.x;
 
 		pParticle = (SimpleParticle *) pSimple->AddParticle( sizeof( SimpleParticle ), m_Material_MuzzleFlash_Player[random->RandomInt(0,3)], offset );
 			
@@ -2968,13 +3036,12 @@ void CTempEnts::MuzzleFlash_SMG1_Player( ClientEntityHandle_t hEntity, int attac
 		pParticle->m_uchStartAlpha	= 255;
 		pParticle->m_uchEndAlpha	= 255;
 
-		pParticle->m_uchStartSize	= ( (random->RandomFloat( 6.0f, 8.0f ) * (8-(i))/6) * flScale * flFOVScale );
+		pParticle->m_uchStartSize	= ( (random->RandomFloat( 6.0f, 8.0f ) * (8-(i))/6) * flScale ) * vecFOVScale.y;
 		pParticle->m_uchEndSize		= pParticle->m_uchStartSize;
 		pParticle->m_flRoll			= random->RandomInt( 0, 360 );
 		pParticle->m_flRollDelta	= 0.0f;
 	}
 }
-#line 2866
 
 //==================================================
 // Purpose: 
@@ -3006,18 +3073,14 @@ void CTempEnts::MuzzleFlash_Shotgun_Player( ClientEntityHandle_t hEntity, int at
 
 	float flScale = random->RandomFloat( 1.25f, 1.5f );
 
-	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
-	float flFOV = pPlayer ? pPlayer->GetFOV() : 75.0f;
-	float flFOVScale;
-	if ( flFOV > 90.0f )
-		flFOVScale = RemapVal( flFOV, 90.0f, 120.0f, 1.5f, 2.2f );
-	else
-		flFOVScale = RemapVal( flFOV, 75.0f, 90.0f, 1.0f, 1.5f );
+	// Compensate for the viewmodel FOV
+	Vector vecFOVScale = Vector( GetFOVScale_357() );
 
 	// Flash
 	for ( int i = 1; i < 6; i++ )
 	{
 		offset = origin + (forward * (i*8.0f*flScale));
+		offset *= vecFOVScale.x;
 
 		pParticle = (SimpleParticle *) pSimple->AddParticle( sizeof( SimpleParticle ), m_Material_MuzzleFlash_Player[random->RandomInt(0,3)], offset );
 			
@@ -3036,13 +3099,12 @@ void CTempEnts::MuzzleFlash_Shotgun_Player( ClientEntityHandle_t hEntity, int at
 		pParticle->m_uchStartAlpha	= 255;
 		pParticle->m_uchEndAlpha	= 255;
 
-		pParticle->m_uchStartSize	= ( (random->RandomFloat( 6.0f, 8.0f ) * (8-(i))/6) * flScale * flFOVScale );
+		pParticle->m_uchStartSize	= ( (random->RandomFloat( 6.0f, 8.0f ) * (8-(i))/6) * flScale ) * vecFOVScale.y;
 		pParticle->m_uchEndSize		= pParticle->m_uchStartSize;
 		pParticle->m_flRoll			= random->RandomInt( 0, 360 );
 		pParticle->m_flRollDelta	= 0.0f;
 	}
 }
-#line 2925
 
 //==================================================
 // Purpose: 
@@ -3183,19 +3245,15 @@ void CTempEnts::MuzzleFlash_357_Player( ClientEntityHandle_t hEntity, int attach
 	Vector forward;
 	AngleVectors( angles, &forward, NULL, NULL );
 
-	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
-	float flFOV = pPlayer ? pPlayer->GetFOV() : 75.0f;
-	float flFOVScale;
-	if ( flFOV > 90.0f )
-		flFOVScale = RemapVal( flFOV, 90.0f, 120.0f, 1.5f, 2.2f );
-	else
-		flFOVScale = RemapVal( flFOV, 75.0f, 90.0f, 1.0f, 1.5f );
+	// Compensate for the viewmodel FOV
+	Vector vecFOVScale = Vector( GetFOVScale_357() );
 
 	SimpleParticle *pParticle;
 	Vector			offset;
 
 	// Smoke
 	offset = origin + forward * 8.0f;
+	offset *= vecFOVScale.x;
 
 	pParticle = (SimpleParticle *) pSimple->AddParticle( sizeof( SimpleParticle ), g_Mat_DustPuff[0], offset );
 		
@@ -3217,7 +3275,7 @@ void CTempEnts::MuzzleFlash_357_Player( ClientEntityHandle_t hEntity, int attach
 	pParticle->m_uchStartAlpha	= random->RandomInt( 64, 128 );
 	pParticle->m_uchEndAlpha	= 0;
 
-	pParticle->m_uchStartSize	= random->RandomInt( 2, 4 ) * flFOVScale;
+	pParticle->m_uchStartSize	= random->RandomInt( 2, 4 ) * vecFOVScale.y;
 	pParticle->m_uchEndSize		= pParticle->m_uchStartSize * 8.0f;
 	pParticle->m_flRoll			= random->RandomInt( 0, 360 );
 	pParticle->m_flRollDelta	= random->RandomFloat( -0.5f, 0.5f );
@@ -3228,6 +3286,7 @@ void CTempEnts::MuzzleFlash_357_Player( ClientEntityHandle_t hEntity, int attach
 	for ( int i = 1; i < 6; i++ )
 	{
 		offset = origin + (forward * (i*8.0f*flScale));
+		offset *= vecFOVScale.x;
 
 		pParticle = (SimpleParticle *) pSimple->AddParticle( sizeof( SimpleParticle ), m_Material_MuzzleFlash_Player[random->RandomInt(0,3)], offset );
 			
@@ -3246,13 +3305,12 @@ void CTempEnts::MuzzleFlash_357_Player( ClientEntityHandle_t hEntity, int attach
 		pParticle->m_uchStartAlpha	= 255;
 		pParticle->m_uchEndAlpha	= 255;
 
-		pParticle->m_uchStartSize	= ( (random->RandomFloat( 6.0f, 8.0f ) * (8-(i))/6) * flScale * flFOVScale );
+		pParticle->m_uchStartSize	= ( (random->RandomFloat( 6.0f, 8.0f ) * (8-(i))/6) * flScale ) * vecFOVScale.y;
 		pParticle->m_uchEndSize		= pParticle->m_uchStartSize;
 		pParticle->m_flRoll			= random->RandomInt( 0, 360 );
 		pParticle->m_flRollDelta	= 0.0f;
 	}
 }
-#line 3126
 
 //==================================================
 // Purpose: 
@@ -3278,19 +3336,15 @@ void CTempEnts::MuzzleFlash_Pistol_Player( ClientEntityHandle_t hEntity, int att
 	Vector forward;
 	AngleVectors( angles, &forward, NULL, NULL );
 
-	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
-	float flFOV = pPlayer ? pPlayer->GetFOV() : 75.0f;
-	float flFOVScale;
-	if ( flFOV > 90.0f )
-		flFOVScale = RemapVal( flFOV, 90.0f, 120.0f, 1.3f, 1.8f );
-	else
-		flFOVScale = RemapVal( flFOV, 75.0f, 90.0f, 1.0f, 1.3f );
+	// Compensate for the viewmodel FOV
+	Vector vecFOVScale = Vector( GetFOVScale_Pistol() );
 
 	SimpleParticle *pParticle;
 	Vector			offset;
 
 	// Smoke
 	offset = origin + forward * 8.0f;
+	offset *= vecFOVScale.x;
 
 	if ( random->RandomInt( 0, 3 ) != 0 )
 	{
@@ -3314,7 +3368,7 @@ void CTempEnts::MuzzleFlash_Pistol_Player( ClientEntityHandle_t hEntity, int att
 		pParticle->m_uchStartAlpha	= random->RandomInt( 64, 128 );
 		pParticle->m_uchEndAlpha	= 0;
 
-		pParticle->m_uchStartSize	= random->RandomInt( 2, 4 ) * flFOVScale;
+		pParticle->m_uchStartSize	= random->RandomInt( 2, 4 ) * vecFOVScale.y;
 		pParticle->m_uchEndSize		= pParticle->m_uchStartSize * 4.0f;
 		pParticle->m_flRoll			= random->RandomInt( 0, 360 );
 		pParticle->m_flRollDelta	= random->RandomFloat( -0.1f, 0.1f );
@@ -3326,6 +3380,7 @@ void CTempEnts::MuzzleFlash_Pistol_Player( ClientEntityHandle_t hEntity, int att
 	for ( int i = 1; i < 6; i++ )
 	{
 		offset = origin + (forward * (i*4.0f*flScale));
+		offset *= vecFOVScale.x;
 
 		pParticle = (SimpleParticle *) pSimple->AddParticle( sizeof( SimpleParticle ), m_Material_MuzzleFlash_Player[random->RandomInt(0,3)], offset );
 			
@@ -3344,13 +3399,12 @@ void CTempEnts::MuzzleFlash_Pistol_Player( ClientEntityHandle_t hEntity, int att
 		pParticle->m_uchStartAlpha	= 255;
 		pParticle->m_uchEndAlpha	= 255;
 
-		pParticle->m_uchStartSize	= ( (random->RandomFloat( 6.0f, 8.0f ) * (8-(i))/6) * flScale * flFOVScale );
+		pParticle->m_uchStartSize	= ( (random->RandomFloat( 6.0f, 8.0f ) * (8-(i))/6) * flScale ) * vecFOVScale.y;
 		pParticle->m_uchEndSize		= pParticle->m_uchStartSize;
 		pParticle->m_flRoll			= random->RandomInt( 0, 360 );
 		pParticle->m_flRollDelta	= 0.0f;
 	}
 }
-#line 3215
 
 //==================================================
 // Purpose: 

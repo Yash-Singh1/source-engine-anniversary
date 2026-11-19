@@ -312,6 +312,18 @@ public:
 			soundemitterbase->AddSoundOverrides( scriptfile );
 		}
 #endif
+#ifdef HL2_ANNIVERSARY_NOV2024
+		// sound scripts from workshop addons
+		FileFindHandle_t hFind;
+		for ( const char *pszFile = g_pFullFileSystem->FindFirstEx( "scripts" CORRECT_PATH_SEPARATOR_S "game_sounds_*.txt", "WORKSHOP_ASSET_TRACKING", &hFind ); pszFile; pszFile = g_pFullFileSystem->FindNext( hFind ) )
+		{
+			char szFile[1024];
+			V_sprintf_safe( szFile, "scripts/%s", pszFile );
+			soundemitterbase->AddSoundOverrides( szFile );
+		}
+		g_pFullFileSystem->FindClose( hFind );
+#endif
+#line 315
 
 #if !defined( CLIENT_DLL )
 		for ( int i=soundemitterbase->First(); i != soundemitterbase->InvalidIndex(); i=soundemitterbase->Next( i ) )

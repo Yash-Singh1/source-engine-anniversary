@@ -2489,9 +2489,9 @@ bool CL_ShouldLoadBackgroundLevel( const CCommand &args )
 
 			// then go back to the background map
 			extern void CL_GetBackgroundLevelName( char *pszBackgroundName, int bufSize, bool bMapName );
-			char szBackgroundName[1024];
+			char szBackgroundName[_MAX_PATH];
 			CL_GetBackgroundLevelName( szBackgroundName, sizeof( szBackgroundName ), true );
-			char szCommand[1024];
+			char szCommand[_MAX_PATH];
 			V_snprintf( szCommand, sizeof( szCommand ), "map_background %s\n", szBackgroundName );
 			Cbuf_AddText( szCommand );
 			Cbuf_Execute();

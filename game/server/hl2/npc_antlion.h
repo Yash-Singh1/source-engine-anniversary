@@ -278,7 +278,7 @@ private:
 	bool		m_bDontExplode;			// Suppresses worker poison burst when drowning, failing to unburrow, etc.
 	bool		m_bLoopingStarted;
 	bool		m_bSuppressUnburrowEffects;	// Don't kick up dust when spawning
-#if HL2_EPISODIC
+#if HL2_EPISODIC || defined( HL2_ANNIVERSARY_NOV2024 )
 	bool		m_bHasDoneAirAttack;  ///< only allowed to apply this damage once per glide
 #endif
 

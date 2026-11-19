@@ -682,7 +682,7 @@ void CEngineVGui::Init()
 		if ( CL_ShouldLoadBackgroundLevel( ccommand ) )
 		{
 #ifdef BYTEMATCH_RETAIL
-			char szBackgroundName[1024];
+			char szBackgroundName[_MAX_PATH];
 			CL_GetBackgroundLevelName( szBackgroundName, sizeof( szBackgroundName ), true );
 
 			char szMapName[96];

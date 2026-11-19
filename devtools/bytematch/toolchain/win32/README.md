@@ -155,7 +155,9 @@ system wine and `$WINEPREFIX`.
 - `build-thirdparty.py`: stand-in Crypto++ and libpng archives
 - `win32-cc.py`: compile one file with its module's switches and diff it against retail
 - `winline.py FILE OURS:RETAIL,...`: give lines retail Windows' `__LINE__` numbers (telemetry
-  zones) in MSVC retail builds only, without moving any other line on either platform
+  zones) in MSVC retail builds only, without moving any other line on either platform.
+  Its non-MSVC and trailing `#line`s are absolute and go stale when lines above them move
+  (a merge); `winline.py --check` verifies every block in the tree, and `identity/ci.sh` runs it
 - `gateline.py FILE LINE,...`: leave lines out of retail builds (`#ifndef BYTEMATCH_RETAIL`), or give MSVC retail
   builds other text at a retail line number (`--retail-line N --retail-text TEXT`), without moving any other line
 - `report-modules.py`, `link-order.py`: match summary with macOS cross-check, link order check.

@@ -33,8 +33,8 @@ CModInfo::CModInfo()
 	m_pModData = new KeyValues("ModData");
 	m_wcsGameTitle[0] = 0;
 	m_bHL2Complete = false;
-
-	if ( !V_stricmp( CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) ), "hl2_complete" ) )
+	const char *pszGameDir = CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) );
+	if ( !V_stricmp( pszGameDir, "hl2_complete" ) )
 	{
 		m_bHL2Complete = true;
 	}

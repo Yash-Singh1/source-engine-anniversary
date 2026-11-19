@@ -62,7 +62,12 @@ void CSoundscapeSystem::AddSoundscapeFile( const char *filename )
 	MEM_ALLOC_CREDIT();
 	// Open the soundscape data file, and abort if we can't
 	KeyValues *pKeyValuesData = new KeyValues( filename );
+#ifdef BYTEMATCH_RETAIL
+	if ( filesystem->LoadKeyValues( *pKeyValuesData, IFileSystem::TYPE_SOUNDSCAPE, filename, "GAME" ) )
+#else
 	if ( pKeyValuesData->LoadFromFile( filesystem, filename, "GAME" ) )
+#endif
+#line 66
 	{
 		// parse out all of the top level sections and save their names
 		KeyValues *pKeys = pKeyValuesData;
@@ -137,7 +142,12 @@ bool CSoundscapeSystem::Init()
 	}
 
 	KeyValues *manifest = new KeyValues( SOUNDSCAPE_MANIFEST_FILE );
+#ifdef BYTEMATCH_RETAIL
+	if ( filesystem->LoadKeyValues( *manifest, IFileSystem::TYPE_SOUNDSCAPE, SOUNDSCAPE_MANIFEST_FILE, "GAME" ) )
+#else
 	if( manifest->LoadFromFile( filesystem, SOUNDSCAPE_MANIFEST_FILE, "GAME" ) )
+#endif
+#line 141
 	{
 		for ( KeyValues *sub = manifest->GetFirstSubKey(); sub != NULL; sub = sub->GetNextKey() )
 		{
@@ -166,6 +176,18 @@ bool CSoundscapeSystem::Init()
 		Error( "Unable to load manifest file '%s'\n", SOUNDSCAPE_MANIFEST_FILE );
 	}
 	manifest->deleteThis();
+#ifdef HL2_ANNIVERSARY_NOV2024
+	// soundscapes from workshop addons
+	FileFindHandle_t hFind;
+	for ( const char *pszFile = g_pFullFileSystem->FindFirstEx( "scripts" CORRECT_PATH_SEPARATOR_S "soundscapes_*.txt", "WORKSHOP_ASSET_TRACKING", &hFind ); pszFile; pszFile = g_pFullFileSystem->FindNext( hFind ) )
+	{
+		char szFile[1024];
+		V_sprintf_safe( szFile, "scripts/%s", pszFile );
+		AddSoundscapeFile( szFile );
+	}
+	g_pFullFileSystem->FindClose( hFind );
+#endif
+#line 169
 	m_activeIndex = 0;
 
 	return true;

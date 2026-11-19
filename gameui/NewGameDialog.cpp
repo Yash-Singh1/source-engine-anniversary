@@ -122,7 +122,7 @@ class CGameChapterPanel : public vgui::EditablePanel
 	Color m_SelectedColor;
 	Color m_FillColor;
 
-	char m_szConfigFile[1024];
+	char m_szConfigFile[_MAX_PATH];
 	char m_szChapter[32];
 
 	bool m_bTeaserChapter;
