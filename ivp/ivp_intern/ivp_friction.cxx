@@ -1492,6 +1492,9 @@ void IVP_Friction_System::split_friction_system(IVP_Core *split_father)
 		    if(!found_mine)
 		    {
 			IVP_IF(1) { printf("removing_dist that doesnt belong to sys\n"); }
+#ifdef BYTEMATCH_RETAIL
+#line 1519
+#endif
 			CORE;
 		    }
 		    fr_sys->remove_dist_from_system(fr_dist);

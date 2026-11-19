@@ -639,6 +639,9 @@ IVP_BOOL IVP_Friction_System::dist_removed_update_pair_info(IVP_Contact_Point *o
 	my_pair_info=this->get_pair_info_for_objs(core0,core1);
 	if(!my_pair_info)
 	{
+#ifdef BYTEMATCH_RETAIL
+#line 656
+#endif
 	    CORE;
 	}
 

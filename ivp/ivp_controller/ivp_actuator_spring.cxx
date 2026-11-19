@@ -121,6 +121,9 @@ void IVP_Actuator_Spring_Active::active_float_changed(IVP_U_Active_Float *af){
 	set_rel_pos_damp( af->get_float_value());
 	return;
     }
+#ifdef BYTEMATCH_RETAIL
+#line 125
+#endif
     CORE;
 }
 

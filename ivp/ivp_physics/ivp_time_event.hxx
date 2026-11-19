@@ -12,6 +12,9 @@ class IVP_Time_Event {
 public:
     int index;    
     IVP_Time_Event() = default;
+#ifdef BYTEMATCH_RETAIL
+#line 18
+#endif
     virtual void simulate_time_event(IVP_Environment *){ CORE; }; // to be implemented by application
 };
 

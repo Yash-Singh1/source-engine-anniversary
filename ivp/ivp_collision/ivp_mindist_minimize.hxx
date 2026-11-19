@@ -8,7 +8,12 @@ class IVP_Cache_Ball;
 class IVP_Cache_Ledge_Point;
 
   // set IVP_LOOP_LIST_SIZE if you want to use a linear list for loop check instead of a HASH
+#ifdef BYTEMATCH_RETAIL
+#define IVP_LOOP_LIST_SIZE 256
+#else
 // #define IVP_LOOP_LIST_SIZE 256
+#endif
+#line 12
 
 #if defined(IVP_LOOP_LIST_SIZE)
     struct IVP_MM_Loop_Hash_Struct {
@@ -115,7 +120,9 @@ public:
 #if !defined(IVP_LOOP_LIST_SIZE)
 	loop_hash = NULL;
 #else
+#ifndef BYTEMATCH_RETAIL
 	memset(loop_hash, 0, sizeof(IVP_MM_Loop_Hash_Struct));
+#endif
 	loop_hash_size = 0;
 #endif
 

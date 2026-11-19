@@ -204,6 +204,9 @@ IVP_MRC_TYPE IVP_Mindist::recalc_invalid_mindist()
 	  return res;
 	}
 	default:
+#ifdef BYTEMATCH_RETAIL
+#line 227
+#endif
 	    CORE;
 	    break;
 	}
@@ -279,6 +282,15 @@ IVP_MRC_TYPE IVP_Mindist::recalc_mindist()
 	    return res;
 	}
 	default:
+#ifdef BYTEMATCH_RETAIL
+#line 304
+	    CORE;
+	    break;
+	}
+	CORE;	
+    }	// while
+    CORE;
+#else
 //	    CORE;
 	    break;
 	}
@@ -286,6 +298,7 @@ IVP_MRC_TYPE IVP_Mindist::recalc_mindist()
     }	// while
 //    CORE;
 // TODO(nillerusr): add warnings here instead of using CORE;
+#endif
 }
 
 IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::p_minimize_FF( const IVP_Compact_Edge *A,const IVP_Compact_Edge *B, IVP_Cache_Ledge_Point *m_cache_A, IVP_Cache_Ledge_Point *m_cache_B)
@@ -523,6 +536,9 @@ IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::minimize_default_poly_poly(IVP_Mindist
 }
 
 IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::minimize_PB(IVP_Mindist_Minimize_Solver *mms){
+#ifdef BYTEMATCH_RETAIL
+#line 663
+#endif
     CORE;
     mms->swap_synapses();
     return minimize_B_POLY(mms);
@@ -571,12 +587,18 @@ IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::minimize_B_POLY(IVP_Mindist_Minimize_S
 
 
 IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::minimize_KB(IVP_Mindist_Minimize_Solver *mms){
+#ifdef BYTEMATCH_RETAIL
+#line 711
+#endif
     CORE;
     mms->swap_synapses();
     return minimize_B_POLY(mms);
 }
 
 IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::minimize_FB(IVP_Mindist_Minimize_Solver *mms){
+#ifdef BYTEMATCH_RETAIL
+#line 717
+#endif
     CORE;
     mms->swap_synapses();
     return minimize_B_POLY(mms);
@@ -682,6 +704,9 @@ const IVP_Compact_Edge *IVP_Compact_Ledge_Solver::minimize_on_other_side(
 
 
 IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::minimize_illegal(IVP_Mindist_Minimize_Solver *){
+#ifdef BYTEMATCH_RETAIL
+#line 822
+#endif
     CORE;
     return IVP_MRC_ILLEGAL;
 }

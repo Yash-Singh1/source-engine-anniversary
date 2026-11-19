@@ -657,6 +657,9 @@ IVP_DOUBLE IVP_Compact_Ledge_Solver::calc_qlen_KK(const IVP_Compact_Edge *K,cons
 	    IVP_CLS.calc_pos_other_space( L->get_next(), m_cache_L, m_cache_K, &L_Kos);
 	    return calc_qlen_PK_K_space( &L_Kos, m_cache_K->get_compact_ledge(), K);
 	}
+#ifdef BYTEMATCH_RETAIL
+#line 670
+#endif
 	CORE;
     }
     

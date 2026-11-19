@@ -49,7 +49,13 @@
        Exactly DEBUG or NDEBUG has to be defined, check Makefile
 #endif
 
+#ifdef BYTEMATCH_RETAIL
+extern "C" void Error( const char *pMsg, ... );
+#define CORE Error( "IVP Failed at %s %d\n", __FILE__, __LINE__ )
+#else
 #define CORE *(int *)0 = 0  /* send fatal signal */
+#endif
+#line 53
 
 #if defined (PSXII)
 #	if defined (__MWERKS__)

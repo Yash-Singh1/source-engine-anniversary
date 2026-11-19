@@ -922,6 +922,9 @@ int IVP_Friction_Solver::calc_solver_PSI(IVP_Friction_System *fs,int *active_is_
 	  k++, my_dist = fs->get_next_friction_dist(my_dist)){
 	if (my_dist->get_lt()->index_in_fs <0) continue;
 	if (my_dist->get_lt()->index_in_fs != k){
+#ifdef BYTEMATCH_RETAIL
+#line 930
+#endif
 	    CORE;
 	}
     }

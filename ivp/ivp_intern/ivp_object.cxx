@@ -665,6 +665,9 @@ void IVP_Real_Object::clear_internal_references() {
     while( (my_anchor=this->get_first_anchor()) != NULL) {
 	my_anchor->object_is_going_to_be_deleted_event(this);
 	if (my_anchor == last_anchor){ // check for errors in anchors
+#ifdef BYTEMATCH_RETAIL
+#line 711
+#endif
 	    CORE;
 	}
 	last_anchor = my_anchor;
