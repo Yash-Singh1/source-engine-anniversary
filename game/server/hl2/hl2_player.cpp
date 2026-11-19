@@ -3113,6 +3113,7 @@ ConVar	sv_show_crosshair_target( "sv_show_crosshair_target", "0" );
 //-----------------------------------------------------------------------------
 // Purpose: Updates the posture of the weapon from lowered to ready
 //-----------------------------------------------------------------------------
+#line 3054
 void CHL2_Player::UpdateWeaponPosture( void )
 {
 	CBaseCombatWeapon *pWeapon = dynamic_cast<CBaseCombatWeapon *>(GetActiveWeapon());

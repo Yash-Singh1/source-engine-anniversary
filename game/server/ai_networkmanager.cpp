@@ -2227,6 +2227,7 @@ void CAI_NetworkBuilder::EndBuild()
 //-----------------------------------------------------------------------------
 
 
+#line 2237
 void CAI_NetworkBuilder::Build( CAI_Network *pNetwork )
 {
 	int nNodes = pNetwork->NumNodes();

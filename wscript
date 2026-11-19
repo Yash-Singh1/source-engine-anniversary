@@ -332,7 +332,7 @@ def options(opt):
 	opt.load('xcompile compiler_cxx compiler_c sdl2 clang_compilation_database strip_on_install_v2 waf_unit_test subproject')
 	if sys.platform == 'win32':
 		opt.load('msvc msdev msvs')
-	opt.load('reconfigure retail_manifest retail_osx32 retail_win32')
+	opt.load('reconfigure retail_manifest retail_osx32 retail_win32 retail_linux32')
 
 def check_deps(conf):
 	if conf.env.DEST_OS != 'win32':
@@ -446,6 +446,10 @@ def configure(conf):
 	if conf.options.RETAIL_WIN32:
 		conf.load('fwgslib reconfigure retail_win32')
 		conf.retail_win32_configure()
+		return
+	if conf.options.RETAIL_LINUX32:
+		conf.load('fwgslib reconfigure subproject retail_manifest retail_osx32 retail_linux32')
+		conf.retail_linux32_configure()
 		return
 
 	conf.load('fwgslib reconfigure compiler_optimizations')
@@ -648,6 +652,11 @@ def build(bld):
 	if bld.env.RETAIL_WIN32:
 		bld.load('retail_win32')
 		bld.retail_win32_build()
+		return
+	if bld.env.RETAIL_LINUX32:
+		# retail_osx32 provides retail_stlib_variant (Lost Coast's static libraries)
+		bld.load('retail_manifest retail_osx32 retail_linux32')
+		bld.add_subproject(bld.env.RETAIL_PROJECTS)
 		return
 
 	if bld.env.DEST_OS in ['win32', 'android']:

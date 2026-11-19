@@ -2794,6 +2794,7 @@ extern ConVar ai_LOS_mode;
 // FVisible - returns true if a line can be traced from
 // the caller's eyes to the target
 //=========================================================
+#line 2790
 bool CBaseEntity::FVisible( CBaseEntity *pEntity, int traceMask, CBaseEntity **ppBlocker )
 {
 	VPROF( "CBaseEntity::FVisible" );

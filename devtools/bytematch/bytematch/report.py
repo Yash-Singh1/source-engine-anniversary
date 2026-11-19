@@ -535,6 +535,19 @@ def summarize(results):
                    missing=b[MISSING], matched=matched_b, pct=round(100 * matched_b / nb, 2) if nb else 0.0))
 
 
+def ours_summary(results, extra):
+    """Paired scope, judged from our side: every function of ours (deduplicated), our sizes.
+    Functions retail lacks or that could not be paired count as unmatched."""
+    rows = [(r.status in MATCHED, r.ours.size) for r in results if r.ours] + \
+        [(getattr(e.ours, 'identical_in_retail', False), e.ours.size) for e in extra]
+    nf, mf = len(rows), sum(1 for m, _ in rows if m)
+    nb, mb = sum(s for _, s in rows), sum(s for m, s in rows if m)
+    shared = [e for e in extra if getattr(e.ours, 'identical_in_retail', False)]
+    return dict(functions=dict(total=nf, matched=mf, pct=round(100 * mf / nf, 2) if nf else 0.0,
+                               identical_unpaired=len(shared)),
+                bytes=dict(total=nb, matched=mb, pct=round(100 * mb / nb, 2) if nb else 0.0))
+
+
 def per_object(results):
     groups = collections.defaultdict(list)
     for r in results:
@@ -587,7 +600,12 @@ def write(out_prefix, run_info, data, diff_lines=12, top=40):
                summary=summary, shared_summary=summarize(shared), objects=objs,
                functions=[result_json(r, diff_lines) for r in results],
                shared=[result_json(r, diff_lines) for r in shared],
-               extra=[dict(name=e.name, key=e.key, object=e.obj, size=e.ours.size) for e in extra])
+               extra=[dict(name=e.name, key=e.key, object=e.obj, size=e.ours.size,
+                           ours_object=e.ours.obj_path or e.ours.module.label,
+                           **({'identical_in_retail': True} if getattr(e.ours, 'identical_in_retail', False) else {}))
+                      for e in extra])
+    if data['mode'] == 'paired':
+        doc['ours_summary'] = ours_summary(results, extra)
     with open(out_prefix + '.json', 'w') as fh:
         json.dump(doc, fh, indent=1)
     with open(out_prefix + '.md', 'w') as fh:
@@ -623,6 +641,11 @@ def markdown(doc, results, top, diff_lines):
         L += [f'Out of scope but present in retail under another object (inline/COMDAT copies): '
               f'{sf["matched"]}/{sf["total"]} matched ({sf["pct"]}%).', '']
     L += [f'Functions only in ours (inlined, renamed or new): {len(doc["extra"])}.', '']
+    if 'ours_summary' in doc:
+        of, ob = doc['ours_summary']['functions'], doc['ours_summary']['bytes']
+        L += [f'Judged from our side (every function of ours, our sizes; unpaired ones count only when their '
+              f'code equals a retail function another of ours paired with, {of["identical_unpaired"]} here): '
+              f'**{of["matched"]}/{of["total"]} functions ({of["pct"]}%), {ob["matched"]}/{ob["total"]} bytes ({ob["pct"]}%)**.', '']
     if len(doc['objects']) > 1:
         L += ['## Per object', '', '| object | funcs | matched | % funcs | % bytes | differs | missing |',
               '|---|---:|---:|---:|---:|---:|---:|']

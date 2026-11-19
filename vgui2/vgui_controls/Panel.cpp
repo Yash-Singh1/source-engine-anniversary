@@ -4012,6 +4012,7 @@ void Panel::ApplySchemeSettings(IScheme *pScheme)
 //-----------------------------------------------------------------------------
 // Purpose: Checks to see if the panel needs it's scheme info setup
 //-----------------------------------------------------------------------------
+#line 4011
 void Panel::PerformApplySchemeSettings()
 {
 	if ( _flags.IsFlagSet( NEEDS_DEFAULT_SETTINGS_APPLIED ) )

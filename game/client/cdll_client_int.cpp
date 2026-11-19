@@ -1579,6 +1579,7 @@ void CHLClient::DecodeUserCmdFromBuffer( bf_read& buf, int slot )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+#line 1580
 void CHLClient::View_Render( vrect_t *rect )
 {
 	VPROF( "View_Render" );
@@ -2076,6 +2077,7 @@ void SimulateEntities()
 }
 
 
+#line 2092
 bool AddDataChangeEvent( IClientNetworkable *ent, DataUpdateType_t updateType, int *pStoredEvent )
 {
 	VPROF( "AddDataChangeEvent" );
