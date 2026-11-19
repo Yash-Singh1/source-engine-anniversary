@@ -144,6 +144,7 @@ def sig(demangled):
     # MSVC keeps __restrict and a parameter's top-level const (array parameters decay to
     # T *const); Itanium drops both. undname spells bool template arguments 0/1.
     out = out.replace('__restrict', '').replace('__ptr64', '')
+    out = re.sub(r'\b(?:__sFILE|_iobuf)\b', 'FILE', out)   # Darwin's and MSVC's FILE
     out = re.sub(r'\*const(?=[,)])', '*', out)
     out = re.sub(r'(?<=[<,])false(?=[,>])', '0', out)
     out = re.sub(r'(?<=[<,])true(?=[,>])', '1', out)

@@ -94,23 +94,33 @@ def build_index(man):
     return dict((n, i + 1) for i, n in enumerate(order))
 
 
-def module_objects(build, name, m, idx, out):
-    """A directory of links to the module's own objects (a linked DLL has no symbols to scope by)."""
+def module_objects(build, name, man, index, out):
+    """A directory of links to the objects a DLL is made of (a linked DLL has no symbols to scope
+    by): its own and those of the static libraries it links, which the retail macOS build often
+    compiles into the module itself (GameUI's PanelListPanel)."""
     d = out + ".objs"
     if os.path.isdir(d):
         for f in os.listdir(d):
             os.remove(os.path.join(d, f))
     os.makedirs(d, exist_ok=True)
-    for s in m["sources"]:
-        if s.get("missing") or s["lang"] not in ("c", "c++", "asm"):
+    mods, todo = [], [name]
+    while todo:
+        n = todo.pop(0)
+        if n in mods or n not in man:
             continue
-        base = os.path.join(os.path.abspath(build), s["path"])
-        for cand in (base + ".%d.o" % idx, os.path.splitext(base)[0] + ".%d.obj" % idx):
-            if os.path.exists(cand):
-                link = os.path.join(d, os.path.basename(cand))
-                if not os.path.lexists(link):
-                    os.symlink(cand, link)
-                break
+        mods.append(n)
+        todo += [l["project"] for l in man[n]["libs"] if l.get("project") and not l.get("implib")]
+    for n in mods:
+        for s in man[n]["sources"]:
+            if s.get("missing") or s["lang"] not in ("c", "c++", "asm"):
+                continue
+            base = os.path.join(os.path.abspath(build), s["path"])
+            for cand in (base + ".%d.o" % index[n], os.path.splitext(base)[0] + ".%d.obj" % index[n]):
+                if os.path.exists(cand):
+                    link = os.path.join(d, os.path.basename(cand))
+                    if not os.path.lexists(link):
+                        os.symlink(cand, link)
+                    break
     return d
 
 
@@ -180,7 +190,7 @@ def main():
         elif m.get("retail"):
             retail = os.path.join(a.depots, m.get("retail_depot", "222"), BUILD, m["retail"])
             link = os.path.splitext(ours)[0] + ".map"
-            objs = module_objects(a.build, name, m, index[name], os.path.join(a.out, name))
+            objs = module_objects(a.build, name, man, index, os.path.join(a.out, name))
             jobs.append((name, name, name, retail, objs, map_for(map_key(name, m)), link))
 
     rows, cross = [], []
