@@ -223,7 +223,7 @@ private:
 
 		time_t now;
 		time( &now );
-		if ( now >= 1605850201 )
+		if ( now > 1605850200 )
 		{
 			IncrementCount();
 		}
