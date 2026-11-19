@@ -1888,7 +1888,7 @@ bool CFastZombie::ShouldBecomeTorso( const CTakeDamageInfo &info, float flDamage
 //-----------------------------------------------------------------------------
 bool CFastZombie::CreateBehaviors( void )
 {
-	AddBehavior( &m_PassengerBehavior );
+	if ( IsHL2Episodic() ) AddBehavior( &m_PassengerBehavior );
 
 	return BaseClass::CreateBehaviors();
 }
@@ -1906,7 +1906,7 @@ void CFastZombie::InputAttachToVehicle( inputdata_t &inputdata )
 	CPropJeepEpisodic *pVehicle = dynamic_cast<CPropJeepEpisodic *>(pEntity);
 
 	// Get in the car if it's valid
-	if ( pVehicle && CanEnterVehicle( pVehicle ) )
+	if ( pVehicle && IsHL2Episodic() && CanEnterVehicle( pVehicle ) )
 	{
 		// Set her into a "passenger" behavior
 		m_PassengerBehavior.Enable( pVehicle );
@@ -1922,7 +1922,7 @@ void CFastZombie::InputAttachToVehicle( inputdata_t &inputdata )
 void CFastZombie::VPhysicsCollision( int index, gamevcollisionevent_t *pEvent )
 {
 	// Only do the override while riding on a vehicle
-	if ( m_PassengerBehavior.CanSelectSchedule() && m_PassengerBehavior.GetPassengerState() != PASSENGER_STATE_OUTSIDE )
+	if ( IsHL2Episodic() && m_PassengerBehavior.CanSelectSchedule() && m_PassengerBehavior.GetPassengerState() != PASSENGER_STATE_OUTSIDE )
 	{
 		int damageType = 0;
 		float flDamage = CalculatePhysicsImpactDamage( index, pEvent, gZombiePassengerImpactDamageTable, 1.0, true, damageType );
@@ -1991,7 +1991,7 @@ bool CFastZombie::CanEnterVehicle( CPropJeepEpisodic *pVehicle )
 //-----------------------------------------------------------------------------
 void CFastZombie::VehicleLeapAttackTouch( CBaseEntity *pOther )
 {
-	if ( pOther->GetServerVehicle() )
+	if ( IsHL2Episodic() && pOther->GetServerVehicle() )
 	{
 		m_PassengerBehavior.AttachToVehicle();
 
@@ -2007,7 +2007,7 @@ void CFastZombie::VehicleLeapAttackTouch( CBaseEntity *pOther )
 bool CFastZombie::IsInAVehicle( void )
 {
 	// Must be active and getting in/out of vehicle
-	if ( m_PassengerBehavior.IsEnabled() && m_PassengerBehavior.GetPassengerState() != PASSENGER_STATE_OUTSIDE )
+	if ( IsHL2Episodic() && m_PassengerBehavior.IsEnabled() && m_PassengerBehavior.GetPassengerState() != PASSENGER_STATE_OUTSIDE )
 		return true;
 
 	return false;
@@ -2021,7 +2021,7 @@ bool CFastZombie::IsInAVehicle( void )
 void CFastZombie::UpdateEfficiency( bool bInPVS )
 { 
 	// If we're transitioning and in the PVS, we override our efficiency
-	if ( IsInAVehicle() && bInPVS )
+	if ( IsHL2Episodic() && IsInAVehicle() && bInPVS )
 	{
 		PassengerState_e nState = m_PassengerBehavior.GetPassengerState();
 		if ( nState == PASSENGER_STATE_ENTERING || nState == PASSENGER_STATE_EXITING )
