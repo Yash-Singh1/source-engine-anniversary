@@ -21,6 +21,7 @@ git -c protocol.file.allow=always submodule update --init
 
 WAFLOCK=.lock-waf-linux python3 waf configure --retail-linux32 --build-games=episodic --prefix='' -o /abs/build-linux
 WAFLOCK=.lock-waf-linux python3 waf build -j6
+WAFLOCK=.lock-waf-linux python3 waf retail_linkdb      # per-object compile database for the report
 devtools/bytematch/toolchain/linux/report-linux.py --build /abs/build-linux --game episodic
 ```
 
@@ -55,29 +56,56 @@ build. Without `--build-games` only the static libraries are built.
   for LINUX32 Release, then the makefile generator's and
   `makefile_base_posix.mak`'s additions) and the files Valve's 2018 VPCs
   compile only on Linux (`tier1/pathmatch.cpp`, `tier1/qsort_s.cpp`,
-  `mathlib/3dnow.cpp`).
+  `mathlib/3dnow.cpp`; game modules pull none of `pathmatch.cpp`).
+- No `DX_TO_GL_ABSTRACTION`/`GL_GLEXT_PROTOTYPES`: retail Linux renders through
+  DXVK (depot 224 ships `libdxvk_d3d9.so`, `shaderapivk.so`), and its client
+  writes vertex colors unswapped, i.e. without `imesh.h`'s `OPENGL_SWAP_COLORS`.
+  Our VPCs (and hl2_src's) force `$GL` on for every non-Windows client, so
+  `make-manifest.py` drops the two defines.
+- Telemetry on: retail imports `g_Telemetry` and has a zone at every VPROF, as
+  `vprof_telemetry.h` enables for `_LINUX`. RAD's headers come from hl2_src
+  (`--retail-linux32-hl2src`), copied under the build directory.
 - Mode defines (not Valve's): `BYTEMATCH_RETAIL` (shared with the macOS and
-  Windows modes), `BYTEMATCH_RETAIL_LINUX` (Linux-retail-only source), and
-  `RAD_TELEMETRY_DISABLED` (retail Linux game modules import no Telemetry
-  symbols; Valve's 2015 Linux VPCs define it).
-- Link: `-shared -m32 -Wl,--build-id -static-libgcc`, objects, the static
-  libraries in one `--start-group`, then `libtier0.so libvstdlib.so
-  libsteam_api.so` copied from depot 224, `-lm -ldl -lpthread
-  -l:ld-linux.so.2` (`-lrt` for the client) and
-  `devtools/version_script.linux.txt`. gcc-9's libstdc++ is static only.
-  zlib is SDK 2013's `libz.a` (byte-identical to retail's), protobuf SDK
-  2013's prebuilt.
+  Windows modes) and `BYTEMATCH_RETAIL_LINUX` (Linux-retail-only source:
+  `public/vstdlib/random.h` drops `CDefaultUniformRandomStream`, whose inline
+  methods let gcc speculatively devirtualize every `random->` call;
+  `public/tier0/memalloc.h` takes SDK 2013's POSIX allocators, without the
+  fork's `MemAllocOOMError` checks).
+- Link, as `LIB_START_SHLIB`/`LIB_END_SHLIB` with `$(LINK)` = gcc-9:
+  `-shared -m32 -Wl,--build-id -static-libgcc`, objects, the static libraries
+  in one `--start-group`, then `libtier0.so libvstdlib.so libsteam_api.so`
+  copied from depot 224, `-lm -ldl -l:libstdc++.a -lpthread -l:ld-linux.so.2`
+  (`-lrt` for the client) and `devtools/version_script.linux.txt`. NEEDED
+  equals retail's. gcc-9's libstdc++ is static only. zlib is SDK 2013's
+  `libz.a` (byte-identical to retail's), protobuf SDK 2013's prebuilt. Not
+  linked yet: libpng and libjpeg (retail's client exports libpng and builds
+  `imageutils.cpp` with `HAVE_PNG`/`HAVE_JPEG`).
+- After the link, `devtools/gendbg.sh`'s steps and `strip -x -S` with the
+  image's binutils 2.22 write `stripped/NAME.so` and `NAME.so.dbg` (retail's
+  trailing section order).
 
 ## Measuring
 
 Retail Linux modules are stripped (`strip -x -S`): only `CreateInterface` and
 libstdc++ helpers keep symbols. bytematch takes function extents from
-`.eh_frame` and names retail functions after ours (`bytematch/elfmatch.py`):
-a masked search against every retail function of the same size, then object
-order (ld keeps each object's `.text` contiguous) to resolve ambiguous hits and
-to pair functions that differ, so they get instruction diffs.
+`.eh_frame` (code between FDEs becomes unnamed functions) and names retail
+functions after ours (`bytematch/elfmatch.py`):
+
+- a masked search against every retail function of the same size;
+- object order (ld keeps each object's `.text` contiguous): unique hits that
+  ascend are anchors, ambiguous hits are resolved between them, and functions
+  with no hit pair with the unclaimed FDE functions between anchors, so they
+  get instruction diffs;
+- groups of ours with identical masked code (vtable-setting destructors,
+  template instantiations) are assigned to their candidates by call targets;
+- a call target counts as wrong only when retail's callee was found by a unique
+  hit under another name and isn't an identical-code copy of our callee;
+- functions whose code equals a retail function another of ours took (more
+  identical instantiations in ours than retail keeps) count as matched.
+
 `report-linux.py` builds each module's object set (its own objects plus the
-static-library members the macOS module pulls) and writes per-module reports
-and `retail-linux32-GAME.md`.
+static-library members the macOS module pulls) from `waf retail_linkdb`'s
+per-object compile database, and writes per-module reports and
+`retail-linux32-GAME.md`. `--no-target-check` gives the survey pilot's metric.
 
 One file: `bytematch diff --retail server.so --ours build/game/shared/x.cpp.N.o --symbol NAME`.

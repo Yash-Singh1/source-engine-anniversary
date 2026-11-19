@@ -130,9 +130,21 @@ Percentages are matched / in-scope, by function count and by retail bytes.
 | | objects | linked |
 |---|---|---|
 | Mach-O i386 (thin or fat) | yes (clang 3.x-21, `__text`/`__textcoal_nt`) | dylib/bundle/exe: symbols, stabs debug map, function starts, stubs, rebase info |
-| ELF32 i386 | yes (REL and RELA) | `.so`/exe: `.symtab` + `.dynsym`, PLT names, text relocations |
+| ELF32 i386 | yes (REL and RELA) | `.so`/exe: `.symtab` + `.dynsym`, `.eh_frame` extents, PLT names, text relocations; stripped images are named after ours (below) |
 | COFF i386 | yes, incl. `/bigobj`; `/GL` LTCG objects are rejected (they contain IL) | PE32: exports, imports + delay imports, base relocs, COFF symbols, user maps |
 | `ar` archives | GNU, BSD (`#1/`) and MSVC `.lib` members | |
+
+### Stripped ELF (retail Linux)
+
+Retail Linux modules keep only exported symbols. Function extents come from
+`.eh_frame` FDEs (code between them becomes unnamed functions), and `diff` and
+`report` first name the unnamed functions after ours (`bytematch/elfmatch.py`):
+masked search against same-size functions, anchors in object order (ld keeps an
+object's `.text` contiguous) for ambiguous hits and for pairing functions that
+differ, assignment of identical-code groups by their call targets. Reports in
+this mode add an ours-side summary (every function of ours; unpaired ones count
+only when their code equals a retail function another of ours took).
+`toolchain/linux/README.md` has the Linux workflow.
 
 ## Self-test
 
@@ -142,7 +154,7 @@ Percentages are matched / in-scope, by function count and by retail bytes.
   server) at 100% exact, and the Mach-O debug-map attribution;
 - `tests/sample.cpp` built with clang-600.0.57 + ld64-242, current Xcode clang,
   mingw-w64 i686 and Steam Runtime scout gcc-9 (Docker): each object fully
-  matches its own linked module; `-O1` objects against `-O2` modules must
+  matches its own linked module (scout also against a `strip -s` copy); `-O1` objects against `-O2` modules must
   differ; a forged call target must be flagged; `locate` + map names more of a
   stripped DLL;
 - `tier1/checksum_md5.cpp`, `tier1/checksum_crc.cpp`, `mathlib/IceKey.cpp`
