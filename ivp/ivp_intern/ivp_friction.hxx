@@ -186,9 +186,16 @@ protected:
     IVP_FLOAT get_gap_length() { return last_gap_len; };
     
 #ifdef BYTEMATCH_RETAIL
+#if defined( _MSC_VER )	// retail Windows has these in 4 bytes before an 8-aligned double: 16-bit storage units
+    short slowly_turn_on_keeper:8;     // is initialized with IVP_SLOWLY_TURN_ON_KEEPER
+    unsigned short  cp_status:8;
+    short has_negative_pull_since:16;   //0 means inactive, n>1 means negative since n-1 PSIs, -n>0 means has positive value since n PSIs
+#else
     short slowly_turn_on_keeper:8;     // is initialized with IVP_SLOWLY_TURN_ON_KEEPER
     IVP_CONTACT_POINT_BREAK_STATUS  cp_status:8;
     int has_negative_pull_since:16;   //0 means inactive, n>1 means negative since n-1 PSIs, -n>0 means has positive value since n PSIs
+#endif
+#line 192
 #else
     short slowly_turn_on_keeper;     // is initialized with IVP_SLOWLY_TURN_ON_KEEPER
     IVP_CONTACT_POINT_BREAK_STATUS  cp_status:8;
