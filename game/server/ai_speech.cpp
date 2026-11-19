@@ -581,12 +581,12 @@ bool CAI_Expresser::SpeakRawScene( const char *pszScene, float delay, AI_Respons
 
 #if defined( HL2_EPISODIC ) || defined( TF_DLL )
 		char szInstanceFilename[256];
-		GetOuter()->GenderExpandString( pszScene, szInstanceFilename, sizeof( szInstanceFilename ) );
+		if ( IsHL2Episodic() ) { GetOuter()->GenderExpandString( pszScene, szInstanceFilename, sizeof( szInstanceFilename ) );
 		// Only mark ourselves as speaking if the scene has speech
 		if ( GetSceneSpeechCount(szInstanceFilename) > 0 )
 		{
 			NoteSpeaking( sceneLength, delay );
-		}
+		} } else { NoteSpeaking( sceneLength, delay ); }
 #else
 		NoteSpeaking( sceneLength, delay );
 #endif
