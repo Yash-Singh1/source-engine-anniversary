@@ -138,7 +138,7 @@ void CLocalNetworkBackdoor::EndEntityStateUpdate()
 				if ( toDelete & (1 << iBit) )
 				{
 					int iEdict = (i<<5) + iBit;
-					if ( iEdict >= 0 && iEdict < MAX_EDICTS )
+					if ( iEdict < MAX_EDICTS )
 					{
 						if ( m_CachedEntState[iEdict].m_pNetworkable )
 						{

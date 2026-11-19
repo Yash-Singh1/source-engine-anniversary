@@ -51,7 +51,7 @@ class ConsoleLogManager
 {
 public:
 	ConsoleLogManager();
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( _MSC_VER )
 	~ConsoleLogManager();
 #endif
 #line 49
@@ -336,7 +336,7 @@ ConsoleLogManager::ConsoleLogManager()
 	m_fh = FILESYSTEM_INVALID_HANDLE;
 }
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( _MSC_VER )
 ConsoleLogManager::~ConsoleLogManager()
 {
 	// This fails because of destructor order problems. The file

@@ -136,7 +136,7 @@ CAudioSourceMP3::CAudioSourceMP3( CSfxTable *pSfx )
 	const char *pszName = pSfx->GetFileName();
 	if ( pszName )
 	{
-		m_bIsCommentary = StringAfterPrefix( PSkipSoundChars( pszName ), "commentary" ) != NULL;
+		m_bIsCommentary = StringHasPrefix( PSkipSoundChars( pszName ), "commentary" );
 	}
 }
 
@@ -159,7 +159,7 @@ CAudioSourceMP3::CAudioSourceMP3( CSfxTable *pSfx, CAudioSourceCachedInfo *info 
 	const char *pszName = pSfx ? pSfx->GetFileName() : NULL;
 	if ( pszName )
 	{
-		m_bIsCommentary = StringAfterPrefix( PSkipSoundChars( pszName ), "commentary" ) != NULL;
+		m_bIsCommentary = StringHasPrefix( PSkipSoundChars( pszName ), "commentary" );
 	}
 #else
 	m_pSfx = pSfx;
@@ -177,7 +177,7 @@ CAudioSourceMP3::CAudioSourceMP3( CSfxTable *pSfx, CAudioSourceCachedInfo *info 
 	const char *pszName = pSfx->GetFileName();
 	if ( pszName )
 	{
-		m_bIsCommentary = StringAfterPrefix( PSkipSoundChars( pszName ), "commentary" ) != NULL;
+		m_bIsCommentary = StringHasPrefix( PSkipSoundChars( pszName ), "commentary" );
 	}
 
 	CheckAudioSourceCache();
