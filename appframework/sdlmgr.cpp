@@ -507,26 +507,6 @@ CSDLMgr::CSDLMgr()
 	m_Window = NULL;
 	Init();
 }
-#ifdef BYTEMATCH_RETAIL
-
-bool IsSteamDeck( bool bSteamDeckOnly );
-
-static RenderBackend_t GetRenderBackend()
-{
-	RenderBackend_t eBackend = RENDER_BACKEND_NULL;
-	if ( !CommandLine()->FindParm( "-noshaderapi" ) )
-	{
-		bool bSteamDeck = IsSteamDeck( true );
-		ICommandLine *pCommandLine = CommandLine();
-		if ( bSteamDeck )
-			eBackend = pCommandLine->FindParm( "-opengl" ) ? RENDER_BACKEND_TOGL : RENDER_BACKEND_VULKAN;
-		else
-			eBackend = pCommandLine->FindParm( "-vulkan" ) ? RENDER_BACKEND_VULKAN : RENDER_BACKEND_TOGL;
-	}
-	return eBackend;
-}
-#endif
-#line 510
 
 InitReturnVal_t CSDLMgr::Init()
 {
@@ -542,7 +522,7 @@ InitReturnVal_t CSDLMgr::Init()
 
 #if defined( DX_TO_GL_ABSTRACTION )
 #ifdef BYTEMATCH_RETAIL
-		if ( GetRenderBackend() == RENDER_BACKEND_TOGL )
+		if ( GetCommandLineRenderBackend() == RENDER_BACKEND_TOGL )
 #endif
 		{
 		if ( CommandLine()->FindParm( "-gl_debug" ) )
@@ -844,7 +824,7 @@ bool CSDLMgr::CreateHiddenGameWindow( const char *pTitle, int width, int height 
 #if defined( DX_TO_GL_ABSTRACTION )
 	// Set up GL context...
 #ifdef BYTEMATCH_RETAIL
-	if ( GetRenderBackend() == RENDER_BACKEND_TOGL )
+	if ( GetCommandLineRenderBackend() == RENDER_BACKEND_TOGL )
 #endif
 	{
 	const int *attrib = m_pixelFormatAttribs;
@@ -862,9 +842,9 @@ bool CSDLMgr::CreateHiddenGameWindow( const char *pTitle, int width, int height 
 	int flags = SDL_WINDOW_HIDDEN;
 #if defined( DX_TO_GL_ABSTRACTION )
 #ifdef BYTEMATCH_RETAIL
-	if ( GetRenderBackend() == RENDER_BACKEND_TOGL )
+	if ( GetCommandLineRenderBackend() == RENDER_BACKEND_TOGL )
 		flags |= SDL_WINDOW_OPENGL;
-	else if ( GetRenderBackend() == RENDER_BACKEND_VULKAN )
+	else if ( GetCommandLineRenderBackend() == RENDER_BACKEND_VULKAN )
 		flags |= SDL_WINDOW_VULKAN;
 #else
 	flags |= SDL_WINDOW_OPENGL;
@@ -909,7 +889,7 @@ bool CSDLMgr::CreateHiddenGameWindow( const char *pTitle, int width, int height 
 
 #if defined( DX_TO_GL_ABSTRACTION )
 #ifdef BYTEMATCH_RETAIL
-	if ( GetRenderBackend() == RENDER_BACKEND_TOGL )
+	if ( GetCommandLineRenderBackend() == RENDER_BACKEND_TOGL )
 	{
 #endif
 #line 860
@@ -2295,6 +2275,10 @@ void GLMDisplayMode::Dump( int which )
 			   which, m_info.m_modePixelWidth, m_info.m_modePixelHeight, m_info.m_modeRefreshHz ));
 }
 
+#if defined( BYTEMATCH_RETAIL ) && ( !defined( OSX ) || defined( TOGL_OSX ) )
+#include "glmdisplaydb_linuxwin.inl"
+#endif
+#line 2225
 GLMDisplayDB *CSDLMgr::GetDisplayDB( void )
 {
 	SDLAPP_FUNC;
@@ -2318,7 +2302,7 @@ GLMDisplayDB *CSDLMgr::GetDisplayDB( void )
 	return m_displayDB;
 }
 
-#if !defined( OSX ) || defined( TOGL_OSX )
+#if ( !defined( OSX ) || defined( TOGL_OSX ) ) && !defined( BYTEMATCH_RETAIL )
 #include "glmdisplaydb_linuxwin.inl"
 #endif
 

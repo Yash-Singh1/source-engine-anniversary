@@ -7,6 +7,11 @@
       "why": "retail compiled video_quicktime from src/video/quicktime_*.cpp (debug map); our tree keeps those files in video/video_quicktime/"
     },
     {
+      "ours": "appframework/glmdisplaydb_linuxwin.inl",
+      "valve": "appframework/sdlmgr.cpp",
+      "why": "retail sdlmgr.o has no N_SOL for the display-mode code (GLMDisplayInfo::PopulateModes etc.): Valve's sdlmgr.cpp holds it inline, our tree includes it from glmdisplaydb_linuxwin.inl"
+    },
+    {
       "ours": "external/cef/",
       "valve": "thirdparty/cef/",
       "why": "retail chromehtml includes CEF from src/thirdparty/cef (debug map N_SOL); thirdparty is a submodule here, so the CEF headers and wrapper live in external/cef"

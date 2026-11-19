@@ -12,6 +12,7 @@
     {"target": "vstdlib", "retail": "bin/libvstdlib.dylib", "size": 181248, "sha256": "0305b99d8d3ce20b47aa07356cced03c3e9383be9b20b06cd474c75a7e2a079f"},
     {"target": "vaudio_miles", "retail": "bin/vaudio_miles.dylib", "size": 28900, "sha256": "51e6b5c1b81b66306fe3ad2e8a2f8f12f6fadd9d68252cecbc3ca2fc7dcf5806"},
     {"target": "vtex_dll", "retail": "bin/vtex_dll.dylib", "size": 298736, "sha256": "c14816e9d29865e32f20d0d9cbd5b25b885b7bc8d7560bb61cfc9f5b846985bb"},
-    {"target": "tier0", "retail": "bin/libtier0.dylib", "size": 169572, "sha256": "1e526baa4ee1973f1a31d3ececa6ae2d4fea0d5f474ada91937205569aed38cd"}
+    {"target": "tier0", "retail": "bin/libtier0.dylib", "size": 169572, "sha256": "1e526baa4ee1973f1a31d3ececa6ae2d4fea0d5f474ada91937205569aed38cd"},
+    {"target": "launcher", "retail": "bin/launcher.dylib", "size": 222960, "sha256": "03d9788abe3fdd7bcda42f41d7ca2f1a0800b125da0dc58c667bd624c3621416"}
   ]
 }

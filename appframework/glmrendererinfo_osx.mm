@@ -491,6 +491,47 @@ GLMRendererInfo::~GLMRendererInfo( void )
 		m_display = NULL;
 	}
 }
+#ifdef BYTEMATCH_RETAIL
+
+extern "C" int DisplayInfoSortFunction( GLMDisplayInfo* const *A, GLMDisplayInfo* const *B )
+{
+	int bigger = -1;
+	int smaller = 1;	// adjust these to get the ordering you want
+
+	// check main-ness - main should win
+
+	uint maskOfMainDisplay = CGDisplayIDToOpenGLDisplayMask( CGMainDisplayID() );
+	//Assert( maskOfMainDisplay==1 );	// just curious
+	
+	int mainscreena = (*A)->m_info.m_glDisplayMask & maskOfMainDisplay;
+	int mainscreenb = (*B)->m_info.m_glDisplayMask & maskOfMainDisplay;
+	
+	if ( mainscreena > mainscreenb )
+	{
+		return bigger;
+	}
+	else if ( mainscreena < mainscreenb )
+	{
+		return smaller;
+	}
+	
+	// check area - larger screen should win
+	int areaa = (*A)->m_info.m_displayPixelWidth * (*A)->m_info.m_displayPixelHeight;
+	int areab = (*B)->m_info.m_displayPixelWidth * (*B)->m_info.m_displayPixelHeight;
+
+	if ( areaa > areab )
+	{	
+		return bigger;
+	}
+	else if ( areaa < areab )
+	{
+		return smaller;
+	}
+	
+	return 0;	// equal rank
+}
+#endif
+#line 479
 
 void	GLMRendererInfo::PopulateDisplays( void )
 {
