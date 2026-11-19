@@ -1813,6 +1813,18 @@ void CTempEnts::MuzzleFlash( const Vector& pos1, const QAngle& angles, int type,
 
 	switch ( type )
 	{
+#ifdef HL2_ANNIVERSARY_NOV2024
+	//
+	// AR2
+	//
+	case MUZZLEFLASH_AR2:
+		if ( firstPerson )
+		{
+			MuzzleFlash_AR2_Player( pos1, angles, hEntity );
+		}
+		break;
+
+#endif
 	//
 	// Shotgun
 	//
@@ -1875,6 +1887,72 @@ void CTempEnts::MuzzleFlash( const Vector& pos1, const QAngle& angles, int type,
 #endif
 
 }
+
+#ifdef HL2_ANNIVERSARY_NOV2024
+//-----------------------------------------------------------------------------
+// Purpose: 
+// Input  : &origin - 
+//			&angles - 
+//			hEntity - 
+//-----------------------------------------------------------------------------
+void CTempEnts::MuzzleFlash_AR2_Player( const Vector &origin, const QAngle &angles, ClientEntityHandle_t hEntity )
+{
+	Vector forward;
+	AngleVectors( angles, &forward );
+
+	float flScale = random->RandomFloat( 1.25f, 1.5f );
+	if ( flScale < 0.5f )
+		flScale = 0.5f;
+
+	C_LocalTempEntity *pTemp;
+	Vector offset;
+
+	// Flash
+	for ( int i = 1; i < 9; i++ )
+	{
+		offset = origin + (forward * (i*8.0f*flScale));
+
+		pTemp = TempEntAllocHigh( offset, m_pSpriteAR2Flash[random->RandomInt(0,3)] );
+		if ( !pTemp )
+			return;
+
+		pTemp->SetRenderMode( kRenderTransAdd );
+		pTemp->SetRenderColor( 164, 164, 164+random->RandomInt(0,64), 255 );
+		pTemp->tempent_renderamt = 255;
+		pTemp->m_nRenderFX = kRenderFxNone;
+		pTemp->flags = FTENT_PERSIST;
+		pTemp->die = gpGlobals->curtime + 0.025f;
+		pTemp->m_flFrame = 0;
+		pTemp->m_flFrameMax = 0;
+		pTemp->SetLocalOrigin( offset );
+		pTemp->SetLocalAngles( vec3_angle );
+		pTemp->SetVelocity( vec3_origin );
+		pTemp->m_flSpriteScale = ( (random->RandomFloat( 6.0f, 8.0f ) * (12-(i))/9) * flScale ) / 32.0f;
+		pTemp->SetLocalAnglesDim( Z_INDEX, random->RandomInt( 0, 360 ) );
+		pTemp->AddToLeafSystem();
+	}
+
+	// Glow
+	pTemp = TempEntAlloc( origin, m_pSpriteMuzzleFlash[0] );
+	if ( !pTemp )
+		return;
+
+	pTemp->SetRenderMode( kRenderTransAdd );
+	pTemp->SetRenderColor( 255, 255, 255, 255 );
+	pTemp->tempent_renderamt = 255;
+	pTemp->m_nRenderFX = kRenderFxNone;
+	pTemp->flags = FTENT_PERSIST;
+	pTemp->die = gpGlobals->curtime + 0.025f;
+	pTemp->m_flFrame = 0;
+	pTemp->m_flFrameMax = 0;
+	pTemp->SetLocalOrigin( origin );
+	pTemp->SetLocalAngles( vec3_angle );
+	pTemp->SetVelocity( vec3_origin );
+	pTemp->m_flSpriteScale = random->RandomFloat( 0.05f, 0.1f );
+	pTemp->SetLocalAnglesDim( Z_INDEX, random->RandomInt( 0, 360 ) );
+	pTemp->AddToLeafSystem();
+}
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: Create explosion sprite
