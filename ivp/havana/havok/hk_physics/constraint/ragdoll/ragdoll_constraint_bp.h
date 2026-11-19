@@ -22,9 +22,11 @@ class hk_Ragdoll_Constraint_BP  //: public hk_Effector_BP
 			m_strength			= 1.0f;
 			m_tau				= 1.0f;
 			m_constrainTranslation = true;
+#ifndef BYTEMATCH_RETAIL
 			m_axisMap[0] = 0;
 			m_axisMap[1] = 1;
 			m_axisMap[2] = 2;
+#endif
 		}
 
 		void set_position_os ( int, hk_Vector3 &position_os);
