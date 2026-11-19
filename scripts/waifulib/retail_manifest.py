@@ -71,11 +71,13 @@ RETAIL_KEEP = {
 # object lands where the first loaded copy is. module -> [(file, the retail-listed
 # file it is linked before)], in Xcode's link order (tree-relative paths).
 RETAIL_DEAD = {
+	'bin/bsppack': [('filesystem/linux_support.cpp', 'public/filesystem_init.cpp')],
 	'bin/chromehtml': [('common/pngloader.cpp', 'public/html/htmlprotobuf.cpp')],
 	'bin/vgui2': [('public/filesystem_helpers.cpp', 'public/filesystem_init.cpp'),
 		('vgui2/src/fileimage.cpp', 'vgui2/src/ImageBorder.cpp'),
 		('vgui2/src/MemoryBitmap.cpp', 'vgui2/src/ScalableImageBorder.cpp'),
 		('vgui2/src/MessageListener.cpp', 'vgui2/src/ScalableImageBorder.cpp')],
+	'bin/vguimatsurface': [('vgui2/src/vgui_key_translation.cpp', 'vguimatsurface/Clip2D.cpp')],
 	'hl2mp/server': [('common/language.cpp', 'game/server/serverbenchmark_base.cpp')],
 }
 
