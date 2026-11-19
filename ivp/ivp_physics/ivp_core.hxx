@@ -5,6 +5,8 @@
 #define _IVP_CORE_INCLUDED
 #if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
 #pragma pack(push, 4)	// retail Windows: doubles and base-class tails aligned to 4, as on OS X i386
+#elif defined( BYTEMATCH_RETAIL )
+#pragma pack(push, 2)	// retail OS X: cores are 2-byte aligned like IVP_Real_Object (same offsets)
 #endif
 #line 6
 
@@ -587,7 +589,7 @@ public:
 };
 
 
-#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#if defined( BYTEMATCH_RETAIL )
 #pragma pack(pop)
 #endif
 #endif /* _IVP_CORE_INCLUDED */
