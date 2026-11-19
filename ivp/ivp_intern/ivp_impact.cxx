@@ -1075,7 +1075,9 @@ void IVP_Impact_Solver_Long_Term::do_impact_of_two_objects(IVP_Mindist *mindist,
 	// printf("impactt\n");
 	IVP_Core *impacteers[2];
 
+#ifndef BYTEMATCH_RETAIL
 	IVP_FLOAT rescue_val_addon = my_fr_dist->get_rescue_speed_impact(obj0->get_environment());
+#endif
 
 	///////////////////////////////////////////////////////////////////////////
 	//@@VALVE
@@ -1099,6 +1101,9 @@ void IVP_Impact_Solver_Long_Term::do_impact_of_two_objects(IVP_Mindist *mindist,
 		}
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	IVP_FLOAT rescue_val_addon = my_fr_dist->get_rescue_speed_impact(obj0->get_environment());
+#endif
 	imp_solve->do_impact_long_term(impacteers,rescue_val_addon,my_fr_dist);
 
 	IVP_U_Float_Point speed_for_callback;
@@ -1508,7 +1513,11 @@ void IVP_Impact_System::add_pair_to_impact_system(IVP_Friction_Core_Pair *new_pa
 }
 
 void IVP_Impact_System::synchronize_core_for_impact_system(IVP_Core *new_core) {
+#ifdef BYTEMATCH_RETAIL
+    if (IVP_MTIS_SIMULATED( new_core->movement_state ) && !new_core->pinned){
+#else
     if (IVP_MTIS_SIMULATED( new_core->movement_state )){
+#endif
 	new_core->synchronize_with_rot_z();
     }
 }

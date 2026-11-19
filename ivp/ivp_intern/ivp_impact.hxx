@@ -48,7 +48,13 @@ void IVP_Impact_System::add_pushed_core_to_impact_system(IVP_Core *new_core)
 }
 
 IVP_BOOL IVP_Impact_System::core_was_already_pushed_in_system(IVP_Core *test_core) {
+#ifdef BYTEMATCH_RETAIL
+    IVP_Old_Sync_Rot_Z *sync_info = test_core->tmp_null.old_sync_info;
+    if ( !sync_info ) return IVP_TRUE;
+    return sync_info->was_pushed_during_i_s;
+#else
     return test_core->tmp_null.old_sync_info->was_pushed_during_i_s;
+#endif
 }
 
 IVP_BOOL IVP_Impact_System::core_is_already_known_to_system(IVP_Core *test_core) {
