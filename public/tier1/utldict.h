@@ -274,6 +274,10 @@ void CUtlDict<T, I>::RemoveAll()
 template <class T, class I>
 void CUtlDict<T, I>::Purge()
 {
+#ifdef HL2_LOSTCOAST
+	RemoveAll();
+#else
+#line 277
 	typename DictElementMap_t::IndexType_t index = m_Elements.FirstInorder();
 	while ( index != m_Elements.InvalidIndex() )
 	{
@@ -282,6 +286,8 @@ void CUtlDict<T, I>::Purge()
 	}
 
 	m_Elements.Purge();
+#endif
+#line 285
 }
 
 
