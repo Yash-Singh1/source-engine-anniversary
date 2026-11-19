@@ -183,6 +183,15 @@ def _targets_agree(r, o, oby):
     return True
 
 
+def _target_code_agrees(r, o, k, of):
+    """The retail call/jump at offset k enters a function that matches our function `of`."""
+    if of is None or of is o or k < 1 or k + 4 > len(r.data) or r.data[k - 1] not in (0xe8, 0xe9):
+        return False
+    va = (r.addr + k + 4 + x86.s32(r.data, k)) & 0xffffffff
+    rf = r.module.function_at(va)
+    return rf is not None and rf.addr == va and compare.compare(rf, of, False).status in MATCHED
+
+
 def _literals_agree(r, o):
     """False when one of o's absolute references to an MSVC string literal points at other
     bytes in the retail image (look-alike ConVar/ConCommand/shader-parameter initializers
@@ -262,6 +271,15 @@ def accept_misnamed(results, retail, spare, ours_funcs):
     def same(r, o, target_check=True):
         return compare.compare(r, o, target_check).status in MATCHED and _literals_agree(r, o)
 
+    def same_by_code(r, o):
+        """Matches but for call targets that are functions of ours whose code is what retail calls."""
+        c = compare.compare(r, o, True)
+        if c.status not in MATCHED and not (c.status == compare.DIFFERS and c.target_mismatches
+                                            and all(_target_code_agrees(r, o, k, oby.get(ot))
+                                                    for k, ot, _ in c.target_mismatches)):
+            return False
+        return _literals_agree(r, o) and _targets_agree(r, o, oby)
+
     def same_name(r):
         n = _sig_name(r.key)
         cands = onames.get(n, ()) if n and rnames[n] == 1 else ()
@@ -270,9 +288,13 @@ def accept_misnamed(results, retail, spare, ours_funcs):
             return cands[0]
         return None
 
-    def spare_for(r):
+    def spare_for(r, by_code=False):
+        """`by_code`: targets are checked by the code they point at, not by name."""
         if len(r.data) < MISNAMED_MIN_SIZE or not _head(r):
             return None
+        if by_code:
+            return _unique_match(opool, _head(r), lambda o: id(o) not in used and fits(r, o)
+                                 and same_by_code(r, o), lambda o: False)
         return _unique_match(opool, _head(r), lambda o: id(o) not in used and fits(r, o) and same(r, o),
                              lambda o: _targets_agree(r, o, oby))
 
@@ -293,9 +315,10 @@ def accept_misnamed(results, retail, spare, ours_funcs):
                         continue
                 else:
                     r = res.retail
-                    o = spare_for(r) if r.addr not in claimed else None
+                    o = spare_for(r, True) if r.addr not in claimed else None
                     if o is None:
                         continue
+                    target_check = False
                     used.add(id(o))
                     res.ours = o
                     res.matched_as = o.name
