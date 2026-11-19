@@ -175,6 +175,8 @@ def macro_prefix_flags(conf, rf, cc, valve, subdir = None):
 			% (cc, rf.MACRO_PREFIX_MAP_PATCH, TOOLCHAIN_DIR))
 	roots = [conf.srcnode.path_from(conf.bldnode), conf.srcnode.abspath()]
 	pairs = [(r + '/', valve) for r in roots]
+	# protobuf's headers come from the Source SDK 2013 checkout, Valve's src/thirdparty.
+	pairs.append((os.path.join(os.path.abspath(rf.SDK2013), 'src', 'thirdparty') + '/', valve + 'thirdparty/'))
 	if subdir:
 		pairs += [(r + '/' + subdir + '/', valve) for r in roots + [conf.bldnode.abspath()]]
 		pairs.append((subdir + '/', valve))
