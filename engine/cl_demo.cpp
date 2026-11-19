@@ -972,7 +972,10 @@ void CDemoPlayer::SkipToTick( int tick, bool bRelative, bool bPause )
 		Q_strncpy( fileName, m_DemoFile.m_szFileName, sizeof(fileName) );
 
 		// reload current demo file
+#ifndef BYTEMATCH_RETAIL
 		ETWMarkPrintf( "DemoPlayer: Reloading demo file '%s'", fileName );
+#endif
+#line 906
 		StartPlayback( fileName, m_bTimeDemo );
 
 		// Make sure the proper skipping occurs after reload

@@ -51,9 +51,7 @@ class ConsoleLogManager
 {
 public:
 	ConsoleLogManager();
-#ifndef BYTEMATCH_RETAIL
 	~ConsoleLogManager();
-#endif
 #line 49
 
 	void RemoveConsoleLogFile();
@@ -336,7 +334,6 @@ ConsoleLogManager::ConsoleLogManager()
 	m_fh = FILESYSTEM_INVALID_HANDLE;
 }
 
-#ifndef BYTEMATCH_RETAIL
 ConsoleLogManager::~ConsoleLogManager()
 {
 	// This fails because of destructor order problems. The file
@@ -344,7 +341,6 @@ ConsoleLogManager::~ConsoleLogManager()
 	// We'll have to count on the OS to close the file for us.
 	//CloseFileIfOpen();
 }
-#endif
 #line 318
 
 void ConsoleLogManager::RemoveConsoleLogFile()

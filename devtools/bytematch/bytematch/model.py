@@ -61,6 +61,7 @@ class Module:
         self.regions = []             # PE images: [(vaddr, bytes)] of every section, for reading data
         self._names = {}              # addr -> [keys] for relocation-target resolution
         self._starts = None
+        self.port_starts = set()      # PE images: every function start a symbol-port map found, named or not
 
     @property
     def label(self):

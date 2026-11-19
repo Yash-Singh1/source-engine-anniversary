@@ -1687,9 +1687,9 @@ void Host_ReadConfiguration_360( void )
 //-----------------------------------------------------------------------------
 void Host_RestoreHL2EpisodicUnlocks()
 {
-	if ( V_stricmp( CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) ), "hl2_complete" ) )
+	const char *pszGameDir = CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) );
+	if ( V_stricmp( pszGameDir, "hl2_complete" ) )
 		return;
-
 	static const char *pszExpansionsToCheck[] = { "hl2", "episodic", "ep2" };
 	for ( int i = 0; i < ARRAYSIZE( pszExpansionsToCheck ); i++ )
 	{
