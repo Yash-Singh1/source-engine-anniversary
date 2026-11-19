@@ -237,6 +237,7 @@ def accept_misnamed(results, retail, spare, ours_funcs):
                 continue
             used.add(id(o))
             res.ours = o
+            res.matched_as = o.name
         else:
             continue
         res.status, res.reason, res.first_diff = compare.compare(r, o, True).status, '', None
@@ -348,6 +349,8 @@ def result_json(r, diff_lines=0):
         d['target_mismatches'] = [dict(offset=k, ours=t, retail=rt) for k, t, rt in r.target_mismatches]
     if getattr(r, 'matched_at', None):
         d['matched_at'] = hex(r.matched_at)
+    if getattr(r, 'matched_as', None):
+        d['matched_as'] = r.matched_as
     if getattr(r, 'equivalent_targets', None):
         d['equivalent_targets'] = [dict(offset=k, ours=t, retail=rt) for k, t, rt in r.equivalent_targets]
     if diff_lines and r.status == DIFFERS and r.retail and r.ours:
