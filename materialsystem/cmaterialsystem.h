@@ -627,7 +627,7 @@ private:
 
 	CMaterialDict							m_MaterialDict;
 	CMatLightmaps							m_Lightmaps;
-	CTHREADLOCAL(IMatRenderContextInternal *) m_pRenderContext;
+	CThreadLocal<IMatRenderContextInternal *> m_pRenderContext;
 	CMatRenderContext						m_HardwareRenderContext;
 
 	CMatQueuedRenderContext					m_QueuedRenderContexts[2];
