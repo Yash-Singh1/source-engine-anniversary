@@ -128,8 +128,13 @@ IVP_Tri_Edge *IVP_Tri_Edge::other_side()
     if(!this->triangle->other_side) return NULL;
     IVP_Tri_Edge *e = &this->triangle->other_side->three_edges[0];
     for(i=2; i>=0; i--){
+#ifdef BYTEMATCH_RETAIL
+	if(e->next->start_point == this->start_point) return e;
+#else
     // MoeMod : prevent NPE
 	if(e->next && e->next->start_point == this->start_point) return e;
+#endif
+#line 132
 	e++;
     }
     return NULL;
