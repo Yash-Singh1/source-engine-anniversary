@@ -267,8 +267,9 @@ void CefRequestCToCpp::SetSecurityDetails(
   // Unverified params: details
 
   // Execute
-  struct_->set_security_details(struct_,
-      CefSecurityDetailsCToCpp::Unwrap(details));
+  cef_security_details_t* detailsStruct =
+      CefSecurityDetailsCToCpp::Unwrap(details);
+  struct_->set_security_details(struct_, detailsStruct);
 }
 
 bool CefRequestCToCpp::BIsSecureRequest() {
@@ -281,7 +282,7 @@ bool CefRequestCToCpp::BIsSecureRequest() {
   int _retval = struct_->bis_secure_request(struct_);
 
   // Return type: bool
-  return _retval?true:false;
+  return _retval > 0;
 }
 
 CefRefPtr<CefSecurityDetails> CefRequestCToCpp::SecurityDetails() {
@@ -294,7 +295,9 @@ CefRefPtr<CefSecurityDetails> CefRequestCToCpp::SecurityDetails() {
   cef_security_details_t* _retval = struct_->security_details(struct_);
 
   // Return type: refptr_same
-  return CefSecurityDetailsCToCpp::Wrap(_retval);
+  if (_retval)
+    return CefSecurityDetailsCToCpp::Wrap(_retval);
+  return NULL;
 }
 
 

@@ -1,0 +1,103 @@
+-fmacro-prefix-map=<old>=<new>, backported from upstream clang (D49466; GCC 8
+has the same option). Valve's retail modules embed __FILE__ as Xcode passed
+it, an absolute buildbot path (/Users/buildbot/buildslave/rel_singleplayer_osx/
+build/src/public/tier1/utlvector.h); waf passes paths relative to the build
+directory. When several prefixes match, the last one on the command line wins
+(GCC's rule, and upstream clang's since 2022). Preprocessor only: without the
+option, objects are byte-identical to the unpatched compiler's.
+Applies to clang-600.0.5x and clang-503.0.38.
+
+diff --git a/src/tools/clang/include/clang/Driver/Options.td b/src/tools/clang/include/clang/Driver/Options.td
+index d9c8b7b..063481e 100644
+--- a/src/tools/clang/include/clang/Driver/Options.td
++++ b/src/tools/clang/include/clang/Driver/Options.td
+@@ -563,6 +563,9 @@ def flto : Flag<["-"], "flto">, Group<f_Group>;
+ def fno_lto : Flag<["-"], "fno-lto">, Group<f_Group>;
+ def fmacro_backtrace_limit_EQ : Joined<["-"], "fmacro-backtrace-limit=">,
+                                 Group<f_Group>;
++def fmacro_prefix_map_EQ : Joined<["-"], "fmacro-prefix-map=">, Group<f_Group>,
++  Flags<[CC1Option]>, MetaVarName<"<prefix>=<new-prefix>">,
++  HelpText<"Remap file source paths in predefined preprocessor macros">;
+ def fmerge_all_constants : Flag<["-"], "fmerge-all-constants">, Group<f_Group>;
+ def fmessage_length_EQ : Joined<["-"], "fmessage-length=">, Group<f_Group>;
+ def fms_extensions : Flag<["-"], "fms-extensions">, Group<f_Group>, Flags<[CC1Option]>,
+diff --git a/src/tools/clang/include/clang/Lex/PreprocessorOptions.h b/src/tools/clang/include/clang/Lex/PreprocessorOptions.h
+index eba2a13..989d75f 100644
+--- a/src/tools/clang/include/clang/Lex/PreprocessorOptions.h
++++ b/src/tools/clang/include/clang/Lex/PreprocessorOptions.h
+@@ -47,6 +47,10 @@ public:
+   std::vector<std::string> Includes;
+   std::vector<std::string> MacroIncludes;
+ 
++  /// \brief -fmacro-prefix-map pairs in command-line order; the last matching
++  /// prefix rewrites __FILE__ and __BASE_FILE__.
++  std::vector<std::pair<std::string, std::string> > MacroPrefixMap;
++
+   /// \brief Initialize the preprocessor with the compiler and target specific
+   /// predefines.
+   unsigned UsePredefines : 1;
+diff --git a/src/tools/clang/lib/Driver/Tools.cpp b/src/tools/clang/lib/Driver/Tools.cpp
+index 9d73b20..b0a7def 100644
+--- a/src/tools/clang/lib/Driver/Tools.cpp
++++ b/src/tools/clang/lib/Driver/Tools.cpp
+@@ -410,6 +410,8 @@ void Clang::AddPreprocessingOptions(Compilation &C,
+   Args.AddAllArgValues(CmdArgs, options::OPT_Wp_COMMA,
+                        options::OPT_Xpreprocessor);
+ 
++  Args.AddAllArgs(CmdArgs, options::OPT_fmacro_prefix_map_EQ);
++
+   // -I- is a deprecated GCC feature, reject it.
+   if (Arg *A = Args.getLastArg(options::OPT_I_))
+     D.Diag(diag::err_drv_I_dash_not_supported) << A->getAsString(Args);
+diff --git a/src/tools/clang/lib/Frontend/CompilerInvocation.cpp b/src/tools/clang/lib/Frontend/CompilerInvocation.cpp
+index 5929538..1bed033 100644
+--- a/src/tools/clang/lib/Frontend/CompilerInvocation.cpp
++++ b/src/tools/clang/lib/Frontend/CompilerInvocation.cpp
+@@ -1542,6 +1542,18 @@ static void ParsePreprocessorArgs(PreprocessorOptions &Opts, ArgList &Args,
+ 
+   Opts.MacroIncludes = Args.getAllArgValues(OPT_imacros);
+ 
++  for (arg_iterator it = Args.filtered_begin(OPT_fmacro_prefix_map_EQ),
++         ie = Args.filtered_end(); it != ie; ++it) {
++    StringRef Value((*it)->getValue());
++    size_t Eq = Value.find('=');
++    if (Eq == StringRef::npos)
++      Diags.Report(diag::err_drv_invalid_value)
++        << (*it)->getAsString(Args) << Value;
++    else
++      Opts.MacroPrefixMap.push_back(
++          std::make_pair(Value.substr(0, Eq).str(), Value.substr(Eq + 1).str()));
++  }
++
+   // Add the ordered list of -includes.
+   for (arg_iterator it = Args.filtered_begin(OPT_include),
+          ie = Args.filtered_end(); it != ie; ++it) {
+diff --git a/src/tools/clang/lib/Lex/PPMacroExpansion.cpp b/src/tools/clang/lib/Lex/PPMacroExpansion.cpp
+index 7f4c3c5..bce839b 100644
+--- a/src/tools/clang/lib/Lex/PPMacroExpansion.cpp
++++ b/src/tools/clang/lib/Lex/PPMacroExpansion.cpp
+@@ -21,6 +21,7 @@
+ #include "clang/Lex/LexDiagnostic.h"
+ #include "clang/Lex/MacroArgs.h"
+ #include "clang/Lex/MacroInfo.h"
++#include "clang/Lex/PreprocessorOptions.h"
+ #include "llvm/ADT/STLExtras.h"
+ #include "llvm/ADT/SmallString.h"
+ #include "llvm/ADT/StringSwitch.h"
+@@ -1304,6 +1305,16 @@ void Preprocessor::ExpandBuiltinMacro(Token &Tok) {
+     SmallString<128> FN;
+     if (PLoc.isValid()) {
+       FN += PLoc.getFilename();
++      const PreprocessorOptions &PPO = getPreprocessorOpts();
++      for (unsigned i = PPO.MacroPrefixMap.size(); i != 0; --i) {
++        const std::pair<std::string, std::string> &M = PPO.MacroPrefixMap[i - 1];
++        if (FN.str().startswith(M.first)) {
++          SmallString<128> Mapped(M.second);
++          Mapped += FN.str().substr(M.first.size());
++          FN = Mapped;
++          break;
++        }
++      }
+       Lexer::Stringify(FN);
+       OS << '"' << FN.str() << '"';
+     }

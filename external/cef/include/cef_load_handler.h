@@ -73,7 +73,7 @@ class CefLoadHandler : public virtual CefBase {
   // will always be called for all frames irrespective of whether the request
   // completes successfully.
   ///
-  /*--cef(optional_param=request)--*/
+  /*--cef()--*/
   virtual void OnLoadEnd(CefRefPtr<CefBrowser> browser,
                          CefRefPtr<CefFrame> frame,
                          int httpStatusCode,

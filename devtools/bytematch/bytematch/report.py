@@ -1,5 +1,6 @@
 """Scoping, summaries and JSON/markdown report output."""
 import collections
+import re
 import datetime
 import json
 import shutil
@@ -84,9 +85,201 @@ def run(retail, ours_funcs, objects=None, all_retail=False, target_check=True, i
                 only_ours.append(e)
     else:
         only_ours = extra
+    if target_check:
+        n = accept_equivalent_targets(results + shared, retail, ours_funcs)
+        if n:
+            notes.append(f'{n} functions differed only in call targets whose code is identical on both '
+                         f'sides (identical-code folding named them differently); counted as matching')
+        n = accept_folded_instantiations(results + shared, retail)
+        if n:
+            notes.append(f'{n} functions match a retail function of the same name with other template '
+                         f'arguments (the instantiations are folded in retail, and the map named the copy '
+                         f'after another one); counted as matching')
+        n = accept_misnamed(results + shared, retail, only_ours, ours_funcs)
+        if n:
+            notes.append(f'{n} functions match exactly one retail function or one of ours that the name map '
+                         f'paired with something else (the map swapped names between look-alike functions); '
+                         f'counted as matching')
     if data_check:
         apply_data_check(results + shared, *data_check)
     return dict(results=results, shared=shared, extra=only_ours, mode=mode, notes=notes)
+
+
+def _untemplated(name):
+    prev = None
+    while prev != name:
+        prev, name = name, re.sub(r'<[^<>]*>', '', name)
+    return name
+
+
+def accept_folded_instantiations(results, retail):
+    """Pass a template function that matches another retail instantiation of the same name.
+
+    Identical-code folding keeps one copy of instantiations that compile to the same code,
+    and the name map can only call it after one of them."""
+    by = {}
+    for f in retail.functions:
+        for n in [f.name] + list(f.aliases):
+            if '<' in n:
+                by.setdefault(_untemplated(n), set()).add(f)
+    moved = 0
+    for res in results:
+        if res.status != compare.DIFFERS or not res.ours or not res.retail or '<' not in res.key:
+            continue
+        for r in by.get(_untemplated(res.key), ()):
+            if r is res.retail or not r.data:
+                continue
+            c = compare.compare(r, res.ours, True)
+            if c.status in (compare.EXACT, compare.MASKED):
+                res.status, res.reason, res.first_diff = c.status, '', None
+                res.line_constants, res.target_mismatches = None, []
+                res.matched_at = r.addr
+                moved += 1
+                break
+    return moved
+
+
+MISNAMED_MIN_SIZE = 8
+
+
+def _head(f):
+    """Leading bytes no relocation of f covers (up to 4): the bucket key for a quick pre-filter."""
+    return f.data[:min([rel.offset for rel in f.relocs] + [4])]
+
+
+def _unique_match(cands, key, accept, tiebreak):
+    hits = [c for c in cands.get(key, ()) if accept(c)]
+    if len(hits) > 1:
+        hits = [c for c in hits if tiebreak(c)]
+    return hits[0] if len(hits) == 1 else None
+
+
+def _targets_agree(r, o, oby):
+    """False when one of o's relocations names a function of ours whose code differs from the
+    retail code the same field points at (vcall thunks for member pointers, callees)."""
+    rmod = r.module
+    if not rmod.linked or rmod.pic:
+        return True
+    for rel in o.relocs:
+        of = oby.get(rel.target)
+        if of is None or of is o or rel.size != 4 or rel.offset + 4 > len(r.data):
+            continue
+        k = rel.offset
+        if rel.kind == 'pcrel':
+            if not (k >= 1 and r.data[k - 1] in (0xe8, 0xe9)):
+                continue
+            va = (r.addr + k + 4 + x86.s32(r.data, k)) & 0xffffffff
+        elif rel.kind == 'abs':
+            va = (x86.u32(r.data, k) - rel.addend) & 0xffffffff
+        else:
+            continue
+        if not of.relocs:
+            if rmod.read(va, len(of.data)) != of.data:
+                return False
+            continue
+        rf = rmod.function_at(va)
+        if rf is not None and rf.addr == va and compare.compare(rf, of, False).status not in MATCHED:
+            return False
+    return True
+
+
+def accept_misnamed(results, retail, spare, ours_funcs):
+    """Pair functions the name map gave the wrong name.
+
+    Maps ported by call-graph and byte similarity can rotate names among look-alike functions
+    (the Create_<Panel> build factories differ only in the allocation size; every
+    PanelMessageFunc_<name>::InitVar has the same shape). A differing function passes when it
+    matches exactly one retail function no result matches; a missing retail function passes
+    when it matches exactly one of our unpaired functions (`spare`, removed from the list when
+    used). The target check applies to both; look-alikes that differ only in what a relocation
+    points at are told apart by comparing the code there. Functions under MISNAMED_MIN_SIZE
+    bytes stay as they are."""
+    claimed = {res.retail.addr for res in results if res.status in MATCHED and res.retail}
+    rpool = collections.defaultdict(list)
+    for f in retail.functions:
+        if f.addr not in claimed and len(f.data) >= MISNAMED_MIN_SIZE:
+            for n in (1, 2, 3, 4):
+                rpool[f.data[:n]].append(f)
+    opool = collections.defaultdict(list)
+    for e in spare:
+        o = e.ours
+        if len(o.data) >= MISNAMED_MIN_SIZE:
+            for n in (1, 2, 3, 4):
+                opool[o.data[:n]].append(o)
+    oby = {}
+    for f in ours_funcs:
+        for n in [f.name] + list(f.aliases):
+            oby.setdefault(n, f)
+    used, moved = set(), 0
+
+    def fits(r, o):
+        return len(r.data) == len(o.data) if r.size_known else len(r.data) >= len(o.data)
+
+    def same(r, o):
+        return compare.compare(r, o, True).status in MATCHED
+
+    for res in results:
+        if res.status == compare.DIFFERS and res.ours and res.retail:
+            o = res.ours
+            if len(o.data) < MISNAMED_MIN_SIZE or not _head(o):
+                continue
+            r = _unique_match(rpool, _head(o), lambda r: r is not res.retail and r.addr not in claimed
+                              and fits(r, o) and same(r, o), lambda r: _targets_agree(r, o, oby))
+            if r is None:
+                continue
+        elif res.status == compare.MISSING and res.retail:
+            r = res.retail
+            if len(r.data) < MISNAMED_MIN_SIZE or not _head(r):
+                continue
+            o = _unique_match(opool, _head(r), lambda o: id(o) not in used and fits(r, o) and same(r, o),
+                              lambda o: _targets_agree(r, o, oby))
+            if o is None:
+                continue
+            used.add(id(o))
+            res.ours = o
+            res.matched_as = o.name
+        else:
+            continue
+        res.status, res.reason, res.first_diff = compare.compare(r, o, True).status, '', None
+        res.line_constants, res.target_mismatches = None, []
+        if r is not res.retail:
+            res.matched_at = r.addr
+        claimed.add(r.addr)
+        moved += 1
+    spare[:] = [e for e in spare if id(e.ours) not in used]
+    return moved
+
+
+def accept_equivalent_targets(results, retail, ours_funcs):
+    """Pass functions whose only differences are call targets that are the same code.
+
+    Identical-code folding (/OPT:ICF, ld64's coalescing) leaves one copy of identical
+    functions under one name, and the retail name map can only give that address one name
+    (e.g. FreeCircularBuffer for the folded operator delete). A target is equivalent when our
+    target function and the retail function at the target address match each other."""
+    rby, oby = {}, {}
+    for f in retail.functions:
+        for n in [f.name] + list(f.aliases):
+            rby.setdefault(n, f)
+    for f in ours_funcs:
+        for n in [f.name] + list(f.aliases):
+            oby.setdefault(n, f)
+    same, moved = {}, 0
+    for res in results:
+        if res.status != compare.DIFFERS or not res.target_mismatches or res.line_constants:
+            continue
+        ok = True
+        for _, ot, rt in res.target_mismatches:
+            if (ot, rt) not in same:
+                o, r = oby.get(ot), rby.get(rt)
+                same[(ot, rt)] = bool(o and r and o.data and r.data and
+                                      compare.compare(r, o, False).status in (compare.EXACT, compare.MASKED))
+            ok = ok and same[(ot, rt)]
+        if ok:
+            res.equivalent_targets, res.target_mismatches = res.target_mismatches, []
+            res.status, res.reason, res.first_diff = compare.MASKED, '', None
+            moved += 1
+    return moved
 
 
 def apply_data_check(results, rimg, oimgs):
@@ -154,6 +347,12 @@ def result_json(r, diff_lines=0):
                                 for k, a, b in r.data_mismatches]
     if r.target_mismatches:
         d['target_mismatches'] = [dict(offset=k, ours=t, retail=rt) for k, t, rt in r.target_mismatches]
+    if getattr(r, 'matched_at', None):
+        d['matched_at'] = hex(r.matched_at)
+    if getattr(r, 'matched_as', None):
+        d['matched_as'] = r.matched_as
+    if getattr(r, 'equivalent_targets', None):
+        d['equivalent_targets'] = [dict(offset=k, ours=t, retail=rt) for k, t, rt in r.equivalent_targets]
     if diff_lines and r.status == DIFFERS and r.retail and r.ours:
         d['diff'] = compare.instruction_diff(r, context=1, limit=diff_lines)
     return d

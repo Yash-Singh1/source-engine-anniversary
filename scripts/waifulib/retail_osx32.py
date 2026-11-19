@@ -51,6 +51,8 @@ GAME_MODULES = ['game/client', 'game/server']
 # SDK 2013's lib/public/osx32 at the 2014 revision: Valve's link dylibs and its
 # prebuilt protobuf 2.3.0 (retail client has its code, without stabs).
 HL2MP_ENV = 'hl2mp2014'
+# chromehtml's prebuilt CEF wrapper: Chromium 18's clang and Release flags (retailflags.CEF_WRAPPER_CLANG).
+CEF_WRAPPER_ENV = 'cefwrapper'
 HL2MP_PROJECTS = ['sdk2013mp']
 SDK2013_LIBS = ['libtier0.dylib', 'libvstdlib.dylib', 'libsteam_api.dylib', 'libprotobuf.a']
 
@@ -113,7 +115,7 @@ def options(opt):
 		help = 'comma-separated subprojects to build [default: %s]' % ','.join(RETAIL_MODULES))
 
 def retailflags(ctx):
-	path = ctx.path.find_node(TOOLCHAIN_DIR).abspath()
+	path = ctx.srcnode.find_node(TOOLCHAIN_DIR).abspath()
 	if path not in sys.path:
 		sys.path.insert(0, path)
 	import retailflags
@@ -161,6 +163,37 @@ def make_depot_stub(conf, p, src, outdir, extra):
 	if subprocess.call(cmd) != 0:
 		conf.fatal('retail-osx32: could not build stub %s' % out)
 
+def macro_prefix_flags(conf, rf, cc, valve, subdir = None):
+	'''__FILE__ as Xcode spelled it on Valve's buildbot: tree paths, relative to the build
+	directory as waf passes them or absolute, under Valve's source root `valve`. `subdir`
+	is a directory of the tree, and of the build directory for generated sources, that
+	Valve had as the root itself (sdk2013mp).'''
+	stamp = os.path.join(os.path.dirname(os.path.dirname(cc)), 'PATCHES')
+	have = open(stamp).read().split() if os.path.exists(stamp) else []
+	if rf.MACRO_PREFIX_MAP_PATCH not in have:
+		conf.fatal('%s lacks %s (-fmacro-prefix-map); rebuild it with %s/build-clang.sh'
+			% (cc, rf.MACRO_PREFIX_MAP_PATCH, TOOLCHAIN_DIR))
+	roots = [conf.srcnode.path_from(conf.bldnode), conf.srcnode.abspath()]
+	pairs = [(r + '/', valve) for r in roots]
+	if subdir:
+		pairs += [(r + '/' + subdir + '/', valve) for r in roots + [conf.bldnode.abspath()]]
+		pairs.append((subdir + '/', valve))
+	return rf.macro_prefix_map(pairs)
+
+def is_macro_prefix_flag(f):
+	return f.startswith('-fmacro-prefix-map=')
+
+@conf
+def retail_macro_prefix_map(bld, ours, valve):
+	'''Compiler flags giving the files under `ours` (a directory relative to the calling
+	wscript) the __FILE__ of Valve's directory `valve` (relative to its source root),
+	for module-local copies of files Valve had elsewhere. Add them to cxxflags.'''
+	node = bld.path.find_dir(ours)
+	if not node:
+		bld.fatal('retail_macro_prefix_map: no directory %s in %s' % (ours, bld.path.abspath()))
+	root = bld.env.RETAIL_VALVE_SRC + valve.strip('/') + '/'
+	return retailflags(bld).macro_prefix_map([(node.path_from(bld.bldnode) + '/', root), (node.abspath() + '/', root)])
+
 @conf
 def retail_osx32_configure(conf):
 	rf = retailflags(conf)
@@ -186,8 +219,10 @@ def retail_osx32_configure(conf):
 	v.SDL = 1
 	v.GL = True
 	sdk = p['sdk']
-	v.CFLAGS = rf.cflags(sdk)
-	v.CXXFLAGS = rf.cxxflags(sdk)
+	prefix_map = macro_prefix_flags(conf, rf, p['cc'], rf.VALVE_SRC)
+	v.RETAIL_VALVE_SRC = rf.VALVE_SRC
+	v.CFLAGS = rf.cflags(sdk) + prefix_map
+	v.CXXFLAGS = rf.cxxflags(sdk) + prefix_map
 	v.CPPFLAGS = list(rf.UNDEFS)
 	v.LINKFLAGS = rf.linkflags(p)
 	v.CFLAGS_cshlib = v.CXXFLAGS_cxxshlib = []
@@ -270,7 +305,29 @@ def retail_osx32_configure(conf):
 			games = GAME_MODULES
 		v.RETAIL_PROJECTS += [g for g in games if g not in v.RETAIL_PROJECTS]
 	Logs.info('retail-osx32: clang %s, ld64 %s, sdk %s' % (p['cc'], p['ld_dir'], sdk))
+	if 'vgui2/chromehtml' in v.RETAIL_PROJECTS:
+		cef_wrapper_configure(conf, rf)
 	conf.add_subproject(v.RETAIL_PROJECTS)
+
+def cef_wrapper_configure(conf, rf):
+	'''CEF_WRAPPER_ENV: the retail env with libcef_dll_wrapper.a's compiler and flags.'''
+	p = rf.paths(conf.options.RETAIL_TOOLCHAIN, rf.CEF_WRAPPER_CLANG)
+	if not os.path.exists(p['cxx']):
+		Logs.warn('retail-osx32: %s missing, cef_dll_wrapper is built with the module compiler; build it with %s/build-clang.sh %s'
+			% (p['cxx'], TOOLCHAIN_DIR, rf.CEF_WRAPPER_CLANG))
+		return
+	conf.setenv(CEF_WRAPPER_ENV, conf.env)
+	v = conf.env
+	v.CXX = [p['cxx']]
+	# Keep what configure added after the retail flags (gccdeps' -MMD); Valve's defines and -U don't apply,
+	# and the upstream wrapper compiler has no -fmacro-prefix-map.
+	v.CXXFLAGS = rf.cef_wrapper_cxxflags(p['sdk']) + [f for f in v.CXXFLAGS
+		if f not in rf.cxxflags(p['sdk']) and not is_macro_prefix_flag(f)]
+	v.CPPFLAGS = []
+	v.DEFINES = []
+	v.INCLUDES = []
+	conf.setenv('')
+	Logs.info('retail-osx32: cef_dll_wrapper with clang %s' % p['cxx'])
 
 def hl2mp_configure(conf, rf):
 	'''The HL2MP_ENV env: the retail env with the 2014 toolchain, deployment target and link dylibs.'''
@@ -309,8 +366,12 @@ def hl2mp_configure(conf, rf):
 	v.CC = v.LINK_CC = [p['cc']]
 	v.CXX = v.LINK_CXX = [p['cxx']]
 	# Keep what configure added after the retail flags (gccdeps' -MMD).
-	v.CFLAGS = rf.cflags(p['sdk'], h['min_osx']) + [f for f in v.CFLAGS if f not in rf.cflags(p['sdk'])]
-	v.CXXFLAGS = rf.cxxflags(p['sdk'], h['min_osx']) + [f for f in v.CXXFLAGS if f not in rf.cxxflags(p['sdk'])]
+	prefix_map = macro_prefix_flags(conf, rf, p['cc'], rf.HL2MP_VALVE_SRC, HL2MP_PROJECTS[0])
+	v.RETAIL_VALVE_SRC = rf.HL2MP_VALVE_SRC
+	v.CFLAGS = rf.cflags(p['sdk'], h['min_osx']) + prefix_map + [f for f in v.CFLAGS
+		if f not in rf.cflags(p['sdk']) and not is_macro_prefix_flag(f)]
+	v.CXXFLAGS = rf.cxxflags(p['sdk'], h['min_osx']) + prefix_map + [f for f in v.CXXFLAGS
+		if f not in rf.cxxflags(p['sdk']) and not is_macro_prefix_flag(f)]
 	v.LINKFLAGS = rf.linkflags(p, h['min_osx'])
 	v.DEFINES = list(rf.DEFINES)
 	# The 2014 tree has its own common/; ours must not shadow missing headers.

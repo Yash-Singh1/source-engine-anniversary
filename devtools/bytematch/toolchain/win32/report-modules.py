@@ -27,7 +27,8 @@ sys.path.insert(0, os.path.join(TREE, "devtools", "bytematch"))
 from bytematch import winmap  # noqa: E402
 
 DEPOTS = "/Volumes/Expansion/mac-ports/hl2-anniversary-depot/depots"
-MAPS = "/Volumes/Storage/sco/byte-match-survey/symbols/out"
+# symbol-port maps: the 16 modules beyond the survey's eight, then the survey's
+MAPS = ["/Volumes/Storage/sco/byte-match-survey/win32-maps", "/Volumes/Storage/sco/byte-match-survey/symbols/out"]
 MATCHED = ("exact", "matches-after-masking")
 BUILD = "19307283"
 # manifest module -> (macOS depot, path in it, file name in a --retail-osx32 build)
@@ -67,7 +68,7 @@ def keyed(doc, demangle):
     out = {}
     for f in doc["functions"]:
         n = f["name"]
-        k = n if n.startswith("sig:") else winmap.sig(dem[n]) if n in dem else None
+        k = n if n.startswith("sig:") else (winmap.itanium_key(n, dem[n]) if demangle is winmap.cxxfilt else winmap.sig(dem[n])) if n in dem else None
         out[k or "c:" + n.lstrip("_")] = (f["status"], f.get("retail_size") or f.get("ours_size") or 0,
                                          bool(f.get("line_constants")))
     return out
@@ -93,28 +94,47 @@ def build_index(man):
     return dict((n, i + 1) for i, n in enumerate(order))
 
 
-def module_objects(build, name, m, idx, out):
-    """A directory of links to the module's own objects (a linked DLL has no symbols to scope by)."""
+def built_index(build, m, idx):
+    """The index a module's objects carry: a build configured with --retail-win32-modules numbers
+    its modules differently, so take the one most of the module's sources were compiled with."""
+    bases = [os.path.join(os.path.abspath(build), s["path"]) for s in m["sources"]
+             if not s.get("missing") and s["lang"] in ("c", "c++", "asm")]
+    if any(os.path.exists(b + ".%d.o" % idx) for b in bases):
+        return idx
+    seen = collections.Counter(p.rsplit(".", 2)[-2] for b in bases for p in glob.glob(b + ".*.o"))
+    return int(seen.most_common(1)[0][0]) if seen else idx
+
+
+def module_objects(build, name, man, index, out, own=False):
+    """A directory of links to the objects a DLL is made of (a linked DLL has no symbols to scope
+    by): its own and those of the static libraries it links, which the retail macOS build often
+    compiles into the module itself (GameUI's PanelListPanel). `own`: the module's own only."""
     d = out + ".objs"
     if os.path.isdir(d):
         for f in os.listdir(d):
             os.remove(os.path.join(d, f))
     os.makedirs(d, exist_ok=True)
-    srcs = [s for s in m["sources"] if not s.get("missing") and s["lang"] in ("c", "c++", "asm")]
-    bases = [os.path.join(os.path.abspath(build), s["path"]) for s in srcs]
-    if not any(os.path.exists(b + ".%d.o" % idx) for b in bases):
-        # a build configured with --retail-win32-modules numbers its modules differently:
-        # take the index most of the module's sources were compiled with
-        seen = collections.Counter(p.rsplit(".", 2)[-2] for b in bases for p in glob.glob(b + ".*.o"))
-        if seen:
-            idx = int(seen.most_common(1)[0][0])
-    for base in bases:
-        for cand in (base + ".%d.o" % idx, os.path.splitext(base)[0] + ".%d.obj" % idx):
-            if os.path.exists(cand):
-                link = os.path.join(d, os.path.basename(cand))
-                if not os.path.lexists(link):
-                    os.symlink(cand, link)
-                break
+    mods, todo = [], [name]
+    while todo:
+        n = todo.pop(0)
+        if n in mods or n not in man:
+            continue
+        mods.append(n)
+        if own:
+            break
+        todo += [l["project"] for l in man[n]["libs"] if l.get("project") and not l.get("implib")]
+    for n in mods:
+        idx = built_index(build, man[n], index[n])
+        for s in man[n]["sources"]:
+            if s.get("missing") or s["lang"] not in ("c", "c++", "asm"):
+                continue
+            base = os.path.join(os.path.abspath(build), s["path"])
+            for cand in (base + ".%d.o" % idx, os.path.splitext(base)[0] + ".%d.obj" % idx):
+                if os.path.exists(cand):
+                    link = os.path.join(d, os.path.basename(cand))
+                    if not os.path.lexists(link):
+                        os.symlink(cand, link)
+                    break
     return d
 
 
@@ -135,8 +155,10 @@ def main():
     ap.add_argument("--mac-game-build", action="append", default=[], help="GAME=DIR: --build-games=GAME build")
     ap.add_argument("--modules", help="comma-separated manifest modules (default: every one built)")
     ap.add_argument("--top", type=int, default=15)
+    ap.add_argument("--own-objects", action="store_true",
+                    help="scope a DLL by its own objects only, without its static libraries (round 3's scope)")
     a = ap.parse_args()
-    maps = a.maps or [MAPS]
+    maps = a.maps or MAPS
     games = dict(g.split("=", 1) for g in a.mac_game_build)
     os.makedirs(a.out, exist_ok=True)
     man = json.load(open(os.path.join(TREE, "devtools", "bytematch", "manifests", "retail-win32.json")))["modules"]
@@ -184,7 +206,7 @@ def main():
         elif m.get("retail"):
             retail = os.path.join(a.depots, m.get("retail_depot", "222"), BUILD, m["retail"])
             link = os.path.splitext(ours)[0] + ".map"
-            objs = module_objects(a.build, name, m, index[name], os.path.join(a.out, name))
+            objs = module_objects(a.build, name, man, index, os.path.join(a.out, name), a.own_objects)
             jobs.append((name, name, name, retail, objs, map_for(map_key(name, m)), link))
 
     rows, cross = [], []

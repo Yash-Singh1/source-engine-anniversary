@@ -16,7 +16,8 @@ SDK_NAME = "MacOSX10.9.sdk"
 # the archives change, so builds running against the old ones keep working.
 # -2: libpng with default visibility.
 # -3: period compilers (Apple gcc 4.0/4.2), Valve's Crypto++ and speex 1.0.1 sources.
-THIRDPARTY_DIR = "thirdparty-osx32-3"
+# -4: libjpeg with clang-318.0.45.
+THIRDPARTY_DIR = "thirdparty-osx32-4"
 MIN_OSX = "10.6"
 RETAIL_DEPOT = "/Volumes/Expansion/mac-ports/hl2-anniversary-depot/depots/223/19307283"
 
@@ -25,8 +26,27 @@ RETAIL_DEPOT = "/Volumes/Expansion/mac-ports/hl2-anniversary-depot/depots/223/19
 # (__unwind_info 2^0), MACOSX_DEPLOYMENT_TARGET 10.5 (LC_VERSION_MIN 10.5,
 # libgcc_s.1 linked). Same xcconfig flags otherwise.
 HL2MP_2014 = {"clang": "503.0.38", "ld64": "236.3", "min_osx": "10.5"}
+
+# Source roots of Valve's buildbot checkouts (N_OSO and __FILE__ paths): every
+# depot 223/340/380/420 module but hl2mp was built in rel_singleplayer_osx,
+# hl2mp in rel_hl2_osx.
+VALVE_SRC = "/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/"
+HL2MP_VALVE_SRC = "/Users/buildbot/buildslave/rel_hl2_osx/build/src/"
+# The build-clang.sh patch that adds -fmacro-prefix-map (macro_prefix_map()).
+MACRO_PREFIX_MAP_PATCH = "clang-macro-prefix-map.patch"
 SDK2013 = os.environ.get("SOURCE_SDK_2013", "/Volumes/Storage/sco/source-sdk-2013")
 SDK2013_COMMIT = "53e78c50"
+
+# chromehtml links Valve's prebuilt lib/public/osx32/libcef_dll_wrapper.a (2013-07-25),
+# built by Steam's CEF build (buildslave_steam/cef_osx) from CEF1 branch 1025's
+# gyp-generated Xcode project inside a Chromium checkout. Chromium's Xcode
+# settings set CC to the checkout's own clang (third_party/llvm-build), and
+# build/common.gypi's Release flags apply: -O3 (mac_release_optimization), no
+# strict aliasing or thread-safe statics, no exceptions or RTTI, deployment
+# target 10.5. The clang is llvm.org svn r147225, Chromium trunk's
+# tools/clang/scripts/update.sh pin of 2011-12-24..2012-01-02 (the 18.0.1025
+# release pins r148911, which differs in 3 wrapper functions).
+CEF_WRAPPER_CLANG = "r147225"
 
 
 def paths(toolchain=None, clang=None, ld64=None):
@@ -81,6 +101,18 @@ def cxxflags(sdk, min_osx=MIN_OSX):
     return common_flags(sdk, min_osx) + ["-std=gnu++11", "-stdlib=libstdc++",
                                 "-fvisibility-inlines-hidden", "-ftemplate-depth=512",
                                 "-Wno-c++11-narrowing"]
+
+
+def cef_wrapper_cxxflags(sdk):
+    return ["-arch", "i386", "-mmacosx-version-min=10.5", "-isysroot", sdk,
+            "-fmessage-length=0", "-Wno-trigraphs", "-O3", "-fno-strict-aliasing",
+            "-fno-threadsafe-statics", "-fvisibility=hidden", "-fvisibility-inlines-hidden",
+            "-fno-exceptions", "-fno-rtti", "-gdwarf-2", "-w"]
+
+
+def macro_prefix_map(pairs):
+    """-fmacro-prefix-map flags for [(our prefix, Valve's)]; the last match wins."""
+    return ["-fmacro-prefix-map=%s=%s" % (ours, valve) for ours, valve in pairs]
 
 
 def objcflags():

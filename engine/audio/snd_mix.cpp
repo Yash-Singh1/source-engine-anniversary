@@ -542,7 +542,11 @@ void MIX_MixChannelsToPaintbuffer( CChannelList &list, int endtime, int flags, i
 #else
 		bool bShouldPause = IsX360() ? !ch->sfx->m_bIsUISound : bIsMouth; 
 #endif
-#line 541
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 542
+#else
+#line 540
+#endif
 
 		// Tracker 14637:  Pausing the game pauses voice sounds, but not other sounds...
 		if ( bShouldPause && g_pSoundServices->IsGamePaused() )
@@ -595,6 +599,11 @@ void MIX_MixChannelsToPaintbuffer( CChannelList &list, int endtime, int flags, i
 		}
 	}
 }
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 590
+#else
+#line 592
+#endif
 
 // pass in index -1...count+2, return pointer to source sample in either paintbuffer or delay buffer
 inline portable_samplepair_t * S_GetNextpFilter(int i, portable_samplepair_t *pbuffer, portable_samplepair_t *pfiltermem)
