@@ -324,7 +324,11 @@ public:
 		}
 		g_pFullFileSystem->FindClose( hFind );
 #endif
-#line 315
+#ifdef BYTEMATCH_RETAIL_LINUX
+#line 325
+#else
+#line 314
+#endif
 
 #if !defined( CLIENT_DLL )
 		for ( int i=soundemitterbase->First(); i != soundemitterbase->InvalidIndex(); i=soundemitterbase->Next( i ) )

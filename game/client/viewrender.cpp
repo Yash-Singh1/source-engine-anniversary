@@ -4165,9 +4165,9 @@ void CRendering3dView::DrawOpaqueRenderables( ERenderDepthMode DepthMode )
 		ParallelProcess( "BoneSetupNpcsLast", arrBoneSetupNpcsLast.Base() + numOpaqueEnts - numNpcs, numNpcs, &SetupBonesOnBaseAnimating );
 		ParallelProcess( "BoneSetupNpcsLast NonNPCs", arrBoneSetupNpcsLast.Base(), numNonNpcsAnimating, &SetupBonesOnBaseAnimating );
 	}
+#elif defined( BYTEMATCH_RETAIL_LINUX )
+#line 4160
 #endif
-
-
 	//
 	// Draw static props + opaque entities from the biggest bucket to the smallest
 	//

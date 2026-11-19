@@ -53,7 +53,11 @@
 #ifdef SIXENSE
 #include "sixense/in_sixense.h"
 #endif
-
+#ifdef BYTEMATCH_RETAIL_LINUX
+#line 51
+#else
+#line 56
+#endif
 // NVNT haptic utils
 #include "haptics/haptic_utils.h"
 // memdbgon must be the last include file in a .cpp file!!!
