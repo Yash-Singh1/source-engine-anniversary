@@ -768,7 +768,7 @@ bool CShaderDeviceMgrDx8::ComputeCapsFromD3D( HardwareCaps_t *pCaps, int nAdapte
 	// OpenGL does not support this--at least not on OSX which is the primary GL target, so just don't use that path on GL at all.
 #if !defined( DX_TO_GL_ABSTRACTION )
 	pCaps->m_bCanStretchRectFromTextures = ( ( caps.DevCaps2 & D3DDEVCAPS2_CAN_STRETCHRECT_FROM_TEXTURES ) != 0 ) && ( pCaps->m_VendorID != VENDORID_INTEL );
-#else
+#elif !defined( BYTEMATCH_RETAIL )
 	pCaps->m_bCanStretchRectFromTextures = false;
 #endif
 
