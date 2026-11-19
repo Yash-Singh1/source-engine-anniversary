@@ -31,7 +31,7 @@ def build(bld):
 		'consoledialog.cpp',
 		'ControllerMap.cpp',
 		'controls.cpp',
-		'cvartogglecheckbutton.cpp',
+		'CvarToggleCheckButton.cpp',
 		'DirectorySelectDialog.cpp',
 		'Divider.cpp',
 		'EditablePanel.cpp',
