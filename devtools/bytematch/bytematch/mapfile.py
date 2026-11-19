@@ -68,7 +68,9 @@ def apply_map(mod, path, min_conf=0.0):
                 # functions it missed: upper bounds, not sizes
                 norm.append((addr, names, size, stem, False))
             rebuild(mod, norm)
-            winmap.add_c_aliases(mod.functions)
+            for f, alias in winmap.add_c_aliases(mod.functions):
+                if f.key in mod.resolve(f.addr):
+                    mod.add_name(f.addr, canonical(mod.fmt, alias))
             return len(norm)
     norm = []
     for addr, name, size in read_map(path):
