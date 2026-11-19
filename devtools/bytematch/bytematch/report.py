@@ -432,6 +432,40 @@ def accept_misnamed(results, retail, spare, ours_funcs):
                 res.matched_at = r.addr
             claimed.add(r.addr)
             moved += 1
+    # the map swapped two names (bitfield getters such as IsTrackActive/IsComboType): a
+    # differing function whose retail function another of ours was moved onto passes when it
+    # matches the retail function that one left; and two differing functions of one object
+    # pass when each matches the other's retail function. A two-way match is evidence enough
+    # at any size, so MISNAMED_MIN_SIZE doesn't apply
+    left = {res.matched_at: res.retail for res in results
+            if getattr(res, 'matched_at', None) and res.retail and res.status in MATCHED}
+    for res in results:
+        r = left.get(res.retail.addr) if res.status == compare.DIFFERS and res.ours and res.retail else None
+        if r is None or r.addr in claimed or not fits(r, res.ours) or not same(r, res.ours):
+            continue
+        res.status, res.reason, res.first_diff = compare.compare(r, res.ours, True).status, '', None
+        res.line_constants, res.target_mismatches = None, []
+        res.matched_at = r.addr
+        claimed.add(r.addr)
+        moved += 1
+    byobj = collections.defaultdict(list)
+    for res in results:
+        if res.status == compare.DIFFERS and res.ours and res.retail and res.retail.addr not in claimed:
+            byobj[res.obj].append(res)
+    for rs in byobj.values():
+        for i, a in enumerate(rs):
+            for b in rs[i + 1:]:
+                if a.status != compare.DIFFERS or b.status != compare.DIFFERS:
+                    continue
+                ra, rb = a.retail, b.retail
+                if not (fits(rb, a.ours) and fits(ra, b.ours) and same(rb, a.ours) and same(ra, b.ours)):
+                    continue
+                for res, r in ((a, rb), (b, ra)):
+                    res.status, res.reason, res.first_diff = compare.compare(r, res.ours, True).status, '', None
+                    res.line_constants, res.target_mismatches = None, []
+                    res.matched_at = r.addr
+                    claimed.add(r.addr)
+                moved += 2
     spare[:] = [e for e in spare if id(e.ours) not in used]
     return moved
 
