@@ -58,9 +58,12 @@ def jobs_for(build, manifest):
     for key, mod in manifest["modules"].items():
         by_name.setdefault(os.path.basename(mod["retail"]["path"]), []).append((key, mod))
     jobs = []
+    # The identity flow keeps relinked copies and extracted retail archives under <build>/identity.
+    identity = os.path.join(build, "identity") + os.sep
     linked = sorted(glob.glob(os.path.join(build, "**", "*.dylib"), recursive=True))
     linked += sorted(p for p in glob.glob(os.path.join(build, "**", "*"), recursive=True)
                      if os.path.isfile(p) and "." not in os.path.basename(p) and is_macho_exe(p))
+    linked = [p for p in linked if not p.startswith(identity)]
     for path in linked:
         if "retail-depot-libs" in path:
             continue
@@ -73,6 +76,8 @@ def jobs_for(build, manifest):
         jobs.append(("module", key, os.path.basename(path), retail_file(mod), path))
     engine = manifest["modules"]["bin/engine"]
     for lib in sorted(glob.glob(os.path.join(build, "**", "lib*.a"), recursive=True)):
+        if lib.startswith(identity):
+            continue
         name = os.path.basename(lib)
         variant = [m for s, m in ARCHIVE_VARIANTS.items() if name.endswith(s + ".a")]
         users = variant or manifest["archives"].get(name, {}).get("used_by", [])
