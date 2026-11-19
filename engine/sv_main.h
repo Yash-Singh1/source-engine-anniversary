@@ -63,7 +63,10 @@ class IServerEntity;
 void SV_ExecuteClientMessage (CGameClient *cl);
 
 bool SV_ActivateServer();
+#ifndef BYTEMATCH_RETAIL // file-local in retail, only SV_ActivateServer calls it
 void SV_InitGameServerSteam();
+#endif
+#line 67
 
 #ifdef ENABLE_RPT
 void SV_NotifyRPTOfDisconnect( int nClientSlot );

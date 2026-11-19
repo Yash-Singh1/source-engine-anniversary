@@ -12,12 +12,11 @@ Retail loose objects: 5 (exact 5 in our tree).
 
 ## bin/engine (ours: `engine`)
 
-Retail loose objects: 252 (exact 225, moved 25, missing 2 in our tree).
-- **add (present in tree)** 3: `common/imageutils.cpp`, `dedicated/console/textconsole.cpp`, `dedicated/console/TextConsoleUnix.cpp`
-- **add (missing from tree, new in retail)** 2: `engine/mm_events.cpp`, `engine/workshop.cpp`
+Retail loose objects: 252 (exact 227, moved 25 in our tree).
+- **add (present in tree)** 4: `common/imageutils.cpp`, `dedicated/console/textconsole.cpp`, `dedicated/console/TextConsoleUnix.cpp`, `engine/workshop.cpp`
 - **same file, different directory** 25: `engine/audio/private/` → `engine/audio/` ×25
 - **remove** 25: `engine/render_pch.cpp`, `engine/server_pch.cpp`, `engine/sv_uploaddata.cpp`, `public/crtmemdebug.cpp`, `engine/dt_test.cpp`, `public/dt_utlvector_common.cpp`, `public/dt_utlvector_recv.cpp`, `public/dt_utlvector_send.cpp`, `engine/filetransfermgr.cpp`, `common/language.cpp`, `engine/net_synctags.cpp`, `public/networkvar.cpp`, `engine/quakedef.cpp`, `common/randoverride.cpp`, `public/vallocator.cpp`, `public/editor_sendcommand.cpp`, `public/scratchpad3d.cpp`, `engine/masterserver.cpp`, `engine/audio/voice_record_sdl.cpp`, `engine/audio/snd_posix.cpp`, `engine/sys_stubwind.cpp`, `engine/client_pch.cpp`, `engine/LoadScreenUpdate.cpp`, `engine/audio/MPAHeader.cpp`, `engine/audio/VBRHeader.cpp`
-- **order**: 247 common files; 170 must move to match retail (longest in-order run 77)
+- **order**: 248 common files; 171 must move to match retail (longest in-order run 77)
 - **static libs** retail link order: `bzip2`, `dmxloader`, `tier1`, `libreplay_common.a`, `tier2`, `vgui_controls`, `matsys_controls`, `bitmap`, `vtf`, `appframework`, `mathlib`, `tier3`; ours: `vgui_controls`, `dmxloader`, `tier1`, `tier2`, `tier3`, `bitmap`, `appframework`, `vtf`, `mathlib`, `matsys_controls`; retail-only: `bzip2`, `libreplay_common.a`
 
 ## bin/filesystem_stdio (ours: `filesystem_stdio`)

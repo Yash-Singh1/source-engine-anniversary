@@ -2380,6 +2380,9 @@ void SV_CreateBaseline (void)
 //-----------------------------------------------------------------------------
 // Purpose: Ensure steam context is initialized for multiplayer gameservers. Idempotent.
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+static
+#endif
 void SV_InitGameServerSteam()
 {
 	if ( sv.IsMultiplayer() )
@@ -2545,10 +2548,13 @@ bool SV_ActivateServer()
 
 	// Heartbeat the master server in case we turned SrcTV on or off.
 	Steam3Server().SendUpdatedServerDetails();
+#ifndef BYTEMATCH_RETAIL
 	if ( Steam3Server().SteamGameServer() )
 	{
 		SteamGameServer_ForceHeartbeat( Steam3Server().SteamGameServer() );
 	}
+#endif
+#line 2213
 
 	COM_TimestampedLog( "SV_ActivateServer(finished)" );
 

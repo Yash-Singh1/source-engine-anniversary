@@ -265,6 +265,13 @@ void CReplayDemoRecorder::RecordServerClasses( ServerClass *pClasses )
 
 void CReplayDemoRecorder::RecordStringTables()
 {
+#ifdef BYTEMATCH_RETAIL
+	byte *data = new byte[ 512 * 1024 ];
+	bf_write buf( data, 512 * 1024 );
+	networkStringTableContainerServer->WriteStringTables( buf );
+	m_DemoFile.WriteStringTables( &buf, GetRecordingTick() );
+	delete [] data;
+#else
 	// !KLUDGE! It would be nice if the bit buffer could write into a stream
 	// with the power to grow itself.  But it can't.  Hence this really bad
 	// kludge
@@ -297,6 +304,8 @@ void CReplayDemoRecorder::RecordStringTables()
 	}
 
 	free(data);
+#endif
+#line 300
 }
 
 int CReplayDemoRecorder::WriteSignonData()

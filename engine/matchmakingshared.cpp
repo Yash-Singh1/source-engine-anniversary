@@ -317,7 +317,12 @@ bool CMatchmaking::ProcessVoiceData( CLC_VoiceData *pVoice )
 {
 	char chReceived[4096];
 	DWORD dwLength = pVoice->m_nLength;
+#ifdef BYTEMATCH_RETAIL
+	pVoice->m_DataIn.ReadBitsClamped( chReceived, dwLength );
+#else
 	pVoice->m_DataIn.ReadBits( chReceived, dwLength );
+#endif
+#line 321
 
 	if ( m_Session.IsHost() )
 	{

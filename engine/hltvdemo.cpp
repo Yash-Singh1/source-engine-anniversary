@@ -256,7 +256,12 @@ void CHLTVDemoRecorder::RecordStringTables()
 	// kludge
 	void *data = NULL;
 	int dataLen = 512 * 1024;
+#ifdef BYTEMATCH_RETAIL
+	while ( true )
+#else
 	while ( dataLen <= DEMO_FILE_MAX_STRINGTABLE_SIZE )
+#endif
+#line 260
 	{
 		data = realloc( data, dataLen );
 		bf_write buf( data, dataLen );
@@ -277,10 +282,13 @@ void CHLTVDemoRecorder::RecordStringTables()
 		dataLen *= 2;
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	if ( dataLen > DEMO_FILE_MAX_STRINGTABLE_SIZE )
 	{
 		Warning( "Failed to RecordStringTables. Trying to record string table that's bigger than max string table size\n" );
 	}
+#endif
+#line 284
 
 	free(data);
 }

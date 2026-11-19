@@ -843,7 +843,12 @@ public:
 			sound.nSoundNum = SV_SoundIndex( samp );
 			if (sound.nSoundNum <= 0)
 			{
+#ifdef BYTEMATCH_RETAIL
 				ConMsg ("EmitAmbientSound:  sound note precached: %s\n", samp);
+#else
+				ConMsg ("EmitAmbientSound:  sound not precached: %s\n", samp);
+#endif
+#line 764
 				return;
 			}
 		}

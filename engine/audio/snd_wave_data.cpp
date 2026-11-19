@@ -1559,6 +1559,9 @@ bool CAsyncWavDataCache::GetDataPointer( memhandle_t& handle, char const *filena
 	// Cache entry exists, but if filesize == 0 then the file itself wasn't on disk...
 	if ( data->m_nDataSize != 0 )
 	{
+#ifdef BYTEMATCH_RETAIL
+		if ( copystartpos < data->m_nDataSize )
+#else
 		if ( datasize != data->m_nDataSize )
 		{
 			// We've had issues where we are called with datasize larger than what we read on disk.
@@ -1573,6 +1576,8 @@ bool CAsyncWavDataCache::GetDataPointer( memhandle_t& handle, char const *filena
 #endif
 		}
 		else if ( copystartpos < data->m_nDataSize )
+#endif
+#line 1562
 		{
 			if ( data->BlockingGetDataPointer( pData ) )
 			{

@@ -34,12 +34,21 @@ public:
 	void StopBenchmark();
 	void SetResultsFilename( const char *pFilename );
 	void Upload();
+#ifndef BYTEMATCH_RETAIL
 	void Frame();
+#endif
+#line 38
 
 private:
 	bool m_bIsTestRunning;
 	char m_szFilename[256];
 
+#ifdef BYTEMATCH_RETAIL
+#line 43
+	int m_flStartTime;
+	int m_iStartFrame;
+#else
+#line 43
 	float m_flStartTime;
 	int m_iStartFrame;
 
@@ -47,6 +56,8 @@ private:
 	int m_iNextSecondFrame;
 
 	CUtlVector<int> m_FPSInfo;
+#endif
+#line 50
 };
 
 inline CBenchmarkResults *GetBenchResultsMgr()

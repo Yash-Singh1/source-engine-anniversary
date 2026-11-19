@@ -386,7 +386,12 @@ void CProfileHierarchyPanel::PerformLayout()
 
 		for ( int col = 0; col < numColumns; ++col )
 		{
+#ifdef BYTEMATCH_RETAIL
+			int left, top, right, bottom;
+#else
 			int left, right, bottom;
+#endif
+#line 390
 			GetGridElementBounds( col, row, left, top, right, bottom );
 
 			ColumnPanels_t search;

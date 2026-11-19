@@ -712,6 +712,7 @@ CON_COMMAND( plugin_unpause_all, "unpauses all disabled plugins" )
 
 CON_COMMAND( plugin_load, "plugin_load <filename> : loads a plugin" )
 {
+#ifndef BYTEMATCH_RETAIL // retail ignores plugin_load
 	if ( sv.IsDedicated() && sv.IsActive() )
 	{
 		ConMsg( "plugin_load : cannot load a plugin while running a map\n" );
@@ -736,6 +737,8 @@ CON_COMMAND( plugin_load, "plugin_load <filename> : loads a plugin" )
 			ConMsg( "Loaded plugin \"%s\"\n", args[1] );
 		}
 	}
+#endif
+#line 739
 }
 
 CON_COMMAND( plugin_unload, "plugin_unload <index> : unloads a plugin" )

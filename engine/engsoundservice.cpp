@@ -136,6 +136,12 @@ public:
 
 	virtual void OnChangeVoiceStatus( int entity, bool status)
 	{
+#ifdef BYTEMATCH_RETAIL
+		// entity -1 is the local player: show the speaking indicator in the Steam overlay
+		if ( entity == -1 && SteamFriends() && SteamUser() )
+			SteamFriends()->SetInGameVoiceSpeaking( SteamUser()->GetSteamID(), status );
+#endif
+#line 139
 		ClientDLL_VoiceStatus(entity, status);
 	}
 
@@ -341,8 +347,12 @@ public:
 			wchar_t file[ 256 ];
 			g_pVGuiLocalize->ConvertANSIToUnicode( cachefile, file, sizeof( file ) );
 
-			g_pVGuiLocalize->ConstructString_safe( 
-				constructed, 
+#ifdef BYTEMATCH_RETAIL
+			g_pVGuiLocalize->ConstructString( constructed, sizeof( constructed ), 
+#else
+			g_pVGuiLocalize->ConstructString_safe( constructed, 
+#endif
+#line 346
 				( wchar_t * )format,
 				1,
 				file );

@@ -666,10 +666,13 @@ void CSentence::ParseDataVersionOnePointZero( CUtlBuffer& buf )
 		buf.GetString( token );
 		if ( strlen( token ) <= 0 )
 			break;
+#ifndef BYTEMATCH_RETAIL
 		
 		// end of block, return
 		if ( !V_strcmp( token, "}" ) )
 			break;
+#endif
+#line 673
 
 		char section[ 256 ];
 		Q_strncpy( section, token, sizeof( section ) );

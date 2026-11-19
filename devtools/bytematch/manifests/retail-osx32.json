@@ -536,6 +536,7 @@
     "engine/materialproxyfactory.cpp",
     "engine/matsys_interface.cpp",
     "engine/mem_fgets.cpp",
+    "engine/mm_events.cpp",
     "engine/ModelInfo.cpp",
     "engine/modelloader.cpp",
     "engine/mod_vis.cpp",
@@ -611,14 +612,12 @@
     "engine/voiceserver_impl.cpp",
     "engine/vprof_engine.cpp",
     "engine/vprof_record.cpp",
+    "engine/workshop.cpp",
     "engine/world.cpp",
     "engine/xboxsystem.cpp",
     "engine/zone.cpp"
    ],
-   "missing_sources": [
-    "engine/mm_events.cpp",
-    "engine/workshop.cpp"
-   ],
+   "missing_sources": [],
    "archives": [
     {
      "archive": "libbzip2.a",
@@ -2931,9 +2930,9 @@
     },
     {
      "kind": "object",
-     "source": null,
+     "source": "engine/mm_events.cpp",
      "retail_source": "engine/mm_events.cpp",
-     "status": "missing",
+     "status": "exact",
      "archive": null,
      "member": null,
      "mtime": 1731778164,
@@ -3767,9 +3766,9 @@
     },
     {
      "kind": "object",
-     "source": null,
+     "source": "engine/workshop.cpp",
      "retail_source": "engine/workshop.cpp",
-     "status": "missing",
+     "status": "exact",
      "archive": null,
      "member": null,
      "mtime": 1732582582,
