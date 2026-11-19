@@ -312,6 +312,13 @@ void IVP_Contact_Point::reset_time(IVP_Time offset){
     last_time_of_recalc_friction_s_vals -= offset;
 }
 
+void IVP_Contact_Point::recompute_friction() {
+	IVP_Environment* env = get_synapse(0)->get_object()->get_environment();
+	env->sim_unit_mem->start_memory_transaction();
+	recalc_friction_s_vals();
+	env->sim_unit_mem->end_memory_transaction();
+}
+
 void IVP_Contact_Point::recalc_friction_s_vals(){
     IVP_Environment *env = get_synapse(0)->get_object()->get_environment();
     

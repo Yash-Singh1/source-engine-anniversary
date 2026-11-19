@@ -52,7 +52,11 @@ public:
      *****************************************************************************/
     IVP_Halfspacesoup(const IVP_Compact_Ledge *ledge);
 
+#ifdef BYTEMATCH_RETAIL
+    IVP_Halfspacesoup();
+#else
     IVP_Halfspacesoup() = default;
+#endif
     ~IVP_Halfspacesoup();
 
 };

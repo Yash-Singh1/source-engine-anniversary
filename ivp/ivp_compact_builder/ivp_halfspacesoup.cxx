@@ -56,6 +56,12 @@ IVP_Halfspacesoup::~IVP_Halfspacesoup(){
     this->clear();
 }
 
+#ifdef BYTEMATCH_RETAIL
+IVP_Halfspacesoup::IVP_Halfspacesoup(){
+
+}
+
+#endif
 IVP_Halfspacesoup::IVP_Halfspacesoup( const IVP_Compact_Ledge *ledge ){
     const IVP_Compact_Triangle *tri;
     tri = ledge->get_first_triangle();
