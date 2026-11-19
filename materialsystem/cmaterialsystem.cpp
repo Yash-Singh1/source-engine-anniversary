@@ -5664,6 +5664,7 @@ static const char *pszReplacementForceCopy[] =
 	NULL
 };
 
+#ifndef BYTEMATCH_RETAIL
 void CMaterialSystem::LoadReplacementMaterials()
 {
 	const char* cLocation = "materials";
@@ -5673,6 +5674,8 @@ void CMaterialSystem::LoadReplacementMaterials()
 		InitReplacementsFromFile( cLocation );
 	}
 }
+#endif
+#line 5150
 
 void CMaterialSystem::ScanDirForReplacements( const char *pszPathName )
 {
@@ -5720,6 +5723,7 @@ void CMaterialSystem::ScanDirForReplacements( const char *pszPathName )
 #line 5189
 }
 
+#ifndef BYTEMATCH_RETAIL
 void CMaterialSystem::InitReplacementsFromFile( const char *pszPathName )
 {
 	CUtlVector<char*> replacementFiles;
@@ -5744,6 +5748,8 @@ void CMaterialSystem::InitReplacementsFromFile( const char *pszPathName )
 
 	replacementFiles.PurgeAndDeleteElements();
 }
+#endif
+#line 5215
 
 void CMaterialSystem::PreloadReplacements( )
 {
@@ -6034,6 +6040,7 @@ CON_COMMAND( mat_hdr_enabled, "Report if HDR is enabled for debugging" )
 }
 
 
+#ifndef BYTEMATCH_RETAIL
 static int ReadListFromFile(CUtlVector<char*>* outReplacementMaterials, const char *pszPathName)
 {
 	Assert(outReplacementMaterials != NULL);
@@ -6049,3 +6056,5 @@ static int ReadListFromFile(CUtlVector<char*>* outReplacementMaterials, const ch
 
 	return outReplacementMaterials->Size();
 }
+#endif
+#line 5512
