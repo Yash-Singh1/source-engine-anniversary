@@ -51,7 +51,7 @@
 #endif
 
 ConVar	cc_achievement_debug( "achievement_debug", "0", FCVAR_CHEAT | FCVAR_REPLICATED, "Turn on achievement debug msgs." );
-ConVar	gottagofast( "gottagofast", "0", FCVAR_CHEAT | FCVAR_REPLICATED | FCVAR_HIDDEN, "" );
+NOV2024_ONLY( ConVar	gottagofast( "gottagofast", "0", FCVAR_CHEAT | FCVAR_REPLICATED | FCVAR_HIDDEN, "" ); )
 
 #ifdef CSTRIKE_DLL
 //=============================================================================
@@ -69,10 +69,13 @@ const char *COM_GetModDirectory();
 //-----------------------------------------------------------------------------
 // Purpose: Half-Life 2 with the episodes in one game; its GameState.txt lives in ROOT_MOD
 //-----------------------------------------------------------------------------
+#ifdef HL2_ANNIVERSARY_NOV2024
 static bool IsHL2Complete()
 {
 	return !V_stricmp( CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) ), "hl2_complete" );
 }
+#endif
+#line 76
 
 #ifdef GAME_DLL
 uint32 GetHL2AppSteamAppId( ESourceApp eSourceApp );
@@ -122,14 +125,14 @@ static void WriteAchievementGlobalState( KeyValues *pKV, bool bPersistToSteamClo
 		Q_snprintf( szFilename, sizeof( szFilename ), "GameState.txt" );
 	}
 
-	bool bHL2Complete = IsHL2Complete();
+	NOV2024_ONLY( bool bHL2Complete = IsHL2Complete(); )
 
 	// Never call pKV->SaveToFile!!!!
 	// Save to a buffer instead.
 	CUtlBuffer buf( 0, 0, CUtlBuffer::TEXT_BUFFER );
 	pKV->RecursiveSaveToFile( buf, 0 );
-	const char *pPathID = bHL2Complete ? "ROOT_MOD" : "MOD";
-	filesystem->WriteFile( szFilename, pPathID, buf );
+	NOV2024_ONLY( const char *pPathID = bHL2Complete ? "ROOT_MOD" : "MOD"; )
+	filesystem->WriteFile( szFilename, NOV2024_ONLY( pPathID ) OCT2024_ONLY( NULL ), buf );
 	pKV->deleteThis();
 
     //=============================================================================
@@ -285,7 +288,7 @@ m_CallbackUserStatsStored( this, &CAchievementMgr::Steam_OnUserStatsStored )
 {
 	SetDefLessFunc( m_mapAchievement );
 	SetDefLessFunc( m_mapMetaAchievement );
-	m_bIsHL2Complete = false;
+	NOV2024_ONLY( m_bIsHL2Complete = false; )
 	m_flLastClassChangeTime = 0;
 	m_flTeamplayStartTime = 0;
 	m_iMiniroundsCompleted = 0;
@@ -295,7 +298,7 @@ m_CallbackUserStatsStored( this, &CAchievementMgr::Steam_OnUserStatsStored )
 	m_bGlobalStateLoaded = false;
 	m_bCheatsEverOn = false;
 	m_flTimeLastSaved = 0;
-	m_bIsHL2Complete = IsHL2Complete();
+	NOV2024_ONLY( m_bIsHL2Complete = IsHL2Complete(); )
 
     //=============================================================================
     // HPE_BEGIN
@@ -389,7 +392,7 @@ void CAchievementMgr::PostInit()
 		// applies to, or truly cross-game) or, if it does have a game filter, the filter matches current game.
 		// (e.g. EP 1/2/... achievements are in shared binary but are game specific, they have a game filter for runtime check.)
 		const char *pGameDirFilter = pAchievement->m_pGameDirFilter;
-		if ( !pGameDirFilter || m_bIsHL2Complete || ( 0 == Q_strcmp( pGameDir, pGameDirFilter ) ) )
+		if ( !pGameDirFilter || NOV2024_ONLY( m_bIsHL2Complete || ) ( 0 == Q_strcmp( pGameDir, pGameDirFilter ) ) )
 		{
 			m_mapAchievement.Insert( pAchievement->GetAchievementID(), pAchievement );
 			if ( pAchievement->IsMetaAchievement() )
@@ -413,6 +416,14 @@ void CAchievementMgr::PostInit()
 
 	// load global state from file
 	LoadGlobalState();
+#if defined( GAME_DLL ) && !defined( HL2_ANNIVERSARY_NOV2024 )
+	if ( engine->GetAppID() == 220 )
+	{
+		MigrateEpisodeData( 380, "episodic" );
+		MigrateEpisodeData( 420, "ep2" );
+	}
+#endif
+#line 416
 
 	// download achievements/stats from Steam/XBox Live
 	DownloadUserData();
@@ -485,10 +496,13 @@ void CAchievementMgr::Update( float frametime )
 	}
 #endif
 
+#ifdef HL2_ANNIVERSARY_NOV2024
 	if ( gottagofast.GetBool() )
 	{
 		m_bCheatsEverOn = false;
 	}
+#endif
+#line 492
 
 	// Call think functions. Work backwards, because we may remove achievements from the list.
 	int iCount = m_vecThinkListeners.Count();
@@ -771,6 +785,7 @@ void CAchievementMgr::UploadUserData()
 // Purpose: In hl2_complete, an achievement can only be earned while playing
 //			the game (expansion) its game dir filter names
 //-----------------------------------------------------------------------------
+#ifdef HL2_ANNIVERSARY_NOV2024
 bool CAchievementMgr::CanEarnForCurrentExpansion( int iAchievementID )
 {
 	if ( !m_bIsHL2Complete )
@@ -799,6 +814,8 @@ bool CAchievementMgr::CanEarnForExpansion( int iAchievementID, const char *pszMo
 
 	return !Q_strcmp( pszModName, pGameDirFilter );
 }
+#endif
+#line 802
 
 #ifdef GAME_DLL
 //-----------------------------------------------------------------------------
@@ -807,6 +824,31 @@ bool CAchievementMgr::CanEarnForExpansion( int iAchievementID, const char *pszMo
 //-----------------------------------------------------------------------------
 void CAchievementMgr::MigrateEpisodeData( uint32 nAppID, const char *pszModName )
 {
+#ifndef HL2_ANNIVERSARY_NOV2024
+	char szInstallDir[512];
+	if ( !SteamApps()->GetAppInstallDir( nAppID, szInstallDir, sizeof( szInstallDir ) ) )
+		return;
+
+	char szFilename[MAX_PATH];
+	V_snprintf( szFilename, sizeof( szFilename ), "%s\\%s\\GameState.txt", szInstallDir, pszModName );
+
+	KeyValues *pKV = new KeyValues( "GameState" );
+	if ( pKV->LoadFromFile( filesystem, szFilename, "ABS" ) )
+	{
+		for ( KeyValues *pNode = pKV->GetFirstSubKey(); pNode; pNode = pNode->GetNextKey() )
+		{
+			int iAchievementID = pNode->GetInt( "id", 0 );
+			if ( iAchievementID <= 0 )
+				continue;
+
+			CBaseAchievement *pAchievement = GetAchievementByID( iAchievementID );
+			if ( pAchievement )
+			{
+				pAchievement->ApplySettings( pNode );
+			}
+		}
+	}
+#else
 	uint32 nHL2AppID = GetHL2AppSteamAppId( k_App_HL2 );
 
 	char szFilename[MAX_PATH];
@@ -855,8 +897,11 @@ void CAchievementMgr::MigrateEpisodeData( uint32 nAppID, const char *pszModName 
 			}
 		}
 	}
+#endif
+#line 858
 }
 
+#ifdef HL2_ANNIVERSARY_NOV2024
 void CAchievementMgr::SyncEpisodeAchievements()
 {
 	MigrateEpisodeData( GetHL2AppSteamAppId( k_App_HL2 ), GetHL2AppModName( k_App_HL2 ) );
@@ -867,6 +912,8 @@ void CAchievementMgr::SyncEpisodeAchievements()
 	SaveGlobalStateIfDirty( false );
 	UploadUserData();
 }
+#endif
+#line 870
 #endif // GAME_DLL
 
 //-----------------------------------------------------------------------------
@@ -946,8 +993,8 @@ void CAchievementMgr::LoadGlobalState()
     //=============================================================================
 
 	KeyValues *pKV = new KeyValues("GameState" );
-	const char *pPathID = IsHL2Complete() ? "ROOT_MOD" : "MOD";
-	if ( pKV->LoadFromFile( filesystem, szFilename, pPathID ) )
+	NOV2024_ONLY( const char *pPathID = IsHL2Complete() ? "ROOT_MOD" : "MOD"; )
+	if ( pKV->LoadFromFile( filesystem, szFilename, NOV2024_ONLY( pPathID ) OCT2024_ONLY( "MOD" ) ) )
 	{
 		KeyValues *pNode = pKV->GetFirstSubKey();
 		while ( pNode )
@@ -979,11 +1026,14 @@ void CAchievementMgr::SaveGlobalState( bool bAsync )
 {
 	VPROF_BUDGET( "CAchievementMgr::SaveGlobalState", "Achievements" );
 
+#ifdef HL2_ANNIVERSARY_NOV2024
 	ConVarRef developer( "developer" );
 	if ( developer.IsValid() && developer.GetBool() )
 	{
 		Msg( "writing out %d achievements\n", m_mapAchievement.Count() );
 	}
+#endif
+#line 1031
 
 	KeyValues *pKV = new KeyValues("GameState" );
 	FOR_EACH_MAP( m_mapAchievement, i )
@@ -1786,7 +1836,7 @@ void CAchievementMgr::OnMapEvent( const char *pchEventName )
 	{
 		CBaseAchievement *pAchievement = m_vecComponentListeners[iAchievement];
 		Assert( pAchievement->m_pszComponentPrefix );
-		if ( CanEarnForCurrentExpansion( pAchievement->GetAchievementID() ) && 0 == Q_strncmp( pchEventName, pAchievement->m_pszComponentPrefix, pAchievement->m_iComponentPrefixLen ) )
+		if ( NOV2024_ONLY( CanEarnForCurrentExpansion( pAchievement->GetAchievementID() ) && ) 0 == Q_strncmp( pchEventName, pAchievement->m_pszComponentPrefix, pAchievement->m_iComponentPrefixLen ) )
 		{
 			// prefix matches, tell the achievement a component was found
 			pAchievement->OnComponentEvent( pchEventName );
@@ -1798,7 +1848,7 @@ void CAchievementMgr::OnMapEvent( const char *pchEventName )
 	FOR_EACH_VEC( m_vecMapEventListeners, iAchievement )
 	{
 		CBaseAchievement *pAchievement = m_vecMapEventListeners[iAchievement];
-		if ( CanEarnForCurrentExpansion( pAchievement->GetAchievementID() ) )
+		if ( NOV2024_ONLY( CanEarnForCurrentExpansion( pAchievement->GetAchievementID() ) ) OCT2024_ONLY( true ) )
 		{
 			pAchievement->OnMapEvent( pchEventName );
 		}
@@ -1850,7 +1900,7 @@ void CAchievementMgr::Steam_OnUserStatsReceived( UserStatsReceived_t *pUserStats
 
 	UpdateStateFromSteam_Internal();
 
-#ifdef GAME_DLL
+#if defined( GAME_DLL ) && defined( HL2_ANNIVERSARY_NOV2024 )
 	if ( m_bIsHL2Complete )
 	{
 		SyncEpisodeAchievements();

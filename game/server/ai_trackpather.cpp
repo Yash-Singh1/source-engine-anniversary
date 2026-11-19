@@ -942,7 +942,7 @@ void CAI_TrackPather::SelectNewDestTarget()
 	// So, only the chopper does the "right" thing.
 #ifdef HL2_EPISODIC 
 	// Episodic uses the fixed logic for all trackpathers
-	if ( 1 )
+	if ( IsHL2Episodic() || ShouldUseFixedPatrolLogic() )
 #else
 	if ( ShouldUseFixedPatrolLogic() )
 #endif

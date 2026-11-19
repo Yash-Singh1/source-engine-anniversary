@@ -270,13 +270,13 @@ public:
 	virtual bool ClientConnected( edict_t *pEntity, const char *pszName, const char *pszAddress, char *reject, int maxrejectlen ) = 0;// a client just connected to the server (player hasn't spawned yet)
 	virtual void InitHUD( CBasePlayer *pl ) = 0;		// the client dll is ready for updating
 	virtual void ClientDisconnected( edict_t *pClient ) = 0;// a client just disconnected from the server
-	
+	NOV2024_ONLY( virtual bool ShouldAutoAim( CBasePlayer *pPlayer, edict_t *target ) { return TRUE; } virtual int GetAutoAimMode() { return AUTOAIM_ON; } virtual float GetAutoAimScale() { return 1.0f; } )
 // Client damage rules
 	virtual float FlPlayerFallDamage( CBasePlayer *pPlayer ) = 0;// this client just hit the ground after a fall. How much damage?
 	virtual bool  FPlayerCanTakeDamage( CBasePlayer *pPlayer, CBaseEntity *pAttacker, const CTakeDamageInfo &info ) {return TRUE;};// can this player take damage from this attacker?
-	virtual bool ShouldAutoAim( CBasePlayer *pPlayer, edict_t *target ) { return TRUE; }
-	virtual float GetAutoAimScale( OCT2024_ONLY( CBasePlayer *pPlayer ) ) { return 1.0f; }
-	virtual int	GetAutoAimMode()	{ return AUTOAIM_ON; }
+	OCT2024_ONLY( virtual bool ShouldAutoAim( CBasePlayer *pPlayer, edict_t *target ) { return TRUE; } )
+	OCT2024_ONLY( virtual float GetAutoAimScale( CBasePlayer *pPlayer ) { return 1.0f; } )
+	OCT2024_ONLY( virtual int	GetAutoAimMode()	{ return AUTOAIM_ON; } )
 
 	virtual bool ShouldUseRobustRadiusDamage(CBaseEntity *pEntity) { return false; }
 	virtual void  RadiusDamage( const CTakeDamageInfo &info, const Vector &vecSrc, float flRadius, int iClassIgnore, CBaseEntity *pEntityIgnore );

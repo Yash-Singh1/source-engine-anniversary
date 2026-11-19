@@ -212,6 +212,40 @@ void WeaponsResource::LoadWeaponSprites( WEAPON_FILE_INFO_HANDLE hWeaponFileInfo
 	FreeHudTextureList( tempList );
 }
 
+#ifdef HL2_ANNIVERSARY_NOV2024
+//-----------------------------------------------------------------------------
+// Purpose: Frees the hud elements LoadWeaponSprites created for a weapon
+//-----------------------------------------------------------------------------
+void WeaponsResource::UnloadWeaponSprites( WEAPON_FILE_INFO_HANDLE hWeaponFileInfo )
+{
+	FileWeaponInfo_t *pWeaponInfo = GetFileWeaponInfoFromHandle( hWeaponFileInfo );
+	if ( !pWeaponInfo || !pWeaponInfo->bLoadedHudElements )
+		return;
+
+	gHUD.RemoveIcon( pWeaponInfo->iconCrosshair );
+	pWeaponInfo->iconCrosshair = NULL;
+	gHUD.RemoveIcon( pWeaponInfo->iconAutoaim );
+	pWeaponInfo->iconAutoaim = NULL;
+	gHUD.RemoveIcon( pWeaponInfo->iconZoomedCrosshair );
+	pWeaponInfo->iconZoomedCrosshair = NULL;
+	gHUD.RemoveIcon( pWeaponInfo->iconZoomedAutoaim );
+	pWeaponInfo->iconZoomedAutoaim = NULL;
+	gHUD.RemoveIcon( pWeaponInfo->iconInactive );
+	pWeaponInfo->iconInactive = NULL;
+	gHUD.RemoveIcon( pWeaponInfo->iconActive );
+	pWeaponInfo->iconActive = NULL;
+	gHUD.RemoveIcon( pWeaponInfo->iconSmall );
+	pWeaponInfo->iconSmall = NULL;
+	gHUD.RemoveIcon( pWeaponInfo->iconAmmo );
+	pWeaponInfo->iconAmmo = NULL;
+	gHUD.RemoveIcon( pWeaponInfo->iconAmmo2 );
+	pWeaponInfo->iconAmmo2 = NULL;
+
+	pWeaponInfo->bLoadedHudElements = false;
+}
+#endif
+#line 214
+
 //-----------------------------------------------------------------------------
 // Purpose: Helper function to return a Ammo pointer from id
 //-----------------------------------------------------------------------------

@@ -95,7 +95,7 @@ bool CAI_MoveProbe::ShouldBrushBeIgnored( CBaseEntity *pEntity )
 
 		// this is true if my class or entity name matches the exclusion name on the func brush
 #if HL2_EPISODIC
-		bool nameMatches = ( pFuncBrush->m_iszExcludedClass == GetOuter()->m_iClassname ) || GetOuter()->NameMatches(pFuncBrush->m_iszExcludedClass);
+		bool nameMatches = IsHL2Episodic() ? ( ( pFuncBrush->m_iszExcludedClass == GetOuter()->m_iClassname ) || GetOuter()->NameMatches(pFuncBrush->m_iszExcludedClass) ) : ( pFuncBrush->m_iszExcludedClass == GetOuter()->m_iClassname );
 #else	// do not match against entity name in base HL2 (just in case there is some case somewhere that might be broken by this)
 		bool nameMatches = ( pFuncBrush->m_iszExcludedClass == GetOuter()->m_iClassname );
 #endif

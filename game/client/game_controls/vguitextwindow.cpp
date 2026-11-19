@@ -107,7 +107,12 @@ CTextWindow::CTextWindow(IViewPort *pViewPort) : Frame(NULL, PANEL_INFO	)
 	SetTitleBarVisible( false );
 
 	m_pTextMessage = new TextEntry( this, "TextMessage" );
+#ifdef BYTEMATCH_RETAIL
+	m_pHTMLMessage = NULL;
+#else
 	m_pHTMLMessage = new CMOTDHTML( this,"HTMLMessage" );
+#endif
+#line 106
 	m_pTitleLabel  = new Label( this, "MessageTitle", "Message Title" );
 	m_pOK		   = new Button(this, "ok", "#PropertyDialog_OK");
 
@@ -134,7 +139,10 @@ void CTextWindow::ApplySchemeSettings( IScheme *pScheme )
 CTextWindow::~CTextWindow()
 {
 	// remove temp file again
+#ifndef BYTEMATCH_RETAIL
 	if (g_pFullFileSystem->FileExists(TEMP_HTML_FILE))
+#endif
+#line 132
 		g_pFullFileSystem->RemoveFile( TEMP_HTML_FILE, "DEFAULT_WRITE_PATH" );
 }
 
@@ -144,9 +152,9 @@ void CTextWindow::Reset( void )
 	// HPE_BEGIN:
 	// [Forrest] Replace strange hard-coded default message with hard-coded error message.
 	//=============================================================================
-	V_strcpy_safe( m_szTitle, "Error loading info message." );
-	V_strcpy_safe( m_szMessage, "" );
-	V_strcpy_safe( m_szMessageFallback, "" );
+	Q_strcpy( m_szTitle, "Error loading info message." );
+	Q_strcpy( m_szMessage, "" );
+	Q_strcpy( m_szMessageFallback, "" );
 	//=============================================================================
 	// HPE_END
 	//=============================================================================
@@ -167,6 +175,7 @@ void CTextWindow::ShowText( const char *text )
 
 void CTextWindow::ShowURL( const char *URL, bool bAllowUserToDisable )
 {
+#ifndef BYTEMATCH_RETAIL
 	#ifdef _DEBUG
 		Msg( "CTextWindow::ShowURL( %s )\n", URL );
 	#endif
@@ -197,6 +206,8 @@ void CTextWindow::ShowURL( const char *URL, bool bAllowUserToDisable )
 	m_pHTMLMessage->SetVisible( true );
 	m_pHTMLMessage->OpenURL( URL, NULL );
 	m_bShownURL = true;
+#endif
+#line 194
 }
 
 void CTextWindow::ShowIndex( const char *entry )
@@ -285,8 +296,11 @@ void CTextWindow::Update( void )
 
 	m_pTitleLabel->SetText( m_szTitle );
 
+#ifndef BYTEMATCH_RETAIL
 	if ( m_pHTMLMessage )
 		m_pHTMLMessage->SetVisible( false );
+#endif
+#line 284
 	m_pTextMessage->SetVisible( false );
 
 	if ( m_nContentType == TYPE_INDEX )
@@ -380,7 +394,12 @@ void CTextWindow::OnCommand( const char *command )
 
 void CTextWindow::OnKeyCodePressed( vgui::KeyCode code )
 {
+#ifdef BYTEMATCH_RETAIL
+	if ( code == KEY_XBUTTON_A || code == KEY_XBUTTON_B )
+#else
 	if ( code == KEY_XBUTTON_A || code == KEY_XBUTTON_B || code == STEAMCONTROLLER_A || code == STEAMCONTROLLER_B )
+#endif
+#line 378
 	{
 		OnCommand( "okay" );
 		return;
@@ -425,11 +444,14 @@ void CTextWindow::ShowPanel( bool bShow )
 		SetVisible( false );
 		SetMouseInputEnabled( false );
 
+#ifndef BYTEMATCH_RETAIL
 		if ( m_bUnloadOnDismissal && m_bShownURL && m_pHTMLMessage )
 		{
 			m_pHTMLMessage->OpenURL( "about:blank", NULL );
 			m_bShownURL = false;
 		}
+#endif
+#line 427
 	}
 }
 

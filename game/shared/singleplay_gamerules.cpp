@@ -31,7 +31,7 @@ NOV2024_ONLY( extern ConVar sc_autoaim_scale; )
 NOV2024_ONLY( extern ConVar joy_autoaim_scale; )
 NOV2024_ONLY( extern ConVar m_autoaim_scale; )
 
-#ifndef CLIENT_DLL
+#if !defined( CLIENT_DLL ) && defined( HL2_ANNIVERSARY_NOV2024 )
 //-----------------------------------------------------------------------------
 // Purpose: Steam app and mod directory of the Half-Life 2 games hl2_complete includes
 //-----------------------------------------------------------------------------

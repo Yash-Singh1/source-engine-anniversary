@@ -168,7 +168,7 @@ private:
 
     CUtlVector<int> m_AchievementsAwarded;
 
-	bool m_bIsHL2Complete;				// running as hl2_complete (Half-Life 2 with the episodes in one game)
+	NOV2024_ONLY( bool m_bIsHL2Complete; )				// running as hl2_complete (Half-Life 2 with the episodes in one game)
 };
 
 // helper functions

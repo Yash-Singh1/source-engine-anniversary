@@ -89,13 +89,13 @@ CHudPosture::CHudPosture( const char *pElementName ) : CHudElement( pElementName
 	SetHiddenBits( HIDEHUD_HEALTH | HIDEHUD_PLAYERDEAD | HIDEHUD_NEEDSUIT );
 
 	int nShowPosture = vgui_hud_posture.GetInt();
-	if ( nShowPosture == 1 )
-	{
-		m_bShowPosture = true;
-	}
-	else if ( nShowPosture == 0 )
+	if ( nShowPosture == 0 )
 	{
 		m_bShowPosture = false;
+	}
+	else if ( nShowPosture == 1 )
+	{
+		m_bShowPosture = true;
 	}
 	else
 	{

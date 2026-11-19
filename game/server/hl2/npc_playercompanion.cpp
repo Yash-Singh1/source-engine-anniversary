@@ -3325,7 +3325,7 @@ bool CNPC_PlayerCompanion::CanExitVehicle( void )
 void CNPC_PlayerCompanion::EnterVehicle( CBaseEntity *pEntityVehicle, bool bImmediately )
 {
 	// Must be allowed to do this
-	if ( CanEnterVehicle() == false )
+	if ( !IsHL2Episodic() || CanEnterVehicle() == false )
 		return;
 
 	// Find the target vehicle
@@ -3372,7 +3372,7 @@ void CNPC_PlayerCompanion::InputEnterVehicleImmediately( inputdata_t &inputdata 
 void CNPC_PlayerCompanion::InputExitVehicle( inputdata_t &inputdata )
 {
 	// See if we're allowed to exit the vehicle
-	if ( CanExitVehicle() == false )
+	if ( !IsHL2Episodic() || CanExitVehicle() == false )
 		return;
 
 	m_PassengerBehavior.ExitVehicle();

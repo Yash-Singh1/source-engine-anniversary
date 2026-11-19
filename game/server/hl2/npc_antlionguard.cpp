@@ -2104,8 +2104,8 @@ void CNPC_AntlionGuard::HandleAnimEvent( animevent_t *pEvent )
 		//Throw dust up
 		UTIL_CreateAntlionDust( GetAbsOrigin() + Vector(0,0,24), GetLocalAngles() );
 
-		// The retail binary makes this call and discards the result
-		IsHL2Episodic();
+
+
 
 		RemoveEffects( EF_NODRAW );
 		RemoveFlag( FL_NOTARGET );

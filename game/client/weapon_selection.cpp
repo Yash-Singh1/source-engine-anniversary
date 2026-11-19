@@ -23,8 +23,8 @@
 
 ConVar hud_drawhistory_time( "hud_drawhistory_time", HISTORY_DRAW_TIME, 0 );
 ConVar hud_fastswitch( "hud_fastswitch", "0", FCVAR_ARCHIVE | FCVAR_ARCHIVE_XBOX );
-ConVar hud_fastswitch_reset( "hud_fastswitch_reset", "1", FCVAR_ARCHIVE );
-ConVar hud_weaponui_gamepad( "hud_weaponui_gamepad", "2", FCVAR_ARCHIVE );
+NOV2024_ONLY( ConVar hud_fastswitch_reset( "hud_fastswitch_reset", "1", FCVAR_ARCHIVE ); )
+NOV2024_ONLY( ConVar hud_weaponui_gamepad( "hud_weaponui_gamepad", "2", FCVAR_ARCHIVE ); )
 ConVar hud_fastswitch_net( "hud_fastswitch_net", "0", FCVAR_ARCHIVE | FCVAR_USERINFO | FCVAR_ARCHIVE_XBOX );
 
 //-----------------------------------------------------------------------------
@@ -34,6 +34,12 @@ ConVar hud_fastswitch_net( "hud_fastswitch_net", "0", FCVAR_ARCHIVE | FCVAR_USER
 int GetFastSwitchType()
 {
 	int nType = hud_fastswitch.GetInt();
+#ifndef HL2_ANNIVERSARY_NOV2024
+	if ( g_pInputSystem->IsSteamControllerActive() )
+	{
+		nType = HUDTYPE_PLUS;
+	}
+#else
 	if ( g_pInputSystem->IsMouseKeyboardActive() )
 	{
 		if ( hud_fastswitch_reset.GetBool() )
@@ -50,6 +56,8 @@ int GetFastSwitchType()
 	{
 		nType = hud_weaponui_gamepad.GetInt();
 	}
+#endif
+#line 53
 
 	if ( hud_fastswitch_net.GetInt() != nType )
 	{

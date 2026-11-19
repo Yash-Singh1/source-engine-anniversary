@@ -116,7 +116,12 @@ static void Matrix3x4Offset( matrix3x4_t& dest, const matrix3x4_t& matrixIn, con
 
 // This does the necessary casting / extract to grab a pointer to a member function as a void *
 // UNDONE: Cast to BASEPTR or something else here?
+#ifdef BYTEMATCH_RETAIL
+#define EXTRACT_INPUTFUNC_FUNCTIONPTR(x)		(*(inputfunc_t **)(&(x)))
+#else
 //#define EXTRACT_INPUTFUNC_FUNCTIONPTR(x)		(*(inputfunc_t **)(&(x)))
+#endif
+#line 120
 
 //-----------------------------------------------------------------------------
 // Purpose: Search this datamap for the name of this member function
@@ -124,7 +129,12 @@ static void Matrix3x4Offset( matrix3x4_t& dest, const matrix3x4_t& matrixIn, con
 // Input  : *function - pointer to member function
 // Output : const char * - function name
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+const char *UTIL_FunctionToName( datamap_t *pMap, inputfunc_t *function )
+#else
 const char *UTIL_FunctionToName( datamap_t *pMap, inputfunc_t function )
+#endif
+#line 128
 {
 	while ( pMap )
 	{
@@ -139,7 +149,12 @@ const char *UTIL_FunctionToName( datamap_t *pMap, inputfunc_t function )
 #else
 #error
 #endif
+#ifdef BYTEMATCH_RETAIL
+				inputfunc_t *pTest = EXTRACT_INPUTFUNC_FUNCTIONPTR(pMap->dataDesc[i].inputFunc);
+#else
 				inputfunc_t pTest = pMap->dataDesc[i].inputFunc;
+#endif
+#line 143
 
 				if ( pTest == function )
 					return pMap->dataDesc[i].fieldName;
@@ -156,7 +171,12 @@ const char *UTIL_FunctionToName( datamap_t *pMap, inputfunc_t function )
 //			This is used to save/restore function pointers (convert text back to pointer)
 // Input  : *pName - name of the member function
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+inputfunc_t *UTIL_FunctionFromName( datamap_t *pMap, const char *pName )
+#else
 inputfunc_t UTIL_FunctionFromName( datamap_t *pMap, const char *pName )
+#endif
+#line 160
 {
 	while ( pMap )
 	{
@@ -174,7 +194,12 @@ inputfunc_t UTIL_FunctionFromName( datamap_t *pMap, const char *pName )
 			{
 				if ( FStrEq( pName, pMap->dataDesc[i].fieldName ) )
 				{
+#ifdef BYTEMATCH_RETAIL
+					return EXTRACT_INPUTFUNC_FUNCTIONPTR(pMap->dataDesc[i].inputFunc);
+#else
 					return pMap->dataDesc[i].inputFunc;
+#endif
+#line 178
 				}
 			}
 		}
@@ -219,7 +244,12 @@ inline int CSave::DataEmpty( const char *pdata, int size )
 		return 1;
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	return ( *((int *)pdata) == 0 );
+#else
 	return memcmp(pdata, &void_data, sizeof(int)) == 0;
+#endif
+#line 223
 }
 
 //-----------------------------------------------------------------------------
@@ -1145,7 +1175,12 @@ void CSave::WritePositionVector( const Vector *value, int count )
 void CSave::WriteFunction( datamap_t *pRootMap, const char *pname, inputfunc_t **data, int count )
 {
 	AssertMsg( count == 1, "Arrays of functions not presently supported" );
+#ifdef BYTEMATCH_RETAIL
+	const char *functionName = UTIL_FunctionToName( pRootMap, *data );
+#else
 	const char *functionName = UTIL_FunctionToName( pRootMap, *(inputfunc_t*)data );
+#endif
+#line 1149
 	if ( !functionName )
 	{
 		Warning( "Invalid function pointer in entity!\n" );
@@ -2257,6 +2292,9 @@ int CRestore::ReadFunction( datamap_t *pMap, inputfunc_t **pValue, int count, in
 	if ( *pszFunctionName == 0 )
 		*pValue = NULL;
 	else
+#ifdef BYTEMATCH_RETAIL
+		*pValue = UTIL_FunctionFromName( pMap, pszFunctionName );
+#else
 	{
 		inputfunc_t func = UTIL_FunctionFromName( pMap, pszFunctionName );
 #ifdef GNUC
@@ -2265,6 +2303,8 @@ int CRestore::ReadFunction( datamap_t *pMap, inputfunc_t **pValue, int count, in
 		Q_memcpy( (void*)pValue, &func, sizeof(void*) );
 #endif
 	}
+#endif
+#line 2268
 	return 0;
 }
 	

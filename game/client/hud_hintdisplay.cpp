@@ -413,7 +413,7 @@ DECLARE_HUDELEMENT( CHudHintKeyDisplay );
 DECLARE_HUD_MESSAGE( CHudHintKeyDisplay, KeyHintText );
 
 ConVar sc_use_glyphs( "sc_use_glyphs", "1", 0, "Debug if the string fallbacks display properly." );
-ConVar sc_prefer_basic_origin_hints( "sc_prefer_basic_origin_hints", "1", 0, "Only show the basic origins if available." );
+NOV2024_ONLY( ConVar sc_prefer_basic_origin_hints( "sc_prefer_basic_origin_hints", "1", 0, "Only show the basic origins if available." ); )
 ConVar sc_tint_glyphs( "sc_tint_glyphs", "0", 0, "Whether or not to tint the glyphs or not." );
 
 extern int g_ActionSet;
@@ -722,10 +722,13 @@ bool CHudHintKeyDisplay::SetHintText( const char *text )
 					{
 						pszAltAction = "toggle_zoom";
 					}
+#ifdef HL2_ANNIVERSARY_NOV2024
 					if ( !strcmp( "speed", pszAltAction ) )
 					{
 						pszAltAction = "smart_sprint";
 					}
+#endif
+#line 729
 
 					InputDigitalActionHandle_t hAltDigital = SteamInput()->GetDigitalActionHandle( pszAltAction );
 					if ( hAltDigital && hAltDigital != hDigital )
@@ -733,6 +736,7 @@ bool CHudHintKeyDisplay::SetHintText( const char *text )
 						nOrigins += SteamInput()->GetDigitalActionOrigins( hController, hActionSet, hAltDigital, &origins[nOrigins] );
 					}
 
+#ifdef HL2_ANNIVERSARY_NOV2024
 					if ( sc_prefer_basic_origin_hints.GetBool() )
 					{
 						bool bHasBasicOrigin = false;
@@ -766,6 +770,8 @@ bool CHudHintKeyDisplay::SetHintText( const char *text )
 							}
 						}
 					}
+#endif
+#line 769
 				}
 				else
 				{
@@ -819,6 +825,7 @@ bool CHudHintKeyDisplay::SetHintText( const char *text )
 				{
 					for ( int i = 0; i < MAX_HINT_GLYPHS && origins[i] != k_EInputActionOrigin_None; i++ )
 					{
+#ifdef HL2_ANNIVERSARY_NOV2024
 						// Glyphs are square and as tall as the font; ask Steam for the next size up
 						int nGlyphSize = vgui::surface()->GetFontTall( m_hLargeFont );
 						nGlyphSize--;
@@ -844,6 +851,10 @@ bool CHudHintKeyDisplay::SetHintText( const char *text )
 						}
 
 						const char *pszGlyph = SteamInput()->GetGlyphPNGForActionOrigin( origins[i], eGlyphSize, ESteamInputGlyphStyle_Light | ESteamInputGlyphStyle_SolidABXY );
+#else
+						const char *pszGlyph = SteamInput()->GetGlyphForActionOrigin_Legacy( origins[i] );
+#endif
+#line 847
 						if ( !pszGlyph )
 							continue;
 
@@ -888,6 +899,17 @@ bool CHudHintKeyDisplay::SetHintText( const char *text )
 								}
 							}
 
+#ifndef HL2_ANNIVERSARY_NOV2024
+							int nGlyphSize = vgui::surface()->GetFontTall( m_hLargeFont );
+							nGlyphSize--;
+							nGlyphSize |= nGlyphSize >> 1;
+							nGlyphSize |= nGlyphSize >> 2;
+							nGlyphSize |= nGlyphSize >> 4;
+							nGlyphSize |= nGlyphSize >> 8;
+							nGlyphSize |= nGlyphSize >> 16;
+							nGlyphSize++;
+#endif
+#line 891
 							ImgUtl_ResizeBitmap( bitmap, nGlyphSize, nGlyphSize, &bitmap );
 
 							glyphSet.m_nTextureIDs[i] = vgui::surface()->CreateNewTextureID( true );
