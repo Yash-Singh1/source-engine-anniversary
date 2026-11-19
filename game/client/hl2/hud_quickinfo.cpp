@@ -106,8 +106,8 @@ void CHUDQuickInfo::ApplySchemeSettings( IScheme *scheme )
 
 	SetPaintBackgroundEnabled( false );
 	SetForceStereoRenderToFrameBuffer( true );
+	SetSize( ScreenWidth(), ScreenHeight() );
 }
-
 
 void CHUDQuickInfo::Init( void )
 {

@@ -65,6 +65,9 @@ vgui::Panel *g_lastPanel = NULL; // used for mouseover buttons, keeps track of t
 vgui::Button *g_lastButton = NULL; // used for mouseover buttons, keeps track of the last active button
 using namespace vgui;
 
+#ifdef BYTEMATCH_RETAIL
+ConVar hud_autoreloadscript("hud_autoreloadscript", "0", FCVAR_NONE, "Automatically reloads the animation script each time one is ran");
+#else
 void hud_autoreloadscript_callback( IConVar *var, const char *pOldValue, float flOldValue );
 
 ConVar hud_autoreloadscript("hud_autoreloadscript", "0", FCVAR_NONE, "Automatically reloads the animation script each time one is ran", hud_autoreloadscript_callback);
@@ -76,6 +79,7 @@ void hud_autoreloadscript_callback( IConVar *var, const char *pOldValue, float f
 		g_pClientMode->GetViewportAnimationController()->SetAutoReloadScript( hud_autoreloadscript.GetBool() );
 	}
 }
+#endif
 
 static ConVar cl_leveloverviewmarker( "cl_leveloverviewmarker", "0", FCVAR_CHEAT );
 
@@ -627,6 +631,11 @@ void CBaseViewport::OnThink()
 	m_pAnimController->UpdateAnimations( gpGlobals->curtime );
 #endif
 
+#ifdef BYTEMATCH_RETAIL
+	// check the auto-reload cvar
+	m_pAnimController->SetAutoReloadScript(hud_autoreloadscript.GetBool());
+
+#endif
 	int count = m_Panels.Count();
 
 	for (int i=0; i< count; i++ )

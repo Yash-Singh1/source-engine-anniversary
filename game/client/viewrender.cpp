@@ -132,13 +132,15 @@ static ConVar fog_override( "fog_override", "0", FCVAR_CHEAT );
 static ConVar fog_start( "fog_start", "-1", FCVAR_CHEAT );
 static ConVar fog_end( "fog_end", "-1", FCVAR_CHEAT );
 static ConVar fog_color( "fog_color", "-1 -1 -1", FCVAR_CHEAT );
-static ConVar fog_enable( "fog_enable", "1", FCVAR_CHEAT );
+static ConVar fog_enable( "fog_enable", "-1", FCVAR_CHEAT );
 static ConVar fog_startskybox( "fog_startskybox", "-1", FCVAR_CHEAT );
 static ConVar fog_endskybox( "fog_endskybox", "-1", FCVAR_CHEAT );
 static ConVar fog_maxdensityskybox( "fog_maxdensityskybox", "-1", FCVAR_CHEAT );
 static ConVar fog_colorskybox( "fog_colorskybox", "-1 -1 -1", FCVAR_CHEAT );
-static ConVar fog_enableskybox( "fog_enableskybox", "1", FCVAR_CHEAT );
+static ConVar fog_enableskybox( "fog_enableskybox", "-1", FCVAR_CHEAT );
 static ConVar fog_maxdensity( "fog_maxdensity", "-1", FCVAR_CHEAT );
+static ConVar fog_radial( "fog_radial", "-1", FCVAR_CHEAT );
+static ConVar fog_radialskybox( "fog_radialskybox", "-1", FCVAR_CHEAT );
 
 
 //-----------------------------------------------------------------------------
@@ -1127,12 +1129,12 @@ void CViewRender::DrawViewModels( const CViewSetup &view, bool drawViewmodel )
 			}
 		}
 
-		if ( !UpdateRefractIfNeededByList( opaqueViewModelList ) )
+		bool bUpdatedRefract = UpdateRefractIfNeededByList( opaqueViewModelList );
+		DrawRenderablesInList( opaqueViewModelList );
+		if ( !bUpdatedRefract )
 		{
 			UpdateRefractIfNeededByList( translucentViewModelList );
 		}
-
-		DrawRenderablesInList( opaqueViewModelList );
 		DrawRenderablesInList( translucentViewModelList, STUDIO_TRANSPARENCY );
 	}
 
@@ -1459,19 +1461,47 @@ static void GetFogColorTransition( fogparams_t *pFogParams, float *pColorPrimary
 //-----------------------------------------------------------------------------
 static void GetFogColor( fogparams_t *pFogParams, float *pColor )
 {
-	C_BasePlayer *pbp = C_BasePlayer::GetLocalPlayer();
-	if ( !pbp || !pFogParams )
-		return;
+	bool bUseOverride = false;
 
 	const char *fogColorString = fog_color.GetString();
 	if( fog_override.GetInt() && fogColorString )
 	{
 		sscanf( fogColorString, "%f%f%f", pColor, pColor+1, pColor+2 );
+
+		bUseOverride = true;
+		for ( int i = 0; i < 3; i++ )
+		{
+			if ( pColor[i] < 0 )
+			{
+				bUseOverride = false;
+			}
+		}
 	}
-	else
+
+	if ( !bUseOverride )
 	{
+		C_BasePlayer* pbp = C_BasePlayer::GetLocalPlayer();
+		if ( !pbp || !pFogParams )
+			return;
+
 		float flPrimaryColor[3] = { (float)pFogParams->colorPrimary.GetR(), (float)pFogParams->colorPrimary.GetG(), (float)pFogParams->colorPrimary.GetB() };
 		float flSecondaryColor[3] = { (float)pFogParams->colorSecondary.GetR(), (float)pFogParams->colorSecondary.GetG(), (float)pFogParams->colorSecondary.GetB() };
+
+#ifdef HL2_ANNIVERSARY_NOV2024
+		if ( Fog_HDREnabled() && ( pFogParams->colorPrimaryHDR.GetR() || pFogParams->colorPrimaryHDR.GetG() || pFogParams->colorPrimaryHDR.GetB() ) )
+		{
+			flPrimaryColor[0] = pFogParams->colorPrimaryHDR.GetR();
+			flPrimaryColor[1] = pFogParams->colorPrimaryHDR.GetG();
+			flPrimaryColor[2] = pFogParams->colorPrimaryHDR.GetB();
+		}
+
+		if ( Fog_HDREnabled() && ( pFogParams->colorSecondaryHDR.GetR() || pFogParams->colorSecondaryHDR.GetG() || pFogParams->colorSecondaryHDR.GetB() ) )
+		{
+			flSecondaryColor[0] = pFogParams->colorSecondaryHDR.GetR();
+			flSecondaryColor[1] = pFogParams->colorSecondaryHDR.GetG();
+			flSecondaryColor[2] = pFogParams->colorSecondaryHDR.GetB();
+		}
+#endif
 
 		GetFogColorTransition( pFogParams, flPrimaryColor, flSecondaryColor );
 
@@ -1509,86 +1539,74 @@ static void GetFogColor( fogparams_t *pFogParams, float *pColor )
 
 static float GetFogStart( fogparams_t *pFogParams )
 {
-	if( !pFogParams )
-		return 0.0f;
-
 	if( fog_override.GetInt() )
 	{
-		if( fog_start.GetFloat() == -1.0f )
-		{
-			return pFogParams->start;
-		}
-		else
+		if( fog_start.GetInt() != -1 )
 		{
 			return fog_start.GetFloat();
 		}
 	}
-	else
-	{
-		if ( pFogParams->lerptime > gpGlobals->curtime )
-		{
-			if ( pFogParams->start != pFogParams->startLerpTo )
-			{
-				if ( pFogParams->lerptime > gpGlobals->curtime )
-				{
-					float flPercent = 1.0f - (( pFogParams->lerptime - gpGlobals->curtime ) / pFogParams->duration );
 
-					return FLerp( pFogParams->start, pFogParams->startLerpTo, flPercent );
-				}
-				else
+	if ( !pFogParams )
+		return 0.0f;
+
+	if ( pFogParams->lerptime > gpGlobals->curtime )
+	{
+		if ( pFogParams->start != pFogParams->startLerpTo )
+		{
+			if ( pFogParams->lerptime > gpGlobals->curtime )
+			{
+				float flPercent = 1.0f - (( pFogParams->lerptime - gpGlobals->curtime ) / pFogParams->duration );
+
+				return FLerp( pFogParams->start, pFogParams->startLerpTo, flPercent );
+			}
+			else
+			{
+				if ( pFogParams->start != pFogParams->startLerpTo )
 				{
-					if ( pFogParams->start != pFogParams->startLerpTo )
-					{
-						pFogParams->start = pFogParams->startLerpTo;
-					}
+					pFogParams->start = pFogParams->startLerpTo;
 				}
 			}
 		}
-
-		return pFogParams->start;
 	}
+
+	return pFogParams->start;
 }
 
 static float GetFogEnd( fogparams_t *pFogParams )
 {
-	if( !pFogParams )
-		return 0.0f;
-
 	if( fog_override.GetInt() )
 	{
-		if( fog_end.GetFloat() == -1.0f )
-		{
-			return pFogParams->end;
-		}
-		else
+		if( fog_end.GetInt() != -1 )
 		{
 			return fog_end.GetFloat();
 		}
 	}
-	else
-	{
-		if ( pFogParams->lerptime > gpGlobals->curtime )
-		{
-			if ( pFogParams->end != pFogParams->endLerpTo )
-			{
-				if ( pFogParams->lerptime > gpGlobals->curtime )
-				{
-					float flPercent = 1.0f - (( pFogParams->lerptime - gpGlobals->curtime ) / pFogParams->duration );
 
-					return FLerp( pFogParams->end, pFogParams->endLerpTo, flPercent );
-				}
-				else
+	if ( !pFogParams )
+		return 0.0f;
+
+	if ( pFogParams->lerptime > gpGlobals->curtime )
+	{
+		if ( pFogParams->end != pFogParams->endLerpTo )
+		{
+			if ( pFogParams->lerptime > gpGlobals->curtime )
+			{
+				float flPercent = 1.0f - (( pFogParams->lerptime - gpGlobals->curtime ) / pFogParams->duration );
+
+				return FLerp( pFogParams->end, pFogParams->endLerpTo, flPercent );
+			}
+			else
+			{
+				if ( pFogParams->end != pFogParams->endLerpTo )
 				{
-					if ( pFogParams->end != pFogParams->endLerpTo )
-					{
-						pFogParams->end = pFogParams->endLerpTo;
-					}
+					pFogParams->end = pFogParams->endLerpTo;
 				}
 			}
 		}
-
-		return pFogParams->end;
 	}
+
+	return pFogParams->end;
 }
 
 static bool GetFogEnable( fogparams_t *pFogParams )
@@ -1602,30 +1620,23 @@ static bool GetFogEnable( fogparams_t *pFogParams )
 
 	if( fog_override.GetInt() )
 	{
-		if( fog_enable.GetInt() )
+		if ( fog_enable.GetInt() != -1 )
 		{
-			return true;
-		}
-		else
-		{
-			return false;
+			return fog_enable.GetBool();
 		}
 	}
-	else
-	{
-		if( pFogParams )
-			return pFogParams->enable != false;
 
-		return false;
-	}
+
+	if ( pFogParams )
+		return pFogParams->enable != false;
+
+	return false;
+
 }
 
 
 static float GetFogMaxDensity( fogparams_t *pFogParams )
 {
-	if( !pFogParams )
-		return 1.0f;
-
 	if ( cl_leveloverview.GetFloat() > 0 )
 		return 1.0f;
 
@@ -1635,13 +1646,35 @@ static float GetFogMaxDensity( fogparams_t *pFogParams )
 
 	if ( fog_override.GetInt() )
 	{
-		if ( fog_maxdensity.GetFloat() == -1.0f )
-			return pFogParams->maxdensity;
-		else
+		if ( fog_maxdensity.GetInt() != -1 )
 			return fog_maxdensity.GetFloat();
 	}
-	else
-		return pFogParams->maxdensity;
+	
+	if ( !pFogParams )
+		return 1.0f;
+
+	return pFogParams->maxdensity;
+}
+
+static float GetFogRadial( fogparams_t *pFogParams )
+{
+	if ( cl_leveloverview.GetFloat() > 0 )
+		return false;
+
+	// Ask the clientmode
+	if ( !g_pClientMode->ShouldDrawFog() )
+		return false;
+
+	if ( fog_override.GetInt() )
+	{
+		if ( fog_radial.GetInt() != -1 )
+			return fog_radial.GetBool();
+	}
+	
+	if ( !pFogParams )
+		return false;
+
+	return pFogParams->radial;
 }
 
 
@@ -1657,12 +1690,24 @@ static void GetSkyboxFogColor( float *pColor )
 	}
 	CPlayerLocalData	*local		= &pbp->m_Local;
 
+	bool bUseOverride = false;
+
 	const char *fogColorString = fog_colorskybox.GetString();
-	if( fog_override.GetInt() && fogColorString )
+	if ( fog_override.GetInt() && fogColorString )
 	{
-		sscanf( fogColorString, "%f%f%f", pColor, pColor+1, pColor+2 );
+		sscanf( fogColorString, "%f%f%f", pColor, pColor + 1, pColor + 2 );
+
+		bUseOverride = true;
+		for ( int i = 0; i < 3; i++ )
+		{
+			if ( pColor[i] < 0 )
+			{
+				bUseOverride = false;
+			}
+		}
 	}
-	else
+
+	if ( !bUseOverride )
 	{
 		if( local->m_skybox3d.fog.blend )
 		{
@@ -1679,11 +1724,43 @@ static void GetSkyboxFogColor( float *pColor )
 
 			float flBlendFactor = 0.5 * forward.Dot( local->m_skybox3d.fog.dirPrimary ) + 0.5;
 						 
+#ifdef HL2_ANNIVERSARY_NOV2024
+			float flPrimaryColor[3] = { (float)local->m_skybox3d.fog.colorPrimary.GetR(), (float)local->m_skybox3d.fog.colorPrimary.GetG(), (float)local->m_skybox3d.fog.colorPrimary.GetB() };
+			float flSecondaryColor[3] = { (float)local->m_skybox3d.fog.colorSecondary.GetR(), (float)local->m_skybox3d.fog.colorSecondary.GetG(), (float)local->m_skybox3d.fog.colorSecondary.GetB() };
+
+			if ( Fog_HDREnabled() && ( local->m_skybox3d.fog.colorPrimaryHDR.GetR() || local->m_skybox3d.fog.colorPrimaryHDR.GetG() || local->m_skybox3d.fog.colorPrimaryHDR.GetB() ) )
+			{
+				flPrimaryColor[0] = local->m_skybox3d.fog.colorPrimaryHDR.GetR();
+				flPrimaryColor[1] = local->m_skybox3d.fog.colorPrimaryHDR.GetG();
+				flPrimaryColor[2] = local->m_skybox3d.fog.colorPrimaryHDR.GetB();
+			}
+
+			if ( Fog_HDREnabled() && ( local->m_skybox3d.fog.colorSecondaryHDR.GetR() || local->m_skybox3d.fog.colorSecondaryHDR.GetG() || local->m_skybox3d.fog.colorSecondaryHDR.GetB() ) )
+			{
+				flSecondaryColor[0] = local->m_skybox3d.fog.colorSecondaryHDR.GetR();
+				flSecondaryColor[1] = local->m_skybox3d.fog.colorSecondaryHDR.GetG();
+				flSecondaryColor[2] = local->m_skybox3d.fog.colorSecondaryHDR.GetB();
+			}
+
+			// FIXME: convert to linear colorspace
+			pColor[0] = flPrimaryColor[0] * flBlendFactor + flSecondaryColor[0] * ( 1 - flBlendFactor );
+			pColor[1] = flPrimaryColor[1] * flBlendFactor + flSecondaryColor[1] * ( 1 - flBlendFactor );
+			pColor[2] = flPrimaryColor[2] * flBlendFactor + flSecondaryColor[2] * ( 1 - flBlendFactor );
+#else
 			// FIXME: convert to linear colorspace
 			pColor[0] = local->m_skybox3d.fog.colorPrimary.GetR() * flBlendFactor + local->m_skybox3d.fog.colorSecondary.GetR() * ( 1 - flBlendFactor );
 			pColor[1] = local->m_skybox3d.fog.colorPrimary.GetG() * flBlendFactor + local->m_skybox3d.fog.colorSecondary.GetG() * ( 1 - flBlendFactor );
 			pColor[2] = local->m_skybox3d.fog.colorPrimary.GetB() * flBlendFactor + local->m_skybox3d.fog.colorSecondary.GetB() * ( 1 - flBlendFactor );
+#endif
 		}
+#ifdef HL2_ANNIVERSARY_NOV2024
+		else if ( Fog_HDREnabled() && ( local->m_skybox3d.fog.colorPrimaryHDR.GetR() || local->m_skybox3d.fog.colorPrimaryHDR.GetG() || local->m_skybox3d.fog.colorPrimaryHDR.GetB() ) )
+		{
+			pColor[0] = local->m_skybox3d.fog.colorPrimaryHDR.GetR();
+			pColor[1] = local->m_skybox3d.fog.colorPrimaryHDR.GetG();
+			pColor[2] = local->m_skybox3d.fog.colorPrimaryHDR.GetB();
+		}
+#endif
 		else
 		{
 			pColor[0] = local->m_skybox3d.fog.colorPrimary.GetR();
@@ -1707,19 +1784,13 @@ static float GetSkyboxFogStart( void )
 
 	if( fog_override.GetInt() )
 	{
-		if( fog_startskybox.GetFloat() == -1.0f )
-		{
-			return local->m_skybox3d.fog.start;
-		}
-		else
+		if ( fog_startskybox.GetInt() != -1 )
 		{
 			return fog_startskybox.GetFloat();
 		}
 	}
-	else
-	{
-		return local->m_skybox3d.fog.start;
-	}
+
+	return local->m_skybox3d.fog.start;
 }
 
 static float GetSkyboxFogEnd( void )
@@ -1733,19 +1804,13 @@ static float GetSkyboxFogEnd( void )
 
 	if( fog_override.GetInt() )
 	{
-		if( fog_endskybox.GetFloat() == -1.0f )
-		{
-			return local->m_skybox3d.fog.end;
-		}
-		else
+		if ( fog_endskybox.GetInt() != -1 )
 		{
 			return fog_endskybox.GetFloat();
 		}
 	}
-	else
-	{
-		return local->m_skybox3d.fog.end;
-	}
+
+	return local->m_skybox3d.fog.end;
 }
 
 
@@ -1766,13 +1831,39 @@ static float GetSkyboxFogMaxDensity()
 
 	if ( fog_override.GetInt() )
 	{
-		if ( fog_maxdensityskybox.GetFloat() == -1.0f )
-			return local->m_skybox3d.fog.maxdensity;
-		else
+		if ( fog_maxdensityskybox.GetInt() != -1 )
+		{
 			return fog_maxdensityskybox.GetFloat();
+		}
 	}
-	else
-		return local->m_skybox3d.fog.maxdensity;
+
+	return local->m_skybox3d.fog.maxdensity;
+}
+
+static bool GetSkyboxFogRadial()
+{
+	C_BasePlayer *pbp = C_BasePlayer::GetLocalPlayer();
+	if ( !pbp )
+		return false;
+
+	CPlayerLocalData *local = &pbp->m_Local;
+
+	if ( cl_leveloverview.GetFloat() > 0 )
+		return false;
+
+	// Ask the clientmode
+	if ( !g_pClientMode->ShouldDrawFog() )
+		return false;
+
+	if ( fog_override.GetInt() )
+	{
+		if ( fog_radialskybox.GetInt() != -1 )
+		{
+			return fog_radialskybox.GetBool();
+		}
+	}
+
+	return local->m_skybox3d.fog.radial;
 }
 
 
@@ -3062,6 +3153,7 @@ bool CViewRender::DrawOneMonitor( ITexture *pRenderTarget, int cameraNum, C_Poin
 		pFogParams->end = pCameraEnt->GetFogEnd();
 		pFogParams->farz = pCameraEnt->GetFogEnd();
 		pFogParams->maxdensity = pCameraEnt->GetFogMaxDensity();
+		pFogParams->radial = pCameraEnt->GetFogRadial();
 
 		unsigned char r, g, b;
 		pCameraEnt->GetFogColor( r, g, b );
@@ -4009,7 +4101,9 @@ void CRendering3dView::DrawOpaqueRenderables( ERenderDepthMode DepthMode )
 	for ( int bucket = 0; bucket < RENDER_GROUP_CFG_NUM_OPAQUE_ENT_BUCKETS; ++ bucket )
 		numOpaqueEnts += m_pRenderablesList->m_RenderGroupCounts[ RENDER_GROUP_OPAQUE_ENTITY_HUGE + 2 * bucket ];
 
+#ifndef BYTEMATCH_RETAIL
 	CUtlVector< C_BaseAnimating * > arrBoneSetupNpcsLast( (C_BaseAnimating **)_alloca( numOpaqueEnts * sizeof( C_BaseAnimating * ) ), numOpaqueEnts, numOpaqueEnts );
+#endif
 	CUtlVector< CClientRenderablesList::CEntry > arrRenderEntsNpcsFirst( (CClientRenderablesList::CEntry *)_alloca( numOpaqueEnts * sizeof( CClientRenderablesList::CEntry ) ), numOpaqueEnts, numOpaqueEnts );
 	int numNpcs = 0, numNonNpcsAnimating = 0;
 
@@ -4025,9 +4119,11 @@ void CRendering3dView::DrawOpaqueRenderables( ERenderDepthMode DepthMode )
 			{
 				if ( pEntity->IsNPC() )
 				{
-					C_BaseAnimating *pba = assert_cast<C_BaseAnimating *>( pEntity );
 					arrRenderEntsNpcsFirst[ numNpcs ++ ] = *itEntity;
+#ifndef BYTEMATCH_RETAIL
+					C_BaseAnimating *pba = assert_cast<C_BaseAnimating *>( pEntity );
 					arrBoneSetupNpcsLast[ numOpaqueEnts - numNpcs ] = pba;
+#endif
 					
 					itEntity->m_pRenderable = NULL;		// We will render NPCs separately
 					itEntity->m_RenderHandle = NULL;
@@ -4036,19 +4132,23 @@ void CRendering3dView::DrawOpaqueRenderables( ERenderDepthMode DepthMode )
 				}
 				else if ( pEntity->GetBaseAnimating() )
 				{
+#ifndef BYTEMATCH_RETAIL
 					C_BaseAnimating *pba = assert_cast<C_BaseAnimating *>( pEntity );
 					arrBoneSetupNpcsLast[ numNonNpcsAnimating ++ ] = pba;
+#endif
 					// fall through
 				}
 			}
 		}
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	if ( r_threaded_renderables.GetBool() )
 	{
 		ParallelProcess( "BoneSetupNpcsLast", arrBoneSetupNpcsLast.Base() + numOpaqueEnts - numNpcs, numNpcs, &SetupBonesOnBaseAnimating );
 		ParallelProcess( "BoneSetupNpcsLast NonNPCs", arrBoneSetupNpcsLast.Base(), numNonNpcsAnimating, &SetupBonesOnBaseAnimating );
 	}
+#endif
 
 
 	//
@@ -4592,6 +4692,7 @@ void CRendering3dView::EnableWorldFog( void )
 		pRenderContext->FogStart( GetFogStart( pFogParams ) );
 		pRenderContext->FogEnd( GetFogEnd( pFogParams ) );
 		pRenderContext->FogMaxDensity( GetFogMaxDensity( pFogParams ) );
+		pRenderContext->FogRadial( GetFogRadial( pFogParams ) );
 	}
 	else
 	{
@@ -4655,19 +4756,13 @@ bool CSkyboxView::GetSkyboxFogEnable()
 
 	if( fog_override.GetInt() )
 	{
-		if( fog_enableskybox.GetInt() )
+		if( fog_enableskybox.GetInt() != -1 )
 		{
-			return true;
-		}
-		else
-		{
-			return false;
+			return fog_enableskybox.GetBool();
 		}
 	}
-	else
-	{
-		return !!local->m_skybox3d.fog.enable;
-	}
+
+	return !!local->m_skybox3d.fog.enable;
 }
 
 
@@ -4699,6 +4794,7 @@ void CSkyboxView::Enable3dSkyboxFog( void )
 		pRenderContext->FogStart( GetSkyboxFogStart() * scale );
 		pRenderContext->FogEnd( GetSkyboxFogEnd() * scale );
 		pRenderContext->FogMaxDensity( GetSkyboxFogMaxDensity() );
+		pRenderContext->FogRadial( GetSkyboxFogRadial() );
 	}
 	else
 	{

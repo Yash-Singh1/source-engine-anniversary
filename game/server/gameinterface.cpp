@@ -89,6 +89,9 @@
 #include "tier3/tier3.h"
 #include "serverbenchmark_base.h"
 #include "querycache.h"
+#ifdef HL2_ANNIVERSARY_NOV2024
+#include "iworkshop.h"
+#endif
 
 
 #ifdef TF_DLL
@@ -180,6 +183,9 @@ ISoundEmitterSystemBase *soundemitterbase = NULL;
 IServerPluginHelpers *serverpluginhelpers = NULL;
 IServerEngineTools *serverenginetools = NULL;
 ISceneFileCache *scenefilecache = NULL;
+#ifdef HL2_ANNIVERSARY_NOV2024
+IWorkshop *workshop = NULL;
+#endif
 IXboxSystem *xboxsystem = NULL;	// Xbox 360 only
 IMatchmaking *matchmaking = NULL;	// Xbox 360 only
 #if defined( REPLAY_ENABLED )
@@ -234,6 +240,9 @@ static int		g_nCommandClientIndex = 0;
 
 // The chapter number of the current
 static int		g_nCurrentChapterIndex = -1;
+#ifdef HL2_ANNIVERSARY_NOV2024
+static int		g_nPreviousChapterIndex = -1;
+#endif
 
 #ifdef _DEBUG
 static ConVar sv_showhitboxes( "sv_showhitboxes", "-1", FCVAR_CHEAT, "Send server-side hitboxes for specified entity to client (NOTE:  this uses lots of bandwidth, use on listen server only)." );
@@ -243,6 +252,9 @@ void PrecachePointTemplates();
 
 static ClientPutInServerOverrideFn g_pClientPutInServerOverride = NULL;
 static void UpdateChapterRestrictions( const char *mapname );
+#if defined( HL2_ANNIVERSARY_NOV2024 ) && defined( HL2_DLL )
+extern ConVar stunstick_pickupable;
+#endif
 
 static void UpdateRichPresence ( void );
 
@@ -619,6 +631,9 @@ bool CServerGameDLL::DLLInit( CreateInterfaceFn appSystemFactory,
 		return false;
 	if ( (scenefilecache = (ISceneFileCache *)appSystemFactory( SCENE_FILE_CACHE_INTERFACE_VERSION, NULL )) == NULL )
 		return false;
+#ifdef HL2_ANNIVERSARY_NOV2024
+	workshop = (IWorkshop *)appSystemFactory( VWORKSHOP_INTERFACE_VERSION, NULL );
+#endif
 	if ( IsX360() && (xboxsystem = (IXboxSystem *)appSystemFactory( XBOXSYSTEM_INTERFACE_VERSION, NULL )) == NULL )
 		return false;
 	if ( IsX360() && (matchmaking = (IMatchmaking *)appSystemFactory( VENGINE_MATCHMAKING_VERSION, NULL )) == NULL )
@@ -953,6 +968,9 @@ bool CServerGameDLL::LevelInit( const char *pMapName, char const *pMapEntities, 
 
 	ResetWindspeed();
 	UpdateChapterRestrictions( pMapName );
+#if defined( HL2_ANNIVERSARY_NOV2024 ) && defined( HL2_DLL )
+	stunstick_pickupable.SetValue( 0 );
+#endif
 
 	if ( IsX360() && !background && (gpGlobals->maxClients == 1) && (g_nCurrentChapterIndex >= 0) )
 	{
@@ -1017,6 +1035,9 @@ bool CServerGameDLL::LevelInit( const char *pMapName, char const *pMapEntities, 
 		if ( background )
 		{
 			gpGlobals->eLoadType = MapLoad_Background;
+#ifdef HL2_ANNIVERSARY_NOV2024
+			g_nPreviousChapterIndex = -1;
+#endif
 		}
 		else
 		{
@@ -1088,7 +1109,7 @@ void CServerGameDLL::ServerActivate( edict_t *pEdictList, int edictCount, int cl
 
 	if ( gEntList.ResetDeleteList() != 0 )
 	{
-		Msg( "%s", "ERROR: Entity delete queue not empty on level start!\n" );
+		Msg( "ERROR: Entity delete queue not empty on level start!\n" );
 	}
 
 	for ( CBaseEntity *pClass = gEntList.FirstEnt(); pClass != NULL; pClass = gEntList.NextEnt(pClass) )
@@ -2027,12 +2048,23 @@ void CServerGameDLL::LoadSpecificMOTDMsg( const ConVar &convar, const char *pszS
 
 // keeps track of which chapters the user has unlocked
 ConVar sv_unlockedchapters( "sv_unlockedchapters", "1", FCVAR_ARCHIVE | FCVAR_ARCHIVE_XBOX );
+#ifdef HL2_ANNIVERSARY_NOV2024
+ConVar hl2_expansion( "hl2_expansion", "", FCVAR_ARCHIVE );
+ConVar hl2_expansion_transition( "hl2_expansion_transition", "", FCVAR_HIDDEN );
+ConVar sv_unlockedchapters_hl2( "sv_unlockedchapters_hl2", "1", FCVAR_ARCHIVE );
+ConVar sv_unlockedchapters_episodic( "sv_unlockedchapters_episodic", "1", FCVAR_ARCHIVE );
+ConVar sv_unlockedchapters_ep2( "sv_unlockedchapters_ep2", "1", FCVAR_ARCHIVE );
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: Updates which chapters are unlocked
 //-----------------------------------------------------------------------------
 void UpdateChapterRestrictions( const char *mapname )
 {
+#ifdef HL2_ANNIVERSARY_NOV2024
+	static ConVarRef workshop_playing_campaign( "workshop_playing_campaign" );
+
+#endif
 	// look at the chapter for this map
 	char chapterTitle[64];
 	chapterTitle[0] = 0;
@@ -2055,6 +2087,25 @@ void UpdateChapterRestrictions( const char *mapname )
 		}
 	}
 
+#ifdef HL2_ANNIVERSARY_NOV2024
+	if ( workshop && workshop_playing_campaign.GetInt() )
+	{
+		CUtlVector< PublishedFileId_t > items;
+		PublishedFileId_t nCampaignID = 0;
+		workshop->GetCurrentCampaign( items, nCampaignID );
+		if ( nCampaignID )
+		{
+			WorkshopItem_t *pItem = workshop->GetItem( nCampaignID );
+			if ( pItem )
+			{
+				SteamFriends()->SetRichPresence( "steam_display", "#Status_Workshop" );
+				SteamFriends()->SetRichPresence( "workshoptitle", pItem->m_Details.m_rgchTitle );
+				return;
+			}
+		}
+	}
+
+#endif
 	if ( !chapterTitle[0] )
 		return;
 
@@ -2070,6 +2121,34 @@ void UpdateChapterRestrictions( const char *mapname )
 	Q_snprintf(chapterNumberPrefix, sizeof(chapterNumberPrefix), "#%s_chapter", modDir);
 
 	const char *newChapterNumber = strstr( chapterTitle, chapterNumberPrefix );
+#ifdef HL2_ANNIVERSARY_NOV2024
+	const char *pszEpisode = "";
+	if ( !newChapterNumber && !Q_stricmp( modDir, "hl2_complete" ) )
+	{
+		// hl2_complete runs all three games; find which one this chapter belongs to
+		Q_snprintf( chapterNumberPrefix, sizeof(chapterNumberPrefix), "#%s_chapter", "hl2" );
+		newChapterNumber = strstr( chapterTitle, chapterNumberPrefix );
+		if ( !newChapterNumber )
+		{
+			Q_snprintf( chapterNumberPrefix, sizeof(chapterNumberPrefix), "#%s_chapter", "episodic" );
+			newChapterNumber = strstr( chapterTitle, chapterNumberPrefix );
+			if ( newChapterNumber )
+			{
+				pszEpisode = "#Status_Episode_1";
+			}
+		}
+		if ( !newChapterNumber )
+		{
+			Q_snprintf( chapterNumberPrefix, sizeof(chapterNumberPrefix), "#%s_chapter", "ep2" );
+			newChapterNumber = strstr( chapterTitle, chapterNumberPrefix );
+			if ( newChapterNumber )
+			{
+				pszEpisode = "#Status_Episode_2";
+			}
+		}
+	}
+
+#endif
 	if ( newChapterNumber )
 	{
 		// cut off the front
@@ -2100,6 +2179,55 @@ void UpdateChapterRestrictions( const char *mapname )
 			}
 		}
 
+#ifdef HL2_ANNIVERSARY_NOV2024
+		// ok we have the string, see if it's newer
+		int nUnlockedChapter = sv_unlockedchapters.GetInt();
+
+		// each expansion keeps its own unlocked chapter
+		char szExpansionChapters[128] = { 0 };
+		ConVarRef expansion( "hl2_expansion" );
+		if ( expansion.IsValid() && V_strlen( expansion.GetString() ) > 0 )
+		{
+			V_snprintf( szExpansionChapters, sizeof( szExpansionChapters ), "sv_unlockedchapters_%s", expansion.GetString() );
+			ConVarRef expansionChapters( szExpansionChapters );
+			nUnlockedChapter = expansionChapters.GetInt();
+		}
+
+		if ( nNewChapter > nUnlockedChapter )
+		{
+			// ok we're at a higher chapter, unlock
+			sv_unlockedchapters.SetValue( nNewChapter );
+
+			if ( szExpansionChapters[0] )
+			{
+				ConVarRef expansionChapters( szExpansionChapters );
+				if ( expansionChapters.IsValid() )
+				{
+					expansionChapters.SetValue( nNewChapter );
+				}
+			}
+
+			engine->ServerCommand( "host_writeconfig\n" );
+		}
+
+		IGameEvent *event = gameeventmanager->CreateEvent( "new_chapter" );
+		if ( event )
+		{
+			event->SetString( "chapter_name", chapterTitle );
+			event->SetInt( "old_chapter_index", g_nPreviousChapterIndex );
+			event->SetInt( "new_chapter_index", nNewChapter );
+			gameeventmanager->FireEventClientSide( event );
+		}
+
+		if ( SteamFriends() )
+		{
+			SteamFriends()->SetRichPresence( "steam_display", V_strlen( pszEpisode ) > 0 ? "#Status_Chapter" : "#Status_ChapterBase" );
+			SteamFriends()->SetRichPresence( "episode", pszEpisode );
+			SteamFriends()->SetRichPresence( "chapter", chapterTitle );
+		}
+
+		g_nPreviousChapterIndex = nNewChapter;
+#else
 		// ok we have the string, see if it's newer
 		const char *unlockedChapter = sv_unlockedchapters.GetString();
 		int nUnlockedChapter = atoi( unlockedChapter );
@@ -2117,6 +2245,7 @@ void UpdateChapterRestrictions( const char *mapname )
 		}
 
 		g_nCurrentChapterIndex = nNewChapter;
+#endif
 	}
 }
 

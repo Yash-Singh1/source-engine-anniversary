@@ -284,10 +284,9 @@ void CBasePlayer::ItemPostFrame()
 			{
 				Weapon_SetLastPending( GetActiveWeapon() );
 			}
-		}
 
-		if ( GetActiveWeapon() && (!IsInAVehicle() || UsingStandardWeaponsInVehicle()) )
-		{
+			if ( !IsInAVehicle() || UsingStandardWeaponsInVehicle() )
+			{
 #if defined( CLIENT_DLL )
 			// Not predicting this weapon
 			if ( GetActiveWeapon()->IsPredicted() )
@@ -295,6 +294,7 @@ void CBasePlayer::ItemPostFrame()
 
 			{
 				GetActiveWeapon()->ItemPostFrame( );
+			}
 			}
 		}
 	}
@@ -866,8 +866,8 @@ bool CBasePlayer::Weapon_Switch( CBaseCombatWeapon *pWeapon, int viewmodelindex 
 #else
 	int nFastSwitch = m_iHudFastSwitch;
 #endif
-	CBaseCombatWeapon *pLastWeapon = m_hLastWeaponPending.Get();
-	if ( nFastSwitch <= 0 || m_hLastWeapon.Get() == pWeapon )
+	CBaseCombatWeapon *pPrevWeapon = m_hLastWeapon.Get(), *pLastWeapon = m_hLastWeaponPending.Get();
+	if ( nFastSwitch <= 0 || pPrevWeapon == pWeapon )
 	{
 		pLastWeapon = GetActiveWeapon();
 	}

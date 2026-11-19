@@ -36,6 +36,7 @@ public:
 	float			GetFogStart();
 	float			GetFogMaxDensity();
 	float			GetFogEnd();
+	bool			GetFogRadial();
 	bool			UseScreenAspectRatio() const { return m_bUseScreenAspectRatio; }
 #ifdef HL2_ANNIVERSARY_NOV2024
 	bool			UseHDCamera() const { return m_bUseHDCamera; }

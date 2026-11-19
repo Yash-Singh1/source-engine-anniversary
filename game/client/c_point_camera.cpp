@@ -48,6 +48,10 @@ C_PointCamera::C_PointCamera()
 {
 	m_bActive = false;
 	m_bFogEnable = false;
+	m_bFogRadial = false;
+#ifdef HL2_ANNIVERSARY_NOV2024
+	m_FogColor_HDR.r = m_FogColor_HDR.g = m_FogColor_HDR.b = m_FogColor_HDR.a = 0;
+#endif
 
 	g_PointCameraList.Insert( this );
 }
@@ -116,6 +120,11 @@ float C_PointCamera::GetFogMaxDensity()
 bool C_PointCamera::IsActive()
 {
 	return m_bActive;
+}
+
+bool C_PointCamera::GetFogRadial()
+{
+	return m_bFogRadial;
 }
 
 

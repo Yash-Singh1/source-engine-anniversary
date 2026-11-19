@@ -188,7 +188,13 @@ void VideoPanel::OnKeyCodePressed( vgui::KeyCode code )
 		 code == KEY_XBUTTON_X || 
 		 code == KEY_XBUTTON_Y || 
 		 code == KEY_XBUTTON_START || 
-		 code == KEY_XBUTTON_BACK )
+		 code == KEY_XBUTTON_BACK ||
+		 code == STEAMCONTROLLER_A ||
+		 code == STEAMCONTROLLER_B ||
+		 code == STEAMCONTROLLER_X ||
+		 code == STEAMCONTROLLER_Y ||
+		 code == STEAMCONTROLLER_START ||
+		 code == STEAMCONTROLLER_SELECT )
 	{
 		OnClose();
 	}
@@ -403,8 +409,10 @@ CON_COMMAND( playvideo_exitcommand, "Plays a video and fires and exit command wh
 	if ( args.ArgC() < 2 )
 		return;
 
-	unsigned int nScreenWidth = ScreenWidth();
-	unsigned int nScreenHeight = ScreenHeight();
+	int vx, vy, vw, vh;
+	vgui::surface()->GetFullscreenViewport( vx, vy, vw, vh );
+	unsigned int nScreenWidth = vw;
+	unsigned int nScreenHeight = vh;
 
 	char strFullpath[MAX_PATH];
 	Q_strncpy( strFullpath, "media/", MAX_PATH );	// Assume we must play out of the media directory
