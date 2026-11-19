@@ -130,41 +130,7 @@ const SteamInfVersionInfo_t& GetSteamInfIDVersionInfo()
 //-----------------------------------------------------------------------------
 // Purpose: Disables the simulation and returns focus to the editor
 //-----------------------------------------------------------------------------
-#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
 void EditorToggle_f();
-#else
-#line 133
-void EditorToggle_f()
-{
-	if ( IsPC() )
-	{
-		IEngine::EngineState_t eOldState = eng->GetState();
-		bool bActive = ( eOldState == IEngine::DLL_PAUSED );
-
-		if ( ( eng->GetState() != IEngine::DLL_ACTIVE ) && ( eng->GetState() != IEngine::DLL_PAUSED ) )
-			return;
-
-		bool bCurrentlyActive = ( eng->GetState() != IEngine::DLL_PAUSED );
-		if ( bCurrentlyActive == bActive )
-			return;
-
-		if ( !bActive )
-		{
-			eng->SetNextState( IEngine::DLL_PAUSED );
-
-			// Detach input from the previous editor window
-			game->InputDetachFromGameWindow();
-		}
-		else
-		{
-			eng->SetNextState( IEngine::DLL_ACTIVE );
-
-			// Start accepting input from the new window
-			game->InputAttachToGameWindow();
-		}
-	}
-}
-#endif
 #line 163
 
 static ConCommand editor_toggle( "editor_toggle", EditorToggle_f, "Disables the simulation and returns focus to the editor", FCVAR_CHEAT );
@@ -1328,13 +1294,7 @@ void CEngineAPI::SetStartupInfo( StartupInfo_t &info )
 #ifndef NO_STEAM
 	if ( !CommandLine()->FindParm( "-nobreakpad" ) )
 	{
-#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
-#line 1090
-		char szSuffix[] = ""; const char *pszVersion = va( "%d%s", build_number(), szSuffix ); SteamAPI_UseBreakpadCrashHandler( pszVersion, __DATE__, __TIME__, CommandLine()->FindParm( "-full_memory_dumps" ) != 0, NULL, NULL );
-#else
 		SteamAPI_UseBreakpadCrashHandler( va( "%d%s", build_number(), "" ), __DATE__, __TIME__, false, NULL, NULL );
-#endif
-#line 1091
 	}
 #endif
 
@@ -1568,7 +1528,6 @@ void CEngineAPI::ActivateSimulation( bool bActive )
 		game->InputAttachToGameWindow();
 	}
 }
-#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
 
 //-----------------------------------------------------------------------------
 // Purpose: Disables the simulation and returns focus to the editor
@@ -1581,7 +1540,6 @@ void EditorToggle_f()
 		s_EngineAPI.ActivateSimulation( !bActive );
 	}
 }
-#endif
 #line 1290
 
 static void MoveConsoleWindowToFront()
