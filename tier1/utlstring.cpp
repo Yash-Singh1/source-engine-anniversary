@@ -134,10 +134,13 @@ CUtlString::CUtlString( const char *pString )
 	Set( pString );
 }
 
+#ifndef BYTEMATCH_RETAIL
 CUtlString::CUtlString( const char *pString, int length )
 {
 	SetDirect( pString, length );
 }
+#endif
+#line 141
 
 CUtlString::CUtlString( const CUtlString& string )
 {
@@ -465,6 +468,33 @@ void CUtlString::StripTrailingSlash()
 
 CUtlString CUtlString::Slice( int32 nStart, int32 nEnd ) const
 {
+#ifdef BYTEMATCH_RETAIL
+	if ( nStart < 0 )
+		nStart = Length() - (-nStart % Length());
+	else if ( nStart >= Length() )
+		nStart = Length();
+
+	if ( nEnd == 0x7FFFFFFF )
+		nEnd = Length();
+	else if ( nEnd < 0 )
+		nEnd = Length() - (-nEnd % Length());
+	else if ( nEnd >= Length() )
+		nEnd = Length();
+	
+	if ( nStart >= nEnd )
+		return CUtlString( "" );
+
+	const char *pIn = String();
+
+	CUtlString ret;
+	ret.m_Storage.SetLength( nEnd - nStart + 1 );
+	char *pOut = (char*)ret.m_Storage.Get();
+
+	memcpy( ret.m_Storage.Get(), &pIn[nStart], nEnd - nStart );
+	pOut[nEnd - nStart] = 0;
+
+	return ret;
+#else
 	int length = Length();
 	if ( length == 0 )
 	{
@@ -491,6 +521,8 @@ CUtlString CUtlString::Slice( int32 nStart, int32 nEnd ) const
 	CUtlString ret;
 	ret.SetDirect( pIn + nStart, nEnd - nStart );
 	return ret;
+#endif
+#line 494
 }
 
 // Grab a substring starting from the left or the right side.
@@ -553,6 +585,7 @@ void CUtlString::Append( const char *pchAddition )
 	*this += pchAddition;
 }
 
+#ifndef BYTEMATCH_RETAIL
 void CUtlString::Append( const char *pchAddition, int nChars )
 {
 	Assert( !m_Storage.IsReadOnly() );
@@ -840,7 +873,6 @@ CUtlString CUtlString::operator+( int rhs ) const
 	return ret;
 }
 
-#ifndef BYTEMATCH_RETAIL
 // Shared static empty string.
 const CUtlString &CUtlString::GetEmptyString()
 {

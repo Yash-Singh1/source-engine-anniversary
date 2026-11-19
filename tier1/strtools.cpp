@@ -1795,6 +1795,7 @@ void V_StripTrailingSlash( char *ppath )
 	}
 }
 
+#ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : *ppline - 
@@ -1849,6 +1850,8 @@ void V_StripSurroundingQuotes( char *ppline )
 		ppline[len] = 0;
 	}
 }
+#endif
+#line 1849
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -3135,6 +3138,7 @@ inline int V_iswspace( int c ) { return ( c <= 0xFFFF ) ? iswspace( (wint_t)c ) 
 #endif
 
 
+#ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
 // Purpose: Slightly modified strtok. Does not modify the input string. Does
 //			not skip over more than one separator at a time. This allows parsing
@@ -3454,7 +3458,6 @@ bool V_BasicHtmlEntityEncode( char *pDest, const int nDestSize, char const *pIn,
 }
 
 
-#ifndef BYTEMATCH_RETAIL
 bool V_HtmlEntityDecodeToUTF8( char *pDest, const int nDestSize, char const *pIn, const int nInSize )
 {
 	Assert( nDestSize == 0 || pDest != NULL );
@@ -3551,8 +3554,6 @@ bool V_HtmlEntityDecodeToUTF8( char *pDest, const int nDestSize, char const *pIn
 
 	return true;
 }
-#endif
-#line 3547
 
 static const char *g_pszSimpleBBCodeReplacements[] = {
 	"[b]", "<b>",
@@ -3823,7 +3824,6 @@ bool V_IsDeprecatedW( wchar_t wch )
 }
 
 
-#ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
 // returns true if the character is allowed in a DNS doman name, false otherwise
 //-----------------------------------------------------------------------------
