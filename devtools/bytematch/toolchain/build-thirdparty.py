@@ -5,15 +5,27 @@ for which no period osx32 archive exists locally (see thirdparty-static.md):
   libjpeg 8b      engine, clients, GameUI (retail compiled it as C++)
   libpng 1.5.2    engine, clients, GameUI, replay, chromehtml (system zlib)
   Crypto++ 5.6.1  filesystem_stdio, vpk (lib/common/osx32/libcryptopp.a in Valve's tree)
-  speex 1.0.4     vaudio_speex (lib/common/osx32/libspeex.a, built 2008)
+  speex 1.0.1     vaudio_speex (lib/common/osx32/libspeex.a, built 2008)
 
-Valve's archives were built years earlier with other compilers and unknown
-flags, so these are known non-matching inputs: they let modules link in
---retail-osx32 mode, not byte-match. Sources are pinned by sha256. protobuf
-2.3.0 is not built here; Source SDK 2013 ships the period osx32 archive.
+Valve's archives came from other compilers than the modules around them. The
+default (--compiler period) rebuilds them with those compilers, identified
+from the retail code and the archives' own debug info (lane-thirdparty2.md):
+
+  Crypto++  Apple gcc 4.2.1 (gcc-5666.3, build-gcc.sh), Valve's Steam copy of
+            5.6.1 (external/crypto++-5.61: patches/cryptopp561-valve*.patch) and
+            its GNUmakefile flags; MacOSX10.5.sdk (out-of-line libstdc++ atomics)
+  speex     Valve's copy is upstream 1.0.1. Apple gcc 4.2.1 build 5564, except
+            nb_celp.c, which Valve compiled with gcc 4.0.1 build 5484; MacOSX10.5.sdk
+  libpng    Apple gcc 4.2.1 -O2, MacOSX10.6.sdk
+  libjpeg   an old Apple clang at -O0; clang-600 -O0 is the closest we have
+
+--compiler clang builds everything with clang-600 and the retail flags (the
+previous behaviour; no period compilers or 10.5 SDK needed). Sources are
+pinned by sha256. protobuf 2.3.0 is not built here; Source SDK 2013 ships the
+period osx32 archive.
 
 Installs <prefix>/<retailflags.THIRDPARTY_DIR>/{lib,include}.
-Usage: build-thirdparty.py [--prefix DIR] [--only jpeg,png,cryptopp,speex]
+Usage: build-thirdparty.py [--prefix DIR] [--only jpeg,png,cryptopp,speex] [--compiler period|clang]
 """
 import argparse
 import concurrent.futures
@@ -35,15 +47,18 @@ TREE = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
 # libjpeg comes from utils/jpeglib: Valve's copy of 8b with the casts that let it
 # compile as C++ (README.valve), which is how the retail Mac archive was built.
 IN_TREE = {"jpeg": "utils/jpeglib"}
-PATCHES = {"cryptopp": ["cryptopp561-two-phase-lookup.patch"]}
+# cryptopp561-valve.patch is Valve's external/crypto++-5.61 (2018 leak) against
+# upstream; -2012 drops a constructor Valve added later for clang.
+PATCHES = {"cryptopp": ["cryptopp561-valve.patch"]}
+PERIOD_PATCHES = {"cryptopp": ["cryptopp561-valve-2012.patch"]}
 SOURCES = {
     "png": (["https://download.sourceforge.net/libpng/libpng-1.5.2.tar.gz"],
             "1ed281810348dbb61d02465c0dff854c17b826f5c5d76cce32bc0e6adca02156", "libpng-1.5.2"),
     "cryptopp": (["https://www.cryptopp.com/cryptopp561.zip",
                   "https://download.sourceforge.net/cryptopp/cryptopp561.zip"],
                  "98e74d8cb17a38033354519ac8ba9c5d98a6dc00bf5d1ec3c533c2e8ec86f268", "cryptopp561"),
-    "speex": (["https://downloads.xiph.org/releases/speex/speex-1.0.4.tar.gz"],
-              "d0708ab9d1a6ae6aa8f59cf7b8c37c1cf03fc2c2fe20401a03b08c57c9898630", "speex-1.0.4"),
+    "speex": (["https://downloads.xiph.org/releases/speex/speex-1.0.1.tar.gz"],
+              "2fdd4303bab90c240df478138a744890cde7fa25fbfd4ed29665cd7cb904b26b", "speex-1.0.1"),
 }
 
 JPEG_LIB = ("jaricom jcapimin jcapistd jcarith jccoefct jccolor jcdctmgr jchuff jcinit jcmainct "
@@ -55,9 +70,38 @@ PNG_LIB = ("png pngerror pngget pngmem pngpread pngread pngrio pngrtran pngrutil
            "pngwio pngwrite pngwtran pngwutil").split()
 CRYPTOPP_TESTS = {"bench", "bench2", "test", "validat1", "validat2", "validat3", "adhoc", "datatest",
                   "regtest", "fipsalgt", "dlltest"}
+# libspeex_la_SOURCES order, which is the member order of Valve's archive.
+SPEEX_LIB = ("nb_celp sb_celp lpc ltp lsp quant_lsp lsp_tables_nb gain_table gain_table_lbr "
+             "cb_search filters bits modes vq high_lsp_tables vbr hexc_table exc_5_256_table "
+             "exc_5_64_table exc_8_128_table exc_10_32_table exc_10_16_table exc_20_32_table "
+             "hexc_10_32_table misc speex_header speex_callbacks math_approx stereo").split()
+
+# Period compilers (build-gcc.sh): version, gcc target, gcc base version.
+GCC = {"5666.3": ("i686-apple-darwin10", "4.2.1"), "5564": ("i686-apple-darwin9", "4.2.1"),
+       "5484": ("i686-apple-darwin9", "4.0.1")}
 
 
-def fetch(work, name):
+def gcc_driver(prefix, version, cxx=False):
+    """Driver command for a build-gcc.sh compiler. Darwin 9 targets look for their
+    own headers under the SDK, which only carries Darwin 10's, so point at ours."""
+    target, base = GCC[version]
+    root = os.path.join(prefix, "gcc-" + version)
+    cmd = [os.path.join(root, "bin", "g++" if cxx else "gcc")]
+    if not os.path.exists(cmd[0]):
+        raise SystemExit(f"{cmd[0]} missing; run {HERE}/build-gcc.sh {version}")
+    if target.endswith("darwin9"):
+        cmd += ["-isystem", os.path.join(root, "lib", "gcc", target, base, "include")]
+    return cmd
+
+
+def sdk_dir(prefix, name):
+    d = os.path.join(prefix, "sdk", name)
+    if not os.path.isdir(d):
+        raise SystemExit(f"{d} missing; run {HERE}/extract-sdk106.sh")
+    return d
+
+
+def fetch(work, name, period):
     if name in IN_TREE:
         src = os.path.join(work, name + "-tree")
         shutil.rmtree(src, ignore_errors=True)
@@ -73,6 +117,10 @@ def fetch(work, name):
                 os.replace(path + ".part", path)
                 break
             except OSError as e:
+                # python.org builds may lack a CA bundle; curl uses the system's.
+                if subprocess.run(["curl", "-fsSL", "-o", path + ".part", u]).returncode == 0:
+                    os.replace(path + ".part", path)
+                    break
                 print(f"{name}: {u}: {e}", file=sys.stderr)
         else:
             raise SystemExit(f"{name}: download failed")
@@ -86,15 +134,15 @@ def fetch(work, name):
         zipfile.ZipFile(path).extractall(src)
     else:
         tarfile.open(path).extractall(work)
-    for patch in PATCHES.get(name, []):
+    for patch in PATCHES.get(name, []) + (PERIOD_PATCHES.get(name, []) if period else []):
         with open(os.path.join(HERE, "patches", patch)) as f:
             subprocess.run(["patch", "-p1", "--forward", "-s"], cwd=src, stdin=f, check=True)
     return src
 
 
-def compile_all(jobs):
+def compile_all(jobs, env=None):
     def one(cmd):
-        r = subprocess.run(cmd, capture_output=True, text=True)
+        r = subprocess.run(cmd, capture_output=True, text=True, env=env)
         return cmd[-1], r.returncode, r.stderr
     failed = []
     with concurrent.futures.ThreadPoolExecutor(os.cpu_count()) as ex:
@@ -105,45 +153,85 @@ def compile_all(jobs):
     return failed
 
 
-def build(name, src, p, out):
+def clang_flags(name, src, p):
+    """The clang-600 build with the retail flags (--compiler clang)."""
     sdk = p["sdk"]
+    if name == "jpeg":
+        return [p["cxx"], "-x", "c++"] + rf.cxxflags(sdk), {}
+    if name == "png":
+        return [p["cc"]] + [f for f in rf.cflags(sdk) if f != "-fvisibility=hidden"], {}
+    if name == "cryptopp":
+        # 5.6.1 is C++98 code; clang-600's integrated assembler rejects its GNU
+        # intel-syntax inline asm, so use the portable C++ paths.
+        return ([p["cxx"]] + [("-std=gnu++98" if f == "-std=gnu++11" else f) for f in rf.cxxflags(sdk)]
+                + ["-DCRYPTOPP_DISABLE_ASM"]), {}
+    return [p["cc"]] + rf.cflags(sdk), {}
+
+
+def period_flags(name, src, p, prefix):
+    """Valve's compiler and flags for each archive, as identified from retail.
+    Returns (default command, {source stem: command}) without -c/-o."""
+    if name == "jpeg":
+        # Retail's libjpeg is unoptimized clang output (smaller than clang-600's -O0).
+        flags = [("-O0" if f == "-O2" else f) for f in rf.cxxflags(p["sdk"])]
+        return [p["cxx"], "-x", "c++"] + flags, {}
+    if name == "png":
+        # Retail modules export libpng (lane-chromehtml2.md), so default visibility.
+        return gcc_driver(prefix, "5666.3") + [
+            "-isysroot", sdk_dir(prefix, "MacOSX10.6.sdk"), "-mmacosx-version-min=10.6", "-O2"], {}
+    if name == "cryptopp":
+        # Valve's GNUmakefile: -DNDEBUG -g -O2 -fPIC, the Steam build's -fvisibility=hidden -w,
+        # -pipe, and CRYPTOPP_DISABLE_ASM because Apple's as fails its GNU-as version probe.
+        return gcc_driver(prefix, "5666.3", cxx=True) + [
+            "-isysroot", sdk_dir(prefix, "MacOSX10.5.sdk"), "-mmacosx-version-min=10.5",
+            "-DNDEBUG", "-g", "-O2", "-fPIC", "-fvisibility=hidden", "-w", "-pipe",
+            "-DCRYPTOPP_DISABLE_ASM"], {}
+    # speex: the archive's DWARF producers name gcc 4.2.1 build 5564 for every object
+    # but nb_celp.o (gcc 4.0.1 build 5484), -O2 -g.
+    sdk = sdk_dir(prefix, "MacOSX10.5.sdk")
+    common = ["-isysroot", sdk, "-mmacosx-version-min=10.5", "-g", "-O2"]
+    return gcc_driver(prefix, "5564") + common, {"nb_celp": gcc_driver(prefix, "5484") + common}
+
+
+def build(name, src, p, out, prefix, period):
     objdir = os.path.join(out, "obj", name)
     shutil.rmtree(objdir, ignore_errors=True)
     os.makedirs(objdir)
     inc = os.path.join(out, "include")
     defs = ["-DNDEBUG"]
-    jobs, headers = [], []
+    headers = []
     if name == "jpeg":
         shutil.copy(os.path.join(src, "jconfig.txt"), os.path.join(src, "jconfig.h"))
-        # thirdparty-static.md: retail's libjpeg static functions are C++-mangled
-        flags = [p["cxx"], "-x", "c++"] + rf.cxxflags(sdk)
         files = [os.path.join(src, f + ".c") for f in JPEG_LIB]
         headers = [(os.path.join(src, h), "") for h in ("jpeglib.h", "jconfig.h", "jmorecfg.h", "jerror.h")]
     elif name == "png":
         shutil.copy(os.path.join(src, "scripts", "pnglibconf.h.prebuilt"), os.path.join(src, "pnglibconf.h"))
-        # Retail modules that link libpng export its functions (lane-chromehtml2.md),
-        # so dead stripping keeps them all; libjpeg stays hidden as in retail.
-        flags = [p["cc"]] + [f for f in rf.cflags(sdk) if f != "-fvisibility=hidden"]
         files = [os.path.join(src, f + ".c") for f in PNG_LIB]
         headers = [(os.path.join(src, h), "") for h in ("png.h", "pngconf.h", "pnglibconf.h")]
     elif name == "cryptopp":
-        # 5.6.1 is C++98 code; clang-600's integrated assembler rejects its GNU
-        # intel-syntax inline asm, so use the portable C++ paths.
-        flags = [p["cxx"]] + [("-std=gnu++98" if f == "-std=gnu++11" else f) for f in rf.cxxflags(sdk)]
-        defs.append("-DCRYPTOPP_DISABLE_ASM")
         files = [f for f in sorted(glob.glob(os.path.join(src, "*.cpp")))
                  if os.path.splitext(os.path.basename(f))[0] not in CRYPTOPP_TESTS]
         headers = [(h, "cryptopp") for h in glob.glob(os.path.join(src, "*.h"))]
     elif name == "speex":
-        flags = [p["cc"]] + rf.cflags(sdk) + ["-I" + os.path.join(src, "include")]
-        files = [f for f in sorted(glob.glob(os.path.join(src, "libspeex", "*.c")))
-                 if not os.path.basename(f).startswith("testenc")]
-        headers = [(h, "speex") for h in glob.glob(os.path.join(src, "include", "speex", "*.h"))]
+        # 1.0.1 keeps its public headers in libspeex/; modules include <speex/speex.h>.
+        defs = []
+        lib = os.path.join(src, "libspeex")
+        files = [os.path.join(lib, f + ".c") for f in SPEEX_LIB]
+        headers = [(os.path.join(lib, h), "speex") for h in
+                   ("speex.h", "speex_bits.h", "speex_header.h", "speex_callbacks.h", "speex_stereo.h")]
+    if period:
+        flags, per_file = period_flags(name, src, p, prefix)
+        defs = [] if name in ("cryptopp", "speex") else defs
+    else:
+        flags, per_file = clang_flags(name, src, p)
+    env = dict(os.environ, MACOSX_DEPLOYMENT_TARGET="10.5") if period else None
+    jobs = []
     for f in files:
-        o = os.path.join(objdir, os.path.splitext(os.path.basename(f))[0] + ".o")
-        jobs.append(flags + ["-I" + src] + defs + ["-c", f, "-o", o])
-    failed = compile_all(jobs)
-    objs = sorted(glob.glob(os.path.join(objdir, "*.o")))
+        stem = os.path.splitext(os.path.basename(f))[0]
+        o = os.path.join(objdir, stem + ".o")
+        jobs.append(per_file.get(stem, flags) + ["-I" + os.path.dirname(f)] + defs + ["-c", f, "-o", o])
+    failed = compile_all(jobs, env)
+    objs = [j[-1] for j in jobs]
     lib = os.path.join(out, "lib", f"lib{name}.a")
     os.makedirs(os.path.dirname(lib), exist_ok=True)
     if os.path.exists(lib):
@@ -165,13 +253,15 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--prefix", default=rf.TOOLCHAIN)
     ap.add_argument("--only", default="jpeg,png,cryptopp,speex")
+    ap.add_argument("--compiler", choices=("period", "clang"), default="period")
     a = ap.parse_args()
     p = rf.paths(a.prefix)
+    period = a.compiler == "period"
     out = os.path.join(a.prefix, rf.THIRDPARTY_DIR)
     work = os.path.join(a.prefix, "work", "thirdparty")
     os.makedirs(work, exist_ok=True)
     for name in a.only.split(","):
-        print(build(name, fetch(work, name), p, out))
+        print(build(name, fetch(work, name, period), p, out, a.prefix, period))
 
 
 if __name__ == "__main__":
