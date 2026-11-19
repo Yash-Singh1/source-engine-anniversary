@@ -144,14 +144,26 @@ MISNAMED_MIN_SIZE = 8
 
 
 def _head(f):
-    """Leading bytes no relocation of f covers (up to 4): the bucket key for a quick pre-filter."""
-    return f.data[:min([rel.offset for rel in f.relocs] + [4])]
+    """Bucket keys for a quick pre-filter: the leading bytes no relocation of f covers (up to 4),
+    then the same cut after the first call/jmp rel32 opcode byte. A linked PE has no relocation
+    for that displacement (MSVC dynamic initializers start with `call EntityFactoryDictionary`)."""
+    n = min([rel.offset for rel in f.relocs] + [4])
+    keys = [f.data[:n]]
+    for i, b in enumerate(f.data[:n]):
+        if b in (0xe8, 0xe9):
+            keys.append(f.data[:i + 1])
+            break
+    return [k for k in dict.fromkeys(keys) if k]
 
 
-def _unique_match(cands, key, accept, tiebreak, obj=None):
-    """The one candidate accept() takes; ties go to tiebreak(), then to the candidates from
-    object `obj` (the name map's object attribution)."""
-    hits = [c for c in cands.get(key, ()) if accept(c)]
+def _unique_match(cands, keys, accept, tiebreak, obj=None):
+    """The one candidate accept() takes in the first bucket of `keys` with any; ties go to
+    tiebreak(), then to the candidates from object `obj` (the name map's object attribution)."""
+    hits = []
+    for key in keys:
+        hits = [c for c in cands.get(key, ()) if accept(c)]
+        if hits:
+            break
     if len(hits) > 1:
         hits = [c for c in hits if tiebreak(c)]
     if len(hits) > 1 and obj:
