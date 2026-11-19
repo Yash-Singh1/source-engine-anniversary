@@ -794,6 +794,28 @@ CHudTexture *CHud::GetIcon( const char *szIcon )
 	return m_Icons[ i ];
 }
 
+#ifdef HL2_ANNIVERSARY_NOV2024
+//-----------------------------------------------------------------------------
+// Purpose: removes an icon from the list and frees it
+//-----------------------------------------------------------------------------
+void CHud::RemoveIcon( CHudTexture *icon )
+{
+	if ( !icon )
+		return;
+
+	for ( int i = m_Icons.First(); m_Icons.IsValidIndex( i ); i = m_Icons.Next( i ) )
+	{
+		if ( m_Icons[ i ] == icon )
+		{
+			g_HudTextureMemoryPool.Free( icon );
+			m_Icons.RemoveAt( i );
+			return;
+		}
+	}
+}
+#endif
+#line 796
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
