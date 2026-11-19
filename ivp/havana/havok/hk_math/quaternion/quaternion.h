@@ -10,7 +10,11 @@ class hk_Quaternion : public hk_Vector4
 {
 	public:
 
+#ifdef BYTEMATCH_RETAIL
+		inline hk_Quaternion();
+#else
 		inline hk_Quaternion() = default;
+#endif
 			//: Empty constructor
 
 		inline hk_Quaternion(hk_real x, hk_real y, hk_real z, hk_real w);

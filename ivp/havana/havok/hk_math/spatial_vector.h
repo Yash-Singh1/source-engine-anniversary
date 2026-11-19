@@ -11,7 +11,11 @@ class hk_Spatial_Vector
 {
 	public:
 
+#ifdef BYTEMATCH_RETAIL
+		inline hk_Spatial_Vector();		
+#else
 		inline hk_Spatial_Vector() = default;
+#endif
 		inline hk_Spatial_Vector( const hk_Spatial_Vector& v);
 		inline hk_Spatial_Vector(hk_real a, hk_real b, hk_real c, hk_real d, hk_real e, hk_real f);
 		inline hk_Spatial_Vector(hk_Vector3 &a, hk_Vector3 &b ); 

@@ -9,7 +9,11 @@
 class hk_Rotation : public hk_Matrix3
 {
 	public:		
+#ifdef BYTEMATCH_RETAIL
+		inline hk_Rotation() { }
+#else
 		inline hk_Rotation() = default;
+#endif
 			//: Empty constructor.
 		inline ~hk_Rotation() { }
 			//: Empty deconstructor.

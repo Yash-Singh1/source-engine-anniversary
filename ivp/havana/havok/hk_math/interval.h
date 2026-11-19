@@ -8,7 +8,14 @@ class hk_Interval
 
 		HK_DECLARE_NONVIRTUAL_CLASS_ALLOCATOR(HK_MEMORY_CLASS_CONSTRAINT, hk_Interval<T> )
 
+#ifdef BYTEMATCH_RETAIL
+		inline hk_Interval()
+		{
+		}
+
+#else
 		inline hk_Interval() = default;
+#endif
 
 		inline hk_Interval(const T& a, const T& b)
 			: m_min(a), m_max(b)

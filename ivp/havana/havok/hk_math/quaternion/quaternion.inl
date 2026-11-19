@@ -1,3 +1,10 @@
+#ifdef BYTEMATCH_RETAIL
+
+hk_Quaternion::hk_Quaternion()
+{
+}
+
+#endif
 hk_Quaternion::hk_Quaternion(const hk_Rotation& r)
 {
 	this->set(r);

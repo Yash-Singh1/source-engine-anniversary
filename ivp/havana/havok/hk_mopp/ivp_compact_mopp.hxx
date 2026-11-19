@@ -78,7 +78,11 @@ public:
 
 private: 
 
+#ifdef BYTEMATCH_RETAIL
+    IVP_Compact_Mopp() {;};
+#else
     IVP_Compact_Mopp() = default;
+#endif
 
 };
 

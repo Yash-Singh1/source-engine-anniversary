@@ -8,7 +8,11 @@
 class hk_Array_Base
 {
 	public:
+#ifdef BYTEMATCH_RETAIL
+			inline hk_Array_Base();
+#else
 			inline hk_Array_Base() = default;
+#endif
 	protected:
 			inline hk_Array_Base(char *elems, int n_elems);
 

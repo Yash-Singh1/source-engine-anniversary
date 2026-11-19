@@ -12,7 +12,11 @@ class hk_Matrix3
 
 		HK_DECLARE_NONVIRTUAL_CLASS_ALLOCATOR(HK_MEMORY_CLASS_CONSTRAINT, hk_Matrix3)
 
+#ifdef BYTEMATCH_RETAIL
+		inline hk_Matrix3();
+#else
 		inline hk_Matrix3() = default;
+#endif
 			//: Empty default constructor
 		inline ~hk_Matrix3() {}
 			//:: Empty default destructor

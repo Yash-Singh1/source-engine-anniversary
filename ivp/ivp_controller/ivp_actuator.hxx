@@ -221,7 +221,11 @@ public:
     IVP_U_Float_Point core_pos;		// core position of anchor
     class IVP_Actuator *l_actuator;
 public:
+#ifdef BYTEMATCH_RETAIL
+    IVP_Anchor(){;};
+#else
     IVP_Anchor() = default;
+#endif
     void object_is_going_to_be_deleted_event(IVP_Real_Object *obj);
     
     void init_anchor(IVP_Actuator *, IVP_Template_Anchor *);	// constructor, called by IVP_Real_Object::create_anchor

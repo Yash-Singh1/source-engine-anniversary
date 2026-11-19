@@ -34,7 +34,11 @@ class IVP_Compact_Ledgetree_Node;
 
 
 class IVP_Compact_Surface {
+#ifdef BYTEMATCH_RETAIL
+    IVP_Compact_Surface(){;};
+#else
     IVP_Compact_Surface() = default;
+#endif
 
 public:
     IVP_U_Float_Point3	mass_center;

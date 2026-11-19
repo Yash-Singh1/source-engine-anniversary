@@ -9,7 +9,11 @@ class hk_Spatial_Matrix
 {
 	public:
 
+#ifdef BYTEMATCH_RETAIL
+		inline hk_Spatial_Matrix();
+#else
 		inline hk_Spatial_Matrix() = default;
+#endif
 			//: construct an uninitialized spatial matrix
 
 		void set_spatial_inertia_tensor( const hk_Matrix3& inertia_tensor, const hk_real mass );

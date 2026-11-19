@@ -133,7 +133,11 @@ public:
     struct ivp_triangle_tmp{
 	struct ivp_triangle_gen{
 	    IVP_U_Hesse hesse;			// normized hesse
+#ifdef BYTEMATCH_RETAIL
+		ivp_triangle_gen(){;};
+#else
 		ivp_triangle_gen() = default;
+#endif
 	} gen;
 	ivp_triangle_tmp(){;};
     } tmp;    

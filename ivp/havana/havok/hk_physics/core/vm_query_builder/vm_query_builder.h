@@ -19,7 +19,11 @@ class hk_VMQ_Storage
 {
 	public:
 
+#ifdef BYTEMATCH_RETAIL
+		inline hk_VMQ_Storage() { }
+#else
 		inline hk_VMQ_Storage() = default;
+#endif
 		inline ~hk_VMQ_Storage(){ }
 
 		inline void initialize()
@@ -87,7 +91,11 @@ class hk_VM_Query_Builder
 {
 	public:
 
+#ifdef BYTEMATCH_RETAIL
+		inline hk_VM_Query_Builder(){}
+#else
 		inline hk_VM_Query_Builder() = default;
+#endif
 
 		void begin(int size)
 		{

@@ -3,6 +3,12 @@
 
 #include <hk_math/spatial_matrix.h>
 
+#ifdef BYTEMATCH_RETAIL
+hk_Spatial_Vector::hk_Spatial_Vector()
+{
+}
+
+#endif
 hk_Spatial_Vector::hk_Spatial_Vector(hk_real a, hk_real b, hk_real c, hk_real d, hk_real e, hk_real f)
 	: top(a,b,c), bottom(d,e,f)
 {

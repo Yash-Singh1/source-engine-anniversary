@@ -120,7 +120,11 @@ public:
     IVP_RETURN_TYPE fast_normize();	// normize vector (0.1f% error)
     void print(const char *comment = 0) const;
 
+#ifdef BYTEMATCH_RETAIL
+    IVP_U_Float_Point(){;};
+#else
     IVP_U_Float_Point() = default;
+#endif
     IVP_U_Float_Point(IVP_DOUBLE x, IVP_DOUBLE y,IVP_DOUBLE z){ k[0] = (IVP_FLOAT)x; k[1] = (IVP_FLOAT)y; k[2] = (IVP_FLOAT)z;};
     IVP_U_Float_Point(const IVP_U_Float_Point *p);
 
@@ -259,7 +263,11 @@ public:
     
     void print(const char *comment = 0);
 
+#ifdef BYTEMATCH_RETAIL
+    IVP_U_Point(){;};
+#else
     IVP_U_Point() = default;
+#endif
     inline IVP_U_Point(const IVP_U_Float_Point &p);
     IVP_U_Point(IVP_DOUBLE x, IVP_DOUBLE y,IVP_DOUBLE z){ k[0] = x; k[1] = y; k[2] = z;};
 
@@ -386,7 +394,11 @@ public:
     // get the distance between a point and the plane
     inline IVP_DOUBLE get_dist(const IVP_U_Float_Point *p) const;				// get the distance between a point and the plane
 
+#ifdef BYTEMATCH_RETAIL
+    IVP_U_Float_Hesse(){;};
+#else
     IVP_U_Float_Hesse() = default;
+#endif
     IVP_U_Float_Hesse(IVP_DOUBLE xi, IVP_DOUBLE yi, IVP_DOUBLE zi, IVP_DOUBLE val) { k[0]=(IVP_FLOAT)xi; k[1]=(IVP_FLOAT)yi; k[2]=(IVP_FLOAT)zi; hesse_val=val; }
 
 	void byte_swap() { ivp_byte_swap4( (uint&) hesse_val ); IVP_U_Float_Point::byte_swap(); }
@@ -604,7 +616,11 @@ public:
 
     inline IVP_DOUBLE inline_estimate_q_diff_to(const IVP_U_Float_Quat *reference) const;	// roughly estimate the quad alpha
 
+#ifdef BYTEMATCH_RETAIL
+    IVP_U_Quat(){};  // not initialized quat
+#else
     IVP_U_Quat() = default;  // not initialized quat
+#endif
     IVP_U_Quat(const IVP_U_Point &p){ this->set_fast_multiple(&p,1.0f); }; // init by a rotation
     IVP_U_Quat( const IVP_U_Matrix3 *m) { this->set_quaternion(m); }
     // INTERN_START

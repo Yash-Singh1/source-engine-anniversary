@@ -8,7 +8,11 @@ class hk_QTransform
 
 		HK_DECLARE_NONVIRTUAL_CLASS_ALLOCATOR(HK_MEMORY_CLASS_CONSTRAINT, hk_QTransform)
 
+#ifdef BYTEMATCH_RETAIL
+		inline hk_QTransform();
+#else
 		inline hk_QTransform() = default;
+#endif
 			//:
 
 		inline hk_QTransform(const hk_Vector3& axis, hk_real angle,

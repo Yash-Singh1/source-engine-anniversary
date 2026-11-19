@@ -1,3 +1,10 @@
+#ifdef BYTEMATCH_RETAIL
+hk_Array_Base::hk_Array_Base()
+{
+}
+
+
+#endif
 template <class T>
 hk_Array<T>::hk_Array( int initial_size )
 {

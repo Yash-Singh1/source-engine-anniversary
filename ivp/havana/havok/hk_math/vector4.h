@@ -9,7 +9,11 @@ class hk_Vector4 : public hk_Vector3
 {
 	public:
 
+#ifdef BYTEMATCH_RETAIL
+		inline hk_Vector4();
+#else
 		inline hk_Vector4() = default;
+#endif
 		inline hk_Vector4(hk_real a, hk_real b, hk_real c, hk_real d);
 
 		inline void operator=  (const hk_Vector4& v);

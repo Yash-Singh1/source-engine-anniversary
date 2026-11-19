@@ -11,7 +11,11 @@ class IVP_Environment;
 class IVP_Time_Event {
 public:
     int index;    
+#ifdef BYTEMATCH_RETAIL
+    IVP_Time_Event(){;};
+#else
     IVP_Time_Event() = default;
+#endif
 #ifdef BYTEMATCH_RETAIL
 #line 18
 #endif

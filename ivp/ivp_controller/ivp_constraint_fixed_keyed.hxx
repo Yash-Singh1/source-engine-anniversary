@@ -15,7 +15,11 @@
 
 class IVP_Template_Constraint_Fixed_Keyframed:public IVP_Template_Controller_Motion {
 public:
+#ifdef BYTEMATCH_RETAIL
+    IVP_Template_Constraint_Fixed_Keyframed();
+#else
     IVP_Template_Constraint_Fixed_Keyframed() = default;
+#endif
 };
 
 class IVP_Constraint_Fixed_Keyframed: public IVP_Controller_Dependent {

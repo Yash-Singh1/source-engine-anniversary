@@ -9,7 +9,11 @@ class hk_Ray
 
 		HK_DECLARE_NONVIRTUAL_CLASS_ALLOCATOR(HK_MEMORY_CLASS_CONSTRAINT, hk_Ray)
 
+#ifdef BYTEMATCH_RETAIL
+		inline hk_Ray() { }
+#else
 		inline hk_Ray() = default;
+#endif
 		inline hk_Ray(const hk_Vector3& orig, const hk_Vector3 dir);
 
 		inline void set_zero();

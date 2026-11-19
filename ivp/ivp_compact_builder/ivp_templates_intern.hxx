@@ -83,7 +83,11 @@ public:
 class IVP_Template_Triangle {
 public:
     IVP_Template_Point tri_points[3]; // array of all 3 points of triangle
+#ifdef BYTEMATCH_RETAIL
+    IVP_Template_Triangle(){ ; }; // used by graph_lib
+#else
     IVP_Template_Triangle() = default; // used by graph_lib
+#endif
 };
 
 

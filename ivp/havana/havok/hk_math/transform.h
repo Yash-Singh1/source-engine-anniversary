@@ -16,7 +16,11 @@ class hk_Transform : public hk_Rotation
 
 		HK_DECLARE_NONVIRTUAL_CLASS_ALLOCATOR(HK_MEMORY_CLASS_CONSTRAINT, hk_Transform)
 
+#ifdef BYTEMATCH_RETAIL
+		inline hk_Transform();
+#else
 		inline hk_Transform() = default;
+#endif
 			//: Empty default constructor.
 
 		hk_Transform(const hk_Quaternion &q, const hk_Vector3 &translation);

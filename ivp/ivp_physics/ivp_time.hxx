@@ -19,7 +19,11 @@ class IVP_Mindist;
 class IVP_Time_Event_PSI : public IVP_Time_Event
 {
 public:
+#ifdef BYTEMATCH_RETAIL
+    IVP_Time_Event_PSI(){;};
+#else
     IVP_Time_Event_PSI() = default;
+#endif
     void simulate_time_event(IVP_Environment *env);
 };
 

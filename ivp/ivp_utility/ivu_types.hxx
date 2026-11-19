@@ -155,7 +155,11 @@ public:
     void operator-=(const IVP_Time b) { this->seconds -= b.seconds; }
     IVP_Time operator+(double val) const { IVP_Time result; result.seconds = this->seconds + val; return result;}
 
+#ifdef BYTEMATCH_RETAIL
+    IVP_Time(){;};
+#else
     IVP_Time() = default;
+#endif
     IVP_Time(double time){ seconds = time; };
 };
 

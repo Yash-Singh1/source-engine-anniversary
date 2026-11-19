@@ -52,7 +52,11 @@ public:
     IVP_Cache_Ledge_Point(IVP_Real_Object *obj, const IVP_Compact_Ledge *ledge){
 	this->init_cache_ledge_point(obj,ledge);
     }
+#ifdef BYTEMATCH_RETAIL
+    IVP_Cache_Ledge_Point(){};
+#else
     IVP_Cache_Ledge_Point() = default;
+#endif
 };
 
 
