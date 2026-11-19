@@ -25,7 +25,12 @@ pinned by sha256. protobuf 2.3.0 is not built here; Source SDK 2013 ships the
 period osx32 archive.
 
 Installs <prefix>/<retailflags.THIRDPARTY_DIR>/{lib,include}.
+--speex-archive takes Valve's own prebuilt instead (the 2018 leak's
+engine/voice_codecs/speex/source/osx/libspeex.a, the 2008 archive retail
+links): our gcc 4.0.1 build of nb_celp.c differs from it in nb_decode only.
+
 Usage: build-thirdparty.py [--prefix DIR] [--only jpeg,png,cryptopp,speex] [--compiler period|clang]
+                           [--speex-archive LIBSPEEX_A]
 """
 import argparse
 import concurrent.futures
@@ -254,6 +259,7 @@ def main():
     ap.add_argument("--prefix", default=rf.TOOLCHAIN)
     ap.add_argument("--only", default="jpeg,png,cryptopp,speex")
     ap.add_argument("--compiler", choices=("period", "clang"), default="period")
+    ap.add_argument("--speex-archive", help="link this prebuilt libspeex.a instead of building it")
     a = ap.parse_args()
     p = rf.paths(a.prefix)
     period = a.compiler == "period"
@@ -262,6 +268,9 @@ def main():
     os.makedirs(work, exist_ok=True)
     for name in a.only.split(","):
         print(build(name, fetch(work, name, period), p, out, a.prefix, period))
+        if name == "speex" and a.speex_archive:
+            shutil.copy(a.speex_archive, os.path.join(out, "lib", "libspeex.a"))
+            print(f"speex: using {a.speex_archive}")
 
 
 if __name__ == "__main__":
