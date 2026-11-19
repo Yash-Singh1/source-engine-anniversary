@@ -424,8 +424,14 @@ inline bool  KeyValues::IsEmpty( int keySymbol )
 	return dat ? dat->IsEmpty( ) : true;
 }
 
+#ifdef HL2_LOSTCOAST
+bool IsSteamDeck();
+#else
+#line 427
 // bSteamDeckOnly: true only on a Steam Deck, otherwise also when GamepadUI / Steam Big Picture is in use
 bool IsSteamDeck( bool bSteamDeckOnly = false );
+#endif
+#line 429
 
 bool EvaluateConditional( const char *str );
 

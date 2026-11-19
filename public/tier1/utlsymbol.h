@@ -172,6 +172,10 @@ protected:
 	CTree m_Lookup;
 
 	bool m_bInsensitive;
+#ifdef HL2_LOSTCOAST
+	mutable const char* m_pUserSearchString;
+#endif
+#line 175
 
 	// stores the string data
 	CUtlVector<StringPool_t*> m_StringPools;

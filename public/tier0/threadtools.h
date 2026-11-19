@@ -1087,7 +1087,10 @@ protected:
 	int m_cSet;
 	bool m_bManualReset;
 	bool m_bWakeForEvent;
+#ifndef HL2_LOSTCOAST
 	int m_nWakeGeneration;
+#endif
+#line 1091
 #else
 #error "Implement me"
 #endif

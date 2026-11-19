@@ -25,7 +25,7 @@
   "WereCheatsEverOn()"
  ],
  "retail_reference": {
-  "module": "hl2_complete/server",
+  "module": "episodic/server",
   "class": "CAchievementMgr",
   "offset": 20,
   "chain": [
@@ -33,8 +33,8 @@
    "IAchievementMgr"
   ]
  },
- "retail_len": 11,
- "retail_len_basis": "shortest deriving subtable",
+ "retail_len": 13,
+ "retail_len_basis": "override: November 2024 servers (episodic, hl2) end with CanEarnForCurrentExpansion/CanEarnForExpansion (their non-virtual thunks at slots 11 and 12); the 11-slot shortest table is Lost Coast's October build, where HL2_LOSTCOAST drops both",
  "retail_len_bounds": {
   "shortest deriving subtable": 11
  },
@@ -104,6 +104,18 @@
    "name": "WereCheatsEverOn",
    "sig": "WereCheatsEverOn()",
    "symbol": "non-virtual thunk to CAchievementMgr::WereCheatsEverOn()"
+  },
+  {
+   "index": 11,
+   "name": "CanEarnForCurrentExpansion",
+   "sig": "CanEarnForCurrentExpansion(int)",
+   "symbol": "non-virtual thunk to CAchievementMgr::CanEarnForCurrentExpansion(int)"
+  },
+  {
+   "index": 12,
+   "name": "CanEarnForExpansion",
+   "sig": "CanEarnForExpansion(int, char const*)",
+   "symbol": "non-virtual thunk to CAchievementMgr::CanEarnForExpansion(int, char const*)"
   }
  ],
  "derived": [
