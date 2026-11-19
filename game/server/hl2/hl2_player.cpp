@@ -638,7 +638,7 @@ void CHL2_Player::PreThink(void)
 		NDebugOverlay::Line( GetAbsOrigin(), predPos, 0, 255, 0, 0, 0.01f );
 	}
 
-	if ( HL2_EPISODIC_ACTIVE() )
+
 	{
 #ifdef HL2_EPISODIC
 		if( m_hLocatorTargetEntity != NULL )
@@ -746,7 +746,7 @@ void CHL2_Player::PreThink(void)
 	else if ( IsSprinting() )
 	{
 		// Disable sprint while ducked unless we're in the air (jumping)
-		if ( IsDucked() && ( GetGroundEntity() != NULL ) )
+		if ( NOV2024_ONLY( ( m_nButtons & IN_DUCK ) && ) IsDucked() && ( GetGroundEntity() != NULL ) )
 		{
 			StopSprinting();
 		}
@@ -962,8 +962,8 @@ void CHL2_Player::PreThink(void)
 			//FIXME: Held weapons like the grenade get sad when this happens
 	#ifdef HL2_EPISODIC
 			// Episodic allows players to zoom while using a func_tank
-			CBaseCombatWeapon* pWep = GetActiveWeapon();
-			if ( !m_hUseEntity || ( pWep && pWep->IsWeaponVisible() ) )
+			bool bEpisodic = IsHL2Episodic(); CBaseCombatWeapon* pWep = bEpisodic ? GetActiveWeapon() : NULL;
+			if ( !bEpisodic || !m_hUseEntity || ( pWep && pWep->IsWeaponVisible() ) )
 	#endif
 			m_nButtons &= ~(IN_ATTACK|IN_ATTACK2);
 		}
@@ -1056,7 +1056,7 @@ void CHL2_Player::HandleAdmireGlovesAnimation( void )
 
 void CHL2_Player::Activate( void )
 {
-	BaseClass::Activate();
+	BaseClass::Activate(); NOV2024_ONLY( g_bCacheLegacyFlashlightStatus = true; )
 	InitSprinting();
 
 	if ( HL2_EPISODIC_ACTIVE() )
@@ -1221,7 +1221,7 @@ void CHL2_Player::Spawn(void)
 	SetModel( "models/player.mdl" );
 #endif
 #endif
-
+	NOV2024_ONLY( g_bCacheLegacyFlashlightStatus = true; )
 	BaseClass::Spawn();
 
 	//

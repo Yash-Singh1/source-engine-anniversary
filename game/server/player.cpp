@@ -2609,6 +2609,12 @@ void CBasePlayer::ObserverUse( bool bIsPressed )
 
 void CBasePlayer::JumptoPosition(const Vector &origin, const QAngle &angles)
 {
+#ifdef BYTEMATCH_RETAIL
+	SetAbsOrigin( origin );
+	SetAbsVelocity( vec3_origin );	// stop movement
+	SetLocalAngles( angles );
+	SnapEyeAngles( angles );
+#else
     Vector neworigin;
     QAngle newangles;
 
@@ -2625,6 +2631,7 @@ void CBasePlayer::JumptoPosition(const Vector &origin, const QAngle &angles)
     SetAbsVelocity( vec3_origin );    // stop movement
     SetLocalAngles( newangles );
     SnapEyeAngles( newangles );
+#endif
 }
 
 bool CBasePlayer::SetObserverTarget(CBaseEntity *target)
@@ -5494,6 +5501,16 @@ bool CBasePlayer::GetInVehicle( IServerVehicle *pVehicle, int nRole )
 
 	OnVehicleStart();
 
+	if ( IsPlayer() )
+	{
+		IGameEvent *event = gameeventmanager->CreateEvent( "enter_vehicle" );
+		if ( event )
+		{
+			event->SetInt( "vehicle", pVehicle->GetVehicleEnt()->entindex() );
+			gameeventmanager->FireEvent( event );
+		}
+	}
+
 	return true;
 }
 
@@ -5567,6 +5584,16 @@ void CBasePlayer::LeaveVehicle( const Vector &vecExitPoint, const QAngle &vecExi
 
 	// Just cut all of the rumble effects. 
 	RumbleEffect( RUMBLE_STOP_ALL, 0, RUMBLE_FLAGS_NONE );
+
+	if ( IsPlayer() )
+	{
+		IGameEvent *event = gameeventmanager->CreateEvent( "leave_vehicle" );
+		if ( event )
+		{
+			event->SetInt( "vehicle", pVehicle->GetVehicleEnt()->entindex() );
+			gameeventmanager->FireEvent( event );
+		}
+	}
 }
 
 
@@ -6535,7 +6562,17 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 			angle.y = atof( args[5] );
 			angle.z = 0.0f;
 
-			JumptoPosition( origin, angle );
+			// If the player jumps outside world extents it will hangs the server
+			CWorld *world = GetWorldEntity();
+			if ( world )
+			{
+				Vector vecWorldMins, vecWorldMaxs;
+				world->GetWorldBounds( vecWorldMins, vecWorldMaxs );
+				VectorMax( origin, vecWorldMins, origin );
+				VectorMin( origin, vecWorldMaxs, origin );
+
+				JumptoPosition( origin, angle );
+			}
 		}
 		
 		return true;
@@ -7864,6 +7901,7 @@ void CMovementSpeedMod::InputSpeedMod(inputdata_t &data)
 				if ( pPlayer->GetActiveWeapon() )
 				{
 					pPlayer->Weapon_SetLast( pPlayer->GetActiveWeapon() );
+					pPlayer->Weapon_SetLastPending( pPlayer->GetActiveWeapon() );
 					pPlayer->GetActiveWeapon()->Holster();
 					pPlayer->ClearActiveWeapon();
 				}

@@ -303,7 +303,22 @@ C_ClientRagdoll::C_ClientRagdoll( bool bRestoring )
 
 void C_ClientRagdoll::OnSave( void )
 {
+	C_EntityFlame *pFireChild = dynamic_cast<C_EntityFlame *>( GetEffectEntity() );
+
+	if ( pFireChild == NULL )
+		return;
+
+	for ( int i = 0; i < NUM_HITBOX_FIRES; i++ )
+	{
+		if ( pFireChild->m_pFireSmoke[i] != NULL )
+		{
+			m_flScaleEnd[i] = pFireChild->m_pFireSmoke[i]->m_flScaleEnd;
+			m_flScaleTimeStart[i] = pFireChild->m_pFireSmoke[i]->m_flScaleTimeStart;
+			m_flScaleTimeEnd[i] = pFireChild->m_pFireSmoke[i]->m_flScaleTimeEnd;
+		}
+	}
 }
+#line 307
 
 void C_ClientRagdoll::OnRestore( void )
 {
@@ -970,7 +985,7 @@ void C_BaseAnimating::UnlockStudioHdr()
 			// Immediate-mode rendering, can unlock immediately
 			if ( pStudioHdr->GetVirtualModel() )
 			{
-				MDLHandle_t hVirtualModel = VoidPtrToMDLHandle( m_pStudioHdr->GetRenderHdr()->VirtualModel() );
+				MDLHandle_t hVirtualModel = VoidPtrToMDLHandle( pStudioHdr->VirtualModel() );
 				mdlcache->UnlockStudioHdr( hVirtualModel );
 			}
 			mdlcache->UnlockStudioHdr( m_hStudioHdr );
@@ -1777,7 +1792,7 @@ void C_BaseAnimating::MaintainSequenceTransitions( IBoneSetup &boneSetup, float 
 	if ( !boneSetup.GetStudioHdr() )
 		return;
 
-	if ( prediction->InPrediction() )
+	if ( prediction->InPrediction() || m_lifeState == LIFE_DYING )
 	{
 		m_nPrevNewSequenceParity = m_nNewSequenceParity;
 		return;

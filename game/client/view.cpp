@@ -128,7 +128,7 @@ static ConVar r_mapextents( "r_mapextents", MAPEXTENTS_DEFAULT, FCVAR_CHEAT,
 						   "Set the max dimension for the map.  This determines the far clipping plane" );
 
 // UNDONE: Delete this or move to the material system?
-ConVar	gl_clear( "gl_clear", "1");
+ConVar	gl_clear( "gl_clear", NOV2024_ONLY( "1" ) OCT2024_ONLY( "0" ) );
 ConVar	gl_clear_randomcolor( "gl_clear_randomcolor", "0", FCVAR_CHEAT, "Clear the back buffer to random colors every frame. Helps spot open seams in geometry." );
 
 static ConVar r_farz( "r_farz", "-1", FCVAR_CHEAT, "Override the far clipping plane. -1 means to use the value in env_fog_controller." );
@@ -938,7 +938,7 @@ void CViewRender::WriteSaveGameScreenshotOfSize( const char *pFilename, int widt
 	{
 		// Write TGA format to buffer
 		int iMaxTGASize = 1024 + ( nSrcWidth * nSrcHeight * 4 );
-		void *pTGA = new char[ iMaxTGASize ];
+		void *pTGA = malloc( iMaxTGASize );
 		buffer.SetExternalBuffer( pTGA, iMaxTGASize, 0 );
 
 		bWriteResult = TGAWriter::WriteToBuffer( pSrcImage, buffer, nSrcWidth, nSrcHeight, IMAGE_FORMAT_RGB888, IMAGE_FORMAT_RGB888 );
@@ -1211,7 +1211,11 @@ void CViewRender::Render( vrect_t *rect )
 	    {
 		    nClearFlags |= VIEW_CLEAR_COLOR;
 	    }
+#ifdef BYTEMATCH_RETAIL
+	    else if ( IsOpenGL() )
+#else
 	    else if ( IsPosix() )
+#endif
 	    {
 		    MaterialAdapterInfo_t adapterInfo;
 		    materials->GetDisplayAdapterInfo( materials->GetCurrentAdapter(), adapterInfo );
@@ -1358,7 +1362,7 @@ CON_COMMAND( getpos, "dump position and angles to the console" )
 		pCommand1 = "setpos_exact";
 		pCommand2 = "setang_exact";
 	}
-
+	NOV2024_ONLY( Warning( "Map name: %s\n", engine->GetMapName() ); )
 	Warning( "%s %f %f %f;", pCommand1, vecOrigin.x, vecOrigin.y, vecOrigin.z );
 	Warning( "%s %f %f %f\n", pCommand2, angles.x, angles.y, angles.z );
 }
