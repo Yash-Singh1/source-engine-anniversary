@@ -106,7 +106,7 @@ def retail_linux32_configure(conf):
 	v.DEST_BINFMT = 'elf'
 	v.DEST_SIZEOF_VOID_P = 4
 	v.SDL = 1
-	v.GL = True
+	v.GL = False  # retail Linux renders through DXVK: no DX_TO_GL_ABSTRACTION (make-manifest.py)
 	v.CFLAGS = ARCH_FLAGS + WARN_FLAGS + OPT_FLAGS
 	v.CXXFLAGS = ARCH_FLAGS + WARN_FLAGS + OPT_FLAGS + CXX_ONLY
 	v.CPPFLAGS = list(UNDEFS)

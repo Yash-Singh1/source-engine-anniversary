@@ -7,7 +7,8 @@ with retail) and this file supplies what differs on Linux, per macOS manifest
 module or archive:
 
 - defines: the module's VPC (this tree's, as the macOS manifest's) evaluated
-  for POSIX/LINUX/LINUX32/LINUXALL Release, then what Valve's VPC makefile
+  for POSIX/LINUX/LINUX32/LINUXALL/SDL Release (no GL: retail Linux uses
+  DXVK, not ToGL), then what Valve's VPC makefile
   generator and makefile_base_posix.mak append (seen in the Source SDK 2013
   linux32 makefiles);
 - add/remove: files Valve's 2018 VPCs (hl2_src) compile for Linux but not
@@ -26,7 +27,11 @@ OSX_MANIFEST = os.path.join(REPO, 'devtools', 'bytematch', 'manifests', 'retail-
 OUT = os.path.join(REPO, 'devtools', 'bytematch', 'manifests', 'retail-linux32.json')
 HL2SRC = os.environ.get('HL2SRC', os.path.expanduser('~/p/sco/source-engine-2018-hl2_src'))
 
-LINUX = ('POSIX', 'LINUX', 'LINUX32', 'LINUXALL', 'GL', 'SDL')
+# Retail Linux renders through DXVK (depot 224 ships libdxvk_d3d9.so and shaderapivk.so), so
+# Valve ran VPC without /gl: no $GL, hence no DX_TO_GL_ABSTRACTION or GL_GLEXT_PROTOTYPES
+# (source_video_base.vpc). imesh.h's OPENGL_SWAP_COLORS follows DX_TO_GL_ABSTRACTION and
+# shows in every vertex color the client writes. macOS still uses ToGL.
+LINUX = ('POSIX', 'LINUX', 'LINUX32', 'LINUXALL', 'SDL')
 OSX = ('POSIX', 'OSX', 'OSX32', 'OSXALL', 'GL', 'SDL')
 
 # Game modules --retail-linux32 builds; their archives come along.
@@ -54,11 +59,17 @@ def sources(summary):
                if f['kind'] == '$file' and not f.get('excluded') and f['path'].endswith(('.c', '.cc', '.cpp', '.mm')))
 
 
+# source_video_base.vpc forces $Conditional GL on for every non-Windows client build;
+# retail Linux game code has no OPENGL_SWAP_COLORS (vertex colors unswapped, e.g. tier2
+# RenderLine), so these come off.
+NOT_LINUX = {'GL_GLEXT_PROTOTYPES', 'DX_TO_GL_ABSTRACTION'}
+
+
 def entry(vpc_path, hl2src):
     s = evaluate(REPO, vpc_path, LINUX, '.so')
     defines = []
     for d in s['settings'].get('compiler.preprocessordefinitions', '').split(';'):
-        if d and d not in defines:
+        if d and d not in defines and d not in NOT_LINUX:
             defines.append(d)
     project_dir = os.path.dirname(vpc_path)
     out = {'vpc': vpc_path, 'project_dir': project_dir, 'defines': defines + generator_defines(project_dir)}
