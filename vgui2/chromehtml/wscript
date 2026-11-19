@@ -82,7 +82,11 @@ def configure(conf):
 
 def build(bld):
 	# Built like Chromium's own targets: no RTTI or exceptions (the retail
-	# wrapper's vtables have no typeinfo).
+	# wrapper's vtables have no typeinfo). --retail-osx32 compiles it with
+	# Chromium 18's clang and flags (the cefwrapper env, see retail_osx32.py).
+	wrapper = {}
+	if bld.env.RETAIL_OSX32 and 'cefwrapper' in bld.all_envs:
+		wrapper = {'env': bld.all_envs['cefwrapper'].derive(), 'retail_defines': ['NDEBUG']}
 	bld.stlib(
 		source   = CEF_WRAPPER_SOURCES,
 		target   = 'cef_dll_wrapper',
@@ -91,7 +95,8 @@ def build(bld):
 		includes = ['../../external/cef'],
 		defines  = ['USING_CEF_SHARED'],
 		cxxflags = ['-fno-rtti', '-fno-exceptions'],
-		idx      = bld.get_taskgen_count()
+		idx      = bld.get_taskgen_count(),
+		**wrapper
 	)
 
 	# generated_proto/htmlmessages.pb.* come from htmlmessages.proto with protoc 2.3.0:

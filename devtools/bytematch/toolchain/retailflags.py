@@ -28,6 +28,15 @@ HL2MP_2014 = {"clang": "503.0.38", "ld64": "236.3", "min_osx": "10.5"}
 SDK2013 = os.environ.get("SOURCE_SDK_2013", "/Volumes/Storage/sco/source-sdk-2013")
 SDK2013_COMMIT = "53e78c50"
 
+# chromehtml links Valve's prebuilt lib/public/osx32/libcef_dll_wrapper.a (2013-07-25),
+# built by Steam's CEF build (buildslave_steam/cef_osx) from CEF1 branch 1025's
+# gyp-generated Xcode project inside a Chromium 18.0.1025 checkout. Chromium's
+# Xcode settings set CC to the checkout's own clang, llvm.org svn r148911
+# (tools/clang/scripts/update.sh), and build/common.gypi's Release flags apply:
+# -O3 (mac_release_optimization), no strict aliasing or thread-safe statics,
+# no exceptions or RTTI, deployment target 10.5.
+CEF_WRAPPER_CLANG = "r148911"
+
 
 def paths(toolchain=None, clang=None, ld64=None):
     t = toolchain or TOOLCHAIN
@@ -81,6 +90,13 @@ def cxxflags(sdk, min_osx=MIN_OSX):
     return common_flags(sdk, min_osx) + ["-std=gnu++11", "-stdlib=libstdc++",
                                 "-fvisibility-inlines-hidden", "-ftemplate-depth=512",
                                 "-Wno-c++11-narrowing"]
+
+
+def cef_wrapper_cxxflags(sdk):
+    return ["-arch", "i386", "-mmacosx-version-min=10.5", "-isysroot", sdk,
+            "-fmessage-length=0", "-Wno-trigraphs", "-O3", "-fno-strict-aliasing",
+            "-fno-threadsafe-statics", "-fvisibility=hidden", "-fvisibility-inlines-hidden",
+            "-fno-exceptions", "-fno-rtti", "-gdwarf-2", "-w"]
 
 
 def objcflags():
