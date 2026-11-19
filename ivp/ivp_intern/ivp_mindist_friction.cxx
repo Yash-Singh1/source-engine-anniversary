@@ -236,7 +236,11 @@ void IVP_Contact_Point::p_calc_friction_ss_KK(const IVP_Compact_Edge *K, const I
 
   IVP_DOUBLE quad_dist = norm.quad_length();
     
+#ifdef BYTEMATCH_RETAIL
+  if(quad_dist > P_FLOAT_EPS){ // not parallel
+#else
   if(quad_dist > (P_DOUBLE_RES * P_DOUBLE_RES)){ // not parallel
+#endif
     IVP_U_Point K_area;	// area vertical to K and norm
     IVP_U_Point L_area;	// area vertical to L and norm
     K_area.calc_cross_product(&Kvec, &norm);
