@@ -62,7 +62,7 @@ to i386 first (`thin-i386.py`, and the waf mode's `retail-depot-libs/`).
 - `retailflags.py`: compiler and linker flags from Valve's xcconfig/VPC, shared by everything here and by `scripts/waifulib/retail_osx32.py`
 - `ld64-pin.py`: links scenefilecache with each ld64 and compares structure with retail
 - `build-gcc.sh`: Apple gcc from apple-oss-distributions (cc1, cc1plus, driver, own headers) plus cctools-port's i386 `as`. Host builds differ from Apple's own binaries in a few register and stack-slot choices (one function in Crypto++'s dll.o versus Snow Leopard's gcc-4.2 5646, none that retail links)
-- `build-thirdparty.py`: period third-party archives, installed in `<prefix>/thirdparty-osx32-N` (`retailflags.THIRDPARTY_DIR`; the suffix is bumped whenever the archives change, so builds using the previous set keep working). libpng has default visibility, as retail modules export it
+- `build-thirdparty.py`: period third-party archives, installed in `<prefix>/thirdparty-osx32-N` (`retailflags.THIRDPARTY_DIR`; the suffix is bumped whenever the archives change, so builds using the previous set keep working). libpng has default visibility, as retail modules export it, and is compiled against the zlib 1.2.5 release's headers (retail's `inflateInit_` version string and static-local numbering); modules still link the system libz
 - `build-protoc.sh`: host protoc 2.3.0 from `sdk2013mp/thirdparty/protobuf-2.3.0`, for hl2mp's `htmlmessages.pb.cc`
 - `report-modules.py`: match summary for a `--retail-osx32` build directory
 

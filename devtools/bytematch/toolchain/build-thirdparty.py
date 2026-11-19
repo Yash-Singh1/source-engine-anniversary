@@ -16,7 +16,11 @@ from the retail code and the archives' own debug info (lane-thirdparty2.md):
             its GNUmakefile flags; MacOSX10.5.sdk (out-of-line libstdc++ atomics)
   speex     Valve's copy is upstream 1.0.1. Apple gcc 4.2.1 build 5564, except
             nb_celp.c, which Valve compiled with gcc 4.0.1 build 5484; MacOSX10.5.sdk
-  libpng    Apple gcc 4.2.1 -O2, MacOSX10.6.sdk
+  libpng    Apple gcc 4.2.1 -O2, MacOSX10.6.sdk, the zlib 1.2.5 release's own
+            zlib.h/zconf.h (unconfigured: no unistd.h) ahead of the SDK's 1.2.3.
+            Retail passes "1.2.5" to inflateInit_ and its static-local suffixes
+            (short_months.6308) count exactly those headers' declarations. The
+            modules still link the system libz.1.dylib.
   libjpeg   Apple clang 3.1 (clang-318.0.45, Xcode 4.3, build-clang.sh) -O0, no debug info
 
 --compiler clang builds everything with clang-600 and the retail flags (the
@@ -64,6 +68,10 @@ SOURCES = {
                  "98e74d8cb17a38033354519ac8ba9c5d98a6dc00bf5d1ec3c533c2e8ec86f268", "cryptopp561"),
     "speex": (["https://downloads.xiph.org/releases/speex/speex-1.0.1.tar.gz"],
               "2fdd4303bab90c240df478138a744890cde7fa25fbfd4ed29665cd7cb904b26b", "speex-1.0.1"),
+    # Headers only, for libpng (zlib.net/fossils serves a bot check instead of the file).
+    "zlib": (["https://download.sourceforge.net/libpng/zlib-1.2.5.tar.gz",
+              "https://zlib.net/fossils/zlib-1.2.5.tar.gz"],
+             "6064e52e513facb0fbb7998c6413406cf253cfb986063d68f4771c2bf7a3f958", "zlib-1.2.5"),
 }
 
 JPEG_LIB = ("jaricom jcapimin jcapistd jcarith jccoefct jccolor jcdctmgr jchuff jcinit jcmainct "
@@ -189,8 +197,10 @@ def period_flags(name, src, p, prefix):
                 "-isysroot", p["sdk"], "-O0", "-fvisibility=hidden", "-w"], {}
     if name == "png":
         # Retail modules export libpng (lane-chromehtml2.md), so default visibility.
+        zlib = fetch(os.path.join(prefix, "work", "thirdparty"), "zlib", True)
         return gcc_driver(prefix, "5666.3") + [
-            "-isysroot", sdk_dir(prefix, "MacOSX10.6.sdk"), "-mmacosx-version-min=10.6", "-O2"], {}
+            "-isysroot", sdk_dir(prefix, "MacOSX10.6.sdk"), "-mmacosx-version-min=10.6", "-O2",
+            "-I" + zlib], {}
     if name == "cryptopp":
         # Valve's GNUmakefile: -DNDEBUG -g -O2 -fPIC, the Steam build's -fvisibility=hidden -w,
         # -pipe, and CRYPTOPP_DISABLE_ASM because Apple's as fails its GNU-as version probe.

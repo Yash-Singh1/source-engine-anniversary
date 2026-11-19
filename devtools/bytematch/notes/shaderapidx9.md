@@ -114,7 +114,12 @@ lines 862-868). ToGL headers: `D3DXMATRIX::operator!=` compares `sizeof(this)` b
 linuxwin's dxabstract.cpp), inline in d3dx_impl.h; `ID3DXMatrixStack::Create` is
 `FORCEINLINE` so `CreateMatrixStacks` inlines into `OnDeviceInit` with its loop kept.
 
-Identity flow: still differs. Ours has `IShaderAPI::SupportsNormalMapCompression() const`
-(inline body in public/shaderapi/ishaderapi.h) and `CHardwareConfig::CanStretchRectFromTextures`
-(IHardwareConfigInternal) that retail lacks, which shifts `__text`/`__const`; plus
-`GCC_except_table` numbering in two objects.
+Identity flow: only `shaderdevicedx8.o`'s except-table labels differ (25/51/54
+where retail has 26/52/55; 3 text bytes, 6 string-table bytes). Retail creates one
+more function before the `CShaderDeviceDx8` constructor. Our functions 0-24 are the
+`CShaderDeviceMgrDx8` methods; four of them (`CheckBorderColorSupport`, the two
+vendor checks, `ComputeDXSupportLevel`) are emitted but dead in retail. So the extra
+function is most likely a coalesced helper that one of them called out of line in
+retail, or one replaced by an earlier object's copy. Clang's -O0 creation order
+lists the candidates. The Linux shaderapidx9.so doesn't help: gcc 9 splits
+functions into `.part` clones there. Name not recovered.

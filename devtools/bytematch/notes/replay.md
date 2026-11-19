@@ -56,3 +56,30 @@ Retail replay predates two hardening passes in the leak:
   rejects that, so the loop is written out).
 
 replay is only built by `--retail-osx32`, so these edits are not gated.
+
+## Whole-file identity
+
+`identity.py replay` leaves 10 bytes of `__text` and 2 bytes of the symbol
+table, both from one cause. Retail's `imageutils.o` had another coalesced
+function after `___clang_call_terminate`, so that atom is 0x20 bytes ending
+in a 10-byte nop (N_FUN size 0x20), where ours is the section's last atom
+(0x16, ld64's 0x90 fill). Engine and the clients show the same 0x20 atom.
+The function is dead in every retail module. Clang creates
+`___clang_call_terminate` while emitting the deferred `~Bitmap_t` body, so the
+missing function came from a deferred inline body after that. Our candidates
+are all inlined at -O2; the likeliest is `~CUtlBuffer`, whose only dead-everywhere
+caller is `ImgUtl_WriteRGBToJPEG`.
+
+Fixed in round 5 of the identity lane:
+- libpng against zlib 1.2.5's headers (`build-thirdparty.py`).
+- `CFtpDirListRetriever` in `sv_fileservercleanup.cpp`. Retail emits six more
+  functions between the `CFtpFileDeleterJob` constructor and
+  `SV_CreateFtpFileDeleterJob` (except-table labels). The Linux `replay.so`
+  keeps the class: an abstract job that lists a remote directory into a
+  buffer. Clang skips the complete constructor of an abstract class, so it
+  gives exactly six functions: base constructor, two `IFtp` overrides with
+  thunks, and the static write callback. Its dead 16-aligned typeinfo name
+  also extends `CFtpFileDeleterJob`'s to 32 bytes, since an atom runs to the
+  next symbol. That put `__ZTS4CFtp` at retail's address; no dead constant in
+  `sv_ftp.o` was needed.
+- `CFtpUploadJob` declares its `IFtp` overrides in retail's vtable order.

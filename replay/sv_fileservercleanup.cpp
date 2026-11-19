@@ -272,6 +272,74 @@ void CFtpFileDeleterJob::FTP_SetError( int nError, const char *pError )
 
 //----------------------------------------------------------------------------------------
 
+// Retrieves a remote directory listing (CURLOPT_DIRLISTONLY) into a buffer. Nothing derives
+// from it or creates one; its layout and code follow the Linux replay.so, which keeps it.
+class CFtpDirListRetriever : public CBaseJob,
+							 public IFtp
+{
+public:
+	CFtpDirListRetriever( const char *pHostname, const char *pRemotePath, const char *pLogin,
+						  const char *pPassword, int nPort, const char *pProxyHostname, int nProxyPort );
+
+	static size_t		WriteCallback( void *pPtr, size_t nSize, size_t nNumItems, void *pUserData );
+
+protected:
+	//
+	// IFtp
+	//
+	virtual bool		FTP_SetupAdditionalCurlOperations( void *pCurl );
+	virtual void		FTP_OnPostExecuteCurlOperations();
+
+	CUtlMemory< char >	m_DirList;
+	int					m_nDirListSize;
+	struct curl_slist	*m_pCommands;
+	CFtp				*m_pFtp;
+};
+
+CFtpDirListRetriever::CFtpDirListRetriever( const char *pHostname, const char *pRemotePath, const char *pLogin,
+											const char *pPassword, int nPort, const char *pProxyHostname, int nProxyPort )
+:	m_nDirListSize( 0 ),
+	m_pCommands( NULL ),
+	m_pFtp( NULL )
+{
+	m_pFtp = new CFtp( pHostname, pRemotePath, pLogin, pPassword, nPort, this, g_pSimpleSpewer );
+
+	if ( pProxyHostname )
+	{
+		m_pFtp->UseProxy( pProxyHostname, nProxyPort );
+	}
+}
+
+size_t CFtpDirListRetriever::WriteCallback( void *pPtr, size_t nSize, size_t nNumItems, void *pUserData )
+{
+	CFtpDirListRetriever *pThis = (CFtpDirListRetriever *)pUserData;
+	const int nBytes = nSize * nNumItems;
+	pThis->m_DirList.EnsureCapacity( pThis->m_nDirListSize + nBytes + 1 );
+	char *pDest = pThis->m_DirList.Base() + pThis->m_nDirListSize;
+	V_memcpy( pDest, pPtr, nBytes );
+	pDest[ nBytes ] = '\0';
+	pThis->m_nDirListSize += nBytes;
+	return nBytes;
+}
+
+bool CFtpDirListRetriever::FTP_SetupAdditionalCurlOperations( void *pCurl )
+{
+	m_DirList.Init( 4096, 1024 );
+	m_nDirListSize = 0;
+
+	return curl_easy_setopt( pCurl, CURLOPT_WRITEFUNCTION, WriteCallback ) == CURLE_OK &&
+		   curl_easy_setopt( pCurl, CURLOPT_WRITEDATA, this ) == CURLE_OK &&
+		   curl_easy_setopt( pCurl, CURLOPT_DIRLISTONLY, 1 ) == CURLE_OK &&
+		   curl_easy_setopt( pCurl, CURLOPT_POSTQUOTE, m_pCommands ) == CURLE_OK;
+}
+
+void CFtpDirListRetriever::FTP_OnPostExecuteCurlOperations()
+{
+	curl_slist_free_all( m_pCommands );
+}
+
+//----------------------------------------------------------------------------------------
+
 CFtpFileDeleterJob *SV_CreateFtpFileDeleterJob( const char *pFilename )
 {
 	extern ConVar replay_fileserver_offload_remotepath;

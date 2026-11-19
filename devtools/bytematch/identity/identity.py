@@ -72,6 +72,14 @@ LANG_EXT = {'c': '.i', 'c++': '.ii', 'objective-c++': '.mii', 'objective-c': '.m
 # retail links under the plain name (build/Release/libtier1.a).
 ARCHIVE_VARIANT = r'_105\.a$'
 LINE_MARKER = re.compile(rb'^(# \d+ ")([^"\n]*)(")', re.M)
+# Archives Valve took prebuilt from another build tree, which we compile from source (the
+# manifest has no source for their members, so they are matched by member name):
+# {archive: (our root, how that build named headers under it, its SDK)}. Steam's CEF build
+# ran Xcode from src/cef with -I., so the debug map has the main file's absolute path but
+# ./include/... for headers, and the 10.6 SDK.
+FOREIGN_ARCHIVES = {
+    'libcef_dll_wrapper.a': ('external/cef/', './', XCODE + 'Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/'),
+}
 
 
 def log(msg):
@@ -158,11 +166,13 @@ class Compiler:
         self.scratch = scratch
         self.tree = tree.rstrip('/') + '/'
         self.aliases = aliases
+        import retailflags
+        self.sdk2013 = os.path.abspath(retailflags.SDK2013)
         self.jobs = jobs
         self.cache = os.path.join(scratch, 'cache')
         os.makedirs(self.cache, exist_ok=True)
 
-    def rewrite_map(self, cc_args, valve_src):
+    def rewrite_map(self, cc_args, valve_src, foreign=None):
         cc = cc_args[0]
         resource = os.path.join(os.path.dirname(cc), '..', 'lib', 'clang')
         rmap = []
@@ -171,14 +181,19 @@ class Compiler:
                 rmap.append((os.path.join(os.path.dirname(cc), '..', 'lib', 'clang', v) + '/', VALVE_RESOURCE))
         sdk = next((cc_args[i + 1] for i, a in enumerate(cc_args) if a == '-isysroot'), None)
         if sdk:
-            rmap.append((sdk.rstrip('/') + '/', VALVE_SDK))
+            rmap.append((sdk.rstrip('/') + '/', foreign['sdk'] if foreign else VALVE_SDK))
+        if foreign:
+            rmap.append((foreign['src'], foreign['valve_path']))
+            rmap.append((self.tree + foreign['root'], foreign['headers']))
         for ours, valve in self.aliases:
             rmap.append((self.tree + ours, valve_src + valve))
+        # protobuf's headers come from the Source SDK 2013 checkout (Valve's src/thirdparty).
+        rmap.append((os.path.join(self.sdk2013, 'src', 'thirdparty') + '/', valve_src + 'thirdparty/'))
         rmap.append((self.tree, valve_src))
         rmap.sort(key=lambda p: -len(p[0]))
         return rmap
 
-    def compile(self, src, entry, valve_src, so_dir, so_name, out):
+    def compile(self, src, entry, valve_src, so_dir, so_name, out, foreign=None):
         """Preprocess, rewrite paths, compile the .ii as ccache would. Returns cache path."""
         d = entry['directory']
         args = list(entry['arguments'])
@@ -218,7 +233,7 @@ class Compiler:
             pre.append(a)
             comp.append(a)
             i += 1
-        rmap = self.rewrite_map(args, valve_src)
+        rmap = self.rewrite_map(args, valve_src, foreign)
         raw = subprocess.run(pre + ['-E', '-o', '-'], cwd=d, stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
         if raw.returncode:
@@ -354,7 +369,7 @@ class Module:
         d = self.link['directory']
         args = self.link['arguments']
         libdirs = [os.path.normpath(os.path.join(d, a[2:])) for a in args if a.startswith('-L')]
-        members = [o for o in self.objects if o['kind'] == 'archive_member']
+        members = [o for o in self.objects if o['kind'] in ('archive_member', 'prebuilt_member')]
         out = []
         for a in args:
             if not a.startswith('-l'):
@@ -371,6 +386,7 @@ class Module:
             else:
                 varchive = self.valve_src + 'build/Release/' + name
             by_src = dict((o.get('source'), o) for o in rmem if o.get('source'))
+            by_member = dict((split_member(o['oso'])[1], o) for o in rmem) if rname in FOREIGN_ARCHIVES else {}
             mems = []
             for inp in entry['inputs']:
                 src, cent = self.build.source_of(inp)
@@ -378,7 +394,7 @@ class Module:
                     self.notes.append('no compile command for %s' % inp)
                     continue
                 rel = os.path.relpath(src, self.comp.tree)
-                r = by_src.get(rel)
+                r = by_src.get(rel) or by_member.get(os.path.splitext(os.path.basename(src))[0] + '.o')
                 mname = split_member(r['oso'])[1] if r else os.path.splitext(os.path.basename(src))[0] + '.o'
                 mems.append((inp, src, cent, r, mname))
             out.append((a, varchive, mems))
@@ -404,7 +420,12 @@ class Module:
             so_dir = r['so_dir'] if r and r.get('so_dir') else DEFAULT_CCACHE_DIR
             so_name = r['so_name'] if r and r.get('so_name') else default_so_name(src, lang)
             vsrc = (r or {}).get('valve_src') or self.valve_src
-            return item, self.comp.compile(src, entry, vsrc, so_dir, so_name, None)
+            foreign = None
+            fa = FOREIGN_ARCHIVES.get(os.path.basename(dest[1])) if dest[0] == 'mem' else None
+            if fa and r:
+                foreign = {'root': fa[0], 'headers': fa[1], 'sdk': fa[2], 'src': src,
+                           'valve_path': so_dir + so_name}
+            return item, self.comp.compile(src, entry, vsrc, so_dir, so_name, None, foreign)
 
         with concurrent.futures.ThreadPoolExecutor(self.comp.jobs) as ex:
             for item, cached in ex.map(do, work):
