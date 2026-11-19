@@ -586,7 +586,12 @@ bool CLoadingDialog::SetProgressPoint( float fraction )
 			fraction = 1.0f;
 		}
 		fraction = clamp( fraction, 0.0f, 1.0f );
+#ifdef BYTEMATCH_RETAIL
+		if ( (int)(fraction * 200) != (int)(m_flProgressFraction * 200) )
+#else
 		if ( (int)(fraction * 25) != (int)(m_flProgressFraction * 25) )
+#endif
+#line 590
 		{
 			m_flProgressFraction = fraction;
 			return true;
