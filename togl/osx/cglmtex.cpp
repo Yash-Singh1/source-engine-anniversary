@@ -1430,7 +1430,10 @@ void CGLMTex::WriteTexels( GLMTexLockDesc *desc, bool writeWholeSlice, bool noDa
 											glDataFormat,				// dataformat
 											glDataType,					// datatype
 											noDataWrite ? NULL : sliceAddress );	// data (optionally suppressed in case ResetSRGB desires)
+#ifndef BYTEMATCH_RETAIL
 					GLMCheckError();
+#endif
+#line 1434
 
 					if (m_layout->m_key.m_texFlags & kGLMTexMultisampled)
 					{

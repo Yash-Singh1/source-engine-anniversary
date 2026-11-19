@@ -73,8 +73,8 @@ itemFlags_t g_ItemFlags[8] =
 extern itemFlags_t g_ItemFlags[7];
 #endif
 
-
-static CUtlDict< FileWeaponInfo_t*, unsigned short > m_WeaponInfoDatabase;
+#define m_WeaponInfoDatabase NOV2024_ONLY( g_WeaponInfoDatabase ) OCT2024_ONLY( m_WeaponInfoDatabase )
+static CUtlDict< FileWeaponInfo_t*, unsigned short > m_WeaponInfoDatabase; NOV2024_ONLY( static CUtlString g_strModWeaponInfoCached; )
 
 #ifdef _DEBUG
 // used to track whether or not two weapons have been mistakenly assigned the wrong slot
@@ -122,12 +122,12 @@ static FileWeaponInfo_t gNullWeaponInfo;
 //-----------------------------------------------------------------------------
 FileWeaponInfo_t *GetFileWeaponInfoFromHandle( WEAPON_FILE_INFO_HANDLE handle )
 {
-	if ( handle < 0 || handle >= m_WeaponInfoDatabase.Count() )
+	if ( NOV2024_ONLY( !m_WeaponInfoDatabase.IsValidIndex( handle ) ) OCT2024_ONLY( handle < 0 || handle >= m_WeaponInfoDatabase.Count() ) )
 	{
 		return &gNullWeaponInfo;
 	}
 
-	if ( handle == m_WeaponInfoDatabase.InvalidIndex() )
+	if ( OCT2024_ONLY( handle == m_WeaponInfoDatabase.InvalidIndex() ) NOV2024_ONLY( false ) )
 	{
 		return &gNullWeaponInfo;
 	}
@@ -144,12 +144,14 @@ WEAPON_FILE_INFO_HANDLE GetInvalidWeaponInfoHandle( void )
 	return (WEAPON_FILE_INFO_HANDLE)m_WeaponInfoDatabase.InvalidIndex();
 }
 
-#if 0
+#ifdef HL2_ANNIVERSARY_NOV2024
 void ResetFileWeaponInfoDatabase( void )
 {
-	int c = m_WeaponInfoDatabase.Count(); 
-	for ( int i = 0; i < c; ++i )
+	for ( unsigned short i = m_WeaponInfoDatabase.First(); m_WeaponInfoDatabase.IsValidIndex( i ); i = m_WeaponInfoDatabase.Next( i ) )
 	{
+#ifdef CLIENT_DLL
+		gWR.UnloadWeaponSprites( i );
+#endif
 		delete m_WeaponInfoDatabase[ i ];
 	}
 	m_WeaponInfoDatabase.RemoveAll();
@@ -162,8 +164,24 @@ void ResetFileWeaponInfoDatabase( void )
 
 void PrecacheFileWeaponInfoDatabase( IFileSystem *filesystem, const unsigned char *pICEKey )
 {
+#ifdef HL2_ANNIVERSARY_NOV2024
+	char szExpansion[16];
+	bool bExpansion = g_pFullFileSystem->GetCurrentGameExpansionId( szExpansion, sizeof( szExpansion ) );
+	if ( bExpansion && V_strlen( szExpansion ) > 0 && V_stricmp( g_strModWeaponInfoCached.String(), szExpansion ) )
+	{
+		ResetFileWeaponInfoDatabase();
+	}
+#endif
+#line 165
 	if ( m_WeaponInfoDatabase.Count() )
 		return;
+#ifdef HL2_ANNIVERSARY_NOV2024
+	if ( bExpansion )
+	{
+		g_strModWeaponInfoCached = szExpansion;
+	}
+#endif
+#line 167
 
 	KeyValues *manifest = new KeyValues( "weaponscripts" );
 	if ( manifest->LoadFromFile( filesystem, "scripts/weapon_manifest.txt", "GAME" ) )

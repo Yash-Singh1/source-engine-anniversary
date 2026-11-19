@@ -159,6 +159,12 @@ def compare(r, o, target_check=True):
         if nxt and nxt[0] not in _PAD and (boundary is None or boundary is r):
             tail_note = 'retail continues past ours'
         rdata = rdata[:len(odata)]
+    elif not r.size_known and len(rdata) < len(odata) and r.module.linked:
+        # retail extent guessed too short (a port boundary inside the function, e.g. after a
+        # DebuggerBreak int3): compare ours' length when retail code continues past the guess
+        ext = r.module.read(r.addr, len(odata))
+        if len(ext) == len(odata) and (ext[len(rdata)] not in _PAD or ext[len(rdata)] == odata[len(rdata)]):
+            rdata = ext
     res = Result(EXACT, r.key, r, o)
     if rdata == odata and not tail_note:
         return res

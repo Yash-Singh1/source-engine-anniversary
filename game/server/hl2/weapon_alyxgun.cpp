@@ -101,8 +101,8 @@ CWeaponAlyxGun::CWeaponAlyxGun( )
 	m_flTooCloseTimer	= TOOCLOSETIMER_OFF;
 
 #ifdef HL2_EPISODIC
-	m_fMinRange1		= 60;
-	m_fMaxRange1		= 2048;
+	if ( IsHL2Episodic() ) { m_fMinRange1		= 60;
+	m_fMaxRange1		= 2048; }
 #endif//HL2_EPISODIC
 }
 

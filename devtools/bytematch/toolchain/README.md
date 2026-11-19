@@ -10,8 +10,9 @@ the `--retail-osx32` waf mode. Everything installs under
 | compiler | Apple clang-600.0.57 (Xcode 6.2) | static-init naming and the pilot match rate pin clang-600; .54 gives identical code on every object we build, .51 differs in one object retail doesn't link |
 | linker | ld64-242 (Xcode 6.2) via cctools-port | 236.3 writes `__unwind_info` with 2^0 alignment, retail has 2^2; 241.9 and 242 give byte-identical dylibs |
 | SDK | stub MacOSX10.9.sdk | 10.6 headers plus i386 stub libraries carrying retail's install names, versions and exports |
-| period third-party archives | Apple gcc 4.2.1 (gcc-5666.3, gcc_42-5564), gcc 4.0.1 (gcc-5484), cctools-port `as` | Crypto++, speex and libpng came into retail as old prebuilt archives built with Apple gcc (the speex archive's DWARF names gcc builds 5564 and 5484); `build-gcc.sh` builds them as x86_64 hosts (Rosetta on arm64), `build-thirdparty.py` uses them by default |
+| period third-party archives | Apple gcc 4.2.1 (gcc-5666.3, gcc_42-5564), gcc 4.0.1 (gcc-5484), cctools-port `as`; Apple clang 3.1 (clang-318.0.45, Xcode 4.3) | Crypto++, speex and libpng came into retail as old prebuilt archives built with Apple gcc (the speex archive's DWARF names gcc builds 5564 and 5484); `build-gcc.sh` builds them as x86_64 hosts (Rosetta on arm64), `build-thirdparty.py` uses them by default. libjpeg is clang-318 -O0 without debug info: its fast-isel still drops a lone branch to the fall-through block, which LLVM keeps from April 2012 (Xcode 4.4) on |
 | chromehtml's CEF wrapper | upstream clang, llvm.org svn r147225 | Valve linked a prebuilt `libcef_dll_wrapper.a` from Steam's CEF build (CEF1 branch 1025's Xcode project in a Chromium checkout), compiled by the checkout's own clang. r147225, Chromium trunk's `tools/clang/scripts/update.sh` pin of 2011-12-24..2012-01-02, with Chromium's Release flags matches all 760 functions; the 18.0.1025 release's pin r148911 gets 757, LLVM 3.2-3.3, clang-425/500 and Chromium's 2013 pins 348. `--retail-osx32` compiles `cef_dll_wrapper` with it (`cefwrapper` env in `scripts/waifulib/retail_osx32.py`) when it is installed |
+| `__FILE__` | `patches/clang-macro-prefix-map.patch` (503 and 600) | retail's assert and protobuf strings hold Xcode's absolute paths (`/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/...`, hl2mp `rel_hl2_osx`). The patch backports `-fmacro-prefix-map`; the waf mode maps the tree (relative and absolute) onto Valve's root, and `bld.retail_macro_prefix_map()` maps module-local copies (vpk's `sdk2013/tier1` overlay) onto Valve's directory. Without the option the patched compilers' objects are byte-identical to the unpatched ones' |
 | hl2mp (2014) | clang-503.0.38, ld64-236.3 (Xcode 5.1), protoc 2.3.0 | depot 223's hl2mp modules are a May 2014 Source SDK 2013 build: `LC_VERSION_MIN` 10.5, `__unwind_info` 2^0; `--build-games=hl2mp` (see `sdk2013mp/wscript`). clang-503 carries `patches/clang-503.0.38-maskandbranch.patch` (an uninitialized x86 flag made Xcode 5.1's codegen vary per compile) |
 
 ## Setup
@@ -27,6 +28,7 @@ $T/build-ld64.sh 242                # optional: 241.9 236.3
 $T/extract-sdk106.sh /path/to/Mac_OS_X_10.6_Snow_Leopard_Retail.iso
 $T/make-sdk109.py                   # reads retail imports from depot 223/340/380/420
 $T/build-gcc.sh 5666.3              # and 5564, 5484: period compilers for build-thirdparty.py
+$T/build-clang.sh 318.0.45          # libjpeg's compiler (build-thirdparty.py)
 $T/build-thirdparty.py              # libjpeg 8b, libpng 1.5.2, Crypto++ 5.6.1, speex 1.0.1 (--compiler clang: clang-600 only)
 $T/build-protoc.sh                  # hl2mp only, with clang 503.0.38 and ld64 236.3
 git submodule update --init thirdparty
@@ -41,7 +43,11 @@ $T/report-modules.py                # per-module function match vs retail (devto
 Each clang build takes a few minutes. `--from-build DIR` on the build scripts
 installs from an existing build tree instead of rebuilding. Sources are pinned
 by tag/commit and sha256 in `versions.sh` and `build-thirdparty.py`; the only
-source changes are the files in `patches/`.
+source changes are the files in `patches/`. Each clang install lists its patches
+in `<prefix>/clang-<version>/PATCHES`; `--retail-osx32` configure stops if the
+compiler lacks `clang-macro-prefix-map.patch` (rebuild it with `build-clang.sh`).
+clang-318's version patch holds host-build fixes only: `llvm-build` converted to
+Python 3, and fixes for current libc++ and clang.
 
 Native arm64 ld64 maps input files with 16 KB pages and fails with EINVAL on fat
 slices at 4 KB-aligned offsets, so every SDK and depot dylib it reads is thinned

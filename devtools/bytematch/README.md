@@ -236,11 +236,15 @@ Outputs go to `build-retail/identity/out/`. For each object the retail debug
 map lists, the tool reproduces what ld64 records:
 
 - **N_SO**: the source is preprocessed with absolute include paths, our tree,
-  SDK and clang resource prefixes in the `.ii` are rewritten to Valve's
-  (`/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/`, Xcode's
+  SDK and clang resource prefixes in the `.ii`'s line markers are rewritten to
+  Valve's (`/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/`, Xcode's
   `MacOSX10.9.sdk`, Xcode's `lib/clang/6.0`), and the `.ii` is compiled under
   its retail ccache temp name with `-fdebug-compilation-dir
-  /Users/buildbot/buildslave/../.ccache/tmp`, as ccache did.
+  /Users/buildbot/buildslave/../.ccache/tmp`, as ccache did. `__FILE__` is
+  already Valve's (the retail flags' `-fmacro-prefix-map`); one of our paths
+  left anywhere else in the `.ii` is an error.
+- **Archives**: sourcevr's 10.5 variants (`libtier1_105.a`, ...) take the
+  retail members of `build/Release/libtier1.a`.
 - **N_SOL**: follows from the rewritten line markers. Files that sit elsewhere
   in our tree are mapped by `identity/aliases.json`.
 - **N_OSO**: objects are written under a scratch root at Valve's Xcode paths

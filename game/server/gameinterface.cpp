@@ -3434,3 +3434,16 @@ CSteamID GetSteamIDForPlayerIndex( int iPlayerIndex )
 }
 
 #endif
+
+#ifdef HL2_ANNIVERSARY_NOV2024
+void ForceReloadResponseRules();
+static void SV_HL2_Expansion_Reloaded()
+{
+	scenefilecache->Reload();
+	ParseParticleEffects( false, false );
+	PhysParseSurfaceData( physprops, filesystem );
+	ForceReloadResponseRules();
+}
+
+static ConCommand sv_hl2_expansion_reloaded( "sv_hl2_expansion_reloaded", SV_HL2_Expansion_Reloaded );
+#endif

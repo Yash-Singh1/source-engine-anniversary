@@ -645,6 +645,11 @@ precacheVarsDone:
 //-----------------------------------------------------------------------------
 // Purpose:
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+#undef Q_stricmp
+#define Q_stricmp stricmp
+#endif
+#line 638
 void CMaterialSubRect::ParseMaterialVars( KeyValues &keyValues )
 {
 	KeyValues *pKeyValues = &keyValues;
@@ -696,6 +701,11 @@ void CMaterialSubRect::ParseMaterialVars( KeyValues &keyValues )
 		}
 	}
 }
+#ifdef BYTEMATCH_RETAIL
+#undef Q_stricmp
+#define Q_stricmp V_stricmp
+#endif
+#line 689
 
 //-----------------------------------------------------------------------------
 // Purpose:

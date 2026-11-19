@@ -1248,6 +1248,7 @@ static wchar_t *StripWhitespaceWorker( int cchLength, wchar_t *pwch, bool *pbStr
 	return pwch;
 }
 
+#ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
 // Purpose: Strips all evil characters (ie. zero-width no-break space)
 //			from a string.
@@ -1289,6 +1290,8 @@ bool Q_RemoveAllEvilCharacters( char *pch )
 
 	return bStrippedWhitespace;
 }
+#endif
+#line 1292
 
 
 //-----------------------------------------------------------------------------

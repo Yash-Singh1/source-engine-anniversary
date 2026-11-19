@@ -146,11 +146,7 @@ CMatSystemSurface g_MatSystemSurface;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR( CMatSystemSurface, ISurface, 
 						VGUI_SURFACE_INTERFACE_VERSION, g_MatSystemSurface );
 
-CON_COMMAND( vgui_font_reload, "" )
-{
-	g_MatSystemSurface.ResetFontCaches();
-}
-
+#line 154
 #ifdef VGUI_FONT_FREETYPE
 CUtlDict< CMatSystemSurface::font_entry, unsigned short > CMatSystemSurface::m_FontData;
 #endif
@@ -678,8 +674,14 @@ void CMatSystemSurface::StartDrawingIn3DSpace( const VMatrix &screenToWorld, int
 // so in theory we shouldn't need to do any adjustments for setting up the screen
 // HOWEVER, we must do the offset, else the driver will think the text is something that should
 // be antialiased, so the text will look broken if antialiasing is turned on (usually forced on in the driver)
+#ifdef BYTEMATCH_RETAIL
+float g_flPixelOffsetX = 0.0f;
+float g_flPixelOffsetY = 0.0f;
+#else
 float g_flPixelOffsetX = 0.5f;
 float g_flPixelOffsetY = 0.5f;
+#endif
+#line 679
 
 bool g_bCheckedCommandLine = false;
 
@@ -1553,11 +1555,7 @@ int CMatSystemSurface::DrawGetTextureId( ITexture *pTexture )
 #endif
 
 
-void CMatSystemSurface::DrawSetTextureRGBAEx2( int id, const unsigned char *rgba, int wide, int tall, ImageFormat imageFormat, bool bNoPointSample, bool bAdditive )
-{
-	TextureDictionary()->SetTextureRGBAEx2( id, (const char *)rgba, wide, tall, imageFormat, true, bNoPointSample, bAdditive );
-}
-
+#line 1561
 //-----------------------------------------------------------------------------
 // Associates a texture with a material file (also binds it)
 //-----------------------------------------------------------------------------
@@ -3563,6 +3561,7 @@ void CMatSystemSurface::End3DPaint()
 }
 
 
+#ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
 // skin composition, force drawing
 //-----------------------------------------------------------------------------
@@ -3579,6 +3578,8 @@ void CMatSystemSurface::EndSkinCompositionPainting()
 {
 	g_bInDrawing = false;
 }
+#endif
+#line 3580
 
 
 //-----------------------------------------------------------------------------
@@ -4578,6 +4579,11 @@ void CMatSystemSurface::SetFullscreenViewportAndRenderTarget( int x, int y, int 
 	m_pFullscreenRenderTarget = pRenderTarget;
 }
 
+void CMatSystemSurface::DrawSetTextureRGBAEx2( int id, const unsigned char *rgba, int wide, int tall, ImageFormat imageFormat, bool bNoPointSample, bool bAdditive )
+{
+	TextureDictionary()->SetTextureRGBAEx2( id, (const char *)rgba, wide, tall, imageFormat, true, bNoPointSample, bAdditive );
+}
+#line 4581
 
 //-----------------------------------------------------------------------------
 // Purpose: Gets the origin of the viewport to render into if we were 
@@ -4733,4 +4739,9 @@ void CMatSystemSurface::DrawSetTextureFrame( int id, int nFrame, unsigned int *p
 	{
 		pFrameVar->SetIntValue( nFrame % nTotalFrames );
 	}
+}
+
+CON_COMMAND( vgui_font_reload, "" )
+{
+	g_MatSystemSurface.ResetFontCaches();
 }

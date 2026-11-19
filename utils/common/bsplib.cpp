@@ -3798,6 +3798,22 @@ void BuildClusterTable( void )
 	}
 }
 
+#ifdef BYTEMATCH_RETAIL
+// There's a version of this in host.cpp!!!  Make sure that they match.
+void GetPlatformMapPath( const char *pMapPath, char *pPlatformMapPath, int dxlevel, int maxLength )
+{
+	Q_StripExtension( pMapPath, pPlatformMapPath, maxLength );
+
+//	if( dxlevel <= 60 )
+//	{
+//		Q_strncat( pPlatformMapPath, "_dx60", maxLength, COPY_ALL_CHARACTERS );
+//	}
+
+	Q_strncat( pPlatformMapPath, ".bsp", maxLength, COPY_ALL_CHARACTERS );
+}
+
+#endif
+#line 3783
 // There's a version of this in checksum_engine.cpp!!! Make sure that they match.
 static bool CRC_MapFile(CRC32_t *crcvalue, const char *pszFileName)
 {

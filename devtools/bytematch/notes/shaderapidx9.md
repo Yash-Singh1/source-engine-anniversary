@@ -93,3 +93,28 @@ Status column: matched = exact or matches-after-masking; "fixed" = differed or w
 | vertexdecl | `ReleaseAllVertexDecl()` | differs | bytes |
 | vertexshaderdx8 | `CShaderManager::SetPixelShader(int)` | matched | fixed (was differs) |
 | vertexshaderdx8 | `CShaderManager::SetVertexShader(int)` | matched | fixed (was differs) |
+
+## Lane residuals3 (1592/1592 with `--data-check`)
+
+All under `BYTEMATCH_RETAIL` unless noted. The anniversary code asks for the render
+backend at runtime: `ReadDXSupportLevels` caps the max dxlevel at 95 on Vulkan,
+`LoadHardwareCaps` drops the ATI centroid hack on Vulkan, `SetupHardwareCaps` skips the
+dxlevel fallbacks on Vulkan, `CreateTextures` marks textures lockable on ToGL (not
+`IsPosix()`), `GetRecommendedConfigurationInfo` sets `ConVar.r_lightmap_bicubic` from the
+dxlevel (if/else, two `SetInt` calls) and `GetRam` prints the 32-bit `dwTotalPhys`.
+Retail never touches `m_bCanStretchRectFromTextures` (not in `ComputeCapsFromD3D` on GL,
+not in `ForceCapsToDXLevel`) and clears `m_bSupportsNormalMapCompression` in
+`ForceCapsToDXLevel` (dx60-dx92, next to the border-color clear) and after
+`CheckBorderColorSupport`. New convar `r_fog_force_gamma_override` (`FCVAR_CHEAT`, after
+`r_pixelfog`) overrides the fog color space. `Texture_t()` doesn't null the texture
+pointer. `ReleaseAllVertexDecl` has no null check (SDK 2012). `GetPixelFogCombo1` tests
+`bSupportsRadial` first. dynamicvb.h counter names use `V_strcpy`/`V_strcat`; dynamicib.h's
+refcount gates now restore retail's numbering (retail never had those 13 lines; `Msg`
+lines 862-868). ToGL headers: `D3DXMATRIX::operator!=` compares `sizeof(this)` bytes (as
+linuxwin's dxabstract.cpp), inline in d3dx_impl.h; `ID3DXMatrixStack::Create` is
+`FORCEINLINE` so `CreateMatrixStacks` inlines into `OnDeviceInit` with its loop kept.
+
+Identity flow: still differs. Ours has `IShaderAPI::SupportsNormalMapCompression() const`
+(inline body in public/shaderapi/ishaderapi.h) and `CHardwareConfig::CanStretchRectFromTextures`
+(IHardwareConfigInternal) that retail lacks, which shifts `__text`/`__const`; plus
+`GCC_except_table` numbering in two objects.

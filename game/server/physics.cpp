@@ -2665,7 +2665,7 @@ void PhysCollisionDust( gamevcollisionevent_t *pEvent, surfacedata_t *phit )
 #if HL2_EPISODIC 
 		// this is probably redundant because BaseEntity::VHandleCollision should have already dispatched us elsewhere
 	case CHAR_TEX_WARPSHIELD:
-		PhysCollisionWarpEffect(pEvent,phit);
+		if ( IsHL2Episodic() ) PhysCollisionWarpEffect(pEvent,phit);
 		return;
 
 		break;

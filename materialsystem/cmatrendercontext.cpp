@@ -1207,10 +1207,16 @@ void CMatRenderContext::BeginRender()
 
 		TelemetrySetLockName( TELEMETRY_LEVEL1, (char const *)&g_MatSysMutex, "MatSysMutex" );
 
+#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
+#line 1141
+#else
+#line 1206
+#endif
 		tmTryLock( TELEMETRY_LEVEL1, (char const *)&g_MatSysMutex, "BeginRender" );
 		g_MatSysMutex.Lock();
 		tmEndTryLock( TELEMETRY_LEVEL1, (char const *)&g_MatSysMutex, TMLR_SUCCESS );
 		tmSetLockState( TELEMETRY_LEVEL1, (char const *)&g_MatSysMutex, TMLS_LOCKED, "BeginRender" );
+#line 1211
 	}
 #endif
 }

@@ -1969,7 +1969,7 @@ void CAI_FollowBehavior::BuildScheduleTestBits()
 			GetOuter()->SetCustomInterruptCondition( COND_CAN_RANGE_ATTACK1 );
 		}
 
-	if ( HL2_EPISODIC_ACTIVE() )
+
 	{
 #ifdef HL2_EPISODIC
 			// In Alyx darkness mode, break on the player turning their flashlight off

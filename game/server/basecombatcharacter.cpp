@@ -1532,7 +1532,7 @@ bool CBaseCombatCharacter::BecomeRagdoll( const CTakeDamageInfo &info, const Vec
 	CTakeDamageInfo newinfo = info;
 	newinfo.SetDamageForce( forceVector );
 
-	if ( HL2_EPISODIC_ACTIVE() )
+
 	{
 #ifdef HL2_EPISODIC
 		// Burning corpses are server-side in episodic, if we're in darkness mode

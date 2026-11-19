@@ -17,9 +17,10 @@ with the manifest's GAME/server and GAME/client; they get their own rows and
 a second total that includes them.
 
 Usage: report-modules.py [--build build-retail] [--bytematch PATH] [--out DIR] [--save PREFIX]
-                         [--game GAME=DIR ...] [--diff-lines N]
+                         [--game GAME=DIR ...] [--diff-lines N] [--data-check] [-j N]
 """
 import argparse
+import concurrent.futures
 import glob
 import json
 import os
@@ -37,6 +38,10 @@ DEPOTS = os.path.dirname(os.path.dirname(rf.RETAIL_DEPOT))
 # Per-module static-library variants (retail_osx32.py's retail_stlib_variant):
 # archive name suffix -> the module that links them.
 ARCHIVE_VARIANTS = {"_105": "bin/sourcevr"}
+# Archives compared with another user than engine: engine pulls only AppSystemGroup.o from
+# libappframework.a, launcher all four retail members (our archive's extra filesystem_init.o
+# would otherwise pair with engine's own ENGINE_DLL copy).
+ARCHIVE_USER = {"libappframework.a": "bin/launcher"}
 
 
 def retail_file(mod):
@@ -81,7 +86,7 @@ def jobs_for(build, manifest):
         name = os.path.basename(lib)
         variant = [m for s, m in ARCHIVE_VARIANTS.items() if name.endswith(s + ".a")]
         users = variant or manifest["archives"].get(name, {}).get("used_by", [])
-        user = "bin/engine" if "bin/engine" in users or not users else users[0]
+        user = ARCHIVE_USER.get(name) or ("bin/engine" if "bin/engine" in users or not users else users[0])
         mod = manifest["modules"].get(user, engine)
         jobs.append(("archive", name, name, retail_file(mod), lib, user))
     return jobs
@@ -109,20 +114,32 @@ def main():
     ap.add_argument("--game", action="append", default=[], metavar="GAME=DIR",
                     help="game build output holding server.dylib and client.dylib (repeatable)")
     ap.add_argument("--diff-lines", type=int, help="passed to bytematch report (per-module output only)")
+    ap.add_argument("--data-check", action="store_true",
+                    help="passed to bytematch report: masked data references must resolve to the same data")
+    ap.add_argument("-j", "--jobs", type=int, default=1, help="modules compared in parallel")
     a = ap.parse_args()
     if not os.path.exists(a.bytematch):
         sys.exit(f"matcher not found at {a.bytematch}; pass --bytematch")
     os.makedirs(a.out, exist_ok=True)
     manifest = json.load(open(MANIFEST))
 
-    rows = []
-    for job in jobs_for(a.build, manifest) + game_jobs(a.game, manifest):
+    def run(job):
         kind, key, name, retail, ours = job[:5]
         out = os.path.join(a.out, name.replace("/", "-"))
         cmd = [a.bytematch, "report", "--retail", retail, "--ours", ours, "--out", out]
         if a.diff_lines:
             cmd += ["--diff-lines", str(a.diff_lines)]
-        r = subprocess.run(cmd, capture_output=True, text=True)
+        if a.data_check:
+            cmd.append("--data-check")
+        return out, subprocess.run(cmd, capture_output=True, text=True)
+
+    jobs = jobs_for(a.build, manifest) + game_jobs(a.game, manifest)
+    with concurrent.futures.ThreadPoolExecutor(max(1, a.jobs)) as pool:
+        results = list(pool.map(run, jobs))
+
+    rows = []
+    for job, (out, r) in zip(jobs, results):
+        kind, key, name, retail, ours = job[:5]
         row = {"kind": kind, "module": key, "name": name, "retail": os.path.relpath(retail, DEPOTS),
                "ours": os.path.relpath(ours, a.build) if kind != "game" else ours}
         if kind == "archive":

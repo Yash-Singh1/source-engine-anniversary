@@ -1807,6 +1807,25 @@ FORCEINLINE bool IsOpenGL( void )
 {
 	return g_pMaterialSystem->GetRenderBackend() == RENDER_BACKEND_TOGL;
 }
+
+#include "tier0/icommandline.h"
+bool IsSteamDeck( bool bSteamDeckOnly );
+
+// The backend the shader API will pick, from the command line (SDL window and GL setup ask before it exists)
+inline RenderBackend_t GetCommandLineRenderBackend()
+{
+	RenderBackend_t eBackend = RENDER_BACKEND_NULL;
+	if ( !CommandLine()->FindParm( "-noshaderapi" ) )
+	{
+		bool bSteamDeck = IsSteamDeck( true );
+		ICommandLine *pCommandLine = CommandLine();
+		if ( bSteamDeck )
+			eBackend = pCommandLine->FindParm( "-opengl" ) ? RENDER_BACKEND_TOGL : RENDER_BACKEND_VULKAN;
+		else
+			eBackend = pCommandLine->FindParm( "-vulkan" ) ? RENDER_BACKEND_VULKAN : RENDER_BACKEND_TOGL;
+	}
+	return eBackend;
+}
 #endif
 
 #endif // IMATERIALSYSTEM_H

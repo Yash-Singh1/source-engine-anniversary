@@ -107,6 +107,23 @@ def _drop_return_type(head):
 def sig(demangled):
     """Normalised signature of a demangled MSVC or Itanium function name, or None."""
     s = demangled.strip()
+    # this-adjusting thunks: MSVC `adjustor{N}', Itanium "non-virtual thunk to" (_ZThnN_, see
+    # read_rows); keyed apart from the method they enter, with the offset when known
+    a = re.search(r"`adjustor\{(\d+)\}'\s*", s)
+    if a:
+        k = sig(s.replace(a.group(0), '').replace('[thunk]:', ''))
+        return k and k + '#thunk' + a.group(1)
+    if s.startswith('non-virtual thunk to '):
+        k = sig(s[len('non-virtual thunk to '):])
+        return k and k + '#thunk'
+    m = re.search(r"::`(?:scalar|vector) deleting (?:destructor|dtor)'", s)
+    if m:
+        # MSVC's deleting destructor; Itanium's D0 gets the same key (read_rows)
+        k = sig(s[:m.start()] + '::__dtor()')
+        if k:
+            cls = re.sub(r'<.*>', '', k[4:-len('::__dtor()')]).split('::')[-1]
+            return k[:-len('__dtor()')] + '~' + cls + '()#D0'
+        return None
     if not s or '`' in s.replace("`anonymous namespace'", ''):
         return None          # vftables, dynamic initializers, RTTI, string literals ...
     s = s.replace('(anonymous namespace)', "`anonymous namespace'")
@@ -124,6 +141,13 @@ def sig(demangled):
     out = out.replace('__int64', 'long long').replace('signed char', 'signed char')
     out = re.sub(r'\s+', '', out)
     out = out.replace('(void)', '()')
+    # MSVC keeps __restrict and a parameter's top-level const (array parameters decay to
+    # T *const); Itanium drops both. undname spells bool template arguments 0/1.
+    out = out.replace('__restrict', '').replace('__ptr64', '')
+    out = re.sub(r'\b(?:__sFILE|_iobuf)\b', 'FILE', out)   # Darwin's and MSVC's FILE
+    out = re.sub(r'\*const(?=[,)])', '*', out)
+    out = re.sub(r'(?<=[<,])false(?=[,>])', '0', out)
+    out = re.sub(r'(?<=[<,])true(?=[,>])', '1', out)
     return 'sig:' + out
 
 
@@ -168,6 +192,39 @@ def load_link_map(path):
     return len(groups)
 
 
+def itanium_key(mangled, demangled):
+    """sig() of an Itanium name, with the deleting-destructor and thunk-offset suffixes the
+    MSVC side gets ("#D0", "#thunkN")."""
+    k = sig(demangled)
+    if not k:
+        return k
+    k = k.replace('#thunk', '')
+    if re.search(r'D0Ev$', mangled):
+        k += '#D0'
+    t = re.match(r'_?_ZThn(\d+)_', mangled)
+    if t:
+        k += '#thunk' + t.group(1)
+    return k
+
+
+_FREE_SIG = re.compile(r'^sig:([A-Za-z_]\w*)\(')
+
+
+def add_c_aliases(funcs):
+    """Give free functions keyed by signature their C name as an alias.
+
+    The macOS build compiles some C sources as C++ (bzip2), so the port names them by
+    Itanium signature while the Windows objects have plain C symbols. Returns the
+    (function, alias) pairs added."""
+    out = []
+    for f in funcs:
+        m = _FREE_SIG.match(f.key)
+        if m and '_' + m.group(1) not in f.aliases:
+            f.aliases.append('_' + m.group(1))
+            out.append((f, '_' + m.group(1)))
+    return out
+
+
 def read_rows(doc, min_conf=0.0):
     """symbol-port rows -> [(addr, [names], size, obj_stem, confidence)] for named functions."""
     rows = [r for r in doc if r.get('name') and float(r.get('confidence') or 0) >= min_conf]
@@ -182,7 +239,7 @@ def read_rows(doc, min_conf=0.0):
             k = sig(r['msvc_demangled'])
         if not k and r.get('mangled'):
             if r['mangled'] in dem_it:
-                k = sig(dem_it[r['mangled']])
+                k = itanium_key(r['mangled'], dem_it[r['mangled']])
             elif not r['mangled'].startswith('__Z'):
                 names.append(r['mangled'])      # C name, '_Foo' on Mach-O
         if not k and not names:

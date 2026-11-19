@@ -836,6 +836,8 @@ void CScheme::LoadFonts()
 				}
 				else
 				{
+					// unused: clang places a literal at its first mention, and retail's "no" is created here
+					const char *pszNotProportional = "no";
 					proportionalFont = static_cast<bool>( i );
 				}
 

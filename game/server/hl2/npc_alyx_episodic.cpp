@@ -1896,7 +1896,7 @@ int CNPC_Alyx_Episodic::TranslateSchedule( int scheduleType )
 
 #ifdef HL2_EPISODIC
 	case SCHED_RUN_RANDOM:
-		if( GetEnemy() && HasCondition(COND_SEE_ENEMY) && GetActiveWeapon() )
+		if( IsHL2Episodic() && GetEnemy() && HasCondition(COND_SEE_ENEMY) && GetActiveWeapon() )
 		{
 			// SCHED_RUN_RANDOM is a last ditch effort, it's the bottom of a chain of 
 			// sequential schedule failures. Since this can cause Alyx to freeze up, 

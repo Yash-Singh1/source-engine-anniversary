@@ -1384,7 +1384,7 @@ void CAI_BaseActor::MakeRandomLookTarget( AILookTargetArgs_t *pArgs, float minTi
 
 	// For now, just look farther afield while driving in the vehicle.  Without this we look around wildly!
 #ifdef HL2_EPISODIC
-	if ( MyCombatCharacterPointer() && MyCombatCharacterPointer()->IsInAVehicle() )
+	if ( IsHL2Episodic() && MyCombatCharacterPointer() && MyCombatCharacterPointer()->IsInAVehicle() )
 	{
 		pArgs->vTarget = EyePosition() + forward * 2048 + right * random->RandomFloat(-650,650) + up * random->RandomFloat(-32,32);
 	}

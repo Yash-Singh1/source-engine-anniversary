@@ -81,6 +81,11 @@ RETAIL_EXCLUDE = {"materialsystem": ["materialsystem/ctexturecompositor.cpp"],
                   "tier0": ["tier0/stacktools.cpp", "tier0/cpumonitoring.cpp"],
                   "engine": ["engine/audio/private/MPAHeader.cpp", "engine/audio/private/VBRHeader.cpp"]}
 
+# VPC conditionals Valve's buildbot set beyond the platform ones (no 2018 script sets them):
+# retail engine.dll has the remote perf test commands (rpt_start, CRPTClient, ...), which
+# engine.vpc compiles with $ENABLE_RPT. The --retail-osx32 engine defines it too.
+RETAIL_CONDITIONALS = {"engine": ("ENABLE_RPT",)}
+
 # Include directories this fork's sources need beyond Valve's (the fork's
 # vector_fpu.inl includes ivu_types.hxx for intp).
 FORK_INCLUDES = {"hk_math": ["ivp/ivp_utility"], "replay": ["thirdparty/curl/include"]}
@@ -94,7 +99,18 @@ RETAIL_INCLUDES_FIRST = {"stdshader_dx9": ["materialsystem/stdshaders/include"]}
 # inertia clamp in ivp_core.cxx calls POSIX finite(); qhull calls sqrt( int ),
 # which needs <cmath>'s integral overloads (Valve linked prebuilt ivp libraries).
 FORK_CL = {"ivp_compactbuilder": ["/FIcmath"]}
-FORK_DEFINES = {"ivp_physics": ["finite=_finite"],
+
+# Switches of this tree's VPCs that Valve's retail build didn't use: ivp_physics.vpc asks
+# for /Ob1, but retail vphysics.dll inlines ivp_physics' plain member functions (ivp_physics
+# 557 to 674 of 811 functions with /Ob2; ivp_compactbuilder does match /Ob1: 362 vs 306).
+RETAIL_CL_REPLACE = {"ivp_physics": {"/Ob1": "/Ob2"}}
+
+# Valve's Windows ivp was built with IVP_PIII (Pentium III paths in ivu_linear and
+# _mm_prefetch hints: retail vphysics.dll has 66 prefetcht1); the ivp submodule's VPCs lack it.
+_IVP_PIII = ["IVP_PIII"]
+FORK_DEFINES = {"ivp_physics": ["finite=_finite"] + _IVP_PIII, "ivp_compactbuilder": _IVP_PIII,
+                "havana_constraints": _IVP_PIII, "hk_base": _IVP_PIII, "hk_math": _IVP_PIII,
+                "vphysics": _IVP_PIII,
                 # this tree gates its JPEG/PNG code on these (the --retail-osx32 build defines them
                 # for every module that links libjpeg/libpng; retail engine.dll and client.dll have both)
                 "engine": ["HAVE_JPEG", "HAVE_PNG"], "client_hl2": ["HAVE_JPEG", "HAVE_PNG"],
@@ -193,7 +209,8 @@ def dedupe(seq):
 class Module:
     def __init__(self, name, vpc_rel, hl2src, retail=None, include_alias=None):
         self.name, self.vpc_rel, self.hl2src, self.retail = name, vpc_rel, hl2src, retail
-        self.p = VPC.Project(hl2src, os.path.join(hl2src, vpc_rel), include_alias=include_alias).parse()
+        self.p = VPC.Project(hl2src, os.path.join(hl2src, vpc_rel), VPC.WIN32_RETAIL + RETAIL_CONDITIONALS.get(name, ()),
+                             include_alias=include_alias).parse()
         self.projdir = os.path.dirname(os.path.join(hl2src, vpc_rel))
 
     def tree_rel(self, win, base=None):
@@ -229,7 +246,8 @@ class Module:
         for fi in split_list(self.get("compiler.forceincludes", f), ";"):
             sw.append("/FI" + fi)
         sw += (self.get("compiler.additionaloptions", f) or "").split()
-        return dedupe([s for s in sw if s not in DROP_SWITCHES] + FORK_CL.get(self.name, []))
+        rep = RETAIL_CL_REPLACE.get(self.name, {})
+        return dedupe([rep.get(s, s) for s in sw if s not in DROP_SWITCHES] + FORK_CL.get(self.name, []))
 
     def defines(self, f=None):
         d = split_list(self.get("compiler.preprocessordefinitions", f), ";")

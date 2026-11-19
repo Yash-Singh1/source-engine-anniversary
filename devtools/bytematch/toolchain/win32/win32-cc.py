@@ -10,7 +10,7 @@ symbol-port map when one exists.
 
 usage: win32-cc.py MODULE SOURCE [-o OUT.obj] [--retail] [--against MODULE] [--symbol NAME]
                    [--build build-win32] [-- cl args]
-BM_WIN32_MAPS overrides the symbol-port map directory.
+BM_WIN32_MAPS overrides the symbol-port map directories (colon-separated, first hit wins).
 """
 import argparse, json, os, subprocess, sys, tempfile
 
@@ -20,7 +20,8 @@ sys.path.insert(0, HERE)
 import versions as V  # noqa: E402
 
 DEPOTS = "/Volumes/Expansion/mac-ports/hl2-anniversary-depot/depots"
-MAPS = os.environ.get("BM_WIN32_MAPS", "/Volumes/Storage/sco/byte-match-survey/symbols/out")
+MAPS = os.environ.get("BM_WIN32_MAPS", "/Volumes/Storage/sco/byte-match-survey/win32-maps:"
+                      "/Volumes/Storage/sco/byte-match-survey/symbols/out").split(":")
 RETAIL_DEFINES = ["BYTEMATCH_RETAIL", "NO_X360_XDK"]  # as scripts/waifulib/retail_win32.py
 
 
@@ -80,10 +81,10 @@ def main():
     depot = m.get("retail_depot", "222")
     retail = os.path.join(DEPOTS, depot, "19307283", m["retail"])
     bm = [os.path.join(TREE, "devtools", "bytematch", "bin", "bytematch"), "diff", "--retail", retail, "--ours", out]
-    mp = os.path.join(MAPS, os.path.splitext(os.path.basename(m["retail"]))[0].lower() + ".win.json")
-    if against.startswith(("client_", "server_")):
-        mp = os.path.join(MAPS, against + ".win.json")
-    if os.path.exists(mp):
+    key = against if against.startswith(("client_", "server_")) else \
+        os.path.splitext(os.path.basename(m["retail"]))[0].lower()
+    mp = next((os.path.join(d, key + ".win.json") for d in MAPS if os.path.exists(os.path.join(d, key + ".win.json"))), "")
+    if mp:
         bm += ["--retail-map", mp]
     if a.symbol:
         bm += ["--symbol", a.symbol]

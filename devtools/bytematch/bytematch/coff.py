@@ -37,6 +37,26 @@ def _strtab_name(raw, strtab):
     return raw.rstrip(b'\0').decode('latin-1')
 
 
+def literal_size(name):
+    """Byte size (terminator included) an MSVC string literal symbol encodes: ??_C@_0BA@... is
+    16 narrow bytes, ??_C@_13... 4 wide ones. None for other names."""
+    if not name.startswith(('??_C@_0', '??_C@_1')) or len(name) < 9:
+        return None
+    c = name[7]
+    if c.isdigit():
+        return int(c) + 1
+    n, i = 0, 7
+    while i < len(name) and 'A' <= name[i] <= 'P':
+        n, i = n * 16 + ord(name[i]) - ord('A'), i + 1
+    return n if i < len(name) and name[i] == '@' and n else None
+
+
+def _export_symbol(name):
+    """An export/import table name as the COFF symbol it came from: cdecl C names are exported
+    without their '_', so tier0's _SpewInfo must not lose its own underscore in canonical()."""
+    return '_' + name if name.startswith('_') and '@' not in name else name
+
+
 def _read_symbols(data, symptr, nsym, symsz, big):
     """[(index, name, value, secno, type, class, naux, aux_bytes)]"""
     strtab = data[symptr + nsym * symsz:]
@@ -97,6 +117,9 @@ def load_obj(path, data, member=None):
             comdat_sel.setdefault(sec, aux[14])
         if 0 < sec <= nsec:
             mod.add_name(secs[sec - 1]['va'] + val, canonical('coff', name))
+            n = literal_size(name)
+            if n and not secs[sec - 1]['chars'] & (SCN_CNT_CODE | SCN_MEM_EXECUTE):
+                mod.literals[name] = secs[sec - 1]['data'][val:val + n]
     for s in secs:
         if s['chars'] & (SCN_CNT_CODE | SCN_MEM_EXECUTE):
             mod.code.append((s['va'], s['data'], s['name']))
@@ -169,6 +192,7 @@ def load_pe(path, data, member=None):
         sch, = struct.unpack_from('<I', data, o + 36)
         body = data[rawptr:rawptr + min(rawsz, vs or rawsz)]
         secs.append(dict(name=name, va=va, vsize=vs, data=body, chars=sch, index=i + 1))
+        mod.regions.append((image_base + va, body))
     code_secs = [s for s in secs if s['chars'] & (SCN_CNT_CODE | SCN_MEM_EXECUTE)]
     for s in code_secs:
         mod.code.append((image_base + s['va'], s['data'], s['name']))
@@ -206,7 +230,7 @@ def load_pe(path, data, member=None):
             ords = struct.unpack('<%dH' % nnames, rva_bytes(aords, 2 * nnames))
             named = {}
             for n, o in zip(names, ords):
-                named.setdefault(o, []).append(cstr(n))
+                named.setdefault(o, []).append(_export_symbol(cstr(n)))
             for i, rva in enumerate(funcs):
                 if not rva or erva <= rva < erva + esz:
                     continue
@@ -226,7 +250,7 @@ def load_pe(path, data, member=None):
             v, = struct.unpack('<I', ent)
             if not v:
                 break
-            name = f'{dll}#{v & 0xffff}' if v & 0x80000000 else cstr(v + 2)
+            name = f'{dll}#{v & 0xffff}' if v & 0x80000000 else _export_symbol(cstr(v + 2))
             mod.add_name(image_base + iat_rva + 4 * k, canonical('pe', name))
             k += 1
 

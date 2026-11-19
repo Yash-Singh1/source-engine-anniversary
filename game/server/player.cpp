@@ -949,7 +949,7 @@ void CBasePlayer::TraceAttack( const CTakeDamageInfo &inputInfo, const Vector &v
 #ifdef HL2_EPISODIC
 		// If this damage type makes us bleed, then do so
 		bool bShouldBleed = !g_pGameRules->Damage_ShouldNotBleed( info.GetDamageType() );
-		if ( bShouldBleed )
+		if ( !IsHL2Episodic() || bShouldBleed )
 #endif
 		{
 			SpawnBlood(ptr->endpos, vecDir, BloodColor(), info.GetDamage());// a little surface blood.
@@ -3194,6 +3194,7 @@ void CBasePlayer::RunNullCommand( void )
 //-----------------------------------------------------------------------------
 // Purpose: Note, don't chain to BaseClass::PhysicsSimulate
 //-----------------------------------------------------------------------------
+#line 3183
 void CBasePlayer::PhysicsSimulate( void )
 {
 	VPROF_BUDGET( "CBasePlayer::PhysicsSimulate", VPROF_BUDGETGROUP_PLAYER );
@@ -3407,6 +3408,7 @@ void CBasePlayer::PhysicsSimulate( void )
 // 		}
 // 	}
 }
+#line 3410
 
 unsigned int CBasePlayer::PhysicsSolidMaskForEntity() const
 {

@@ -3452,7 +3452,7 @@ bool CNPC_Citizen::ShouldHealTarget( CBaseEntity *pTarget, bool bActiveUse )
 		Vector toPlayer = ( pTarget->GetAbsOrigin() - GetAbsOrigin() );
 	 	if (( bActiveUse || !HaveCommandGoal() || toPlayer.Length() < HEAL_TARGET_RANGE) 
 #ifdef HL2_EPISODIC
-			&& fabs(toPlayer.z) < HEAL_TARGET_RANGE_Z
+			&& ( fabs(toPlayer.z) < HEAL_TARGET_RANGE_Z || !IsHL2Episodic() )
 #endif
 			)
 	 	{
@@ -3528,7 +3528,7 @@ bool CNPC_Citizen::ShouldHealTarget( CBaseEntity *pTarget, bool bActiveUse )
 bool CNPC_Citizen::ShouldHealTossTarget( CBaseEntity *pTarget, bool bActiveUse )
 {
 	Disposition_t disposition;
-
+	if ( !IsHL2Episodic() ) return false;
 	Assert( IsMedic() );
 	if ( !IsMedic() )
 		return false;

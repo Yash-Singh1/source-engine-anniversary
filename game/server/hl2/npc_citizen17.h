@@ -85,7 +85,7 @@ public:
 	void			FixupMattWeapon();
 
 #ifdef HL2_EPISODIC
-	virtual float	GetJumpGravity() const		{ return 1.8f; }
+	virtual float	GetJumpGravity() const		{ if ( IsHL2Episodic() ) return 1.8f; return BaseClass::GetJumpGravity(); }
 #endif//HL2_EPISODIC
 
 	void			OnRestore();

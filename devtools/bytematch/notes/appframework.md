@@ -46,3 +46,20 @@ appframework's non-engine copy with engine's object, so it keeps showing
 | LoadExpansionInfo | written new (`ENGINE_DLL`) | reads `<mod>/cfg/config.cfg`, finds `hl2_expansion`, takes the second `COM_Parse` token into the output (passing `com_token` as the format string, as retail does). Leaks the read buffer and, on an empty file, the FILE, as retail does |
 | CFSSearchPathsInit::CFSSearchPathsInit | edited | retail struct has one bool (`m_bLowViolence`) at +0xc and `m_ModPath` at +0xd. `m_bMountHDContent` is a static dummy in retail mode so engine/common.cpp still compiles; the engine lane should drop that assignment |
 | FileSystem_Init_Normal (utils/common/filesystem_tools.cpp) | edited | calls `FileSystem_SetupSteamInstallPath()` after `FileSystem_GetFileSystemDLLName` (SDK 2013), which also brings that function back into vtex_dll |
+
+## Lane residuals3 (launcher 361/361, byte-identical)
+
+- `CSDLMgr::Init`/`CreateHiddenGameWindow`: GL setup only when
+  `GetCommandLineRenderBackend()` (public/materialsystem/imaterialsystem.h, retail mode;
+  retail's N_SOL puts imaterialsystem.h right after utllinkedlist.h) returns ToGL; the
+  window gets `SDL_WINDOW_VULKAN` on Vulkan; glGetString calls always run, then the GL
+  compatibility-profile warning; chipset check is GMA950/X3100/G7x only, no 10.6.7 check.
+- `SizeWindow` sets viewport/scissor only when `IsOpenGL()`; `Shutdown` no longer deletes
+  `m_readFBO`; `m_leopard` is live (offset 0x10).
+- glmdisplaydb_linuxwin.inl `PopulateModes`: no aspect-fit or half-size modes. Retail
+  defines this code inside sdlmgr.cpp, before `GetDisplayDB` (function order); the
+  include moved there in retail mode and identity/aliases.json maps the .inl to
+  sdlmgr.cpp for N_SOL.
+- glmrendererinfo_osx: no dead-context blacklist, no `kCGLRPOnline` check, Intel IDs
+  above X3100 set `m_intelNewer`; `DisplayInfoSortFunction` kept (dead-stripped, but
+  it sets `PopulateRenderers`' GCC_except_table index).
