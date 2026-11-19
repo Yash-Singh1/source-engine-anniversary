@@ -136,6 +136,7 @@ def main():
     os.makedirs(a.out, exist_ok=True)
     man = json.load(open(os.path.join(TREE, "devtools", "bytematch", "manifests", "retail-win32.json")))["modules"]
     want = a.modules.split(",") if a.modules else list(man)
+    a.modules_explicit = set(a.modules.split(",")) if a.modules else set()
     index = build_index(man)
 
     def ours_path(name, m):
@@ -162,6 +163,9 @@ def main():
         if not m:
             continue
         ours = ours_path(name, m)
+        if not ours and m["type"] != "lib" and name in a.modules_explicit:
+            # objects without a (successful) link: measured anyway, without folding information
+            ours = os.path.join(a.build, m["project_dir"], m["output"] + ".dll")
         if not ours:
             continue
         if m["type"] == "lib":
