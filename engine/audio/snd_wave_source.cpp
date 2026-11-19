@@ -184,8 +184,8 @@ void CAudioSourceWave::GetCacheData( CAudioSourceCachedInfo *info )
 	int datalen = 0;
 	// NOTE GetStartupData has side-effects (...) hence the unconditional call
 	if ( GetStartupData( tempbuf, sizeof( tempbuf ), datalen ) &&
-	     info->s_bIsPrecacheSound &&
-	     datalen > 0 )
+	     datalen > 0 &&
+	     info->s_bIsPrecacheSound )
 	{
 		byte *data = new byte[ datalen ];
 		Q_memcpy( data, tempbuf, datalen );

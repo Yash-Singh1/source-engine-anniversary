@@ -26,7 +26,7 @@ IMPLEMENT_CLIENTCLASS_DT(C_PhysicsProp, DT_PhysicsProp, CPhysicsProp)
 	RecvPropBool( RECVINFO( m_bAwake ) ),
 END_RECV_TABLE()
 
-#ifdef PBR_CHANGE
+#if defined( PBR_CHANGE ) && !defined( BYTEMATCH_RETAIL )
 	ConVar r_PhysPropStaticLighting( "r_PhysPropStaticLighting", "0" );
 #else
 	ConVar r_PhysPropStaticLighting( "r_PhysPropStaticLighting", "1" );

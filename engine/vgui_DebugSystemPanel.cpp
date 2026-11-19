@@ -296,10 +296,15 @@ public:
 		SetPos( videomode->GetModeStereoWidth() - GetWide() - 10 , 10 );
 		SetVisible( true );
 
+#ifdef BYTEMATCH_RETAIL
+		LoadControlSettings( "resource\\DebugOptionsPanel.res" );
+#else
 		if ( g_pFullFileSystem->FileExists( "resource/DebugOptionsPanel.res" ) )
 		{
 			LoadControlSettings( "resource/DebugOptionsPanel.res" );
 		}
+#endif
+#line 303
 	}
 
 	void	Init( KeyValues *kv );

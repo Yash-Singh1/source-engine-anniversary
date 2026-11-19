@@ -37,7 +37,7 @@ public:
 	void CycleToNextWeapon( void );
 	void CycleToPrevWeapon( void );
 
-	C_BaseCombatWeapon *GetWeaponInSlot( int iSlot, int iSlotPos );
+	C_BaseCombatWeapon *GetWeaponInSlot( int iSlot, int iSlotPos, bool bConsole = false );
 	void SelectWeaponSlot( int iSlot );
 
 	C_BaseCombatWeapon	*GetSelectedWeapon( void )
@@ -534,7 +534,7 @@ void CHudWeaponSelection::CycleToPrevWeapon( void )
 //-----------------------------------------------------------------------------
 // Purpose: returns the weapon in the specified slot
 //-----------------------------------------------------------------------------
-C_BaseCombatWeapon *CHudWeaponSelection::GetWeaponInSlot( int iSlot, int iSlotPos )
+C_BaseCombatWeapon *CHudWeaponSelection::GetWeaponInSlot( int iSlot, int iSlotPos, bool bConsole )
 {
 	C_BasePlayer *player = C_BasePlayer::GetLocalPlayer();
 	if ( !player )

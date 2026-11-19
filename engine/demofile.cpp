@@ -345,6 +345,41 @@ int CDemoFile::ReadRawData( char *buffer, int length )
 	int size;
 	
 	Assert( m_pBuffer && m_pBuffer->IsValid() );
+#ifdef BYTEMATCH_RETAIL
+	size = m_pBuffer->GetInt();
+
+	if ( buffer && (length < size) )
+	{
+		DevMsg("CDemoFile::ReadRawData: buffe overflow (%i).\n", size );
+		return -1;
+	}
+
+	if ( !buffer )
+	{
+		// just skip it
+		m_pBuffer->SeekGet( CUtlBuffer::SEEK_CURRENT, size );
+		return size;
+	}
+
+	if ( length < size )
+	{
+		// given buffer is too small
+		DevMsg("CDemoFile::ReadRawData: buffer overflow (%i).\n", size );
+		m_pBuffer->SeekGet( CUtlBuffer::SEEK_CURRENT, size );
+		return -1;
+	}
+
+	// read data into buffer
+	m_pBuffer->Get( buffer, size );
+
+	if ( !m_pBuffer || !m_pBuffer->IsValid() )
+	{
+		Host_EndGame(true, "Error reading demo message data.\n");
+		return -1;
+	}
+
+	return size;
+#else
 	if ( !m_pBuffer || !m_pBuffer->IsValid() )
 	{
 		Host_EndGame(true, "Error reading demo message data.\n");
@@ -372,6 +407,8 @@ int CDemoFile::ReadRawData( char *buffer, int length )
 	m_pBuffer->Get( buffer, size );
 
 	return size;
+#endif
+#line 375
 }
 
 void CDemoFile::WriteRawData( const char *buffer, int length )

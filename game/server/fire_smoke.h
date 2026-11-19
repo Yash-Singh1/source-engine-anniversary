@@ -30,12 +30,12 @@ public:
 
 	virtual void	Scale( float size, float time );
 	virtual void	Scale( float start, float size, float time );
-	virtual void	SetOriginalScale( float flScale ) { m_flOriginalStartScale = flScale; }
+	NOV2024_ONLY( virtual void	SetOriginalScale( float flScale ) { m_flOriginalStartScale = flScale; } )
 	virtual void	Enable( int state = true );
 
 	//Client-side
 	CNetworkVar( float, m_flStartScale );
-	CNetworkVar( float, m_flOriginalStartScale );
+	NOV2024_ONLY( CNetworkVar( float, m_flOriginalStartScale ); )
 	CNetworkVar( float, m_flScale );
 	CNetworkVar( float, m_flScaleTime );
 	CNetworkVar( int, m_nFlags );

@@ -39,7 +39,7 @@
 // NVNT Include
 #include "haptics/haptic_utils.h"
 #include <vgui/ISurface.h>
-
+#include "inputsystem/iinputsystem.h"
 extern ConVar in_joystick;
 extern ConVar cam_idealpitch;
 extern ConVar cam_idealyaw;
@@ -470,7 +470,7 @@ void IN_MoverightDown( const CCommand &args ) {KeyDown(&in_moveright, args[1] );
 void IN_MoverightUp( const CCommand &args ) {KeyUp(&in_moveright, args[1] );}
 void IN_WalkDown( const CCommand &args ) {KeyDown(&in_walk, args[1] );}
 void IN_WalkUp( const CCommand &args ) {KeyUp(&in_walk, args[1] );}
-void IN_SpeedDown( const CCommand &args ) {KeyDown(&in_speed, args[1] );}
+void IN_SpeedDown( const CCommand &args ) { NOV2024_ONLY( engine->ClientCmd_Unrestricted( "cancel_duck_toggle 0.5" ); ) KeyDown(&in_speed, args[1] );}
 void IN_SpeedUp( const CCommand &args ) {KeyUp(&in_speed, args[1] );}
 void IN_StrafeDown( const CCommand &args ) {KeyDown(&in_strafe, args[1] );}
 void IN_StrafeUp( const CCommand &args ) {KeyUp(&in_strafe, args[1] );}
@@ -480,7 +480,7 @@ void IN_UseDown ( const CCommand &args ) {KeyDown(&in_use, args[1] );}
 void IN_UseUp ( const CCommand &args ) {KeyUp(&in_use, args[1] );}
 void IN_JumpDown ( const CCommand &args ) {KeyDown(&in_jump, args[1] );}
 void IN_JumpUp ( const CCommand &args ) {KeyUp(&in_jump, args[1] );}
-void IN_DuckDown( const CCommand &args ) {KeyDown(&in_duck, args[1] );}
+void IN_DuckDown( const CCommand &args ) { NOV2024_ONLY( engine->ClientCmd_Unrestricted( "cancel_duck_toggle" ); ) KeyDown(&in_duck, args[1] );}
 void IN_DuckUp( const CCommand &args ) {KeyUp(&in_duck, args[1] );}
 void IN_LookSpinDown( const CCommand &args ) {KeyDown(&in_lookspin, args[1] );}
 void IN_LookSpinUp( const CCommand &args ) {KeyUp(&in_lookspin, args[1] );}
@@ -504,6 +504,7 @@ void IN_XboxStub( const CCommand &args ) { /*do nothing*/ }
 void IN_Attack3Down( const CCommand &args ) { KeyDown(&in_attack3, args[1] );}
 void IN_Attack3Up( const CCommand &args ) { KeyUp(&in_attack3, args[1] );}
 
+#ifndef BYTEMATCH_RETAIL
 void IN_DuckToggle( const CCommand &args ) 
 { 
 	if ( ::input->KeyState(&in_ducktoggle) )
@@ -515,6 +516,7 @@ void IN_DuckToggle( const CCommand &args )
 		KeyDown( &in_ducktoggle, args[1] ); 
 	}
 }
+#endif
 
 void IN_AttackDown( const CCommand &args )
 {
@@ -650,8 +652,6 @@ DetermineKeySpeed
 ==============================
 */
 static ConVar in_usekeyboardsampletime( "in_usekeyboardsampletime", "1", 0, "Use keyboard sample time smoothing." );
-ConVar sc_last_used_input( "sc_last_used_input", "0", 0 );
-ConVar sc_controller_mode( "sc_controller_mode", "0", 0 );
 
 float CInput::DetermineKeySpeed( float frametime )
 {
@@ -961,7 +961,7 @@ void CInput::ControllerMove( float frametime, CUserCmd *cmd )
 	}
 
 	JoyStickMove( frametime, cmd);
-
+	SteamControllerMove( frametime, cmd );
 #ifndef BYTEMATCH_RETAIL
 	TouchMove( cmd );
 #endif
@@ -1214,7 +1214,7 @@ void CInput::CreateMove ( int sequence_number, float input_sample_frametime, boo
 #ifdef SIXENSE
 	if ( in_joystick.GetInt() || g_pSixenseInput->IsEnabled() )
 #else
-	if ( in_joystick.GetInt() )
+	if ( !g_pInputSystem->IsSteamControllerActive() && in_joystick.GetInt() )
 #endif
 #elif defined( SIXENSE )
 	if ( in_joystick.GetInt() || g_pSixenseInput->IsEnabled() || touch_enable.GetInt() )
@@ -1494,6 +1494,8 @@ int CInput::GetButtonBits( int bResetState )
 	CalcButtonBits( bits, IN_GRENADE1, s_ClearInputState, &in_grenade1, bResetState );
 	CalcButtonBits( bits, IN_GRENADE2, s_ClearInputState, &in_grenade2, bResetState );
 	CalcButtonBits( bits, IN_ATTACK3, s_ClearInputState, &in_attack3, bResetState );
+	CalcButtonBits( bits, IN_LOOKSPIN, s_ClearInputState, &in_lookspin, bResetState );
+	CalcButtonBits( bits, IN_RESETCAMERA, s_ClearInputState, &in_resetcamera, bResetState );
 
 	if ( KeyState(&in_ducktoggle) )
 	{
@@ -1583,6 +1585,7 @@ void CInput::AddIKGroundContactInfo( int entindex, float minheight, float maxhei
 }
 #endif
 
+#ifdef HL2_ANNIVERSARY_NOV2024
 //-----------------------------------------------------------------------------
 // Purpose: Enhanced aim assist: pulls the view yaw towards the autoaim target,
 //			harder when moving across it and when already aiming close to it
@@ -1640,6 +1643,8 @@ QAngle CInput::DoAutoAimMagnetism( QAngle viewangles, int nAutoAimMode, float fl
 #endif
 	return viewangles;
 }
+#endif
+#line 1645
 
 
 static ConCommand startcommandermousemove("+commandermousemove", IN_CommanderMouseMoveDown);
@@ -1685,10 +1690,6 @@ static ConCommand startjlook("+jlook", IN_JLookDown);
 static ConCommand endjlook("-jlook", IN_JLookUp);
 static ConCommand startduck("+duck", IN_DuckDown);
 static ConCommand endduck("-duck", IN_DuckUp);
-static ConCommand startlookspin("+lookspin", IN_LookSpinDown);
-static ConCommand endlookspin("-lookspin", IN_LookSpinUp);
-static ConCommand startresetcamera("+resetcamera", IN_ResetCameraDown);
-static ConCommand endresetcamera("-resetcamera", IN_ResetCameraUp);
 static ConCommand startreload("+reload", IN_ReloadDown);
 static ConCommand endreload("-reload", IN_ReloadUp);
 static ConCommand startalt1("+alt1", IN_Alt1Down);
@@ -1713,6 +1714,10 @@ static ConCommand endgrenade2( "-grenade2", IN_Grenade2Up );
 static ConCommand startgrenade2( "+grenade2", IN_Grenade2Down );
 static ConCommand startattack3("+attack3", IN_Attack3Down);
 static ConCommand endattack3("-attack3", IN_Attack3Up);
+static ConCommand startlookspin("+lookspin", IN_LookSpinDown);
+static ConCommand endlookspin("-lookspin", IN_LookSpinUp);
+static ConCommand startresetcamera("+resetcamera", IN_ResetCameraDown);
+static ConCommand endresetcamera("-resetcamera", IN_ResetCameraUp);
 
 #ifdef TF_CLIENT_DLL
 static ConCommand toggle_duck( "toggle_duck", IN_DuckToggle );
@@ -1721,6 +1726,8 @@ static ConCommand toggle_duck( "toggle_duck", IN_DuckToggle );
 // Xbox 360 stub commands
 static ConCommand xboxmove("xmove", IN_XboxStub);
 static ConCommand xboxlook("xlook", IN_XboxStub);
+ConVar sc_last_used_input( "sc_last_used_input", "0", 0 );
+ConVar sc_controller_mode( "sc_controller_mode", "0", 0 );
 
 /*
 ============
@@ -1749,13 +1756,22 @@ void CInput::Init_All (void)
 	m_fHadJoysticks = false;
 	m_flLastForwardMove = 0.0;
 
+#ifdef HL2_ANNIVERSARY_NOV2024
 	m_vecQuickTurn = vec2_origin;
 	m_bQuickTurnFlip = false;
 	m_bQuickTurnWasDown = false;
 	m_bCameraResetWasDown = false;
+#else
+	m_flQuickTurnTime = 0.0f;
+	m_flQuickTurnRate = 0.0f;
+	m_flLastYawInput = 0.0f;
+	m_flCameraResetTime = 0.0f;
+	m_flCameraResetRate = 0.0f;
+#endif
+#line 1760
 
-	SetControllerModeActive( false );
-	m_nUnused = 0;
+	SetLastUsedInput( 0 );
+	m_flMouseMoveSinceControllerMode = 0;
 
 	// Initialize inputs
 	if ( IsPC() )

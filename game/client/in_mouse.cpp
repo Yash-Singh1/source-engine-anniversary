@@ -28,6 +28,10 @@
 #include "tier1/convar_serverbounded.h"
 #include "cam_thirdperson.h"
 #include "inputsystem/iinputsystem.h"
+#include "tier2/tier2.h"
+#if defined( HL2_CLIENT_DLL )
+#include "c_basehlplayer.h"
+#endif
 
 #if defined( _X360 )
 #include "xbox/xbox_win32stubs.h"
@@ -103,6 +107,46 @@ static ConVar m_mouseaccel1( "m_mouseaccel1", "0", FCVAR_ARCHIVE, "Windows mouse
 static ConVar m_mouseaccel2( "m_mouseaccel2", "0", FCVAR_ARCHIVE, "Windows mouse acceleration secondary threshold (4x movement).", true, 0, false, 0.0f );
 
 static ConVar m_rawinput( "m_rawinput", "0", FCVAR_ARCHIVE, "Use Raw Input for mouse input.");
+
+#if defined( HL2_CLIENT_DLL ) && defined( HL2_ANNIVERSARY_NOV2024 )
+ConVar m_autoaimdampen( "m_autoaimdampen", "0.5", FCVAR_ARCHIVE, "Dampening Factor for Aim Assist" );
+ConVar m_autoaimdampenrange( "m_autoaimdampenrange", "50", FCVAR_ARCHIVE, "Speed Factor for Applying Aim Assist Dampening" );
+ConVar m_autoaim_magnetism( "m_autoaim_magnetism", "0.03", FCVAR_ARCHIVE, "Magnetism Factor for Aim Assist" );
+
+extern ConVar sk_allow_autoaim;
+extern ConVar m_autoaim_mode;
+extern ConVar m_autoaim_scale;
+
+//-----------------------------------------------------------------------------
+// Purpose: Aim assist dampening for mouse look deltas
+//-----------------------------------------------------------------------------
+static float GetMouseAutoAimDampening( float flValue )
+{
+	if ( m_autoaim_mode.GetBool() && m_autoaimdampen.GetFloat() > 0.0f )
+	{
+		C_BaseHLPlayer *pLocalPlayer = (C_BaseHLPlayer *)C_BasePlayer::GetLocalPlayer();
+		if ( pLocalPlayer )
+		{
+			float flScale = 1.0f;
+			if ( sk_allow_autoaim.GetBool() && m_autoaim_mode.GetBool() )
+			{
+				flScale = m_autoaim_scale.GetFloat();
+			}
+
+			if ( pLocalPlayer->m_HL2Local.m_bAutoAimTarget )
+			{
+				float flRange = m_autoaimdampenrange.GetFloat();
+				if ( fabsf( flValue ) < flRange * flScale )
+				{
+					return MIN( 1.0, pow( m_autoaimdampen.GetFloat(), flScale ) );
+				}
+			}
+		}
+	}
+
+	return 1.0f;
+}
+#endif
 
 #if DEBUG
 ConVar cl_mouselook( "cl_mouselook", "1", FCVAR_ARCHIVE, "Set to 1 to use mouse for look, 0 for keyboard look." );
@@ -525,6 +569,13 @@ void CInput::ApplyMouse( QAngle& viewangles, CUserCmd *cmd, float mouse_x, float
 				viewangles[PITCH] += m_pitch->GetFloat() * mouse_y;
 			}
 
+#if defined( HL2_CLIENT_DLL ) && defined( HL2_ANNIVERSARY_NOV2024 )
+			if ( sk_allow_autoaim.GetBool() && g_pInputSystem->IsMouseKeyboardActive() )
+			{
+				viewangles = DoAutoAimMagnetism( viewangles, m_autoaim_mode.GetInt(), m_autoaim_magnetism.GetFloat(), m_autoaim_scale.GetFloat() );
+			}
+#endif
+
 			// Check pitch bounds
 			if (viewangles[PITCH] > cl_pitchdown.GetFloat())
 			{
@@ -673,8 +724,24 @@ void CInput::MouseMove( CUserCmd *cmd )
 		// Filter, etc. the delta values and place into mouse_x and mouse_y
 		GetMouseDelta( mx, my, &mouse_x, &mouse_y );
 
+		// Enough mouse movement leaves controller mode
+		if ( ControllerModeActive() )
+		{
+			m_flMouseMoveSinceControllerMode += fabsf( mouse_x ) + fabsf( mouse_y );
+			if ( m_flMouseMoveSinceControllerMode > 30.0f )
+			{
+				sc_controller_mode.SetValue( 0 );
+				m_flMouseMoveSinceControllerMode = 0;
+			}
+		}
+
 		// Apply scaling factor
 		ScaleMouse( &mouse_x, &mouse_y );
+
+#if defined( HL2_CLIENT_DLL ) && defined( HL2_ANNIVERSARY_NOV2024 )
+		mouse_x *= GetMouseAutoAimDampening( mouse_x );
+		mouse_y *= GetMouseAutoAimDampening( mouse_y );
+#endif
 
 		// Let the client mode at the mouse input before it's used
 		g_pClientMode->OverrideMouseInput( &mouse_x, &mouse_y );

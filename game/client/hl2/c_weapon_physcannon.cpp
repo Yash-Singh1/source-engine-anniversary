@@ -25,7 +25,7 @@ public:
 	virtual int DrawModel( int flags );
 	virtual void ClientThink( void );
 
-	virtual bool ShouldUseLargeViewModelVROverride() OVERRIDE { return true; }
+	virtual bool ShouldUseLargeViewModelVROverride() OVERRIDE { return true; } NOV2024_ONLY( virtual bool IsUpgraded( void ) { return m_bWasUpgraded; } )
 
 private:
 

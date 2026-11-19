@@ -54,8 +54,14 @@ void EncodeFloat( const SendProp *pProp, float fVal, bf_write *pOut, int objectI
 			
 			if(!(flags & SPROP_ROUNDUP))
 			{
+#ifdef BYTEMATCH_RETAIL
+				DataTable_Warning("(class %s): Out-of-range value (%f) in SendPropFloat '%s', clamping.\n",
+					GetObjectClassName( objectID ), fVal, pProp->m_pVarName );
+#else
 				DataTable_Warning("(class %s): Out-of-range value (%f / %f) in SendPropFloat '%s', clamping.\n",
 					GetObjectClassName( objectID ), fVal, pProp->m_fLowValue, pProp->m_pVarName );
+#endif
+#line 59
 			}
 		}
 		else if( fVal > pProp->m_fHighValue )
@@ -65,8 +71,14 @@ void EncodeFloat( const SendProp *pProp, float fVal, bf_write *pOut, int objectI
 
 			if(!(flags & SPROP_ROUNDDOWN))
 			{
+#ifdef BYTEMATCH_RETAIL
+				DataTable_Warning("%s: Out-of-range value (%f) in SendPropFloat '%s', clamping.\n",
+					GetObjectClassName( objectID ), fVal, pProp->m_pVarName );
+#else
 				DataTable_Warning("%s: Out-of-range value (%f/%f) in SendPropFloat '%s', clamping.\n",
 					GetObjectClassName( objectID ), fVal, pProp->m_fHighValue, pProp->m_pVarName );
+#endif
+#line 70
 			}
 		}
 		else

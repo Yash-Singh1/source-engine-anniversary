@@ -15,7 +15,7 @@
 class C_BaseCombatWeapon;
 class C_BasePlayer;
 
-extern ConVar hud_fastswitch;
+extern ConVar hud_fastswitch; extern ConVar hud_fastswitch_net;
 int GetFastSwitchType();
 
 // weapon switch types for Convar hud_fastswitch
@@ -48,7 +48,7 @@ public:
 	virtual void CycleToNextWeapon( void ) = 0;
 	virtual void CycleToPrevWeapon( void ) = 0;
 	virtual void SwitchToLastWeapon( void );
-	virtual C_BaseCombatWeapon *GetWeaponInSlot( int iSlot, int iSlotPos ) = 0;
+	virtual C_BaseCombatWeapon *GetWeaponInSlot( int iSlot, int iSlotPos, bool bConsole = false ) = 0;
 	virtual void SelectWeaponSlot( int iSlot ) = 0;
 	virtual C_BaseCombatWeapon	*GetFirstPos( int iSlot );
 	virtual C_BaseCombatWeapon	*GetNextActivePos( int iSlot, int iSlotPos );

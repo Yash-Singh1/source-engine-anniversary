@@ -705,7 +705,12 @@ bool CHLTVServer::DispatchToRelay( CHLTVClient *pClient )
 	pClient->SendNetMsg( serverInfo, true );
 
 	// tell the client to connect to this new address
+#ifdef BYTEMATCH_RETAIL
+	NET_StringCmd cmdMsg( va("connect %s\n", pszRelayAddr ) ) ;
+#else
 	NET_StringCmd cmdMsg( va("redirect %s\n", pszRelayAddr ) ) ;
+#endif
+#line 709
 	pClient->SendNetMsg( cmdMsg, true );
 
  	// increase this proxies client number in advance so this proxy isn't used again next time
@@ -1866,7 +1871,7 @@ bool CHLTVServer::StartPlayback( const char *filename, bool bAsTimeDemo )
 
 	double start = Plat_FloatTime();
 
-	ReadCompleteDemoFile();
+	ReadCompeleteDemoFile();
 
 	double diff = Plat_FloatTime() - start;
 
@@ -1878,7 +1883,7 @@ bool CHLTVServer::StartPlayback( const char *filename, bool bAsTimeDemo )
 	return true;
 }
 
-void CHLTVServer::ReadCompleteDemoFile()
+void CHLTVServer::ReadCompeleteDemoFile()
 {
 	int			tick = 0;
 	byte		cmd = dem_signon;
@@ -1925,6 +1930,16 @@ void CHLTVServer::ReadCompleteDemoFile()
 			break;
 		case dem_stringtables:
 			{
+#ifdef BYTEMATCH_RETAIL
+				void *data = malloc( 512 * 1024 );
+				bf_read buf( "dem_stringtables", data, 512 * 1024 );
+				m_DemoFile.ReadStringTables( &buf );
+				buf.Seek( 0 );
+				if ( !networkStringTableContainerClient->ReadStringTables( buf ) )
+				{
+					Host_Error( "Error parsing string tables during demo playback." );
+				}
+#else
 				void *data = NULL;
 				int dataLen = 512 * 1024;
 				while ( dataLen <= DEMO_FILE_MAX_STRINGTABLE_SIZE )
@@ -1950,6 +1965,8 @@ void CHLTVServer::ReadCompleteDemoFile()
 				{
 					Warning( "ReadCompleteDemoFile failed to read string tables. Trying to read string tables that's bigger than max string table size\n" );
 				}
+#endif
+#line 1948
 
 				free( data );
 			}

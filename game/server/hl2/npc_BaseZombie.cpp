@@ -1765,11 +1765,20 @@ int CNPC_BaseZombie::TranslateSchedule( int scheduleType )
 	switch( scheduleType )
 	{
 	case SCHED_CHASE_ENEMY:
+#ifdef HL2_EPISODIC
+		if ( HasCondition( COND_ZOMBIE_LOCAL_MELEE_OBSTRUCTION ) && !HasCondition(COND_TASK_FAILED) && ( IsCurSchedule( SCHED_ZOMBIE_CHASE_ENEMY, false ) || IsCurSchedule( SCHED_ZOMBIE_CHASE_ENEMY_EPISODIC, false ) ) )
+		{
+			return SCHED_COMBAT_PATROL;
+		}
+		return IsHL2Episodic() ? SCHED_ZOMBIE_CHASE_ENEMY_EPISODIC : SCHED_ZOMBIE_CHASE_ENEMY;
+#else
 		if ( HasCondition( COND_ZOMBIE_LOCAL_MELEE_OBSTRUCTION ) && !HasCondition(COND_TASK_FAILED) && IsCurSchedule( SCHED_ZOMBIE_CHASE_ENEMY, false ) )
 		{
 			return SCHED_COMBAT_PATROL;
 		}
 		return SCHED_ZOMBIE_CHASE_ENEMY;
+#endif
+#line 1773
 		break;
 
 	case SCHED_ZOMBIE_SWATITEM:
@@ -1807,13 +1816,13 @@ void CNPC_BaseZombie::BuildScheduleTestBits( void )
 		ClearCustomInterruptCondition( COND_LIGHT_DAMAGE );
 		ClearCustomInterruptCondition( COND_HEAVY_DAMAGE );
 	}
-#ifndef HL2_EPISODIC
-	else if ( m_flNextFlinch >= gpGlobals->curtime )
+
+	else if ( !HL2_EPISODIC_ACTIVE() && m_flNextFlinch >= gpGlobals->curtime )
 	{
 		ClearCustomInterruptCondition( COND_LIGHT_DAMAGE );
 		ClearCustomInterruptCondition( COND_HEAVY_DAMAGE );
 	}
-#endif // !HL2_EPISODIC
+
 
 	// Everything should be interrupted if we get killed.
 	SetCustomInterruptCondition( COND_ZOMBIE_RELEASECRAB );
@@ -2823,7 +2832,7 @@ AI_BEGIN_CUSTOM_NPC( base_zombie, CNPC_BaseZombie )
 #ifdef HL2_EPISODIC
 	DEFINE_SCHEDULE
 	(
-		SCHED_ZOMBIE_CHASE_ENEMY,
+		SCHED_ZOMBIE_CHASE_ENEMY_EPISODIC,
 
 		"	Tasks"
 		"		 TASK_SET_FAIL_SCHEDULE			SCHEDULE:SCHED_CHASE_ENEMY_FAILED"
@@ -2847,7 +2856,7 @@ AI_BEGIN_CUSTOM_NPC( base_zombie, CNPC_BaseZombie )
 		"		COND_ZOMBIE_RELEASECRAB"
 		"		COND_HEAVY_DAMAGE"
 	)
-#else 
+#endif
 	DEFINE_SCHEDULE
 	(
 		SCHED_ZOMBIE_CHASE_ENEMY,
@@ -2873,7 +2882,7 @@ AI_BEGIN_CUSTOM_NPC( base_zombie, CNPC_BaseZombie )
 		"		COND_ZOMBIE_CAN_SWAT_ATTACK"
 		"		COND_ZOMBIE_RELEASECRAB"
 	)
-#endif // HL2_EPISODIC
+
 
 
 	//=========================================================

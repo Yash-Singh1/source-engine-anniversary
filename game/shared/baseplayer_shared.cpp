@@ -2101,8 +2101,11 @@ bool fogparams_t::operator !=( const fogparams_t& other ) const
 		!VectorsAreEqual(this->dirPrimary, other.dirPrimary, 0.01f ) || 
 		this->colorPrimary.Get() != other.colorPrimary.Get() ||
 		this->colorSecondary.Get() != other.colorSecondary.Get() ||
+#ifdef HL2_ANNIVERSARY_NOV2024
 		this->colorPrimaryHDR.Get() != other.colorPrimaryHDR.Get() ||
 		this->colorSecondaryHDR.Get() != other.colorSecondaryHDR.Get() ||
+#endif
+#line 2106
 		this->start != other.start ||
 		this->end != other.end ||
 		this->farz != other.farz ||

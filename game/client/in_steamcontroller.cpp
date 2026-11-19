@@ -48,13 +48,14 @@ static ConVar sc_yaw_sensitivity_default( "sc_yaw_sensitivity_default", "1.0", F
 static ConVar sc_pitch_sensitivity( "sc_pitch_sensitivity_new2", "0.10", FCVAR_ARCHIVE, "SteamController pitch factor." );
 static ConVar sc_pitch_sensitivity_default( "sc_pitch_sensitivity_default", "0.9", FCVAR_NONE );
 
-ConVar sc_autoaimdampen( "sc_autoaimdampen", "0.5", FCVAR_ARCHIVE, "Dampening Factor for Aim Assist" );
-ConVar sc_autoaimdampen_speed_factor( "sc_autoaimdampen_speed_factor", "0.35", FCVAR_ARCHIVE, "Speed Contribution for Dampening Factor for Aim Assist" );
-ConVar sc_autoaimdampen_distance_factor( "sc_autoaimdampen_distance_factor", "0.25", FCVAR_ARCHIVE, "Distance Contribution for Dampening Factor for Aim Assist" );
-ConVar sc_autoaimdampenrange( "sc_autoaimdampenrange", "35", FCVAR_ARCHIVE, "Speed Factor for Applying Aim Assist Dampening" );
-ConVar sc_autoaim_magnetism( "sc_autoaim_magnetism", "0.03", FCVAR_ARCHIVE, "Magnetism Factor for Aim Assist" );
-ConVar sc_sensitivity_scale( "sc_sensitivity_scale", "1.0", FCVAR_ARCHIVE, "Global scale to Steam Input look sensitivity." );
+NOV2024_ONLY( ConVar sc_autoaimdampen( "sc_autoaimdampen", "0.5", FCVAR_ARCHIVE, "Dampening Factor for Aim Assist" ); )
+NOV2024_ONLY( ConVar sc_autoaimdampen_speed_factor( "sc_autoaimdampen_speed_factor", "0.35", FCVAR_ARCHIVE, "Speed Contribution for Dampening Factor for Aim Assist" ); )
+NOV2024_ONLY( ConVar sc_autoaimdampen_distance_factor( "sc_autoaimdampen_distance_factor", "0.25", FCVAR_ARCHIVE, "Distance Contribution for Dampening Factor for Aim Assist" ); )
+NOV2024_ONLY( ConVar sc_autoaimdampenrange( "sc_autoaimdampenrange", "35", FCVAR_ARCHIVE, "Speed Factor for Applying Aim Assist Dampening" ); )
+NOV2024_ONLY( ConVar sc_autoaim_magnetism( "sc_autoaim_magnetism", "0.03", FCVAR_ARCHIVE, "Magnetism Factor for Aim Assist" ); )
+NOV2024_ONLY( ConVar sc_sensitivity_scale( "sc_sensitivity_scale", "1.0", FCVAR_ARCHIVE, "Global scale to Steam Input look sensitivity." ); )
 
+#ifdef HL2_ANNIVERSARY_NOV2024
 //-----------------------------------------------------------------------------
 // Purpose: Aim assist dampening for Steam Input look deltas
 //-----------------------------------------------------------------------------
@@ -94,6 +95,8 @@ float GetSCAutoAimDampening( float flValue )
 
 	return 1.0f;
 }
+#endif
+#line 97
 
 CON_COMMAND( sc_flashlight, "Toggles the flashlight." )
 {
@@ -138,9 +141,9 @@ static const char *g_ControllerDigitalGameActions[] =
 	"slot2",
 	"slot3",
 	"slot4",
-	"sc_save_quick",
-	"sc_load_quick",
-	"smart_sprint",
+	NOV2024_ONLY( "sc_save_quick", )
+	NOV2024_ONLY( "sc_load_quick", )
+	NOV2024_ONLY( "smart_sprint", )
 };
 
 struct ControllerDigitalActionState
@@ -197,10 +200,10 @@ static int InitializeSteamInputActions()
 	g_ControllerBreakingHandle = SteamInput()->GetAnalogActionHandle( "Brake" );
 	g_ControllerCameraHandle = SteamInput()->GetAnalogActionHandle( "Camera" );
 	g_ControllerJoystickCameraHandle = SteamInput()->GetAnalogActionHandle( "JoystickCamera" );
-	g_ControllerGyroAngles = SteamInput()->GetAnalogActionHandle( "GyroCameraAngles" );
-	g_ControllerTrackPadAngles = SteamInput()->GetAnalogActionHandle( "TouchPadCameraAngles" );
-	g_ControllerJoystickAngles = SteamInput()->GetAnalogActionHandle( "JoystickCameraAngles" );
-	g_ControllerFlickStickAngles = SteamInput()->GetAnalogActionHandle( "FlickStickCameraAngles" );
+	NOV2024_ONLY( g_ControllerGyroAngles = SteamInput()->GetAnalogActionHandle( "GyroCameraAngles" ); )
+	NOV2024_ONLY( g_ControllerTrackPadAngles = SteamInput()->GetAnalogActionHandle( "TouchPadCameraAngles" ); )
+	NOV2024_ONLY( g_ControllerJoystickAngles = SteamInput()->GetAnalogActionHandle( "JoystickCameraAngles" ); )
+	NOV2024_ONLY( g_ControllerFlickStickAngles = SteamInput()->GetAnalogActionHandle( "FlickStickCameraAngles" ); )
 
 	return nControllers;
 }
@@ -234,14 +237,14 @@ void CInput::SteamControllerMove( float flFrametime, CUserCmd *cmd )
 	InputHandle_t controllers[STEAM_INPUT_MAX_COUNT];
 	int nControllers = SteamInput()->GetConnectedControllers( controllers );
 
-	static int nControllersInitialized = 0;
+	OCT2024_ONLY( if ( nControllers <= 0 ) return; ) static int nControllersInitialized = 0;
 	if ( nControllers != nControllersInitialized )
 	{
 		nControllersInitialized = InitializeSteamInputActions();
-		Joystick_Advanced();
+		NOV2024_ONLY( Joystick_Advanced(); )
 	}
 
-	if ( !nControllersInitialized || nControllers <= 0 )
+	if ( !nControllersInitialized NOV2024_ONLY( || nControllers <= 0 ) )
 		return;
 
 	QAngle viewangles;
@@ -267,16 +270,19 @@ void CInput::SteamControllerMove( float flFrametime, CUserCmd *cmd )
 			InputDigitalActionData_t data = SteamInput()->GetDigitalActionData( controller, state.handle );
 
 			bool bActionSetChanged = g_ControllerCurrentActionSet[i] != actionSet;
-			bool bSmartSprint = !V_strcmp( state.cmd, "smart_sprint" );
+			bool bSmartSprint = !V_strcmp( state.cmd, NOV2024_ONLY( "smart_sprint" ) OCT2024_ONLY( "+speed" ) );
 
 			if ( bActionSetChanged )
 			{
+#ifdef HL2_ANNIVERSARY_NOV2024
 				// Don't carry buttons over from the previous action set
 				int bits = ::input->GetButtonBits( 0 );
 				if ( bits > 0 )
 				{
 					::input->ClearInputButton( bits );
 				}
+#endif
+#line 280
 				state.bState = data.bState;
 			}
 			else if ( data.bState != state.bState )
@@ -396,24 +402,39 @@ void CInput::SteamControllerMove( float flFrametime, CUserCmd *cmd )
 
 			if ( !m_fCameraInterceptingMouse )
 			{
+#ifdef HL2_ANNIVERSARY_NOV2024
 				flMouseY = -flMouseY;
 				angDelta[YAW] -= CAM_CapYaw( gHUD.GetFOVSensitivityAdjust() * sc_yaw_sensitivity.GetFloat() * flMouseX * GetSCAutoAimDampening( flMouseX ) * sc_sensitivity_scale.GetFloat() );
 				angDelta[PITCH] -= gHUD.GetFOVSensitivityAdjust() * flMouseY * sc_pitch_sensitivity.GetFloat() * GetSCAutoAimDampening( flMouseY ) * sc_sensitivity_scale.GetFloat();
+#else
+				angDelta[YAW] -= CAM_CapYaw( gHUD.GetFOVSensitivityAdjust() * sc_yaw_sensitivity.GetFloat() * flMouseX );
+				angDelta[PITCH] += gHUD.GetFOVSensitivityAdjust() * flMouseY * sc_pitch_sensitivity.GetFloat();
+#endif
+#line 402
 			}
 		}
 
+#ifdef HL2_ANNIVERSARY_NOV2024
 		UpdateQuickTurnAndCameraReset( angDelta, flFrametime );
 		UpdateSteamInputCameraAngles( controller, angDelta );
+#else
+		angDelta[YAW] = UpdateAndGetQuickTurnYaw( flFrametime, angDelta[YAW] );
+		angDelta[PITCH] = UpdateAndGetCameraReset( viewangles, flFrametime, angDelta[PITCH] );
+#endif
+#line 407
 
 		cmd->mousedx += angDelta[YAW];
 		cmd->mousedy += angDelta[PITCH];
 
 		viewangles += angDelta;
 
+#ifdef HL2_ANNIVERSARY_NOV2024
 		if ( sk_allow_autoaim.GetBool() && g_pInputSystem->IsSteamControllerActive() )
 		{
 			viewangles = DoAutoAimMagnetism( viewangles, sc_autoaim_mode.GetInt(), sc_autoaim_magnetism.GetFloat(), sc_autoaim_scale.GetFloat() );
 		}
+#endif
+#line 417
 
 		viewangles[PITCH] = clamp( viewangles[PITCH], -cl_pitchdown.GetFloat(), cl_pitchup.GetFloat() );
 
@@ -423,7 +444,7 @@ void CInput::SteamControllerMove( float flFrametime, CUserCmd *cmd )
 	bool bSmartSprintActive = pHLPlayer->m_bSmartSprintActive;
 	if ( g_pInputSystem->IsSteamControllerActive() )
 	{
-		if ( sc_smart_sprint.GetBool() && ( bSmartSprintHeld || bSmartSprintActive ) )
+		if ( sc_smart_sprint.GetBool() && ( bSmartSprintHeld || bSmartSprintActive OCT2024_ONLY( || bSprinting ) ) )
 		{
 			float flMoveLength = vecMoveTotal.Length();
 			bool bInBounds = bSmartSprintActive ? ( flMoveLength >= sc_smart_sprint_end_bounds.GetFloat() ) : ( flMoveLength >= sc_smart_sprint_start_bounds.GetFloat() );
@@ -446,6 +467,7 @@ void CInput::SteamControllerMove( float flFrametime, CUserCmd *cmd )
 	engine->SetViewAngles( viewangles );
 }
 
+#ifdef HL2_ANNIVERSARY_NOV2024
 //-----------------------------------------------------------------------------
 // Purpose: Adds the gyro, touch pad, joystick and flick stick camera deltas
 //-----------------------------------------------------------------------------
@@ -476,6 +498,8 @@ void CInput::UpdateSteamInputCameraAngles( uint64 controller, QAngle &angles )
 	angles[YAW] -= vecDelta.x;
 	angles[PITCH] += vecDelta.y;
 }
+#endif
+#line 479
 
 //-----------------------------------------------------------------------------
 // Purpose: Advanced Steam Input frame time accumulator
@@ -505,7 +529,7 @@ CON_COMMAND( sc_force_action_manifest, "Forces an action manifest from the app i
 
 	char szManifest[MAX_PATH + 1];
 	V_snprintf( szManifest, sizeof( szManifest ), "%s/steam_input/action_manifest_%s.vdf", szInstallDir, args[1] );
-	Msg( "[SteamInput] Loading action manifest from console: %s\n", szManifest );
+	Msg( NOV2024_ONLY( "[SteamInput] Loading action manifest from console: %s\n" ) OCT2024_ONLY( "Loading action manifest: %s\n" ), szManifest );
 	SteamInput()->SetInputActionManifestFilePath( szManifest );
 }
 
@@ -516,10 +540,12 @@ CON_COMMAND( sc_save_quick, "Helper binding for quick saving in Steam Input" )
 
 CON_COMMAND( sc_load_quick, "Helper binding for quick loading in Steam Input" )
 {
-	engine->ClientCmd_Unrestricted( "load quick" );
+	engine->ClientCmd_Unrestricted( NOV2024_ONLY( "load quick" ) OCT2024_ONLY( "save load" ) );
 }
 
+#ifdef HL2_ANNIVERSARY_NOV2024
 CON_COMMAND( smart_sprint, "Helper binding for smart sprint in Steam Input" )
 {
 	engine->ClientCmd_Unrestricted( "+speed" );
 }
+#endif

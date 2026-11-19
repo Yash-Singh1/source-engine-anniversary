@@ -42,6 +42,14 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
+#ifdef BYTEMATCH_RETAIL
+static CRConServer g_RCONServer;
+CRConServer & RCONServer()
+{
+	return g_RCONServer;
+}
+#endif
+#line 45
 #ifdef ENABLE_RPT
 class CRPTServer : public CRConServer
 {
@@ -71,11 +79,14 @@ CRConServer & RPTServer()
 }
 #endif // ENABLE_RPT
 
+#ifndef BYTEMATCH_RETAIL
 static CRConServer g_RCONServer;
 CRConServer & RCONServer()
 {
 	return g_RCONServer;
 }
+#endif
+#line 79
 
 static void RconPasswordChanged_f( IConVar *pConVar, const char *pOldString, float flOldValue )
 {

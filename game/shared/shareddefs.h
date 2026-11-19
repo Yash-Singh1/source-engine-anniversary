@@ -949,4 +949,28 @@ enum
 };
 #endif // TF_DLL || TF_CLIENT_DLL
 
+// Retail Lost Coast game modules are an October 2024 build, older than the November 2024
+// hl2 and episodic ones; in retail mode HL2_EPISODIC tells the two code revisions apart.
+#if defined( HL2_EPISODIC ) || !defined( BYTEMATCH_RETAIL )
+#define HL2_ANNIVERSARY_NOV2024
+#endif
+
+// Single-line forms, so gated declarations and table entries keep their line.
+#ifdef HL2_ANNIVERSARY_NOV2024
+#define NOV2024_VIRTUAL virtual
+#define NOV2024_ONLY( ... ) __VA_ARGS__
+#define OCT2024_ONLY( ... )
+#else
+#define NOV2024_VIRTUAL
+#define NOV2024_ONLY( ... )
+#define OCT2024_ONLY( ... ) __VA_ARGS__
+#endif
+
+// Former #ifdef HL2_EPISODIC additions that fit on the line they extend.
+#ifdef HL2_EPISODIC
+#define HL2_EPISODIC_ONLY( ... ) __VA_ARGS__
+#else
+#define HL2_EPISODIC_ONLY( ... )
+#endif
+
 #endif // SHAREDDEFS_H

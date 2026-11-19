@@ -203,7 +203,7 @@ private:
 	void		EntityPVSCheck( CClientFrame *pFrame );
 	void		InitClientRecvTables();
 	void		FreeClientRecvTables();
-	void		ReadCompleteDemoFile();
+	void		ReadCompeleteDemoFile();
 	void		ResyncDemoClock();
 
 #ifndef NO_STEAM

@@ -32,7 +32,7 @@ CLIENTEFFECT_REGISTER_BEGIN( SmokeStackMaterials )
 	CLIENTEFFECT_MATERIAL( "sprites/fire1" )
 CLIENTEFFECT_REGISTER_END()
 
-ConVar r_classic_fire( "r_classic_fire", "0", FCVAR_ARCHIVE | FCVAR_REPLICATED, "Use Classic Effects for Fire (Disabled/Classic/Release)" );
+ConVar r_classic_fire( "r_classic_fire", NOV2024_ONLY( "0", FCVAR_ARCHIVE | FCVAR_REPLICATED, "Use Classic Effects for Fire (Disabled/Classic/Release)" ) OCT2024_ONLY( "2", FCVAR_REPLICATED, "Use Classic Effects for Fire (New/Classic/Release)" ) );
 
 //-----------------------------------------------------------------------------
 // Purpose: 0 uses the particle fire, 1 the classic sprite fire, 2 the classic
@@ -104,7 +104,7 @@ void RecvProxy_ScaleTime( const CRecvProxyData *pData, void *pStruct, void *pOut
 //Receive datatable
 IMPLEMENT_CLIENTCLASS_DT( C_FireSmoke, DT_FireSmoke, CFireSmoke )
 	RecvPropFloat( RECVINFO( m_flStartScale )),
-	RecvPropFloat( RECVINFO( m_flOriginalStartScale )),
+	NOV2024_ONLY( RecvPropFloat( RECVINFO( m_flOriginalStartScale )), )
 	RecvPropFloat( RECVINFO( m_flScale ), 0, RecvProxy_Scale ),
 	RecvPropFloat( RECVINFO( m_flScaleTime ), 0, RecvProxy_ScaleTime ),
 	RecvPropInt( RECVINFO( m_nFlags ) ),
@@ -241,6 +241,7 @@ void C_FireSmoke::Simulate( void )
 			AddFlames();
 		}
 	}
+#ifdef HL2_ANNIVERSARY_NOV2024
 	else
 	{
 		float flScaleTimeEnd = m_flScaleTimeEnd;
@@ -254,6 +255,8 @@ void C_FireSmoke::Simulate( void )
 			m_hEffect = NULL;
 		}
 	}
+#endif
+#line 257
 }
 
 //-----------------------------------------------------------------------------

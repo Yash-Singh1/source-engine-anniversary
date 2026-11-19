@@ -37,8 +37,11 @@ BEGIN_DATADESC( CFogController )
 	DEFINE_INPUTFUNC( FIELD_VOID,		"TurnOff",		InputTurnOff ),
 	DEFINE_INPUTFUNC( FIELD_COLOR32,	"SetColor",		InputSetColor ),
 	DEFINE_INPUTFUNC( FIELD_COLOR32,	"SetColorSecondary",	InputSetColorSecondary ),
+#ifdef HL2_ANNIVERSARY_NOV2024
 	DEFINE_INPUTFUNC( FIELD_COLOR32,	"SetColorHDR",		InputSetColorHDR ),
 	DEFINE_INPUTFUNC( FIELD_COLOR32,	"SetColorSecondaryHDR",	InputSetColorSecondaryHDR ),
+#endif
+#line 42
 	DEFINE_INPUTFUNC( FIELD_INTEGER,	"SetFarZ",		InputSetFarZ ),
 	DEFINE_INPUTFUNC( FIELD_STRING,		"SetAngles",	InputSetAngles ),
 	DEFINE_INPUTFUNC( FIELD_BOOLEAN,	"SetRadial",	InputSetRadial ),
@@ -55,8 +58,11 @@ BEGIN_DATADESC( CFogController )
 	DEFINE_KEYFIELD( m_bUseAngles,			FIELD_BOOLEAN,	"use_angles" ),
 	DEFINE_KEYFIELD( m_fog.colorPrimary,	FIELD_COLOR32,	"fogcolor" ),
 	DEFINE_KEYFIELD( m_fog.colorSecondary,	FIELD_COLOR32,	"fogcolor2" ),
+#ifdef HL2_ANNIVERSARY_NOV2024
 	DEFINE_KEYFIELD( m_fog.colorPrimaryHDR,	FIELD_COLOR32,	"fogcolor_hdr" ),
 	DEFINE_KEYFIELD( m_fog.colorSecondaryHDR,	FIELD_COLOR32,	"fogcolor2_hdr" ),
+#endif
+#line 60
 	DEFINE_KEYFIELD( m_fog.dirPrimary,		FIELD_VECTOR,	"fogdir" ),
 	DEFINE_KEYFIELD( m_fog.enable,			FIELD_BOOLEAN,	"fogenable" ),
 	DEFINE_KEYFIELD( m_fog.blend,			FIELD_BOOLEAN,	"fogblend" ),
@@ -87,8 +93,11 @@ IMPLEMENT_SERVERCLASS_ST_NOBASE( CFogController, DT_FogController )
 	SendPropVector( SENDINFO_STRUCTELEM(m_fog.dirPrimary), -1, SPROP_COORD),
 	SendPropInt( SENDINFO_STRUCTELEM( m_fog.colorPrimary ), 32, SPROP_UNSIGNED ),
 	SendPropInt( SENDINFO_STRUCTELEM( m_fog.colorSecondary ), 32, SPROP_UNSIGNED ),
+#ifdef HL2_ANNIVERSARY_NOV2024
 	SendPropInt( SENDINFO_STRUCTELEM( m_fog.colorPrimaryHDR ), 32, SPROP_UNSIGNED ),
 	SendPropInt( SENDINFO_STRUCTELEM( m_fog.colorSecondaryHDR ), 32, SPROP_UNSIGNED ),
+#endif
+#line 92
 	SendPropFloat( SENDINFO_STRUCTELEM( m_fog.start ), 0, SPROP_NOSCALE ),
 	SendPropFloat( SENDINFO_STRUCTELEM( m_fog.end ), 0, SPROP_NOSCALE ),
 	SendPropFloat( SENDINFO_STRUCTELEM( m_fog.maxdensity ), 0, SPROP_NOSCALE ),
@@ -211,6 +220,7 @@ void CFogController::InputSetColorSecondary(inputdata_t &inputdata)
 //------------------------------------------------------------------------------
 // Purpose: Input handler for setting the primary fog color used with HDR.
 //------------------------------------------------------------------------------
+#ifdef HL2_ANNIVERSARY_NOV2024
 void CFogController::InputSetColorHDR(inputdata_t &inputdata)
 {
 	m_fog.colorPrimaryHDR = inputdata.value.Color32();
@@ -223,6 +233,8 @@ void CFogController::InputSetColorSecondaryHDR(inputdata_t &inputdata)
 {
 	m_fog.colorSecondaryHDR = inputdata.value.Color32();
 }
+#endif
+#line 226
 
 void CFogController::InputSetFarZ(inputdata_t &inputdata)
 {

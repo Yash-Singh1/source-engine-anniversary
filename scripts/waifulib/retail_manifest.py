@@ -64,9 +64,6 @@ RETAIL_SKIP = {
 # Files retail doesn't link that our tree still needs to link the module
 # (code that retail has in a file we lack). module -> files (tree-relative).
 RETAIL_KEEP = {
-	# Callers in our engine that retail's engine doesn't have.
-	'bin/engine': ['engine/sv_uploaddata.cpp', 'common/language.cpp', 'engine/audio/MPAHeader.cpp',
-		'engine/audio/VBRHeader.cpp', 'engine/masterserver.cpp'],
 }
 
 # Objects retail links whose code is all dead-stripped, so the debug map doesn't

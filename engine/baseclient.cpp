@@ -390,7 +390,10 @@ void ValidateName( char *pszName, int nBuffSize )
 	}
 	else
 	{
+#ifndef BYTEMATCH_RETAIL
 		Q_RemoveAllEvilCharacters( pszName );
+#endif
+#line 376
 
 		const unsigned char *pChar = (unsigned char *)pszName;
 
@@ -503,7 +506,12 @@ void CBaseClient::SetName(const char * playerName)
 				}
 			}
 
+#ifdef BYTEMATCH_RETAIL
+			Q_snprintf(newname, sizeof(newname), "(%d)%-0.*s", dupc++, MAX_PLAYER_NAME_LENGTH - 4, p );
+#else
 			Q_snprintf(newname, sizeof(newname), "(%d)%-.*s", dupc++, MAX_PLAYER_NAME_LENGTH - 4, p );
+#endif
+#line 489
 			Q_strncpy(m_Name, newname, sizeof(m_Name));
 			
 			val = m_Name;		

@@ -41,7 +41,10 @@ public:
 // IClientVehicle overrides.
 public:
 
+#if !defined( BYTEMATCH_RETAIL ) || !defined( HL2_ANNIVERSARY_NOV2024 )
 	virtual void GetVehicleFOV( float &flFOV ) { flFOV = m_flFOV; }
+#endif
+#line 45
 	virtual void DrawHudElements();
 	virtual void UpdateViewAngles( C_BasePlayer *pLocalPlayer, CUserCmd *pCmd );
 	virtual void DampenEyePosition( Vector &vecVehicleEyePos, QAngle &vecVehicleEyeAngles );
@@ -87,7 +90,12 @@ protected:
 	virtual void OnExitedVehicle( C_BaseCombatCharacter *pPassenger );
 
 	virtual void RestrictView( float *pYawBounds, float *pPitchBounds, float *pRollBounds, QAngle &vecViewAngles );
+#if !defined( BYTEMATCH_RETAIL ) || !defined( HL2_ANNIVERSARY_NOV2024 )
 	virtual void SetVehicleFOV( float flFOV ) { m_flFOV = flFOV; }
+#endif
+#ifdef HL2_ANNIVERSARY_NOV2024
+	virtual void UpdateViewSmoothingFOV();
+#endif
 
 protected:
 
@@ -116,9 +124,14 @@ protected:
 	float						m_flSequenceChangeTime;
 	bool						m_bEnterAnimOn;
 	bool						m_bExitAnimOn;
+#if !defined( BYTEMATCH_RETAIL ) || !defined( HL2_ANNIVERSARY_NOV2024 )
 	float						m_flFOV;
+#endif
 
 	Vector						m_vecGunCrosshair;
+#ifdef HL2_ANNIVERSARY_NOV2024
+	Vector						m_vecSmoothedGunCrosshair;
+#endif
 	CInterpolatedVar<Vector>	m_iv_vecGunCrosshair;
 	Vector						m_vecEyeExitEndpoint;
 	bool						m_bHasGun;

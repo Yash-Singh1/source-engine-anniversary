@@ -65,7 +65,9 @@ def scope(retail, ours_funcs, objects=None, all_retail=False):
     return [f for f in rf if idx.find(f)], 'paired', notes
 
 
-def run(retail, ours_funcs, objects=None, all_retail=False, target_check=True, include=None):
+def run(retail, ours_funcs, objects=None, all_retail=False, target_check=True, include=None, data_check=None):
+    """`data_check`: (retail data.Image, {ours module path: data.Image}) to also resolve the
+    data references of matched functions (strings, globals, constants) on both sides."""
     rf, mode, notes = scope(retail, ours_funcs, objects, all_retail)
     results, extra = compare.pair_all(rf, ours_funcs, target_check, include)
     # ours functions outside the scope that retail has elsewhere (inline/COMDAT copies
@@ -82,7 +84,24 @@ def run(retail, ours_funcs, objects=None, all_retail=False, target_check=True, i
                 only_ours.append(e)
     else:
         only_ours = extra
+    if data_check:
+        apply_data_check(results + shared, *data_check)
     return dict(results=results, shared=shared, extra=only_ours, mode=mode, notes=notes)
+
+
+def apply_data_check(results, rimg, oimgs):
+    from . import data
+    for r in results:
+        if r.status not in MATCHED:
+            continue
+        oimg = oimgs.get(r.ours.module.path)
+        if oimg is None:
+            continue
+        mism = [m for m in data.check_function(rimg, oimg, r.retail, r.ours) if not data.same_modulo_linkage(m[1], m[2])]
+        if mism:
+            k, ri, oi = mism[0]
+            r.status, r.first_diff, r.data_mismatches = DIFFERS, k, mism
+            r.reason = f'data ref at +{k:#x} ({data.kind_of(ri, oi)}): retail {data.show(ri, 60)}, ours {data.show(oi, 60)}'
 
 
 def summarize(results):
@@ -129,6 +148,10 @@ def result_json(r, diff_lines=0):
         d['first_diff'] = r.first_diff
     if r.line_constants:
         d['line_constants'] = [dict(offset=o, retail=a, ours=b) for o, a, b in r.line_constants]
+    if r.data_mismatches:
+        from . import data
+        d['data_mismatches'] = [dict(offset=k, kind=data.kind_of(a, b), retail=data.show(a), ours=data.show(b))
+                                for k, a, b in r.data_mismatches]
     if r.target_mismatches:
         d['target_mismatches'] = [dict(offset=k, ours=t, retail=rt) for k, t, rt in r.target_mismatches]
     if diff_lines and r.status == DIFFERS and r.retail and r.ours:

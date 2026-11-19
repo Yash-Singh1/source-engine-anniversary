@@ -90,6 +90,8 @@
 #include "sourcevr/isourcevirtualreality.h"
 #include "cl_check_process.h"
 #include "enginethreads.h"
+#include "mm_events.h"
+#line 93
 
 #if defined( REPLAY_ENABLED )
 #include "replay_internal.h"
@@ -2134,8 +2136,8 @@ void CEngineClient::OnHL2ExpansionLoaded()
 
 IMatchEventsSubscription *CEngineClient::GetEventsSubscription()
 {
-	// UNIMPLEMENTED: retail returns its CMatchEventsSubscription; our engine has no match events system.
-	return NULL;
+	return g_pMatchEventsSubscription;
+#line 2105
 }
 
 const char *CEngineClient::GetMapName()

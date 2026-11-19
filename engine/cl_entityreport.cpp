@@ -364,8 +364,8 @@ void CEntityReportPanel::ApplyEffect( ENTITYBITS *entry, int& r, int& g, int& b 
 	float frequency = 3.0f;
 
 	float frac = ( EFFECT_TIME - ( entry->effectfinishtime - realtime ) ) / EFFECT_TIME;
-	frac = min( 1.f, frac );
-	frac = max( 0.f, frac );
+	frac = min( 1.0, frac );
+	frac = max( 0.0, frac );
 
 	frac *= 2.0 * M_PI;
 	frac = sin( frequency * frac );

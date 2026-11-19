@@ -71,14 +71,22 @@ void CBenchmarkResults::StartBenchmark( const CCommand &args )
 	SetResultsFilename( pszFilename );
 
 	// set any necessary settings
+#ifdef BYTEMATCH_RETAIL
+	host_framerate.SetValue( (float)(1.0f / host_state.interval_per_tick) );
+#else
 	//host_framerate.SetValue( (float)(1.0f / host_state.interval_per_tick) );
+#endif
+#line 75
 
 	// get the current frame and time
 	m_iStartFrame = host_framecount;
 	m_flStartTime = realtime;
+#ifndef BYTEMATCH_RETAIL
 
 	m_flNextSecondTime = realtime + 1.0f;
 	m_iNextSecondFrame = host_framecount;
+#endif
+#line 82
 }
 
 //-----------------------------------------------------------------------------
@@ -89,7 +97,12 @@ void CBenchmarkResults::StopBenchmark()
 	m_bIsTestRunning = false;
 
 	// reset
+#ifdef BYTEMATCH_RETAIL
+	host_framerate.SetValue( 0 );
+#else
 	//host_framerate.SetValue( 0 );
+#endif
+#line 93
 
 	// print out some stats
 	int numticks = host_framecount - m_iStartFrame;
@@ -106,6 +119,7 @@ void CBenchmarkResults::StopBenchmark()
 	kv->SetFloat( "framerate", framerate );
 	kv->SetInt( "build", build_number() );
 
+#ifndef BYTEMATCH_RETAIL
 	CUtlString str;
 	for( int i = 0; i < m_FPSInfo.Count(); i++ )
 	{
@@ -114,6 +128,8 @@ void CBenchmarkResults::StopBenchmark()
 			str += ',';
 	}
 	kv->SetString( "framerates", str );
+#endif
+#line 117
 
 	// get material system info
 	GetMaterialSystemConfigForBenchmarkUpload( kv );
@@ -121,8 +137,11 @@ void CBenchmarkResults::StopBenchmark()
 	// save
 	kv->SaveToFile( g_pFileSystem, szFilename, "MOD" );
 	kv->deleteThis();
+#ifndef BYTEMATCH_RETAIL
 
 	m_FPSInfo.Purge();
+#endif
+#line 126
 }
 
 //-----------------------------------------------------------------------------
@@ -166,6 +185,7 @@ void CBenchmarkResults::Upload()
 
 }
 
+#ifndef BYTEMATCH_RETAIL
 void CBenchmarkResults::Frame()
 {
 	if( !m_bIsTestRunning )
@@ -178,6 +198,7 @@ void CBenchmarkResults::Frame()
 		m_iNextSecondFrame = host_framecount;
 	}
 }
+#endif
 
 
 CON_COMMAND_F( bench_start, "Starts gathering of info. Arguments: filename to write results into", FCVAR_CHEAT )

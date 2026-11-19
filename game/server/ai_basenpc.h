@@ -1921,7 +1921,7 @@ public:
 	void				CheckPhysicsContacts();
 
 private:
-	virtual void		TryRestoreHull( void );
+	NOV2024_VIRTUAL void TryRestoreHull( void );
 	bool				m_fIsUsingSmallHull;
 	bool				m_bCheckContacts;
 

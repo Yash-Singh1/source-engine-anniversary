@@ -49,10 +49,13 @@ public:
 
 	// IClientVehicle overrides.
 	virtual void GetVehicleViewPosition( int nRole, Vector *pOrigin, QAngle *pAngles, float *pFOV = NULL );
+#if !defined( BYTEMATCH_RETAIL ) || !defined( HL2_ANNIVERSARY_NOV2024 )
 	virtual void GetVehicleFOV( float &flFOV )
 	{
 		flFOV = m_flFOV;
 	}
+#endif
+#line 56
 	virtual void DrawHudElements();
 	virtual bool IsPassengerUsingStandardWeapons( int nRole = VEHICLE_ROLE_DRIVER ) { return false; }
 	virtual void UpdateViewAngles( C_BasePlayer *pLocalPlayer, CUserCmd *pCmd );
@@ -85,7 +88,10 @@ private:
 	bool					m_bEnterAnimOn;
 	bool					m_bExitAnimOn;
 	Vector					m_vecEyeExitEndpoint;
+#if !defined( BYTEMATCH_RETAIL ) || !defined( HL2_ANNIVERSARY_NOV2024 )
 	float					m_flFOV;				// The current FOV (changes during entry/exit anims).
+#endif
+#line 92
 
 	ViewSmoothingData_t		m_ViewSmoothingData;
 
@@ -126,7 +132,10 @@ C_PropVehicleChoreoGeneric::C_PropVehicleChoreoGeneric( void )
 	m_ViewSmoothingData.flPitchCurveLinear = PITCH_CURVE_LINEAR;
 	m_ViewSmoothingData.flRollCurveZero = ROLL_CURVE_ZERO;
 	m_ViewSmoothingData.flRollCurveLinear = ROLL_CURVE_LINEAR;
+#if !defined( BYTEMATCH_RETAIL ) || !defined( HL2_ANNIVERSARY_NOV2024 )
 	m_flFOV = 0;
+#endif
+#line 133
 }
 
 //-----------------------------------------------------------------------------

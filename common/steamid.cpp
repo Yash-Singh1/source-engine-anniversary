@@ -75,6 +75,145 @@ CSteamID::CSteamID( const char *pchSteamID, EUniverse eDefaultUniverse /* = k_EU
 // Purpose: Initializes a steam ID from a string
 // Input  : pchSteamID -		text representation of a Steam ID
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+void CSteamID::SetFromString( const char *pchSteamID, EUniverse eDefaultUniverse )
+{
+	uint nAccountID = 0;
+	uint nInstance = 1;
+	EUniverse eUniverse = eDefaultUniverse;
+	EAccountType eAccountType = k_EAccountTypeIndividual;
+
+	if ( *pchSteamID == '[' )
+		pchSteamID++;
+
+	// BUGBUG Rich use the Q_ functions
+	if (*pchSteamID == 'A')
+	{
+		// This is test only
+		pchSteamID++; // skip the A
+		eAccountType = k_EAccountTypeAnonGameServer;
+		if (*pchSteamID == '-' || *pchSteamID == ':')
+			pchSteamID++; // skip the optional - or :
+
+		if ( strchr( pchSteamID, '(' ) )
+			sscanf( strchr( pchSteamID, '(' ), "(%u)", &nInstance );
+		const char *pchColon = strchr( pchSteamID, ':' );
+		if ( pchColon && *pchColon != 0 && strchr( pchColon+1, ':' ))
+		{
+			sscanf( pchSteamID, "%u:%u:%u", (uint*)&eUniverse, &nAccountID, &nInstance );
+		}
+		else if ( pchColon )
+		{
+			sscanf( pchSteamID, "%u:%u", (uint*)&eUniverse, &nAccountID );
+		}
+		else
+		{
+			sscanf( pchSteamID, "%u", &nAccountID );
+		}
+
+		if ( nAccountID == 0 )
+		{
+			// i dont care what number you entered
+			CreateBlankAnonLogon(eUniverse);
+		}
+		else
+		{
+			InstancedSet( nAccountID, nInstance, eUniverse, eAccountType );
+		}
+		return;
+	}
+	else if (*pchSteamID == 'G')
+	{
+		pchSteamID++; // skip the G
+		eAccountType = k_EAccountTypeGameServer;
+		nInstance = 0;
+		if (*pchSteamID == '-' || *pchSteamID == ':')
+			pchSteamID++; // skip the optional - or :
+	}
+	else if (*pchSteamID == 'C')
+	{
+		pchSteamID++; // skip the C
+		eAccountType = k_EAccountTypeContentServer;
+		if (*pchSteamID == '-' || *pchSteamID == ':')
+			pchSteamID++; // skip the optional - or :
+	}
+	else if (*pchSteamID == 'g')
+	{
+		pchSteamID++; // skip the g
+		eAccountType = k_EAccountTypeClan;
+		nInstance = 0;
+		if (*pchSteamID == '-' || *pchSteamID == ':')
+			pchSteamID++; // skip the optional - or :
+	}
+	else if (*pchSteamID == 'c')
+	{
+		pchSteamID++; // skip the c
+		eAccountType = k_EAccountTypeChat;
+		nInstance = k_EChatInstanceFlagClan;
+		if (*pchSteamID == '-' || *pchSteamID == ':')
+			pchSteamID++; // skip the optional - or :
+	}
+	else if (*pchSteamID == 'L')
+	{
+		pchSteamID++; // skip the L
+		eAccountType = k_EAccountTypeChat;
+		nInstance = k_EChatInstanceFlagLobby;
+		if (*pchSteamID == '-' || *pchSteamID == ':')
+			pchSteamID++; // skip the optional - or :
+	}
+	else if (*pchSteamID == 'T')
+	{
+		pchSteamID++; // skip the T
+		eAccountType = k_EAccountTypeChat;
+		nInstance = 0;	// Anon chat
+		if (*pchSteamID == '-' || *pchSteamID == ':')
+			pchSteamID++; // skip the optional - or :
+	}
+	else if (*pchSteamID == 'U')
+	{
+		pchSteamID++; // skip the U
+		eAccountType = k_EAccountTypeIndividual;
+		nInstance = 1;
+		if (*pchSteamID == '-' || *pchSteamID == ':')
+			pchSteamID++; // skip the optional - or :
+	}
+	else if (*pchSteamID == 'i')
+	{
+		pchSteamID++; // skip the i
+		eAccountType = k_EAccountTypeInvalid;
+		nInstance = 1;
+		if (*pchSteamID == '-' || *pchSteamID == ':')
+			pchSteamID++; // skip the optional - or :
+	}
+	else
+	{
+		// No prefix: may be a full 64-bit Steam ID
+		uint64 unVal64 = V_atoui64( pchSteamID );
+		if ( unVal64 > 0xFFFFFFFFull )
+		{
+			SetFromUint64( unVal64 );
+			return;
+		}
+	}
+
+	if ( strchr( pchSteamID, ':' ) )
+	{
+		if (*pchSteamID == '[')
+			pchSteamID++; // skip the optional [
+		sscanf( pchSteamID, "%u:%u", (uint*)&eUniverse, &nAccountID );
+		if ( eUniverse == k_EUniverseInvalid )
+			eUniverse = eDefaultUniverse; 
+	}
+	else
+	{
+		sscanf( pchSteamID, "%u", &nAccountID );
+	}
+
+	Assert( (eUniverse > k_EUniverseInvalid) && (eUniverse < k_EUniverseMax) );
+
+	InstancedSet( nAccountID, nInstance, eUniverse, eAccountType );
+}
+#else
 void CSteamID::SetFromString( const char *pchSteamID, EUniverse eDefaultUniverse )
 {
 	uint nAccountID = 0;
@@ -230,6 +369,8 @@ void CSteamID::SetFromString( const char *pchSteamID, EUniverse eDefaultUniverse
     // might not want to allow.
     AssertMsg1( this->operator==( StrictID ), "Steam ID does not pass strict parsing: '%s'", pchSteamIDString );
 }
+#endif
+#line 233
 
 // SetFromString allows many partially-correct strings, constraining how
 // we might be able to change things in the future.

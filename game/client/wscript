@@ -95,6 +95,8 @@ def build(bld):
 	defines = game["defines"]
 
 	defines.remove('PROTECTED_THINGS_ENABLE')
+	if retail and bld.env.GAMES == 'lostcoast':
+		defines.append('HL2_LOSTCOAST')
 
 	bld.shlib(
 		source   = source,

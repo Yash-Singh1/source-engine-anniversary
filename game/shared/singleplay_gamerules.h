@@ -84,7 +84,7 @@ public:
 
 	virtual bool AllowAutoTargetCrosshair( void );
 	virtual	int	GetAutoAimMode();
-	virtual float GetAutoAimScale();
+	NOV2024_ONLY( virtual float GetAutoAimScale(); )
 
 // Client kills/scoring
 	virtual int IPointsForKill( CBasePlayer *pAttacker, CBasePlayer *pKilled );
