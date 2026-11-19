@@ -312,7 +312,7 @@ CON_COMMAND( cl_panelanimation, "Shows panel animation variables: <panelname | b
 	}
 }
 
-void GetHudSize( int& w, int &h )
+void GetRealScreenSize( int& w, int &h )
 {
 	vgui::surface()->GetScreenSize( w, h );
 
@@ -322,3 +322,27 @@ void GetHudSize( int& w, int &h )
 		vgui::ipanel()->GetSize( hudParent, w, h );
 	}
 }
+
+void GetRatioedHudSize( int &x, int &y, int &w, int &h )
+{
+	if ( g_pClientMode )
+	{
+		vgui::Panel *pViewport = g_pClientMode->GetViewport();
+		if ( pViewport )
+		{
+			pViewport->GetBounds( x, y, w, h );
+			return;
+		}
+	}
+
+	x = 0;
+	y = 0;
+	GetRealScreenSize( w, h );
+}
+
+void GetHudSize( int& w, int &h )
+{
+	int x, y;
+	GetRatioedHudSize( x, y, w, h );
+}
+#line 325

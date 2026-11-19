@@ -2819,6 +2819,19 @@ BEGIN_NETWORK_TABLE_NOBASE( CBaseCombatWeapon, DT_LocalWeaponData )
 #endif
 END_NETWORK_TABLE()
 
+#ifdef CLIENT_DLL
+static void RecvProxy_WeaponOwner( const CRecvProxyData *pData, void *pStruct, void *pOut )
+{
+	RecvProxy_IntToEHandle( pData, pStruct, pOut );
+
+	C_BaseCombatWeapon *pWeapon = (C_BaseCombatWeapon *)pStruct;
+	if ( pWeapon )
+	{
+		pWeapon->UpdateVisibility();
+	}
+}
+#endif
+
 BEGIN_NETWORK_TABLE(CBaseCombatWeapon, DT_BaseCombatWeapon)
 #if !defined( CLIENT_DLL )
 	SendPropDataTable("LocalWeaponData", 0, &REFERENCE_SEND_TABLE(DT_LocalWeaponData), SendProxy_SendLocalWeaponDataTable ),
@@ -2833,6 +2846,6 @@ BEGIN_NETWORK_TABLE(CBaseCombatWeapon, DT_BaseCombatWeapon)
 	RecvPropInt( RECVINFO(m_iViewModelIndex)),
 	RecvPropInt( RECVINFO(m_iWorldModelIndex)),
 	RecvPropInt( RECVINFO(m_iState )),
-	RecvPropEHandle( RECVINFO(m_hOwner ) ),
+	RecvPropEHandle( RECVINFO(m_hOwner ), RecvProxy_WeaponOwner ),
 #endif
 END_NETWORK_TABLE()
