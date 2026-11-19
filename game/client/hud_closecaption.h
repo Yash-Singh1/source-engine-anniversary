@@ -97,6 +97,7 @@ public:
 
 	// Painting methods
 	virtual void	Paint();
+	virtual void	ApplySchemeSettings( vgui::IScheme *pScheme );
 
 	void MsgFunc_CloseCaption(bf_read &msg);
 
@@ -111,6 +112,9 @@ public:
 	void			PlayRandomCaption();
 
 	void				InitCaptionDictionary( char const *dbfile );
+#ifdef HL2_ANNIVERSARY_NOV2024
+	void				ReloadData();
+#endif
 	void				OnFinishAsyncLoad( int nFileIndex, int nBlockNum, AsyncCaptionData_t *pData );
 
 	void			Flush();
@@ -206,6 +210,7 @@ private:
 	CPanelAnimationVar( float, m_flItemFadeInTime, "ItemFadeInTime", "0.15" );
 	CPanelAnimationVar( float, m_flItemFadeOutTime, "ItemFadeOutTime", "0.3" );
 	CPanelAnimationVar( int, m_nTopOffset, "topoffset", "40" );
+	CPanelAnimationVar( int, m_nAspectRatioOffset, "aspectratiooffset", "36" );
 
 	CUtlVector< AsyncCaption_t > m_AsyncCaptions;
 	bool		m_bLocked;

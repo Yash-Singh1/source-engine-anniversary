@@ -534,12 +534,12 @@ void Slider::DrawNob()
 	// border
 	if (_sliderBorder)
 	{
-		_sliderBorder->Paint2(
+		_sliderBorder->VGUI_NOV2024_ONLY( Paint2 ) VGUI_OCT2024_ONLY( Paint )(
 			_nobPos[0], 
 			y + tall / 2 - nobheight / 2, 
 			_nobPos[1], 
-			y + tall / 2 + nobheight / 2,
-			-1, 0, 0, nBorderScale );
+			y + tall / 2 + nobheight / 2
+			VGUI_NOV2024_ONLY( , -1, 0, 0, nBorderScale ) );
 	}
 }
 
@@ -622,7 +622,7 @@ void Slider::PaintBackground()
 	surface()->DrawFilledRect( x, y, x + wide, y + tall );
 	if (_insetBorder)
 	{
-		_insetBorder->Paint2( x, y, x + wide, y + tall, -1, 0, 0, nBorderScale );
+		_insetBorder->VGUI_NOV2024_ONLY( Paint2( x, y, x + wide, y + tall, -1, 0, 0, nBorderScale ) ) VGUI_OCT2024_ONLY( Paint( x, y, x + wide, y + tall ) );
 	}
 }
 

@@ -2743,7 +2743,12 @@ void RVA_ConstructDelays( float *rgd, float *rgf, int m, int *D, int *a, int *b,
 		// D[i] = MSEC_TO_SAMPS(d + ((i/3) * RVA_MIN_SEPARATION));		// (i/3) counts 0,0,0 1,1,1 2,2,2 ... separate all reverbs by 5ms
 
 		// feedback - due to wall/floor/ceiling reflectivity
+#ifdef BYTEMATCH_RETAIL
+		a[i] = (int) min (0.999 * PMAX, PMAX * r);
+#else
 		a[i] = (int) min (0.999 * PMAX, (double)PMAX * r);
+#endif
+#line 2747
 
 		if (bpredelay)
 			a[i] = -a[i];		// flag delay as predelay
@@ -2882,13 +2887,23 @@ rva_t * RVA_Params ( prc_t *pprc )
 			{
 				// set feedback for smallest delay
 
+#ifdef BYTEMATCH_RETAIL
+				a[i] = (int) min (0.999 * PMAX, PMAX * feedback );
+#else
 				a[i] = (int) min (0.999 * PMAX, (double)PMAX * feedback );
+#endif
+#line 2886
 			}
 			else
 			{
 				// adjust feedback down for larger delays so that decay time is constant
 
+#ifdef BYTEMATCH_RETAIL
+				a[i] = (int) min (0.999 * PMAX, PMAX * DLY_NormalizeFeedback( D[0], feedback, D[i] ) );
+#else
 				a[i] = (int) min (0.999 * PMAX, (double)PMAX * DLY_NormalizeFeedback( D[0], feedback, D[i] ) );
+#endif
+#line 2892
 			}
 			
 			b[i] = (int) ((float)(gain * PMAX) / (float)m);

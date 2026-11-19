@@ -153,7 +153,7 @@ public:
 	
 	virtual bool ShouldForceVRMode() = 0;
 	virtual void SetShouldForceVRMode() = 0;
-
+	virtual bool IsHmdAvailable() = 0;
 };
 
 

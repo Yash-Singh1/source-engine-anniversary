@@ -95,8 +95,13 @@ def build(bld):
 	defines = game["defines"]
 
 	defines.remove('PROTECTED_THINGS_ENABLE')
+	archives = {}
 	if retail and bld.env.GAMES == 'lostcoast':
 		defines.append('HL2_LOSTCOAST')
+		# Lost Coast links its own October 2024 builds of the static libraries
+		for lib in ('tier1', 'tier2', 'tier3', 'mathlib', 'particles', 'dmxloader', 'choreoobjects', 'vgui_controls', 'matsys_controls', 'bitmap', 'vtf'):
+			archives['lib%s.a' % lib] = bld.retail_stlib_variant(lib, '_lc', ['-DHL2_LOSTCOAST'])
+		libs = [archives.get('lib%s.a' % u, u) for u in libs]
 
 	bld.shlib(
 		source   = source,
@@ -108,6 +113,7 @@ def build(bld):
 		use      = libs,
 		install_path = install_path,
 		retail_module = retail_module,
+		retail_archives = archives,
 		subsystem = bld.env.MSVC_SUBSYSTEM,
 		idx      = bld.get_taskgen_count()
 	)

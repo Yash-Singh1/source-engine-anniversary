@@ -163,7 +163,7 @@ void CBitmapImagePanel::PaintBorder()
 
 	IBorder *pBorder = GetBorder();
 	if ( pBorder )
-		pBorder->Paint2( x, y, x+w, y+h, -1, 0, 0, nRepeats );
+		pBorder->VGUI_NOV2024_ONLY( Paint2( x, y, x+w, y+h, -1, 0, 0, nRepeats ) ) VGUI_OCT2024_ONLY( Paint( x, y, x+w, y+h, -1, 0, 0 ) );
 }
 
 //-----------------------------------------------------------------------------

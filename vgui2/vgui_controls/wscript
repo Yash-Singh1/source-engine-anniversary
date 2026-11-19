@@ -12,7 +12,7 @@ def options(opt):
 	return
 
 def configure(conf):
-	return
+	conf.env.GAMES = conf.options.GAMES
 
 def build(bld):
 	source = [
@@ -31,7 +31,7 @@ def build(bld):
 		'consoledialog.cpp',
 		'ControllerMap.cpp',
 		'controls.cpp',
-		'cvartogglecheckbutton.cpp',
+		'CvarToggleCheckButton.cpp',
 		'DirectorySelectDialog.cpp',
 		'Divider.cpp',
 		'EditablePanel.cpp',
@@ -114,6 +114,8 @@ def build(bld):
 	# retail's libvgui_controls.a has public/html/htmlprotobuf.cpp (added by the manifest)
 	if bld.env.RETAIL_OSX32:
 		libs += ['PROTOBUF']
+		# Lost Coast's client links an October 2024 build (VGUI_CONTROLS_OCT2024): the
+		# vgui_controls_lc variant from game/client, so the engine modules keep this one
 
 	bld.stlib(
 		source   = source,

@@ -1183,20 +1183,20 @@ void CBaseServer::CalculateCPUUsage( void )
 		}
 #elif defined ( POSIX )
 		static struct rusage s_lastUsage;
-		static float s_lastAvg = 0;
+		static float lastAvg = 0;
 		struct rusage currentUsage;
 
 		if ( getrusage( RUSAGE_SELF, &currentUsage ) == 0 )
 		{
 			double flTimeDiff = (double)( currentUsage.ru_utime.tv_sec - s_lastUsage.ru_utime.tv_sec ) +
 				(double)(( currentUsage.ru_utime.tv_usec - s_lastUsage.ru_utime.tv_usec ) / 1000000); 
-			m_fCPUPercent = flTimeDiff / ( m_fLastCPUCheckTime - s_lastAvg );
+			m_fCPUPercent = flTimeDiff / ( m_fLastCPUCheckTime - lastAvg );
 
 			// now save this away for next time
-			if( m_fLastCPUCheckTime > s_lastAvg + 5) 
+			if( m_fLastCPUCheckTime > lastAvg + 5) 
 			{
 				s_lastUsage = currentUsage;
-				s_lastAvg = m_fLastCPUCheckTime;
+				lastAvg = m_fLastCPUCheckTime;
 			}
 		}
 

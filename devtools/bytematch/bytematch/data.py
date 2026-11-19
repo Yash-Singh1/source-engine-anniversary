@@ -578,6 +578,10 @@ def code_refs(img, func):
         return out
     code, base = func.data, func.addr
     pic, slots = {}, {}
+    # Registers that held the PIC base: PIC code (e.g. -fPIC archives) inside a
+    # non-PIE executable, whose [reg + disp] must not be read as absolute once
+    # the linear decode loses track of reg (blocks placed after the epilogue).
+    was_pic = set()
     pending = None
     for addr, size, mnem, ops in x86._lite.disasm_lite(code, base):
         off = addr - base
@@ -593,6 +597,7 @@ def code_refs(img, func):
             continue
         if mnem == 'pop' and pending is not None and ops in _REG32:
             pic[ops] = pending
+            was_pic.add(ops)
             pending = None
             continue
         pending = None
@@ -612,7 +617,8 @@ def code_refs(img, func):
                     fo = raw.find(struct.pack('<i', disp), 1)
                     if fo > 0:
                         out[off + fo] = ((pb + disp) & 0xffffffff, _SIZES.get(m.group(1) or '', 0))
-                elif img.absolute and pb is None and img.in_image(disp & 0xffffffff) and disp & 0xffffffff > 0x1000:
+                elif (img.absolute and pb is None and b not in was_pic and ix not in was_pic
+                        and img.in_image(disp & 0xffffffff) and disp & 0xffffffff > 0x1000):
                     raw = code[off:off + size]
                     fo = raw.find(struct.pack('<I', disp & 0xffffffff), 1)
                     if fo > 0:

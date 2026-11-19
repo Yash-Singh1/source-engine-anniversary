@@ -290,7 +290,7 @@ void ImagePanel::GetSettings(KeyValues *outResourceData)
 	outResourceData->SetInt("tileImage", m_bTileImage);
 	outResourceData->SetInt("tileHorizontally", m_bTileHorizontally);
 	outResourceData->SetInt("tileVertically", m_bTileVertically);
-	outResourceData->SetInt("scaleProportional", m_nScaleProportional);
+	VGUI_NOV2024_ONLY( outResourceData->SetInt("scaleProportional", m_nScaleProportional); )
 }
 
 //-----------------------------------------------------------------------------
@@ -307,10 +307,11 @@ void ImagePanel::ApplySettings(KeyValues *inResourceData)
 
 	m_bPositionImage = inResourceData->GetInt("positionImage", 1);
 	m_bScaleImage = inResourceData->GetInt("scaleImage", 0);
-	m_nScaleProportional = inResourceData->GetInt("scaleProportional", 0);
+	VGUI_NOV2024_ONLY( m_nScaleProportional = inResourceData->GetInt("scaleProportional", 0); )
 
 	m_fScaleAmount = inResourceData->GetFloat("scaleAmount", 0.0f);
 
+#if !defined( VGUI_CONTROLS_OCT2024 )
 	if ( m_nScaleProportional == 1 && m_bScaleImage && IsProportional() )
 	{
 		m_fScaleAmount *= .001f * ( float )QuickPropScale( 1000 );
@@ -319,6 +320,8 @@ void ImagePanel::ApplySettings(KeyValues *inResourceData)
 	{
 		m_fScaleAmount = .001f * ( float )QuickPropScale( 1000 );
 	}
+#endif
+#line 322
 	m_bTileImage = inResourceData->GetInt("tileImage", 0);
 	m_bTileHorizontally = inResourceData->GetInt("tileHorizontally", m_bTileImage);
 	m_bTileVertically = inResourceData->GetInt("tileVertically", m_bTileImage);

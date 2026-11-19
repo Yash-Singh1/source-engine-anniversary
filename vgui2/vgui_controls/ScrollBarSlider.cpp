@@ -322,7 +322,7 @@ void ScrollBarSlider::ApplySchemeSettings(IScheme *pScheme)
 	SetFgColor(GetSchemeColor("ScrollBarSlider.FgColor", pScheme));
 	SetBgColor(GetSchemeColor("ScrollBarSlider.BgColor", pScheme));
 
-	IBorder *newBorder = pScheme->GetBorder2("ScrollBarSliderBorder");
+	IBorder *newBorder = pScheme->VGUI_NOV2024_ONLY( GetBorder2 ) VGUI_OCT2024_ONLY( GetBorder )("ScrollBarSliderBorder");
 
 	if ( newBorder )
 	{
@@ -367,18 +367,18 @@ void ScrollBarSlider::Paint()
 	{
 		if ( GetPaintBackgroundType() == 2 )
 		{
-			DrawBox( nRepeats, _nobPos[0], wide - nRepeats, _nobPos[1] - _nobPos[0], col, 1.0f );
+			DrawBox( nRepeats, _nobPos[0], VGUI_NOV2024_ONLY( wide - nRepeats ) VGUI_OCT2024_ONLY( wide - 2 ), _nobPos[1] - _nobPos[0], col, 1.0f );
 		}
 		else
 		{
 			// Nob
-			surface()->DrawFilledRect(0, _nobPos[0], wide - nRepeats, _nobPos[1]);
+			surface()->DrawFilledRect(VGUI_NOV2024_ONLY( 0, _nobPos[0], wide - nRepeats ) VGUI_OCT2024_ONLY( 1, _nobPos[0], wide - 2 ), _nobPos[1]);
 		}
 
 		// border
 		if (_ScrollBarSliderBorder)
 		{
-			_ScrollBarSliderBorder->Paint2(0, _nobPos[0], wide - nRepeats, _nobPos[1], -1, 0, 0, nRepeats );
+			_ScrollBarSliderBorder->VGUI_NOV2024_ONLY( Paint2(0, _nobPos[0], wide - nRepeats, _nobPos[1], -1, 0, 0, nRepeats ) ) VGUI_OCT2024_ONLY( Paint(0, _nobPos[0], wide, _nobPos[1]) );
 		}
 	}
 	else
@@ -389,7 +389,7 @@ void ScrollBarSlider::Paint()
 		// border
 		if (_ScrollBarSliderBorder)
 		{
-			_ScrollBarSliderBorder->Paint2(_nobPos[0] - nRepeats, nRepeats, _nobPos[1], tall, -1, 0, 0, nRepeats );
+			_ScrollBarSliderBorder->VGUI_NOV2024_ONLY( Paint2(_nobPos[0] - nRepeats, nRepeats, _nobPos[1], tall, -1, 0, 0, nRepeats ) ) VGUI_OCT2024_ONLY( Paint(_nobPos[0] - nRepeats, nRepeats, _nobPos[1], tall) );
 		}
 	}
 

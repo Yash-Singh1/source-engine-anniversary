@@ -738,3 +738,38 @@ masking hides; those in engine files are fixed (see lane report).
 | snd_mix | `MIX_MixChannelsToPaintbuffer(CChannelList&, int, int, int, int)` | 1340 | 1292 | not investigated |
 | spatialpartition | `CVoxelTree::EnumerateElementsAlongRay_Ray(int, Ray_t const&, Vector const&, Vector const&, IPartitionEnumerator*)` | 1499 | 1363 | register allocation |
 | vgui_basebudgetpanel | `CBaseBudgetPanel::PerformLayout()` | 1411 | 1403 | identical to pristine; 16 more frame bytes from shared vgui headers |
+
+# Round 6 (engine6 lane)
+
+Branch `bytematch-engine6`, started at `bytematch` 9c8cb095. Whole-dylib report:
+engine.dylib 12983 -> 12990 of 13025 (97.93% -> 98.15% bytes); with `--data-check`
+12955 -> 12968. No object lost a function. Native arm64 build passes.
+
+## Fixed
+
+| object | start -> end | cause |
+|---|---|---|
+| snd_dsp | 115 -> 117 | `RVA_ConstructDelays`, `RVA_Params`: retail computes `PMAX * x` in float (no `(double)` cast; the pristine has the cast) |
+| snd_mix | 50 -> 52 | `MIX_BuildChannelList`: no `bStopOnFocusLoss`, mute check on `!bActive`, free only non-looped sources; `MIX_MixChannelsToPaintbuffer`: pause unless `m_bIsUISound` |
+| spatialpartition | 91 -> 92 | ray walk also stops on a NaN `tMax` |
+| enginetrace, cmodel_disp | 43 -> 44, 21 -> 22 | `TraceInfo_t::Visit` (engine/cmodel_private.h) returns false for a counter index outside the counter vector or a null counter array |
+| data only | | `lump_t` datadesc names `fourCC` (FIELD_CHARACTER x4), statics `lastAvg`, `next`, `s_szMapNameOnDisk`, `CDrawTreeFrame` without `OnThink`, text console uses `g_pFullFileSystem`, `Host_ReadPreStartupConfiguration` restores HL2 episodic unlocks |
+
+## Header patches (headers lane)
+
+`public/bspfile.h`, saved as `lane-engine6-scratch/bspfile-dispinfo.patch`:
+`MAX_MAP_DISPINFO` 8096 in retail (was 2048) and `ddispinfo_t::m_AllowedVerts`
+as `unsigned long` (pristine and SDK 2013 type; the alias class lets clang vectorize
+the copy). Tested per object: disp_mapload 24 -> 26 (100%), disp_interface 58 -> 60
+(100%), cmodel_disp 22 -> 23. bsppack does not change.
+
+## Still differing, cause known
+
+| object | function | note |
+|---|---|---|
+| disp_mapload, disp_interface, cmodel_disp | 5 functions | bspfile.h patch above |
+| cmodel | `CM_TestInLeaf`, `CM_TraceToLeaf<>` | logic matches after the `Visit` fix; register allocation, 16 more frame bytes in `CM_TestInLeaf` |
+| snd_dma | `S_Update`, `SND_GetGainObscured` | store scheduling only; `SND_GetGainObscured` has 80 more frame bytes |
+| cvar | `CvarList` | stack slots |
+| gl_rmain | `ViewDrawFade` | float scheduling in the quad setup, same calls |
+| l_studio | `UpdateStaticPropColorData` | zero stores from a register vs immediates |

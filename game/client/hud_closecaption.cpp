@@ -26,7 +26,7 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-#define CC_INSET		12
+#define CC_INSET		6
 
 extern ISoundEmitterSystemBase *soundemitterbase;
 
@@ -543,7 +543,7 @@ struct AsyncCaptionData_t
 		data->m_nBlockNum = params.blocktoload;
 		data->m_nFileIndex = params.fileindex;
 		data->m_nBlockSize = params.blocksize;
-		data->m_pBlockData = new byte[ data->m_nBlockSize * sizeof(ucs2) ];
+		data->m_pBlockData = new byte[ data->m_nBlockSize ];
 		return data;
 	}
 
@@ -774,6 +774,7 @@ public:
 
 	void Flush()
 	{
+		NOV2024_ONLY( if ( GetCacheSection() ) )
 		CacheFlush();
 	}
 
@@ -819,7 +820,6 @@ CHudCloseCaption::CHudCloseCaption( const char *pElementName )
 {
 	vgui::Panel *pParent = g_pClientMode->GetViewport();
 	SetParent( pParent );
-
 	SetProportional( true );
 
 	m_nGoalHeight = 0;
@@ -838,6 +838,11 @@ CHudCloseCaption::CHudCloseCaption( const char *pElementName )
 
 	vgui::ivgui()->AddTickSignal( GetVPanel(), 0 );
 
+#ifdef HL2_ANNIVERSARY_NOV2024
+	HOOK_HUD_MESSAGE( CHudCloseCaption, CloseCaption );
+
+	ReloadData();
+#else
 	if ( !IsX360() )
 	{
 		g_pVGuiLocalize->AddFile( "resource/closecaption_%language%.txt", "GAME", true );
@@ -860,6 +865,7 @@ CHudCloseCaption::CHudCloseCaption( const char *pElementName )
 	char dbfile [ 512 ];
 	Q_snprintf( dbfile, sizeof( dbfile ), "resource/closecaption_%s.dat", uilanguage );
 	InitCaptionDictionary( dbfile );
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -878,7 +884,6 @@ CHudCloseCaption::~CHudCloseCaption()
 //-----------------------------------------------------------------------------
 void CHudCloseCaption::LevelInit( void )
 {
-	CreateFonts();
 	// Reset repeat counters per level
 	m_CloseCaptionRepeats.RemoveAll();
 
@@ -955,11 +960,13 @@ void CHudCloseCaption::Paint( void )
 	rcOutput.right = w;
 	rcOutput.bottom = h;
 	rcOutput.top = m_nTopOffset;
-
+		
 	wrect_t rcText = rcOutput;
 
-	int avail_width = rcText.right - rcText.left - 2 * CC_INSET;
-	int avail_height = rcText.bottom - rcText.top - 2 * CC_INSET;
+	int inset = vgui::scheme()->GetProportionalScaledValueEx( GetScheme(), CC_INSET );
+
+	int avail_width = rcText.right - rcText.left - 2 * inset;
+	int avail_height = rcText.bottom - rcText.top - 2 * inset;
 
 	int totalheight = 0;
 	int i;
@@ -1068,7 +1075,7 @@ void CHudCloseCaption::Paint( void )
 		m_flCurrentAlpha = m_flGoalAlpha;
 	}
 
-	rcText.top = rcText.bottom - m_nCurrentHeight - 2 * CC_INSET;
+	rcText.top = rcText.bottom - m_nCurrentHeight - 2 * inset;
  
 	Color bgColor = GetBgColor();
    	bgColor[3] = m_flBackgroundAlpha;
@@ -1079,8 +1086,8 @@ void CHudCloseCaption::Paint( void )
 		return;
 	}
 
-	rcText.left += CC_INSET;
-	rcText.right -= CC_INSET;
+	rcText.left += inset;
+	rcText.right -= inset;
 
 	int textHeight = m_nCurrentHeight;
 	if ( growingDown )
@@ -1089,7 +1096,7 @@ void CHudCloseCaption::Paint( void )
 		textHeight = totalheight;
 	}
 
-	rcText.top = rcText.bottom - textHeight - CC_INSET;
+	rcText.top = rcText.bottom - textHeight - inset;
 
 	// Now draw them
 	c = visibleitems.Count();
@@ -1188,7 +1195,7 @@ void CHudCloseCaption::Paint( void )
  
 		wrect_t rcOut = rcText;
  
-		rcOut.right = rcOut.left + si->width + 6;
+		rcOut.right = rcOut.left + si->width + vgui::scheme()->GetProportionalScaledValueEx( GetScheme(), 6 );
 		
 		DrawStream( rcOut, rcOutput, item, iFadeLine, flFadeLineAlpha );
 
@@ -1587,7 +1594,7 @@ void CHudCloseCaption::CreateFonts( void )
 	}
 	else
 	{
-		m_hFonts[CCFONT_SMALL] = pScheme->GetFont( "CloseCaption_Small", true );
+		m_hFonts[CCFONT_SMALL] = pScheme->GetFont( "CloseCaption_Small" );
 	}
 
 	m_nLineHeight = MAX( 6, vgui::surface()->GetFontTall( m_hFonts[ CCFONT_NORMAL ] ) );
@@ -2025,10 +2032,9 @@ public:
 				continue;
 
 			// Lookup the data
-			CaptionLookup_t &entry = directories[ caption->fileindex ].m_CaptionDirectory[ caption->dirindex ];
+			CaptionLookup_t &entry = directories[ nFileIndex ].m_CaptionDirectory[ caption->dirindex ];
 			if ( entry.blockNum != nBlockNum )
 				continue;
-
 
 #ifdef WIN32
 			const wchar_t *pIn = ( const wchar_t *)&pData->m_pBlockData[ entry.offset ];
@@ -2037,7 +2043,7 @@ public:
 #else
 			// we persist to disk as ucs2 so convert back to real unicode here
 			caption->stream = new wchar_t[ entry.length ];
-			V_UCS2ToUnicode( (ucs2 *)&pData->m_pBlockData[ entry.offset ], caption->stream, entry.length << 1 );
+			V_UCS2ToUnicode( (ucs2 *)&pData->m_pBlockData[ entry.offset ], caption->stream, entry.length*sizeof(wchar_t) );
 #endif
 		}
 	}
@@ -2911,3 +2917,69 @@ void CHudCloseCaption::FindSound( char const *pchANSI )
 		delete[] block;
 	}
 }
+
+//-----------------------------------------------------------------------------
+// Purpose: Keeps the captions on screen when the HUD is narrower than the panel
+//-----------------------------------------------------------------------------
+void CHudCloseCaption::ApplySchemeSettings( vgui::IScheme *pScheme )
+{
+	BaseClass::ApplySchemeSettings( pScheme );
+
+	m_hFonts[CCFONT_NORMAL] = pScheme->GetFont( "CloseCaption_Normal", true );
+	m_hFonts[CCFONT_BOLD] = pScheme->GetFont( "CloseCaption_Bold", true );
+	m_hFonts[CCFONT_ITALIC] = pScheme->GetFont( "CloseCaption_Italic", true );
+	m_hFonts[CCFONT_ITALICBOLD] = pScheme->GetFont( "CloseCaption_BoldItalic", true );
+
+	m_nLineHeight = MAX( 6, vgui::surface()->GetFontTall( m_hFonts[ CCFONT_NORMAL ] ) );
+
+	int nHudWide, nHudTall;
+	GetHudSize( nHudWide, nHudTall );
+
+	int x, y;
+	GetPos( x, y );
+	int w, h;
+	GetSize( w, h );
+
+	if ( w > nHudWide )
+	{
+		x = 0;
+		SetSize( nHudWide, h );
+	}
+
+	if ( (float)nHudWide / (float)nHudTall <= 1.57f )
+	{
+		SetPos( x, y - vgui::scheme()->GetProportionalScaledValueEx( GetScheme(), m_nAspectRatioOffset ) );
+	}
+}
+
+#ifdef HL2_ANNIVERSARY_NOV2024
+//-----------------------------------------------------------------------------
+// Purpose: Reloads the caption dictionary for the current language
+//-----------------------------------------------------------------------------
+void CHudCloseCaption::ReloadData()
+{
+	m_CloseCaptionRepeats.RemoveAll();
+	ClearAsyncWork();
+	g_AsyncCaptionResourceManager.Flush();
+
+	m_CurrentLanguage = "";
+
+	g_pVGuiLocalize->AddFile( "resource/closecaption_%language%.txt", "GAME", true );
+
+	char uilanguage[ 64 ];
+	engine->GetUILanguage( uilanguage, sizeof( uilanguage ) );
+
+	if ( !Q_stricmp( uilanguage, "english" ) )
+	{
+		english.SetValue( 1 );
+	}
+	else
+	{
+		english.SetValue( 0 );
+	}
+
+	char dbfile [ 512 ];
+	Q_snprintf( dbfile, sizeof( dbfile ), "resource/closecaption_%s.dat", uilanguage );
+	InitCaptionDictionary( dbfile );
+}
+#endif

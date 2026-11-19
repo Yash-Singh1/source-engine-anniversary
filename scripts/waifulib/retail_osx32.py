@@ -328,7 +328,13 @@ def hl2mp_configure(conf, rf):
 def retail_stlib_variant(bld, name, suffix, flags):
 	'''Copy of static library `name` built as `name + suffix` with extra compiler flags, for
 	modules whose retail build links its own build of the library (e.g. sourcevr at 10.5).
-	Returns the new target name; pass it in the module's `use` and `retail_archives`.'''
+	Returns the new target name; pass it in the module's `use` and `retail_archives`.
+	Modules asking for the same variant share one copy.'''
+	try:
+		bld.get_tgen_by_name(name + suffix)
+		return name + suffix
+	except Exception:
+		pass
 	try:
 		tg = bld.get_tgen_by_name(name)
 	except Exception:

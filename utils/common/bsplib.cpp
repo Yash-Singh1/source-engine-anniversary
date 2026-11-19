@@ -54,9 +54,9 @@ BEGIN_BYTESWAP_DATADESC( lump_t )
 #ifndef BYTEMATCH_RETAIL
 	DEFINE_FIELD( uncompressedSize, FIELD_INTEGER ),
 #else
-	// SDK 2013 lump_t has char fourCC[4] where uncompressedSize is: DEFINE_ARRAY( fourCC, FIELD_CHARACTER, 4 )
-	{ FIELD_CHARACTER, "fourCC", { _offsetof( classNameTypedef, uncompressedSize ), 0 }, 4, FTYPEDESC_SAVE, NULL, NULL, NULL, NULL, sizeof( ((classNameTypedef *)0)->uncompressedSize ), NULL, 0, 0 },
+	DEFINE_ARRAY( fourCC, FIELD_CHARACTER, 4 ),
 #endif
+#line 60
 END_BYTESWAP_DATADESC()
 
 BEGIN_BYTESWAP_DATADESC( dflagslump_t )
@@ -1375,7 +1375,15 @@ static void AddOcclusionLump( )
 	lump->fileofs = g_pFileSystem->Tell( g_hBSPFile );
 	lump->filelen = nLumpLength;
 	lump->version = LUMP_OCCLUSION_VERSION;
+#ifdef BYTEMATCH_RETAIL
+	lump->fourCC[0] = ( char )0;
+	lump->fourCC[1] = ( char )0;
+	lump->fourCC[2] = ( char )0;
+	lump->fourCC[3] = ( char )0;
+#else
 	lump->uncompressedSize = 0;
+#endif
+#line 1379
 
 	// Data is swapped in place, so the 'Count' variables aren't safe to use after they're written
 	WriteData( FIELD_INTEGER, &nOccluderCount );
@@ -4898,7 +4906,7 @@ bool CompressBSP( CUtlBuffer &inputBuffer, CUtlBuffer &outputBuffer, CompressFun
 			unsigned int newOffset = AlignBuffer( outputBuffer, alignment );
 
 			// only set by compressed lumps, hides the uncompressed size
-			*((unsigned int *)&pOutBSPHeader->lumps[lumpNum].uncompressedSize) = 0;
+			*((unsigned int *)pOutBSPHeader->lumps[lumpNum].fourCC) = 0;
 
 			CUtlBuffer inputBuffer;
 			inputBuffer.SetExternalBuffer( ((byte *)pInBSPHeader) + pSortedLump->pLump->fileofs, pSortedLump->pLump->filelen, pSortedLump->pLump->filelen );
@@ -4921,7 +4929,7 @@ bool CompressBSP( CUtlBuffer &inputBuffer, CUtlBuffer &outputBuffer, CompressFun
 				if ( bCompressed )
 				{
 					// placing the uncompressed size in the unused fourCC, will decode at runtime
-					*((unsigned int *)&pOutBSPHeader->lumps[lumpNum].uncompressedSize) = BigLong( inputBuffer.TellPut() );
+					*((unsigned int *)pOutBSPHeader->lumps[lumpNum].fourCC) = BigLong( inputBuffer.TellPut() );
 					pOutBSPHeader->lumps[lumpNum].filelen = compressedBuffer.TellPut();
 					pOutBSPHeader->lumps[lumpNum].fileofs = newOffset;
 					outputBuffer.Put( compressedBuffer.Base(), compressedBuffer.TellPut() );
