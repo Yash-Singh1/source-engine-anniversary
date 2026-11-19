@@ -147,7 +147,7 @@ BEGIN_DATADESC_NO_BASE( CFourWheelVehiclePhysics )
 	DEFINE_FIELD( m_bLastBoost, FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_bLastSkid, FIELD_BOOLEAN ),
 END_DATADESC()
-
+ConVar sv_airboat_wheel_fix( "sv_airboat_wheel_fix", "0", FCVAR_ARCHIVE, "Worksaround the wheel being misnamed on the airboat (wheele_rr vs wheel_rr) for people who prefer 'fixed' handling. Only affects new spawns." );
 
 //-----------------------------------------------------------------------------
 // Constructor
@@ -271,7 +271,10 @@ void CFourWheelVehiclePhysics::CalcWheelData( vehicleparams_t &vehicle )
 		m_wheelBaseHeight[1] = right.z;
 	}
 
-	if ( GetAttachment( "wheel_rl", left, dummy ) && GetAttachment( "wheel_rr", right, dummy ) )
+	bool bRearRight = GetAttachment( "wheel_rr", right, dummy );
+	if ( !bRearRight && sv_airboat_wheel_fix.GetBool() )
+		bRearRight = GetAttachment( "wheele_rr", right, dummy );
+	if ( GetAttachment( "wheel_rl", left, dummy ) && bRearRight )
 	{
 		VectorITransform( left, m_pOuter->EntityToWorldTransform(), left );
 		VectorITransform( right, m_pOuter->EntityToWorldTransform(), right );
@@ -297,7 +300,10 @@ void CFourWheelVehiclePhysics::CalcWheelData( vehicleparams_t &vehicle )
 		vehicle.axles[0].wheels.springAdditionalLength = m_wheelTotalHeight[0];
 	}
 
-	if ( GetAttachment( "wheel_rl", left, dummy ) && GetAttachment( "wheel_rr", right, dummy ) )
+	bRearRight = GetAttachment( "wheel_rr", right, dummy );
+	if ( !bRearRight && sv_airboat_wheel_fix.GetBool() )
+		bRearRight = GetAttachment( "wheele_rr", right, dummy );
+	if ( GetAttachment( "wheel_rl", left, dummy ) && bRearRight )
 	{
 		VectorITransform( left, m_pOuter->EntityToWorldTransform(), left );
 		VectorITransform( right, m_pOuter->EntityToWorldTransform(), right );

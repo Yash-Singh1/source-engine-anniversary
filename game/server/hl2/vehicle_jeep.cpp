@@ -881,7 +881,7 @@ void CPropJeep::DrawBeam( const Vector &startPos, const Vector &endPos, float wi
 }
 
 // NVNT Convar for jeep cannon magnitude
-ConVar hap_jeep_cannon_mag("hap_jeep_cannon_mag", "10", 0);
+ConVar hap_jeep_cannon_mag("hap_jeep_cannon_mag", "10", 0); OCT2024_ONLY( ConVar sv_jalopy_steering_angle( "sv_jalopy_steering_angle", "0", FCVAR_CHEAT, "Use the steering angles for the jalopy. Affects turning at high speeds." ); )
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -1377,7 +1377,7 @@ void CPropJeep::ProcessMovement( CBasePlayer *pPlayer, CMoveData *pMoveData )
 	BaseClass::ProcessMovement( pPlayer, pMoveData );
 
 	// Update the steering angles based on speed.
-	UpdateSteeringAngle();
+	OCT2024_ONLY( if ( !sv_jalopy_steering_angle.GetBool() ) ) UpdateSteeringAngle();
 
 	// Create dangers sounds in front of the vehicle.
 	CreateDangerSounds();
@@ -1397,10 +1397,12 @@ void CPropJeep::UpdateSteeringAngle( void )
 	m_VehiclePhysics.SetSteeringDegrees( flSteeringDegrees );
 }
 
+#ifdef HL2_ANNIVERSARY_NOV2024
 bool CPropJeep::IsJalopy( void )
 {
 	return false;
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: Create danger sounds in front of the vehicle.
