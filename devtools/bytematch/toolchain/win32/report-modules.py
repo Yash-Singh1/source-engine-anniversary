@@ -19,7 +19,7 @@ define differences rather than codegen.
 usage: report-modules.py [--build DIR] [--maps DIR ...] [--mac-build DIR] [--mac-game-build hl2=DIR ...]
                          [--out DIR] [--json FILE] [--top N] [--modules a,b,...]
 """
-import argparse, glob, json, os, subprocess, sys
+import argparse, collections, glob, json, os, subprocess, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TREE = os.path.abspath(os.path.join(HERE, "..", "..", "..", ".."))
@@ -100,10 +100,15 @@ def module_objects(build, name, m, idx, out):
         for f in os.listdir(d):
             os.remove(os.path.join(d, f))
     os.makedirs(d, exist_ok=True)
-    for s in m["sources"]:
-        if s.get("missing") or s["lang"] not in ("c", "c++", "asm"):
-            continue
-        base = os.path.join(os.path.abspath(build), s["path"])
+    srcs = [s for s in m["sources"] if not s.get("missing") and s["lang"] in ("c", "c++", "asm")]
+    bases = [os.path.join(os.path.abspath(build), s["path"]) for s in srcs]
+    if not any(os.path.exists(b + ".%d.o" % idx) for b in bases):
+        # a build configured with --retail-win32-modules numbers its modules differently:
+        # take the index most of the module's sources were compiled with
+        seen = collections.Counter(p.rsplit(".", 2)[-2] for b in bases for p in glob.glob(b + ".*.o"))
+        if seen:
+            idx = int(seen.most_common(1)[0][0])
+    for base in bases:
         for cand in (base + ".%d.o" % idx, os.path.splitext(base)[0] + ".%d.obj" % idx):
             if os.path.exists(cand):
                 link = os.path.join(d, os.path.basename(cand))
