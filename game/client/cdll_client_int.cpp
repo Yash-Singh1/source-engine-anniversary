@@ -124,7 +124,11 @@
 #include "sourcevr/isourcevirtualreality.h"
 #include "client_virtualreality.h"
 #include "mumble.h"
-
+#include "igamepadui.h"
+#ifdef BYTEMATCH_RETAIL
+#include "steamshare.h"
+#endif
+#line 128
 // NVNT includes
 #include "hud_macros.h"
 #include "haptics/ihaptics.h"
@@ -342,13 +346,13 @@ static ConVar s_cl_class("cl_class", "default", FCVAR_USERINFO|FCVAR_ARCHIVE, "D
 #ifdef HL1MP_CLIENT_DLL
 static ConVar s_cl_load_hl1_content("cl_load_hl1_content", "0", FCVAR_ARCHIVE, "Mount the content from Half-Life: Source if possible");
 #endif
-
-
+NOV2024_ONLY( ConVar r_lightmap_bicubic_set( "r_lightmap_bicubic_set2", "0", FCVAR_ARCHIVE | FCVAR_HIDDEN, "Hack to get this convar to be re-set on first launch." ); )
+NOV2024_ONLY( ConVar r_modeldetail_set( "r_modeldetail_set", "0", FCVAR_ARCHIVE | FCVAR_HIDDEN, "Hack to get this convar to re-set on first launch." ); )
 // Physics system
 bool g_bLevelInitialized;
 bool g_bTextMode = false;
 class IClientPurchaseInterfaceV2 *g_pClientPurchaseInterface = (class IClientPurchaseInterfaceV2 *)(&g_bTextMode + 156);
-
+IGamepadUI *g_pGamepadUI = NULL;
 static ConVar *g_pcv_ThreadMode = NULL;
 
 //-----------------------------------------------------------------------------
@@ -1017,7 +1021,10 @@ int CHLClient::Init( CreateInterfaceFn appSystemFactory, CreateInterfaceFn physi
 	IGameSystem::Add( ClientSoundscapeSystem() );
 	IGameSystem::Add( PerfVisualBenchmark() );
 	IGameSystem::Add( MumbleSystem() );
-	
+#ifdef BYTEMATCH_RETAIL
+	IGameSystem::Add( SteamShareSystem() );
+#endif
+#line 1021
 	#if defined( TF_CLIENT_DLL )
 	IGameSystem::Add( CustomTextureToolCacheGameSystem() );
 	IGameSystem::Add( TFSharedContentManager() );
@@ -1163,7 +1170,69 @@ void CHLClient::PostInit()
 		}
 	}
 #endif
+
+#define GamepadUI_Log( ... ) ConColorMsg( Color( 255, 134, 44, 255 ), "[GamepadUI] " __VA_ARGS__ )
+
+	if ( IsSteamDeck() )
+	{
+		CSysModule *pGamepadUIModule = g_pFullFileSystem->LoadModule( "gamepadui", "GAMEBIN", false );
+		if ( pGamepadUIModule != NULL )
+		{
+			GamepadUI_Log( "Loaded gamepadui module.\n" );
+
+			CreateInterfaceFn gamepaduiFactory = Sys_GetFactory( pGamepadUIModule );
+			if ( gamepaduiFactory != NULL )
+			{
+				g_pGamepadUI = (IGamepadUI *)gamepaduiFactory( GAMEPADUI_INTERFACE_VERSION, NULL );
+				if ( g_pGamepadUI != NULL )
+				{
+					GamepadUI_Log( "Initializing IGamepadUI interface...\n" );
+
+					factorylist_t factories;
+					FactoryList_Retrieve( factories );
+					g_pGamepadUI->Initialize( factories.appSystemFactory );
+				}
+				else
+				{
+					GamepadUI_Log( "Unable to pull IGamepadUI interface.\n" );
+				}
+			}
+			else
+			{
+				GamepadUI_Log( "Unable to get gamepadui factory.\n" );
+			}
+		}
+		else
+		{
+			GamepadUI_Log( "Unable to load gamepadui module\n" );
+		}
+	}
+
+#ifdef HL2_ANNIVERSARY_NOV2024
+	if ( materials )
+	{
+		MaterialAdapterInfo_t info{};
+		materials->GetDisplayAdapterInfo( materials->GetCurrentAdapter(), info );
+
+		int nDXLevel = info.m_nMaxDXSupportLevel;
+		bool bHighEnd = nDXLevel >= 95;
+		if ( !r_lightmap_bicubic_set.GetBool() )
+		{
+			ConVarRef r_lightmap_bicubic( "r_lightmap_bicubic" );
+			r_lightmap_bicubic.SetValue( bHighEnd || ( nDXLevel >= 90 && IsLinux() ) );
+			r_lightmap_bicubic_set.SetValue( true );
+		}
+
+		if ( !r_modeldetail_set.GetBool() && bHighEnd )
+		{
+			ConVarRef r_rootlod( "r_rootlod" );
+			r_rootlod.SetValue( r_rootlod.GetDefault() );
+			r_modeldetail_set.SetValue( true );
+		}
+	}
+#endif
 }
+#line 1167
 
 //-----------------------------------------------------------------------------
 // Purpose: Called when the client .dll is being dismissed
@@ -1203,7 +1272,7 @@ void CHLClient::Shutdown( void )
 	UncacheAllMaterials();
 
 	IGameSystem::ShutdownAllSystems();
-	
+	if ( g_pGamepadUI ) g_pGamepadUI->Shutdown();
 	gHUD.Shutdown();
 	VGui_Shutdown();
 #ifndef BYTEMATCH_RETAIL
@@ -1294,7 +1363,7 @@ void CHLClient::HudUpdate( bool bActive )
 	// I don't think this is necessary any longer, but I will leave it until
 	// I can check into this further.
 	C_BaseTempEntity::CheckDynamicTempEnts();
-
+	if ( g_pGamepadUI ) g_pGamepadUI->OnUpdate( frametime );
 #ifdef SIXENSE
 	// If we're not connected, update sixense so we can move the mouse cursor when in the menus
 	if( !engine->IsConnected() || engine->IsPaused() )
@@ -1643,7 +1712,7 @@ void CHLClient::LevelInitPreEntity( char const* pMapName )
 #ifndef BYTEMATCH_RETAIL
 	gTouch.LevelInit();
 #endif
-
+	if ( g_pGamepadUI ) g_pGamepadUI->OnLevelInitializePreEntity();
 #if defined( REPLAY_ENABLED )
 	// Initialize replay ragdoll recorder
 	if ( !engine->IsPlayingDemo() )
@@ -1662,7 +1731,9 @@ void CHLClient::LevelInitPostEntity( )
 	IGameSystem::LevelInitPostEntityAllSystems();
 	C_PhysPropClientside::RecreateAll();
 	internalCenterPrint->Clear();
+	if ( g_pGamepadUI ) g_pGamepadUI->OnLevelInitializePostEntity();
 }
+#line 1666
 
 //-----------------------------------------------------------------------------
 // Purpose: Reset our global string table pointers
@@ -1727,7 +1798,7 @@ void CHLClient::LevelShutdown( void )
 	ParticleMgr()->RemoveAllEffects();
 	
 	StopAllRumbleEffects();
-
+	if ( g_pGamepadUI ) g_pGamepadUI->OnLevelShutdown();
 	gHUD.LevelShutdown();
 
 	internalCenterPrint->Clear();

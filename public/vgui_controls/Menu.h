@@ -252,7 +252,7 @@ public:
 	virtual void SetBgColor( Color newColor );
 
 	virtual void SetFont( HFont font );
-	virtual void SetItemUppercase( int itemID, bool state );
+	VGUI_NOV2024_ONLY( virtual void SetItemUppercase( int itemID, bool state ); )
 
 	// Pass in NULL hotkey to remove hotkey
 	void SetCurrentKeyBinding( int itemID, char const *hotkey );

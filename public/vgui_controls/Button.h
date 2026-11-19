@@ -160,7 +160,7 @@ public:
 
 	virtual KeyValues *GetCommand();
 
-	virtual bool IsToggleButton() { return false; }
+	VGUI_NOV2024_ONLY( virtual bool IsToggleButton() { return false; } )
 
 	bool IsDrawingFocusBox();
 	void DrawFocusBox( bool bEnable );

@@ -45,7 +45,7 @@ public:
 
 	float	GetFireRate( void ) { return 0.075f; }	// 13.3hz
 	int		CapabilitiesGet( void ) { return bits_CAP_WEAPON_RANGE_ATTACK1; }
-	int		WeaponRangeAttack2Condition(/* float flDot, float flDist */);
+	int		WeaponRangeAttack2Condition( float flDot, float flDist );
 	Activity	GetPrimaryAttackActivity( void );
 
 	virtual const Vector& GetBulletSpread( void )
@@ -228,6 +228,34 @@ void CWeaponSMG1::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatChar
 		}
 		break;
 
+#ifdef BYTEMATCH_RETAIL
+		/*//FIXME: Re-enable
+		case EVENT_WEAPON_AR2_GRENADE:
+		{
+		CAI_BaseNPC *npc = pOperator->MyNPCPointer();
+
+		Vector vecShootOrigin, vecShootDir;
+		vecShootOrigin = pOperator->Weapon_ShootPosition();
+		vecShootDir = npc->GetShootEnemyDir( vecShootOrigin );
+
+		Vector vecThrow = m_vecTossVelocity;
+
+		CGrenadeAR2 *pGrenade = (CGrenadeAR2*)Create( "grenade_ar2", vecShootOrigin, vec3_angle, npc );
+		pGrenade->SetAbsVelocity( vecThrow );
+		pGrenade->SetLocalAngularVelocity( QAngle( 0, 400, 0 ) );
+		pGrenade->SetMoveType( MOVETYPE_FLYGRAVITY ); 
+		pGrenade->m_hOwner			= npc;
+		pGrenade->m_pMyWeaponAR2	= this;
+		pGrenade->SetDamage(sk_npc_dmg_ar2_grenade.GetFloat());
+
+		// FIXME: arrgg ,this is hard coded into the weapon???
+		m_flNextGrenadeCheck = gpGlobals->curtime + 6;// wait six seconds before even looking again to see if a grenade can be thrown.
+
+		m_iClip2--;
+		}
+		break;
+		*/
+#else
 		case EVENT_WEAPON_AR2_ALTFIRE:
 		{
 			CAI_BaseNPC *npc = pOperator->MyNPCPointer();
@@ -237,7 +265,7 @@ void CWeaponSMG1::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatChar
 			//vecShootDir = npc->GetShootEnemyDir( vecShootOrigin );
 
 			//Checks if it can fire the grenade
-			WeaponRangeAttack2Condition();
+			WeaponRangeAttack2Condition( 0.0f, 0.0f );
 
 			Vector vecThrow = m_vecTossVelocity;
 
@@ -272,6 +300,8 @@ void CWeaponSMG1::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatChar
 			m_iClip2--;
 		}
 		break;
+#endif
+#line 257
 
 	default:
 		BaseClass::Operator_HandleAnimEvent( pEvent, pOperator );
@@ -412,11 +442,14 @@ void CWeaponSMG1::SecondaryAttack( void )
 //			flDist - 
 // Output : int
 //-----------------------------------------------------------------------------
-int CWeaponSMG1::WeaponRangeAttack2Condition(/* float flDot, float flDist */)
+int CWeaponSMG1::WeaponRangeAttack2Condition( float flDot, float flDist )
 {
 	CAI_BaseNPC *npcOwner = GetOwner()->MyNPCPointer();
 
-	// return COND_NONE;
+#ifdef BYTEMATCH_RETAIL
+	return COND_NONE;
+#endif
+#line 402
 
 /*
 	// --------------------------------------------------------

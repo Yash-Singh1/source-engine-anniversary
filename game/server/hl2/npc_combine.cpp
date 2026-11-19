@@ -378,7 +378,12 @@ void CNPC_Combine::PostNPCInit()
 		// an AR2. 
 		if( !GetActiveWeapon() || !FClassnameIs( GetActiveWeapon(), "weapon_ar2" ) )
 		{
+#ifdef BYTEMATCH_RETAIL
+			DevWarning("**Combine Elite Soldier MUST be equipped with AR2\n");
+#else
 			// DevWarning("**Combine Elite Soldier MUST be equipped with AR2\n");
+#endif
+#line 382
 		}
 	}
 
@@ -2320,6 +2325,9 @@ void CNPC_Combine::HandleAnimEvent( animevent_t *pEvent )
 	{
 		if ( pEvent->event == COMBINE_AE_BEGIN_ALTFIRE )
 		{
+#ifdef BYTEMATCH_RETAIL
+			EmitSound( "Weapon_CombineGuard.Special1" );
+#else
 			if( FClassnameIs( GetActiveWeapon(), "weapon_ar2" ) )
 			{
 				EmitSound( "Weapon_CombineGuard.Special1" );
@@ -2332,6 +2340,8 @@ void CNPC_Combine::HandleAnimEvent( animevent_t *pEvent )
 			{
 				EmitSound( "Weapon_CombineGuard.Special1" );
 			}
+#endif
+#line 2324
 			handledEvent = true;
 		}
 		else if ( pEvent->event == COMBINE_AE_ALTFIRE )
@@ -2679,7 +2689,7 @@ void CNPC_Combine::NotifyDeadFriend ( CBaseEntity* pFriend )
 //=========================================================
 // DeathSound 
 //=========================================================
-void CNPC_Combine::DeathSound ( void )
+void CNPC_Combine::DeathSound ( const CTakeDamageInfo &info )
 {
 	// NOTE: The response system deals with this at the moment
 	if ( GetFlags() & FL_DISSOLVING )

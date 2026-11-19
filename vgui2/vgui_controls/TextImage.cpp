@@ -24,7 +24,7 @@
 
 #include <vgui_controls/TextImage.h>
 #include <vgui_controls/Controls.h>
-
+#include <vgui_controls/Panel.h>
 #include "tier0/dbg.h"
 // memdbgon must be the last include file in a .cpp file!!!
 #include <tier0/memdbgon.h>
@@ -819,7 +819,7 @@ void TextImage::RecalculateEllipsesPosition()
 					float flWide = 0.0f, flabcA = 0.0f;
 					surface()->GetKernedCharWidth( font, *rwsz, chBefore, chAfter, flWide, flabcA );
 					int len = floor( flWide + 0.6 );
-					remainingLength += len;
+					remainingLength += VGUI_NOV2024_ONLY( len ) VGUI_OCT2024_ONLY( floor( flWide + 0.6 ) );
 #else
 					remainingLength += surface()->GetCharacterWidth(font, *rwsz);
 #endif

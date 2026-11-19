@@ -106,11 +106,11 @@ public:
 
 	virtual void GetContentSize( int& cw, int &ch );
 
-	void SetOffsetFromMainMenu(int nOffset) { m_nOffsetFromMainMenu = nOffset; }
-	int GetOffsetFromMainMenu() const { return m_nOffsetFromMainMenu; }
+	VGUI_NOV2024_ONLY( void SetOffsetFromMainMenu(int nOffset) { m_nOffsetFromMainMenu = nOffset; } )
+	int GetOffsetFromMainMenu() const { return VGUI_NOV2024_ONLY( m_nOffsetFromMainMenu ) VGUI_OCT2024_ONLY( 0 ); }
 
-	void SetPaddingY( int nPadding ) { m_nPaddingY = nPadding; }
-	int GetPaddingY() const { return m_nPaddingY; }
+	VGUI_NOV2024_ONLY( void SetPaddingY( int nPadding ) { m_nPaddingY = nPadding; } )
+	int GetPaddingY() const { return VGUI_NOV2024_ONLY( m_nPaddingY ) VGUI_OCT2024_ONLY( 0 ); }
 
 protected:
 	void OnKeyCodeReleased(KeyCode code);
@@ -135,8 +135,8 @@ private:
 
 	KeyValues *m_pUserData;
 
-	int m_nOffsetFromMainMenu;
-	int m_nPaddingY;
+	VGUI_NOV2024_ONLY( int m_nOffsetFromMainMenu; )
+	VGUI_NOV2024_ONLY( int m_nPaddingY; )
 };
 
 } // namespace vgui

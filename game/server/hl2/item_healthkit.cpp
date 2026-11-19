@@ -431,7 +431,7 @@ public:
 	bool KeyValue(  const char *szKeyName, const char *szValue );
 	void Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value );
 	virtual int	ObjectCaps( void ) { return BaseClass::ObjectCaps() | m_iCaps; }
-
+	NOV2024_ONLY( virtual float GetAutoAimRadius() { return 20.0f; } )
 	float m_flNextCharge; 
 	int		m_iReactivate ; // DeathMatch Delay until reactvated
 	int		m_iJuice;

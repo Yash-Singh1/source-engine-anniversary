@@ -1395,11 +1395,11 @@ void Panel::SetParent(VPANEL newParent)
 		ipanel()->SetParent(GetVPanel(), NULL);
 	}
 
-	if (GetVParent())
+	if (GetVParent() VGUI_OCT2024_ONLY( && !IsPopup() ))
 	{
 		SetProportional(ipanel()->IsProportional(GetVParent()));
 
-		if ( !IsPopup() )
+		VGUI_NOV2024_ONLY( if ( !IsPopup() ) )
 		{
 			// most of the time KBInput == parents kbinput
 			if (ipanel()->IsKeyBoardInputEnabled(GetVParent()) != IsKeyBoardInputEnabled())
@@ -6354,8 +6354,8 @@ void Panel::GetCornerTextureSize( int& w, int& h )
 	if ( IsProportional() )
 	{
 		// Do not use the scheme for this, so it's screen space that affects the rounding always.
-		w = MAX( scheme()->GetProportionalScaledValue( 8 ) / 2, 8 );
-		h = w;
+		w = MAX( VGUI_NOV2024_ONLY( scheme()->GetProportionalScaledValue( 8 ) ) VGUI_OCT2024_ONLY( scheme()->GetProportionalScaledValueEx( GetScheme(), 8 ) ) / 2, 8 );
+		h = VGUI_NOV2024_ONLY( w ) VGUI_OCT2024_ONLY( MAX( scheme()->GetProportionalScaledValueEx( GetScheme(), 8 ) / 2, 8 ) );
 	}
 	else
 	{

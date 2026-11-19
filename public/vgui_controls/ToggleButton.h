@@ -30,7 +30,7 @@ public:
 
 	virtual void DoClick();
 
-	virtual bool IsToggleButton() { return true; }
+	VGUI_NOV2024_ONLY( virtual bool IsToggleButton() { return true; } )
 
 	/* messages sent (get via AddActionSignalTarget()):
 		"ButtonToggled"
