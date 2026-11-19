@@ -41,7 +41,11 @@ class hk_Ragdoll_Constraint_BP  //: public hk_Effector_BP
 		hk_real		m_strength;
 		hk_real     m_tau;
 		hk_uchar	m_axisMap[3];
+#ifdef BYTEMATCH_RETAIL
+		hk_uchar	m_constrainTranslation;
+#else
 		bool		m_constrainTranslation;
+#endif
 };
 
 #endif /* HK_PHYSICS_RAGDOLL_CONSTRAINT_BP_H */

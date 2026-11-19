@@ -73,6 +73,10 @@ IVP_Contact_Point::IVP_Contact_Point( IVP_Mindist *md)
 #endif
     IVP_Synapse_Real *syn1 = md->get_sorted_synapse(1);
     synapse[1].init_synapse_friction(this, syn1->get_object(), syn1->edge, syn1->get_status());
+#ifdef BYTEMATCH_RETAIL
+    syn0->get_object()->get_surface_manager()->add_reference_to_ledge(syn0->edge->get_compact_ledge());
+    syn1->get_object()->get_surface_manager()->add_reference_to_ledge(syn1->edge->get_compact_ledge());
+#endif
 
     IVP_Environment *env = md->get_environment();
     this->last_time_of_recalc_friction_s_vals = env->get_current_time();
@@ -92,7 +96,7 @@ IVP_Contact_Point::IVP_Contact_Point( IVP_Mindist *md)
 	IVP_U_Point wHesse_vecF_Fos;
 	IVP_CLS.calc_hesse_vec_object_not_normized(e1, e1->get_compact_ledge(), &wHesse_vecF_Fos);
 #ifdef BYTEMATCH_RETAIL
-	inv_triangle_det = 1.0f / ( wHesse_vecF_Fos.real_length() + 1e-18 );
+	inv_triangle_det = 1.0f / ( wHesse_vecF_Fos.real_length() + 1e-18f );
 #else
 	inv_triangle_det = 1.0f / wHesse_vecF_Fos.real_length();
 #endif

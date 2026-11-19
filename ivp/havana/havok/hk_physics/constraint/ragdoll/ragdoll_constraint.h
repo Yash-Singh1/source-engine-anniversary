@@ -65,7 +65,11 @@ class hk_Ragdoll_Constraint : public hk_Constraint
 		hk_real m_strength;
 		hk_real m_tau;
 		unsigned char              m_axisMap[3];
+#ifdef BYTEMATCH_RETAIL
+		hk_uchar m_constrainTranslation;
+#else
 		bool m_constrainTranslation;
+#endif
 
 };
 
