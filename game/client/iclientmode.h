@@ -33,7 +33,7 @@ enum
 
 // Anniversary IClientMode::Layout( bool ) and hud_aspect. MSVC groups the overload with
 // Layout(), which moves every later slot; retail macOS has them too (appended slot 48).
-#if defined( _WIN32 )
+#if defined( _WIN32 ) || defined( BYTEMATCH_RETAIL )
 #define CLIENTMODE_LAYOUT_FORCE
 #endif
 

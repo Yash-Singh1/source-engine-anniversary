@@ -145,6 +145,7 @@ CON_COMMAND( hud_reloadscheme, "Reloads hud layout and animation scripts." )
 	mode->ReloadScheme();
 }
 
+#ifndef BYTEMATCH_RETAIL
 CON_COMMAND( messagemode, "Opens chat dialog" )
 {
 	ClientModeShared *mode = ( ClientModeShared * )GetClientModeNormal();
@@ -156,6 +157,8 @@ CON_COMMAND( messagemode2, "Opens chat dialog" )
 	ClientModeShared *mode = ( ClientModeShared * )GetClientModeNormal();
 	mode->StartMessageMode( MM_SAY_TEAM );
 }
+#endif
+#line 159
 
 #ifdef _DEBUG
 CON_COMMAND_F( crash, "Crash the client. Optional parameter -- type of crash:\n 0: read from NULL\n 1: write to NULL\n 2: DmCrashDump() (xbox360 only)", FCVAR_CHEAT )
@@ -645,6 +648,30 @@ int	ClientModeShared::KeyInput( int down, ButtonCode_t keynum, const char *pszCu
 	if ( engine->Con_IsVisible() )
 		return 1;
 	
+#ifdef BYTEMATCH_RETAIL
+	// Should we start typing a message?
+	if ( pszCurrentBinding &&
+		( Q_strcmp( pszCurrentBinding, "messagemode" ) == 0 ||
+		  Q_strcmp( pszCurrentBinding, "say" ) == 0 ) )
+	{
+		if ( down )
+		{
+			StartMessageMode( MM_SAY );
+		}
+		return 0;
+	}
+	else if ( pszCurrentBinding &&
+				( Q_strcmp( pszCurrentBinding, "messagemode2" ) == 0 ||
+				  Q_strcmp( pszCurrentBinding, "say_team" ) == 0 ) )
+	{
+		if ( down )
+		{
+			StartMessageMode( MM_SAY_TEAM );
+		}
+		return 0;
+	}
+#endif
+#line 648
 	// If we're voting...
 #ifdef VOTING_ENABLED
 	CHudVote *pHudVote = GET_HUDELEMENT( CHudVote );
@@ -933,7 +960,7 @@ void ClientModeShared::Layout( bool bForce )
 
 		int x = 0;
 		float flAspect = hud_aspect.GetFloat();
-		if ( flAspect != 0.0f && (float)wide / (float)tall > flAspect )
+		if ( flAspect != 0.0f && flAspect < (float)wide / (float)tall )
 		{
 			int newWide = (int)( tall * flAspect );
 			x = ( wide - newWide ) / 2;

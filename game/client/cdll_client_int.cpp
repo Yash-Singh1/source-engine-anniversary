@@ -2730,3 +2730,27 @@ CSteamID GetSteamIDForPlayerIndex( int iPlayerIndex )
 
 #endif
 
+#ifdef HL2_ANNIVERSARY_NOV2024
+static void CL_HL2_Expansion_Reloaded()
+{
+	scenefilecache->Reload();
+
+	CHudCloseCaption *hudCloseCaption = GET_HUDELEMENT( CHudCloseCaption );
+	if ( hudCloseCaption )
+	{
+		hudCloseCaption->ReloadData();
+	}
+
+	soundemitterbase->ModShutdown();
+	soundemitterbase->ModShutdown();
+	soundemitterbase->ModInit();
+
+	g_pParticleSystemMgr->UncacheAllParticleSystems();
+	g_pParticleSystemMgr->FlushAllSheets();
+	ParseParticleEffects( true, false );
+	PhysParseSurfaceData( physprops, filesystem );
+}
+
+static ConCommand cl_hl2_expansion_reloaded( "cl_hl2_expansion_reloaded", CL_HL2_Expansion_Reloaded );
+#endif
+

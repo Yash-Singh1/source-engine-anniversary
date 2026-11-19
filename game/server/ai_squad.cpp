@@ -175,7 +175,12 @@ CAI_Squad::CAI_Squad()
 
 void CAI_Squad::Init(string_t newName) 
 {
+#ifdef BYTEMATCH_RETAIL
+	m_Name = AllocPooledString( STRING(newName) );
+#else
 	m_Name = newName;
+#endif
+#line 179
 	m_pNextSquad = NULL;
 	m_flSquadSoundWaitTime = 0;
 	m_SquadMembers.RemoveAll();

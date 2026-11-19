@@ -731,7 +731,7 @@ CBaseCombatCharacter::CBaseCombatCharacter( void )
 	}
 
 	// not standing on a nav area yet
-#ifdef MEXT_BOT
+#if defined( NEXT_BOT ) || defined( BYTEMATCH_RETAIL )
 	m_lastNavArea = NULL;
 #endif
 
@@ -2998,8 +2998,21 @@ int CBaseCombatCharacter::GiveAmmo( int iCount, int iAmmoIndex, bool bSuppressSo
 
 	m_iAmmo.Set( iAmmoIndex, m_iAmmo[iAmmoIndex] + iAdd );
 
+	if ( IsPlayer() )
+	{
+		IGameEvent *event = gameeventmanager->CreateEvent( "ammo_pickup" );
+		if ( event )
+		{
+			event->SetInt( "ammo_index", iAmmoIndex );
+			event->SetInt( "amount", iAdd );
+			event->SetInt( "total", m_iAmmo[iAmmoIndex] );
+			gameeventmanager->FireEvent( event );
+		}
+	}
+
 	return iAdd;
 }
+#line 3003
 
 //-----------------------------------------------------------------------------
 // Purpose: Give the player some ammo.
@@ -3487,7 +3500,7 @@ void CBaseCombatCharacter::UpdateLastKnownArea( void )
 //-----------------------------------------------------------------------------
 bool CBaseCombatCharacter::IsAreaTraversable( const CNavArea *area ) const
 {
-#ifdef NEXT_BOT
+#if defined( NEXT_BOT ) || defined( BYTEMATCH_RETAIL )
 	return area ? !area->IsBlocked( GetTeamNumber() ) : false;
 #endif
 	return false;
@@ -3498,7 +3511,7 @@ bool CBaseCombatCharacter::IsAreaTraversable( const CNavArea *area ) const
 //-----------------------------------------------------------------------------
 void CBaseCombatCharacter::ClearLastKnownArea( void )
 {
-#ifdef NEXT_BOT
+#if defined( NEXT_BOT ) || defined( BYTEMATCH_RETAIL )
 	OnNavAreaChanged( NULL, m_lastNavArea );
 
 	if ( m_lastNavArea )
@@ -3516,7 +3529,7 @@ void CBaseCombatCharacter::ClearLastKnownArea( void )
 //-----------------------------------------------------------------------------
 void CBaseCombatCharacter::OnNavAreaRemoved( CNavArea *removedArea )
 {
-#ifdef NEXT_BOT
+#if defined( NEXT_BOT ) || defined( BYTEMATCH_RETAIL )
 	if ( m_lastNavArea == removedArea )
 	{
 		ClearLastKnownArea();

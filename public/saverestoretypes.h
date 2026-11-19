@@ -522,6 +522,27 @@ inline unsigned _rotr(unsigned x, unsigned n) {
 }
 #endif
 
+#if defined( BYTEMATCH_RETAIL ) && !defined( _WIN32 )
+// SDK 2013's bit-at-a-time CSaveRestoreSegment::_rotr, which retail inlines into HashString
+inline unsigned SaveRestoreRotr( unsigned val, int shift )
+{
+	unsigned lobit;
+	unsigned num = val;
+	shift &= 0x1f;
+	while ( shift-- )
+	{
+		lobit = num & 1;
+		num >>= 1;
+		if ( lobit )
+			num |= 0x80000000;
+	}
+	return num;
+}
+#define SAVERESTORE_ROTR SaveRestoreRotr
+#else
+#define SAVERESTORE_ROTR _rotr
+#endif
+#line 525
 inline unsigned int CSaveRestoreSegment::HashString( const char *pszToken )
 {
 	COMPILE_TIME_ASSERT( sizeof( unsigned int ) == 4 );
@@ -529,7 +550,7 @@ inline unsigned int CSaveRestoreSegment::HashString( const char *pszToken )
 
 	while ( *pszToken )
 	{
-		hash = _rotr( hash, 4 ) ^ *pszToken++;
+		hash = SAVERESTORE_ROTR( hash, 4 ) ^ *pszToken++;
 	}
 	return hash;
 }
