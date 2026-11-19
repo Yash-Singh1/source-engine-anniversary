@@ -21,6 +21,17 @@ class hk_Local_Constraint_System_BP  //: public hk_Effector_BP
 
 public:
 
+#ifdef BYTEMATCH_RETAIL
+		hk_Local_Constraint_System_BP()
+		{
+			m_damp = 1.0f;
+			m_tau = 1.0f;
+			m_active = true;
+			m_n_iterations = 0;
+			m_errorTolerance = 0.03f;
+			m_minErrorTicks = 1;
+		}
+#else
 		hk_Local_Constraint_System_BP()
 			:	m_damp( 1.0f ),
 				m_tau( 1.0f ),
@@ -30,6 +41,7 @@ public:
 		{
 			;
 		}
+#endif
 };
 
 #endif /* HK_PHYSICS_LOCAL_CONSTRAINT_SYSTEM_BP */

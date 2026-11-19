@@ -15,6 +15,10 @@ class hk_Breakable_Constraint_BP  //: public hk_Effector_BP
 				m_linear_strength(0),
 				m_angular_strength(0)
 		{			
+#ifdef BYTEMATCH_RETAIL
+			m_bodyMassScale[0] = 1.0f;
+			m_bodyMassScale[1] = 1.0f;
+#endif
 		}
 
 	public: 
