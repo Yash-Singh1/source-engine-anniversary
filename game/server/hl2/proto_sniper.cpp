@@ -3231,7 +3231,7 @@ void CSniperBullet::BulletThink( void )
 		m_iImpacts++;
 
 #ifdef HL2_EPISODIC
-		if( tr.m_pEnt->IsNPC() || m_iImpacts == NUM_PENETRATIONS )
+		if( ( IsHL2Episodic() && ( tr.m_pEnt->IsNPC() || m_iImpacts == NUM_PENETRATIONS ) ) || ( !IsHL2Episodic() && ( tr.m_pEnt->m_takedamage == DAMAGE_YES || m_iImpacts == NUM_PENETRATIONS ) ) )
 #else	 
 		if( tr.m_pEnt->m_takedamage == DAMAGE_YES || m_iImpacts == NUM_PENETRATIONS )
 #endif//HL2_EPISODIC
