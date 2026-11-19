@@ -183,6 +183,22 @@ def _targets_agree(r, o, oby):
     return True
 
 
+def _literals_agree(r, o):
+    """False when one of o's absolute references to an MSVC string literal points at other
+    bytes in the retail image (look-alike ConVar/ConCommand/shader-parameter initializers
+    differ only in the strings they pass)."""
+    lits, rmod = o.module.literals if o.module else None, r.module
+    if not lits or not rmod.regions:
+        return True
+    for rel in o.relocs:
+        lit = lits.get(rel.target)
+        if lit is None or rel.kind != 'abs' or rel.size != 4 or rel.offset + 4 > len(r.data):
+            continue
+        if rmod.read_data((x86.u32(r.data, rel.offset) - rel.addend) & 0xffffffff, len(lit)) != lit:
+            return False
+    return True
+
+
 def accept_misnamed(results, retail, spare, ours_funcs):
     """Pair functions the name map gave the wrong name.
 
@@ -192,8 +208,9 @@ def accept_misnamed(results, retail, spare, ours_funcs):
     matches exactly one retail function no result matches; a missing retail function passes
     when it matches exactly one of our unpaired functions (`spare`, removed from the list when
     used). The target check applies to both; look-alikes that differ only in what a relocation
-    points at are told apart by comparing the code there. Functions under MISNAMED_MIN_SIZE
-    bytes stay as they are."""
+    points at are told apart by comparing the code there, and on PE by comparing the string
+    literals they reference (the port names every MSVC dynamic initializer __GLOBAL__I_a).
+    Functions under MISNAMED_MIN_SIZE bytes stay as they are."""
     claimed = {res.retail.addr for res in results if res.status in MATCHED and res.retail}
     rpool = collections.defaultdict(list)
     for f in retail.functions:
@@ -216,7 +233,7 @@ def accept_misnamed(results, retail, spare, ours_funcs):
         return len(r.data) == len(o.data) if r.size_known else len(r.data) >= len(o.data)
 
     def same(r, o):
-        return compare.compare(r, o, True).status in MATCHED
+        return compare.compare(r, o, True).status in MATCHED and _literals_agree(r, o)
 
     for res in results:
         if res.status == compare.DIFFERS and res.ours and res.retail:
