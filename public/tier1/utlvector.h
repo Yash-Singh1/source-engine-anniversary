@@ -14,7 +14,7 @@
 #ifdef _WIN32
 #pragma once
 #endif
-#if !defined( _MSC_VER ) || !defined( BYTEMATCH_RETAIL ) // MSVC's <algorithm> includes crtdbg.h, which turns memdbgon.h off
+#if defined( POSIX ) || !defined( BYTEMATCH_RETAIL ) // see minmax.h
 #include <algorithm>
 #endif
 #include <string.h>

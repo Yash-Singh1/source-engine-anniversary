@@ -674,11 +674,7 @@ void CBaseClient::Disconnect( const char *fmt, ... )
 
 void CBaseClient::FireGameEvent( IGameEvent *event )
 {
-#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
-#line 641
-#else
 #line 644
-#endif
 	tmZoneFiltered( TELEMETRY_LEVEL0, 50, TMZF_NONE, "%s", __FUNCTION__ );
 #line 646
 
@@ -1106,11 +1102,7 @@ void CBaseClient::EndTrace( bf_write &msg )
 {
 	if ( m_iTracing == 0 )
 		return;
-#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
-#line 1031
-#else
-#line 1039
-#endif
+#line 1034
 	VPROF_BUDGET( "CBaseClient::EndTrace", VPROF_BUDGETGROUP_OTHER_NETWORKING );
 #line 1041
 
@@ -1161,11 +1153,7 @@ void CBaseClient::TraceNetworkData( bf_write &msg, char const *fmt, ... )
 {
 	if ( !IsTracing() )
 		return;
-#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
-#line 1080
-#else
-#line 1088
-#endif
+#line 1083
 	VPROF_BUDGET( "CBaseClient::TraceNetworkData", VPROF_BUDGETGROUP_OTHER_NETWORKING );
 #line 1090
 	char buf[ 64 ];
@@ -1185,11 +1173,7 @@ void CBaseClient::TraceNetworkMsg( int nBits, char const *fmt, ... )
 {
 	if ( !IsTracing() )
 		return;
-#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
-#line 1098
-#else
-#line 1106
-#endif
+#line 1101
 	VPROF_BUDGET( "CBaseClient::TraceNetworkMsg", VPROF_BUDGETGROUP_OTHER_NETWORKING );
 #line 1108
 	char buf[ 64 ];
@@ -1222,11 +1206,7 @@ void CBaseClient::SendSnapshot( CClientFrame *pFrame )
 		return;
 	}
 
-#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
-#line 1129
-#else
-#line 1137
-#endif
+#line 1132
 	VPROF_BUDGET( "SendSnapshot", VPROF_BUDGETGROUP_OTHER_NETWORKING );
 	tmZoneFiltered( TELEMETRY_LEVEL0, 50, TMZF_NONE, "%s", __FUNCTION__ );
 #line 1140
@@ -1351,11 +1331,7 @@ write_again:
 	// is this is a full entity update (no delta) ?
 	if ( !deltaFrame )
 	{
-#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
-#line 1252
-#else
-#line 1260
-#endif
+#line 1255
 		VPROF_BUDGET( "SendSnapshot Transmit Full", VPROF_BUDGETGROUP_OTHER_NETWORKING );
 
 		// transmit snapshot as reliable data chunk
@@ -1642,11 +1618,7 @@ bool CBaseClient::IsNameChangeOnCooldown( bool bShowStatusMessage /*= false*/ )
 
 void CBaseClient::OnRequestFullUpdate()
 {
-#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
-#line 1443
-#else
-#line 1442
-#endif
+#line 1446
 	VPROF_BUDGET( "CBaseClient::OnRequestFullUpdate", VPROF_BUDGETGROUP_OTHER_NETWORKING );
 #line 1444
 

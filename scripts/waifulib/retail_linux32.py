@@ -66,8 +66,8 @@ UNDEFS = ['-Usprintf', '-Ustrncpy', '-UPROTECTED_THINGS_ENABLE']
 CXX_ONLY = ['-std=gnu++0x', '-fpermissive']
 
 # Not Valve's. BYTEMATCH_RETAIL: this fork's runtime additions stay out (shared with
-# the macOS and Windows modes); BYTEMATCH_RETAIL_LINUX: Linux-retail-only source.
-RETAIL_DEFINES = ['BYTEMATCH_RETAIL', 'BYTEMATCH_RETAIL_LINUX']
+# the macOS and Windows modes).
+RETAIL_DEFINES = ['BYTEMATCH_RETAIL']
 
 # Defines from this tree's wscripts and global env that Valve's build doesn't have.
 TREE_ONLY_DEFINES = ['PLATFORM_POSIX', 'NO_MEMOVERRIDE_NEW_DELETE', 'GIT_COMMIT_HASH',
@@ -254,8 +254,8 @@ def retail_linux32_configure(conf):
 		# the 2025 SDK's source_posix_ninja.vpc sets: retail libtier0/libvstdlib import readdir64
 		# and no readdir, and Plat_IsInDebugSession calls fopen64's wrapper.
 		v.RETAIL_LINUX32_DEFINES = ['_FILE_OFFSET_BITS=64']
-		if any(a == '--build-games' or a.startswith('--build-games=') for a in sys.argv):
-			v.RETAIL_PROJECTS += GAME_MODULES
+	if o.RETAIL_LINUX32_MODULES is None and any(a == '--build-games' or a.startswith('--build-games=') for a in sys.argv):
+		v.RETAIL_PROJECTS += GAME_MODULES
 	Logs.info('retail-linux32: container %s, projects %s' % (subprocess.check_output(scout + ['--name']).decode().strip(),
 		','.join(v.RETAIL_PROJECTS)))
 	conf.add_subproject(v.RETAIL_PROJECTS)

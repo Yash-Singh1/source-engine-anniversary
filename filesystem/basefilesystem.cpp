@@ -3316,11 +3316,7 @@ FileHandle_t CBaseFileSystem::OpenEx( const char *pFileName, const char *pOption
 #endif
 #line 3315
 
-#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
-#line 3668
-#else
-#line 3315
-#endif
+#line 3671
 	VPROF_BUDGET( "CBaseFileSystem::Open", VPROF_BUDGETGROUP_OTHER_FILESYSTEM );
 #line 3317
 
@@ -3380,11 +3376,7 @@ void CBaseFileSystem::Seek( FileHandle_t file, int pos, FileSystemSeek_t whence 
 #endif
 #line 3720
 
-#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
-#line 3716
-#else
-#line 3720
-#endif
+#line 3719
 	VPROF_BUDGET( "CBaseFileSystem::Seek", VPROF_BUDGETGROUP_OTHER_FILESYSTEM );
 #line 3722
 	CFileHandle *fh = ( CFileHandle *)file;
@@ -3430,11 +3422,7 @@ unsigned int CBaseFileSystem::Size( FileHandle_t file )
 #endif
 #line 3758
 
-#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
-#line 3754
-#else
-#line 3758
-#endif
+#line 3757
 	VPROF_BUDGET( "CBaseFileSystem::Size", VPROF_BUDGETGROUP_OTHER_FILESYSTEM );
 #line 3760
 	if ( !file )
@@ -3572,11 +3560,7 @@ int CBaseFileSystem::ReadEx( void *pOutput, int destSize, int size, FileHandle_t
 #endif
 #line 3889
 
-#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
-#line 3885
-#else
-#line 3889
-#endif
+#line 3888
 	VPROF_BUDGET( "CBaseFileSystem::Read", VPROF_BUDGETGROUP_OTHER_FILESYSTEM );
 #line 3891
 	if ( !file )

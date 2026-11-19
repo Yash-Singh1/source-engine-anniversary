@@ -5732,11 +5732,7 @@ int S_StartSound( StartSoundParams_t& params )
 
 	if ( params.staticsound )
 	{
-#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
-#line 5682
-#else
-#line 5711
-#endif
+#line 5685
 		VPROF_( "StartStaticSound", 0, VPROF_BUDGETGROUP_OTHER_SOUND, false, BUDGETFLAG_OTHER );	
 		return S_StartStaticSound( params );
 	}
@@ -6600,11 +6596,7 @@ extern void DEBUG_StopSoundMeasure(int type, int samplecount );
 void S_Update_Guts( float mixAheadTime )
 {
 	VPROF( "S_Update_Guts" );
-#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
-#line 6563
-#else
-#line 6561
-#endif
+#line 6566
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__ );
 #line 6563
 

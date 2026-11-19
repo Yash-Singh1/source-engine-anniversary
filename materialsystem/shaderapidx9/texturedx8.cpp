@@ -748,12 +748,8 @@ static void BlitSurfaceBits( TextureLoadInfo_t &info, int xOffset, int yOffset, 
 #endif
 
 	{
-#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
 #line 708
 		tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "D3DLockRect" );
-#else
-		tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s - D3DLockRect", __FUNCTION__ );
-#endif
 #line 735
 
 		// lock the region (could be the full surface or less)

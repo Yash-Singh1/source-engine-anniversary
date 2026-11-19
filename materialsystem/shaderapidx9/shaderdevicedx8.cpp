@@ -2604,11 +2604,7 @@ void CShaderDeviceDx8::FreeFrameSyncObjects( void )
 		{
 			if ( m_bQueryIssued[i] )
 			{
-#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
-#line 2651
-#else
-#line 2570
-#endif
+#line 2654
 				tmZone( TELEMETRY_LEVEL1, TMZF_NONE, "D3DQueryGetData %t", tmSendCallStack( TELEMETRY_LEVEL0, 0 ) );
 #line 2572
 

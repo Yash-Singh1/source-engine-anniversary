@@ -2,29 +2,35 @@
 """winline.py FILE OURS:RETAIL[,OURS:RETAIL...] [--from N --to M] [--dry]
 winline.py --check [FILE...]
 
-Give the lines whose effective __LINE__ is OURS the number RETAIL in MSVC retail builds only.
-Each run of consecutive targets with the same offset gets, before its first line,
+Give the lines whose effective __LINE__ is OURS the number RETAIL, on every platform (Valve built
+all of them from one file; retail Windows and Linux Telemetry zones carry these numbers, macOS
+compiles Telemetry out). Each run of consecutive targets with the same offset gets, before its
+first line,
 
-    #if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
-    #line RETAIL-3
-    #else
-    #line OURS-1
-    #endif
+    #line RETAIL
 
-and after its last line an unconditional `#line` with the next line's current number, so no
-other line's number changes on any platform. --from/--to limit the physical range searched
-(an effective number can repeat after a #line reset).
+and after its last line a `#line` with the number the next line has without the first one, so
+no other line's number changes. --from/--to limit the physical range searched (an effective
+number can repeat after a #line reset).
 
-Both `#line OURS-1` and the trailing `#line` are absolute, so they go stale when lines above
-them are added or removed later (a merge). --check verifies every such block in the given
-files (default: every tracked source containing one): in the non-MSVC view the `#else` branch's
-`#line` must equal the `#if` line's own number minus one, and the trailing `#line` must equal
-the number the line after the run would have had anyway. Exits 1 on a stale block."""
+The trailing `#line` is absolute, so it goes stale when lines above it are added or removed later
+(a merge): the lines below keep their old numbers and the edit's shift is silently cancelled.
+--check verifies every such run in the given files (default: every tracked source with a #line):
+a `#line` after an ordinary line and before a Telemetry call or VPROF, followed by up to 60
+ordinary lines and then another `#line` before any conditional, is a run, and the second `#line`
+must equal the number its next line would have without the first one. Runs written by older
+versions of this script inside
+`#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )` blocks are checked as before: the `#else`
+branch's `#line` must be the `#if` line's number minus one. Exits 1 on a stale run."""
 import os, re, subprocess, sys
 
 LINE = re.compile(r'^\s*#\s*line\s+(\d+)')
+DIRECTIVE = re.compile(r'^\s*#')
 MSVC_IF = re.compile(r'^\s*#\s*if\s+defined\(\s*_MSC_VER\s*\)\s*&&\s*defined\(\s*BYTEMATCH_RETAIL\s*\)\s*$')
 COND = re.compile(r'^\s*#\s*(if|ifdef|ifndef|elif|else|endif)\b')
+# Telemetry calls and VPROFs (a Telemetry zone in Windows and Linux retail builds) carry __LINE__
+ZONE = re.compile(r'^\s*(tm[A-Z]\w*|VPROF\w*)\s*\(')
+WINDOW = 60
 
 
 def effective(lines):
@@ -54,43 +60,59 @@ def other_numbers(lines):
     return out
 
 
+def restore_after(lines, start):
+    """Index of the #line ending the run that starts at line `start`, or None."""
+    for j in range(start, min(len(lines), start + WINDOW)):
+        t = lines[j].rstrip('\r')
+        if COND.match(t):
+            return None
+        if LINE.match(t):
+            return j
+    return None
+
+
 def check(path):
     lines = open(path, newline='').read().split('\n')
     num = other_numbers(lines)
+    s = [l.rstrip('\r') for l in lines]
     bad = 0
-    for i in range(len(lines) - 5):
-        s = [l.rstrip('\r') for l in lines[i:i + 5]]
-        if not (MSVC_IF.match(s[0]) and LINE.match(s[1]) and re.match(r'^\s*#\s*else\s*$', s[2])
-                and LINE.match(s[3]) and re.match(r'^\s*#\s*endif\s*$', s[4])):
+    i = 0
+    while i < len(s) - 2:
+        # older form: an MSVC-only pair, the #else branch must keep the #if line's number
+        if MSVC_IF.match(s[i]) and i + 4 < len(s) and LINE.match(s[i + 1]) and re.match(r'^\s*#\s*else\s*$', s[i + 2]) \
+                and LINE.match(s[i + 3]) and re.match(r'^\s*#\s*endif\s*$', s[i + 4]):
+            end = restore_after(lines, i + 5)
+            if end is not None:
+                b = int(LINE.match(s[i + 3]).group(1))
+                if b != num[i] - 1:
+                    print('%s:%d: stale #line %d in the #else branch, want %d' % (path, i + 4, b, num[i] - 1))
+                    bad += 1
+                c = int(LINE.match(s[end]).group(1))
+                if c != num[end - 1] + 1:
+                    print('%s:%d: stale trailing #line %d, want %d' % (path, end + 1, c, num[end - 1] + 1))
+                    bad += 1
+            i += 5
             continue
-        # winline.py's blocks end in an unconditional restore before any other conditional;
-        # hand-written blocks without one shift the numbering on purpose and are left alone
-        end = None
-        for j in range(i + 5, min(len(lines), i + 60)):
-            t = lines[j].rstrip('\r')
-            if COND.match(t):
-                break
-            if LINE.match(t):
-                end = j
-                break
-        if end is None:
-            continue
-        b = int(LINE.match(s[3]).group(1))
-        if b != num[i] - 1:
-            print('%s:%d: stale #line %d in the #else branch, want %d' % (path, i + 4, b, num[i] - 1))
-            bad += 1
-        c = int(LINE.match(lines[end]).group(1))
-        if c != num[end - 1] + 1:
-            print('%s:%d: stale trailing #line %d, want %d' % (path, end + 1, c, num[end - 1] + 1))
-            bad += 1
+        # a run: <ordinary line> #line W <zone line> <ordinary lines> #line M
+        if LINE.match(s[i]) and i > 0 and not DIRECTIVE.match(s[i - 1]) and ZONE.match(s[i + 1]):
+            end = restore_after(lines, i + 1)
+            if end is not None and all(not DIRECTIVE.match(t) for t in s[i + 1:end]):
+                want = num[i - 1] + (end - i - 1) + 1
+                c = int(LINE.match(s[end]).group(1))
+                if c != want:
+                    print('%s:%d: stale trailing #line %d, want %d' % (path, end + 1, c, want))
+                    bad += 1
+                i = end
+                continue
+        i += 1
     return bad
 
 
 def check_main(files):
     if not files:
         top = subprocess.run(['git', 'rev-parse', '--show-toplevel'], capture_output=True, text=True).stdout.strip()
-        r = subprocess.run(['git', '-C', top, 'grep', '-l', '-E', r'^#if defined\( _MSC_VER \) && defined\( BYTEMATCH_RETAIL \)',
-                            '--', '*.cpp', '*.h', '*.c', '*.inl'], capture_output=True, text=True)
+        r = subprocess.run(['git', '-C', top, 'grep', '-l', '-E', r'^\s*#\s*line [0-9]',
+                            '--', '*.cpp', '*.h', '*.c', '*.inl', ':!devtools'], capture_output=True, text=True)
         files = [os.path.join(top, f) for f in r.stdout.split()]
     bad = sum(check(f) for f in files)
     print('%d file(s) checked, %d stale #line(s)' % (len(files), bad))
@@ -119,15 +141,11 @@ def main():
             runs[-1].append((i, e, r))
         else:
             runs.append([(i, e, r)])
-    nl = '\r\n' if lines and lines[0].endswith('\r') else '\n'
-    cr = '\r' if nl == '\r\n' else ''
+    cr = '\r' if lines and lines[0].endswith('\r') else ''
     for run in reversed(runs):
         first, last = run[0], run[-1]
-        after = eff[last[0]] + 1
-        lines[last[0] + 1:last[0] + 1] = ['#line %d%s' % (after, cr)]
-        # skipped lines count: #else, the other #line and #endif follow the first #line, #endif the second
-        lines[first[0]:first[0]] = [s + cr for s in ('#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )',
-                                                    '#line %d' % (first[2] - 3), '#else', '#line %d' % (first[1] - 1), '#endif')]
+        lines[last[0] + 1:last[0] + 1] = ['#line %d%s' % (eff[last[0]] + 1, cr)]
+        lines[first[0]:first[0]] = ['#line %d%s' % (first[2], cr)]
         print('%s: lines %d..%d (now %d..%d) -> %d..%d' % (path, first[0] + 1, last[0] + 1, first[1], last[1], first[2], last[2]))
     if '--dry' not in sys.argv:
         open(path, 'w', newline='').write('\n'.join(lines))

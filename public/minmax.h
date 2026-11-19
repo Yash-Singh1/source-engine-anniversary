@@ -25,9 +25,9 @@
 #undef fopen
 #endif
 
-// MSVC's <algorithm> includes crtdbg.h, which turns memdbgon.h's release allocator
-// override off; Valve's (SDK 2013) mathlib.h never pulled it in.
-#if !defined( _MSC_VER ) || !defined( BYTEMATCH_RETAIL )
+// libstdc++'s first header undefines min/max (see valve_minmax_on.h), so POSIX includes it first; MSVC's
+// <algorithm> includes crtdbg.h, which turns memdbgon.h's allocator override off, so Windows retail doesn't.
+#if defined( POSIX ) || !defined( BYTEMATCH_RETAIL )
 #include <algorithm>
 #endif
 

@@ -71,12 +71,12 @@ build. Without `--build-games` only the static libraries are built.
 - Telemetry on: retail imports `g_Telemetry` and has a zone at every VPROF, as
   `vprof_telemetry.h` enables for `_LINUX`. RAD's headers come from hl2_src
   (`--retail-linux32-hl2src`), copied under the build directory.
-- Mode defines (not Valve's): `BYTEMATCH_RETAIL` (shared with the macOS and
-  Windows modes) and `BYTEMATCH_RETAIL_LINUX` (Linux-retail-only source:
-  `public/vstdlib/random.h` drops `CDefaultUniformRandomStream`, whose inline
-  methods let gcc speculatively devirtualize every `random->` call;
+- Mode define (not Valve's): `BYTEMATCH_RETAIL`, shared with the macOS and
+  Windows modes. Linux showed two retail forms that hold on every platform:
+  `public/vstdlib/random.h` has no `CDefaultUniformRandomStream` (its inline
+  methods let gcc speculatively devirtualize every `random->` call) and
   `public/tier0/memalloc.h` takes SDK 2013's POSIX allocators, without the
-  fork's `MemAllocOOMError` checks).
+  fork's `MemAllocOOMError` checks.
 - Link, as `LIB_START_SHLIB`/`LIB_END_SHLIB` with `$(LINK)` = gcc-9:
   `-shared -m32 -Wl,--build-id -static-libgcc`, objects, the static libraries
   in one `--start-group`, then `libtier0.so libvstdlib.so libsteam_api.so`
