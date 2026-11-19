@@ -528,7 +528,12 @@ void CAI_NetworkManager::LoadNetworkGraph( void )
 	
 
 
+#ifdef BYTEMATCH_RETAIL
+	if ( !bHaveAIN && !filesystem->ReadFile( szNrpFilename, "GAME", buf ) )
+#else
 	if ( !bHaveAIN && !filesystem->ReadFile( szNrpFilename, "game", buf ) )
+#endif
+#line 532
 	{
 		DevWarning( 2, "Couldn't read %s!\n", szNrpFilename );
 		return;
