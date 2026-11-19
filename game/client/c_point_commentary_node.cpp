@@ -294,6 +294,16 @@ void C_PointCommentaryNode::OnDataChanged( DataUpdateType_t updateType )
 			}
 		}
 
+#ifdef HL2_ANNIVERSARY_NOV2024
+		IGameEvent *event = gameeventmanager->CreateEvent( "commentary_event" );
+		if ( event )
+		{
+			event->SetString( "speaker_name", m_iszSpeakers );
+			event->SetFloat( "duration", flDuration );
+			gameeventmanager->FireEvent( event );
+		}
+#endif
+
 		// Tell the HUD element
 		CHudCommentary *pHudCommentary = (CHudCommentary *)GET_HUDELEMENT( CHudCommentary );
 		pHudCommentary->StartCommentary( this, m_iszSpeakers, m_iNodeNumber, m_iNodeNumberMax, m_flStartTime, m_flStartTime + flDuration );
@@ -434,17 +444,27 @@ void CHudCommentary::Paint()
 
 	// Draw the progress bar
 	vgui::surface()->DrawSetColor( clr );
+#ifdef HL2_ANNIVERSARY_NOV2024
+	int nBorder = QuickPropScale( 1 );
+	for ( int i = 0; i < nBorder; i++ )
+	{
+		vgui::surface()->DrawOutlinedRect( xOffset+i, yOffset+i, xOffset+m_iBarWide-i, yOffset+m_iBarTall-i );
+	}
+	vgui::surface()->DrawSetColor( clr );
+	vgui::surface()->DrawFilledRect( xOffset+QuickPropScale( 2 ), yOffset+QuickPropScale( 2 ), xOffset+(int)(flPercentage*m_iBarWide)-QuickPropScale( 2 ), yOffset+m_iBarTall-QuickPropScale( 2 ) );
+#else
 	vgui::surface()->DrawOutlinedRect( xOffset, yOffset, xOffset+m_iBarWide, yOffset+m_iBarTall );
 	vgui::surface()->DrawSetColor( clr );
 	vgui::surface()->DrawFilledRect( xOffset+2, yOffset+2, xOffset+(int)(flPercentage*m_iBarWide)-2, yOffset+m_iBarTall-2 );
+#endif
 
 	// Draw the speaker names
 	// Get our scheme and font information
 	vgui::HScheme scheme = vgui::scheme()->GetScheme( "ClientScheme" );
-	vgui::HFont hFont = vgui::scheme()->GetIScheme(scheme)->GetFont( "CommentaryDefault" );
+	vgui::HFont hFont = vgui::scheme()->GetIScheme(scheme)->GetFont( "CommentaryDefault" NOV2024_ONLY( , true ) );
 	if ( !hFont )
 	{
-		hFont = vgui::scheme()->GetIScheme(scheme)->GetFont( "Default" );
+		hFont = vgui::scheme()->GetIScheme(scheme)->GetFont( "Default" NOV2024_ONLY( , true ) );
 	}
 	vgui::surface()->DrawSetTextFont( hFont );
 	vgui::surface()->DrawSetTextColor( clr ); 

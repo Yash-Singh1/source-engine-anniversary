@@ -43,7 +43,7 @@ public:
 
 	virtual int		CapabilitiesGet( void );
 	virtual	int		WeaponMeleeAttack1Condition( float flDot, float flDist );
-
+	NOV2024_ONLY( virtual void OnWeaponHit( void ) {} )
 protected:
 	virtual	void	ImpactEffect( trace_t &trace );
 

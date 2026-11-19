@@ -218,6 +218,12 @@ void CBounceBomb::Spawn()
 		// pretend like the player set me down.
 		m_bPlacedByPlayer = true;
 	}
+#ifdef HL2_ANNIVERSARY_NOV2024
+	else if( g_pGameRules->GetAutoAimMode() == AUTOAIM_ON_CONSOLE )
+	{
+		AddFlag( FL_AIMTARGET );
+	}
+#endif
 }
 
 //---------------------------------------------------------
@@ -1189,6 +1195,7 @@ void CBounceBomb::OnPhysGunDrop( CBasePlayer *pPhysGunUser, PhysGunDrop_t Reason
 		m_bPlacedByPlayer = true;
 		OpenHooks( true );
 		SetMineState( MINE_STATE_DEPLOY );
+		NOV2024_ONLY( RemoveFlag( FL_AIMTARGET ); )
 	}
 	else if ( Reason == LAUNCHED_BY_CANNON )
 	{
@@ -1267,6 +1274,7 @@ void CBounceBomb::OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t re
 		SetTouch( NULL );
 		SetThink( &CBounceBomb::SettleThink );
 		SetNextThink( gpGlobals->curtime + 0.1);
+		NOV2024_ONLY( RemoveFlag( FL_AIMTARGET ); )
 
 		// Since being punted causes the mine to flip, sometimes it 'catches an edge'
 		// and ends up touching the ground from whence it came, exploding instantly. 

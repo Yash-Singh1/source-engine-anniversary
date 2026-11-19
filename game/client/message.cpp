@@ -612,7 +612,7 @@ void CHudMessage::Paint()
 	int i, drawn;
 	client_textmessage_t *pMessage;
 	float endTime;
-
+	NOV2024_ONLY( SetBounds( 0, 0, ScreenWidth(), ScreenHeight() ); )
 	drawn = 0;
 
 	if ( m_gameTitleTime > 0 )
@@ -987,7 +987,12 @@ void CHudMessage::AddChar( int r, int g, int b, int a, wchar_t ch )
 //-----------------------------------------------------------------------------
 void CHudMessage::GetTextExtents( int *wide, int *tall, const char *string )
 {
+#ifdef BYTEMATCH_RETAIL
+	*wide = g_pMatSystemSurface->DrawTextLen( m_hFont, (char *)string );
+#else
 	*wide = g_pMatSystemSurface->DrawTextLen( m_hFont, "%s", (char *)string );
+#endif
+#line 991
 	*tall = vgui::surface()->GetFontTall( m_hFont );
 }
 

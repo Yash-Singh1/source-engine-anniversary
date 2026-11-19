@@ -1921,7 +1921,7 @@ void CSceneEntity::DispatchEndSequence( CChoreoScene *scene, CBaseFlex *actor, C
 //-----------------------------------------------------------------------------
 void CSceneEntity::DispatchStartPermitResponses( CChoreoScene *scene, CBaseFlex *actor, CChoreoEvent *event )
 {
-	actor->SetPermitResponse( gpGlobals->curtime + event->GetDuration() );
+	NOV2024_ONLY( if ( actor ) ) actor->SetPermitResponse( gpGlobals->curtime + event->GetDuration() );
 }
 
 //-----------------------------------------------------------------------------
@@ -1932,7 +1932,7 @@ void CSceneEntity::DispatchStartPermitResponses( CChoreoScene *scene, CBaseFlex 
 //-----------------------------------------------------------------------------
 void CSceneEntity::DispatchEndPermitResponses( CChoreoScene *scene, CBaseFlex *actor, CChoreoEvent *event )
 {
-	actor->SetPermitResponse( 0 );
+	NOV2024_ONLY( if ( actor ) ) actor->SetPermitResponse( 0 );
 }
 
 //-----------------------------------------------------------------------------
@@ -2527,6 +2527,15 @@ void CSceneEntity::StartPlayback( void )
 	{
 		return;
 	}
+
+#ifdef HL2_ANNIVERSARY_NOV2024
+	IGameEvent *event = gameeventmanager->CreateEvent( "choreo_scene" );
+	if ( event )
+	{
+		event->SetString( "scene", STRING( m_iszSceneFile ) );
+		gameeventmanager->FireEvent( event );
+	}
+#endif
 
 	m_bCompletedEarly = false;
 	m_bWaitingForActor	= false;

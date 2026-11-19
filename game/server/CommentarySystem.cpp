@@ -33,6 +33,9 @@ static const char *s_pCommentaryUpdateViewThink = "CommentaryUpdateViewThink";
 
 extern ConVar commentary;
 ConVar commentary_available("commentary_available", "0", FCVAR_NONE, "Automatically set by the game when a commentary file is available for the current map." );
+#ifdef HL2_ANNIVERSARY_NOV2024
+ConVar commentary_enable_teleport( "commentary_enable_teleport", "0", FCVAR_NONE, "Allow teleporting to the next node by pressing use + alt fire" );
+#endif
 
 enum teleport_stages_t
 {
@@ -96,8 +99,14 @@ public:
 	void AbortPlaying( void );
 	void TeleportTo( CBasePlayer *pPlayer );
 	bool CanTeleportTo( void );
+#ifdef HL2_ANNIVERSARY_NOV2024
+	int  ObjectCaps( void ) { return BaseClass::ObjectCaps() | FCAP_NOTIFY_ON_TRANSITION; }
+#endif
 
 	// Inputs
+#ifdef HL2_ANNIVERSARY_NOV2024
+	void InputInsideTransition( inputdata_t &inputdata );
+#endif
 	void InputStartCommentary( inputdata_t &inputdata );
 	void InputStartUnstoppableCommentary( inputdata_t &inputdata );
 	void InputEnable( inputdata_t &inputdata );
@@ -167,6 +176,9 @@ BEGIN_DATADESC( CPointCommentaryNode )
 	DEFINE_OUTPUT( m_pOnCommentaryStopped, "OnCommentaryStopped" ),
 
 	// Inputs
+#ifdef HL2_ANNIVERSARY_NOV2024
+	DEFINE_INPUTFUNC( FIELD_VOID, "InsideTransition", InputInsideTransition ),
+#endif
 	DEFINE_INPUTFUNC( FIELD_VOID, "StartCommentary", InputStartCommentary ),
 	DEFINE_INPUTFUNC( FIELD_VOID, "StartUnstoppableCommentary", InputStartUnstoppableCommentary ),
 	DEFINE_INPUTFUNC( FIELD_VOID, "Enable", InputEnable ),
@@ -420,7 +432,7 @@ public:
 			// Detect press events to start/stop commentary nodes
 			if (buttonsPressed & COMMENTARY_BUTTONS) 
 			{
-				if ( buttonsPressed & IN_ATTACK2 )
+				if ( NOV2024_ONLY( commentary_enable_teleport.GetBool() && ) ( buttonsPressed & IN_ATTACK2 ) )
 				{
 					if ( !(GetActiveNode() && GetActiveNode()->CannotBeStopped()) )
 					{
@@ -1384,6 +1396,16 @@ void CPointCommentaryNode::CleanupPostCommentary( void )
 
 	g_CommentarySystem.SetActiveNode( NULL );
 }
+
+#ifdef HL2_ANNIVERSARY_NOV2024
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CPointCommentaryNode::InputInsideTransition( inputdata_t &inputdata )
+{
+	UTIL_Remove( this );
+}
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 
