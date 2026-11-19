@@ -19,6 +19,7 @@
     {"target": "vgui2", "retail": "bin/vgui2.dylib", "size": 331636, "sha256": "e84260d840972b4f7629aee899fa365fc1b71c9c821030efd212dceace09caf5"},
     {"target": "ServerBrowser", "retail": "bin/ServerBrowser.dylib", "size": 2142380, "sha256": "7b71cc2112f034d64a3078262739c02fe5e441bba88284c7c892595fedcdf77b"},
     {"target": "shaderapiempty", "retail": "bin/shaderapiempty.dylib", "size": 143668, "sha256": "5631f4854eda050739cd473747225acaa2884d43544330e929f8a065c7b85155"},
-    {"target": "chromehtml", "retail": "bin/chromehtml.dylib", "size": 2021676, "sha256": "eb90dbb2aca7c88a368a69699e01b77d92647fdc7c2edd5806a76208946503aa"}
+    {"target": "chromehtml", "retail": "bin/chromehtml.dylib", "size": 2021676, "sha256": "eb90dbb2aca7c88a368a69699e01b77d92647fdc7c2edd5806a76208946503aa"},
+    {"target": "replay", "retail": "bin/replay.dylib", "size": 852508, "sha256": "2cf96c1541eb7a23b9ae488a86d7877edf560ca6cab50f63b635b19f6f6afc7e"}
   ]
 }
