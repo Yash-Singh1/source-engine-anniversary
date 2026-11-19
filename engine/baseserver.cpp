@@ -1117,7 +1117,10 @@ void CBaseServer::CalculateCPUUsage( void )
 		return;
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__ );
+#endif
+#line 1105
 
 #ifdef BYTEMATCH_RETAIL
 	if ( m_fStartTime == 0 )

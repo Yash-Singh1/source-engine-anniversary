@@ -7283,7 +7283,10 @@ ShaderAPITextureHandle_t CShaderAPIDx8::CreateTextureHandle( void )
 
 void CShaderAPIDx8::CreateTextureHandles( ShaderAPITextureHandle_t *handles, int count )
 {
+#ifndef BYTEMATCH_RETAIL
 	TM_ZONE_DEFAULT( TELEMETRY_LEVEL0 );
+#endif
+#line 7272
 
 	if ( count <= 0 )
 		return;
@@ -7294,7 +7297,10 @@ void CShaderAPIDx8::CreateTextureHandles( ShaderAPITextureHandle_t *handles, int
 	ShaderAPITextureHandle_t hTexture;
 
 	{
+#ifndef BYTEMATCH_RETAIL
 		tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s - Search", __FUNCTION__ );
+#endif
+#line 7283
 
 		for ( hTexture = m_Textures.Head(); hTexture != m_Textures.InvalidIndex(); hTexture = m_Textures.Next( hTexture ) )
 		{
@@ -7307,7 +7313,10 @@ void CShaderAPIDx8::CreateTextureHandles( ShaderAPITextureHandle_t *handles, int
 		}
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s - Add", __FUNCTION__ );
+#endif
+#line 7296
 	while ( idxCreating < count )
 		handles[ idxCreating ++ ] = m_Textures.AddToTail();
 }
@@ -7345,11 +7354,17 @@ void CShaderAPIDx8::CreateTextures(
 	const char *pDebugName,
 	const char *pTextureGroupName )
 {
+#ifndef BYTEMATCH_RETAIL
 	TM_ZONE_DEFAULT( TELEMETRY_LEVEL0 );
+#endif
+#line 7334
 
 	LOCK_SHADERAPI();
 
+#ifndef BYTEMATCH_RETAIL
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s - PostLock", __FUNCTION__ );
+#endif
+#line 7338
 
 	Assert( this == g_pShaderAPI );
 
@@ -7407,7 +7422,10 @@ void CShaderAPIDx8::CreateTextures(
 	usSetFlags |= ( creationFlags & TEXTURE_CREATE_CANCONVERTFORMAT ) ? Texture_t::CAN_CONVERT_FORMAT : 0;
 #endif
 
+#ifndef BYTEMATCH_RETAIL
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s - CreateFrames", __FUNCTION__ );
+#endif
+#line 7391
 
 	for ( int idxFrame = 0; idxFrame < count; ++ idxFrame )
 	{
@@ -7443,7 +7461,10 @@ void CShaderAPIDx8::CreateTextures(
 		// Set the initial texture state
 		if ( numCopies <= 1 )
 		{
+#ifndef BYTEMATCH_RETAIL
 			tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s - CreateD3DTexture", __FUNCTION__ );
+#endif
+#line 7427
 
 			pTexture->m_NumCopies = 1;
 			pD3DTex = CreateD3DTexture( width, height, depth, dstImageFormat, numMipLevels, creationFlags, (char*)pDebugName );
@@ -7451,7 +7472,10 @@ void CShaderAPIDx8::CreateTextures(
 		}
 		else
 		{
+#ifndef BYTEMATCH_RETAIL
 			tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s - CreateD3DTexture", __FUNCTION__ );
+#endif
+#line 7435
 
 			pTexture->m_NumCopies = numCopies;
 			{
@@ -8250,7 +8274,10 @@ void CShaderAPIDx8::AdvanceCurrentCopy( ShaderAPITextureHandle_t hTexture )
 bool CShaderAPIDx8::TexLock( int level, int cubeFaceID, int xOffset, int yOffset, 
 								int width, int height, CPixelWriter& writer )
 {
+#ifndef BYTEMATCH_RETAIL
 	tmZone( TELEMETRY_LEVEL2, TMZF_NONE, "%s", __FUNCTION__ );
+#endif
+#line 8234
 
 	LOCK_SHADERAPI();
 
@@ -8300,7 +8327,10 @@ bool CShaderAPIDx8::TexLock( int level, int cubeFaceID, int xOffset, int yOffset
 
 void CShaderAPIDx8::TexUnlock( )
 {
+#ifndef BYTEMATCH_RETAIL
 	tmZone( TELEMETRY_LEVEL2, TMZF_NONE, "%s", __FUNCTION__ );
+#endif
+#line 8284
 
 	LOCK_SHADERAPI();
 	if ( m_ModifyTextureLockedLevel >= 0 )
