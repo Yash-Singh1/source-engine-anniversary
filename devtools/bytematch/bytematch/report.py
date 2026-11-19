@@ -9,6 +9,7 @@ import sys
 
 from . import compare, x86
 from .compare import DIFFERS, EXACT, EXTRA, MASKED, MISSING
+from .model import Function
 from .winmap import EQUIV, FOLDED
 
 MATCHED = (EXACT, MASKED)
@@ -200,16 +201,22 @@ def _targets_agree(r, o, oby):
     return True
 
 
-def _target_code_agrees(r, o, k, of):
-    """The retail call/jump at offset k enters a function that matches our function `of`."""
+def _target_code_agrees(r, o, k, of, unnamed=False):
+    """The retail call/jump at offset k enters a function that matches our function `of`.
+    `unnamed`: a target the name map has no function for (a small destructor) passes when
+    the retail bytes there, up to padding, match `of`."""
     if of is None or of is o or k < 1 or k + 4 > len(r.data) or r.data[k - 1] not in (0xe8, 0xe9):
         return False
     va = (r.addr + k + 4 + x86.s32(r.data, k)) & 0xffffffff
     rf = r.module.function_at(va)
+    if unnamed and (rf is None or rf.addr != va) and of.data:
+        body = r.module.read(va, len(of.data) + 1)
+        if len(body) == len(of.data) + 1 and body[-1] in (0xcc, 0x90):
+            rf = Function(name=f'sub_{va:x}', key=f'sub_{va:x}', addr=va, data=body[:-1], module=r.module)
     return rf is not None and rf.addr == va and compare.compare(rf, of, False).status in MATCHED
 
 
-def _targets_verified(r, o, oby):
+def _targets_verified(r, o, oby, unnamed=False):
     """Every call/jump of o leaving it is shown to enter the same function in retail: the
     retail name at the target is ours (or folded with it), or the target is a function of
     ours that matches the retail function there. Look-alikes paired without trusting names
@@ -226,7 +233,7 @@ def _targets_verified(r, o, oby):
         mine = {rel.target, EQUIV.get(rel.target)} | FOLDED.get(rel.target, set())
         if names & mine:
             continue
-        if not _target_code_agrees(r, o, k, oby.get(rel.target)):
+        if not _target_code_agrees(r, o, k, oby.get(rel.target), unnamed):
             return False
     return True
 
@@ -331,20 +338,17 @@ def accept_misnamed(results, retail, spare, ours_funcs):
         """`by_code`: targets are checked by the code they point at, not by name. `second`:
         a tie still open after that goes to our functions from the map's object, but only
         among candidates whose every target is verified (look-alike atexit stubs differ in
-        nothing else)."""
+        nothing else), and failing that, verified by the retail bytes at targets the map
+        doesn't name."""
         if len(r.data) < MISNAMED_MIN_SIZE or not _head(r):
             return None
         free = lambda o: id(o) not in used and fits(r, o)
-        if by_code:
-            o = _unique_match(opool, _head(r), lambda o: free(o) and same_by_code(r, o), lambda o: _targets_agree(r, o, oby))
+        match = (lambda o: same_by_code(r, o)) if by_code else (lambda o: same(r, o))
+        o = _unique_match(opool, _head(r), lambda o: free(o) and match(o), lambda o: _targets_agree(r, o, oby))
+        for unnamed in (False, True):
             if o is None and second:
-                o = _unique_match(opool, _head(r), lambda o: free(o) and same_by_code(r, o)
-                                  and _targets_verified(r, o, oby), lambda o: True, r.obj)
-            return o
-        o = _unique_match(opool, _head(r), lambda o: free(o) and same(r, o), lambda o: _targets_agree(r, o, oby))
-        if o is None and second:
-            o = _unique_match(opool, _head(r), lambda o: free(o) and same(r, o) and _targets_verified(r, o, oby),
-                              lambda o: True, r.obj)
+                o = _unique_match(opool, _head(r), lambda o: free(o) and match(o) and _targets_verified(r, o, oby, unnamed),
+                                  lambda o: True, r.obj)
         return o
 
     # second pass, on what the first leaves: a differing retail function that is one of our
