@@ -25,14 +25,11 @@
 #include <ivp_cache_ledge_point.hxx>
 #include <ivp_compact_ledge_solver.hxx>
 #ifdef BYTEMATCH_RETAIL
-#if defined( _MSC_VER )
 #define Error tier0_Error	// ivu_types.hxx declares Error without tier0's dllimport
-#endif
 #include "tier1/fmtstr.h"
-#if defined( _MSC_VER )
 #undef Error
 #endif
-#endif
+#line 36
 
 
 // for english speakers:

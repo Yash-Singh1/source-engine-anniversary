@@ -75,8 +75,8 @@ typedef unsigned int 	hk_size_t;
 
 #ifdef _LINUX
 #define HK_BREAK raise(SIGINT)
-#elif defined(BYTEMATCH_RETAIL) && !defined(_MSC_VER)
-#define HK_BREAK (*((volatile int *)0)) = 0	// kept by clang, as in retail
+#elif defined(BYTEMATCH_RETAIL)
+#define HK_BREAK (*((volatile int *)0)) = 0
 #else
 #define HK_BREAK (*((int *)0)) = 0
 #endif

@@ -3,10 +3,8 @@
 // IVP_EXPORT_PUBLIC
 #ifndef _IVP_CORE_INCLUDED
 #define _IVP_CORE_INCLUDED
-#if defined( _MSC_VER ) && defined( BYTEMATCH_RETAIL )
-#pragma pack(push, 4)	// retail Windows: doubles and base-class tails aligned to 4, as on OS X i386
-#elif defined( BYTEMATCH_RETAIL )
-#pragma pack(push, 2)	// retail OS X: cores are 2-byte aligned like IVP_Real_Object (same offsets)
+#ifdef BYTEMATCH_RETAIL
+#pragma pack(push, 2)	// retail cores are 2-byte aligned (the offsets are the unpacked ones on every compiler)
 #endif
 #line 6
 
@@ -94,8 +92,7 @@ public:
      *  Note:		For memory reasons, the flags will be combined to a bit-area soon.
      *			So use the corresponding functions to read/set them.
      ********************************************************************************/
-#ifdef BYTEMATCH_RETAIL
-#if defined( _MSC_VER )	// retail Windows keeps the 16 flag bits and the short in 4 bytes: 16-bit storage units
+#ifdef BYTEMATCH_RETAIL	// retail has the 16 flag bits and the short in 4 bytes, which MSVC needs 16-bit storage units for
     unsigned short 		fast_piling_allowed_flag:1;
     unsigned short		physical_unmoveable:1;	// never any movement
     unsigned short            is_in_wakeup_vec:1;
@@ -104,16 +101,6 @@ public:
     unsigned short            temporarily_unmovable:3;
     unsigned short	movement_state:8;		// Movement state
     short               impacts_since_last_PSI;
-#else
-    IVP_BOOL 		fast_piling_allowed_flag:1;
-    IVP_BOOL		physical_unmoveable:1;	// never any movement
-    IVP_BOOL            is_in_wakeup_vec:1;
-    IVP_BOOL		rot_inertias_are_equal:1;
-	IVP_BOOL		pinned:1;
-    IVP_BOOL            temporarily_unmovable:3;
-    IVP_Movement_Type	movement_state:8;		// Movement state
-    short               impacts_since_last_PSI;
-#endif
 #line 100
 #else
     IVP_BOOL 		fast_piling_allowed_flag:2;
