@@ -109,6 +109,8 @@ def main():
     ap.add_argument("--game", action="append", default=[], metavar="GAME=DIR",
                     help="game build output holding server.dylib and client.dylib (repeatable)")
     ap.add_argument("--diff-lines", type=int, help="passed to bytematch report (per-module output only)")
+    ap.add_argument("--data-check", action="store_true",
+                    help="passed to bytematch report: masked data references must resolve to the same data")
     a = ap.parse_args()
     if not os.path.exists(a.bytematch):
         sys.exit(f"matcher not found at {a.bytematch}; pass --bytematch")
@@ -122,6 +124,8 @@ def main():
         cmd = [a.bytematch, "report", "--retail", retail, "--ours", ours, "--out", out]
         if a.diff_lines:
             cmd += ["--diff-lines", str(a.diff_lines)]
+        if a.data_check:
+            cmd.append("--data-check")
         r = subprocess.run(cmd, capture_output=True, text=True)
         row = {"kind": kind, "module": key, "name": name, "retail": os.path.relpath(retail, DEPOTS),
                "ours": os.path.relpath(ours, a.build) if kind != "game" else ours}

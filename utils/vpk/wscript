@@ -22,8 +22,10 @@ def build(bld):
 
 	# Retail's packtest (asserts on) inlines the Source SDK 2013 versions of these
 	# tier1 containers: their Assert line numbers and SetSize/copy code.
+	cxxflags = []
 	if bld.env.RETAIL_OSX32:
 		includes = ['sdk2013', 'sdk2013/tier1'] + includes
+		cxxflags = bld.retail_macro_prefix_map('sdk2013/tier1', 'public/tier1')
 
 	bld(
 		source   = ['packtest.cpp'],
@@ -31,6 +33,7 @@ def build(bld):
 		name     = PROJECT_NAME,
 		features = 'c cxx cxxprogram',
 		includes = includes,
+		cxxflags = cxxflags,
 		use      = ['tier0', 'tier1', 'tier2', 'mathlib', 'vstdlib', 'vpklib', 'CRYPTOPP', 'ICONV'],
 		retail_module = 'bin/vpk_osx32',
 		install_path = bld.env.BINDIR,
