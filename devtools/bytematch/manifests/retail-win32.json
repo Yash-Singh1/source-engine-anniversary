@@ -6133,7 +6133,7 @@
    ]
   },
   "client_hl2": {
-   "vpc": "game/client/client_hl2.vpc",
+   "vpc": "game/client/client_episodic.vpc",
    "type": "dll",
    "output": "client",
    "retail": "hl2/bin/client.dll",
@@ -6168,6 +6168,7 @@
     "_snprintf=use_Q_snprintf_instead",
     "fopen=dont_use_fopen",
     "HL2_CLIENT_DLL",
+    "HL2_EPISODIC",
     "_WINDLL",
     "_USING_V110_SDK71_",
     "_MBCS",
@@ -6178,12 +6179,13 @@
     "game/client/hl2",
     "game/client/hl2/elements",
     "game/shared/hl2",
+    "game/shared/episodic",
+    "public",
     "game/client",
     "common",
-    "public",
     "public/tier0",
     "public/tier1",
-    "game/client/generated_proto_hl2",
+    "game/client/generated_proto_episodic",
     "thirdparty/protobuf-2.6.1/src",
     "vgui2/include",
     "vgui2/controls",
@@ -7995,7 +7997,17 @@
      "pch": "use"
     },
     {
-     "path": "game/shared/hl2/achievements_hl2.cpp",
+     "path": "game/shared/episodic/achievements_ep1.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "game/shared/episodic/achievements_ep2.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "game/shared/episodic/achievements_epx.cpp",
      "lang": "c++",
      "pch": "use"
     },
@@ -8080,6 +8092,11 @@
      "pch": "use"
     },
     {
+     "path": "game/client/episodic/c_npc_advisor.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
      "path": "game/client/hl2/c_npc_antlionguard.cpp",
      "lang": "c++",
      "pch": "use"
@@ -8095,6 +8112,11 @@
      "pch": "use"
     },
     {
+     "path": "game/client/episodic/c_npc_puppet.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
      "path": "game/client/hl2/c_npc_rollermine.cpp",
      "lang": "c++",
      "pch": "use"
@@ -8106,6 +8128,11 @@
     },
     {
      "path": "game/client/hl2/c_prop_combine_ball.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "game/client/episodic/c_prop_scalable.cpp",
      "lang": "c++",
      "pch": "use"
     },
@@ -8155,6 +8182,11 @@
      "pch": "use"
     },
     {
+     "path": "game/client/episodic/c_vehicle_jeep_episodic.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
      "path": "game/client/hl2/c_vehicle_prisoner_pod.cpp",
      "lang": "c++",
      "pch": "use"
@@ -8171,6 +8203,11 @@
     },
     {
      "path": "game/client/hl2/c_weapon_crossbow.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "game/client/episodic/c_weapon_hopwire.cpp",
      "lang": "c++",
      "pch": "use"
     },
@@ -8196,6 +8233,16 @@
     },
     {
      "path": "game/shared/hl2/env_headcrabcanister_shared.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "game/client/episodic/episodic_screenspaceeffects.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "game/client/episodic/flesh_internal_material_proxy.cpp",
      "lang": "c++",
      "pch": "use"
     },
@@ -8285,6 +8332,11 @@
      "pch": "use"
     },
     {
+     "path": "game/client/hl2/hud_locator.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
      "path": "game/client/hl2/hud_poisondamageindicator.cpp",
      "lang": "c++",
      "pch": "use"
@@ -8296,6 +8348,11 @@
     },
     {
      "path": "game/client/hl2/hud_quickinfo.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "game/client/hl2/hud_radar.cpp",
      "lang": "c++",
      "pch": "use"
     },
@@ -8330,6 +8387,11 @@
      "pch": "use"
     },
     {
+     "path": "game/shared/hl2/survival_gamerules.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
      "path": "game/client/hl2/vgui_rootpanel_hl2.cpp",
      "lang": "c++",
      "pch": "use"
@@ -8338,6 +8400,11 @@
      "path": "game/client/stdafx.cpp",
      "lang": "c++",
      "pch": "create"
+    },
+    {
+     "lang": "c++",
+     "pch": "use",
+     "path": "game/client/steamshare.cpp"
     },
     {
      "path": "game/client/sixense/in_sixense.cpp",
@@ -8754,9 +8821,6 @@
      "prebuilt": "lib/public/libz.lib"
     },
     {
-     "prebuilt": "thirdparty/protobuf-2.6.1/bin/win32/2013/staticcrt/release/libprotobuf.lib"
-    },
-    {
      "project": "jpeglib",
      "path": "lib/common/libjpeg.lib"
     },
@@ -8799,7 +8863,7 @@
    ]
   },
   "server_hl2": {
-   "vpc": "game/server/server_hl2.vpc",
+   "vpc": "game/server/server_episodic.vpc",
    "type": "dll",
    "output": "server",
    "retail": "hl2/bin/server.dll",
@@ -8834,6 +8898,7 @@
     "_snprintf=use_Q_snprintf_instead",
     "fopen=dont_use_fopen",
     "HL2_DLL",
+    "HL2_EPISODIC",
     "USES_SAVERESTORE",
     "_WINDLL",
     "_USING_V110_SDK71_",
@@ -8844,7 +8909,7 @@
     "public",
     "public/tier0",
     "public/tier1",
-    "game/server/generated_proto_hl2",
+    "game/server/generated_proto_episodic",
     "thirdparty/protobuf-2.6.1/src",
     "game/server",
     "game/shared",
@@ -8852,7 +8917,9 @@
     "game/shared/econ",
     "game/server/NextBot",
     "game/shared/hl2",
-    "game/server/hl2"
+    "game/shared/episodic",
+    "game/server/hl2",
+    "game/server/episodic"
    ],
    "cl": [
     "/O2",
@@ -9716,11 +9783,6 @@
     },
     {
      "path": "game/server/func_lod.cpp",
-     "lang": "c++",
-     "pch": "use"
-    },
-    {
-     "path": "game/server/hl2/Func_Monitor.cpp",
      "lang": "c++",
      "pch": "use"
     },
@@ -10703,7 +10765,17 @@
      "pch": "use"
     },
     {
-     "path": "game/shared/hl2/achievements_hl2.cpp",
+     "path": "game/shared/episodic/achievements_ep1.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "game/shared/episodic/achievements_ep2.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "game/shared/episodic/achievements_epx.cpp",
      "lang": "c++",
      "pch": "use"
     },
@@ -10714,6 +10786,11 @@
     },
     {
      "path": "game/server/hl2/ai_behavior_actbusy.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "game/server/episodic/ai_behavior_alyx_injured.cpp",
      "lang": "c++",
      "pch": "use"
     },
@@ -10729,6 +10806,21 @@
     },
     {
      "path": "game/server/hl2/ai_behavior_operator.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "game/server/ai_behavior_passenger.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "game/server/episodic/ai_behavior_passenger_companion.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "game/server/episodic/ai_behavior_passenger_zombie.cpp",
      "lang": "c++",
      "pch": "use"
     },
@@ -10823,6 +10915,24 @@
      "pch": "use"
     },
     {
+     "path": "game/server/episodic/ep1_gamestats.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "game/server/episodic/ep2_gamestats.cpp",
+     "lang": "c++"
+    },
+    {
+     "path": "game/server/hl2/func_bulletshield.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "game/server/hl2/Func_Monitor.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
      "path": "game/server/hl2/func_recharge.cpp",
      "lang": "c++",
      "pch": "use"
@@ -10848,6 +10958,11 @@
      "pch": "use"
     },
     {
+     "path": "game/server/hl2/grenade_spit.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
      "path": "game/server/hl2/hl2_ai_network.cpp",
      "lang": "c++",
      "pch": "use"
@@ -10864,11 +10979,6 @@
     },
     {
      "path": "game/shared/hl2/hl2_gamerules.cpp",
-     "lang": "c++",
-     "pch": "use"
-    },
-    {
-     "path": "game/server/hl2/hl2_gamestats.cpp",
      "lang": "c++",
      "pch": "use"
     },
@@ -10953,12 +11063,22 @@
      "pch": "use"
     },
     {
-     "path": "game/server/hl2/npc_alyx.cpp",
+     "path": "game/server/episodic/npc_advisor.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "game/server/hl2/npc_alyx_episodic.cpp",
      "lang": "c++",
      "pch": "use"
     },
     {
      "path": "game/server/hl2/npc_antlion.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "game/server/hl2/npc_antliongrub.cpp",
      "lang": "c++",
      "pch": "use"
     },
@@ -10998,11 +11118,6 @@
      "pch": "use"
     },
     {
-     "path": "game/server/hl2/npc_blob.cpp",
-     "lang": "c++",
-     "pch": "use"
-    },
-    {
      "path": "game/server/hl2/npc_breen.cpp",
      "lang": "c++",
      "pch": "use"
@@ -11019,6 +11134,11 @@
     },
     {
      "path": "game/server/hl2/npc_combine.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "game/server/episodic/npc_combine_cannon.cpp",
      "lang": "c++",
      "pch": "use"
     },
@@ -11088,6 +11208,11 @@
      "pch": "use"
     },
     {
+     "path": "game/server/episodic/npc_hunter.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
      "path": "game/server/hl2/npc_ichthyosaur.cpp",
      "lang": "c++",
      "pch": "use"
@@ -11099,6 +11224,11 @@
     },
     {
      "path": "game/server/hl2/npc_launcher.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "game/server/episodic/npc_magnusson.cpp",
      "lang": "c++",
      "pch": "use"
     },
@@ -11129,6 +11259,11 @@
     },
     {
      "path": "game/server/hl2/npc_PoisonZombie.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "game/server/episodic/npc_puppet.cpp",
      "lang": "c++",
      "pch": "use"
     },
@@ -11183,12 +11318,22 @@
      "pch": "use"
     },
     {
+     "path": "game/server/hl2/npc_zombine.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
      "path": "game/server/hl2/point_apc_controller.cpp",
      "lang": "c++",
      "pch": "use"
     },
     {
      "path": "game/server/hl2/prop_combine_ball.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "game/server/episodic/prop_scalable.cpp",
      "lang": "c++",
      "pch": "use"
     },
@@ -11234,6 +11379,11 @@
     },
     {
      "path": "game/server/hl2/vehicle_jeep.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "game/server/episodic/vehicle_jeep_episodic.cpp",
      "lang": "c++",
      "pch": "use"
     },
@@ -11319,6 +11469,11 @@
     },
     {
      "path": "game/server/hl2/weapon_smg1.cpp",
+     "lang": "c++",
+     "pch": "use"
+    },
+    {
+     "path": "game/server/episodic/weapon_striderbuster.cpp",
      "lang": "c++",
      "pch": "use"
     },
@@ -13991,6 +14146,11 @@
      "path": "game/client/stdafx.cpp",
      "lang": "c++",
      "pch": "create"
+    },
+    {
+     "lang": "c++",
+     "pch": "use",
+     "path": "game/client/steamshare.cpp"
     },
     {
      "path": "game/client/sixense/in_sixense.cpp",

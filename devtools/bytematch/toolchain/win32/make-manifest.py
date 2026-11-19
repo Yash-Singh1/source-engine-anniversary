@@ -53,8 +53,9 @@ DEFAULT_MODULES = {
 # theirs by game conditional; vgui2's project is called vgui_dll).
 VPC_FILES = {
     "vgui2": "vgui2/src/vgui_dll.vpc",
-    "client_hl2": "game/client/client_hl2.vpc",
-    "server_hl2": "game/server/server_hl2.vpc",
+    # retail hl2 is the episodic build (same objects and code; --retail-osx32 builds it so too)
+    "client_hl2": "game/client/client_episodic.vpc",
+    "server_hl2": "game/server/server_episodic.vpc",
     "client_episodic": "game/client/client_episodic.vpc",
     "server_episodic": "game/server/server_episodic.vpc",
 }
@@ -116,7 +117,8 @@ FORK_SOURCES = {"engine": ["engine/masterserver.cpp"]}
 RETAIL_SOURCES = {"GameUI": ["gameui/OptionsSubGamepad.cpp"],
                   # retail replay.dll and engine.dll have their strings too
                   "replay": ["replay/sv_ftp.cpp"], "engine": ["engine/workshop.cpp", "engine/mm_events.cpp", "common/imageutils.cpp"],
-                  "client_hl2": ["common/imageutils.cpp"], "client_episodic": ["common/imageutils.cpp"]}
+                  "client_hl2": ["common/imageutils.cpp", "game/client/steamshare.cpp"],
+                  "client_episodic": ["common/imageutils.cpp", "game/client/steamshare.cpp"]}
 
 # Libraries retail links beyond the 2018 VPCs: retail macOS stdshader_dx9 has
 # libtier2.a(tier2.o), which defines the g_pMaterialSystem CShaderDLL::Connect sets.
@@ -355,6 +357,8 @@ class Module:
                     if os.path.dirname(e["path"]) == d and os.path.basename(e["path"]).lower() < n.lower()]
             i = max(prev)[1] if prev else len(out) - 1
             ent = dict((k, v) for k, v in out[i].items() if k not in ("path", "valve_path", "missing"))
+            if ent.get("pch") == "create":
+                ent["pch"] = "use"
             ent["path"] = path
             out.insert(i + 1, ent)
         for path in FORK_SOURCES.get(self.name, []):
