@@ -55,11 +55,11 @@ private:
 	CNetworkVar( float, m_flFogMaxDensity );
 	CNetworkVar( bool, m_bFogRadial );
 	CNetworkVar( bool, m_bActive );
-	CNetworkVar( bool, m_bUseScreenAspectRatio );
 #ifdef HL2_ANNIVERSARY_NOV2024
 	CNetworkVar( bool, m_bUseHDCamera );
 #endif
-#line 57
+#line 56
+	CNetworkVar( bool, m_bUseScreenAspectRatio );
 
 	// Allows the mapmaker to control whether a camera is active or not
 	bool	m_bIsOn;
