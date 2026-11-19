@@ -139,7 +139,12 @@ inline const char* CUtlSymbolTable::StringFromIndex( const CStringPoolIndex &ind
 
 
 // Search string for CLess, per thread so that tables can be searched concurrently.
+#ifdef HL2_LOSTCOAST
+#define g_pSymbolTableUserSearchString pTable->m_pUserSearchString
+#else
 CThreadLocalPtr<char> g_pSymbolTableUserSearchString;
+#endif
+#line 143
 
 bool CUtlSymbolTable::CLess::operator()( const CStringPoolIndex &i1, const CStringPoolIndex &i2 ) const
 {
@@ -187,13 +192,21 @@ CUtlSymbol CUtlSymbolTable::Find( const char* pString ) const
 		return CUtlSymbol();
 	
 	// Store a special context used to help with insertion
+#ifdef HL2_LOSTCOAST
+	m_pUserSearchString = pString;
+#else
 	g_pSymbolTableUserSearchString = (char *)pString;
+#endif
+#line 191
 	
 	// Passing this special invalid symbol makes the comparison function
 	// use the string passed in the context
 	UtlSymId_t idx = m_Lookup.Find( INVALID_STRING_INDEX );
 
+#ifndef HL2_LOSTCOAST
 	g_pSymbolTableUserSearchString = 0;
+#endif
+#line 197
 
 	return CUtlSymbol( idx );
 }
