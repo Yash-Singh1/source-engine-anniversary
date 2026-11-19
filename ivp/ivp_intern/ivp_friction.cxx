@@ -2247,6 +2247,9 @@ IVP_BOOL IVP_Synapse_Friction::is_same_as(const IVP_Synapse_Real *syn1) const
 	}
     }	    
         default:
+#ifdef BYTEMATCH_RETAIL
+#line 2303
+#endif
 	    CORE;
     }
     return IVP_FALSE;

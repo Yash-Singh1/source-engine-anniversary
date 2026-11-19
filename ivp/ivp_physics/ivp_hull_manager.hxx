@@ -27,7 +27,13 @@ public:
     inline void increase_hull_by_x(IVP_Time t_now, IVP_FLOAT delta_time, IVP_FLOAT gradient, IVP_FLOAT center_gradient_);
 
     // inline functions, include ivp_hull_manager_macros.hxx
+#ifdef BYTEMATCH_RETAIL
+    int get_synapse_check_count(IVP_Environment *env);
+    int too_many_synapses_checked_error_get_additional(IVP_Environment *env, int total_checks);
+    inline void check_hull_synapses(IVP_Environment *env);
+#else
     inline void check_hull_synapses();
+#endif
     inline IVP_BOOL are_events_in_hull(); // quick check for events in hull
     
     inline void check_for_reset(){

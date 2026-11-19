@@ -228,7 +228,11 @@ IVP_RETURN_TYPE IVP_Object_Attach::reposition_object_Ros( IVP_Real_Object *paren
 	attached_object->recalc_exact_mindists_of_object();
 	attached_object->recalc_invalid_mindists_of_object();
 
+#ifdef BYTEMATCH_RETAIL
+	h_manager->check_hull_synapses(attached_object->get_environment());
+#else
 	h_manager->check_hull_synapses();
+#endif
 	h_manager->check_for_reset();
 
     return IVP_OK;

@@ -1275,6 +1275,12 @@ void IVP_Mindist::create_cp_in_advance_pretension(IVP_Real_Object *robject,float
 			s2=new_cp->tmp_contact_info->span_friction_v[1].dot_product(&world_friction_vec);
 			new_cp->span_friction_s[0]= s1;
 			new_cp->span_friction_s[1]= s2;
+#ifdef BYTEMATCH_RETAIL
+			IVP_Real_Object *other_object = get_sorted_synapse(1)->get_object();
+			if ( other_object->get_movement_state() == IVP_MT_NOT_SIM ) {
+			    other_object->ensure_in_simulation_now();
+			}
+#endif
 	    }
 
         robject->environment->sim_unit_mem->end_memory_transaction();

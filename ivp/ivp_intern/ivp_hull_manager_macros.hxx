@@ -8,6 +8,25 @@ IVP_BOOL IVP_Hull_Manager::are_events_in_hull(){
     }
 }
 
+#ifdef BYTEMATCH_RETAIL
+void IVP_Hull_Manager::check_hull_synapses(IVP_Environment *env){
+    // check all synapses
+
+    // eventually throw hull limit exceeded event
+    IVP_FLOAT syn_val;
+    int total_checks = get_synapse_check_count(env);
+    int maxcnt = total_checks;
+    while ( (syn_val = sorted_synapses.find_min_value() - hull_value_next_psi) < 0.0f){
+	IVP_Listener_Hull *syn = (IVP_Listener_Hull *)sorted_synapses.find_min_elem();
+	syn->hull_limit_exceeded_event(this,syn_val);
+	if (maxcnt-- <= 0){
+	    maxcnt += too_many_synapses_checked_error_get_additional(env, total_checks);
+	    if (maxcnt < 0) break;
+	    total_checks += maxcnt + 1;
+	}
+    }
+}
+#else
 void IVP_Hull_Manager::check_hull_synapses(){
     // check all synapses
 
@@ -21,6 +40,7 @@ void IVP_Hull_Manager::check_hull_synapses(){
 	if (maxcnt-- <0) break;
     }
 }
+#endif
 
 void IVP_Hull_Manager::increase_hull_by_x(IVP_Time t_now, IVP_FLOAT delta_time, IVP_FLOAT gradient_, IVP_FLOAT center_gradient_) {
     IVP_FLOAT dt = t_now - last_vpsi_time;

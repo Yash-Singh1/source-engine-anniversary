@@ -10,6 +10,9 @@
 
 #include <ivu_min_hash.hxx>
 #include <ivp_hull_manager.hxx>
+#ifdef BYTEMATCH_RETAIL
+#include <ivp_anomaly_manager.hxx>
+#endif
 #include "ivp_hull_manager_macros.hxx"
 
 // IVP_EXPORT_PRIVATE
@@ -57,3 +60,13 @@ void IVP_Hull_Manager::reset_times(){
 void IVP_Hull_Manager::reset_time(IVP_Time offset){
     last_vpsi_time -= offset;
 }
+
+#ifdef BYTEMATCH_RETAIL
+int IVP_Hull_Manager::too_many_synapses_checked_error_get_additional(IVP_Environment *env, int total_checks){
+    return env->get_anomaly_manager()->max_collision_checks_exceeded(total_checks);
+}
+
+int IVP_Hull_Manager::get_synapse_check_count(IVP_Environment *env){
+    return env->get_anomaly_limits()->get_max_collision_checks_per_psi();
+}
+#endif
