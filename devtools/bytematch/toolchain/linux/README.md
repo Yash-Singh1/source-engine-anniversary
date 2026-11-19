@@ -25,6 +25,12 @@ WAFLOCK=.lock-waf-linux python3 waf retail_linkdb      # per-object compile data
 devtools/bytematch/toolchain/linux/report-linux.py --build /abs/build-linux --game episodic
 ```
 
+`--retail-linux32-engine` adds depot 224's engine-side modules (engine, libtier0, libvstdlib,
+filesystem_stdio, materialsystem, shaderapidx9, libtogl, studiorender, ..., hl2_linux; 28 with
+source) and `-D_FILE_OFFSET_BITS=64`; measure them with
+`report-linux.py --build DIR --engine [--mac DIR]` (whole tree: `reports/retail-linux32.md`) and
+list May 2025 line-number evidence with `linuxlines.py REPORT_DIR`.
+
 `--build-games=lostcoast` builds Lost Coast (the hl2 project with `HL2_LOSTCOAST`
 and its own static-library variants, as `--retail-osx32`); `hl2` is the episodic
 build. Without `--build-games` only the static libraries are built.
