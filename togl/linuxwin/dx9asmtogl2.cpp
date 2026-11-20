@@ -1157,7 +1157,6 @@ void D3DToGL::PrintParameterToString ( uint32 dwToken, uint32 dwSourceOrDest, ch
 				}
 				else
 				{
-					bAllowSwizzle = false;
 					V_snprintf( buff, sizeof( buff ), "%s[a0.x + %d]", szConstantRegName, dwRegNum );
 				}
 				strcat_s( pRegisterName, nBufLen, buff );
@@ -1919,7 +1918,7 @@ union Double_t
 
 static uint PrintDoubleInt( char *pBuf, uint nBufSize, double f, uint nMinChars )
 {
-	static const char *pDigits = "00010203040506070809101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596979899";
+	static const char pDigits[] = "00010203040506070809101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596979899";
 
 	Assert( !nMinChars || ( ( nMinChars % 6 ) == 0 ) );
 
@@ -1974,30 +1973,30 @@ static uint PrintDoubleInt( char *pBuf, uint nBufSize, double f, uint nMinChars 
 		if ( bAnyDigitsLeft )
 		{
 			uint n = remainder % 100U; remainder /= 100U;
-			memcpy( reinterpret_cast<uint16*>(pDst - 1), &(reinterpret_cast<const uint16*>(pDigits)[n]), sizeof(uint16) );
+			*reinterpret_cast<uint16*>(pDst - 1) = reinterpret_cast<const uint16*>(pDigits)[n];
 			n = remainder % 100U; remainder /= 100U;
-			memcpy( reinterpret_cast<uint16*>(pDst - 3), &(reinterpret_cast<const uint16*>(pDigits)[n]), sizeof(uint16) );
+			*reinterpret_cast<uint16*>(pDst - 3) = reinterpret_cast<const uint16*>(pDigits)[n];
 			Assert( remainder < 100U );
-			memcpy( reinterpret_cast<uint16*>(pDst - 5), &(reinterpret_cast<const uint16*>(pDigits)[remainder]), sizeof(uint16) );
+			*reinterpret_cast<uint16*>(pDst - 5) = reinterpret_cast<const uint16*>(pDigits)[remainder];
 			pDst -= 6;
 		}
 		else
 		{
 			uint n = remainder % 100U; remainder /= 100U;
-			memcpy( reinterpret_cast<uint16*>(pDst - 1), &(reinterpret_cast<const uint16*>(pDigits)[n]), sizeof(uint16) );
+			*reinterpret_cast<uint16*>(pDst - 1) = reinterpret_cast<const uint16*>(pDigits)[n];
 			--pDst; if ( ( n >= 10 ) || ( remainder ) ) --pDst;
 
 			if ( remainder )
 			{
 				n = remainder % 100U; remainder /= 100U;
-				memcpy( reinterpret_cast<uint16*>(pDst - 1), &(reinterpret_cast<const uint16*>(pDigits)[n]), sizeof(uint16) );
+				*reinterpret_cast<uint16*>(pDst - 1) = reinterpret_cast<const uint16*>(pDigits)[n];
 
 				--pDst; if ( ( n >= 10 ) || ( remainder ) ) --pDst;
 
 				if ( remainder )
 				{
 					Assert( remainder < 100U );
-					memcpy( reinterpret_cast<uint16*>(pDst - 1), &(reinterpret_cast<const uint16*>(pDigits)[remainder]), sizeof(uint16) );
+					*reinterpret_cast<uint16*>(pDst - 1) = reinterpret_cast<const uint16*>(pDigits)[remainder];
 					--pDst; if ( remainder >= 10 ) --pDst;
 				}
 			}
@@ -3173,7 +3172,7 @@ int D3DToGL::TranslateShader( uint32* code, CUtlBuffer *pBufDisassembledCode, bo
 	}
 
 	*bVertexShader = m_bVertexShader;
-	m_bGenerateBoneUniformBuffer = m_bVertexShader && m_bGLSL && ( ( options & D3DToGL_OptionGenerateBoneUniformBuffer ) != 0 );
+	m_bGenerateBoneUniformBuffer = m_bGLSL && m_bVertexShader && ( ( options & D3DToGL_OptionGenerateBoneUniformBuffer ) != 0 );
 
 	if ( m_bAddHexCodeComments )
 	{
@@ -3559,7 +3558,7 @@ int D3DToGL::TranslateShader( uint32* code, CUtlBuffer *pBufDisassembledCode, bo
 	}
 	else
 	{
-		PrintToBuf( *m_pBufParamCode, "#HIGHWATER-%d\n", m_nHighestRegister );
+		PrintToBuf( *m_pBufParamCode, "#HIGHWATER-%d\n", m_nHighestRegister + 1 );
 		PrintToBuf( *m_pBufParamCode, "PARAM %s[%d] = { program.%s[0..%d] };\n", m_bVertexShader ? "vc" : "pc", m_nHighestRegister + 1, m_bUseEnvParams ? "env" : "local", m_nHighestRegister );
 	}
 
@@ -3771,7 +3770,14 @@ int D3DToGL::TranslateShader( uint32* code, CUtlBuffer *pBufDisassembledCode, bo
 				char outTexCoordBuff[64];
 				if ( m_dwTexCoordOutMask & ( 0x00000001 << i ) )
 				{
-					V_snprintf( outTexCoordBuff, sizeof( outTexCoordBuff ), ( m_nCentroidMask & ( 0x00000001 << i ) ) ? "centroid varying vec4 oT%d;\n" : "varying vec4 oT%d;\n", i );
+					if ( m_nCentroidMask & ( 0x00000001 << i ) )
+					{
+						V_snprintf( outTexCoordBuff, sizeof( outTexCoordBuff ), "centroid varying vec4 oT%d;\n", i ); // centroid varying
+					}
+					else
+					{
+						V_snprintf( outTexCoordBuff, sizeof( outTexCoordBuff ), "varying vec4 oT%d;\n", i );
+					}
 					StrcatToHeaderCode( outTexCoordBuff );
 				}
 			}			
@@ -3833,7 +3839,7 @@ int D3DToGL::TranslateShader( uint32* code, CUtlBuffer *pBufDisassembledCode, bo
 			}
 		}
 
-		V_snprintf( temp, sizeof(temp), "%s trans#%d label:%s\n", m_bGLSL ? "//" : "#", g_translationCounter, debugLabel ? debugLabel : "none" );
+		V_snprintf( temp, sizeof(temp), "%s trans#%d label:%s\n", m_bGLSL ? "//" : "#", 0, debugLabel ? debugLabel : "none" );
 		StrcatToAttribCode( temp );
 
 		g_translationCounter++;
@@ -5938,7 +5944,7 @@ union Double_t
 
 static uint PrintDoubleInt( char *pBuf, uint nBufSize, double f, uint nMinChars )
 {
-	static const char *pDigits = "00010203040506070809101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596979899";
+	static const char pDigits[] = "00010203040506070809101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596979899";
 
 	Assert( !nMinChars || ( ( nMinChars % 6 ) == 0 ) );
 
@@ -5993,30 +5999,30 @@ static uint PrintDoubleInt( char *pBuf, uint nBufSize, double f, uint nMinChars 
 		if ( bAnyDigitsLeft )
 		{
 			uint n = remainder % 100U; remainder /= 100U;
-			memcpy( reinterpret_cast<uint16*>(pDst - 1), &(reinterpret_cast<const uint16*>(pDigits)[n]), sizeof(uint16) );
+			*reinterpret_cast<uint16*>(pDst - 1) = reinterpret_cast<const uint16*>(pDigits)[n];
 			n = remainder % 100U; remainder /= 100U;
-			memcpy( reinterpret_cast<uint16*>(pDst - 3), &(reinterpret_cast<const uint16*>(pDigits)[n]), sizeof(uint16) );
+			*reinterpret_cast<uint16*>(pDst - 3) = reinterpret_cast<const uint16*>(pDigits)[n];
 			Assert( remainder < 100U );
-			memcpy( reinterpret_cast<uint16*>(pDst - 5), &(reinterpret_cast<const uint16*>(pDigits)[remainder]), sizeof(uint16) );
+			*reinterpret_cast<uint16*>(pDst - 5) = reinterpret_cast<const uint16*>(pDigits)[remainder];
 			pDst -= 6;
 		}
 		else
 		{
 			uint n = remainder % 100U; remainder /= 100U;
-			memcpy( reinterpret_cast<uint16*>(pDst - 1), &(reinterpret_cast<const uint16*>(pDigits)[n]), sizeof(uint16) );
+			*reinterpret_cast<uint16*>(pDst - 1) = reinterpret_cast<const uint16*>(pDigits)[n];
 			--pDst; if ( ( n >= 10 ) || ( remainder ) ) --pDst;
 
 			if ( remainder )
 			{
 				n = remainder % 100U; remainder /= 100U;
-				memcpy( reinterpret_cast<uint16*>(pDst - 1), &(reinterpret_cast<const uint16*>(pDigits)[n]), sizeof(uint16) );
+				*reinterpret_cast<uint16*>(pDst - 1) = reinterpret_cast<const uint16*>(pDigits)[n];
 
 				--pDst; if ( ( n >= 10 ) || ( remainder ) ) --pDst;
 
 				if ( remainder )
 				{
 					Assert( remainder < 100U );
-					memcpy( reinterpret_cast<uint16*>(pDst - 1), &(reinterpret_cast<const uint16*>(pDigits)[remainder]), sizeof(uint16) );
+					*reinterpret_cast<uint16*>(pDst - 1) = reinterpret_cast<const uint16*>(pDigits)[remainder];
 					--pDst; if ( remainder >= 10 ) --pDst;
 				}
 			}
