@@ -58,7 +58,7 @@ ConVar gl_pow2_tempmem( "gl_pow2_tempmem", "0", FCVAR_INTERNAL_USE,
 //	2	:	1 if not power of two
 //	1	:	1 if mipmapped
 
-bool pwroftwo (int val )
+static bool pwroftwo (int val )
 {
 	return (val & (val-1)) == 0;
 }
@@ -707,6 +707,7 @@ void CGLMTexLayoutTable::DumpStats( )
 }
 
 #ifdef BYTEMATCH_RETAIL
+ConVar gl_enabletexsubimage( "gl_enabletexsubimage", "1" );
 ConVar gl_texclientstorage( "gl_texclientstorage", "1" );		// default 1 for L4D2
 #endif
 
@@ -1246,7 +1247,9 @@ void CGLMTex::ReadTexels( GLMTexLockDesc *desc, bool readWholeSlice )
 }
 
 // TexSubImage should work properly on every driver stack and GPU--enabling by default.
+#ifndef BYTEMATCH_RETAIL
 ConVar	gl_enabletexsubimage( "gl_enabletexsubimage", "1" );
+#endif
 
 void CGLMTex::WriteTexels( GLMTexLockDesc *desc, bool writeWholeSlice, bool noDataWrite )
 {

@@ -2445,6 +2445,9 @@ static ConVar mat_vsync( "mat_vsync", "0", 0, "Force sync to vertical retrace", 
 
 ConVar glm_nullrefresh_capslock( "glm_nullrefresh_capslock", "0" );
 ConVar glm_literefresh_capslock( "glm_literefresh_capslock", "0" );
+#ifdef BYTEMATCH_RETAIL
+ConVar gl_singlecontext( "gl_singlecontext", "1" );
+#endif
 
 extern ConVar gl_blitmode;
 
