@@ -1337,7 +1337,7 @@ void CMatSystemSurface::DrawFilledRectFade( int x0, int y0, int x1, int y1, unsi
 	
 	InternalSetMaterial();
 
-	unsigned char colors[4][4] = {{0}};
+	unsigned char colors[4][4] = {0};
 	for ( int i=0; i<4; i++ )
 	{
 		// copy the rgb and leave the alpha at zero
@@ -2592,10 +2592,12 @@ void CMatSystemSurface::DrawPrintText(const wchar_t *text, int iTextLen, FontDra
 	int iLastTexId = -1;
 #ifdef BYTEMATCH_RETAIL
 	int iLastColorGlyph = -1;
-	int bColorGlyph = 0;
 #endif
 
 	int iCount = 0;
+#ifdef BYTEMATCH_RETAIL
+	int bColorGlyph = 0;
+#endif
 	vgui::Vertex_t *pQuads = (vgui::Vertex_t*)stackalloc((2 * iTextLen) * sizeof(vgui::Vertex_t) );
 	bool bUnderlined = FontManager().GetFontUnderlined( m_hCurrentFont );
 
@@ -2636,7 +2638,11 @@ void CMatSystemSurface::DrawPrintText(const wchar_t *text, int iTextLen, FontDra
 #else
 		int abcA,abcB,abcC;
 		GetCharABCwide(m_hCurrentFont, ch, abcA, abcB, abcC);
+#ifdef BYTEMATCH_RETAIL
+		int textureWide = abcB + 2;
+#else
 		int textureWide = abcB;
+#endif
 		if ( bUnderlined )
 		{
 			textureWide += ( abcA + abcC );
@@ -2645,6 +2651,7 @@ void CMatSystemSurface::DrawPrintText(const wchar_t *text, int iTextLen, FontDra
 		float flabcA = abcA;
 		float flWide = abcA + abcB + abcC;
 #endif
+#line 2648
 		
 		if ( !iswspace( ch ) || bUnderlined )
 		{

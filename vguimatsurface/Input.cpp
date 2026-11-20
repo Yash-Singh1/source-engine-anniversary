@@ -388,7 +388,7 @@ bool InputHandleInputEvent( const InputEvent_t &event )
 				return g_pIInput->InternalKeyCodePressed( keyCode );
 			}
 
-			if ( IsJoystickCode( code ) )
+			if ( IsSteamControllerCode( code ) )
 			{
 				vgui::KeyCode keyCode = ButtonCodeToKeyCode( code );
 				return g_pIInput->InternalKeyCodePressed( keyCode );
@@ -412,7 +412,7 @@ bool InputHandleInputEvent( const InputEvent_t &event )
 				return g_pIInput->InternalKeyCodeReleased( keyCode );
 			}
 
-			if ( IsJoystickCode( code ) )
+			if ( IsSteamControllerCode( code ) )
 			{
 				vgui::KeyCode keyCode = ButtonCodeToKeyCode( code );
 				return g_pIInput->InternalKeyCodeReleased( keyCode );

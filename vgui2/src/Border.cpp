@@ -174,8 +174,8 @@ void Border::Paint(VPANEL panel)
 	((VPanel *)panel)->GetSize(wide, tall);
 
 	// scale line thickness with the panel's proportional scheme
-	int scale = 1;
 	HScheme scheme = ((VPanel *)panel)->GetScheme();
+	int scale = 1;
 	if ( scheme )
 	{
 		scale = Max( g_pScheme->GetProportionalScaledValueEx( scheme, 1 ), 1 );

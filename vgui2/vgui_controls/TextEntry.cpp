@@ -3612,24 +3612,22 @@ int TextEntry::GetValueAsInt()
 VGUI_NOV2024_ONLY( int ) VGUI_OCT2024_ONLY( void ) TextEntry::GetText(OUT_Z_BYTECAP(bufLenInBytes) char *buf, int bufLenInBytes)
 {
 	Assert(bufLenInBytes >= sizeof(buf[0]));
-	VGUI_NOV2024_ONLY( int nLength = 0; )
 	if (m_TextStream.Count())
 	{
 		// temporarily null terminate the text stream so we can use the conversion function
 		int nullTerminatorIndex = m_TextStream.AddToTail((wchar_t)0);
-		VGUI_NOV2024_ONLY( nLength = ) g_pVGuiLocalize->ConvertUnicodeToANSI(m_TextStream.Base(), buf, bufLenInBytes);
+		VGUI_NOV2024_ONLY( int nLength = ) g_pVGuiLocalize->ConvertUnicodeToANSI(m_TextStream.Base(), buf, bufLenInBytes);
 		m_TextStream.FastRemove(nullTerminatorIndex);
 
 		// don't count the terminator
-		VGUI_NOV2024_ONLY( if ( nLength ) )
-			VGUI_NOV2024_ONLY( nLength--; )
+		VGUI_NOV2024_ONLY( if ( nLength ) return nLength - 1; )
 	}
 	else
 	{
 		// no characters in the stream
 		buf[0] = 0;
 	}
-	VGUI_NOV2024_ONLY( return nLength; )
+	VGUI_NOV2024_ONLY( return 0; )
 }
 
 //-----------------------------------------------------------------------------

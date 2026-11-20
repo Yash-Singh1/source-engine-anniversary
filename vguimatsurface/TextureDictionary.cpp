@@ -657,16 +657,10 @@ void CMatSystemTexture::SetMaterial( IMaterial *pMaterial )
 	m_iTall = m_pMaterial->GetMappingHeight();
 
 	// Compute texture coordinates
-#ifdef BYTEMATCH_RETAIL
-	m_s0 = 0.0f;
-	m_t0 = 0.0f;
-	m_s1 = 1.0f;
-	m_t1 = 1.0f;
-#else
 	float flPixelCenterX = 0.0f;
 	float flPixelCenterY = 0.0f;
 
-	if ( m_iWide > 0.0f && m_iTall > 0.0f)
+	if ( !IsOSX() && m_iWide > 0.0f && m_iTall > 0.0f)
 	{
 		flPixelCenterX = 0.5f / m_iWide;
 		flPixelCenterY = 0.5f / m_iTall;
@@ -678,7 +672,6 @@ void CMatSystemTexture::SetMaterial( IMaterial *pMaterial )
 	// FIXME: Old code used +, it should be - yes?!??!
 	m_s1 = 1.0 - flPixelCenterX;
 	m_t1 = 1.0 - flPixelCenterY;
-#endif
 
 	if ( IsProcedural() )
 	{

@@ -299,8 +299,7 @@ protected:
 CFtpDirListRetriever::CFtpDirListRetriever( const char *pHostname, const char *pRemotePath, const char *pLogin,
 											const char *pPassword, int nPort, const char *pProxyHostname, int nProxyPort )
 :	m_nDirListSize( 0 ),
-	m_pCommands( NULL ),
-	m_pFtp( NULL )
+	m_pCommands( NULL )
 {
 	m_pFtp = new CFtp( pHostname, pRemotePath, pLogin, pPassword, nPort, this, g_pSimpleSpewer );
 
