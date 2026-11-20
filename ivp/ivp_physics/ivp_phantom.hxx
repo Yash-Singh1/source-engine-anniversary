@@ -126,6 +126,12 @@ protected:
   // functions called by the collision detection engine
   void mindist_entered_volume(class IVP_Mindist *mindist);
   void mindist_left_volume(class IVP_Mindist *mindist);
+#ifdef BYTEMATCH_RETAIL
+  inline void fire_event_core_entered_volume( IVP_Core *core );
+  inline void fire_event_core_left_volume( IVP_Core *core );
+  void add_sleeping_object( IVP_Real_Object *obj );
+  void remove_sleeping_object( IVP_Real_Object *obj );
+#endif
 public:
   
   IVP_U_Set_Active<IVP_Real_Object> *get_intruding_objects() const { return set_of_objects ; };  // returns NULL if manage_set was IVP_FALSE 

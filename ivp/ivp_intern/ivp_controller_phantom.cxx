@@ -26,6 +26,38 @@ void IVP_Controller_Phantom::remove_listener_phantom( IVP_Listener_Phantom *list
 	listeners.remove(listener);
 }
 
+#ifdef BYTEMATCH_RETAIL
+inline void IVP_Controller_Phantom::fire_event_core_entered_volume( IVP_Core *core )
+{
+	for (int i = listeners.len()-1;i>=0;i--)
+	{
+		IVP_Listener_Phantom *l = listeners.element_at(i);
+		l->core_entered_volume(this,core);
+	}
+}
+
+inline void IVP_Controller_Phantom::fire_event_core_left_volume( IVP_Core *core )
+{
+	for (int i = listeners.len()-1;i>=0;i--)
+	{
+		IVP_Listener_Phantom *l = listeners.element_at(i);
+		l->core_left_volume(this,core);
+	}
+}
+
+void IVP_Controller_Phantom::add_sleeping_object( IVP_Real_Object *obj )
+{
+	obj->add_listener_object( this );
+	sleeping_cores->add_element( obj->get_core() );
+}
+
+void IVP_Controller_Phantom::remove_sleeping_object( IVP_Real_Object *obj )
+{
+	obj->remove_listener_object( this );
+	sleeping_cores->remove_element( obj->get_core() );
+}
+#endif
+
 IVP_Controller_Phantom::~IVP_Controller_Phantom(){
 #ifdef BYTEMATCH_RETAIL
 	if (set_of_cores)
@@ -34,11 +66,7 @@ IVP_Controller_Phantom::~IVP_Controller_Phantom(){
 		IVP_Core *core;
 		while ( (core = enumerator.get_next_element(set_of_cores)) != NULL )
 		{
-			for (int i = listeners.len()-1;i>=0;i--)
-			{
-				IVP_Listener_Phantom *l = listeners.element_at(i);
-				l->core_left_volume(this,core);
-			}
+			fire_event_core_left_volume( core );
 		}
 	}
 	if (sleeping_cores)
@@ -46,11 +74,7 @@ IVP_Controller_Phantom::~IVP_Controller_Phantom(){
 		IVP_U_Set_Enumerator<IVP_Core> enumerator(sleeping_cores);
 		while ( IVP_Core *core = enumerator.get_next_element(sleeping_cores) )
 		{
-			for (int i = listeners.len()-1;i>=0;i--)
-			{
-				IVP_Listener_Phantom *l = listeners.element_at(i);
-				l->core_left_volume(this,core);
-			}
+			fire_event_core_left_volume( core );
 		}
 	}
 #endif
@@ -71,8 +95,8 @@ IVP_Controller_Phantom::~IVP_Controller_Phantom(){
 		{
 			core->objects.element_at(0)->remove_listener_object(this);
 		}
+		P_DELETE(sleeping_cores);
 	}
-	P_DELETE(sleeping_cores);
 #endif
 	P_DELETE(set_of_cores);
 }
@@ -103,19 +127,13 @@ void IVP_Controller_Phantom::event_object_revived( IVP_Event_Object *event )
 	if ( !sleeping_cores->find_element( event->real_object->get_core() ) )
 		return;
 
-	IVP_Real_Object *object_revived = event->real_object;
-	object_revived->remove_listener_object( this );
-	sleeping_cores->remove_element( object_revived->get_core() );
+	remove_sleeping_object( event->real_object );
 	if ( set_of_cores )
 	{
 		IVP_Core *core = event->real_object->get_core();
 		if ( !mindist_core_counter->find_elem( core ) )
 		{
-			for (int i = listeners.len()-1;i>=0;i--)
-			{
-				IVP_Listener_Phantom *l = listeners.element_at(i);
-				l->core_left_volume(this,core);
-			}
+			fire_event_core_left_volume( core );
 		}
 	}
 }
@@ -184,16 +202,19 @@ void IVP_Controller_Phantom::mindist_entered_volume(class IVP_Mindist *mindist)
 #ifdef BYTEMATCH_RETAIL
 			if ( sleeping_cores->find_element( other_core ) )
 			{
-				other_object->remove_listener_object( this );
-				sleeping_cores->remove_element( other_object->get_core() );
+				remove_sleeping_object( other_object );
 			}
 			else
-#endif
+			{
+				fire_event_core_entered_volume( other_core );
+			}
+#else
 			for (int i = listeners.len()-1;i>=0;i--)
 			{
 				IVP_Listener_Phantom *l = listeners.element_at(i);
 				l->core_entered_volume(this,other_core);
 			}
+#endif
 		}
 	}
 	
@@ -253,16 +274,19 @@ void IVP_Controller_Phantom:: mindist_left_volume(class IVP_Mindist *mindist)
 #ifdef BYTEMATCH_RETAIL
 			if ( other_object->get_movement_state() == IVP_MT_NOT_SIM )
 			{
-				other_object->add_listener_object( this );
-				sleeping_cores->add_element( other_object->get_core() );
+				add_sleeping_object( other_object );
 			}
 			else
-#endif
+			{
+				fire_event_core_left_volume( other_core );
+			}
+#else
 			for (int i = listeners.len()-1;i>=0;i--)
 			{
 				IVP_Listener_Phantom *l = listeners.element_at(i);
 				l->core_left_volume(this,other_core);
 			}
+#endif
 		}
 	}
 	
