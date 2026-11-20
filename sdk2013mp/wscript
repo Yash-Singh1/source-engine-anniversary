@@ -66,6 +66,19 @@ SINK_AND_CMP_FLAGS = ['-mllvm', '-mask-and-branch-folding']
 # Dead-stripped objects that retail Xcode links (their code is stripped, so N_OSO
 # omits them, but ld64 coalesces their literals/GOT entries before dead-stripping).
 DEAD_OBJECTS = {
+	'hl2mp/client': [
+		('common/language.cpp', 'common/randoverride.cpp'),
+		('game/shared/debugoverlay_shared.cpp', 'game/shared/decals.cpp'),
+		('game/shared/hintmessage.cpp', 'game/shared/hintsystem.cpp'),
+		('game/shared/rope_helpers.cpp', 'game/shared/saverestore.cpp'),
+		('game/shared/sheetsimulator.cpp', 'game/shared/simtimer.cpp'),
+		('public/ScratchPadUtils.cpp', 'public/sentence.cpp'),
+		('game/client/baseclientrendertargets.cpp', 'game/client/basepresence.cpp'),
+		('game/client/fx_cube.cpp', 'game/client/fx_discreetline.cpp'),
+		('game/client/hl2/hud_flashlight.cpp', 'game/client/hl2/hud_hdrdemo.cpp'),
+		('game/client/hud_basetimer.cpp', 'game/client/hud_closecaption.cpp'),
+		('game/client/vgui_basepanel.cpp', 'game/client/vgui_bitmapbutton.cpp'),
+	],
 	'hl2mp/server': [
 		('game/shared/ehandle.cpp', 'game/shared/entitylist_base.cpp'),
 		('game/shared/SceneCache.cpp', 'game/shared/sceneentity_shared.cpp'),
@@ -99,6 +112,12 @@ def manifest(bld):
 	import retail_manifest
 	return retail_manifest._load(bld.env.RETAIL_MANIFEST)
 
+# Dead-stripped archive members that ld64 pulls on pass 1 before dead-stripping
+# (e.g. compiledcaptionswap.o -> UpdateOrCreate -> libtier2.a(fileutils.o) coalesces "..").
+DEAD_ARCHIVE_MEMBERS = {
+	'libtier2.a': [('fileutils.o', 'meshutils.o')],
+}
+
 def lib_members(m, archive):
 	'''Member objects of `archive` in archive order, merged over the hl2mp modules.'''
 	out = []
@@ -111,6 +130,9 @@ def lib_members(m, archive):
 				if mem not in out:
 					out.insert(out.index(prev) + 1 if prev else len(out), mem)
 				prev = mem
+	for mem, before in DEAD_ARCHIVE_MEMBERS.get(archive, []):
+		if mem not in out:
+			out.insert(out.index(before) if before in out else len(out), mem)
 	return out
 
 def find_member(bld, dirs, member):
@@ -197,6 +219,9 @@ def build(bld):
 		for entry in entries:
 			if entry not in lst:
 				lst.append(entry)
+	lst = retail_manifest.RETAIL_STLIB_BEFORE.setdefault('hl2mp/client', [])
+	if ('protobuf', 'dmxloader') not in lst:
+		lst.append(('protobuf', 'dmxloader'))
 
 	for name, (key, projdir, vpcfile, uselib) in MODULES.items():
 		defines, includes = vpc(bld, os.path.join(projdir, vpcfile))
