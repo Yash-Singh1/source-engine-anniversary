@@ -2794,8 +2794,12 @@ void CResponseSystem::CopyResponsesFrom( Rule *pSrcRule, Rule *pDstRule, CRespon
 //-----------------------------------------------------------------------------
 void CResponseSystem::CopyEnumerationsFrom( CResponseSystem *pCustomSystem )
 {
+#ifdef HL2_ANNIVERSARY_NOV2024
+	for ( int iEnumeration = m_Enumerations.First(); iEnumeration != m_Enumerations.InvalidIndex(); iEnumeration = m_Enumerations.Next( iEnumeration ) )
+#else
 	int nEnumerationCount = m_Enumerations.Count();
 	for ( int iEnumeration = 0; iEnumeration < nEnumerationCount; ++iEnumeration )
+#endif
 	{
 		Enumeration *pSrcEnumeration = &m_Enumerations[iEnumeration];
 		if ( pSrcEnumeration )

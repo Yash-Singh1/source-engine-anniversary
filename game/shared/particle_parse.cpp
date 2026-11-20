@@ -120,7 +120,7 @@ void ParseParticleEffects( bool bLoadSheets, bool bPrecache )
 }
 #line 104
 
-#ifdef CLIENT_DLL
+#if defined( CLIENT_DLL ) || defined( HL2_ANNIVERSARY_NOV2024 )
 //-----------------------------------------------------------------------------
 // Purpose: Reload every particle file, e.g. after the HL2 expansion changed
 //-----------------------------------------------------------------------------
@@ -129,7 +129,11 @@ void ReloadParticleEffects()
 	CUtlVector<CUtlString> files;
 	GetParticleManifest( files );
 
+#ifdef CLIENT_DLL
 	const char *pszMapName = engine->GetLevelName();
+#else
+	const char *pszMapName = STRING( gpGlobals->mapname );
+#endif
 	if ( pszMapName && pszMapName[0] )
 	{
 		char mapname[MAX_MAP_NAME];

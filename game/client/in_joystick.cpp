@@ -715,8 +715,7 @@ float CInput::ScaleAxisValue( const float axisValue, const float axisThreshold )
 	else if ( inputsystem->IsSteamControllerActive() && ( sc_joystick_inner_deadzone_scale.GetFloat() != 1.0f || sc_joystick_outer_deadzone_scale.GetFloat() != 1.0f ) )
 	{
 		// Steam Input: rescale the deadzone and the pegged range
-		float flSign = axisValue < 0.0f ? -1.0f : 1.0f;
-		result = RemapValClamped( axisValue, axisThreshold * flSign * sc_joystick_inner_deadzone_scale.GetFloat(), MAX_BUTTONSAMPLE * flSign * sc_joystick_outer_deadzone_scale.GetFloat(), 0.0f, flSign );
+		result = RemapValClamped( axisValue, axisThreshold * ( axisValue < 0.0f ? -1.0f : 1.0f ) * sc_joystick_inner_deadzone_scale.GetFloat(), MAX_BUTTONSAMPLE * ( axisValue < 0.0f ? -1.0f : 1.0f ) * sc_joystick_outer_deadzone_scale.GetFloat(), 0.0f, ( axisValue < 0.0f ? -1.0f : 1.0f ) );
 	}
 	else
 	{

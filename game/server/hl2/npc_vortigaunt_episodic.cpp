@@ -1211,55 +1211,6 @@ void CNPC_Vortigaunt::Precache()
 	BaseClass::Precache();
 }	
 
-#ifdef HL2_ANNIVERSARY_NOV2024
-void CNPC_Vortigaunt::TryRestoreHull( void )
-{
-	if ( !IsUsingSmallHull() || !GetCurSchedule() )
-		return;
-
-	if ( !NameMatches( "vortigaunt_bugbait" ) )
-	{
-		BaseClass::TryRestoreHull();
-		return;
-	}
-
-	Vector vOldMins = CollisionProp()->OBBMins();
-	Vector vOldMaxs = CollisionProp()->OBBMaxs();
-
-	trace_t tr;
-	Vector vUpBit = GetAbsOrigin();
-	vUpBit.z += 1.0f;
-
-	UTIL_TraceHull( GetAbsOrigin(), vUpBit, NAI_Hull::Mins( GetHullType() ),
-		NAI_Hull::Maxs( GetHullType() ), MASK_NPCSOLID, this, COLLISION_GROUP_NONE, &tr );
-
-	if ( !tr.startsolid && ( tr.fraction == 1.0 ) )
-	{
-		GroundTrace( vOldMins, vOldMaxs, tr );
-		float flOldFrac = tr.fraction;
-
-		SetHullSizeNormal();
-
-		if ( flOldFrac == 1.0f )
-			return;
-
-		GroundTrace( CollisionProp()->OBBMins(), CollisionProp()->OBBMaxs(), tr );
-		if ( tr.fraction == 1.0f )
-		{
-			CBaseEntity *pOldGround = GetGroundEntity();
-			Vector vOldOrigin = GetAbsOrigin();
-			SetAbsOrigin( vOldOrigin + Vector( 0, 0, StepHeight() ) );
-			if ( UTIL_DropToFloor( this, MASK_NPCSOLID ) <= 0 )
-			{
-				SetAbsOrigin( vOldOrigin );
-				SetHullSizeSmall();
-				SetGroundEntity( pOldGround );
-			}
-		}
-	}
-}
-#endif
-
 //-----------------------------------------------------------------------------
 // Purpose: Interpret a player +USE'ing us
 //-----------------------------------------------------------------------------
@@ -2877,6 +2828,55 @@ void CNPC_Vortigaunt::OnUpdateShotRegulator( void )
 	GetShotRegulator()->SetBurstShotCountRange( 1, 1 );
 	GetShotRegulator()->SetRestInterval( 2.0f, 2.0f );	
 }
+
+#ifdef HL2_ANNIVERSARY_NOV2024
+void CNPC_Vortigaunt::TryRestoreHull( void )
+{
+	if ( !IsUsingSmallHull() || !GetCurSchedule() )
+		return;
+
+	if ( !NameMatches( "vortigaunt_bugbait" ) )
+	{
+		BaseClass::TryRestoreHull();
+		return;
+	}
+
+	Vector vOldMins = CollisionProp()->OBBMins();
+	Vector vOldMaxs = CollisionProp()->OBBMaxs();
+
+	trace_t tr;
+	Vector vUpBit = GetAbsOrigin();
+	vUpBit.z += 1.0f;
+
+	UTIL_TraceHull( GetAbsOrigin(), vUpBit, NAI_Hull::Mins( GetHullType() ),
+		NAI_Hull::Maxs( GetHullType() ), MASK_NPCSOLID, this, COLLISION_GROUP_NONE, &tr );
+
+	if ( !tr.startsolid && ( tr.fraction == 1.0 ) )
+	{
+		GroundTrace( vOldMins, vOldMaxs, tr );
+		float flOldFrac = tr.fraction;
+
+		SetHullSizeNormal();
+
+		if ( flOldFrac == 1.0f )
+			return;
+
+		GroundTrace( CollisionProp()->OBBMins(), CollisionProp()->OBBMaxs(), tr );
+		if ( tr.fraction == 1.0f )
+		{
+			CBaseEntity *pOldGround = GetGroundEntity();
+			Vector vOldOrigin = GetAbsOrigin();
+			SetAbsOrigin( vOldOrigin + Vector( 0, 0, StepHeight() ) );
+			if ( UTIL_DropToFloor( this, MASK_NPCSOLID ) <= 0 )
+			{
+				SetAbsOrigin( vOldOrigin );
+				SetHullSizeSmall();
+				SetGroundEntity( pOldGround );
+			}
+		}
+	}
+}
+#endif
 
 /*
 IMPLEMENT_SERVERCLASS_ST( CVortigauntChargeToken, DT_VortigauntChargeToken )

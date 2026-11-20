@@ -886,7 +886,7 @@ void CPropJeep::DrawBeam( const Vector &startPos, const Vector &endPos, float wi
 }
 
 // NVNT Convar for jeep cannon magnitude
-ConVar hap_jeep_cannon_mag("hap_jeep_cannon_mag", "10", 0); OCT2024_ONLY( ConVar sv_jalopy_steering_angle( "sv_jalopy_steering_angle", "0", FCVAR_CHEAT, "Use the steering angles for the jalopy. Affects turning at high speeds." ); )
+ConVar hap_jeep_cannon_mag("hap_jeep_cannon_mag", "10", 0);
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -1377,6 +1377,7 @@ void CPropJeep::DriveVehicle( float flFrameTime, CUserCmd *ucmd, int iButtonsDow
 // Input  : *pPlayer - 
 //			*pMoveData - 
 //-----------------------------------------------------------------------------
+OCT2024_ONLY( ConVar sv_jalopy_steering_angle( "sv_jalopy_steering_angle", "0", FCVAR_CHEAT, "Use the steering angles for the jalopy. Affects turning at high speeds." ); )
 void CPropJeep::ProcessMovement( CBasePlayer *pPlayer, CMoveData *pMoveData )
 {
 	BaseClass::ProcessMovement( pPlayer, pMoveData );

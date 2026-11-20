@@ -70,11 +70,7 @@ const char *COM_GetModDirectory();
 // Purpose: Half-Life 2 with the episodes in one game; its GameState.txt lives in ROOT_MOD
 //-----------------------------------------------------------------------------
 #ifdef HL2_ANNIVERSARY_NOV2024
-static inline bool IsHL2Complete()
-{
-	const char *pGameDir = CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) );
-	return !V_stricmp( pGameDir, "hl2_complete" );
-}
+bool IsHL2Complete();
 #endif
 #line 76
 
@@ -299,7 +295,13 @@ m_CallbackUserStatsStored( this, &CAchievementMgr::Steam_OnUserStatsStored )
 	m_bCheatsEverOn = false;
 	m_flTimeLastSaved = 0;
 	NOV2024_ONLY( m_bIsHL2Complete = false; )
-	NOV2024_ONLY( m_bIsHL2Complete = IsHL2Complete(); )
+#ifdef HL2_ANNIVERSARY_NOV2024
+	{
+		const char *pGameDir = CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) );
+		m_bIsHL2Complete = !V_stricmp( pGameDir, "hl2_complete" );
+	}
+#endif
+#line 301
 
     //=============================================================================
     // HPE_BEGIN
@@ -321,6 +323,14 @@ m_CallbackUserStatsStored( this, &CAchievementMgr::Steam_OnUserStatsStored )
 
 	m_AchievementsAwarded.RemoveAll();
 }
+
+#ifdef HL2_ANNIVERSARY_NOV2024
+bool IsHL2Complete()
+{
+	const char *pGameDir = CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) );
+	return !V_stricmp( pGameDir, "hl2_complete" );
+}
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: Initializer
@@ -393,7 +403,8 @@ void CAchievementMgr::PostInit()
 		// applies to, or truly cross-game) or, if it does have a game filter, the filter matches current game.
 		// (e.g. EP 1/2/... achievements are in shared binary but are game specific, they have a game filter for runtime check.)
 		const char *pGameDirFilter = pAchievement->m_pGameDirFilter;
-		if ( NOV2024_ONLY( m_bIsHL2Complete || ) !pGameDirFilter || ( 0 == Q_strcmp( pGameDir, pGameDirFilter ) ) )
+		bool bIgnoreFilter = NOV2024_ONLY( m_bIsHL2Complete || ) !pGameDirFilter;
+		if ( bIgnoreFilter || ( 0 == Q_strcmp( pGameDir, pGameDirFilter ) ) )
 		{
 			m_mapAchievement.Insert( pAchievement->GetAchievementID(), pAchievement );
 			if ( pAchievement->IsMetaAchievement() )
@@ -418,11 +429,7 @@ void CAchievementMgr::PostInit()
 	// load global state from file
 	LoadGlobalState();
 #if defined( GAME_DLL ) && !defined( HL2_ANNIVERSARY_NOV2024 )
-	if ( engine->GetAppID() == 220 )
-	{
-		MigrateEpisodeData( 380, "episodic" );
-		MigrateEpisodeData( 420, "ep2" );
-	}
+	SyncEpisodeAchievements();
 #endif
 #line 416
 
@@ -673,6 +680,153 @@ bool CAchievementMgr::HasAchieved( const char *pchName )
 }
 
 //-----------------------------------------------------------------------------
+// Purpose: In hl2_complete, an achievement can only be earned while playing
+//			the game (expansion) its game dir filter names
+//-----------------------------------------------------------------------------
+#ifdef HL2_ANNIVERSARY_NOV2024
+bool CAchievementMgr::CanEarnForCurrentExpansion( int iAchievementID )
+{
+	if ( !m_bIsHL2Complete )
+		return true;
+
+	ConVarRef hl2_expansion( "hl2_expansion" );
+	if ( !hl2_expansion.IsValid() )
+		return true;
+
+	const char *pszExpansion = hl2_expansion.GetString();
+	return CanEarnForExpansion( iAchievementID, pszExpansion );
+}
+
+bool CAchievementMgr::CanEarnForExpansion( int iAchievementID, const char *pszModName )
+{
+	if ( m_bIsHL2Complete )
+	{
+		CBaseAchievement *pAchievement = GetAchievementByID( iAchievementID );
+		if ( !pAchievement )
+			return false;
+
+		const char *pGameDirFilter = pAchievement->m_pGameDirFilter;
+		if ( pGameDirFilter && Q_strcmp( pszModName, pGameDirFilter ) != 0 )
+			return false;
+	}
+
+	return true;
+}
+#endif
+
+#ifdef GAME_DLL
+//-----------------------------------------------------------------------------
+// Purpose: Brings over achievements earned in the standalone Half-Life 2 and
+//			episode installs (their GameState.txt) into hl2_complete
+//-----------------------------------------------------------------------------
+void CAchievementMgr::MigrateEpisodeData( uint32 nAppID, const char *pszModName )
+{
+#ifndef HL2_ANNIVERSARY_NOV2024
+	char szInstallDir[512];
+	if ( !SteamApps()->GetAppInstallDir( nAppID, szInstallDir, sizeof( szInstallDir ) ) )
+		return;
+
+	char szFilename[MAX_PATH];
+	V_snprintf( szFilename, sizeof( szFilename ), "%s\\%s\\GameState.txt", szInstallDir, pszModName );
+
+	KeyValues *pKV = new KeyValues( "GameState" );
+	if ( pKV->LoadFromFile( filesystem, szFilename, "ABS" ) )
+	{
+		for ( KeyValues *pNode = pKV->GetFirstSubKey(); pNode; pNode = pNode->GetNextKey() )
+		{
+			int iAchievementID = pNode->GetInt( "id", 0 );
+			if ( iAchievementID <= 0 )
+				continue;
+
+			CBaseAchievement *pAchievement = GetAchievementByID( iAchievementID );
+			if ( pAchievement )
+			{
+				pAchievement->ApplySettings( pNode );
+			}
+		}
+	}
+#else
+	const char *pPathID = NULL;
+	uint32 nHL2AppID = GetHL2AppSteamAppId( k_App_HL2 );
+
+	char szFilename[MAX_PATH];
+
+	ConVarRef developer( "developer" );
+	if ( developer.IsValid() && developer.GetBool() )
+	{
+		pPathID = "BASE_PATH";
+		V_snprintf( szFilename, sizeof( szFilename ), "%s\\GameState.txt", pszModName );
+	}
+	else
+	{
+		char szInstallDir[512];
+
+		if ( SteamApps()->GetAppInstallDir( nAppID, szInstallDir, sizeof( szInstallDir ) ) )
+		{
+			pPathID = "ABS";
+			V_snprintf( szFilename, sizeof( szFilename ), "%s\\%s\\GameState.txt", szInstallDir, pszModName );
+		}
+	}
+
+	KeyValues *pKV = new KeyValues( "GameState" );
+	if ( pKV->LoadFromFile( filesystem, szFilename, pPathID ) )
+	{
+		for ( KeyValues *pNode = pKV->GetFirstSubKey(); pNode; pNode = pNode->GetNextKey() )
+		{
+			int iAchievementID = pNode->GetInt( "id", 0 );
+			if ( iAchievementID <= 0 )
+				continue;
+
+			CBaseAchievement *pAchievement = GetAchievementByID( iAchievementID );
+			if ( !pAchievement )
+				continue;
+
+			if ( !CanEarnForExpansion( iAchievementID, pszModName ) || pAchievement->IsAchieved() )
+				continue;
+
+			pAchievement->ApplySettings( pNode );
+
+			// Achievements earned in an episode still have to be awarded through Steam here
+			if ( nAppID != nHL2AppID && pAchievement->IsAchieved() )
+			{
+				pAchievement->SetAchieved( false );
+				AwardAchievement( iAchievementID );
+			}
+		}
+	}
+#endif
+}
+
+#ifndef HL2_ANNIVERSARY_NOV2024
+static inline void MigrateHL2Episodes( CAchievementMgr *pMgr )
+{
+	if ( engine->GetAppID() == 220 )
+	{
+		pMgr->MigrateEpisodeData( 380, "episodic" );
+		pMgr->MigrateEpisodeData( 420, "ep2" );
+	}
+}
+
+void CAchievementMgr::SyncEpisodeAchievements()
+{
+	MigrateHL2Episodes( this );
+}
+#else
+void CAchievementMgr::SyncEpisodeAchievements()
+{
+	MigrateEpisodeData( GetHL2AppSteamAppId( k_App_HL2 ), GetHL2AppModName( k_App_HL2 ) );
+	MigrateEpisodeData( GetHL2AppSteamAppId( k_App_HL2_EP1 ), GetHL2AppModName( k_App_HL2_EP1 ) );
+	MigrateEpisodeData( GetHL2AppSteamAppId( k_App_HL2_EP2 ), GetHL2AppModName( k_App_HL2_EP2 ) );
+
+	SaveGlobalState( false );
+	SaveGlobalStateIfDirty( false );
+	UploadUserData();
+}
+#endif
+#endif // GAME_DLL
+#line 670
+
+//-----------------------------------------------------------------------------
 // Purpose: downloads user data from Steam or XBox Live
 //-----------------------------------------------------------------------------
 void CAchievementMgr::DownloadUserData()
@@ -782,141 +936,6 @@ void CAchievementMgr::UploadUserData()
 #endif
 	}
 }
-
-//-----------------------------------------------------------------------------
-// Purpose: In hl2_complete, an achievement can only be earned while playing
-//			the game (expansion) its game dir filter names
-//-----------------------------------------------------------------------------
-#ifdef HL2_ANNIVERSARY_NOV2024
-bool CAchievementMgr::CanEarnForCurrentExpansion( int iAchievementID )
-{
-	if ( !m_bIsHL2Complete )
-		return true;
-
-	ConVarRef hl2_expansion( "hl2_expansion" );
-	if ( !hl2_expansion.IsValid() )
-		return true;
-
-	const char *pszExpansion = hl2_expansion.GetString();
-	return CanEarnForExpansion( iAchievementID, pszExpansion );
-}
-
-bool CAchievementMgr::CanEarnForExpansion( int iAchievementID, const char *pszModName )
-{
-	if ( m_bIsHL2Complete )
-	{
-		CBaseAchievement *pAchievement = GetAchievementByID( iAchievementID );
-		if ( !pAchievement )
-			return false;
-
-		const char *pGameDirFilter = pAchievement->m_pGameDirFilter;
-		if ( pGameDirFilter && Q_strcmp( pszModName, pGameDirFilter ) != 0 )
-			return false;
-	}
-
-	return true;
-}
-#endif
-#line 802
-
-#ifdef GAME_DLL
-//-----------------------------------------------------------------------------
-// Purpose: Brings over achievements earned in the standalone Half-Life 2 and
-//			episode installs (their GameState.txt) into hl2_complete
-//-----------------------------------------------------------------------------
-void CAchievementMgr::MigrateEpisodeData( uint32 nAppID, const char *pszModName )
-{
-#ifndef HL2_ANNIVERSARY_NOV2024
-	char szInstallDir[512];
-	if ( !SteamApps()->GetAppInstallDir( nAppID, szInstallDir, sizeof( szInstallDir ) ) )
-		return;
-
-	char szFilename[MAX_PATH];
-	V_snprintf( szFilename, sizeof( szFilename ), "%s\\%s\\GameState.txt", szInstallDir, pszModName );
-
-	KeyValues *pKV = new KeyValues( "GameState" );
-	if ( pKV->LoadFromFile( filesystem, szFilename, "ABS" ) )
-	{
-		for ( KeyValues *pNode = pKV->GetFirstSubKey(); pNode; pNode = pNode->GetNextKey() )
-		{
-			int iAchievementID = pNode->GetInt( "id", 0 );
-			if ( iAchievementID <= 0 )
-				continue;
-
-			CBaseAchievement *pAchievement = GetAchievementByID( iAchievementID );
-			if ( pAchievement )
-			{
-				pAchievement->ApplySettings( pNode );
-			}
-		}
-	}
-#else
-	const char *pPathID = NULL;
-	uint32 nHL2AppID = GetHL2AppSteamAppId( k_App_HL2 );
-
-	char szFilename[MAX_PATH];
-
-	ConVarRef developer( "developer" );
-	if ( developer.IsValid() && developer.GetBool() )
-	{
-		pPathID = "BASE_PATH";
-		V_snprintf( szFilename, sizeof( szFilename ), "%s\\GameState.txt", pszModName );
-	}
-	else
-	{
-		char szInstallDir[512];
-
-		if ( SteamApps()->GetAppInstallDir( nAppID, szInstallDir, sizeof( szInstallDir ) ) )
-		{
-			pPathID = "ABS";
-			V_snprintf( szFilename, sizeof( szFilename ), "%s\\%s\\GameState.txt", szInstallDir, pszModName );
-		}
-	}
-
-	KeyValues *pKV = new KeyValues( "GameState" );
-	if ( pKV->LoadFromFile( filesystem, szFilename, pPathID ) )
-	{
-		for ( KeyValues *pNode = pKV->GetFirstSubKey(); pNode; pNode = pNode->GetNextKey() )
-		{
-			int iAchievementID = pNode->GetInt( "id", 0 );
-			if ( iAchievementID <= 0 )
-				continue;
-
-			CBaseAchievement *pAchievement = GetAchievementByID( iAchievementID );
-			if ( !pAchievement )
-				continue;
-
-			if ( !CanEarnForExpansion( iAchievementID, pszModName ) || pAchievement->IsAchieved() )
-				continue;
-
-			pAchievement->ApplySettings( pNode );
-
-			// Achievements earned in an episode still have to be awarded through Steam here
-			if ( nAppID != nHL2AppID && pAchievement->IsAchieved() )
-			{
-				pAchievement->SetAchieved( false );
-				AwardAchievement( iAchievementID );
-			}
-		}
-	}
-#endif
-#line 858
-}
-
-#ifdef HL2_ANNIVERSARY_NOV2024
-void CAchievementMgr::SyncEpisodeAchievements()
-{
-	MigrateEpisodeData( GetHL2AppSteamAppId( k_App_HL2 ), GetHL2AppModName( k_App_HL2 ) );
-	MigrateEpisodeData( GetHL2AppSteamAppId( k_App_HL2_EP1 ), GetHL2AppModName( k_App_HL2_EP1 ) );
-	MigrateEpisodeData( GetHL2AppSteamAppId( k_App_HL2_EP2 ), GetHL2AppModName( k_App_HL2_EP2 ) );
-
-	SaveGlobalState( false );
-	SaveGlobalStateIfDirty( false );
-	UploadUserData();
-}
-#endif
-#line 870
-#endif // GAME_DLL
 
 //-----------------------------------------------------------------------------
 // Purpose: loads global state from file

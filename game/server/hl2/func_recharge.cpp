@@ -344,7 +344,7 @@ public:
 	bool KeyValue( const char *szKeyName, const char *szValue );
 	void Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value );
 	virtual int	ObjectCaps( void ) { return (BaseClass::ObjectCaps() | m_iCaps ); }
-	NOV2024_ONLY( virtual float GetAutoAimRadius() { return 20.0f; } )
+	NOV2024_ONLY( virtual float GetAutoAimRadius(); )
 	void SetInitialCharge( void );
 
 private:
@@ -502,6 +502,13 @@ bool CNewRecharge::CreateVPhysics()
 	VPhysicsInitStatic();
 	return true;
 }
+
+#ifdef HL2_ANNIVERSARY_NOV2024
+float CNewRecharge::GetAutoAimRadius()
+{
+	return 20.0f;
+}
+#endif
 
 int CNewRecharge::DrawDebugTextOverlays(void) 
 {

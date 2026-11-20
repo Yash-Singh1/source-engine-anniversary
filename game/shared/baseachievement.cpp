@@ -192,6 +192,16 @@ void CBaseAchievement::Event_EntityKilled( CBaseEntity *pVictim, CBaseEntity *pA
 	IncrementCount();
 }
 
+#ifdef HL2_ANNIVERSARY_NOV2024
+bool CBaseAchievement::LocalPlayerCanEarn( void )
+{
+	if ( !m_pAchievementMgr || !m_pAchievementMgr->CanEarnForCurrentExpansion( GetAchievementID() ) )
+		return false;
+
+	return true;
+}
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose: called when an event that counts toward an achievement occurs
 //-----------------------------------------------------------------------------
@@ -541,18 +551,6 @@ bool CBaseAchievement::ShouldSaveGlobal()
 	return ( ( ( m_iFlags & ACH_SAVE_GLOBAL ) > 0 && ( GetCount() > 0 ) ) || IsAchieved() || ( m_iProgressShown > 0 ) || ShouldShowOnHUD() NOV2024_ONLY( || ( m_iComponentBits > 0 ) ) );
 }
 
-#ifdef HL2_ANNIVERSARY_NOV2024
-//-----------------------------------------------------------------------------
-// Purpose: Can the local player earn this achievement in the game being played?
-//-----------------------------------------------------------------------------
-bool CBaseAchievement::LocalPlayerCanEarn( void )
-{
-	if ( !m_pAchievementMgr || !m_pAchievementMgr->CanEarnForCurrentExpansion( GetAchievementID() ) )
-		return false;
-
-	return true;
-}
-#endif
 #line 554
 
 //-----------------------------------------------------------------------------

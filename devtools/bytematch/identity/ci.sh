@@ -27,6 +27,18 @@ if [ ! -f "$OUT/c4che/_cache.py" ] || ! grep -q "sdk2013mp" "$OUT/c4che/_cache.p
 		--retail-modules=tier0,tier1,mathlib,tier2,tier3,vstdlib,appframework,bitmap,vtf,utils/vtex,inputsystem,video,video/video_quicktime,soundemittersystem,scenefilecache,utils/bugreporter_public,utils/bugreporter_filequeue,materialsystem,materialsystem/shaderlib,materialsystem/stdshaders,engine/voice_codecs/miles,launcher,launcher_main,togl,vpklib,utils/vpk,filesystem,sourcevr,utils/bsppack,vgui2/src,vgui2/vgui_controls,vgui2/matsys_controls,serverbrowser,materialsystem/shaderapiempty,vgui2/chromehtml,utils/bzip2,replay/common,replay,vgui2/vgui_surfacelib,vguimatsurface,materialsystem/shaderapidx9,datacache,gameui,dmxloader,datamodel,engine
 fi
 python3 devtools/bytematch/toolchain/win32/winline.py --check
-python3 waf build
+JOBS_FLAG=${WAF_JOBS:+-j$WAF_JOBS}
+python3 waf build $JOBS_FLAG
 python3 waf retail_linkdb
-exec devtools/bytematch/identity/identity.py --identical --build-dir "$OUT"
+SERVER_MODULES=tier0,tier1,mathlib,tier2,tier3,vstdlib,bitmap,vtf,choreoobjects,dmxloader,particles,vgui2/vgui_controls,vgui2/matsys_controls
+for g in lostcoast episodic; do
+	GOUT="${OUT}-${g}"
+	GLOCK="${WAFLOCK:-.lock-waf_darwin_build}-${g}"
+	if [ ! -f "$GOUT/c4che/_cache.py" ]; then
+		WAFLOCK="$GLOCK" python3 waf configure --retail-osx32 -T release --prefix='' -o "$GOUT" \
+			--build-games="$g" --retail-modules="$SERVER_MODULES"
+	fi
+	WAFLOCK="$GLOCK" python3 waf build --targets=server $JOBS_FLAG
+	WAFLOCK="$GLOCK" python3 waf retail_linkdb
+done
+exec devtools/bytematch/identity/identity.py --identical --build-dir "$OUT" $JOBS_FLAG

@@ -147,7 +147,6 @@ BEGIN_DATADESC_NO_BASE( CFourWheelVehiclePhysics )
 	DEFINE_FIELD( m_bLastBoost, FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_bLastSkid, FIELD_BOOLEAN ),
 END_DATADESC()
-ConVar sv_airboat_wheel_fix( "sv_airboat_wheel_fix", "0", FCVAR_ARCHIVE, "Worksaround the wheel being misnamed on the airboat (wheele_rr vs wheel_rr) for people who prefer 'fixed' handling. Only affects new spawns." );
 
 //-----------------------------------------------------------------------------
 // Constructor
@@ -248,6 +247,8 @@ bool CFourWheelVehiclePhysics::ParseVehicleScript( const char *pScriptName, soli
 
 	return true;
 }
+
+ConVar sv_airboat_wheel_fix( "sv_airboat_wheel_fix", "0", FCVAR_ARCHIVE, "Worksaround the wheel being misnamed on the airboat (wheele_rr vs wheel_rr) for people who prefer 'fixed' handling. Only affects new spawns." );
 
 void CFourWheelVehiclePhysics::CalcWheelData( vehicleparams_t &vehicle )
 {

@@ -92,6 +92,16 @@ def build(bld):
 			archives['lib%s.a' % lib] = bld.retail_stlib_variant(lib, '_lc', ['-DHL2_LOSTCOAST'])
 		libs = [archives.get('lib%s.a' % u, u) for u in libs]
 
+	if retail and retail_module:
+		import retail_manifest
+		retail_manifest.RETAIL_DEAD.setdefault(retail_module, [
+			('common/language.cpp', 'game/server/serverbenchmark_base.cpp'),
+			('game/shared/ehandle.cpp', 'game/shared/entitylist_base.cpp'),
+			('game/shared/SceneCache.cpp', 'game/shared/sceneentity_shared.cpp'),
+			('game/shared/sheetsimulator.cpp', 'game/shared/singleplay_gamerules.cpp'),
+			('public/ScratchPadUtils.cpp', 'public/server_class.cpp'),
+		])
+
 	bld.shlib(
 		source   = source,
 		target   = PROJECT_NAME,
