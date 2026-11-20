@@ -1446,10 +1446,10 @@ bool CSchemeManager::DeleteImage( const char *pImageName )
 IBorder *CScheme::GetBorder(const char *borderName)
 {
 	IBorder *border = GetBorder2( borderName );
-	if ( !border )
-		return m_pBaseBorder;
+	if ( border )
+		return border;
 
-	return border;
+	return m_pBaseBorder;
 }
 
 //-----------------------------------------------------------------------------

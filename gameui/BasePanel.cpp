@@ -901,8 +901,8 @@ CBasePanel::CBasePanel() : Panel(NULL, "BaseGameUIPanel")
 	m_iProductImageID = -1;
 	m_iLoadingImageID = -1;
 
-	m_hGameTitleFont2 = 0;
-	m_hGameTitleFont = 0;
+	m_hGameTitleFont[0] = 0;
+	m_hGameTitleFont[1] = 0;
 	m_hWorkshopTitleFont = 0;
 
 	if ( GameUI().IsConsoleUI() )
@@ -1644,14 +1644,12 @@ void CBasePanel::UpdateTitleText( bool bExpansion )
 	if ( m_pGameMenuButtons.Count() < 2 )
 		return;
 
-	if ( !m_hGameTitleFont )
+	for ( int i = 0; i < 2; i++ )
 	{
-		m_hGameTitleFont = m_pGameMenuButtons[0]->GetFont();
-	}
-
-	if ( !m_hGameTitleFont2 )
-	{
-		m_hGameTitleFont2 = m_pGameMenuButtons[1]->GetFont();
+		if ( !m_hGameTitleFont[i] )
+		{
+			m_hGameTitleFont[i] = m_pGameMenuButtons[i]->GetFont();
+		}
 	}
 
 	if ( !m_hWorkshopTitleFont )
@@ -1685,10 +1683,11 @@ void CBasePanel::UpdateTitleText( bool bExpansion )
 		WorkshopItem_t *pItem = workshop->GetItem( nCampaignID );
 		if ( pItem )
 		{
-			const char *pszTitle = pItem->m_pCampaignData->GetString( "TitleOverride", "" );
-			if ( !pszTitle || !pszTitle[0] )
+			const char *pszTitle = pItem->m_Details.m_rgchTitle;
+			const char *pszOverride = pItem->m_pCampaignData->GetString( "TitleOverride", "" );
+			if ( pszOverride && pszOverride[0] )
 			{
-				pszTitle = pItem->m_Details.m_rgchTitle;
+				pszTitle = pszOverride;
 			}
 
 			wchar_t wszTitle[ k_cchPublishedDocumentTitleMax ];
@@ -1703,8 +1702,10 @@ void CBasePanel::UpdateTitleText( bool bExpansion )
 	}
 	else
 	{
-		m_pGameMenuButtons[0]->SetFont( m_hGameTitleFont );
-		m_pGameMenuButtons[1]->SetFont( m_hGameTitleFont2 );
+		for ( int i = 0; i < 2; i++ )
+		{
+			m_pGameMenuButtons[i]->SetFont( m_hGameTitleFont[i] );
+		}
 	}
 
 	for ( int i = 0; i < m_pGameMenuButtons.Count(); ++i )
