@@ -69,7 +69,7 @@ void CTGAImagePanel::Paint()
 		if ( m_iTextureID == -1 )
 		{
 			m_iTextureID = vgui::surface()->CreateNewTextureID( true );
-			SetSize( PROPORTIONAL_VALUE( 180 ), PROPORTIONAL_VALUE( 100 ) );
+			SetSize( QuickPropScale( 180 ), QuickPropScale( 100 ) );
 		}
 
 		// load the file
@@ -80,7 +80,7 @@ void CTGAImagePanel::Paint()
 			surface()->DrawSetTextureRGBA( m_iTextureID, tga.Base(), m_iImageWidth, m_iImageHeight, true, true );
 			m_bHasValidTexture = true;
 			// set our size to be the size of the tga
-			SetSize( PROPORTIONAL_VALUE( m_iImageWidth ), PROPORTIONAL_VALUE( m_iImageHeight ) );
+			SetSize( QuickPropScale( m_iImageWidth ), QuickPropScale( m_iImageHeight ) );
 		}
 		else
 		{
@@ -93,8 +93,8 @@ void CTGAImagePanel::Paint()
 	if ( m_bHasValidTexture )
 	{
 		surface()->DrawGetTextureSize( m_iTextureID, wide, tall );
-		wide = PROPORTIONAL_VALUE( wide );
-		tall = PROPORTIONAL_VALUE( tall );
+		wide = QuickPropScale( wide );
+		tall = QuickPropScale( tall );
 		surface()->DrawSetTexture( m_iTextureID );
 		surface()->DrawSetColor( 255, 255, 255, 255 );
 		surface()->DrawTexturedRect( 0, 0, wide, tall );
@@ -102,8 +102,8 @@ void CTGAImagePanel::Paint()
 	else
 	{
 		// draw a black fill instead
-		wide = PROPORTIONAL_VALUE( wide );
-		tall = PROPORTIONAL_VALUE( tall );
+		wide = QuickPropScale( wide );
+		tall = QuickPropScale( tall );
 		surface()->DrawSetColor( 0, 0, 0, 255 );
 		surface()->DrawFilledRect( 0, 0, wide, tall );
 	}

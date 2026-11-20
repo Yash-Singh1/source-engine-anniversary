@@ -64,7 +64,7 @@ void URLButton::Init()
 	_mouseClickMask = 0;
 	_actionMessage = NULL;
 	m_bSelectionStateSaved = false;
-	SetTextInset( PROPORTIONAL_VALUE( 6 ), 0 );
+	SetTextInset( QuickPropScale( 6 ), 0 );
 	SetMouseClickEnabled( MOUSE_LEFT, true );
 	SetButtonActivationType(ACTIVATE_ONPRESSEDANDRELEASED);
 
@@ -249,7 +249,7 @@ void URLButton::Paint(void)
    GetSize(controlWidth, controlHeight);
    GetContentSize(textWidth, textHeight);
    x = textWidth;
-   y = controlHeight - PROPORTIONAL_VALUE( 4 );
+   y = controlHeight - QuickPropScale( 4 );
 
    int insetX, insetY;
    GetTextInset( &insetX, &insetY );
@@ -620,6 +620,6 @@ void URLButton::SizeToContents()
 {
 	int wide, tall;
 	GetContentSize(wide, tall);
-	SetSize( wide + PROPORTIONAL_VALUE( Label::Content ), tall + PROPORTIONAL_VALUE( Label::Content ) );
+	SetSize( wide + QuickPropScale( Label::Content ), tall + QuickPropScale( Label::Content ) );
 }
 

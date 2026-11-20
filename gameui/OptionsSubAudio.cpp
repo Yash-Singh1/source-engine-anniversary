@@ -390,7 +390,7 @@ public:
 #ifdef BYTEMATCH_RETAIL
 		SetParent( enginevguifuncs->GetPanel( PANEL_GAMEUIDLL ) );
 		SetTitle("#GameUI_ThirdPartyAudio_Title", true);
-		SetSize( PROPORTIONAL_VALUE( 500 ), PROPORTIONAL_VALUE( 210 ) );
+		SetSize( QuickPropScale( 500 ), QuickPropScale( 210 ) );
 #else
 		int w = 500;
 		int h = 200;
