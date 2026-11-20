@@ -2322,7 +2322,7 @@ bool CShaderManager::CreateDynamicCombos_Ver5( void *pContext, uint8 *pComboBuff
 			{
 				nBlockSize &= 0x3fffffff;
 
-				size_t nOutsize = CLZMA().Uncompress(
+				CLZMA lzma; size_t nOutsize = lzma.Uncompress(
 					reinterpret_cast<uint8 *>( pCompressedShaders ),
 					pUnpackBuffer );
 				pCompressedShaders += nBlockSize;

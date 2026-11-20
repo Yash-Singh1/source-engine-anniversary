@@ -386,15 +386,20 @@ public:
 #ifdef IS_WINDOWS_PC
 		#pragma warning( suppress : 4535 )
 		_se_translator_function curfilter = _set_se_translator( &FailSafe );
-#endif
 		try
+#elif defined( LINUX )
+		sig_t curfilter = signal( SIGSEGV, posix_signal_handler );
+		DO_TRY
+#else
+		try
+#endif
 		{
 			int nCommentLength = m_nSize;
 			bool bExtendedSpew = sys_minidumpexpandedspew.GetBool();
 			if ( !bExtendedSpew )
 			{
 				// Keep the comment small unless extended spew is wanted
-				nCommentLength = MIN( m_nSize, 3500 );
+				nCommentLength = Min( m_nSize, 3500 );
 			}
 
 			Q_memset( m_errorText, 0x00, nCommentLength );
@@ -447,12 +452,18 @@ public:
 				SteamAPI_SetMiniDumpComment( m_errorText );
 			}
 		}
+#if defined( LINUX )
+		DO_CATCH
+#else
 		catch ( ... )
+#endif
 		{
 			// Oh oh
 		}
 #ifdef IS_WINDOWS_PC
 		_set_se_translator( curfilter );
+#elif defined( LINUX )
+		signal( SIGSEGV, curfilter );
 #endif
 	}
 
@@ -1360,7 +1371,11 @@ void CEngineAPI::SetStartupInfo( StartupInfo_t &info )
 #ifndef NO_STEAM
 	if ( !CommandLine()->FindParm( "-nobreakpad" ) )
 	{
+#if defined( LINUX )
+		const char szSuffix[] = "_client";
+#else
 		const char szSuffix[] = "";
+#endif
 		const char *pchVersion = va( "%d%s", build_number(), szSuffix );
 		SteamAPI_UseBreakpadCrashHandler( pchVersion, __DATE__, __TIME__,
 #ifdef _WIN32
@@ -1368,7 +1383,12 @@ void CEngineAPI::SetStartupInfo( StartupInfo_t &info )
 #else
 			false,
 #endif
-			NULL, NULL );
+#ifdef LINUX
+			this, PosixPreMinidumpCallback
+#else
+			NULL, NULL
+#endif
+			);
 	}
 #endif
 
@@ -2048,8 +2068,14 @@ bool CEngineAPI::ModInit( const char *pModName, const char *pGameDir )
 	// Set up the engineparms_t which contains global information about the mod
 #ifdef BYTEMATCH_RETAIL
 	char szExpansionId[16];
-	bool bExpansion = g_pFileSystem->GetCurrentGameExpansionId( szExpansionId, sizeof( szExpansionId ) );
-	host_parms.mod = COM_StringCopy( bExpansion ? GetModDirFromPath( szExpansionId ) : GetModDirFromPath( pModName ) );
+	if ( g_pFileSystem->GetCurrentGameExpansionId( szExpansionId, sizeof( szExpansionId ) ) )
+	{
+		host_parms.mod = COM_StringCopy( GetModDirFromPath( szExpansionId ) );
+	}
+	else
+	{
+		host_parms.mod = COM_StringCopy( GetModDirFromPath( pModName ) );
+	}
 #else
 	host_parms.mod = COM_StringCopy( GetModDirFromPath( pModName ) );
 #endif
@@ -2084,7 +2110,7 @@ bool CEngineAPI::ModInit( const char *pModName, const char *pGameDir )
 	// Create the game window now that we have a search path
 	// FIXME: Deal with initial window width + height better
 #ifdef BYTEMATCH_RETAIL
-	if ( !videomode || !videomode->CreateGameWindow( g_pMaterialSystemConfig->m_VideoMode.m_Width, g_pMaterialSystemConfig->m_VideoMode.m_Height, bWindowed, ( g_pMaterialSystemConfig->m_Flags & MATSYS_VIDCFG_FLAGS_NO_WINDOW_BORDER ) != 0 ) )
+	if ( !videomode || !videomode->CreateGameWindow( g_pMaterialSystemConfig->m_VideoMode.m_Width, g_pMaterialSystemConfig->m_VideoMode.m_Height, bWindowed, g_pMaterialSystemConfig->NoWindowBorder() ) )
 #else
 	if ( !videomode || !videomode->CreateGameWindow( g_pMaterialSystemConfig->m_VideoMode.m_Width, g_pMaterialSystemConfig->m_VideoMode.m_Height, bWindowed ) )
 #endif

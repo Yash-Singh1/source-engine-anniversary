@@ -84,6 +84,10 @@ def side_mask(f, data, both_linked):
     branches leaving the function (resolved by the assembler without a
     relocation for same-section targets) are added. Two linked images have no
     relocations for PIC/absolute operands, so heuristics fill in."""
+    if not both_linked and data is f.data:
+        cached = getattr(f, '_side_mask', None)
+        if cached is not None:
+            return cached
     n = len(data)
     mask, labels = set(), {}
     for rel in f.relocs:
@@ -101,6 +105,8 @@ def side_mask(f, data, both_linked):
             names = mod.resolve(tgt)
             if names:
                 labels.setdefault(off, names[0])
+    if not both_linked and data is f.data:
+        f._side_mask = (mask, labels)
     return mask, labels
 
 
@@ -151,16 +157,24 @@ def check_targets(r, o, rdata, odata):
 _NPAD = (b'', b'\x90', b'\x8b\xff', b'\x8d\x49\x00', b'\x90\x90', b'\x90\x90\x90')
 
 
+def _ends_ret(r, n):
+    """True when r.data[:n] ends with `ret` (`c3`) or `ret imm16` (`c2 xx xx`)."""
+    return n > 0 and (r.data[n - 1] == 0xc3 or (n >= 3 and r.data[n - 3] == 0xc2))
+
+
 def _ends_at(r, n):
     """Evidence that a retail function whose guessed extent runs on (stripped PE) ends after n
     bytes: the symbol-port found an unnamed function there, an MSVC frame prologue starts on the
-    next 16-byte boundary, or the bytes there are a switch jump table pointing back into the
-    first n bytes (our COFF functions end before their tables, see coff.py)."""
+    next 16-byte boundary, a 16-byte-aligned call target follows a `ret`, or the bytes there are
+    a switch jump table pointing back into the first n bytes (our COFF functions end before their
+    tables, see coff.py)."""
     end = r.addr + n
     if end in r.module.port_starts:
         return True
     tail = r.data[n:n + 16]
     if end % 16 == 0 and tail[:3] == b'\x55\x8b\xec':
+        return True
+    if end % 16 == 0 and _ends_ret(r, n) and end in r.module.call_targets():
         return True
     for pad in _NPAD:
         k = n + len(pad)
@@ -183,11 +197,71 @@ def _late_start(r, o):
     return 0
 
 
-def compare(r, o, target_check=True):
-    j = _late_start(r, o)
+def _find_late_start(r, o, target_check):
+    """When a stripped-PE guessed extent merges an unnamed preceding function or jump table
+    before ours, scan 16-byte-aligned boundaries inside `r.data` for an exact/masked match of `o`."""
+    if r.size_known or not r.module.linked or len(o.data) < 8 or len(r.data) <= len(o.data):
+        return None
+    k = min([rel.offset for rel in o.relocs] + [4])
+    head = o.data[:k]
+    first_j = (16 - (r.addr & 15)) & 15 or 16
+    limit = len(r.data) - len(o.data)
+    for j in range(first_j, limit + 1, 16):
+        if head and r.data[j:j + k] != head:
+            continue
+        va = r.addr + j
+        if r.data[j - 1] not in _PAD and va not in r.module.port_starts and va not in r.module.call_targets():
+            continue
+        sub = compare(replace(r, addr=va, data=r.data[j:], raw_size=max(r.raw_size - j, 0)), o, target_check, _late=False, _line_check=False)
+        if sub.status in (EXACT, MASKED):
+            sub.retail = r
+            sub.matched_at = va
+            return sub
+    return None
+
+
+def _find_early_start(r, o, target_check):
+    """When a stripped-PE map entry starts mid-function (e.g. after an inlined DebuggerBreak
+    int3 inside CThreadFastMutex::Lock), scan back up to 96 bytes to a 16-byte-aligned
+    unnamed function start (`port_starts` or `call_targets`) whose bytes match `o`."""
+    if r.size_known or not r.module.linked or len(o.data) < 8 or len(r.data) >= len(o.data):
+        return None
+    k = min([rel.offset for rel in o.relocs] + [4])
+    head = o.data[:k]
+    n = len(o.data)
+    lo = (r.addr - 96) & ~15
+    for va in range((r.addr - 1) & ~15, lo - 1, -16):
+        if va >= r.addr or va + n <= r.addr:
+            continue
+        if va not in r.module.port_starts and va not in r.module.call_targets():
+            continue
+        fn = r.module.function_at(va)
+        if fn is not None and fn.addr == va and not (
+                not fn.size_known and 0 <= r.addr - (fn.addr + fn.raw_size) <= 1 and r.module.read(r.addr - 1, 1) == b'\xcc'):
+            continue
+        cand = r.module.read(va, n + 1)
+        if len(cand) < n or (head and cand[:k] != head):
+            continue
+        end = va + n
+        boundary = r.module.function_at(end)
+        if len(cand) > n and cand[n] not in _PAD and (boundary is None or boundary.addr != end) \
+                and end not in r.module.port_starts and end not in r.module.call_targets():
+            continue
+        sub = compare(replace(r, addr=va, data=cand[:n], size_known=True, raw_size=n), o, target_check, _late=False, _line_check=False)
+        if sub.status in (EXACT, MASKED) or (sub.status == DIFFERS and sub.target_mismatches):
+            sub.retail = r
+            sub.matched_at = va
+            return sub
+    return None
+
+
+def compare(r, o, target_check=True, _late=True, _line_check=True):
+    j = _late_start(r, o) if _late else 0
     if j:
-        res = compare(replace(r, addr=r.addr + j, data=r.data[j:], raw_size=max(r.raw_size - j, 0)), o, target_check)
+        res = compare(replace(r, addr=r.addr + j, data=r.data[j:], raw_size=max(r.raw_size - j, 0)), o, target_check, _late=False, _line_check=_line_check)
         res.retail = r
+        if res.status in (EXACT, MASKED):
+            res.matched_at = r.addr + j
         return res
     odata = o.data
     rdata = r.data
@@ -209,9 +283,18 @@ def compare(r, o, target_check=True):
     if rdata == odata and not tail_note:
         return res
     if len(rdata) != len(odata):
+        if _late:
+            early = _find_early_start(r, o, target_check)
+            if early is not None:
+                return early
         res.status = DIFFERS
         res.reason = f'size retail {len(rdata)} vs ours {len(odata)}'
         res.first_diff = next((i for i, (a, b) in enumerate(zip(rdata, odata)) if a != b), min(len(rdata), len(odata)))
+        return res
+    if tail_note and not _late:
+        res.status = DIFFERS
+        res.reason = tail_note
+        res.first_diff = len(odata)
         return res
     mask, _ = build_mask(r, o, rdata, odata)
     res.masked_bytes = len(mask)
@@ -227,9 +310,16 @@ def compare(r, o, target_check=True):
                 res.reason = f'reloc target at +{k:#x}: ours {ours_t}, retail {ret_t}'
                 res.first_diff = k
         return res
+    if _late:
+        late = _find_late_start(r, o, target_check)
+        if late is not None:
+            return late
+        early = _find_early_start(r, o, target_check)
+        if early is not None:
+            return early
     res.status = DIFFERS
     res.first_diff = first if first is not None else n
-    if len(rdata) == len(odata) and not tail_note:
+    if _line_check and len(rdata) == len(odata) and not tail_note:
         rz = bytes(0 if i in mask else c for i, c in enumerate(rdata))
         oz = bytes(0 if i in mask else c for i, c in enumerate(odata))
         lc = x86.line_constant_diffs(rz, oz)

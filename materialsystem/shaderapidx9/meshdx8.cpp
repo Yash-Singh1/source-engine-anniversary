@@ -5952,7 +5952,9 @@ void CMeshMgr::Draw( MaterialPrimitiveType_t primitiveType, int nFirstIndex, int
 void CMeshMgr::RenderPassWithVertexAndIndexBuffers( void )
 {
 //	LOCK_SHADERAPI(); MESHFIXME
+#line 5883
 	VPROF( "CShaderAPIDX8::RenderPassWithVertexAndIndexBuffers" );
+#line 5886
 
 	Assert( m_PrimitiveType != MATERIAL_HETEROGENOUS );
 
@@ -5976,7 +5978,9 @@ void CMeshMgr::RenderPassWithVertexAndIndexBuffers( void )
 
 //			Warning( "CMeshMgr::RenderPassWithVertexAndIndexBuffers: DrawIndexedPrimitive: m_nFirstIndex = %d numPrimitives = %d\n", ( int )( ( CDynamiCIndexBufferDx8 * )m_pCurrentIndexBuffer )->m_FirstIndex, ( int )( m_nNumIndices / 3 ) );
 			{
+#line 5907
 				VPROF( "Dx9Device()->DrawIndexedPrimitive" );
+#line 5910
 //				VPROF_INCREMENT_COUNTER( "DrawIndexedPrimitive", 1 );
 //				VPROF_INCREMENT_COUNTER( "numPrimitives", numPrimitives );
 

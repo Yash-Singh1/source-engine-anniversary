@@ -1514,7 +1514,11 @@ void CGLMTex::WriteTexels( GLMTexLockDesc *desc, bool writeWholeSlice, bool noDa
 				
 				gGL->glCompressedTexImage3D(	target,						// target
 										desc->m_req.m_mip,			// level
+#ifdef BYTEMATCH_RETAIL
+										format->m_glIntFormat,		// internalformat
+#else
 										intformat,					// internalformat
+#endif
 										slice->m_xSize,				// width
 										slice->m_ySize,				// height
 										slice->m_zSize,				// depth
@@ -1528,7 +1532,11 @@ void CGLMTex::WriteTexels( GLMTexLockDesc *desc, bool writeWholeSlice, bool noDa
 				// http://www.opengl.org/sdk/docs/man/xhtml/glTexImage3D.xml
 				gGL->glTexImage3D(			target,						// target
 										desc->m_req.m_mip,			// level
+#ifdef BYTEMATCH_RETAIL
+										format->m_glIntFormat,		// internalformat
+#else
 										intformat,					// internalformat
+#endif
 										slice->m_xSize,				// width
 										slice->m_ySize,				// height
 										slice->m_zSize,				// depth

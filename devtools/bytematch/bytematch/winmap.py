@@ -28,6 +28,11 @@ EQUIV = {}
 # link /MAP files; compare.check_targets accepts a retail target in the same group.
 FOLDED = {}
 
+# (map_path, pe_path) pairs from load_link_map(); lazily loaded by link_map_func() so
+# static-lib or own-object comparisons can byte-verify call targets defined in other TUs.
+_LINK_MAPS = []
+_LINK_MAP_CACHE = None
+
 _CC = re.compile(r'\b__(?:thiscall|cdecl|stdcall|fastcall|vectorcall|clrcall|ptr32|ptr64)\b')
 _ACCESS = re.compile(r'^(?:public|private|protected): ')
 _KW = re.compile(r'\b(?:class|struct|union|enum) ')
@@ -104,6 +109,61 @@ def _drop_return_type(head):
     return head
 
 
+def _unwrap_fnptr_return(s):
+    """'void * (* Foo::Bar(void))(int)' -> 'Foo::Bar(void)' (MSVC undname syntax for functions
+    returning a function pointer; Itanium c++filt omits return types)."""
+    while True:
+        p = _top_level_paren(s)
+        if p < 0:
+            break
+        head = s[:p].strip()
+        if not head.endswith(')'):
+            break
+        depth, op = 0, -1
+        for i in range(len(head) - 1, -1, -1):
+            if head[i] == ')':
+                depth += 1
+            elif head[i] == '(':
+                depth -= 1
+                if depth == 0:
+                    op = i
+                    break
+        if op < 0:
+            break
+        inner = head[op + 1:-1].strip()
+        if not inner.startswith('*') or '(' not in inner:
+            break
+        s = inner[1:].strip()
+    return s
+
+
+def _strip_repeated_template(head):
+    """'Foo<T>::~Foo<T>' -> 'Foo<T>::~Foo' (MSVC repeats class template args on ctors/dtors;
+    Itanium omits them)."""
+    if not head.endswith('>'):
+        return head
+    depth, lt = 0, -1
+    for i in range(len(head) - 1, -1, -1):
+        if head[i] == '>':
+            depth += 1
+        elif head[i] == '<':
+            depth -= 1
+            if depth == 0:
+                lt = i
+                break
+    if lt < 0:
+        return head
+    targs, before = head[lt:], head[:lt]
+    sep = before.rfind('::')
+    if sep < 0:
+        return head
+    member = before[sep + 2:]
+    cls = member[1:] if member.startswith('~') else member
+    if cls and before[:sep].endswith(cls + targs):
+        return before
+    return head
+
+
 def sig(demangled):
     """Normalised signature of a demangled MSVC or Itanium function name, or None."""
     s = demangled.strip()
@@ -130,11 +190,14 @@ def sig(demangled):
     s = _ACCESS.sub('', s)
     s = re.sub(r'^(?:virtual |static )+', '', s)
     s = _CC.sub('', s)
+    s = _unwrap_fnptr_return(s)
     p = _top_level_paren(s)
     if p < 0:
         return None
     head, tail = s[:p].strip(), s[p:]
     head = _drop_return_type(head)
+    head = re.sub(r'\s+', '', _KW.sub('', head))
+    head = _strip_repeated_template(head)
     tail = tail.replace('(void)', '()')
     out = head + tail
     out = _KW.sub('', out)
@@ -175,6 +238,7 @@ _MAP_PUBLIC = re.compile(r'^\s*[0-9a-fA-F]{4}:[0-9a-fA-F]{8}\s+(\S+)\s+([0-9a-fA
 
 def load_link_map(path):
     """Fill FOLDED from an MSVC link /MAP file: code symbols that share an address."""
+    global _LINK_MAP_CACHE
     from .model import canonical
     at = {}
     with open(path, errors='replace') as f:
@@ -189,7 +253,36 @@ def load_link_map(path):
         keys |= {k for k in (sig(dem[n]) for n in g if n in dem) if k}
         for k in keys:
             FOLDED.setdefault(k, set()).update(keys)
+    base = os.path.splitext(path)[0]
+    for ext in ('.dll', '.exe'):
+        pe = base + ext
+        if os.path.exists(pe) and (path, pe) not in _LINK_MAPS:
+            _LINK_MAPS.append((path, pe))
+            _LINK_MAP_CACHE = None
+            break
     return len(groups)
+
+
+def link_map_func(name):
+    """Our linked PE's Function for `name` (from the sibling binary of --ours-link-map), or None."""
+    global _LINK_MAP_CACHE
+    if not name or not _LINK_MAPS:
+        return None
+    if _LINK_MAP_CACHE is None:
+        from . import loader, mapfile
+        from .model import canonical
+        _LINK_MAP_CACHE = {}
+        for map_path, pe_path in _LINK_MAPS:
+            try:
+                mod = loader.load_one(pe_path)
+                mapfile.apply_map(mod, map_path)
+            except (OSError, ValueError, SystemExit):
+                continue
+            for f in mod.functions:
+                for n in [f.name, f.key] + list(f.aliases):
+                    _LINK_MAP_CACHE.setdefault(n, f)
+                    _LINK_MAP_CACHE.setdefault(canonical('pe', n), f)
+    return _LINK_MAP_CACHE.get(name) or _LINK_MAP_CACHE.get(EQUIV.get(name))
 
 
 def itanium_key(mangled, demangled):

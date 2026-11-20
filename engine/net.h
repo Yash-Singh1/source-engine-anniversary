@@ -103,7 +103,7 @@ enum
 	NS_HLTV,
 	NS_MATCHMAKING,
 	NS_SYSTEMLINK,
-#ifdef LINUX
+#if defined( LINUX ) && !defined( BYTEMATCH_RETAIL )
 	NS_SVLAN,	// LAN udp port for Linux. See NET_OpenSockets for info.
 #endif
 	MAX_SOCKETS

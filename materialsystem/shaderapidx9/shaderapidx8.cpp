@@ -123,7 +123,7 @@ mat_fullbright 1 doesn't work properly on alpha materials in testroom_standards
 #pragma warning (disable:4189)
 #endif
 
-#if defined( TOGL_OSX )
+#if defined( TOGL_OSX ) || ( defined( DX_TO_GL_ABSTRACTION ) && defined( BYTEMATCH_RETAIL ) )
 void nativeGetClientRect( void *hWnd, RECT *destRect )
 {
 	// the only useful answer this call can offer, is the size of the canvas.
@@ -3784,7 +3784,7 @@ void CShaderAPIDx8::ResetRenderState( bool bFullReset )
 	RECT windowRect;
 #if !defined( DX_TO_GL_ABSTRACTION )
 	GetClientRect( (HWND)m_hWnd, &windowRect );
-#elif defined( TOGL_OSX )
+#elif defined( TOGL_OSX ) || defined( BYTEMATCH_RETAIL )
 	nativeGetClientRect( m_hWnd, &windowRect );
 #else
 	toglGetClientRect( (VD3DHWND)m_hWnd, &windowRect );
@@ -3903,7 +3903,9 @@ void CShaderAPIDx8::SetDefaultState()
 //-----------------------------------------------------------------------------
 inline void CShaderAPIDx8::SetVertexDecl( VertexFormat_t vertexFormat, bool bHasColorMesh, bool bUsingFlex, bool bUsingMorph )
 {
+#line 3826
 	VPROF("CShaderAPIDx8::SetVertexDecl");
+#line 3904
 	IDirect3DVertexDeclaration9 *pDecl = FindOrCreateVertexDecl( vertexFormat, bHasColorMesh, bUsingFlex, bUsingMorph );
 	Assert( pDecl );
 
@@ -3983,7 +3985,9 @@ void CShaderAPIDx8::MarkUnusedVertexFields( unsigned int nFlags, int nTexCoordCo
 //-----------------------------------------------------------------------------
 void CShaderAPIDx8::DrawMesh( CMeshBase *pMesh )
 {
+#line 3906
 	VPROF("CShaderAPIDx8::DrawMesh");
+#line 3984
 	if ( ShaderUtil()->GetConfig().m_bSuppressRendering )
 		return;
 
@@ -4007,7 +4011,9 @@ void CShaderAPIDx8::DrawMesh( CMeshBase *pMesh )
 
 void CShaderAPIDx8::DrawWithVertexAndIndexBuffers( void )
 {
+#line 3930
 	VPROF("CShaderAPIDx8::DrawWithVertexAndIndexBuffers");
+#line 4008
 	if ( ShaderUtil()->GetConfig().m_bSuppressRendering )
 		return;
 
@@ -4055,7 +4061,9 @@ void CShaderAPIDx8::ForceHardwareSync_WithManagedTexture()
 
 	D3DLOCKED_RECT rect;
 
+#line 3978
 	tmZone( TELEMETRY_LEVEL1, TMZF_NONE, "%s", __FUNCTION__ );
+#line 4056
 
 	HRESULT hr = m_pFrameSyncTexture->LockRect( 0, &rect, NULL, 0 );
 	if ( SUCCEEDED( hr ) )
@@ -4084,7 +4092,9 @@ void CShaderAPIDx8::ForceHardwareSync_WithManagedTexture()
 				unsigned short indices[3] = { 0, 1, 2 };
 				Vector verts[3] = {vec3_origin, vec3_origin, vec3_origin};
 				
+#line 4007
 				tmZone( TELEMETRY_LEVEL1, TMZF_NONE, "DrawIndexedPrimitiveUP" );
+#line 4085
 
 				Dx9Device()->DrawIndexedPrimitiveUP(
 					D3DPT_TRIANGLELIST,
@@ -4112,7 +4122,9 @@ void CShaderAPIDx8::UpdateFrameSyncQuery( int queryIndex, bool bIssue )
 	// wait if already issued
 	if ( m_bQueryIssued[queryIndex] )
 	{
+#line 4035
 		tmZone( TELEMETRY_LEVEL1, TMZF_NONE, "%s", __FUNCTION__ );
+#line 4113
 
 		double flStartTime = Plat_FloatTime();
 		BOOL dummyData = 0;
@@ -4156,7 +4168,9 @@ void CShaderAPIDx8::UpdateFrameSyncQuery( int queryIndex, bool bIssue )
 void CShaderAPIDx8::ForceHardwareSync( void )
 {
 	LOCK_SHADERAPI();
+#line 4079
 	VPROF( "CShaderAPIDx8::ForceHardwareSync" );
+#line 4157
 
 #ifdef DX_TO_GL_ABSTRACTION
 	if ( true )
@@ -7010,20 +7024,21 @@ void CShaderAPIDx8::SetTextureState( Sampler_t sampler, ShaderAPITextureHandle_t
 
 	// For now do this the old way on OSX since the dxabstract layer doesn't support SetSamplerStates
 	// ###OSX### punting on OSX for now
-#if DX_TO_GL_ABSTRACTION && !OSX && !defined( BYTEMATCH_RETAIL )
+#if DX_TO_GL_ABSTRACTION && !OSX
 	if ( ( samplerState.m_MinFilter != minFilter ) || ( samplerState.m_MagFilter != magFilter ) || ( samplerState.m_MipFilter != mipFilter ) ||
-		( samplerState.m_UTexWrap != uTexWrap ) || ( samplerState.m_VTexWrap != vTexWrap ) || ( samplerState.m_WTexWrap != wTexWrap ) || 
-		( samplerState.m_FinestMipmapLevel != finestMipmapLevel ) || ( samplerState.m_LodBias != lodBias ) )
-	{
-		samplerState.m_UTexWrap = uTexWrap;
-		samplerState.m_VTexWrap = vTexWrap;
-		samplerState.m_WTexWrap = wTexWrap;
-		samplerState.m_MinFilter = minFilter;
-		samplerState.m_MagFilter = magFilter;
-		samplerState.m_MipFilter = mipFilter;
-		samplerState.m_FinestMipmapLevel = finestMipmapLevel;
-		samplerState.m_LodBias = lodBias;
+		( samplerState.m_UTexWrap != uTexWrap ) || ( samplerState.m_VTexWrap != vTexWrap ) || ( samplerState.m_WTexWrap != wTexWrap )
+#ifndef BYTEMATCH_RETAIL
+		|| ( samplerState.m_FinestMipmapLevel != finestMipmapLevel ) || ( samplerState.m_LodBias != lodBias )
+#endif
+	) {
+		samplerState.m_UTexWrap = uTexWrap; samplerState.m_VTexWrap = vTexWrap; samplerState.m_WTexWrap = wTexWrap;
+		samplerState.m_MinFilter = minFilter; samplerState.m_MagFilter = magFilter; samplerState.m_MipFilter = mipFilter;
+#ifdef BYTEMATCH_RETAIL
+		Dx9Device()->SetSamplerStates( sampler, uTexWrap, vTexWrap, wTexWrap, minFilter, magFilter, mipFilter );
+#else
+		samplerState.m_FinestMipmapLevel = finestMipmapLevel; samplerState.m_LodBias = lodBias;
 		Dx9Device()->SetSamplerStates( sampler, uTexWrap, vTexWrap, wTexWrap, minFilter, magFilter, mipFilter, finestMipmapLevel, lodBias );
+#endif
 	}
 #else
 	SETSAMPLESTATEANDMIRROR( sampler, samplerState, D3DSAMP_ADDRESSU, m_UTexWrap, uTexWrap );
@@ -9527,7 +9542,9 @@ void CShaderAPIDx8::CopyRenderTargetToTexture( ShaderAPITextureHandle_t textureH
 void CShaderAPIDx8::CopyTextureToRenderTargetEx( int nRenderTargetID, ShaderAPITextureHandle_t textureHandle, Rect_t *pSrcRect, Rect_t *pDstRect )
 {
 	LOCK_SHADERAPI();
+#line 9087
 	VPROF( "CShaderAPIDx8::CopyRenderTargetToTexture" );
+#line 9347
 
 	if ( !TextureIsAllocated( textureHandle ) )
 		return;
@@ -10031,7 +10048,9 @@ void CShaderAPIDx8::SpewBoardState()
 void CShaderAPIDx8::BeginPass( StateSnapshot_t snapshot )
 {
 	LOCK_SHADERAPI();
+#line 9588
 	VPROF("CShaderAPIDx8::BeginPass");
+#line 9851
 	if (IsDeactivated())
 		return;
 
@@ -11598,7 +11617,9 @@ void CShaderAPIDx8::CommitPerPassStateChanges( StateSnapshot_t id )
 //-----------------------------------------------------------------------------
 void CShaderAPIDx8::CommitStateChanges()
 {
+#line 11133
 	VPROF("CShaderAPIDx8::CommitStateChanges");
+#line 11418
 	CommitFastClipPlane();
 
 	bool bUsingFixedFunction = !IsX360() && m_pMaterial && !UsesVertexShader( m_pMaterial->GetVertexFormat() );
@@ -11691,7 +11712,7 @@ void CShaderAPIDx8::SetViewports( int nCount, const ShaderViewport_t* pViewports
 			RECT viewRect;
 #if !defined( DX_TO_GL_ABSTRACTION )
 			GetClientRect( ( HWND )m_ViewHWnd, &viewRect );
-#elif defined( TOGL_OSX )
+#elif defined( TOGL_OSX ) || defined( BYTEMATCH_RETAIL )
 			nativeGetClientRect( m_ViewHWnd, &viewRect );
 #else
 			toglGetClientRect( (VD3DHWND)m_ViewHWnd, &viewRect );
@@ -12442,7 +12463,9 @@ void CShaderAPIDx8::CopyBitsFromHostSurface( IDirect3DSurface* pSurfaceBits,
 	HRESULT hr;
 	int flags = D3DLOCK_READONLY | D3DLOCK_NOSYSLOCK;
 
+#line 11975
 	tmZone( TELEMETRY_LEVEL1, TMZF_NONE, "%s", __FUNCTION__ );
+#line 12262
 
 	hr = pSurfaceBits->LockRect( &lockedRect, &rect, flags );
 	if ( !FAILED( hr ) )
@@ -13108,7 +13131,9 @@ int CShaderAPIDx8::OcclusionQuery_GetNumPixelsRendered( ShaderAPIOcclusionQuery_
 	LOCK_SHADERAPI();
 	IDirect3DQuery9 *pQuery = (IDirect3DQuery9 *)handle;
 
+#line 12641
 	tmZone( TELEMETRY_LEVEL1, TMZF_NONE, "%s", __FUNCTION__ );
+#line 12928
 
 	DWORD nPixels;
 	HRESULT hResult = pQuery->GetData( &nPixels, sizeof( nPixels ), bFlush ? D3DGETDATA_FLUSH : 0 );
