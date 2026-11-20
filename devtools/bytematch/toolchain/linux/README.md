@@ -63,11 +63,11 @@ build. Without `--build-games` only the static libraries are built.
   `makefile_base_posix.mak`'s additions) and the files Valve's 2018 VPCs
   compile only on Linux (`tier1/pathmatch.cpp`, `tier1/qsort_s.cpp`,
   `mathlib/3dnow.cpp`; game modules pull none of `pathmatch.cpp`).
-- No `DX_TO_GL_ABSTRACTION`/`GL_GLEXT_PROTOTYPES`: retail Linux renders through
-  DXVK (depot 224 ships `libdxvk_d3d9.so`, `shaderapivk.so`), and its client
-  writes vertex colors unswapped, i.e. without `imesh.h`'s `OPENGL_SWAP_COLORS`.
-  Our VPCs (and hl2_src's) force `$GL` on for every non-Windows client, so
-  `make-manifest.py` drops the two defines.
+- `$GL` on (`DX_TO_GL_ABSTRACTION`/`GL_GLEXT_PROTOTYPES`), as `source_video_base.vpc`
+  sets for `$POSIX`: retail Linux `IMaterialSystem` has `DoStartupShaderPreloading`,
+  `appframework/sdlmgr.cpp` has its GL fields, `shadersystem.cpp` skips fillrate debug,
+  and `ctexture` clamps border mips. Vertex colors stay unswapped on Linux because
+  `public/materialsystem/imesh.h` gates `OPENGL_SWAP_COLORS` on `OSX`.
 - Telemetry on: retail imports `g_Telemetry` and has a zone at every VPROF, as
   `vprof_telemetry.h` enables for `_LINUX`. Retail libtier0.so loads Telemetry 1.1 build 25
   (`tmLoadTelemetryEx( 1, 1, 25, 0, 0 )`, as Windows tier0.dll), so the declarations are
