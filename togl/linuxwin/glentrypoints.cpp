@@ -454,15 +454,9 @@ COpenGLEntryPoints::COpenGLEntryPoints()
 #endif // !OSX
 
 #ifdef BYTEMATCH_RETAIL
-	char buf[256];
-	V_snprintf(buf, sizeof( buf ), "GL_NV_bindless_texture: %s\n", m_bHave_GL_NV_bindless_texture ? "ENABLED" : "DISABLED" );
-	Plat_DebugString( buf );
-
-	V_snprintf(buf, sizeof( buf ), "GL_AMD_pinned_memory: %s\n", m_bHave_GL_AMD_pinned_memory ? "ENABLED" : "DISABLED" );
-	Plat_DebugString( buf );
-
-	V_snprintf(buf, sizeof( buf ), "GL_EXT_texture_sRGB_decode: %s\n", m_bHave_GL_EXT_texture_sRGB_decode ? "AVAILABLE" : "NOT AVAILABLE" );
-	Plat_DebugString( buf );
+	GLMDebugPrintf( "GL_NV_bindless_texture: %s\n", m_bHave_GL_NV_bindless_texture ? "ENABLED" : "DISABLED" );
+	GLMDebugPrintf( "GL_AMD_pinned_memory: %s\n", m_bHave_GL_AMD_pinned_memory ? "ENABLED" : "DISABLED" );
+	GLMDebugPrintf( "GL_EXT_texture_sRGB_decode: %s\n", m_bHave_GL_EXT_texture_sRGB_decode ? "AVAILABLE" : "NOT AVAILABLE" );
 #else
 	// Getting reports of black screens, etc. with ARB_buffer_storage and AMD drivers. This type of thing:
 	//  http://forums.steampowered.com/forums/showthread.php?t=3266806
@@ -502,7 +496,11 @@ COpenGLEntryPoints::COpenGLEntryPoints()
 
 COpenGLEntryPoints::~COpenGLEntryPoints()
 {
+#ifdef BYTEMATCH_RETAIL
+	for ( uint i = 0; i < cGLTotalDriverStrings; ++i )
+#else
 	for ( uint i = 0; i < cGLTotalDriverProviders; ++i )
+#endif
 	{
 		free( m_pGLDriverStrings[i] );
 		m_pGLDriverStrings[i] = NULL;

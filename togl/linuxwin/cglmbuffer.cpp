@@ -825,7 +825,11 @@ void CGLMBuffer::Lock( GLMBuffLockParams *pParams, char **pAddressOut )
 		pTempBuffer->Append( pParams->m_nSize );
 	}
 #endif // OSX
+#ifdef BYTEMATCH_RETAIL
+	else if ( !m_pCtx->m_bPreferMapBufferRange && !g_bDisableStaticBuffer && ( pParams->m_bDiscard || pParams->m_bNoOverwrite ) && ( pParams->m_nSize <= GL_STATIC_BUFFER_SIZE ) )
+#else
 	else if ( !g_bDisableStaticBuffer && ( pParams->m_bDiscard || pParams->m_bNoOverwrite ) && ( pParams->m_nSize <= GL_STATIC_BUFFER_SIZE ) )
+#endif
 	{
 #if TOGL_SUPPORT_NULL_DEVICE
 		if ( !g_bNullD3DDevice )
@@ -1134,6 +1138,9 @@ void CGLMBuffer::Unlock( int nActualSize, const void *pActualData )
 		{
 			if ( nActualSize )
 			{
+#ifdef BYTEMATCH_RETAIL
+#line 900
+#endif
 				tmZone( TELEMETRY_LEVEL2, TMZF_NONE, "UnlockSubData" );
 
 	#ifdef REPORT_LOCK_TIME
@@ -1184,6 +1191,9 @@ void CGLMBuffer::Unlock( int nActualSize, const void *pActualData )
 	}
 	else
 	{
+#ifdef BYTEMATCH_RETAIL
+#line 950
+#endif
 		tmZone( TELEMETRY_LEVEL2, TMZF_NONE, "UnlockUnmap" );
 
 		if ( pActualData )

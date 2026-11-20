@@ -3728,6 +3728,9 @@ void GLMBeginPIXEvent( const char *str )
 	char szName[1024];
 	V_snprintf( szName, sizeof( szName ), "[ID:%u FR:%u] %s", g_nPIXEventIndex, g_GPUTimestampManager.GetCurFrame(), str );
 	const char *p = tmDynamicString( TELEMETRY_LEVEL2, szName ); //p can be null if tm is getting shut down
+#ifdef BYTEMATCH_RETAIL
+#line 3694
+#endif
 	tmEnter( TELEMETRY_LEVEL2, TMZF_NONE, "PIX %s", p ? p : ""  );
 
 	g_nPIXEventIndex++;
@@ -3763,6 +3766,9 @@ void GLMEndPIXEvent( void )
 
 	sg_pPIXName[0] = '\0';
 		
+#ifdef BYTEMATCH_RETAIL
+#line 3727
+#endif
 	tmLeave( TELEMETRY_LEVEL2 );
 }
 
@@ -4243,9 +4249,13 @@ CGLMEditableTextItem::~CGLMEditableTextItem( )
 	
 	if (m_mirror)
 	{
+#ifdef BYTEMATCH_RETAIL
+		free( m_mirror );
+#else
 		//free( m_mirror );
         // MoeMod : should be delete here
         delete m_mirror;
+#endif
 	}
 }
 

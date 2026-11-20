@@ -719,6 +719,24 @@ ConVar gl_minimize_all_tex ( "gl_minimize_all_tex", "1" );	// if 1, set the GL_T
 ConVar gl_minimize_tex_log ( "gl_minimize_tex_log", "0" );	// if 1, printf the names of the tex that got minimized
 
 #ifdef BYTEMATCH_RETAIL
+void CGLMTex::AllocBacking()
+{
+	ReleaseBacking();
+	m_backing = (char *)malloc( m_layout->m_storageTotalSize );
+	memset( m_backing, 0, m_layout->m_storageTotalSize );
+}
+
+void CGLMTex::ReleaseBacking()
+{
+	if ( m_backing )
+	{
+		free( m_backing );
+		m_backing = NULL;
+	}
+}
+#endif
+
+#ifdef BYTEMATCH_RETAIL
 CGLMTex::CGLMTex( GLMContext *ctx, GLMTexLayout *layout, const char *debugLabel )
 #else
 CGLMTex::CGLMTex( GLMContext *ctx, GLMTexLayout *layout, uint levels, const char *debugLabel )
@@ -757,6 +775,9 @@ CGLMTex::CGLMTex( GLMContext *ctx, GLMTexLayout *layout, uint levels, const char
 
 	m_maxActiveMip = -1;	//index of highest mip that has been written - increase as each mip arrives
 	m_minActiveMip = 999;	//index of lowest mip that has been written - lower it as each mip arrives
+#ifdef BYTEMATCH_RETAIL
+	m_mipCount = m_layout->m_mipCount;
+#endif
 	
 	// note context owner
 	m_ctx = ctx;
@@ -839,6 +860,7 @@ CGLMTex::CGLMTex( GLMContext *ctx, GLMTexLayout *layout, uint levels, const char
 	m_SamplingParams.SetToDefaults();
 #ifdef BYTEMATCH_RETAIL
 	m_SamplingParams.SetToTargetTexture( m_texGLTarget );
+	gGL->glTexParameteri( m_texGLTarget, GL_TEXTURE_MAX_LEVEL, m_layout->m_mipCount - 1 );
 #else
 	m_SamplingParams.SetToTarget( m_texGLTarget );
 #endif
@@ -847,13 +869,18 @@ CGLMTex::CGLMTex( GLMContext *ctx, GLMTexLayout *layout, uint levels, const char
 		
 	// Create backing storage and fill it
 #ifdef BYTEMATCH_RETAIL
+	m_backing = NULL;
 	if ( !(layout->m_key.m_texFlags & kGLMTexRenderable) )
 #else
 	if ( !(layout->m_key.m_texFlags & kGLMTexRenderable) && m_texClientStorage )
 #endif
 	{
+#ifdef BYTEMATCH_RETAIL
+		AllocBacking();
+#else
 		m_backing = (char *)malloc( m_layout->m_storageTotalSize );
 		memset( m_backing, 0, m_layout->m_storageTotalSize );
+#endif
 		
 		// track bytes allocated for non-RT's
 		int formindex = sEncodeLayoutAsIndex( &layout->m_key );
@@ -870,7 +897,9 @@ CGLMTex::CGLMTex( GLMContext *ctx, GLMTexLayout *layout, uint levels, const char
 	}
 	else
 	{
+#ifndef BYTEMATCH_RETAIL
 		m_backing = NULL;
+#endif
 		
 		m_texClientStorage = false;
 	}		
@@ -1569,8 +1598,7 @@ void CGLMTex::Lock( GLMTexLockParams *params, char** addressOut, int* yStrideOut
 	if (!m_backing)
 	{
 #ifdef BYTEMATCH_RETAIL
-		m_backing = (char *)malloc( m_layout->m_storageTotalSize );
-		memset( m_backing, 0, m_layout->m_storageTotalSize );
+		AllocBacking();
 #else
 		if ( gl_pow2_tempmem.GetBool() )
 		{

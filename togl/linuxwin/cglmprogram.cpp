@@ -813,11 +813,16 @@ bool CGLMProgram::CheckValidity( EGLMProgramLang lang )
 
 			gGL->glGetObjectParameterivARB( (GLhandleARB)glslDesc->m_object.glsl, GL_OBJECT_COMPILE_STATUS_ARB, &compiled);
 			gGL->glGetObjectParameterivARB( (GLhandleARB)glslDesc->m_object.glsl, GL_OBJECT_INFO_LOG_LENGTH_ARB, &length);
+#ifdef BYTEMATCH_RETAIL
+			logString = (GLcharARB *)malloc(length * sizeof(GLcharARB));
+			gGL->glGetInfoLogARB((GLhandleARB)glslDesc->m_object.glsl, length, &laux, logString);	
+#else
             if ( length > 0 )
             {
                 logString = (GLcharARB *)malloc(length * sizeof(GLcharARB));
                 gGL->glGetInfoLogARB((GLhandleARB)glslDesc->m_object.glsl, length, &laux, logString);	
 			}
+#endif
 			// we may not be able to check "native limits" stuff until link time. meh
 
 			if (!compiled)
@@ -837,8 +842,12 @@ bool CGLMProgram::CheckValidity( EGLMProgramLang lang )
 				GLMPRINTF(("-D- -----end-----" ));
 			}
 			
+#ifdef BYTEMATCH_RETAIL
+			free( logString );
+#else
             if ( logString )
                 free( logString );
+#endif
 
 #ifdef BYTEMATCH_RETAIL
 			return glslDesc->m_valid;
@@ -917,9 +926,6 @@ void	CGLMProgram::GetLabelIndexCombo		( char *labelOut, int labelOutMaxChars, in
 	*indexOut = -1;
 
 #ifdef BYTEMATCH_RETAIL
-	if ( !m_text )
-		return;
-
 	char *lineStr = strstr( m_text, "// trans#" );
 	if (lineStr)
 	{
@@ -965,9 +971,6 @@ void	CGLMProgram::GetComboIndexNameString	( char *stringOut, int stringOutMaxCha
 	*stringOut = 0;
 
 #ifdef BYTEMATCH_RETAIL
-	if ( !m_text )
-		return;
-	
 	char *lineStr = strstr( m_text, "// trans#" );
 	if (lineStr)
 	{
@@ -1246,12 +1249,6 @@ bool CGLMShaderPair::SetProgramPair( CGLMProgram *vp, CGLMProgram *fp )
 	bool vpgood = (vp!=NULL) && (vp->m_descs[ kGLMGLSL ].m_valid);
 	bool fpgood = (fp!=NULL) && (fp->m_descs[ kGLMGLSL ].m_valid);
 	
-	if ( !fpgood )
-	{
-		fp = m_ctx->m_pNullFragmentProgram;
-		fpgood = true;
-	}
-
 	if (vpgood && fpgood)
 	{
 		if ( vp->m_nCentroidMask != fp->m_nCentroidMask )
@@ -1377,7 +1374,7 @@ bool CGLMShaderPair::SetProgramPair( CGLMProgram *vp, CGLMProgram *fp )
 		m_locVertexBool2 = gGL->glGetUniformLocationARB( m_program, "b2");
 		m_locVertexBool3 = gGL->glGetUniformLocationARB( m_program, "b3");
 
-		m_bHasBoolOrIntUniforms = ( m_locVertexInteger0 >= 0 ) || ( m_locVertexBool0 >= 0 ) || ( m_locVertexBool1 >= 0 ) || ( m_locVertexBool2 >= 0 ) || ( m_locVertexBool3 >= 0 );
+		m_bHasBoolOrIntUniforms = ( m_locVertexBool0 >= 0 ) || ( m_locVertexBool1 >= 0 ) || ( m_locVertexBool2 >= 0 ) || ( m_locVertexBool3 >= 0 ) || ( m_locVertexInteger0 >= 0 );
 
  		m_locFragmentParams = gGL->glGetUniformLocationARB( m_program, "pc");
 						
@@ -1827,7 +1824,11 @@ void	CGLMShaderPairCache::QueryShaderPair( int index, GLMShaderPairInfo *infoOut
 
 		CGLMPairCacheEntry *entry = &m_entries[index];
 		
+#ifdef BYTEMATCH_RETAIL
+		if ( entry->m_pair && entry->m_pair->m_vertexProg && entry->m_pair->m_fragmentProg )
+#else
 		if (entry->m_pair)
+#endif
 		{
 			// live
 			// extract values of interest for caller
