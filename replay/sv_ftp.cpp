@@ -114,10 +114,7 @@ size_t CFtp::ReadCallback( void *pPtr, size_t nSize, size_t nNumItems, void *pSt
 
 bool CFtp::FTP_IsCurlResultOK( int nCurlResult ) const
 {
-	if ( m_pCallbacks )
-		return m_pCallbacks->FTP_IsCurlResultOK( nCurlResult );
-
-	return nCurlResult == CURLE_OK;
+	return m_pCallbacks ? m_pCallbacks->FTP_IsCurlResultOK( nCurlResult ) : ( nCurlResult == CURLE_OK );
 }
 
 const char *CFtp::FTP_GetFilename() const
@@ -195,7 +192,7 @@ JobStatus_t CFtpUploadJob::DoExecute()
 bool CFtpUploadJob::FTP_SetupAdditionalCurlOperations( void *pCurl )
 {
 	PrintEventStartMsg( "Getting file size" );
-	const unsigned int nFileSize = g_pFullFileSystem->Size( m_szLocalFilename );
+	const curl_off_t nFileSize = g_pFullFileSystem->Size( m_szLocalFilename );
 	if ( !nFileSize )
 	{
 		PrintEventResult( false );

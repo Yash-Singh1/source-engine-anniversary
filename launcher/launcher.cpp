@@ -683,6 +683,9 @@ bool CSourceAppSystemGroup::Create()
 		{ "vguimatsurface" DLL_EXT_STRING,	VGUI_SURFACE_INTERFACE_VERSION },
 		{ "vgui2" DLL_EXT_STRING,			VGUI_IVGUI_INTERFACE_VERSION },
 		{ "engine" DLL_EXT_STRING,			VENGINE_LAUNCHER_API_VERSION },
+#ifndef OSX
+		{ "engine" DLL_EXT_STRING,			"VWorkshop001" },
+#endif
 
 		{ "", "" }							// Required to terminate the list
 	};
@@ -723,13 +726,15 @@ bool CSourceAppSystemGroup::Create()
 		{
 			return false;
 		}
-
-		AppModule_t vstdlibModule = LoadModule( "vstdlib" DLL_EXT_STRING );
-		IProcessUtils *processUtils = ( IProcessUtils* )AddSystem( vstdlibModule, PROCESS_UTILS_INTERFACE_VERSION );
-		if ( !processUtils )
-			return false;
 #endif // STAGING_ONLY
 	}
+
+#ifdef _WIN32
+	AppModule_t vstdlibModule = LoadModule( "vstdlib" DLL_EXT_STRING );
+	IProcessUtils *processUtils = ( IProcessUtils* )AddSystem( vstdlibModule, PROCESS_UTILS_INTERFACE_VERSION );
+	if ( !processUtils )
+		return false;
+#endif
 
 	// Connect to iterfaces loaded in AddSystems that we need locally
 	IMaterialSystem *pMaterialSystem = (IMaterialSystem*)FindSystem( MATERIAL_SYSTEM_INTERFACE_VERSION );

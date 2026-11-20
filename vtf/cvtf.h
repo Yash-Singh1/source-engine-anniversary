@@ -315,8 +315,13 @@ private:
 	void BuildCubeMapMatchLists( CEdgeMatch edgeMatches[NUM_EDGE_MATCHES], CCornerMatch cornerMatches[NUM_CORNER_MATCHES], bool bSkybox );
 
 	// Allocate image data blocks with an eye toward re-using memory
+#ifdef BYTEMATCH_RETAIL
+	void AllocateImageData( int nMemorySize );
+	void AllocateLowResImageData( int nMemorySize );
+#else
 	bool AllocateImageData( int nMemorySize );
 	bool AllocateLowResImageData( int nMemorySize );
+#endif
 
 	// Compute the mip count based on the size + flags
 	int ComputeMipCount( ) const;

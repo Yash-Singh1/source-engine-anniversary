@@ -125,7 +125,7 @@ int GetMemRequired( int width, int height, int depth, ImageFormat imageFormat, b
 		
 #ifdef BYTEMATCH_RETAIL
 		if ( imageFormat == IMAGE_FORMAT_DXT1 || imageFormat == IMAGE_FORMAT_DXT3 || imageFormat == IMAGE_FORMAT_DXT5 ||
-			 imageFormat == IMAGE_FORMAT_ATI1N || imageFormat == IMAGE_FORMAT_ATI2N )
+			 imageFormat == IMAGE_FORMAT_ATI2N || imageFormat == IMAGE_FORMAT_ATI1N )
 #else
 		if ( IsCompressed( imageFormat ) )
 #endif

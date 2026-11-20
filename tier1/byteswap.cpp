@@ -34,14 +34,6 @@ void CByteswap::SwapFieldToTargetEndian( void* pOutputBuffer, void *pData, typed
 		SwapBufferToTargetEndian<int>( (int*)pOutputBuffer, (int*)pData, pField->fieldSize );
 		break;
 
-#ifndef BYTEMATCH_RETAIL
-    case FIELD_INTEGER64: SwapBufferToTargetEndian<uint64>( (uint64*)pOutputBuffer, (uint64*)pData, pField->fieldSize ); break;
-#else
-	// retail's FIELD_INTEGER64; datamap.h leaves it out in retail mode to keep FIELD_TYPECOUNT
-    case FIELD_VECTOR2D + 1: SwapBufferToTargetEndian<uint64>( (uint64*)pOutputBuffer, (uint64*)pData, pField->fieldSize ); break;
-#endif
-#line 40
-
 	case FIELD_VECTOR:
 		SwapBufferToTargetEndian<uint>( (uint*)pOutputBuffer, (uint*)pData, pField->fieldSize * 3 );
 		break;
@@ -49,6 +41,14 @@ void CByteswap::SwapFieldToTargetEndian( void* pOutputBuffer, void *pData, typed
 	case FIELD_VECTOR2D:
 		SwapBufferToTargetEndian<uint>( (uint*)pOutputBuffer, (uint*)pData, pField->fieldSize * 2 );
 		break;
+
+#ifndef BYTEMATCH_RETAIL
+    case FIELD_INTEGER64: SwapBufferToTargetEndian<uint64>( (uint64*)pOutputBuffer, (uint64*)pData, pField->fieldSize ); break;
+#else
+	// retail's FIELD_INTEGER64; datamap.h leaves it out in retail mode to keep FIELD_TYPECOUNT
+    case FIELD_VECTOR2D + 1: SwapBufferToTargetEndian<uint64>( (uint64*)pOutputBuffer, (uint64*)pData, pField->fieldSize ); break;
+#endif
+#line 52
 
 	case FIELD_QUATERNION:
 		SwapBufferToTargetEndian<uint>( (uint*)pOutputBuffer, (uint*)pData, pField->fieldSize * 4 );
