@@ -235,6 +235,9 @@ enum IVP_MINDIST_FUNCTION {
   IVP_MF_PHANTOM =1
 };
 
+#ifdef BYTEMATCH_RETAIL
+#pragma pack(push, 4)
+#endif
 class IVP_Mindist_Base : public IVP_Collision {
 protected:
   IVP_COLL_TYPE coll_type:8;
@@ -249,7 +252,11 @@ public:  // Read only public !!!!
   IVP_MINIMAL_DIST_STATUS mindist_status:4;
     unsigned int coll_dist_selector:8;
 
+#ifdef BYTEMATCH_RETAIL
+  IVP_Synapse         synapse[2];
+#else
   IVP_Synapse_Real         synapse[2];
+#endif
   IVP_FLOAT           sum_extra_radius;   // sum of extra radius around each object
 
   // calculated by IVP_Mindist::recalc_mindist
@@ -412,6 +419,9 @@ public:
     IVP_Mindist_Recursive(IVP_Environment *env, IVP_Collision_Delegator *del);
     ~IVP_Mindist_Recursive();
 };
+#ifdef BYTEMATCH_RETAIL
+#pragma pack(pop)
+#endif
 
 
 
