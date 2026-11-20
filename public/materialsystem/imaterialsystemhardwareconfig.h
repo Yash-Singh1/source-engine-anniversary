@@ -103,7 +103,7 @@ public:
 	virtual bool HasSetDeviceGammaRamp() const = 0;
 	DEFCONFIGMETHOD( bool, SupportsCompressedTextures(), true );
 	virtual VertexCompressionType_t SupportsCompressedVertices() const = 0;
-	virtual bool SupportsNormalMapCompression() const { return false; }
+	DEFCONFIGMETHOD( bool, SupportsNormalMapCompression(), true );
 	DEFCONFIGMETHOD( bool, SupportsVertexAndPixelShaders(), true );
 	DEFCONFIGMETHOD( bool, SupportsPixelShaders_1_4(), true );
 	DEFCONFIGMETHOD( bool, SupportsStaticControlFlow(), true );
