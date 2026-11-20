@@ -346,7 +346,7 @@ void MaterialSystem_RegisterLightmapSurfaces( void )
 	surfID = SURFACE_HANDLE_INVALID;
 	for (int i = surfaces.FirstInorder(); i != surfaces.InvalidIndex(); i = surfaces.NextInorder(i) )
 	{
-		surfID = surfaces[i];
+		SurfaceHandle_t surfID = surfaces[i];
 
 		bool hasLightmap = ( MSurf_Flags( surfID ) & SURFDRAW_NOLIGHT) == 0;
 		if ( hasLightmap )
