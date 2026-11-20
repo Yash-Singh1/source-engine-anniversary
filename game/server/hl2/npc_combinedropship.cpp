@@ -1007,6 +1007,9 @@ void CNPC_CombineDropship::Spawn( void )
 	{
 		UTIL_SetSize( this, DROPSHIP_BBOX_CRATE_MIN, DROPSHIP_BBOX_CRATE_MAX );
 		SetIdealActivity( (Activity)ACT_DROPSHIP_FLY_IDLE_CARGO );
+
+		m_poseWeapon_Pitch = m_hContainer->LookupPoseParameter( "weapon_pitch" );
+		m_poseWeapon_Yaw = m_hContainer->LookupPoseParameter( "weapon_yaw" );
 	}
 	else
 	{

@@ -1442,7 +1442,7 @@ bool CBaseFlex::ProcessMoveToSceneEvent( CSceneEventInfo *info, CChoreoScene *sc
 					// Msg("actor %s unable to build route\n", STRING( myNpc->GetEntityName() ) );
 					// Assert(0);
 
-					if (developer.GetInt() > 0 && scene_showmoveto.GetBool())
+					NOV2024_ONLY( static ConVarRef commentary( "commentary" ); ) if ( ( developer.GetInt() > 0 NOV2024_ONLY( || commentary.GetBool() ) ) && scene_showmoveto.GetBool() )
 					{
 						Vector vTestPoint;
 						myNpc->GetMoveProbe()->FloorPoint( info->m_hTarget->EyePosition(), MASK_NPCSOLID, 0, -64, &vTestPoint );
@@ -1474,7 +1474,7 @@ bool CBaseFlex::ProcessMoveToSceneEvent( CSceneEventInfo *info, CChoreoScene *sc
 	}
 
 	// show movement target
-	if (developer.GetInt() > 0 && scene_showmoveto.GetBool() && IsMoving())
+	NOV2024_ONLY( static ConVarRef commentary( "commentary" ); ) if ( ( developer.GetInt() > 0 NOV2024_ONLY( || commentary.GetBool() ) ) && scene_showmoveto.GetBool() && IsMoving() )
 	{
 		Vector vecStart, vTestPoint;
 		vecStart = myNpc->GetNavigator()->GetGoalPos();
@@ -1528,7 +1528,7 @@ bool CBaseFlex::ProcessLookAtSceneEvent( CSceneEventInfo *info, CChoreoScene *sc
 		intensity = clamp( intensity, 0.0f, flMaxIntensity );
 
 		myNpc->AddLookTarget( info->m_hTarget, intensity, 0.1 );
-		if (developer.GetInt() > 0 && scene_showlook.GetBool() && info->m_hTarget)
+		NOV2024_ONLY( static ConVarRef commentary( "commentary" ); ) if ( ( developer.GetInt() > 0 NOV2024_ONLY( || commentary.GetBool() ) ) && scene_showlook.GetBool() && info->m_hTarget )
 		{
 			Vector tmp = info->m_hTarget->EyePosition() - myNpc->EyePosition();
 			VectorNormalize( tmp );

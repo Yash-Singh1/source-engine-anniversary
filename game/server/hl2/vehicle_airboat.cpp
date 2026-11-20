@@ -1057,7 +1057,12 @@ void CPropAirboat::ComputeAimPoint( Vector *pVecAimPoint )
 		// Use autoaim as the eye dir.
 		autoaim_params_t params;
 
+#ifdef HL2_ANNIVERSARY_NOV2024
+		float flQuarterMaxSpeed = m_VehiclePhysics.GetMaxSpeed() * 0.25f;
+		params.m_fScale = RemapValClamped( m_VehiclePhysics.GetSpeed(), 0.0f, flQuarterMaxSpeed, 0.75f, 1.0f ) * sv_vehicle_autoaim_scale.GetFloat();
+#else
 		params.m_fScale = AUTOAIM_SCALE_DEFAULT * sv_vehicle_autoaim_scale.GetFloat();
+#endif
 		params.m_fMaxDist = autoaim_max_dist.GetFloat();
 		m_hPlayer->GetAutoaimVector( params );
 

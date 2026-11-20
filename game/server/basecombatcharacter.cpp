@@ -2170,7 +2170,20 @@ void CBaseCombatCharacter::Weapon_Equip( CBaseCombatWeapon *pWeapon )
 
 	// Pass the lighting origin over to the weapon if we have one
 	pWeapon->SetLightingOriginRelative( GetLightingOriginRelative() );
+
+	if ( IsPlayer() )
+	{
+		IGameEvent *event = gameeventmanager->CreateEvent( "weapon_equipped" );
+		if ( event )
+		{
+			event->SetString( "class", pWeapon->GetClassname() );
+			event->SetInt( "entindex", pWeapon->entindex() );
+			NOV2024_ONLY( event->SetInt( "owner", entindex() ); )
+			gameeventmanager->FireEvent( event );
+		}
+	}
 }
+#line 2174
 
 //-----------------------------------------------------------------------------
 // Purpose:	Leaves weapon, giving only ammo to the character

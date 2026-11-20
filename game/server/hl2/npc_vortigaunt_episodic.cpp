@@ -617,43 +617,57 @@ int CNPC_Vortigaunt::RangeAttack1Conditions( float flDot, float flDist )
 	{
 		return( COND_TOO_CLOSE_TO_ATTACK );
 	}
-	else
-#else
-	if ( flDist < 32.0f )
-		return COND_TOO_CLOSE_TO_ATTACK;
-#endif // HL2_EPISODIC
-	if ( flDist > InnateRange1MaxRange() )
+	else if ( flDist > InnateRange1MaxRange() )
 	{
 		return( COND_TOO_FAR_TO_ATTACK );
 	}
-	else if ( flDot < 0.65 )
+#else
+	if ( IsHL2Episodic() )
+	{
+		if ( flDist < 32.0f )
+			return COND_TOO_CLOSE_TO_ATTACK;
+		if ( flDist > InnateRange1MaxRange() )
+		{
+			return( COND_TOO_FAR_TO_ATTACK );
+		}
+	}
+	else
+	{
+		if ( flDist <= 70 )
+		{
+			return( COND_TOO_CLOSE_TO_ATTACK );
+		}
+		else if ( flDist > InnateRange1MaxRange() )
+		{
+			return( COND_TOO_FAR_TO_ATTACK );
+		}
+	}
+#endif // HL2_EPISODIC
+	if ( flDot < 0.65 )
 	{
 		return( COND_NOT_FACING_ATTACK );
 	}
 
-	if ( HL2_EPISODIC_ACTIVE() )
-	{
 #ifdef HL2_EPISODIC
 
-		// Do an extra check for workers near myself or the player
-		if ( IsAntlionWorker( GetEnemy() ) )
-		{
-			// See if it's too close to me
-			if ( ( GetAbsOrigin() - GetEnemy()->GetAbsOrigin() ).LengthSqr() < Square( AntlionWorkerBurstRadius() ) )
-				return COND_TOO_CLOSE_TO_ATTACK;
+	// Do an extra check for workers near myself or the player
+	if ( IsAntlionWorker( GetEnemy() ) )
+	{
+		// See if it's too close to me
+		if ( ( GetAbsOrigin() - GetEnemy()->GetAbsOrigin() ).LengthSqr() < Square( AntlionWorkerBurstRadius() ) )
+			return COND_TOO_CLOSE_TO_ATTACK;
 
-			CBasePlayer *pPlayer = AI_GetSinglePlayer();
-			if ( pPlayer && ( pPlayer->GetAbsOrigin() - GetEnemy()->GetAbsOrigin() ).LengthSqr() < Square( AntlionWorkerBurstRadius() ) )
-			{
-				// Warn the player to get away!
-				CFmtStrN<128> modifiers( "antlion_worker:true" );
-				SpeakIfAllowed( TLK_DANGER, modifiers );
-				return COND_NONE;
-			}
+		CBasePlayer *pPlayer = AI_GetSinglePlayer();
+		if ( pPlayer && ( pPlayer->GetAbsOrigin() - GetEnemy()->GetAbsOrigin() ).LengthSqr() < Square( AntlionWorkerBurstRadius() ) )
+		{
+			// Warn the player to get away!
+			CFmtStrN<128> modifiers( "antlion_worker:true" );
+			SpeakIfAllowed( TLK_DANGER, modifiers );
+			return COND_NONE;
 		}
+	}
 
 #endif
-	}
 
 	return COND_CAN_RANGE_ATTACK1;
 }
@@ -1152,6 +1166,18 @@ void CNPC_Vortigaunt::Precache()
 	// HACK: Only precache this for EP2 because reslists cannot be rebuilt - 08/22/07 - jdw
 	if ( IsHL2Episodic() )
 	{
+#ifdef HL2_ANNIVERSARY_NOV2024
+		ConVarRef hl2_expansion( "hl2_expansion" );
+		if ( hl2_expansion.IsValid() && V_strlen( hl2_expansion.GetString() ) > 0 )
+		{
+			char modDir[MAX_PATH];
+			V_snprintf( modDir, sizeof( modDir ), "%s", hl2_expansion.GetString() );
+			if ( !V_stricmp( modDir, "ep2" ) )
+			{
+				PrecacheMaterial( "effects/rollerglow" );
+			}
+		}
+#else
 		char modDir[MAX_PATH];
 		if ( UTIL_GetModDir( modDir, sizeof(modDir) ) )
 		{
@@ -1160,6 +1186,7 @@ void CNPC_Vortigaunt::Precache()
 				PrecacheMaterial( "effects/rollerglow" );
 			}
 		}
+#endif
 	}
 
 	PrecacheScriptSound( "NPC_Vortigaunt.SuitOn" );
@@ -1183,6 +1210,55 @@ void CNPC_Vortigaunt::Precache()
 
 	BaseClass::Precache();
 }	
+
+#ifdef HL2_ANNIVERSARY_NOV2024
+void CNPC_Vortigaunt::TryRestoreHull( void )
+{
+	if ( !IsUsingSmallHull() || !GetCurSchedule() )
+		return;
+
+	if ( !NameMatches( "vortigaunt_bugbait" ) )
+	{
+		BaseClass::TryRestoreHull();
+		return;
+	}
+
+	Vector vOldMins = CollisionProp()->OBBMins();
+	Vector vOldMaxs = CollisionProp()->OBBMaxs();
+
+	trace_t tr;
+	Vector vUpBit = GetAbsOrigin();
+	vUpBit.z += 1.0f;
+
+	UTIL_TraceHull( GetAbsOrigin(), vUpBit, NAI_Hull::Mins( GetHullType() ),
+		NAI_Hull::Maxs( GetHullType() ), MASK_NPCSOLID, this, COLLISION_GROUP_NONE, &tr );
+
+	if ( !tr.startsolid && ( tr.fraction == 1.0 ) )
+	{
+		GroundTrace( vOldMins, vOldMaxs, tr );
+		float flOldFrac = tr.fraction;
+
+		SetHullSizeNormal();
+
+		if ( flOldFrac == 1.0f )
+			return;
+
+		GroundTrace( CollisionProp()->OBBMins(), CollisionProp()->OBBMaxs(), tr );
+		if ( tr.fraction == 1.0f )
+		{
+			CBaseEntity *pOldGround = GetGroundEntity();
+			Vector vOldOrigin = GetAbsOrigin();
+			SetAbsOrigin( vOldOrigin + Vector( 0, 0, StepHeight() ) );
+			if ( UTIL_DropToFloor( this, MASK_NPCSOLID ) <= 0 )
+			{
+				SetAbsOrigin( vOldOrigin );
+				SetHullSizeSmall();
+				SetGroundEntity( pOldGround );
+			}
+		}
+	}
+}
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: Interpret a player +USE'ing us

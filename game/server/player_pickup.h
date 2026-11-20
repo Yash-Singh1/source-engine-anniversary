@@ -83,7 +83,11 @@ public:
 	virtual QAngle			PreferredCarryAngles( void ) { return vec3_angle; }
 	virtual bool			ForcePhysgunOpen( CBasePlayer *pPlayer ) { return false; }
 	virtual AngularImpulse	PhysGunLaunchAngularImpulse() { return RandomAngularImpulse( -600, 600 ); }
+#ifdef BYTEMATCH_RETAIL
+	virtual bool			ShouldPuntUseLaunchForces( PhysGunForce_t reason ) { return false; }
+#else
 	virtual bool			ShouldPuntUseLaunchForces( PhysGunForce_t reason ) { return reason == PHYSGUN_FORCE_LAUNCHED; }
+#endif
 	virtual Vector			PhysGunLaunchVelocity( const Vector &vecForward, float flMass )
 	{
 		return Pickup_DefaultPhysGunLaunchVelocity( vecForward, flMass );

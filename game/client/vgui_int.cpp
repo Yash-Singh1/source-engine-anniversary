@@ -272,6 +272,7 @@ static ConVar cl_showpausedimage( "cl_showpausedimage", "1", 0, "Show the 'Pause
 //-----------------------------------------------------------------------------
 // Things to do before rendering vgui stuff...
 //-----------------------------------------------------------------------------
+#line 262
 void VGui_PreRender()
 {
 	VPROF( "VGui_PreRender" );
@@ -281,13 +282,10 @@ void VGui_PreRender()
 	if ( IsPC() )
 	{
 		loadingdisc->SetLoadingVisible( engine->IsDrawingLoadingImage() && !engine->IsPlayingDemo() );
-		
-		bool bShowPausedImage = !enginevgui->IsGameUIVisible() && cl_showpausedimage.GetBool() && engine->IsPaused() && !engine->IsTakingScreenshot() && !engine->IsPlayingDemo();
 #if !defined( TF_CLIENT_DLL )
-		loadingdisc->SetPausedVisible( bShowPausedImage  );
+		loadingdisc->SetPausedVisible( !enginevgui->IsGameUIVisible() && cl_showpausedimage.GetBool() && engine->IsPaused() && !engine->IsTakingScreenshot() && !engine->IsPlayingDemo() );
 #else
-		bShowPausedImage &= ( TFGameRules() && !TFGameRules()->IsInTraining() );
-		loadingdisc->SetPausedVisible( bShowPausedImage );
+		loadingdisc->SetPausedVisible( !enginevgui->IsGameUIVisible() && cl_showpausedimage.GetBool() && engine->IsPaused() && !engine->IsTakingScreenshot() && !engine->IsPlayingDemo() && ( TFGameRules() && !TFGameRules()->IsInTraining() ) );
 #endif
 	}
 }

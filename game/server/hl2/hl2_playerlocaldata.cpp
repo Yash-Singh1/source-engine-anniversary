@@ -64,6 +64,7 @@ CHL2PlayerLocalData::CHL2PlayerLocalData()
 	m_bDisplayReticle = false;
 #ifdef HL2_EPISODIC
 	m_flFlashBattery = 0.0f;
+	NOV2024_ONLY( m_vecLocatorOrigin = vec3_invalid; )
 #endif
 }
 

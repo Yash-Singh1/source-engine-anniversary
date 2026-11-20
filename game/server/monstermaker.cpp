@@ -383,11 +383,13 @@ END_DATADESC()
 //-----------------------------------------------------------------------------
 CNPCMaker::CNPCMaker( void )
 {
+#ifndef BYTEMATCH_RETAIL
 	m_strHintGroup = NULL_STRING;
 	m_RelationshipString = NULL_STRING;
 	m_ChildTargetName = NULL_STRING;
 	m_iszNPCClassname = NULL_STRING;
 	m_SquadName = NULL_STRING;
+#endif
 	m_spawnEquipment = NULL_STRING;
 }
 

@@ -1959,6 +1959,10 @@ int CNPC_Combine::SelectScheduleAttack()
 		{
 			if( HasCondition(COND_SEE_ENEMY) )
 			{
+#ifdef HL2_ANNIVERSARY_NOV2024
+				if ( HasCondition( COND_WEAPON_BLOCKED_BY_FRIEND ) )
+					return SCHED_ESTABLISH_LINE_OF_FIRE;
+#endif
 				if ( OccupyStrategySlotRange( SQUAD_SLOT_ATTACK1, SQUAD_SLOT_ATTACK2 ) )
 					return SCHED_RANGE_ATTACK1;
 			}

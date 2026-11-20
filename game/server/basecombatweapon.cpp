@@ -81,6 +81,7 @@ void W_Precache(void)
 	PrecacheParticleSystem( "blood_impact_yellow_01" );
 
 	CBaseEntity::PrecacheModel ("effects/bubble.vmt");//bubble trails
+	CBaseEntity::PrecacheModel( "sprites/fire1.vmt" );
 
 	CBaseEntity::PrecacheModel("models/weapons/w_bullet.mdl");
 #endif

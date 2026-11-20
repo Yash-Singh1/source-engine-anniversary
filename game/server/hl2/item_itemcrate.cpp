@@ -127,6 +127,13 @@ void CItem_ItemCrate::Spawn( void )
 		return;
 	}
 
+#ifdef HL2_ANNIVERSARY_NOV2024
+	if ( g_pGameRules->GetAutoAimMode() == AUTOAIM_ON_CONSOLE )
+	{
+		AddFlag( FL_AIMTARGET );
+	}
+#endif
+
 	Precache( );
 	SetModel( pszItemCrateModelName[m_CrateAppearance] );
 	AddEFlags( EFL_NO_ROTORWASH_PUSH );

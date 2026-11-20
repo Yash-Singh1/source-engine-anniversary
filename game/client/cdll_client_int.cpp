@@ -2068,10 +2068,12 @@ void SimulateEntities()
 	{
 		VPROF_("C_BaseEntity::Simulate", 1, VPROF_BUDGETGROUP_CLIENT_SIM, false, BUDGETFLAG_CLIENT);
 		C_BaseEntityIterator iterator;
-		C_BaseEntity *pEnt;
-		while ( (pEnt = iterator.Next()) != NULL )
+		C_BaseEntity *pEnt = iterator.Next();
+		while ( pEnt )
 		{
+			C_BaseEntity *pNext = iterator.Next();
 			pEnt->Simulate();
+			pEnt = pNext;
 		}
 	}
 }

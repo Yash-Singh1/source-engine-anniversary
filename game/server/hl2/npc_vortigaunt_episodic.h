@@ -51,6 +51,7 @@ public:
 
 	virtual void	Spawn( void );
 	virtual void	Precache( void );
+	NOV2024_ONLY( virtual void TryRestoreHull( void ); )
 	virtual float	MaxYawSpeed( void );
 
 	virtual	Vector  FacingPosition( void );

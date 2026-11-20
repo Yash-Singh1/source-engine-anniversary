@@ -645,6 +645,9 @@ private:
 	bool				PreThink( void );
 	void				PerformSensing();
 	void				CheckOnGround( void );
+protected:
+	NOV2024_ONLY( void GroundTrace( const Vector &mins, Vector maxs, trace_t &trace ); )
+private:
 	void				MaintainSchedule( void );
 	void				RunAnimation( void );
 	void				PostRun( void );
@@ -1920,8 +1923,9 @@ public:
 	virtual void		StartTouch( CBaseEntity *pOther );
 	void				CheckPhysicsContacts();
 
-private:
+protected:
 	NOV2024_VIRTUAL void TryRestoreHull( void );
+private:
 	bool				m_fIsUsingSmallHull;
 	bool				m_bCheckContacts;
 

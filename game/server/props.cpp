@@ -5525,7 +5525,9 @@ class CPhysicsPropMultiplayer : public CPhysicsProp, public IMultiplayerPhysics
 	{
 		m_iPhysicsMode = PHYSICS_MULTIPLAYER_AUTODETECT;
 		m_usingCustomCollisionBounds = false;
+#ifndef BYTEMATCH_RETAIL
 		m_fMass = 0.f;
+#endif
 	}
 
 // IBreakableWithPropData:
@@ -5619,8 +5621,12 @@ class CPhysicsPropMultiplayer : public CPhysicsProp, public IMultiplayerPhysics
 			SetCollisionGroup( COLLISION_GROUP_DEBRIS );
 		}
 
+#ifdef BYTEMATCH_RETAIL
+		m_fMass = VPhysicsGetObject()->GetMass();
+#else
 		if(VPhysicsGetObject())
 			m_fMass = VPhysicsGetObject()->GetMass();
+#endif
 
 		// VPhysicsGetObject() is NULL on the client, which prevents the client from finding a decent
 		// AABB surrounding the collision bounds.  If we've got a VPhysicsGetObject()->GetCollide(), we'll

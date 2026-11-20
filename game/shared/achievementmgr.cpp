@@ -803,18 +803,18 @@ bool CAchievementMgr::CanEarnForCurrentExpansion( int iAchievementID )
 
 bool CAchievementMgr::CanEarnForExpansion( int iAchievementID, const char *pszModName )
 {
-	if ( !m_bIsHL2Complete )
-		return true;
+	if ( m_bIsHL2Complete )
+	{
+		CBaseAchievement *pAchievement = GetAchievementByID( iAchievementID );
+		if ( !pAchievement )
+			return false;
 
-	CBaseAchievement *pAchievement = GetAchievementByID( iAchievementID );
-	if ( !pAchievement )
-		return false;
+		const char *pGameDirFilter = pAchievement->m_pGameDirFilter;
+		if ( pGameDirFilter && Q_strcmp( pszModName, pGameDirFilter ) != 0 )
+			return false;
+	}
 
-	const char *pGameDirFilter = pAchievement->m_pGameDirFilter;
-	if ( !pGameDirFilter )
-		return true;
-
-	return !Q_strcmp( pszModName, pGameDirFilter );
+	return true;
 }
 #endif
 #line 802

@@ -735,6 +735,12 @@ void CAI_LeadBehavior::StartTask( const Task_t *pTask )
 			}
 			else
 			{
+#ifdef HL2_ANNIVERSARY_NOV2024
+				if ( FClassnameIs( GetOuter(), "npc_barney" ) && ( FStrEq( STRING( gpGlobals->mapname ), "d3_c17_10a" ) || FStrEq( STRING( gpGlobals->mapname ), "d3_c17_10b" ) ) )
+				{
+					ClearGoal();
+				}
+#endif
 				TaskFail("NO PATH");
 			}
 			break;

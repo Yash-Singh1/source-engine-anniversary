@@ -531,6 +531,12 @@ void CNewWallHealth::Spawn(void)
 
 	m_flJuice = m_iJuice;
 	SetCycle( 1.0f - ( m_flJuice /  sk_healthcharger.GetFloat() ) );
+#ifdef HL2_ANNIVERSARY_NOV2024
+	if ( g_pGameRules->GetAutoAimMode() == AUTOAIM_ON_CONSOLE )
+	{
+		AddFlag( FL_AIMTARGET );
+	}
+#endif
 }
 
 int CNewWallHealth::DrawDebugTextOverlays(void) 

@@ -1495,7 +1495,7 @@ void CAI_BaseActor::MaintainLookTargets( float flInterval )
 	}
 
 	// don't bother with any of the rest if the player can't see you
-	if (!HasCondition( COND_IN_PVS ))
+	if ( !HasCondition( COND_IN_PVS ) NOV2024_ONLY( && !IsInAScript() && !IsInChoreo() ) )
 	{
 		return;
 	}

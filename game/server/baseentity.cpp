@@ -972,7 +972,7 @@ void CBaseEntity::DrawDebugGeometryOverlays(void)
 
 		if( pPlayer->IsInAVehicle() )
 		{
-			radius *= sv_vehicle_autoaim_scale.GetFloat();
+			radius *= sv_vehicle_autoaim_scale.GetFloat() NOV2024_ONLY( * g_pGameRules->GetAutoAimScale() );
 		}
 
 		NDebugOverlay::Line( vecCenter, vecCenter + vecRight * radius, r, g, b, true, 0.1 );

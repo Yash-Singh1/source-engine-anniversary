@@ -1319,10 +1319,16 @@ void CAI_TrackPather::UpdateTrackNavigation( void )
 		m_target = NULL_STRING;
 	}
 
+#ifdef HL2_ANNIVERSARY_NOV2024
+	if ( !m_pCurrentPathTarget )
+		return;
+#endif
 	if ( !IsLeading() )
 	{
+#ifndef HL2_ANNIVERSARY_NOV2024
 		if ( !m_pCurrentPathTarget )
 			return;
+#endif
 
 		// Updates our destination node if we're tracking something
 		UpdateTargetPosition();

@@ -265,9 +265,7 @@ void CHudCrosshair::Paint( void )
 #else
 	Color clr = m_clrCrosshair;
 
-	int iScreenDiv = 1600;
-	if ( IsSteamDeck() )
-		iScreenDiv = 1440;
+	int iScreenDiv = IsSteamDeck() ? 1440 : 1600;
 
 	flPlayerScale = ( ScreenHeight() / iScreenDiv ) + 1;
 	if ( m_pCrosshair->bRenderUsingFont )
