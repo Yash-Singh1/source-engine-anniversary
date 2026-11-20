@@ -155,6 +155,7 @@ RETAIL_LIBS = {"stdshader_dx9": [{"project": "tier2", "path": "lib/public/tier2.
                "engine": [{"prebuilt": "lib/public/libpng.lib"}],
                "vguimatsurface": _FREETYPE_LIBS}
 RETAIL_SYSTEM_LIBS = dict((m, ["rpcrt4.lib"]) for m in ("client_hl2", "client_episodic", "server_hl2", "server_episodic"))
+RETAIL_SYSTEM_LIBS["GameUI"] = ["nvtc.lib"]
 
 # Valve library paths ($File "...lib") that live elsewhere in this tree.
 LIB_FILE_ALIASES = {"dx9sdk/lib": "dx9sdk/lib/x86"}

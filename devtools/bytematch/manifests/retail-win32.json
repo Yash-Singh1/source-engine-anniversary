@@ -4945,7 +4945,8 @@
     "Ws2_32.lib",
     "odbc32.lib",
     "odbccp32.lib",
-    "Shlwapi.lib"
+    "Shlwapi.lib",
+    "nvtc.lib"
    ]
   },
   "ServerBrowser": {
