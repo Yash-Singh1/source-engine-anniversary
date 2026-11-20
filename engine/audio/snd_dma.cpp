@@ -6122,12 +6122,13 @@ static void S_UpdateCommentaryDuck( int commentaryChannelCount, int commentaryCh
 {
 	float volume_when_ducked = snd_ducktovolume_commentary.GetFloat();
 	float voice_volume_when_ducked = snd_ducktovolume_commentary_othervoice.GetFloat();
+	float flThreshold = snd_duckerthreshold.GetFloat();
 
 	float duckTarget = 1.0;
 	float voiceDuckTarget = 1.0;
 	if ( commentaryChannelCount > 0 )
 	{
-		int volume_threshold = (int)(snd_duckerthreshold.GetFloat() * 255.0);
+		int volume_threshold = (int)(flThreshold * 255.0);
 		commentaryChannelMaxVolume = clamp(commentaryChannelMaxVolume, 0, 255);
 
 		if ( commentaryChannelMaxVolume > volume_threshold )

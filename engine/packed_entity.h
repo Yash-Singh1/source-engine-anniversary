@@ -158,6 +158,8 @@ inline void* PackedEntity::GetData()
 	return m_pData;
 }
 
+#include "memdbgoff.h"
+
 inline void PackedEntity::FreeData()
 {
 	if ( m_pData )
@@ -204,8 +206,6 @@ inline bool PackedEntity::ShouldCheckCreationTick() const
 {
 	return m_nShouldCheckCreationTick == 1 ? true : false;
 }
-
-#include "memdbgoff.h"
 
 #endif // PACKED_ENTITY_H
 
