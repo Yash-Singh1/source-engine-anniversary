@@ -612,16 +612,7 @@ CMaterialSystem::CMaterialSystem()
 #endif
 #line 580
 #ifdef BYTEMATCH_RETAIL
-
-	RenderBackend_t eBackend = RENDER_BACKEND_NULL;
-	if ( !CommandLine()->FindParm( "-noshaderapi" ) )
-	{
-		bool bSteamDeck = IsSteamDeck( true );
-		ICommandLine *pCommandLine = CommandLine();
-		bool bVulkan = bSteamDeck ? !pCommandLine->FindParm( "-opengl" ) : pCommandLine->FindParm( "-vulkan" ) != 0;
-		eBackend = bVulkan ? RENDER_BACKEND_VULKAN : ( IsPlatformOpenGL() ? RENDER_BACKEND_TOGL : RENDER_BACKEND_D3D9 );
-	}
-	m_eRenderBackend = eBackend;
+	m_eRenderBackend = GetCommandLineRenderBackend();
 #endif
 #line 570
 }
@@ -675,9 +666,19 @@ void CMaterialSystem::DestroyShaderAPI()
 }
 
 
-RenderBackend_t CMaterialSystem::GetRenderBackend() const
+static const char *GetShaderAPIDLLForBackend( RenderBackend_t eBackend )
 {
-	return m_eRenderBackend;
+	switch ( eBackend )
+	{
+	case RENDER_BACKEND_D3D9:
+		return "shaderapidx9";
+	case RENDER_BACKEND_TOGL:
+		return "shaderapidx9";
+	case RENDER_BACKEND_VULKAN:
+		return "shaderapivk";
+	default:
+		return "shaderapiempty";
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -693,21 +694,7 @@ void CMaterialSystem::SetShaderAPI( char const *pShaderAPIDLL )
 #ifdef BYTEMATCH_RETAIL
 	if ( !pShaderAPIDLL )
 	{
-		switch ( GetRenderBackend() )
-		{
-		case RENDER_BACKEND_D3D9:
-			pShaderAPIDLL = "shaderapidx9";
-			break;
-		case RENDER_BACKEND_TOGL:
-			pShaderAPIDLL = "shaderapidx9";
-			break;
-		case RENDER_BACKEND_VULKAN:
-			pShaderAPIDLL = "shaderapivk";
-			break;
-		default:
-			pShaderAPIDLL = "shaderapiempty";
-			break;
-		}
+		pShaderAPIDLL = GetShaderAPIDLLForBackend( GetRenderBackend() );
 	}
 	Msg( "Using shader api: %s\n", pShaderAPIDLL );
 #else
@@ -3450,6 +3437,12 @@ void CMaterialSystem::ResetTempHWMemory( bool bExitingLevel )
 {
 	g_pShaderAPI->DestroyVertexBuffers( bExitingLevel );
 	TextureManager()->ReleaseTempRenderTargetBits();
+}
+
+
+RenderBackend_t CMaterialSystem::GetRenderBackend() const
+{
+	return m_eRenderBackend;
 }
 
 

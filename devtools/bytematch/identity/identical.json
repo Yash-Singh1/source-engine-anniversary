@@ -29,6 +29,8 @@
     {"target": "server_hl2mp", "retail": "hl2mp/bin/server.dylib", "size": 16134996, "sha256": "0938616a65f3871e702feb086e1f25c3ace74a7d759683dcf789a387f143e06e"},
     {"target": "client_hl2mp", "retail": "hl2mp/bin/client.dylib", "size": 14075852, "sha256": "3a48b37467d0dbca6796eb9cdb175f9db3d45fec72210792b4dfb1da8ca4c67d"},
     {"target": "GameUI", "retail": "bin/GameUI.dylib", "size": 3704412, "sha256": "91bf6b3c45fe71abfe8c485158ab0902196d2bc8ae8b6b65883e2e3b1e0bdbef"},
-    {"target": "togl", "retail": "bin/libtogl.dylib", "size": 447124, "sha256": "4971da079113659a04d2cbaeba2e0f3a1fa489bd1f9e2225f2247b873e355cc9"}
+    {"target": "togl", "retail": "bin/libtogl.dylib", "size": 447124, "sha256": "4971da079113659a04d2cbaeba2e0f3a1fa489bd1f9e2225f2247b873e355cc9"},
+    {"target": "materialsystem", "retail": "bin/materialsystem.dylib", "size": 1725424, "sha256": "53ee91054e5ec7e142131ec3577dbbde8acc935d1a8c65e42078d09b9c93b00f"},
+    {"target": "filesystem_stdio", "retail": "bin/filesystem_stdio.dylib", "size": 1248272, "sha256": "9c27f564a5419f05e6d8876617e0bf783ba72d7a51eb16b8c0087b91ae76836b"}
   ]
 }

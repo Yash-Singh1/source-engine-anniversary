@@ -1054,6 +1054,17 @@ void CMatQueuedRenderContext::FogMaxDensity( float flMaxDensity )
 	m_queue.QueueCall( m_pHardwareContext, &IMatRenderContext::FogMaxDensity, flMaxDensity );
 }
 
+void CMatQueuedRenderContext::FogRadial( bool bRadial )
+{
+	m_bFogRadial = bRadial;
+	m_queue.QueueCall( m_pHardwareContext, &IMatRenderContext::FogRadial, bRadial );
+}
+
+bool CMatQueuedRenderContext::GetFogRadial()
+{
+	return m_bFogRadial;
+}
+
 void CMatQueuedRenderContext::SetFogZ( float fogZ )
 {
 	m_flFogZ = fogZ;

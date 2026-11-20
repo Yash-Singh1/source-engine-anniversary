@@ -10,7 +10,7 @@
 #endif
 
 #include "basefilesystem.h"
-#include "packfile.h"
+
 #include "tier0/dbg.h"
 #include "tier0/threadtools.h"
 #ifdef _WIN32

@@ -197,6 +197,8 @@ public:
 	MaterialFogMode_t						GetFogMode( void );
 	void									GetFogDistances( float *fStart, float *fEnd, float *fFogZ );
 	void									FogMaxDensity( float flMaxDensity );
+	virtual void							FogRadial( bool bRadial ) OVERRIDE;
+	virtual bool							GetFogRadial() OVERRIDE;
 
 	void									FogColor3f( float r, float g, float b );
 	void									FogColor3fv( float const* rgb );
@@ -412,17 +414,6 @@ public:
 	}
 
 #endif
-
-	virtual void							FogRadial( bool bRadial ) OVERRIDE
-	{
-		m_bFogRadial = bRadial;
-		m_queue.QueueCall( m_pHardwareContext, &IMatRenderContext::FogRadial, bRadial );
-	}
-
-	virtual bool							GetFogRadial() OVERRIDE
-	{
-		return m_bFogRadial;
-	}
 
 #ifndef BYTEMATCH_RETAIL
 	virtual void							AsyncMap( ITextureInternal* pTexToMap, IAsyncTextureOperationReceiver* pRecipient, void* pExtraArgs ) OVERRIDE
