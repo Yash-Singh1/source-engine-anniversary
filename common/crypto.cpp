@@ -86,6 +86,7 @@ const int k_cMedBuff = 1024;					// medium buffer
 #include "cryptopp/zlib.h"
 #include "cryptopp/gzip.h"
 #include "cryptopp/pwdbased.h"
+#line 91
 using namespace CryptoPP;
 typedef AutoSeededX917RNG<AES> CAutoSeededRNG;
 
