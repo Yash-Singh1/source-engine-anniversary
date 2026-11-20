@@ -1708,7 +1708,7 @@ void CMatRenderContext::BindMorph( IMorph *pMorph )
 #ifdef BYTEMATCH_RETAIL
 		g_pShaderAPI->EnableHWMorphing( pMorphInternal != NULL );
 		m_pBoundMorph = pMorphInternal;
-		if ( pMorph > MATERIAL_MORPH_DECAL )
+		if ( pMorph != NULL && pMorph != MATERIAL_MORPH_DECAL )
 		{
 			pMorphInternal->Bind( m_pMorphRenderContext );
 		}

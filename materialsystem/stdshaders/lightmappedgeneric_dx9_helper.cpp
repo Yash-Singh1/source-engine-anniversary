@@ -101,7 +101,9 @@ void InitParamsLightmappedGeneric_DX9( CBaseVSShader *pShader, IMaterialVar** pa
 	}
 
 	static ConVarRef mat_specular_scalar( "mat_specular_scalar" );
-	float flSpecularScalar = mat_specular_scalar.IsValid() ? mat_specular_scalar.GetFloat() : -1.0f;
+	float flSpecularScalar = -1.0f;
+	if ( mat_specular_scalar.IsValid() )
+		flSpecularScalar = mat_specular_scalar.GetFloat();
 	if ( flSpecularScalar < 0.0f )
 		flSpecularScalar = 1.0f;
 

@@ -647,7 +647,7 @@ precacheVarsDone:
 //-----------------------------------------------------------------------------
 #ifdef BYTEMATCH_RETAIL
 #undef Q_stricmp
-#define Q_stricmp stricmp
+#define Q_stricmp strcmp
 #endif
 #line 638
 void CMaterialSubRect::ParseMaterialVars( KeyValues &keyValues )
@@ -674,11 +674,11 @@ void CMaterialSubRect::ParseMaterialVars( KeyValues &keyValues )
 			{
 				sscanf( pVar->GetString(), "%f %f", &m_vecOffset.x, &m_vecOffset.y );
 			}
-			else if ( !Q_stricmp( pVar->GetName(), "$Size" ) )
+			if ( !Q_stricmp( pVar->GetName(), "$Size" ) )
 			{
 				sscanf( pVar->GetString(), "%f %f", &m_vecSize.x, &m_vecSize.y );
 			}
-			else if ( !Q_stricmp( pVar->GetName(), "$Material" ) )
+			if ( !Q_stricmp( pVar->GetName(), "$Material" ) )
 			{
 				m_pMaterialPage = static_cast<IMaterialInternal*>( MaterialSystem()->FindMaterial( pVar->GetString(), TEXTURE_GROUP_DECAL ) );
 				m_pMaterialPage = m_pMaterialPage->GetRealTimeVersion(); //always work with the realtime material internally

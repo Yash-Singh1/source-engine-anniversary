@@ -450,8 +450,7 @@ extern "C"
 
 void CShaderSystem::VerifyBaseShaderDLL( CSysModule *pModule )
 {
-//#if defined( _WIN32 ) && !defined( _X360 )
-#if 0
+#if defined( _WIN32 ) && !defined( _X360 ) && defined( BYTEMATCH_RETAIL )
 	const char *pErrorStr = "Corrupt save data settings.";
 
 	unsigned char *testData1 = new unsigned char[SHADER_DLL_VERIFY_DATA_LEN1];

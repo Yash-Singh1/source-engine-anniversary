@@ -696,6 +696,8 @@ void CMaterialSystem::SetShaderAPI( char const *pShaderAPIDLL )
 		switch ( GetRenderBackend() )
 		{
 		case RENDER_BACKEND_D3D9:
+			pShaderAPIDLL = "shaderapidx9";
+			break;
 		case RENDER_BACKEND_TOGL:
 			pShaderAPIDLL = "shaderapidx9";
 			break;
@@ -3982,7 +3984,9 @@ void CMaterialSystem::EndFrame( void )
 		return;
 
 	Assert( m_bGeneratedConfig );
+#line 3465
 	VPROF_BUDGET( "CMaterialSystem::EndFrame", VPROF_BUDGETGROUP_SWAP_BUFFERS );
+#line 3468
 
 	GetRenderContextInternal()->EndFrame();
 	   
@@ -4081,7 +4085,9 @@ void CMaterialSystem::EndFrame( void )
 
 	case MATERIAL_QUEUED_THREADED:
 		{
+#line 3508
 			VPROF_BUDGET( "Mat_ThreadedEndframe", "Mat_ThreadedEndframe" );
+#line 3564
 			if ( !m_bThreadHasOwnership )
 			{
 				ThreadAcquire( true );
@@ -5320,7 +5326,8 @@ void CMaterialSystem::ThreadRelease( )
 	pThreadPool->AddJob( pActiveAsyncJob );
 	pActiveAsyncJob->WaitForFinish();
 
-	SafeRelease( pActiveAsyncJob );
+	if ( pActiveAsyncJob )
+		pActiveAsyncJob->Release();
 
 	if ( do_report )
 	{
@@ -5376,7 +5383,8 @@ void CMaterialSystem::ThreadAcquire( bool bForce )
 //	while we could wait for this job to finish, there's no reason too
 //	pActiveAsyncJob->WaitForFinish();	
 
-	SafeRelease( pActiveAsyncJob );
+	if ( pActiveAsyncJob )
+		pActiveAsyncJob->Release();
 
 	m_bThreadHasOwnership = true;
 	m_ThreadOwnershipID = ThreadGetCurrentId();
