@@ -111,6 +111,47 @@ static DIR *my_opendir(const char *path)
 	return opendir(map(path, b));
 }
 
+/*
+ * ld64-236.3 compact_unwind.cpp aligns its second-level page pointer with
+ * ((uintptr_t)pageEnd & -4096) on a calloc(pageCount, 4096) buffer. On OS X 10.9,
+ * allocations under 127 KB came from libmalloc's 512-byte small zone rather than
+ * a 4096-byte page boundary, shifting the gap before the last page by base % 4096.
+ * When BM_UNWIND_CALLOC_OFFSET is set, offset calloc(n, 4096) by that amount.
+ */
+static void *unwind_orig = NULL;
+static void *unwind_shifted = NULL;
+static size_t unwind_off = (size_t)-1;
+
+static void *my_calloc(size_t count, size_t size)
+{
+	if (unwind_off == (size_t)-1) {
+		const char *env = getenv("BM_UNWIND_CALLOC_OFFSET");
+		unwind_off = env ? (size_t)strtoul(env, NULL, 0) : 0;
+	}
+	if (unwind_off && size == 4096 && count > 1 && unwind_orig == NULL) {
+		void *p = calloc(count + 1, 4096);
+		if (!p)
+			return NULL;
+		if (((uintptr_t)p & 4095) == 0) {
+			unwind_orig = p;
+			unwind_shifted = (char *)p + unwind_off;
+			return unwind_shifted;
+		}
+		return p;
+	}
+	return calloc(count, size);
+}
+
+static void my_free(void *ptr)
+{
+	if (ptr && ptr == unwind_shifted) {
+		ptr = unwind_orig;
+		unwind_orig = NULL;
+		unwind_shifted = NULL;
+	}
+	free(ptr);
+}
+
 #define INTERPOSE(fn) \
 	__attribute__((used, section("__DATA,__interpose"))) \
 	static const struct { const void *replacement, *original; } interpose_##fn = { (const void *)my_##fn, (const void *)fn }
@@ -125,3 +166,5 @@ INTERPOSE(access);
 INTERPOSE(fopen);
 INTERPOSE(opendir);
 INTERPOSE(qsort);
+INTERPOSE(calloc);
+INTERPOSE(free);

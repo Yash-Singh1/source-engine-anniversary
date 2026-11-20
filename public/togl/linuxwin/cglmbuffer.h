@@ -68,6 +68,7 @@ extern void glBufferSubDataMaxSize( GLenum target, GLintptr offset, GLsizeiptr s
 
 //===========================================================================//
 
+#ifndef BYTEMATCH_RETAIL
 // Creates an immutable storage for a buffer object
 // https://www.opengl.org/registry/specs/ARB/buffer_storage.txt
 class CPersistentBuffer
@@ -110,6 +111,7 @@ private:
 	GLsync			m_nSyncObj;
 #endif
 };
+#endif
 
 //===============================================================================
 
@@ -188,7 +190,9 @@ public:
 	void Lock( GLMBuffLockParams *pParams, char **pAddressOut );
 	void Unlock( int nActualSize = -1, const void *pActualData = NULL );
 
+#ifndef BYTEMATCH_RETAIL
 	GLuint GetHandle() const;
+#endif
 		
 	friend class GLMContext;			// only GLMContext can make CGLMBuffer objects
 	friend class GLMTester;	
@@ -229,8 +233,10 @@ public:
 
 	int						m_nPinnedMemoryOfs;
 
+#ifndef BYTEMATCH_RETAIL
 	uint					m_nPersistentBufferStartOffset;
 	bool					m_bUsingPersistentBuffer;
+#endif
 	
 	bool					m_bPseudo;				// true if the m_name is 0, and the backing is plain RAM
 			

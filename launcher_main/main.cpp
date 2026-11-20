@@ -143,7 +143,7 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 
 #elif defined (POSIX)
 
-#if defined( LINUX )
+#if defined( LINUX ) && defined( _DEBUG )
 
 #include <fcntl.h>
 #include <sys/stat.h>

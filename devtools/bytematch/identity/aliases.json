@@ -20,6 +20,11 @@
       "ours": "utils/vpk/sdk2013/",
       "valve": "public/",
       "why": "retail vpk packtest compiles against SDK 2013 headers in utils/vpk/sdk2013/ (tier1 containers and clean filesystem.h/utlsymbol.h without fork-added includes)"
+    },
+    {
+      "ours": "sdk2013mp/",
+      "valve": "",
+      "why": "retail hl2mp (2014 SDK 2013 mp) compiles from src/..., whereas this tree keeps those files under sdk2013mp/"
     }
   ]
 }

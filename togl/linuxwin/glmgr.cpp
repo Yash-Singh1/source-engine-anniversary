@@ -55,9 +55,11 @@
 ConVar gl_debug_output( "gl_debug_output", "1" );
 
 
+#ifndef BYTEMATCH_RETAIL
 // Whether or not we should batch up our creation and deletion behavior. 
 ConVar gl_batch_tex_creates( "gl_batch_tex_creates", "0" );
 ConVar gl_batch_tex_destroys( "gl_batch_tex_destroys", "0" ); 
+#endif
 
 //===============================================================================
 
@@ -68,11 +70,13 @@ uint g_nTotalDrawsOrClears, g_nTotalVBLockBytes, g_nTotalIBLockBytes;
 TelemetryGPUStats_t g_TelemetryGPUStats;
 #endif
 
+#ifndef BYTEMATCH_RETAIL
 const int kGLMInitialTexCount = 4096;
 const int kGLMReUpTexCount = 1024;
 const int kGLMHighWaterUndeleted = 2048;
 const int kDeletedTextureDim = 4;
 const uint32 g_garbageTextureBits[ 4 * kDeletedTextureDim * kDeletedTextureDim ] = { 0 };
+#endif
 
 char g_nullFragmentProgramText [] =
 {
@@ -211,11 +215,13 @@ void APIENTRY GL_Debug_Output_Callback(GLenum source, GLenum type, GLuint id, GL
 		       *sType = glTypeToString(type),
 			   *sSeverity = glSeverityToString(severity);
 	
+#ifndef BYTEMATCH_RETAIL
 	// According to NVidia, this error is a bug in the driver and not really an error (it's a warning in newer drivers): "Texture X is base level inconsistent. Check texture size"
 	if (  ( type == GL_DEBUG_TYPE_ERROR_ARB ) && strstr( message, "base level inconsistent" ) )
 	{
 		return;
 	}
+#endif
 	
 	if ( gl_debug_output.GetBool() || type == GL_DEBUG_TYPE_ERROR_ARB )
 	{
@@ -226,7 +232,11 @@ void APIENTRY GL_Debug_Output_Callback(GLenum source, GLenum type, GLuint id, GL
 	OutputDebugStringA( message );
 #endif
 			
+#ifdef BYTEMATCH_RETAIL
+	if ( type == GL_DEBUG_TYPE_ERROR_ARB )
+#else
 	if ( ( type == GL_DEBUG_TYPE_ERROR_ARB ) && ( g_bDebugOutputBreakpoints ) )
+#endif
 	{
 		DebuggerBreak();
 	}
@@ -234,6 +244,39 @@ void APIENTRY GL_Debug_Output_Callback(GLenum source, GLenum type, GLuint id, GL
 
 void GLMDebugPrintf( const char *pMsg, ... )
 {
+#ifdef BYTEMATCH_RETAIL
+	char buf[1024];
+	char *pBuf = buf;
+	bool bHeap = false;
+
+	va_list args;
+	va_start( args, pMsg );
+	uint nLen = V_vsnprintf( buf, sizeof( buf ), pMsg, args );
+	if ( nLen >= sizeof( buf ) - 1 )
+	{
+		pBuf = new char[65536];
+		bHeap = ( pBuf != NULL );
+		nLen = V_vsnprintf( pBuf, 65536, pMsg, args );
+	}
+	va_end( args );
+
+	const char *pCur = pBuf;
+	while ( nLen )
+	{
+		char chunk[1024];
+		uint nCopy = MIN( nLen, (uint)sizeof( chunk ) - 1 );
+		memcpy( chunk, pCur, nCopy );
+		chunk[nCopy] = '\0';
+		Plat_DebugString( chunk );
+		pCur += nCopy;
+		nLen -= nCopy;
+	}
+
+	if ( bHeap )
+	{
+		delete[] pBuf;
+	}
+#else
 	//$ TODO: Should this call Warning()?
 	//$ TODO: Should replace call these calls with Warning() / Msg() / DevMsg()?
 
@@ -241,6 +284,7 @@ void GLMDebugPrintf( const char *pMsg, ... )
 	va_start( args, pMsg );
 	vprintf( pMsg, args );
 	va_end( args );
+#endif
 }
 
 //===============================================================================
@@ -494,6 +538,9 @@ GLMContext *GLMgr::GetCurrentContext( void )
 // GLMContext public methods
 void GLMContext::MakeCurrent( bool bRenderThread )
 {
+#ifdef BYTEMATCH_RETAIL
+#line 519
+#endif
 	tmZone( TELEMETRY_LEVEL0, 0, "GLMContext::MakeCurrent" );
 	Assert( m_nCurOwnerThreadId == 0 || m_nCurOwnerThreadId == ThreadGetCurrentId() );
 		
@@ -539,6 +586,9 @@ void GLMContext::MakeCurrent( bool bRenderThread )
 
 void GLMContext::ReleaseCurrent( bool bRenderThread )
 {
+#ifdef BYTEMATCH_RETAIL
+#line 569
+#endif
 	tmZone( TELEMETRY_LEVEL0, 0, "GLMContext::ReleaseCurrent" );
 	Assert( m_nCurOwnerThreadId == ThreadGetCurrentId() );
 		
@@ -670,7 +720,11 @@ void GLMContext::DumpCaps( void )
 	#define	dumpfield_hex( fff )	printf( "\n  %-30s : 0x%08x", #fff, (int) m_caps.fff )
 	#define	dumpfield_str( fff )	printf( "\n  %-30s : %s", #fff, m_caps.fff )
 
+#ifdef BYTEMATCH_RETAIL
+	printf("\n-------------------------------- context caps for context %08x", (uint)this);
+#else
 	printf("\n-------------------------------- context caps for context %p", this);
+#endif
 
 	dumpfield( m_fullscreen );
 	dumpfield( m_accelerated );
@@ -712,7 +766,11 @@ void GLMContext::DumpCaps( void )
 	{
 		dumpfield( m_intel95x );
 		dumpfield( m_intel3100 );
+#ifdef BYTEMATCH_RETAIL
+		dumpfield( m_intelNewer );
+#else
 		dumpfield( m_intelHD4000 );
+#endif
 	}
 
 	dumpfield( m_nv );
@@ -744,7 +802,9 @@ void GLMContext::DumpCaps( void )
 	dumpfield( m_cantResolveScaled );
 	dumpfield( m_costlyGammaFlips );
 	dumpfield( m_badDriver1064NV );
+#ifndef BYTEMATCH_RETAIL
 	dumpfield( m_badDriver108Intel );
+#endif
 
 	printf("\n--------------------------------");
 	
@@ -753,6 +813,37 @@ void GLMContext::DumpCaps( void )
 	#undef dumpfield_str
 }
 
+#ifdef BYTEMATCH_RETAIL
+CGLMTex	*GLMContext::NewTex( GLMTexLayoutKey *key, const char *debugLabel )
+{
+	// get a layout based on the key
+	GLMTexLayout *layout = m_texLayoutTable->NewLayoutRef( key );
+			
+	CGLMTex *tex = new CGLMTex( this, layout, debugLabel );
+	
+	return tex;
+}
+
+void GLMContext::DelTex( CGLMTex * tex )
+{
+	for( int i = 0; i < GLM_SAMPLER_COUNT; i++)
+	{
+		if ( m_samplers[i].m_pBoundTex == tex )
+		{
+			BindTexToTMU( NULL, i );
+		}
+	}
+			
+	if ( tex->m_rtAttachCount != 0 )
+	{
+		GLMDebugPrintf("GLMContext::DelTex: Leaking tex %08x [ %s ] - was attached for drawing at time of delete",tex, tex->m_layout->m_layoutSummary );
+	}
+	else
+	{	
+		delete tex;
+	}
+}
+#else
 CGLMTex	*GLMContext::NewTex( GLMTexLayoutKey *key, uint levels, const char *debugLabel )
 {
 	// get a layout based on the key
@@ -810,6 +901,7 @@ void GLMContext::ProcessTextureDeletes()
 		}
 	}
 }
+#endif
 
 // push and pop attrib when blit has mixed srgb source and dest?		
 ConVar	gl_radar7954721_workaround_mixed ( "gl_radar7954721_workaround_mixed", "1" );
@@ -924,7 +1016,11 @@ void GLMContext::Blit2( CGLMTex *srcTex, GLMRect *srcRect, int srcFace, int srcM
 
 	switch( srcTex->m_layout->m_format->m_glDataFormat )
 	{
+#ifdef BYTEMATCH_RETAIL
+		case GL_BGRA:	case GL_RGB:	case GL_RGBA:	case GL_ALPHA:	case GL_LUMINANCE:	case GL_LUMINANCE_ALPHA:
+#else
 		case GL_RED: case GL_BGRA:	case GL_RGB:	case GL_RGBA:	case GL_ALPHA:	case GL_LUMINANCE:	case GL_LUMINANCE_ALPHA:
+#endif
 			formatClass = eColor;
 			blitMask = GL_COLOR_BUFFER_BIT;
 		break;
@@ -1737,6 +1833,9 @@ void GLMContext::PreloadTex( CGLMTex *tex, bool force )
 	if (!preloadPair)
 		return;
 
+#ifdef BYTEMATCH_RETAIL
+	gGL->glUseProgram( (GLuint)preloadPair->m_program );
+#else
 	if ( !preloadPair->m_valid )
 	{
 		if ( !preloadPair->ValidateProgramPair() )
@@ -1747,6 +1846,7 @@ void GLMContext::PreloadTex( CGLMTex *tex, bool force )
 
 	gGL->glUseProgramObjectARB( preloadPair->m_program );
 	//gGL->glUseProgram( (GLuint)preloadPair->m_program );
+#endif
 
 	m_pBoundPair = preloadPair;
 	m_bDirtyPrograms = true;
@@ -1789,6 +1889,16 @@ void GLMContext::PreloadTex( CGLMTex *tex, bool force )
 								0.0f, 0.0f, 0.0f,
 								0.0f, 0.0f, 0.0f };
 
+#ifdef BYTEMATCH_RETAIL
+	static int indices[] = { 0, 1, 2 };
+	
+
+	gGL->glEnableVertexAttribArray( 0 );
+
+	gGL->glVertexAttribPointer( 0, 3, GL_FLOAT, 0, 0, posns );
+
+	gGL->glDrawRangeElements( GL_TRIANGLES, 0, 3, 3, GL_UNSIGNED_INT, indices);
+#else
 	static short indices[] = { 0, 1, 2 };
 	
 
@@ -1797,6 +1907,7 @@ void GLMContext::PreloadTex( CGLMTex *tex, bool force )
 	gGL->glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), posns );
 
 	gGL->glDrawRangeElements( GL_TRIANGLES, 0, 2, 3, GL_UNSIGNED_SHORT, indices);
+#endif
 
 	gGL->glDisableVertexAttribArray( 0 );
 	
@@ -1811,6 +1922,9 @@ void GLMContext::PreloadTex( CGLMTex *tex, bool force )
 
 CGLMFBO	*GLMContext::NewFBO( void )
 {
+#ifdef BYTEMATCH_RETAIL
+#line 1821
+#endif
 	GLM_FUNC;
 
 	CGLMFBO *fbo = new CGLMFBO( this );
@@ -1822,6 +1936,9 @@ CGLMFBO	*GLMContext::NewFBO( void )
 
 void GLMContext::DelFBO( CGLMFBO *fbo )
 {
+#ifdef BYTEMATCH_RETAIL
+#line 1832
+#endif
 	GLM_FUNC;
 
 	if (m_drawingFBO == fbo)
@@ -1861,13 +1978,28 @@ CGLMProgram	*GLMContext::NewProgram( EGLMProgramType type, char *progString, con
 	
 	prog->SetProgramText( progString );
 	prog->SetShaderName( pShaderName );
+#ifdef BYTEMATCH_RETAIL
+	bool compile_ok = prog->CompileActiveSources();
+	(void)compile_ok;
+	if ( !compile_ok )
+	{
+		GLMDebugPrintf( "Compile of \"%s\" Failed:\n", pShaderName );
+		Plat_DebugString( progString );
+	}
+
+	AssertOnce( compile_ok );
+#else
 	prog->CompileActiveSources();
+#endif
 
 	return prog;
 }
 
 void GLMContext::DelProgram( CGLMProgram *pProg )
 {
+#ifdef BYTEMATCH_RETAIL
+#line 1886
+#endif
 	GLM_FUNC;
 
 	if ( m_drawingProgram[ pProg->m_type ] == pProg )
@@ -1918,6 +2050,7 @@ void GLMContext::LinkShaderPair( CGLMProgram *vp, CGLMProgram *fp )
 	}
 }
 
+#ifndef BYTEMATCH_RETAIL
 void GLMContext::ValidateShaderPair( CGLMProgram *vp, CGLMProgram *fp )
 {
 	if ((m_pairCache) && (m_drawingLang == kGLMGLSL) && (vp) && (fp))
@@ -1929,6 +2062,7 @@ void GLMContext::ValidateShaderPair( CGLMProgram *vp, CGLMProgram *fp )
 		NullProgram();	// clear out any binds that were done - next draw will set it right
 	}
 }
+#endif
 
 void GLMContext::ClearShaderPairCache( void )
 {
@@ -1964,6 +2098,9 @@ CGLMBuffer *GLMContext::NewBuffer( EGLMBufferType type, uint size, uint options 
 
 void GLMContext::DelBuffer( CGLMBuffer *buff )
 {
+#ifdef BYTEMATCH_RETAIL
+#line 1970
+#endif
 	GLM_FUNC;
 
 	for( int index = 0; index < kGLMVertexAttributeIndexMax; index++ )
@@ -1984,6 +2121,9 @@ GLMVertexSetup g_blank_setup;
 
 void GLMContext::Clear( bool color, unsigned long colorValue, bool depth, float depthValue, bool stencil, unsigned int stencilValue, GLScissorBox_t *box )
 {
+#ifdef BYTEMATCH_RETAIL
+#line 1990
+#endif
 	GLM_FUNC;
 		
 	++m_nBatchCounter;
@@ -2222,7 +2362,17 @@ void GLMContext::BeginFrame( void )
 
 void GLMContext::EndFrame( void )
 {
+#ifdef BYTEMATCH_RETAIL
+#line 2229
+#endif
 	GLM_FUNC;
+
+#ifdef BYTEMATCH_RETAIL
+	if ( !m_oneCtxEnable )
+	{
+		gGL->glFlush();
+	}
+#endif
 
 #if GLMDEBUG
 	// init debug hook information
@@ -2271,7 +2421,9 @@ void GLMContext::Present( CGLMTex *tex )
 		g_TelemetryGPUStats.m_nTotalPresent++;
 #endif
 
+#ifndef BYTEMATCH_RETAIL
 		ProcessTextureDeletes();
+#endif
 
 #ifdef HAVE_GL_ARB_SYNC
 
@@ -2286,6 +2438,7 @@ void GLMContext::Present( CGLMTex *tex )
 			gGL->glBindBufferARB( GL_EXTERNAL_VIRTUAL_MEMORY_BUFFER_AMD, m_PinnedMemoryBuffers[m_nCurPinnedMemoryBuffer].GetHandle() );
 		}
 
+#ifndef BYTEMATCH_RETAIL
 		if ( gGL->m_bHave_GL_ARB_buffer_storage )
 		{
 			for (uint lpType = 0; lpType < kGLMNumBufferTypes; ++lpType)
@@ -2300,6 +2453,7 @@ void GLMContext::Present( CGLMTex *tex )
 				m_persistentBuffer[m_nCurPersistentBuffer][lpType].BlockUntilNotBusy();
 			}
 		}
+#endif
 
 #endif // HAVE_GL_ARB_SYNC
 					
@@ -2444,6 +2598,7 @@ bool GLMContext::SetDisplayParams( GLMDisplayParams *params )
 
 ConVar gl_can_query_fast("gl_can_query_fast", "0");
 
+#ifndef BYTEMATCH_RETAIL
 static uint gPersistentBufferSize[kGLMNumBufferTypes] = 
 {
 	2 * 1024 * 1024,	// kGLMVertexBuffer
@@ -2451,9 +2606,40 @@ static uint gPersistentBufferSize[kGLMNumBufferTypes] =
 	0,					// kGLMUniformBuffer
 	0,					// kGLMPixelBuffer
 };
+#endif
 
 GLMContext::GLMContext( IDirect3DDevice9 *pDevice, GLMDisplayParams *params )
 {
+#ifdef BYTEMATCH_RETAIL
+	m_bUseSamplerObjects = true;
+	
+	// On most AMD drivers (like the current latest, 12.10 Windows), the PCF depth comparison mode doesn't work on sampler objects, so just punt them.
+	if ( gGL->m_nDriverProvider == cGLDriverProviderAMD )
+	{
+		m_bUseSamplerObjects = false;
+	}
+	
+	if ( CommandLine()->CheckParm( "-gl_disablesamplerobjects" ) )
+	{
+		m_bUseSamplerObjects = false;
+	}
+	if ( CommandLine()->CheckParm( "-gl_enablesamplerobjects" ) )
+	{
+		m_bUseSamplerObjects = true;
+	}
+	
+	char buf[256];
+	V_snprintf( buf, sizeof( buf ), "GL sampler object usage: %s\n", m_bUseSamplerObjects ? "ENABLED" : "DISABLED" );
+	Plat_DebugString( buf );
+
+	m_bPreferMapBufferRange = ( gGL->m_nDriverProvider == cGLDriverProviderAMD ) || ( gGL->m_nDriverProvider == cGLDriverProviderIntel ) || ( gGL->m_nDriverProvider == cGLDriverProviderIntelOpenSource );
+	if ( CommandLine()->CheckParm( "-gl_disableprefermapbufferrange" ) )
+	{
+		m_bPreferMapBufferRange = false;
+	}
+	V_snprintf( buf, sizeof( buf ), "GL prefer MapBufferRange: %s\n", m_bPreferMapBufferRange ? "ENABLED" : "DISABLED" );
+	Plat_DebugString( buf );
+#else
 	m_nNumDirtySamplers = 0;
 // 	m_bUseSamplerObjects = true;
 // 	
@@ -2482,6 +2668,7 @@ GLMContext::GLMContext( IDirect3DDevice9 *pDevice, GLMDisplayParams *params )
 		m_bTexClientStorage = true;
 
 	GLMDebugPrintf( "GL sampler object usage: %s\n", m_bUseSamplerObjects ? "ENABLED" : "DISABLED" );
+#endif
 
 	m_nCurOwnerThreadId = ThreadGetCurrentId();
 	m_nThreadOwnershipReleaseCounter = 0;
@@ -2505,6 +2692,7 @@ GLMContext::GLMContext( IDirect3DDevice9 *pDevice, GLMDisplayParams *params )
 	}
 #endif // OSX
 
+#ifndef BYTEMATCH_RETAIL
 	m_nCurPersistentBuffer = 0;
 	if ( gGL->m_bHave_GL_ARB_buffer_storage )
 	{
@@ -2516,6 +2704,7 @@ GLMContext::GLMContext( IDirect3DDevice9 *pDevice, GLMDisplayParams *params )
 			}
 		}
 	}
+#endif
 
 	m_bUseBoneUniformBuffers = true;
 	if (CommandLine()->CheckParm("-disableboneuniformbuffers"))
@@ -2678,7 +2867,9 @@ GLMContext::GLMContext( IDirect3DDevice9 *pDevice, GLMDisplayParams *params )
 	m_pairCache	= new CGLMShaderPairCache( this );
 	m_pBoundPair = NULL;
 
+#ifndef BYTEMATCH_RETAIL
 	m_fragDataMask = 0;
+#endif
 			
 	memset( m_nBoundGLBuffer, 0xFF, sizeof( m_nBoundGLBuffer ) );
 
@@ -2744,6 +2935,7 @@ GLMContext::GLMContext( IDirect3DDevice9 *pDevice, GLMDisplayParams *params )
 		m_scratchFBO[i] = NewFBO();
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	// Create a PBO that we can use to fill textures with bogus data asyncronously.
 	m_nBoundGLBuffer[ kGLMPixelBuffer ] = 0;
 
@@ -2754,6 +2946,7 @@ GLMContext::GLMContext( IDirect3DDevice9 *pDevice, GLMDisplayParams *params )
 
 	// Create a bunch of texture names for us to use forever and ever ramen.
 	FillTexCache( false, kGLMInitialTexCount );
+#endif
 
 #ifdef OSX
 	bool new_mtgl = m_caps.m_hasPerfPackage1;	// i.e. 10.6.4 plus new driver
@@ -2837,11 +3030,13 @@ GLMContext::GLMContext( IDirect3DDevice9 *pDevice, GLMDisplayParams *params )
 	m_nTotalPSUniformsSet = 0;
 #endif
 
+#ifndef BYTEMATCH_RETAIL
 	// See g_D3DRS_INFO_packed in dxabstract.cpp; dithering is a non-managed
 	// piece of state that we consider off by default. However it is actually
 	// enabled by default in the GL spec, so account for that here.
 	// See: https://bugs.freedesktop.org/show_bug.cgi?id=74700
 	gGL->glDisable( GL_DITHER );
+#endif
 }
 
 void GLMContext::Reset()
@@ -2858,6 +3053,7 @@ GLMContext::~GLMContext	()
 		m_PinnedMemoryBuffers[t].Deinit();
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	if (gGL->m_bHave_GL_ARB_buffer_storage)
 	{
 		for (uint lpType = 0; lpType < kGLMNumBufferTypes; ++lpType)
@@ -2868,6 +3064,7 @@ GLMContext::~GLMContext	()
 			}
 		}
 	}
+#endif
 
 	if ( m_bUseSamplerObjects )
 	{
@@ -2876,12 +3073,21 @@ GLMContext::~GLMContext	()
 			gGL->glBindSampler( i, 0 );
 		}
 
+#ifndef BYTEMATCH_RETAIL
 		for( int i=0; i< cSamplerObjectHashSize; i++)
 		{
 			gGL->glDeleteSamplers( 1, &m_samplerObjectHash[i].m_samplerObject );
 			m_samplerObjectHash[i].m_samplerObject = 0;
 		}
+#endif
 	}
+#ifdef BYTEMATCH_RETAIL
+	for( int i=0; i< cSamplerObjectHashSize; i++)
+	{
+		gGL->glDeleteSamplers( 1, &m_samplerObjectHash[i].m_samplerObject );
+		m_samplerObjectHash[i].m_samplerObject = 0;
+	}
+#endif
 #endif // !OSX
 
 	if (m_debugFontTex)
@@ -2890,7 +3096,9 @@ GLMContext::~GLMContext	()
 		m_debugFontTex = NULL;
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	ProcessTextureDeletes();
+#endif
 
 	if ( m_pNullFragmentProgram )
 	{
@@ -2916,9 +3124,11 @@ GLMContext::~GLMContext	()
 
 	// m_texLayoutTable can be scrubbed once we know that all the tex are freed
 
+#ifndef BYTEMATCH_RETAIL
 	gGL->glDeleteBuffersARB( 1, &m_destroyPBO );
 
 	PurgeTexCache();
+#endif
 
 	DecrementWindowRefCount();
 }
@@ -3021,7 +3231,11 @@ void GLMContext::BindBufferToCtx( EGLMBufferType type, CGLMBuffer *pBuff, bool b
 
 	CheckCurrent();
 
+#ifdef BYTEMATCH_RETAIL
+	GLuint nGLName = pBuff ? pBuff->m_nHandle : 0;
+#else
 	GLuint nGLName = pBuff ? pBuff->GetHandle() : 0;
+#endif
 	if ( !bForce ) 
 	{
 		if ( m_nBoundGLBuffer[type] == nGLName )
@@ -3045,6 +3259,7 @@ void GLMContext::BindBufferToCtx( EGLMBufferType type, CGLMBuffer *pBuff, bool b
 }
 
 
+#ifndef BYTEMATCH_RETAIL
 GLuint GLMContext::CreateTex( GLenum texBind, GLenum internalFormat )
 {
 	GLM_FUNC;
@@ -3194,6 +3409,7 @@ void GLMContext::PurgeTexCache()
 	
 	m_availableTextures.RemoveAll();
 }
+#endif // !BYTEMATCH_RETAIL
 
 #ifdef OSX
 // As far as I can tell this stuff is only useful under OSX.
@@ -3217,6 +3433,9 @@ void GLMContext::FlushDrawStatesNoShaders( )
 {
 	Assert( ( m_drawingFBO == m_boundDrawFBO ) && ( m_drawingFBO == m_boundReadFBO ) ); // this check MUST succeed
 
+#ifdef BYTEMATCH_RETAIL
+#line 3050
+#endif
 	GLM_FUNC;
 
 	GL_BATCH_PERF( m_FlushStats.m_nTotalBatchFlushes++; )
@@ -4596,6 +4815,9 @@ void GLMContext::CheckNative( void )
 		{
 			const char	*decodedStr = GLMDecode( eGL_ERROR, errorcode );
 
+#ifdef BYTEMATCH_RETAIL
+			GLMDebugPrintf( "\nGL ERROR! %08x = '%s'\n", errorcode, decodedStr );
+#else
 			char buf[512];
 			V_snprintf( buf, sizeof( buf), "\nGL ERROR! %08x = '%s'\n", errorcode, decodedStr );
 
@@ -4604,6 +4826,7 @@ void GLMContext::CheckNative( void )
 			OutputDebugStringA( buf );
 #else
 			printf( "%s", buf );
+#endif
 #endif
 		}
 	}
@@ -4614,6 +4837,7 @@ void GLMContext::CheckNative( void )
 
 
 
+#ifndef BYTEMATCH_RETAIL
 // debug font
 void GLMContext::GenDebugFontTex( void )
 {
@@ -4895,9 +5119,11 @@ void GLMContext::DrawDebugText( float x, float y, float z, float drawCharWidth, 
 
 	BindTexToTMU( pPrevTex, 0 );
 }
+#endif // !BYTEMATCH_RETAIL
 
 //===============================================================================
 
+#ifndef BYTEMATCH_RETAIL
 void GLMgrSelfTests( void )	
 {
 	return;	// until such time as the tests are revised or axed
@@ -4955,9 +5181,13 @@ void GLMgrSelfTests( void )
 	
 	GLMgr::aGLMgr()->DelContext( ctx );
 }
+#endif // !BYTEMATCH_RETAIL
 
 void GLMContext::SetDefaultStates( void )
 {
+#ifdef BYTEMATCH_RETAIL
+#line 4439
+#endif
 	GLM_FUNC;
 	CheckCurrent();
 
@@ -5006,6 +5236,9 @@ void GLMContext::SetDefaultStates( void )
 
 void GLMContext::VerifyStates		( void )
 {
+#ifdef BYTEMATCH_RETAIL
+#line 4487
+#endif
 	GLM_FUNC;
 	CheckCurrent();
 
@@ -5103,10 +5336,12 @@ void GLMContext::DrawRangeElementsNonInline( GLenum mode, GLuint start, GLuint e
 		// you have to pass actual address, not offset
 		indicesActual = (void*)( (intp)indicesActual + (intp)pIndexBuf->m_pPseudoBuf );
 	}
+#ifndef BYTEMATCH_RETAIL
 	if (pIndexBuf->m_bUsingPersistentBuffer)
 	{
 		indicesActual = (void*)( (intp)indicesActual + (intp)pIndexBuf->m_nPersistentBufferStartOffset );
 	}
+#endif
 
 #if GL_ENABLE_INDEX_VERIFICATION
 	// Obviously only for debugging.
@@ -5323,6 +5558,7 @@ void glGetEnumv( GLenum which, GLenum *dst )
 //===============================================================================
 
 
+#ifndef BYTEMATCH_RETAIL
 GLMTester::GLMTester(GLMTestParams *params)
 {
 	m_params = *params;
@@ -6097,6 +6333,7 @@ void GLMTester::Test3( void )
 	StdCleanup();
 	*****************************/
 }
+#endif // !BYTEMATCH_RETAIL
 
 #if GLMDEBUG
 void GLMTriggerDebuggerBreak()

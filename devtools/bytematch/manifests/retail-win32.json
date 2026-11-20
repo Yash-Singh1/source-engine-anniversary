@@ -1054,7 +1054,8 @@
     "advapi32.lib",
     "gdi32.lib",
     "comdlg32.lib",
-    "ole32.lib"
+    "ole32.lib",
+    "nvtc.lib"
    ]
   },
   "inputsystem": {
@@ -2752,7 +2753,8 @@
     "ws2_32.lib",
     "wininet.lib",
     "vfw32.lib",
-    "Rpcrt4.lib"
+    "Rpcrt4.lib",
+    "nvtc.lib"
    ]
   },
   "filesystem_stdio": {
@@ -3179,7 +3181,8 @@
     "advapi32.lib",
     "gdi32.lib",
     "comdlg32.lib",
-    "ole32.lib"
+    "ole32.lib",
+    "nvtc.lib"
    ]
   },
   "shaderapidx9": {
@@ -3408,7 +3411,8 @@
     "gdi32.lib",
     "comdlg32.lib",
     "ole32.lib",
-    "ws2_32.lib"
+    "ws2_32.lib",
+    "nvtc.lib"
    ]
   },
   "stdshader_dx9": {
@@ -5850,7 +5854,8 @@
     "gdi32.lib",
     "comdlg32.lib",
     "ole32.lib",
-    "ws2_32.lib"
+    "ws2_32.lib",
+    "nvtc.lib"
    ]
   },
   "launcher": {
@@ -8860,7 +8865,8 @@
     "comdlg32.lib",
     "ole32.lib",
     "winmm.lib",
-    "rpcrt4.lib"
+    "rpcrt4.lib",
+    "nvtc.lib"
    ]
   },
   "server_hl2": {
@@ -14607,7 +14613,8 @@
     "comdlg32.lib",
     "ole32.lib",
     "winmm.lib",
-    "rpcrt4.lib"
+    "rpcrt4.lib",
+    "nvtc.lib"
    ]
   },
   "server_episodic": {

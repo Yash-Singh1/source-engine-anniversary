@@ -50,14 +50,18 @@
 #include "cglmbuffer.h"
 #include "cglmquery.h"
 
+#ifndef BYTEMATCH_RETAIL
 #include "tier0/tslist.h"
+#endif
 #include "tier0/vprof_telemetry.h"
 #include "materialsystem/IShader.h"
 #include "dxabstract_types.h"
 #include "tier0/icommandline.h"
 
+#ifndef BYTEMATCH_RETAIL
 #undef FORCEINLINE
 #define FORCEINLINE inline
+#endif
 
 //===============================================================================
 
@@ -1097,7 +1101,11 @@ struct GLMVertexSetup
 #define	kGLMProgramParamInt4Limit	16
 
 #define	kGLMVertexProgramParamFloat4Limit	256
+#ifdef BYTEMATCH_RETAIL
+#define	kGLMFragmentProgramParamFloat4Limit	32
+#else
 #define	kGLMFragmentProgramParamFloat4Limit	256
+#endif
 
 struct GLMProgramParamsF
 {
@@ -1357,7 +1365,11 @@ class GLMContext
 
 		// textures
 		// Lock and Unlock reqs go directly to the tex object
+#ifdef BYTEMATCH_RETAIL
+		CGLMTex	*NewTex( GLMTexLayoutKey *key, const char *debugLabel=NULL );
+#else
 		CGLMTex	*NewTex( GLMTexLayoutKey *key, uint levels=1, const char *debugLabel=NULL );
+#endif
 		void	DelTex( CGLMTex	*tex );	
 
 			// options for Blit (replacement for ResolveTex and BlitTex)
@@ -1383,7 +1395,11 @@ class GLMContext
 		FORCEINLINE void SetSamplerAddressU( int sampler, GLenum Value );
 		FORCEINLINE void SetSamplerAddressV( int sampler, GLenum Value );
 		FORCEINLINE void SetSamplerAddressW( int sampler, GLenum Value );
+#ifdef BYTEMATCH_RETAIL
+		FORCEINLINE void SetSamplerStates( int sampler, GLenum AddressU, GLenum AddressV, GLenum AddressW, GLenum minFilter, GLenum magFilter, GLenum mipFilter );
+#else
 		FORCEINLINE void SetSamplerStates( int sampler, GLenum AddressU, GLenum AddressV, GLenum AddressW, GLenum minFilter, GLenum magFilter, GLenum mipFilter, int minLod, float lodBias );
+#endif
 		FORCEINLINE void SetSamplerBorderColor( int sampler, DWORD Value );
 		FORCEINLINE void SetSamplerMipMapLODBias( int sampler, DWORD Value );
 		FORCEINLINE void SetSamplerMaxMipLevel( int sampler, DWORD Value );
@@ -1407,7 +1423,9 @@ class GLMContext
 		void	SetDrawingLang( EGLMProgramLang lang, bool immediate=false );	// choose ARB or GLSL.  immediate=false defers lang change to top of frame
 		
 		void	LinkShaderPair( CGLMProgram *vp, CGLMProgram *fp );			// ensure this combo has been linked and is in the GLSL pair cache
+#ifndef BYTEMATCH_RETAIL
 		void	ValidateShaderPair( CGLMProgram *vp, CGLMProgram *fp );
+#endif
 		void	ClearShaderPairCache( void );								// call this to shoot down all the linked pairs
 		void	QueryShaderPair( int index, GLMShaderPairInfo *infoOut );	// this lets you query the shader pair cache for saving its state
 		
@@ -1644,6 +1662,7 @@ class GLMContext
 		FORCEINLINE void BindIndexBufferToCtx( CGLMBuffer *buff );
 		FORCEINLINE void BindVertexBufferToCtx( CGLMBuffer *buff );
 		
+#ifndef BYTEMATCH_RETAIL
 		GLuint CreateTex( GLenum texBind, GLenum internalFormat );
 		void CleanupTex( GLenum texBind, GLMTexLayout* pLayout, GLuint tex );
 		void DestroyTex( GLenum texBind, GLMTexLayout* pLayout, GLuint tex );
@@ -1653,12 +1672,15 @@ class GLMContext
 		// debug font
 		void GenDebugFontTex( void );
 		void DrawDebugText( float x, float y, float z, float drawCharWidth, float drawCharHeight, char *string );
+#endif
 
 #ifndef OSX
 		CPinnedMemoryBuffer *GetCurPinnedMemoryBuffer( ) { return &m_PinnedMemoryBuffers[m_nCurPinnedMemoryBuffer]; }
 #endif
 
+#ifndef BYTEMATCH_RETAIL
 		CPersistentBuffer* GetCurPersistentBuffer( EGLMBufferType type ) { return &( m_persistentBuffer[m_nCurPersistentBuffer][type] ); }
+#endif
 
 		// members------------------------------------------
 						
@@ -1667,7 +1689,11 @@ class GLMContext
 		uint							m_nThreadOwnershipReleaseCounter;
 
 		bool							m_bUseSamplerObjects;
+#ifdef BYTEMATCH_RETAIL
+		bool							m_bPreferMapBufferRange;
+#else
 		bool							m_bTexClientStorage;
+#endif
 
 		IDirect3DDevice9				*m_pDevice;
 		GLMRendererInfoFields			m_caps;
@@ -1679,6 +1705,9 @@ class GLMContext
 		int								m_pixelFormatAttribs[100];	// more than enough
 		PseudoNSGLContextPtr			m_nsctx;
 		void *							m_ctx;
+#endif
+#ifdef BYTEMATCH_RETAIL
+		bool							m_oneCtxEnable;			// true if we use the window's context directly instead of making a second one shared against it
 #endif
 		bool							m_bUseBoneUniformBuffers; // if true, we use two uniform buffers for vertex shader constants vs. one
 
@@ -1774,7 +1803,9 @@ class GLMContext
 		
 		CUtlVector< CGLMFBO* >			m_fboTable;				// each live FBO goes in the table
 
+#ifndef BYTEMATCH_RETAIL
 		uint							m_fragDataMask;
+#endif
 		
 		// program bindings
 		EGLMProgramLang					m_drawingLangAtFrameStart;	// selector for start of frame (spills into m_drawingLang)
@@ -1849,6 +1880,7 @@ class GLMContext
 		uint m_nCurFrame;
 		uint m_nBatchCounter;
 
+#ifndef BYTEMATCH_RETAIL
 		struct TextureEntry_t
 		{
 			GLenum m_nTexBind;
@@ -1858,6 +1890,7 @@ class GLMContext
 
 		GLuint							m_destroyPBO;
 		CUtlVector< TextureEntry_t >	m_availableTextures;
+#endif
 
 #ifndef OSX
 		enum { cNumPinnedMemoryBuffers = 4 };
@@ -1865,9 +1898,11 @@ class GLMContext
 		uint m_nCurPinnedMemoryBuffer;
 #endif
 
+#ifndef BYTEMATCH_RETAIL
 		enum { cNumPersistentBuffers = 3 };
 		CPersistentBuffer	m_persistentBuffer[cNumPersistentBuffers][kGLMNumBufferTypes];
 		uint				m_nCurPersistentBuffer;
+#endif
 
 		void SaveColorMaskAndSetToDefault();
 		void RestoreSavedColorMask();
@@ -1907,8 +1942,10 @@ class GLMContext
 		CFlushDrawStatesStats m_FlushStats;
 #endif
 
+#ifndef BYTEMATCH_RETAIL
 	void ProcessTextureDeletes();
 	CTSQueue<CGLMTex*> m_DeleteTextureQueue;
+#endif
 };
 
 #if 1 //ifndef OSX
@@ -1936,10 +1973,12 @@ FORCEINLINE void GLMContext::DrawRangeElements(	GLenum mode, GLuint start, GLuin
 		// you have to pass actual address, not offset
 		indicesActual = (void*)( (intp)indicesActual + (intp)pIndexBuf->m_pPseudoBuf );
 	}
+#ifndef BYTEMATCH_RETAIL
 	if (pIndexBuf->m_bUsingPersistentBuffer)
 	{
 		indicesActual = (void*)( (intp)indicesActual + (intp)pIndexBuf->m_nPersistentBufferStartOffset );
 	}
+#endif
 
 //#if GLMDEBUG
 #if 0
@@ -2064,6 +2103,26 @@ FORCEINLINE void GLMContext::SetProgramParametersF( EGLMProgramType type, uint b
 
 	if ( ( type == kGLMVertexProgram ) && ( m_bUseBoneUniformBuffers ) )
 	{
+#ifdef BYTEMATCH_RETAIL
+		if ( ( baseSlot + slotCount ) > DXABSTRACT_VS_FIRST_BONE_SLOT )
+		{
+			if ( baseSlot < DXABSTRACT_VS_FIRST_BONE_SLOT ) 
+			{
+				// The register set crosses between the constant buffers - should only happen at startup during init.
+				m_programParamsF[kGLMVertexProgram].m_firstDirtySlotNonBone = MIN( m_programParamsF[kGLMVertexProgram].m_firstDirtySlotNonBone, (int)baseSlot );
+				m_programParamsF[kGLMVertexProgram].m_dirtySlotHighWaterNonBone = MAX( m_programParamsF[kGLMVertexProgram].m_dirtySlotHighWaterNonBone, (int)MIN( baseSlot + slotCount, DXABSTRACT_VS_FIRST_BONE_SLOT ) );
+				baseSlot = DXABSTRACT_VS_FIRST_BONE_SLOT;
+			}
+
+			int nNumActualBones = ( baseSlot + slotCount ) - DXABSTRACT_VS_FIRST_BONE_SLOT;
+			m_programParamsF[kGLMVertexProgram].m_dirtySlotHighWaterBone = MAX( m_programParamsF[kGLMVertexProgram].m_dirtySlotHighWaterBone, nNumActualBones );
+		}
+		else
+		{
+			m_programParamsF[kGLMVertexProgram].m_firstDirtySlotNonBone = MIN( m_programParamsF[kGLMVertexProgram].m_firstDirtySlotNonBone, (int)baseSlot );
+			m_programParamsF[kGLMVertexProgram].m_dirtySlotHighWaterNonBone = MAX( m_programParamsF[kGLMVertexProgram].m_dirtySlotHighWaterNonBone, (int)(baseSlot + slotCount) );
+		}
+#else
 		// changes here to handle vertex shaders which use constants before and after the bone array i.e. before c58 and after c216
 		// a better change may be to modify the shaders and place the bone consts at either start or end - would simplify this and the flush code
 		// the current supporting code (shader translator(dx9asmtogl2), param setting(here) and flushing(glmgr_flush.inl) should work unchanged, even if the const mapping is changed.
@@ -2112,6 +2171,7 @@ FORCEINLINE void GLMContext::SetProgramParametersF( EGLMProgramType type, uint b
 				m_programParamsF[kGLMVertexProgram].m_dirtySlotHighWaterNonBone = MAX( m_programParamsF[kGLMVertexProgram].m_dirtySlotHighWaterNonBone, highWater - maxBoneSlots );
 			}
 		}
+#endif
 	}
 	else
 	{
@@ -2252,6 +2312,25 @@ FORCEINLINE void GLMContext::SetSamplerAddressW( int sampler, GLenum Value )
 	m_samplers[sampler].m_samp.m_packed.m_addressW = Value;
 }
 
+#ifdef BYTEMATCH_RETAIL
+FORCEINLINE void GLMContext::SetSamplerStates( int sampler, GLenum AddressU, GLenum AddressV, GLenum AddressW, GLenum minFilter, GLenum magFilter, GLenum mipFilter )
+{
+	Assert( AddressU < ( 1 << GLM_PACKED_SAMPLER_PARAMS_ADDRESS_BITS) );
+	Assert( AddressV < ( 1 << GLM_PACKED_SAMPLER_PARAMS_ADDRESS_BITS) );
+	Assert( AddressW < ( 1 << GLM_PACKED_SAMPLER_PARAMS_ADDRESS_BITS) );
+	Assert( minFilter < ( 1 << GLM_PACKED_SAMPLER_PARAMS_MIN_FILTER_BITS ) );
+	Assert( magFilter < ( 1 << GLM_PACKED_SAMPLER_PARAMS_MAG_FILTER_BITS ) );
+	Assert( mipFilter < ( 1 << GLM_PACKED_SAMPLER_PARAMS_MIP_FILTER_BITS ) );
+
+	GLMTexSamplingParams &params = m_samplers[sampler].m_samp;
+	params.m_packed.m_addressU = AddressU;
+	params.m_packed.m_addressV = AddressV;
+	params.m_packed.m_addressW = AddressW;
+	params.m_packed.m_minFilter = minFilter;
+	params.m_packed.m_magFilter = magFilter;
+	params.m_packed.m_mipFilter = mipFilter;
+}
+#else
 FORCEINLINE void GLMContext::SetSamplerStates( int sampler, GLenum AddressU, GLenum AddressV, GLenum AddressW, GLenum minFilter, GLenum magFilter, GLenum mipFilter, int minLod, float lodBias )
 {
 	Assert( AddressU < ( 1 << GLM_PACKED_SAMPLER_PARAMS_ADDRESS_BITS) );
@@ -2273,6 +2352,7 @@ FORCEINLINE void GLMContext::SetSamplerStates( int sampler, GLenum AddressU, GLe
 
 	params.m_lodBias = lodBias;
 }
+#endif
 
 FORCEINLINE void GLMContext::SetSamplerBorderColor( int sampler, DWORD Value )
 {
@@ -2281,6 +2361,9 @@ FORCEINLINE void GLMContext::SetSamplerBorderColor( int sampler, DWORD Value )
 
 FORCEINLINE void GLMContext::SetSamplerMipMapLODBias( int sampler, DWORD Value )
 {
+#ifdef BYTEMATCH_RETAIL
+	// not currently supported
+#else
 	typedef union {
 		DWORD asDword;
 		float asFloat;
@@ -2290,6 +2373,7 @@ FORCEINLINE void GLMContext::SetSamplerMipMapLODBias( int sampler, DWORD Value )
 	c.asDword = Value;
 
 	m_samplers[sampler].m_samp.m_lodBias = c.asFloat;
+#endif
 }
 
 FORCEINLINE void GLMContext::SetSamplerMaxMipLevel( int sampler, DWORD Value )
@@ -2322,7 +2406,11 @@ FORCEINLINE void GLMContext::BindIndexBufferToCtx( CGLMBuffer *buff )
 		
 	Assert( !buff || ( buff->m_buffGLTarget == GL_ELEMENT_ARRAY_BUFFER_ARB ) );
 
+#ifdef BYTEMATCH_RETAIL
+	GLuint nGLName = buff ? buff->m_nHandle : 0;
+#else
 	GLuint nGLName = buff ? buff->GetHandle() : 0;
+#endif
 
 	if ( m_nBoundGLBuffer[ kGLMIndexBuffer] == nGLName )
 		return;
@@ -2337,7 +2425,11 @@ FORCEINLINE void GLMContext::BindVertexBufferToCtx( CGLMBuffer *buff )
 
 	Assert( !buff || ( buff->m_buffGLTarget == GL_ARRAY_BUFFER_ARB ) );
 
+#ifdef BYTEMATCH_RETAIL
+	GLuint nGLName = buff ? buff->m_nHandle : 0;
+#else
 	GLuint nGLName = buff ? buff->GetHandle() : 0;
+#endif
 
 	if ( m_nBoundGLBuffer[ kGLMVertexBuffer] == nGLName )
 		return;
@@ -2369,6 +2461,7 @@ struct GLMTestParams
 	int			m_frameCount;			// how many frames to test.
 };
 
+#ifndef BYTEMATCH_RETAIL
 class GLMTester
 {
 	public:
@@ -2407,6 +2500,7 @@ class GLMTester
 	CGLMTex			*m_drawColorTex;
 	CGLMTex			*m_drawDepthTex;
 };
+#endif
 
 class CShowPixelsParams
 {

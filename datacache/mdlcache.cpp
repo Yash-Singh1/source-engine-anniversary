@@ -908,6 +908,10 @@ void CMDLCache::MakeFilename( MDLHandle_t handle, const char *pszExtension, char
 	Q_strncpy( pszFileName, GetActualModelName( handle ), nMaxLength );
 	Q_SetExtension( pszFileName, pszExtension, nMaxLength );
 	Q_FixSlashes( pszFileName );
+#ifdef _LINUX
+	Q_strlower( pszFileName );
+#endif
+#line 899
 }
 
 //-----------------------------------------------------------------------------
@@ -1234,6 +1238,10 @@ unsigned char *CMDLCache::UnserializeAnimBlock( MDLHandle_t handle, int nBlock )
 		char pFileName[MAX_PATH];
 		Q_strncpy( pFileName, pModelName, sizeof(pFileName) );
 		Q_FixSlashes( pFileName );
+#ifdef _LINUX
+		Q_strlower( pFileName );
+#endif
+#line 1225
 		if ( IsX360() )
 		{
 			char pX360Filename[MAX_PATH];
@@ -2046,6 +2054,10 @@ bool CMDLCache::ReadMDLFile( MDLHandle_t handle, const char *pMDLFileName, CUtlB
 	char pFileName[ MAX_PATH ];
 	Q_strncpy( pFileName, pMDLFileName, sizeof( pFileName ) );
 	Q_FixSlashes( pFileName );
+#ifdef _LINUX
+	Q_strlower( pFileName );
+#endif
+#line 2037
 
 	MdlCacheMsg( "MDLCache: Load studiohdr %s\n", pFileName );
 

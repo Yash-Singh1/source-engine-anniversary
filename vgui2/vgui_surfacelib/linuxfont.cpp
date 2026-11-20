@@ -22,6 +22,9 @@
 #include <tier0/dbg.h>
 #include <vgui/ISurface.h>
 #include <utlbuffer.h>
+#if defined( BYTEMATCH_RETAIL ) && !defined( HAVE_FC )
+#define HAVE_FC 1
+#endif
 #if HAVE_FC
 #include <fontconfig/fontconfig.h>
 #endif
@@ -101,8 +104,10 @@ void CLinuxFont::CreateFontList()
 		return;
 
 #if HAVE_FC && !defined( _WIN32 )
+#ifndef VGUI_FONT_INTERFACE
 	if(!FcInit())
 		return;
+#endif
     FcConfig *config;
     FcPattern *pat;
     FcObjectSet *os;
@@ -111,7 +116,11 @@ void CLinuxFont::CreateFontList()
     char *file;
 	const char *name;
 
+#ifdef VGUI_FONT_INTERFACE
+    config = FontManager().GetFcConfig();
+#else
     config = FcConfigGetCurrent();
+#endif
     pat = FcPatternCreate();
     os = FcObjectSetCreate();
     FcObjectSetAdd(os, FC_FILE);

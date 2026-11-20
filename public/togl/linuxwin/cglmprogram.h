@@ -132,8 +132,13 @@ public:
 	void	SetProgramText			( char *text );				// import text to GLM object - invalidate any prev compiled program
 	void	SetShaderName			( const char *name );				// only used for debugging/telemetry markup
 	
+#ifdef BYTEMATCH_RETAIL
+	bool	CompileActiveSources	( void );					// compile only the flavors that were provided.
+	bool	Compile					( EGLMProgramLang lang );
+#else
 	void	CompileActiveSources	( void );					// compile only the flavors that were provided.
 	void	Compile					( EGLMProgramLang lang );	
+#endif
 	bool	CheckValidity			( EGLMProgramLang lang );
 
 	void	LogSlow					( EGLMProgramLang lang );	// detailed spew when called for first time; one liner or perhaps silence after that
@@ -167,9 +172,11 @@ public:
 
 	uint					m_samplerMask;			// (1<<n) mask of sampler active locs, if this is a fragment shader (dxabstract sets this field)
 	uint					m_samplerTypes;			// SAMPLER_2D, etc.
+#ifndef BYTEMATCH_RETAIL
 	uint					m_fragDataMask;			// (1<<n) mask of gl_FragData[n] outputs referenced, if this is a fragment shader (dxabstract sets this field)
 	uint					m_numDrawBuffers;		// number of draw buffers used
 	GLenum					m_drawBuffers[4];		// GL_COLOR_ATTACHMENT0_EXT1, etc
+#endif
 	uint					m_nNumUsedSamplers;
 	uint					m_maxSamplers;
 	uint					m_maxVertexAttrs;
@@ -180,12 +187,14 @@ public:
 
 	char					m_shaderName[64];
 
+#ifndef BYTEMATCH_RETAIL
 	// Cache label string from the shader text
 	// example:
 	// trans#2871 label:vs-file vertexlit_and_unlit_generic_vs20 vs-index 294912 vs-combo 1234
 	char					m_labelName[1024];
 	int						m_labelIndex;
 	int						m_labelCombo;
+#endif
 };	
 
 //===============================================================================
@@ -226,8 +235,10 @@ public:
 	bool	RefreshProgramPair		( void );
 		// re-link and re-query the uniforms
 
+#ifndef BYTEMATCH_RETAIL
 	bool	ValidateProgramPair( void );
 		// true result means successful link and query
+#endif
 
 	FORCEINLINE void UpdateScreenUniform( uint nWidthHeight )
 	{
@@ -236,10 +247,17 @@ public:
 		
 		m_nScreenWidthHeight = nWidthHeight;
 
+#ifdef BYTEMATCH_RETAIL
+		uint nWidth = nWidthHeight & 0xFFFF, nHeight = nWidthHeight >> 16;
+		// Apply half pixel offset to output vertices to account for the pixel center difference between D3D9 and OpenGL.
+		// We output vertices in clip space, which ranges from [-1,1], so 1.0/width in clip space transforms into .5/width in screenspace, see: "Viewports and Clipping (Direct3D 9)" in the DXSDK
+		float v[4] = { 1.0f / nWidth, 1.0f / nHeight, nWidth, nHeight };
+#else
 		float fWidth = (float)( nWidthHeight & 0xFFFF ), fHeight = (float)( nWidthHeight >> 16 );
 		// Apply half pixel offset to output vertices to account for the pixel center difference between D3D9 and OpenGL.
 		// We output vertices in clip space, which ranges from [-1,1], so 1.0/width in clip space transforms into .5/width in screenspace, see: "Viewports and Clipping (Direct3D 9)" in the DXSDK
 		float v[4] = { 1.0f / fWidth, 1.0f / fHeight, fWidth, fHeight };
+#endif
 		if ( m_locVertexScreenParams >= 0 )
 			gGL->glUniform4fv( m_locVertexScreenParams, 1, v );
 	}
@@ -264,10 +282,17 @@ public:
 	GLint					m_locVertexBoneParams;	// "vcbones"
 	GLint					m_locVertexInteger0;	// "i0"
 			
+#ifdef BYTEMATCH_RETAIL
+	GLint					m_locVertexBool0;		// "b0"
+	GLint					m_locVertexBool1;		// "b1"
+	GLint					m_locVertexBool2;		// "b2"
+	GLint					m_locVertexBool3;		// "b3"
+#else
 	enum { cMaxVertexShaderBoolUniforms = 4, cMaxFragmentShaderBoolUniforms = 1 };
 
 	GLint					m_locVertexBool[cMaxVertexShaderBoolUniforms];		// "b0", etc.
 	GLint					m_locFragmentBool[cMaxFragmentShaderBoolUniforms];		// "fb0", etc.
+#endif
 	bool					m_bHasBoolOrIntUniforms;
 			
 	// fragment stage uniforms
@@ -284,7 +309,9 @@ public:
 
 	// other stuff
 	bool					m_valid;				// true on successful link
+#ifndef BYTEMATCH_RETAIL
 	bool					m_bCheckLinkStatus;
+#endif
 	uint					m_revision;				// if this pair is relinked, bump this number.
 
 	GLint					m_locVertexScreenParams; // vcscreen
