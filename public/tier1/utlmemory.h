@@ -53,13 +53,13 @@ public:
 	CUtlMemory( T* pMemory, int numElements );
 	CUtlMemory( const T* pMemory, int numElements );
 	~CUtlMemory();
-
+#ifndef BYTEMATCH_RETAIL
 	CUtlMemory( const CUtlMemory& ) = delete;
 	CUtlMemory& operator=( const CUtlMemory& ) = delete;
 
 	CUtlMemory( CUtlMemory&& moveFrom );
 	CUtlMemory& operator=( CUtlMemory&& moveFrom );
-
+#endif
 	// Set the size by which the memory grows
 	void Init( int nGrowSize = 0, int nInitSize = 0 );
 
@@ -457,7 +457,7 @@ CUtlMemory<T,I>::~CUtlMemory()
 	m_nAllocationCount = 0x7BADF00D;
 #endif
 }
-
+#ifndef BYTEMATCH_RETAIL
 template< class T, class I >
 CUtlMemory<T,I>::CUtlMemory( CUtlMemory&& moveFrom )
 : m_pMemory(moveFrom.m_pMemory)
@@ -490,7 +490,7 @@ CUtlMemory<T,I>& CUtlMemory<T,I>::operator=( CUtlMemory&& moveFrom )
 
 	return *this;
 }
-
+#endif
 template< class T, class I >
 void CUtlMemory<T,I>::Init( int nGrowSize /*= 0*/, int nInitSize /*= 0*/ )
 {
