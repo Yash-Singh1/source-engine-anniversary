@@ -383,8 +383,8 @@ void TrackedFile_t::ProcessFileRead( void *dest, size_t nBytesRead )
 	if ( m_nFilePos == m_nMD5Pos )
 		m_nMD5Pos += nBytesRead;
 
-	if ( ( m_nFilePos == 0 && m_nLength == nBytesRead ) ||
-		( m_nLength == m_nMD5Pos && m_nMD5Pos == m_filehashInProgress.m_cbFileLen ) )
+	if ( ( m_nFilePos == 0 && nBytesRead == m_nLength ) ||
+		( m_nLength == m_nMD5Pos && m_filehashInProgress.m_cbFileLen == m_nMD5Pos ) )
 	{
 		MD5Final( m_filehashInProgress.m_md5contents.bits, &m_md5ctx );
 		m_filehashInProgress.m_crcIOSequence = m_nLength;
@@ -481,33 +481,6 @@ void CFileTracker2::NotePackFileAccess( const char *pFilename, const char *pPath
 
 #endif // SUPPORT_PACKED_STORE
 
-int CFileTracker2::IdxFileFromName( const char *pFilename, const char *pPathID, int nFileFraction, int64 nLength, bool bPackOrVPKFile, bool bRecordInRecentList )
-{
-	TrackedFile_t trackedfile;
-
-	trackedfile.RebuildFileName( pFilename, pPathID );
-	trackedfile.m_nLength = nLength;
-	trackedfile.m_bPackOrVPKFile = bPackOrVPKFile;
-	trackedfile.m_nFileFraction = nFileFraction;
-	MD5Init( &trackedfile.m_md5ctx );
-	CRC32_Init( &trackedfile.m_filehashInProgress.m_crcIOSequence );
-	trackedfile.m_idxRecentFileList = m_RecentFileList.InvalidIndex();
-
-	int idxFile = m_treeAllOpenedFiles.Find( trackedfile );
-	if ( idxFile == m_treeAllOpenedFiles.InvalidIndex() )
-	{
-		idxFile = m_treeAllOpenedFiles.Insert( trackedfile );
-		if ( bRecordInRecentList )
-			m_treeAllOpenedFiles[ idxFile ].m_idxRecentFileList = m_RecentFileList.AddToTail( idxFile );
-	}
-	else if ( bRecordInRecentList && m_treeAllOpenedFiles[ idxFile ].m_idxRecentFileList == m_RecentFileList.InvalidIndex() )
-	{
-		m_treeAllOpenedFiles[ idxFile ].m_idxRecentFileList = m_RecentFileList.AddToTail( idxFile );
-	}
-
-	return idxFile;
-}
-
 struct FileListToUnloadForWhitelistChange : public IFileList
 {
 	virtual bool IsFileInList( const char *pFilename )
@@ -539,6 +512,11 @@ struct FileListToUnloadForWhitelistChange : public IFileList
 
 	CUtlDict<int> m_dictFiles;
 };
+
+#ifdef BYTEMATCH_RETAIL
+// Dead-stripped alignment slot matching retail's function numbering before GetFilesToUnloadForWhitelistChange
+void CFileTracker2_RetailDeadSlot1() {}
+#endif
 
 IFileList *CFileTracker2::GetFilesToUnloadForWhitelistChange( IPureServerWhitelist *pNewWhiteList )
 {
@@ -643,6 +621,37 @@ void CFileTracker2::AddFileHashForVPKFile( int nPackFileNumber, int nFileFractio
 	Q_memcpy( trackedfile.m_filehashFinal.m_md5contents.bits, md5.bits, sizeof( md5.bits) );
 #endif // !DEDICATED
 }
+
+#endif // SUPPORT_PACKED_STORE
+
+int CFileTracker2::IdxFileFromName( const char *pFilename, const char *pPathID, int nFileFraction, int64 nLength, bool bPackOrVPKFile, bool bRecordInRecentList )
+{
+	TrackedFile_t trackedfile;
+
+	trackedfile.RebuildFileName( pFilename, pPathID );
+	trackedfile.m_nLength = nLength;
+	trackedfile.m_bPackOrVPKFile = bPackOrVPKFile;
+	trackedfile.m_nFileFraction = nFileFraction;
+	MD5Init( &trackedfile.m_md5ctx );
+	CRC32_Init( &trackedfile.m_filehashInProgress.m_crcIOSequence );
+	trackedfile.m_idxRecentFileList = m_RecentFileList.InvalidIndex();
+
+	int idxFile = m_treeAllOpenedFiles.Find( trackedfile );
+	if ( idxFile == m_treeAllOpenedFiles.InvalidIndex() )
+	{
+		idxFile = m_treeAllOpenedFiles.Insert( trackedfile );
+		if ( bRecordInRecentList )
+			m_treeAllOpenedFiles[ idxFile ].m_idxRecentFileList = m_RecentFileList.AddToTail( idxFile );
+	}
+	else if ( bRecordInRecentList && m_treeAllOpenedFiles[ idxFile ].m_idxRecentFileList == m_RecentFileList.InvalidIndex() )
+	{
+		m_treeAllOpenedFiles[ idxFile ].m_idxRecentFileList = m_RecentFileList.AddToTail( idxFile );
+	}
+
+	return idxFile;
+}
+
+#ifdef SUPPORT_PACKED_STORE
 
 int CFileTracker2::NotePackFileOpened( const char *pVPKAbsPath, const char *pPathID, int64 nLength )
 {
@@ -779,5 +788,10 @@ void CFileTracker2::RecordFileRead( void *dest, size_t nBytesRead, size_t nBytes
 		m_cMissedReads++;
 	}
 }
+
+#ifdef BYTEMATCH_RETAIL
+// Dead-stripped alignment slot (e.g. retail ListOpenedFiles) after RecordFileRead
+void CFileTracker2_RetailDeadSlot2() {}
+#endif
 
 #endif // !DEDICATED

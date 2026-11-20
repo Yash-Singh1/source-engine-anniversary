@@ -208,7 +208,7 @@ void EnableThreadedMaterialVarAccess( bool bEnable, IMaterialVar **ppParams, int
 }
 
 
-CMaterialVar *CMaterialVar::AllocThreadVar()
+inline CMaterialVar *CMaterialVar::AllocThreadVar()
 {
 	if ( s_bEnableThreadedAccess )
 	{

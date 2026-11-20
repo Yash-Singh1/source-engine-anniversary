@@ -1957,6 +1957,7 @@ void CStudioRenderContext::ForcedMaterialOverride( IMaterial *newMaterial, Overr
 	m_RC.m_nForcedMaterialType = nOverrideType;
 }
 
+#ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
 // Return the material overrides
 //-----------------------------------------------------------------------------
@@ -1966,6 +1967,8 @@ void CStudioRenderContext::GetMaterialOverride( IMaterial** ppOutForcedMaterial,
 	*ppOutForcedMaterial = m_RC.m_pForcedMaterial;
 	*pOutOverrideType = m_RC.m_nForcedMaterialType;
 }
+#endif
+#line 1970
 
 //-----------------------------------------------------------------------------
 // Sets the view state

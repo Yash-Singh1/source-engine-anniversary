@@ -24,7 +24,7 @@ fi
 if [ ! -f "$OUT/c4che/_cache.py" ] || ! grep -q "sdk2013mp" "$OUT/c4che/_cache.py" 2>/dev/null; then
 	python3 waf configure --retail-osx32 -T release --prefix='' -o "$OUT" \
 		--build-games=hl2mp \
-		--retail-modules=tier0,tier1,mathlib,tier2,tier3,vstdlib,appframework,bitmap,vtf,utils/vtex,inputsystem,video,video/video_quicktime,soundemittersystem,scenefilecache,utils/bugreporter_public,utils/bugreporter_filequeue,materialsystem/shaderlib,materialsystem/stdshaders,engine/voice_codecs/miles,launcher,launcher_main,togl,vpklib,utils/vpk,filesystem,sourcevr,utils/bsppack,vgui2/src,vgui2/vgui_controls,vgui2/matsys_controls,serverbrowser,materialsystem/shaderapiempty,vgui2/chromehtml,utils/bzip2,replay/common,replay,vgui2/vgui_surfacelib,vguimatsurface,materialsystem/shaderapidx9,datacache,gameui
+		--retail-modules=tier0,tier1,mathlib,tier2,tier3,vstdlib,appframework,bitmap,vtf,utils/vtex,inputsystem,video,video/video_quicktime,soundemittersystem,scenefilecache,utils/bugreporter_public,utils/bugreporter_filequeue,materialsystem,materialsystem/shaderlib,materialsystem/stdshaders,engine/voice_codecs/miles,launcher,launcher_main,togl,vpklib,utils/vpk,filesystem,sourcevr,utils/bsppack,vgui2/src,vgui2/vgui_controls,vgui2/matsys_controls,serverbrowser,materialsystem/shaderapiempty,vgui2/chromehtml,utils/bzip2,replay/common,replay,vgui2/vgui_surfacelib,vguimatsurface,materialsystem/shaderapidx9,datacache,gameui
 fi
 python3 devtools/bytematch/toolchain/win32/winline.py --check
 python3 waf build

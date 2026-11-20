@@ -21,7 +21,6 @@
 #include "filesystem/IQueuedLoader.h"
 #include "tier2/tier2.h"
 #include "zip_utils.h"
-#include "packfile.h"
 #ifdef _X360
 #include "xbox/xbox_launch.h"
 #endif
@@ -59,7 +58,7 @@ ConVar fs_report_sync_opens( "fs_report_sync_opens", "0", 0, "0:Off, 1:Blocking 
 ConVar fs_warning_mode( "fs_warning_mode", "0", 0, "0:Off, 1:Warn main thread, 2:Warn other threads"  );
 ConVar fs_monitor_read_from_pack( "fs_monitor_read_from_pack", "0", 0, "0:Off, 1:Any, 2:Sync only" );
 
-static ConVar workshop_playing_campaign( "workshop_playing_campaign", "0", FCVAR_HIDDEN );
+ConVar workshop_playing_campaign( "workshop_playing_campaign", "0", FCVAR_HIDDEN );
 
 #define BSPOUTPUT	0	// bsp output flag -- determines type of fs_log output to generate
 
@@ -958,6 +957,12 @@ bool CBaseFileSystem::AddPackFileFromPath( const char *pPath, const char *pakfil
 	return true;
 }
 
+#ifdef BYTEMATCH_RETAIL
+// Dead-stripped alignment slots matching retail's 2 dead-stripped functions before CPackFile::OpenFile
+void CBaseFileSystem_RetailDeadSlot1() {}
+void CBaseFileSystem_RetailDeadSlot2() {}
+#endif
+
 //-----------------------------------------------------------------------------
 // Read a bit of the file from the pack file:
 //-----------------------------------------------------------------------------
@@ -1047,46 +1052,6 @@ CFileHandle *CPackFile::OpenFile( const char *pFileName, const char *pOptions )
 	}
 
 	return NULL;
-}
-
-#if defined( SUPPORT_PACKED_STORE )
-//-----------------------------------------------------------------------------
-// Find a file in the VPKs on the given search path
-//-----------------------------------------------------------------------------
-CPackedStoreFileHandle CBaseFileSystem::FindFileInVPKs( const char *pFileName, const char *pPathID )
-{
-	CSearchPathsIterator iter( this, &pFileName, pPathID );
-	for ( CSearchPath *pSearchPath = iter.GetFirst(); pSearchPath != NULL; pSearchPath = iter.GetNext() )
-	{
-		CPackedStore *pPackedStore = pSearchPath->GetPackedStore();
-		if ( pPackedStore )
-		{
-			CPackedStoreFileHandle fHandle = pPackedStore->OpenFile( pFileName );
-			if ( fHandle )
-			{
-				return fHandle;
-			}
-		}
-	}
-
-	return CPackedStoreFileHandle();
-}
-#endif
-
-//-----------------------------------------------------------------------------
-//
-//-----------------------------------------------------------------------------
-CZipPackFile::CZipPackFile( CBaseFileSystem* fs, void *pSection )
- : m_PackFiles()
-{
-	m_fs = fs;
-	m_pSection = pSection;
-	m_pPreloadDirectory = NULL;
-	m_pPreloadData = NULL;
-	m_pPreloadHeader = NULL;
-	m_pPreloadRemapTable = NULL;
-	m_nPreloadSectionOffset = 0;
-	m_nPreloadSectionSize = 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -1500,6 +1465,22 @@ bool CZipPackFile::Prepare( int64 fileLen, int64 nFileOfs )
 	return bSuccess;
 }
 
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+CZipPackFile::CZipPackFile( CBaseFileSystem* fs, void *pSection )
+ : m_PackFiles()
+{
+	m_fs = fs;
+	m_pSection = pSection;
+	m_pPreloadDirectory = NULL;
+	m_pPreloadData = NULL;
+	m_pPreloadHeader = NULL;
+	m_pPreloadRemapTable = NULL;
+	m_nPreloadSectionOffset = 0;
+	m_nPreloadSectionSize = 0;
+}
+
 CZipPackFile::~CZipPackFile()
 {
 	DiscardPreloadData();
@@ -1697,6 +1678,30 @@ void CBaseFileSystem::RemoveAllMapSearchPaths( void )
 		m_SearchPaths.Remove( i );
 	}
 }
+
+#if defined( SUPPORT_PACKED_STORE )
+//-----------------------------------------------------------------------------
+// Find a file in the VPKs on the given search path
+//-----------------------------------------------------------------------------
+CPackedStoreFileHandle CBaseFileSystem::FindFileInVPKs( const char *pFileName, const char *pPathID )
+{
+	CSearchPathsIterator iter( this, &pFileName, pPathID );
+	for ( CSearchPath *pSearchPath = iter.GetFirst(); pSearchPath != NULL; pSearchPath = iter.GetNext() )
+	{
+		CPackedStore *pPackedStore = pSearchPath->GetPackedStore();
+		if ( pPackedStore )
+		{
+			CPackedStoreFileHandle fHandle = pPackedStore->OpenFile( pFileName );
+			if ( fHandle )
+			{
+				return fHandle;
+			}
+		}
+	}
+
+	return CPackedStoreFileHandle();
+}
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -2163,6 +2168,363 @@ void CBaseFileSystem::AddSearchPathInternal( const char *pPath, const char *path
 }
 
 //-----------------------------------------------------------------------------
+// Game expansions (episodes, Lost Coast, Workshop campaigns) mounted on top of
+// the base game's search paths
+//-----------------------------------------------------------------------------
+void CBaseFileSystem::SetCurrentGameExpansionId( const char *pszExpansionId )
+{
+	m_sCurrentGameExpansionId = pszExpansionId;
+}
+
+bool CBaseFileSystem::GetCurrentGameExpansionId( char *pszExpansionId, int nMaxLen )
+{
+	if ( m_sCurrentGameExpansionId.Length() )
+	{
+		V_snprintf( pszExpansionId, nMaxLen, "%s", m_sCurrentGameExpansionId.Get() );
+		return true;
+	}
+	return false;
+}
+
+void CBaseFileSystem::SetUseLowViolancePaths( bool bUseLowViolence )
+{
+	m_bUseLowViolencePaths = bUseLowViolence;
+}
+
+void CBaseFileSystem::SetUseHDMount( bool bUseHD )
+{
+	m_bUseHDMount = bUseHD;
+}
+
+void CBaseFileSystem::SetAudioLanguageOverride( const char *pszLanguage )
+{
+	m_sAudioLanguageOverride = pszLanguage;
+}
+
+static void FileSystem_AddLoadedSearchPath( 
+	IFileSystem *pFileSystem, 
+	const char *pPathID, 
+	const char *fullLocationPath, 
+	const char *pLanguage, 
+	bool bLowViolence, 
+	bool bMountHDContent )
+{
+
+	// Check for mounting LV game content in LV builds only
+	if ( V_stricmp( pPathID, "game_lv" ) == 0 )
+	{
+
+		// Not in LV build, don't mount
+		if ( !bLowViolence )
+			return;
+
+		// Mount, as a game path
+		pPathID = "game";
+	}
+
+	// Check for mounting HD game content if enabled
+	if ( V_stricmp( pPathID, "game_hd" ) == 0 )
+	{
+
+		// Not in LV build, don't mount
+		if ( !bMountHDContent )
+			return;
+
+		// Mount, as a game path
+		pPathID = "game";
+	}
+
+
+	// Special processing for ordinary game folders
+	if ( V_stristr( fullLocationPath, ".vpk" ) == NULL && Q_stricmp( pPathID, "game" ) == 0 )
+	{
+		if ( CommandLine()->FindParm( "-tempcontent" ) != 0 )
+		{
+			char szPath[MAX_PATH];
+			Q_snprintf( szPath, sizeof(szPath), "%s_tempcontent", fullLocationPath );
+			pFileSystem->AddSearchPath( szPath, pPathID, PATH_ADD_TO_TAIL );
+		}
+	}
+
+	
+	if ( pLanguage &&
+	     Q_stricmp( pLanguage, "english" ) &&
+	     V_strstr( fullLocationPath, "_english" ) != NULL )
+	{
+		char szPath[MAX_PATH];
+		char szLangString[MAX_PATH];		
+		
+		// Need to add a language version of this path first
+
+		Q_snprintf( szLangString, sizeof(szLangString), "_%s", pLanguage);
+		V_StrSubst( fullLocationPath, "_english", szLangString, szPath, sizeof( szPath ), true );
+		pFileSystem->AddSearchPath( szPath, pPathID, PATH_ADD_TO_TAIL );		
+	}
+
+	pFileSystem->AddSearchPath( fullLocationPath, pPathID, PATH_ADD_TO_TAIL );
+}
+
+static int SortStricmp( char * const * sz1, char * const * sz2 )
+{
+	return V_stricmp( *sz1, *sz2 );
+}
+
+void CBaseFileSystem::AddGameAndModSearchPathsFromGameInfo( const char *pszGameInfoDir, const char *pszBaseDir, KeyValues *pSearchPaths )
+{
+	const char *pszLanguage = m_sAudioLanguageOverride.Get();
+
+	#define GAMEINFOPATH_TOKEN		"|gameinfo_path|"
+	#define BASESOURCEPATHS_TOKEN	"|all_source_engine_paths|"
+
+	const char *pszExtraSearchPath = CommandLine()->ParmValue( "-insert_search_path" );
+	if ( pszExtraSearchPath )
+	{
+		CUtlStringList vecPaths;
+		V_SplitString( pszExtraSearchPath, ",", vecPaths );
+		FOR_EACH_VEC( vecPaths, idxExtraPath )
+		{
+			char szAbsSearchPath[MAX_PATH];
+			Q_StripPrecedingAndTrailingWhitespace( vecPaths[ idxExtraPath ] );
+			V_MakeAbsolutePath( szAbsSearchPath, sizeof( szAbsSearchPath ), vecPaths[ idxExtraPath ], pszBaseDir );
+			V_FixSlashes( szAbsSearchPath );
+			if ( !V_RemoveDotSlashes( szAbsSearchPath ) )
+				Error( "Bad -insert_search_path - Can't resolve pathname for '%s'", szAbsSearchPath );
+			V_StripTrailingSlash( szAbsSearchPath );
+			FileSystem_AddLoadedSearchPath( this, "GAME", szAbsSearchPath, pszLanguage, m_bUseLowViolencePaths, m_bUseHDMount );
+			FileSystem_AddLoadedSearchPath( this, "MOD", szAbsSearchPath, pszLanguage, m_bUseLowViolencePaths, m_bUseHDMount );
+		}
+	}
+
+	for ( KeyValues *pCur=pSearchPaths->GetFirstValue(); pCur; pCur=pCur->GetNextValue() )
+	{
+		const char *pLocation = pCur->GetString();
+		const char *pszLocationBaseDir = pszBaseDir;
+
+		if ( Q_stristr( pLocation, GAMEINFOPATH_TOKEN ) == pLocation )
+		{
+			pLocation += strlen( GAMEINFOPATH_TOKEN );
+			pszLocationBaseDir = pszGameInfoDir;
+		}
+		else if ( Q_stristr( pLocation, BASESOURCEPATHS_TOKEN ) == pLocation )
+		{
+			// This is a special identifier that tells it to add the specified path for all source engine versions equal to or prior to this version.
+			// So in Orange Box, if they specified:
+			//		|all_source_engine_paths|hl2
+			// it would add the ep2\hl2 folder and the base (ep1-era) hl2 folder.
+			//
+			// We need a special identifier in the gameinfo.txt here because the base hl2 folder exists in different places.
+			// In the case of a game or a Steam-launched dedicated server, all the necessary prior engine content is mapped in with the Steam depots,
+			// so we can just use the path as-is.
+			pLocation += strlen( BASESOURCEPATHS_TOKEN );
+		}
+
+		CUtlStringList vecFullLocationPaths;
+		char szAbsSearchPath[MAX_PATH];
+		V_MakeAbsolutePath( szAbsSearchPath, sizeof( szAbsSearchPath ), pLocation, pszLocationBaseDir );
+
+		// Now resolve any ./'s.
+		V_FixSlashes( szAbsSearchPath );
+		if ( !V_RemoveDotSlashes( szAbsSearchPath ) )
+			Error( "FileSystem_AddLoadedSearchPath - Can't resolve pathname for '%s'", szAbsSearchPath );
+		V_StripTrailingSlash( szAbsSearchPath );
+
+		// Don't bother doing any wildcard expansion unless it has wildcards.  This avoids the weird
+		// thing with xxx_dir.vpk files being referred to simply as xxx.vpk.
+		if ( V_stristr( pLocation, "?") == NULL && V_stristr( pLocation, "*") == NULL )
+		{
+			vecFullLocationPaths.CopyAndAddToTail( szAbsSearchPath );
+		}
+		else
+		{
+			FileFindHandle_t findHandle = NULL;
+			const char *pszFoundShortName = FindFirst( szAbsSearchPath, &findHandle );
+			if ( pszFoundShortName )
+			{
+				do 
+				{
+
+					// We only know how to mount VPK's and directories
+					if ( pszFoundShortName[0] != '.' && ( FindIsDirectory( findHandle ) || V_stristr( pszFoundShortName, ".vpk" ) ) )
+					{
+						char szAbsName[MAX_PATH];
+						V_ExtractFilePath( szAbsSearchPath, szAbsName, sizeof( szAbsName ) );
+						V_AppendSlash( szAbsName, sizeof(szAbsName) );
+						V_strcat_safe( szAbsName, pszFoundShortName );
+
+						vecFullLocationPaths.CopyAndAddToTail( szAbsName );
+
+						// Check for a common mistake
+						if (
+							!V_stricmp( pszFoundShortName, "materials" )
+							|| !V_stricmp( pszFoundShortName, "maps" )
+							|| !V_stricmp( pszFoundShortName, "resource" )
+							|| !V_stricmp( pszFoundShortName, "scripts" )
+							|| !V_stricmp( pszFoundShortName, "sound" )
+							|| !V_stricmp( pszFoundShortName, "models" ) )
+						{
+
+							char szReadme[MAX_PATH];
+							V_ExtractFilePath( szAbsSearchPath, szReadme, sizeof( szReadme ) );
+							V_AppendSlash( szReadme, sizeof(szReadme) );
+							V_strcat_safe( szReadme, "readme.txt" );
+
+							Error(
+								"Tried to add %s as a search path.\n"
+								"\nThis is probably not what you intended.\n"
+								"\nCheck %s for more info\n",
+								szAbsName, szReadme );
+						}
+
+					}
+					pszFoundShortName = FindNext( findHandle );
+				} while ( pszFoundShortName );
+				FindClose( findHandle );
+			}
+
+			// Sort alphabetically.  Also note that this will put
+			// all the xxx_000.vpk packs just before the corresponding
+			// xxx_dir.vpk
+			vecFullLocationPaths.Sort( SortStricmp );
+
+			// Now for any _dir.vpk files, remove the _nnn.vpk ones.
+			int idx = vecFullLocationPaths.Count()-1;
+			while ( idx > 0 )
+			{
+				char szTemp[ MAX_PATH ];
+				V_strcpy_safe( szTemp, vecFullLocationPaths[ idx ] );
+				--idx;
+
+				char *szDirVpk = V_stristr( szTemp, "_dir.vpk" );
+				if ( szDirVpk != NULL )
+				{
+					*szDirVpk = '\0';
+					while ( idx >= 0 )
+					{
+						char *pszPath = vecFullLocationPaths[ idx ];
+						if ( V_stristr( pszPath, szTemp ) != pszPath )
+							break;
+						delete pszPath;
+						vecFullLocationPaths.Remove( idx );
+						--idx;
+					}
+				}
+			}
+		}
+
+		// Parse Path ID list
+		CUtlStringList vecPathIDs;
+		V_SplitString( pCur->GetName(), "+", vecPathIDs );
+		FOR_EACH_VEC( vecPathIDs, idxPathID )
+		{
+			Q_StripPrecedingAndTrailingWhitespace( vecPathIDs[ idxPathID ] );
+		}
+
+		// Mount them.
+		FOR_EACH_VEC( vecFullLocationPaths, idxLocation )
+		{
+			FOR_EACH_VEC( vecPathIDs, idxPathID )
+			{
+				FileSystem_AddLoadedSearchPath( this, vecPathIDs[ idxPathID ], vecFullLocationPaths[ idxLocation ], pszLanguage, m_bUseLowViolencePaths, m_bUseHDMount );
+			}
+		}
+	}
+}
+
+void CBaseFileSystem::UpdateSearchPathsForCurrentGameExpansion()
+{
+	Msg( "UpdateSearchPathsForCurrentGameExpansion\n" );
+
+	char szExpansionId[16];
+	if ( !GetCurrentGameExpansionId( szExpansionId, sizeof( szExpansionId ) ) )
+		return;
+
+	Plat_DebugString( "----------------- INITIAL PATHS -----------------\n" );
+	PrintSearchPaths();
+	Plat_DebugString( "--------------------------------------------------\n" );
+
+	CUtlString sGameDir( CommandLine()->ParmValue( "-game", "" ) );
+	if ( !sGameDir.Length() )
+		return;
+
+	// The base game directories stay searchable underneath the expansion's
+	CUtlVector< CUtlString > rootModPaths;
+	GetSearchPaths2( "ROOT_MOD", true, rootModPaths );
+
+	char szBasePath[MAX_PATH];
+	GetSearchPath( "BASE_PATH", true, szBasePath, sizeof( szBasePath ) );
+	V_StripTrailingSlash( szBasePath );
+
+	char szExpansionPath[MAX_PATH];
+	V_snprintf( szExpansionPath, sizeof( szExpansionPath ), "%s/%s/", szBasePath, szExpansionId );
+	V_FixSlashes( szExpansionPath );
+
+	CUtlSymbol expansionPathSymbol = g_PathIDTable.Find( szExpansionPath );
+	if ( !expansionPathSymbol.IsValid() )
+	{
+		expansionPathSymbol = g_PathIDTable.AddString( szExpansionPath );
+	}
+
+	RemoveSearchPaths( "exp" );
+	AddSearchPath( szExpansionPath, "exp", PATH_ADD_TO_TAIL );
+	MarkPathIDByRequestOnly( "exp", true );
+
+	RemoveSearchPaths( "mod" );
+	RemoveSearchPaths( "game" );
+	RemoveSearchPaths( "mod_write" );
+	RemoveSearchPaths( "game_write" );
+	RemoveSearchPaths( "default_write_path" );
+
+	Plat_DebugString( "------------------ PRUNED PATHS -----------------\n" );
+	PrintSearchPaths();
+	Plat_DebugString( "--------------------------------------------------\n" );
+
+	KeyValues *pGameInfo = new KeyValues( "modinfo" );
+	if ( pGameInfo->LoadFromFile( this, "gameinfo.txt", "EXP" ) )
+	{
+		KeyValues *pFileSystemInfo = pGameInfo->FindKey( "FileSystem" );
+		if ( pFileSystemInfo )
+		{
+			KeyValues *pSearchPaths = pFileSystemInfo->FindKey( "SearchPaths" );
+			if ( pSearchPaths )
+			{
+				AddGameAndModSearchPathsFromGameInfo( szExpansionId, szBasePath, pSearchPaths );
+			}
+		}
+	}
+	pGameInfo->deleteThis();
+
+	FOR_EACH_VEC( rootModPaths, i )
+	{
+		AddSearchPath( rootModPaths[i], "GAME", PATH_ADD_TO_HEAD );
+	}
+
+	if ( workshop_playing_campaign.GetInt() )
+	{
+		// Workshop campaigns write into, and load ahead of everything from, the workshop folder
+		RemoveSearchPaths( "mod" );
+		RemoveSearchPaths( "mod_write" );
+		RemoveSearchPaths( "game_write" );
+		RemoveSearchPaths( "default_write_path" );
+
+		CreateDirHierarchy( "workshop", NULL );
+
+		AddSearchPath( "lostcoast", "game", PATH_ADD_TO_TAIL );
+		AddSearchPath( "lostcoast/lostcoast_pak.vpk", "game", PATH_ADD_TO_TAIL );
+
+		AddSearchPath( "workshop", "mod", PATH_ADD_TO_HEAD );
+		AddSearchPath( "workshop", "game", PATH_ADD_TO_HEAD );
+		AddSearchPath( "workshop", "mod_write", PATH_ADD_TO_HEAD );
+		AddSearchPath( "workshop", "game_write", PATH_ADD_TO_HEAD );
+		AddSearchPath( "workshop", "default_write_path", PATH_ADD_TO_HEAD );
+	}
+
+	Plat_DebugString( "----------------- UPDATED PATHS -----------------\n" );
+	PrintSearchPaths();
+	Plat_DebugString( "--------------------------------------------------\n" );
+}
+
+
+//-----------------------------------------------------------------------------
 CBaseFileSystem::CSearchPath *CBaseFileSystem::FindSearchPathByStoreId( int storeId )
 {
 	FOR_EACH_VEC( m_SearchPaths, i )
@@ -2265,6 +2627,40 @@ int CBaseFileSystem::GetSearchPath( const char *pathID, bool bGetPackFiles, OUT_
 	return sResult.Length()+1;
 }
 
+
+
+int CBaseFileSystem::GetSearchPaths2( const char *pathID, bool bGetPackFiles, CUtlVector< CUtlString > &searchPaths )
+{
+	AUTO_LOCK( m_SearchPathsMutex );
+
+	CUtlString sResult;
+	CSearchPathsIterator iter( this, pathID, bGetPackFiles ? FILTER_NONE : FILTER_CULLPACK );
+	int nCount = 0;
+	for ( CSearchPath *pSearchPath = iter.GetFirst(); pSearchPath != NULL; pSearchPath = iter.GetNext() )
+	{
+		CUtlString sName;
+		if ( pSearchPath->GetPackFile() )
+		{
+			sName += pSearchPath->GetPackFile()->m_ZipName.String();
+			sName += CORRECT_PATH_SEPARATOR_S;
+		}
+		#ifdef SUPPORT_PACKED_STORE
+		else if ( pSearchPath->GetPackedStore() )
+		{
+			sName = pSearchPath->GetPackedStore()->FullPathName();
+		}
+		#endif
+		else
+		{
+			sName = pSearchPath->GetPathString();
+		}
+
+		++nCount;
+		searchPaths.AddToTail( sName );
+	}
+
+	return nCount;
+}
 
 
 //-----------------------------------------------------------------------------
@@ -4292,457 +4688,6 @@ void CBaseFileSystem::RegisterFileWhitelist( IPureServerWhitelist *pWhiteList, I
 		*pFilesToReload = m_FileTracker2.GetFilesToUnloadForWhitelistChange( pWhiteList );
 }
 
-//-----------------------------------------------------------------------------
-// Game expansions (episodes, Lost Coast, Workshop campaigns) mounted on top of
-// the base game's search paths
-//-----------------------------------------------------------------------------
-void CBaseFileSystem::SetCurrentGameExpansionId( const char *pszExpansionId )
-{
-	m_sCurrentGameExpansionId = pszExpansionId;
-}
-
-bool CBaseFileSystem::GetCurrentGameExpansionId( char *pszExpansionId, int nMaxLen )
-{
-	if ( m_sCurrentGameExpansionId.Length() )
-	{
-		V_snprintf( pszExpansionId, nMaxLen, "%s", m_sCurrentGameExpansionId.Get() );
-		return true;
-	}
-	return false;
-}
-
-void CBaseFileSystem::SetUseLowViolancePaths( bool bUseLowViolence )
-{
-	m_bUseLowViolencePaths = bUseLowViolence;
-}
-
-void CBaseFileSystem::SetUseHDMount( bool bUseHD )
-{
-	m_bUseHDMount = bUseHD;
-}
-
-void CBaseFileSystem::SetAudioLanguageOverride( const char *pszLanguage )
-{
-	m_sAudioLanguageOverride = pszLanguage;
-}
-
-static void FileSystem_AddLoadedSearchPath( 
-	IFileSystem *pFileSystem, 
-	const char *pPathID, 
-	const char *fullLocationPath, 
-	const char *pLanguage, 
-	bool bLowViolence, 
-	bool bMountHDContent )
-{
-
-	// Check for mounting LV game content in LV builds only
-	if ( V_stricmp( pPathID, "game_lv" ) == 0 )
-	{
-
-		// Not in LV build, don't mount
-		if ( !bLowViolence )
-			return;
-
-		// Mount, as a game path
-		pPathID = "game";
-	}
-
-	// Check for mounting HD game content if enabled
-	if ( V_stricmp( pPathID, "game_hd" ) == 0 )
-	{
-
-		// Not in LV build, don't mount
-		if ( !bMountHDContent )
-			return;
-
-		// Mount, as a game path
-		pPathID = "game";
-	}
-
-
-	// Special processing for ordinary game folders
-	if ( V_stristr( fullLocationPath, ".vpk" ) == NULL && Q_stricmp( pPathID, "game" ) == 0 )
-	{
-		if ( CommandLine()->FindParm( "-tempcontent" ) != 0 )
-		{
-			char szPath[MAX_PATH];
-			Q_snprintf( szPath, sizeof(szPath), "%s_tempcontent", fullLocationPath );
-			pFileSystem->AddSearchPath( szPath, pPathID, PATH_ADD_TO_TAIL );
-		}
-	}
-
-	
-	if ( pLanguage &&
-	     Q_stricmp( pLanguage, "english" ) &&
-	     V_strstr( fullLocationPath, "_english" ) != NULL )
-	{
-		char szPath[MAX_PATH];
-		char szLangString[MAX_PATH];		
-		
-		// Need to add a language version of this path first
-
-		Q_snprintf( szLangString, sizeof(szLangString), "_%s", pLanguage);
-		V_StrSubst( fullLocationPath, "_english", szLangString, szPath, sizeof( szPath ), true );
-		pFileSystem->AddSearchPath( szPath, pPathID, PATH_ADD_TO_TAIL );		
-	}
-
-	pFileSystem->AddSearchPath( fullLocationPath, pPathID, PATH_ADD_TO_TAIL );
-}
-
-static int SortStricmp( char * const * sz1, char * const * sz2 )
-{
-	return V_stricmp( *sz1, *sz2 );
-}
-
-void CBaseFileSystem::AddGameAndModSearchPathsFromGameInfo( const char *pszGameInfoDir, const char *pszBaseDir, KeyValues *pSearchPaths )
-{
-	const char *pszLanguage = m_sAudioLanguageOverride.Get();
-
-	#define GAMEINFOPATH_TOKEN		"|gameinfo_path|"
-	#define BASESOURCEPATHS_TOKEN	"|all_source_engine_paths|"
-
-	const char *pszExtraSearchPath = CommandLine()->ParmValue( "-insert_search_path" );
-	if ( pszExtraSearchPath )
-	{
-		CUtlStringList vecPaths;
-		V_SplitString( pszExtraSearchPath, ",", vecPaths );
-		FOR_EACH_VEC( vecPaths, idxExtraPath )
-		{
-			char szAbsSearchPath[MAX_PATH];
-			Q_StripPrecedingAndTrailingWhitespace( vecPaths[ idxExtraPath ] );
-			V_MakeAbsolutePath( szAbsSearchPath, sizeof( szAbsSearchPath ), vecPaths[ idxExtraPath ], pszBaseDir );
-			V_FixSlashes( szAbsSearchPath );
-			if ( !V_RemoveDotSlashes( szAbsSearchPath ) )
-				Error( "Bad -insert_search_path - Can't resolve pathname for '%s'", szAbsSearchPath );
-			V_StripTrailingSlash( szAbsSearchPath );
-			FileSystem_AddLoadedSearchPath( this, "GAME", szAbsSearchPath, pszLanguage, m_bUseLowViolencePaths, m_bUseHDMount );
-			FileSystem_AddLoadedSearchPath( this, "MOD", szAbsSearchPath, pszLanguage, m_bUseLowViolencePaths, m_bUseHDMount );
-		}
-	}
-
-	for ( KeyValues *pCur=pSearchPaths->GetFirstValue(); pCur; pCur=pCur->GetNextValue() )
-	{
-		const char *pLocation = pCur->GetString();
-		const char *pszLocationBaseDir = pszBaseDir;
-
-		if ( Q_stristr( pLocation, GAMEINFOPATH_TOKEN ) == pLocation )
-		{
-			pLocation += strlen( GAMEINFOPATH_TOKEN );
-			pszLocationBaseDir = pszGameInfoDir;
-		}
-		else if ( Q_stristr( pLocation, BASESOURCEPATHS_TOKEN ) == pLocation )
-		{
-			// This is a special identifier that tells it to add the specified path for all source engine versions equal to or prior to this version.
-			// So in Orange Box, if they specified:
-			//		|all_source_engine_paths|hl2
-			// it would add the ep2\hl2 folder and the base (ep1-era) hl2 folder.
-			//
-			// We need a special identifier in the gameinfo.txt here because the base hl2 folder exists in different places.
-			// In the case of a game or a Steam-launched dedicated server, all the necessary prior engine content is mapped in with the Steam depots,
-			// so we can just use the path as-is.
-			pLocation += strlen( BASESOURCEPATHS_TOKEN );
-		}
-
-		CUtlStringList vecFullLocationPaths;
-		char szAbsSearchPath[MAX_PATH];
-		V_MakeAbsolutePath( szAbsSearchPath, sizeof( szAbsSearchPath ), pLocation, pszLocationBaseDir );
-
-		// Now resolve any ./'s.
-		V_FixSlashes( szAbsSearchPath );
-		if ( !V_RemoveDotSlashes( szAbsSearchPath ) )
-			Error( "FileSystem_AddLoadedSearchPath - Can't resolve pathname for '%s'", szAbsSearchPath );
-		V_StripTrailingSlash( szAbsSearchPath );
-
-		// Don't bother doing any wildcard expansion unless it has wildcards.  This avoids the weird
-		// thing with xxx_dir.vpk files being referred to simply as xxx.vpk.
-		if ( V_stristr( pLocation, "?") == NULL && V_stristr( pLocation, "*") == NULL )
-		{
-			vecFullLocationPaths.CopyAndAddToTail( szAbsSearchPath );
-		}
-		else
-		{
-			FileFindHandle_t findHandle = NULL;
-			const char *pszFoundShortName = FindFirst( szAbsSearchPath, &findHandle );
-			if ( pszFoundShortName )
-			{
-				do 
-				{
-
-					// We only know how to mount VPK's and directories
-					if ( pszFoundShortName[0] != '.' && ( FindIsDirectory( findHandle ) || V_stristr( pszFoundShortName, ".vpk" ) ) )
-					{
-						char szAbsName[MAX_PATH];
-						V_ExtractFilePath( szAbsSearchPath, szAbsName, sizeof( szAbsName ) );
-						V_AppendSlash( szAbsName, sizeof(szAbsName) );
-						V_strcat_safe( szAbsName, pszFoundShortName );
-
-						vecFullLocationPaths.CopyAndAddToTail( szAbsName );
-
-						// Check for a common mistake
-						if (
-							!V_stricmp( pszFoundShortName, "materials" )
-							|| !V_stricmp( pszFoundShortName, "maps" )
-							|| !V_stricmp( pszFoundShortName, "resource" )
-							|| !V_stricmp( pszFoundShortName, "scripts" )
-							|| !V_stricmp( pszFoundShortName, "sound" )
-							|| !V_stricmp( pszFoundShortName, "models" ) )
-						{
-
-							char szReadme[MAX_PATH];
-							V_ExtractFilePath( szAbsSearchPath, szReadme, sizeof( szReadme ) );
-							V_AppendSlash( szReadme, sizeof(szReadme) );
-							V_strcat_safe( szReadme, "readme.txt" );
-
-							Error(
-								"Tried to add %s as a search path.\n"
-								"\nThis is probably not what you intended.\n"
-								"\nCheck %s for more info\n",
-								szAbsName, szReadme );
-						}
-
-					}
-					pszFoundShortName = FindNext( findHandle );
-				} while ( pszFoundShortName );
-				FindClose( findHandle );
-			}
-
-			// Sort alphabetically.  Also note that this will put
-			// all the xxx_000.vpk packs just before the corresponding
-			// xxx_dir.vpk
-			vecFullLocationPaths.Sort( SortStricmp );
-
-			// Now for any _dir.vpk files, remove the _nnn.vpk ones.
-			int idx = vecFullLocationPaths.Count()-1;
-			while ( idx > 0 )
-			{
-				char szTemp[ MAX_PATH ];
-				V_strcpy_safe( szTemp, vecFullLocationPaths[ idx ] );
-				--idx;
-
-				char *szDirVpk = V_stristr( szTemp, "_dir.vpk" );
-				if ( szDirVpk != NULL )
-				{
-					*szDirVpk = '\0';
-					while ( idx >= 0 )
-					{
-						char *pszPath = vecFullLocationPaths[ idx ];
-						if ( V_stristr( pszPath, szTemp ) != pszPath )
-							break;
-						delete pszPath;
-						vecFullLocationPaths.Remove( idx );
-						--idx;
-					}
-				}
-			}
-		}
-
-		// Parse Path ID list
-		CUtlStringList vecPathIDs;
-		V_SplitString( pCur->GetName(), "+", vecPathIDs );
-		FOR_EACH_VEC( vecPathIDs, idxPathID )
-		{
-			Q_StripPrecedingAndTrailingWhitespace( vecPathIDs[ idxPathID ] );
-		}
-
-		// Mount them.
-		FOR_EACH_VEC( vecFullLocationPaths, idxLocation )
-		{
-			FOR_EACH_VEC( vecPathIDs, idxPathID )
-			{
-				FileSystem_AddLoadedSearchPath( this, vecPathIDs[ idxPathID ], vecFullLocationPaths[ idxLocation ], pszLanguage, m_bUseLowViolencePaths, m_bUseHDMount );
-			}
-		}
-	}
-}
-
-void CBaseFileSystem::UpdateSearchPathsForCurrentGameExpansion()
-{
-	Msg( "UpdateSearchPathsForCurrentGameExpansion\n" );
-
-	char szExpansionId[16];
-	if ( !GetCurrentGameExpansionId( szExpansionId, sizeof( szExpansionId ) ) )
-		return;
-
-	Plat_DebugString( "----------------- INITIAL PATHS -----------------\n" );
-	PrintSearchPaths();
-	Plat_DebugString( "--------------------------------------------------\n" );
-
-	CUtlString sGameDir( CommandLine()->ParmValue( "-game", "" ) );
-	if ( !sGameDir.Length() )
-		return;
-
-	// The base game directories stay searchable underneath the expansion's
-	CUtlVector< CUtlString > rootModPaths;
-	GetSearchPaths2( "ROOT_MOD", true, rootModPaths );
-
-	char szBasePath[MAX_PATH];
-	GetSearchPath( "BASE_PATH", true, szBasePath, sizeof( szBasePath ) );
-	V_StripTrailingSlash( szBasePath );
-
-	char szExpansionPath[MAX_PATH];
-	V_snprintf( szExpansionPath, sizeof( szExpansionPath ), "%s/%s/", szBasePath, szExpansionId );
-	V_FixSlashes( szExpansionPath );
-
-	CUtlSymbol expansionPathSymbol = g_PathIDTable.Find( szExpansionPath );
-	if ( !expansionPathSymbol.IsValid() )
-	{
-		expansionPathSymbol = g_PathIDTable.AddString( szExpansionPath );
-	}
-
-	RemoveSearchPaths( "exp" );
-	AddSearchPath( szExpansionPath, "exp", PATH_ADD_TO_TAIL );
-	MarkPathIDByRequestOnly( "exp", true );
-
-	RemoveSearchPaths( "mod" );
-	RemoveSearchPaths( "game" );
-	RemoveSearchPaths( "mod_write" );
-	RemoveSearchPaths( "game_write" );
-	RemoveSearchPaths( "default_write_path" );
-
-	Plat_DebugString( "------------------ PRUNED PATHS -----------------\n" );
-	PrintSearchPaths();
-	Plat_DebugString( "--------------------------------------------------\n" );
-
-	KeyValues *pGameInfo = new KeyValues( "modinfo" );
-	if ( pGameInfo->LoadFromFile( this, "gameinfo.txt", "EXP" ) )
-	{
-		KeyValues *pFileSystemInfo = pGameInfo->FindKey( "FileSystem" );
-		if ( pFileSystemInfo )
-		{
-			KeyValues *pSearchPaths = pFileSystemInfo->FindKey( "SearchPaths" );
-			if ( pSearchPaths )
-			{
-				AddGameAndModSearchPathsFromGameInfo( szExpansionId, szBasePath, pSearchPaths );
-			}
-		}
-	}
-	pGameInfo->deleteThis();
-
-	FOR_EACH_VEC( rootModPaths, i )
-	{
-		AddSearchPath( rootModPaths[i], "GAME", PATH_ADD_TO_HEAD );
-	}
-
-	if ( workshop_playing_campaign.GetInt() )
-	{
-		// Workshop campaigns write into, and load ahead of everything from, the workshop folder
-		RemoveSearchPaths( "mod" );
-		RemoveSearchPaths( "mod_write" );
-		RemoveSearchPaths( "game_write" );
-		RemoveSearchPaths( "default_write_path" );
-
-		CreateDirHierarchy( "workshop", NULL );
-
-		AddSearchPath( "lostcoast", "game", PATH_ADD_TO_TAIL );
-		AddSearchPath( "lostcoast/lostcoast_pak.vpk", "game", PATH_ADD_TO_TAIL );
-
-		AddSearchPath( "workshop", "mod", PATH_ADD_TO_HEAD );
-		AddSearchPath( "workshop", "game", PATH_ADD_TO_HEAD );
-		AddSearchPath( "workshop", "mod_write", PATH_ADD_TO_HEAD );
-		AddSearchPath( "workshop", "game_write", PATH_ADD_TO_HEAD );
-		AddSearchPath( "workshop", "default_write_path", PATH_ADD_TO_HEAD );
-	}
-
-	Plat_DebugString( "----------------- UPDATED PATHS -----------------\n" );
-	PrintSearchPaths();
-	Plat_DebugString( "--------------------------------------------------\n" );
-}
-
-int CBaseFileSystem::GetSearchPaths2( const char *pathID, bool bGetPackFiles, CUtlVector< CUtlString > &searchPaths )
-{
-	AUTO_LOCK( m_SearchPathsMutex );
-
-	CUtlString sResult;
-	CSearchPathsIterator iter( this, pathID, bGetPackFiles ? FILTER_NONE : FILTER_CULLPACK );
-	int nCount = 0;
-	for ( CSearchPath *pSearchPath = iter.GetFirst(); pSearchPath != NULL; pSearchPath = iter.GetNext() )
-	{
-		CUtlString sName;
-		if ( pSearchPath->GetPackFile() )
-		{
-			sName += pSearchPath->GetPackFile()->m_ZipName.String();
-			sName += CORRECT_PATH_SEPARATOR_S;
-		}
-		#ifdef SUPPORT_PACKED_STORE
-		else if ( pSearchPath->GetPackedStore() )
-		{
-			sName = pSearchPath->GetPackedStore()->FullPathName();
-		}
-		#endif
-		else
-		{
-			sName = pSearchPath->GetPathString();
-		}
-
-		++nCount;
-		searchPaths.AddToTail( sName );
-	}
-
-	return nCount;
-}
-
-//-----------------------------------------------------------------------------
-// Fonts inside VPKs are copied out to temp_font/ so the OS font loader can open them
-//-----------------------------------------------------------------------------
-bool CBaseFileSystem::GetFontTempFile( const char *pszFontFile, char *pszTempFile, int nMaxLen )
-{
-	const char *pszFileName = V_GetFileName( pszFontFile );
-	const char *pszExtension = V_GetFileExtension( pszFontFile );
-	if ( !pszFileName || !pszExtension || strcmp( pszExtension, "ttf" ) || !nMaxLen )
-		return false;
-
-	pszTempFile[0] = '\0';
-
-	FileHandle_t hFont = Open( pszFontFile, "rb", "GAME" );
-	if ( !hFont )
-	{
-		hFont = Open( pszFontFile, "rb", "PLATFORM" );
-		if ( !hFont )
-			return false;
-	}
-
-	if ( !( (CFileHandle *)hFont )->m_VPKHandle )
-	{
-		// A loose file can be loaded where it is
-		Close( hFont );
-		V_strncpy( pszTempFile, pszFontFile, nMaxLen );
-		return true;
-	}
-
-	CreateDirHierarchy( "temp_font", "GAME" );
-
-	CUtlBuffer buf;
-	if ( !ReadToBuffer( hFont, buf ) )
-	{
-		Close( hFont );
-		return false;
-	}
-	Close( hFont );
-
-	V_snprintf( pszTempFile, nMaxLen, "temp_font/%s", pszFileName );
-	if ( !WriteFile( pszTempFile, "GAME", buf ) )
-		return false;
-
-	return true;
-}
-
-//-----------------------------------------------------------------------------
-// Keeps AsyncFinishAll from flushing the IO queue while search paths are rebuilt
-//-----------------------------------------------------------------------------
-void CBaseFileSystem::PushNoFinishAllOnSearchPaths()
-{
-	if ( !m_nNoFinishAllOnSearchPaths )
-	{
-		AsyncFinishAll( INT_MIN );
-	}
-	m_nNoFinishAllOnSearchPaths++;
-}
-
-void CBaseFileSystem::PopNoFinishAllOnSearchPaths()
-{
-	m_nNoFinishAllOnSearchPaths--;
-}
-
 void CBaseFileSystem::NotifyFileUnloaded( const char *pszFilename, const char *pPathId )
 {
 	m_FileTracker2.NoteFileUnloaded( pszFilename, pPathId );
@@ -5399,6 +5344,69 @@ void CBaseFileSystem::FindClose( FileFindHandle_t handle )
 }
 
 //-----------------------------------------------------------------------------
+// Fonts inside VPKs are copied out to temp_font/ so the OS font loader can open them
+//-----------------------------------------------------------------------------
+bool CBaseFileSystem::GetFontTempFile( const char *pszFontFile, char *pszTempFile, int nMaxLen )
+{
+	const char *pszFileName = V_GetFileName( pszFontFile );
+	const char *pszExtension = V_GetFileExtension( pszFontFile );
+	if ( !pszFileName || !pszExtension || strcmp( pszExtension, "ttf" ) || !nMaxLen )
+		return false;
+
+	pszTempFile[0] = '\0';
+
+	FileHandle_t hFont = Open( pszFontFile, "rb", "GAME" );
+	if ( !hFont )
+	{
+		hFont = Open( pszFontFile, "rb", "PLATFORM" );
+		if ( !hFont )
+			return false;
+	}
+
+	if ( !( (CFileHandle *)hFont )->m_VPKHandle )
+	{
+		// A loose file can be loaded where it is
+		Close( hFont );
+		V_strncpy( pszTempFile, pszFontFile, nMaxLen );
+		return true;
+	}
+
+	CreateDirHierarchy( "temp_font", "GAME" );
+
+	CUtlBuffer buf;
+	if ( !ReadToBuffer( hFont, buf ) )
+	{
+		Close( hFont );
+		return false;
+	}
+	Close( hFont );
+
+	V_snprintf( pszTempFile, nMaxLen, "temp_font/%s", pszFileName );
+	if ( !WriteFile( pszTempFile, "GAME", buf ) )
+		return false;
+
+	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Keeps AsyncFinishAll from flushing the IO queue while search paths are rebuilt
+//-----------------------------------------------------------------------------
+void CBaseFileSystem::PushNoFinishAllOnSearchPaths()
+{
+	if ( !m_nNoFinishAllOnSearchPaths )
+	{
+		AsyncFinishAll( INT_MIN );
+	}
+	m_nNoFinishAllOnSearchPaths++;
+}
+
+void CBaseFileSystem::PopNoFinishAllOnSearchPaths()
+{
+	m_nNoFinishAllOnSearchPaths--;
+}
+
+
+//-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : *pFileName - 
 //-----------------------------------------------------------------------------
@@ -6012,7 +6020,7 @@ CBaseFileSystem::CSearchPath::CSearchPath( void )
 	m_bIsTrustedForPureServer = false;
 }
 
-const char *CBaseFileSystem::CSearchPath::GetDebugString() const
+inline const char *CBaseFileSystem::CSearchPath::GetDebugString() const
 {
 	if ( GetPackFile()  )
 	{
@@ -6125,21 +6133,6 @@ CBaseFileSystem::CSearchPath *CBaseFileSystem::CSearchPathsIterator::GetNext()
 	return NULL;
 }
 
-void CBaseFileSystem::CSearchPathsIterator::CopySearchPaths( const CUtlVector<CSearchPath>	&searchPaths )
-{
-	m_SearchPaths = searchPaths;
-	for ( int i = 0; i <  m_SearchPaths.Count(); i++ )
-	{
-		if ( m_SearchPaths[i].GetPackFile() )
-		{
-			m_SearchPaths[i].GetPackFile()->AddRef();
-		}
-		else if ( m_SearchPaths[i].GetPackedStore() )
-		{
-			m_SearchPaths[i].GetPackedStore()->AddRef();
-		}
-	}
-}
 
 //-----------------------------------------------------------------------------
 // Purpose: Load/unload a DLL

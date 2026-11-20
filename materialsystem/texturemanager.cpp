@@ -67,7 +67,7 @@ const char* cTextureCachePathDir = "__texture_cache";
 // TODO: Relocate this somewhere else. It works like python's "strip" function,
 // removing leading and trailing whitespace, including newlines. Whitespace between
 // non-whitespace characters is preserved.
-void V_StripWhitespace( char* pBuffer )
+static void V_StripWhitespace( char* pBuffer )
 {
 	Assert( pBuffer );
 
