@@ -813,6 +813,10 @@ static void PrintCommand( const ConCommand *cmd, bool logging, FileHandle_t& f )
 		{
 			Q_snprintf( name, sizeof( name ), "'%s'", cmd->GetName() );
 		}
+#ifdef BYTEMATCH_RETAIL
+		char tempbuff[128];
+#endif
+#line 780
 		g_pFileSystem->FPrintf( f, "\"%s\",\"%s\",%s,\"%s\"\n", name, "cmd", emptyflags, StripQuotes( cmd->GetHelpText(), tempbuff, sizeof(tempbuff) ) );
 	}
 }

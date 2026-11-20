@@ -781,7 +781,12 @@ static void AddSampleToBSPFile( bool bHDR, mcubemapsample_t *pSample, const char
 	Q_snprintf( textureName, sizeof( textureName ), "%s/c%d_%d_%d%s.vtf", matDir, ( int )pSample->origin[0],
 	            ( int )pSample->origin[1], ( int )pSample->origin[2], pHDRExtension );
 	char localPath[MAX_PATH] = { 0 };
+#ifdef BYTEMATCH_RETAIL
+	if ( !g_pFileSystem->RelativePathToFullPath_safe( textureName, "MOD", localPath ) || !*localPath )
+#else
 	if ( !g_pFileSystem->RelativePathToFullPath_safe( textureName, "DEFAULT_WRITE_PATH", localPath ) || !*localPath )
+#endif
+#line 785
 	{
 		Warning("vtex failed to compile cubemap!\n");
 	}
@@ -790,7 +795,12 @@ static void AddSampleToBSPFile( bool bHDR, mcubemapsample_t *pSample, const char
 		Q_FixSlashes( localPath );
 		iBSPPack->AddFileToPack( textureName, localPath );
 	}
+#ifdef BYTEMATCH_RETAIL
+	g_pFileSystem->RemoveFile( textureName, "MOD" );
+#else
 	g_pFileSystem->RemoveFile( textureName, "DEFAULT_WRITE_PATH" );
+#endif
+#line 794
 }
 
 
@@ -1029,7 +1039,7 @@ void R_BuildCubemapSamples( int numIterations )
 
 		char gameDir[MAX_OSPATH];
 #ifdef BYTEMATCH_RETAIL
-		if ( !g_pFileSystem->RelativePathToFullPath( "gameinfo.txt", "MOD", gameDir, sizeof( gameDir ) ) )
+		if ( !g_pFullFileSystem->RelativePathToFullPath( "gameinfo.txt", "MOD", gameDir, sizeof( gameDir ) ) )
 		{
 			Error( "Couldn't find gameinfo.txt" );
 		}

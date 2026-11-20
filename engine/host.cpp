@@ -1241,10 +1241,7 @@ void Host_WriteConfiguration( const char *filename )
 	if ( !filename )
 		filename = "config.cfg";
 
-	if ( !host_initialized )
-		return;
-
-	if ( !g_bConfigCfgExecuted )
+	if ( !g_bConfigCfgExecuted || !host_initialized )
 		return;
 
 	// If in map editing mode don't save configuration

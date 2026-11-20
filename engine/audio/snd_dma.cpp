@@ -6227,6 +6227,7 @@ void S_Update( const AudioState_t *pAudioState )
 	g_AudioDevice->UpdateListener( listener_origin, listener_forward, listener_right, listener_up );
  
 	combine = NULL;
+	int i;
 
 	int voiceChannelCount = 0;
 	int voiceChannelMaxVolume = 0;
@@ -6251,7 +6252,7 @@ void S_Update( const AudioState_t *pAudioState )
 	g_ActiveChannels.GetActiveChannels( list );
 
 #ifdef BYTEMATCH_RETAIL
-	for ( int i = 0; i < list.Count(); i++ )
+	for ( i = 0; i < list.Count(); i++ )
 	{
 		ch = list.GetChannel(i);
 		if ( ch->sfx->pSource && ch->sfx->pSource->IsCommentarySource() )
@@ -6266,7 +6267,7 @@ void S_Update( const AudioState_t *pAudioState )
 	if (snd_spatialize_roundrobin.GetInt() == 0)
 	{
 		// spatialize each channel each time
-		for ( int i = 0; i < list.Count(); i++ )
+		for ( i = 0; i < list.Count(); i++ )
 		{
 			ch = list.GetChannel(i);
 			Assert(ch->sfx);
@@ -6286,7 +6287,7 @@ void S_Update( const AudioState_t *pAudioState )
 		unsigned int robinmask = (1 << snd_spatialize_roundrobin.GetInt()) - 1;
 
 		// now do static channels
-		for ( int i = 0 ; i < list.Count() ; ++i )
+		for ( i = 0 ; i < list.Count() ; ++i )
 		{
 			ch = list.GetChannel(i);
 			Assert(ch->sfx);

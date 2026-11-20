@@ -4641,7 +4641,7 @@ void R_DrawBrushModel( IClientEntity *baseentity, model_t *model,
 	if ( model->flags & MODELFLAG_FRAMEBUFFER_TEXTURE )
 	{
 		CMatRenderContextPtr pRenderContextMat( materials );
-		pRenderContext->CopyRenderTargetToTexture( pRenderContextMat->GetFrameBufferCopyTexture( 0 ) );
+		pRenderContextMat->CopyRenderTargetToTexture( pRenderContextMat->GetFrameBufferCopyTexture( 0 ) );
 	}
 
 	if ( s_pBrushRenderOverride )
