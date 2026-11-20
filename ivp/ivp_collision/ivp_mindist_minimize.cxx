@@ -317,6 +317,16 @@ IVP_MRC_TYPE IVP_Mindist::recalc_mindist()
 #endif
 }
 
+#ifdef BYTEMATCH_RETAIL
+void IVP_FF_DescribeSynapse( IVP_Synapse_Real *syn, CFmtStr &str )
+{
+    IVP_Real_Object *obj = syn->get_object();
+    const IVP_U_Point *pos = obj->get_core()->get_position_PSI();
+    str.sprintf( "%s (%d) at %.1f %.1f %.1f", obj->get_name(), syn->get_status(),
+	(float)pos->k[0], (float)pos->k[1], (float)pos->k[2] );
+}
+#endif
+
 IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::p_minimize_FF( const IVP_Compact_Edge *A,const IVP_Compact_Edge *B, IVP_Cache_Ledge_Point *m_cache_A, IVP_Cache_Ledge_Point *m_cache_B)
 {
 
@@ -464,15 +474,10 @@ IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::p_minimize_FF( const IVP_Compact_Edge 
     IVP_MRC_TYPE ret_val = IVP_MRC_UNINITIALIZED; // (un)initialize
 
 #ifdef BYTEMATCH_RETAIL
-#define IVP_FF_DESCRIBE_SYNAPSE( str, syn ) \
-    str.sprintf( "%s (%d) at %.1f %.1f %.1f", syn->get_object()->get_name(), syn->get_status(), \
-	(float)syn->get_object()->get_core()->m_world_f_core_last_psi.vv.k[0], \
-	(float)syn->get_object()->get_core()->m_world_f_core_last_psi.vv.k[1], \
-	(float)syn->get_object()->get_core()->m_world_f_core_last_psi.vv.k[2] )
 #define IVP_FF_CRASH() { \
 	CFmtStr str0, str1; \
-	IVP_FF_DESCRIBE_SYNAPSE( str0, syn0 ); \
-	IVP_FF_DESCRIBE_SYNAPSE( str1, syn1 ); \
+	IVP_FF_DescribeSynapse( syn0, str0 ); \
+	IVP_FF_DescribeSynapse( syn1, str1 ); \
 	Error( "%s in contact with %s, crash. dist = %d, minq = %lf\n", str0.Access(), str1.Access(), min_type, min_qdist ); }
     switch(syn0->get_status()){
       case IVP_ST_POINT:{

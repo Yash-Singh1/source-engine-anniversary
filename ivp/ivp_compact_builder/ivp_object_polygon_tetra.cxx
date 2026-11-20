@@ -600,6 +600,9 @@ IVP_ERROR_STRING P_Sur_2D::calc_line_representation()
 	break;
     default:
 	td_k0 = td_k1 = 0; // compiler lullaby
+#ifdef BYTEMATCH_RETAIL
+#line 594
+#endif
 	CORE;
     }
     
