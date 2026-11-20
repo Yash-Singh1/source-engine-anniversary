@@ -134,10 +134,10 @@ public:
 	// This one isn't actually defined so that we catch contructors that are trying to pass a bool in as the third param.
 	CUtlBuffer( const void *pBuffer, int size, bool crap ) = delete;
 
-	// UtlBuffer objects should not be copyable; we do a slow copy if you use this but it asserts.
+#ifndef BYTEMATCH_RETAIL
 	CUtlBuffer( const CUtlBuffer& );
 	CUtlBuffer& operator= ( const CUtlBuffer& );
-
+#endif
 
 	unsigned char	GetFlags() const;
 
