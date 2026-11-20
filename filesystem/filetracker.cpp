@@ -31,7 +31,9 @@ unsigned CFileTracker2::ThreadedProcessMD5Requests()
 
 		while ( m_PendingJobs.PopItem( &stuff ) )
 		{
+#ifndef BYTEMATCH_RETAIL
 			tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__ ); 
+#endif
 
 			MD5Context_t ctx;
 			memset( &ctx, 0, sizeof(MD5Context_t) );
@@ -68,7 +70,9 @@ unsigned CFileTracker2::ThreadedProcessMD5Requests()
 		}
 
 		{
+#ifndef BYTEMATCH_RETAIL
 			tmZone( TELEMETRY_LEVEL0, TMZF_IDLE, "m_threadEventWorkToDo" ); 
+#endif
 
 			m_threadEventWorkToDo.Wait( 1000 );
 		}
@@ -229,17 +233,16 @@ void CFileTracker2::MarkAllCRCsUnverified()
 		if ( file.m_filehashInProgress.m_cbFileLen || file.m_filehashFinal.m_cbFileLen )
 		{
 			if ( file.m_bPackOrVPKFile )
-			{
 				file.m_idxRecentFileList = m_RecentFileList.AddToHead( i );
-				continue;
-			}
-			if ( !file.m_bFileInVPK && file.m_path.Length() )
-			{
+			else if ( !file.m_bFileInVPK && file.m_path.Length() )
 				file.m_idxRecentFileList = m_RecentFileList.AddToTail( i );
-				continue;
-			}
+			else
+				file.m_idxRecentFileList = m_RecentFileList.InvalidIndex();
 		}
-		file.m_idxRecentFileList = m_RecentFileList.InvalidIndex();
+		else
+		{
+			file.m_idxRecentFileList = m_RecentFileList.InvalidIndex();
+		}
 	}
 
 	// Then everything else
@@ -463,15 +466,15 @@ void CFileTracker2::NotePackFileAccess( const char *pFilename, const char *pPath
 	int nFileFractionLast = ( VPKHandle.m_nFileOffset + VPKHandle.m_nFileSize ) & ~( k_cbFileFraction - 1 );
 	for ( ; trackedVPKFile.m_nFileFraction <= nFileFractionLast; trackedVPKFile.m_nFileFraction += k_cbFileFraction )
 	{
-		if ( m_treeTrackedVPKFiles.Find( trackedVPKFile ) != m_treeTrackedVPKFiles.InvalidIndex() )
-			continue;
+		if ( m_treeTrackedVPKFiles.Find( trackedVPKFile ) == m_treeTrackedVPKFiles.InvalidIndex() )
+		{
+			char szDataFileName[MAX_PATH];
+			VPKHandle.m_pOwner->GetPackFileName( VPKHandle, szDataFileName, sizeof(szDataFileName) );
+			const char *pszFileName = V_GetFileName( szDataFileName );
 
-		char szDataFileName[MAX_PATH];
-		VPKHandle.m_pOwner->GetPackFileName( VPKHandle, szDataFileName, sizeof(szDataFileName) );
-		const char *pszFileName = V_GetFileName( szDataFileName );
-
-		trackedVPKFile.m_idxAllOpenedFiles = IdxFileFromName( pszFileName, "GAME", trackedVPKFile.m_nFileFraction, 0, true, true );
-		m_treeTrackedVPKFiles.Insert( trackedVPKFile );
+			trackedVPKFile.m_idxAllOpenedFiles = IdxFileFromName( pszFileName, "GAME", trackedVPKFile.m_nFileFraction, 0, true, true );
+			m_treeTrackedVPKFiles.Insert( trackedVPKFile );
+		}
 	}
 #endif // !defined( _GAMECONSOLE ) && !defined( DEDICATED )
 }

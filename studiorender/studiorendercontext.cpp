@@ -763,9 +763,14 @@ void CStudioRenderContext::R_StudioBuildMeshGroup( const char *pModelName, bool 
 
 	for (i = 0; i < pStripGroup->numIndices; ++i)
 	{
+#ifdef BYTEMATCH_RETAIL
+		meshBuilder.Index( *pStripGroup->pIndex(i) );
+#else
 		unsigned short index;
 		memcpy( &index, pStripGroup->pIndex(i), sizeof(index) );
 		meshBuilder.Index( index );
+#endif
+#line 769
 		meshBuilder.AdvanceIndex();
 	}
 

@@ -50,7 +50,7 @@ public:
 //-----------------------------------------------------------------------------
 CCreateMultiplayerGameGameplayPage::CCreateMultiplayerGameGameplayPage(vgui::Panel *parent, const char *name) : PropertyPage(parent, name)
 {
-	SetSize( PROPORTIONAL_VALUE( 10 ), PROPORTIONAL_VALUE( 10 ) ); // Quiet "parent not sized yet" spew
+	SetSize( QuickPropScale( 10 ), QuickPropScale( 10 ) ); // Quiet "parent not sized yet" spew
 	m_pOptionsList = new CPanelListPanel(this, "GameOptions");
 
 	m_pDescription = new CServerDescription();
@@ -241,7 +241,7 @@ void CCreateMultiplayerGameGameplayPage::LoadGameOptionsList()
 			pCtrl->pPrompt = new vgui::Label( pCtrl, "DescLabel", "" );
 			pCtrl->pPrompt->SetContentAlignment( vgui::Label::a_west );
 #ifdef BYTEMATCH_RETAIL
-			pCtrl->pPrompt->SetTextInset( PROPORTIONAL_VALUE( 5 ), 0 );
+			pCtrl->pPrompt->SetTextInset( QuickPropScale( 5 ), 0 );
 #else
 			pCtrl->pPrompt->SetTextInset( 5, 0 );
 #endif
@@ -250,7 +250,7 @@ void CCreateMultiplayerGameGameplayPage::LoadGameOptionsList()
 
 		pCtrl->pScrObj = pObj;
 #ifdef BYTEMATCH_RETAIL
-		pCtrl->SetSize( PROPORTIONAL_VALUE( 100 ), PROPORTIONAL_VALUE( 28 ) );
+		pCtrl->SetSize( QuickPropScale( 100 ), QuickPropScale( 28 ) );
 #else
 		pCtrl->SetSize( 100, scheme()->GetProportionalScaledValue(28) );
 #endif

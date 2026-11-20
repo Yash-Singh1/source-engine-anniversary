@@ -226,8 +226,8 @@ void COptionsSubKeyboard::ParseActionDescriptions( void )
 			{
 				// add header item
 				m_pKeyBindList->AddSection(++sectionIndex, szDescription);
-				m_pKeyBindList->AddColumnToSection(sectionIndex, "Action", szDescription, SectionedListPanel::COLUMN_BRIGHT, PROPORTIONAL_VALUE( 286 ));
-				m_pKeyBindList->AddColumnToSection(sectionIndex, "Key", "#GameUI_KeyButton", SectionedListPanel::COLUMN_BRIGHT, PROPORTIONAL_VALUE( 128 ));
+				m_pKeyBindList->AddColumnToSection(sectionIndex, "Action", szDescription, SectionedListPanel::COLUMN_BRIGHT, QuickPropScale( 286 ));
+				m_pKeyBindList->AddColumnToSection(sectionIndex, "Key", "#GameUI_KeyButton", SectionedListPanel::COLUMN_BRIGHT, QuickPropScale( 128 ));
 			}
 			else
 			{
@@ -764,7 +764,7 @@ public:
 #ifdef BYTEMATCH_RETAIL
 		SetParent( enginevguifuncs->GetPanel( PANEL_GAMEUIDLL ) );
 		SetTitle("#GameUI_KeyboardAdvanced_Title", true);
-		SetSize( PROPORTIONAL_VALUE( 280 ), PROPORTIONAL_VALUE( 140 ) );
+		SetSize( QuickPropScale( 280 ), QuickPropScale( 140 ) );
 #else
 		if( NeedProportional() )
 			SetProportional(true);

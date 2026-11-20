@@ -61,7 +61,7 @@ struct DecalClipState_t
 	// Union of the decal triangle clip flags above for each vert
 	int m_ClipFlags[16];
 
-	DecalClipState_t() = default;
+	DecalClipState_t() {}
 
 private:
 	// Copy constructors are not allowed

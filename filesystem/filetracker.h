@@ -42,14 +42,14 @@ struct TrackedFile_t
 	TrackedFile_t()
 	{
 		m_nFileFraction = 0;
+		m_nFilePos = 0;
 		m_nLength = 0;
 		m_nMD5Pos = 0;
-		m_iUnused = 0;
-		m_nFilePos = 0;
 		m_PackFileID = 0;
 		m_nPackFileNumber = 0;
 		m_bPackOrVPKFile = false;
 		m_bFileInVPK = false;
+		m_iUnused = 0;
 		m_iLoadedSearchPathStoreId = 0;
 		m_bIgnoredForPureServer = false;
 	}

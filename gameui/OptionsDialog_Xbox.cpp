@@ -384,7 +384,7 @@ void COptionsDialogXbox::ApplySchemeSettings( vgui::IScheme *pScheme )
 	{
 		pPanel = pPanelList[ iPanelList ];
 
-		int  iZ, iWide;
+		int  iX, iY, iZ, iWide, iTall;
 		bool bVisible;
 		pPanel->GetPos( iX, iY );
 		iZ = ipanel()->GetZPos( pPanel->GetVPanel() );

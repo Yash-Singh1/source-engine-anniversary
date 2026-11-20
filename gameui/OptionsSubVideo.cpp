@@ -203,7 +203,7 @@ public:
 		// parent is ignored, since we want look like we're steal focus from the parent (we'll become modal below)
 		SetParent( enginevguifuncs->GetPanel( PANEL_GAMEUIDLL ) );
 		SetTitle("#GameUI_AdjustGamma_Title", true);
-		SetSize( PROPORTIONAL_VALUE( 400 ), PROPORTIONAL_VALUE( 260 ) );
+		SetSize( QuickPropScale( 400 ), QuickPropScale( 260 ) );
 		SetDeleteSelfOnClose( true );
 
 		m_pGammaSlider = new CCvarSlider( this, "Gamma", "#GameUI_Gamma", 1.6f, 2.6f, "mat_monitorgamma" );
@@ -2069,7 +2069,7 @@ public:
 #ifdef BYTEMATCH_RETAIL
 		SetParent( enginevguifuncs->GetPanel( PANEL_GAMEUIDLL ) );
 		SetTitle("#GameUI_ThirdPartyVideo_Title", true);
-		SetSize( PROPORTIONAL_VALUE( 500 ), PROPORTIONAL_VALUE( 210 ) );
+		SetSize( QuickPropScale( 500 ), QuickPropScale( 210 ) );
 #else
 		int w = 500;
 		int h = 200;
