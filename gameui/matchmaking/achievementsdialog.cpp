@@ -117,7 +117,7 @@ void UpdateProgressBar( vgui::EditablePanel* pPanel, IAchievement *pAchievement,
 			flCompletion = ( ((float)pAchievement->GetCount()) / ((float)pAchievement->GetGoal()) );
 			// In rare cases count can exceed goal and not be achieved (switch local storage on X360, take saved game from different user on PC).
 			// These will self-correct with continued play, but if we're in that state don't show more than 100% achieved.
-			flCompletion = MIN( flCompletion, 1.f );
+			flCompletion = MIN( flCompletion, 1.0 );
 		}
 
 		char szPercentageText[ 256 ] = "";
@@ -376,8 +376,8 @@ void CAchievementsDialog_XBox::OnClose()
 CAchievementsDialog::CAchievementsDialog(vgui::Panel *parent) : BaseClass(parent, "AchievementsDialog"), m_nHideAchievedLayoutFrames( 0 )
 {
 	SetDeleteSelfOnClose(true);
-	SetBounds( 0, 0, PROPORTIONAL_VALUE( 512 ), PROPORTIONAL_VALUE( 384 ) );
-	SetMinimumSize( PROPORTIONAL_VALUE( 256 ), PROPORTIONAL_VALUE( 300 ) );
+	SetBounds( 0, 0, QuickPropScale( 512 ), QuickPropScale( 384 ) );
+	SetMinimumSize( QuickPropScale( 256 ), QuickPropScale( 300 ) );
 	SetSizeable( true );
 
 	m_nOldScrollItem = -1;
@@ -448,7 +448,7 @@ void CAchievementsDialog::CreateNewAchievementGroup( int iMinRange, int iMaxRang
 //----------------------------------------------------------
 void CAchievementsDialog::ApplySettings( KeyValues *pResourceData )
 {
-	m_iFixedWidth = PROPORTIONAL_VALUE( pResourceData->GetInt( "wide", 512 ) );
+	m_iFixedWidth = QuickPropScale( pResourceData->GetInt( "wide", 512 ) );
 
 	BaseClass::ApplySettings( pResourceData );
 }

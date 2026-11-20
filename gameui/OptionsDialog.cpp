@@ -48,9 +48,9 @@ COptionsDialog::COptionsDialog(vgui::Panel *parent) : PropertyDialog(parent, "Op
 {
 	SetDeleteSelfOnClose(true);
 
-	int nWide = PROPORTIONAL_VALUE( 512 );
-	int nTall = PROPORTIONAL_VALUE( 406 );
-	int nTabWidth = PROPORTIONAL_VALUE( 64 );
+	int nWide = QuickPropScale( 512 );
+	int nTall = QuickPropScale( 406 );
+	int nTabWidth = QuickPropScale( 64 );
 	SetBounds( 0, 0, nWide, nTall );
 
 	SetSizeable( false );

@@ -50,6 +50,7 @@ CPointCamera::CPointCamera()
 	m_bIsOn = false;
 	
 	m_bFogEnable = false;
+	NOV2024_ONLY( m_bFogRadial = false; )
 	NOV2024_ONLY( color32 clrFogHDR; clrFogHDR.r = clrFogHDR.g = clrFogHDR.b = clrFogHDR.a = 0; m_FogColor_HDR = clrFogHDR; )
 	g_PointCameraList.Insert( this );
 }

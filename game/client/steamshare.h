@@ -65,6 +65,19 @@ public:
 #ifdef HL2_ANNIVERSARY_NOV2024
 	void UpdateChapterDetails();
 	void UpdateSteamTimelineGameMode();
+	void PushTimelineGameMode( ETimelineGameMode eMode )
+	{
+		m_GameModeStack.AddToTail( eMode );
+		UpdateSteamTimelineGameMode();
+	}
+	void PopTimelineGameMode()
+	{
+		if ( m_GameModeStack.Count() )
+		{
+			m_GameModeStack.Remove( m_GameModeStack.Count() - 1 );
+		}
+		UpdateSteamTimelineGameMode();
+	}
 
 	ETimelineGameMode m_eGameMode;
 	CUtlVector< ETimelineGameMode > m_GameModeStack;

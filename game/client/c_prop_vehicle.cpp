@@ -319,7 +319,8 @@ void C_PropVehicleDriveable::DrawHudElements( )
 
 #if TRIANGULATED_CROSSHAIR
 				// Smooth the reticle toward the networked crosshair; less smoothing at low frame rates
-				float flSmoothing = RemapValClamped( Helper_GetFrameTime(), 0.033333f, 0.016666f, 0.0f, 1.0f ) * r_VehicleHudReticleSmoothing.GetFloat();
+				float flSmoothing = RemapValClamped( Helper_GetFrameTime(), 0.033333f, 0.016666f, 0.0f, 1.0f );
+				flSmoothing *= r_VehicleHudReticleSmoothing.GetFloat();
 				Vector vecCrosshair;
 				VectorLerp( m_vecGunCrosshair, m_vecSmoothedGunCrosshair, flSmoothing, vecCrosshair );
 				m_vecSmoothedGunCrosshair = vecCrosshair;

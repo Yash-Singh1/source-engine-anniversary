@@ -398,7 +398,9 @@ void C_ClientRagdoll::OnRestore( void )
 
 void C_ClientRagdoll::ImpactTrace( trace_t *pTrace, int iDamageType, const char *pCustomImpactName )
 {
+#line 399
 	VPROF( "C_ClientRagdoll::ImpactTrace" );
+#line 387
 
 	IPhysicsObject *pPhysicsObject = VPhysicsGetObject();
 
@@ -1787,7 +1789,9 @@ CollideType_t C_BaseAnimating::GetCollideType( void )
 //-----------------------------------------------------------------------------
 void C_BaseAnimating::MaintainSequenceTransitions( IBoneSetup &boneSetup, float flCycle, Vector pos[], Quaternion q[] )
 {
+#line 1778
 	VPROF( "C_BaseAnimating::MaintainSequenceTransitions" );
+#line 1769
 
 	if ( !boneSetup.GetStudioHdr() )
 		return;

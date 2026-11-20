@@ -272,7 +272,7 @@ static ConVar cl_showpausedimage( "cl_showpausedimage", "1", 0, "Show the 'Pause
 //-----------------------------------------------------------------------------
 // Things to do before rendering vgui stuff...
 //-----------------------------------------------------------------------------
-#line 262
+#line 259
 void VGui_PreRender()
 {
 	VPROF( "VGui_PreRender" );

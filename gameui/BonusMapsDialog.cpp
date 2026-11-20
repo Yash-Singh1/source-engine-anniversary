@@ -194,11 +194,11 @@ public:
 		m_TextColor = pScheme->GetColor( "NewGame.TextColor", Color(255, 255, 255, 255) );
 		m_SelectedColor = pScheme->GetColor( "NewGame.SelectionColor", Color(255, 255, 255, 255) );
 
-		if ( PROPORTIONAL_VALUE( 1000 ) != 1000 )
+		if ( QuickPropScale( 1000 ) != 1000 )
 		{
 			m_pBonusMapImage->SetShouldScaleImage( true );
 
-			float flScale = PROPORTIONAL_VALUE( 1000 ) / 1000.0f;
+			float flScale = QuickPropScale( 1000 ) / 1000.0f;
 			m_pBonusMapImage->SetSize( m_nImageWide, m_nImageTall );
 			m_pBonusMapImage->SetScaleAmount( flScale );
 		}

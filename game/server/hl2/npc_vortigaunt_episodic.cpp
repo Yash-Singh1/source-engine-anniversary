@@ -1633,17 +1633,17 @@ int CNPC_Vortigaunt::SelectSchedule( void )
 			return nSchedule;
 	}
 
-	if ( HL2_EPISODIC_ACTIVE() )
+	if ( !HL2_EPISODIC_ACTIVE() )
+	{
+		if ( BehaviorSelectSchedule() )
+			return BaseClass::SelectSchedule();
+	}
+	else
 	{
 #ifdef HL2_EPISODIC
 		if ( IsInAScript() )
 			return BaseClass::SelectSchedule();
 #endif
-	}
-	else
-	{
-		if ( BehaviorSelectSchedule() )
-			return BaseClass::SelectSchedule();
 	}
 
 	// If we're currently supposed to be doing something scripted, do it immediately.

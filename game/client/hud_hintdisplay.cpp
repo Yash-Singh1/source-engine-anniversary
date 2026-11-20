@@ -555,7 +555,7 @@ bool CHudHintKeyDisplay::SetHintText( const char *text )
 	for ( int i = 0; i < m_GlyphSets.Count(); i++ )
 	{
 		SteamControllerGlyphSet_t &glyphSet = m_GlyphSets[i];
-		for ( int j = 0; j != MAX_HINT_GLYPHS; j++ )
+		for ( int j = 0; j < MAX_HINT_GLYPHS; j++ )
 		{
 			if ( glyphSet.m_nTextureIDs[j] > 0 )
 			{
@@ -695,11 +695,11 @@ bool CHudHintKeyDisplay::SetHintText( const char *text )
 
 				// Steam Input actions are named after the commands, minus the +
 				const char *pszAction = ( binding[0] == '+' ) ? binding + 1 : binding;
-				if ( !strcmp( "impulse 100", pszAction ) )
+				if ( !V_strcmp( "impulse 100", pszAction ) )
 				{
 					pszAction = "sc_flashlight";
 				}
-				else if ( !strcmp( "impulse 50", pszAction ) )
+				else if ( !V_strcmp( "impulse 50", pszAction ) )
 				{
 					pszAction = "sc_squad";
 				}
@@ -714,16 +714,16 @@ bool CHudHintKeyDisplay::SetHintText( const char *text )
 
 					// The toggle and smart versions are bound separately
 					const char *pszAltAction = pszAction;
-					if ( !strcmp( "duck", pszAltAction ) )
+					if ( !V_strcmp( "duck", pszAltAction ) )
 					{
 						pszAltAction = "toggle_duck";
 					}
-					if ( !strcmp( "zoom", pszAltAction ) )
+					if ( !V_strcmp( "zoom", pszAltAction ) )
 					{
 						pszAltAction = "toggle_zoom";
 					}
 #ifdef HL2_ANNIVERSARY_NOV2024
-					if ( !strcmp( "speed", pszAltAction ) )
+					if ( !V_strcmp( "speed", pszAltAction ) )
 					{
 						pszAltAction = "smart_sprint";
 					}
@@ -776,24 +776,24 @@ bool CHudHintKeyDisplay::SetHintText( const char *text )
 				else
 				{
 					const char *pszAnalogAction = pszAction;
-					if ( !strcmp( "xmove", pszAction ) || !strcmp( "forward", pszAction ) || !strcmp( "moveleft", pszAction ) ||
-						 !strcmp( "moveright", pszAction ) || !strcmp( "back", pszAction ) )
+					if ( !V_strcmp( "xmove", pszAction ) || !V_strcmp( "forward", pszAction ) || !V_strcmp( "moveleft", pszAction ) ||
+						 !V_strcmp( "moveright", pszAction ) || !V_strcmp( "back", pszAction ) )
 					{
 						pszAnalogAction = "Move";
 					}
-					else if ( !strcmp( "xsteer", pszAction ) )
+					else if ( !V_strcmp( "xsteer", pszAction ) )
 					{
 						pszAnalogAction = "Steer";
 					}
-					else if ( !strcmp( "xaccel", pszAction ) )
+					else if ( !V_strcmp( "xaccel", pszAction ) )
 					{
 						pszAnalogAction = "Accelerate";
 					}
-					else if ( !strcmp( "xbrake", pszAction ) )
+					else if ( !V_strcmp( "xbrake", pszAction ) )
 					{
 						pszAnalogAction = "Brake";
 					}
-					else if ( !strcmp( "xlook", pszAction ) )
+					else if ( !V_strcmp( "xlook", pszAction ) )
 					{
 						pszAnalogAction = "Camera";
 					}
@@ -804,17 +804,17 @@ bool CHudHintKeyDisplay::SetHintText( const char *text )
 						int nOrigins = SteamInput()->GetAnalogActionOrigins( hController, hActionSet, hAnalog, origins );
 
 						const char *pszAltAction = pszAnalogAction;
-						if ( g_ActionSet == GAME_ACTION_SET_VEHICLECONTROLS && !strcmp( "xmove", pszAnalogAction ) )
+						if ( g_ActionSet == GAME_ACTION_SET_VEHICLECONTROLS && !V_strcmp( "xmove", pszAnalogAction ) )
 						{
 							pszAltAction = "Steer";
 						}
-						else if ( !strcmp( "xsteer", pszAnalogAction ) || !strcmp( "xaccel", pszAnalogAction ) || !strcmp( "xbrake", pszAnalogAction ) )
+						else if ( !V_strcmp( "xsteer", pszAnalogAction ) || !V_strcmp( "xaccel", pszAnalogAction ) || !V_strcmp( "xbrake", pszAnalogAction ) )
 						{
 							pszAltAction = "Move";
 						}
 
 						InputAnalogActionHandle_t hAltAnalog = SteamInput()->GetAnalogActionHandle( pszAltAction );
-						if ( hAltAnalog && hAltAnalog != hAnalog )
+						if ( hAltAnalog && hAnalog != hAltAnalog )
 						{
 							SteamInput()->GetAnalogActionOrigins( hController, hActionSet, hAltAnalog, &origins[nOrigins] );
 						}
@@ -1034,19 +1034,17 @@ bool CHudHintKeyDisplay::SetHintText( const char *text )
 			label1->SetPos( col2_x, col_y + (rowHeight - tall1) / 2 );
 		}
 
-		SteamControllerGlyphSet_t &glyphSet0 = m_GlyphSets[i];
-		glyphSet0.m_nX = col1_x;
-		glyphSet0.m_nY = col_y + (rowHeight - glyphTall) / 2;
-		glyphSet0.m_nWide = glyphTall;
-		glyphSet0.m_nTall = glyphTall;
+		m_GlyphSets[i].m_nX = col1_x;
+		m_GlyphSets[i].m_nY = col_y + (rowHeight - glyphTall) / 2;
+		m_GlyphSets[i].m_nWide = glyphTall;
+		m_GlyphSets[i].m_nTall = glyphTall;
 
 		if ( i + 1 < m_GlyphSets.Count() )
 		{
-			SteamControllerGlyphSet_t &glyphSet1 = m_GlyphSets[i + 1];
-			glyphSet1.m_nX = col2_x;
-			glyphSet1.m_nY = col_y + (rowHeight - glyphTall) / 2;
-			glyphSet1.m_nWide = glyphTall;
-			glyphSet1.m_nTall = glyphTall;
+			m_GlyphSets[i + 1].m_nX = col2_x;
+			m_GlyphSets[i + 1].m_nY = col_y + (rowHeight - glyphTall) / 2;
+			m_GlyphSets[i + 1].m_nWide = glyphTall;
+			m_GlyphSets[i + 1].m_nTall = glyphTall;
 		}
 
 		label0->SetPos( col1_x, col_y + (rowHeight - tall0) / 2 );

@@ -352,7 +352,11 @@ class C_OP_ContinuousEmitter : public CParticleOperatorInstance
 			//}
 		}
 		float flDeltaTime = flCurrDrawTime - flPrevDrawTime;
+#ifdef BYTEMATCH_RETAIL
+		flDeltaTime = min( flDeltaTime, 4.0 );
+#else
 		flDeltaTime = min( flDeltaTime, 4.f );
+#endif
 		flPrevDrawTime = flCurrDrawTime - flDeltaTime;
 		//disabled for now
 		pCtx->m_flTotalActualParticlesSoFar = flDeltaTime * flEmissionRate;

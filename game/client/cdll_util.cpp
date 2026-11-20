@@ -204,8 +204,8 @@ void LaunchMod( const CCommand &args )
 	ConVarRef workshop_playing_campaign( "workshop_playing_campaign" );
 	if ( workshop_playing_campaign.GetBool() != bWorkshop )
 	{
-		workshop_playing_campaign.SetValue( bWorkshop );
 		bChanged = true;
+		workshop_playing_campaign.SetValue( bWorkshop );
 	}
 
 	char szCurrentExpansion[512];
@@ -217,8 +217,18 @@ void LaunchMod( const CCommand &args )
 		engine->ClientCmd( "exec modsettings.cfg mod\n" );
 	}
 
-	if ( !bChanged && !strcmp( pszMod, szCurrentExpansion ) )
+	if ( strcmp( pszMod, szCurrentExpansion ) != 0 )
+	{
+		bChanged = true;
+	}
+
+#if !defined( OSX ) && defined( BYTEMATCH_RETAIL )
+	if ( !workshop->Unknown11( false ) && !bChanged )
 		return;
+#else
+	if ( !bChanged )
+		return;
+#endif
 
 	engine->DisconnectInternal();
 	g_pFullFileSystem->SetCurrentGameExpansionId( pszMod );

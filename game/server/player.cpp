@@ -7002,7 +7002,7 @@ void CBasePlayer::GetAutoaimVector( autoaim_params_t &params )
 
 #ifdef HL2_ANNIVERSARY_NOV2024
 	params.m_fScale *= g_pGameRules->GetAutoAimScale();
-	params.m_fMaxDist *= pow( (double)g_pGameRules->GetAutoAimScale(), 0.5 );
+	params.m_fMaxDist *= pow( g_pGameRules->GetAutoAimScale(), 0.5f );
 #endif
 
 	Vector vecSrc	= Weapon_ShootPosition( );

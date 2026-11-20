@@ -925,7 +925,7 @@ CStdioFile *CStdioFile::FS_fopen( const char *filenameT, const char *options, in
 		// so add a lock here to mimic that behavior
 		ThreadId_t curThread = ThreadGetCurrentId();
 		int fd = fileno_unlocked( pFile );
-		unsigned short iLockID = m_LockedFDMap.Find( fd );
+		int iLockID = m_LockedFDMap.Find( fd );
 		int ret = flock( fd, LOCK_EX | LOCK_NB );
 		if ( ret < 0 )
 		{

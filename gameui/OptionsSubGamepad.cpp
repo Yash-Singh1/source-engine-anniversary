@@ -90,7 +90,7 @@ void COptionsSubGamepad::OnResetData()
 	{
 		nWeaponSelection = hud_weaponui_gamepad.GetInt();
 	}
-	m_pWeaponSelectionCombo->ActivateItem( nWeaponSelection != 2 ? 1 : 0 );
+	m_pWeaponSelectionCombo->ActivateItem( nWeaponSelection == 2 ? 0 : 1 );
 }
 
 void COptionsSubGamepad::OnApplyChanges()

@@ -61,6 +61,7 @@ IDENTICAL = os.path.join(HERE, 'identical.json')
 XCODE = '/Applications/Xcode.app/Contents/Developer/'
 VALVE_SDK = XCODE + 'Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/'
 VALVE_RESOURCE = XCODE + 'Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/6.0/'
+VALVE_RESOURCE_BY_VER = {'3.4': XCODE + 'Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/5.1/'}
 VALVE_TOP = '/Users/buildbot/'
 DEFAULT_CCACHE_DIR = '/Users/buildbot/buildslave/../.ccache/tmp/'
 
@@ -161,6 +162,31 @@ def retail_debug_map(path):
     return out
 
 
+def retail_unwind_calloc_offset(path):
+    """For ld64-236.3 images whose __unwind_info calloc() was small-zone aligned,
+    recover base % 4096 from the zero gap before the last second-level page."""
+    import struct
+    img = machocmp.Image(path)
+    uw = next((r for r in img.regions if r[0] == 'section __TEXT,__unwind_info'), None)
+    eh = next((r for r in img.regions if r[0] == 'section __TEXT,__eh_frame'), None)
+    if not uw or not eh:
+        return 0
+    d = img.data[uw[1]:uw[1] + uw[2]]
+    if len(d) < 28:
+        return 0
+    _, _, _, _, _, i_off, i_cnt = struct.unpack_from('<7I', d, 0)
+    if i_cnt < 3:
+        return 0
+    sl_prev = struct.unpack_from('<3I', d, i_off + (i_cnt - 3) * 12)[1]
+    sl_last = struct.unpack_from('<3I', d, i_off + (i_cnt - 2) * 12)[1]
+    gap = (sl_last - sl_prev) - 4096
+    eh_mod = eh[2] % 4096
+    off = gap - eh_mod
+    if 0 < off < 4096 and (off % 512) == 0:
+        return off
+    return 0
+
+
 def split_member(oso):
     m = re.match(r'^(.*\.a)\((.*)\)$', oso)
     return (m.group(1), m.group(2)) if m else (None, None)
@@ -207,6 +233,10 @@ def load_manifest():
 
 
 def module_key(m, target, link=None):
+    if target.endswith('_hl2mp'):
+        key = 'hl2mp/' + target[:-len('_hl2mp')]
+        if key in m['modules']:
+            return key
     for key, mod in m['modules'].items():
         if mod.get('waf_target') == target and mod['retail'].get('filetype') in ('MH_DYLIB', 'MH_EXECUTE'):
             return key
@@ -223,9 +253,10 @@ def module_key(m, target, link=None):
 # ---------------------------------------------------------------- compile
 
 class Compiler:
-    def __init__(self, scratch, tree, aliases, jobs):
+    def __init__(self, scratch, tree, aliases, jobs, bld=None):
         self.scratch = scratch
         self.tree = tree.rstrip('/') + '/'
+        self.bld = bld.rstrip('/') + '/' if bld else None
         self.aliases = aliases
         import retailflags
         self.sdk2013 = os.path.abspath(retailflags.SDK2013)
@@ -240,7 +271,8 @@ class Compiler:
         rmap = []
         if os.path.isdir(resource):
             for v in os.listdir(resource):
-                rmap.append((os.path.join(os.path.dirname(cc), '..', 'lib', 'clang', v) + '/', VALVE_RESOURCE))
+                rmap.append((os.path.join(os.path.dirname(cc), '..', 'lib', 'clang', v) + '/',
+                             VALVE_RESOURCE_BY_VER.get(v, VALVE_RESOURCE)))
         sdk = next((cc_args[i + 1] for i, a in enumerate(cc_args) if a == '-isysroot'), None)
         if sdk:
             rmap.append((sdk.rstrip('/') + '/', foreign['sdk'] if foreign else VALVE_SDK))
@@ -249,10 +281,14 @@ class Compiler:
             rmap.append((self.tree + foreign['root'], foreign['headers']))
         for ours, valve in self.aliases:
             rmap.append((self.tree + ours, valve_src + valve))
+            if self.bld:
+                rmap.append((self.bld + ours, valve_src + valve))
         # protobuf's headers come from the Source SDK 2013 checkout (Valve's src/thirdparty).
         rmap.append((os.path.join(self.sdk2013, 'src', 'thirdparty') + '/', valve_src + 'thirdparty/'))
         # Crypto++ headers come from thirdparty-osx32-*/include/cryptopp (Valve's src/external/crypto++-5.61).
         rmap.append((os.path.join(self.thirdparty, 'include', 'cryptopp') + '/', valve_src + 'external/crypto++-5.61/'))
+        if self.bld:
+            rmap.append((self.bld, valve_src))
         rmap.append((self.tree, valve_src))
         rmap.sort(key=lambda p: -len(p[0]))
         return rmap
@@ -437,6 +473,15 @@ class Module:
     def vpath(self, p):
         return os.path.join(self.root, p.lstrip('/')) if p.startswith(VALVE_TOP) else None
 
+    def rel_source(self, src):
+        if self.comp.bld and src.startswith(self.comp.bld):
+            rel = src[len(self.comp.bld):]
+        else:
+            rel = os.path.relpath(src, self.comp.tree)
+        if rel.startswith('sdk2013mp/'):
+            rel = rel[len('sdk2013mp/'):]
+        return rel
+
     def plan(self):
         """Work list: (our object, source, compile entry, retail object or None, Valve path).
 
@@ -447,6 +492,7 @@ class Module:
         args = self.link['arguments']
         loose = [o for o in self.objects if o['kind'] == 'object']
         by_src = dict((o.get('source'), o) for o in loose if o.get('source'))
+        by_src_ci = dict((o.get('source').lower(), o) for o in loose if o.get('source'))
         ours_ar = set('lib%s.a' % a[2:] for a in args if a.startswith('-l'))
         mem_src = dict((o.get('source'), o) for o in self.objects if o['kind'] == 'archive_member'
                        and o.get('source') and os.path.basename(o['archive']) not in ours_ar)
@@ -460,8 +506,8 @@ class Module:
             if not src:
                 self.notes.append('no compile command for %s' % a)
                 continue
-            rel = os.path.relpath(src, self.comp.tree)
-            r = by_src.get(rel)
+            rel = self.rel_source(src)
+            r = by_src.get(rel) or by_src_ci.get(rel.lower())
             if not r and rel in mem_src:
                 r = mem_src[rel]
                 varchive, mname = split_member(r['oso'])
@@ -516,15 +562,16 @@ class Module:
             else:
                 varchive = self.valve_src + 'build/Release/' + name
             by_src = dict((o.get('source'), o) for o in rmem if o.get('source'))
-            by_member = dict((split_member(o['oso'])[1], o) for o in rmem) if rname in FOREIGN_ARCHIVES else {}
+            by_src_ci = dict((o.get('source').lower(), o) for o in rmem if o.get('source'))
+            by_member = dict((split_member(o['oso'])[1], o) for o in rmem)
             mems = []
             for inp in entry['inputs']:
                 src, cent = self.build.source_of(inp)
                 if not src:
                     self.notes.append('no compile command for %s' % inp)
                     continue
-                rel = os.path.relpath(src, self.comp.tree)
-                r = by_src.get(rel) or by_member.get(os.path.splitext(os.path.basename(src))[0] + '.o')
+                rel = self.rel_source(src)
+                r = by_src.get(rel) or by_src_ci.get(rel.lower()) or by_member.get(os.path.splitext(os.path.basename(src))[0] + '.o')
                 mname = split_member(r['oso'])[1] if r else os.path.splitext(os.path.basename(src))[0] + '.o'
                 mems.append((inp, src, cent, r, mname))
             out.append((a, varchive, mems))
@@ -622,6 +669,9 @@ class Module:
                 crt = build_crt109(self.comp.scratch)
                 pathmap += ';%s/usr/lib/crt1.10.6.o=%s' % (sdk.rstrip('/'), crt)
         env['BM_PATHMAP'] = pathmap
+        uw_off = retail_unwind_calloc_offset(self.retail)
+        if uw_off:
+            env['BM_UNWIND_CALLOC_OFFSET'] = str(uw_off)
         r = subprocess.run(cmd, cwd=self.link['directory'], env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if r.returncode:
             raise RuntimeError('link failed:\n%s\n%s' % (' '.join(shlex.quote(c) for c in cmd), r.stdout.decode(errors='replace')))
@@ -692,7 +742,7 @@ def main():
     if not targets:
         ap.error('no targets')
     shim = build_shim(scratch)
-    comp = Compiler(scratch, TREE, [] if args.no_aliases else load_aliases(), args.jobs)
+    comp = Compiler(scratch, TREE, [] if args.no_aliases else load_aliases(), args.jobs, build.bld)
     rc = 0
     summary = []
     for t in targets:

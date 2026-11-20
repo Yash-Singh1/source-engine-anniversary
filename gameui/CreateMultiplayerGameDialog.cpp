@@ -36,7 +36,7 @@ CCreateMultiplayerGameDialog::CCreateMultiplayerGameDialog(vgui::Panel *parent) 
 	SetDeleteSelfOnClose(true);
 
 #ifdef BYTEMATCH_RETAIL
-	SetSize( PROPORTIONAL_VALUE( 348 ), PROPORTIONAL_VALUE( 460 ) );
+	SetSize( QuickPropScale( 348 ), QuickPropScale( 460 ) );
 #else
 	int w = 348;
 	int h = 460;

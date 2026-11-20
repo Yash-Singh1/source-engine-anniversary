@@ -351,7 +351,7 @@ public:
 
 #ifdef BYTEMATCH_RETAIL
 		int nHeight = atoi( pScheme->GetResourceString( "MainMenu.MenuItemHeight" ) );
-		nHeight = PROPORTIONAL_VALUE( nHeight );
+		nHeight = QuickPropScale( nHeight );
 		int nMaxHeight = atoi( pScheme->GetResourceString( "MainMenu.MaxPropMenuItemHeight" ) );
 		if ( nMaxHeight )
 		{
@@ -724,7 +724,7 @@ public:
 				}
 
 				const char *pszExcludeFromMenuCategory = kv->GetString( "ExcludeFromMenuCategory", "" );
-				if ( pszExcludeFromMenuCategory[0] )
+				if ( Q_strlen( pszExcludeFromMenuCategory ) )
 				{
 					const char *pszCurrentCategory = ( workshop_playing_campaign.GetInt() && engine->IsInGame() ) ? "workshop" : m_strMenuCategory.String();
 					if ( V_stristr( pszExcludeFromMenuCategory, pszCurrentCategory ) )
@@ -2552,7 +2552,11 @@ void CBasePanel::RunMenuCommand(const char *command)
 #endif
 	else if ( Q_stristr( command, "OpenLoadGameDialog" ) )
 	{
-		if ( !GameUI().IsConsoleUI() )
+		if ( GameUI().IsConsoleUI() )
+		{
+			OnOpenLoadGameDialog_Xbox();
+		}
+		else
 		{
 			const char *pszMod = NULL;
 			if ( !ModInfo().HasPortals() && Q_strlen( command ) > Q_strlen( "OpenLoadGameDialog " ) )
@@ -2560,10 +2564,6 @@ void CBasePanel::RunMenuCommand(const char *command)
 				pszMod = Q_stristr( command, "OpenLoadGameDialog " ) + Q_strlen( "OpenLoadGameDialog " );
 			}
 			OnOpenLoadGameDialog( pszMod );
-		}
-		else
-		{
-			OnOpenLoadGameDialog_Xbox();
 		}
 	}
 	else if ( !Q_stricmp( command, "OpenSaveGameDialog" ) )

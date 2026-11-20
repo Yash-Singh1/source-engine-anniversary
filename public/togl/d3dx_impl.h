@@ -363,7 +363,7 @@ inline D3DXMATRIX* D3DXMatrixInverse( D3DXMATRIX *pOut, FLOAT *pDeterminant, CON
 	
 	bool success = MatrixInverseGeneral( *origM, *destM );
 	Assert( success );
-	
+	(void)success;
 	return pOut;
 }
 
@@ -480,6 +480,9 @@ inline HRESULT D3DXCompileShader(
 		LPD3DXCONSTANTTABLE*            ppConstantTable )
 {
 	DXABSTRACT_BREAK_ON_ERROR();	// is anyone calling this ?
+#ifdef _WIN32
+	return E_FAIL;
+#endif
 }
 
 #endif // D3DX_IMPL_H

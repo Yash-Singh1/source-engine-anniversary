@@ -164,12 +164,13 @@ void CLoadingDialog::PaintBackground()
 	// fade in the darkened edges over the first half second
 	float flTime = Plat_FloatTime();
 	float flFade = clamp<float>( ( flTime - flOpenTime ) * 2.0f, 0.0f, 1.0f );
+	float flEdgeFade = flFade * 0.667f;
 
 	vgui::surface()->DrawSetColor( Color( 0, 0, 0, 255 ) );
-	vgui::surface()->DrawFilledRectFade( 0, 0, GetWide() * 0.1f, GetTall(), ( 255 * 0.667f ) * flFade, 0, true );
-	vgui::surface()->DrawFilledRectFade( GetWide() * 0.9f, 0, GetWide(), GetTall(), 0, ( 255 * 0.667f ) * flFade, true );
-	vgui::surface()->DrawFilledRectFade( 0, 0, GetWide(), GetTall() * 0.1f, ( 255 * 0.667f ) * flFade, 0, false );
-	vgui::surface()->DrawFilledRectFade( 0, GetTall() * 0.9f, GetWide(), GetTall(), 0, ( 255 * 0.667f ) * flFade, false );
+	vgui::surface()->DrawFilledRectFade( 0, 0, GetWide() * 0.1f, GetTall(), flEdgeFade * 255.0f, 0, true );
+	vgui::surface()->DrawFilledRectFade( GetWide() * 0.9f, 0, GetWide(), GetTall(), 0, flEdgeFade * 255.0f, true );
+	vgui::surface()->DrawFilledRectFade( 0, 0, GetWide(), GetTall() * 0.1f, flEdgeFade * 255.0f, 0, false );
+	vgui::surface()->DrawFilledRectFade( 0, GetTall() * 0.9f, GetWide(), GetTall(), 0, flEdgeFade * 255.0f, false );
 
 	Color loadingBarColor = GetSchemeColor( "SteamDeckLoadingBar", Color( 255, 134, 44, 255 ), pScheme );
 	Color spinnerColor = GetSchemeColor( "SteamDeckSpinner", Color( 255, 134, 44, flFade * 255 ), pScheme );
@@ -197,8 +198,8 @@ void CLoadingDialog::PaintBackground()
 		}
 	}
 
-	float flSpinnerSize = (float)GetTall() * ( 70.0 / 600.0 );
-	float flSpinnerMargin = (float)GetTall() * ( 15.0 / 600.0 );
+	float flSpinnerSize = ( (float)GetTall() / 480.0 ) * 56.0;
+	float flSpinnerMargin = ( (float)GetTall() / 480.0 ) * 12.0;
 
 	if ( m_iSpinnerTextureID > 0 )
 	{
@@ -407,11 +408,11 @@ void CLoadingDialog::DisplayGenericError(const char *failureReason, const char *
 	int x,y;
 	m_pInfoLabel->GetContentSize( wide, tall );
 	m_pInfoLabel->GetPos( x, y );
-	SetTall( tall + y + PROPORTIONAL_VALUE( 50 ) );
+	SetTall( tall + y + QuickPropScale( 50 ) );
 
 	int buttonX, buttonY;
 	m_pCancelButton->GetPos( buttonX, buttonY );
-	m_pCancelButton->SetPos( buttonX, tall + y + PROPORTIONAL_VALUE( 6 ) );
+	m_pCancelButton->SetPos( buttonX, tall + y + QuickPropScale( 6 ) );
 
 	m_pCancelButton->RequestFocus();
 }

@@ -241,10 +241,10 @@ public:
 		m_pChapterLabel->SetAllCaps( true );
 		m_pChapterNameLabel->SetAllCaps( true );
 
-		if ( PROPORTIONAL_VALUE( 1000 ) != 1000 )
+		if ( QuickPropScale( 1000 ) != 1000 )
 		{
 			m_pLevelPic->SetShouldScaleImage( true );
-			m_pLevelPic->SetScaleAmount( PROPORTIONAL_VALUE( 1000 ) / 1000.0f );
+			m_pLevelPic->SetScaleAmount( QuickPropScale( 1000 ) / 1000.0f );
 		}
 
 		m_pCommentaryIcon = dynamic_cast<ImagePanel*>( FindChildByName( "CommentaryIcon" ) );
@@ -617,10 +617,10 @@ void CNewGameDialog::ReloadChapters()
 	}
 
 	// Layout panel positions relative to the dialog center.
-	int panelWidth = m_ChapterPanels[0]->GetWide() + PROPORTIONAL_VALUE( 16 );
+	int panelWidth = m_ChapterPanels[0]->GetWide() + QuickPropScale( 16 );
 	int dialogWidth = GetWide();
 	
-	m_PanelXPos[2] = ( dialogWidth - panelWidth ) / 2 + PROPORTIONAL_VALUE( 8 );
+	m_PanelXPos[2] = ( dialogWidth - panelWidth ) / 2 + QuickPropScale( 8 );
 	
 	if (m_ChapterPanels.Count() > 1)
 	{
@@ -643,8 +643,8 @@ void CNewGameDialog::ReloadChapters()
 
 	int panelHeight;
 	m_ChapterPanels[0]->GetSize( panelWidth, panelHeight );
-	m_pCenterBg->SetWide( panelWidth + PROPORTIONAL_VALUE( 16 ) );
-	m_pCenterBg->SetPos( m_PanelXPos[2] - PROPORTIONAL_VALUE( 8 ), m_PanelYPos[2] - (m_pCenterBg->GetTall() - panelHeight) + PROPORTIONAL_VALUE( 8 ) );
+	m_pCenterBg->SetWide( panelWidth + QuickPropScale( 16 ) );
+	m_pCenterBg->SetPos( m_PanelXPos[2] - QuickPropScale( 8 ), m_PanelYPos[2] - (m_pCenterBg->GetTall() - panelHeight) + QuickPropScale( 8 ) );
 	m_pCenterBg->SetBgColor( Color( 190, 115, 0, 255 ) );
 
 	// start the first item selected
@@ -697,16 +697,7 @@ void CNewGameDialog::OnCheckButtonChecked( vgui::Panel *panel )
 		}
 	}
 
-	int iSelected = m_iSelectedChapter;
-	if ( iSelected < -1 )
-	{
-		iSelected = -1;
-	}
-	else if ( iSelected > iLastEnabledChapter )
-	{
-		iSelected = iLastEnabledChapter;
-	}
-	SetSelectedChapterIndex( iSelected, false );
+	SetSelectedChapterIndex( Clamp( m_iSelectedChapter, -1, iLastEnabledChapter ), false );
 	m_pPlayButton->SetEnabled( iLastEnabledChapter >= 0 );
 }
 
@@ -755,7 +746,7 @@ void CNewGameDialog::ApplySettings( KeyValues *inResourceData )
 {
 	BaseClass::ApplySettings( inResourceData );
 
-	int ypos = PROPORTIONAL_VALUE( inResourceData->GetInt( "chapterypos", 40 ) );
+	int ypos = QuickPropScale( inResourceData->GetInt( "chapterypos", 40 ) );
 
 	for ( int i = 0; i < NUM_SLOTS; ++i )
 	{
