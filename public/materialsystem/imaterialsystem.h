@@ -1805,7 +1805,11 @@ extern IMaterialSystem *g_pMaterialSystem;
 #ifdef BYTEMATCH_RETAIL
 FORCEINLINE bool IsOpenGL( void )
 {
+#ifdef POSIX
 	return g_pMaterialSystem->GetRenderBackend() == RENDER_BACKEND_TOGL;
+#else
+	return IsPlatformOpenGL();
+#endif
 }
 
 #include "tier0/icommandline.h"

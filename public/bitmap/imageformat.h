@@ -111,7 +111,7 @@ enum ImageFormat
 	NUM_IMAGE_FORMATS
 };
 
-#if defined( TOGL_OSX )
+#if defined( TOGL_OSX ) || ( defined( BYTEMATCH_RETAIL ) && ( defined( POSIX ) || defined( DX_TO_GL_ABSTRACTION ) ) )
 typedef enum _D3DFORMAT
 	{
 		D3DFMT_INDEX16		= 101,

@@ -1182,19 +1182,19 @@ int CUtlVector<T, A>::AddVectorToTail( CUtlVector const &src )
 	Assert( &src != this );
 
 	int base = Count();
-	
-	// Make space.
-	int nSrcCount = src.Count();
-	EnsureCapacity( base + nSrcCount );
 
-	// Copy the elements.	
-	m_Size += nSrcCount;
-	for ( int i=0; i < nSrcCount; i++ )
+	// Make space.
+	AddMultipleToTail( src.Count() );
+
+	// Copy the elements.
+	for ( int i=0; i < src.Count(); i++ )
 	{
-		CopyConstruct( &Element(base+i), src[i] );
+		(*this)[base + i] = src[i];
 	}
+
 	return base;
 }
+
 
 template< typename T, class A >
 inline int CUtlVector<T, A>::InsertMultipleBefore( int elem, int num, const T *pToInsert )
