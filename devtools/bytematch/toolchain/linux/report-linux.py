@@ -31,6 +31,9 @@ MATCHED = ('exact', 'matches-after-masking')
 DEPOT224 = os.path.join(DEPOTS, '224', '19307283')
 LINUX_MANIFEST = os.path.join(REPO, 'devtools', 'bytematch', 'manifests', 'retail-linux32.json')
 ENGINE_NAMES = {'hl2_osx': 'hl2_linux'}
+# third-party archives build-thirdparty.sh rebuilds (measured from the link map); the other
+# prebuilts (SDK 2013 zlib, curl, OpenSSL) are Valve's own files and not counted
+REBUILT_ARCHIVES = ('libjpeg.a', 'libpng.a')
 
 
 def engine_modules():
@@ -62,6 +65,9 @@ def map_groups(mapfile, build):
         members[m.group(1)].add(m.group(2))
     idx = object_index(build)
     for ar, objs in members.items():
+        if os.path.basename(ar) in REBUILT_ARCHIVES:
+            groups[os.path.basename(ar)] += extract_members(host(ar), objs, build)
+            continue
         # archive members are object basenames; waf's per-task-generator suffix (x.cpp.N.o)
         # keeps them unique, prefer the archive's own directory anyway
         d = os.path.dirname(host(ar))
@@ -72,6 +78,21 @@ def map_groups(mapfile, build):
             if pick:
                 groups[os.path.basename(ar)].append(pick)
     return groups
+
+
+def extract_members(archive, names, build):
+    '''Archive members ld pulled from a prebuilt archive, written under BUILD/objs-thirdparty.'''
+    from bytematch import loader
+    dst = os.path.join(build, 'objs-thirdparty', os.path.basename(archive))
+    os.makedirs(dst, exist_ok=True)
+    out = []
+    for name, body in loader.ar_members(open(archive, 'rb').read()):
+        if name in names:
+            p = os.path.join(dst, name)
+            with open(p, 'wb') as f:
+                f.write(body)
+            out.append(p)
+    return out
 
 
 _index = {}
@@ -143,6 +164,11 @@ def objects_for(game, module, entries):
 def run(game, module, build, out, extra=()):
     entries = compile_entries(build)
     groups = objects_for(game, module, entries)
+    mapfile = os.path.join(build, 'game', module, module + '.so.map')
+    if os.path.exists(mapfile):
+        for g, objs in map_groups(mapfile, build).items():
+            if g in REBUILT_ARCHIVES:
+                groups[g] = [dict(obj=o) for o in objs]
     return measure(groups, RETAIL[game] % module, build, out, '%s-%s' % (game, module), extra)
 
 
