@@ -1068,7 +1068,7 @@ static void CalcAnimation( const CStudioHdr *pStudioHdr,	Vector *pos, Quaternion
 	mstudiobone_t *pbone = pStudioHdr->pBone( 0 );
 	const mstudiolinearbone_t *pLinearBones = pStudioHdr->pLinearBones();
 
-//	int					i;
+	int					i;
 	int					iFrame;
 	float				s;
 
@@ -1088,7 +1088,7 @@ static void CalcAnimation( const CStudioHdr *pStudioHdr,	Vector *pos, Quaternion
 	{
 		// Msg("zeroframe %s\n", animdesc.pszName() );
 		// pre initialize
-		for (int i = 0; i < pStudioHdr->numbones(); i++, pbone++, pweight++)
+		for (i = 0; i < pStudioHdr->numbones(); i++, pbone++, pweight++)
 		{
 			if (*pweight > 0 && (pStudioHdr->boneFlags(i) & boneMask))
 			{
@@ -1111,7 +1111,7 @@ static void CalcAnimation( const CStudioHdr *pStudioHdr,	Vector *pos, Quaternion
 	}
 
 	// BUGBUG: the sequence, the anim, and the model can have all different bone mappings.
-	for (int i = 0; i < pStudioHdr->numbones(); i++, pbone++, pweight++)
+	for (i = 0; i < pStudioHdr->numbones(); i++, pbone++, pweight++)
 	{
 		if (panim && panim->bone == i)
 		{

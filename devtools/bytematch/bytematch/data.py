@@ -329,6 +329,18 @@ class Image:
         a = starts[i]
         return _pick(self.names[a]), addr - a
 
+    def next_symbol_at(self, addr, sec=None):
+        """(raw name, negative offset) of the nearest symbol strictly above addr in its section."""
+        sec = sec or self.section_at(addr)
+        if sec is None:
+            return None, 0
+        starts = self.sec_syms.get(sec.index, [])
+        i = bisect.bisect_right(starts, addr)
+        if i >= len(starts):
+            return None, 0
+        a = starts[i]
+        return _pick(self.names[a]), addr - a
+
     def pointee(self, slot):
         """Identity of what a data pointer slot points at."""
         kind, name = self.slots.get(slot, (None, None))
@@ -529,78 +541,57 @@ def _sleb(data, pos):
 
 # -- references from code ----------------------------------------------------
 
-_REG32 = {'eax', 'ebx', 'ecx', 'edx', 'esi', 'edi', 'ebp', 'esp'}
-_SUBREG = {'al': 'eax', 'ah': 'eax', 'ax': 'eax', 'bl': 'ebx', 'bh': 'ebx', 'bx': 'ebx',
-           'cl': 'ecx', 'ch': 'ecx', 'cx': 'ecx', 'dl': 'edx', 'dh': 'edx', 'dx': 'edx',
-           'si': 'esi', 'di': 'edi', 'bp': 'ebp', 'sp': 'esp'}
-_NOWRITE = re.compile(r'^(cmp|test|push|j\w+|call|ret|u?comis[sd]|bt|nop|cmps\w*|scas\w*|fst\w*|fist\w*|fcom\w*|'
-                      r'movs[bwd]|stos\w*|lods\w*|leave|int3|ud2|out|prefetch\w*)$')
-_MEM = re.compile(r'(?:(byte|word|dword|qword|xmmword|tbyte|ymmword) ptr )?(?:[a-z]s:)?\[([^\]]+)\]')
+_REG32 = x86._REG32
+_SUBREG = x86._SUBREG
+_NOWRITE = x86._NOWRITE
+_MEM = x86._MEM
 _SIZES = {'byte': 1, 'word': 2, 'dword': 4, 'qword': 8, 'tbyte': 10, 'xmmword': 16, 'ymmword': 32}
+_parse_mem = x86.parse_mem
 
 
-def _parse_mem(expr):
-    """'ebx + ecx*4 + 0x10' -> (base, index, scale, disp)."""
-    base = index = None
-    scale, disp = 1, 0
-    for sign, term in re.findall(r'([+-]?)\s*([^+\-\s]+)', expr.replace(' - ', ' + -').replace('+ -', '-')):
-        neg = sign == '-'
-        if '*' in term:
-            index, sc = term.split('*')
-            scale = int(sc)
-        elif term in _REG32:
-            if base is None:
-                base = term
-            else:
-                index = term
-        else:
-            try:
-                v = int(term, 0)
-            except ValueError:
-                return None
-            disp += -v if neg else v
-    return base, index, scale, disp
-
-
-def code_refs(img, func):
-    """{field offset in func: (target VA, operand size)} for data references.
-
-    Objects: from relocations. Linked images: PIC base tracking over a linear
-    decode (call next/pop reg, register copies, stack spills; writes and
-    calls kill tracked registers)."""
+def _code_refs_detail(img, func):
+    """({field offset: (target VA, operand size)}, set of indexed PIC field offsets)."""
     out = {}
+    indexed = set()
     if not img.linked:
         for va, (tgt, name) in img.code_fields.items():
             if func.addr <= va < func.addr + func.size and tgt is not None:
                 out[va - func.addr] = (tgt, 0)
-        return out
+        return out, indexed
     if not x86.have_capstone():
-        return out
+        return out, indexed
     code, base = func.data, func.addr
-    pic, slots = {}, {}
-    # Registers that held the PIC base: PIC code (e.g. -fPIC archives) inside a
-    # non-PIE executable, whose [reg + disp] must not be read as absolute once
-    # the linear decode loses track of reg (blocks placed after the epilogue).
-    was_pic = set()
-    pending = None
-    for addr, size, mnem, ops in x86._lite.disasm_lite(code, base):
+    insns, states, was_pic = x86.pic_states(code, base, allow_got=False)
+    # Track recent negative unsigned-bound checks (`cmp reg, -N` + `jb`/`jae`/`jbe`/`ja`)
+    # so negative-indexed constant/jump tables (`[pic + reg*sc + table_end]`) resolve to
+    # the actual indexed entries `[table_end - N*sc, table_end)` instead of the adjacent
+    # constant sitting past the end of the table.
+    neg_cmp = {}            # reg -> N (pending `cmp reg, -N` awaiting unsigned jump)
+    neg_guarded = {}        # reg -> (N, insn_idx) after unsigned branch guard
+    for idx_i, ((addr, size, mnem, ops), pic) in enumerate(zip(insns, states)):
         off = addr - base
-        nxt = addr + size
         if mnem == 'call':
-            try:
-                tgt = int(ops, 0)
-            except ValueError:
-                tgt = None
             for r in ('eax', 'ecx', 'edx'):
-                pic.pop(r, None)
-            pending = nxt if tgt == nxt else None
+                neg_cmp.pop(r, None)
+                neg_guarded.pop(r, None)
             continue
-        if mnem == 'pop' and pending is not None and ops in _REG32:
-            pic[ops] = pending
-            was_pic.add(ops)
-            pending = None
+        if mnem == 'cmp' and ops:
+            parts = ops.split(', ', 1)
+            if len(parts) == 2 and parts[0] in _REG32:
+                try:
+                    imm = int(parts[1], 0)
+                except ValueError:
+                    imm = 0
+                if -256 <= imm < 0:
+                    neg_cmp[parts[0]] = -imm
+                else:
+                    neg_cmp.pop(parts[0], None)
             continue
-        pending = None
+        if mnem in ('jb', 'jbe', 'ja', 'jae'):
+            for r, cnt in neg_cmp.items():
+                neg_guarded[r] = (cnt, idx_i)
+            neg_cmp.clear()
+            continue
         parts = ops.split(', ', 1) if ops else []
         dst = parts[0] if parts else ''
         src = parts[1] if len(parts) > 1 else ''
@@ -610,13 +601,27 @@ def code_refs(img, func):
             if pm:
                 b, ix, sc, disp = pm
                 pb = pic.get(b) if b else None
+                idx_reg = ix if pb is not None else (b if ix and sc == 1 and ix in pic else None)
                 if pb is None and ix and sc == 1:
                     pb = pic.get(ix)
                 if pb is not None and abs(disp) > 0x7f:
                     raw = code[off:off + size]
                     fo = raw.find(struct.pack('<i', disp), 1)
                     if fo > 0:
-                        out[off + fo] = ((pb + disp) & 0xffffffff, _SIZES.get(m.group(1) or '', 0))
+                        tgt = (pb + disp) & 0xffffffff
+                        osz = _SIZES.get(m.group(1) or '', 0)
+                        if idx_reg is not None:
+                            indexed.add(off + fo)
+                            ng = neg_guarded.get(idx_reg)
+                            if ng is not None and idx_i - ng[1] <= 4 and sc in (1, 2, 4, 8):
+                                n_ent = ng[0]
+                                span = n_ent * sc
+                                lo_va = (tgt - span) & 0xffffffff
+                                s_lo = img.section_at(lo_va)
+                                s_hi = img.section_at(tgt)
+                                if s_lo is not None and (s_hi is None or s_lo.index == s_hi.index):
+                                    tgt, osz = lo_va, span
+                        out[off + fo] = (tgt, osz)
                 elif (img.absolute and pb is None and b not in was_pic and ix not in was_pic
                         and img.in_image(disp & 0xffffffff) and disp & 0xffffffff > 0x1000):
                     raw = code[off:off + size]
@@ -633,30 +638,36 @@ def code_refs(img, func):
                 fo = raw.find(struct.pack('<I', v), 1)
                 if fo > 0:
                     out[off + fo] = (v, 0)
-        # tracking
-        if mnem == 'mov' and m and dst.startswith('dword ptr [') and src in pic:
-            pm = _parse_mem(m.group(2))
-            if pm:
-                slots[(pm[0], pm[3])] = pic[src]
-            continue
         dreg = _SUBREG.get(dst, dst)
-        if dreg in _REG32:
-            if mnem == 'mov' and src in pic:
-                pic[dreg] = pic[src]
-                continue
-            if mnem == 'mov' and m and src.startswith('dword ptr ['):
-                pm = _parse_mem(m.group(2))
-                if pm and (pm[0], pm[3]) in slots:
-                    pic[dreg] = slots[(pm[0], pm[3])]
-                    continue
-            if not _NOWRITE.match(mnem):
-                pic.pop(dreg, None)
-                if mnem == 'xchg' and src in _REG32:
-                    pic.pop(src, None)
-        if mnem in ('cdq', 'mul', 'div', 'idiv') or (mnem == 'imul' and ',' not in ops):
-            pic.pop('eax', None)
-            pic.pop('edx', None)
-    return out
+        if dreg in _REG32 and not _NOWRITE.match(mnem):
+            neg_cmp.pop(dreg, None)
+            neg_guarded.pop(dreg, None)
+    return out, indexed
+
+
+def code_refs(img, func):
+    """{field offset in func: (target VA, operand size)} for data references.
+
+    Objects: from relocations. Linked images: CFG-aware PIC base tracking."""
+    return _code_refs_detail(img, func)[0]
+
+
+def _neg_biased_symbol_match(rimg, oimg, rt, ot, ri, oi, direct_names):
+    """True when an indexed PIC base lands right before the same symbol on both sides
+    (e.g. `&g_DecalClipVerts[-1]` landing on whatever symbol precedes it)."""
+    rn, roff = rimg.next_symbol_at(rt)
+    on, ooff = oimg.next_symbol_at(ot)
+    if not (rn and on and roff == ooff and -0x100 <= roff < 0):
+        return False
+    rni = ('sym', canonical('macho', rn), roff)
+    oni = ('sym', canonical('macho', on), ooff)
+    if rni != oni and not same_modulo_linkage(rni, oni):
+        return False
+    # If both sides point at offset 0 of two distinct symbols, only accept when the
+    # following symbol is also referenced directly in the same function.
+    if ri[0] == 'sym' and ri[2] == 0 and oi[0] == 'sym' and oi[2] == 0:
+        return unlink(rni[1]) in direct_names
+    return True
 
 
 def check_function(rimg, oimg, r, o):
@@ -665,13 +676,26 @@ def check_function(rimg, oimg, r, o):
     Returns [(offset, retail identity, ours identity)]. Only references found
     on both sides at the same field offset are compared, and only when at
     least one side resolves to something definite."""
-    rr, orf = code_refs(rimg, r), code_refs(oimg, o)
+    rr, ridx = _code_refs_detail(rimg, r)
+    orf, oidx = _code_refs_detail(oimg, o)
+    indexed = ridx & oidx
+    direct_names = None
     out = []
     for k in sorted(rr.keys() & orf.keys()):
         (rt, rsz), (ot, osz) = rr[k], orf[k]
         ri, oi = rimg.ident(rt, rsz), oimg.ident(ot, osz or rsz)
         if ri == oi or not comparable(ri, oi):
             continue
+        if k in indexed:
+            if direct_names is None:
+                direct_names = set()
+                for dk, (dt, dsz) in rr.items():
+                    if dk not in indexed:
+                        nm = named(rimg.ident(dt, dsz))
+                        if nm:
+                            direct_names.add(unlink(nm))
+            if _neg_biased_symbol_match(rimg, oimg, rt, ot, ri, oi, direct_names):
+                continue
         out.append((k, ri, oi))
     return out
 

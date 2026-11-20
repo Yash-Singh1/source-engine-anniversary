@@ -453,11 +453,144 @@ def test_pe_matcher(t):
             f'{res_e.status} @ {hex(getattr(res_e, "matched_at", 0))}')
 
 
+def test_macho_pic_and_data(t):
+    import struct
+    from . import data, model, x86
+
+    if not x86.have_capstone():
+        t.skip('Mach-O CFG PIC & negative-index tests', 'capstone missing')
+        return
+
+    base = 0x10000
+
+    # 1. Backward jump after register copy (RebalanceThinks pattern) + non-PIC overwrite check:
+    # +00: call +5 (e8 00 00 00 00) -> +05: pop ebx (5b)
+    # +06: jmp +0x15 (eb 0d) -> L_hdr (+15)
+    # +08: L_body: mov eax, [edi + 0x123456] (8b 87 56 34 12 00)   <- disp at +0a (PIC!)
+    # +0e: mov ecx, [ebx + 0x234567]         (8b 8b 67 45 23 00)   <- disp at +10 (NOT PIC: ebx clobbered!)
+    # +14: ret (c3)
+    # +15: L_hdr: mov edi, ebx (89 df)
+    # +17: xor ebx, ebx (31 db)
+    # +19: jmp L_body (eb ed)
+    code1 = (
+        b'\xe8\x00\x00\x00\x00\x5b'
+        b'\xeb\x0d'
+        b'\x8b\x87' + struct.pack('<i', 0x123456) +
+        b'\x8b\x8b' + struct.pack('<i', 0x234567) +
+        b'\xc3'
+        b'\x89\xdf\x31\xdb\xeb\xed'
+    )
+    af1 = {(off, kind) for off, w, kind in x86.address_fields(code1, base)}
+    t.check('CFG PIC tracks reg copy across backward jump without masking clobbered reg',
+            (0x0a, 'pic') in af1 and (0x10, 'pic') not in af1,
+            f'fields={sorted(af1)}')
+
+    # 2. Backward jump after stack-spill reload across alignment nop (ForceDynamicLinkNeighbors pattern):
+    # +00: call +5 (5) ; +05: pop edx (5a) ; +06: mov [ebp-0x10], edx (89 55 f0)
+    # +09: jmp L_hdr (eb 08 -> +13) ; +0b: nop (90)
+    # +0c: L_body: mov eax, [ebx + 0x123456] (8b 83 56 34 12 00)  <- disp at +0e (PIC!)
+    # +12: ret (c3)
+    # +13: L_hdr: mov ebx, [ebp-0x10] (8b 5d f0) ; +16: jne L_body (75 f4 -> +0c) ; +18: ret (c3)
+    code2 = (
+        b'\xe8\x00\x00\x00\x00\x5a\x89\x55\xf0'
+        b'\xeb\x08\x90'
+        b'\x8b\x83' + struct.pack('<i', 0x123456) + b'\xc3'
+        b'\x8b\x5d\xf0\x75\xf4\xc3'
+    )
+    af2 = {(off, kind) for off, w, kind in x86.address_fields(code2, base)}
+    t.check('CFG PIC tracks stack-spill reload across jmp + alignment nop',
+            (0x0e, 'pic') in af2, f'fields={sorted(af2)}')
+
+    # 3. Clobbered PIC reg on one path into a join must NOT be masked:
+    # +00: call +5 (5) ; +05: pop ebx (5b) ; +06: test eax, eax (85 c0) ; +08: je +0c (74 02)
+    # +0a: xor ebx, ebx (31 db)
+    # +0c: mov eax, [ebx + 0x123456] (8b 83 56 34 12 00)  <- disp at +0e (NOT PIC!) ; +12: ret (c3)
+    code3 = b'\xe8\x00\x00\x00\x00\x5b\x85\xc0\x74\x02\x31\xdb\x8b\x83' + struct.pack('<i', 0x123456) + b'\xc3'
+    af3 = {(off, kind) for off, w, kind in x86.address_fields(code3, base)}
+    t.check('CFG PIC rejects register clobbered on one incoming path',
+            (0x0e, 'pic') not in af3, f'fields={sorted(af3)}')
+
+    # 3b. Noreturn `ret; fstp st(0); call ext` epilogue stub must not fall through and
+    # poison the following block with the early-return path's clobbered stack slot:
+    # +00: call +5 (5) ; +05: pop edx (5a) ; +06: test eax, eax (85 c0) ; +08: je +0f (74 05)
+    # +0a: mov [ebp-0x10], edx (89 55 f0) ; +0d: jmp +1c (eb 0d)
+    # +0f: mov [ebp-0x10], eax (89 45 f0) ; +12: jne +15 (75 01) ; +14: ret (c3)
+    # +15: fstp st(0) (dd d8) ; +17: call ext (e8 ...)
+    # +1c: mov eax, [ebp-0x10] (8b 45 f0) ; +1f: mov eax, [eax+0x123456] (8b 80 <disp32>) ; +25: ret
+    code3b = (
+        b'\xe8\x00\x00\x00\x00\x5a\x85\xc0\x74\x05'
+        b'\x89\x55\xf0\xeb\x0d'
+        b'\x89\x45\xf0\x75\x01\xc3\xdd\xd8\xe8' + struct.pack('<i', 0x10000) +
+        b'\x8b\x45\xf0\x8b\x80' + struct.pack('<i', 0x123456) + b'\xc3'
+    )
+    af3b = {(off, kind) for off, w, kind in x86.address_fields(code3b, base)}
+    t.check('CFG PIC does not fall through ret + fstp + external noreturn call',
+            (0x21, 'pic') in af3b, f'fields={sorted(af3b)}')
+
+    # Helper to build minimal synthetic data.Image for --data-check tests
+    def synth_img(const_addr, const_bytes, data_addr, data_syms):
+        img = object.__new__(data.Image)
+        img.path = '<synth>'
+        img.linked = True
+        img.absolute = False
+        s_const = data.Section(seg='__TEXT', name='__const', addr=const_addr, size=len(const_bytes),
+                               offset=0, data=const_bytes, type=0, index=1, reloff=0, nreloc=0, r1=0, r2=0)
+        s_bss = data.Section(seg='__DATA', name='__common', addr=data_addr, size=0x1000,
+                             offset=0, data=None, type=1, index=2, reloff=0, nreloc=0, r1=0, r2=0)
+        img.sections = [s_const, s_bss]
+        img._sec_starts = [(s_const.addr, 0), (s_bss.addr, 1)]
+        img.names = {a: [nm] for a, nm in data_syms}
+        img.sec_syms = {2: sorted(a for a, _ in data_syms)}
+        img.slots, img.indirect, img.code_fields = {}, {}, {}
+        img.objects, img.addr_obj, img.name_obj, img._cstr_cache = [], {}, {}, {}
+        return img
+
+    # 4. Negative-indexed constant table (`cmp ecx, -4; jb; mov edx, [ebx + ecx*4 + table_end]`):
+    # +00: call +5 (5) ; +05: pop ebx (5b) ; +06: cmp ecx, -4 (83 f9 fc) ; +09: jb +12 (72 07)
+    # +0b: mov edx, [ebx + ecx*4 + disp] (8b 94 8b <disp32>) ; +12: ret (c3)
+    tbl_ok = struct.pack('<4I', 1, 3, 4, 2)
+    tbl_bad = struct.pack('<4I', 1, 3, 5, 2)
+    r_const = tbl_ok + struct.pack('<f', -0.75)
+    o_const = tbl_ok + struct.pack('<f', 250000.0)
+    o_const_bad = tbl_bad + struct.pack('<f', 250000.0)
+    r_base_va, o_base_va = 0x20010, 0x30010      # table_end on each side
+    code_neg_r = (b'\xe8\x00\x00\x00\x00\x5b\x83\xf9\xfc\x72\x07\x8b\x94\x8b'
+                  + struct.pack('<i', r_base_va - (base + 5)) + b'\xc3')
+    code_neg_o = (b'\xe8\x00\x00\x00\x00\x5b\x83\xf9\xfc\x72\x07\x8b\x94\x8b'
+                  + struct.pack('<i', o_base_va - (base + 5)) + b'\xc3')
+    fr = model.Function('f', 'f', base, code_neg_r)
+    fo = model.Function('f', 'f', base, code_neg_o)
+    rimg = synth_img(0x20000, r_const, 0x40000, [(0x40010, '_g_OtherA'), (0x40040, '_g_Arr')])
+    oimg = synth_img(0x30000, o_const, 0x50000, [(0x50010, '_g_OtherB'), (0x50040, '_g_Arr')])
+    oimg_bad = synth_img(0x30000, o_const_bad, 0x50000, [(0x50010, '_g_OtherB'), (0x50040, '_g_Arr')])
+    m_ok = data.check_function(rimg, oimg, fr, fo)
+    m_bad = data.check_function(rimg, oimg_bad, fr, fo)
+    t.check('data-check verifies negative-indexed table contents and ignores trailing constant',
+            not m_ok and len(m_bad) == 1,
+            f'same={len(m_ok)} diff={len(m_bad)}')
+
+    # 5. Negative-biased indexed symbol base (`lea ebx, [eax + esi + (&g_Arr[-1] - pic)]`):
+    # +00: call +5 (5) ; +05: pop esi (5e) ; +06: lea ebx, [eax + esi + disp] (8d 9c 30 <disp32>) ; +0d: ret (c3)
+    code_sym_r = b'\xe8\x00\x00\x00\x00\x5e\x8d\x9c\x30' + struct.pack('<i', 0x40020 - (base + 5)) + b'\xc3'
+    code_sym_o = b'\xe8\x00\x00\x00\x00\x5e\x8d\x9c\x30' + struct.pack('<i', 0x50020 - (base + 5)) + b'\xc3'
+    oimg_wrong_sym = synth_img(0x30000, o_const, 0x50000, [(0x50010, '_g_OtherB'), (0x50040, '_g_Wrong')])
+    oimg_wrong_off = synth_img(0x30000, o_const, 0x50000, [(0x50010, '_g_OtherB'), (0x50060, '_g_Arr')])
+    fsr = model.Function('g', 'g', base, code_sym_r)
+    fso = model.Function('g', 'g', base, code_sym_o)
+    s_ok = data.check_function(rimg, oimg, fsr, fso)
+    s_wsym = data.check_function(rimg, oimg_wrong_sym, fsr, fso)
+    s_woff = data.check_function(rimg, oimg_wrong_off, fsr, fso)
+    t.check('data-check matches negative-biased indexed symbol base and rejects wrong target/stride',
+            not s_ok and len(s_wsym) == 1 and len(s_woff) == 1,
+            f'same={len(s_ok)} wrong_sym={len(s_wsym)} wrong_stride={len(s_woff)}')
+
+
 def main(args):
     t = Runner()
     from . import x86
     print(f'capstone: {"yes" if x86.have_capstone() else "no"}')
     test_pe_matcher(t)
+    test_macho_pic_and_data(t)
     test_retail_self(t, args.depots, args.full)
     test_data(t, args.depots)
     b = build_samples(t, rebuild=args.rebuild)

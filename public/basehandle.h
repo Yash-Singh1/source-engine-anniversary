@@ -30,7 +30,12 @@ public:
 
 	CBaseHandle();
 	CBaseHandle( const CBaseHandle &other );
+#ifdef BYTEMATCH_RETAIL
+	CBaseHandle( unsigned long value );
+#else
 	CBaseHandle( uintp value );
+#endif
+#line 34
 	CBaseHandle( int iEntry, int iSerialNumber );
 
 	void Init( int iEntry, int iSerialNumber );
@@ -63,7 +68,12 @@ public:
 protected:
 	// The low NUM_SERIAL_BITS hold the index. If this value is less than MAX_EDICTS, then the entity is networkable.
 	// The high NUM_SERIAL_NUM_BITS bits are the serial number.
+#ifdef BYTEMATCH_RETAIL
+	unsigned long	m_Index;
+#else
 	uintp	m_Index;
+#endif
+#line 67
 };
 
 
@@ -80,7 +90,12 @@ inline CBaseHandle::CBaseHandle( const CBaseHandle &other )
 	m_Index = other.m_Index;
 }
 
+#ifdef BYTEMATCH_RETAIL
+inline CBaseHandle::CBaseHandle( unsigned long value )
+#else
 inline CBaseHandle::CBaseHandle( uintp value )
+#endif
+#line 84
 {
 	m_Index = value;
 }
@@ -150,7 +165,12 @@ inline bool CBaseHandle::operator <( const CBaseHandle &other ) const
 
 inline bool CBaseHandle::operator <( const IHandleEntity *pEntity ) const
 {
+#ifdef BYTEMATCH_RETAIL
+	unsigned long otherIndex = (pEntity) ? pEntity->GetRefEHandle().m_Index : INVALID_EHANDLE_INDEX;
+#else
 	uintp otherIndex = (pEntity) ? pEntity->GetRefEHandle().m_Index : INVALID_EHANDLE_INDEX;
+#endif
+#line 154
 	return m_Index < otherIndex;
 }
 
