@@ -720,7 +720,11 @@ private:
 	bool									m_bInFrame;
 	bool									m_bForcedSingleThreaded;
 	bool									m_bAllowQueuedRendering;
+#ifdef BYTEMATCH_RETAIL
+	bool									m_bThreadHasOwnership;
+#else
 	volatile bool							m_bThreadHasOwnership;
+#endif
 	uint									m_ThreadOwnershipID;
 #ifdef BYTEMATCH_RETAIL
 	RenderBackend_t							m_eRenderBackend;

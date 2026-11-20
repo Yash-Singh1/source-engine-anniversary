@@ -1958,7 +1958,11 @@ bool CMatSystemSurface::AddCustomFontFile( const char *fontName, const char *fon
 #elif defined(VGUI_FONT_FREETYPE)
 
 	int size;
+#ifdef VGUI_FONT_INTERFACE
+	if ( CMatSystemSurface::FontDataHelper( fontName, size, fullPath, true, 0, false ) )
+#else
 	if ( CMatSystemSurface::FontDataHelper( fontName, size, fontFileName ) )
+#endif
 		return true;
 	return false;
 

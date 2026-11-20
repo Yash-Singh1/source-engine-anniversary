@@ -182,6 +182,35 @@ bool CFontManager::SetFontGlyphSet(HFont font, const char *windowsFontName, int 
 	return SetFontGlyphSet( font, windowsFontName, tall, weight, blur, scanlines, flags, 0, 0);
 }
 
+#ifdef LINUX
+static const struct { const char *src; const char *dst; } g_LinuxFontAliases[] =
+{
+	{ "Trebuchet MS", "DejaVu Sans" },
+	{ "Verdana", "DejaVu Sans" },
+	{ "Verdana Bold Italic", "DejaVu Sans" },
+	{ "Verdana Bold", "DejaVu Sans" },
+	{ "Verdana Italic", "DejaVu Sans" },
+	{ "Tahoma", "DejaVu Sans" },
+	{ "Arial", "Liberation Sans" },
+	{ "Arial Bold", "Liberation Sans" },
+	{ "Courier", "Liberation Mono" },
+	{ "Courier New", "Liberation Mono" },
+	{ "Lucida Console", "Liberation Mono" },
+	{ "Impact", "DejaVu Sans" },
+	{ NULL, NULL }
+};
+
+const char *RemapLinuxFontName( const char *windowsFontName )
+{
+	for ( int i = 0; g_LinuxFontAliases[i].src; i++ )
+	{
+		if ( !Q_stricmp( g_LinuxFontAliases[i].src, windowsFontName ) )
+			return g_LinuxFontAliases[i].dst;
+	}
+	return windowsFontName;
+}
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose: Sets the valid glyph ranges for a font created by CreateFont()
 //-----------------------------------------------------------------------------
@@ -219,6 +248,9 @@ bool CFontManager::SetFontGlyphSet(HFont font, const char *windowsFontName, int 
 			}
 		}
 	}
+#ifdef LINUX
+	windowsFontName = RemapLinuxFontName( windowsFontName );
+#endif
 #ifdef BYTEMATCH_RETAIL
 	if ( !windowsFontName || !windowsFontName[0] )
 	{
@@ -364,8 +396,10 @@ font_t *CFontManager::CreateOrFindWin32Font(const char *windowsFontName, int tal
 		int memSize = 0;
 		bool bItalic = ( flags & vgui::ISurface::FONTFLAG_ITALIC ) != 0;
 		bool bForceFreetype = m_FontFileNames.Find( windowsFontName ) != UTL_INVAL_SYMBOL;
+		bool bUseFreetype = UseFreetypeFonts() || bForceFreetype;
 
-		if ( !UseFreetypeFonts() && !bForceFreetype )
+#ifdef WIN32
+		if ( !bUseFreetype )
 		{
 			m_Win32Fonts[i] = new CWin32Font();
 			if ( m_Win32Fonts[i]->Create( windowsFontName, NULL, 0, tall, weight, blur, scanlines, flags ) )
@@ -380,6 +414,7 @@ font_t *CFontManager::CreateOrFindWin32Font(const char *windowsFontName, int tal
 			}
 		}
 		else
+#endif
 		{
 			void *pchFontData = m_pFontDataHelper( windowsFontName, memSize, NULL, false, weight, bItalic );
 			if ( !pchFontData )

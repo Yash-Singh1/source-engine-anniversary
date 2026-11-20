@@ -42,16 +42,16 @@ struct TrackedFile_t
 	TrackedFile_t()
 	{
 		m_nFileFraction = 0;
-		m_iLoadedSearchPathStoreId = 0;
-		m_bIgnoredForPureServer = false;
-		m_iUnused = 0;
-		m_nFilePos = 0;
 		m_nLength = 0;
 		m_nMD5Pos = 0;
+		m_iUnused = 0;
+		m_nFilePos = 0;
 		m_PackFileID = 0;
 		m_nPackFileNumber = 0;
 		m_bPackOrVPKFile = false;
 		m_bFileInVPK = false;
+		m_iLoadedSearchPathStoreId = 0;
+		m_bIgnoredForPureServer = false;
 	}
 
 	CRC32_t m_crcIdentifier;	// CRC32 of the filename and path, compared first
@@ -78,33 +78,7 @@ struct TrackedFile_t
 
 	void RebuildFileName( const char *pFilename, const char *pPathID );
 	void ProcessFileRead( void *dest, size_t nBytesRead );
-
-	void GetFileHash( FileHash_t *pFileHash )
-	{
-		if ( m_filehashFinal.m_eFileHashType == FileHash_t::k_EFileHashTypeEntireFile )
-		{
-			pFileHash->m_md5contents = m_filehashFinal.m_md5contents;
-			pFileHash->m_crcIOSequence = m_filehashFinal.m_crcIOSequence;
-			pFileHash->m_eFileHashType = m_filehashFinal.m_eFileHashType;
-			pFileHash->m_cbFileLen = m_filehashFinal.m_cbFileLen;
-			pFileHash->m_nPackFileNumber = m_filehashFinal.m_nPackFileNumber;
-			pFileHash->m_PackFileID = m_filehashFinal.m_PackFileID;
-		}
-		else
-		{
-			// hash of the partial read sequence so far
-			MD5Context_t ctx;
-			Q_memcpy( &ctx, &m_md5ctx, sizeof( ctx ) );
-			MD5Final( pFileHash->m_md5contents.bits, &ctx );
-			CRC32_t crcIOSequence = m_filehashInProgress.m_crcIOSequence;
-			CRC32_Final( &crcIOSequence );
-			pFileHash->m_crcIOSequence = crcIOSequence;
-			pFileHash->m_eFileHashType = FileHash_t::k_EFileHashTypeIncompleteFile;
-			pFileHash->m_cbFileLen = m_filehashInProgress.m_cbFileLen;
-			pFileHash->m_nPackFileNumber = m_filehashInProgress.m_nPackFileNumber;
-			pFileHash->m_PackFileID = m_filehashInProgress.m_PackFileID;
-		}
-	}
+	bool GetFileHash( FileHash_t *pFileHash );
 
 	static bool Less( const TrackedFile_t& lhs, const TrackedFile_t& rhs )
 	{

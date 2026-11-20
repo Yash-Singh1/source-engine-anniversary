@@ -6033,7 +6033,7 @@ const char *CBaseFileSystem::CSearchPath::GetDebugString() const
 	return GetPathString();
 }
 
-bool CBaseFileSystem::CSearchPath::IsMapPath() const
+inline bool CBaseFileSystem::CSearchPath::IsMapPath() const
 {
 	return GetPackFile()->m_bIsMapPath;
 }

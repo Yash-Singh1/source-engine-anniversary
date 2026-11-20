@@ -396,6 +396,34 @@ void TrackedFile_t::ProcessFileRead( void *dest, size_t nBytesRead )
 	m_nFilePos += nBytesRead;
 }
 
+bool TrackedFile_t::GetFileHash( FileHash_t *pFileHash )
+{
+	if ( m_filehashFinal.m_eFileHashType == FileHash_t::k_EFileHashTypeEntireFile )
+	{
+		pFileHash->m_md5contents = m_filehashFinal.m_md5contents;
+		pFileHash->m_crcIOSequence = m_filehashFinal.m_crcIOSequence;
+		pFileHash->m_eFileHashType = m_filehashFinal.m_eFileHashType;
+		pFileHash->m_cbFileLen = m_filehashFinal.m_cbFileLen;
+		pFileHash->m_nPackFileNumber = m_filehashFinal.m_nPackFileNumber;
+		pFileHash->m_PackFileID = m_filehashFinal.m_PackFileID;
+	}
+	else
+	{
+		// hash of the partial read sequence so far
+		MD5Context_t ctx;
+		Q_memcpy( &ctx, &m_md5ctx, sizeof( ctx ) );
+		MD5Final( pFileHash->m_md5contents.bits, &ctx );
+		CRC32_t crcIOSequence = m_filehashInProgress.m_crcIOSequence;
+		CRC32_Final( &crcIOSequence );
+		pFileHash->m_crcIOSequence = crcIOSequence;
+		pFileHash->m_eFileHashType = FileHash_t::k_EFileHashTypeIncompleteFile;
+		pFileHash->m_cbFileLen = m_filehashInProgress.m_cbFileLen;
+		pFileHash->m_nPackFileNumber = m_filehashInProgress.m_nPackFileNumber;
+		pFileHash->m_PackFileID = m_filehashInProgress.m_PackFileID;
+	}
+	return true;
+}
+
 #ifdef SUPPORT_PACKED_STORE
 
 void CFileTracker2::NotePackFileAccess( const char *pFilename, const char *pPathID, int iSearchPathStoreId, CPackedStoreFileHandle &VPKHandle )
@@ -702,32 +730,32 @@ void CFileTracker2::RecordFileSeek( FILE *fp, int64 pos, int seekType )
 	AUTO_LOCK( m_Mutex );
 
 	int idx = m_mapAllOpenFiles.Find( fp );
-	if ( idx == m_mapAllOpenFiles.InvalidIndex() )
-		return;
-
-	int idxFile = m_mapAllOpenFiles[ idx ];
-	if ( idxFile == m_treeAllOpenedFiles.InvalidIndex() )
-		return;
-
-	TrackedFile_t &trackedfile = m_treeAllOpenedFiles[ idxFile ];
-	if ( trackedfile.m_filehashFinal.m_eFileHashType == FileHash_t::k_EFileHashTypeEntireFile )
-		return;
-
-	if ( seekType == FILESYSTEM_SEEK_HEAD )
+	if ( idx != m_mapAllOpenFiles.InvalidIndex() )
 	{
-		trackedfile.m_nFilePos = pos;
-	}
-	else if ( seekType == FILESYSTEM_SEEK_TAIL )
-	{
-		trackedfile.m_nFilePos = trackedfile.m_nLength - pos;
-	}
-	else if ( seekType == FILESYSTEM_SEEK_CURRENT )
-	{
-		trackedfile.m_nFilePos += pos;
-	}
+		int idxFile = m_mapAllOpenFiles[ idx ];
+		if ( idxFile != m_treeAllOpenedFiles.InvalidIndex() )
+		{
+			TrackedFile_t &trackedfile = m_treeAllOpenedFiles[ idxFile ];
+			if ( trackedfile.m_filehashFinal.m_eFileHashType != FileHash_t::k_EFileHashTypeEntireFile )
+			{
+				if ( seekType == FILESYSTEM_SEEK_HEAD )
+				{
+					trackedfile.m_nFilePos = pos;
+				}
+				else if ( seekType == FILESYSTEM_SEEK_TAIL )
+				{
+					trackedfile.m_nFilePos = trackedfile.m_nLength - pos;
+				}
+				else if ( seekType == FILESYSTEM_SEEK_CURRENT )
+				{
+					trackedfile.m_nFilePos += pos;
+				}
 
-	CRC32_ProcessBuffer( &trackedfile.m_filehashInProgress.m_crcIOSequence, &pos, sizeof( pos ) );
-	CRC32_ProcessBuffer( &trackedfile.m_filehashInProgress.m_crcIOSequence, &seekType, sizeof( seekType ) );
+				CRC32_ProcessBuffer( &trackedfile.m_filehashInProgress.m_crcIOSequence, &pos, sizeof( pos ) );
+				CRC32_ProcessBuffer( &trackedfile.m_filehashInProgress.m_crcIOSequence, &seekType, sizeof( seekType ) );
+			}
+		}
+	}
 }
 
 void CFileTracker2::RecordFileRead( void *dest, size_t nBytesRead, size_t nBytesRequested, FILE *fp )
@@ -735,15 +763,18 @@ void CFileTracker2::RecordFileRead( void *dest, size_t nBytesRead, size_t nBytes
 	AUTO_LOCK( m_Mutex );
 
 	int idx = m_mapAllOpenFiles.Find( fp );
-	if ( idx == m_mapAllOpenFiles.InvalidIndex() )
+	if ( idx != m_mapAllOpenFiles.InvalidIndex() )
+	{
+		int idxFile = m_mapAllOpenFiles[ idx ];
+		if ( idxFile != m_treeAllOpenedFiles.InvalidIndex() )
+		{
+			m_treeAllOpenedFiles[ idxFile ].ProcessFileRead( dest, nBytesRead );
+		}
+	}
+	else
 	{
 		m_cMissedReads++;
-		return;
 	}
-
-	int idxFile = m_mapAllOpenFiles[ idx ];
-	if ( idxFile != m_treeAllOpenedFiles.InvalidIndex() )
-		m_treeAllOpenedFiles[ idxFile ].ProcessFileRead( dest, nBytesRead );
 }
 
 #endif // !DEDICATED

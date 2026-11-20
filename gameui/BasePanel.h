@@ -364,8 +364,7 @@ private:
 	
 	// menu buttons
 	CUtlVector< CBackgroundMenuButton * >m_pGameMenuButtons;
-	vgui::HFont m_hGameTitleFont;
-	vgui::HFont m_hGameTitleFont2;
+	vgui::HFont m_hGameTitleFont[2];
 	vgui::HFont m_hWorkshopTitleFont;
 	CGameMenu *m_pGameMenu;
 	bool m_bPlatformMenuInitialized;
