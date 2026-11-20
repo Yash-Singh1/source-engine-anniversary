@@ -901,8 +901,7 @@ CBasePanel::CBasePanel() : Panel(NULL, "BaseGameUIPanel")
 	m_iProductImageID = -1;
 	m_iLoadingImageID = -1;
 
-	m_hGameTitleFont[0] = 0;
-	m_hGameTitleFont[1] = 0;
+	Q_memset( m_hGameTitleFont, 0, sizeof( m_hGameTitleFont ) );
 	m_hWorkshopTitleFont = 0;
 
 	if ( GameUI().IsConsoleUI() )

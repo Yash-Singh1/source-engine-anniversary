@@ -6131,7 +6131,7 @@ CBaseFileSystem::CSearchPath *CBaseFileSystem::CSearchPathsIterator::GetNext()
 	return NULL;
 }
 
-inline void CBaseFileSystem::CSearchPathsIterator::CopySearchPaths( const CUtlVector<CSearchPath>	&searchPaths )
+void CBaseFileSystem::CSearchPathsIterator::CopySearchPaths( const CUtlVector<CSearchPath>	&searchPaths )
 {
 	m_SearchPaths = searchPaths;
 	for ( int i = 0; i <  m_SearchPaths.Count(); i++ )

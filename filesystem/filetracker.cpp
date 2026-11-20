@@ -404,8 +404,8 @@ bool TrackedFile_t::GetFileHash( FileHash_t *pFileHash )
 		pFileHash->m_crcIOSequence = m_filehashFinal.m_crcIOSequence;
 		pFileHash->m_eFileHashType = m_filehashFinal.m_eFileHashType;
 		pFileHash->m_cbFileLen = m_filehashFinal.m_cbFileLen;
-		pFileHash->m_PackFileID = m_filehashFinal.m_PackFileID;
 		pFileHash->m_nPackFileNumber = m_filehashFinal.m_nPackFileNumber;
+		pFileHash->m_PackFileID = m_filehashFinal.m_PackFileID;
 	}
 	else
 	{
@@ -415,11 +415,11 @@ bool TrackedFile_t::GetFileHash( FileHash_t *pFileHash )
 		MD5Final( pFileHash->m_md5contents.bits, &ctx );
 		CRC32_t crcIOSequence = m_filehashInProgress.m_crcIOSequence;
 		CRC32_Final( &crcIOSequence );
-		pFileHash->m_eFileHashType = FileHash_t::k_EFileHashTypeIncompleteFile;
 		pFileHash->m_crcIOSequence = crcIOSequence;
+		pFileHash->m_eFileHashType = FileHash_t::k_EFileHashTypeIncompleteFile;
 		pFileHash->m_cbFileLen = m_filehashInProgress.m_cbFileLen;
-		pFileHash->m_PackFileID = m_filehashInProgress.m_PackFileID;
 		pFileHash->m_nPackFileNumber = m_filehashInProgress.m_nPackFileNumber;
+		pFileHash->m_PackFileID = m_filehashInProgress.m_PackFileID;
 	}
 	return true;
 }
