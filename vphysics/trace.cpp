@@ -2264,8 +2264,10 @@ float simplex_t::ClipRayToTriangle( const Vector &dir, float epsilon )
 		dmin = dists[2];
 	}
 	float dot = DotProduct( dir, *normals[best] );
+#ifndef BYTEMATCH_RETAIL
 	if ( dot <= 0 )
 		return TRACE_FAR_DIST;
+#endif
 	dmin += epsilon/dot;
 
 	return dmin;
