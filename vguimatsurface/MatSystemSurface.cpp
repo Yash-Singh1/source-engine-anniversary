@@ -147,9 +147,12 @@ EXPOSE_SINGLE_INTERFACE_GLOBALVAR( CMatSystemSurface, ISurface,
 						VGUI_SURFACE_INTERFACE_VERSION, g_MatSystemSurface );
 
 #line 154
-#ifdef VGUI_FONT_FREETYPE
+#if defined( VGUI_FONT_FREETYPE ) && defined( VGUI_FONT_INTERFACE )
+CUtlDict< CUtlVector< CMatSystemSurface::font_entry > *, unsigned short > CMatSystemSurface::m_FontData;
+#elif defined( VGUI_FONT_FREETYPE )
 CUtlDict< CMatSystemSurface::font_entry, unsigned short > CMatSystemSurface::m_FontData;
 #endif
+#line 157
 
 //-----------------------------------------------------------------------------
 // Make sure the panel is the same size as the viewport
@@ -212,11 +215,11 @@ CMatSystemSurface::CMatSystemSurface() : m_pEmbeddedPanel(NULL), m_pWhite(NULL)
 	memset( m_WorkSpaceInsets, 0, sizeof( m_WorkSpaceInsets ) );
 	m_nBatchedCharVertCount = 0;
 	m_bBatchedColorGlyphs = false;
+	m_bUnused = false;
 
 	m_nFullscreenViewportX = m_nFullscreenViewportY = 0;
 	m_nFullscreenViewportWidth = m_nFullscreenViewportHeight = 0;
 	m_pFullscreenRenderTarget = NULL;
-	m_bUnused = false;
 
 	m_cursorAlwaysVisible = false;
 }
@@ -1904,6 +1907,20 @@ bool CMatSystemSurface::AddCustomFontFile( const char *fontName, const char *fon
 	// try and use the optimal custom font loader, will makes sure fonts are unloaded properly
 	// this function is in a newer version of the gdi library (win2k+), so need to try get it directly
 #if defined( WIN32 ) && !defined( _X360 )
+#if defined( VGUI_FONT_FREETYPE ) && defined( VGUI_FONT_INTERFACE )
+	int size;
+	CMatSystemSurface::FontDataHelper( fontName, size, fullPath, true, 0, false );
+
+	char szFullPath[2048];
+	if ( !g_pFullFileSystem->RelativePathToFullPath( fullPath, "GAME", szFullPath, sizeof( szFullPath ) ) &&
+		 !g_pFullFileSystem->RelativePathToFullPath( fullPath, "PLATFORM", szFullPath, sizeof( szFullPath ) ) )
+	{
+		return false;
+	}
+	const char *pFontPath = szFullPath;
+#else
+	const char *pFontPath = fullPath;
+#endif
 	bool successfullyAdded = false;
 	HMODULE gdiModule = ::LoadLibrary("gdi32.dll");
 	if (gdiModule)
@@ -1912,7 +1929,7 @@ bool CMatSystemSurface::AddCustomFontFile( const char *fontName, const char *fon
 		AddFontResourceExProc pAddFontResourceEx = (AddFontResourceExProc)::GetProcAddress(gdiModule, "AddFontResourceExA");
 		if (pAddFontResourceEx)
 		{
-			int result = (*pAddFontResourceEx)(fullPath, 0x10, NULL);
+			int result = (*pAddFontResourceEx)(pFontPath, 0x10, NULL);
 			if (result > 0)
 			{
 				successfullyAdded = true;
@@ -1922,10 +1939,10 @@ bool CMatSystemSurface::AddCustomFontFile( const char *fontName, const char *fon
 	}
 
 	// add to windows
-	bool success = successfullyAdded || (::AddFontResource(fullPath) > 0);
+	bool success = successfullyAdded || (::AddFontResource(pFontPath) > 0);
 	if ( !success )
 	{
-		Msg( "Failed to load custom font file '%s'\n", fullPath );
+		Msg( "Failed to load custom font file '%s'\n", pFontPath );
 	}
 	Assert( success );
 	return success;
@@ -1969,6 +1986,101 @@ static void RemoveSpaces( CUtlString &str )
 	*dst = 0;
 }
 
+#ifdef VGUI_FONT_INTERFACE
+void *CMatSystemSurface::FontDataHelper( const char *pchFontName, int &size, const char *fontFileName, bool bRegister, int weight, bool italic )
+{
+	size = 0;
+
+	if ( fontFileName )
+	{
+		CUtlBuffer buf;
+		if ( !g_pFullFileSystem->ReadFile( fontFileName, "GAME", buf ) )
+		{
+			buf.Clear();
+			if ( !g_pFullFileSystem->ReadFile( fontFileName, "PLATFORM", buf ) )
+			{
+				Msg( "Failed to load custom font file '%s'\n", fontFileName );
+				return NULL;
+			}
+		}
+
+		FT_Face face;
+		const FT_Error error = FT_New_Memory_Face( FontManager().GetFontLibraryHandle(), (FT_Byte *)buf.Base(), buf.TellPut(), 0, &face );
+		if ( error )
+		{
+			Msg( "ERROR %d: UNABLE TO LOAD FONT FILE %s\n", error, fontFileName );
+			return NULL;
+		}
+
+		if ( !pchFontName )
+		{
+			pchFontName = face->family_name;
+			if ( !pchFontName || !pchFontName[ 0 ] )
+			{
+				pchFontName = FT_Get_Postscript_Name( face );
+			}
+		}
+
+		if ( bRegister )
+		{
+			char szFullPath[2048];
+			if ( g_pFullFileSystem->RelativePathToFullPath( fontFileName, "GAME", szFullPath, sizeof( szFullPath ) ) ||
+				 g_pFullFileSystem->RelativePathToFullPath( fontFileName, "PLATFORM", szFullPath, sizeof( szFullPath ) ) )
+			{
+				if ( !FcConfigAppFontAddFile( FontManager().GetFcConfig(), (const FcChar8 *)szFullPath ) )
+				{
+					Log( "[CMatSystemSurface] FcConfigAppFontAddFile failed for %s\n", szFullPath );
+				}
+			}
+			return NULL;
+		}
+
+		CUtlString strFontName( pchFontName );
+		RemoveSpaces( strFontName );
+
+		font_entry entry;
+		entry.size = buf.TellPut();
+		entry.data = malloc( entry.size );
+		entry.weight = weight;
+		entry.italic = ( face->style_flags & FT_STYLE_FLAG_ITALIC ) != 0;
+		memcpy( entry.data, buf.Base(), entry.size );
+
+		unsigned short iIndex = m_FontData.Find( strFontName.Get() );
+		if ( iIndex == m_FontData.InvalidIndex() )
+		{
+			CUtlVector< font_entry > *pVec = new CUtlVector< font_entry >();
+			iIndex = m_FontData.Insert( strFontName.Get(), pVec );
+		}
+		m_FontData[ iIndex ]->AddToTail( entry );
+
+		FT_Done_Face( face );
+
+		size = entry.size;
+		return entry.data;
+	}
+	else
+	{
+		CUtlString strFontName( pchFontName );
+		RemoveSpaces( strFontName );
+
+		unsigned short iIndex = m_FontData.Find( strFontName.Get() );
+		if ( iIndex != m_FontData.InvalidIndex() )
+		{
+			CUtlVector< font_entry > *pVec = m_FontData[ iIndex ];
+			for ( int i = 0; i < pVec->Count(); i++ )
+			{
+				if ( (*pVec)[i].weight == weight && (*pVec)[i].italic == italic )
+				{
+					size = (*pVec)[i].size;
+					return (*pVec)[i].data;
+				}
+			}
+		}
+	}
+
+	return NULL;
+}
+#else
 void *CMatSystemSurface::FontDataHelper( const char *pchFontName, int &size, const char *fontFileName )
 {
 	size = 0;
@@ -2036,8 +2148,10 @@ void *CMatSystemSurface::FontDataHelper( const char *pchFontName, int &size, con
 
 	return NULL;
 }
+#endif
 
 #endif // LINUX
+#line 2042
 
 //-----------------------------------------------------------------------------
 // Purpose: adds a bitmap font file

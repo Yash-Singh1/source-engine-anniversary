@@ -67,7 +67,11 @@ void CLoadGameDialog::OnCommand( const char *command )
 			{
 				// Load the game, return to top and switch to engine
 				char sz[ 256 ];
-				if ( m_strOverrideMod.Length() )
+				if ( m_strOverrideMod.IsEmpty() )
+				{
+					Q_snprintf( sz, sizeof( sz ), "progress_enable\nload %s\n", shortName );
+				}
+				else
 				{
 					// saves made in a Workshop campaign remember the campaign in their appendix
 					KeyValues *pAppendix = m_SaveGames[saveIndex].pAppendix;
@@ -118,12 +122,9 @@ void CLoadGameDialog::OnCommand( const char *command )
 					}
 					else
 					{
-						Q_snprintf( sz, sizeof( sz ), "disconnect\nlaunchmod %s\nprogress_enable\nload %s\n", m_strOverrideMod.Get(), shortName );
+						const char *pszOverrideMod = m_strOverrideMod.Get();
+						Q_snprintf( sz, sizeof( sz ), "disconnect\nlaunchmod %s\nprogress_enable\nload %s\n", pszOverrideMod, shortName );
 					}
-				}
-				else
-				{
-					Q_snprintf( sz, sizeof( sz ), "progress_enable\nload %s\n", shortName );
 				}
 				
 				engine->ClientCmd_Unrestricted( sz );

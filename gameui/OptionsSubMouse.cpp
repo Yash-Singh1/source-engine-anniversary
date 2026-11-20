@@ -126,27 +126,21 @@ COptionsSubMouse::COptionsSubMouse(vgui::Panel *parent) : PropertyPage(parent, N
 
 	LoadControlSettings("Resource\\OptionsSubMouse.res");
 
-	m_bJoystickVisible = m_pJoystickCheckBox->IsVisible();
-	m_bAutoaimVisible = m_pAutoaimCombo->IsVisible();
+	m_bJoystickVisible = m_pJoystickCheckBox->IsVisible() ? true : false;
+	if ( m_pAutoaimCombo->IsVisible() )
+	{
+		m_bAutoaimVisible = true;
+	}
+	else
+	{
+		m_bAutoaimVisible = false;
+	}
 
 	UpdateSensitivityLabel();
 	UpdateAccelerationLabel();
 
 	UpdateJoystickPanels();
-
-	if ( m_bAutoaimVisible )
-	{
-		if ( m_pAutoaimCombo->GetActiveItem() > 0 )
-		{
-			m_pAutoaimScaleLabel->SetEnabled( true );
-			m_pAutoaimScaleSlider->SetEnabled( true );
-		}
-		else
-		{
-			m_pAutoaimScaleLabel->SetEnabled( false );
-			m_pAutoaimScaleSlider->SetEnabled( false );
-		}
-	}
+	UpdateAutoaimPanels();
 }
 
 //-----------------------------------------------------------------------------
@@ -288,10 +282,8 @@ void COptionsSubMouse::OnTextChanged(Panel *panel)
             m_pMouseSensitivitySlider->SetSliderValue(fValue);
             PostActionSignal(new KeyValues("ApplyButtonEnable"));
         }
-		return;
     }
-
-	if ( panel == m_pMouseAccelExponentLabel )
+	else if ( panel == m_pMouseAccelExponentLabel )
 	{
 		char buf[64];
 		m_pMouseAccelExponentLabel->GetText(buf, 64);
@@ -302,24 +294,10 @@ void COptionsSubMouse::OnTextChanged(Panel *panel)
 			m_pMouseAccelExponentSlider->SetSliderValue(fValue);
 			PostActionSignal(new KeyValues("ApplyButtonEnable"));
 		}
-		return;
 	}
-
-	if ( panel == m_pAutoaimCombo )
+	else if ( panel == m_pAutoaimCombo )
 	{
-		if ( m_bAutoaimVisible )
-		{
-			if ( m_pAutoaimCombo->GetActiveItem() > 0 )
-			{
-				m_pAutoaimScaleLabel->SetEnabled( true );
-				m_pAutoaimScaleSlider->SetEnabled( true );
-			}
-			else
-			{
-				m_pAutoaimScaleLabel->SetEnabled( false );
-				m_pAutoaimScaleSlider->SetEnabled( false );
-			}
-		}
+		UpdateAutoaimPanels();
 		PostActionSignal( new KeyValues( "ApplyButtonEnable" ) );
 	}
 }
@@ -359,4 +337,21 @@ void COptionsSubMouse::UpdateJoystickPanels()
 	m_pJoyYawSensitivityPreLabel->SetEnabled( bEnabled );
 	m_pJoyPitchSensitivitySlider->SetEnabled( bEnabled );
 	m_pJoyPitchSensitivityPreLabel->SetEnabled( bEnabled );
+}
+
+void COptionsSubMouse::UpdateAutoaimPanels()
+{
+	if ( !m_bAutoaimVisible )
+		return;
+
+	if ( m_pAutoaimCombo->GetActiveItem() > 0 )
+	{
+		m_pAutoaimScaleLabel->SetEnabled( true );
+		m_pAutoaimScaleSlider->SetEnabled( true );
+	}
+	else
+	{
+		m_pAutoaimScaleLabel->SetEnabled( false );
+		m_pAutoaimScaleSlider->SetEnabled( false );
+	}
 }

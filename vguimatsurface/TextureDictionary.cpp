@@ -470,7 +470,7 @@ void CMatSystemTexture::SetTextureRGBA( const char *rgba, int wide, int tall, Im
 		pVMTKeyValues->SetInt( "$ignorez", 1 );
 		pVMTKeyValues->SetInt( "$no_fullbright", 1 );
 		pVMTKeyValues->SetInt( "$translucent", 1 );
-		pVMTKeyValues->SetInt( "$additive", bAdditive );
+		pVMTKeyValues->SetInt( "$additive", bAdditive ? 1 : 0 );
 		pVMTKeyValues->SetString( "$basetexture", pTextureName );
 
 		IMaterial *pMaterial = g_pMaterialSystem->CreateMaterial( pTextureName, pVMTKeyValues );

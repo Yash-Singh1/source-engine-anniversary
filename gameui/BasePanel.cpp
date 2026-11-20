@@ -1517,17 +1517,17 @@ void CBasePanel::SwitchExpansion( const char *pszExpansion )
 	if ( !g_pFullFileSystem->GetCurrentGameExpansionId( szExpansion, sizeof( szExpansion ) ) || V_strlen( pszExpansion ) <= 0 )
 		return;
 
-	if ( V_stricmp( pszExpansion, szExpansion ) )
+	if ( !V_stricmp( pszExpansion, szExpansion ) )
+	{
+		m_pGameMenu->SetMenuCategory( pszExpansion );
+		UpdateTitleText( V_stricmp( pszExpansion, "main" ) != 0 );
+	}
+	else
 	{
 		m_strSwitchMod = pszExpansion;
 		m_iSwitchModState = 1;
 		m_flSwitchModTransition = 0.0f;
 		vgui::GetAnimationController()->RunAnimationCommand( this, "m_flSwitchModTransition", 1.0f, 0.0f, 0.65f, AnimationController::INTERPOLATOR_ACCEL );
-	}
-	else
-	{
-		m_pGameMenu->SetMenuCategory( pszExpansion );
-		UpdateTitleText( V_stricmp( pszExpansion, "main" ) != 0 );
 	}
 }
 
@@ -1588,12 +1588,6 @@ void CBasePanel::OnLevelLoadingStarted()
 //-----------------------------------------------------------------------------
 // Purpose: true unless the main menu shows the base game's category
 //-----------------------------------------------------------------------------
-static bool IsExpansionMenuCategory( CGameMenu *pGameMenu )
-{
-	const char *pszMenuCategory = pGameMenu ? pGameMenu->GetMenuCategory() : NULL;
-	return !pszMenuCategory || V_stricmp( pszMenuCategory, "main" ) != 0;
-}
-
 //-----------------------------------------------------------------------------
 // Purpose: notification
 //-----------------------------------------------------------------------------
@@ -1607,7 +1601,19 @@ void CBasePanel::OnDisconnectFromServer( uint8 eSteamLoginFailure )
 	char szExpansion[16];
 	if ( g_pFullFileSystem->GetCurrentGameExpansionId( szExpansion, sizeof( szExpansion ) ) )
 	{
-		UpdateTitleText( IsExpansionMenuCategory( m_pGameMenu ) );
+		bool bExpansion = true;
+		if ( m_pGameMenu )
+		{
+			const char *pszMenuCategory = m_pGameMenu->GetMenuCategory();
+			if ( pszMenuCategory )
+			{
+				if ( !V_stricmp( pszMenuCategory, "main" ) )
+				{
+					bExpansion = false;
+				}
+			}
+		}
+		UpdateTitleText( bExpansion );
 	}
 }
 
@@ -1616,19 +1622,21 @@ void CBasePanel::OnDisconnectFromServer( uint8 eSteamLoginFailure )
 //-----------------------------------------------------------------------------
 void CBasePanel::UpdateTitleText( bool bExpansion )
 {
-	const char *pszGame;
+	const char *pszGame = NULL;
 	if ( bExpansion )
 	{
 		ConVarRef hl2_expansion( "hl2_expansion" );
-		hl2_expansion.IsValid();
-		pszGame = hl2_expansion.GetString();
+		if ( hl2_expansion.IsValid() )
+		{
+			pszGame = hl2_expansion.GetString();
+		}
 	}
 	else
 	{
 		pszGame = m_strStartupGame.Get();
 	}
 
-	if ( !pszGame[0] )
+	if ( V_strlen( pszGame ) == 0 )
 	{
 		pszGame = "hl2";
 	}
@@ -1716,13 +1724,29 @@ void CBasePanel::OnLevelLoadingFinished()
 		{
 			m_iSwitchModState = 5;
 			UpdateBackgroundImages();
-			UpdateTitleText( IsExpansionMenuCategory( m_pGameMenu ) );
 		}
 
+		bool bExpansion = true;
+		if ( m_pGameMenu )
+		{
+			const char *pszMenuCategory = m_pGameMenu->GetMenuCategory();
+			if ( pszMenuCategory )
+			{
+				if ( !V_stricmp( pszMenuCategory, "main" ) )
+				{
+					bExpansion = false;
+				}
+			}
+		}
+		UpdateTitleText( bExpansion );
+
+		const char *pszExpansion = NULL;
 		ConVarRef hl2_expansion( "hl2_expansion" );
-		hl2_expansion.IsValid();
-		const char *pszExpansion = hl2_expansion.GetString();
-		if ( !pszExpansion[0] )
+		if ( hl2_expansion.IsValid() )
+		{
+			pszExpansion = hl2_expansion.GetString();
+		}
+		if ( V_strlen( pszExpansion ) == 0 )
 		{
 			pszExpansion = "hl2";
 		}

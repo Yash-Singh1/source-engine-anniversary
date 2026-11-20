@@ -610,8 +610,7 @@ void Slider::PaintBackground()
 {
 	BaseClass::PaintBackground();
 	
-	int nScale = QuickPropScale( 1 );
-	int nBorderScale = max( nScale, 1 );
+	int nBorderScale = Max( QuickPropScale( 1 ), 1 );
 
 	int x, y;
 	int wide,tall;

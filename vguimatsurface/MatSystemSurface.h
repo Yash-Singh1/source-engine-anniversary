@@ -569,7 +569,19 @@ private:
 	ITexture *m_pFullscreenRenderTarget;
 	bool m_bUnused;
 
-#if defined(LINUX) || defined(OSX) || defined(PLATFORM_BSD)
+#if defined( VGUI_FONT_FREETYPE ) && defined( VGUI_FONT_INTERFACE )
+	struct font_entry
+	{
+		void *data;
+		int size;
+		int weight;
+		bool italic;
+	};
+
+	static CUtlDict< CUtlVector< font_entry > *, unsigned short > m_FontData;
+
+	static void *FontDataHelper( const char *pchFontName, int &size, const char *fontFileName, bool bRegister, int weight, bool italic );
+#elif defined(LINUX) || defined(OSX) || defined(PLATFORM_BSD)
 	struct font_entry
 	{
 		void *data;

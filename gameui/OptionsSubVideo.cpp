@@ -543,23 +543,7 @@ public:
 		m_pColorCorrection->SetEnabled( mat_dxlevel.GetInt() >= 90 );
 		m_pMotionBlur->SetEnabled( mat_dxlevel.GetInt() >= 90 );
 		
-		if ( g_pCVar->FindVar( "fov_desired" ) )
-		{
-			CCvarSlider *pFOV = (CCvarSlider *)FindChildByName( "FOVSlider" );
-			if ( pFOV )
-			{
-				pFOV->SetNumTicks( 7 );
-			}
-
-			Label *pFOVValue = (Label *)FindChildByName( "FOVValueLabel" );
-			if ( pFOVValue )
-			{
-				wchar_t szValue[16];
-				V_snwprintf( szValue, ARRAYSIZE( szValue ), L"%.0f", pFOV->GetSliderValue() );
-				pFOVValue->SetText( szValue );
-			}
-		}
-		else
+		if ( !g_pCVar->FindVar( "fov_desired" ) )
 		{
 			Panel *pFOV = FindChildByName( "FovSlider" );
 			if ( pFOV )
@@ -577,6 +561,22 @@ public:
 			if ( pFOV )
 			{
 				pFOV->SetVisible( false );
+			}
+		}
+		else
+		{
+			CCvarSlider *pFOV = (CCvarSlider *)FindChildByName( "FOVSlider" );
+			if ( pFOV )
+			{
+				pFOV->SetNumTicks( 7 );
+			}
+
+			Label *pFOVValue = (Label *)FindChildByName( "FOVValueLabel" );
+			if ( pFOVValue )
+			{
+				wchar_t szValue[16];
+				V_snwprintf( szValue, ARRAYSIZE( szValue ), L"%.0f", pFOV->GetSliderValue() );
+				pFOVValue->SetText( szValue );
 			}
 		}
 		
@@ -1401,6 +1401,11 @@ COptionsSubVideo::COptionsSubVideo(vgui::Panel *parent) : PropertyPage(parent, N
 			m_pWindowed->AddItem( ItemText, NULL );
 		}
 	}
+#else
+	m_pWindowed = new vgui::ComboBox( this, "DisplayModeCombo", 7, false );
+
+	m_pWindowed->AddItem( "#GameUI_Fullscreen", NULL );
+#endif
 
 	// the last two items are windowed and borderless windowed
 	wchar_t *windowedText = g_pVGuiLocalize->Find( "#GameUI_Windowed" );
@@ -1410,12 +1415,6 @@ COptionsSubVideo::COptionsSubVideo(vgui::Panel *parent) : PropertyPage(parent, N
 	wchar_t ItemText[ 256 ];
 	V_swprintf_safe( ItemText, L"%ls (%ls)", windowedText, noWindowBorderText );
 	m_pWindowed->AddItem( ItemText, NULL );
-#else
-	m_pWindowed = new vgui::ComboBox( this, "DisplayModeCombo", 6, false );
-
-	m_pWindowed->AddItem( "#GameUI_Fullscreen", NULL );
-	m_pWindowed->AddItem( "#GameUI_Windowed", NULL );
-#endif
 
 #ifdef ANDROID
 	m_pWindowed->SetEnabled( false );
@@ -1659,7 +1658,12 @@ void COptionsSubVideo::OnResetData()
 
     m_pWindowed->ActivateItem( ItemIndex );
 #else
-    m_pWindowed->ActivateItem( config.Windowed() ? 1 : 0 );
+	int ItemIndex = 0;
+	if ( config.Windowed() )
+	{
+		ItemIndex = ConfigNoWindowBorder( config ) ? 2 : 1;
+	}
+	m_pWindowed->ActivateItem( ItemIndex );
 #endif
 
 	// reset gamma control

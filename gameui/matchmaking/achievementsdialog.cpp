@@ -117,7 +117,7 @@ void UpdateProgressBar( vgui::EditablePanel* pPanel, IAchievement *pAchievement,
 			flCompletion = ( ((float)pAchievement->GetCount()) / ((float)pAchievement->GetGoal()) );
 			// In rare cases count can exceed goal and not be achieved (switch local storage on X360, take saved game from different user on PC).
 			// These will self-correct with continued play, but if we're in that state don't show more than 100% achieved.
-			flCompletion = min( flCompletion, 1.f );
+			flCompletion = MIN( flCompletion, 1.f );
 		}
 
 		char szPercentageText[ 256 ] = "";
@@ -507,8 +507,8 @@ public:
 static inline bool IsAchievementInGame( int iAchievementID, CUtlString &strOverrideMod )
 {
 #ifdef BYTEMATCH_RETAIL
-	return strOverrideMod.Length() ? achievementmgr->CanEarnForExpansion( iAchievementID, strOverrideMod.Get() )
-								   : achievementmgr->CanEarnForCurrentExpansion( iAchievementID );
+	return strOverrideMod.IsEmpty() ? achievementmgr->CanEarnForCurrentExpansion( iAchievementID )
+									: achievementmgr->CanEarnForExpansion( iAchievementID, strOverrideMod.Get() );
 #else
 	return true;
 #endif
@@ -531,6 +531,10 @@ void CAchievementsDialog::UpdateAchievementList()
 	m_nUnlocked = 0;
 	m_nTotalAchievements = 0;
 
+	// int that holds the highest number achievement id we've found
+	int iHighestAchievementIDSeen = -1;
+	int iNextGroupBoundary = 1000;
+
 	Q_memset( m_AchievementGroups, 0, sizeof(m_AchievementGroups) );
 	m_iNumAchievementGroups = 0;
 
@@ -549,10 +553,6 @@ void CAchievementsDialog::UpdateAchievementList()
 		if ( achievementmgr )
 		{
 			CUtlSortVector<IAchievement*, CAchievementsLess> achievements;
-
-			// int that holds the highest number achievement id we've found
-			int iHighestAchievementIDSeen = -1;
-			int iNextGroupBoundary = 1000;
 
 			int iCount = achievementmgr->GetAchievementCount();
 			for ( int i = 0; i < iCount; ++i )

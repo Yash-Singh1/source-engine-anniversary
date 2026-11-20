@@ -10,6 +10,10 @@
 #include <vgui/ISurface.h>
 #include <tier0/dbg.h>
 #include <tier0/icommandline.h>
+#if defined( VGUI_FONT_FREETYPE ) && defined( VGUI_FONT_INTERFACE )
+#include "tier1/KeyValues.h"
+#include "SDL.h"
+#endif
 #line 12
 
 // memdbgon must be the last include file in a .cpp file!!!
@@ -56,7 +60,11 @@ CFontManager::CFontManager()
 	m_FontAmalgams.AddToTail();
 	m_Win32Fonts.EnsureCapacity( MAX_INITIAL_FONTS );
 
-#ifdef VGUI_FONT_FREETYPE
+#if defined( VGUI_FONT_FREETYPE ) && defined( VGUI_FONT_INTERFACE )
+	library = NULL;
+	m_pFcConfig = NULL;
+	m_pFontDataHelper = NULL;
+#elif defined( VGUI_FONT_FREETYPE )
 	FT_Error error = FT_Init_FreeType( &library ); 
 	if ( error )
 		Error( "Unable to initalize freetype library, is it installed?" );
@@ -71,6 +79,9 @@ CFontManager::CFontManager()
 
 	m_pFileSystem = NULL;
 	m_pMaterialSystem = NULL;
+#if defined( VGUI_FONT_FREETYPE ) && defined( VGUI_FONT_INTERFACE )
+	InitFreetype();
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -78,6 +89,42 @@ CFontManager::CFontManager()
 //-----------------------------------------------------------------------------
 void CFontManager::InitFreetype()
 {
+#if defined( VGUI_FONT_FREETYPE ) && defined( VGUI_FONT_INTERFACE )
+	if ( m_bFreetypeInitialized || !m_pFileSystem )
+		return;
+
+	KeyValues *pFontInfo = new KeyValues( "FontInfo" );
+	if ( pFontInfo->LoadFromFile( m_pFileSystem, "resource/FontInfo.kv", "PLATFORM" ) )
+	{
+		for ( KeyValues *pSubKey = pFontInfo->GetFirstSubKey(); pSubKey; pSubKey = pSubKey->GetNextKey() )
+		{
+			if ( !V_strcmp( pSubKey->GetString(), "freetype2" ) )
+			{
+				m_FontFileNames.AddString( pSubKey->GetName() );
+				Msg( "[CFontManager] Forcing freetype2 for %s\n", pSubKey->GetName() );
+			}
+		}
+	}
+	pFontInfo->deleteThis();
+
+	char szFontConfigPath[1024];
+	m_pFileSystem->RelativePathToFullPath( "fontconfig/fonts.conf", "PLATFORM", szFontConfigPath, sizeof( szFontConfigPath ) );
+	V_StripFilename( szFontConfigPath );
+	SDL_setenv( "FONTCONFIG_PATH", szFontConfigPath, 1 );
+
+	V_MakeAbsolutePath( szFontConfigPath, sizeof( szFontConfigPath ), "." );
+	SDL_setenv( "PANGO_SYSCONFDIR", szFontConfigPath, 1 );
+	SDL_setenv( "PANGO_LIBDIR", szFontConfigPath, 1 );
+
+	FT_Error error = FT_Init_FreeType( &library );
+	if ( error )
+		Error( "Unable to initalize freetype library, is it installed?" );
+
+	m_pFcConfig = FcInitLoadConfigAndFonts();
+	FcConfigSetCurrent( m_pFcConfig );
+
+	m_bFreetypeInitialized = true;
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -313,7 +360,56 @@ font_t *CFontManager::CreateOrFindWin32Font(const char *windowsFontName, int tal
 		i = m_Win32Fonts.AddToTail();
 		m_Win32Fonts[i] = NULL;
 
-#ifdef VGUI_FONT_FREETYPE
+#if defined( VGUI_FONT_FREETYPE ) && defined( VGUI_FONT_INTERFACE )
+		int memSize = 0;
+		bool bItalic = ( flags & vgui::ISurface::FONTFLAG_ITALIC ) != 0;
+		bool bForceFreetype = m_FontFileNames.Find( windowsFontName ) != UTL_INVAL_SYMBOL;
+
+		if ( !UseFreetypeFonts() && !bForceFreetype )
+		{
+			m_Win32Fonts[i] = new CWin32Font();
+			if ( m_Win32Fonts[i]->Create( windowsFontName, NULL, 0, tall, weight, blur, scanlines, flags ) )
+			{
+				winFont = m_Win32Fonts[i];
+			}
+			else
+			{
+				delete m_Win32Fonts[i];
+				m_Win32Fonts.Remove( i );
+				return NULL;
+			}
+		}
+		else
+		{
+			void *pchFontData = m_pFontDataHelper( windowsFontName, memSize, NULL, false, weight, bItalic );
+			if ( !pchFontData )
+			{
+				char *filename = CLinuxFont::GetFontFileName( windowsFontName, weight, bItalic );
+				if ( filename )
+				{
+					pchFontData = m_pFontDataHelper( windowsFontName, memSize, filename, false, weight, bItalic );
+					free( filename );
+				}
+			}
+
+			if ( pchFontData )
+			{
+				m_Win32Fonts[i] = new CLinuxFont();
+				if ( m_Win32Fonts[i]->Create( windowsFontName, pchFontData, memSize, tall, weight, blur, scanlines, flags ) )
+				{
+					winFont = m_Win32Fonts[i];
+				}
+			}
+
+			if ( !winFont )
+			{
+				if ( m_Win32Fonts[i] )
+					delete m_Win32Fonts[i];
+				m_Win32Fonts.Remove( i );
+				return NULL;
+			}
+		}
+#elif defined( VGUI_FONT_FREETYPE )
 		int memSize = 0;
 		void *pchFontData = m_pFontDataHelper( windowsFontName, memSize, NULL );
 

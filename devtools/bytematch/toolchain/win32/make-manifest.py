@@ -93,7 +93,9 @@ RETAIL_FILE_CL_DROP = {"engine/sys_dll2.cpp": ("/EHa",)}
 
 # Include directories this fork's sources need beyond Valve's (the fork's
 # vector_fpu.inl includes ivu_types.hxx for intp).
-FORK_INCLUDES = {"hk_math": ["ivp/ivp_utility"], "replay": ["thirdparty/curl/include"]}
+FORK_INCLUDES = {"hk_math": ["ivp/ivp_utility"], "replay": ["thirdparty/curl/include"],
+                 "vgui_surfacelib": ["thirdparty/freetype/include", "thirdparty/fontconfig", "thirdparty/SDL"],
+                 "vguimatsurface": ["thirdparty/freetype/include", "thirdparty/fontconfig"]}
 
 # Searched before the VPC's include directories: Valve's 2024 shader combo headers
 # (SDK 2013 TF2 branch include/), which the 2018 fxctmp9/vshtmp9 predate; the
@@ -119,7 +121,8 @@ FORK_DEFINES = {"ivp_physics": ["finite=_finite"] + _IVP_PIII, "ivp_compactbuild
                 # this tree gates its JPEG/PNG code on these (the --retail-osx32 build defines them
                 # for every module that links libjpeg/libpng; retail engine.dll and client.dll have both)
                 "engine": ["HAVE_JPEG", "HAVE_PNG"], "client_hl2": ["HAVE_JPEG", "HAVE_PNG"],
-                "client_episodic": ["HAVE_JPEG", "HAVE_PNG"]}
+                "client_episodic": ["HAVE_JPEG", "HAVE_PNG"], "GameUI": ["HAVE_JPEG", "HAVE_PNG"],
+                "vgui_surfacelib": ["HAVE_FC=1"], "vguimatsurface": ["HAVE_FC=1"]}
 
 # Static-library projects whose outputs other projects name in $Lib.
 LIB_PROJECTS = ["jpeglib", "tier1", "tier2", "tier3", "mathlib", "bitmap", "vtf", "appframework", "dmxloader",
@@ -139,16 +142,20 @@ RETAIL_SOURCES = {"GameUI": ["gameui/OptionsSubGamepad.cpp"],
                   # retail replay.dll and engine.dll have their strings too
                   "replay": ["replay/sv_ftp.cpp"], "engine": ["engine/workshop.cpp", "engine/mm_events.cpp", "common/imageutils.cpp"],
                   "client_hl2": ["common/imageutils.cpp", "game/client/steamshare.cpp"],
-                  "client_episodic": ["common/imageutils.cpp", "game/client/steamshare.cpp"]}
+                  "client_episodic": ["common/imageutils.cpp", "game/client/steamshare.cpp"],
+                  "vgui_surfacelib": ["vgui2/vgui_surfacelib/linuxfont.cpp"]}
 
 # Libraries retail links beyond the 2018 VPCs: retail macOS stdshader_dx9 has
 # libtier2.a(tier2.o), which defines the g_pMaterialSystem CShaderDLL::Connect sets.
 # Retail client.dll and engine.dll also link libjpeg and libpng (imageutils); client and server import rpcrt4 (tier1 uniqueid).
 _CLIENT_IMAGE_LIBS = [{"project": "jpeglib", "path": "lib/common/libjpeg.lib"}, {"prebuilt": "lib/public/libpng.lib"}]
+_FREETYPE_LIBS = [{"prebuilt": "lib/public/libfreetype-6.lib"}, {"prebuilt": "lib/public/libfontconfig-1.lib"}, {"prebuilt": "lib/public/SDL2.lib"}]
 RETAIL_LIBS = {"stdshader_dx9": [{"project": "tier2", "path": "lib/public/tier2.lib"}],
                "client_hl2": _CLIENT_IMAGE_LIBS, "client_episodic": _CLIENT_IMAGE_LIBS,
-               "engine": [{"prebuilt": "lib/public/libpng.lib"}]}
+               "engine": [{"prebuilt": "lib/public/libpng.lib"}],
+               "vguimatsurface": _FREETYPE_LIBS}
 RETAIL_SYSTEM_LIBS = dict((m, ["rpcrt4.lib"]) for m in ("client_hl2", "client_episodic", "server_hl2", "server_episodic"))
+RETAIL_SYSTEM_LIBS["GameUI"] = ["nvtc.lib"]
 
 # Valve library paths ($File "...lib") that live elsewhere in this tree.
 LIB_FILE_ALIASES = {"dx9sdk/lib": "dx9sdk/lib/x86"}

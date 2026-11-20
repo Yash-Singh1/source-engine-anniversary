@@ -47,7 +47,7 @@ LAYOUT_SHIMS = {'audio/public': 'public/engine/audio', 'audio/private': 'engine/
 SDK_OVERRIDES = {'ksmedia.h': 'KsMedia.h'}
 
 # Retail third-party DLLs whose import libraries are generated from their exports.
-DEPOT_IMPLIBS = ['steam_api', 'SDL2', 'binkw32']
+DEPOT_IMPLIBS = ['steam_api', 'SDL2', 'binkw32', 'libfreetype-6', 'libfontconfig-1']
 
 def options(opt):
 	grp = opt.add_option_group('Byte-match options')
