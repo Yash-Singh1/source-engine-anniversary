@@ -306,11 +306,16 @@ static bool CheckOpenGLExtension_internal(const char *ext, const int coremajor, 
 				extensions = glXQueryExtensionsString(glXGetCurrentDisplay(), 0);
 				ptr = strstr(extensions, ext);
 			}
-		}
-#endif
 
+			if (!ptr)
+			{
+				return false;
+			}
+		}
+#else
 		if (!ptr)
 			return false;
+#endif
 
 		// make sure this matches the entire string, and isn't a substring match of some other extension.
 		// if ( ( (string is at start of extension list) or (the char before the string is a space) ) and

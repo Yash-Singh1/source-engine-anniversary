@@ -378,9 +378,10 @@ FORCEINLINE void GLMContext::FlushDrawStates( uint nStartIndex, uint nEndIndex, 
 #ifdef BYTEMATCH_RETAIL
 	if ( m_programParamsF[kGLMVertexProgram].m_dirtySlotHighWaterNonBone )
 	{
-		int dirtySlotHighWater = MIN( (int)m_nMaxUsedVertexProgramConstantsHint, m_programParamsF[kGLMVertexProgram].m_dirtySlotHighWaterNonBone );
+		const int nMaxUsedShaderSlots = m_drawingProgram[kGLMVertexProgram]->m_descs[kGLMGLSL].m_highWater;
+		int dirtySlotHighWater = MIN( m_nMaxUsedVertexProgramConstantsHint, m_programParamsF[kGLMVertexProgram].m_dirtySlotHighWaterNonBone );
 		int firstDirtySlot = m_programParamsF[kGLMVertexProgram].m_firstDirtySlotNonBone;
-		dirtySlotHighWater = MIN( dirtySlotHighWater, m_drawingProgram[kGLMVertexProgram]->m_descs[kGLMGLSL].m_highWater );
+		dirtySlotHighWater = MIN( nMaxUsedShaderSlots, dirtySlotHighWater );
 
 		GLint vconstLoc = m_pBoundPair->m_locVertexParams;
 		if ( ( vconstLoc >= 0 ) && ( dirtySlotHighWater > firstDirtySlot ) )
