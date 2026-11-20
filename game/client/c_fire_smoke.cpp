@@ -703,11 +703,12 @@ void C_FireSmoke::SpawnSmoke( void )
 		return;
 
 	float	scalar = m_flScaleRegister;
+	float	flSpread = 32.0f * scalar;
 	Vector	offset;
 
-	offset[0] = Helper_RandomFloat( -32.0f*scalar, 32.0f*scalar );
-	offset[1] = Helper_RandomFloat( -32.0f*scalar, 32.0f*scalar );
-	offset[2] = 32.0f*scalar + Helper_RandomFloat( -8.0f*scalar, 8.0f*scalar ) + 100.0f;
+	offset[0] = Helper_RandomFloat( -flSpread, flSpread );
+	offset[1] = Helper_RandomFloat( -flSpread, flSpread );
+	offset[2] = flSpread + Helper_RandomFloat( -8.0f*scalar, 8.0f*scalar ) + 100.0f;
 
 	m_pSmokeEmitter->SetDirectionalLight( GetAbsOrigin(), Vector( 1.0f, 0.5f, 0.2f ), 2500 );
 
@@ -716,8 +717,9 @@ void C_FireSmoke::SpawnSmoke( void )
 	if ( pParticle == NULL )
 		return;
 
+	float flDieTime = m_flClipPerc * SMOKE_LIFETIME;
 	pParticle->m_flLifetime	= 0.0f;
-	pParticle->m_flDieTime	= random->RandomFloat( m_flClipPerc * ( SMOKE_LIFETIME * 0.75f ), m_flClipPerc * SMOKE_LIFETIME );
+	pParticle->m_flDieTime	= random->RandomFloat( flDieTime * 0.75f, flDieTime );
 
 	pParticle->m_vecVelocity.Init( random->RandomFloat( -16.0f, 16.0f ), random->RandomFloat( -16.0f, 16.0f ), random->RandomFloat( 2.0f, SMOKE_RISE_RATE ) );
 
@@ -1209,15 +1211,12 @@ void C_EntityFlame::UpdateHitBoxFlames( void )
 
 	if ( pAnimating->GetModel() != m_pCachedModel )
 	{
-		if ( m_pCachedModel == NULL )
+		if ( m_pCachedModel != NULL )
 		{
-			// We had no model, give up
-			return;
+			// The model changed, so rebuild the flames
+			DeleteHitBoxFlames();
+			AttachToHitBoxes();
 		}
-
-		// The model changed, so rebuild the flames
-		DeleteHitBoxFlames();
-		AttachToHitBoxes();
 
 		if ( m_pCachedModel == NULL )
 		{

@@ -217,7 +217,49 @@ void CCredits::OnRestore()
 
 void CCredits::RollOutroCredits()
 {
+#ifdef HL2_ANNIVERSARY_NOV2024
+	ConVarRef workshop_playing_campaign( "workshop_playing_campaign" );
+	if ( !workshop_playing_campaign.GetBool() )
+	{
+		sv_unlockedchapters.SetValue( 15 );
+
+		CUtlString strExpansion;
+		ConVarRef hl2_expansion( "hl2_expansion" );
+		if ( hl2_expansion.IsValid() )
+		{
+			const char *pszExpansion = hl2_expansion.GetString();
+			if ( V_strlen( pszExpansion ) > 0 )
+			{
+				char szConVar[128];
+				V_snprintf( szConVar, sizeof( szConVar ), "sv_unlockedchapters_%s", pszExpansion );
+				ConVarRef unlockedChapters( szConVar );
+				if ( unlockedChapters.IsValid() )
+				{
+					unlockedChapters.SetValue( 15 );
+				}
+				strExpansion = pszExpansion;
+			}
+		}
+
+		ConVarRef hl2_expansion_transition( "hl2_expansion_transition" );
+		if ( !strExpansion.IsEmpty() && hl2_expansion_transition.IsValid() )
+		{
+			const char *pszCurrent = strExpansion.Get();
+			const char *pszNext = "hl2";
+			if ( V_stricmp( pszCurrent, "hl2" ) == 0 )
+			{
+				pszNext = "episodic";
+			}
+			else if ( V_stricmp( pszCurrent, "episodic" ) == 0 || V_stricmp( pszCurrent, "ep2" ) == 0 )
+			{
+				pszNext = "ep2";
+			}
+			hl2_expansion_transition.SetValue( pszNext );
+		}
+	}
+#else
 	sv_unlockedchapters.SetValue( "15" );
+#endif
 	
 	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
 

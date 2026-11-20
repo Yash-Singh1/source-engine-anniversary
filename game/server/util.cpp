@@ -352,7 +352,7 @@ int UTIL_DropToFloor( CBaseEntity *pEntity, unsigned int mask, CBaseEntity *pIgn
 		return -1;
 #endif // HL2MP
 
-	UTIL_TraceEntity( pEntity, pEntity->GetAbsOrigin() + Vector(0,0,1), pEntity->GetAbsOrigin() - Vector(0,0,256), mask, pIgnore, pEntity->GetCollisionGroup(), &trace );
+	UTIL_TraceEntity( pEntity, pEntity->GetAbsOrigin(), pEntity->GetAbsOrigin() - Vector(0,0,256), mask, pIgnore, pEntity->GetCollisionGroup(), &trace );
 
 #ifdef HL1_DLL
 	if( fabs(pEntity->GetAbsOrigin().z - trace.endpos.z) <= 2.f )

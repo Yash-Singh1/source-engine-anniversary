@@ -7000,6 +7000,11 @@ void CBasePlayer::GetAutoaimVector( autoaim_params_t &params )
 		return;
 	}
 
+#ifdef HL2_ANNIVERSARY_NOV2024
+	params.m_fScale *= g_pGameRules->GetAutoAimScale();
+	params.m_fMaxDist *= pow( (double)g_pGameRules->GetAutoAimScale(), 0.5 );
+#endif
+
 	Vector vecSrc	= Weapon_ShootPosition( );
 
 	m_vecAutoAim.Init( 0.0f, 0.0f, 0.0f );
@@ -7146,6 +7151,13 @@ QAngle CBasePlayer::AutoaimDeflection( Vector &vecSrc, autoaim_params_t &params 
 					}
 				}
 
+#ifdef HL2_ANNIVERSARY_NOV2024
+				if ( pEntHit == GetPlayerHeldEntity( this ) || pEntHit == PhysCannonGetHeldEntity( GetActiveWeapon() ) )
+				{
+					bAimAtThis = false;
+				}
+#endif
+
 				if( bAimAtThis )
 				{
 					if ( pEntHit->GetFlags() & FL_AIMTARGET )
@@ -7193,6 +7205,11 @@ QAngle CBasePlayer::AutoaimDeflection( Vector &vecSrc, autoaim_params_t &params 
 
 			if ( !g_pGameRules->ShouldAutoAim( this, pEntity->edict() ) )
 				continue;
+
+#ifdef HL2_ANNIVERSARY_NOV2024
+			if ( pEntity == GetPlayerHeldEntity( this ) || pEntity == PhysCannonGetHeldEntity( GetActiveWeapon() ) )
+				continue;
+#endif
 
 			// don't look through water
 			if ((GetWaterLevel() != 3 && pEntity->GetWaterLevel() == 3) || (GetWaterLevel() == 3 && pEntity->GetWaterLevel() == 0))

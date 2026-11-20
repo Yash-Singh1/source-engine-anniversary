@@ -251,10 +251,12 @@ void CNPC_PlayerCompanion::Spawn()
 			Warning( "NPC %s using alternate collision! -- DISABLED\n", STRING( GetEntityName() ) );
 			RemoveSpawnFlags( SF_NPC_ALTCOLLISION );
 		}
-
-		m_hFlare = NULL;
 #endif
 	}
+
+#ifdef HL2_EPISODIC
+	m_hFlare = NULL;
+#endif
 
 	BaseClass::Spawn();
 }

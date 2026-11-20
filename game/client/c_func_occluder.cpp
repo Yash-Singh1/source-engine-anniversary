@@ -24,7 +24,11 @@ public:
 
 private:
 	int m_nOccluderIndex;
+#ifdef BYTEMATCH_RETAIL
+	bool m_bActive;
+#else
 	bool m_bActive = false;
+#endif
 };
 
 IMPLEMENT_CLIENTCLASS_DT( C_FuncOccluder, DT_FuncOccluder, CFuncOccluder )

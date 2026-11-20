@@ -1003,7 +1003,7 @@ void PhysFrictionSound( CBaseEntity *pEntity, IPhysicsObject *pObject, float ene
 	if ( psurf->sounds.scrapeSmooth && phit->audio.roughnessFactor < psurf->audio.roughThreshold )
 	{
 		soundName = psurf->sounds.scrapeSmooth;
-		soundHandle = &psurf->soundhandles.scrapeRough;
+		soundHandle = &psurf->soundhandles.NOV2024_ONLY( scrapeSmooth ) OCT2024_ONLY( scrapeRough );
 	}
 
 	const char *pSoundName = physprops->GetString( soundName );

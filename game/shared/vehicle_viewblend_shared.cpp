@@ -330,6 +330,12 @@ void SharedVehicleViewSmoothing(CBasePlayer *pPlayer,
 #else
 	flDefaultFOV = pPlayer->GetDefaultFOV();
 #endif
+#ifdef HL2_ANNIVERSARY_NOV2024
+	if ( pFOV != NULL )
+	{
+		*pFOV = flDefaultFOV;
+	}
+#endif
 
 	// If we're playing an entry or exit animation...
 	if ( bRunningAnim || pData->bRunningEnterExit )

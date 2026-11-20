@@ -130,6 +130,13 @@ void CUserMessages::HookMessage( const char *name, pfnUserMsgHook hook )
 		return;
 	}
 
+#ifdef HL2_ANNIVERSARY_NOV2024
+	if ( m_UserMessages[ idx ]->clienthooks.Find( hook ) >= 0 )
+	{
+		DevMsg( "CUserMessages::HookMessage:  trying to hook this message multiple times, safe but may be a bug: %s\n", name );
+		return;
+	}
+#endif
 	int i = m_UserMessages[ idx ]->clienthooks.AddToTail();
 	m_UserMessages[ idx ]->clienthooks[i] = hook;
 

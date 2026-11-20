@@ -809,7 +809,12 @@ void CFire::SpawnEffect( fireType_e type, float scale )
 	UTIL_SetOrigin( pEffect, GetAbsOrigin() );
 	pEffect->Spawn();
 	pEffect->SetParent( this );
+#ifdef HL2_ANNIVERSARY_NOV2024
+	pEffect->SetOriginalScale( m_flFireSize );
+#else
 	pEffect->Scale( m_flFireSize, m_flFireSize, 0 );
+#endif
+#line 813
 	//Start it going
 	pEffect->Enable( ( m_spawnflags & SF_FIRE_START_ON ) );
 	m_hEffect = pEffect;

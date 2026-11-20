@@ -885,13 +885,21 @@ void CAI_Expresser::SpeechMsg( CBaseEntity *pFlex, const char *pszFormat, ... )
 
 	if ( pFlex->MyNPCPointer() )
 	{
+#ifdef BYTEMATCH_RETAIL
+		DevMsg( pFlex->MyNPCPointer(), string );
+#else
 		DevMsg( pFlex->MyNPCPointer(), "%s", string );
+#endif
 	}
 	else 
 	{
 		DevMsg( "%s", string );
 	}
+#ifdef BYTEMATCH_RETAIL
+	UTIL_LogPrintf( string );
+#else
 	UTIL_LogPrintf( "%s", string );
+#endif
 }
 
 

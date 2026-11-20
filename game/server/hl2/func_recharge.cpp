@@ -489,6 +489,12 @@ void CNewRecharge::Spawn()
 	m_iReactivate = 0;
 
 	SetCycle( 1.0f - ( m_flJuice / MaxJuice() ) );
+#ifdef HL2_ANNIVERSARY_NOV2024
+	if ( g_pGameRules->GetAutoAimMode() == AUTOAIM_ON_CONSOLE )
+	{
+		AddFlag( FL_AIMTARGET );
+	}
+#endif
 }
 
 bool CNewRecharge::CreateVPhysics()

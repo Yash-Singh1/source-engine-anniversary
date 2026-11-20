@@ -4495,6 +4495,19 @@ void CAI_BaseNPC::ClearSenseConditions( void )
 
 //-----------------------------------------------------------------------------
 
+#ifdef HL2_ANNIVERSARY_NOV2024
+void CAI_BaseNPC::GroundTrace( const Vector &mins, Vector maxs, trace_t &trace )
+{
+	maxs -= Vector( 0.0f, 0.0f, 0.2f );
+
+	Vector vecStart	= GetAbsOrigin() + Vector( 0, 0, .1f );
+	Vector vecDown	= GetAbsOrigin();
+	vecDown.z -= 4.0;
+
+	m_pMoveProbe->TraceHull( vecStart, vecDown, mins, maxs, MASK_NPCSOLID, &trace );
+}
+#endif
+
 void CAI_BaseNPC::CheckOnGround( void )
 {
 	bool bScriptedWait = ( IsCurSchedule( SCHED_WAIT_FOR_SCRIPT ) || ( m_hCine && m_scriptState == CAI_BaseNPC::SCRIPT_WAIT ) );
@@ -4521,6 +4534,10 @@ void CAI_BaseNPC::CheckOnGround( void )
 
 				if ( mins != maxs ) // some NPCs have no hull, so mins == maxs == vec3_origin
 				{
+#ifdef HL2_ANNIVERSARY_NOV2024
+					trace_t trace;
+					GroundTrace( mins, maxs, trace );
+#else
 					maxs -= Vector( 0.0f, 0.0f, 0.2f );
 
 					Vector vecStart	= GetAbsOrigin() + Vector( 0, 0, .1f );
@@ -4529,6 +4546,7 @@ void CAI_BaseNPC::CheckOnGround( void )
 
 					trace_t trace;
 					m_pMoveProbe->TraceHull( vecStart, vecDown, mins, maxs, MASK_NPCSOLID, &trace );
+#endif
 
 					if (trace.fraction == 1.0)
 					{

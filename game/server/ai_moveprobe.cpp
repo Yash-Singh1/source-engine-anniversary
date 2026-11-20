@@ -705,6 +705,13 @@ void CAI_MoveProbe::GroundMoveLimit( const Vector &vecStart, const Vector &vecEn
 	else
 		vecDesiredEnd = vecEnd;
 
+	Vector vecMin( MIN_COORD_FLOAT, MIN_COORD_FLOAT, MIN_COORD_FLOAT );
+	Vector vecMax( MAX_COORD_FLOAT, MAX_COORD_FLOAT, MAX_COORD_FLOAT );
+	VectorMax( vecActualStart, vecMin, vecActualStart );
+	VectorMax( vecDesiredEnd, vecMin, vecDesiredEnd );
+	VectorMin( vecActualStart, vecMax, vecActualStart );
+	VectorMin( vecDesiredEnd, vecMax, vecDesiredEnd );
+
 	// When checking the route, look for ground geometric validity
 	// Let's try to avoid invalid routes
 	TestGroundMove( vecActualStart, vecDesiredEnd, collisionMask, pctToCheckStandPositions, testGroundMoveFlags, pTrace );

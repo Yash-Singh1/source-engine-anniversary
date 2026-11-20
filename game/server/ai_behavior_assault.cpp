@@ -1467,7 +1467,7 @@ int CAI_AssaultBehavior::SelectSchedule()
 			GetOuter()->SpeakSentence( ASSAULT_SENTENCE_UNDER_ATTACK );
 			return SCHED_ALERT_FACE;
 		}
-		else if( GetOuter()->GetEnemy() && !HasCondition( COND_CAN_RANGE_ATTACK1 ) && !HasCondition( COND_CAN_RANGE_ATTACK2) && !HasCondition(COND_ENEMY_OCCLUDED) )
+		else if( GetOuter()->GetEnemy() && !HasCondition( COND_CAN_RANGE_ATTACK1 ) && !HasCondition( COND_CAN_RANGE_ATTACK2) && !HasCondition(COND_ENEMY_OCCLUDED) NOV2024_ONLY( && !( m_hRallyPoint && m_hRallyPoint->m_RallySequenceName != NULL_STRING ) ) )
 		{
 			return SCHED_COMBAT_FACE;
 		}
