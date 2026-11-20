@@ -1032,7 +1032,7 @@ IVP_Movement_Type IVP_Core::calc_movement_state(IVP_Time psi_time) {
 	if (psi_time - time_of_calm_reference[0] > environment->get_freeze_manager()->freeze_check_dtime){
 #ifdef BYTEMATCH_RETAIL
 	    // a spinning object only calms down if it did not turn since the last PSI
-	    IVP_FLOAT max_rot_speed = IVP_PI * 0.75f / environment->get_freeze_manager()->freeze_check_dtime;
+	    IVP_FLOAT max_rot_speed = (IVP_PI / environment->get_freeze_manager()->freeze_check_dtime) * 0.75f;
 	    if ( rot_speed.quad_length() > max_rot_speed * max_rot_speed ) {
 		IVP_U_Float_Quat q_last_psi;
 		q_last_psi.set( &q_world_f_core_last_psi );

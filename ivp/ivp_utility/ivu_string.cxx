@@ -246,8 +246,7 @@ char *p_strdup(const char *s)
     // kann auch NULLen
     if(s){
 #ifdef BYTEMATCH_RETAIL
-	int len = 1;
-	if ( s[0] ) len = strlen((char *)s)+1;
+	int len = p_strlen(s)+1;
 #else
 	int len = strlen((char *)s)+1;
 #endif
@@ -336,7 +335,7 @@ void ivp_message(const char *templat, ...)
     p += strlen(p);
     
     va_start(parg,templat);	
-#if defined(LINUX) || defined(BYTEMATCH_RETAIL)
+#ifdef POSIX
     vsnprintf(buffer,MAX_MAKE_STRING_LEN,templat,parg);
 #else
     vsprintf(buffer, templat,parg);
