@@ -67,6 +67,12 @@ DECLARE_HUDELEMENT( CHudPosture );
 
 ConVar vgui_hud_posture( "vgui_hud_posture", "-1", FCVAR_ARCHIVE );
 
+bool ShouldShowPosture()
+{
+	int nShowPosture = vgui_hud_posture.GetInt();
+	return ( nShowPosture == 0 ) ? false : ( ( nShowPosture == 1 ) ? true : IsSteamDeck() );
+}
+
 
 namespace
 {
@@ -88,8 +94,7 @@ CHudPosture::CHudPosture( const char *pElementName ) : CHudElement( pElementName
 
 	SetHiddenBits( HIDEHUD_HEALTH | HIDEHUD_PLAYERDEAD | HIDEHUD_NEEDSUIT );
 
-	int nShowPosture = vgui_hud_posture.GetInt();
-	m_bShowPosture = ( nShowPosture == 0 ) ? false : ( ( nShowPosture == 1 ) ? true : IsSteamDeck() );
+	m_bShowPosture = ShouldShowPosture();
 
 	if ( m_bShowPosture )
 	{

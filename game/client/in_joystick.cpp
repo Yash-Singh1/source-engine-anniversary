@@ -248,6 +248,19 @@ static float ResponseCurve( int curve, float x, int axis, float sensitivity )
 //
 // This assists the player staying on target.
 //-----------------------------------------------
+#ifdef HL2_ANNIVERSARY_NOV2024
+float GetJoyAutoAimScale()
+{
+#ifdef HL2_CLIENT_DLL
+	if ( sk_allow_autoaim.GetBool() && joy_autoaim_mode.GetBool() )
+	{
+		return joy_autoaim_scale.GetFloat();
+	}
+#endif
+	return 1.0f;
+}
+#endif
+#line 251
 float AutoAimDampening( float x, int axis, float dist )
 {
 	// FIXME: Autoaim support needs to be moved from HL2_DLL to the client dll, so all games can use it.
@@ -263,11 +276,7 @@ float AutoAimDampening( float x, int axis, float dist )
 		if( pLocalPlayer )
 		{
 			float flRange = joy_autoaimdampenrange.GetFloat();
-			float flScale = 1.0f;
-			if ( sk_allow_autoaim.GetBool() && joy_autoaim_mode.GetBool() )
-			{
-				flScale = joy_autoaim_scale.GetFloat();
-			}
+			float flScale = GetJoyAutoAimScale();
 
 			// Get the autoaim target
 			if( pLocalPlayer->m_HL2Local.m_bAutoAimTarget && fabsf( x ) < flRange * flScale )

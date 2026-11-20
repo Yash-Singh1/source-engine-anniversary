@@ -644,7 +644,15 @@ class Module:
 
     def run(self, shim):
         if os.path.isdir(self.root):
-            shutil.rmtree(self.root)
+            import time
+            for attempt in range(5):
+                try:
+                    shutil.rmtree(self.root)
+                    break
+                except OSError:
+                    if attempt == 4:
+                        raise
+                    time.sleep(0.1 * (attempt + 1))
         jobs, arg_map, extra = self.plan()
         archives = self.archive_plan()
         for varchive, mems in extra.items():

@@ -886,7 +886,7 @@ void CHudCloseCaption::ReloadData()
 {
 	m_CloseCaptionRepeats.RemoveAll();
 	ClearAsyncWork();
-	g_AsyncCaptionResourceManager.Flush();
+	Flush();
 
 	m_CurrentLanguage = "";
 
@@ -1647,6 +1647,7 @@ void CHudCloseCaption::ApplySchemeSettings( vgui::IScheme *pScheme )
 	}
 }
 
+#ifndef BYTEMATCH_RETAIL
 void CHudCloseCaption::CreateFonts( void )
 {
 	vgui::IScheme *pScheme = vgui::scheme()->GetIScheme( GetScheme() );
@@ -1666,6 +1667,7 @@ void CHudCloseCaption::CreateFonts( void )
 
 	m_nLineHeight = MAX( 6, vgui::surface()->GetFontTall( m_hFonts[ CCFONT_NORMAL ] ) );
 }
+#endif
 
 struct WorkUnitParams
 {

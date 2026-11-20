@@ -120,7 +120,7 @@ void ParseParticleEffects( bool bLoadSheets, bool bPrecache )
 }
 #line 104
 
-#if defined( CLIENT_DLL ) || defined( HL2_ANNIVERSARY_NOV2024 )
+#ifdef HL2_ANNIVERSARY_NOV2024
 //-----------------------------------------------------------------------------
 // Purpose: Reload every particle file, e.g. after the HL2 expansion changed
 //-----------------------------------------------------------------------------

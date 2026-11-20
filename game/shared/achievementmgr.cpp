@@ -295,7 +295,7 @@ m_CallbackUserStatsStored( this, &CAchievementMgr::Steam_OnUserStatsStored )
 	m_bCheatsEverOn = false;
 	m_flTimeLastSaved = 0;
 	NOV2024_ONLY( m_bIsHL2Complete = false; )
-#ifdef HL2_ANNIVERSARY_NOV2024
+#if defined( GAME_DLL ) && defined( HL2_ANNIVERSARY_NOV2024 )
 	{
 		const char *pGameDir = CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) );
 		m_bIsHL2Complete = !V_stricmp( pGameDir, "hl2_complete" );
@@ -324,7 +324,7 @@ m_CallbackUserStatsStored( this, &CAchievementMgr::Steam_OnUserStatsStored )
 	m_AchievementsAwarded.RemoveAll();
 }
 
-#ifdef HL2_ANNIVERSARY_NOV2024
+#if defined( GAME_DLL ) && defined( HL2_ANNIVERSARY_NOV2024 )
 bool IsHL2Complete()
 {
 	const char *pGameDir = CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) );
@@ -714,7 +714,7 @@ bool CAchievementMgr::CanEarnForExpansion( int iAchievementID, const char *pszMo
 }
 #endif
 
-#ifdef GAME_DLL
+#if defined( GAME_DLL ) || defined( HL2_LOSTCOAST )
 //-----------------------------------------------------------------------------
 // Purpose: Brings over achievements earned in the standalone Half-Life 2 and
 //			episode installs (their GameState.txt) into hl2_complete
@@ -1014,8 +1014,14 @@ void CAchievementMgr::LoadGlobalState()
     //=============================================================================
 
 	KeyValues *pKV = new KeyValues("GameState" );
-	NOV2024_ONLY( const char *pPathID = !IsHL2Complete() ? "MOD" : "ROOT_MOD"; )
-	if ( pKV->LoadFromFile( filesystem, szFilename, NOV2024_ONLY( pPathID ) OCT2024_ONLY( "MOD" ) ) )
+	const char *pPathID = "MOD";
+#ifdef HL2_ANNIVERSARY_NOV2024
+	if ( !V_stricmp( CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) ), "hl2_complete" ) )
+	{
+		pPathID = "ROOT_MOD";
+	}
+#endif
+	if ( pKV->LoadFromFile( filesystem, szFilename, pPathID ) )
 	{
 		KeyValues *pNode = pKV->GetFirstSubKey();
 		while ( pNode )
@@ -1037,6 +1043,14 @@ void CAchievementMgr::LoadGlobalState()
 		m_bGlobalStateLoaded = true;
 	}
 }
+
+#if !defined( GAME_DLL ) && defined( HL2_ANNIVERSARY_NOV2024 )
+bool IsHL2Complete()
+{
+	const char *pGameDir = CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) );
+	return !V_stricmp( pGameDir, "hl2_complete" );
+}
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: saves global state to file

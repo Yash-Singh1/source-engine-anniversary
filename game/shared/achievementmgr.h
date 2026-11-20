@@ -67,7 +67,7 @@ public:
 	void DownloadUserData();
 	NOV2024_VIRTUAL bool CanEarnForCurrentExpansion( int iAchievementID );
 	NOV2024_VIRTUAL bool CanEarnForExpansion( int iAchievementID, const char *pszModName );
-#ifdef GAME_DLL
+#if defined( GAME_DLL ) || defined( HL2_LOSTCOAST )
 	void MigrateEpisodeData( uint32 nAppID, const char *pszModName );
 	void SyncEpisodeAchievements();
 #endif

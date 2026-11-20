@@ -104,7 +104,7 @@ CON_COMMAND( sc_squad, "Call/recall squad" )
 {
 	engine->ClientCmd_Unrestricted( "impulse 50" );
 }
-
+int g_ActionSet;
 ConVar sc_smart_sprint( "sc_smart_sprint", "1", FCVAR_ARCHIVE, "When using a Steam Controller, toggle sprint after sc_smart_sprint_start_bounds analogue joy move until we go under sc_smart_sprint_end_bounds of analogue joy move" );
 ConVar sc_smart_sprint_start_bounds( "sc_smart_sprint_start_bounds", "0.50", FCVAR_ARCHIVE, "If we got past this, enable 'smart sprint'." );
 ConVar sc_smart_sprint_end_bounds( "sc_smart_sprint_end_bounds", "0.35", FCVAR_ARCHIVE, "If we are in 'smart sprint' and we go under this amount on the joystick, cancel our sprint if sprint is not held." );
@@ -150,7 +150,6 @@ struct ControllerDigitalActionState
 	bool bState;
 };
 
-int g_ActionSet;
 
 static InputAnalogActionHandle_t g_ControllerMoveHandle;
 static ControllerDigitalActionState g_ControllerDigitalActionState[STEAM_INPUT_MAX_COUNT][ARRAYSIZE( g_ControllerDigitalGameActions )];
