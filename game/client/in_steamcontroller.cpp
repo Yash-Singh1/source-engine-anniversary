@@ -72,23 +72,19 @@ float GetSCAutoAimDampening( float flValue )
 				flScale = sc_autoaim_scale.GetFloat();
 			}
 
-			if ( pLocalPlayer->m_HL2Local.m_bAutoAimTarget )
+			float flAbsValue = fabs( flValue );
+			float flRange = sc_autoaimdampenrange.GetFloat() * flScale * sc_sensitivity_scale.GetFloat();
+			if ( pLocalPlayer->m_HL2Local.m_bAutoAimTarget && flAbsValue < flRange )
 			{
-				float flAbsValue = fabs( flValue );
-				float flRange = sc_autoaimdampenrange.GetFloat() * flScale * sc_sensitivity_scale.GetFloat();
-				if ( flAbsValue < flRange )
+				float flDistance = 0.0f;
+				if ( pLocalPlayer->m_HL2Local.m_hAutoAimTarget )
 				{
-					float flDistance = 0.0f;
-					C_BaseEntity *pTarget = pLocalPlayer->m_HL2Local.m_hAutoAimTarget;
-					if ( pTarget )
-					{
-						flDistance = clamp( pTarget->GetAbsOrigin().DistToSqr( pLocalPlayer->GetAbsOrigin() ) / ( 3000.0f * 3000.0f ), 0.0f, 1.0f ) * sc_autoaimdampen_distance_factor.GetFloat();
-					}
-
-					float flSpeed = ( flAbsValue / flRange ) * sc_autoaimdampen_speed_factor.GetFloat();
-					float flExponent = flScale + flSpeed + flDistance;
-					return MIN( 1.0, pow( sc_autoaimdampen.GetFloat(), flExponent ) );
+					flDistance = RemapValClamped( pLocalPlayer->m_HL2Local.m_hAutoAimTarget->GetAbsOrigin().DistToSqr( pLocalPlayer->GetAbsOrigin() ), 0.0f, 3000.0f * 3000.0f, 0.0f, 1.0f ) * sc_autoaimdampen_distance_factor.GetFloat();
 				}
+
+				float flSpeed = ( flAbsValue / flRange ) * sc_autoaimdampen_speed_factor.GetFloat();
+				float flExponent = flScale + flSpeed + flDistance;
+				return MIN( 1.0, pow( sc_autoaimdampen.GetFloat(), flExponent ) );
 			}
 		}
 	}
@@ -209,6 +205,20 @@ static int InitializeSteamInputActions()
 }
 
 //-----------------------------------------------------------------------------
+// Purpose: Apply Steam Controller camera movement
+//-----------------------------------------------------------------------------
+void CInput::ApplySteamControllerCameraMove( float flFrametime, QAngle &viewangles, CUserCmd *cmd, Vector2D vecPosition )
+{
+#ifdef HL2_ANNIVERSARY_NOV2024
+	viewangles[YAW] -= CAM_CapYaw( gHUD.GetFOVSensitivityAdjust() * sc_yaw_sensitivity.GetFloat() * vecPosition.x * GetSCAutoAimDampening( vecPosition.x ) * sc_sensitivity_scale.GetFloat() );
+	viewangles[PITCH] -= gHUD.GetFOVSensitivityAdjust() * vecPosition.y * sc_pitch_sensitivity.GetFloat() * GetSCAutoAimDampening( vecPosition.y ) * sc_sensitivity_scale.GetFloat();
+#else
+	viewangles[YAW] -= CAM_CapYaw( gHUD.GetFOVSensitivityAdjust() * sc_yaw_sensitivity.GetFloat() * vecPosition.x );
+	viewangles[PITCH] -= gHUD.GetFOVSensitivityAdjust() * vecPosition.y * sc_pitch_sensitivity.GetFloat();
+#endif
+}
+
+//-----------------------------------------------------------------------------
 // Purpose: SteamControllerMove -- main entry point for applying Steam Input movements
 // Input  : *cmd - 
 //-----------------------------------------------------------------------------
@@ -223,7 +233,10 @@ void CInput::SteamControllerMove( float flFrametime, CUserCmd *cmd )
 	bool bSprinting = false;
 	if ( pPlayer )
 	{
-		bInVehicle = dynamic_cast< C_PropVehicleDriveable * >( pPlayer->GetVehicleEntity() ) != NULL;
+		if ( dynamic_cast< C_PropVehicleDriveable * >( pPlayer->GetVehicleEntity() ) )
+		{
+			bInVehicle = true;
+		}
 		pHLPlayer = dynamic_cast< C_BaseHLPlayer * >( pPlayer );
 		if ( pHLPlayer )
 		{
@@ -238,7 +251,7 @@ void CInput::SteamControllerMove( float flFrametime, CUserCmd *cmd )
 	int nControllers = SteamInput()->GetConnectedControllers( controllers );
 
 	OCT2024_ONLY( if ( nControllers <= 0 ) return; ) static int nControllersInitialized = 0;
-	if ( nControllers != nControllersInitialized )
+	if ( nControllersInitialized != nControllers )
 	{
 		nControllersInitialized = InitializeSteamInputActions();
 		NOV2024_ONLY( Joystick_Advanced(); )
@@ -347,9 +360,9 @@ void CInput::SteamControllerMove( float flFrametime, CUserCmd *cmd )
 		InputAnalogActionData_t joystickCameraData = SteamInput()->GetAnalogActionData( controller, g_ControllerJoystickCameraHandle );
 		InputAnalogActionData_t cameraData = SteamInput()->GetAnalogActionData( controller, g_ControllerCameraHandle );
 
-		float flMouseX = cameraData.x * sc_mouse_sensitivity.GetFloat();
-		float flMouseY = sc_mouse_sensitivity.GetFloat() * cameraData.y;
-		float flMouseLength = Vector2D( flMouseX, flMouseY ).Length();
+		Vector2D vecCameraMove( cameraData.x, -cameraData.y );
+		vecCameraMove *= sc_mouse_sensitivity.GetFloat();
+		float flMouseLength = vecCameraMove.Length();
 		if ( flMouseLength > 2.0f )
 		{
 			g_pInputSystem->SetActiveInputType( ACTIVE_INPUT_TYPE_STEAM_INPUT, controller );
@@ -402,15 +415,7 @@ void CInput::SteamControllerMove( float flFrametime, CUserCmd *cmd )
 
 			if ( !m_fCameraInterceptingMouse )
 			{
-#ifdef HL2_ANNIVERSARY_NOV2024
-				flMouseY = -flMouseY;
-				angDelta[YAW] -= CAM_CapYaw( gHUD.GetFOVSensitivityAdjust() * sc_yaw_sensitivity.GetFloat() * flMouseX * GetSCAutoAimDampening( flMouseX ) * sc_sensitivity_scale.GetFloat() );
-				angDelta[PITCH] -= gHUD.GetFOVSensitivityAdjust() * flMouseY * sc_pitch_sensitivity.GetFloat() * GetSCAutoAimDampening( flMouseY ) * sc_sensitivity_scale.GetFloat();
-#else
-				angDelta[YAW] -= CAM_CapYaw( gHUD.GetFOVSensitivityAdjust() * sc_yaw_sensitivity.GetFloat() * flMouseX );
-				angDelta[PITCH] += gHUD.GetFOVSensitivityAdjust() * flMouseY * sc_pitch_sensitivity.GetFloat();
-#endif
-#line 402
+				ApplySteamControllerCameraMove( flFrametime, angDelta, cmd, vecCameraMove );
 			}
 		}
 
@@ -447,7 +452,8 @@ void CInput::SteamControllerMove( float flFrametime, CUserCmd *cmd )
 		if ( sc_smart_sprint.GetBool() && ( bSmartSprintHeld || bSmartSprintActive OCT2024_ONLY( || bSprinting ) ) )
 		{
 			float flMoveLength = vecMoveTotal.Length();
-			bool bInBounds = bSmartSprintActive ? ( flMoveLength >= sc_smart_sprint_end_bounds.GetFloat() ) : ( flMoveLength >= sc_smart_sprint_start_bounds.GetFloat() );
+			bool bInBounds = ( !bSmartSprintActive && flMoveLength >= sc_smart_sprint_start_bounds.GetFloat() )
+				|| ( bSmartSprintActive && flMoveLength >= sc_smart_sprint_end_bounds.GetFloat() );
 			pHLPlayer->m_bSmartSprintActive = ( bSprinting || bSmartSprintHeld ) && bInBounds;
 			if ( !pHLPlayer->m_bSmartSprintActive && !bSmartSprintHeld )
 			{

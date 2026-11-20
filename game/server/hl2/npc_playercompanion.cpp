@@ -702,17 +702,14 @@ int CNPC_PlayerCompanion::SelectSchedule()
 {
 	m_bMovingAwayFromPlayer = false;
 
-	if ( HL2_EPISODIC_ACTIVE() )
-	{
 #ifdef HL2_EPISODIC
-		// Always defer to passenger if it's running
-		if ( ShouldDeferToPassengerBehavior() )
-		{
-			DeferSchedulingToBehavior( &m_PassengerBehavior );
-			return BaseClass::SelectSchedule();
-		}
-#endif
+	// Always defer to passenger if it's running
+	if ( ShouldDeferToPassengerBehavior() )
+	{
+		DeferSchedulingToBehavior( &m_PassengerBehavior );
+		return BaseClass::SelectSchedule();
 	}
+#endif
 
 	if ( m_ActBusyBehavior.IsRunning() && m_ActBusyBehavior.NeedsToPlayExitAnim() )
 	{
@@ -1586,10 +1583,7 @@ bool CNPC_PlayerCompanion::IsReadinessCapable()
 	if ( GlobalEntity_GetState("gordon_precriminal") == GLOBAL_ON )
 		return false;
 
-	if ( HL2_EPISODIC_ACTIVE() )
-	{
-	}
-	else
+	if ( !HL2_EPISODIC_ACTIVE() )
 	{
 		// Allow episodic companions to use readiness even if unarmed. This allows for the panicked 
 		// citizens in ep1_c17_05 (sjb)
@@ -3291,6 +3285,9 @@ void CNPC_PlayerCompanion::UnlockReadiness( void )
 //-----------------------------------------------------------------------------
 bool CNPC_PlayerCompanion::ShouldDeferToPassengerBehavior( void )
 {
+	if ( !IsHL2Episodic() )
+		return false;
+
 	if ( m_PassengerBehavior.CanSelectSchedule() )
 		return true;
 
@@ -3303,7 +3300,7 @@ bool CNPC_PlayerCompanion::ShouldDeferToPassengerBehavior( void )
 //-----------------------------------------------------------------------------
 bool CNPC_PlayerCompanion::CanEnterVehicle( void )
 {
-	return true;
+	return IsHL2Episodic();
 }
 
 //-----------------------------------------------------------------------------
@@ -3312,6 +3309,9 @@ bool CNPC_PlayerCompanion::CanEnterVehicle( void )
 //-----------------------------------------------------------------------------
 bool CNPC_PlayerCompanion::CanExitVehicle( void )
 {
+	if ( !IsHL2Episodic() )
+		return false;
+
 	// See if we can exit our vehicle
 	CPropJeepEpisodic *pVehicle = dynamic_cast<CPropJeepEpisodic *>(m_PassengerBehavior.GetTargetVehicle());
 	if ( pVehicle != NULL && pVehicle->NPC_CanExitVehicle( this, true ) == false )
@@ -3327,7 +3327,7 @@ bool CNPC_PlayerCompanion::CanExitVehicle( void )
 void CNPC_PlayerCompanion::EnterVehicle( CBaseEntity *pEntityVehicle, bool bImmediately )
 {
 	// Must be allowed to do this
-	if ( !IsHL2Episodic() || CanEnterVehicle() == false )
+	if ( CanEnterVehicle() == false )
 		return;
 
 	// Find the target vehicle
@@ -3374,7 +3374,7 @@ void CNPC_PlayerCompanion::InputEnterVehicleImmediately( inputdata_t &inputdata 
 void CNPC_PlayerCompanion::InputExitVehicle( inputdata_t &inputdata )
 {
 	// See if we're allowed to exit the vehicle
-	if ( !IsHL2Episodic() || CanExitVehicle() == false )
+	if ( CanExitVehicle() == false )
 		return;
 
 	m_PassengerBehavior.ExitVehicle();

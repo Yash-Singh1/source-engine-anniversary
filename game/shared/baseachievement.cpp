@@ -547,10 +547,10 @@ bool CBaseAchievement::ShouldSaveGlobal()
 //-----------------------------------------------------------------------------
 bool CBaseAchievement::LocalPlayerCanEarn( void )
 {
-	if ( !m_pAchievementMgr )
+	if ( !m_pAchievementMgr || !m_pAchievementMgr->CanEarnForCurrentExpansion( GetAchievementID() ) )
 		return false;
 
-	return m_pAchievementMgr->CanEarnForCurrentExpansion( GetAchievementID() );
+	return true;
 }
 #endif
 #line 554

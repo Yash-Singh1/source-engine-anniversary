@@ -1214,7 +1214,7 @@ void CInput::CreateMove ( int sequence_number, float input_sample_frametime, boo
 #ifdef SIXENSE
 	if ( in_joystick.GetInt() || g_pSixenseInput->IsEnabled() )
 #else
-	if ( !g_pInputSystem->IsSteamControllerActive() && in_joystick.GetInt() )
+	if ( g_pInputSystem->IsSteamControllerActive() || in_joystick.GetInt() )
 #endif
 #elif defined( SIXENSE )
 	if ( in_joystick.GetInt() || g_pSixenseInput->IsEnabled() || touch_enable.GetInt() )

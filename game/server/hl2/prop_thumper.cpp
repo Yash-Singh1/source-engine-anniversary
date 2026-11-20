@@ -50,6 +50,13 @@ public:
 
 	void	Thump( void );
 
+#if HL2_EPISODIC
+	CPropThumper()
+	{
+		m_iEffectRadius = 0;
+	}
+#endif
+
 private:
 	
 	bool m_bEnabled;

@@ -99,6 +99,7 @@ CSkyCamera::CSkyCamera()
 {
 	g_SkyList.Insert( this );
 	m_skyboxData.fog.maxdensity = 1.0f;
+	m_skyboxData.fog.radial = false;
 }
 
 CSkyCamera::~CSkyCamera()

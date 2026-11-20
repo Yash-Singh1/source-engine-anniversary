@@ -2135,19 +2135,13 @@ void UpdateChapterRestrictions( const char *mapname )
 		{
 			Q_snprintf( chapterNumberPrefix, sizeof(chapterNumberPrefix), "#%s_chapter", "episodic" );
 			newChapterNumber = strstr( chapterTitle, chapterNumberPrefix );
-			if ( newChapterNumber )
-			{
-				pszEpisode = "#Status_Episode_1";
-			}
+			pszEpisode = newChapterNumber ? "#Status_Episode_1" : pszEpisode;
 		}
 		if ( !newChapterNumber )
 		{
 			Q_snprintf( chapterNumberPrefix, sizeof(chapterNumberPrefix), "#%s_chapter", "ep2" );
 			newChapterNumber = strstr( chapterTitle, chapterNumberPrefix );
-			if ( newChapterNumber )
-			{
-				pszEpisode = "#Status_Episode_2";
-			}
+			pszEpisode = newChapterNumber ? "#Status_Episode_2" : pszEpisode;
 		}
 	}
 

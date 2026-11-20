@@ -298,7 +298,16 @@ inline void C_FireSmoke::UpdateScale( void )
 		{
 			//Lerp the scale and set it 
 			float	timeFraction = 1.0f - ( m_flScaleTimeEnd - time ) / ( m_flScaleTimeEnd - m_flScaleTimeStart );
-			float	newScale = m_flScaleStart + ( ( m_flScaleEnd - m_flScaleStart ) * timeFraction );
+			float	newScale;
+
+			if ( !m_bFadingOut )
+			{
+				newScale = m_flScaleStart + ( ( m_flScaleEnd - m_flScaleStart ) * timeFraction );
+			}
+			else
+			{
+				newScale = m_flScaleStart - ( ( m_flScaleStart - m_flScaleEnd ) * timeFraction );
+			}
 
 			m_flScaleRegister = m_flStartScale = newScale;
 		}
