@@ -54,7 +54,9 @@ class GLMDisplayInfo
 public:
 	GLMDisplayInfoFields			m_info;
 	CUtlVector< GLMDisplayMode* >	*m_modes;				// starts out NULL, set by PopulateModes
+#ifndef BYTEMATCH_RETAIL
 	GLMDisplayMode					m_DesktopMode;
+#endif
 
 #ifdef OSX
 	GLMDisplayInfo( CGDirectDisplayID displayID, CGOpenGLDisplayMask displayMask );

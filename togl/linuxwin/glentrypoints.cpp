@@ -370,8 +370,10 @@ COpenGLEntryPoints::COpenGLEntryPoints()
 	pszString = ( const char * )glGetString(GL_EXTENSIONS);
 	m_pGLDriverStrings[cGLExtensionsString] = strdup( pszString ? pszString : "" );
 
+#ifndef BYTEMATCH_RETAIL
 	printf( "OpenGL: %s %s (%d.%d.%d)\n", m_pGLDriverStrings[ cGLRendererString ], m_pGLDriverStrings[ cGLVersionString ],
 		m_nOpenGLVersionMajor, m_nOpenGLVersionMinor, m_nOpenGLVersionPatch );
+#endif
 
 	// !!! FIXME: Alfred says the original GL_APPLE_fence code only exists to
 	// !!! FIXME:  hint Apple's drivers and not because we rely on the
@@ -445,12 +447,23 @@ COpenGLEntryPoints::COpenGLEntryPoints()
 		glIsTextureHandleResidentNV.Force( NULL );
 	}
 
-	if ( !CommandLine()->CheckParm( "-gl_amd_pinned_memory" ) )
+	if ( ( m_bHave_GL_AMD_pinned_memory ) && ( !CommandLine()->CheckParm( "-gl_amd_pinned_memory" ) ) )
 	{
 		m_bHave_GL_AMD_pinned_memory = false;
 	}
 #endif // !OSX
 
+#ifdef BYTEMATCH_RETAIL
+	char buf[256];
+	V_snprintf(buf, sizeof( buf ), "GL_NV_bindless_texture: %s\n", m_bHave_GL_NV_bindless_texture ? "ENABLED" : "DISABLED" );
+	Plat_DebugString( buf );
+
+	V_snprintf(buf, sizeof( buf ), "GL_AMD_pinned_memory: %s\n", m_bHave_GL_AMD_pinned_memory ? "ENABLED" : "DISABLED" );
+	Plat_DebugString( buf );
+
+	V_snprintf(buf, sizeof( buf ), "GL_EXT_texture_sRGB_decode: %s\n", m_bHave_GL_EXT_texture_sRGB_decode ? "AVAILABLE" : "NOT AVAILABLE" );
+	Plat_DebugString( buf );
+#else
 	// Getting reports of black screens, etc. with ARB_buffer_storage and AMD drivers. This type of thing:
 	//  http://forums.steampowered.com/forums/showthread.php?t=3266806
 	// So disable it for now.
@@ -463,6 +476,7 @@ COpenGLEntryPoints::COpenGLEntryPoints()
 	printf( "GL_AMD_pinned_memory: %s\n", m_bHave_GL_AMD_pinned_memory ? "ENABLED" : "DISABLED" );
 	printf( "GL_ARB_buffer_storage: %s\n", m_bHave_GL_ARB_buffer_storage ? "AVAILABLE" : "NOT AVAILABLE" );
 	printf( "GL_EXT_texture_sRGB_decode: %s\n", m_bHave_GL_EXT_texture_sRGB_decode ? "AVAILABLE" : "NOT AVAILABLE" );
+#endif
 
 	bool bGLCanDecodeS3TCTextures = m_bHave_GL_EXT_texture_compression_s3tc || ( m_bHave_GL_EXT_texture_compression_dxt1 && m_bHave_GL_ANGLE_texture_compression_dxt3 && m_bHave_GL_ANGLE_texture_compression_dxt5 );
 	if ( !bGLCanDecodeS3TCTextures )

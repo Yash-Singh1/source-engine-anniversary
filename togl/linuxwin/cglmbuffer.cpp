@@ -31,6 +31,10 @@
 // memdbgon -must- be the last include file in a .cpp file.
 #include "tier0/memdbgon.h"
 
+#ifdef BYTEMATCH_RETAIL
+bool g_bUsePseudoBufs = ( Plat_GetCommandLineA() ) ? ( strstr( Plat_GetCommandLineA(), "-gl_enable_pseudobufs" ) != NULL ) : false;
+bool g_bDisableStaticBuffer = ( Plat_GetCommandLineA() ) ? ( strstr( Plat_GetCommandLineA(), "-gl_disable_static_buffer" ) != NULL ) : false;
+#else
 // 7LS TODO : took out cmdline here
 bool g_bUsePseudoBufs = false; //( Plat_GetCommandLineA() ) ? ( strstr( Plat_GetCommandLineA(), "-gl_enable_pseudobufs" ) != NULL ) : false;
 #ifdef OSX
@@ -38,6 +42,7 @@ bool g_bUsePseudoBufs = false; //( Plat_GetCommandLineA() ) ? ( strstr( Plat_Get
 bool g_bDisableStaticBuffer = true;
 #else
 bool g_bDisableStaticBuffer = false; //( Plat_GetCommandLineA() ) ? ( strstr( Plat_GetCommandLineA(), "-gl_disable_static_buffer" ) != NULL ) : false;
+#endif
 #endif
 
 // http://www.opengl.org/registry/specs/ARB/vertex_buffer_object.txt
@@ -57,6 +62,7 @@ bool CGLMBuffer::m_bStaticBufferUsed[ GL_MAX_STATIC_BUFFERS ];
 
 extern bool g_bNullD3DDevice; 
 
+#ifndef BYTEMATCH_RETAIL
 //===========================================================================//
 
 static uint gMaxPersistentOffset[kGLMNumBufferTypes] =
@@ -180,6 +186,7 @@ void CPersistentBuffer::Append( uint nSize )
 }
 
 //===========================================================================//
+#endif // !BYTEMATCH_RETAIL
 
 #if GL_ENABLE_INDEX_VERIFICATION
 
@@ -453,8 +460,10 @@ CGLMBuffer::CGLMBuffer( GLMContext *pCtx, EGLMBufferType type, uint size, uint o
 
 	m_pStaticBuffer = NULL;
 	m_nPinnedMemoryOfs = -1;
+#ifndef BYTEMATCH_RETAIL
 	m_nPersistentBufferStartOffset = 0;
 	m_bUsingPersistentBuffer = false;
+#endif
 
 	m_bEnableAsyncMap = false;
 	m_bEnableExplicitFlush = false;
@@ -702,6 +711,7 @@ void CGLMBuffer::Lock( GLMBuffLockParams *pParams, char **pAddressOut )
 #endif
 
 	m_pStaticBuffer = NULL;
+#ifndef BYTEMATCH_RETAIL
 	bool bUsingPersistentBuffer = false;
 
 	uint padding = 0;
@@ -717,6 +727,7 @@ void CGLMBuffer::Lock( GLMBuffLockParams *pParams, char **pAddressOut )
 			padding = pParams->m_nOffset - persistentBufferOffset;
 		}
 	}
+#endif
 	
 	if ( m_bPseudo )
 	{
@@ -765,6 +776,7 @@ void CGLMBuffer::Lock( GLMBuffLockParams *pParams, char **pAddressOut )
 		}
 #endif
 	}
+#ifndef BYTEMATCH_RETAIL
 	else if ( m_bDynamic && gGL->m_bHave_GL_ARB_buffer_storage && ( m_pCtx->GetCurPersistentBuffer( m_type )->GetBytesRemaining() >= ( pParams->m_nSize + padding ) ) )
 	{
 		CPersistentBuffer *pTempBuffer = m_pCtx->GetCurPersistentBuffer( m_type );
@@ -792,6 +804,7 @@ void CGLMBuffer::Lock( GLMBuffLockParams *pParams, char **pAddressOut )
 
 		//DevMsg( " --> buff=%x, startOffset=%d, paramsOffset=%d, persistOffset = %d\n", this, m_nPersistentBufferStartOffset, pParams->m_nOffset, persistentBufferOffset );
 	}
+#endif
 #ifndef OSX
 	else if ( m_bDynamic && gGL->m_bHave_GL_AMD_pinned_memory && ( m_pCtx->GetCurPinnedMemoryBuffer()->GetBytesRemaining() >= pParams->m_nSize ) )
 	{
@@ -942,6 +955,7 @@ void CGLMBuffer::Lock( GLMBuffLockParams *pParams, char **pAddressOut )
 		m_dirtyMaxOffset = pParams->m_nOffset + pParams->m_nSize;
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	if ( m_bUsingPersistentBuffer != bUsingPersistentBuffer )
 	{
 		// Up the revision number when switching from a persistent to a non persistent buffer (or vice versa)
@@ -949,6 +963,7 @@ void CGLMBuffer::Lock( GLMBuffLockParams *pParams, char **pAddressOut )
 		m_nRevision++;
 		m_bUsingPersistentBuffer = bUsingPersistentBuffer;
 	}
+#endif
 
 	m_bMapped = true;
 
@@ -1098,6 +1113,7 @@ void CGLMBuffer::Unlock( int nActualSize, const void *pActualData )
 	}
 	else
 #endif // !OSX
+#ifndef BYTEMATCH_RETAIL
 	if ( m_bUsingPersistentBuffer )
 	{
 		if ( nActualSize )
@@ -1108,7 +1124,9 @@ void CGLMBuffer::Unlock( int nActualSize, const void *pActualData )
 			//DevMsg( "   <-- actualSize=%d, persistOffset = %d\n", nActualSize, pTempBuffer->GetOffset() );
 		}
 	}
-	else if ( m_pStaticBuffer )
+	else
+#endif
+	if ( m_pStaticBuffer )
 	{
 #if TOGL_SUPPORT_NULL_DEVICE
 		if ( !g_bNullD3DDevice )
@@ -1209,7 +1227,9 @@ void CGLMBuffer::Unlock( int nActualSize, const void *pActualData )
 	m_bMapped = false;
 }
 
+#ifndef BYTEMATCH_RETAIL
 GLuint CGLMBuffer::GetHandle() const
 { 
 	return ( m_bUsingPersistentBuffer ? m_pCtx->GetCurPersistentBuffer( m_type )->GetHandle() : m_nHandle ); 
 }
+#endif

@@ -270,18 +270,26 @@ struct GLMTexSamplingParams
 	};
 
 	uint32 m_borderColor;
+#ifndef BYTEMATCH_RETAIL
 	float m_lodBias;
+#endif
 
 	FORCEINLINE bool operator== (const GLMTexSamplingParams& rhs ) const
 	{
+#ifdef BYTEMATCH_RETAIL
+		return ( m_bits == rhs.m_bits ) && ( m_borderColor == rhs.m_borderColor );
+#else
 		return ( m_bits == rhs.m_bits ) && ( m_borderColor == rhs.m_borderColor ) && ( m_lodBias == rhs.m_lodBias );
+#endif
 	}
 
 	FORCEINLINE void SetToDefaults()
 	{
 		m_bits = 0;
 		m_borderColor = 0;
+#ifndef BYTEMATCH_RETAIL
 		m_lodBias = 0.0f;
+#endif
 		m_packed.m_addressU = D3DTADDRESS_WRAP;
 		m_packed.m_addressV = D3DTADDRESS_WRAP;
 		m_packed.m_addressW = D3DTADDRESS_WRAP;
@@ -289,7 +297,9 @@ struct GLMTexSamplingParams
 		m_packed.m_magFilter = D3DTEXF_POINT;
 		m_packed.m_mipFilter = D3DTEXF_NONE;
 		m_packed.m_maxAniso = 1;
+#ifndef BYTEMATCH_RETAIL
 		m_packed.m_compareMode = 0;
+#endif
 		m_packed.m_isValid = true;
 	}
 
@@ -323,9 +333,13 @@ struct GLMTexSamplingParams
 		}
 		gGL->glSamplerParameterfv( nSamplerObject, GL_TEXTURE_BORDER_COLOR, flBorderColor ); // <-- this crashes ATI's driver, remark it out
 		gGL->glSamplerParameteri( nSamplerObject, GL_TEXTURE_MIN_LOD, m_packed.m_minLOD );
+#ifndef BYTEMATCH_RETAIL
 		gGL->glSamplerParameterfv( nSamplerObject, GL_TEXTURE_LOD_BIAS, &m_lodBias );
+#endif
 		gGL->glSamplerParameteri( nSamplerObject, GL_TEXTURE_COMPARE_MODE_ARB, m_packed.m_compareMode ? GL_COMPARE_R_TO_TEXTURE_ARB : GL_NONE );
+#ifndef BYTEMATCH_RETAIL
 		gGL->glSamplerParameterf( nSamplerObject, GL_TEXTURE_LOD_BIAS, m_lodBias );
+#endif
 		if ( m_packed.m_compareMode )
 		{
 			gGL->glSamplerParameteri( nSamplerObject, GL_TEXTURE_COMPARE_FUNC_ARB, GL_LEQUAL );
@@ -393,11 +407,13 @@ struct GLMTexSamplingParams
 			gGL->glTexParameteri( target, GL_TEXTURE_MIN_LOD, m_packed.m_minLOD );
 		}
 
+#ifndef BYTEMATCH_RETAIL
 		if ( m_lodBias != curState.m_lodBias )
 		{
 			// Could use TexParameterf instead, but we don't currently grab it. This works fine, too.
 			gGL->glTexParameterfv( target, GL_TEXTURE_LOD_BIAS, &m_lodBias );
 		}
+#endif
 
 		if ( m_packed.m_compareMode != curState.m_packed.m_compareMode )
 		{
@@ -414,7 +430,11 @@ struct GLMTexSamplingParams
 		}
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	inline void SetToTargetTexture( GLenum target )
+#else
 	inline void SetToTarget( GLenum target )
+#endif
 	{
 		static const GLenum dxtogl_addressMode[] = { GL_REPEAT, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_BORDER, (GLenum)-1 };
 		static const GLenum dxtogl_magFilter[4] = { GL_NEAREST,	GL_NEAREST,	GL_LINEAR, GL_LINEAR };
@@ -443,7 +463,9 @@ struct GLMTexSamplingParams
 		}
 		gGL->glTexParameterfv( target, GL_TEXTURE_BORDER_COLOR, flBorderColor ); // <-- this crashes ATI's driver, remark it out
 		gGL->glTexParameteri( target, GL_TEXTURE_MIN_LOD, m_packed.m_minLOD );
+#ifndef BYTEMATCH_RETAIL
 		gGL->glTexParameterfv( target, GL_TEXTURE_LOD_BIAS, &m_lodBias );
+#endif
 		gGL->glTexParameteri( target, GL_TEXTURE_COMPARE_MODE_ARB, m_packed.m_compareMode ? GL_COMPARE_R_TO_TEXTURE_ARB : GL_NONE );
 		if ( m_packed.m_compareMode )
 		{
@@ -479,7 +501,11 @@ protected:
 	friend struct IDirect3DCubeTexture9;
 	friend struct IDirect3DVolumeTexture9;
 	
+#ifdef BYTEMATCH_RETAIL
+			CGLMTex( GLMContext *ctx, GLMTexLayout *layout, const char *debugLabel = NULL );
+#else
 			CGLMTex( GLMContext *ctx, GLMTexLayout *layout, uint levels, const char *debugLabel = NULL );
+#endif
 			~CGLMTex( );
 	
 	int						CalcSliceIndex( int face, int mip );
@@ -500,6 +526,10 @@ protected:
 	bool					IsRBODirty() const;
 	void					ForceRBONonDirty();
 	void					ForceRBODirty();
+#ifdef BYTEMATCH_RETAIL
+	void					AllocBacking();
+	void					ReleaseBacking();
+#endif
 			
 		// re-specify texture format to match desired sRGB form
 		// noWrite means send NULL for texel source addresses instead of actual data - ideal for RT's
@@ -516,6 +546,9 @@ protected:
 					
 	int						m_minActiveMip;//index of lowest mip that has been written.  used to drive setting of GL_TEXTURE_MAX_LEVEL.
 	int						m_maxActiveMip;//index of highest mip that has been written.  used to drive setting of GL_TEXTURE_MAX_LEVEL.
+#ifdef BYTEMATCH_RETAIL
+	int						m_mipCount;
+#endif
 						
 	GLMContext				*m_ctx;			// link back to parent context
 		
@@ -537,7 +570,9 @@ protected:
 	bool					m_texClientStorage;	// was CS selected for texture
 	bool					m_texPreloaded;		// has it been kicked into VRAM with GLMContext::PreloadTex yet
 
+#ifndef BYTEMATCH_RETAIL
 	int						m_srgbFlipCount;
+#endif
 #if GLMDEBUG
 	CGLMTex					*m_pPrevTex;
 	CGLMTex					*m_pNextTex;

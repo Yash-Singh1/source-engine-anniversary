@@ -188,6 +188,12 @@ FORCEINLINE void GLMContext::FlushDrawStates( uint nStartIndex, uint nEndIndex, 
 			tmZone( TELEMETRY_LEVEL2, TMZF_NONE, "NewProgram" );
 #endif
 
+#ifdef BYTEMATCH_RETAIL
+			if ( !pNewPair->m_valid )
+				goto flush_error_exit;
+
+			gGL->glUseProgram( (GLuint)pNewPair->m_program );
+#else
 			if ( !pNewPair->m_valid )
 			{
 				if ( !pNewPair->ValidateProgramPair() )
@@ -198,6 +204,7 @@ FORCEINLINE void GLMContext::FlushDrawStates( uint nStartIndex, uint nEndIndex, 
 
             gGL->glUseProgramObjectARB(pNewPair->m_program);
 			//gGL->glUseProgram( (GLuint)pNewPair->m_program );
+#endif
 			
 			GL_BATCH_PERF( m_FlushStats.m_nTotalProgramPairChanges++; )
 
@@ -234,6 +241,12 @@ FORCEINLINE void GLMContext::FlushDrawStates( uint nStartIndex, uint nEndIndex, 
 			// bool and int dirty levels get set to max, we don't have actual high water marks for them
 			// code which sends the values must clamp on these types.
 			m_programParamsB[kGLMVertexProgram].m_dirtySlotCount = kGLMProgramParamBoolLimit;
+#ifdef BYTEMATCH_RETAIL
+			m_programParamsB[kGLMFragmentProgram].m_dirtySlotCount = 0;
+
+			m_programParamsI[kGLMVertexProgram].m_dirtySlotCount = kGLMProgramParamInt4Limit;
+			m_programParamsI[kGLMFragmentProgram].m_dirtySlotCount = 0;
+#else
 			m_programParamsB[kGLMFragmentProgram].m_dirtySlotCount = kGLMProgramParamBoolLimit;
 
 			m_programParamsI[kGLMVertexProgram].m_dirtySlotCount = kGLMProgramParamInt4Limit;
@@ -245,6 +258,7 @@ FORCEINLINE void GLMContext::FlushDrawStates( uint nStartIndex, uint nEndIndex, 
 				gGL->glDrawBuffers( pNewPair->m_fragmentProg->m_numDrawBuffers, pNewPair->m_fragmentProg->m_drawBuffers );
 				m_fragDataMask = pNewPair->m_fragmentProg->m_fragDataMask;
 			}
+#endif
 		}
 	}
 
@@ -442,6 +456,28 @@ FORCEINLINE void GLMContext::FlushDrawStates( uint nStartIndex, uint nEndIndex, 
 	// ------- bools ---------- //
 	if ( m_pBoundPair->m_bHasBoolOrIntUniforms )
 	{
+#ifdef BYTEMATCH_RETAIL
+		if ( m_programParamsB[kGLMVertexProgram].m_dirtySlotCount )	// optimize this later after the float param pushes are proven out
+		{
+			GLint vconstBool0Loc = m_pBoundPair->m_locVertexBool0;
+			if ( vconstBool0Loc >= 0 )
+				gGL->glUniform1i( vconstBool0Loc, m_programParamsB[kGLMVertexProgram].m_values[0] );
+
+			GLint vconstBool1Loc = m_pBoundPair->m_locVertexBool1;
+			if ( vconstBool1Loc >= 0 )
+				gGL->glUniform1i( vconstBool1Loc, m_programParamsB[kGLMVertexProgram].m_values[1] );
+
+			GLint vconstBool2Loc = m_pBoundPair->m_locVertexBool2;
+			if ( vconstBool2Loc >= 0 )
+				gGL->glUniform1i( vconstBool2Loc, m_programParamsB[kGLMVertexProgram].m_values[2] );
+
+			GLint vconstBool3Loc = m_pBoundPair->m_locVertexBool3;
+			if ( vconstBool3Loc >= 0 )
+				gGL->glUniform1i( vconstBool3Loc, m_programParamsB[kGLMVertexProgram].m_values[3] );
+
+			m_programParamsB[kGLMVertexProgram].m_dirtySlotCount = 0;
+		}
+#else
 		if ( m_programParamsB[kGLMVertexProgram].m_dirtySlotCount )	// optimize this later after the float param pushes are proven out
 		{
 			const uint nLimit = MIN( CGLMShaderPair::cMaxVertexShaderBoolUniforms, m_programParamsB[kGLMVertexProgram].m_dirtySlotCount );
@@ -467,6 +503,7 @@ FORCEINLINE void GLMContext::FlushDrawStates( uint nStartIndex, uint nEndIndex, 
 
 			m_programParamsB[kGLMFragmentProgram].m_dirtySlotCount = 0;
 		}
+#endif
 
 		if ( m_programParamsI[kGLMVertexProgram].m_dirtySlotCount )
 		{
@@ -557,6 +594,12 @@ FORCEINLINE void GLMContext::FlushDrawStates( uint nStartIndex, uint nEndIndex, 
 			int nBufOffset = pDeclElem->m_gldecl.m_offset + pStream->m_offset;
 			Assert( nBufOffset >= 0 );
 			Assert( nBufOffset < (int)pBuf->m_nSize );
+#ifdef BYTEMATCH_RETAIL
+			SetBufAndVertexAttribPointer( nIndex, pBuf->m_nHandle, 
+				pStream->m_stride, pDeclElem->m_gldecl.m_datatype, pDeclElem->m_gldecl.m_normalized, pDeclElem->m_gldecl.m_nCompCount, 
+				reinterpret_cast< const GLvoid * >( reinterpret_cast< int >( pBuf->m_pPseudoBuf ) + nBufOffset ), 
+				pBuf->m_nRevision );
+#else
 			if ( pBuf->m_bUsingPersistentBuffer )
 			{
 				nBufOffset += pBuf->m_nPersistentBufferStartOffset;
@@ -566,6 +609,7 @@ FORCEINLINE void GLMContext::FlushDrawStates( uint nStartIndex, uint nEndIndex, 
 				pStream->m_stride, pDeclElem->m_gldecl.m_datatype, pDeclElem->m_gldecl.m_normalized, pDeclElem->m_gldecl.m_nCompCount, 
 				reinterpret_cast< const GLvoid * >( reinterpret_cast< intp >( pBuf->m_pPseudoBuf ) + nBufOffset ),
 				pBuf->m_nRevision );
+#endif
 
 			if ( !( m_lastKnownVertexAttribMask & nMask ) )
 			{

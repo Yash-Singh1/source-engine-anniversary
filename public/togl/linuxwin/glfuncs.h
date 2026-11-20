@@ -61,7 +61,9 @@ GL_FUNC_VOID(OpenGL,true,glDisable,(GLenum a),(a))
 GL_FUNC_VOID(OpenGL,true,glDisableVertexAttribArray,(GLuint a),(a))
 GL_FUNC_VOID(OpenGL,true,glDrawArrays,(GLenum a,GLint b,GLsizei c),(a,b,c))
 GL_FUNC_VOID(OpenGL,true,glDrawBuffer,(GLenum a),(a))
+#ifndef BYTEMATCH_RETAIL
 GL_FUNC_VOID(OpenGL,true,glDrawBuffers,(GLsizei a,const GLenum *b),(a,b))
+#endif
 GL_FUNC_VOID(OpenGL,true,glDrawRangeElements,(GLenum a,GLuint b,GLuint c,GLsizei d,GLenum e,const GLvoid *f),(a,b,c,d,e,f))
 #if 1 //ifndef OSX // 10.6/GL 2.1 compatability
 GL_FUNC_VOID(OpenGL,true,glDrawRangeElementsBaseVertex,(GLenum a,GLuint b,GLuint c,GLsizei d,GLenum e,const GLvoid *f, GLenum g),(a,b,c,d,e,f,g))
@@ -116,8 +118,10 @@ GL_FUNC_VOID(OpenGL,true,glUniform1iARB,(GLint a,GLint b),(a,b))
 GL_FUNC_VOID(OpenGL,true,glUniform4fv,(GLint a,GLsizei b,const GLfloat *c),(a,b,c))
 GL_FUNC(OpenGL,true,GLboolean,glUnmapBuffer,(GLenum a),(a))
 GL_FUNC_VOID(OpenGL,true,glUseProgram,(GLuint a),(a))
+#ifndef BYTEMATCH_RETAIL
 GL_FUNC_VOID(OpenGL,true,glUseProgramObjectARB,(GLhandleARB a),(a))
 GL_FUNC_VOID(OpenGL,true,glValidateProgramARB,(GLhandleARB a),(a))
+#endif
 GL_FUNC_VOID(OpenGL,true,glVertex3f,(GLfloat a,GLfloat b,GLfloat c),(a,b,c))
 GL_FUNC_VOID(OpenGL,true,glVertexAttribPointer,(GLuint a,GLint b,GLenum c,GLboolean d,GLsizei e,const GLvoid *f),(a,b,c,d,e,f))
 GL_FUNC_VOID(OpenGL,true,glViewport,(GLint a,GLint b,GLsizei c,GLsizei d),(a,b,c,d))
@@ -221,6 +225,15 @@ GL_FUNC_VOID(GL_ARB_debug_output,false,glDebugMessageControlARB,(GLenum a, GLenu
 
 GL_EXT(GL_EXT_direct_state_access,-1,-1)
 GL_FUNC_VOID(GL_EXT_direct_state_access,false,glBindMultiTextureEXT,(GLenum a,GLuint b, GLuint c),(a,b,c))
+#ifdef BYTEMATCH_RETAIL
+GL_FUNC_VOID(OpenGL,true,glGenSamplers,(GLuint a,GLuint *b),(a,b))
+GL_FUNC_VOID(OpenGL,true,glDeleteSamplers,(GLsizei a,const GLuint *b),(a,b))
+GL_FUNC_VOID(OpenGL,true,glBindSampler,(GLuint a, GLuint b),(a,b))
+GL_FUNC_VOID(OpenGL,true,glSamplerParameteri,(GLuint a, GLenum b, GLint c),(a,b,c))
+GL_FUNC_VOID(OpenGL,true,glSamplerParameterf,(GLuint a, GLenum b, GLfloat c),(a,b,c))
+GL_FUNC_VOID(OpenGL,true,glSamplerParameterfv,(GLuint a, GLenum b, const GLfloat *c),(a,b,c))
+GL_EXT(GL_NV_bindless_texture,-1,-1)
+#else
 GL_EXT(GL_NV_bindless_texture,-1,-1)
 
 #ifndef OSX
@@ -230,6 +243,10 @@ GL_FUNC_VOID(OpenGL, true, glBindSampler, (GLuint a, GLuint b), (a, b))
 GL_FUNC_VOID(OpenGL, true, glSamplerParameteri, (GLuint a, GLenum b, GLint c), (a, b, c))
 GL_FUNC_VOID(OpenGL, true, glSamplerParameterf, (GLuint a, GLenum b, GLfloat c), (a, b, c))
 GL_FUNC_VOID(OpenGL, true, glSamplerParameterfv, (GLuint a, GLenum b, const GLfloat *c), (a, b, c))
+#endif
+#endif
+
+#ifndef OSX
 GL_FUNC(GL_NV_bindless_texture, false, GLuint64, glGetTextureHandleNV, (GLuint texture), (texture))
 GL_FUNC(GL_NV_bindless_texture, false, GLuint64, glGetTextureSamplerHandleNV, (GLuint texture, GLuint sampler), (texture, sampler))
 GL_FUNC_VOID(GL_NV_bindless_texture, false, glMakeTextureHandleResidentNV, (GLuint64 handle), (handle))
@@ -268,8 +285,10 @@ GL_EXT(GL_EXT_texture_compression_dxt1,-1,-1)
 GL_EXT(GL_ANGLE_texture_compression_dxt3,-1,-1)
 GL_EXT(GL_ANGLE_texture_compression_dxt5,-1,-1)
 
+#ifndef BYTEMATCH_RETAIL
 GL_EXT( GL_ARB_buffer_storage, 4, 4 )
 GL_FUNC_VOID( GL_ARB_buffer_storage, false, glBufferStorage, (GLenum target, GLsizeiptr size, const void *data, GLbitfield flags), (target, size, data, flags) )
+#endif
 
 // This one is an OS extension. We'll add a little helper function to look for it.
 #ifdef _WIN32

@@ -134,6 +134,7 @@ D3DMATRIX::operator void* ()
 
 #endif
 
+#ifndef BYTEMATCH_RETAIL
 D3DXMATRIX D3DXMATRIX::operator*( const D3DXMATRIX &o ) const
 {
 	D3DXMATRIX result;
@@ -254,6 +255,7 @@ D3DXVECTOR4::D3DXVECTOR4( float a, float b, float c, float d )
 	z = c;
 	w = d;
 }
+#endif // !BYTEMATCH_RETAIL
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
@@ -446,6 +448,16 @@ HRESULT IDirect3DDevice9::CreateTexture(UINT Width,UINT Height,UINT Levels,DWORD
 	key.m_ySize = Height;
 	key.m_zSize = 1;
 	
+#ifdef BYTEMATCH_RETAIL
+	CGLMTex *tex = m_ctx->NewTex( &key, pDebugLabel );
+	if (!tex)
+	{
+		DXABSTRACT_BREAK_ON_ERROR();
+	}
+	dxtex->m_tex = tex;
+
+	dxtex->m_srgbFlipCount = 0;
+#else
 	CGLMTex *tex = m_ctx->NewTex( &key, Levels, pDebugLabel );
 	if (!tex)
 	{
@@ -454,6 +466,7 @@ HRESULT IDirect3DDevice9::CreateTexture(UINT Width,UINT Height,UINT Levels,DWORD
 	dxtex->m_tex = tex;
 
 	dxtex->m_tex->m_srgbFlipCount = 0;
+#endif
 
 	m_ObjectStats.m_nTotalSurfaces++;
 
@@ -629,6 +642,16 @@ HRESULT IDirect3DDevice9::CreateCubeTexture(UINT EdgeLength,UINT Levels,DWORD Us
 	key.m_ySize = EdgeLength;
 	key.m_zSize = 1;
 	
+#ifdef BYTEMATCH_RETAIL
+	CGLMTex *tex = m_ctx->NewTex( &key, pDebugLabel );
+	if (!tex)
+	{
+		DXABSTRACT_BREAK_ON_ERROR();
+	}
+	dxtex->m_tex = tex;
+	
+	dxtex->m_srgbFlipCount = 0;
+#else
 	CGLMTex *tex = m_ctx->NewTex( &key, Levels, pDebugLabel );
 	if (!tex)
 	{
@@ -637,6 +660,7 @@ HRESULT IDirect3DDevice9::CreateCubeTexture(UINT EdgeLength,UINT Levels,DWORD Us
 	dxtex->m_tex = tex;
 	
 	dxtex->m_tex->m_srgbFlipCount = 0;
+#endif
 
 	for( int face = 0; face < 6; face ++)
 	{
@@ -835,6 +859,16 @@ HRESULT IDirect3DDevice9::CreateVolumeTexture(UINT Width,UINT Height,UINT Depth,
 	key.m_ySize = Height;
 	key.m_zSize = Depth;
 	
+#ifdef BYTEMATCH_RETAIL
+	CGLMTex *tex = m_ctx->NewTex( &key, pDebugLabel );
+	if (!tex)
+	{
+		DXABSTRACT_BREAK_ON_ERROR();
+	}
+	dxtex->m_tex = tex;
+	
+	dxtex->m_srgbFlipCount = 0;
+#else
 	CGLMTex *tex = m_ctx->NewTex( &key, Levels, pDebugLabel );
 	if (!tex)
 	{
@@ -843,6 +877,7 @@ HRESULT IDirect3DDevice9::CreateVolumeTexture(UINT Width,UINT Height,UINT Depth,
 	dxtex->m_tex = tex;
 	
 	dxtex->m_tex->m_srgbFlipCount = 0;
+#endif
 
 	m_ObjectStats.m_nTotalSurfaces++;
 
@@ -2465,8 +2500,10 @@ HRESULT	IDirect3DDevice9::Create( IDirect3DDevice9Params *params )
 		return (HRESULT)-1;
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	// this next part really needs to be inside GLMContext.. or replaced with D3D style viewport setup calls.
 	m_ctx->GenDebugFontTex();
+#endif
 	
 	// blast the gl state mirror...
 	memset( &this->gl, 0, sizeof( this->gl ) );
@@ -2758,6 +2795,7 @@ HRESULT IDirect3DDevice9::SetViewport(CONST D3DVIEWPORT9* pViewport)
 	return S_OK;
 }
 
+#ifndef BYTEMATCH_RETAIL
 HRESULT IDirect3DDevice9::GetViewport( D3DVIEWPORT9* pViewport )
 {
 	// 7LS - unfinished, used in scaleformuirenderimpl.cpp (only width and height required)
@@ -2776,6 +2814,7 @@ HRESULT IDirect3DDevice9::GetViewport( D3DVIEWPORT9* pViewport )
 
 	return S_OK;
 }
+#endif
 
 HRESULT IDirect3DDevice9::BeginScene()
 {
@@ -3144,7 +3183,11 @@ HRESULT IDirect3DDevice9::CreateRenderTarget(UINT Width,UINT Height,D3DFORMAT Fo
 		// FIXME no support for "MS quality" yet
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	surf->m_tex			= m_ctx->NewTex( &rtkey, pDebugLabel );
+#else
 	surf->m_tex			= m_ctx->NewTex( &rtkey, 1, pDebugLabel );
+#endif
 	surf->m_face		= 0;
 	surf->m_mip			= 0;
 	
@@ -3441,7 +3484,11 @@ HRESULT IDirect3DDevice9::CreateOffscreenPlainSurface( UINT Width,UINT Height,D3
 	rtkey.m_texFormat	=	Format;
 	rtkey.m_texFlags	=	kGLMTexRenderable;
 
+#ifdef BYTEMATCH_RETAIL
+	surf->m_tex			=	m_ctx->NewTex( &rtkey, "offscreen plain surface" );
+#else
 	surf->m_tex			=	m_ctx->NewTex( &rtkey, 1, "offscreen plain surface" );
+#endif
 	surf->m_face		=	0;
 	surf->m_mip			=	0;
 	
@@ -3498,7 +3545,11 @@ HRESULT IDirect3DDevice9::CreateDepthStencilSurface(UINT Width,UINT Height,D3DFO
 		// FIXME no support for "MS quality" yet
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	surf->m_tex				= m_ctx->NewTex( &depthkey, "depth-stencil surface" );
+#else
 	surf->m_tex				= m_ctx->NewTex( &depthkey, 1, "depth-stencil surface" );
+#endif
 	surf->m_face			= 0;
 	surf->m_mip				= 0;
 
@@ -4011,6 +4062,7 @@ HRESULT IDirect3DDevice9::CreatePixelShader(CONST DWORD* pFunction,IDirect3DPixe
 				}
 			}
 
+#ifndef BYTEMATCH_RETAIL
 			{
 				// find the fb outputs used by this shader/combo
 				const GLenum buffers[] = { GL_COLOR_ATTACHMENT0_EXT, GL_COLOR_ATTACHMENT1_EXT, GL_COLOR_ATTACHMENT2_EXT, GL_COLOR_ATTACHMENT3_EXT };
@@ -4052,6 +4104,7 @@ HRESULT IDirect3DDevice9::CreatePixelShader(CONST DWORD* pFunction,IDirect3DPixe
 				}
 
 			}
+#endif
 									
 			*ppShader = newprog;
 			
@@ -4386,6 +4439,7 @@ HRESULT IDirect3DDevice9::LinkShaderPair( IDirect3DVertexShader9* vs, IDirect3DP
 	return S_OK;
 }
 
+#ifndef BYTEMATCH_RETAIL
 HRESULT IDirect3DDevice9::ValidateShaderPair( IDirect3DVertexShader9* vs, IDirect3DPixelShader9* ps )
 {
 	GL_BATCH_PERF_CALL_TIMER;
@@ -4396,6 +4450,7 @@ HRESULT IDirect3DDevice9::ValidateShaderPair( IDirect3DVertexShader9* vs, IDirec
 	}
 	return S_OK;
 }
+#endif
 
 // callers need to ifdef POSIX this, because this method does not exist on real DX9
 // 
@@ -6369,6 +6424,21 @@ HRESULT IDirect3DDevice9::SetSamplerStateNonInline( DWORD Sampler, D3DSAMPLERSTA
 	return S_OK;
 }
 
+#ifdef BYTEMATCH_RETAIL
+void IDirect3DDevice9::SetSamplerStatesNonInline(
+	DWORD Sampler, DWORD AddressU, DWORD AddressV, DWORD AddressW,
+	DWORD MinFilter, DWORD MagFilter, DWORD MipFilter )
+{
+	GL_BATCH_PERF_CALL_TIMER;
+	GL_PUBLIC_ENTRYPOINT_CHECKS( this );
+		
+	Assert( Sampler < 16 );
+
+	m_ctx->SetSamplerDirty( Sampler );
+
+	m_ctx->SetSamplerStates( Sampler, AddressU, AddressV, AddressW, MinFilter, MagFilter, MipFilter );
+}
+#else
 void IDirect3DDevice9::SetSamplerStatesNonInline(
 	DWORD Sampler, DWORD AddressU, DWORD AddressV, DWORD AddressW,
 	DWORD MinFilter, DWORD MagFilter, DWORD MipFilter, 
@@ -6383,6 +6453,7 @@ void IDirect3DDevice9::SetSamplerStatesNonInline(
 
 	m_ctx->SetSamplerStates( Sampler, AddressU, AddressV, AddressW, MinFilter, MagFilter, MipFilter, MinLod, LodBias );
 }
+#endif
 
 HRESULT IDirect3DDevice9::SetTextureNonInline(DWORD Stage,IDirect3DBaseTexture9* pTexture)
 {
@@ -6394,6 +6465,7 @@ HRESULT IDirect3DDevice9::SetTextureNonInline(DWORD Stage,IDirect3DBaseTexture9*
 	return S_OK;
 }
 
+#ifndef BYTEMATCH_RETAIL
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
 void* ID3DXBuffer::GetBufferPointer()
@@ -6790,6 +6862,7 @@ D3DXPLANE* D3DXPlaneTransform( D3DXPLANE *pOut, CONST D3DXPLANE *pP, CONST D3DXM
 	
 	return pOut;
 }
+#endif // !BYTEMATCH_RETAIL
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
@@ -6806,7 +6879,7 @@ void D3DPERF_SetOptions( DWORD dwOptions )
 {
 }
 
-
+#ifndef BYTEMATCH_RETAIL
 HRESULT D3DXCompileShader(
         LPCSTR                          pSrcData,
         UINT                            SrcDataLen,
@@ -6846,5 +6919,6 @@ void toglGetClientRect( void *hWnd, RECT *destRect )
 }
 
 #endif
+#endif // !BYTEMATCH_RETAIL
 
 #endif
