@@ -2303,17 +2303,17 @@ void CMaterial::DecideShouldReloadFromWhitelist( IFileList *pFilesToReload )
 	V_strncat( vmtFilename, ".vmt", sizeof( vmtFilename ) );
 
 	// Check if either this file or any of the files it included need to be reloaded.
-	bool bShouldReload = pFilesToReload->IsFileInList( vmtFilename );
-	if ( !bShouldReload )
+	bool bShouldReload = false;
+	if ( pFilesToReload->IsFileInList( vmtFilename ) )
 	{
-		for ( int i=0; i < m_VMTIncludes.Count(); i++ )
+		bShouldReload = true;
+	}
+	for ( int i=0; !bShouldReload && i < m_VMTIncludes.Count(); i++ )
+	{
+		g_pFullFileSystem->String( m_VMTIncludes[i], vmtFilename, sizeof( vmtFilename ) );
+		if ( pFilesToReload->IsFileInList( vmtFilename ) )
 		{
-			g_pFullFileSystem->String( m_VMTIncludes[i], vmtFilename, sizeof( vmtFilename ) );
-			if ( pFilesToReload->IsFileInList( vmtFilename ) )
-			{
-				bShouldReload = true;
-				break;
-			}
+			bShouldReload = true;
 		}
 	}
 

@@ -2225,7 +2225,12 @@ void CStudioRenderContext::InvokeBindProxies( const DrawModelInfo_t &info )
 				continue;
 			pProxyCalled[ nMaterialIndex ] = true;
 			IMaterial* pMaterial = ppMaterials[ nMaterialIndex ]; 
+#ifdef BYTEMATCH_RETAIL
+			if ( pMaterial->HasProxy() )
+#else
 			if ( pMaterial && pMaterial->HasProxy() )
+#endif
+#line 2229
 			{
 				pMaterial->CallBindProxy( info.m_pClientEntity );
 			}

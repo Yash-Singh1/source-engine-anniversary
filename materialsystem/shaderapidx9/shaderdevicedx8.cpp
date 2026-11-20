@@ -96,6 +96,13 @@ IDirect3DDevice *g_pD3DDevice = NULL;
 // so they do not try to specify D3DPOOL_MANAGED, which is unsupported in D3D9Ex
 bool g_ShaderDeviceUsingD3D9Ex = false;
 static ConVar mat_supports_d3d9ex( "mat_supports_d3d9ex", "0", FCVAR_HIDDEN );
+#ifdef BYTEMATCH_RETAIL
+static void OnDisableD3D9ExChanged( IConVar *var, const char *pOldValue, float flOldValue )
+{
+	Warning( "mat_disable_d3d9ex changes will not take effect until application restart\n" );
+}
+static ConVar mat_disable_d3d9ex( "mat_disable_d3d9ex", "0", FCVAR_ARCHIVE, "Disables Windows Aero DirectX extensions (may positively or negatively affect performance depending on video drivers)", OnDisableD3D9ExChanged );
+#endif
 #endif
 
 // hook into mat_forcedynamic from the engine.
@@ -158,9 +165,51 @@ bool CShaderDeviceMgrDx8::Connect( CreateInterfaceFn factory )
 #if defined(IS_WINDOWS_PC) && defined(SHADERAPIDX9) && !defined(RECORDING) && !defined( DX_TO_GL_ABSTRACTION )
 	m_pD3D = NULL;
 
+#ifdef BYTEMATCH_RETAIL
+	char szCfgPath[MAX_PATH];
+	if ( ::GetModuleFileNameA( ::GetModuleHandleA( NULL ), szCfgPath, sizeof( szCfgPath ) ) )
+	{
+		szCfgPath[MAX_PATH - 1] = '\0';
+		V_StripFilename( szCfgPath );
+		int nLen = Q_strlen( szCfgPath );
+		Q_snprintf( szCfgPath + nLen, sizeof( szCfgPath ) - nLen, "\\%s\\cfg\\config.cfg", CommandLine()->ParmValue( "-game", "hl2" ) );
+		FileHandle_t fp = g_pFullFileSystem->Open( szCfgPath, "rt", NULL );
+		if ( fp )
+		{
+			size_t nVarLen = strlen( mat_disable_d3d9ex.GetName() );
+			char szLine[512];
+			while ( g_pFullFileSystem->ReadLine( szLine, sizeof( szLine ), fp ) )
+			{
+				char *p = szLine;
+				while ( *p && isspace( (unsigned char)*p ) )
+					++p;
+				if ( Q_strnicmp( p, mat_disable_d3d9ex.GetName(), nVarLen ) == 0 )
+				{
+					p += nVarLen;
+					if ( *p && isspace( (unsigned char)*p ) )
+					{
+						while ( *p && ( isspace( (unsigned char)*p ) || *p == '\"' ) )
+							++p;
+						if ( *p )
+						{
+							mat_disable_d3d9ex.SetValue( atoi( p ) );
+						}
+					}
+				}
+			}
+			g_pFullFileSystem->Close( fp );
+		}
+	}
+#endif
+#line 154
+
 	// Attempt to create a D3D9Ex device (Windows Vista and later) if possible
 	bool bD3D9ExForceDisable = ( CommandLine()->FindParm( "-nod3d9ex" ) != 0 ) ||
-								( CommandLine()->ParmValue( "-dxlevel", 95 ) < 90 );
+								( CommandLine()->ParmValue( "-dxlevel", 95 ) < 90 )
+#ifdef BYTEMATCH_RETAIL
+								|| ( mat_disable_d3d9ex.GetInt() == 1 )
+#endif
+								;
 
 	bool bD3D9ExAvailable = false;
 	if ( HMODULE hMod = ::LoadLibraryA( "d3d9.dll" ) )
@@ -642,8 +691,10 @@ bool CShaderDeviceMgrDx8::ComputeCapsFromD3D( HardwareCaps_t *pCaps, int nAdapte
 		if ( pVendorID )
 		{
 			int nVendorID = V_atoi( pVendorID );	// use V_atoi for hex support
-			if ( pVendorID )
+			if ( (uintptr_t)pVendorID > 0 )
+			{
 				ident.VendorId = nVendorID;
+			}
 		}
 	}
 
@@ -777,10 +828,12 @@ bool CShaderDeviceMgrDx8::ComputeCapsFromD3D( HardwareCaps_t *pCaps, int nAdapte
 	pCaps->m_bSupportsMagAnisotropicFiltering = (caps.TextureFilterCaps & D3DPTFILTERCAPS_MAGFANISOTROPIC) != 0;
 
 	// OpenGL does not support this--at least not on OSX which is the primary GL target, so just don't use that path on GL at all.
+#if !defined( BYTEMATCH_RETAIL )
 #if !defined( DX_TO_GL_ABSTRACTION )
 	pCaps->m_bCanStretchRectFromTextures = ( ( caps.DevCaps2 & D3DDEVCAPS2_CAN_STRETCHRECT_FROM_TEXTURES ) != 0 ) && ( pCaps->m_VendorID != VENDORID_INTEL );
-#elif !defined( BYTEMATCH_RETAIL )
+#else
 	pCaps->m_bCanStretchRectFromTextures = false;
+#endif
 #endif
 
 	pCaps->m_nMaxAnisotropy = pCaps->m_bSupportsAnisotropicFiltering ? caps.MaxAnisotropy : 1; 

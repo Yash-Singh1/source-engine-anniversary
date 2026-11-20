@@ -795,12 +795,14 @@ void CMatLightmaps::BumpedLightmapBitsToPixelWriter_LDR( float* pFloatImage, flo
 	// Each lightmap gets a one texel border of clamped edge texels
 	const int nLightmap0WriterSizeBytes = ( nLightmapSize0 + 2 ) * m_LightmapPixelWriter.GetPixelSize();
 
-	for( int t = -1; t <= pLightmapSize[1]; t++ )
+	for( int t = -1; t < pLightmapSize[1] + 1; t++ )
 	{
-		for( int s = -1; s <= nLightmapSize0; s++ )
+		for( int s = -1; s < nLightmapSize0 + 1; s++ )
 		{
-			int nSrcT = ( t < 0 ) ? 0 : MIN( t, pLightmapSize[1] - 1 );
-			int nSrcS = ( s < 0 ) ? 0 : MIN( s, pLightmapSize[0] - 1 );
+			int nMaxT = pLightmapSize[1] - 1;
+			int nSrcT = ( t < 0 ) ? 0 : ( ( t > nMaxT ) ? nMaxT : t );
+			int nMaxS = pLightmapSize[0] - 1;
+			int nSrcS = ( s < 0 ) ? 0 : ( ( s > nMaxS ) ? nMaxS : s );
 			m_LightmapPixelWriter.Seek( pOffsetIntoLightmapPage[0] + s, pOffsetIntoLightmapPage[1] + t );
 			int srcTexelOffset = ( sizeof( Vector4D ) / sizeof( float ) ) * ( nSrcS + nSrcT * nLightmapSize0 );
 #else
@@ -839,12 +841,14 @@ void CMatLightmaps::BumpedLightmapBitsToPixelWriter_LDR( float* pFloatImage, flo
 	if ( pfmOut )
 	{
 #ifdef BYTEMATCH_RETAIL
-		for( int t = -1; t <= pLightmapSize[1]; t++ )
+		for( int t = -1; t < pLightmapSize[1] + 1; t++ )
 		{
-			for( int s = -1; s <= nLightmapSize0; s++ )
+			for( int s = -1; s < nLightmapSize0 + 1; s++ )
 			{
-				int nSrcT = ( t < 0 ) ? 0 : MIN( t, pLightmapSize[1] - 1 );
-				int nSrcS = ( s < 0 ) ? 0 : MIN( s, pLightmapSize[0] - 1 );
+				int nMaxT = pLightmapSize[1] - 1;
+				int nSrcT = ( t < 0 ) ? 0 : ( ( t > nMaxT ) ? nMaxT : t );
+				int nMaxS = pLightmapSize[0] - 1;
+				int nSrcS = ( s < 0 ) ? 0 : ( ( s > nMaxS ) ? nMaxS : s );
 				int srcTexelOffset = ( sizeof( Vector4D ) / sizeof( float ) ) * ( nSrcS + nSrcT * nLightmapSize0 );
 #else
 		for( int t = 0; t < pLightmapSize[1]; t++ )
@@ -892,13 +896,14 @@ void CMatLightmaps::BumpedLightmapBitsToPixelWriter_HDRF( float* pFloatImage, fl
 	// Each lightmap gets a one texel border of clamped edge texels
 	const int nLightmap0WriterSizeBytes = ( nLightmapSize0 + 2 ) * m_LightmapPixelWriter.GetPixelSize();
 
-	for( int t = -1; t <= pLightmapSize[1]; t++ )
+	for( int t = -1; t < pLightmapSize[1] + 1; t++ )
 	{
-		for( int s = -1; s <= nLightmapSize0; s++ )
+		for( int s = -1; s < nLightmapSize0 + 1; s++ )
 		{
 			int nMaxT = pLightmapSize[1] - 1;
-			int nSrcT = ( t < 0 ) ? 0 : MIN( t, nMaxT );
-			int nSrcS = ( s < 0 ) ? 0 : MIN( s, pLightmapSize[0] - 1 );
+			int nSrcT = ( t < 0 ) ? 0 : ( ( t > nMaxT ) ? nMaxT : t );
+			int nMaxS = pLightmapSize[0] - 1;
+			int nSrcS = ( s < 0 ) ? 0 : ( ( s > nMaxS ) ? nMaxS : s );
 			m_LightmapPixelWriter.Seek( pOffsetIntoLightmapPage[0] + s, pOffsetIntoLightmapPage[1] + t );
 			int srcTexelOffset = ( sizeof( Vector4D ) / sizeof( float ) ) * ( nSrcS + nSrcT * nLightmapSize0 );
 #else
@@ -1415,13 +1420,14 @@ void CMatLightmaps::BumpedLightmapBitsToPixelWriter_HDRI( float* RESTRICT pFloat
 		if (!IsX360())
 		{
 #ifdef BYTEMATCH_RETAIL
-			for( int t = -1; t <= pLightmapSize[1]; t++ )
+			for( int t = -1; t < pLightmapSize[1] + 1; t++ )
 			{
-				for( int s = -1; s <= nLightmapSize0; s++ )
+				for( int s = -1; s < nLightmapSize0 + 1; s++ )
 				{
 					int nMaxT = pLightmapSize[1] - 1;
-					int nSrcT = ( t < 0 ) ? 0 : MIN( t, nMaxT );
-					int nSrcS = ( s < 0 ) ? 0 : MIN( s, pLightmapSize[0] - 1 );
+					int nSrcT = ( t < 0 ) ? 0 : ( ( t > nMaxT ) ? nMaxT : t );
+					int nMaxS = pLightmapSize[0] - 1;
+					int nSrcS = ( s < 0 ) ? 0 : ( ( s > nMaxS ) ? nMaxS : s );
 					m_LightmapPixelWriter.Seek( pOffsetIntoLightmapPage[0] + s, pOffsetIntoLightmapPage[1] + t );
 					int srcTexelOffset = ( sizeof( Vector4D ) / sizeof( float ) ) * ( nSrcS + nSrcT * nLightmapSize0 );
 #else
@@ -1488,13 +1494,14 @@ void CMatLightmaps::BumpedLightmapBitsToPixelWriter_HDRI( float* RESTRICT pFloat
 	{
 #ifndef X360_USE_SIMD_LIGHTMAP
 #ifdef BYTEMATCH_RETAIL
-		for( int t = -1; t <= pLightmapSize[1]; t++ )
+		for( int t = -1; t < pLightmapSize[1] + 1; t++ )
 		{
-			for( int s = -1; s <= nLightmapSize0; s++ )
+			for( int s = -1; s < nLightmapSize0 + 1; s++ )
 			{
 				int nMaxT = pLightmapSize[1] - 1;
-				int nSrcT = ( t < 0 ) ? 0 : MIN( t, nMaxT );
-				int nSrcS = ( s < 0 ) ? 0 : MIN( s, pLightmapSize[0] - 1 );
+				int nSrcT = ( t < 0 ) ? 0 : ( ( t > nMaxT ) ? nMaxT : t );
+				int nMaxS = pLightmapSize[0] - 1;
+				int nSrcS = ( s < 0 ) ? 0 : ( ( s > nMaxS ) ? nMaxS : s );
 				m_LightmapPixelWriter.Seek( pOffsetIntoLightmapPage[0] + s, pOffsetIntoLightmapPage[1] + t );
 				int srcTexelOffset = ( sizeof( Vector4D ) / sizeof( float ) ) * ( nSrcS + nSrcT * nLightmapSize0 );
 #else
@@ -1663,14 +1670,16 @@ void CMatLightmaps::LightmapBitsToPixelWriter_LDR( float* pFloatImage, int pLigh
 	// non-HDR lightmap processing
 #ifdef BYTEMATCH_RETAIL
 	// Write a one texel border of clamped edge texels around the lightmap
-	for( int t = -1; t <= pLightmapSize[1]; ++t )
+	for( int t = -1; t < pLightmapSize[1] + 1; ++t )
 	{
-		for( int s = -1; s <= pLightmapSize[0]; ++s )
+		for( int s = -1; s < pLightmapSize[0] + 1; ++s )
 		{
 			int nWidth = pLightmapSize[0];
 			m_LightmapPixelWriter.Seek( pOffsetIntoLightmapPage[0] + s, pOffsetIntoLightmapPage[1] + t );
-			int nSrcS = ( s < 0 ) ? 0 : MIN( s, nWidth - 1 );
-			int nSrcT = ( t < 0 ) ? 0 : MIN( t, pLightmapSize[1] - 1 );
+			int nMaxS = nWidth - 1;
+			int nSrcS = ( s < 0 ) ? 0 : ( ( s > nMaxS ) ? nMaxS : s );
+			int nMaxT = pLightmapSize[1] - 1;
+			int nSrcT = ( t < 0 ) ? 0 : ( ( t > nMaxT ) ? nMaxT : t );
 			float *pSrc = pFloatImage + ( nSrcS + nSrcT * nWidth ) * (sizeof(Vector4D)/sizeof(*pSrc));
 
 			unsigned char color[4];
@@ -1714,17 +1723,18 @@ void CMatLightmaps::LightmapBitsToPixelWriter_HDRF( float* pFloatImage, int pLig
 	// float HDR lightmap processing
 #ifdef BYTEMATCH_RETAIL
 	// Write a one texel border of clamped edge texels around the lightmap
-	int nWidth = pLightmapSize[0];
-	for ( int t = -1; t <= pLightmapSize[1]; ++t )
+	const int nLightmapSize0 = pLightmapSize[0];
+	for ( int t = -1; t < pLightmapSize[1] + 1; ++t )
 	{
-		for ( int s = -1; s <= nWidth; ++s )
+		for ( int s = -1; s < nLightmapSize0 + 1; ++s )
 		{
 			int nMaxT = pLightmapSize[1] - 1;
-			int nSrcT = ( t < 0 ) ? 0 : MIN( t, nMaxT );
-			int nSrcS = ( s < 0 ) ? 0 : MIN( s, pLightmapSize[0] - 1 );
+			int nSrcT = ( t < 0 ) ? 0 : ( ( t > nMaxT ) ? nMaxT : t );
+			int nMaxS = pLightmapSize[0] - 1;
+			int nSrcS = ( s < 0 ) ? 0 : ( ( s > nMaxS ) ? nMaxS : s );
 
 			m_LightmapPixelWriter.Seek( pOffsetIntoLightmapPage[0] + s, pOffsetIntoLightmapPage[1] + t );
-			float *pSrc = pFloatImage + ( nSrcS + nSrcT * nWidth ) * (sizeof(Vector4D)/sizeof(*pSrc));
+			float *pSrc = pFloatImage + ( nSrcS + nSrcT * nLightmapSize0 ) * (sizeof(Vector4D)/sizeof(*pSrc));
 			m_LightmapPixelWriter.WritePixelF( pSrc[0], pSrc[1], pSrc[2], pSrc[3] );
 		}
 	}
@@ -1749,21 +1759,23 @@ void CMatLightmaps::LightmapBitsToPixelWriter_HDRI( float* RESTRICT pFloatImage,
 	// PC code (and old, pre-SIMD xbox version -- unshippably slow)
 #ifdef BYTEMATCH_RETAIL
 	// Write a one texel border of clamped edge texels around the lightmap
-	int nWidth = pLightmapSize[0];
-	int nHeight = pLightmapSize[1];
+	const int nLightmapSize0 = pLightmapSize[0];
+	const int nHeight = pLightmapSize[1];
 #endif
 	if ( m_LightmapPixelWriter.IsUsingFloatFormat() )
 	{
 		// integer HDR lightmap processing
 #ifdef BYTEMATCH_RETAIL
-		for ( int t = -1; t <= nHeight; ++t )
+		for ( int t = -1; t < nHeight + 1; ++t )
 		{
-			for ( int s = -1; s <= nWidth; ++s )
+			for ( int s = -1; s < nLightmapSize0 + 1; ++s )
 			{
-				int nSrcT = ( t < 0 ) ? 0 : MIN( t, nHeight - 1 );
-				int nSrcS = ( s < 0 ) ? 0 : MIN( s, pLightmapSize[0] - 1 );
+				int nMaxT = pLightmapSize[1] - 1;
+				int nSrcT = ( t < 0 ) ? 0 : ( ( t > nMaxT ) ? nMaxT : t );
+				int nMaxS = pLightmapSize[0] - 1;
+				int nSrcS = ( s < 0 ) ? 0 : ( ( s > nMaxS ) ? nMaxS : s );
 				m_LightmapPixelWriter.Seek( pOffsetIntoLightmapPage[0] + s, pOffsetIntoLightmapPage[1] + t );
-				float *pSrc = pFloatImage + ( nSrcS + nSrcT * nWidth ) * (sizeof(Vector4D)/sizeof(*pSrc));
+				float *pSrc = pFloatImage + ( nSrcS + nSrcT * nLightmapSize0 ) * (sizeof(Vector4D)/sizeof(*pSrc));
 #else
 		float *pSrc = pFloatImage;
 		for ( int t = 0; t < pLightmapSize[1]; ++t )
@@ -1809,14 +1821,16 @@ void CMatLightmaps::LightmapBitsToPixelWriter_HDRI( float* RESTRICT pFloatImage,
 	{
 		// integer HDR lightmap processing
 #ifdef BYTEMATCH_RETAIL
-		for ( int t = -1; t <= nHeight; ++t )
+		for ( int t = -1; t < nHeight + 1; ++t )
 		{
-			for ( int s = -1; s <= nWidth; ++s )
+			for ( int s = -1; s < nLightmapSize0 + 1; ++s )
 			{
-				int nSrcT = ( t < 0 ) ? 0 : MIN( t, nHeight - 1 );
-				int nSrcS = ( s < 0 ) ? 0 : MIN( s, pLightmapSize[0] - 1 );
+				int nMaxT = pLightmapSize[1] - 1;
+				int nSrcT = ( t < 0 ) ? 0 : ( ( t > nMaxT ) ? nMaxT : t );
+				int nMaxS = pLightmapSize[0] - 1;
+				int nSrcS = ( s < 0 ) ? 0 : ( ( s > nMaxS ) ? nMaxS : s );
 				m_LightmapPixelWriter.Seek( pOffsetIntoLightmapPage[0] + s, pOffsetIntoLightmapPage[1] + t );
-				float *pSrc = pFloatImage + ( nSrcS + nSrcT * nWidth ) * (sizeof(Vector4D)/sizeof(*pSrc));
+				float *pSrc = pFloatImage + ( nSrcS + nSrcT * nLightmapSize0 ) * (sizeof(Vector4D)/sizeof(*pSrc));
 #else
 		float *pSrc = pFloatImage;
 		for ( int t = 0; t < pLightmapSize[1]; ++t )

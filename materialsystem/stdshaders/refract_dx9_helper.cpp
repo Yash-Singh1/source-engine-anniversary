@@ -21,7 +21,9 @@ void InitParamsRefract_DX9( CBaseVSShader *pShader, IMaterialVar** params, const
 	SET_FLAGS2( MATERIAL_VAR2_NEEDS_TANGENT_SPACES );
 	SET_FLAGS( MATERIAL_VAR_TRANSLUCENT );
 	static ConVarRef mat_specular_scalar( "mat_specular_scalar" );
-	float flSpecularScalar = mat_specular_scalar.IsValid() ? mat_specular_scalar.GetFloat() : -1.0f;
+	float flSpecularScalar = -1.0f;
+	if ( mat_specular_scalar.IsValid() )
+		flSpecularScalar = mat_specular_scalar.GetFloat();
 	if ( flSpecularScalar < 0.0f )
 		flSpecularScalar = 1.0f;
 

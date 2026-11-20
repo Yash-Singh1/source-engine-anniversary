@@ -56,12 +56,26 @@
 #include "ifilelist.h"
 #include "tier0/icommandline.h"
 #include "tier0/vprof.h"
+#include "tier0/vprof_telemetry.h"
 
 // NOTE: This must be the last file included!!!
 #include "tier0/memdbgon.h"
 
 // this allows the command line to force the "all mips" flag to on for all textures
 bool g_bForceTextureAllMips = false;
+
+#if defined(IS_WINDOWS_PC)
+static void ConVarChanged_mat_managedtextures( IConVar *var, const char *pOldValue, float flOldValue );
+static ConVar mat_managedtextures( "mat_managedtextures", "1", FCVAR_ARCHIVE, "If set, allows Direct3D to manage texture uploading at the cost of extra system memory", &ConVarChanged_mat_managedtextures );
+static void ConVarChanged_mat_managedtextures( IConVar *var, const char *pOldValue, float flOldValue )
+{
+	if ( mat_managedtextures.GetBool() != (flOldValue != 0) )
+	{
+		materials->ReleaseResources();
+		materials->ReacquireResources();
+	}
+}
+#endif
 
 static ConVar mat_spew_on_texture_size( "mat_spew_on_texture_size", "0", 0, "Print warnings about vtf content that isn't of the expected size" );
 
@@ -1372,7 +1386,13 @@ bool CTexture::AllocateShaderAPITextures()
 	else
 	{
 		// If it's not a render target, use the texture manager in dx
-		nCreateFlags |= TEXTURE_CREATE_MANAGED;
+#if defined(IS_WINDOWS_PC)
+		static ConVarRef mat_dxlevel( "mat_dxlevel" );
+		if ( mat_dxlevel.GetInt() < 90 || mat_managedtextures.GetBool() )
+#endif
+		{
+			nCreateFlags |= TEXTURE_CREATE_MANAGED;
+		}
 	}
 
 	if ( m_nFlags & TEXTUREFLAGS_POINTSAMPLE )
@@ -2686,6 +2706,9 @@ void CTexture::ReloadFilesInList( IFileList *pFilesToReload )
 //-----------------------------------------------------------------------------
 IVTFTexture *CTexture::LoadTextureBitsFromFile( char *pCacheFileName, char **ppResolvedFilename, bool bPaired )
 {
+#line 2989
+	tmZoneFiltered( TELEMETRY_LEVEL0, 50, TMZF_NONE, "%s %s", __FUNCTION__, tmDynamicString( TELEMETRY_LEVEL0, pCacheFileName ) );
+#line 2710
 	IVTFTexture *pVTFTexture = bPaired ? GetScratchVTFTexturePaired() : GetScratchVTFTexture();
 
 	CUtlBuffer buf;
@@ -3000,8 +3023,7 @@ void CTexture::ReconstructPartialTexture( const Rect_t *pRect )
 	// Make sure we've allocated the API textures
 	if ( !HasBeenAllocated() )
 	{
-		if ( !AllocateShaderAPITextures() )
-			return;
+		AllocateShaderAPITextures();
 	}
 
 	int nFaceCount, nFirstFace;
@@ -3183,8 +3205,7 @@ void CTexture::ReconstructTexture()
 		}
 
 		// Create the shader api textures
-		if ( !AllocateShaderAPITextures() )
-			return;
+		AllocateShaderAPITextures();
 	}
 
 	// Render Targets just need to be cleared, they have no upload
