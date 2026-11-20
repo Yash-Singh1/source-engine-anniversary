@@ -900,10 +900,12 @@ FORCEINLINE GLenum D3DBlendOperationToGL( DWORD operation )
 	switch (operation)
 	{
 		case	D3DBLENDOP_ADD			: return GL_FUNC_ADD;				// The result is the destination added to the source. Result = Source + Destination
+#ifndef BYTEMATCH_RETAIL
 		case	D3DBLENDOP_SUBTRACT		: return GL_FUNC_SUBTRACT;			// The result is the destination subtracted from to the source. Result = Source - Destination
 		case	D3DBLENDOP_REVSUBTRACT	: return GL_FUNC_REVERSE_SUBTRACT;	// The result is the source subtracted from the destination. Result = Destination - Source
 		case	D3DBLENDOP_MIN			: return GL_MIN;					// The result is the minimum of the source and destination. Result = MIN(Source, Destination)
 		case	D3DBLENDOP_MAX			: return GL_MAX;					// The result is the maximum of the source and destination. Result = MAX(Source, Destination)
+#endif
 		default:
 			DXABSTRACT_BREAK_ON_ERROR();
 			return 0xFFFFFFFF;

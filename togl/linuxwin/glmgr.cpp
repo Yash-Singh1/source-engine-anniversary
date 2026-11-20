@@ -215,11 +215,13 @@ void APIENTRY GL_Debug_Output_Callback(GLenum source, GLenum type, GLuint id, GL
 		       *sType = glTypeToString(type),
 			   *sSeverity = glSeverityToString(severity);
 	
+#ifndef BYTEMATCH_RETAIL
 	// According to NVidia, this error is a bug in the driver and not really an error (it's a warning in newer drivers): "Texture X is base level inconsistent. Check texture size"
 	if (  ( type == GL_DEBUG_TYPE_ERROR_ARB ) && strstr( message, "base level inconsistent" ) )
 	{
 		return;
 	}
+#endif
 	
 	if ( gl_debug_output.GetBool() || type == GL_DEBUG_TYPE_ERROR_ARB )
 	{
@@ -230,7 +232,11 @@ void APIENTRY GL_Debug_Output_Callback(GLenum source, GLenum type, GLuint id, GL
 	OutputDebugStringA( message );
 #endif
 			
+#ifdef BYTEMATCH_RETAIL
+	if ( type == GL_DEBUG_TYPE_ERROR_ARB )
+#else
 	if ( ( type == GL_DEBUG_TYPE_ERROR_ARB ) && ( g_bDebugOutputBreakpoints ) )
+#endif
 	{
 		DebuggerBreak();
 	}
@@ -239,13 +245,37 @@ void APIENTRY GL_Debug_Output_Callback(GLenum source, GLenum type, GLuint id, GL
 void GLMDebugPrintf( const char *pMsg, ... )
 {
 #ifdef BYTEMATCH_RETAIL
+	char buf[1024];
+	char *pBuf = buf;
+	bool bHeap = false;
+
 	va_list args;
 	va_start( args, pMsg );
-	char buf[1024];
-	V_vsnprintf( buf, sizeof( buf ), pMsg, args );
+	uint nLen = V_vsnprintf( buf, sizeof( buf ), pMsg, args );
+	if ( nLen >= sizeof( buf ) - 1 )
+	{
+		pBuf = new char[65536];
+		bHeap = ( pBuf != NULL );
+		nLen = V_vsnprintf( pBuf, 65536, pMsg, args );
+	}
 	va_end( args );
 
-	Plat_DebugString( buf );
+	const char *pCur = pBuf;
+	while ( nLen )
+	{
+		char chunk[1024];
+		uint nCopy = MIN( nLen, (uint)sizeof( chunk ) - 1 );
+		memcpy( chunk, pCur, nCopy );
+		chunk[nCopy] = '\0';
+		Plat_DebugString( chunk );
+		pCur += nCopy;
+		nLen -= nCopy;
+	}
+
+	if ( bHeap )
+	{
+		delete[] pBuf;
+	}
 #else
 	//$ TODO: Should this call Warning()?
 	//$ TODO: Should replace call these calls with Warning() / Msg() / DevMsg()?
@@ -508,6 +538,9 @@ GLMContext *GLMgr::GetCurrentContext( void )
 // GLMContext public methods
 void GLMContext::MakeCurrent( bool bRenderThread )
 {
+#ifdef BYTEMATCH_RETAIL
+#line 519
+#endif
 	tmZone( TELEMETRY_LEVEL0, 0, "GLMContext::MakeCurrent" );
 	Assert( m_nCurOwnerThreadId == 0 || m_nCurOwnerThreadId == ThreadGetCurrentId() );
 		
@@ -553,6 +586,9 @@ void GLMContext::MakeCurrent( bool bRenderThread )
 
 void GLMContext::ReleaseCurrent( bool bRenderThread )
 {
+#ifdef BYTEMATCH_RETAIL
+#line 569
+#endif
 	tmZone( TELEMETRY_LEVEL0, 0, "GLMContext::ReleaseCurrent" );
 	Assert( m_nCurOwnerThreadId == ThreadGetCurrentId() );
 		
@@ -980,7 +1016,11 @@ void GLMContext::Blit2( CGLMTex *srcTex, GLMRect *srcRect, int srcFace, int srcM
 
 	switch( srcTex->m_layout->m_format->m_glDataFormat )
 	{
+#ifdef BYTEMATCH_RETAIL
+		case GL_BGRA:	case GL_RGB:	case GL_RGBA:	case GL_ALPHA:	case GL_LUMINANCE:	case GL_LUMINANCE_ALPHA:
+#else
 		case GL_RED: case GL_BGRA:	case GL_RGB:	case GL_RGBA:	case GL_ALPHA:	case GL_LUMINANCE:	case GL_LUMINANCE_ALPHA:
+#endif
 			formatClass = eColor;
 			blitMask = GL_COLOR_BUFFER_BIT;
 		break;
@@ -1882,6 +1922,9 @@ void GLMContext::PreloadTex( CGLMTex *tex, bool force )
 
 CGLMFBO	*GLMContext::NewFBO( void )
 {
+#ifdef BYTEMATCH_RETAIL
+#line 1821
+#endif
 	GLM_FUNC;
 
 	CGLMFBO *fbo = new CGLMFBO( this );
@@ -1893,6 +1936,9 @@ CGLMFBO	*GLMContext::NewFBO( void )
 
 void GLMContext::DelFBO( CGLMFBO *fbo )
 {
+#ifdef BYTEMATCH_RETAIL
+#line 1832
+#endif
 	GLM_FUNC;
 
 	if (m_drawingFBO == fbo)
@@ -1951,6 +1997,9 @@ CGLMProgram	*GLMContext::NewProgram( EGLMProgramType type, char *progString, con
 
 void GLMContext::DelProgram( CGLMProgram *pProg )
 {
+#ifdef BYTEMATCH_RETAIL
+#line 1886
+#endif
 	GLM_FUNC;
 
 	if ( m_drawingProgram[ pProg->m_type ] == pProg )
@@ -2049,6 +2098,9 @@ CGLMBuffer *GLMContext::NewBuffer( EGLMBufferType type, uint size, uint options 
 
 void GLMContext::DelBuffer( CGLMBuffer *buff )
 {
+#ifdef BYTEMATCH_RETAIL
+#line 1970
+#endif
 	GLM_FUNC;
 
 	for( int index = 0; index < kGLMVertexAttributeIndexMax; index++ )
@@ -2069,6 +2121,9 @@ GLMVertexSetup g_blank_setup;
 
 void GLMContext::Clear( bool color, unsigned long colorValue, bool depth, float depthValue, bool stencil, unsigned int stencilValue, GLScissorBox_t *box )
 {
+#ifdef BYTEMATCH_RETAIL
+#line 1990
+#endif
 	GLM_FUNC;
 		
 	++m_nBatchCounter;
@@ -2307,7 +2362,17 @@ void GLMContext::BeginFrame( void )
 
 void GLMContext::EndFrame( void )
 {
+#ifdef BYTEMATCH_RETAIL
+#line 2229
+#endif
 	GLM_FUNC;
+
+#ifdef BYTEMATCH_RETAIL
+	if ( !m_oneCtxEnable )
+	{
+		gGL->glFlush();
+	}
+#endif
 
 #if GLMDEBUG
 	// init debug hook information
@@ -3008,12 +3073,21 @@ GLMContext::~GLMContext	()
 			gGL->glBindSampler( i, 0 );
 		}
 
+#ifndef BYTEMATCH_RETAIL
 		for( int i=0; i< cSamplerObjectHashSize; i++)
 		{
 			gGL->glDeleteSamplers( 1, &m_samplerObjectHash[i].m_samplerObject );
 			m_samplerObjectHash[i].m_samplerObject = 0;
 		}
+#endif
 	}
+#ifdef BYTEMATCH_RETAIL
+	for( int i=0; i< cSamplerObjectHashSize; i++)
+	{
+		gGL->glDeleteSamplers( 1, &m_samplerObjectHash[i].m_samplerObject );
+		m_samplerObjectHash[i].m_samplerObject = 0;
+	}
+#endif
 #endif // !OSX
 
 	if (m_debugFontTex)
@@ -3359,6 +3433,9 @@ void GLMContext::FlushDrawStatesNoShaders( )
 {
 	Assert( ( m_drawingFBO == m_boundDrawFBO ) && ( m_drawingFBO == m_boundReadFBO ) ); // this check MUST succeed
 
+#ifdef BYTEMATCH_RETAIL
+#line 3050
+#endif
 	GLM_FUNC;
 
 	GL_BATCH_PERF( m_FlushStats.m_nTotalBatchFlushes++; )
@@ -4738,6 +4815,9 @@ void GLMContext::CheckNative( void )
 		{
 			const char	*decodedStr = GLMDecode( eGL_ERROR, errorcode );
 
+#ifdef BYTEMATCH_RETAIL
+			GLMDebugPrintf( "\nGL ERROR! %08x = '%s'\n", errorcode, decodedStr );
+#else
 			char buf[512];
 			V_snprintf( buf, sizeof( buf), "\nGL ERROR! %08x = '%s'\n", errorcode, decodedStr );
 
@@ -4746,6 +4826,7 @@ void GLMContext::CheckNative( void )
 			OutputDebugStringA( buf );
 #else
 			printf( "%s", buf );
+#endif
 #endif
 		}
 	}
@@ -5104,6 +5185,9 @@ void GLMgrSelfTests( void )
 
 void GLMContext::SetDefaultStates( void )
 {
+#ifdef BYTEMATCH_RETAIL
+#line 4439
+#endif
 	GLM_FUNC;
 	CheckCurrent();
 
@@ -5152,6 +5236,9 @@ void GLMContext::SetDefaultStates( void )
 
 void GLMContext::VerifyStates		( void )
 {
+#ifdef BYTEMATCH_RETAIL
+#line 4487
+#endif
 	GLM_FUNC;
 	CheckCurrent();
 

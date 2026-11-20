@@ -279,7 +279,24 @@ FORCEINLINE void GLMContext::FlushDrawStates( uint nStartIndex, uint nEndIndex, 
 
 			m_nDirtySamplerFlags[nSamplerIndex] = 1;
 
+#ifdef BYTEMATCH_RETAIL
+			GLMTexSamplingParams tempParams;
+			const GLMTexSamplingParams *pParams = &m_samplers[nSamplerIndex].m_samp;
+			if ( pParams->m_packed.m_mipFilter == D3DTEXF_LINEAR )
+			{
+				CGLMTex *pTex = m_samplers[nSamplerIndex].m_pBoundTex;
+				if ( pTex && ( pTex->m_mipCount == 1 ) )
+				{
+					tempParams = *pParams;
+					tempParams.m_packed.m_mipFilter = D3DTEXF_NONE;
+					pParams = &tempParams;
+				}
+			}
+
+			gGL->glBindSampler( nSamplerIndex, FindSamplerObject( *pParams ) );
+#else
 			gGL->glBindSampler( nSamplerIndex, FindSamplerObject( m_samplers[nSamplerIndex].m_samp ) );
+#endif
 
 			GL_BATCH_PERF( m_FlushStats.m_nNumSamplingParamsChanged++ );
 
@@ -312,6 +329,28 @@ FORCEINLINE void GLMContext::FlushDrawStates( uint nStartIndex, uint nEndIndex, 
 
 			CGLMTex *pTex = m_samplers[nSamplerIndex].m_pBoundTex;
 
+#ifdef BYTEMATCH_RETAIL
+			if ( pTex )
+			{
+				if ( ( pTex->m_mipCount == 1 ) && ( m_samplers[nSamplerIndex].m_samp.m_packed.m_mipFilter == D3DTEXF_LINEAR ) )
+				{
+					GLMTexSamplingParams tempParams = m_samplers[nSamplerIndex].m_samp;
+					tempParams.m_packed.m_mipFilter = D3DTEXF_NONE;
+					if ( !( pTex->m_SamplingParams == tempParams ) )
+					{
+						SelectTMU( nSamplerIndex );
+						tempParams.DeltaSetToTarget( pTex->m_texGLTarget, pTex->m_SamplingParams );
+						pTex->m_SamplingParams = tempParams;
+					}
+				}
+				else if ( !( pTex->m_SamplingParams == m_samplers[nSamplerIndex].m_samp ) )
+				{
+					SelectTMU( nSamplerIndex );
+					m_samplers[nSamplerIndex].m_samp.DeltaSetToTarget( pTex->m_texGLTarget, pTex->m_SamplingParams );
+					pTex->m_SamplingParams = m_samplers[nSamplerIndex].m_samp;
+				}
+			}
+#else
 			if ( ( pTex ) && ( !( pTex->m_SamplingParams == m_samplers[nSamplerIndex].m_samp ) ) )
 			{
 				SelectTMU( nSamplerIndex );
@@ -334,6 +373,7 @@ FORCEINLINE void GLMContext::FlushDrawStates( uint nStartIndex, uint nEndIndex, 
 				}
 #endif
 			}
+#endif // !BYTEMATCH_RETAIL
 		}
 	}
 
