@@ -392,10 +392,17 @@ IVP_Car_System_Real_Wheels::IVP_Car_System_Real_Wheels( IVP_Environment *env, IV
 	IVP_U_Float_Point hp; 
 	hp.set_to_zero();
 	hp.k[cs_car->x_idx] = 1.0f;
+#ifdef BYTEMATCH_RETAIL
+	anchor_left_template.set_anchor_position_cs( car_body, &hp );
+	
+	hp.k[cs_car->x_idx] = -1.0f;
+	anchor_right_template.set_anchor_position_cs( car_body, &hp );
+#else
 	anchor_left_template.set_anchor_position_os( car_body, &hp );
 	
 	hp.k[cs_car->x_idx] = -1.0f;
 	anchor_right_template.set_anchor_position_os( car_body, &hp );
+#endif
 	
 	torque_template.anchors[0]  = &anchor_left_template;
 	torque_template.anchors[1] = &anchor_right_template;
@@ -463,6 +470,67 @@ IVP_Car_System_Real_Wheels::IVP_Car_System_Real_Wheels( IVP_Environment *env, IV
 	
 	this->car_act_down_force = environment->create_force( &force_template );	
 
+#ifdef BYTEMATCH_RETAIL
+	///////////////////////////////////////////////////////////////////
+	////////             EXTRA GRAVITY               //////////////////
+	///////////////////////////////////////////////////////////////////
+	IVP_U_Float_Point center; 
+	center.set_to_zero();
+      
+	center.k[cs_car->y_idx] = templ->extra_gravity_height_offset;
+	
+	anchor_center_template.set_anchor_position_cs( car_body, &center );
+	
+	hp.set_to_zero();
+
+	// Real far downwards so it appears vertical
+	hp.k[cs_car->y_idx] = 1e8f; 
+	if ( environment->get_gravity()->k[cs_car->y_idx] > 0 )
+	{
+		hp.k[cs_car->y_idx] *= -1; // Check direction of gravity
+	}
+	
+	anchor_down_template.set_anchor_position_os( static_object, &hp );
+	
+	force_template.anchors[0] = &anchor_center_template;
+	force_template.anchors[1] = &anchor_down_template;
+	
+	force_template.force = templ->extra_gravity_force_value;
+	
+	force_template.push_first_object = IVP_TRUE;
+	force_template.push_second_object = IVP_FALSE;
+	
+	this->car_act_extra_gravity = environment->create_force( &force_template );	
+
+	IVP_Template_Force powerslide_template;
+	hp.set_to_zero();
+	hp.k[cs_car->x_idx] = -1.0f;
+	hp.k[cs_car->z_idx] = 2.0f;
+	anchor_left_template.set_anchor_position_cs( car_body, &hp );
+
+	hp.k[cs_car->x_idx] = 1.0f;
+	hp.k[cs_car->z_idx] = 2.0f;
+	anchor_right_template.set_anchor_position_cs( car_body, &hp );
+
+	powerslide_template.anchors[0] = &anchor_left_template;
+	powerslide_template.anchors[1] = &anchor_right_template;
+	powerslide_template.force = 0.0f;
+	this->car_act_powerslide_back = environment->create_force( &powerslide_template );
+
+	hp.set_to_zero();
+	hp.k[cs_car->x_idx] = -1.0f;
+	hp.k[cs_car->z_idx] = -2.0f;
+	anchor_left_template.set_anchor_position_cs( car_body, &hp );
+
+	hp.k[cs_car->x_idx] = 1.0f;
+	hp.k[cs_car->z_idx] = -2.0f;
+	anchor_right_template.set_anchor_position_cs( car_body, &hp );
+
+	powerslide_template.anchors[0] = &anchor_left_template;
+	powerslide_template.anchors[1] = &anchor_right_template;
+	powerslide_template.force = 0.0f;
+	this->car_act_powerslide_front = environment->create_force( &powerslide_template );
+#else
 	// mmz: TODO fix this ---V
 
 	hp.set_to_zero();
@@ -535,6 +603,7 @@ IVP_Car_System_Real_Wheels::IVP_Car_System_Real_Wheels( IVP_Environment *env, IV
 	force_template.push_second_object = IVP_FALSE;
 	
 	this->car_act_extra_gravity = environment->create_force( &force_template );	
+#endif
 
 	////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////

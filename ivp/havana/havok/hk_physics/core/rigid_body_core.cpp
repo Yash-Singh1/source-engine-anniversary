@@ -51,13 +51,15 @@ void hk_Rigid_Body_Core::apply_impulses( hk_Core_VMQ_Input &input,
 {
 #ifdef BYTEMATCH_RETAIL
 	if ( physical_unmoveable || pinned ) return;
-	hk_real inv_mass = this->get_inv_mass();
 #else
 	if ( physical_unmoveable || pinned || isnan(impulse_strength[0]) ) return;
 #endif
 	int i = input.m_n_queries-1;
 	hk_Impulse_Info *mq = input.m_vmq;
 	hk_Single_Rigid_Body_CFAD *ds = (hk_Single_Rigid_Body_CFAD *)input.m_buffer;
+#ifdef BYTEMATCH_RETAIL
+	hk_real inv_mass = this->get_inv_mass();
+#endif
 	do {
 #ifdef BYTEMATCH_RETAIL
 		hk_real impulse = impulse_strength[mq->m_matrix_index];
