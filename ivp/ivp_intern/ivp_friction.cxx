@@ -261,8 +261,7 @@ bool IVP_Contact_Point::friction_force_local_constraint_2d_wheel( IVP_Core *core
 	IVP_DOUBLE damping = materials[1]->get_damping();
 	if ( damping != 0.0f )
 	{
-		IVP_U_Float_Point no_rot_damping;
-		no_rot_damping.set_to_zero();
+		IVP_U_Float_Point no_rot_damping( 0.0f, 0.0f, 0.0f );
 		core_a->damp_object( es->delta_time, &no_rot_damping, damping );
 	}
 #endif
@@ -544,7 +543,7 @@ void IVP_Contact_Point::friction_force_local_constraint_1d(const IVP_Event_Sim *
     IVP_U_Float_Point world_speed[2];
     for(i=0;i<2;i++) {
 	IVP_Core *c = core[i];
-	if(!c->physical_unmoveable){
+	if(!c->physical_unmoveable && !c->pinned){
 	    c->get_surface_speed(&tmp_contact_info->contact_point_cs[i],&world_speed[i]);
 	} else {
 	    world_speed[i].set_to_zero();
@@ -566,7 +565,7 @@ void IVP_Contact_Point::friction_force_local_constraint_1d(const IVP_Event_Sim *
 	translation_vec[i].set_to_zero();
 	rotation_vec[i].set_to_zero();
 	
-	if(!c->physical_unmoveable) {
+	if(!c->physical_unmoveable && !c->pinned) {
 	    IVP_U_Matrix *mat=&c->m_world_f_core_last_psi;
 	   
 	    IVP_U_Float_Point push_world_vec;
@@ -601,7 +600,7 @@ void IVP_Contact_Point::friction_force_local_constraint_1d(const IVP_Event_Sim *
     for(i=0;i<2;i++) {
 	IVP_Core *c = core[i];
 	
-	if(!c->physical_unmoveable) {
+	if(!c->physical_unmoveable && !c->pinned) {
 	    c->speed.add_multiple(&translation_vec[i],push_val);
 	    c->rot_speed.add_multiple(&rotation_vec[i],push_val);
 	}

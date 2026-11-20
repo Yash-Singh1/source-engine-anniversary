@@ -249,7 +249,7 @@ void hk_Local_Constraint_System::get_effected_entities(hk_Array<hk_Entity*>& ent
 //virtual hk_real get_minimum_simulation_frequency(hk_Array<hk_Entity> *);
 
 #ifdef BYTEMATCH_RETAIL
-static inline IVP_FLOAT GetMoveableMass(IVP_Core* pCore)
+static IVP_FLOAT GetMoveableMass(IVP_Core* pCore)
 {
 	if ( pCore->physical_unmoveable || pCore->pinned )
 		return 0;
@@ -299,7 +299,7 @@ void hk_Local_Constraint_System::apply_effector_PSI(hk_PSI_Info& pi, hk_Array<hk
 
 	if (m_penetrationCount)
 	{
-		IVP_FLOAT d_time = m_environment->get_delta_PSI_time();
+		IVP_DOUBLE d_time = m_environment->get_delta_PSI_time();
 		IVP_DOUBLE grav = m_environment->get_gravity()->real_length();
 		IVP_DOUBLE speed_change = (grav * 2.0f) * d_time;
 		IVP_FLOAT mass = 0;
@@ -356,14 +356,15 @@ void hk_Local_Constraint_System::apply_effector_PSI(hk_PSI_Info& pi, hk_Array<hk
 		m_penetrationCount = 0;
 	}
 
-	if( !m_errorThisTick )
+	if( m_errorThisTick )
+	{
+		if( m_errorCount <= m_minErrorTicks )
+			m_errorCount++;
+	}
+	else
 	{
 		m_errorCount = 0;
-		return;
 	}
-
-	if( m_errorCount <= m_minErrorTicks )
-		m_errorCount++;
 }
 #else
 IVP_FLOAT GetMoveableMass(IVP_Core* pCore)

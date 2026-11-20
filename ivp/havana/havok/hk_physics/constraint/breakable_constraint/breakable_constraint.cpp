@@ -84,7 +84,36 @@ int hk_Breakable_Constraint::get_vmq_storage_size()
 // the constraint runs with each body's mass (and inertia) scaled by its mass scale; the destructor restores them
 struct BreakableConstraintHelper
 {
-	BreakableConstraintHelper( hk_Rigid_Body* b, hk_real massScale );
+	BreakableConstraintHelper( hk_Rigid_Body* b, hk_real massScale )
+		:	m_core(b->get_rigid_body_core()),
+			m_old_lin_vel(m_core->_get_linear_velocity()),
+			m_old_ang_vel(m_core->_get_spin()),
+			m_body(b)
+	{
+		m_massScale = massScale;
+		if ( massScale != 1.0f && massScale > 0 )
+		{
+			if ( !m_core->_is_fixed() )
+			{
+				hk_Rigid_Body_Core *core = b->get_rigid_body_core();
+				m_saved_inertia.set4( &core->_get_inertia_and_mass() );
+				m_saved_inv_inertia.set4( &core->_get_inv_inertia_and_mass() );
+
+				hk_real mass = m_core->get_mass();
+				if ( mass * massScale > 10000.0f )
+				{
+					massScale = 10000.0f / mass;
+				}
+				hk_real invScale = 1.0f / massScale;
+				core->_get_inertia_and_mass().mult( massScale );
+				core->_get_inertia_and_mass().hesse_val *= massScale;
+				core->_get_inv_inertia_and_mass().mult( invScale );
+				core->_get_inv_inertia_and_mass().hesse_val *= invScale;
+				return;
+			}
+		}
+		m_massScale = 1.0f;
+	}
 
 	~BreakableConstraintHelper()
 	{
@@ -135,34 +164,6 @@ struct BreakableConstraintHelper
 	IVP_U_Float_Hesse m_saved_inertia;
 	IVP_U_Float_Hesse m_saved_inv_inertia;
 };
-
-BreakableConstraintHelper::BreakableConstraintHelper( hk_Rigid_Body* b, hk_real massScale )
-	:	m_core(b->get_rigid_body_core()),
-		m_old_lin_vel(m_core->_get_linear_velocity()),
-		m_old_ang_vel(m_core->_get_spin()),
-		m_body(b)
-{
-	m_massScale = massScale;
-	if ( massScale == 1.0f || !(massScale > 0) || m_core->_is_fixed() )
-	{
-		m_massScale = 1.0f;
-		return;
-	}
-	hk_Rigid_Body_Core *core = b->get_rigid_body_core();
-	m_saved_inertia.set4( &core->_get_inertia_and_mass() );
-	m_saved_inv_inertia.set4( &core->_get_inv_inertia_and_mass() );
-
-	hk_real mass = m_core->get_mass();
-	if ( mass * massScale > 10000.0f )
-	{
-		massScale = 10000.0f / mass;
-	}
-	hk_real invScale = 1.0f / massScale;
-	core->_get_inertia_and_mass().mult( massScale );
-	core->_get_inertia_and_mass().hesse_val *= massScale;
-	core->_get_inv_inertia_and_mass().mult( invScale );
-	core->_get_inv_inertia_and_mass().hesse_val *= invScale;
-}
 #else
 struct BreakableConstraintHelper
 {

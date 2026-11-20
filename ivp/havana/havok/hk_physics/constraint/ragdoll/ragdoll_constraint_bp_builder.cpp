@@ -229,4 +229,7 @@ void hk_Ragdoll_Constraint_BP_Builder::set_ragdoll_constraint(
 	r.m_limits[ HK_LIMIT_CONE ]. set_limits( cone_limits.m_min, cone_limits.m_max);
 	r.m_limits[ HK_LIMIT_PLANES].set_limits( plane_limits.m_min, plane_limits.m_max );
 	r.m_constrainTranslation = constrainTranslation;
+	r.m_axisMap[0] = 0;
+	r.m_axisMap[1] = 1;
+	r.m_axisMap[2] = 2;
 }

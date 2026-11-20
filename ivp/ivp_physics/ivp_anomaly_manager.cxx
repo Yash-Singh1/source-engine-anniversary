@@ -142,7 +142,11 @@ void IVP_Anomaly_Manager::inter_penetration(IVP_Mindist *mindist, IVP_Real_Objec
 	}
 
 #ifdef BYTEMATCH_RETAIL
-	if( !my_objects[swapped]->get_core()->physical_unmoveable || mindist->synapse[swapped].get_status() > IVP_ST_TRIANGLE ) {
+	if( !my_objects[swapped]->get_core()->physical_unmoveable ) {
+		solve_inter_penetration_simple( obj0,obj1,speedChange );
+		return;
+	}
+	if( mindist->synapse[swapped].get_status() > IVP_ST_TRIANGLE ) {
 		solve_inter_penetration_simple( obj0,obj1,speedChange );
 		return;
 	}

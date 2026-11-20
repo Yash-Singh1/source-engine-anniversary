@@ -157,7 +157,7 @@ int P_String::string_cmp(const char *str,const char *search,IVP_BOOL upper_case)
 				if (i > 250) break;
 			}
 			if (*p2 != '*' ) {
-				p1 += strlen((char *)p1)-i;	/* check the end of the string */
+				p1 += p_strlen(p1)-i;	/* check the end of the string */
 				if (p1 < str) return -1;	/* neither less or greater */
 				p2 -= i;
 			}else{
@@ -194,11 +194,11 @@ char *gbs_add_path(char *path,char *name)
 	}
 	if (*name == '/') return name;
 	found =0;
-	len = strlen(path);
+	len = p_strlen(path);
 	for (i=0;i<len;i++) {
 		if (path[i] == '/') found = i+1;
 	}
-	len = found + strlen(name);
+	len = found + p_strlen(name);
 	erg = (char *)p_calloc(sizeof(char),(size_t)(len +1));
 	for (i=0;i<found;i++) {
 		erg[i] = path[i];

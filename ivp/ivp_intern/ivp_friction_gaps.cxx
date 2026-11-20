@@ -16,6 +16,9 @@
 #endif
 #include <ivp_friction_solver.hxx>
 #include <ivp_debug_manager.hxx> // bvecause of debug psi_synchrone
+#ifdef BYTEMATCH_RETAIL
+#include <mathlib/mathlib.h>
+#endif
 
 #if !defined(WIN32) && !defined(PSXII) && !defined(GEKKO) && !defined(PLATFORM_BSD)
 #	include <alloca.h>
@@ -1267,9 +1270,7 @@ IVP_DOUBLE IVP_Friction_System::get_max_energy_gain() {
 	if(my_core->physical_unmoveable==IVP_FALSE) {
 #ifdef BYTEMATCH_RETAIL
 	    // retail clamps the mass with min_friction_mass as both bounds
-	    IVP_FLOAT mass = my_core->get_mass();
-	    mass = ( mass < min_mass ) ? min_mass : mass;
-	    mass = ( mass < min_mass ) ? mass : min_mass;
+	    IVP_FLOAT mass = clamp( my_core->get_mass(), min_mass, min_mass );
 	    IVP_DOUBLE force_gravity = mass * gravity;
 #else
 	    IVP_DOUBLE force_gravity=my_core->get_mass()*9.81f; //@@TL #+# oh oh 

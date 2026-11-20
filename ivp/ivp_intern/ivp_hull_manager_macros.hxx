@@ -14,12 +14,12 @@ void IVP_Hull_Manager::check_hull_synapses(IVP_Environment *env){
 
     // eventually throw hull limit exceeded event
     IVP_FLOAT syn_val;
-    int total_checks = get_synapse_check_count(env);
-    int maxcnt = total_checks;
+    int maxcnt = get_synapse_check_count(env);
+    int total_checks = maxcnt;
     while ( (syn_val = sorted_synapses.find_min_value() - hull_value_next_psi) < 0.0f){
 	IVP_Listener_Hull *syn = (IVP_Listener_Hull *)sorted_synapses.find_min_elem();
 	syn->hull_limit_exceeded_event(this,syn_val);
-	if (maxcnt-- <= 0){
+	if (--maxcnt < 0){
 	    maxcnt += too_many_synapses_checked_error_get_additional(env, total_checks);
 	    if (maxcnt < 0) break;
 	    total_checks += maxcnt + 1;

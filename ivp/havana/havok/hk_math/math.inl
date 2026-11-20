@@ -15,7 +15,7 @@ inline hk_real hk_Math::fabs( hk_real r) { return hk_real(::fabs(r)); }
 inline hk_real hk_Math::tan( hk_real r) { return hk_real(::tan(r)); }
 inline hk_real hk_Math::sin( hk_real r) { return hk_real(::sin(r)); }
 inline hk_real hk_Math::cos( hk_real r) { return hk_real(::cos(r)); }
-inline hk_real hk_Math::atan2( hk_real a, hk_real b)  { return hk_real(::atan2(a,b)); }
+inline hk_real hk_Math::atan2( hk_real a, hk_real b)  { return hk_real(::atan2((double)a,(double)b)); }
 inline hk_real hk_Math::asin( hk_real r) { return hk_real(::asin(r)); }
 inline hk_real hk_Math::acos( hk_real r) { return hk_real(::acos(r)); }
 inline hk_real hk_Math::max( hk_real a, hk_real b) { return a>b ? a : b; }

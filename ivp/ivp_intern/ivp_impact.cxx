@@ -567,8 +567,8 @@ void IVP_Impact_Solver::do_rescue_push(IVP_U_Float_Point *push_dir_norm,IVP_BOOL
 	if(!core[0]->physical_unmoveable)
 	{
 	    //give first obj a test push and look how distance reacts
-	    mat=m_world_f_core[0];
 	    push_vec_world.mult(-1.0f);
+	    mat=m_world_f_core[0];
 	    mat->vimult3(&push_vec_world,&push_vec_obj);
 
 	    core[0]->test_push_core(obj_point[0],&push_vec_obj,&push_vec_world,&translation_vec,&rotation_vec);

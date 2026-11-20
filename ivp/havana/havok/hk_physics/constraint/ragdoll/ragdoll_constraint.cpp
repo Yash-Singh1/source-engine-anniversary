@@ -225,12 +225,22 @@ int	hk_Ragdoll_Constraint::setup_and_step_constraint(
 
 		/* get the relative joint axes and angles */
 		{ // twist setup
+#ifdef BYTEMATCH_RETAIL
+			hk_Vector3 twist_axis_ws;
+			twist_axis_ws.set_add( work.twist_axis_Ref_ws, work.twist_axis_Att_ws);
+			hk_real length = twist_axis_ws.length();
+			hk_real length_inv = 1.0f / length;
+
+			work.twist_axis_ws.set_mul( length_inv, twist_axis_ws );
+			work.twist_axis_ws.w = length * 0.5f; // the tau for the twist
+#else
 			work.twist_axis_ws.set_add( work.twist_axis_Ref_ws, work.twist_axis_Att_ws);
 			hk_real length = work.twist_axis_ws.length();
 			hk_real length_inv = 1.0f / length;
 
 			work.twist_axis_ws *= length_inv;
 			work.twist_axis_ws.w = length * 0.5f; // the tau for the twist
+#endif
 
 			hk_Rotation m_ws_us;
 			m_ws_us.get_column(0) = work.twist_axis_ws;
@@ -292,7 +302,11 @@ int	hk_Ragdoll_Constraint::setup_and_step_constraint(
 
 		hk_Vector3 delta_dist_3;
 		delta_dist_3.set_mul( tau_factor * m_tau * pi.get_inv_delta_time(), dir );
+#ifdef BYTEMATCH_RETAIL
+		delta_dist_3.add_mul( -1.0f * m_strength * strength_factor, *(const hk_Vector3 *)approaching_velocity );
+#else
 		delta_dist_3.add_mul( -0.0f * m_strength * strength_factor, *(const hk_Vector3 *)approaching_velocity );
+#endif
 
 		hk_Fixed_Dense_Matrix<3>& mass_matrix = query_engine.get_vmq_storage().get_fixed_dense_matrix();
 

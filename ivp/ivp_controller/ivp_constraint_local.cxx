@@ -754,7 +754,7 @@ void IVP_Constraint_Local::do_simulation_controller(IVP_Event_Sim *es,IVP_U_Vect
 	    /// #+# switch ausserhalb von loop
 	    for (int i = 0; i < 3; i++) {
 		short map[5] = {0, 1, 2, 0, 1};
-		IVP_DOUBLE simplenorm_transdir, simplenorm_rotdir;
+		IVP_DOUBLE simplenorm_transdir, simplenorm_rotdir = 1.0;
 		switch (norm) {
 		case IVP_NORM_MINIMUM:
 		    simplenorm_transdir = IVP_Inline_Math::fabsd(impulseR_fs.k[0]) + IVP_Inline_Math::fabsd(impulseR_fs.k[1]) + IVP_Inline_Math::fabsd(impulseR_fs.k[2]);

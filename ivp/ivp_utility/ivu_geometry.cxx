@@ -107,7 +107,13 @@ IVP_RETURN_TYPE IVP_U_Plain::calc_intersect_with(const IVP_U_Hesse *plane2,
     straight.vec.normize();
 
     // calc intersection of straight with plane2
+#ifdef BYTEMATCH_RETAIL
+    IVP_RETURN_TYPE res = plane2->calc_intersect_with(&straight, &straight_out->start_point);
+    if (res == IVP_FAULT) return IVP_FAULT;
+    return IVP_OK;
+#else
     return plane2->calc_intersect_with(&straight, &straight_out->start_point);
+#endif
 }
 
 IVP_RETURN_TYPE IVP_U_Hesse::calc_intersect_with(const IVP_U_Straight *straight,

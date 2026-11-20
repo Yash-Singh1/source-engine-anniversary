@@ -702,6 +702,18 @@ IVP_Compact_Ledge *IVP_SurfaceBuilder_Pointsoup::convert_pointsoup_to_compact_le
     int n_points = points->len();
 
     if (n_points <3) return NULL;
+#ifdef BYTEMATCH_RETAIL
+    IVP_Compact_Ledge *res;
+    if ( n_points == 3 ) { // special case: 2-dimensional triangles
+	res = convert_triangle_to_compace_ledge( points->element_at(0), points->element_at(1), points->element_at(2));
+    } else { // use QHULL to convert pointsoup
+	res = IVP_SurfaceBuilder_Pointsoup::convert_pointsoup_to_compact_ledge_internal(points);
+    }
+#if defined WIN32 && defined(_M_IX86)
+  __asm FLDCW tmpflag;
+#endif
+    return res;
+#else
     if ( n_points == 3 ) { // special case: 2-dimensional triangles
 	return convert_triangle_to_compace_ledge( points->element_at(0), points->element_at(1), points->element_at(2));
     } else { // use QHULL to convert pointsoup
@@ -709,6 +721,7 @@ IVP_Compact_Ledge *IVP_SurfaceBuilder_Pointsoup::convert_pointsoup_to_compact_le
     }
 #if defined WIN32 && defined(_M_IX86)
   __asm FLDCW tmpflag;
+#endif
 #endif
 }
 
