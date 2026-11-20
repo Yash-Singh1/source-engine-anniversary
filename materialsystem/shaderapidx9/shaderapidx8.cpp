@@ -123,7 +123,7 @@ mat_fullbright 1 doesn't work properly on alpha materials in testroom_standards
 #pragma warning (disable:4189)
 #endif
 
-#if defined( TOGL_OSX )
+#if defined( TOGL_OSX ) || ( defined( DX_TO_GL_ABSTRACTION ) && defined( BYTEMATCH_RETAIL ) )
 void nativeGetClientRect( void *hWnd, RECT *destRect )
 {
 	// the only useful answer this call can offer, is the size of the canvas.
@@ -3784,7 +3784,7 @@ void CShaderAPIDx8::ResetRenderState( bool bFullReset )
 	RECT windowRect;
 #if !defined( DX_TO_GL_ABSTRACTION )
 	GetClientRect( (HWND)m_hWnd, &windowRect );
-#elif defined( TOGL_OSX )
+#elif defined( TOGL_OSX ) || defined( BYTEMATCH_RETAIL )
 	nativeGetClientRect( m_hWnd, &windowRect );
 #else
 	toglGetClientRect( (VD3DHWND)m_hWnd, &windowRect );
@@ -7010,20 +7010,21 @@ void CShaderAPIDx8::SetTextureState( Sampler_t sampler, ShaderAPITextureHandle_t
 
 	// For now do this the old way on OSX since the dxabstract layer doesn't support SetSamplerStates
 	// ###OSX### punting on OSX for now
-#if DX_TO_GL_ABSTRACTION && !OSX && !defined( BYTEMATCH_RETAIL )
+#if DX_TO_GL_ABSTRACTION && !OSX
 	if ( ( samplerState.m_MinFilter != minFilter ) || ( samplerState.m_MagFilter != magFilter ) || ( samplerState.m_MipFilter != mipFilter ) ||
-		( samplerState.m_UTexWrap != uTexWrap ) || ( samplerState.m_VTexWrap != vTexWrap ) || ( samplerState.m_WTexWrap != wTexWrap ) || 
-		( samplerState.m_FinestMipmapLevel != finestMipmapLevel ) || ( samplerState.m_LodBias != lodBias ) )
-	{
-		samplerState.m_UTexWrap = uTexWrap;
-		samplerState.m_VTexWrap = vTexWrap;
-		samplerState.m_WTexWrap = wTexWrap;
-		samplerState.m_MinFilter = minFilter;
-		samplerState.m_MagFilter = magFilter;
-		samplerState.m_MipFilter = mipFilter;
-		samplerState.m_FinestMipmapLevel = finestMipmapLevel;
-		samplerState.m_LodBias = lodBias;
+		( samplerState.m_UTexWrap != uTexWrap ) || ( samplerState.m_VTexWrap != vTexWrap ) || ( samplerState.m_WTexWrap != wTexWrap )
+#ifndef BYTEMATCH_RETAIL
+		|| ( samplerState.m_FinestMipmapLevel != finestMipmapLevel ) || ( samplerState.m_LodBias != lodBias )
+#endif
+	) {
+		samplerState.m_UTexWrap = uTexWrap; samplerState.m_VTexWrap = vTexWrap; samplerState.m_WTexWrap = wTexWrap;
+		samplerState.m_MinFilter = minFilter; samplerState.m_MagFilter = magFilter; samplerState.m_MipFilter = mipFilter;
+#ifdef BYTEMATCH_RETAIL
+		Dx9Device()->SetSamplerStates( sampler, uTexWrap, vTexWrap, wTexWrap, minFilter, magFilter, mipFilter );
+#else
+		samplerState.m_FinestMipmapLevel = finestMipmapLevel; samplerState.m_LodBias = lodBias;
 		Dx9Device()->SetSamplerStates( sampler, uTexWrap, vTexWrap, wTexWrap, minFilter, magFilter, mipFilter, finestMipmapLevel, lodBias );
+#endif
 	}
 #else
 	SETSAMPLESTATEANDMIRROR( sampler, samplerState, D3DSAMP_ADDRESSU, m_UTexWrap, uTexWrap );
@@ -11691,7 +11692,7 @@ void CShaderAPIDx8::SetViewports( int nCount, const ShaderViewport_t* pViewports
 			RECT viewRect;
 #if !defined( DX_TO_GL_ABSTRACTION )
 			GetClientRect( ( HWND )m_ViewHWnd, &viewRect );
-#elif defined( TOGL_OSX )
+#elif defined( TOGL_OSX ) || defined( BYTEMATCH_RETAIL )
 			nativeGetClientRect( m_ViewHWnd, &viewRect );
 #else
 			toglGetClientRect( (VD3DHWND)m_ViewHWnd, &viewRect );
