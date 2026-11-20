@@ -1058,9 +1058,10 @@ CPackedStoreFileHandle CBaseFileSystem::FindFileInVPKs( const char *pFileName, c
 	CSearchPathsIterator iter( this, &pFileName, pPathID );
 	for ( CSearchPath *pSearchPath = iter.GetFirst(); pSearchPath != NULL; pSearchPath = iter.GetNext() )
 	{
-		if ( pSearchPath->GetPackedStore() )
+		CPackedStore *pPackedStore = pSearchPath->GetPackedStore();
+		if ( pPackedStore )
 		{
-			CPackedStoreFileHandle fHandle = pSearchPath->GetPackedStore()->OpenFile( pFileName );
+			CPackedStoreFileHandle fHandle = pPackedStore->OpenFile( pFileName );
 			if ( fHandle )
 			{
 				return fHandle;
@@ -1784,31 +1785,35 @@ void CBaseFileSystem::AddMapPackFile( const char *pPath, const char *pPathID, Se
 
 	{
 		FILE *fp = NULL;
-		dheader_t header;
-		int nBytesRead;
-
 #if defined( SUPPORT_PACKED_STORE )
 		if ( !fhandle )
 #endif
 			fp = Trace_FOpen( fullpath, "rb", 0, NULL );
-		if ( fp )
-		{
-			memset( &header, 0, sizeof(dheader_t) );
-			nBytesRead = FS_fread( &header, sizeof( header ), fp );
-		}
+		if ( !fp
 #if defined( SUPPORT_PACKED_STORE )
-		else if ( fhandle )
-		{
-			memset( &header, 0, sizeof(dheader_t) );
-			nBytesRead = fhandle.Read( &header, sizeof( header ) );
-		}
+			&& !fhandle
 #endif
-		else
+			)
 		{
 			// Couldn't open it
 			Warning( FILESYSTEM_WARNING, "Couldn't open .bsp %s for embedded pack file check\n", fullpath );
 			return;
 		}
+	
+		// Get the .bsp file header
+		dheader_t header;
+		memset( &header, 0, sizeof(dheader_t) );
+		int nBytesRead;
+		if ( fp )
+		{
+			nBytesRead = FS_fread( &header, sizeof( header ), fp );
+		}
+#if defined( SUPPORT_PACKED_STORE )
+		else
+		{
+			nBytesRead = fhandle.Read( &header, sizeof( header ) );
+		}
+#endif
 		m_Stats.nBytesRead += nBytesRead;
 		m_Stats.nReads++;
 
@@ -4304,11 +4309,12 @@ void CBaseFileSystem::SetCurrentGameExpansionId( const char *pszExpansionId )
 
 bool CBaseFileSystem::GetCurrentGameExpansionId( char *pszExpansionId, int nMaxLen )
 {
-	if ( !m_sCurrentGameExpansionId.Length() )
-		return false;
-
-	V_snprintf( pszExpansionId, nMaxLen, "%s", m_sCurrentGameExpansionId.Get() );
-	return true;
+	if ( m_sCurrentGameExpansionId.Length() )
+	{
+		V_snprintf( pszExpansionId, nMaxLen, "%s", m_sCurrentGameExpansionId.Get() );
+		return true;
+	}
+	return false;
 }
 
 void CBaseFileSystem::SetUseLowViolancePaths( bool bUseLowViolence )
@@ -4581,7 +4587,7 @@ void CBaseFileSystem::UpdateSearchPathsForCurrentGameExpansion()
 
 	char szExpansionPath[MAX_PATH];
 	V_snprintf( szExpansionPath, sizeof( szExpansionPath ), "%s/%s/", szBasePath, szExpansionId );
-	V_FixSlashes( szExpansionPath, '/' );
+	V_FixSlashes( szExpansionPath );
 
 	CUtlSymbol expansionPathSymbol = g_PathIDTable.Find( szExpansionPath );
 	if ( !expansionPathSymbol.IsValid() )
@@ -4652,9 +4658,9 @@ int CBaseFileSystem::GetSearchPaths2( const char *pathID, bool bGetPackFiles, CU
 {
 	AUTO_LOCK( m_SearchPathsMutex );
 
-	int nCount = 0;
 	CUtlString sResult;
 	CSearchPathsIterator iter( this, pathID, bGetPackFiles ? FILTER_NONE : FILTER_CULLPACK );
+	int nCount = 0;
 	for ( CSearchPath *pSearchPath = iter.GetFirst(); pSearchPath != NULL; pSearchPath = iter.GetNext() )
 	{
 		CUtlString sName;
@@ -4720,7 +4726,10 @@ bool CBaseFileSystem::GetFontTempFile( const char *pszFontFile, char *pszTempFil
 	Close( hFont );
 
 	V_snprintf( pszTempFile, nMaxLen, "temp_font/%s", pszFileName );
-	return WriteFile( pszTempFile, "GAME", buf );
+	if ( !WriteFile( pszTempFile, "GAME", buf ) )
+		return false;
+
+	return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -5086,7 +5095,8 @@ void CBaseFileSystem::CreateDirHierarchy( const char *pRelativePathT, const char
 	char *s = szScratchFileName;
 	while( s < end )
 	{
-		if( *s == CORRECT_PATH_SEPARATOR && s != szScratchFileName && ( IsLinux() || *( s - 1 ) != ':' ) )
+		char ch = *s;
+		if( ( ch == CORRECT_PATH_SEPARATOR || ( !IsPosix() && ch == INCORRECT_PATH_SEPARATOR ) ) && s != szScratchFileName && ( IsLinux() || *( s - 1 ) != ':' ) )
 		{
 			*s = '\0';
 #if defined( _WIN32 )
@@ -5094,7 +5104,7 @@ void CBaseFileSystem::CreateDirHierarchy( const char *pRelativePathT, const char
 #elif defined( POSIX )
 			mkdir( szScratchFileName, S_IRWXU |  S_IRGRP |  S_IROTH );// owner has rwx, rest have r
 #endif
-			*s = CORRECT_PATH_SEPARATOR;
+			*s = ch;
 		}
 		s++;
 	}

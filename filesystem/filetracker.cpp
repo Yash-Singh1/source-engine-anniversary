@@ -713,17 +713,17 @@ void CFileTracker2::RecordFileSeek( FILE *fp, int64 pos, int seekType )
 	if ( trackedfile.m_filehashFinal.m_eFileHashType == FileHash_t::k_EFileHashTypeEntireFile )
 		return;
 
-	switch ( seekType )
+	if ( seekType == FILESYSTEM_SEEK_HEAD )
 	{
-	case FILESYSTEM_SEEK_HEAD:
 		trackedfile.m_nFilePos = pos;
-		break;
-	case FILESYSTEM_SEEK_CURRENT:
-		trackedfile.m_nFilePos += pos;
-		break;
-	case FILESYSTEM_SEEK_TAIL:
+	}
+	else if ( seekType == FILESYSTEM_SEEK_TAIL )
+	{
 		trackedfile.m_nFilePos = trackedfile.m_nLength - pos;
-		break;
+	}
+	else if ( seekType == FILESYSTEM_SEEK_CURRENT )
+	{
+		trackedfile.m_nFilePos += pos;
 	}
 
 	CRC32_ProcessBuffer( &trackedfile.m_filehashInProgress.m_crcIOSequence, &pos, sizeof( pos ) );

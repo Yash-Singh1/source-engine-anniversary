@@ -796,17 +796,19 @@ bool LoadExpansionInfo( const char *pDirectoryName, char *pszExpansion, unsigned
 }
 #endif
 
-static bool HasHDContent( const char *pModPath, const char *pBaseDir )
+static bool BLoadHDContent( const char *pModPath, const char *pBaseDir )
 {
 	char szHDFile[1024];
 	V_ComposeFileName( pModPath, "game_hd.txt", szHDFile, sizeof( szHDFile ) );
 	char szAbsHDFile[1024];
 	V_MakeAbsolutePath( szAbsHDFile, sizeof( szAbsHDFile ), szHDFile, pBaseDir );
 	FILE *fp = fopen( szAbsHDFile, "rb" );
-	if ( !fp )
-		return false;
-	fclose( fp );
-	return true;
+	if ( fp )
+	{
+		fclose( fp );
+		return true;
+	}
+	return false;
 }
 
 FSReturnCode_t FileSystem_LoadSearchPaths( CFSSearchPathsInit &initInfo )
@@ -829,7 +831,7 @@ FSReturnCode_t FileSystem_LoadSearchPaths( CFSSearchPathsInit &initInfo )
 	// The MOD directory is always the one that contains gameinfo.txt
 	Q_strncpy( initInfo.m_ModPath, initInfo.m_pDirectoryName, sizeof( initInfo.m_ModPath ) );
 
-	bool bUseHDContent = HasHDContent( initInfo.m_ModPath, baseDir );
+	bool bUseHDContent = BLoadHDContent( initInfo.m_ModPath, baseDir );
 	const char *pszLanguage = initInfo.m_pLanguage;
 
 	initInfo.m_pFileSystem->SetUseLowViolancePaths( initInfo.m_bLowViolence );
@@ -846,25 +848,25 @@ FSReturnCode_t FileSystem_LoadSearchPaths( CFSSearchPathsInit &initInfo )
 	V_StripTrailingSlash( szBaseDir );
 
 	V_snprintf( szRootModPath, sizeof( szRootModPath ), "%s/%s", szBaseDir, pszGameDir );
-	V_FixSlashes( szRootModPath, '/' );
+	V_FixSlashes( szRootModPath );
 
-	if ( !bComplete )
-	{
-		V_snprintf( szExpansionPath, sizeof( szExpansionPath ), "%s/%s", szBaseDir, pszGameDir );
-		V_FixSlashes( szExpansionPath, '/' );
-		initInfo.m_pFileSystem->SetCurrentGameExpansionId( "" );
-	}
-	else
+	if ( bComplete )
 	{
 		char szExpansion[16] = { 0 };
 #ifdef ENGINE_DLL
 		LoadExpansionInfo( initInfo.m_pDirectoryName, szExpansion, sizeof( szExpansion ) );
-		if ( !szExpansion[0] )
+		if ( V_strlen( szExpansion ) == 0 )
 #endif
 			V_snprintf( szExpansion, sizeof( szExpansion ), "hl2" );
 		initInfo.m_pFileSystem->SetCurrentGameExpansionId( szExpansion );
 		V_snprintf( szExpansionPath, sizeof( szExpansionPath ), "%s/%s", szBaseDir, szExpansion );
-		V_FixSlashes( szExpansionPath, '/' );
+		V_FixSlashes( szExpansionPath );
+	}
+	else
+	{
+		V_snprintf( szExpansionPath, sizeof( szExpansionPath ), "%s/%s", szBaseDir, pszGameDir );
+		V_FixSlashes( szExpansionPath );
+		initInfo.m_pFileSystem->SetCurrentGameExpansionId( "" );
 	}
 
 	initInfo.m_pFileSystem->AddSearchPath( szExpansionPath, "exp", PATH_ADD_TO_TAIL );
