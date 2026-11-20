@@ -572,9 +572,7 @@ void FloatBitMap_t::MakeTileable(void)
 	// set each pixel=avg-pixel
 	FloatBitMap_t *cursrc=&rslta;
 	for(int x=1;x<Width-1;x++)
-	{
 		for(int y=1;y<Height-1;y++)
-		{
 			for(int c=0;c<3;c++)
 			{
 				DiffMapX.Pixel(x,y,c)=Pixel(x,y,c)-Pixel(x+1,y,c);
@@ -607,9 +605,7 @@ void FloatBitMap_t::MakeTileable(void)
 			{
 				float error=0.0;
 				for(int x=1;x<Width-1;x++)
-				{
 					for(int y=1;y<Height-1;y++)
-					{
 						for(int c=0;c<3;c++)
 						{
 							float desiredx=DiffMapX.Pixel(x,y,c)+cursrc->Pixel(x+1,y,c);
@@ -619,16 +615,12 @@ void FloatBitMap_t::MakeTileable(void)
 							error+=SQ(desired-cursrc->Pixel(x,y,c));
 						}
 						SWAP(cursrc,curdst);
-					}
-				}
 			}
 			// paste result
 			for(int x=0;x<Width;x++)
 				for(int y=0;y<Height;y++)
 					for(int c=0;c<3;c++)
 						Pixel(x,y,c)=curdst->Pixel(x,y,c);
-		}
-	}
 }
 
 
@@ -698,13 +690,9 @@ void FloatBitMap_t::Poisson(FloatBitMap_t *deltas[4],
 		tmp->Poisson(lowdeltas,n_iters*4,flags);
 		// now, propagate results from tmp to us
 		for(int x=0;x<tmp->Width;x++)
-		{
 			for(int y=0;y<tmp->Height;y++)
-			{
 				for(int xi=0;xi<2;xi++)
-				{
 					for(int yi=0;yi<2;yi++)
-					{
 						if (Alpha(x*2+xi,y*2+yi))
 						{
 							for(int c=0;c<3;c++)
@@ -719,10 +707,6 @@ void FloatBitMap_t::Poisson(FloatBitMap_t *deltas[4],
 						delete tmp;
 						for(int i=0;i<NDELTAS;i++)
 							delete lowdeltas[i];
-					}
-				}
-			}
-		}
 	}
 	FloatBitMap_t work1(this);
 	FloatBitMap_t work2(this);

@@ -373,8 +373,8 @@ protected:
 	void GetDownloadFaceCount( int &nFirstFace, int &nFaceCount );
 	void ComputeMipLevelSubRect( const Rect_t* pSrcRect, int nMipLevel, Rect_t *pSubRect );
 
-	IVTFTexture *GetScratchVTFTexture( );
-	IVTFTexture *GetScratchVTFTexturePaired( );
+	IVTFTexture *GetScratchVTFTexture( bool bPaired = false );
+
 
 	int GetOptimalReadBuffer( FileHandle_t hFile, int nFileSize, CUtlBuffer &optimalBuffer );
 	void FreeOptimalReadBuffer( int nMaxSize );
@@ -918,8 +918,16 @@ void CTexture::Release()
 	NotifyUnloadedFile();
 }
 
-IVTFTexture *CTexture::GetScratchVTFTexture( )
+IVTFTexture *CTexture::GetScratchVTFTexture( bool bPaired )
 {
+	if ( bPaired )
+	{
+		if ( !s_pVTFTexturePaired )
+		{
+			s_pVTFTexturePaired = CreateVTFTexture();
+		}
+		return s_pVTFTexturePaired;
+	}
 	if ( !s_pVTFTexture )
 	{
 		s_pVTFTexture = CreateVTFTexture();
@@ -927,14 +935,6 @@ IVTFTexture *CTexture::GetScratchVTFTexture( )
 	return s_pVTFTexture;
 }
 
-IVTFTexture *CTexture::GetScratchVTFTexturePaired( )
-{
-	if ( !s_pVTFTexturePaired )
-	{
-		s_pVTFTexturePaired = CreateVTFTexture();
-	}
-	return s_pVTFTexturePaired;
-}
 
 //-----------------------------------------------------------------------------
 // Get an optimal read buffer, persists and avoids excessive allocations
@@ -2709,7 +2709,7 @@ IVTFTexture *CTexture::LoadTextureBitsFromFile( char *pCacheFileName, char **ppR
 #line 2989
 	tmZoneFiltered( TELEMETRY_LEVEL0, 50, TMZF_NONE, "%s %s", __FUNCTION__, tmDynamicString( TELEMETRY_LEVEL0, pCacheFileName ) );
 #line 2710
-	IVTFTexture *pVTFTexture = bPaired ? GetScratchVTFTexturePaired() : GetScratchVTFTexture();
+	IVTFTexture *pVTFTexture = GetScratchVTFTexture( bPaired );
 
 	CUtlBuffer buf;
 
@@ -2768,7 +2768,7 @@ IVTFTexture *CTexture::LoadTextureBitsFromFile( char *pCacheFileName, char **ppR
 	}
 
 	// OSX hackery
-	int nPreserveFlags = m_nFlags & TEXTUREFLAGS_SRGB;
+	bool bPreserveSRGB = ( m_nFlags & TEXTUREFLAGS_SRGB ) != 0;
 
 	// Seek the reading back to the front of the buffer
 	buf.SeekGet( CUtlBuffer::SEEK_HEAD, 0 );
@@ -2778,8 +2778,9 @@ IVTFTexture *CTexture::LoadTextureBitsFromFile( char *pCacheFileName, char **ppR
 		pVTFTexture->Height(), 
 		pVTFTexture->Depth(), 
 		pVTFTexture->Format(), 
-		pVTFTexture->Flags() | nPreserveFlags, 
-		pVTFTexture->FrameCount() );
+		pVTFTexture->Flags() | ( bPreserveSRGB ? TEXTUREFLAGS_SRGB : 0 ), 
+		pVTFTexture->FrameCount(),
+		bPaired );
 
 	VectorCopy( pVTFTexture->Reflectivity(), m_vecReflectivity );
 
@@ -2863,7 +2864,7 @@ IVTFTexture *CTexture::LoadTextureBitsFromFile( char *pCacheFileName, char **ppR
 	if ( !IsProcedural() )
 		SetupDebuggingTextures( pVTFTexture );
 
-	ConvertToActualFormat( pVTFTexture );
+	ConvertToActualFormat( pVTFTexture, bPaired );
 
 	return pVTFTexture;
 }
