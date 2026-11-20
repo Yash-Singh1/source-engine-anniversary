@@ -43,7 +43,11 @@ class hk_Ragdoll_Constraint : public hk_Constraint
 			return 3;
 		}
 
+#ifdef BYTEMATCH_RETAIL
+		inline const hk_Transform &get_transform(int x) const
+#else
 		inline hk_Transform get_transform(int x) const
+#endif
 		{
 			return m_transform_os_ks[x];
 		}

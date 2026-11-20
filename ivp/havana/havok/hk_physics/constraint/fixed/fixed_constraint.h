@@ -45,7 +45,11 @@ class hk_Fixed_Constraint : public hk_Constraint
 			return 0;
 		}
 
+#ifdef BYTEMATCH_RETAIL
+		inline const hk_Transform &get_transform(int x) const
+#else
 		inline hk_Transform get_transform(int x) const
+#endif
 		{
 			// todo(crack): this is probably wrong... fix me
 			HK_ASSERT(0 && "Incomplete implementation");

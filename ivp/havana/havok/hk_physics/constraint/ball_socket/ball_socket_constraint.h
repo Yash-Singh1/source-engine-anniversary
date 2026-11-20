@@ -37,7 +37,11 @@ class hk_Ball_Socket_Constraint : public hk_Constraint
 			return 3;
 		}
 
+#ifdef BYTEMATCH_RETAIL
+		inline const hk_Vector3 &get_transform(int x) const
+#else
 		inline hk_Vector3 get_transform(int x) const
+#endif
 		{
 			return m_translation_os_ks[x];
 		}
