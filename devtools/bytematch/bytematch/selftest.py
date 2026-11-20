@@ -296,10 +296,168 @@ def test_no_capstone(t, depots, b):
         t.check(f'no-capstone {name}', ok, f'{f["matched"]}/{f["total"]} matched')
 
 
+def test_pe_matcher(t):
+    import struct
+    from . import model, winmap
+
+    # 1. sig() normalization: function-pointer return types and repeated template args
+    cases = [
+        ('void * (__cdecl * __cdecl ClientDLL_GetFactory(void))(char const *, int *)',
+         'sig:ClientDLL_GetFactory()'),
+        ('public: virtual void * (__cdecl * __thiscall CEngineVGui::GetGameUIFactory(void))(char const *, int *)',
+         'sig:CEngineVGui::GetGameUIFactory()'),
+        ('public: virtual void (__cdecl * __thiscall CNetworkStringTable::GetCallback(void))(void *, class INetworkStringTable *, int)',
+         'sig:CNetworkStringTable::GetCallback()'),
+        ('public: __thiscall CUtlLinkedList<int, unsigned short>::~CUtlLinkedList<int, unsigned short>(void)',
+         'sig:CUtlLinkedList<int,unsignedshort>::~CUtlLinkedList()'),
+        ('public: int __thiscall Foo::operator()(int)',
+         'sig:Foo::operator()(int)'),
+        ('public: int __thiscall Foo<int>::Bar<int>(void)',
+         'sig:Foo<int>::Bar<int>()'),
+    ]
+    bad = [(inp, winmap.sig(inp), want) for inp, want in cases if winmap.sig(inp) != want]
+    t.check('PE sig() fn-ptr return & repeated template args', not bad, str(bad[:1]) if bad else f'{len(cases)}/{len(cases)}')
+
+    # Build a synthetic linked PE image at 0x10001000 for stripped-PE rules
+    base = 0x10001000
+    R = model.Module('<synth-retail>', 'pe', True)
+    R.image_base, R.image_end = base, base + 0x10000
+    O = model.Module('<synth-ours>', 'coff', False)
+
+    # Layout in .text (16-byte aligned functions):
+    # +0x00: dtor (7 B: mov [ecx], 0x10009000; ret) + 9 B int3
+    # +0x10: atexit stub (10 B: mov ecx, 0x10008000; jmp +0x00) + 6 B int3
+    # +0x20: dynamic initializer (18 B: mov ecx, 0x10008000; push +0x10; call +0x50; pop ecx; ret) + 14 B int3
+    # +0x40: merged preceding func (12 B) + 4 B int3; +0x50: real target func (16 B, exact mult of 16, ends in ret)
+    # +0x60: frameless successor func (8 B: push edi; call +0x50; pop edi; ret)
+    # +0x70: thunk (7 B: mov eax, [ecx+0xc0]; ret) + 9 B int3
+    # +0x80: dtor-array-1 (10 B) + 6 B int3; +0x90: dtor-array-2 (10 B, matches ours) + 6 B int3
+    # +0xa0: caller referencing +0x90 (12 B) + 4 B int3
+    # +0xb0: jmp +0x60 (tail call proving +0x60 is a function start)
+    buf = bytearray(b'\xcc' * 0xc0)
+    dtor_code = b'\xc7\x01' + struct.pack('<I', base + 0x9000) + b'\xc3'
+    buf[0x00:0x07] = dtor_code
+    stub_code = b'\xb9' + struct.pack('<I', base + 0x8000) + b'\xe9' + struct.pack('<i', 0x00 - 0x1a)
+    buf[0x10:0x1a] = stub_code
+    init_code = (b'\xb9' + struct.pack('<I', base + 0x8000) +
+                 b'\x68' + struct.pack('<I', base + 0x10) +
+                 b'\xe8' + struct.pack('<i', 0x50 - 0x2f) + b'\x59\xc3')
+    buf[0x20:0x31] = init_code
+    prev_code = b'\x55\x8b\xec\x83\xc0\x01\x83\xc0\x02\x5d\xc3'
+    buf[0x40:0x4b] = prev_code
+    real_code = b'\x55\x8b\xec\x8b\x45\x08\x83\xc0\x07\x03\xc0\x83\xc0\x01\x5d\xc3'  # 16 B exact!
+    buf[0x50:0x60] = real_code
+    succ_code = b'\x57\xe8' + struct.pack('<i', 0x50 - 0x66) + b'\x5f\xc3'
+    buf[0x60:0x68] = succ_code
+    thunk_code = b'\x8b\x81\xc0\x00\x00\x00\xc3'
+    buf[0x70:0x77] = thunk_code
+    arr1_code = b'\x56\x57\xbe' + struct.pack('<I', base + 0x8100) + b'\x5f\x5e\xc3'  # 10 B (different)
+    arr2_code = b'\x56\x57\xbf' + struct.pack('<I', base + 0x8200) + b'\x5f\x5e\xc3'  # 10 B (matches ours)
+    buf[0x80:0x8a] = arr1_code
+    buf[0x90:0x9a] = arr2_code
+    caller_code = b'\x68' + struct.pack('<I', base + 0x90) + b'\xe8' + struct.pack('<i', 0x50 - 0xaa) + b'\x59\xc3'
+    buf[0xa0:0xac] = caller_code
+    buf[0xb0:0xb5] = b'\xe9' + struct.pack('<i', 0x60 - 0xb5)
+    R.code.append((base, bytes(buf), '.text'))
+
+    r_stub = model.Function('sig:WrongDtor()', 'sig:WrongDtor()', base + 0x10, bytes(buf[0x10:0x1a]),
+                            obj='foo', size_known=False, raw_size=16,
+                            relocs=[model.Reloc(1, 4, 'abs')], module=R)
+    r_init = model.Function('__GLOBAL__I_a', '__GLOBAL__I_a', base + 0x20, bytes(buf[0x20:0x31]),
+                            obj='foo', size_known=False, raw_size=32,
+                            relocs=[model.Reloc(1, 4, 'abs'), model.Reloc(6, 4, 'abs')], module=R)
+    # Merged extent: covers prev_code (+0x40), real_code (+0x50), AND succ_code (+0x60) with no boundary!
+    r_merged = model.Function('sig:RealFn()', 'sig:RealFn()', base + 0x40, bytes(buf[0x40:0x68]),
+                              obj='foo', size_known=False, raw_size=40, module=R)
+    r_thunk = model.Function('sig:CBase::Get()#thunk4', 'sig:CBase::Get()#thunk4', base + 0x70,
+                             bytes(buf[0x70:0x77]), obj='foo', size_known=False, raw_size=16, module=R)
+    r_arr1 = model.Function('___cxx_global_array_dtor', '__cxx_global_array_dtor', base + 0x80,
+                            bytes(buf[0x80:0x8a]), obj='bar', size_known=False, raw_size=16, module=R)
+    r_arr2 = model.Function('___cxx_global_array_dtor', '__cxx_global_array_dtor', base + 0x90,
+                            bytes(buf[0x90:0x9a]), obj='foo', size_known=False, raw_size=16, module=R)
+    r_caller = model.Function('sig:Caller()', 'sig:Caller()', base + 0xa0, bytes(buf[0xa0:0xac]),
+                              obj='foo', size_known=False, raw_size=16, module=R)
+    R.functions = [r_stub, r_init, r_merged, r_thunk, r_arr1, r_arr2, r_caller]
+    for fn in (r_init, r_merged, r_thunk, r_arr1, r_arr2, r_caller):
+        R.add_name(fn.addr, fn.key)
+
+    o_dtor = model.Function('??1CDtor@@UAE@XZ', '??1CDtor@@UAE@XZ', 0,
+                            b'\xc7\x01\x00\x00\x00\x00\xc3', obj='foo',
+                            relocs=[model.Reloc(2, 4, 'abs', 'vft')], module=O)
+    o_stub = model.Function('??__Fg_x@@YAXXZ', '??__Fg_x@@YAXXZ', 0x10,
+                            b'\xb9\x00\x00\x00\x00\xe9\x00\x00\x00\x00', obj='foo',
+                            relocs=[model.Reloc(1, 4, 'abs', 'g_x'), model.Reloc(6, 4, 'pcrel', '??1CDtor@@UAE@XZ')],
+                            module=O)
+    o_init = model.Function('??__Eg_x@@YAXXZ', '??__Eg_x@@YAXXZ', 0x20,
+                            b'\xb9\x00\x00\x00\x00\x68\x00\x00\x00\x00\xe8\x00\x00\x00\x00\x59\xc3', obj='foo',
+                            relocs=[model.Reloc(1, 4, 'abs', 'g_x'), model.Reloc(6, 4, 'abs', '??__Fg_x@@YAXXZ'),
+                                    model.Reloc(11, 4, 'pcrel', 'sig:RealFn()')], module=O)
+    o_real = model.Function('?RealFn@@YAXXZ', '?RealFn@@YAXXZ', 0x50, real_code, obj='foo',
+                            aliases=['sig:RealFn()'], module=O)
+    o_thunk = model.Function('?Get@CBase@@UAEHXZ', '?Get@CBase@@UAEHXZ', 0x70, thunk_code, obj='foo',
+                             aliases=['sig:CBase::Get()'], module=O)
+    o_arr2 = model.Function('??__Farr@@YAXXZ', '??__Farr@@YAXXZ', 0x90,
+                            b'\x56\x57\xbf\x00\x00\x00\x00\x5f\x5e\xc3', obj='foo',
+                            relocs=[model.Reloc(3, 4, 'abs', 'g_arr')], module=O)
+    o_caller = model.Function('?Caller@@YAXXZ', '?Caller@@YAXXZ', 0xa0,
+                              b'\x68\x00\x00\x00\x00\xe8\x00\x00\x00\x00\x59\xc3', obj='foo',
+                              relocs=[model.Reloc(1, 4, 'abs', '??__Farr@@YAXXZ'),
+                                      model.Reloc(6, 4, 'pcrel', 'sig:RealFn()')],
+                              aliases=['sig:Caller()'], module=O)
+    # Put WrongDtor in ours with wrong bytes so r_stub starts as DIFFERS (just like engine.dll)
+    o_wrong = model.Function('?WrongDtor@@YAXXZ', '?WrongDtor@@YAXXZ', 0x100, b'\x90' * 30, obj='foo',
+                             aliases=['sig:WrongDtor()'], module=O)
+    R.add_name(base + 0x50, 'sig:RealFn()')
+
+    # 2. _find_late_start + _ends_at (exact multiple of 16 followed by tail-called frameless func)
+    res_m = compare.compare(r_merged, o_real, True)
+    t.check('PE stripped late-start & ret+call_target extent',
+            res_m.status == compare.EXACT and getattr(res_m, 'matched_at', None) == base + 0x50,
+            f'{res_m.status} @ {hex(getattr(res_m, "matched_at", 0))}')
+
+    # 3. Full report.run(): verifies #thunk, ref_map atexit stub, and VA-disambiguated equivalent target
+    data = report.run(R, [o_dtor, o_stub, o_init, o_real, o_thunk, o_arr2, o_caller, o_wrong], objects=['foo'])
+    by_addr = {r.retail.addr: r for r in data['results']}
+    t.check('PE virtual adjustor #thunk pairing',
+            by_addr[base + 0x70].status == compare.EXACT and getattr(by_addr[base + 0x70], 'matched_as', None) == o_thunk.name,
+            f'{by_addr[base + 0x70].status} as {getattr(by_addr[base + 0x70], "matched_as", None)}')
+    t.check('PE matched-reloc atexit stub resolution',
+            by_addr[base + 0x10].status == compare.MASKED and getattr(by_addr[base + 0x10], 'matched_as', None) == o_stub.name,
+            f'{by_addr[base + 0x10].status} as {getattr(by_addr[base + 0x10], "matched_as", None)}')
+    t.check('PE VA-based equivalent target disambiguates duplicate names',
+            by_addr[base + 0xa0].status == compare.MASKED and bool(getattr(by_addr[base + 0xa0], 'equivalent_targets', None)),
+            f'{by_addr[base + 0xa0].status}')
+    # Negative check: mismatched bytes on #thunk must NOT match
+    o_bad_thunk = model.Function('?Get@CBase@@UAEHXZ', '?Get@CBase@@UAEHXZ', 0x70,
+                                 b'\x8b\x81\xc4\x00\x00\x00\xc3', obj='foo', aliases=['sig:CBase::Get()'], module=O)
+    bad_data = report.run(R, [o_bad_thunk], objects=['foo'])
+    bad_thunk_res = [r for r in bad_data['results'] if r.retail.addr == base + 0x70][0]
+    t.check('PE mismatched #thunk bytes are rejected', bad_thunk_res.status == compare.MISSING, bad_thunk_res.status)
+
+    # 4. _find_early_start: map entry started mid-function right after an inlined DebuggerBreak int3
+    R2 = model.Module('<synth-early>', 'pe', True)
+    R2.image_base, R2.image_end = base, base + 0x10000
+    early_code = b'\x55\x8b\xec\x83\xec\x10\x53\x8b\xd9\x33\xc0\x85\xc0\x74\x01\xcc\x5b\x8b\xe5\x5d\xc3'  # 21 B, int3 at +15
+    buf2 = bytearray(b'\xcc' * 0x40)
+    buf2[0x00:len(early_code)] = early_code
+    R2.code.append((base, bytes(buf2), '.text'))
+    R2.port_starts = {base}
+    r_mid = model.Function('sig:EarlyFn()', 'sig:EarlyFn()', base + 16, bytes(buf2[16:len(early_code)]),
+                           obj='foo', size_known=False, raw_size=len(early_code) - 16, module=R2)
+    R2.functions = [r_mid]
+    o_early = model.Function('?EarlyFn@@YAXXZ', '?EarlyFn@@YAXXZ', 0, early_code, obj='foo',
+                             aliases=['sig:EarlyFn()'], module=O)
+    res_e = compare.compare(r_mid, o_early, True)
+    t.check('PE stripped early-start across inlined int3',
+            res_e.status == compare.EXACT and getattr(res_e, 'matched_at', None) == base,
+            f'{res_e.status} @ {hex(getattr(res_e, "matched_at", 0))}')
+
+
 def main(args):
     t = Runner()
     from . import x86
     print(f'capstone: {"yes" if x86.have_capstone() else "no"}')
+    test_pe_matcher(t)
     test_retail_self(t, args.depots, args.full)
     test_data(t, args.depots)
     b = build_samples(t, rebuild=args.rebuild)

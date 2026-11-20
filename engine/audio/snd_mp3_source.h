@@ -31,6 +31,10 @@ public:
 	
 	virtual int					GetType( void );
 	virtual void				GetCacheData( CAudioSourceCachedInfo *info );
+#ifdef BYTEMATCH_RETAIL
+	bool						GetStartupData( void *dest, int destsize, int &bytescopied );
+#endif
+#line 35
 
 	// Provide samples for the mixer. You can point pData at your own data, or if you prefer to copy the data,
 	// you can copy it into copyBuf and set pData to copyBuf.
