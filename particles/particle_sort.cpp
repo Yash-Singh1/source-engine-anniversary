@@ -144,6 +144,7 @@ static bool SortLessFunc( const ParticleRenderData_t &left, const ParticleRender
 }
 
 
+#line 121
 void CParticleCollection::GenerateSortedIndexList( Vector vecCamera, CParticleVisibilityData *pVisibilityData, bool bSorted )
 {
 	VPROF_BUDGET( "CParticleCollection::GenerateSortedIndexList", VPROF_BUDGETGROUP_PARTICLE_RENDERING );

@@ -563,7 +563,7 @@ class Module:
                 varchive = self.valve_src + 'build/Release/' + name
             by_src = dict((o.get('source'), o) for o in rmem if o.get('source'))
             by_src_ci = dict((o.get('source').lower(), o) for o in rmem if o.get('source'))
-            by_member = dict((split_member(o['oso'])[1], o) for o in rmem) if rname in FOREIGN_ARCHIVES else {}
+            by_member = dict((split_member(o['oso'])[1], o) for o in rmem)
             mems = []
             for inp in entry['inputs']:
                 src, cent = self.build.source_of(inp)

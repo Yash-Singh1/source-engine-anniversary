@@ -319,10 +319,17 @@ CPolyhedron *ClipPolyhedron( const CPolyhedron *pExistingPolyhedron, const float
 														pExistingPolyhedron->iPolygonCount );
 		}
 
+#ifdef BYTEMATCH_RETAIL
+		memcpy( pReturn->pVertices, pExistingPolyhedron->pVertices, sizeof( Vector ) * pReturn->iVertexCount );
+		memcpy( pReturn->pLines, pExistingPolyhedron->pLines, sizeof( Polyhedron_IndexedLine_t ) * pReturn->iLineCount );
+		memcpy( pReturn->pIndices, pExistingPolyhedron->pIndices, sizeof( Polyhedron_IndexedLineReference_t ) * pReturn->iIndexCount );
+		memcpy( pReturn->pPolygons, pExistingPolyhedron->pPolygons, sizeof( Polyhedron_IndexedPolygon_t ) * pReturn->iPolygonCount );
+#else
 		memutils::copy( pReturn->pVertices, pExistingPolyhedron->pVertices, pReturn->iVertexCount );
 		memutils::copy( pReturn->pLines, pExistingPolyhedron->pLines, pReturn->iLineCount );
 		memutils::copy( pReturn->pIndices, pExistingPolyhedron->pIndices, pReturn->iIndexCount );
 		memutils::copy( pReturn->pPolygons, pExistingPolyhedron->pPolygons, pReturn->iPolygonCount );
+#endif
 
 		return pReturn;
 	}
