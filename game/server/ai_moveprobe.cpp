@@ -534,7 +534,7 @@ bool CAI_MoveProbe::TestGroundMove( const Vector &vecActualStart, const Vector &
 
 	CUtlVector<CBaseEntity *> ignoredEntities;
 
-	for (;;)
+	for ( int nSteps = 0; nSteps < COORD_EXTENT; nSteps++ )
 	{
 		float flStepSize = MIN( LOCAL_STEP_SIZE, pMoveTrace->flTotalDist - distClear );
 		if ( flStepSize < 0.001 )

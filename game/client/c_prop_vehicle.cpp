@@ -307,7 +307,6 @@ void C_PropVehicleDriveable::DrawHudElements( )
 			{
 				Vector screen;
 
-#ifdef HL2_ANNIVERSARY_NOV2024
 				int vx, vy, vw, vh;
 				vgui::surface()->GetFullscreenViewport( vx, vy, vw, vh );
 
@@ -318,6 +317,7 @@ void C_PropVehicleDriveable::DrawHudElements( )
 				y = screenHeight / 2;
 
 #if TRIANGULATED_CROSSHAIR
+#ifdef HL2_ANNIVERSARY_NOV2024
 				// Smooth the reticle toward the networked crosshair; less smoothing at low frame rates
 				float flSmoothing = RemapValClamped( Helper_GetFrameTime(), 0.033333f, 0.016666f, 0.0f, 1.0f );
 				flSmoothing *= r_VehicleHudReticleSmoothing.GetFloat();
@@ -325,18 +325,11 @@ void C_PropVehicleDriveable::DrawHudElements( )
 				VectorLerp( m_vecGunCrosshair, m_vecSmoothedGunCrosshair, flSmoothing, vecCrosshair );
 				m_vecSmoothedGunCrosshair = vecCrosshair;
 				ScreenTransform( vecCrosshair, screen );
+#else
+				ScreenTransform( m_vecGunCrosshair, screen );
+#endif
 				x += 0.5 * screen[0] * screenWidth + 0.5;
 				y -= 0.5 * screen[1] * screenHeight + 0.5;
-#endif
-#else
-				x = ScreenWidth()/2;
-				y = ScreenHeight()/2;
-
-#if TRIANGULATED_CROSSHAIR
-				ScreenTransform( m_vecGunCrosshair, screen );
-				x += 0.5 * screen[0] * ScreenWidth() + 0.5;
-				y -= 0.5 * screen[1] * ScreenHeight() + 0.5;
-#endif
 #endif
 			}
 

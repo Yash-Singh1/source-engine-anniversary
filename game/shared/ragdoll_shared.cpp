@@ -935,12 +935,13 @@ void CRagdollLRURetirement::Update( float frametime ) // EPISODIC VERSION
 				m_LRU.Remove(i);
 			}
 		}
-		return;
 	}
+	else
 #else
 void CRagdollLRURetirement::Update( float frametime ) // Non-episodic version
-{
 #endif
+#line 940
+	{
 	VPROF( "CRagdollLRURetirement::Update" );
 	// Compress out dead items
 	int i, next;
@@ -1020,6 +1021,9 @@ void CRagdollLRURetirement::Update( float frametime ) // Non-episodic version
 #endif
 		m_LRU.Remove(i);
 	}
+#if HL2_EPISODIC
+	}
+#endif
 }
 
 #line 1024

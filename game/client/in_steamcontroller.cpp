@@ -59,6 +59,14 @@ NOV2024_ONLY( ConVar sc_sensitivity_scale( "sc_sensitivity_scale", "1.0", FCVAR_
 //-----------------------------------------------------------------------------
 // Purpose: Aim assist dampening for Steam Input look deltas
 //-----------------------------------------------------------------------------
+static inline float GetSCAutoAimScale()
+{
+	if ( !sk_allow_autoaim.GetBool() || !sc_autoaim_mode.GetBool() )
+		return 1.0f;
+
+	return sc_autoaim_scale.GetFloat();
+}
+
 float GetSCAutoAimDampening( float flValue )
 {
 	if ( sc_autoaim_mode.GetInt() > 0 && sc_autoaimdampen.GetFloat() > 0.0f )
@@ -66,25 +74,18 @@ float GetSCAutoAimDampening( float flValue )
 		C_BaseHLPlayer *pLocalPlayer = (C_BaseHLPlayer *)C_BasePlayer::GetLocalPlayer();
 		if ( pLocalPlayer )
 		{
-			float flScale = 1.0f;
-			if ( sk_allow_autoaim.GetBool() && sc_autoaim_mode.GetBool() )
-			{
-				flScale = sc_autoaim_scale.GetFloat();
-			}
+			float flScale = GetSCAutoAimScale();
 
 			float flAbsValue = fabs( flValue );
 			float flRange = sc_autoaimdampenrange.GetFloat() * flScale * sc_sensitivity_scale.GetFloat();
 			if ( pLocalPlayer->m_HL2Local.m_bAutoAimTarget && flAbsValue < flRange )
 			{
-				float flDistance = 0.0f;
-				if ( pLocalPlayer->m_HL2Local.m_hAutoAimTarget )
-				{
-					flDistance = RemapValClamped( pLocalPlayer->m_HL2Local.m_hAutoAimTarget->GetAbsOrigin().DistToSqr( pLocalPlayer->GetAbsOrigin() ), 0.0f, 3000.0f * 3000.0f, 0.0f, 1.0f ) * sc_autoaimdampen_distance_factor.GetFloat();
-				}
+				float flDistance = pLocalPlayer->m_HL2Local.m_hAutoAimTarget ?
+					RemapValClamped( ( pLocalPlayer->m_HL2Local.m_hAutoAimTarget->GetAbsOrigin() - pLocalPlayer->GetAbsOrigin() ).LengthSqr(), 0.0f, 3000.0f * 3000.0f, 0.0f, 1.0f ) * sc_autoaimdampen_distance_factor.GetFloat() : 0.0f;
 
 				float flSpeed = ( flAbsValue / flRange ) * sc_autoaimdampen_speed_factor.GetFloat();
-				float flExponent = flScale + flSpeed + flDistance;
-				return MIN( 1.0, pow( sc_autoaimdampen.GetFloat(), flExponent ) );
+				float flExponent = flSpeed + flScale + flDistance;
+				return MIN( 1.0f, pow( sc_autoaimdampen.GetFloat(), flExponent ) );
 			}
 		}
 	}
@@ -273,7 +274,7 @@ void CInput::SteamControllerMove( float flFrametime, CUserCmd *cmd )
 		InputHandle_t controller = controllers[i];
 
 		InputAnalogActionData_t moveData = SteamInput()->GetAnalogActionData( controller, g_ControllerMoveHandle );
-		vecMoveTotal.x += moveData.x;
+		vecMoveTotal += Vector2D( moveData.x, moveData.y );
 
 		InputActionSetHandle_t actionSet = SteamInput()->GetCurrentActionSet( controller );
 
@@ -304,7 +305,7 @@ void CInput::SteamControllerMove( float flFrametime, CUserCmd *cmd )
 				{
 					sc_controller_mode.SetValue( 1 );
 
-					if ( !bSmartSprint || !sc_smart_sprint.GetBool() || !( !bSmartSprint || bSprinting ) )
+					if ( !bSmartSprint || !sc_smart_sprint.GetBool() || ( bSmartSprint && !bSprinting ) )
 					{
 						char cmdbuf[128];
 						Q_snprintf( cmdbuf, sizeof( cmdbuf ), "%s", state.cmd );
@@ -327,8 +328,6 @@ void CInput::SteamControllerMove( float flFrametime, CUserCmd *cmd )
 				bSmartSprintHeld |= state.bState;
 			}
 		}
-
-		vecMoveTotal.y += moveData.y;
 
 		InputAnalogActionData_t steerData = SteamInput()->GetAnalogActionData( controller, g_ControllerSteerHandle );
 		InputAnalogActionData_t accelerationData = SteamInput()->GetAnalogActionData( controller, g_ControllerAccelerationHandle );
