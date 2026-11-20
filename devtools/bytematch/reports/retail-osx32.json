@@ -1,28 +1,28 @@
 {
  "meta": {
-  "generated": "2026-11-18T17:35:22Z",
+  "generated": "2026-11-20T20:53:23Z",
   "depot_build": "19307283",
   "clang": "600.0.57",
   "ld64": "242"
  },
  "total": {
   "functions": {
-   "total": 53615,
-   "exact": 24216,
-   "matches_after_masking": 26030,
-   "differs": 2567,
-   "missing": 802,
-   "matched": 50246,
-   "pct": 93.72
+   "total": 49376,
+   "exact": 46055,
+   "matches_after_masking": 3313,
+   "differs": 8,
+   "missing": 0,
+   "matched": 49368,
+   "pct": 99.98
   },
   "bytes": {
-   "total": 13328435,
-   "exact": 3093085,
-   "matches_after_masking": 8927992,
-   "differs": 1224178,
-   "missing": 83180,
-   "matched": 12021077,
-   "pct": 90.19
+   "total": 12320061,
+   "exact": 10551684,
+   "matches_after_masking": 1737712,
+   "differs": 30665,
+   "missing": 0,
+   "matched": 12289396,
+   "pct": 99.75
   }
  },
  "rows": [
@@ -39,21 +39,21 @@
     },
     "functions": {
      "total": 406,
-     "exact": 202,
-     "matches_after_masking": 203,
-     "differs": 1,
+     "exact": 322,
+     "matches_after_masking": 84,
+     "differs": 0,
      "missing": 0,
-     "matched": 405,
-     "pct": 99.75
+     "matched": 406,
+     "pct": 100.0
     },
     "bytes": {
      "total": 138135,
-     "exact": 25408,
-     "matches_after_masking": 111731,
-     "differs": 996,
+     "exact": 86638,
+     "matches_after_masking": 51497,
+     "differs": 0,
      "missing": 0,
-     "matched": 137139,
-     "pct": 99.28
+     "matched": 138135,
+     "pct": 100.0
     }
    }
   },
@@ -65,26 +65,26 @@
    "ours": "engine/engine.dylib",
    "summary": {
     "line_constants_only": {
-     "functions": 2,
-     "bytes": 929
+     "functions": 0,
+     "bytes": 0
     },
     "functions": {
-     "total": 12999,
-     "exact": 3505,
-     "matches_after_masking": 9219,
-     "differs": 226,
-     "missing": 49,
-     "matched": 12724,
-     "pct": 97.88
+     "total": 13040,
+     "exact": 13038,
+     "matches_after_masking": 0,
+     "differs": 2,
+     "missing": 0,
+     "matched": 13038,
+     "pct": 99.98
     },
     "bytes": {
-     "total": 3813628,
-     "exact": 215673,
-     "matches_after_masking": 3363609,
-     "differs": 221120,
-     "missing": 13226,
-     "matched": 3579282,
-     "pct": 93.86
+     "total": 3820121,
+     "exact": 3818572,
+     "matches_after_masking": 0,
+     "differs": 1549,
+     "missing": 0,
+     "matched": 3818572,
+     "pct": 99.96
     }
    }
   },
@@ -132,21 +132,21 @@
     },
     "functions": {
      "total": 131,
-     "exact": 5,
-     "matches_after_masking": 15,
-     "differs": 86,
-     "missing": 25,
-     "matched": 20,
-     "pct": 15.27
+     "exact": 77,
+     "matches_after_masking": 53,
+     "differs": 1,
+     "missing": 0,
+     "matched": 130,
+     "pct": 99.24
     },
     "bytes": {
      "total": 61295,
-     "exact": 342,
-     "matches_after_masking": 2166,
-     "differs": 56616,
-     "missing": 2171,
-     "matched": 2508,
-     "pct": 4.09
+     "exact": 9385,
+     "matches_after_masking": 45592,
+     "differs": 6318,
+     "missing": 0,
+     "matched": 54977,
+     "pct": 89.69
     }
    }
   },
@@ -162,22 +162,22 @@
      "bytes": 0
     },
     "functions": {
-     "total": 1953,
-     "exact": 338,
-     "matches_after_masking": 850,
-     "differs": 547,
-     "missing": 218,
-     "matched": 1188,
-     "pct": 60.83
+     "total": 1962,
+     "exact": 1962,
+     "matches_after_masking": 0,
+     "differs": 0,
+     "missing": 0,
+     "matched": 1962,
+     "pct": 100.0
     },
     "bytes": {
-     "total": 567545,
-     "exact": 16420,
-     "matches_after_masking": 340713,
-     "differs": 189370,
-     "missing": 21042,
-     "matched": 357133,
-     "pct": 62.93
+     "total": 567780,
+     "exact": 567780,
+     "matches_after_masking": 0,
+     "differs": 0,
+     "missing": 0,
+     "matched": 567780,
+     "pct": 100.0
     }
    }
   },
@@ -189,397 +189,25 @@
    "ours": "gameui/GameUI.dylib",
    "summary": {
     "line_constants_only": {
-     "functions": 3,
-     "bytes": 2076
+     "functions": 0,
+     "bytes": 0
     },
     "functions": {
      "total": 4970,
-     "exact": 1275,
-     "matches_after_masking": 3592,
-     "differs": 80,
-     "missing": 23,
-     "matched": 4867,
-     "pct": 97.93
+     "exact": 4970,
+     "matches_after_masking": 0,
+     "differs": 0,
+     "missing": 0,
+     "matched": 4970,
+     "pct": 100.0
     },
     "bytes": {
      "total": 1197344,
-     "exact": 80550,
-     "matches_after_masking": 1034495,
-     "differs": 77978,
-     "missing": 4321,
-     "matched": 1115045,
-     "pct": 93.13
-    }
-   }
-  },
-  {
-   "kind": "module",
-   "module": "bin/bugreporter_filequeue",
-   "name": "bugreporter_filequeue.dylib",
-   "retail": "223/19307283/bin/bugreporter_filequeue.dylib",
-   "ours": "identity/out/bugreporter_filequeue.dylib",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 212,
-     "exact": 212,
+     "exact": 1197344,
      "matches_after_masking": 0,
      "differs": 0,
      "missing": 0,
-     "matched": 212,
-     "pct": 100.0
-    },
-    "bytes": {
-     "total": 41424,
-     "exact": 41424,
-     "matches_after_masking": 0,
-     "differs": 0,
-     "missing": 0,
-     "matched": 41424,
-     "pct": 100.0
-    }
-   }
-  },
-  {
-   "kind": "module",
-   "module": "bin/bugreporter_public",
-   "name": "bugreporter_public.dylib",
-   "retail": "223/19307283/bin/bugreporter_public.dylib",
-   "ours": "identity/out/bugreporter_public.dylib",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 163,
-     "exact": 163,
-     "matches_after_masking": 0,
-     "differs": 0,
-     "missing": 0,
-     "matched": 163,
-     "pct": 100.0
-    },
-    "bytes": {
-     "total": 34863,
-     "exact": 34863,
-     "matches_after_masking": 0,
-     "differs": 0,
-     "missing": 0,
-     "matched": 34863,
-     "pct": 100.0
-    }
-   }
-  },
-  {
-   "kind": "module",
-   "module": "bin/inputsystem",
-   "name": "inputsystem.dylib",
-   "retail": "223/19307283/bin/inputsystem.dylib",
-   "ours": "identity/out/inputsystem.dylib",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 193,
-     "exact": 193,
-     "matches_after_masking": 0,
-     "differs": 0,
-     "missing": 0,
-     "matched": 193,
-     "pct": 100.0
-    },
-    "bytes": {
-     "total": 29183,
-     "exact": 29183,
-     "matches_after_masking": 0,
-     "differs": 0,
-     "missing": 0,
-     "matched": 29183,
-     "pct": 100.0
-    }
-   }
-  },
-  {
-   "kind": "module",
-   "module": "bin/libtier0",
-   "name": "libtier0.dylib",
-   "retail": "223/19307283/bin/libtier0.dylib",
-   "ours": "identity/out/libtier0.dylib",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 367,
-     "exact": 367,
-     "matches_after_masking": 0,
-     "differs": 0,
-     "missing": 0,
-     "matched": 367,
-     "pct": 100.0
-    },
-    "bytes": {
-     "total": 58505,
-     "exact": 58505,
-     "matches_after_masking": 0,
-     "differs": 0,
-     "missing": 0,
-     "matched": 58505,
-     "pct": 100.0
-    }
-   }
-  },
-  {
-   "kind": "module",
-   "module": "bin/libvstdlib",
-   "name": "libvstdlib.dylib",
-   "retail": "223/19307283/bin/libvstdlib.dylib",
-   "ours": "identity/out/libvstdlib.dylib",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 361,
-     "exact": 361,
-     "matches_after_masking": 0,
-     "differs": 0,
-     "missing": 0,
-     "matched": 361,
-     "pct": 100.0
-    },
-    "bytes": {
-     "total": 56548,
-     "exact": 56548,
-     "matches_after_masking": 0,
-     "differs": 0,
-     "missing": 0,
-     "matched": 56548,
-     "pct": 100.0
-    }
-   }
-  },
-  {
-   "kind": "module",
-   "module": "bin/scenefilecache",
-   "name": "scenefilecache.dylib",
-   "retail": "223/19307283/bin/scenefilecache.dylib",
-   "ours": "identity/out/scenefilecache.dylib",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 40,
-     "exact": 40,
-     "matches_after_masking": 0,
-     "differs": 0,
-     "missing": 0,
-     "matched": 40,
-     "pct": 100.0
-    },
-    "bytes": {
-     "total": 7785,
-     "exact": 7785,
-     "matches_after_masking": 0,
-     "differs": 0,
-     "missing": 0,
-     "matched": 7785,
-     "pct": 100.0
-    }
-   }
-  },
-  {
-   "kind": "module",
-   "module": "bin/soundemittersystem",
-   "name": "soundemittersystem.dylib",
-   "retail": "223/19307283/bin/soundemittersystem.dylib",
-   "ours": "identity/out/soundemittersystem.dylib",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 236,
-     "exact": 236,
-     "matches_after_masking": 0,
-     "differs": 0,
-     "missing": 0,
-     "matched": 236,
-     "pct": 100.0
-    },
-    "bytes": {
-     "total": 53556,
-     "exact": 53556,
-     "matches_after_masking": 0,
-     "differs": 0,
-     "missing": 0,
-     "matched": 53556,
-     "pct": 100.0
-    }
-   }
-  },
-  {
-   "kind": "module",
-   "module": "bin/stdshader_dx9",
-   "name": "stdshader_dx9.dylib",
-   "retail": "223/19307283/bin/stdshader_dx9.dylib",
-   "ours": "identity/out/stdshader_dx9.dylib",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 1963,
-     "exact": 1963,
-     "matches_after_masking": 0,
-     "differs": 0,
-     "missing": 0,
-     "matched": 1963,
-     "pct": 100.0
-    },
-    "bytes": {
-     "total": 535678,
-     "exact": 535678,
-     "matches_after_masking": 0,
-     "differs": 0,
-     "missing": 0,
-     "matched": 535678,
-     "pct": 100.0
-    }
-   }
-  },
-  {
-   "kind": "module",
-   "module": "bin/vaudio_miles",
-   "name": "vaudio_miles.dylib",
-   "retail": "223/19307283/bin/vaudio_miles.dylib",
-   "ours": "identity/out/vaudio_miles.dylib",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 51,
-     "exact": 51,
-     "matches_after_masking": 0,
-     "differs": 0,
-     "missing": 0,
-     "matched": 51,
-     "pct": 100.0
-    },
-    "bytes": {
-     "total": 6250,
-     "exact": 6250,
-     "matches_after_masking": 0,
-     "differs": 0,
-     "missing": 0,
-     "matched": 6250,
-     "pct": 100.0
-    }
-   }
-  },
-  {
-   "kind": "module",
-   "module": "bin/video_quicktime",
-   "name": "video_quicktime.dylib",
-   "retail": "223/19307283/bin/video_quicktime.dylib",
-   "ours": "identity/out/video_quicktime.dylib",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 181,
-     "exact": 181,
-     "matches_after_masking": 0,
-     "differs": 0,
-     "missing": 0,
-     "matched": 181,
-     "pct": 100.0
-    },
-    "bytes": {
-     "total": 29196,
-     "exact": 29196,
-     "matches_after_masking": 0,
-     "differs": 0,
-     "missing": 0,
-     "matched": 29196,
-     "pct": 100.0
-    }
-   }
-  },
-  {
-   "kind": "module",
-   "module": "bin/video_services",
-   "name": "video_services.dylib",
-   "retail": "223/19307283/bin/video_services.dylib",
-   "ours": "identity/out/video_services.dylib",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 113,
-     "exact": 113,
-     "matches_after_masking": 0,
-     "differs": 0,
-     "missing": 0,
-     "matched": 113,
-     "pct": 100.0
-    },
-    "bytes": {
-     "total": 16116,
-     "exact": 16116,
-     "matches_after_masking": 0,
-     "differs": 0,
-     "missing": 0,
-     "matched": 16116,
-     "pct": 100.0
-    }
-   }
-  },
-  {
-   "kind": "module",
-   "module": "bin/vtex_dll",
-   "name": "vtex_dll.dylib",
-   "retail": "223/19307283/bin/vtex_dll.dylib",
-   "ours": "identity/out/vtex_dll.dylib",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 439,
-     "exact": 439,
-     "matches_after_masking": 0,
-     "differs": 0,
-     "missing": 0,
-     "matched": 439,
-     "pct": 100.0
-    },
-    "bytes": {
-     "total": 149812,
-     "exact": 149812,
-     "matches_after_masking": 0,
-     "differs": 0,
-     "missing": 0,
-     "matched": 149812,
+     "matched": 1197344,
      "pct": 100.0
     }
    }
@@ -628,21 +256,21 @@
     },
     "functions": {
      "total": 361,
-     "exact": 107,
-     "matches_after_masking": 245,
-     "differs": 9,
+     "exact": 305,
+     "matches_after_masking": 56,
+     "differs": 0,
      "missing": 0,
-     "matched": 352,
-     "pct": 97.51
+     "matched": 361,
+     "pct": 100.0
     },
     "bytes": {
      "total": 89485,
-     "exact": 4956,
-     "matches_after_masking": 74260,
-     "differs": 10269,
+     "exact": 67965,
+     "matches_after_masking": 21520,
+     "differs": 0,
      "missing": 0,
-     "matched": 79216,
-     "pct": 88.52
+     "matched": 89485,
+     "pct": 100.0
     }
    }
   },
@@ -659,21 +287,21 @@
     },
     "functions": {
      "total": 3747,
-     "exact": 2260,
-     "matches_after_masking": 1481,
-     "differs": 6,
+     "exact": 3747,
+     "matches_after_masking": 0,
+     "differs": 0,
      "missing": 0,
-     "matched": 3741,
-     "pct": 99.84
+     "matched": 3747,
+     "pct": 100.0
     },
     "bytes": {
      "total": 552250,
-     "exact": 118667,
-     "matches_after_masking": 420476,
-     "differs": 13107,
+     "exact": 552250,
+     "matches_after_masking": 0,
+     "differs": 0,
      "missing": 0,
-     "matched": 539143,
-     "pct": 97.63
+     "matched": 552250,
+     "pct": 100.0
     }
    }
   },
@@ -685,26 +313,26 @@
    "ours": "materialsystem/shaderapidx9/shaderapidx9.dylib",
    "summary": {
     "line_constants_only": {
-     "functions": 1,
-     "bytes": 604
+     "functions": 0,
+     "bytes": 0
     },
     "functions": {
      "total": 1592,
-     "exact": 720,
-     "matches_after_masking": 853,
-     "differs": 19,
+     "exact": 1434,
+     "matches_after_masking": 158,
+     "differs": 0,
      "missing": 0,
-     "matched": 1573,
-     "pct": 98.81
+     "matched": 1592,
+     "pct": 100.0
     },
     "bytes": {
      "total": 302451,
-     "exact": 44959,
-     "matches_after_masking": 240909,
-     "differs": 16583,
+     "exact": 233203,
+     "matches_after_masking": 69248,
+     "differs": 0,
      "missing": 0,
-     "matched": 285868,
-     "pct": 94.52
+     "matched": 302451,
+     "pct": 100.0
     }
    }
   },
@@ -721,8 +349,8 @@
     },
     "functions": {
      "total": 588,
-     "exact": 528,
-     "matches_after_masking": 60,
+     "exact": 588,
+     "matches_after_masking": 0,
      "differs": 0,
      "missing": 0,
      "matched": 588,
@@ -730,8 +358,8 @@
     },
     "bytes": {
      "total": 8569,
-     "exact": 4317,
-     "matches_after_masking": 4252,
+     "exact": 8569,
+     "matches_after_masking": 0,
      "differs": 0,
      "missing": 0,
      "matched": 8569,
@@ -783,8 +411,8 @@
     },
     "functions": {
      "total": 1442,
-     "exact": 565,
-     "matches_after_masking": 877,
+     "exact": 1360,
+     "matches_after_masking": 82,
      "differs": 0,
      "missing": 0,
      "matched": 1442,
@@ -792,8 +420,8 @@
     },
     "bytes": {
      "total": 257979,
-     "exact": 22380,
-     "matches_after_masking": 235599,
+     "exact": 229125,
+     "matches_after_masking": 28854,
      "differs": 0,
      "missing": 0,
      "matched": 257979,
@@ -844,22 +472,22 @@
      "bytes": 0
     },
     "functions": {
-     "total": 3380,
-     "exact": 1429,
-     "matches_after_masking": 1949,
-     "differs": 2,
+     "total": 3395,
+     "exact": 3395,
+     "matches_after_masking": 0,
+     "differs": 0,
      "missing": 0,
-     "matched": 3378,
-     "pct": 99.94
+     "matched": 3395,
+     "pct": 100.0
     },
     "bytes": {
-     "total": 788052,
-     "exact": 129087,
-     "matches_after_masking": 653677,
-     "differs": 5288,
+     "total": 789959,
+     "exact": 789959,
+     "matches_after_masking": 0,
+     "differs": 0,
      "missing": 0,
-     "matched": 782764,
-     "pct": 99.33
+     "matched": 789959,
+     "pct": 100.0
     }
    }
   },
@@ -939,20 +567,20 @@
     "functions": {
      "total": 988,
      "exact": 259,
-     "matches_after_masking": 726,
-     "differs": 3,
+     "matches_after_masking": 727,
+     "differs": 2,
      "missing": 0,
-     "matched": 985,
-     "pct": 99.7
+     "matched": 986,
+     "pct": 99.8
     },
     "bytes": {
      "total": 507743,
      "exact": 46359,
-     "matches_after_masking": 448564,
-     "differs": 12820,
+     "matches_after_masking": 449054,
+     "differs": 12330,
      "missing": 0,
-     "matched": 494923,
-     "pct": 97.48
+     "matched": 495413,
+     "pct": 97.57
     }
    }
   },
@@ -1000,21 +628,21 @@
     },
     "functions": {
      "total": 502,
-     "exact": 229,
-     "matches_after_masking": 270,
-     "differs": 3,
+     "exact": 502,
+     "matches_after_masking": 0,
+     "differs": 0,
      "missing": 0,
-     "matched": 499,
-     "pct": 99.4
+     "matched": 502,
+     "pct": 100.0
     },
     "bytes": {
      "total": 179003,
-     "exact": 23186,
-     "matches_after_masking": 151807,
-     "differs": 4010,
+     "exact": 179003,
+     "matches_after_masking": 0,
+     "differs": 0,
      "missing": 0,
-     "matched": 174993,
-     "pct": 97.76
+     "matched": 179003,
+     "pct": 100.0
     }
    }
   },
@@ -1026,26 +654,26 @@
    "ours": "utils/bsppack/bsppack.dylib",
    "summary": {
     "line_constants_only": {
-     "functions": 1,
-     "bytes": 12580
+     "functions": 0,
+     "bytes": 0
     },
     "functions": {
      "total": 368,
-     "exact": 93,
-     "matches_after_masking": 255,
-     "differs": 16,
-     "missing": 4,
-     "matched": 348,
-     "pct": 94.57
+     "exact": 368,
+     "matches_after_masking": 0,
+     "differs": 0,
+     "missing": 0,
+     "matched": 368,
+     "pct": 100.0
     },
     "bytes": {
      "total": 153265,
-     "exact": 8121,
-     "matches_after_masking": 104098,
-     "differs": 39848,
-     "missing": 1198,
-     "matched": 112219,
-     "pct": 73.22
+     "exact": 153265,
+     "matches_after_masking": 0,
+     "differs": 0,
+     "missing": 0,
+     "matched": 153265,
+     "pct": 100.0
     }
    }
   },
@@ -1155,21 +783,21 @@
     },
     "functions": {
      "total": 2891,
-     "exact": 704,
-     "matches_after_masking": 1617,
-     "differs": 440,
-     "missing": 130,
-     "matched": 2321,
-     "pct": 80.28
+     "exact": 2891,
+     "matches_after_masking": 0,
+     "differs": 0,
+     "missing": 0,
+     "matched": 2891,
+     "pct": 100.0
     },
     "bytes": {
      "total": 435407,
-     "exact": 15865,
-     "matches_after_masking": 349833,
-     "differs": 65743,
-     "missing": 3966,
-     "matched": 365698,
-     "pct": 83.99
+     "exact": 435407,
+     "matches_after_masking": 0,
+     "differs": 0,
+     "missing": 0,
+     "matched": 435407,
+     "pct": 100.0
     }
    }
   },
@@ -1186,8 +814,8 @@
     },
     "functions": {
      "total": 684,
-     "exact": 677,
-     "matches_after_masking": 7,
+     "exact": 684,
+     "matches_after_masking": 0,
      "differs": 0,
      "missing": 0,
      "matched": 684,
@@ -1195,8 +823,8 @@
     },
     "bytes": {
      "total": 133227,
-     "exact": 126368,
-     "matches_after_masking": 6859,
+     "exact": 133227,
+     "matches_after_masking": 0,
      "differs": 0,
      "missing": 0,
      "matched": 133227,
@@ -1216,21 +844,21 @@
      "bytes": 0
     },
     "functions": {
-     "total": 2987,
-     "exact": 1570,
-     "matches_after_masking": 1417,
+     "total": 3002,
+     "exact": 2799,
+     "matches_after_masking": 203,
      "differs": 0,
      "missing": 0,
-     "matched": 2987,
+     "matched": 3002,
      "pct": 100.0
     },
     "bytes": {
-     "total": 709304,
-     "exact": 165626,
-     "matches_after_masking": 543678,
+     "total": 711211,
+     "exact": 624325,
+     "matches_after_masking": 86886,
      "differs": 0,
      "missing": 0,
-     "matched": 709304,
+     "matched": 711211,
      "pct": 100.0
     }
    }
@@ -1310,21 +938,21 @@
     },
     "functions": {
      "total": 2963,
-     "exact": 927,
-     "matches_after_masking": 1803,
-     "differs": 215,
-     "missing": 18,
-     "matched": 2730,
-     "pct": 92.14
+     "exact": 1541,
+     "matches_after_masking": 1421,
+     "differs": 1,
+     "missing": 0,
+     "matched": 2962,
+     "pct": 99.97
     },
     "bytes": {
      "total": 891892,
-     "exact": 59555,
-     "matches_after_masking": 648986,
-     "differs": 180142,
-     "missing": 3209,
-     "matched": 708541,
-     "pct": 79.44
+     "exact": 149551,
+     "matches_after_masking": 740353,
+     "differs": 1988,
+     "missing": 0,
+     "matched": 889904,
+     "pct": 99.78
     }
    }
   },
@@ -1341,8 +969,8 @@
     },
     "functions": {
      "total": 361,
-     "exact": 229,
-     "matches_after_masking": 132,
+     "exact": 361,
+     "matches_after_masking": 0,
      "differs": 0,
      "missing": 0,
      "matched": 361,
@@ -1350,8 +978,8 @@
     },
     "bytes": {
      "total": 56548,
-     "exact": 25211,
-     "matches_after_masking": 31337,
+     "exact": 56548,
+     "matches_after_masking": 0,
      "differs": 0,
      "missing": 0,
      "matched": 56548,
@@ -1398,26 +1026,26 @@
    "ours": "utils/vpk/vpk_osx32",
    "summary": {
     "line_constants_only": {
-     "functions": 84,
-     "bytes": 47960
+     "functions": 0,
+     "bytes": 0
     },
     "functions": {
      "total": 1883,
-     "exact": 248,
-     "matches_after_masking": 386,
-     "differs": 914,
-     "missing": 335,
-     "matched": 634,
-     "pct": 33.67
+     "exact": 1425,
+     "matches_after_masking": 456,
+     "differs": 2,
+     "missing": 0,
+     "matched": 1881,
+     "pct": 99.89
     },
     "bytes": {
      "total": 485072,
-     "exact": 9819,
-     "matches_after_masking": 110918,
-     "differs": 330288,
-     "missing": 34047,
-     "matched": 120737,
-     "pct": 24.89
+     "exact": 281909,
+     "matches_after_masking": 194683,
+     "differs": 8480,
+     "missing": 0,
+     "matched": 476592,
+     "pct": 98.25
     }
    }
   },
@@ -1425,31 +1053,31 @@
    "kind": "archive",
    "module": "libappframework.a",
    "name": "libappframework.a",
-   "retail": "223/19307283/bin/engine.dylib",
+   "retail": "223/19307283/bin/launcher.dylib",
    "ours": "appframework/libappframework.a",
-   "compared_with": "bin/engine",
+   "compared_with": "bin/launcher",
    "summary": {
     "line_constants_only": {
      "functions": 0,
      "bytes": 0
     },
     "functions": {
-     "total": 34,
-     "exact": 2,
-     "matches_after_masking": 31,
-     "differs": 1,
+     "total": 136,
+     "exact": 36,
+     "matches_after_masking": 100,
+     "differs": 0,
      "missing": 0,
-     "matched": 33,
-     "pct": 97.06
+     "matched": 136,
+     "pct": 100.0
     },
     "bytes": {
-     "total": 10412,
-     "exact": 36,
-     "matches_after_masking": 9019,
-     "differs": 1357,
+     "total": 35205,
+     "exact": 1792,
+     "matches_after_masking": 33413,
+     "differs": 0,
      "missing": 0,
-     "matched": 9055,
-     "pct": 86.97
+     "matched": 35205,
+     "pct": 100.0
     }
    }
   },
@@ -1551,774 +1179,6 @@
   },
   {
    "kind": "archive",
-   "module": "libtier1.a",
-   "name": "libtier1.a",
-   "retail": "223/19307283/bin/engine.dylib",
-   "ours": "identity/roots/bin_bugreporter_filequeue/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/build/Release/libtier1.a",
-   "compared_with": "bin/engine",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 485,
-     "exact": 167,
-     "matches_after_masking": 317,
-     "differs": 1,
-     "missing": 0,
-     "matched": 484,
-     "pct": 99.79
-    },
-    "bytes": {
-     "total": 98806,
-     "exact": 14045,
-     "matches_after_masking": 83737,
-     "differs": 1024,
-     "missing": 0,
-     "matched": 97782,
-     "pct": 98.96
-    }
-   }
-  },
-  {
-   "kind": "archive",
-   "module": "libmathlib.a",
-   "name": "libmathlib.a",
-   "retail": "223/19307283/bin/engine.dylib",
-   "ours": "identity/roots/bin_bugreporter_public/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/build/Release/libmathlib.a",
-   "compared_with": "bin/engine",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 95,
-     "exact": 31,
-     "matches_after_masking": 64,
-     "differs": 0,
-     "missing": 0,
-     "matched": 95,
-     "pct": 100.0
-    },
-    "bytes": {
-     "total": 29755,
-     "exact": 4979,
-     "matches_after_masking": 24776,
-     "differs": 0,
-     "missing": 0,
-     "matched": 29755,
-     "pct": 100.0
-    }
-   }
-  },
-  {
-   "kind": "archive",
-   "module": "libtier1.a",
-   "name": "libtier1.a",
-   "retail": "223/19307283/bin/engine.dylib",
-   "ours": "identity/roots/bin_bugreporter_public/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/build/Release/libtier1.a",
-   "compared_with": "bin/engine",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 485,
-     "exact": 167,
-     "matches_after_masking": 317,
-     "differs": 1,
-     "missing": 0,
-     "matched": 484,
-     "pct": 99.79
-    },
-    "bytes": {
-     "total": 98806,
-     "exact": 14045,
-     "matches_after_masking": 83737,
-     "differs": 1024,
-     "missing": 0,
-     "matched": 97782,
-     "pct": 98.96
-    }
-   }
-  },
-  {
-   "kind": "archive",
-   "module": "libtier1.a",
-   "name": "libtier1.a",
-   "retail": "223/19307283/bin/engine.dylib",
-   "ours": "identity/roots/bin_inputsystem/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/build/Release/libtier1.a",
-   "compared_with": "bin/engine",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 485,
-     "exact": 167,
-     "matches_after_masking": 317,
-     "differs": 1,
-     "missing": 0,
-     "matched": 484,
-     "pct": 99.79
-    },
-    "bytes": {
-     "total": 98806,
-     "exact": 14045,
-     "matches_after_masking": 83737,
-     "differs": 1024,
-     "missing": 0,
-     "matched": 97782,
-     "pct": 98.96
-    }
-   }
-  },
-  {
-   "kind": "archive",
-   "module": "libtier2.a",
-   "name": "libtier2.a",
-   "retail": "223/19307283/bin/engine.dylib",
-   "ours": "identity/roots/bin_inputsystem/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/build/Release/libtier2.a",
-   "compared_with": "bin/engine",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 65,
-     "exact": 19,
-     "matches_after_masking": 46,
-     "differs": 0,
-     "missing": 0,
-     "matched": 65,
-     "pct": 100.0
-    },
-    "bytes": {
-     "total": 36813,
-     "exact": 6072,
-     "matches_after_masking": 30741,
-     "differs": 0,
-     "missing": 0,
-     "matched": 36813,
-     "pct": 100.0
-    }
-   }
-  },
-  {
-   "kind": "archive",
-   "module": "libcoroutine_osx.a",
-   "name": "libcoroutine_osx.a",
-   "retail": "223/19307283/bin/libvstdlib.dylib",
-   "ours": "identity/roots/bin_libvstdlib/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/build/Release/libcoroutine_osx.a",
-   "compared_with": "bin/libvstdlib",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 32,
-     "exact": 8,
-     "matches_after_masking": 24,
-     "differs": 0,
-     "missing": 0,
-     "matched": 32,
-     "pct": 100.0
-    },
-    "bytes": {
-     "total": 9013,
-     "exact": 261,
-     "matches_after_masking": 8752,
-     "differs": 0,
-     "missing": 0,
-     "matched": 9013,
-     "pct": 100.0
-    }
-   }
-  },
-  {
-   "kind": "archive",
-   "module": "libtier1.a",
-   "name": "libtier1.a",
-   "retail": "223/19307283/bin/engine.dylib",
-   "ours": "identity/roots/bin_libvstdlib/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/build/Release/libtier1.a",
-   "compared_with": "bin/engine",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 485,
-     "exact": 167,
-     "matches_after_masking": 317,
-     "differs": 1,
-     "missing": 0,
-     "matched": 484,
-     "pct": 99.79
-    },
-    "bytes": {
-     "total": 98806,
-     "exact": 14045,
-     "matches_after_masking": 83737,
-     "differs": 1024,
-     "missing": 0,
-     "matched": 97782,
-     "pct": 98.96
-    }
-   }
-  },
-  {
-   "kind": "archive",
-   "module": "libtier1.a",
-   "name": "libtier1.a",
-   "retail": "223/19307283/bin/engine.dylib",
-   "ours": "identity/roots/bin_scenefilecache/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/build/Release/libtier1.a",
-   "compared_with": "bin/engine",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 485,
-     "exact": 167,
-     "matches_after_masking": 317,
-     "differs": 1,
-     "missing": 0,
-     "matched": 484,
-     "pct": 99.79
-    },
-    "bytes": {
-     "total": 98806,
-     "exact": 14045,
-     "matches_after_masking": 83737,
-     "differs": 1024,
-     "missing": 0,
-     "matched": 97782,
-     "pct": 98.96
-    }
-   }
-  },
-  {
-   "kind": "archive",
-   "module": "libtier1.a",
-   "name": "libtier1.a",
-   "retail": "223/19307283/bin/engine.dylib",
-   "ours": "identity/roots/bin_soundemittersystem/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/build/Release/libtier1.a",
-   "compared_with": "bin/engine",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 485,
-     "exact": 167,
-     "matches_after_masking": 317,
-     "differs": 1,
-     "missing": 0,
-     "matched": 484,
-     "pct": 99.79
-    },
-    "bytes": {
-     "total": 98806,
-     "exact": 14045,
-     "matches_after_masking": 83737,
-     "differs": 1024,
-     "missing": 0,
-     "matched": 97782,
-     "pct": 98.96
-    }
-   }
-  },
-  {
-   "kind": "archive",
-   "module": "libmathlib.a",
-   "name": "libmathlib.a",
-   "retail": "223/19307283/bin/engine.dylib",
-   "ours": "identity/roots/bin_stdshader_dx9/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/build/Release/libmathlib.a",
-   "compared_with": "bin/engine",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 95,
-     "exact": 31,
-     "matches_after_masking": 64,
-     "differs": 0,
-     "missing": 0,
-     "matched": 95,
-     "pct": 100.0
-    },
-    "bytes": {
-     "total": 29755,
-     "exact": 4979,
-     "matches_after_masking": 24776,
-     "differs": 0,
-     "missing": 0,
-     "matched": 29755,
-     "pct": 100.0
-    }
-   }
-  },
-  {
-   "kind": "archive",
-   "module": "libshaderlib.a",
-   "name": "libshaderlib.a",
-   "retail": "223/19307283/bin/materialsystem.dylib",
-   "ours": "identity/roots/bin_stdshader_dx9/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/build/Release/libshaderlib.a",
-   "compared_with": "bin/materialsystem",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 13,
-     "exact": 4,
-     "matches_after_masking": 9,
-     "differs": 0,
-     "missing": 0,
-     "matched": 13,
-     "pct": 100.0
-    },
-    "bytes": {
-     "total": 1314,
-     "exact": 108,
-     "matches_after_masking": 1206,
-     "differs": 0,
-     "missing": 0,
-     "matched": 1314,
-     "pct": 100.0
-    }
-   }
-  },
-  {
-   "kind": "archive",
-   "module": "libtier1.a",
-   "name": "libtier1.a",
-   "retail": "223/19307283/bin/engine.dylib",
-   "ours": "identity/roots/bin_stdshader_dx9/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/build/Release/libtier1.a",
-   "compared_with": "bin/engine",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 485,
-     "exact": 167,
-     "matches_after_masking": 317,
-     "differs": 1,
-     "missing": 0,
-     "matched": 484,
-     "pct": 99.79
-    },
-    "bytes": {
-     "total": 98806,
-     "exact": 14045,
-     "matches_after_masking": 83737,
-     "differs": 1024,
-     "missing": 0,
-     "matched": 97782,
-     "pct": 98.96
-    }
-   }
-  },
-  {
-   "kind": "archive",
-   "module": "libtier2.a",
-   "name": "libtier2.a",
-   "retail": "223/19307283/bin/engine.dylib",
-   "ours": "identity/roots/bin_stdshader_dx9/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/build/Release/libtier2.a",
-   "compared_with": "bin/engine",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 65,
-     "exact": 19,
-     "matches_after_masking": 46,
-     "differs": 0,
-     "missing": 0,
-     "matched": 65,
-     "pct": 100.0
-    },
-    "bytes": {
-     "total": 36813,
-     "exact": 6072,
-     "matches_after_masking": 30741,
-     "differs": 0,
-     "missing": 0,
-     "matched": 36813,
-     "pct": 100.0
-    }
-   }
-  },
-  {
-   "kind": "archive",
-   "module": "libtier1.a",
-   "name": "libtier1.a",
-   "retail": "223/19307283/bin/engine.dylib",
-   "ours": "identity/roots/bin_vaudio_miles/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/build/Release/libtier1.a",
-   "compared_with": "bin/engine",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 485,
-     "exact": 167,
-     "matches_after_masking": 317,
-     "differs": 1,
-     "missing": 0,
-     "matched": 484,
-     "pct": 99.79
-    },
-    "bytes": {
-     "total": 98806,
-     "exact": 14045,
-     "matches_after_masking": 83737,
-     "differs": 1024,
-     "missing": 0,
-     "matched": 97782,
-     "pct": 98.96
-    }
-   }
-  },
-  {
-   "kind": "archive",
-   "module": "libtier1.a",
-   "name": "libtier1.a",
-   "retail": "223/19307283/bin/engine.dylib",
-   "ours": "identity/roots/bin_video_quicktime/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/build/Release/libtier1.a",
-   "compared_with": "bin/engine",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 485,
-     "exact": 167,
-     "matches_after_masking": 317,
-     "differs": 1,
-     "missing": 0,
-     "matched": 484,
-     "pct": 99.79
-    },
-    "bytes": {
-     "total": 98806,
-     "exact": 14045,
-     "matches_after_masking": 83737,
-     "differs": 1024,
-     "missing": 0,
-     "matched": 97782,
-     "pct": 98.96
-    }
-   }
-  },
-  {
-   "kind": "archive",
-   "module": "libtier2.a",
-   "name": "libtier2.a",
-   "retail": "223/19307283/bin/engine.dylib",
-   "ours": "identity/roots/bin_video_quicktime/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/build/Release/libtier2.a",
-   "compared_with": "bin/engine",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 65,
-     "exact": 19,
-     "matches_after_masking": 46,
-     "differs": 0,
-     "missing": 0,
-     "matched": 65,
-     "pct": 100.0
-    },
-    "bytes": {
-     "total": 36813,
-     "exact": 6072,
-     "matches_after_masking": 30741,
-     "differs": 0,
-     "missing": 0,
-     "matched": 36813,
-     "pct": 100.0
-    }
-   }
-  },
-  {
-   "kind": "archive",
-   "module": "libtier1.a",
-   "name": "libtier1.a",
-   "retail": "223/19307283/bin/engine.dylib",
-   "ours": "identity/roots/bin_video_services/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/build/Release/libtier1.a",
-   "compared_with": "bin/engine",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 485,
-     "exact": 167,
-     "matches_after_masking": 317,
-     "differs": 1,
-     "missing": 0,
-     "matched": 484,
-     "pct": 99.79
-    },
-    "bytes": {
-     "total": 98806,
-     "exact": 14045,
-     "matches_after_masking": 83737,
-     "differs": 1024,
-     "missing": 0,
-     "matched": 97782,
-     "pct": 98.96
-    }
-   }
-  },
-  {
-   "kind": "archive",
-   "module": "libtier2.a",
-   "name": "libtier2.a",
-   "retail": "223/19307283/bin/engine.dylib",
-   "ours": "identity/roots/bin_video_services/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/build/Release/libtier2.a",
-   "compared_with": "bin/engine",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 65,
-     "exact": 19,
-     "matches_after_masking": 46,
-     "differs": 0,
-     "missing": 0,
-     "matched": 65,
-     "pct": 100.0
-    },
-    "bytes": {
-     "total": 36813,
-     "exact": 6072,
-     "matches_after_masking": 30741,
-     "differs": 0,
-     "missing": 0,
-     "matched": 36813,
-     "pct": 100.0
-    }
-   }
-  },
-  {
-   "kind": "archive",
-   "module": "libtier3.a",
-   "name": "libtier3.a",
-   "retail": "223/19307283/bin/engine.dylib",
-   "ours": "identity/roots/bin_video_services/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/build/Release/libtier3.a",
-   "compared_with": "bin/engine",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 2,
-     "exact": 0,
-     "matches_after_masking": 2,
-     "differs": 0,
-     "missing": 0,
-     "matched": 2,
-     "pct": 100.0
-    },
-    "bytes": {
-     "total": 845,
-     "exact": 0,
-     "matches_after_masking": 845,
-     "differs": 0,
-     "missing": 0,
-     "matched": 845,
-     "pct": 100.0
-    }
-   }
-  },
-  {
-   "kind": "archive",
-   "module": "libbitmap.a",
-   "name": "libbitmap.a",
-   "retail": "223/19307283/bin/engine.dylib",
-   "ours": "identity/roots/bin_vtex_dll/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/build/Release/libbitmap.a",
-   "compared_with": "bin/engine",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 102,
-     "exact": 44,
-     "matches_after_masking": 58,
-     "differs": 0,
-     "missing": 0,
-     "matched": 102,
-     "pct": 100.0
-    },
-    "bytes": {
-     "total": 53332,
-     "exact": 6568,
-     "matches_after_masking": 46764,
-     "differs": 0,
-     "missing": 0,
-     "matched": 53332,
-     "pct": 100.0
-    }
-   }
-  },
-  {
-   "kind": "archive",
-   "module": "libmathlib.a",
-   "name": "libmathlib.a",
-   "retail": "223/19307283/bin/engine.dylib",
-   "ours": "identity/roots/bin_vtex_dll/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/build/Release/libmathlib.a",
-   "compared_with": "bin/engine",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 95,
-     "exact": 31,
-     "matches_after_masking": 64,
-     "differs": 0,
-     "missing": 0,
-     "matched": 95,
-     "pct": 100.0
-    },
-    "bytes": {
-     "total": 29755,
-     "exact": 4979,
-     "matches_after_masking": 24776,
-     "differs": 0,
-     "missing": 0,
-     "matched": 29755,
-     "pct": 100.0
-    }
-   }
-  },
-  {
-   "kind": "archive",
-   "module": "libtier1.a",
-   "name": "libtier1.a",
-   "retail": "223/19307283/bin/engine.dylib",
-   "ours": "identity/roots/bin_vtex_dll/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/build/Release/libtier1.a",
-   "compared_with": "bin/engine",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 485,
-     "exact": 167,
-     "matches_after_masking": 317,
-     "differs": 1,
-     "missing": 0,
-     "matched": 484,
-     "pct": 99.79
-    },
-    "bytes": {
-     "total": 98806,
-     "exact": 14045,
-     "matches_after_masking": 83737,
-     "differs": 1024,
-     "missing": 0,
-     "matched": 97782,
-     "pct": 98.96
-    }
-   }
-  },
-  {
-   "kind": "archive",
-   "module": "libtier2.a",
-   "name": "libtier2.a",
-   "retail": "223/19307283/bin/engine.dylib",
-   "ours": "identity/roots/bin_vtex_dll/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/build/Release/libtier2.a",
-   "compared_with": "bin/engine",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 65,
-     "exact": 19,
-     "matches_after_masking": 46,
-     "differs": 0,
-     "missing": 0,
-     "matched": 65,
-     "pct": 100.0
-    },
-    "bytes": {
-     "total": 36813,
-     "exact": 6072,
-     "matches_after_masking": 30741,
-     "differs": 0,
-     "missing": 0,
-     "matched": 36813,
-     "pct": 100.0
-    }
-   }
-  },
-  {
-   "kind": "archive",
-   "module": "libvtf.a",
-   "name": "libvtf.a",
-   "retail": "223/19307283/bin/engine.dylib",
-   "ours": "identity/roots/bin_vtex_dll/Users/buildbot/buildslave/rel_singleplayer_osx/build/src/build/Release/libvtf.a",
-   "compared_with": "bin/engine",
-   "summary": {
-    "line_constants_only": {
-     "functions": 0,
-     "bytes": 0
-    },
-    "functions": {
-     "total": 82,
-     "exact": 30,
-     "matches_after_masking": 52,
-     "differs": 0,
-     "missing": 0,
-     "matched": 82,
-     "pct": 100.0
-    },
-    "bytes": {
-     "total": 25047,
-     "exact": 2438,
-     "matches_after_masking": 22609,
-     "differs": 0,
-     "missing": 0,
-     "matched": 25047,
-     "pct": 100.0
-    }
-   }
-  },
-  {
-   "kind": "archive",
    "module": "libhk_base.a",
    "name": "libhk_base.a",
    "retail": "223/19307283/bin/vphysics.dylib",
@@ -2332,20 +1192,20 @@
     "functions": {
      "total": 5,
      "exact": 0,
-     "matches_after_masking": 4,
-     "differs": 1,
+     "matches_after_masking": 5,
+     "differs": 0,
      "missing": 0,
-     "matched": 4,
-     "pct": 80.0
+     "matched": 5,
+     "pct": 100.0
     },
     "bytes": {
      "total": 1219,
      "exact": 0,
-     "matches_after_masking": 599,
-     "differs": 620,
+     "matches_after_masking": 1219,
+     "differs": 0,
      "missing": 0,
-     "matched": 599,
-     "pct": 49.14
+     "matched": 1219,
+     "pct": 100.0
     }
    }
   },
@@ -2395,21 +1255,21 @@
     },
     "functions": {
      "total": 143,
-     "exact": 52,
-     "matches_after_masking": 71,
-     "differs": 19,
-     "missing": 1,
-     "matched": 123,
-     "pct": 86.01
+     "exact": 53,
+     "matches_after_masking": 90,
+     "differs": 0,
+     "missing": 0,
+     "matched": 143,
+     "pct": 100.0
     },
     "bytes": {
      "total": 72841,
-     "exact": 3380,
-     "matches_after_masking": 35690,
-     "differs": 33466,
-     "missing": 305,
-     "matched": 39070,
-     "pct": 53.64
+     "exact": 3632,
+     "matches_after_masking": 69209,
+     "differs": 0,
+     "missing": 0,
+     "matched": 72841,
+     "pct": 100.0
     }
    }
   },
@@ -2427,21 +1287,21 @@
     },
     "functions": {
      "total": 393,
-     "exact": 36,
-     "matches_after_masking": 345,
-     "differs": 11,
-     "missing": 1,
-     "matched": 381,
-     "pct": 96.95
+     "exact": 37,
+     "matches_after_masking": 356,
+     "differs": 0,
+     "missing": 0,
+     "matched": 393,
+     "pct": 100.0
     },
     "bytes": {
      "total": 235146,
-     "exact": 2452,
-     "matches_after_masking": 217870,
-     "differs": 14798,
-     "missing": 26,
-     "matched": 220322,
-     "pct": 93.7
+     "exact": 2478,
+     "matches_after_masking": 232668,
+     "differs": 0,
+     "missing": 0,
+     "matched": 235146,
+     "pct": 100.0
     }
    }
   },
@@ -2459,21 +1319,21 @@
     },
     "functions": {
      "total": 1207,
-     "exact": 338,
-     "matches_after_masking": 711,
-     "differs": 152,
-     "missing": 6,
-     "matched": 1049,
-     "pct": 86.91
+     "exact": 360,
+     "matches_after_masking": 847,
+     "differs": 0,
+     "missing": 0,
+     "matched": 1207,
+     "pct": 100.0
     },
     "bytes": {
      "total": 317532,
-     "exact": 31110,
-     "matches_after_masking": 180546,
-     "differs": 104405,
-     "missing": 1471,
-     "matched": 211656,
-     "pct": 66.66
+     "exact": 32066,
+     "matches_after_masking": 285466,
+     "differs": 0,
+     "missing": 0,
+     "matched": 317532,
+     "pct": 100.0
     }
    }
   },
@@ -2588,20 +1448,20 @@
     "functions": {
      "total": 1463,
      "exact": 842,
-     "matches_after_masking": 602,
-     "differs": 14,
-     "missing": 5,
-     "matched": 1444,
-     "pct": 98.7
+     "matches_after_masking": 621,
+     "differs": 0,
+     "missing": 0,
+     "matched": 1463,
+     "pct": 100.0
     },
     "bytes": {
      "total": 285508,
      "exact": 14742,
-     "matches_after_masking": 238698,
-     "differs": 20070,
-     "missing": 11998,
-     "matched": 253440,
-     "pct": 88.77
+     "matches_after_masking": 270766,
+     "differs": 0,
+     "missing": 0,
+     "matched": 285508,
+     "pct": 100.0
     }
    }
   },
@@ -2651,21 +1511,21 @@
     },
     "functions": {
      "total": 485,
-     "exact": 167,
+     "exact": 168,
      "matches_after_masking": 317,
-     "differs": 1,
+     "differs": 0,
      "missing": 0,
-     "matched": 484,
-     "pct": 99.79
+     "matched": 485,
+     "pct": 100.0
     },
     "bytes": {
      "total": 98806,
-     "exact": 14045,
-     "matches_after_masking": 83737,
-     "differs": 1024,
+     "exact": 14161,
+     "matches_after_masking": 84645,
+     "differs": 0,
      "missing": 0,
-     "matched": 97782,
-     "pct": 98.96
+     "matched": 98806,
+     "pct": 100.0
     }
    }
   },
@@ -2875,21 +1735,21 @@
     },
     "functions": {
      "total": 760,
-     "exact": 197,
-     "matches_after_masking": 84,
-     "differs": 468,
-     "missing": 11,
-     "matched": 281,
-     "pct": 36.97
+     "exact": 437,
+     "matches_after_masking": 323,
+     "differs": 0,
+     "missing": 0,
+     "matched": 760,
+     "pct": 100.0
     },
     "bytes": {
      "total": 74631,
-     "exact": 4454,
-     "matches_after_masking": 1157,
-     "differs": 67357,
-     "missing": 1663,
-     "matched": 5611,
-     "pct": 7.52
+     "exact": 16948,
+     "matches_after_masking": 57683,
+     "differs": 0,
+     "missing": 0,
+     "matched": 74631,
+     "pct": 100.0
     }
    }
   },
@@ -2938,21 +1798,21 @@
      "bytes": 0
     },
     "functions": {
-     "total": 2508,
+     "total": 2523,
      "exact": 681,
-     "matches_after_masking": 1827,
+     "matches_after_masking": 1842,
      "differs": 0,
      "missing": 0,
-     "matched": 2508,
+     "matched": 2523,
      "pct": 100.0
     },
     "bytes": {
-     "total": 595734,
+     "total": 597641,
      "exact": 30628,
-     "matches_after_masking": 565106,
+     "matches_after_masking": 567013,
      "differs": 0,
      "missing": 0,
-     "matched": 595734,
+     "matched": 597641,
      "pct": 100.0
     }
    }
@@ -2971,8 +1831,8 @@
     },
     "functions": {
      "total": 92,
-     "exact": 24,
-     "matches_after_masking": 68,
+     "exact": 23,
+     "matches_after_masking": 69,
      "differs": 0,
      "missing": 0,
      "matched": 92,
@@ -2980,8 +1840,8 @@
     },
     "bytes": {
      "total": 22043,
-     "exact": 1116,
-     "matches_after_masking": 20927,
+     "exact": 1107,
+     "matches_after_masking": 20936,
      "differs": 0,
      "missing": 0,
      "matched": 22043,
@@ -3004,20 +1864,20 @@
     "functions": {
      "total": 241,
      "exact": 81,
-     "matches_after_masking": 157,
-     "differs": 3,
+     "matches_after_masking": 160,
+     "differs": 0,
      "missing": 0,
-     "matched": 238,
-     "pct": 98.76
+     "matched": 241,
+     "pct": 100.0
     },
     "bytes": {
      "total": 55440,
      "exact": 2036,
-     "matches_after_masking": 52748,
-     "differs": 656,
+     "matches_after_masking": 53404,
+     "differs": 0,
      "missing": 0,
-     "matched": 54784,
-     "pct": 98.82
+     "matched": 55440,
+     "pct": 100.0
     }
    }
   },
@@ -3087,196 +1947,10 @@
   },
   {
    "kind": "game",
-   "module": "episodic/server",
-   "name": "episodic/server.dylib",
-   "retail": "380/19307283/episodic/bin/server.dylib",
-   "ours": "/Volumes/Storage/sco/byte-match-survey/integration-4-scratch/games/episodic/server.dylib",
-   "summary": {
-    "line_constants_only": {
-     "functions": 24,
-     "bytes": 12333
-    },
-    "functions": {
-     "total": 22744,
-     "exact": 5276,
-     "matches_after_masking": 16869,
-     "differs": 475,
-     "missing": 124,
-     "matched": 22145,
-     "pct": 97.37
-    },
-    "bytes": {
-     "total": 7696434,
-     "exact": 157521,
-     "matches_after_masking": 7138573,
-     "differs": 382051,
-     "missing": 18289,
-     "matched": 7296094,
-     "pct": 94.8
-    }
-   }
-  },
-  {
-   "kind": "game",
-   "module": "episodic/client",
-   "name": "episodic/client.dylib",
-   "retail": "380/19307283/episodic/bin/client.dylib",
-   "ours": "/Volumes/Storage/sco/byte-match-survey/integration-4-scratch/games/episodic/client.dylib",
-   "summary": {
-    "line_constants_only": {
-     "functions": 30,
-     "bytes": 8514
-    },
-    "functions": {
-     "total": 17821,
-     "exact": 5390,
-     "matches_after_masking": 11896,
-     "differs": 407,
-     "missing": 128,
-     "matched": 17286,
-     "pct": 97.0
-    },
-    "bytes": {
-     "total": 4443243,
-     "exact": 192089,
-     "matches_after_masking": 3896768,
-     "differs": 299042,
-     "missing": 55344,
-     "matched": 4088857,
-     "pct": 92.02
-    }
-   }
-  },
-  {
-   "kind": "game",
-   "module": "lostcoast/server",
-   "name": "lostcoast/server.dylib",
-   "retail": "340/19307283/lostcoast/bin/server.dylib",
-   "ours": "/Volumes/Storage/sco/byte-match-survey/integration-4-scratch/games/lostcoast/server.dylib",
-   "summary": {
-    "line_constants_only": {
-     "functions": 63,
-     "bytes": 121212
-    },
-    "functions": {
-     "total": 21442,
-     "exact": 5061,
-     "matches_after_masking": 15253,
-     "differs": 1096,
-     "missing": 32,
-     "matched": 20314,
-     "pct": 94.74
-    },
-    "bytes": {
-     "total": 7181480,
-     "exact": 150234,
-     "matches_after_masking": 6229812,
-     "differs": 794593,
-     "missing": 6841,
-     "matched": 6380046,
-     "pct": 88.84
-    }
-   }
-  },
-  {
-   "kind": "game",
-   "module": "lostcoast/client",
-   "name": "lostcoast/client.dylib",
-   "retail": "340/19307283/lostcoast/bin/client.dylib",
-   "ours": "/Volumes/Storage/sco/byte-match-survey/integration-4-scratch/games/lostcoast/client.dylib",
-   "summary": {
-    "line_constants_only": {
-     "functions": 36,
-     "bytes": 13018
-    },
-    "functions": {
-     "total": 17468,
-     "exact": 5208,
-     "matches_after_masking": 11300,
-     "differs": 843,
-     "missing": 117,
-     "matched": 16508,
-     "pct": 94.5
-    },
-    "bytes": {
-     "total": 4356276,
-     "exact": 179878,
-     "matches_after_masking": 3643949,
-     "differs": 490335,
-     "missing": 42114,
-     "matched": 3823827,
-     "pct": 87.78
-    }
-   }
-  },
-  {
-   "kind": "game",
-   "module": "hl2/server",
-   "name": "hl2/server.dylib",
-   "retail": "223/19307283/hl2/bin/server.dylib",
-   "ours": "/Volumes/Storage/sco/byte-match-survey/integration-4-scratch/games/hl2/server.dylib",
-   "summary": {
-    "line_constants_only": {
-     "functions": 24,
-     "bytes": 12333
-    },
-    "functions": {
-     "total": 22744,
-     "exact": 5276,
-     "matches_after_masking": 16869,
-     "differs": 475,
-     "missing": 124,
-     "matched": 22145,
-     "pct": 97.37
-    },
-    "bytes": {
-     "total": 7696434,
-     "exact": 157521,
-     "matches_after_masking": 7138573,
-     "differs": 382051,
-     "missing": 18289,
-     "matched": 7296094,
-     "pct": 94.8
-    }
-   }
-  },
-  {
-   "kind": "game",
-   "module": "hl2/client",
-   "name": "hl2/client.dylib",
-   "retail": "223/19307283/hl2/bin/client.dylib",
-   "ours": "/Volumes/Storage/sco/byte-match-survey/integration-4-scratch/games/hl2/client.dylib",
-   "summary": {
-    "line_constants_only": {
-     "functions": 30,
-     "bytes": 8514
-    },
-    "functions": {
-     "total": 17820,
-     "exact": 5394,
-     "matches_after_masking": 11891,
-     "differs": 407,
-     "missing": 128,
-     "matched": 17285,
-     "pct": 97.0
-    },
-    "bytes": {
-     "total": 4443188,
-     "exact": 192125,
-     "matches_after_masking": 3896705,
-     "differs": 299001,
-     "missing": 55357,
-     "matched": 4088830,
-     "pct": 92.02
-    }
-   }
-  },
-  {
-   "kind": "game",
    "module": "hl2mp/server",
    "name": "hl2mp/server.dylib",
    "retail": "223/19307283/hl2mp/bin/server.dylib",
-   "ours": "build-hl2mp/sdk2013mp/server.dylib",
+   "ours": "/Volumes/Storage/sco/int5-osx-games/hl2mp/server.dylib",
    "summary": {
     "line_constants_only": {
      "functions": 0,
@@ -3284,21 +1958,21 @@
     },
     "functions": {
      "total": 21192,
-     "exact": 9479,
-     "matches_after_masking": 11703,
-     "differs": 10,
+     "exact": 10795,
+     "matches_after_masking": 10397,
+     "differs": 0,
      "missing": 0,
-     "matched": 21182,
-     "pct": 99.95
+     "matched": 21192,
+     "pct": 100.0
     },
     "bytes": {
      "total": 6526716,
-     "exact": 676588,
-     "matches_after_masking": 5845496,
-     "differs": 4632,
+     "exact": 1026523,
+     "matches_after_masking": 5500193,
+     "differs": 0,
      "missing": 0,
-     "matched": 6522084,
-     "pct": 99.93
+     "matched": 6526716,
+     "pct": 100.0
     }
    }
   },
@@ -3307,7 +1981,7 @@
    "module": "hl2mp/client",
    "name": "hl2mp/client.dylib",
    "retail": "223/19307283/hl2mp/bin/client.dylib",
-   "ours": "build-hl2mp/sdk2013mp/client.dylib",
+   "ours": "/Volumes/Storage/sco/int5-osx-games/hl2mp/client.dylib",
    "summary": {
     "line_constants_only": {
      "functions": 0,
@@ -3315,43 +1989,229 @@
     },
     "functions": {
      "total": 20011,
-     "exact": 8613,
-     "matches_after_masking": 11348,
-     "differs": 45,
-     "missing": 5,
-     "matched": 19961,
-     "pct": 99.75
+     "exact": 11086,
+     "matches_after_masking": 8925,
+     "differs": 0,
+     "missing": 0,
+     "matched": 20011,
+     "pct": 100.0
     },
     "bytes": {
      "total": 4715459,
-     "exact": 458737,
-     "matches_after_masking": 4202404,
-     "differs": 42314,
-     "missing": 12004,
-     "matched": 4661141,
-     "pct": 98.85
+     "exact": 1115837,
+     "matches_after_masking": 3599622,
+     "differs": 0,
+     "missing": 0,
+     "matched": 4715459,
+     "pct": 100.0
+    }
+   }
+  },
+  {
+   "kind": "game",
+   "module": "episodic/server",
+   "name": "episodic/server.dylib",
+   "retail": "380/19307283/episodic/bin/server.dylib",
+   "ours": "/Volumes/Storage/sco/int5-osx-games/episodic/server.dylib",
+   "summary": {
+    "line_constants_only": {
+     "functions": 0,
+     "bytes": 0
+    },
+    "functions": {
+     "total": 22744,
+     "exact": 19793,
+     "matches_after_masking": 2951,
+     "differs": 0,
+     "missing": 0,
+     "matched": 22744,
+     "pct": 100.0
+    },
+    "bytes": {
+     "total": 7696434,
+     "exact": 5637201,
+     "matches_after_masking": 2059233,
+     "differs": 0,
+     "missing": 0,
+     "matched": 7696434,
+     "pct": 100.0
+    }
+   }
+  },
+  {
+   "kind": "game",
+   "module": "episodic/client",
+   "name": "episodic/client.dylib",
+   "retail": "380/19307283/episodic/bin/client.dylib",
+   "ours": "/Volumes/Storage/sco/int5-osx-games/episodic/client.dylib",
+   "summary": {
+    "line_constants_only": {
+     "functions": 0,
+     "bytes": 0
+    },
+    "functions": {
+     "total": 17893,
+     "exact": 6337,
+     "matches_after_masking": 11555,
+     "differs": 1,
+     "missing": 0,
+     "matched": 17892,
+     "pct": 99.99
+    },
+    "bytes": {
+     "total": 4459034,
+     "exact": 254001,
+     "matches_after_masking": 4199760,
+     "differs": 5273,
+     "missing": 0,
+     "matched": 4453761,
+     "pct": 99.88
+    }
+   }
+  },
+  {
+   "kind": "game",
+   "module": "hl2/server",
+   "name": "hl2/server.dylib",
+   "retail": "223/19307283/hl2/bin/server.dylib",
+   "ours": "/Volumes/Storage/sco/int5-osx-games/hl2/server.dylib",
+   "summary": {
+    "line_constants_only": {
+     "functions": 0,
+     "bytes": 0
+    },
+    "functions": {
+     "total": 22744,
+     "exact": 19793,
+     "matches_after_masking": 2951,
+     "differs": 0,
+     "missing": 0,
+     "matched": 22744,
+     "pct": 100.0
+    },
+    "bytes": {
+     "total": 7696434,
+     "exact": 5637201,
+     "matches_after_masking": 2059233,
+     "differs": 0,
+     "missing": 0,
+     "matched": 7696434,
+     "pct": 100.0
+    }
+   }
+  },
+  {
+   "kind": "game",
+   "module": "hl2/client",
+   "name": "hl2/client.dylib",
+   "retail": "223/19307283/hl2/bin/client.dylib",
+   "ours": "/Volumes/Storage/sco/int5-osx-games/hl2/client.dylib",
+   "summary": {
+    "line_constants_only": {
+     "functions": 0,
+     "bytes": 0
+    },
+    "functions": {
+     "total": 17892,
+     "exact": 6231,
+     "matches_after_masking": 11656,
+     "differs": 5,
+     "missing": 0,
+     "matched": 17887,
+     "pct": 99.97
+    },
+    "bytes": {
+     "total": 4459007,
+     "exact": 249272,
+     "matches_after_masking": 4200493,
+     "differs": 9242,
+     "missing": 0,
+     "matched": 4449765,
+     "pct": 99.79
+    }
+   }
+  },
+  {
+   "kind": "game",
+   "module": "lostcoast/server",
+   "name": "lostcoast/server.dylib",
+   "retail": "340/19307283/lostcoast/bin/server.dylib",
+   "ours": "/Volumes/Storage/sco/int5-osx-games/lostcoast/server.dylib",
+   "summary": {
+    "line_constants_only": {
+     "functions": 0,
+     "bytes": 0
+    },
+    "functions": {
+     "total": 21442,
+     "exact": 18712,
+     "matches_after_masking": 2730,
+     "differs": 0,
+     "missing": 0,
+     "matched": 21442,
+     "pct": 100.0
+    },
+    "bytes": {
+     "total": 7181480,
+     "exact": 5317907,
+     "matches_after_masking": 1863573,
+     "differs": 0,
+     "missing": 0,
+     "matched": 7181480,
+     "pct": 100.0
+    }
+   }
+  },
+  {
+   "kind": "game",
+   "module": "lostcoast/client",
+   "name": "lostcoast/client.dylib",
+   "retail": "340/19307283/lostcoast/bin/client.dylib",
+   "ours": "/Volumes/Storage/sco/int5-osx-games/lostcoast/client.dylib",
+   "summary": {
+    "line_constants_only": {
+     "functions": 0,
+     "bytes": 0
+    },
+    "functions": {
+     "total": 17510,
+     "exact": 6145,
+     "matches_after_masking": 11362,
+     "differs": 3,
+     "missing": 0,
+     "matched": 17507,
+     "pct": 99.98
+    },
+    "bytes": {
+     "total": 4365944,
+     "exact": 250815,
+     "matches_after_masking": 4110366,
+     "differs": 4763,
+     "missing": 0,
+     "matched": 4361181,
+     "pct": 99.89
     }
    }
   }
  ],
  "total_with_games": {
   "functions": {
-   "total": 214857,
-   "exact": 73913,
-   "matches_after_masking": 133159,
-   "differs": 6325,
-   "missing": 1460,
-   "matched": 207072,
-   "pct": 96.38
+   "total": 210804,
+   "exact": 144947,
+   "matches_after_masking": 65840,
+   "differs": 17,
+   "missing": 0,
+   "matched": 210787,
+   "pct": 99.99
   },
   "bytes": {
-   "total": 60387665,
-   "exact": 5257778,
-   "matches_after_masking": 50920272,
-   "differs": 3918197,
-   "missing": 291418,
-   "matched": 56178050,
-   "pct": 93.03
+   "total": 59420569,
+   "exact": 30040441,
+   "matches_after_masking": 29330185,
+   "differs": 49943,
+   "missing": 0,
+   "matched": 59370626,
+   "pct": 99.92
   }
  }
 }
