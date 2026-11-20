@@ -1652,15 +1652,22 @@ static int mp3d_match_frame(const uint8_t *hdr, int mp3_bytes, int frame_bytes)
         i += hdr_frame_bytes(hdr + i, frame_bytes) + hdr_padding(hdr + i);
         if (i + HDR_SIZE > mp3_bytes)
             return nmatch > 0;
-        if (!hdr_compare(hdr, hdr + i))
+        if (hdr[i] == 'T')
         {
-            if (((hdr[i] == 0 && hdr[i + 1] == 0 && hdr[i + 2] == 0) ||
-                 (hdr[i] == 'T' && hdr[i + 1] == 'A' && hdr[i + 2] == 'G')) && hdr[i + 3] == 0)
-                return nmatch > 0;
+            if (hdr[i + 1] == 'A' && hdr[i + 2] == 'G' && hdr[i + 3] == 0)
+                break;
             return 0;
         }
+        if (hdr[i] == 0)
+        {
+            if (hdr[i + 1] == 0 && hdr[i + 2] == 0 && hdr[i + 3] == 0)
+                break;
+            return 0;
+        }
+        if (!hdr_compare(hdr, hdr + i))
+            return 0;
     }
-    return 1;
+    return nmatch > 0;
 }
 
 static int mp3d_find_frame(const uint8_t *mp3, int mp3_bytes, int *free_format_bytes, int *ptr_frame_bytes)

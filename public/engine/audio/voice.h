@@ -137,7 +137,9 @@ int Voice_GetChannel(int nEntity);
 
 #if !defined( NO_VOICE )
 extern IVoiceTweak g_VoiceTweakAPI;
+#ifndef BYTEMATCH_RETAIL
 extern bool g_bUsingSteamVoice;
+#endif
 #endif
 
 /*! @} */

@@ -17,12 +17,13 @@
 extern IFileSystem *g_pFullFileSystem;
 
 #ifdef BYTEMATCH_RETAIL
-// retail measures durations with minimp3's frame iterator; the CMPAFile parser is gone
+// retail measures durations with minimp3's frame iterator; CMPAFile stays in the TU (dead-stripped on macOS)
 #define MINIMP3_NO_STDIO
 #define MINIMP3_ONLY_SIMD
 #define MINIMP3_IMPLEMENTATION
 #include "../voice_codecs/minimp3/minimp3_ex.h"
-#else
+#endif
+#line 19
 
 // exception class
 CMPAException::CMPAException(ErrorIDs ErrorID, const char *szFile, const char *szFunction, bool bGetLastError ) :
@@ -323,7 +324,12 @@ uint32 CMPAFile::ExtractBytes( uint32& dwOffset, uint32 dwNumBytes, bool bMoveOf
 
     for( uint32 n=dwOffset; n < dwOffset+dwNumBytes; n++ )
     {
+#ifdef BYTEMATCH_RETAIL
+        dwResult |= m_pBuffer[n] << (8*dwNumByteShifts); // the bit shift will do the correct byte order for you
+#else
         dwResult |= ((byte)m_pBuffer[n]) << (8*dwNumByteShifts); // the bit shift will do the correct byte order for you                                                           
+#endif
+#line 327
 		dwNumByteShifts--;
     }
     
@@ -367,8 +373,6 @@ void CMPAFile::FillBuffer( uint32 dwOffsetToRead )
     // no more bytes in buffer than read out from file
     m_dwBufferSize += dwBytesRead;
 }
-#endif
-#line 363
 
 // Uses mp3 code from:  http://www.codeproject.com/audio/MPEGAudioInfo.asp
 

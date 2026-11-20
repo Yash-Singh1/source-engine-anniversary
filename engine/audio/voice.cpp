@@ -200,7 +200,7 @@ static IVoiceCodec  *g_pEncodeCodec = NULL;
 static bool			g_bVoiceRecording = false;	// Are we recording at the moment?
 static bool			g_bVoiceRecordStopping = false;	// Are we waiting to stop?
 #ifdef BYTEMATCH_RETAIL
-bool				g_bUsingSteamVoice = true;
+static bool			g_bUsingSteamVoice = true;
 #else
 bool				g_bUsingSteamVoice = false;
 #endif

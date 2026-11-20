@@ -78,7 +78,8 @@ RETAIL_DEAD = {
 		('vgui2/src/MemoryBitmap.cpp', 'vgui2/src/ScalableImageBorder.cpp'),
 		('vgui2/src/MessageListener.cpp', 'vgui2/src/ScalableImageBorder.cpp')],
 	'bin/vguimatsurface': [('vgui2/src/vgui_key_translation.cpp', 'vguimatsurface/Clip2D.cpp')],
-	'bin/engine': [('common/language.cpp', 'common/netmessages.cpp')],
+	'bin/engine': [('common/language.cpp', 'common/netmessages.cpp'),
+		('engine/audio/VBRHeader.cpp', 'engine/audio/voice.cpp')],
 	'hl2mp/server': [('common/language.cpp', 'game/server/serverbenchmark_base.cpp')],
 }
 
