@@ -345,6 +345,9 @@ unsigned int CPhonemeTag::ComputeDataCheckSum()
 //-----------------------------------------------------------------------------
 // Purpose: Simple language to string and string to language lookup dictionary
 //-----------------------------------------------------------------------------
+#ifndef PLATFORM_64BITS
+#pragma pack(1)
+#endif
 struct CCLanguage
 {
 	int				type;
@@ -367,7 +370,10 @@ static CCLanguage g_CCLanguageLookup[] =
 	{ CC_THAI,		"thai",			0 ,		150,	250 },
 	{ CC_PORTUGUESE,"portuguese",	0 ,		0,		150 },	
 };
-
+#ifndef PLATFORM_64BITS
+#pragma pack()
+#endif
+#line 374
 void CSentence::ColorForLanguage( int language, unsigned char& r, unsigned char& g, unsigned char& b )
 {
 	r = g = b = 0;
