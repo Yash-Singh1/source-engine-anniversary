@@ -48,7 +48,8 @@ COMPILE_C_AS_CXX = ['bzip2']
 RETAIL_NAMES = {'hl2_osx': 'hl2_linux'}
 # makefile_base_posix.mak's PATHWRAP, in LIB_START_SHLIB/LIB_START_EXE: file APIs go through
 # tier1/pathmatch.cpp's __wrap_* (retail libtier0 calls __wrap_fopen64; ServerBrowser imports
-# libsteam_api's __wrap___xstat64). Engine-side modules only: the game modules call none of these.
+# libsteam_api's __wrap___xstat64; client.so imports what pathmatch's __real_* calls resolve to:
+# mount, mkfifo, lchown, ...).
 PATHWRAP = ['fopen', 'freopen', 'open', 'creat', 'access', '__xstat', 'stat', 'lstat', 'fopen64', 'open64',
 	'opendir', '__lxstat', 'chmod', 'chown', 'lchown', 'symlink', 'link', '__lxstat64', 'mknod', 'utimes',
 	'unlink', 'rename', 'utime', '__xstat64', 'mount', 'mkfifo', 'mkdir', 'rmdir', 'scandir', 'realpath']
@@ -66,8 +67,8 @@ UNDEFS = ['-Usprintf', '-Ustrncpy', '-UPROTECTED_THINGS_ENABLE']
 CXX_ONLY = ['-std=gnu++0x', '-fpermissive']
 
 # Not Valve's. BYTEMATCH_RETAIL: this fork's runtime additions stay out (shared with
-# the macOS and Windows modes); BYTEMATCH_RETAIL_LINUX: Linux-retail-only source.
-RETAIL_DEFINES = ['BYTEMATCH_RETAIL', 'BYTEMATCH_RETAIL_LINUX']
+# the macOS and Windows modes).
+RETAIL_DEFINES = ['BYTEMATCH_RETAIL']
 
 # Defines from this tree's wscripts and global env that Valve's build doesn't have.
 TREE_ONLY_DEFINES = ['PLATFORM_POSIX', 'NO_MEMOVERRIDE_NEW_DELETE', 'GIT_COMMIT_HASH',
@@ -99,7 +100,10 @@ def options(opt):
 		help = 'retail depot 224 build root, for libtier0/libvstdlib/libsteam_api [default: %default]')
 	grp.add_option('--retail-linux32-hl2src', action = 'store', dest = 'RETAIL_LINUX32_HL2SRC',
 		default = os.environ.get('HL2SRC', os.path.expanduser('~/p/sco/source-engine-2018-hl2_src')),
-		help = '2018 hl2_src tree, for RAD Telemetry\'s headers (thirdparty/telemetry/include) [default: %default]')
+		help = '2018 hl2_src tree, for Valve\'s curl headers (common/curl) [default: %default]')
+	grp.add_option('--retail-linux32-thirdparty', action = 'store', dest = 'RETAIL_LINUX32_THIRDPARTY',
+		default = os.path.expanduser('~/.cache/source-bytematch/toolchain/thirdparty-linux32'),
+		help = 'libjpeg/libpng archives from %s/build-thirdparty.sh [default: %%default]' % TOOLCHAIN_DIR)
 	grp.add_option('--retail-linux32-modules', action = 'store', dest = 'RETAIL_LINUX32_MODULES', default = None,
 		help = 'comma-separated subprojects [default: the game modules\' static libraries, plus game/client and game/server with --build-games]')
 	grp.add_option('--retail-linux32-engine', action = 'store_true', dest = 'RETAIL_LINUX32_ENGINE', default = False,
@@ -197,11 +201,18 @@ def retail_linux32_configure(conf):
 		v['LIB_' + use] = list(libs)
 		v['INCLUDES_' + use] = list(IMAGE_INCLUDES.get(use, []))
 	# Retail's engine, GameUI, replay and clients link libjpeg 8b and libpng 1.5.2 (old
-	# crosstool-NG prebuilts, not linked here), so their code has HAVE_JPEG/HAVE_PNG; the
-	# tree's public/jpeglib and public/libpng are those versions' headers.
-	for use, d in (('JPEG', 'public/jpeglib'), ('PNG', 'public/libpng')):
+	# crosstool-NG gcc 4.5.1 prebuilts, which build-thirdparty.sh rebuilds), so their code has
+	# HAVE_JPEG/HAVE_PNG; the tree's public/jpeglib and public/libpng are those versions' headers.
+	for use, d, lib in (('JPEG', 'public/jpeglib', 'jpeg'), ('PNG', 'public/libpng', 'png')):
 		v['INCLUDES_' + use] = [conf.path.find_node(d).abspath()]
 		v['DEFINES_' + use] = ['HAVE_' + use]
+		a = os.path.join(o.RETAIL_LINUX32_THIRDPARTY, 'lib', 'lib%s.a' % lib)
+		if not os.path.exists(a):
+			Logs.warn('retail-linux32: %s missing; run %s/build-thirdparty.sh' % (a, TOOLCHAIN_DIR))
+			continue
+		shutil.copy2(a, libdir.make_node(os.path.basename(a)).abspath())
+		v['STLIB_' + use] = [lib]
+		v['STLIBPATH_' + use] = [libdir.abspath()]
 	inc = os.path.join(conf.bldnode.abspath(), 'retail-linux32-include')
 	# Valve's curl 7.21.2 headers (common/curl in hl2_src), as the prebuilt libcurl's
 	curl = os.path.join(o.RETAIL_LINUX32_HL2SRC, 'common', 'curl')
@@ -223,9 +234,10 @@ def retail_linux32_configure(conf):
 		v.append_value('INCLUDES', [sdl.abspath()])
 	# Retail Linux modules have a Telemetry zone at every VPROF (they import g_Telemetry), as
 	# vprof_telemetry.h enables for _LINUX. Its "../../thirdparty/telemetry/include/telemetry.h"
-	# resolves through an include directory two levels below a copy of hl2_src's headers
-	# (inside the build dir, which the container can see).
-	tm = os.path.join(o.RETAIL_LINUX32_HL2SRC, 'thirdparty', 'telemetry', 'include')
+	# resolves through an include directory two levels below a copy of the Telemetry 1.1
+	# declarations --retail-win32 uses (libtier0.so calls tmLoadTelemetryEx( 1, 1, 25, 0, 0 ) as
+	# tier0.dll does), inside the build dir, which the container can see.
+	tm = conf.path.find_node('devtools/bytematch/toolchain/win32/telemetry/include').abspath()
 	if os.path.isfile(os.path.join(tm, 'telemetry.h')):
 		root = conf.bldnode.make_node('retail-linux32-telemetry')
 		dst = os.path.join(root.abspath(), 'thirdparty', 'telemetry', 'include')
@@ -251,11 +263,11 @@ def retail_linux32_configure(conf):
 			v.RETAIL_PROJECTS += ENGINE_MODULES
 		if any(a == '--build-games' or a.startswith('--build-games=') for a in sys.argv):
 			v.RETAIL_PROJECTS += GAME_MODULES
-	if o.RETAIL_LINUX32_ENGINE:
-		# The May 2025 build has the define makefile_base_posix.mak (2018) left commented out and
-		# the 2025 SDK's source_posix_ninja.vpc sets: retail libtier0/libvstdlib import readdir64
-		# and no readdir, and Plat_IsInDebugSession calls fopen64's wrapper.
-		v.RETAIL_LINUX32_DEFINES = ['_FILE_OFFSET_BITS=64']
+	# The define makefile_base_posix.mak (2018) left commented out and the 2025 SDK's
+	# source_posix_ninja.vpc sets: retail libtier0/libvstdlib import readdir64 and no readdir,
+	# Plat_IsInDebugSession calls fopen64's wrapper, and client.so imports mmap64 (mumble.cpp)
+	# and readdir64 (pathmatch.cpp), never mmap or readdir.
+	v.RETAIL_LINUX32_DEFINES = ['_FILE_OFFSET_BITS=64']
 	Logs.info('retail-linux32: container %s, projects %s' % (subprocess.check_output(scout + ['--name']).decode().strip(),
 		','.join(v.RETAIL_PROJECTS)))
 	conf.add_subproject(v.RETAIL_PROJECTS)
@@ -368,7 +380,7 @@ def retail_linux32_link(self):
 	env.LIB = [ours.get(l, l) for l in env.LIB]
 	import retail_manifest
 	kind, key, _ = retail_manifest.lookup(self)
-	if kind == 'module' and (key.startswith('bin/') or key in RETAIL_NAMES):
+	if kind == 'module':
 		env.LINKFLAGS = list(env.LINKFLAGS) + ['-Wl,--wrap=' + f for f in PATHWRAP]
 	vs = self.bld.srcnode.find_node('devtools/version_script.linux.txt')
 	if self.link_task.__class__.__name__ in ('cprogram', 'cxxprogram'):
