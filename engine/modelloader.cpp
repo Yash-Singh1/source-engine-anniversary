@@ -429,7 +429,10 @@ static worldbrushdata_t	*s_pMap = NULL;
 static int				s_nMapLoadRecursion = 0;
 static CUtlBuffer		s_MapBuffer;
 
+#ifndef BYTEMATCH_RETAIL
 int s_MapVersion = 0;
+#endif
+#line 368
 
 // Lump files are patches for a shipped map
 // List of lump files found when map was loaded. Each entry is the lump file index for that lump id.
