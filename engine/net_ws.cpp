@@ -2662,7 +2662,7 @@ enum
 };
 
 #ifdef BYTEMATCH_RETAIL
-static bool OpenSocketInternal( int nModule, int nSetPort, int nDefaultPort, const char *pName, int nProtocol, bool bTryAny )
+static void OpenSocketInternal( int nModule, int nSetPort, int nDefaultPort, const char *pName, int nProtocol, bool bTryAny )
 #else
 static bool OpenSocketInternal( int nModule, int nSetPort, int nDefaultPort, const char *pName, int nProtocol, bool bTryAny,
 								int flags = ( OSOCKET_FLAG_USE_IPNAME | OSOCKET_FLAG_FAIL ) )
@@ -2683,7 +2683,11 @@ static bool OpenSocketInternal( int nModule, int nSetPort, int nDefaultPort, con
 	else
 	{
 		Sys_Error( "Unrecognized protocol type %d", nProtocol );
+#ifdef BYTEMATCH_RETAIL
+		return;
+#else
 		return false;
+#endif
 	}
 
 	if ( !net_sockets[nModule].nPort )
@@ -2714,7 +2718,11 @@ static bool OpenSocketInternal( int nModule, int nSetPort, int nDefaultPort, con
 #endif
 #line 2615
 				Sys_Exit( "Couldn't allocate any %s IP port", pName );
+#ifdef BYTEMATCH_RETAIL
+			return;
+#else
 			return false;
+#endif
 		}
 
 		net_sockets[nModule].nPort = port;
@@ -2722,10 +2730,17 @@ static bool OpenSocketInternal( int nModule, int nSetPort, int nDefaultPort, con
 	else
 	{
 		Msg( "WARNING: NET_OpenSockets: %s port %i already open.\n", pName, net_sockets[nModule].nPort );
+#ifdef BYTEMATCH_RETAIL
+		return;
+#else
 		return false;
+#endif
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	return ( net_sockets[nModule].nPort != 0 );
+#endif
+#line 2630
 }
 
 /*

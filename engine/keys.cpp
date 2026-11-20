@@ -428,14 +428,18 @@ CON_COMMAND( key_listboundkeys, "List bound keys with bindings." )
 			continue;
 
 #ifdef BYTEMATCH_RETAIL
-		if ( IsJoystickCode( (ButtonCode_t)i ) )
+		if ( IsJoystickCode( (ButtonCode_t)i ) || IsSteamControllerCode( (ButtonCode_t)i ) )
 		{
 			ConMsg( "[%d:%d]\"%s\" = \"%s\"\n", i, GetJoystickForCode( (ButtonCode_t)i ), g_pInputSystem->ButtonCodeToString( (ButtonCode_t)i ), pBinding );
-			continue;
 		}
-#endif
-#line 427
+		else
+		{
+			ConMsg( "\"%s\" = \"%s\"\n", g_pInputSystem->ButtonCodeToString( (ButtonCode_t)i ), pBinding );
+		}
+#else
 		ConMsg( "\"%s\" = \"%s\"\n", g_pInputSystem->ButtonCodeToString( (ButtonCode_t)i ), pBinding );
+#endif
+#line 428
 	}
 }
 

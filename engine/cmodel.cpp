@@ -1493,6 +1493,11 @@ void FASTCALL CM_TraceToLeaf( TraceInfo_t * RESTRICT pTraceInfo, int ndxLeaf, fl
 	{
 		// get the current brush
 		int ndxBrush = map_leafbrushes[ndxLeafBrush];
+#ifdef BYTEMATCH_RETAIL
+		if ( !pTraceInfo->m_BrushCounters[pTraceInfo->m_nCheckDepth].IsValidIndex( ndxBrush ) )
+			continue;
+#endif
+#line 1496
 
 		cbrush_t * RESTRICT pBrush = &map_brushes[ndxBrush];
 
@@ -1691,6 +1696,11 @@ static void FASTCALL CM_TestInLeaf( TraceInfo_t *pTraceInfo, int ndxLeaf )
 	{
 		// get the current brush
 		int ndxBrush = pTraceInfo->m_pBSPData->map_leafbrushes[pLeaf->firstleafbrush+ndxLeafBrush];
+#ifdef BYTEMATCH_RETAIL
+		if ( !pTraceInfo->m_BrushCounters[pTraceInfo->m_nCheckDepth].IsValidIndex( ndxBrush ) )
+			continue;
+#endif
+#line 1694
 
 		cbrush_t *pBrush = &pTraceInfo->m_pBSPData->map_brushes[ndxBrush];
 

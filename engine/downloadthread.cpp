@@ -484,6 +484,7 @@ DWORD __stdcall DownloadThread( void *voidPtr )
 		if ( code > 0 )
 		{
 			rc.data = new unsigned char[rc.nBytesTotal + 1];	// Extra byte for NULL terminator
+#ifndef BYTEMATCH_RETAIL
 			if ( !rc.data )
 			{
 				// We're seeing crazy large numbers being returned in code (0x48e1e22), the new fails, and we crash.
@@ -491,6 +492,8 @@ DWORD __stdcall DownloadThread( void *voidPtr )
 				CleanUpDownload( rc, HTTP_ERROR, HTTP_ERROR_ZERO_LENGTH_FILE );
 				return rc.status;
 			}
+#endif
+#line 494
 			rc.data[ rc.nBytesTotal ] = 0;
 		}
 	}

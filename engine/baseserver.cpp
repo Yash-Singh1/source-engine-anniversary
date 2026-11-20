@@ -1145,10 +1145,6 @@ void CBaseServer::CalculateCPUUsage( void )
 	// only do this every 1 second
 	{
 #if defined ( _WIN32 ) 
-#ifdef BYTEMATCH_RETAIL
-		float curtime = Sys_FloatTime();
-#endif
-#line 1118
 		static float lastAvg=0;
 		static __int64 lastTotalTime=0,lastNow=0;
 
@@ -1177,7 +1173,12 @@ void CBaseServer::CalculateCPUUsage( void )
 		m_fCPUPercent = (double)(totalTime-lastTotalTime)/(double)(now-lastNow);
 		
 		// now save this away for next time
+#ifdef BYTEMATCH_RETAIL
+		if ( Sys_FloatTime() > lastAvg+5 ) 
+#else
 		if ( curtime > lastAvg+5 ) 
+#endif
+#line 1149
 		// only do it every 5 seconds, so we keep a moving average
 		{
 			memcpy(&lastNow,&nowTime,sizeof(__int64));

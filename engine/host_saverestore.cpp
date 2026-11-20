@@ -46,6 +46,10 @@
 #include "baseautocompletefilelist.h"
 #include "sound.h"
 #include "vgui_baseui_interface.h"
+#ifndef OSX
+#include "iworkshop.h"
+#endif
+#line 49
 #include "gl_matsysiface.h"
 #include "cl_main.h"
 #include "pr_edict.h"
@@ -674,7 +678,9 @@ int CSaveRestore::SaveGameSlot( const char *pSaveName, const char *pSaveComment,
 	}
 
 	SaveMsg( "Start save... (%d/%d)\n", ThreadInMainThread(), ThreadGetCurrentId() );
+#line 665
 	VPROF_BUDGET( "SaveGameSlot", "Save" );
+#line 678
 	char			hlPath[256], name[256], *pTokenData;
 	int				tag, i, tokenSize;
 	CSaveRestoreData	*pSaveData;
@@ -854,12 +860,32 @@ int CSaveRestore::SaveGameSlot( const char *pSaveName, const char *pSaveComment,
 	szExpansionId[0] = '\0';
 	if ( g_pFullFileSystem->GetCurrentGameExpansionId( szExpansionId, sizeof( szExpansionId ) ) )
 		pSaveAppendix->SetString( "Expansion", szExpansionId );
-#ifndef BYTEMATCH_RETAIL
+#ifndef OSX
+	CUtlVector< PublishedFileId_t > items;
+	PublishedFileId_t nCampaignID = 0;
+	workshop->GetCurrentCampaign( items, nCampaignID );
+	if ( nCampaignID != 0 )
+	{
+		KeyValues *pWorkshopKV = new KeyValues( "Workshop" );
+		pWorkshopKV->SetUint64( "Campaign", nCampaignID );
+		KeyValues *pAddonsKV = new KeyValues( "Addons" );
+		for ( int i = 0; i < items.Count(); ++i )
+		{
+			char szKey[256];
+			V_sprintf_safe( szKey, "%d", i );
+			pAddonsKV->SetUint64( szKey, items[i] );
+		}
+		pWorkshopKV->AddSubKey( pAddonsKV );
+		pSaveAppendix->AddSubKey( pWorkshopKV );
+	}
 	char szAppendixName[MAX_PATH];
 	V_sprintf_safe( szAppendixName, "%s.kv", name );
 	pSaveAppendix->SaveToFile( g_pFullFileSystem, szAppendixName, MOD_DIR );
+#ifndef BYTEMATCH_RETAIL
 	pSaveAppendix->deleteThis();
 #endif
+#endif
+#line 863
 
 	// Finish all writes and close the save game container
 	// @TODO: this async finish all writes has to go away, very expensive and will make game hitchy. switch to a wait on the last async op
@@ -915,6 +941,19 @@ void CSaveRestore::UpdateSaveGameScreenshots()
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+static bool IsOldHL2Save( const GAME_HEADER *pHeader )
+{
+	bool bIsOldSave = false;
+	if ( pHeader->mapCount != SAVEGAME_MAPCOUNT_ANNIVERSARY )
+	{
+		if ( !V_strnicmp( pHeader->mapName, "d1_", 3 ) || !V_strnicmp( pHeader->mapName, "d2_", 3 ) || !V_strnicmp( pHeader->mapName, "d3_", 3 ) )
+			bIsOldSave = true;
+	}
+	return bIsOldSave;
+}
+#endif
+#line 918
 int CSaveRestore::SaveReadHeader( FileHandle_t pFile, GAME_HEADER *pHeader, int readGlobalState, bool *pbOldSave )
 {
 	int					i, tag, size, tokenCount, tokenSize;
@@ -1015,7 +1054,10 @@ int CSaveRestore::SaveReadHeader( FileHandle_t pFile, GAME_HEADER *pHeader, int 
 #ifdef BYTEMATCH_RETAIL
 	// Pre-anniversary saves of HL2 maps need the old save handling
 	if ( pbOldSave )
-		*pbOldSave = pHeader->mapCount != SAVEGAME_MAPCOUNT_ANNIVERSARY && ( !V_strnicmp( pHeader->mapName, "d1_", 3 ) || !V_strnicmp( pHeader->mapName, "d2_", 3 ) || !V_strnicmp( pHeader->mapName, "d3_", 3 ) );
+	{
+		*pbOldSave = IsOldHL2Save( pHeader );
+	}
+#line 1019
 
 	if ( readGlobalState && pHeader->mapCount == SAVEGAME_MAPCOUNT_ANNIVERSARY )
 #else
@@ -1031,7 +1073,7 @@ int CSaveRestore::SaveReadHeader( FileHandle_t pFile, GAME_HEADER *pHeader, int 
 
 	Finish( pSaveData );
 
-	if ( pHeader->mapCount == 0 || pHeader->mapCount == -1 || pHeader->mapCount == SAVEGAME_MAPCOUNT_ANNIVERSARY )
+	if ( pHeader->mapCount == 0 || pHeader->mapCount == SAVEGAME_MAPCOUNT_ANNIVERSARY || pHeader->mapCount == -1 )
 	{
 		if ( g_pSaveRestoreFileSystem->Read( &pHeader->mapCount, sizeof(pHeader->mapCount), pFile ) != sizeof(pHeader->mapCount) )
 			return 0;
@@ -1138,11 +1180,7 @@ bool CSaveRestore::LoadGame( const char *pName )
 	FileHandle_t	pFile;
 	GAME_HEADER		gameHeader;
 	char			name[ MAX_PATH ];
-#ifdef BYTEMATCH_RETAIL
-	bool			validload = true;
-#else
 	bool			validload = false;
-#endif
 
 	FinishAsyncSave();
 	SaveResetMemory();
@@ -1218,20 +1256,28 @@ bool CSaveRestore::LoadGame( const char *pName )
 		// Reset the file pointer to the start of the file
 		g_pSaveRestoreFileSystem->Seek( pFile, 0, FILESYSTEM_SEEK_HEAD );
 
+		validload = true;
 		if ( pSaveAppendix )
 		{
 			KeyValues *pWorkshop = pSaveAppendix->FindKey( "Workshop" );
 			if ( pWorkshop )
 			{
-				// Workshop campaigns are not mounted on this platform
-				pWorkshop->GetUint64( "Campaign" );
+				PublishedFileId_t nCampaignID = pWorkshop->GetUint64( "Campaign" );
+#ifndef OSX
+				if ( nCampaignID != 0 && !workshop->LoadCampaign( nCampaignID, false ) )
+				{
+					Msg( "[WorkshopSaveLoad] Failed to launch campaign: %llu\n", nCampaignID );
+					validload = false;
+				}
+#endif
 			}
 		}
 
 		if ( SaveReadHeader( pFile, &gameHeader, 1, &bOldSave ) )
 		{
-			validload = DirectoryExtract( pFile, gameHeader.mapCount );
+			validload &= DirectoryExtract( pFile, gameHeader.mapCount );
 		}
+#line 1235
 
 #ifdef BYTEMATCH_RETAIL
 		char szMapFile[ MAX_PATH ] = { 0 };
@@ -1287,6 +1333,10 @@ bool CSaveRestore::LoadGame( const char *pName )
 	}
 
 	bool bIsTransitionSave = ( gameHeader.originMapName[0] != 0 );
+#ifndef OSX
+	workshop->Unknown24();
+#endif
+#line 1290
 
 	bool retval = Host_NewGame( gameHeader.mapName, true, false, ( bIsTransitionSave ) ? gameHeader.originMapName : NULL, ( bIsTransitionSave ) ? gameHeader.landmark : NULL, bOldSave );
 
