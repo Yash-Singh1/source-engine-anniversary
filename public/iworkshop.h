@@ -26,7 +26,9 @@ class KeyValues;
 struct WorkshopItem_t
 {
 	SteamUGCDetails_t	m_Details;
-	uint8				m_Reserved[0x2c];
+	uint32				m_nPad0;
+	uint64				m_nPad1;
+	uint8				m_Reserved[0x20];
 	KeyValues			*m_pCampaignData;
 };
 
