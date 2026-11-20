@@ -12,6 +12,42 @@
 
 #include "steam_api_common.h"
 
+#if defined( HL2_LOSTCOAST )
+// The October 2024 Lost Coast build uses Steamworks 1.60's ISteamTimeline.
+enum ETimelineGameMode
+{
+	k_ETimelineGameMode_Invalid = 0,
+	k_ETimelineGameMode_Playing = 1,
+	k_ETimelineGameMode_Staging = 2,
+	k_ETimelineGameMode_Menus = 3,
+	k_ETimelineGameMode_LoadingScreen = 4,
+
+	k_ETimelineGameMode_Max,
+};
+
+enum ETimelineEventClipPriority
+{
+	k_ETimelineEventClipPriority_Invalid = 0,
+	k_ETimelineEventClipPriority_None = 1,
+	k_ETimelineEventClipPriority_Standard = 2,
+	k_ETimelineEventClipPriority_Featured = 3,
+};
+
+class ISteamTimeline
+{
+public:
+	virtual void SetTimelineStateDescription( const char *pchDescription, float flTimeDelta ) = 0;
+	virtual void ClearTimelineStateDescription( float flTimeDelta ) = 0;
+	virtual void AddTimelineEvent( const char *pchIcon, const char *pchTitle, const char *pchDescription, uint32 unPriority, float flStartOffsetSeconds, float flDurationSeconds, ETimelineEventClipPriority ePossibleClip ) = 0;
+	virtual void SetTimelineGameMode( ETimelineGameMode eMode ) = 0;
+};
+
+#define STEAMTIMELINE_INTERFACE_VERSION "STEAMTIMELINE_INTERFACE_V001"
+
+inline ISteamTimeline *SteamTimeline();
+STEAM_DEFINE_USER_INTERFACE_ACCESSOR( ISteamTimeline *, SteamTimeline, STEAMTIMELINE_INTERFACE_VERSION );
+
+#else
 // callbacks
 #if defined( VALVE_CALLBACK_PACK_SMALL )
 #pragma pack( push, 4 )
@@ -257,5 +293,6 @@ struct SteamTimelineEventRecordingExists_t
 
 #pragma pack( pop )
 
+#endif // HL2_LOSTCOAST
 
 #endif // ISTEAMTIMELINE_H

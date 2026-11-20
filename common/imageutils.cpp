@@ -660,7 +660,7 @@ unsigned char *ImgUtl_ReadJPEGAsRGBA( const char *jpegPath, int &width, int &hei
 #endif
 }
 
-#if HAVE_JPEG
+#if HAVE_JPEG && !defined( HL2_LOSTCOAST )
 class CJpegSourceMgr : public jpeg_source_mgr
 {
 public:

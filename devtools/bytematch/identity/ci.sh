@@ -38,7 +38,7 @@ for g in lostcoast episodic; do
 		WAFLOCK="$GLOCK" python3 waf configure --retail-osx32 -T release --prefix='' -o "$GOUT" \
 			--build-games="$g" --retail-modules="$SERVER_MODULES"
 	fi
-	WAFLOCK="$GLOCK" python3 waf build --targets=server $JOBS_FLAG
+	WAFLOCK="$GLOCK" python3 waf build --targets=server,client $JOBS_FLAG
 	WAFLOCK="$GLOCK" python3 waf retail_linkdb
 done
 exec devtools/bytematch/identity/identity.py --identical --build-dir "$OUT" $JOBS_FLAG

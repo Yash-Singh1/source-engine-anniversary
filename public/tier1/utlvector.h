@@ -47,7 +47,7 @@ public:
 // by index (they should *never* maintain pointers to elements in the vector).
 //-----------------------------------------------------------------------------
 template< class T, class A = CUtlMemory<T> >
-class CUtlVector : public base_vector_t
+class CUtlVector
 {
 	typedef A CAllocator;
 public:

@@ -5,45 +5,6 @@
 //
 //===========================================================================//
 
-#if defined( HL2_LOSTCOAST )
-// The October 2024 Lost Coast build uses Steamworks 1.60's ISteamTimeline.
-#include "steam/steam_api_common.h"
-#define ISTEAMTIMELINE_H
-
-enum ETimelineGameMode
-{
-	k_ETimelineGameMode_Invalid = 0,
-	k_ETimelineGameMode_Playing = 1,
-	k_ETimelineGameMode_Staging = 2,
-	k_ETimelineGameMode_Menus = 3,
-	k_ETimelineGameMode_LoadingScreen = 4,
-
-	k_ETimelineGameMode_Max,
-};
-
-enum ETimelineEventClipPriority
-{
-	k_ETimelineEventClipPriority_Invalid = 0,
-	k_ETimelineEventClipPriority_None = 1,
-	k_ETimelineEventClipPriority_Standard = 2,
-	k_ETimelineEventClipPriority_Featured = 3,
-};
-
-class ISteamTimeline
-{
-public:
-	virtual void SetTimelineStateDescription( const char *pchDescription, float flTimeDelta ) = 0;
-	virtual void ClearTimelineStateDescription( float flTimeDelta ) = 0;
-	virtual void AddTimelineEvent( const char *pchIcon, const char *pchTitle, const char *pchDescription, uint32 unPriority, float flStartOffsetSeconds, float flDurationSeconds, ETimelineEventClipPriority ePossibleClip ) = 0;
-	virtual void SetTimelineGameMode( ETimelineGameMode eMode ) = 0;
-};
-
-#define STEAMTIMELINE_INTERFACE_VERSION "STEAMTIMELINE_INTERFACE_V001"
-
-inline ISteamTimeline *SteamTimeline();
-STEAM_DEFINE_USER_INTERFACE_ACCESSOR( ISteamTimeline *, SteamTimeline, STEAMTIMELINE_INTERFACE_VERSION );
-#endif
-
 #include "cbase.h"
 #include "shareddefs.h"
 #include "view.h"
@@ -62,6 +23,17 @@ STEAM_DEFINE_USER_INTERFACE_ACCESSOR( ISteamTimeline *, SteamTimeline, STEAMTIME
 
 extern vgui::ILocalize *g_pVGuiLocalize;
 
+#ifdef HL2_ANNIVERSARY_NOV2024
+CSteamTimelineEventHelper *CSteamTimelineEventHelper::s_pFirst = NULL;
+
+CSteamTimelineEventHelper::CSteamTimelineEventHelper( SteamTimelineEventCreateFn_t pfnCreate )
+{
+	m_pfnCreate = pfnCreate;
+	m_pNext = s_pFirst;
+	s_pFirst = this;
+}
+#endif
+
 //-----------------------------------------------------------------------------
 // Singleton
 //-----------------------------------------------------------------------------
@@ -73,8 +45,37 @@ IGameSystem *SteamShareSystem()
 }
 
 #ifdef HL2_ANNIVERSARY_NOV2024
+const char *GetWeaponTimelineIcon( C_BaseCombatWeapon *pWeapon )
+{
+	if ( !pWeapon )
+		return "steam_combat";
 
-CSteamTimelineEventHelper *CSteamTimelineEventHelper::s_pFirst = NULL;
+	const char *pszIcon = pWeapon->GetName();
+	if ( !V_stricmp( "weapon_physcannon", pszIcon ) )
+	{
+		pszIcon = dynamic_cast< C_BaseHLCombatWeapon * >( pWeapon )->IsUpgraded() ? "weapon_supergravgun" : "weapon_gravgun";
+	}
+	return pszIcon;
+}
+
+const char *FormatChapterTimeString( float flSeconds )
+{
+	static int nWhichStr = 0;
+	static char s_szResult[2][32];
+
+	if ( flSeconds <= 0.0f )
+		return "00:00:00";
+
+	int nTime = (int)flSeconds;
+	int nHours = nTime / 3600;
+	int nRemainder = nTime - nHours * 3600;
+	int nSeconds = nTime % 60;
+	int nMinutes = nRemainder / 60;
+	char *pszResult = s_szResult[nWhichStr];
+	V_snprintf( pszResult, sizeof( s_szResult[0] ), "%02i:%02i", nMinutes, nSeconds );
+	nWhichStr = ( nWhichStr + 1 ) % 2;
+	return pszResult;
+}
 
 #define REGISTER_STEAM_TIMELINE_EVENT( className, eventName ) \
 	static CSteamTimelineEventBase_t *Create_##className() \
@@ -111,19 +112,6 @@ bool CSteamShareSystem::Init()
 	SetTimelineGameMode( k_ETimelineGameMode_Menus );
 
 	return true;
-}
-
-static const char *GetWeaponTimelineIcon( C_BaseCombatWeapon *pWeapon )
-{
-	if ( !pWeapon )
-		return "steam_combat";
-
-	const char *pszIcon = pWeapon->GetName();
-	if ( !V_stricmp( "weapon_physcannon", pszIcon ) )
-	{
-		pszIcon = dynamic_cast< C_BaseHLCombatWeapon * >( pWeapon )->IsUpgraded() ? "weapon_supergravgun" : "weapon_gravgun";
-	}
-	return pszIcon;
 }
 
 class CSteamTimelineEvent_Choreo : public CSteamTimelineEventBase_t
@@ -507,27 +495,6 @@ void CSteamShareSystem::FireGameEvent( IGameEvent *event )
 	}
 }
 
-const char *FormatChapterTimeString( float flSeconds )
-{
-	static int nWhichStr = 0;
-	static char s_szResult[2][32];
-
-	if ( flSeconds > 0.0f )
-	{
-		int nTime = (int)flSeconds;
-		int nHours = nTime / 3600;
-		int nRemainder = nTime - nHours * 3600;
-		int nSeconds = nTime % 60;
-		int nMinutes = nRemainder / 60;
-		char *pszResult = s_szResult[nWhichStr];
-		V_snprintf( pszResult, sizeof( s_szResult[0] ), "%02i:%02i", nMinutes, nSeconds );
-		nWhichStr = ( nWhichStr + 1 ) % 2;
-		return pszResult;
-	}
-
-	return "00:00:00";
-}
-
 void CSteamShareSystem::UpdateChapterDetails()
 {
 	char szPlaytime[1024] = { 0 };
@@ -559,11 +526,11 @@ void CSteamShareSystem::UpdateSteamTimelineGameMode()
 	case k_ETimelineGameMode_Playing:
 		SteamTimeline()->SetTimelineTooltip( m_strChapterName.String(), 0.0f );
 		break;
-	case k_ETimelineGameMode_Staging:
-		SteamTimeline()->SetTimelineTooltip( g_pVGuiLocalize->FindAsUTF8( "#GameUI_SteamShare_Tooltip_GameModeLoading" ), 0.0f );
-		break;
 	case k_ETimelineGameMode_Menus:
 		SteamTimeline()->SetTimelineTooltip( g_pVGuiLocalize->FindAsUTF8( "#GameUI_SteamShare_Tooltip_GameModeMenu" ), 0.0f );
+		break;
+	case k_ETimelineGameMode_Staging:
+		SteamTimeline()->SetTimelineTooltip( g_pVGuiLocalize->FindAsUTF8( "#GameUI_SteamShare_Tooltip_GameModeLoading" ), 0.0f );
 		break;
 	}
 }

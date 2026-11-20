@@ -230,7 +230,7 @@ void C_FireSmoke::Simulate( void )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-inline void C_FireSmoke::UpdateEffects( void )
+void C_FireSmoke::UpdateEffects( void )
 {
 	if ( !BIsCurrentFireTypeClassic() )
 		return;
@@ -243,43 +243,6 @@ inline void C_FireSmoke::UpdateEffects( void )
 	if ( m_pFireOverlay != NULL )
 	{
 		m_pFireOverlay->m_vPos = GetAbsOrigin();
-	}
-}
-
-//-----------------------------------------------------------------------------
-// Purpose: 
-//-----------------------------------------------------------------------------
-inline void C_FireSmoke::UpdateScale( void )
-{
-	if ( !BIsCurrentFireTypeClassic() )
-		return;
-
-	float	time = Helper_GetTime();
-
-	if ( m_flScaleRegister != m_flScaleEnd )
-	{
-		//See if we're done scaling
-		if ( time > m_flScaleTimeEnd )
-		{
-			m_flScaleRegister = m_flStartScale = m_flScaleEnd;
-		}
-		else
-		{
-			//Lerp the scale and set it 
-			float	timeFraction = 1.0f - ( m_flScaleTimeEnd - time ) / ( m_flScaleTimeEnd - m_flScaleTimeStart );
-			float	newScale;
-
-			if ( !m_bFadingOut )
-			{
-				newScale = m_flScaleStart + ( ( m_flScaleEnd - m_flScaleStart ) * timeFraction );
-			}
-			else
-			{
-				newScale = m_flScaleStart - ( ( m_flScaleStart - m_flScaleEnd ) * timeFraction );
-			}
-
-			m_flScaleRegister = m_flStartScale = newScale;
-		}
 	}
 }
 
@@ -655,6 +618,43 @@ void C_FireSmoke::UpdateFlames( void )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+void C_FireSmoke::UpdateScale( void )
+{
+	if ( !BIsCurrentFireTypeClassic() )
+		return;
+
+	float	time = Helper_GetTime();
+
+	if ( m_flScaleRegister != m_flScaleEnd )
+	{
+		//See if we're done scaling
+		if ( time > m_flScaleTimeEnd )
+		{
+			m_flScaleRegister = m_flStartScale = m_flScaleEnd;
+		}
+		else
+		{
+			//Lerp the scale and set it 
+			float	timeFraction = 1.0f - ( m_flScaleTimeEnd - time ) / ( m_flScaleTimeEnd - m_flScaleTimeStart );
+			float	newScale;
+
+			if ( !m_bFadingOut )
+			{
+				newScale = m_flScaleStart + ( ( m_flScaleEnd - m_flScaleStart ) * timeFraction );
+			}
+			else
+			{
+				newScale = m_flScaleStart - ( ( m_flScaleStart - m_flScaleEnd ) * timeFraction );
+			}
+
+			m_flScaleRegister = m_flStartScale = newScale;
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
 void C_FireSmoke::Update( void )
 {
 	if ( !BIsCurrentFireTypeClassic() )
@@ -812,6 +812,15 @@ void C_EntityFlame::CleanUpRagdollOnRemove( void )
 
 		m_hEntAttached = NULL;
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void C_EntityFlame::StopEffect( void )
+{
+	ParticleProp()->StopEmission( NULL, true, true );
+	CleanUpRagdollOnRemove();
 }
 
 //-----------------------------------------------------------------------------
@@ -1050,43 +1059,6 @@ void C_EntityFlame::Simulate( void )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void C_EntityFlame::CreateClassicEffect( void )
-{
-	m_iOldNumHitboxFires = m_iNumHitboxFires;
-	m_flOldHitboxFireScale = m_flHitboxFireScale;
-
-	C_BaseEntity *pEnt = m_hEntAttached;
-
-	if ( pEnt )
-	{
-		if ( m_bUseHitboxes && pEnt->GetBaseAnimating() != NULL )
-		{
-			AttachToHitBoxes();
-		}
-		else
-		{
-			m_vecLastPosition = GetRenderOrigin();
-
-			m_ParticleSpawn.Init( 60 ); //Events per second
-
-			m_pEmitter = CEmberEffect::Create("C_EntityFlame::Create");
-
-			if ( m_pEmitter.IsValid() )
-			{
-				for ( int i = 1; i < NUM_FLAMELETS+1; i++ )
-				{
-					m_MaterialHandle[i-1] = m_pEmitter->GetPMaterial( VarArgs( "sprites/flamelet%d", i ) );
-				}
-
-				m_pEmitter->SetSortOrigin( GetAbsOrigin() );
-			}
-		}
-	}
-}
-
-//-----------------------------------------------------------------------------
-// Purpose: 
-//-----------------------------------------------------------------------------
 struct HitboxVolume_t
 {
 	int nIndex;
@@ -1212,6 +1184,43 @@ int __cdecl SortHitboxVolumes( HitboxVolume_t *elem1, HitboxVolume_t *elem2 )
 	if ( elem1->flVolume < elem2->flVolume + 50 ) return 1;
 	if ( elem1->flVolume != elem2->flVolume ) return random->RandomInt( -1, 1 );
 	return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void C_EntityFlame::CreateClassicEffect( void )
+{
+	m_iOldNumHitboxFires = m_iNumHitboxFires;
+	m_flOldHitboxFireScale = m_flHitboxFireScale;
+
+	C_BaseEntity *pEnt = m_hEntAttached;
+
+	if ( pEnt )
+	{
+		if ( m_bUseHitboxes && pEnt->GetBaseAnimating() != NULL )
+		{
+			AttachToHitBoxes();
+		}
+		else
+		{
+			m_vecLastPosition = GetRenderOrigin();
+
+			m_ParticleSpawn.Init( 60 ); //Events per second
+
+			m_pEmitter = CEmberEffect::Create("C_EntityFlame::Create");
+
+			if ( m_pEmitter.IsValid() )
+			{
+				for ( int i = 1; i < NUM_FLAMELETS+1; i++ )
+				{
+					m_MaterialHandle[i-1] = m_pEmitter->GetPMaterial( VarArgs( "sprites/flamelet%d", i ) );
+				}
+
+				m_pEmitter->SetSortOrigin( GetAbsOrigin() );
+			}
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------

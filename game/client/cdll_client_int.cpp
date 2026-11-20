@@ -227,7 +227,7 @@ IEngineReplay *g_pEngineReplay = NULL;
 IEngineClientReplay *g_pEngineClientReplay = NULL;
 IReplaySystem *g_pReplay = NULL;
 #endif
-
+IGamepadUI *g_pGamepadUI = NULL;
 IHaptics* haptics = NULL;// NVNT haptics system interface singleton
 
 //=============================================================================
@@ -357,7 +357,7 @@ NOV2024_ONLY( ConVar r_modeldetail_set( "r_modeldetail_set", "0", FCVAR_ARCHIVE 
 bool g_bLevelInitialized;
 bool g_bTextMode = false;
 class IClientPurchaseInterfaceV2 *g_pClientPurchaseInterface = (class IClientPurchaseInterfaceV2 *)(&g_bTextMode + 156);
-IGamepadUI *g_pGamepadUI = NULL;
+
 static ConVar *g_pcv_ThreadMode = NULL;
 
 //-----------------------------------------------------------------------------

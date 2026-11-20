@@ -36,7 +36,11 @@ static const float THUMBNAIL_SAFE_ZONE_HEIGHT_SCALE = (float)THUMBNAIL_SAFE_ZONE
 // Purpose: Keeps a global clock to autoplay sequences to run from
 //			Also deals with speedScale changes
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+static float GetAutoPlayTime( void )
+#else
 float GetAutoPlayTime( void )
+#endif
 {
 	static int g_prevTicks;
 	static float g_time;

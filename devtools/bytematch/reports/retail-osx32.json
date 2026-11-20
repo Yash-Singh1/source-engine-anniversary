@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated": "2026-11-20T20:53:23Z",
+  "generated": "2026-11-20T23:47:29Z",
   "depot_build": "19307283",
   "clang": "600.0.57",
   "ld64": "242"
@@ -2051,21 +2051,21 @@
     },
     "functions": {
      "total": 17893,
-     "exact": 6337,
-     "matches_after_masking": 11555,
-     "differs": 1,
+     "exact": 15231,
+     "matches_after_masking": 2662,
+     "differs": 0,
      "missing": 0,
-     "matched": 17892,
-     "pct": 99.99
+     "matched": 17893,
+     "pct": 100.0
     },
     "bytes": {
      "total": 4459034,
-     "exact": 254001,
-     "matches_after_masking": 4199760,
-     "differs": 5273,
+     "exact": 3252264,
+     "matches_after_masking": 1206770,
+     "differs": 0,
      "missing": 0,
-     "matched": 4453761,
-     "pct": 99.88
+     "matched": 4459034,
+     "pct": 100.0
     }
    }
   },
@@ -2113,21 +2113,21 @@
     },
     "functions": {
      "total": 17892,
-     "exact": 6231,
-     "matches_after_masking": 11656,
-     "differs": 5,
+     "exact": 6677,
+     "matches_after_masking": 11211,
+     "differs": 4,
      "missing": 0,
-     "matched": 17887,
-     "pct": 99.97
+     "matched": 17888,
+     "pct": 99.98
     },
     "bytes": {
      "total": 4459007,
-     "exact": 249272,
-     "matches_after_masking": 4200493,
-     "differs": 9242,
+     "exact": 283076,
+     "matches_after_masking": 4171962,
+     "differs": 3969,
      "missing": 0,
-     "matched": 4449765,
-     "pct": 99.79
+     "matched": 4455038,
+     "pct": 99.91
     }
    }
   },
@@ -2175,21 +2175,21 @@
     },
     "functions": {
      "total": 17510,
-     "exact": 6145,
-     "matches_after_masking": 11362,
-     "differs": 3,
+     "exact": 14918,
+     "matches_after_masking": 2592,
+     "differs": 0,
      "missing": 0,
-     "matched": 17507,
-     "pct": 99.98
+     "matched": 17510,
+     "pct": 100.0
     },
     "bytes": {
      "total": 4365944,
-     "exact": 250815,
-     "matches_after_masking": 4110366,
-     "differs": 4763,
+     "exact": 3192211,
+     "matches_after_masking": 1173733,
+     "differs": 0,
      "missing": 0,
-     "matched": 4361181,
-     "pct": 99.89
+     "matched": 4365944,
+     "pct": 100.0
     }
    }
   }
@@ -2197,21 +2197,21 @@
  "total_with_games": {
   "functions": {
    "total": 210804,
-   "exact": 144947,
-   "matches_after_masking": 65840,
-   "differs": 17,
+   "exact": 163060,
+   "matches_after_masking": 47732,
+   "differs": 12,
    "missing": 0,
-   "matched": 210787,
+   "matched": 210792,
    "pct": 99.99
   },
   "bytes": {
    "total": 59420569,
-   "exact": 30040441,
-   "matches_after_masking": 29330185,
-   "differs": 49943,
+   "exact": 36013904,
+   "matches_after_masking": 23372031,
+   "differs": 34634,
    "missing": 0,
-   "matched": 59370626,
-   "pct": 99.92
+   "matched": 59385935,
+   "pct": 99.94
   }
  }
 }

@@ -39,12 +39,7 @@ typedef CSteamTimelineEventBase_t *( *SteamTimelineEventCreateFn_t )();
 class CSteamTimelineEventHelper
 {
 public:
-	CSteamTimelineEventHelper( SteamTimelineEventCreateFn_t pfnCreate )
-	{
-		m_pfnCreate = pfnCreate;
-		m_pNext = s_pFirst;
-		s_pFirst = this;
-	}
+	CSteamTimelineEventHelper( SteamTimelineEventCreateFn_t pfnCreate );
 
 	SteamTimelineEventCreateFn_t m_pfnCreate;
 	CSteamTimelineEventHelper *m_pNext;

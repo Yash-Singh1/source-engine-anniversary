@@ -350,6 +350,7 @@ void CPotteryWheelPanel::DestroyLights()
 }
 
 
+#ifndef BYTEMATCH_RETAIL
 void StringToFloatArray( float *pVector, int count, const char *pString )
 {
 	char *pstr, *pfront, tempString[128];
@@ -391,7 +392,6 @@ void StringToVector( float *pVector, const char *pString )
 //-----------------------------------------------------------------------------
 // Sets initialize lights from KeyValues
 //-----------------------------------------------------------------------------
-#ifndef BYTEMATCH_RETAIL
 void CPotteryWheelPanel::ParseLightsFromKV( KeyValues *pLightsKV )
 {
 	int nLightCount = 0;

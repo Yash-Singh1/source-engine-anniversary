@@ -318,6 +318,7 @@ protected:
 	void	CreateClassicEffect( void );
 	void	ChangeFireEffectType( void );
 	void	CleanUpRagdollOnRemove( void );
+	void	StopEffect( void );
 
 	void	AttachToHitBoxes( void );
 	void	UpdateHitBoxFlames( void );

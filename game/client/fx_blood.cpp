@@ -25,6 +25,12 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 ConVar r_classic_blood( "r_classic_blood", NOV2024_ONLY( "0" ) OCT2024_ONLY( "2" ), FCVAR_REPLICATED NOV2024_ONLY( | FCVAR_ARCHIVE ), NOV2024_ONLY( "Use Classic Effects for Blood ( disabled/classic/release )" ) OCT2024_ONLY( "Use Classic Effects for Blood ( new/classic/release )" ) );
+bool BIsCurrentBloodTypeClassic()
+{
+	int nClassicBlood = r_classic_blood.GetInt();
+	return ( nClassicBlood == 2 ) ? !IsHL2Episodic() : ( nClassicBlood == 1 );
+}
+#line 28
 CLIENTEFFECT_REGISTER_BEGIN( PrecacheEffectBloodSpray )
 CLIENTEFFECT_MATERIAL( "effects/blood_core" )
 CLIENTEFFECT_MATERIAL( "effects/blood_gore" )
@@ -502,9 +508,7 @@ DECLARE_CLIENT_EFFECT( "bloodspray", BloodSprayCallback );
 void BloodImpactCallback( const CEffectData & data )
 {
 	bool bFoundBlood = false;
-	int nClassicBlood = r_classic_blood.GetInt();
-	bool bClassicBlood = ( nClassicBlood == 2 ) ? !IsHL2Episodic() : ( nClassicBlood == 1 );
-	if ( !bClassicBlood ) // Find which sort of blood we are
+	if ( !BIsCurrentBloodTypeClassic() ) // Find which sort of blood we are
 #line 507
 	for ( int i = 0; i < ARRAYSIZE( bloodCallbacks ); i++ )
 	{

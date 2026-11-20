@@ -1,4 +1,4 @@
-# --retail-osx32 match report (2026-11-20T20:53:23Z)
+# --retail-osx32 match report (2026-11-20T23:47:29Z)
 
 clang-600.0.57, ld64-242, retail build 19307283. Matched = exact + matches-after-masking (bytematch). Percentages are of the retail functions in scope (debug-map objects); bytes are retail bytes. The totals count linked modules only, since static libraries are linked into them. Game modules (server/client per game, against depots 380, 340 and 223) have their own rows and a second total.
 
@@ -44,10 +44,10 @@ clang-600.0.57, ld64-242, retail build 19307283. Matched = exact + matches-after
 | episodic/server.dylib | 22744/22744 | 100.0% | 7696434/7696434 | 100.0% | 19793 | 2951 | 0 | 0 |
 | hl2/server.dylib | 22744/22744 | 100.0% | 7696434/7696434 | 100.0% | 19793 | 2951 | 0 | 0 |
 | lostcoast/server.dylib | 21442/21442 | 100.0% | 7181480/7181480 | 100.0% | 18712 | 2730 | 0 | 0 |
-| episodic/client.dylib | 17892/17893 | 99.99% | 4453761/4459034 | 99.88% | 6337 | 11555 | 1 | 0 |
-| lostcoast/client.dylib | 17507/17510 | 99.98% | 4361181/4365944 | 99.89% | 6145 | 11362 | 3 | 0 |
-| hl2/client.dylib | 17887/17892 | 99.97% | 4449765/4459007 | 99.79% | 6231 | 11656 | 5 | 0 |
-| **total, linked modules and games** | 210787/210804 | 99.99% | 59370626/59420569 | 99.92% | 144947 | 65840 | 17 | 0 |
+| episodic/client.dylib | 17893/17893 | 100.0% | 4459034/4459034 | 100.0% | 15231 | 2662 | 0 | 0 |
+| lostcoast/client.dylib | 17510/17510 | 100.0% | 4365944/4365944 | 100.0% | 14918 | 2592 | 0 | 0 |
+| hl2/client.dylib | 17888/17892 | 99.98% | 4455038/4459007 | 99.91% | 6677 | 11211 | 4 | 0 |
+| **total, linked modules and games** | 210792/210804 | 99.99% | 59385935/59420569 | 99.94% | 163060 | 47732 | 12 | 0 |
 | **static libraries (members pulled by the named retail module)** | | | | | | | | |
 | libappframework.a (vs launcher) | 136/136 | 100.0% | 35205/35205 | 100.0% | 36 | 100 | 0 | 0 |
 | libbitmap.a (vs engine) | 102/102 | 100.0% | 53332/53332 | 100.0% | 44 | 58 | 0 | 0 |

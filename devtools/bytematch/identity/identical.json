@@ -35,6 +35,8 @@
     {"target": "engine", "retail": "bin/engine.dylib", "size": 8655856, "sha256": "f6054951bdde6c4ec0c62654c075d8fb65321628da2e62e35d01785718a2bd71"},
     {"target": "server_lostcoast", "retail": "lostcoast/bin/server.dylib", "size": 15525592, "sha256": "324c40f8f7116097b9504c47d919230d9fb0fcb691d2068691f28831fe0addaf"},
     {"target": "server_episodic", "retail": "episodic/bin/server.dylib", "size": 16551336, "sha256": "10893380d48a2ce3590454debe9bde091880eee511aad38d0b7fdf82635cf6c7"},
-    {"target": "server_hl2", "retail": "hl2/bin/server.dylib", "size": 16545796, "sha256": "3a9a75cf08827b26e0151754002ad9a2f6cf383479662abc4c7b4e9c9095375c"}
+    {"target": "server_hl2", "retail": "hl2/bin/server.dylib", "size": 16545796, "sha256": "3a9a75cf08827b26e0151754002ad9a2f6cf383479662abc4c7b4e9c9095375c"},
+    {"target": "client_episodic", "retail": "episodic/bin/client.dylib", "size": 11310840, "sha256": "4ba62d1956056474a8f4db1e87a3a2dd352cb87742404c0afd7ad5a34e9e7d52"},
+    {"target": "client_lostcoast", "retail": "lostcoast/bin/client.dylib", "size": 11072420, "sha256": "7ef48902089012a7dd71b52ab96a452c7afa5972567acd236e7a171f57f58f90"}
   ]
 }

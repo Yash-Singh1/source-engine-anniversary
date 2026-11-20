@@ -500,7 +500,6 @@ void IN_XboxStub( const CCommand &args ) { /*do nothing*/ }
 void IN_Attack3Down( const CCommand &args ) { KeyDown(&in_attack3, args[1] );}
 void IN_Attack3Up( const CCommand &args ) { KeyUp(&in_attack3, args[1] );}
 
-#ifndef BYTEMATCH_RETAIL
 void IN_DuckToggle( const CCommand &args ) 
 { 
 	if ( ::input->KeyState(&in_ducktoggle) )
@@ -508,11 +507,10 @@ void IN_DuckToggle( const CCommand &args )
 		KeyUp( &in_ducktoggle, args[1] ); 
 	}
 	else
-	{
+	{ 
 		KeyDown( &in_ducktoggle, args[1] ); 
 	}
 }
-#endif
 
 void IN_AttackDown( const CCommand &args )
 {
