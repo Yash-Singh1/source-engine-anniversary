@@ -816,7 +816,7 @@ void S_Shutdown(void)
 #ifndef BYTEMATCH_RETAIL
 	MXR_ReleaseMemory();
 #endif
-#line 803
+#line 775
 
 	// release sentences resources
 	TRACESHUTDOWN( VOX_Shutdown() );
@@ -939,7 +939,7 @@ CAudioSource *S_LoadSound( CSfxTable *pSfx, channel_t *ch )
 #ifndef BYTEMATCH_RETAIL
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__ );
 #endif
-#line 923
+#line 896
 
 	VPROF("S_LoadSound");
 	if ( !pSfx->pSource )
@@ -1098,7 +1098,7 @@ CSfxTable *S_PrecacheSound( const char *name )
 #ifndef BYTEMATCH_RETAIL
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__ );
 #endif
-#line 1079
+#line 1051
 
 	if ( !g_AudioDevice )
 		return NULL;
@@ -5739,7 +5739,7 @@ int S_StartSound( StartSoundParams_t& params )
 	else
 	{
 		VPROF_( "StartDynamicSound", 0, VPROF_BUDGETGROUP_OTHER_SOUND, false, BUDGETFLAG_OTHER );
-#line 5718
+#line 5690
 		return S_StartDynamicSound( params );
 	}
 }
@@ -6595,8 +6595,8 @@ extern void DEBUG_StopSoundMeasure(int type, int samplecount );
 
 void S_Update_Guts( float mixAheadTime )
 {
+#line 6565
 	VPROF( "S_Update_Guts" );
-#line 6566
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__ );
 #line 6563
 

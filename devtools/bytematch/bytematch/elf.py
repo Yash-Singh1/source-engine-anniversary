@@ -148,7 +148,9 @@ def load(path, data, member=None):
 
 def _gaps(data, va, entries):
     """Entries for code between known extents that isn't padding (code without an FDE,
-    such as glibc's crti.o __x86.get_pc_thunk.bx)."""
+    such as glibc's crti.o __x86.get_pc_thunk.bx, or C archives built without unwind
+    tables: retail's libjpeg). A gap splits where a frame-pointer prologue
+    (push ebp; mov ebp, esp) follows a ret or padding."""
     from .x86 import skip_padding
     spans = sorted((e.addr, e.addr + (e.size or 0)) for e in entries)
     out, pos = [], va
@@ -158,8 +160,19 @@ def _gaps(data, va, entries):
             lead = skip_padding(chunk)
             if lead < len(chunk) and chunk[lead:].strip(b'\0'):
                 out.append(Entry(pos + lead, [], None))
+                i = chunk.find(_PROLOGUE, lead + 1)
+                while i > 0:
+                    if chunk[i - 1] in (0xc3, 0x90, 0xcc) or any(chunk[max(0, i - len(p)):i] == p for p in _NOPS):
+                        out.append(Entry(pos + i, [], None))
+                    i = chunk.find(_PROLOGUE, i + 1)
         pos = max(pos, b)
     return out
+
+
+_PROLOGUE = b'\x55\x89\xe5'
+# multi-byte padding gas emits before an aligned function
+_NOPS = (b'\x89\xf6', b'\x8d\x76\x00', b'\x8d\x74\x26\x00', b'\x8d\xb6\x00\x00\x00\x00',
+         b'\x8d\xbc\x27\x00\x00\x00\x00', b'\x8d\xb4\x26\x00\x00\x00\x00')
 
 
 def _uleb(d, i):

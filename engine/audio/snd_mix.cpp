@@ -595,7 +595,7 @@ void MIX_MixChannelsToPaintbuffer( CChannelList &list, int endtime, int flags, i
 		}
 	}
 }
-#line 593
+#line 597
 
 // pass in index -1...count+2, return pointer to source sample in either paintbuffer or delay buffer
 inline portable_samplepair_t * S_GetNextpFilter(int i, portable_samplepair_t *pbuffer, portable_samplepair_t *pfiltermem)
@@ -2076,7 +2076,7 @@ void MIX_BuildChannelList( CChannelList &list )
 #ifndef BYTEMATCH_RETAIL
 	bool bStopOnFocusLoss = !bActive && snd_mute_losefocus.GetBool();
 #endif
-#line 2071
+#line 2075
 #endif
 
 	CChannelCullList cullList;
@@ -2132,7 +2132,7 @@ void MIX_BuildChannelList( CChannelList &list )
 #else
 			if ( !bRemove && bStopOnFocusLoss )
 #endif
-#line 2122
+#line 2126
 			{
 				bRemove = true;
 
@@ -2142,7 +2142,7 @@ void MIX_BuildChannelList( CChannelList &list )
 #else
 				if ( pSource && ( !pSource->IsLooped() && !pSource->IsStreaming() ) )
 #endif
-#line 2127
+#line 2131
 				{
 					S_FreeChannel( ch );
 				}

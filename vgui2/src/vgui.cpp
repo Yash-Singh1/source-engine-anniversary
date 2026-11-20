@@ -31,6 +31,7 @@
 #else
 #include <malloc.h>
 #endif
+#line 30
 #include <tier0/dbg.h>
 #include <tier1/utlhandletable.h>
 #include "vgui_internal.h"
@@ -472,7 +473,7 @@ void CVGui::RunFrame()
 #ifndef BYTEMATCH_RETAIL
 		tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s - Ticks", __FUNCTION__ );
 #endif
-#line 473
+#line 469
 		// directly invoke tick all who asked to be ticked
 		int count = m_TickSignalVec.Count();
 		for (int i = count - 1; i >= 0; i-- )
@@ -490,7 +491,7 @@ void CVGui::RunFrame()
 #ifndef BYTEMATCH_RETAIL
 			tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s - Ticks: %s", __FUNCTION__, t->panel->Client()->GetName() );
 #endif
-#line 488
+#line 480
 		}
 
 	}
