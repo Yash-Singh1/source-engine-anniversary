@@ -4028,7 +4028,9 @@
     "public/tier0",
     "public/tier1",
     "vgui2/include",
-    "thirdparty"
+    "thirdparty",
+    "thirdparty/freetype/include",
+    "thirdparty/fontconfig"
    ],
    "cl": [
     "/O2",
@@ -4182,6 +4184,15 @@
     {
      "project": "tier3",
      "path": "lib/public/tier3.lib"
+    },
+    {
+     "prebuilt": "lib/public/libfreetype-6.lib"
+    },
+    {
+     "prebuilt": "lib/public/libfontconfig-1.lib"
+    },
+    {
+     "prebuilt": "lib/public/SDL2.lib"
     }
    ],
    "file_libs": [],

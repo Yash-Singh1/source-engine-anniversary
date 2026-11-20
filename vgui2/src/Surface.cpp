@@ -416,7 +416,7 @@ private:
 
 	// current font info
 	HFont m_hCurrentFont;
-	CWin32Font *m_pActiveFont;
+	font_t *m_pActiveFont;
 	HPEN pen; // the pen used to draw lines
 
 	bool _needKB;
@@ -1450,7 +1450,7 @@ void CWin32Surface::DrawUnicodeString( const wchar_t *pwString, FontDrawType_t d
 void CWin32Surface::DrawUnicodeChar(wchar_t wch, FontDrawType_t drawType /*= FONT_DRAW_DEFAULT*/)
 {
 	// set the current font
-	CWin32Font *winFont = FontManager().GetFontForChar(m_hCurrentFont, wch);
+	font_t *winFont = FontManager().GetFontForChar(m_hCurrentFont, wch);
 
 	if (!winFont)
 		return;
