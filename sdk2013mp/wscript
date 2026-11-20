@@ -63,6 +63,18 @@ SINK_AND_CMP = {
 }
 SINK_AND_CMP_FLAGS = ['-mllvm', '-mask-and-branch-folding']
 
+# Dead-stripped objects that retail Xcode links (their code is stripped, so N_OSO
+# omits them, but ld64 coalesces their literals/GOT entries before dead-stripping).
+DEAD_OBJECTS = {
+	'hl2mp/server': [
+		('game/shared/ehandle.cpp', 'game/shared/entitylist_base.cpp'),
+		('game/shared/SceneCache.cpp', 'game/shared/sceneentity_shared.cpp'),
+		('game/shared/sheetsimulator.cpp', 'game/shared/simtimer.cpp'),
+		('public/ScratchPadUtils.cpp', 'public/server_class.cpp'),
+		('game/server/scratchpad_gamedll_helpers.cpp', 'game/server/scripted.cpp'),
+	],
+}
+
 LIB_INCLUDES = ['common', 'public', 'public/tier0', 'public/tier1', 'public/tier2', 'public/tier3']
 TREE_EXTRA_INCLUDES = {'libbitmap.a': ['thirdparty/stb']}
 
@@ -178,6 +190,13 @@ def build(bld):
 			retail_file_cxxflags = sink_and_cmp(bld, archive),
 			idx      = bld.get_taskgen_count()
 		)
+
+	import retail_manifest
+	for key, entries in DEAD_OBJECTS.items():
+		lst = retail_manifest.RETAIL_DEAD.setdefault(key, [])
+		for entry in entries:
+			if entry not in lst:
+				lst.append(entry)
 
 	for name, (key, projdir, vpcfile, uselib) in MODULES.items():
 		defines, includes = vpc(bld, os.path.join(projdir, vpcfile))

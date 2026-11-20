@@ -25,6 +25,7 @@
     {"target": "shaderapidx9", "retail": "bin/shaderapidx9.dylib", "size": 748564, "sha256": "0e167522b54481aed96c031d754cdc666da20494d6acc92db1f769e07558c4a8"},
     {"target": "datacache", "retail": "bin/datacache.dylib", "size": 376716, "sha256": "df6e074270dfa56b4788a63d61b0b424b6d8503f3b91e05b1223087a52e25eca"},
     {"target": "hl2_launcher", "retail": "hl2_osx", "size": 9164, "sha256": "678159be877650c347b1f4c24c8de63ce1a38f536ffa4acc45eec6b90e51984a"},
-    {"target": "vpk", "retail": "bin/vpk_osx32", "size": 1243752, "sha256": "02cf527d8ea89ca6db7f13b95e3e3aa44517267b9ba93abf2ee4b8fbfbc351fd"}
+    {"target": "vpk", "retail": "bin/vpk_osx32", "size": 1243752, "sha256": "02cf527d8ea89ca6db7f13b95e3e3aa44517267b9ba93abf2ee4b8fbfbc351fd"},
+    {"target": "server_hl2mp", "retail": "hl2mp/bin/server.dylib", "size": 16134996, "sha256": "0938616a65f3871e702feb086e1f25c3ace74a7d759683dcf789a387f143e06e"}
   ]
 }
