@@ -1979,9 +1979,11 @@ LanguageIds g_LanguageIds[] =
 	{ 0x1c3b, UNKNOWN, L"",		L"Sami, Southern (Sweden)" },  
 	{ 0x203b, UNKNOWN, L"",		L"Sami, Skolt (Finland)" },  
 	{ 0x243b, UNKNOWN, L"",		L"Sami, Inari (Finland)" },  
-	{ 0x0c1a, UNKNOWN, L"SR",	L"Serbian (Cyrillic)" },  
+	{ 0x0c1a, UNKNOWN, L"SR",	L"Serbian - Serbia and Montenegro (Former) (Cyrillic)" },  
+	{ 0x281a, UNKNOWN, L"SR",	L"Serbian (Cyrillic)" },  
 	{ 0x1c1a, UNKNOWN, L"SR",	L"Serbian (Cyrillic, Bosnia, and Herzegovina)" },  
-	{ 0x081a, UNKNOWN, L"SR",	L"Serbian (Latin)" },  
+	{ 0x081a, UNKNOWN, L"SR",	L"Serbian - Serbia and Montenegro (Former) (Latin)" },  
+	{ 0x241a, UNKNOWN, L"SR",	L"Serbian (Latin)" },  
 	{ 0x181a, UNKNOWN, L"SR",	L"Serbian (Latin, Bosnia, and Herzegovina)" }, 
 	{ 0x046c, UNKNOWN, L"",		L"Sesotho sa Leboa/Northern Sotho (South Africa)" },  
 	{ 0x0432, UNKNOWN, L"",		L"Setswana/Tswana (South Africa)" },  
@@ -2252,7 +2254,10 @@ int CInputSystem::GetIMELanguageList( LanguageItem *dest, int destcount )
 			if ( !first )
 				continue;
 
-			selections.AddToTail( list[ i ] );
+			if ( GetLanguageInfo( LOWORD( list[ i ] ) ) )
+			{
+				selections.AddToTail( list[ i ] );
+			}
 		}
 
 		iret = selections.Count();
@@ -2264,9 +2269,11 @@ int CInputSystem::GetIMELanguageList( LanguageItem *dest, int destcount )
 
 				IInput::LanguageItem *p = &dest[ i ];
 
-				LanguageIds *info = GetLanguageInfo( LOWORD( hkl ) );
-
 				memset( p, 0, sizeof( IInput::LanguageItem ) );
+
+				LanguageIds *info = GetLanguageInfo( LOWORD( hkl ) );
+				if ( !info )
+					continue;
 
 				wcsncpy( p->shortname, info->shortcode, sizeof( p->shortname ) / sizeof( wchar_t ) );
 				p->shortname[ sizeof( p->shortname ) / sizeof( wchar_t ) - 1 ] = L'\0';
@@ -2490,6 +2497,8 @@ int CInputSystem::GetIMEConversionModes( ConversionModeItem *dest, int destcount
 	}
 
 	LanguageIds *info = GetLanguageInfo( LOWORD( GetKeyboardLayout( 0 ) ) );
+	if ( !info )
+		return 0;
 	switch ( info->languageflag )
 	{
 	default:
@@ -2641,40 +2650,43 @@ int CInputSystem::GetIMESentenceModes( SentenceModeItem *dest, int destcount )
 	}
 
 	LanguageIds *info = GetLanguageInfo( LOWORD( GetKeyboardLayout( 0 ) ) );
-	switch ( info->languageflag )
+	if ( info )
 	{
-	default:
-		return 0;
-//	case TRADITIONAL_CHINESE:
-//		break;
-	case JAPANESE:
-		// There are 4 Japanese sentence modes
-		if ( dest )
+		switch ( info->languageflag )
 		{
-			SentenceModeItem *item;
-			
-			int i = 0;
-			item = &dest[ i++ ];
-			wcsncpy( item->menuname, L"#IME_General", sizeof( item->menuname ) / sizeof( wchar_t ) );
-			item->handleValue = (int)&g_SentenceMode_JP_General;
-			item->active = g_SentenceMode_JP_General.SentMatches( dwSentMode );
-			
-			item = &dest[ i++ ];
-			wcsncpy( item->menuname, L"#IME_BiasNames", sizeof( item->menuname ) / sizeof( wchar_t ) );
-			item->handleValue = (int)&g_SentenceMode_JP_BiasNames;
-			item->active = g_SentenceMode_JP_BiasNames.SentMatches( dwSentMode );
-			
-			item = &dest[ i++ ];
-			wcsncpy( item->menuname, L"#IME_BiasSpeech", sizeof( item->menuname ) / sizeof( wchar_t ) );
-			item->handleValue = (int)&g_SentenceMode_JP_BiasSpeech;
-			item->active = g_SentenceMode_JP_BiasSpeech.SentMatches( dwSentMode );
+		default:
+			return 0;
+//		case TRADITIONAL_CHINESE:
+//			break;
+		case JAPANESE:
+			// There are 4 Japanese sentence modes
+			if ( dest )
+			{
+				SentenceModeItem *item;
+				
+				int i = 0;
+				item = &dest[ i++ ];
+				wcsncpy( item->menuname, L"#IME_General", sizeof( item->menuname ) / sizeof( wchar_t ) );
+				item->handleValue = (int)&g_SentenceMode_JP_General;
+				item->active = g_SentenceMode_JP_General.SentMatches( dwSentMode );
+				
+				item = &dest[ i++ ];
+				wcsncpy( item->menuname, L"#IME_BiasNames", sizeof( item->menuname ) / sizeof( wchar_t ) );
+				item->handleValue = (int)&g_SentenceMode_JP_BiasNames;
+				item->active = g_SentenceMode_JP_BiasNames.SentMatches( dwSentMode );
+				
+				item = &dest[ i++ ];
+				wcsncpy( item->menuname, L"#IME_BiasSpeech", sizeof( item->menuname ) / sizeof( wchar_t ) );
+				item->handleValue = (int)&g_SentenceMode_JP_BiasSpeech;
+				item->active = g_SentenceMode_JP_BiasSpeech.SentMatches( dwSentMode );
 
-			item = &dest[ i++ ];
-			wcsncpy( item->menuname, L"#IME_NoConversion", sizeof( item->menuname ) / sizeof( wchar_t ) );
-			item->handleValue = (int)&g_SentenceMode_JP_None;
-			item->active = g_SentenceMode_JP_None.SentMatches( dwSentMode );
+				item = &dest[ i++ ];
+				wcsncpy( item->menuname, L"#IME_NoConversion", sizeof( item->menuname ) / sizeof( wchar_t ) );
+				item->handleValue = (int)&g_SentenceMode_JP_None;
+				item->active = g_SentenceMode_JP_None.SentMatches( dwSentMode );
+			}
+			return 4;
 		}
-		return 4;
 	}
 #endif
 

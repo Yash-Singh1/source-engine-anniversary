@@ -1066,42 +1066,43 @@ void CScheme::LoadBorders()
 			if ( pExistingBorder )
 			{
 				pExistingBorder->ApplySchemeSettings( this, kv );
-				continue;
 			}
-
-			int i = m_BorderList.AddToTail();
-
-			IBorder *border = NULL;
-			const char *pszBorderType = kv->GetString( "bordertype", NULL );
-			if ( pszBorderType && pszBorderType[0] )
+			else
 			{
-				if ( !stricmp(pszBorderType,"image") )
+				int i = m_BorderList.AddToTail();
+
+				IBorder *border = NULL;
+				const char *pszBorderType = kv->GetString( "bordertype", NULL );
+				if ( pszBorderType && pszBorderType[0] )
 				{
-					border = new ImageBorder();
+					if ( !stricmp(pszBorderType,"image") )
+					{
+						border = new ImageBorder();
+					}
+					else if ( !stricmp(pszBorderType,"scalable_image") )
+					{
+						border = new ScalableImageBorder();
+					}
+					else
+					{
+						Assert(0);
+						// Fall back to the base border type. See below.
+						pszBorderType = NULL;
+					}
 				}
-				else if ( !stricmp(pszBorderType,"scalable_image") )
+
+				if ( !pszBorderType || !pszBorderType[0] )
 				{
-					border = new ScalableImageBorder();
+					border = new Border();
 				}
-				else
-				{
-					Assert(0);
-					// Fall back to the base border type. See below.
-					pszBorderType = NULL;
-				}
+
+				border->SetName(kv->GetName());
+				border->ApplySchemeSettings(this, kv);
+
+				m_BorderList[i].border = border;
+				m_BorderList[i].bSharedBorder = false;
+				m_BorderList[i].borderSymbol = kv->GetNameSymbol();
 			}
-
-			if ( !pszBorderType || !pszBorderType[0] )
-			{
-				border = new Border();
-			}
-
-			border->SetName(kv->GetName());
-			border->ApplySchemeSettings(this, kv);
-
-			m_BorderList[i].border = border;
-			m_BorderList[i].bSharedBorder = false;
-			m_BorderList[i].borderSymbol = kv->GetNameSymbol();
 		}
 	}}
 

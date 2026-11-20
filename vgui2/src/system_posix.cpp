@@ -276,6 +276,15 @@ long CSystem::GetTimeMillis()
 //-----------------------------------------------------------------------------
 void CSystem::ShellExecute(const char *command, const char *file)
 {
+#ifdef BYTEMATCH_RETAIL
+	char szCmd[1024];
+#ifdef OSX
+	V_snprintf( szCmd, sizeof( szCmd ), "open %s", file );
+#else
+	V_snprintf( szCmd, sizeof( szCmd ), "xdg-open '%s' &", file );
+#endif
+	system( szCmd );
+#else
 #ifdef OSX
 	char szCmd[1024];
 	V_snprintf( szCmd, sizeof( szCmd ), "open %s", file );
@@ -320,6 +329,7 @@ void CSystem::ShellExecute(const char *command, const char *file)
 		execlp( szCommand, szCommand, file, (char *)0 );
 		Assert( !"execlp failed" );
 	}
+#endif
 #endif
 }
 

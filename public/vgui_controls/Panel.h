@@ -1034,12 +1034,12 @@ inline int GetProportionalScaledValueIf( ISchemeManager *pSchemeManager, bool bP
 
 // Scales a layout constant when the panel is proportional. The scheme manager,
 // IsProportional() and GetScheme() are evaluated before the value.
-#define PROPORTIONAL_VALUE( nValue ) vgui::GetProportionalScaledValueIf( vgui::scheme(), IsProportional(), GetScheme(), ( nValue ) )
-
 // Fallback for IScheme.h versions without ISchemeManager::QuickPropScaleCond.
 #ifndef QuickPropScale
 #define QuickPropScale( x ) ( ::vgui::GetProportionalScaledValueIf( ::vgui::scheme(), this->IsProportional(), this->GetScheme(), ( x ) ) )
 #endif
+
+#define PROPORTIONAL_VALUE( nValue ) QuickPropScale( nValue )
 
 // Retail Lost Coast's client links an October 2024 libvgui_controls (HL2_LOSTCOAST in retail
 // mode): no anniversary proportional scaling and the older Label/Button/Menu vtables.
