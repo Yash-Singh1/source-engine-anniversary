@@ -2371,7 +2371,7 @@ float SND_GetGainObscured( channel_t *ch, bool fplayersound, bool flooping, bool
 		for (count = 0, i = 0; i < 4; i++)
 		{
 			// UNDONE: some endpoints are in walls - in this case, trace from the wall hit location
-
+			Ray_t ray;
 			ray.Init( MainViewOrigin(), endpoints[i] );
 			g_pEngineTraceClient->TraceRay( ray, MASK_BLOCK_AUDIO, &filter, &tr );
 			
@@ -6230,6 +6230,11 @@ void S_Update( const AudioState_t *pAudioState )
 
 	int voiceChannelCount = 0;
 	int voiceChannelMaxVolume = 0;
+#ifdef BYTEMATCH_RETAIL
+	int commentaryChannelCount = 0;
+	int commentaryChannelMaxVolume = 0;
+#endif
+#line 6202
 
 	// reset traceline counter for this frame
 	g_snd_trace_count = 0;
@@ -6246,8 +6251,6 @@ void S_Update( const AudioState_t *pAudioState )
 	g_ActiveChannels.GetActiveChannels( list );
 
 #ifdef BYTEMATCH_RETAIL
-	int commentaryChannelCount = 0;
-	int commentaryChannelMaxVolume = 0;
 	for ( int i = 0; i < list.Count(); i++ )
 	{
 		ch = list.GetChannel(i);

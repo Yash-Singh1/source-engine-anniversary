@@ -61,6 +61,7 @@ class Module:
         self.regions = []             # PE images: [(vaddr, bytes)] of every section, for reading data
         self._names = {}              # addr -> [keys] for relocation-target resolution
         self._starts = None
+        self._call_targets = None
         self.port_starts = set()      # PE images: every function start a symbol-port map found, named or not
 
     @property
@@ -91,6 +92,23 @@ class Module:
             if va <= addr < va + len(data):
                 return data[addr - va:addr - va + size]
         return b''
+
+    def call_targets(self):
+        """16-byte-aligned `call`/`jmp rel32` target VAs inside executable sections (lazy cache)."""
+        if self._call_targets is None:
+            import struct
+            out = set()
+            for va, data, _ in self.code:
+                n = len(data)
+                for op in (b'\xe8', b'\xe9'):
+                    pos = data.find(op)
+                    while pos != -1 and pos + 5 <= n:
+                        tgt = (va + pos + 5 + struct.unpack_from('<i', data, pos + 1)[0]) & 0xffffffff
+                        if (tgt & 0xf) == 0 and va <= tgt < va + n:
+                            out.add(tgt)
+                        pos = data.find(op, pos + 1)
+            self._call_targets = out
+        return self._call_targets
 
     def function_at(self, addr):
         if self._starts is None:

@@ -967,7 +967,9 @@ void CVideoMode_Common::DrawStartupGraphic()
     // Allocate a white material
 #ifdef BYTEMATCH_RETAIL
     // skip "materials/"
-    const char *pszBaseTexture = ( Q_strlen( pStartupGraphicName ) > 10 ) ? pStartupGraphicName + 10 : pStartupGraphicName;
+    const char *pszBaseTexture = pStartupGraphicName;
+    if ( Q_strlen( pStartupGraphicName ) > 10 )
+        pszBaseTexture = pStartupGraphicName + 10;
     KeyValues *pVMTKeyValues = new KeyValues( "UnlitGeneric" );
     pVMTKeyValues->SetString( "$basetexture", pszBaseTexture );
 #else
@@ -981,9 +983,8 @@ void CVideoMode_Common::DrawStartupGraphic()
     pVMTKeyValues->SetInt( "$nocull", 1 );
     IMaterial *pMaterial = g_pMaterialSystem->CreateMaterial( "__background", pVMTKeyValues );
 
-    const char* loading = "console/startup_loading.vtf";
-    if ( IsSteamDeck() )
-        loading = "gamepadui/game_logo.vtf";
+    const char* loading = IsSteamDeck() ? "gamepadui/game_logo.vtf" : "console/startup_loading.vtf";
+#line 903
 
     pVMTKeyValues = new KeyValues( "UnlitGeneric" );
     pVMTKeyValues->SetString( "$basetexture", loading );
@@ -1072,8 +1073,8 @@ void CVideoMode_Common::DrawStartupGraphic()
 		
 #ifdef BYTEMATCH_RETAIL
 		// Steam Deck: game logo in the top right corner, scaled with the screen height
-		float flLogoSize = (float)videomode->GetModeStereoHeight() * 0.11666666666666667;
-		float flLogoMargin = (float)videomode->GetModeStereoHeight() * 0.025;
+		float flLogoSize = ( (float)videomode->GetModeStereoHeight() / 480.0 ) * 56.0;
+		float flLogoMargin = ( (float)videomode->GetModeStereoHeight() / 480.0 ) * 12.0;
 #endif
 #line 982
 		float depth = 0.5f;
@@ -1504,7 +1505,12 @@ void CVideoMode_Common::AdjustWindow( int nWidth, int nHeight, int nBPP, bool bW
 	{
 		// Give it a frame (pretty much WS_OVERLAPPEDWINDOW except for we do not modify the
 		// flags corresponding to resizing-frame and maximize-box)
+#ifdef BYTEMATCH_RETAIL
+		if( !CommandLine()->FindParm( "-noborder" ) && !m_bVROverride && !bNoWindowBorder )
+#else
 		if( !CommandLine()->FindParm( "-noborder" ) && !m_bVROverride )
+#endif
+#line 1402
 		{
 			style |= WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
 		}

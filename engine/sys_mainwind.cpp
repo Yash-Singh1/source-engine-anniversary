@@ -1024,7 +1024,12 @@ bool CGame::CreateGameWindow( void )
 	// Give it a frame if we want a border
 	if ( videomode->IsWindowedMode() )
 	{
+#ifdef BYTEMATCH_RETAIL
+		if( !CommandLine()->FindParm( "-noborder" ) && !videomode->NoWindowBorder() )
+#else
 		if( !CommandLine()->FindParm( "-noborder" ) )
+#endif
+#line 1003
 		{
 			style |= WS_OVERLAPPEDWINDOW;
 			style &= ~WS_THICKFRAME;

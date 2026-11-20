@@ -153,6 +153,8 @@ def load_obj(path, data, member=None):
             target = canonical('coff', sym[1]) if sym else None
             if sym and sym[5] == 3 and sym[2] == 0 and sym[6] and 0 < sym[3] <= nsec and sym[1] == secs[sym[3] - 1]['name']:
                 target = None    # section-relative reference (static data/label), name is meaningless
+            elif sym and sym[5] == 3 and sym[3] == sec_no and (sym[4] >> 4) != 2 and sym[1].startswith('$'):
+                target = None    # compiler-internal local label in the same code section (e.g. $LN12 switch table)
             addend = int.from_bytes(s['data'][va:va + width], 'little', signed=True)
             fields.append((s['va'] + va, width, kind, target, addend))
             if ty == 6 and sym and sym[3] == sec_no:

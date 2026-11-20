@@ -295,6 +295,23 @@ int CAudioSourceMP3::SampleRate()
 #line 144
 }
 
+#ifdef BYTEMATCH_RETAIL
+bool CAudioSourceMP3::GetStartupData( void *dest, int destsize, int &bytescopied )
+{
+	bytescopied = 0;
+
+	intp file = g_pSndIO->open( m_pSfx->GetFileName() );
+	if ( !file )
+		return false;
+
+	m_dataSize = (int)g_pSndIO->size( file );
+	bytescopied = min( destsize, m_dataSize );
+	g_pSndIO->read( dest, bytescopied, file );
+	g_pSndIO->close( file );
+	return true;
+}
+#endif
+#line 145
 void CAudioSourceMP3::GetCacheData( CAudioSourceCachedInfo *info )
 {
 #ifdef BYTEMATCH_RETAIL
@@ -303,27 +320,14 @@ void CAudioSourceMP3::GetCacheData( CAudioSourceCachedInfo *info )
 
 	if ( info->s_bIsPrecacheSound )
 	{
-		intp file = g_pSndIO->open( m_pSfx->GetFileName() );
-		if ( file )
+		byte tempbuf[ MP3_RETAIL_STARTUP_DATA_SIZE_BYTES ];
+		int datasize = 0;
+		if ( GetStartupData( tempbuf, sizeof( tempbuf ), datasize ) && datasize > 0 )
 		{
-			m_dataSize = (int)g_pSndIO->size( file );
-
-			char data[ MP3_RETAIL_STARTUP_DATA_SIZE_BYTES ];
-			int dataSize = m_dataSize;
-			if ( dataSize > MP3_RETAIL_STARTUP_DATA_SIZE_BYTES )
-			{
-				dataSize = MP3_RETAIL_STARTUP_DATA_SIZE_BYTES;
-			}
-			g_pSndIO->read( data, dataSize, file );
-			g_pSndIO->close( file );
-
-			if ( dataSize > 0 )
-			{
-				byte *pData = new byte[ dataSize ];
-				memcpy( pData, data, dataSize );
-				info->SetCachedDataSize( dataSize );
-				info->SetCachedData( pData );
-			}
+			byte *pData = new byte[ datasize ];
+			memcpy( pData, tempbuf, datasize );
+			info->SetCachedDataSize( datasize );
+			info->SetCachedData( pData );
 		}
 	}
 
