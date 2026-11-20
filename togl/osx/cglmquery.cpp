@@ -96,6 +96,10 @@ CGLMQuery::CGLMQuery( GLMContext *ctx, GLMQueryParams *params )
 	
 }
 
+#ifdef BYTEMATCH_RETAIL
+void CGLMQuery_RetailDeadSlot0() {}
+#endif
+
 CGLMQuery::~CGLMQuery()
 {
 	// make sure query has completed (might not be necessary)

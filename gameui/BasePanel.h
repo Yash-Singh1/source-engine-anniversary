@@ -226,6 +226,7 @@ public:
 	void OnOpenCreateMultiplayerGameDialog();
 	void OnOpenQuitConfirmationDialog();
 	void OnOpenDisconnectConfirmationDialog();
+	void OnOpenWorkshopDialog();
 	void OnOpenChangeGameDialog();
 	void OnOpenPlayerListDialog();
 	void OnOpenBenchmarkDialog();

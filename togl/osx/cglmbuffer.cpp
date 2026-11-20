@@ -19,8 +19,6 @@
 // ->but can shift to dynamic upon first 'discard' (orphaning)
 
 ConVar	gl_bufmode( "gl_bufmode", "1" );
-ConVar	gl_buffer_alignment_quantum( "gl_buffer_alignment_quantum", "32" );
-ConVar	gl_buffer_alignment_quantum_slgu( "gl_buffer_alignment_quantum_slgu", "2" );
 
 CGLMBuffer::CGLMBuffer( GLMContext *ctx, EGLMBufferType type, uint size, uint options )
 {
@@ -164,6 +162,9 @@ void	CGLMBuffer::FlushRange	( uint offset, uint size )
 		}
 	}
 }
+
+ConVar	gl_buffer_alignment_quantum( "gl_buffer_alignment_quantum", "32" );
+ConVar	gl_buffer_alignment_quantum_slgu( "gl_buffer_alignment_quantum_slgu", "2" );
 
 void	CGLMBuffer::Lock( GLMBuffLockParams *params, char **addressOut )
 {

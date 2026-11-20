@@ -553,6 +553,12 @@ class Module:
                             else:
                                 mems.append((ar, None, None, None, mn))
                         out.append((a, varchive, mems))
+                elif name == 'libjpeg.a':
+                    varchive = self.valve_src + 'lib/common/osx32/' + name
+                    all_m = sorted(m for m in subprocess.check_output(['/usr/bin/ar', 't', ar], text=True).splitlines()
+                                   if m.endswith('.o'))
+                    mems = [(ar, None, None, None, mn) for mn in all_m]
+                    out.append((a, varchive, mems))
                 continue
             entry = self.build.by_output[os.path.normpath(ar)]
             rname = re.sub(ARCHIVE_VARIANT, '.a', name)

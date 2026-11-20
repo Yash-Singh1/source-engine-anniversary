@@ -421,6 +421,15 @@ CAchievementsDialog::~CAchievementsDialog()
 	delete m_pPercentageBar;
 }
 
+//----------------------------------------------------------
+// Show the achievements of another game directory
+//----------------------------------------------------------
+void CAchievementsDialog::SetOverrideMod( const char *pszOverrideMod )
+{
+	m_strOverrideMod = pszOverrideMod;
+	UpdateAchievementList();
+}
+
 void CAchievementsDialog::OnCheckButtonChecked(Panel *panel)
 {
 	if ( panel == m_pHideAchievedCheck )
@@ -515,15 +524,6 @@ static inline bool IsAchievementInGame( int iAchievementID, CUtlString &strOverr
 }
 
 //----------------------------------------------------------
-// Show the achievements of another game directory
-//----------------------------------------------------------
-void CAchievementsDialog::SetOverrideMod( const char *pszOverrideMod )
-{
-	m_strOverrideMod = pszOverrideMod;
-	UpdateAchievementList();
-}
-
-//----------------------------------------------------------
 // Re-populate the achievement list with the selected group
 //----------------------------------------------------------
 void CAchievementsDialog::UpdateAchievementList()
@@ -565,8 +565,11 @@ void CAchievementsDialog::UpdateAchievementList()
 				int iAchievementID = pCur->GetAchievementID();
 
 				// only list the achievements of the current game, or of the override mod
-				if ( !IsAchievementInGame( iAchievementID, m_strOverrideMod ) )
+#ifdef BYTEMATCH_RETAIL
+				if ( !( m_strOverrideMod.IsEmpty() ? achievementmgr->CanEarnForCurrentExpansion( iAchievementID )
+												   : achievementmgr->CanEarnForExpansion( iAchievementID, m_strOverrideMod.Get() ) ) )
 					continue;
+#endif
 
 				if ( iAchievementID > iHighestAchievementIDSeen )
 				{

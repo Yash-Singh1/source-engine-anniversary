@@ -5224,42 +5224,6 @@ HRESULT IDirect3DDevice9::SetTextureStageState(DWORD Stage,D3DTEXTURESTAGESTATET
 	return S_OK;
 }
 
-void IDirect3DDevice9::SaveGLState()
-{
-	gGL->glPushAttrib( GL_ALL_ATTRIB_BITS );
-	gGL->glPushClientAttrib( GL_CLIENT_ALL_ATTRIB_BITS );
-}
-
-void IDirect3DDevice9::RestoreGLState()
-{
-	gGL->glPopClientAttrib();
-	gGL->glPopAttrib();
-
-	m_ctx->FlushStates();
-}
-
-void IDirect3DDevice9::AcquireThreadOwnership( )
-{
-	m_ctx->MakeCurrent( true );
-}
-
-void IDirect3DDevice9::ReleaseThreadOwnership( )
-{
-	m_ctx->ReleaseCurrent( true );
-}
-
-HRESULT IDirect3DDevice9::SetRenderStateInline( D3DRENDERSTATETYPE State, DWORD Value )
-{
-	SetRenderState( State, Value );
-	return S_OK;
-}
-
-HRESULT IDirect3DDevice9::SetRenderStateConstInline( D3DRENDERSTATETYPE State, DWORD Value )
-{
-	SetRenderState( State, Value );
-	return S_OK;
-}
-
 HRESULT IDirect3DDevice9::ValidateDevice(DWORD* pNumPasses)
 {
 	Debugger();
@@ -5369,6 +5333,30 @@ void IDirect3DDevice9::SetGammaRamp(UINT iSwapChain,DWORD Flags,CONST D3DGAMMARA
 	
 }
 
+void IDirect3DDevice9::SaveGLState()
+{
+	gGL->glPushAttrib( GL_ALL_ATTRIB_BITS );
+	gGL->glPushClientAttrib( GL_CLIENT_ALL_ATTRIB_BITS );
+}
+
+void IDirect3DDevice9::RestoreGLState()
+{
+	gGL->glPopClientAttrib();
+	gGL->glPopAttrib();
+
+	m_ctx->FlushStates();
+}
+
+void IDirect3DDevice9::AcquireThreadOwnership( )
+{
+	m_ctx->MakeCurrent( true );
+}
+
+void IDirect3DDevice9::ReleaseThreadOwnership( )
+{
+	m_ctx->ReleaseCurrent( true );
+}
+
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
@@ -5384,6 +5372,18 @@ IDirect3D9 *Direct3DCreate9(UINT SDKVersion)
 
 void D3DPERF_SetOptions( DWORD dwOptions )
 {
+}
+
+HRESULT IDirect3DDevice9::SetRenderStateInline( D3DRENDERSTATETYPE State, DWORD Value )
+{
+	SetRenderState( State, Value );
+	return S_OK;
+}
+
+HRESULT IDirect3DDevice9::SetRenderStateConstInline( D3DRENDERSTATETYPE State, DWORD Value )
+{
+	SetRenderState( State, Value );
+	return S_OK;
 }
 
 

@@ -27,6 +27,8 @@
     {"target": "hl2_launcher", "retail": "hl2_osx", "size": 9164, "sha256": "678159be877650c347b1f4c24c8de63ce1a38f536ffa4acc45eec6b90e51984a"},
     {"target": "vpk", "retail": "bin/vpk_osx32", "size": 1243752, "sha256": "02cf527d8ea89ca6db7f13b95e3e3aa44517267b9ba93abf2ee4b8fbfbc351fd"},
     {"target": "server_hl2mp", "retail": "hl2mp/bin/server.dylib", "size": 16134996, "sha256": "0938616a65f3871e702feb086e1f25c3ace74a7d759683dcf789a387f143e06e"},
-    {"target": "client_hl2mp", "retail": "hl2mp/bin/client.dylib", "size": 14075852, "sha256": "3a48b37467d0dbca6796eb9cdb175f9db3d45fec72210792b4dfb1da8ca4c67d"}
+    {"target": "client_hl2mp", "retail": "hl2mp/bin/client.dylib", "size": 14075852, "sha256": "3a48b37467d0dbca6796eb9cdb175f9db3d45fec72210792b4dfb1da8ca4c67d"},
+    {"target": "GameUI", "retail": "bin/GameUI.dylib", "size": 3704412, "sha256": "91bf6b3c45fe71abfe8c485158ab0902196d2bc8ae8b6b65883e2e3b1e0bdbef"},
+    {"target": "togl", "retail": "bin/libtogl.dylib", "size": 447124, "sha256": "4971da079113659a04d2cbaeba2e0f3a1fa489bd1f9e2225f2247b873e355cc9"}
   ]
 }

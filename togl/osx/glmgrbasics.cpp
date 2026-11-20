@@ -13,6 +13,10 @@
 // memdbgon -must- be the last include file in a .cpp file.
 #include "tier0/memdbgon.h"
 
+ConVar	gl_errorcheckall		( "gl_errorcheckall", "0" );
+ConVar	gl_errorcheckqueries	( "gl_errorcheckqueries", "0" );
+ConVar	gl_errorchecknone		( "gl_errorchecknone", "0" );
+
 //===============================================================================
 // decoding tables for debug
 
@@ -2545,10 +2549,6 @@ void	GLMStop( void )
 
 //===============================================================================
 
-ConVar	gl_errorcheckall		( "gl_errorcheckall", "0" );
-ConVar	gl_errorcheckqueries	( "gl_errorcheckqueries", "0" );
-ConVar	gl_errorchecknone		( "gl_errorchecknone", "0" );
-
 void	GLMCheckError( bool noStop, bool noLog )
 {
 	GLenum errorcode;
@@ -2589,6 +2589,17 @@ void	GLMCheckError( bool noStop, bool noLog )
 		}
 	}
 }
+
+#ifdef BYTEMATCH_RETAIL
+// Dead-stripped CGLMEditableTextItem file mode literals ("rb"/"wb") coalesced here in retail
+void GLM_RetailDeadFileModes( const char *path )
+{
+	FILE *f = fopen( path, "rb" );
+	if ( f ) fclose( f );
+	f = fopen( path, "wb" );
+	if ( f ) fclose( f );
+}
+#endif
 
 //===============================================================================
 // knob twiddling

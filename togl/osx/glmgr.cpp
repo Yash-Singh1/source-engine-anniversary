@@ -6323,7 +6323,7 @@ void	GLMTester::CheckGLError( char *comment )
 			
 			decodedStr2 = GLMDecode( eGL_ERROR, errorcode2 );
 
-			sprintf( errbuf, "\n%s - GL Error %08x/%08x = '%s / %s'", comment, errorcode, errorcode2, decodedStr, decodedStr2 );
+			sprintf( errbuf, "\n%s - GL Error %08x/%08x = '%s / %s'\n", comment, errorcode, errorcode2, decodedStr, decodedStr2 );
 		}
 		else
 		{
@@ -6348,7 +6348,7 @@ void	GLMTester::InternalError( int errcode, char *comment )
 	{
 		if (m_params.m_intlErrToConsole)
 		{	
-			printf("\%s - error %d", comment, errcode );
+			printf("\n%s - error %d\n", comment, errcode );
 		}
 
 		if (m_params.m_intlErrToDebugger)
@@ -6817,7 +6817,12 @@ void	GLMTester::Test2( void )
 			ctx->DrawDebugText( posx, posy, 0.0f, charwidth, charheight, text );
 		}
 		gGL->glFinish();
+#ifdef BYTEMATCH_RETAIL
+		// Match retail's empty-string coalescing alignment (align=2 at end of dead GLMTester literals)
+		CheckGLError("test2 finish  ");
+#else
 		CheckGLError("test2 finish");
+#endif
 
 		this->Present( selftest2_seed );
 	}

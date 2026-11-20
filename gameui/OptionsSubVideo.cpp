@@ -82,7 +82,7 @@ int g_DirectXLevels[] =
 //-----------------------------------------------------------------------------
 // Purpose: returns the string name of a given dxlevel
 //-----------------------------------------------------------------------------
-static void GetNameForDXLevel( int dxlevel, char *name, int bufferSize)
+void GetNameForDXLevel( int dxlevel, char *name, int bufferSize)
 {
 	if ( ( dxlevel >= 92 ) && ( dxlevel <= 95 ) )
 	{
@@ -97,7 +97,7 @@ static void GetNameForDXLevel( int dxlevel, char *name, int bufferSize)
 //-----------------------------------------------------------------------------
 // Purpose: returns the aspect ratio mode number for the given resolution
 //-----------------------------------------------------------------------------
-static int GetScreenAspectMode( int width, int height )
+int GetScreenAspectMode( int width, int height )
 {
 	float aspectRatio = (float)width / (float)height;
 
@@ -133,7 +133,7 @@ static void GetResolutionName( vmode_t *mode, wchar_t *sz, int sizeofsz, int des
 	}
 }
 
-static FILE *FOpenGameHDFile( const char *pchMode )
+FILE *FOpenGameHDFile( const char *pchMode )
 {
 	const char *pGameDir = engine->GetGameDirectory();
 	char szModSteamInfPath[ 1024 ];
@@ -146,7 +146,7 @@ static FILE *FOpenGameHDFile( const char *pchMode )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-static bool BUseHDContent()
+bool BUseHDContent()
 {
 	FILE *fp = FOpenGameHDFile( "rb" );
 	if ( fp )

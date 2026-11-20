@@ -208,6 +208,12 @@ void CGameMenuItem::SetRightAlignedText(bool state)
 	m_bRightAligned = state;
 }
 
+#ifdef BYTEMATCH_RETAIL
+// Dead-stripped helpers matching retail's GCC_except_table numbering in BasePanel.o
+void BasePanel_RetailDeadSlot0() {}
+void BasePanel_RetailDeadSlot1() {}
+#endif
+
 #ifndef BYTEMATCH_RETAIL
 class ImageButton : public vgui::Panel
 {
@@ -355,7 +361,7 @@ public:
 		int nMaxHeight = atoi( pScheme->GetResourceString( "MainMenu.MaxPropMenuItemHeight" ) );
 		if ( nMaxHeight )
 		{
-			nHeight = MIN( nMaxHeight, nHeight );
+			nHeight = Min( nMaxHeight, nHeight );
 		}
 
 		// make fully transparent
@@ -636,10 +642,21 @@ public:
 		}
 	}
 
-	void SetMenuCategory( const char *pszMenuCategory );
-	const char *GetMenuCategory()
+	void SetMenuCategory( const char *pszMenuCategory )
 	{
-		return ( workshop_playing_campaign.GetInt() && engine->IsInGame() ) ? "workshop" : m_strMenuCategory.String();
+		m_strMenuCategory.Set( pszMenuCategory );
+		for ( int i = 0; i < GetChildCount(); i++ )
+		{
+			Panel *pChild = GetChild( i );
+			CGameMenuItem *pMenuItem = dynamic_cast<CGameMenuItem *>( pChild );
+			if ( !pMenuItem )
+				continue;
+
+			if ( !pMenuItem->m_strMenuCategory.Length() )
+				continue;
+		}
+
+		InvalidateLayout();
 	}
 
 	void UpdateMenuItemState( bool isInGame, bool isMultiplayer, bool isInReplay, bool isVREnabled, bool isVRActive )
@@ -716,7 +733,7 @@ public:
 				const char *pszMenuCategory = kv->GetString( "MenuCategory", "" );
 				if ( Q_strlen( pszMenuCategory ) > 0 )
 				{
-					const char *pszCurrentCategory = ( workshop_playing_campaign.GetInt() && engine->IsInGame() ) ? "workshop" : m_strMenuCategory.String();
+					const char *pszCurrentCategory = GetMenuCategory();
 					if ( V_stricmp( pszMenuCategory, pszCurrentCategory ) )
 					{
 						shouldBeVisible = false;
@@ -726,7 +743,7 @@ public:
 				const char *pszExcludeFromMenuCategory = kv->GetString( "ExcludeFromMenuCategory", "" );
 				if ( Q_strlen( pszExcludeFromMenuCategory ) )
 				{
-					const char *pszCurrentCategory = ( workshop_playing_campaign.GetInt() && engine->IsInGame() ) ? "workshop" : m_strMenuCategory.String();
+					const char *pszCurrentCategory = GetMenuCategory();
 					if ( V_stristr( pszExcludeFromMenuCategory, pszCurrentCategory ) )
 					{
 						shouldBeVisible = false;
@@ -795,6 +812,11 @@ public:
 				}
 			}
 		}
+	}
+
+	const char *GetMenuCategory()
+	{
+		return ( workshop_playing_campaign.GetInt() && engine->IsInGame() ) ? "workshop" : m_strMenuCategory.String();
 	}
 
 #ifdef PLATFORM_64BITS
@@ -1093,7 +1115,7 @@ CBasePanel::~CBasePanel()
 //-----------------------------------------------------------------------------
 void CBasePanel::OnThink()
 {
-	if ( m_iSwitchModState && m_strSwitchMod.Length() )
+	if ( m_iSwitchModState && !m_strSwitchMod.IsEmpty() )
 	{
 		switch ( m_iSwitchModState )
 		{
@@ -1507,29 +1529,6 @@ void CBasePanel::SetBackgroundRenderState(EBackgroundState state)
 	m_eBackgroundState = state;
 }
 
-//-----------------------------------------------------------------------------
-// Purpose: fades out the menus and relaunches into another expansion
-//-----------------------------------------------------------------------------
-void CBasePanel::SwitchExpansion( const char *pszExpansion )
-{
-	char szExpansion[16];
-	if ( !g_pFullFileSystem->GetCurrentGameExpansionId( szExpansion, sizeof( szExpansion ) ) || V_strlen( pszExpansion ) <= 0 )
-		return;
-
-	if ( !V_stricmp( pszExpansion, szExpansion ) )
-	{
-		m_pGameMenu->SetMenuCategory( pszExpansion );
-		UpdateTitleText( V_stricmp( pszExpansion, "main" ) != 0 );
-	}
-	else
-	{
-		m_strSwitchMod = pszExpansion;
-		m_iSwitchModState = 1;
-		m_flSwitchModTransition = 0.0f;
-		vgui::GetAnimationController()->RunAnimationCommand( this, "m_flSwitchModTransition", 1.0f, 0.0f, 0.65f, AnimationController::INTERPOLATOR_ACCEL );
-	}
-}
-
 void CBasePanel::StartExitingProcess()
 {
 	// must let a non trivial number of screen swaps occur to stabilize image
@@ -1585,9 +1584,6 @@ void CBasePanel::OnLevelLoadingStarted()
 }
 
 //-----------------------------------------------------------------------------
-// Purpose: true unless the main menu shows the base game's category
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
 // Purpose: notification
 //-----------------------------------------------------------------------------
 void CBasePanel::OnDisconnectFromServer( uint8 eSteamLoginFailure )
@@ -1613,6 +1609,58 @@ void CBasePanel::OnDisconnectFromServer( uint8 eSteamLoginFailure )
 			}
 		}
 		UpdateTitleText( bExpansion );
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: notification
+//-----------------------------------------------------------------------------
+void CBasePanel::OnLevelLoadingFinished()
+{
+	if ( ModInfo().IsHL2Complete() )
+	{
+		if ( m_iSwitchModState == 4 )
+		{
+			m_iSwitchModState = 5;
+			UpdateBackgroundImages();
+		}
+
+		bool bExpansion = true;
+		if ( m_pGameMenu )
+		{
+			const char *pszMenuCategory = m_pGameMenu->GetMenuCategory();
+			if ( pszMenuCategory )
+			{
+				if ( !V_stricmp( pszMenuCategory, "main" ) )
+				{
+					bExpansion = false;
+				}
+			}
+		}
+		UpdateTitleText( bExpansion );
+
+		const char *pszExpansion = NULL;
+		ConVarRef hl2_expansion( "hl2_expansion" );
+		if ( hl2_expansion.IsValid() )
+		{
+			pszExpansion = hl2_expansion.GetString();
+		}
+		if ( V_strlen( pszExpansion ) == 0 )
+		{
+			pszExpansion = "hl2";
+		}
+
+		if ( V_stricmp( pszExpansion, m_strCurrentGame.Get() ) )
+		{
+			m_strCurrentGame = pszExpansion;
+		}
+	}
+
+	m_bLevelLoading = false;
+
+	if ( m_hMatchmakingBasePanel.Get() )
+	{
+		m_hMatchmakingBasePanel->OnCommand( "LevelLoadingFinished" );
 	}
 }
 
@@ -1713,57 +1761,9 @@ void CBasePanel::UpdateTitleText( bool bExpansion )
 	}
 }
 
-//-----------------------------------------------------------------------------
-// Purpose: notification
-//-----------------------------------------------------------------------------
-void CBasePanel::OnLevelLoadingFinished()
-{
-	if ( ModInfo().IsHL2Complete() )
-	{
-		if ( m_iSwitchModState == 4 )
-		{
-			m_iSwitchModState = 5;
-			UpdateBackgroundImages();
-		}
-
-		bool bExpansion = true;
-		if ( m_pGameMenu )
-		{
-			const char *pszMenuCategory = m_pGameMenu->GetMenuCategory();
-			if ( pszMenuCategory )
-			{
-				if ( !V_stricmp( pszMenuCategory, "main" ) )
-				{
-					bExpansion = false;
-				}
-			}
-		}
-		UpdateTitleText( bExpansion );
-
-		const char *pszExpansion = NULL;
-		ConVarRef hl2_expansion( "hl2_expansion" );
-		if ( hl2_expansion.IsValid() )
-		{
-			pszExpansion = hl2_expansion.GetString();
-		}
-		if ( V_strlen( pszExpansion ) == 0 )
-		{
-			pszExpansion = "hl2";
-		}
-
-		if ( V_stricmp( pszExpansion, m_strCurrentGame.Get() ) )
-		{
-			m_strCurrentGame = pszExpansion;
-		}
-	}
-
-	m_bLevelLoading = false;
-
-	if ( m_hMatchmakingBasePanel.Get() )
-	{
-		m_hMatchmakingBasePanel->OnCommand( "LevelLoadingFinished" );
-	}
-}
+#ifdef BYTEMATCH_RETAIL
+void BasePanel_RetailDeadSlot2() {}
+#endif
 
 //-----------------------------------------------------------------------------
 // Draws the background image.
@@ -1989,6 +1989,29 @@ void CBasePanel::UpdateGameMenus()
 	// position the menu
 	InvalidateLayout();
 	m_pGameMenu->SetVisible( true );
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: fades out the menus and relaunches into another expansion
+//-----------------------------------------------------------------------------
+void CBasePanel::SwitchExpansion( const char *pszExpansion )
+{
+	char szExpansion[16];
+	if ( !g_pFullFileSystem->GetCurrentGameExpansionId( szExpansion, sizeof( szExpansion ) ) || V_strlen( pszExpansion ) <= 0 )
+		return;
+
+	if ( !V_stricmp( pszExpansion, szExpansion ) )
+	{
+		m_pGameMenu->SetMenuCategory( pszExpansion );
+		UpdateTitleText( V_stricmp( pszExpansion, "main" ) != 0 );
+	}
+	else
+	{
+		m_strSwitchMod = pszExpansion;
+		m_iSwitchModState = 1;
+		m_flSwitchModTransition = 0.0f;
+		vgui::GetAnimationController()->RunAnimationCommand( this, "m_flSwitchModTransition", 1.0f, 0.0f, 0.65f, AnimationController::INTERPOLATOR_ACCEL );
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -2671,7 +2694,7 @@ void CBasePanel::RunMenuCommand(const char *command)
 	}
 	else if ( !Q_stricmp( command, "OpenWorkshopDialog" ) )
 	{
-		// the Workshop dialog is not available on this platform
+		OnOpenWorkshopDialog();
 	}
 	else if ( !Q_stricmp( command, "OpenChangeGameDialog" ) )
 	{
@@ -3845,6 +3868,11 @@ void CBasePanel::OnOpenCreateMultiplayerGameDialog()
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+void CBasePanel::OnOpenWorkshopDialog()
+{
+	// the Workshop dialog is not available on this platform
+}
+
 void CBasePanel::OnOpenChangeGameDialog()
 {
 #ifdef POSIX
@@ -5620,21 +5648,4 @@ static ConCommand refresh_gameui_dialogs_modeset( "refresh_gameui_dialogs_modese
 static bool UtlStringLessFunc( const CUtlString &lhs, const CUtlString &rhs )
 {
 	return V_stricmp( lhs.Get(), rhs.Get() ) < 0;
-}
-
-void CGameMenu::SetMenuCategory( const char *pszMenuCategory )
-{
-	m_strMenuCategory.Set( pszMenuCategory );
-	for ( int i = 0; i < GetChildCount(); i++ )
-	{
-		Panel *pChild = GetChild( i );
-		CGameMenuItem *pMenuItem = dynamic_cast<CGameMenuItem *>( pChild );
-		if ( !pMenuItem )
-			continue;
-
-		if ( !pMenuItem->m_strMenuCategory.Length() )
-			continue;
-	}
-
-	InvalidateLayout();
 }
