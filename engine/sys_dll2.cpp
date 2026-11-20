@@ -394,7 +394,7 @@ public:
 			if ( !bExtendedSpew )
 			{
 				// Keep the comment small unless extended spew is wanted
-				nCommentLength = MIN( m_nSize, 3500 );
+				nCommentLength = Min( m_nSize, 3500 );
 			}
 
 			Q_memset( m_errorText, 0x00, nCommentLength );
@@ -2048,8 +2048,14 @@ bool CEngineAPI::ModInit( const char *pModName, const char *pGameDir )
 	// Set up the engineparms_t which contains global information about the mod
 #ifdef BYTEMATCH_RETAIL
 	char szExpansionId[16];
-	bool bExpansion = g_pFileSystem->GetCurrentGameExpansionId( szExpansionId, sizeof( szExpansionId ) );
-	host_parms.mod = COM_StringCopy( bExpansion ? GetModDirFromPath( szExpansionId ) : GetModDirFromPath( pModName ) );
+	if ( g_pFileSystem->GetCurrentGameExpansionId( szExpansionId, sizeof( szExpansionId ) ) )
+	{
+		host_parms.mod = COM_StringCopy( GetModDirFromPath( szExpansionId ) );
+	}
+	else
+	{
+		host_parms.mod = COM_StringCopy( GetModDirFromPath( pModName ) );
+	}
 #else
 	host_parms.mod = COM_StringCopy( GetModDirFromPath( pModName ) );
 #endif
@@ -2084,7 +2090,7 @@ bool CEngineAPI::ModInit( const char *pModName, const char *pGameDir )
 	// Create the game window now that we have a search path
 	// FIXME: Deal with initial window width + height better
 #ifdef BYTEMATCH_RETAIL
-	if ( !videomode || !videomode->CreateGameWindow( g_pMaterialSystemConfig->m_VideoMode.m_Width, g_pMaterialSystemConfig->m_VideoMode.m_Height, bWindowed, ( g_pMaterialSystemConfig->m_Flags & MATSYS_VIDCFG_FLAGS_NO_WINDOW_BORDER ) != 0 ) )
+	if ( !videomode || !videomode->CreateGameWindow( g_pMaterialSystemConfig->m_VideoMode.m_Width, g_pMaterialSystemConfig->m_VideoMode.m_Height, bWindowed, g_pMaterialSystemConfig->NoWindowBorder() ) )
 #else
 	if ( !videomode || !videomode->CreateGameWindow( g_pMaterialSystemConfig->m_VideoMode.m_Width, g_pMaterialSystemConfig->m_VideoMode.m_Height, bWindowed ) )
 #endif

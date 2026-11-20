@@ -460,7 +460,7 @@ void Sys_Error_Internal( bool bMinidump, const char *error, va_list argsList )
 
 			// We always get here because the above filter evaluates to EXCEPTION_EXECUTE_HANDLER
 		}
-#elif defined(POSIX)
+#elif defined(OSX)
 		// Doing this doesn't quite work the way we want because there is no "crashing" thread
 		// and we see "No thread was identified as the cause of the crash; No signature could be created because we do not know which thread crashed" on the back end
 		//SteamAPI_WriteMiniDump( 0, NULL, build_number() );
@@ -471,6 +471,18 @@ void Sys_Error_Internal( bool bMinidump, const char *error, va_list argsList )
 		int *p = 0;
 		*p = 0xdeadbeef;
 #else
+		raise(SIGTRAP);
+#endif
+#elif defined(LINUX) || defined(POSIX)
+		// Doing this doesn't quite work the way we want because there is no "crashing" thread
+		// and we see "No thread was identified as the cause of the crash; No signature could be created because we do not know which thread crashed" on the back end
+		//SteamAPI_WriteMiniDump( 0, NULL, build_number() );
+#ifdef BYTEMATCH_RETAIL
+		int *p = 0;
+		*p = 0xdeadbeef;
+#else
+		printf("\n ##### Sys_Error: %s", text );
+		fflush(stdout );
 		raise(SIGTRAP);
 #endif
 #line 472
@@ -861,6 +873,9 @@ void GetSpew( char *buf, size_t buflen )
 }
 
 #ifdef BYTEMATCH_RETAIL
+#ifdef _WIN32
+ConVar spew_consolelog_to_debugstring( "spew_consolelog_to_debugstring", "0", 0, "Send console log to PLAT_DebugString()" );
+#endif
 SpewRetval_t Sys_SpewFunc( SpewType_t spewType, const char *pMsg )
 {
 	bool suppress = g_bInSpew;
@@ -871,15 +886,19 @@ SpewRetval_t Sys_SpewFunc( SpewType_t spewType, const char *pMsg )
 	char temp[8192];
 	char *pDst = temp;
 	const char *pDstLimit = &temp[ sizeof( temp ) - 2 ];
-	for ( const char *pSrc = pMsg; *pSrc && pDst < pDstLimit; pSrc++ )
+	const char *pSrc = pMsg;
+	while ( *pSrc && pDst < pDstLimit )
 	{
-		*pDst++ = *pSrc;
-		if ( *pSrc == '%' )
+		char c = *pSrc++;
+		*pDst++ = c;
+		if ( c == '%' )
 			*pDst++ = '%';
 	}
 	*pDst = 0;
 
 	AddSpewRecord( pMsg );
+
+	ETWMark1I( pMsg, spewType );
 
 	if ( !suppress )
 	{
@@ -888,7 +907,14 @@ SpewRetval_t Sys_SpewFunc( SpewType_t spewType, const char *pMsg )
 		if ( dedicated )
 			dedicated->Sys_Printf( (char*)pMsg );
 
+#ifdef _WIN32
+		if ( spew_consolelog_to_debugstring.GetBool() )
+		{
+			Plat_DebugString( pMsg );
+		}
+#else
 		Plat_DebugString( pMsg );
+#endif
 
 		if ( g_bTextMode )
 		{
