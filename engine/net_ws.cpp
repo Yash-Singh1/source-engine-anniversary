@@ -1228,7 +1228,7 @@ static char const *DescribeSocket( int sock )
 		return "mat";
 	case NS_SYSTEMLINK:
 		return "lnk";
-#ifdef LINUX
+#if defined( LINUX ) && !defined( BYTEMATCH_RETAIL )
 	case NS_SVLAN:
 		return "lan";
 #endif

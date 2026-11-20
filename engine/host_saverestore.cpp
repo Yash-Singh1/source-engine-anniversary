@@ -942,7 +942,7 @@ void CSaveRestore::UpdateSaveGameScreenshots()
 // Purpose: 
 //-----------------------------------------------------------------------------
 #ifdef BYTEMATCH_RETAIL
-static bool IsOldHL2Save( const GAME_HEADER *pHeader )
+bool IsOldHL2Save( const GAME_HEADER *pHeader )
 {
 	bool bIsOldSave = false;
 	if ( pHeader->mapCount != SAVEGAME_MAPCOUNT_ANNIVERSARY )
@@ -1275,7 +1275,8 @@ bool CSaveRestore::LoadGame( const char *pName )
 
 		if ( SaveReadHeader( pFile, &gameHeader, 1, &bOldSave ) )
 		{
-			validload &= DirectoryExtract( pFile, gameHeader.mapCount );
+			if ( !DirectoryExtract( pFile, gameHeader.mapCount ) )
+				validload = false;
 		}
 #line 1235
 

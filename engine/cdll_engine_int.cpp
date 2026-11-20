@@ -579,9 +579,12 @@ public:
 	virtual const char *GetMapName();
 	virtual const char *GetPatchVersion();
 
+#ifndef BYTEMATCH_RETAIL
 	bool			StartDemoRecording( const char *pszFilename, const char *pszFolder = NULL );
 	void			StopDemoRecording( void );
 	void			TakeScreenshot( const char *pszFilename, const char *pszFolder = NULL );
+#endif
+#line 575
 };
 
 
@@ -2172,6 +2175,7 @@ const char *CEngineClient::GetPatchVersion()
 #line 2139
 }
 
+#ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -2306,3 +2310,4 @@ void CEngineClient::TakeScreenshot( const char *pszFilename, const char *pszFold
 		Shader_SwapBuffers();
 	}
 }
+#endif

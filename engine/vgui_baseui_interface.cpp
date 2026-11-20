@@ -630,7 +630,7 @@ void CEngineVGui::Init()
 #endif
 #line 607
 	engineClient->GetUILanguage( lang, sizeof( lang ) );
-	if ( lang[0] )
+	if ( Q_strlen( lang ) )
 		vgui::system()->SetRegistryString( "HKEY_CURRENT_USER\\Software\\Valve\\Source\\Language", lang );
 
 	COM_TimestampedLog( "AttachToWindow" );
@@ -893,7 +893,8 @@ void CEngineVGui::Init()
 
 #ifdef BYTEMATCH_RETAIL
 	// the combined game carries every episode's strings
-	if ( !V_stricmp( CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) ), "hl2_complete" ) )
+	const char *pszGameDir = CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) );
+	if ( !V_stricmp( pszGameDir, "hl2_complete" ) )
 	{
 		g_pVGuiLocalize->AddFile( "hl2/resource/hl2_%language%.txt", "BASE_PATH" );
 		g_pVGuiLocalize->AddFile( "episodic/resource/episodic_%language%.txt", "BASE_PATH" );
@@ -1136,16 +1137,20 @@ void CEngineVGui::UpdateStaticSizingPanelSize( int nWidth, int nHeight )
 	static int s_nOldAAMode = -1;
 	static bool s_bResizedOnce = false;
 
-	int nScaledWidth = MAX( (int)( nWidth * vgui_ui_scale_factor.GetFloat() ), vgui_ui_scale_base_width.GetInt() );
-	int nScaledHeight = MAX( (int)( nHeight * vgui_ui_scale_factor.GetFloat() ), vgui_ui_scale_base_height.GetInt() );
+	int nScaledWidth = Max( (int)( nWidth * vgui_ui_scale_factor.GetFloat() ), vgui_ui_scale_base_width.GetInt() );
+	int nScaledHeight = Max( (int)( nHeight * vgui_ui_scale_factor.GetFloat() ), vgui_ui_scale_base_height.GetInt() );
 	int nPanelWidth = nScaledWidth * 640 / vgui_ui_scale_base_width.GetInt();
 	int nPanelHeight = nScaledHeight * 480 / vgui_ui_scale_base_height.GetInt();
 
 	bool bWindowMode = videomode->IsWindowedMode();
 	bool bWindowBorderMode = videomode->NoWindowBorder();
 
+	int nAAMode = -1;
 	ConVarRef mat_antialias( "mat_antialias" );
-	int nAAMode = mat_antialias.IsValid() ? mat_antialias.GetInt() : -1;
+	if ( mat_antialias.IsValid() )
+	{
+		nAAMode = mat_antialias.GetInt();
+	}
 
 	// tools don't resize the UI after the first layout
 	if ( CommandLine()->CheckParm( "-tools" ) && s_bResizedOnce )
@@ -1159,11 +1164,11 @@ void CEngineVGui::UpdateStaticSizingPanelSize( int nWidth, int nHeight )
 
 	s_nOldWidth = nWidth;
 	s_nOldHeight = nHeight;
-	s_bOldWindowMode = bWindowMode;
-	s_bOldWindowBorderMode = bWindowBorderMode;
 	s_bResizedOnce = true;
 	s_nOldPanelWidth = nPanelWidth;
 	s_nOldPanelHeight = nPanelHeight;
+	s_bOldWindowMode = bWindowMode;
+	s_bOldWindowBorderMode = bWindowBorderMode;
 	s_nOldAAMode = nAAMode;
 
 	staticSizingPanel->SetBounds( 0, 0, nPanelWidth, nPanelHeight );

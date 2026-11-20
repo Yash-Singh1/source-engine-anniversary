@@ -1966,12 +1966,32 @@ CON_COMMAND( host_writeconfig, "Store current settings to config.cfg (or specifi
 //			need to be read before any games systems are initialized
 //			assumes only cvars and filesystem are initialized
 //-----------------------------------------------------------------------------
+void Host_ReadPreStartupConVar( const char *configBuffer, const char *pszConVarName )
+{
+	const char *search = Q_stristr( configBuffer, pszConVarName );
+	if ( search )
+	{
+		// read over the token
+		search = COM_Parse( search );
+
+		// read the value
+		COM_Parse( search );
+
+		// apply the value
+		ConVar *var = (ConVar *)g_pCVar->FindVar( pszConVarName );
+		if ( var )
+		{
+			var->SetValue( com_token );
+		}
+	}
+}
+#line 1869
 void Host_ReadPreStartupConfiguration()
 {
 	FileHandle_t f = NULL;
 #ifdef BYTEMATCH_RETAIL
-	const char *pszGameDir = CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) );
 	bool bHL2Complete = false;
+	const char *pszGameDir = CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) );
 	if ( !V_stricmp( pszGameDir, "hl2_complete" ) )
 	{
 		bHL2Complete = true;
@@ -1994,79 +2014,53 @@ void Host_ReadPreStartupConfiguration()
 #endif
 #line 1886
 
-	if ( !f )
-		return;
-
-	// read file into memory
-	int size = g_pFileSystem->Size(f);
-	char *configBuffer = new char[ size + 1 ];
-	g_pFileSystem->Read( configBuffer, size, f );
-	configBuffer[size] = 0;
-	g_pFileSystem->Close( f );
-
-	// parse out file
-	static const char *s_PreStartupConfigConVars[] =
+	if ( f )
 	{
-		"sv_unlockedchapters",		// needed to display the startup graphic while loading
-		"snd_legacy_surround",		// needed to init the sound system
-		"gameui_xbox",				// needed to initialize the correct UI
-		"save_in_memory"			// needed to preread data from the correct location in UI
-	};
+		// read file into memory
+		int size = g_pFileSystem->Size(f);
+		char *configBuffer = new char[ size + 1 ];
+		g_pFileSystem->Read( configBuffer, size, f );
+		configBuffer[size] = 0;
+		g_pFileSystem->Close( f );
 
-	// loop through looking for all the cvars to apply
-	for (int i = 0; i < ARRAYSIZE(s_PreStartupConfigConVars); i++)
-	{
-		const char *search = Q_stristr((const char *)configBuffer, s_PreStartupConfigConVars[i]);
-		if (search)
+		// parse out file
+		static const char *s_PreStartupConfigConVars[] =
 		{
-			// read over the token
-			search = COM_Parse(search);
-
-			// read the value
-			COM_Parse(search);
-
-			// apply the value
-			ConVar *var = (ConVar *)g_pCVar->FindVar( s_PreStartupConfigConVars[i] );
-			if ( var )
-			{
-				var->SetValue( com_token );
-			}
-		}
-	}
-
-#ifdef BYTEMATCH_RETAIL
-	if ( bHL2Complete )
-	{
-		// the HL2 collection picks its chapter backgrounds per expansion
-		static const char *s_PreStartupHL2CompleteConVars[] =
-		{
-			"hl2_expansion",
-			"sv_unlockedchapters_hl2",
-			"sv_unlockedchapters_episodic",
-			"sv_unlockedchapters_ep2"
+			"sv_unlockedchapters",		// needed to display the startup graphic while loading
+			"snd_legacy_surround",		// needed to init the sound system
+			"gameui_xbox",				// needed to initialize the correct UI
+			"save_in_memory"			// needed to preread data from the correct location in UI
 		};
 
-		for (int i = 0; i < ARRAYSIZE(s_PreStartupHL2CompleteConVars); i++)
+		// loop through looking for all the cvars to apply
+		for (int i = 0; i < ARRAYSIZE(s_PreStartupConfigConVars); i++)
 		{
-			const char *search = Q_stristr((const char *)configBuffer, s_PreStartupHL2CompleteConVars[i]);
-			if (search)
-			{
-				search = COM_Parse(search);
-				COM_Parse(search);
+			Host_ReadPreStartupConVar( (const char *)configBuffer, s_PreStartupConfigConVars[i] );
+		}
 
-				ConVar *var = (ConVar *)g_pCVar->FindVar( s_PreStartupHL2CompleteConVars[i] );
-				if ( var )
-				{
-					var->SetValue( com_token );
-				}
+#ifdef BYTEMATCH_RETAIL
+		if ( bHL2Complete )
+		{
+			// the HL2 collection picks its chapter backgrounds per expansion
+			static const char *s_PreStartupHL2CompleteConVars[] =
+			{
+				"hl2_expansion",
+				"sv_unlockedchapters_hl2",
+				"sv_unlockedchapters_episodic",
+				"sv_unlockedchapters_ep2"
+			};
+
+			for (int i = 0; i < ARRAYSIZE(s_PreStartupHL2CompleteConVars); i++)
+			{
+				Host_ReadPreStartupConVar( (const char *)configBuffer, s_PreStartupHL2CompleteConVars[i] );
 			}
 		}
-	}
 #endif
 #line 1954
 
-	// free
-	delete [] configBuffer;
+		// free
+		delete [] configBuffer;
+	}
 #ifdef BYTEMATCH_RETAIL
 
 	if ( bHL2Complete )

@@ -54,7 +54,7 @@
 
 #ifdef BYTEMATCH_RETAIL
 // retail predates V_strdup
-inline char *CloneString( const char *str )
+static char *CloneString( const char *str )
 {
 	int len = strlen( str ) + 1;
 	char *cloneStr = new char [ len ];
