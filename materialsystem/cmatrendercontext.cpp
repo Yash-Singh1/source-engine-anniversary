@@ -1223,6 +1223,7 @@ void CMatRenderContext::EndRender()
 	if ( GetMaterialSystem()->GetThreadMode() != MATERIAL_SINGLE_THREADED )
 	{
 		g_MatSysMutex.Unlock();
+#line 1158
 		tmSetLockState( TELEMETRY_LEVEL1, (char const *)&g_MatSysMutex, TMLS_RELEASED, "EndRender" );
 	}
 #endif
@@ -1231,6 +1232,7 @@ void CMatRenderContext::EndRender()
 void CMatRenderContext::Flush( bool flushHardware )
 {
 	VPROF( "CMatRenderContextBase::Flush" );
+#line 1229
 
 	g_pShaderAPI->FlushBufferedPrimitives();
 	if ( IsPC() && flushHardware )
@@ -1733,7 +1735,9 @@ void CMatRenderContext::BindMorph( IMorph *pMorph )
 
 IMesh* CMatRenderContext::GetDynamicMesh( bool buffered, IMesh* pVertexOverride, IMesh* pIndexOverride, IMaterial *pAutoBind )
 {
+#line 1650
 	VPROF_ASSERT_ACCOUNTED( "CMatRenderContext::GetDynamicMesh" );
+#line 1722
 	if( pAutoBind )
 	{
 		Bind( pAutoBind, NULL );
@@ -1763,7 +1767,9 @@ IMesh* CMatRenderContext::GetDynamicMesh( bool buffered, IMesh* pVertexOverride,
 
 IMesh* CMatRenderContext::GetDynamicMeshEx( VertexFormat_t vertexFormat, bool bBuffered, IMesh* pVertexOverride, IMesh* pIndexOverride, IMaterial *pAutoBind )
 {
+#line 1680
 	VPROF_ASSERT_ACCOUNTED( "CMatRenderContext::GetDynamicMesh" );
+#line 1752
 	if( pAutoBind )
 	{
 		Bind( pAutoBind, NULL );

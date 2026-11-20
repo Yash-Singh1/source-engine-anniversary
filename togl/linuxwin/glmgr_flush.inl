@@ -336,12 +336,9 @@ FORCEINLINE void GLMContext::FlushDrawStates( uint nStartIndex, uint nEndIndex, 
 				{
 					GLMTexSamplingParams tempParams = m_samplers[nSamplerIndex].m_samp;
 					tempParams.m_packed.m_mipFilter = D3DTEXF_NONE;
-					if ( !( pTex->m_SamplingParams == tempParams ) )
-					{
-						SelectTMU( nSamplerIndex );
-						tempParams.DeltaSetToTarget( pTex->m_texGLTarget, pTex->m_SamplingParams );
-						pTex->m_SamplingParams = tempParams;
-					}
+					SelectTMU( nSamplerIndex );
+					tempParams.DeltaSetToTarget( pTex->m_texGLTarget, pTex->m_SamplingParams );
+					pTex->m_SamplingParams = tempParams;
 				}
 				else if ( !( pTex->m_SamplingParams == m_samplers[nSamplerIndex].m_samp ) )
 				{
@@ -378,6 +375,45 @@ FORCEINLINE void GLMContext::FlushDrawStates( uint nStartIndex, uint nEndIndex, 
 	}
 
 	// vertex stage --------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+	if ( m_programParamsF[kGLMVertexProgram].m_dirtySlotHighWaterNonBone )
+	{
+		int dirtySlotHighWater = MIN( (int)m_nMaxUsedVertexProgramConstantsHint, m_programParamsF[kGLMVertexProgram].m_dirtySlotHighWaterNonBone );
+		int firstDirtySlot = m_programParamsF[kGLMVertexProgram].m_firstDirtySlotNonBone;
+		dirtySlotHighWater = MIN( dirtySlotHighWater, m_drawingProgram[kGLMVertexProgram]->m_descs[kGLMGLSL].m_highWater );
+
+		GLint vconstLoc = m_pBoundPair->m_locVertexParams;
+		if ( ( vconstLoc >= 0 ) && ( dirtySlotHighWater > firstDirtySlot ) )
+		{
+			gGL->glUniform4fv( m_pBoundPair->m_UniformBufferParams[kGLMVertexProgram][firstDirtySlot], dirtySlotHighWater - firstDirtySlot, &m_programParamsF[kGLMVertexProgram].m_values[firstDirtySlot][0] );
+		}
+
+		m_programParamsF[kGLMVertexProgram].m_firstDirtySlotNonBone = 256;
+		m_programParamsF[kGLMVertexProgram].m_dirtySlotHighWaterNonBone = 0;
+	}
+
+	if ( m_programParamsF[kGLMVertexProgram].m_dirtySlotHighWaterBone )
+	{
+		const GLint vconstBoneLoc = m_pBoundPair->m_locVertexBoneParams;
+		if ( vconstBoneLoc >= 0 )
+		{
+			int shaderSlotsBone = 0;
+			if ( ( m_drawingProgram[kGLMVertexProgram]->m_descs[kGLMGLSL].m_VSHighWaterBone > 0 ) && ( m_nMaxUsedVertexProgramConstantsHint > DXABSTRACT_VS_FIRST_BONE_SLOT ) )
+			{
+				shaderSlotsBone = MIN( m_drawingProgram[kGLMVertexProgram]->m_descs[kGLMGLSL].m_VSHighWaterBone, m_nMaxUsedVertexProgramConstantsHint - DXABSTRACT_VS_FIRST_BONE_SLOT );
+			}
+
+			int dirtySlotHighWaterBone = MIN( shaderSlotsBone, m_programParamsF[kGLMVertexProgram].m_dirtySlotHighWaterBone );
+			if ( dirtySlotHighWaterBone )
+			{
+				uint nNumBoneRegs = dirtySlotHighWaterBone;
+				gGL->glUniform4fv( vconstBoneLoc, nNumBoneRegs, &m_programParamsF[kGLMVertexProgram].m_values[DXABSTRACT_VS_FIRST_BONE_SLOT][0] );
+			}
+
+			m_programParamsF[kGLMVertexProgram].m_dirtySlotHighWaterBone = 0;
+		}
+	}
+#else
 	if ( m_bUseBoneUniformBuffers )
 	{
 		// vertex stage --------------------------------------------------------------------
@@ -487,6 +523,7 @@ FORCEINLINE void GLMContext::FlushDrawStates( uint nStartIndex, uint nEndIndex, 
 			m_programParamsF[kGLMVertexProgram].m_dirtySlotHighWaterNonBone = 0;
 		}
 	}
+#endif // !BYTEMATCH_RETAIL
 
 
 	// see if VS uses i0, b0, b1, b2, b3.

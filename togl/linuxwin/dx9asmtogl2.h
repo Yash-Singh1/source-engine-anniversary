@@ -30,6 +30,7 @@
 #define D3DToGL_OptionUseBindableUniforms		0x200		// add "bindable" in front of "vc" / "pc" constant arrays (GLSL only)
 #define D3DToGL_OptionSRGBWriteSuffix			0x400		// Tack sRGB conversion suffix on to pixel shaders
 #define D3DToGL_OptionGenerateBoneUniformBuffer	0x800
+#define D3DToGL_OptionUseBindlessTexturing		0x1000
 #define D3DToGL_OptionSpew						0x80000000
 
 // Code for which component of the "dummy" address register is needed by an instruction
@@ -57,9 +58,9 @@ private:
 	bool	m_bDoFixupY;				// set D3DToGL_OptionDoFixupZ
 	bool	m_bDoUserClipPlanes;		// set D3DToGL_OptionDoUserClipPlanes
 	bool	m_bSpew;					// set D3DToGL_OptionSpew
-	bool	m_bUseBindableUniforms;		// set D3DToGL_OptionUseBindableUniforms
-	bool	m_bGenerateBoneUniformBuffer;
 	bool	m_bGenerateSRGBWriteSuffix;	// set D3DToGL_OptionSRGBWriteSuffix
+	bool	m_bGenerateBoneUniformBuffer;
+	bool	m_bUseBindlessTexturing;	// set D3DToGL_OptionUseBindlessTexturing
 
 	// Default: false
 	// If you set this to true, it'll convert to GLSL instead of GL ASM.
@@ -158,6 +159,8 @@ private:
 
 	// Have they used the tangent input semantic (i.e. is g_pTangentAttributeName declared)?
 	bool m_bTangentInputUsed;
+
+	bool m_bUsesDSTInstruction;
 
 
 private:

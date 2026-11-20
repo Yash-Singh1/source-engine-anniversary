@@ -3546,7 +3546,7 @@ void CShaderDeviceDx8::Present()
 			RECT destRect;
 			#ifndef DX_TO_GL_ABSTRACTION
 					GetClientRect( ( HWND )m_ViewHWnd, &destRect );
-			#elif defined( TOGL_OSX )
+			#elif defined( TOGL_OSX ) || defined( BYTEMATCH_RETAIL )
 					nativeGetClientRect( m_ViewHWnd, &destRect );
 			#else
 					toglGetClientRect( (VD3DHWND)m_ViewHWnd, &destRect );

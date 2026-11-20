@@ -247,15 +247,15 @@ void GLMDebugPrintf( const char *pMsg, ... )
 #ifdef BYTEMATCH_RETAIL
 	char buf[1024];
 	char *pBuf = buf;
-	bool bHeap = false;
+	char *pHeapBuf = NULL;
 
 	va_list args;
 	va_start( args, pMsg );
 	uint nLen = V_vsnprintf( buf, sizeof( buf ), pMsg, args );
 	if ( nLen >= sizeof( buf ) - 1 )
 	{
-		pBuf = new char[65536];
-		bHeap = ( pBuf != NULL );
+		pHeapBuf = new char[65536];
+		pBuf = pHeapBuf;
 		nLen = V_vsnprintf( pBuf, 65536, pMsg, args );
 	}
 	va_end( args );
@@ -272,7 +272,7 @@ void GLMDebugPrintf( const char *pMsg, ... )
 		nLen -= nCopy;
 	}
 
-	if ( bHeap )
+	if ( pHeapBuf )
 	{
 		delete[] pBuf;
 	}
@@ -1869,14 +1869,28 @@ void GLMContext::PreloadTex( CGLMTex *tex, bool force )
 	}
 		
 	// bind texture and sampling params
+#ifdef BYTEMATCH_RETAIL
+	GLMTexSampler prevSampler = m_samplers[15];
+	GLMTexSamplingParams samp;
+	memset( &samp, 0, sizeof( samp ) );
+	samp.m_packed.m_addressU = D3DTADDRESS_WRAP;
+	samp.m_packed.m_addressV = D3DTADDRESS_WRAP;
+	samp.m_packed.m_addressW = D3DTADDRESS_WRAP;
+	samp.m_packed.m_minFilter = D3DTEXF_POINT;
+	samp.m_packed.m_magFilter = D3DTEXF_POINT;
+	samp.m_packed.m_mipFilter = D3DTEXF_NONE;
+	samp.m_packed.m_maxAniso = 1;
+	samp.m_packed.m_isValid = true;
+	gGL->glBindSampler( 15, FindSamplerObject( samp ) );
+#else
 	CGLMTex *pPrevTex = m_samplers[15].m_pBoundTex;
-
 #ifndef OSX // 10.6
 	if ( m_bUseSamplerObjects )
 	{
 		gGL->glBindSampler( 15, 0 );
 	}
 #endif // !OSX
+#endif
 
 	BindTexToTMU( tex, 15 );
 	
@@ -1911,9 +1925,13 @@ void GLMContext::PreloadTex( CGLMTex *tex, bool force )
 
 	gGL->glDisableVertexAttribArray( 0 );
 	
+#ifdef BYTEMATCH_RETAIL
+	gGL->glBindSampler( 15, FindSamplerObject( prevSampler.m_samp ) );
+	BindTexToTMU( prevSampler.m_pBoundTex, 15 );
+#else
 	SetSamplerDirty( 15 );
-
 	BindTexToTMU( pPrevTex, 15 );
+#endif
 		
 	tex->m_texPreloaded = true;
 }
@@ -2039,7 +2057,11 @@ void GLMContext::SetDrawingLang( EGLMProgramLang lang, bool immediate )
 
 void GLMContext::LinkShaderPair( CGLMProgram *vp, CGLMProgram *fp )
 {
+#ifdef BYTEMATCH_RETAIL
+	if ( (m_pairCache) && (m_drawingLang==kGLMGLSL) && (vp && vp->m_descs[kGLMGLSL].m_valid) && (fp && fp->m_descs[kGLMGLSL].m_valid) )
+#else
 	if ( (m_pairCache) && (m_drawingLang==kGLMGLSL) && (vp) && (fp) )
+#endif
 	{
 		CGLMShaderPair	*pair = m_pairCache->SelectShaderPair( vp, fp, 0 );
 		(void)pair;
@@ -2287,6 +2309,9 @@ static	ConVar gl_texlayoutstats ("gl_texlayoutstats", "0" );
 
 void GLMContext::BeginFrame( void )
 {
+#ifdef BYTEMATCH_RETAIL
+#line 2153
+#endif
 	GLM_FUNC;
 
 	m_debugFrameIndex++;
@@ -2304,12 +2329,22 @@ void GLMContext::BeginFrame( void )
 	}
 
 	// scrub some critical shock absorbers
+#ifdef BYTEMATCH_RETAIL
+	for( int i=0; i< m_nNumSetVertexAttributes; i++)
+	{
+		gGL->glDisableVertexAttribArray( i );						// enable GLSL attribute- this is just client state - will be turned back off
+	}
+	m_lastKnownVertexAttribMask = 0;
+	m_nNumSetVertexAttributes = 0;
+	ClearCurAttribs();
+#else
 	for( int i=0; i< 16; i++)
 	{
 		gGL->glDisableVertexAttribArray( i );						// enable GLSL attribute- this is just client state - will be turned back off
 	}
 	m_lastKnownVertexAttribMask = 0;
 	m_nNumSetVertexAttributes = 0;
+#endif
 	
 	//FIXME should we also zap the m_lastKnownAttribs array ? (worst case it just sets them all again on first batch)
 
@@ -2402,7 +2437,9 @@ void GLMContext::DelQuery( CGLMQuery *query )
 	delete query;
 }
 
+#ifndef BYTEMATCH_RETAIL
 static ConVar mat_vsync( "mat_vsync", "0", 0, "Force sync to vertical retrace", true, 0.0, true, 1.0 );
+#endif
 
 //===============================================================================
 
@@ -2413,6 +2450,9 @@ extern ConVar gl_blitmode;
 
 void GLMContext::Present( CGLMTex *tex )
 {
+#ifdef BYTEMATCH_RETAIL
+#line 2274
+#endif
 	GLM_FUNC;
 	
 	{
@@ -2463,7 +2503,11 @@ void GLMContext::Present( CGLMTex *tex )
 		// old school, do the resolve, had the tex down to cocoamgr to actually blit.
 		// that way is required if you are not in one-context mode (10.5.8)
 	
+#ifdef BYTEMATCH_RETAIL
+		if ( m_oneCtxEnable && (gl_blitmode.GetInt() != 0) )
+#else
 		if ( (gl_blitmode.GetInt() != 0) )
+#endif
 		{
 			newRefreshMode = true;
 		}
@@ -2472,10 +2516,19 @@ void GLMContext::Present( CGLMTex *tex )
 		CShowPixelsParams showparams;
 		memset( &showparams, 0, sizeof(showparams) );
 
+#ifdef BYTEMATCH_RETAIL
+		static ConVarRef mat_vsync( "mat_vsync" );
+		bool bVsync = mat_vsync.IsValid() ? mat_vsync.GetBool() : false;
+		showparams.m_srcTexName	= tex->m_texName;
+		showparams.m_width		= tex->m_layout->m_key.m_xSize;
+		showparams.m_height		= tex->m_layout->m_key.m_ySize;
+		showparams.m_vsyncEnable = m_displayParams.m_vsyncEnable = bVsync;
+#else
 		showparams.m_srcTexName	= tex->m_texName;
 		showparams.m_width		= tex->m_layout->m_key.m_xSize;
 		showparams.m_height		= tex->m_layout->m_key.m_ySize;
 		showparams.m_vsyncEnable = m_displayParams.m_vsyncEnable = mat_vsync.GetBool();
+#endif
 		showparams.m_fsEnable	= m_displayParams.m_fsEnable;
 		showparams.m_useBlit	= m_caps.m_hasFramebufferBlit;
 
@@ -2533,13 +2586,31 @@ void GLMContext::Present( CGLMTex *tex )
 				// we set showparams.m_noBlit, and just let CocoaMgr handle the swap (flushbuffer / page flip)
 				showparams.m_noBlit = true;
 
+#ifdef BYTEMATCH_RETAIL
+				if ( m_oneCtxEnable )
+				{
+					BindFBOToCtx( NULL, GL_FRAMEBUFFER_EXT );
+				}
+#else
 				BindFBOToCtx( NULL, GL_FRAMEBUFFER_EXT );
+#endif
 			}
 			else
 			{
 				ResolveTex( tex, true );	// dxabstract used to do this unconditionally.we still do if new refresh mode doesn't engage.
 
+#ifdef BYTEMATCH_RETAIL
+				if ( m_oneCtxEnable )
+				{
+					BindFBOToCtx( NULL, GL_FRAMEBUFFER_EXT );
+				}
+				else
+				{
+					gGL->glFlush();
+				}
+#else
 				BindFBOToCtx( NULL, GL_FRAMEBUFFER_EXT );
+#endif
 
 				// showparams.m_noBlit is left set to 0.  CocoaMgr does the blit.
 			}
@@ -2549,12 +2620,24 @@ void GLMContext::Present( CGLMTex *tex )
 
 		//	put the original FB back in place (both read and draw)
 		// this bind will hit both read and draw bindings
+#ifdef BYTEMATCH_RETAIL
+		if ( m_oneCtxEnable )
+		{
+			BindFBOToCtx( m_drawingFBO, GL_FRAMEBUFFER_EXT );
+
+			// put em back !!
+			m_ScissorEnable.Flush();	
+			m_ScissorBox.Flush();
+			m_ViewportBox.Flush();		
+		}
+#else
 		BindFBOToCtx( m_drawingFBO, GL_FRAMEBUFFER_EXT );
 
 		// put em back !!
 		m_ScissorEnable.Flush();	
 		m_ScissorBox.Flush();
 		m_ViewportBox.Flush();		
+#endif
 	}
 
 	m_nCurFrame++;
@@ -2612,33 +2695,25 @@ GLMContext::GLMContext( IDirect3DDevice9 *pDevice, GLMDisplayParams *params )
 {
 #ifdef BYTEMATCH_RETAIL
 	m_bUseSamplerObjects = true;
-	
-	// On most AMD drivers (like the current latest, 12.10 Windows), the PCF depth comparison mode doesn't work on sampler objects, so just punt them.
-	if ( gGL->m_nDriverProvider == cGLDriverProviderAMD )
-	{
-		m_bUseSamplerObjects = false;
-	}
-	
 	if ( CommandLine()->CheckParm( "-gl_disablesamplerobjects" ) )
 	{
 		m_bUseSamplerObjects = false;
 	}
-	if ( CommandLine()->CheckParm( "-gl_enablesamplerobjects" ) )
+	else if ( CommandLine()->CheckParm( "-gl_enablesamplerobjects" ) )
 	{
 		m_bUseSamplerObjects = true;
 	}
-	
-	char buf[256];
-	V_snprintf( buf, sizeof( buf ), "GL sampler object usage: %s\n", m_bUseSamplerObjects ? "ENABLED" : "DISABLED" );
-	Plat_DebugString( buf );
+	GLMDebugPrintf( "GL sampler object usage: %s\n", m_bUseSamplerObjects ? "ENABLED" : "DISABLED" );
 
-	m_bPreferMapBufferRange = ( gGL->m_nDriverProvider == cGLDriverProviderAMD ) || ( gGL->m_nDriverProvider == cGLDriverProviderIntel ) || ( gGL->m_nDriverProvider == cGLDriverProviderIntelOpenSource );
-	if ( CommandLine()->CheckParm( "-gl_disableprefermapbufferrange" ) )
+	m_bPreferMapBufferRange = false;
+	if ( !CommandLine()->CheckParm( "-gl_disableprefermapbufferrange" ) )
 	{
-		m_bPreferMapBufferRange = false;
+		if ( ( gGL->m_nDriverProvider == cGLDriverProviderIntel ) || ( gGL->m_nDriverProvider == cGLDriverProviderIntelOpenSource ) )
+		{
+			m_bPreferMapBufferRange = true;
+		}
 	}
-	V_snprintf( buf, sizeof( buf ), "GL prefer MapBufferRange: %s\n", m_bPreferMapBufferRange ? "ENABLED" : "DISABLED" );
-	Plat_DebugString( buf );
+	GLMDebugPrintf( "GL prefer MapBufferRange: %s\n", m_bPreferMapBufferRange ? "YES" : "NO" );
 #else
 	m_nNumDirtySamplers = 0;
 // 	m_bUseSamplerObjects = true;
@@ -2754,6 +2829,9 @@ GLMContext::GLMContext( IDirect3DDevice9 *pDevice, GLMDisplayParams *params )
 #if defined( USE_SDL )
 	m_ctx = (SDL_GLContext)GetGLContextForWindow( params ? (void*)params->m_focusWindow : NULL );
 	MakeCurrent( true );
+#ifdef BYTEMATCH_RETAIL
+	m_oneCtxEnable = true;
+#endif
 #else
 #error
 #endif
@@ -2799,7 +2877,9 @@ GLMContext::GLMContext( IDirect3DDevice9 *pDevice, GLMDisplayParams *params )
 	m_texLayoutTable = new CGLMTexLayoutTable;
 
 #ifndef OSX
+#ifndef BYTEMATCH_RETAIL
 	if ( m_bUseSamplerObjects )
+#endif
 	{
 		memset( m_samplerObjectHash, 0, sizeof( m_samplerObjectHash ) );
 		m_nSamplerObjectHashNumEntries = 0;
@@ -2823,7 +2903,9 @@ GLMContext::GLMContext( IDirect3DDevice9 *pDevice, GLMDisplayParams *params )
 		params.m_packed.m_mipFilter = D3DTEXF_NONE;
 		params.m_packed.m_maxAniso = 1;
 		params.m_packed.m_isValid = true;
+#ifndef BYTEMATCH_RETAIL
 		params.m_packed.m_compareMode = 0;
+#endif
 	}
 	
 	MarkAllSamplersDirty();

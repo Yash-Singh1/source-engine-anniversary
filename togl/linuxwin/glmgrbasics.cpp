@@ -3452,6 +3452,9 @@ public:
 
 	void FlushOutstandingQueries( bool bForce )
 	{
+#ifdef BYTEMATCH_RETAIL
+#line 3424
+#endif
 		tmZone( TELEMETRY_LEVEL2, 0, "FlushOutstandingQueries: %u", m_nNumOutstandingQueryZones );
 
 		if ( bForce )
@@ -3625,6 +3628,9 @@ private:
 	inline void NewTimeSpan( uint64 nStartGPUTime, uint64 nEndGPUTime, const char *pName, uint nTotalDraws )
 	{
 		// apparently we must use level0 for timespans?
+#ifdef BYTEMATCH_RETAIL
+#line 3595
+#endif
 		tmBeginTimeSpanAt( TELEMETRY_LEVEL0, 1, 0, nStartGPUTime, "%s [C:%u]", pName ? pName : "", nTotalDraws );
 		tmEndTimeSpanAt( TELEMETRY_LEVEL0, 1, 0, nEndGPUTime, "%s [C:%u]", pName ? pName : "", nTotalDraws );
 	}

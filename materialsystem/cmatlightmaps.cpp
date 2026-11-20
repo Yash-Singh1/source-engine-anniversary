@@ -617,7 +617,9 @@ void CMatLightmaps::RestoreLightmapPages()
 //-----------------------------------------------------------------------------
 void CMatLightmaps::InitLightmapBits( int lightmap )
 {
+#line 612
 	VPROF_( "CMatLightmaps::InitLightmapBits", 1, VPROF_BUDGETGROUP_DLIGHT_RENDERING, false, 0 );
+#line 605
 	int width = GetLightmapWidth(lightmap);
 	int height = GetLightmapHeight(lightmap);
 
@@ -1657,7 +1659,7 @@ void CMatLightmaps::LightmapBitsToPixelWriter_LDR( float* pFloatImage, int pLigh
 			m_LightmapPixelWriter.Seek( pOffsetIntoLightmapPage[0] + s, pOffsetIntoLightmapPage[1] + t );
 			int nSrcS = Clamp( s, 0, pLightmapSize[0] - 1 );
 			int nSrcT = Clamp( t, 0, pLightmapSize[1] - 1 );
-			float *pSrc = pFloatImage + ( nSrcS + nSrcT * pLightmapSize[0] ) * (sizeof(Vector4D)/sizeof(*pSrc));
+			float *pSrc = ( (Vector4D *)pFloatImage + nSrcS + nSrcT * pLightmapSize[0] )->Base();
 
 			unsigned char color[4];
 #else
@@ -2083,7 +2085,9 @@ void CMatLightmaps::UpdateLightmap( int lightmapPageID, int lightmapSize[2],
 									  float *pFloatImage, float *pFloatImageBump1,
 									  float *pFloatImageBump2, float *pFloatImageBump3 )
 {
+#line 1890
 	VPROF( "CMatRenderContext::UpdateLightmap" );
+#line 2079
 
 	bool hasBump = false;
 	int uSize = 1;
