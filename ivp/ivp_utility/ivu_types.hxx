@@ -50,7 +50,11 @@
 #endif
 
 #ifdef BYTEMATCH_RETAIL
+#ifdef _WIN32
+extern "C" __declspec(dllimport) __declspec(noreturn) void Error( const char *pMsg, ... );
+#else
 extern "C" void Error( const char *pMsg, ... );
+#endif
 #define CORE Error( "IVP Failed at %s %d\n", __FILE__, __LINE__ )
 #else
 #define CORE *(int *)0 = 0  /* send fatal signal */
