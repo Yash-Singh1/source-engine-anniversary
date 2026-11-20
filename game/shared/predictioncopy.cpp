@@ -30,7 +30,7 @@
 // CSave
 //
 // --------------------------------------------------------------
-static const char *g_FieldTypes[ FIELD_TYPECOUNT ] = 
+static const char *g_FieldTypes[ FIELD_TYPECOUNT NOV2024_ONLY( + 1 ) ] = 
 {
 	"FIELD_VOID",			// FIELD_VOID
 	"FIELD_FLOAT",			// FIELD_FLOAT

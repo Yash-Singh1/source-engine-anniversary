@@ -111,15 +111,6 @@ C_PropJeepEpisodic::C_PropJeepEpisodic()
 }
 
 //-----------------------------------------------------------------------------
-// Purpose: The jalopy has its own view FOV
-//-----------------------------------------------------------------------------
-void C_PropJeepEpisodic::UpdateViewSmoothingFOV()
-{
-	static ConVarRef r_JalopyFOV( "r_JalopyFOV" );
-	m_ViewSmoothingData.flFOV = r_JalopyFOV.GetFloat();
-}
-
-//-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
 void C_PropJeepEpisodic::Simulate( void )
@@ -142,4 +133,13 @@ void C_PropJeepEpisodic::Simulate( void )
 void C_PropJeepEpisodic::OnEnteredVehicle( C_BasePlayer *pPlayer )
 {
 	BaseClass::OnEnteredVehicle( pPlayer );
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: The jalopy has its own view FOV
+//-----------------------------------------------------------------------------
+void C_PropJeepEpisodic::UpdateViewSmoothingFOV()
+{
+	static ConVarRef r_JalopyFOV( "r_JalopyFOV" );
+	m_ViewSmoothingData.flFOV = r_JalopyFOV.GetFloat();
 }

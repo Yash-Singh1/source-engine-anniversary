@@ -59,7 +59,7 @@ NOV2024_ONLY( ConVar sc_sensitivity_scale( "sc_sensitivity_scale", "1.0", FCVAR_
 //-----------------------------------------------------------------------------
 // Purpose: Aim assist dampening for Steam Input look deltas
 //-----------------------------------------------------------------------------
-static inline float GetSCAutoAimScale()
+float GetSCAutoAimScale()
 {
 	if ( !sk_allow_autoaim.GetBool() || !sc_autoaim_mode.GetBool() )
 		return 1.0f;
@@ -223,14 +223,23 @@ void CInput::ApplySteamControllerCameraMove( float flFrametime, QAngle &viewangl
 // Purpose: SteamControllerMove -- main entry point for applying Steam Input movements
 // Input  : *cmd - 
 //-----------------------------------------------------------------------------
+static inline void ApplySmartSprint( C_BaseHLPlayer *pHLPlayer, bool bSmartSprintActive, bool bSprinting, bool bNotHeld )
+{
+	bool bNew = ( bSprinting || !bNotHeld ) && bSmartSprintActive;
+	pHLPlayer->m_bSmartSprintActive = bNew;
+	if ( !bNew && bNotHeld )
+	{
+		engine->ClientCmd_Unrestricted( "-speed" );
+	}
+}
 void CInput::SteamControllerMove( float flFrametime, CUserCmd *cmd )
 {
 	if ( enginevgui->IsGameUIVisible() || !SteamController() )
 		return;
 
 	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
-	C_BaseHLPlayer *pHLPlayer = NULL;
 	bool bInVehicle = false;
+	C_BaseHLPlayer *pHLPlayer = NULL;
 	bool bSprinting = false;
 	if ( pPlayer )
 	{
@@ -305,7 +314,7 @@ void CInput::SteamControllerMove( float flFrametime, CUserCmd *cmd )
 				{
 					sc_controller_mode.SetValue( 1 );
 
-					if ( !bSmartSprint || !sc_smart_sprint.GetBool() || ( bSmartSprint && !bSprinting ) )
+					if ( !sc_smart_sprint.GetBool() || !bSmartSprint || ( bSmartSprint && !bSprinting ) )
 					{
 						char cmdbuf[128];
 						Q_snprintf( cmdbuf, sizeof( cmdbuf ), "%s", state.cmd );
@@ -325,7 +334,7 @@ void CInput::SteamControllerMove( float flFrametime, CUserCmd *cmd )
 
 			if ( bSmartSprint )
 			{
-				bSmartSprintHeld |= state.bState;
+				bSmartSprintHeld NOV2024_ONLY( |= ) OCT2024_ONLY( = ) state.bState;
 			}
 		}
 
@@ -354,7 +363,7 @@ void CInput::SteamControllerMove( float flFrametime, CUserCmd *cmd )
 		}
 
 		// Apply sidestep movement
-		cmd->sidemove += ( moveData.x + steerData.x ) * cl_sidespeed.GetFloat();
+		cmd->sidemove += cl_sidespeed.GetFloat() * ( moveData.x + steerData.x );
 
 		InputAnalogActionData_t joystickCameraData = SteamInput()->GetAnalogActionData( controller, g_ControllerJoystickCameraHandle );
 		InputAnalogActionData_t cameraData = SteamInput()->GetAnalogActionData( controller, g_ControllerCameraHandle );
@@ -445,28 +454,39 @@ void CInput::SteamControllerMove( float flFrametime, CUserCmd *cmd )
 		g_ControllerCurrentActionSet[i] = actionSet;
 	}
 
-	bool bSmartSprintActive = pHLPlayer->m_bSmartSprintActive;
+	float flMoveLength = vecMoveTotal.Length();
 	if ( g_pInputSystem->IsSteamControllerActive() )
 	{
-		if ( sc_smart_sprint.GetBool() && ( bSmartSprintHeld || bSmartSprintActive OCT2024_ONLY( || bSprinting ) ) )
+		bool bSmartSprintActive = pHLPlayer->m_bSmartSprintActive;
+		if ( sc_smart_sprint.GetBool() && ( bSmartSprintActive OCT2024_ONLY( || bSprinting ) || bSmartSprintHeld ) )
 		{
-			float flMoveLength = vecMoveTotal.Length();
-			bool bInBounds = ( !bSmartSprintActive && flMoveLength >= sc_smart_sprint_start_bounds.GetFloat() )
-				|| ( bSmartSprintActive && flMoveLength >= sc_smart_sprint_end_bounds.GetFloat() );
-			pHLPlayer->m_bSmartSprintActive = ( bSprinting || bSmartSprintHeld ) && bInBounds;
-			if ( !pHLPlayer->m_bSmartSprintActive && !bSmartSprintHeld )
+			if ( !bSmartSprintActive && flMoveLength >= sc_smart_sprint_start_bounds.GetFloat() )
 			{
-				engine->ClientCmd_Unrestricted( "-speed" );
+				bSmartSprintActive = true;
 			}
+			else if ( bSmartSprintActive && flMoveLength < sc_smart_sprint_end_bounds.GetFloat() )
+			{
+				bSmartSprintActive = false;
+			}
+
+			ApplySmartSprint( pHLPlayer, bSmartSprintActive, bSprinting, !bSmartSprintHeld );
 		}
 	}
 	else
 	{
-		if ( sc_smart_sprint.GetBool() && bSmartSprintActive )
+		bool bSmartSprintActive = pHLPlayer->m_bSmartSprintActive;
+		if ( sc_smart_sprint.GetBool() )
 		{
-			engine->ClientCmd_Unrestricted( "-speed" );
+			if ( bSmartSprintActive )
+			{
+				engine->ClientCmd_Unrestricted( "-speed" );
+			}
+			pHLPlayer->m_bSmartSprintActive = false;
 		}
-		pHLPlayer->m_bSmartSprintActive = false;
+		else
+		{
+			pHLPlayer->m_bSmartSprintActive = false;
+		}
 	}
 
 	engine->SetViewAngles( viewangles );

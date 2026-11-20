@@ -70,8 +70,10 @@ public:
 
 	// virtual void ChatInputPosition( int *x, int *y );
 
+#ifndef BYTEMATCH_RETAIL
 	// Check if any panel other than the scoreboard is visible
 	virtual bool IsAnyPanelVisibleExceptScores();
+#endif
 
 	// Walk through all the panels. Handler should be an object taking an IViewPortPanel*
 	template<typename THandler> void ForEachPanel( THandler handler )
@@ -82,8 +84,10 @@ public:
 		}
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	// Check if the named panel is visible
 	virtual bool IsPanelVisible( const char* panel );
+#endif
 	
 public: // IGameEventListener:
 	virtual void FireGameEvent( IGameEvent * event);

@@ -412,10 +412,6 @@ private:
 DECLARE_HUDELEMENT( CHudHintKeyDisplay );
 DECLARE_HUD_MESSAGE( CHudHintKeyDisplay, KeyHintText );
 
-ConVar sc_use_glyphs( "sc_use_glyphs", "1", 0, "Debug if the string fallbacks display properly." );
-NOV2024_ONLY( ConVar sc_prefer_basic_origin_hints( "sc_prefer_basic_origin_hints", "1", 0, "Only show the basic origins if available." ); )
-ConVar sc_tint_glyphs( "sc_tint_glyphs", "0", 0, "Whether or not to tint the glyphs or not." );
-
 extern int g_ActionSet;
 
 //-----------------------------------------------------------------------------
@@ -475,6 +471,10 @@ void CHudHintKeyDisplay::ApplySchemeSettings( vgui::IScheme *pScheme )
 
 	BaseClass::ApplySchemeSettings( pScheme );
 }
+
+ConVar sc_use_glyphs( "sc_use_glyphs", "1", 0, "Debug if the string fallbacks display properly." );
+NOV2024_ONLY( ConVar sc_prefer_basic_origin_hints( "sc_prefer_basic_origin_hints", "1", 0, "Only show the basic origins if available." ); )
+ConVar sc_tint_glyphs( "sc_tint_glyphs", "0", 0, "Whether or not to tint the glyphs or not." );
 
 //-----------------------------------------------------------------------------
 // Purpose: Save CPU cycles by letting the HUD system early cull

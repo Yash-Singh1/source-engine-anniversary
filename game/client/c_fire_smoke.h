@@ -294,7 +294,7 @@ public:
 	virtual void	Simulate( void );
 	virtual void	UpdateOnRemove( void );
 	virtual void	OnDataChanged( DataUpdateType_t updateType );
-	virtual RenderGroup_t GetRenderGroup() { return RENDER_GROUP_TRANSLUCENT_ENTITY; }
+	virtual RenderGroup_t GetRenderGroup();
 	virtual void	ClientThink( void );
 
 	CNewParticleEffect *m_hEffect;
@@ -322,6 +322,7 @@ protected:
 	void	AttachToHitBoxes( void );
 	void	UpdateHitBoxFlames( void );
 	void	DeleteHitBoxFlames( void );
+	void	ClearHitBoxFlames( void ) { DeleteHitBoxFlames(); }
 
 	CSmartPtr<CEmberEffect> m_pEmitter;
 	TimedEvent			m_ParticleSpawn;

@@ -878,6 +878,39 @@ CHudCloseCaption::~CHudCloseCaption()
 	ClearAsyncWork();
 }
 
+#ifdef HL2_ANNIVERSARY_NOV2024
+//-----------------------------------------------------------------------------
+// Purpose: Reloads the caption dictionary for the current language
+//-----------------------------------------------------------------------------
+void CHudCloseCaption::ReloadData()
+{
+	m_CloseCaptionRepeats.RemoveAll();
+	ClearAsyncWork();
+	g_AsyncCaptionResourceManager.Flush();
+
+	m_CurrentLanguage = "";
+
+	g_pVGuiLocalize->AddFile( "resource/closecaption_%language%.txt", "GAME", true );
+
+	char uilanguage[ 64 ];
+	engine->GetUILanguage( uilanguage, sizeof( uilanguage ) );
+
+	if ( !Q_stricmp( uilanguage, "english" ) )
+	{
+		english.SetValue( 1 );
+	}
+	else
+	{
+		english.SetValue( 0 );
+	}
+
+	char dbfile [ 512 ];
+	Q_snprintf( dbfile, sizeof( dbfile ), "resource/closecaption_%s.dat", uilanguage );
+	InitCaptionDictionary( dbfile );
+}
+#endif
+#line 880
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : *newmap - 
@@ -1577,6 +1610,40 @@ void CHudCloseCaption::Process( const wchar_t *stream, float duration, const cha
 			item->SetTimeToLive( override_duration );
 			item->SetInitialLifeSpan( override_duration );
 		}
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Keeps the captions on screen when the HUD is narrower than the panel
+//-----------------------------------------------------------------------------
+void CHudCloseCaption::ApplySchemeSettings( vgui::IScheme *pScheme )
+{
+	BaseClass::ApplySchemeSettings( pScheme );
+
+	m_hFonts[CCFONT_NORMAL] = pScheme->GetFont( "CloseCaption_Normal", true );
+	m_hFonts[CCFONT_BOLD] = pScheme->GetFont( "CloseCaption_Bold", true );
+	m_hFonts[CCFONT_ITALIC] = pScheme->GetFont( "CloseCaption_Italic", true );
+	m_hFonts[CCFONT_ITALICBOLD] = pScheme->GetFont( "CloseCaption_BoldItalic", true );
+
+	m_nLineHeight = MAX( 6, vgui::surface()->GetFontTall( m_hFonts[ CCFONT_NORMAL ] ) );
+
+	int nHudWide, nHudTall;
+	GetHudSize( nHudWide, nHudTall );
+
+	int x, y;
+	GetPos( x, y );
+	int w, h;
+	GetSize( w, h );
+
+	if ( w > nHudWide )
+	{
+		x = 0;
+		SetSize( nHudWide, h );
+	}
+
+	if ( (float)nHudWide / (float)nHudTall <= 1.57f )
+	{
+		SetPos( x, y - vgui::scheme()->GetProportionalScaledValueEx( GetScheme(), m_nAspectRatioOffset ) );
 	}
 }
 
@@ -2917,69 +2984,3 @@ void CHudCloseCaption::FindSound( char const *pchANSI )
 		delete[] block;
 	}
 }
-
-//-----------------------------------------------------------------------------
-// Purpose: Keeps the captions on screen when the HUD is narrower than the panel
-//-----------------------------------------------------------------------------
-void CHudCloseCaption::ApplySchemeSettings( vgui::IScheme *pScheme )
-{
-	BaseClass::ApplySchemeSettings( pScheme );
-
-	m_hFonts[CCFONT_NORMAL] = pScheme->GetFont( "CloseCaption_Normal", true );
-	m_hFonts[CCFONT_BOLD] = pScheme->GetFont( "CloseCaption_Bold", true );
-	m_hFonts[CCFONT_ITALIC] = pScheme->GetFont( "CloseCaption_Italic", true );
-	m_hFonts[CCFONT_ITALICBOLD] = pScheme->GetFont( "CloseCaption_BoldItalic", true );
-
-	m_nLineHeight = MAX( 6, vgui::surface()->GetFontTall( m_hFonts[ CCFONT_NORMAL ] ) );
-
-	int nHudWide, nHudTall;
-	GetHudSize( nHudWide, nHudTall );
-
-	int x, y;
-	GetPos( x, y );
-	int w, h;
-	GetSize( w, h );
-
-	if ( w > nHudWide )
-	{
-		x = 0;
-		SetSize( nHudWide, h );
-	}
-
-	if ( (float)nHudWide / (float)nHudTall <= 1.57f )
-	{
-		SetPos( x, y - vgui::scheme()->GetProportionalScaledValueEx( GetScheme(), m_nAspectRatioOffset ) );
-	}
-}
-
-#ifdef HL2_ANNIVERSARY_NOV2024
-//-----------------------------------------------------------------------------
-// Purpose: Reloads the caption dictionary for the current language
-//-----------------------------------------------------------------------------
-void CHudCloseCaption::ReloadData()
-{
-	m_CloseCaptionRepeats.RemoveAll();
-	ClearAsyncWork();
-	g_AsyncCaptionResourceManager.Flush();
-
-	m_CurrentLanguage = "";
-
-	g_pVGuiLocalize->AddFile( "resource/closecaption_%language%.txt", "GAME", true );
-
-	char uilanguage[ 64 ];
-	engine->GetUILanguage( uilanguage, sizeof( uilanguage ) );
-
-	if ( !Q_stricmp( uilanguage, "english" ) )
-	{
-		english.SetValue( 1 );
-	}
-	else
-	{
-		english.SetValue( 0 );
-	}
-
-	char dbfile [ 512 ];
-	Q_snprintf( dbfile, sizeof( dbfile ), "resource/closecaption_%s.dat", uilanguage );
-	InitCaptionDictionary( dbfile );
-}
-#endif
