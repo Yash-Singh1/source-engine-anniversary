@@ -103,6 +103,26 @@ def build(bld):
 			archives['lib%s.a' % lib] = bld.retail_stlib_variant(lib, '_lc', ['-DHL2_LOSTCOAST'])
 		libs = [archives.get('lib%s.a' % u, u) for u in libs]
 
+	if retail and retail_module:
+		import retail_manifest
+		retail_manifest.RETAIL_DEAD.setdefault(retail_module, [
+			('common/language.cpp', 'common/randoverride.cpp'),
+			('game/shared/debugoverlay_shared.cpp', 'game/shared/decals.cpp'),
+			('game/shared/ehandle.cpp', 'game/shared/entitylist_base.cpp'),
+			('game/shared/hintmessage.cpp', 'game/shared/hintsystem.cpp'),
+			('game/shared/rope_helpers.cpp', 'game/shared/saverestore.cpp'),
+			('game/shared/sheetsimulator.cpp', 'game/shared/singleplay_gamerules.cpp'),
+			('public/bone_accessor.cpp', 'public/bone_setup.cpp'),
+			('game/client/baseclientrendertargets.cpp', 'game/client/basepresence.cpp'),
+			('game/client/hud_basetimer.cpp', 'game/client/hud_chat.cpp'),
+			('game/client/hud_bitmapnumericdisplay.cpp', 'game/client/hud_chat.cpp'),
+			('game/client/vgui_basepanel.cpp', 'game/client/vgui_bitmapbutton.cpp'),
+		])
+		retail_manifest.RETAIL_STLIB_BEFORE.setdefault(retail_module, [
+			('jpeg', 'tier1'),
+			('png', 'vgui_controls'),
+		])
+
 	bld.shlib(
 		source   = source,
 		target   = PROJECT_NAME,

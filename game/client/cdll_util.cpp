@@ -112,10 +112,11 @@ void FlushClientContent( const CCommand &args )
 #line 102
 	if ( !V_stricmp( pszGameDir, "hl2_complete" ) )
 	{
-		g_pVGuiLocalize->AddFile( "hl2/resource/hl2_%language%.txt", "BASE_PATH" );
-		g_pVGuiLocalize->AddFile( "episodic/resource/episodic_%language%.txt", "BASE_PATH" );
-		g_pVGuiLocalize->AddFile( "ep2/resource/ep2_%language%.txt", "BASE_PATH" );
-		g_pVGuiLocalize->AddFile( "lostcoast/resource/lostcoast_%language%.txt", "BASE_PATH" );
+		const char *pszPathID = "BASE_PATH";
+		g_pVGuiLocalize->AddFile( "hl2/resource/hl2_%language%.txt", pszPathID );
+		g_pVGuiLocalize->AddFile( "episodic/resource/episodic_%language%.txt", pszPathID );
+		g_pVGuiLocalize->AddFile( "ep2/resource/ep2_%language%.txt", pszPathID );
+		g_pVGuiLocalize->AddFile( "lostcoast/resource/lostcoast_%language%.txt", pszPathID );
 	}
 	else
 	{
@@ -235,8 +236,8 @@ void LaunchMod( const CCommand &args )
 	FlushClientContent( args );
 }
 
-ConCommand launchmod( "launchmod", LaunchMod, "Launch a specified mod (ex: ep2)" );
-ConCommand flush_content( "flush_content", FlushClientContent, "" );
+static ConCommand launchmod( "launchmod", LaunchMod, "Launch a specified mod (ex: ep2)" );
+static ConCommand flush_content( "flush_content", FlushClientContent, "" );
 #else
 //-----------------------------------------------------------------------------
 // Purpose: Restart the game in another mod
@@ -268,7 +269,7 @@ void LaunchMod( const CCommand &args )
 	engine->ClientCmd_Unrestricted( "_restart\n" );
 }
 
-ConCommand launchmod( "launchmod", LaunchMod, "Launch a specified mod (ex: ep2)" );
+static ConCommand launchmod( "launchmod", LaunchMod, "Launch a specified mod (ex: ep2)" );
 #endif
 	
 //-----------------------------------------------------------------------------

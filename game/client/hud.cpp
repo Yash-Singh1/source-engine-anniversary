@@ -803,18 +803,6 @@ CHudTexture *CHud::AddSearchableHudIconToList( CHudTexture& texture )
 	return m_Icons[ idx ];
 }
 
-//-----------------------------------------------------------------------------
-// Purpose: returns a pointer to an icon in the list
-//-----------------------------------------------------------------------------
-CHudTexture *CHud::GetIcon( const char *szIcon )
-{
-	int i = m_Icons.Find( szIcon );
-	if ( i == m_Icons.InvalidIndex() )
-		return NULL;
-
-	return m_Icons[ i ];
-}
-
 #ifdef HL2_ANNIVERSARY_NOV2024
 //-----------------------------------------------------------------------------
 // Purpose: removes an icon from the list and frees it
@@ -836,6 +824,19 @@ void CHud::RemoveIcon( CHudTexture *icon )
 	}
 }
 #endif
+#line 806
+
+//-----------------------------------------------------------------------------
+// Purpose: returns a pointer to an icon in the list
+//-----------------------------------------------------------------------------
+CHudTexture *CHud::GetIcon( const char *szIcon )
+{
+	int i = m_Icons.Find( szIcon );
+	if ( i == m_Icons.InvalidIndex() )
+		return NULL;
+
+	return m_Icons[ i ];
+}
 #line 796
 
 //-----------------------------------------------------------------------------

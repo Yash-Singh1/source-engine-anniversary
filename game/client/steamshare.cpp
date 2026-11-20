@@ -108,8 +108,7 @@ bool CSteamShareSystem::Init()
 	m_bInGame = false;
 	m_nChapterDeaths = 0;
 
-	m_eGameMode = k_ETimelineGameMode_Menus;
-	UpdateSteamTimelineGameMode();
+	SetTimelineGameMode( k_ETimelineGameMode_Menus );
 
 	return true;
 }
@@ -140,7 +139,7 @@ public:
 			const char *m_pszIcon;
 		};
 
-		const NPCMeet_t npcMeets[] =
+		NPCMeet_t npcMeets[] =
 		{
 			{ "scenes/npc/Gman/gman_intro.vcd", "#GameUI_SteamShare_NPCMeet_Gman", "#Trainride.gman_riseshine", "npc_gman" },
 			{ "scenes/trainyard/alyx_greet01.vcd", "#GameUI_SteamShare_NPCMeet_Alyx", "#Trainyard.al_presume", "npc_alyx" },
@@ -508,7 +507,7 @@ void CSteamShareSystem::FireGameEvent( IGameEvent *event )
 	}
 }
 
-static const char *FormatChapterTimeString( float flSeconds )
+const char *FormatChapterTimeString( float flSeconds )
 {
 	static int nWhichStr = 0;
 	static char s_szResult[2][32];
@@ -567,6 +566,21 @@ void CSteamShareSystem::UpdateSteamTimelineGameMode()
 		SteamTimeline()->SetTimelineTooltip( g_pVGuiLocalize->FindAsUTF8( "#GameUI_SteamShare_Tooltip_GameModeMenu" ), 0.0f );
 		break;
 	}
+}
+
+void CSteamShareSystem::PushTimelineGameMode( ETimelineGameMode eMode )
+{
+	m_GameModeStack.AddToTail( eMode );
+	UpdateSteamTimelineGameMode();
+}
+
+void CSteamShareSystem::PopTimelineGameMode()
+{
+	if ( m_GameModeStack.Count() )
+	{
+		m_GameModeStack.Remove( m_GameModeStack.Count() - 1 );
+	}
+	UpdateSteamTimelineGameMode();
 }
 
 #else // HL2_ANNIVERSARY_NOV2024

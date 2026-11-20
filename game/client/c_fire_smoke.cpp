@@ -159,37 +159,6 @@ C_FireSmoke::~C_FireSmoke()
 }
 
 //-----------------------------------------------------------------------------
-// Purpose: FIXME: what's the right way to do this?
-//-----------------------------------------------------------------------------
-void C_FireSmoke::StartClientOnly( void )
-{
-	Start();
-
-	ClientEntityList().AddNonNetworkableEntity(	this );
-	CollisionProp()->CreatePartitionHandle();
-	AddEffects( EF_NORECEIVESHADOW | EF_NOSHADOW );
-	AddToLeafSystem();
-}
-
-//-----------------------------------------------------------------------------
-// Purpose: 
-//-----------------------------------------------------------------------------
-void C_FireSmoke::RemoveClientOnly(void)
-{
-	ClientThinkList()->RemoveThinkable( GetClientHandle() );
-
-	// Remove from the client entity list.
-	ClientEntityList().RemoveEntity( GetClientHandle() );
-
-	partition->Remove( PARTITION_CLIENT_SOLID_EDICTS | PARTITION_CLIENT_RESPONSIVE_EDICTS | PARTITION_CLIENT_NON_STATIC_EDICTS, CollisionProp()->GetPartitionHandle() );
-
-	RemoveFromLeafSystem();
-
-	CollisionProp()->DestroyPartitionHandle();
-	ParticleProp()->StopEmissionAndDestroyImmediately( m_hEffect );
-}
-
-//-----------------------------------------------------------------------------
 // Purpose: Restart the fire with the effect type r_classic_fire now asks for
 //-----------------------------------------------------------------------------
 void C_FireSmoke::ChangeFireEffectType( void )
@@ -310,38 +279,6 @@ inline void C_FireSmoke::UpdateScale( void )
 			}
 
 			m_flScaleRegister = m_flStartScale = newScale;
-		}
-	}
-}
-
-//-----------------------------------------------------------------------------
-// Purpose: 
-//-----------------------------------------------------------------------------
-void C_FireSmoke::Update( void )
-{
-	if ( !BIsCurrentFireTypeClassic() )
-		return;
-
-	//If we haven't already, find the clip plane for smoke effects
-	if ( ( m_nFlags & bitsFIRESMOKE_SMOKE ) && ( m_bClipTested == false ) )
-	{
-		FindClipPlane();
-	}
-
-	//Update all our parts
-	UpdateEffects();
-	UpdateScale();
-	UpdateAnimation();
-	UpdateFlames();
-
-	//See if we should emit smoke
-	if ( m_nFlags & bitsFIRESMOKE_SMOKE )
-	{
-		float tempDelta = Helper_GetFrameTime();
-
-		while( m_tParticleSpawn.NextEvent( tempDelta ) )
-		{
-			SpawnSmoke();
 		}
 	}
 }
@@ -556,6 +493,37 @@ void C_FireSmoke::Start( void )
 }
 
 //-----------------------------------------------------------------------------
+// Purpose: FIXME: what's the right way to do this?
+//-----------------------------------------------------------------------------
+void C_FireSmoke::StartClientOnly( void )
+{
+	Start();
+
+	ClientEntityList().AddNonNetworkableEntity(	this );
+	CollisionProp()->CreatePartitionHandle();
+	AddEffects( EF_NORECEIVESHADOW | EF_NOSHADOW );
+	AddToLeafSystem();
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void C_FireSmoke::RemoveClientOnly(void)
+{
+	ClientThinkList()->RemoveThinkable( GetClientHandle() );
+
+	// Remove from the client entity list.
+	ClientEntityList().RemoveEntity( GetClientHandle() );
+
+	partition->Remove( PARTITION_CLIENT_SOLID_EDICTS | PARTITION_CLIENT_RESPONSIVE_EDICTS | PARTITION_CLIENT_NON_STATIC_EDICTS, CollisionProp()->GetPartitionHandle() );
+
+	RemoveFromLeafSystem();
+
+	CollisionProp()->DestroyPartitionHandle();
+	ParticleProp()->StopEmissionAndDestroyImmediately( m_hEffect );
+}
+
+//-----------------------------------------------------------------------------
 // Purpose: 
 // Output : Returns true on success, false on failure.
 //-----------------------------------------------------------------------------
@@ -680,6 +648,38 @@ void C_FireSmoke::UpdateFlames( void )
 			{
 				m_entFlamesFromAbove[i].SetLocalOrigin( offset );
 			}
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void C_FireSmoke::Update( void )
+{
+	if ( !BIsCurrentFireTypeClassic() )
+		return;
+
+	//If we haven't already, find the clip plane for smoke effects
+	if ( ( m_nFlags & bitsFIRESMOKE_SMOKE ) && ( m_bClipTested == false ) )
+	{
+		FindClipPlane();
+	}
+
+	//Update all our parts
+	UpdateEffects();
+	UpdateScale();
+	UpdateAnimation();
+	UpdateFlames();
+
+	//See if we should emit smoke
+	if ( m_nFlags & bitsFIRESMOKE_SMOKE )
+	{
+		float tempDelta = Helper_GetFrameTime();
+
+		while( m_tParticleSpawn.NextEvent( tempDelta ) )
+		{
+			SpawnSmoke();
 		}
 	}
 }
@@ -817,6 +817,14 @@ void C_EntityFlame::CleanUpRagdollOnRemove( void )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+RenderGroup_t C_EntityFlame::GetRenderGroup()
+{
+	return RENDER_GROUP_TRANSLUCENT_ENTITY;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
 void C_EntityFlame::UpdateOnRemove( void )
 {
 	ParticleProp()->StopEmission( NULL, true, true );
@@ -879,7 +887,7 @@ void C_EntityFlame::OnDataChanged( DataUpdateType_t updateType )
 				if ( !m_hEntAttached )
 					return;
 
-				DeleteHitBoxFlames();
+				ClearHitBoxFlames();
 				AttachToHitBoxes();
 			}
 		}
@@ -897,183 +905,6 @@ void C_EntityFlame::OnDataChanged( DataUpdateType_t updateType )
 }
 
 //-----------------------------------------------------------------------------
-// Purpose: 
-//-----------------------------------------------------------------------------
-void C_EntityFlame::CreateClassicEffect( void )
-{
-	m_iOldNumHitboxFires = m_iNumHitboxFires;
-	m_flOldHitboxFireScale = m_flHitboxFireScale;
-
-	C_BaseEntity *pEnt = m_hEntAttached;
-
-	if ( pEnt )
-	{
-		if ( m_bUseHitboxes && pEnt->GetBaseAnimating() != NULL )
-		{
-			AttachToHitBoxes();
-		}
-		else
-		{
-			m_vecLastPosition = GetRenderOrigin();
-
-			m_ParticleSpawn.Init( 60 ); //Events per second
-
-			m_pEmitter = CEmberEffect::Create("C_EntityFlame::Create");
-
-			if ( m_pEmitter.IsValid() )
-			{
-				for ( int i = 1; i < NUM_FLAMELETS+1; i++ )
-				{
-					m_MaterialHandle[i-1] = m_pEmitter->GetPMaterial( VarArgs( "sprites/flamelet%d", i ) );
-				}
-
-				m_pEmitter->SetSortOrigin( GetAbsOrigin() );
-			}
-		}
-	}
-}
-
-//-----------------------------------------------------------------------------
-// Purpose: 
-//-----------------------------------------------------------------------------
-struct HitboxVolume_t
-{
-	int nIndex;
-	float flVolume;
-};
-
-//-----------------------------------------------------------------------------
-// Purpose: Sorts the hitboxes by volume.
-//-----------------------------------------------------------------------------
-int __cdecl SortHitboxVolumes( HitboxVolume_t *elem1, HitboxVolume_t *elem2 )
-{
-	if ( elem1->flVolume > elem2->flVolume + 50 ) return -1;
-	if ( elem1->flVolume < elem2->flVolume + 50 ) return 1;
-	if ( elem1->flVolume != elem2->flVolume ) return random->RandomInt( -1, 1 );
-	return 0;
-}
-
-//-----------------------------------------------------------------------------
-// Purpose: Attaches fire to the hitboxes of an animating character. The fire
-//			is distributed based on hitbox volumes -- it attaches to the larger
-//			hitboxes first.
-//-----------------------------------------------------------------------------
-void C_EntityFlame::AttachToHitBoxes( void )
-{
-	m_pCachedModel = NULL;
-
-	C_BaseCombatCharacter *pAnimating = (C_BaseCombatCharacter *)m_hEntAttached.Get();
-
-	if ( !pAnimating || !pAnimating->GetModel() )
-	{
-		return;
-	}
-
-	CStudioHdr *pStudioHdr = pAnimating->GetModelPtr();
-	if ( !pStudioHdr )
-	{
-		return;
-	}
-
-	mstudiohitboxset_t *set = pStudioHdr->pHitboxSet( pAnimating->m_nHitboxSet );
-	if ( !set )
-	{
-		return;
-	}
-
-	if ( !set->numhitboxes )
-	{
-		return;
-	}
-
-	m_pCachedModel = pAnimating->GetModel();
-
-	CBoneCache *pCache = pAnimating->GetBoneCache( pStudioHdr );
-	matrix3x4_t	*hitboxbones[MAXSTUDIOBONES];
-	pCache->ReadCachedBonePointers( hitboxbones, pStudioHdr->numbones() );
-
-	//
-	// Sort the hitboxes by volume.
-	//
-	HitboxVolume_t hitboxvolume[MAXSTUDIOBONES];
-	for ( int i = 0; i < set->numhitboxes; i++ )
-	{
-		mstudiobbox_t *pBox = set->pHitbox(i);
-		hitboxvolume[i].nIndex = i;
-		hitboxvolume[i].flVolume = ( pBox->bbmax.x - pBox->bbmin.x ) * ( pBox->bbmax.y - pBox->bbmin.y ) * ( pBox->bbmax.z - pBox->bbmin.z );
-	}
-	qsort( hitboxvolume, set->numhitboxes, sizeof( hitboxvolume[0] ), (int (__cdecl *)(const void *, const void *))SortHitboxVolumes );
-
-	//
-	// Attach fire to the hitboxes.
-	//
-	for ( int i = 0; i < m_iNumHitboxFires; i++ )
-	{
-		int hitboxindex;
-		//
-		// Pick the 5 biggest hitboxes, or random ones if there are less than 5 hitboxes,
-		// then pick random ones after that.
-		//
-		if ( ( i < 5 ) && ( i < set->numhitboxes ) )
-		{
-			hitboxindex = i;
-		}
-		else
-		{
-			hitboxindex = random->RandomInt( 0, set->numhitboxes - 1 );
-		}
-		
-		mstudiobbox_t *pBox = set->pHitbox( hitboxvolume[hitboxindex].nIndex );
-
-		Assert( hitboxbones[pBox->bone] );
-
-		m_nHitbox[i] = hitboxvolume[hitboxindex].nIndex;
-		m_pFireSmoke[i] = new C_FireSmoke;
-
-		//
-		// Calculate a position within the hitbox to place the fire.
-		//
-		m_vecFireOrigin[i] = Vector( random->RandomFloat( pBox->bbmin.x, pBox->bbmax.x ), random->RandomFloat( pBox->bbmin.y, pBox->bbmax.y ), random->RandomFloat( pBox->bbmin.z, pBox->bbmax.z ) );
-		Vector vecAbsOrigin;
-		VectorTransform( m_vecFireOrigin[i], *hitboxbones[pBox->bone], vecAbsOrigin );
-		m_pFireSmoke[i]->SetLocalOrigin( vecAbsOrigin );
-
-		//
-		// The first fire emits smoke, the rest do not.
-		//
-		m_pFireSmoke[i]->m_nFlags = bitsFIRESMOKE_ACTIVE;
-
-		m_pFireSmoke[i]->m_nFlameModelIndex	= modelinfo->GetModelIndex( "sprites/fire1.vmt" );
-		m_pFireSmoke[i]->m_nFlameFromAboveModelIndex = modelinfo->GetModelIndex( "sprites/flamefromabove.vmt" );
-		m_pFireSmoke[i]->m_flScale = 0;
-		m_pFireSmoke[i]->m_flStartScale = 0;
-		m_pFireSmoke[i]->m_flScaleTime = 1.5;
-		m_pFireSmoke[i]->m_flScaleRegister = 0.1;
-		m_pFireSmoke[i]->m_flChildFlameSpread = 20.0;
-		m_pFireSmoke[i]->m_flScaleStart = 0;
-		m_pFireSmoke[i]->SetOwnerEntity( this );
-		
-		// Do a simple approximation of the area the fire is covering based on the hitbox volume.
-		float flVolume = hitboxvolume[hitboxindex].flVolume;
-		if ( flVolume < 1000.0f )
-		{
-			flVolume = 1000.0f;
-		}
-		else if ( flVolume > 4000.0f )
-		{
-			flVolume = 4000.0f;
-		}
-		m_pFireSmoke[i]->m_flScaleEnd = flVolume * 0.00012f * m_flHitboxFireScale;
-		m_pFireSmoke[i]->m_flScaleTimeStart = Helper_GetTime();
-		m_pFireSmoke[i]->m_flScaleTimeEnd = Helper_GetTime() + 2.0;
-
-		m_pFireSmoke[i]->StartClientOnly();
-	}
-
-	m_bAttachedToHitboxes = true;
-}
-
-//-----------------------------------------------------------------------------
 // Purpose: Restart the flame with the effect type r_classic_fire now asks for
 //-----------------------------------------------------------------------------
 void C_EntityFlame::ChangeFireEffectType( void )
@@ -1087,7 +918,7 @@ void C_EntityFlame::ChangeFireEffectType( void )
 	}
 	else
 	{
-		DeleteHitBoxFlames();
+		ClearHitBoxFlames();
 		CreateEffect();
 	}
 }
@@ -1219,6 +1050,52 @@ void C_EntityFlame::Simulate( void )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+void C_EntityFlame::CreateClassicEffect( void )
+{
+	m_iOldNumHitboxFires = m_iNumHitboxFires;
+	m_flOldHitboxFireScale = m_flHitboxFireScale;
+
+	C_BaseEntity *pEnt = m_hEntAttached;
+
+	if ( pEnt )
+	{
+		if ( m_bUseHitboxes && pEnt->GetBaseAnimating() != NULL )
+		{
+			AttachToHitBoxes();
+		}
+		else
+		{
+			m_vecLastPosition = GetRenderOrigin();
+
+			m_ParticleSpawn.Init( 60 ); //Events per second
+
+			m_pEmitter = CEmberEffect::Create("C_EntityFlame::Create");
+
+			if ( m_pEmitter.IsValid() )
+			{
+				for ( int i = 1; i < NUM_FLAMELETS+1; i++ )
+				{
+					m_MaterialHandle[i-1] = m_pEmitter->GetPMaterial( VarArgs( "sprites/flamelet%d", i ) );
+				}
+
+				m_pEmitter->SetSortOrigin( GetAbsOrigin() );
+			}
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+struct HitboxVolume_t
+{
+	int nIndex;
+	float flVolume;
+};
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
 void C_EntityFlame::UpdateHitBoxFlames( void )
 {
 	C_BaseCombatCharacter *pAnimating = (C_BaseCombatCharacter *)m_hEntAttached.Get();
@@ -1232,7 +1109,7 @@ void C_EntityFlame::UpdateHitBoxFlames( void )
 		if ( m_pCachedModel != NULL )
 		{
 			// The model changed, so rebuild the flames
-			DeleteHitBoxFlames();
+			ClearHitBoxFlames();
 			AttachToHitBoxes();
 		}
 
@@ -1324,6 +1201,137 @@ void C_EntityFlame::ClientThink( void )
 	ParticleProp()->StopEmission( NULL, true, true );
 	CleanUpRagdollOnRemove();
 	Release();
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Sorts the hitboxes by volume.
+//-----------------------------------------------------------------------------
+int __cdecl SortHitboxVolumes( HitboxVolume_t *elem1, HitboxVolume_t *elem2 )
+{
+	if ( elem1->flVolume > elem2->flVolume + 50 ) return -1;
+	if ( elem1->flVolume < elem2->flVolume + 50 ) return 1;
+	if ( elem1->flVolume != elem2->flVolume ) return random->RandomInt( -1, 1 );
+	return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Attaches fire to the hitboxes of an animating character. The fire
+//			is distributed based on hitbox volumes -- it attaches to the larger
+//			hitboxes first.
+//-----------------------------------------------------------------------------
+void C_EntityFlame::AttachToHitBoxes( void )
+{
+	m_pCachedModel = NULL;
+
+	C_BaseCombatCharacter *pAnimating = (C_BaseCombatCharacter *)m_hEntAttached.Get();
+
+	if ( !pAnimating || !pAnimating->GetModel() )
+	{
+		return;
+	}
+
+	CStudioHdr *pStudioHdr = pAnimating->GetModelPtr();
+	if ( !pStudioHdr )
+	{
+		return;
+	}
+
+	mstudiohitboxset_t *set = pStudioHdr->pHitboxSet( pAnimating->m_nHitboxSet );
+	if ( !set )
+	{
+		return;
+	}
+
+	if ( !set->numhitboxes )
+	{
+		return;
+	}
+
+	m_pCachedModel = pAnimating->GetModel();
+
+	CBoneCache *pCache = pAnimating->GetBoneCache( pStudioHdr );
+	matrix3x4_t	*hitboxbones[MAXSTUDIOBONES];
+	pCache->ReadCachedBonePointers( hitboxbones, pStudioHdr->numbones() );
+
+	//
+	// Sort the hitboxes by volume.
+	//
+	HitboxVolume_t hitboxvolume[MAXSTUDIOBONES];
+	for ( int i = 0; i < set->numhitboxes; i++ )
+	{
+		mstudiobbox_t *pBox = set->pHitbox(i);
+		hitboxvolume[i].nIndex = i;
+		hitboxvolume[i].flVolume = ( pBox->bbmax.x - pBox->bbmin.x ) * ( pBox->bbmax.y - pBox->bbmin.y ) * ( pBox->bbmax.z - pBox->bbmin.z );
+	}
+	qsort( hitboxvolume, set->numhitboxes, sizeof( hitboxvolume[0] ), (int (__cdecl *)(const void *, const void *))SortHitboxVolumes );
+
+	//
+	// Attach fire to the hitboxes.
+	//
+	for ( int i = 0; i < m_iNumHitboxFires; i++ )
+	{
+		int hitboxindex;
+		//
+		// Pick the 5 biggest hitboxes, or random ones if there are less than 5 hitboxes,
+		// then pick random ones after that.
+		//
+		if ( ( i < 5 ) && ( i < set->numhitboxes ) )
+		{
+			hitboxindex = i;
+		}
+		else
+		{
+			hitboxindex = random->RandomInt( 0, set->numhitboxes - 1 );
+		}
+		
+		mstudiobbox_t *pBox = set->pHitbox( hitboxvolume[hitboxindex].nIndex );
+
+		Assert( hitboxbones[pBox->bone] );
+
+		m_nHitbox[i] = hitboxvolume[hitboxindex].nIndex;
+		m_pFireSmoke[i] = new C_FireSmoke;
+
+		//
+		// Calculate a position within the hitbox to place the fire.
+		//
+		m_vecFireOrigin[i] = Vector( random->RandomFloat( pBox->bbmin.x, pBox->bbmax.x ), random->RandomFloat( pBox->bbmin.y, pBox->bbmax.y ), random->RandomFloat( pBox->bbmin.z, pBox->bbmax.z ) );
+		Vector vecAbsOrigin;
+		VectorTransform( m_vecFireOrigin[i], *hitboxbones[pBox->bone], vecAbsOrigin );
+		m_pFireSmoke[i]->SetLocalOrigin( vecAbsOrigin );
+
+		//
+		// The first fire emits smoke, the rest do not.
+		//
+		m_pFireSmoke[i]->m_nFlags = bitsFIRESMOKE_ACTIVE;
+
+		m_pFireSmoke[i]->m_nFlameModelIndex	= modelinfo->GetModelIndex( "sprites/fire1.vmt" );
+		m_pFireSmoke[i]->m_nFlameFromAboveModelIndex = modelinfo->GetModelIndex( "sprites/flamefromabove.vmt" );
+		m_pFireSmoke[i]->m_flScale = 0;
+		m_pFireSmoke[i]->m_flStartScale = 0;
+		m_pFireSmoke[i]->m_flScaleTime = 1.5;
+		m_pFireSmoke[i]->m_flScaleRegister = 0.1;
+		m_pFireSmoke[i]->m_flChildFlameSpread = 20.0;
+		m_pFireSmoke[i]->m_flScaleStart = 0;
+		m_pFireSmoke[i]->SetOwnerEntity( this );
+		
+		// Do a simple approximation of the area the fire is covering based on the hitbox volume.
+		float flVolume = hitboxvolume[hitboxindex].flVolume;
+		if ( flVolume < 1000.0f )
+		{
+			flVolume = 1000.0f;
+		}
+		else if ( flVolume > 4000.0f )
+		{
+			flVolume = 4000.0f;
+		}
+		m_pFireSmoke[i]->m_flScaleEnd = flVolume * 0.00012f * m_flHitboxFireScale;
+		m_pFireSmoke[i]->m_flScaleTimeStart = Helper_GetTime();
+		m_pFireSmoke[i]->m_flScaleTimeEnd = Helper_GetTime() + 2.0;
+
+		m_pFireSmoke[i]->StartClientOnly();
+	}
+
+	m_bAttachedToHitboxes = true;
 }
 
 //-----------------------------------------------------------------------------

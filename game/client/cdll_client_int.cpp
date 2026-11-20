@@ -2757,6 +2757,6 @@ static void CL_HL2_Expansion_Reloaded()
 	PhysParseSurfaceData( physprops, filesystem );
 }
 
-static ConCommand cl_hl2_expansion_reloaded( "cl_hl2_expansion_reloaded", CL_HL2_Expansion_Reloaded );
+ConCommand cl_hl2_expansion_reloaded( "cl_hl2_expansion_reloaded", CL_HL2_Expansion_Reloaded );
 #endif
 

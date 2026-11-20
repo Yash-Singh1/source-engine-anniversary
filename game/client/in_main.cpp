@@ -482,10 +482,6 @@ void IN_JumpDown ( const CCommand &args ) {KeyDown(&in_jump, args[1] );}
 void IN_JumpUp ( const CCommand &args ) {KeyUp(&in_jump, args[1] );}
 void IN_DuckDown( const CCommand &args ) { NOV2024_ONLY( engine->ClientCmd_Unrestricted( "cancel_duck_toggle" ); ) KeyDown(&in_duck, args[1] );}
 void IN_DuckUp( const CCommand &args ) {KeyUp(&in_duck, args[1] );}
-void IN_LookSpinDown( const CCommand &args ) {KeyDown(&in_lookspin, args[1] );}
-void IN_LookSpinUp( const CCommand &args ) {KeyUp(&in_lookspin, args[1] );}
-void IN_ResetCameraDown( const CCommand &args ) {KeyDown(&in_resetcamera, args[1] );}
-void IN_ResetCameraUp( const CCommand &args ) {KeyUp(&in_resetcamera, args[1] );}
 void IN_ReloadDown( const CCommand &args ) {KeyDown(&in_reload, args[1] );}
 void IN_ReloadUp( const CCommand &args ) {KeyUp(&in_reload, args[1] );}
 void IN_Alt1Down( const CCommand &args ) {KeyDown(&in_alt1, args[1] );}
@@ -558,6 +554,11 @@ void IN_ScoreUp( const CCommand &args )
 		GetClientVoiceMgr()->StopSquelchMode();
 	}
 }
+
+void IN_LookSpinDown( const CCommand &args ) {KeyDown(&in_lookspin, args[1] );}
+void IN_LookSpinUp( const CCommand &args ) {KeyUp(&in_lookspin, args[1] );}
+void IN_ResetCameraDown( const CCommand &args ) {KeyDown(&in_resetcamera, args[1] );}
+void IN_ResetCameraUp( const CCommand &args ) {KeyUp(&in_resetcamera, args[1] );}
 
 
 /*

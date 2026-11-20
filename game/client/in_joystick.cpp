@@ -50,14 +50,6 @@ extern ConVar joy_autoaim_scale;
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-// Names of the controller types (GetControllerTypeForSlot)
-const char *g_inputTypeToNameTable[] =
-{
-	"joystick",
-	"Xbox360 controller",
-	"Steam Controller",
-};
-
 // Control like a joystick
 #define JOY_ABSOLUTE_AXIS	0x00000000		
 // Control like a mouse, spinner, trackball
@@ -256,7 +248,7 @@ static float ResponseCurve( int curve, float x, int axis, float sensitivity )
 //
 // This assists the player staying on target.
 //-----------------------------------------------
-static float AutoAimDampening( float x, int axis, float dist )
+float AutoAimDampening( float x, int axis, float dist )
 {
 	// FIXME: Autoaim support needs to be moved from HL2_DLL to the client dll, so all games can use it.
 #ifdef HL2_CLIENT_DLL
@@ -416,6 +408,14 @@ static float ResponseCurveLookDefault( float x, int axis, float otherAxis, float
 }
 
 ConVar joy_accel_filter("joy_accel_filter", "0.2");// If the non-accelerated axis is pushed farther than this, then accelerate it, too.
+
+// Names of the controller types (GetControllerTypeForSlot)
+const char *g_inputTypeToNameTable[] =
+{
+	"joystick",
+	"Xbox360 controller",
+	"Steam Controller",
+};
 static float ResponseCurveLookAccelerated( float x, int axis, float otherAxis, float dist, float frametime )
 {
 	float input = x;

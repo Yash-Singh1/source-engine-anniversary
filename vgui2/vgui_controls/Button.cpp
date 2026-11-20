@@ -691,12 +691,17 @@ void Button::SetReleasedSound(const char *sound)
 
 inline int MouseCodeToMask( MouseCode code )
 {
+#ifdef VGUI_CONTROLS_OCT2024
+	return 1 << ( (int)( code + 1 ) );
+#else
 	// MouseCodes do not start at zero. Make them start at zero before trying to fit them into a 32 bit mask..
 	// Otherwise, you would be trying to set bit 107 of an integer, and that would be bad.
 	const int recode = code - MOUSE_FIRST;
 	AssertMsg1( recode >= 0 && recode < 32, "MouseCode %d is invalid and cannot fit into a 32-bit mask\n", code );
 	return 1 << recode ;
+#endif
 }
+#line 700
 
 //-----------------------------------------------------------------------------
 // Purpose: Set button to be mouse clickable or not.

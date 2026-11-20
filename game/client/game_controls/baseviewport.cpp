@@ -265,6 +265,7 @@ void CBaseViewport::UpdateAllPanels( void )
 	}
 }
 
+#ifndef BYTEMATCH_RETAIL
 // Check if we have any visible panel (that's not the MainMenuOverride or the Scoreboard)
 bool CBaseViewport::IsAnyPanelVisibleExceptScores()
 {
@@ -301,6 +302,7 @@ bool CBaseViewport::IsPanelVisible( const char* panel )
 
 	return false;
 }
+#endif
 
 IViewPortPanel* CBaseViewport::CreatePanelByName(const char *szPanelName)
 {

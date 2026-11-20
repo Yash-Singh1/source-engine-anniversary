@@ -789,7 +789,7 @@ void CBaseCombatWeapon::OnPickedUp( CBaseCombatCharacter *pNewOwner )
 #endif
 }
 
-#if !defined( CLIENT_DLL ) && defined( HL2_ANNIVERSARY_NOV2024 )
+#if defined( HL2_ANNIVERSARY_NOV2024 )
 //-----------------------------------------------------------------------------
 // Purpose: Notify listeners (Steam Timeline) that a player's weapon inventory changed
 //-----------------------------------------------------------------------------
