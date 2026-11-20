@@ -17,9 +17,9 @@ hk_Local_Constraint_System::hk_Local_Constraint_System(hk_Environment* env, hk_L
 {
 	m_is_active = false;
 	m_errorThisTick = false;
+	m_size_of_all_vmq_storages = 0;
 	m_errorCount = 0;
 	m_client_data = NULL;
-	m_size_of_all_vmq_storages = 0;
 	m_n_iterations = bp->m_n_iterations + 2;
 	m_errorTolerance = bp->m_errorTolerance;
 	m_minErrorTicks = bp->m_minErrorTicks;

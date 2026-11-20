@@ -116,18 +116,14 @@ void hk_Ragdoll_Constraint::write_to_blueprint( hk_Ragdoll_Constraint_BP *bp )
 	bp->m_transform_os_ks[0] = m_transform_os_ks[0];
 	bp->m_transform_os_ks[1] = m_transform_os_ks[1];
 #ifdef BYTEMATCH_RETAIL
-	hk_Vector3 col00 = m_transform_os_ks[0].get_column(0);
-	hk_Vector3 col01 = m_transform_os_ks[0].get_column(1);
-	hk_Vector3 col02 = m_transform_os_ks[0].get_column(2);
-	hk_Vector3 col10 = m_transform_os_ks[1].get_column(0);
-	hk_Vector3 col11 = m_transform_os_ks[1].get_column(1);
-	hk_Vector3 col12 = m_transform_os_ks[1].get_column(2);
-	bp->m_transform_os_ks[0].get_column(m_axisMap[0]) = col00;
-	bp->m_transform_os_ks[1].get_column(m_axisMap[0]) = col10;
-	bp->m_transform_os_ks[0].get_column(m_axisMap[2]) = col01;
-	bp->m_transform_os_ks[1].get_column(m_axisMap[2]) = col11;
-	bp->m_transform_os_ks[0].get_column(m_axisMap[1]) = col02;
-	bp->m_transform_os_ks[1].get_column(m_axisMap[1]) = col12;
+	hk_Rotation rot0 = m_transform_os_ks[0];
+	hk_Rotation rot1 = m_transform_os_ks[1];
+	bp->m_transform_os_ks[0].get_column(m_axisMap[0]) = rot0.get_column(0);
+	bp->m_transform_os_ks[1].get_column(m_axisMap[0]) = rot1.get_column(0);
+	bp->m_transform_os_ks[0].get_column(m_axisMap[2]) = rot0.get_column(1);
+	bp->m_transform_os_ks[1].get_column(m_axisMap[2]) = rot1.get_column(1);
+	bp->m_transform_os_ks[0].get_column(m_axisMap[1]) = rot0.get_column(2);
+	bp->m_transform_os_ks[1].get_column(m_axisMap[1]) = rot1.get_column(2);
 	bp->m_limits[0] = m_inputLimits[0];
 	bp->m_limits[0].m_limit_min = -m_inputLimits[0].m_limit_max;
 	bp->m_limits[0].m_limit_max = -m_inputLimits[0].m_limit_min;

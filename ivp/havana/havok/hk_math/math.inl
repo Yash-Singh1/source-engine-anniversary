@@ -2,7 +2,7 @@
 #	include <hk_math/math_ps2.inl>
 #else	//HK_PS2
 
-#ifdef _WIN32
+#if defined(_WIN32) || defined(BYTEMATCH_RETAIL)
 inline hk_double hk_Math::fabsd( hk_double r ) { return hk_double(::fabs(r)); }
 
 inline hk_real hk_Math::sqrt( hk_real r) { return hk_real(::sqrt(r)); }
