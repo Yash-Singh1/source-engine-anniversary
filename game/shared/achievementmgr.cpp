@@ -289,7 +289,6 @@ m_CallbackUserStatsStored( this, &CAchievementMgr::Steam_OnUserStatsStored )
 {
 	SetDefLessFunc( m_mapAchievement );
 	SetDefLessFunc( m_mapMetaAchievement );
-	NOV2024_ONLY( m_bIsHL2Complete = false; )
 	m_flLastClassChangeTime = 0;
 	m_flTeamplayStartTime = 0;
 	m_iMiniroundsCompleted = 0;
@@ -299,6 +298,7 @@ m_CallbackUserStatsStored( this, &CAchievementMgr::Steam_OnUserStatsStored )
 	m_bGlobalStateLoaded = false;
 	m_bCheatsEverOn = false;
 	m_flTimeLastSaved = 0;
+	NOV2024_ONLY( m_bIsHL2Complete = false; )
 	NOV2024_ONLY( m_bIsHL2Complete = IsHL2Complete(); )
 
     //=============================================================================
@@ -995,7 +995,7 @@ void CAchievementMgr::LoadGlobalState()
     //=============================================================================
 
 	KeyValues *pKV = new KeyValues("GameState" );
-	NOV2024_ONLY( const char *pPathID = IsHL2Complete() ? "ROOT_MOD" : "MOD"; )
+	NOV2024_ONLY( const char *pPathID = !IsHL2Complete() ? "MOD" : "ROOT_MOD"; )
 	if ( pKV->LoadFromFile( filesystem, szFilename, NOV2024_ONLY( pPathID ) OCT2024_ONLY( "MOD" ) ) )
 	{
 		KeyValues *pNode = pKV->GetFirstSubKey();
