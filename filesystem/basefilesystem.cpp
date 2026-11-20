@@ -6033,7 +6033,7 @@ const char *CBaseFileSystem::CSearchPath::GetDebugString() const
 	return GetPathString();
 }
 
-bool CBaseFileSystem::CSearchPath::IsMapPath() const
+inline bool CBaseFileSystem::CSearchPath::IsMapPath() const
 {
 	return GetPackFile()->m_bIsMapPath;
 }
@@ -6131,7 +6131,7 @@ CBaseFileSystem::CSearchPath *CBaseFileSystem::CSearchPathsIterator::GetNext()
 	return NULL;
 }
 
-void CBaseFileSystem::CSearchPathsIterator::CopySearchPaths( const CUtlVector<CSearchPath>	&searchPaths )
+inline void CBaseFileSystem::CSearchPathsIterator::CopySearchPaths( const CUtlVector<CSearchPath>	&searchPaths )
 {
 	m_SearchPaths = searchPaths;
 	for ( int i = 0; i <  m_SearchPaths.Count(); i++ )
