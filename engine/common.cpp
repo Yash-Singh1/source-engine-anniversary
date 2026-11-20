@@ -1237,6 +1237,7 @@ bool COM_IsValidPath( const char *pszFilename )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+#ifndef BYTEMATCH_RETAIL
 bool COM_IsValidLogFilename( const char *pszFilename )
 {
 	if ( !pszFilename || !pszFilename[0] )
@@ -1257,6 +1258,8 @@ bool COM_IsValidLogFilename( const char *pszFilename )
 
 	return true;
 }
+#endif
+#line 1259
 
 //-----------------------------------------------------------------------------
 unsigned int COM_GetIdealDestinationCompressionBufferSize_Snappy( unsigned int uncompressedSize )

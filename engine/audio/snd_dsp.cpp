@@ -8361,6 +8361,11 @@ inline void DSP_Process5To1(dsp_t *pdsp, portable_samplepair_t *pbfront, portabl
 // Helper: called only from DSP_Process
 // DSP_Process quad + center in to quad + center out
 
+#ifdef BYTEMATCH_RETAIL
+void _bm_dead_snd_dsp_0() {}
+#endif
+#line 8364
+
 inline void DSP_Process5To5(dsp_t *pdsp, portable_samplepair_t *pbfront, portable_samplepair_t *pbrear, portable_samplepair_t *pbcenter, int sampleCount, bool bcrossfading )
 {
 	portable_samplepair_t *pbf = pbfront;		// pointer to buffer of front stereo samples to process

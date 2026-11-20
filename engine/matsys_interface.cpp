@@ -79,8 +79,8 @@ extern ConVar mat_colorcorrection;
 extern ConVar sv_allow_color_correction;
 
 #ifdef BYTEMATCH_RETAIL
-ConVar mat_shadowstate( "mat_shadowstate", "1" );
-ConVar mat_maxframelatency( "mat_maxframelatency", "1" );
+static ConVar mat_shadowstate( "mat_shadowstate", "1" );
+static ConVar mat_maxframelatency( "mat_maxframelatency", "1" );
 #endif
 #line 83
 ConVar mat_debugalttab( "mat_debugalttab", "0", FCVAR_CHEAT );

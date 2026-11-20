@@ -199,7 +199,12 @@ static IVoiceCodec  *g_pEncodeCodec = NULL;
 
 static bool			g_bVoiceRecording = false;	// Are we recording at the moment?
 static bool			g_bVoiceRecordStopping = false;	// Are we waiting to stop?
+#ifdef BYTEMATCH_RETAIL
+bool				g_bUsingSteamVoice = true;
+#else
 bool				g_bUsingSteamVoice = false;
+#endif
+#line 203
 
 #ifdef WIN32
 extern IVoiceRecord* CreateVoiceRecord_DSound(int nSamplesPerSec);
@@ -1658,7 +1663,12 @@ int VoiceTweak_StartVoiceTweakMode()
 
 	if ( !g_pMixerControls && voice_enable.GetBool() )
 	{
+#ifdef BYTEMATCH_RETAIL
+		Voice_Init( "vaudio_speex" );
+#else
 		Voice_ForceInit();
+#endif
+#line 1662
 	}
 
 	if( !g_pMixerControls )

@@ -1117,6 +1117,32 @@ char const *CEngineClient::GetLevelName( void )
 	return cl.m_szLevelFileName;
 }
 
+const char *CEngineClient::GetMapName()
+{
+#ifdef BYTEMATCH_RETAIL
+	if ( sv.IsDedicated() )
+		return "Dedicated Server";
+
+	if ( !cl.IsConnected() )
+		return "";
+
+	return cl.m_szLevelBaseName;
+#else
+	// UNIMPLEMENTED: retail also has a fixed-name case; this returns the current level's base name.
+	return cl.m_szLevelBaseName;
+#endif
+}
+
+const char *CEngineClient::GetPatchVersion()
+{
+#ifdef BYTEMATCH_RETAIL
+	return gpszVersionString;
+#else
+	// UNIMPLEMENTED: retail returns its own version buffer; this uses the steam.inf version string.
+	return GetSteamInfIDVersionInfo().szVersionString;
+#endif
+}
+
 int CEngineClient::GetLevelVersion( void )
 {
 	return g_ServerGlobalVariables.mapversion;
@@ -1655,6 +1681,44 @@ bool CEngineClient::IsPlayingDemoALocallyRecordedDemo()
 		   !V_strnicmp( demoplayer->GetDemoFile()->m_DemoHeader.servername, "localhost", 9 );
 }
 
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CEngineClient::OnHL2ExpansionLoaded()
+{
+	extern void S_ReloadAudioCaches();
+	extern void DSP_DEBUGReloadPresetFile( void );
+	extern void Host_MapListFlush( void );
+
+	S_StopAllSounds( true );
+	DSP_DEBUGReloadPresetFile();
+	S_ReloadAudioCaches();
+	VOX_Shutdown();
+	VOX_Init();
+
+	ClientCmd_Unrestricted( "r_flushlod" );
+	ClientCmd_Unrestricted( "_gi_on_expansion_reload" );
+
+	ConCommand *pCommand = g_pCVar->FindCommand( "sv_hl2_expansion_reloaded" );
+	if ( pCommand )
+	{
+		const char *pArgv[] = { "sv_hl2_expansion_reloaded" };
+		CCommand args( 1, pArgv );
+		pCommand->Dispatch( args );
+	}
+
+	ClientCmd_Unrestricted( "cl_hl2_expansion_reloaded" );
+
+	TextMessageShutdown();
+	TextMessageInit();
+	Host_MapListFlush();
+}
+
+IMatchEventsSubscription *CEngineClient::GetEventsSubscription()
+{
+	return g_pMatchEventsSubscription;
+}
+
 uint CEngineClient::GetProtocolVersion()
 {
 	if ( demoplayer && demoplayer->IsPlayingBack() )
@@ -2106,73 +2170,6 @@ void CEngineClient::FlashWindow()
 int CEngineClient::GetInstancesRunningCount( )
 {
 	return CheckOtherInstancesRunning( );
-}
-
-//-----------------------------------------------------------------------------
-// Purpose: 
-//-----------------------------------------------------------------------------
-void CEngineClient::OnHL2ExpansionLoaded()
-{
-	extern void S_ReloadAudioCaches();
-	extern void DSP_DEBUGReloadPresetFile( void );
-	extern void Host_MapListFlush( void );
-
-	S_StopAllSounds( true );
-	DSP_DEBUGReloadPresetFile();
-	S_ReloadAudioCaches();
-	VOX_Shutdown();
-	VOX_Init();
-
-	ClientCmd_Unrestricted( "r_flushlod" );
-	ClientCmd_Unrestricted( "_gi_on_expansion_reload" );
-
-	ConCommand *pCommand = g_pCVar->FindCommand( "sv_hl2_expansion_reloaded" );
-	if ( pCommand )
-	{
-		const char *pArgv[] = { "sv_hl2_expansion_reloaded" };
-		CCommand args( 1, pArgv );
-		pCommand->Dispatch( args );
-	}
-
-	ClientCmd_Unrestricted( "cl_hl2_expansion_reloaded" );
-
-	TextMessageShutdown();
-	TextMessageInit();
-	Host_MapListFlush();
-}
-
-IMatchEventsSubscription *CEngineClient::GetEventsSubscription()
-{
-	return g_pMatchEventsSubscription;
-#line 2127
-}
-
-const char *CEngineClient::GetMapName()
-{
-#ifdef BYTEMATCH_RETAIL
-	if ( sv.IsDedicated() )
-		return "Dedicated Server";
-
-	if ( !cl.IsConnected() )
-		return "";
-
-	return cl.m_szLevelBaseName;
-#else
-	// UNIMPLEMENTED: retail also has a fixed-name case; this returns the current level's base name.
-	return cl.m_szLevelBaseName;
-#endif
-#line 2133
-}
-
-const char *CEngineClient::GetPatchVersion()
-{
-#ifdef BYTEMATCH_RETAIL
-	return gpszVersionString;
-#else
-	// UNIMPLEMENTED: retail returns its own version buffer; this uses the steam.inf version string.
-	return GetSteamInfIDVersionInfo().szVersionString;
-#endif
-#line 2139
 }
 
 #ifndef BYTEMATCH_RETAIL

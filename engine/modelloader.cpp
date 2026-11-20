@@ -413,7 +413,7 @@ IModelLoader *modelloader = ( IModelLoader * )&g_ModelLoader;
 //-----------------------------------------------------------------------------
 // Globals used by the CMapLoadHelper
 //-----------------------------------------------------------------------------
-dheader_t		s_MapHeader;
+static dheader_t		s_MapHeader;
 
 static FileHandle_t		s_MapFileHandle = FILESYSTEM_INVALID_HANDLE;
 #ifdef BYTEMATCH_RETAIL
@@ -449,7 +449,12 @@ CON_COMMAND( mem_vcollide, "Dumps the memory used by vcollides" )
 //-----------------------------------------------------------------------------
 // Map name as found on disk
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+void GetMapPathNameOnDisk( char *pDiskName, const char *pFullMapName, unsigned int nDiskNameSize )
+#else
 inline void GetMapPathNameOnDisk( char *pDiskName, const char *pFullMapName, unsigned int nDiskNameSize )
+#endif
+#line 453
 {
 	if ( pFullMapName != pDiskName )
 	{

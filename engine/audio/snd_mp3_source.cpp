@@ -30,11 +30,7 @@
 #endif
 #line 29
 
-#ifdef BYTEMATCH_RETAIL
-void PhonemeMP3Shutdown( void )
-{
-}
-#else
+#ifndef BYTEMATCH_RETAIL
 CUtlDict< CSentence *, int> g_PhonemeFileSentences;
 bool g_bAllPhonemesLoaded;
 
@@ -262,11 +258,9 @@ void CAudioSourceMP3::SetSentence( CSentence *pSentence )
 #endif
 #line 140
 
+#ifndef BYTEMATCH_RETAIL
 int CAudioSourceMP3::SampleRate()
 {
-#ifdef BYTEMATCH_RETAIL
-	return m_sampleRate;
-#else
 	if ( !m_sampleRate )
 	{
 		// This should've come from the sound cache. We can avoid sync I/O jank if and only if we've started streaming
@@ -291,9 +285,9 @@ int CAudioSourceMP3::SampleRate()
 		delete pMixer;
 	}
 	return m_sampleRate;
-#endif
-#line 144
 }
+#endif
+#line 145
 
 #ifdef BYTEMATCH_RETAIL
 bool CAudioSourceMP3::GetStartupData( void *dest, int destsize, int &bytescopied )

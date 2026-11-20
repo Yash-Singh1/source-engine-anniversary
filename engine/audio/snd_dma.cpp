@@ -20,7 +20,7 @@
 #include "vstdlib/jobthread.h"
 #include "vaudio/ivaudio.h"
 #include "client.h"
-#include "cl_main.h"
+#include "../cl_main.h"
 #include "utldict.h"
 #include "mempool.h"
 #include "enginetrace.h"			// for traceline
@@ -761,37 +761,10 @@ void S_Init( void )
 }
 
 
-//-----------------------------------------------------------------------------
-// Purpose: Free every sound source and empty the sfx dictionary and pool
-//-----------------------------------------------------------------------------
-void S_ClearSoundPool()
-{
-	for ( int i = s_Sounds.FirstInorder(); i != s_Sounds.InvalidIndex(); i = s_Sounds.NextInorder( i ) )
-	{
-		if ( s_Sounds[i].pSfx )
-		{
-			delete s_Sounds[i].pSfx->pSource;
-			s_Sounds[i].pSfx->pSource = NULL;
-		}
-	}
-	s_Sounds.RemoveAll();
-	s_SoundPool.Clear();
-}
-
-//-----------------------------------------------------------------------------
-// Purpose: Drop all cached sound data so newly mounted content is picked up
-//-----------------------------------------------------------------------------
-void S_ReloadAudioCaches()
-{
-	S_ClearSoundPool();
-	wavedatacache->Flush();
-	audiosourcecache->Shutdown();
-	audiosourcecache->Init( host_parms.memsize >> 2 );
-}
-
 // =======================================================================
 // Shutdown sound engine
 // =======================================================================
+void S_ClearSoundPool();
 void S_Shutdown(void)
 {
 #if !defined( _X360 )
@@ -933,6 +906,11 @@ CSfxTable *S_FindName( const char *szName, int *pfInCache )
 // If not, allocate cache space for wave data, load wave file into temporary heap
 // space, and dump/convert file data into cache.
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+void _bm_dead_snd_dma_0() {}
+#endif
+#line 896
+
 double g_flAccumulatedSoundLoadTime = 0.0f;
 CAudioSource *S_LoadSound( CSfxTable *pSfx, channel_t *ch )
 {
@@ -5951,6 +5929,34 @@ void S_GetActiveSounds( CUtlVector< SndInfo_t >& sndlist )
 
 		sndlist.AddToTail( info );
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Free every sound source and empty the sfx dictionary and pool
+//-----------------------------------------------------------------------------
+void S_ClearSoundPool()
+{
+	for ( int i = s_Sounds.FirstInorder(); i != s_Sounds.InvalidIndex(); i = s_Sounds.NextInorder( i ) )
+	{
+		if ( s_Sounds[i].pSfx )
+		{
+			delete s_Sounds[i].pSfx->pSource;
+			s_Sounds[i].pSfx->pSource = NULL;
+		}
+	}
+	s_Sounds.RemoveAll();
+	s_SoundPool.Clear();
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Drop all cached sound data so newly mounted content is picked up
+//-----------------------------------------------------------------------------
+void S_ReloadAudioCaches()
+{
+	S_ClearSoundPool();
+	wavedatacache->Flush();
+	audiosourcecache->Shutdown();
+	audiosourcecache->Init( host_parms.memsize >> 2 );
 }
 
 void S_StopAllSounds( bool bClear )

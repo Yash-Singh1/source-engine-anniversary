@@ -19,8 +19,9 @@ extern IFileSystem *g_pFullFileSystem;
 #ifdef BYTEMATCH_RETAIL
 // retail measures durations with minimp3's frame iterator; the CMPAFile parser is gone
 #define MINIMP3_NO_STDIO
+#define MINIMP3_ONLY_SIMD
 #define MINIMP3_IMPLEMENTATION
-#include "../../thirdparty/minimp3/minimp3_ex.h"
+#include "../voice_codecs/minimp3/minimp3_ex.h"
 #else
 
 // exception class

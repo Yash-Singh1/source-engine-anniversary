@@ -254,6 +254,7 @@ void Cbuf_AddText( const char *pText )
 // Escape an argument for a command. This *can* fail as many characters cannot
 // actually be passed through the old command syntax...
 //-----------------------------------------------------------------------------
+#ifndef BYTEMATCH_RETAIL
 bool Cbuf_EscapeCommandArg( const char *pText, char *pOut, unsigned int nOut )
 {
 	// Okay, so, to be honest, all we can do with the super limited syntax is ensure we don't have quotes or control
@@ -281,6 +282,8 @@ bool Cbuf_EscapeCommandArg( const char *pText, char *pOut, unsigned int nOut )
 	V_snprintf( pOut, nOut, "\"%s\"", pText );
 	return true;
 }
+#endif
+#line 284
 
 //-----------------------------------------------------------------------------
 // Adds command text at the beginning of the buffer

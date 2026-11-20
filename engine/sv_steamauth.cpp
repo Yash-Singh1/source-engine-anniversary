@@ -1072,6 +1072,7 @@ bool CSteam3Server::IsMasterServerUpdaterSharingGameSocket()
 	return m_bMasterServerUpdaterSharingGameSocket;
 }
 
+#ifndef BYTEMATCH_RETAIL
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -1083,6 +1084,8 @@ void Heartbeat_f()
 		SteamGameServer_ForceHeartbeat( Steam3Server().SteamGameServer() );
 	}
 }
+#endif
+#line 1086
 
 //static ConCommand heartbeat( "heartbeat", Heartbeat_f, "Force heartbeat of master servers", 0 );
 

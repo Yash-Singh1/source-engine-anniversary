@@ -2435,7 +2435,12 @@ bool CAudioSourceCache::Init( unsigned int memSize )
 	return true;
 }
 
+#ifdef BYTEMATCH_RETAIL
+inline CAudioSourceCache::SearchPathCache *CAudioSourceCache::FindCacheForSearchPath( const char *pszSearchPath )
+#else
 CAudioSourceCache::SearchPathCache *CAudioSourceCache::FindCacheForSearchPath( const char *pszSearchPath )
+#endif
+#line 2439
 {
 	FOR_EACH_VEC( m_vecCaches, idx )
 	{

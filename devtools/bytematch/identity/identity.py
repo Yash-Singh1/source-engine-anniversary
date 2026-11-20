@@ -187,6 +187,28 @@ def retail_unwind_calloc_offset(path):
     return 0
 
 
+def retail_build_time(path, mtime):
+    """Find the build-clock timestamp (for __DATE__/__TIME__) near an object's N_OSO mtime."""
+    if not mtime:
+        return None
+    import datetime
+    img = machocmp.Image(path)
+    cs = next((r for r in img.regions if r[0] == 'section __TEXT,__cstring'), None)
+    if not cs:
+        return None
+    strs = set(img.data[cs[1]:cs[1] + cs[2]].split(b'\0'))
+    # Valve's macOS buildbot ran in PST8PDT (UTC-8 in Nov, UTC-7 in DST).
+    for tz_off in (-8 * 3600, -7 * 3600, 0):
+        for delta in range(0, -16, -1):
+            ts = mtime + delta
+            dt = datetime.datetime.utcfromtimestamp(ts + tz_off)
+            dstr = ('%s %2d %04d' % (dt.strftime('%b'), dt.day, dt.year)).encode()
+            tstr = dt.strftime('%H:%M:%S').encode()
+            if dstr in strs and tstr in strs:
+                return ts
+    return None
+
+
 def split_member(oso):
     m = re.match(r'^(.*\.a)\((.*)\)$', oso)
     return (m.group(1), m.group(2)) if m else (None, None)
@@ -293,7 +315,7 @@ class Compiler:
         rmap.sort(key=lambda p: -len(p[0]))
         return rmap
 
-    def compile(self, src, entry, valve_src, so_dir, so_name, out, foreign=None):
+    def compile(self, src, entry, valve_src, so_dir, so_name, out, foreign=None, build_time=None, shim=None):
         """Preprocess, rewrite paths, compile the .ii as ccache would. Returns cache path."""
         d = entry['directory']
         args = list(entry['arguments'])
@@ -334,7 +356,10 @@ class Compiler:
             comp.append(a)
             i += 1
         rmap = self.rewrite_map(args, valve_src, foreign)
-        raw = subprocess.run(pre + ['-E', '-o', '-'], cwd=d, stdout=subprocess.PIPE,
+        pre_env = None
+        if build_time is not None and shim:
+            pre_env = dict(os.environ, DYLD_INSERT_LIBRARIES=shim, BM_BUILD_TIME=str(build_time), TZ='PST8PDT')
+        raw = subprocess.run(pre + ['-E', '-o', '-'], cwd=d, env=pre_env, stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
         if raw.returncode:
             raise RuntimeError('preprocess %s failed:\n%s' % (src, raw.stderr.decode(errors='replace')))
@@ -611,7 +636,13 @@ class Module:
             if fa and r:
                 foreign = {'root': fa[0], 'headers': fa[1], 'sdk': fa[2], 'src': src,
                            'valve_path': so_dir + so_name}
-            return item, self.comp.compile(src, entry, vsrc, so_dir, so_name, None, foreign)
+            build_time = None
+            if r and r.get('mtime'):
+                with open(src, 'rb') as sf:
+                    sdata = sf.read()
+                if b'__DATE__' in sdata or b'__TIME__' in sdata:
+                    build_time = retail_build_time(self.retail, r['mtime'])
+            return item, self.comp.compile(src, entry, vsrc, so_dir, so_name, None, foreign, build_time, shim)
 
         with concurrent.futures.ThreadPoolExecutor(self.comp.jobs) as ex:
             for item, cached in ex.map(do, work):

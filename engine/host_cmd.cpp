@@ -228,6 +228,11 @@ EUniverse GetSteamUniverse()
 	return k_EUniverseInvalid;
 }
 
+#ifdef BYTEMATCH_RETAIL
+char gpszVersionString[32];
+char gpszProductString[32];
+#endif
+#line 231
 // Globals
 int	gHostSpawnCount = 0;
 
@@ -1311,8 +1316,6 @@ DWORD __declspec(dllimport) __stdcall GetEnvironmentVariableA( const char *, cha
 #endif // _WIN32
 
 #ifdef BYTEMATCH_RETAIL
-char gpszVersionString[32];
-char gpszProductString[32];
 static int sClientVersion = 0;
 static int sServerVersion = 0;
 

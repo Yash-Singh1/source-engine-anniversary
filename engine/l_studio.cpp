@@ -98,7 +98,7 @@ ConVar r_proplightingfromdisk( "r_proplightingfromdisk", "1", FCVAR_CHEAT, "0=Of
 static ConVar r_itemblinkmax( "r_itemblinkmax", ".3", FCVAR_CHEAT );
 static ConVar r_itemblinkrate( "r_itemblinkrate", "4.5", FCVAR_CHEAT );
 static ConVar r_proplightingpooling( "r_proplightingpooling", "-1.0", FCVAR_CHEAT, "0 - off, 1 - static prop color meshes are allocated from a single shared vertex buffer (on hardware that supports stream offset)" );
-static ConVar mat_specular_scalar( "mat_specular_scalar", "-1.0", 0 );
+ConVar mat_specular_scalar( "mat_specular_scalar", "-1.0", 0 );
 
 //-----------------------------------------------------------------------------
 // StudioRender config 

@@ -198,7 +198,12 @@ void Host_UpdateMapList( void )
 
 void Host_MapListFlush( void )
 {
+#ifdef BYTEMATCH_RETAIL
+	g_MapListMgr.RefreshList( true );
+#else
 	g_MapListMgr.BuildList();
+#endif
+#line 202
 }
 
 //-----------------------------------------------------------------------------

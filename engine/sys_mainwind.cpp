@@ -903,6 +903,21 @@ static void DoSomeSocketStuffInOrderToGetZoneAlarmToNoticeUs( void )
 }
 #endif
 
+#ifdef BYTEMATCH_RETAIL
+static const char *GetRenderBackendName( RenderBackend_t eBackend )
+{
+	switch ( eBackend )
+	{
+	case RENDER_BACKEND_D3D9:	return "Direct3D 9";
+	case RENDER_BACKEND_TOGL:	return "OpenGL";
+	case RENDER_BACKEND_VULKAN:	return "Vulkan";
+	case RENDER_BACKEND_NULL:	return "Null";
+	default:					return "Unknown";
+	}
+}
+#endif
+#line 906
+
 bool CGame::CreateGameWindow( void )
 {
 	// get the window name
@@ -921,17 +936,7 @@ bool CGame::CreateGameWindow( void )
 
 #ifdef BYTEMATCH_RETAIL
 	V_strcat( windowName, " - ", sizeof( windowName ) );
-
-	const char *pszRenderBackend;
-	switch ( g_pMaterialSystem->GetRenderBackend() )
-	{
-	case RENDER_BACKEND_D3D9:	pszRenderBackend = "Direct3D 9"; break;
-	case RENDER_BACKEND_TOGL:	pszRenderBackend = "OpenGL"; break;
-	case RENDER_BACKEND_VULKAN:	pszRenderBackend = "Vulkan"; break;
-	case RENDER_BACKEND_NULL:	pszRenderBackend = "Null"; break;
-	default:					pszRenderBackend = "Unknown"; break;
-	}
-	V_strcat( windowName, pszRenderBackend, sizeof( windowName ) );
+	V_strcat( windowName, GetRenderBackendName( g_pMaterialSystem->GetRenderBackend() ), sizeof( windowName ) );
 #else
 	if ( IsOpenGL() )
 	{

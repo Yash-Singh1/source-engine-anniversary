@@ -75,6 +75,11 @@ void CMatchEventsSubscription::Unsubscribe( IMatchEventsSink *pSink )
 	}
 }
 
+#ifdef BYTEMATCH_RETAIL
+void _bm_dead_mm_events_0() {}
+#endif
+#line 70
+
 void CMatchEventsSubscription::BroadcastEvent( KeyValues *pEvent )
 {
 	// Events broadcast while sinks are being notified are queued

@@ -1140,35 +1140,6 @@ bool CSaveRestore::SaveFileExists( const char *pName )
 }
 
 //-----------------------------------------------------------------------------
-// Purpose: Loads the KeyValues stored next to a save game (<save>.kv); the
-//			caller owns the result
-//-----------------------------------------------------------------------------
-KeyValues *CSaveRestore::GetSaveAppendix( const char *pName )
-{
-	char name[ MAX_PATH ];
-	if ( !CalcSaveGameName( pName, name, sizeof( name ) ) )
-	{
-		DevWarning( "Loaded bad game %s\n", pName );
-		return NULL;
-	}
-
-	char szAppendixName[ MAX_PATH ];
-	V_sprintf_safe( szAppendixName, "%s.kv", name );
-
-	KeyValues *pSaveAppendix = new KeyValues( "SaveAppendix" );
-	if ( !pSaveAppendix )
-		return NULL;
-
-	if ( !pSaveAppendix->LoadFromFile( g_pFullFileSystem, szAppendixName, "MOD" ) )
-	{
-		pSaveAppendix->deleteThis();
-		return NULL;
-	}
-
-	return pSaveAppendix;
-}
-
-//-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : *pName - 
 // Output : int
@@ -2219,6 +2190,35 @@ bool CSaveRestore::SaveClientState( const char *name )
 	free( decalList );
 	return true;
 #endif
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Loads the KeyValues stored next to a save game (<save>.kv); the
+//			caller owns the result
+//-----------------------------------------------------------------------------
+KeyValues *CSaveRestore::GetSaveAppendix( const char *pName )
+{
+	char name[ MAX_PATH ];
+	if ( !CalcSaveGameName( pName, name, sizeof( name ) ) )
+	{
+		DevWarning( "Loaded bad game %s\n", pName );
+		return NULL;
+	}
+
+	char szAppendixName[ MAX_PATH ];
+	V_sprintf_safe( szAppendixName, "%s.kv", name );
+
+	KeyValues *pSaveAppendix = new KeyValues( "SaveAppendix" );
+	if ( !pSaveAppendix )
+		return NULL;
+
+	if ( !pSaveAppendix->LoadFromFile( g_pFullFileSystem, szAppendixName, "MOD" ) )
+	{
+		pSaveAppendix->deleteThis();
+		return NULL;
+	}
+
+	return pSaveAppendix;
 }
 
 //-----------------------------------------------------------------------------
