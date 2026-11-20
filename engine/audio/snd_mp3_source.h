@@ -40,7 +40,12 @@ public:
 	// you can copy it into copyBuf and set pData to copyBuf.
 	virtual int					GetOutputData( void **pData, int samplePosition, int sampleCount, char copyBuf[AUDIOSOURCE_COPYBUF_SIZE] ) = 0;
 
+#ifdef BYTEMATCH_RETAIL
+	virtual int					SampleRate( void ) { return m_sampleRate; }
+#else
 	virtual int					SampleRate( void );
+#endif
+#line 43
 
 	// Returns true if the source is a voice source.
 	// This affects the voice_overdrive behavior (all sounds get quieter when

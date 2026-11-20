@@ -620,7 +620,7 @@ bool CSteamID::SetFromStringStrict( const char *pchSteamID, EUniverse eDefaultUn
 }
 
 
-#if defined( INCLUDED_STEAM2_USERID_STRUCTS ) 
+#if defined( INCLUDED_STEAM2_USERID_STRUCTS ) && !defined( BYTEMATCH_RETAIL )
 //-----------------------------------------------------------------------------
 // Purpose: Initializes a steam ID from a Steam2 ID string
 // Input:	pchSteam2ID -	Steam2 ID (as a string #:#:#) to convert

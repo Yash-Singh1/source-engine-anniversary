@@ -30,6 +30,26 @@
       "ours": "sdk2013mp/",
       "valve": "",
       "why": "retail hl2mp (2014 SDK 2013 mp) compiles from src/..., whereas this tree keeps those files under sdk2013mp/"
+    },
+    {
+      "ours": "engine/audio/../voice_codecs/",
+      "valve": "engine/audio/../voice_codecs/",
+      "why": "retail MPAFile.o debug map keeps engine/audio/../voice_codecs/minimp3/minimp3{,_ex}.h verbatim"
+    },
+    {
+      "ours": "engine/audio/../",
+      "valve": "engine/audio/private/../../",
+      "why": "retail audio sources include engine headers as ../../<header>.h from src/engine/audio/private/"
+    },
+    {
+      "ours": "engine/audio/",
+      "valve": "engine/audio/private/",
+      "why": "retail keeps engine audio sources and private headers in src/engine/audio/private/, whereas this tree flattened them into engine/audio/"
+    },
+    {
+      "ours": "public/engine/audio/",
+      "valve": "engine/audio/public/",
+      "why": "retail keeps engine audio public headers in src/engine/audio/public/, whereas this tree moved them to public/engine/audio/"
     }
   ]
 }

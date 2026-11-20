@@ -102,11 +102,11 @@ extern ConVar cl_clanid;
 
 #ifdef BYTEMATCH_RETAIL
 ConVar sv_unlockedchapters( "sv_unlockedchapters", "1", FCVAR_ARCHIVE, "Highest unlocked game chapter." );
-static ConVar hl2_random_chapter_index( "hl2_random_chapter_index", "-1", 0 );
-static ConVar hl2_expansion( "hl2_expansion", "", FCVAR_ARCHIVE );
-static ConVar sv_unlockedchapters_hl2( "sv_unlockedchapters_hl2", "1", FCVAR_ARCHIVE );
-static ConVar sv_unlockedchapters_episodic( "sv_unlockedchapters_episodic", "1", FCVAR_ARCHIVE );
-static ConVar sv_unlockedchapters_ep2( "sv_unlockedchapters_ep2", "1", FCVAR_ARCHIVE );
+ConVar hl2_random_chapter_index( "hl2_random_chapter_index", "-1", 0 );
+ConVar hl2_expansion( "hl2_expansion", "", FCVAR_ARCHIVE );
+ConVar sv_unlockedchapters_hl2( "sv_unlockedchapters_hl2", "1", FCVAR_ARCHIVE );
+ConVar sv_unlockedchapters_episodic( "sv_unlockedchapters_episodic", "1", FCVAR_ARCHIVE );
+ConVar sv_unlockedchapters_ep2( "sv_unlockedchapters_ep2", "1", FCVAR_ARCHIVE );
 #else
 ConVar sv_unlockedchapters( "sv_unlockedchapters", "1", FCVAR_ARCHIVE | FCVAR_ARCHIVE_XBOX, "Highest unlocked game chapter." );
 #endif

@@ -529,11 +529,6 @@ private:
 	int m_SnappedProgress;
 };
 static CLoaderProgress s_LoaderProgress;
-#ifdef BYTEMATCH_RETAIL
-static ConVar vgui_ui_scale_base_width( "vgui_ui_scale_width", "1920", 0 );
-static ConVar vgui_ui_scale_base_height( "vgui_ui_scale_height", "1080", 0 );
-static ConVar vgui_ui_scale_factor( "vgui_ui_scale_factor", "1", 0 );
-#endif
 #line 519
 
 	
@@ -1121,80 +1116,6 @@ inline vgui::Panel *CEngineVGui::GetRootPanel( VGuiPanel_t type )
 	}
 }
 
-#ifdef BYTEMATCH_RETAIL
-//-----------------------------------------------------------------------------
-// Purpose: lays out the static sizing panel for the scaled UI size, reloads
-//			fonts and borders and rebuilds the game UI dialogs when it changes
-//-----------------------------------------------------------------------------
-void CEngineVGui::UpdateStaticSizingPanelSize( int nWidth, int nHeight )
-{
-	static bool s_bOldWindowMode = videomode->IsWindowedMode();
-	static bool s_bOldWindowBorderMode = videomode->NoWindowBorder();
-	static int s_nOldWidth = 0;
-	static int s_nOldHeight = 0;
-	static int s_nOldPanelWidth = 0;
-	static int s_nOldPanelHeight = 0;
-	static int s_nOldAAMode = -1;
-	static bool s_bResizedOnce = false;
-
-	int nScaledWidth = Max( (int)( nWidth * vgui_ui_scale_factor.GetFloat() ), vgui_ui_scale_base_width.GetInt() );
-	int nScaledHeight = Max( (int)( nHeight * vgui_ui_scale_factor.GetFloat() ), vgui_ui_scale_base_height.GetInt() );
-	int nPanelWidth = nScaledWidth * 640 / vgui_ui_scale_base_width.GetInt();
-	int nPanelHeight = nScaledHeight * 480 / vgui_ui_scale_base_height.GetInt();
-
-	bool bWindowMode = videomode->IsWindowedMode();
-	bool bWindowBorderMode = videomode->NoWindowBorder();
-
-	int nAAMode = -1;
-	ConVarRef mat_antialias( "mat_antialias" );
-	if ( mat_antialias.IsValid() )
-	{
-		nAAMode = mat_antialias.GetInt();
-	}
-
-	// tools don't resize the UI after the first layout
-	if ( CommandLine()->CheckParm( "-tools" ) && s_bResizedOnce )
-		return;
-
-	if ( s_nOldWidth == nWidth && s_nOldHeight == nHeight &&
-		 s_nOldPanelWidth == nPanelWidth && s_nOldPanelHeight == nPanelHeight &&
-		 s_bOldWindowMode == bWindowMode && s_bOldWindowBorderMode == bWindowBorderMode &&
-		 s_nOldAAMode == nAAMode )
-		return;
-
-	s_nOldWidth = nWidth;
-	s_nOldHeight = nHeight;
-	s_bResizedOnce = true;
-	s_nOldPanelWidth = nPanelWidth;
-	s_nOldPanelHeight = nPanelHeight;
-	s_bOldWindowMode = bWindowMode;
-	s_bOldWindowBorderMode = bWindowBorderMode;
-	s_nOldAAMode = nAAMode;
-
-	staticSizingPanel->SetBounds( 0, 0, nPanelWidth, nPanelHeight );
-
-	vgui::ivgui()->RunFrame();
-	g_pMatSystemSurface->ResetFontCaches();
-	vgui::scheme()->ReloadFonts();
-	vgui::scheme()->UpdateBorders();
-
-	if ( IsSteamDeck() || !staticGameUIPanel )
-		return;
-
-	if ( staticGameConsole )
-	{
-		bool bConsoleVisible = staticGameConsole->IsConsoleVisible();
-		staticGameConsole->Initialize();
-		staticGameConsole->SetParent( staticGameUIPanel->GetVPanel() );
-		if ( bConsoleVisible )
-		{
-			staticGameConsole->Activate();
-		}
-	}
-
-	engineClient->ExecuteClientCmd( "refresh_gameui_dialogs_modeset\n" );
-}
-#endif
 #line 1105
 
 vgui::VPANEL CEngineVGui::GetPanel( VGuiPanel_t type )
@@ -1255,7 +1176,7 @@ void CEngineVGui::ActivateGameUI()
 #ifdef BYTEMATCH_RETAIL
 	if ( g_pInputSystem )
 	{
-		g_pInputSystem->ActivateSteamControllerActionSet( GAME_ACTION_SET_MENUCONTROLS );
+		g_pInputSystem->ActivateSteamControllerActionSetForSlot( 0xffffffffffffffffULL, GAME_ACTION_SET_MENUCONTROLS );
 	}
 #endif
 #line 1165
@@ -1925,7 +1846,7 @@ void CEngineVGui::Simulate()
 
 		if ( IsGameUIVisible() )
 		{
-			g_pInputSystem->ActivateSteamControllerActionSet( GAME_ACTION_SET_MENUCONTROLS );
+			g_pInputSystem->ActivateSteamControllerActionSetForSlot( 0xffffffffffffffffULL, GAME_ACTION_SET_MENUCONTROLS );
 		}
 #endif
 #line 1808
@@ -1936,6 +1857,86 @@ void CEngineVGui::Simulate()
 	
 	toolframework->VGui_PostSimulateAllTools();
 }
+
+#ifdef BYTEMATCH_RETAIL
+static ConVar vgui_ui_scale_base_width( "vgui_ui_scale_width", "1920", 0 );
+static ConVar vgui_ui_scale_base_height( "vgui_ui_scale_height", "1080", 0 );
+static ConVar vgui_ui_scale_factor( "vgui_ui_scale_factor", "1", 0 );
+
+//-----------------------------------------------------------------------------
+// Purpose: lays out the static sizing panel for the scaled UI size, reloads
+//			fonts and borders and rebuilds the game UI dialogs when it changes
+//-----------------------------------------------------------------------------
+void CEngineVGui::UpdateStaticSizingPanelSize( int nWidth, int nHeight )
+{
+	static int s_nOldWidth = 0;
+	static int s_nOldHeight = 0;
+	static int s_nOldPanelWidth = 0;
+	static int s_nOldPanelHeight = 0;
+	static int s_nOldAAMode = -1;
+	static bool s_bOldWindowMode = videomode->IsWindowedMode();
+	static bool s_bOldWindowBorderMode = videomode->NoWindowBorder();
+	static bool s_bResizedOnce = false;
+
+	int nScaledWidth = Max( (int)( nWidth * vgui_ui_scale_factor.GetFloat() ), vgui_ui_scale_base_width.GetInt() );
+	int nScaledHeight = Max( (int)( nHeight * vgui_ui_scale_factor.GetFloat() ), vgui_ui_scale_base_height.GetInt() );
+	int nPanelWidth = nScaledWidth * 640 / vgui_ui_scale_base_width.GetInt();
+	int nPanelHeight = nScaledHeight * 480 / vgui_ui_scale_base_height.GetInt();
+
+	bool bWindowMode = videomode->IsWindowedMode();
+	bool bWindowBorderMode = videomode->NoWindowBorder();
+
+	int nAAMode = -1;
+	ConVarRef mat_antialias( "mat_antialias" );
+	if ( mat_antialias.IsValid() )
+	{
+		nAAMode = mat_antialias.GetInt();
+	}
+
+	// tools don't resize the UI after the first layout
+	if ( CommandLine()->CheckParm( "-tools" ) && s_bResizedOnce )
+		return;
+
+	if ( s_nOldWidth == nWidth && s_nOldHeight == nHeight &&
+		 s_nOldPanelWidth == nPanelWidth && s_nOldPanelHeight == nPanelHeight &&
+		 s_bOldWindowMode == bWindowMode && s_bOldWindowBorderMode == bWindowBorderMode &&
+		 s_nOldAAMode == nAAMode )
+		return;
+
+	s_nOldWidth = nWidth;
+	s_nOldHeight = nHeight;
+	s_bResizedOnce = true;
+	s_nOldPanelWidth = nPanelWidth;
+	s_nOldPanelHeight = nPanelHeight;
+	s_bOldWindowMode = bWindowMode;
+	s_bOldWindowBorderMode = bWindowBorderMode;
+	s_nOldAAMode = nAAMode;
+
+	staticSizingPanel->SetBounds( 0, 0, nPanelWidth, nPanelHeight );
+
+	vgui::ivgui()->RunFrame();
+	g_pMatSystemSurface->ResetFontCaches();
+	vgui::scheme()->ReloadFonts();
+	vgui::scheme()->UpdateBorders();
+
+	if ( IsSteamDeck() || !staticGameUIPanel )
+		return;
+
+	if ( staticGameConsole )
+	{
+		bool bConsoleVisible = staticGameConsole->IsConsoleVisible();
+		staticGameConsole->Initialize();
+		staticGameConsole->SetParent( staticGameUIPanel->GetVPanel() );
+		if ( bConsoleVisible )
+		{
+			staticGameConsole->Activate();
+		}
+	}
+
+	engineClient->ExecuteClientCmd( "refresh_gameui_dialogs_modeset\n" );
+}
+#endif
+#line 1815
 
 void CEngineVGui::BackwardCompatibility_Paint()
 {

@@ -947,6 +947,12 @@ static CErrorText<95000> errorText;
 #endif
 #line 671
 
+#ifdef BYTEMATCH_RETAIL
+void _bm_dead_sys_dll2_0() {}
+void _bm_dead_sys_dll2_1() {}
+#endif
+#line 670
+
 void BuildMinidumpComment( char const *pchSysErrorText, bool bRealCrash )
 {
 #if !defined(NO_STEAM)
@@ -2568,6 +2574,13 @@ EXPOSE_SINGLE_INTERFACE( CDedicatedServerAPI, IDedicatedServerAPI, VENGINE_HLDS_
 #define MAX_DUMPS_PER_LONG_TICK			10
 void Sys_Sleep ( int msec );
 
+#ifdef BYTEMATCH_RETAIL
+void CDedicatedServerAPI::PreMinidumpCallback( void *context )
+{
+}
+#endif
+#line 2212
+
 bool g_bLongTickWatcherThreadEnabled = false;
 bool g_bQuitLongTickWatcherThread = false;
 int g_bTotalDumps = 0;
@@ -2671,13 +2684,6 @@ bool EnableLongTickWatcher()
 //-----------------------------------------------------------------------------
 // Dedicated server entrypoint
 //-----------------------------------------------------------------------------
-#ifdef BYTEMATCH_RETAIL
-void CDedicatedServerAPI::PreMinidumpCallback( void *context )
-{
-}
-
-#endif
-#line 2284
 bool CDedicatedServerAPI::Connect( CreateInterfaceFn factory ) 
 { 
 #ifdef BYTEMATCH_RETAIL
@@ -2773,6 +2779,11 @@ void *CDedicatedServerAPI::QueryInterface( const char *pInterfaceName )
 //			*cmdline - 
 //			launcherFactory - 
 //-----------------------------------------------------------------------------
+#ifdef BYTEMATCH_RETAIL
+void _bm_dead_sys_dll2_2() {}
+#endif
+#line 2378
+
 bool CDedicatedServerAPI::ModInit( ModInfo_t &info )
 {
 #ifndef BYTEMATCH_RETAIL

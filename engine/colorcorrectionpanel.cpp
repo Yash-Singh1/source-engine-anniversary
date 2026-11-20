@@ -355,7 +355,7 @@ public:
 class CColorOperationList
 {
 public:
-	CColorOperationList() = default;
+	CColorOperationList();
 
 	// Clears the list
 	void Clear();
@@ -384,6 +384,14 @@ public:
 private:
 	CUtlVector< IColorOperation* > m_OpList;
 };
+
+
+//-----------------------------------------------------------------------------
+// Constructor
+//-----------------------------------------------------------------------------
+CColorOperationList::CColorOperationList()
+{
+}
 
 
 //-----------------------------------------------------------------------------

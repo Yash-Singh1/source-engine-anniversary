@@ -132,28 +132,28 @@ static void DrawLightSprite( dworldlight_t *pLight, float angleAttenFactor )
 	Vector p;
 	
 	ColorClamp( color );
-	
+	float r = color[0], g = color[1], b = color[2];
 	p = pLight->origin + right * radius + up * radius;
 	meshBuilder.TexCoord2f( 0, 1.0f, 1.0f );
-	meshBuilder.Color3fv( color.Base() );
+	meshBuilder.Color3f( r, g, b );
 	meshBuilder.Position3fv( p.Base() );
 	meshBuilder.AdvanceVertex();
 
 	p = pLight->origin + right * -radius + up * radius;
 	meshBuilder.TexCoord2f( 0, 0.0f, 1.0f );
-	meshBuilder.Color3fv( color.Base() );
+	meshBuilder.Color3f( r, g, b );
 	meshBuilder.Position3fv( p.Base() );
 	meshBuilder.AdvanceVertex();
 
 	p = pLight->origin + right * -radius + up * -radius;
 	meshBuilder.TexCoord2f( 0, 0.0f, 0.0f );
-	meshBuilder.Color3fv( color.Base() );
+	meshBuilder.Color3f( r, g, b );
 	meshBuilder.Position3fv( p.Base() );
 	meshBuilder.AdvanceVertex();
 
 	p = pLight->origin + right * radius + up * -radius;
 	meshBuilder.TexCoord2f( 0, 1.0f, 0.0f );
-	meshBuilder.Color3fv( color.Base() );
+	meshBuilder.Color3f( r, g, b );
 	meshBuilder.Position3fv( p.Base() );
 	meshBuilder.AdvanceVertex();
 

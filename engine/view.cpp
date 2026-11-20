@@ -171,6 +171,7 @@ void V_RenderVGuiOnly( void )
 	Shader_SwapBuffers();
 }
 
+#ifndef BYTEMATCH_RETAIL
 void V_RenderSwapBuffers( void )
 {
 	materials->BeginFrame( host_frametime );
@@ -183,6 +184,8 @@ void V_RenderSwapBuffers( void )
 
 	Shader_SwapBuffers();
 }
+#endif
+#line 175
 
 void FullViewColorAdjustment( )
 {

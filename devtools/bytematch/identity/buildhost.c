@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <time.h>
 #include <unistd.h>
 
 #define MAX_MAPS 16
@@ -152,6 +153,18 @@ static void my_free(void *ptr)
 	free(ptr);
 }
 
+static time_t my_time(time_t *tloc)
+{
+	const char *env = getenv("BM_BUILD_TIME");
+	if (env && *env) {
+		time_t t = (time_t)strtoll(env, NULL, 0);
+		if (tloc)
+			*tloc = t;
+		return t;
+	}
+	return time(tloc);
+}
+
 #define INTERPOSE(fn) \
 	__attribute__((used, section("__DATA,__interpose"))) \
 	static const struct { const void *replacement, *original; } interpose_##fn = { (const void *)my_##fn, (const void *)fn }
@@ -168,3 +181,4 @@ INTERPOSE(opendir);
 INTERPOSE(qsort);
 INTERPOSE(calloc);
 INTERPOSE(free);
+INTERPOSE(time);

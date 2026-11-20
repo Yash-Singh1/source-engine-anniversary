@@ -636,6 +636,7 @@ bool CBaseClientState::PrepareSteamConnectResponse( uint64 unGSSteamID, bool bGS
 // Tracks how we connected to the current server.
 static ConVar cl_connectmethod( "cl_connectmethod", "", FCVAR_USERINFO | FCVAR_HIDDEN, "Method by which we connected to the current server." );
 
+#ifndef BYTEMATCH_RETAIL
 /* static */ bool CBaseClientState::ConnectMethodAllowsRedirects()
 {
 	// Only HLTV should be allowed to redirect clients, but malicious servers can answer a connect
@@ -654,6 +655,8 @@ static ConVar cl_connectmethod( "cl_connectmethod", "", FCVAR_USERINFO | FCVAR_H
 	 }
 	return true;
 }
+#endif
+#line 657
 
 void CBaseClientState::Connect(const char* adr, const char *pszSourceTag)
 {

@@ -17,6 +17,47 @@
 
 extern IVAudio *vaudio;
 
+#ifdef BYTEMATCH_RETAIL
+static const int MP3_BUFFER_SIZE = 16384;
+
+class CAudioMixerWaveMP3 : public CAudioMixerWave, public IAudioStreamEvent
+{
+public:
+	CAudioMixerWaveMP3( IWaveData *data );
+	~CAudioMixerWaveMP3( void );
+
+	virtual void Mix( IAudioDevice *pDevice, channel_t *pChannel, void *pData, int outputOffset, int inputOffset, fixedint fracRate, int outCount, int timecompress );
+	virtual int	 GetOutputData( void **pData, int sampleCount, char copyBuf[AUDIOSOURCE_COPYBUF_SIZE] );
+
+	void SetSampleStart( int newPosition );
+
+	int GetPositionForSave() { return m_pStream->GetPosition(); }
+	void SetPositionFromSaved(int position) { m_pStream->SetPosition(position); }
+
+	virtual int StreamRequestData( void *pBuffer, int bytesRequested, int offset );
+	virtual void SetStartupDelaySamples( int delaySamples );
+	virtual int GetMixSampleSize() { return CalcSampleSize( 16, m_channelCount ); }
+	virtual int GetStreamOutputRate() { return m_pStream->GetOutputRate(); }
+
+	friend CAudioMixer *CreateMP3Mixer( IWaveData *data, int *pSampleRate );
+
+private:
+	bool					DecodeBlock( void );
+	void					GetID3HeaderOffset();
+
+	IAudioStream			*m_pStream;
+
+	char					m_samples[MP3_BUFFER_SIZE];
+	int						m_sampleCount;
+	int						m_samplePosition;
+	int						m_channelCount;
+	int						m_offset;
+	int						m_delaySamples;
+	int						m_headerOffset;
+};
+#endif
+#line 19
+
 CAudioMixerWaveMP3::CAudioMixerWaveMP3( IWaveData *data ) : CAudioMixerWave( data ) 
 {
 	m_sampleCount = 0;
@@ -264,10 +305,10 @@ void CAudioMixerWaveMP3::SetStartupDelaySamples( int delaySamples )
 }
 
 #ifdef BYTEMATCH_RETAIL
-CAudioMixerWaveMP3 *CreateMP3Mixer( IWaveData *data, int *pSampleRate )
+CAudioMixer *CreateMP3Mixer( IWaveData *data, int *pSampleRate )
 {
 	CAudioMixerWaveMP3 *pMixer = new CAudioMixerWaveMP3( data );
-	if ( pMixer->IsValid() )
+	if ( pMixer->m_pStream )
 	{
 		if ( pSampleRate )
 		{

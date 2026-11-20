@@ -155,6 +155,10 @@ extern char	*CM_EntityString( void );
 extern ConVar host_map;
 extern ConVar sv_cheats;
 
+#ifdef BYTEMATCH_RETAIL
+ConVar save_transition_music( "save_transition_music", "0", FCVAR_ARCHIVE );
+#endif
+#line 158
 bool g_bDedicatedServerBenchmarkMode = false;
 bool g_bAllowSecureServers = true;
 bool g_bLowViolence = false;
@@ -172,9 +176,6 @@ int host_tickcount = 0;
 int host_currentframetick = 0;
 
 static const char g_pModuleExtension[] = DLL_EXT_STRING;
-#ifdef BYTEMATCH_RETAIL
-ConVar save_transition_music( "save_transition_music", "0", FCVAR_ARCHIVE );
-#endif
 #line 171
 
 // Engine player info, no game related infos here
