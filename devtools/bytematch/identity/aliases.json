@@ -15,6 +15,11 @@
       "ours": "external/cef/",
       "valve": "thirdparty/cef/",
       "why": "retail chromehtml includes CEF from src/thirdparty/cef (debug map N_SOL); thirdparty is a submodule here, so the CEF headers and wrapper live in external/cef"
+    },
+    {
+      "ours": "utils/vpk/sdk2013/",
+      "valve": "public/",
+      "why": "retail vpk packtest compiles against SDK 2013 headers in utils/vpk/sdk2013/ (tier1 containers and clean filesystem.h/utlsymbol.h without fork-added includes)"
     }
   ]
 }

@@ -103,7 +103,7 @@ DBG_INTERFACE SpewRetval_t DefaultSpewFunc( SpewType_t type, const tchar *pMsg )
 		bool bRaiseOnAssert = true;
 #else
 		// Win32 release
-		bool bRaiseOnAssert = !!CommandLine()->FindParm( "-raiseonassert" );
+		bool bRaiseOnAssert = true;
 #endif
 
 		return bRaiseOnAssert ? SPEW_DEBUGGER : SPEW_CONTINUE;
