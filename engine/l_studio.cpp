@@ -4680,12 +4680,17 @@ void SetRootLOD_f( IConVar *pConVar, const char *pOldString, float flOldValue )
 	ConVarRef var( pConVar );
 #ifdef BYTEMATCH_RETAIL
 	// detail prop distance and model LOD follow the root LOD
-	int nLod = 0;
-	int nDetailDist = 4096;
-	if ( var.GetInt() != 0 )
+	int nModelDetail = 2 - var.GetInt();
+	int nLod = -1;
+	int nDetailDist = 1024;
+	if ( nModelDetail == 2 )
 	{
-		nDetailDist = ( var.GetInt() == 1 ) ? 2048 : 1024;
-		nLod = -1;
+		nDetailDist = 4096;
+		nLod = 0;
+	}
+	else if ( nModelDetail == 1 )
+	{
+		nDetailDist = 2048;
 	}
 	ConVarRef cl_detaildist( "cl_detaildist" );
 	cl_detaildist.SetValue( nDetailDist );

@@ -152,9 +152,12 @@ void EatTextModeKeyPresses()
 	}
 }
 
+static unsigned int s_unSteamAppID = 0;
+
 void Sys_SetSteamAppID( unsigned int unAppID )
 {
-	SteamAPI_SetBreakpadAppID( unAppID );
+	s_unSteamAppID = unAppID;
+	SteamAPI_SetBreakpadAppID( s_unSteamAppID );
 }
 #else
 int build_number( void )
@@ -380,6 +383,10 @@ public:
 
 	void BuildComment( char const *pchSysErrorText, bool bRealCrash )
 	{
+#ifdef IS_WINDOWS_PC
+		#pragma warning( suppress : 4535 )
+		_se_translator_function curfilter = _set_se_translator( &FailSafe );
+#endif
 		try
 		{
 			int nCommentLength = m_nSize;
@@ -411,6 +418,10 @@ public:
 			// Latch in case extended stuff below crashes
 			SteamAPI_SetMiniDumpComment( m_errorText );
 
+#ifdef _WIN32
+			BuildCommentMemStatus( nCommentLength );
+#endif
+
 			// Spew out paged pool stuff, etc.
 			Plat_GetPagedPoolInfo( &g_final );
 
@@ -440,7 +451,62 @@ public:
 		{
 			// Oh oh
 		}
+#ifdef IS_WINDOWS_PC
+		_set_se_translator( curfilter );
+#endif
 	}
+
+#ifdef _WIN32
+	void BuildCommentMemStatus( int nCommentLength )
+	{
+		const double MbDiv = 1024.0 * 1024.0;
+		char buf[ 256 ];
+
+		MEMORYSTATUSEX memStat;
+		ZeroMemory( &memStat, sizeof( MEMORYSTATUSEX ) );
+		memStat.dwLength = sizeof( MEMORYSTATUSEX );
+
+		if ( GlobalMemoryStatusEx( &memStat ) )
+		{
+			Q_snprintf( buf, sizeof( buf ), "\nMemory\nmemusage( %d %% )\ntotalPhysical Mb(%.2f)\nfreePhysical Mb(%.2f)\ntotalPaging Mb(%.2f)\nfreePaging Mb(%.2f)\ntotalVirtualMem Mb(%.2f)\nfreeVirtualMem Mb(%.2f)\nextendedVirtualFree Mb(%.2f)\n",
+				memStat.dwMemoryLoad,
+				(double)memStat.ullTotalPhys / MbDiv,
+				(double)memStat.ullAvailPhys / MbDiv,
+				(double)memStat.ullTotalPageFile / MbDiv,
+				(double)memStat.ullAvailPageFile / MbDiv,
+				(double)memStat.ullTotalVirtual / MbDiv,
+				(double)memStat.ullAvailVirtual / MbDiv,
+				(double)memStat.ullAvailExtendedVirtual / MbDiv );
+			V_strncat( m_errorText, buf, nCommentLength, COPY_ALL_CHARACTERS );
+		}
+
+		HINSTANCE hInst = LoadLibrary( "Psapi.dll" );
+		if ( hInst )
+		{
+			typedef BOOL (WINAPI *GetProcessMemoryInfoFn)(HANDLE, PPROCESS_MEMORY_COUNTERS, DWORD);
+			GetProcessMemoryInfoFn fn = (GetProcessMemoryInfoFn)GetProcAddress( hInst, "GetProcessMemoryInfo" );
+			if ( fn )
+			{
+				PROCESS_MEMORY_COUNTERS counters;
+
+				ZeroMemory( &counters, sizeof( PROCESS_MEMORY_COUNTERS ) );
+				counters.cb = sizeof( PROCESS_MEMORY_COUNTERS );
+
+				if ( fn( GetCurrentProcess(), &counters, sizeof( PROCESS_MEMORY_COUNTERS ) ) )
+				{
+					Q_snprintf( buf, sizeof( buf ), "\nProcess Memory\nWorkingSetSize Mb(%.2f)\nQuotaPagedPoolUsage Mb(%.2f)\nQuotaNonPagedPoolUsage: Mb(%.2f)\nPagefileUsage: Mb(%.2f)\n",
+						(double)counters.WorkingSetSize / MbDiv,
+						(double)counters.QuotaPagedPoolUsage / MbDiv,
+						(double)counters.QuotaNonPagedPoolUsage / MbDiv,
+						(double)counters.PagefileUsage / MbDiv );
+					V_strncat( m_errorText, buf, nCommentLength, COPY_ALL_CHARACTERS );
+				}
+			}
+
+			FreeLibrary( hInst );
+		}
+	}
+#endif
 
 	void BuildCommentExtended( int nCommentLength )
 	{
@@ -467,12 +533,7 @@ public:
 					if ( pCvar->IsFlagSet( FCVAR_SERVER_CANNOT_QUERY | FCVAR_PROTECTED ) )
 						continue;
 
-					if ( pCvar->IsFlagSet( FCVAR_NEVER_AS_STRING ) )
-					{
-						if ( pCvar->GetFloat() == Q_atof( pCvar->GetDefault() ) )
-							continue;
-					}
-					else
+					if ( !pCvar->IsFlagSet( FCVAR_NEVER_AS_STRING ) )
 					{
 						char var1[ MAX_OSPATH ];
 						char var2[ MAX_OSPATH ];
@@ -483,13 +544,18 @@ public:
 						if ( !Q_stricmp( var1, var2 ) )
 							continue;
 					}
+					else
+					{
+						if ( pCvar->GetFloat() == Q_atof( pCvar->GetDefault() ) )
+							continue;
+					}
 
 					char line[ MAX_OSPATH ];
 					int nLen;
-					if ( pCvar->IsFlagSet( FCVAR_NEVER_AS_STRING ) )
-						nLen = Q_snprintf( line, sizeof( line ), "%s\n\t'%f' '%f'\n", pCvar->GetName(), pCvar->GetFloat(), Q_atof( pCvar->GetDefault() ) );
-					else
+					if ( !pCvar->IsFlagSet( FCVAR_NEVER_AS_STRING ) )
 						nLen = Q_snprintf( line, sizeof( line ), "%s\n\t'%s' '%s'\n", pCvar->GetName(), Host_CleanupConVarStringValue( pCvar->GetString() ), pCvar->GetDefault() );
+					else
+						nLen = Q_snprintf( line, sizeof( line ), "%s\n\t'%f' '%f'\n", pCvar->GetName(), pCvar->GetFloat(), Q_atof( pCvar->GetDefault() ) );
 
 					nLen = MIN( nLen, nRemaining );
 					if ( nLen <= 0 )
@@ -1294,7 +1360,15 @@ void CEngineAPI::SetStartupInfo( StartupInfo_t &info )
 #ifndef NO_STEAM
 	if ( !CommandLine()->FindParm( "-nobreakpad" ) )
 	{
-		SteamAPI_UseBreakpadCrashHandler( va( "%d%s", build_number(), "" ), __DATE__, __TIME__, false, NULL, NULL );
+		const char szSuffix[] = "";
+		const char *pchVersion = va( "%d%s", build_number(), szSuffix );
+		SteamAPI_UseBreakpadCrashHandler( pchVersion, __DATE__, __TIME__,
+#ifdef _WIN32
+			CommandLine()->FindParm( "-full_memory_dumps" ) != 0,
+#else
+			false,
+#endif
+			NULL, NULL );
 	}
 #endif
 

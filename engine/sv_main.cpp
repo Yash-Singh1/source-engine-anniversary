@@ -2382,19 +2382,12 @@ void SV_CreateBaseline (void)
 //-----------------------------------------------------------------------------
 // Purpose: Ensure steam context is initialized for multiplayer gameservers. Idempotent.
 //-----------------------------------------------------------------------------
-#ifdef BYTEMATCH_RETAIL
-static
-#endif
+#ifndef BYTEMATCH_RETAIL
 void SV_InitGameServerSteam()
 {
 	if ( sv.IsMultiplayer() )
 	{
-#ifdef BYTEMATCH_RETAIL
-		Steam3Server().Activate();
-#else
 		Steam3Server().Activate( CSteam3Server::eServerTypeNormal );
-#endif
-#line 2054
 		sv.SetQueryPortFromSteamServer();
 		if ( serverGameDLL && g_iServerGameDLLVersion >= 6 )
 		{
@@ -2402,6 +2395,8 @@ void SV_InitGameServerSteam()
 		}
 	}
 }
+#endif
+#line 2060
 
 //-----------------------------------------------------------------------------
 // Purpose:
@@ -2545,7 +2540,20 @@ bool SV_ActivateServer()
 		modelloader->PurgeUnusedModels();
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	if ( sv.IsMultiplayer() )
+	{
+		Steam3Server().Activate();
+		sv.SetQueryPortFromSteamServer();
+		if ( serverGameDLL && g_iServerGameDLLVersion >= 6 )
+		{
+			serverGameDLL->GameServerSteamAPIActivated();
+		}
+	}
+#else
 	SV_InitGameServerSteam();
+#endif
+#line 2204
 	networkStringTableContainerServer->Lock( bPrevState );
 
 	// Heartbeat the master server in case we turned SrcTV on or off.
@@ -3099,7 +3107,13 @@ bool SV_HasPlayers()
 void SV_Think( bool bIsSimulating )
 {
 	VPROF( "SV_Physics" );
+#ifdef BYTEMATCH_RETAIL
+#line 2728
+	tmZoneFiltered( TELEMETRY_LEVEL1, g_Telemetry.ZoneFilterVal, TMZF_NONE, "SV_Think(%s)", bIsSimulating ? "simulating" : "not simulating" );
+#else
 	tmZone( TELEMETRY_LEVEL1, TMZF_NONE, "SV_Think(%s)", bIsSimulating ? "simulating" : "not simulating" );
+#endif
+#line 2725
 	
 // @FD The staging branch already did away with "frames" and wakes on tick
 // optimally.  Currently the hibernating flag essentially means "is empty

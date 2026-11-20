@@ -40,6 +40,10 @@
 #include "sys_dll.h"
 #include "cmd.h"
 #include "tier0/icommandline.h"
+#ifndef OSX
+#include "iworkshop.h"
+#endif
+#line 43
 #include "filesystem.h"
 #include "filesystem_engine.h"
 #include "icliententitylist.h"
@@ -869,6 +873,15 @@ void Host_Map_Helper( const CCommand &args, bool bEditmode, bool bBackground, bo
 	cl.demonum = -1;
 
 	Host_Disconnect( false );	// stop old game
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
+	workshop->Unknown24();
+	if ( workshop->Unknown11( false ) )
+	{
+		Cbuf_AddText( "flush_content" );
+		Cbuf_Execute();
+	}
+#endif
+#line 873
 
 	HostState_NewGame( szMapName, false, bBackground );
 
@@ -1322,18 +1335,44 @@ AppId_t DetermineAppID( const char *pchGameDir, const char *pchBaseDir )
 {
 	char szSteamInf[1024];
 	char szFullPath[1024];
-	char szGameInfo[1024];
-	char szAppID[32];
-	struct stat statGameInfo;
-	struct stat statSteamInf;
 
 	V_ComposeFileName( pchGameDir, "steam.inf", szSteamInf, sizeof( szSteamInf ) );
 	V_MakeAbsolutePath( szFullPath, sizeof( szFullPath ), szSteamInf, pchBaseDir );
 
 	// steam.inf first, then gameinfo.txt
 	FILE *fp = fopen( szFullPath, "rb" );
-	if ( fp )
+	if ( !fp )
 	{
+		char szGameInfo[1024];
+		V_ComposeFileName( pchGameDir, "gameinfo.txt", szGameInfo, sizeof( szGameInfo ) );
+		V_MakeAbsolutePath( szFullPath, sizeof( szFullPath ), szGameInfo, pchBaseDir );
+		struct stat statGameInfo;
+		if ( stat( szFullPath, &statGameInfo ) != 0 )
+		{
+			fclose( fp );
+			return 0;
+		}
+
+		fp = fopen( szFullPath, "rb" );
+		if ( !fp )
+			return 0;
+
+		int nSize = statGameInfo.st_size;
+		char *pchBuffer = (char *)_alloca( nSize + 1 );
+		int nRead = fread( pchBuffer, nSize, 1, fp ) * nSize;
+		pchBuffer[nRead] = 0;
+		fclose( fp );
+
+		KeyValues *pkvGameInfo = new KeyValues( "gameinfo" );
+		KeyValues::AutoDelete autodelete_pkvGameInfo( pkvGameInfo );
+		if ( !pkvGameInfo->LoadFromBuffer( "gameinfo.txt", pchBuffer ) )
+			return 0;
+
+		return pkvGameInfo->GetInt( "FileSystem/SteamAppId" );
+	}
+	else
+	{
+		struct stat statSteamInf;
 		if ( stat( szFullPath, &statSteamInf ) != 0 )
 		{
 			fclose( fp );
@@ -1354,43 +1393,18 @@ AppId_t DetermineAppID( const char *pchGameDir, const char *pchBaseDir )
 
 			if ( !Q_strnicmp( com_token, "AppID=", 6 ) )
 			{
+				char szAppID[32];
 				Q_strncpy( szAppID, com_token + 6, sizeof( szAppID ) - 1 );
 				return atoi( szAppID );
 			}
 		}
 		return 0;
 	}
-
-	V_ComposeFileName( pchGameDir, "gameinfo.txt", szGameInfo, sizeof( szGameInfo ) );
-	V_MakeAbsolutePath( szFullPath, sizeof( szFullPath ), szGameInfo, pchBaseDir );
-	if ( stat( szFullPath, &statGameInfo ) != 0 )
-	{
-		fclose( fp );
-		return 0;
-	}
-
-	fp = fopen( szFullPath, "rb" );
-	if ( !fp )
-		return 0;
-
-	int nSize = statGameInfo.st_size;
-	char *pchBuffer = (char *)_alloca( nSize + 1 );
-	int nRead = fread( pchBuffer, nSize, 1, fp ) * nSize;
-	pchBuffer[nRead] = 0;
-	fclose( fp );
-
-	KeyValues *pkvGameInfo = new KeyValues( "gameinfo" );
-	KeyValues::AutoDelete autodelete_pkvGameInfo( pkvGameInfo );
-	AppId_t nAppID = 0;
-	if ( pkvGameInfo->LoadFromBuffer( "gameinfo.txt", pchBuffer ) )
-	{
-		nAppID = pkvGameInfo->GetInt( "FileSystem/SteamAppId" );
-	}
-	return nAppID;
 }
 
 void ParseSteamInfFile( const char *pszFile )
 {
+	int gotKeys = 0;
 	FileHandle_t fp = g_pFileSystem->Open( pszFile, "r" );
 	if ( fp )
 	{
@@ -1400,8 +1414,6 @@ void ParseSteamInfFile( const char *pszFile )
 		int iBytesRead = g_pFileSystem->Read( buffer, bufsize, fp );
 		g_pFileSystem->Close( fp );
 		buffer[iBytesRead] = 0;
-
-		int gotKeys = 0;
 
 		const char *pbuf = buffer;
 		while ( 1 )
@@ -1443,6 +1455,7 @@ void ParseSteamInfFile( const char *pszFile )
 			{
 				char szAppID[32];
 				Q_strncpy( szAppID, com_token + Q_strlen( "AppID=" ), sizeof( szAppID ) - 1 );
+				atoi( szAppID );
 				++gotKeys;
 				continue;
 			}

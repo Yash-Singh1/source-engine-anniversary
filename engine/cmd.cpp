@@ -601,9 +601,7 @@ void Cmd_Exec_f( const CCommand &args )
 	char	fileName[MAX_OSPATH];
 #ifdef BYTEMATCH_RETAIL
 
-	int argc = args.ArgC();
-
-	if ( argc < 2 )
+	if ( args.ArgC() < 2 )
 	{
 		ConMsg( "exec <filename> [path id]: execute a script file\n" );
 		return;
@@ -613,7 +611,7 @@ void Cmd_Exec_f( const CCommand &args )
 
 	const char *pPathID = "*";
 
-	if ( argc > 2 )
+	if ( args.ArgC() >= 3 )
 	{
 		pPathID = args[2];
 	}

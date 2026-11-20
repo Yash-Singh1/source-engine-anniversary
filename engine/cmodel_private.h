@@ -502,7 +502,7 @@ void FASTCALL CM_RecursiveHullCheck ( TraceInfo_t *pTraceInfo, int num, const fl
 inline bool TraceInfo_t::Visit( cbrush_t *pBrush, int ndxBrush, TraceCounter_t cachedCount, TraceCounter_t *pCachedCounters )
 {
 #ifdef BYTEMATCH_RETAIL
-	if ( ndxBrush < 0 || ndxBrush >= m_BrushCounters[m_nCheckDepth].Count() || !pCachedCounters )
+	if ( !pCachedCounters )
 		return false;
 
 #endif

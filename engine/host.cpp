@@ -105,6 +105,10 @@
 #ifndef SWDS
 #include "vgui_baseui_interface.h"
 #include "cl_steamauth.h"
+#ifndef OSX
+#include "iworkshop.h"
+#endif
+#line 108
 #endif
 #include "sv_remoteaccess.h" // NotifyDedicatedServerUI()
 #include "snd_audio_source.h"
@@ -1265,20 +1269,21 @@ void Host_WriteConfiguration( const char *filename )
 	UpdateMaterialSystemConfig();
 
 	// Generate a new .cfg file.
+	const char *pPathID;
 	char		szFileName[MAX_PATH];
 	CUtlBuffer	configBuff( 0, 0, CUtlBuffer::TEXT_BUFFER);
 
 	// The HL2 collection keeps its settings in the root mod
-	const char *pPathID;
-	if ( V_stricmp( CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) ), "hl2_complete" ) )
+	const char *pszGameDir = CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) );
+	if ( !V_stricmp( pszGameDir, "hl2_complete" ) )
 	{
-		Q_snprintf( szFileName, sizeof(szFileName), "cfg/%s", filename );
-		pPathID = "MOD";
+		pPathID = NULL;
+		Q_snprintf( szFileName, sizeof(szFileName), "//ROOT_MOD/cfg/%s", filename );
 	}
 	else
 	{
-		Q_snprintf( szFileName, sizeof(szFileName), "//ROOT_MOD/cfg/%s", filename );
-		pPathID = NULL;
+		Q_snprintf( szFileName, sizeof(szFileName), "cfg/%s", filename );
+		pPathID = "MOD";
 	}
 
 	g_pFileSystem->CreateDirHierarchy( "cfg", pPathID );
@@ -1777,15 +1782,23 @@ void Host_ReadConfiguration()
 #ifdef BYTEMATCH_RETAIL
 	const char *pszGameDir = CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) );
 	bool bHL2 = !V_stricmp( pszGameDir, "hl2" );
-	bool bHL2Complete = !V_stricmp( pszGameDir, "hl2_complete" );
-
-	if ( g_pFileSystem->FileExists( bHL2Complete ? "//ROOT_MOD/cfg/config.cfg" : "//mod/cfg/config.cfg" ) )
+	const char *pszConfigFile = "//mod/cfg/config.cfg";
+	const char *pszExecConfig = "exec config.cfg mod\n";
+	const char *pszExecDefault = "exec config_default.cfg\n";
+	if ( !V_stricmp( pszGameDir, "hl2_complete" ) )
 	{
-		Cbuf_AddText( bHL2Complete ? "exec config.cfg ROOT_MOD\n" : "exec config.cfg mod\n" );
+		pszConfigFile = "//ROOT_MOD/cfg/config.cfg";
+		pszExecConfig = "exec config.cfg ROOT_MOD\n";
+		pszExecDefault = "exec config_default.cfg ROOT_MOD\n";
+	}
+
+	if ( g_pFileSystem->FileExists( pszConfigFile ) )
+	{
+		Cbuf_AddText( pszExecConfig );
 	}
 	else
 	{
-		Cbuf_AddText( bHL2Complete ? "exec config_default.cfg ROOT_MOD\n" : "exec config_default.cfg\n" );
+		Cbuf_AddText( pszExecDefault );
 		saveconfig = true;
 	}
 
@@ -1799,7 +1812,14 @@ void Host_ReadConfiguration()
 	}
 
 	ConVarRef hl2_episodic( "hl2_episodic" );
-	hl2_episodic.SetValue( bHL2 ? 0 : 1 );
+	if ( bHL2 )
+	{
+		hl2_episodic.SetValue( 0 );
+	}
+	else
+	{
+		hl2_episodic.SetValue( 1 );
+	}
 
 	Cbuf_AddText( "exec modsettings_default.cfg\n" );
 	if ( g_pFileSystem->FileExists( "//mod/cfg/modsettings.cfg" ) )
@@ -1950,15 +1970,16 @@ void Host_ReadPreStartupConfiguration()
 {
 	FileHandle_t f = NULL;
 #ifdef BYTEMATCH_RETAIL
+	const char *pszGameDir = CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) );
 	bool bHL2Complete = false;
-	if ( V_stricmp( CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) ), "hl2_complete" ) )
+	if ( !V_stricmp( pszGameDir, "hl2_complete" ) )
 	{
-		f = g_pFileSystem->Open( "//mod/cfg/config.cfg", "rt" );
+		bHL2Complete = true;
+		f = g_pFileSystem->Open( "//ROOT_MOD/cfg/config.cfg", "rt" );
 	}
 	else
 	{
-		f = g_pFileSystem->Open( "//ROOT_MOD/cfg/config.cfg", "rt" );
-		bHL2Complete = true;
+		f = g_pFileSystem->Open( "//mod/cfg/config.cfg", "rt" );
 	}
 #else
 	if ( IsX360() )
@@ -3344,6 +3365,9 @@ void _Host_RunFrame (float time)
 	double prevremainder;
 	bool shouldrender;
 
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
+	workshop->Unknown05();
+#endif
 #if defined( RAD_TELEMETRY_ENABLED )
 	if( g_Telemetry.DemoTickEnd == ( uint32 )-1 )
 	{
@@ -3805,7 +3829,7 @@ void _Host_RunFrame (float time)
 			modelloader->UpdateDynamicModels();
 		}
 #endif
-#line 3675
+#line 3676
 
 		//-------------------
 		// simulation

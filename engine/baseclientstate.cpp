@@ -1091,7 +1091,7 @@ bool CBaseClientState::InternalProcessStringCmd( NET_StringCmd *msg, bool bIsHLT
 		return true;
 
 	// A relay may send the client on to another server unless matchmaking put it here
-	if ( bIsHLTV && !V_stricmp( args[0], "Connect" ) && !IsClientConnectionViaMatchMaking() )
+	if ( bIsHLTV && !V_stricmp( args[0], "Connect" ) && !cl.IsClientConnectionViaMatchMaking() )
 	{
 		Cbuf_AddText( msg->m_szCommand );
 		return true;
