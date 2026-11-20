@@ -448,6 +448,7 @@ void CCvar::UnregisterConCommands( CVarDLLIdentifier_t id )
 	ConCommandBase  *pCommand, *pNext;
 
 	int iCommandsLooped = 0;
+	ConCommandBase *pLastCommand = NULL;
 
 	pNewList = NULL;
 	pCommand = m_pConCommandList;
@@ -466,6 +467,7 @@ void CCvar::UnregisterConCommands( CVarDLLIdentifier_t id )
 			pCommand->m_pNext = NULL;
 		}
 
+		pLastCommand = pCommand;
 		pCommand = pNext;
 		iCommandsLooped++;
 	}

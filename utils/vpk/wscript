@@ -25,7 +25,7 @@ def build(bld):
 	cxxflags = []
 	if bld.env.RETAIL_OSX32:
 		includes = ['sdk2013', 'sdk2013/tier1'] + includes
-		cxxflags = bld.retail_macro_prefix_map('sdk2013/tier1', 'public/tier1')
+		cxxflags = bld.retail_macro_prefix_map('sdk2013', 'public')
 
 	bld(
 		source   = ['packtest.cpp'],

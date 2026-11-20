@@ -80,6 +80,63 @@ LINE_MARKER = re.compile(rb'^(# \d+ ")([^"\n]*)(")', re.M)
 FOREIGN_ARCHIVES = {
     'libcef_dll_wrapper.a': ('external/cef/', './', XCODE + 'Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/'),
 }
+# Prebuilt third-party archives whose members carry DWARF debug info (so ld64 emits
+# N_SO/N_SOL/N_OSO stabs). Rebuilt from the toolchain work tree with the period gcc
+# driver and Valve's SDK/source paths before archiving with retail member mtimes.
+CRYPTOPP_FLAGS = [
+    '-mmacosx-version-min=10.5', '-DNDEBUG', '-g', '-O2', '-fPIC',
+    '-fvisibility=hidden', '-w', '-pipe', '-DCRYPTOPP_DISABLE_ASM',
+]
+# Apple's 10.9 SDK crt1.10.6.o (Csu-79): defines _pvars in __DATA,__program_vars
+# with .no_dead_strip (so -dead_strip keeps it) and NXArgc/NXArgv/environ/__progname
+# as __DATA,__common zerofills. The 10.6 SDK stub lacks _pvars and puts them in __data.
+CRT1_10_6_ASM = """\t.section __TEXT,__text,regular,pure_instructions
+\t.globl start
+\t.align 2
+start:
+\tpushl $0
+\tmovl %esp, %ebp
+\tandl $-16, %esp
+\tsubl $16, %esp
+\tmovl 4(%ebp), %ebx
+\tmovl %ebx, (%esp)
+\tleal 8(%ebp), %ecx
+\tmovl %ecx, 4(%esp)
+\taddl $1, %ebx
+\tshll $2, %ebx
+\taddl %ecx, %ebx
+\tmovl %ebx, 8(%esp)
+Lloop:
+\tmovl (%ebx), %eax
+\taddl $4, %ebx
+\ttestl %eax, %eax
+\tjne Lloop
+\tmovl %ebx, 12(%esp)
+\tcall _main
+\tmovl %eax, (%esp)
+\tcall _exit
+\thlt
+
+\t.section __DATA,__program_vars
+\t.align 2
+\t.no_dead_strip _pvars
+_pvars:
+\t.long ___dso_handle
+\t.long _NXArgc
+\t.long _NXArgv
+\t.long _environ
+\t.long ___progname
+
+\t.globl _NXArgc
+\t.zerofill __DATA,__common,_NXArgc,4,2
+\t.globl _NXArgv
+\t.zerofill __DATA,__common,_NXArgv,4,2
+\t.globl _environ
+\t.zerofill __DATA,__common,_environ,4,2
+\t.globl ___progname
+\t.zerofill __DATA,__common,___progname,4,2
+\t.subsections_via_symbols
+"""
 
 
 def log(msg):
@@ -149,11 +206,15 @@ def load_manifest():
     return m
 
 
-def module_key(m, target):
+def module_key(m, target, link=None):
     for key, mod in m['modules'].items():
-        if mod.get('waf_target') == target and mod['retail'].get('filetype') == 'MH_DYLIB':
+        if mod.get('waf_target') == target and mod['retail'].get('filetype') in ('MH_DYLIB', 'MH_EXECUTE'):
             return key
-    for key in (target, 'bin/' + target):
+    candidates = [target, 'bin/' + target]
+    if link:
+        base = os.path.basename(link['output'])
+        candidates += [base, 'bin/' + base]
+    for key in candidates:
         if key in m['modules']:
             return key
     return None
@@ -168,6 +229,7 @@ class Compiler:
         self.aliases = aliases
         import retailflags
         self.sdk2013 = os.path.abspath(retailflags.SDK2013)
+        self.thirdparty = os.path.abspath(os.path.join(retailflags.TOOLCHAIN, retailflags.THIRDPARTY_DIR))
         self.jobs = jobs
         self.cache = os.path.join(scratch, 'cache')
         os.makedirs(self.cache, exist_ok=True)
@@ -189,6 +251,8 @@ class Compiler:
             rmap.append((self.tree + ours, valve_src + valve))
         # protobuf's headers come from the Source SDK 2013 checkout (Valve's src/thirdparty).
         rmap.append((os.path.join(self.sdk2013, 'src', 'thirdparty') + '/', valve_src + 'thirdparty/'))
+        # Crypto++ headers come from thirdparty-osx32-*/include/cryptopp (Valve's src/external/crypto++-5.61).
+        rmap.append((os.path.join(self.thirdparty, 'include', 'cryptopp') + '/', valve_src + 'external/crypto++-5.61/'))
         rmap.append((self.tree, valve_src))
         rmap.sort(key=lambda p: -len(p[0]))
         return rmap
@@ -269,6 +333,55 @@ class Compiler:
             shutil.rmtree(tmpdir, ignore_errors=True)
         return cached
 
+    def compile_cryptopp(self, src_name, so_dir):
+        """Compile a Crypto++ 5.6.1 member with period gcc 4.2.1 and rewrite DWARF paths."""
+        import retailflags
+        tc = retailflags.TOOLCHAIN
+        gxx = os.path.join(tc, 'gcc-5666.3', 'bin', 'g++')
+        sdk105 = os.path.join(tc, 'sdk', 'MacOSX10.5.sdk')
+        src_dir = os.path.join(tc, 'work', 'thirdparty', 'cryptopp561')
+        src = os.path.join(src_dir, src_name)
+        if not os.path.exists(src):
+            raise RuntimeError('%s missing; run devtools/bytematch/toolchain/build-thirdparty.py --only cryptopp' % src)
+        target_dir = so_dir.rstrip('/')
+        key = hashlib.sha1(repr(('cryptopp2', src_name, target_dir, os.path.getmtime(src), CRYPTOPP_FLAGS)).encode()).hexdigest()
+        cached = os.path.join(self.cache, key + '.o')
+        if not os.path.exists(cached):
+            tmpdir = os.path.join(self.scratch, 'ccache-tmp', key[:8])
+            os.makedirs(tmpdir, exist_ok=True)
+            # gcc 4.2.1 emits DW_AT_comp_dir as inline DW_FORM_string with a hardcoded CU length,
+            # so compile from a symlink of the exact byte length of Valve's comp_dir.
+            prefix = '/tmp/bm-%d-%s-' % (os.getpid(), key[:8])
+            if len(prefix) > len(target_dir):
+                raise RuntimeError('target_dir too short for exact-length symlink: %s' % target_dir)
+            link_path = prefix + 'x' * (len(target_dir) - len(prefix))
+            if os.path.islink(link_path):
+                os.unlink(link_path)
+            os.symlink(src_dir, link_path)
+            try:
+                s_path = os.path.join(tmpdir, src_name + '.s')
+                env = dict(os.environ, MACOSX_DEPLOYMENT_TARGET='10.5', PWD=link_path)
+                r = subprocess.run([gxx, '-isysroot', sdk105] + CRYPTOPP_FLAGS + ['-S', src_name, '-o', s_path],
+                                   cwd=link_path, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                if r.returncode:
+                    raise RuntimeError('compile %s failed:\n%s' % (src, r.stdout.decode(errors='replace')))
+                with open(s_path, 'rb') as f:
+                    asm = f.read()
+                asm = asm.replace((sdk105.rstrip('/') + '/').encode(), b'/Developer/SDKs/MacOSX10.5.sdk/')
+                asm = asm.replace(link_path.encode(), target_dir.encode())
+                with open(s_path, 'wb') as f:
+                    f.write(asm)
+                r = subprocess.run([gxx, '-c', s_path, '-o', cached + '.tmp'],
+                                   cwd=tmpdir, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                if r.returncode:
+                    raise RuntimeError('assemble %s failed:\n%s' % (s_path, r.stdout.decode(errors='replace')))
+                os.rename(cached + '.tmp', cached)
+            finally:
+                if os.path.islink(link_path):
+                    os.unlink(link_path)
+                shutil.rmtree(tmpdir, ignore_errors=True)
+        return cached
+
 
 # ---------------------------------------------------------------- module
 
@@ -293,13 +406,13 @@ class Module:
         self.target = target
         self.build = build
         self.comp = comp
-        self.key = module_key(manifest, target)
-        if not self.key:
-            raise SystemExit('%s: not in %s' % (target, MANIFEST))
-        self.mod = manifest['modules'][self.key]
         self.link = build.by_target.get(target)
         if not self.link:
             raise SystemExit('%s: no link command in link_commands.json' % target)
+        self.key = module_key(manifest, target, self.link)
+        if not self.key:
+            raise SystemExit('%s: not in %s' % (target, MANIFEST))
+        self.mod = manifest['modules'][self.key]
         self.retail = os.path.join(depot, self.mod['retail']['path'])
         self.root = os.path.join(scratch, 'roots', self.key.replace('/', '_'))
         self.out = os.path.join(out_dir, os.path.basename(self.link['output']))
@@ -376,7 +489,24 @@ class Module:
                 continue
             name = 'lib%s.a' % a[2:]
             ar = next((os.path.join(ld, name) for ld in libdirs if os.path.exists(os.path.join(ld, name))), None)
-            if not ar or os.path.normpath(ar) not in self.build.by_output:
+            if not ar:
+                continue
+            if os.path.normpath(ar) not in self.build.by_output:
+                if name == 'libcryptopp.a':
+                    rmem = [o for o in members if o['oso'].split('(')[0].endswith('/' + name)]
+                    if rmem:
+                        varchive = split_member(rmem[0]['oso'])[0]
+                        by_m = dict((split_member(o['oso'])[1], o) for o in rmem)
+                        all_m = [m for m in subprocess.check_output(['/usr/bin/ar', 't', ar], text=True).splitlines()
+                                 if m.endswith('.o')]
+                        mems = []
+                        for mn in all_m:
+                            r = by_m.get(mn)
+                            if r:
+                                mems.append((ar, r['so_name'], None, r, mn))
+                            else:
+                                mems.append((ar, None, None, None, mn))
+                        out.append((a, varchive, mems))
                 continue
             entry = self.build.by_output[os.path.normpath(ar)]
             rname = re.sub(ARCHIVE_VARIANT, '.a', name)
@@ -412,10 +542,13 @@ class Module:
             work.append((src, entry, r, ('obj', vp)))
         for lib, varchive, mems in archives:
             for inp, src, cent, r, mname in mems:
-                work.append((src, cent, r, ('mem', varchive, mname)))
+                if src is not None:
+                    work.append((src, cent, r, ('mem', varchive, mname)))
 
         def do(item):
             src, entry, r, dest = item
+            if entry is None:
+                return item, self.comp.compile_cryptopp(src, r['so_dir'])
             lang = lang_of(src)
             so_dir = r['so_dir'] if r and r.get('so_dir') else DEFAULT_CCACHE_DIR
             so_name = r['so_name'] if r and r.get('so_name') else default_so_name(src, lang)
@@ -443,12 +576,23 @@ class Module:
             os.makedirs(os.path.dirname(dest), exist_ok=True)
             if os.path.exists(dest):
                 os.unlink(dest)
+            # Extract any unmodified members of a prebuilt archive (e.g. dead-stripped Crypto++ objects).
+            prebuilt_ar = next((m[0] for m in mems if m[1] is None and m[0]), None)
+            if prebuilt_ar:
+                os.makedirs(stage, exist_ok=True)
+                missing = [m[4] for m in mems if m[1] is None]
+                subprocess.check_call(['/usr/bin/ar', 'x', prebuilt_ar] + missing, cwd=stage,
+                                      stderr=subprocess.DEVNULL)
             names = []
             for m in mems:
                 if m[4] not in names:
                     names.append(m[4])
-            subprocess.check_call(['/usr/bin/ar', 'rcs', dest] + names, cwd=stage,
-                                  stderr=subprocess.DEVNULL)
+            if prebuilt_ar:
+                subprocess.check_call(['/usr/bin/libtool', '-static', '-arch_only', 'i386', '-o', dest] + names,
+                                      cwd=stage, stderr=subprocess.DEVNULL)
+            else:
+                subprocess.check_call(['/usr/bin/ar', 'rcs', dest] + names, cwd=stage,
+                                      stderr=subprocess.DEVNULL)
             lib_map[lib] = varchive
         # link; archives of formerly loose objects follow the last object, ahead of the libraries
         cmd = []
@@ -471,7 +615,13 @@ class Module:
         os.makedirs(os.path.dirname(self.out), exist_ok=True)
         env = dict(os.environ)
         env['DYLD_INSERT_LIBRARIES'] = shim
-        env['BM_PATHMAP'] = '%s=%s/' % (VALVE_TOP, os.path.join(self.root, VALVE_TOP[1:].rstrip('/')))
+        pathmap = '%s=%s/' % (VALVE_TOP, os.path.join(self.root, VALVE_TOP[1:].rstrip('/')))
+        if self.mod['retail'].get('filetype') == 'MH_EXECUTE':
+            sdk = next((cmd[i + 1] for i, a in enumerate(cmd) if a == '-isysroot'), None)
+            if sdk:
+                crt = build_crt109(self.comp.scratch)
+                pathmap += ';%s/usr/lib/crt1.10.6.o=%s' % (sdk.rstrip('/'), crt)
+        env['BM_PATHMAP'] = pathmap
         r = subprocess.run(cmd, cwd=self.link['directory'], env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if r.returncode:
             raise RuntimeError('link failed:\n%s\n%s' % (' '.join(shlex.quote(c) for c in cmd), r.stdout.decode(errors='replace')))
@@ -485,6 +635,21 @@ def build_shim(scratch):
     out = os.path.join(scratch, 'buildhost.dylib')
     if not os.path.exists(out) or os.path.getmtime(out) < max(os.path.getmtime(s) for s in srcs):
         subprocess.check_call(['xcrun', 'clang', '-O2', '-dynamiclib', '-o', out] + srcs)
+    return out
+
+
+def build_crt109(scratch):
+    import retailflags
+    out = os.path.join(scratch, 'crt1.10.6.o')
+    asm = os.path.join(scratch, 'crt1.10.6.s')
+    if os.path.exists(out) and os.path.exists(asm):
+        with open(asm) as f:
+            if f.read() == CRT1_10_6_ASM:
+                return out
+    with open(asm, 'w') as f:
+        f.write(CRT1_10_6_ASM)
+    cc = retailflags.paths()['cc']
+    subprocess.check_call([cc, '-arch', 'i386', '-c', asm, '-o', out])
     return out
 
 
