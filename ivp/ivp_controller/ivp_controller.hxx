@@ -9,7 +9,14 @@
 #   include <ivp_environment.hxx>
 #endif
 #ifdef BYTEMATCH_RETAIL
-#include <stdlib.h>
+#define Error tier0_Error
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include "tier0/memalloc.h"
+#undef Error
+#undef min
+#undef max
 #endif
 
 /**********************************************************************************************
@@ -143,8 +150,8 @@ class IVP_Controller_Dependent: public IVP_Controller {
 class IVP_Standard_Gravity_Controller : public IVP_Controller_Independent {
 public:
 #ifdef BYTEMATCH_RETAIL
-    void *operator new(size_t size) { return malloc(size); }
-    void operator delete(void *p) { if (p) free(p); }
+    void *operator new(size_t size) { return MemAlloc_AllocAligned(size, 16); }
+    void operator delete(void *p) { if (p) MemAlloc_FreeAligned(p); }
 #else
     IVP_Standard_Gravity_Controller() { ; };
 #endif

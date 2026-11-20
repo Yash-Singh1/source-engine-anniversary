@@ -211,10 +211,10 @@ void IVP_SurfaceBuilder_Ledge_Soup::build_root_convex_hull(){
 
 #ifdef BYTEMATCH_RETAIL
     IVP_Compact_Ledge *hull;
-    if ( this->parameters->force_convex_hull ) {
-	hull = cr.compile_with_hull( this->parameters->force_convex_hull );
-    } else {
+    if ( !this->parameters->force_convex_hull ) {
 	hull = cr.compile();
+    } else {
+	hull = cr.compile_with_hull( this->parameters->force_convex_hull );
     }
 #else
     IVP_Compact_Ledge *hull = cr.compile(); 

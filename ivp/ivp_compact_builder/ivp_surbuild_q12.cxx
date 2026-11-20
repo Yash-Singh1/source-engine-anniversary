@@ -20,6 +20,10 @@
 #include <ivp_surbuild_polygon_convex.hxx>
 #include <ivp_surbuild_halfspacesoup.hxx>
 #include <ivp_surbuild_ledge_soup.hxx>
+#undef LittleShort
+#undef LittleLong
+#undef BigFloat
+#undef LittleFloat
 
 
 // hack :)

@@ -354,7 +354,7 @@ IVP_Compact_Ledge *IVP_SurfaceBuilder_Pointsoup::try_to_build_convex_ledge_from_
 	    // check area size of facet
 	    IVP_DOUBLE area_sum = plane->get_area_size();
 #ifdef BYTEMATCH_RETAIL
-	    IVP_DOUBLE min_area = 0.5 * P_MIN_EDGE_LEN * plane->get_len_of_all_edges();
+	    IVP_DOUBLE edge_sum = plane->get_len_of_all_edges();
 #else
 	    IVP_DOUBLE qedge_sum = plane->get_qlen_of_all_edges();
 #endif
@@ -368,7 +368,7 @@ IVP_Compact_Ledge *IVP_SurfaceBuilder_Pointsoup::try_to_build_convex_ledge_from_
 	    }
 	    
 #ifdef BYTEMATCH_RETAIL
-	    if ( area_sum  <  min_area ){
+	    if ( area_sum  <  0.5 * P_MIN_EDGE_LEN * edge_sum ){
 #else
 	    if ( area_sum  <  0.5 * P_MIN_EDGE_LEN * IVP_Inline_Math::ivp_sqrtf(qedge_sum)){
 #endif
