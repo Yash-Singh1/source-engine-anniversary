@@ -118,8 +118,6 @@ END_RECV_TABLE()
 
 C_FireSmoke::C_FireSmoke()
 {
-	m_bClipTested			= false;
-
 	//Server-side
 	m_flStartScale			= 0.0f;
 	m_flOriginalStartScale	= 0.0f;
@@ -135,6 +133,7 @@ C_FireSmoke::C_FireSmoke()
 	m_flScaleEnd			= 0.0f;
 	m_flScaleTimeStart		= 0.0f;
 	m_flScaleTimeEnd		= 0.0f;
+	m_bClipTested			= false;
 	m_flChildFlameSpread	= FLAME_CHILD_SPREAD;
 
 	for ( int i = 0; i < NUM_CHILD_FLAMES; i++ )
@@ -157,13 +156,12 @@ C_FireSmoke::~C_FireSmoke()
 
 	// Shut down our effect if we have it
 	ParticleProp()->StopEmissionAndDestroyImmediately( m_hEffect );
-	m_hEffect = NULL;
 }
 
 //-----------------------------------------------------------------------------
 // Purpose: FIXME: what's the right way to do this?
 //-----------------------------------------------------------------------------
-inline void C_FireSmoke::StartClientOnly( void )
+void C_FireSmoke::StartClientOnly( void )
 {
 	Start();
 
@@ -176,7 +174,7 @@ inline void C_FireSmoke::StartClientOnly( void )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-inline void C_FireSmoke::RemoveClientOnly(void)
+void C_FireSmoke::RemoveClientOnly(void)
 {
 	ClientThinkList()->RemoveThinkable( GetClientHandle() );
 
@@ -232,7 +230,23 @@ void C_FireSmoke::Simulate( void )
 		m_nFlags &= ~bitsFIRESMOKE_SMOKE;
 	}
 
+#ifdef HL2_ANNIVERSARY_NOV2024
+	if ( !BIsCurrentFireTypeClassic() )
+	{
+		float flScaleTime = m_flScaleTimeEnd - m_flScaleTimeStart;
+		float flTimeLeft = m_flScaleTimeEnd - Helper_GetTime();
+
+		// Stop emitting once the fire has almost finished shrinking away
+		if ( m_hEffect && flScaleTime > 0.0f && m_flScaleEnd == 0.0f && flTimeLeft <= 1.5f )
+		{
+			m_hEffect->StopEmission( false, false, true );
+			m_hEffect = NULL;
+		}
+	}
+	else
+#else
 	if ( BIsCurrentFireTypeClassic() )
+#endif
 	{
 		//Only do this if we're active
 		if ( m_nFlags & bitsFIRESMOKE_ACTIVE )
@@ -241,21 +255,6 @@ void C_FireSmoke::Simulate( void )
 			AddFlames();
 		}
 	}
-#ifdef HL2_ANNIVERSARY_NOV2024
-	else
-	{
-		float flScaleTimeEnd = m_flScaleTimeEnd;
-		float flScaleTime = flScaleTimeEnd - m_flScaleTimeStart;
-		float flTime = Helper_GetTime();
-
-		// Stop emitting once the fire has almost finished shrinking away
-		if ( m_hEffect && flScaleTime > 0.0f && m_flScaleEnd == 0.0f && ( flScaleTimeEnd - flTime ) <= 1.5f )
-		{
-			m_hEffect->StopEmission( false, false, true );
-			m_hEffect = NULL;
-		}
-	}
-#endif
 #line 257
 }
 
@@ -402,7 +401,119 @@ void C_FireSmoke::Start( void )
 		m_flOriginalStartScale = m_flStartScale;
 	}
 
-	if ( !BIsCurrentFireTypeClassic() )
+	if ( BIsCurrentFireTypeClassic() )
+	{
+		// Setup the flame sprites
+		bool bTools = CommandLine()->CheckParm( "-tools" ) != NULL;
+
+		int i;
+		for ( i = 0; i < NUM_CHILD_FLAMES; i++ )
+		{
+			if ( bTools )
+			{
+				ClientEntityList().AddNonNetworkableEntity(	&m_entFlames[i] );
+			}
+			m_entFlames[i].AddToLeafSystem( RENDER_GROUP_TRANSLUCENT_ENTITY );
+		}
+
+		if ( m_nFlags & bitsFIRESMOKE_VISIBLE_FROM_ABOVE )
+		{
+			for ( i = 0; i < NUM_CHILD_FLAMES; i++ )
+			{
+				if ( bTools )
+				{
+					ClientEntityList().AddNonNetworkableEntity(	&m_entFlamesFromAbove[i] );
+				}
+				m_entFlamesFromAbove[i].AddToLeafSystem( RENDER_GROUP_TRANSLUCENT_ENTITY );
+			}
+		}
+
+		//Various setup info
+		m_tParticleSpawn.Init( 2.0f );
+
+		QAngle	offset;
+		int		maxFrames;
+
+		//Setup the child flames
+		for ( i = 0; i < NUM_CHILD_FLAMES; i++ )
+		{
+			//Setup our offset angles
+			offset[0] = 0.0f;
+			offset[1] = Helper_RandomFloat( 0, 360 );
+			offset[2] = 0.0f;
+
+			AngleVectors( offset, &m_entFlames[i].m_vecMoveDir );
+			m_entFlames[i].m_bFadeFromAbove = ( m_nFlags & bitsFIRESMOKE_VISIBLE_FROM_ABOVE );
+
+			model_t *pModel = (model_t *) modelinfo->GetModel( m_nFlameModelIndex );
+			maxFrames = modelinfo->GetModelFrameCount( pModel );
+
+			//Setup all the information for the client entity
+			m_entFlames[i].SetModelByIndex( m_nFlameModelIndex );
+			m_entFlames[i].SetLocalOrigin( GetLocalOrigin() );
+			m_entFlames[i].m_flFrame			= Helper_RandomInt( 0, maxFrames - 1 );
+			m_entFlames[i].m_flSpriteFramerate	= (float) Helper_RandomInt( 15, 30 );
+			m_entFlames[i].SetScale( m_flStartScale );
+			m_entFlames[i].SetRenderMode( kRenderTransAddFrameBlend );
+			m_entFlames[i].m_nRenderFX			= kRenderFxNone;
+			m_entFlames[i].SetRenderColor( 255, 255, 255, 255 );
+			m_entFlames[i].SetBrightness( 255 );
+			m_entFlames[i].AddEffects( EF_NORECEIVESHADOW | EF_NOSHADOW );
+
+			m_entFlames[i].index				= -1;
+
+			if ( i == 0 )
+			{
+				m_entFlameScales[i] = 1.0f;
+			}
+			else
+			{
+				//Keep a scale offset
+				m_entFlameScales[i] = random->RandomFloat( 0.5f, 1.0f );
+			}
+		}
+
+		if ( m_nFlags & bitsFIRESMOKE_VISIBLE_FROM_ABOVE )
+		{
+			for ( i = 0; i < NUM_CHILD_FLAMES; i++ )
+			{
+				model_t *pModel = (model_t *) modelinfo->GetModel( m_nFlameFromAboveModelIndex );
+				maxFrames = modelinfo->GetModelFrameCount( pModel );
+
+				//Setup all the information for the client entity
+				m_entFlamesFromAbove[i].SetModelByIndex( m_nFlameFromAboveModelIndex );
+				m_entFlamesFromAbove[i].SetLocalOrigin( GetLocalOrigin() );
+				m_entFlamesFromAbove[i].m_flFrame			= Helper_RandomInt( 0, maxFrames - 1 );
+				m_entFlamesFromAbove[i].m_flSpriteFramerate	= (float) Helper_RandomInt( 15, 30 );
+				m_entFlamesFromAbove[i].SetScale( m_flStartScale );
+				m_entFlamesFromAbove[i].SetRenderMode( kRenderTransAddFrameBlend );
+				m_entFlamesFromAbove[i].m_nRenderFX			= kRenderFxNone;
+				m_entFlamesFromAbove[i].SetRenderColor( 255, 255, 255, 255 );
+				m_entFlamesFromAbove[i].SetBrightness( 255 );
+				m_entFlamesFromAbove[i].AddEffects( EF_NORECEIVESHADOW | EF_NOSHADOW );
+
+				m_entFlamesFromAbove[i].index				= -1;
+
+				if ( i == 0 )
+				{
+					m_entFlameScales[i] = 1.0f;
+				}
+				else
+				{
+					//Keep a scale offset
+					m_entFlameScales[i] = random->RandomFloat( 0.5f, 1.0f );
+				}
+			}
+		}
+
+		//Only make the smoke if we've requested it
+		if ( m_nFlags & bitsFIRESMOKE_SMOKE )
+		{
+			m_pSmokeEmitter = CLitSmokeEmitter::Create( "C_FireSmoke::m_pSmokeEmitter" );
+			m_pSmokeEmitter->Init( "particle/SmokeStack", GetAbsOrigin() );
+		}
+	}
+	else
 	{
 		if ( !m_hEffect )
 		{
@@ -432,117 +543,6 @@ void C_FireSmoke::Start( void )
 			m_hEffect = ParticleProp()->Create( lpszEffectName, PATTACH_ABSORIGIN );
 			m_hEffect->SetControlPoint( 0, GetAbsOrigin() );
 		}
-		return;
-	}
-
-	// Setup the flame sprites
-	bool bTools = CommandLine()->CheckParm( "-tools" ) != NULL;
-
-	int i;
-	for ( i = 0; i < NUM_CHILD_FLAMES; i++ )
-	{
-		if ( bTools )
-		{
-			ClientEntityList().AddNonNetworkableEntity(	&m_entFlames[i] );
-		}
-		m_entFlames[i].AddToLeafSystem( RENDER_GROUP_TRANSLUCENT_ENTITY );
-	}
-
-	if ( m_nFlags & bitsFIRESMOKE_VISIBLE_FROM_ABOVE )
-	{
-		for ( i = 0; i < NUM_CHILD_FLAMES; i++ )
-		{
-			if ( bTools )
-			{
-				ClientEntityList().AddNonNetworkableEntity(	&m_entFlamesFromAbove[i] );
-			}
-			m_entFlamesFromAbove[i].AddToLeafSystem( RENDER_GROUP_TRANSLUCENT_ENTITY );
-		}
-	}
-
-	//Various setup info
-	m_tParticleSpawn.Init( 2.0f );
-
-	QAngle	offset;
-	int		maxFrames;
-
-	//Setup the child flames
-	for ( i = 0; i < NUM_CHILD_FLAMES; i++ )
-	{
-		//Setup our offset angles
-		offset[0] = 0.0f;
-		offset[1] = Helper_RandomFloat( 0, 360 );
-		offset[2] = 0.0f;
-
-		AngleVectors( offset, &m_entFlames[i].m_vecMoveDir );
-		m_entFlames[i].m_bFadeFromAbove = ( m_nFlags & bitsFIRESMOKE_VISIBLE_FROM_ABOVE );
-
-		model_t *pModel = (model_t *) modelinfo->GetModel( m_nFlameModelIndex );
-		maxFrames = modelinfo->GetModelFrameCount( pModel );
-
-		//Setup all the information for the client entity
-		m_entFlames[i].SetModelByIndex( m_nFlameModelIndex );
-		m_entFlames[i].SetLocalOrigin( GetLocalOrigin() );
-		m_entFlames[i].m_flFrame			= Helper_RandomInt( 0, maxFrames - 1 );
-		m_entFlames[i].m_flSpriteFramerate	= (float) Helper_RandomInt( 15, 30 );
-		m_entFlames[i].SetScale( m_flStartScale );
-		m_entFlames[i].SetRenderMode( kRenderTransAddFrameBlend );
-		m_entFlames[i].m_nRenderFX			= kRenderFxNone;
-		m_entFlames[i].SetRenderColor( 255, 255, 255, 255 );
-		m_entFlames[i].SetBrightness( 255 );
-		m_entFlames[i].AddEffects( EF_NORECEIVESHADOW | EF_NOSHADOW );
-
-		m_entFlames[i].index				= -1;
-
-		if ( i == 0 )
-		{
-			m_entFlameScales[i] = 1.0f;
-		}
-		else
-		{
-			//Keep a scale offset
-			m_entFlameScales[i] = random->RandomFloat( 0.5f, 1.0f );
-		}
-	}
-
-	if ( m_nFlags & bitsFIRESMOKE_VISIBLE_FROM_ABOVE )
-	{
-		for ( i = 0; i < NUM_CHILD_FLAMES; i++ )
-		{
-			model_t *pModel = (model_t *) modelinfo->GetModel( m_nFlameFromAboveModelIndex );
-			maxFrames = modelinfo->GetModelFrameCount( pModel );
-
-			//Setup all the information for the client entity
-			m_entFlamesFromAbove[i].SetModelByIndex( m_nFlameFromAboveModelIndex );
-			m_entFlamesFromAbove[i].SetLocalOrigin( GetLocalOrigin() );
-			m_entFlamesFromAbove[i].m_flFrame			= Helper_RandomInt( 0, maxFrames - 1 );
-			m_entFlamesFromAbove[i].m_flSpriteFramerate	= (float) Helper_RandomInt( 15, 30 );
-			m_entFlamesFromAbove[i].SetScale( m_flStartScale );
-			m_entFlamesFromAbove[i].SetRenderMode( kRenderTransAddFrameBlend );
-			m_entFlamesFromAbove[i].m_nRenderFX			= kRenderFxNone;
-			m_entFlamesFromAbove[i].SetRenderColor( 255, 255, 255, 255 );
-			m_entFlamesFromAbove[i].SetBrightness( 255 );
-			m_entFlamesFromAbove[i].AddEffects( EF_NORECEIVESHADOW | EF_NOSHADOW );
-
-			m_entFlamesFromAbove[i].index				= -1;
-
-			if ( i == 0 )
-			{
-				m_entFlameScales[i] = 1.0f;
-			}
-			else
-			{
-				//Keep a scale offset
-				m_entFlameScales[i] = random->RandomFloat( 0.5f, 1.0f );
-			}
-		}
-	}
-
-	//Only make the smoke if we've requested it
-	if ( m_nFlags & bitsFIRESMOKE_SMOKE )
-	{
-		m_pSmokeEmitter = CLitSmokeEmitter::Create( "C_FireSmoke::m_pSmokeEmitter" );
-		m_pSmokeEmitter->Init( "particle/SmokeStack", GetAbsOrigin() );
 	}
 }
 
@@ -613,17 +613,21 @@ void C_FireSmoke::UpdateFlames( void )
 	{
 		float	newScale = m_flScaleRegister * m_entFlameScales[i];
 
+		Vector	dir;
+		dir[2] = 0.0f;
+		VectorNormalize( dir );
+
 		Vector	offset = GetAbsOrigin();
 		offset[2] += m_entFlames[i].GetScale() * FLAME_SOURCE_HEIGHT;
 
-		if ( m_bFadingOut )
-		{
-			m_entFlames[i].SetScale( newScale );
-		}
-		else
+		if ( !m_bFadingOut )
 		{
 			// Note: Sprite render assumes 0 scale means 1.0
 			m_entFlames[i].SetScale( clamp( newScale, 0.000001f, 1.0f ) );
+		}
+		else
+		{
+			m_entFlames[i].SetScale( newScale );
 		}
 
 		if ( i != 0 )
@@ -642,17 +646,21 @@ void C_FireSmoke::UpdateFlames( void )
 		{
 			float	newScale = m_flScaleRegister * m_entFlameScales[i];
 
+			Vector	dir;
+			dir[2] = 0.0f;
+			VectorNormalize( dir );
+
 			Vector	offset = GetAbsOrigin();
 			offset[2] += m_entFlamesFromAbove[i].GetScale() * FLAME_FROM_ABOVE_SOURCE_HEIGHT;
 
-			if ( m_bFadingOut )
-			{
-				m_entFlamesFromAbove[i].SetScale( newScale );
-			}
-			else
+			if ( !m_bFadingOut )
 			{
 				// Note: Sprite render assumes 0 scale means 1.0
 				m_entFlamesFromAbove[i].SetScale( MAX( 0.000001, newScale ) );
+			}
+			else
+			{
+				m_entFlamesFromAbove[i].SetScale( newScale );
 			}
 
 			if ( i != 0 )
@@ -702,13 +710,13 @@ void C_FireSmoke::SpawnSmoke( void )
 	if ( m_pSmokeEmitter.IsValid() == false )
 		return;
 
-	float	scalar = m_flScaleRegister;
-	float	flSpread = 32.0f * scalar;
+	float	scalar = m_flScaleRegister * 32.0f;
 	Vector	offset;
 
-	offset[0] = Helper_RandomFloat( -flSpread, flSpread );
-	offset[1] = Helper_RandomFloat( -flSpread, flSpread );
-	offset[2] = flSpread + Helper_RandomFloat( -8.0f*scalar, 8.0f*scalar ) + 100.0f;
+	offset[0] = Helper_RandomFloat( -scalar, scalar );
+	offset[1] = Helper_RandomFloat( -scalar, scalar );
+	offset[2] = scalar + Helper_RandomFloat( -0.25f * scalar, 0.25f * scalar );
+	offset[2] += 100.0f;
 
 	m_pSmokeEmitter->SetDirectionalLight( GetAbsOrigin(), Vector( 1.0f, 0.5f, 0.2f ), 2500 );
 
@@ -752,6 +760,7 @@ m_hEffect( NULL )
 	m_bClassicFire			= false;
 	m_hOldAttached			= NULL;
 	m_flSize				= 4.0f;
+	m_pEmitter				= NULL;
 	m_flLifetime			= 0;
 	m_bStartedFading		= false;
 	m_bCreatedClientside	= false;
@@ -931,8 +940,8 @@ int __cdecl SortHitboxVolumes( HitboxVolume_t *elem1, HitboxVolume_t *elem2 )
 {
 	if ( elem1->flVolume > elem2->flVolume + 50 ) return -1;
 	if ( elem1->flVolume < elem2->flVolume + 50 ) return 1;
-	if ( elem1->flVolume == elem2->flVolume ) return 0;
-	return random->RandomInt( -1, 1 );
+	if ( elem1->flVolume != elem2->flVolume ) return random->RandomInt( -1, 1 );
+	return 0;
 }
 
 //-----------------------------------------------------------------------------

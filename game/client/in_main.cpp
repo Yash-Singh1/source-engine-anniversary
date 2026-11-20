@@ -1607,7 +1607,7 @@ QAngle CInput::DoAutoAimMagnetism( QAngle viewangles, int nAutoAimMode, float fl
 				float flSpeed = VectorNormalize( vecVelocity );
 				float flDot = DotProduct( vecVelocity, vecForward );
 				float flSpeedFactor = RemapValClamped( flSpeed, 20.0f, 100.0f, 0.0f, 1.0f );
-				float flStrafeFactor = 1.0f - RemapValClamped( fabs( flDot ), 0.707f, 0.975f, 0.0f, 1.0f );
+				float flStrafeFactor = RemapValClamped( fabs( flDot ), 0.707f, 0.975f, 1.0f, 0.0f );
 				flStrafeFactor *= flStrafeFactor;
 
 				QAngle angles = viewangles;

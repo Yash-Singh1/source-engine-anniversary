@@ -2391,7 +2391,9 @@ int CTempEnts::AddVisibleTempEntity( C_LocalTempEntity *pEntity )
 //-----------------------------------------------------------------------------
 void CTempEnts::Update(void)
 {
+#line 2335
 	VPROF_("CTempEnts::Update", 1, VPROF_BUDGETGROUP_CLIENT_SIM, false, BUDGETFLAG_CLIENT);
+#line 2395
 	static int gTempEntFrame = 0;
 	float		frametime;
 
@@ -2586,7 +2588,7 @@ inline void CTempEnts::CacheMuzzleFlashes( void )
 	}
 }
 
-static Vector GetFOVScale_Combine();
+Vector GetFOVScale_Combine();
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : entityIndex - 
@@ -2894,7 +2896,7 @@ void CTempEnts::MuzzleFlash_SMG1_NPC( ClientEntityHandle_t hEntity, int attachme
 //-----------------------------------------------------------------------------
 // Purpose: Scale of the 357 and shotgun muzzle flashes (y: particle size)
 //-----------------------------------------------------------------------------
-static Vector GetFOVScale_357()
+Vector GetFOVScale_357()
 {
 	float flFOV = 75.0f;
 
@@ -2923,7 +2925,7 @@ static Vector GetFOVScale_357()
 // Purpose: Scale of the combine muzzle flash (x: offset, y: particle size,
 //			z: particle spacing)
 //-----------------------------------------------------------------------------
-static Vector GetFOVScale_Combine()
+Vector GetFOVScale_Combine()
 {
 	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
 	float flFOV = pPlayer ? pPlayer->GetFOV() : 75.0f;
@@ -2947,7 +2949,7 @@ static Vector GetFOVScale_Combine()
 //-----------------------------------------------------------------------------
 // Purpose: Scale of the pistol muzzle flash (y: particle size)
 //-----------------------------------------------------------------------------
-static Vector GetFOVScale_Pistol()
+Vector GetFOVScale_Pistol()
 {
 	float flFOV = 75.0f;
 
@@ -2975,7 +2977,7 @@ static Vector GetFOVScale_Pistol()
 //-----------------------------------------------------------------------------
 // Purpose: Scale of the SMG1 muzzle flash (x: offset, y: particle size)
 //-----------------------------------------------------------------------------
-static Vector GetFOVScale_SMG1()
+Vector GetFOVScale_SMG1()
 {
 	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
 	float flFOV = pPlayer ? pPlayer->GetFOV() : 75.0f;
@@ -3245,11 +3247,11 @@ void CTempEnts::MuzzleFlash_357_Player( ClientEntityHandle_t hEntity, int attach
 	Vector forward;
 	AngleVectors( angles, &forward, NULL, NULL );
 
-	// Compensate for the viewmodel FOV
-	Vector vecFOVScale = Vector( GetFOVScale_357() );
-
 	SimpleParticle *pParticle;
 	Vector			offset;
+
+	// Compensate for the viewmodel FOV
+	Vector vecFOVScale = Vector( GetFOVScale_357() );
 
 	// Smoke
 	offset = origin + forward * 8.0f;
@@ -3336,11 +3338,11 @@ void CTempEnts::MuzzleFlash_Pistol_Player( ClientEntityHandle_t hEntity, int att
 	Vector forward;
 	AngleVectors( angles, &forward, NULL, NULL );
 
-	// Compensate for the viewmodel FOV
-	Vector vecFOVScale = Vector( GetFOVScale_Pistol() );
-
 	SimpleParticle *pParticle;
 	Vector			offset;
+
+	// Compensate for the viewmodel FOV
+	Vector vecFOVScale = Vector( GetFOVScale_Pistol() );
 
 	// Smoke
 	offset = origin + forward * 8.0f;

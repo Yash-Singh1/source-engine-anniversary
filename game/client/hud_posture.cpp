@@ -89,18 +89,7 @@ CHudPosture::CHudPosture( const char *pElementName ) : CHudElement( pElementName
 	SetHiddenBits( HIDEHUD_HEALTH | HIDEHUD_PLAYERDEAD | HIDEHUD_NEEDSUIT );
 
 	int nShowPosture = vgui_hud_posture.GetInt();
-	if ( nShowPosture == 0 )
-	{
-		m_bShowPosture = false;
-	}
-	else if ( nShowPosture == 1 )
-	{
-		m_bShowPosture = true;
-	}
-	else
-	{
-		m_bShowPosture = IsSteamDeck();
-	}
+	m_bShowPosture = ( nShowPosture == 0 ) ? false : ( ( nShowPosture == 1 ) ? true : IsSteamDeck() );
 
 	if ( m_bShowPosture )
 	{

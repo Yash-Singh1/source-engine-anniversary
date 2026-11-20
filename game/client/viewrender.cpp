@@ -4100,10 +4100,7 @@ void CRendering3dView::DrawOpaqueRenderables( ERenderDepthMode DepthMode )
 	for ( int bucket = 0; bucket < RENDER_GROUP_CFG_NUM_OPAQUE_ENT_BUCKETS; ++ bucket )
 		numOpaqueEnts += m_pRenderablesList->m_RenderGroupCounts[ RENDER_GROUP_OPAQUE_ENTITY_HUGE + 2 * bucket ];
 
-#ifndef BYTEMATCH_RETAIL
 	CUtlVector< C_BaseAnimating * > arrBoneSetupNpcsLast( (C_BaseAnimating **)_alloca( numOpaqueEnts * sizeof( C_BaseAnimating * ) ), numOpaqueEnts, numOpaqueEnts );
-#endif
-#line 4119
 	CUtlVector< CClientRenderablesList::CEntry > arrRenderEntsNpcsFirst( (CClientRenderablesList::CEntry *)_alloca( numOpaqueEnts * sizeof( CClientRenderablesList::CEntry ) ), numOpaqueEnts, numOpaqueEnts );
 	int numNpcs = 0, numNonNpcsAnimating = 0;
 
@@ -4119,12 +4116,9 @@ void CRendering3dView::DrawOpaqueRenderables( ERenderDepthMode DepthMode )
 			{
 				if ( pEntity->IsNPC() )
 				{
-					arrRenderEntsNpcsFirst[ numNpcs ++ ] = *itEntity;
-#ifndef BYTEMATCH_RETAIL
 					C_BaseAnimating *pba = assert_cast<C_BaseAnimating *>( pEntity );
+					arrRenderEntsNpcsFirst[ numNpcs ++ ] = *itEntity;
 					arrBoneSetupNpcsLast[ numOpaqueEnts - numNpcs ] = pba;
-#endif
-#line 4137
 					
 					itEntity->m_pRenderable = NULL;		// We will render NPCs separately
 					itEntity->m_RenderHandle = NULL;
@@ -4133,24 +4127,23 @@ void CRendering3dView::DrawOpaqueRenderables( ERenderDepthMode DepthMode )
 				}
 				else if ( pEntity->GetBaseAnimating() )
 				{
-#ifndef BYTEMATCH_RETAIL
 					C_BaseAnimating *pba = assert_cast<C_BaseAnimating *>( pEntity );
 					arrBoneSetupNpcsLast[ numNonNpcsAnimating ++ ] = pba;
-#endif
-#line 4147
 					// fall through
 				}
 			}
 		}
 	}
 
-#ifndef BYTEMATCH_RETAIL
+#ifdef BYTEMATCH_RETAIL
+	if ( 0 && r_threaded_renderables.GetBool() )
+#else
 	if ( r_threaded_renderables.GetBool() )
+#endif
 	{
 		ParallelProcess( "BoneSetupNpcsLast", arrBoneSetupNpcsLast.Base() + numOpaqueEnts - numNpcs, numNpcs, &SetupBonesOnBaseAnimating );
 		ParallelProcess( "BoneSetupNpcsLast NonNPCs", arrBoneSetupNpcsLast.Base(), numNonNpcsAnimating, &SetupBonesOnBaseAnimating );
 	}
-#endif
 #line 4158
 
 

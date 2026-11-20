@@ -320,8 +320,7 @@ void CC_CancelDuckToggle( const CCommand &args )
 	CHL2_Player *pPlayer = dynamic_cast< CHL2_Player * >( pBasePlayer );
 
 	// Optional minimum stick deflection (lateral wish speed) needed to cancel
-	const char *pszMinSpeed = args[1];
-	float flMinSpeed = pszMinSpeed ? V_atof( pszMinSpeed ) : 0.0f;
+	float flMinSpeed = args[1] ? V_atof( args[1] ) : 0.0f;
 
 	if ( pPlayer && pPlayer->GetToggledDuckState() && pPlayer->GetStickDist() >= flMinSpeed )
 	{
@@ -745,8 +744,8 @@ void CHL2_Player::PreThink(void)
 	}
 	else if ( IsSprinting() )
 	{
-		// Disable sprint while ducked unless we're in the air (jumping)
-		if ( NOV2024_ONLY( ( m_nButtons & IN_DUCK ) && ) IsDucked() && ( GetGroundEntity() != NULL ) )
+		NOV2024_ONLY( bool bHoldingDuck = ( m_nButtons & IN_DUCK ) != 0; )
+		if ( NOV2024_ONLY( bHoldingDuck && ) IsDucked() && ( GetGroundEntity() != NULL ) )
 		{
 			StopSprinting();
 		}

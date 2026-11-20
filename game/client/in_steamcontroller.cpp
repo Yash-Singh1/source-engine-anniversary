@@ -476,7 +476,7 @@ void CInput::UpdateSteamInputCameraAngles( uint64 controller, QAngle &angles )
 	InputAnalogActionHandle_t handles[] = { g_ControllerGyroAngles, g_ControllerTrackPadAngles, g_ControllerJoystickAngles, g_ControllerFlickStickAngles };
 
 	Vector2D vecDelta = vec2_origin;
-	for ( int i = 0; i < ARRAYSIZE( handles ); ++i )
+	for ( int i = 0; i < (int)ARRAYSIZE( handles ); ++i )
 	{
 		if ( !handles[i] )
 			continue;
@@ -486,10 +486,10 @@ void CInput::UpdateSteamInputCameraAngles( uint64 controller, QAngle &angles )
 			continue;
 
 		Vector2D vecInput( data.x, data.y );
-		if ( handles[i] != g_ControllerFlickStickAngles )
+		if ( g_ControllerFlickStickAngles != handles[i] )
 		{
 			vecInput *= gHUD.GetFOVSensitivityAdjust();
-			vecInput = Vector2D( GetSCAutoAimDampening( vecInput.x ), GetSCAutoAimDampening( vecInput.y ) ) * vecInput;
+			vecInput.x *= GetSCAutoAimDampening( vecInput.x ); vecInput.y *= GetSCAutoAimDampening( vecInput.y );
 			vecInput *= sc_sensitivity_scale.GetFloat();
 		}
 		vecDelta += vecInput;

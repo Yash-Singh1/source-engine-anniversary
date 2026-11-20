@@ -515,8 +515,7 @@ void CInput::Joystick_Advanced(void)
 	}
 
 	// Steam Input does its own axis mapping
-	const char *pszControllerType = g_inputTypeToNameTable[ inputsystem->GetControllerTypeForSlot( 0 ) ];
-	if ( V_stricmp( pszControllerType, g_inputTypeToNameTable[ INPUT_TYPE_STEAMCONTROLLER ] ) &&
+	if ( V_stricmp( g_inputTypeToNameTable[ inputsystem->GetControllerTypeForSlot( 0 ) ], g_inputTypeToNameTable[ INPUT_TYPE_STEAMCONTROLLER ] ) &&
 		 V_stricmp( g_inputTypeToNameTable[ INPUT_TYPE_STEAMCONTROLLER ], joy_name.GetString() ) )
 	{
 		// Initialize all the maps
@@ -589,7 +588,8 @@ void CInput::Joystick_Advanced(void)
 	{
 #ifdef HL2_ANNIVERSARY_NOV2024
 		InputHandle_t handles[ STEAM_INPUT_MAX_COUNT ];
-		if ( SteamInput()->GetConnectedControllers( handles ) && !joy_steamcontroller_cfg_loaded.GetBool() )
+		int nControllers = SteamInput()->GetConnectedControllers( handles );
+		if ( !joy_steamcontroller_cfg_loaded.GetBool() && nControllers )
 #else
 		if ( !joy_steamcontroller_cfg_loaded.GetBool() )
 #endif
@@ -745,12 +745,18 @@ float CInput::Joystick_GetSide( void )
 
 float CInput::Joystick_GetPitch( void )
 {
-	return ControllerModeActive() ? m_flPreviousJoystickPitch : 0.0f;
+	if ( !ControllerModeActive() )
+		return 0.0f;
+
+	return m_flPreviousJoystickPitch;
 }
 
 float CInput::Joystick_GetYaw( void )
 {
-	return ControllerModeActive() ? m_flPreviousJoystickYaw : 0.0f;
+	if ( !ControllerModeActive() )
+		return 0.0f;
+
+	return m_flPreviousJoystickYaw;
 }
 
 //-----------------------------------------------------------------------------

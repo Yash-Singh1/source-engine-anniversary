@@ -1516,7 +1516,9 @@ bool CBaseFlex::ProcessMoveToSceneEvent( CSceneEventInfo *info, CChoreoScene *sc
 
 bool CBaseFlex::ProcessLookAtSceneEvent( CSceneEventInfo *info, CChoreoScene *scene, CChoreoEvent *event )
 {
+#line 1521
 	VPROF( "CBaseFlex::ProcessLookAtSceneEvent" );
+#line 1517
 	CAI_BaseNPC *myNpc = MyNPCPointer( );
 	if (myNpc && info->m_hTarget != NULL)
 	{

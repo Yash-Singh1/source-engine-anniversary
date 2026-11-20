@@ -2059,6 +2059,7 @@ bool CHLClient::DispatchUserMessage( int msg_type, bf_read &msg_data )
 
 void SimulateEntities()
 {
+#line 2069
 	VPROF_BUDGET("Client SimulateEntities", VPROF_BUDGETGROUP_CLIENT_SIM);
 
 	// Service timer events (think functions).
@@ -2067,6 +2068,7 @@ void SimulateEntities()
 	// TODO: make an ISimulateable interface so C_BaseNetworkables can simulate?
 	{
 		VPROF_("C_BaseEntity::Simulate", 1, VPROF_BUDGETGROUP_CLIENT_SIM, false, BUDGETFLAG_CLIENT);
+#line 1988
 		C_BaseEntityIterator iterator;
 		C_BaseEntity *pEnt = iterator.Next();
 		while ( pEnt )
