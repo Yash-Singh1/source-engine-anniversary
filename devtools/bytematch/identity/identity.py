@@ -69,9 +69,9 @@ N_SO, N_OSO = 0x64, 0x66
 PREPROCESSOR_ONLY = ('-I', '-D', '-U', '-isystem', '-iquote', '-include', '-imacros')
 DEP_FLAGS = ('-MMD', '-MD', '-MP')
 LANG_EXT = {'c': '.i', 'c++': '.ii', 'objective-c++': '.mii', 'objective-c': '.mi'}
-# Per-module archive variants (retail_stlib_variant: sourcevr's 10.5 libtier1_105.a) that
-# retail links under the plain name (build/Release/libtier1.a).
-ARCHIVE_VARIANT = r'_105\.a$'
+# Per-module archive variants (retail_stlib_variant: sourcevr's 10.5 libtier1_105.a,
+# lostcoast's libtier1_lc.a) that retail links under the plain name (build/Release/libtier1.a).
+ARCHIVE_VARIANT = r'(_105|_lc)\.a$'
 LINE_MARKER = re.compile(rb'^(# \d+ ")([^"\n]*)(")', re.M)
 # Archives Valve took prebuilt from another build tree, which we compile from source (the
 # manifest has no source for their members, so they are matched by member name):
@@ -240,6 +240,13 @@ class Build:
             self.links = json.load(f)
         self.by_target = dict((e['target'], e) for e in self.links)
         self.by_output = dict((os.path.normpath(e['output']), e) for e in self.links)
+        self.game = None
+        cache = os.path.join(self.bld, 'c4che', '_cache.py')
+        if os.path.exists(cache):
+            with open(cache) as f:
+                m = re.search(r"^GAMES\s*=\s*['\"]([^'\"]+)['\"]", f.read(), re.M)
+                if m:
+                    self.game = m.group(1)
 
     def source_of(self, obj):
         e = self.compile.get(os.path.normpath(obj))
@@ -254,9 +261,33 @@ def load_manifest():
     return m
 
 
+GAME_SUFFIXES = ('hl2mp', 'lostcoast', 'episodic', 'hl2')
+
+
+def split_game_target(target):
+    for g in GAME_SUFFIXES:
+        if target.endswith('_' + g):
+            return g, target[:-len(g) - 1]
+    return None, target
+
+
+def retail_path(depot, mod):
+    rel = mod['retail']['path']
+    p = os.path.join(depot, rel)
+    if os.path.exists(p):
+        return p
+    mod_depot = mod['retail'].get('depot')
+    if mod_depot:
+        alt = os.path.join(os.path.dirname(os.path.dirname(depot)), mod_depot, os.path.basename(depot), rel)
+        if os.path.exists(alt):
+            return alt
+    return p
+
+
 def module_key(m, target, link=None):
-    if target.endswith('_hl2mp'):
-        key = 'hl2mp/' + target[:-len('_hl2mp')]
+    game, base = split_game_target(target)
+    if game:
+        key = game + '/' + base
         if key in m['modules']:
             return key
     for key, mod in m['modules'].items():
@@ -467,16 +498,19 @@ class Module:
         self.target = target
         self.build = build
         self.comp = comp
+        game, base = split_game_target(target)
         self.link = build.by_target.get(target)
+        if not self.link and game and game != 'hl2mp':
+            self.link = build.by_target.get(base)
         if not self.link:
             raise SystemExit('%s: no link command in link_commands.json' % target)
         self.key = module_key(manifest, target, self.link)
         if not self.key:
             raise SystemExit('%s: not in %s' % (target, MANIFEST))
         self.mod = manifest['modules'][self.key]
-        self.retail = os.path.join(depot, self.mod['retail']['path'])
+        self.retail = retail_path(depot, self.mod)
         self.root = os.path.join(scratch, 'roots', self.key.replace('/', '_'))
-        self.out = os.path.join(out_dir, os.path.basename(self.link['output']))
+        self.out = os.path.join(out_dir, self.mod['retail']['path'])
         with open(os.path.join(MODULE_DIR, self.key.replace('/', '.') + '.json')) as f:
             self.objects = json.load(f)['objects']
         ours = self.mod.get('objects', [])
@@ -779,13 +813,33 @@ def main():
     if not targets:
         ap.error('no targets')
     shim = build_shim(scratch)
-    comp = Compiler(scratch, TREE, [] if args.no_aliases else load_aliases(), args.jobs, build.bld)
+    aliases = [] if args.no_aliases else load_aliases()
+    build_cache = {build.bld: (build, Compiler(scratch, TREE, aliases, args.jobs, build.bld))}
+
+    def build_for(target):
+        game, base = split_game_target(target)
+        if not game or game == 'hl2mp':
+            return build_cache[build.bld]
+        if target in build.by_target or (base in build.by_target and (build.game == game or (game == 'hl2' and build.game == 'episodic'))):
+            return build_cache[build.bld]
+        candidates = [build.bld + '-' + game]
+        if game == 'hl2':
+            candidates.append(build.bld + '-episodic')
+        for cand in candidates:
+            if os.path.exists(os.path.join(cand, 'link_commands.json')):
+                if cand not in build_cache:
+                    b = Build(cand)
+                    build_cache[cand] = (b, Compiler(scratch, TREE, aliases, args.jobs, b.bld))
+                return build_cache[cand]
+        return build_cache[build.bld]
+
     rc = 0
     summary = []
     for t in targets:
         m = None
         try:
-            m = Module(t, build, manifest, comp, depot, scratch, os.path.join(scratch, 'out'))
+            tb, tc = build_for(t)
+            m = Module(t, tb, manifest, tc, depot, scratch, os.path.join(scratch, 'out'))
             out = m.run(shim)
         except (RuntimeError, SystemExit) as e:
             for n in (m.notes if m else []):

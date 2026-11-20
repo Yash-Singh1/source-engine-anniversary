@@ -56,7 +56,7 @@ ASSERT_INVARIANT( sizeof(EHandlePlaceholder_t) == sizeof(EHANDLE) );
 
 //-----------------------------------------------------------------------------
 
-static int gSizes[FIELD_TYPECOUNT] = 
+static int gSizes[] = 
 {
 	FIELD_SIZE( FIELD_VOID ),
 	FIELD_SIZE( FIELD_FLOAT ),
@@ -94,6 +94,8 @@ static int gSizes[FIELD_TYPECOUNT] =
 #ifndef BYTEMATCH_RETAIL
 	FIELD_SIZE( FIELD_INTEGER64 ),
 	FIELD_SIZE( FIELD_POINTER ),
+#elif defined( HL2_ANNIVERSARY_NOV2024 )
+	sizeof( int64 ),
 #endif
 };
 

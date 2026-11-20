@@ -516,6 +516,22 @@ void CHL2_Player::RemoveSuit( void )
 	m_HL2Local.m_bDisplayReticle = false;
 }
 
+#ifdef HL2_ANNIVERSARY_NOV2024
+//-----------------------------------------------------------------------------
+// Purpose: Is there room for the standing hull where we are?
+//-----------------------------------------------------------------------------
+bool CHL2_Player::BCanStand()
+{
+	Vector vecOrigin = GetAbsOrigin();
+	Vector vecMins = VEC_HULL_MIN_SCALED( this );
+	Vector vecMaxs = VEC_HULL_MAX_SCALED( this );
+
+	trace_t tr;
+	UTIL_TraceHull( vecOrigin, vecOrigin, vecMins, vecMaxs, MASK_PLAYERSOLID, this, COLLISION_GROUP_PLAYER_MOVEMENT, &tr );
+	return !tr.startsolid && !tr.allsolid;
+}
+#endif
+#line 519
 void CHL2_Player::HandleSpeedChanges( void )
 {
 	int buttonsChanged = m_afButtonPressed | m_afButtonReleased;
@@ -527,8 +543,9 @@ void CHL2_Player::HandleSpeedChanges( void )
 #ifdef HL2_ANNIVERSARY_NOV2024
 	// Releasing duck while holding sprint goes back to sprinting
 	bool bUnduckToSprint = bWantSprint && ( buttonsChanged & IN_DUCK ) && ( m_afButtonReleased & IN_DUCK );
+	bool bChangeSprint = bIsSprinting != bWantSprint && (buttonsChanged & IN_SPEED);
 
-	if ( ( bIsSprinting != bWantSprint && (buttonsChanged & IN_SPEED) ) || bUnduckToSprint )
+	if ( bChangeSprint || bUnduckToSprint )
 	{
 		// If someone wants to sprint, make sure they've pressed the button to do so. We want to prevent the
 		// case where a player can hold down the sprint key and burn tiny bursts of sprint as the suit recharges
@@ -1270,21 +1287,6 @@ void CHL2_Player::InitSprinting( void )
 //-----------------------------------------------------------------------------
 // Purpose: Returns whether or not we are allowed to sprint now.
 //-----------------------------------------------------------------------------
-#ifdef HL2_ANNIVERSARY_NOV2024
-//-----------------------------------------------------------------------------
-// Purpose: Is there room for the standing hull where we are?
-//-----------------------------------------------------------------------------
-bool CHL2_Player::BCanStand()
-{
-	Vector vecOrigin = GetAbsOrigin();
-	Vector vecMins = VEC_HULL_MIN_SCALED( this );
-	Vector vecMaxs = VEC_HULL_MAX_SCALED( this );
-
-	trace_t tr;
-	UTIL_TraceHull( vecOrigin, vecOrigin, vecMins, vecMaxs, MASK_PLAYERSOLID, this, COLLISION_GROUP_PLAYER_MOVEMENT, &tr );
-	return !tr.startsolid && !tr.allsolid;
-}
-#endif
 #line 1249
 
 bool CHL2_Player::CanSprint()

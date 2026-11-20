@@ -87,6 +87,11 @@ void MigrateEpisodicDataCmd( const CCommand &args )
 	}
 }
 
+#ifdef BYTEMATCH_RETAIL
+// Retail Nov 2024 singleplay_gamerules.cpp has one extra dead-stripped helper before
+// CSingleplayRules::IsMultiplayer, placing CSingleplayRules::CSingleplayRules at FDE #17.
+void _SingleplayRulesRetailHelperPad() {}
+#endif
 ConCommand migrate_episodic_data( "_migrate_episodic_data", MigrateEpisodicDataCmd );
 #endif
 

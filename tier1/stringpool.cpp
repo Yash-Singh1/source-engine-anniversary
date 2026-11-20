@@ -94,6 +94,12 @@ void CStringPool::FreeAll()
 //-----------------------------------------------------------------------------
 
 
+#ifdef BYTEMATCH_RETAIL
+// Valve's stringpool.cpp defines non-template CCountedStringPool methods in __TEXT,__text
+// after CStringPool::Allocate, so clang aligns the next function with 66 90 (96 B atom).
+void _CountedStringPoolPad() {}
+#endif
+
 #ifdef _DEBUG
 CON_COMMAND( test_stringpool, "Tests the class CStringPool" )
 {

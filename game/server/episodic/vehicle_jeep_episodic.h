@@ -82,8 +82,8 @@ protected:
 	virtual float			GetUprightTime( void ) { return 1.0f; }
 	virtual float			GetUprightStrength( void );
 	virtual bool			ShouldPuntUseLaunchForces( PhysGunForce_t reason ) { return ( reason == PHYSGUN_FORCE_PUNTED ); }
-	virtual bool			IsJalopy( void ) { return true; }
-	NOV2024_ONLY( virtual void UpdateSteeringAngle( void ) {} )
+	virtual bool			IsJalopy( void );
+	NOV2024_ONLY( virtual void UpdateSteeringAngle( void ); )
 	virtual void			HandleWater( void );
 
 	virtual AngularImpulse	PhysGunLaunchAngularImpulse( void );

@@ -1764,6 +1764,17 @@ void CPropJeepEpisodic::InputDestroyLinkController( inputdata_t &data )
 }
 
 
+#ifdef HL2_ANNIVERSARY_NOV2024
+void CPropJeepEpisodic::UpdateSteeringAngle( void )
+{
+}
+#endif
+
+bool CPropJeepEpisodic::IsJalopy( void )
+{
+	return true;
+}
+
 bool CPropJeepEpisodic::AllowBlockedExit( CBaseCombatCharacter *pPassenger, int nRole )
 {
 	// Wait until we've settled down before we resort to blocked exits.

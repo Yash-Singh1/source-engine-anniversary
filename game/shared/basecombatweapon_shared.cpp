@@ -145,24 +145,6 @@ void CBaseCombatWeapon::Activate( void )
 
 }
 
-#if !defined( CLIENT_DLL ) && defined( HL2_ANNIVERSARY_NOV2024 )
-//-----------------------------------------------------------------------------
-// Purpose: Tell the owning player's HUD that their weapons changed
-//-----------------------------------------------------------------------------
-void CBaseCombatWeapon::OnInventoryChanged( void )
-{
-	CBaseCombatCharacter *pOwner = GetOwner();
-	if ( pOwner && pOwner->IsPlayer() )
-	{
-		IGameEvent *event = gameeventmanager->CreateEvent( "weapon_inventory_updated" );
-		if ( event )
-		{
-			event->SetInt( "owner", pOwner->entindex() );
-			gameeventmanager->FireEvent( event );
-		}
-	}
-}
-#endif
 void CBaseCombatWeapon::GiveDefaultAmmo( void )
 {
 	// If I use clips, set my clips to the default
@@ -806,6 +788,26 @@ void CBaseCombatWeapon::OnPickedUp( CBaseCombatCharacter *pNewOwner )
 	SetRemoveable( false );
 #endif
 }
+
+#if !defined( CLIENT_DLL ) && defined( HL2_ANNIVERSARY_NOV2024 )
+//-----------------------------------------------------------------------------
+// Purpose: Notify listeners (Steam Timeline) that a player's weapon inventory changed
+//-----------------------------------------------------------------------------
+void CBaseCombatWeapon::OnInventoryChanged( void )
+{
+	CBaseCombatCharacter *pOwner = GetOwner();
+	if ( pOwner && pOwner->IsPlayer() )
+	{
+		IGameEvent *event = gameeventmanager->CreateEvent( "weapon_inventory_updated" );
+		if ( event )
+		{
+			event->SetInt( "owner", pOwner->entindex() );
+			gameeventmanager->FireEvent( event );
+		}
+	}
+}
+#endif
+#line 810
 
 //-----------------------------------------------------------------------------
 // Purpose: 

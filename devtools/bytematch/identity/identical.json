@@ -32,6 +32,9 @@
     {"target": "togl", "retail": "bin/libtogl.dylib", "size": 447124, "sha256": "4971da079113659a04d2cbaeba2e0f3a1fa489bd1f9e2225f2247b873e355cc9"},
     {"target": "materialsystem", "retail": "bin/materialsystem.dylib", "size": 1725424, "sha256": "53ee91054e5ec7e142131ec3577dbbde8acc935d1a8c65e42078d09b9c93b00f"},
     {"target": "filesystem_stdio", "retail": "bin/filesystem_stdio.dylib", "size": 1248272, "sha256": "9c27f564a5419f05e6d8876617e0bf783ba72d7a51eb16b8c0087b91ae76836b"},
-    {"target": "engine", "retail": "bin/engine.dylib", "size": 8655856, "sha256": "f6054951bdde6c4ec0c62654c075d8fb65321628da2e62e35d01785718a2bd71"}
+    {"target": "engine", "retail": "bin/engine.dylib", "size": 8655856, "sha256": "f6054951bdde6c4ec0c62654c075d8fb65321628da2e62e35d01785718a2bd71"},
+    {"target": "server_lostcoast", "retail": "lostcoast/bin/server.dylib", "size": 15525592, "sha256": "324c40f8f7116097b9504c47d919230d9fb0fcb691d2068691f28831fe0addaf"},
+    {"target": "server_episodic", "retail": "episodic/bin/server.dylib", "size": 16551336, "sha256": "10893380d48a2ce3590454debe9bde091880eee511aad38d0b7fdf82635cf6c7"},
+    {"target": "server_hl2", "retail": "hl2/bin/server.dylib", "size": 16545796, "sha256": "3a9a75cf08827b26e0151754002ad9a2f6cf383479662abc4c7b4e9c9095375c"}
   ]
 }
