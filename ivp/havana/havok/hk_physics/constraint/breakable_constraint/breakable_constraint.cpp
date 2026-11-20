@@ -81,6 +81,12 @@ int hk_Breakable_Constraint::get_vmq_storage_size()
 
 
 #ifdef BYTEMATCH_RETAIL
+static inline void ScaleHesse4( IVP_U_Float_Hesse &h, hk_real scale )
+{
+	h.mult( scale );
+	h.hesse_val *= scale;
+}
+
 // the constraint runs with each body's mass (and inertia) scaled by its mass scale; the destructor restores them
 struct BreakableConstraintHelper
 {
@@ -105,10 +111,8 @@ struct BreakableConstraintHelper
 					massScale = 10000.0f / mass;
 				}
 				hk_real invScale = 1.0f / massScale;
-				core->_get_inertia_and_mass().mult( massScale );
-				core->_get_inertia_and_mass().hesse_val *= massScale;
-				core->_get_inv_inertia_and_mass().mult( invScale );
-				core->_get_inv_inertia_and_mass().hesse_val *= invScale;
+				ScaleHesse4( core->_get_inertia_and_mass(), massScale );
+				ScaleHesse4( core->_get_inv_inertia_and_mass(), invScale );
 				return;
 			}
 		}

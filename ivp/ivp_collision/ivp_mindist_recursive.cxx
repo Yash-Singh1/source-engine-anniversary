@@ -80,8 +80,8 @@ void IVP_Mindist_Recursive::do_impact(){
 		const IVP_Compact_Ledgetree_Node *n1 = l1->get_ledgetree_node();
 
 #ifdef BYTEMATCH_RETAIL
-		IVP_FLOAT rad0 = n0 ? n0->radius : P_FLOAT_MAX;
-		IVP_FLOAT rad1 = n1 ? n1->radius : P_FLOAT_MAX;
+		IVP_FLOAT rad0 = n0 ? n0->radius : 1e15f;
+		IVP_FLOAT rad1 = n1 ? n1->radius : 1e15f;
 #else
 		IVP_DOUBLE rad0 = n0 ? n0->radius : P_FLOAT_MAX;
 		IVP_DOUBLE rad1 = n1 ? n1->radius : P_FLOAT_MAX;

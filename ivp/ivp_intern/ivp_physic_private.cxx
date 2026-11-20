@@ -433,12 +433,11 @@ IVP_BOOL IVP_Core::revive_simulation_core()
     
 #ifdef BYTEMATCH_RETAIL
     // a core that was never simulated keeps the speeds it was given before its first wakeup
-    IVP_DOUBLE last_psi_time = core->time_of_last_psi.get_time();
     IVP_U_Float_Point saved_speed, saved_rot_speed;
     saved_speed.set_to_zero();
-    if ( last_psi_time == 0.0f ) {
-	saved_speed.set(&core->speed);
-	saved_speed.hesse_val = core->speed.hesse_val;
+    bool bSaveSpeed = ( core->time_of_last_psi.get_time() == 0.0f );
+    if ( bSaveSpeed ) {
+	saved_speed = core->speed;
 	saved_rot_speed = core->rot_speed;
     }
 #endif
@@ -446,9 +445,8 @@ IVP_BOOL IVP_Core::revive_simulation_core()
     IVP_Event_Sim es(environment, environment->get_next_PSI_time() - environment->get_current_time());
     core->calc_next_PSI_matrix_zero_speed(&es);
 #ifdef BYTEMATCH_RETAIL
-    if ( last_psi_time == 0.0f ) {
-	core->speed.set(&saved_speed);
-	core->speed.hesse_val = saved_speed.hesse_val;
+    if ( bSaveSpeed ) {
+	core->speed = saved_speed;
 	core->rot_speed = saved_rot_speed;
     }
 #endif
