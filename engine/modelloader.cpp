@@ -2749,7 +2749,7 @@ void Mod_LoadMarksurfaces( void )
 		int numMark = 0;
 		bool foundDetail = false;
 		int numMarkNode = 0;
-		for ( j = 0; j < pLeaf[i].nummarksurfaces; j++ )
+		for ( int j = 0; j < pLeaf[i].nummarksurfaces; j++ )
 		{
 			// write a new copy of the mark surfaces for this leaf, strip out the nodraw & terrain
 			SurfaceHandle_t surfID = tempDiskData[pLeaf[i].firstmarksurface+j];
@@ -3411,8 +3411,10 @@ class CResourcePreloadModel : public CResourcePreload
 				CMapLoadHelper::Shutdown();
 
 				// create a loader job to perform i/o operation to mount the .bsp
+				char szFilename[MAX_PATH];
+				GetMapPathNameOnDisk( szFilename, pMapModel->strName, sizeof( szFilename ) );
 				LoaderJob_t loaderJobBSP;
-				loaderJobBSP.m_pFilename = pMapModel->strName;
+				loaderJobBSP.m_pFilename = szFilename;
 				loaderJobBSP.m_pPathID = "GAME";
 				loaderJobBSP.m_pCallback = QueuedLoaderMapCallback;
 				loaderJobBSP.m_pContext = (void *)pMapModel;
@@ -3423,10 +3425,9 @@ class CResourcePreloadModel : public CResourcePreload
 
 				// create an anonymous job to perform i/o operation to mount the .ain
 				// the .ain gets claimed later
-				char szAINName[MAX_PATH] = { 0 };
-				V_snprintf( szAINName, sizeof( szAINName ), "maps/graphs/%s.360.ain", szLoadName );
+				V_snprintf( szFilename, sizeof( szFilename ), "maps/graphs/%s.360.ain", szLoadName );
 				LoaderJob_t loaderJobAIN;
-				loaderJobAIN.m_pFilename = szAINName;
+				loaderJobAIN.m_pFilename = szFilename;
 				loaderJobAIN.m_pPathID = "GAME";
 				loaderJobAIN.m_Priority = LOADERPRIORITY_DURINGPRELOAD;
 				g_pQueuedLoader->AddJob( &loaderJobAIN );

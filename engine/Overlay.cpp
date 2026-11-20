@@ -1938,6 +1938,7 @@ void Overlay_TriTLToBR(
 			}
 			else
 			{
+				int nIndices[3];
 				nIndices[0] = nSnapV * nWidth + nSnapU;
 				nIndices[1] = nNextV * nWidth + nSnapU;
 				nIndices[2] = nSnapV * nWidth + nNextU;
@@ -1974,6 +1975,7 @@ void Overlay_TriTLToBR(
 				}
 				else
 				{
+					float flCfs[3];
 					CalcBarycentricCooefs( vecFlatVerts[0], vecFlatVerts[1], vecFlatVerts[2], vecIntersectPoint, flCfs[0], flCfs[1], flCfs[2] );
 					vecWorld = ( vecVerts[0] * flCfs[0] ) + ( vecVerts[1] * flCfs[1] ) + ( vecVerts[2] * flCfs[2] );
 				}
@@ -2026,6 +2028,7 @@ void Overlay_TriTLToBR(
 			}
 			else
 			{
+				int nIndices[3];
 				nIndices[0] = nNextV * nWidth + nSnapU;
 				nIndices[1] = nNextV * nWidth + nNextU;
 				nIndices[2] = nSnapV * nWidth + nNextU;
@@ -2062,6 +2065,7 @@ void Overlay_TriTLToBR(
 				}
 				else
 				{
+					float flCfs[3];
 					CalcBarycentricCooefs( vecFlatVerts[0], vecFlatVerts[1], vecFlatVerts[2], vecIntersectPoint, flCfs[0], flCfs[1], flCfs[2] );
 					vecWorld = ( vecVerts[0] * flCfs[0] ) + ( vecVerts[1] * flCfs[1] ) + ( vecVerts[2] * flCfs[2] );
 				}
@@ -2142,6 +2146,7 @@ void Overlay_TriBLToTR(
 			}
 			else
 			{
+				int nIndices[3];
 				nIndices[0] = nSnapV * nWidth + nSnapU;
 				nIndices[1] = nNextV * nWidth + nNextU;
 				nIndices[2] = nSnapV * nWidth + nNextU;
@@ -2178,6 +2183,7 @@ void Overlay_TriBLToTR(
 				}
 				else
 				{
+					float flCfs[3];
 					CalcBarycentricCooefs( vecFlatVerts[0], vecFlatVerts[1], vecFlatVerts[2], vecIntersectPoint, flCfs[0], flCfs[1], flCfs[2] );
 					vecWorld = ( vecVerts[0] * flCfs[0] ) + ( vecVerts[1] * flCfs[1] ) + ( vecVerts[2] * flCfs[2] );
 				}
@@ -2230,6 +2236,7 @@ void Overlay_TriBLToTR(
 			}
 			else
 			{
+				int nIndices[3];
 				nIndices[0] = nSnapV * nWidth + nSnapU;
 				nIndices[1] = nNextV * nWidth + nSnapU;
 				nIndices[2] = nNextV * nWidth + nNextU;
@@ -2266,6 +2273,7 @@ void Overlay_TriBLToTR(
 				}
 				else
 				{
+					float flCfs[3];
 					CalcBarycentricCooefs( vecFlatVerts[0], vecFlatVerts[1], vecFlatVerts[2], vecIntersectPoint, flCfs[0], flCfs[1], flCfs[2] );
 					vecWorld = ( vecVerts[0] * flCfs[0] ) + ( vecVerts[1] * flCfs[1] ) + ( vecVerts[2] * flCfs[2] );
 				}

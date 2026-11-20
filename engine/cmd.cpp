@@ -609,12 +609,7 @@ void Cmd_Exec_f( const CCommand &args )
 
 	const char *szFile = args[1];
 
-	const char *pPathID = "*";
-
-	if ( args.ArgC() >= 3 )
-	{
-		pPathID = args[2];
-	}
+	const char *pPathID = ( args.ArgC() >= 3 ) ? args[2] : "*";
 
 	if ( !Q_stricmp( pPathID, "T" ) )
 	{

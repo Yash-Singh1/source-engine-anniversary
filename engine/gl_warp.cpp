@@ -291,6 +291,7 @@ void R_DrawSkyBox( float zFar, int nDrawFlags /*= 0x3F*/  )
 		if ( !(nDrawFlags & 1) )
 			continue;
 
+#ifndef BYTEMATCH_RETAIL
 		VectorCopy( vec3_origin, normal );
 		switch( gFakePlaneType[i] )
 		{
@@ -324,6 +325,8 @@ void R_DrawSkyBox( float zFar, int nDrawFlags /*= 0x3F*/  )
 		// Assuming a 90 fov looking at face is 0 degrees, so reject at 107
 		if ( DotProduct( CurrentViewForward(), normal ) < -0.29289f )
 			continue;
+#endif
+#line 328
 
 		Vector positionArray[4];
 		Vector2D texCoordArray[4];
@@ -341,12 +344,9 @@ void R_DrawSkyBox( float zFar, int nDrawFlags /*= 0x3F*/  )
 			CMeshBuilder meshBuilder;
 			meshBuilder.Begin( pMesh, MATERIAL_TRIANGLES, 4, 6 );
 
-#ifndef BYTEMATCH_RETAIL
 			// meshbuilder Begin can fail if dynamic mesh is not available (eg, alt-tabbed away)
 			if ( meshBuilder.BaseVertexData() == NULL )
 				continue;
-#endif
-#line 347
 
 			for (int j = 0; j < 4; ++j)
 			{

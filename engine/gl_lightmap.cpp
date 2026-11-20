@@ -235,7 +235,7 @@ static void AddSingleDynamicLightToBumpLighting( dlight_t& dl, SurfaceHandle_t s
 	// and compute what light would have to come in along that direction
 	// in order to produce the same illumination on the flat lightmap. That's
 	// computed by dividing the flat lightmap color by n dot l.
-	Vector lightDirection(0, 0, 0), texelWorldPosition;
+	Vector lightDirection, texelWorldPosition;
 #if 1
 	bool useLightDirection = (dl.m_OuterAngle != 0.0f) &&
 		(fabs(dl.m_Direction.LengthSqr() - 1.0f) < 1e-3);

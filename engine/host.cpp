@@ -1241,10 +1241,7 @@ void Host_WriteConfiguration( const char *filename )
 	if ( !filename )
 		filename = "config.cfg";
 
-	if ( !host_initialized )
-		return;
-
-	if ( !g_bConfigCfgExecuted )
+	if ( !g_bConfigCfgExecuted || !host_initialized )
 		return;
 
 	// If in map editing mode don't save configuration
@@ -1269,11 +1266,11 @@ void Host_WriteConfiguration( const char *filename )
 	UpdateMaterialSystemConfig();
 
 	// Generate a new .cfg file.
-	const char *pPathID;
 	char		szFileName[MAX_PATH];
 	CUtlBuffer	configBuff( 0, 0, CUtlBuffer::TEXT_BUFFER);
 
 	// The HL2 collection keeps its settings in the root mod
+	const char *pPathID = "MOD";
 	const char *pszGameDir = CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) );
 	if ( !V_stricmp( pszGameDir, "hl2_complete" ) )
 	{
@@ -1283,7 +1280,6 @@ void Host_WriteConfiguration( const char *filename )
 	else
 	{
 		Q_snprintf( szFileName, sizeof(szFileName), "cfg/%s", filename );
-		pPathID = "MOD";
 	}
 
 	g_pFileSystem->CreateDirHierarchy( "cfg", pPathID );

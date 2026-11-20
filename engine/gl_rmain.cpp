@@ -973,7 +973,12 @@ void CRender::ViewDrawFade( byte *color, IMaterial* pFadeMaterial )
 	CMeshBuilder meshBuilder;
 	meshBuilder.Begin( pMesh, MATERIAL_QUADS, 1 );
 	
+#ifdef BYTEMATCH_RETAIL
+	float flOffset = IsOSX() ? 0.0f : 0.5f;
+#else
 	float flOffset = 0.5f;
+#endif
+#line 977
 
 	// Note - the viewport has already adjusted the origin
 	float x1=0.0f - flOffset;
