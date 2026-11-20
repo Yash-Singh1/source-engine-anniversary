@@ -1343,9 +1343,10 @@ void C_OP_RenderSprites::Render( IMatRenderContext *pRenderContext, CParticleCol
 			meshBuilder.Begin( pMesh, primType, vertexCount, indexCount );
 		}
 		info.m_nVertexOffset = 0;
+		int i;
 		if ( meshBuilder.TextureCoordinateSize( 5 ) )		// second sequence?
 		{
-			for( int i = 0; i < nParticlesInBatch; i++ )
+			for( i = 0; i < nParticlesInBatch; i++ )
 			{
 				int hParticle = (--pSortList)->m_nIndex;
 #ifdef BYTEMATCH_RETAIL
@@ -1357,7 +1358,7 @@ void C_OP_RenderSprites::Render( IMatRenderContext *pRenderContext, CParticleCol
 		}
 		else
 		{			
-			for( int i = 0; i < nParticlesInBatch; i++ )
+			for( i = 0; i < nParticlesInBatch; i++ )
 			{
 				int hParticle = (--pSortList)->m_nIndex;
 #ifdef BYTEMATCH_RETAIL
