@@ -627,7 +627,7 @@ bool CUtlString::IsEqual_CaseInsensitive( const char *src ) const
 	}
 	return ( V_stricmp( Get(), src ) == 0 );
 }
-#endif
+
 void CUtlString::FixSlashes( char cSeparator/*=CORRECT_PATH_SEPARATOR*/ )
 {
 	if ( !IsEmpty() )
@@ -635,7 +635,7 @@ void CUtlString::FixSlashes( char cSeparator/*=CORRECT_PATH_SEPARATOR*/ )
 		V_FixSlashes( Get(), cSeparator );
 	}
 }
-#ifndef BYTEMATCH_RETAIL
+
 //-----------------------------------------------------------------------------
 // Trim functions
 //-----------------------------------------------------------------------------
