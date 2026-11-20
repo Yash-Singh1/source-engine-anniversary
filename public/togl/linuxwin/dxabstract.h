@@ -36,6 +36,19 @@
 #include "tier0/dbg.h"
 #include "tier1/utlmap.h"
 
+#ifdef BYTEMATCH_RETAIL
+#include "togl/dx_iunknown.h"
+#include "appframework/ilaunchermgr.h"
+inline void toglGetClientRect( VD3DHWND hWnd, RECT *destRect )
+{
+	uint width, height;
+	g_pLauncherMgr->RenderedSize( width, height, false );
+	destRect->left = 0;
+	destRect->top = 0;
+	destRect->right = width;
+	destRect->bottom = height;
+}
+#else
 // turn this on to get refcount logging from IUnknown
 #define	IUNKNOWN_ALLOC_SPEW 0
 #define	IUNKNOWN_ALLOC_SPEW_MARK_ALL 0	
@@ -145,6 +158,7 @@ struct TOGL_CLASS IUnknown
 		m_mark = markValue;
 	}
 };
+#endif // BYTEMATCH_RETAIL
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 // INTERFACES
@@ -162,6 +176,9 @@ struct TOGL_CLASS IDirect3DBaseTexture9 : public IDirect3DResource9						// "A T
 {
 	D3DSURFACE_DESC			m_descZero;			// desc of top level.
 	CGLMTex					*m_tex;				// a CGLMTex can represent all forms of tex
+#ifdef BYTEMATCH_RETAIL
+	int						m_srgbFlipCount;
+#endif
 
 	virtual					~IDirect3DBaseTexture9();
 	D3DRESOURCETYPE	TOGLMETHODCALLTYPE GetType();
@@ -294,7 +311,9 @@ struct TOGL_CLASS IDirect3DPixelShader9 : public IDirect3DResource9	//was IUnkno
 	uint					m_pixSamplerMask;	// (1<<n) mask of samplers referemnced by this pixel shader
 												// this can help FlushSamplers avoid SRGB flipping on textures not being referenced...
 	uint					m_pixSamplerTypes;  // SAMPLER_TYPE_2D, etc.
+#ifndef BYTEMATCH_RETAIL
 	uint					m_pixFragDataMask;  // (1<<n) mask of gl_FragData[n] referenced by this pixel shader
+#endif
 	
 	virtual					~IDirect3DPixelShader9();
 };
@@ -310,6 +329,7 @@ struct TOGL_CLASS IDirect3DVertexShader9 : public IDirect3DResource9	//was IUnkn
 	virtual					~IDirect3DVertexShader9();
 };
 
+#ifndef BYTEMATCH_RETAIL
 #ifdef _MSC_VER
 	typedef class TOGL_CLASS CUtlMemory<D3DMATRIX> CD3DMATRIXAllocator;
 	typedef class TOGL_CLASS CUtlVector<D3DMATRIX, CD3DMATRIXAllocator> CD3DMATRIXStack;
@@ -351,6 +371,7 @@ struct TOGL_CLASS ID3DXMatrixStack //: public IUnknown
 };
 
 typedef ID3DXMatrixStack* LPD3DXMATRIXSTACK;
+#endif // !BYTEMATCH_RETAIL
 
 struct RenderTargetState_t
 {
@@ -428,7 +449,9 @@ struct TOGL_CLASS IDirect3DDevice9 : public IUnknown
 	//
 	HRESULT TOGLMETHODCALLTYPE Reset(D3DPRESENT_PARAMETERS* pPresentationParameters);
 	HRESULT TOGLMETHODCALLTYPE SetViewport(CONST D3DVIEWPORT9* pViewport);
+#ifndef BYTEMATCH_RETAIL
 	HRESULT TOGLMETHODCALLTYPE GetViewport(D3DVIEWPORT9* pViewport);
+#endif
     HRESULT TOGLMETHODCALLTYPE BeginScene();
 	HRESULT TOGLMETHODCALLTYPE Clear(DWORD Count,CONST D3DRECT* pRects,DWORD Flags,D3DCOLOR Color,float Z,DWORD Stencil);
     HRESULT TOGLMETHODCALLTYPE EndScene();
@@ -488,7 +511,9 @@ struct TOGL_CLASS IDirect3DDevice9 : public IUnknown
 
 	// POSIX only - preheating for a specific vertex/pixel shader pair - trigger GLSL link inside GLM
 	HRESULT TOGLMETHODCALLTYPE LinkShaderPair( IDirect3DVertexShader9* vs, IDirect3DPixelShader9* ps );
+#ifndef BYTEMATCH_RETAIL
 	HRESULT TOGLMETHODCALLTYPE ValidateShaderPair( IDirect3DVertexShader9* vs, IDirect3DPixelShader9* ps );
+#endif
 	HRESULT TOGLMETHODCALLTYPE QueryShaderPair( int index, GLMShaderPairInfo *infoOut );
 	
 	// vertex buffers
@@ -519,8 +544,13 @@ struct TOGL_CLASS IDirect3DDevice9 : public IUnknown
     FORCEINLINE HRESULT TOGLMETHODCALLTYPE SetSamplerState(DWORD Sampler,D3DSAMPLERSTATETYPE Type,DWORD Value);
 	HRESULT TOGLMETHODCALLTYPE SetSamplerStateNonInline(DWORD Sampler,D3DSAMPLERSTATETYPE Type,DWORD Value);
 
+#ifdef BYTEMATCH_RETAIL
+	FORCEINLINE void TOGLMETHODCALLTYPE SetSamplerStates(DWORD Sampler, DWORD AddressU, DWORD AddressV, DWORD AddressW, DWORD MinFilter, DWORD MagFilter, DWORD MipFilter );
+	void TOGLMETHODCALLTYPE SetSamplerStatesNonInline(DWORD Sampler, DWORD AddressU, DWORD AddressV, DWORD AddressW, DWORD MinFilter, DWORD MagFilter, DWORD MipFilter );
+#else
 	FORCEINLINE void TOGLMETHODCALLTYPE SetSamplerStates(DWORD Sampler, DWORD AddressU, DWORD AddressV, DWORD AddressW, DWORD MinFilter, DWORD MagFilter, DWORD MipFilter, DWORD MinLod, float LodBias );
 	void TOGLMETHODCALLTYPE SetSamplerStatesNonInline(DWORD Sampler, DWORD AddressU, DWORD AddressV, DWORD AddressW, DWORD MinFilter, DWORD MagFilter, DWORD MipFilter, DWORD MinLod, float LodBias );
+#endif
 			
 #ifdef OSX
 	// required for 10.6 support
@@ -620,6 +650,9 @@ private:
 	IDirect3DPixelShader9		*m_pixelShader;					// Set by SetPixelShader...
 
 	IDirect3DBaseTexture9		*m_textures[GLM_SAMPLER_COUNT];				// set by SetTexture... NULL if stage inactive
+#ifdef BYTEMATCH_RETAIL
+	D3DSamplerDesc				m_samplers[16];					// set by SetSamplerState..
+#endif
 	
 	// GLM flavor stuff
 	GLMContext					*m_ctx;
@@ -706,6 +739,9 @@ private:
 		bool						m_FogEnable;			// not really pushed to GL, just latched here
 
 		// samplers
+#ifdef BYTEMATCH_RETAIL
+		GLMTexSamplingParams		m_samplers[ 16 ];
+#endif
 		//GLMTexSamplingParams		m_samplers[GLM_SAMPLER_COUNT];
 	} gl;
 	
@@ -780,7 +816,9 @@ FORCEINLINE HRESULT TOGLMETHODCALLTYPE IDirect3DDevice9::SetSamplerState( DWORD 
 			m_ctx->SetSamplerMaxAnisotropy( Sampler, Value);
 			break;
 		case D3DSAMP_SRGBTEXTURE: 
-			//m_samplers[ Sampler ].m_srgb = Value;
+#ifdef BYTEMATCH_RETAIL
+			m_samplers[ Sampler ].m_srgb = Value;
+#endif
 			m_ctx->SetSamplerSRGBTexture(Sampler, Value);
 			break;
 		case D3DSAMP_SHADOWFILTER: 
@@ -793,6 +831,23 @@ FORCEINLINE HRESULT TOGLMETHODCALLTYPE IDirect3DDevice9::SetSamplerState( DWORD 
 #endif
 }
 
+#ifdef BYTEMATCH_RETAIL
+FORCEINLINE void TOGLMETHODCALLTYPE IDirect3DDevice9::SetSamplerStates(
+	DWORD Sampler, DWORD AddressU, DWORD AddressV, DWORD AddressW,
+	DWORD MinFilter, DWORD MagFilter, DWORD MipFilter )
+{
+#if GLMDEBUG || GL_BATCH_PERF_ANALYSIS
+	SetSamplerStatesNonInline( Sampler, AddressU, AddressV, AddressW, MinFilter, MagFilter, MipFilter );
+#else
+	Assert( GetCurrentOwnerThreadId() == ThreadGetCurrentId() );
+	Assert( Sampler < 16 );
+		
+	m_ctx->SetSamplerDirty( Sampler );
+		
+	m_ctx->SetSamplerStates( Sampler, AddressU, AddressV, AddressW, MinFilter, MagFilter, MipFilter );
+#endif
+}
+#else
 FORCEINLINE void TOGLMETHODCALLTYPE IDirect3DDevice9::SetSamplerStates(
 	DWORD Sampler, DWORD AddressU, DWORD AddressV, DWORD AddressW,
 	DWORD MinFilter, DWORD MagFilter, DWORD MipFilter, DWORD MinLod,
@@ -809,6 +864,7 @@ FORCEINLINE void TOGLMETHODCALLTYPE IDirect3DDevice9::SetSamplerStates(
 	m_ctx->SetSamplerStates( Sampler, AddressU, AddressV, AddressW, MinFilter, MagFilter, MipFilter, MinLod, LodBias );
 #endif
 }
+#endif
 
 FORCEINLINE HRESULT TOGLMETHODCALLTYPE IDirect3DDevice9::SetTexture(DWORD Stage,IDirect3DBaseTexture9* pTexture)
 {
@@ -844,10 +900,12 @@ FORCEINLINE GLenum D3DBlendOperationToGL( DWORD operation )
 	switch (operation)
 	{
 		case	D3DBLENDOP_ADD			: return GL_FUNC_ADD;				// The result is the destination added to the source. Result = Source + Destination
+#ifndef BYTEMATCH_RETAIL
 		case	D3DBLENDOP_SUBTRACT		: return GL_FUNC_SUBTRACT;			// The result is the destination subtracted from to the source. Result = Source - Destination
 		case	D3DBLENDOP_REVSUBTRACT	: return GL_FUNC_REVERSE_SUBTRACT;	// The result is the source subtracted from the destination. Result = Destination - Source
 		case	D3DBLENDOP_MIN			: return GL_MIN;					// The result is the minimum of the source and destination. Result = MIN(Source, Destination)
 		case	D3DBLENDOP_MAX			: return GL_MAX;					// The result is the maximum of the source and destination. Result = MAX(Source, Destination)
+#endif
 		default:
 			DXABSTRACT_BREAK_ON_ERROR();
 			return 0xFFFFFFFF;
@@ -1346,6 +1404,13 @@ class ID3DXConstantTable : public IUnknown
 };
 typedef ID3DXConstantTable* LPD3DXCONSTANTTABLE;
 
+#ifdef BYTEMATCH_RETAIL
+#include "togl/d3dx_impl.h"
+
+TOGL_INTERFACE IDirect3D9 *Direct3DCreate9(UINT SDKVersion);
+
+TOGL_INTERFACE void D3DPERF_SetOptions( DWORD dwOptions );
+#else
 TOGL_INTERFACE const char* D3DXGetPixelShaderProfile( IDirect3DDevice9 *pDevice );
 
 TOGL_INTERFACE D3DXMATRIX* D3DXMatrixMultiply( D3DXMATRIX *pOut, CONST D3DXMATRIX *pM1, CONST D3DXMATRIX *pM2 );
@@ -1418,6 +1483,7 @@ TOGL_INTERFACE HRESULT D3DXCompileShader(
 	LPD3DXBUFFER*                   ppShader,
 	LPD3DXBUFFER*                   ppErrorMsgs,
 	LPD3DXCONSTANTTABLE*            ppConstantTable);
+#endif // BYTEMATCH_RETAIL
 
 // fake D3D usage constant for SRGB tex creation
 #define D3DUSAGE_TEXTURE_SRGB (0x80000000L)

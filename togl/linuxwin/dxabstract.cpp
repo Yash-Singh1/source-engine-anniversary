@@ -134,6 +134,7 @@ D3DMATRIX::operator void* ()
 
 #endif
 
+#ifndef BYTEMATCH_RETAIL
 D3DXMATRIX D3DXMATRIX::operator*( const D3DXMATRIX &o ) const
 {
 	D3DXMATRIX result;
@@ -254,6 +255,7 @@ D3DXVECTOR4::D3DXVECTOR4( float a, float b, float c, float d )
 	z = c;
 	w = d;
 }
+#endif // !BYTEMATCH_RETAIL
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
@@ -420,11 +422,15 @@ HRESULT IDirect3DDevice9::CreateTexture(UINT Width,UINT Height,UINT Levels,DWORD
 						
 		key.m_texFlags |= kGLMTexRenderable;
 		
+#ifdef BYTEMATCH_RETAIL
+		key.m_texFlags |= kGLMTexSRGB;
+#else
 		const GLMTexFormatDesc *pFmtDesc = GetFormatDesc( key.m_texFormat );
 		if ( pFmtDesc->m_glIntFormatSRGB != 0 )
 		{
 			key.m_texFlags |= kGLMTexSRGB;			// this catches callers of CreateTexture who set the "renderable" option - they get an SRGB tex
 		}
+#endif
 		
 		if (m_ctx->Caps().m_cantAttachSRGB)
 		{
@@ -446,6 +452,16 @@ HRESULT IDirect3DDevice9::CreateTexture(UINT Width,UINT Height,UINT Levels,DWORD
 	key.m_ySize = Height;
 	key.m_zSize = 1;
 	
+#ifdef BYTEMATCH_RETAIL
+	CGLMTex *tex = m_ctx->NewTex( &key, pDebugLabel );
+	if (!tex)
+	{
+		DXABSTRACT_BREAK_ON_ERROR();
+	}
+	dxtex->m_tex = tex;
+
+	dxtex->m_srgbFlipCount = 0;
+#else
 	CGLMTex *tex = m_ctx->NewTex( &key, Levels, pDebugLabel );
 	if (!tex)
 	{
@@ -454,6 +470,7 @@ HRESULT IDirect3DDevice9::CreateTexture(UINT Width,UINT Height,UINT Levels,DWORD
 	dxtex->m_tex = tex;
 
 	dxtex->m_tex->m_srgbFlipCount = 0;
+#endif
 
 	m_ObjectStats.m_nTotalSurfaces++;
 
@@ -629,6 +646,16 @@ HRESULT IDirect3DDevice9::CreateCubeTexture(UINT EdgeLength,UINT Levels,DWORD Us
 	key.m_ySize = EdgeLength;
 	key.m_zSize = 1;
 	
+#ifdef BYTEMATCH_RETAIL
+	CGLMTex *tex = m_ctx->NewTex( &key, pDebugLabel );
+	if (!tex)
+	{
+		DXABSTRACT_BREAK_ON_ERROR();
+	}
+	dxtex->m_tex = tex;
+	
+	dxtex->m_srgbFlipCount = 0;
+#else
 	CGLMTex *tex = m_ctx->NewTex( &key, Levels, pDebugLabel );
 	if (!tex)
 	{
@@ -637,6 +664,7 @@ HRESULT IDirect3DDevice9::CreateCubeTexture(UINT EdgeLength,UINT Levels,DWORD Us
 	dxtex->m_tex = tex;
 	
 	dxtex->m_tex->m_srgbFlipCount = 0;
+#endif
 
 	for( int face = 0; face < 6; face ++)
 	{
@@ -835,6 +863,16 @@ HRESULT IDirect3DDevice9::CreateVolumeTexture(UINT Width,UINT Height,UINT Depth,
 	key.m_ySize = Height;
 	key.m_zSize = Depth;
 	
+#ifdef BYTEMATCH_RETAIL
+	CGLMTex *tex = m_ctx->NewTex( &key, pDebugLabel );
+	if (!tex)
+	{
+		DXABSTRACT_BREAK_ON_ERROR();
+	}
+	dxtex->m_tex = tex;
+	
+	dxtex->m_srgbFlipCount = 0;
+#else
 	CGLMTex *tex = m_ctx->NewTex( &key, Levels, pDebugLabel );
 	if (!tex)
 	{
@@ -843,6 +881,7 @@ HRESULT IDirect3DDevice9::CreateVolumeTexture(UINT Width,UINT Height,UINT Depth,
 	dxtex->m_tex = tex;
 	
 	dxtex->m_tex->m_srgbFlipCount = 0;
+#endif
 
 	m_ObjectStats.m_nTotalSurfaces++;
 
@@ -1035,7 +1074,11 @@ HRESULT IDirect3DSurface9::LockRect(D3DLOCKED_RECT* pLockedRect,CONST RECT* pRec
 	lockreq.m_region.ymax = pRect->bottom;
 	lockreq.m_region.zmax = 1;
 	
+#ifdef BYTEMATCH_RETAIL
+	if ( Flags & D3DLOCK_READONLY )
+#else
 	if ((Flags & (D3DLOCK_READONLY | D3DLOCK_NOSYSLOCK)) == (D3DLOCK_READONLY | D3DLOCK_NOSYSLOCK) )
+#endif
 	{
 		// smells like readback, force texel readout
 		lockreq.m_readback = true;
@@ -1939,8 +1982,10 @@ HRESULT IDirect3DQuery9::GetData(void* pData,DWORD dwSize,DWORD dwGetDataFlags)
 			if ( flush )
 				{
 				uint oqValue = 0;
+#ifndef BYTEMATCH_RETAIL
 					CFastTimer tm;
 					tm.Start();
+#endif
 										
 
 						// Is this flush actually necessary? According to the extension it's not.
@@ -1949,7 +1994,7 @@ HRESULT IDirect3DQuery9::GetData(void* pData,DWORD dwSize,DWORD dwGetDataFlags)
 																						
 				m_query->Complete(&oqValue);
 
-											
+#ifndef BYTEMATCH_RETAIL
 				double flTotalTime = tm.GetDurationInProgress().GetSeconds() * 1000.0f;
 				if ( flTotalTime > .5f )
 						{
@@ -1959,6 +2004,7 @@ HRESULT IDirect3DQuery9::GetData(void* pData,DWORD dwSize,DWORD dwGetDataFlags)
 							//Assert( 0 );
 					Warning( "IDirect3DQuery9::GetData(): Occlusion query flush took %3.3fms!\n", flTotalTime );
 						}
+#endif
 				if (pData)
 				{
 					*(uint*)pData = oqValue;
@@ -2079,6 +2125,9 @@ HRESULT IDirect3DVertexBuffer9::Lock(UINT OffsetToLock,UINT SizeToLock,void** pp
 {
 	GL_BATCH_PERF_CALL_TIMER;
 	GL_PUBLIC_ENTRYPOINT_CHECKS( m_device );
+#ifdef BYTEMATCH_RETAIL
+#line 1890
+#endif
 	tmZoneFiltered( TELEMETRY_LEVEL2, 25, TMZF_NONE, "VB Lock" );
 
 	// FIXME would be good to have "can't lock twice" logic
@@ -2103,6 +2152,9 @@ HRESULT IDirect3DVertexBuffer9::Unlock()
 	GL_BATCH_PERF_CALL_TIMER;
 	GL_PUBLIC_ENTRYPOINT_CHECKS( m_device );
 	
+#ifdef BYTEMATCH_RETAIL
+#line 1914
+#endif
 	tmZoneFiltered( TELEMETRY_LEVEL2, 25, TMZF_NONE, "VB Unlock" );
 
 	m_vtxBuffer->Unlock();
@@ -2113,6 +2165,9 @@ void IDirect3DVertexBuffer9::UnlockActualSize( uint nActualSize, const void *pAc
 {
 	GL_BATCH_PERF_CALL_TIMER;
 	GL_PUBLIC_ENTRYPOINT_CHECKS( m_device );
+#ifdef BYTEMATCH_RETAIL
+#line 1924
+#endif
 	tmZoneFiltered( TELEMETRY_LEVEL2, 25, TMZF_NONE, "VB UnlockActualSize" );
 
 	m_vtxBuffer->Unlock( nActualSize, pActualData );
@@ -2200,6 +2255,9 @@ HRESULT IDirect3DIndexBuffer9::Lock(UINT OffsetToLock,UINT SizeToLock,void** ppb
 	GL_PUBLIC_ENTRYPOINT_CHECKS( m_device );
 	// FIXME would be good to have "can't lock twice" logic
 
+#ifdef BYTEMATCH_RETAIL
+#line 2011
+#endif
 	tmZoneFiltered( TELEMETRY_LEVEL2, 25, TMZF_NONE, "IB Lock" );
 	
 	GLMBuffLockParams lockreq;
@@ -2218,6 +2276,9 @@ HRESULT IDirect3DIndexBuffer9::Unlock()
 	GL_BATCH_PERF_CALL_TIMER;
 	GL_PUBLIC_ENTRYPOINT_CHECKS( m_device );
 
+#ifdef BYTEMATCH_RETAIL
+#line 2029
+#endif
 	tmZoneFiltered( TELEMETRY_LEVEL2, 25, TMZF_NONE, "IB Unlock" );
 
 	m_idxBuffer->Unlock();
@@ -2229,6 +2290,9 @@ void IDirect3DIndexBuffer9::UnlockActualSize( uint nActualSize, const void *pAct
 { 
 	GL_BATCH_PERF_CALL_TIMER;
 	GL_PUBLIC_ENTRYPOINT_CHECKS( m_device );
+#ifdef BYTEMATCH_RETAIL
+#line 2040
+#endif
 	tmZoneFiltered( TELEMETRY_LEVEL2, 25, TMZF_NONE, "IB UnlockActualSize" );
 
 	m_idxBuffer->Unlock( nActualSize, pActualData );
@@ -2334,7 +2398,9 @@ HRESULT	IDirect3DDevice9::Create( IDirect3DDevice9Params *params )
 	memset( m_streams, 0, sizeof(m_streams) );
 	memset( m_vtx_buffers, 0, sizeof( m_vtx_buffers ) );
 	memset( m_textures, 0, sizeof(m_textures) );
-	//memset( m_samplers, 0, sizeof(m_samplers) );
+#ifdef BYTEMATCH_RETAIL
+	memset( m_samplers, 0, sizeof(m_samplers) );
+#endif
 
 	m_indices.m_idxBuffer = NULL;
 
@@ -2465,8 +2531,10 @@ HRESULT	IDirect3DDevice9::Create( IDirect3DDevice9Params *params )
 		return (HRESULT)-1;
 	}
 
+#ifndef BYTEMATCH_RETAIL
 	// this next part really needs to be inside GLMContext.. or replaced with D3D style viewport setup calls.
 	m_ctx->GenDebugFontTex();
+#endif
 	
 	// blast the gl state mirror...
 	memset( &this->gl, 0, sizeof( this->gl ) );
@@ -2547,6 +2615,10 @@ IDirect3DDevice9::~IDirect3DDevice9()
 	if ( m_pFBOs )
 	{
 	ResetFBOMap();
+#ifdef BYTEMATCH_RETAIL
+	delete m_pFBOs;
+	m_pFBOs = NULL;
+#endif
 	}
 
 	GLMPRINTF(( "-D- IDirect3DDevice9::~IDirect3DDevice9 signpost" ));	// want to know when this is called, if ever
@@ -2758,6 +2830,7 @@ HRESULT IDirect3DDevice9::SetViewport(CONST D3DVIEWPORT9* pViewport)
 	return S_OK;
 }
 
+#ifndef BYTEMATCH_RETAIL
 HRESULT IDirect3DDevice9::GetViewport( D3DVIEWPORT9* pViewport )
 {
 	// 7LS - unfinished, used in scaleformuirenderimpl.cpp (only width and height required)
@@ -2776,6 +2849,7 @@ HRESULT IDirect3DDevice9::GetViewport( D3DVIEWPORT9* pViewport )
 
 	return S_OK;
 }
+#endif
 
 HRESULT IDirect3DDevice9::BeginScene()
 {
@@ -3144,7 +3218,11 @@ HRESULT IDirect3DDevice9::CreateRenderTarget(UINT Width,UINT Height,D3DFORMAT Fo
 		// FIXME no support for "MS quality" yet
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	surf->m_tex			= m_ctx->NewTex( &rtkey, pDebugLabel );
+#else
 	surf->m_tex			= m_ctx->NewTex( &rtkey, 1, pDebugLabel );
+#endif
 	surf->m_face		= 0;
 	surf->m_mip			= 0;
 	
@@ -3305,6 +3383,9 @@ HRESULT IDirect3DDevice9::SetRenderTarget(DWORD RenderTargetIndex,IDirect3DSurfa
 {
 	GL_BATCH_PERF_CALL_TIMER;
 	GL_PUBLIC_ENTRYPOINT_CHECKS( this );
+#ifdef BYTEMATCH_RETAIL
+#line 3128
+#endif
 	tmZone( TELEMETRY_LEVEL2, TMZF_NONE, "%s", __FUNCTION__ );
 	
 	Assert( RenderTargetIndex < 4 );
@@ -3441,7 +3522,11 @@ HRESULT IDirect3DDevice9::CreateOffscreenPlainSurface( UINT Width,UINT Height,D3
 	rtkey.m_texFormat	=	Format;
 	rtkey.m_texFlags	=	kGLMTexRenderable;
 
+#ifdef BYTEMATCH_RETAIL
+	surf->m_tex			=	m_ctx->NewTex( &rtkey, "offscreen plain surface" );
+#else
 	surf->m_tex			=	m_ctx->NewTex( &rtkey, 1, "offscreen plain surface" );
+#endif
 	surf->m_face		=	0;
 	surf->m_mip			=	0;
 	
@@ -3498,7 +3583,11 @@ HRESULT IDirect3DDevice9::CreateDepthStencilSurface(UINT Width,UINT Height,D3DFO
 		// FIXME no support for "MS quality" yet
 	}
 
+#ifdef BYTEMATCH_RETAIL
+	surf->m_tex				= m_ctx->NewTex( &depthkey, "depth-stencil surface" );
+#else
 	surf->m_tex				= m_ctx->NewTex( &depthkey, 1, "depth-stencil surface" );
+#endif
 	surf->m_face			= 0;
 	surf->m_mip				= 0;
 
@@ -3759,6 +3848,61 @@ static uint32 CentroidMaskFromName( bool bPixelShader, const char *pName )
 
 // This totally sucks, but this information can't be gleaned any
 // other way when translating from D3D to GL at this level
+#ifdef BYTEMATCH_RETAIL
+static int ShadowDepthSamplerMaskFromName( const char *pName )
+{
+	if ( !pName )
+		return -1;	
+	
+	if ( V_stristr( pName, "water_ps" ) )
+	{
+		return 7;
+	}
+	else if ( V_stristr( pName, "infected_ps" ) )
+	{
+		return 1;
+	}
+	else if ( V_stristr( pName, "phong_ps" ) )
+	{
+		return 4;
+	}
+	else if ( V_stristr( pName, "vertexlit_and_unlit_generic_bump_ps" ) )
+	{
+		return 8;
+	}
+	else if ( V_stristr( pName, "vertexlit_and_unlit_generic_ps" ) )
+	{
+		return 8;
+	}
+	else if ( V_stristr( pName, "eye_refract_ps" ) )
+	{
+		return 6;
+	}
+	else if ( V_stristr( pName, "eyes_flashlight_ps" ) )
+	{
+		return 4;
+	}
+	else if ( V_stristr( pName, "worldtwotextureblend_ps" ) ) 
+	{
+		return 7;
+	}
+	else if ( V_stristr( pName, "teeth_flashlight_ps" ) ) 
+	{
+		return 2;
+	}
+	else if ( V_stristr( pName, "skin_ps" ) )
+	{
+		return 4;
+	}
+	else if ( V_stristr( pName, "flashlight_ps" ) ) // substring of above, make sure this comes last!!
+	{
+		return 7;
+	}
+	
+	// This shader doesn't have a shadow depth map sampler
+	return -1;
+}
+#else
 static int ShadowDepthSamplerMaskFromName( const char *pName )
 {
 	if ( !pName )
@@ -3812,6 +3956,7 @@ static int ShadowDepthSamplerMaskFromName( const char *pName )
 	{
 		return (1<<15);
 	}
+#ifndef BYTEMATCH_RETAIL
 	else if ( V_stristr( pName, "deferred_global_light_ps" ) )
 	{
 		return (1<<14);
@@ -3836,10 +3981,12 @@ static int ShadowDepthSamplerMaskFromName( const char *pName )
 	{
 		return (1<<14);
 	}
+#endif
 
 	// This shader doesn't have a shadow depth map sampler
 	return 0;
 }
+#endif
 
 #ifdef OSX
 
@@ -3861,7 +4008,13 @@ HRESULT IDirect3DDevice9::CreatePixelShader(CONST DWORD* pFunction,IDirect3DPixe
 	{
 		if ( *pCentroidMask != nCentroidMask )
 		{
+#ifdef BYTEMATCH_RETAIL
+			char buf[256];
+			V_snprintf( buf, sizeof( buf ), "IDirect3DDevice9::CreatePixelShader: shaderapi's centroid mask (0x%08X) differs from mask derived from shader name (0x%08X) for shader %s\n", *pCentroidMask, nCentroidMask, pDebugLabel );
+			Plat_DebugString( buf );
+#else
 			GLMDebugPrintf( "IDirect3DDevice9::CreatePixelShader: shaderapi's centroid mask (0x%08X) differs from mask derived from shader name (0x%08X) for shader %s\n", *pCentroidMask, nCentroidMask, pDebugLabel );
+#endif
 		}
 		// It would be great if we could use these centroid masks passed in from shaderapi - but unfortunately they're only available for pixel shaders, and we also need to compute matching masks for vertex shaders!
 		//nCentroidMask = *pCentroidMask;
@@ -3885,7 +4038,11 @@ HRESULT IDirect3DDevice9::CreatePixelShader(CONST DWORD* pFunction,IDirect3DPixe
 		// note the GLSL translator wants its own buffer
 		tempbuf.EnsureCapacity( maxTranslationSize );
 			
+#ifdef BYTEMATCH_RETAIL
+		uint glslPixelShaderOptions = D3DToGL_OptionUseEnvParams | D3DToGL_OptionGLSL | D3DToGL_OptionAllowStaticControlFlow;
+#else
 		uint glslPixelShaderOptions = D3DToGL_OptionUseEnvParams;// | D3DToGL_OptionAllowStaticControlFlow;
+#endif
 			
 
 		// Fake SRGB mode - needed on R500, probably indefinitely.
@@ -3926,7 +4083,11 @@ HRESULT IDirect3DDevice9::CreatePixelShader(CONST DWORD* pFunction,IDirect3DPixe
 					
 			newprog->m_pixProgram = m_ctx->NewProgram( kGLMFragmentProgram, (char *)transbuf.Base(), pShaderName ? pShaderName : "?" ) ;
 			newprog->m_pixProgram->m_nCentroidMask = nCentroidMask;
+#ifdef BYTEMATCH_RETAIL
+			newprog->m_pixProgram->m_nShadowDepthSamplerMask = ( nShadowDepthSamplerMask != -1 ) ? ( 1 << nShadowDepthSamplerMask ) : 0;
+#else
 			newprog->m_pixProgram->m_nShadowDepthSamplerMask = nShadowDepthSamplerMask;
+#endif
 			
 			newprog->m_pixProgram->m_bTranslatedProgram = true;
 			newprog->m_pixProgram->m_maxVertexAttrs = 0;
@@ -4011,6 +4172,7 @@ HRESULT IDirect3DDevice9::CreatePixelShader(CONST DWORD* pFunction,IDirect3DPixe
 				}
 			}
 
+#ifndef BYTEMATCH_RETAIL
 			{
 				// find the fb outputs used by this shader/combo
 				const GLenum buffers[] = { GL_COLOR_ATTACHMENT0_EXT, GL_COLOR_ATTACHMENT1_EXT, GL_COLOR_ATTACHMENT2_EXT, GL_COLOR_ATTACHMENT3_EXT };
@@ -4052,6 +4214,7 @@ HRESULT IDirect3DDevice9::CreatePixelShader(CONST DWORD* pFunction,IDirect3DPixe
 				}
 
 			}
+#endif
 									
 			*ppShader = newprog;
 			
@@ -4117,7 +4280,9 @@ HRESULT IDirect3DDevice9::SetPixelShaderConstantB(UINT StartRegister,CONST BOOL*
 	GL_BATCH_PERF_CALL_TIMER;
 	GL_PUBLIC_ENTRYPOINT_CHECKS( this );
 	TOGL_NULL_DEVICE_CHECK;
+#ifndef BYTEMATCH_RETAIL
 	m_ctx->SetProgramParametersB( kGLMFragmentProgram, StartRegister, (int *)pConstantData, BoolCount );
+#endif
 	return S_OK;
 }
 
@@ -4165,7 +4330,11 @@ HRESULT IDirect3DDevice9::CreateVertexShader(CONST DWORD* pFunction, IDirect3DVe
 		// note the GLSL translator wants its own buffer
 		tempbuf.EnsureCapacity( maxTranslationSize );
 			
+#ifdef BYTEMATCH_RETAIL
+		uint glslVertexShaderOptions = D3DToGL_OptionUseEnvParams | D3DToGL_OptionDoFixupZ | D3DToGL_OptionDoFixupY | D3DToGL_OptionGLSL | D3DToGL_OptionAllowStaticControlFlow;
+#else
 		uint glslVertexShaderOptions = D3DToGL_OptionUseEnvParams | D3DToGL_OptionDoFixupZ | D3DToGL_OptionDoFixupY;
+#endif
 
 		if ( m_ctx->Caps().m_hasNativeClipVertexMode )
 		{
@@ -4386,6 +4555,7 @@ HRESULT IDirect3DDevice9::LinkShaderPair( IDirect3DVertexShader9* vs, IDirect3DP
 	return S_OK;
 }
 
+#ifndef BYTEMATCH_RETAIL
 HRESULT IDirect3DDevice9::ValidateShaderPair( IDirect3DVertexShader9* vs, IDirect3DPixelShader9* ps )
 {
 	GL_BATCH_PERF_CALL_TIMER;
@@ -4396,6 +4566,7 @@ HRESULT IDirect3DDevice9::ValidateShaderPair( IDirect3DVertexShader9* vs, IDirec
 	}
 	return S_OK;
 }
+#endif
 
 // callers need to ifdef POSIX this, because this method does not exist on real DX9
 // 
@@ -4477,8 +4648,22 @@ HRESULT IDirect3DDevice9::CreateVertexDeclaration(CONST D3DVERTEXELEMENT9* pVert
 			// case D3DVSDT_UBYTE4:		
 			case D3DDECLTYPE_D3DCOLOR:
 			case D3DDECLTYPE_UBYTE4:
+#ifndef BYTEMATCH_RETAIL
 			case D3DDECLTYPE_UBYTE4N:
+#endif
 				
+#ifdef BYTEMATCH_RETAIL
+				if ( elem->m_dxdecl.Type == D3DDECLTYPE_UBYTE4 )
+				{
+					elem->m_gldecl.m_nCompCount = 4; elem->m_gldecl.m_datatype = GL_UNSIGNED_BYTE;
+				}
+				else
+				{
+					elem->m_gldecl.m_nCompCount = GL_BGRA; elem->m_gldecl.m_datatype = GL_UNSIGNED_BYTE;
+				}
+
+				elem->m_gldecl.m_normalized = ( elem->m_dxdecl.Type == D3DDECLTYPE_D3DCOLOR );
+#else
 				// Force this path since we're on 10.6.2 and can't rely on EXT_vertex_array_bgra
 				if ( 1 )
 				{
@@ -4493,13 +4678,18 @@ HRESULT IDirect3DDevice9::CreateVertexDeclaration(CONST D3DVERTEXELEMENT9* pVert
 
 				elem->m_gldecl.m_normalized = ( (elem->m_dxdecl.Type == D3DDECLTYPE_D3DCOLOR) ||
 												(elem->m_dxdecl.Type == D3DDECLTYPE_UBYTE4N) );
+#endif
 				
 				bytes = 4;
 			break;
 			
 			case D3DDECLTYPE_SHORT2:
 				// pass 2 US's but we know this is out of order compared to D3DCOLOR data
+#ifdef BYTEMATCH_RETAIL
+				elem->m_gldecl.m_nCompCount = 2; elem->m_gldecl.m_datatype = GL_UNSIGNED_SHORT;
+#else
 				elem->m_gldecl.m_nCompCount = 2; elem->m_gldecl.m_datatype = GL_SHORT;
+#endif
 
 				elem->m_gldecl.m_normalized = 0;
 				bytes = 4;
@@ -5331,6 +5521,9 @@ HRESULT IDirect3DDevice9::DrawPrimitiveUP(D3DPRIMITIVETYPE PrimitiveType,UINT Pr
 
 HRESULT IDirect3DDevice9::DrawIndexedPrimitive( D3DPRIMITIVETYPE Type, INT BaseVertexIndex, UINT MinVertexIndex, UINT NumVertices, UINT startIndex, UINT primCount )
 {
+#ifdef BYTEMATCH_RETAIL
+#line 5027
+#endif
 	tmZone( TELEMETRY_LEVEL2, TMZF_NONE, "%s", __FUNCTION__ );
 	Assert( m_ctx->m_nCurOwnerThreadId == ThreadGetCurrentId() );
 		
@@ -5897,10 +6090,18 @@ void IDirect3DDevice9::SetGammaRamp(UINT iSwapChain,DWORD Flags,CONST D3DGAMMARA
 
 void TOGLMETHODCALLTYPE IDirect3DDevice9::SaveGLState()
 {
+#ifdef BYTEMATCH_RETAIL
+	gGL->glPushAttrib( GL_ALL_ATTRIB_BITS );
+	gGL->glPushClientAttrib( GL_CLIENT_ALL_ATTRIB_BITS );
+#endif
 }
 
 void TOGLMETHODCALLTYPE IDirect3DDevice9::RestoreGLState()
 {
+#ifdef BYTEMATCH_RETAIL
+	gGL->glPopClientAttrib();
+	gGL->glPopAttrib();
+#endif
 	m_ctx->ForceFlushStates();
 
 	m_bFBODirty = true;
@@ -6356,7 +6557,9 @@ HRESULT IDirect3DDevice9::SetSamplerStateNonInline( DWORD Sampler, D3DSAMPLERSTA
 		m_ctx->SetSamplerMaxAnisotropy( Sampler, Value);
 		break;
 	case D3DSAMP_SRGBTEXTURE: 
-		//m_samplers[ Sampler ].m_srgb = Value;
+#ifdef BYTEMATCH_RETAIL
+		m_samplers[ Sampler ].m_srgb = Value;
+#endif
 		m_ctx->SetSamplerSRGBTexture(Sampler, Value);
 		break;
 	case D3DSAMP_SHADOWFILTER: 
@@ -6369,6 +6572,21 @@ HRESULT IDirect3DDevice9::SetSamplerStateNonInline( DWORD Sampler, D3DSAMPLERSTA
 	return S_OK;
 }
 
+#ifdef BYTEMATCH_RETAIL
+void IDirect3DDevice9::SetSamplerStatesNonInline(
+	DWORD Sampler, DWORD AddressU, DWORD AddressV, DWORD AddressW,
+	DWORD MinFilter, DWORD MagFilter, DWORD MipFilter )
+{
+	GL_BATCH_PERF_CALL_TIMER;
+	GL_PUBLIC_ENTRYPOINT_CHECKS( this );
+		
+	Assert( Sampler < 16 );
+
+	m_ctx->SetSamplerDirty( Sampler );
+
+	m_ctx->SetSamplerStates( Sampler, AddressU, AddressV, AddressW, MinFilter, MagFilter, MipFilter );
+}
+#else
 void IDirect3DDevice9::SetSamplerStatesNonInline(
 	DWORD Sampler, DWORD AddressU, DWORD AddressV, DWORD AddressW,
 	DWORD MinFilter, DWORD MagFilter, DWORD MipFilter, 
@@ -6383,6 +6601,7 @@ void IDirect3DDevice9::SetSamplerStatesNonInline(
 
 	m_ctx->SetSamplerStates( Sampler, AddressU, AddressV, AddressW, MinFilter, MagFilter, MipFilter, MinLod, LodBias );
 }
+#endif
 
 HRESULT IDirect3DDevice9::SetTextureNonInline(DWORD Stage,IDirect3DBaseTexture9* pTexture)
 {
@@ -6394,6 +6613,7 @@ HRESULT IDirect3DDevice9::SetTextureNonInline(DWORD Stage,IDirect3DBaseTexture9*
 	return S_OK;
 }
 
+#ifndef BYTEMATCH_RETAIL
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
 void* ID3DXBuffer::GetBufferPointer()
@@ -6790,6 +7010,7 @@ D3DXPLANE* D3DXPlaneTransform( D3DXPLANE *pOut, CONST D3DXPLANE *pP, CONST D3DXM
 	
 	return pOut;
 }
+#endif // !BYTEMATCH_RETAIL
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
@@ -6806,7 +7027,7 @@ void D3DPERF_SetOptions( DWORD dwOptions )
 {
 }
 
-
+#ifndef BYTEMATCH_RETAIL
 HRESULT D3DXCompileShader(
         LPCSTR                          pSrcData,
         UINT                            SrcDataLen,
@@ -6846,5 +7067,6 @@ void toglGetClientRect( void *hWnd, RECT *destRect )
 }
 
 #endif
+#endif // !BYTEMATCH_RETAIL
 
 #endif

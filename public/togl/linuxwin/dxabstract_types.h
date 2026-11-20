@@ -1042,6 +1042,22 @@ typedef enum _D3DSHADER_PARAM_REGISTER_TYPE
     D3DSPR_FORCE_DWORD  = 0x7fffffff,         // force 32-bit size enum
 } D3DSHADER_PARAM_REGISTER_TYPE;
 
+#ifdef BYTEMATCH_RETAIL
+typedef struct _D3DMATRIX
+{
+    union 
+	{
+        struct 
+		{
+            float        _11, _12, _13, _14;
+            float        _21, _22, _23, _24;
+            float        _31, _32, _33, _34;
+            float        _41, _42, _43, _44;
+        };
+        float m[4][4];
+    };
+} D3DMATRIX;
+#else
 struct alignas(16) D3DMATRIX 
 {
     union 
@@ -1062,6 +1078,7 @@ struct alignas(16) D3DMATRIX
 	bool operator == ( CONST D3DMATRIX& src ) const;
 #endif
 };
+#endif
 
 
 typedef struct _D3DVERTEXBUFFER_DESC
@@ -1718,7 +1735,11 @@ struct IDirect3DDevice9Params
 	D3DPRESENT_PARAMETERS	m_presentationParameters;
 };
 
+#ifdef BYTEMATCH_RETAIL
+#define	D3D_MAX_STREAMS	4
+#else
 #define	D3D_MAX_STREAMS	5 //9
+#endif
 struct D3DStreamDesc
 {
 	IDirect3DVertexBuffer9	*m_vtxBuffer;
