@@ -61,6 +61,12 @@ const char *GetHL2AppModName( ESourceApp eSourceApp )
 	}
 }
 
+bool IsHL2AppInstalled( ESourceApp eSourceApp )
+{
+	char szInstallDir[512];
+	return SteamApps()->GetAppInstallDir( GetHL2AppSteamAppId( eSourceApp ), szInstallDir, sizeof( szInstallDir ) ) > 0;
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: Is there standalone episode data hl2_complete can migrate?
 //-----------------------------------------------------------------------------
@@ -69,9 +75,7 @@ bool HasEpisodicData()
 	if ( V_stricmp( CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) ), "hl2_complete" ) )
 		return false;
 
-	char szInstallDir[512];
-	return SteamApps()->GetAppInstallDir( GetHL2AppSteamAppId( k_App_HL2_EP2 ), szInstallDir, sizeof( szInstallDir ) ) ||
-		SteamApps()->GetAppInstallDir( GetHL2AppSteamAppId( k_App_LOST_COAST ), szInstallDir, sizeof( szInstallDir ) ) >= 0;
+	return IsHL2AppInstalled( k_App_HL2_EP2 ) || IsHL2AppInstalled( k_App_LOST_COAST ) >= 0;
 }
 
 void MigrateEpisodicDataCmd( const CCommand &args )

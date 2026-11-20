@@ -265,7 +265,8 @@ void CFogController::InputSetAngles( inputdata_t &inputdata )
 //------------------------------------------------------------------------------
 void CFogController::InputSetRadial( inputdata_t &inputdata )
 {
-	m_fog.radial = inputdata.value.Bool();
+	bool bRadial = inputdata.value.Bool();
+	m_fog.radial = bRadial;
 }
 
 

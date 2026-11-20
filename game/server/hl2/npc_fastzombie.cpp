@@ -1906,7 +1906,7 @@ void CFastZombie::InputAttachToVehicle( inputdata_t &inputdata )
 	CPropJeepEpisodic *pVehicle = dynamic_cast<CPropJeepEpisodic *>(pEntity);
 
 	// Get in the car if it's valid
-	if ( pVehicle && IsHL2Episodic() && CanEnterVehicle( pVehicle ) )
+	if ( pVehicle && CanEnterVehicle( pVehicle ) )
 	{
 		// Set her into a "passenger" behavior
 		m_PassengerBehavior.Enable( pVehicle );
@@ -1979,7 +1979,7 @@ void CFastZombie::VehicleLeapAttack( void )
 //-----------------------------------------------------------------------------
 bool CFastZombie::CanEnterVehicle( CPropJeepEpisodic *pVehicle )
 {
-	if ( pVehicle == NULL )
+	if ( pVehicle == NULL || !IsHL2Episodic() )
 		return false;
 
 	return pVehicle->NPC_CanEnterVehicle( this, false );

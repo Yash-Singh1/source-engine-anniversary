@@ -157,6 +157,7 @@ private:
 	float		ScaleAxisValue( const float axisValue, const float axisThreshold );
 	void		UpdateQuickTurnAndCameraReset( QAngle &viewangles, float frametime );
 	QAngle		DoAutoAimMagnetism( QAngle viewangles, int nAutoAimMode, float flMagnetism, float flScale );
+	void		ApplySteamControllerCameraMove( float flFrametime, QAngle &viewangles, CUserCmd *cmd, Vector2D vecPosition );
 	static void	UpdateSteamInputCameraAngles( uint64 controller, QAngle &angles );
 	virtual void SteamControllerMove( float frametime, CUserCmd *cmd );
 	virtual float JoyStickAdjustYaw( float flSpeed ) { return flSpeed; }

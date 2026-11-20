@@ -120,7 +120,7 @@ extern ConVar m_autoaim_scale;
 //-----------------------------------------------------------------------------
 // Purpose: Aim assist dampening for mouse look deltas
 //-----------------------------------------------------------------------------
-static float GetMouseAutoAimDampening( float flValue )
+float GetMouseAutoAimDampening( float flValue )
 {
 	if ( m_autoaim_mode.GetBool() && m_autoaimdampen.GetFloat() > 0.0f )
 	{

@@ -70,7 +70,7 @@ const char *COM_GetModDirectory();
 // Purpose: Half-Life 2 with the episodes in one game; its GameState.txt lives in ROOT_MOD
 //-----------------------------------------------------------------------------
 #ifdef HL2_ANNIVERSARY_NOV2024
-static bool IsHL2Complete()
+static inline bool IsHL2Complete()
 {
 	const char *pGameDir = CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) );
 	return !V_stricmp( pGameDir, "hl2_complete" );
