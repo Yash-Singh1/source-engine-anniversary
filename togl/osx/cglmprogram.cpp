@@ -561,7 +561,7 @@ void	CGLMProgram::LogSlow( EGLMProgramLang lang )
 				m_type==kGLMVertexProgram ? "VS" : "FS",
 				this,
 				lang==kGLMGLSL ? "GLSL" : "ARB",
-				(int)(lang==kGLMGLSL ? (int)desc->m_object.glsl : (int)desc->m_object.arb),
+				(int)desc->m_object.arb,
 				m_text
 		);
 	}
@@ -574,7 +574,7 @@ void	CGLMProgram::LogSlow( EGLMProgramLang lang )
 					m_type==kGLMVertexProgram ? "VS" : "FS",
 					this,
 					lang==kGLMGLSL ? "GLSL" : "ARB",
-					(int)(lang==kGLMGLSL ? (int)desc->m_object.glsl : (int)desc->m_object.arb),
+					(int)desc->m_object.arb,
 					desc->m_slowMark+1
 			);
 		}
@@ -1239,11 +1239,11 @@ void	CGLMShaderPairCache::HashRowProbe( CGLMPairCacheEntry *row, CGLMProgram *vp
 {
 	// scan this row to see if the desired pair is present
 	CGLMPairCacheEntry *cursor = row;
-	long long oldestmark = 0xFFFFFFFFFFFFFFFFLL;
 	
 	int hitway = -1;
 	int emptyway = -1;
 	int oldestway = -1;
+	long long oldestmark = 0xFFFFFFFFFFFFFFFFLL;
 	
 	for( uint way = 0; (way < m_ways) && (hitway < 0); way++ )
 	{

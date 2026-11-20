@@ -90,8 +90,8 @@ public:
 	void			SetOverrideMod( const char *pszOverrideMod );
 	void			ReloadChapters();
 	int				GetUnlockedChapter();
-	inline void		UpdatePanelLockedStatus( int iUnlockedChapter, int i, CGameChapterPanel *pChapterPanel );
-	inline bool		IsCommentaryEnabled();
+	void			UpdatePanelLockedStatus( int iUnlockedChapter, int i, CGameChapterPanel *pChapterPanel );
+	bool			IsCommentaryEnabled();
 
 	void			SetCommentaryMode( bool bCommentary ) { m_bCommentaryMode = bCommentary; }
 	bool			IsCommentaryMode() const { return m_bCommentaryMode; }

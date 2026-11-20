@@ -132,6 +132,10 @@ void CCommentaryDialog::OnKeyCodePressed(KeyCode code)
 	BaseClass::OnKeyCodePressed(code);
 }
 
+#ifdef BYTEMATCH_RETAIL
+void CommentaryDialog_RetailDeadSlot0() {}
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------

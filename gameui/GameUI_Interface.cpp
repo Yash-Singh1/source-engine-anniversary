@@ -95,7 +95,6 @@ IEngineSound *enginesound = NULL;
 IAchievementMgr *achievementmgr = NULL;
 IEngineClientReplay *g_pEngineClientReplay = NULL;
 ISourceVirtualReality *g_pSourceVR = NULL;
-IWorkshop *workshop = NULL;
 
 
 
@@ -107,6 +106,7 @@ CGameUI *g_pGameUI = NULL;
 class CLoadingDialog;
 vgui::DHANDLE<CLoadingDialog> g_hLoadingDialog;
 vgui::VPANEL g_hLoadingBackgroundDialog = NULL;
+IWorkshop *workshop = NULL;
 
 static CGameUI g_GameUI;
 static WHANDLE g_hMutex = NULL;
@@ -152,6 +152,23 @@ CGameUI::CGameUI()
 CGameUI::~CGameUI()
 {
 	g_pGameUI = NULL;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: creates the base panel and parents it to the engine's GameUI panel
+//-----------------------------------------------------------------------------
+void MakeBasePanel()
+{
+	staticPanel = new CBasePanel();
+	staticPanel->SetBounds(0, 0, 400, 300 );
+	staticPanel->SetPaintBorderEnabled( false );
+	staticPanel->SetPaintBackgroundEnabled( true );
+	staticPanel->SetPaintEnabled( false );
+	staticPanel->SetVisible( true );
+	staticPanel->SetMouseInputEnabled( false );
+	staticPanel->SetKeyBoardInputEnabled( false );
+	vgui::VPANEL rootpanel = enginevguifuncs->GetPanel( PANEL_GAMEUIDLL );
+	staticPanel->SetParent(rootpanel);
 }
 
 #ifndef OSX
@@ -219,23 +236,6 @@ void CGameUI::Initialize( CreateInterfaceFn factory )
 	}
 
 	MakeBasePanel();
-}
-
-//-----------------------------------------------------------------------------
-// Purpose: creates the base panel and parents it to the engine's GameUI panel
-//-----------------------------------------------------------------------------
-void MakeBasePanel()
-{
-	staticPanel = new CBasePanel();
-	staticPanel->SetBounds(0, 0, 400, 300 );
-	staticPanel->SetPaintBorderEnabled( false );
-	staticPanel->SetPaintBackgroundEnabled( true );
-	staticPanel->SetPaintEnabled( false );
-	staticPanel->SetVisible( true );
-	staticPanel->SetMouseInputEnabled( false );
-	staticPanel->SetKeyBoardInputEnabled( false );
-	vgui::VPANEL rootpanel = enginevguifuncs->GetPanel( PANEL_GAMEUIDLL );
-	staticPanel->SetParent(rootpanel);
 }
 
 void CGameUI::PostInit()

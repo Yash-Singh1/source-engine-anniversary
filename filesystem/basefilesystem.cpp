@@ -1803,16 +1803,10 @@ void CBaseFileSystem::AddMapPackFile( const char *pPath, const char *pPathID, Se
 		// Get the .bsp file header
 		dheader_t header;
 		memset( &header, 0, sizeof(dheader_t) );
-		int nBytesRead;
-		if ( fp )
-		{
-			nBytesRead = FS_fread( &header, sizeof( header ), fp );
-		}
 #if defined( SUPPORT_PACKED_STORE )
-		else
-		{
-			nBytesRead = fhandle.Read( &header, sizeof( header ) );
-		}
+		int nBytesRead = fp ? FS_fread( &header, sizeof( header ), fp ) : fhandle.Read( &header, sizeof( header ) );
+#else
+		int nBytesRead = FS_fread( &header, sizeof( header ), fp );
 #endif
 		m_Stats.nBytesRead += nBytesRead;
 		m_Stats.nReads++;

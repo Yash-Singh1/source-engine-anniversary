@@ -66,6 +66,7 @@ protected:
 	virtual void OnScanningSaveGames() {}
 
 	void DeleteSaveGame( const char *fileName );
+	void CreateSavedGamesList();
 	void ScanSavedGames();
 	int GetSelectedItemSaveIndex();
 	void AddSaveGameItemToList( int saveIndex );

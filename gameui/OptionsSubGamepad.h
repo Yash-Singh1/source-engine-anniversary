@@ -40,6 +40,7 @@ public:
 protected:
 	virtual void ApplySchemeSettings( vgui::IScheme *pScheme );
 	virtual void OnCommand( const char *command );
+	void UpdateAutoaimControls();
 
 	MESSAGE_FUNC_PTR( OnControlModified, "ControlModified", panel );
 	MESSAGE_FUNC_PTR( OnTextChanged, "TextChanged", panel );

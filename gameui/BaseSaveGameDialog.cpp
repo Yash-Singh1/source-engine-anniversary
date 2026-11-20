@@ -169,13 +169,20 @@ private:
 //-----------------------------------------------------------------------------
 CBaseSaveGameDialog::CBaseSaveGameDialog( vgui::Panel *parent, const char *name ) : BaseClass( parent, name )
 {
-	m_pGameList = new vgui::PanelListPanel( this, "listpanel_loadgame" );
-	m_pGameList->SetFirstColumnWidth( 0 );
-
+	CreateSavedGamesList();
 	ScanSavedGames();
 
 	m_pLoadButton = new vgui::Button( this, "loadsave", "" );
 	SetControlEnabled( "loadsave", false );
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Creates the load game display list
+//-----------------------------------------------------------------------------
+void CBaseSaveGameDialog::CreateSavedGamesList()
+{
+	m_pGameList = new vgui::PanelListPanel( this, "listpanel_loadgame" );
+	m_pGameList->SetFirstColumnWidth( 0 );
 }
 
 //-----------------------------------------------------------------------------
@@ -329,26 +336,7 @@ void CBaseSaveGameDialog::AddSaveGameItemToList( int saveIndex )
 	m_pGameList->AddItem( NULL, saveGamePanel );
 }
 
-//-----------------------------------------------------------------------------
-// Purpose: Loads the key values saved next to a save game, if any
-//-----------------------------------------------------------------------------
-KeyValues *GetSaveAppendix( const char *pszFileName, const char *pszPathID )
-{
-	char szAppendixFile[MAX_PATH];
-	V_sprintf_safe( szAppendixFile, "%s.kv", pszFileName );
-
-	KeyValues *pAppendix = new KeyValues( "SaveAppendix" );
-	if ( !pAppendix )
-		return NULL;
-
-	if ( !pAppendix->LoadFromFile( g_pFullFileSystem, szAppendixFile, pszPathID ) )
-	{
-		pAppendix->deleteThis();
-		return NULL;
-	}
-
-	return pAppendix;
-}
+KeyValues *GetSaveAppendix( const char *pszFileName, const char *pszPathID );
 
 //-----------------------------------------------------------------------------
 // Purpose: Parses the save game info out of the .sav file header
@@ -596,6 +584,27 @@ int CBaseSaveGameDialog::SaveGameSortFunc( const void *lhs, const void *rhs )
 
 	// timestamps are equal, so just sort by filename
 	return strcmp(s1->szFileName, s2->szFileName);
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Loads the key values saved next to a save game, if any
+//-----------------------------------------------------------------------------
+KeyValues *GetSaveAppendix( const char *pszFileName, const char *pszPathID )
+{
+	char szAppendixFile[MAX_PATH];
+	V_sprintf_safe( szAppendixFile, "%s.kv", pszFileName );
+
+	KeyValues *pAppendix = new KeyValues( "SaveAppendix" );
+	if ( !pAppendix )
+		return NULL;
+
+	if ( !pAppendix->LoadFromFile( g_pFullFileSystem, szAppendixFile, pszPathID ) )
+	{
+		pAppendix->deleteThis();
+		return NULL;
+	}
+
+	return pAppendix;
 }
 
 #define MAKEID(d,c,b,a)	( ((int)(a) << 24) | ((int)(b) << 16) | ((int)(c) << 8) | ((int)(d)) )

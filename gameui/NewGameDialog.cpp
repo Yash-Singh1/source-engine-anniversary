@@ -343,7 +343,7 @@ const char *COM_GetModDirectory()
 //
 // i - the 1-based index of the chapter we're considering.
 //-----------------------------------------------------------------------------
-inline void CNewGameDialog::UpdatePanelLockedStatus( int iUnlockedChapter, int i, CGameChapterPanel *pChapterPanel )
+void CNewGameDialog::UpdatePanelLockedStatus( int iUnlockedChapter, int i, CGameChapterPanel *pChapterPanel )
 {
 	if ( iUnlockedChapter <= 0 )
 	{
@@ -363,9 +363,43 @@ inline void CNewGameDialog::UpdatePanelLockedStatus( int iUnlockedChapter, int i
 //-----------------------------------------------------------------------------
 // Purpose: the commentary check button wins over the dialog's commentary mode
 //-----------------------------------------------------------------------------
-inline bool CNewGameDialog::IsCommentaryEnabled()
+bool CNewGameDialog::IsCommentaryEnabled()
 {
 	return m_pCommentaryCheckButton ? m_pCommentaryCheckButton->IsSelected() : m_bCommentaryMode;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: the commentary check button relocks the chapters and toggles commentary icons
+//-----------------------------------------------------------------------------
+void CNewGameDialog::OnCheckButtonChecked( vgui::Panel *panel )
+{
+	int i;
+	int iLastEnabledChapter = -1;
+	if ( m_pCommentaryCheckButton && panel == m_pCommentaryCheckButton )
+	{
+		int iUnlockedChapter = GetUnlockedChapter();
+
+		for ( i = 0; i < m_ChapterPanels.Count(); i++ )
+		{
+			CGameChapterPanel *pChapterPanel = m_ChapterPanels[i];
+			if ( !pChapterPanel )
+				continue;
+
+			UpdatePanelLockedStatus( iUnlockedChapter, i + 1, pChapterPanel );
+			if ( pChapterPanel->IsEnabled() )
+			{
+				++iLastEnabledChapter;
+				pChapterPanel->SetCommentaryMode( IsCommentaryEnabled() );
+			}
+			else
+			{
+				pChapterPanel->SetCommentaryMode( false );
+			}
+		}
+	}
+
+	SetSelectedChapterIndex( ( m_iSelectedChapter < -1 ) ? -1 : ( ( m_iSelectedChapter > iLastEnabledChapter ) ? iLastEnabledChapter : m_iSelectedChapter ), false );
+	m_pPlayButton->SetEnabled( iLastEnabledChapter >= 0 );
 }
 
 //-----------------------------------------------------------------------------
@@ -443,6 +477,23 @@ CNewGameDialog::~CNewGameDialog()
 {
 	delete m_pFooter;
 	m_pFooter = NULL;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: lists the chapters of another game directory
+//-----------------------------------------------------------------------------
+void CNewGameDialog::SetOverrideMod( const char *pszOverrideMod )
+{
+	if ( pszOverrideMod && V_strlen( pszOverrideMod ) > 0 )
+	{
+		m_strOverrideMod.Set( pszOverrideMod );
+	}
+	else
+	{
+		m_strOverrideMod.Set( NULL );
+	}
+
+	ReloadChapters();
 }
 
 //-----------------------------------------------------------------------------
@@ -649,56 +700,6 @@ void CNewGameDialog::ReloadChapters()
 
 	// start the first item selected
 	SetSelectedChapterIndex( 0, true );
-}
-
-//-----------------------------------------------------------------------------
-// Purpose: lists the chapters of another game directory
-//-----------------------------------------------------------------------------
-void CNewGameDialog::SetOverrideMod( const char *pszOverrideMod )
-{
-	if ( pszOverrideMod && V_strlen( pszOverrideMod ) > 0 )
-	{
-		m_strOverrideMod.Set( pszOverrideMod );
-	}
-	else
-	{
-		m_strOverrideMod.Set( NULL );
-	}
-
-	ReloadChapters();
-}
-
-//-----------------------------------------------------------------------------
-// Purpose: the commentary check button relocks the chapters and toggles commentary icons
-//-----------------------------------------------------------------------------
-void CNewGameDialog::OnCheckButtonChecked( vgui::Panel *panel )
-{
-	int iLastEnabledChapter = -1;
-	if ( m_pCommentaryCheckButton && panel == m_pCommentaryCheckButton )
-	{
-		int iUnlockedChapter = GetUnlockedChapter();
-
-		for ( int i = 0; i < m_ChapterPanels.Count(); i++ )
-		{
-			CGameChapterPanel *pChapterPanel = m_ChapterPanels[i];
-			if ( !pChapterPanel )
-				continue;
-
-			UpdatePanelLockedStatus( iUnlockedChapter, i + 1, pChapterPanel );
-			if ( pChapterPanel->IsEnabled() )
-			{
-				++iLastEnabledChapter;
-				pChapterPanel->SetCommentaryMode( IsCommentaryEnabled() );
-			}
-			else
-			{
-				pChapterPanel->SetCommentaryMode( false );
-			}
-		}
-	}
-
-	SetSelectedChapterIndex( Clamp( m_iSelectedChapter, -1, iLastEnabledChapter ), false );
-	m_pPlayButton->SetEnabled( iLastEnabledChapter >= 0 );
 }
 
 void CNewGameDialog::Activate( void )

@@ -50,6 +50,11 @@ COptionsSubGamepad::COptionsSubGamepad( vgui::Panel *parent ) : PropertyPage( pa
 
 	LoadControlSettings( "Resource\\OptionsSubGamepad.res" );
 
+	UpdateAutoaimControls();
+}
+
+void COptionsSubGamepad::UpdateAutoaimControls()
+{
 	if ( m_pAutoaimCombo->GetActiveItem() > 0 )
 	{
 		m_pAutoaimScaleLabel->SetEnabled( true );
