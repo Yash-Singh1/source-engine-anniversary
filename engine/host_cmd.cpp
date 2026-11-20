@@ -1405,6 +1405,7 @@ AppId_t DetermineAppID( const char *pchGameDir, const char *pchBaseDir )
 void ParseSteamInfFile( const char *pszFile )
 {
 	int gotKeys = 0;
+	int nAppID = 0;
 	FileHandle_t fp = g_pFileSystem->Open( pszFile, "r" );
 	if ( fp )
 	{
@@ -1455,7 +1456,7 @@ void ParseSteamInfFile( const char *pszFile )
 			{
 				char szAppID[32];
 				Q_strncpy( szAppID, com_token + Q_strlen( "AppID=" ), sizeof( szAppID ) - 1 );
-				atoi( szAppID );
+				nAppID = atoi( szAppID );
 				++gotKeys;
 				continue;
 			}
