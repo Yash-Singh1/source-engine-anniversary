@@ -643,7 +643,9 @@ float CViewRender::GetZFar()
 //-----------------------------------------------------------------------------
 void CViewRender::SetUpViews()
 {
+#line 640
 	VPROF("CViewRender::SetUpViews");
+#line 647
 
 	// Initialize view structure with default values
 	float farZ = GetZFar();
@@ -743,7 +745,7 @@ void CViewRender::SetUpViews()
 	float flFOVOffset = fDefaultFov - view.fov;
 
 	//Adjust the viewmodel's FOV to move with any FOV offsets on the viewer's end
-	view.fovViewmodel = fabs( g_pClientMode->GetViewModelFOV() - flFOVOffset );
+	view.fovViewmodel = MAX( 0.0f, g_pClientMode->GetViewModelFOV() - flFOVOffset );
 
 	if ( UseVR() )
 	{
@@ -1212,7 +1214,7 @@ void CViewRender::Render( vrect_t *rect )
 		    nClearFlags |= VIEW_CLEAR_COLOR;
 	    }
 #ifdef BYTEMATCH_RETAIL
-	    else if ( IsOpenGL() )
+	    else if ( IsPosix() && IsOpenGL() )
 #else
 	    else if ( IsPosix() )
 #endif

@@ -867,8 +867,9 @@ bool CBasePlayer::Weapon_Switch( CBaseCombatWeapon *pWeapon, int viewmodelindex 
 #else
 	int nFastSwitch = m_iHudFastSwitch;
 #endif
-	CBaseCombatWeapon *pPrevWeapon = m_hLastWeapon.Get(), *pLastWeapon = m_hLastWeaponPending.Get();
-	if ( nFastSwitch <= 0 || pPrevWeapon == pWeapon )
+	bool bSwitchingToLast = ( m_hLastWeapon.Get() == pWeapon );
+	CBaseCombatWeapon *pLastWeapon = m_hLastWeaponPending.Get();
+	if ( nFastSwitch <= 0 || bSwitchingToLast )
 	{
 		pLastWeapon = GetActiveWeapon();
 	}

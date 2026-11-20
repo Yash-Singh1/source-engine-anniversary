@@ -2245,11 +2245,10 @@ void CNPC_Barnacle::WaitTillDead ( void )
 //=========================================================
 bool CNPC_Barnacle::IsPoisonous( CBaseEntity *pVictim )
 {
-	bool bEpisodic = HL2_EPISODIC_ACTIVE();
-	if (!pVictim)
+	if ( !HL2_EPISODIC_ACTIVE() )
 		return false;
 
-	if ( !bEpisodic )
+	if (!pVictim)
 		return false;
 
 	if ( FClassnameIs(pVictim,"npc_headcrab_poison") )

@@ -50,9 +50,8 @@ C_FogController::C_FogController()
 	m_fog.enable = false;
 	m_fog.maxdensity = 1.0f;
 #ifdef HL2_ANNIVERSARY_NOV2024
-	color32 clrPrimaryHDR = { 0, 0, 0, 0 };
-	m_fog.colorPrimaryHDR = clrPrimaryHDR;
-	color32 clrSecondaryHDR = { 0, 0, 0, 0 };
-	m_fog.colorSecondaryHDR = clrSecondaryHDR;
+	m_fog.radial = false;
+	m_fog.colorPrimaryHDR = color32();
+	m_fog.colorSecondaryHDR = color32();
 #endif
 }

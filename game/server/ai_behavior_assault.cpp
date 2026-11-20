@@ -79,7 +79,15 @@ int CRallyPoint::DrawDebugTextOverlays()
 //---------------------------------------------------------
 bool CRallyPoint::IsExclusive()
 {
-	if ( HL2_EPISODIC_ACTIVE() )
+	if ( !HL2_EPISODIC_ACTIVE() )
+	{
+		// This 'exclusivity' concept is new to EP2. We're only willing to
+		// risk causing problems in EP1, so emulate the old behavior if 
+		// we are not EPISODIC. We must do this by setting m_sExclusivity
+		// so that ent_text will properly report the state.
+		m_sExclusivity = RALLY_EXCLUSIVE_NO;
+	}
+	else
 	{
 #ifdef HL2_EPISODIC
 		if( m_sExclusivity == RALLY_EXCLUSIVE_NOT_EVALUATED )
@@ -122,14 +130,6 @@ bool CRallyPoint::IsExclusive()
 			}
 		}
 #endif
-	}
-	else
-	{
-		// This 'exclusivity' concept is new to EP2. We're only willing to
-		// risk causing problems in EP1, so emulate the old behavior if 
-		// we are not EPISODIC. We must do this by setting m_sExclusivity
-		// so that ent_text will properly report the state.
-		m_sExclusivity = RALLY_EXCLUSIVE_NO;
 	}
 
 	return (m_sExclusivity == RALLY_EXCLUSIVE_YES);

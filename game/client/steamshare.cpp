@@ -248,14 +248,12 @@ public:
 	{
 		if ( event->GetBool( "is_loading" ) )
 		{
-			pSystem->m_GameModeStack.AddToTail( k_ETimelineGameMode_Staging );
+			pSystem->PushTimelineGameMode( k_ETimelineGameMode_Staging );
 		}
-		else if ( pSystem->m_GameModeStack.Count() )
+		else
 		{
-			pSystem->m_GameModeStack.RemoveMultipleFromTail( 1 );
+			pSystem->PopTimelineGameMode();
 		}
-
-		pSystem->UpdateSteamTimelineGameMode();
 	}
 };
 REGISTER_STEAM_TIMELINE_EVENT( CSteamTimelineEvent_LoadingLevel, "loading_level" );

@@ -582,13 +582,11 @@ void CNPC_Crow::MoveCrowFly( float flInterval )
 	// Look to see if we are going to hit anything.
 	//
 	VectorNormalize( vForward );
-	int nProbes = NOV2024_ONLY( RandomInt( 2, 5 ) ) OCT2024_ONLY( 3 );
-	for ( int i = 0; i < nProbes; i++ )
+	int nMaxProbes = NOV2024_ONLY( RandomInt( 2, 5 ) ) OCT2024_ONLY( 3 );
+	int nProbes = 0;
+	Vector vecDeflect;
+	while ( nProbes++ < nMaxProbes && Probe( vForward, CROW_AIRSPEED, vecDeflect ) )
 	{
-		Vector vecDeflect;
-		if ( !Probe( vForward, CROW_AIRSPEED, vecDeflect ) )
-			break;
-
 		vForward = vecDeflect;
 		VectorNormalize( vForward );
 	}
@@ -663,9 +661,7 @@ bool CNPC_Crow::Probe( const Vector &vecMoveDir, float flSpeed, Vector &vecDefle
 		CrossProduct( vecMoveDir, tr.plane.normal, vecUp );
 		CrossProduct( tr.plane.normal, vecUp, vecDeflect );
 #ifdef HL2_ANNIVERSARY_NOV2024
-		Vector vecJitter;
-		vecJitter.Random( -0.05f, 0.05f );
-		vecDeflect += vecJitter;
+		vecDeflect += RandomVector( -0.05f, 0.05f );
 #endif
 		VectorNormalize( vecDeflect );
 

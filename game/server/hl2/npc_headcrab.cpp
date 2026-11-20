@@ -3371,7 +3371,12 @@ void CBlackHeadcrab::Panic( float flDuration )
 #define CRAB_360_VIEW_DIST_SQR	(12 * 12 * 24 * 24)
 bool CBlackHeadcrab::FInViewCone( CBaseEntity *pEntity )
 {
-	if(  IsHL2Episodic() && IsCurSchedule( SCHED_HEADCRAB_AMBUSH ) &&
+	if ( !IsHL2Episodic() )
+	{
+		return BaseClass::FInViewCone( pEntity );
+	}
+
+	if( IsCurSchedule( SCHED_HEADCRAB_AMBUSH ) &&
 		 (( pEntity->IsNPC() || pEntity->IsPlayer() ) && pEntity->GetAbsOrigin().DistToSqr(GetAbsOrigin()) <= CRAB_360_VIEW_DIST_SQR ) )
 	{
 		// Only see players and NPC's with 360 cone

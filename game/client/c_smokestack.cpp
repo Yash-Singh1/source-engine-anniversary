@@ -486,19 +486,19 @@ void C_SmokeStack::SimulateParticles( CParticleSimulateIterator *pIterator )
 				pParticle->m_Pos.y = vTwist.x * m_TwistMat[1][0] + vTwist.y * m_TwistMat[1][1] + GetAbsOrigin().y;
 			}
 
-		if ( HL2_EPISODIC_ACTIVE() )
-		{
-#ifdef HL2_EPISODIC
-				pParticle->m_Pos = pParticle->m_Pos + pParticle->m_Velocity * pIterator->GetTimeDelta() + pParticle->m_vAccel * pIterator->GetTimeDelta();
-#endif
-		}
-		else
+		if ( !HL2_EPISODIC_ACTIVE() )
 		{
 				pParticle->m_Pos = pParticle->m_Pos + 
 					pParticle->m_Velocity * pIterator->GetTimeDelta() + 
 					pParticle->m_vAccel * (0.5f * pIterator->GetTimeDelta() * pIterator->GetTimeDelta());
 
 				pParticle->m_Velocity += pParticle->m_vAccel * pIterator->GetTimeDelta();
+		}
+		else
+		{
+#ifdef HL2_EPISODIC
+				pParticle->m_Pos = pParticle->m_Pos + pParticle->m_Velocity * pIterator->GetTimeDelta() + pParticle->m_vAccel * pIterator->GetTimeDelta();
+#endif
 		}
 
 			pParticle->m_flAngle += pParticle->m_flRollDelta * pIterator->GetTimeDelta();
