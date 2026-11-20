@@ -357,7 +357,7 @@ def build(bld):
 	]
 
 	defines = []
-	if bld.env.RETAIL_OSX32:
+	if bld.env.RETAIL_OSX32 or bld.env.RETAIL_LINUX32:
 		# Valve's engine.vpc includes source_replay.vpc ($BUILD_REPLAY)
 		defines += ['REPLAY_ENABLED']
 		# engine.vpc: $PreprocessorDefinitions "$BASE;ENABLE_RPT" [$ENABLE_RPT]

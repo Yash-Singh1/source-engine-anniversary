@@ -851,7 +851,11 @@ public:
 	virtual void SetupLighting( const Vector &vecCenter );
 	virtual void SuppressEngineLighting( bool bSuppress );
 
+#ifndef PLATFORM_64BITS
+	inline vertexFileHeader_t *CacheVertexData() { return g_pMDLCache->GetVertexData( (MDLHandle_t)(int)m_pStudioHdr->virtualModel & 0xffff ); }
+#else
 	inline vertexFileHeader_t *CacheVertexData() { return g_pMDLCache->GetVertexData( VoidPtrToMDLHandle( m_pStudioHdr->VirtualModel() ) ); }
+#endif
 
 	bool Init();
 	void Shutdown();
@@ -3921,7 +3925,7 @@ bool CModelRender::UpdateStaticPropColorData( IHandleEntity *pProp, ModelInstanc
 		return false;
 	}
 
-	unsigned char debugColor[3] = {0};
+	unsigned char debugColor[3];
 	bool bDebugColor = false;
 	if ( r_debugrandomstaticlighting.GetBool() )
 	{
@@ -3998,7 +4002,11 @@ bool CModelRender::UpdateStaticPropColorData( IHandleEntity *pProp, ModelInstanc
 	if ( !bDebugColor )
 	{
 		// vertexes must be available for lighting calculation
+#ifndef PLATFORM_64BITS
+		vertexFileHeader_t *pVertexHdr = g_pMDLCache->GetVertexData( (MDLHandle_t)(int)pStudioHdr->virtualModel & 0xffff );
+#else
 		vertexFileHeader_t *pVertexHdr = g_pMDLCache->GetVertexData( VoidPtrToMDLHandle( pStudioHdr->VirtualModel() ) );
+#endif
 		if ( !pVertexHdr )
 		{
 			// data not available yet
@@ -4060,8 +4068,11 @@ bool CModelRender::UpdateStaticPropColorData( IHandleEntity *pProp, ModelInstanc
 		{
 			mstudiomodel_t* pModel = pBodyPart->pModel(modelID);
 
+#ifndef BYTEMATCH_RETAIL
 			if ( pModel->numvertices == 0 )
 				continue;
+#endif
+#line 4066
 
 			// Make sure we've got enough space allocated
 			tmpLightingMem.EnsureCapacity( pModel->numvertices );

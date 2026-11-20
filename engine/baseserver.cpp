@@ -1986,7 +1986,7 @@ void CBaseServer::RunFrame( void )
 
 	NET_ProcessSocket( m_Socket, this );	
 
-#ifdef LINUX
+#if defined( LINUX ) && !defined( BYTEMATCH_RETAIL )
 	// Process the linux sv lan port if it's open.
 	if ( NET_GetUDPPort( NS_SVLAN ) )
 		NET_ProcessSocket( NS_SVLAN, this );
