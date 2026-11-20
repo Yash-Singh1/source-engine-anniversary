@@ -27,7 +27,7 @@ devtools/bytematch/toolchain/linux/report-linux.py --build /abs/build-linux --ga
 
 `--retail-linux32-engine` adds depot 224's engine-side modules (engine, libtier0, libvstdlib,
 filesystem_stdio, materialsystem, shaderapidx9, libtogl, studiorender, ..., hl2_linux; 28 with
-source) and `-D_FILE_OFFSET_BITS=64`; measure them with
+source); measure them with
 `report-linux.py --build DIR --engine [--mac DIR]` (whole tree: `reports/retail-linux32.md`) and
 list May 2025 line-number evidence with `linuxlines.py REPORT_DIR`.
 
@@ -63,14 +63,16 @@ build. Without `--build-games` only the static libraries are built.
   `makefile_base_posix.mak`'s additions) and the files Valve's 2018 VPCs
   compile only on Linux (`tier1/pathmatch.cpp`, `tier1/qsort_s.cpp`,
   `mathlib/3dnow.cpp`; game modules pull none of `pathmatch.cpp`).
-- No `DX_TO_GL_ABSTRACTION`/`GL_GLEXT_PROTOTYPES`: retail Linux renders through
-  DXVK (depot 224 ships `libdxvk_d3d9.so`, `shaderapivk.so`), and its client
-  writes vertex colors unswapped, i.e. without `imesh.h`'s `OPENGL_SWAP_COLORS`.
-  Our VPCs (and hl2_src's) force `$GL` on for every non-Windows client, so
-  `make-manifest.py` drops the two defines.
+- `$GL` on (`DX_TO_GL_ABSTRACTION`/`GL_GLEXT_PROTOTYPES`), as `source_video_base.vpc`
+  sets for `$POSIX`: retail Linux `IMaterialSystem` has `DoStartupShaderPreloading`,
+  `appframework/sdlmgr.cpp` has its GL fields, `shadersystem.cpp` skips fillrate debug,
+  and `ctexture` clamps border mips. Vertex colors stay unswapped on Linux because
+  `public/materialsystem/imesh.h` gates `OPENGL_SWAP_COLORS` on `OSX`.
 - Telemetry on: retail imports `g_Telemetry` and has a zone at every VPROF, as
-  `vprof_telemetry.h` enables for `_LINUX`. RAD's headers come from hl2_src
-  (`--retail-linux32-hl2src`), copied under the build directory.
+  `vprof_telemetry.h` enables for `_LINUX`. Retail libtier0.so loads Telemetry 1.1 build 25
+  (`tmLoadTelemetryEx( 1, 1, 25, 0, 0 )`, as Windows tier0.dll), so the declarations are
+  `--retail-win32`'s `toolchain/win32/telemetry/include/telemetry.h` (cdecl and
+  `TMOF_NO_PDB_LOOKUP` default flags on Linux), copied under the build directory.
 - Mode define (not Valve's): `BYTEMATCH_RETAIL`, shared with the macOS and
   Windows modes. Linux showed two retail forms that hold on every platform:
   `public/vstdlib/random.h` has no `CDefaultUniformRandomStream` (its inline
@@ -83,9 +85,13 @@ build. Without `--build-games` only the static libraries are built.
   copied from depot 224, `-lm -ldl -l:libstdc++.a -lpthread -l:ld-linux.so.2`
   (`-lrt` for the client) and `devtools/version_script.linux.txt`. NEEDED
   equals retail's. gcc-9's libstdc++ is static only. zlib is SDK 2013's
-  `libz.a` (byte-identical to retail's), protobuf SDK 2013's prebuilt. Not
-  linked yet: libpng and libjpeg (retail's client exports libpng and builds
-  `imageutils.cpp` with `HAVE_PNG`/`HAVE_JPEG`).
+  `libz.a` (byte-identical to retail's), protobuf SDK 2013's prebuilt. libpng
+  1.5.2 and libjpeg 8b (client, engine, GameUI, replay; retail exports libpng)
+  come from `build-thirdparty.sh`: gcc 4.5.1 with `-march=pentium4` against
+  glibc 2.3.6's headers, libpng at `-O2 -fPIC`, libjpeg at `-O0
+  -fvisibility=hidden` from upstream sources (`--retail-linux32-thirdparty`).
+  Every module gets `-D_FILE_OFFSET_BITS=64` and PATHWRAP's `--wrap` flags:
+  retail client.so imports `mmap64`/`readdir64` and the `__real_*` targets.
 - After the link, `devtools/gendbg.sh`'s steps and `strip -x -S` with the
   image's binutils 2.22 write `stripped/NAME.so` and `NAME.so.dbg` (retail's
   trailing section order).

@@ -27,11 +27,11 @@ OSX_MANIFEST = os.path.join(REPO, 'devtools', 'bytematch', 'manifests', 'retail-
 OUT = os.path.join(REPO, 'devtools', 'bytematch', 'manifests', 'retail-linux32.json')
 HL2SRC = os.environ.get('HL2SRC', os.path.expanduser('~/p/sco/source-engine-2018-hl2_src'))
 
-# Retail Linux renders through DXVK (depot 224 ships libdxvk_d3d9.so and shaderapivk.so), so
-# Valve ran VPC without /gl: no $GL, hence no DX_TO_GL_ABSTRACTION or GL_GLEXT_PROTOTYPES
-# (source_video_base.vpc). imesh.h's OPENGL_SWAP_COLORS follows DX_TO_GL_ABSTRACTION and
-# shows in every vertex color the client writes. macOS still uses ToGL.
-LINUX = ('POSIX', 'LINUX', 'LINUX32', 'LINUXALL', 'SDL')
+# Retail Linux evaluates VPCs with $GL (DX_TO_GL_ABSTRACTION and GL_GLEXT_PROTOTYPES, as
+# source_video_base.vpc sets for $POSIX): IMaterialSystem's vtable has DoStartupShaderPreloading,
+# appframework/sdlmgr.cpp has its GL fields, shadersystem skips fillrate debug, and ctexture clamps
+# border mips. Vertex colors stay unswapped on Linux because imesh.h gates OPENGL_SWAP_COLORS on OSX.
+LINUX = ('POSIX', 'LINUX', 'LINUX32', 'LINUXALL', 'GL', 'SDL')
 OSX = ('POSIX', 'OSX', 'OSX32', 'OSXALL', 'GL', 'SDL')
 
 # Game modules --retail-linux32 builds; their archives come along.
@@ -47,16 +47,6 @@ ENGINE_MODULES = ['bin/libtier0', 'bin/libvstdlib', 'bin/engine', 'bin/filesyste
                   'bin/GameUI', 'bin/ServerBrowser', 'bin/replay', 'bin/launcher', 'hl2_osx',
                   'bin/video_services', 'bin/vaudio_speex', 'bin/vtex_dll', 'bin/bsppack',
                   'bin/bugreporter_filequeue', 'bin/bugreporter_public']
-
-# Modules built with $GL on Linux: libtogl and those linking it (retail NEEDED). The others go
-# through DXVK and have no DX_TO_GL_ABSTRACTION (see NOT_LINUX): without it the engine's decal
-# and overlay code (vertex colors, imesh.h's OPENGL_SWAP_COLORS) matches retail.
-GL_MODULES = {'bin/libtogl', 'bin/shaderapidx9', 'bin/launcher'}
-# Files of non-GL modules that this tree compiles on Linux only with the GL defines (their SDL
-# window and video-mode code is under DX_TO_GL_ABSTRACTION; Valve's 2025 code has some other
-# condition there).
-GL_FILES = {'bin/engine': ['engine/sys_getmodes.cpp', 'engine/sys_mainwind.cpp']}
-GL_DEFINES = ['GL_GLEXT_PROTOTYPES', 'DX_TO_GL_ABSTRACTION']
 
 # Archive members to leave out on Linux, beyond the VPC differences. mathlib/vector.cpp isn't
 # among retail's libmathlib.a members (retail-osx32.json) and defines vec3_origin again (and a
@@ -92,28 +82,19 @@ def sources(summary):
                if f['kind'] == '$file' and not f.get('excluded') and f['path'].endswith(('.c', '.cc', '.cpp', '.mm')))
 
 
-# source_video_base.vpc forces $Conditional GL on for every non-Windows client build;
-# retail Linux game code has no OPENGL_SWAP_COLORS (vertex colors unswapped, e.g. tier2
-# RenderLine), so these come off.
-NOT_LINUX = {'GL_GLEXT_PROTOTYPES', 'DX_TO_GL_ABSTRACTION'}
-
-
-def entry(vpc_path, hl2src, gl=False):
-    conds = LINUX + (('GL',) if gl else ())
-    s = evaluate(REPO, vpc_path, conds, '.so')
+def entry(vpc_path, hl2src):
+    s = evaluate(REPO, vpc_path, LINUX, '.so')
     defines = []
     for d in s['settings'].get('compiler.preprocessordefinitions', '').split(';'):
-        if d and d not in defines and (gl or d not in NOT_LINUX):
+        if d and d not in defines:
             defines.append(d)
     project_dir = os.path.dirname(vpc_path)
     out = {'vpc': vpc_path, 'project_dir': project_dir, 'defines': defines + generator_defines(project_dir)}
     # $GCC_ExtraCompilerFlags isn't applied: the only Linux one here, vstdlib's -U_FORTIFY_SOURCE,
     # isn't in retail (libvstdlib.so calls __longjmp_chk and __vsnprintf_chk)
-    if gl:
-        out['gl'] = True
     hp = HL2SRC_VPC.get(vpc_path, vpc_path)
     if hl2src and os.path.exists(os.path.join(hl2src, hp)):
-        lin = sources(evaluate(hl2src, hp, conds, '.so'))
+        lin = sources(evaluate(hl2src, hp, LINUX, '.so'))
         osx = sources(evaluate(hl2src, hp, OSX, '.dylib'))
         out['add'] = sorted(lin - osx)
         out['remove'] = sorted(osx - lin)
@@ -138,7 +119,7 @@ def engine_files(key, m, out, hl2src, alias):
     hp = HL2SRC_VPC.get(out['vpc'], out['vpc'])
     if not hl2src or not os.path.exists(os.path.join(hl2src, hp)):
         return
-    conds = LINUX + (('GL',) if out.get('gl') else ())
+    conds = LINUX
 
     def ours(p):
         if p.lower() in alias:
@@ -181,11 +162,9 @@ def main():
     mods, archives = {}, {}
     for key in MODULES + ENGINE_MODULES:
         m = osx['modules'][key]
-        mods[key] = entry(m['defines']['vpc_files'][0].split(':', 1)[1], args.hl2src, key in GL_MODULES)
+        mods[key] = entry(m['defines']['vpc_files'][0].split(':', 1)[1], args.hl2src)
         if key in ENGINE_MODULES:
             engine_files(key, m, mods[key], args.hl2src, alias)
-        if key in GL_FILES:
-            mods[key]['file_defines'] = dict((f, GL_DEFINES) for f in GL_FILES[key])
         for a in m['archives']:
             name = a['path'].split('/')[-1]
             if name in archives:

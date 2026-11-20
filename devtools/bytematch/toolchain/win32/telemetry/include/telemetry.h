@@ -1,15 +1,18 @@
-/* RAD Telemetry declarations for --retail-win32.
+/* RAD Telemetry declarations for --retail-win32 and --retail-linux32.
 
    Written for this tree from the retail Windows binaries (depot 222) and RAD's public
    changelog; no RAD header text. Valve's rel_singleplayer modules were built against
-   Telemetry 1.1 build 25: tier0's TelemetryInit calls tmLoadTelemetryEx( 1, 1, 25, 0, 0 ).
+   Telemetry 1.1 build 25: tier0's TelemetryInit calls tmLoadTelemetryEx( 1, 1, 25, 0, 0 ),
+   on Windows and in the Linux libtier0.so of depot 224 alike.
    Retail calls every entry through the context's function table at the same offsets as
    later 2.0 releases, with three older call shapes:
    - tmCoreMessage has no thread id: ( cx, flags, &fmt, format, ... );
    - tmCorePlot* have no timestamp: ( cx, type, flags, value, &fmt, name, ... );
    - tmCoreSendCallStack has no frame skip: ( cx, callstack ).
-   Entries retail never calls keep the 2.0 shapes. Functions are __stdcall, so the
-   variadic ones are caller-cleaned and the others callee-cleaned, as retail shows. */
+   Entries retail never calls keep the 2.0 shapes. On Windows functions are __stdcall, so
+   the variadic ones are caller-cleaned and the others callee-cleaned, as retail shows;
+   on Linux everything is cdecl. Linux retail opens with TMOF_NO_PDB_LOOKUP in the
+   default flags (tmOpen's flags are 0x60 there, 0x20 on Windows). */
 #ifndef TELEMETRY_H
 #define TELEMETRY_H
 
@@ -18,7 +21,11 @@
 #define TelemetryBuildNumber	25
 #define TelemetryCustomization	0
 
+#ifdef _WIN32
 #define RADEXPLINK __stdcall
+#else
+#define RADEXPLINK
+#endif
 
 #ifdef __cplusplus
 #define TM_EXTERN_C extern "C"
@@ -34,8 +41,13 @@ typedef signed int			TmI32;
 typedef unsigned int		TmU32;
 typedef float				TmF32;
 typedef double				TmF64;
+#ifdef _WIN32
 typedef signed __int64		TmI64;
 typedef unsigned __int64	TmU64;
+#else
+typedef signed long long	TmI64;
+typedef unsigned long long	TmU64;
+#endif
 typedef unsigned int		TmIntPtr;
 
 /* Per call site; the run-time caches the parsed format here. */
@@ -58,7 +70,6 @@ typedef struct TmContext *HTELEMETRY;
 #define TM_MAX_STRING				( 1024 * 8 )
 #define TM_LOCK_MIN_TIME_BUFSIZE	512
 #define TELEMETRY_DEFAULT_PORT		0
-#define TMOF_DEFAULT				0
 
 typedef enum TmErrorCode
 {
@@ -140,8 +151,15 @@ typedef enum TmOpenFlag
 	TMOF_DISABLE_CONTEXT_SWITCHES = 0x0000,
 	TMOF_MODERATE_CONTEXT_SWITCHES = 0x0010,
 	TMOF_MINIMAL_CONTEXT_SWITCHES = 0x0020,
-	TMOF_MAXIMUM_CONTEXT_SWITCHES = 0x0030
+	TMOF_MAXIMUM_CONTEXT_SWITCHES = 0x0030,
+	TMOF_NO_PDB_LOOKUP = 0x0040
 } TmOpenFlag;
+
+#ifdef _WIN32
+#define TMOF_DEFAULT				0
+#else
+#define TMOF_DEFAULT				TMOF_NO_PDB_LOOKUP
+#endif
 
 typedef enum TmConnectionType
 {
@@ -274,9 +292,18 @@ TM_EXTERN_C TmErrorCode RADEXPLINK tmShutdown( void );
 TM_EXTERN_C TmErrorCode RADEXPLINK tmInitializeContext( HTELEMETRY *pcx, void *arena, TmU32 size );
 #define tmLoadTelemetry( checked ) tmLoadTelemetryEx( TelemetryMajorVersion, TelemetryMinorVersion, TelemetryBuildNumber, TelemetryCustomization, checked )
 
+#ifdef _WIN32
 TM_EXTERN_C unsigned __int64 __rdtsc( void );
 #pragma intrinsic( __rdtsc )
 #define tmFastTime() __rdtsc()
+#else
+static inline TmU64 tmFastTime()
+{
+	TmU32 lo, hi;
+	__asm__ volatile ( "rdtsc" : "=a" ( lo ), "=d" ( hi ) );
+	return ( TmU64 )hi << 32 | lo;
+}
+#endif
 
 /* Every call checks the context; variadic calls own a format-code static per site. */
 #define TM_API_V( cx, fn, args )		{ if ( cx ) { ( ( (TmApi *)( cx ) )->fn args ); } }

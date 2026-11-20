@@ -26,10 +26,7 @@ static bool s_bUseSteamPipeFriendlyBuilder = false;
 static int s_iMultichunkSize = k_nVPKDefaultChunkSize / ( 1024 * 1024 );
 const int k_nVPKDefaultChunkAlign = 1;
 static int s_iChunkAlign = k_nVPKDefaultChunkAlign;
-#ifdef BYTEMATCH_RETAIL
 static CUtlString s_OutputDirOverride;
-#endif
-#line 30
 static CUtlString s_sPrivateKeyFile;
 static CUtlString s_sPublicKeyFile;
 
@@ -93,10 +90,7 @@ static void PrintArgSummaryAndExit( int iReturnCode = 1 )
 		"Options:\n"
 		"  -v     Verbose.\n"
 		"  -M     Produce a multi-chunk pack file\n"
-#ifdef BYTEMATCH_RETAIL
 		"  -o     Set the output VPK file path\n"
-#endif
-#line 94
 		"  -P     Use SteamPipe-friendly incremental build algorithm.\n"
 		"         Use with 'k' command.\n"
 		"         For optimal incremental build performance, the control file used\n"
@@ -1875,6 +1869,10 @@ static void DroppedDirectory( const char *pszDirectoryArg )
 
 	// Construct path to VPK
 	V_snprintf( szVPKPath, sizeof( szVPKPath ), "%s.vpk", szDirectory ); 
+	if ( !s_OutputDirOverride.IsEmpty() )
+	{
+		V_snprintf( szVPKPath, sizeof( szVPKPath ), "%s.vpk", s_OutputDirOverride.Get() );
+	}
 
 	// Delete any existing one at that location
 	if ( g_pFullFileSystem->FileExists( szVPKPath ) )
@@ -1939,6 +1937,20 @@ int main(int argc, char **argv)
 			case 'M':
 			{
 				s_bMakeMultiChunk = true;
+			}
+			break;
+
+			case 'o':
+			{
+				nCurArg++;
+				if ( nCurArg >= argc )
+				{
+					fprintf( stderr, "Expected argument after %s\n", argv[nCurArg-1] );
+#ifndef BYTEMATCH_RETAIL
+					exit( 1 );
+#endif
+				}
+				s_OutputDirOverride = argv[nCurArg];
 			}
 			break;
 
@@ -2108,11 +2120,13 @@ int main(int argc, char **argv)
 			{
 				printf( "extracting %s\n", argv[i] );
 				COutputFile outF( argv[i] );
+#ifndef BYTEMATCH_RETAIL
 				if ( !outF.IsOk() )
 				{
 					fprintf( stderr, "Unable to create '%s'.\n", argv[i] );
 					exit(1);
 				}
+#endif
 				int nBytes = pData.m_nFileSize;
 				while( nBytes )
 				{

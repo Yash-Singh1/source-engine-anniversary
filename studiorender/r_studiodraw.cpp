@@ -15,6 +15,7 @@
 #include "optimize.h"
 #include "mathlib/mathlib.h"
 #include "mathlib/vector.h"
+#line 19
 #include "mathlib/vmatrix.h"
 #include "studiorendercontext.h"
 #include "tier2/tier2.h"

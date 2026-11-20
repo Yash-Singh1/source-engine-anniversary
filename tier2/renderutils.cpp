@@ -823,7 +823,7 @@ void DrawScreenSpaceRectangle( IMaterial *pMaterial,
 	pRenderContext->GetRenderTargetDimensions( nScreenWidth, nScreenHeight );
 
 #ifdef BYTEMATCH_RETAIL
-	float flOffset = IsPosix() ? 0.0f : 0.5f;
+	float flOffset = IsOSX() ? 0.0f : 0.5f;
 #else
 	float flOffset = 0.5f;
 #endif

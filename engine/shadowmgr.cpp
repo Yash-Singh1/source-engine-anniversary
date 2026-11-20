@@ -2097,7 +2097,7 @@ const Vector *CClipPlane::m_pNormal;
 #else
 Vector CClipPlane::m_pNormal;
 #endif
-#line 2080
+#line 2079
 float  CClipPlane::m_Dist;
 
 static inline void ClampTexCoord( ShadowVertex_t *pInVertex, ShadowVertex_t *pOutVertex )

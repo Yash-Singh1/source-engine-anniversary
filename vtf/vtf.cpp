@@ -376,7 +376,7 @@ int CVTFTexture::ComputeMipCount() const
 // Allocate data blocks with an eye toward re-using memory
 //-----------------------------------------------------------------------------
 
-static bool GenericAllocateReusableData( unsigned char **ppData, int *pNumAllocated, int numRequested )
+static void GenericAllocateReusableData( unsigned char **ppData, int *pNumAllocated, int numRequested )
 {
 #ifdef BYTEMATCH_RETAIL
 	if ( *pNumAllocated < numRequested )
@@ -388,38 +388,24 @@ static bool GenericAllocateReusableData( unsigned char **ppData, int *pNumAlloca
 	{
 		delete [] *ppData;
 		*ppData = new unsigned char[ numRequested ];
-		if ( *ppData )
-		{
-			*pNumAllocated = numRequested;
-			return true;
-		}
-
-		*pNumAllocated = 0;
-		return false;
+		*pNumAllocated = numRequested;
 	}
-
-	return true;
 }
 
-bool CVTFTexture::AllocateImageData( int nMemorySize )
+void CVTFTexture::AllocateImageData( int nMemorySize )
 {
-	return GenericAllocateReusableData( &m_pImageData, &m_nImageAllocSize, nMemorySize );
+	GenericAllocateReusableData( &m_pImageData, &m_nImageAllocSize, nMemorySize );
 }
 
-bool CVTFTexture::ResourceMemorySection::AllocateData( int nMemorySize )
+void CVTFTexture::ResourceMemorySection::AllocateData( int nMemorySize )
 {
-	if ( GenericAllocateReusableData( &m_pData, &m_nDataAllocSize, nMemorySize ) )
-	{
-		m_nDataLength = nMemorySize;
-		return true;
-	}
-
-	return false;
+	GenericAllocateReusableData( &m_pData, &m_nDataAllocSize, nMemorySize );
+	m_nDataLength = nMemorySize;
 }
 
-bool CVTFTexture::AllocateLowResImageData( int nMemorySize )
+void CVTFTexture::AllocateLowResImageData( int nMemorySize )
 {
-	return GenericAllocateReusableData( &m_pLowResImageData, &m_nLowResImageAllocSize, nMemorySize );
+	GenericAllocateReusableData( &m_pLowResImageData, &m_nLowResImageAllocSize, nMemorySize );
 }
 
 inline bool IsMultipleOf4( int value )
@@ -518,8 +504,7 @@ bool CVTFTexture::Init( int nWidth, int nHeight, int nDepth, ImageFormat fmt, in
 
 	// Allocate me some bits!
 	int iMemorySize = ComputeTotalSize();
-	if ( !AllocateImageData( iMemorySize ) )
-		return false;
+	AllocateImageData( iMemorySize );
 
 	// As soon as we have image indicate so in the resources
 	if ( iMemorySize )
@@ -543,8 +528,7 @@ void CVTFTexture::InitLowResImage( int nWidth, int nHeight, ImageFormat fmt )
 	int iLowResImageSize = ImageLoader::GetMemRequired( m_nLowResImageWidth, 
 		m_nLowResImageHeight, 1, m_LowResImageFormat, false );
 
-	if ( !AllocateLowResImageData( iLowResImageSize ) )
-		return;
+	AllocateLowResImageData( iLowResImageSize );
 
 	// As soon as we have low-res image indicate so in the resources
 	if ( iLowResImageSize )
@@ -766,8 +750,7 @@ bool CVTFTexture::LoadImageData( CUtlBuffer &buf, const VTFFileHeader_t &header,
 	int iImageSize = ComputeFaceSize();
 	iImageSize *= m_nFaceCount * m_nFrameCount;
 
-	if ( !AllocateImageData( iImageSize ) )
-		return false;
+	AllocateImageData( iImageSize );
 
 	// NOTE: The mip levels are stored ascending from smallest (1x1) to largest (NxN)
 	// in order to allow for truncated reads of the minimal required data
@@ -857,8 +840,7 @@ bool CVTFTexture::LoadImageData( CUtlBuffer &buf, const VTFFileHeader_t &header,
 			nFacesToRead = 6;
 	}
 
-	if ( !AllocateImageData( iImageSize ) )
-		return false;
+	AllocateImageData( iImageSize );
 
 	// NOTE: The mip levels are stored ascending from smallest (1x1) to largest (NxN)
 	// in order to allow for truncated reads of the minimal required data
@@ -909,11 +891,7 @@ void *CVTFTexture::SetResourceData( uint32 eType, void const *pData, size_t nNum
 		}
 		else
 		{
-			if ( !rms.AllocateData( nNumBytes ) )
-			{
-				RemoveResourceEntryInfo( eType );
-				return NULL;
-			}
+			rms.AllocateData( nNumBytes );
 
 			if ( pData )
 				memcpy( rms.m_pData, pData, nNumBytes );
@@ -992,8 +970,7 @@ bool CVTFTexture::ResourceMemorySection::LoadData( CUtlBuffer &buf, CByteswap &b
 	byteSwap.SwapBufferToTargetEndian( &iDataSize );
 
 	// Read the actual data
-	if ( !AllocateData( iDataSize ) )
-		return false;
+	AllocateData( iDataSize );
 
 	buf.Get( m_pData, iDataSize );
 
@@ -2125,8 +2102,7 @@ void CVTFTexture::ConvertImageFormat( ImageFormat fmt, bool bNormalToDUDV )
 		}
 	}
 
-	if ( !AllocateImageData(iConvertedSize) )
-		return;
+	AllocateImageData(iConvertedSize);
 
 	memcpy( m_pImageData, pConvertedImage, iConvertedSize );
 	m_Format = fmt;

@@ -23,6 +23,7 @@
 #else
 #define TRACE_FAR_DIST 1e24f
 #endif
+#line 20
 
 // this skips the sphere tree stuff for tracing
 #define DEBUG_TEST_ALL_LEDGES 0
