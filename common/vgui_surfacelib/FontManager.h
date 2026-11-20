@@ -21,7 +21,12 @@
 #ifdef VGUI_FONT_FREETYPE
 #include <ft2build.h>
 #include FT_FREETYPE_H
+#ifdef VGUI_FONT_INTERFACE
+#include <fontconfig/fontconfig.h>
+typedef void *(*FontDataHelper)( const char *pchFontName, int &size, const char *fontFileName, bool bRegister, int weight, bool italic );
+#else
 typedef void *(*FontDataHelper)( const char *pchFontName, int &size, const char *fontFileName );
+#endif
 #endif
 
 #ifdef CreateFont
@@ -75,6 +80,9 @@ public:
 	IMaterialSystem *MaterialSystem() { return m_pMaterialSystem; }
 
 #ifdef VGUI_FONT_FREETYPE
+#ifdef VGUI_FONT_INTERFACE
+	FcConfig *GetFcConfig() { return m_pFcConfig; }
+#endif
 	FT_Library GetFontLibraryHandle() { return library; }
 	void SetFontDataHelper( FontDataHelper helper ) { m_pFontDataHelper = helper; }
 #endif
@@ -98,12 +106,15 @@ private:
 
 	CUtlVector<CFontAmalgam> m_FontAmalgams;
 	CUtlVector<font_t *> m_Win32Fonts;
+	CUtlSymbolTable m_FontFileNames;
 
 #ifdef VGUI_FONT_FREETYPE
+#ifdef VGUI_FONT_INTERFACE
+	FcConfig *m_pFcConfig;
+#endif
 	FT_Library library; 
 	FontDataHelper m_pFontDataHelper;
 #endif
-	CUtlSymbolTable m_FontFileNames;
 	bool m_bFreetypeInitialized;
 	char m_szLanguage[64];
 	IFileSystem		*m_pFileSystem;

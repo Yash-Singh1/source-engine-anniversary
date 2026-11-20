@@ -6,6 +6,9 @@
 //=============================================================================//
 
 #ifndef WIN32FONT_H
+#ifndef VGUIFONT_H
+#include "vguifont.h"
+#else
 #define WIN32FONT_H
 #ifdef _WIN32
 #pragma once
@@ -29,14 +32,22 @@ struct newChar_t;
 // Purpose: encapsulates a windows font
 //-----------------------------------------------------------------------------
 
+#ifdef VGUI_FONT_INTERFACE
+class CWin32Font : public IVGuiFontImpl
+#else
 class CWin32Font
+#endif
 {
 public:
 	CWin32Font();
-	~CWin32Font();
+	virtual ~CWin32Font();
 
 	// creates the font from windows.  returns false if font does not exist in the OS.
+#ifdef VGUI_FONT_INTERFACE
+	virtual bool Create(const char *windowsFontName, void *data, int size, int tall, int weight, int blur, int scanlines, int flags);
+#else
 	virtual bool Create(const char *windowsFontName, int tall, int weight, int blur, int scanlines, int flags);
+#endif
 
 	// writes the char into the specified 32bpp texture
 	virtual void GetCharRGBA(wchar_t ch, int rgbaWide, int rgbaTall, unsigned char *rgba);
@@ -48,10 +59,18 @@ public:
 	virtual bool IsValid();
 
 	// gets the abc widths for a character
+#ifdef VGUI_FONT_INTERFACE
+	virtual void GetCharABCWidths(int ch, int &a, int &b, int &c, int *pColorGlyph = NULL);
+#else
 	virtual void GetCharABCWidths(int ch, int &a, int &b, int &c);
+#endif
 
 	// set the font to be the one to currently draw with in the gdi
+#ifdef VGUI_FONT_INTERFACE
+	virtual void *SetAsActiveFont(void *hdc);
+#else
 	virtual void SetAsActiveFont(HDC hdc);
+#endif
 
 	// returns the height of the font, in pixels
 	virtual int GetHeight();
@@ -69,14 +88,19 @@ public:
 	virtual int GetFlags();
 
 	// returns true if this font is underlined
-	bool GetUnderlined() { return m_bUnderlined; }
+	virtual bool GetUnderlined() { return m_bUnderlined; }
 
 	// gets the name of this font
-	const char *GetName() { return m_szName.String(); }
-	const char *GetFamilyName() { return NULL; }
+	virtual const char *GetName() { return m_szName.String(); }
+	virtual const char *GetFamilyName() { return NULL; }
+	virtual int GetWeight() { return m_iWeight; }
 
 	// gets the width of ch given its position around before and after chars
+#ifdef VGUI_FONT_INTERFACE
+	virtual void GetKernedCharWidth( wchar_t ch, wchar_t chBefore, wchar_t chAfter, float &wide, float &abcA, float &abcC );
+#else
 	void GetKernedCharWidth( wchar_t ch, wchar_t chBefore, wchar_t chAfter, float &wide, float &abcA );
+#endif
 
 #if defined( _X360 )
 	// generates texture data for a set of chars
@@ -110,9 +134,9 @@ protected:
 	unsigned short	m_rgiBitmapSize[2];
 	bool			m_bUnderlined;
 
-	unsigned int	m_iHeight : 8;
-	unsigned int	m_iMaxCharWidth : 8;
-	unsigned int	m_iAscent : 8;
+	unsigned int	m_iHeight : 16;
+	unsigned int	m_iMaxCharWidth : 16;
+	unsigned int	m_iAscent : 16;
 	unsigned int	m_iDropShadowOffset : 1;
 	unsigned int	m_iOutlineSize : 1;
 	unsigned int	m_bAntiAliased : 1;
@@ -142,7 +166,8 @@ private:
 	// 360 requires all possible characters during font init
 	enum { ABCWIDTHS_CACHE_SIZE = 256 };
 	abc_t m_ABCWidthsCache[ABCWIDTHS_CACHE_SIZE];
-#endif
+#endif // _X360
 };
 
+#endif // VGUIFONT_H
 #endif // WIN32FONT_H

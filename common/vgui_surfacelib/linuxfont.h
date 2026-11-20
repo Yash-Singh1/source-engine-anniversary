@@ -6,6 +6,9 @@
 //=============================================================================//
 
 #ifndef LINUXFONT_H
+#ifndef VGUIFONT_H
+#include "vguifont.h"
+#else
 #define LINUXFONT_H
 
 #include "utlrbtree.h"
@@ -17,18 +20,25 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-
 //-----------------------------------------------------------------------------
-// Purpose: encapsulates a OSX font
+// Purpose: encapsulates a FreeType font
 //-----------------------------------------------------------------------------
+#ifdef VGUI_FONT_INTERFACE
+class CLinuxFont : public IVGuiFontImpl
+#else
 class CLinuxFont
+#endif
 {
 public:
 	CLinuxFont();
-	~CLinuxFont();
+	virtual ~CLinuxFont();
 
-	// creates the font from windows.  returns false if font does not exist in the OS.
+	// creates the font from memory.  returns false if font does not exist in the OS.
+#ifdef VGUI_FONT_INTERFACE
+	virtual bool Create(const char *windowsFontName, void *data, int size, int tall, int weight, int blur, int scanlines, int flags);
+#else
 	virtual bool CreateFromMemory(const char *windowsFontName, void *data, int size, int tall, int weight, int blur, int scanlines, int flags);
+#endif
 
 	// writes the char into the specified 32bpp texture
 	virtual void GetCharRGBA( wchar_t ch, int rgbaWide, int rgbaTall, unsigned char *rgba);
@@ -43,10 +53,14 @@ public:
 	//  A spacing is the distance to add to the current position before drawing the character glyph.
 	//  B spacing is the width of the drawn portion of the glyph.
 	//  C spacing is the distance to add to the current position to provide white space to the right of the glyph.
+#ifdef VGUI_FONT_INTERFACE
+	virtual void GetCharABCWidths(int ch, int &a, int &b, int &c, int *pColorGlyph = NULL);
+#else
 	virtual void GetCharABCWidths(int ch, int &a, int &b, int &c);
+#endif
 
 	// set the font to be the one to currently draw with in the gdi
-	void *SetAsActiveFont( void *glContext );
+	virtual void *SetAsActiveFont( void *glContext );
 
 	// returns the height of the font, in pixels
 	virtual int GetHeight();
@@ -67,8 +81,8 @@ public:
 	virtual bool GetUnderlined() { return m_bUnderlined; }
 	
 	// gets the name of this font
-	const char *GetName() { return m_szName.String(); }
-	const char *GetFamilyName() { return m_face ? m_face->family_name : NULL; }
+	virtual const char *GetName() { return m_szName.String(); }
+	virtual const char *GetFamilyName() { return m_face ? m_face->family_name : NULL; }
 
 	// gets the weight of the font
 	virtual int GetWeight() { return m_iWeight; }
@@ -78,12 +92,20 @@ public:
 	// gets the width of ch given its position around before and after chars
 	virtual void GetKernedCharWidth( wchar_t ch, wchar_t chBefore, wchar_t chAfter, float &wide, float &abcA, float &abcC );
 
+#ifdef VGUI_FONT_INTERFACE
+	virtual bool SupportsFullCharacterRange() { return true; }
+#endif
+
 #ifdef DBGFLAG_VALIDATE
 	void Validate( CValidator &validator, char *pchName );
 #endif
 
 	// Given a font name from windows, match it to the filename and return that.
+#ifdef VGUI_FONT_INTERFACE
+	static char *GetFontFileName(const char *windowsFontName, int weight, bool italic);
+#else
 	static char *GetFontFileName(const char *windowsFontName, int flags);
+#endif
 
 
 protected:
@@ -166,4 +188,5 @@ private:
 	static bool ms_bSetFriendlyNameCacheLessFunc;
 };
 
+#endif // VGUIFONT_H
 #endif // LINUXFONT_H

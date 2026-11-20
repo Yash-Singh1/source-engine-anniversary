@@ -1067,7 +1067,8 @@ void Button::OnKeyCodeReleased( KeyCode keycode )
 {
 	vgui::KeyCode code = GetBaseButtonCode( keycode );
 
-	if ( _buttonFlags.IsFlagSet( BUTTON_KEY_DOWN ) && ( code == KEY_XBUTTON_A || code == KEY_XBUTTON_START || code == STEAMCONTROLLER_A || code == STEAMCONTROLLER_START ) )
+	if ( ( _buttonFlags.IsFlagSet( BUTTON_KEY_DOWN ) && ( code == KEY_XBUTTON_A || code == KEY_XBUTTON_START ) ) ||
+		 ( _buttonFlags.IsFlagSet( BUTTON_KEY_DOWN ) && ( code == STEAMCONTROLLER_A || code == STEAMCONTROLLER_START ) ) )
 	{
 		SetArmed( true );
 		if( _activationType != ACTIVATE_ONPRESSED )

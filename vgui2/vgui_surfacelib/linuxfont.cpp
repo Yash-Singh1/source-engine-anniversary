@@ -12,6 +12,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#include <stdint.h>
+#include <stdarg.h>
 #ifdef OSX
 #include <malloc/malloc.h>
 #else
@@ -98,7 +100,7 @@ void CLinuxFont::CreateFontList()
 	if ( m_FriendlyNameCache.Count() > 0 ) 
 		return;
 
-#if HAVE_FC
+#if HAVE_FC && !defined( _WIN32 )
 	if(!FcInit())
 		return;
     FcConfig *config;
@@ -212,7 +214,11 @@ static FcPattern* FontMatch(const char* type, ...)
 }
 #endif
 
+#ifdef VGUI_FONT_INTERFACE
+bool CLinuxFont::Create(const char *windowsFontName, void *data, int datasize, int tall, int weight, int blur, int scanlines, int flags)
+#else
 bool CLinuxFont::CreateFromMemory(const char *windowsFontName, void *data, int datasize, int tall, int weight, int blur, int scanlines, int flags)
+#endif
 {
 	// setup font properties
 	m_szName = windowsFontName;
@@ -228,6 +234,7 @@ bool CLinuxFont::CreateFromMemory(const char *windowsFontName, void *data, int d
 	m_bRotary = flags & vgui::ISurface::FONTFLAG_ROTARY;
 	m_bAdditive = flags & vgui::ISurface::FONTFLAG_ADDITIVE;
 
+#ifdef DBGFLAG_ASSERT
 	if ( !HushAsserts() )
 	{
 		// These flags are NYI in Linux right now.
@@ -235,6 +242,7 @@ bool CLinuxFont::CreateFromMemory(const char *windowsFontName, void *data, int d
 		Assert( !m_bUnderlined );
 		Assert( !m_bAdditive );
 	}
+#endif
 
 	Assert( !m_faceValid );
 	FT_Error error = FT_New_Memory_Face( FontManager().GetFontLibraryHandle(), (FT_Byte *)data, datasize, 0, &m_face );
@@ -498,6 +506,80 @@ char *TryFindFont(const char *winFontName, bool bBold, int italic)
 //-----------------------------------------------------------------------------
 // Purpose: Given a font name from windows, match it to the filename and return that.
 //-----------------------------------------------------------------------------
+#ifdef VGUI_FONT_INTERFACE
+static double WeightFromOpenTypeDouble( double ot_weight )
+{
+	if ( ot_weight < 0.0 )
+		return -1.0;
+
+	if ( ot_weight > 1000.0 )
+		ot_weight = 1000.0;
+
+	static const struct { int ot; int fc; } map[] = {
+		{    0,   0 },
+		{  100,   0 },
+		{  200,  40 },
+		{  300,  50 },
+		{  380,  75 },
+		{  400,  80 },
+		{  500, 100 },
+		{  600, 180 },
+		{  700, 200 },
+		{  800, 205 },
+		{  900, 210 },
+		{ 1000, 215 },
+	};
+
+	int i;
+	for ( i = 1; ot_weight > map[i].ot; i++ )
+		;
+
+	if ( ot_weight == map[i].ot )
+		return map[i].fc;
+
+	double a = map[i - 1].ot;
+	double b = map[i].ot;
+	return map[i - 1].fc + ( ot_weight - a ) * ( map[i].fc - map[i - 1].fc ) / ( b - a );
+}
+
+char *CLinuxFont::GetFontFileName( const char *windowsFontName, int weight, bool italic )
+{
+	int nFcSlant = italic ? FC_SLANT_ITALIC : FC_SLANT_ROMAN;
+	int nFcWeight = (int)WeightFromOpenTypeDouble( (double)weight );
+
+	char szFontName[1024];
+	V_strncpy( szFontName, windowsFontName, sizeof( szFontName ) );
+
+	if ( V_stristr( windowsFontName, " black" ) || V_stristr( windowsFontName, "-black" ) )
+		nFcWeight = FC_WEIGHT_BLACK;
+	else if ( V_stristr( windowsFontName, " bold" ) || V_stristr( windowsFontName, "-bold" ) )
+		nFcWeight = FC_WEIGHT_BOLD;
+	else if ( V_stristr( windowsFontName, " regular" ) || V_stristr( windowsFontName, "-regular" ) )
+		nFcWeight = FC_WEIGHT_REGULAR;
+	else if ( V_stristr( windowsFontName, " semibold" ) || V_stristr( windowsFontName, "-semibold" ) )
+		nFcWeight = FC_WEIGHT_SEMIBOLD;
+	else if ( V_stristr( windowsFontName, " light" ) || V_stristr( windowsFontName, "-light" ) )
+		nFcWeight = FC_WEIGHT_LIGHT;
+
+	FcPattern *match = FontMatch( FC_FAMILY, FcTypeString, szFontName,
+								  FC_WEIGHT, FcTypeInteger, nFcWeight,
+								  FC_SLANT, FcTypeInteger, nFcSlant,
+								  NULL );
+	if ( !match )
+	{
+		return NULL;
+	}
+
+	char *filenameret = NULL;
+	FcChar8 *filename = NULL;
+	if ( FcPatternGetString( match, FC_FILE, 0, &filename ) == FcResultMatch )
+	{
+		filenameret = strdup( (const char *)filename );
+	}
+	FcPatternDestroy( match );
+	return filenameret;
+}
+#else
 char *CLinuxFont::GetFontFileName( const char *windowsFontName, int flags )
 {
 	bool bBold = false;
@@ -547,6 +629,7 @@ char *CLinuxFont::GetFontFileName( const char *windowsFontName, int flags )
 	}
 #endif
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: writes the char into the specified 32bpp texture
@@ -716,7 +799,11 @@ void CLinuxFont::GetKernedCharWidth( wchar_t ch, wchar_t chBefore, wchar_t chAft
 //-----------------------------------------------------------------------------
 // Purpose: gets the abc widths for a character
 //-----------------------------------------------------------------------------
+#ifdef VGUI_FONT_INTERFACE
+void CLinuxFont::GetCharABCWidths(int ch, int &a, int &b, int &c, int *pColorGlyph)
+#else
 void CLinuxFont::GetCharABCWidths(int ch, int &a, int &b, int &c)
+#endif
 {
 	Assert(IsValid());
 

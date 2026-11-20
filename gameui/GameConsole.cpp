@@ -144,14 +144,14 @@ void CGameConsole::SetParent( intp parent )
 	if (!m_bInitialized)
 		return;
 
-	if ( m_pConsole )
-	{
-		m_pConsole->SetParent( static_cast<vgui::VPANEL>( parent ));
-	}
-	else
+	if ( !m_pConsole )
 	{
 		vgui::Panel *pParent = vgui::ipanel()->GetPanel( static_cast<vgui::VPANEL>( parent ), "BaseUI" );
 		m_pConsole = new CGameConsoleDialog( pParent );
+	}
+	else
+	{
+		m_pConsole->SetParent( static_cast<vgui::VPANEL>( parent ));
 	}
 
 	if ( m_bConsoleLaidOut )

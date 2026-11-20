@@ -4256,13 +4256,16 @@
     "fopen=dont_use_fopen",
     "_WINDLL",
     "_USING_V110_SDK71_",
-    "_MBCS"
+    "_MBCS",
+    "HAVE_FC=1"
    ],
    "includes": [
     "common",
     "public",
     "public/tier0",
-    "public/tier1"
+    "public/tier1",
+    "thirdparty/freetype/include",
+    "thirdparty/fontconfig"
    ],
    "cl": [
     "/O2",
@@ -4385,6 +4388,15 @@
     {
      "project": "vgui_surfacelib",
      "path": "lib/public/vgui_surfacelib.lib"
+    },
+    {
+     "prebuilt": "lib/public/libfreetype-6.lib"
+    },
+    {
+     "prebuilt": "lib/public/libfontconfig-1.lib"
+    },
+    {
+     "prebuilt": "lib/public/SDL2.lib"
     }
    ],
    "file_libs": [],
@@ -4452,7 +4464,9 @@
     "VERSION_SAFE_STEAM_API_INTERFACES",
     "_WINDLL",
     "_USING_V110_SDK71_",
-    "_MBCS"
+    "_MBCS",
+    "HAVE_JPEG",
+    "HAVE_PNG"
    ],
    "includes": [
     "common",
@@ -19850,13 +19864,17 @@
     "DEV_BUILD",
     "FRAME_POINTER_OMISSION_DISABLED",
     "_USING_V110_SDK71_",
-    "_MBCS"
+    "_MBCS",
+    "HAVE_FC=1"
    ],
    "includes": [
     "common",
     "public",
     "public/tier0",
-    "public/tier1"
+    "public/tier1",
+    "thirdparty/freetype/include",
+    "thirdparty/fontconfig",
+    "thirdparty/SDL"
    ],
    "cl": [
     "/O2",
@@ -19904,6 +19922,10 @@
     {
      "path": "vgui2/vgui_surfacelib/FontManager.cpp",
      "lang": "c++"
+    },
+    {
+     "lang": "c++",
+     "path": "vgui2/vgui_surfacelib/linuxfont.cpp"
     },
     {
      "path": "vgui2/vgui_surfacelib/Win32Font.cpp",

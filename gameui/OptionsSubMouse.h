@@ -52,6 +52,7 @@ protected:
 	void UpdateSensitivityLabel();
 	void UpdateAccelerationLabel();
 	void UpdateJoystickPanels();
+	void UpdateAutoaimPanels();
 
 private:
 	CCvarNegateCheckButton		*m_pReverseMouseCheckBox;

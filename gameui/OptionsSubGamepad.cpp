@@ -68,8 +68,12 @@ COptionsSubGamepad::~COptionsSubGamepad()
 
 void COptionsSubGamepad::OnResetData()
 {
+	int nAutoaimMode = 0;
 	ConVarRef sc_autoaim_mode( "sc_autoaim_mode" );
-	int nAutoaimMode = sc_autoaim_mode.IsValid() ? sc_autoaim_mode.GetInt() : 0;
+	if ( sc_autoaim_mode.IsValid() )
+	{
+		nAutoaimMode = sc_autoaim_mode.GetInt();
+	}
 	m_pAutoaimCombo->ActivateItem( nAutoaimMode );
 	if ( nAutoaimMode > 0 )
 	{
@@ -80,9 +84,13 @@ void COptionsSubGamepad::OnResetData()
 		m_pAutoaimScaleSlider->SetEnabled( false );
 	}
 
+	int nWeaponSelection = 2;
 	ConVarRef hud_weaponui_gamepad( "hud_weaponui_gamepad" );
-	bool bCrossbar = hud_weaponui_gamepad.IsValid() ? ( hud_weaponui_gamepad.GetInt() == 2 ) : true;
-	m_pWeaponSelectionCombo->ActivateItem( bCrossbar ? 0 : 1 );
+	if ( hud_weaponui_gamepad.IsValid() )
+	{
+		nWeaponSelection = hud_weaponui_gamepad.GetInt();
+	}
+	m_pWeaponSelectionCombo->ActivateItem( nWeaponSelection != 2 ? 1 : 0 );
 }
 
 void COptionsSubGamepad::OnApplyChanges()

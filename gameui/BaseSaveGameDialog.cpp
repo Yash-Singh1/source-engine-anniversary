@@ -230,15 +230,15 @@ void CBaseSaveGameDialog::ScanSavedGames()
 	// populate list box with all saved games on record:
 	char	szDirectory[_MAX_PATH];
 	const char *pszPathID;
-	if ( m_strOverrideMod.Length() )
-	{
-		Q_snprintf( szDirectory, sizeof( szDirectory ), "%s/save/*.sav", m_strOverrideMod.Get() );
-		pszPathID = "BASE_PATH";
-	}
-	else
+	if ( m_strOverrideMod.IsEmpty() )
 	{
 		Q_snprintf( szDirectory, sizeof( szDirectory ), "save/*.sav" );
 		pszPathID = "MOD";
+	}
+	else
+	{
+		Q_snprintf( szDirectory, sizeof( szDirectory ), "%s/save/*.sav", m_strOverrideMod.Get() );
+		pszPathID = "BASE_PATH";
 	}
 
 	// clear the current list
@@ -265,13 +265,13 @@ void CBaseSaveGameDialog::ScanSavedGames()
 		}
 
 		char szFileName[_MAX_PATH];
-		if ( m_strOverrideMod.Length() )
+		if ( m_strOverrideMod.IsEmpty() )
 		{
-			Q_snprintf( szFileName, sizeof( szFileName ), "%s/save/%s", m_strOverrideMod.Get(), pFileName );
+			Q_snprintf( szFileName, sizeof( szFileName ), "save/%s", pFileName );
 		}
 		else
 		{
-			Q_snprintf( szFileName, sizeof( szFileName ), "save/%s", pFileName );
+			Q_snprintf( szFileName, sizeof( szFileName ), "%s/save/%s", m_strOverrideMod.Get(), pFileName );
 		}
 
 		// Only load save games from the current mod's save dir
@@ -325,7 +325,7 @@ void CBaseSaveGameDialog::AddSaveGameItemToList( int saveIndex )
 {
 	// create the new panel and add to the list
 	CSaveGamePanel *saveGamePanel = new CSaveGamePanel( m_pGameList, "SaveGamePanel", saveIndex );
-	saveGamePanel->SetSaveGameInfo( m_SaveGames[saveIndex], m_strOverrideMod.Length() ? m_strOverrideMod.Get() : NULL );
+	saveGamePanel->SetSaveGameInfo( m_SaveGames[saveIndex], m_strOverrideMod.IsEmpty() ? NULL : m_strOverrideMod.Get() );
 	m_pGameList->AddItem( NULL, saveGamePanel );
 }
 

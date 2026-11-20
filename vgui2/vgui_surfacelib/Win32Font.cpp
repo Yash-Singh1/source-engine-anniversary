@@ -104,7 +104,11 @@ int CALLBACK FontEnumProc(
 //-----------------------------------------------------------------------------
 // Purpose: creates the font from windows.  returns false if font does not exist in the OS.
 //-----------------------------------------------------------------------------
+#ifdef VGUI_FONT_INTERFACE
+bool CWin32Font::Create(const char *windowsFontName, void *data, int size, int tall, int weight, int blur, int scanlines, int flags)
+#else
 bool CWin32Font::Create(const char *windowsFontName, int tall, int weight, int blur, int scanlines, int flags)
+#endif
 {
 	// setup font properties
 	m_szName = windowsFontName;
@@ -500,16 +504,29 @@ bool CWin32Font::IsValid()
 //-----------------------------------------------------------------------------
 // Purpose: set the font to be the one to currently draw with in the gdi
 //-----------------------------------------------------------------------------
+#ifdef VGUI_FONT_INTERFACE
+void *CWin32Font::SetAsActiveFont(void *hdc)
+{
+	Assert( IsValid() );
+	::SelectObject( (HDC)hdc, m_hFont );
+	return NULL;
+}
+#else
 void CWin32Font::SetAsActiveFont(HDC hdc)
 {
 	Assert( IsValid() );
 	::SelectObject( hdc, m_hFont );
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: gets the abc widths for a character
 //-----------------------------------------------------------------------------
+#ifdef VGUI_FONT_INTERFACE
+void CWin32Font::GetCharABCWidths(int ch, int &a, int &b, int &c, int *pColorGlyph)
+#else
 void CWin32Font::GetCharABCWidths(int ch, int &a, int &b, int &c)
+#endif
 {
 	Assert( IsValid() );
 #if defined( _X360 )
@@ -627,6 +644,16 @@ bool CWin32Font::ExtendedABCWidthsCacheLessFunc(const abc_cache_t &lhs, const ab
 //-----------------------------------------------------------------------------
 // Purpose: Get the kerned size of a char, for win32 just pass thru for now
 //-----------------------------------------------------------------------------
+#ifdef VGUI_FONT_INTERFACE
+void CWin32Font::GetKernedCharWidth( wchar_t ch, wchar_t chBefore, wchar_t chAfter, float &wide, float &abcA, float &abcC )
+{
+	int a,b,c;
+	GetCharABCWidths(ch, a, b, c );
+	wide = ( a + b + c);
+	abcA = a;
+	abcC = c;
+}
+#else
 void CWin32Font::GetKernedCharWidth( wchar_t ch, wchar_t chBefore, wchar_t chAfter, float &wide, float &abcA )
 {
 	int a,b,c;
@@ -634,5 +661,6 @@ void CWin32Font::GetKernedCharWidth( wchar_t ch, wchar_t chBefore, wchar_t chAft
 	wide = ( a + b + c);
 	abcA = a;
 }
+#endif
 
 

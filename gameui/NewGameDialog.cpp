@@ -473,9 +473,9 @@ int CNewGameDialog::GetUnlockedChapter()
 //-----------------------------------------------------------------------------
 void CNewGameDialog::ReloadChapters()
 {
-	for ( int i = m_ChapterPanels.Count(); i > 0; --i )
+	for ( int i = m_ChapterPanels.Count() - 1; i >= 0; --i )
 	{
-		m_ChapterPanels[i - 1]->DeletePanel();
+		m_ChapterPanels[i]->DeletePanel();
 	}
 	m_ChapterPanels.RemoveAll();
 
@@ -487,48 +487,51 @@ void CNewGameDialog::ReloadChapters()
 	char szFullFileName[MAX_PATH];
 	int chapterIndex = 0;
 
-	FileFindHandle_t findHandle = FILESYSTEM_INVALID_FIND_HANDLE;
-	const char *pszPathID;
-	if ( m_strOverrideMod.Length() )
+	if ( IsPC() )
 	{
-		Q_snprintf( szSearchPath, sizeof( szSearchPath ), "%s/cfg/chapter*.cfg", m_strOverrideMod.Get() );
-		pszPathID = "BASE_PATH";
-	}
-	else
-	{
-		Q_snprintf( szSearchPath, sizeof( szSearchPath ), "cfg/chapter*.cfg" );
-		pszPathID = "MOD";
-	}
-
-	const char *fileName = g_pFullFileSystem->FindFirstEx( szSearchPath, pszPathID, &findHandle );
-	while ( fileName && chapterIndex < MAX_CHAPTERS )
-	{
-		if ( fileName[0] )
+		FileFindHandle_t findHandle = FILESYSTEM_INVALID_FIND_HANDLE;
+		const char *pszPathID;
+		if ( m_strOverrideMod.IsEmpty() )
 		{
-			// Only load chapter configs from the current mod's cfg dir
-			// or else chapters appear that we don't want!
-			if ( m_strOverrideMod.Length() )
-			{
-				Q_snprintf( szFullFileName, sizeof( szFullFileName ), "%s/cfg/%s", m_strOverrideMod.Get(), fileName );
-			}
-			else
-			{
-				Q_snprintf( szFullFileName, sizeof( szFullFileName ), "cfg/%s", fileName );
-			}
-
-			FileHandle_t f = g_pFullFileSystem->Open( szFullFileName, "rb", pszPathID );
-			if ( f )
-			{
-				// don't load chapter files that are empty, used in the demo
-				if ( g_pFullFileSystem->Size( f ) > 0 )
-				{
-					Q_strncpy( chapters[chapterIndex].filename, fileName, sizeof( chapters[chapterIndex].filename ) );
-					++chapterIndex;
-				}
-				g_pFullFileSystem->Close( f );
-			}
+			Q_snprintf( szSearchPath, sizeof( szSearchPath ), "cfg/chapter*.cfg" );
+			pszPathID = "MOD";
 		}
-		fileName = g_pFullFileSystem->FindNext( findHandle );
+		else
+		{
+			Q_snprintf( szSearchPath, sizeof( szSearchPath ), "%s/cfg/chapter*.cfg", m_strOverrideMod.Get() );
+			pszPathID = "BASE_PATH";
+		}
+
+		const char *fileName = g_pFullFileSystem->FindFirstEx( szSearchPath, pszPathID, &findHandle );
+		while ( fileName && chapterIndex < MAX_CHAPTERS )
+		{
+			if ( fileName[0] )
+			{
+				// Only load chapter configs from the current mod's cfg dir
+				// or else chapters appear that we don't want!
+				if ( m_strOverrideMod.IsEmpty() )
+				{
+					Q_snprintf( szFullFileName, sizeof( szFullFileName ), "cfg/%s", fileName );
+				}
+				else
+				{
+					Q_snprintf( szFullFileName, sizeof( szFullFileName ), "%s/cfg/%s", m_strOverrideMod.Get(), fileName );
+				}
+
+				FileHandle_t f = g_pFullFileSystem->Open( szFullFileName, "rb", pszPathID );
+				if ( f )
+				{
+					// don't load chapter files that are empty, used in the demo
+					if ( g_pFullFileSystem->Size( f ) > 0 )
+					{
+						Q_strncpy( chapters[chapterIndex].filename, fileName, sizeof( chapters[chapterIndex].filename ) );
+						++chapterIndex;
+					}
+					g_pFullFileSystem->Close( f );
+				}
+			}
+			fileName = g_pFullFileSystem->FindNext( findHandle );
+		}
 	}
 
 	bool bBonusesUnlocked = false;
@@ -572,7 +575,7 @@ void CNewGameDialog::ReloadChapters()
 		Q_snprintf( chapterName, sizeof( chapterName ), "#%s_Chapter%s_Title", pGameDir, chapterID );
 
 		Q_snprintf( szFullFileName, sizeof( szFullFileName ), "%s", fileName );
-		CGameChapterPanel *chapterPanel = SETUP_PANEL( new CGameChapterPanel( this, NULL, chapterName, i, chapterID, szFullFileName, m_bCommentaryMode, m_strOverrideMod.Length() ? m_strOverrideMod.Get() : NULL ) );
+		CGameChapterPanel *chapterPanel = SETUP_PANEL( new CGameChapterPanel( this, NULL, chapterName, i, chapterID, szFullFileName, m_bCommentaryMode, m_strOverrideMod.IsEmpty() ? NULL : m_strOverrideMod.Get() ) );
 		chapterPanel->SetVisible( false );
 
 		UpdatePanelLockedStatus( iUnlockedChapter, i + 1, chapterPanel );
@@ -671,7 +674,7 @@ void CNewGameDialog::SetOverrideMod( const char *pszOverrideMod )
 void CNewGameDialog::OnCheckButtonChecked( vgui::Panel *panel )
 {
 	int iLastEnabledChapter = -1;
-	if ( m_pCommentaryCheckButton && m_pCommentaryCheckButton == panel )
+	if ( m_pCommentaryCheckButton && panel == m_pCommentaryCheckButton )
 	{
 		int iUnlockedChapter = GetUnlockedChapter();
 
@@ -694,7 +697,16 @@ void CNewGameDialog::OnCheckButtonChecked( vgui::Panel *panel )
 		}
 	}
 
-	SetSelectedChapterIndex( clamp( m_iSelectedChapter, -1, iLastEnabledChapter ), false );
+	int iSelected = m_iSelectedChapter;
+	if ( iSelected < -1 )
+	{
+		iSelected = -1;
+	}
+	else if ( iSelected > iLastEnabledChapter )
+	{
+		iSelected = iLastEnabledChapter;
+	}
+	SetSelectedChapterIndex( iSelected, false );
 	m_pPlayButton->SetEnabled( iLastEnabledChapter >= 0 );
 }
 
