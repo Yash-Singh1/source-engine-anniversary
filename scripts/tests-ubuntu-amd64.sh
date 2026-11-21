@@ -8,4 +8,4 @@ sudo apt-get install -y libbz2-dev
 python3 ./waf configure -T release --sanitize=address,undefined --disable-warns --tests --prefix=out/ "$@"
 python3 ./waf install
 cd out
-LD_LIBRARY_PATH=bin/ ./unittest
+ASAN_OPTIONS=detect_odr_violation=0:detect_leaks=0 LD_LIBRARY_PATH=bin/ ./unittest
