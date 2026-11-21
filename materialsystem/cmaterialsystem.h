@@ -757,4 +757,10 @@ inline CMaterialSystem *CMatLightmaps::GetMaterialSystem() const
 
 //-----------------------------------------------------------------------------
 
+#ifdef PLATFORM_64BITS
+#define WAIT_MAT_QUEUE_JOB( pJob, pPool ) (pJob)->WaitForFinish( TT_INFINITE, (pPool) ? (pPool) : g_pThreadPool )
+#else
+#define WAIT_MAT_QUEUE_JOB( pJob, pPool ) (pJob)->WaitForFinish()
+#endif
+
 #endif // CMATERIALSYSTEM_H

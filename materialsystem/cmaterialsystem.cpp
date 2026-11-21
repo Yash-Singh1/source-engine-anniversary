@@ -1414,7 +1414,7 @@ void CMaterialSystem::ForceSingleThreaded()
 	{
 		if ( m_pActiveAsyncJob && !m_pActiveAsyncJob->IsFinished() )
 		{
-			m_pActiveAsyncJob->WaitForFinish();
+			WAIT_MAT_QUEUE_JOB( m_pActiveAsyncJob, m_pMatQueueThreadPool );
 		}
 		SafeRelease( m_pActiveAsyncJob );
 
@@ -4086,7 +4086,7 @@ void CMaterialSystem::EndFrame( void )
 				ThreadAcquire( true );
 			}
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 			if ( m_pActiveAsyncJob && !m_pActiveAsyncJob->IsFinished() )
 			{
 				m_pActiveAsyncJob->WaitForFinish();
@@ -4213,7 +4213,7 @@ void CMaterialSystem::EndFrame( void )
 			{
 				if ( m_pActiveAsyncJob )
 				{
-					m_pActiveAsyncJob->WaitForFinish();
+					WAIT_MAT_QUEUE_JOB( m_pActiveAsyncJob, m_pMatQueueThreadPool );
 					SafeRelease( m_pActiveAsyncJob );
 				}
 				// probably have a queued context set here, need hardware to flush the queue if the job isn't active
@@ -5317,7 +5317,7 @@ void CMaterialSystem::ThreadRelease( )
 	CJob		*pActiveAsyncJob = new CThreadRelease();
 	IThreadPool *pThreadPool = CreateMatQueueThreadPool();
 	pThreadPool->AddJob( pActiveAsyncJob );
-	pActiveAsyncJob->WaitForFinish();
+	WAIT_MAT_QUEUE_JOB( pActiveAsyncJob, pThreadPool );
 
 	if ( pActiveAsyncJob )
 		pActiveAsyncJob->Release();
@@ -5425,7 +5425,7 @@ MaterialLock_t CMaterialSystem::Lock()
 #if 1 // Rick's optimization: not sure this is needed anymore
 	if ( pCurContext != &m_HardwareRenderContext && m_pActiveAsyncJob )
 	{
-		m_pActiveAsyncJob->WaitForFinish();
+		WAIT_MAT_QUEUE_JOB( m_pActiveAsyncJob, m_pMatQueueThreadPool );
 		// threadsafety note: not releasing or nulling pointer.
 	}
 
