@@ -3165,6 +3165,33 @@ void CMeshDX8::SetColorStreamState()
 {
 	if ( ( m_pColorMesh != g_pLastColorMesh ) || ( m_nColorMeshVertOffsetInBytes != g_nLastColorMeshVertOffsetInBytes ) )
 	{
+#ifndef BYTEMATCH_RETAIL
+		CVertexBuffer *pColorVB = m_pColorMesh ? m_pColorMesh->GetVertexBuffer() : NULL;
+		if ( pColorVB )
+		{
+			RECORD_COMMAND( DX8_SET_STREAM_SOURCE, 4 );
+			RECORD_INT( pColorVB->UID() );
+			RECORD_INT( 1 );
+			RECORD_INT( m_nColorMeshVertOffsetInBytes );
+			RECORD_INT( pColorVB->VertexSize() );
+
+			D3DSetStreamSource( 1, pColorVB->GetInterface(), 
+								m_nColorMeshVertOffsetInBytes, pColorVB->VertexSize() );
+			pColorVB->HandlePerFrameTextureStats( ShaderAPI()->GetCurrentFrameCounter() );
+		}
+		else
+		{
+			RECORD_COMMAND( DX8_SET_STREAM_SOURCE, 4 );
+			RECORD_INT( -1 );	// vertex buffer id
+			RECORD_INT( 1 );	// stream
+			RECORD_INT( 0 );	// vertex offset
+			RECORD_INT( 0 );	// vertex size
+
+			D3DSetStreamSource( 1, 0, 0, 0 );
+		}
+		g_pLastColorMesh = pColorVB ? m_pColorMesh : NULL;
+		g_nLastColorMeshVertOffsetInBytes = pColorVB ? m_nColorMeshVertOffsetInBytes : 0;
+#else
 		if ( m_pColorMesh )
 		{
 			RECORD_COMMAND( DX8_SET_STREAM_SOURCE, 4 );
@@ -3189,6 +3216,7 @@ void CMeshDX8::SetColorStreamState()
 		}
 		g_pLastColorMesh = m_pColorMesh;
 		g_nLastColorMeshVertOffsetInBytes = m_nColorMeshVertOffsetInBytes;
+#endif
 	}
 }
 

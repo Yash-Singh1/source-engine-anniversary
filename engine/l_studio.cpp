@@ -3671,6 +3671,10 @@ void CModelRender::StaticPropColorMeshCallback( void *pContext, const void *pDat
 	HardwareVerts::FileHeader_t *pVhvHdr;
 	byte *pOriginalData = NULL;
 	int numLightingComponents = 1;
+#ifndef BYTEMATCH_RETAIL
+	bool bColorMeshValid = false;
+	int populatedMeshes = 0;
+#endif
 
 	if ( asyncStatus != FSASYNC_OK )
 	{
@@ -3716,14 +3720,19 @@ void CModelRender::StaticPropColorMeshCallback( void *pContext, const void *pDat
 	int meshID;
 	for ( meshID = startMesh; meshID<pVhvHdr->m_nMeshes; meshID++ )
 	{
+		int nID = meshID-startMesh;
+#ifndef BYTEMATCH_RETAIL
+		if ( nID >= pStaticPropContext->m_nMeshes )
+		{
+			break;
+		}
+#endif
 		int numVertexes = pVhvHdr->pMesh( meshID )->m_nVertexes;
-		if ( numVertexes != pStaticPropContext->m_pColorMeshData->m_pMeshInfos[meshID-startMesh].m_nNumVerts )
+		if ( numVertexes <= 0 || numVertexes != pStaticPropContext->m_pColorMeshData->m_pMeshInfos[nID].m_nNumVerts )
 		{
 			// meshes are out of sync, discard data
 			break;
 		}
-
-		int nID = meshID-startMesh;
 
 		unsigned char *pIn = (unsigned char *) pVhvHdr->pVertexBase( meshID );
 		unsigned char *pOut = NULL;
@@ -3755,7 +3764,13 @@ void CModelRender::StaticPropColorMeshCallback( void *pContext, const void *pDat
 		V_memcpy( pOut, pIn, numVertexes * 4 * numLightingComponents );
 #endif
 		meshBuilder.End();
+#ifndef BYTEMATCH_RETAIL
+		populatedMeshes++;
+#endif
 	}
+#ifndef BYTEMATCH_RETAIL
+	bColorMeshValid = ( populatedMeshes > 0 && populatedMeshes == pStaticPropContext->m_nMeshes );
+#endif
 cleanUp:
 	if ( IsX360() )
 	{
@@ -3768,7 +3783,11 @@ cleanUp:
 	}
 
 	// mark as completed in single atomic operation
+#ifndef BYTEMATCH_RETAIL
+	pStaticPropContext->m_pColorMeshData->m_bColorMeshValid = bColorMeshValid;
+#else
 	pStaticPropContext->m_pColorMeshData->m_bColorMeshValid = true;
+#endif
 	CacheUnlock( pStaticPropContext->m_ColorMeshHandle );
 	delete pStaticPropContext;
 

@@ -506,6 +506,25 @@ void CHud::Shutdown( void )
 	}
 
 	m_HudList.Purge();
+#ifndef BYTEMATCH_RETAIL
+	// Free HUD textures while vgui::surface() is still loaded (on macOS exit,
+	// libvguimatsurface can be unloaded before gHUD's static destructor runs).
+#ifdef HL2_ANNIVERSARY_NOV2024
+	for ( int i = m_Icons.First(); m_Icons.IsValidIndex( i ); i = m_Icons.Next( i ) )
+	{
+		CHudTexture *tex = m_Icons[ i ];
+		g_HudTextureMemoryPool.Free( tex );
+	}
+	m_Icons.Purge();
+#else
+	for ( int i = m_Icons.Count() - 1; i >= 0; i-- )
+	{
+		CHudTexture *tex = m_Icons[ i ];
+		g_HudTextureMemoryPool.Free( tex );
+	}
+	m_Icons.Purge();
+#endif
+#endif
 	m_bHudTexturesLoaded = false;
 }
 
