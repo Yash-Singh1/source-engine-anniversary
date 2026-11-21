@@ -330,6 +330,7 @@ void CAudioDeviceAudioQueue::PaintEnd( void )
 		// We are running the audio queue but have become starved of buffers.
 		// Stop the audio queue so we force a restart of it.
 		AudioQueueStop( m_Queue, true );
+		m_bRunning = false;
 	}
 
 	//
@@ -383,8 +384,10 @@ void CAudioDeviceAudioQueue::Pause( void )
 	m_pauseCount++;
 	if (m_pauseCount == 1)
 	{
-		m_bRunning = false;
-		AudioQueueStop(m_Queue, true);
+		if ( ValidWaveOut() )
+		{
+			AudioQueuePause( m_Queue );
+		}
 	}
 }
 
@@ -396,10 +399,10 @@ void CAudioDeviceAudioQueue::UnPause( void )
 		m_pauseCount--;
 	}
 	
-	if ( m_pauseCount == 0 )
+	if ( m_pauseCount == 0 && ValidWaveOut() )
 	{ 
 		m_bRunning = true;
-		AudioQueueStart( m_Queue, NULL);
+		AudioQueueStart( m_Queue, NULL );
 	}
 }
 
