@@ -17,7 +17,7 @@
 #include <stdio.h>
 #include "textconsole.h"
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 #include <termios.h>
 
 enum ESCAPE_STATE

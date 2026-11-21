@@ -11,7 +11,7 @@
 
 #ifndef _WIN32
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -349,7 +349,7 @@ TINFO_SYM(int,    tgetnum,  (char *id), (id), return);
 TINFO_SYM(int,    tgetent,  (char *bufp, const char *name), (bufp, name), return);
 TINFO_SYM(char *, tgetstr,  (char *id, char **area), (id, area), return);
 #endif // LINUX
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 #define PRESET_READER_THREADID()
 #else // the reader thread can test g_threadid before pthread_create has stored it
 #define PRESET_READER_THREADID() ( g_threadid = (pthread_t)0 )
@@ -480,7 +480,8 @@ static bool add_command( const char *cmd, int cmd_len )
 			pthread_mutex_lock( &g_lock );
 			if ( g_Commands.Count() < 32 )
 			{
-				CUtlString szCommand( cmd, cmd_len );
+				CUtlString szCommand;
+				szCommand.SetDirect( cmd, cmd_len );
 				g_Commands.AddToTail( szCommand );
 
 				g_ProcessingCommands = true;

@@ -323,16 +323,21 @@ CRopeManager::CRopeManager()
 //-----------------------------------------------------------------------------
 CRopeManager::~CRopeManager()
 {
-	int nRenderCacheCount = m_aRenderCache.Count();
-	for ( int iRenderCache = 0; iRenderCache < nRenderCacheCount; ++iRenderCache )
+#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
+	if ( materials )
+#endif
 	{
-		if ( m_aRenderCache[iRenderCache].m_pSolidMaterial )
+		int nRenderCacheCount = m_aRenderCache.Count();
+		for ( int iRenderCache = 0; iRenderCache < nRenderCacheCount; ++iRenderCache )
 		{
-			m_aRenderCache[iRenderCache].m_pSolidMaterial->DecrementReferenceCount();
-		}
-		if ( m_aRenderCache[iRenderCache].m_pBackMaterial )
-		{
-			m_aRenderCache[iRenderCache].m_pBackMaterial->DecrementReferenceCount();
+			if ( m_aRenderCache[iRenderCache].m_pSolidMaterial )
+			{
+				m_aRenderCache[iRenderCache].m_pSolidMaterial->DecrementReferenceCount();
+			}
+			if ( m_aRenderCache[iRenderCache].m_pBackMaterial )
+			{
+				m_aRenderCache[iRenderCache].m_pBackMaterial->DecrementReferenceCount();
+			}
 		}
 	}
 

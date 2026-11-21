@@ -77,7 +77,7 @@ void SetNameToSteamIDName( IConVar *pConVar )
 
 void CL_NameCvarChanged( IConVar *pConVar, const char *pOldString, float flOldValue )
 {
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( SWDS )
 	static bool bPreventRent = false;
 	if ( !bPreventRent )
 	{
@@ -108,7 +108,9 @@ void CL_NameCvarChanged( IConVar *pConVar, const char *pOldString, float flOldVa
 		// Remove any evil characters (ex: zero width no-break space)
 		char pchName[MAX_PLAYER_NAME_LENGTH];
 		V_strcpy_safe( pchName, var.GetString() );
+#ifndef SWDS
 		Q_RemoveAllEvilCharacters( pchName );
+#endif
 		pConVar->SetValue( pchName );
 
 		// store off the last known name, that isn't default, in the registry

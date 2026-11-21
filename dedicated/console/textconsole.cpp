@@ -11,7 +11,7 @@
 
 #include "textconsole.h"
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 #include <string.h>
 #include "tier0/dbg.h"
 

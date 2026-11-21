@@ -127,6 +127,7 @@ const SteamInfVersionInfo_t& GetSteamInfIDVersionInfo()
 }
 
 #ifdef BYTEMATCH_RETAIL
+#ifndef SWDS
 //-----------------------------------------------------------------------------
 // Purpose: Disables the simulation and returns focus to the editor
 //-----------------------------------------------------------------------------
@@ -151,6 +152,7 @@ void EatTextModeKeyPresses()
 		MoveConsoleWindowToFront();
 	}
 }
+#endif
 
 static unsigned int s_unSteamAppID = 0;
 

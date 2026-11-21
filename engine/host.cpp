@@ -2058,7 +2058,7 @@ void Host_ReadPreStartupConfiguration()
 		// free
 		delete [] configBuffer;
 	}
-#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
+#if ( defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE ) ) && !defined( SWDS )
 
 	if ( bHL2Complete )
 		Host_RestoreHL2EpisodicUnlocks();

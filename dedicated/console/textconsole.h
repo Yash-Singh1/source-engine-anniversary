@@ -10,7 +10,7 @@
 #define TEXTCONSOLE_H
 #pragma once
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 // The retail engine links the Orange Box era console: the base class keeps the
 // input line and history, children only do raw I/O.
 #define MAX_CONSOLE_TEXTLEN 256

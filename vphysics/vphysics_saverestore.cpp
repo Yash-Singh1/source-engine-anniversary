@@ -57,7 +57,7 @@ bool CPhysicsEnvironment::Save( const physsaveparams_t &params )
 	
 	if ( type >= 0 && type < PIID_NUM_TYPES )
 	{
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
 		params.pSave->WriteData( (char *)&params.pObject, sizeof(void*) );
 #else
 		params.pSave->WriteInt( (int *)&params.pObject );
@@ -109,7 +109,7 @@ bool CPhysicsEnvironment::Restore( const physrestoreparams_t &params )
 	if ( type >= 0 && type < PIID_NUM_TYPES )
 	{
 		void *pOldObject;
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
 		params.pRestore->ReadData( (char *)&pOldObject, sizeof(void*), 0 );
 #else
 		params.pRestore->ReadInt( (int *)&pOldObject );
@@ -139,7 +139,7 @@ void CPhysicsEnvironment::PostRestore()
 
 void CVPhysPtrSaveRestoreOps::Save( const SaveRestoreFieldInfo_t &fieldInfo, ISave *pSave )
 {
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
 	char *pField = (char *)fieldInfo.pField;
 	int nObjects = fieldInfo.pTypeDesc->fieldSize;
 	for ( int i = 0; i < nObjects; i++ )
@@ -174,7 +174,7 @@ void CVPhysPtrSaveRestoreOps::Restore( const SaveRestoreFieldInfo_t &fieldInfo, 
 
 	for ( int i = 0; i < nObjects; i++ )
 	{
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
 		pRestore->ReadData( (char *)ppField, sizeof(void*), 0 );
 #else
 		pRestore->ReadInt( (int *)ppField );
