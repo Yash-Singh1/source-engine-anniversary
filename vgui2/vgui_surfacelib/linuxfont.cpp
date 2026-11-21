@@ -698,7 +698,12 @@ void CLinuxFont::GetCharRGBA( wchar_t ch, int rgbaWide, int rgbaTall, unsigned c
 	if( error == 0 )
 	{
 		uint32 alpha_scale = 1;
+#ifdef OSX
+		int nHorizPad = m_iBlur + m_iOutlineSize;
+		int Width = MIN( MAX( 0, rgbaWide - nHorizPad ), (int)bitmap.width );
+#else
 		int Width = MIN( rgbaWide, bitmap.width );
+#endif
 		unsigned char *rgba = prgba + ( nSkipRows * rgbaWide * 4 );
 
 		switch( m_face->glyph->bitmap.pixel_mode )
@@ -719,7 +724,11 @@ void CLinuxFont::GetCharRGBA( wchar_t ch, int rgbaWide, int rgbaTall, unsigned c
 		{
 			for ( int x = 0; x < Width; x++ )
 			{
+#ifdef OSX
+				int rgbaOffset = 4 * ( x + nHorizPad ); // +(rgbaTall-y-1)*rgbaWide*4
+#else
 				int rgbaOffset = 4 * ( x + m_iBlur ); // +(rgbaTall-y-1)*rgbaWide*4
+#endif
 				uint32 alpha = Min( 255U, alpha_scale * bitmap.buffer[ x + y * bitmap.pitch ] );
 
 				rgba[ rgbaOffset + 0 ] =  255;
@@ -755,8 +764,13 @@ void CLinuxFont::GetKernedCharWidth( wchar_t ch, wchar_t chBefore, wchar_t chAft
 	unsigned short iKerned = m_ExtendedKernedABCWidthsCache.Find(finder);
 	if (m_ExtendedKernedABCWidthsCache.IsValidIndex(iKerned))
 	{
+#ifdef OSX
+		abcA = m_ExtendedKernedABCWidthsCache[iKerned].abc.abcA;
+		abcC = m_ExtendedKernedABCWidthsCache[iKerned].abc.abcC;
+#else
 		abcA = 0; //$ NYI. m_ExtendedKernedABCWidthsCache[iKerned].abc.abcA;
 		abcC = 0; //$ NYI. m_ExtendedKernedABCWidthsCache[iKerned].abc.abcC;
+#endif
 		wide = m_ExtendedKernedABCWidthsCache[iKerned].abc.wide;
 		return;
 	}
@@ -799,8 +813,15 @@ void CLinuxFont::GetKernedCharWidth( wchar_t ch, wchar_t chBefore, wchar_t chAft
 	if ( FIXED6_2INT(iFxpPenX) > wide )
 		wide = FIXED6_2INT(iFxpPenX);
 	
+#ifdef OSX
+	abcA = (float)( slot->metrics.horiBearingX / 64 - m_iBlur - m_iOutlineSize );
+	abcC = (float)( ( slot->metrics.horiAdvance - slot->metrics.horiBearingX - slot->metrics.width ) / 64 - m_iBlur - m_iDropShadowOffset - m_iOutlineSize );
+	finder.abc.abcA = abcA;
+	finder.abc.abcC = abcC;
+#else
 	//$ NYI: finder.abc.abcA = abcA;
 	//$ NYI: finder.abc.abcC = abcC;
+#endif
 	finder.abc.wide = wide;
 	m_ExtendedKernedABCWidthsCache.Insert(finder);
 }

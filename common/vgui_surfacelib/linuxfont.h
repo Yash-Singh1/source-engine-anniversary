@@ -153,6 +153,10 @@ private:
 	struct kernedSize
 	{
 		float wide;
+#ifdef OSX
+		float abcA;
+		float abcC;
+#endif
 	};
 	
 	struct kerned_abc_cache_t
