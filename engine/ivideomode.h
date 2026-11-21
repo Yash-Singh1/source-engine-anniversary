@@ -35,7 +35,7 @@ public:
 	virtual void			DrawStartupGraphic() = 0;
 
 	// Creates the game window, plays the startup movie, starts up the material system
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 	virtual bool			CreateGameWindow( int nWidth, int nHeight, bool bWindowed, bool bNoWindowBorder ) = 0;
 #else
 	virtual bool			CreateGameWindow( int nWidth, int nHeight, bool bWindowed ) = 0;
@@ -46,7 +46,7 @@ public:
 	virtual void			SetGameWindow( void *hWnd ) = 0;
 
 	// Sets the video mode, and re-sizes the window
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 	virtual bool			SetMode( int nWidth, int nHeight, bool bWindowed, bool bNoWindowBorder ) = 0;
 #else
 	virtual bool			SetMode( int nWidth, int nHeight, bool bWindowed ) = 0;
@@ -74,7 +74,7 @@ public:
 	virtual int				GetModeWidth() const = 0;
 	virtual int				GetModeHeight() const = 0;
 	virtual	bool			IsWindowedMode() const = 0;
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 	virtual bool			NoWindowBorder() const = 0;
 #endif
 #line 67

@@ -106,7 +106,7 @@ public:
     virtual vmode_t     *GetMode( int num );
     virtual int         GetModeCount( void );
     virtual bool        IsWindowedMode( void ) const;
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
     virtual bool        NoWindowBorder( void ) const;
 #endif
 #line 110
@@ -116,7 +116,7 @@ public:
     virtual void        DrawNullBackground( void *hdc, int w, int h );
     virtual void        InvalidateWindow();
     virtual void        DrawStartupGraphic();
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
     virtual bool        CreateGameWindow( int nWidth, int nHeight, bool bWindowed, bool bNoWindowBorder );
 #else
     virtual bool        CreateGameWindow( int nWidth, int nHeight, bool bWindowed );
@@ -139,7 +139,7 @@ public:
 protected:
     bool                GetInitialized( ) const;
     void                SetInitialized( bool init );
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
     void                AdjustWindow( int nWidth, int nHeight, int nBPP, bool bWindowed, bool bNoWindowBorder );
     void                ResetCurrentModeForNewResolution( int width, int height, bool bWindowed, bool bNoWindowBorder );
 #else
@@ -226,7 +226,7 @@ protected:
 	int					m_nRenderHeight;
 #endif
     bool                m_bWindowed;
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
     bool                m_bNoWindowBorder;
 #endif
 #line 216
@@ -318,7 +318,7 @@ bool CVideoMode_Common::IsWindowedMode( void ) const
     return m_bWindowed;
 }
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 bool CVideoMode_Common::NoWindowBorder( void ) const
 {
     return m_bNoWindowBorder;
@@ -541,7 +541,7 @@ int CVideoMode_Common::FindVideoMode( int nDesiredWidth, int nDesiredHeight, boo
 //-----------------------------------------------------------------------------
 // Choose the actual video mode based on the available modes
 //-----------------------------------------------------------------------------
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 void CVideoMode_Common::ResetCurrentModeForNewResolution( int nWidth, int nHeight, bool bWindowed, bool bNoWindowBorder )
 #else
 void CVideoMode_Common::ResetCurrentModeForNewResolution( int nWidth, int nHeight, bool bWindowed )
@@ -554,7 +554,7 @@ void CVideoMode_Common::ResetCurrentModeForNewResolution( int nWidth, int nHeigh
 
 	// default to non-VR values
 	m_bWindowed = bWindowed;
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 	m_bNoWindowBorder = bNoWindowBorder;
 #endif
 #line 533
@@ -618,7 +618,7 @@ void CVideoMode_Common::ResetCurrentModeForNewResolution( int nWidth, int nHeigh
 //-----------------------------------------------------------------------------
 // Creates the game window, plays the startup movie
 //-----------------------------------------------------------------------------
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 bool CVideoMode_Common::CreateGameWindow( int nWidth, int nHeight, bool bWindowed, bool bNoWindowBorder )
 #else
 bool CVideoMode_Common::CreateGameWindow( int nWidth, int nHeight, bool bWindowed )
@@ -665,7 +665,7 @@ bool CVideoMode_Common::CreateGameWindow( int nWidth, int nHeight, bool bWindowe
     {
         // Fill in vid structure for the mode.
         // Note: ModeWidth/Height may *not* match requested nWidth/nHeight
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
         ResetCurrentModeForNewResolution( nWidth, nHeight, bWindowed, bNoWindowBorder );
 #else
         ResetCurrentModeForNewResolution( nWidth, nHeight, bWindowed );
@@ -679,7 +679,7 @@ bool CVideoMode_Common::CreateGameWindow( int nWidth, int nHeight, bool bWindowe
 		COM_TimestampedLog( "CreateGameWindow - Finish" );
 
         // Re-size and re-center the window
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
         AdjustWindow( GetModeWidth(), GetModeHeight(), GetModeBPP(), IsWindowedMode(), NoWindowBorder() );
 #else
         AdjustWindow( GetModeWidth(), GetModeHeight(), GetModeBPP(), IsWindowedMode() );
@@ -688,7 +688,7 @@ bool CVideoMode_Common::CreateGameWindow( int nWidth, int nHeight, bool bWindowe
 
 		COM_TimestampedLog( "SetMode - Start" );
         // Set the mode and let the materialsystem take over
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
         if ( !SetMode( GetModeWidth(), GetModeHeight(), IsWindowedMode(), NoWindowBorder() ) )
 #else
         if ( !SetMode( GetModeWidth(), GetModeHeight(), IsWindowedMode() ) )
@@ -1476,7 +1476,7 @@ int CVideoMode_Common::GetRefreshRateForMode( const vmode_t *pMode )
 // Input  : *mode - 
 // Output : Returns true on success, false on failure.
 //-----------------------------------------------------------------------------
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 void CVideoMode_Common::AdjustWindow( int nWidth, int nHeight, int nBPP, bool bWindowed, bool bNoWindowBorder )
 #else
 void CVideoMode_Common::AdjustWindow( int nWidth, int nHeight, int nBPP, bool bWindowed )
@@ -1505,7 +1505,7 @@ void CVideoMode_Common::AdjustWindow( int nWidth, int nHeight, int nBPP, bool bW
 	{
 		// Give it a frame (pretty much WS_OVERLAPPEDWINDOW except for we do not modify the
 		// flags corresponding to resizing-frame and maximize-box)
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 		if( !CommandLine()->FindParm( "-noborder" ) && !m_bVROverride && !bNoWindowBorder )
 #else
 		if( !CommandLine()->FindParm( "-noborder" ) && !m_bVROverride )
@@ -1580,7 +1580,7 @@ void CVideoMode_Common::AdjustWindow( int nWidth, int nHeight, int nBPP, bool bW
 	if( bWindowed )
 	{
 		SDL_Window* win = (SDL_Window*)g_pLauncherMgr->GetWindowRef();
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 		if ( m_bVROverride || CommandLine()->FindParm( "-noborder" ) || bNoWindowBorder )
 #else
 		if ( m_bVROverride || CommandLine()->FindParm( "-noborder" ) )
@@ -2387,7 +2387,7 @@ public:
     virtual bool        Init( );
     virtual void        Shutdown( void );
     virtual void        SetGameWindow( void *hWnd );
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
     virtual bool        SetMode( int nWidth, int nHeight, bool bWindowed, bool bNoWindowBorder );
 #else
     virtual bool        SetMode( int nWidth, int nHeight, bool bWindowed );
@@ -2533,7 +2533,7 @@ void CVideoMode_MaterialSystem::Shutdown()
 //-----------------------------------------------------------------------------
 // Sets the video mode
 //-----------------------------------------------------------------------------
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 bool CVideoMode_MaterialSystem::SetMode( int nWidth, int nHeight, bool bWindowed, bool bNoWindowBorder )
 #else
 bool CVideoMode_MaterialSystem::SetMode( int nWidth, int nHeight, bool bWindowed )
@@ -2564,7 +2564,7 @@ bool CVideoMode_MaterialSystem::SetMode( int nWidth, int nHeight, bool bWindowed
 #endif
     
     config.SetFlag( MATSYS_VIDCFG_FLAGS_WINDOWED, bWindowed );
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
     config.SetFlag( MATSYS_VIDCFG_FLAGS_NO_WINDOW_BORDER, bNoWindowBorder );
 #endif
 #line 2434
@@ -2624,7 +2624,7 @@ void CVideoMode_MaterialSystem::AdjustForModeChange( void )
     int nNewWidth = g_pMaterialSystemConfig->m_VideoMode.m_Width;
     int nNewHeight = g_pMaterialSystemConfig->m_VideoMode.m_Height;
     bool bWindowed = g_pMaterialSystemConfig->Windowed();
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
     bool bNoWindowBorder = ( g_pMaterialSystemConfig->m_Flags & MATSYS_VIDCFG_FLAGS_NO_WINDOW_BORDER ) != 0;
 #endif
 #line 2491
@@ -2632,7 +2632,7 @@ void CVideoMode_MaterialSystem::AdjustForModeChange( void )
     // reset the window size
     CMatRenderContextPtr pRenderContext( materials );
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
     ResetCurrentModeForNewResolution( nNewWidth, nNewHeight, bWindowed, bNoWindowBorder );
     AdjustWindow( GetModeWidth(), GetModeHeight(), GetModeBPP(), IsWindowedMode(), NoWindowBorder() );
 #else
@@ -2673,7 +2673,7 @@ void CVideoMode_MaterialSystem::SetGameWindow( void *hWnd )
     m_bWindowed = true;
     m_nModeWidth = mode.m_Width;
     m_nModeHeight = mode.m_Height;
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
     m_bNoWindowBorder = false;
 #endif
 #line 2531
@@ -2713,7 +2713,7 @@ void CVideoMode_MaterialSystem::RestoreVideo( void )
 #else
 	ShowWindow( (HWND)game->GetMainWindow(), SW_SHOWNORMAL );
 #endif
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
     AdjustWindow( GetModeWidth(), GetModeHeight(), GetModeBPP(), IsWindowedMode(), NoWindowBorder() );
 #else
     AdjustWindow( GetModeWidth(), GetModeHeight(), GetModeBPP(), IsWindowedMode() );

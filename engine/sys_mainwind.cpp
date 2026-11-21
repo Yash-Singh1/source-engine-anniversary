@@ -1029,7 +1029,7 @@ bool CGame::CreateGameWindow( void )
 	// Give it a frame if we want a border
 	if ( videomode->IsWindowedMode() )
 	{
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 		if( !CommandLine()->FindParm( "-noborder" ) && !videomode->NoWindowBorder() )
 #else
 		if( !CommandLine()->FindParm( "-noborder" ) )

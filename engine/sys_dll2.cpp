@@ -2115,7 +2115,7 @@ bool CEngineAPI::ModInit( const char *pModName, const char *pGameDir )
 
 	// Create the game window now that we have a search path
 	// FIXME: Deal with initial window width + height better
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 	if ( !videomode || !videomode->CreateGameWindow( g_pMaterialSystemConfig->m_VideoMode.m_Width, g_pMaterialSystemConfig->m_VideoMode.m_Height, bWindowed, g_pMaterialSystemConfig->NoWindowBorder() ) )
 #else
 	if ( !videomode || !videomode->CreateGameWindow( g_pMaterialSystemConfig->m_VideoMode.m_Width, g_pMaterialSystemConfig->m_VideoMode.m_Height, bWindowed ) )

@@ -244,7 +244,7 @@ static const char *s_pRegistryConVars[] =
 	"mat_forcehardwaresync",
 	"mat_parallaxmap",
 	"mat_reducefillrate",
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 	"r_lightmap_bicubic",
 #endif
 #line 239
@@ -284,6 +284,16 @@ static const char *s_pRegistryConVars[] =
 
 #if USE_VIDEOCONFIG_FILE
 static CThreadMutex g_VideoConfigMutex;
+#if !defined( BYTEMATCH_RETAIL ) && defined( HL2_COMPLETE_ENGINE )
+static const char *GetVideoConfigPathID()
+{
+	const char *pszGameDir = CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) );
+	return !V_stricmp( pszGameDir, "hl2_complete" ) ? "ROOT_MOD" : "MOD";
+}
+#define VIDEO_CONFIG_PATH_ID GetVideoConfigPathID()
+#else
+#define VIDEO_CONFIG_PATH_ID "MOD"
+#endif
 #endif
 
 #ifndef DEDICATED
@@ -295,7 +305,7 @@ static int ReadVideoConfigInt( const char *pName, int nDefault )
 	
 	// Try to make a keyvalues from the cfg file
 	KeyValues *pVideoConfig = new KeyValues( "videoconfig" );
-	bool bFileExists = pVideoConfig->LoadFromFile( g_pFullFileSystem, MOD_VIDEO_CONFIG_SETTINGS, "MOD" );
+	bool bFileExists = pVideoConfig->LoadFromFile( g_pFullFileSystem, MOD_VIDEO_CONFIG_SETTINGS, VIDEO_CONFIG_PATH_ID );
 	
 	// We probably didn't have one on disk yet, just bail.  It'll get created soon.
 	if ( !bFileExists )
@@ -316,7 +326,7 @@ static void ReadVideoConfigInt( const char *pName, int *pEntry )
 	
 	// Try to make a keyvalues from the cfg file
 	KeyValues *pVideoConfig = new KeyValues( "videoconfig" );
-	bool bFileExists = pVideoConfig->LoadFromFile( g_pFullFileSystem, MOD_VIDEO_CONFIG_SETTINGS, "MOD" );
+	bool bFileExists = pVideoConfig->LoadFromFile( g_pFullFileSystem, MOD_VIDEO_CONFIG_SETTINGS, VIDEO_CONFIG_PATH_ID );
 	
 	// We probably didn't have one on disk yet, just bail.  It'll get created soon.
 	if ( !bFileExists )
@@ -344,7 +354,7 @@ static const char *ReadVideoConfigString( const char *pName, const char *pDefaul
 	
 	// Try to make a keyvalues from the cfg file
 	KeyValues *pVideoConfig = new KeyValues( "videoconfig" );
-	bool bFileExists = pVideoConfig->LoadFromFile( g_pFullFileSystem, MOD_VIDEO_CONFIG_SETTINGS, "MOD" );
+	bool bFileExists = pVideoConfig->LoadFromFile( g_pFullFileSystem, MOD_VIDEO_CONFIG_SETTINGS, VIDEO_CONFIG_PATH_ID );
 	
 	// We probably didn't have one on disk yet, just bail.  It'll get created soon.
 	if ( !bFileExists )
@@ -368,11 +378,11 @@ static void WriteVideoConfigInt( const char *pName, int nEntry )
 	
 	// Try to make a keyvalues from the cfg file
 	KeyValues *pVideoConfig = new KeyValues( "videoconfig" );
-	pVideoConfig->LoadFromFile( g_pFullFileSystem, MOD_VIDEO_CONFIG_SETTINGS, "MOD" );
+	pVideoConfig->LoadFromFile( g_pFullFileSystem, MOD_VIDEO_CONFIG_SETTINGS, VIDEO_CONFIG_PATH_ID );
 	
 	pVideoConfig->SetInt( pName, nEntry );
 	
-	pVideoConfig->SaveToFile( g_pFullFileSystem, MOD_VIDEO_CONFIG_SETTINGS, "MOD", false, false );
+	pVideoConfig->SaveToFile( g_pFullFileSystem, MOD_VIDEO_CONFIG_SETTINGS, VIDEO_CONFIG_PATH_ID, false, false );
 	pVideoConfig->deleteThis();
 #else
 	registry->WriteInt( pName, nEntry );
@@ -387,11 +397,11 @@ static void WriteVideoConfigString( const char *pName, const char *pString )
 
 	// Try to make a keyvalues from the cfg file
 	KeyValues *pVideoConfig = new KeyValues( "videoconfig" );
-	pVideoConfig->LoadFromFile( g_pFullFileSystem, MOD_VIDEO_CONFIG_SETTINGS, "MOD" );
+	pVideoConfig->LoadFromFile( g_pFullFileSystem, MOD_VIDEO_CONFIG_SETTINGS, VIDEO_CONFIG_PATH_ID );
 	
 	pVideoConfig->SetString( pName, pString );
 	
-	pVideoConfig->SaveToFile( g_pFullFileSystem, MOD_VIDEO_CONFIG_SETTINGS, "MOD", false, false );
+	pVideoConfig->SaveToFile( g_pFullFileSystem, MOD_VIDEO_CONFIG_SETTINGS, VIDEO_CONFIG_PATH_ID, false, false );
 	pVideoConfig->deleteThis();
 #else
 	registry->WriteString( pName, pString );
@@ -434,7 +444,7 @@ static void ReadMaterialSystemConfigFromRegistry( MaterialSystem_Config_t &confi
 
 	ReadVideoConfigInt( "ScreenWidth", &config.m_VideoMode.m_Width );
 	ReadVideoConfigInt( "ScreenHeight", &config.m_VideoMode.m_Height );
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 	config.SetFlag( MATSYS_VIDCFG_FLAGS_WINDOWED, ReadVideoConfigInt( "ScreenWindowed", 1 ) != 0 );
 	config.SetFlag( MATSYS_VIDCFG_FLAGS_NO_WINDOW_BORDER, ReadVideoConfigInt( "ScreenNoBorder", 1 ) != 0 );
 #else
@@ -571,7 +581,7 @@ static void WriteMaterialSystemConfigToRegistry( const MaterialSystem_Config_t &
 	WriteVideoConfigInt( "ScreenWidth", config.m_VideoMode.m_Width );
 	WriteVideoConfigInt( "ScreenHeight", config.m_VideoMode.m_Height );
 	WriteVideoConfigInt( "ScreenWindowed", config.Windowed() );
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 	WriteVideoConfigInt( "ScreenNoBorder", ( config.m_Flags & MATSYS_VIDCFG_FLAGS_NO_WINDOW_BORDER ) != 0 );
 #endif
 #line 558
@@ -635,7 +645,7 @@ static void OverrideMaterialSystemConfigFromCommandLine( MaterialSystem_Config_t
 		config.SetFlag( MATSYS_VIDCFG_FLAGS_WINDOWED, false );
 	}
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 	if ( CommandLine()->FindParm( "-noborder" ) )
 	{
 		config.SetFlag( MATSYS_VIDCFG_FLAGS_NO_WINDOW_BORDER, true );
@@ -976,7 +986,7 @@ CON_COMMAND( mat_configcurrent, "show the current video control panel config for
 #if !defined(SWDS) && !defined( _X360 )
 CON_COMMAND( mat_setvideomode, "sets the width, height, windowed state of the material system" )
 {
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 	if ( args.ArgC() < 4 )
 		return;
 #else
@@ -989,7 +999,7 @@ CON_COMMAND( mat_setvideomode, "sets the width, height, windowed state of the ma
 	int nHeight = Q_atoi( args[2] );
 	bool bWindowed = Q_atoi( args[3] ) > 0 ? true : false;
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 	bool bNoWindowBorder = videomode->NoWindowBorder();
 	if ( args.ArgC() >= 5 )
 	{

@@ -34,7 +34,7 @@ enum MaterialSystem_Config_Flags_t
 	MATSYS_VIDCFG_FLAGS_USING_MULTIPLE_WINDOWS      = ( 1 << 15 ),
 	MATSYS_VIDCFG_FLAGS_DISABLE_PHONG               = ( 1 << 16 ),
 	MATSYS_VIDCFG_FLAGS_VR_MODE						= ( 1 << 17 ),
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 	MATSYS_VIDCFG_FLAGS_NO_WINDOW_BORDER			= ( 1 << 18 ),
 	MATSYS_VIDCFG_FLAGS_LIGHTMAP_BICUBIC			= ( 1 << 19 ),
 #endif
@@ -71,7 +71,7 @@ struct MaterialSystem_Config_t
 	bool UsingMultipleWindows() const { return ( m_Flags & MATSYS_VIDCFG_FLAGS_USING_MULTIPLE_WINDOWS ) != 0; }
 	bool UsePhong() const { return ( m_Flags & MATSYS_VIDCFG_FLAGS_DISABLE_PHONG ) == 0; }
 	bool VRMode() const { return ( m_Flags & MATSYS_VIDCFG_FLAGS_VR_MODE) != 0; }
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 	bool NoWindowBorder() const { return ( m_Flags & MATSYS_VIDCFG_FLAGS_NO_WINDOW_BORDER ) != 0; }
 	bool LightmapBicubic() const { return ( m_Flags & MATSYS_VIDCFG_FLAGS_LIGHTMAP_BICUBIC ) != 0; }
 #endif
