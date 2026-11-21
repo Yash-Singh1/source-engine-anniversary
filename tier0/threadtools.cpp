@@ -461,7 +461,7 @@ void ThreadSetDebugName( ThreadId_t id, const char *pszName )
 	//
 	//
 	{
-		if ( id == (uint32)-1 )
+		if ( id == (ThreadId_t)-1 || id == (uint32)-1 )
 			id = pthread_self();
 
 		/* 
