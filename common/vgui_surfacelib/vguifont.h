@@ -24,7 +24,7 @@ struct newChar_t
 #undef GetCharABCWidths
 #endif
 
-#if ( defined( WIN32 ) && !defined( _X360 ) ) || ( defined( OSX ) && defined( BYTEMATCH_RETAIL ) ) || defined( LINUX )
+#if ( defined( WIN32 ) && !defined( _X360 ) ) || ( defined( OSX ) && defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS ) ) || defined( LINUX )
 //-----------------------------------------------------------------------------
 // Purpose: interface the font manager keeps its fonts behind.  On Windows both
 //			CWin32Font and CLinuxFont implement it; on OSX COSXFont does not,
@@ -70,7 +70,7 @@ typedef CWin32Font font_base_t;
 #include "osxfont.h"
 typedef IVGuiFontImpl font_t;
 typedef COSXFont font_base_t;
-#elif defined( LINUX ) || ( defined(OSX) && defined(BYTEMATCH_RETAIL) && defined(PLATFORM_64BITS) )
+#elif defined( LINUX )
 #include "linuxfont.h"
 typedef IVGuiFontImpl font_t;
 typedef CLinuxFont font_base_t;

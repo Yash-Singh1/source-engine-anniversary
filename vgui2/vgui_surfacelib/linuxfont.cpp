@@ -770,7 +770,7 @@ void CLinuxFont::GetKernedCharWidth( wchar_t ch, wchar_t chBefore, wchar_t chAft
 	wide = 0;
 
 	use_kerning = FT_HAS_KERNING( m_face );
-	previous    = chBefore;
+	previous    = chBefore ? FT_Get_Char_Index( m_face, chBefore ) : 0;
 	
 	/* convert character code to glyph index */
 	glyph_index = FT_Get_Char_Index( m_face, ch );

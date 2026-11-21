@@ -242,7 +242,7 @@ bool CFontTextureCache::GetTextureForChars( vgui::HFont font, vgui::FontDrawType
 #else
 				winFont->GetCharABCWidths( wch[i], a, b, c );
 #endif
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !( defined( OSX ) && defined( PLATFORM_64BITS ) )
 				// leave a texel of padding around each glyph
 				int fontWide = max( b, 1 ) + 2;
 				int fontTall = max( winFont->GetHeight(), 1 ) + 2;

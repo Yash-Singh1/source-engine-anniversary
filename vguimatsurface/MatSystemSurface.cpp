@@ -2392,7 +2392,7 @@ void CMatSystemSurface::DrawUnicodeString( const wchar_t *pString, FontDrawType_
 		return;
 
 	//hushed MAT_FUNC;
-#if defined( POSIX ) && !defined( BYTEMATCH_RETAIL )
+#if defined( POSIX ) && ( !defined( BYTEMATCH_RETAIL ) || ( defined( OSX ) && defined( PLATFORM_64BITS ) ) )
 	DrawPrintText( pString, V_wcslen( pString ) , drawType );
 #else
 	wchar_t	ch;
@@ -2474,8 +2474,12 @@ bool CMatSystemSurface::DrawGetUnicodeCharRenderInfo( wchar_t ch, CharRenderInfo
 		m_bBatchedColorGlyphs = ( bColorGlyph != 0 );
 	}
 
+#if defined( BYTEMATCH_RETAIL ) && !( defined( OSX ) && defined( PLATFORM_64BITS ) )
 	// glyphs are cached with a texel of padding on each side
 	int fontWide = info.abcB + 2;
+#else
+	int fontWide = info.abcB;
+#endif
 #else
 	if (!g_FontTextureCache.GetTextureForChar(m_hCurrentFont, info.drawType, ch, &info.textureId, &texCoords))
 	{
@@ -2501,7 +2505,7 @@ bool CMatSystemSurface::DrawGetUnicodeCharRenderInfo( wchar_t ch, CharRenderInfo
 	// This avoid copying the data in the nonclipped case!!! (X360)
 	info.verts = &m_BatchedCharVerts[ m_nBatchedCharVertCount ];
 	InitVertex( info.verts[0], info.x, info.y, texCoords[0], texCoords[1] );
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !( defined( OSX ) && defined( PLATFORM_64BITS ) )
 	InitVertex( info.verts[1], info.x + fontWide, info.y + info.fontTall + 2, texCoords[2], texCoords[3] );
 #else
 	InitVertex( info.verts[1], info.x + fontWide, info.y + info.fontTall, texCoords[2], texCoords[3] );
@@ -2583,7 +2587,7 @@ void CMatSystemSurface::DrawPrintText(const wchar_t *text, int iTextLen, FontDra
 	int x = m_pDrawTextPos[0] + m_nTranslateX;
 	int y = m_pDrawTextPos[1] + m_nTranslateY;
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !( defined( OSX ) && defined( PLATFORM_64BITS ) )
 	// glyphs are cached with a texel of padding on each side
 	int iTall = GetFontTall(m_hCurrentFont) + 2;
 #else
@@ -2624,7 +2628,7 @@ void CMatSystemSurface::DrawPrintText(const wchar_t *text, int iTextLen, FontDra
 		// different to the amount we step ahead once rendered
 		GetCharABCwide(m_hCurrentFont, ch, abcA, abcB, abcC);
 		
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !( defined( OSX ) && defined( PLATFORM_64BITS ) )
 		// glyphs are cached with a texel of padding on each side
 		int textureWide = abcB + 2;
 #else
@@ -2638,7 +2642,7 @@ void CMatSystemSurface::DrawPrintText(const wchar_t *text, int iTextLen, FontDra
 #else
 		int abcA,abcB,abcC;
 		GetCharABCwide(m_hCurrentFont, ch, abcA, abcB, abcC);
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !( defined( OSX ) && defined( PLATFORM_64BITS ) )
 		int textureWide = abcB + 2;
 #else
 		int textureWide = abcB;

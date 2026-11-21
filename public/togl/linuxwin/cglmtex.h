@@ -570,7 +570,7 @@ protected:
 	bool					m_texClientStorage;	// was CS selected for texture
 	bool					m_texPreloaded;		// has it been kicked into VRAM with GLMContext::PreloadTex yet
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 	int						m_srgbFlipCount;
 #endif
 #if GLMDEBUG

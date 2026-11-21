@@ -350,6 +350,17 @@ FORCEINLINE void GLMContext::FlushDrawStates( uint nStartIndex, uint nEndIndex, 
 					m_samplers[nSamplerIndex].m_samp.DeltaSetToTarget( pTex->m_texGLTarget, pTex->m_SamplingParams );
 					pTex->m_SamplingParams = m_samplers[nSamplerIndex].m_samp;
 				}
+#if defined( OSX )
+				if ( !( gGL->m_bHave_GL_EXT_texture_sRGB_decode ) )
+				{
+					bool texSRGB = ( pTex->m_layout->m_key.m_texFlags & kGLMTexSRGB ) != 0;
+					bool glSampSRGB = m_samplers[nSamplerIndex].m_samp.m_packed.m_srgb;
+					if ( texSRGB != glSampSRGB )
+					{
+						pTex->HandleSRGBMismatch( glSampSRGB, pTex->m_srgbFlipCount );
+					}
+				}
+#endif
 			}
 #else
 			if ( ( pTex ) && ( !( pTex->m_SamplingParams == m_samplers[nSamplerIndex].m_samp ) ) )

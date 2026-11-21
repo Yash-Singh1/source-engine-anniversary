@@ -422,7 +422,7 @@ HRESULT IDirect3DDevice9::CreateTexture(UINT Width,UINT Height,UINT Levels,DWORD
 						
 		key.m_texFlags |= kGLMTexRenderable;
 		
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 		key.m_texFlags |= kGLMTexSRGB;
 #else
 		const GLMTexFormatDesc *pFmtDesc = GetFormatDesc( key.m_texFormat );
@@ -461,6 +461,9 @@ HRESULT IDirect3DDevice9::CreateTexture(UINT Width,UINT Height,UINT Levels,DWORD
 	dxtex->m_tex = tex;
 
 	dxtex->m_srgbFlipCount = 0;
+#ifdef OSX
+	dxtex->m_tex->m_srgbFlipCount = 0;
+#endif
 #else
 	CGLMTex *tex = m_ctx->NewTex( &key, Levels, pDebugLabel );
 	if (!tex)
@@ -655,6 +658,9 @@ HRESULT IDirect3DDevice9::CreateCubeTexture(UINT EdgeLength,UINT Levels,DWORD Us
 	dxtex->m_tex = tex;
 	
 	dxtex->m_srgbFlipCount = 0;
+#ifdef OSX
+	dxtex->m_tex->m_srgbFlipCount = 0;
+#endif
 #else
 	CGLMTex *tex = m_ctx->NewTex( &key, Levels, pDebugLabel );
 	if (!tex)
@@ -872,6 +878,9 @@ HRESULT IDirect3DDevice9::CreateVolumeTexture(UINT Width,UINT Height,UINT Depth,
 	dxtex->m_tex = tex;
 	
 	dxtex->m_srgbFlipCount = 0;
+#ifdef OSX
+	dxtex->m_tex->m_srgbFlipCount = 0;
+#endif
 #else
 	CGLMTex *tex = m_ctx->NewTex( &key, Levels, pDebugLabel );
 	if (!tex)
@@ -4038,7 +4047,7 @@ HRESULT IDirect3DDevice9::CreatePixelShader(CONST DWORD* pFunction,IDirect3DPixe
 		// note the GLSL translator wants its own buffer
 		tempbuf.EnsureCapacity( maxTranslationSize );
 			
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 		uint glslPixelShaderOptions = D3DToGL_OptionUseEnvParams | D3DToGL_OptionGLSL | D3DToGL_OptionAllowStaticControlFlow;
 #else
 		uint glslPixelShaderOptions = D3DToGL_OptionUseEnvParams;// | D3DToGL_OptionAllowStaticControlFlow;
@@ -4330,7 +4339,7 @@ HRESULT IDirect3DDevice9::CreateVertexShader(CONST DWORD* pFunction, IDirect3DVe
 		// note the GLSL translator wants its own buffer
 		tempbuf.EnsureCapacity( maxTranslationSize );
 			
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 		uint glslVertexShaderOptions = D3DToGL_OptionUseEnvParams | D3DToGL_OptionDoFixupZ | D3DToGL_OptionDoFixupY | D3DToGL_OptionGLSL | D3DToGL_OptionAllowStaticControlFlow;
 #else
 		uint glslVertexShaderOptions = D3DToGL_OptionUseEnvParams | D3DToGL_OptionDoFixupZ | D3DToGL_OptionDoFixupY;
