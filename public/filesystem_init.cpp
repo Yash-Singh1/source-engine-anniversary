@@ -475,7 +475,7 @@ FSReturnCode_t LoadGameInfoFile(
 }
 
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) && !defined( HL2_COMPLETE_ENGINE )
 static void FileSystem_AddLoadedSearchPath( 
 	CFSSearchPathsInit &initInfo, 
 	const char *pPathID, 
@@ -756,7 +756,9 @@ FSReturnCode_t FileSystem_LoadSearchPaths( CFSSearchPathsInit &initInfo )
 #else
 #include "tier1/convar.h"
 
+#ifdef BYTEMATCH_RETAIL
 bool CFSSearchPathsInit::m_bMountHDContent;
+#endif
 
 #if defined( ENGINE_DLL ) || ( defined( BYTEMATCH_RETAIL ) && defined( OSX ) )
 const char *COM_Parse( const char *data );

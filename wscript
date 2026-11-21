@@ -686,6 +686,12 @@ def build(bld):
 
 		bld.add_subproject(projects['game'])
 
+	# Enable post-Anniversary hl2_complete expansion/config/save support on native builds.
+	hl2_complete_targets = set(['appframework', 'dedicated', 'engine', 'GameUI', 'launcher', 'vgui2', 'vtex_dll'])
+	for tg in bld.get_all_task_gen():
+		if getattr(tg, 'name', None) in hl2_complete_targets:
+			tg.defines = tg.to_list(getattr(tg, 'defines', [])) + ['HL2_COMPLETE_ENGINE=1']
+
 	# ivp only includes <alloca.h> for LINUX/SUN; macOS needs it too.
 	# Also give native macOS dylibs relocatable @rpath install names so staged
 	# installs resolve sibling binaries from bin/ instead of build-tree paths.

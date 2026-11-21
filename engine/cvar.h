@@ -35,7 +35,7 @@ public:
 #ifdef BYTEMATCH_RETAIL
 	void WriteVariables( CUtlBuffer &buff );
 #else
-	void WriteVariables( CUtlBuffer &buff, bool bAllVars );
+	void WriteVariables( CUtlBuffer &buff, bool bAllVars = true );
 #endif
 #line 36
 

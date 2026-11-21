@@ -848,7 +848,7 @@ const char *COM_GetModDirectory()
 	if ( Q_strlen( modDir ) == 0 )
 	{
 		const char *gamedir = CommandLine()->ParmValue("-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) );
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 		char szExpansionId[16];
 		if ( g_pFullFileSystem->GetCurrentGameExpansionId( szExpansionId, sizeof( szExpansionId ) ) )
 			gamedir = szExpansionId;

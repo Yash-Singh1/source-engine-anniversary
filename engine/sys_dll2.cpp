@@ -2072,7 +2072,7 @@ static bool IsValveMod( const char *pModName )
 bool CEngineAPI::ModInit( const char *pModName, const char *pGameDir )
 {
 	// Set up the engineparms_t which contains global information about the mod
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 	char szExpansionId[16];
 	if ( g_pFileSystem->GetCurrentGameExpansionId( szExpansionId, sizeof( szExpansionId ) ) )
 	{

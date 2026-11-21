@@ -602,7 +602,7 @@ void Cmd_Exec_f( const CCommand &args )
 {
 	LOCK_COMMAND_BUFFER();
 	char	fileName[MAX_OSPATH];
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 
 	if ( args.ArgC() < 2 )
 	{

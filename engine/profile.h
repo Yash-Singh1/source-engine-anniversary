@@ -17,7 +17,7 @@
 #endif
 
 void Host_ReadConfiguration();
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 void Host_WriteConfiguration( const char *filename = NULL );
 #else
 void Host_WriteConfiguration( const char *filename = NULL, bool bAllVars = false );

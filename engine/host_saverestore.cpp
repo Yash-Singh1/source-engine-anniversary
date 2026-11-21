@@ -941,7 +941,7 @@ void CSaveRestore::UpdateSaveGameScreenshots()
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 bool IsOldHL2Save( const GAME_HEADER *pHeader )
 {
 	bool bIsOldSave = false;
@@ -1051,7 +1051,7 @@ int CSaveRestore::SaveReadHeader( FileHandle_t pFile, GAME_HEADER *pHeader, int 
 		g_szMapLoadOverride[0] = 0;
 	}
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 	// Pre-anniversary saves of HL2 maps need the old save handling
 	if ( pbOldSave )
 	{
@@ -1251,7 +1251,7 @@ bool CSaveRestore::LoadGame( const char *pName )
 		}
 #line 1235
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 		char szMapFile[ MAX_PATH ] = { 0 };
 		Host_DefaultMapFileName( gameHeader.mapName, szMapFile, sizeof( szMapFile ) );
 		if ( !g_pVEngineServer->IsMapValid( szMapFile ) )

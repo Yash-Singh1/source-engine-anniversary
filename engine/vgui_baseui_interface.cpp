@@ -874,7 +874,7 @@ void CEngineVGui::Init()
 
 	// load the base localization file
 	g_pVGuiLocalize->AddFile( "Resource/valve_%language%.txt" );
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 	g_pVGuiLocalize->AddFile( "Resource/deck_%language%.txt" );
 #endif
 #line 817
@@ -886,7 +886,7 @@ void CEngineVGui::Init()
 	COM_TimestampedLog( "staticGameUIFuncs->Start" );
 	staticGameUIFuncs->Start();
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 	// the combined game carries every episode's strings
 	const char *pszGameDir = CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) );
 	if ( !V_stricmp( pszGameDir, "hl2_complete" ) )

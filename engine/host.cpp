@@ -1235,7 +1235,7 @@ Writes key bindings and archived cvars to config.cfg
 ===============
 */
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 #line 1280
 void Host_WriteConfiguration( const char *filename )
 {
@@ -1683,7 +1683,7 @@ void Host_ReadConfiguration_360( void )
 // Purpose: 
 // Input  : false - 
 //-----------------------------------------------------------------------------
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 //-----------------------------------------------------------------------------
 // The HL2 collection carries chapter unlocks over from the standalone HL2/episode configs
 //-----------------------------------------------------------------------------
@@ -1776,7 +1776,7 @@ void Host_ReadConfiguration()
 		}
 	}
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 	const char *pszGameDir = CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) );
 	bool bHL2 = !V_stricmp( pszGameDir, "hl2" );
 	const char *pszConfigFile = "//mod/cfg/config.cfg";
@@ -1893,7 +1893,7 @@ void Host_ReadConfiguration()
 	}
 }
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 CON_COMMAND( host_writeconfig, "Store current settings to config.cfg (or specified .cfg file)." )
 {
 	if ( args.ArgC() > 2 )
@@ -1986,7 +1986,7 @@ void Host_ReadPreStartupConVar( const char *configBuffer, const char *pszConVarN
 void Host_ReadPreStartupConfiguration()
 {
 	FileHandle_t f = NULL;
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 	bool bHL2Complete = false;
 	const char *pszGameDir = CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) );
 	if ( !V_stricmp( pszGameDir, "hl2_complete" ) )
@@ -2035,7 +2035,7 @@ void Host_ReadPreStartupConfiguration()
 			Host_ReadPreStartupConVar( (const char *)configBuffer, s_PreStartupConfigConVars[i] );
 		}
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 		if ( bHL2Complete )
 		{
 			// the HL2 collection picks its chapter backgrounds per expansion
@@ -2058,7 +2058,7 @@ void Host_ReadPreStartupConfiguration()
 		// free
 		delete [] configBuffer;
 	}
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 
 	if ( bHL2Complete )
 		Host_RestoreHL2EpisodicUnlocks();

@@ -100,7 +100,7 @@ extern ConVar rcon_password;
 extern ConVar host_framerate;
 extern ConVar cl_clanid;
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 ConVar sv_unlockedchapters( "sv_unlockedchapters", "1", FCVAR_ARCHIVE, "Highest unlocked game chapter." );
 ConVar hl2_random_chapter_index( "hl2_random_chapter_index", "-1", 0 );
 ConVar hl2_expansion( "hl2_expansion", "", FCVAR_ARCHIVE );
@@ -2594,7 +2594,7 @@ bool CL_ShouldLoadBackgroundLevel( const CCommand &args )
 
 #define DEFAULT_BACKGROUND_NAME	"background01"
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 
 int CL_GetBackgroundLevelIndex( int nNumChapters )
 {

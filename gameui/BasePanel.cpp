@@ -355,7 +355,7 @@ public:
 	{
 		BaseClass::ApplySchemeSettings(pScheme);
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 		int nHeight = atoi( pScheme->GetResourceString( "MainMenu.MenuItemHeight" ) );
 		nHeight = QuickPropScale( nHeight );
 		int nMaxHeight = atoi( pScheme->GetResourceString( "MainMenu.MaxPropMenuItemHeight" ) );
@@ -861,7 +861,7 @@ void CGameMenu::OnCursorEnteredMenuItem(int VPanel)
 static CBackgroundMenuButton* CreateMenuButton( CBasePanel *parent, const char *panelName, const wchar_t *panelText )
 {
 	CBackgroundMenuButton *pButton = new CBackgroundMenuButton( parent, panelName );
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 	pButton->SetProportional(true);
 #endif
 	pButton->SetCommand("OpenGameMenu");
@@ -1182,7 +1182,7 @@ static const char *g_rgValidCommands[] =
 	"QuitNoConfirm",
 	"ResumeGame",
 	"Disconnect",
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 	"OpenMainMenuDialog",
 #endif
 };
@@ -2025,7 +2025,7 @@ CGameMenu *CBasePanel::RecursiveLoadGameMenu(KeyValues *datafile)
 	int menuWide, menuTall;
 	menu->GetSize( menuWide, menuTall );
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) && !defined( HL2_COMPLETE_ENGINE )
 	wchar_t *pString = g_pVGuiLocalize->Find( "#GameUI_Console" );
 
 	if( pString )
