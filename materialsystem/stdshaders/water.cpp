@@ -368,7 +368,7 @@ BEGIN_VS_SHADER( Water_DX90,
 
 			pShaderAPI->SetPixelShaderFogParams( 8 );
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_SHADER_COMBOS_2024 )
 
 			float vEyePos[4];
 			pShaderAPI->GetWorldSpaceCameraPosition( vEyePos );
@@ -383,7 +383,7 @@ BEGIN_VS_SHADER( Water_DX90,
 			if ( g_pHardwareConfig->SupportsPixelShaders_2_b() )
 			{
 				DECLARE_DYNAMIC_PIXEL_SHADER( water_ps20b );
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_SHADER_COMBOS_2024 )
 				SET_DYNAMIC_PIXEL_SHADER_COMBO( PIXELFOGTYPE, pShaderAPI->GetPixelFogCombo1( true ) );
 #else
 				SET_DYNAMIC_PIXEL_SHADER_COMBO( PIXELFOGTYPE, pShaderAPI->GetPixelFogCombo() );
@@ -509,7 +509,7 @@ BEGIN_VS_SHADER( Water_DX90,
 			};
 			pShaderAPI->SetPixelShaderConstant( 1, cheapWaterParams );
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_SHADER_COMBOS_2024 )
 			float vEyePos[4];
 			pShaderAPI->GetWorldSpaceCameraPosition( vEyePos );
 			vEyePos[3] = 0.0f;
@@ -550,7 +550,7 @@ BEGIN_VS_SHADER( Water_DX90,
 			{
 				DECLARE_DYNAMIC_PIXEL_SHADER( watercheap_ps20b );
 				SET_DYNAMIC_PIXEL_SHADER_COMBO( HDRENABLED,  IsHDREnabled() );
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_SHADER_COMBOS_2024 )
 				SET_DYNAMIC_PIXEL_SHADER_COMBO( PIXELFOGTYPE, pShaderAPI->GetPixelFogCombo1( true ) );
 #else
 				SET_DYNAMIC_PIXEL_SHADER_COMBO( PIXELFOGTYPE, pShaderAPI->GetPixelFogCombo() );

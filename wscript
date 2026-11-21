@@ -520,7 +520,10 @@ def configure(conf):
 		flags += ['-fsanitize=%s'%conf.options.SANITIZE, '-fno-sanitize=vptr']
 
 	if conf.env.DEST_OS != 'win32':
-		flags += ['-pipe', '-fPIC', '-L'+os.path.abspath('.')+'/lib/'+conf.env.DEST_OS+'/'+conf.env.DEST_CPU+'/']
+		flags += ['-pipe', '-fPIC']
+		lib_arch_dir = os.path.abspath('.')+'/lib/'+conf.env.DEST_OS+'/'+conf.env.DEST_CPU+'/'
+		if os.path.isdir(lib_arch_dir):
+			flags += ['-L'+lib_arch_dir]
 	if conf.env.COMPILER_CC != 'msvc':
 		flags += ['-pthread']
 
@@ -684,7 +687,24 @@ def build(bld):
 		bld.add_subproject(projects['game'])
 
 	# ivp only includes <alloca.h> for LINUX/SUN; macOS needs it too.
+	# Also give native macOS dylibs relocatable @rpath install names so staged
+	# installs resolve sibling binaries from bin/ instead of build-tree paths.
 	if bld.env.DEST_OS == 'darwin':
 		for tg in bld.get_all_task_gen():
 			if getattr(tg, 'name', None) == 'ivp_physics':
 				tg.cxxflags = tg.to_list(getattr(tg, 'cxxflags', [])) + ['-include', 'alloca.h']
+			feats = tg.to_list(getattr(tg, 'features', []))
+			if 'cshlib' in feats or 'cxxshlib' in feats:
+				pat = bld.env.cxxshlib_PATTERN if 'cxxshlib' in feats else bld.env.cshlib_PATTERN
+				dylib_name = pat % os.path.basename(tg.target)
+				tg.linkflags = tg.to_list(getattr(tg, 'linkflags', [])) + [
+					'-Wl,-install_name,@rpath/' + dylib_name,
+					'-Wl,-rpath,@loader_path',
+					'-Wl,-rpath,@executable_path/bin',
+					'-Wl,-rpath,@loader_path/../../bin',
+				]
+			elif 'cprogram' in feats or 'cxxprogram' in feats:
+				tg.linkflags = tg.to_list(getattr(tg, 'linkflags', [])) + [
+					'-Wl,-rpath,@executable_path/bin',
+					'-Wl,-rpath,@loader_path/bin',
+				]
