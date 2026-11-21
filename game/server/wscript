@@ -81,8 +81,10 @@ def build(bld):
 
 	# In retail mode the manifest (RETAIL_SELECT) replaces these with retail's file set.
 	source = game["sources"] + ['../../public/tier0/memoverride.cpp']
-	if bld.env.GAMES in ('hl2_complete', 'episodic') and 'episodic/weapon_oldmanharpoon.cpp' not in source:
-		source.append('episodic/weapon_oldmanharpoon.cpp')
+	if bld.env.GAMES in ('hl2_complete', 'episodic'):
+		for extra in ('hl2/npc_alyx.cpp', 'episodic/weapon_oldmanharpoon.cpp'):
+			if extra not in source:
+				source.append(extra)
 	retail_module = '%s/%s' % (bld.env.GAMES, PROJECT_NAME) if retail else None
 	includes += game["includes"]
 	defines = game["defines"]
