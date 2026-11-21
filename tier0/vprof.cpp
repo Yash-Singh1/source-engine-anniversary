@@ -1516,7 +1516,11 @@ void CVProfile::Term()
 	{
 		delete [] m_pBudgetGroups[i].m_pName;
 	}
+#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
+	delete [] m_pBudgetGroups;
+#else
 	delete m_pBudgetGroups;
+#endif
 	m_nBudgetGroupNames = m_nBudgetGroupNamesAllocated = 0;
 	m_pBudgetGroups = NULL;
 
