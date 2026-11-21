@@ -243,7 +243,7 @@ bool CLinuxFont::CreateFromMemory(const char *windowsFontName, void *data, int d
 	m_bRotary = flags & vgui::ISurface::FONTFLAG_ROTARY;
 	m_bAdditive = flags & vgui::ISurface::FONTFLAG_ADDITIVE;
 
-#ifdef DBGFLAG_ASSERT
+#if defined( DBGFLAG_ASSERT ) && !defined( OSX )
 	if ( !HushAsserts() )
 	{
 		// These flags are NYI in Linux right now.
@@ -685,6 +685,32 @@ void CLinuxFont::GetCharRGBA( wchar_t ch, int rgbaWide, int rgbaTall, unsigned c
 
 	if ( m_face->glyph->bitmap.width == 0 )
 	{
+#ifdef OSX
+		if ( m_bUnderlined && rgbaWide > 0 && rgbaTall > 0 )
+		{
+			int nThickness = MAX( 1, FIXED6_2INT( FT_MulFix( m_face->underline_thickness, m_face->size->metrics.y_scale ) ) );
+			int nUnderlineY = m_iAscent - FIXED6_2INT( FT_MulFix( m_face->underline_position, m_face->size->metrics.y_scale ) );
+			if ( nUnderlineY < 0 || nUnderlineY >= rgbaTall )
+				nUnderlineY = clamp( m_iAscent + 1, 0, rgbaTall - nThickness );
+			for ( int uy = nUnderlineY; uy < MIN( rgbaTall, nUnderlineY + nThickness ); uy++ )
+			{
+				unsigned char *row = prgba + uy * rgbaWide * 4;
+				for ( int ux = 0; ux < rgbaWide; ux++ )
+				{
+					row[ ux * 4 + 0 ] = 255;
+					row[ ux * 4 + 1 ] = 255;
+					row[ ux * 4 + 2 ] = 255;
+					row[ ux * 4 + 3 ] = 255;
+				}
+			}
+			ApplyDropShadowToTexture( rgbaWide, rgbaTall, prgba, m_iDropShadowOffset );
+			ApplyOutlineToTexture( rgbaWide, rgbaTall, prgba, m_iOutlineSize );
+			ApplyGaussianBlurToTexture( rgbaWide, rgbaTall, prgba, m_iBlur );
+			ApplyScanlineEffectToTexture( rgbaWide, rgbaTall, prgba, m_iScanLines );
+			ApplyRotaryEffectToTexture( rgbaWide, rgbaTall, prgba, m_bRotary );
+			return;
+		}
+#endif
 		Msg( "m_face->glyph->bitmap.width is 0 for ch:%d %s\n", (int)ch, m_face->family_name ? m_face->family_name : "??" );
 		return;
 	}
@@ -700,6 +726,11 @@ void CLinuxFont::GetCharRGBA( wchar_t ch, int rgbaWide, int rgbaTall, unsigned c
 		uint32 alpha_scale = 1;
 #ifdef OSX
 		int nHorizPad = m_iBlur + m_iOutlineSize;
+		if ( m_bUnderlined )
+		{
+			int nBearingX = MAX( 0, (int)( slot->metrics.horiBearingX / 64 ) );
+			nHorizPad += nBearingX;
+		}
 		int Width = MIN( MAX( 0, rgbaWide - nHorizPad ), (int)bitmap.width );
 #else
 		int Width = MIN( rgbaWide, bitmap.width );
@@ -738,6 +769,43 @@ void CLinuxFont::GetCharRGBA( wchar_t ch, int rgbaWide, int rgbaTall, unsigned c
 			}
 			rgba += ( rgbaWide * 4 );
 		}
+
+#ifdef OSX
+		if ( m_bUnderlined && rgbaWide > 0 && rgbaTall > 0 )
+		{
+			int nThickness = MAX( 1, FIXED6_2INT( FT_MulFix( m_face->underline_thickness, m_face->size->metrics.y_scale ) ) );
+			int nUnderlineY = m_iAscent - FIXED6_2INT( FT_MulFix( m_face->underline_position, m_face->size->metrics.y_scale ) );
+			if ( nUnderlineY < 0 || nUnderlineY >= rgbaTall )
+				nUnderlineY = clamp( m_iAscent + 1, 0, rgbaTall - nThickness );
+			for ( int uy = nUnderlineY; uy < MIN( rgbaTall, nUnderlineY + nThickness ); uy++ )
+			{
+				unsigned char *row = prgba + uy * rgbaWide * 4;
+				for ( int ux = 0; ux < rgbaWide; ux++ )
+				{
+					row[ ux * 4 + 0 ] = 255;
+					row[ ux * 4 + 1 ] = 255;
+					row[ ux * 4 + 2 ] = 255;
+					row[ ux * 4 + 3 ] = 255;
+				}
+			}
+		}
+		if ( ( m_iFlags & vgui::ISurface::FONTFLAG_STRIKEOUT ) && rgbaWide > 0 && rgbaTall > 0 )
+		{
+			int nThickness = MAX( 1, m_iTall / 16 );
+			int nStrikeY = clamp( ( m_iAscent * 2 ) / 3, 0, rgbaTall - nThickness );
+			for ( int sy = nStrikeY; sy < MIN( rgbaTall, nStrikeY + nThickness ); sy++ )
+			{
+				unsigned char *row = prgba + sy * rgbaWide * 4;
+				for ( int sx = 0; sx < rgbaWide; sx++ )
+				{
+					row[ sx * 4 + 0 ] = 255;
+					row[ sx * 4 + 1 ] = 255;
+					row[ sx * 4 + 2 ] = 255;
+					row[ sx * 4 + 3 ] = 255;
+				}
+			}
+		}
+#endif
 
 		// apply requested effects in specified order
 		ApplyDropShadowToTexture( rgbaWide, rgbaTall, prgba, m_iDropShadowOffset );

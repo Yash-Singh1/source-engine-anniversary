@@ -537,7 +537,11 @@ bool CSystem::SetRegistryInteger(const char *key, int value)
 {
 	m_bRegistryDirty = true;
 	m_pRegistry->SetInt( key, value );
+#ifdef OSX
+	return true;
+#else
 	return false;
+#endif
 }
 
 bool CSystem::GetRegistryInteger(const char *key, int &value)
@@ -551,8 +555,20 @@ bool CSystem::GetRegistryInteger(const char *key, int &value)
 //-----------------------------------------------------------------------------
 bool CSystem::DeleteRegistryKey(const char *key)
 {
+#ifdef OSX
+	if ( !m_pRegistry || !key || !key[0] )
+		return false;
+	KeyValues *pSub = m_pRegistry->FindKey( key, false );
+	if ( !pSub )
+		return false;
+	m_pRegistry->RemoveSubKey( pSub );
+	pSub->deleteThis();
+	m_bRegistryDirty = true;
+	return true;
+#else
 	Assert( false );
 	return false;
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -690,9 +706,43 @@ bool CSystem::CommandLineParamExists(const char *paramName)
 //-----------------------------------------------------------------------------
 bool CSystem::GetCommandLineParamValue(const char *paramName, char *value, int valueBufferSize)
 {
+#ifdef OSX
+	if ( !paramName || !value || valueBufferSize <= 0 )
+		return false;
+
+	const char *cmdLine = GetFullCommandLine();
+	if ( !cmdLine )
+		return false;
+
+	const char *loc = Q_strstr( cmdLine, paramName );
+	if ( !loc )
+		return false;
+
+	loc += Q_strlen( paramName );
+	while ( *loc == ' ' || *loc == '\t' )
+		loc++;
+
+	if ( *loc == '\"' )
+	{
+		loc++;
+		int i = 0;
+		while ( *loc && *loc != '\"' && i < valueBufferSize - 1 )
+			value[i++] = *loc++;
+		value[i] = '\0';
+	}
+	else
+	{
+		int i = 0;
+		while ( *loc && *loc != ' ' && *loc != '\t' && i < valueBufferSize - 1 )
+			value[i++] = *loc++;
+		value[i] = '\0';
+	}
+	return true;
+#else
 	Assert( false );
 	
 	return true;
+#endif
 }
 
 //-----------------------------------------------------------------------------

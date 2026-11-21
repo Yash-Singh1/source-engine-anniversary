@@ -827,6 +827,10 @@ void CGLMBuffer::Lock( GLMBuffLockParams *pParams, char **pAddressOut )
 #endif // OSX
 #if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	else if ( !m_pCtx->m_bPreferMapBufferRange && !g_bDisableStaticBuffer && ( pParams->m_bDiscard || pParams->m_bNoOverwrite ) && ( pParams->m_nSize <= GL_STATIC_BUFFER_SIZE ) )
+#elif defined( OSX )
+	// On macOS Metal-backed OpenGL, glBufferSubData on a streaming VBO/IBO stalls
+	// (~20ms/frame vs ~0.4ms/frame with GL_APPLE_flush_buffer_range unsynchronized map+flush).
+	else if ( !gGL->m_bHave_GL_APPLE_flush_buffer_range && !g_bDisableStaticBuffer && ( pParams->m_bDiscard || pParams->m_bNoOverwrite ) && ( pParams->m_nSize <= GL_STATIC_BUFFER_SIZE ) )
 #else
 	else if ( !g_bDisableStaticBuffer && ( pParams->m_bDiscard || pParams->m_bNoOverwrite ) && ( pParams->m_nSize <= GL_STATIC_BUFFER_SIZE ) )
 #endif
@@ -891,7 +895,11 @@ void CGLMBuffer::Lock( GLMBuffLockParams *pParams, char **pAddressOut )
 		}
 
 		// adjust async map option appropriately, leave explicit flush unchanged
+#ifdef OSX
+		SetModes( pParams->m_bNoOverwrite || pParams->m_bDiscard, m_bEnableExplicitFlush, pParams->m_bDiscard );
+#else
 		SetModes( pParams->m_bNoOverwrite, m_bEnableExplicitFlush );
+#endif
 
 		// map
 		char *mapPtr;
@@ -1206,7 +1214,11 @@ void CGLMBuffer::Unlock( int nActualSize, const void *pActualData )
 		Assert( nActualSize <= (int)( m_dirtyMaxOffset - m_dirtyMinOffset ) );
 
 		// time to do explicit flush (currently m_bEnableExplicitFlush is always true)
+#ifdef OSX
+		if ( m_bEnableExplicitFlush && nActualSize > 0 )
+#else
 		if ( m_bEnableExplicitFlush )
+#endif
 		{
 			FlushRange( m_dirtyMinOffset, nActualSize );
 		}

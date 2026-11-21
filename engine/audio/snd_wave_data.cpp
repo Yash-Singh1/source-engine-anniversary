@@ -47,7 +47,11 @@ extern double realtime;
 
 #ifdef BYTEMATCH_RETAIL
 ConVar snd_async_spew_blocking( "snd_async_spew_blocking", "0", 0, "Spew message to console any time async sound loading blocks on file i/o." );
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+ConVar snd_async_fullyasync( "snd_async_fullyasync", "1", 0, "All playback is fully async (sound doesn't play until data arrives)." );
+#else
 ConVar snd_async_fullyasync( "snd_async_fullyasync", "0", 0, "All playback is fully async (sound doesn't play until data arrives)." );
+#endif
 ConVar snd_async_stream_spew( "snd_async_stream_spew", "0", 0, "Spew streaming info ( 0=Off, 1=streams, 2=buffers" );
 
 #define SndAsyncSpewBlocking()	snd_async_spew_blocking.GetBool()
