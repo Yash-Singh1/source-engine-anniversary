@@ -188,15 +188,11 @@ FORCEINLINE void GLMContext::FlushDrawStates( uint nStartIndex, uint nEndIndex, 
 			tmZone( TELEMETRY_LEVEL2, TMZF_NONE, "NewProgram" );
 #endif
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 			if ( !pNewPair->m_valid )
 				goto flush_error_exit;
 
-#ifdef OSX
-			gGL->glUseProgramObjectARB( pNewPair->m_program );
-#else
 			gGL->glUseProgram( (GLuint)pNewPair->m_program );
-#endif
 #else
 			if ( !pNewPair->m_valid )
 			{
@@ -245,7 +241,7 @@ FORCEINLINE void GLMContext::FlushDrawStates( uint nStartIndex, uint nEndIndex, 
 			// bool and int dirty levels get set to max, we don't have actual high water marks for them
 			// code which sends the values must clamp on these types.
 			m_programParamsB[kGLMVertexProgram].m_dirtySlotCount = kGLMProgramParamBoolLimit;
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 			m_programParamsB[kGLMFragmentProgram].m_dirtySlotCount = 0;
 
 			m_programParamsI[kGLMVertexProgram].m_dirtySlotCount = kGLMProgramParamInt4Limit;
@@ -283,7 +279,7 @@ FORCEINLINE void GLMContext::FlushDrawStates( uint nStartIndex, uint nEndIndex, 
 
 			m_nDirtySamplerFlags[nSamplerIndex] = 1;
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 			GLMTexSamplingParams tempParams;
 			const GLMTexSamplingParams *pParams = &m_samplers[nSamplerIndex].m_samp;
 			if ( pParams->m_packed.m_mipFilter == D3DTEXF_LINEAR )
@@ -333,7 +329,7 @@ FORCEINLINE void GLMContext::FlushDrawStates( uint nStartIndex, uint nEndIndex, 
 
 			CGLMTex *pTex = m_samplers[nSamplerIndex].m_pBoundTex;
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 			if ( pTex )
 			{
 				if ( ( pTex->m_mipCount == 1 ) && ( m_samplers[nSamplerIndex].m_samp.m_packed.m_mipFilter == D3DTEXF_LINEAR ) )
@@ -350,17 +346,6 @@ FORCEINLINE void GLMContext::FlushDrawStates( uint nStartIndex, uint nEndIndex, 
 					m_samplers[nSamplerIndex].m_samp.DeltaSetToTarget( pTex->m_texGLTarget, pTex->m_SamplingParams );
 					pTex->m_SamplingParams = m_samplers[nSamplerIndex].m_samp;
 				}
-#if defined( OSX )
-				if ( !( gGL->m_bHave_GL_EXT_texture_sRGB_decode ) )
-				{
-					bool texSRGB = ( pTex->m_layout->m_key.m_texFlags & kGLMTexSRGB ) != 0;
-					bool glSampSRGB = m_samplers[nSamplerIndex].m_samp.m_packed.m_srgb;
-					if ( texSRGB != glSampSRGB )
-					{
-						pTex->HandleSRGBMismatch( glSampSRGB, pTex->m_srgbFlipCount );
-					}
-				}
-#endif
 			}
 #else
 			if ( ( pTex ) && ( !( pTex->m_SamplingParams == m_samplers[nSamplerIndex].m_samp ) ) )
@@ -390,7 +375,7 @@ FORCEINLINE void GLMContext::FlushDrawStates( uint nStartIndex, uint nEndIndex, 
 	}
 
 	// vertex stage --------------------------------------------------------------------
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	if ( m_programParamsF[kGLMVertexProgram].m_dirtySlotHighWaterNonBone )
 	{
 		const int nMaxUsedShaderSlots = m_drawingProgram[kGLMVertexProgram]->m_descs[kGLMGLSL].m_highWater;
@@ -549,7 +534,7 @@ FORCEINLINE void GLMContext::FlushDrawStates( uint nStartIndex, uint nEndIndex, 
 	// ------- bools ---------- //
 	if ( m_pBoundPair->m_bHasBoolOrIntUniforms )
 	{
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 		if ( m_programParamsB[kGLMVertexProgram].m_dirtySlotCount )	// optimize this later after the float param pushes are proven out
 		{
 			GLint vconstBool0Loc = m_pBoundPair->m_locVertexBool0;
@@ -687,10 +672,10 @@ FORCEINLINE void GLMContext::FlushDrawStates( uint nStartIndex, uint nEndIndex, 
 			int nBufOffset = pDeclElem->m_gldecl.m_offset + pStream->m_offset;
 			Assert( nBufOffset >= 0 );
 			Assert( nBufOffset < (int)pBuf->m_nSize );
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 			SetBufAndVertexAttribPointer( nIndex, pBuf->m_nHandle, 
 				pStream->m_stride, pDeclElem->m_gldecl.m_datatype, pDeclElem->m_gldecl.m_normalized, pDeclElem->m_gldecl.m_nCompCount, 
-				reinterpret_cast< const GLvoid * >( reinterpret_cast< intp >( pBuf->m_pPseudoBuf ) + nBufOffset ), 
+				reinterpret_cast< const GLvoid * >( reinterpret_cast< int >( pBuf->m_pPseudoBuf ) + nBufOffset ), 
 				pBuf->m_nRevision );
 #else
 			if ( pBuf->m_bUsingPersistentBuffer )

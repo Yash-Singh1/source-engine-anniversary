@@ -33,7 +33,7 @@ ILauncherMgr *g_pLauncherMgr = NULL;
 #endif
 #line 28
 
-#if defined ( DX_TO_GL_ABSTRACTION ) && !defined( BYTEMATCH_RETAIL )
+#if defined ( DX_TO_GL_ABSTRACTION ) && ( !defined( BYTEMATCH_RETAIL ) || defined( OSX ) )
 // Placed here so inlines placed in dxabstract.h can access gGL
 COpenGLEntryPoints *gGL = NULL;
 #endif

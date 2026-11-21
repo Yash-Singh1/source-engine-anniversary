@@ -61,7 +61,7 @@ GL_FUNC_VOID(OpenGL,true,glDisable,(GLenum a),(a))
 GL_FUNC_VOID(OpenGL,true,glDisableVertexAttribArray,(GLuint a),(a))
 GL_FUNC_VOID(OpenGL,true,glDrawArrays,(GLenum a,GLint b,GLsizei c),(a,b,c))
 GL_FUNC_VOID(OpenGL,true,glDrawBuffer,(GLenum a),(a))
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 GL_FUNC_VOID(OpenGL,true,glDrawBuffers,(GLsizei a,const GLenum *b),(a,b))
 #endif
 GL_FUNC_VOID(OpenGL,true,glDrawRangeElements,(GLenum a,GLuint b,GLuint c,GLsizei d,GLenum e,const GLvoid *f),(a,b,c,d,e,f))
@@ -225,7 +225,7 @@ GL_FUNC_VOID(GL_ARB_debug_output,false,glDebugMessageControlARB,(GLenum a, GLenu
 
 GL_EXT(GL_EXT_direct_state_access,-1,-1)
 GL_FUNC_VOID(GL_EXT_direct_state_access,false,glBindMultiTextureEXT,(GLenum a,GLuint b, GLuint c),(a,b,c))
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 GL_FUNC_VOID(OpenGL,true,glGenSamplers,(GLuint a,GLuint *b),(a,b))
 GL_FUNC_VOID(OpenGL,true,glDeleteSamplers,(GLsizei a,const GLuint *b),(a,b))
 GL_FUNC_VOID(OpenGL,true,glBindSampler,(GLuint a, GLuint b),(a,b))
@@ -285,7 +285,7 @@ GL_EXT(GL_EXT_texture_compression_dxt1,-1,-1)
 GL_EXT(GL_ANGLE_texture_compression_dxt3,-1,-1)
 GL_EXT(GL_ANGLE_texture_compression_dxt5,-1,-1)
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 GL_EXT( GL_ARB_buffer_storage, 4, 4 )
 GL_FUNC_VOID( GL_ARB_buffer_storage, false, glBufferStorage, (GLenum target, GLsizeiptr size, const void *data, GLbitfield flags), (target, size, data, flags) )
 #endif

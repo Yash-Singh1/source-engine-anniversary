@@ -944,7 +944,11 @@ void CPhysHinge::Activate( void )
 	BaseClass::Activate();
 
 	m_soundInfo.OnActivate(this);
+#ifdef PLATFORM_64BITS
+	if (m_pConstraint && m_pConstraint->GetAttachedObject() && m_pConstraint->GetReferenceObject())
+#else
 	if (m_pConstraint)
+#endif
 	{
 		m_soundInfo.StartThinking(this, 
 			VelocitySampler::GetRelativeAngularVelocity(m_pConstraint->GetAttachedObject(), m_pConstraint->GetReferenceObject()) ,

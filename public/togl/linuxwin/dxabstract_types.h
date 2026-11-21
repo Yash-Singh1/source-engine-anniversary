@@ -1042,7 +1042,7 @@ typedef enum _D3DSHADER_PARAM_REGISTER_TYPE
     D3DSPR_FORCE_DWORD  = 0x7fffffff,         // force 32-bit size enum
 } D3DSHADER_PARAM_REGISTER_TYPE;
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 typedef struct _D3DMATRIX
 {
     union 
@@ -1735,7 +1735,7 @@ struct IDirect3DDevice9Params
 	D3DPRESENT_PARAMETERS	m_presentationParameters;
 };
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 #define	D3D_MAX_STREAMS	4
 #else
 #define	D3D_MAX_STREAMS	5 //9

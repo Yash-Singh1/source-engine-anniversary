@@ -862,6 +862,10 @@ void TextImage::SetUseFallbackFont( bool bState, HFont hFallback )
 void TextImage::SetAllCaps( bool bAllCaps )
 {
 	m_bAllCaps = bAllCaps;
+#ifdef PLATFORM_64BITS
+	m_bRecalculateTruncation = true;
+	ResizeImageToContent();
+#endif
 }
 
 void TextImage::ResizeImageToContentMaxWidth( int nMaxWidth )

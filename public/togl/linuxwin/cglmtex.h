@@ -270,13 +270,13 @@ struct GLMTexSamplingParams
 	};
 
 	uint32 m_borderColor;
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 	float m_lodBias;
 #endif
 
 	FORCEINLINE bool operator== (const GLMTexSamplingParams& rhs ) const
 	{
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 		return ( m_bits == rhs.m_bits ) && ( m_borderColor == rhs.m_borderColor );
 #else
 		return ( m_bits == rhs.m_bits ) && ( m_borderColor == rhs.m_borderColor ) && ( m_lodBias == rhs.m_lodBias );
@@ -287,7 +287,7 @@ struct GLMTexSamplingParams
 	{
 		m_bits = 0;
 		m_borderColor = 0;
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 		m_lodBias = 0.0f;
 #endif
 		m_packed.m_addressU = D3DTADDRESS_WRAP;
@@ -297,7 +297,7 @@ struct GLMTexSamplingParams
 		m_packed.m_magFilter = D3DTEXF_POINT;
 		m_packed.m_mipFilter = D3DTEXF_NONE;
 		m_packed.m_maxAniso = 1;
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 		m_packed.m_compareMode = 0;
 #endif
 		m_packed.m_isValid = true;
@@ -333,11 +333,11 @@ struct GLMTexSamplingParams
 		}
 		gGL->glSamplerParameterfv( nSamplerObject, GL_TEXTURE_BORDER_COLOR, flBorderColor ); // <-- this crashes ATI's driver, remark it out
 		gGL->glSamplerParameteri( nSamplerObject, GL_TEXTURE_MIN_LOD, m_packed.m_minLOD );
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 		gGL->glSamplerParameterfv( nSamplerObject, GL_TEXTURE_LOD_BIAS, &m_lodBias );
 #endif
 		gGL->glSamplerParameteri( nSamplerObject, GL_TEXTURE_COMPARE_MODE_ARB, m_packed.m_compareMode ? GL_COMPARE_R_TO_TEXTURE_ARB : GL_NONE );
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 		gGL->glSamplerParameterf( nSamplerObject, GL_TEXTURE_LOD_BIAS, m_lodBias );
 #endif
 		if ( m_packed.m_compareMode )
@@ -407,7 +407,7 @@ struct GLMTexSamplingParams
 			gGL->glTexParameteri( target, GL_TEXTURE_MIN_LOD, m_packed.m_minLOD );
 		}
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 		if ( m_lodBias != curState.m_lodBias )
 		{
 			// Could use TexParameterf instead, but we don't currently grab it. This works fine, too.
@@ -430,7 +430,7 @@ struct GLMTexSamplingParams
 		}
 	}
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	inline void SetToTargetTexture( GLenum target )
 #else
 	inline void SetToTarget( GLenum target )
@@ -463,7 +463,7 @@ struct GLMTexSamplingParams
 		}
 		gGL->glTexParameterfv( target, GL_TEXTURE_BORDER_COLOR, flBorderColor ); // <-- this crashes ATI's driver, remark it out
 		gGL->glTexParameteri( target, GL_TEXTURE_MIN_LOD, m_packed.m_minLOD );
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 		gGL->glTexParameterfv( target, GL_TEXTURE_LOD_BIAS, &m_lodBias );
 #endif
 		gGL->glTexParameteri( target, GL_TEXTURE_COMPARE_MODE_ARB, m_packed.m_compareMode ? GL_COMPARE_R_TO_TEXTURE_ARB : GL_NONE );
@@ -501,7 +501,7 @@ protected:
 	friend struct IDirect3DCubeTexture9;
 	friend struct IDirect3DVolumeTexture9;
 	
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 			CGLMTex( GLMContext *ctx, GLMTexLayout *layout, const char *debugLabel = NULL );
 #else
 			CGLMTex( GLMContext *ctx, GLMTexLayout *layout, uint levels, const char *debugLabel = NULL );
@@ -526,7 +526,7 @@ protected:
 	bool					IsRBODirty() const;
 	void					ForceRBONonDirty();
 	void					ForceRBODirty();
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	void					AllocBacking();
 	void					ReleaseBacking();
 #endif
@@ -546,7 +546,7 @@ protected:
 					
 	int						m_minActiveMip;//index of lowest mip that has been written.  used to drive setting of GL_TEXTURE_MAX_LEVEL.
 	int						m_maxActiveMip;//index of highest mip that has been written.  used to drive setting of GL_TEXTURE_MAX_LEVEL.
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	int						m_mipCount;
 #endif
 						

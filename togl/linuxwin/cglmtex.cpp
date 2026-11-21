@@ -45,7 +45,7 @@ extern ILauncherMgr *g_pLauncherMgr;
 CGLMTex *g_pFirstCGMLTex;
 #endif
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 ConVar gl_pow2_tempmem( "gl_pow2_tempmem", "0", FCVAR_INTERNAL_USE,
                         "If set, use power-of-two allocations for temporary texture memory during uploads. "
                         "May help with fragmentation on certain systems caused by heavy churn of large allocations." );
@@ -706,7 +706,7 @@ void CGLMTexLayoutTable::DumpStats( )
 	}
 }
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 ConVar gl_enabletexsubimage( "gl_enabletexsubimage", "1" );
 ConVar gl_texclientstorage( "gl_texclientstorage", "1" );		// default 1 for L4D2
 #endif
@@ -719,7 +719,7 @@ ConVar gl_minimize_rt_tex ( "gl_minimize_rt_tex", "0" );	// if 1, set the GL_TEX
 ConVar gl_minimize_all_tex ( "gl_minimize_all_tex", "1" );	// if 1, set the GL_TEXTURE_MINIMIZE_STORAGE_APPLE texture parameter to cut off mipmaps for textures which are unmipped
 ConVar gl_minimize_tex_log ( "gl_minimize_tex_log", "0" );	// if 1, printf the names of the tex that got minimized
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 void CGLMTex::AllocBacking()
 {
 	ReleaseBacking();
@@ -737,7 +737,7 @@ void CGLMTex::ReleaseBacking()
 }
 #endif
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 CGLMTex::CGLMTex( GLMContext *ctx, GLMTexLayout *layout, const char *debugLabel )
 #else
 CGLMTex::CGLMTex( GLMContext *ctx, GLMTexLayout *layout, uint levels, const char *debugLabel )
@@ -776,7 +776,7 @@ CGLMTex::CGLMTex( GLMContext *ctx, GLMTexLayout *layout, uint levels, const char
 
 	m_maxActiveMip = -1;	//index of highest mip that has been written - increase as each mip arrives
 	m_minActiveMip = 999;	//index of lowest mip that has been written - lower it as each mip arrives
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	m_mipCount = m_layout->m_mipCount;
 #endif
 	
@@ -790,7 +790,7 @@ CGLMTex::CGLMTex( GLMContext *ctx, GLMTexLayout *layout, uint levels, const char
 	m_rtAttachCount = 0;
 	
 	// come up with a GL name for this texture.
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	gGL->glGenTextures( 1, &m_texName );
 #else
 	m_texName = ctx->CreateTex( m_texGLTarget, m_layout->m_format->m_glIntFormat );
@@ -799,7 +799,7 @@ CGLMTex::CGLMTex( GLMContext *ctx, GLMTexLayout *layout, uint levels, const char
 	m_pBlitSrcFBO = NULL;
 	m_pBlitDstFBO = NULL;
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	//sense whether to try and apply client storage upon teximage/subimage
 	m_texClientStorage = gl_texclientstorage.GetInt() != 0;
 #else
@@ -859,7 +859,7 @@ CGLMTex::CGLMTex( GLMContext *ctx, GLMTexLayout *layout, uint levels, const char
 	ctx->BindTexToTMU( this, 0 );
 
 	m_SamplingParams.SetToDefaults();
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	m_SamplingParams.SetToTargetTexture( m_texGLTarget );
 	gGL->glTexParameteri( m_texGLTarget, GL_TEXTURE_MAX_LEVEL, m_layout->m_mipCount - 1 );
 #else
@@ -869,14 +869,14 @@ CGLMTex::CGLMTex( GLMContext *ctx, GLMTexLayout *layout, uint levels, const char
 	// OK, our texture now exists and is bound on the active TMU.  Not drawable yet though.
 		
 	// Create backing storage and fill it
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	m_backing = NULL;
 	if ( !(layout->m_key.m_texFlags & kGLMTexRenderable) )
 #else
 	if ( !(layout->m_key.m_texFlags & kGLMTexRenderable) && m_texClientStorage )
 #endif
 	{
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 		AllocBacking();
 #else
 		m_backing = (char *)malloc( m_layout->m_storageTotalSize );
@@ -898,7 +898,7 @@ CGLMTex::CGLMTex( GLMContext *ctx, GLMTexLayout *layout, uint levels, const char
 	}
 	else
 	{
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 		m_backing = NULL;
 #endif
 		
@@ -983,7 +983,7 @@ CGLMTex::CGLMTex( GLMContext *ctx, GLMTexLayout *layout, uint levels, const char
 	#endif
 	
 	//if (pushRenderableSlices || pushTexSlices)
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	if (1)
 #else
 	if ( !( ( layout->m_key.m_texFlags & kGLMTexMipped ) && ( levels == ( unsigned ) m_layout->m_mipCount ) ) )
@@ -1081,7 +1081,7 @@ CGLMTex::~CGLMTex( )
 	// if all that is OK, then delete the underlying tex
 	if ( m_texName )
 	{
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 		gGL->glDeleteTextures( 1, &m_texName );
 #else
 		m_ctx->DestroyTex( m_texGLTarget, m_layout, m_texName );
@@ -1247,7 +1247,7 @@ void CGLMTex::ReadTexels( GLMTexLockDesc *desc, bool readWholeSlice )
 }
 
 // TexSubImage should work properly on every driver stack and GPU--enabling by default.
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 ConVar	gl_enabletexsubimage( "gl_enabletexsubimage", "1" );
 #endif
 
@@ -1338,7 +1338,7 @@ void CGLMTex::WriteTexels( GLMTexLockDesc *desc, bool writeWholeSlice, bool noDa
 	{
 		m_maxActiveMip = desc->m_req.m_mip;
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 		gGL->glTexParameteri( target, GL_TEXTURE_MAX_LEVEL, desc->m_req.m_mip);
 #endif
 	}
@@ -1347,7 +1347,7 @@ void CGLMTex::WriteTexels( GLMTexLockDesc *desc, bool writeWholeSlice, bool noDa
 	{
 		m_minActiveMip = desc->m_req.m_mip;
 		
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 		gGL->glTexParameteri( target, GL_TEXTURE_BASE_LEVEL, desc->m_req.m_mip);
 #endif
 	}
@@ -1517,7 +1517,7 @@ void CGLMTex::WriteTexels( GLMTexLockDesc *desc, bool writeWholeSlice, bool noDa
 				
 				gGL->glCompressedTexImage3D(	target,						// target
 										desc->m_req.m_mip,			// level
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 										format->m_glIntFormat,		// internalformat
 #else
 										intformat,					// internalformat
@@ -1535,7 +1535,7 @@ void CGLMTex::WriteTexels( GLMTexLockDesc *desc, bool writeWholeSlice, bool noDa
 				// http://www.opengl.org/sdk/docs/man/xhtml/glTexImage3D.xml
 				gGL->glTexImage3D(			target,						// target
 										desc->m_req.m_mip,			// level
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 										format->m_glIntFormat,		// internalformat
 #else
 										intformat,					// internalformat
@@ -1608,7 +1608,7 @@ void CGLMTex::Lock( GLMTexLockParams *params, char** addressOut, int* yStrideOut
 	// so step 1 is unambiguous.  If there's no backing storage, make some.
 	if (!m_backing)
 	{
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 		AllocBacking();
 #else
 		if ( gl_pow2_tempmem.GetBool() )
@@ -1843,7 +1843,7 @@ void CGLMTex::Unlock( GLMTexLockParams *params )
 			m_sliceFlags[slice] &= ~( kSliceLocked | kSliceFullyDirty );
 		}
 		
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 		// The 3D texture upload code seems to rely on the host copy, probably
 		// because it reuploads the whole thing each slice; we only use 3D textures
 		// for the 32x32x32 colorpsace conversion lookups and debugging the problem
@@ -1873,11 +1873,7 @@ void CGLMTex::HandleSRGBMismatch( bool srgb, int &srgbFlipCount )
 		char *texname = m_debugLabel;
 		if (!texname) texname = "-";
 
-#if defined( BYTEMATCH_RETAIL ) && defined( OSX )
-		srgbFlipCount++;
-#else
 		m_srgbFlipCount++;
-#endif
 
 #if GLMDEBUG
 		//policy: print the ones that have flipped 1 or N times

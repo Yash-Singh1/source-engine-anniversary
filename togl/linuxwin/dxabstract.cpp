@@ -134,7 +134,7 @@ D3DMATRIX::operator void* ()
 
 #endif
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 D3DXMATRIX D3DXMATRIX::operator*( const D3DXMATRIX &o ) const
 {
 	D3DXMATRIX result;
@@ -452,7 +452,7 @@ HRESULT IDirect3DDevice9::CreateTexture(UINT Width,UINT Height,UINT Levels,DWORD
 	key.m_ySize = Height;
 	key.m_zSize = 1;
 	
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	CGLMTex *tex = m_ctx->NewTex( &key, pDebugLabel );
 	if (!tex)
 	{
@@ -461,9 +461,6 @@ HRESULT IDirect3DDevice9::CreateTexture(UINT Width,UINT Height,UINT Levels,DWORD
 	dxtex->m_tex = tex;
 
 	dxtex->m_srgbFlipCount = 0;
-#ifdef OSX
-	dxtex->m_tex->m_srgbFlipCount = 0;
-#endif
 #else
 	CGLMTex *tex = m_ctx->NewTex( &key, Levels, pDebugLabel );
 	if (!tex)
@@ -649,7 +646,7 @@ HRESULT IDirect3DDevice9::CreateCubeTexture(UINT EdgeLength,UINT Levels,DWORD Us
 	key.m_ySize = EdgeLength;
 	key.m_zSize = 1;
 	
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	CGLMTex *tex = m_ctx->NewTex( &key, pDebugLabel );
 	if (!tex)
 	{
@@ -658,9 +655,6 @@ HRESULT IDirect3DDevice9::CreateCubeTexture(UINT EdgeLength,UINT Levels,DWORD Us
 	dxtex->m_tex = tex;
 	
 	dxtex->m_srgbFlipCount = 0;
-#ifdef OSX
-	dxtex->m_tex->m_srgbFlipCount = 0;
-#endif
 #else
 	CGLMTex *tex = m_ctx->NewTex( &key, Levels, pDebugLabel );
 	if (!tex)
@@ -869,7 +863,7 @@ HRESULT IDirect3DDevice9::CreateVolumeTexture(UINT Width,UINT Height,UINT Depth,
 	key.m_ySize = Height;
 	key.m_zSize = Depth;
 	
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	CGLMTex *tex = m_ctx->NewTex( &key, pDebugLabel );
 	if (!tex)
 	{
@@ -878,9 +872,6 @@ HRESULT IDirect3DDevice9::CreateVolumeTexture(UINT Width,UINT Height,UINT Depth,
 	dxtex->m_tex = tex;
 	
 	dxtex->m_srgbFlipCount = 0;
-#ifdef OSX
-	dxtex->m_tex->m_srgbFlipCount = 0;
-#endif
 #else
 	CGLMTex *tex = m_ctx->NewTex( &key, Levels, pDebugLabel );
 	if (!tex)
@@ -1083,7 +1074,7 @@ HRESULT IDirect3DSurface9::LockRect(D3DLOCKED_RECT* pLockedRect,CONST RECT* pRec
 	lockreq.m_region.ymax = pRect->bottom;
 	lockreq.m_region.zmax = 1;
 	
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	if ( Flags & D3DLOCK_READONLY )
 #else
 	if ((Flags & (D3DLOCK_READONLY | D3DLOCK_NOSYSLOCK)) == (D3DLOCK_READONLY | D3DLOCK_NOSYSLOCK) )
@@ -1991,7 +1982,7 @@ HRESULT IDirect3DQuery9::GetData(void* pData,DWORD dwSize,DWORD dwGetDataFlags)
 			if ( flush )
 				{
 				uint oqValue = 0;
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 					CFastTimer tm;
 					tm.Start();
 #endif
@@ -2003,7 +1994,7 @@ HRESULT IDirect3DQuery9::GetData(void* pData,DWORD dwSize,DWORD dwGetDataFlags)
 																						
 				m_query->Complete(&oqValue);
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 				double flTotalTime = tm.GetDurationInProgress().GetSeconds() * 1000.0f;
 				if ( flTotalTime > .5f )
 						{
@@ -2134,7 +2125,7 @@ HRESULT IDirect3DVertexBuffer9::Lock(UINT OffsetToLock,UINT SizeToLock,void** pp
 {
 	GL_BATCH_PERF_CALL_TIMER;
 	GL_PUBLIC_ENTRYPOINT_CHECKS( m_device );
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 #line 1890
 #endif
 	tmZoneFiltered( TELEMETRY_LEVEL2, 25, TMZF_NONE, "VB Lock" );
@@ -2161,7 +2152,7 @@ HRESULT IDirect3DVertexBuffer9::Unlock()
 	GL_BATCH_PERF_CALL_TIMER;
 	GL_PUBLIC_ENTRYPOINT_CHECKS( m_device );
 	
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 #line 1914
 #endif
 	tmZoneFiltered( TELEMETRY_LEVEL2, 25, TMZF_NONE, "VB Unlock" );
@@ -2174,7 +2165,7 @@ void IDirect3DVertexBuffer9::UnlockActualSize( uint nActualSize, const void *pAc
 {
 	GL_BATCH_PERF_CALL_TIMER;
 	GL_PUBLIC_ENTRYPOINT_CHECKS( m_device );
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 #line 1924
 #endif
 	tmZoneFiltered( TELEMETRY_LEVEL2, 25, TMZF_NONE, "VB UnlockActualSize" );
@@ -2264,7 +2255,7 @@ HRESULT IDirect3DIndexBuffer9::Lock(UINT OffsetToLock,UINT SizeToLock,void** ppb
 	GL_PUBLIC_ENTRYPOINT_CHECKS( m_device );
 	// FIXME would be good to have "can't lock twice" logic
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 #line 2011
 #endif
 	tmZoneFiltered( TELEMETRY_LEVEL2, 25, TMZF_NONE, "IB Lock" );
@@ -2285,7 +2276,7 @@ HRESULT IDirect3DIndexBuffer9::Unlock()
 	GL_BATCH_PERF_CALL_TIMER;
 	GL_PUBLIC_ENTRYPOINT_CHECKS( m_device );
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 #line 2029
 #endif
 	tmZoneFiltered( TELEMETRY_LEVEL2, 25, TMZF_NONE, "IB Unlock" );
@@ -2299,7 +2290,7 @@ void IDirect3DIndexBuffer9::UnlockActualSize( uint nActualSize, const void *pAct
 { 
 	GL_BATCH_PERF_CALL_TIMER;
 	GL_PUBLIC_ENTRYPOINT_CHECKS( m_device );
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 #line 2040
 #endif
 	tmZoneFiltered( TELEMETRY_LEVEL2, 25, TMZF_NONE, "IB UnlockActualSize" );
@@ -2407,7 +2398,7 @@ HRESULT	IDirect3DDevice9::Create( IDirect3DDevice9Params *params )
 	memset( m_streams, 0, sizeof(m_streams) );
 	memset( m_vtx_buffers, 0, sizeof( m_vtx_buffers ) );
 	memset( m_textures, 0, sizeof(m_textures) );
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	memset( m_samplers, 0, sizeof(m_samplers) );
 #endif
 
@@ -2540,7 +2531,7 @@ HRESULT	IDirect3DDevice9::Create( IDirect3DDevice9Params *params )
 		return (HRESULT)-1;
 	}
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 	// this next part really needs to be inside GLMContext.. or replaced with D3D style viewport setup calls.
 	m_ctx->GenDebugFontTex();
 #endif
@@ -2624,7 +2615,7 @@ IDirect3DDevice9::~IDirect3DDevice9()
 	if ( m_pFBOs )
 	{
 	ResetFBOMap();
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	delete m_pFBOs;
 	m_pFBOs = NULL;
 #endif
@@ -2839,7 +2830,7 @@ HRESULT IDirect3DDevice9::SetViewport(CONST D3DVIEWPORT9* pViewport)
 	return S_OK;
 }
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 HRESULT IDirect3DDevice9::GetViewport( D3DVIEWPORT9* pViewport )
 {
 	// 7LS - unfinished, used in scaleformuirenderimpl.cpp (only width and height required)
@@ -3227,7 +3218,7 @@ HRESULT IDirect3DDevice9::CreateRenderTarget(UINT Width,UINT Height,D3DFORMAT Fo
 		// FIXME no support for "MS quality" yet
 	}
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	surf->m_tex			= m_ctx->NewTex( &rtkey, pDebugLabel );
 #else
 	surf->m_tex			= m_ctx->NewTex( &rtkey, 1, pDebugLabel );
@@ -3392,7 +3383,7 @@ HRESULT IDirect3DDevice9::SetRenderTarget(DWORD RenderTargetIndex,IDirect3DSurfa
 {
 	GL_BATCH_PERF_CALL_TIMER;
 	GL_PUBLIC_ENTRYPOINT_CHECKS( this );
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 #line 3128
 #endif
 	tmZone( TELEMETRY_LEVEL2, TMZF_NONE, "%s", __FUNCTION__ );
@@ -3531,7 +3522,7 @@ HRESULT IDirect3DDevice9::CreateOffscreenPlainSurface( UINT Width,UINT Height,D3
 	rtkey.m_texFormat	=	Format;
 	rtkey.m_texFlags	=	kGLMTexRenderable;
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	surf->m_tex			=	m_ctx->NewTex( &rtkey, "offscreen plain surface" );
 #else
 	surf->m_tex			=	m_ctx->NewTex( &rtkey, 1, "offscreen plain surface" );
@@ -3592,7 +3583,7 @@ HRESULT IDirect3DDevice9::CreateDepthStencilSurface(UINT Width,UINT Height,D3DFO
 		// FIXME no support for "MS quality" yet
 	}
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	surf->m_tex				= m_ctx->NewTex( &depthkey, "depth-stencil surface" );
 #else
 	surf->m_tex				= m_ctx->NewTex( &depthkey, 1, "depth-stencil surface" );
@@ -3857,7 +3848,7 @@ static uint32 CentroidMaskFromName( bool bPixelShader, const char *pName )
 
 // This totally sucks, but this information can't be gleaned any
 // other way when translating from D3D to GL at this level
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 static int ShadowDepthSamplerMaskFromName( const char *pName )
 {
 	if ( !pName )
@@ -3965,7 +3956,7 @@ static int ShadowDepthSamplerMaskFromName( const char *pName )
 	{
 		return (1<<15);
 	}
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 	else if ( V_stristr( pName, "deferred_global_light_ps" ) )
 	{
 		return (1<<14);
@@ -4017,7 +4008,7 @@ HRESULT IDirect3DDevice9::CreatePixelShader(CONST DWORD* pFunction,IDirect3DPixe
 	{
 		if ( *pCentroidMask != nCentroidMask )
 		{
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 			char buf[256];
 			V_snprintf( buf, sizeof( buf ), "IDirect3DDevice9::CreatePixelShader: shaderapi's centroid mask (0x%08X) differs from mask derived from shader name (0x%08X) for shader %s\n", *pCentroidMask, nCentroidMask, pDebugLabel );
 			Plat_DebugString( buf );
@@ -4092,7 +4083,7 @@ HRESULT IDirect3DDevice9::CreatePixelShader(CONST DWORD* pFunction,IDirect3DPixe
 					
 			newprog->m_pixProgram = m_ctx->NewProgram( kGLMFragmentProgram, (char *)transbuf.Base(), pShaderName ? pShaderName : "?" ) ;
 			newprog->m_pixProgram->m_nCentroidMask = nCentroidMask;
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 			newprog->m_pixProgram->m_nShadowDepthSamplerMask = ( nShadowDepthSamplerMask != -1 ) ? ( 1 << nShadowDepthSamplerMask ) : 0;
 #else
 			newprog->m_pixProgram->m_nShadowDepthSamplerMask = nShadowDepthSamplerMask;
@@ -4181,7 +4172,7 @@ HRESULT IDirect3DDevice9::CreatePixelShader(CONST DWORD* pFunction,IDirect3DPixe
 				}
 			}
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 			{
 				// find the fb outputs used by this shader/combo
 				const GLenum buffers[] = { GL_COLOR_ATTACHMENT0_EXT, GL_COLOR_ATTACHMENT1_EXT, GL_COLOR_ATTACHMENT2_EXT, GL_COLOR_ATTACHMENT3_EXT };
@@ -4289,7 +4280,7 @@ HRESULT IDirect3DDevice9::SetPixelShaderConstantB(UINT StartRegister,CONST BOOL*
 	GL_BATCH_PERF_CALL_TIMER;
 	GL_PUBLIC_ENTRYPOINT_CHECKS( this );
 	TOGL_NULL_DEVICE_CHECK;
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 	m_ctx->SetProgramParametersB( kGLMFragmentProgram, StartRegister, (int *)pConstantData, BoolCount );
 #endif
 	return S_OK;
@@ -4564,7 +4555,7 @@ HRESULT IDirect3DDevice9::LinkShaderPair( IDirect3DVertexShader9* vs, IDirect3DP
 	return S_OK;
 }
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 HRESULT IDirect3DDevice9::ValidateShaderPair( IDirect3DVertexShader9* vs, IDirect3DPixelShader9* ps )
 {
 	GL_BATCH_PERF_CALL_TIMER;
@@ -4657,11 +4648,11 @@ HRESULT IDirect3DDevice9::CreateVertexDeclaration(CONST D3DVERTEXELEMENT9* pVert
 			// case D3DVSDT_UBYTE4:		
 			case D3DDECLTYPE_D3DCOLOR:
 			case D3DDECLTYPE_UBYTE4:
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 			case D3DDECLTYPE_UBYTE4N:
 #endif
 				
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 				if ( elem->m_dxdecl.Type == D3DDECLTYPE_UBYTE4 )
 				{
 					elem->m_gldecl.m_nCompCount = 4; elem->m_gldecl.m_datatype = GL_UNSIGNED_BYTE;
@@ -4694,7 +4685,7 @@ HRESULT IDirect3DDevice9::CreateVertexDeclaration(CONST D3DVERTEXELEMENT9* pVert
 			
 			case D3DDECLTYPE_SHORT2:
 				// pass 2 US's but we know this is out of order compared to D3DCOLOR data
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 				elem->m_gldecl.m_nCompCount = 2; elem->m_gldecl.m_datatype = GL_UNSIGNED_SHORT;
 #else
 				elem->m_gldecl.m_nCompCount = 2; elem->m_gldecl.m_datatype = GL_SHORT;
@@ -5530,7 +5521,7 @@ HRESULT IDirect3DDevice9::DrawPrimitiveUP(D3DPRIMITIVETYPE PrimitiveType,UINT Pr
 
 HRESULT IDirect3DDevice9::DrawIndexedPrimitive( D3DPRIMITIVETYPE Type, INT BaseVertexIndex, UINT MinVertexIndex, UINT NumVertices, UINT startIndex, UINT primCount )
 {
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 #line 5027
 #endif
 	tmZone( TELEMETRY_LEVEL2, TMZF_NONE, "%s", __FUNCTION__ );
@@ -6099,7 +6090,7 @@ void IDirect3DDevice9::SetGammaRamp(UINT iSwapChain,DWORD Flags,CONST D3DGAMMARA
 
 void TOGLMETHODCALLTYPE IDirect3DDevice9::SaveGLState()
 {
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	gGL->glPushAttrib( GL_ALL_ATTRIB_BITS );
 	gGL->glPushClientAttrib( GL_CLIENT_ALL_ATTRIB_BITS );
 #endif
@@ -6107,7 +6098,7 @@ void TOGLMETHODCALLTYPE IDirect3DDevice9::SaveGLState()
 
 void TOGLMETHODCALLTYPE IDirect3DDevice9::RestoreGLState()
 {
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	gGL->glPopClientAttrib();
 	gGL->glPopAttrib();
 #endif
@@ -6566,7 +6557,7 @@ HRESULT IDirect3DDevice9::SetSamplerStateNonInline( DWORD Sampler, D3DSAMPLERSTA
 		m_ctx->SetSamplerMaxAnisotropy( Sampler, Value);
 		break;
 	case D3DSAMP_SRGBTEXTURE: 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 		m_samplers[ Sampler ].m_srgb = Value;
 #endif
 		m_ctx->SetSamplerSRGBTexture(Sampler, Value);
@@ -6581,7 +6572,7 @@ HRESULT IDirect3DDevice9::SetSamplerStateNonInline( DWORD Sampler, D3DSAMPLERSTA
 	return S_OK;
 }
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 void IDirect3DDevice9::SetSamplerStatesNonInline(
 	DWORD Sampler, DWORD AddressU, DWORD AddressV, DWORD AddressW,
 	DWORD MinFilter, DWORD MagFilter, DWORD MipFilter )
@@ -6622,7 +6613,7 @@ HRESULT IDirect3DDevice9::SetTextureNonInline(DWORD Stage,IDirect3DBaseTexture9*
 	return S_OK;
 }
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
 void* ID3DXBuffer::GetBufferPointer()
@@ -7036,7 +7027,7 @@ void D3DPERF_SetOptions( DWORD dwOptions )
 {
 }
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 HRESULT D3DXCompileShader(
         LPCSTR                          pSrcData,
         UINT                            SrcDataLen,

@@ -149,10 +149,9 @@ struct GLMRendererInfoFields
 	bool	m_intel;
 	bool	m_intel95x;
 	bool	m_intel3100;
-#if defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	bool	m_intelNewer;
-#endif
-#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
+#else
 	bool	m_intelHD4000;
 #endif
 
@@ -198,7 +197,7 @@ struct GLMRendererInfoFields
 
 	//--------------------------- " bads " - known bad drivers
 	bool	m_badDriver1064NV;		// this is the bad NVIDIA driver on 10.6.4 - stutter, tex corruption, black screen issues
-#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 	bool    m_badDriver108Intel;	// this is the bad Intel HD4000 driver on 10.8 - intermittent crash on GLSL compilation.
 #endif
 };

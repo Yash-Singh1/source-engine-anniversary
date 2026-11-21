@@ -99,7 +99,7 @@ static GLenum EncodeAttachmentFBO( EGLMFBOAttachment index )
 
 void	CGLMFBO::TexAttach( GLMFBOTexAttachParams *params, EGLMFBOAttachment attachIndex, GLenum fboBindPoint )
 {
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 	// force our parent context to be current
 	m_ctx->MakeCurrent();
 #endif
@@ -227,7 +227,7 @@ void	CGLMFBO::TexAttach( GLMFBOTexAttachParams *params, EGLMFBOAttachment attach
 
 void	CGLMFBO::TexDetach( EGLMFBOAttachment attachIndex, GLenum fboBindPoint )
 {
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 	// force our parent context to be current
 	m_ctx->MakeCurrent();
 #endif

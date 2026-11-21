@@ -332,11 +332,7 @@ public:
 };
 
 // This will be set to the current OpenGL context's entry points.
-#ifdef TOGL_DLL_EXPORT
-extern DLL_EXPORT COpenGLEntryPoints *gGL;
-#else
-extern DLL_IMPORT COpenGLEntryPoints *gGL;
-#endif
+extern COpenGLEntryPoints *gGL;
 typedef void * (*GL_GetProcAddressCallbackFunc_t)(const char *, bool &, const bool, void *);
 
 #ifdef TOGL_DLL_EXPORT

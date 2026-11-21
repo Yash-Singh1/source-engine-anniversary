@@ -3452,7 +3452,7 @@ public:
 
 	void FlushOutstandingQueries( bool bForce )
 	{
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 #line 3424
 #endif
 		tmZone( TELEMETRY_LEVEL2, 0, "FlushOutstandingQueries: %u", m_nNumOutstandingQueryZones );
@@ -3628,7 +3628,7 @@ private:
 	inline void NewTimeSpan( uint64 nStartGPUTime, uint64 nEndGPUTime, const char *pName, uint nTotalDraws )
 	{
 		// apparently we must use level0 for timespans?
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 #line 3595
 #endif
 		tmBeginTimeSpanAt( TELEMETRY_LEVEL0, 1, 0, nStartGPUTime, "%s [C:%u]", pName ? pName : "", nTotalDraws );
@@ -3734,7 +3734,7 @@ void GLMBeginPIXEvent( const char *str )
 	char szName[1024];
 	V_snprintf( szName, sizeof( szName ), "[ID:%u FR:%u] %s", g_nPIXEventIndex, g_GPUTimestampManager.GetCurFrame(), str );
 	const char *p = tmDynamicString( TELEMETRY_LEVEL2, szName ); //p can be null if tm is getting shut down
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 #line 3694
 #endif
 	tmEnter( TELEMETRY_LEVEL2, TMZF_NONE, "PIX %s", p ? p : ""  );
@@ -3772,7 +3772,7 @@ void GLMEndPIXEvent( void )
 
 	sg_pPIXName[0] = '\0';
 		
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 #line 3727
 #endif
 	tmLeave( TELEMETRY_LEVEL2 );
@@ -4255,7 +4255,7 @@ CGLMEditableTextItem::~CGLMEditableTextItem( )
 	
 	if (m_mirror)
 	{
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 		free( m_mirror );
 #else
 		//free( m_mirror );

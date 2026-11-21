@@ -132,7 +132,7 @@ public:
 	void	SetProgramText			( char *text );				// import text to GLM object - invalidate any prev compiled program
 	void	SetShaderName			( const char *name );				// only used for debugging/telemetry markup
 	
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	bool	CompileActiveSources	( void );					// compile only the flavors that were provided.
 	bool	Compile					( EGLMProgramLang lang );
 #else
@@ -172,7 +172,7 @@ public:
 
 	uint					m_samplerMask;			// (1<<n) mask of sampler active locs, if this is a fragment shader (dxabstract sets this field)
 	uint					m_samplerTypes;			// SAMPLER_2D, etc.
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 	uint					m_fragDataMask;			// (1<<n) mask of gl_FragData[n] outputs referenced, if this is a fragment shader (dxabstract sets this field)
 	uint					m_numDrawBuffers;		// number of draw buffers used
 	GLenum					m_drawBuffers[4];		// GL_COLOR_ATTACHMENT0_EXT1, etc
@@ -187,7 +187,7 @@ public:
 
 	char					m_shaderName[64];
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 	// Cache label string from the shader text
 	// example:
 	// trans#2871 label:vs-file vertexlit_and_unlit_generic_vs20 vs-index 294912 vs-combo 1234
@@ -235,7 +235,7 @@ public:
 	bool	RefreshProgramPair		( void );
 		// re-link and re-query the uniforms
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 	bool	ValidateProgramPair( void );
 		// true result means successful link and query
 #endif
@@ -247,7 +247,7 @@ public:
 		
 		m_nScreenWidthHeight = nWidthHeight;
 
-#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 		uint nWidth = nWidthHeight & 0xFFFF, nHeight = nWidthHeight >> 16;
 		// Apply half pixel offset to output vertices to account for the pixel center difference between D3D9 and OpenGL.
 		// We output vertices in clip space, which ranges from [-1,1], so 1.0/width in clip space transforms into .5/width in screenspace, see: "Viewports and Clipping (Direct3D 9)" in the DXSDK
@@ -282,7 +282,7 @@ public:
 	GLint					m_locVertexBoneParams;	// "vcbones"
 	GLint					m_locVertexInteger0;	// "i0"
 			
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	GLint					m_locVertexBool0;		// "b0"
 	GLint					m_locVertexBool1;		// "b1"
 	GLint					m_locVertexBool2;		// "b2"
@@ -309,7 +309,7 @@ public:
 
 	// other stuff
 	bool					m_valid;				// true on successful link
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 	bool					m_bCheckLinkStatus;
 #endif
 	uint					m_revision;				// if this pair is relinked, bump this number.

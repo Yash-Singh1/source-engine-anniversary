@@ -55,7 +55,7 @@
 ConVar gl_debug_output( "gl_debug_output", "1" );
 
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 // Whether or not we should batch up our creation and deletion behavior. 
 ConVar gl_batch_tex_creates( "gl_batch_tex_creates", "0" );
 ConVar gl_batch_tex_destroys( "gl_batch_tex_destroys", "0" ); 
@@ -70,7 +70,7 @@ uint g_nTotalDrawsOrClears, g_nTotalVBLockBytes, g_nTotalIBLockBytes;
 TelemetryGPUStats_t g_TelemetryGPUStats;
 #endif
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 const int kGLMInitialTexCount = 4096;
 const int kGLMReUpTexCount = 1024;
 const int kGLMHighWaterUndeleted = 2048;
@@ -215,7 +215,7 @@ void APIENTRY GL_Debug_Output_Callback(GLenum source, GLenum type, GLuint id, GL
 		       *sType = glTypeToString(type),
 			   *sSeverity = glSeverityToString(severity);
 	
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 	// According to NVidia, this error is a bug in the driver and not really an error (it's a warning in newer drivers): "Texture X is base level inconsistent. Check texture size"
 	if (  ( type == GL_DEBUG_TYPE_ERROR_ARB ) && strstr( message, "base level inconsistent" ) )
 	{
@@ -232,7 +232,7 @@ void APIENTRY GL_Debug_Output_Callback(GLenum source, GLenum type, GLuint id, GL
 	OutputDebugStringA( message );
 #endif
 			
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	if ( type == GL_DEBUG_TYPE_ERROR_ARB )
 #else
 	if ( ( type == GL_DEBUG_TYPE_ERROR_ARB ) && ( g_bDebugOutputBreakpoints ) )
@@ -244,7 +244,7 @@ void APIENTRY GL_Debug_Output_Callback(GLenum source, GLenum type, GLuint id, GL
 
 void GLMDebugPrintf( const char *pMsg, ... )
 {
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	char buf[1024];
 	char *pBuf = buf;
 	char *pHeapBuf = NULL;
@@ -538,7 +538,7 @@ GLMContext *GLMgr::GetCurrentContext( void )
 // GLMContext public methods
 void GLMContext::MakeCurrent( bool bRenderThread )
 {
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 #line 519
 #endif
 	tmZone( TELEMETRY_LEVEL0, 0, "GLMContext::MakeCurrent" );
@@ -586,7 +586,7 @@ void GLMContext::MakeCurrent( bool bRenderThread )
 
 void GLMContext::ReleaseCurrent( bool bRenderThread )
 {
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 #line 569
 #endif
 	tmZone( TELEMETRY_LEVEL0, 0, "GLMContext::ReleaseCurrent" );
@@ -720,8 +720,8 @@ void GLMContext::DumpCaps( void )
 	#define	dumpfield_hex( fff )	printf( "\n  %-30s : 0x%08x", #fff, (int) m_caps.fff )
 	#define	dumpfield_str( fff )	printf( "\n  %-30s : %s", #fff, m_caps.fff )
 
-#ifdef BYTEMATCH_RETAIL
-	printf("\n-------------------------------- context caps for context %08x", (uint)(uintptr_t)this);
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
+	printf("\n-------------------------------- context caps for context %08x", (uint)this);
 #else
 	printf("\n-------------------------------- context caps for context %p", this);
 #endif
@@ -766,7 +766,7 @@ void GLMContext::DumpCaps( void )
 	{
 		dumpfield( m_intel95x );
 		dumpfield( m_intel3100 );
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 		dumpfield( m_intelNewer );
 #else
 		dumpfield( m_intelHD4000 );
@@ -802,7 +802,7 @@ void GLMContext::DumpCaps( void )
 	dumpfield( m_cantResolveScaled );
 	dumpfield( m_costlyGammaFlips );
 	dumpfield( m_badDriver1064NV );
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 	dumpfield( m_badDriver108Intel );
 #endif
 
@@ -813,7 +813,7 @@ void GLMContext::DumpCaps( void )
 	#undef dumpfield_str
 }
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 CGLMTex	*GLMContext::NewTex( GLMTexLayoutKey *key, const char *debugLabel )
 {
 	// get a layout based on the key
@@ -1016,7 +1016,7 @@ void GLMContext::Blit2( CGLMTex *srcTex, GLMRect *srcRect, int srcFace, int srcM
 
 	switch( srcTex->m_layout->m_format->m_glDataFormat )
 	{
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 		case GL_BGRA:	case GL_RGB:	case GL_RGBA:	case GL_ALPHA:	case GL_LUMINANCE:	case GL_LUMINANCE_ALPHA:
 #else
 		case GL_RED: case GL_BGRA:	case GL_RGB:	case GL_RGBA:	case GL_ALPHA:	case GL_LUMINANCE:	case GL_LUMINANCE_ALPHA:
@@ -1838,9 +1838,7 @@ void GLMContext::PreloadTex( CGLMTex *tex, bool force )
 #else
 	if ( !preloadPair->m_valid )
 	{
-#ifndef BYTEMATCH_RETAIL
 		if ( !preloadPair->ValidateProgramPair() )
-#endif
 		{
 			return;
 		}
@@ -1905,7 +1903,7 @@ void GLMContext::PreloadTex( CGLMTex *tex, bool force )
 								0.0f, 0.0f, 0.0f,
 								0.0f, 0.0f, 0.0f };
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	static int indices[] = { 0, 1, 2 };
 	
 
@@ -1942,7 +1940,7 @@ void GLMContext::PreloadTex( CGLMTex *tex, bool force )
 
 CGLMFBO	*GLMContext::NewFBO( void )
 {
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 #line 1821
 #endif
 	GLM_FUNC;
@@ -1956,7 +1954,7 @@ CGLMFBO	*GLMContext::NewFBO( void )
 
 void GLMContext::DelFBO( CGLMFBO *fbo )
 {
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 #line 1832
 #endif
 	GLM_FUNC;
@@ -1998,7 +1996,7 @@ CGLMProgram	*GLMContext::NewProgram( EGLMProgramType type, char *progString, con
 	
 	prog->SetProgramText( progString );
 	prog->SetShaderName( pShaderName );
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	bool compile_ok = prog->CompileActiveSources();
 	(void)compile_ok;
 	if ( !compile_ok )
@@ -2017,7 +2015,7 @@ CGLMProgram	*GLMContext::NewProgram( EGLMProgramType type, char *progString, con
 
 void GLMContext::DelProgram( CGLMProgram *pProg )
 {
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 #line 1886
 #endif
 	GLM_FUNC;
@@ -2059,7 +2057,7 @@ void GLMContext::SetDrawingLang( EGLMProgramLang lang, bool immediate )
 
 void GLMContext::LinkShaderPair( CGLMProgram *vp, CGLMProgram *fp )
 {
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	if ( (m_pairCache) && (m_drawingLang==kGLMGLSL) && (vp && vp->m_descs[kGLMGLSL].m_valid) && (fp && fp->m_descs[kGLMGLSL].m_valid) )
 #else
 	if ( (m_pairCache) && (m_drawingLang==kGLMGLSL) && (vp) && (fp) )
@@ -2074,7 +2072,7 @@ void GLMContext::LinkShaderPair( CGLMProgram *vp, CGLMProgram *fp )
 	}
 }
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 void GLMContext::ValidateShaderPair( CGLMProgram *vp, CGLMProgram *fp )
 {
 	if ((m_pairCache) && (m_drawingLang == kGLMGLSL) && (vp) && (fp))
@@ -2122,7 +2120,7 @@ CGLMBuffer *GLMContext::NewBuffer( EGLMBufferType type, uint size, uint options 
 
 void GLMContext::DelBuffer( CGLMBuffer *buff )
 {
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 #line 1970
 #endif
 	GLM_FUNC;
@@ -2145,7 +2143,7 @@ GLMVertexSetup g_blank_setup;
 
 void GLMContext::Clear( bool color, unsigned long colorValue, bool depth, float depthValue, bool stencil, unsigned int stencilValue, GLScissorBox_t *box )
 {
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 #line 1990
 #endif
 	GLM_FUNC;
@@ -2311,7 +2309,7 @@ static	ConVar gl_texlayoutstats ("gl_texlayoutstats", "0" );
 
 void GLMContext::BeginFrame( void )
 {
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 #line 2153
 #endif
 	GLM_FUNC;
@@ -2331,7 +2329,7 @@ void GLMContext::BeginFrame( void )
 	}
 
 	// scrub some critical shock absorbers
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	for( int i=0; i< m_nNumSetVertexAttributes; i++)
 	{
 		gGL->glDisableVertexAttribArray( i );						// enable GLSL attribute- this is just client state - will be turned back off
@@ -2399,12 +2397,12 @@ void GLMContext::BeginFrame( void )
 
 void GLMContext::EndFrame( void )
 {
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 #line 2229
 #endif
 	GLM_FUNC;
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	if ( !m_oneCtxEnable )
 	{
 		gGL->glFlush();
@@ -2439,7 +2437,7 @@ void GLMContext::DelQuery( CGLMQuery *query )
 	delete query;
 }
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 static ConVar mat_vsync( "mat_vsync", "0", 0, "Force sync to vertical retrace", true, 0.0, true, 1.0 );
 #endif
 
@@ -2447,7 +2445,7 @@ static ConVar mat_vsync( "mat_vsync", "0", 0, "Force sync to vertical retrace", 
 
 ConVar glm_nullrefresh_capslock( "glm_nullrefresh_capslock", "0" );
 ConVar glm_literefresh_capslock( "glm_literefresh_capslock", "0" );
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 ConVar gl_singlecontext( "gl_singlecontext", "1" );
 #endif
 
@@ -2455,7 +2453,7 @@ extern ConVar gl_blitmode;
 
 void GLMContext::Present( CGLMTex *tex )
 {
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 #line 2274
 #endif
 	GLM_FUNC;
@@ -2466,7 +2464,7 @@ void GLMContext::Present( CGLMTex *tex )
 		g_TelemetryGPUStats.m_nTotalPresent++;
 #endif
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 		ProcessTextureDeletes();
 #endif
 
@@ -2483,7 +2481,7 @@ void GLMContext::Present( CGLMTex *tex )
 			gGL->glBindBufferARB( GL_EXTERNAL_VIRTUAL_MEMORY_BUFFER_AMD, m_PinnedMemoryBuffers[m_nCurPinnedMemoryBuffer].GetHandle() );
 		}
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 		if ( gGL->m_bHave_GL_ARB_buffer_storage )
 		{
 			for (uint lpType = 0; lpType < kGLMNumBufferTypes; ++lpType)
@@ -2508,7 +2506,7 @@ void GLMContext::Present( CGLMTex *tex )
 		// old school, do the resolve, had the tex down to cocoamgr to actually blit.
 		// that way is required if you are not in one-context mode (10.5.8)
 	
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 		if ( m_oneCtxEnable && (gl_blitmode.GetInt() != 0) )
 #else
 		if ( (gl_blitmode.GetInt() != 0) )
@@ -2521,7 +2519,7 @@ void GLMContext::Present( CGLMTex *tex )
 		CShowPixelsParams showparams;
 		memset( &showparams, 0, sizeof(showparams) );
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 		static ConVarRef mat_vsync( "mat_vsync" );
 		bool bVsync = mat_vsync.IsValid() ? mat_vsync.GetBool() : false;
 		showparams.m_srcTexName	= tex->m_texName;
@@ -2591,7 +2589,7 @@ void GLMContext::Present( CGLMTex *tex )
 				// we set showparams.m_noBlit, and just let CocoaMgr handle the swap (flushbuffer / page flip)
 				showparams.m_noBlit = true;
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 				if ( m_oneCtxEnable )
 				{
 					BindFBOToCtx( NULL, GL_FRAMEBUFFER_EXT );
@@ -2604,7 +2602,7 @@ void GLMContext::Present( CGLMTex *tex )
 			{
 				ResolveTex( tex, true );	// dxabstract used to do this unconditionally.we still do if new refresh mode doesn't engage.
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 				if ( m_oneCtxEnable )
 				{
 					BindFBOToCtx( NULL, GL_FRAMEBUFFER_EXT );
@@ -2625,7 +2623,7 @@ void GLMContext::Present( CGLMTex *tex )
 
 		//	put the original FB back in place (both read and draw)
 		// this bind will hit both read and draw bindings
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 		if ( m_oneCtxEnable )
 		{
 			BindFBOToCtx( m_drawingFBO, GL_FRAMEBUFFER_EXT );
@@ -2686,7 +2684,7 @@ bool GLMContext::SetDisplayParams( GLMDisplayParams *params )
 
 ConVar gl_can_query_fast("gl_can_query_fast", "0");
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 static uint gPersistentBufferSize[kGLMNumBufferTypes] = 
 {
 	2 * 1024 * 1024,	// kGLMVertexBuffer
@@ -2698,7 +2696,7 @@ static uint gPersistentBufferSize[kGLMNumBufferTypes] =
 
 GLMContext::GLMContext( IDirect3DDevice9 *pDevice, GLMDisplayParams *params )
 {
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	m_bUseSamplerObjects = true;
 	if ( CommandLine()->CheckParm( "-gl_disablesamplerobjects" ) )
 	{
@@ -2772,7 +2770,7 @@ GLMContext::GLMContext( IDirect3DDevice9 *pDevice, GLMDisplayParams *params )
 	}
 #endif // OSX
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 	m_nCurPersistentBuffer = 0;
 	if ( gGL->m_bHave_GL_ARB_buffer_storage )
 	{
@@ -2834,7 +2832,7 @@ GLMContext::GLMContext( IDirect3DDevice9 *pDevice, GLMDisplayParams *params )
 #if defined( USE_SDL )
 	m_ctx = (SDL_GLContext)GetGLContextForWindow( params ? (void*)params->m_focusWindow : NULL );
 	MakeCurrent( true );
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	m_oneCtxEnable = true;
 #endif
 #else
@@ -2882,7 +2880,7 @@ GLMContext::GLMContext( IDirect3DDevice9 *pDevice, GLMDisplayParams *params )
 	m_texLayoutTable = new CGLMTexLayoutTable;
 
 #ifndef OSX
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 	if ( m_bUseSamplerObjects )
 #endif
 	{
@@ -2908,7 +2906,7 @@ GLMContext::GLMContext( IDirect3DDevice9 *pDevice, GLMDisplayParams *params )
 		params.m_packed.m_mipFilter = D3DTEXF_NONE;
 		params.m_packed.m_maxAniso = 1;
 		params.m_packed.m_isValid = true;
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 		params.m_packed.m_compareMode = 0;
 #endif
 	}
@@ -2954,7 +2952,7 @@ GLMContext::GLMContext( IDirect3DDevice9 *pDevice, GLMDisplayParams *params )
 	m_pairCache	= new CGLMShaderPairCache( this );
 	m_pBoundPair = NULL;
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 	m_fragDataMask = 0;
 #endif
 			
@@ -3022,7 +3020,7 @@ GLMContext::GLMContext( IDirect3DDevice9 *pDevice, GLMDisplayParams *params )
 		m_scratchFBO[i] = NewFBO();
 	}
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 	// Create a PBO that we can use to fill textures with bogus data asyncronously.
 	m_nBoundGLBuffer[ kGLMPixelBuffer ] = 0;
 
@@ -3117,7 +3115,7 @@ GLMContext::GLMContext( IDirect3DDevice9 *pDevice, GLMDisplayParams *params )
 	m_nTotalPSUniformsSet = 0;
 #endif
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 	// See g_D3DRS_INFO_packed in dxabstract.cpp; dithering is a non-managed
 	// piece of state that we consider off by default. However it is actually
 	// enabled by default in the GL spec, so account for that here.
@@ -3140,7 +3138,7 @@ GLMContext::~GLMContext	()
 		m_PinnedMemoryBuffers[t].Deinit();
 	}
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 	if (gGL->m_bHave_GL_ARB_buffer_storage)
 	{
 		for (uint lpType = 0; lpType < kGLMNumBufferTypes; ++lpType)
@@ -3160,7 +3158,7 @@ GLMContext::~GLMContext	()
 			gGL->glBindSampler( i, 0 );
 		}
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 		for( int i=0; i< cSamplerObjectHashSize; i++)
 		{
 			gGL->glDeleteSamplers( 1, &m_samplerObjectHash[i].m_samplerObject );
@@ -3168,7 +3166,7 @@ GLMContext::~GLMContext	()
 		}
 #endif
 	}
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	for( int i=0; i< cSamplerObjectHashSize; i++)
 	{
 		gGL->glDeleteSamplers( 1, &m_samplerObjectHash[i].m_samplerObject );
@@ -3183,7 +3181,7 @@ GLMContext::~GLMContext	()
 		m_debugFontTex = NULL;
 	}
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 	ProcessTextureDeletes();
 #endif
 
@@ -3211,7 +3209,7 @@ GLMContext::~GLMContext	()
 
 	// m_texLayoutTable can be scrubbed once we know that all the tex are freed
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 	gGL->glDeleteBuffersARB( 1, &m_destroyPBO );
 
 	PurgeTexCache();
@@ -3318,7 +3316,7 @@ void GLMContext::BindBufferToCtx( EGLMBufferType type, CGLMBuffer *pBuff, bool b
 
 	CheckCurrent();
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	GLuint nGLName = pBuff ? pBuff->m_nHandle : 0;
 #else
 	GLuint nGLName = pBuff ? pBuff->GetHandle() : 0;
@@ -3346,7 +3344,7 @@ void GLMContext::BindBufferToCtx( EGLMBufferType type, CGLMBuffer *pBuff, bool b
 }
 
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 GLuint GLMContext::CreateTex( GLenum texBind, GLenum internalFormat )
 {
 	GLM_FUNC;
@@ -3520,7 +3518,7 @@ void GLMContext::FlushDrawStatesNoShaders( )
 {
 	Assert( ( m_drawingFBO == m_boundDrawFBO ) && ( m_drawingFBO == m_boundReadFBO ) ); // this check MUST succeed
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 #line 3050
 #endif
 	GLM_FUNC;
@@ -4902,7 +4900,7 @@ void GLMContext::CheckNative( void )
 		{
 			const char	*decodedStr = GLMDecode( eGL_ERROR, errorcode );
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 			GLMDebugPrintf( "\nGL ERROR! %08x = '%s'\n", errorcode, decodedStr );
 #else
 			char buf[512];
@@ -4924,7 +4922,7 @@ void GLMContext::CheckNative( void )
 
 
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 // debug font
 void GLMContext::GenDebugFontTex( void )
 {
@@ -5210,7 +5208,7 @@ void GLMContext::DrawDebugText( float x, float y, float z, float drawCharWidth, 
 
 //===============================================================================
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 void GLMgrSelfTests( void )	
 {
 	return;	// until such time as the tests are revised or axed
@@ -5272,7 +5270,7 @@ void GLMgrSelfTests( void )
 
 void GLMContext::SetDefaultStates( void )
 {
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 #line 4439
 #endif
 	GLM_FUNC;
@@ -5323,7 +5321,7 @@ void GLMContext::SetDefaultStates( void )
 
 void GLMContext::VerifyStates		( void )
 {
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 #line 4487
 #endif
 	GLM_FUNC;
@@ -5423,7 +5421,7 @@ void GLMContext::DrawRangeElementsNonInline( GLenum mode, GLuint start, GLuint e
 		// you have to pass actual address, not offset
 		indicesActual = (void*)( (intp)indicesActual + (intp)pIndexBuf->m_pPseudoBuf );
 	}
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 	if (pIndexBuf->m_bUsingPersistentBuffer)
 	{
 		indicesActual = (void*)( (intp)indicesActual + (intp)pIndexBuf->m_nPersistentBufferStartOffset );
@@ -5645,7 +5643,7 @@ void glGetEnumv( GLenum which, GLenum *dst )
 //===============================================================================
 
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 GLMTester::GLMTester(GLMTestParams *params)
 {
 	m_params = *params;

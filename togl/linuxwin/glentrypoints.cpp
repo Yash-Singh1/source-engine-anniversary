@@ -125,7 +125,7 @@ bool g_bPrintOpenGLCalls = false;
 #undef GL_EXT
 #endif
 
-DLL_EXPORT COpenGLEntryPoints *gGL = NULL;
+COpenGLEntryPoints *gGL = NULL;
 GL_GetProcAddressCallbackFunc_t gGL_GetProcAddressCallback = NULL;
 
 void *VoidFnPtrLookup_GlMgr(const char *fn, bool &okay, const bool bRequired, void *fallback)
@@ -375,7 +375,7 @@ COpenGLEntryPoints::COpenGLEntryPoints()
 	pszString = ( const char * )glGetString(GL_EXTENSIONS);
 	m_pGLDriverStrings[cGLExtensionsString] = strdup( pszString ? pszString : "" );
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 	printf( "OpenGL: %s %s (%d.%d.%d)\n", m_pGLDriverStrings[ cGLRendererString ], m_pGLDriverStrings[ cGLVersionString ],
 		m_nOpenGLVersionMajor, m_nOpenGLVersionMinor, m_nOpenGLVersionPatch );
 #endif
@@ -458,7 +458,7 @@ COpenGLEntryPoints::COpenGLEntryPoints()
 	}
 #endif // !OSX
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	GLMDebugPrintf( "GL_NV_bindless_texture: %s\n", m_bHave_GL_NV_bindless_texture ? "ENABLED" : "DISABLED" );
 	GLMDebugPrintf( "GL_AMD_pinned_memory: %s\n", m_bHave_GL_AMD_pinned_memory ? "ENABLED" : "DISABLED" );
 	GLMDebugPrintf( "GL_EXT_texture_sRGB_decode: %s\n", m_bHave_GL_EXT_texture_sRGB_decode ? "AVAILABLE" : "NOT AVAILABLE" );
@@ -501,7 +501,7 @@ COpenGLEntryPoints::COpenGLEntryPoints()
 
 COpenGLEntryPoints::~COpenGLEntryPoints()
 {
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	for ( uint i = 0; i < cGLTotalDriverStrings; ++i )
 #else
 	for ( uint i = 0; i < cGLTotalDriverProviders; ++i )

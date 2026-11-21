@@ -2229,6 +2229,10 @@ void Menu::SetItemUppercase( int itemID, bool state )
 		return;
 
 	m_MenuItems[itemID]->SetAllCaps( state );
+#ifdef PLATFORM_64BITS
+	m_MenuItems[itemID]->SizeToContents();
+	_recalculateWidth = true;
+#endif
 }
 #endif
 #line 2232

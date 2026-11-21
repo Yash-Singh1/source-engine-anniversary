@@ -68,7 +68,7 @@ extern void glBufferSubDataMaxSize( GLenum target, GLintptr offset, GLsizeiptr s
 
 //===========================================================================//
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 // Creates an immutable storage for a buffer object
 // https://www.opengl.org/registry/specs/ARB/buffer_storage.txt
 class CPersistentBuffer
@@ -190,7 +190,7 @@ public:
 	void Lock( GLMBuffLockParams *pParams, char **pAddressOut );
 	void Unlock( int nActualSize = -1, const void *pActualData = NULL );
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 	GLuint GetHandle() const;
 #endif
 		
@@ -233,7 +233,7 @@ public:
 
 	int						m_nPinnedMemoryOfs;
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 	uint					m_nPersistentBufferStartOffset;
 	bool					m_bUsingPersistentBuffer;
 #endif

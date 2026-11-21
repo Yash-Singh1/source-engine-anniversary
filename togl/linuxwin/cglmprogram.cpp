@@ -52,7 +52,7 @@ ConVar	gl_shaderpair_cacherows_lg2( "gl_paircache_rows_lg2", "10");		// 10 is mi
 ConVar	gl_shaderpair_cacheways_lg2( "gl_paircache_ways_lg2", "5");		// 5 is minimum
 ConVar	gl_shaderpair_cachelog( "gl_shaderpair_cachelog", "0" );
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 static CCycleCount	gShaderCompileTime;
 static int			gShaderCompileCount = 0;
 static CCycleCount	gShaderCompileQueryTime;
@@ -110,7 +110,7 @@ CGLMProgram::CGLMProgram( GLMContext *ctx, EGLMProgramType type )
 
 	m_samplerMask    = 0;	// dxabstract sets this field later
 	m_samplerTypes   = 0;
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 	m_fragDataMask   = 0;
 	m_numDrawBuffers = 0;
 	memset( &m_drawBuffers, 0, sizeof( m_drawBuffers ) );
@@ -138,7 +138,7 @@ CGLMProgram::CGLMProgram( GLMContext *ctx, EGLMProgramType type )
 	m_nCentroidMask = 0;
 	m_nShadowDepthSamplerMask = 0;
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 	m_labelName[0]	= '\0';
 	m_labelIndex	= -1;
 	m_labelCombo	= -1;
@@ -333,7 +333,7 @@ void	CGLMProgram::SetProgramText( char *text )
 		}
 	}
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 	// find the label string
 	// example:
 	// trans#2871 label:vs-file vertexlit_and_unlit_generic_vs20 vs-index 294912 vs-combo 1234
@@ -355,7 +355,7 @@ void	CGLMProgram::SetProgramText( char *text )
 #endif
 }
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 bool	CGLMProgram::CompileActiveSources	( void )
 {
 	bool result = true;	// assume success
@@ -387,7 +387,7 @@ void	CGLMProgram::CompileActiveSources	( void )
 }
 #endif
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 bool	CGLMProgram::Compile( EGLMProgramLang lang )
 {
 	bool result = true;	// indicating validity..
@@ -452,7 +452,7 @@ void	CGLMProgram::Compile( EGLMProgramLang lang )
 			
 			CheckValidity( lang );
 			// leave it bound n enabled, don't care (draw will sort it all out)
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 			result = arbDesc->m_valid;
 #endif
 		}
@@ -518,7 +518,7 @@ void	CGLMProgram::Compile( EGLMProgramLang lang )
 			gGL->glCompileShaderARB( glslDesc->m_object.glsl );
 			glslDesc->m_compiled = true;	// compiled but not necessarily valid
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 			CheckValidity( lang );
 #else
 			// Check shader validity at creation time.  This will cause the driver to not be able to
@@ -544,14 +544,14 @@ void	CGLMProgram::Compile( EGLMProgramLang lang )
 				GetComboIndexNameString( tempname, sizeof(tempname) );
 				printf("\ncompile: %s on GL name %d ", tempname, glslDesc->m_object.glsl );
 			}
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 			result = glslDesc->m_valid;
 #endif
 		}
 		break;
 	}
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	return result;
 #else
 	if (bTimeShaderCompiles)
@@ -711,7 +711,7 @@ bool CGLMProgram::CheckValidity( EGLMProgramLang lang )
 {
 	static char *targnames[] = { "vertex", "fragment" };
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 	bool bTimeShaderCompiles = (CommandLine()->FindParm( "-gl_time_shader_compiles" ) != 0);
 	// If using "-gl_time_shader_compiles", keeps track of total cycle count spent on shader compiles.
 	CFastTimer shaderCompileTimer;
@@ -788,7 +788,7 @@ bool CGLMProgram::CheckValidity( EGLMProgramLang lang )
 				free( temp );
 			}
 			
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 			return arbDesc->m_valid;
 #else
 			bValid = arbDesc->m_valid;
@@ -813,7 +813,7 @@ bool CGLMProgram::CheckValidity( EGLMProgramLang lang )
 
 			gGL->glGetObjectParameterivARB( (GLhandleARB)glslDesc->m_object.glsl, GL_OBJECT_COMPILE_STATUS_ARB, &compiled);
 			gGL->glGetObjectParameterivARB( (GLhandleARB)glslDesc->m_object.glsl, GL_OBJECT_INFO_LOG_LENGTH_ARB, &length);
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 			logString = (GLcharARB *)malloc(length * sizeof(GLcharARB));
 			gGL->glGetInfoLogARB((GLhandleARB)glslDesc->m_object.glsl, length, &laux, logString);	
 #else
@@ -842,14 +842,14 @@ bool CGLMProgram::CheckValidity( EGLMProgramLang lang )
 				GLMPRINTF(("-D- -----end-----" ));
 			}
 			
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 			free( logString );
 #else
             if ( logString )
                 free( logString );
 #endif
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 			return glslDesc->m_valid;
 #else
 			bValid = glslDesc->m_valid;
@@ -858,7 +858,7 @@ bool CGLMProgram::CheckValidity( EGLMProgramLang lang )
 		break;
 	}
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	return false;
 #else
 	if ( !bValid )
@@ -925,7 +925,7 @@ void	CGLMProgram::GetLabelIndexCombo		( char *labelOut, int labelOutMaxChars, in
 	*labelOut = 0;
 	*indexOut = -1;
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	char *lineStr = strstr( m_text, "// trans#" );
 	if (lineStr)
 	{
@@ -970,7 +970,7 @@ void	CGLMProgram::GetComboIndexNameString	( char *stringOut, int stringOutMaxCha
 	
 	*stringOut = 0;
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	char *lineStr = strstr( m_text, "// trans#" );
 	if (lineStr)
 	{
@@ -1025,7 +1025,7 @@ CGLMShaderPair::CGLMShaderPair( GLMContext *ctx  )
 	m_locVertexScreenParams = -1;
 	m_nScreenWidthHeight = 0xFFFFFFFF;
 	m_locVertexInteger0 = -1;	// "i0"
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	m_locVertexBool0 = -1;
 	m_locVertexBool1 = -1;
 	m_locVertexBool2 = -1;
@@ -1044,7 +1044,7 @@ CGLMShaderPair::CGLMShaderPair( GLMContext *ctx  )
 	memset( m_locSamplers, 0xFF, sizeof( m_locSamplers ) );
 	
 	m_valid = false;
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 	m_bCheckLinkStatus = false;
 #endif
 	m_revision = 0;				// bumps to 1 once linked
@@ -1059,7 +1059,7 @@ CGLMShaderPair::~CGLMShaderPair( )
 	}
 }
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 bool CGLMShaderPair::ValidateProgramPair()
 {
 	if ( m_vertexProg && m_vertexProg->m_descs[kGLMGLSL].m_textPresent && !m_vertexProg->m_descs[kGLMGLSL].m_valid )
@@ -1242,7 +1242,7 @@ bool CGLMShaderPair::ValidateProgramPair()
 // glUseProgram() will be called as a side effect!
 bool CGLMShaderPair::SetProgramPair( CGLMProgram *vp, CGLMProgram *fp )
 {
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	m_valid	= false;			// assume failure
 	
 	// true result means successful link and query
@@ -1359,11 +1359,7 @@ bool CGLMShaderPair::SetProgramPair( CGLMProgram *vp, CGLMProgram *fp )
 
 	if (m_valid)
 	{
-#ifdef OSX
-		gGL->glUseProgramObjectARB( m_program );
-#else
 		gGL->glUseProgram( m_program );
-#endif
 
 		m_ctx->NewLinkedProgram();
 				
@@ -1828,7 +1824,7 @@ void	CGLMShaderPairCache::QueryShaderPair( int index, GLMShaderPairInfo *infoOut
 
 		CGLMPairCacheEntry *entry = &m_entries[index];
 		
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 		if ( entry->m_pair && entry->m_pair->m_vertexProg && entry->m_pair->m_fragmentProg )
 #else
 		if (entry->m_pair)

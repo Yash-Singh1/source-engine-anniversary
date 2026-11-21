@@ -181,8 +181,14 @@ public:
 	memhandle_t CreateResource( const CREATE_PARAMS &createParams, bool bCreateLocked = false )
 	{
 		BaseClass::EnsureCapacity(STORAGE_TYPE::EstimatedSize(createParams));
+#ifdef PLATFORM_64BITS
+		STORAGE_TYPE *pStore = STORAGE_TYPE::CreateResource( createParams );
+		AUTO_LOCK_( CDataManagerBase, *this );
+		unsigned short memoryIndex = BaseClass::CreateHandle( bCreateLocked );
+#else
 		unsigned short memoryIndex = BaseClass::CreateHandle( bCreateLocked );
 		STORAGE_TYPE *pStore = STORAGE_TYPE::CreateResource( createParams );
+#endif
 		return BaseClass::StoreResourceInHandle( memoryIndex, pStore, pStore->Size() );
 	}
 

@@ -61,9 +61,10 @@ unsigned int CDataManagerBase::FlushAllUnlocked()
 
 	Unlock();
 
-	for ( int i = 0; i < nFlush; i++ )
+	for ( int i = 0; i < destroyList.Count(); i++ )
 	{
-		DestroyResourceStorage( destroyList[i] );
+		if ( destroyList[i] )
+			DestroyResourceStorage( destroyList[i] );
 	}
 
 	return ( nBytesInitial - MemUsed_Inline() );
@@ -111,9 +112,10 @@ unsigned int CDataManagerBase::FlushAll()
 	m_listsAreFreed = false;
 	Unlock();
 
-	for ( int i = 0; i < nFlush; i++ )
+	for ( int i = 0; i < destroyList.Count(); i++ )
 	{
-		DestroyResourceStorage( destroyList[i] );
+		if ( destroyList[i] )
+			DestroyResourceStorage( destroyList[i] );
 	}
 
 	return result;
@@ -372,7 +374,7 @@ void *CDataManagerBase::GetForFreeByIndex( unsigned short memoryIndex )
 		Assert( m_memoryLists[memoryIndex].lockCount == 0 );
 
 		resource_lru_element_t &mem = m_memoryLists[memoryIndex];
-		unsigned size = GetRealSize( mem.pStore );
+		unsigned size = mem.pStore ? GetRealSize( mem.pStore ) : 0;
 		if ( size > m_memUsed )
 		{
 			ExecuteOnce( Warning( "Data manager 'used' memory incorrect\n" ) );

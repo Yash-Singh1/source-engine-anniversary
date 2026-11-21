@@ -7033,7 +7033,7 @@ void CShaderAPIDx8::SetTextureState( Sampler_t sampler, ShaderAPITextureHandle_t
 	) {
 		samplerState.m_UTexWrap = uTexWrap; samplerState.m_VTexWrap = vTexWrap; samplerState.m_WTexWrap = wTexWrap;
 		samplerState.m_MinFilter = minFilter; samplerState.m_MagFilter = magFilter; samplerState.m_MipFilter = mipFilter;
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 		Dx9Device()->SetSamplerStates( sampler, uTexWrap, vTexWrap, wTexWrap, minFilter, magFilter, mipFilter );
 #else
 		samplerState.m_FinestMipmapLevel = finestMipmapLevel; samplerState.m_LodBias = lodBias;

@@ -1204,7 +1204,7 @@ void	GLMDisplayDB::PopulateRenderers( void )
 								{
 									case	0x27A6:	fields.m_intel95x = true;		break;	// GMA 950
 									case	0x2A02:	fields.m_intel3100 = true;		break;	// X3100
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && defined( TOGL_OSX )
 									default:		if ( fields.m_pciDeviceID > 0x2A02 ) fields.m_intelNewer = true;	break;
 #endif
 #line 1148
