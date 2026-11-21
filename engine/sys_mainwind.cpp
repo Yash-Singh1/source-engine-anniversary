@@ -1372,9 +1372,13 @@ void CGame::PlayStartupVideos( void )
 
 		// get the path to the media file and play it.
 		char localPath[MAX_PATH];
+		localPath[0] = 0;
 
- 		    g_pFileSystem->GetLocalPath( com_token, localPath, sizeof(localPath) );
- 		
+		if ( !g_pFileSystem->GetLocalPath( com_token, localPath, sizeof(localPath) ) )
+		{
+			V_strncpy( localPath, com_token, sizeof(localPath) );
+		}
+		
 		PlayVideoAndWait( localPath, bNeedHealthWarning );
 		localPath[0] = 0; // just to make sure we don't play the same avi file twice in the case that one movie is there but another isn't.
 	}
