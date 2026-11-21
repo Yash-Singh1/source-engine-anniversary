@@ -37,6 +37,9 @@ CCommandBuffer::CCommandBuffer( ) : m_Commands( 32, 32 )
 	m_nArgSBufferSize = 0;
 	m_bIsProcessingCommands = false;
 	m_nMaxArgSBufferLength = ARGS_BUFFER_LENGTH;
+#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
+	m_bWaitEnabled = true;
+#endif
 }
 
 CCommandBuffer::~CCommandBuffer()
@@ -395,7 +398,11 @@ void CCommandBuffer::EndProcessingCommands()
 			break;
 
 		AssertMsgOnce( false, "CCommandBuffer::EndProcessingCommands() called before all appropriate commands were dequeued.\n" );
+#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
+		intp nNext = m_Commands.Next( i );
+#else
 		intp nNext = i;
+#endif
 		Msg( "Warning: Skipping command %s\n", &m_pArgSBuffer[ m_Commands[i].m_nFirstArgS ] );
 		m_Commands.Remove( i );
 		i = nNext;

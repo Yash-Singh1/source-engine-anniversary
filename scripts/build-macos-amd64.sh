@@ -1,8 +1,9 @@
 #!/bin/sh
+set -e
 
-git submodule init && git submodule update
+git submodule update --init
 
-brew install sdl2
+brew install pkg-config sdl2 freetype fontconfig jpeg-turbo libpng
 
-./waf configure -T debug --disable-warns $* &&
-./waf build
+python3 ./waf configure -T release --prefix='' --build-games=hl2_complete --disable-warns "$@"
+python3 ./waf build

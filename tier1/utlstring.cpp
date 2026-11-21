@@ -133,7 +133,7 @@ CUtlString::CUtlString( const char *pString )
 {
 	Set( pString );
 }
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
 CUtlString::CUtlString( const char *pString, int length )
 {
 	SetDirect( pString, length );
@@ -188,6 +188,10 @@ void CUtlString::SetLength( int nLen )
 
 	// Add 1 to account for the NULL
 	m_Storage.SetLength( nLen > 0 ? nLen + 1 : 0 );
+#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
+	if ( nLen > 0 )
+		m_Storage[ nLen ] = '\0';
+#endif
 }
 
 const char *CUtlString::Get( ) const
@@ -581,7 +585,7 @@ void CUtlString::Append( const char *pchAddition )
 {
 	*this += pchAddition;
 }
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
 void CUtlString::Append( const char *pchAddition, int nChars )
 {
 	Assert( !m_Storage.IsReadOnly() );
@@ -869,7 +873,7 @@ CUtlString CUtlString::operator+( int rhs ) const
 	return ret;
 }
 #endif
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
 // Shared static empty string.
 const CUtlString &CUtlString::GetEmptyString()
 {
