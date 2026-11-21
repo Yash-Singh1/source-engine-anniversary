@@ -42,7 +42,7 @@ void CByteswap::SwapFieldToTargetEndian( void* pOutputBuffer, void *pData, typed
 		SwapBufferToTargetEndian<uint>( (uint*)pOutputBuffer, (uint*)pData, pField->fieldSize * 2 );
 		break;
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
     case FIELD_INTEGER64: SwapBufferToTargetEndian<uint64>( (uint64*)pOutputBuffer, (uint64*)pData, pField->fieldSize ); break;
 #else
 	// retail's FIELD_INTEGER64; datamap.h leaves it out in retail mode to keep FIELD_TYPECOUNT

@@ -350,7 +350,11 @@ protected:
 
 
 template< class DummyType >
+#ifdef PLATFORM_64BITS
+class CIntHandle32 : public CBaseIntHandle< unsigned int >
+#else
 class CIntHandle32 : public CBaseIntHandle< unsigned long >
+#endif
 {
 public:
 	inline			CIntHandle32() {}

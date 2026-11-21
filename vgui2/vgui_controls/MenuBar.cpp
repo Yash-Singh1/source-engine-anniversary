@@ -221,9 +221,14 @@ void MenuBar::OnMenuClose()
 //-----------------------------------------------------------------------------
 // Purpose: Message map
 //-----------------------------------------------------------------------------
+#ifdef PLATFORM_64BITS
+void MenuBar::OnCursorEnteredMenuButton(VPANEL menuButton)
+{
+#else
 void MenuBar::OnCursorEnteredMenuButton(int VPanel)
 {
 	VPANEL menuButton = (VPANEL)VPanel;
+#endif
 	// see if we had a menu open
 	for ( int i = 0; i < m_pMenuButtons.Count(); i++)
 	{

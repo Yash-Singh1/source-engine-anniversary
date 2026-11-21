@@ -1629,7 +1629,7 @@ int CStudioRenderContext::GetMaterialList( studiohdr_t *pStudioHdr, int count, I
 	if ( !pStudioHdr )
 		return 0;
 
-	if ( pStudioHdr->textureindex == 0 )
+	if ( pStudioHdr->id != (('T'<<24)+('S'<<16)+('D'<<8)+'I') || pStudioHdr->textureindex <= 0 || pStudioHdr->textureindex >= pStudioHdr->length )
 		return 0;
 
 	// iterate each texture

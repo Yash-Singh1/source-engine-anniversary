@@ -1130,10 +1130,17 @@ void CBasePanel::OnThink()
 
 				const char *pszMenuCategory = m_strSwitchMod.String();
 				m_pGameMenu->SetMenuCategory( pszMenuCategory );
-				m_iSwitchModState = 2;
+				if ( engine->IsConnected() )
+				{
+					m_iSwitchModState = 2;
 
-				CFmtStr strCommand( "disconnect\n" );
-				engine->ClientCmd_Unrestricted( strCommand );
+					CFmtStr strCommand( "disconnect\n" );
+					engine->ClientCmd_Unrestricted( strCommand );
+				}
+				else
+				{
+					m_iSwitchModState = 3;
+				}
 			}
 			break;
 
@@ -1150,13 +1157,14 @@ void CBasePanel::OnThink()
 			{
 				m_pGameMenuButtons[i]->SetVisible( true );
 			}
+			UpdateGameMenus();
 			SetMenuAlpha( 0 );
 			m_iSwitchModState = 0;
 			break;
 		}
-
-		BaseClass::OnThink();
 	}
+
+	BaseClass::OnThink();
 }
 
 static const char *g_rgValidCommands[] =
@@ -1996,6 +2004,9 @@ void CBasePanel::UpdateGameMenus()
 //-----------------------------------------------------------------------------
 void CBasePanel::SwitchExpansion( const char *pszExpansion )
 {
+	if ( m_iSwitchModState )
+		return;
+
 	char szExpansion[16];
 	if ( !g_pFullFileSystem->GetCurrentGameExpansionId( szExpansion, sizeof( szExpansion ) ) || V_strlen( pszExpansion ) <= 0 )
 		return;
@@ -2003,6 +2014,7 @@ void CBasePanel::SwitchExpansion( const char *pszExpansion )
 	if ( !V_stricmp( pszExpansion, szExpansion ) )
 	{
 		m_pGameMenu->SetMenuCategory( pszExpansion );
+		UpdateGameMenus();
 		UpdateTitleText( V_stricmp( pszExpansion, "main" ) != 0 );
 	}
 	else
@@ -2830,8 +2842,9 @@ void CBasePanel::RunMenuCommand(const char *command)
 			if ( m_pGameMenu )
 			{
 				m_pGameMenu->SetMenuCategory( pszCategory );
+				UpdateGameMenus();
 			}
-			UpdateTitleText( true );
+			UpdateTitleText( V_stricmp( pszCategory, "main" ) != 0 );
 		}
 	}
 	else if ( Q_stristr( command, "SwitchExpansion " ) )
@@ -5603,8 +5616,25 @@ void CBasePanel::RefreshDialogs()
 		vgui_drawtree.SetValue( 0 );
 	}
 
+	bool bWasEverActivated = m_bEverActivated;
+	bool bWasPlatformMenuInitialized = m_bPlatformMenuInitialized;
+	CUtlString strSavedCategory( m_pGameMenu && m_pGameMenu->GetMenuCategory() ? m_pGameMenu->GetMenuCategory() : "main" );
+
 	DeletePanel();
 	MakeBasePanel();
+
+	if ( g_pBasePanel )
+	{
+		g_pBasePanel->m_bEverActivated = bWasEverActivated;
+		g_pBasePanel->m_bPlatformMenuInitialized = bWasPlatformMenuInitialized;
+		if ( g_pBasePanel->m_pGameMenu && !strSavedCategory.IsEmpty() )
+		{
+			g_pBasePanel->m_pGameMenu->SetMenuCategory( strSavedCategory.Get() );
+		}
+		g_pBasePanel->UpdateGameMenus();
+		g_pBasePanel->UpdateTitleText( V_stricmp( strSavedCategory.Get(), "main" ) != 0 );
+		g_pBasePanel->SetMenuAlpha( 255 );
+	}
 
 	if ( bNewGameDialog )
 	{

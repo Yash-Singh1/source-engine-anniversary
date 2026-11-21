@@ -4469,7 +4469,7 @@ int Mod_GetModelMaterials( model_t* pModel, int count, IMaterial** ppMaterials )
 		}
 		else
 		{
-			// Get the studiohdr into the cache
+			MDLCACHE_CRITICAL_SECTION_( g_pMDLCache );
 			pStudioHdr = g_pMDLCache->GetStudioHdr( pModel->studio );
 			// Get the list of materials
 			found = g_pStudioRender->GetMaterialList( pStudioHdr, count, ppMaterials );

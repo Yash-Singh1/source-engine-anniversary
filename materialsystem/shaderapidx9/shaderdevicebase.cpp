@@ -710,7 +710,7 @@ static unsigned long GetRam()
 	GlobalMemoryStatus( &stat );
 	
 	char buf[256];
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 	V_snprintf( buf, sizeof( buf ), "GlobalMemoryStatus: %u\n", stat.dwTotalPhys );
 #else
 	V_snprintf( buf, sizeof( buf ), "GlobalMemoryStatus: %llu\n", (uint64)(stat.dwTotalPhys) );

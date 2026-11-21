@@ -53,7 +53,7 @@ unsigned long g_iCurRandomValueOffset = 0;
 
 void InitializeToFeeFee( void *pMem, int nSize )
 {
-	unsigned long *pCurDWord = (unsigned long*)pMem;
+	uint32 *pCurDWord = (uint32*)pMem;
 	int nDWords = nSize >> 2;
 	while ( nDWords )
 	{

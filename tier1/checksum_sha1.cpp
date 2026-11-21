@@ -91,12 +91,12 @@ void CSHA1::Reset()
 }
 
 #ifdef	_MINIMUM_BUILD_
-void Minimum_CSHA1::Transform(unsigned long state[5], unsigned char buffer[64])
+void Minimum_CSHA1::Transform(sha1_uint32_t state[5], unsigned char buffer[64])
 #else
-void CSHA1::Transform(unsigned long state[5], unsigned char buffer[64])
+void CSHA1::Transform(sha1_uint32_t state[5], unsigned char buffer[64])
 #endif
 {
-	unsigned long a = 0, b = 0, c = 0, d = 0, e = 0;
+	sha1_uint32_t a = 0, b = 0, c = 0, d = 0, e = 0;
 
 	memcpy(m_block, buffer, 64);
 

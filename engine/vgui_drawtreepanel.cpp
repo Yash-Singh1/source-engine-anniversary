@@ -268,7 +268,7 @@ public:
 
 			if ( data )
 			{
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 				g_DrawTreeSelectedPanel = (data) ? (vgui::VPANEL)data->GetInt( "PanelPtr", 0 ) : 0;
 #else
 				g_DrawTreeSelectedPanel = (data) ? (vgui::VPANEL)data->GetPtr( "PanelPtr", 0 ) : 0;
@@ -396,7 +396,7 @@ void VGui_RecursivePrintTree(
 		Q_snprintf( str, sizeof( str ), "%s", name );
 
 	pVal->SetString( "Text", str );
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 	pVal->SetInt( "PanelPtr", current );
 #else
 	pVal->SetPtr( "PanelPtr", (void*)current );
@@ -430,7 +430,7 @@ bool UpdateItemState(
 	vgui::IPanel *ipanel = vgui::ipanel();
 
 	KeyValues *pItemData = pTree->GetItemData( iChildItemId );
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 	if ( pItemData->GetInt( "PanelPtr" ) != pSub->GetInt( "PanelPtr" ) ||
 #else
 	if ( pItemData->GetPtr( "PanelPtr" ) != pSub->GetPtr( "PanelPtr" ) ||
@@ -443,7 +443,7 @@ bool UpdateItemState(
 	}
 
 	// Ok, this is a new panel.
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 	vgui::VPANEL vPanel = pSub->GetInt( "PanelPtr" );
 #else
 	vgui::VPANEL vPanel = (vgui::VPANEL)pSub->GetPtr( "PanelPtr" );

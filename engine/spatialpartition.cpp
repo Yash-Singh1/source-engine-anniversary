@@ -2885,7 +2885,7 @@ void CVoxelTree::ReportStats( const char *pFileName )
 
 void CSpatialPartition::ReportStats( const char *pFileName )
 {
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 	Msg( "Handle Count %d (%d bytes)\n", m_aHandles.Count(), m_aHandles.Count() * ( sizeof(EntityInfo_t) + 2 * sizeof(SpatialPartitionHandle_t) ) );
 #else
 	Msg( "Handle Count %d (%llu bytes)\n", m_aHandles.Count(), (uint64)( m_aHandles.Count() * ( sizeof(EntityInfo_t) + 2 * sizeof(SpatialPartitionHandle_t) ) ) );

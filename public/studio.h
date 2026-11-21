@@ -2360,7 +2360,7 @@ struct studiohdr_t
 
 	// implementation specific back pointer to virtual data
 #ifdef PLATFORM_64BITS
-	int                 unused_virtualModel;
+	mutable int         unused_virtualModel;
 #else
 	mutable void		*virtualModel;
 #endif
@@ -2440,8 +2440,8 @@ struct studiohdr_t
 	inline const mstudioboneflexdriver_t* BoneFlexDriver( int i ) const { Assert( i >= 0 && i < BoneFlexDriverCount() ); return studiohdr2index ? pStudioHdr2()->pBoneFlexDriver( i ) : NULL; }
 
 #ifdef PLATFORM_64BITS
-	void* 				VirtualModel() const { return studiohdr2index ? (void *)( pStudioHdr2()->virtualModel ) : nullptr; }
-	void				SetVirtualModel( void* ptr ) { Assert( studiohdr2index ); if ( studiohdr2index ) { pStudioHdr2()->virtualModel = ptr; } else { Msg("go fuck urself!\n"); } }
+	void* 				VirtualModel() const { return studiohdr2index ? (void *)( pStudioHdr2()->virtualModel ) : (void *)(uintp)(unsigned int)unused_virtualModel; }
+	void				SetVirtualModel( void* ptr ) { if ( studiohdr2index ) { pStudioHdr2()->virtualModel = ptr; } else { unused_virtualModel = (int)(uintp)ptr; } }
 	void*				VertexBase() const { return studiohdr2index ? (void *)( pStudioHdr2()->pVertexBase ) : nullptr; }
 	void				SetVertexBase( void* pVertexBase ) const { Assert( studiohdr2index ); if ( studiohdr2index ) { pStudioHdr2()->pVertexBase = pVertexBase; } }
 	void*				IndexBase() const { return studiohdr2index ? ( void * ) ( pStudioHdr2()->pIndexBase ) : nullptr; }

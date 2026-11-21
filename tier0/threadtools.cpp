@@ -1098,7 +1098,7 @@ ThreadInterlockedLong_t ThreadInterlockedDecrement( ThreadInterlockedLong_t vola
 
 ThreadInterlockedLong_t ThreadInterlockedExchange( ThreadInterlockedLong_t volatile *pDest, ThreadInterlockedLong_t value )
 {
-	return __sync_lock_test_and_set( pDest, value );
+	return __atomic_exchange_n( pDest, value, __ATOMIC_SEQ_CST );
 }
 
 ThreadInterlockedLong_t ThreadInterlockedExchangeAdd( ThreadInterlockedLong_t volatile *pDest, ThreadInterlockedLong_t value )
@@ -1118,7 +1118,7 @@ bool ThreadInterlockedAssignIf( ThreadInterlockedLong_t volatile *pDest, ThreadI
 
 void *ThreadInterlockedExchangePointer( void * volatile *pDest, void *value )
 {
-	return __sync_lock_test_and_set( pDest, value );
+	return __atomic_exchange_n( pDest, value, __ATOMIC_SEQ_CST );
 }
 
 void *ThreadInterlockedCompareExchangePointer( void *volatile *pDest, void *value, void *comperand )
@@ -1133,10 +1133,10 @@ bool ThreadInterlockedAssignPointerIf( void * volatile *pDest, void *value, void
 
 int64 ThreadInterlockedCompareExchange64( int64 volatile *pDest, int64 value, int64 comperand )
 {
-#if defined(OSX)
+#if defined(OSX) && !defined(PLATFORM_64BITS)
 	int64 retVal = *pDest;
 	if ( OSAtomicCompareAndSwap64( comperand, value, pDest ) )
-		retVal = *pDest;
+		retVal = comperand;
 	
 	return retVal;
 #else
@@ -1152,14 +1152,13 @@ bool ThreadInterlockedAssignIf64( int64 volatile * pDest, int64 value, int64 com
 int64 ThreadInterlockedExchange64( int64 volatile *pDest, int64 value )
 {
 	Assert( (size_t)pDest % 8 == 0 );
+#if defined(PLATFORM_64BITS)
+	return __atomic_exchange_n( pDest, value, __ATOMIC_SEQ_CST );
+#else
 	int64 Old;
-	
-	do 
-	{
-		Old = *pDest;
-	} while (ThreadInterlockedCompareExchange64(pDest, value, Old) != Old);
-	
+	do { Old = *pDest; } while (ThreadInterlockedCompareExchange64(pDest, value, Old) != Old);
 	return Old;
+#endif
 }
 
 

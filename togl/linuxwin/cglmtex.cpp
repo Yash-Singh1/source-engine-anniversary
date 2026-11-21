@@ -184,10 +184,10 @@ const GLMTexFormatDesc *GetFormatDesc( D3DFORMAT format )
 //===============================================================================
 
 
-void	InsertTexelComponentFixed( float value, int width, unsigned long *valuebuf )
+void	InsertTexelComponentFixed( float value, int width, uint32 *valuebuf )
 {
-	unsigned long	range = (1<<width);
-	unsigned long	scaled = (value * (float) range) * (range-1) / (range);
+	uint32	range = (1<<width);
+	uint32	scaled = (value * (float) range) * (range-1) / (range);
 	
 	if (scaled >= range)	DebuggerBreak();
 	
@@ -207,7 +207,7 @@ bool	GLMGenTexels( GLMGenTexelParams *params )
 	}
 	
 	// this section just generates one square chunk in the desired format
-	unsigned long *temp32 = (unsigned long*)chunkbuf;
+	uint32 *temp32 = (uint32*)chunkbuf;
 	unsigned int chunksize = 0;		// we can sanity check against the format table with this
 	
 	switch( params->m_format )
@@ -292,7 +292,7 @@ bool	GLMGenTexels( GLMGenTexelParams *params )
 			// two 565 RGB words followed by 32 bits of 2-bit interp values for a 4x4 block
 			// we write the same color to both slots and all zeroes for the mask (one color total)
 			
-			unsigned long dxt1_color = 0;
+			uint32 dxt1_color = 0;
 			
 			// generate one such word and clone it
 			InsertTexelComponentFixed( params->r, 5, &dxt1_color );
@@ -303,7 +303,7 @@ bool	GLMGenTexels( GLMGenTexelParams *params )
 			dxt1_color = dxt1_color | (dxt1_color<<16);
 			
 			// write into chunkbuf
-			*(unsigned long*)&chunkbuf[0] = dxt1_color;
+			*(uint32*)&chunkbuf[0] = dxt1_color;
 			
 			// color mask bits after that are already set to all zeroes.  chunk is done.
 			chunksize = 8;
@@ -317,14 +317,14 @@ bool	GLMGenTexels( GLMGenTexelParams *params )
 			// eight bytes of alpha (16 4-bit alpha nibbles)
 			// followed by a DXT1 block
 			
-			unsigned long dxt3_alpha = 0;
+			uint32 dxt3_alpha = 0;
 			for( int i=0; i<8; i++)
 			{
 				// splat same alpha through block
 				InsertTexelComponentFixed( params->a, 4, &dxt3_alpha );
 			}
 
-			unsigned long dxt3_color = 0;
+			uint32 dxt3_color = 0;
 			
 			// generate one such word and clone it
 			InsertTexelComponentFixed( params->r, 5, &dxt3_color );
@@ -335,10 +335,10 @@ bool	GLMGenTexels( GLMGenTexelParams *params )
 			dxt3_color = dxt3_color | (dxt3_color<<16);
 			
 			// write into chunkbuf
-			*(unsigned long*)&chunkbuf[0] = dxt3_alpha;
-			*(unsigned long*)&chunkbuf[4] = dxt3_alpha;
-			*(unsigned long*)&chunkbuf[8] = dxt3_color;
-			*(unsigned long*)&chunkbuf[12] = dxt3_color;
+			*(uint32*)&chunkbuf[0] = dxt3_alpha;
+			*(uint32*)&chunkbuf[4] = dxt3_alpha;
+			*(uint32*)&chunkbuf[8] = dxt3_color;
+			*(uint32*)&chunkbuf[12] = dxt3_color;
 
 			chunksize = 16;
 		}			
@@ -353,12 +353,12 @@ bool	GLMGenTexels( GLMGenTexelParams *params )
 			// the 8 alpha bytes are 2 bytes of endpoint alpha values, then 16x3 bits of interpolants.
 			// so to write a single alpha value, just figure out the value, store it in both the first two bytes then store zeroes.
 			
-			InsertTexelComponentFixed( params->a, 8, (unsigned long*)&chunkbuf[0] );
-			InsertTexelComponentFixed( params->a, 8, (unsigned long*)&chunkbuf[0] );
+			InsertTexelComponentFixed( params->a, 8, (uint32*)&chunkbuf[0] );
+			InsertTexelComponentFixed( params->a, 8, (uint32*)&chunkbuf[0] );
 			// rest of the alpha mask was already zeroed.
 			
 			// now do colors
-			unsigned long dxt5_color = 0;
+			uint32 dxt5_color = 0;
 			
 			// generate one such word and clone it
 			InsertTexelComponentFixed( params->r, 5, &dxt5_color );
@@ -369,8 +369,8 @@ bool	GLMGenTexels( GLMGenTexelParams *params )
 			dxt5_color = dxt5_color | (dxt5_color<<16);
 			
 			// write into chunkbuf
-			*(unsigned long*)&chunkbuf[8] = dxt5_color;
-			*(unsigned long*)&chunkbuf[12] = dxt5_color;
+			*(uint32*)&chunkbuf[8] = dxt5_color;
+			*(uint32*)&chunkbuf[12] = dxt5_color;
 
 			chunksize = 16;
 		}
@@ -393,11 +393,11 @@ bool	GLMGenTexels( GLMGenTexelParams *params )
 			// R and G wind up in the first 32 bits
 			// B and A wind up in the second 32 bits
 			
-			InsertTexelComponentFixed( params->a, 16, (unsigned long*)&chunkbuf[4] );	// winds up as MSW of second word (note [4]) - thus last in RAM
-			InsertTexelComponentFixed( params->b, 16, (unsigned long*)&chunkbuf[4] );
+			InsertTexelComponentFixed( params->a, 16, (uint32*)&chunkbuf[4] );	// winds up as MSW of second word (note [4]) - thus last in RAM
+			InsertTexelComponentFixed( params->b, 16, (uint32*)&chunkbuf[4] );
 
-			InsertTexelComponentFixed( params->g, 16, (unsigned long*)&chunkbuf[0] );
-			InsertTexelComponentFixed( params->r, 16, (unsigned long*)&chunkbuf[0] );	// winds up as LSW of first word, thus first in RAM
+			InsertTexelComponentFixed( params->g, 16, (uint32*)&chunkbuf[0] );
+			InsertTexelComponentFixed( params->r, 16, (uint32*)&chunkbuf[0] );	// winds up as LSW of first word, thus first in RAM
 			
 			chunksize = 8;
 		break;

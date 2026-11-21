@@ -91,13 +91,21 @@ typedef void* VD3DHANDLE;
 
 	typedef int INT;
 	typedef unsigned long ULONG;
+#ifdef PLATFORM_64BITS
+	typedef int32 LONG;
+#else
 	typedef long LONG;
+#endif
 	typedef float FLOAT;
 	typedef unsigned int DWORD;
 	typedef unsigned short WORD;
 	typedef long long LONGLONG;
 	typedef unsigned int UINT;
+#ifdef PLATFORM_64BITS
+	typedef int32 HRESULT;
+#else
 	typedef long HRESULT;
+#endif
 	typedef unsigned char BYTE;
 	#define CONST const
 		
@@ -135,7 +143,11 @@ typedef void* VD3DHANDLE;
 	{
 		bool operator==( const struct _GUID &other ) const;
 
+#ifdef PLATFORM_64BITS
+		uint32         Data1;
+#else
 		unsigned long  Data1;
+#endif
 		unsigned short Data2;
 		unsigned short Data3;
 		unsigned char  Data4[ 8 ];
@@ -164,7 +176,11 @@ typedef void* VD3DHANDLE;
 	typedef DWORD   COLORREF;
 	#define RGB(r,g,b)          ((COLORREF)(((BYTE)(r)|((WORD)((BYTE)(g))<<8))|(((DWORD)(BYTE)(b))<<16)))
 
+#ifdef PLATFORM_64BITS
+	#define MAKE_HRESULT(sev,fac,code) ((HRESULT) (((uint32)(sev)<<31) | ((uint32)(fac)<<16) | ((uint32)(code))) )
+#else
 	#define MAKE_HRESULT(sev,fac,code) ((HRESULT) (((unsigned long)(sev)<<31) | ((unsigned long)(fac)<<16) | ((unsigned long)(code))) )
+#endif
 
 	#define S_FALSE ((HRESULT)0x00000001L)
 	#define S_OK 0

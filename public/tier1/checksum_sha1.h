@@ -41,10 +41,16 @@
 // If you're compiling big endian, just comment out the following line
 #define SHA1_LITTLE_ENDIAN
 
+#ifdef PLATFORM_64BITS
+typedef unsigned int sha1_uint32_t;
+#else
+typedef unsigned long sha1_uint32_t;
+#endif
+
 typedef union
 {
 	unsigned char c[64];
-	unsigned long l[16];
+	sha1_uint32_t l[16];
 } SHA1_WORKSPACE_BLOCK;
 
 // SHA1 hash
@@ -77,8 +83,8 @@ public:
 	~Minimum_CSHA1() ;	// no virtual destructor's in the minimal builds !
 #endif	
 
-	unsigned long m_state[5];
-	unsigned long m_count[2];
+	sha1_uint32_t m_state[5];
+	sha1_uint32_t m_count[2];
 	unsigned char m_buffer[64];
 	unsigned char m_digest[k_cubHash];
 
@@ -99,7 +105,7 @@ public:
 
 private:
 	// Private SHA-1 transformation
-	void Transform(unsigned long state[5], unsigned char buffer[64]);
+	void Transform(sha1_uint32_t state[5], unsigned char buffer[64]);
 
 	// Member variables
 	unsigned char m_workspace[64];

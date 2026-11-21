@@ -4069,7 +4069,7 @@ void CShaderAPIDx8::ForceHardwareSync_WithManagedTexture()
 	if ( SUCCEEDED( hr ) )
 	{
 		// modify..
-		unsigned long *pData = (unsigned long*)rect.pBits;
+		uint32 *pData = (uint32*)rect.pBits;
 		(*pData)++; 
 
 		m_pFrameSyncTexture->UnlockRect( 0 );

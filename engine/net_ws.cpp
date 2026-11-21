@@ -1269,7 +1269,7 @@ bool NET_GetLong( const int sock, netpacket_t *packet )
 	if ( nSplitSizeMinusHeader < MIN_SPLIT_SIZE ||
 		 nSplitSizeMinusHeader > MAX_SPLIT_SIZE )
 	{
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 		Msg( "NET_GetLong:  Split packet from %s with invalid split size (number %i/ count %i) where size %i is out of valid range [%d - %d ]\n", 
 			packet->from.ToString(), 
 			packetNumber, 
@@ -1293,7 +1293,7 @@ bool NET_GetLong( const int sock, netpacket_t *packet )
 	if ( packetNumber >= MAX_SPLITPACKET_SPLITS ||
 		 packetCount > MAX_SPLITPACKET_SPLITS )
 	{
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 		Msg( "NET_GetLong:  Split packet from %s with too many split parts (number %i/ count %i) where %i is max count allowed\n", 
 			packet->from.ToString(), 
 			packetNumber, 
@@ -1355,7 +1355,7 @@ bool NET_GetLong( const int sock, netpacket_t *packet )
 
 		if ( net_showsplits.GetInt() && net_showsplits.GetInt() != 3 )
 		{
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 			Msg( "<-- [%s] Split packet %4i/%4i seq %5i size %4i mtu %4i from %s\n", 
 				DescribeSocket( sock ),
 				packetNumber + 1, 

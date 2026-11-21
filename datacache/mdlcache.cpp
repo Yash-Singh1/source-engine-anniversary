@@ -242,7 +242,7 @@ struct AsyncInfo_t
 	int					iAnimBlock;
 };
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 const int NO_ASYNC = CUtlLinkedList< AsyncInfo_t >::InvalidIndex();
 #else
 const intp NO_ASYNC = CUtlFixedLinkedList< AsyncInfo_t >::InvalidIndex();
@@ -2163,7 +2163,7 @@ void CMDLCache::UnlockStudioHdr( MDLHandle_t handle )
 //-----------------------------------------------------------------------------
 studiohdr_t *CMDLCache::GetStudioHdr( MDLHandle_t handle )
 {
-	if ( handle == MDLHANDLE_INVALID )
+	if ( handle == MDLHANDLE_INVALID || !m_MDLDict.IsValidIndex( handle ) || !m_MDLDict[handle] )
 		return NULL;
 
 	// Returning a pointer to data inside the cache when it's unlocked is just a bad idea.
