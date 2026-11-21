@@ -146,3 +146,8 @@ def build(bld):
 		idx      = bld.get_taskgen_count()
 	)
 
+	if bld.env.GAMES == 'hl2_complete' and bld.env.DEST_OS != 'android' and not retail:
+		out_node = bld.path.find_or_declare(bld.env.cxxshlib_PATTERN % PROJECT_NAME)
+		for extra_mod in ('hl2', 'episodic', 'lostcoast'):
+			bld.install_files(bld.env.PREFIX + '/' + extra_mod + '/bin', [out_node])
+
