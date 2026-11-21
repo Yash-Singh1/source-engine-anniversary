@@ -41,6 +41,14 @@ def configure(conf):
 			conf.find_program('objcopy', var='OBJCOPY')
 
 def copy_fun(self, src, tgt):
+	# Unlink before copying on macOS so replacing an existing signed/cached
+	# Mach-O binary does not overwrite it in place and trigger SIGKILL.
+	if self.env.DEST_BINFMT == 'mac-o' and os.path.lexists(tgt):
+		try:
+			os.remove(tgt)
+		except OSError:
+			pass
+
 	inst_copy_fun(self, src, tgt)
 
 	if not self.generator.bld.options.strip and not self.generator.bld.options.strip_to_file:

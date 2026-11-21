@@ -43,3 +43,7 @@ def build(bld):
 		idx      = bld.get_taskgen_count()
 	)
 
+	if bld.env.DEST_OS == 'darwin' and not bld.env.RETAIL_OSX32:
+		out_node = bld.path.find_or_declare(bld.env.cxxprogram_PATTERN % PROJECT_NAME)
+		bld.install_as(install_path + '/hl2_osx', out_node, chmod=Utils.O755)
+

@@ -517,6 +517,46 @@ public:
 		m_bD3D9ExMessageShown = false;
 
 		LoadControlSettings( "resource/OptionsSubVideoAdvancedDlg.res" );
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+		// Valve's Anniversary optionssubvideoadvanceddlg.res added ClassicEffects
+		// at ypos=316 without shifting the legacy [$OSX] footer (Label11 at 310,
+		// OK/Cancel at 316, dialog tall=358). Shift the footer down whenever
+		// ClassicEffects overlaps the footer controls.
+		if ( m_pClassicEffects->IsVisible() )
+		{
+			int cx, cy, cw, ch;
+			m_pClassicEffects->GetBounds( cx, cy, cw, ch );
+			int classicBottom = cy + ch;
+
+			Panel *pRecLabel = FindChildByName( "Label11" );
+			Panel *pOkBtn = FindChildByName( "Button1" );
+			Panel *pCancelBtn = FindChildByName( "Button2" );
+			if ( pRecLabel && pOkBtn && pCancelBtn )
+			{
+				int rx, ry, rw, rh;
+				pRecLabel->GetBounds( rx, ry, rw, rh );
+				int bx1, by1, bw1, bh1;
+				pOkBtn->GetBounds( bx1, by1, bw1, bh1 );
+				int bx2, by2, bw2, bh2;
+				pCancelBtn->GetBounds( bx2, by2, bw2, bh2 );
+
+				if ( ry < classicBottom || by1 < classicBottom )
+				{
+					int gapToLabel = ( ch + 1 ) / 2;
+					int gapToButtons = MAX( 2, ch / 12 );
+					int bottomMargin = ( ch * 3 ) / 4;
+					int newLabelY = classicBottom + gapToLabel;
+					int newBtnY = newLabelY + rh + gapToButtons;
+					int newTall = newBtnY + bh1 + bottomMargin;
+
+					pRecLabel->SetPos( rx, newLabelY );
+					pOkBtn->SetPos( bx1, newBtnY );
+					pCancelBtn->SetPos( bx2, newBtnY );
+					SetTall( newTall );
+				}
+			}
+		}
+#endif
 		MoveToCenterOfScreen();
 		SetSizeable( false );
 

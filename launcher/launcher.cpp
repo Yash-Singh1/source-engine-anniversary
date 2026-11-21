@@ -1369,6 +1369,36 @@ DLL_EXPORT int LauncherMain( int argc, char **argv )
 	// See the function for why we do this.
 	RemoveSpuriousGameParameters();
 
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+	// Steam's macOS launch config for AppID 220 still passes `-game hl2 -steam`
+	// instead of `-game hl2_complete`. Promote missing or `hl2` to `hl2_complete`
+	// when hl2_complete/gameinfo.txt is installed (unless `-legacy` is passed).
+	if ( !CommandLine()->CheckParm( "-legacy" ) )
+	{
+		const char *pszGame = CommandLine()->ParmValue( "-game", "" );
+		if ( !pszGame[0] || !Q_stricmp( pszGame, "hl2" ) )
+		{
+			const char *pszBaseDir = GetBaseDirectory();
+			char szCompleteGameInfo[MAX_PATH];
+			if ( pszBaseDir && pszBaseDir[0] )
+			{
+				Q_snprintf( szCompleteGameInfo, sizeof( szCompleteGameInfo ), "%s/hl2_complete/gameinfo.txt", pszBaseDir );
+			}
+			else
+			{
+				Q_strncpy( szCompleteGameInfo, "hl2_complete/gameinfo.txt", sizeof( szCompleteGameInfo ) );
+			}
+			struct stat st;
+			if ( stat( szCompleteGameInfo, &st ) == 0 )
+			{
+				CommandLine()->RemoveParm( "-game" );
+				CommandLine()->AppendParm( "-game", "hl2_complete" );
+				Plat_SetCommandLine( CommandLine()->GetCmdLine() );
+			}
+		}
+	}
+#endif
+
 #ifdef WIN32
 	if ( IsPC() )
 	{
