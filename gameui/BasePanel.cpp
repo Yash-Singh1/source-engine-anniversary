@@ -38,6 +38,9 @@ using namespace vgui;
 #include "IGameUIFuncs.h"
 #include "LoadingDialog.h"
 #include "BackgroundMenuButton.h"
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+#include "WorkshopDialog.h"
+#endif
 #include "vgui_controls/AnimationController.h"
 #include "vgui_controls/ImagePanel.h"
 #include "vgui_controls/Label.h"
@@ -3883,7 +3886,16 @@ void CBasePanel::OnOpenCreateMultiplayerGameDialog()
 //-----------------------------------------------------------------------------
 void CBasePanel::OnOpenWorkshopDialog()
 {
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+	if ( !m_hWorkshopDialog.Get() )
+	{
+		m_hWorkshopDialog = new CWorkshopDialog( this );
+		PositionDialog( m_hWorkshopDialog );
+	}
+	m_hWorkshopDialog->Activate();
+#else
 	// the Workshop dialog is not available on this platform
+#endif
 }
 
 void CBasePanel::OnOpenChangeGameDialog()

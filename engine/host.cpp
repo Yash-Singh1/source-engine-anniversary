@@ -105,7 +105,7 @@
 #ifndef SWDS
 #include "vgui_baseui_interface.h"
 #include "cl_steamauth.h"
-#ifndef OSX
+#if !defined( OSX ) || defined( PLATFORM_64BITS )
 #include "iworkshop.h"
 #endif
 #line 108
@@ -3356,8 +3356,8 @@ void _Host_RunFrame (float time)
 	double prevremainder;
 	bool shouldrender;
 
-#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
-	workshop->Unknown05();
+#if defined( BYTEMATCH_RETAIL ) && ( !defined( OSX ) || defined( PLATFORM_64BITS ) )
+	if ( workshop ) workshop->Unknown05();
 #endif
 #if defined( RAD_TELEMETRY_ENABLED )
 	if( g_Telemetry.DemoTickEnd == ( uint32 )-1 )

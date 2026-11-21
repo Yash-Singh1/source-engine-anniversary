@@ -33,7 +33,7 @@
 #include "physics_shared.h"
 #endif
 #include "tier0/icommandline.h"
-#if !defined( OSX ) && defined( BYTEMATCH_RETAIL )
+#if ( !defined( OSX ) || defined( PLATFORM_64BITS ) ) && defined( BYTEMATCH_RETAIL )
 #include "iworkshop.h"
 #include "iclientmode.h"
 #include "game_controls/baseviewport.h"
@@ -85,8 +85,8 @@ void FlushClientContent( const CCommand &args )
 {
 	g_pFullFileSystem->PushNoFinishAllOnSearchPaths();
 	g_pFullFileSystem->UpdateSearchPathsForCurrentGameExpansion();
-#if !defined( OSX ) && defined( BYTEMATCH_RETAIL )
-	workshop->Unknown11( true );
+#if ( !defined( OSX ) || defined( PLATFORM_64BITS ) ) && defined( BYTEMATCH_RETAIL )
+	if ( workshop ) workshop->Unknown11( true );
 #endif
 #line 81
 	g_pMaterialSystem->UncacheAllMaterials();
@@ -127,10 +127,10 @@ void FlushClientContent( const CCommand &args )
 	}
 #line 115
 
-#if !defined( OSX ) && defined( BYTEMATCH_RETAIL )
+#if ( !defined( OSX ) || defined( PLATFORM_64BITS ) ) && defined( BYTEMATCH_RETAIL )
 	CUtlVector< PublishedFileId_t > items;
 	PublishedFileId_t nCampaignID = 0;
-	workshop->GetCurrentCampaign( items, nCampaignID );
+	if ( workshop ) workshop->GetCurrentCampaign( items, nCampaignID );
 	bool bHasWorkshopContent = items.Count() != 0 || nCampaignID != 0;
 	if ( bHasWorkshopContent || s_bHadWorkshopContent )
 	{
@@ -223,8 +223,8 @@ void LaunchMod( const CCommand &args )
 		bChanged = true;
 	}
 
-#if !defined( OSX ) && defined( BYTEMATCH_RETAIL )
-	if ( !workshop->Unknown11( false ) && !bChanged )
+#if ( !defined( OSX ) || defined( PLATFORM_64BITS ) ) && defined( BYTEMATCH_RETAIL )
+	if ( ( !workshop || !workshop->Unknown11( false ) ) && !bChanged )
 		return;
 #else
 	if ( !bChanged )

@@ -2145,7 +2145,7 @@ void CVideoMode_Common::WriteMovieFrame( const MovieInfo_t& info )
 }
 
 #if HAVE_JPEG
-#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
+#if defined( BYTEMATCH_RETAIL ) && ( !defined( PLATFORM_64BITS ) || defined( OSX ) )
 // retail links only common/imageutils.cpp's copy
 void jpeg_UtlBuffer_dest( j_compress_ptr cinfo, CUtlBuffer *pBuffer );
 #else

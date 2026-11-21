@@ -40,7 +40,7 @@
 #include "sys_dll.h"
 #include "cmd.h"
 #include "tier0/icommandline.h"
-#ifndef OSX
+#if !defined( OSX ) || defined( PLATFORM_64BITS )
 #include "iworkshop.h"
 #endif
 #line 43
@@ -878,9 +878,9 @@ void Host_Map_Helper( const CCommand &args, bool bEditmode, bool bBackground, bo
 	cl.demonum = -1;
 
 	Host_Disconnect( false );	// stop old game
-#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
-	workshop->Unknown24();
-	if ( workshop->Unknown11( false ) )
+#if defined( BYTEMATCH_RETAIL ) && ( !defined( OSX ) || defined( PLATFORM_64BITS ) )
+	if ( workshop ) workshop->Unknown24();
+	if ( workshop && workshop->Unknown11( false ) )
 	{
 		Cbuf_AddText( "flush_content" );
 		Cbuf_Execute();

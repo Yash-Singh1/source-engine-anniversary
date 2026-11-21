@@ -13,7 +13,8 @@ def options(opt):
 
 def configure(conf):
 	conf.define('GAMEUI_EXPORTS',1)
-	conf.define('NO_STEAM',1)
+	if not (conf.env.DEST_OS == 'darwin' and not conf.options.TARGET32):
+		conf.define('NO_STEAM',1)
 	conf.define('VERSION_SAFE_STEAM_API_INTERFACES',1)
 
 def build(bld):
@@ -115,6 +116,10 @@ def build(bld):
 	]
 
 	defines = []
+	cxxflags = []
+	if bld.env.DEST_OS == 'darwin' and not bld.env.TARGET32:
+		source += ['WorkshopDialog.cpp']
+		cxxflags += ['-UNO_STEAM']
 
 	libs = ['tier0','vgui_controls','tier1','tier2','tier3','vstdlib','vtf','bitmap','mathlib','SDL2','steam_api','matsys_controls','JPEG','PNG','ZLIB']
 
@@ -149,6 +154,7 @@ def build(bld):
 		features = 'c cxx',
 		includes = includes,
 		defines  = defines,
+		cxxflags = cxxflags,
 		use      = libs,
 		install_path = install_path,
 		subsystem = bld.env.MSVC_SUBSYSTEM,

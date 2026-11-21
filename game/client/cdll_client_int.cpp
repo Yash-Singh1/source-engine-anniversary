@@ -211,7 +211,7 @@ ISceneFileCache *scenefilecache = NULL;
 IXboxSystem *xboxsystem = NULL;	// Xbox 360 only
 IMatchmaking *matchmaking = NULL;
 IUploadGameStats *gamestatsuploader = NULL;
-#if !defined( OSX ) && !defined( HL2_LOSTCOAST ) && defined( BYTEMATCH_RETAIL )
+#if ( !defined( OSX ) || defined( PLATFORM_64BITS ) ) && !defined( HL2_LOSTCOAST ) && defined( BYTEMATCH_RETAIL )
 #include "iworkshop.h"
 IWorkshop *workshop = NULL;
 #endif
@@ -952,7 +952,7 @@ int CHLClient::Init( CreateInterfaceFn appSystemFactory, CreateInterfaceFn physi
 	if ( IsPC() && (g_pEngineClientReplay = (IEngineClientReplay *)appSystemFactory( ENGINE_REPLAY_CLIENT_INTERFACE_VERSION, NULL )) == NULL )
 		return false;
 #endif
-#if !defined( OSX ) && !defined( HL2_LOSTCOAST ) && defined( BYTEMATCH_RETAIL )
+#if ( !defined( OSX ) || defined( PLATFORM_64BITS ) ) && !defined( HL2_LOSTCOAST ) && defined( BYTEMATCH_RETAIL )
 	if ( (workshop = (IWorkshop *)appSystemFactory( VWORKSHOP_INTERFACE_VERSION, NULL )) == NULL )
 		return false;
 #endif

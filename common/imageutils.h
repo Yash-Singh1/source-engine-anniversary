@@ -87,6 +87,9 @@ ConversionErrorType ImgUtl_LoadBitmapFromBuffer( CUtlBuffer &fileData, Bitmap_t 
 /// Save a bitmap to memory buffer
 ConversionErrorType ImgUtl_SaveBitmapToBuffer( CUtlBuffer &fileData, const Bitmap_t &bitmap, ImageFileFormat eImageFileFormat );
 
+/// Load a JPEG direct from memory buffer as RGBA
+ConversionErrorType ImgUtl_ReadJPEGAsRGBAFromBuffer( CUtlBuffer &srcBuffer, CUtlBuffer &dstBuffer, int &width, int &height );
+
 /// Load a PNG direct from memory buffer
 ConversionErrorType ImgUtl_LoadPNGBitmapFromBuffer( CUtlBuffer &fileData, Bitmap_t &bitmap );
 

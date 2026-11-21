@@ -400,6 +400,9 @@ private:
 	vgui::DHANDLE<vgui::Frame> m_hBenchmarkDialog;
 	vgui::DHANDLE<vgui::Frame> m_hLoadCommentaryDialog;
 	vgui::DHANDLE<vgui::Frame> m_hAchievementsDialog;
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+	vgui::DHANDLE<vgui::PropertyDialog> m_hWorkshopDialog;
+#endif
 
 	// Xbox 360
 	vgui::DHANDLE<vgui::Frame> m_hMatchmakingBasePanel;

@@ -46,7 +46,7 @@
 #include "baseautocompletefilelist.h"
 #include "sound.h"
 #include "vgui_baseui_interface.h"
-#ifndef OSX
+#if !defined( OSX ) || defined( PLATFORM_64BITS )
 #include "iworkshop.h"
 #endif
 #line 49
@@ -860,10 +860,10 @@ int CSaveRestore::SaveGameSlot( const char *pSaveName, const char *pSaveComment,
 	szExpansionId[0] = '\0';
 	if ( g_pFullFileSystem->GetCurrentGameExpansionId( szExpansionId, sizeof( szExpansionId ) ) )
 		pSaveAppendix->SetString( "Expansion", szExpansionId );
-#ifndef OSX
+#if !defined( OSX ) || defined( PLATFORM_64BITS )
 	CUtlVector< PublishedFileId_t > items;
 	PublishedFileId_t nCampaignID = 0;
-	workshop->GetCurrentCampaign( items, nCampaignID );
+	if ( workshop ) workshop->GetCurrentCampaign( items, nCampaignID );
 	if ( nCampaignID != 0 )
 	{
 		KeyValues *pWorkshopKV = new KeyValues( "Workshop" );
@@ -1234,8 +1234,8 @@ bool CSaveRestore::LoadGame( const char *pName )
 			if ( pWorkshop )
 			{
 				PublishedFileId_t nCampaignID = pWorkshop->GetUint64( "Campaign" );
-#ifndef OSX
-				if ( nCampaignID != 0 && !workshop->LoadCampaign( nCampaignID, false ) )
+#if !defined( OSX ) || defined( PLATFORM_64BITS )
+				if ( nCampaignID != 0 && ( !workshop || !workshop->LoadCampaign( nCampaignID, false ) ) )
 				{
 					Msg( "[WorkshopSaveLoad] Failed to launch campaign: %llu\n", nCampaignID );
 					validload = false;
@@ -1305,8 +1305,8 @@ bool CSaveRestore::LoadGame( const char *pName )
 	}
 
 	bool bIsTransitionSave = ( gameHeader.originMapName[0] != 0 );
-#ifndef OSX
-	workshop->Unknown24();
+#if !defined( OSX ) || defined( PLATFORM_64BITS )
+	if ( workshop ) workshop->Unknown24();
 #endif
 #line 1290
 

@@ -344,6 +344,8 @@ def build(bld):
 				'audio/snd_dev_mac_audioqueue.cpp',#	[$OSXALL]
 				'audio/voice_record_mac_audioqueue.cpp',	#[$OSXALL]
 			]
+			if not bld.env.TARGET32:
+				source += ['workshop.cpp', '../common/imageutils.cpp']
 
 	includes = [
 		'.',
@@ -374,6 +376,8 @@ def build(bld):
 		libs += ['USER32', 'WINMM', 'WININET', 'DSOUND', 'DXGUID', 'GDI32', 'bzip2']
 	elif bld.env.DEST_OS == 'darwin' and not bld.env.DEDICATED:
 		libs += ['APPKIT', 'COREAUDIO', 'AUDIOTOOLBOX', 'SYSTEMCONFIGURATION']
+		if not bld.env.TARGET32:
+			libs += ['PNG']
 		
 	install_path = bld.env.LIBDIR
 

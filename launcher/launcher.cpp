@@ -683,7 +683,7 @@ bool CSourceAppSystemGroup::Create()
 		{ "vguimatsurface" DLL_EXT_STRING,	VGUI_SURFACE_INTERFACE_VERSION },
 		{ "vgui2" DLL_EXT_STRING,			VGUI_IVGUI_INTERFACE_VERSION },
 		{ "engine" DLL_EXT_STRING,			VENGINE_LAUNCHER_API_VERSION },
-#ifndef OSX
+#if !defined( OSX ) || defined( PLATFORM_64BITS )
 		{ "engine" DLL_EXT_STRING,			"VWorkshop001" },
 #endif
 

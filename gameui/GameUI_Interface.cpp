@@ -171,7 +171,7 @@ void MakeBasePanel()
 	staticPanel->SetParent(rootpanel);
 }
 
-#ifndef OSX
+#if !defined( OSX ) || defined( PLATFORM_64BITS )
 #line 157
 class IWorkshop; IWorkshop *g_pWorkshop = NULL;
 #endif
@@ -188,9 +188,9 @@ void CGameUI::Initialize( CreateInterfaceFn factory )
 
 	enginesound = (IEngineSound *)factory(IENGINESOUND_CLIENT_INTERFACE_VERSION, NULL);
 	engine = (IVEngineClient *)factory( VENGINE_CLIENT_INTERFACE_VERSION, NULL );
-#ifndef OSX
+#if !defined( OSX ) || defined( PLATFORM_64BITS )
 #line 170
-	g_pWorkshop = (IWorkshop *)factory( "VWorkshop001", NULL );
+	workshop = g_pWorkshop = (IWorkshop *)factory( "VWorkshop001", NULL );
 #endif
 #line 171
 
