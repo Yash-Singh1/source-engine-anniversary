@@ -1786,5 +1786,22 @@ bool CGame::CanPostActivateEvents()
 void CGame::SetActiveApp( bool active )
 {
 	m_bActiveApp = active;
+#if defined( OSX ) && defined( PLATFORM_64BITS ) && !defined( SWDS )
+	static bool s_bFocusAudioBlocked = false;
+	if ( !active )
+	{
+		ConVarRef snd_mute_losefocus( "snd_mute_losefocus" );
+		if ( !s_bFocusAudioBlocked && snd_mute_losefocus.IsValid() && snd_mute_losefocus.GetBool() )
+		{
+			S_BlockSound();
+			s_bFocusAudioBlocked = true;
+		}
+	}
+	else if ( s_bFocusAudioBlocked )
+	{
+		S_UnblockSound();
+		s_bFocusAudioBlocked = false;
+	}
+#endif
 }
 

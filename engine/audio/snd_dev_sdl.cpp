@@ -28,9 +28,12 @@ extern bool snd_firsttime;
 extern bool MIX_ScaleChannelVolume( paintbuffer_t *ppaint, channel_t *pChannel, int volume[CCHANVOLUMES], int mixchans );
 extern void S_SpatializeChannel( /*int nSlot,*/ int volume[6], int master_vol, const Vector *psourceDir, float gain, float mono );
 
-// 64K is about 1/3 second at 16-bit, stereo, 44100 Hz
-// 44k: UNDONE - need to double buffers now that we're playing back at 44100?
+// 256K is ~1.48 seconds at 16-bit, stereo, 44100 Hz (> 1s so GetSoundTime never misses wraps)
+#ifdef PLATFORM_64BITS
+#define	WAV_BUFFERS             256
+#else
 #define	WAV_BUFFERS             64
+#endif
 #define	WAV_MASK				(WAV_BUFFERS - 1)
 #define	WAV_BUFFER_SIZE			0x0400
 
@@ -242,7 +245,11 @@ void CAudioDeviceSDLAudio::OpenWaveOut( void )
 	desired.samples = 2048;
 	desired.callback = &CAudioDeviceSDLAudio::AudioCallbackEntry;
 	desired.userdata = this;
+#ifdef PLATFORM_64BITS
+	m_devId = SDL_OpenAudioDevice(NULL, 0, &desired, &obtained, 0);
+#else
 	m_devId = SDL_OpenAudioDevice(NULL, 0, &desired, &obtained, SDL_AUDIO_ALLOW_ANY_CHANGE);
+#endif
 
 	if (!m_devId)
 		SDLAUDIO_FAIL("SDL_OpenAudioDevice()");

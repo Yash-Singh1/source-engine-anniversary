@@ -2137,7 +2137,7 @@ void MIX_BuildChannelList( CChannelList &list )
 				bRemove = true;
 
 				// Free up the sound channels otherwise they start filling up
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 				if ( pSource && !pSource->IsLooped() )
 #else
 				if ( pSource && ( !pSource->IsLooped() && !pSource->IsStreaming() ) )
