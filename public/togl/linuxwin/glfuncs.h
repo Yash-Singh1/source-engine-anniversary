@@ -118,7 +118,7 @@ GL_FUNC_VOID(OpenGL,true,glUniform1iARB,(GLint a,GLint b),(a,b))
 GL_FUNC_VOID(OpenGL,true,glUniform4fv,(GLint a,GLsizei b,const GLfloat *c),(a,b,c))
 GL_FUNC(OpenGL,true,GLboolean,glUnmapBuffer,(GLenum a),(a))
 GL_FUNC_VOID(OpenGL,true,glUseProgram,(GLuint a),(a))
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 GL_FUNC_VOID(OpenGL,true,glUseProgramObjectARB,(GLhandleARB a),(a))
 GL_FUNC_VOID(OpenGL,true,glValidateProgramARB,(GLhandleARB a),(a))
 #endif

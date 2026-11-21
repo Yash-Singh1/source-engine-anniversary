@@ -3278,7 +3278,7 @@ bool CMDLCache::SetAsyncLoad( MDLCacheDataType_t type, bool bAsync )
 //-----------------------------------------------------------------------------
 vertexFileHeader_t *CMDLCache::BuildAndCacheVertexData( studiohdr_t *pStudioHdr, vertexFileHeader_t *pRawVvdHdr  )
 {
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 	MDLHandle_t	handle = (MDLHandle_t)(int)pStudioHdr->VirtualModel()&0xffff;
 #else
 	MDLHandle_t	handle = VoidPtrToMDLHandle( pStudioHdr->VirtualModel() );

@@ -267,7 +267,7 @@ HMODULE Sys_LoadLibrary( const char *pLibraryName, Sys_Flags flags )
 }
 static bool s_bRunningWithDebugModules = false;
 
-#if defined( POSIX ) && !defined( BYTEMATCH_RETAIL )
+#if defined( POSIX ) && ( !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS ) )
 
 #ifdef ANDROID
 #define DEFAULT_LIB_PATH ""
@@ -320,7 +320,7 @@ CSysModule *Sys_LoadModule( const char *pModuleName, Sys_Flags flags /* = SYS_NO
 	// file in the depot (MFP) or a filesystem GetLocalCopy() call must be made
 	// prior to the call to this routine.
 	char szCwd[1024];
-#if defined( POSIX ) && !defined( BYTEMATCH_RETAIL )
+#if defined( POSIX ) && ( !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS ) )
 	char szModuleName[1024] = { 0 };
 #endif
 	HMODULE hDLL = NULL;
@@ -343,7 +343,7 @@ CSysModule *Sys_LoadModule( const char *pModuleName, Sys_Flags flags /* = SYS_NO
 			szCwd[strlen(szCwd) - 1] = 0;
 		}
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 		char szAbsoluteModuleName[1024];
 		size_t cCwd = strlen( szCwd );
 		if ( strstr( pModuleName, "bin/") == pModuleName || ( szCwd[ cCwd - 1 ] == 'n'  && szCwd[ cCwd - 2 ] == 'i' && szCwd[ cCwd - 3 ] == 'b' )  )

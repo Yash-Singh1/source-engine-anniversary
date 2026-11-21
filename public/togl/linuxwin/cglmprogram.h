@@ -247,7 +247,7 @@ public:
 		
 		m_nScreenWidthHeight = nWidthHeight;
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 		uint nWidth = nWidthHeight & 0xFFFF, nHeight = nWidthHeight >> 16;
 		// Apply half pixel offset to output vertices to account for the pixel center difference between D3D9 and OpenGL.
 		// We output vertices in clip space, which ranges from [-1,1], so 1.0/width in clip space transforms into .5/width in screenspace, see: "Viewports and Clipping (Direct3D 9)" in the DXSDK

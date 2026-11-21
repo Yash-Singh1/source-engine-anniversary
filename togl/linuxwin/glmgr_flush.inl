@@ -192,7 +192,11 @@ FORCEINLINE void GLMContext::FlushDrawStates( uint nStartIndex, uint nEndIndex, 
 			if ( !pNewPair->m_valid )
 				goto flush_error_exit;
 
+#ifdef OSX
+			gGL->glUseProgramObjectARB( pNewPair->m_program );
+#else
 			gGL->glUseProgram( (GLuint)pNewPair->m_program );
+#endif
 #else
 			if ( !pNewPair->m_valid )
 			{
@@ -675,7 +679,7 @@ FORCEINLINE void GLMContext::FlushDrawStates( uint nStartIndex, uint nEndIndex, 
 #ifdef BYTEMATCH_RETAIL
 			SetBufAndVertexAttribPointer( nIndex, pBuf->m_nHandle, 
 				pStream->m_stride, pDeclElem->m_gldecl.m_datatype, pDeclElem->m_gldecl.m_normalized, pDeclElem->m_gldecl.m_nCompCount, 
-				reinterpret_cast< const GLvoid * >( reinterpret_cast< int >( pBuf->m_pPseudoBuf ) + nBufOffset ), 
+				reinterpret_cast< const GLvoid * >( reinterpret_cast< intp >( pBuf->m_pPseudoBuf ) + nBufOffset ), 
 				pBuf->m_nRevision );
 #else
 			if ( pBuf->m_bUsingPersistentBuffer )

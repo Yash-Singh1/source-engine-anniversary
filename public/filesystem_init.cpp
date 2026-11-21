@@ -760,7 +760,7 @@ FSReturnCode_t FileSystem_LoadSearchPaths( CFSSearchPathsInit &initInfo )
 bool CFSSearchPathsInit::m_bMountHDContent;
 #endif
 
-#if defined( ENGINE_DLL ) || ( defined( BYTEMATCH_RETAIL ) && defined( OSX ) )
+#if defined( ENGINE_DLL ) || ( defined( BYTEMATCH_RETAIL ) && defined( OSX ) && !defined( PLATFORM_64BITS ) )
 const char *COM_Parse( const char *data );
 extern char com_token[1024];
 
@@ -1366,7 +1366,7 @@ FSReturnCode_t FileSystem_GetFileSystemDLLName( char *pFileSystemDLL, int nMaxLe
 		return SetupFileSystemError( false, FS_INVALID_PARAMETERS, "FileSystem_GetExecutableDir failed." );
 
 	// Assume we'll use local files
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 	Q_snprintf( pFileSystemDLL, nMaxLen, "%s%cfilesystem_stdio" DLL_EXT_STRING, executablePath, CORRECT_PATH_SEPARATOR );
 #else
 	// waf builds name POSIX shared libraries lib<name>; VPC builds don't.
@@ -1386,7 +1386,7 @@ FSReturnCode_t FileSystem_GetFileSystemDLLName( char *pFileSystemDLL, int nMaxLe
 				_access( pFileSystemDLL, 0 ) != 0
 			#endif
 		) {
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 			Q_snprintf( pFileSystemDLL, nMaxLen, "%s%cfilesystem_steam" DLL_EXT_STRING, executablePath, CORRECT_PATH_SEPARATOR );
 			bSteam = true;
 #else

@@ -3165,7 +3165,7 @@ void CMeshDX8::SetColorStreamState()
 {
 	if ( ( m_pColorMesh != g_pLastColorMesh ) || ( m_nColorMeshVertOffsetInBytes != g_nLastColorMeshVertOffsetInBytes ) )
 	{
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
 		CVertexBuffer *pColorVB = m_pColorMesh ? m_pColorMesh->GetVertexBuffer() : NULL;
 		if ( pColorVB )
 		{

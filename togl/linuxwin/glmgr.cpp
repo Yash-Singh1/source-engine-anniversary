@@ -721,7 +721,7 @@ void GLMContext::DumpCaps( void )
 	#define	dumpfield_str( fff )	printf( "\n  %-30s : %s", #fff, m_caps.fff )
 
 #ifdef BYTEMATCH_RETAIL
-	printf("\n-------------------------------- context caps for context %08x", (uint)this);
+	printf("\n-------------------------------- context caps for context %08x", (uint)(uintptr_t)this);
 #else
 	printf("\n-------------------------------- context caps for context %p", this);
 #endif
@@ -1833,12 +1833,14 @@ void GLMContext::PreloadTex( CGLMTex *tex, bool force )
 	if (!preloadPair)
 		return;
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	gGL->glUseProgram( (GLuint)preloadPair->m_program );
 #else
 	if ( !preloadPair->m_valid )
 	{
+#ifndef BYTEMATCH_RETAIL
 		if ( !preloadPair->ValidateProgramPair() )
+#endif
 		{
 			return;
 		}
@@ -1869,7 +1871,7 @@ void GLMContext::PreloadTex( CGLMTex *tex, bool force )
 	}
 		
 	// bind texture and sampling params
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	GLMTexSampler prevSampler = m_samplers[15];
 	GLMTexSamplingParams samp;
 	memset( &samp, 0, sizeof( samp ) );
@@ -1925,7 +1927,7 @@ void GLMContext::PreloadTex( CGLMTex *tex, bool force )
 
 	gGL->glDisableVertexAttribArray( 0 );
 	
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 	gGL->glBindSampler( 15, FindSamplerObject( prevSampler.m_samp ) );
 	BindTexToTMU( prevSampler.m_pBoundTex, 15 );
 #else

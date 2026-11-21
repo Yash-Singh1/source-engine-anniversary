@@ -125,7 +125,7 @@ bool g_bPrintOpenGLCalls = false;
 #undef GL_EXT
 #endif
 
-COpenGLEntryPoints *gGL = NULL;
+DLL_EXPORT COpenGLEntryPoints *gGL = NULL;
 GL_GetProcAddressCallbackFunc_t gGL_GetProcAddressCallback = NULL;
 
 void *VoidFnPtrLookup_GlMgr(const char *fn, bool &okay, const bool bRequired, void *fallback)

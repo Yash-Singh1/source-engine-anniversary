@@ -24,7 +24,7 @@
 #include "tier1/utlmap.h"
 #include "tier1/checksum_md5.h"
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 #define VPK_ENABLE_SIGNING
 #endif
 #line 28

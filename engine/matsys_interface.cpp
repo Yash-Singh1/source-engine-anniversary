@@ -284,7 +284,7 @@ static const char *s_pRegistryConVars[] =
 
 #if USE_VIDEOCONFIG_FILE
 static CThreadMutex g_VideoConfigMutex;
-#if !defined( BYTEMATCH_RETAIL ) && defined( HL2_COMPLETE_ENGINE )
+#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
 static const char *GetVideoConfigPathID()
 {
 	const char *pszGameDir = CommandLine()->ParmValue( "-game", CommandLine()->ParmValue( "-defaultgamedir", "hl2" ) );

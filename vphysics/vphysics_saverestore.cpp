@@ -215,7 +215,7 @@ void CVPhysPtrUtlVectorSaveRestoreOps::Save( const SaveRestoreFieldInfo_t &field
 	pSave->WriteInt( &nObjects );
 	for ( int i = 0; i < nObjects; i++ )
 	{
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
 		pSave->WriteData( (char*)&pUtlVector->Element(i), sizeof(void*) );
 #else
 		pSave->WriteInt( &pUtlVector->Element(i) );
@@ -235,7 +235,7 @@ void CVPhysPtrUtlVectorSaveRestoreOps::Restore( const SaveRestoreFieldInfo_t &fi
 	for ( int i = 0; i < nObjects; i++ )
 	{
 		void **ppElem = (void**)(&pUtlVector->Element(i));
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
 		pRestore->ReadData( (char *)ppElem, sizeof(void*), 0 );
 #else
 		pRestore->ReadInt( (int*)ppElem );

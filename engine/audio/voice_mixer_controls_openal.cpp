@@ -141,7 +141,7 @@ bool CMixerControls::GetValue_Float(Control iControl, float &value)
 		case MicVolume:
 		{
 			OSStatus theError = noErr;
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 			for ( int iChannel = 0; iChannel < 3; iChannel++ )
 #else
 			for ( uint iChannel = 0; iChannel < 3; iChannel++ )

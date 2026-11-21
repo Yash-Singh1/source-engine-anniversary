@@ -44,9 +44,10 @@ def build(bld):
 		'cmatlightmaps.cpp',
 		'cmatrendercontext.cpp',
 		'cmatqueuedrendercontext.cpp',
-		'ctexturecompositor.cpp',
 		'../public/tier0/memoverride.cpp'
 	]
+	if 'BYTEMATCH_RETAIL=1' not in bld.env.DEFINES:
+		source.insert(-1, 'ctexturecompositor.cpp')
 
 	includes = [
 		'.',

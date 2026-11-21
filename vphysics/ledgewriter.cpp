@@ -234,7 +234,7 @@ void CVPhysicsVirtualMeshWriter::UnpackCompactLedgeFromHull( IVP_Compact_Ledge *
 	pLedge->has_chilren_flag = isVirtualLedge ? IVP_TRUE : IVP_FALSE;
 
 	// Make the offset -pLedge so the result is a NULL ledgetree node - we haven't needed to create one of these as of yet
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 	pLedge->ledgetree_node_offset = -((int)pLedge);
 #endif
 

@@ -23,7 +23,7 @@
 // #define MULTILIST_PEDANTIC_ASSERTS 1 
 
 // This is a useful macro to iterate from head to tail in a linked list.
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 #define FOR_EACH_LL( listName, iteratorName ) \
 	for( int iteratorName=(listName).Head(); (listName).IsUtlLinkedList && iteratorName != (listName).InvalidIndex(); iteratorName = (listName).Next( iteratorName ) )
 #else

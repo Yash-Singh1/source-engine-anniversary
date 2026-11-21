@@ -3671,7 +3671,7 @@ void CModelRender::StaticPropColorMeshCallback( void *pContext, const void *pDat
 	HardwareVerts::FileHeader_t *pVhvHdr;
 	byte *pOriginalData = NULL;
 	int numLightingComponents = 1;
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
 	bool bColorMeshValid = false;
 	int populatedMeshes = 0;
 #endif
@@ -3721,7 +3721,7 @@ void CModelRender::StaticPropColorMeshCallback( void *pContext, const void *pDat
 	for ( meshID = startMesh; meshID<pVhvHdr->m_nMeshes; meshID++ )
 	{
 		int nID = meshID-startMesh;
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
 		if ( nID >= pStaticPropContext->m_nMeshes )
 		{
 			break;
@@ -3764,11 +3764,11 @@ void CModelRender::StaticPropColorMeshCallback( void *pContext, const void *pDat
 		V_memcpy( pOut, pIn, numVertexes * 4 * numLightingComponents );
 #endif
 		meshBuilder.End();
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
 		populatedMeshes++;
 #endif
 	}
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
 	bColorMeshValid = ( populatedMeshes > 0 && populatedMeshes == pStaticPropContext->m_nMeshes );
 #endif
 cleanUp:
@@ -3783,7 +3783,7 @@ cleanUp:
 	}
 
 	// mark as completed in single atomic operation
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
 	pStaticPropContext->m_pColorMeshData->m_bColorMeshValid = bColorMeshValid;
 #else
 	pStaticPropContext->m_pColorMeshData->m_bColorMeshValid = true;

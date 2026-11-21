@@ -678,7 +678,7 @@ void VAudioInit()
 			g_pFileSystem->GetLocalCopy( "mss32.dll" );
 		}
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 		g_pVAudioModule = FileSystem_LoadModule( "vaudio_miles" );
 #else
 		g_pVAudioModule = FileSystem_LoadModule( "vaudio_minimp3" );

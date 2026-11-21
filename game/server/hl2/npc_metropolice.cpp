@@ -1675,7 +1675,7 @@ float CNPC_MetroPolice::AimBurstAtReactionTime( float flReactionTime, float flDi
 #define AIM_AT_SHOT_SPEED_COUNT 6
 #define AIM_AT_SHOT_DIST_COUNT 6
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 static int s_pShotCountFraction[AIM_AT_TIME_DIST_COUNT][AIM_AT_TIME_SPEED_COUNT] =
 #else
 static float s_pShotCountFraction[AIM_AT_TIME_DIST_COUNT][AIM_AT_TIME_SPEED_COUNT] =

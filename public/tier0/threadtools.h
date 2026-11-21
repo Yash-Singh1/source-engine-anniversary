@@ -660,7 +660,7 @@ private:
 #define MAX_THREADS_SUPPORTED 32
 #endif
 
-#if !( defined( OSX ) && !defined( PLATFORM_64BITS ) ) && !defined( BYTEMATCH_RETAIL )
+#if !( defined( OSX ) && !defined( PLATFORM_64BITS ) ) && ( !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS ) )
 namespace ThreadIndexInternal
 {
 	inline CInterlockedInt *Slots()

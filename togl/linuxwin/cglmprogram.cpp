@@ -163,7 +163,7 @@ CGLMProgram::~CGLMProgram( )
 	GLMShaderDesc *glslDesc = &m_descs[kGLMGLSL];
 	if (glslDesc->m_object.glsl)
 	{
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( OSX )
 		gGL->glDeleteShader( (uint)glslDesc->m_object.glsl );	// why do I need a cast here again ?
 #else
 		//gGL->glDeleteShader( (uint)glslDesc->m_object.glsl );	// why do I need a cast here again ?
@@ -1359,7 +1359,11 @@ bool CGLMShaderPair::SetProgramPair( CGLMProgram *vp, CGLMProgram *fp )
 
 	if (m_valid)
 	{
+#ifdef OSX
+		gGL->glUseProgramObjectARB( m_program );
+#else
 		gGL->glUseProgram( m_program );
+#endif
 
 		m_ctx->NewLinkedProgram();
 				

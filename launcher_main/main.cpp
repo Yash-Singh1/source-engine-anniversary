@@ -216,7 +216,7 @@ static void WaitForDebuggerConnect( int argc, char *argv[], int time )
 
 int main( int argc, char *argv[] )
 {
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 	void *launcher = dlopen( "bin/launcher" DLL_EXT_STRING, RTLD_NOW );
 	if ( !launcher )
 	{

@@ -1261,7 +1261,7 @@ void CShaderDeviceBase::GetWindowSize( int& nWidth, int& nHeight ) const
 		RECT rect;
 #ifdef _WIN32
 		GetClientRect( ( HWND )m_ViewHWnd, &rect );
-#elif defined( TOGL_OSX ) || defined( BYTEMATCH_RETAIL )
+#elif defined( TOGL_OSX ) || ( defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS ) )
 		nativeGetClientRect( m_ViewHWnd, &rect );
 #else
 		toglGetClientRect( (VD3DHWND)m_ViewHWnd, &rect );

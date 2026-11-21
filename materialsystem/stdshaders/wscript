@@ -154,7 +154,7 @@ def build(bld):
 
 	defines = ['HL2_SHADER_COMBOS_2024']
 
-	libs = ['tier0','shaderlib','tier1','mathlib']
+	libs = ['tier0','shaderlib','tier1','tier2','mathlib']
 
 	if bld.env.DEST_OS == 'android':
 		libs += ['ANDROID_SUPPORT']

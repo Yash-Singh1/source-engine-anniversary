@@ -66,11 +66,11 @@ typedef CWin32Font font_base_t;
 #include "Win32Font.h"
 typedef CWin32Font font_t;
 typedef CWin32Font font_base_t;
-#elif defined(OSX) && defined(BYTEMATCH_RETAIL)
+#elif defined(OSX) && defined(BYTEMATCH_RETAIL) && !defined(PLATFORM_64BITS)
 #include "osxfont.h"
 typedef IVGuiFontImpl font_t;
 typedef COSXFont font_base_t;
-#elif defined( LINUX )
+#elif defined( LINUX ) || ( defined(OSX) && defined(BYTEMATCH_RETAIL) && defined(PLATFORM_64BITS) )
 #include "linuxfont.h"
 typedef IVGuiFontImpl font_t;
 typedef CLinuxFont font_base_t;

@@ -35,7 +35,7 @@
 #include "vgui_baseui_interface.h"
 #endif
 #include "tier0/etwprof.h"
-#if defined( BYTEMATCH_RETAIL ) && defined( POSIX )
+#if defined( BYTEMATCH_RETAIL ) && defined( POSIX ) && !defined( PLATFORM_64BITS )
 #include "../dedicated/console/TextConsoleUnix.h"
 #endif
 #line 38
@@ -167,7 +167,7 @@ private:
 	float			m_flMinFrameTime; // Expected duration of a frame, or zero if it is unlimited.
 	float			m_flLastRemainder; // 'Unused' time on the last render loop.
 	bool			m_bCatchupTime;
-#if defined( BYTEMATCH_RETAIL ) && defined( POSIX )
+#if defined( BYTEMATCH_RETAIL ) && defined( POSIX ) && !defined( PLATFORM_64BITS )
 	CTextConsoleUnix m_TextConsole;
 #endif
 #line 161
@@ -214,7 +214,7 @@ void CEngine::Unload( void )
 
 	m_nDLLState			= DLL_INACTIVE;
 	m_nNextDLLState		= DLL_INACTIVE;
-#if defined( BYTEMATCH_RETAIL ) && defined( POSIX )
+#if defined( BYTEMATCH_RETAIL ) && defined( POSIX ) && !defined( PLATFORM_64BITS )
 	m_TextConsole.ShutDown();
 #endif
 #line 204
@@ -242,7 +242,7 @@ bool CEngine::Load( bool bDedicated, const char *rootdir )
 
 		UpdateMaterialSystemConfig();
 	}
-#if defined( BYTEMATCH_RETAIL ) && defined( POSIX )
+#if defined( BYTEMATCH_RETAIL ) && defined( POSIX ) && !defined( PLATFORM_64BITS )
 	m_TextConsole.Init();
 #endif
 #line 228
@@ -397,7 +397,10 @@ void CEngine::Frame( void )
 				// the other logical hyperthread core if the CPU supports it)
 				for (int i = 2000; i >= 0; --i)
 				{
-#ifdef POSIX
+#if defined( POSIX ) && defined( __aarch64__ )
+#line 371
+					__asm__ __volatile__( "yield" ); __asm__ __volatile__( "yield" ); __asm__ __volatile__( "yield" ); __asm__ __volatile__( "yield" );
+#elif defined( POSIX )
 #line 371
 					__asm( "pause" ); __asm( "pause" ); __asm( "pause" ); __asm( "pause" );
 #else
@@ -518,7 +521,7 @@ void CEngine::Frame( void )
 
 	// Remember old time
 	m_flPreviousTime = m_flCurrentTime;
-#if defined( BYTEMATCH_RETAIL ) && defined( POSIX )
+#if defined( BYTEMATCH_RETAIL ) && defined( POSIX ) && !defined( PLATFORM_64BITS )
 
 	// Process console input typed into the terminal we were launched from
 	char *pLine;

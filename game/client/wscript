@@ -92,6 +92,8 @@ def build(bld):
 
 	# In retail mode the manifest (RETAIL_SELECT) replaces these with retail's file set.
 	source = [ 'in_touch.cpp', '../../common/imageutils.cpp' ] + game["sources"] + ['../../public/tier0/memoverride.cpp']
+	if 'BYTEMATCH_RETAIL=1' in bld.env.DEFINES and 'steamshare.cpp' not in source:
+		source.append('steamshare.cpp')
 	retail_module = '%s/%s' % (bld.env.GAMES, PROJECT_NAME) if retail else None
 	includes += game["includes"]
 	defines = game["defines"]

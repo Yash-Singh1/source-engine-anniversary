@@ -44,6 +44,9 @@ def build(bld):
 		'../public/tier0/memoverride.cpp'
 	]
 
+	if 'BYTEMATCH_RETAIL=1' in bld.env.DEFINES:
+		source += ['BlacklistedServers.cpp', 'CustomGames.cpp', 'FriendsGames.cpp', 'SpectateGames.cpp']
+
 	includes = [
 		'.',
 		'../public',

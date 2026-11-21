@@ -506,7 +506,7 @@ void CHud::Shutdown( void )
 	}
 
 	m_HudList.Purge();
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
 	// Free HUD textures while vgui::surface() is still loaded (on macOS exit,
 	// libvguimatsurface can be unloaded before gHUD's static destructor runs).
 #ifdef HL2_ANNIVERSARY_NOV2024

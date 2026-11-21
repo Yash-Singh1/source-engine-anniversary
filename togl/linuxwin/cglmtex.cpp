@@ -1873,7 +1873,11 @@ void CGLMTex::HandleSRGBMismatch( bool srgb, int &srgbFlipCount )
 		char *texname = m_debugLabel;
 		if (!texname) texname = "-";
 
+#if defined( BYTEMATCH_RETAIL ) && defined( OSX )
+		srgbFlipCount++;
+#else
 		m_srgbFlipCount++;
+#endif
 
 #if GLMDEBUG
 		//policy: print the ones that have flipped 1 or N times

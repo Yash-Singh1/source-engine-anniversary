@@ -64,7 +64,7 @@ typedef enum _fieldtypes
 	FIELD_MATERIALINDEX,	// a material index (using the material precache string table)
 
 	FIELD_VECTOR2D,			// 2 floats
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
 	FIELD_INTEGER64, FIELD_POINTER,        // 64bit integer, pointer
 #endif
 	FIELD_TYPECOUNT,		// MUST BE LAST
@@ -104,8 +104,8 @@ DECLARE_FIELD_SIZE( FIELD_BOOLEAN,		sizeof(char))
 DECLARE_FIELD_SIZE( FIELD_SHORT,		sizeof(short))
 DECLARE_FIELD_SIZE( FIELD_CHARACTER,	sizeof(char))
 DECLARE_FIELD_SIZE( FIELD_COLOR32,		sizeof(int))
-DECLARE_FIELD_SIZE( FIELD_STRING,		sizeof(void*))
-#ifndef BYTEMATCH_RETAIL
+	DECLARE_FIELD_SIZE( FIELD_STRING,		sizeof(void*))
+#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
 DECLARE_FIELD_SIZE( FIELD_POINTER,		sizeof(void*))
 #endif
 #line 109

@@ -49,7 +49,7 @@ public:
 	template<class T> FORCEINLINE void Put( T const &nValue )
 	{
 		EnsureCapacity( sizeof( T ) );
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
 		memcpy( m_pDataOut, &nValue, sizeof(T) );
 #else
 		*( reinterpret_cast<T *>( m_pDataOut ) ) = nValue;
@@ -66,7 +66,7 @@ public:
 		Put( nValue );
 	}
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
     FORCEINLINE void PutIntPtr( intp nValue )
     {
         Put( nValue );
@@ -348,7 +348,7 @@ public:
 		{
 			m_Storage.PutInt( CBCMD_BIND_SHADERAPI_TEXTURE_HANDLE );
 			m_Storage.PutInt( nSampler );
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
 			m_Storage.PutIntPtr( hTexture );
 #else
 			m_Storage.PutInt( hTexture );

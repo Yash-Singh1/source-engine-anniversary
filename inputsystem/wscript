@@ -19,11 +19,12 @@ def build(bld):
 	source = [
 		'inputsystem.cpp',
 		'joystick_sdl.cpp',
-		'touch_sdl.cpp',
 		'key_translation.cpp',
 		'steamcontroller.cpp',
 		'../public/tier0/memoverride.cpp'
 	]
+	if 'BYTEMATCH_RETAIL=1' not in bld.env.DEFINES:
+		source.insert(2, 'touch_sdl.cpp')
 
 	if bld.env.DEST_OS == 'win32':
 		source += [

@@ -27,6 +27,9 @@
 #include "tier0/vprof_telemetry.h"
 #if defined( BYTEMATCH_RETAIL ) && defined( USE_SDL )
 #include "appframework/ilaunchermgr.h"
+#ifdef PLATFORM_64BITS
+ILauncherMgr *g_pLauncherMgr = NULL;
+#endif
 #endif
 #line 28
 
@@ -3546,7 +3549,7 @@ void CShaderDeviceDx8::Present()
 			RECT destRect;
 			#ifndef DX_TO_GL_ABSTRACTION
 					GetClientRect( ( HWND )m_ViewHWnd, &destRect );
-			#elif defined( TOGL_OSX ) || defined( BYTEMATCH_RETAIL )
+			#elif defined( TOGL_OSX ) || ( defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS ) )
 					nativeGetClientRect( m_ViewHWnd, &destRect );
 			#else
 					toglGetClientRect( (VD3DHWND)m_ViewHWnd, &destRect );

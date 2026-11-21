@@ -411,7 +411,7 @@ inline void CClassMemoryPool<T>::Clear()
 
 	for( CBlob *pCur=m_BlobHead.m_pNext; pCur != &m_BlobHead; pCur=pCur->m_pNext )
 	{
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 		T *p = (T *)pCur->m_Data;
 		T *pLimit = (T *)(pCur->m_Data + pCur->m_NumBytes);
 #else
@@ -450,7 +450,7 @@ inline void CClassMemoryPool<T>::Clear()
 		inline void  operator delete( void* p, int nBlockUse, const char *pFileName, int nLine ) { s_Allocator.Free(p); }   \
 	private:																		\
 		static   CUtlMemoryPool   s_Allocator
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 #define FIXEDSIZE_ALLOCATOR_ALIGNMENT( _class )
 #else
 #define FIXEDSIZE_ALLOCATOR_ALIGNMENT( _class )	, alignof(_class)

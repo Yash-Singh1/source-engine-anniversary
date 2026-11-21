@@ -91,7 +91,7 @@ static int gSizes[] =
 	FIELD_SIZE( FIELD_MATERIALINDEX ),
 
 	FIELD_SIZE( FIELD_VECTOR2D ),
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
 	FIELD_SIZE( FIELD_INTEGER64 ),
 	FIELD_SIZE( FIELD_POINTER ),
 #elif defined( HL2_ANNIVERSARY_NOV2024 )
@@ -118,7 +118,7 @@ static void Matrix3x4Offset( matrix3x4_t& dest, const matrix3x4_t& matrixIn, con
 
 // This does the necessary casting / extract to grab a pointer to a member function as a void *
 // UNDONE: Cast to BASEPTR or something else here?
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 #define EXTRACT_INPUTFUNC_FUNCTIONPTR(x)		(*(inputfunc_t **)(&(x)))
 #else
 //#define EXTRACT_INPUTFUNC_FUNCTIONPTR(x)		(*(inputfunc_t **)(&(x)))
@@ -131,7 +131,7 @@ static void Matrix3x4Offset( matrix3x4_t& dest, const matrix3x4_t& matrixIn, con
 // Input  : *function - pointer to member function
 // Output : const char * - function name
 //-----------------------------------------------------------------------------
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 const char *UTIL_FunctionToName( datamap_t *pMap, inputfunc_t *function )
 #else
 const char *UTIL_FunctionToName( datamap_t *pMap, inputfunc_t function )
@@ -147,11 +147,11 @@ const char *UTIL_FunctionToName( datamap_t *pMap, inputfunc_t function )
 #ifdef WIN32
 				Assert( sizeof(pMap->dataDesc[i].inputFunc) == sizeof(void *) );
 #elif defined(POSIX)
-				Assert( sizeof(pMap->dataDesc[i].inputFunc) == 8 );
+				Assert( sizeof(pMap->dataDesc[i].inputFunc) == (sizeof(void *) * 2) );
 #else
 #error
 #endif
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 				inputfunc_t *pTest = EXTRACT_INPUTFUNC_FUNCTIONPTR(pMap->dataDesc[i].inputFunc);
 #else
 				inputfunc_t pTest = pMap->dataDesc[i].inputFunc;
@@ -173,7 +173,7 @@ const char *UTIL_FunctionToName( datamap_t *pMap, inputfunc_t function )
 //			This is used to save/restore function pointers (convert text back to pointer)
 // Input  : *pName - name of the member function
 //-----------------------------------------------------------------------------
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 inputfunc_t *UTIL_FunctionFromName( datamap_t *pMap, const char *pName )
 #else
 inputfunc_t UTIL_FunctionFromName( datamap_t *pMap, const char *pName )
@@ -196,7 +196,7 @@ inputfunc_t UTIL_FunctionFromName( datamap_t *pMap, const char *pName )
 			{
 				if ( FStrEq( pName, pMap->dataDesc[i].fieldName ) )
 				{
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 					return EXTRACT_INPUTFUNC_FUNCTIONPTR(pMap->dataDesc[i].inputFunc);
 #else
 					return pMap->dataDesc[i].inputFunc;
@@ -1177,7 +1177,7 @@ void CSave::WritePositionVector( const Vector *value, int count )
 void CSave::WriteFunction( datamap_t *pRootMap, const char *pname, inputfunc_t **data, int count )
 {
 	AssertMsg( count == 1, "Arrays of functions not presently supported" );
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 	const char *functionName = UTIL_FunctionToName( pRootMap, *data );
 #else
 	const char *functionName = UTIL_FunctionToName( pRootMap, *(inputfunc_t*)data );
@@ -1354,7 +1354,7 @@ bool CSave::WriteGameField( const char *pname, void *pData, datamap_t *pRootMap,
 			WriteInterval( pField->fieldName, (interval_t *)pData, pField->fieldSize );
 			break;
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
 		case FIELD_POINTER:
 			WriteData( pField->fieldName, sizeof(void*)*pField->fieldSize, (char *)pData );
 			break;
@@ -2200,7 +2200,7 @@ void CRestore::ReadGameField( const SaveRestoreRecordHeader_t &header, void *pDe
 			ReadInterval( (interval_t *)pDest, pField->fieldSize, header.size );
 			break;
 
-#ifndef BYTEMATCH_RETAIL
+#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
 		case FIELD_POINTER:
 			ReadData( (char *)pDest, sizeof(void*)*pField->fieldSize, header.size );
 			break;
@@ -2294,7 +2294,7 @@ int CRestore::ReadFunction( datamap_t *pMap, inputfunc_t **pValue, int count, in
 	if ( *pszFunctionName == 0 )
 		*pValue = NULL;
 	else
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !defined( PLATFORM_64BITS )
 		*pValue = UTIL_FunctionFromName( pMap, pszFunctionName );
 #else
 	{

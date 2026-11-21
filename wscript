@@ -623,6 +623,8 @@ def configure(conf):
 	conf.env.append_unique('CXXFLAGS', cxxflags)
 	conf.env.append_unique('LINKFLAGS', linkflags)
 	conf.env.append_unique('INCLUDES', [os.path.abspath('common/')])
+	if conf.env.DEST_OS == 'darwin' and conf.env.DEST_CPU == 'aarch64':
+		conf.env.append_unique('DEFINES', ['BYTEMATCH_RETAIL=1'])
 
 	check_deps( conf )
 
@@ -686,19 +688,13 @@ def build(bld):
 
 		bld.add_subproject(projects['game'])
 
-	# Enable post-Anniversary hl2_complete expansion/config/save support on native builds.
-	hl2_complete_targets = set(['appframework', 'dedicated', 'engine', 'GameUI', 'launcher', 'vgui2', 'vtex_dll'])
-	for tg in bld.get_all_task_gen():
-		if getattr(tg, 'name', None) in hl2_complete_targets:
-			tg.defines = tg.to_list(getattr(tg, 'defines', [])) + ['HL2_COMPLETE_ENGINE=1']
-
-	# ivp only includes <alloca.h> for LINUX/SUN; macOS needs it too.
+	# ivp only includes <alloca.h> for LINUX/SUN and uses BSD finite(); macOS needs both.
 	# Also give native macOS dylibs relocatable @rpath install names so staged
 	# installs resolve sibling binaries from bin/ instead of build-tree paths.
 	if bld.env.DEST_OS == 'darwin':
 		for tg in bld.get_all_task_gen():
 			if getattr(tg, 'name', None) == 'ivp_physics':
-				tg.cxxflags = tg.to_list(getattr(tg, 'cxxflags', [])) + ['-include', 'alloca.h']
+				tg.cxxflags = tg.to_list(getattr(tg, 'cxxflags', [])) + ['-include', 'alloca.h', '-Dfinite=isfinite']
 			feats = tg.to_list(getattr(tg, 'features', []))
 			if 'cshlib' in feats or 'cxxshlib' in feats:
 				pat = bld.env.cxxshlib_PATTERN if 'cxxshlib' in feats else bld.env.cshlib_PATTERN
