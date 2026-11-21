@@ -37,7 +37,11 @@ extern double realtime;
 // Force a small cache for debugging cache issues.
 // #define FORCE_SMALL_MEMORY_CACHE_SIZE	( 6 * 1024 * 1024 )
 
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+#define DEFAULT_WAV_MEMORY_CACHE ( 64 * 1024 * 1024 )
+#else
 #define DEFAULT_WAV_MEMORY_CACHE ( 16 * 1024 * 1024 )
+#endif
 #define DEFAULT_XBOX_WAV_MEMORY_CACHE ( 16 * 1024 * 1024 )
 #define TF_XBOX_WAV_MEMORY_CACHE ( 24 * 1024 * 1024 ) // Team Fortress uses a larger cache
 

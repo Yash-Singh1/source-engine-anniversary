@@ -972,7 +972,11 @@ void DataCacheSize_f( IConVar *pConVar, const char *pOldString, float flOldValue
 		g_DataCache.SetSize( var.GetInt() * 1024 * 1024 );
 	}
 }
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+ConVar datacachesize( "datacachesize", "256", FCVAR_INTERNAL_USE, "Size in MB.", true, 32, true, 512, DataCacheSize_f );
+#else
 ConVar datacachesize( "datacachesize", "64", FCVAR_INTERNAL_USE, "Size in MB.", true, 32, true, 512, DataCacheSize_f );
+#endif
 
 //-----------------------------------------------------------------------------
 // Connect, disconnect

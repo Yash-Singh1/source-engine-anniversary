@@ -901,7 +901,11 @@ void CShaderManager::Init()
 {
 	// incompatible with the 360, violates loading system
 	// only used by PC to help tools reduce d3d footprint
+#ifdef OSX
+	m_bCreateShadersOnDemand = !CommandLine()->CheckParm( "-noshadersondemand" );
+#else
 	m_bCreateShadersOnDemand = IsPC() && ( ShaderUtil()->InEditorMode() || CommandLine()->CheckParm( "-shadersondemand" ) );
+#endif
 
 #ifdef DYNAMIC_SHADER_COMPILE
 	if( !IsX360() )
@@ -2984,6 +2988,12 @@ bool	CShaderManager::LoadShaderCache( char *cacheName )
 #ifdef DX_TO_GL_ABSTRACTION
 	KeyValues *pProgramCache = new KeyValues( "" );
 	bool found = pProgramCache->LoadFromFile( g_pFullFileSystem, cacheName, "MOD" );
+#ifdef OSX
+	if ( !found )
+	{
+		found = pProgramCache->LoadFromFile( g_pFullFileSystem, cacheName, "GAME" );
+	}
+#endif
 
 	if ( !found ) 
 	{
@@ -3081,10 +3091,43 @@ bool	CShaderManager::LoadShaderCache( char *cacheName )
 			if (m_VertexShaderDict[vertexShader].m_ShaderStaticCombos.m_pHardwareShaders && m_PixelShaderDict[pixelShader].m_ShaderStaticCombos.m_pHardwareShaders)
 			{
 				// and sanity check the indices..
-				if ( (nVertexShaderDynamicIndex>=0) && (nPixelShaderDynamicIndex>=0) )
+				if ( (nVertexShaderDynamicIndex>=0) && (nPixelShaderDynamicIndex>=0)
+#ifdef OSX
+					&& (nVertexShaderDynamicIndex < m_VertexShaderDict[vertexShader].m_ShaderStaticCombos.m_nCount)
+					&& (nPixelShaderDynamicIndex < m_PixelShaderDict[pixelShader].m_ShaderStaticCombos.m_nCount)
+#endif
+					)
 				{
 					HardwareShader_t hardwareVertexShader = m_VertexShaderDict[vertexShader].m_ShaderStaticCombos.m_pHardwareShaders[nVertexShaderDynamicIndex];
 					HardwareShader_t hardwarePixelShader = m_PixelShaderDict[pixelShader].m_ShaderStaticCombos.m_pHardwareShaders[nPixelShaderDynamicIndex];
+
+#ifdef OSX
+					if ( m_bCreateShadersOnDemand )
+					{
+						if ( hardwareVertexShader == INVALID_HARDWARE_SHADER && m_VertexShaderDict[vertexShader].m_ShaderStaticCombos.m_pCreationData )
+						{
+							ShaderStaticCombos_t::ShaderCreationData_t *pCreationData = &m_VertexShaderDict[vertexShader].m_ShaderStaticCombos.m_pCreationData[nVertexShaderDynamicIndex];
+							if ( pCreationData->ByteCode.Count() > 0 )
+							{
+								char szDebugLabel[1024];
+								V_snprintf( szDebugLabel, sizeof( szDebugLabel ), "vs-file %s vs-index %d vs-combo %d", pVertexShaderName, nVertexShaderStaticIndex, nVertexShaderDynamicIndex );
+								hardwareVertexShader = CreateD3DVertexShader( (DWORD *)pCreationData->ByteCode.Base(), pCreationData->ByteCode.Count(), pVertexShaderName, szDebugLabel );
+								m_VertexShaderDict[vertexShader].m_ShaderStaticCombos.m_pHardwareShaders[nVertexShaderDynamicIndex] = hardwareVertexShader;
+							}
+						}
+						if ( hardwarePixelShader == INVALID_HARDWARE_SHADER && m_PixelShaderDict[pixelShader].m_ShaderStaticCombos.m_pCreationData )
+						{
+							ShaderStaticCombos_t::ShaderCreationData_t *pCreationData = &m_PixelShaderDict[pixelShader].m_ShaderStaticCombos.m_pCreationData[nPixelShaderDynamicIndex];
+							if ( pCreationData->ByteCode.Count() > 0 )
+							{
+								char szDebugLabel[1024];
+								V_snprintf( szDebugLabel, sizeof( szDebugLabel ), "ps-file %s ps-index %d ps-combo %d", pPixelShaderName, nPixelShaderStaticIndex, nPixelShaderDynamicIndex );
+								hardwarePixelShader = CreateD3DPixelShader( (DWORD *)pCreationData->ByteCode.Base(), pCreationData->iCentroidMask, pCreationData->ByteCode.Count(), pPixelShaderName, szDebugLabel );
+								m_PixelShaderDict[pixelShader].m_ShaderStaticCombos.m_pHardwareShaders[nPixelShaderDynamicIndex] = hardwarePixelShader;
+							}
+						}
+					}
+#endif
 
 					if ( ( hardwareVertexShader != INVALID_HARDWARE_SHADER ) && ( hardwarePixelShader != INVALID_HARDWARE_SHADER ) )
 					{
@@ -3094,6 +3137,9 @@ bool	CShaderManager::LoadShaderCache( char *cacheName )
 						}
 						else
 						{
+#ifdef OSX
+							Dx9Device()->ValidateShaderPair( (IDirect3DVertexShader9 *)hardwareVertexShader, (IDirect3DPixelShader9 *)hardwarePixelShader );
+#endif
 							nTotalLinkedShaders++;
 						}
 					}
@@ -3373,7 +3419,14 @@ void CShaderManager::SetVertexShader( VertexShader_t shader )
 		ShaderStaticCombos_t::ShaderCreationData_t *pCreationData = &vshLookup.m_ShaderStaticCombos.m_pCreationData[vshIndex];
 #endif
 
+#ifdef OSX
+		const char *pShaderName = m_ShaderSymbolTable.String( vshLookup.m_Name );
+		char szDebugLabel[1024];
+		V_snprintf( szDebugLabel, sizeof( szDebugLabel ), "vs-file %s vs-index %d vs-combo %d", pShaderName, vshLookup.m_nStaticIndex, vshIndex );
+		dxshader = CreateD3DVertexShader( ( DWORD * )pCreationData->ByteCode.Base(), pCreationData->ByteCode.Count(), pShaderName, szDebugLabel );
+#else
 		dxshader = CreateD3DVertexShader( ( DWORD * )pCreationData->ByteCode.Base(), pCreationData->ByteCode.Count(), m_ShaderSymbolTable.String( vshLookup.m_Name ) );
+#endif
 
 #ifdef DYNAMIC_SHADER_COMPILE 
 		// copy the compiled shader handle back to wherever it's supposed to be stored
@@ -3485,7 +3538,13 @@ void CShaderManager::SetPixelShader( PixelShader_t shader )
 #endif
 
 		const char *pShaderName = m_ShaderSymbolTable.String( pshLookup.m_Name );
+#ifdef OSX
+		char szDebugLabel[1024];
+		V_snprintf( szDebugLabel, sizeof( szDebugLabel ), "ps-file %s ps-index %d ps-combo %d", pShaderName, pshLookup.m_nStaticIndex, pshIndex );
+		dxshader = CreateD3DPixelShader( ( DWORD * )pCreationData->ByteCode.Base(), pCreationData->iCentroidMask, pCreationData->ByteCode.Count(), pShaderName, szDebugLabel );
+#else
 		dxshader = CreateD3DPixelShader( ( DWORD * )pCreationData->ByteCode.Base(), pCreationData->iCentroidMask, pCreationData->ByteCode.Count(), pShaderName );
+#endif
 
 #ifdef DYNAMIC_SHADER_COMPILE 
 		// copy the compiled shader handle back to wherever it's supposed to be stored
