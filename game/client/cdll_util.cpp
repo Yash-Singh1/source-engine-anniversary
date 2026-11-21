@@ -38,6 +38,9 @@
 #include "iclientmode.h"
 #include "game_controls/baseviewport.h"
 #include "particles/particles.h"
+#if defined( OSX ) && defined( PLATFORM_64BITS ) && defined( HL2_ANNIVERSARY_NOV2024 )
+#include "weapon_parse.h"
+#endif
 #endif
 #line 36
 
@@ -135,8 +138,22 @@ void FlushClientContent( const CCommand &args )
 	if ( bHasWorkshopContent || s_bHadWorkshopContent )
 	{
 		vgui::scheme()->ReloadSchemes();
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+		// Clear glyph texture cache and FreeType font data cache after loading the new
+		// scheme files so updated custom TTFs / font definitions take effect cleanly.
+		g_pVGuiSurface->ResetFontCaches();
+#endif
 		vgui::scheme()->UpdateBorders();
 		g_pParticleSystemMgr->UncacheAllParticleSystems();
+#if defined( OSX ) && defined( PLATFORM_64BITS ) && defined( HL2_ANNIVERSARY_NOV2024 )
+		// When disconnected (map load / launchmod), clear cached weapon scripts and
+		// unload their HUD sprites so Workshop weapon_*.txt overrides (or removals)
+		// reload cleanly on the next map even when staying in the same expansion.
+		if ( !engine->IsConnected() )
+		{
+			ResetFileWeaponInfoDatabase();
+		}
+#endif
 		gHUD.Shutdown();
 		g_pClientMode->InitViewport();
 		gHUD.Init();

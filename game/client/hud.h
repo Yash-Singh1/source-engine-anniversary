@@ -107,6 +107,12 @@ public:
 	void						VidInit( void );
 	// Shutdown's called when the engine's shutting down
 	void						Shutdown( void );
+#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
+	// Final DLL unload cleanup: frees m_Icons while vgui::surface() is still loaded.
+	// Must NOT run during mid-session FlushClientContent() -> gHUD.Shutdown(), because
+	// FileWeaponInfo_t entries still hold CHudTexture* pointers into g_HudTextureMemoryPool.
+	void						FreeIcons( void );
+#endif
 	// LevelInit's called whenever a new level is starting
 	void						LevelInit( void );
 	// LevelShutdown's called whenever a level is finishing

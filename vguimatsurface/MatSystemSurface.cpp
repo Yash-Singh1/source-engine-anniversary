@@ -2125,6 +2125,19 @@ void *CMatSystemSurface::FontDataHelper( const char *pchFontName, int &size, con
 		CUtlString strFontName( pchFontName );
 		RemoveSpaces( strFontName );
 
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+		// Avoid duplicating identical font buffers across multiple schemes / reloads.
+		int iExisting = m_FontData.Find( strFontName.Get() );
+		if ( iExisting != m_FontData.InvalidIndex() &&
+			 m_FontData[ iExisting ].size == buf.TellPut() &&
+			 memcmp( m_FontData[ iExisting ].data, buf.Base(), buf.TellPut() ) == 0 )
+		{
+			FT_Done_Face( face );
+			size = m_FontData[ iExisting ].size;
+			return m_FontData[ iExisting ].data;
+		}
+#endif
+
 		font_entry entry;
 		entry.size = buf.TellPut();
 		entry.data = malloc( entry.size );
@@ -2863,6 +2876,15 @@ void CMatSystemSurface::ResetFontCaches()
 
 	// reload fonts
 	FontManager().ClearAllFonts();
+#if defined( OSX ) && defined( PLATFORM_64BITS ) && defined( VGUI_FONT_FREETYPE ) && !defined( VGUI_FONT_INTERFACE )
+	// All CLinuxFont / FT_Face instances were just destroyed above; purge cached
+	// TTF buffers so Workshop custom font overrides / removals reload cleanly.
+	for ( unsigned short i = m_FontData.First(); m_FontData.IsValidIndex( i ); i = m_FontData.Next( i ) )
+	{
+		free( m_FontData[ i ].data );
+	}
+	m_FontData.RemoveAll();
+#endif
 	scheme()->ReloadFonts();
 	
 	// Run a frame of the GUI to notify all subwindows of the message size change

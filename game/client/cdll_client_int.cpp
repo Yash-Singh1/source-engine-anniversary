@@ -1284,6 +1284,9 @@ void CHLClient::Shutdown( void )
 	IGameSystem::ShutdownAllSystems();
 	if ( g_pGamepadUI ) g_pGamepadUI->Shutdown();
 	gHUD.Shutdown();
+#if !defined( BYTEMATCH_RETAIL ) || defined( PLATFORM_64BITS )
+	gHUD.FreeIcons();
+#endif
 	VGui_Shutdown();
 #ifndef BYTEMATCH_RETAIL
 	gTouch.Shutdown();
