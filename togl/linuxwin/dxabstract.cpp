@@ -3954,7 +3954,7 @@ static int ShadowDepthSamplerMaskFromName( const char *pName )
 	}
 	else if ( V_stristr( pName, "lightmappedgeneric_ps" ) )
 	{
-		return (1<<15);
+		return (1<<14) | (1<<15);
 	}
 #if !defined( BYTEMATCH_RETAIL ) || defined( OSX )
 	else if ( V_stristr( pName, "deferred_global_light_ps" ) )

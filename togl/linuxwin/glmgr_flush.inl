@@ -348,27 +348,37 @@ FORCEINLINE void GLMContext::FlushDrawStates( uint nStartIndex, uint nEndIndex, 
 				}
 			}
 #else
-			if ( ( pTex ) && ( !( pTex->m_SamplingParams == m_samplers[nSamplerIndex].m_samp ) ) )
+			if ( pTex )
 			{
-				SelectTMU( nSamplerIndex );
-
-				m_samplers[nSamplerIndex].m_samp.DeltaSetToTarget( pTex->m_texGLTarget, pTex->m_SamplingParams );
-
-				pTex->m_SamplingParams = m_samplers[nSamplerIndex].m_samp;
-
+				GLMTexSamplingParams desiredParams = m_samplers[nSamplerIndex].m_samp;
 #if defined( OSX )
-				if( pTex && !( gGL->m_bHave_GL_EXT_texture_sRGB_decode ) )
+				if ( ( pTex->m_layout->m_mipCount == 1 ) && ( desiredParams.m_packed.m_mipFilter != D3DTEXF_NONE ) )
 				{
-					// see if requested SRGB state differs from the known one
-					bool texSRGB = ( pTex->m_layout->m_key.m_texFlags & kGLMTexSRGB ) != 0;
-					bool glSampSRGB  = m_samplers[nSamplerIndex].m_samp.m_packed.m_srgb;
-
-					if ( texSRGB != glSampSRGB ) // mismatch
-					{
-						pTex->HandleSRGBMismatch( glSampSRGB, pTex->m_srgbFlipCount );
-					}	
+					desiredParams.m_packed.m_mipFilter = D3DTEXF_NONE;
 				}
 #endif
+				if ( !( pTex->m_SamplingParams == desiredParams ) )
+				{
+					SelectTMU( nSamplerIndex );
+
+					desiredParams.DeltaSetToTarget( pTex->m_texGLTarget, pTex->m_SamplingParams );
+
+					pTex->m_SamplingParams = desiredParams;
+
+#if defined( OSX )
+					if( pTex && !( gGL->m_bHave_GL_EXT_texture_sRGB_decode ) )
+					{
+						// see if requested SRGB state differs from the known one
+						bool texSRGB = ( pTex->m_layout->m_key.m_texFlags & kGLMTexSRGB ) != 0;
+						bool glSampSRGB  = desiredParams.m_packed.m_srgb;
+
+						if ( texSRGB != glSampSRGB ) // mismatch
+						{
+							pTex->HandleSRGBMismatch( glSampSRGB, pTex->m_srgbFlipCount );
+						}	
+					}
+#endif
+				}
 			}
 #endif // !BYTEMATCH_RETAIL
 		}

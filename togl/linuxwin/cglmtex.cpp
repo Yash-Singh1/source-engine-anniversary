@@ -864,6 +864,9 @@ CGLMTex::CGLMTex( GLMContext *ctx, GLMTexLayout *layout, uint levels, const char
 	gGL->glTexParameteri( m_texGLTarget, GL_TEXTURE_MAX_LEVEL, m_layout->m_mipCount - 1 );
 #else
 	m_SamplingParams.SetToTarget( m_texGLTarget );
+#ifdef OSX
+	gGL->glTexParameteri( m_texGLTarget, GL_TEXTURE_MAX_LEVEL, m_layout->m_mipCount - 1 );
+#endif
 #endif
 	
 	// OK, our texture now exists and is bound on the active TMU.  Not drawable yet though.

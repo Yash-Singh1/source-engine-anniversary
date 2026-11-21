@@ -18,7 +18,11 @@
 #include "tier0/memdbgon.h"
 
 static ConVar mat_slopescaledepthbias_shadowmap( "mat_slopescaledepthbias_shadowmap", "16", FCVAR_CHEAT );
+#ifdef OSX
+static ConVar mat_depthbias_shadowmap(	"mat_depthbias_shadowmap", "20", FCVAR_CHEAT  );
+#else
 static ConVar mat_depthbias_shadowmap(	"mat_depthbias_shadowmap", "0.0005", FCVAR_CHEAT  );
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 

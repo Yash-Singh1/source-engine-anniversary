@@ -2027,7 +2027,11 @@ static ConVar mat_slopescaledepthbias_decal( "mat_slopescaledepthbias_decal", "-
 static ConVar mat_depthbias_decal(	"mat_depthbias_decal", "-262144", FCVAR_CHEAT );						//
 
 static ConVar mat_slopescaledepthbias_shadowmap( "mat_slopescaledepthbias_shadowmap", "16", FCVAR_CHEAT );
+#ifdef OSX
+static ConVar mat_depthbias_shadowmap(	"mat_depthbias_shadowmap", "20", FCVAR_CHEAT  );
+#else
 static ConVar mat_depthbias_shadowmap(	"mat_depthbias_shadowmap", "0.0005", FCVAR_CHEAT  );
+#endif
 
 static ConVar mat_monitorgamma(		"mat_monitorgamma", "2.2", 0, "monitor gamma (typically 2.2 for CRT and 1.7 for LCD)", true, 1.6f, true, 2.6f  );
 static ConVar mat_monitorgamma_tv_range_min( "mat_monitorgamma_tv_range_min", "16" );
@@ -2074,7 +2078,11 @@ static ConVar mat_slopescaledepthbias_decal( "mat_slopescaledepthbias_decal", "-
 static ConVar mat_depthbias_decal(	"mat_depthbias_decal", "-262144", FCVAR_CHEAT | FCVAR_ALLOWED_IN_COMPETITIVE );						//
 
 static ConVar mat_slopescaledepthbias_shadowmap( "mat_slopescaledepthbias_shadowmap", "16", FCVAR_CHEAT );
+#ifdef OSX
+static ConVar mat_depthbias_shadowmap(	"mat_depthbias_shadowmap", "20", FCVAR_CHEAT  );
+#else
 static ConVar mat_depthbias_shadowmap(	"mat_depthbias_shadowmap", "0.0005", FCVAR_CHEAT  );
+#endif
 
 static ConVar mat_monitorgamma(		"mat_monitorgamma", "2.2", FCVAR_ARCHIVE, "monitor gamma (typically 2.2 for CRT and 1.7 for LCD)", true, 1.6f, true, 2.6f  );
 static ConVar mat_monitorgamma_tv_range_min( "mat_monitorgamma_tv_range_min", "16" );

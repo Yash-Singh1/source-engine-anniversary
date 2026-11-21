@@ -1443,6 +1443,23 @@ static void DrawVertexLitGeneric_DX9_Internal( CBaseVSShader *pShader, IMaterial
 			DynamicCmdsOut.SetPixelShaderConstant( 22, atten_pos, 2 );
 
 			DynamicCmdsOut.SetPixelShaderConstant( 24, worldToTexture.Base(), 4 );
+#ifdef OSX
+			// Re-upload flashlight shadow tweaks (c2) and screen scale (c31) per draw;
+			// the semi-static block above only executes on initial context creation and
+			// does not record these constants into m_SemiStaticCmdsOut.
+			float tweaks[4];
+			tweaks[0] = ShadowFilterFromState( flashlightState );
+			tweaks[1] = ShadowAttenFromState( flashlightState );
+			pShader->HashShadow2DJitter( flashlightState.m_flShadowJitterSeed, &tweaks[2], &tweaks[3] );
+			DynamicCmdsOut.SetPixelShaderConstant( 2, tweaks, 1 );
+
+			float vScreenScale[4] = { 1280.0f / 32.0f, 720.0f / 32.0f, 0.0f, 0.0f };
+			int nWidth, nHeight;
+			pShaderAPI->GetBackBufferDimensions( nWidth, nHeight );
+			vScreenScale[0] = (float)nWidth / 32.0f;
+			vScreenScale[1] = (float)nHeight / 32.0f;
+			DynamicCmdsOut.SetPixelShaderConstant( 31, vScreenScale, 1 );
+#endif
 		}
 		DynamicCmdsOut.End();
 		pShaderAPI->ExecuteCommandBuffer( DynamicCmdsOut.Base() );
