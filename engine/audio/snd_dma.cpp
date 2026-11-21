@@ -529,6 +529,10 @@ public:
 						Msg( "CResourcePreloadSound: Purging: %s\n", pSfx->GetFileName() );
 					}
 
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+					if ( !pSfx->pSource->CanDelete() )
+						continue;
+#endif
 					pSfx->pSource->CacheUnload();
 					delete pSfx->pSource;
 					pSfx->pSource = NULL;
@@ -571,6 +575,10 @@ public:
 					Msg( "CResourcePreloadSound: Purging: %s\n", pSfx->GetFileName() );
 				}
 				
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+				if ( !pSfx->pSource->CanDelete() )
+					continue;
+#endif
 				pSfx->pSource->CacheUnload();
 				delete pSfx->pSource;
 				pSfx->pSource = NULL;
@@ -5936,6 +5944,22 @@ void S_GetActiveSounds( CUtlVector< SndInfo_t >& sndlist )
 //-----------------------------------------------------------------------------
 void S_ClearSoundPool()
 {
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+	// Always free active channels before deleting CAudioSources, even if the
+	// audio device is currently paused/blocked (e.g. unfocused window) and
+	// S_StopAllSounds() returned early.
+	if ( g_ActiveChannels.GetActiveCount() > 0 )
+	{
+		CChannelList list;
+		g_ActiveChannels.GetActiveChannels( list );
+		for ( int i = 0; i < list.Count(); i++ )
+		{
+			S_FreeChannel( list.GetChannel( i ) );
+		}
+		Q_memset( channels, 0, MAX_CHANNELS * sizeof( channel_t ) );
+		total_channels = MAX_DYNAMIC_CHANNELS;
+	}
+#endif
 	for ( int i = s_Sounds.FirstInorder(); i != s_Sounds.InvalidIndex(); i = s_Sounds.NextInorder( i ) )
 	{
 		if ( s_Sounds[i].pSfx )
@@ -5967,8 +5991,14 @@ void S_StopAllSounds( bool bClear )
 	if ( !g_AudioDevice )
 		return;
 
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+	bool bDeviceActive = g_AudioDevice->IsActive();
+	if ( !bDeviceActive && g_ActiveChannels.GetActiveCount() == 0 )
+		return;
+#else
 	if ( !g_AudioDevice->IsActive() )
 		return;
+#endif
 
 	total_channels = MAX_DYNAMIC_CHANNELS;	// no statics
 
@@ -5986,6 +6016,20 @@ void S_StopAllSounds( bool bClear )
 
 	Q_memset( channels, 0, MAX_CHANNELS * sizeof(channel_t) );
 
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+	if ( bClear && bDeviceActive )
+	{
+		S_ClearBuffer();
+	}
+
+	// Clear any remaining soundfade
+	memset( &soundfade, 0, sizeof( soundfade ) );
+
+	if ( bDeviceActive )
+	{
+		g_AudioDevice->StopAllSounds();
+	}
+#else
 	if ( bClear )
 	{
 		S_ClearBuffer();
@@ -5995,6 +6039,7 @@ void S_StopAllSounds( bool bClear )
 	memset( &soundfade, 0, sizeof( soundfade ) );
 
 	g_AudioDevice->StopAllSounds();
+#endif
 	Assert( g_ActiveChannels.GetActiveCount() == 0 );
 }
 

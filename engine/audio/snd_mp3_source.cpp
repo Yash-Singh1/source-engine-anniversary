@@ -193,7 +193,12 @@ void CAudioSourceMP3::ReferenceAdd( CAudioMixer * )
 
 void CAudioSourceMP3::ReferenceRemove( CAudioMixer * )
 {
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+	if ( m_refCount > 0 )
+		m_refCount--;
+#else
 	m_refCount--;
+#endif
 	if ( m_refCount == 0 && IsPlayOnce() )
 	{
 		SetPlayOnce( false ); // in case it gets used again
@@ -280,6 +285,9 @@ int CAudioSourceMP3::SampleRate()
 			// do sync I/O
 		}
 		CAudioMixerWaveMP3 *pMixer = new CAudioMixerWaveMP3( pData );
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+		ReferenceAdd( pMixer );
+#endif
 		m_sampleRate = pMixer->GetStreamOutputRate();
 		// pData ownership is passed to, and free'd by, pMixer
 		delete pMixer;

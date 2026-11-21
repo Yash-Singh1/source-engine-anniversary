@@ -910,7 +910,12 @@ int CAudioSourceWave::ConvertLoopedPosition( int samplePosition )
 //-----------------------------------------------------------------------------
 void CAudioSourceWave::ReferenceRemove( CAudioMixer *pMixer )
 {
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+	if ( m_refCount > 0 )
+		m_refCount--;
+#else
 	m_refCount--;
+#endif
 
 	if ( m_refCount == 0 && ( ( IsPC() && IsPlayOnce() ) || ( IsX360() && IsStreaming() ) ) )
 	{
