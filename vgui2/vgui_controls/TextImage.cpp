@@ -456,8 +456,8 @@ void TextImage::Paint()
 		wchar_t chBefore = 0;
 		wchar_t chAfter = 0;
 		if ( wsz > _utext )
-			chBefore = wsz[-1];
-		chAfter = wsz[1];
+			chBefore = m_bAllCaps ? towupper( wsz[-1] ) : wsz[-1];
+		chAfter = m_bAllCaps ? towupper( wsz[1] ) : wsz[1];
 		float flWide = 0.0f, flabcA = 0.0f;
 		surface()->GetKernedCharWidth( font, ch, chBefore, chAfter, flWide, flabcA );
 		if ( ch == L' ' )
@@ -523,11 +523,11 @@ void TextImage::GetTextSize(int &wide, int &tall)
 		wchar_t chBefore = 0;
 		wchar_t chAfter = 0;
 		if ( i > 0 )
-			chBefore = text[i-1];
-		chAfter = text[i+1];
+			chBefore = m_bAllCaps ? towupper( text[i-1] ) : text[i-1];
+		chAfter = m_bAllCaps ? towupper( text[i+1] ) : text[i+1];
 		float flWide = 0.0f, flabcA;
-		surface()->GetKernedCharWidth( font, text[i], chBefore, chAfter, flWide, flabcA );
-		if ( text[i] == L' ' )
+		surface()->GetKernedCharWidth( font, ch, chBefore, chAfter, flWide, flabcA );
+		if ( ch == L' ' )
 			flWide = ceil( flWide );
 		wide += floor( flWide + 0.6);
 #else
@@ -666,8 +666,8 @@ void TextImage::RecalculateNewLinePositions()
 		wchar_t chBefore = 0;
 		wchar_t chAfter = 0;
 		if ( wsz > _utext )
-			chBefore = wsz[-1];
-		chAfter = wsz[1];
+			chBefore = m_bAllCaps ? towupper( wsz[-1] ) : wsz[-1];
+		chAfter = m_bAllCaps ? towupper( wsz[1] ) : wsz[1];
 		float flWide = 0.0f, flabcA = 0.0f;
 		surface()->GetKernedCharWidth( font, ch, chBefore, chAfter, flWide, flabcA );
 		charWidth = floor( flWide + 0.6 );
@@ -788,8 +788,8 @@ void TextImage::RecalculateEllipsesPosition()
 			wchar_t chBefore = 0;
 			wchar_t chAfter = 0;
 			if ( wsz > _utext )
-				chBefore = wsz[-1];
-			chAfter = wsz[1];
+				chBefore = m_bAllCaps ? towupper( wsz[-1] ) : wsz[-1];
+			chAfter = m_bAllCaps ? towupper( wsz[1] ) : wsz[1];
 			float flWide = 0.0f, flabcA = 0.0f;
 			surface()->GetKernedCharWidth( font, ch, chBefore, chAfter, flWide, flabcA );
 			int len = floor( flWide + 0.6 );
@@ -810,18 +810,19 @@ void TextImage::RecalculateEllipsesPosition()
 				int remainingLength = len;
 				for (const wchar_t *rwsz = wsz + 1; *rwsz != 0; rwsz++)
 				{
+					wchar_t rch = m_bAllCaps ? towupper( *rwsz ) : *rwsz;
 #if USE_GETKERNEDCHARWIDTH
 					wchar_t chBefore = 0;
 					wchar_t chAfter = 0;
 					if ( rwsz > _utext )
-						chBefore = rwsz[-1];
-					chAfter = rwsz[1];
+						chBefore = m_bAllCaps ? towupper( rwsz[-1] ) : rwsz[-1];
+					chAfter = m_bAllCaps ? towupper( rwsz[1] ) : rwsz[1];
 					float flWide = 0.0f, flabcA = 0.0f;
-					surface()->GetKernedCharWidth( font, *rwsz, chBefore, chAfter, flWide, flabcA );
+					surface()->GetKernedCharWidth( font, rch, chBefore, chAfter, flWide, flabcA );
 					int len = floor( flWide + 0.6 );
 					remainingLength += VGUI_NOV2024_ONLY( len ) VGUI_OCT2024_ONLY( floor( flWide + 0.6 ) );
 #else
-					remainingLength += surface()->GetCharacterWidth(font, *rwsz);
+					remainingLength += surface()->GetCharacterWidth(font, rch);
 #endif
 				}
 
@@ -962,8 +963,8 @@ void TextImage::RecalculateCenterWrapIndents()
 		wchar_t chBefore = 0;
 		wchar_t chAfter = 0;
 		if ( wsz > _utext )
-			chBefore = wsz[-1];
-		chAfter = wsz[1];
+			chBefore = m_bAllCaps ? towupper( wsz[-1] ) : wsz[-1];
+		chAfter = m_bAllCaps ? towupper( wsz[1] ) : wsz[1];
 		float flWide = 0.0f, flabcA = 0.0f;
 		surface()->GetKernedCharWidth( font, ch, chBefore, chAfter, flWide, flabcA );
 		iCurLineW += floor( flWide + 0.6 );
