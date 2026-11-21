@@ -135,7 +135,7 @@ void HostState_RunGameInit()
 //-----------------------------------------------------------------------------
 void HostState_NewGame( char const *pMapName, bool remember_location, bool background )
 {
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 	char szMapName[_MAX_PATH];
 	V_StripExtension( pMapName, szMapName, sizeof( szMapName ) );
 	Q_strncpy( g_HostState.m_levelName, szMapName, sizeof( g_HostState.m_levelName ) );

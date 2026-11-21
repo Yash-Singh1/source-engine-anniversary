@@ -2447,7 +2447,7 @@ bool CL_ShouldLoadBackgroundLevel( const CCommand &args )
 	if ( bIsTF2 && IsPC() )
 		return false;
 
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
 	if ( args.ArgC() == 2 )
 	{
 		// presence of args identifies an end-of-game situation
