@@ -1275,7 +1275,22 @@ void GamepadUIOptionsPanel::PopulateResolutions()
 	int nModeCount = 0;
 	if ( pGameUIFuncs )
 	{
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+		// The engine lists the modes of the sdl_displayindex display; preview the one picked here.
+		static ConVarRef sdl_displayindex_preview( "sdl_displayindex" );
+		int nSavedDisplayIndex = sdl_displayindex_preview.IsValid() ? sdl_displayindex_preview.GetInt() : 0;
+		if ( sdl_displayindex_preview.IsValid() && nDisplayMode > 1 )
+		{
+			sdl_displayindex_preview.SetValue( nDisplayMode - 2 );
+		}
 		pGameUIFuncs->GetVideoModes( &pModes, &nModeCount );
+		if ( sdl_displayindex_preview.IsValid() )
+		{
+			sdl_displayindex_preview.SetValue( nSavedDisplayIndex );
+		}
+#else
+		pGameUIFuncs->GetVideoModes( &pModes, &nModeCount );
+#endif
 	}
 
 	int nTargetAspect = _gamepadui_aspectratio.GetInt();

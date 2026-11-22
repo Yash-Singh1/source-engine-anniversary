@@ -1468,6 +1468,72 @@ bool	GLMDisplayDB::GetModeInfo( int rendererIndex, int displayIndex, int modeInd
 
 #else
 
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+#include "SDL.h"
+#include "tier1/convar.h"
+
+// Built-in panels report 0 Hz through the CGDisplayMode APIs.
+static int GLMDisplayRefreshHz( CGDirectDisplayID cgid, double flReportedHz )
+{
+	if ( flReportedHz > 0.0 )
+		return (int)( flReportedHz + 0.5 );
+
+	int nHz = 60;
+	@autoreleasepool
+	{
+		for ( NSScreen *screen in [NSScreen screens] )
+		{
+			NSNumber *screenNumber = [[screen deviceDescription] objectForKey:@"NSScreenNumber"];
+			if ( screenNumber && (CGDirectDisplayID)[screenNumber unsignedIntValue] == cgid )
+			{
+				if ( @available( macOS 12.0, * ) )
+				{
+					if ( [screen maximumFramesPerSecond] > 0 )
+						nHz = (int)[screen maximumFramesPerSecond];
+				}
+				break;
+			}
+		}
+	}
+	return nHz;
+}
+
+// The engine only queries fake adapter 0, which sorts to the main display. Swap it with the
+// display picked for fullscreen (sdl_displayindex) so its modes and refresh rate are used.
+static int GLMRemapDisplayIndex( CUtlVector< GLMDisplayInfo* > *pDisplays, int displayIndex )
+{
+	if ( !pDisplays || pDisplays->Count() < 2 || displayIndex < 0 || displayIndex >= pDisplays->Count() )
+		return displayIndex;
+
+	ConVarRef sdl_displayindex( "sdl_displayindex", true );
+	if ( !sdl_displayindex.IsValid() )
+		return displayIndex;
+
+	SDL_Rect rect;
+	if ( SDL_GetDisplayBounds( sdl_displayindex.GetInt(), &rect ) != 0 )
+		return displayIndex;
+
+	int nSelected = -1;
+	FOR_EACH_VEC( *pDisplays, i )
+	{
+		CGRect bounds = CGDisplayBounds( (*pDisplays)[i]->m_info.m_cgDisplayID );
+		if ( (int)bounds.origin.x == rect.x && (int)bounds.origin.y == rect.y )
+		{
+			nSelected = i;
+			break;
+		}
+	}
+
+	if ( nSelected <= 0 )
+		return displayIndex;
+	if ( displayIndex == 0 )
+		return nSelected;
+	if ( displayIndex == nSelected )
+		return 0;
+	return displayIndex;
+}
+#endif
+
 int		GLMDisplayDB::GetDisplayCount( int rendererIndex )
 {
 	if (rendererIndex >= GetRendererCount())
@@ -1487,6 +1553,10 @@ bool	GLMDisplayDB::GetDisplayInfo( int rendererIndex, int displayIndex, GLMDispl
 	
 	if (displayIndex >= GetDisplayCount(rendererIndex))
 		return true; // fail
+
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+	displayIndex = GLMRemapDisplayIndex( (*m_renderers)[rendererIndex]->m_displays, displayIndex );
+#endif
 	
 	GLMDisplayInfo *displayInfo = (*(*m_renderers)[rendererIndex]->m_displays)[displayIndex];
 	*infoOut = displayInfo->m_info;
@@ -1501,6 +1571,10 @@ int		GLMDisplayDB::GetModeCount( int rendererIndex, int displayIndex )
 	
 	if (displayIndex >= GetDisplayCount(rendererIndex))
 		return 0; // fail
+
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+	displayIndex = GLMRemapDisplayIndex( (*m_renderers)[rendererIndex]->m_displays, displayIndex );
+#endif
 		
 	GLMDisplayInfo *displayInfo = (*(*m_renderers)[rendererIndex]->m_displays)[displayIndex];
 
@@ -1519,6 +1593,10 @@ bool	GLMDisplayDB::GetModeInfo( int rendererIndex, int displayIndex, int modeInd
 	
 	if (modeIndex >= GetModeCount(rendererIndex,displayIndex))
 		return true; // fail
+
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+	displayIndex = GLMRemapDisplayIndex( (*m_renderers)[rendererIndex]->m_displays, displayIndex );
+#endif
 	
 	if (modeIndex>=0)
 	{
@@ -1532,6 +1610,19 @@ bool	GLMDisplayDB::GetModeInfo( int rendererIndex, int displayIndex, int modeInd
 		GLMRendererInfo		*rendInfo = (*m_renderers)[ rendererIndex ];
 		GLMDisplayInfo		*dispinfo = (*rendInfo ->m_displays)[displayIndex];	
 		CGDirectDisplayID	cgid = dispinfo->m_info.m_cgDisplayID;
+
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+		// Desktop mode in points, matching SDL's display bounds and the mode list.
+		CGDisplayModeRef curMode = CGDisplayCopyDisplayMode( cgid );
+		if ( curMode )
+		{
+			infoOut->m_modePixelWidth = (uint)CGDisplayModeGetWidth( curMode );
+			infoOut->m_modePixelHeight = (uint)CGDisplayModeGetHeight( curMode );
+			infoOut->m_modeRefreshHz = GLMDisplayRefreshHz( cgid, CGDisplayModeGetRefreshRate( curMode ) );
+			CGDisplayModeRelease( curMode );
+			return false;
+		}
+#endif
 		
 		CFDictionaryRef		curModeDict = CGDisplayCurrentMode( cgid );
 		CFNumberRef			number;
@@ -1674,6 +1765,56 @@ void	GLMDisplayInfo::PopulateModes( void )
 {
 	Assert( !m_modes );
 	m_modes = new CUtlVector< GLMDisplayMode* >;
+
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+	// Point sizes, as SDL's fullscreen-desktop window and display bounds use them; the duplicate
+	// low-resolution modes include the panel's native 1x size.
+	const void *optionKeys[] = { kCGDisplayShowDuplicateLowResolutionModes };
+	const void *optionValues[] = { kCFBooleanTrue };
+	CFDictionaryRef options = CFDictionaryCreate( NULL, optionKeys, optionValues, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks );
+	CFArrayRef allModes = CGDisplayCopyAllDisplayModes( m_info.m_cgDisplayID, options );
+	if ( options )
+	{
+		CFRelease( options );
+	}
+
+	if ( allModes )
+	{
+		for ( CFIndex i = 0; i < CFArrayGetCount( allModes ); i++ )
+		{
+			CGDisplayModeRef mode = (CGDisplayModeRef)CFArrayGetValueAtIndex( allModes, i );
+			if ( !CGDisplayModeIsUsableForDesktopGUI( mode ) )
+				continue;
+
+			uint modeWidth = (uint)CGDisplayModeGetWidth( mode );
+			uint modeHeight = (uint)CGDisplayModeGetHeight( mode );
+			if ( ( modeHeight < 384 ) || ( modeWidth < 512 ) )
+				continue;
+
+			uint refreshrate = (uint)GLMDisplayRefreshHz( m_info.m_cgDisplayID, CGDisplayModeGetRefreshRate( mode ) );
+
+			bool bDuplicate = false;
+			FOR_EACH_VEC( *m_modes, j )
+			{
+				const GLMDisplayModeInfoFields &existing = (*m_modes)[j]->m_info;
+				if ( existing.m_modePixelWidth == modeWidth && existing.m_modePixelHeight == modeHeight && existing.m_modeRefreshHz == refreshrate )
+				{
+					bDuplicate = true;
+					break;
+				}
+			}
+
+			if ( !bDuplicate )
+			{
+				m_modes->AddToTail( new GLMDisplayMode( modeWidth, modeHeight, refreshrate ) );
+			}
+		}
+		CFRelease( allModes );
+	}
+
+	m_modes->Sort( DisplayModeSortFunction );
+	return;
+#endif
 	
 	CFArrayRef		modeList;
 //	CGDisplayErr	cgderr;

@@ -2387,6 +2387,9 @@ public:
     virtual bool        Init( );
     virtual void        Shutdown( void );
     virtual void        SetGameWindow( void *hWnd );
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+    void                RebuildModeList( void );
+#endif
 #if defined( BYTEMATCH_RETAIL ) || defined( HL2_COMPLETE_ENGINE )
     virtual bool        SetMode( int nWidth, int nHeight, bool bWindowed, bool bNoWindowBorder );
 #else
@@ -2540,6 +2543,10 @@ bool CVideoMode_MaterialSystem::SetMode( int nWidth, int nHeight, bool bWindowed
 #endif
 #line 2408
 {
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+    RebuildModeList();
+#endif
+#line 2409
     // Necessary for mode selection to work
     int nFoundMode = FindVideoMode( nWidth, nHeight, bWindowed );
     vmode_t *pMode = GetMode( nFoundMode );
@@ -2860,3 +2867,59 @@ void VideoMode_Destroy()
         videomode = NULL;
     }
 }
+
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+//-----------------------------------------------------------------------------
+// On macOS the material system's adapter follows sdl_displayindex, so the mode
+// list has to be rebuilt for the display the game will go fullscreen on.
+//-----------------------------------------------------------------------------
+void CVideoMode_MaterialSystem::RebuildModeList( void )
+{
+    bool bAllowSmallModes = CommandLine()->FindParm( "-small" ) != 0;
+
+    int nAdapter = materials->GetCurrentAdapter();
+    int nModeCount = materials->GetModeCount( nAdapter );
+
+    m_nNumModes = 0;
+    for ( int i = 0; i < nModeCount && m_nNumModes < MAX_MODE_LIST; i++ )
+    {
+        MaterialVideoMode_t info;
+        materials->GetModeInfo( nAdapter, i, info );
+
+        if ( ( info.m_Width < 640 || info.m_Height < 480 ) && !bAllowSmallModes )
+            continue;
+
+        int j;
+        for ( j = 0; j < m_nNumModes; j++ )
+        {
+            if ( info.m_Width == m_rgModeList[ j ].width && info.m_Height == m_rgModeList[ j ].height )
+                break;
+        }
+
+        if ( j < m_nNumModes )
+        {
+            m_rgModeList[ j ].refreshRate = MAX( m_rgModeList[ j ].refreshRate, info.m_RefreshRate );
+            continue;
+        }
+
+        m_rgModeList[ m_nNumModes ].width = info.m_Width;
+        m_rgModeList[ m_nNumModes ].height = info.m_Height;
+        m_rgModeList[ m_nNumModes ].bpp = 32;
+        m_rgModeList[ m_nNumModes ].refreshRate = info.m_RefreshRate;
+        m_nNumModes++;
+    }
+
+    if ( m_nNumModes > 1 )
+    {
+        qsort( (void *)&m_rgModeList[0], m_nNumModes, sizeof(vmode_t), VideoModeCompare );
+    }
+}
+
+void VideoMode_RebuildModeList( void )
+{
+    if ( videomode && !InEditMode() )
+    {
+        static_cast<CVideoMode_MaterialSystem*>( videomode )->RebuildModeList();
+    }
+}
+#endif

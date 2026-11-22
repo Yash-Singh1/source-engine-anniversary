@@ -2917,6 +2917,10 @@ void CDedicatedServerAPI::UpdateHostname(char *pszHostname, int maxlen)
 
 #ifndef SWDS
 
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+extern void VideoMode_RebuildModeList( void );
+#endif
+
 class CGameUIFuncs : public IGameUIFuncs
 {
 public:
@@ -2946,6 +2950,9 @@ public:
 	{
 		if ( videomode )
 		{
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+			VideoMode_RebuildModeList();
+#endif
 			*pCount = videomode->GetModeCount();
 			*ppListStart = videomode->GetMode( 0 );
 		}

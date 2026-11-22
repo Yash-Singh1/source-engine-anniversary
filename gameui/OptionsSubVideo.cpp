@@ -1525,7 +1525,22 @@ void COptionsSubVideo::PrepareResolutionList()
 	// get full video mode list
 	vmode_t *plist = NULL;
 	int count = 0;
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+	// The engine lists the modes of the sdl_displayindex display; preview the one picked here.
+	static ConVarRef sdl_displayindex_preview( "sdl_displayindex" );
+	int nSavedDisplayIndex = sdl_displayindex_preview.IsValid() ? sdl_displayindex_preview.GetInt() : 0;
+	if ( sdl_displayindex_preview.IsValid() && m_pWindowed->GetActiveItem() < ( m_pWindowed->GetItemCount() - 2 ) )
+	{
+		sdl_displayindex_preview.SetValue( m_pWindowed->GetActiveItem() );
+	}
 	gameuifuncs->GetVideoModes( &plist, &count );
+	if ( sdl_displayindex_preview.IsValid() )
+	{
+		sdl_displayindex_preview.SetValue( nSavedDisplayIndex );
+	}
+#else
+	gameuifuncs->GetVideoModes( &plist, &count );
+#endif
 
 	const MaterialSystem_Config_t &config = materials->GetCurrentConfigForVideoCard();
 
