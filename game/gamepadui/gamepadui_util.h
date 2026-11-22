@@ -173,12 +173,12 @@ public:
 		}
 
 		wchar_t wszBuf[4096];
-		int nBytes = V_UTF8ToUnicode( pszText, wszBuf, sizeof( wszBuf ) );
-		int nChars = nBytes / static_cast<int>( sizeof( wchar_t ) );
-		if ( nChars <= 1 )
+		V_UTF8ToUnicode( pszText, wszBuf, sizeof( wszBuf ) );
+		size_t nLen = wcslen( wszBuf );
+		if ( nLen == 0 )
 			return;
 
-		CopyArray( wszBuf, nChars );
+		CopyArray( wszBuf, static_cast<int>( nLen ) + 1 );
 	}
 
 	void SetString( const wchar_t *pwszText )

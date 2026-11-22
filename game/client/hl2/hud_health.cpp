@@ -50,6 +50,9 @@ public:
 	virtual void Reset( void );
 	virtual void OnThink();
 			void MsgFunc_Damage( bf_read &msg );
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+	virtual void ApplySettings( KeyValues *inResourceData );
+#endif
 
 private:
 	// old variables
@@ -68,6 +71,28 @@ CHudHealth::CHudHealth( const char *pElementName ) : CHudElement( pElementName )
 {
 	SetHiddenBits( HIDEHUD_HEALTH | HIDEHUD_PLAYERDEAD | HIDEHUD_NEEDSUIT );
 }
+
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+void CHudHealth::ApplySettings( KeyValues *inResourceData )
+{
+	// Valve's retail ep2_pak_dir.vpk scripts/hudlayout.res has a stray token in
+	// HudHealth [$DECK]: `"ypos" "426"HudPoisonDamageIndicator`, which shifts
+	// all subsequent key/value pairs off by one and leaves HudHealth invisible.
+	if ( inResourceData && inResourceData->FindKey( "HudPoisonDamageIndicator" ) )
+	{
+		inResourceData->SetInt( "wide", 130 );
+		inResourceData->SetInt( "tall", 42 );
+		inResourceData->SetInt( "visible", 1 );
+		inResourceData->SetInt( "enabled", 1 );
+		inResourceData->SetInt( "PaintBackgroundType", 2 );
+		inResourceData->SetInt( "text_xpos", 8 );
+		inResourceData->SetInt( "text_ypos", 23 );
+		inResourceData->SetInt( "digit_xpos", 66 );
+		inResourceData->SetInt( "digit_ypos", 0 );
+	}
+	BaseClass::ApplySettings( inResourceData );
+}
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 
