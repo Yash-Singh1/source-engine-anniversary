@@ -1,0 +1,107 @@
+#! /usr/bin/env python
+# encoding: utf-8
+
+from waflib import Utils
+import os
+
+top = '.'
+PROJECT_NAME = 'gamepadui'
+
+def options(opt):
+	return
+
+def configure(conf):
+	conf.env.GAMES = conf.options.GAMES
+	return
+
+def build(bld):
+	source = [
+		'gamepadui_achievements.cpp',
+		'gamepadui_basepanel.cpp',
+		'gamepadui_bonusmaps.cpp',
+		'gamepadui_button.cpp',
+		'gamepadui_checkbutton.cpp',
+		'gamepadui_frame.cpp',
+		'gamepadui_genericconfirmation.cpp',
+		'gamepadui_interface.cpp',
+		'gamepadui_mainmenu.cpp',
+		'gamepadui_newgame.cpp',
+		'gamepadui_options.cpp',
+		'gamepadui_savegame.cpp',
+		'gamepadui_util.cpp',
+		'gamepadui_workshop.cpp',
+		'../../common/imageutils.cpp',
+		'../../public/vgui_controls/vgui_controls.cpp',
+		'../../public/tier0/memoverride.cpp',
+	]
+
+	includes = [
+		'.',
+		'..',
+		'../..',
+		'../client',
+		'../../public',
+		'../../public/tier0',
+		'../../public/tier1',
+		'../../common',
+		'../../common/GameUI',
+		'../../gameui',
+		'../../thirdparty',
+	]
+
+	defines = [
+		'GAMEPADUI_EXPORTS',
+		'VERSION_SAFE_STEAM_API_INTERFACES',
+	]
+	if bld.env.GAMES == 'lostcoast':
+		defines.append('HL2_LOSTCOAST')
+
+	cxxflags = []
+	if bld.env.DEST_OS == 'darwin' and not bld.env.TARGET32:
+		cxxflags += ['-UNO_STEAM']
+	elif bld.env.DEST_OS != 'linux' and not bld.env.RETAIL_LINUX32:
+		defines.append('NO_STEAM')
+
+	libs = [
+		'tier0',
+		'vstdlib',
+		'tier1',
+		'tier2',
+		'tier3',
+		'mathlib',
+		'vgui_controls',
+		'matsys_controls',
+		'bitmap',
+		'vtf',
+		'SDL2',
+		'steam_api',
+		'JPEG',
+		'PNG',
+		'ZLIB',
+	]
+
+	if bld.env.DEST_OS == 'win32':
+		libs += ['USER32', 'GDI32']
+
+	install_path = bld.env.PREFIX
+	if bld.env.DEST_OS != 'android':
+		install_path += '/' + bld.env.GAMES + '/bin'
+
+	bld.shlib(
+		source       = source,
+		target       = PROJECT_NAME,
+		name         = PROJECT_NAME,
+		features     = 'c cxx',
+		includes     = includes,
+		defines      = defines,
+		cxxflags     = cxxflags,
+		use          = libs,
+		install_path = install_path,
+		subsystem    = bld.env.MSVC_SUBSYSTEM,
+		idx          = bld.get_taskgen_count(),
+	)
+
+	if bld.env.GAMES == 'hl2_complete' and bld.env.DEST_OS != 'android' and not bld.env.RETAIL_LINUX32:
+		out_node = bld.path.find_or_declare(bld.env.cxxshlib_PATTERN % PROJECT_NAME)
+		for extra_mod in ('hl2', 'episodic', 'lostcoast'):
+			bld.install_files(bld.env.PREFIX + '/' + extra_mod + '/bin', [out_node])

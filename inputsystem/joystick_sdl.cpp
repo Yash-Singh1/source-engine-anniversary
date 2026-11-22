@@ -157,8 +157,14 @@ void CInputSystem::InitializeJoysticks( void )
 	if ( CommandLine()->FindParm("-nojoy") ) return;
 
 #ifdef BYTEMATCH_RETAIL
-	// Steam Input handles the Steam Deck's built-in controls (stub_steam has none, so native builds keep SDL)
+	// Steam Input handles the Steam Deck's built-in controls (stub_steam has none, so native builds keep SDL).
+	// On macOS 64-bit, only skip SDL joysticks on an actual Steam Deck (IsSteamDeck(true)), so running
+	// with -gamepadui or Steam Big Picture on a Mac keeps native SDL controller support.
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+	if ( !CommandLine()->FindParm("-forcejoy") && IsSteamDeck( true ) ) return;
+#else
 	if ( !CommandLine()->FindParm("-forcejoy") && IsSteamDeck() ) return;
+#endif
 #endif
 
 	const char *controllerConfig = joy_gamecontroller_config.GetString();

@@ -322,9 +322,15 @@ bool CInputSystem::BLoadOnDiscManifest()
 	}
 	V_StripTrailingSlash( szCurrentDir );
 
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+	const char *pszActionManifest = "steam_input/action_manifest_hl2.vdf";
+	char szManifestPath[MAX_PATH + 1];
+	V_snprintf( szManifestPath, sizeof( szManifestPath ), "%s/%s", szCurrentDir, pszActionManifest );
+#else
 	const char *pszActionManifest = "steam_input\\action_manifest_hl2.vdf";
 	char szManifestPath[MAX_PATH + 1];
 	V_snprintf( szManifestPath, sizeof( szManifestPath ), "%s\\%s", szCurrentDir, pszActionManifest );
+#endif
 	Msg( "Loading action manifest: %s\n", szManifestPath );
 
 	if ( g_pFullFileSystem->FileExists( szManifestPath ) )

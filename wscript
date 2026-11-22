@@ -55,6 +55,7 @@ projects={
 		'engine/voice_codecs/minimp3',
 		'filesystem',
 		'game/client',
+		'game/gamepadui',
 		'game/server',
 		'gameui',
 		'inputsystem',
