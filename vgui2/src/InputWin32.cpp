@@ -1431,7 +1431,14 @@ HCursor CInputSystem::GetCursorOveride()
 //-----------------------------------------------------------------------------
 bool CInputSystem::InternalCursorMoved(int x, int y)
 {
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+	// Update cursor position and mouse focus immediately so a MousePressed/Released
+	// arriving in the same DispatchAllStoredGameMessages batch hits the current panel
+	// instead of the stale panel from before the move.
+	UpdateCursorPosInternal( x, y );
+#else
 	g_pIVgui->PostMessage((VPANEL) MESSAGE_CURSOR_POS, new KeyValues("SetCursorPosInternal", "xpos", x, "ypos", y), NULL);
+#endif
 	return true;
 }
 

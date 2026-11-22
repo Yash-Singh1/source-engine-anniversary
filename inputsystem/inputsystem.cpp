@@ -766,6 +766,19 @@ void CInputSystem::PollInputState_Platform()
 
 				case CocoaEvent_MouseButtonDown:
 				{
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+					UpdateMousePositionState( state, (short)pEvent->m_MousePos[0], (short)pEvent->m_MousePos[1] );
+					{
+						InputEvent_t locEvent;
+						memset( &locEvent, 0, sizeof(locEvent) );
+						locEvent.m_nTick = GetPollTick();
+						// IE_LocateMouseClick
+						locEvent.m_nType = IE_FirstVguiEvent + 1;
+						locEvent.m_nData = (short)pEvent->m_MousePos[0];
+						locEvent.m_nData2 = (short)pEvent->m_MousePos[1];
+						g_pInputSystem->PostUserEvent( locEvent );
+					}
+#endif
 					int nButtonMask = pEvent->m_MouseButtonFlags;
 					ButtonCode_t dblClickCode = BUTTON_CODE_INVALID;
 					if ( pEvent->m_nMouseClickCount > 1 )
@@ -796,6 +809,19 @@ void CInputSystem::PollInputState_Platform()
 
 				case CocoaEvent_MouseButtonUp:
 				{
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+					UpdateMousePositionState( state, (short)pEvent->m_MousePos[0], (short)pEvent->m_MousePos[1] );
+					{
+						InputEvent_t locEvent;
+						memset( &locEvent, 0, sizeof(locEvent) );
+						locEvent.m_nTick = GetPollTick();
+						// IE_LocateMouseClick
+						locEvent.m_nType = IE_FirstVguiEvent + 1;
+						locEvent.m_nData = (short)pEvent->m_MousePos[0];
+						locEvent.m_nData2 = (short)pEvent->m_MousePos[1];
+						g_pInputSystem->PostUserEvent( locEvent );
+					}
+#endif
 					int nButtonMask = pEvent->m_MouseButtonFlags;
 					UpdateMouseButtonState( nButtonMask );
 				}

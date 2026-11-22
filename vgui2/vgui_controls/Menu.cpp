@@ -2288,7 +2288,7 @@ void Menu::OnCursorMoved(int x, int y)
 	
 	// chain up
 	CallParentFunction(new KeyValues("OnCursorMoved", "x", x, "y", y));
-#ifdef BYTEMATCH_RETAIL
+#if defined( BYTEMATCH_RETAIL ) && !( defined( OSX ) && defined( PLATFORM_64BITS ) )
 	RequestFocus();
 	InvalidateLayout();
 #endif

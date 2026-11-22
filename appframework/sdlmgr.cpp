@@ -517,6 +517,9 @@ InitReturnVal_t CSDLMgr::Init()
 
 	if (!SDL_WasInit(SDL_INIT_VIDEO))
 	{
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+		SDL_SetHint( "SDL_MOUSE_FOCUS_CLICKTHROUGH", "1" );
+#endif
 		if (SDL_Init(SDL_INIT_VIDEO) == -1)
 			Error( "SDL_Init(SDL_INIT_VIDEO) failed: %s", SDL_GetError() );
 
@@ -1591,6 +1594,19 @@ void CSDLMgr::SetWindowFullScreen( bool bFullScreen, int nWidth, int nHeight )
 		m_bFullScreen = bFullScreen;
 	}
 
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+	if ( bFullScreen )
+	{
+		int winW = 0, winH = 0;
+		SDL_GetWindowSize( m_Window, &winW, &winH );
+		if ( winW > 0 && winH > 0 )
+		{
+			m_flMouseXScale = ( float )nWidth / ( float )winW;
+			m_flMouseYScale = ( float )nHeight / ( float )winH;
+		}
+	}
+#endif
+
 #ifndef BYTEMATCH_RETAIL
 	if (bFullScreen)
 	{
@@ -1992,6 +2008,18 @@ void CSDLMgr::PumpWindowsMessageLoop()
 						}
 						break;
 					}
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+					case SDL_WINDOWEVENT_SIZE_CHANGED:
+					case SDL_WINDOWEVENT_RESIZED:
+					{
+						if ( m_bFullScreen && event.window.data1 > 0 && event.window.data2 > 0 && m_WindowWidth > 0 && m_WindowHeight > 0 )
+						{
+							m_flMouseXScale = ( float )m_WindowWidth / ( float )event.window.data1;
+							m_flMouseYScale = ( float )m_WindowHeight / ( float )event.window.data2;
+						}
+						break;
+					}
+#endif
 				}
 				break;
 
