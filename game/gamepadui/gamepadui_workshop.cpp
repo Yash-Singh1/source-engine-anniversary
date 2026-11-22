@@ -203,12 +203,10 @@ void GamepadUIWorkshopButton_List::OnKeyCodePressed( vgui::KeyCode code )
 	case KEY_XBUTTON_RIGHT:
 	case KEY_XSTICK1_LEFT:
 	case KEY_XSTICK1_RIGHT:
-#if defined( STEAMCONTROLLER_DPAD_LEFT )
 	case STEAMCONTROLLER_DPAD_LEFT:
-#endif
-#if defined( STEAMCONTROLLER_DPAD_RIGHT )
 	case STEAMCONTROLLER_DPAD_RIGHT:
-#endif
+	case STEAMCONTROLLER_LEFT_PAD_LEFT:
+	case STEAMCONTROLLER_LEFT_PAD_RIGHT:
 		m_bEnabled = !m_bEnabled;
 		if ( pWorkshop && m_pItem )
 		{
@@ -219,9 +217,8 @@ void GamepadUIWorkshopButton_List::OnKeyCodePressed( vgui::KeyCode code )
 	case KEY_UP:
 	case KEY_XBUTTON_UP:
 	case KEY_XSTICK1_UP:
-#if defined( STEAMCONTROLLER_DPAD_UP )
 	case STEAMCONTROLLER_DPAD_UP:
-#endif
+	case STEAMCONTROLLER_LEFT_PAD_UP:
 		if ( GamepadUIWorkshopPanel::s_pWorkshopPanel && GamepadUIWorkshopPanel::s_pWorkshopPanel->IsMovingAddon() )
 		{
 			if ( pWorkshop && m_pItem )
@@ -235,9 +232,8 @@ void GamepadUIWorkshopButton_List::OnKeyCodePressed( vgui::KeyCode code )
 	case KEY_DOWN:
 	case KEY_XBUTTON_DOWN:
 	case KEY_XSTICK1_DOWN:
-#if defined( STEAMCONTROLLER_DPAD_DOWN )
 	case STEAMCONTROLLER_DPAD_DOWN:
-#endif
+	case STEAMCONTROLLER_LEFT_PAD_DOWN:
 		if ( GamepadUIWorkshopPanel::s_pWorkshopPanel && GamepadUIWorkshopPanel::s_pWorkshopPanel->IsMovingAddon() )
 		{
 			if ( pWorkshop && m_pItem )
@@ -839,22 +835,14 @@ void GamepadUIWorkshopPanel::OnKeyCodePressed( vgui::KeyCode code )
 {
 	ButtonCode_t baseCode = GamepadUI_NormalizeJoystickCode( code );
 
-	bool bPrevTab = ( baseCode == KEY_XBUTTON_LEFT_SHOULDER
-#if defined( STEAMCONTROLLER_LEFT_BUMPER )
-		|| baseCode == STEAMCONTROLLER_LEFT_BUMPER
-#endif
-		);
+	bool bPrevTab = ( baseCode == KEY_XBUTTON_LEFT_SHOULDER || baseCode == STEAMCONTROLLER_LEFT_BUMPER );
 	if ( bPrevTab )
 	{
 		ChangeTab( GetCurrentTab() - 1 );
 		return;
 	}
 
-	bool bNextTab = ( baseCode == KEY_XBUTTON_RIGHT_SHOULDER
-#if defined( STEAMCONTROLLER_RIGHT_BUMPER )
-		|| baseCode == STEAMCONTROLLER_RIGHT_BUMPER
-#endif
-		);
+	bool bNextTab = ( baseCode == KEY_XBUTTON_RIGHT_SHOULDER || baseCode == STEAMCONTROLLER_RIGHT_BUMPER );
 	if ( bNextTab )
 	{
 		ChangeTab( GetCurrentTab() + 1 );

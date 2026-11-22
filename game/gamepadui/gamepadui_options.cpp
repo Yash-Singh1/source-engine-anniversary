@@ -713,10 +713,7 @@ void GamepadUIWheelyWheel::OnKeyCodePressed( vgui::KeyCode code )
 	ButtonCode_t baseCode = GamepadUI_NormalizeJoystickCode( code );
 
 	bool bLeft = ( baseCode == KEY_LEFT || baseCode == KEY_XBUTTON_LEFT || baseCode == KEY_XSTICK1_LEFT
-#if defined( STEAMCONTROLLER_DPAD_LEFT )
-		|| baseCode == STEAMCONTROLLER_DPAD_LEFT
-#endif
-		);
+		|| baseCode == STEAMCONTROLLER_DPAD_LEFT || baseCode == STEAMCONTROLLER_LEFT_PAD_LEFT || baseCode == STEAMCONTROLLER_RIGHT_PAD_LEFT );
 	if ( bLeft )
 	{
 		--m_nCurrentOption;
@@ -732,10 +729,7 @@ void GamepadUIWheelyWheel::OnKeyCodePressed( vgui::KeyCode code )
 	}
 
 	bool bRight = ( baseCode == KEY_RIGHT || baseCode == KEY_XBUTTON_RIGHT || baseCode == KEY_XSTICK1_RIGHT
-#if defined( STEAMCONTROLLER_DPAD_RIGHT )
-		|| baseCode == STEAMCONTROLLER_DPAD_RIGHT
-#endif
-		);
+		|| baseCode == STEAMCONTROLLER_DPAD_RIGHT || baseCode == STEAMCONTROLLER_LEFT_PAD_RIGHT || baseCode == STEAMCONTROLLER_RIGHT_PAD_RIGHT );
 	if ( bRight )
 	{
 		if ( m_Options.Count() > 0 )
@@ -884,10 +878,7 @@ void GamepadUISlideySlide::OnKeyCodePressed( vgui::KeyCode code )
 	ButtonCode_t baseCode = GamepadUI_NormalizeJoystickCode( code );
 
 	bool bLeft = ( baseCode == KEY_LEFT || baseCode == KEY_XBUTTON_LEFT || baseCode == KEY_XSTICK1_LEFT
-#if defined( STEAMCONTROLLER_DPAD_LEFT )
-		|| baseCode == STEAMCONTROLLER_DPAD_LEFT
-#endif
-		);
+		|| baseCode == STEAMCONTROLLER_DPAD_LEFT || baseCode == STEAMCONTROLLER_LEFT_PAD_LEFT || baseCode == STEAMCONTROLLER_RIGHT_PAD_LEFT );
 	if ( bLeft )
 	{
 		m_flValue = clamp( m_flValue - m_flStep, m_flMin, m_flMax );
@@ -899,10 +890,7 @@ void GamepadUISlideySlide::OnKeyCodePressed( vgui::KeyCode code )
 	}
 
 	bool bRight = ( baseCode == KEY_RIGHT || baseCode == KEY_XBUTTON_RIGHT || baseCode == KEY_XSTICK1_RIGHT
-#if defined( STEAMCONTROLLER_DPAD_RIGHT )
-		|| baseCode == STEAMCONTROLLER_DPAD_RIGHT
-#endif
-		);
+		|| baseCode == STEAMCONTROLLER_DPAD_RIGHT || baseCode == STEAMCONTROLLER_LEFT_PAD_RIGHT || baseCode == STEAMCONTROLLER_RIGHT_PAD_RIGHT );
 	if ( bRight )
 	{
 		m_flValue = clamp( m_flValue + m_flStep, m_flMin, m_flMax );
@@ -2002,22 +1990,14 @@ void GamepadUIOptionsPanel::OnKeyCodePressed( vgui::KeyCode code )
 {
 	ButtonCode_t baseCode = GamepadUI_NormalizeJoystickCode( code );
 
-	bool bPrevTab = ( baseCode == KEY_XBUTTON_LEFT_SHOULDER
-#if defined( STEAMCONTROLLER_LEFT_BUMPER )
-		|| baseCode == STEAMCONTROLLER_LEFT_BUMPER
-#endif
-		);
+	bool bPrevTab = ( baseCode == KEY_XBUTTON_LEFT_SHOULDER || baseCode == STEAMCONTROLLER_LEFT_BUMPER );
 	if ( bPrevTab )
 	{
 		ChangeTab( GetCurrentTab() - 1 );
 		return;
 	}
 
-	bool bNextTab = ( baseCode == KEY_XBUTTON_RIGHT_SHOULDER
-#if defined( STEAMCONTROLLER_RIGHT_BUMPER )
-		|| baseCode == STEAMCONTROLLER_RIGHT_BUMPER
-#endif
-		);
+	bool bNextTab = ( baseCode == KEY_XBUTTON_RIGHT_SHOULDER || baseCode == STEAMCONTROLLER_RIGHT_BUMPER );
 	if ( bNextTab )
 	{
 		ChangeTab( GetCurrentTab() + 1 );
