@@ -722,6 +722,11 @@ void *CSDLMgr::QueryInterface( const char *pInterfaceName )
 	return NULL;
 }
 
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+void DisplaySync_WaitForVBlank( SDL_Window *pWindow, int nInterval );
+void DisplaySync_Shutdown();
+#endif
+#line 716
 void CSDLMgr::Shutdown()
 {
 	SDLAPP_FUNC;
@@ -734,6 +739,10 @@ void CSDLMgr::Shutdown()
 		gGL->glDeleteFramebuffersEXT(1, &m_readFBO);
 #endif
 	m_readFBO = 0;
+#endif
+#line 727
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+	DisplaySync_Shutdown();
 #endif
 #line 727
 
@@ -1296,6 +1305,11 @@ void CSDLMgr::ShowPixels( CShowPixelsParams *params )
 				swapInterval = -swapInterval;
 			}
 			SDL_GL_SetSwapInterval(swapInterval);
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+			// SDL's vsync stays on the display the GL context was created on; DisplaySync paces on the window's display.
+			SDL_GL_SetSwapInterval( 0 );
+#endif
+#line 1249
 		}
 
 		m_lastKnownSwapInterval = swapInterval;
@@ -1491,6 +1505,13 @@ void CSDLMgr::ShowPixels( CShowPixelsParams *params )
 	CFastTimer tm;
 	tm.Start();
 
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+	if ( m_lastKnownSwapInterval > 0 )
+	{
+		DisplaySync_WaitForVBlank( m_Window, m_lastKnownSwapInterval );
+	}
+#endif
+#line 1444
 	SDL_GL_SwapWindow( m_Window );
 
 	m_flPrevGLSwapWindowTime = tm.GetDurationInProgress().GetMillisecondsF();

@@ -27,6 +27,8 @@ def build(bld):
 
 	if bld.env.DEST_OS == 'darwin' and bld.env.GL:
 		source += ['glmrendererinfo_osx.mm']
+		if not bld.env.TARGET32 and not bld.env.RETAIL_OSX32:
+			source += ['displaysync_osx.cpp']
 
 
 	if bld.env.DEST_OS == 'win32':
@@ -51,7 +53,7 @@ def build(bld):
 	libs = []
 
 	if bld.env.DEST_OS == 'darwin':
-		libs += ['FOUNDATION', 'APPKIT', 'IOKIT']
+		libs += ['FOUNDATION', 'APPKIT', 'IOKIT', 'COREVIDEO']
 
 	bld.stlib(
 		source   = source,

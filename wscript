@@ -378,6 +378,7 @@ def check_deps(conf):
 		conf.env.FRAMEWORK_FOUNDATION = "Foundation"
 		conf.env.FRAMEWORK_COREFOUNDATION = "CoreFoundation"
 		conf.env.FRAMEWORK_COREGRAPHICS = "CoreGraphics"
+		conf.env.FRAMEWORK_COREVIDEO = "CoreVideo"
 		conf.env.FRAMEWORK_OPENGL = "OpenGL"
 		conf.env.FRAMEWORK_CARBON = "Carbon"
 		conf.env.FRAMEWORK_APPLICATIONSERVICES = "ApplicationServices"
