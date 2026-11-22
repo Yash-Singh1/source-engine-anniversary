@@ -2126,6 +2126,19 @@ bool IsSteamDeck( bool bSteamDeckOnly )
 
 			const char *pszTenFoot = getenv( "SteamTenFoot" );
 			bGamepadUI = pszTenFoot && *pszTenFoot && atoi( pszTenFoot ) != 0;
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+			// Steam Big Picture on POSIX sets SteamTenfoot (lowercase 'f') and/or SteamGamepadUI.
+			if ( !bGamepadUI )
+			{
+				const char *pszTenfootLower = getenv( "SteamTenfoot" );
+				bGamepadUI = pszTenfootLower && *pszTenfootLower && atoi( pszTenfootLower ) != 0;
+			}
+			if ( !bGamepadUI )
+			{
+				const char *pszGamepadUI = getenv( "SteamGamepadUI" );
+				bGamepadUI = pszGamepadUI && *pszGamepadUI && atoi( pszGamepadUI ) != 0;
+			}
+#endif
 		}
 
 		s_nSteamDeckCached = bSteamDeck ? 1 : 0;

@@ -126,20 +126,25 @@ void GamepadUI::Initialize( CreateInterfaceFn factory )
 
 	m_pAchievementMgr = m_pEngineClient->GetAchievementMgr();
 
-	if ( !m_pEngineClient ||
-		 !m_pEngineSound ||
-		 !m_pEngineVGui ||
-		 !m_pGameUIFuncs ||
-		 !m_pMaterialSystem ||
-		 !m_pMatSystemSurface ||
-		 !m_pRenderView ||
-		 !m_pSoundEmitterSystem ||
-		 !m_pGameUI ||
-		 !m_pAchievementMgr )
-	{
-		GamepadUI_Log( "GamepadUI::Initialize() failed to get necessary interfaces.\n" );
-		return;
-	}
+		if ( !m_pEngineClient ||
+			 !m_pEngineSound ||
+			 !m_pEngineVGui ||
+			 !m_pGameUIFuncs ||
+			 !m_pMaterialSystem ||
+			 !m_pMatSystemSurface ||
+			 !m_pRenderView ||
+			 !m_pSoundEmitterSystem ||
+			 !m_pGameUI ||
+			 !m_pAchievementMgr )
+		{
+			GamepadUI_Log( "GamepadUI::Initialize() failed to get necessary interfaces.\n" );
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+			GamepadUI_Log( "  engine=%p sound=%p vgui=%p gameuifuncs=%p mat=%p surface=%p render=%p soundemit=%p gameui=%p ach=%p\n",
+				m_pEngineClient, m_pEngineSound, m_pEngineVGui, m_pGameUIFuncs, m_pMaterialSystem,
+				m_pMatSystemSurface, m_pRenderView, m_pSoundEmitterSystem, m_pGameUI, m_pAchievementMgr );
+#endif
+			return;
+		}
 
 	g_pVGuiLocalize->AddFile( "resource/gameui_%language%.txt", "GAME", true );
 	g_pVGuiLocalize->AddFile( "resource/deck_%language%.txt", "GAME", true );
@@ -202,8 +207,15 @@ void GamepadUI::OnLevelInitializePreEntity()
 
 void GamepadUI::OnLevelInitializePostEntity()
 {
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+	if ( !m_pBasePanel )
+		return;
+#endif
 	m_pBasePanel->UpdateBackgroundMusic();
-	GetMainMenu()->OnMenuStateChanged();
+	if ( GamepadUIMainMenu *pMainMenu = GetMainMenu() )
+	{
+		pMainMenu->OnMenuStateChanged();
+	}
 }
 
 void GamepadUI::OnLevelShutdown()
@@ -214,8 +226,15 @@ void GamepadUI::OnLevelShutdown()
 		m_pAnimationController->CancelAllAnimations();
 	}
 
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+	if ( !m_pBasePanel )
+		return;
+#endif
 	m_pBasePanel->UpdateBackgroundMusic();
-	GetMainMenu()->OnMenuStateChanged();
+	if ( GamepadUIMainMenu *pMainMenu = GetMainMenu() )
+	{
+		pMainMenu->OnMenuStateChanged();
+	}
 }
 
 IFileSystem *GamepadUI::GetFileSystem() const
