@@ -4,6 +4,15 @@ This branch is a decomp of HL2 Anniversary Edition built off the TF2 2018 Source
 
 ## Building & Installing
 
+Clone the repository with its submodules and run every command below from inside it:
+
+```sh
+git clone --recursive https://github.com/Yash-Singh1/source-engine-anniversary.git
+cd source-engine-anniversary
+```
+
+If you already cloned without `--recursive`, run `git submodule update --init --recursive` inside the repository.
+
 Install the dependencies with [Homebrew](https://brew.sh):
 
 ```sh
