@@ -1272,7 +1272,7 @@ FORCEINLINE unsigned long RoundFloatToUnsignedLong(float f)
 #else  // !X360
 #if defined(__arm__) || defined(__aarch64__)
         return (unsigned long)(f + 0.5f);
-#elif defined( PLATFORM_WINDOWS_PC64 )
+#elif defined( PLATFORM_WINDOWS_PC64 ) || ( defined( POSIX ) && defined( PLATFORM_64BITS ) )
 	uint nRet = ( uint ) f;
 	if ( nRet & 1 )
 	{

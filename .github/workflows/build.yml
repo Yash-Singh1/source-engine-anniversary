@@ -18,6 +18,17 @@ jobs:
       run: |
         scripts/build-macos-amd64.sh
 
+  build-macos-x86_64:
+    runs-on: macos-15-intel
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
+    - name: Build macOS x86_64 (hl2_complete)
+      run: |
+        scripts/build-macos-amd64.sh
+
   winline-check:
     runs-on: ubuntu-latest
 

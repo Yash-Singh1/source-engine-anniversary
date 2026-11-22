@@ -17,8 +17,16 @@
 #include <tier0/platform.h>
 #include <errno.h>
 
+#if defined( __x86_64__ )
+#define rdtsc(x) do { \
+	uint32 __rdtsc_lo, __rdtsc_hi; \
+	__asm__ __volatile__ ("rdtsc" : "=a" (__rdtsc_lo), "=d" (__rdtsc_hi)); \
+	(x) = (((uint64)__rdtsc_hi) << 32) | __rdtsc_lo; \
+} while (0)
+#else
 #define rdtsc(x) \
 	__asm__ __volatile__ ("rdtsc" : "=A" (x))
+#endif
 
 class TimeVal
 {

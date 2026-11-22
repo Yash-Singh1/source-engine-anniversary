@@ -623,7 +623,7 @@ def configure(conf):
 	conf.env.append_unique('CXXFLAGS', cxxflags)
 	conf.env.append_unique('LINKFLAGS', linkflags)
 	conf.env.append_unique('INCLUDES', [os.path.abspath('common/')])
-	if conf.env.DEST_OS == 'darwin' and conf.env.DEST_CPU == 'aarch64':
+	if conf.env.DEST_OS == 'darwin' and conf.env.DEST_CPU in ['aarch64', 'x86_64']:
 		conf.env.append_unique('DEFINES', ['BYTEMATCH_RETAIL=1'])
 
 	check_deps( conf )
@@ -694,7 +694,10 @@ def build(bld):
 	if bld.env.DEST_OS == 'darwin':
 		for tg in bld.get_all_task_gen():
 			if getattr(tg, 'name', None) == 'ivp_physics':
-				tg.cxxflags = tg.to_list(getattr(tg, 'cxxflags', [])) + ['-include', 'alloca.h', '-Dfinite=isfinite']
+				ivp_flags = ['-include', 'alloca.h']
+				if bld.env.DEST_CPU == 'aarch64':
+					ivp_flags.append('-Dfinite=isfinite')
+				tg.cxxflags = tg.to_list(getattr(tg, 'cxxflags', [])) + ivp_flags
 			feats = tg.to_list(getattr(tg, 'features', []))
 			if 'cshlib' in feats or 'cxxshlib' in feats:
 				pat = bld.env.cxxshlib_PATTERN if 'cxxshlib' in feats else bld.env.cshlib_PATTERN
