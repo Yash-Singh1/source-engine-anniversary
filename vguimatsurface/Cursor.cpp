@@ -476,8 +476,37 @@ bool IsCursorLocked()
 //-----------------------------------------------------------------------------
 // handles mouse movement
 //-----------------------------------------------------------------------------
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+// Window points per backbuffer pixel. A fullscreen window stretches the backbuffer, and the
+// viewport is not always the backbuffer size when the cursor is read.
+static bool CursorGetWindowScale( float &flScaleX, float &flScaleY )
+{
+	int nWindowWide = 0, nWindowTall = 0;
+	SDL_GetWindowSize( ( SDL_Window * )g_pLauncherMgr->GetWindowRef(), &nWindowWide, &nWindowTall );
+
+	int nBackBufferWide = 0, nBackBufferTall = 0;
+	CMatRenderContextPtr pRenderContext( g_pMaterialSystem );
+	pRenderContext->GetWindowSize( nBackBufferWide, nBackBufferTall );
+
+	if ( nWindowWide <= 0 || nWindowTall <= 0 || nBackBufferWide <= 0 || nBackBufferTall <= 0 )
+		return false;
+
+	flScaleX = (float)nWindowWide / (float)nBackBufferWide;
+	flScaleY = (float)nWindowTall / (float)nBackBufferTall;
+	return true;
+}
+#endif
+
 void CursorSetPos( void *hwnd, int x, int y )
 {
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+	float flScaleX, flScaleY;
+	if ( s_bCursorVisible && CursorGetWindowScale( flScaleX, flScaleY ) )
+	{
+		x = (int)( x * flScaleX );
+		y = (int)( y * flScaleY );
+	}
+#endif
 #if defined( USE_SDL )
 	if ( s_bCursorVisible )
 #endif
@@ -490,6 +519,16 @@ void CursorGetPos(void *hwnd, int &x, int &y)
 	if ( s_bCursorVisible )
 	{
 		SDL_GetMouseState( &x, &y );
+
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+		float flScaleX, flScaleY;
+		if ( !s_bSoftwareCursorActive && CursorGetWindowScale( flScaleX, flScaleY ) )
+		{
+			x = (int)( x / flScaleX );
+			y = (int)( y / flScaleY );
+		}
+		return;
+#endif
 
 		int windowHeight = 0;
 		int windowWidth = 0;
@@ -514,6 +553,10 @@ void CursorGetPos(void *hwnd, int &x, int &y)
 		CMatRenderContextPtr pRenderContext( g_pMaterialSystem );
 		int rx, ry, width, height;
 		pRenderContext->GetViewport( rx, ry, width, height );
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+		rx = ry = 0;
+		pRenderContext->GetWindowSize( width, height );
+#endif
 		x = rx + width/2;
 		y = ry + height/2;
 		//printf( "Mouse(inv) x:%d y:%d %d %d\n", x, y, width, height );
