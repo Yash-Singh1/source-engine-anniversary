@@ -833,6 +833,11 @@ void CGameUI::RunFrame()
 	// resize the background panel to the screen size
 	int wide, tall;
 	vgui::surface()->GetScreenSize(wide, tall);
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+	// The surface reports the current viewport, which is not always the full window here.
+	engine->GetScreenSize( wide, tall );
+#endif
+#line 825
 	staticPanel->SetSize(wide,tall);
 
 	// Run frames

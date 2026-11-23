@@ -8,6 +8,7 @@
 #include "gamepadui_interface.h"
 #include "gamepadui_mainmenu.h"
 
+#include "cdll_int.h"
 #include "tier0/icommandline.h"
 #include "tier1/convar.h"
 #include "tier1/strtools.h"
@@ -61,6 +62,28 @@ void GamepadUIBasePanel::ApplySchemeSettings( vgui::IScheme *pScheme )
 
 	m_pMainMenu->InvalidateLayout( false, true );
 }
+
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+//-----------------------------------------------------------------------------
+// Purpose: Follow the window size; the parent's size is copied only when the
+//			scheme is applied and can be taken mid mode change
+//-----------------------------------------------------------------------------
+void GamepadUIBasePanel::OnThink()
+{
+	BaseClass::OnThink();
+
+	IVEngineClient *pEngine = GamepadUI::GetInstance().GetEngineClient();
+	if ( !pEngine )
+		return;
+
+	int nWide = 0, nTall = 0;
+	pEngine->GetScreenSize( nWide, nTall );
+	if ( nWide > 0 && nTall > 0 && ( nWide != GetWide() || nTall != GetTall() ) )
+	{
+		SetBounds( 0, 0, nWide, nTall );
+	}
+}
+#endif
 
 GamepadUIMainMenu *GamepadUIBasePanel::GetMainMenu() const
 {

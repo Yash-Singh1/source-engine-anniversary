@@ -205,6 +205,17 @@ GamepadUIButton *GamepadUIFrame::GetFooterButton( FooterButtons::Button eButton 
 void GamepadUIFrame::OnThink()
 {
 	BaseClass::OnThink();
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+	if ( vgui::Panel *pParent = GetParent() )
+	{
+		int nWide = 0, nTall = 0;
+		pParent->GetSize( nWide, nTall );
+		if ( nWide != GetWide() || nTall != GetTall() )
+		{
+			SetBounds( 0, 0, nWide, nTall );
+		}
+	}
+#endif
 	LayoutFooterButtons();
 }
 

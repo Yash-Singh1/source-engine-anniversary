@@ -28,6 +28,9 @@ public:
 	virtual ~GamepadUIBasePanel();
 
 	virtual void ApplySchemeSettings( vgui::IScheme *pScheme ) OVERRIDE;
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+	virtual void OnThink() OVERRIDE;
+#endif
 
 	GamepadUIMainMenu *GetMainMenu() const;
 
