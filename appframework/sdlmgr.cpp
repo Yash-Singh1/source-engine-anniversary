@@ -1222,6 +1222,13 @@ void CSDLMgr::OnFrameRendered()
 		}
 #endif
 		m_bRawInput = !m_bCursorVisible && rawinput.IsValid() && rawinput.GetBool();
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+		// Without relative mode the OS cursor keeps moving and is only hidden by the window's
+		// cursor rect, so it shows whenever it slips outside the window or over the menu bar
+		// or Dock before it is warped back. Relative mode freezes and hides it; the game reads
+		// the same motion deltas either way.
+		m_bRawInput = !m_bCursorVisible;
+#endif
 
 		SDL_bool bWindowGrab = !m_bCursorVisible ? SDL_TRUE : SDL_FALSE;
 		SDL_bool bRelativeMouseMode = bWindowGrab;
