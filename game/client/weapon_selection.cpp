@@ -15,6 +15,11 @@
 #include "iinput.h"
 #include "inputsystem/iinputsystem.h"
 #include "tier2/tier2.h"
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+#include <execinfo.h>
+#include <dlfcn.h>
+#include <time.h>
+#endif
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -22,7 +27,49 @@
 #define HISTORY_DRAW_TIME	"5"
 
 ConVar hud_drawhistory_time( "hud_drawhistory_time", HISTORY_DRAW_TIME, 0 );
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+//-----------------------------------------------------------------------------
+// Purpose: Log every hud_fastswitch change with the call stack (image + offset,
+//			resolvable with atos) to the console and fastswitch_changes.log
+//-----------------------------------------------------------------------------
+static void HudFastSwitchChanged( IConVar *pVar, const char *pOldValue, float flOldValue )
+{
+	ConVarRef var( pVar );
+	char szLine[4096];
+	time_t now = time( NULL );
+	struct tm tmNow;
+	localtime_r( &now, &tmNow );
+	int nLen = V_snprintf( szLine, sizeof( szLine ), "%04d-%02d-%02d %02d:%02d:%02d hud_fastswitch %s -> %s\n",
+		tmNow.tm_year + 1900, tmNow.tm_mon + 1, tmNow.tm_mday, tmNow.tm_hour, tmNow.tm_min, tmNow.tm_sec, pOldValue, var.GetString() );
+
+	void *pFrames[32];
+	int nFrames = backtrace( pFrames, ARRAYSIZE( pFrames ) );
+	for ( int i = 1; i < nFrames && nLen < ( int )sizeof( szLine ) - 256; i++ )
+	{
+		Dl_info info;
+		if ( dladdr( pFrames[i], &info ) && info.dli_fname )
+		{
+			const char *pszImage = V_UnqualifiedFileName( info.dli_fname );
+			nLen += V_snprintf( szLine + nLen, sizeof( szLine ) - nLen, "  %s+0x%llx %s\n", pszImage,
+				( unsigned long long )( ( uintptr_t )pFrames[i] - ( uintptr_t )info.dli_fbase ), info.dli_sname ? info.dli_sname : "" );
+		}
+	}
+
+	Msg( "%s", szLine );
+	if ( g_pFullFileSystem )
+	{
+		FileHandle_t hFile = g_pFullFileSystem->Open( "fastswitch_changes.log", "a", "DEFAULT_WRITE_PATH" );
+		if ( hFile )
+		{
+			g_pFullFileSystem->Write( szLine, V_strlen( szLine ), hFile );
+			g_pFullFileSystem->Close( hFile );
+		}
+	}
+}
+ConVar hud_fastswitch( "hud_fastswitch", "0", FCVAR_ARCHIVE | FCVAR_ARCHIVE_XBOX, "", HudFastSwitchChanged );
+#else
 ConVar hud_fastswitch( "hud_fastswitch", "0", FCVAR_ARCHIVE | FCVAR_ARCHIVE_XBOX );
+#endif
 NOV2024_ONLY( ConVar hud_fastswitch_reset( "hud_fastswitch_reset", "1", FCVAR_ARCHIVE ); )
 NOV2024_ONLY( ConVar hud_weaponui_gamepad( "hud_weaponui_gamepad", "2", FCVAR_ARCHIVE ); )
 ConVar hud_fastswitch_net( "hud_fastswitch_net", "0", FCVAR_ARCHIVE | FCVAR_USERINFO | FCVAR_ARCHIVE_XBOX );
