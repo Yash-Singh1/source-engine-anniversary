@@ -2923,3 +2923,38 @@ void VideoMode_RebuildModeList( void )
     }
 }
 #endif
+
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+//-----------------------------------------------------------------------------
+// Purpose: Print every size the UI, the renderer and the cursor depend on
+//-----------------------------------------------------------------------------
+CON_COMMAND( mac_screeninfo, "Print the video mode, render, UI and window sizes." )
+{
+	Msg( "engine: mode %dx%d windowed %d noborder %d\n", videomode->GetModeWidth(), videomode->GetModeHeight(), videomode->IsWindowedMode() ? 1 : 0, videomode->NoWindowBorder() ? 1 : 0 );
+
+	int nBackWide = 0, nBackTall = 0;
+	materials->GetBackBufferDimensions( nBackWide, nBackTall );
+
+	int nWindowWide = 0, nWindowTall = 0, nVX = 0, nVY = 0, nVWide = 0, nVTall = 0;
+	{
+		CMatRenderContextPtr pRenderContext( materials );
+		pRenderContext->GetWindowSize( nWindowWide, nWindowTall );
+		pRenderContext->GetViewport( nVX, nVY, nVWide, nVTall );
+	}
+	Msg( "engine: backbuffer %dx%d render context window %dx%d viewport %d,%d %dx%d\n", nBackWide, nBackTall, nWindowWide, nWindowTall, nVX, nVY, nVWide, nVTall );
+
+	uint nRenderedWide = 0, nRenderedTall = 0, nDisplayedWide = 0, nDisplayedTall = 0;
+	g_pLauncherMgr->RenderedSize( nRenderedWide, nRenderedTall, false );
+	g_pLauncherMgr->DisplayedSize( nDisplayedWide, nDisplayedTall );
+	int nSurfaceWide = 0, nSurfaceTall = 0;
+	vgui::surface()->GetScreenSize( nSurfaceWide, nSurfaceTall );
+	Msg( "engine: rendered %ux%u displayed %ux%u vgui screen %dx%d\n", nRenderedWide, nRenderedTall, nDisplayedWide, nDisplayedTall, nSurfaceWide, nSurfaceTall );
+
+	ConCommandBase *pLauncherInfo = g_pCVar->FindCommandBase( "mac_launcherinfo" );
+	if ( pLauncherInfo && pLauncherInfo->IsCommand() )
+	{
+		CCommand launcherArgs;
+		static_cast< ConCommand * >( pLauncherInfo )->Dispatch( launcherArgs );
+	}
+}
+#endif

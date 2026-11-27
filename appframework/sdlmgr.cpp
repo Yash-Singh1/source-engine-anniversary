@@ -324,6 +324,10 @@ public:
 	virtual void SetForbidMouseGrab( bool bForbidMouseGrab ) { m_bForbidMouseGrab = bForbidMouseGrab; }
 
 	virtual void OnFrameRendered();
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+	void UpdateMouseScaleFromWindow();
+	void PrintScreenInfo();
+#endif
 
 	virtual void SetGammaRamp( const uint16 *pRed, const uint16 *pGreen, const uint16 *pBlue );
 			
@@ -1195,6 +1199,53 @@ void CSDLMgr::SetMouseCursor( SDL_Cursor *hCursor )
 	}
 }
 
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+//-----------------------------------------------------------------------------
+// Window points -> backbuffer pixels, the inverse of the present blit, which
+// stretches the whole backbuffer (RenderedSize) over SDL_GetWindowSize. Cached
+// scales from the fullscreen switch go stale: macOS finishes fullscreen
+// asynchronously and below the notch the window is shorter than the display.
+//-----------------------------------------------------------------------------
+void CSDLMgr::UpdateMouseScaleFromWindow()
+{
+	int nWindowWide = 0, nWindowTall = 0;
+	SDL_GetWindowSize( m_Window, &nWindowWide, &nWindowTall );
+
+	int nRenderWide = m_renderedWidth, nRenderTall = m_rendererHeight;
+	if ( nRenderWide <= 0 || nRenderTall <= 0 )
+	{
+		nRenderWide = m_WindowWidth;
+		nRenderTall = m_WindowHeight;
+	}
+
+	if ( nWindowWide > 0 && nWindowTall > 0 && nRenderWide > 0 && nRenderTall > 0 )
+	{
+		m_flMouseXScale = ( float )nRenderWide / ( float )nWindowWide;
+		m_flMouseYScale = ( float )nRenderTall / ( float )nWindowTall;
+	}
+}
+
+void CSDLMgr::PrintScreenInfo()
+{
+	int nWindowWide = 0, nWindowTall = 0, nDrawWide = 0, nDrawTall = 0, nX = 0, nY = 0;
+	SDL_GetWindowSize( m_Window, &nWindowWide, &nWindowTall );
+	SDL_GL_GetDrawableSize( m_Window, &nDrawWide, &nDrawTall );
+	SDL_GetWindowPosition( m_Window, &nX, &nY );
+	int nDisplay = SDL_GetWindowDisplayIndex( m_Window );
+	SDL_Rect bounds = { 0, 0, 0, 0 }, usable = { 0, 0, 0, 0 };
+	SDL_GetDisplayBounds( nDisplay, &bounds );
+	SDL_GetDisplayUsableBounds( nDisplay, &usable );
+	Msg( "launcher: window %dx%d at %d,%d drawable %dx%d flags 0x%x fullscreen %d\n", nWindowWide, nWindowTall, nX, nY, nDrawWide, nDrawTall, ( unsigned )SDL_GetWindowFlags( m_Window ), m_bFullScreen ? 1 : 0 );
+	Msg( "launcher: display %d bounds %d,%d %dx%d usable %d,%d %dx%d\n", nDisplay, bounds.x, bounds.y, bounds.w, bounds.h, usable.x, usable.y, usable.w, usable.h );
+	Msg( "launcher: SizeWindow %dx%d rendered %dx%d mouse scale %.4f %.4f\n", m_WindowWidth, m_WindowHeight, m_renderedWidth, m_rendererHeight, m_flMouseXScale, m_flMouseYScale );
+}
+
+CON_COMMAND( mac_launcherinfo, "Print the launcher's window, display and mouse scaling state." )
+{
+	static_cast< CSDLMgr * >( g_pLauncherMgr )->PrintScreenInfo();
+}
+#endif
+
 void CSDLMgr::OnFrameRendered()
 {
 	SDLAPP_FUNC;
@@ -1885,6 +1936,9 @@ void CSDLMgr::PumpWindowsMessageLoop()
 					m_bExpectSyntheticMouseMotion = true;
 				}
 
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+				UpdateMouseScaleFromWindow();
+#endif
 				CCocoaEvent theEvent;
 				theEvent.m_EventType = CocoaEvent_MouseMove;
 				theEvent.m_MousePos[0] = event.motion.x * m_flMouseXScale;
@@ -1961,6 +2015,9 @@ void CSDLMgr::PumpWindowsMessageLoop()
 					}
 				}
 
+#if defined( OSX ) && defined( PLATFORM_64BITS )
+				UpdateMouseScaleFromWindow();
+#endif
 				CCocoaEvent theEvent;
 				theEvent.m_EventType = (bPressed) ? CocoaEvent_MouseButtonDown : CocoaEvent_MouseButtonUp;
 				theEvent.m_MousePos[0] = event.button.x * m_flMouseXScale;
@@ -2040,11 +2097,7 @@ void CSDLMgr::PumpWindowsMessageLoop()
 					case SDL_WINDOWEVENT_SIZE_CHANGED:
 					case SDL_WINDOWEVENT_RESIZED:
 					{
-						if ( m_bFullScreen && event.window.data1 > 0 && event.window.data2 > 0 && m_WindowWidth > 0 && m_WindowHeight > 0 )
-						{
-							m_flMouseXScale = ( float )m_WindowWidth / ( float )event.window.data1;
-							m_flMouseYScale = ( float )m_WindowHeight / ( float )event.window.data2;
-						}
+						UpdateMouseScaleFromWindow();
 						break;
 					}
 #endif
